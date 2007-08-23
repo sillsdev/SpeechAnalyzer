@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<SaAudioDocument DocVersion="2" MD5HashCode="AC2432FA-9069-8F9A-B070-2BA8CE4ABFFB">
+  <SpeakerName>Bomes Kedamoc</SpeakerName>
+  <SpeakerGender>M</SpeakerGender>
+  <EthnologueId>mpp</EthnologueId>
+  <Region>Morobe Province</Region>
+  <Country>Papua New Guinea</Country>
+  <Family>Eastern Huon</Family>
+  <LanguageName>Migabac</LanguageName>
+  <Dialect />
+  <NoteBookReference />
+  <FreeFormTranslation>He said "bush nut" like that.</FreeFormTranslation>
+  <Transcriber>Steve McEvoy</Transcriber>
+  <SADescription>The frame uses an indirect form of quotation.
+
+This utterance was excerpted from a word list of double plosives, recorded on an Olympus DM-10 digital voice recorder using an external noise reduction microphone.</SADescription>
+  <SAFlags>0</SAFlags>
+  <RecordFileFormat>1</RecordFileFormat>
+  <RecordTimeStamp>0</RecordTimeStamp>
+  <RecordBandWidth>0</RecordBandWidth>
+  <RecordSampleSize>0</RecordSampleSize>
+  <SignalMax>0</SignalMax>
+  <SignalMin>0</SignalMin>
+  <SignalBandWidth>0</SignalBandWidth>
+  <SignalEffSampSize>0</SignalEffSampSize>
+  <CalcFreqLow>40</CalcFreqLow>
+  <CalcFreqHigh>500</CalcFreqHigh>
+  <CalcVoicingThd>8192</CalcVoicingThd>
+  <CalcPercntChng>10</CalcPercntChng>
+  <CalcGrpSize>6</CalcGrpSize>
+  <CalcIntrpGap>7</CalcIntrpGap>
+  <Segments>
+    <SegmentData IsBookmark="false" Offset="0.0400453514739229" Duration="0.29324263038548753" MarkDuration="0.29324263038548753">
+      <Phonetic>ˈmime</Phonetic>
+      <Orthographic>mime</Orthographic>
+      <Gloss>say-3sing.Sequential.Different.Subject</Gloss>
+    </SegmentData>
+    <SegmentData IsBookmark="false" Offset="0.33333333333333331" Duration="0.45455782312925169" MarkDuration="0.45455782312925169">
+      <Phonetic>ˈyog͡ba</Phonetic>
+      <Orthographic>yogba</Orthographic>
+      <Gloss>"bush nut"</Gloss>
+    </SegmentData>
+    <SegmentData IsBookmark="false" Offset="0.78793650793650793" Duration="0.269750566893424" MarkDuration="0.269750566893424">
+      <Phonetic>ˈiŋuʔ</Phonetic>
+      <Orthographic>inguc</Orthographic>
+      <Gloss>like that</Gloss>
+    </SegmentData>
+    <SegmentData IsBookmark="false" Offset="1.0577324263038548" Duration="0.27972789115646257" MarkDuration="0.27972789115646257">
+      <Phonetic>ˈmiweʔ</Phonetic>
+      <Orthographic>miwec</Orthographic>
+      <Gloss>say-3sing.Remote.Past</Gloss>
+    </SegmentData>
+  </Segments>
+  <MusicSegments />
+</SaAudioDocument>

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<SaAudioDocument DocVersion="2" MD5HashCode="9823C232-DCDC-DF42-8A15-BEE82C51C626">
+  <SpeakerName />
+  <SpeakerGender>M</SpeakerGender>
+  <EthnologueId>nld</EthnologueId>
+  <Region />
+  <Country />
+  <Family />
+  <LanguageName>Dutch</LanguageName>
+  <Dialect />
+  <NoteBookReference />
+  <FreeFormTranslation>a present</FreeFormTranslation>
+  <Transcriber />
+  <SADescription>Used in the Speech Analyzer training course.</SADescription>
+  <SAFlags>0</SAFlags>
+  <RecordFileFormat>1</RecordFileFormat>
+  <RecordTimeStamp>1180636375</RecordTimeStamp>
+  <RecordBandWidth>11025</RecordBandWidth>
+  <RecordSampleSize>16</RecordSampleSize>
+  <SignalMax>0</SignalMax>
+  <SignalMin>0</SignalMin>
+  <SignalBandWidth>11025</SignalBandWidth>
+  <SignalEffSampSize>16</SignalEffSampSize>
+  <CalcFreqLow>40</CalcFreqLow>
+  <CalcFreqHigh>500</CalcFreqHigh>
+  <CalcVoicingThd>10240</CalcVoicingThd>
+  <CalcPercntChng>32</CalcPercntChng>
+  <CalcGrpSize>6</CalcGrpSize>
+  <CalcIntrpGap>7</CalcIntrpGap>
+  <Segments />
+  <MusicSegments />
+</SaAudioDocument>

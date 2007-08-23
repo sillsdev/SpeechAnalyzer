@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<SaAudioDocument DocVersion="2" MD5HashCode="0CDBBBFB-220C-96D2-90C4-0CDBA41DA374">
+  <SpeakerName>Arnold and Aotta</SpeakerName>
+  <SpeakerGender>M</SpeakerGender>
+  <EthnologueId>kvg</EthnologueId>
+  <Region>Western Province</Region>
+  <Country>Papua New Guinea</Country>
+  <Family>Boazi</Family>
+  <LanguageName>Kuni-Boazi</LanguageName>
+  <Dialect>Kuni</Dialect>
+  <NoteBookReference />
+  <FreeFormTranslation>Did he/she run? He/she ran.  Will he/she run? He/she will run.</FreeFormTranslation>
+  <Transcriber>R. Fumey</Transcriber>
+  <SADescription>Kuni-Boazi has grammatical tone on clause level, in most cases governed by 
+the verb. This file shows 4 minimal pairs, all with contrastive tone 
+patterns.
+
+The four sentences in this file are produced by two speakers (Arnold and Aotta).</SADescription>
+  <SAFlags>32</SAFlags>
+  <RecordFileFormat>1</RecordFileFormat>
+  <RecordTimeStamp>942965557</RecordTimeStamp>
+  <RecordBandWidth>10955</RecordBandWidth>
+  <RecordSampleSize>16</RecordSampleSize>
+  <SignalMax>0</SignalMax>
+  <SignalMin>0</SignalMin>
+  <SignalBandWidth>10955</SignalBandWidth>
+  <SignalEffSampSize>16</SignalEffSampSize>
+  <CalcFreqLow>40</CalcFreqLow>
+  <CalcFreqHigh>500</CalcFreqHigh>
+  <CalcVoicingThd>8192</CalcVoicingThd>
+  <CalcPercntChng>10</CalcPercntChng>
+  <CalcGrpSize>6</CalcGrpSize>
+  <CalcIntrpGap>7</CalcIntrpGap>
+  <Segments>
+    <SegmentData IsBookmark="false" Offset="0.03927437641723356" Duration="0.1309750566893424" MarkDuration="0.53337868480725625">
+      <Phonetic>g</Phonetic>
+      <Orthographic>G</Orthographic>
+      <Gloss>Did he/she run?</Gloss>
+    </SegmentData>
+    <SegmentData IsBookmark="false" Offset="0.17029478458049888" Duration="0.093832199546485265" MarkDuration="0">
+      <Phonetic>e</Phonetic>
+      <Orthographic>é</Orthographic>
+    </SegmentData>
+    <SegmentData IsBookmark="false" Offset="0.264172335600907" Duration="0.085850340136054415" MarkDuration="0">
+      <Phonetic>t</Phonetic>
+      <Orthographic>t</Orthographic>
+    </SegmentData>
+    <SegmentData IsBookmark="false" Offset="0.35006802721088437" Duration="0.090612244897959188" MarkDuration="0">
+      <Phonetic>eɪ</Phonetic>
+      <Orthographic>ei</Orthographic>
+    </SegmentData>
+    <SegmentData IsBookmark="false" Offset="0.44072562358276646" Duration="0.13192743764172335" MarkDuration="0">
+      <Phonetic>tʰ</Phonetic>
+      <Orthographic>t?</Orthographic>
+    </SegmentData>
+    <SegmentData IsBookmark="false" Offset="0.97496598639455778" Duration="0.14081632653061224" MarkDuration="0.71764172335600906">
+      <Phonetic>g</Phonetic>
+      <Orthographic>G</Orthographic>
+      <Gloss>He/she ran.</Gloss>
+    </SegmentData>
+    <SegmentData IsBookmark="false" Offset="1.115827664399093" Duration="0.091111111111111115" MarkDuration="0">
+      <Phonetic>e</Phonetic>
+      <Orthographic>e</Orthographic>
+    </SegmentData>
+    <SegmentData IsBookmark="false" Offset="1.2069841269841271" Duration="0.10340136054421768" MarkDuration="0">
+      <Phonetic>t</Phonetic>
+      <Orthographic>t</Orthographic>
+    </SegmentData>
+    <SegmentData IsBookmark="false" Offset="1.3104308390022676" Duration="0.12086167800453515" MarkDuration="0">
+      <Phonetic>ei</Phonetic>
+      <Orthographic>éi</Orthographic>
+    </SegmentData>
+    <SegmentData IsBookmark="false" Offset="1.4313378684807256" Duration="0.26126984126984126" MarkDuration="0">
+      <Phonetic>tʰ</Phonetic>
+      <Orthographic>t.</Orthographic>
+    </SegmentData>
+    <SegmentData IsBookmark="false" Offset="2.0448979591836736" Duration="0.10562358276643991" MarkDuration="0.510249433106576">
+      <Phonetic>g</Phonetic>
+      <Orthographic>G</Orthographic>
+      <Gloss>Will he/she run?</Gloss>
+    </SegmentData>
+    <SegmentData IsBookmark="false" Offset="2.1505668934240361" Duration="0.0854421768707483" MarkDuration="0">
+      <Phonetic>e</Phonetic>
+      <Orthographic>é</Orthographic>
+    </SegmentData>
+    <SegmentData IsBookmark="false" Offset="2.2360544217687073" Duration="0.085804988662131515" MarkDuration="0">
+      <Phonetic>t</Phonetic>
+      <Orthographic>t</Orthographic>
+    </SegmentData>
+    <SegmentData IsBookmark="false" Offset="2.3219047619047619" Duration="0.10049886621315193" MarkDuration="0">
+      <Phonetic>ei</Phonetic>
+      <Orthographic>ēi</Orthographic>
+    </SegmentData>
+    <SegmentData IsBookmark="false" Offset="2.4224489795918367" Duration="0.1326984126984127" MarkDuration="0">
+      <Phonetic>tʰ</Phonetic>
+      <Orthographic>t?</Orthographic>
+    </SegmentData>
+    <SegmentData IsBookmark="false" Offset="2.9194104308390023" Duration="0.13469387755102041" MarkDuration="0.59183673469387754">
+      <Phonetic>g</Phonetic>
+      <Orthographic>G</Orthographic>
+      <Gloss>He/she will run.</Gloss>
+    </SegmentData>
+    <SegmentData IsBookmark="false" Offset="3.0541496598639455" Duration="0.071791383219954652" MarkDuration="0">
+      <Phonetic>e</Phonetic>
+      <Orthographic>é</Orthographic>
+    </SegmentData>
+    <SegmentData IsBookmark="false" Offset="3.125986394557823" Duration="0.099591836734693878" MarkDuration="0">
+      <Phonetic>t</Phonetic>
+      <Orthographic>t</Orthographic>
+    </SegmentData>
+    <SegmentData IsBookmark="false" Offset="3.22562358276644" Duration="0.10997732426303855" MarkDuration="0">
+      <Phonetic>ei</Phonetic>
+      <Orthographic>éi</Orthographic>
+    </SegmentData>
+    <SegmentData IsBookmark="false" Offset="3.3356462585034015" Duration="0.17560090702947845" MarkDuration="0">
+      <Phonetic>tʰ</Phonetic>
+      <Orthographic>t.</Orthographic>
+    </SegmentData>
+  </Segments>
+  <MusicSegments />
+</SaAudioDocument>

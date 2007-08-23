@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<SaAudioDocument DocVersion="2" MD5HashCode="0686C1E5-D4D8-C331-791C-0E5B2BE05A1B">
+  <SpeakerGender> </SpeakerGender>
+  <SAFlags>32</SAFlags>
+  <RecordFileFormat>1</RecordFileFormat>
+  <RecordTimeStamp>964735763</RecordTimeStamp>
+  <RecordBandWidth>10955</RecordBandWidth>
+  <RecordSampleSize>16</RecordSampleSize>
+  <SignalMax>0</SignalMax>
+  <SignalMin>0</SignalMin>
+  <SignalBandWidth>10955</SignalBandWidth>
+  <SignalEffSampSize>16</SignalEffSampSize>
+  <CalcFreqLow>40</CalcFreqLow>
+  <CalcFreqHigh>500</CalcFreqHigh>
+  <CalcVoicingThd>32</CalcVoicingThd>
+  <CalcPercntChng>10</CalcPercntChng>
+  <CalcGrpSize>6</CalcGrpSize>
+  <CalcIntrpGap>7</CalcIntrpGap>
+  <Segments />
+  <MusicSegments />
+</SaAudioDocument>

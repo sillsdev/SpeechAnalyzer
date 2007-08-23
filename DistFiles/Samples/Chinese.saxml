@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<SaAudioDocument DocVersion="2" MD5HashCode="76EC4F06-FC49-A371-786B-D0B7A7E7FA08">
+  <SpeakerName />
+  <SpeakerGender>F</SpeakerGender>
+  <EthnologueId>cmn</EthnologueId>
+  <Region />
+  <Country />
+  <Family>Sino-Tibetan</Family>
+  <LanguageName>Chinese, Mandarin</LanguageName>
+  <Dialect />
+  <NoteBookReference />
+  <FreeFormTranslation>Mother rides the horse, the horse is slow, mother scolds the horse.</FreeFormTranslation>
+  <Transcriber />
+  <SADescription>There are 4 tones with 5 pitch levels and a 5th unmarked "neutral" tone. Tones have 2 or more pitch levels as  follows: HI:  -  5-5 ... 2ND:  3-5 ... 3RD:  2-1-4 ... 4TH:   5-1.</SADescription>
+  <SAFlags>38</SAFlags>
+  <RecordFileFormat>1</RecordFileFormat>
+  <RecordTimeStamp>777657600</RecordTimeStamp>
+  <RecordBandWidth>9930</RecordBandWidth>
+  <RecordSampleSize>8</RecordSampleSize>
+  <SignalMax>32512</SignalMax>
+  <SignalMin>-24832</SignalMin>
+  <SignalBandWidth>9930</SignalBandWidth>
+  <SignalEffSampSize>8</SignalEffSampSize>
+  <CalcFreqLow>100</CalcFreqLow>
+  <CalcFreqHigh>400</CalcFreqHigh>
+  <CalcVoicingThd>3840</CalcVoicingThd>
+  <CalcPercntChng>14</CalcPercntChng>
+  <CalcGrpSize>11</CalcGrpSize>
+  <CalcIntrpGap>10</CalcIntrpGap>
+  <Segments>
+    <SegmentData IsBookmark="false" Offset="0.074920634920634915" Duration="0.068435374149659861" MarkDuration="0.3887981859410431">
+      <Phonetic>m</Phonetic>
+      <Orthographic>m</Orthographic>
+      <Gloss>Mother</Gloss>
+    </SegmentData>
+    <SegmentData IsBookmark="false" Offset="0.14340136054421768" Duration="0.11532879818594104" MarkDuration="0">
+      <Phonetic>a¹</Phonetic>
+      <Orthographic>a</Orthographic>
+    </SegmentData>
+    <SegmentData IsBookmark="false" Offset="0.25877551020408163" Duration="0.045170068027210887" MarkDuration="0">
+      <Phonetic>m</Phonetic>
+      <Orthographic>m</Orthographic>
+    </SegmentData>
+    <SegmentData IsBookmark="false" Offset="0.30399092970521541" Duration="0.15972789115646258" MarkDuration="0">
+      <Phonetic>a</Phonetic>
+      <Orthographic>a</Orthographic>
+    </SegmentData>
+    <SegmentData IsBookmark="false" Offset="0.46376417233560091" Duration="0.20154195011337869" MarkDuration="0.250249433106576">
+      <Phonetic>tʃ</Phonetic>
+      <Orthographic>q</Orthographic>
+      <Gloss>rides</Gloss>
+    </SegmentData>
+    <SegmentData IsBookmark="false" Offset="0.6653514739229025" Duration="0.048662131519274378" MarkDuration="0">
+      <Phonetic>i²</Phonetic>
+      <Orthographic>i</Orthographic>
+    </SegmentData>
+    <SegmentData IsBookmark="false" Offset="0.71405895691609977" Duration="0.0691609977324263" MarkDuration="0.41410430839002266">
+      <Phonetic>m</Phonetic>
+      <Orthographic>m</Orthographic>
+      <Gloss>horse.</Gloss>
+    </SegmentData>
+    <SegmentData IsBookmark="false" Offset="0.78326530612244893" Duration="0.15600907029478459" MarkDuration="0">
+      <Phonetic>a³</Phonetic>
+      <Orthographic>a</Orthographic>
+    </SegmentData>
+    <SegmentData IsBookmark="false" Offset="0.93931972789115648" Duration="0.18884353741496598" MarkDuration="0">
+      <Phonetic>ʔ</Phonetic>
+    </SegmentData>
+    <SegmentData IsBookmark="false" Offset="1.1282086167800454" Duration="0.070702947845804984" MarkDuration="0.22172335600907028">
+      <Phonetic>m</Phonetic>
+      <Orthographic>m</Orthographic>
+      <Gloss>Horse</Gloss>
+    </SegmentData>
+    <SegmentData IsBookmark="false" Offset="1.1989569160997733" Duration="0.15097505668934241" MarkDuration="0">
+      <Phonetic>a³</Phonetic>
+      <Orthographic>a</Orthographic>
+    </SegmentData>
+    <SegmentData IsBookmark="false" Offset="1.3499773242630386" Duration="0.081088435374149656" MarkDuration="0.31120181405895692">
+      <Phonetic>m</Phonetic>
+      <Orthographic>m</Orthographic>
+      <Gloss>slow.</Gloss>
+    </SegmentData>
+    <SegmentData IsBookmark="false" Offset="1.431111111111111" Duration="0.17564625850340135" MarkDuration="0">
+      <Phonetic>a⁴</Phonetic>
+      <Orthographic>a</Orthographic>
+    </SegmentData>
+    <SegmentData IsBookmark="false" Offset="1.6068027210884355" Duration="0.054376417233560091" MarkDuration="0">
+      <Phonetic>n</Phonetic>
+    </SegmentData>
+    <SegmentData IsBookmark="false" Offset="1.846938775510204" Duration="0.062947845804988661" MarkDuration="0.36752834467120182">
+      <Phonetic>m</Phonetic>
+      <Orthographic>m</Orthographic>
+      <Gloss>mother</Gloss>
+    </SegmentData>
+    <SegmentData IsBookmark="false" Offset="1.9099319727891158" Duration="0.11736961451247166" MarkDuration="0">
+      <Phonetic>a¹</Phonetic>
+      <Orthographic>a</Orthographic>
+    </SegmentData>
+    <SegmentData IsBookmark="false" Offset="2.0273469387755103" Duration="0.070657596371882084" MarkDuration="0">
+      <Phonetic>m</Phonetic>
+      <Orthographic>m</Orthographic>
+    </SegmentData>
+    <SegmentData IsBookmark="false" Offset="2.0980498866213151" Duration="0.11641723356009071" MarkDuration="0">
+      <Phonetic>a</Phonetic>
+      <Orthographic>a</Orthographic>
+    </SegmentData>
+    <SegmentData IsBookmark="false" Offset="2.2145124716553286" Duration="0.079863945578231288" MarkDuration="0.21709750566893424">
+      <Phonetic>m</Phonetic>
+      <Orthographic>m</Orthographic>
+      <Gloss>scolds</Gloss>
+    </SegmentData>
+    <SegmentData IsBookmark="false" Offset="2.2944217687074828" Duration="0.13718820861678005" MarkDuration="0">
+      <Phonetic>a⁴</Phonetic>
+      <Orthographic>a</Orthographic>
+    </SegmentData>
+    <SegmentData IsBookmark="false" Offset="2.4316553287981861" Duration="0.0670748299319728" MarkDuration="0.20335600907029477">
+      <Phonetic>m</Phonetic>
+      <Orthographic>m</Orthographic>
+      <Gloss>horse</Gloss>
+    </SegmentData>
+    <SegmentData IsBookmark="false" Offset="2.4987755102040818" Duration="0.10789115646258503" MarkDuration="0">
+      <Phonetic>a³</Phonetic>
+      <Orthographic>a</Orthographic>
+    </SegmentData>
+    <SegmentData IsBookmark="false" Offset="2.6067120181405894" Duration="0.028299319727891157" MarkDuration="0">
+      <Phonetic>ʔ</Phonetic>
+    </SegmentData>
+  </Segments>
+  <MusicSegments />
+</SaAudioDocument>

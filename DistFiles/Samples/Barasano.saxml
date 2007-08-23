@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<SaAudioDocument DocVersion="2" MD5HashCode="2B71217C-7315-5126-7E3E-423D2F6BBF30">
+  <SpeakerName />
+  <SpeakerGender>M</SpeakerGender>
+  <EthnologueId>bao</EthnologueId>
+  <Region>Vaupés</Region>
+  <Country>Colombia</Country>
+  <Family>Eastern Tucanoan</Family>
+  <LanguageName>Barasano</LanguageName>
+  <Dialect />
+  <NoteBookReference />
+  <FreeFormTranslation>Lice, Caterpillars</FreeFormTranslation>
+  <Transcriber />
+  <SADescription>Nasalization is a prominent contrastive feature in Eastern Tucanoan languages.
+
+
+
+
+
+This class of nouns are inherently plural (things that swarm).</SADescription>
+  <SAFlags>32</SAFlags>
+  <RecordFileFormat>1</RecordFileFormat>
+  <RecordTimeStamp>925163207</RecordTimeStamp>
+  <RecordBandWidth>10955</RecordBandWidth>
+  <RecordSampleSize>16</RecordSampleSize>
+  <SignalMax>0</SignalMax>
+  <SignalMin>0</SignalMin>
+  <SignalBandWidth>10955</SignalBandWidth>
+  <SignalEffSampSize>16</SignalEffSampSize>
+  <CalcFreqLow>40</CalcFreqLow>
+  <CalcFreqHigh>500</CalcFreqHigh>
+  <CalcVoicingThd>8192</CalcVoicingThd>
+  <CalcPercntChng>10</CalcPercntChng>
+  <CalcGrpSize>6</CalcGrpSize>
+  <CalcIntrpGap>7</CalcIntrpGap>
+  <Segments>
+    <SegmentData IsBookmark="false" Offset="0.00399092970521542" Duration="0.25129251700680272" MarkDuration="0.55024943310657592">
+      <Phonetic>i</Phonetic>
+      <Gloss>lice</Gloss>
+    </SegmentData>
+    <SegmentData IsBookmark="false" Offset="0.25532879818594106" Duration="0.29891156462585033" MarkDuration="0">
+      <Phonetic>a</Phonetic>
+    </SegmentData>
+    <SegmentData IsBookmark="false" Offset="0.80131519274376417" Duration="0.25873015873015875" MarkDuration="0.48095238095238096">
+      <Phonetic>ĩ</Phonetic>
+      <Gloss>caterpillars</Gloss>
+    </SegmentData>
+    <SegmentData IsBookmark="false" Offset="1.0600907029478459" Duration="0.22217687074829931" MarkDuration="0">
+      <Phonetic>ã</Phonetic>
+    </SegmentData>
+  </Segments>
+  <MusicSegments />
+</SaAudioDocument>

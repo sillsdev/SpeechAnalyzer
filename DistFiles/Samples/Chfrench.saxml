@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="utf-8"?>
+<SaAudioDocument DocVersion="2" MD5HashCode="33C583BC-8A7A-C3E3-2481-28F82D0B9AB3">
+  <SpeakerName />
+  <SpeakerGender>M</SpeakerGender>
+  <EthnologueId>fra</EthnologueId>
+  <Region />
+  <Country>Switzerland</Country>
+  <Family>Oïl</Family>
+  <LanguageName>French</LanguageName>
+  <Dialect />
+  <NoteBookReference />
+  <FreeFormTranslation>Many thanks to all the friends here today.</FreeFormTranslation>
+  <Transcriber />
+  <SADescription />
+  <SAFlags>34</SAFlags>
+  <RecordFileFormat>1</RecordFileFormat>
+  <RecordTimeStamp>636829200</RecordTimeStamp>
+  <RecordBandWidth>9680</RecordBandWidth>
+  <RecordSampleSize>8</RecordSampleSize>
+  <SignalMax>32512</SignalMax>
+  <SignalMin>-24064</SignalMin>
+  <SignalBandWidth>9680</SignalBandWidth>
+  <SignalEffSampSize>8</SignalEffSampSize>
+  <CalcFreqLow>70</CalcFreqLow>
+  <CalcFreqHigh>260</CalcFreqHigh>
+  <CalcVoicingThd>6912</CalcVoicingThd>
+  <CalcPercntChng>11</CalcPercntChng>
+  <CalcGrpSize>6</CalcGrpSize>
+  <CalcIntrpGap>7</CalcIntrpGap>
+  <Segments>
+    <SegmentData IsBookmark="false" Offset="0.0782312925170068" Duration="0.0308843537414966" MarkDuration="0.26068027210884354">
+      <Phonetic>m</Phonetic>
+      <Phonemic>m</Phonemic>
+      <Orthographic>m</Orthographic>
+      <Gloss>thanks</Gloss>
+    </SegmentData>
+    <SegmentData IsBookmark="false" Offset="0.10916099773242631" Duration="0.055510204081632653" MarkDuration="0">
+      <Phonetic>ɛ</Phonetic>
+      <Phonemic>ɛ</Phonemic>
+      <Orthographic>e</Orthographic>
+    </SegmentData>
+    <SegmentData IsBookmark="false" Offset="0.16471655328798185" Duration="0.019909297052154194" MarkDuration="0">
+      <Phonetic>ʁ</Phonetic>
+      <Phonemic>ʁ</Phonemic>
+      <Orthographic>r</Orthographic>
+    </SegmentData>
+    <SegmentData IsBookmark="false" Offset="0.18467120181405897" Duration="0.11342403628117914" MarkDuration="0">
+      <Phonetic>s</Phonetic>
+      <Phonemic>s</Phonemic>
+      <Orthographic>c</Orthographic>
+    </SegmentData>
+    <SegmentData IsBookmark="false" Offset="0.298140589569161" Duration="0.040770975056689342" MarkDuration="0">
+      <Phonetic>i</Phonetic>
+      <Phonemic>i</Phonemic>
+      <Orthographic>i</Orthographic>
+    </SegmentData>
+    <SegmentData IsBookmark="false" Offset="0.33895691609977324" Duration="0.063356009070294789" MarkDuration="0.38448979591836735">
+      <Phonetic>b</Phonetic>
+      <Phonemic>b</Phonemic>
+      <Orthographic>b</Orthographic>
+      <Gloss>many</Gloss>
+    </SegmentData>
+    <SegmentData IsBookmark="false" Offset="0.40235827664399093" Duration="0.099365079365079365" MarkDuration="0">
+      <Phonetic>u</Phonetic>
+      <Phonemic>o</Phonemic>
+      <Orthographic>eau</Orthographic>
+    </SegmentData>
+    <SegmentData IsBookmark="false" Offset="0.50176870748299318" Duration="0.10766439909297053" MarkDuration="0">
+      <Phonetic>k</Phonetic>
+      <Phonemic>k</Phonemic>
+      <Orthographic>c</Orthographic>
+    </SegmentData>
+    <SegmentData IsBookmark="false" Offset="0.60947845804988665" Duration="0.11396825396825397" MarkDuration="0">
+      <Phonetic>u</Phonetic>
+      <Phonemic>u</Phonemic>
+      <Orthographic>oup</Orthographic>
+    </SegmentData>
+    <SegmentData IsBookmark="false" Offset="0.72349206349206352" Duration="0.09283446712018141" MarkDuration="0.09283446712018141">
+      <Phonetic>ʌ</Phonetic>
+      <Phonemic>a</Phonemic>
+      <Orthographic>à</Orthographic>
+      <Gloss>to</Gloss>
+    </SegmentData>
+    <SegmentData IsBookmark="false" Offset="0.81637188208616784" Duration="0.12408163265306123" MarkDuration="0.17818594104308391">
+      <Phonetic>t</Phonetic>
+      <Phonemic>t</Phonemic>
+      <Orthographic>t</Orthographic>
+      <Gloss>all</Gloss>
+    </SegmentData>
+    <SegmentData IsBookmark="false" Offset="0.94049886621315193" Duration="0.054058956916099771" MarkDuration="0">
+      <Phonetic>u</Phonetic>
+      <Phonemic>u</Phonemic>
+      <Orthographic>ous</Orthographic>
+    </SegmentData>
+    <SegmentData IsBookmark="false" Offset="0.9946031746031746" Duration="0.046077097505668935" MarkDuration="0.16607709750566893">
+      <Phonetic>l</Phonetic>
+      <Phonemic>l</Phonemic>
+      <Orthographic>l</Orthographic>
+      <Gloss>the</Gloss>
+    </SegmentData>
+    <SegmentData IsBookmark="false" Offset="1.0407256235827664" Duration="0.063265306122448975" MarkDuration="0">
+      <Phonetic>e</Phonetic>
+      <Phonemic>e</Phonemic>
+      <Orthographic>e</Orthographic>
+    </SegmentData>
+    <SegmentData IsBookmark="false" Offset="1.1040362811791382" Duration="0.056643990929705214" MarkDuration="0">
+      <Phonetic>z</Phonetic>
+      <Phonemic>z</Phonemic>
+      <Orthographic>s</Orthographic>
+    </SegmentData>
+    <SegmentData IsBookmark="false" Offset="1.1607256235827665" Duration="0.091882086167800456" MarkDuration="0.24503401360544216">
+      <Phonetic>æ</Phonetic>
+      <Phonemic>a</Phonemic>
+      <Orthographic>a</Orthographic>
+      <Gloss>frends</Gloss>
+    </SegmentData>
+    <SegmentData IsBookmark="false" Offset="1.2526530612244897" Duration="0.05369614512471655" MarkDuration="0">
+      <Phonetic>m</Phonetic>
+      <Phonemic>m</Phonemic>
+      <Orthographic>m</Orthographic>
+    </SegmentData>
+    <SegmentData IsBookmark="false" Offset="1.3063945578231293" Duration="0.099365079365079365" MarkDuration="0">
+      <Phonetic>i</Phonetic>
+      <Phonemic>i</Phonemic>
+      <Orthographic>is</Orthographic>
+    </SegmentData>
+    <SegmentData IsBookmark="false" Offset="1.4058049886621316" Duration="0.066712018140589566" MarkDuration="0.11260770975056689">
+      <Phonetic>k</Phonetic>
+      <Phonemic>k</Phonemic>
+      <Orthographic>qu</Orthographic>
+      <Gloss>who</Gloss>
+    </SegmentData>
+    <SegmentData IsBookmark="false" Offset="1.4725623582766441" Duration="0.045850340136054421" MarkDuration="0">
+      <Phonetic>i</Phonetic>
+      <Phonemic>i</Phonemic>
+      <Orthographic>i</Orthographic>
+    </SegmentData>
+    <SegmentData IsBookmark="false" Offset="1.5184580498866214" Duration="0.099501133786848078" MarkDuration="0.28163265306122448">
+      <Phonetic>s</Phonetic>
+      <Phonemic>s</Phonemic>
+      <Orthographic>s</Orthographic>
+      <Gloss>are</Gloss>
+    </SegmentData>
+    <SegmentData IsBookmark="false" Offset="1.6180045351473924" Duration="0.10045351473922902" MarkDuration="0">
+      <Phonetic>ɒ̃</Phonetic>
+      <Phonemic>ɒ̃</Phonemic>
+      <Orthographic>on</Orthographic>
+    </SegmentData>
+    <SegmentData IsBookmark="false" Offset="1.7185034013605443" Duration="0.081587301587301583" MarkDuration="0">
+      <Phonetic>t</Phonetic>
+      <Phonemic>t</Phonemic>
+      <Orthographic>t</Orthographic>
+    </SegmentData>
+    <SegmentData IsBookmark="false" Offset="1.8001360544217686" Duration="0.047528344671201816" MarkDuration="0.21034013605442176">
+      <Phonetic>i</Phonetic>
+      <Phonemic>i</Phonemic>
+      <Orthographic>i</Orthographic>
+      <Gloss>here</Gloss>
+    </SegmentData>
+    <SegmentData IsBookmark="false" Offset="1.8477097505668934" Duration="0.12970521541950114" MarkDuration="0">
+      <Phonetic>s</Phonetic>
+      <Phonemic>s</Phonemic>
+      <Orthographic>c</Orthographic>
+    </SegmentData>
+    <SegmentData IsBookmark="false" Offset="1.9774603174603174" Duration="0.033015873015873019" MarkDuration="0">
+      <Phonetic>i</Phonetic>
+      <Phonemic>i</Phonemic>
+      <Orthographic>i</Orthographic>
+    </SegmentData>
+    <SegmentData IsBookmark="false" Offset="2.0105215419501135" Duration="0.1019047619047619" MarkDuration="0.45764172335600906">
+      <Phonetic>o</Phonetic>
+      <Phonemic>o</Phonemic>
+      <Orthographic>au</Orthographic>
+      <Gloss>today</Gloss>
+    </SegmentData>
+    <SegmentData IsBookmark="false" Offset="2.1124716553287981" Duration="0.060090702947845805" MarkDuration="0">
+      <Phonetic>ʒ</Phonetic>
+      <Phonemic>ʒ</Phonemic>
+      <Orthographic>j</Orthographic>
+    </SegmentData>
+    <SegmentData IsBookmark="false" Offset="2.1726077097505669" Duration="0.062721088435374148" MarkDuration="0">
+      <Phonetic>o</Phonetic>
+      <Phonemic>u</Phonemic>
+      <Orthographic>ou</Orthographic>
+    </SegmentData>
+    <SegmentData IsBookmark="false" Offset="2.2353741496598638" Duration="0.04204081632653061" MarkDuration="0">
+      <Phonetic>ʁ</Phonetic>
+      <Phonemic>ʁ</Phonemic>
+      <Orthographic>r</Orthographic>
+    </SegmentData>
+    <SegmentData IsBookmark="false" Offset="2.2774603174603176" Duration="0.05605442176870748" MarkDuration="0">
+      <Phonetic>d</Phonetic>
+      <Phonemic>d</Phonemic>
+      <Orthographic>d'</Orthographic>
+    </SegmentData>
+    <SegmentData IsBookmark="false" Offset="2.3335600907029477" Duration="0.057687074829931975" MarkDuration="0">
+      <Phonetic>y</Phonetic>
+      <Phonemic>ɥ</Phonemic>
+      <Orthographic>hu</Orthographic>
+    </SegmentData>
+    <SegmentData IsBookmark="false" Offset="2.3912925170068027" Duration="0.076870748299319724" MarkDuration="0">
+      <Phonetic>i</Phonetic>
+      <Phonemic>i</Phonemic>
+      <Orthographic>i</Orthographic>
+    </SegmentData>
+  </Segments>
+  <MusicSegments />
+</SaAudioDocument>
