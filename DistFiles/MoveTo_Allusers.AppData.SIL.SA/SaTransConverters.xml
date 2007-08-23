@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TransConverterInfo>
+  <TransConverter transcription="Phonetic" converter="ASAP&lt;&gt;UNICODE" filename="Asap2Unicode.tec" chunkid="etic" />
+  <TransConverter transcription="Phonemic" converter="ASAP&lt;&gt;UNICODE" filename="Asap2Unicode.tec" chunkid="emic" />
+  <TransConverter transcription="Tone" converter="PitchContours" filename="PitchContours.tec" chunkid="tone" />
+  <TransConverter transcription="Orthographic" converter="SA-ISO-8859&lt;&gt;UNICODE" filename="iso-8859.tec" chunkid="orth" />
+  <TransConverter transcription="Gloss" converter="SA-ISO-8859&lt;&gt;UNICODE" filename="iso-8859.tec" chunkid="mark" />
+  <TransConverter transcription="Reference" converter="SA-ISO-8859&lt;&gt;UNICODE" filename="iso-8859.tec" chunkid="ref " />
+  <TransConverter transcription="Music Phrase Level 1" converter="SA-ISO-8859&lt;&gt;UNICODE" filename="iso-8859.tec" chunkid="mpl1" />
+  <TransConverter transcription="Music Phrase Level 2" converter="SA-ISO-8859&lt;&gt;UNICODE" filename="iso-8859.tec" chunkid="mpl2" />
+  <TransConverter transcription="Music Phrase Level 3" converter="SA-ISO-8859&lt;&gt;UNICODE" filename="iso-8859.tec" chunkid="mpl3" />
+  <TransConverter transcription="Music Phrase Level 4" converter="SA-ISO-8859&lt;&gt;UNICODE" filename="iso-8859.tec" chunkid="mpl4" />
+</TransConverterInfo>
