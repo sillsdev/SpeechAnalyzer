@@ -1,0 +1,252 @@
+default namespace = "http://www.sil.org/computing/schemas/asap/sa/SaDoc-RIFF8.0/0.0"
+# This is the schema for the storing Speech Analyzer Riff documents
+# this is a preliminary document
+
+## The root node is SaDoc
+start = SaRiff80
+
+## SaDoc describes the content of the SA Riff 8.0 
+## specification for storing Speech Analyzer Data
+## for archival purposes the Annotation Data is stored 
+## as is.  This means is stored as the "code points" for the 
+## fonts.  (These code points are treated as unicode and 
+## transformed to utf-8 to be written to XML
+SaRiff80 = element SaRiff80
+{
+  FileReference ,
+  AudioEncodingInfo? , 
+  ReferenceInfo? ,
+  LanguageInfo? ,
+  SpeakerInfo?,
+  Annotation? ,
+  MusicInfo? , 
+  DatabaseInfo? , 
+  Preferences?  
+}
+
+## Recording File Reference
+FileReference = element FileReference
+{
+  ## Recording Universal Resource Locator
+  element Name {xsd:anyURI},
+  element DriveVolume {string}?,
+  element DriveType {string}?,
+  element Hash { string },
+  element HashAlg { string },
+  element Length { xsd:long },
+  element Modified { xsd:dateTime }
+}
+
+AudioEncodingInfo = element AudioEncodingInfo
+{
+  ## Number of Channels (1=mono, 2=stereo)
+  element Channels { xsd:int } ,
+
+  ## Samples Per Second
+  element SamplesPerSecond { xsd:int }, 
+
+  element Bandwidth { xsd:int },
+  
+  ## Bits Per Sample
+  element BitsPerSample { xsd:int } ,
+  
+  ## Effective Bits Per Sample
+  element EffectiveBits { xsd:int },
+    
+  ## Number of samples
+  element SampleCount { xsd:long } ,
+  
+  element SignalRange
+  {
+    element Max { xsd:int },
+    element Min { xsd:int }
+  }?,
+  
+  element SampleFlags 
+  {
+    element SampleWordSizeConverted { xsd:boolean },
+    element SampleRateConverted { xsd:boolean },
+    element SampleDataCompressed { xsd:boolean },
+    element SampleDataLossy { xsd:boolean }
+  }?,
+  
+  ## Recording Encoding Info
+  element RecordingInfo
+  {
+    element HighpassFilter { "Unknown", "None", "HP70Hz" },
+    element RecordingFormat { "Unknown", "UTT", "WAV", "MAC", "TIMIT" },
+    element Bandwidth { xsd:int },
+    
+    ## Recoridng Time Stamp
+    element RecordingTime { xsd:dateTime } ,
+  
+    ## Bits Per Sample
+    element BitsPerSample { xsd:int } 
+  }?    
+}
+
+## Reference Info
+ReferenceInfo = element ReferenceInfo
+{
+  ## Description
+  element Description { string }? ,
+  
+  ## Free Translation
+  element FreeTranslation { string }? ,
+  
+  ## Notebook Reference
+  element NoteBook { string }? ,
+  
+  ## Transcriber
+  element Transcriber { string }? 
+}
+
+## Language Info
+LanguageInfo = element LanguageInfo
+{
+  ## Ethnologue ID
+  element EthnologueID { string {maxLength = "3"}}? ,
+  
+  ## Language Family
+  element Family { string }? ,
+  
+  ## Languange
+  element Language { string }? ,
+  
+  ## Dialect
+  element Dialect { string }? ,
+  
+  ## Country 
+  element Country { string }? ,
+  
+  ## Region
+  element Region { string }?
+}
+
+## Speaker Info
+SpeakerInfo = element SpeakerInfo
+{
+  ## Age Classification
+  element Age { "Unknown" | "Adult" | "Child" }? ,
+  
+  ## Gender
+  element Gender { "Unknown" | "Male" | "Female" }? ,
+  
+  ## Speaker
+  element SpeakerName { string }?
+}
+
+## Annotation represents the collection of annotations
+## stored as hacked code page code points
+Annotation = element Annotation
+{
+  element Phonemic { Segment* } ?, 
+  element Phonetic { Segment* } ? ,
+  element Tone { Segment* } ? ,
+  element Orthographic { Segment* } ? ,
+  element Gloss { Segment* } ? ,
+  element PartOfSpeech { Segment* } ? ,
+  element Reference { Segment* } ? ,
+  element Phrase1 { Segment* } ? ,
+  element Phrase2 { Segment* } ? ,
+  element Phrase3 { Segment* } ? ,
+  element Phrase4 { Segment* } ?
+}
+
+## An annotation item
+Segment = element Segment
+{
+  ## Segment begin time in seconds
+  attribute Begin { xsd:double { minInclusive = "0" } } ,
+  ## Segment end time in seconds
+  attribute End { xsd:double  { minInclusive = "0" } },
+
+  ## Each Segment must have a string with length at least 1 character
+  element Content { string { minLength = "1" }}
+}
+
+## Database Info for maintaining database integrity
+DatabaseInfo = element DatabaseInfo
+{
+  ## Name of owning Application
+  element ApplicationName { string }? ,
+  
+  ## Window title of owning Application
+  element ApplicationTitle { string }? ,
+  
+  ## Database registrations
+  element Registration 
+  {
+    ## Name of Database
+    element DatabaseName { string } ,
+    
+    ## DateTime of registration
+    element RegistrationTimeStamp { xsd:dateTime }? ,
+    
+    ## Application specific key string
+    element Key { string }*
+  }*
+}
+
+## Music Info
+MusicInfo = element MusicInfo
+{
+  ## Music Score
+  element MusicScore { text }?
+}
+
+## Preferences
+Preferences = element Preferences
+{
+  Fonts? ,
+  GrapplCustomPitch?
+}
+
+## Preferred font for displaying each annotation
+## NOTE: Critical for interpreting annotation encoding
+Fonts = element Fonts
+{
+  ## Phonemic Font
+  element Phonemic {string}? ,
+  
+  ## Phonetic Font
+  element Phonetic {string}? ,
+  
+  ## Tone Font
+  element Tone {string}? ,
+  
+  ## Orthographic Font
+  element Orthographic {string}? ,
+  
+  ## Gloss Font
+  element Gloss {string}? ,
+  
+  ## Part of Speech Font
+  element PartOfSpeech {string}? ,
+  
+  ## Reference Font
+  element Reference {string}? ,
+  
+  ## Phrase1 Font
+  element Phrase1 {string}? ,
+  
+  ## Phrase2 Font
+  element Phrase2 {string}? ,
+  
+  ## Phrase3 Font
+  element Phrase3 {string}? ,
+  
+  ## Phrase4
+  element Phrase4 {string}?
+}
+
+## GrapplCustomPitch
+GrapplCustomPitch = element GrapplCustomPitch
+{
+  element CalcFreqLow {xsd:int},
+  element CalcFreqHigh {xsd:int},
+  element CalcVoicingThd {xsd:int},
+  element CalcPercntChng {xsd:int},
+  element CalcGrpSize {xsd:int},
+  element CalcIntrpGap {xsd:int}
+}

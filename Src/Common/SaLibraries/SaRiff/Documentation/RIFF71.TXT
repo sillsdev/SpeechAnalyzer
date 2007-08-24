@@ -1,0 +1,283 @@
+             RIFF STRUCTURE SPECIFICATION FOR ASAP, Version 7.1 
+     
+  RIFF                      <RIFF chunk id = 'RIFF', set by AudioCon     >
+                            <or Wave Recorder                            >
+    RIFFChunkSize           <size of RIFF chunk in bytes, excluding id,  >
+                            <RIFFChunkSize, and pad byte, set by         > 
+                            <AudioCon, and updated by Wave Recorder or   > 
+                            <SA; unsigned long                           >
+      form                  <set to 'WAVE' by Wave Recorder or AudioCon  > 
+      fmt                   <format sub-chunk id = 'fmt ', set           >
+                            <by AudioCon or Wave Recorder                >
+        fmtChunkSize        <size of fmt chunk in bytes, excluding id,   >
+                            <fmtChunksize, and pad byte, set by AudioCon > 
+                            <or Wave Recorder; unsigned long             >
+          FormatTag         <encoding method:  PCM = 1, set by AudioCon  >
+                            <or Wave Recorder, updated by compression    > 
+                            <algorithm; unsigned short                   >
+          Channels          <no. of recording channels, set by AudioCon  >
+                            <or Wave Recorder; unsigned short            >
+          SamplesPerSecond  <sampling rate, set by AudioCon or Wave      >
+                            <Recorder; unsigned long                     >
+          AvgBytesPerSec    <average throughput in bytes/sec, set by     >
+                            <AudioCon or Wave Recorder; unsigned long    >
+          BlockAlign        <bytes per sample for all channels, set by   >
+                            <AudioCon or Wave Recorder; unsigned short   >
+          BitsPerSample     <sample word size, set by AudioCon or Wave   >
+                            <Recorder; unsigned short                    >
+      data                  <data sub-chunk id = 'data', set by          >
+                            <AudioCon or Wave Recorder                   >
+        dataChunkSize       <size of data chunk in bytes, excluding id,  >
+                            <dataChunkSize, and pad byte, set by         > 
+                            <AudioCon or WaveRecorder, updated by        > 
+                            <compression algorithm; unsigned long        >
+          SpeechData        <speech sample data: if uncompressed 8-bit,  >
+                            <unsigned; if 16-bit, 2's complement signed  > 
+                            <(low byte first); set by AudioCon or        > 
+                            <Wave Recorder, updated by compression       > 
+                            <algorithm                                   >
+      sa                    <sa sub-chunk id = 'sa  ', set by            >
+                            <AudioCon or SA; size set by AudioCon or SA  >
+        saChunkSize         <size of sa chunk in bytes, excluding id,    >
+                            <saChunkSize, and pad byte, set by           > 
+                            <AudioCon and updated by SA; unsigned long   >
+          RiffVersion       <version of ASAP chunks, set by AudioCon     >
+                            <or SA; 4-byte float                         >
+          Description       <Comments field, description of speech data; >      
+                            <updated by AudioCon or SA, fixed 256 bytes  > 
+                            <left-justified, last character must be null >
+          Flags             <unsigned short; set by AudioCon, SA, or     >      
+                            <compression algorithm                       > 
+                            <  Bit Position         Definition           > 
+                            <       0        db registered (see db chunk)> 
+                            <       1        Sample word size converted  > 
+                            <       2        Sample rate converted       > 
+                            <      3-4       Reserved                    > 
+                            <       5        Highpass filtered (>=70 Hz) > 
+                            <       6        Sample data compressed      > 
+                            <       7        Sample data lossy           > 
+                            <      8-15      Reserved                    > 
+                            <  Except where noted, bit setting of 0      > 
+                            <  means false, bit setting of 1 means true  > 
+          RecordFileFormat  <file format of original recording, set by   >
+                            <AudioCon, if converted, or SA, if not;      > 
+                            <unsigned byte:                              > 
+                            <            0 = UTT                         > 
+                            <            1 = WAV                         > 
+                            <            2 = MAC (future use)            > 
+                            <            3 = TIMIT                       >
+          RecordTimeStamp   <local timestamp of original recording:  if  >
+                            <converted, AudioCon sets from original time > 
+                            <stamp, else set by SA from file time stamp; > 
+                            <signed long integer representing seconds    > 
+                            <since 00:00:00 Jan. 1, 1970                 >
+          RecordBandWidth   <unsigned long integer normally set to half  >
+                            <the recording sampling frequency, reduced   > 
+                            <by 70 Hz if highpass filtered flag true;    > 
+                            <set by AudioCon if converted, else set by   > 
+                            <SA                                          >
+          RecordSmpSize     <unsigned byte representing number of bits   >
+                            <per sample when originally digitized;       > 
+                            <set by AudioCon or SA                       >
+          NumberOfSamples   <number of samples, set by AudioCon if       >
+                            <converted, else by SA; unsigned long        >
+          SignalMax         <maximum signal value, set by SA (future     >
+                            <function), updated by AudioCon;             > 
+                            <signed long: for byte sample data size,     > 
+                            <positive 0 to 255; for all others, full 2's > 
+                            <complement range, sign extended             >
+          SignalMin         <minimum signal value, set by SA (future     >
+                            <function), updated by AudioCon;             > 
+                            <unsigned long:  for byte sample data size,  > 
+                            <positive 0 to 255; for all others, full 2's > 
+                            <complement range, sign extended             >
+          SignalBandWidth   <current signal bandwidth, unsigned long     >
+                            <integer; set by SA, updated by AudioCon     >
+          SignalEffSmpSize  <effective sample word size, set to the      >
+                            <minimum sample word size for all            > 
+                            <conversions,  unsigned byte; set by SA,     > 
+                            <updated by AudioCon                         >
+      utt                   <utt sub-chunk id = 'utt ', set by           >
+                            <AudioCon or SA                              >
+        uttChunkSize        <size of utt chunk in bytes, excluding id,   >
+                            <uttChunkSize, and pad byte, set by          > 
+                            <AudioCon and updated by SA; unsigned long   >
+          CalcFreqLow       <pitch calculation settings, unsigned short; > 
+          CalcFreqHigh      <updated by AudioCon or SA                   > 
+          CalcVoicingThd
+          CalcPercntChng
+          CalcGrpSize
+          CalcIntrpGap
+      etic                  <phonetic sub-chunk id = 'etic' set by       >
+                            <AudioCon or SA, formerly 'ipa'              >
+        eticChunkSize       <size of etic subchunk in bytes, excluding   >
+                            <id, eticChunkSize, and pad byte, set by     > 
+                            <AudioCon and updated by SA; unsigned long   >
+        AnnData             <annotation data (see note below)            >
+      emic                  <phonemic sub-chunk id = 'emic' set by       >
+                            <AudioCon or SA                              >
+        emicChunkSize       <size of emic chunk in bytes, excluding id,  >
+                            <emicChunkSize, and pad byte, set by         >
+        AnnData             <annotation data (see note below)            > 
+      tone                  <tone sub-chunk id = 'tone' set by AudioCon  >
+                            <or SA                                       >
+        toneChunkSize       <size of tone chunk in bytes, excluding id,  >
+                            <toneChunkSize, and pad byte, set by         >
+        AnnData             <annotation data (see note below)            >
+                            <AudioCon and updated by SA;  unsigned long  >
+      orth                  <orth sub-chunk id = 'orth' set by AudioCon  >
+                            <or SA                                       >
+        orthChunkSize       <size of orth chunk in bytes, excluding id,  >
+                            <orthChunkSize, and pad byte, set by         > 
+                            <AudioCon and updated by SA; unsigned long   >
+        AnnData             <annotation data (see note below)            >
+      mark                  <marker sub-chunk id = 'mark', used for      >
+                            <tagging a section of speech (e.g. for       > 
+                            <glossing), set by AudioCon or SA            >
+        markChunkSize       <size of mark chunk in bytes, excluding id,  >
+                            <markChunkSize, and pad byte, set by         > 
+                            <AudioCon and updated by SA; unsigned long   >
+          LabelLength       <label length in bytes, excluding final null >
+                            <terminator, set by AudioCon and updated by  >   
+                            <SA; signed short                            >
+          LabelString       <label consisting of ASCII codes, set by     >
+                            <AudioCon and updated/appended by SA; must   > 
+                            <begin with a # to designate an acoustic     > 
+                            <break or ! to designate an acoustic         > 
+                            <event, and end with a null byte; encoded    > 
+                            <using font indicated in font sub-chunk      > 
+          MarkerLocUnPacked <location and duration of marked waveform    >
+                            <section in uncompressed speech data,        > 
+                            <updated/appended by SA; unsigned long byte  > 
+                            <offset followed by unsigned long duration   >   
+                            <(in bytes)                                  >
+          MarkerLocPacked   <location and duration of marked waveform    >
+                            <section in compressed speech data, present  >  
+                            <only if compression flag set, updated/      > 
+                            <appended by compression algorithm; unsigned >  
+                            <long byte offset followed by unsigned long  > 
+                            <duration (in bytes)                         >
+      font                  <font sub-chunk id = 'font', used to         >
+                            <identify font for each annotation line      >
+        fontChunkSize       <size of font chunk in bytes, excluding id,  >
+                            <fontChunkSize, and pad byte, set by         > 
+                            <AudioCon or SA                              >
+           eticFontName     <null-terminated etic font typeface name     > 
+           emicFontName     <null-terminated emic font typeface name     > 
+           toneFontName     <null-terminated tone font typeface name     > 
+           orthFontName     <null-terminated orthographic typeface name  > 
+           markFontName     <null-terminated mark font typeface name     >
+      spkr                  <spkr sub-chunk id = 'spkr', used to         >
+                            <identify speaker, set by AudioCon or SA     >
+        spkrChunkSize       <size of spkr chunk in bytes, excluding id,  >
+                            <spkrChunkSize, and pad byte, set by         > 
+                            <AudioCon or SA                              >
+           Gender           <char, 'M' for male, 'F' for female, 'C'     >
+                            <for child, ' ' if unknown                   >
+           Name             <name, null-terminated                       >
+      lang                  <lang sub-chunk id = 'lang', used to         >
+                            <identify language                           >
+        langChunkSize       <size of lang chunk in bytes, excluding id,  >
+                            <langChunkSize, and pad byte, set by         > 
+                            <AudioCon or SA                              >
+           EthnologueId     <Ethnologue language id, 3 characters; set   >
+                            <to nulls if unspecified                     >
+           Region           <geographic region, null-terminated          > 
+           Country          <country, null-terminated                    > 
+           Family           <family, null-terminated                     > 
+           Language         <language description, null terminated       > 
+           Dialect          <dialect, null-terminated                    >
+      db                    <db sub-chunk id = 'db  ', used to store     >
+                            <database parameters                         >
+        dbChunkSize         <size of db chunk in bytes, excluding id,    >
+                            <dbChunkSize, and pad byte, set by           > 
+                            <AudioCon or SM                              >
+        dbTitle             <null-terminated db title                    > 
+        AppProgram          <null-terminated db application name         > 
+        dbRegCount          <number of databases wave file registered in;>
+                            <unsigned short; 0 if none, in which case    > 
+                            <dbName is omitted                           >
+          dbName            <database name, null-terminated              >
+            dbTimeStamp     <local timestamp when wave file registered   >
+                            <in database, set by SM; signed long integer >      
+            KeyCount        <number of database keys; unsigned short     > 
+            Key             <key or pointer into database; unsigned long >
+             :
+      ref                   <ref sub-chunk id = 'ref ', used to store    >
+                            <reference to notebook entry or cassette     > 
+                            <tape of original recording                  >
+        refChunkSize        <size of ref chunk in bytes, excluding id,   >
+                            <dbChunkSize, and pad byte, set by           > 
+                            <AudioCon or SA                              >
+        NotebookRef         <reference string, null-terminated           >
+        FreeTranslation     <translation of utterance, null-terminated   >
+        Transcriber         <person transcribing utterance, null-term.   >
+       :
+       Note:
+      1. Odd sized chunks are padded at the end with a null byte to ensure
+         short word alignment.
+      2. The ASAP-defined sub-chunks 'sa  ', 'utt ', 'etic', 'emic', 'tone',   
+         'orth', 'mark', 'font', 'spkr', 'lang', 'db  ', and 'ref ' may not 
+         immediately follow the 'data' sub-chunk or each other, but if they 
+         exist in the WAV file, they must all be present, and in the order given 
+         above.  
+      3. The version number specified in the 'sa  ' sub-chunk refers to
+         the version for the ASAP-defined sub-chunks.  It is the same 
+         number indicated in the title of this document and is incremented 
+         for each published change.
+      4. AnnData consists of the following:
+           AnnStringLength   <annotation string length in bytes,          >
+                             <excluding null terminator, set by AudioCon  > 
+                             <and updated by SA; signed short             >
+           AnnString         <annotation string, encoded using font       >
+                             <indicated by typeface name in font sub-     > 
+                             <chunk and followed by a null byte           > 
+                             <terminator (present even if string is zero  > 
+                             <length); set by AudioCon and updated/       > 
+                             <appended by SA                              >
+           PhoneLocUnpacked  <location and duration of phones in          >
+                             <uncompressed speech data, present only if   > 
+                             <AnnStringLen is nonzero, updated/appended   > 
+                             <by AudioCon or SA; for ea. phone in         > 
+                             <AnnString, unsigned long byte offset        > 
+                             <followed by unsigned long duration (in      > 
+                             <bytes)                                      >
+           PhoneLocPacked    <location and duration of phones in          >
+                             <compressed speech, present only if          > 
+                             <AnnStringLen is nonzero and compression     > 
+                             <flag set, updated/appended by compression   > 
+                             <algorithm, called from AudioCon or SA; for  > 
+                             <each phone in AnnString, unsigned long bit  > 
+                             <offset into speech data followed by         > 
+                             <unsigned long duration in bits              >
+         5. The 'mark' sub-chunk may contain any number of waveform markers,
+            each consisting of a LabelLength, LabelString, MarkerLocUnpacked, 
+            and, if the compression flag is set, MarkerLocPacked.  The # mark 
+            is generally used to denote the beginning of a word.  It may be 
+            optionally followed by any or all of the following:  a gloss for 
+            the word terminated by a null character,  a "pos:" followed by the 
+            part-of-speech and a null terminator, and a "ref:" followed by a 
+            word level reference terminated by a null.  The LabelLength 
+            includes all but the final null terminator.
+         6. The 'font' sub-chunk must contain a typeface name for each      
+            annotation line.  The names are stored in the sub-chunk as 
+            contiguous, variable-length strings, delimited by null byte 
+            terminators.  If no font is used (as in the case when a 
+            particular annotation string is of zero length), a null 
+            terminator is inserted for that typeface name.
+         7. The 'db  ' sub-chunk contains dbRegCount dbName parameter
+            sets, each of the form indicated above.  
+         8. The file attribute must be set to read-only if it contains
+            an 'etic', 'emic', 'tone', and 'orth' sub-chunk with a 
+            nonzero string length or a 'mark' sub-chunk with a nonzero 
+            markChunkSize.  This prevents a wave editor from deleting 
+            speech data which may be referenced by the offsets in these 
+            sub-chunks. SA may reset the attribute to read/write 
+            momentarily to permit the strings and waveform markers, along 
+            with their associated locations and durations, to be updated.
+         9. "Set" means initialized once and never modified.
+            "Updated" means initialized and thereafter modified in place, 
+            as required.  "Appended" means extra data is inserted.
+     
+     
+            A. Epting  03/26/99
