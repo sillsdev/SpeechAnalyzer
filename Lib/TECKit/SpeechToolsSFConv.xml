@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<!--Copyright (c) 2002-5 SIL International-->
+<sfConversion defaultMapping="WINDOWS-1252">
+	<sfMarkers escape="\"
+				chars="abcdefghijklmnopqrstuvwxyz_ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+				mapping="WINDOWS-1252">
+		<marker name="ph" mapping="ASAP-SIL-IPA93"/>
+		<marker name="pm" mapping="ASAP-SIL-IPA93"/>
+		<marker name="tn" mapping="PITCH-CONTOURS"/>
+	</sfMarkers>
+</sfConversion>

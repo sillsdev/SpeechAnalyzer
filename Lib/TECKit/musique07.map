@@ -1,0 +1,108 @@
+; musique07.map
+
+; Musique staff and symbols used by Speech Analyzer for ethnomusicology
+; This mapping is for conversion between Musique Unicode (2000), a
+; hacked 16-bit font, and Musique (2007).
+
+LHSName			"SIL-SA_MUSIQUE-2000"
+RHSName			"SIL-SA_MUSIQUE-2007"
+LHSDescription		"SIL Speech Analyzer Musique 2000"
+RHSDescription		"SIL Speech Analyzer Musique 2007"
+
+Version			"1"
+Contact			"mailto:SaErrors@sil.org"
+RegistrationAuthority	"SIL International"
+RegistrationName		"SA Musique"
+Copyright			"(c)2007 SIL International"
+
+Pass(Unicode)
+
+U+0020 <> U+0020 ; Space
+
+; Misc Symbols - Phrase Marks, Bars and Clefs
+UniClass  [miscIn] = ( U+0021 .. U+0029 )
+UniClass  [miscOut] = ( U+E000 .. U+E008 )
+
+[miscIn] <> [miscOut]
+
+; Whole Notes & Rests
+UniClass  [wholeIn] = ( U+002a .. U+003e )
+UniClass  [wholeOut] = ( U+E010 .. U+E024 )
+
+[wholeIn] <> [wholeOut]
+
+; Half Notes & Rests
+UniClass  [halfIn] = ( U+003f .. U+0053 )
+UniClass  [halfOut] = ( U+E025 .. U+E039 )
+
+[halfIn] <> [halfOut]
+
+; Quarter Notes & Rests
+UniClass  [quarterIn] = ( U+0054 .. U+0068 )
+UniClass  [quarterOut] = ( U+E03A .. U+E04E )
+
+[quarterIn] <> [quarterOut]
+
+; Eighth Notes & Rests
+UniClass [eighthIn] = ( U+0069 .. U+007d )
+UniClass  [eighthOut] = ( U+E04F .. U+E063 )
+
+U+007e <> U+E009 ; empty staff
+
+U+00a1 <> U+E00A ; narrow staff
+
+[eighthIn] <> [eighthOut]
+
+U+0000bc <> U+25B6 ; play
+U+0000bd <> U+25A0 ; stop
+
+; Sixteenth Notes & Rests
+UniClass [sixteenthIn] = ( U+00c0 .. U+00d4 )
+UniClass  [sixteenthOut] = ( U+E064 .. U+E078 )
+
+[sixteenthIn] <> [sixteenthOut]
+
+; Grace Notes & Rests
+UniClass [graceIn] = ( U+00d5 .. U+00e9 )
+UniClass  [graceOut] = ( U+E079 .. U+E08D )
+
+[graceIn] <> [graceOut]
+
+; Accidentals
+
+UniClass  [accidentalsIn] = ( U+00ea .. U+015b )
+UniClass  [accidentalsOut] = ( U+E090 .. U+E101 )
+
+[accidentalsIn] <> [accidentalsOut]
+
+; Dots
+UniClass [dotsIn] = ( U+015c .. U+0164 )
+UniClass  [dotsOut] = ( U+E102 .. U+E10A )
+
+[dotsIn] <> [dotsOut]
+
+; Glissandos
+
+UniClass [glissandosIn] = ( U+0165 .. U+0170 )
+UniClass  [glissandosOut] = ( U+E110 .. U+E11B )
+
+[glissandosIn] <> [glissandosOut]
+
+; Ties
+UniClass [tiesIn] = ( U+0176 .. U+0179 )
+UniClass  [tiesOut] = ( U+E11C .. U+E11F )
+
+[tiesIn] <> [tiesOut]
+
+U+017b <> U+2083 ; subscript 3
+U+017c <> U+00B3 ; superscript 3
+U+017d <> U+2085 ; subscript 5
+U+017e <> U+2075 ; superscript 5
+U+044c <> U+E00B ; continuation symbol
+
+; Unused symbols
+UniClass [unused1] = ( U+007f .. U+00a0 U+00a2 .. U+00bb U+00be U+00bf )
+UniClass [unused2] = ( U+0171 .. U+0175 U+017a U+017f .. U+044b U+044d .. U+2219 U+ffff )
+
+[unused1] > replacement_character
+[unused2] > replacement_character
