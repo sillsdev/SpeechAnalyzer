@@ -1,0 +1,264 @@
+//Microsoft Developer Studio generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "afxres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// English (U.S.) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+#ifdef _WIN32
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+#pragma code_page(1252)
+#endif //_WIN32
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "#include ""afxres.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "#define _AFX_NO_SPLITTER_RESOURCES\r\n"
+    "#define _AFX_NO_OLE_RESOURCES\r\n"
+    "#define _AFX_NO_TRACKER_RESOURCES\r\n"
+    "#define _AFX_NO_PROPERTY_RESOURCES\r\n"
+    "\r\n"
+    "#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)\r\n"
+    "#ifdef _WIN32\r\n"
+    "LANGUAGE 9, 1\r\n"
+    "#pragma code_page(1252)\r\n"
+    "#endif //_WIN32\r\n"
+    "#include ""res\\SA Builder.rc2""  // non-Microsoft Visual C++ edited resources\r\n"
+    "#include ""afxres.rc""         // Standard components\r\n"
+    "#endif\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+IDR_MAINFRAME           ICON    DISCARDABLE     "res\\SA Builder.ico"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_ABOUTBOX DIALOG DISCARDABLE  0, 0, 235, 55
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "About SA Builder"
+FONT 8, "MS Sans Serif"
+BEGIN
+    ICON            IDR_MAINFRAME,IDC_STATIC,11,17,20,20
+    LTEXT           "SA Builder Version 1.0",IDC_STATIC,40,10,119,8,
+                    SS_NOPREFIX
+    LTEXT           "Copyright (C) 2001",IDC_STATIC,40,25,119,8
+    DEFPUSHBUTTON   "OK",IDOK,178,7,50,14,WS_GROUP
+END
+
+IDD_SABUILDER_DIALOG DIALOGEX 0, 0, 285, 351
+STYLE DS_MODALFRAME | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
+EXSTYLE WS_EX_APPWINDOW
+CAPTION "SA Builder"
+FONT 8, "MS Sans Serif"
+BEGIN
+    DEFPUSHBUTTON   "&Build",IDOK,228,7,50,14
+    PUSHBUTTON      "&Store only",IDC_STORE_BUTTON,228,23,50,14
+    LTEXT           "Version",IDC_STATIC,7,25,29,8
+    EDITTEXT        IDC_VERSION_MAJOR_EDIT,42,23,13,13,ES_RIGHT | 
+                    ES_AUTOHSCROLL
+    EDITTEXT        IDC_VERSION_MINOR_EDIT,68,23,18,13,ES_RIGHT | 
+                    ES_AUTOHSCROLL
+    LTEXT           "Destination Path",IDC_STATIC,7,61,53,8
+    EDITTEXT        IDC_DEST_PATH_EDIT,83,59,195,13,ES_AUTOHSCROLL
+    ICON            IDR_MAINFRAME,IDR_MAINFRAME,198,13,20,20
+    LTEXT           "Build Path",IDC_STATIC,7,78,33,8
+    EDITTEXT        IDC_SA_PATH_EDIT,83,76,195,13,ES_AUTOHSCROLL
+    LTEXT           "Subversion EXE path",IDC_STATIC,7,106,68,8
+    EDITTEXT        IDC_SVN_EXE_PATH_EDIT,83,104,195,13,ES_AUTOHSCROLL
+    LTEXT           "Subversion User",IDC_STATIC,7,124,53,8
+    EDITTEXT        IDC_SVN_USER_EDIT,83,122,195,13,ES_AUTOHSCROLL
+    LTEXT           "Repository URL",IDC_STATIC,7,158,51,8
+    EDITTEXT        IDC_SVN_REPO_URL_EDIT,83,156,195,13,ES_AUTOHSCROLL
+    LTEXT           "MSDev Path",IDC_STATIC,7,189,42,8
+    EDITTEXT        IDC_MSDEVPATH,83,186,195,14,ES_AUTOHSCROLL
+    EDITTEXT        IDC_TESTPATH,83,246,195,14,ES_AUTOHSCROLL | WS_DISABLED
+    LTEXT           "Test Path",IDC_STATIC,7,249,32,8,WS_DISABLED
+    EDITTEXT        IDC_NOTEPATH,83,266,195,14,ES_AUTOHSCROLL | WS_DISABLED
+    LTEXT           "Notepad path",IDC_STATIC,7,269,44,8,WS_DISABLED
+    LTEXT           "Web Page Path",IDC_STATIC,7,297,52,8,WS_DISABLED
+    EDITTEXT        IDC_WEB_PATH_EDIT,83,295,195,13,ES_AUTOHSCROLL | 
+                    WS_DISABLED
+    EDITTEXT        IDC_FTP_USER_EDIT,83,314,195,14,ES_AUTOHSCROLL | 
+                    WS_DISABLED
+    LTEXT           "FTP User Name",IDC_STATIC,7,317,52,8,WS_DISABLED
+    LTEXT           "FTP Password",IDC_STATIC,7,333,47,8,WS_DISABLED
+    EDITTEXT        IDC_FTP_PASS_EDIT,83,331,195,13,ES_PASSWORD | 
+                    ES_AUTOHSCROLL | WS_DISABLED
+    LTEXT           ".",IDC_STATIC,60,28,8,11
+    LTEXT           "Subversion Password",IDC_STATIC,7,141,69,8
+    EDITTEXT        IDC_SVN_PASS_EDIT,83,139,196,13,ES_PASSWORD | 
+                    ES_AUTOHSCROLL
+    LTEXT           "Branch",IDC_STATIC,7,9,29,8
+    EDITTEXT        IDC_BRANCH_EDIT,42,7,74,13,ES_AUTOHSCROLL
+    LTEXT           "RC",IDC_STATIC,101,25,12,8
+    EDITTEXT        IDC_RC_EDIT,116,23,18,13,ES_CENTER | ES_AUTOHSCROLL
+    LTEXT           "MSBuild Path",IDC_STATIC,7,209,44,8
+    EDITTEXT        IDC_MSBUILDPATH,83,207,195,14,ES_AUTOHSCROLL
+END
+
+
+#ifndef _MAC
+/////////////////////////////////////////////////////////////////////////////
+//
+// Version
+//
+
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION 1,0,1,2
+ PRODUCTVERSION 1,0,1,2
+ FILEFLAGSMASK 0x3fL
+#ifdef _DEBUG
+ FILEFLAGS 0x1L
+#else
+ FILEFLAGS 0x0L
+#endif
+ FILEOS 0x4L
+ FILETYPE 0x1L
+ FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "040904b0"
+        BEGIN
+            VALUE "Comments", "\0"
+            VALUE "CompanyName", "\0"
+            VALUE "FileDescription", "SA Builder MFC Application\0"
+            VALUE "FileVersion", "1, 0, 1, 2\0"
+            VALUE "InternalName", "SA Builder\0"
+            VALUE "LegalCopyright", "Copyright (C) 2005\0"
+            VALUE "LegalTrademarks", "\0"
+            VALUE "OriginalFilename", "SA Builder.EXE\0"
+            VALUE "PrivateBuild", "\0"
+            VALUE "ProductName", "SA Builder Application\0"
+            VALUE "ProductVersion", "1, 0, 1, 2\0"
+            VALUE "SpecialBuild", "\0"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x409, 1200
+    END
+END
+
+#endif    // !_MAC
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO DISCARDABLE 
+BEGIN
+    IDD_ABOUTBOX, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 228
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 48
+    END
+
+    IDD_SABUILDER_DIALOG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 278
+        VERTGUIDE, 83
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 344
+        HORZGUIDE, 149
+        HORZGUIDE, 155
+        HORZGUIDE, 167
+        HORZGUIDE, 174
+        HORZGUIDE, 187
+        HORZGUIDE, 193
+        HORZGUIDE, 207
+        HORZGUIDE, 213
+        HORZGUIDE, 227
+        HORZGUIDE, 233
+        HORZGUIDE, 247
+        HORZGUIDE, 253
+        HORZGUIDE, 267
+        HORZGUIDE, 273
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_ABOUTBOX            "&About SA Builder..."
+END
+
+#endif    // English (U.S.) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+#define _AFX_NO_SPLITTER_RESOURCES
+#define _AFX_NO_OLE_RESOURCES
+#define _AFX_NO_TRACKER_RESOURCES
+#define _AFX_NO_PROPERTY_RESOURCES
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+#ifdef _WIN32
+LANGUAGE 9, 1
+#pragma code_page(1252)
+#endif //_WIN32
+#include "res\SA Builder.rc2"  // non-Microsoft Visual C++ edited resources
+#include "afxres.rc"         // Standard components
+#endif
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+
