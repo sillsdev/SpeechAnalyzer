@@ -1,0 +1,25 @@
+LIBRARY   zGraph
+DESCRIPTION "zGraph library used in Speech Analyzer"
+EXPORTS
+?zzDrawGraphAxes@zGraph@@QAEXHH@Z
+?zFlip@zScatterGraph@@QAEXXZ
+?zTerminateGraph@zGraph@@UAEXXZ
+?zShowYAxisNumbers@zGraph@@UAEXXZ
+?zShowXAxisNumbers@zGraph@@UAEXXZ
+?zShowGraphTitles@zGraph@@UAEXXZ
+?zScaleData@zScatterGraph@@UAEHXZ
+?zInitGraph@zScatterGraph@@UAEHXZ
+?zDrawLegend@zGraph@@UAEXH@Z
+?zDraw3DGrid@zScatterGraph@@UAEXXZ
+?zDraw2DGrid@zGraph@@UAEXXZ
+?zDrawGrid@zGraph@@UAEXXZ
+?zDrawDataPoints@zScatterGraph@@UAEXXZ
+?zDrawGraphAxes@zScatterGraph@@UAEXXZ
+?zDraw@zScatterGraph@@UAEXXZ
+?zCheckForLegalData@zGraph@@UAEHXZ
+??0zGraph@@QAE@PAUzGraphStruct@@@Z
+??1zGraph@@QAE@XZ
+?zMapCoordinates@zScatterGraph@@QAE?AUtagPOINT@@NNN@Z
+?ScatterGraph@@YAXPAUzGraphStruct@@@Z
+?PolarGraph@@YAXPAUzGraphStruct@@@Z
+?parse@@YANPBDPAHNN@Z

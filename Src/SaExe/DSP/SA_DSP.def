@@ -1,0 +1,54 @@
+LIBRARY   SA_DSP
+DESCRIPTION "DSP algorithms for Speech Analyzer."
+EXPORTS
+  ?grapplGetResults@@YAFPAXPAPAUGrappl_res@@PAF2@Z
+  ?grapplSetInbuff@@YAFPAX0GF@Z
+  ?grapplInit@@YAFPAXPAUGrappl_parms@@@Z
+  ?grapplWorkspace@@YAIXZ
+  ?FormantRange@CFormantPicker@@SA?AURANGE@@HI@Z
+  ?grapplSetInbuff@@YAFPAX0GF@Z
+?grapplInit@@YAFPAXPAUGrappl_parms@@@Z
+?grapplWorkspace@@YAIXZ
+?FormantRange@CFormantPicker@@SA?AURANGE@@HI@Z
+?BandwidthInRange@CFormantPicker@@SA_NHGM@Z
+??1CFragment@@QAE@XZ
+?Fragment@CFragment@@QAEHXZ
+?ReadPowerSlice@Spectrogram@@QAEPAEPAHG@Z
+?Generate@Spectrogram@@QAEHXZ
+?CreateObject@Spectrogram@@SAHPAPAV1@USPGM_SETTINGS@@USIG_PARMS@@@Z
+?CalcLength@DspWin@@SAHNHH@Z
+??1Spectrogram@@QAE@XZ
+?GetSpectParms@CSpectrum@@QAE?AUSPECT_PARMS@@XZ
+?CreateObject@CSpectrum@@SAHPAPAV1@AAUSPECT_SETTINGS@@AAUSIG_PARMS@@G@Z
+?CalcEquivalentLength@DspWin@@SAHHHH@Z
+??1CSpectrum@@QAE@XZ
+?Init@CWindowSettings@@QAEXXZ
+??8CWindowSettings@@QBE_NABV0@@Z
+?GetHistogram@CHistogram@@QAEHPAFNG@Z
+??1CHistogram@@QAE@XZ
+?GenerateHistogram@CHistogram@@QAEHXZ
+?CreateObject@CHistogram@@SAHPAPAV1@AAUHIST_PARMS@@AAUPROC_PARMS@@@Z
+?Round@@YANN@Z
+?GetBinByData@CHistogram@@QAEHAAHFNG@Z
+?GetBin@CHistogram@@QAEHAAHGNG@Z
+?CalcPower@Spectrogram@@SAHPAMMMW4Type@CWindowSettings@@USIG_PARMS@@_NM@Z
+?CalcPower@Spectrogram@@SAHPAMMHW4Type@CWindowSettings@@USIG_PARMS@@_N@Z
+?IsSingleBitOn@@YA_NG@Z
+?roots@@YA_NQANHQAV?$complex@N@std@@1H_N2@Z
+?GetBumps@CPeakPicker@@QAEHPAPAUBUMP_TABLE_ENTRY@@PAIPAMI@Z
+?CreateObject@CFormantPicker@@SAHPAPAV1@GF@Z
+??1CFormantPicker@@QAE@XZ
+?Build@DspWin@@AAEXXZ
+??1CHighPassFilter70@@QAE@XZ
+??1CAcousticTube@@UAE@XZ
+?Tick@CAcousticTube@@QAENN_N0@Z
+?CreateObject@CHighPassFilter70@@SAHPAPAV1@G@Z
+?CreateObject@CFragment@@SAHPAPAV1@PAUFRAG_PARMS@@IAAUSIG_PARMS@@PAXIAAUPITCH_PARMS@@PAFI@Z
+rfft2f
+??0CAcousticTube@@QAE@ABV?$vector@NV?$allocator@N@std@@@std@@0@Z
+?ForwardPass@CHighPassFilter70@@QAEHPAEI@Z
+?ForwardPass@CHighPassFilter70@@QAEHPAFI@Z
+?BackwardPass@CHighPassFilter70@@QAEHPAEI@Z
+?BackwardPass@CHighPassFilter70@@QAEHPAFI@Z
+?SetTransform@CAcousticTube@@QAEXABV?$vector@NV?$allocator@N@std@@@std@@0@Z
+
