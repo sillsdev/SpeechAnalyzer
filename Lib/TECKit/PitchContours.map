@@ -1,11 +1,14 @@
-EncodingName			"PITCH-CONTOURS"
-DescriptiveName			"Pitch Contours Font encoding"
-Version					"1"
-Contact					"mailto:speechTools@sil.org"
-RegistrationAuthority	"SIL International"
-RegistrationName		"PitchContours"
+EncodingName			"SIL-PitchContours1-1999"
+DescriptiveName			"SIL PitchContours Font encoding"
+Version				"0.2"
+Contact				"mailto:lorna_priest@sil.org"
+RegistrationAuthority		"SIL International"
+RegistrationName			"PitchContours1"
 
 RHSFlags				(ExpectsNFD)
+
+; 2007-02-28 	LP 	created
+; 2007-03-4	LP	fixed 2F and 30
 
 pass(Byte_Unicode)
 
@@ -14,160 +17,113 @@ UniClass [ctl] = (U+0000 .. U+001F)
 
 [ctl]	<>	[ctl]
 
-; Pitch Contours has represents nine different tones sliding to nine tones
-; Unicode defines five different tone bars
-; What do we do with the other four tones?
-; Using a sharp as a place holder....
-Define	T1 modifier_letter_extra_low_tone_bar
-Define	T2 modifier_letter_extra_low_tone_bar music_sharp_sign
-Define	T3 modifier_letter_low_tone_bar
-Define	T4 modifier_letter_low_tone_bar music_sharp_sign
-Define	T5 modifier_letter_mid_tone_bar
-Define	T6 modifier_letter_mid_tone_bar music_sharp_sign
-Define	T7 modifier_letter_high_tone_bar
-Define	T8 modifier_letter_high_tone_bar music_sharp_sign
-Define	T9 modifier_letter_extra_high_tone_bar
-
-;What do we do with the dotter two line staff?
-Define STAFF combining_low_line combining_overline
-;Define STAFF musical_symbol_two_line_staff
-
-; The pitch contours font has several positions which are non-spacing, non-modifying
-; The codes may be in the Pirch Contours without noticeabley affecting the graphical display
-Define EMPTY replacement_character
-
 0x20	<>	space
-0x21	<>	T1 T1
-0x22	<>	T1 T2
-0x23	<>	T1 T3
-0x24	<>	T1 T4
-0x25	<>	T1 T5
-0x26	<>	T1 T6
-0x27	<>	T1 T7
-0x28	<>	T1 T8
-0x29	<>	T1 T9
+0x2F	>	
+0x2F 0x2F	> space	
+0x30	>
+0x30 0x30	> space	
+0x40	<>    U+002A
+0x21	<>	U+F1F1 U+034F
+0x22	<>	U+F1F1 U+F1F2
+0x23	<>	U+F1F1 U+F1F3
+0x24	<>	U+F1F1 U+F1F4
+0x25	<>	U+F1F1 U+F1F5
+0x26	<>	U+F1F1 U+F1F6
+0x27	<>	U+F1F1 U+F1F7
+0x28	<>	U+F1F1 U+F1F8
+0x29	<>	U+F1F1 U+F1F9
 
-0x30   <>     STAFF space
+0x31	<>	U+F1F2 U+F1F1
+0x32	<>	U+F1F2 U+034F 
+0x33	<>	U+F1F2 U+F1F3
+0x34	<>	U+F1F2 U+F1F4
+0x35	<>	U+F1F2 U+F1F5
+0x36	<>	U+F1F2 U+F1F6
+0x37	<>	U+F1F2 U+F1F7
+0x38	<>	U+F1F2 U+F1F8
+0x39	<>	U+F1F2 U+F1F9
 
-0x31	<>	T2 T1
-0x32	<>	T2 T2
-0x33	<>	T2 T3
-0x34	<>	T2 T4
-0x35	<>	T2 T5
-0x36	<>	T2 T6
-0x37	<>	T2 T7
-0x38	<>	T2 T8
-0x39	<>	T2 T9
+0x41	<>	U+F1F3 U+F1F1
+0x42	<>	U+F1F3 U+F1F2
+0x43	<>	U+F1F3 U+034F 
+0x44	<>	U+F1F3 U+F1F4
+0x45	<>	U+F1F3 U+F1F5
+0x46	<>	U+F1F3 U+F1F6
+0x47	<>	U+F1F3 U+F1F7
+0x48	<>	U+F1F3 U+F1F8
+0x49	<>	U+F1F3 U+F1F9
 
-0x40   <>     STAFF asterisk
+0x51	<>	U+F1F4 U+F1F1
+0x52	<>	U+F1F4 U+F1F2
+0x53	<>	U+F1F4 U+F1F3
+0x54	<>	U+F1F4 U+034F 
+0x55	<>	U+F1F4 U+F1F5
+0x56	<>	U+F1F4 U+F1F6
+0x57	<>	U+F1F4 U+F1F7
+0x58	<>	U+F1F4 U+F1F8
+0x59	<>	U+F1F4 U+F1F9
 
-0x41	<>	T3 T1
-0x42	<>	T3 T2
-0x43	<>	T3 T3
-0x44	<>	T3 T4
-0x45	<>	T3 T5
-0x46	<>	T3 T6
-0x47	<>	T3 T7
-0x48	<>	T3 T8
-0x49	<>	T3 T9
+0x61	<>	U+F1F5 U+F1F1
+0x62	<>	U+F1F5 U+F1F2
+0x63	<>	U+F1F5 U+F1F3
+0x64	<>	U+F1F5 U+F1F4
+0x65	<>	U+F1F5 U+034F 
+0x66	<>	U+F1F5 U+F1F6
+0x67	<>	U+F1F5 U+F1F7
+0x68	<>	U+F1F5 U+F1F8
+0x69	<>	U+F1F5 U+F1F9
 
-0x6F   <>     EMPTY
+0x71	<>	U+F1F6 U+F1F1
+0x72	<>	U+F1F6 U+F1F2
+0x73	<>	U+F1F6 U+F1F3
+0x74	<>	U+F1F6 U+F1F4
+0x75	<>	U+F1F6 U+F1F5
+0x76	<>	U+F1F6 U+034F 
+0x77	<>	U+F1F6 U+F1F7
+0x78	<>	U+F1F6 U+F1F8
+0x79	<>	U+F1F6 U+F1F9
 
-0x51	<>	T4 T1
-0x52	<>	T4 T2
-0x53	<>	T4 T3
-0x54	<>	T4 T4
-0x55	<>	T4 T5
-0x56	<>	T4 T6
-0x57	<>	T4 T7
-0x58	<>	T4 T8
-0x59	<>	T4 T9
+0x81	<>	U+F1F7 U+F1F1
+0x82	<>	U+F1F7 U+F1F2
+0x83	<>	U+F1F7 U+F1F3
+0x84	<>	U+F1F7 U+F1F4
+0x85	<>	U+F1F7 U+F1F5
+0x86	<>	U+F1F7 U+F1F6
+0x87	<>	U+F1F7 U+034F 
+0x88	<>	U+F1F7 U+F1F8
+0x89	<>	U+F1F7 U+F1F9
 
-0x61	<>	T5 T1
-0x62	<>	T5 T2
-0x63	<>	T5 T3
-0x64	<>	T5 T4
-0x65	<>	T5 T5
-0x66	<>	T5 T6
-0x67	<>	T5 T7
-0x68	<>	T5 T8
-0x69	<>	T5 T9
+0x91	<>	U+F1F8 U+F1F1
+0x92	<>	U+F1F8 U+F1F2
+0x93	<>	U+F1F8 U+F1F3
+0x94	<>	U+F1F8 U+F1F4
+0x95	<>	U+F1F8 U+F1F5
+0x96	<>	U+F1F8 U+F1F6
+0x97	<>	U+F1F8 U+F1F7
+0x98	<>	U+F1F8 U+034F 
+0x99	<>	U+F1F8 U+F1F9
 
-0x6F   <>     EMPTY
+0xA1	<>	U+F1F9 U+F1F1
+0xA2	<>	U+F1F9 U+F1F2
+0xA3	<>	U+F1F9 U+F1F3
+0xA4	<>	U+F1F9 U+F1F4
+0xA5	<>	U+F1F9 U+F1F5
+0xA6	<>	U+F1F9 U+F1F6
+0xA7	<>	U+F1F9 U+F1F7
+0xA8	<>	U+F1F9 U+F1F8
+0xA9	<>	U+F1F9 U+034F 
 
-0x71	<>	T6 T1
-0x72	<>	T6 T2
-0x73	<>	T6 T3
-0x74	<>	T6 T4
-0x75	<>	T6 T5
-0x76	<>	T6 T6
-0x77	<>	T6 T7
-0x78	<>	T6 T8
-0x79	<>	T6 T9
+; last we get rid of duplicates
 
-0x7A   <>     EMPTY
+Pass(Unicode)
 
-0x81	<>	T7 T1
-0x82	<>	T7 T2
-0x83	<>	T7 T3
-0x84	<>	T7 T4
-0x85	<>	T7 T5
-0x86	<>	T7 T6
-0x87	<>	T7 T7
-0x88	<>	T7 T8
-0x89	<>	T7 T9
-
-0x91	<>	T8 T1
-0x92	<>	T8 T2
-0x93	<>	T8 T3
-0x94	<>	T8 T4
-0x95	<>	T8 T5
-0x96	<>	T8 T6
-0x97	<>	T8 T7
-0x98	<>	T8 T8
-0x99	<>	T8 T9
-
-0xA1	<>	T9 T1
-0xA2	<>	T9 T2
-0xA3	<>	T9 T3
-0xA4	<>	T9 T4
-0xA5	<>	T9 T5
-0xA6	<>	T9 T6
-0xA7	<>	T9 T7
-0xA8	<>	T9 T8
-0xA9	<>	T9 T9
-
-0xB1   <>     EMPTY
-0xB2   <>     EMPTY
-0xB3   <>     EMPTY
-0xB4   <>     EMPTY
-0xB5   <>     EMPTY
-0xB6   <>     pilcrow_sign
-0xB7   <>     EMPTY
-0xB8   <>     EMPTY
-0xB9   <>     EMPTY
-
-0xC0   <>     EMPTY
-0xC1   <>     EMPTY
-0xC2   <>     EMPTY
-0xC3   <>     EMPTY
-0xC4   <>     EMPTY
-0xC5   <>     EMPTY
-0xC6   <>     EMPTY
-0xC7   <>     EMPTY
-0xC8   <>     EMPTY
-0xC9   <>     EMPTY
-
-0xED   <>     EMPTY
-
-0xF1   <>     EMPTY
-0xF2   <>     EMPTY
-0xF3   <>     EMPTY
-0xF4   <>     EMPTY
-0xF5   <>     EMPTY
-0xF6   <>     EMPTY
-0xF7   <>     EMPTY
-0xF8   <>     EMPTY
-0xF9   <>     EMPTY
-0xFC   <>     EMPTY
+U+F1F1 U+F1F1 <> U+F1F1
+U+F1F2 U+F1F2 <> U+F1F2
+U+F1F3 U+F1F3 <> U+F1F3
+U+F1F4 U+F1F4 <> U+F1F4
+U+F1F5 U+F1F5 <> U+F1F5
+U+F1F6 U+F1F6 <> U+F1F6
+U+F1F7 U+F1F7 <> U+F1F7
+U+F1F8 U+F1F8 <> U+F1F8
+U+F1F9 U+F1F9 <> U+F1F9
 
