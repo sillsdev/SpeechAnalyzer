@@ -1,306 +1,485 @@
-EncodingName			"ASAP-SIL-IPA93"
-DescriptiveName		"ASAP SIL IPA93 Font encoding"
-Version					"1"
-Contact					"mailto:speechtools_support@sil.org"
-RegistrationAuthority	"SIL International"
-RegistrationName		"ASAP IPA93"
+;                             ASAP SIL DOULOS to UNICODE MAP
+; Asap2Unicode.map	              (Rev. 11/27/06 1118)                       3/08/05
+;*********************************************************************************
+;   Last Edit/ Compile 11/22/06 1145
+;    NOTE: Don't forget to copy compiled *.tec file to Documents\SIL\Speech Analyzer!
+; ********************************************************************************
+; NOTE 11/22/06 TLH: Because of time contraints last year I did not do the CLASS section of the conversion which makes possible reverse conversion from UNICODE back to Legacy font. 
 
-RHSFlags				(ExpectsNFD)
+; NOTE Question on mapping to the 'dotless j' though there is nonein ASAP (?) dotless i ?
 
-; 2005-03-26	SDM	converted IPA 93 Version 12 mapping for use with ASAP IPA fonts
-; 2005-10-12	SDM	corrected 0xc5 and 0xf2
+; BE AWARE:  In the original TECKIT, there are many references to 'footnotes' as SILID.  I looked up most but many did not have anything so there is more information avialable.
 
-pass(Byte_Unicode)
+;  3/16/07: The first new character to the IPA in 12 years, the labio-dental flap. Lorna Priest email of 11/15/06: The labiodental flap is already in our font...but at a PUA codepoint...U+F25F. I believe it will be in Unicode 5.1 but since Unicode 5.0 was just released I expect that to be at least a year away, so it remains (and can be used) in the PUA.
+; ************************************************************************************
+;                                   REVISIONS 2006
+; Rev. 11/26/06 TLH
+;   WILL MAP 11 MORE CHARACTERS WITH MID TILDE.(small 'l' with mid tilde and barred o already done which is equivalent to the capital 'O' with mid tilde.
+;   See my character map for the legacy font, see my UNC-5 tests for UNI ones based on CodePages.pdf from Unicode site for UNI 4.1.0 of 2005.
+; ********************************************************************************
+; Rev. 11/22/06 TLH  removed most comments about previous problemsremoved but a map backup contains all the originals. 
+; ************************************************************************************
+; Rev. 11/22/06 TLH ; ORIGINALLY(4/05) the MID-TILDE PROBLEM THREE. SAP SIL DOULOS has a 'floating' tilde.  The most common usage is with the small letter l ("el"). I removed the mapping to "0x6C and 0xF2," and replaced it with the equivalent UNI single character code point: 06C.  However,  since ASAP SIL DOULOS has a 'floating' mid tilde (you may use on ANY letter) , I mapped it as is (to 0xF2) later on. UNI has many single code points for various letters with tilde that are not in ASAP SIL DOULOS as such so the most important thing is to map the translators data with any kind of tilde initially. (It's robably not going to look very good but better than none initially.  Then later, we can choose one of the UNI characters that has the letter in question plus the mid tilde as a single code point.
 
-ByteDefault			0x40			; 0x40 is the question mark in ASAP SIL IPA93 
-UniDefault			replacement_character
+; ************************************************************************************
+; Rev. & Recompiled 11/15/06 1640 to add a header line for NFD & correct 0x8B & 0x9B per Lorna Preist's email of 11/07/06
+; ************************************************************************************
+; Rev. 10/25/06 to rename from Asapdr-EDITED.tec and make corrections beginning 10/25/06 - 30 char failed to render properly in SA 3.0 that worked before in April, 2006 .
+; ************************************************************************************
+; Rev. 10/06 TLH Added "header line" suggested by Lorna Priest.
+;************************************************************************************
 
-ByteClass[ctl] = (0x00   .. 0x1F  )
-UniClass [ctl] = (U+0000 .. U+001F)
+;                                   SOME REVISIONS FROM 2005
+;  4/7/05 TLH PROOFED:  EACH OF THE MAPPINGS BELOW SEEMS TO MAP CORRECTLY TO Unicode DOULOS SIL   TEST DOCLUMENT is -->0   ASAP Conversion Chart -EVERY CHAR CHECK.doc EXCEPT a few unresolved problems. (11/22/06 we've solved most of these now)  Chart has code point equivalants for ASAP SIL DOULOS, UNICODE, IPA-93 &nd a table at the begininning of which ASAP characters are different than in IPA-93.  
+; ************************************************************************************
+;Rev. 4/04/05  Marked the characters that are different in ASAP SIL DOULOS as compared to the IPA standard. LOOK FOR:  "-Diff.from IPA93"  There ought to be 39 different ones. (not proofed) 
+;*************************************************************************************
+;  OK. COUNT CHECK... 224 in original unedited asapdr.map but 225 here because
+;      I added spearate mapping for the mid-tilde (by itselfe).
+;  (Asap SIL Doulos goes from 21 to -255 but is inclusuve ... so it's 255-32 + 1 = 224)               (2 through 10 INCLUSIVE is 9 items, not 8!)
+; **************************************************************************************
 
-[ctl]	<>	[ctl]
+; $$$
+;*************************************************************************************
+;*************************************************************************************
+RHSFlags		   (ExpectsNFD) ; Rev. 11/15/06 per Lorna Priest email of 11/07/06
+EncodingName            "(SIL)-ASAP_SILDoulos-(Macromedia Fontographer 4.1 9/3/1997 compiled 4/14/1999)"
+DescriptiveName         ""
+Version                 "0"
+Contact                 "mailto: tom_hodges@sil.org"
+RegistrationAuthority   "(SIL International)"
+RegistrationName        "ASAP SILDoulos-(Macromedia Fontographer 4.1 9/3/1997 First compiled 4/14/1999))"
 
-UniClass[ilow] = (	latin_small_letter_i latin_small_letter_j latin_small_letter_r latin_small_letter_dotless_i \
-					latin_small_letter_i_with_stroke latin_letter_small_capital_i latin_small_letter_turned_r \
-					latin_small_letter_turned_r_with_hook latin_small_letter_r_with_tail latin_small_letter_r_with_fishhook \
-					latin_small_letter_j_with_crossed_tail)
-UniClass[itall] = (	latin_small_letter_f latin_small_letter_l latin_small_letter_t latin_small_letter_l_with_retroflex_hook \
-					latin_small_letter_turned_r_with_long_leg latin_small_letter_esh \
-					latin_small_letter_dotless_j_with_stroke_and_hook latin_small_letter_t_with_retroflex_hook)
-UniClass[tall] = (	latin_small_letter_b latin_small_letter_d latin_small_letter_h latin_small_letter_k latin_small_letter_eth \
-					latin_small_letter_h_with_stroke latin_letter_retroflex_click latin_small_letter_b_with_hook \
-					latin_small_letter_d_with_tail latin_small_letter_d_with_hook latin_small_letter_g_with_hook \
-					latin_small_letter_h_with_hook latin_small_letter_heng_with_hook latin_small_letter_l_with_belt \
-					latin_small_letter_lezh latin_small_letter_phi latin_small_letter_turned_y latin_letter_glottal_stop \
-					latin_letter_pharyngeal_voiced_fricative latin_letter_glottal_stop_with_stroke \
-					latin_letter_reversed_glottal_stop_with_stroke greek_small_letter_beta \
-					greek_small_letter_theta)
+;*** Replace "(REG_ID)" with "SIL" or other organization identifier
+;*** Replace "(REG_NAME)" with "SIL International" or other organization name
+;*** Replace "(VERSION)" with year the encoding was introduced
+;*** Replace "(YOUR_ADDRESS_HERE)" with your email address
+;*** Replace font name with other encoding identifier if appropriate
 
-;SIL IPA 93 V12 : ByteClass[ldiab] = (0x2B 0x2D 0x30 0x31 0x32 0x33 0x34 0x35 0x36 0x37 0x38 0x39 0x3D 0x60 0xB1 0xA2 0xA3 \
-;SIL IPA 93 V12 : 					0xA4 0xA5 0xA6 0xAA 0xB0 0xBB 0xBC 0xC1 0xD0 0xD1)
+;set normalization flags only if you are sure they are appropriate
+;SourceFlags		()
+;TargetFlags		()
 
-UniClass[ldia] = (	combining_left_tack_below combining_right_tack_below combining_left_half_ring_below combining_up_tack_below \
-					combining_down_tack_below combining_plus_sign_below combining_minus_sign_below combining_diaeresis_below \
-					combining_ring_below combining_vertical_line_below combining_bridge_below combining_caron_below \
-					combining_inverted_breve_below combining_tilde_below combining_right_half_ring_below \
-					combining_inverted_bridge_below combining_square_below combining_seagull_below)
+ByteClass [CTL] = (   0x00 .. 0x1f   )
+UniClass  [CTL] = ( U+0000 .. U+001f )
+[CTL]	<>	[CTL]
 
-;SIL IPA 93 V12 : ByteClass[udiab] = (0x28 0x29 0x2A 0x5F 0x7E 0xA1 0xE1 0xE2 0x21 0x23 0x24 0x25 0x26 0x40 0x5E 0x88 0x89 0x8F \
-;SIL IPA 93 V12 : 					0x90 0x93 0x94 0x98 0x99 0x9D 0x9E 0xDA 0xDB 0xDC 0xDD 0xDE 0xDF 0xE0 0xE6 0xE9 0xF3 0xF4)
+0x20	<>	U+0020	; space  --  space
+; ********************************************* 
+0x21	<>	U+2003	; em_space  --  SILID 0129* -Diff.from IPA93
+0x22	<>	U+2002	; en_space  --  SILID 0130* -Diff.from IPA93
+0x23	<>	U+0023	; number_sign  --  numbersign = SILID 9062 -Diff.from IPA93
+0x24	<>	U+2039	; single_left_pointing_angle_quotation_mark  --  SILID 9020* -Diff.from IPA93
+0x25	<>	U+203A	; single_right_pointing_angle_quotation_mark  --  SILID 9021* -Diff.from IPA93
+0x26	<>	U+002B	; plus_sign  --  SILID 0037* -Diff.from IPA93
+; 0x27	<>	U+0027	; apostrophe  --  quoteright = SILID 9038* (mapped as codepage )PREVIOUS)  1252 character)
+0x27	<>	U+02BC	; modifier_letter_apostrophe  TLH
+;0x28	<>	PUA  ; --  SILID 0130 (space glyph ignored) + SILID 6172 PREVIOUS 
+0x28	<>	U+F175	; modifier_letter_rising_falling_tone  TLH guessed at name:
+;                  (guess after name of 0x80: “modifier_letter_extra_low_tone_bar”) -Diff.from IPA93
+0x29	<>	U+0303	; combining_tilde  --  SILID 0130 (space glyph ignored) + SILID 6001
+0x2A	<>	U+002A	; asterisk  --  composite: SILID 9032 -Diff.from IPA93
+0x2B	<>	U+031F	; combining_plus_sign_below  --  SILID 0130 (space glyph ignored) + SILID 6639
+0x2C	<>	U+002C	; comma  --  comma = SILID 9011*
+0x2D	<>	U+0324	; combining_diaeresis_below  --  SILID 0130 (space glyph ignored) + SILID 6604
+0x2E	<>	U+002E	; full_stop  --  period = SILID 9010*
+0x2F	<>	U+002F	; solidus  --  slash = SILID 9030*
+0x30	<>	U+032A	; combining_bridge_below  --  SILID 0130 (space glyph ignored) + SILID 6642 -Diff.from IPA93
+;**********************************************************************************************
+0x31	<>	U+00B9	; superscript_one  --  SILID 9801* -Diff.from IPA93
+0x32	<>	U+00B2	; superscript_two  --  SILID 9802* -Diff.from IPA93
+0x33	<>	U+00B3	; superscript_three  --  SILID 9803* -Diff.from IPA93
+0x34	<>	U+2074	; superscript_four  --  SILID 9804* -Diff.from IPA93
+0x35	<>	U+2075	; superscript_five  --  SILID 9805* -Diff.from IPA93
+0x36	<>	U+033B	; combining_square_below  --  SILID 0130 (space glyph ignored) + SILID 6663 
+0x37	<>	U+031C	; combining_left_half_ring_below  --  SILID 0130 (space glyph ignored) + SILID 6673
+0x38	<>	U+0325	; combining_ring_below  --  SILID 0130 (space glyph ignored) + SILID 6617
+0x39	<>	U+032F	; combining_inverted_breve_below  --  SILID 0130 (space glyph ignored) + SILID 6608
+0x3A	<>	U+02E1	; modifier_letter_small_l  --  SILID 1815*
+0x3B	<>	U+029F	; latin_letter_small_capital_l  --  SILID 3015*
+0x3C	<>	U+207F	; superscript_latin_small_letter_n  --  SILID 1818*
 
-UniClass[udia] = (	combining_tilde combining_breve combining_diaeresis combining_ring_above combining_x_above)
-UniClass[udia_all] = ([udia] combining_grave_accent combining_acute_accent combining_circumflex_accent combining_macron \
-					combining_double_acute_accent combining_caron combining_double_grave_accent)
+;Mapping for 0x3D changed only the name. The Unicode character it is mapped to is the 
+;   same. Though  SILID 6609 says many characters are similar I'm wondering why the name 
+; was ;changed when the original name "COMBINING; MACRON BELOW" is the 
+; one given by the Microsoft WORD 97 Insert Menu, Symbol  chart ; as well as Peter 
+;Constable's EXCEL spreadsheet? (Didn't find it in the DOULOS SIL    documentation.)
 
-;Define	PRE_CTX_UDIA			([udia] | [tall] [ldia]{0,3}) _ 
-;Define	PRE_CTX_I_UDIA			([ilow] [ldia]{0,3} [udia] | [itall] [ldia]{0,3}) _ 
-;Define	PRE_CTX_IWIDTH			 [ilow] [ldia]{0,3} _ 
-Define	POST_CTX_DIA_ABOVE		_ [ldia]{0,3} [udia_all]
+;   NOTE:  SILID 6609 below map does explain many characters are similar but why
+; change to a different name that disagrees with WORD and the EXCEL spreadsheet?
+;0x3D	<>	U+0331	; combining_macron_below  --  SILID 0130 (space glyph ignored) + SILID 6609* (PREVIOUS)
+0x3D	<>	U+0331	; combining_minus_sign_below  TLH
+0x3E	<>	U+02D1	; modifier_letter_half_triangular_colon  --  SILID 9064
+0x3F	<>	U+0294	; latin_letter_glottal_stop  --  SILID 1041*
+0x40	<>	U+003F	; question_mark  --  question = SILID 9014* -Diff.from IPA93
+0x41	<>	U+0251	; latin_small_letter_alpha  --  SILID 1002*
+0x42	<>	U+03B2	; greek_small_letter_beta  --  SILID 2603
+0x43	<>	U+00E7	; latin_small_letter_c_with_cedilla  --  SILID 7104
+0x44	<>	U+00F0	; latin_small_letter_eth  --  SILID 8105*
+0x45	<>	U+025B	; latin_small_letter_open_e  --  SILID 1007*
+0x46	<>	U+0264	; latin_small_letter_rams_horn  --  SILID 1529
+; 0x47	<>	U+0047	; latin_capital_letter_g  --  SILID 3009* (mapped as codepage 1252 character)  (PREVIOUS)
+0x47	<>	U+0262	; latin_letter_small_capital_g  --  SILID 3009* (mapped as codepage 1252 character)TLH
+;*******************************************************************************
 
-0x20	<>	space
-0x21	<>	en_space                                         ;ASAP character different from IPA 93 ;SIL IPA 93 V12 : 0x21	<>	combining_double_acute_accent
-0x22	<>	em_space                                         ;ASAP character different from IPA 93 ;SIL IPA 93 V12 : 0x22	<>	latin_small_letter_dotless_i;SIL IPA 93 V12 : 0x22 / _ [ldiab]{0,3} [udiab]	<>	latin_small_letter_i / POST_CTX_DIA_ABOVE
-0x23	<>	number_sign                                      ;ASAP character different from IPA 93 ;SIL IPA 93 V12 : 0x23	<>	combining_macron
-0x24	<>	single_left_pointing_angle_quotation_mark        ;ASAP character different from IPA 93 ;SIL IPA 93 V12 : 0x24	<>	combining_grave_accent
-0x25	<>	single_right_pointing_angle_quotation_mark       ;ASAP character different from IPA 93 ;SIL IPA 93 V12 : 0x25	<>	combining_double_grave_accent
-0x26	<>	plus_sign                                        ;ASAP character different from IPA 93 ;SIL IPA 93 V12 : 0x26	<>	combining_caron
-0x27	<>	modifier_letter_apostrophe
-0x28	<>	U+F175                                           ;SIL PUA Combining Grave-Acute-Grave
-                                                           ;ASAP character different from IPA 93 ;SIL IPA 93 V12 : 0x28	<>	combining_breve
-0x29	<>	combining_tilde
-0x2A	<>	asterisk                                         ;ASAP character different from IPA 93 ;SIL IPA 93 V12 : 0x2A	<>	combining_ring_above
-0x2B	<>	combining_plus_sign_below
-0x2C	<>	comma
-0x2D	<>	combining_diaeresis_below
-0x2E	<>	full_stop
-0x2F	<>	solidus
+0x48	<>	U+02B0	; modifier_letter_small_h  --  SILID 1810*
+;0x49	<>	U+0049	; latin_capital_letter_i  --  SILID 1711* (mapped as codepage 1252 character)
+0x49	<>	U+026A	; latin_letter_small_capital_i  --  SILID 1711* (mapped as codepage 
+0x4A	<>	U+02B2	; modifier_letter_small_j  --  SILID 1813*
+0x4B	<>	U+029C	; latin_letter_small_capital_h  --  SILID 3010*
+0x4C	<>	U+026E	 ; latin_small_letter_lezh  --  SILID 1715
+0x4D	<>	U+0271	; latin_small_letter_m_with_hook  --  SILID 1417
+0x4E	<>	U+014B	; latin_small_letter_eng  --  SILID 1418
+0x4F	<>	U+00F8	; latin_small_letter_o_with_stroke  --  oslash = SILID 7219
+0x50	<>	U+0275	; latin_small_letter_barred_o  --  SILID 7019*
+0x51	<>	U+00E6	; latin_small_letter_ae  --  ae = SILID 1501*
+0x52	<>	U+027E	; latin_small_letter_r_with_fishhook  --  SILID 1513
+0x52 0xF2 <>	U+1D73  ; latin_small_letter_r_with_fishhook_and middle_tilde  11/26/06 TLH
+0x53	<>	U+0283	; latin_small_letter_esh  --  SILID 1024*
+0x54	<>	U+03B8	; greek_small_letter_theta  --  SILID 1519*
+0x55	<>	U+028A	; latin_small_letter_upsilon  --  SILID 1128*
+0x56	<>	U+028B	; latin_small_letter_v_with_hook  --  SILID 1028*
+0x57	<>	U+02B7	; modifier_letter_small_w  --  SILID 1830*
+0x58	<>	U+03C7	; greek_small_letter_chi  --  SILID 2432
+;0x59	<>	U+0059	; latin_capital_letter_y  --  SILID 3033* (mapped as codepage 1252 character) (PREVIOUS)
+0x59	<>	U+028F	; latin_letter_small_capital_y  TLH
+0x5A	<>	U+0292	; latin_small_letter_ezh  --  SILID 1035*
+0x5B	<>	U+005B	; left_square_bracket  --  bracketleft = SILID 9028
+0x5C	<>	U+005C	; reverse_solidus  --  backslash = SILID 9031*
+0x5D	<>	U+005D	; right_square_bracket  --  bracketright = SILID 9029
+0x5E	<>	U+2014	; em_dash  --  composite: SILID 9024* -Diff.from IPA93
+0x5F	<>	U+0308	; combining_diaeresis  --  SILID 0130 (space glyph ignored) + SILID 6004
+;*******************************************************************************
+0x60	<>	U+0329	; combining_vertical_line_below  --  SILID 0130 (space glyph ignored) + SILID 6658
+0x61	<>	U+0061	; latin_small_letter_a  --  a = SILID 1001*
+0x62	<>	U+0062	; latin_small_letter_b  --  b = SILID 1003
+0x62 0xF2 <>	U+1D6C  ; latin_small_letter_b_with_middle_tilde  11/26/06 TLH
+0x63	<>	U+0063	; latin_small_letter_c  --  c = SILID 1004*
+0x64	<>	U+0064	; latin_small_letter_d  --  d = SILID 1005*
+0x64 0xF2 <>	U+1D6D  ; latin_small_letter_d_with_middle_tilde  11/26/06 TLH
+0x65	<>	U+0065	; latin_small_letter_e  --  e = SILID 1006*
+0x66	<>	U+0066	; latin_small_letter_f  --  f = SILID 1008
+0x66 0xF2 <>	U+1D6E  ; latin_small_letter_f_with_middle_tilde  11/26/06 TLH
+;0x67	<>	U+0067	; latin_small_letter_g  --  SILID 1409* (mapped as codepage 1252 character) (PREV)
+0x67	<>	U+0067	; latin_small_script_g  --  TLH (PREV was SILID 1409* (mapped as codepage 1252 character) (PREV)
+0x68	<>	U+0068	; latin_small_letter_h  --  h = SILID 1010*
+0x69	<>	U+0069	; latin_small_letter_i  --  i = SILID 1011*
+0x6A	<>	U+006A	; latin_small_letter_j  --  j = SILID 1013*
+0x6B	<>	U+006B	; latin_small_letter_k  --  k = SILID 1014
+0x6C	<>	U+006C	; latin_small_letter_l  --  l = SILID 1015*
+0x6C 0xF2 <>  U+026B ; latin_small_letter_l_with_middle_tilde  
 
-0x30	<>	combining_bridge_below                           ;ASAP character different from IPA 93 ;SIL IPA 93 V12 : 0x30	<>	combining_tilde_below
-0x31	<>	superscript_one                                  ;ASAP character different from IPA 93 ;SIL IPA 93 V12 : 0x31	<>	combining_left_tack_below
-0x32	<>	superscript_two                                  ;ASAP character different from IPA 93 ;SIL IPA 93 V12 : 0x32	<>	combining_right_tack_below
-0x33	<>	superscript_three                                ;ASAP character different from IPA 93 ;SIL IPA 93 V12 : 0x33	<>	combining_up_tack_below
-0x34	<>	superscript_four                                 ;ASAP character different from IPA 93 ;SIL IPA 93 V12 : 0x34	<>	combining_down_tack_below
-0x35	<>	superscript_five                                 ;ASAP character different from IPA 93 ;SIL IPA 93 V12 : 0x35	<>	combining_bridge_below
-0x36	<>	combining_square_below
-0x37	<>	combining_left_half_ring_below
-0x38	<>	combining_ring_below
-0x39	<>	combining_inverted_breve_below
-0x3A	<>	modifier_letter_small_l
-0x3B	<>	latin_letter_small_capital_l
-0x3C	<>	superscript_latin_small_letter_n
-0x3D	<>	combining_minus_sign_below
-0x3E	<>	modifier_letter_half_triangular_colon
-0x3F	<>	latin_letter_glottal_stop
+0x6D	<>	U+006D	; latin_small_letter_m  --  m = SILID 1017*
+0x6D 0xF2 <>	U+1D6F  ; latin_small_letter_m_with_middle_tilde  11/26/06 TLH
 
-0x40	<>	question_mark                                    ;ASAP character different from IPA 93 ;SIL IPA 93 V12 : 0x40	<>	combining_acute_accent
-0x41	<>	latin_small_letter_alpha
-0x42	<>	greek_small_letter_beta
-0x43	<>	latin_small_letter_c combining_cedilla	; JK 2002-10-07 -- use decomposed representation
-0x44	<>	latin_small_letter_eth
-0x45	<>	latin_small_letter_open_e
-0x46	<>	latin_small_letter_rams_horn
-0x47	<>	latin_letter_small_capital_g
-0x48	<>	modifier_letter_small_h
-0x49	<>	latin_letter_small_capital_i
-0x4A	<>	modifier_letter_small_j
-0x4B	<>	latin_letter_small_capital_h
-0x4C	<>	latin_small_letter_lezh
-0x4D	<>	latin_small_letter_m_with_hook
-0x4E	<>	latin_small_letter_eng
-0x4F	<>	latin_small_letter_o_with_stroke
+0x6E	<>	U+006E	; latin_small_letter_n  --  n = SILID 1018
+0x6E 0xF2 <>	U+1D70  ; latin_small_letter_n_with_middle_tilde  11/26/06 TLH
+0x6F	<>	U+006F	; latin_small_letter_o  --  o = SILID 1019*
+;*******************************************************************************
+0x70	<>	U+0070	; latin_small_letter_p  --  p = SILID 1020*
+0x70 0xF2 <>	U+1D71  ; latin_small_letter_p_with_middle_tilde  11/26/06 TLH
+0x71	<>	U+0071	; latin_small_letter_q  --  q = SILID 1021
+0x72	<>	U+0072	; latin_small_letter_r  --  r = SILID 1022*
+0x72 0xF2 <>	U+1D72  ; latin_small_letter_r_with_middle_tilde  11/26/06 TLH
+0x73	<>	U+0073	; latin_small_letter_s  --  s = SILID 1023*
+0x73 0xF2 <>	U+1D74  ; latin_small_letter_s_with_middle_tilde  11/26/06 TLH
+0x74	<>	U+0074	; latin_small_letter_t  --  t = SILID 1026
+0x74 0xF2 <>	U+1D75  ; latin_small_letter_t_with_middle_tilde  11/26/06 TLH
+0x75	<>	U+0075	; latin_small_letter_u  --  u = SILID 1027
+0x76	<>	U+0076	; latin_small_letter_v  --  v = SILID 1029*
+0x77	<>	U+0077	; latin_small_letter_w  --  w = SILID 1030*
+0x78	<>	U+0078	; latin_small_letter_x  --  x = SILID 1032*
+0x79	<>	U+0079	; latin_small_letter_y  --  y = SILID 1033*
+0x7A	<>	U+007A	; latin_small_letter_z  --  z = SILID 1034
+0x7A 0xF2 <>	U+1D76  ; latin_small_letter_Z_with_middle_tilde  11/26/06 TLH
+0x7B	<>	U+0280	; latin_letter_small_capital_r  --  SILID 3022*
+;0x7C	<>	U+0020 U+031A	; space combining_left_angle_above  --  SILID 9086(PREVIOUS)
+0x7C	<>	U+031A	; combining_left_angle_above  --  SILID 9086 TLH
+0x7D	<>	U+027D	; latin_small_letter_r_with_tail  --  SILID 1522
+0x7E	<>	U+033D	; combining_x_above  --  SILID 0130 (space glyph ignored) + SILID 6064
+;*******************************************************************************
+0x80	<>	U+02E9 U+02E7	; modifier_letter_extra_low_tone_bar modifier_letter_mid_tone_bar  --  SILID 0613
+; ************************************************************
+0x81	<>	U+0252	; latin_small_letter_turned_alpha  --  SILID 1202
+0x82	<>	U+0258	; latin_small_letter_reversed_e  --  SILID 1206
+0x83	<>	U+0361	; combining_double_inverted_breve  --  SILID 0130 (space glyph ignored) + SILID 9152
+;0x84	<>	U+2225	; parallel_to  --  SILID 9078*(PREVIOUS)
+0x84	<>	U+2016	; double_vertical_line  TLH
+;************************************************************
+; PROBLEM 10 SILID not found below.
+0x85	<> U+02E5 U+02E7; modifier_letter_extra_high_tone_bar modifier_letter_mid_tone_bar  --  SILID 0653   
+; *************************************************************
+0x86	<>	U+02E5 U+02E9	; modifier_letter_extra_high_tone_bar modifier_letter_extra_low_tone_bar  --  SILID 0651
+;*************************************************************
+0x87	<>	U+0298	; latin_letter_bilabial_  --  SILID 1719
+;0x88	<>	PUA	; PUA  --  SILID 0130 (space glyph ignored) + SILID 6140  (PREVIOUS)
+0x88	<>	U+F172	; modifier_letter_low_rising_tone [TLH Dec. 61810 FORMER PUA ]  -Diff.from IPA93
+0x89	<>	U+030B	; combining_double_acute_accent  --  SILID 0130 (space glyph ignored) + SILID 6110
+;0x8A	<>	U+02E5 U+02E5	; modifier_letter_extra_high_tone_bar modifier_letter_extra_high_tone_bar  --  SILID 0655 (PREVIOUS ...ENTERED TWICE)
+0x8A	<>	U+02E5	; modifier_letter_extra_high_tone_bar --  SILID 0655 TLH
+;0x8B	<>	U+2191	; upwards_arrow  --  SILID 9083*  PREVIOUS
+;0x8B	<>	U+F19d	; upwards_arrow (upstep) 10/26/06 TLH FIXED
+0x8B	<>	U+F19C	; upwards_arrow (upstep) 11/15/06 per Lorna Priest email 11/07/06 TLH FIXED
+0x8C	<>	U+0250	; latin_small_letter_turned_a  --  SILID 1101
+0x8D	<>	U+0254	; latin_small_letter_open_o  --  SILID 1104
+;0x8E	<>	U+007C	; vertical_line  --  SILID 9090* (PREVIOUS)
+0x8E	<>	U+01C0	; latin_letter_dental_click
+0x8F	<>	U+0301	; combining_acute_accent  --  SILID 0130 (space glyph ignored) + SILID 6102
+;*******************************************************************************
+0x90	<>	U+002A	; asterisk  --  composite: SILID 9032 -Diff.from IPA93
+;0x91	<>	U+02E6 U+02E6	; modifier_letter_high_tone_bar modifier_letter_high_tone_bar  --  SILID 0644 (PREVIOUS entered twice)
+0x91	<>	U+02E6	; modifier_letter_high_tone_bar --  SILID 0644  TLH
+;0x92	<>	U+007C U+007C	; vertical_line vertical_line  -- SILID 9090* + SILID 9090*  (PREVIOUS)
+0x92	<>	U+01C1	; latin_letter_lateral_click TLH
+;0x93	<>		;   --  .notdef -Diff.from IPA93
+0x94	<>	U+0304	; combining_macron  --  SILID 0130 (space glyph ignored) + SILID 6109*
+;0x95	<>	U+02E7 U+02E7	; modifier_letter_mid_tone_bar modifier_letter_mid_tone_bar  --  SILID 0633 (PREVIOUS entered twice)
+0x95	<>	U+02E7	; modifier_letter_mid_tone_bar  --  SILID 0633 TLH
+0x96	<>	U+007C	; vertical_line  --  bar = SILID 9055*
+;0x97	<>	U+0021	; exclamation_mark  --  exclam = SILID 9016* (PREVIOUS)
+0x97	<>	U+01C3	; latin_letter_retroflex_click TLH
+;0x98	<>		;   --  .notdef -Diff.from IPA93
+0x99	<>	U+0300	; combining_grave_accent  --  SILID 0130 (space glyph ignored) + SILID 6103
+;0x9A	<>	U+02E8 U+02E8	; modifier_letter_low_tone_bar modifier_letter_low_tone_bar  --  SILID 0622 (entered twice)
+0x9A	<>	U+02E8	; modifier_letter_low_tone_bar --  SILID 0622 TLH
+0x9B	<>	U+F19D	; downwards_arrow  --  SILID 9082* ;11/15/06 Per Lorna Priest email 11/07/06 
+0x9C	<>	U+01C2	; latin_letter_alveolar_click  --  SILID 9179
+;0x9D	<>	PUA	; PUA  --  SILID 0130 (space glyph ignored) + SILID 6170(PREV)
+0x9D	<>	U+F171 ; modifier_letter_high_rising_tone [TLH former PUA: high_rising in our IPA]  
+0x9E	<>	U+030F	; combining_double_grave_accent  --  SILID 0130 (space glyph ignored) + SILID 6169
+;0x9F	<>	U+02E9 U+02E9	; modifier_letter_extra_low_tone_bar modifier_letter_extra_low_tone_bar  --  SILID 0611 (PREVIOUS entered twice)
+0x9F	<>	U+02E9 ; modifier_letter_extra_low_tone_bar -  SILID 0611 TLH
+;*****************************************************************
 
-0x50	<>	latin_small_letter_barred_o
-0x51	<>	latin_small_letter_ae
-0x52	<>	latin_small_letter_r_with_fishhook
-0x53	<>	latin_small_letter_esh
-0x54	<>	greek_small_letter_theta
-0x55	<>	latin_small_letter_upsilon
-0x56	<>	latin_small_letter_v_with_hook
-0x57	<>	modifier_letter_small_w
-0x58	<>	greek_small_letter_chi
-0x59	<>	latin_letter_small_capital_y
-0x5A	<>	latin_small_letter_ezh
-0x5B	<>	left_square_bracket
-0x5C	<>	reverse_solidus
-0x5D	<>	right_square_bracket
-0x5E	<>	low_line                                         ;ASAP character different from IPA 93 ;SIL IPA 93 V12 : 0x5E	<>	combining_circumflex_accent
-0x5F	<>	combining_diaeresis
+;0xA0	<>		;   --  .notdef
+;0xA1	<>		;   --  .notdef  -Diff.from IPA93
+0xA2	<>	U+031E	; combining_down_tack_below  --  SILID 0130 (space glyph ignored) + SILID 6665
+0xA3	<>	U+031D	; combining_up_tack_below  --  SILID 0130 (space glyph ignored) + SILID 6666
+0xA4	<>	U+032C	; combining_caron_below  --  SILID 0130 (space glyph ignored) + SILID 6606
+;0xA5	<>		;   --  .notdef  -Diff.from IPA93
+0xA6	<>	U+0339	; combining_right_half_ring_below  --  SILID 0130 (space glyph ignored) + SILID 6674
+0xA7	<>	U+0282	; latin_small_letter_s_with_hook  --  SILID 1524
+0xA8	<>	U+0279	; latin_small_letter_turned_r  --  SILID 1122*
+0xA9	<>	U+0260	; latin_small_letter_g_with_hook  --  SILID 1609
+0xAA	<>	U+0319	; combining_right_tack_below  --  SILID 0130 (space glyph ignored) + SILID 6668
+0xAB	<>	U+0259	; latin_small_letter_schwa  --  SILID 1106*
+0xAC	<>	U+0289	; latin_small_letter_u_bar  --  SILID 7027
+0xAD	<>	U+0043	; latin_capital_letter_c  --  C = SILID 2004*  -Diff.from IPA93
+0xAE	<>	U+0056	; latin_capital_letter_v  --  V = SILID 2029* -Diff.from IPA93
+0xAF	<>	U+0276	; latin_letter_small_capital_oe  --  SILID 3319*
+;*******************************************************************************
+0xB0	<>	U+033A	; combining_inverted_bridge_below  --  SILID 0130 (space glyph ignored) + SILID 6670
+;0xB1	<>		;   --  .notdef -Diff.from IPA93
+0xB2	<>	U+0274	; latin_letter_small_capital_n  --  SILID 3018*
+0xB3	<>	U+02E4	; modifier_letter_small_reversed_glottal_stop  --  SILID 1841*
+0xB4	<>	U+028E	; latin_small_letter_turned_y  --  SILID 1133
+0xB5	<>	U+026F	; latin_small_letter_turned_m  --  SILID 1117
+;0xB6	<>		;   --  .notdef
+;0xB7	<>		;   --  .notdef
+0xB8	<>	U+0278	; latin_small_letter_phi  --  SILID 1119*
+0xB9	<>	U+02A2	; latin_letter_reversed_glottal_stop_with_stroke  --  SILID 7241
+0xBA	<>	U+0253	; latin_small_letter_b_with_hook  --  SILID 1403
+;0xBB	<>		;   --  .notdef -Diff.from IPA93
+0xBC	<>	U+0330	; combining_tilde_below  --  SILID 0130 (space glyph ignored) + SILID 6601
+0xBD	<>	U+0290	; latin_small_letter_z_with_retroflex_hook  --  SILID 1334
+;                      PROBLEM 14: I question mapping.
+;  0xBE is a DOTLESS j but is mapped to regular j.  OK??  TLH 3/21/05
+0xBE	<>	U+006A	; latin_small_letter_j  --  SILID 1413*
+0xBF	<>	U+0153	; latin_small_ligature_oe  --  oe = SILID 1319
+;*******************************************************************************
+0xC0	<>	U+0295	; latin_letter_pharyngeal_voiced_fricative  --  SILID 1241*
+0xC1	<>	U+0318	; combining_left_tack_below  --  SILID 0130 (space glyph ignored) + SILID 6667
+0xC2	<>	U+026C	; latin_small_letter_l_with_belt  --  SILID 1615
+0xC2 	<> 	U+026B  ; latin_small_letter_l_with_mid_tilde    TLH NEW
+0xC3	<>	U+028C	; latin_small_letter_turned_v  --  SILID 1129
+0xC4	<>	U+0263	; latin_small_letter_gamma  --  SILID 1433
+;0xC5	<>		;   --  .notdef
+0xC6	<>	U+029D	; latin_small_letter_j_with_crossed_tail  --  SILID 1613
+0xC7	<>	U+02CC	; modifier_letter_low_vertical_line  --  SILID 9093
+0xC8	<>	U+02C8	; modifier_letter_vertical_line  --  SILID 9094*
+;0xC9	<>	PUA	; PUA  --  SILID 1817*  (PREVIOUS)
+0xC9	<>	U+F180	; modifier_letter_small m (superscript m, formerly [PUA] TLH 
+0xCA	<>	U+02E6 U+02E5 U+02E6	; modifier_letter_high_tone_bar modifier_letter_extra_high_tone_bar modifier_letter_high_tone_bar  --  SILID 0454 -Diff.from IPA93
+;0xCB	<>	PUA	; PUA  --  SILID 1859*  (PREV)
+0xCB	<>	U+F181	; superscript left-tail n [PUA] TLH 
+0xCC	<>	U+2197	; north_east_arrow  --  SILID 0058
+0xCD	<>	U+2198	; south_east_arrow  --  SILID 0057
+0xCE	<>	U+025C	; latin_small_letter_reversed_open_e  --  SILID 1207*
+0xCF	<>	U+025E	; latin_small_letter_closed_reversed_open_e  --  SILID 1707
+;*******************************************************************************
+;0xD0	<>		;   --  .notdef -Diff.from IPA93
+0xD1	<>	U+033C	; combining_seagull_below  --  SILID 0130 (space glyph ignored) + SILID 6662
+0xD2	<>	U+0281	; latin_letter_small_capital_inverted_r  --  SILID 3122*
+0xD3	<>	U+027B	; latin_small_letter_turned_r_with_hook  --  SILID 1222*
+;0xD4	<>	PUA	; PUA  --  SILID 1860* (PREVIOUS)
+0xD4	<>	U+F182	; modifier_letter_eng  
+;           (name modeled same as superscript m)[Former PUA]  TLH
+;0xD5	<>	PUA	; PUA  --  composite: SILID 6162* (PREVIOUS)
+0xD5	<>	U+02DE ;  modifier_letter_rhotic_hook (From Constable's EXCEL spredsheet TLH
+0xD6	<>	U+002D	; hyphen_minus  --  hyphen = SILID 9022*
+;0xD7	<>	PUA ; [PUA]  --  SILID 7513*
+0xD7	<>	U+0192 ; latin_small_letter_script f  OR latin_small_letter_F_with_hook.[TLH Former PUA] Found in UNIBOOK visually
+;  in the "LATIN EXTENDED B" "Index Style View" icon Code page 01FF
+0xD8	<>	U+02E7 U+02E5	; modifier_letter_mid_tone_bar modifier_letter_extra_high_tone_bar  --  SILID 0635
+0xD9	<>	U+02E7 U+02E9	; modifier_letter_mid_tone_bar modifier_letter_extra_low_tone_bar  --  SILID 0631
+;              NOTE 3/21/05: 0xDA through 0xDF and 0xE0 UNDEFINED in ASAP SIL ... OK...
+;0xDA	<>		;   --  .notdef -Diff.from IPA93
+;0xDB	<>		;   --  .notdef -Diff.from IPA93
+;0xDD	<>		;   --  .notdef -Diff.from IPA93
+;0xDE	<>		;   --  .notdef -Diff.from IPA93
+;0xDF	<>		;   --  .notdef -Diff.from IPA93
+;*******************************************************************************
+;0xE0	<>		;   --  .notdef -Diff.from IPA93
+0xE1	<>	U+0306	; combining_breve  --  SILID 0130 (space glyph ignored) + SILID 6007
+;0xE2	<>		;   --  .notdef -Diff.from IPA93
+0xE3	<>	U+028D	; latin_small_letter_turned_w  --  SILID 1130
+0xE4	<>	U+027A	; latin_small_letter_turned_r_with_long_leg  --  SILID 1622
+0xE5	<>	U+0270	; latin_small_letter_turned_m_with_long_leg  --  SILID 1517 
+0xE6	<>	U+0302	; combining_circumflex_accent  --  SILID 0130 (space glyph ignored) + SILID 6105
+0xE7	<>	U+0265	; latin_small_letter_turned_h  --  SILID 1110
+0xE8	<>	U+02E9 U+02E5	; modifier_letter_extra_low_tone_bar modifier_letter_extra_high_tone_bar  --  SILID 0615
+;0xE9	<>	PUA	; PUA  --  SILID 0130 (space glyph ignored) + SILID 9153*  PREVIOUS
+0xE9	<>	U+F176    ; TLH  [Former PUA] combining_double_breve_below -Diff.from IPA93
+;  from DOULOUS SIL Documentation site (Confirmed in WORD Insert menu, Symbol chart to hard to see)--  SILID 0130 (space glyph ignored) + SILID 9153*
+;*****************************************************************************************
 
-0x60	<>	combining_vertical_line_below
-0x61	<>	latin_small_letter_a
-0x62	<>	latin_small_letter_b
-0x63	<>	latin_small_letter_c
-0x64	<>	latin_small_letter_d
-0x65	<>	latin_small_letter_e
-0x66	<>	latin_small_letter_f
-0x67	<>	latin_small_letter_script_g
-0x68	<>	latin_small_letter_h
-0x69	<>	latin_small_letter_i
-0x6A	<>	latin_small_letter_j
-0x6B	<>	latin_small_letter_k
-0x6C	<>	latin_small_letter_l
-0x6D	<>	latin_small_letter_m
-0x6E	<>	latin_small_letter_n
-0x6F	<>	latin_small_letter_o
+0xEA	<>	U+0256	; latin_small_letter_d_with_tail  --  SILID 1605
+0xEB	<>	U+0257	; latin_small_letter_d_with_hook  --  SILID 1405
+0xEC	<>	U+02E0	; modifier_letter_small_gamma  --  SILID 1933*
+0xED	<>	U+203F	; undertie  --  SILID 9053*
+0xEE	<>	U+0267	; latin_small_letter_heng_with_hook  --  SILID 1510
+0xEF	<>	U+025F	; latin_small_letter_dotless_j_with_stroke  --  SILID 7013*
 
-0x70	<>	latin_small_letter_p
-0x71	<>	latin_small_letter_q
-0x72	<>	latin_small_letter_r
-0x73	<>	latin_small_letter_s
-0x74	<>	latin_small_letter_t
-0x75	<>	latin_small_letter_u
-0x76	<>	latin_small_letter_v
-0x77	<>	latin_small_letter_w
-0x78	<>	latin_small_letter_x
-0x79	<>	latin_small_letter_y
-0x7A	<>	latin_small_letter_z
-0x7B	<>	latin_letter_small_capital_r
-0x7C	<>	combining_left_angle_above
-0x7D	<>	latin_small_letter_r_with_tail
-0x7E	<>	combining_x_above
-0x7F	<>	U+007F
+; *******************************************************************
+0xF0	<>	U+0127	; latin_small_letter_h_with_stroke  --  SILID 7010*
+0xF1	<>     U+026D	; latin_small_letter_l_with_retroflex_hook  --  SILID 1415
+0xF2	<>	U+007E ; mid-tilde ; See notes on PROBLM THREE above. TLH 11/22/06
 
-0x80	<>	modifier_letter_extra_low_tone_bar modifier_letter_mid_tone_bar
-0x81	<>	latin_small_letter_turned_alpha
-0x82	<>	latin_small_letter_reversed_e
-0x83	<>	combining_double_inverted_breve
-0x84	<>	double_vertical_line				; CHECK ME
-0x85	<>	modifier_letter_extra_high_tone_bar modifier_letter_mid_tone_bar
-0x86	<>	modifier_letter_extra_high_tone_bar modifier_letter_extra_low_tone_bar
-0x87	<>	latin_letter_bilabial_click
-0x88	<>	U+F172                                          ;SIL PUA Combining Grave Macron
-                                                           ;ASAP character different from IPA 93 ;SIL IPA 93 V12 : 0x88	<>	combining_double_acute_accent		/ PRE_CTX_UDIA
-0x89	<>	combining_double_acute_accent                    ;ASAP generalizes diacritics ;SIL IPA 93 V12 : 0x89	<>	combining_double_acute_accent		/ PRE_CTX_I_UDIA
-0x8A	<>	modifier_letter_extra_high_tone_bar
-0x8B	<>	upwards_arrow
-0x8C	<>	latin_small_letter_turned_a
-0x8D	<>	latin_small_letter_open_o
-0x8E	<>	latin_letter_dental_click
-0x8F	<>	combining_acute_accent                           ;ASAP generalizes diacritics ;SIL IPA 93 V12 : 0x8F	<>	combining_acute_accent				/ PRE_CTX_UDIA
+0xF3	<>	U+030C	; combining_caron  --  SILID 0130 (space glyph ignored) + SILID 6106
+;0xF4	<>		;   --  .notdef   -Diff.from IPA93
+0xF5	<>	U+0299	; latin_letter_small_capital_b  --  SILID 3003*
+0xF6	<>	U+0268	; latin_small_letter_i_with_stroke  --  SILID 7011
+0xF7	<>	U+0273	; latin_small_letter_n_with_retroflex_hook  --  SILID 1518
+0xF8	<>	U+0272	; latin_small_letter_n_with_left_hook  --  SILID 1618
+0xF9	<>	U+02D0	; modifier_letter_triangular_colon  --  SILID 9063
+0xFA	<>	U+0266	; latin_small_letter_h_with_hook  --  SILID 1410
+0xFB	<>	U+02A1	; latin_letter_glottal_stop_with_stroke  --  SILID 7041
+0xFC	<>	U+0291	; latin_small_letter_z_with_curl  --  SILID 1134
+0xFD	<>	U+029B	; latin_letter_small_capital_g_with_hook  --  SILID 3609*
+0xFE	<>	U+0255	; latin_small_letter_c_with_curl  --  SILID 1504
+0xFF	<>	U+0288	; latin_small_letter_t_with_retroflex_hook  --  SILID 1426
 
-0x90	<>	asterisk                                         ;ASAP character different from IPA 93 ;SIL IPA 93 V12 : 0x90	<>	combining_acute_accent				/ PRE_CTX_I_UDIA
-0x91	<>	modifier_letter_high_tone_bar
-0x92	<>	latin_letter_lateral_click
-;0x93 undefined                                          ;ASAP character different from IPA 93 ;SIL IPA 93 V12 : 0x93	<>	combining_macron					/ PRE_CTX_UDIA
-0x94	<>	combining_macron                                 ;ASAP generalizes diacritics ;SIL IPA 93 V12 : 0x94	<>	combining_macron					/ PRE_CTX_I_UDIA
-0x95	<>	modifier_letter_mid_tone_bar
-0x96	<>	vertical_line
-0x97	<>	latin_letter_retroflex_click
-;0x98 undefined                                          ;ASAP character different from IPA 93 ;SIL IPA 93 V12 : 0x98	<>	combining_grave_accent				/ PRE_CTX_UDIA
-0x99	<>	combining_grave_accent                           ;ASAP generalizes diacritics ;SIL IPA 93 V12 : 0x99	<>	combining_grave_accent				/ PRE_CTX_I_UDIA
-0x9A	<>	modifier_letter_low_tone_bar
-0x9B	<>	downwards_arrow
-0x9C	<>	latin_letter_alveolar_click
-0x9D	<>	U+F171                                         ; SIL PUA Combining Macron Acute
-                                                         ;ASAP character different from IPA 93 ;SIL IPA 93 V12 : 0x9D	<>	combining_double_grave_accent		/ PRE_CTX_UDIA
-0x9E	<>	combining_double_grave_accent                    ;ASAP generalizes diacritics ;SIL IPA 93 V12 : 0x9E	<>	combining_double_grave_accent		/ PRE_CTX_I_UDIA
-0x9F	<>	modifier_letter_extra_low_tone_bar
+;Comments on marked SILID values:
+;* SILID 0037: See also U+02D6 [Spacing Modifier Letters], U+207A [Superscripts and Subscripts] and U+208A [Superscripts and Subscripts].
 
-;0xA0 undefined
-;0xA1 undefined                                          ;ASAP character different from IPA 93 ;SIL IPA 93 V12 : 0xA1	<>	combining_ring_above				/ PRE_CTX_IWIDTH
-0xA2	<>	combining_down_tack_below                        ;ASAP generalizes diacritics ;SIL IPA 93 V12 : 0xA2	<>	combining_down_tack_below			/ PRE_CTX_IWIDTH
-0xA3	<>	combining_up_tack_below                          ;ASAP generalizes diacritics ;SIL IPA 93 V12 : 0xA3	<>	combining_up_tack_below				/ PRE_CTX_IWIDTH
-0xA4	<>	combining_caron_below
-;0xA5 undefined                                          ;ASAP character different from IPA 93 ;SIL IPA 93 V12 : 0xA5	<>	combining_ring_below				/ PRE_CTX_IWIDTH
-0xA6	<>	combining_right_half_ring_below
-0xA7	<>	latin_small_letter_s_with_hook
-0xA8	<>	latin_small_letter_turned_r
-0xA9	<>	latin_small_letter_g_with_hook
-0xAA	<>	combining_right_tack_below                       ;ASAP generalizes diacritics ;SIL IPA 93 V12 : 0xAA	<>	combining_right_tack_below			/ PRE_CTX_IWIDTH
-0xAB	<>	latin_small_letter_schwa
-0xAC	<>	latin_small_letter_u_bar
-0xAD	<>	latin_capital_letter_c                           ;ASAP character different from IPA 93 ;SIL IPA 93 V12 : 0xAD	<>	combining_minus_sign_below			/ PRE_CTX_IWIDTH
-0xAE	<>	latin_capital_letter_v                           ;ASAP character different from IPA 93 ;SIL IPA 93 V12 : 0xAE	<>	latin_small_letter_i_with_stroke	/ POST_CTX_DIA_ABOVE
-0xAF	<>	latin_letter_small_capital_oe
+;* SILID 0129: Possible mappings include space U+0020 [Basic Latin]; no-break space U+00A0 [Latin-1 Supplement]; en space U+2002 [General Punctuation]; three-per-em space U+2004 [General Punctuation]; four-per-em space U+2005 [General Punctuation]; six-per-em space U+2006 [General Punctuation]; figure space U+2007 [General Punctuation]; punctuation space U+2008 [General Punctuation]; thin space U+2009 [General Punctuation]; hair space U+200A [General Punctuation]; zero width space U+200B [General Punctuation]; ideographic space U+3000 [CJK Symbols and Punctuation] and zero width no-break space U+FEFF [Arabic Presentation Forms-B].
 
-0xB0	<>	combining_inverted_bridge_below
-;0xB1 undefined                                          ;ASAP character different from IPA 93 ;SIL IPA 93 V12 : 0xB1	<>	combining_plus_sign_below			/ PRE_CTX_IWIDTH
-0xB2	<>	latin_letter_small_capital_n
-0xB3	<>	modifier_letter_small_reversed_glottal_stop
-0xB4	<>	latin_small_letter_turned_y
-0xB5	<>	latin_small_letter_turned_m
-;0xB6 undefined
-;0xB7 undefined
-0xB8	<>	latin_small_letter_phi
-0xB9	<>	latin_letter_reversed_glottal_stop_with_stroke
-0xBA	<>	latin_small_letter_b_with_hook
-;0xBB undefined                                          ;ASAP character different from IPA 93 ;SIL IPA 93 V12 : 0xBB	<>	combining_inverted_breve_below		/ PRE_CTX_IWIDTH
-0xBC	<>	combining_tilde_below                            ;ASAP generalizes diacritics ;SIL IPA 93 V12 : 0xBC	<>	combining_tilde_below				/ PRE_CTX_IWIDTH
-0xBD	<>	latin_small_letter_z_with_retroflex_hook
-0xBE	<>	latin_small_letter_j				/ POST_CTX_DIA_ABOVE
-0xBF	<>	latin_small_ligature_oe
+;* SILID 0130: Possible mappings include space U+0020 [Basic Latin]; no-break space U+00A0 [Latin-1 Supplement]; en space U+2002 [General Punctuation]; three-per-em space U+2004 [General Punctuation]; four-per-em space U+2005 [General Punctuation]; six-per-em space U+2006 [General Punctuation]; figure space U+2007 [General Punctuation]; punctuation space U+2008 [General Punctuation]; thin space U+2009 [General Punctuation]; hair space U+200A [General Punctuation]; zero width space U+200B [General Punctuation]; ideographic space U+3000 [CJK Symbols and Punctuation] and zero width no-break space U+FEFF [Arabic Presentation Forms-B].
 
-0xC0	<>	latin_letter_pharyngeal_voiced_fricative
-0xC1	<>	combining_left_tack_below                        ;ASAP generalizes diacritics ;SIL IPA 93 V12 : 0xC1	<>	combining_left_tack_below			/ PRE_CTX_IWIDTH
-0xC2	<>	latin_small_letter_l_with_belt
-0xC3	<>	latin_small_letter_turned_v
-0xC4	<>	latin_small_letter_gamma
-;0xC5	undefined                                            ;ASAP character different from IPA 93 ;ASAP character different from IPA 93
-0xC6	<>	latin_small_letter_j_with_crossed_tail
-0xC7	<>	modifier_letter_low_vertical_line
-0xC8	<>	modifier_letter_vertical_line
-0xC9	<>	modifier_letter_small_m
-0xC9	<	U+F180	; superscript m
-0xCA	<>	modifier_letter_high_tone_bar \
-          modifier_letter_extra_high_tone_bar \
-          modifier_letter_high_tone_bar                  ;ASAP character different from IPA 93 ;SIL IPA 93 V12 : 0xCA	<>	hair_space
-0xCB	<>	U+F181	; superscript nya
-0xCC	<>	north_east_arrow
-0xCD	<>	south_east_arrow
-0xCE	<>	latin_small_letter_reversed_open_e
-0xCF	<>	latin_small_letter_closed_reversed_open_e
+; ????? SILID 0653, etc. for Problem 9s???  TLH
 
-;0xD0 undefined                                          ;ASAP character different from IPA 93 ;SIL IPA 93 V12 : 0xD0	<>	combining_diaeresis_below			/ PRE_CTX_IWIDTH
-0xD1	<>	combining_seagull_below
-0xD2	<>	latin_letter_small_capital_inverted_r
-0xD3	<>	latin_small_letter_turned_r_with_hook
-0xD4	<>	modifier_letter_small_eng
-0xD4	< 	U+F182	; superscript eng
-0xD5	<>	modifier_letter_rhotic_hook
-0xD6	<>	hyphen_minus
-0xD7	<>	latin_small_letter_dotless_j_with_stroke_and_hook
-0xD8	<>	modifier_letter_mid_tone_bar modifier_letter_extra_high_tone_bar
-0xD9	<>	modifier_letter_mid_tone_bar modifier_letter_extra_low_tone_bar
-;0xDA undefined                                          ;ASAP character different from IPA 93 ;SIL IPA 93 V12 : 0xDA	<>	combining_double_acute_accent		/ PRE_CTX_IWIDTH
-;0xDB undefined                                          ;ASAP character different from IPA 93 ;SIL IPA 93 V12 : 0xDB	<>	combining_acute_accent				/ PRE_CTX_IWIDTH
-;0xDC undefined                                          ;ASAP character different from IPA 93 ;SIL IPA 93 V12 : 0xDC	<>	combining_macron					/ PRE_CTX_IWIDTH
-;0xDD undefined                                          ;ASAP character different from IPA 93 ;SIL IPA 93 V12 : 0xDD	<>	combining_grave_accent				/ PRE_CTX_IWIDTH
-;0xDE undefined                                          ;ASAP character different from IPA 93 ;SIL IPA 93 V12 : 0xDE	<>	combining_double_grave_accent		/ PRE_CTX_IWIDTH
-;0xDF undefined                                          ;ASAP character different from IPA 93 ;SIL IPA 93 V12 : 0xDF	<>	combining_circumflex_accent			/ PRE_CTX_IWIDTH
+;* SILID 1001: See also U+0430 [Cyrillic].
+;* SILID 1002: Possible mappings include U+0061 [Basic Latin] and U+0251 [IPA Extensions]
+;* SILID 1004: See also U+03F2 [Greek and Coptic] and 0441.
+;* SILID 1005: See also U+217E [Number Forms].
+;* SILID 1006: See also U+0435 [Cyrillic].
+;* SILID 1007: See also U+03B5 [Greek and Coptic].
+;* SILID 1010: See also U+02B0 [Spacing Modifier Letters].
+;* SILID 1011: See also U+2170 [Number Forms].
+;* SILID 1013: See also U+02B2 [Spacing Modifier Letters], U+03F3 [Greek and Coptic] and U+0458 [Cyrillic].
+;* SILID 1015: See also U+217C [Number Forms].
+;* SILID 1017: See also U+217F [Number Forms].
+;* SILID 1019: See also U+03BF [Greek and Coptic] and U+043E [Cyrillic].
+;* SILID 1020: See also U+0440 [Cyrillic].
+;* SILID 1022: See also U+02B3 [Spacing Modifier Letters].
+;* SILID 1023: See also U+02E2 [Spacing Modifier Letters] and U+0455 [Cyrillic].
+;* SILID 1024: See also U+222B [Mathematical Operators].
+;* SILID 1028: See also U+03C5 [Greek and Coptic].
+;* SILID 1029: See also U+2174 [Number Forms].
+;* SILID 1030: See also U+02B7 [Spacing Modifier Letters].
+;* SILID 1032: See also U+0445 [Cyrillic] and U+2179 [Number Forms]. 
+;* SILID 1033: See also U+02B8 [Spacing Modifier Letters].
+;* SILID 1035: See also U+021D [Latin Extended-B] and U+04E1 [Cyrillic].
+;* SILID 1041: See also U+02C0 [Spacing Modifier Letters].
+;* SILID 1106: See also U+01DD [Latin Extended-B] and U+04D9 [Cyrillic]. U+01DD [Latin Extended-B] and U+0259 [IPA Extensions] are both Latin script characters with the same shape. They differ only by their uppercase counterparts: the uppercase of U+01DD [Latin Extended-B] is U+018E [Latin Extended-B], and the uppercase of U+0259 [IPA Extensions] is U+018F [Latin Extended-B]. U+01DD [Latin Extended-B] is used in the Pan-Nigerian Alphabet; U+0259 [IPA Extensions] is appropriate for most other uses of schewa.
+;* SILID 1119: See also U+03C6 [Greek and Coptic], U+03D5 [Greek and Coptic] and U+0444 [Cyrillic].
+;* SILID 1122: See also U+02B4 [Spacing Modifier Letters].
+;* SILID 1128: See also U+03C5 [Greek and Coptic].
+;* SILID 1207: See also U+0437 [Cyrillic].
+;* SILID 1222: See also U+02B5 [Spacing Modifier Letters].
+;* SILID 1241: See also U+02C1 [Spacing Modifier Letters].
+;* SILID 1409: Possible mappings include U+0067 [Basic Latin] and U+0261 [IPA Extensions].
+;* SILID 1413: Typically SILID 1413 is used with diacritics and so should map to U+006A [Basic Latin]. See also U+025F [IPA Extensions], U+03F3 [Greek and Coptic] and U+0458 [Cyrillic].
+;* SILID 1501: See also U+04D5 [Cyrillic].
+;* SILID 1519: See also U+03D1 [Greek and Coptic] and U+04E9 [Cyrillic]. Unicode 3.2 adds greek capital theta symbol at U+03F4 [Greek and Coptic], though Encore glyph SILID 1519 is not the best choice for that character.
+;* SILID 1711: If the small cap attribute is not being used for a character distinction, Encore glyph SILID 1711 should be mapped to U+0049 [Basic Latin].
+;* SILID 1810: For non-phonetic/phonemic usage, or in phonetic/phonemic usage where superscripting is not used to reflect a phonetic/phonemic distinction, Encore glyph SILID 1810 should probably be mapped to the non-superscript character U+0068 [Basic Latin].
+;* SILID 1813: For non-phonetic/phonemic usage, or in phonetic/phonemic usage where superscripting is not used to reflect a phonetic/phonemic distinction, Encore glyph SILID 1813 should probably be mapped to the non-superscript character U+006A [Basic Latin].
+;* SILID 1815: For non-phonetic/phonemic usage, or in phonetic/phonemic usage where superscripting is not used to reflect a phonetic/phonemic distinction, Encore glyph SILID 1815 should probably be mapped to the non-superscript character U+006C [Basic Latin].
 
+;* SILID 1817: If distinct superscript and non-superscript characters are needed for phonetic or phonemic usage, a new character should be proposed for Unicode. For non-phonetic/phonemic usage, or in phonetic/phonemic usage where superscripting is not used to reflect a phonetic/phonemic distinction, Encore glyph SILID 1817 should probably be mapped to the non-superscript character U+006D [Basic Latin].
 
-;0xE0 undefined                                          ;ASAP character different from IPA 93 ;SIL IPA 93 V12 : 0xE0	<>	combining_caron						/ PRE_CTX_IWIDTH
-0xE1	<>	combining_breve                                  ;ASAP generalizes diacritics ;SIL IPA 93 V12 : 0xE1	<>	combining_breve						/ PRE_CTX_IWIDTH
-;0xE2 undefined                                          ;ASAP character different from IPA 93 ;SIL IPA 93 V12 : 0xE2	<>	combining_tilde						/ PRE_CTX_IWIDTH
-0xE3	<>	latin_small_letter_turned_w
-0xE4	<>	latin_small_letter_turned_r_with_long_leg
-0xE5	<>	latin_small_letter_turned_m_with_long_leg
-0xE6	<>	combining_circumflex_accent                      ;ASAP generalizes diacritics ;SIL IPA 93 V12 : 0xE6	<>	combining_circumflex_accent			/ PRE_CTX_I_UDIA
-0xE7	<>	latin_small_letter_turned_h
-0xE8	<>	modifier_letter_extra_low_tone_bar modifier_letter_extra_high_tone_bar
-0xE9	<>	undertie                                         ;ASAP character different from IPA 93 ;SIL IPA 93 V12 : 0xE9	<>	combining_circumflex_accent			/ PRE_CTX_UDIA
-0xEA	<>	latin_small_letter_d_with_tail
-0xEB	<>	latin_small_letter_d_with_hook
-0xEC	<>	modifier_letter_small_gamma
-0xED	<>	undertie
-0xEE	<>	latin_small_letter_heng_with_hook
-0xEF	<>	latin_small_letter_dotless_j_with_stroke
+;* SILID 1818: For non-phonetic/phonemic usage, or in phonetic/phonemic usage where superscripting is not used to reflect a phonetic/phonemic distinction, Encore glyph SILID 1818 should probably be mapped to the non-superscript character U+006E [Basic Latin].
+;* SILID 1830: For non-phonetic/phonemic usage, or in phonetic/phonemic usage where superscripting is not used to reflect a phonetic/phonemic distinction, Encore glyph SILID 1830 should probably be mapped to the non-superscript character U+0077 [Basic Latin].
+;* SILID 1841: See also U+02C1 [Spacing Modifier Letters]. For non-phonetic/phonemic usage, or in phonetic/phonemic usage where superscripting is not used to reflect a phonetic/phonemic distinction, Encore glyph SILID 1841 should probably be mapped to the non-superscript character U+0295 [IPA Extensions].
+;* SILID 1859: If distinct superscript and non-superscript characters are needed for phonetic or phonemic usage, a new character should be proposed for Unicode. For non-phonetic/phonemic usage, or in phonetic/phonemic usage where superscripting is not used to reflect a phonetic/phonemic distinction, Encore glyph SILID 1859 should probably be mapped to the non-superscript character U+0272 [IPA Extensions].
 
-0xF0	<>	latin_small_letter_h_with_stroke
-0xF1	<>	latin_small_letter_l_with_retroflex_hook
-0x6C 0xF2	<>	latin_small_letter_l_with_middle_tilde
-0xF2	<>	combining_tilde_overlay
-0xF3	<>	combining_caron                                  ;ASAP generalizes diacritics ;SIL IPA 93 V12 : 0xF3	<>	combining_caron						/ PRE_CTX_I_UDIA
-;0xF4 undefined                                          ;ASAP character different from IPA 93 ;SIL IPA 93 V12 : 0xF4	<>	combining_caron						/ PRE_CTX_UDIA
-0xF5	<>	latin_letter_small_capital_b
-0xF6	<>	latin_small_letter_i_with_stroke
-0xF7	<>	latin_small_letter_n_with_retroflex_hook
-0xF8	<>	latin_small_letter_n_with_left_hook
-0xF9	<>	modifier_letter_triangular_colon
-0xFA	<>	latin_small_letter_h_with_hook
-0xFB	<>	latin_letter_glottal_stop_with_stroke
-0xFC	<>	latin_small_letter_z_with_curl
-0xFD	<>	latin_letter_small_capital_g_with_hook
-0xFE	<>	latin_small_letter_c_with_curl
-0xFF	<>	latin_small_letter_t_with_retroflex_hook
+;* SILID 1860: If distinct superscript and non-superscript characters are needed for phonetic or phonemic usage, a new character should be proposed for Unicode. For non-phonetic/phonemic usage, or in phonetic/phonemic usage where superscripting is not used to reflect a phonetic/phonemic distinction, Encore glyph SILID 1860 should probably be mapped to the non-superscript character U+014B [Latin Extended-A].
 
+;* SILID 1933: For non-phonetic/phonemic usage, or in phonetic/phonemic usage where superscripting is not used to reflect a phonetic/phonemic distinction, Encore glyph SILID 1933 should probably be mapped to the non-superscript character U+0263 [IPA Extensions].
+;* SILID 2004: See also U+216D [Number Forms].
+;* SILID 2029: See also U+2164 [Number Forms].
+;* SILID 3003: If the small cap attribute is not being used for a character distinction, Encore glyph SILID 3003 should be mapped to U+0042 [Basic Latin].
+;* SILID 3009: If the small cap attribute is not being used for a character distinction, Encore glyph SILID 3009 should be mapped to U+0047 [Basic Latin].
+;* SILID 3010: If the small cap attribute is not being used for a character distinction, Encore glyph SILID 3010 should be mapped to U+0048 [Basic Latin].
+;* SILID 3015: If the small cap attribute is not being used for a character distinction, Encore glyph SILID 3015 should be mapped to U+004C [Basic Latin].
+;* SILID 3018: If the small cap attribute is not being used for a character distinction, Encore glyph SILID 3018 should be mapped to U+004E [Basic Latin].
+;* SILID 3022: If the small cap attribute is not being used for a character distinction, Encore glyph SILID 3022 should be mapped to U+0052 [Basic Latin].
+;* SILID 3033: If the small cap attribute is not being used for a character distinction, Encore glyph SILID 3033 should be mapped to U+0059 [Basic Latin].
+;* SILID 3122: If the small cap attribute is not being used for a character distinction, Encore glyph SILID 3119 should be mapped to a PUA character.
+;* SILID 3319: If the small cap attribute is not being used for a character distinction, Encore glyph SILID 3319 should be mapped to U+0152 [Latin Extended-A].
+;* SILID 3609: If the small cap attribute is not being used for a character distinction, Encore glyph SILID 3601 should be mapped to U+0193 [Latin Extended-B].
+
+;* SILID 6109: See also U+0305 [Combining Diacritical Marks] and U+033F [Combining Diacritical Marks]
+;* SILID 6162: No non-spacing mapping available
+
+;* SILID 6401: See U+0334 [Combining Diacritical Marks]. Combinations that use a combining overlay (U+0334 [Combining Diacritical Marks]..U+0338 [Combining Diacritical Marks], U+20E5 [Combining Diacritical Marks for Symbols]) should probably be handled as a single, non-decomposed character, and we should probably try to get that character into Unicode before we consider encoding it using the combining overlay characters.
+
+;* SILID 6609: The distinctions between Encore glyphs SILIDs 0123 - 0128, 6609, 6618 - 6631, 6709, 6718 - 6731, 6809, 6909, 8618 - 8631, 8718 - 8731, 9056, 9075, 9076 are too subtle to make accurate predictions as to what Unicode characters they might have been used to represent. Possible mappings include U+0320 [Combining Diacritical Marks], U+0331 [Combining Diacritical Marks], U+0332 [Combining Diacritical Marks], U+0333 [Combining Diacritical Marks] and U+0347 [Combining Diacritical Marks]
+
+;* SILID 7010: See also U+045B [Cyrillic].
+;* SILID 7013: If Encore glyph SILID 7013 is used as a glyph variant of SILID 7413 (for use with diacritics), then it should be mapped to the same PUA character as 7414.
+;* SILID 7019: See also U+03B8 [Greek and Coptic], U+03D1 [Greek and Coptic] and U+04E9 [Cyrillic]. Unicode 3.2 adds greek capital theta symbol at U+03F4 [Greek and Coptic], though Encore glyph SILID 7019 is not the best choice for that character.
+
+;* SILID 7513: We should attempt to get it added to Unicode before considering encoding it using the combining overlays U+0335 [Combining Diacritical Marks] or U+0336 [Combining Diacritical Marks].
+;* SILID 8105: See also U+2202 [Mathematical Operators].
+;* SILID 9010: See also U+2024 [General Punctuation], U+2025 [General Punctuation] and U+2026 [General Punctuation].
+;* SILID 9011: Possible mappings include U+002C [Basic Latin] and U+201A [General Punctuation].
+;* SILID 9014: See also U+02C0 [Spacing Modifier Letters].
+;* SILID 9016: See also U+01C3 [Latin Extended-B]
+;* SILID 9020: Possible mappings include U+003C [Basic Latin], U+02C2 [Spacing Modifier Letters], U+2039 [General Punctuation], U+2329 [Miscellaneous Technical] and U+3008 [CJK Symbols and Punctuation].
+;* SILID 9021: Possible mappings include U+003E [Basic Latin], U+02C3 [Spacing Modifier Letters], U+203A [General Punctuation], U+232A [Miscellaneous Technical] and U+3009 [CJK Symbols and Punctuation].
+;* SILID 9022: Encore glyph 9022 is most likely to be used for U+002D [Basic Latin] or U+2212 [Mathematical Operators]. The distinctions between Encore glyphs SILIDs 0039, 6618 - 6631, 8418 - 8431, 8518 - 8531, The distinctions between Encore glyphs SILIDs 0039, 0123 - 0128, 6009, 6109, 6209, 6309, 6418 - 6431, 6518 - 6531, 8418 - 8431, 8518 - 8531, 9022 - 9025, 9095, 9822 - 9823, 9922 and 9923 are too subtle to make accurate predictions as to what Unicode characters they might have been used to represent.Possibilities include: hyphen-minus U+002D [Basic Latin], soft hyphen U+00AD [Latin-1 Supplement], modifier letter low macron U+02C9 [Spacing Modifier Letters], modifier letter minus sign U+02D7 [Spacing Modifier Letters], hyphen U+2010 [General Punctuation], non-breaking hyphen U+2011 [General Punctuation], figure dash U+2012 [General Punctuation], en dash U+2013 [General Punctuation], em dash U+2014 [General Punctuation], horizontal bar U+2015 [General Punctuation], overline U+203E [General Punctuation], hyphen bullet U+2043 [General Punctuation], superscript minus U+207B [Superscripts and Subscripts], subscript minus U+208B [Superscripts and Subscripts] and minus sign U+2212 [Mathematical Operators].
+;* SILID 9024: Encore glyph 9024 is most likely to be used for U+2014 [General Punctuation] or U+2015 [General Punctuation]. The distinctions between Encore glyphs SILIDs 0039, 0123 - 0128, 6009, 6109, 6209, 6309, 6418 - 6431, 6518 - 6531, 8418 - 8431, 8518 - 8531, 9022 - 9025, 9095, 9822 - 9823, 9922 and 9923 are too subtle to make accurate predictions as to what Unicode characters they might have been used to represent.Possibilities include: hyphen-minus U+002D [Basic Latin], soft hyphen U+00AD [Latin-1 Supplement], modifier letter low macron U+02C9 [Spacing Modifier Letters], modifier letter minus sign U+02D7 [Spacing Modifier Letters], hyphen U+2010 [General Punctuation], non-breaking hyphen U+2011 [General Punctuation], figure dash U+2012 [General Punctuation], en dash U+2013 [General Punctuation], em dash U+2014 [General Punctuation], horizontal bar U+2015 [General Punctuation], overline U+203E [General Punctuation], hyphen bullet U+2043 [General Punctuation], superscript minus U+207B [Superscripts and Subscripts], subscript minus U+208B [Superscripts and Subscripts] and minus sign U+2212 [Mathematical Operators].
+;* SILID 9030: See also U+2044 [General Punctuation] and U+2215 [Mathematical Operators].
+;* SILID 9031: See also U+2216 [Mathematical Operators].
+;* SILID 9038: The appropriate mapping of Encore glyph SILID 9038 depends upon how it is used. The following are preferred: for apostrophe (in contractions), U+2019 [General Punctuation]; for quotation, U+2018 [General Punctuation] and U+2019 [General Punctuation] (may use U+201A [General Punctuation] or U+201B [General Punctuation] depending upon locale conventions); for indicating primary stress in IPA transcription, U+02C8 [Spacing Modifier Letters] (U+02B9 [Spacing Modifier Letters] or U+02CA [Spacing Modifier Letters] may be preferred typographically in some dictionaries); for glottalization, ejective consonants or orthographic glottal stop, U+02BC [Spacing Modifier Letters]; for minutes or feet, U+2032 [General Punctuation]. All potential mappings: apostrophe U+0027 [Basic Latin]; acute accent U+00B4 [Latin-1 Supplement]; modifier letter prime U+02B9 [Spacing Modifier Letters]; modifier letter apostrophe U+02BC [Spacing Modifier Letters]; modifier letter vertical line U+02C8 [Spacing Modifier Letters]; modifier letter acute accent U+02CA [Spacing Modifier Letters]; tone marks U+02E5 [Spacing Modifier Letters]..U+02E9 [Spacing Modifier Letters]; combining acute accent U+0301 [Combining Diacritical Marks]; combining turned comma above U+0312 [Combining Diacritical Marks]; combining comma above U+0313 [Combining Diacritical Marks]; combining reversed comma above U+0314 [Combining Diacritical Marks]; combining comma above right U+0315 [Combining Diacritical Marks]; greek tonos U+0384 [Greek and Coptic]; right single quotation mark U+2019 [General Punctuation]; prime U+2032 [General Punctuation].
+;* SILID 9053: See also U+2323 [Miscellaneous Technical].
+;* SILID 9055: See also U+01C0 [Latin Extended-B] and U+2223 [Mathematical Operators].
+;* SILID 9078: See also U+01C1 [Latin Extended-B] and U+2016 [General Punctuation].
+;* SILID 9082: See also U+02C54.
+;* SILID 9083: See also U+02C4 [Spacing Modifier Letters].
+;* SILID 9090: See also U+01C0 [Latin Extended-B] and U+2223 [Mathematical Operators].
+;* SILID 9094: U+02C8 [Spacing Modifier Letters] is primarily intended for indicating primary stress -- for which purpose it is written before the stressed syllable. Tones can be represented in Unicode using U+02E5 [Spacing Modifier Letters]..U+02E9 [Spacing Modifier Letters]. See also U+0027 [Basic Latin], U+02C8 [Spacing Modifier Letters] and U+2019 [General Punctuation].
+
+;* SILID 9153: No non-spacing mapping available
+
+;* SILID 9801: For non-phonetic usage, Encore glyph SILID 9801 should probably be mapped to the non-superscript character U+0031 [Basic Latin].
+
+;* SILID 9802: For non-phonetic usage, Encore glyph SILID 9802 should probably be mapped to the non-superscript character U+0032 [Basic Latin].
+
+;* SILID 9803: For non-phonetic usage, Encore glyph SILID 9803 should probably be mapped to the non-superscript character U+0033 [Basic Latin].
+
+;* SILID 9804: For non-phonetic usage, Encore glyph SILID 9804 should probably be mapped to the non-superscript character U+0034 [Basic Latin].
+
+;* SILID 9805: For non-phonetic usage, Encore glyph SILID 9805 should probably be mapped to the non-superscript character U+0035 [Basic Latin].
