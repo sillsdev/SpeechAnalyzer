@@ -23,7 +23,7 @@
 #include <afxadv.h>
 #include <afxole.h>
 
-#include <htmlhelp.h>				// HTML Help support
+#include "HtmlHelp\htmlhelp.h"				// HTML Help support
 
 #pragma warning(push, 3)  // these files generate a lot of warnings at level 4
 #pragma warning(disable : 4786) // identifier was truncated to 255 chars in browser

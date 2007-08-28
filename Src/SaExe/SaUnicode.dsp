@@ -55,7 +55,7 @@ BSC32=bscmake.exe
 LINK32=link.exe
 # ADD BASE LINK32 mfc42d.lib mfco42d.lib mfcs42d.lib msvcrtd.lib comdlg32.lib user32.lib gdi32.lib kernel32.lib advapi32.lib oldnames.lib winmm.lib version.lib imm32.lib ole32.lib oleaut32.lib uuid.lib /nologo /stack:0x10000 /subsystem:windows /incremental:no /map /debug /machine:IX86 /out:"Debug/SA2.exe"
 # SUBTRACT BASE LINK32 /profile /nodefaultlib
-# ADD LINK32 mfc42ud.lib mfco42ud.lib mfcs42ud.lib msvcrtd.lib msvcprtd.lib comdlg32.lib user32.lib gdi32.lib kernel32.lib advapi32.lib oldnames.lib winmm.lib version.lib imm32.lib ole32.lib oleaut32.lib uuid.lib comsupp.lib ..\lib\htmlhelp.lib shell32.lib /nologo /stack:0x100000 /entry:"wWinMainCRTStartup" /subsystem:windows /map /debug /machine:IX86 /nodefaultlib /out:"..\..\Output\Debug\SA.exe"
+# ADD LINK32 mfc42ud.lib mfco42ud.lib mfcs42ud.lib msvcrtd.lib msvcprtd.lib comdlg32.lib user32.lib gdi32.lib kernel32.lib advapi32.lib oldnames.lib winmm.lib version.lib imm32.lib ole32.lib oleaut32.lib uuid.lib comsupp.lib HtmlHelp\htmlhelp.lib shell32.lib /nologo /stack:0x100000 /entry:"wWinMainCRTStartup" /subsystem:windows /map /debug /machine:IX86 /nodefaultlib /out:"..\..\Output\Debug\SA.exe"
 # SUBTRACT LINK32 /profile /incremental:no
 
 !ELSEIF  "$(CFG)" == "SaUnicode - Win32 URelease"
@@ -84,7 +84,7 @@ BSC32=bscmake.exe
 LINK32=link.exe
 # ADD BASE LINK32 mfc42ud.lib mfco42ud.lib mfcs42ud.lib msvcrtd.lib msvcprtd.lib comdlg32.lib user32.lib gdi32.lib kernel32.lib advapi32.lib oldnames.lib winmm.lib version.lib imm32.lib ole32.lib oleaut32.lib uuid.lib /nologo /stack:0x10000 /entry:"wWinMainCRTStartup" /subsystem:windows /map /debug /machine:IX86 /nodefaultlib /out:"UDebug/SA2.exe"
 # SUBTRACT BASE LINK32 /profile /incremental:no
-# ADD LINK32 mfc42u.lib mfcs42u.lib msvcrt.lib msvcprt.lib comdlg32.lib user32.lib gdi32.lib kernel32.lib advapi32.lib oldnames.lib winmm.lib version.lib imm32.lib ole32.lib oleaut32.lib uuid.lib comsupp.lib ..\lib\htmlhelp.lib shell32.lib /nologo /stack:0x100000 /entry:"wWinMainCRTStartup" /subsystem:windows /map /debug /machine:IX86 /nodefaultlib /out:"..\..\Output\Release\SA.exe" /pdbtype:sept
+# ADD LINK32 mfc42u.lib mfcs42u.lib msvcrt.lib msvcprt.lib comdlg32.lib user32.lib gdi32.lib kernel32.lib advapi32.lib oldnames.lib winmm.lib version.lib imm32.lib ole32.lib oleaut32.lib uuid.lib comsupp.lib HtmlHelp\htmlhelp.lib shell32.lib /nologo /stack:0x100000 /entry:"wWinMainCRTStartup" /subsystem:windows /map /debug /machine:IX86 /nodefaultlib /out:"..\..\Output\Release\SA.exe" /pdbtype:sept
 # SUBTRACT LINK32 /profile /incremental:no
 
 !ENDIF 
