@@ -85,7 +85,7 @@ CSABuilderDlg::CSABuilderDlg(CWnd* pParent /*=NULL*/)
   m_bDeleteFilesFirst = TRUE;
 	m_bSACodeChanges = FALSE;
 	m_bPACodeChanges = FALSE;
-	m_bCommonCodeChanges = FALSE;
+	m_bCSharpCodeChanges = FALSE;
 	LPTSTR lpCmdLine = AfxGetApp()->m_lpCmdLine;
 	for(register i=0;lpCmdLine[i] == _T('/');)
 	{
@@ -243,7 +243,7 @@ BOOL CSABuilderDlg::OnInitDialog()
 	SetDlgItemText(IDC_SVN_USER_EDIT,szString);
 	sdfGetRegistryString("SA Builder","SvnPass","",szString,_MAX_PATH);
 	SetDlgItemText(IDC_SVN_PASS_EDIT,szString);
-	sdfGetRegistryString("SA Builder","SvnRepoURL","https://src.sil.org/svn/langsw/speechtools/",szString,_MAX_PATH);
+	sdfGetRegistryString("SA Builder","SvnRepoURL","https://svn.sil.org/langsw/speechtools/",szString,_MAX_PATH);
 	SetDlgItemText(IDC_SVN_REPO_URL_EDIT,szString);
 	sdfGetRegistryString("SA Builder","MSDevPath","C:\\Program Files\\Microsoft Visual Studio\\Common\\MSDev98\\Bin\\",szString,_MAX_PATH);
 	SetDlgItemText(IDC_MSDEVPATH,szString);
@@ -281,7 +281,7 @@ void CSABuilderDlg::OnOK()
   WriteRegistryStrings();
 
 	CheckForCodeChanges();
-	if (!m_bSACodeChanges && !m_bCommonCodeChanges && m_bBatchMode)
+	if (!m_bSACodeChanges && !m_bCSharpCodeChanges && m_bBatchMode)
 	{
 		CDialog::OnOK();
 		PostQuitMessage(0);
@@ -303,17 +303,17 @@ void CSABuilderDlg::OnOK()
 
   SetVersionStrings();
 	CheckoutCode();
-  SetCurrentDirectory(m_szBuildPath + (m_szSvnBranch == "trunk" ? "trunk" : "branches/" + m_szSvnBranch));
-  UpdateRC(m_szBuildPath + m_szSvnBranch + "\\src\\sa\\sa.rc");
+  SetCurrentDirectory(m_szBuildPath + (m_szSvnBranch == "Trunk" ? "Trunk" : "Branches/" + m_szSvnBranch));
+  UpdateRC(m_szBuildPath + m_szSvnBranch + "\\Src\\SaExe\\SA.rc");
 	LookupCommitterAddress();
 
 	// Build
-	if (m_szMSDevPath.GetLength() && (m_bCommonCodeChanges || m_bSACodeChanges))
+	if (m_szMSDevPath.GetLength() && (m_bCSharpCodeChanges || m_bSACodeChanges))
 	{
-		m_nErrors += BuildSaCommonCode();
+		m_nErrors += BuildSaCSharpProjects();
     m_nErrors += BuildSA();
 	}
-	//if (m_szMSBuildPath.GetLength() && (m_bCommonCodeChanges || m_bPACodeChanges))
+	//if (m_szMSBuildPath.GetLength() && (m_bCSharpCodeChanges || m_bPACodeChanges))
   //	m_nErrors += BuildPA();
 
 	// Set up for testing
@@ -327,6 +327,8 @@ void CSABuilderDlg::OnOK()
 	// Distribute files
 	if(!m_nErrors && m_szDestinationPath.GetLength())
     DistributeFiles();
+
+  //CommitInstallerChanges();
 
 	// Commit version change (label)
 	if(!m_nErrors && m_bLabelVersion)
@@ -467,9 +469,9 @@ int CSABuilderDlg::RemoveOldBuildFolders()
 
   if (m_bDeleteFilesFirst)
   {
-    nErrors += system("rd /s /q \"" + m_szBuildPath + m_szSvnBranch + "\\src\\sa\"");
+    nErrors += system("rd /s /q \"" + m_szBuildPath + m_szSvnBranch + "\\Src\"");
     nErrors += system("rd /s /q \"" + m_szBuildPath + m_szSvnBranch + "\\Output\"");
-	  nErrors += CreateDirectory(m_szBuildPath + m_szSvnBranch + "\\src\\sa", NULL);
+	  nErrors += CreateDirectory(m_szBuildPath + m_szSvnBranch + "\\Src", NULL);
 	  nErrors += CreateDirectory(m_szBuildPath + m_szSvnBranch + "\\Output", NULL);
 
   }
@@ -495,20 +497,13 @@ int CSABuilderDlg::CompleteLog()
 
 int CSABuilderDlg::CheckoutCode()
 {
-  // checkout from src\sa
+  // checkout Src folder
 	CString szSvnBranchURL = m_szSvnRepoURL;
-  szSvnBranchURL += (m_szSvnBranch == "trunk" ? "trunk/src/sa" : "branches/" + m_szSvnBranch + "/src/sa");
-  CString szCommandString = "svn checkout " + szSvnBranchURL + " " + m_szSvnBranch + "\\src\\sa --non-interactive --username " + m_szSvnUser + " --password "+ m_szSvnPass;
+  szSvnBranchURL += (m_szSvnBranch == "Trunk" ? "Trunk/Src" : "Branches/" + m_szSvnBranch + "/Src");
+  CString szCommandString = "svn checkout " + szSvnBranchURL + " " + m_szSvnBranch + "\\Src --non-interactive --username " + m_szSvnUser + " --password "+ m_szSvnPass;
   char* szCommand = szCommandString.GetBuffer(szCommandString.GetLength());
   char* szConsoleOutput = new char[65536];
   int nResult = RunConsoleCommand(szCommand, szConsoleOutput);
-
-  // update src\common
-	szSvnBranchURL = m_szSvnRepoURL;
-  szSvnBranchURL += (m_szSvnBranch == "trunk" ? "trunk/src/common" : "branches/" + m_szSvnBranch + "/src/common");
-  szCommandString = "svn update " + szSvnBranchURL + " " + m_szSvnBranch + "\\src\\common --non-interactive --username " + m_szSvnUser + " --password "+ m_szSvnPass;
-  szCommand = szCommandString.GetBuffer(szCommandString.GetLength());
-  nResult = RunConsoleCommand(szCommand, szConsoleOutput);
 
 	// format results
   CString szResult;
@@ -522,7 +517,7 @@ int CSABuilderDlg::CheckoutCode()
   return (nResult == 0);
 }
 
-int CSABuilderDlg::BuildSaCommonCode()
+int CSABuilderDlg::BuildSaCSharpProjects()
 {
 	int nResult = 0;
   CString szResult = "";
@@ -531,14 +526,14 @@ int CSABuilderDlg::BuildSaCommonCode()
   
 	CString szCommandString = m_szMSBuildPath;
 	szCommandString += "MSBuild.exe ";
-	szCommandString += "src\\sa\\SaCommonCode.sln ";
+	szCommandString += "Src\\SaExe\\SaC#Projects.sln ";
 	szCommandString += "/property:Configuration=Release";
   char* szCommand = szCommandString.GetBuffer(szCommandString.GetLength());
   char* szConsoleOutput = new char[65536];
-  nResult = RunConsoleCommand(szCommand, szConsoleOutput, "SaCommon-MSBuild.log");
+  nResult = RunConsoleCommand(szCommand, szConsoleOutput, "SaCSharp-MSBuild.log");
   nErrors += nResult;
   szResult.Format("ERR%d", nResult);
-	Log((nResult==0) ? "OK  " : szResult, "Build SA Common Projects");
+	Log((nResult==0) ? "OK  " : szResult, "Build SA C# Projects");
 
 	// Create SpeechToolsUtils.reg
 	LPTSTR szWindowsPath = new char[MAX_PATH + 1];
@@ -553,7 +548,7 @@ int CSABuilderDlg::BuildSaCommonCode()
 
 	// e-mail log
 	if (nResult != 0)
-		EmailFile(m_szBuildPath + m_szSvnBranch + "\\SaCommon-MSBuild.log", m_szCommitterAddress, "Common Projects Build Log");
+		EmailFile(m_szBuildPath + m_szSvnBranch + "\\SaCSharp-MSBuild.log", m_szCommitterAddress, "C# Projects Build Log");
 
 	delete [] szConsoleOutput;
 	delete [] szWindowsPath;
@@ -569,7 +564,7 @@ int CSABuilderDlg::BuildSA()
   
 	if(nResult != 0)
 		nErrors++;
-  nResult = _spawnl(_P_WAIT, m_szMSDevPath + "MSDev.exe", "MSDev.exe", "src\\sa\\SAUnicode.dsw", "/MAKE \"SaUnicode - Win32 URelease\"", "/REBUILD", "/OUT Sa-MSDEV.log", NULL);
+  nResult = _spawnl(_P_WAIT, m_szMSDevPath + "MSDev.exe", "MSDev.exe", "Src\\SaExe\\SAUnicode.dsw", "/MAKE \"SaUnicode - Win32 URelease\"", "/REBUILD", "/OUT Sa-MSDEV.log", NULL);
   szResult.Format("ERR%d", nResult);
 	Log((nResult==0) ? "OK  " : szResult, "Build SA URelease");
 
@@ -582,7 +577,7 @@ int CSABuilderDlg::BuildSA()
 		EmailFile(m_szBuildPath + m_szSvnBranch + "\\Sa-MSDEV.log", m_szCommitterAddress, "SA Build Log");
 
 		// build debug version
-		nResult = _spawnl(_P_WAIT, m_szMSDevPath + "MSDev.exe", "MSDev.exe", "src\\sa\\SAUnicode.dsw", "/MAKE \"SaUnicode - Win32 UDebug\"", "/REBUILD", "/OUT SaDebug-MSDEV.log", NULL);
+		nResult = _spawnl(_P_WAIT, m_szMSDevPath + "MSDev.exe", "MSDev.exe", "Src\\SaExe\\SAUnicode.dsw", "/MAKE \"SaUnicode - Win32 UDebug\"", "/REBUILD", "/OUT SaDebug-MSDEV.log", NULL);
 		szResult.Format("ERR%d", nResult);
 		Log((nResult==0) ? "OK  " : szResult, "Build SA UDebug");
 		if(nResult != 0)
@@ -713,7 +708,7 @@ int CSABuilderDlg::CheckForCodeChanges()
 {
   // Check most recent source-safe item date/time
   CString szSvnBranchURL = m_szSvnRepoURL;
-  szSvnBranchURL += (m_szSvnBranch == "trunk" ? "trunk/src" : "branches/" + m_szSvnBranch + "/src");
+  szSvnBranchURL += (m_szSvnBranch == "Trunk" ? "Trunk/Src" : "Branches/" + m_szSvnBranch + "/Src");
   CString szCommandString = "svn log " + szSvnBranchURL + " -v -r HEAD:" + m_szSvnLastRev + " --username " + m_szSvnUser + " --password "+ m_szSvnPass;
   char* szCommand = szCommandString.GetBuffer(szCommandString.GetLength());
   char* szConsoleOutput = new char[65536];
@@ -726,7 +721,7 @@ int CSABuilderDlg::CheckForCodeChanges()
 	// Check if log request succeeded
 	if (szLog.GetLength() == 0)
 	{
-		EmailFile("", "corey_wenger@sil.org", "SVN unavailable");
+		//EmailFile("", "corey_wenger@sil.org", "SVN unavailable");
 		delete [] szConsoleOutput;
 		return 0;
 	}
@@ -742,19 +737,20 @@ int CSABuilderDlg::CheckForCodeChanges()
 	CString szLogAfterLastRev = szLog.Left(nLastRevIndex); // cut off log entry of last rev
 	if (nCodeChanges > 0)
 	{
-		m_bCommonCodeChanges = szLogAfterLastRev.Find("src/common/SpeechToolsUtils") >= 0;
-		m_bSACodeChanges = szLogAfterLastRev.Find("src/sa") >= 0;
-		m_bSACodeChanges = m_bSACodeChanges || (szLogAfterLastRev.Find("src/common/ST_Audio") >= 0);
-		m_bSACodeChanges = (m_bSACodeChanges || (szLogAfterLastRev.Find("src/common/yeti") >= 0));
-		m_bPACodeChanges = szLogAfterLastRev.Find("src/pa") >= 0;
-		m_bPACodeChanges = (m_bPACodeChanges || (szLogAfterLastRev.Find("src/common") >= 0)
-												&& !m_bSACodeChanges && !m_bCommonCodeChanges);
+		m_bSACodeChanges = TRUE;
+		//m_bCSharpCodeChanges = szLogAfterLastRev.Find("src/common/SpeechToolsUtils") >= 0;
+		//m_bSACodeChanges = szLogAfterLastRev.Find("src/sa") >= 0;
+		//m_bSACodeChanges = m_bSACodeChanges || (szLogAfterLastRev.Find("src/common/ST_Audio") >= 0);
+		//m_bSACodeChanges = (m_bSACodeChanges || (szLogAfterLastRev.Find("src/common/yeti") >= 0));
+		//m_bPACodeChanges = szLogAfterLastRev.Find("src/pa") >= 0;
+		//m_bPACodeChanges = (m_bPACodeChanges || (szLogAfterLastRev.Find("src/common") >= 0)
+		//										&& !m_bSACodeChanges && !m_bCSharpCodeChanges);
 	}
 
 	// if this is a label version build and there have been incremental builds, assume code changes
 	if ((m_bLabelVersion) && (m_szSvnLastLabelRev < m_szSvnLastRev))
 	{
-		m_bCommonCodeChanges = TRUE;
+		m_bCSharpCodeChanges = TRUE;
 		m_bSACodeChanges = TRUE;
 	}
   
@@ -802,13 +798,10 @@ int CSABuilderDlg::DistributeFiles()
 	int nResult = 0;
 	int nErrors = 0;
 	CString szSource = m_szBuildPath + m_szSvnBranch + "\\Output\\Release\\";
-	//CString szInstallerFilesPath = "C:\\speechtools\\Installer Files";
 
 	CheckOutputFileCount();
 	
-	//UpdateInstallerFilesFromSVN(szInstallerFilesPath);
-
-  if (m_bSACodeChanges || m_bCommonCodeChanges)
+  if (m_bSACodeChanges || m_bCSharpCodeChanges)
 	{
 		// Create folder
 		m_szDestinationFolderName = "SA" + m_szVersion;
@@ -834,23 +827,7 @@ int CSABuilderDlg::DistributeFiles()
 		nErrors += Copy(szSource, szDest, "ST_Audio.dll");
 		nErrors += Copy(szSource, szDest, "yeti.mmedia.dll");
 		nErrors += Copy(szSource, szDest, "yeti.wmfsdk.dll");
-
-		// copy files to installer folder
-		//szDest = szInstallerFilesPath + "\\Speech Analyzer\\";
-		//Log("", "Copying to " + szDest);
-		//nErrors += Copy(szSource, szDest, "SA.exe");
-		//nErrors += Copy(szSource, szDest, "SA_ENU.dll");
-		//nErrors += Copy(szSource, szDest, "mbrola.dll");
-		//nErrors += Copy(szSource, szDest, "SA_DSP.dll");
-		//nErrors += Copy(szSource, szDest, "sfSettings.dll");
-		//nErrors += Copy(szSource, szDest, "zGraph.dll");
-		//nErrors += Copy(szSource, szDest, "SpeechToolsUtils.dll");
-		//nErrors += Copy(szSource, szDest, "ST_Audio.dll");
-		//nErrors += Copy(szSource, szDest, "yeti.mmedia.dll");
-		//nErrors += Copy(szSource, szDest, "yeti.wmfsdk.dll");
 	}
-
-  //CommitInstallerChanges(szInstallerFilesPath);
 
 	// TODO: Distribute SVN log
 
@@ -866,7 +843,7 @@ int CSABuilderDlg::DistributeFiles()
 ///////////////////////////////////////////////////////////////////////////////
 int CSABuilderDlg::UpdateInstallerFilesFromSVN(CString szInstallerFilesPath)
 {
-  CString szCommandString = "svn update \"" + szInstallerFilesPath + "\\Speech Analyzer\" --non-interactive --username wenger --password svnwenger";
+  CString szCommandString = "svn update \"" + szInstallerFilesPath + "\\Speech Analyzer\" --non-interactive";
   char* szCommand = szCommandString.GetBuffer(szCommandString.GetLength());
   char* szConsoleOutput = new char[65536];
   int nResult = RunConsoleCommand(szCommand, szConsoleOutput);
@@ -882,12 +859,33 @@ int CSABuilderDlg::UpdateInstallerFilesFromSVN(CString szInstallerFilesPath)
 ///////////////////////////////////////////////////////////////////////////////
 // CommitInstallerChanges Commits build outputs to installer SVN repository 
 ///////////////////////////////////////////////////////////////////////////////
-int CSABuilderDlg::CommitInstallerChanges(CString szInstallerFilesPath)
+int CSABuilderDlg::CommitInstallerChanges()
 {
-  CString szCommandString = "svn commit \"" + szInstallerFilesPath + "\" -m \"svn.sil.org r" + m_szSvnHeadRev + "\" --non-interactive --username wenger --password svnwenger";
+	CString szInstallerFilesPath = "C:\\speechtools\\Installer Files";
+	int nResult = 0;
+
+	UpdateInstallerFilesFromSVN(szInstallerFilesPath);
+
+	// copy files to installer folder
+	CString szSource = m_szBuildPath + m_szSvnBranch + "\\Output\\Release\\";
+	CString szDest = szInstallerFilesPath + "\\Speech Analyzer\\";
+	Log("", "Copying to " + szDest);
+	nResult += Copy(szSource, szDest, "SA.exe");
+	nResult += Copy(szSource, szDest, "SA_ENU.dll");
+	nResult += Copy(szSource, szDest, "mbrola.dll");
+	nResult += Copy(szSource, szDest, "SA_DSP.dll");
+	nResult += Copy(szSource, szDest, "sfSettings.dll");
+	nResult += Copy(szSource, szDest, "zGraph.dll");
+	nResult += Copy(szSource, szDest, "SpeechToolsUtils.dll");
+	nResult += Copy(szSource, szDest, "ST_Audio.dll");
+	nResult += Copy(szSource, szDest, "yeti.mmedia.dll");
+	nResult += Copy(szSource, szDest, "yeti.wmfsdk.dll");
+
+  // Commit changes to installer repository
+	CString szCommandString = "svn commit \"" + szInstallerFilesPath + "\" -m \"svn.sil.org r" + m_szSvnHeadRev + "\" --non-interactive --username wenger --password svnwenger";
   char* szCommand = szCommandString.GetBuffer(szCommandString.GetLength());
   char* szConsoleOutput = new char[65536];
-  int nResult = RunConsoleCommand(szCommand, szConsoleOutput);
+  nResult += RunConsoleCommand(szCommand, szConsoleOutput);
   CString szResult;
   szResult.Format("ERR%d", nResult);
 	Log((nResult==0) ? "OK  " : szResult, "Commit installer files");
@@ -924,7 +922,7 @@ int CSABuilderDlg::CheckOutputFileCount()
 		bSearching = FindNextFile(hSearch, &FileData);
 	}
 
-	int nExpectedCount = 7; // SpeechToolsUtils
+	int nExpectedCount = 8; // SpeechToolsUtils
 	nExpectedCount += 26; // SA files
 
 	CString szResult = (nResult == nExpectedCount ? "OK" : "WARN");
@@ -1123,7 +1121,7 @@ void CSABuilderDlg::LookupCommitterAddress()
   CString szUser = szLog.Mid(nUserStart, nUserLength);
 
 	// Lookup user's address
-	m_szCommitterAddress = "corey_wenger@sil.org";
+	m_szCommitterAddress = "";
 	for (int i = 0; i < 3; i++)
 	{
 		if (pszAddressLookup[i][0] == szUser)
@@ -1202,17 +1200,6 @@ int CSABuilderDlg::EmailResults()
 	// e-mail committer
 	nResult = EmailFile(m_szLogFilePath, m_szCommitterAddress, szSubject);
 	
-	// e-mail Corey
-	CTime t;
-	CTimeSpan ts(60);
-	if (m_szCommitterAddress != "corey_wenger@sil.org")
-	{
-		// wait a minute so mail server doesn't think this is spam
-		t = CTime::GetCurrentTime();
-		while (CTime::GetCurrentTime() < (t + ts));
-		nResult += EmailFile(m_szLogFilePath, "corey_wenger@sil.org", szSubject);
-	}
-
   return nResult;
 }
 
@@ -1292,7 +1279,7 @@ void CSABuilderDlg::SetVersionStrings()
 
 void CSABuilderDlg::LabelVersion()
 {
-  CString szRCPath = "\"" + m_szBuildPath + m_szSvnBranch + "\\src\\sa\\sa.rc\"";
+  CString szRCPath = "\"" + m_szBuildPath + m_szSvnBranch + "\\Src\\SaExe\\sa.rc\"";
   CString szCommandString = "svn commit " + szRCPath + " --username " + m_szSvnUser + " --password "+ m_szSvnPass + " -m \"" + m_szVersionComment + "\"";
   char* szCommand = szCommandString.GetBuffer(szCommandString.GetLength());
   char* szConsoleOutput = new char[65536];

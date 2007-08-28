@@ -37,7 +37,7 @@ protected:
   int InitializeLog();
   int CompleteLog();
   int CheckoutCode();
-  int BuildSaCommonCode();
+  int BuildSaCSharpProjects();
   int BuildSA();
 	int BuildPA();
 	int BuildInstaller();
@@ -45,7 +45,7 @@ protected:
 	int CheckOutputFileCount();
 	int UpdateInstallerFilesFromSVN(CString szInstallerFilesPath);
   int CommitChanges();
-	int CommitInstallerChanges(CString szInstallerFilesPath);
+	int CommitInstallerChanges();
   CString DecryptString(CString &szEncryptedText);
   int DistributeFiles();
 	int Copy(CString szSourcePath, CString szDestPath, CString szFileName);
@@ -109,7 +109,7 @@ protected:
   CString m_szSvnHeadRev;
 	BOOL m_bSACodeChanges;
 	BOOL m_bPACodeChanges;
-	BOOL m_bCommonCodeChanges;
+	BOOL m_bCSharpCodeChanges;
 	CString m_szCommitterAddress;
   CString m_szSABuilderPath;
   int m_nErrors;
