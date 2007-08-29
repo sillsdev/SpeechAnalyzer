@@ -526,7 +526,7 @@ int CSABuilderDlg::BuildSaCSharpProjects()
   
 	CString szCommandString = m_szMSBuildPath;
 	szCommandString += "MSBuild.exe ";
-	szCommandString += "Src\\SaExe\\SaC#Projects.sln ";
+	szCommandString += "Src\\SaC#Projects.sln ";
 	szCommandString += "/property:Configuration=Release";
   char* szCommand = szCommandString.GetBuffer(szCommandString.GetLength());
   char* szConsoleOutput = new char[65536];
@@ -922,7 +922,7 @@ int CSABuilderDlg::CheckOutputFileCount()
 		bSearching = FindNextFile(hSearch, &FileData);
 	}
 
-	int nExpectedCount = 8; // SpeechToolsUtils
+	int nExpectedCount = 7; // SpeechToolsUtils
 	nExpectedCount += 26; // SA files
 
 	CString szResult = (nResult == nExpectedCount ? "OK" : "WARN");
