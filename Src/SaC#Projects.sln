@@ -1,13 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 9.00
 # Visual Studio 2005
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpeechToolsUtils", "..\SpeechToolsUtils\SpeechToolsUtils.csproj", "{45F4F307-5C89-46E1-B92B-0A2E3489FF6F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpeechToolsUtils", "SpeechToolsUtils\SpeechToolsUtils.csproj", "{45F4F307-5C89-46E1-B92B-0A2E3489FF6F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ST_Audio", "..\ST_Audio\ST_Audio.csproj", "{31635602-EE5E-48C6-BE91-D42EC9A377F7}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ST_Audio", "ST_Audio\ST_Audio.csproj", "{31635602-EE5E-48C6-BE91-D42EC9A377F7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "yeti.mmedia", "..\yeti.mmedia\yeti.mmedia.csproj", "{315EE7BF-EAE2-42C0-BFC6-CCA9160F3CFE}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "yeti.mmedia", "yeti.mmedia\yeti.mmedia.csproj", "{315EE7BF-EAE2-42C0-BFC6-CCA9160F3CFE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "yeti.wmfsdk", "..\yeti.wmfsdk\yeti.wmfsdk.csproj", "{FECB5BEB-AB05-454A-BB14-6A554E897274}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "yeti.wmfsdk", "yeti.wmfsdk\yeti.wmfsdk.csproj", "{FECB5BEB-AB05-454A-BB14-6A554E897274}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
