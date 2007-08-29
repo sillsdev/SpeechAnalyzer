@@ -17,13 +17,15 @@
 // </remarks>
 // --------------------------------------------------------------------------------------------
 using System;
-using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Drawing2D;
+using System.Collections;
+using System.ComponentModel;
+using System.Windows.Forms;
 using System.Reflection;
 using System.Threading;
-using System.Windows.Forms;
-using Timer=System.Windows.Forms.Timer;
+using System.Diagnostics;
+using System.Runtime.InteropServices;
 
 namespace SIL.SpeechTools.Utils
 {
@@ -33,7 +35,7 @@ namespace SIL.SpeechTools.Utils
 	/// 
 	/// </summary>
 	/// ----------------------------------------------------------------------------------------
-	internal class SplashScreenForm : Form
+	internal class SplashScreenForm : System.Windows.Forms.Form
 	{
 		#region Data members
 		private delegate void UpdateOpacityDelegate();
@@ -41,7 +43,7 @@ namespace SIL.SpeechTools.Utils
 		// NOTE: we use a Forms.Timer here (compared to Threading.Timer in FW)
 		// because we can't set the stack size of a thread in the thread pool which the 
 		// Threading.Timer uses and so we'd get a stack overflow.
-		private Timer m_timer;
+		private System.Windows.Forms.Timer m_timer;
 		private EventWaitHandle m_waitHandle;
 		private Panel m_panel;
 		private PictureBox pictureBox1;
@@ -50,11 +52,11 @@ namespace SIL.SpeechTools.Utils
 		private Label lblCopyright;
 		private Label lblProductName;
 		private bool m_useFading = true;
+		private string m_versionFmt;
+		private string m_buildFmt;
 		private Label lblBuildNumber;
-		private readonly bool m_showBuildNum = false;
-		private readonly bool m_isBetaVersion = false;
-		private readonly string m_versionFmt;
-		private readonly string m_buildFmt;
+		private bool m_showBuildNum = false;
+		private bool m_isBetaVersion = false;
 		#endregion
 
 		#region Constructor
@@ -235,7 +237,7 @@ namespace SIL.SpeechTools.Utils
 		/// ----------------------------------------------------------------------------------------
 		public void RealActivate()
 		{
-			BringToFront();
+			base.BringToFront();
 			Refresh();
 		}
 
@@ -248,8 +250,7 @@ namespace SIL.SpeechTools.Utils
 		{
 			if (m_timer != null)
 				m_timer.Stop();
-			
-			Close();
+			base.Close();
 		}
 		#endregion
 
@@ -351,9 +352,9 @@ namespace SIL.SpeechTools.Utils
 			lblBuildNumber.Visible = m_showBuildNum;
 
 			// start a timer to ramp up the opacity of the window.
-			m_timer = new Timer();
+			m_timer = new System.Windows.Forms.Timer();
 			m_timer.Interval = 50;
-			m_timer.Tick += OnUpdateOpacity;
+			m_timer.Tick += new EventHandler(OnUpdateOpacity);
 			m_timer.Start();
 		}
 
@@ -382,7 +383,7 @@ namespace SIL.SpeechTools.Utils
 					}
 
 					lblProductName.Text = productName;
-					Text = productName;
+					this.Text = productName;
 
 					lblBuildNumber.Visible = m_showBuildNum;
 					if (m_showBuildNum)
@@ -487,7 +488,7 @@ namespace SIL.SpeechTools.Utils
 					// debugging while starting up, but it might happen at other times too 
 					// - so just be safe.
 					if (!IsDisposed && IsHandleCreated)
-						Invoke(new UpdateOpacityDelegate(UpdateOpacity));
+						this.Invoke(new UpdateOpacityDelegate(UpdateOpacity));
 				}
 				catch (Exception ex)
 				{

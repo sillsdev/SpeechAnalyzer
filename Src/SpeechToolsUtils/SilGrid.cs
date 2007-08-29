@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
+using System.Text;
 using System.Windows.Forms;
 using System.Windows.Forms.VisualStyles;
 
@@ -17,11 +18,11 @@ namespace SIL.SpeechTools.Utils
 	{
 		public delegate void GetWaterMarkRectHandler(object sender,
 			Rectangle adjustedClientRect, ref Rectangle rcProposed);
-		
 		public event GetWaterMarkRectHandler GetWaterMarkRect;
 
-		private static readonly string kDropDownStyle = "DropDown";
+		private static string kDropDownStyle = "DropDown";
 		
+		private ArrayList m_colsWithDropDownStyle = new ArrayList();
 		private bool m_isDirty = false;
 		private bool m_paintWaterMark = false;
 		private bool m_showWaterMarkWhenDirty = false;
@@ -32,16 +33,15 @@ namespace SIL.SpeechTools.Utils
 		/// 
 		/// </summary>
 		/// ------------------------------------------------------------------------------------
-		public SilGrid()
+		public SilGrid() : base()
 		{
-			DoubleBuffered = true;
 			AllowUserToOrderColumns = true;
 			AllowUserToResizeRows = false;
 			AllowUserToAddRows = false;
 			AllowUserToDeleteRows = false;
 			AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCellsExceptHeaders;
 			BackgroundColor = DefaultCellStyle.BackColor = SystemColors.Window;
-			base.ForeColor = DefaultCellStyle.ForeColor = SystemColors.WindowText;
+			ForeColor = DefaultCellStyle.ForeColor = SystemColors.WindowText;
 			SelectionMode = DataGridViewSelectionMode.FullRowSelect;
 			BorderStyle = BorderStyle.Fixed3D;
 			ColumnHeadersBorderStyle = DataGridViewHeaderBorderStyle.None;
@@ -78,9 +78,7 @@ namespace SIL.SpeechTools.Utils
 			{
 				m_isDirty = value;
 				m_paintWaterMark = (value && m_showWaterMarkWhenDirty);
-				
-				if (m_showWaterMarkWhenDirty)
-					Invalidate();
+				Invalidate();
 			}
 		}
 
@@ -144,8 +142,8 @@ namespace SIL.SpeechTools.Utils
 				// Modify the client rectangle so it doesn't
 				// include the vertical scroll bar width.
 				rc = ClientRectangle;
-				rc.Width = (int)(clientWidth * 0.5f);
-				rc.Height = (int)(rc.Height * 0.5f);
+				rc.Width = (int)((float)clientWidth * 0.5f);
+				rc.Height = (int)((float)rc.Height * 0.5f);
 				rc.X = (clientWidth - rc.Width) / 2;
 				rc.Y = (ClientRectangle.Height - rc.Height) / 2;
 
@@ -248,59 +246,6 @@ namespace SIL.SpeechTools.Utils
 				e.Graphics.FillRegion(br, new Region(path));
 		}
 
-		/// ------------------------------------------------------------------------------------
-		/// <summary>
-		/// In order to achieve double buffering without the problem that arises from having
-		/// double buffering on while sizing rows and columns or dragging columns around,
-		/// monitor when the mouse goes down and turn off double buffering when it goes down
-		/// on a column heading or over the dividers between rows or the dividers between
-		/// columns.
-		/// </summary>
-		/// ------------------------------------------------------------------------------------
-		protected override void OnCellMouseDown(DataGridViewCellMouseEventArgs e)
-		{
-			if (Cursor == Cursors.SizeNS || Cursor == Cursors.SizeWE)
-				DoubleBuffered = false;
-
-			base.OnCellMouseDown(e);
-		}
-
-		/// ------------------------------------------------------------------------------------
-		/// <summary>
-		/// When double buffering is off, it means it was turned off in the cell mouse down
-		/// event. Therefore, turn it back on.
-		/// </summary>
-		/// ------------------------------------------------------------------------------------
-		protected override void OnCellMouseUp(DataGridViewCellMouseEventArgs e)
-		{
-			if (!DoubleBuffered)
-				DoubleBuffered = true;
-
-			base.OnCellMouseUp(e);
-		}
-
-		/// ------------------------------------------------------------------------------------
-		/// <summary>
-		/// 
-		/// </summary>
-		/// ------------------------------------------------------------------------------------
-		protected override void OnRowsAdded(DataGridViewRowsAddedEventArgs e)
-		{
-			base.OnRowsAdded(e);
-			IsDirty = true;
-		}
-
-		/// ------------------------------------------------------------------------------------
-		/// <summary>
-		/// 
-		/// </summary>
-		/// ------------------------------------------------------------------------------------
-		protected override void OnRowsRemoved(DataGridViewRowsRemovedEventArgs e)
-		{
-			base.OnRowsRemoved(e);
-			IsDirty = true;
-		}
-
 		#endregion
 
 		#region Events and methods for handling DropDown style combo box cells.
@@ -355,7 +300,7 @@ namespace SIL.SpeechTools.Utils
 		/// </summary>
 		/// <param name="cbo"></param>
 		/// ------------------------------------------------------------------------------------
-		private static void SortComboList(ComboBox cbo)
+		private void SortComboList(ComboBox cbo)
 		{
 			SortedList lst = new SortedList();
 

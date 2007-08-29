@@ -1,29 +1,20 @@
 using System;
-using System.Drawing;
+using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
+using System.Drawing;
+using System.Text;
 using System.Windows.Forms;
-using SIL.SpeechTools.Utils.Properties;
 using SilEncConverters22;
 
 namespace SIL.SpeechTools.Utils
 {
-	/// ----------------------------------------------------------------------------------------
-	/// <summary>
-	/// This dialog displays a list of the various transcriptions that can be found in pre SA
-	/// 3.0 transcribed wave files and encoding converters found in the encoding converters
-	/// repository that may be applied to converting those transcriptions to Unicode. The user
-	/// specifies one encoding converter to apply to each transcription type.
-	/// </summary>
-	/// ----------------------------------------------------------------------------------------
 	public partial class TransConvertersDlg : Form
 	{
-		private static string s_helpURL = "file://" + Application.StartupPath + "\\Speech_Analyzer_Help.chm";
-		private static string s_hlpTopic = "User_Interface/Menus/File/Transcription_Encoding_Converters.htm";
-
 		private SilGrid m_grid;
 		private TransConverterInfo m_transConverters;
 		private bool m_appUsingWaitCursor;
-
+		
 		/// ------------------------------------------------------------------------------------
 		/// <summary>
 		/// 
@@ -82,13 +73,13 @@ namespace SIL.SpeechTools.Utils
 			m_grid.RowHeadersBorderStyle = DataGridViewHeaderBorderStyle.Raised;
 
 			DataGridViewColumn col = SilGrid.CreateTextBoxColumn("transcription");
-			col.HeaderText = Resources.kstidCnvtrGridTransHdg;
+			col.HeaderText = Properties.Resources.kstidCnvtrGridTransHdg;
 			col.Width = 150;
 			col.ReadOnly = true;
 			m_grid.Columns.Add(col);
 
 			col = SilGrid.CreateTextBoxColumn("font");
-			col.HeaderText = Resources.kstidCnvtrGridFontHdg;
+			col.HeaderText = Properties.Resources.kstidCnvtrGridFontHdg;
 			col.Width = 150;
 			col.ReadOnly = true;
 			m_grid.Columns.Add(col);
@@ -96,7 +87,7 @@ namespace SIL.SpeechTools.Utils
 			col = SilGrid.CreateSilButtonColumn("converter");
 			col.Width = 150;
 			col.ReadOnly = true;
-			col.HeaderText = Resources.kstidCnvtrGridCnvtrHdg;
+			col.HeaderText = Properties.Resources.kstidCnvtrGridCnvtrHdg;
 			((SilButtonColumn)col).ButtonWidth = 17;
 			((SilButtonColumn)col).UseComboButtonStyle = true;
 			((SilButtonColumn)col).ButtonClicked +=
@@ -221,13 +212,13 @@ namespace SIL.SpeechTools.Utils
 				// At this point, we know the user clicked the browse option.
 				OpenFileDialog dlg = new OpenFileDialog();
 				dlg.Multiselect = false;
-				dlg.Title = Resources.kstidOFDFindConverterCaption;
+				dlg.Title = Properties.Resources.kstidOFDFindConverterCaption;
 				dlg.CheckPathExists = true;
 				dlg.CheckFileExists = true;
-				dlg.Filter = Resources.kstidFileTypeTecFile + "|" +
-					Resources.kstidFileTypeMapFile + "|" +
-					Resources.kstidFileTypeCCFile + "|" +
-					Resources.kstidFileTypeAll;
+				dlg.Filter = Properties.Resources.kstidFileTypeTecFile + "|" +
+					Properties.Resources.kstidFileTypeMapFile + "|" +
+					Properties.Resources.kstidFileTypeCCFile + "|" +
+					Properties.Resources.kstidFileTypeAll;
 
 				if (dlg.ShowDialog() != DialogResult.OK || string.IsNullOrEmpty(dlg.FileName))
 					return;
@@ -257,34 +248,14 @@ namespace SIL.SpeechTools.Utils
 
 		/// ------------------------------------------------------------------------------------
 		/// <summary>
-		/// Gets or sets the help file to open when the dialog's help button is clicked.
-		/// </summary>
-		/// ------------------------------------------------------------------------------------
-		public static string HelpFilePath
-		{
-			get { return s_helpURL; }
-			set { s_helpURL = value; }
-		}
-
-		/// ------------------------------------------------------------------------------------
-		/// <summary>
-		/// Gets or sets the help file topic to open when the dialog's help button is clicked.
-		/// </summary>
-		/// ------------------------------------------------------------------------------------
-		public static string HelpTopic
-		{
-			get { return s_hlpTopic; }
-			set { s_hlpTopic = value; }
-		}
-
-		/// ------------------------------------------------------------------------------------
-		/// <summary>
 		/// 
 		/// </summary>
 		/// ------------------------------------------------------------------------------------
 		private void btnHelp_Click(object sender, EventArgs e)
 		{
-			Help.ShowHelp(this, HelpFilePath, HelpTopic);
+			string helpURL = "file://" + Application.StartupPath + "\\Speech_Analyzer_Help.chm";
+			string topic = "User_Interface/Menus/File/Transcription_Encoding_Converters.htm";
+			Help.ShowHelp(this, helpURL, topic);
 		}
 
 		/// ------------------------------------------------------------------------------------

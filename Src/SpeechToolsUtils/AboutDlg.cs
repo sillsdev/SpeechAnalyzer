@@ -16,10 +16,15 @@
 // </remarks>
 // --------------------------------------------------------------------------------------------
 using System;
+using System.Drawing;
+using System.Collections;
 using System.ComponentModel;
 using System.Reflection;
+using System.Resources;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
+using Microsoft.Win32;
+using System.Diagnostics;
 
 namespace SIL.SpeechTools.Utils
 {
@@ -134,11 +139,11 @@ namespace SIL.SpeechTools.Utils
 	[ClassInterface(ClassInterfaceType.None)]
 	[GuidAttribute("7ACF99EB-7FB6-482a-B1C2-11E2E14C02A0")]
 	[ComVisible(true)]
-	public class AboutDlg : Form, IAboutDlg
+	public class AboutDlg : System.Windows.Forms.Form, IAboutDlg
 	{
 		#region Data members
 
-		private IContainer components;
+		private System.ComponentModel.IContainer components;
 
 		private string m_sAvailableMemoryFmt;
 		private string m_sAppVersionFmt;

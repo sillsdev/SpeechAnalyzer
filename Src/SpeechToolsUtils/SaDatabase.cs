@@ -1,12 +1,15 @@
 using System;
 using System.Collections.Generic;
+using System.Text;
 using System.IO;
 using System.Xml.Serialization;
+using System.Reflection;
+using System.Windows.Forms;
 using Microsoft.Win32;
 
 namespace SIL.SpeechTools.Utils
 {
-    [XmlRoot("SaDocCache")]
+    [XmlRootAttribute("SaDocCache")]
     public class SaDocumentCache : List<SaAudioDocument>
     {
     }

@@ -1,13 +1,17 @@
 using System;
-using System.Drawing;
-using System.Globalization;
+using System.Collections.Generic;
+using System.Text;
 using System.IO;
-using System.Management;
-using System.Reflection;
-using System.Runtime.InteropServices;
+using System.Drawing;
+using System.Security.Cryptography;
 using System.Windows.Forms;
+using System.Windows.Forms.VisualStyles;
+using System.Runtime.InteropServices;
 using System.Xml.Serialization;
+using System.Reflection;
 using Microsoft.Win32;
+using Microsoft.VisualBasic.FileIO;
+using System.Management;
 using SilEncConverters22;
 
 namespace SIL.SpeechTools.Utils
@@ -111,20 +115,7 @@ namespace SIL.SpeechTools.Utils
 
 			return 0;
 		}
-
-		/// ------------------------------------------------------------------------------------
-		/// <summary>
-		/// Since a file path may contain '\n' and passing a string to STMsgBox will convert
-		/// those to a new line character (which would not be good for a file path), this
-		/// method will go through the specified file path and prepare it to be properly
-		/// displayed in a message box via the STMsgBox method.
-		/// </summary>
-		/// ------------------------------------------------------------------------------------
-		public static string PrepFilePathForSTMsgBox(string filepath)
-		{
-			return filepath.Replace("\\n", kObjReplacementChar.ToString());
-		}
-
+		
 		/// ------------------------------------------------------------------------------------
 		/// <summary>
 		/// Displays a speech tools message box with an icon that is determined by the buttons.
@@ -158,7 +149,6 @@ namespace SIL.SpeechTools.Utils
 
 			s_msgBoxJustShown = true;
 			msg = ConvertLiteralNewLines(msg);
-			msg = msg.Replace(kObjReplacementChar.ToString(), "\\n");
 			return MessageBox.Show(msg, Application.ProductName, buttons, icon);
 		}
 
@@ -170,8 +160,8 @@ namespace SIL.SpeechTools.Utils
 		/// ------------------------------------------------------------------------------------
 		public static bool MessageBoxJustShown
 		{
-			get { return s_msgBoxJustShown; }
-			set { s_msgBoxJustShown = value; }
+			get { return STUtils.s_msgBoxJustShown; }
+			set { STUtils.s_msgBoxJustShown = value; }
 		}
 
 		/// ------------------------------------------------------------------------------------
@@ -357,6 +347,7 @@ namespace SIL.SpeechTools.Utils
 					nameSpace.Add(string.Empty, string.Empty);
 					XmlSerializer serializer = new XmlSerializer(data.GetType());
 					serializer.Serialize(writer, data, nameSpace);
+					serializer = null;
 					writer.Close();
 				}
 
@@ -385,19 +376,17 @@ namespace SIL.SpeechTools.Utils
 		/// ------------------------------------------------------------------------------------
 		public static object DeserializeData(string filename, Type type, out Exception e)
 		{
-			object data;
+			object data = null;
 			e = null;
 
 			try
 			{
 				string filepath = GetLocalPath(filename, true);
-				if (!File.Exists(filepath))
-					return null;
-
 				using (TextReader reader = new StreamReader(filepath))
 				{
 					XmlSerializer deserializer = new XmlSerializer(type);
 					data = deserializer.Deserialize(reader);
+					deserializer = null;
 					reader.Close();
 				}
 			}
@@ -471,7 +460,7 @@ namespace SIL.SpeechTools.Utils
 		/// </summary>
 		/// ------------------------------------------------------------------------------------
 		public static bool TryFloatParse(string input, 
-			CultureInfo ci, out float output)
+			System.Globalization.CultureInfo ci, out float output)
 		{
 			if (ci == null)
 			{
@@ -480,32 +469,11 @@ namespace SIL.SpeechTools.Utils
 
 				// The first attempt failed so now try parsing with a culture whose number
 				// system decimal separator is known to be a period.
-				ci = CultureInfo.CreateSpecificCulture("en");
+				ci = System.Globalization.CultureInfo.CreateSpecificCulture("en");
 			}
 
-			return float.TryParse(input, NumberStyles.Number,
+			return float.TryParse(input, System.Globalization.NumberStyles.Number,
 					ci.NumberFormat, out output);
-		}
-
-		/// ------------------------------------------------------------------------------------
-		/// <summary>
-		/// 
-		/// </summary>
-		/// ------------------------------------------------------------------------------------
-		public static void WaitCursors(bool turnOn)
-		{
-			Application.UseWaitCursor = turnOn;
-			if (Application.OpenForms != null && Application.OpenForms.Count > 0)
-			{
-				foreach (Form frm in Application.OpenForms)
-				{
-					// Check if the form was created in the current thread.
-					if (!frm.InvokeRequired)
-						frm.Cursor = (turnOn ? Cursors.WaitCursor : Cursors.Default);
-				}
-			}
-
-			Application.DoEvents();
 		}
 	}
 }

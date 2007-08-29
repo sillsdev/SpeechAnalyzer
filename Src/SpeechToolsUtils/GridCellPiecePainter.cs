@@ -1,4 +1,8 @@
+using System;
+using System.Collections.Generic;
+using System.Text;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Windows.Forms;
 
 namespace SIL.SpeechTools.Utils
@@ -14,12 +18,12 @@ namespace SIL.SpeechTools.Utils
 		public delegate void DrawPiecesHandler(Graphics g, string[] subpieces, int firstSubPiece,
 			int lastSubPiece, Rectangle rc, Color textColor, TextFormatFlags flags, bool drawForward);
 		
-		private readonly Font m_font;
-		private readonly Color m_textColorNormal;
-		private readonly Color m_textColorSelected;
-		private readonly Color m_middlePieceBackColor;
-		private readonly Color m_middlePieceForeColor;
-		private readonly DrawPiecesHandler m_drawPieces;
+		private Font m_font;
+		private Color m_textColorNormal;
+		private Color m_textColorSelected;
+		private Color m_middlePieceBackColor;
+		private Color m_middlePieceForeColor;
+		private DrawPiecesHandler m_drawPieces;
 
 		/// ------------------------------------------------------------------------------------
 		/// <summary>

@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Text;
 using System.Drawing;
 using System.Windows.Forms;
 using System.Windows.Forms.VisualStyles;
@@ -32,7 +34,7 @@ namespace SIL.SpeechTools.Utils
 		/// ------------------------------------------------------------------------------------
 		public SilButtonColumn() : base(new SilButtonCell())
 		{
-			base.DefaultCellStyle.Font = SystemInformation.MenuFont;
+			DefaultCellStyle.Font = SystemInformation.MenuFont;
 			m_buttonFont = SystemInformation.MenuFont;
 			Width = 110;
 			HeaderText = string.Empty;
@@ -216,7 +218,7 @@ namespace SIL.SpeechTools.Utils
 			DataGridView.ShowCellToolTips = false;
 			Size sz = SystemInformation.CursorSize;
 			Point pt = DataGridView.FindForm().PointToClient(DataGridView.MousePosition);
-			pt.X += (int)(sz.Width * 0.6);
+			pt.X += (int)((float)sz.Width * 0.6);
 			pt.Y += sz.Height;
 			m_toolTip.Active = true;
 			m_toolTip.Show(m_buttonToolTip, DataGridView.FindForm(), pt);
@@ -427,9 +429,8 @@ namespace SIL.SpeechTools.Utils
 
 			SilButtonColumn col =
 				DataGridView.Columns[ColumnIndex] as SilButtonColumn;
-
-			if (col != null)
-				col.InvokeButtonClick(e);
+	
+			col.InvokeButtonClick(e);
 		}
 
 		/// ------------------------------------------------------------------------------------
@@ -535,7 +536,7 @@ namespace SIL.SpeechTools.Utils
 			TextFormatFlags flags = TextFormatFlags.HorizontalCenter |
 				TextFormatFlags.VerticalCenter | TextFormatFlags.SingleLine |
 				TextFormatFlags.NoPrefix | TextFormatFlags.EndEllipsis |
-				TextFormatFlags.NoPadding | TextFormatFlags.PreserveGraphicsClipping;
+				TextFormatFlags.NoPadding;
 
 			Color clrText = (m_enabled ? SystemColors.ControlText : SystemColors.GrayText);
 			TextRenderer.DrawText(g, buttonText, buttonFont, rcbtn, clrText, flags);
@@ -563,8 +564,7 @@ namespace SIL.SpeechTools.Utils
 			TextFormatFlags flags = TextFormatFlags.LeftAndRightPadding |
 				TextFormatFlags.VerticalCenter | TextFormatFlags.SingleLine |
 				TextFormatFlags.NoPrefix | (useEllipsisPath ?
-				TextFormatFlags.PathEllipsis : TextFormatFlags.EndEllipsis) |
-				TextFormatFlags.PreserveGraphicsClipping;
+				TextFormatFlags.PathEllipsis : TextFormatFlags.EndEllipsis);
 
 			TextRenderer.DrawText(g, text, style.Font, rcText, clrText, flags);
 		}

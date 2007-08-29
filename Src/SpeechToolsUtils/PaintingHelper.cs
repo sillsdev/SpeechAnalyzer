@@ -1,9 +1,11 @@
 using System;
+using System.Collections.Generic;
+using System.Text;
 using System.Drawing;
 using System.Drawing.Drawing2D;
-using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using System.Windows.Forms.VisualStyles;
+using System.Runtime.InteropServices;
 
 namespace SIL.SpeechTools.Utils
 {
@@ -27,10 +29,10 @@ namespace SIL.SpeechTools.Utils
 	public class PaintingHelper
 	{
 		#region Windows API imported methods
-		[DllImport("User32.dll")]
+		[System.Runtime.InteropServices.DllImport("User32.dll")]
 		extern static public IntPtr GetWindowDC(IntPtr hwnd);
 
-		[DllImport("User32.dll")]
+		[System.Runtime.InteropServices.DllImport("User32.dll")]
 		extern static public int ReleaseDC(IntPtr hwnd, IntPtr hdc);
 
 		[DllImport("user32.dll", CharSet = CharSet.Auto)]
@@ -202,11 +204,8 @@ namespace SIL.SpeechTools.Utils
 
 			try
 			{
-				if (rc.Width > 0 && rc.Height > 0)
-				{
-					using (LinearGradientBrush br = new LinearGradientBrush(rc, clrTop, clrBottom, 90))
-						g.FillRectangle(br, rc);
-				}
+				using (LinearGradientBrush br =	new LinearGradientBrush(rc, clrTop, clrBottom, 90))
+					g.FillRectangle(br, rc);
 			}
 			catch { }
 		}

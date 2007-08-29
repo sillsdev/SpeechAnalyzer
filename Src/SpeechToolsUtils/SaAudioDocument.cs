@@ -2,9 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
-using System.Windows.Forms;
 using System.Xml.Serialization;
-using SIL.SpeechTools.Utils.Properties;
+using System.Xml;
+using System.Windows.Forms;
 
 namespace SIL.SpeechTools.Utils
 {
@@ -249,8 +249,8 @@ namespace SIL.SpeechTools.Utils
 			// Make sure the wave file exists.
 			if (!File.Exists(audioFilePath))
 			{
-				string msg = string.Format(Resources.kstidWaveFileNotFound,
-					STUtils.PrepFilePathForSTMsgBox(audioFilePath));
+				string msg = string.Format(Properties.Resources.kstidWaveFileNotFound,
+					audioFilePath);
 
 				STUtils.STMsgBox(msg, MessageBoxButtons.OK);
 				return null;
@@ -326,7 +326,7 @@ namespace SIL.SpeechTools.Utils
 				// Warn the user that we don't have write privileges
 				string audioFileNameOnly = Path.GetFileName(audioFile);
 				string transFileNameOnly = Path.ChangeExtension(audioFileNameOnly, ".saxml");
-				string msg = Resources.kstidReadOnlyFolderMsg;
+				string msg = Properties.Resources.kstidReadOnlyFolderMsg;
 				msg = string.Format(msg, audioFileNameOnly, audioFileNameOnly, transFileNameOnly);
 				msg = STUtils.ConvertLiteralNewLines(msg);
 				STUtils.STMsgBox(msg, MessageBoxButtons.OK);
@@ -416,7 +416,7 @@ namespace SIL.SpeechTools.Utils
 					return 0;
 			}
 
-			return BytesToSeconds(byteVal, m_channels,
+			return SaAudioDocument.BytesToSeconds(byteVal, m_channels,
 				m_samplesPerSecond, m_bitsPerSample);
 		}
 
@@ -440,7 +440,7 @@ namespace SIL.SpeechTools.Utils
 			}
 
 
-			return SecondsToBytes(seconds, m_channels,
+			return SaAudioDocument.SecondsToBytes(seconds, m_channels,
 				m_samplesPerSecond, m_bitsPerSample);
 		}
 
@@ -571,8 +571,8 @@ namespace SIL.SpeechTools.Utils
 				// Make sure the wave file exists.
 				if (!File.Exists(value))
 				{
-					string msg = string.Format(Resources.kstidWaveFileNotFound,
-						STUtils.PrepFilePathForSTMsgBox(value));
+					string msg = string.Format(Properties.Resources.kstidWaveFileNotFound,
+						value);
 
 					STUtils.STMsgBox(msg, MessageBoxButtons.OK);
 					return;

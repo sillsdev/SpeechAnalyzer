@@ -1,4 +1,7 @@
 using System;
+using System.Collections.Generic;
+using System.Collections;
+using System.Text;
 using System.Drawing;
 using System.Drawing.Text;
 using System.Windows.Forms;
@@ -137,6 +140,7 @@ namespace SIL.SpeechTools.Utils
 
 			SpeechToolsSettingsHandler spSettingsHandler = new SpeechToolsSettingsHandler();
 			spSettingsHandler.LoadFonts();
+			spSettingsHandler = null;
 		}
 
 		/// ------------------------------------------------------------------------------------
@@ -171,6 +175,7 @@ namespace SIL.SpeechTools.Utils
 		{
 			SpeechToolsSettingsHandler spSettingsHandler = new SpeechToolsSettingsHandler();
 			spSettingsHandler.SaveFonts();
+			spSettingsHandler = null;
 		}
 
 		/// ------------------------------------------------------------------------------------
@@ -229,7 +234,7 @@ namespace SIL.SpeechTools.Utils
 		/// ------------------------------------------------------------------------------------
 		public static Font MakeFont(string family, float size, FontStyle style)
 		{
-		    Font fnt;
+		    Font fnt = null;
 
 			while (true)
 			{
@@ -241,9 +246,7 @@ namespace SIL.SpeechTools.Utils
 				catch (Exception e)
 				{
 					string msg = e.Message.ToLower();
-					if (!msg.Contains("does not support style"))
-						return (Font)SystemInformation.MenuFont.Clone();
-					else
+					if (msg.Contains("does not support style"))
 					{
 						if (msg.Contains("bold"))
 							style &= ~FontStyle.Bold;
@@ -251,6 +254,10 @@ namespace SIL.SpeechTools.Utils
 							style &= ~FontStyle.Italic;
 						else if (msg.Contains("regular"))
 							style = FontStyle.Bold;
+					}
+					else
+					{
+						fnt = (Font)SystemInformation.MenuFont.Clone();
 					}
 				}
 			}

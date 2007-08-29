@@ -1,8 +1,11 @@
 using System;
+using System.Collections.Generic;
+using System.Text;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Windows.Forms;
-using SIL.SpeechTools.Utils.Properties;
+using System.Windows.Forms.VisualStyles;
+using System.Reflection;
 
 namespace SIL.SpeechTools.Utils
 {
@@ -35,17 +38,17 @@ namespace SIL.SpeechTools.Utils
 		/// 
 		/// </summary>
 		/// ------------------------------------------------------------------------------------
-		public SilHierarchicalGridRow()
+		public SilHierarchicalGridRow() : base()
 		{
-			base.ReadOnly = true;
-			Image glyph = Resources.kimidExpand;
+			ReadOnly = true;
+			Image glyph = Properties.Resources.kimidExpand;
 			m_glyphWidth = glyph.Width;
 			m_glyphHeight = glyph.Height;
 
 			m_recCountFmt = new string[] {
-				Resources.kstidHierarchicalRowChildCountLongFmt,
-				Resources.kstidHierarchicalRowChildCountMedFmt,
-				Resources.kstidHierarchicalRowChildCountShortFmt};
+				Properties.Resources.kstidHierarchicalRowChildCountLongFmt,
+				Properties.Resources.kstidHierarchicalRowChildCountMedFmt,
+				Properties.Resources.kstidHierarchicalRowChildCountShortFmt};
 		}
 
 		/// ------------------------------------------------------------------------------------
@@ -157,7 +160,6 @@ namespace SIL.SpeechTools.Utils
 				row.m_childCount = m_childCount;
 				row.m_firstCacheIndex = m_firstCacheIndex;
 				row.m_lastCacheIndex = m_lastCacheIndex;
-				row.m_recCountFmt = m_recCountFmt;
 
 				// This is kludgy but here's the ridiculous problem I observe. Whenever a row
 				// is added to the grid, internally, that row is cloned and added to the grid,
@@ -201,12 +203,11 @@ namespace SIL.SpeechTools.Utils
 		{
 			if (m_owningGrid != null)
 			{
-				m_owningGrid.MouseClick += m_owningGrid_MouseClick;
-				m_owningGrid.CellDoubleClick += m_owningGrid_CellDoubleClick;
-				m_owningGrid.RowPostPaint += m_owningGrid_RowPostPaint;
-				m_owningGrid.SizeChanged += m_owningGrid_SizeChanged;
-				m_owningGrid.Scroll += m_owningGrid_Scroll;
-				m_owningGrid.KeyDown += m_owningGrid_KeyDown;
+				m_owningGrid.MouseClick += new MouseEventHandler(m_owningGrid_MouseClick);
+				m_owningGrid.RowPostPaint += new DataGridViewRowPostPaintEventHandler(m_owningGrid_RowPostPaint);
+				m_owningGrid.SizeChanged += new EventHandler(m_owningGrid_SizeChanged);
+				m_owningGrid.Scroll += new ScrollEventHandler(m_owningGrid_Scroll);
+				m_owningGrid.KeyDown += new KeyEventHandler(m_owningGrid_KeyDown);
 			}
 		}
 
@@ -220,7 +221,6 @@ namespace SIL.SpeechTools.Utils
 			if (m_owningGrid != null)
 			{
 				m_owningGrid.MouseClick -= m_owningGrid_MouseClick;
-				m_owningGrid.CellDoubleClick -= m_owningGrid_CellDoubleClick;
 				m_owningGrid.RowPostPaint -= m_owningGrid_RowPostPaint;
 				m_owningGrid.SizeChanged -= m_owningGrid_SizeChanged;
 				m_owningGrid.Scroll -= m_owningGrid_Scroll;
@@ -253,8 +253,7 @@ namespace SIL.SpeechTools.Utils
 			{
 				if (m_font == null)
 				{
-					m_font = FontHelper.MakeFont((m_owningGrid == null ||
-						m_owningGrid.DefaultCellStyle.Font == null ? SystemInformation.MenuFont :
+					m_font = FontHelper.MakeFont((m_owningGrid == null ? SystemInformation.MenuFont :
 						m_owningGrid.DefaultCellStyle.Font), FontStyle.Bold);
 				}
 
@@ -312,41 +311,6 @@ namespace SIL.SpeechTools.Utils
 		{
 			get { return m_childCount; }
 			set { m_childCount = value; }
-		}
-
-		/// ------------------------------------------------------------------------------------
-		/// <summary>
-		/// The format strings for displaying count information at the far right of the
-		/// row. There must be three strings: a long version, medium version and a short
-		/// version. The format strings in the string array are assumed to be in that order.
-		/// When there is enough room, the long will always be used. An example of the three
-		/// would be:
-		/// 
-		/// Long: "({0} records)"
-		/// Med.: "({0} rec.)"
-		/// Short: "({0})"
-		/// 
-		/// </summary>
-		/// ------------------------------------------------------------------------------------
-		public string[] CountFormatStrings
-		{
-			get
-			{
-				if (m_recCountFmt == null || m_recCountFmt.Length != 3)
-				{
-					m_recCountFmt = new string[] {
-						Resources.kstidHierarchicalRowChildCountLongFmt,
-						Resources.kstidHierarchicalRowChildCountMedFmt,
-						Resources.kstidHierarchicalRowChildCountShortFmt};
-				}
-				
-				return m_recCountFmt;
-			}
-			set
-			{
-				if (value.Length == 3)
-					m_recCountFmt = value;
-			}
 		}
 
 		///// ------------------------------------------------------------------------------------
@@ -419,7 +383,6 @@ namespace SIL.SpeechTools.Utils
 			get { return m_expanded; }
 			set {SetExpandedState(value, false);}
 		}
-
 		#endregion
 
 		#region Public methods
@@ -430,16 +393,6 @@ namespace SIL.SpeechTools.Utils
 		/// ------------------------------------------------------------------------------------
 		public void SetExpandedState(bool expanded, bool force)
 		{
-			SetExpandedState(expanded, force, true);
-		}
-		
-		/// ------------------------------------------------------------------------------------
-		/// <summary>
-		/// 
-		/// </summary>
-		/// ------------------------------------------------------------------------------------
-		public void SetExpandedState(bool expanded, bool force, bool suspendAndResumeLayout)
-		{
 			if (m_expanded == expanded && !force)
 				return;
 
@@ -448,8 +401,7 @@ namespace SIL.SpeechTools.Utils
 			if (m_owningGrid == null || Index == m_owningGrid.Rows.Count - 1)
 				return;
 
-			if (suspendAndResumeLayout)
-				m_owningGrid.SuspendLayout();
+			m_owningGrid.SuspendLayout();
 
 			// Make hide or unhide all rows between this one and the next SilHierarchicalGridRow
 			// at the same level or higher or the end of the list, whatever comes first.
@@ -463,11 +415,10 @@ namespace SIL.SpeechTools.Utils
 				m_owningGrid.Rows[i].Visible = m_expanded;
 			}
 
+			m_owningGrid.ResumeLayout();
+
 			if (ExpandedStateChanged != null)
 				ExpandedStateChanged(this);
-
-			if (suspendAndResumeLayout)
-				m_owningGrid.ResumeLayout();
 		}
 
 		/// ------------------------------------------------------------------------------------
@@ -509,9 +460,12 @@ namespace SIL.SpeechTools.Utils
 			if (m_owningGrid.CurrentRow == null || m_owningGrid.CurrentRow.Index != Index)
 				return;
 
-			bool toggle = (Expanded ?
-				(e.KeyCode == Keys.OemMinus ||	(!e.Shift && e.KeyCode == Keys.Left)) :
-				(e.KeyCode == Keys.Oemplus || (!e.Shift && e.KeyCode == Keys.Right)));
+			bool toggle = false;
+
+			if (Expanded)
+				toggle = (e.KeyCode == Keys.OemMinus ||	(!e.Shift && e.KeyCode == Keys.Left));
+			else
+				toggle = (e.KeyCode == Keys.Oemplus || (!e.Shift && e.KeyCode == Keys.Right));
 
 			if (toggle)
 			{
@@ -528,17 +482,6 @@ namespace SIL.SpeechTools.Utils
 		private void m_owningGrid_MouseClick(object sender, MouseEventArgs e)
 		{
 			if (GlyphRectangle.Contains(e.X, e.Y))
-				Expanded = !Expanded;
-		}
-
-		/// ------------------------------------------------------------------------------------
-		/// <summary>
-		/// Toggle expansion when the user double-clicks on the row.
-		/// </summary>
-		/// ------------------------------------------------------------------------------------
-		void m_owningGrid_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
-		{
-			if (e.RowIndex == Index)
 				Expanded = !Expanded;
 		}
 
@@ -578,7 +521,7 @@ namespace SIL.SpeechTools.Utils
 			Rectangle rcText;
 			GetRectangles(e.RowBounds, out rcHighlight, out rcText);
 			DrawHighlight(e.Graphics, ref rcHighlight, ref rcText);
-			DrawGlyph(e.Graphics);
+			DrawGlyph(e.Graphics, e.RowBounds);
 			DrawText(e.Graphics, ref rcText);
 		}
 
@@ -617,7 +560,7 @@ namespace SIL.SpeechTools.Utils
 
 			TextFormatFlags flags = TextFormatFlags.EndEllipsis |
 				TextFormatFlags.LeftAndRightPadding | TextFormatFlags.SingleLine |
-				TextFormatFlags.VerticalCenter | TextFormatFlags.PreserveGraphicsClipping;
+				TextFormatFlags.VerticalCenter;
 
 			if (!string.IsNullOrEmpty(m_text))
 				TextRenderer.DrawText(g, m_text, m_font, rcText, clr, flags);
@@ -715,10 +658,10 @@ namespace SIL.SpeechTools.Utils
 		/// Draws the + or - glyph.
 		/// </summary>
 		/// ------------------------------------------------------------------------------------
-		private void DrawGlyph(Graphics graphics)
+		private void DrawGlyph(Graphics graphics, Rectangle rc)
 		{
-			Image glyph = (m_expanded ? Resources.kimidCollapse :
-				Resources.kimidExpand);
+			Image glyph = (m_expanded ? Properties.Resources.kimidCollapse :
+				Properties.Resources.kimidExpand);
 
 			graphics.DrawImage(glyph, GlyphRectangle);
 		}
@@ -812,12 +755,12 @@ namespace SIL.SpeechTools.Utils
 		/// ------------------------------------------------------------------------------------
 		public SilHierarchicalGridColumn() : base(new SilHierarchicalGridCell())
 		{
-			base.ReadOnly = true;
-			base.Frozen = true;
+			ReadOnly = true;
+			Frozen = true;
 			SortMode = DataGridViewColumnSortMode.NotSortable;
 			AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
-			Width = Resources.kimidExpand.Width + 8;
-			base.Resizable = DataGridViewTriState.False;
+			Width = Properties.Resources.kimidExpand.Width + 8;
+			Resizable = DataGridViewTriState.False;
 		}
 
 		/// ------------------------------------------------------------------------------------
@@ -882,10 +825,9 @@ namespace SIL.SpeechTools.Utils
 			{
 				if (col.Visible != show && col is SilHierarchicalGridColumn)
 				{
+					col.Visible = show;
 					if (show)
 						col.DisplayIndex = 0;
-
-					col.Visible = show;
 				}
 			}
 
@@ -939,6 +881,31 @@ namespace SIL.SpeechTools.Utils
 
 		/// ------------------------------------------------------------------------------------
 		/// <summary>
+		/// Gets the index of the furthest right, visible SilHierarchicalGridColumn in the grid.
+		/// </summary>
+		/// ------------------------------------------------------------------------------------
+		private int LastHierarchicalColumnIndex
+		{
+			get
+			{
+				if (DataGridView != null)
+				{
+					for (int i = DataGridView.Columns.Count - 1; i >= 0; i--)
+					{
+						SilHierarchicalGridColumn col =
+							DataGridView.Columns[i] as SilHierarchicalGridColumn;
+
+						if (col != null && col.Visible)
+							return i;
+					}
+				}
+
+				return -1;
+			}
+		}
+
+		/// ------------------------------------------------------------------------------------
+		/// <summary>
 		/// Get rid of all borders except the bottom.
 		/// </summary>
 		/// ------------------------------------------------------------------------------------
@@ -951,6 +918,7 @@ namespace SIL.SpeechTools.Utils
 			dataGridViewAdvancedBorderStylePlaceHolder.Left =
 				DataGridViewAdvancedCellBorderStyle.None;
 
+			bool lastPHGC = (ColumnIndex == LastHierarchicalColumnIndex);
 			bool isRowPHGR = (RowIndex > -1 && DataGridView.Rows[RowIndex] is SilHierarchicalGridRow);
 
 			// Only allow a right border if we're the furthest right

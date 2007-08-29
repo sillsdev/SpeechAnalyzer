@@ -1,10 +1,14 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
-using System.IO;
-using System.Runtime.InteropServices;
 using System.Text;
+using System.Data;
+using System.Data.OleDb;
+using System.Reflection;
+using System.IO;
+using System.Xml.Serialization;
 using System.Windows.Forms;
-using SIL.SpeechTools.Utils.Properties;
+using System.Runtime.InteropServices;
 
 namespace SIL.SpeechTools.Utils
 {
@@ -36,7 +40,7 @@ namespace SIL.SpeechTools.Utils
 	[ClassInterface(ClassInterfaceType.None)]
 	[GuidAttribute("58A46D07-9EF3-49ae-9C19-42AC3158801C")]
 	[ComVisible(true)]
-	public class SaAudioDocumentReader : ISaAudioDocumentReader
+	public class SaAudioDocumentReader : SIL.SpeechTools.Utils.ISaAudioDocumentReader
 	{
 		private SaAudioDocument m_doc = null;
 		//private string m_md5HashCode;
@@ -93,8 +97,8 @@ namespace SIL.SpeechTools.Utils
 					AudioReader.InitResult result = audioReader.Initialize(audioFilePath);
 					if (result == AudioReader.InitResult.FileNotFound)
 					{
-						string msg = string.Format(Resources.kstidWaveFileNotFound,
-							STUtils.PrepFilePathForSTMsgBox(audioFilePath));
+						string msg = string.Format(Properties.Resources.kstidWaveFileNotFound,
+							audioFilePath);
 
 						STUtils.STMsgBox(msg, MessageBoxButtons.OK);
 						return false;
@@ -102,8 +106,8 @@ namespace SIL.SpeechTools.Utils
 
 					if ((result == AudioReader.InitResult.InvalidFormat))
 					{
-						string msg = string.Format(Resources.kstidInvalidWaveFile,
-							STUtils.PrepFilePathForSTMsgBox(audioFilePath));
+						string msg = string.Format(Properties.Resources.kstidInvalidWaveFile,
+							audioFilePath);
 
 						STUtils.STMsgBox(msg, MessageBoxButtons.OK);
 						return false;
@@ -121,7 +125,7 @@ namespace SIL.SpeechTools.Utils
 			}
 			catch (Exception e)
 			{
-				string msg = string.Format(Resources.kstidErrorInitializingDocReader,
+				string msg = string.Format(Properties.Resources.kstidErrorInitializingDocReader,
 					e.Message);
 
 				STUtils.STMsgBox(msg, MessageBoxButtons.OK);
@@ -144,14 +148,14 @@ namespace SIL.SpeechTools.Utils
 			if (!SaDatabase.Load())
 				return;
 
-			STUtils.STMsgBox(Resources.kstidOldDbConverionMsg, MessageBoxButtons.OK);
+			STUtils.STMsgBox(Properties.Resources.kstidOldDbConverionMsg, MessageBoxButtons.OK);
 			bool allConverted = true;
 
 			for (int i = SaDatabase.Cache.Count - 1; i >= 0; i--)
 			{
 				if (!File.Exists(SaDatabase.Cache[i].AudioFile))
 				{
-					string msg = Resources.kstidOldDbAudioFileMissingMsg;
+					string msg = Properties.Resources.kstidOldDbAudioFileMissingMsg;
 					msg = string.Format(msg, SaDatabase.Cache[i].AudioFile);
 					if (STUtils.STMsgBox(msg, MessageBoxButtons.YesNo) == DialogResult.Yes)
 						SaDatabase.Cache.RemoveAt(i);
@@ -406,7 +410,7 @@ namespace SIL.SpeechTools.Utils
 				KeyValuePair<MusicSegmentKey, MusicSegmentData> entry = m_musicEnum[index].Current;
 				offset = entry.Value.Offset;
 				length = entry.Value.Duration;
-				annotation = entry.Value.Annotation;
+				annotation = (ret ? entry.Value.Annotation : null);
 			}
 
 			return ret;
@@ -684,7 +688,7 @@ namespace SIL.SpeechTools.Utils
 
 		/// ------------------------------------------------------------------------------------
 		/// <summary>
-		/// Gets the notebook reference.
+		/// Gets the note book reference.
 		/// </summary>
 		/// ------------------------------------------------------------------------------------
 		public string NoteBookReference

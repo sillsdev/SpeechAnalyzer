@@ -16,10 +16,15 @@
 // Splash Screen
 // </remarks>
 // --------------------------------------------------------------------------------------------
+using System;
+using System.Drawing;
+using System.Collections;
+using System.ComponentModel;
+using System.Windows.Forms;
+using System.Reflection;
+using System.Threading;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
-using System.Threading;
-using System.Windows.Forms;
 
 namespace SIL.SpeechTools.Utils
 {
@@ -142,6 +147,7 @@ namespace SIL.SpeechTools.Utils
 		private bool m_useFading = true;
 		private Thread m_thread;
 		private SplashScreenForm m_splashScreen;
+		private string m_Sync = string.Empty;
 		internal EventWaitHandle m_waitHandle;
 		private bool m_showBuildNum = false;
 		private bool m_isBetaVersion = false;
@@ -211,8 +217,7 @@ namespace SIL.SpeechTools.Utils
 			// For some reason we have to specify a stack size, otherwise we get a stack overflow. 
 			// The default stack size of 1MB works on WinXP. Needs to be 2MB on Win2K.
 			// Don't know what value it's using if we don't specify it.
-			m_thread = new Thread(StartSplashScreen, 0x200000);
-			m_thread.CurrentUICulture = Thread.CurrentThread.CurrentUICulture;
+			m_thread = new Thread(new ThreadStart(StartSplashScreen), 0x200000);
 			m_thread.IsBackground = true;
 			m_thread.SetApartmentState(ApartmentState.STA);
 			m_thread.Name = "SplashScreen";

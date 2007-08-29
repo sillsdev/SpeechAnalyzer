@@ -1,7 +1,10 @@
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Drawing2D;
+using System.Data;
+using System.Text;
 using System.Windows.Forms;
 
 namespace SIL.SpeechTools.Utils
@@ -35,12 +38,12 @@ namespace SIL.SpeechTools.Utils
 		public SilPopup()
 		{
 			InitializeComponent();
-			base.DoubleBuffered = true;
+			DoubleBuffered = true;
 
 			if (DesignMode)
 				return;
 
-			base.Dock = DockStyle.Fill;
+			Dock = DockStyle.Fill;
 			
 			m_host = new ToolStripControlHost(this);
 			m_host.Padding = Padding.Empty;
@@ -55,9 +58,9 @@ namespace SIL.SpeechTools.Utils
 			m_owningDropDown.LayoutStyle = ToolStripLayoutStyle.Table;
 			m_owningDropDown.Size = Size;
 			m_owningDropDown.Items.Add(m_host);
-			m_owningDropDown.VisibleChanged += m_owningDropDown_VisibleChanged;
+			m_owningDropDown.VisibleChanged += new EventHandler(m_owningDropDown_VisibleChanged);
 
-			Disposed += SilPopup_Disposed;
+			Disposed += new EventHandler(SilPopup_Disposed);
 		}
 
 		/// ------------------------------------------------------------------------------------
@@ -184,7 +187,7 @@ namespace SIL.SpeechTools.Utils
 			if (m_timer == null)
 			{
 				m_timer = new Timer();
-				m_timer.Tick += m_timer_Tick;
+				m_timer.Tick += new EventHandler(m_timer_Tick);
 			}
 
 			m_timer.Interval = 1;
@@ -247,6 +250,8 @@ namespace SIL.SpeechTools.Utils
 		/// ------------------------------------------------------------------------------------
 		public void PaintBodyBackground(Graphics g)
 		{
+			Rectangle rc = ClientRectangle;
+
 			using (SolidBrush brWhite = new SolidBrush(kBodyLightColor))
 			using (LinearGradientBrush br = new LinearGradientBrush(ClientRectangle,
 				kBodyDarkColor,	kBodyLightColor, 0f))

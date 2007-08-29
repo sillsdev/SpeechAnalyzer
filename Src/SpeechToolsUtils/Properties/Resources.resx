@@ -209,11 +209,4 @@ What would you like to do?</value>
   <data name="kstidCnvtrGridFontHdg" xml:space="preserve">
     <value>Legacy Font</value>
   </data>
-  <data name="kstidInvalidMusicXMLFile" xml:space="preserve">
-    <value>'{0}' is not a valid MusicXML file.\n\nFile will not be loaded.</value>
-  </data>
-  <data name="kstidMusicXMLValidationErrMsg" xml:space="preserve">
-    <value>The following errors were encountered while validating {0}:\n\n{1}</value>
-    <comment>First parameter is music XML file name; second parameter is the error message.</comment>
-  </data>
 </root>

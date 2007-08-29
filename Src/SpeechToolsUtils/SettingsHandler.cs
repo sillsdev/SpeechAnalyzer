@@ -1,8 +1,14 @@
+using System;
+using System.Reflection;
+using System.Resources;
+using System.Xml;
+using System.Data.OleDb;
+using System.IO;
+using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Globalization;
 using System.Windows.Forms;
-using System.Xml;
+using System.Diagnostics;
 
 namespace SIL.SpeechTools.Utils
 {
@@ -15,10 +21,10 @@ namespace SIL.SpeechTools.Utils
 	{
 		protected const string kRootNodeName = "settings";
 		protected const string kMiscSettingsNode = kRootNodeName + "/misc";
+		private const string kLastPrjNode = kMiscSettingsNode + "/lastproject";
 		private const string kGridsNode = kRootNodeName + "/grids";
 		private const string kWindowStatesNode = kRootNodeName + "/windowstates";
 
-		private readonly float m_currSystemDpi = 0;
 		protected string m_settingsFile;
 		protected XmlDocument m_xmlDoc;
 
@@ -44,10 +50,6 @@ namespace SIL.SpeechTools.Utils
 			{
 				CreateNewSettingsFile();
 			}
-
-			using (Form frm = new Form())
-			using (Graphics g = frm.CreateGraphics())
-				m_currSystemDpi = g.DpiX;
 		}
 
 		/// ------------------------------------------------------------------------------------
@@ -77,8 +79,18 @@ namespace SIL.SpeechTools.Utils
 		/// ------------------------------------------------------------------------------------
 		public string LastProject
 		{
-			get { return GetStringSettingsValue("lastproject", "path", null); }
-			set { SaveSettingsValue("lastproject", "path", value); }
+			set {SetStringValue(kLastPrjNode, "path", value);}
+			get
+			{
+				if (m_xmlDoc == null)
+					return null;
+
+				XmlNode node = m_xmlDoc.SelectSingleNode(kLastPrjNode);
+				if (node == null)
+					return null;
+
+				return XMLHelper.GetAttributeValue(node, "path");
+			}
 		}
 		
 		#endregion
@@ -124,9 +136,6 @@ namespace SIL.SpeechTools.Utils
 				element.SetAttribute("height", frm.Height.ToString());
 			}
 
-			// Save the system's dpi setting with the form's settings.
-			element.SetAttribute("dpi", m_currSystemDpi.ToString());
-
 			node.AppendChild(element);
 			m_xmlDoc.Save(m_settingsFile);
 		}
@@ -148,20 +157,10 @@ namespace SIL.SpeechTools.Utils
 			if (node == null) 
 				return false;
 
-			string sdpi = XMLHelper.GetAttributeValue(node, "dpi");
-			float dpi;
-			if (!float.TryParse(sdpi, out dpi))
-				dpi = 0;
-
-			// Only set the form's size and location if the dpi setting now is
-			// the same as it was the last time the form's settings were saved.
-			if (dpi == m_currSystemDpi)
-			{
-				frm.Height = XMLHelper.GetIntFromAttribute(node, "height", frm.Height);
-				frm.Width = XMLHelper.GetIntFromAttribute(node, "width", frm.Width);
-				frm.Top = XMLHelper.GetIntFromAttribute(node, "top", frm.Top);
-				frm.Left = XMLHelper.GetIntFromAttribute(node, "left", frm.Left);
-			}
+			frm.Height = XMLHelper.GetIntFromAttribute(node, "height", frm.Height);
+			frm.Width = XMLHelper.GetIntFromAttribute(node, "width", frm.Width);
+			frm.Top = XMLHelper.GetIntFromAttribute(node, "top", frm.Top);
+			frm.Left = XMLHelper.GetIntFromAttribute(node, "left", frm.Left);
 
 			frm.WindowState = (XMLHelper.GetAttributeValue(node, "state") == "Maximized" ?
 				FormWindowState.Maximized :	frm.WindowState = FormWindowState.Normal);
@@ -189,7 +188,6 @@ namespace SIL.SpeechTools.Utils
 		/// Saves properties of the specified grid.
 		/// </summary>
 		/// <param name="grid">Grid for which settings are being saved</param>
-		/// <param name="gridLinesValue"></param>
 		/// <returns>True on success</returns>
 		/// ------------------------------------------------------------------------------------
 		public void SaveGridProperties(DataGridView grid, string gridLinesValue)
@@ -209,7 +207,6 @@ namespace SIL.SpeechTools.Utils
 			XmlElement gridElement = m_xmlDoc.CreateElement("grid");
 			gridElement.SetAttribute("id", grid.Name);
 			gridElement.SetAttribute("colheaderheight", grid.ColumnHeadersHeight.ToString());
-			gridElement.SetAttribute("dpi", m_currSystemDpi.ToString());
 			if (gridLinesValue != null)
 				gridElement.SetAttribute("lines", gridLinesValue);
 			
@@ -276,46 +273,35 @@ namespace SIL.SpeechTools.Utils
 			// Get the cell border style.
 			gridLinesValue = XMLHelper.GetAttributeValue(node, "lines");
 
-			// Get the column header height and dpi setting
-			// when the grid's settings were last saved.
+			// Get the column header height. If it's not there, then auto. calculate it.
 			int colHdrHeight = XMLHelper.GetIntFromAttribute(node, "colheaderheight", -1);
-			string sdpi = XMLHelper.GetAttributeValue(node, "dpi");
-			float dpi;
-			if (!float.TryParse(sdpi, out dpi))
-				dpi = 0;
+			if (colHdrHeight == -1)
+				grid.AutoResizeColumnHeadersHeight();
+			else
+				grid.ColumnHeadersHeight = colHdrHeight;
 
 			// Get each column's properties.
 			node = node.FirstChild;
 			while (node != null)
 			{
-				if (node.NodeType != XmlNodeType.Comment)
+				try
 				{
-					try
-					{
-						string id = XMLHelper.GetAttributeValue(node, "id");
-						grid.Columns[id].Visible = XMLHelper.GetBoolFromAttribute(node, "visible", true);
+					string id = XMLHelper.GetAttributeValue(node, "id");
+					grid.Columns[id].Visible = XMLHelper.GetBoolFromAttribute(node, "visible", true);
 
-						int width = XMLHelper.GetIntFromAttribute(node, "width", -1);
-						if (width > -1)
-							grid.Columns[id].Width = width;
+					int width = XMLHelper.GetIntFromAttribute(node, "width", -1);
+					if (width > -1)
+						grid.Columns[id].Width = width;
 
-						int displayIndex = XMLHelper.GetIntFromAttribute(node, "displayindex", -1);
-						if (displayIndex > -1)
-							grid.Columns[id].DisplayIndex = displayIndex;
-					}
-					catch { }
+					int displayIndex = XMLHelper.GetIntFromAttribute(node, "displayindex", -1);
+					if (displayIndex > -1)
+						grid.Columns[id].DisplayIndex = displayIndex;
 				}
+				catch {}
 
 				node = node.NextSibling;
 			}
-
-			// If the column header height or the former dpi settings are different,
-			// then auto. calculate the heigh of the column headings.
-			if (colHdrHeight == -1 || dpi != m_currSystemDpi)
-				grid.AutoResizeColumnHeadersHeight();
-			else
-				grid.ColumnHeadersHeight = colHdrHeight;
-
+			
 			return true;
 		}
 
@@ -386,8 +372,7 @@ namespace SIL.SpeechTools.Utils
 
 			try
 			{
-				if (sClrVal != null)
-					return Color.FromArgb(int.Parse(sClrVal, NumberStyles.AllowHexSpecifier));
+				return Color.FromArgb(int.Parse(sClrVal, System.Globalization.NumberStyles.AllowHexSpecifier));
 			}
 			catch { }
 
@@ -520,7 +505,7 @@ namespace SIL.SpeechTools.Utils
 		public string GetStringValue(string xPath, string id, string property, string defaultValue)
 		{
 			string retVal = GetValue(xPath, id, property);
-			return (retVal ?? defaultValue);
+			return (retVal == null ? defaultValue : retVal);
 		}
 
 		/// ------------------------------------------------------------------------------------
@@ -571,12 +556,9 @@ namespace SIL.SpeechTools.Utils
 
 				while (node != null)
 				{
-					if (node.NodeType != XmlNodeType.Comment)
-					{
-						XmlAttribute attrib = node.Attributes["id"];
-						if (attrib != null && attrib.Value == id)
-							return node;
-					}
+					XmlAttribute attrib = node.Attributes["id"];
+					if (attrib != null && attrib.Value == id)
+						return node;
 
 					node = node.NextSibling;
 				}
@@ -604,6 +586,8 @@ namespace SIL.SpeechTools.Utils
 		/// <summary>
 		/// Only works if xpath is unique
 		/// </summary>
+		/// <param name="xpath"></param>
+		/// <param name="val"></param>
 		/// ------------------------------------------------------------------------------------
 		protected void SetStringValue(string xpath, string attribute, string val)
 		{
@@ -661,21 +645,17 @@ namespace SIL.SpeechTools.Utils
 				{
 					// Save what's to the right of the slash.
 					childPath = xpath.Substring(i + 1);
-
+					
 					// Get the node associated with the path to the left of the slash.
 					node = VerifyNodeExists(xpath.Substring(0, i + 1));
 				}
 
 				XmlElement element = m_xmlDoc.CreateElement(childPath);
-
-				if (node != null)
-				{
-					node.AppendChild(element);
-					node = m_xmlDoc.SelectSingleNode(xpath);
-					m_xmlDoc.Save(m_settingsFile);
-				}
+				node.AppendChild(element);
+				node = m_xmlDoc.SelectSingleNode(xpath);
+				m_xmlDoc.Save(m_settingsFile);
 			}
-
+			
 			return node;
 		}
 

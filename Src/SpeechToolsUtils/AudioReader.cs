@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.Text;
 using System.IO;
 using System.Security.Cryptography;
-using System.Text;
 using System.Windows.Forms;
 using SilEncConverters22;
 
@@ -506,7 +506,7 @@ namespace SIL.SpeechTools.Utils
 			{
 				// Find the SA chunk, skipping over the chunk size and read the SA version.
 				m_stream.Position = GetChunkOffset(m_stream, kidSAChunk) + 8;
-				m_reader.ReadSingle(); // skip the RIFF version
+				float riffVer = m_reader.ReadSingle(); // skip the RIFF version
 
 				// Get SA description.
 				string saDesc = new string(Encoding.ASCII.GetChars(m_reader.ReadBytes(256)));
