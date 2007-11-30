@@ -300,7 +300,7 @@ void CPlotPOA::OnDraw(CDC * pDC, CRect rWnd, CRect /*rClip*/, CSaView * pView)
       int nRowPitch = nCharHeight + nRowSpacing;
       int nRowX = nLeftMargin + nImageWidth;
       int nRowY = nRowPitch;
-      for (i = 0; i < (UINT)nRows - 1; i++, nRowY += nRowPitch)    //left column
+      for (int i = 0; i < (UINT)nRows - 1; i++, nRowY += nRowPitch)    //left column
       {
         if (i == 0) _stprintf(szText, _T("  Lips:  %6.2f"), pVocalTract->dNormCrossSectArea[i]);
         else _stprintf(szText, _T("         %6.2f"), pVocalTract->dNormCrossSectArea[i]);
@@ -316,7 +316,7 @@ void CPlotPOA::OnDraw(CDC * pDC, CRect rWnd, CRect /*rClip*/, CSaView * pView)
       int nRowXEnd = nRowX + rText.Width();
       pDC->DrawText(szText, -1, rText, DT_SINGLELINE | DT_TOP | DT_RIGHT | DT_NOCLIP);
       nRowY = 0;
-      for (i = 0; i < (UINT)nRows - 1; i++, nRowY += nRowPitch)    //right column
+      for (int i = 0; i < (UINT)nRows - 1; i++, nRowY += nRowPitch)    //right column
       {
         _stprintf(szText, _T("         %6.2f"), pVocalTract->dNormCrossSectArea[i + nRows - 1]);
         //rText.SetRect(nWndWidth - strlen(szText)*TextMetric.tmMaxCharWidth, (nCharHeight+nRowSpacing)*i, 100, 10);
@@ -416,6 +416,7 @@ void CPlotPOA::EndAnimation()
   m_bShowModelData = TRUE;
   CPlotWnd::StandardEndAnimation();
 }
+
 
 
 

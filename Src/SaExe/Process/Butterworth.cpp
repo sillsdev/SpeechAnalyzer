@@ -691,7 +691,7 @@ CHilbert::CHilbert(CDataProcess * pSourceProcess, BOOL bWBenchProcess)
   }
   Forward() *= DelayHalf(); // Introduce a single clock delay
 
-  for(i=(poleLast+1)&0x1; i < poleLast; i+=2)
+  for(int i=(poleLast+1)&0x1; i < poleLast; i+=2)
   {
     double rlp;
 

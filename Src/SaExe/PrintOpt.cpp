@@ -233,7 +233,8 @@ void CPrintOptionsDlg::OnOK()
   m_NumGraphsSelected = m_listBoxGraphsToPrint.GetSelCount();
   m_listBoxGraphsToPrint.GetSelItems(m_NumGraphsSelected, m_selections);
 
-  for (int i = 0; i < MAX_GRAPHS_NUMBER; i++)
+  int i;
+  for (i = 0; i < MAX_GRAPHS_NUMBER; i++)
   {
     m_bIsGraphSelected[i] = FALSE;
   }

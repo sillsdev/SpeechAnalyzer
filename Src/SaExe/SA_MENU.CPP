@@ -121,7 +121,7 @@ void CLayoutListBox::SelectLayoutWithCount(int number)
 /***************************************************************************/
 // CLayoutListBox::GetLayoutFromSelection get layout ID from selection index
 /***************************************************************************/
-CLayoutListBox::GetLayoutFromSelection(int nIndex)
+int CLayoutListBox::GetLayoutFromSelection(int nIndex)
 {
   const int one[] = { ID_LAYOUT_1,0 };
   const int two[] = { ID_LAYOUT_2A,ID_LAYOUT_2B,ID_LAYOUT_2C,0 };
@@ -351,4 +351,5 @@ static void DrawLayoutItem(LPDRAWITEMSTRUCT lpDIS, BOOL bMenu)
   pDC->SetTextColor(oldTextColor);
   pDC->SetBkMode(nOldBkMode);
 }
+
 

@@ -977,7 +977,7 @@ void CDlgKlattAll::LabelGrid(int nGrid)
     
     const PARAMETER_DESC *parameterInfo = GetTemporalKlattDesc();
     
-    for(register i=0;parameterInfo[i].parameterOffset != -1; i++)
+    for(register int i=0;parameterInfo[i].parameterOffset != -1; i++)
     {
       int row = i+rowParameters;
       
@@ -1927,7 +1927,7 @@ static void WeighChars(CIpaChar &cPrev, CIpaChar &cNext, double dWeight, CIpaCha
 #define WeighParameter(P) ((cThis. ## P) = ((cPrev. ## P)*dWeight + (cNext. ## P)*(1 - dWeight)))
 
   // For dB we are going to weieght based on power.... 
-#define WeighParameterDB(P) ((cThis. ## P) = 10*log(10)*log(exp((cPrev. ## P)/10/log(10.))*dWeight + exp((cNext. ## P)/10/log(10.))*(1 - dWeight)))
+#define WeighParameterDB(P) ((cThis. ## P) = 10*log(10.F)*log(exp((cPrev. ## P)/10/log(10.F))*dWeight + exp((cNext. ## P)/10/log(10.F))*(1 - dWeight)))
 
 //WeighParameter(parameters.F0);
 WeighParameterDB(parameters.AV);
@@ -1992,11 +1992,11 @@ static void Interpolate(CIpaCharVector &cInterpolated, int nPrevious, double dBr
     breakTime += cInterpolated[nLocation].duration;
 
   double endTime = 0;
-  for(nLocation = nPrevious; nLocation < nNext; nLocation++)
+  for(int nLocation = nPrevious; nLocation < nNext; nLocation++)
     endTime += cInterpolated[nLocation].duration;
 
   double time = 0;
-  for(nLocation = nPrevious + 1; nLocation < nNext; nLocation++)
+  for(int nLocation = nPrevious + 1; nLocation < nNext; nLocation++)
   {
     time += cInterpolated[nLocation].duration/2.;
     double dWeight = InterpolateWeight(time, breakTime, endTime);
@@ -2067,7 +2067,7 @@ void CDlgKlattAll::OnKlattBlendSegments(int nSrc, CFlexEditGrid &cGrid)
       cInterpolated.push_back(newValue);
       
       newValue.duration = dLength/int(dLength/spkrDef.UI);
-      for(replicas = int(dLength/spkrDef.UI); replicas > 0; replicas--)
+      for(int replicas = int(dLength/spkrDef.UI); replicas > 0; replicas--)
       {
         cInterpolated.push_back(newValue);
       }
@@ -2078,7 +2078,7 @@ void CDlgKlattAll::OnKlattBlendSegments(int nSrc, CFlexEditGrid &cGrid)
   int nLastMarker = 0;
   double dBreakPoint= 0;
   CString szPrevious;
-  for(nIndex = 0; nIndex < cInterpolated.size(); nIndex++)
+  for(unsigned int nIndex = 0; nIndex < cInterpolated.size(); nIndex++)
   {
     if(szPrevious != cInterpolated[nIndex].ipa)
     {
@@ -2148,7 +2148,7 @@ void CDlgKlattAll::OnKlattBlendSegments(int nSrc, CFlexEditGrid &cGrid)
     fSizeFactor[PITCH] /= pDoc->GetBytesFromTime(0.001);
     
     // construct table entries
-    for(nIndex = 0; nIndex < cInterpolated.size(); nIndex++)
+    for(unsigned int nIndex = 0; nIndex < cInterpolated.size(); nIndex++)
     {
       if(bPitch && cInterpolated[nIndex].duration)
       {
@@ -2270,7 +2270,7 @@ void CDlgKlattAll::OnSmoothe(void)
 {
 	//long columnLast = m_cGrid[m_nSelectedView].GetCols(0);
 	
-	for(register cRow = rowF0; cRow<rowA8V; ++cRow)
+	for(register int cRow = rowF0; cRow<rowA8V; ++cRow)
 	{
 		CString szData = m_cGrid[m_nSelectedView].SaveRange(cRow, columnFirst, cRow+1, m_cGrid[m_nSelectedView].GetCols(0), TRUE);
 		if(!szData.GetLength())
@@ -2687,4 +2687,5 @@ void CDlgKlattAll::OnUpdateSynthHide(CCmdUI* pCmdUI)
 {
 	pCmdUI->SetCheck(m_bMinimize);	
 }
+
 

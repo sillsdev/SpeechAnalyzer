@@ -127,7 +127,7 @@ protected:
   virtual void Write( const void* lpBuf, UINT nCount ) { m_pFile->Write(lpBuf, nCount);}
 
   // Special case used to bypass file
-  virtual SetDataSize(int nElements, size_t nElementSize = 1) { m_fileStatus.m_size = nElements * nElementSize;}
+  virtual void SetDataSize(int nElements, size_t nElementSize = 1) { m_fileStatus.m_size = nElements * nElementSize;}
 
 //Implementation
 private:

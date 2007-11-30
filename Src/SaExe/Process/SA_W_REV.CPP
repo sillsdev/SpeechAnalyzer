@@ -146,7 +146,7 @@ long CProcessWbEcho::Process(void* pCaller, ISaDoc* pDoc, int nProgress,
   {
     pFifo[dwFifoIndex] = 0;
   }
-  dwFifoIndex = 0;
+  DWORD dwFifoIndex = 0;
   // start processing loop
   while (dwDataPos < dwDataSize)
   {
@@ -433,7 +433,8 @@ long CProcessWbReverb::Process(void* pCaller, ISaDoc* pDoc, int nProgress,
   }
   // initialize fifo with silence
   short int * pFifo = (short int *)lpFifo;
-  for (DWORD dwFifoIndex = 0; dwFifoIndex < dwFifoSize; dwFifoIndex++)
+  DWORD dwFifoIndex;
+  for (dwFifoIndex = 0; dwFifoIndex < dwFifoSize; dwFifoIndex++)
   {
     pFifo[dwFifoIndex] = 0;
   }
@@ -598,6 +599,7 @@ BOOL CProcessWbReverb::bReadProperties(Object_istream& obs)
   if ((nDelay != m_nDelay) || (nGain != m_nGain)) SetDataInvalid();
   return TRUE;
 }
+
 
 
 

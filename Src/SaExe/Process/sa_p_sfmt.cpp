@@ -179,7 +179,8 @@ long CProcessSpectroFormants::ExtractFormants(ISaDoc *pDoc, DWORD dwWaveDataStar
         BOOL bVoiced = TRUE, bFricative = FALSE;
         DWORD dwVoicedFragStart = (DWORD)UNDEFINED_DATA;
         
-        for (DWORD dwFragmentIndex = dwFirstFragment; dwFragmentIndex <= dwLastFragment; dwFragmentIndex++)
+        DWORD dwFragmentIndex;
+		for (dwFragmentIndex = dwFirstFragment; dwFragmentIndex <= dwLastFragment; dwFragmentIndex++)
         { 
           int nMyProgress = int(100*double(dwFragmentIndex - dwFirstFragment)/(dwLastFragment - dwFirstFragment));
           SetProgress(nMyProgress);
@@ -257,7 +258,7 @@ long CProcessSpectroFormants::ExtractFormants(ISaDoc *pDoc, DWORD dwWaveDataStar
                 CString Annot = pSegments->GetSegmentString(nSegment);
                 fprintf(hDump, "\t%s", nSegment < 0 ? " " : (LPCTSTR)Annot);
 #endif
-                for (nFormant = 0; nFormant <= MAX_NUM_FORMANTS; nFormant++)
+                for (USHORT nFormant = 0; nFormant <= MAX_NUM_FORMANTS; nFormant++)
                 {
                   FormantFreq.F[nFormant] = pFormantFrame->Formant[nFormant].Lpc.FrequencyInHertz;
 #ifdef DUMP_FORMANT_TRACKS
@@ -357,7 +358,7 @@ long CProcessSpectroFormants::ExtractFormants(ISaDoc *pDoc, DWORD dwWaveDataStar
                 int nSegment = pSegments->FindFromPosition(FragmentParm.dwOffset*nSmpSize, bWithin);
                 fprintf(hDump, "\t%s", nSegment < 0 ? " " : (LPCTSTR)pSegments->GetSegmentString(nSegment));
 #endif
-                for (nFormant = 0; nFormant <= MAX_NUM_FORMANTS; nFormant++)
+                for (USHORT nFormant = 0; nFormant <= MAX_NUM_FORMANTS; nFormant++)
                 {
                   FormantFreq.F[nFormant] = pFormantFrame->Formant[nFormant].Lpc.FrequencyInHertz;
 #ifdef DUMP_FORMANT_TRACKS
@@ -439,4 +440,5 @@ BOOL CProcessSpectroFormants::AreFormantTracksReady()
   if (IsCanceled()) return FALSE;
   return IsDataReady();
 }
+
 

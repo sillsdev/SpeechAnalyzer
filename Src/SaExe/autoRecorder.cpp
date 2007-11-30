@@ -1156,7 +1156,7 @@ BOOL CDlgAutoRecorder::OnAssignOverlay(CSaView *pSourceView)
   pSourceView->OnGraphsTypesPostProcess(graphIDs);
 
   BOOL bFound = FALSE;
-  for(i=0; i<MAX_GRAPHS_NUMBER; i++)
+  for(int i=0; i<MAX_GRAPHS_NUMBER; i++)
   {
     CGraphWnd *pGraph = pView->GetGraph(i);
     if (pGraph && CGraphWnd::IsMergeableGraph(pGraph))

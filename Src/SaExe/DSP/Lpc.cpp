@@ -723,7 +723,7 @@ void CLinPredCoding::ApplyWindow()
   }
 
   double scale = sqrt(dTotalInput/dTotalWindow);
-  for (i = 0; i < m_LpcParm.Model.nFrameLen; i++) 
+  for (USHORT i = 0; i < m_LpcParm.Model.nFrameLen; i++) 
   {
     double value = m_LpcParm.Model.pFrameBfr[i] * Window[i];
     m_LpcParm.Model.pWinFrameBfr[i] = (short) Round(value * scale);
@@ -739,7 +739,7 @@ void CLinPredCoding::RemoveDcBias()
  for (USHORT i = 0; i < m_LpcParm.Model.nFrameLen; i++) 
       dSum += (double)m_LpcParm.Model.pFrameBfr[i];
  double dAverage = (double)(dSum / (double)m_LpcParm.Model.nFrameLen);
- for (i = 0; i < m_LpcParm.Model.nFrameLen; i++)
+ for (USHORT i = 0; i < m_LpcParm.Model.nFrameLen; i++)
  { 
    double dData = Round((double)m_LpcParm.Model.pFrameBfr[i] - dAverage);
    if (dData > 32767.) dData = 32767.;
@@ -1133,10 +1133,10 @@ void CLinPredCoding::CalcReflCoeff(void)
       m_LpcParm.Model.pReflCoeff[i-1] = -ki;  // reflection coefficient is negative of ki (PARCOR)
       m_LpcParm.Model.pPredCoeff[i] = ki;
 
-      for(j = 1; j <= i; j++)
+      for(int j = 1; j <= i; j++)
         m_LpcParm.pScratchArray[j-1] = m_LpcParm.Model.pPredCoeff[j];
 
-      for(j = 1; j < i; j++)
+      for(int j = 1; j < i; j++)
         m_LpcParm.Model.pPredCoeff[j] = m_LpcParm.pScratchArray[j-1] - ki*m_LpcParm.pScratchArray[i-j-1];
 
       e *= (1 - ki*ki);
@@ -1147,11 +1147,11 @@ void CLinPredCoding::CalcReflCoeff(void)
     m_LpcParm.Model.nPredCoeffs = (USHORT)(m_LpcParm.Model.nOrder + 1);
     
     m_LpcParm.Model.pLpcCoeff[0] = 1.;
-    for (i = 1; i < m_LpcParm.Model.nLpcCoeffs; i++) 
+    for (int i = 1; i < m_LpcParm.Model.nLpcCoeffs; i++) 
       m_LpcParm.Model.pLpcCoeff[i] = -m_LpcParm.Model.pPredCoeff[i];
     
     m_LpcParm.Model.dGain = m_LpcParm.ppCovarMatrix[0][0];
-    for( i=1; i<=m_LpcParm.Model.nOrder; i++)
+    for (int i = 1; i <= m_LpcParm.Model.nOrder; i++)
       m_LpcParm.Model.dGain -= m_LpcParm.Model.pPredCoeff[i]*m_LpcParm.ppCovarMatrix[0][i];
 
     m_LpcParm.Model.dGain = sqrt(m_LpcParm.Model.dGain);
@@ -1466,10 +1466,10 @@ void CLinPredCoding::CalcFormants(void)
     vector<FORMANT_ASSESSMENT> assessment;  
     assessment.assign(unfilteredFormants.size(),defaultAssessment);
     
-    const maxK = m_wFFTLength/2 -1;
+    const int maxK = m_wFFTLength/2 -1;
     USHORT deltaK = (USHORT)Round((double)50/((double)m_Signal.SmpRate/(double)m_wFFTLength));
     
-    for(i = 0; i < unfilteredFormants.size(); i++)
+    for(USHORT i = 0; i < unfilteredFormants.size(); i++)
     {
       assessment[i].index = i; // save index so later we can sort and keep track of original data
       
@@ -1504,7 +1504,7 @@ void CLinPredCoding::CalcFormants(void)
     double dUpperFrequency = 0;
     ULONG nLowerIndex = 0;
     ULONG nUpperIndex = 0;
-    for(i = 0; i < unfilteredFormants.size(); i++)
+    for(USHORT i = 0; i < unfilteredFormants.size(); i++)
     {
       FORMANT_VALUES &formant = unfilteredFormants[i];
       while (dUpperFrequency < formant.FrequencyInHertz + 2500)
@@ -1533,7 +1533,7 @@ void CLinPredCoding::CalcFormants(void)
 
     int nDesiredFormants = int(Round(m_Signal.SmpRate/2000.));
     
-    for(i = 0; i < nDesiredFormants && i < assessment.size(); i++)
+    for(USHORT i = 0; i < nDesiredFormants && i < assessment.size(); i++)
     {
       FORMANT_ASSESSMENT &assess = assessment[i];
       FORMANT_VALUES &formant = unfilteredFormants[assess.index];
@@ -1548,7 +1548,7 @@ void CLinPredCoding::CalcFormants(void)
   sort(&m_LpcParm.Model.Formant[1],&m_LpcParm.Model.Formant[j], frequencyLess);
   
   // Clear out the rest of the formant array.
-  for (i = (USHORT)(m_LpcParm.Model.nFormants + 1); i <= nMaxFormants; i++) 
+  for (USHORT i = (USHORT)(m_LpcParm.Model.nFormants + 1); i <= nMaxFormants; i++) 
   {
     m_LpcParm.Model.Formant[i].FrequencyInHertz = (float)UNDEFINED_DATA;     
     m_LpcParm.Model.Formant[i].BandwidthInHertz = (float)UNDEFINED_DATA;     
@@ -1705,7 +1705,8 @@ void CLinPredCoding::CalcPowerSpectrum(void)
  // the model to 0.
  LpcCoeff[0] = (float)m_LpcParm.Model.pPredCoeff[0];
  float fRadius = m_LpcParm.fFFTRadius;
- for (USHORT i = 1; i <= m_LpcParm.Model.nOrder; i++) 
+ USHORT i;
+ for (i = 1; i <= m_LpcParm.Model.nOrder; i++) 
      { 
        LpcCoeff[i] = -(float)m_LpcParm.Model.pPredCoeff[i] / fRadius;
        fRadius *= m_LpcParm.fFFTRadius;  // pre-condition to sharpen peaks
@@ -1811,7 +1812,9 @@ dspError_t CLinPredCoding::GetPowerSpectrum(USHORT wSpectLength, int nScaleSelec
  double    dPower = 0.;
  double    dAccumPower = dPower;
  
- for (short i = 0, j = 0; i < (short)m_LpcParm.Model.nSpectValues; i++)
+ short j = 0;
+ short i;
+ for (i = 0; i < (short)m_LpcParm.Model.nSpectValues; i++)
      {
       dAccumPower += m_LpcParm.Model.pPwrSpectrum[i];         
       dFFTFreq += dFFTScale;

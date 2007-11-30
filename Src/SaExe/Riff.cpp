@@ -117,7 +117,7 @@ BOOL CRiff::NewWav(const TCHAR *pszPathName, PCMWAVEFORMAT &pcm, const TCHAR *sz
     try
     {
       pFile = new CFile(szRawDataPath, CFile::modeRead);
-      const BUFFER_SIZE =4096;
+      const int BUFFER_SIZE =4096;
       pCopyBuf = new char [BUFFER_SIZE];
 
       long nBytesRead = 0;
@@ -180,4 +180,5 @@ BOOL CRiff::NewWav(const TCHAR *pszPathName, PCMWAVEFORMAT &pcm, const TCHAR *sz
 
   return TRUE;
 }
+
 

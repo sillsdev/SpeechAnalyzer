@@ -26,7 +26,7 @@ private:
   HPSTR   m_lpDataY;         // pointer to Z-graph data
   HANDLE  m_hDataSym;        // needed to get m_lpDataSym
   HPSTR   m_lpDataSym;       // pointer to Z-graph data
-  const m_nIndexSDP;
+  const int m_nIndexSDP;
 
   // Operations
 private:

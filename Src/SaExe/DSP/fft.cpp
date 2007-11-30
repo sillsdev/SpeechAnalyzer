@@ -152,9 +152,10 @@ static const uint32 reverse6bits[] =
 inline static uint32 reverseBits(uint32 value, uint32 maxValue)
 {
   uint32 returnValue = 0;
-  const mask = 0x3f;  // 6bits
+  const int mask = 0x3f;  // 6bits
   
-  for(uint32 test = 1; test < maxValue; test = test << 6)
+  uint32 test;
+  for(test = 1; test < maxValue; test = test << 6)
   {
     returnValue = (returnValue << 6) + reverse6bits[value&mask];
     value = value >> 6;
@@ -259,13 +260,13 @@ extern "C" int32 slowrfft2f(float *pfarray, int32 n, int32 idir)
   if(idir == FORWARD)
   {
     // copy real data to complex array
-    for(int32 i=0;i<n;i++)
+	for(int32 i=0;i<n;i++)
     {
       data[i] = pfarray[i];
     }
     cfft2f(data, n, idir);
     // copy complex coeffiecients to real cos, sin coeeficients
-    for(i=0;i<n;i++)
+    for(int32 i=0;i<n;i++)
     {
       pfarray[i] = floatData[i] * 2.0f;
     }
@@ -274,7 +275,7 @@ extern "C" int32 slowrfft2f(float *pfarray, int32 n, int32 idir)
   }
   else
   {
-    // copy real data to complex array
+	// copy real data to complex array
     for(int32 i=0;i<n;i++)
     {
       floatData[i] = pfarray[i]/2.0f;
@@ -283,13 +284,13 @@ extern "C" int32 slowrfft2f(float *pfarray, int32 n, int32 idir)
     floatData[n] = pfarray[1]/2.0f;  // this is the nyquist term
     floatData[n+1] = 0; // the imaginary nyquist term is 0
     // the remaining terms are the complex conjugate of the previous terms
-    for(i=1;i<n/2;i++)
+    for(int32 i=1;i<n/2;i++)
     {
       data[n-i] = data[i].conjugate();
     }
     cfft2f(data, n, idir);
     // copy complex coeffiecients to real cos, sin coeeficients
-    for(i=0;i<n;i++)
+    for(int32 i=0;i<n;i++)
     {
       pfarray[i] = data[i].real;
     }

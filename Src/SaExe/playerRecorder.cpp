@@ -248,9 +248,9 @@ CDlgPlayer::~CDlgPlayer()
 /***************************************************************************/
 // CDlgPlayer::Create Creation
 /***************************************************************************/
-CDlgPlayer::Create()
+int CDlgPlayer::Create()
 {
-  bPlayer = TRUE; // player launched
+  int bPlayer = TRUE; // player launched
   return CDialog::Create(CDlgPlayer::IDD);
 }
 
@@ -3065,4 +3065,5 @@ void CDlgFnKeys::OnHelpFnKeys()
 	szPath += "::/User_Interface/Menus/Playback/Playback_Function_Keys_Setup.htm";
 	::HtmlHelp(NULL, szPath, HH_DISPLAY_TOPIC, NULL);
 }
+
 

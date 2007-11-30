@@ -418,7 +418,7 @@ void CSASelfTest::SelfTest()
 		CFile OutputFile(szFileName,CFile::modeCreate|CFile::modeWrite);
 		OutputFile.Write(&pData->dErrorRatio,sizeof(pData->dErrorRatio));
 		OutputFile.Write(&pData->nNormCrossSectAreas,sizeof(pData->nNormCrossSectAreas));
-		for(register i=0;i<pData->nNormCrossSectAreas;++i)
+		for(register int i=0;i<pData->nNormCrossSectAreas;++i)
 			OutputFile.Write(&pData->dNormCrossSectArea[i],sizeof(double));
 		OutputFile.Flush();
 		OutputFile.Close();

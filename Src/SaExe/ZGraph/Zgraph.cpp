@@ -1167,7 +1167,7 @@ void zGraph::zDraw3DGrid()
   //
   // Draw In the Individual Horizontal Grid Segments
   //
-  for (i = 0; i < x_axis_divisions; i++)
+  for (INT i = 0; i < x_axis_divisions; i++)
   {
     INT x_offset_1 = X_LEFT + zRound(z3D_GRID_X_SLANT_OFFSET * i / x_axis_divisions);
     INT x_offset_2 = x_offset_1 + GridWidth;
@@ -2022,7 +2022,7 @@ void zGraph::zDrawLegend(BOOL UseColorFills /* = TRUE */)
    }
 
    // Now Draw In the Text For Each Legend String
-   for (index = 0; (index < zMAX_DATA_SETS)
+   for (INT index = 0; (index < zMAX_DATA_SETS)
      && (index < num_sets);  index++)
    {
      // Get This Legend Title
@@ -2629,4 +2629,5 @@ void zGraph::zFillBkgWithGradedColor()
 
 
 // EOF -- ZGRAPH.CPP
+
 

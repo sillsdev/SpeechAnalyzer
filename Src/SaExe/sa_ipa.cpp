@@ -426,7 +426,8 @@ CString CFontTableIPA::GetNext(tUnit nInUnits, int &nIndex, const CString& szStr
         BOOL bAppendPrefix = TRUE;
         
         int nIndependent = 0;
-        for(int nWrkIndex = nIndex; nWrkIndex < szString.GetLength(); nWrkIndex++)
+        int nWrkIndex;
+		for(nWrkIndex = nIndex; nWrkIndex < szString.GetLength(); nWrkIndex++)
         {
           switch(GlyphType(szString[nWrkIndex]))
           {
@@ -577,4 +578,5 @@ CString CFontTableANSI::GetNext(tUnit nInUnits, int &nIndex, const CString& szSt
       return szReturn;
   }
 };
+
 

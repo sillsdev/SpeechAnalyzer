@@ -226,7 +226,7 @@ void CDlgParametersPitchPage::Apply()
     pDoc->GetUttParm(pUttParm); // get sa parameters utterance member data
 	FmtParm* pFmtParm = pDoc->GetFmtParm();
     // save member data
-	int nVoicingRaw16 = (int)(m_fVoicing * 16. * .01 * pow(2, pFmtParm->wBitsPerSample - 1) + 0.5);
+	int nVoicingRaw16 = (int)(m_fVoicing * 16. * .01 * pow(2.F, pFmtParm->wBitsPerSample - 1) + 0.5);
     if (((UINT)m_nMaxFreq != pUttParm->nMaxFreq) || 
 		((UINT)m_nMinFreq != pUttParm->nMinFreq) ||
 		(nVoicingRaw16 != pUttParm->nCritLoud)) 
@@ -336,10 +336,10 @@ BOOL CDlgParametersPitchPage::OnInitDialog()
   m_nInterpol = pUttParm->nMaxInterp;
   if (m_nInterpol > 10) m_nInterpol = 10;
   if (m_nInterpol < 0) m_nInterpol = 0;
-  m_fVoicing = (double)pUttParm->nCritLoud / 16. / pow(2, pFmtParm->wBitsPerSample - 1) * 100.;
+  m_fVoicing = (double)pUttParm->nCritLoud / 16. / pow(2.F, pFmtParm->wBitsPerSample - 1) * 100.;
   if (m_fVoicing > 5.0) m_fVoicing = 5.0;
   if (m_fVoicing < 0.) m_fVoicing = 0.;
-  int nVoicingRaw16 = (int)(m_fVoicing * 16. * .01 * pow(2, pFmtParm->wBitsPerSample - 1) + 0.5);
+  int nVoicingRaw16 = (int)(m_fVoicing * 16. * .01 * pow(2.F, pFmtParm->wBitsPerSample - 1) + 0.5);
   m_nMaxFreq = pUttParm->nMaxFreq;
   if (m_nMaxFreq > 2047) m_nMaxFreq = 2047; //CLW 10/4/99
   if (m_nMaxFreq < 80) m_nMaxFreq = 80;
@@ -984,7 +984,7 @@ void CDlgParametersPitchPage::OnPitchManualDefault(BOOL bAppDefaults)
   }
 
   // calculate raw voicing value
-  int nVoicingRaw16 = (int)(m_fVoicing * 16. * .01 * pow(2, pFmtParm->wBitsPerSample - 1) + 0.5);
+  int nVoicingRaw16 = (int)(m_fVoicing * 16. * .01 * pow(2.F, pFmtParm->wBitsPerSample - 1) + 0.5);
 
   if ((m_nChange != pUttParm->nMaxChange) || (m_nGroup != pUttParm->nMinGroup)
     || (m_nInterpol != pUttParm->nMaxInterp) || (nVoicingRaw16 != pUttParm->nCritLoud)
@@ -995,7 +995,7 @@ void CDlgParametersPitchPage::OnPitchManualDefault(BOOL bAppDefaults)
     m_nChange = pUttParm->nMaxChange;
     m_nGroup = pUttParm->nMinGroup;
     m_nInterpol = pUttParm->nMaxInterp;
-    m_fVoicing = pUttParm->nCritLoud / 16. / pow(2, pFmtParm->wBitsPerSample - 1) * 100.;
+    m_fVoicing = pUttParm->nCritLoud / 16. / pow(2.F, pFmtParm->wBitsPerSample - 1) * 100.;
     m_nMaxFreq = pUttParm->nMaxFreq;
     m_nMinFreq = pUttParm->nMinFreq;
     UpdateData(FALSE);

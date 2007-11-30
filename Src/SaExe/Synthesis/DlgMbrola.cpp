@@ -179,7 +179,7 @@ BOOL CDlgMbrola::OnInitDialog()
     m_cGrid.SetTextMatrix(0,i, number);
   }
 
-  for(i=rowPitchMs; i<m_cGrid.GetRows(); i++)
+  for(int i=rowPitchMs; i<m_cGrid.GetRows(); i++)
   {
     CString label;
     label.Format(_T("Pitch @ %gms (Hz)"), (i-rowPitchMs)*m_fPitchUpdateInterval*1000.);
@@ -195,14 +195,14 @@ BOOL CDlgMbrola::OnInitDialog()
   m_cOutputGrid.SetTextMatrix(rowPitchAvg,columnDescription, _T("Avg Pitch (Hz)"));
   m_cOutputGrid.SetColWidth(columnDescription,0, 2500);
 
-  for(i=columnFirst;i<m_cOutputGrid.GetCols(0); i++)
+  for(int i=columnFirst;i<m_cOutputGrid.GetCols(0); i++)
   {
     CString number;
     number.Format(_T("%d"), i);
     m_cOutputGrid.SetTextMatrix(0,i, number);
   }
 
-  for(i=rowPitchMs; i<m_cOutputGrid.GetRows(); i++)
+  for(int i=rowPitchMs; i<m_cOutputGrid.GetRows(); i++)
   {
     CString label;
     label.Format(_T("Pitch @ %gms (Hz)"), (i-rowPitchMs)*m_fPitchUpdateInterval*1000.);
@@ -210,7 +210,7 @@ BOOL CDlgMbrola::OnInitDialog()
   }
 
   // Populate Dictionary
-  for(i=0;Dictionary[i].description;i++)
+  for(int i=0;Dictionary[i].description;i++)
     m_cDictionary.AddString(Dictionary[i].description);
   m_cDictionary.SetCurSel(0);
 
@@ -489,7 +489,7 @@ void CDlgMbrola::OnMbrolaConvert()
 		durationText = m_cGrid.GetTextMatrix(rowDuration,i+1);
         duration = _tcstod(durationText,&ptr)/1000.;
 		rows = int(duration/m_fPitchUpdateInterval);
-        for (row = 0; row <= rows; row++)
+        for (int row = 0; row <= rows; row++)
         {
           pitchText = m_cGrid.GetTextMatrix(row + rowPitchMs,i+1);
 		  pitch = _tcstod(pitchText, &ptr);

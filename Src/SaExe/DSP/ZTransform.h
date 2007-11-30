@@ -183,7 +183,7 @@ template<class _Ty> _Ty CZTransformGeneric<_Ty>::Tick(_Ty dInput)
   partialOutput += partialState*m_pNumerator[0];
 
   // advance delay line
-  for(i = m_nOrder;i>1;i--)
+  for(int32 i = m_nOrder;i>1;i--)
   {
     m_pState[i] = m_pState[i-1];
   }
@@ -191,7 +191,7 @@ template<class _Ty> _Ty CZTransformGeneric<_Ty>::Tick(_Ty dInput)
   if(m_nOrder)  // Special reduced case no state info
     m_pState[1] = partialState;
   
-  for(i=0; i<int32(m_cStages.size()); i++)
+  for(int32 i=0; i<int32(m_cStages.size()); i++)
     partialOutput = m_cStages[i].Tick(partialOutput);
 
   return partialOutput;

@@ -479,7 +479,7 @@ BOOL CDib::Read(CFile* pFile)
   {
     return FALSE;
   }
-  DWORD dwCount = pFile->ReadHuge(m_lpBuf, m_dwLength);
+  DWORD dwCount = pFile->Read(m_lpBuf, m_dwLength);
   if (dwCount != m_dwLength)
   {
     AfxMessageBox(_T("Read error"));
@@ -502,9 +502,9 @@ BOOL CDib::Write(CFile* pFile)
 {
   try
   {
-    pFile->WriteHuge(m_lpBuf, m_dwLength);
+    pFile->Write(m_lpBuf, m_dwLength);
   }
-  catch (CException e)
+  catch (const CException& e)
   {
     AfxMessageBox(_T("Write error--possible disk full condition"));
     return FALSE;

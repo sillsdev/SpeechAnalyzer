@@ -470,7 +470,7 @@ long CProcessChange::Process(void* pCaller, ISaDoc* pDoc, int nProgress,
       // write the processed quality data block
       try
       { 
-        m_pQualityFile->WriteHuge((HPSTR)m_lpQualityData, dwPitchCount * 2);
+        m_pQualityFile->Write((HPSTR)m_lpQualityData, dwPitchCount * 2);
       }
       catch (CFileException e)
         
@@ -636,7 +636,7 @@ void* CProcessChange::GetQualityData(DWORD dwOffset, BOOL bBlockBegin)
     }
     // read the processed quality data block
     try
-    { m_pQualityFile->ReadHuge((HPSTR)m_lpQualityData, GetProcessBufferSize());
+    { m_pQualityFile->Read((HPSTR)m_lpQualityData, GetProcessBufferSize());
     }
     catch (CFileException e)
     {
@@ -701,7 +701,7 @@ int CProcessChange::GetQualityData(DWORD dwOffset, BOOL* bRes)
     }
     // read the processed quality data block
     try
-    { m_pQualityFile->ReadHuge((HPSTR)m_lpQualityData, GetProcessBufferSize());
+    { m_pQualityFile->Read((HPSTR)m_lpQualityData, GetProcessBufferSize());
     }
     catch (CFileException e)
     {
@@ -719,4 +719,5 @@ int CProcessChange::GetQualityData(DWORD dwOffset, BOOL* bRes)
     return *(lpData + (dwOffset - m_dwQualityBufferOffset)); // return data
   }
 }
+
 

@@ -247,7 +247,7 @@ void CPlotSpectrum::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView)
       if (pSpectrumParms->bShowCepSpectrum)
       {
         pDC->SelectObject(&penSmoothBold);
-        for (x = nFirstX; x < nLastX; x++)
+        for (int x = nFirstX; x < nLastX; x++)
         {
           // plot smooth spectrum
           LBandEdge = (short)max(0,(short)Round((double)(x-0.5) * PlotXScale / SpectFreqScale));
@@ -288,7 +288,7 @@ void CPlotSpectrum::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView)
       {
         if (MaxRawBandPwr != (float)UNDEFINED_DATA && MaxRawBandPwr != 0.F)
           LpcRef = MaxLpcBandPwr / MaxRawBandPwr;
-        else LpcRef = pow(10., pSpectrum->GetSpectralPowerRange().fdBRef / 10.F);
+        else LpcRef = pow(10.F, pSpectrum->GetSpectralPowerRange().fdBRef / 10.F);
       }
 
       for (int x = nFirstX; x < nLastX; x++)
@@ -356,7 +356,7 @@ void CPlotSpectrum::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView)
         CFont* pOldFont = pDC->SelectObject(&Font); // select reference font for tags
 
         // Write formant info.
-        for (nFormant = 1; nFormant <= MAX_NUM_FORMANTS; nFormant++)
+        for (unsigned short nFormant = 1; nFormant <= MAX_NUM_FORMANTS; nFormant++)
         {
           FORMANT Formant = pSpectrum->GetFormant(nFormant);
 
@@ -440,6 +440,7 @@ void CPlotSpectrum::EndAnimation(void)
 {
   CPlotWnd::StandardEndAnimation();
 }
+
 
 
 

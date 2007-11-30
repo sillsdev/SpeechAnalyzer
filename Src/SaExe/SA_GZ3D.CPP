@@ -2043,7 +2043,7 @@ void CPlotInvSDP::OnDraw(CDC * pDC, CRect rClient, CRect rClip, CSaView * pView)
       if (nMaxValue != nMinValue) dfHminL = (double)nMaxValue - (double)nMinValue;
       pData += dwSmplSteps;
       dwDataPos += dwSmplSteps;
-      for (dwLoop = 1; dwLoop < dwNumber; dwLoop++)
+      for (DWORD dwLoop = 1; dwLoop < dwNumber; dwLoop++)
       {
         // read data
         if (bAverage)

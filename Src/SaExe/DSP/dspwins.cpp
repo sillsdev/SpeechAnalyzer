@@ -33,7 +33,7 @@ bool CWindowSettings::operator==(const CWindowSettings &a) const
   return result;
 }
 
-using DspWin::CWindowParms;
+typedef DspWin::CWindowParms CWindowParms;
 
 CWindowParms RectParms()
 {
@@ -315,6 +315,7 @@ void KaiserWin::Fill(void)
 
   return;
 }
+
 
 
 

@@ -86,7 +86,7 @@ void CAnalyticLpcAnalysis::BuildPredictorReflectionCoefficients(const CAnalyticL
     m_reflection[i-1] = -ki;  // reflection coefficient is negative of ki (PARCOR)
     Prediction[i] = ki;
     
-    for(j = 1; j < i; j++)
+    for(int j = 1; j < i; j++)
       Prediction[j] = lastPrediction[j-1] - ki*lastPrediction[i-j-1];
     
     e *= (CDBL(1) - ki*ki);
@@ -244,10 +244,13 @@ void CFormantTracker::BuildTrack(CTrackState &state, double samplingRate, int pi
       VECTOR_DBL &filter = state.GetZeroFilterDBL();
 
       // Flatten AZF
-      filter.resize(zeroFilterOrder);
+      filter.resize(zeroFilterOrder + 1);
       filter[0] = AZF.Tick(1).real();
-      for(unsigned int z=1; z<zeroFilterOrder; z++)
+      for(unsigned int z = 1; z <= zeroFilterOrder; z++)
+	  {
         filter[z] = AZF.Tick(0).real();
+			//TRACE(_T("filter[%d]\t= %d\n"), z, filter[z]);
+	  }
 
       // Apply AZF & DTF
       for(unsigned int i = zeroFilterOrder; i < windowed.size() ; i++)
@@ -255,7 +258,10 @@ void CFormantTracker::BuildTrack(CTrackState &state, double samplingRate, int pi
         CDBL z = 0;
 
         for (unsigned int j = 0; j <= zeroFilterOrder; j++)
+		{
+			//TRACE(_T("i = %d\t j = %d\twindowed = %d\tfilter = %d\n"), i, j, windowed[i-j], filter[j]);
           z += windowed[i-j]*filter[j];
+		}
 
         filtered[i - zeroFilterOrder] = DTF.Tick(z);
       }
@@ -531,4 +537,5 @@ FORMANT_FREQ* CFormantTracker::GetFormant(DWORD dwIndex)
   size_t sSize = sizeof(FORMANT_FREQ);
   return (FORMANT_FREQ*) GetProcessedObject(dwIndex, sSize);
 }
+
 

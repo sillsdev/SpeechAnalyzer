@@ -324,7 +324,8 @@ dspError_t CHistogram::GetBin(int32 & nBinValue, uint16 nBinNum, double fCoeff, 
     
   case CDF:
     {
-      for (uint32 i = 0, dwCumCounts = 0; i <= nBinNum; i++)
+      uint32 dwCumCounts = 0;
+	  for (uint32 i = 0; i <= nBinNum; i++)
         dwCumCounts += m_pHistogram[i];
       nBinValue = (short)(dwCumCounts / ((double)m_stProcParms.dwBlockLength * fCoeff));
     }

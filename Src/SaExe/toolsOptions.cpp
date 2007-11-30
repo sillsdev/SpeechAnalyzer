@@ -118,7 +118,7 @@ void CDlgOptionsViewPage::DoDataExchange(CDataExchange* pDX)
 /***************************************************************************/
 BOOL CDlgOptionsViewPage::OnInitDialog()
 {
-  static const StyleList[] =
+  static const int StyleList[] =
   {
     // This list is based on the interpretation of Style numbers in the rest of SA.
     0,
@@ -253,7 +253,8 @@ void CDlgOptionsViewPage::OnAnimationRateScroll()
   int nOptions[] = {1, 2, 5, 10, 30, 60};   // only options allowed
   int nOptionsCount = sizeof(nOptions)/sizeof(*nOptions);
   int nData = GetDlgItemInt(IDC_VIEW_ANIMRATEEDIT, NULL, TRUE);
-  for (int nIndex = 0; nIndex < nOptionsCount; nIndex++)
+  int nIndex;
+  for (nIndex = 0; nIndex < nOptionsCount; nIndex++)
     if (nData == nOptions[nIndex]) break;
     if (m_SpinAnimationRate.UpperButtonClicked()) nIndex++;
     else nIndex--;
@@ -528,7 +529,7 @@ void CDlgOptionsColorPage::FillColorComboBoxInfo(BOOL bAddStrings)
     m_GraphItemColors.SetItemDataPtr(i, &GraphColorsComboInfo[i]);
   }
 
-  for (i = 0; AnnotColorsComboInfo[i].pszColorItem; i++)
+  for (int i = 0; AnnotColorsComboInfo[i].pszColorItem; i++)
   {
     if (bAddStrings) m_AnnotItemColors.AddString(NULL);
     if (i % 2) AnnotColorsComboInfo[i].cColor = *(&m_cColors.cAnnotationFont[PHONETIC] + i / 2);
@@ -536,14 +537,14 @@ void CDlgOptionsColorPage::FillColorComboBoxInfo(BOOL bAddStrings)
     m_AnnotItemColors.SetItemDataPtr(i, &AnnotColorsComboInfo[i]);
   }
 
-  for (i = 0; ScaleColorsComboInfo[i].pszColorItem; i++)
+  for (int i = 0; ScaleColorsComboInfo[i].pszColorItem; i++)
   {
     if (bAddStrings) m_ScaleItemColors.AddString(NULL);
     ScaleColorsComboInfo[i].cColor = *(&m_cColors.cScaleBkg + i);
     m_ScaleItemColors.SetItemDataPtr(i, &ScaleColorsComboInfo[i]);
   }
 
-  for (i = 0; OvrlyColorsComboInfo[i].pszColorItem; i++)
+  for (int i = 0; OvrlyColorsComboInfo[i].pszColorItem; i++)
   {
     if (bAddStrings) m_OvrlyItemColors.AddString(NULL);
     OvrlyColorsComboInfo[i].cColor = m_cColors.cPlotData[i];
@@ -1242,4 +1243,5 @@ void CDlgToolsOptions::OnHelpToolsOptions()
   ::HtmlHelp(NULL, szPath, HH_DISPLAY_TOPIC, NULL);
 }
  
+
 

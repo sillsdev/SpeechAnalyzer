@@ -112,8 +112,9 @@ dspError_t CFormantPicker::PickFormants(FORMANT_VALUES **ppFormantTable, uint16 
   m_FormantTable[0].PowerInDecibels = FLT_MAX_NEG;
   
   
+  uint32 i;
   enum MATCH_RESULT {SKIP_BUMP, FOUND_FORMANT, NO_FORMANT};
-  for (uint32 i = 0; i < dwBumpCount; i++)   
+  for (i = 0; i < dwBumpCount; i++)   
   {
     MATCH_RESULT MatchResult = SKIP_BUMP;
     float fBumpFrequency = (float)(BumpTable[i].Distance * dSpectralResolution);    

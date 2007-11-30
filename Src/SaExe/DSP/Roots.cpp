@@ -60,14 +60,15 @@ template<class CT> bool Laguerre(const CDBL *coefficients, int32 nOrder, complex
 bool LaguerreComplexDouble(const CDBL *coefficients, int32 nOrder, CDBL *rootEstimate, int32 *iterations = NULL)
 {
   const double nudges[] = {1/16., 2/16., 3/16., 4/16., 5/16., 6/16., 7/16., 8/16., 9/16., 10/16., 11/16., 12/16., 13/16., 14/16., 15/16.};
-  const nudge = 16;
-  const maxIter = nudge*sizeof(nudges)/sizeof(double);
+  const int nudge = 16;
+  const int maxIter = nudge*sizeof(nudges)/sizeof(double);
   CDBL &root = *rootEstimate;
   const double epsilon = std::numeric_limits<double>::epsilon() * 16;  
   int32 extraPasses = 0;
   double error = 0;
 
-  for(int32 iter = 1; iter < maxIter; )
+  int32 iter;
+  for(iter = 1; iter < maxIter; )
   {
     CDBL distance;
 

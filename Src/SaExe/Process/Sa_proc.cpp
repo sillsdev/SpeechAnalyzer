@@ -215,7 +215,7 @@ void* CDataProcess::GetProcessedData(DWORD dwOffset, BOOL bBlockBegin)
     }
     // read the processed data block
     try
-    { m_pFile->ReadHuge((HPSTR)m_lpData, GetProcessBufferSize());
+    { m_pFile->Read((HPSTR)m_lpData, GetProcessBufferSize());
     }
     catch (CFileException e)
     { // error reading file
@@ -282,7 +282,7 @@ int CDataProcess::GetProcessedData(DWORD dwOffset, BOOL* pbRes)
   // read the processed data block
   try
   { 
-    m_pFile->ReadHuge((HPSTR)m_lpData, GetProcessBufferSize());
+    m_pFile->Read((HPSTR)m_lpData, GetProcessBufferSize());
   }
   catch (CFileException e)
   { // error reading file
@@ -358,7 +358,7 @@ HPSTR CDataProcess::GetProcessedWaveData(DWORD dwOffset, BOOL bBlockBegin)
     // read the processed data block
     try
     { 
-      m_pFile->ReadHuge((HPSTR)m_lpData, GetProcessBufferSize());
+      m_pFile->Read((HPSTR)m_lpData, GetProcessBufferSize());
     }
     catch (CFileException e)
     { 
@@ -441,7 +441,7 @@ void* CDataProcess::GetProcessedDataBlock(DWORD dwByteOffset, size_t sObjectSize
     }
     // read the processed data block
     try
-    { m_pFile->ReadHuge((HPSTR)m_lpData, GetProcessBufferSize());
+    { m_pFile->Read((HPSTR)m_lpData, GetProcessBufferSize());
     }
     catch (...)
     { // error reading file
@@ -904,4 +904,5 @@ BOOL CAreaDataProcess::SetArea(DWORD dwAreaPos, DWORD dwAreaLength)
   
   return TRUE;
 }
+
 

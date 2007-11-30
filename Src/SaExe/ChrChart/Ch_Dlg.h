@@ -211,7 +211,7 @@ protected:
   afx_msg void OnCancel();
   afx_msg void OnClose();
   //}}AFX_MSG
-  afx_msg void OnChecked(int nID);
+  afx_msg void OnChecked(unsigned int nID);
   afx_msg LRESULT OnCharSelect(WPARAM, LPARAM);
   DECLARE_MESSAGE_MAP()
 };

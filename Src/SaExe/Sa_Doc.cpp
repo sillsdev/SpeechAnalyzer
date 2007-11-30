@@ -1830,7 +1830,7 @@ DWORD CSaDoc::WriteRiff(const TCHAR* pszPathName)
       DWORD dwSizeRead = 0;
       try
       {
-        dwSizeRead = pTempFile->ReadHuge((HPSTR)m_lpData, GetBufferSize());
+        dwSizeRead = pTempFile->Read((HPSTR)m_lpData, GetBufferSize());
       }
       catch (CFileException e)
       {
@@ -2214,7 +2214,7 @@ BOOL CSaDoc::CopyWaveToTemp(const TCHAR* pszSourcePathName, CAlignInfo info)
               char cData = 0;
               for (long j=0;j<lFrontPad;j++)
               {
-                pTempFile->WriteHuge(&cData, sizeof(cData));
+                pTempFile->Write(&cData, sizeof(cData));
                 lSizeWritten++;
               }
             }
@@ -2223,7 +2223,7 @@ BOOL CSaDoc::CopyWaveToTemp(const TCHAR* pszSourcePathName, CAlignInfo info)
               short int iData = 0;
               for (long j=0;j<lFrontPad;j++)
               {
-                pTempFile->WriteHuge(&iData, sizeof(iData));
+                pTempFile->Write(&iData, sizeof(iData));
                 lSizeWritten+=2;
               }
             }
@@ -2246,7 +2246,7 @@ BOOL CSaDoc::CopyWaveToTemp(const TCHAR* pszSourcePathName, CAlignInfo info)
             if ((lSizeWritten + lWriteSize) > lLengthRaw)
               lWriteSize = lLengthRaw - lSizeWritten;
             
-            pTempFile->WriteHuge((HPSTR)m_lpData + nStart, (DWORD)lWriteSize);
+            pTempFile->Write((HPSTR)m_lpData + nStart, (DWORD)lWriteSize);
             lSizeWritten += lWriteSize;
           }
           catch (CFileException e)
@@ -2295,7 +2295,7 @@ BOOL CSaDoc::CopyWaveToTemp(const TCHAR* pszSourcePathName, CAlignInfo info)
         else 
           lWriteSize = lSizeRead;
         
-        pTempFile->WriteHuge((HPSTR)m_lpData, (DWORD)lWriteSize);
+        pTempFile->Write((HPSTR)m_lpData, (DWORD)lWriteSize);
         lSizeWritten += lWriteSize;
       }
       catch (CFileException e)
@@ -2324,7 +2324,7 @@ BOOL CSaDoc::CopyWaveToTemp(const TCHAR* pszSourcePathName, CAlignInfo info)
           char cData = 0;
           for (long j=0;j<lRearPad;j++)
           {
-            pTempFile->WriteHuge(&cData, sizeof(cData));
+            pTempFile->Write(&cData, sizeof(cData));
             lSizeWritten++;
           }
         }
@@ -2334,7 +2334,7 @@ BOOL CSaDoc::CopyWaveToTemp(const TCHAR* pszSourcePathName, CAlignInfo info)
           short int iData = 0;
           for (long j=0;j<lRearPad;j++)
           {
-            pTempFile->WriteHuge(&iData, sizeof(iData));
+            pTempFile->Write(&iData, sizeof(iData));
             lSizeWritten+=2;
           }
         }
@@ -2537,7 +2537,7 @@ BOOL CSaDoc::CopyWaveToTemp(const TCHAR* pszSourcePathName,
     // write the data block from the buffer
     try
     {
-      pTempFile->WriteHuge((HPSTR)lpData, (DWORD)lSizeRead);
+      pTempFile->Write((HPSTR)lpData, (DWORD)lSizeRead);
     }
     catch (CFileException e)
     {
@@ -2712,8 +2712,8 @@ BOOL CSaDoc::CopyFile(const TCHAR* pszSourceName, const TCHAR* pszTargetName, DW
     try
     {
       dwCopy = (dwSize > GetBufferSize()) ? GetBufferSize() : dwSize;
-      dwCopied = SourceFile.ReadHuge((HPSTR)m_lpData, dwCopy);
-      TargetFile.WriteHuge((HPSTR)m_lpData, dwCopied);
+      dwCopied = SourceFile.Read((HPSTR)m_lpData, dwCopy);
+      TargetFile.Write((HPSTR)m_lpData, dwCopied);
     }
     catch (CFileException e)
     {
@@ -3505,7 +3505,7 @@ BOOL CSaDoc::CopySectionToNewWavFile(DWORD dwSectionStart, DWORD dwSectionLength
     CFile::Remove(szTempNewTemp);  // Done with this file
     Undo(FALSE);  // return segments to original state
   }
-  catch(CException e)
+  catch(const CException& e)
   {
     m_szRawDataWrk[0] = szTempName;
     m_dwDataSize = dwDataSize;
@@ -3585,7 +3585,7 @@ BOOL COleWaveDataSource::OnRenderData(LPFORMATETC lpFormatEtc, LPSTGMEDIUM lpStg
       pFile = new CFile(m_szSourceFile,CFile::modeRead | CFile::shareExclusive);
       dwLength = pFile->GetLength();
     }
-    catch(CException e)
+    catch(const CException& e)
     {
       if(pFile)
       {
@@ -3643,13 +3643,13 @@ BOOL COleWaveDataSource::OnRenderData(LPFORMATETC lpFormatEtc, LPSTGMEDIUM lpStg
     // Copy temporary wave file to buffer then delete
     try
     {
-      pFile->ReadHuge((HPSTR)lpData, dwLength);
+      pFile->Read((HPSTR)lpData, dwLength);
       pFile->Abort();
       // Remove Temporary Wave file
       delete pFile;
       ::GlobalUnlock(hData);
     }
-    catch(CException e)
+    catch(const CException& e)
     {
       ::GlobalFree(hData);
       if(pFile)
@@ -3749,7 +3749,7 @@ BOOL CSaDoc::PutWaveToClipboard(DWORD dwSectionStart, DWORD dwSectionLength, BOO
       try
       {
         pTempFile->Seek((long)(dwSectionPos + dwSectionLength), CFile::begin);
-        dwReadSize = pTempFile->ReadHuge((HPSTR)m_lpData, GetBufferSize());
+        dwReadSize = pTempFile->Read((HPSTR)m_lpData, GetBufferSize());
         dwDataTail -= dwReadSize;
       }
       catch (CFileException e)
@@ -3762,7 +3762,7 @@ BOOL CSaDoc::PutWaveToClipboard(DWORD dwSectionStart, DWORD dwSectionLength, BOO
       try
       {
         pTempFile->Seek((long)(dwSectionPos), CFile::begin);
-        pTempFile->WriteHuge((HPSTR)m_lpData, dwReadSize);
+        pTempFile->Write((HPSTR)m_lpData, dwReadSize);
       }
       catch (CFileException e)
       {
@@ -3868,11 +3868,11 @@ BOOL CSaDoc::PasteClipboardToWave(DWORD dwPastePos)
       {
         // create and open the file
         pFile = new CFile(szTempPath, CFile::modeCreate | CFile::modeReadWrite | CFile::shareExclusive);
-        pFile->WriteHuge(lpData, dwSize);
+        pFile->Write(lpData, dwSize);
         pFile->Abort();
         delete pFile;
       }
-      catch(CException pException)
+      catch(const CException& pException)
       {
         if (pFile)
         {
@@ -4722,7 +4722,7 @@ HPSTR CSaDoc::GetUnprocessedWaveData(DWORD dwOffset, BOOL bBlockBegin, BOOL bAdj
     // read the wave data block
     try
     {
-      pTempFile->ReadHuge((HPSTR)m_lpData, GetBufferSize());
+      pTempFile->Read((HPSTR)m_lpData, GetBufferSize());
     }
     catch (CFileException e)
     {
@@ -4841,7 +4841,7 @@ CSaString CSaDoc::GetMeasurementsString(DWORD dwOffset, DWORD dwLength, BOOL* pb
 	int nRawData;
 	fSum = 0;
 	count = 0;
-	for (i = dwStartPos; i <= dwEndPos; i++)
+	for (DWORD i = dwStartPos; i <= dwEndPos; i++)
 	{
 		nRawData = m_pProcessLoudness->GetProcessedData(i, pbRes);
 		if (nRawData > 0.)
@@ -4864,7 +4864,7 @@ CSaString CSaDoc::GetMeasurementsString(DWORD dwOffset, DWORD dwLength, BOOL* pb
 	double fF3Sum = 0;
 	double fF4Sum = 0;
 	count = 0;
-	for (i = dwStartPos; i <= dwEndPos; i++)
+	for (DWORD i = dwStartPos; i <= dwEndPos; i++)
 	{
 		CProcessIterator<FORMANT_FREQ> iterFormants(*m_pProcessFormantTracker, i);
 		if ((*iterFormants).F[1] != (double)NA)
@@ -5555,7 +5555,7 @@ BOOL CSaDoc::AdvancedSegment()
   CSaApp* pApp = (CSaApp*)AfxGetApp();
 
   // restore preserved gloss etc. SDM 1.5Test8.2
-  for(nLoop = GLOSS; nLoop < ANNOT_WND_NUMBER; nLoop++)
+  for(int nLoop = GLOSS; nLoop < ANNOT_WND_NUMBER; nLoop++)
   {
     if(m_apSegments[nLoop]) delete m_apSegments[nLoop];
     m_apSegments[nLoop] = pPreserve[nLoop];
@@ -5570,7 +5570,8 @@ BOOL CSaDoc::AdvancedSegment()
     DWORD dwDistance;
     int nPhonetic;
     BOOL bInsert = FALSE;
-    for(int nGloss = 0;nGloss < pGloss->GetSize(); nGloss++)
+    int nGloss;
+	for(nGloss = 0;nGloss < pGloss->GetSize(); nGloss++)
     {
       dwStart = pGloss->GetOffset(nGloss);
       dwStop = dwStart + pGloss->GetDuration(nGloss);

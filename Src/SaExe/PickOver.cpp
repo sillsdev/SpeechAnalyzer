@@ -35,7 +35,7 @@ CPickOverlayDlg::CPickOverlayDlg(CWnd* pParent /*=NULL*/)
   }
   m_NumItemsSelected = 0;
 	m_numPlots = 0;
-	for ( i=0;i<MAX_PLOTS;i++)
+	for (int i=0;i<MAX_PLOTS;i++)
 	{
 		m_apPlot[i] = NULL;
 	}

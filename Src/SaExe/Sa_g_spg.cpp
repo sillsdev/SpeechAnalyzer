@@ -524,7 +524,7 @@ BOOL CPlotSpectrogram::OnDrawSpectrogram(CDC *pDC, CRect rWnd, CRect rClip, CSaV
     dlog = new double[nSpectrumIndex + 1];
     for (; nSpectrumIndex>0; nSpectrumIndex--)
     {
-      dlog[nSpectrumIndex] = log(nSpectrumIndex);
+      dlog[nSpectrumIndex] = log(double(nSpectrumIndex));
     }
     dlog[0] = dlog[1];
   }

@@ -67,7 +67,7 @@ using std::streampos;
 static char BASED_CODE THIS_FILE[] = __FILE__;
 #endif
 
-static WriteFileUtf8(CFile *pFile, const CSaString szString)
+static void WriteFileUtf8(CFile *pFile, const CSaString szString)
 {
   std::string szUtf8 = szString.utf8();
   pFile->Write(szUtf8.c_str(),szUtf8.size());
@@ -413,7 +413,7 @@ void CExportXML::OutputXMLField(CFile* pFile,const TCHAR *szFieldName,const CSaS
   szString = "\t<";
   szString += szFieldName;
   szString += ">";
-  for(register i=0;i<szContents.GetLength();++i)
+  for(register int i=0;i<szContents.GetLength();++i)
   {
     if(szContents[i]=='<')
       szString += "&#60;";
@@ -2370,7 +2370,7 @@ BOOL CImport::ReadTable(Object_istream &obs, int nMode)
 
   CSaDoc* pDoc = (CSaDoc*)pView->GetDocument();
 
-  const MAXLINE = 32000;
+  const int MAXLINE = 32000;
   char* pUtf8 = new char[MAXLINE];
   CSaString szLine;
 
@@ -2395,7 +2395,7 @@ BOOL CImport::ReadTable(Object_istream &obs, int nMode)
   for(int nLoop = 0;nLoop < ANNOT_WND_NUMBER+1; nLoop++) nAnnotField[nLoop] = -1;
 
 
-  for(nLoop = 0;nLoop < 20; nLoop++)
+  for(int nLoop = 0;nLoop < 20; nLoop++)
   {
     szField = extractTabField(szLine, nLoop);
 
@@ -2559,7 +2559,7 @@ BOOL CImport::ReadTable(Object_istream &obs, int nMode)
   }
   if(nAnnotField[ANNOT_WND_NUMBER/* POS*/] != -1)
   {
-    for(nIndex = 0; nIndex < pDoc->GetSegment(GLOSS)->GetSize(); nIndex++)
+    for(int nIndex = 0; nIndex < pDoc->GetSegment(GLOSS)->GetSize(); nIndex++)
       ((CGlossSegment*)pDoc->GetSegment(GLOSS))->GetPOSs()->SetAt(nIndex, "");
   }
 
@@ -2626,7 +2626,7 @@ BOOL CImport::ReadTable(Object_istream &obs, int nMode)
         pView->ASelection().SetSelectedAnnotationString(pView, szString, TRUE, FALSE);
       }
     }
-    for(nIndex = PHONETIC; nIndex < GLOSS; nIndex++)
+    for(int nIndex = PHONETIC; nIndex < GLOSS; nIndex++)
     {
       szString = extractTabField(szLine, nAnnotField[nIndex]);
       if(szString.GetLength())
@@ -2653,7 +2653,7 @@ BOOL CImport::ReadTable(Object_istream &obs, int nMode)
       bAppendPhonetic = FALSE;
   }
   // deselect everything // SDM 1.5Test10.1
-  for (nLoop = 0; nLoop < ANNOT_WND_NUMBER; nLoop++)
+  for (int nLoop = 0; nLoop < ANNOT_WND_NUMBER; nLoop++)
   { pDoc->GetSegment(nLoop)->SetSelection(-1);
   }
 
@@ -3438,7 +3438,7 @@ void CDlgAnnotationWizard::OnImport()
 
     if(!SFM)
     {
-      const MAXLINE = 32000;
+      const int MAXLINE = 32000;
       char* pBuf = new char[MAXLINE];
       obs.getIos().seekg(0);  // start to file start
       obs.getIos().getline(pBuf,MAXLINE, '\000');
@@ -4124,6 +4124,7 @@ const CSaString CDlgAnnotationWizard::ReadFile(const CSaString& Pathname)
   delete pFile;
   return String;
 }
+
 
 
 

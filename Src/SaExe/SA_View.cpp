@@ -514,7 +514,7 @@ void CSaView::OnPlayer()
 /***************************************************************************/
 // CSaView::OnLayout Change the layout type
 /***************************************************************************/
-void CSaView::OnLayout(int nID)
+void CSaView::OnLayout(UINT nID)
 {
   ChangeLayout(nID);
   OnGraphsRetile(); // retile graphs
@@ -773,7 +773,7 @@ void CSaView::OnGraphsRetile()
     }
   }
 
-  for (i = 0; (i < MAX_GRAPHS_NUMBER && !bLastGraph); i++)
+  for (int i = 0; (i < MAX_GRAPHS_NUMBER && !bLastGraph); i++)
   {
     //********************************************************************
     // If the recording graph is to be displayed then display it and
@@ -1280,7 +1280,7 @@ void CSaView::ToggleAnnotation(int nAnnot, BOOL bShow, BOOL bRawDataOnly)
 /***************************************************************************/
 // CSaView::OnAnnotationAll Show the Annotation window on all graphs
 /***************************************************************************/
-void CSaView::OnAnnotationAll(int nID)
+void CSaView::OnAnnotationAll(UINT nID)
 {
   int nAnnotationID = nID - ID_PHONETIC_ALL;
   ToggleAnnotation(nAnnotationID, TRUE);
@@ -1300,7 +1300,7 @@ void CSaView::OnUpdateAnnotationAll(CCmdUI* pCmdUI)
 /***************************************************************************/
 // CSaView::OnAnnotationRawdata Show the Annotation wnd on raw data graph only
 /***************************************************************************/
-void CSaView::OnAnnotationRawdata(int nID)
+void CSaView::OnAnnotationRawdata(UINT nID)
 {
   int nAnnotationID = nID - ID_PHONETIC_RAWDATA;
   ToggleAnnotation(nAnnotationID, TRUE, TRUE);
@@ -1320,7 +1320,7 @@ void CSaView::OnUpdateAnnotationRawdata(CCmdUI* pCmdUI)
 /***************************************************************************/
 // CSaView::OnAnnotationNone Hide Annotation windows in all the graphs
 /***************************************************************************/
-void CSaView::OnAnnotationNone(int nID)
+void CSaView::OnAnnotationNone(UINT nID)
 {
   int nAnnotationID = nID - ID_PHONETIC_NONE;
   ToggleAnnotation(nAnnotationID, FALSE);
@@ -1339,7 +1339,7 @@ void CSaView::OnUpdateAnnotationNone(CCmdUI* pCmdUI)
 /***************************************************************************/
 // CSaView::OnPopupgraphAnnotation Show or hide Annotation window
 /***************************************************************************/
-void CSaView::OnPopupgraphAnnotation(int nID)
+void CSaView::OnPopupgraphAnnotation(UINT nID)
 {
   int nAnnotationID = nID - ID_POPUPGRAPH_PHONETIC;
   ShowAnnotation(nAnnotationID);
@@ -1692,7 +1692,8 @@ void CSaView::OnSize(UINT nType, int cx, int cy)
   if ((nType == SIZE_MAXIMIZED) || (nType == SIZE_RESTORED))
   {
     // check if there is at least one graph
-    for (int nLoop = 0; nLoop < MAX_GRAPHS_NUMBER; nLoop++)
+    int nLoop;
+	for (nLoop = 0; nLoop < MAX_GRAPHS_NUMBER; nLoop++)
     {
       if (m_apGraphs[nLoop])
         break;
@@ -1830,7 +1831,8 @@ void CSaView::MakeGraphArraysContiguous()
   {
     if (!m_apGraphs[i])
     {
-      for (int j = i + 1; j < MAX_GRAPHS_NUMBER && !m_apGraphs[j]; j++);
+      int j;
+	  for (j = i + 1; j < MAX_GRAPHS_NUMBER && !m_apGraphs[j]; j++);
       if (j < MAX_GRAPHS_NUMBER && m_apGraphs[j])
       {
         m_apGraphs[i]  = m_apGraphs[j];
@@ -2321,7 +2323,7 @@ static const GraphTypeInfo* GetGraphTypeInfo(int nID)
 /***************************************************************************/
 // CSaView::OnChangeGraph Change the graph type
 /***************************************************************************/
-void CSaView::OnChangeGraph(int nID)
+void CSaView::OnChangeGraph(UINT nID)
 {
   if(GetGraphTypeInfo(nID))
     ChangeGraph(nID);
@@ -2912,7 +2914,7 @@ void CSaView::OnUpdateEditSelectWaveform(CCmdUI* pCmdUI)
 /***************************************************************************/
 // CSaView::OnPlayFKey Playback according to function key setting
 /***************************************************************************/
-void CSaView::OnPlayFKey(int nID)
+void CSaView::OnPlayFKey(UINT nID)
 {
   SendPlayMessage(WORD(nID - ID_PLAY_F1), WORD(-1)); // send message to start player
 }
@@ -3154,7 +3156,8 @@ void CSaView::OnRemoveOverlay()
           ASSERT(numPlots==1);
           UINT plotID = pMPlot->GetBasePlotID();
           
-          for (int nLoop = 0; nLoop < MAX_GRAPHS_NUMBER; nLoop++)
+          int nLoop;
+		  for (nLoop = 0; nLoop < MAX_GRAPHS_NUMBER; nLoop++)
           {
             if (m_anGraphID[nLoop] == plotID)
             {
@@ -3187,7 +3190,8 @@ void CSaView::OnRemoveOverlays()
 
     UINT plotID = pMPlot->GetBasePlotID();
     
-    for (int nLoop = 0; nLoop < MAX_GRAPHS_NUMBER; nLoop++)
+    int nLoop;
+	for (nLoop = 0; nLoop < MAX_GRAPHS_NUMBER; nLoop++)
     {
       if (m_anGraphID[nLoop] == plotID)
       {
@@ -3673,7 +3677,8 @@ void CSaView::OnVerifyOverlays()
       {
         ASSERT(numPlots==1);
         UINT plotID = pMPlot->GetBasePlotID();
-        for (int i2 = 0; i2 < MAX_GRAPHS_NUMBER; i2++)
+        int i2;
+		for (i2 = 0; i2 < MAX_GRAPHS_NUMBER; i2++)
         {
           if (m_anGraphID[i2] == plotID)
           {

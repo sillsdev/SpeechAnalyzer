@@ -159,7 +159,7 @@ void CSaWorkbenchView::SetupFilterProcesses(CObject* pDialog)
     anLocalID[nLoop] = pMain->SetWbFilterID(pDlg->m_nProcess, nLoop, 0);
   }
   // first delete all the processes not longer needed
-  for (nLoop = 0; nLoop < MAX_FILTER_NUMBER; nLoop++)
+  for (int nLoop = 0; nLoop < MAX_FILTER_NUMBER; nLoop++)
   {
     int nOldFilterID = anLocalID[nLoop];
     if ((nOldFilterID != pDlg->m_nFilter1) && (nOldFilterID != pDlg->m_nFilter2) && (nOldFilterID != pDlg->m_nFilter3))
@@ -171,7 +171,7 @@ void CSaWorkbenchView::SetupFilterProcesses(CObject* pDialog)
     }
   }
   // now copy or create the new filter IDs and processes
-  for (nLoop = 0; nLoop < MAX_FILTER_NUMBER; nLoop++)
+  for (int nLoop = 0; nLoop < MAX_FILTER_NUMBER; nLoop++)
   {
     if (pDlg->m_nFilter3)
     {

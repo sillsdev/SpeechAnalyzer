@@ -186,7 +186,7 @@ BOOL CVowelFormantSets::Load(const CSaString &szFilename)
   push_back(PetersonBarney52());
   push_back(SynthesisLadefoged());
 
-  const nPredefined = size();
+  const int nPredefined = size();
   
   if(szFilename.IsEmpty())
     return TRUE;
@@ -237,7 +237,7 @@ BOOL CVowelFormantSets::Load(const CSaString &szFilename)
   return TRUE;
 }
 
-CVowelFormantSets::Save(const CSaString &szFilename) const
+int CVowelFormantSets::Save(const CSaString &szFilename) const
 {
   if(szFilename.IsEmpty())
     return FALSE;
@@ -302,7 +302,7 @@ static inline CSaString getVowel(const char* pszVowel)
 // None - now the default set
 CVowelFormantSet CVowelFormantSets::None()
 {
-  const nVowels = 1;
+  const int nVowels = 1;
   const char* szVowels[nVowels] = 
   {
     _AC("",""),
@@ -322,9 +322,9 @@ CVowelFormantSet CVowelFormantSets::None()
   CVowelFormantsVector vowels[3];
   
 
-  using CVowelFormantSet::male;
-  using CVowelFormantSet::female;
-  using CVowelFormantSet::child;
+  const int male   = CVowelFormantSet::male;
+  const int female = CVowelFormantSet::female;
+  const int child  = CVowelFormantSet::child;
   
   // pre-reserve space to speed operation
   vowels[male].reserve(nVowels);
@@ -359,7 +359,7 @@ CVowelFormantSet CVowelFormantSets::None()
 // Hillenbrand, Getty, Clark, Wheeler (1995)
 CVowelFormantSet CVowelFormantSets::HillenbrandEtAl95()
 {
-  const nVowels = 12;
+  const int nVowels = 12;
   const char* szVowels[nVowels] = {
     _AC("i","i"),
     _AC("I","ɪ"),
@@ -422,9 +422,9 @@ CVowelFormantSet CVowelFormantSets::HillenbrandEtAl95()
 
   CVowelFormantsVector vowels[3];
   
-  using CVowelFormantSet::male;
-  using CVowelFormantSet::female;
-  using CVowelFormantSet::child;
+  const int male   = CVowelFormantSet::male;
+  const int female = CVowelFormantSet::female;
+  const int child  = CVowelFormantSet::child;
   
   // pre-reserve space to speed operation
   vowels[male].reserve(nVowels);
@@ -458,7 +458,7 @@ CVowelFormantSet CVowelFormantSets::HillenbrandEtAl95()
 // Peterson and Barney(1952)
 CVowelFormantSet CVowelFormantSets::PetersonBarney52()
 {
-  const nVowels = 10;
+  const int nVowels = 10;
   const char* szVowels[nVowels] = 
   {
     _AC("i","i"),
@@ -509,9 +509,9 @@ CVowelFormantSet CVowelFormantSets::PetersonBarney52()
 
   CVowelFormantsVector vowels[3];
 
-  using CVowelFormantSet::male;
-  using CVowelFormantSet::female;
-  using CVowelFormantSet::child;
+  const int male   = CVowelFormantSet::male;
+  const int female = CVowelFormantSet::female;
+  const int child  = CVowelFormantSet::child;
   
   // pre-reserve space to speed operation
   vowels[male].reserve(nVowels);
@@ -520,10 +520,6 @@ CVowelFormantSet CVowelFormantSets::PetersonBarney52()
   for(int nIndex = 0; nIndex < nVowels; nIndex++)
   {
     CSaString szVowel = getVowel(szVowels[nIndex]);
-
-    using CVowelFormantSet::male;
-    using CVowelFormantSet::female;
-    using CVowelFormantSet::child;
 
     vowels[male].push_back(CVowelFormants(szVowel, 
                                           Men[nIndex][0],
@@ -548,7 +544,7 @@ CVowelFormantSet CVowelFormantSets::PetersonBarney52()
 // Ladefoged(1993)
 CVowelFormantSet CVowelFormantSets::Ladefoged93()
 {
-  const nVowels = 8;
+  const int nVowels = 8;
   const char* szVowels[nVowels] = 
   {
     _AC("i","i"),
@@ -574,9 +570,9 @@ CVowelFormantSet CVowelFormantSets::Ladefoged93()
   CVowelFormantsVector vowels[3];
   
 
-  using CVowelFormantSet::male;
-  using CVowelFormantSet::female;
-  using CVowelFormantSet::child;
+  const int male   = CVowelFormantSet::male;
+  const int female = CVowelFormantSet::female;
+  const int child  = CVowelFormantSet::child;
   
   // pre-reserve space to speed operation
   vowels[male].reserve(nVowels);
@@ -598,7 +594,7 @@ CVowelFormantSet CVowelFormantSets::Ladefoged93()
 
 CVowelFormantSet CVowelFormantSets::DanielJones()
 {
-  const nVowels = 8;
+  const int nVowels = 8;
   const char* szVowels[nVowels] = 
   {
     _AC("i","i"),
@@ -626,9 +622,9 @@ CVowelFormantSet CVowelFormantSets::DanielJones()
   CVowelFormantsVector vowels[3];
   
 
-  using CVowelFormantSet::male;
-  using CVowelFormantSet::female;
-  using CVowelFormantSet::child;
+  const int male   = CVowelFormantSet::male;
+  const int female = CVowelFormantSet::female;
+  const int child  = CVowelFormantSet::child;
   
   // pre-reserve space to speed operation
   vowels[male].reserve(nVowels);
@@ -650,7 +646,7 @@ CVowelFormantSet CVowelFormantSets::DanielJones()
 
 CVowelFormantSet CVowelFormantSets::Whitley()
 {
-  const nVowels = 8;
+  const int nVowels = 8;
   const char* szVowels[nVowels] = 
   {
     _AC("i","i"),
@@ -678,9 +674,9 @@ CVowelFormantSet CVowelFormantSets::Whitley()
   CVowelFormantsVector vowels[3];
   
 
-  using CVowelFormantSet::male;
-  using CVowelFormantSet::female;
-  using CVowelFormantSet::child;
+  const int male   = CVowelFormantSet::male;
+  const int female = CVowelFormantSet::female;
+  const int child  = CVowelFormantSet::child;
   
   // pre-reserve space to speed operation
   vowels[male].reserve(nVowels);
@@ -702,7 +698,7 @@ CVowelFormantSet CVowelFormantSets::Whitley()
 
 CVowelFormantSet CVowelFormantSets::SynthesisLadefoged()
 {
-  const nVowels = 8;
+  const int nVowels = 8;
   const char* szVowels[nVowels] = 
   {
     _AC("i","i"),
@@ -729,9 +725,9 @@ CVowelFormantSet CVowelFormantSets::SynthesisLadefoged()
   CVowelFormantsVector vowels[3];
   
 
-  using CVowelFormantSet::male;
-  using CVowelFormantSet::female;
-  using CVowelFormantSet::child;
+  const int male   = CVowelFormantSet::male;
+  const int female = CVowelFormantSet::female;
+  const int child  = CVowelFormantSet::child;
   
   // pre-reserve space to speed operation
   vowels[male].reserve(nVowels);

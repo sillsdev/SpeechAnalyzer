@@ -152,7 +152,7 @@ void CIpaVTCharVector::Load(CString szPath)
     value = extractTabField(line, field++);
     int i = 0;
     _stscanf(value,_T("%d"),&i);
-    const VTAreas = i;
+    const int VTAreas = i;
     columnChar.m_areas.reserve(VTAreas);
     for(i = 0; i < VTAreas; i++)
     {
@@ -167,7 +167,7 @@ void CIpaVTCharVector::Load(CString szPath)
     value = extractTabField(line, field++);
     i = 0;
     _stscanf(value,_T("%d"),&i);
-    const VTReflections = i;
+    const int VTReflections = i;
     columnChar.m_reflection.reserve(VTReflections);
     for(i = 0; i < VTReflections; i++)
     {
@@ -182,7 +182,7 @@ void CIpaVTCharVector::Load(CString szPath)
     value = extractTabField(line, field++);
     i = 0;
     _stscanf(value,_T("%d"),&i);
-    const VTPreds = i;
+    const int VTPreds = i;
     columnChar.m_pred.reserve(VTPreds);
     for(i = 0; i < VTPreds; i++)
     {
@@ -743,7 +743,7 @@ void CDlgVocalTract::LabelGrid(int nGrid)
       m_cGrid[nGrid].SetTextMatrix(i, columnDescription, _T(""));
     }
 
-    for(i = getRow(rAreaFirst); i < getRow(rAreaLast); i++)
+    for(int i = getRow(rAreaFirst); i < getRow(rAreaLast); i++)
     {
       CString szArea;
 
@@ -755,7 +755,7 @@ void CDlgVocalTract::LabelGrid(int nGrid)
     }
     m_cGrid[nGrid].SetTextMatrix(getRow(rAreaFirst), columnDescription, _T("Tube #1 area (source)"));
     
-    for(i = getRow(rPredFirst); i < getRow(rPredLast); i++)
+    for(int i = getRow(rPredFirst); i < getRow(rPredLast); i++)
     {
       CString szPred;
 
@@ -766,7 +766,7 @@ void CDlgVocalTract::LabelGrid(int nGrid)
       m_cGrid[nGrid].SetTextMatrix(i, columnDescription, szPred);
     }
     
-    for(i = getRow(rReflectionFirst); i < getRow(rReflectionLast); i++)
+    for(int i = getRow(rReflectionFirst); i < getRow(rReflectionLast); i++)
     {
       CString szReflection;
 
@@ -1555,11 +1555,11 @@ static void Interpolate(CIpaVTCharVector &cInterpolated, int nPrevious, double d
     breakTime += cInterpolated[nLocation].m_duration;
 
   double endTime = 0;
-  for(nLocation = nPrevious; nLocation < nNext; nLocation++)
+  for(int nLocation = nPrevious; nLocation < nNext; nLocation++)
     endTime += cInterpolated[nLocation].m_duration;
 
   double time = 0;
-  for(nLocation = nPrevious + 1; nLocation < nNext; nLocation++)
+  for(int nLocation = nPrevious + 1; nLocation < nNext; nLocation++)
   {
     time += cInterpolated[nLocation].m_duration/2.;
     double dWeight = InterpolateWeight(time, breakTime, endTime);
@@ -1628,7 +1628,7 @@ void CDlgVocalTract::OnBlendSegments(int nSrc, CFlexEditGrid &cGrid)
       cInterpolated.push_back(newValue);
       
       newValue.m_duration = dLength/int(dLength/desiredLength);
-      for(replicas = int(dLength/desiredLength); replicas > 0; replicas--)
+      for(int replicas = int(dLength/desiredLength); replicas > 0; replicas--)
       {
         cInterpolated.push_back(newValue);
       }
@@ -1639,7 +1639,7 @@ void CDlgVocalTract::OnBlendSegments(int nSrc, CFlexEditGrid &cGrid)
   int nLastMarker = 0;
   double dBreakPoint= 0;
   CString szPrevious;
-  for(nIndex = 0; nIndex < cInterpolated.size(); nIndex++)
+  for(unsigned int nIndex = 0; nIndex < cInterpolated.size(); nIndex++)
   {
     if(szPrevious != cInterpolated[nIndex].m_ipa)
     {
@@ -1669,7 +1669,7 @@ void CDlgVocalTract::ParseParameterGrid(CFlexEditGrid &cGrid, int column, CIpaVT
   if(columnChar.m_ipa.IsEmpty())
     return;
   
-  const VTAreas = getRow(rAreaLast) - getRow(rAreaFirst);
+  const int VTAreas = getRow(rAreaLast) - getRow(rAreaFirst);
   columnChar.m_areas.reserve(VTAreas);
   for(int i = 0; i < VTAreas; i++)
   {
@@ -1681,9 +1681,9 @@ void CDlgVocalTract::ParseParameterGrid(CFlexEditGrid &cGrid, int column, CIpaVT
     columnChar.m_areas.push_back(dValue);
   }
   
-  const VTReflections = getRow(rReflectionLast) - getRow(rReflectionFirst);
+  const int VTReflections = getRow(rReflectionLast) - getRow(rReflectionFirst);
   columnChar.m_reflection.reserve(VTReflections);
-  for(i = 0; i < VTReflections; i++)
+  for(int i = 0; i < VTReflections; i++)
   {
     CString szValue;
     double dValue = 0.;
@@ -1693,9 +1693,9 @@ void CDlgVocalTract::ParseParameterGrid(CFlexEditGrid &cGrid, int column, CIpaVT
     columnChar.m_reflection.push_back(dValue);
   }
   
-  const VTPreds = getRow(rPredLast) - getRow(rPredFirst);
+  const int VTPreds = getRow(rPredLast) - getRow(rPredFirst);
   columnChar.m_pred.reserve(VTPreds);
-  for(i = 0; i < VTPreds; i++)
+  for(int i = 0; i < VTPreds; i++)
   {
     CString szValue;
     double dValue = 0.;
@@ -2136,14 +2136,14 @@ BOOL CDlgVocalTract::SynthesizeDataChunk(HMMIO hmmioFile, PCMWAVEFORMAT pcm, CIp
 
     CZTransform zReverse = filter.Forward();
 
-    for(i = data.size(); i>0; i--)  // Apply filter in reverse to get better phase estimate
+    for(unsigned int i = data.size(); i>0; i--)  // Apply filter in reverse to get better phase estimate
       data[i-1] = zReverse.Tick(dScale*data[i-1]);
 
     if(m_nTilt == DB12)
     {
       CZTransform zForward = filter.Forward();
       
-      for(i = 0; i < data.size(); i++)
+      for(unsigned int i = 0; i < data.size(); i++)
         data[i] = zForward.Tick(data[i]);
     }
   }
@@ -2154,7 +2154,7 @@ BOOL CDlgVocalTract::SynthesizeDataChunk(HMMIO hmmioFile, PCMWAVEFORMAT pcm, CIp
 
     mirror.reserve(data.size());
     
-    for(i = data.size(); i>0; i--)  // Mirror waveform
+    for(unsigned int i = data.size(); i>0; i--)  // Mirror waveform
       mirror.push_back(data[i-1]);
 
     mirror.swap(data);
@@ -2162,7 +2162,7 @@ BOOL CDlgVocalTract::SynthesizeDataChunk(HMMIO hmmioFile, PCMWAVEFORMAT pcm, CIp
 
   std::vector<SHORT> shortData;
   shortData.reserve(data.size());
-  for(i = 0; i < data.size(); i++)  // Convert samples to double
+  for(unsigned int i = 0; i < data.size(); i++)  // Convert samples to double
     shortData.push_back((SHORT) min(max(data[i],-0x8000), 0x7fff));
 
   return mmioWrite(hmmioFile, (char*) &shortData[0], sizeof(SHORT)*data.size());
@@ -2749,5 +2749,6 @@ void CDlgVocalTract::OnUpdateSynthHide(CCmdUI* pCmdUI)
 {
 	pCmdUI->SetCheck(m_bMinimize);	
 }
+
 
 

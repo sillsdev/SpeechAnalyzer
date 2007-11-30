@@ -267,7 +267,8 @@ void CProcessFormants::SmoothMedian(ISaDoc *pDoc)
     FORMANT MedianFreq[MAX_NUM_FORMANTS+1];
     m_dwValidFrameCount = 0;
     
-    for (DWORD dwFrame = 0; dwFrame < m_dwFormantFrameCount - 2; dwFrame++)
+    DWORD dwFrame;
+	for (dwFrame = 0; dwFrame < m_dwFormantFrameCount - 2; dwFrame++)
     {
       // Set pointers to each frame.
       FormantFrame[0] = GetFormantFrame(dwFrame)->Formant;     // frame to update with median
@@ -344,13 +345,13 @@ void CProcessFormants::SmoothMedian(ISaDoc *pDoc)
       {
         m_dwValidFrameCount++;
         if(dwFrame == 0)
-          for (nFormant = 1; nFormant <= 3; nFormant++) 
+          for (unsigned short nFormant = 1; nFormant <= 3; nFormant++) 
           {
             m_F[nFormant].Mean = FormantFrame[0][nFormant].Lpc.FrequencyInHertz;
             m_F[nFormant].StdDev = 0.;  //!!update
           }
           else
-            for (nFormant = 1; nFormant <= 3; nFormant++) 
+            for (unsigned short nFormant = 1; nFormant <= 3; nFormant++) 
             {
               double FormantFreq = FormantFrame[0][nFormant].Lpc.FrequencyInHertz;
               m_F[nFormant].Mean = (m_F[nFormant].Mean*(m_dwValidFrameCount-1)/m_dwValidFrameCount) + FormantFreq/m_dwValidFrameCount;
@@ -379,7 +380,7 @@ void CProcessFormants::SmoothMedian(ISaDoc *pDoc)
     if (bValidF1F2F3)
     {
       m_dwValidFrameCount++;
-      for (nFormant = 1; nFormant <= 3; nFormant++) 
+      for (UINT nFormant = 1; nFormant <= 3; nFormant++) 
       {
         double FormantFreq = FormantFrame[0][nFormant].Lpc.FrequencyInHertz;
         m_F[nFormant].Mean = (m_F[nFormant].Mean*(m_dwValidFrameCount-1)/m_dwValidFrameCount) + 

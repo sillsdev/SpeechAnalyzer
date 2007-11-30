@@ -115,12 +115,12 @@ long CProcessLoudness::Process(void* pCaller, ISaDoc* pDoc, int nProgress,
     HPSTR pRawData = NULL, pBlockStart; // pointers to raw data
     short int * pLoudData = (short int *)m_lpData; // pointer to loudness data
     // calculate current processing position
-    DWORD dwDataPos, dwLoudStart;
+    DWORD dwDataPos, dwLoudStart, dwLoudCount;
     dwLoudStart = static_cast<DWORD>(ceil(nCalcDataLength / 2. / nCalcInterval));
     dwDataPos = dwLoudStart * nCalcInterval - nCalcDataLength / 2;
     if (nSmpSize > 1) dwDataPos *= 2; // 16 bit data
     // prepare loudness loop
-    for (DWORD dwLoudCount = 0; dwLoudCount < dwLoudStart; dwLoudCount++)
+    for (dwLoudCount = 0; dwLoudCount < dwLoudStart; dwLoudCount++)
     { 
       *pLoudData++ = 0; // initialize buffer
     }
@@ -451,7 +451,7 @@ HPSTR CProcessSmoothLoudness::SmoothRawData(ISaDoc* pDoc, HPSTR pTarget, UINT nS
     if (((DWORD)(nBlock + 1) * GetProcessBufferSize()) > pDoc->GetDataSize())
     dwAmount = pDoc->GetDataSize() - ((DWORD)nBlock * GetProcessBufferSize());
     try
-    { m_pSRDfile->WriteHuge((HPSTR)(pTarget + GetProcessBufferSize()), dwAmount);
+    { m_pSRDfile->Write((HPSTR)(pTarget + GetProcessBufferSize()), dwAmount);
     }
     catch (CFileException e)
     { // error writing file
@@ -561,7 +561,8 @@ long CProcessSmoothLoudness::Process(void* pCaller, ISaDoc* pDoc,
     dwDataPos = dwLoudStart * nCalcInterval - nCalcDataLength / 2;
     if (nSmpSize > 1) dwDataPos *= 2; // 16 bit data
     // prepare loudness loop
-    for (DWORD dwLoudCount = 0; dwLoudCount < dwLoudStart; dwLoudCount++)
+	DWORD dwLoudCount;
+    for (dwLoudCount = 0; dwLoudCount < dwLoudStart; dwLoudCount++)
     { *pLoudData++ = 0; // initialize buffer
     }
     UINT nFirstOffset = (UINT)dwDataPos; // raw data pointer offset for start
@@ -737,7 +738,7 @@ HPSTR CProcessSmoothLoudness::GetSmoothRawData(DWORD dwOffset, BOOL bBlockBegin)
       }
       // read the processed data block
       try
-      { m_pSRDfile->ReadHuge((HPSTR)m_lpSRDdata, GetProcessBufferSize());
+      { m_pSRDfile->Read((HPSTR)m_lpSRDdata, GetProcessBufferSize());
       }
       catch (CFileException e)
       { // error reading file
@@ -753,4 +754,5 @@ HPSTR CProcessSmoothLoudness::GetSmoothRawData(DWORD dwOffset, BOOL bBlockBegin)
       return m_lpSRDdata;
     }
 }
+
 

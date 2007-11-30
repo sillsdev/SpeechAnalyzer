@@ -455,7 +455,7 @@ void CSaView::OnGraphsTypes()
 /***************************************************************************/
 // CSaView::OnGraphTypesSelect Change the graphs
 /***************************************************************************/
-void CSaView::OnGraphTypesSelect(int nID)
+void CSaView::OnGraphTypesSelect(UINT nID)
 {
   int nConfiguration = nID - ID_GRAPHTYPES_SELECT_FIRST;
 
@@ -517,7 +517,7 @@ void CSaView::OnGraphsTypesPostProcess(const UINT* anNewGraphID, int nLayout)
   // NOTE: Do this first because the destructors want the graph 
   // list intact to be able to inter communicate.
   //**************************************************************
-  for (i = 0; i < MAX_GRAPHS_NUMBER; i++)
+  for (int i = 0; i < MAX_GRAPHS_NUMBER; i++)
   {
     if (m_apGraphs[i] && !IDDSelected(&anTmpGraphID[0], m_anGraphID[i]))
     {
@@ -534,7 +534,7 @@ void CSaView::OnGraphsTypesPostProcess(const UINT* anNewGraphID, int nLayout)
   // elements in the permanent array of graph pointers and IDs
   // so those graphs won't get deleted later in this function.
   //**************************************************************
-  for (i = 0; i < MAX_GRAPHS_NUMBER; i++)
+  for (int i = 0; i < MAX_GRAPHS_NUMBER; i++)
   {
     if (anTmpGraphID[i] && IDDSelected(&m_anGraphID[0], anTmpGraphID[i]))
     {
@@ -557,7 +557,7 @@ void CSaView::OnGraphsTypesPostProcess(const UINT* anNewGraphID, int nLayout)
   // For those graph IDs in the temp. graph ID array that don't
   // have corresponding graph pointers, create graphs.
   //**************************************************************
-  for (i = 0; i < MAX_GRAPHS_NUMBER; i++)
+  for (int i = 0; i < MAX_GRAPHS_NUMBER; i++)
   {
     ASSERT (m_apGraphs[i] == NULL);
     m_anGraphID[i] = anTmpGraphID[i];
@@ -773,7 +773,7 @@ CSaView::CSaView(const CSaView *pToBeCopied)
   m_bXScaleAll = TRUE;
   m_bXScaleNone = FALSE;
 
-  for (nLoop = 0; nLoop < ANNOT_WND_NUMBER; nLoop++)
+  for (int nLoop = 0; nLoop < ANNOT_WND_NUMBER; nLoop++)
   {
     if (nLoop == PHONETIC)
     {
@@ -1006,7 +1006,8 @@ WINDOWPLACEMENT CSaView::DeleteGraphs(int nPosition, BOOL bClearID)
 /***************************************************************************/
 int CSaView::GetNumberOfGraphs(UINT *pGraphIDs)
 {
-  for (int nNumOfGraphs = 0, i = 0; i < MAX_GRAPHS_NUMBER; i++)
+  int nNumOfGraphs = 0;
+  for (int i = 0; i < MAX_GRAPHS_NUMBER; i++)
     if (pGraphIDs[i]) nNumOfGraphs++;
 
     return nNumOfGraphs;
