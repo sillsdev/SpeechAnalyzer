@@ -2307,8 +2307,10 @@ void CSaApp::WriteProperties(Object_ostream& obs)
 	szVersion = szVersion.Right(szVersion.GetLength() - szVersion.Find(' ') - 1);
 	int nBuildIndex = szVersion.Find(_T("Build"));
 	if (nBuildIndex > 0)
+	{
 		szBuildNum = _T(".") + szVersion.Mid(nBuildIndex + 6, szVersion.GetLength() - nBuildIndex - 7);
-	szVersion = szVersion.Left(szVersion.Find(' ')) + szBuildNum;
+		szVersion = szVersion.Left(szVersion.Find(' ')) + szBuildNum;
+	}
 
 	// The open databases and windows
 	SetZ();  // Set the current z-order of all views
