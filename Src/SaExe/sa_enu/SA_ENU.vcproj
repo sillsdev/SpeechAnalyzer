@@ -4,6 +4,7 @@
 	Version="8.00"
 	Name="SA_ENU"
 	ProjectGUID="{23E56F0E-30A8-4CF2-AB4D-5B1ED39CD268}"
+	RootNamespace="SA_ENU"
 	Keyword="MFCProj"
 	>
 	<Platforms>
@@ -15,9 +16,9 @@
 	</ToolFiles>
 	<Configurations>
 		<Configuration
-			Name="UDebug|Win32"
+			Name="Debug|Win32"
 			OutputDirectory=".\..\..\..\Output\Debug"
-			IntermediateDirectory=".\UDebug"
+			IntermediateDirectory=".\Debug"
 			ConfigurationType="2"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC60.vsprops"
 			UseOfMFC="2"
@@ -55,10 +56,10 @@
 				RuntimeLibrary="3"
 				UsePrecompiledHeader="2"
 				PrecompiledHeaderThrough="stdafx.h"
-				PrecompiledHeaderFile=".\UDebug/SA_ENU.pch"
-				AssemblerListingLocation=".\UDebug/"
-				ObjectFile=".\UDebug/"
-				ProgramDataBaseFileName=".\UDebug/"
+				PrecompiledHeaderFile=".\Debug/SA_ENU.pch"
+				AssemblerListingLocation=".\Debug/"
+				ObjectFile=".\Debug/"
+				ProgramDataBaseFileName=".\Debug/"
 				WarningLevel="3"
 				SuppressStartupBanner="true"
 				DebugInformationFormat="4"
@@ -114,9 +115,9 @@
 			/>
 		</Configuration>
 		<Configuration
-			Name="URelease|Win32"
+			Name="Release|Win32"
 			OutputDirectory=".\..\..\..\Output\Release"
-			IntermediateDirectory=".\URelease"
+			IntermediateDirectory=".\Release"
 			ConfigurationType="2"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC60.vsprops"
 			UseOfMFC="2"
@@ -155,10 +156,10 @@
 				RuntimeLibrary="2"
 				UsePrecompiledHeader="2"
 				PrecompiledHeaderThrough="stdafx.h"
-				PrecompiledHeaderFile=".\URelease/SA_ENU.pch"
-				AssemblerListingLocation=".\URelease/"
-				ObjectFile=".\URelease/"
-				ProgramDataBaseFileName=".\URelease/"
+				PrecompiledHeaderFile=".\Release/SA_ENU.pch"
+				AssemblerListingLocation=".\Release/"
+				ObjectFile=".\Release/"
+				ProgramDataBaseFileName=".\Release/"
 				BrowseInformation="1"
 				WarningLevel="4"
 				SuppressStartupBanner="true"
@@ -226,7 +227,7 @@
 				RelativePath="..\SA.rc"
 				>
 				<FileConfiguration
-					Name="UDebug|Win32"
+					Name="Debug|Win32"
 					>
 					<Tool
 						Name="VCResourceCompilerTool"
@@ -235,7 +236,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="URelease|Win32"
+					Name="Release|Win32"
 					>
 					<Tool
 						Name="VCResourceCompilerTool"
@@ -248,7 +249,7 @@
 				RelativePath="SA_ENU.cpp"
 				>
 				<FileConfiguration
-					Name="UDebug|Win32"
+					Name="Debug|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -257,7 +258,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="URelease|Win32"
+					Name="Release|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -270,7 +271,7 @@
 				RelativePath="StdAfx.cpp"
 				>
 				<FileConfiguration
-					Name="UDebug|Win32"
+					Name="Debug|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -280,7 +281,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="URelease|Win32"
+					Name="Release|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"

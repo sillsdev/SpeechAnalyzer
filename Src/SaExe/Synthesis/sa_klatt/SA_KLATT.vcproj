@@ -4,6 +4,7 @@
 	Version="8.00"
 	Name="SA_KLATT"
 	ProjectGUID="{C27ADB97-DE1A-4820-8CF5-7554CF677995}"
+	RootNamespace="SA_KLATT"
 	>
 	<Platforms>
 		<Platform
@@ -14,9 +15,9 @@
 	</ToolFiles>
 	<Configurations>
 		<Configuration
-			Name="UDebug|Win32"
-			OutputDirectory=".\UDebug"
-			IntermediateDirectory=".\UDebug"
+			Name="Debug|Win32"
+			OutputDirectory=".\Debug"
+			IntermediateDirectory=".\Debug"
 			ConfigurationType="4"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC60.vsprops"
 			UseOfMFC="0"
@@ -45,10 +46,10 @@
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
-				PrecompiledHeaderFile=".\UDebug/SA_KLATT.pch"
-				AssemblerListingLocation=".\UDebug/"
-				ObjectFile=".\UDebug/"
-				ProgramDataBaseFileName=".\UDebug/"
+				PrecompiledHeaderFile=".\Debug/SA_KLATT.pch"
+				AssemblerListingLocation=".\Debug/"
+				ObjectFile=".\Debug/"
+				ProgramDataBaseFileName=".\Debug/"
 				BrowseInformation="1"
 				WarningLevel="3"
 				SuppressStartupBanner="true"
@@ -67,7 +68,7 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile=".\UDebug\SA_KLATT.lib"
+				OutputFile=".\..\..\..\Output\Debug\SA_KLATT.lib"
 				SuppressStartupBanner="true"
 			/>
 			<Tool
@@ -79,7 +80,7 @@
 			<Tool
 				Name="VCBscMakeTool"
 				SuppressStartupBanner="true"
-				OutputFile=".\UDebug/SA_KLATT.bsc"
+				OutputFile=".\..\..\..\Output\Debug/SA_KLATT.bsc"
 			/>
 			<Tool
 				Name="VCFxCopTool"
@@ -89,9 +90,9 @@
 			/>
 		</Configuration>
 		<Configuration
-			Name="URelease|Win32"
-			OutputDirectory=".\URelease"
-			IntermediateDirectory=".\URelease"
+			Name="Release|Win32"
+			OutputDirectory=".\Release"
+			IntermediateDirectory=".\Release"
 			ConfigurationType="4"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC60.vsprops"
 			UseOfMFC="0"
@@ -121,10 +122,10 @@
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="2"
-				PrecompiledHeaderFile=".\URelease/SA_KLATT.pch"
-				AssemblerListingLocation=".\URelease/"
-				ObjectFile=".\URelease/"
-				ProgramDataBaseFileName=".\URelease/"
+				PrecompiledHeaderFile=".\Release/SA_KLATT.pch"
+				AssemblerListingLocation=".\Release/"
+				ObjectFile=".\Release/"
+				ProgramDataBaseFileName=".\Release/"
 				BrowseInformation="1"
 				WarningLevel="4"
 				SuppressStartupBanner="true"
@@ -143,7 +144,7 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile=".\URelease\SA_KLATT.lib"
+				OutputFile=".\..\..\..\Output\Release\SA_KLATT.lib"
 				SuppressStartupBanner="true"
 			/>
 			<Tool
@@ -155,7 +156,7 @@
 			<Tool
 				Name="VCBscMakeTool"
 				SuppressStartupBanner="true"
-				OutputFile=".\URelease/SA_KLATT.bsc"
+				OutputFile=".\..\..\..\Output\Release/SA_KLATT.bsc"
 			/>
 			<Tool
 				Name="VCFxCopTool"
@@ -176,7 +177,7 @@
 				RelativePath="Frame.cpp"
 				>
 				<FileConfiguration
-					Name="UDebug|Win32"
+					Name="Debug|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -184,7 +185,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="URelease|Win32"
+					Name="Release|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -196,7 +197,7 @@
 				RelativePath="Init_syn.cpp"
 				>
 				<FileConfiguration
-					Name="UDebug|Win32"
+					Name="Debug|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -204,7 +205,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="URelease|Win32"
+					Name="Release|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -216,7 +217,7 @@
 				RelativePath="parameters.cpp"
 				>
 				<FileConfiguration
-					Name="UDebug|Win32"
+					Name="Debug|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -224,7 +225,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="URelease|Win32"
+					Name="Release|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -236,7 +237,7 @@
 				RelativePath="Reson.cpp"
 				>
 				<FileConfiguration
-					Name="UDebug|Win32"
+					Name="Debug|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -244,7 +245,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="URelease|Win32"
+					Name="Release|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -256,7 +257,7 @@
 				RelativePath="Sample.cpp"
 				>
 				<FileConfiguration
-					Name="UDebug|Win32"
+					Name="Debug|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -264,7 +265,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="URelease|Win32"
+					Name="Release|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -276,7 +277,7 @@
 				RelativePath="StdAfx.cpp"
 				>
 				<FileConfiguration
-					Name="UDebug|Win32"
+					Name="Debug|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -284,7 +285,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="URelease|Win32"
+					Name="Release|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -296,7 +297,7 @@
 				RelativePath="synth interface.cpp"
 				>
 				<FileConfiguration
-					Name="UDebug|Win32"
+					Name="Debug|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -304,7 +305,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="URelease|Win32"
+					Name="Release|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -316,7 +317,7 @@
 				RelativePath="Voice.cpp"
 				>
 				<FileConfiguration
-					Name="UDebug|Win32"
+					Name="Debug|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -324,7 +325,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="URelease|Win32"
+					Name="Release|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"

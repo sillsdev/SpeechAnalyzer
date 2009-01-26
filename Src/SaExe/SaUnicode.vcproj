@@ -16,9 +16,9 @@
 	</ToolFiles>
 	<Configurations>
 		<Configuration
-			Name="UDebug|Win32"
+			Name="Debug|Win32"
 			OutputDirectory=".\..\..\Output\Debug"
-			IntermediateDirectory=".\UDebug"
+			IntermediateDirectory=".\Debug"
 			ConfigurationType="1"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC60.vsprops"
 			UseOfMFC="2"
@@ -53,10 +53,10 @@
 				PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;WINDOWS_PLATFORM;WINVER=0x400;_WIN32_IE=0x0400"
 				MinimalRebuild="true"
 				RuntimeLibrary="3"
-				PrecompiledHeaderFile=".\UDebug/SaUnicode.pch"
-				AssemblerListingLocation=".\UDebug/"
-				ObjectFile=".\UDebug/"
-				ProgramDataBaseFileName=".\UDebug/"
+				PrecompiledHeaderFile=".\Debug/SaUnicode.pch"
+				AssemblerListingLocation=".\Debug/"
+				ObjectFile=".\Debug/"
+				ProgramDataBaseFileName=".\Debug/"
 				BrowseInformation="1"
 				WarningLevel="4"
 				SuppressStartupBanner="true"
@@ -83,7 +83,7 @@
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile=".\..\..\Output\Debug/SA.pdb"
 				GenerateMapFile="true"
-				MapFileName=".\UDebug/SA.map"
+				MapFileName=".\..\..\Output\Debug/SA.map"
 				SubSystem="2"
 				StackReserveSize="1048576"
 				EntryPointSymbol="wWinMainCRTStartup"
@@ -116,9 +116,9 @@
 			/>
 		</Configuration>
 		<Configuration
-			Name="URelease|Win32"
+			Name="Release|Win32"
 			OutputDirectory=".\..\..\Output\Release"
-			IntermediateDirectory=".\URelease"
+			IntermediateDirectory=".\Release"
 			ConfigurationType="1"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC60.vsprops"
 			UseOfMFC="2"
@@ -154,10 +154,10 @@
 				PreprocessorDefinitions="_WINDOWS;WINDOWS_PLATFORM;WINVER=0x400;_WIN32_IE=0x0400;WIN32;NDEBUG"
 				MinimalRebuild="true"
 				RuntimeLibrary="2"
-				PrecompiledHeaderFile=".\URelease/SaUnicode.pch"
-				AssemblerListingLocation=".\URelease/"
-				ObjectFile=".\URelease/"
-				ProgramDataBaseFileName=".\URelease/"
+				PrecompiledHeaderFile=".\Release/SaUnicode.pch"
+				AssemblerListingLocation=".\Release/"
+				ObjectFile=".\Release/"
+				ProgramDataBaseFileName=".\Release/"
 				BrowseInformation="1"
 				WarningLevel="4"
 				SuppressStartupBanner="true"
@@ -176,7 +176,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="mfc80u.lib mfcs80u.lib msvcrt.lib msvcprt.lib comdlg32.lib user32.lib gdi32.lib kernel32.lib advapi32.lib oldnames.lib winmm.lib version.lib imm32.lib ole32.lib oleaut32.lib uuid.lib comsupp.lib HtmlHelp\htmlhelp.lib shell32.lib"
+				AdditionalDependencies="mfc80u.lib mfcs80u.lib msvcrt.lib msvcprt.lib comdlg32.lib user32.lib gdi32.lib kernel32.lib advapi32.lib oldnames.lib winmm.lib version.lib imm32.lib ole32.lib oleaut32.lib uuid.lib comsuppw.lib HtmlHelp\htmlhelp.lib shell32.lib"
 				OutputFile="..\..\Output\Release\SA.exe"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
@@ -184,7 +184,7 @@
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile=".\..\..\Output\Release/SA.pdb"
 				GenerateMapFile="true"
-				MapFileName=".\URelease/SA.map"
+				MapFileName=".\..\..\Output\Release/SA.map"
 				SubSystem="2"
 				StackReserveSize="1048576"
 				EntryPointSymbol="wWinMainCRTStartup"
@@ -227,7 +227,7 @@
 				RelativePath="Synthesis\DlgKlattAll.cpp"
 				>
 				<FileConfiguration
-					Name="UDebug|Win32"
+					Name="Debug|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -236,7 +236,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="URelease|Win32"
+					Name="Release|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -249,7 +249,7 @@
 				RelativePath="Synthesis\DlgMbrola.cpp"
 				>
 				<FileConfiguration
-					Name="UDebug|Win32"
+					Name="Debug|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -258,7 +258,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="URelease|Win32"
+					Name="Release|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -271,7 +271,7 @@
 				RelativePath="Synthesis\DlgSynthesis.cpp"
 				>
 				<FileConfiguration
-					Name="UDebug|Win32"
+					Name="Debug|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -280,7 +280,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="URelease|Win32"
+					Name="Release|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -293,7 +293,7 @@
 				RelativePath="Synthesis\DlgVocalTract.cpp"
 				>
 				<FileConfiguration
-					Name="UDebug|Win32"
+					Name="Debug|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -302,7 +302,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="URelease|Win32"
+					Name="Release|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -318,7 +318,7 @@
 					RelativePath="Process\Butterworth.cpp"
 					>
 					<FileConfiguration
-						Name="UDebug|Win32"
+						Name="Debug|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -327,7 +327,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="URelease|Win32"
+						Name="Release|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -340,7 +340,7 @@
 					RelativePath="Process\FormantTracker.cpp"
 					>
 					<FileConfiguration
-						Name="UDebug|Win32"
+						Name="Debug|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -349,7 +349,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="URelease|Win32"
+						Name="Release|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -362,7 +362,7 @@
 					RelativePath="Dsp\Lpc.cpp"
 					>
 					<FileConfiguration
-						Name="UDebug|Win32"
+						Name="Debug|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -371,7 +371,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="URelease|Win32"
+						Name="Release|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -384,7 +384,7 @@
 					RelativePath="Process\sa_p_3dPitch.cpp"
 					>
 					<FileConfiguration
-						Name="UDebug|Win32"
+						Name="Debug|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -393,7 +393,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="URelease|Win32"
+						Name="Release|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -406,7 +406,7 @@
 					RelativePath="Process\SA_P_CHA.CPP"
 					>
 					<FileConfiguration
-						Name="UDebug|Win32"
+						Name="Debug|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -415,7 +415,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="URelease|Win32"
+						Name="Release|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -428,7 +428,7 @@
 					RelativePath="Process\sa_p_cor.cpp"
 					>
 					<FileConfiguration
-						Name="UDebug|Win32"
+						Name="Debug|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -437,7 +437,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="URelease|Win32"
+						Name="Release|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -450,7 +450,7 @@
 					RelativePath="Process\SA_P_CPI.CPP"
 					>
 					<FileConfiguration
-						Name="UDebug|Win32"
+						Name="Debug|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -459,7 +459,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="URelease|Win32"
+						Name="Release|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -472,7 +472,7 @@
 					RelativePath="Process\sa_p_doc.cpp"
 					>
 					<FileConfiguration
-						Name="UDebug|Win32"
+						Name="Debug|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -481,7 +481,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="URelease|Win32"
+						Name="Release|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -494,7 +494,7 @@
 					RelativePath="Process\SA_P_DUR.CPP"
 					>
 					<FileConfiguration
-						Name="UDebug|Win32"
+						Name="Debug|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -503,7 +503,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="URelease|Win32"
+						Name="Release|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -516,7 +516,7 @@
 					RelativePath="Process\SA_P_FMT.CPP"
 					>
 					<FileConfiguration
-						Name="UDebug|Win32"
+						Name="Debug|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -525,7 +525,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="URelease|Win32"
+						Name="Release|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -538,7 +538,7 @@
 					RelativePath="Process\SA_P_FRA.CPP"
 					>
 					<FileConfiguration
-						Name="UDebug|Win32"
+						Name="Debug|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -547,7 +547,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="URelease|Win32"
+						Name="Release|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -560,7 +560,7 @@
 					RelativePath="Process\Sa_p_glo.cpp"
 					>
 					<FileConfiguration
-						Name="UDebug|Win32"
+						Name="Debug|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -569,7 +569,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="URelease|Win32"
+						Name="Release|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -582,7 +582,7 @@
 					RelativePath="Process\Sa_p_gra.cpp"
 					>
 					<FileConfiguration
-						Name="UDebug|Win32"
+						Name="Debug|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -591,7 +591,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="URelease|Win32"
+						Name="Release|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -604,7 +604,7 @@
 					RelativePath="Process\sa_p_InstantaneousPower.cpp"
 					>
 					<FileConfiguration
-						Name="UDebug|Win32"
+						Name="Debug|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -613,7 +613,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="URelease|Win32"
+						Name="Release|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -626,7 +626,7 @@
 					RelativePath="Process\Sa_p_lou.cpp"
 					>
 					<FileConfiguration
-						Name="UDebug|Win32"
+						Name="Debug|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -635,7 +635,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="URelease|Win32"
+						Name="Release|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -648,7 +648,7 @@
 					RelativePath="Process\sa_p_mel.cpp"
 					>
 					<FileConfiguration
-						Name="UDebug|Win32"
+						Name="Debug|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -657,7 +657,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="URelease|Win32"
+						Name="Release|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -670,7 +670,7 @@
 					RelativePath="Process\Sa_p_pit.cpp"
 					>
 					<FileConfiguration
-						Name="UDebug|Win32"
+						Name="Debug|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -679,7 +679,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="URelease|Win32"
+						Name="Release|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -692,7 +692,7 @@
 					RelativePath="Process\sa_p_poa.cpp"
 					>
 					<FileConfiguration
-						Name="UDebug|Win32"
+						Name="Debug|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -701,7 +701,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="URelease|Win32"
+						Name="Release|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -714,7 +714,7 @@
 					RelativePath="Process\SA_P_RAT.CPP"
 					>
 					<FileConfiguration
-						Name="UDebug|Win32"
+						Name="Debug|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -723,7 +723,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="URelease|Win32"
+						Name="Release|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -736,7 +736,7 @@
 					RelativePath="Process\Sa_p_raw.cpp"
 					>
 					<FileConfiguration
-						Name="UDebug|Win32"
+						Name="Debug|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -745,7 +745,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="URelease|Win32"
+						Name="Release|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -758,7 +758,7 @@
 					RelativePath="Process\sa_p_sfmt.cpp"
 					>
 					<FileConfiguration
-						Name="UDebug|Win32"
+						Name="Debug|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -767,7 +767,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="URelease|Win32"
+						Name="Release|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -780,7 +780,7 @@
 					RelativePath="Process\Sa_p_spg.cpp"
 					>
 					<FileConfiguration
-						Name="UDebug|Win32"
+						Name="Debug|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -789,7 +789,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="URelease|Win32"
+						Name="Release|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -802,7 +802,7 @@
 					RelativePath="Process\SA_P_SPI.CPP"
 					>
 					<FileConfiguration
-						Name="UDebug|Win32"
+						Name="Debug|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -811,7 +811,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="URelease|Win32"
+						Name="Release|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -824,7 +824,7 @@
 					RelativePath="Process\Sa_p_spu.cpp"
 					>
 					<FileConfiguration
-						Name="UDebug|Win32"
+						Name="Debug|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -833,7 +833,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="URelease|Win32"
+						Name="Release|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -846,7 +846,7 @@
 					RelativePath="Process\SA_P_TWC.CPP"
 					>
 					<FileConfiguration
-						Name="UDebug|Win32"
+						Name="Debug|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -855,7 +855,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="URelease|Win32"
+						Name="Release|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -868,7 +868,7 @@
 					RelativePath="Process\sa_p_wavelet.cpp"
 					>
 					<FileConfiguration
-						Name="UDebug|Win32"
+						Name="Debug|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -877,7 +877,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="URelease|Win32"
+						Name="Release|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -890,7 +890,7 @@
 					RelativePath="Process\SA_P_ZCR.CPP"
 					>
 					<FileConfiguration
-						Name="UDebug|Win32"
+						Name="Debug|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -899,7 +899,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="URelease|Win32"
+						Name="Release|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -912,7 +912,7 @@
 					RelativePath="Process\Sa_proc.cpp"
 					>
 					<FileConfiguration
-						Name="UDebug|Win32"
+						Name="Debug|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -921,7 +921,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="URelease|Win32"
+						Name="Release|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -934,7 +934,7 @@
 					RelativePath="Process\SA_W_ADJ.CPP"
 					>
 					<FileConfiguration
-						Name="UDebug|Win32"
+						Name="Debug|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -943,7 +943,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="URelease|Win32"
+						Name="Release|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -956,7 +956,7 @@
 					RelativePath="Process\SA_W_EQU.CPP"
 					>
 					<FileConfiguration
-						Name="UDebug|Win32"
+						Name="Debug|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -965,7 +965,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="URelease|Win32"
+						Name="Release|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -978,7 +978,7 @@
 					RelativePath="Process\SA_W_PAS.CPP"
 					>
 					<FileConfiguration
-						Name="UDebug|Win32"
+						Name="Debug|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -987,7 +987,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="URelease|Win32"
+						Name="Release|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -1000,7 +1000,7 @@
 					RelativePath="Process\SA_W_REV.CPP"
 					>
 					<FileConfiguration
-						Name="UDebug|Win32"
+						Name="Debug|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -1009,7 +1009,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="URelease|Win32"
+						Name="Release|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -1022,7 +1022,7 @@
 					RelativePath="Dsp\Wavewarp.cpp"
 					>
 					<FileConfiguration
-						Name="UDebug|Win32"
+						Name="Debug|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -1031,7 +1031,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="URelease|Win32"
+						Name="Release|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -1048,7 +1048,7 @@
 					RelativePath="Clip.cpp"
 					>
 					<FileConfiguration
-						Name="UDebug|Win32"
+						Name="Debug|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -1057,7 +1057,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="URelease|Win32"
+						Name="Release|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -1070,7 +1070,7 @@
 					RelativePath="Partiture.cpp"
 					>
 					<FileConfiguration
-						Name="UDebug|Win32"
+						Name="Debug|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -1079,7 +1079,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="URelease|Win32"
+						Name="Release|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -1092,7 +1092,7 @@
 					RelativePath="PickOver.cpp"
 					>
 					<FileConfiguration
-						Name="UDebug|Win32"
+						Name="Debug|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -1101,7 +1101,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="URelease|Win32"
+						Name="Release|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -1114,7 +1114,7 @@
 					RelativePath="SA_Annot.cpp"
 					>
 					<FileConfiguration
-						Name="UDebug|Win32"
+						Name="Debug|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -1123,7 +1123,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="URelease|Win32"
+						Name="Release|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -1136,7 +1136,7 @@
 					RelativePath="SA_Cursr.cpp"
 					>
 					<FileConfiguration
-						Name="UDebug|Win32"
+						Name="Debug|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -1145,7 +1145,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="URelease|Win32"
+						Name="Release|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -1158,7 +1158,7 @@
 					RelativePath="sa_g_3dPitch.cpp"
 					>
 					<FileConfiguration
-						Name="UDebug|Win32"
+						Name="Debug|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -1167,7 +1167,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="URelease|Win32"
+						Name="Release|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -1180,7 +1180,7 @@
 					RelativePath="SA_G_Cha.cpp"
 					>
 					<FileConfiguration
-						Name="UDebug|Win32"
+						Name="Debug|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -1189,7 +1189,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="URelease|Win32"
+						Name="Release|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -1202,7 +1202,7 @@
 					RelativePath="SA_G_CPi.cpp"
 					>
 					<FileConfiguration
-						Name="UDebug|Win32"
+						Name="Debug|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -1211,7 +1211,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="URelease|Win32"
+						Name="Release|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -1224,7 +1224,7 @@
 					RelativePath="Sa_G_Dur.cpp"
 					>
 					<FileConfiguration
-						Name="UDebug|Win32"
+						Name="Debug|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -1233,7 +1233,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="URelease|Win32"
+						Name="Release|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -1246,7 +1246,7 @@
 					RelativePath="Sa_g_glo.cpp"
 					>
 					<FileConfiguration
-						Name="UDebug|Win32"
+						Name="Debug|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -1255,7 +1255,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="URelease|Win32"
+						Name="Release|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -1268,7 +1268,7 @@
 					RelativePath="Sa_g_gra.cpp"
 					>
 					<FileConfiguration
-						Name="UDebug|Win32"
+						Name="Debug|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -1277,7 +1277,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="URelease|Win32"
+						Name="Release|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -1290,7 +1290,7 @@
 					RelativePath="Sa_g_lou.cpp"
 					>
 					<FileConfiguration
-						Name="UDebug|Win32"
+						Name="Debug|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -1299,7 +1299,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="URelease|Win32"
+						Name="Release|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -1312,7 +1312,7 @@
 					RelativePath="Sa_g_mag.cpp"
 					>
 					<FileConfiguration
-						Name="UDebug|Win32"
+						Name="Debug|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -1321,7 +1321,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="URelease|Win32"
+						Name="Release|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -1334,7 +1334,7 @@
 					RelativePath="sa_g_mel.cpp"
 					>
 					<FileConfiguration
-						Name="UDebug|Win32"
+						Name="Debug|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -1343,7 +1343,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="URelease|Win32"
+						Name="Release|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -1356,7 +1356,7 @@
 					RelativePath="Sa_g_pit.cpp"
 					>
 					<FileConfiguration
-						Name="UDebug|Win32"
+						Name="Debug|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -1365,7 +1365,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="URelease|Win32"
+						Name="Release|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -1378,7 +1378,7 @@
 					RelativePath="Sa_g_poa.cpp"
 					>
 					<FileConfiguration
-						Name="UDebug|Win32"
+						Name="Debug|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -1387,7 +1387,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="URelease|Win32"
+						Name="Release|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -1400,7 +1400,7 @@
 					RelativePath="Sa_g_rat.cpp"
 					>
 					<FileConfiguration
-						Name="UDebug|Win32"
+						Name="Debug|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -1409,7 +1409,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="URelease|Win32"
+						Name="Release|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -1422,7 +1422,7 @@
 					RelativePath="Sa_g_raw.cpp"
 					>
 					<FileConfiguration
-						Name="UDebug|Win32"
+						Name="Debug|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -1431,7 +1431,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="URelease|Win32"
+						Name="Release|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -1444,7 +1444,7 @@
 					RelativePath="sa_g_rec.cpp"
 					>
 					<FileConfiguration
-						Name="UDebug|Win32"
+						Name="Debug|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -1453,7 +1453,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="URelease|Win32"
+						Name="Release|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -1466,7 +1466,7 @@
 					RelativePath="Sa_g_spe.cpp"
 					>
 					<FileConfiguration
-						Name="UDebug|Win32"
+						Name="Debug|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -1475,7 +1475,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="URelease|Win32"
+						Name="Release|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -1488,7 +1488,7 @@
 					RelativePath="Sa_g_spg.cpp"
 					>
 					<FileConfiguration
-						Name="UDebug|Win32"
+						Name="Debug|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -1498,7 +1498,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="URelease|Win32"
+						Name="Release|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -1512,7 +1512,7 @@
 					RelativePath="Sa_g_spi.cpp"
 					>
 					<FileConfiguration
-						Name="UDebug|Win32"
+						Name="Debug|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -1521,7 +1521,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="URelease|Win32"
+						Name="Release|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -1534,7 +1534,7 @@
 					RelativePath="Sa_g_spu.cpp"
 					>
 					<FileConfiguration
-						Name="UDebug|Win32"
+						Name="Debug|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -1543,7 +1543,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="URelease|Win32"
+						Name="Release|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -1556,7 +1556,7 @@
 					RelativePath="SA_G_Stf.cpp"
 					>
 					<FileConfiguration
-						Name="UDebug|Win32"
+						Name="Debug|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -1565,7 +1565,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="URelease|Win32"
+						Name="Release|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -1578,7 +1578,7 @@
 					RelativePath="Sa_g_twc.cpp"
 					>
 					<FileConfiguration
-						Name="UDebug|Win32"
+						Name="Debug|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -1587,7 +1587,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="URelease|Win32"
+						Name="Release|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -1600,7 +1600,7 @@
 					RelativePath="sa_g_wavelet.cpp"
 					>
 					<FileConfiguration
-						Name="UDebug|Win32"
+						Name="Debug|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -1609,7 +1609,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="URelease|Win32"
+						Name="Release|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -1622,7 +1622,7 @@
 					RelativePath="Sa_g_zcr.cpp"
 					>
 					<FileConfiguration
-						Name="UDebug|Win32"
+						Name="Debug|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -1631,7 +1631,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="URelease|Win32"
+						Name="Release|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -1644,7 +1644,7 @@
 					RelativePath="Sa_grap2.cpp"
 					>
 					<FileConfiguration
-						Name="UDebug|Win32"
+						Name="Debug|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -1653,7 +1653,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="URelease|Win32"
+						Name="Release|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -1666,7 +1666,7 @@
 					RelativePath="Sa_graph.cpp"
 					>
 					<FileConfiguration
-						Name="UDebug|Win32"
+						Name="Debug|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -1675,7 +1675,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="URelease|Win32"
+						Name="Release|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -1688,7 +1688,7 @@
 					RelativePath="Sa_gz3d.cpp"
 					>
 					<FileConfiguration
-						Name="UDebug|Win32"
+						Name="Debug|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -1697,7 +1697,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="URelease|Win32"
+						Name="Release|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -1710,7 +1710,7 @@
 					RelativePath="Sa_gzpol.cpp"
 					>
 					<FileConfiguration
-						Name="UDebug|Win32"
+						Name="Debug|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -1719,7 +1719,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="URelease|Win32"
+						Name="Release|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -1732,7 +1732,7 @@
 					RelativePath="Sa_mplot.cpp"
 					>
 					<FileConfiguration
-						Name="UDebug|Win32"
+						Name="Debug|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -1741,7 +1741,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="URelease|Win32"
+						Name="Release|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -1754,7 +1754,7 @@
 					RelativePath="Sa_plot.cpp"
 					>
 					<FileConfiguration
-						Name="UDebug|Win32"
+						Name="Debug|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -1763,7 +1763,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="URelease|Win32"
+						Name="Release|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -1780,7 +1780,7 @@
 					RelativePath="Sa_w_dlg.cpp"
 					>
 					<FileConfiguration
-						Name="UDebug|Win32"
+						Name="Debug|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -1789,7 +1789,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="URelease|Win32"
+						Name="Release|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -1802,7 +1802,7 @@
 					RelativePath="Sa_w_doc.cpp"
 					>
 					<FileConfiguration
-						Name="UDebug|Win32"
+						Name="Debug|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -1811,7 +1811,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="URelease|Win32"
+						Name="Release|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -1824,7 +1824,7 @@
 					RelativePath="Sa_wbch.cpp"
 					>
 					<FileConfiguration
-						Name="UDebug|Win32"
+						Name="Debug|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -1833,7 +1833,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="URelease|Win32"
+						Name="Release|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -1850,7 +1850,7 @@
 					RelativePath="Colors.cpp"
 					>
 					<FileConfiguration
-						Name="UDebug|Win32"
+						Name="Debug|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -1859,7 +1859,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="URelease|Win32"
+						Name="Release|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -1872,7 +1872,7 @@
 					RelativePath="Grid.cpp"
 					>
 					<FileConfiguration
-						Name="UDebug|Win32"
+						Name="Debug|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -1881,7 +1881,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="URelease|Win32"
+						Name="Release|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -1894,7 +1894,7 @@
 					RelativePath="Param.cpp"
 					>
 					<FileConfiguration
-						Name="UDebug|Win32"
+						Name="Debug|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -1903,7 +1903,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="URelease|Win32"
+						Name="Release|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -1920,7 +1920,7 @@
 					RelativePath="Chrchart\Ch_dlg.cpp"
 					>
 					<FileConfiguration
-						Name="UDebug|Win32"
+						Name="Debug|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -1929,7 +1929,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="URelease|Win32"
+						Name="Release|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -1942,7 +1942,7 @@
 					RelativePath="Chrchart\Ch_dlwnd.cpp"
 					>
 					<FileConfiguration
-						Name="UDebug|Win32"
+						Name="Debug|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -1951,7 +1951,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="URelease|Win32"
+						Name="Release|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -1964,7 +1964,7 @@
 					RelativePath="Chrchart\Ch_table.cpp"
 					>
 					<FileConfiguration
-						Name="UDebug|Win32"
+						Name="Debug|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -1973,7 +1973,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="URelease|Win32"
+						Name="Release|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -1990,7 +1990,7 @@
 					RelativePath="advancedParameters.cpp"
 					>
 					<FileConfiguration
-						Name="UDebug|Win32"
+						Name="Debug|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -1999,7 +1999,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="URelease|Win32"
+						Name="Release|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -2012,7 +2012,7 @@
 					RelativePath="autoRecorder.cpp"
 					>
 					<FileConfiguration
-						Name="UDebug|Win32"
+						Name="Debug|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -2021,7 +2021,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="URelease|Win32"
+						Name="Release|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -2034,7 +2034,7 @@
 					RelativePath="DlgAudio.cpp"
 					>
 					<FileConfiguration
-						Name="UDebug|Win32"
+						Name="Debug|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -2043,7 +2043,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="URelease|Win32"
+						Name="Release|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -2056,7 +2056,7 @@
 					RelativePath="DlgVowelFormants.cpp"
 					>
 					<FileConfiguration
-						Name="UDebug|Win32"
+						Name="Debug|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -2065,7 +2065,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="URelease|Win32"
+						Name="Release|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -2078,7 +2078,7 @@
 					RelativePath="FileInformation.cpp"
 					>
 					<FileConfiguration
-						Name="UDebug|Win32"
+						Name="Debug|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -2087,7 +2087,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="URelease|Win32"
+						Name="Release|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -2100,7 +2100,7 @@
 					RelativePath="FileOpen.cpp"
 					>
 					<FileConfiguration
-						Name="UDebug|Win32"
+						Name="Debug|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -2109,7 +2109,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="URelease|Win32"
+						Name="Release|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -2122,7 +2122,7 @@
 					RelativePath="FnKeys.cpp"
 					>
 					<FileConfiguration
-						Name="UDebug|Win32"
+						Name="Debug|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -2131,7 +2131,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="URelease|Win32"
+						Name="Release|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -2144,7 +2144,7 @@
 					RelativePath="graphsMagnify.cpp"
 					>
 					<FileConfiguration
-						Name="UDebug|Win32"
+						Name="Debug|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -2153,7 +2153,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="URelease|Win32"
+						Name="Release|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -2166,7 +2166,7 @@
 					RelativePath="graphsParameters.cpp"
 					>
 					<FileConfiguration
-						Name="UDebug|Win32"
+						Name="Debug|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -2175,7 +2175,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="URelease|Win32"
+						Name="Release|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -2188,7 +2188,7 @@
 					RelativePath="graphsTypes.cpp"
 					>
 					<FileConfiguration
-						Name="UDebug|Win32"
+						Name="Debug|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -2197,7 +2197,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="URelease|Win32"
+						Name="Release|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -2210,7 +2210,7 @@
 					RelativePath="playerRecorder.cpp"
 					>
 					<FileConfiguration
-						Name="UDebug|Win32"
+						Name="Debug|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -2219,7 +2219,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="URelease|Win32"
+						Name="Release|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -2232,7 +2232,7 @@
 					RelativePath="PrintOpt.cpp"
 					>
 					<FileConfiguration
-						Name="UDebug|Win32"
+						Name="Debug|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -2241,7 +2241,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="URelease|Win32"
+						Name="Release|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -2254,7 +2254,7 @@
 					RelativePath="Result.cpp"
 					>
 					<FileConfiguration
-						Name="UDebug|Win32"
+						Name="Debug|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -2263,7 +2263,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="URelease|Win32"
+						Name="Release|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -2276,7 +2276,7 @@
 					RelativePath="SA_DlWnd.cpp"
 					>
 					<FileConfiguration
-						Name="UDebug|Win32"
+						Name="Debug|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -2285,7 +2285,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="URelease|Win32"
+						Name="Release|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -2298,7 +2298,7 @@
 					RelativePath="SA_Edit.cpp"
 					>
 					<FileConfiguration
-						Name="UDebug|Win32"
+						Name="Debug|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -2307,7 +2307,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="URelease|Win32"
+						Name="Release|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -2320,7 +2320,7 @@
 					RelativePath="SA_Exprt.cpp"
 					>
 					<FileConfiguration
-						Name="UDebug|Win32"
+						Name="Debug|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -2329,7 +2329,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="URelease|Win32"
+						Name="Release|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -2342,7 +2342,7 @@
 					RelativePath="SA_Find.cpp"
 					>
 					<FileConfiguration
-						Name="UDebug|Win32"
+						Name="Debug|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -2351,7 +2351,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="URelease|Win32"
+						Name="Release|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -2364,7 +2364,7 @@
 					RelativePath="Sa_start.cpp"
 					>
 					<FileConfiguration
-						Name="UDebug|Win32"
+						Name="Debug|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -2373,7 +2373,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="URelease|Win32"
+						Name="Release|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -2386,7 +2386,7 @@
 					RelativePath="saveAsOptions.cpp"
 					>
 					<FileConfiguration
-						Name="UDebug|Win32"
+						Name="Debug|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -2395,7 +2395,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="URelease|Win32"
+						Name="Release|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -2408,7 +2408,7 @@
 					RelativePath="Targview.cpp"
 					>
 					<FileConfiguration
-						Name="UDebug|Win32"
+						Name="Debug|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -2417,7 +2417,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="URelease|Win32"
+						Name="Release|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -2430,7 +2430,7 @@
 					RelativePath="toolsOptions.cpp"
 					>
 					<FileConfiguration
-						Name="UDebug|Win32"
+						Name="Debug|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -2439,7 +2439,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="URelease|Win32"
+						Name="Release|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -2452,7 +2452,7 @@
 					RelativePath="waveformGenerator.cpp"
 					>
 					<FileConfiguration
-						Name="UDebug|Win32"
+						Name="Debug|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -2461,7 +2461,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="URelease|Win32"
+						Name="Release|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -2478,7 +2478,7 @@
 					RelativePath="ActiveX\FlexEditGrid.cpp"
 					>
 					<FileConfiguration
-						Name="UDebug|Win32"
+						Name="Debug|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -2487,7 +2487,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="URelease|Win32"
+						Name="Release|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -2500,7 +2500,7 @@
 					RelativePath="ActiveX\font.cpp"
 					>
 					<FileConfiguration
-						Name="UDebug|Win32"
+						Name="Debug|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -2509,7 +2509,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="URelease|Win32"
+						Name="Release|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -2522,7 +2522,7 @@
 					RelativePath="ActiveX\mshflexgrid.cpp"
 					>
 					<FileConfiguration
-						Name="UDebug|Win32"
+						Name="Debug|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -2531,7 +2531,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="URelease|Win32"
+						Name="Release|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -2544,7 +2544,7 @@
 					RelativePath="ActiveX\picture.cpp"
 					>
 					<FileConfiguration
-						Name="UDebug|Win32"
+						Name="Debug|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -2553,7 +2553,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="URelease|Win32"
+						Name="Release|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -2566,7 +2566,7 @@
 					RelativePath="ActiveX\recordset.cpp"
 					>
 					<FileConfiguration
-						Name="UDebug|Win32"
+						Name="Debug|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -2575,7 +2575,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="URelease|Win32"
+						Name="Release|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -2593,7 +2593,7 @@
 					RelativePath="CSaString.cpp"
 					>
 					<FileConfiguration
-						Name="UDebug|Win32"
+						Name="Debug|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -2602,7 +2602,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="URelease|Win32"
+						Name="Release|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -2615,7 +2615,7 @@
 					RelativePath="MainFrm.cpp"
 					>
 					<FileConfiguration
-						Name="UDebug|Win32"
+						Name="Debug|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -2624,7 +2624,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="URelease|Win32"
+						Name="Release|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -2637,7 +2637,7 @@
 					RelativePath="mixer.cpp"
 					>
 					<FileConfiguration
-						Name="UDebug|Win32"
+						Name="Debug|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -2646,7 +2646,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="URelease|Win32"
+						Name="Release|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -2659,7 +2659,7 @@
 					RelativePath="Riff.cpp"
 					>
 					<FileConfiguration
-						Name="UDebug|Win32"
+						Name="Debug|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -2668,7 +2668,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="URelease|Win32"
+						Name="Release|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -2681,7 +2681,7 @@
 					RelativePath="Sa.cpp"
 					>
 					<FileConfiguration
-						Name="UDebug|Win32"
+						Name="Debug|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -2690,7 +2690,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="URelease|Win32"
+						Name="Release|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -2703,7 +2703,7 @@
 					RelativePath="SA.rc"
 					>
 					<FileConfiguration
-						Name="UDebug|Win32"
+						Name="Debug|Win32"
 						>
 						<Tool
 							Name="VCResourceCompilerTool"
@@ -2711,7 +2711,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="URelease|Win32"
+						Name="Release|Win32"
 						>
 						<Tool
 							Name="VCResourceCompilerTool"
@@ -2723,7 +2723,7 @@
 					RelativePath="SA_AnSel.cpp"
 					>
 					<FileConfiguration
-						Name="UDebug|Win32"
+						Name="Debug|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -2732,7 +2732,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="URelease|Win32"
+						Name="Release|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -2745,7 +2745,7 @@
 					RelativePath="SA_Asert.cpp"
 					>
 					<FileConfiguration
-						Name="UDebug|Win32"
+						Name="Debug|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -2754,7 +2754,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="URelease|Win32"
+						Name="Release|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -2767,7 +2767,7 @@
 					RelativePath="SA_CDib.cpp"
 					>
 					<FileConfiguration
-						Name="UDebug|Win32"
+						Name="Debug|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -2776,7 +2776,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="URelease|Win32"
+						Name="Release|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -2789,7 +2789,7 @@
 					RelativePath="Sa_Doc.cpp"
 					>
 					<FileConfiguration
-						Name="UDebug|Win32"
+						Name="Debug|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -2798,7 +2798,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="URelease|Win32"
+						Name="Release|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -2811,7 +2811,7 @@
 					RelativePath="SA_DPlot.cpp"
 					>
 					<FileConfiguration
-						Name="UDebug|Win32"
+						Name="Debug|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -2820,7 +2820,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="URelease|Win32"
+						Name="Release|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -2833,7 +2833,7 @@
 					RelativePath="sa_ipa.cpp"
 					>
 					<FileConfiguration
-						Name="UDebug|Win32"
+						Name="Debug|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -2842,7 +2842,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="URelease|Win32"
+						Name="Release|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -2855,7 +2855,7 @@
 					RelativePath="Sa_menu.cpp"
 					>
 					<FileConfiguration
-						Name="UDebug|Win32"
+						Name="Debug|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -2864,7 +2864,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="URelease|Win32"
+						Name="Release|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -2877,7 +2877,7 @@
 					RelativePath="Sa_minic.cpp"
 					>
 					<FileConfiguration
-						Name="UDebug|Win32"
+						Name="Debug|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -2886,7 +2886,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="URelease|Win32"
+						Name="Release|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -2899,7 +2899,7 @@
 					RelativePath="Sa_sbar.cpp"
 					>
 					<FileConfiguration
-						Name="UDebug|Win32"
+						Name="Debug|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -2908,7 +2908,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="URelease|Win32"
+						Name="Release|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -2921,7 +2921,7 @@
 					RelativePath="Sa_segm.cpp"
 					>
 					<FileConfiguration
-						Name="UDebug|Win32"
+						Name="Debug|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -2930,7 +2930,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="URelease|Win32"
+						Name="Release|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -2943,7 +2943,7 @@
 					RelativePath="SA_View.cpp"
 					>
 					<FileConfiguration
-						Name="UDebug|Win32"
+						Name="Debug|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -2952,7 +2952,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="URelease|Win32"
+						Name="Release|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -2965,7 +2965,7 @@
 					RelativePath="SA_View2.cpp"
 					>
 					<FileConfiguration
-						Name="UDebug|Win32"
+						Name="Debug|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -2974,7 +2974,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="URelease|Win32"
+						Name="Release|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -2987,7 +2987,7 @@
 					RelativePath="Sa_wave.cpp"
 					>
 					<FileConfiguration
-						Name="UDebug|Win32"
+						Name="Debug|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -2996,7 +2996,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="URelease|Win32"
+						Name="Release|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -3009,7 +3009,7 @@
 					RelativePath="SelfTest.cpp"
 					>
 					<FileConfiguration
-						Name="UDebug|Win32"
+						Name="Debug|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -3018,7 +3018,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="URelease|Win32"
+						Name="Release|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -3031,7 +3031,7 @@
 					RelativePath="Stdafx.cpp"
 					>
 					<FileConfiguration
-						Name="UDebug|Win32"
+						Name="Debug|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -3042,7 +3042,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="URelease|Win32"
+						Name="Release|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -3057,7 +3057,7 @@
 					RelativePath="stpwatch.cpp"
 					>
 					<FileConfiguration
-						Name="UDebug|Win32"
+						Name="Debug|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -3066,7 +3066,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="URelease|Win32"
+						Name="Release|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -3079,7 +3079,7 @@
 					RelativePath="TaskBar.cpp"
 					>
 					<FileConfiguration
-						Name="UDebug|Win32"
+						Name="Debug|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -3088,7 +3088,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="URelease|Win32"
+						Name="Release|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -3101,7 +3101,7 @@
 					RelativePath="Undoredo.cpp"
 					>
 					<FileConfiguration
-						Name="UDebug|Win32"
+						Name="Debug|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -3110,7 +3110,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="URelease|Win32"
+						Name="Release|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -3123,7 +3123,7 @@
 					RelativePath="UnicodeString.cpp"
 					>
 					<FileConfiguration
-						Name="UDebug|Win32"
+						Name="Debug|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -3132,7 +3132,7 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="URelease|Win32"
+						Name="Release|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
