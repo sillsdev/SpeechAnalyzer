@@ -250,7 +250,7 @@ CDlgPlayer::~CDlgPlayer()
 /***************************************************************************/
 int CDlgPlayer::Create()
 {
-  int bPlayer = TRUE; // player launched
+  bPlayer = TRUE; // player launched
   return CDialog::Create(CDlgPlayer::IDD);
 }
 

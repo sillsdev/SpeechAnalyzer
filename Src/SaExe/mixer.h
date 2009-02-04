@@ -35,6 +35,8 @@ public:
   MMRESULT GetVolume(UINT uMixID, DWORD dwMixIdFlags, DWORD *dwVolume);
   BOOL IsSndVolInstalled();
 
+  static int GetWindowsVersion();
+
 private:
   MMRESULT GetMixerControlID(HMIXER &hmx, DWORD *dwControl, MIXERCONTROL *control = NULL , DWORD dwControlType = MIXERCONTROL_CONTROLTYPE_VOLUME);
 };
@@ -65,5 +67,6 @@ public:
   MMRESULT GetVolume(HWAVEIN hRecorder, DWORD *dwVolume);
   BOOL ShowMixerControls(HWAVEIN hRecorder);
   BOOL CanShowMixerControls(HWAVEIN hRecorder);
+
 };
 
