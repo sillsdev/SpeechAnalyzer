@@ -139,338 +139,23 @@ namespace SIL.SpeechTools.Utils
 	[ClassInterface(ClassInterfaceType.None)]
 	[GuidAttribute("7ACF99EB-7FB6-482a-B1C2-11E2E14C02A0")]
 	[ComVisible(true)]
-	public class AboutDlg : System.Windows.Forms.Form, IAboutDlg
+	public class AboutDlg : IAboutDlg
 	{
 		#region Data members
 
-		private System.ComponentModel.IContainer components;
+		private SilUtils.AboutDlg m_aboutDlg;
 
-		private string m_sAvailableMemoryFmt;
-		private string m_sAppVersionFmt;
-		private string m_sTitleFmt;
-		private string m_sAvailableDiskSpaceFmt;
-		private string m_buildFmt;
-		private bool m_showBuildNum = false;
-		private bool m_isBetaVersion = false;
-		private Panel panel1;
-		private Label lblBuild;
-		private Label lblAppVersion;
-		private Label lblAvailableMemoryValue;
-		private Label lblAvailableDiskSpaceValue;
-		private Label lblCopyright;
-		private Label lblName;
-		private string m_sDriveLetter;
-		private string m_tmpProdVersion;
 		#endregion
 
-		#region Construction and Disposal
-		/// ----------------------------------------------------------------------------------------
+		#region Constructor
+		/// ------------------------------------------------------------------------------------
 		/// <summary>
-		/// Constructor
+		/// Default Constructor for AboutDlg
 		/// </summary>
-		/// ----------------------------------------------------------------------------------------
+		/// ------------------------------------------------------------------------------------
 		public AboutDlg()
 		{
-			//
-			// Required for Windows Form Designer support
-			//
-			InitializeComponent();
-
-			// Cache the format strings. The control labels will be overwritten when the
-			// dialog is shown.
-			m_sAvailableMemoryFmt = lblAvailableMemoryValue.Text;
-			m_sAppVersionFmt = lblAppVersion.Text;
-			m_sTitleFmt = Text;
-			m_sAvailableDiskSpaceFmt = lblAvailableDiskSpaceValue.Text;
-			m_buildFmt = lblBuild.Text;
-		}
-
-		/// ------------------------------------------------------------------------------------
-		/// <summary>
-		/// 
-		/// </summary>
-		/// ------------------------------------------------------------------------------------
-		public AboutDlg(bool showBuildNum, bool isBetaVersion) : this()
-		{
-			m_showBuildNum = showBuildNum;
-			m_isBetaVersion = isBetaVersion;
-		}
-
-		/// ----------------------------------------------------------------------------------------
-		/// <summary>
-		/// Clean up any resources being used.
-		/// </summary>
-		/// ----------------------------------------------------------------------------------------
-		protected override void Dispose( bool disposing )
-		{
-			// Must not be run more than once.
-			if (IsDisposed)
-				return;
-
-			if( disposing )
-			{
-				if(components != null)
-				{
-					components.Dispose();
-				}
-			}
-			base.Dispose( disposing );
-		}
-		#endregion
-
-		#region Windows Form Designer generated code
-		/// <summary>
-		/// Required method for Designer support - do not modify
-		/// the contents of this method with the code editor.
-		/// </summary>
-		private void InitializeComponent()
-		{
-			this.components = new System.ComponentModel.Container();
-			System.Windows.Forms.ToolTip m_toolTip;
-			System.Windows.Forms.Button buttonOk;
-			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(AboutDlg));
-			System.Windows.Forms.Label lblAvailableMemory;
-			System.Windows.Forms.Label lblAvailableDiskSpace;
-			System.Windows.Forms.PictureBox fieldWorksIcon;
-			this.panel1 = new System.Windows.Forms.Panel();
-			this.lblBuild = new System.Windows.Forms.Label();
-			this.lblAppVersion = new System.Windows.Forms.Label();
-			this.lblAvailableMemoryValue = new System.Windows.Forms.Label();
-			this.lblAvailableDiskSpaceValue = new System.Windows.Forms.Label();
-			this.lblCopyright = new System.Windows.Forms.Label();
-			this.lblName = new System.Windows.Forms.Label();
-			m_toolTip = new System.Windows.Forms.ToolTip(this.components);
-			buttonOk = new System.Windows.Forms.Button();
-			lblAvailableMemory = new System.Windows.Forms.Label();
-			lblAvailableDiskSpace = new System.Windows.Forms.Label();
-			fieldWorksIcon = new System.Windows.Forms.PictureBox();
-			((System.ComponentModel.ISupportInitialize)(fieldWorksIcon)).BeginInit();
-			this.panel1.SuspendLayout();
-			this.SuspendLayout();
-			// 
-			// m_toolTip
-			// 
-			m_toolTip.AutomaticDelay = 100;
-			m_toolTip.AutoPopDelay = 1000;
-			m_toolTip.InitialDelay = 100;
-			m_toolTip.ReshowDelay = 100;
-			// 
-			// buttonOk
-			// 
-			resources.ApplyResources(buttonOk, "buttonOk");
-			buttonOk.DialogResult = System.Windows.Forms.DialogResult.OK;
-			buttonOk.Name = "buttonOk";
-			m_toolTip.SetToolTip(buttonOk, resources.GetString("buttonOk.ToolTip"));
-			buttonOk.UseVisualStyleBackColor = true;
-			// 
-			// lblAvailableMemory
-			// 
-			resources.ApplyResources(lblAvailableMemory, "lblAvailableMemory");
-			lblAvailableMemory.Name = "lblAvailableMemory";
-			// 
-			// lblAvailableDiskSpace
-			// 
-			resources.ApplyResources(lblAvailableDiskSpace, "lblAvailableDiskSpace");
-			lblAvailableDiskSpace.Name = "lblAvailableDiskSpace";
-			// 
-			// fieldWorksIcon
-			// 
-			fieldWorksIcon.ErrorImage = null;
-			fieldWorksIcon.Image = global::SIL.SpeechTools.Utils.Properties.Resources.kimidSilLogo;
-			resources.ApplyResources(fieldWorksIcon, "fieldWorksIcon");
-			fieldWorksIcon.InitialImage = null;
-			fieldWorksIcon.Name = "fieldWorksIcon";
-			fieldWorksIcon.TabStop = false;
-			// 
-			// panel1
-			// 
-			this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-			this.panel1.Controls.Add(this.lblBuild);
-			this.panel1.Controls.Add(this.lblAppVersion);
-			this.panel1.Controls.Add(this.lblAvailableMemoryValue);
-			this.panel1.Controls.Add(this.lblAvailableDiskSpaceValue);
-			this.panel1.Controls.Add(lblAvailableMemory);
-			this.panel1.Controls.Add(lblAvailableDiskSpace);
-			this.panel1.Controls.Add(this.lblCopyright);
-			this.panel1.Controls.Add(fieldWorksIcon);
-			this.panel1.Controls.Add(this.lblName);
-			this.panel1.Controls.Add(buttonOk);
-			resources.ApplyResources(this.panel1, "panel1");
-			this.panel1.Name = "panel1";
-			// 
-			// lblBuild
-			// 
-			resources.ApplyResources(this.lblBuild, "lblBuild");
-			this.lblBuild.Name = "lblBuild";
-			// 
-			// lblAppVersion
-			// 
-			resources.ApplyResources(this.lblAppVersion, "lblAppVersion");
-			this.lblAppVersion.Name = "lblAppVersion";
-			// 
-			// lblAvailableMemoryValue
-			// 
-			resources.ApplyResources(this.lblAvailableMemoryValue, "lblAvailableMemoryValue");
-			this.lblAvailableMemoryValue.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-			this.lblAvailableMemoryValue.Name = "lblAvailableMemoryValue";
-			// 
-			// lblAvailableDiskSpaceValue
-			// 
-			resources.ApplyResources(this.lblAvailableDiskSpaceValue, "lblAvailableDiskSpaceValue");
-			this.lblAvailableDiskSpaceValue.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-			this.lblAvailableDiskSpaceValue.Name = "lblAvailableDiskSpaceValue";
-			// 
-			// lblCopyright
-			// 
-			resources.ApplyResources(this.lblCopyright, "lblCopyright");
-			this.lblCopyright.Name = "lblCopyright";
-			// 
-			// lblName
-			// 
-			resources.ApplyResources(this.lblName, "lblName");
-			this.lblName.Name = "lblName";
-			// 
-			// AboutDlg
-			// 
-			this.AcceptButton = buttonOk;
-			resources.ApplyResources(this, "$this");
-			this.BackColor = System.Drawing.Color.White;
-			this.ControlBox = false;
-			this.Controls.Add(this.panel1);
-			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
-			this.MaximizeBox = false;
-			this.MinimizeBox = false;
-			this.Name = "AboutDlg";
-			this.ShowIcon = false;
-			this.ShowInTaskbar = false;
-			((System.ComponentModel.ISupportInitialize)(fieldWorksIcon)).EndInit();
-			this.panel1.ResumeLayout(false);
-			this.panel1.PerformLayout();
-			this.ResumeLayout(false);
-
-		}
-		#endregion
-
-		#region Initialization Methods
-		/// ------------------------------------------------------------------------------------
-		/// <summary>
-		/// When the window handle gets created we want to initialize the controls
-		/// </summary>
-		/// <param name="e"></param>
-		/// ------------------------------------------------------------------------------------
-		protected override void OnHandleCreated(EventArgs e)
-		{
-			base.OnHandleCreated(e);
-
-			try
-			{
-				// Set the Application label to the name of the app
-				Assembly assembly = Assembly.GetEntryAssembly();
-				string strRoot;
-				if (assembly == null)
-				{	
-					// Must be called from COM client
-					strRoot = m_sDriveLetter + ":\\";
-					lblBuild.Visible = m_showBuildNum;
-				}
-				else
-				{
-					SetVersionInformation(assembly);
-
-					// Set the title bar text
-					Text = string.Format(m_sTitleFmt, Application.ProductName);
-					strRoot = Application.ExecutablePath.Substring(0, 2) + "\\";
-				}
-
-				SetCopyrightInformation();
-				SetMemoryAndDiskInformation(strRoot);
-			}
-			catch
-			{
-				// ignore errors
-			}
-		}
-
-		/// ------------------------------------------------------------------------------------
-		/// <summary>
-		/// Sets the application's version information.
-		/// </summary>
-		/// ------------------------------------------------------------------------------------
-		private void SetVersionInformation(Assembly assembly)
-		{
-			object[] attributes = assembly.GetCustomAttributes(typeof(AssemblyTitleAttribute), false);
-			
-			string productName = Application.ProductName;
-			
-			if (string.IsNullOrEmpty(productName) && attributes != null && attributes.Length > 0)
-				productName = ((AssemblyTitleAttribute)attributes[0]).Title;
-
-			lblName.Text = productName;
-
-			lblBuild.Visible = m_showBuildNum;
-			if (m_showBuildNum)
-			{
-				// The build number is just the number of days since 01/01/2000
-				int bldNum = assembly.GetName().Version.Build;
-				DateTime bldDate = new DateTime(2000, 1, 1).Add(new TimeSpan(bldNum, 0, 0, 0));
-				lblBuild.Text = string.Format(m_buildFmt, bldDate.ToString("dd-MMM-yyyy"));
-			}
-
-			string appVersion = assembly.GetName().Version.ToString(2);
-#if DEBUG
-			lblAppVersion.Text = string.Format(m_sAppVersionFmt, appVersion, "(Debug version)",
-				(m_isBetaVersion ? "Beta" : string.Empty));
-#else
-			lblAppVersion.Text = string.Format(m_sAppVersionFmt, appVersion, string.Empty,
-				(m_isBetaVersion ? "Beta" : string.Empty));
-#endif
-		}
-
-		/// ------------------------------------------------------------------------------------
-		/// <summary>
-		/// Sets the copyright information.
-		/// </summary>
-		/// ------------------------------------------------------------------------------------
-		private void SetCopyrightInformation()
-		{
-			// Get copyright information from assembly info. By doing this we don't have
-			// to update the about dialog each year.
-			string copyright;
-			object[] attributes = Assembly.GetExecutingAssembly().GetCustomAttributes(
-				typeof(AssemblyCopyrightAttribute), false);
-
-			// Try to get the copyright from the executing assembly.
-			// If that fails, use a generic one.
-			copyright = (attributes != null && attributes.Length > 0 ?
-				((AssemblyCopyrightAttribute)attributes[0]).Copyright :
-				"(C) 2002-2007 SIL International");
-
-			lblCopyright.Text = string.Format(lblCopyright.Text, copyright.Replace("(C)", "©"));
-		}
-
-		/// ------------------------------------------------------------------------------------
-		/// <summary>
-		/// Fills in the memory usage and disk space information.
-		/// </summary>
-		/// ------------------------------------------------------------------------------------
-		private void SetMemoryAndDiskInformation(string strRoot)
-		{
-			// Set the memory information in MB.
-			STUtils.MemoryStatus ms = new STUtils.MemoryStatus();
-			STUtils.GlobalMemoryStatus(ref ms);
-			double available = (double)ms.dwAvailPhys / Math.Pow(1024, 2);
-			double total = (double)ms.dwTotalPhys / Math.Pow(1024, 2);
-			lblAvailableMemoryValue.Text = string.Format(m_sAvailableMemoryFmt,
-				available.ToString("###,###,###,###,###.##"),
-				total.ToString("###,###,###,###,###"));
-
-			// Set the disk space information in KB and GB.
-			ulong freeDiskSpace = STUtils.GetFreeDiskSpace(strRoot);
-			ulong kbFree = freeDiskSpace / 1024;
-			double gbFree = (double)freeDiskSpace / Math.Pow(1024, 3);
-			lblAvailableDiskSpaceValue.Text = string.Format(m_sAvailableDiskSpaceFmt,
-				kbFree.ToString("###,###,###,###,###,###,###"),
-				gbFree.ToString("##,###.#"), strRoot);
+			m_aboutDlg = new SilUtils.AboutDlg();
 		}
 
 		#endregion
@@ -483,7 +168,7 @@ namespace SIL.SpeechTools.Utils
 		/// ----------------------------------------------------------------------------------------
 		int IAboutDlg.ShowDialog()
 		{
-			return (int)base.ShowDialog();
+			return ((SilUtils.IAboutDlg)m_aboutDlg).ShowDialog();
 		}
 
 		/// ------------------------------------------------------------------------------------
@@ -496,11 +181,7 @@ namespace SIL.SpeechTools.Utils
 		/// ------------------------------------------------------------------------------------
 		string IAboutDlg.Build
 		{
-			set 
-			{
-				lblBuild.Text = value;
-				m_showBuildNum = true;
-			}
+			set { ((SilUtils.IAboutDlg)m_aboutDlg).Build = value; }
 		}
 
 		/// ------------------------------------------------------------------------------------
@@ -510,20 +191,7 @@ namespace SIL.SpeechTools.Utils
 		/// ------------------------------------------------------------------------------------
 		bool IAboutDlg.IsBetaVersion
 		{
-			set
-			{
-				m_isBetaVersion = value;
-				if (m_tmpProdVersion != null)
-				{
-#if DEBUG
-					lblAppVersion.Text = string.Format(m_sAppVersionFmt, m_tmpProdVersion,
-						"(Debug version)", (m_isBetaVersion ? "Beta" : string.Empty));
-#else
-					lblAppVersion.Text = string.Format(m_sAppVersionFmt, m_tmpProdVersion,
-						string.Empty, (m_isBetaVersion ? "Beta" : string.Empty));
-#endif
-				}
-			}
+			set { ((SilUtils.IAboutDlg)m_aboutDlg).IsBetaVersion = value; }
 		}
 
 		/// ------------------------------------------------------------------------------------
@@ -536,11 +204,7 @@ namespace SIL.SpeechTools.Utils
 		/// ------------------------------------------------------------------------------------
 		string IAboutDlg.ProdName
 		{
-			set
-			{
-				lblName.Text = value;
-				Text = string.Format(m_sTitleFmt, value);
-			}
+			set { ((SilUtils.IAboutDlg)m_aboutDlg).ProdName = value; }
 		}
 
 		/// ------------------------------------------------------------------------------------
@@ -553,17 +217,7 @@ namespace SIL.SpeechTools.Utils
 		/// ------------------------------------------------------------------------------------
 		string IAboutDlg.ProdVersion
 		{
-			set 
-			{
-				m_tmpProdVersion = value;
-#if DEBUG
-				lblAppVersion.Text = string.Format(m_sAppVersionFmt, value, "(Debug version)",
-					(m_isBetaVersion ? "Beta" : string.Empty));
-#else
-				lblAppVersion.Text = string.Format(m_sAppVersionFmt, value, string.Empty,
-					(m_isBetaVersion ? "Beta" : string.Empty));
-#endif
-			}
+			set { ((SilUtils.IAboutDlg)m_aboutDlg).ProdVersion = value; }
 		}
 
 		/// ------------------------------------------------------------------------------------
@@ -576,11 +230,7 @@ namespace SIL.SpeechTools.Utils
 		/// ------------------------------------------------------------------------------------
 		string IAboutDlg.Copyright
 		{
-			set
-			{
-				value = value.Replace("\n", " ");
-				lblCopyright.Text = value.Replace("(C)", "©");
-			}
+			set { ((SilUtils.IAboutDlg)m_aboutDlg).Copyright = value; }
 		}
 		/// ------------------------------------------------------------------------------------
 		/// <summary>
@@ -592,7 +242,7 @@ namespace SIL.SpeechTools.Utils
 		/// ------------------------------------------------------------------------------------
 		string IAboutDlg.DriveLetter
 		{
-			set { m_sDriveLetter = value; }
+			set { ((SilUtils.IAboutDlg)m_aboutDlg).DriveLetter = value; }
 		}
 
 		#endregion

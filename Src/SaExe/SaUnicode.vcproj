@@ -113,6 +113,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
+				CommandLine="xcopy /d /y ..\..\DistFiles ..\..\Output\$(ConfigurationName)&#x0D;&#x0A;xcopy /d /i /y ..\..\DistFiles\AudioCon ..\..\Output\$(ConfigurationName)\AudioCon&#x0D;&#x0A;xcopy /d /i /y ..\..\DistFiles\dtds ..\..\Output\$(ConfigurationName)\dtds&#x0D;&#x0A;xcopy /d /i /y ..\..\DistFiles\Samples ..\..\Output\$(ConfigurationName)\Samples&#x0D;&#x0A;xcopy /d /i /y ..\..\DistFiles\Training ..\..\Output\$(ConfigurationName)\Training"
 			/>
 		</Configuration>
 		<Configuration

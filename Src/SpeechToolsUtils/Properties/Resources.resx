@@ -120,9 +120,6 @@
   <data name="kstidSADBRestoreSucceeded" xml:space="preserve">
     <value>The Speech Analyzer database was successfully restored from backup.\n\nThe failed database has been renamed to {0}.</value>
   </data>
-  <data name="kstidHierarchicalRowChildCountMedFmt" xml:space="preserve">
-    <value>({0} rec.)</value>
-  </data>
   <data name="kstidFileTypeAll" xml:space="preserve">
     <value>All Files (*.*)|*.*</value>
   </data>
@@ -136,21 +133,11 @@ An existing transcription was found for the file:
 The audio data for both files is identical. 
 What would you like to do?</value>
   </data>
-  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="kimidSilLogo" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\kimidSilLogo.jpg;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="kstidHierarchicalRowChildCountLongFmt" xml:space="preserve">
-    <value>({0} records)</value>
-  </data>
   <data name="kstidErrorSavingSADB" xml:space="preserve">
     <value>Error saving Speech Analyzer database.\n\n{0}</value>
   </data>
   <data name="kstidFileTypeMapFile" xml:space="preserve">
     <value>TECkit Uncompiled Mapping Files (*.map)|*.map</value>
-  </data>
-  <data name="kstidHierarchicalRowChildCountShortFmt" xml:space="preserve">
-    <value>({0})</value>
   </data>
   <data name="kstidSADBRestoreFailed" xml:space="preserve">
     <value>The Speech Analyzer database could not be restored from backup.\n\n{0}\n\nThe failed database has been renamed to {1}.</value>
@@ -164,17 +151,11 @@ What would you like to do?</value>
   <data name="kstidErrorInitializingDocReader" xml:space="preserve">
     <value>Error initializing SA Document reader.\n\n{0}</value>
   </data>
-  <data name="kimidExpand" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Expand.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="kstidSADBRestoreCancelled" xml:space="preserve">
     <value>The failed database has been renamed to {0}.</value>
   </data>
   <data name="kstidErrorOpeningSADB" xml:space="preserve">
     <value>Error opening Speech Analyzer database.\n\n{0}\n\nWould you like to try restoring the from the backup?</value>
-  </data>
-  <data name="kimidCollapse" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Collapse.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="kstidFileTypeTecFile" xml:space="preserve">
     <value>TECkit Compiled Mapping Files (*.tec)|*.tec</value>
@@ -187,9 +168,6 @@ What would you like to do?</value>
   </data>
   <data name="kstidWaveFileNotFound" xml:space="preserve">
     <value>{0} cannot be found.</value>
-  </data>
-  <data name="kimidSilLogo1" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\kimidSilLogo.jpg;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="kstidReadOnlyFolderMsg" xml:space="preserve">
     <value>You are attempting to save the transcriptions for {0} in a location for which you do not have write access. Please specify another location in which to make a copy of {1} along with its transcription file ({2}).</value>
@@ -208,5 +186,12 @@ What would you like to do?</value>
   </data>
   <data name="kstidCnvtrGridFontHdg" xml:space="preserve">
     <value>Legacy Font</value>
+  </data>
+  <data name="kstidInvalidMusicXMLFile" xml:space="preserve">
+    <value>'{0}' is not a valid MusicXML file.\n\nFile will not be loaded.</value>
+  </data>
+  <data name="kstidMusicXMLValidationErrMsg" xml:space="preserve">
+    <value>The following errors were encountered while validating {0}:\n\n{1}</value>
+    <comment>First parameter is music XML file name; second parameter is the error message.</comment>
   </data>
 </root>

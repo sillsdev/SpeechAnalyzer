@@ -1,15 +1,13 @@
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.IO;
 using System.Xml.Serialization;
-using System.Reflection;
-using System.Windows.Forms;
 using Microsoft.Win32;
+using SilUtils;
 
 namespace SIL.SpeechTools.Utils
 {
-    [XmlRootAttribute("SaDocCache")]
+    [XmlRoot("SaDocCache")]
     public class SaDocumentCache : List<SaAudioDocument>
     {
     }
@@ -53,7 +51,7 @@ namespace SIL.SpeechTools.Utils
 
 			// Load the contents of the database into the cache.
 			s_docCache =
-				STUtils.DeserializeData(fullDbPath, typeof(SaDocumentCache)) as SaDocumentCache;
+				SilUtils.Utils.DeserializeData(fullDbPath, typeof(SaDocumentCache)) as SaDocumentCache;
 
 			if (s_docCache == null)
 				return false;
@@ -85,7 +83,7 @@ namespace SIL.SpeechTools.Utils
 
 			try
 			{
-				STUtils.SerializeData(s_dbPath, s_docCache);
+				SilUtils.Utils.SerializeData(s_dbPath, s_docCache);
 			}
 			catch { }
 

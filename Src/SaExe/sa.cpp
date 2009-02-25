@@ -1486,7 +1486,7 @@ void CSaApp::OnAppAbout()
 		szBuild = szVersion.Mid(nBuildIndex, szVersion.GetLength() - nBuildIndex - 1);
 		szVersion = szVersion.Left(nBuildIndex - 2);
 	}
-	
+
 	// Remove RC number
 	int nRCIndex = szVersion.Find(_T("RC"));
 	if (nRCIndex > 0)

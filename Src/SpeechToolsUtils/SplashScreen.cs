@@ -141,17 +141,7 @@ namespace SIL.SpeechTools.Utils
 	[ComVisible(true)]
 	public class SplashScreen : ISplashScreen
 	{
-		#region Data members
-		private delegate void MethodWithStringDelegate(string value);
-
-		private bool m_useFading = true;
-		private Thread m_thread;
-		private SplashScreenForm m_splashScreen;
-		private string m_Sync = string.Empty;
-		internal EventWaitHandle m_waitHandle;
-		private bool m_showBuildNum = false;
-		private bool m_isBetaVersion = false;
-		#endregion
+		private SilUtils.SplashScreen m_splash;
 
 		#region Constructor
 		/// ------------------------------------------------------------------------------------
@@ -161,19 +151,9 @@ namespace SIL.SpeechTools.Utils
 		/// ------------------------------------------------------------------------------------
 		public SplashScreen()
 		{
+			m_splash = new SilUtils.SplashScreen();
 		}
 
-		/// ------------------------------------------------------------------------------------
-		/// <summary>
-		/// 
-		/// </summary>
-		/// ------------------------------------------------------------------------------------
-		public SplashScreen(bool showBuildNum, bool isBetaVersion)
-		{
-			m_showBuildNum = showBuildNum;
-			m_isBetaVersion = isBetaVersion;
-		}
-		
 		#endregion
 
 		#region Public Methods
@@ -184,9 +164,8 @@ namespace SIL.SpeechTools.Utils
 		/// ------------------------------------------------------------------------------------
 		void ISplashScreen.Show(bool showBuildDate, bool isBetaVersion)
 		{
-			m_showBuildNum = showBuildDate;
-			m_isBetaVersion = isBetaVersion;
-			InternalShow();
+			m_splash = new SilUtils.SplashScreen(showBuildDate, isBetaVersion);
+			((SilUtils.ISplashScreen)m_splash).Show();
 		}
 
 		/// ------------------------------------------------------------------------------------
@@ -196,35 +175,9 @@ namespace SIL.SpeechTools.Utils
 		/// ------------------------------------------------------------------------------------
 		void ISplashScreen.Show()
 		{
-			InternalShow();
+			((SilUtils.ISplashScreen)m_splash).Show();
 		}
 
-		/// ------------------------------------------------------------------------------------
-		/// <summary>
-		/// Does the work of showing.
-		/// </summary>
-		/// ------------------------------------------------------------------------------------
-		private void InternalShow()
-		{
-			if (m_thread != null)
-				return;
-
-			m_waitHandle = new EventWaitHandle(false, EventResetMode.AutoReset);
-
-			Thread.CurrentThread.Name = "Main";
-			STUtils.s_splashScreen = this;
-
-			// For some reason we have to specify a stack size, otherwise we get a stack overflow. 
-			// The default stack size of 1MB works on WinXP. Needs to be 2MB on Win2K.
-			// Don't know what value it's using if we don't specify it.
-			m_thread = new Thread(new ThreadStart(StartSplashScreen), 0x200000);
-			m_thread.IsBackground = true;
-			m_thread.SetApartmentState(ApartmentState.STA);
-			m_thread.Name = "SplashScreen";
-			m_thread.Start();
-			m_waitHandle.WaitOne();
-		}
-		
 		/// ------------------------------------------------------------------------------------
 		/// <summary>
 		/// Shows the splash screen
@@ -232,13 +185,7 @@ namespace SIL.SpeechTools.Utils
 		/// ------------------------------------------------------------------------------------
 		void ISplashScreen.ShowWithoutFade()
 		{
-			m_useFading = false;
-			StartSplashScreen();
-			STUtils.s_splashScreen = this;
-
-			// Wait until the splash screen is actually up
-			while (m_splashScreen == null || !m_splashScreen.Visible)
-				Thread.Sleep(50);
+			((SilUtils.ISplashScreen)m_splash).ShowWithoutFade();
 		}
 
 		/// ----------------------------------------------------------------------------------------
@@ -249,18 +196,7 @@ namespace SIL.SpeechTools.Utils
 		/// ----------------------------------------------------------------------------------------
 		void ISplashScreen.Activate()
 		{
-			if (!m_useFading)
-			{
-				m_splashScreen.Activate();
-				Application.DoEvents();
-				return;
-			}
-
-			Debug.Assert(m_splashScreen != null);
-			lock (m_splashScreen)
-			{
-				m_splashScreen.Invoke(new MethodInvoker(m_splashScreen.Activate));
-			}
+			((SilUtils.ISplashScreen)m_splash).Activate();
 		}
 
 		/// ----------------------------------------------------------------------------------------
@@ -270,37 +206,7 @@ namespace SIL.SpeechTools.Utils
 		/// ----------------------------------------------------------------------------------------
 		void ISplashScreen.Close()
 		{
-			if (m_splashScreen.Opacity < 1.0)
-			{
-				lock (m_splashScreen)
-				{
-					m_splashScreen.Invoke(new MethodInvoker(m_splashScreen.MakeFullyOpaque));
-				}
-			}
-			
-			STUtils.s_splashScreen = null;
-
-			if (m_splashScreen == null)
-				return;
-
-			if (!m_useFading)
-			{
-				m_splashScreen.Hide();
-				m_splashScreen = null;
-				return;
-			}
-
-			lock (m_splashScreen)
-			{
-				m_splashScreen.Invoke(new MethodInvoker(m_splashScreen.RealClose));
-			}
-			m_thread.Join();
-			lock (m_splashScreen)
-			{
-				m_splashScreen.Dispose();
-			}
-			m_splashScreen = null;
-			m_thread = null;
+			((SilUtils.ISplashScreen)m_splash).Close();
 		}
 
 		/// ----------------------------------------------------------------------------------------
@@ -310,18 +216,7 @@ namespace SIL.SpeechTools.Utils
 		/// ----------------------------------------------------------------------------------------
 		void ISplashScreen.Refresh()
 		{
-			if (!m_useFading)
-			{
-				m_splashScreen.Refresh();
-				Application.DoEvents();
-				return;
-			}
-
-			Debug.Assert(m_splashScreen != null);
-			lock (m_splashScreen)
-			{
-				m_splashScreen.Invoke(new MethodInvoker(m_splashScreen.Refresh));
-			}
+			((SilUtils.ISplashScreen)m_splash).Refresh();
 		}
 
 		/// ------------------------------------------------------------------------------------
@@ -332,7 +227,7 @@ namespace SIL.SpeechTools.Utils
 		/// ------------------------------------------------------------------------------------
 		bool ISplashScreen.StillAlive
 		{
-			get {return m_splashScreen != null; }
+			get { return ((SilUtils.ISplashScreen)m_splash).StillAlive; }
 		}
 
 		#endregion
@@ -345,14 +240,7 @@ namespace SIL.SpeechTools.Utils
 		/// ------------------------------------------------------------------------------------
 		string ISplashScreen.Message
 		{
-			set
-			{
-				Debug.Assert(m_splashScreen != null);
-				lock (m_splashScreen)
-				{
-					m_splashScreen.Invoke(new MethodWithStringDelegate(m_splashScreen.SetMessage), value);
-				}
-			}
+			set { ((SilUtils.ISplashScreen)m_splash).Message = value; }
 		}
 		#endregion
 
@@ -368,14 +256,7 @@ namespace SIL.SpeechTools.Utils
 		/// ------------------------------------------------------------------------------------
 		string ISplashScreen.ProdName
 		{
-			set
-			{
-				Debug.Assert(m_splashScreen != null);
-				lock (m_splashScreen)
-				{
-					m_splashScreen.Invoke(new MethodWithStringDelegate(m_splashScreen.SetProdName), value);
-				}
-			}
+			set { ((SilUtils.ISplashScreen)m_splash).ProdName = value; }
 		}
 
 		/// ------------------------------------------------------------------------------------
@@ -389,14 +270,7 @@ namespace SIL.SpeechTools.Utils
 		/// ------------------------------------------------------------------------------------
 		string ISplashScreen.ProdVersion
 		{
-			set
-			{
-				Debug.Assert(m_splashScreen != null);
-				lock (m_splashScreen)
-				{
-					m_splashScreen.Invoke(new MethodWithStringDelegate(m_splashScreen.SetProdVersion), value);
-				}
-			}
+			set { ((SilUtils.ISplashScreen)m_splash).ProdVersion = value; }
 		}
 
 		/// ------------------------------------------------------------------------------------
@@ -410,32 +284,11 @@ namespace SIL.SpeechTools.Utils
 		/// ------------------------------------------------------------------------------------
 		string ISplashScreen.Copyright
 		{
-			set
-			{
-				Debug.Assert(m_splashScreen != null);
-				lock (m_splashScreen)
-				{
-					m_splashScreen.Invoke(new MethodWithStringDelegate(m_splashScreen.SetCopyright), value);
-				}
-			}
+			set { ((SilUtils.ISplashScreen)m_splash).Copyright = value; }
 		}
 
-		#endregion
-
-		#region private methods
-		/// ------------------------------------------------------------------------------------
-		/// <summary>
-		/// Starts the splash screen.
-		/// </summary>
-		/// ------------------------------------------------------------------------------------
-		private void StartSplashScreen()
-		{
-			m_splashScreen = new SplashScreenForm(m_showBuildNum, m_isBetaVersion);
-			m_splashScreen.RealShow(m_waitHandle, m_useFading);
-			if (m_useFading)
-				m_splashScreen.ShowDialog();
-		}
 		#endregion
 	}
+
 	#endregion
 }

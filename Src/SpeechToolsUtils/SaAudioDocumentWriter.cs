@@ -1,12 +1,4 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Text;
-using System.Data;
-using System.Data.OleDb;
-using System.Reflection;
 using System.IO;
-using System.Windows.Forms;
 using System.Runtime.InteropServices;
 
 namespace SIL.SpeechTools.Utils
@@ -20,7 +12,7 @@ namespace SIL.SpeechTools.Utils
 	[ClassInterface(ClassInterfaceType.None)]
 	[GuidAttribute("5F70259E-A867-470a-B114-6D516722CE39")]
 	[ComVisible(true)]
-	public class SaAudioDocumentWriter : SIL.SpeechTools.Utils.ISaAudioDocumentWriter
+	public class SaAudioDocumentWriter : ISaAudioDocumentWriter
 	{
 		private const string kTmpFilePathHolderName = "sa.~#!tmpfileholder~#!.tmp";
 
@@ -149,7 +141,7 @@ namespace SIL.SpeechTools.Utils
 			}
 		
 			File.SetAttributes(m_doc.AudioFile, FileAttributes.Normal);
-			int newFileLength = 0;
+			int newFileLength;
 			byte[] bytes = null;
 
 			// Now, read all the bytes in the file that are not from SA chunks.
@@ -475,7 +467,7 @@ namespace SIL.SpeechTools.Utils
 
 		/// ------------------------------------------------------------------------------------
 		/// <summary>
-		/// Sets the note book reference.
+		/// Sets the notebook reference.
 		/// </summary>
 		/// ------------------------------------------------------------------------------------
 		public string NoteBookReference
