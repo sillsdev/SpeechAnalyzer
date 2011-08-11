@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="8.00"
+	Version="9.00"
 	Name="SA_DSP"
 	ProjectGUID="{BB3F670E-28AF-42CE-9C9F-DE267D3CB986}"
 	RootNamespace="SA_DSP"
+	TargetFrameworkVersion="131072"
 	>
 	<Platforms>
 		<Platform
@@ -83,6 +84,8 @@
 				ProgramDatabaseFile=".\..\..\..\Output\Debug/SA_DSP.pdb"
 				GenerateMapFile="true"
 				MapFileName=".\..\..\..\Output\Debug/SA_DSP.map"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
 				ImportLibrary=".\..\..\..\Output\Debug/SA_DSP.lib"
 				TargetMachine="1"
 			/>
@@ -105,9 +108,6 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -184,6 +184,8 @@
 				ProgramDatabaseFile=".\..\..\..\Output\Release/SA_DSP.pdb"
 				GenerateMapFile="true"
 				MapFileName=".\..\..\..\Output\Release/SA_DSP.map"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
 				ImportLibrary=".\..\..\..\Output\Release/SA_DSP.lib"
 				TargetMachine="1"
 			/>
@@ -206,9 +208,6 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"

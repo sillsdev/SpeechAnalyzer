@@ -1,9 +1,10 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Xml.Serialization;
-using SilEncConverters22;
+using SilEncConverters31;
 using System;
 using SilUtils;
+using ECInterfaces;
 
 namespace SIL.SpeechTools.Utils
 {

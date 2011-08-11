@@ -608,7 +608,7 @@ BOOL CPlotSpectrogram::OnDrawSpectrogram(CDC *pDC, CRect rWnd, CRect rClip, CSaV
             
             double dMaxPower = 0;
             double dMinPower = 1000;
-            for (nSpectrumIndex = int(dSpectrumPoints); nSpectrumIndex>=0; nSpectrumIndex--)
+            for (int nSpectrumIndex = int(dSpectrumPoints); nSpectrumIndex>=0; nSpectrumIndex--)
             {
               dMaxPower = max(dMaxPower, pPower[nSpectrumIndex] - (dlog[nSpectrumIndex]*localSlope + dOffset));
               dMinPower = min(dMinPower, pPower[nSpectrumIndex] - (dlog[nSpectrumIndex]*localSlope + dOffset));

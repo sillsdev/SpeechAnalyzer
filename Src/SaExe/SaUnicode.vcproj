@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="8.00"
+	Version="9.00"
 	Name="SaUnicode"
 	ProjectGUID="{67914272-7CF2-4E5B-A0EC-54728888A13D}"
 	RootNamespace="SaUnicode"
 	Keyword="MFCProj"
+	TargetFrameworkVersion="131072"
 	>
 	<Platforms>
 		<Platform
@@ -75,7 +76,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="mfc80ud.lib mfcs80ud.lib atlsd.lib msvcrtd.lib msvcprtd.lib comdlg32.lib user32.lib gdi32.lib kernel32.lib advapi32.lib oldnames.lib winmm.lib version.lib imm32.lib ole32.lib oleaut32.lib uuid.lib comsuppw.lib HtmlHelp\htmlhelp.lib shell32.lib"
+				AdditionalDependencies="mfc90ud.lib mfcs90ud.lib atlsd.lib msvcrtd.lib msvcprtd.lib comdlg32.lib user32.lib gdi32.lib kernel32.lib advapi32.lib oldnames.lib winmm.lib version.lib imm32.lib ole32.lib oleaut32.lib uuid.lib comsuppw.lib HtmlHelp\htmlhelp.lib shell32.lib"
 				OutputFile="..\..\Output\Debug\SA.exe"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
@@ -87,6 +88,8 @@
 				SubSystem="2"
 				StackReserveSize="1048576"
 				EntryPointSymbol="wWinMainCRTStartup"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -109,11 +112,8 @@
 				Name="VCAppVerifierTool"
 			/>
 			<Tool
-				Name="VCWebDeploymentTool"
-			/>
-			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="xcopy /d /y ..\..\DistFiles ..\..\Output\$(ConfigurationName)&#x0D;&#x0A;xcopy /d /i /y ..\..\DistFiles\AudioCon ..\..\Output\$(ConfigurationName)\AudioCon&#x0D;&#x0A;xcopy /d /i /y ..\..\DistFiles\dtds ..\..\Output\$(ConfigurationName)\dtds&#x0D;&#x0A;xcopy /d /i /y ..\..\DistFiles\Samples ..\..\Output\$(ConfigurationName)\Samples&#x0D;&#x0A;xcopy /d /i /y ..\..\DistFiles\Training ..\..\Output\$(ConfigurationName)\Training"
+				CommandLine="xcopy /d /y ..\..\DistFiles ..\..\Output\$(ConfigurationName)&#x0D;&#x0A;xcopy /d /i /y ..\..\DistFiles\AudioCon ..\..\Output\$(ConfigurationName)\AudioCon&#x0D;&#x0A;xcopy /d /i /y ..\..\DistFiles\dtds ..\..\Output\$(ConfigurationName)\dtds&#x0D;&#x0A;xcopy /d /i /y ..\..\DistFiles\Samples ..\..\Output\$(ConfigurationName)\Samples&#x0D;&#x0A;xcopy /d /i /y ..\..\DistFiles\Training ..\..\Output\$(ConfigurationName)\Training&#x0D;&#x0A;"
 			/>
 		</Configuration>
 		<Configuration
@@ -189,6 +189,8 @@
 				SubSystem="2"
 				StackReserveSize="1048576"
 				EntryPointSymbol="wWinMainCRTStartup"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -209,9 +211,6 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"

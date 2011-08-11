@@ -1,6 +1,6 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 9.00
-# Visual Studio 2005
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SA_DSP", "SaExe\DSP\SA_DSP.vcproj", "{BB3F670E-28AF-42CE-9C9F-DE267D3CB986}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SA_ENU", "SaExe\sa_enu\SA_ENU.vcproj", "{23E56F0E-30A8-4CF2-AB4D-5B1ED39CD268}"

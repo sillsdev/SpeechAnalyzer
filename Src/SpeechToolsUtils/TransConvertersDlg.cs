@@ -3,8 +3,9 @@ using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
 using SIL.SpeechTools.Utils.Properties;
-using SilEncConverters22;
+using SilEncConverters31;
 using SilUtils;
+using ECInterfaces;
 
 namespace SIL.SpeechTools.Utils
 {
