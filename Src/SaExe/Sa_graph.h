@@ -26,6 +26,7 @@
 #include "sa_minic.h"
 #include "appdefs.h"
 #include "resource.h"
+#include "csastring.h"
 
 #define _SA_GRAPH_H
 
@@ -84,7 +85,7 @@ public:
   void ResizeGraph(BOOL bEntire = TRUE, BOOL bLegend = FALSE, BOOL bGraph = TRUE); // resize entire or parts of the graph
   static double GetSemitone(double fFreq); // calculates semitones from a frequency
   static double SemitoneToFrequency(double fSemitone);
-  static LPTSTR Semitone2Name(double fSemitone);
+  static CSaString Semitone2Name(double fSemitone);
   void UpdateStatusBar(DWORD dwStartCursor, DWORD dwStopCursor, BOOL bForceUpdate = FALSE); // update the status bar
   // interface to plot window
   UINT GetPlotID() const {return m_nPlotID;} // return plot ID

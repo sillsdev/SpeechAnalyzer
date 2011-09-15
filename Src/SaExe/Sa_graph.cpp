@@ -665,7 +665,7 @@ double CGraphWnd::SemitoneToFrequency(double fSemitone)
 /***************************************************************************/
 // CGraphWnd::NoteNum2Name Calculates frequency from a given semitone
 /***************************************************************************/
-LPTSTR CGraphWnd::Semitone2Name(double fSemitone)
+CSaString CGraphWnd::Semitone2Name( double fSemitone)
 {
   CSaString szNoteName;
 	short nOctave;
@@ -686,14 +686,13 @@ LPTSTR CGraphWnd::Semitone2Name(double fSemitone)
   fSemitone -= 12; // MIDI starts one octave lower
   nOctave = (short)((fSemitone + 0.5) / 12.);
   nInterval = (short)(2. * (fSemitone - (double)nOctave * 12.) + 0.5);
+	
   // construct note name
   szNoteName.setUtf8(sNoteNamesUtf8[nInterval]);
 	_itow(nOctave, pASCII, 10);
   szNoteName += pASCII;
-	LPTSTR szReturn = _T("");
-	wcscpy(szReturn, szNoteName);
 
-  return szReturn;
+	return CSaString(szNoteName);
 }
 
 
@@ -941,10 +940,9 @@ void CGraphWnd::UpdateStatusBar(DWORD dwStartCursor, DWORD dwStopCursor, BOOL bF
               fSemitone  = fMinScale - 0.1;
               nData        = 0;
             }
-            LPTSTR szNoteName = Semitone2Name(fSemitone);
             
             // write to amplitude pane
-            _stprintf(szText, _T("     %3.2f st (%3s)"), fSemitone, szNoteName);
+					_stprintf(szText, _T("     %3.2f st (%3s)"), fSemitone, Semitone2Name(fSemitone));
             
             //                 pStat->SetPaneSymbol(ID_STATUSPANE_AMPLITUDE); // switch symbol on
             
