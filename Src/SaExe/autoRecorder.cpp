@@ -1136,7 +1136,8 @@ BOOL CDlgAutoRecorder::OnAssignOverlay(CSaView *pSourceView)
   CSaView *pView = pFrame->GetCurrSaView();
 
   UINT graphIDs[MAX_GRAPHS_NUMBER];
-  for(int i=0; i<MAX_GRAPHS_NUMBER; i++)
+	int i=0;
+	for(; i<MAX_GRAPHS_NUMBER; i++)
   {
     CGraphWnd *pGraph = pView->GetGraph(i);
     

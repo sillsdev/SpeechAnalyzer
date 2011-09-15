@@ -93,7 +93,7 @@ long CIIRFilter::Process(void* pCaller, ISaDoc* pDoc, int nProgress, int nLevel)
   }
 
   HPSTR pTargetData; // pointers to target data
-  DWORD dwDataPos = 0; // data position pointer
+	ULONGLONG dwDataPos = 0; // data position pointer
 
   FmtParm* pFmtParm = pDoc->GetFmtParm(); // get sa parameters format member data
   WORD wDstSmpSize = WORD(m_bDstWBenchProcess ? pFmtParm->wBlockAlign / pFmtParm->wChannels : sizeof(short));
@@ -107,7 +107,7 @@ long CIIRFilter::Process(void* pCaller, ISaDoc* pDoc, int nProgress, int nLevel)
   {
     m_bReverse = FALSE;
     // get source data size
-    DWORD dwDataSize;
+		ULONGLONG dwDataSize;
     if (pLowerProcess)
     {
       dwDataSize = pLowerProcess->GetProcessedWaveDataSize();
@@ -130,17 +130,16 @@ long CIIRFilter::Process(void* pCaller, ISaDoc* pDoc, int nProgress, int nLevel)
       if (IsCanceled()) return Exit(PROCESS_CANCELED); // process canceled
       
       pTargetData = m_lpData;
-      DWORD dwBlockEnd = dwDataPos + dwBufferSize;
+			ULONGLONG dwBlockEnd = dwDataPos + dwBufferSize;
       if (dwBlockEnd > dwDataSize)
       {
         dwBlockEnd = dwDataSize;
       }
-      DWORD dwBlockStart = dwDataPos;
+			ULONGLONG dwBlockStart = dwDataPos;
       
       while (dwDataPos < dwBlockEnd)
       {
-        int nData;
-        nData = ReadSourceData(dwDataPos, wSrcSmpSize, pDoc);
+				ULONGLONG nData = ReadSourceData(dwDataPos, wSrcSmpSize, pDoc);
         dwDataPos+= wSrcSmpSize;
         
         // process data
@@ -164,12 +163,12 @@ long CIIRFilter::Process(void* pCaller, ISaDoc* pDoc, int nProgress, int nLevel)
       while (dwDataPos < dwDataSize + dwSettlingSize)
       {
         pTargetData = m_lpData;
-        DWORD dwBlockEnd = dwDataPos + dwBufferSize;
+				ULONGLONG dwBlockEnd = dwDataPos + dwBufferSize;
         if (dwBlockEnd > dwDataSize + dwSettlingSize)
         {
           dwBlockEnd = dwDataSize + dwSettlingSize;
         }
-        DWORD dwBlockStart = dwDataPos;
+				ULONGLONG dwBlockStart = dwDataPos;
         
         while (dwDataPos < dwBlockEnd)
         {
@@ -210,7 +209,7 @@ long CIIRFilter::Process(void* pCaller, ISaDoc* pDoc, int nProgress, int nLevel)
     m_pSourceProcess = &forwardPass;;
     
     WORD wSmpSize = wDstSmpSize;
-    DWORD dwDataSize;
+		ULONGLONG dwDataSize;
     if (forwardPass.m_pSourceProcess)
       dwDataSize = forwardPass.m_pSourceProcess->GetDataSize()*wSmpSize;
     else
@@ -220,9 +219,8 @@ long CIIRFilter::Process(void* pCaller, ISaDoc* pDoc, int nProgress, int nLevel)
     while (dwDataPos > dwDataSize)
     {
       // process silence 
-      int nData;
       dwDataPos-= wSmpSize;
-      nData = ReadSourceData(dwDataPos, wSmpSize, pDoc);
+			ULONGLONG nData = ReadSourceData(dwDataPos, wSmpSize, pDoc);
       
       // process data
       nData = round(Reverse().Tick(double(nData)));
@@ -241,20 +239,19 @@ long CIIRFilter::Process(void* pCaller, ISaDoc* pDoc, int nProgress, int nLevel)
         return Exit(PROCESS_CANCELED); // process canceled
       }
       
-      DWORD dwBlockEnd = dwDataPos - dwBufferSize;
+			ULONGLONG dwBlockEnd = dwDataPos - dwBufferSize;
       if (dwDataPos < dwBufferSize)
       {
         dwBlockEnd = 0;
         dwBufferSize = dwDataPos;
       }
-      DWORD dwBlockStart = dwBlockEnd;
+			ULONGLONG dwBlockStart = dwBlockEnd;
       
       pTargetData = m_lpData + dwBufferSize;
       while (dwDataPos > dwBlockEnd)
       {
-        int nData;
         dwDataPos-= wSmpSize;
-        nData = ReadSourceData(dwDataPos, wSmpSize, pDoc);
+				ULONGLONG nData = ReadSourceData(dwDataPos, wSmpSize, pDoc);
         
         // process data
         nData = round(Reverse().Tick(double(nData)));
@@ -681,7 +678,8 @@ CHilbert::CHilbert(CDataProcess * pSourceProcess, BOOL bWBenchProcess)
   while(poles[poleLast] != 0.)
     poleLast++;
   
-  for(int i=poleLast & 0x1; i < poleLast; i+=2)
+	int i=poleLast & 0x1;
+	for(; i < poleLast; i+=2)
   {
     double flp;
 

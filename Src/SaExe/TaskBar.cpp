@@ -133,7 +133,7 @@ void CTaskBar::UpdateLayout()
       }
 
       // Shift items down
-      for(i=(int) pPage->m_cItemList.size()-1; i >= 0 ; i--)
+			for(int i=(int) pPage->m_cItemList.size()-1; i >= 0 ; i--)
       {
         POINT point;
         m_cList.GetItemPosition(i, &point);
@@ -411,7 +411,7 @@ void SetupTaskBar(CTaskBar &cTaskBar)
 
   pPage->m_pImageList[0]->Create(IDR_TASKBAR,30,32,RGB(192,192,192));
 
-  for(i = 0; i < 6; i++)
+	for(int i = 0; i < 6; i++)
   {
     CSaTaskItem lvitem = itemTemplate;
     int nConfiguration = i + 6;

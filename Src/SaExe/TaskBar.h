@@ -110,7 +110,6 @@ protected:
   
   // Implementation
 protected:
-  
   // Generated message map functions
   //{{AFX_MSG(CTaskBar)
   afx_msg void OnSize(UINT nType, int cx, int cy);

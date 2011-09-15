@@ -1976,7 +1976,8 @@ void CPlotInvSDP::OnDraw(CDC * pDC, CRect rClient, CRect rClip, CSaView * pView)
       nMinValue = 0x7FFF;
       bRadiusValid = FALSE;
       // first find min and max values
-      for (DWORD dwLoop = 0; dwLoop < dwNumber; dwLoop++)
+			DWORD dwLoop = 0;
+			for (; dwLoop < dwNumber; dwLoop++)
       {
         // read data
         if (bAverage)

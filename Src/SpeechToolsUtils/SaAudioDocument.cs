@@ -2,9 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
-using System.Xml.Serialization;
-using System.Xml;
 using System.Windows.Forms;
+using System.Xml.Serialization;
+using SIL.SpeechTools.Utils.Properties;
+using SilUtils;
 
 namespace SIL.SpeechTools.Utils
 {
@@ -93,7 +94,15 @@ namespace SIL.SpeechTools.Utils
 	{
 		public const float kCurrSaDocVersion = 2.0F;
 
-		private static List<string> m_genders = new List<string>(new string[] {" ", "M", "F", "C"});
+		// Defaults based on the sample format SA converts mp3 and wma files to. These constants 
+		// need to change if SA ever chooses a different sample format to convert to. 
+		// Alternatively, a temp wave file path could be passed to the Load() method.
+		private const int kDefaultFormatTag = 1;
+		private const int kDefaultChannels = 1;
+		private const int kDefaultSamplePerSec = 22050;
+		private const int kDefaultBitsPerSample = 16;
+
+		private static List<string> m_genders = new List<string>(new string[] { " ", "M", "F", "C" });
 		
 		internal SortedDictionary<uint, SegmentData> m_segments;
 		internal SortedDictionary<MusicSegmentKey, MusicSegmentData> m_musicSegments;
@@ -120,7 +129,7 @@ namespace SIL.SpeechTools.Utils
 		private int m_blockAlignment;
 		private int m_bitsPerSample;
 		private int m_saFlags;
-		private int m_recordFileFormat;
+		private int m_recordFileFormat = -1;
 		private int m_recordTimeStamp;
 		private int m_recordBandWidth;
 		private int m_recordSampleSize;
@@ -249,10 +258,10 @@ namespace SIL.SpeechTools.Utils
 			// Make sure the wave file exists.
 			if (!File.Exists(audioFilePath))
 			{
-				string msg = string.Format(Properties.Resources.kstidWaveFileNotFound,
-					audioFilePath);
+				string msg = string.Format(Resources.kstidWaveFileNotFound,
+					SilUtils.Utils.PrepFilePathForSTMsgBox(audioFilePath));
 
-				STUtils.STMsgBox(msg, MessageBoxButtons.OK);
+				SilUtils.Utils.STMsgBox(msg, MessageBoxButtons.OK);
 				return null;
 			}
 
@@ -274,7 +283,7 @@ namespace SIL.SpeechTools.Utils
 				// Get the transcription data from the companion transcription file.
 				Exception e;
 				s_audioFileLoading = audioFilePath;
-				doc = STUtils.DeserializeData(transcriptionFile,
+				doc = SilUtils.Utils.DeserializeData(transcriptionFile,
 					typeof(SaAudioDocument), out e) as SaAudioDocument;
 
 				if (e != null)
@@ -326,10 +335,10 @@ namespace SIL.SpeechTools.Utils
 				// Warn the user that we don't have write privileges
 				string audioFileNameOnly = Path.GetFileName(audioFile);
 				string transFileNameOnly = Path.ChangeExtension(audioFileNameOnly, ".saxml");
-				string msg = Properties.Resources.kstidReadOnlyFolderMsg;
+				string msg = Resources.kstidReadOnlyFolderMsg;
 				msg = string.Format(msg, audioFileNameOnly, audioFileNameOnly, transFileNameOnly);
-				msg = STUtils.ConvertLiteralNewLines(msg);
-				STUtils.STMsgBox(msg, MessageBoxButtons.OK);
+				msg = SilUtils.Utils.ConvertLiteralNewLines(msg);
+				SilUtils.Utils.STMsgBox(msg, MessageBoxButtons.OK);
 
 				using (FolderBrowserDialog dlg = new FolderBrowserDialog())
 				{
@@ -363,7 +372,7 @@ namespace SIL.SpeechTools.Utils
 				AudioFile = audioFile;
 			}
 
-			return STUtils.SerializeData(TranscriptionFile, this);
+			return SilUtils.Utils.SerializeData(TranscriptionFile, this);
 		}
 
 		/// ------------------------------------------------------------------------------------
@@ -410,13 +419,11 @@ namespace SIL.SpeechTools.Utils
 				? m_audioFile : s_audioFileLoading;
 			if (m_samplesPerSecond == -1)
 			{
-				if (File.Exists(audioFilePath))
-					GetAudioFormatValues(audioFilePath);
-				else
+				if (!File.Exists(audioFilePath) || !GetAudioFormatValues(audioFilePath))
 					return 0;
 			}
 
-			return SaAudioDocument.BytesToSeconds(byteVal, m_channels,
+			return BytesToSeconds(byteVal, m_channels,
 				m_samplesPerSecond, m_bitsPerSample);
 		}
 
@@ -433,14 +440,12 @@ namespace SIL.SpeechTools.Utils
 				? m_audioFile : s_audioFileLoading;
 			if (m_samplesPerSecond == -1)
 			{
-				if (File.Exists(audioFilePath))
-					GetAudioFormatValues(audioFilePath);
-				else
+				if (!File.Exists(audioFilePath) || !GetAudioFormatValues(audioFilePath))
 					return 0;
 			}
 
 
-			return SaAudioDocument.SecondsToBytes(seconds, m_channels,
+			return SecondsToBytes(seconds, m_channels,
 				m_samplesPerSecond, m_bitsPerSample);
 		}
 
@@ -451,14 +456,30 @@ namespace SIL.SpeechTools.Utils
 		/// ------------------------------------------------------------------------------------
 		private bool GetAudioFormatValues(string audioFilePath)
 		{
+			FileStream stream = null;
+			BinaryReader reader = null;
+
 			try
 			{
-				FileStream stream = File.Open(audioFilePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
-				BinaryReader reader = new BinaryReader(stream, Encoding.ASCII);
+				stream = File.Open(audioFilePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+				reader = new BinaryReader(stream, Encoding.ASCII);
 
 				//Start at the beginning of fmt chunk plus advance eight 
 				//positions to move ahead of the chunk ID and chunk size.
-				stream.Position = AudioReader.GetChunkOffset(stream, AudioReader.kidFmtChunk) + 8;
+				long fmtChunkOffset = AudioReader.GetChunkOffset(stream, AudioReader.kidFmtChunk);
+				stream.Position = fmtChunkOffset + 8;
+
+				// This is not a standard wave file, so assume SA converted it to wave.
+				if (fmtChunkOffset == -1)
+				{
+					FormatTag = kDefaultFormatTag;
+					Channels = kDefaultChannels;
+					SamplesPerSecond = kDefaultSamplePerSec;
+					BitsPerSample = kDefaultBitsPerSample;
+					AverageBytesPerSecond = Channels * SamplesPerSecond * BitsPerSample / 8;
+					BlockAlignment = Channels * BitsPerSample / 8;
+					return true;
+				}
 
 				//Read the correct values that correspond with each category
 				//of the fmt chunk, then write the information to the database.
@@ -484,16 +505,18 @@ namespace SIL.SpeechTools.Utils
 
 				//Calculate number of samples
 				NumberOfSamples = 8 * dataChunkSize / bitsPerSample;
-
+			}
+			catch
+			{
+				return false;
+			}
+			finally
+			{
 				if (stream != null)
 					stream.Close();
 
 				stream = null;
 				reader = null;
-			}
-			catch
-			{
-				return false;
 			}
 
 			return true;
@@ -571,10 +594,10 @@ namespace SIL.SpeechTools.Utils
 				// Make sure the wave file exists.
 				if (!File.Exists(value))
 				{
-					string msg = string.Format(Properties.Resources.kstidWaveFileNotFound,
-						value);
+					string msg = string.Format(Resources.kstidWaveFileNotFound,
+						SilUtils.Utils.PrepFilePathForSTMsgBox(value));
 
-					STUtils.STMsgBox(msg, MessageBoxButtons.OK);
+					SilUtils.Utils.STMsgBox(msg, MessageBoxButtons.OK);
 					return;
 				}
 

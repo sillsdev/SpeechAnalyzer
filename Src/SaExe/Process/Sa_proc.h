@@ -75,8 +75,8 @@ public:
   virtual int GetProcessedData(DWORD dwOffset, BOOL*); // return processed data from given position (offset)    
   virtual DWORD GetProcessedData(int /*nSegmentIndex*/) {return 0;}  // return processed data for a given segment
   
-  virtual DWORD GetDataSize() const {return GetDataSize(2);} // return processed data size in words (16 bit)
-  virtual DWORD GetDataSize(size_t nElementSize) const {return m_fileStatus.m_size / nElementSize;} // return processed data size in words (16 bit)
+	virtual ULONGLONG GetDataSize() const {return GetDataSize(2);} // return processed data size in words (16 bit)
+	virtual ULONGLONG GetDataSize(size_t nElementSize) const {return m_fileStatus.m_size / nElementSize;} // return processed data size in words (16 bit)
   virtual void* GetProcessedDataBlock(DWORD dwOffset, size_t sObjectSize, BOOL bReverse=FALSE); // return processed data pointer to object staring at dwOffset
   virtual void* GetProcessedObject(DWORD dwIndex, size_t sObjectSize, BOOL bReverse=FALSE); // return processed data pointer to object staring at dwOffset
   
@@ -91,7 +91,7 @@ public:
 
   // special workbench helper functions
   virtual HPSTR GetProcessedWaveData(DWORD dwOffset, BOOL bBlockBegin = FALSE); // return pointer to block of processed wave source   
-  virtual DWORD GetProcessedWaveDataSize() {return GetDataSize(1);} // return processed wave source data size
+	virtual ULONGLONG GetProcessedWaveDataSize() {return GetDataSize(1);} // return processed wave source data size
   virtual DWORD GetProcessBufferIndex(size_t nSize = 1) {return m_dwBufferOffset >= 0x40000000 ? UNDEFINED_OFFSET : m_dwBufferOffset/nSize;} // return index to process buffer
   
   DWORD GetProcessBufferSize() {return m_dwBufferSize;}  // return process buffer size 
@@ -127,7 +127,7 @@ protected:
   virtual void Write( const void* lpBuf, UINT nCount ) { m_pFile->Write(lpBuf, nCount);}
 
   // Special case used to bypass file
-  virtual SetDataSize(int nElements, size_t nElementSize = 1) { m_fileStatus.m_size = nElements * nElementSize;}
+	virtual void SetDataSize(int nElements, size_t nElementSize = 1) { m_fileStatus.m_size = nElements * nElementSize;}
 
 //Implementation
 private:

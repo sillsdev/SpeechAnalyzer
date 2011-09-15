@@ -67,26 +67,26 @@ class Object_ostream;
 //###########################################################################
 // FindMemoryLeaks class
 
-class FindMemoryLeaks
-{
-	_CrtMemState m_checkpoint;
-	
-public:
-	FindMemoryLeaks()
-	{
-		_CrtMemCheckpoint(&m_checkpoint);
-	};
-
-	~FindMemoryLeaks()
-	{
-		_CrtMemState checkpoint;
-		_CrtMemCheckpoint(&checkpoint);
-		_CrtMemState diff;
-		_CrtMemDifference(&diff, &m_checkpoint, &checkpoint);
-		_CrtMemDumpStatistics(&diff);
-		_CrtMemDumpAllObjectsSince(&diff);
-	};
-};
+//class FindMemoryLeaks
+//{
+//	_CrtMemState m_checkpoint;
+//	
+//public:
+//	FindMemoryLeaks()
+//	{
+//		_CrtMemCheckpoint(&m_checkpoint);
+//	};
+//
+//	~FindMemoryLeaks()
+//	{
+//		_CrtMemState checkpoint;
+//		_CrtMemCheckpoint(&checkpoint);
+//		_CrtMemState diff;
+//		_CrtMemDifference(&diff, &m_checkpoint, &checkpoint);
+//		_CrtMemDumpStatistics(&diff);
+//		_CrtMemDumpAllObjectsSince(&diff);
+//	};
+//};
 
 //###########################################################################
 // CSaApp window
@@ -102,7 +102,7 @@ public:
 
   // Attributes
 private:
-  FindMemoryLeaks m_fml;
+//  FindMemoryLeaks m_fml;
 
 	HINSTANCE m_hEnglishResources;
   HINSTANCE m_hLocalizedResources;

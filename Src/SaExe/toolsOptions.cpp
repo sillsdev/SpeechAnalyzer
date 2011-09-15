@@ -118,7 +118,7 @@ void CDlgOptionsViewPage::DoDataExchange(CDataExchange* pDX)
 /***************************************************************************/
 BOOL CDlgOptionsViewPage::OnInitDialog()
 {
-  static const StyleList[] =
+	static const int StyleList[] =
   {
     // This list is based on the interpretation of Style numbers in the rest of SA.
     0,
@@ -253,7 +253,8 @@ void CDlgOptionsViewPage::OnAnimationRateScroll()
   int nOptions[] = {1, 2, 5, 10, 30, 60};   // only options allowed
   int nOptionsCount = sizeof(nOptions)/sizeof(*nOptions);
   int nData = GetDlgItemInt(IDC_VIEW_ANIMRATEEDIT, NULL, TRUE);
-  for (int nIndex = 0; nIndex < nOptionsCount; nIndex++)
+	int nIndex = 0;
+	for (; nIndex < nOptionsCount; nIndex++)
     if (nData == nOptions[nIndex]) break;
     if (m_SpinAnimationRate.UpperButtonClicked()) nIndex++;
     else nIndex--;
@@ -521,7 +522,8 @@ void CDlgOptionsColorPage::DoDataExchange(CDataExchange* pDX)
 /***************************************************************************/
 void CDlgOptionsColorPage::FillColorComboBoxInfo(BOOL bAddStrings)
 {
-  for (int i = 0; GraphColorsComboInfo[i].pszColorItem; i++)
+	int i = 0;
+	for (; GraphColorsComboInfo[i].pszColorItem; i++)
   {
     if (bAddStrings) m_GraphItemColors.AddString(NULL);
     GraphColorsComboInfo[i].cColor = *(&m_cColors.cPlotBkg + i);

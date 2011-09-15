@@ -25,6 +25,7 @@
 //    TRE Added Convert command to the context menu
 ////////////////////////////////////////////////////////////////////////////
 #undef _UNICODE
+#undef UNICODE
 
 #pragma warning(push, 3)  // these files generate a lot of warnings at level 4
 #include <fstream>
@@ -32,6 +33,8 @@
 
 #include <stdlib.h>
 #include <windows.h>
+#include <tchar.h>
+
 using std::ofstream;
 using std::ifstream;
 using std::ios;
@@ -48,7 +51,7 @@ using std::streampos;
 
 static HINSTANCE hInstance = NULL;
 
-const ClefRange[5][2] =
+const int ClefRange[5][2] =
 {
   {((NAME_G*NUMBER_OF_ACCIDENTALS)+DOUBLE_FLAT+OCTAVE_4),
     ((NAME_D*NUMBER_OF_ACCIDENTALS)+DOUBLE_SHARP+OCTAVE_7)}, // TREBLE-8VA
@@ -811,145 +814,145 @@ InstrumentMenu::InstrumentMenu(int /*Instrument*/)
   hWoodMnu = CreatePopupMenu();
   hMiscMnu = CreatePopupMenu();
 
-  AppendMenu(hPercussionMnu,MF_ENABLED|MF_STRING,WM_USER+128," 0 Acoustic Grand Piano");
-  AppendMenu(hPercussionMnu,MF_ENABLED|MF_STRING,WM_USER+129," 1 Bright Acoustic Piano");
-  AppendMenu(hPercussionMnu,MF_ENABLED|MF_STRING,WM_USER+130," 2 Electric Grand Piano");
-  AppendMenu(hPercussionMnu,MF_ENABLED|MF_STRING,WM_USER+131," 3 Honkytonk Piano");
-  AppendMenu(hPercussionMnu,MF_ENABLED|MF_STRING,WM_USER+132," 4 Rhodes Piano");
-  AppendMenu(hPercussionMnu,MF_ENABLED|MF_STRING,WM_USER+133," 5 Chorus Piano");
-  AppendMenu(hPercussionMnu,MF_ENABLED|MF_STRING,WM_USER+135," 7 Clavinet");
-  AppendMenu(hPercussionMnu,MF_ENABLED|MF_STRING,WM_USER+136," 8 Celesta");
-  AppendMenu(hPercussionMnu,MF_ENABLED|MF_STRING,WM_USER+137," 9 Glockenspiel");
-  AppendMenu(hPercussionMnu,MF_ENABLED|MF_STRING,WM_USER+138," 10 Music Box");
-  AppendMenu(hPercussionMnu,MF_ENABLED|MF_STRING,WM_USER+139," 11 Vibraphone");
-  AppendMenu(hPercussionMnu,MF_ENABLED|MF_STRING,WM_USER+140," 12 Marimba");
-  AppendMenu(hPercussionMnu,MF_ENABLED|MF_STRING,WM_USER+141," 13 Xylophone");
-  AppendMenu(hPercussionMnu,MF_ENABLED|MF_STRING,WM_USER+142," 14 Tubular Bells");
-  AppendMenu(hPercussionMnu,MF_ENABLED|MF_STRING,WM_USER+143," 15 Dulcimer");
-  AppendMenu(hPercussionMnu,MF_ENABLED|MF_STRING,WM_USER+175," 47 Timpani");
-  AppendMenu(hPercussionMnu,MF_ENABLED|MF_STRING,WM_USER+236,"108 Kalimba");
-  AppendMenu(hPercussionMnu,MF_ENABLED|MF_STRING,WM_USER+240,"112 Tinkle Bell");
-  AppendMenu(hPercussionMnu,MF_ENABLED|MF_STRING,WM_USER+241,"113 Agogo");
-  AppendMenu(hPercussionMnu,MF_ENABLED|MF_STRING,WM_USER+242,"114 Steel Drums");
-  AppendMenu(hPercussionMnu,MF_ENABLED|MF_STRING,WM_USER+243,"115 Wood Block");
-  AppendMenu(hPercussionMnu,MF_ENABLED|MF_STRING,WM_USER+244,"116 Taiko Drum");
-  AppendMenu(hPercussionMnu,MF_ENABLED|MF_STRING,WM_USER+245,"117 Melodic Tom");
-  AppendMenu(hPercussionMnu,MF_ENABLED|MF_STRING,WM_USER+246,"118 Synth Drum");
-  AppendMenu(hPercussionMnu,MF_ENABLED|MF_STRING,WM_USER+247,"119 Reverse Cymbal");
+	AppendMenu(hPercussionMnu,MF_ENABLED|MF_STRING,WM_USER+128,_T(" 0 Acoustic Grand Piano"));
+	AppendMenu(hPercussionMnu,MF_ENABLED|MF_STRING,WM_USER+129,_T(" 1 Bright Acoustic Piano"));
+	AppendMenu(hPercussionMnu,MF_ENABLED|MF_STRING,WM_USER+130,_T(" 2 Electric Grand Piano"));
+	AppendMenu(hPercussionMnu,MF_ENABLED|MF_STRING,WM_USER+131,_T(" 3 Honkytonk Piano"));
+	AppendMenu(hPercussionMnu,MF_ENABLED|MF_STRING,WM_USER+132,_T(" 4 Rhodes Piano"));
+	AppendMenu(hPercussionMnu,MF_ENABLED|MF_STRING,WM_USER+133,_T(" 5 Chorus Piano"));
+	AppendMenu(hPercussionMnu,MF_ENABLED|MF_STRING,WM_USER+135,_T(" 7 Clavinet"));
+	AppendMenu(hPercussionMnu,MF_ENABLED|MF_STRING,WM_USER+136,_T(" 8 Celesta"));
+	AppendMenu(hPercussionMnu,MF_ENABLED|MF_STRING,WM_USER+137,_T(" 9 Glockenspiel"));
+	AppendMenu(hPercussionMnu,MF_ENABLED|MF_STRING,WM_USER+138,_T(" 10 Music Box"));
+	AppendMenu(hPercussionMnu,MF_ENABLED|MF_STRING,WM_USER+139,_T(" 11 Vibraphone"));
+	AppendMenu(hPercussionMnu,MF_ENABLED|MF_STRING,WM_USER+140,_T(" 12 Marimba"));
+	AppendMenu(hPercussionMnu,MF_ENABLED|MF_STRING,WM_USER+141,_T(" 13 Xylophone"));
+	AppendMenu(hPercussionMnu,MF_ENABLED|MF_STRING,WM_USER+142,_T(" 14 Tubular Bells"));
+	AppendMenu(hPercussionMnu,MF_ENABLED|MF_STRING,WM_USER+143,_T(" 15 Dulcimer"));
+	AppendMenu(hPercussionMnu,MF_ENABLED|MF_STRING,WM_USER+175,_T(" 47 Timpani"));
+	AppendMenu(hPercussionMnu,MF_ENABLED|MF_STRING,WM_USER+236,_T("108 Kalimba"));
+	AppendMenu(hPercussionMnu,MF_ENABLED|MF_STRING,WM_USER+240,_T("112 Tinkle Bell"));
+	AppendMenu(hPercussionMnu,MF_ENABLED|MF_STRING,WM_USER+241,_T("113 Agogo"));
+	AppendMenu(hPercussionMnu,MF_ENABLED|MF_STRING,WM_USER+242,_T("114 Steel Drums"));
+	AppendMenu(hPercussionMnu,MF_ENABLED|MF_STRING,WM_USER+243,_T("115 Wood Block"));
+	AppendMenu(hPercussionMnu,MF_ENABLED|MF_STRING,WM_USER+244,_T("116 Taiko Drum"));
+	AppendMenu(hPercussionMnu,MF_ENABLED|MF_STRING,WM_USER+245,_T("117 Melodic Tom"));
+	AppendMenu(hPercussionMnu,MF_ENABLED|MF_STRING,WM_USER+246,_T("118 Synth Drum"));
+	AppendMenu(hPercussionMnu,MF_ENABLED|MF_STRING,WM_USER+247,_T("119 Reverse Cymbal"));
 
-  AppendMenu(hInstrumentMnu,MF_ENABLED|MF_POPUP,(UINT)hPercussionMnu,"&Percussion");
+	AppendMenu(hInstrumentMnu,MF_ENABLED|MF_POPUP,(UINT)hPercussionMnu,_T("&Percussion"));
 
-  AppendMenu(hStringMnu,MF_ENABLED|MF_STRING,WM_USER+134," 6 Harpsichord");
-  AppendMenu(hStringMnu,MF_ENABLED|MF_STRING,WM_USER+152," 24 Acoustic Guitar (nylon)");
-  AppendMenu(hStringMnu,MF_ENABLED|MF_STRING,WM_USER+153," 25 Acoustic Guitar (steel)");
-  AppendMenu(hStringMnu,MF_ENABLED|MF_STRING,WM_USER+154," 26 Electric Guitar (jazz)");
-  AppendMenu(hStringMnu,MF_ENABLED|MF_STRING,WM_USER+155," 27 Electric Guitar (clean)");
-  AppendMenu(hStringMnu,MF_ENABLED|MF_STRING,WM_USER+156," 28 Electric Guitar (muted)");
-  AppendMenu(hStringMnu,MF_ENABLED|MF_STRING,WM_USER+157," 29 Overdriven Guitar");
-  AppendMenu(hStringMnu,MF_ENABLED|MF_STRING,WM_USER+158," 30 Distortion Guitar");
-  AppendMenu(hStringMnu,MF_ENABLED|MF_STRING,WM_USER+159," 31 Guitar Harmonics");
-  AppendMenu(hStringMnu,MF_ENABLED|MF_STRING,WM_USER+160," 32 Acoustic Bass");
-  AppendMenu(hStringMnu,MF_ENABLED|MF_STRING,WM_USER+161," 33 Electric Bass (finger)");
-  AppendMenu(hStringMnu,MF_ENABLED|MF_STRING,WM_USER+162," 34 Electric Bass (pick)");
-  AppendMenu(hStringMnu,MF_ENABLED|MF_STRING,WM_USER+163," 35 Fretless Bass");
-  AppendMenu(hStringMnu,MF_ENABLED|MF_STRING,WM_USER+164," 36 Slap Bass 1");
-  AppendMenu(hStringMnu,MF_ENABLED|MF_STRING,WM_USER+165," 37 Slap Bass 2");
-  AppendMenu(hStringMnu,MF_ENABLED|MF_STRING,WM_USER+166," 38 Synth Bass 1");
-  AppendMenu(hStringMnu,MF_ENABLED|MF_STRING,WM_USER+167," 39 Synth Bass 2");
-  AppendMenu(hStringMnu,MF_ENABLED|MF_STRING,WM_USER+168," 40 Violin");
-  AppendMenu(hStringMnu,MF_ENABLED|MF_STRING,WM_USER+169," 41 Viola");
-  AppendMenu(hStringMnu,MF_ENABLED|MF_STRING,WM_USER+170," 42 Cello");
-  AppendMenu(hStringMnu,MF_ENABLED|MF_STRING,WM_USER+171," 43 Contra Bass");
-  AppendMenu(hStringMnu,MF_ENABLED|MF_STRING,WM_USER+172," 44 Tremolo Strings");
-  AppendMenu(hStringMnu,MF_ENABLED|MF_STRING,WM_USER+173," 45 Pizzicato Strings");
-  AppendMenu(hStringMnu,MF_ENABLED|MF_STRING,WM_USER+174," 46 Orchestral Harp");
-  AppendMenu(hStringMnu,MF_ENABLED|MF_STRING,WM_USER+176," 48 String Ensemble 1");
-  AppendMenu(hStringMnu,MF_ENABLED|MF_STRING,WM_USER+177," 49 String Ensemble 2");
-  AppendMenu(hStringMnu,MF_ENABLED|MF_STRING,WM_USER+178," 50 Synth Strings 1");
-  AppendMenu(hStringMnu,MF_ENABLED|MF_STRING,WM_USER+179," 51 Synth Strings 2");
-  AppendMenu(hStringMnu,MF_ENABLED|MF_STRING,WM_USER+183," 55 Orchestra Hit");
-  AppendMenu(hStringMnu,MF_ENABLED|MF_STRING,WM_USER+232,"104 Sitar");
-  AppendMenu(hStringMnu,MF_ENABLED|MF_STRING,WM_USER+233,"105 Banjo");
-  AppendMenu(hStringMnu,MF_ENABLED|MF_STRING,WM_USER+234,"106 Shamisen");
-  AppendMenu(hStringMnu,MF_ENABLED|MF_STRING,WM_USER+235,"107 Koto");
-  AppendMenu(hStringMnu,MF_ENABLED|MF_STRING,WM_USER+238,"110 Fiddle");
-  AppendMenu(hStringMnu,MF_ENABLED|MF_STRING,WM_USER+248,"120 Guitar Fret Noise");
-  AppendMenu(hInstrumentMnu,MF_ENABLED|MF_POPUP,(UINT)hStringMnu,"&String");
+	AppendMenu(hStringMnu,MF_ENABLED|MF_STRING,WM_USER+134,_T(" 6 Harpsichord"));
+	AppendMenu(hStringMnu,MF_ENABLED|MF_STRING,WM_USER+152,_T(" 24 Acoustic Guitar (nylon)"));
+	AppendMenu(hStringMnu,MF_ENABLED|MF_STRING,WM_USER+153,_T(" 25 Acoustic Guitar (steel)"));
+	AppendMenu(hStringMnu,MF_ENABLED|MF_STRING,WM_USER+154,_T(" 26 Electric Guitar (jazz)"));
+	AppendMenu(hStringMnu,MF_ENABLED|MF_STRING,WM_USER+155,_T(" 27 Electric Guitar (clean)"));
+	AppendMenu(hStringMnu,MF_ENABLED|MF_STRING,WM_USER+156,_T(" 28 Electric Guitar (muted)"));
+	AppendMenu(hStringMnu,MF_ENABLED|MF_STRING,WM_USER+157,_T(" 29 Overdriven Guitar"));
+	AppendMenu(hStringMnu,MF_ENABLED|MF_STRING,WM_USER+158,_T(" 30 Distortion Guitar"));
+	AppendMenu(hStringMnu,MF_ENABLED|MF_STRING,WM_USER+159,_T(" 31 Guitar Harmonics"));
+	AppendMenu(hStringMnu,MF_ENABLED|MF_STRING,WM_USER+160,_T(" 32 Acoustic Bass"));
+	AppendMenu(hStringMnu,MF_ENABLED|MF_STRING,WM_USER+161,_T(" 33 Electric Bass (finger)"));
+	AppendMenu(hStringMnu,MF_ENABLED|MF_STRING,WM_USER+162,_T(" 34 Electric Bass (pick)"));
+	AppendMenu(hStringMnu,MF_ENABLED|MF_STRING,WM_USER+163,_T(" 35 Fretless Bass"));
+	AppendMenu(hStringMnu,MF_ENABLED|MF_STRING,WM_USER+164,_T(" 36 Slap Bass 1"));
+	AppendMenu(hStringMnu,MF_ENABLED|MF_STRING,WM_USER+165,_T(" 37 Slap Bass 2"));
+	AppendMenu(hStringMnu,MF_ENABLED|MF_STRING,WM_USER+166,_T(" 38 Synth Bass 1"));
+	AppendMenu(hStringMnu,MF_ENABLED|MF_STRING,WM_USER+167,_T(" 39 Synth Bass 2"));
+	AppendMenu(hStringMnu,MF_ENABLED|MF_STRING,WM_USER+168,_T(" 40 Violin"));
+	AppendMenu(hStringMnu,MF_ENABLED|MF_STRING,WM_USER+169,_T(" 41 Viola"));
+	AppendMenu(hStringMnu,MF_ENABLED|MF_STRING,WM_USER+170,_T(" 42 Cello"));
+	AppendMenu(hStringMnu,MF_ENABLED|MF_STRING,WM_USER+171,_T(" 43 Contra Bass"));
+	AppendMenu(hStringMnu,MF_ENABLED|MF_STRING,WM_USER+172,_T(" 44 Tremolo Strings"));
+	AppendMenu(hStringMnu,MF_ENABLED|MF_STRING,WM_USER+173,_T(" 45 Pizzicato Strings"));
+	AppendMenu(hStringMnu,MF_ENABLED|MF_STRING,WM_USER+174,_T(" 46 Orchestral Harp"));
+	AppendMenu(hStringMnu,MF_ENABLED|MF_STRING,WM_USER+176,_T(" 48 String Ensemble 1"));
+	AppendMenu(hStringMnu,MF_ENABLED|MF_STRING,WM_USER+177,_T(" 49 String Ensemble 2"));
+	AppendMenu(hStringMnu,MF_ENABLED|MF_STRING,WM_USER+178,_T(" 50 Synth Strings 1"));
+	AppendMenu(hStringMnu,MF_ENABLED|MF_STRING,WM_USER+179,_T(" 51 Synth Strings 2"));
+	AppendMenu(hStringMnu,MF_ENABLED|MF_STRING,WM_USER+183,_T(" 55 Orchestra Hit"));
+	AppendMenu(hStringMnu,MF_ENABLED|MF_STRING,WM_USER+232,_T("104 Sitar"));
+	AppendMenu(hStringMnu,MF_ENABLED|MF_STRING,WM_USER+233,_T("105 Banjo"));
+	AppendMenu(hStringMnu,MF_ENABLED|MF_STRING,WM_USER+234,_T("106 Shamisen"));
+	AppendMenu(hStringMnu,MF_ENABLED|MF_STRING,WM_USER+235,_T("107 Koto"));
+	AppendMenu(hStringMnu,MF_ENABLED|MF_STRING,WM_USER+238,_T("110 Fiddle"));
+	AppendMenu(hStringMnu,MF_ENABLED|MF_STRING,WM_USER+248,_T("120 Guitar Fret Noise"));
+	AppendMenu(hInstrumentMnu,MF_ENABLED|MF_POPUP,(UINT)hStringMnu,_T("&String"));
 
-  AppendMenu(hBrassMnu,MF_ENABLED|MF_STRING,WM_USER+184,"56 Trumpet");
-  AppendMenu(hBrassMnu,MF_ENABLED|MF_STRING,WM_USER+185,"57 Trombone");
-  AppendMenu(hBrassMnu,MF_ENABLED|MF_STRING,WM_USER+186,"58 Tuba");
-  AppendMenu(hBrassMnu,MF_ENABLED|MF_STRING,WM_USER+187,"59 Muted Trumpet");
-  AppendMenu(hBrassMnu,MF_ENABLED|MF_STRING,WM_USER+188,"60 French Horn");
-  AppendMenu(hBrassMnu,MF_ENABLED|MF_STRING,WM_USER+189,"61 Brass Section");
-  AppendMenu(hBrassMnu,MF_ENABLED|MF_STRING,WM_USER+190,"62 Synth Brass 1");
-  AppendMenu(hBrassMnu,MF_ENABLED|MF_STRING,WM_USER+191,"63 Synth Brass 2");
-  AppendMenu(hInstrumentMnu,MF_ENABLED|MF_POPUP,(UINT)hBrassMnu,"&Brass");
+	AppendMenu(hBrassMnu,MF_ENABLED|MF_STRING,WM_USER+184,_T("56 Trumpet"));
+	AppendMenu(hBrassMnu,MF_ENABLED|MF_STRING,WM_USER+185,_T("57 Trombone"));
+	AppendMenu(hBrassMnu,MF_ENABLED|MF_STRING,WM_USER+186,_T("58 Tuba"));
+	AppendMenu(hBrassMnu,MF_ENABLED|MF_STRING,WM_USER+187,_T("59 Muted Trumpet"));
+	AppendMenu(hBrassMnu,MF_ENABLED|MF_STRING,WM_USER+188,_T("60 French Horn"));
+	AppendMenu(hBrassMnu,MF_ENABLED|MF_STRING,WM_USER+189,_T("61 Brass Section"));
+	AppendMenu(hBrassMnu,MF_ENABLED|MF_STRING,WM_USER+190,_T("62 Synth Brass 1"));
+	AppendMenu(hBrassMnu,MF_ENABLED|MF_STRING,WM_USER+191,_T("63 Synth Brass 2"));
+	AppendMenu(hInstrumentMnu,MF_ENABLED|MF_POPUP,(UINT)hBrassMnu,_T("&Brass"));
 
-  AppendMenu(hWoodMnu,MF_ENABLED|MF_STRING,WM_USER+144," 16 Hammond Organ");
-  AppendMenu(hWoodMnu,MF_ENABLED|MF_STRING,WM_USER+145," 17 Percuss. Organ");
-  AppendMenu(hWoodMnu,MF_ENABLED|MF_STRING,WM_USER+146," 18 Rock Organ");
-  AppendMenu(hWoodMnu,MF_ENABLED|MF_STRING,WM_USER+147," 19 Church Organ");
-  AppendMenu(hWoodMnu,MF_ENABLED|MF_STRING,WM_USER+148," 20 Reed Organ");
-  AppendMenu(hWoodMnu,MF_ENABLED|MF_STRING,WM_USER+149," 21 Accordion");
-  AppendMenu(hWoodMnu,MF_ENABLED|MF_STRING,WM_USER+150," 22 Harmonica");
-  AppendMenu(hWoodMnu,MF_ENABLED|MF_STRING,WM_USER+151," 23 Tango Accordion");
-  AppendMenu(hWoodMnu,MF_ENABLED|MF_STRING,WM_USER+192," 64 Soprano Sax");
-  AppendMenu(hWoodMnu,MF_ENABLED|MF_STRING,WM_USER+193," 65 Alto Sax");
-  AppendMenu(hWoodMnu,MF_ENABLED|MF_STRING,WM_USER+194," 66 Tenor Sax");
-  AppendMenu(hWoodMnu,MF_ENABLED|MF_STRING,WM_USER+195," 67 Baritone Sax");
-  AppendMenu(hWoodMnu,MF_ENABLED|MF_STRING,WM_USER+196," 68 Oboe");
-  AppendMenu(hWoodMnu,MF_ENABLED|MF_STRING,WM_USER+197," 69 English Horn");
-  AppendMenu(hWoodMnu,MF_ENABLED|MF_STRING,WM_USER+198," 70 Bassoon");
-  AppendMenu(hWoodMnu,MF_ENABLED|MF_STRING,WM_USER+199," 71 Clarinet");
-  AppendMenu(hWoodMnu,MF_ENABLED|MF_STRING,WM_USER+200," 72 Piccolo");
-  AppendMenu(hWoodMnu,MF_ENABLED|MF_STRING,WM_USER+201," 73 Flute");
-  AppendMenu(hWoodMnu,MF_ENABLED|MF_STRING,WM_USER+202," 74 Recorder");
-  AppendMenu(hWoodMnu,MF_ENABLED|MF_STRING,WM_USER+203," 75 Pan Flute");
-  AppendMenu(hWoodMnu,MF_ENABLED|MF_STRING,WM_USER+204," 76 Bottle Blow");
-  AppendMenu(hWoodMnu,MF_ENABLED|MF_STRING,WM_USER+205," 77 Shaku");
-  AppendMenu(hWoodMnu,MF_ENABLED|MF_STRING,WM_USER+206," 78 Whistle");
-  AppendMenu(hWoodMnu,MF_ENABLED|MF_STRING,WM_USER+207," 79 Ocarina");
-  AppendMenu(hWoodMnu,MF_ENABLED|MF_STRING,WM_USER+237,"109 Bagpipe");
-  AppendMenu(hWoodMnu,MF_ENABLED|MF_STRING,WM_USER+239,"111 Shahnai");
-  AppendMenu(hInstrumentMnu,MF_ENABLED|MF_POPUP,(UINT)hWoodMnu,"&Woodwind");
+	AppendMenu(hWoodMnu,MF_ENABLED|MF_STRING,WM_USER+144,_T(" 16 Hammond Organ"));
+	AppendMenu(hWoodMnu,MF_ENABLED|MF_STRING,WM_USER+145,_T(" 17 Percuss. Organ"));
+	AppendMenu(hWoodMnu,MF_ENABLED|MF_STRING,WM_USER+146,_T(" 18 Rock Organ"));
+	AppendMenu(hWoodMnu,MF_ENABLED|MF_STRING,WM_USER+147,_T(" 19 Church Organ"));
+	AppendMenu(hWoodMnu,MF_ENABLED|MF_STRING,WM_USER+148,_T(" 20 Reed Organ"));
+	AppendMenu(hWoodMnu,MF_ENABLED|MF_STRING,WM_USER+149,_T(" 21 Accordion"));
+	AppendMenu(hWoodMnu,MF_ENABLED|MF_STRING,WM_USER+150,_T(" 22 Harmonica"));
+	AppendMenu(hWoodMnu,MF_ENABLED|MF_STRING,WM_USER+151,_T(" 23 Tango Accordion"));
+	AppendMenu(hWoodMnu,MF_ENABLED|MF_STRING,WM_USER+192,_T(" 64 Soprano Sax"));
+	AppendMenu(hWoodMnu,MF_ENABLED|MF_STRING,WM_USER+193,_T(" 65 Alto Sax"));
+	AppendMenu(hWoodMnu,MF_ENABLED|MF_STRING,WM_USER+194,_T(" 66 Tenor Sax"));
+	AppendMenu(hWoodMnu,MF_ENABLED|MF_STRING,WM_USER+195,_T(" 67 Baritone Sax"));
+	AppendMenu(hWoodMnu,MF_ENABLED|MF_STRING,WM_USER+196,_T(" 68 Oboe"));
+	AppendMenu(hWoodMnu,MF_ENABLED|MF_STRING,WM_USER+197,_T(" 69 English Horn"));
+	AppendMenu(hWoodMnu,MF_ENABLED|MF_STRING,WM_USER+198,_T(" 70 Bassoon"));
+	AppendMenu(hWoodMnu,MF_ENABLED|MF_STRING,WM_USER+199,_T(" 71 Clarinet"));
+	AppendMenu(hWoodMnu,MF_ENABLED|MF_STRING,WM_USER+200,_T(" 72 Piccolo"));
+	AppendMenu(hWoodMnu,MF_ENABLED|MF_STRING,WM_USER+201,_T(" 73 Flute"));
+	AppendMenu(hWoodMnu,MF_ENABLED|MF_STRING,WM_USER+202,_T(" 74 Recorder"));
+	AppendMenu(hWoodMnu,MF_ENABLED|MF_STRING,WM_USER+203,_T(" 75 Pan Flute"));
+	AppendMenu(hWoodMnu,MF_ENABLED|MF_STRING,WM_USER+204,_T(" 76 Bottle Blow"));
+	AppendMenu(hWoodMnu,MF_ENABLED|MF_STRING,WM_USER+205,_T(" 77 Shaku"));
+	AppendMenu(hWoodMnu,MF_ENABLED|MF_STRING,WM_USER+206,_T(" 78 Whistle"));
+	AppendMenu(hWoodMnu,MF_ENABLED|MF_STRING,WM_USER+207,_T(" 79 Ocarina"));
+	AppendMenu(hWoodMnu,MF_ENABLED|MF_STRING,WM_USER+237,_T("109 Bagpipe"));
+	AppendMenu(hWoodMnu,MF_ENABLED|MF_STRING,WM_USER+239,_T("111 Shahnai"));
+	AppendMenu(hInstrumentMnu,MF_ENABLED|MF_POPUP,(UINT)hWoodMnu,_T("&Woodwind"));
 
-  AppendMenu(hMiscMnu,MF_ENABLED|MF_STRING,WM_USER+180," 52 Choir Aahs");
-  AppendMenu(hMiscMnu,MF_ENABLED|MF_STRING,WM_USER+181," 53 Voice Oohs");
-  AppendMenu(hMiscMnu,MF_ENABLED|MF_STRING,WM_USER+182," 54 Synth Voice");
-  AppendMenu(hMiscMnu,MF_ENABLED|MF_STRING,WM_USER+208," 80 Lead 1 (square)");
-  AppendMenu(hMiscMnu,MF_ENABLED|MF_STRING,WM_USER+209," 81 Lead 2 (sawtooth)");
-  AppendMenu(hMiscMnu,MF_ENABLED|MF_STRING,WM_USER+210," 82 Lead 3 (calliope lead)");
-  AppendMenu(hMiscMnu,MF_ENABLED|MF_STRING,WM_USER+211," 83 Lead 4 (chiff lead)");
-  AppendMenu(hMiscMnu,MF_ENABLED|MF_STRING,WM_USER+212," 84 Lead 5 (charang)");
-  AppendMenu(hMiscMnu,MF_ENABLED|MF_STRING,WM_USER+213," 85 Lead 6 (voice)");
-  AppendMenu(hMiscMnu,MF_ENABLED|MF_STRING,WM_USER+214," 86 Lead 7 (fifths)");
-  AppendMenu(hMiscMnu,MF_ENABLED|MF_STRING,WM_USER+215," 87 Lead 8 (bass + lead)");
-  AppendMenu(hMiscMnu,MF_ENABLED|MF_STRING,WM_USER+216," 88 Pad 1 (new age)");
-  AppendMenu(hMiscMnu,MF_ENABLED|MF_STRING,WM_USER+217," 89 Pad 2 (warm)");
-  AppendMenu(hMiscMnu,MF_ENABLED|MF_STRING,WM_USER+218," 90 Pad 3 (poly synth)");
-  AppendMenu(hMiscMnu,MF_ENABLED|MF_STRING,WM_USER+219," 91 Pad 4 (choir)");
-  AppendMenu(hMiscMnu,MF_ENABLED|MF_STRING,WM_USER+220," 92 Pad 5 (bowed)");
-  AppendMenu(hMiscMnu,MF_ENABLED|MF_STRING,WM_USER+221," 93 Pad 6 (metallic)");
-  AppendMenu(hMiscMnu,MF_ENABLED|MF_STRING,WM_USER+222," 94 Pad 7 (halo)");
-  AppendMenu(hMiscMnu,MF_ENABLED|MF_STRING,WM_USER+223," 95 Pad 8 (sweep)");
-  AppendMenu(hMiscMnu,MF_ENABLED|MF_STRING,WM_USER+224," 96 FX 1 (rain)");
-  AppendMenu(hMiscMnu,MF_ENABLED|MF_STRING,WM_USER+225," 97 FX 2 (sound track)");
-  AppendMenu(hMiscMnu,MF_ENABLED|MF_STRING,WM_USER+226," 98 FX 3 (crystal)");
-  AppendMenu(hMiscMnu,MF_ENABLED|MF_STRING,WM_USER+227," 99 FX 4 (atmosphere)");
-  AppendMenu(hMiscMnu,MF_ENABLED|MF_STRING,WM_USER+228,"100 FX 5 (bright)");
-  AppendMenu(hMiscMnu,MF_ENABLED|MF_STRING,WM_USER+229,"101 FX 6 (goblins)");
-  AppendMenu(hMiscMnu,MF_ENABLED|MF_STRING,WM_USER+230,"102 FX 7 (echoes)");
-  AppendMenu(hMiscMnu,MF_ENABLED|MF_STRING,WM_USER+231,"103 FX 8 (sci-fi)");
-  AppendMenu(hMiscMnu,MF_ENABLED|MF_STRING,WM_USER+249,"121 Breath Noise");
-  AppendMenu(hMiscMnu,MF_ENABLED|MF_STRING,WM_USER+250,"122 Seashore");
-  AppendMenu(hMiscMnu,MF_ENABLED|MF_STRING,WM_USER+251,"123 Bird Tweet");
-  AppendMenu(hMiscMnu,MF_ENABLED|MF_STRING,WM_USER+252,"124 Telephone Ring");
-  AppendMenu(hMiscMnu,MF_ENABLED|MF_STRING,WM_USER+253,"125 Helicopter");
-  AppendMenu(hMiscMnu,MF_ENABLED|MF_STRING,WM_USER+254,"126 Applause");
-  AppendMenu(hMiscMnu,MF_ENABLED|MF_STRING,WM_USER+255,"127 Gunshot");
+	AppendMenu(hMiscMnu,MF_ENABLED|MF_STRING,WM_USER+180,_T(" 52 Choir Aahs"));
+	AppendMenu(hMiscMnu,MF_ENABLED|MF_STRING,WM_USER+181,_T(" 53 Voice Oohs"));
+	AppendMenu(hMiscMnu,MF_ENABLED|MF_STRING,WM_USER+182,_T(" 54 Synth Voice"));
+	AppendMenu(hMiscMnu,MF_ENABLED|MF_STRING,WM_USER+208,_T(" 80 Lead 1 (square)"));
+	AppendMenu(hMiscMnu,MF_ENABLED|MF_STRING,WM_USER+209,_T(" 81 Lead 2 (sawtooth)"));
+	AppendMenu(hMiscMnu,MF_ENABLED|MF_STRING,WM_USER+210,_T(" 82 Lead 3 (calliope lead)"));
+	AppendMenu(hMiscMnu,MF_ENABLED|MF_STRING,WM_USER+211,_T(" 83 Lead 4 (chiff lead)"));
+	AppendMenu(hMiscMnu,MF_ENABLED|MF_STRING,WM_USER+212,_T(" 84 Lead 5 (charang)"));
+	AppendMenu(hMiscMnu,MF_ENABLED|MF_STRING,WM_USER+213,_T(" 85 Lead 6 (voice)"));
+	AppendMenu(hMiscMnu,MF_ENABLED|MF_STRING,WM_USER+214,_T(" 86 Lead 7 (fifths)"));
+	AppendMenu(hMiscMnu,MF_ENABLED|MF_STRING,WM_USER+215,_T(" 87 Lead 8 (bass + lead)"));
+	AppendMenu(hMiscMnu,MF_ENABLED|MF_STRING,WM_USER+216,_T(" 88 Pad 1 (new age)"));
+	AppendMenu(hMiscMnu,MF_ENABLED|MF_STRING,WM_USER+217,_T(" 89 Pad 2 (warm)"));
+	AppendMenu(hMiscMnu,MF_ENABLED|MF_STRING,WM_USER+218,_T(" 90 Pad 3 (poly synth)"));
+	AppendMenu(hMiscMnu,MF_ENABLED|MF_STRING,WM_USER+219,_T(" 91 Pad 4 (choir)"));
+	AppendMenu(hMiscMnu,MF_ENABLED|MF_STRING,WM_USER+220,_T(" 92 Pad 5 (bowed)"));
+	AppendMenu(hMiscMnu,MF_ENABLED|MF_STRING,WM_USER+221,_T(" 93 Pad 6 (metallic)"));
+	AppendMenu(hMiscMnu,MF_ENABLED|MF_STRING,WM_USER+222,_T(" 94 Pad 7 (halo)"));
+	AppendMenu(hMiscMnu,MF_ENABLED|MF_STRING,WM_USER+223,_T(" 95 Pad 8 (sweep)"));
+	AppendMenu(hMiscMnu,MF_ENABLED|MF_STRING,WM_USER+224,_T(" 96 FX 1 (rain)"));
+	AppendMenu(hMiscMnu,MF_ENABLED|MF_STRING,WM_USER+225,_T(" 97 FX 2 (sound track)"));
+	AppendMenu(hMiscMnu,MF_ENABLED|MF_STRING,WM_USER+226,_T(" 98 FX 3 (crystal)"));
+	AppendMenu(hMiscMnu,MF_ENABLED|MF_STRING,WM_USER+227,_T(" 99 FX 4 (atmosphere)"));
+	AppendMenu(hMiscMnu,MF_ENABLED|MF_STRING,WM_USER+228,_T("100 FX 5 (bright)"));
+	AppendMenu(hMiscMnu,MF_ENABLED|MF_STRING,WM_USER+229,_T("101 FX 6 (goblins)"));
+	AppendMenu(hMiscMnu,MF_ENABLED|MF_STRING,WM_USER+230,_T("102 FX 7 (echoes)"));
+	AppendMenu(hMiscMnu,MF_ENABLED|MF_STRING,WM_USER+231,_T("103 FX 8 (sci-fi)"));
+	AppendMenu(hMiscMnu,MF_ENABLED|MF_STRING,WM_USER+249,_T("121 Breath Noise"));
+	AppendMenu(hMiscMnu,MF_ENABLED|MF_STRING,WM_USER+250,_T("122 Seashore"));
+	AppendMenu(hMiscMnu,MF_ENABLED|MF_STRING,WM_USER+251,_T("123 Bird Tweet"));
+	AppendMenu(hMiscMnu,MF_ENABLED|MF_STRING,WM_USER+252,_T("124 Telephone Ring"));
+	AppendMenu(hMiscMnu,MF_ENABLED|MF_STRING,WM_USER+253,_T("125 Helicopter"));
+	AppendMenu(hMiscMnu,MF_ENABLED|MF_STRING,WM_USER+254,_T("126 Applause"));
+	AppendMenu(hMiscMnu,MF_ENABLED|MF_STRING,WM_USER+255,_T("127 Gunshot"));
 
-  AppendMenu(hInstrumentMnu,MF_ENABLED|MF_POPUP,(UINT)hMiscMnu,"&Miscellaneous");
+	AppendMenu(hInstrumentMnu,MF_ENABLED|MF_POPUP,(UINT)hMiscMnu,_T("&Miscellaneous"));
 }
 
 InstrumentMenu::~InstrumentMenu()
@@ -1012,55 +1015,55 @@ TempoMenu::TempoMenu(int /*iTempo*/)
   hAllegrettoMnu = CreatePopupMenu();
   hPrestoMnu = CreatePopupMenu();
 
-  AppendMenu(hAdagioMnu,MF_ENABLED|MF_STRING,WM_TEMPO+52,"52");
-  AppendMenu(hAdagioMnu,MF_ENABLED|MF_STRING,WM_TEMPO+56,"56");
-  AppendMenu(hAdagioMnu,MF_ENABLED|MF_STRING,WM_TEMPO+60,"60");
-  AppendMenu(hAdagioMnu,MF_ENABLED|MF_STRING,WM_TEMPO+64,"64");
-  AppendMenu(hAdagioMnu,MF_ENABLED|MF_STRING,WM_TEMPO+68,"68");
-  AppendMenu(hAdagioMnu,MF_ENABLED|MF_STRING,WM_TEMPO+72,"72");
-  AppendMenu(hTempoMnu,MF_ENABLED|MF_POPUP,(UINT)hAdagioMnu,"52-72\t(Adagio)");
+	AppendMenu(hAdagioMnu,MF_ENABLED|MF_STRING,WM_TEMPO+52,_T("52"));
+	AppendMenu(hAdagioMnu,MF_ENABLED|MF_STRING,WM_TEMPO+56,_T("56"));
+	AppendMenu(hAdagioMnu,MF_ENABLED|MF_STRING,WM_TEMPO+60,_T("60"));
+	AppendMenu(hAdagioMnu,MF_ENABLED|MF_STRING,WM_TEMPO+64,_T("64"));
+	AppendMenu(hAdagioMnu,MF_ENABLED|MF_STRING,WM_TEMPO+68,_T("68"));
+	AppendMenu(hAdagioMnu,MF_ENABLED|MF_STRING,WM_TEMPO+72,_T("72"));
+	AppendMenu(hTempoMnu,MF_ENABLED|MF_POPUP,(UINT)hAdagioMnu,_T("52-72\t(Adagio)"));
 
-  AppendMenu(hAndanteMnu,MF_ENABLED|MF_STRING,WM_TEMPO+76,"76");
-  AppendMenu(hAndanteMnu,MF_ENABLED|MF_STRING,WM_TEMPO+80,"80");
-  AppendMenu(hAndanteMnu,MF_ENABLED|MF_STRING,WM_TEMPO+84,"84");
-  AppendMenu(hAndanteMnu,MF_ENABLED|MF_STRING,WM_TEMPO+88,"88");
-  AppendMenu(hAndanteMnu,MF_ENABLED|MF_STRING,WM_TEMPO+92,"92");
-  AppendMenu(hAndanteMnu,MF_ENABLED|MF_STRING,WM_TEMPO+96,"96");
-  AppendMenu(hTempoMnu,MF_ENABLED|MF_POPUP,(UINT)hAndanteMnu,"76-96\t(Andante)");
+	AppendMenu(hAndanteMnu,MF_ENABLED|MF_STRING,WM_TEMPO+76,_T("76"));
+	AppendMenu(hAndanteMnu,MF_ENABLED|MF_STRING,WM_TEMPO+80,_T("80"));
+	AppendMenu(hAndanteMnu,MF_ENABLED|MF_STRING,WM_TEMPO+84,_T("84"));
+	AppendMenu(hAndanteMnu,MF_ENABLED|MF_STRING,WM_TEMPO+88,_T("88"));
+	AppendMenu(hAndanteMnu,MF_ENABLED|MF_STRING,WM_TEMPO+92,_T("92"));
+	AppendMenu(hAndanteMnu,MF_ENABLED|MF_STRING,WM_TEMPO+96,_T("96"));
+	AppendMenu(hTempoMnu,MF_ENABLED|MF_POPUP,(UINT)hAndanteMnu,_T("76-96\t(Andante)"));
 
-  AppendMenu(hModeratoMnu,MF_ENABLED|MF_STRING,WM_TEMPO+100,"100");
-  AppendMenu(hModeratoMnu,MF_ENABLED|MF_STRING,WM_TEMPO+104,"104");
-  AppendMenu(hModeratoMnu,MF_ENABLED|MF_STRING,WM_TEMPO+108,"108");
-  AppendMenu(hModeratoMnu,MF_ENABLED|MF_STRING,WM_TEMPO+112,"112");
-  AppendMenu(hModeratoMnu,MF_ENABLED|MF_STRING,WM_TEMPO+116,"116");
-  AppendMenu(hModeratoMnu,MF_ENABLED|MF_STRING,WM_TEMPO+120,"120");
-  AppendMenu(hTempoMnu,MF_ENABLED|MF_POPUP,(UINT)hModeratoMnu,"100-120\t(Moderato)");
+	AppendMenu(hModeratoMnu,MF_ENABLED|MF_STRING,WM_TEMPO+100,_T("100"));
+	AppendMenu(hModeratoMnu,MF_ENABLED|MF_STRING,WM_TEMPO+104,_T("104"));
+	AppendMenu(hModeratoMnu,MF_ENABLED|MF_STRING,WM_TEMPO+108,_T("108"));
+	AppendMenu(hModeratoMnu,MF_ENABLED|MF_STRING,WM_TEMPO+112,_T("112"));
+	AppendMenu(hModeratoMnu,MF_ENABLED|MF_STRING,WM_TEMPO+116,_T("116"));
+	AppendMenu(hModeratoMnu,MF_ENABLED|MF_STRING,WM_TEMPO+120,_T("120"));
+	AppendMenu(hTempoMnu,MF_ENABLED|MF_POPUP,(UINT)hModeratoMnu,_T("100-120\t(Moderato)"));
 
-  AppendMenu(hAllegroMnu,MF_ENABLED|MF_STRING,WM_TEMPO+124,"124");
-  AppendMenu(hAllegroMnu,MF_ENABLED|MF_STRING,WM_TEMPO+128,"128");
-  AppendMenu(hAllegroMnu,MF_ENABLED|MF_STRING,WM_TEMPO+132,"132");
-  AppendMenu(hAllegroMnu,MF_ENABLED|MF_STRING,WM_TEMPO+136,"136");
-  AppendMenu(hAllegroMnu,MF_ENABLED|MF_STRING,WM_TEMPO+140,"140");
-  AppendMenu(hAllegroMnu,MF_ENABLED|MF_STRING,WM_TEMPO+144,"144");
-  AppendMenu(hAllegroMnu,MF_ENABLED|MF_STRING,WM_TEMPO+148,"148");
-  AppendMenu(hTempoMnu,MF_ENABLED|MF_POPUP,(UINT)hAllegroMnu,"124-148\t(Allegro)");
+	AppendMenu(hAllegroMnu,MF_ENABLED|MF_STRING,WM_TEMPO+124,_T("124"));
+	AppendMenu(hAllegroMnu,MF_ENABLED|MF_STRING,WM_TEMPO+128,_T("128"));
+	AppendMenu(hAllegroMnu,MF_ENABLED|MF_STRING,WM_TEMPO+132,_T("132"));
+	AppendMenu(hAllegroMnu,MF_ENABLED|MF_STRING,WM_TEMPO+136,_T("136"));
+	AppendMenu(hAllegroMnu,MF_ENABLED|MF_STRING,WM_TEMPO+140,_T("140"));
+	AppendMenu(hAllegroMnu,MF_ENABLED|MF_STRING,WM_TEMPO+144,_T("144"));
+	AppendMenu(hAllegroMnu,MF_ENABLED|MF_STRING,WM_TEMPO+148,_T("148"));
+	AppendMenu(hTempoMnu,MF_ENABLED|MF_POPUP,(UINT)hAllegroMnu,_T("124-148\t(Allegro)"));
 
-  AppendMenu(hAllegrettoMnu,MF_ENABLED|MF_STRING,WM_TEMPO+152,"152");
-  AppendMenu(hAllegrettoMnu,MF_ENABLED|MF_STRING,WM_TEMPO+154,"156");
-  AppendMenu(hAllegrettoMnu,MF_ENABLED|MF_STRING,WM_TEMPO+160,"160");
-  AppendMenu(hAllegrettoMnu,MF_ENABLED|MF_STRING,WM_TEMPO+164,"164");
-  AppendMenu(hAllegrettoMnu,MF_ENABLED|MF_STRING,WM_TEMPO+168,"168");
-  AppendMenu(hAllegrettoMnu,MF_ENABLED|MF_STRING,WM_TEMPO+172,"172");
-  AppendMenu(hTempoMnu,MF_ENABLED|MF_POPUP,(UINT)hAllegrettoMnu,"152-172\t(Allegretto)");
+	AppendMenu(hAllegrettoMnu,MF_ENABLED|MF_STRING,WM_TEMPO+152,_T("152"));
+	AppendMenu(hAllegrettoMnu,MF_ENABLED|MF_STRING,WM_TEMPO+154,_T("156"));
+	AppendMenu(hAllegrettoMnu,MF_ENABLED|MF_STRING,WM_TEMPO+160,_T("160"));
+	AppendMenu(hAllegrettoMnu,MF_ENABLED|MF_STRING,WM_TEMPO+164,_T("164"));
+	AppendMenu(hAllegrettoMnu,MF_ENABLED|MF_STRING,WM_TEMPO+168,_T("168"));
+	AppendMenu(hAllegrettoMnu,MF_ENABLED|MF_STRING,WM_TEMPO+172,_T("172"));
+	AppendMenu(hTempoMnu,MF_ENABLED|MF_POPUP,(UINT)hAllegrettoMnu,_T("152-172\t(Allegretto)"));
 
-  AppendMenu(hPrestoMnu,MF_ENABLED|MF_STRING,WM_TEMPO+176,"176");
-  AppendMenu(hPrestoMnu,MF_ENABLED|MF_STRING,WM_TEMPO+180,"180");
-  AppendMenu(hPrestoMnu,MF_ENABLED|MF_STRING,WM_TEMPO+184,"184");
-  AppendMenu(hPrestoMnu,MF_ENABLED|MF_STRING,WM_TEMPO+188,"188");
-  AppendMenu(hPrestoMnu,MF_ENABLED|MF_STRING,WM_TEMPO+192,"192");
-  AppendMenu(hPrestoMnu,MF_ENABLED|MF_STRING,WM_TEMPO+196,"196");
-  AppendMenu(hPrestoMnu,MF_ENABLED|MF_STRING,WM_TEMPO+200,"200");
-  AppendMenu(hTempoMnu,MF_ENABLED|MF_POPUP,(UINT)hPrestoMnu,"176-200\t(Presto)");
+	AppendMenu(hPrestoMnu,MF_ENABLED|MF_STRING,WM_TEMPO+176,_T("176"));
+	AppendMenu(hPrestoMnu,MF_ENABLED|MF_STRING,WM_TEMPO+180,_T("180"));
+	AppendMenu(hPrestoMnu,MF_ENABLED|MF_STRING,WM_TEMPO+184,_T("184"));
+	AppendMenu(hPrestoMnu,MF_ENABLED|MF_STRING,WM_TEMPO+188,_T("188"));
+	AppendMenu(hPrestoMnu,MF_ENABLED|MF_STRING,WM_TEMPO+192,_T("192"));
+	AppendMenu(hPrestoMnu,MF_ENABLED|MF_STRING,WM_TEMPO+196,_T("196"));
+	AppendMenu(hPrestoMnu,MF_ENABLED|MF_STRING,WM_TEMPO+200,_T("200"));
+	AppendMenu(hTempoMnu,MF_ENABLED|MF_POPUP,(UINT)hPrestoMnu,_T("176-200\t(Presto)"));
 }
 
 TempoMenu::~TempoMenu()
@@ -1124,7 +1127,7 @@ PartWindowData::PartWindowData(HWND hWnd,int Size) : m_stMThdChunk(NULL)
   Modified = (FALSE);
 
   Melody = new pNote[Size];
-  register i;
+	register int i;
   for (i=0;i<Size;++i) Melody[i]=NULL;
   for (i=0;i<MUSIQUE_FONT_SIZE;++i) FontCharWidth[i]=0;
 
@@ -1230,7 +1233,7 @@ int PartWindowData::WhichClef()
   {
     if(!Melody[i] || Melody[i]->Value < 0) continue; // not a note
 
-    for(register j=0;j<5;++j)
+		for(register int j=0;j<5;++j)
       if(Melody[i]->Value >= ClefRange[j][0] && Melody[i]->Value <= ClefRange[j][1])
         ++ClefHit[j];
   }
@@ -1241,7 +1244,7 @@ int PartWindowData::WhichClef()
   ClefHit[4] = 3 * ClefHit[4] / 4;
 
   int NewClef = 0;
-  for(register k=1;k<5;++k)
+	for(register int k=1;k<5;++k)
   {
     if(ClefHit[k]<ClefHit[NewClef]) continue;
     if(ClefHit[k]==ClefHit[NewClef] && Clef!=k) continue;
@@ -1433,7 +1436,7 @@ int PartWindowData::ReplaceString(char *String,unsigned Begin,unsigned End)
     Grow(DELTA+InsertionLength-ReplacedLength);
 
   // copy what you can
-  for (register i=0;i<InsertionLength&&i<ReplacedLength;++i)
+	for (register int i=0;i<InsertionLength&&i<ReplacedLength;++i)
     Melody[Begin+i]->Set((unsigned char*)&String[i*7],Clef);
 
   int NetLengthChange = InsertionLength - (End - Begin);
@@ -1441,7 +1444,7 @@ int PartWindowData::ReplaceString(char *String,unsigned Begin,unsigned End)
   // move over to add remaining notes if any
   if (NetLengthChange>0)
   {
-    register i;
+		register int i;
     if (MelodySize)
     {
       // move over
@@ -1469,7 +1472,7 @@ int PartWindowData::ReplaceString(char *String,unsigned Begin,unsigned End)
   else if (NetLengthChange<0)
   {
     MelodySize += NetLengthChange;
-    for (register i=End+NetLengthChange;i<=(int)MelodySize;++i)
+		for (register int i=End+NetLengthChange;i<=(int)MelodySize;++i)
     {
       if (Melody[i]) delete Melody[i];
       if (Melody[i-NetLengthChange])
@@ -1543,7 +1546,7 @@ int PartWindowData::Paint()
     if (ViewBegin<SelectMin())
     {
       Sequence = PartEncode(ViewBegin,SelectMin());
-      for (register i=0;Sequence[i];++i)
+			for (register int i=0;Sequence[i];++i)
         r.left += FontCharWidth[Sequence[i]];
       delete Sequence;
     }
@@ -1622,7 +1625,7 @@ int PartWindowData::Paint()
     HANDLE hOldFont = SelectObject(ps.hdc, hMSSansSerif);
     char szTempo[12];
     strcpy(szTempo, "MM = XXX");
-    itoa(Tempo, &(szTempo[5]), 10);
+		_ltoa(Tempo, &(szTempo[5]), 10);
     TextOut(ps.hdc, 3, 3, szTempo, strlen(szTempo));
     SelectObject(ps.hdc, hOldFont);
     DeleteObject(hMSSansSerif);
@@ -1644,7 +1647,7 @@ unsigned PartWindowData::Width(unsigned From, unsigned Through)
   if (Through<MelodySize) Through=MelodySize;
 
   unsigned SectionWidth = 0;
-  for (register i=From;i<=(int)Through;++i)
+	for (register int i=From;i<=(int)Through;++i)
   {
     if (Melody[i])
     {
@@ -1677,7 +1680,7 @@ unsigned PartWindowData::Position(unsigned Pixels)
   case 3: Left=Right=FontCharWidth[DISPLAY_BASS]; break;
   case 4: Left=Right=FontCharWidth[DISPLAY_BASS_8VB]; break;
   }
-  register i;
+	register int i;
   for (i=ViewBegin;i<(int)MelodySize;++i)
   {
     if (Melody[i])
@@ -1764,7 +1767,7 @@ nOctave = (short)(bySamaNumber / 12);
 nInterval = (short)((int)bySamaNumber - nOctave * 12);
 // construct note name
 strcpy(sMusique, &sNoteNames[nInterval][0]);
-strcat(sMusique, itoa(nOctave, pASCII, 10));
+strcat(sMusique, _ltoa(nOctave, pASCII, 10));
 
 return sMusique;
 }
@@ -1783,7 +1786,7 @@ static void OutputVarLenNum(ofstream &os, const unsigned long value)
   OutVals[0] = (unsigned char)((value >> 21) & 0x7F);
   // if value > 0x0FFFFFFF it's truncated to 0x0FFFFFFF
 
-  register i;
+	register int i;
   for (i=0;i<3;++i)
     if (OutVals[i]) break;
     while(i<3)
@@ -2286,7 +2289,7 @@ BOOL PartWindowData::MIDIOut(const char *filename)
 
 
     BOOL bTiedNote = FALSE;
-    for (register i=Start;i<End;++i)
+		for (register int i=Start;i<End;++i)
     {
       // in some cases we output a SAMA chunk to help re-input parser
       if (!strchr("=#@",Melody[i]->Accidental)
@@ -2364,7 +2367,7 @@ BOOL PartWindowData::MIDIOut(const char *filename)
             if(Melody[i]->Conclusion == '_')
             {
               // look to see if next note is same tone
-              for(register j=1;i+j<End;++j)
+							for(register int j=1;i+j<End;++j)
               {
                 if(Melody[i]->Value == Melody[i+j]->Value)
                 {
@@ -2427,11 +2430,11 @@ BOOL PartWindowData::RTFOut(const char *filename)
     char aString[34] = "0";
     switch(Clef)
     {
-    case 1: ltoa(DISPLAY_TREBLE,aString,10); break;
-    case 2: ltoa(DISPLAY_TREBLE_8VB,aString,10); break;
-    case 3: ltoa(DISPLAY_BASS,aString,10); break;
-    case 0: ltoa(DISPLAY_TREBLE_8VA,aString,10); break;
-    case 4: ltoa(DISPLAY_BASS_8VB,aString,10); break;
+		case 1: _ltoa(DISPLAY_TREBLE,aString,10); break;
+		case 2: _ltoa(DISPLAY_TREBLE_8VB,aString,10); break;
+		case 3: _ltoa(DISPLAY_BASS,aString,10); break;
+		case 0: _ltoa(DISPLAY_TREBLE_8VA,aString,10); break;
+		case 4: _ltoa(DISPLAY_BASS_8VB,aString,10); break;
     }
     outfile.write("\\uc0",4);
     outfile.put('\\');
@@ -2440,23 +2443,23 @@ BOOL PartWindowData::RTFOut(const char *filename)
     WCHAR *wString = PartEncode(0,MelodySize);
     if(wString)
     {
-      for(register i=0;wString[i];++i)
+			for(register int i=0;wString[i];++i)
       {
-        ltoa(wString[i],aString,10);
+				_ltoa(wString[i],aString,10);
         outfile.put('\\');
         outfile.put('u');
         outfile.write(aString,strlen(aString));
       }
       delete wString;
-      ltoa(DISPLAY_BAR,aString,10);
+			_ltoa(DISPLAY_BAR,aString,10);
       outfile.put('\\');
       outfile.put('u');
       outfile.write(aString,strlen(aString));
-      ltoa(DISPLAY_SMALL_SPACE,aString,10);
+			_ltoa(DISPLAY_SMALL_SPACE,aString,10);
       outfile.put('\\');
       outfile.put('u');
       outfile.write(aString,strlen(aString));
-      ltoa(DISPLAY_THICK_BAR,aString,10);
+			_ltoa(DISPLAY_THICK_BAR,aString,10);
       outfile.put('\\');
       outfile.put('u');
       outfile.write(aString,strlen(aString));
@@ -3283,7 +3286,7 @@ LRESULT CALLBACK PartitureProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam)
             unsigned RTFTextWLen = wcslen(RTFTextW);
             unsigned UniCharLen = 3 + (unsigned) log10((double)MUSIQUE_FONT_SIZE);
             RTFText = new char[4 + RTFTextWLen * UniCharLen + 4 * UniCharLen + 1];
-            auto i=0;
+					auto int i=0;
             RTFText[i++]='\\';
             RTFText[i++]='u';
             RTFText[i++]='c';
@@ -3292,31 +3295,31 @@ LRESULT CALLBACK PartitureProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam)
             RTFText[i++]='u';
             switch(pwd->Clef)
             {
-            case 1: ltoa(DISPLAY_TREBLE,&RTFText[i],10); break;
-            case 2: ltoa(DISPLAY_TREBLE_8VB,&RTFText[i],10); break;
-            case 3: ltoa(DISPLAY_BASS,&RTFText[i],10); break;
-            case 0: ltoa(DISPLAY_TREBLE_8VA,&RTFText[i],10); break;
-            case 4: ltoa(DISPLAY_BASS_8VB,&RTFText[i],10); break;
+					case 1: _ltoa(DISPLAY_TREBLE,&RTFText[i],10); break;
+					case 2: _ltoa(DISPLAY_TREBLE_8VB,&RTFText[i],10); break;
+					case 3: _ltoa(DISPLAY_BASS,&RTFText[i],10); break;
+					case 0: _ltoa(DISPLAY_TREBLE_8VA,&RTFText[i],10); break;
+					case 4: _ltoa(DISPLAY_BASS_8VB,&RTFText[i],10); break;
             }
             while(RTFText[i]) ++i;
             for(register unsigned j=0;j<RTFTextWLen;++j)
             {
               RTFText[i++]='\\';
               RTFText[i++]='u';
-              ltoa(RTFTextW[j],&RTFText[i],10);
+						_ltoa(RTFTextW[j],&RTFText[i],10);
               while(RTFText[i]) ++i;
             }
             RTFText[i++]='\\';
             RTFText[i++]='u';
-            ltoa(DISPLAY_BAR,&RTFText[i],10);
+					_ltoa(DISPLAY_BAR,&RTFText[i],10);
             while(RTFText[i]) ++i;
             RTFText[i++]='\\';
             RTFText[i++]='u';
-            ltoa(DISPLAY_SMALL_SPACE,&RTFText[i],10);
+					_ltoa(DISPLAY_SMALL_SPACE,&RTFText[i],10);
             while(RTFText[i]) ++i;
             RTFText[i++]='\\';
             RTFText[i++]='u';
-            ltoa(DISPLAY_THICK_BAR,&RTFText[i],10);
+					_ltoa(DISPLAY_THICK_BAR,&RTFText[i],10);
             while(RTFText[i]) ++i;
             delete RTFTextW;
           }
@@ -3326,7 +3329,7 @@ LRESULT CALLBACK PartitureProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam)
             unsigned RTFTextWLen = wcslen(RTFTextW);
             unsigned UniCharLen = 3 + (unsigned) log10((double)MUSIQUE_FONT_SIZE);
             RTFText = new char[(RTFTextWLen*UniCharLen)+(4*UniCharLen)+1];
-            register i=0;
+					register int i=0;
             RTFText[i++]='\\';
             RTFText[i++]='u';
             RTFText[i++]='c';
@@ -3335,7 +3338,7 @@ LRESULT CALLBACK PartitureProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam)
             {
               RTFText[i++]='\\';
               RTFText[i++]='u';
-              ltoa(RTFTextW[j],&RTFText[i],10);
+						_ltoa(RTFTextW[j],&RTFText[i],10);
               while(RTFText[i]) ++i;
             }
             Text = pwd->GetString(pwd->SelectMin(),pwd->SelectMax());
@@ -3524,7 +3527,8 @@ LRESULT CALLBACK PartitureProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam)
             {
               pn = (char*)malloc(256);
               strcpy(pn,(char*)lParam);
-              for(register i=strlen(pn);i&&pn[i]!='\\';--i);
+						register int i=strlen(pn);
+						for(;i&&pn[i]!='\\';--i);
               pn[i+1]='\0';
               strcpy(fn,fn+i+1);
             }
@@ -3565,11 +3569,11 @@ LRESULT CALLBACK PartitureProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam)
           BOOL Ret = FALSE;
           if (fnlen>4)
           {
-            if (!stricmp(&fn[fnlen-4],".xml"))
+					if (!_stricmp(&fn[fnlen-4],".xml"))
               Ret = pwd->MusicXMLOut(fn);
-            else if (!stricmp(&fn[fnlen-4],".mid"))
+					else if (!_stricmp(&fn[fnlen-4],".mid"))
               Ret = pwd->MIDIOut(fn);
-            else if (!stricmp(&fn[fnlen-4],".rtf"))
+					else if (!_stricmp(&fn[fnlen-4],".rtf"))
               Ret =  pwd->RTFOut(fn);
             else Ret = pwd->TXTOut(fn);
           }
@@ -3688,7 +3692,8 @@ LRESULT CALLBACK PartitureProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam)
             pwd->m_sPlay.nMax = pwd->MelodySize;
 
           double dHere = 0;
-          for(unsigned i=pwd->m_sPlay.nMin; i < pwd->m_sPlay.nMax; i++)
+				unsigned i=pwd->m_sPlay.nMin;
+				for(; i < pwd->m_sPlay.nMax; i++)
           {
             dHere +=  pwd->Melody[i]->MIDIDuration();
 
@@ -3768,9 +3773,9 @@ LRESULT CALLBACK PartitureProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam)
           if (!fnlen) return 0;
 
           BOOL Ret = FALSE;
-          if (fnlen>4 && !stricmp(&szFile[fnlen-4],".xml"))
+				if (fnlen>4 && !_stricmp(&szFile[fnlen-4],".xml"))
             Ret = pwd->MusicXMLIn(szFile);
-          else if (fnlen>4 && !stricmp(&szFile[fnlen-4],".mid"))
+				else if (fnlen>4 && !_stricmp(&szFile[fnlen-4],".mid"))
             Ret = pwd->MIDIIn(szFile);
           else Ret = pwd->TXTIn(szFile);
           return Ret;

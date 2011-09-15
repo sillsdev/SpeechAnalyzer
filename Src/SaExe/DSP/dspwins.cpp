@@ -33,19 +33,17 @@ bool CWindowSettings::operator==(const CWindowSettings &a) const
   return result;
 }
 
-using DspWin::CWindowParms;
-
-CWindowParms RectParms()
+DspWin::CWindowParms RectParms()
 {
   double bandwidthProduct = 2.416228*0.576000; // 1.39
   static const double coefficients[] = {
     1. 
   };
 
-  return CWindowParms(bandwidthProduct, sizeof(coefficients)/sizeof(double), coefficients);
+	return DspWin::CWindowParms(bandwidthProduct, sizeof(coefficients)/sizeof(double), coefficients);
 }
 
-CWindowParms HannParms() // Also known as Hanning
+DspWin::CWindowParms HannParms() // Also known as Hanning
 {
   double bandwidthProduct = 1.414790*1.599393; // 2.26
   static const double coefficients[] = {
@@ -53,10 +51,10 @@ CWindowParms HannParms() // Also known as Hanning
     0.5 
   };
 
-  return CWindowParms(bandwidthProduct, sizeof(coefficients)/sizeof(double), coefficients);
+	return DspWin::CWindowParms(bandwidthProduct, sizeof(coefficients)/sizeof(double), coefficients);
 }
 
-CWindowParms HammingParms()
+DspWin::CWindowParms HammingParms()
 {
   double bandwidthProduct = 1.358215*1.506903; // 2.05
   static const double coefficients[] = {
@@ -64,10 +62,10 @@ CWindowParms HammingParms()
     0.46 
   };
 
-  return CWindowParms(bandwidthProduct, sizeof(coefficients)/sizeof(double), coefficients);
+	return DspWin::CWindowParms(bandwidthProduct, sizeof(coefficients)/sizeof(double), coefficients);
 }
 
-CWindowParms BlackmanParms()
+DspWin::CWindowParms BlackmanParms()
 {
   double bandwidthProduct = 1.309175*1.969723; // 2.58
   static const double coefficients[] = {
@@ -76,10 +74,10 @@ CWindowParms BlackmanParms()
     0.08 
   };
 
-  return CWindowParms(bandwidthProduct, sizeof(coefficients)/sizeof(double), coefficients);
+	return DspWin::CWindowParms(bandwidthProduct, sizeof(coefficients)/sizeof(double), coefficients);
 }
 
-CWindowParms BlackmanHarrisParms()
+DspWin::CWindowParms BlackmanHarrisParms()
 {
   double bandwidthProduct = 1.277152*2.334273; // 2.98
   static const double coefficients[] = {
@@ -89,10 +87,10 @@ CWindowParms BlackmanHarrisParms()
     0.01168
   };
 
-  return CWindowParms(bandwidthProduct, sizeof(coefficients)/sizeof(double), coefficients);
+	return DspWin::CWindowParms(bandwidthProduct, sizeof(coefficients)/sizeof(double), coefficients);
 }
 
-CWindowParms GaussianParms()
+DspWin::CWindowParms GaussianParms()
 {
   double bandwidthProduct = 1.222838*3.354341; // 4.10
   static const double coefficients[] = {
@@ -105,12 +103,12 @@ CWindowParms GaussianParms()
     1.910492117385130E-4,
     1.036901498651440E-5 };
 
-  return CWindowParms(bandwidthProduct, sizeof(coefficients)/sizeof(double), coefficients);
+		return DspWin::CWindowParms(bandwidthProduct, sizeof(coefficients)/sizeof(double), coefficients);
 }
 
-CWindowParms DspWin::WindowParms(int32 windowType)
+DspWin::CWindowParms DspWin::WindowParms(int32 windowType)
 {
-  CWindowParms (*parms[])(void) = 
+	DspWin::CWindowParms (*parms[])(void) = 
   {
     RectParms,
     HannParms,

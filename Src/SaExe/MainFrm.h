@@ -328,7 +328,7 @@ protected:
   afx_msg void OnSaveGraphsAsBMP();
   afx_msg void OnCopyGraphsAsBMP();
   afx_msg void OnUpdateGraphsAsBMP(CCmdUI* pCmdUI);
-  afx_msg void OnActivateApp(BOOL bActive, HTASK hTask);
+  afx_msg void OnActivateApp(BOOL bActive, DWORD dwThreadID);
   afx_msg void OnWindowTileHorz();
   afx_msg void OnWindowTileVert();
   afx_msg void OnWaveformGenerator();

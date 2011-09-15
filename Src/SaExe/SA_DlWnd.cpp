@@ -1431,7 +1431,7 @@ void CComboGridlines::DrawItem(LPDRAWITEMSTRUCT lpDIS)
       
       // Item has been de-selected
       pDC->FillRect(&lpDIS->rcItem, &brush);
-      const nRepeat = 32;
+      const int nRepeat = 32;
       if (nPenStyle > 4)
       {
         // special dot style

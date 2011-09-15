@@ -771,7 +771,7 @@ void CDlgCharChart::vSetupControls()
   CenterWindow();
 }
 
-void CDlgCharChart::OnChecked(int nID)
+void CDlgCharChart::OnChecked(UINT nID)
 {
   int i = nID - kPlayButtonIdFirst;
   

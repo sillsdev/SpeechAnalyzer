@@ -221,7 +221,8 @@ void CPlotSpectrum::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView)
     if (pSpectrum->GetSpectralData(0).Raw != (float)UNDEFINED_DATA)  // undefined if plot type not requested
     {
       pDC->SelectObject(&penRaw);
-      for (int x = nFirstX; x < nLastX; x++)
+			int x = nFirstX;
+			for (; x < nLastX; x++)
       {
         // plot raw spectrum
         LBandEdge = (short)max(0,(short)Round((double)(x-0.5) * PlotXScale / SpectFreqScale));
@@ -288,7 +289,7 @@ void CPlotSpectrum::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView)
       {
         if (MaxRawBandPwr != (float)UNDEFINED_DATA && MaxRawBandPwr != 0.F)
           LpcRef = MaxLpcBandPwr / MaxRawBandPwr;
-        else LpcRef = pow(10., pSpectrum->GetSpectralPowerRange().fdBRef / 10.F);
+				else LpcRef = pow(10.F, pSpectrum->GetSpectralPowerRange().fdBRef / 10.F);
       }
 
       for (int x = nFirstX; x < nLastX; x++)
@@ -315,7 +316,8 @@ void CPlotSpectrum::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView)
       // Draw boxes around formants.
       if (pSpectrumParms->bShowFormantFreq || pSpectrumParms->bShowFormantPower)
       {
-        for (unsigned short nFormant = 1; nFormant <= MAX_NUM_FORMANTS; nFormant++)
+				unsigned short nFormant = 1;
+				for (; nFormant <= MAX_NUM_FORMANTS; nFormant++)
         {
           FORMANT Formant = pSpectrum->GetFormant(nFormant);
 
@@ -440,12 +442,3 @@ void CPlotSpectrum::EndAnimation(void)
 {
   CPlotWnd::StandardEndAnimation();
 }
-
-
-
-
-
-
-
-
-

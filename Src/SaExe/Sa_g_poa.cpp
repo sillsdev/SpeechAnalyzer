@@ -219,7 +219,8 @@ void CPlotPOA::OnDraw(CDC * pDC, CRect rWnd, CRect /*rClip*/, CSaView * pView)
     //from front of
     //glottis
     short x = 0, y = 0;
-    for (unsigned short i = 1; i <= pVocalTract->nNormCrossSectAreas - 3; i++)  //continue plotting front
+		unsigned short i = 1;
+		for (; i <= pVocalTract->nNormCrossSectAreas - 3; i++)  //continue plotting front
     {
       //of vocal tract wall
       double NormDiam = pow(pVocalTract->dNormCrossSectArea[pVocalTract->nNormCrossSectAreas-i-1], 0.5)*
@@ -416,7 +417,3 @@ void CPlotPOA::EndAnimation()
   m_bShowModelData = TRUE;
   CPlotWnd::StandardEndAnimation();
 }
-
-
-
-

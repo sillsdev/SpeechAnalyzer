@@ -152,7 +152,8 @@ void CIpaVTCharVector::Load(CString szPath)
     value = extractTabField(line, field++);
     int i = 0;
     _stscanf(value,_T("%d"),&i);
-    const VTAreas = i;
+		
+		const int VTAreas = i;
     columnChar.m_areas.reserve(VTAreas);
     for(i = 0; i < VTAreas; i++)
     {
@@ -167,7 +168,7 @@ void CIpaVTCharVector::Load(CString szPath)
     value = extractTabField(line, field++);
     i = 0;
     _stscanf(value,_T("%d"),&i);
-    const VTReflections = i;
+		const int VTReflections = i;
     columnChar.m_reflection.reserve(VTReflections);
     for(i = 0; i < VTReflections; i++)
     {
@@ -182,7 +183,7 @@ void CIpaVTCharVector::Load(CString szPath)
     value = extractTabField(line, field++);
     i = 0;
     _stscanf(value,_T("%d"),&i);
-    const VTPreds = i;
+		const int VTPreds = i;
     columnChar.m_pred.reserve(VTPreds);
     for(i = 0; i < VTPreds; i++)
     {
@@ -737,7 +738,8 @@ void CDlgVocalTract::LabelGrid(int nGrid)
     m_cGrid[nGrid].SetTextMatrix(rowVTGain, columnDescription, _T("VT Gain"));
     m_cGrid[nGrid].SetTextMatrix(rowVTGain,columnSym, _T("dB"));
 
-    for(int i = getRow(rAreaFirst); i < getRow(rLast); i++)
+		int i = getRow(rAreaFirst);
+		for(; i < getRow(rLast); i++)
     {
       m_cGrid[nGrid].SetTextMatrix(i, columnSym, _T(""));
       m_cGrid[nGrid].SetTextMatrix(i, columnDescription, _T(""));
@@ -1551,7 +1553,8 @@ static void WeightChars(CIpaVTChar &cPrev, CIpaVTChar &cNext, double dWeight, CI
 static void Interpolate(CIpaVTCharVector &cInterpolated, int nPrevious, double dBreakPoint, int nNext)
 {
   double breakTime = 0;
-  for(int nLocation = nPrevious; nLocation < dBreakPoint; nLocation++)
+	int nLocation = nPrevious;
+	for(; nLocation < dBreakPoint; nLocation++)
     breakTime += cInterpolated[nLocation].m_duration;
 
   double endTime = 0;
@@ -1577,7 +1580,8 @@ void CDlgVocalTract::OnBlendSegments(int nSrc, CFlexEditGrid &cGrid)
 
   cInterpolated.reserve(cSegments.size()*8); // estimate 8x growth from unblended
 
-  for(unsigned int nIndex = 0; nIndex < cSegments.size(); nIndex++)
+	unsigned int nIndex = 0;
+	for(; nIndex < cSegments.size(); nIndex++)
   {
     if(cSegments[nIndex].m_stimulus.AH == 0. &&
        cSegments[nIndex].m_stimulus.AF == 0. &&
@@ -1619,7 +1623,8 @@ void CDlgVocalTract::OnBlendSegments(int nSrc, CFlexEditGrid &cGrid)
       double desiredLength = 5; // aim for 5ms segments
       
       newValue.m_duration = dLength/int(dLength/desiredLength);
-      for(int replicas = int(dLength/desiredLength); replicas > 0; replicas--)
+			int replicas = int(dLength/desiredLength);
+			for(; replicas > 0; replicas--)
       {
         cInterpolated.push_back(newValue);
       }
@@ -1669,9 +1674,10 @@ void CDlgVocalTract::ParseParameterGrid(CFlexEditGrid &cGrid, int column, CIpaVT
   if(columnChar.m_ipa.IsEmpty())
     return;
   
-  const VTAreas = getRow(rAreaLast) - getRow(rAreaFirst);
+	const int VTAreas = getRow(rAreaLast) - getRow(rAreaFirst);
   columnChar.m_areas.reserve(VTAreas);
-  for(int i = 0; i < VTAreas; i++)
+	int i = 0;
+	for(; i < VTAreas; i++)
   {
     CString szValue;
     double dValue = 1.;
@@ -1681,7 +1687,7 @@ void CDlgVocalTract::ParseParameterGrid(CFlexEditGrid &cGrid, int column, CIpaVT
     columnChar.m_areas.push_back(dValue);
   }
   
-  const VTReflections = getRow(rReflectionLast) - getRow(rReflectionFirst);
+	const int VTReflections = getRow(rReflectionLast) - getRow(rReflectionFirst);
   columnChar.m_reflection.reserve(VTReflections);
   for(i = 0; i < VTReflections; i++)
   {
@@ -1693,7 +1699,7 @@ void CDlgVocalTract::ParseParameterGrid(CFlexEditGrid &cGrid, int column, CIpaVT
     columnChar.m_reflection.push_back(dValue);
   }
   
-  const VTPreds = getRow(rPredLast) - getRow(rPredFirst);
+	const int VTPreds = getRow(rPredLast) - getRow(rPredFirst);
   columnChar.m_pred.reserve(VTPreds);
   for(i = 0; i < VTPreds; i++)
   {
@@ -1977,7 +1983,8 @@ BOOL CDlgVocalTract::SynthesizeDataChunk(HMMIO hmmioFile, PCMWAVEFORMAT pcm, CIp
     }
   }
 #else
-  for(unsigned int i = 0;i < cChars.size();i++)
+	unsigned int i = 0;
+	for(;i < cChars.size();i++)
   {
     int nSections = cChars[i].m_areas.size();
     vt.SetTransform(cChars[i].m_areas, cChars[i].m_reflection);

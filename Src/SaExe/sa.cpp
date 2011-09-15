@@ -546,7 +546,7 @@ int CSaApp::ExitInstance()
   }
   // standard implementation: save initialisation
   if (bOK)
-    return m_msgCur.wParam; // Returns the value from \QuitMessage
+		return AfxGetCurrentMessage()->wParam; // Returns the value from \QuitMessage
   else
     return bOK;
 }
@@ -1312,10 +1312,10 @@ void CSaApp::PasteClipboardToNewFile(HGLOBAL hData)
   {
     // create and open the file
     pFile = new CFile(szTempPath, CFile::modeCreate | CFile::modeReadWrite | CFile::shareExclusive);
-    pFile->WriteHuge(lpData, dwSize);
+		pFile->Write(lpData, dwSize);
     delete pFile;
   }
-  catch(CException pException)
+	catch(const CException & pException)
   {
     if (pFile)
     {
@@ -1486,7 +1486,7 @@ void CSaApp::OnAppAbout()
 		szBuild = szVersion.Mid(nBuildIndex, szVersion.GetLength() - nBuildIndex - 1);
 		szVersion = szVersion.Left(nBuildIndex - 2);
 	}
-	
+
 	// Remove RC number
 	int nRCIndex = szVersion.Find(_T("RC"));
 	if (nRCIndex > 0)

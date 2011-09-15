@@ -455,7 +455,7 @@ void CSaView::OnGraphsTypes()
 /***************************************************************************/
 // CSaView::OnGraphTypesSelect Change the graphs
 /***************************************************************************/
-void CSaView::OnGraphTypesSelect(int nID)
+void CSaView::OnGraphTypesSelect(UINT nID)
 {
   int nConfiguration = nID - ID_GRAPHTYPES_SELECT_FIRST;
 
@@ -505,7 +505,8 @@ void CSaView::OnGraphsTypesPostProcess(const UINT* anNewGraphID, int nLayout)
   // graph IDs already copied to the temp. ID array should be
   // copied to the temp. array.
   //**************************************************************
-  for (int i = 0; i < MAX_GRAPHS_NUMBER; i++)
+	int i = 0;
+	for (; i < MAX_GRAPHS_NUMBER; i++)
   {
     if (anNewGraphID[i] && anNewGraphID[i] != IDD_RECORDING)
       anTmpGraphID[index++] = anNewGraphID[i];
@@ -758,7 +759,8 @@ CSaView::CSaView(const CSaView *pToBeCopied)
   m_bStaticTWC = TRUE;
   m_bNormalMelogram = TRUE;
 
-  for (int nLoop = 0; nLoop < MAX_GRAPHS_NUMBER; nLoop++)
+	int nLoop = 0;
+	for (; nLoop < MAX_GRAPHS_NUMBER; nLoop++)
   {
     m_apGraphs[nLoop] = NULL;
     m_anGraphID[nLoop] = 0;
@@ -1006,7 +1008,9 @@ WINDOWPLACEMENT CSaView::DeleteGraphs(int nPosition, BOOL bClearID)
 /***************************************************************************/
 int CSaView::GetNumberOfGraphs(UINT *pGraphIDs)
 {
-  for (int nNumOfGraphs = 0, i = 0; i < MAX_GRAPHS_NUMBER; i++)
+	int nNumOfGraphs = 0;
+	int i = 0;
+	for ( ; i < MAX_GRAPHS_NUMBER; i++)
     if (pGraphIDs[i]) nNumOfGraphs++;
 
     return nNumOfGraphs;

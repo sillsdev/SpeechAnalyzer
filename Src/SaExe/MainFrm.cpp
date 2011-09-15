@@ -2310,9 +2310,9 @@ void CMainFrame::WriteReadDefaultViewToTempFile(BOOL bWrite)
 /***************************************************************************/
 // CMainFrame::OnActivateApp delete display plot on loss of focus
 /***************************************************************************/
-void CMainFrame::OnActivateApp(BOOL bActive, HTASK hTask)
+void CMainFrame::OnActivateApp(BOOL bActive, DWORD dwThreadID)
 {
-  CMainFrameBase::OnActivateApp(bActive, hTask);
+  CMainFrameBase::OnActivateApp(bActive, dwThreadID);
   
   if(!bActive && m_pDisplayPlot) 
   {

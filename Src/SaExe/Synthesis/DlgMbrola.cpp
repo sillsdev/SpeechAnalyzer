@@ -172,7 +172,8 @@ BOOL CDlgMbrola::OnInitDialog()
   m_cGrid.SetTextMatrix(rowPitchAvg,columnDescription, _T("Avg Pitch (Hz)"));
   m_cGrid.SetColWidth(columnDescription,0, 2500);
 
-  for(int i=columnFirst;i<m_cGrid.GetCols(0); i++)
+	int i=columnFirst;
+	for(;i<m_cGrid.GetCols(0); i++)
   {
     CString number;
     number.Format(_T("%d"), i);
@@ -467,7 +468,8 @@ void CDlgMbrola::OnMbrolaConvert()
       duration = _tcstod(durationText,&ptr)/1000.;
       int rows = int(duration/m_fPitchUpdateInterval);
 	  BOOL bPitch = FALSE;
-      for(int row = 0; row <= rows; row++)
+			int row = 0;
+			for(; row <= rows; row++)
       {
 		pitchText = m_cGrid.GetTextMatrix(row + rowPitchMs,i);
 		pitch = _tcstod(pitchText, &ptr);

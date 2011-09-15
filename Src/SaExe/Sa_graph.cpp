@@ -895,7 +895,7 @@ void CGraphWnd::UpdateStatusBar(DWORD dwStartCursor, DWORD dwStopCursor, BOOL bF
 			  {
                 if (MaxRawBandPwr != (float)UNDEFINED_DATA && MaxRawBandPwr != 0.F)
                 LpcRef = MaxLpcBandPwr / MaxRawBandPwr;
-                else LpcRef = pow(10., pSpectrum->GetSpectralPowerRange().fdBRef / 10.F);
+							else LpcRef = pow(10.F, pSpectrum->GetSpectralPowerRange().fdBRef / 10.F);
 				fData /= LpcRef;
 			  }
               bRes = TRUE;
@@ -957,7 +957,7 @@ void CGraphWnd::UpdateStatusBar(DWORD dwStartCursor, DWORD dwStopCursor, BOOL bF
             // only show tenths below 173 Hz CLW 12/9/00
             double fFrequency = SemitoneToFrequency(fSemitone);
             short nPrecision = short(fFrequency < 173.0 ? 1 : 0);
-            fFrequency += 0.5 * pow(10, -nPrecision);
+					fFrequency += 0.5 * pow(10.0, -nPrecision);
             fData          = (double)nData / 10.0;
             _stprintf(szText, _T("     %.*f Hz (%3.1f%%)"), nPrecision, fFrequency, fData);
             
@@ -969,7 +969,7 @@ void CGraphWnd::UpdateStatusBar(DWORD dwStartCursor, DWORD dwStopCursor, BOOL bF
             // only show tenths below 173 Hz
             fFrequency = SemitoneToFrequency(fSemitoneOffset);
             nPrecision = short(fFrequency < 173.0 ? 1 : 0);
-            fFrequency += 0.5 * pow(10, -nPrecision);
+					fFrequency += 0.5 * pow(10.0, -nPrecision);
             _stprintf(szText, _T(" %3.2f st (%.*f Hz)"), fSemitoneOffset, nPrecision, fFrequency, fData);
             
             // write to scale pane
@@ -980,7 +980,7 @@ void CGraphWnd::UpdateStatusBar(DWORD dwStartCursor, DWORD dwStopCursor, BOOL bF
             // only show tenths below 173 Hz
             fFrequency = SemitoneToFrequency(fSemitone) - SemitoneToFrequency(fSemitoneOffset);
             nPrecision = short(fFrequency < 173.0 ? 1 : 0);
-            fFrequency += 0.5 * pow(10, -nPrecision);
+					fFrequency += 0.5 * pow(10.0, -nPrecision);
             _stprintf(szText, _T(" %3.2f st (%.*f Hz)"), fSemitone - fSemitoneOffset, nPrecision, fFrequency, fData);
             
             // write to scale pane
@@ -1555,7 +1555,7 @@ void CGraphWnd::OnNcMouseMove( UINT nHitTest, CPoint point)
 {
   m_pPlot->SetMousePointerPosition(CPoint(UNDEFINED_OFFSET, UNDEFINED_OFFSET)); // clear mouse position 
   m_pPlot->SetMouseButtonState(0);  // reset state
-  const bForceUpdate = TRUE;
+	const BOOL bForceUpdate = TRUE;
   CSaView* pView = (CSaView*)GetParent();
   UpdateStatusBar(pView->GetStartCursorPosition(), pView->GetStopCursorPosition(), bForceUpdate);
   CWnd::OnNcMouseMove(nHitTest, point);

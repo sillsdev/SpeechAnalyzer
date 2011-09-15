@@ -78,7 +78,8 @@ void CAnalyticLpcAnalysis::BuildPredictorReflectionCoefficients(const CAnalyticL
     VECTOR_CDBL &Prediction = workingPrediction[(i)&1];
     
     
-    for(int j = 1; j < i; j++)
+		int j = 1;
+		for(; j < i; j++)
       ki -= lastPrediction[j]*m_autocorrelation[i - j];
     
     ki /= e;
@@ -336,8 +337,7 @@ long CFormantTracker::Process(void* pCaller, ISaDoc* pDoc, int nProgress, int nL
   nProgress = nOldProgress;
 
   // get source data size
-  DWORD dwDataSize;
-  dwDataSize = m_pReal->GetDataSize();
+	ULONGLONG dwDataSize = m_pReal->GetDataSize();
 
   if (nLevel < 0) // memory allocation failed or previous processing error
   {
@@ -436,7 +436,7 @@ long CFormantTracker::Process(void* pCaller, ISaDoc* pDoc, int nProgress, int nL
 void CFormantTracker::AdvanceData(CTrackState &state, DWORD dwDataPos, int nSamples)
 {
   DEQUE_CDBL &data = state.GetData();
-  DWORD dwSize = m_pReal->GetDataSize();
+	ULONGLONG dwSize = m_pReal->GetDataSize();
 	double fSizeFactor = dwSize / m_pImag->GetDataSize();
 	DWORD dwImagPos = (DWORD)((double)dwDataPos / fSizeFactor); // imaginary data position
 	unsigned int nImagSmpSize = sizeof(short) / (unsigned int)fSizeFactor; // imaginary data sample size

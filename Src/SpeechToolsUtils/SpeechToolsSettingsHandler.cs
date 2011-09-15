@@ -1,11 +1,7 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Drawing;
-using System.Text;
-using System.Xml;
 using System.IO;
-using System.Reflection;
+using System.Xml;
+using SilUtils;
 
 namespace SIL.SpeechTools.Utils
 {
@@ -22,8 +18,12 @@ namespace SIL.SpeechTools.Utils
 		/// ------------------------------------------------------------------------------------
 		public SpeechToolsSettingsHandler() : base(null)
 		{
-			m_settingsFile = Path.Combine(STUtils.SilSoftwareCommonFilesPath, kSettingsFileName);
+			m_settingsFile = Path.Combine(SilUtils.Utils.SilSoftwareCommonFilesPath, kSettingsFileName);
 			m_xmlDoc = new XmlDocument();
+
+			FontHelper.ResetFonts();
+			SpeechToolsSettingsHandler spSettingsHandler = new SpeechToolsSettingsHandler();
+			spSettingsHandler.LoadFonts();
 
 			try
 			{

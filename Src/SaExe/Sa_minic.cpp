@@ -263,7 +263,7 @@ void CMiniCaptionWnd::CalcNCAreas(BOOL isPrinting, const CRect & printRect, BOOL
                                   // client area. Determines, on which button or other part the mouse hits and
 // gives the result back as return parameter.
 /***************************************************************************/
-UINT CMiniCaptionWnd::OnNcHitTest(CPoint point)
+LRESULT CMiniCaptionWnd::OnNcHitTest(CPoint point)
 {
   if ((m_nCaption == None) || (m_nCaption == NoneThin) || (m_nCaption == Normal)) return CWnd::OnNcHitTest(point); // no or normal caption window style
   // get window placement information

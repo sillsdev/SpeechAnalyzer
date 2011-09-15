@@ -438,7 +438,8 @@ long CProcessSpectrum::Process(void* pCaller, ISaDoc* pDoc, DWORD dwFrameStart, 
 #endif    
   m_stBandPower.Max.Raw = m_stBandPower.Max.Smooth = m_stBandPower.Max.Lpc = FLT_MIN_NEG;
   m_stBandPower.Min.Raw = m_stBandPower.Min.Smooth = m_stBandPower.Min.Lpc = FLT_MAX;
-  for (unsigned short i = 0; i < m_nSpectralBands; i++)  
+  unsigned short i = 0;
+  for ( ; i < m_nSpectralBands; i++)  
   {
     if (poSpectrum)
     {
@@ -474,7 +475,7 @@ long CProcessSpectrum::Process(void* pCaller, ISaDoc* pDoc, DWORD dwFrameStart, 
   if (m_stBandPower.Min.Lpc == FLT_MAX) m_stBandPower.Min.Lpc = (float)UNDEFINED_DATA; 
   
   const double MaxFormantBandwidth = 1000.F;   // determined empirically
-  const MinFormantFrequency = int(70.F);         // based on highpass cut-in frequency    
+  const int MinFormantFrequency = int(70.F);         // based on highpass cut-in frequency    
   unsigned short j = 0;
   for (i = 0; i <= MAX_NUM_FORMANTS; i++)
   {

@@ -241,7 +241,7 @@ long CProcessGlottis::Process(void* pCaller, ISaDoc* pDoc,
     delete pLpcObject;    
 
   int nTrailPadding = (dwWaveSize - dwLastOffset - dwFrameInterval)/wSmpSize - nLeadPadding;
-  for (i = 0; i < nTrailPadding; i++)
+  for (int i = 0; i < nTrailPadding; i++)
   {
     *pProcData++ = 0;    //pad output to account for predictor delay
     dwProcDataCount++;

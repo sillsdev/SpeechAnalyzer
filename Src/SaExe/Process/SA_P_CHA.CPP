@@ -329,8 +329,8 @@ long CProcessChange::Process(void* pCaller, ISaDoc* pDoc, int nProgress,
   naACFlags[++nNumLags] = nMaxLag + 1; // extra value
   nNumLags--;
   // process smoothed raw data into raw pitch data
-  DWORD dwDataSize = pLoudness->GetDataSize(); // size of processed data
-  DWORD dwLoopEnd = dwDataSize - dwLoopStart; // end of loop
+  ULONGLONG dwDataSize = pLoudness->GetDataSize(); // size of processed data
+  ULONGLONG dwLoopEnd = dwDataSize - dwLoopStart; // end of loop
   short int * pQualityData = (short int *)m_lpQualityData; // pointer to quality data
   DWORD dwPitchCount = 0; // reset processed data counter
   // calculate lowest needed first data index in smooth raw data block and load data block
@@ -470,7 +470,7 @@ long CProcessChange::Process(void* pCaller, ISaDoc* pDoc, int nProgress,
       // write the processed quality data block
       try
       { 
-        m_pQualityFile->WriteHuge((HPSTR)m_lpQualityData, dwPitchCount * 2);
+        m_pQualityFile->Write((HPSTR)m_lpQualityData, dwPitchCount * 2);
       }
       catch (CFileException e)
         
@@ -636,7 +636,7 @@ void* CProcessChange::GetQualityData(DWORD dwOffset, BOOL bBlockBegin)
     }
     // read the processed quality data block
     try
-    { m_pQualityFile->ReadHuge((HPSTR)m_lpQualityData, GetProcessBufferSize());
+    { m_pQualityFile->Read((HPSTR)m_lpQualityData, GetProcessBufferSize());
     }
     catch (CFileException e)
     {
@@ -701,7 +701,7 @@ int CProcessChange::GetQualityData(DWORD dwOffset, BOOL* bRes)
     }
     // read the processed quality data block
     try
-    { m_pQualityFile->ReadHuge((HPSTR)m_lpQualityData, GetProcessBufferSize());
+    { m_pQualityFile->Read((HPSTR)m_lpQualityData, GetProcessBufferSize());
     }
     catch (CFileException e)
     {

@@ -101,7 +101,7 @@ void Clipboard::SetTextRTF(const char* RTFstring, const char* TEXTstring)
     return;
   }
 
-  register i=0;
+  register int i=0;
 
   // copy the data into the clipboard
   LPSTR lpMemory = (LPSTR) GlobalLock(hRTFMemory);

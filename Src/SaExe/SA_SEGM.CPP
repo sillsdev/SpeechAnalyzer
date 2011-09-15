@@ -230,7 +230,8 @@ void CSegment::Serialize(CArchive& ar)
     int x = GetSize();
     SA_ASSERT(x);
     ArchiveTransfer::tInt(ar, x);
-    for (int i = 0; i< GetSize(); i++)
+		int i = 0;
+		for (; i< GetSize(); i++)
     {
       ArchiveTransfer::tDWORD(ar, GetOffset(i));
     }
@@ -250,7 +251,8 @@ void CSegment::Serialize(CArchive& ar)
     int x = ArchiveTransfer::tInt(ar);
     SA_ASSERT(x);
     m_pOffset->SetSize(x);
-    for (int i=0; i< GetSize(); i++)
+		int i=0;
+		for (; i< GetSize(); i++)
     {
       m_pOffset->SetAt(i, ArchiveTransfer::tDWORD(ar));
     }
@@ -551,7 +553,8 @@ int CSegment::GetSegmentLength(int nIndex) const
 {
   DWORD dwOffset = GetOffset(nIndex);
   int nLength = m_pAnnotation->GetLength();
-  for (int nLoop = nIndex + 1; nLoop < nLength; nLoop++)
+	int nLoop = nIndex + 1;
+	for (; nLoop < nLength; nLoop++)
   {
     if (dwOffset != GetOffset(nLoop)) break;
   }
@@ -580,7 +583,8 @@ void CSegment::Adjust(CSaDoc* pDoc, int nIndex, DWORD dwOffset, DWORD dwDuration
   DWORD dwOldOffset = GetOffset(nIndex);
   DWORD dwOldStop = GetStop(nIndex);
 
-  for (int nLoop = nIndex; nLoop < GetSize(); nLoop++)
+	int nLoop = nIndex;
+	for (; nLoop < GetSize(); nLoop++)
   {
     if (GetOffset(nLoop) == dwOldOffset)
     {
@@ -852,7 +856,8 @@ int CDependentSegment::AlignOffsetToMaster(CDocument* pSaDoc, DWORD* pdwOffset) 
   int nLength = pSegment->GetSize();
   if (nLength == 0) return -1; // no master segment yet
   // check the position
-  for (int nLoop = 0; nLoop < nLength; nLoop++)
+	int nLoop = 0;
+	for (; nLoop < nLength; nLoop++)
   {
     DWORD dwOffset = pSegment->GetOffset(nLoop);
     if (*pdwOffset < dwOffset) // this offset is larger
@@ -878,7 +883,8 @@ int CDependentSegment::AlignStopToMaster(CDocument* pSaDoc, DWORD* pdwStop) cons
   int nLength = pSegment->GetSize();
   if (nLength == 0) return -1; // no master segment yet
   // check the position
-  for (int nLoop = 0; nLoop < nLength; nLoop++)
+	int nLoop = 0;
+	for (; nLoop < nLength; nLoop++)
   {
     DWORD dwStop = pSegment->GetStop(nLoop);
     if (*pdwStop < dwStop) // this offset is larger
@@ -1151,7 +1157,8 @@ int CDependentSegment::CheckPositionToMaster(CSaDoc* pSaDoc, DWORD dwStart, DWOR
     // now check if this position is already occupied
     int nLength = GetSize();
     if (nLength == 0) return 0; // no segment yet
-    for (int nLoop = 0; nLoop < nLength; nLoop++)
+		int nLoop = 0;
+		for (; nLoop < nLength; nLoop++)
     {
       if (dwStart <= GetOffset(nLoop)) // this offset is bigger or equal
       {
@@ -1950,7 +1957,8 @@ int CIndependentSegment::CheckPosition(CSaDoc* pDoc, DWORD dwStart,DWORD dwStop,
     //SDM 1.06.5 add will make room by shifting adjacent segments
     // check the positions
     if((dwStop - dwStart)  < pDoc->GetBytesFromTime(MIN_ADD_SEGMENT_TIME)) return -1; // segment too small
-    for (int nLoop = 0; nLoop < nLength; nLoop++)
+		int nLoop = 0;
+		for (; nLoop < nLength; nLoop++)
     {
       DWORD dwOffset = GetOffset(nLoop);
       if (dwStart <= dwOffset) // this offset
@@ -2184,7 +2192,7 @@ long CPhoneticSegment::Process(void* pCaller, CSaDoc* pSaDoc, int nProgress, int
     EndWaitCursor();
     return MAKELONG(PROCESS_ERROR, nProgress);
   }
-  DWORD dwLoopEnd = pChange->GetDataSize();; // end of loop
+	ULONGLONG dwLoopEnd = pChange->GetDataSize();; // end of loop
   // prepare parameters
   CMainFrame* pMainFrame = (CMainFrame*)AfxGetMainWnd();
   ASSERT(pMainFrame->IsKindOf(RUNTIME_CLASS(CMainFrame)));
@@ -2496,7 +2504,8 @@ int CMusicPhraseSegment::CheckPosition(CSaDoc* pDoc, DWORD dwStart,DWORD dwStop,
   else if((nMode==MODE_ADD)||(nMode==MODE_AUTOMATIC))
   {
     if((dwStop - dwStart)  < pDoc->GetBytesFromTime(MIN_ADD_SEGMENT_TIME)) return -1; // segment too small
-    for (int nLoop = 0; nLoop < nLength; nLoop++)
+		int nLoop = 0;
+		for (; nLoop < nLength; nLoop++)
     {
       DWORD dwOffset = GetOffset(nLoop);
       if (dwStart <= dwOffset) // this offset
@@ -2709,7 +2718,7 @@ long CGlossSegment::Process(void* pCaller, CSaDoc* pSaDoc, int nProgress, int nL
     EndWaitCursor();
     return MAKELONG(PROCESS_ERROR, nProgress);
   }
-  DWORD dwLoopEnd = pLoudness->GetDataSize();; // end of loop
+	ULONGLONG dwLoopEnd = pLoudness->GetDataSize();; // end of loop
   // prepare parameters
   CMainFrame* pMainFrame = (CMainFrame*)AfxGetMainWnd();
   ASSERT(pMainFrame->IsKindOf(RUNTIME_CLASS(CMainFrame)));

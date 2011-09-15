@@ -56,7 +56,7 @@ public:
     void SetDataInvalid();
     long Process(void* pCaller, ISaDoc* pDoc, int nProgress = 0, int nLevel = 1);
     HPSTR GetSmoothRawData(DWORD dwOffset, BOOL bBlockBegin = FALSE); // return smooth raw data pointer on given position (offset)
-    DWORD GetSmoothRawDataSize() {return m_SRDfileStatus.m_size;} // return processed data size in words (16 bit)
+    ULONGLONG GetSmoothRawDataSize() {return m_SRDfileStatus.m_size;} // return processed data size in words (16 bit)
 };
 
 #endif //_SA_P_LOU_H

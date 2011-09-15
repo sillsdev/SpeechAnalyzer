@@ -1,14 +1,11 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Text;
-using System.Data;
-using System.Data.OleDb;
-using System.Reflection;
 using System.IO;
-using System.Xml.Serialization;
-using System.Windows.Forms;
 using System.Runtime.InteropServices;
+using System.Text;
+using System.Windows.Forms;
+using SIL.SpeechTools.Utils.Properties;
+using SilUtils;
 
 namespace SIL.SpeechTools.Utils
 {
@@ -40,7 +37,7 @@ namespace SIL.SpeechTools.Utils
 	[ClassInterface(ClassInterfaceType.None)]
 	[GuidAttribute("58A46D07-9EF3-49ae-9C19-42AC3158801C")]
 	[ComVisible(true)]
-	public class SaAudioDocumentReader : SIL.SpeechTools.Utils.ISaAudioDocumentReader
+	public class SaAudioDocumentReader : ISaAudioDocumentReader
 	{
 		private SaAudioDocument m_doc = null;
 		//private string m_md5HashCode;
@@ -97,19 +94,19 @@ namespace SIL.SpeechTools.Utils
 					AudioReader.InitResult result = audioReader.Initialize(audioFilePath);
 					if (result == AudioReader.InitResult.FileNotFound)
 					{
-						string msg = string.Format(Properties.Resources.kstidWaveFileNotFound,
-							audioFilePath);
+						string msg = string.Format(Resources.kstidWaveFileNotFound,
+							SilUtils.Utils.PrepFilePathForSTMsgBox(audioFilePath));
 
-						STUtils.STMsgBox(msg, MessageBoxButtons.OK);
+						SilUtils.Utils.STMsgBox(msg, MessageBoxButtons.OK);
 						return false;
 					}
 
 					if ((result == AudioReader.InitResult.InvalidFormat))
 					{
-						string msg = string.Format(Properties.Resources.kstidInvalidWaveFile,
-							audioFilePath);
+						string msg = string.Format(Resources.kstidInvalidWaveFile,
+							SilUtils.Utils.PrepFilePathForSTMsgBox(audioFilePath));
 
-						STUtils.STMsgBox(msg, MessageBoxButtons.OK);
+						SilUtils.Utils.STMsgBox(msg, MessageBoxButtons.OK);
 						return false;
 					}
 
@@ -125,10 +122,10 @@ namespace SIL.SpeechTools.Utils
 			}
 			catch (Exception e)
 			{
-				string msg = string.Format(Properties.Resources.kstidErrorInitializingDocReader,
+				string msg = string.Format(Resources.kstidErrorInitializingDocReader,
 					e.Message);
 
-				STUtils.STMsgBox(msg, MessageBoxButtons.OK);
+				SilUtils.Utils.STMsgBox(msg, MessageBoxButtons.OK);
 				return false;
 			}
 
@@ -148,16 +145,16 @@ namespace SIL.SpeechTools.Utils
 			if (!SaDatabase.Load())
 				return;
 
-			STUtils.STMsgBox(Properties.Resources.kstidOldDbConverionMsg, MessageBoxButtons.OK);
+			SilUtils.Utils.STMsgBox(Resources.kstidOldDbConverionMsg, MessageBoxButtons.OK);
 			bool allConverted = true;
 
 			for (int i = SaDatabase.Cache.Count - 1; i >= 0; i--)
 			{
 				if (!File.Exists(SaDatabase.Cache[i].AudioFile))
 				{
-					string msg = Properties.Resources.kstidOldDbAudioFileMissingMsg;
+					string msg = Resources.kstidOldDbAudioFileMissingMsg;
 					msg = string.Format(msg, SaDatabase.Cache[i].AudioFile);
-					if (STUtils.STMsgBox(msg, MessageBoxButtons.YesNo) == DialogResult.Yes)
+					if (SilUtils.Utils.STMsgBox(msg, MessageBoxButtons.YesNo) == DialogResult.Yes)
 						SaDatabase.Cache.RemoveAt(i);
 					else
 						allConverted = false;
@@ -410,7 +407,7 @@ namespace SIL.SpeechTools.Utils
 				KeyValuePair<MusicSegmentKey, MusicSegmentData> entry = m_musicEnum[index].Current;
 				offset = entry.Value.Offset;
 				length = entry.Value.Duration;
-				annotation = (ret ? entry.Value.Annotation : null);
+				annotation = entry.Value.Annotation;
 			}
 
 			return ret;
@@ -489,6 +486,8 @@ namespace SIL.SpeechTools.Utils
 		{
 			uint offset;
 			uint length;
+			uint firstSegOffset = 0;
+			uint lengthSum = 0;
 			string segment;
 			StringBuilder bldr = new StringBuilder();
 			AudioDocWords prevAdw = null;
@@ -497,6 +496,12 @@ namespace SIL.SpeechTools.Utils
 			while (ReadSegment((int)atype, out offset, out length, out segment))
 			{
 				AudioDocWords currWord;
+				
+				// We'll only use lengthSum and firstSegOffset in the case when the first
+				// word's offset isn't the same as the offset of the first phonetic segment. 
+				lengthSum += length;
+				if (bldr.Length == 0)
+					firstSegOffset = offset;
 
 				// When the offset for the current segment matches one already in the
 				// collection of words we know we've come to the beginning of the next
@@ -507,6 +512,18 @@ namespace SIL.SpeechTools.Utils
 					// builder to accept the next word coming down the pike.
 					if (bldr.Length > 0)
 					{
+						// This should only happen when the first word's offset is not the same as
+						// the first phonetic segment's offset. When that happens, we need to add
+						// a word at the beginning of the collection to accomodate the fact that
+						// the audio file contains one or more phonetic segments at the beginning
+						// of the transcription that do not belong to a word.
+						if (prevAdw == null)
+						{
+							prevAdw = new AudioDocWords();
+							prevAdw.AudioLength = lengthSum;
+							words[firstSegOffset] = prevAdw;
+						}
+
 						prevAdw.m_words[atype] = bldr.ToString();
 						bldr.Length = 0;
 					}
@@ -688,7 +705,7 @@ namespace SIL.SpeechTools.Utils
 
 		/// ------------------------------------------------------------------------------------
 		/// <summary>
-		/// Gets the note book reference.
+		/// Gets the notebook reference.
 		/// </summary>
 		/// ------------------------------------------------------------------------------------
 		public string NoteBookReference

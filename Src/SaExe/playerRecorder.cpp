@@ -248,7 +248,7 @@ CDlgPlayer::~CDlgPlayer()
 /***************************************************************************/
 // CDlgPlayer::Create Creation
 /***************************************************************************/
-CDlgPlayer::Create()
+BOOL CDlgPlayer::Create()
 {
   bPlayer = TRUE; // player launched
   return CDialog::Create(CDlgPlayer::IDD);

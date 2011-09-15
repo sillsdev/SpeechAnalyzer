@@ -153,7 +153,8 @@ void CSaWorkbenchView::SetupFilterProcesses(CObject* pDialog)
   // make local copy of existing processes and filters and clear originals
   CDataProcess* apWbLocalProcess[MAX_FILTER_NUMBER];
   int anLocalID[MAX_FILTER_NUMBER];
-  for (int nLoop = 0; nLoop < MAX_FILTER_NUMBER; nLoop++)
+	int nLoop = 0;
+	for (; nLoop < MAX_FILTER_NUMBER; nLoop++)
   {
     apWbLocalProcess[nLoop] = pMain->SetWbProcess(pDlg->m_nProcess, nLoop, NULL);
     anLocalID[nLoop] = pMain->SetWbFilterID(pDlg->m_nProcess, nLoop, 0);

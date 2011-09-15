@@ -29,7 +29,8 @@ CPickOverlayDlg::CPickOverlayDlg(CWnd* pParent /*=NULL*/)
   //{{AFX_DATA_INIT(CPickOverlayDlg)
   //}}AFX_DATA_INIT
 
-  for (int i=0;i<MAX_LIST_SIZE;i++)
+	int i=0;
+	for (;i<MAX_LIST_SIZE;i++)
   {
     m_bIsItemSelected[i] = FALSE;
   }

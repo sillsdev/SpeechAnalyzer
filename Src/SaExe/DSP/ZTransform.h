@@ -174,7 +174,8 @@ template<class _Ty> _Ty CZTransformGeneric<_Ty>::Tick(_Ty dInput)
   _Ty partialOutput = 0.;
   _Ty partialState = dInput;
 
-  for(int32 i = m_nOrder;i>0;i--)
+	int32 i = m_nOrder;
+	for(;i>0;i--)
   {
     partialOutput += m_pState[i]*m_pNumerator[i];
     partialState -= m_pState[i]*m_pDenominator[i];

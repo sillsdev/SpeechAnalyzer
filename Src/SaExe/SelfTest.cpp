@@ -373,7 +373,7 @@ void CSASelfTest::SelfTest()
 
 		short int nResult = LOWORD(pSpectrum->Process(this, pDoc,30870,4410,SpectraSelected)); // process data
 		
-		DWORD dwDataSize = pSpectrum->GetDataSize();
+		ULONGLONG dwDataSize = pSpectrum->GetDataSize();
 		void *pData = (char*) pSpectrum->GetProcessedData(0);
 		CString szFileName = this->m_szTempPath + "Spectrum.tmp";
 
@@ -418,7 +418,7 @@ void CSASelfTest::SelfTest()
 		CFile OutputFile(szFileName,CFile::modeCreate|CFile::modeWrite);
 		OutputFile.Write(&pData->dErrorRatio,sizeof(pData->dErrorRatio));
 		OutputFile.Write(&pData->nNormCrossSectAreas,sizeof(pData->nNormCrossSectAreas));
-		for(register i=0;i<pData->nNormCrossSectAreas;++i)
+		for(register int i=0;i<pData->nNormCrossSectAreas;++i)
 			OutputFile.Write(&pData->dNormCrossSectArea[i],sizeof(double));
 		OutputFile.Flush();
 		OutputFile.Close();
@@ -436,7 +436,7 @@ void CSASelfTest::SelfTest()
     CProcessMelogram* pMelogram = (CProcessMelogram*)pDoc->GetMelogram(); // get pointer to melogram object
     int nLevel = 0, nProgress = 0;
     long lResult = pMelogram->Process(this, pDoc, nProgress, ++nLevel); // process data
-    DWORD dwMelDataSize = pMelogram->GetDataSize() * 2; // size of melogram data
+    ULONGLONG dwMelDataSize = pMelogram->GetDataSize() * 2; // size of melogram data
     nLevel = (short int)LOWORD(lResult);
     if ((nLevel == PROCESS_CANCELED) || !dwMelDataSize) 
       EndTest(FALSE);
@@ -449,7 +449,7 @@ void CSASelfTest::SelfTest()
       DWORD dwRawDataSize = pDoc->GetDataSize(); // size of raw data
       double fScaleFactor = (double)dwRawDataSize / (double)dwMelDataSize;
       DWORD dwFrameStart = (DWORD)((double)pView->GetStartCursorPosition() / fScaleFactor) & ~1; // must be multiple of two
-      DWORD dwFrameSize  = ((DWORD)((double)pView->GetStopCursorPosition() / fScaleFactor) & ~1) - dwFrameStart + wSmpSize;
+      ULONGLONG dwFrameSize  = ((DWORD)((double)pView->GetStopCursorPosition() / fScaleFactor) & ~1) - dwFrameStart + wSmpSize;
       if (pView->Get_m_bStaticTWC())
       {
         dwFrameStart = 0;
@@ -1023,8 +1023,8 @@ int CSASelfTest::FileCompare(const CString szFileOne, long nTolerableDifferences
 	char Buffer1[BUFFERSIZE], Buffer2[BUFFERSIZE];
 
 
-	DWORD dwFile1Len=File1.GetLength();
-	DWORD dwFile2Len=File2.GetLength();
+	ULONGLONG dwFile1Len=File1.GetLength();
+	ULONGLONG dwFile2Len=File2.GetLength();
 	if(dwFile1Len!=dwFile2Len)// Files are different length
 	{
 		CString szLen;

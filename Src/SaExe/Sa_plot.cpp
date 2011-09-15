@@ -946,7 +946,7 @@ BOOL CPlotWnd::PlotPrePaintDots(CDC* pDC, int nTop, CRect rClip,
 
       int nLogDisp = (int)ceil(dScaleMinValue / pow(10, floor(fBase)));
       double fBasePos = (double)nTop + dYFirstGridPos + (fBase - floor(fBase)) * fYDistance;
-      int nYPos = round(fBasePos - log10(nLogDisp) * fYDistance);
+      int nYPos = round(fBasePos - log10((double)nLogDisp) * fYDistance);
       while (nYPos > rClip.top)
       {
         // set pixel
@@ -964,7 +964,7 @@ BOOL CPlotWnd::PlotPrePaintDots(CDC* pDC, int nTop, CRect rClip,
           fBasePos -= fYDistance;
         }
         nLogDisp++;
-        nYPos = round(fBasePos - log10(nLogDisp) * fYDistance);
+        nYPos = round(fBasePos - log10((double)nLogDisp) * fYDistance);
       }
       dXPos = dXFirstGridPos + ++nXCount * fXDistance;
     }
@@ -2052,7 +2052,7 @@ void CPlotWnd::OnMouseMove(UINT nFlags, CPoint point)
   CSaView* pView = (CSaView *)pGraph->GetParent();
 
   // update the status bar
-  const bForceUpdate = TRUE;
+  const BOOL bForceUpdate = TRUE;
   pGraph->UpdateStatusBar(pView->GetStartCursorPosition(), pView->GetStopCursorPosition(), bForceUpdate);
 
   // continue with message handler

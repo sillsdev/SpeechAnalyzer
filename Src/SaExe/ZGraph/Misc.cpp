@@ -698,7 +698,7 @@ double parse(LPCSTR s, INT *att, double X, double Y)
   //   Depending Upon What Platform We're On...
 
 #ifdef WINDOWS_PLATFORM
-  strupr(lstrcpy(copy, s));
+  strupr(strcpy(copy, s));
 #endif
 
 #ifdef OS2_PLATFORM

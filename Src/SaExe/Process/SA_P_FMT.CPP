@@ -267,14 +267,17 @@ void CProcessFormants::SmoothMedian(ISaDoc *pDoc)
     FORMANT MedianFreq[MAX_NUM_FORMANTS+1];
     m_dwValidFrameCount = 0;
     
-    for (DWORD dwFrame = 0; dwFrame < m_dwFormantFrameCount - 2; dwFrame++)
+		DWORD dwFrame = 0;
+		for (; dwFrame < m_dwFormantFrameCount - 2; dwFrame++)
     {
       // Set pointers to each frame.
       FormantFrame[0] = GetFormantFrame(dwFrame)->Formant;     // frame to update with median
       FormantFrame[1] = GetFormantFrame(dwFrame+1)->Formant;   // frame to median smooth
       FormantFrame[2] = GetFormantFrame(dwFrame+2)->Formant;   // frame to select pole frequencies within valid formant ranges
       
-      for (unsigned short nFormant = 1, nPole = 1; nFormant < MAX_NUM_FORMANTS; nFormant++)
+			unsigned short nFormant = 1;
+			unsigned short nPole = 1;
+			for ( ; nFormant < MAX_NUM_FORMANTS; nFormant++)
       { // look for nearest formant from previous frame                    
         if (dwFrame == 0) MedianFreq[nFormant].Lpc.FrequencyInHertz = FormantFrame[0][nFormant].Lpc.FrequencyInHertz;
         float fMinDistance = FLT_MAX;
@@ -370,7 +373,8 @@ void CProcessFormants::SmoothMedian(ISaDoc *pDoc)
     
     // Update next to last frame.
     FormantFrame[0] = GetFormantFrame(dwFrame)->Formant;
-    for (UINT nFormant = 1; nFormant <= MAX_NUM_FORMANTS; nFormant++) 
+		UINT nFormant = 1;
+		for (; nFormant <= MAX_NUM_FORMANTS; nFormant++) 
       FormantFrame[0][nFormant].Lpc.FrequencyInHertz = MedianFreq[nFormant].Lpc.FrequencyInHertz;
     
     BOOL bValidF1F2F3 = (FormantFrame[0][1].Lpc.FrequencyInHertz != (float)NA && 

@@ -301,9 +301,7 @@ BOOL CMixer::IsSndVolInstalled()
 	m_szPlayMixerCmd = "";
 	m_szRecMixerCmd = "";
 
-	int osVer = _winver;
-
-	if (osVer < 0x0600)
+	if (GetWindowsVersion()<6) 
 	{
 		bReturn = SearchPath(NULL, _T("SNDVOL32.EXE"), NULL, 0, NULL, NULL);
 		if (bReturn)
@@ -411,7 +409,7 @@ BOOL CPlayMixer::ShowMixerControls(HWAVEOUT hPlayer)
 
 			CSaString command;
 			CSaString args;
-			if (_winver < 0x0600)
+			if (GetWindowsVersion()<6)
 				args.Format(_T("%d"), uDevID);
 			command = m_szPlayMixerCmd + args;
 
@@ -509,7 +507,7 @@ BOOL CRecMixer::ShowMixerControls(HWAVEIN hRecorder)
 
 			CSaString command;
 			CSaString args;
-			if (_winver < 0x0600)
+			if (GetWindowsVersion() < 6)
 				args.Format(_T("%d"), uDevID);
 			command = m_szRecMixerCmd + args;
 
@@ -531,3 +529,16 @@ BOOL CRecMixer::ShowMixerControls(HWAVEIN hRecorder)
   return FALSE;
 }
 
+/**
+* returns major revision for operation system.
+* see GetVersionEx for details
+*/
+int CMixer::GetWindowsVersion()
+{
+	OSVERSIONINFO versionInfo;
+	memset(&versionInfo,0,sizeof(OSVERSIONINFO));
+	versionInfo.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
+	BOOL result = ::GetVersionEx( &versionInfo);
+	ASSERT(result);
+	return versionInfo.dwMajorVersion; 
+}

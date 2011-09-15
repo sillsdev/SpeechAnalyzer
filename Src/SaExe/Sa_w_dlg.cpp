@@ -129,7 +129,8 @@ void CWbDlgProcesses::OnProperties1()
   UpdateData(TRUE);
   // check if filter already exists
   CMainFrame* pMain = (CMainFrame*)AfxGetMainWnd();
-  for (int nLoop = 0; nLoop < MAX_FILTER_NUMBER; nLoop++)
+	int nLoop = 0;
+	for (; nLoop < MAX_FILTER_NUMBER; nLoop++)
   {
     if (m_nFilter1 == pMain->GetWbFilterID(m_nProcess, nLoop)) break;
   }
@@ -171,7 +172,8 @@ void CWbDlgProcesses::OnProperties2()
   UpdateData(TRUE);
   // check if filter already exists
   CMainFrame* pMain = (CMainFrame*)AfxGetMainWnd();
-  for (int nLoop = 0; nLoop < MAX_FILTER_NUMBER; nLoop++)
+	int nLoop = 0;
+	for (; nLoop < MAX_FILTER_NUMBER; nLoop++)
   {
     if (m_nFilter2 == pMain->GetWbFilterID(m_nProcess, nLoop)) break;
   }
@@ -213,7 +215,8 @@ void CWbDlgProcesses::OnProperties3()
   UpdateData(TRUE);
   // check if filter already exists
   CMainFrame* pMain = (CMainFrame*)AfxGetMainWnd();
-  for (int nLoop = 0; nLoop < MAX_FILTER_NUMBER; nLoop++)
+	int nLoop = 0;
+	for (; nLoop < MAX_FILTER_NUMBER; nLoop++)
   {
     if (m_nFilter3 == pMain->GetWbFilterID(m_nProcess, nLoop)) break;
   }

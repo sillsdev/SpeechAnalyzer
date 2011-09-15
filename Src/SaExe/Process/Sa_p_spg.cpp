@@ -167,7 +167,7 @@ long CProcessSpectrogram::Process(void* pCaller, ISaDoc* pDoc, CSaView *pView, i
   SpgmSetting.PreEmphSw = true;                                         
   SpgmSetting.Bandwidth = pSpectroParm->Bandwidth();
   Signal.SmpRate = (USHORT)pFmtParm->dwSamplesPerSec; 
-  SpgmSetting.FFTLength = USHORT(2 << USHORT(ceil(log(DspWin::CalcLength(SpgmSetting.Bandwidth,Signal.SmpRate, ResearchSettings.m_cWindow.m_nType))/log(2.0) + 0.0)));   
+  SpgmSetting.FFTLength = (USHORT)(2 << USHORT(ceil(log(float(DspWin::CalcLength(SpgmSetting.Bandwidth,Signal.SmpRate, ResearchSettings.m_cWindow.m_nType))/log(2.0) + 0.0))));   
   
   {
     int minSpectraInterval = 

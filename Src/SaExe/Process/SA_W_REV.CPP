@@ -142,7 +142,8 @@ long CProcessWbEcho::Process(void* pCaller, ISaDoc* pDoc, int nProgress,
   }
   // initialize fifo with silence
   short int * pFifo = (short int *)lpFifo;
-  for (DWORD dwFifoIndex = 0; dwFifoIndex < dwFifoSize; dwFifoIndex++)
+	DWORD dwFifoIndex = 0;
+	for ( ; dwFifoIndex < dwFifoSize; dwFifoIndex++)
   {
     pFifo[dwFifoIndex] = 0;
   }
@@ -433,7 +434,8 @@ long CProcessWbReverb::Process(void* pCaller, ISaDoc* pDoc, int nProgress,
   }
   // initialize fifo with silence
   short int * pFifo = (short int *)lpFifo;
-  for (DWORD dwFifoIndex = 0; dwFifoIndex < dwFifoSize; dwFifoIndex++)
+	DWORD dwFifoIndex = 0;
+	for (; dwFifoIndex < dwFifoSize; dwFifoIndex++)
   {
     pFifo[dwFifoIndex] = 0;
   }

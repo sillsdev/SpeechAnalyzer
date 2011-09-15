@@ -1157,7 +1157,7 @@ void CLegendWnd::OnMouseMove(UINT nFlags, CPoint point)
   CSaView* pView = (CSaView*)pGraph->GetParent();
   pPlot->SetMousePointerPosition(CPoint(UNDEFINED_OFFSET, UNDEFINED_OFFSET)); // clear mouse position 
   pPlot->SetMouseButtonState(0);  // reset state
-  const bForceUpdate = TRUE;
+  const BOOL bForceUpdate = TRUE;
   pGraph->UpdateStatusBar(pView->GetStartCursorPosition(), pView->GetStopCursorPosition(), bForceUpdate);
   CWnd::OnMouseMove(nFlags, point);
 }
@@ -1717,7 +1717,7 @@ void CXScaleWnd::OnMouseMove(UINT nFlags, CPoint point)
   CSaView* pView = (CSaView*)pGraph->GetParent();
   pPlot->SetMousePointerPosition(CPoint(UNDEFINED_OFFSET, UNDEFINED_OFFSET)); // clear mouse position 
   pPlot->SetMouseButtonState(0);  // reset state
-  const bForceUpdate = TRUE;
+  const BOOL bForceUpdate = TRUE;
   pGraph->UpdateStatusBar(pView->GetStartCursorPosition(), pView->GetStopCursorPosition(), bForceUpdate);
   CWnd::OnMouseMove(nFlags, point);
 } 
@@ -2257,7 +2257,7 @@ void CAnnotationWnd::OnMouseMove(UINT nFlags, CPoint point)
   CSaView* pView = (CSaView*)pGraph->GetParent();
   pPlot->SetMousePointerPosition(CPoint(UNDEFINED_OFFSET, UNDEFINED_OFFSET)); // clear mouse position 
   pPlot->SetMouseButtonState(0);  // reset state
-  const bForceUpdate = TRUE;
+  const BOOL bForceUpdate = TRUE;
   pGraph->UpdateStatusBar(pView->GetStartCursorPosition(), pView->GetStopCursorPosition(), bForceUpdate);
   CWnd::OnMouseMove(nFlags, point);
 } 

@@ -179,7 +179,8 @@ long CProcessSpectroFormants::ExtractFormants(ISaDoc *pDoc, DWORD dwWaveDataStar
         BOOL bVoiced = TRUE, bFricative = FALSE;
         DWORD dwVoicedFragStart = (DWORD)UNDEFINED_DATA;
         
-        for (DWORD dwFragmentIndex = dwFirstFragment; dwFragmentIndex <= dwLastFragment; dwFragmentIndex++)
+				DWORD dwFragmentIndex = dwFirstFragment;
+				for (; dwFragmentIndex <= dwLastFragment; dwFragmentIndex++)
         { 
           int nMyProgress = int(100*double(dwFragmentIndex - dwFirstFragment)/(dwLastFragment - dwFirstFragment));
           SetProgress(nMyProgress);
@@ -242,7 +243,8 @@ long CProcessSpectroFormants::ExtractFormants(ISaDoc *pDoc, DWORD dwWaveDataStar
                 FORMANT_FREQ FormantPwr;
                 FORMANT_FRAME *pFormantFrame = pFormants->GetFormantFrame(dwFormantFrame++);
                 float MaxPowerInDecibels = FLT_MAX_NEG;
-                for (USHORT nFormant = 1; nFormant <= MAX_NUM_FORMANTS; nFormant++)
+								USHORT nFormant = 1;
+								for (; nFormant <= MAX_NUM_FORMANTS; nFormant++)
                 {
                   if (pFormantFrame->Formant[nFormant].Lpc.PowerInDecibels != (float)NA &&
                     MaxPowerInDecibels > pFormantFrame->Formant[nFormant].Lpc.PowerInDecibels)    // find max power
@@ -345,7 +347,8 @@ long CProcessSpectroFormants::ExtractFormants(ISaDoc *pDoc, DWORD dwWaveDataStar
               FORMANT_FRAME *pFormantFrame = pFormants->GetFormantFrame(dwFormantFrame++);
               //                FILE *hDump = fopen("formants.txt", "w");                
               float MaxPowerInDecibels = FLT_MAX_NEG;
-              for (USHORT nFormant = 0; nFormant <= MAX_NUM_FORMANTS; nFormant++)
+							USHORT nFormant = 0;
+							for (; nFormant <= MAX_NUM_FORMANTS; nFormant++)
                 if (pFormantFrame->Formant[nFormant].Lpc.PowerInDecibels != (float)NA &&
                   MaxPowerInDecibels > pFormantFrame->Formant[nFormant].Lpc.PowerInDecibels)
                   MaxPowerInDecibels = pFormantFrame->Formant[nFormant].Lpc.PowerInDecibels;  // find max power

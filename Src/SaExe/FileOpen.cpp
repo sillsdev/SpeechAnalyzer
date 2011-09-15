@@ -19,7 +19,9 @@ IMPLEMENT_DYNAMIC(CDlgFileOpen, CFileDialog)
 CDlgFileOpen::CDlgFileOpen(LPCTSTR lpszDefExt, LPCTSTR lpszFileName, DWORD dwFlags, LPCTSTR lpszFilter, CWnd* pParentWnd) :
               CFileDialog(TRUE, lpszDefExt, lpszFileName, dwFlags, lpszFilter, pParentWnd)
 {
-  SetTemplate(IDD, IDD);
+	// SetTemplate not supported on Vista and above
+	if (CMixer::GetWindowsVersion()<6)
+		SetTemplate(IDD, IDD);
 
   m_ofn.hInstance = AfxFindResourceHandle(MAKEINTRESOURCE(IDD),RT_DIALOG);
 }

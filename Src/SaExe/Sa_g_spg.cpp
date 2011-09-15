@@ -524,7 +524,7 @@ BOOL CPlotSpectrogram::OnDrawSpectrogram(CDC *pDC, CRect rWnd, CRect rClip, CSaV
     dlog = new double[nSpectrumIndex + 1];
     for (; nSpectrumIndex>0; nSpectrumIndex--)
     {
-      dlog[nSpectrumIndex] = log(nSpectrumIndex);
+      dlog[nSpectrumIndex] = log(double(nSpectrumIndex));
     }
     dlog[0] = dlog[1];
   }
@@ -608,7 +608,7 @@ BOOL CPlotSpectrogram::OnDrawSpectrogram(CDC *pDC, CRect rWnd, CRect rClip, CSaV
             
             double dMaxPower = 0;
             double dMinPower = 1000;
-            for (nSpectrumIndex = int(dSpectrumPoints); nSpectrumIndex>=0; nSpectrumIndex--)
+            for (int nSpectrumIndex = int(dSpectrumPoints); nSpectrumIndex>=0; nSpectrumIndex--)
             {
               dMaxPower = max(dMaxPower, pPower[nSpectrumIndex] - (dlog[nSpectrumIndex]*localSlope + dOffset));
               dMinPower = min(dMinPower, pPower[nSpectrumIndex] - (dlog[nSpectrumIndex]*localSlope + dOffset));

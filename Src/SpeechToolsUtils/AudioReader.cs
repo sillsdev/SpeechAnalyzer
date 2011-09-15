@@ -1,10 +1,11 @@
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.IO;
 using System.Security.Cryptography;
+using System.Text;
 using System.Windows.Forms;
-using SilEncConverters22;
+using SilEncConverters31;
+using SilUtils;
 
 namespace SIL.SpeechTools.Utils
 {
@@ -269,6 +270,10 @@ namespace SIL.SpeechTools.Utils
 				// Read the chunk id.
 				string id = new string(Encoding.ASCII.GetChars(reader.ReadBytes(4)));
 
+				// if we don't have a fmt tag to start with don't try to read anything else
+				if (stream.Position == 16 && id != "fmt ")
+					return -1;
+
 				// If we've found the chunk id we're looking for, then return the
 				// current position less the 4 bytes we just read to get the id.
 				if (id == chunkId)
@@ -368,7 +373,7 @@ namespace SIL.SpeechTools.Utils
 
 			// TODO: When code exists to read wave files in batch mode, then move this so
 			// it's done after all wave files are read and converted.
-			STUtils.EncodingConverters = null;
+			TransConverter.EncodingConverters = null;
 
 			m_writer.Commit(m_backupAudioFile);
 			m_writer.Close();
@@ -399,8 +404,7 @@ namespace SIL.SpeechTools.Utils
 				{
 					// If there's a splash screen open, then close it before showing the
 					// dialog. Otherwise, the dialog will popup behind the splash screen.
-					if (STUtils.s_splashScreen != null)
-						STUtils.s_splashScreen.Close();
+					SilUtils.Utils.ForceCloseOfSplashScreen();
 
 					DialogResult res = dlg.ShowDialog();
 					if (res == DialogResult.Cancel)
@@ -506,7 +510,7 @@ namespace SIL.SpeechTools.Utils
 			{
 				// Find the SA chunk, skipping over the chunk size and read the SA version.
 				m_stream.Position = GetChunkOffset(m_stream, kidSAChunk) + 8;
-				float riffVer = m_reader.ReadSingle(); // skip the RIFF version
+				m_reader.ReadSingle(); // skip the RIFF version
 
 				// Get SA description.
 				string saDesc = new string(Encoding.ASCII.GetChars(m_reader.ReadBytes(256)));
@@ -772,7 +776,7 @@ namespace SIL.SpeechTools.Utils
 			}
 
 			// Get the encoding converter used for the specified chunk.
-			return STUtils.GetConverter(m_transConverters[chunkId].Converter);
+			return TransConverter.GetConverter(m_transConverters[chunkId].Converter);
 		}
 
 		/// ------------------------------------------------------------------------------------

@@ -1155,7 +1155,8 @@ void zGraph::zDraw3DGrid()
   //
   // Draw In the Individual Vertical Grid Segments
   //
-  for (INT i = 0; i < y_axis_divisions; i++)
+	INT i = 0;
+	for (; i < y_axis_divisions; i++)
   {
     INT x_offset_1 = X_LEFT + zRound(grid_width * i / y_axis_divisions);
     INT x_offset_2 = x_offset_1 + zRound(z3D_GRID_X_SLANT_OFFSET);
@@ -1882,7 +1883,8 @@ void zGraph::zDrawLegend(BOOL UseColorFills /* = TRUE */)
   //
   // Draw In the Legend ID Box/Line for Each Element...
   //
-  for (INT index = 0; (index < zMAX_DATA_SETS)
+	INT index = 0;
+	for (; (index < zMAX_DATA_SETS)
     && (index < num_sets);  index++)
   {
     //

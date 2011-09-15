@@ -34,7 +34,7 @@ public:
   long Process(void* pCaller, ISaDoc* pDoc, int nProgress = 0, int nLevel = 1);
   void* GetQualityData(DWORD dwOffset, BOOL bBlockBegin = FALSE); // return quality data pointer on given position (offset)
   int GetQualityData(DWORD dwOffset, BOOL*); // return quality data from given position (offset)  
-  DWORD GetQualityDataSize() {return m_qualityFileStatus.m_size / 2;} // return processed data size in words (16 bit)
+  DWORD GetQualityDataSize() {return (DWORD)(m_qualityFileStatus.m_size / 2);} // return processed data size in words (16 bit)
   int GetQualityMaxValue() {return m_nQualityMaxValue;} // return maximum value
 private:
   UINT CalculateACF8(CDataProcess*, unsigned char * pSRDdata, BOOL*, UINT nACFinterval, UINT nLagData,
