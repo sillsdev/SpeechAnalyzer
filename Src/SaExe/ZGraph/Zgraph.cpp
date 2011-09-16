@@ -550,68 +550,77 @@ void zGraph::zGetLongestLegendString(PWCHAR TemplateBuf)
 
 void zGraph::zConvertValue(double d, PWCHAR buf)
 {
-  //
-  // Converts a double value [d] to a string [Buf], Based Upon the Desired
-  //   Numeric Format that the User Selects.  This Function is Used to
-  //   Display Digits Along the Graph Axes in a Variety of Different
-  //   Formats...
-  //
-  static WCHAR TempBuf[ 32 ];
+	//
+	// Converts a double value [d] to a string [Buf], Based Upon the Desired
+	//   Numeric Format that the User Selects.  This Function is Used to
+	//   Display Digits Along the Graph Axes in a Variety of Different
+	//   Formats...
+	//
+#define BUF_SIZE 32
+	static WCHAR TempBuf[BUF_SIZE];
 
-  switch (digit_format)
-  {
-    case zSCI_NOTATION:           // If Using Scientific Notation
-      gcvt(d, digit_precision, (char*)TempBuf);
-      _tcscpy(buf, TempBuf);
-      return;
-      
-      // If User Wants Whole Numbers Only,
-    case zROUND_INTEGER:          //   Round to Nearest Whole Integer
-      _stprintf(TempBuf, _T("%-6.0lf"), d);
-      _tcscpy(buf, TempBuf);
-      break;
-      
-      
-    case zFIXED:                   // User Specified Number of Sig. Digits
-      _stprintf(TempBuf, _T("%-6.*lf"), //   That Should Be Shown After
-        digit_precision, d);     //   the Decimal Point
-      _tcscpy(buf, TempBuf);
-      break;
-      
-    case zFLOAT_PT:               // If Just Using
-    default:                      //    Regular Floating Pt. Format
-      _stprintf(TempBuf, _T("%-6.*lf"), zDEFAULT_FLOAT_PRECISION, d);
-      _tcscpy(buf, TempBuf);
-      {
-        //
-        // Trim Any Spaces and Zeroes Off the End of the String.
-        //   Get Rid Of the Decimal Point, if it is Not Followed
-        //   By any Significant Digits...
-        //
-        
-        PWCHAR pStart = _tcschr(buf, '.');
-        if (pStart!= NULL)
-        {
-          PWCHAR p = &buf[ _tcslen(buf) - 1 ];
-          INT count = 0;
-          while ((*p == '0' || *p == '.' ||  *p == ' ')
-            &&  p >= pStart)
-          {
-            *p-- = '\0';
-            if (++count > 20)
-              break;
-          }
-        }
-      }
-      return;
-  }
+	switch (digit_format)
+	{
+	case zSCI_NOTATION:           // If Using Scientific Notation
+		{
+			char buffer[BUF_SIZE];
+			memset(buffer,0,BUF_SIZE);
+			_gcvt_s( buffer, BUF_SIZE, d, digit_precision);
+			// perform wide char conversion
+			for (unsigned int i=0;i<BUF_SIZE;i++) {
+				TempBuf[i] = buffer[i];
+			}
+		}
+		_tcscpy(buf, TempBuf);
+		return;
 
-  //
-  // Trim Off Any Spaces at End Of String
-  //
-  INT pos = _tcslen(buf) - 1;
-  while (pos > 0  &&  buf[ pos ] == ' ')
-    buf[ pos-- ] = 0;
+		// If User Wants Whole Numbers Only,
+	case zROUND_INTEGER:          //   Round to Nearest Whole Integer
+		_stprintf(TempBuf, _T("%-6.0lf"), d);
+		_tcscpy(buf, TempBuf);
+		break;
+
+
+	case zFIXED:                   // User Specified Number of Sig. Digits
+		_stprintf(TempBuf, _T("%-6.*lf"), //   That Should Be Shown After
+			digit_precision, d);     //   the Decimal Point
+		_tcscpy(buf, TempBuf);
+		break;
+
+	case zFLOAT_PT:               // If Just Using
+	default:                      //    Regular Floating Pt. Format
+		_stprintf(TempBuf, _T("%-6.*lf"), zDEFAULT_FLOAT_PRECISION, d);
+		_tcscpy(buf, TempBuf);
+		{
+			//
+			// Trim Any Spaces and Zeroes Off the End of the String.
+			//   Get Rid Of the Decimal Point, if it is Not Followed
+			//   By any Significant Digits...
+			//
+
+			PWCHAR pStart = _tcschr(buf, '.');
+			if (pStart!= NULL)
+			{
+				PWCHAR p = &buf[ _tcslen(buf) - 1 ];
+				INT count = 0;
+				while ((*p == '0' || *p == '.' ||  *p == ' ')
+					&&  p >= pStart)
+				{
+					*p-- = '\0';
+					if (++count > 20)
+						break;
+				}
+			}
+		}
+		return;
+	}
+
+	//
+	// Trim Off Any Spaces at End Of String
+	//
+	INT pos = _tcslen(buf) - 1;
+	while (pos > 0  &&  buf[ pos ] == ' ')
+		buf[ pos-- ] = 0;
 }
 
 ////////////////////////// zShowXAxisNumbers() ////////////////////////////
