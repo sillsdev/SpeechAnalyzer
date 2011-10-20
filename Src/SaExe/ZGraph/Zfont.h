@@ -99,7 +99,7 @@ public:
     TextColor = zBLACK;                   // Default Color of Text
     BkgColor  = zWHITE;                   // Default Color of Background
 
-    _tcscpy(szTypeFaceName, _T("Arial"));      // Use Arial Font for Default
+    wcscpy_s(szTypeFaceName, _countof(szTypeFaceName), _T("Arial"));      // Use Arial Font for Default
   }
 
 
@@ -153,7 +153,7 @@ public:
   void zSetTypeFaceName(PWCHAR sz1, BOOL ApplyNow = TRUE)
   {
     // Set Type Face
-    _tcscpy(szTypeFaceName, sz1);
+    wcscpy_s(szTypeFaceName, _countof(szTypeFaceName), sz1);
 
     SwitchFont(ApplyNow);
   }
@@ -236,7 +236,7 @@ public:
     logfont.lfPitchAndFamily = DEFAULT_PITCH | FF_DONTCARE | 0x4;
 
     // Set Font TypeFace
-    _tcscpy((PWCHAR)(logfont.lfFaceName), szTypeFaceName);
+    wcscpy_s((PWCHAR)(logfont.lfFaceName), _countof(logfont.lfFaceName), szTypeFaceName);
 
     // Create the Font and Install It in the current display context.
     pNewFont = CreateFontIndirect((LPLOGFONT) &logfont);

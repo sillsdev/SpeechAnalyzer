@@ -1227,7 +1227,7 @@ CProcessSpectroFormants* CPlotSpectrogram::GetFormantProcess(CSaDoc *pDoc)
   return pDoc->GetSpectrogram(TRUE)->GetFormantProcess();
 }
 
-BOOL CPlotSpectrogram::OnSetCursor(CWnd* pWnd, UINT nHitTest, UINT message) 
+BOOL CPlotSpectrogram::OnSetCursor(CWnd* /*pWnd*/, UINT /*nHitTest*/, UINT /*message*/) 
 {
   CGraphWnd* pGraph = (CGraphWnd*)GetParent();
   CSaView *pView = static_cast<CSaView*>(pGraph->GetParent());

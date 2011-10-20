@@ -54,9 +54,9 @@ IMPLEMENT_DYNCREATE(CFormantChart, CPlotWnd)
 // FormantChart message map
 
 BEGIN_MESSAGE_MAP(CFormantChart, CPlotWnd)
-    //{{AFX_MSG_MAP(CFormantChart)
-    ON_WM_CREATE()
-    //}}AFX_MSG_MAP
+	//{{AFX_MSG_MAP(CFormantChart)
+	ON_WM_CREATE()
+	//}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
@@ -67,9 +67,9 @@ END_MESSAGE_MAP()
 /***************************************************************************/
 CFormantChart::CFormantChart()
 {
-  m_bAnimationPlot = TRUE;
-  m_bVoiced = TRUE;
-  m_bOutOfRange = FALSE;
+	m_bAnimationPlot = TRUE;
+	m_bVoiced = TRUE;
+	m_bOutOfRange = FALSE;
 }
 
 /***************************************************************************/
@@ -84,32 +84,32 @@ CFormantChart::~CFormantChart()
 /***************************************************************************/
 void CFormantChart::SetStartCursor(CSaView* pView)
 {
-  CSaDoc* pDoc = (CSaDoc*)pView->GetDocument();
-  CProcessFormants* pFormants = pDoc->GetFormants();
-  pFormants->ResetTracking();  // start over
-  FormantParm* pFormantSource = pFormants->GetFormantParms();
-  CPlotWnd::SetStartCursor(pView);
+	CSaDoc* pDoc = (CSaDoc*)pView->GetDocument();
+	CProcessFormants* pFormants = pDoc->GetFormants();
+	pFormants->ResetTracking();  // start over
+	FormantParm* pFormantSource = pFormants->GetFormantParms();
+	CPlotWnd::SetStartCursor(pView);
 
-  // Finish pitch processing if necessary.
-  CProcessGrappl* pAutoPitch = (CProcessGrappl*)pDoc->GetGrappl();
-  short int nResult = LOWORD(pAutoPitch->Process(this, pDoc)); // process data
-  if (nResult == PROCESS_ERROR || nResult == PROCESS_NO_DATA || nResult == PROCESS_CANCELED) 
-  {
-    if( nResult == PROCESS_CANCELED)
-      pFormants->CancelProcess();
-    return;
-  }
-  DWORD dwWaveStart = (pView->GetStartCursorPosition() / Grappl_calc_intvl) * Grappl_calc_intvl;
-  DWORD dwWaveStop = dwWaveStart;
-  if (pFormantSource->bFromCepstralSpectrum)
-    dwWaveStop = (pView->GetStopCursorPosition() / Grappl_calc_intvl) * Grappl_calc_intvl;
-  m_bVoiced = TRUE;
-  for (DWORD dwWave = dwWaveStart; dwWave <= dwWaveStop; dwWave += Grappl_calc_intvl)
-	  if (!pAutoPitch->IsVoiced(pDoc, dwWave)) 
-	  {
-	    m_bVoiced = FALSE;
-	    break;
-	  }
+	// Finish pitch processing if necessary.
+	CProcessGrappl* pAutoPitch = (CProcessGrappl*)pDoc->GetGrappl();
+	short int nResult = LOWORD(pAutoPitch->Process(this, pDoc)); // process data
+	if (nResult == PROCESS_ERROR || nResult == PROCESS_NO_DATA || nResult == PROCESS_CANCELED) 
+	{
+		if( nResult == PROCESS_CANCELED)
+			pFormants->CancelProcess();
+		return;
+	}
+	DWORD dwWaveStart = (pView->GetStartCursorPosition() / Grappl_calc_intvl) * Grappl_calc_intvl;
+	DWORD dwWaveStop = dwWaveStart;
+	if (pFormantSource->bFromCepstralSpectrum)
+		dwWaveStop = (pView->GetStopCursorPosition() / Grappl_calc_intvl) * Grappl_calc_intvl;
+	m_bVoiced = TRUE;
+	for (DWORD dwWave = dwWaveStart; dwWave <= dwWaveStop; dwWave += Grappl_calc_intvl)
+		if (!pAutoPitch->IsVoiced(pDoc, dwWave)) 
+		{
+			m_bVoiced = FALSE;
+			break;
+		}
 }
 
 /***************************************************************************/
@@ -117,29 +117,29 @@ void CFormantChart::SetStartCursor(CSaView* pView)
 /***************************************************************************/
 void CFormantChart::SetStopCursor(CSaView* pView)
 {
-  CPlotWnd::SetStopCursor(pView);
-  // Finish pitch processing if necessary.
-  CSaDoc* pDoc   = pView->GetDocument();
-  CProcessFormants* pFormants = (CProcessFormants*)pDoc->GetFormants(); // get pointer to formants object
-  FormantParm* pFormantSource = pFormants->GetFormantParms();
-  CProcessGrappl* pAutoPitch = (CProcessGrappl*)pDoc->GetGrappl();
-  short int nResult = LOWORD(pAutoPitch->Process(this, pDoc)); // process data
-  if (nResult == PROCESS_ERROR || nResult == PROCESS_NO_DATA || nResult == PROCESS_CANCELED) 
-  {
-    if( nResult == PROCESS_CANCELED)
-      pFormants->CancelProcess();
-  }
-  DWORD dwWaveStart = (pView->GetStartCursorPosition() / Grappl_calc_intvl) * Grappl_calc_intvl;
-  DWORD dwWaveStop = dwWaveStart;
-  if (pFormantSource->bFromCepstralSpectrum)
-    dwWaveStop = (pView->GetStopCursorPosition() / Grappl_calc_intvl) * Grappl_calc_intvl;
-  m_bVoiced = TRUE;
-  for (DWORD dwWave = dwWaveStart; dwWave <= dwWaveStop; dwWave += Grappl_calc_intvl)
-	  if (!pAutoPitch->IsVoiced(pDoc, dwWave)) 
-	  {
-	    m_bVoiced = FALSE;
-	    break;
-	  }
+	CPlotWnd::SetStopCursor(pView);
+	// Finish pitch processing if necessary.
+	CSaDoc* pDoc   = pView->GetDocument();
+	CProcessFormants* pFormants = (CProcessFormants*)pDoc->GetFormants(); // get pointer to formants object
+	FormantParm* pFormantSource = pFormants->GetFormantParms();
+	CProcessGrappl* pAutoPitch = (CProcessGrappl*)pDoc->GetGrappl();
+	short int nResult = LOWORD(pAutoPitch->Process(this, pDoc)); // process data
+	if (nResult == PROCESS_ERROR || nResult == PROCESS_NO_DATA || nResult == PROCESS_CANCELED) 
+	{
+		if( nResult == PROCESS_CANCELED)
+			pFormants->CancelProcess();
+	}
+	DWORD dwWaveStart = (pView->GetStartCursorPosition() / Grappl_calc_intvl) * Grappl_calc_intvl;
+	DWORD dwWaveStop = dwWaveStart;
+	if (pFormantSource->bFromCepstralSpectrum)
+		dwWaveStop = (pView->GetStopCursorPosition() / Grappl_calc_intvl) * Grappl_calc_intvl;
+	m_bVoiced = TRUE;
+	for (DWORD dwWave = dwWaveStart; dwWave <= dwWaveStop; dwWave += Grappl_calc_intvl)
+		if (!pAutoPitch->IsVoiced(pDoc, dwWave)) 
+		{
+			m_bVoiced = FALSE;
+			break;
+		}
 }
 
 
@@ -148,7 +148,7 @@ void CFormantChart::SetStopCursor(CSaView* pView)
 /***************************************************************************/
 void CFormantChart::GenderInfoChanged(int /* nGender */)
 {
-  RedrawWindow(NULL, NULL, RDW_INVALIDATE | RDW_UPDATENOW);
+	RedrawWindow(NULL, NULL, RDW_INVALIDATE | RDW_UPDATENOW);
 }
 
 
@@ -157,15 +157,15 @@ void CFormantChart::GenderInfoChanged(int /* nGender */)
 /***************************************************************************/
 short int CFormantChart::ProcessFTFormants()
 {
-  CGraphWnd* pGraph = (CGraphWnd*)GetParent();
-  CSaView* pView = (CSaView*)pGraph->GetParent();
-  CSaDoc* pDoc   = pView->GetDocument();
-  // Process FormantTracker formants
-  CFormantTracker* pFTFormants = pDoc->GetFormantTracker(); // get pointer to FormantTracker object
-  short int nResult = LOWORD(pFTFormants->Process(pView, pDoc));
-  nResult = CheckResult(nResult, pFTFormants); // check the process result
+	CGraphWnd* pGraph = (CGraphWnd*)GetParent();
+	CSaView* pView = (CSaView*)pGraph->GetParent();
+	CSaDoc* pDoc   = pView->GetDocument();
+	// Process FormantTracker formants
+	CFormantTracker* pFTFormants = pDoc->GetFormantTracker(); // get pointer to FormantTracker object
+	short int nResult = LOWORD(pFTFormants->Process(pView, pDoc));
+	nResult = CheckResult(nResult, pFTFormants); // check the process result
 
-  return nResult;
+	return nResult;
 }
 
 /***************************************************************************/
@@ -174,309 +174,313 @@ short int CFormantChart::ProcessFTFormants()
 short int CFormantChart::ProcessFormants()
 {
 
-  // Get pointers to document and main frame.
-  CGraphWnd* pGraph = (CGraphWnd*)GetParent();
-  CSaView* pView = (CSaView*)pGraph->GetParent();
-  CSaDoc* pDoc   = pView->GetDocument();
-  FmtParm* pFmtParm = pDoc->GetFmtParm(); // get sa parameters format member data
-  WORD wSmpSize = (WORD)(pFmtParm->wBlockAlign / pFmtParm->wChannels);  // calculate sample size in bytes
-  BOOL bDynamicUpdate = (pView->GetGraphUpdateMode() == DYNAMIC_UPDATE); 
+	// Get pointers to document and main frame.
+	CGraphWnd* pGraph = (CGraphWnd*)GetParent();
+	CSaView* pView = (CSaView*)pGraph->GetParent();
+	CSaDoc* pDoc   = pView->GetDocument();
+	FmtParm* pFmtParm = pDoc->GetFmtParm(); // get sa parameters format member data
+	WORD wSmpSize = (WORD)(pFmtParm->wBlockAlign / pFmtParm->wChannels);  // calculate sample size in bytes
+	BOOL bDynamicUpdate = (pView->GetGraphUpdateMode() == DYNAMIC_UPDATE); 
 
-  // Get formant object and formant plot parameters.
-  CProcessFormants* pFormants = (CProcessFormants*)pDoc->GetFormants(); // get pointer to formants object
-  FormantParm* pFormantParms = pFormants->GetFormantParms();    //!!move to formant processing class
+	// Get formant object and formant plot parameters.
+	CProcessFormants* pFormants = (CProcessFormants*)pDoc->GetFormants(); // get pointer to formants object
+	FormantParm* pFormantParms = pFormants->GetFormantParms();    //!!move to formant processing class
 
-  // Finish pitch processing if necessary.
-  CProcessGrappl* pAutoPitch = (CProcessGrappl*)pDoc->GetGrappl();
-  short int nResult = LOWORD(pAutoPitch->Process(this, pDoc)); // process data
-  if (nResult == PROCESS_ERROR || nResult == PROCESS_NO_DATA || nResult == PROCESS_CANCELED) 
-  {
-    if( nResult == PROCESS_CANCELED)
-      pFormants->CancelProcess();
-    return nResult;
-  }
+	// Finish pitch processing if necessary.
+	CProcessGrappl* pAutoPitch = (CProcessGrappl*)pDoc->GetGrappl();
+	short int nResult = LOWORD(pAutoPitch->Process(this, pDoc)); // process data
+	if (nResult == PROCESS_ERROR || nResult == PROCESS_NO_DATA || nResult == PROCESS_CANCELED) 
+	{
+		if( nResult == PROCESS_CANCELED)
+			pFormants->CancelProcess();
+		return nResult;
+	}
 
-  // Finish fragmenting if necessary.
-  CProcessFragments* pFragments = (CProcessFragments*)pDoc->GetFragments();
-  nResult = LOWORD(pFragments->Process(this, pDoc)); // process data
-  if (nResult == PROCESS_ERROR || nResult == PROCESS_NO_DATA || nResult == PROCESS_CANCELED) 
-  {
-    if( nResult == PROCESS_CANCELED)
-      pFormants->CancelProcess();
-    return nResult;
-  }
+	// Finish fragmenting if necessary.
+	CProcessFragments* pFragments = (CProcessFragments*)pDoc->GetFragments();
+	nResult = LOWORD(pFragments->Process(this, pDoc)); // process data
+	if (nResult == PROCESS_ERROR || nResult == PROCESS_NO_DATA || nResult == PROCESS_CANCELED) 
+	{
+		if( nResult == PROCESS_CANCELED)
+			pFormants->CancelProcess();
+		return nResult;
+	}
 
-  // Set frame parameters.
-  DWORD dwFrameStart, dwFrameSize;
-  SPECT_PROC_SELECT SpectraSelected;
+	// Set frame parameters.
+	DWORD dwFrameStart, dwFrameSize;
+	SPECT_PROC_SELECT SpectraSelected;
 
-  if (bDynamicUpdate)
-  { // formants extracted from LPC spectrum for current fragment as start cursor is dragged or plot is animating
-    if (m_dwAnimationFrame == UNDEFINED_OFFSET)
-    { // initialize animation frame for new graph
-     DWORD dwStartCursor = pView->GetStartCursorPosition();
-     m_dwAnimationFrame = pFragments->GetFragmentIndex(dwStartCursor/wSmpSize); 
-    } 
-    FRAG_PARMS FragParms = pFragments->GetFragmentParms(m_dwAnimationFrame);
-    dwFrameStart = FragParms.dwOffset * wSmpSize;
-    dwFrameSize = (DWORD)FragParms.wLength * (DWORD)wSmpSize;
-    SpectraSelected.bCepstralSpectrum = FALSE;    // turn off to reduce processing time
-    SpectraSelected.bLpcSpectrum = TRUE;
-  }
-  else
-  {
-    // formants extracted from cepstrally-smoothed and LPC spectra for sample data between start and stop cursors
-    dwFrameStart = pView->GetStartCursorPosition();
-    dwFrameSize = pView->GetStopCursorPosition() - dwFrameStart + wSmpSize;
-    SpectraSelected.bCepstralSpectrum = TRUE;
-    SpectraSelected.bLpcSpectrum = TRUE;
-  }
+	if (bDynamicUpdate)
+	{ // formants extracted from LPC spectrum for current fragment as start cursor is dragged or plot is animating
+		if (m_dwAnimationFrame == UNDEFINED_OFFSET)
+		{ // initialize animation frame for new graph
+			DWORD dwStartCursor = pView->GetStartCursorPosition();
+			m_dwAnimationFrame = pFragments->GetFragmentIndex(dwStartCursor/wSmpSize); 
+		} 
+		FRAG_PARMS FragParms = pFragments->GetFragmentParms(m_dwAnimationFrame);
+		dwFrameStart = FragParms.dwOffset * wSmpSize;
+		dwFrameSize = (DWORD)FragParms.wLength * (DWORD)wSmpSize;
+		SpectraSelected.bCepstralSpectrum = FALSE;    // turn off to reduce processing time
+		SpectraSelected.bLpcSpectrum = TRUE;
+	}
+	else
+	{
+		// formants extracted from cepstrally-smoothed and LPC spectra for sample data between start and stop cursors
+		dwFrameStart = pView->GetStartCursorPosition();
+		dwFrameSize = pView->GetStopCursorPosition() - dwFrameStart + wSmpSize;
+		SpectraSelected.bCepstralSpectrum = TRUE;
+		SpectraSelected.bLpcSpectrum = TRUE;
+	}
 
-  // Process FormantTracker formants
-  nResult = ProcessFTFormants();
-  if (nResult == PROCESS_ERROR) 
-    return nResult;
+	// Process FormantTracker formants
+	nResult = ProcessFTFormants();
+	if (nResult == PROCESS_ERROR) 
+		return nResult;
 
-  // If frame unvoiced, exit.
-  if ((!bDynamicUpdate && (!m_bVoiced || !pAutoPitch->IsVoiced(pDoc, dwFrameStart))) || 
-      (bDynamicUpdate && (!pAutoPitch->IsVoiced(pDoc, dwFrameStart) || !pAutoPitch->IsVoiced(pDoc, dwFrameStart+dwFrameSize-wSmpSize))))
-	  return PROCESS_UNVOICED;
+	// If frame unvoiced, exit.
+	if ((!bDynamicUpdate && (!m_bVoiced || !pAutoPitch->IsVoiced(pDoc, dwFrameStart))) || 
+		(bDynamicUpdate && (!pAutoPitch->IsVoiced(pDoc, dwFrameStart) || !pAutoPitch->IsVoiced(pDoc, dwFrameStart+dwFrameSize-wSmpSize))))
+		return PROCESS_UNVOICED;
 
-  // Extract formants.
-  BOOL bTrackFormants = pFormantParms->bTrackFormants && pView->IsAnimationRequested();
-  if (pView->GetGraphUpdateMode() == STATIC_UPDATE ||
-    (bDynamicUpdate && !pView->IsAnimationRequested()) ||
-    ((bDynamicUpdate || !pFormantParms->bTrackFormants) && pView->IsAnimationRequested()))
-    nResult = LOWORD(pFormants->Process(this, pDoc, bTrackFormants, dwFrameStart, dwFrameSize, SpectraSelected)); // process data
-  return nResult;
+	// Extract formants.
+	BOOL bTrackFormants = pFormantParms->bTrackFormants && pView->IsAnimationRequested();
+	if (pView->GetGraphUpdateMode() == STATIC_UPDATE ||
+		(bDynamicUpdate && !pView->IsAnimationRequested()) ||
+		((bDynamicUpdate || !pFormantParms->bTrackFormants) && pView->IsAnimationRequested()))
+		nResult = LOWORD(pFormants->Process(this, pDoc, bTrackFormants, dwFrameStart, dwFrameSize, SpectraSelected)); // process data
+	return nResult;
 }
 
 /***************************************************************************/
 // CFormantChart::StandardPlot
 /***************************************************************************/
 void CFormantChart::StandardPlot(CSaView *pView, CDC *pDC, CRect rClient, CRect rClip,
-                                 zGraphStruct &zG, BOOL bFlipChart, BOOL bShowAxes, BOOL bValidData)
+								 zGraphStruct &zG, BOOL bFlipChart, BOOL bShowAxes, BOOL bValidData)
 {
-  if (IsIconic()) return; // nothing to draw
-  if(bValidData)
-    m_HelperWnd.SetMode(MODE_HIDDEN); // hide helper window
+	if (IsIconic())
+		return; // nothing to draw
 
-  // get a handle to windows for Z-graph
-  HDC hdc = pDC->GetSafeHdc();
+	if (bValidData)
+		m_HelperWnd.SetMode(MODE_HIDDEN); // hide helper window
 
-  // set up an array of colors to be used in the Z-graph
-  CMainFrame* pMainWnd = (CMainFrame*)AfxGetMainWnd();
-  Colors* pColor = pMainWnd->GetColors();  // get application colors
-  CSaDoc *pDoc = (CSaDoc *)pView->GetDocument();
-  CProcessFormants* pFormants = (CProcessFormants*)pDoc->GetFormants(); // get pointer to formants object	
-  FormantParm* pFormantParms = pFormants->GetFormantParms();    //!!move to formant processing class
-  ProcessFTFormants(); // process FormantTracker formants
-  BOOL bDynamicUpdate = (pView->GetGraphUpdateMode() == DYNAMIC_UPDATE);
-  BOOL bTrackFormants = pFormantParms->bTrackFormants;
-  BOOL bCluster = (pFormants->GetFormantFrameCount() > 1);
-  zRGB PlotColorArray[3];
-  if (pView->IsAnimationRequested() && bTrackFormants)
-  {
-    PlotColorArray[0] = pColor->cPlotData[4];
-    PlotColorArray[1] = pColor->cPlotData[2];
-  }
-  else
-  {
-    //PlotColorArray[0] = (zG.n == 1 && !bDynamicUpdate) ? pColor->cPlotData[0]: pColor->cPlotData[2];
-    FormantParm* pFormantSource = pFormants->GetFormantParms();
-    PlotColorArray[0] = (pFormantSource->bFromCepstralSpectrum && zG.n == 1 && !bDynamicUpdate) ? 
-		                pColor->cPlotData[0]: pColor->cPlotData[2];
-    PlotColorArray[1] = pColor->cPlotData[0];
-  }
+	// get a handle to windows for Z-graph
+	HDC hdc = pDC->GetSafeHdc();
 
-  int far *DataPointSymbol = NULL;
-  if (zG.n) 
-  {
-    DataPointSymbol = (int far *)new int[zG.n + 1];
-	int nPoints = bCluster ? zG.n - 2 : zG.n - 1;
-	int nSymbol;
-    for (nSymbol = 0; nSymbol < nPoints; nSymbol++) DataPointSymbol[nSymbol] = 'L';  // LPC point
-    DataPointSymbol[nSymbol] = 'C';   // cepstral point
-	if (bCluster)
+	// set up an array of colors to be used in the Z-graph
+	CMainFrame* pMainWnd = (CMainFrame*)AfxGetMainWnd();
+	Colors* pColor = pMainWnd->GetColors();  // get application colors
+	CSaDoc *pDoc = (CSaDoc *)pView->GetDocument();
+	CProcessFormants* pFormants = (CProcessFormants*)pDoc->GetFormants(); // get pointer to formants object	
+	FormantParm* pFormantParms = pFormants->GetFormantParms();    //!!move to formant processing class
+	ProcessFTFormants(); // process FormantTracker formants
+	BOOL bDynamicUpdate = (pView->GetGraphUpdateMode() == DYNAMIC_UPDATE);
+	BOOL bTrackFormants = pFormantParms->bTrackFormants;
+	BOOL bCluster = (pFormants->GetFormantFrameCount() > 1);
+	zRGB PlotColorArray[3];
+	if (pView->IsAnimationRequested() && bTrackFormants)
 	{
-      PlotColorArray[2] = pColor->cPlotStopCursor;  // for mean value of tracking cluster
-      DataPointSymbol[++nSymbol] = 'M';
+		PlotColorArray[0] = pColor->cPlotData[4];
+		PlotColorArray[1] = pColor->cPlotData[2];
 	}
-  }  
+	else
+	{
+		//PlotColorArray[0] = (zG.n == 1 && !bDynamicUpdate) ? pColor->cPlotData[0]: pColor->cPlotData[2];
+		FormantParm* pFormantSource = pFormants->GetFormantParms();
+		PlotColorArray[0] = (pFormantSource->bFromCepstralSpectrum && zG.n == 1 && !bDynamicUpdate) ? 
+			pColor->cPlotData[0]: pColor->cPlotData[2];
+		PlotColorArray[1] = pColor->cPlotData[0];
+	}
 
-  // fill In the [zGraphStruct] structure elements
-  zG.hdc			= hdc			 ; // windows HDC
-  zG.RWindow		= &rClient		 ; // RECT with plot dimensions
-  zG.symbols		= (int far*)DataPointSymbol; // symbols array (no symbols used)
-  zG.axis_color	= pColor->cPlotGrid; // graph axis color
-  zG.bkg_color	= pColor->cPlotBkg;   // graph bkg. color
-  zG.plot_color	= PlotColorArray ;    // array of plot colors
-  zG.fill_style	= 0				 ;
-  zG.title		= _T("\0")			 ;
-  zG.legend_position = zNO_LEGEND  ;
-  zG.symbols_flag = OFF			 ;
-  zG.grid_flag	= HaveGrid()	 ;
-  zG.auto_scale	= OFF			 ;
-  zG.draw_forward = TRUE		 	 ;
-  zG._3D_flag		= (zG.zdata != NULL);
-  zG.bkg_gradient_mode = zNO_GRADIENT;
-  zG.digit_format = zFIXED		 ; // round axis numbers to nearest whole integer
-  zG.digit_precision = 0		 	 ;
-  zG.grid_pen_style = zDOTTED	 	 ; // use dotted lines for grid
-  zG.shading_style = zNO_SHADING 	 ;
-  zG.quality		= zG3D_QUALITY_HI;
-  zG.function		= NULL		 	 ;
+	int far *DataPointSymbol = NULL;
+	if (zG.n) 
+	{
+		DataPointSymbol = (int far *)new int[zG.n + 1];
+		int nPoints = bCluster ? zG.n - 2 : zG.n - 1;
+		int nSymbol;
+		for (nSymbol = 0; nSymbol < nPoints; nSymbol++) DataPointSymbol[nSymbol] = 'L';  // LPC point
+		DataPointSymbol[nSymbol] = 'C';   // cepstral point
+		if (bCluster)
+		{
+			PlotColorArray[2] = pColor->cPlotStopCursor;  // for mean value of tracking cluster
+			DataPointSymbol[++nSymbol] = 'M';
+		}
+	}  
 
-  if(!bValidData && zG.zdata == (double *) -1)
-    zG.zdata = NULL; // Patch, to allow 3D graph with no data
+	// fill In the [zGraphStruct] structure elements
+	zG.hdc			= hdc			 ; // windows HDC
+	zG.RWindow		= &rClient		 ; // RECT with plot dimensions
+	zG.symbols		= (int far*)DataPointSymbol; // symbols array (no symbols used)
+	zG.axis_color	= pColor->cPlotGrid; // graph axis color
+	zG.bkg_color	= pColor->cPlotBkg;   // graph bkg. color
+	zG.plot_color	= PlotColorArray ;    // array of plot colors
+	zG.fill_style	= 0				 ;
+	zG.title		= _T("\0")			 ;
+	zG.legend_position = zNO_LEGEND  ;
+	zG.symbols_flag = OFF			 ;
+	zG.grid_flag	= HaveGrid()	 ;
+	zG.auto_scale	= OFF			 ;
+	zG.draw_forward = TRUE		 	 ;
+	zG._3D_flag		= (zG.zdata != NULL);
+	zG.bkg_gradient_mode = zNO_GRADIENT;
+	zG.digit_format = zFIXED		 ; // round axis numbers to nearest whole integer
+	zG.digit_precision = 0		 	 ;
+	zG.grid_pen_style = zDOTTED	 	 ; // use dotted lines for grid
+	zG.shading_style = zNO_SHADING 	 ;
+	zG.quality		= zG3D_QUALITY_HI;
+	zG.function		= NULL		 	 ;
 
-  // draw the graph -- this could be done by calling the ScatterGraph function,
-  // but we need to draw vowels over the graph and therefore need to create
-  // a ScatterGraph object and use its member functions
-  zScatterGraph *pFormantChart = new zScatterGraph(&zG);  // construct new graph window
-  pFormantChart->zInitGraph();                            // initialize it
+	if(!bValidData && zG.zdata == (double *) -1)
+		zG.zdata = NULL; // Patch, to allow 3D graph with no data
 
-  // scale data and reverse it as needed
-  pFormantChart->zScaleData();
-  if (bFlipChart) pFormantChart->zFlip();
+	// draw the graph -- this could be done by calling the ScatterGraph function,
+	// but we need to draw vowels over the graph and therefore need to create
+	// a ScatterGraph object and use its member functions
+	zScatterGraph *pFormantChart = new zScatterGraph(&zG);  // construct new graph window
+	pFormantChart->zInitGraph();                            // initialize it
 
-  // draw the graph and plot the data
-  if (bShowAxes) pFormantChart->zDrawGraphAxes();
-  else pFormantChart->zzDrawGraphAxes(FALSE, FALSE);
-  pFormantChart->zDrawGrid();
-  if (zG.n) pFormantChart->zDrawDataPoints();   
+	// scale data and reverse it as needed
+	pFormantChart->zScaleData();
+	if (bFlipChart) pFormantChart->zFlip();
 
-  // set the vowel font
-  pDC->SetTextColor(pColor->cPlotStopCursor); // set font color
-  pDC->SetBkMode(TRANSPARENT); // letters must be transparent
-  CFont* pOldFont = pDC->SelectObject((CFont*)pDoc->GetFont(PHONETIC));
-  TEXTMETRIC tm;
-  pDC->GetTextMetrics(&tm);
-  CFont GridVowelFont;
-  int nHeight = max(25, (int)(.15 * min(rClient.Height(),rClient.Width()) + 0.5));
-  GridVowelFont.CreateFont(nHeight, 0, 0, 0, FW_NORMAL, 0, 0, 0, tm.tmCharSet, OUT_DEFAULT_PRECIS,
-    CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, DEFAULT_PITCH|FF_DONTCARE,
-    pMainWnd->GetFontFace(PHONETIC));  // create font for vowels on the grid
-  pDC->SelectObject(&GridVowelFont); // select phonetic font
+	// draw the graph and plot the data
+	if (bShowAxes) pFormantChart->zDrawGraphAxes();
+	else pFormantChart->zzDrawGraphAxes(FALSE, FALSE);
+	pFormantChart->zDrawGrid();
+	if (zG.n) pFormantChart->zDrawDataPoints();   
 
-  // select a pen
-  CPen GridVowelPen(PS_SOLID, 1, pColor->cPlotGrid);
-  CPen* pOldPen = pDC->SelectObject(&GridVowelPen);
+	// set the vowel font
+	pDC->SetTextColor(pColor->cPlotStopCursor); // set font color
+	pDC->SetBkMode(TRANSPARENT); // letters must be transparent
+	CFont* pOldFont = pDC->SelectObject((CFont*)pDoc->GetFont(PHONETIC));
+	TEXTMETRIC tm;
+	pDC->GetTextMetrics(&tm);
+	CFont GridVowelFont;
+	int nHeight = max(25, (int)(.15 * min(rClient.Height(),rClient.Width()) + 0.5));
+	GridVowelFont.CreateFont(nHeight, 0, 0, 0, FW_NORMAL, 0, 0, 0, tm.tmCharSet, OUT_DEFAULT_PRECIS,
+		CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, DEFAULT_PITCH|FF_DONTCARE,
+		pMainWnd->GetFontFace(PHONETIC));  // create font for vowels on the grid
+	pDC->SelectObject(&GridVowelFont); // select phonetic font
 
-  CRect rVowel;
-  POINT p;
+	// select a pen
+	CPen GridVowelPen(PS_SOLID, 1, pColor->cPlotGrid);
+	CPen* pOldPen = pDC->SelectObject(&GridVowelPen);
 
-  // draw the vowels
-  int nGender = pDoc->GetGender();
+	CRect rVowel;
+	POINT p;
 
-  // Draw Vowel Set Title
-  const CSaString &szVowelSetName = GetDefaultVowelSet().GetName();
-  if(!szVowelSetName.IsEmpty() && szVowelSetName != "(None)")
-  {
-    CFont VowelTitleFont;
-    const _TCHAR VowelTitleTypeface[] = _T("Arial");
-    VowelTitleFont.CreateFont(int(0.6*nHeight), 0, 0, 0, FW_NORMAL, 0, 0, 0,
-      ANSI_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS,
-      DEFAULT_QUALITY, (VARIABLE_PITCH | FF_ROMAN), VowelTitleTypeface);
-	CFont* pOldFont = pDC->SelectObject(&VowelTitleFont);
-	CSize TitleSize = pDC->GetTextExtent((CString&)szVowelSetName);
-    int nLeft = pFormantChart->X_LEFT + TitleSize.cy/3;
-	int nRight = nLeft + TitleSize.cx;
-	int nBottom = pFormantChart->Y_BOTTOM; 
-	int nTop = nBottom - TitleSize.cy;
-    CRect rVowel(nLeft, nTop, nRight, nBottom);
-    COLORREF oldColor = pDC->SetTextColor(pColor->cPlotData[0]); // set font color
-    pDC->DrawText(szVowelSetName, rVowel,
-      DT_SINGLELINE | DT_TOP | DT_LEFT | DT_NOCLIP | DT_NOPREFIX);
-    if(pFormants->GetVowelCount(nGender) == 0)
-    {
-      int nTop = pFormantChart->Y_TOP + (pFormantChart->Y_BOTTOM - pFormantChart->Y_TOP)/3;
-      CRect rVowel(pFormantChart->X_LEFT, nTop, pFormantChart->X_RIGHT,pFormantChart->Y_BOTTOM);
+	// draw the vowels
+	int nGender = pDoc->GetGender();
 
-      CSaString szWarning;
+	// Draw Vowel Set Title
+	const CSaString &szVowelSetName = GetDefaultVowelSet().GetName();
+	if(!szVowelSetName.IsEmpty() && szVowelSetName != "(None)")
+	{
+		CFont VowelTitleFont;
+		const _TCHAR VowelTitleTypeface[] = _T("Arial");
+		VowelTitleFont.CreateFont(int(0.6*nHeight), 0, 0, 0, FW_NORMAL, 0, 0, 0,
+			ANSI_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS,
+			DEFAULT_QUALITY, (VARIABLE_PITCH | FF_ROMAN), VowelTitleTypeface);
+		CFont* pOldFont = pDC->SelectObject(&VowelTitleFont);
+		CSize TitleSize = pDC->GetTextExtent((CString&)szVowelSetName);
+		int nLeft = pFormantChart->X_LEFT + TitleSize.cy/3;
+		int nRight = nLeft + TitleSize.cx;
+		int nBottom = pFormantChart->Y_BOTTOM; 
+		int nTop = nBottom - TitleSize.cy;
+		CRect rVowel(nLeft, nTop, nRight, nBottom);
+		COLORREF oldColor = pDC->SetTextColor(pColor->cPlotData[0]); // set font color
+		pDC->DrawText(szVowelSetName, rVowel,
+			DT_SINGLELINE | DT_TOP | DT_LEFT | DT_NOCLIP | DT_NOPREFIX);
+		if(pFormants->GetVowelCount(nGender) == 0)
+		{
+			int nTop = pFormantChart->Y_TOP + (pFormantChart->Y_BOTTOM - pFormantChart->Y_TOP)/3;
+			CRect rVowel(pFormantChart->X_LEFT, nTop, pFormantChart->X_RIGHT,pFormantChart->Y_BOTTOM);
 
-      szWarning.LoadString(IDS_EMPTY_FORMANT_VOWEL_SET);
-      pDC->DrawText(szWarning, rVowel,
-        DT_SINGLELINE | DT_CENTER | DT_TOP | DT_NOCLIP | DT_NOPREFIX);
-    }
-    pDC->SetTextColor(oldColor); // reset font color
-	pDC->SelectObject(pOldFont);
-  }
+			CSaString szWarning;
 
-  for (int nVowel = 0; nVowel < pFormants->GetVowelCount(nGender); nVowel++)
-  { 
-    CSaString Vowel = pFormants->GetVowel(nVowel, nGender);
-    FORMANT_FREQ Formant = pFormants->GetVowelFreq(nVowel, nGender, pFormantParms->bMelScale);
-    CSize VowelSize = pDC->GetTextExtent(Vowel);
-    p = MapVowelsToChart(pDC, Formant, VowelSize.cy, pFormantChart, zG, bFlipChart);
-	// display the vowel symbol
-    rVowel.SetRect(p.x - VowelSize.cx/2, p.y - VowelSize.cy/2, p.x + VowelSize.cx/2, p.y + VowelSize.cy/2);
-    pDC->DrawText(Vowel, rVowel, DT_SINGLELINE | DT_VCENTER | DT_CENTER | DT_NOCLIP);
-/*
-	// indicate vowel position with a cross.
-	pDC->MoveTo(p.x-2, p.y);
-	pDC->LineTo(p.x+2, p.y);
-	pDC->MoveTo(p.x, p.y-2);
-	pDC->LineTo(p.x, p.y+2);
-*/
-  }
-  // draw the nearest vowel
-  if (bDynamicUpdate && bValidData && (szVowelSetName != "(None)") && pFormants->GetVowelCount(nGender))
-  {
-	CSaString VowelId = pFormants->FindNearestVowel(pDoc);
-	CSize VowelIdSize = pDC->GetTextExtent(VowelId);
+			szWarning.LoadString(IDS_EMPTY_FORMANT_VOWEL_SET);
+			pDC->DrawText(szWarning, rVowel,
+				DT_SINGLELINE | DT_CENTER | DT_TOP | DT_NOCLIP | DT_NOPREFIX);
+		}
+		pDC->SetTextColor(oldColor); // reset font color
+		pDC->SelectObject(pOldFont);
+	}
+
+	for (int nVowel = 0; nVowel < pFormants->GetVowelCount(nGender); nVowel++)
+	{ 
+		CSaString Vowel = pFormants->GetVowel(nVowel, nGender);
+		FORMANT_FREQ Formant = pFormants->GetVowelFreq(nVowel, nGender, pFormantParms->bMelScale);
+		CSize VowelSize = pDC->GetTextExtent(Vowel);
+		p = MapVowelsToChart(pDC, Formant, VowelSize.cy, pFormantChart, zG, bFlipChart);
+		// display the vowel symbol
+		rVowel.SetRect(p.x - VowelSize.cx/2, p.y - VowelSize.cy/2, p.x + VowelSize.cx/2, p.y + VowelSize.cy/2);
+		pDC->DrawText(Vowel, rVowel, DT_SINGLELINE | DT_VCENTER | DT_CENTER | DT_NOCLIP);
+		/*
+		// indicate vowel position with a cross.
+		pDC->MoveTo(p.x-2, p.y);
+		pDC->LineTo(p.x+2, p.y);
+		pDC->MoveTo(p.x, p.y-2);
+		pDC->LineTo(p.x, p.y+2);
+		*/
+	}
+	// draw the nearest vowel
+	if (bDynamicUpdate && bValidData && (szVowelSetName != "(None)") && pFormants->GetVowelCount(nGender))
+	{
+		CSaString VowelId = pFormants->FindNearestVowel(pDoc);
+		CSize VowelIdSize = pDC->GetTextExtent(VowelId);
 #ifdef originalSizeZGraph
-	int nBottom = pFormantChart->Y_TOP;
-	int nTop = nBottom - VowelIdSize.cy;
-    int nRight = pFormantChart->X_RIGHT;
+		int nBottom = pFormantChart->Y_TOP;
+		int nTop = nBottom - VowelIdSize.cy;
+		int nRight = pFormantChart->X_RIGHT;
 #else
-	int nTop = pFormantChart->Y_TOP;
-	int nBottom = nTop + VowelIdSize.cy;
-    int nRight = pFormantChart->X_RIGHT  - VowelIdSize.cx/3;
+		int nTop = pFormantChart->Y_TOP;
+		int nBottom = nTop + VowelIdSize.cy;
+		int nRight = pFormantChart->X_RIGHT  - VowelIdSize.cx/3;
 #endif
-    int	nLeft = nRight - VowelIdSize.cx;
-    CRect rVowel;
+		int	nLeft = nRight - VowelIdSize.cx;
+		CRect rVowel;
 
-    rVowel.SetRect(nLeft, nTop, nRight, nBottom);
-	pDC->DrawText(VowelId, rVowel, DT_SINGLELINE | DT_BOTTOM | DT_RIGHT | DT_NOCLIP);
+		rVowel.SetRect(nLeft, nTop, nRight, nBottom);
+		pDC->DrawText(VowelId, rVowel, DT_SINGLELINE | DT_BOTTOM | DT_RIGHT | DT_NOCLIP);
 
-    pDC->SetTextColor(pColor->cPlotData[0]); // set font color
-	CFont VowelIdTitleFont;
-    const TCHAR VowelIdTitleTypeface[] = _T("Arial");
-    VowelIdTitleFont.CreateFont(int(0.6*nHeight), 0, 0, 0, FW_NORMAL, 0, 0, 0,
-      ANSI_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS,
-      DEFAULT_QUALITY, (VARIABLE_PITCH | FF_ROMAN), VowelIdTitleTypeface);
-	CFont* pGridVowelFont = pDC->SelectObject(&VowelIdTitleFont);
-    const CSaString VowelIdTitle = _T("Nearest Vowel:  ");
-	CSize VowelIdTitleSize = pDC->GetTextExtent(VowelIdTitle);
-	nRight = pFormantChart->X_RIGHT - VowelIdSize.cx;
-	nLeft = nRight - VowelIdTitleSize.cx; 
-    rVowel.SetRect(nLeft, nTop, nRight, nBottom);
-    pDC->DrawText(VowelIdTitle, rVowel,
-      DT_SINGLELINE | DT_VCENTER | DT_LEFT | DT_NOCLIP);
-	pDC->SelectObject(pGridVowelFont);
-  }
-  pDC->SelectObject(pOldPen);  // restore old pen
-  pDC->SelectObject(pOldFont); // restore old font
+		pDC->SetTextColor(pColor->cPlotData[0]); // set font color
+		CFont VowelIdTitleFont;
+		const TCHAR VowelIdTitleTypeface[] = _T("Arial");
+		VowelIdTitleFont.CreateFont(int(0.6*nHeight), 0, 0, 0, FW_NORMAL, 0, 0, 0,
+			ANSI_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS,
+			DEFAULT_QUALITY, (VARIABLE_PITCH | FF_ROMAN), VowelIdTitleTypeface);
+		CFont* pGridVowelFont = pDC->SelectObject(&VowelIdTitleFont);
+		const CSaString VowelIdTitle = _T("Nearest Vowel:  ");
+		CSize VowelIdTitleSize = pDC->GetTextExtent(VowelIdTitle);
+		nRight = pFormantChart->X_RIGHT - VowelIdSize.cx;
+		nLeft = nRight - VowelIdTitleSize.cx; 
+		rVowel.SetRect(nLeft, nTop, nRight, nBottom);
+		pDC->DrawText(VowelIdTitle, rVowel,
+			DT_SINGLELINE | DT_VCENTER | DT_LEFT | DT_NOCLIP);
+		pDC->SelectObject(pGridVowelFont);
+	}
+	pDC->SelectObject(pOldPen);  // restore old pen
+	pDC->SelectObject(pOldFont); // restore old font
 
-  // label the graph
-  pFormantChart->zDrawLegend();
+	// label the graph
+	pFormantChart->zDrawLegend();
 #ifdef originalSizeZGraph
-  pFormantChart->zShowGraphTitles();
+	pFormantChart->zShowGraphTitles();
 #endif
 
 	// check if data is outside graph boundaries
 	if (zG.xdata && zG.ydata && bValidData)
 	{
+		TRACE("zG=%f %f %f %f %f %f\n",zG.xstart,zG.xend,zG.ystart,zG.yend,zG.xdata[0],zG.ydata[0]);
+
 		int xScaleDirection = (zG.xend > zG.xstart ? 1 : -1);
 		int yScaleDirection = (zG.yend > zG.ystart ? 1 : -1);
 		int nInRangeCount = 0;
 		for (int i = 0; i < zG.n; i++)
 		{
-			BOOL isInRange = xScaleDirection * (zG.xdata[i] - zG.xend) < 0 && 
-					xScaleDirection * (zG.xdata[i] - zG.xstart) > 0 && 
-					yScaleDirection * (zG.ydata[i] - zG.yend) < 0 && 
-					yScaleDirection * (zG.ydata[i] - zG.ystart) > 0;
+			BOOL isInRange = (xScaleDirection * (zG.xdata[i] - zG.xend) < 0) && 
+							 (xScaleDirection * (zG.xdata[i] - zG.xstart) > 0) && 
+							 (yScaleDirection * (zG.ydata[i] - zG.yend) < 0) && 
+							 (yScaleDirection * (zG.ydata[i] - zG.ystart) > 0);
 			if (isInRange)
 				nInRangeCount++;
 		}
@@ -492,26 +496,26 @@ void CFormantChart::StandardPlot(CSaView *pView, CDC *pDC, CRect rClient, CRect 
 		}
 	}
 
-  // delete the graph object
-  pFormantChart->zTerminateGraph();
-  delete pFormantChart;
-  if (DataPointSymbol) delete [] DataPointSymbol;
+	// delete the graph object
+	pFormantChart->zTerminateGraph();
+	delete pFormantChart;
+	if (DataPointSymbol) delete [] DataPointSymbol;
 
-  if(zG._3D_flag)
-  {
-    // set legend scale
-    GetParent()->SetLegendScale(SCALE | NUMBERS | ARBITRARY, zG.zstart, zG.zend, zG.V_Title, 5, 0.25); 
-    GetParent()->SetXScale(SCALE | NUMBERS, int(zG.ystart), int(zG.yend), zG.H_Title, zG.y_axis_divisions, 0.20); 
-  }
-  else
-  {
-    // set legend scale
-    GetParent()->SetLegendScale(SCALE | NUMBERS | ARBITRARY, zG.ystart, zG.yend, zG.V_Title, zG.y_axis_divisions); 
-    GetParent()->SetXScale(SCALE | NUMBERS, int(zG.xstart), int(zG.xend), zG.H_Title, zG.x_axis_divisions); 
-  }
+	if(zG._3D_flag)
+	{
+		// set legend scale
+		GetParent()->SetLegendScale(SCALE | NUMBERS | ARBITRARY, zG.zstart, zG.zend, zG.V_Title, 5, 0.25); 
+		GetParent()->SetXScale(SCALE | NUMBERS, int(zG.ystart), int(zG.yend), zG.H_Title, zG.y_axis_divisions, 0.20); 
+	}
+	else
+	{
+		// set legend scale
+		GetParent()->SetLegendScale(SCALE | NUMBERS | ARBITRARY, zG.ystart, zG.yend, zG.V_Title, zG.y_axis_divisions); 
+		GetParent()->SetXScale(SCALE | NUMBERS, int(zG.xstart), int(zG.xend), zG.H_Title, zG.x_axis_divisions); 
+	}
 
-  // finish the plot
-  PlotPaintFinish(pDC, rClient, rClip);
+	// finish the plot
+	PlotPaintFinish(pDC, rClient, rClip);
 
 	//redraw helper window
 	if (m_bOutOfRange)
@@ -526,44 +530,44 @@ void CFormantChart::StandardPlot(CSaView *pView, CDC *pDC, CRect rClient, CRect 
 /***************************************************************************/
 POINT CFormantChart::GetXYCoordinates(void* pG, double x , double y, BOOL bFlip)
 {
-  zScatterGraph* pGraph2D = (zScatterGraph*)pG; // cast pointer
-  INT grid_width  = abs(pGraph2D->X_RIGHT - pGraph2D->X_LEFT);
-  INT grid_height = abs(pGraph2D->Y_TOP - pGraph2D->Y_BOTTOM);
-  double a = (double) grid_width / (pGraph2D->xmax - pGraph2D->xmin);
-  double b = (double) pGraph2D->X_LEFT - a * pGraph2D->xmin;
-  double c = zY_ADJUST * (double) grid_height / (pGraph2D->ymin - pGraph2D->ymax);
-  double d = (double) pGraph2D->Y_TOP - c * pGraph2D->ymax;
-  POINT p;
-  // scale x and y coordinates
-  if (bFlip)
-  {
-    p.x = (INT)(a * ((pGraph2D->xmax + pGraph2D->xmin) - x) + b);
-    p.y = (INT)(c * ((pGraph2D->ymax + pGraph2D->ymin) - y) + d);
-  }
-  else
-  {
-    p.x = (INT)(a * x + b);
-    p.y = (INT)(c * y + d);
-  }
+	zScatterGraph* pGraph2D = (zScatterGraph*)pG; // cast pointer
+	INT grid_width  = abs(pGraph2D->X_RIGHT - pGraph2D->X_LEFT);
+	INT grid_height = abs(pGraph2D->Y_TOP - pGraph2D->Y_BOTTOM);
+	double a = (double) grid_width / (pGraph2D->xmax - pGraph2D->xmin);
+	double b = (double) pGraph2D->X_LEFT - a * pGraph2D->xmin;
+	double c = zY_ADJUST * (double) grid_height / (pGraph2D->ymin - pGraph2D->ymax);
+	double d = (double) pGraph2D->Y_TOP - c * pGraph2D->ymax;
+	POINT p;
+	// scale x and y coordinates
+	if (bFlip)
+	{
+		p.x = (INT)(a * ((pGraph2D->xmax + pGraph2D->xmin) - x) + b);
+		p.y = (INT)(c * ((pGraph2D->ymax + pGraph2D->ymin) - y) + d);
+	}
+	else
+	{
+		p.x = (INT)(a * x + b);
+		p.y = (INT)(c * y + d);
+	}
 
-  return p;
+	return p;
 
-  /*
-  // Original F2 F1 Graph as a Log/ Linear Graph                        // tdg
-  
-  zLogGraph* G = (zLogGraph*)pG; // cast pointer
-  double x_inc = (double)(abs(pGraph2D->X_RIGHT - pGraph2D->X_LEFT)) / pGraph2D->x_axis_divisions;
-  double xlow = pow(10.0, floor(log10(pGraph2D->xstart)));
-  INT grid_height = abs(pGraph2D->Y_TOP - pGraph2D->Y_BOTTOM);
-  double c = zY_ADJUST * (double) grid_height / (pGraph2D->ymin - pGraph2D->ymax);
-  double d = (double) pGraph2D->Y_TOP - c * pGraph2D->ymax ;
-  POINT p;
-  // scale x-coordinate
-  p.x = (INT)(pGraph2D->X_LEFT + pGraph2D->zRound(x_inc * log10(x / xlow)));
-  // scale y-coordinate
-  p.y = (INT)(c * y + d);
-  return p;
-  */
+	/*
+	// Original F2 F1 Graph as a Log/ Linear Graph                        // tdg
+
+	zLogGraph* G = (zLogGraph*)pG; // cast pointer
+	double x_inc = (double)(abs(pGraph2D->X_RIGHT - pGraph2D->X_LEFT)) / pGraph2D->x_axis_divisions;
+	double xlow = pow(10.0, floor(log10(pGraph2D->xstart)));
+	INT grid_height = abs(pGraph2D->Y_TOP - pGraph2D->Y_BOTTOM);
+	double c = zY_ADJUST * (double) grid_height / (pGraph2D->ymin - pGraph2D->ymax);
+	double d = (double) pGraph2D->Y_TOP - c * pGraph2D->ymax ;
+	POINT p;
+	// scale x-coordinate
+	p.x = (INT)(pGraph2D->X_LEFT + pGraph2D->zRound(x_inc * log10(x / xlow)));
+	// scale y-coordinate
+	p.y = (INT)(c * y + d);
+	return p;
+	*/
 }
 
 /***************************************************************************/
@@ -571,7 +575,7 @@ POINT CFormantChart::GetXYCoordinates(void* pG, double x , double y, BOOL bFlip)
 /***************************************************************************/
 void CFormantChart::AnimateFrame(DWORD dwFrameIndex)
 {
-  CPlotWnd::StandardAnimateFrame(dwFrameIndex);
+	CPlotWnd::StandardAnimateFrame(dwFrameIndex);
 }
 
 /***************************************************************************/
@@ -579,22 +583,22 @@ void CFormantChart::AnimateFrame(DWORD dwFrameIndex)
 /***************************************************************************/
 void CFormantChart::EndAnimation(void)
 {
-  CGraphWnd* pGraph = (CGraphWnd*)GetParent();
-  CSaView* pView = (CSaView*)pGraph->GetParent();
-  int nWaveGraphIndex = pView->GetGraphIndexForIDD(IDD_RAWDATA);
-  CGraphWnd* pWaveGraph = pView->GetGraph(nWaveGraphIndex);
-  if (pWaveGraph) 
-  {
-    CPlotWnd* pWavePlot = pWaveGraph->GetPlot();
-	pWavePlot->SetHighLightArea(0, 0);
-  }
-  CSaDoc* pDoc = (CSaDoc*)pView->GetDocument();
-  CProcessFormants* pFormants = (CProcessFormants*)pDoc->GetFormants(); // get pointer to formants object
-  FormantParm* pFormantParms = pFormants->GetFormantParms(); 
-  if (pFormantParms->bSmoothFormants) 
-    pFormants->SmoothMedian(pDoc);
-  m_dwAnimationFrame = UNDEFINED_OFFSET;
-  RedrawWindow(NULL, NULL, RDW_INVALIDATE | RDW_UPDATENOW);
+	CGraphWnd* pGraph = (CGraphWnd*)GetParent();
+	CSaView* pView = (CSaView*)pGraph->GetParent();
+	int nWaveGraphIndex = pView->GetGraphIndexForIDD(IDD_RAWDATA);
+	CGraphWnd* pWaveGraph = pView->GetGraph(nWaveGraphIndex);
+	if (pWaveGraph) 
+	{
+		CPlotWnd* pWavePlot = pWaveGraph->GetPlot();
+		pWavePlot->SetHighLightArea(0, 0);
+	}
+	CSaDoc* pDoc = (CSaDoc*)pView->GetDocument();
+	CProcessFormants* pFormants = (CProcessFormants*)pDoc->GetFormants(); // get pointer to formants object
+	FormantParm* pFormantParms = pFormants->GetFormantParms(); 
+	if (pFormantParms->bSmoothFormants) 
+		pFormants->SmoothMedian(pDoc);
+	m_dwAnimationFrame = UNDEFINED_OFFSET;
+	RedrawWindow(NULL, NULL, RDW_INVALIDATE | RDW_UPDATENOW);
 }
 
 /***************************************************************************/
@@ -602,43 +606,43 @@ void CFormantChart::EndAnimation(void)
 /***************************************************************************/
 void CFormantChart::GraphHasFocus(BOOL bFocus)
 {
-  CMainFrame* pMainWnd = (CMainFrame*)AfxGetMainWnd();
-  CSaView* pView = (pMainWnd)?(CSaView*)pMainWnd->GetCurrSaView():NULL;
-  if(!pView) return;
-  if (m_bAnimationPlot)
-  {
-    int nWaveGraphIndex = pView->GetGraphIndexForIDD(IDD_RAWDATA);
-    CGraphWnd* pWaveGraph = pView->GetGraph(nWaveGraphIndex);
-    if (pWaveGraph)
+	CMainFrame* pMainWnd = (CMainFrame*)AfxGetMainWnd();
+	CSaView* pView = (pMainWnd)?(CSaView*)pMainWnd->GetCurrSaView():NULL;
+	if(!pView) return;
+	if (m_bAnimationPlot)
 	{
-      BOOL bDynamicUpdate = (pView->GetGraphUpdateMode() == DYNAMIC_UPDATE);
-	  if (bDynamicUpdate)
-	  {
-        CPlotWnd* pWavePlot = pWaveGraph->GetPlot();
-        CSaDoc* pDoc = pView->GetDocument();
-		CProcessFormants* pFormants = pDoc->GetFormants();
-		BOOL bCluster = (pFormants->GetFormantFrameCount() > 1); 
-        if (bFocus && !bCluster)
-		{ // Highlight raw data frame for which formants are calculated
-          FmtParm* pFmtParm = pDoc->GetFmtParm(); // get sa parameters format member data
-          WORD wSmpSize = (WORD)(pFmtParm->wBlockAlign / pFmtParm->wChannels);  // calculate sample size in bytes
-          CProcessFragments* pFragments = (CProcessFragments*)pDoc->GetFragments();  // data should be ready -- dynamic mode enabled
-          DWORD dwFrame = m_dwAnimationFrame;
-          if (dwFrame == UNDEFINED_OFFSET) dwFrame = pFragments->GetFragmentIndex(pView->GetStartCursorPosition()/wSmpSize);
-          FRAG_PARMS FragParms = pFragments->GetFragmentParms(dwFrame);
-          DWORD dwFrameStart = FragParms.dwOffset * wSmpSize;
-          DWORD dwFrameSize = (DWORD)FragParms.wLength * (DWORD)wSmpSize;
-          pWavePlot->SetHighLightArea(dwFrameStart, dwFrameStart + dwFrameSize, TRUE, TRUE);
-          pWavePlot->UpdateWindow();
+		int nWaveGraphIndex = pView->GetGraphIndexForIDD(IDD_RAWDATA);
+		CGraphWnd* pWaveGraph = pView->GetGraph(nWaveGraphIndex);
+		if (pWaveGraph)
+		{
+			BOOL bDynamicUpdate = (pView->GetGraphUpdateMode() == DYNAMIC_UPDATE);
+			if (bDynamicUpdate)
+			{
+				CPlotWnd* pWavePlot = pWaveGraph->GetPlot();
+				CSaDoc* pDoc = pView->GetDocument();
+				CProcessFormants* pFormants = pDoc->GetFormants();
+				BOOL bCluster = (pFormants->GetFormantFrameCount() > 1); 
+				if (bFocus && !bCluster)
+				{ // Highlight raw data frame for which formants are calculated
+					FmtParm* pFmtParm = pDoc->GetFmtParm(); // get sa parameters format member data
+					WORD wSmpSize = (WORD)(pFmtParm->wBlockAlign / pFmtParm->wChannels);  // calculate sample size in bytes
+					CProcessFragments* pFragments = (CProcessFragments*)pDoc->GetFragments();  // data should be ready -- dynamic mode enabled
+					DWORD dwFrame = m_dwAnimationFrame;
+					if (dwFrame == UNDEFINED_OFFSET) dwFrame = pFragments->GetFragmentIndex(pView->GetStartCursorPosition()/wSmpSize);
+					FRAG_PARMS FragParms = pFragments->GetFragmentParms(dwFrame);
+					DWORD dwFrameStart = FragParms.dwOffset * wSmpSize;
+					DWORD dwFrameSize = (DWORD)FragParms.wLength * (DWORD)wSmpSize;
+					pWavePlot->SetHighLightArea(dwFrameStart, dwFrameStart + dwFrameSize, TRUE, TRUE);
+					pWavePlot->UpdateWindow();
+				}
+				else if (!pView->IsAnimating())
+				{ // turn off highlighted area in raw data
+					pWavePlot->SetHighLightArea(0, 0);
+					pWavePlot->UpdateWindow();
+				}
+			}
 		}
-        else if (!pView->IsAnimating())
-		{ // turn off highlighted area in raw data
-          pWavePlot->SetHighLightArea(0, 0);
-          pWavePlot->UpdateWindow();
-		}
-	  }
 	}
-  }
 }
 
 //###########################################################################
@@ -654,9 +658,9 @@ IMPLEMENT_DYNCREATE(CPlot3D, CFormantChart)
 // FormantChart message map
 
 BEGIN_MESSAGE_MAP(CPlot3D, CPlotWnd)
-    //{{AFX_MSG_MAP(CPlot3D)
-    ON_WM_CREATE()
-    //}}AFX_MSG_MAP
+	//{{AFX_MSG_MAP(CPlot3D)
+	ON_WM_CREATE()
+	//}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
@@ -682,26 +686,26 @@ CPlot3D::~CPlot3D()
 /***************************************************************************/
 RANGE CPlot3D::GetChartRange(int nFormant, int nGender)
 {
-                           //               F1          F2            F3
-  static RANGE Scale[3][4] = {{{0.,0.},{200., 800.},{650.,2500.},{1500.,3200.}},  // man
-                              {{0.,0.},{280., 900.},{700.,3000.},{1850.,3500.}},  // woman
-                              {{0.,0.},{350.,1100.},{900.,3400.},{1950.,3900.}}}; // child
-  if (nFormant < 0 || nFormant >= 4 || nGender < 0 || nGender >= 3)
-      nFormant = nGender = 0;
-  return Scale[nGender][nFormant];
+	//               F1          F2            F3
+	static RANGE Scale[3][4] = {{{0.,0.},{200., 800.},{650.,2500.},{1500.,3200.}},  // man
+	{{0.,0.},{280., 900.},{700.,3000.},{1850.,3500.}},  // woman
+	{{0.,0.},{350.,1100.},{900.,3400.},{1950.,3900.}}}; // child
+	if (nFormant < 0 || nFormant >= 4 || nGender < 0 || nGender >= 3)
+		nFormant = nGender = 0;
+	return Scale[nGender][nFormant];
 }
 
 /***************************************************************************/
 // CPlot3D::MapVowelsToChart  Map vowels to chart coordinates
 /***************************************************************************/
 POINT CPlot3D::MapVowelsToChart(CDC* pDC, FORMANT_FREQ& Formant, int SymbolHeight, zScatterGraph *pFormantChart,
-                                zGraphStruct& ChartParms, BOOL /* bFlip */)
+								zGraphStruct& ChartParms, BOOL /* bFlip */)
 {
-  POINT p = pFormantChart->zMapCoordinates(Formant.F[2], Formant.F[1], Formant.F[3]); // converts 3D point to 2D
-  POINT pBase = pFormantChart->zMapCoordinates(Formant.F[2], Formant.F[1], ChartParms.zstart);
-  pDC->MoveTo(p.x, p.y + SymbolHeight / 2);
-  pDC->LineTo(pBase.x, pBase.y);
-  return p;
+	POINT p = pFormantChart->zMapCoordinates(Formant.F[2], Formant.F[1], Formant.F[3]); // converts 3D point to 2D
+	POINT pBase = pFormantChart->zMapCoordinates(Formant.F[2], Formant.F[1], ChartParms.zstart);
+	pDC->MoveTo(p.x, p.y + SymbolHeight / 2);
+	pDC->LineTo(pBase.x, pBase.y);
+	return p;
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -714,8 +718,8 @@ POINT CPlot3D::MapVowelsToChart(CDC* pDC, FORMANT_FREQ& Formant, int SymbolHeigh
 /***************************************************************************/
 int CPlot3D::OnCreate(LPCREATESTRUCT lpCreateStruct)
 {
-  if (CPlotWnd::OnCreate(lpCreateStruct) == -1) return -1;
-  return 0;
+	if (CPlotWnd::OnCreate(lpCreateStruct) == -1) return -1;
+	return 0;
 }
 
 /***************************************************************************/
@@ -727,56 +731,56 @@ int CPlot3D::OnCreate(LPCREATESTRUCT lpCreateStruct)
 /***************************************************************************/
 void CPlot3D::OnDraw(CDC * pDC, CRect rClient, CRect rClip, CSaView * pView)
 {
-  // Get pointer to application, document, and formant processing object.
-  CSaApp* pApp = (CSaApp*)AfxGetApp();
-  CSaDoc* pDoc = pView->GetDocument();
-  CProcessFormants* pFormants = (CProcessFormants*)pDoc->GetFormants();
-  CFormantTracker* pFTFormants = pDoc->GetFormantTracker(); // get pointer to FormantTracker object
-  FormantParm* pFormantParms = pFormants->GetFormantParms();
-  CProcessFragments* pFragments = (CProcessFragments*)pDoc->GetFragments();
-  FmtParm* pFmtParm = pDoc->GetFmtParm(); // get sa parameters format member data
-  WORD wSmpSize = (WORD)(pFmtParm->wBlockAlign / pFmtParm->wChannels);  // calculate sample size in bytes
-  BOOL bDynamicUpdate = (pView->GetGraphUpdateMode() == DYNAMIC_UPDATE);
-  BOOL bDataValid = TRUE; 
+	// Get pointer to application, document, and formant processing object.
+	CSaApp* pApp = (CSaApp*)AfxGetApp();
+	CSaDoc* pDoc = pView->GetDocument();
+	CProcessFormants* pFormants = (CProcessFormants*)pDoc->GetFormants();
+	CFormantTracker* pFTFormants = pDoc->GetFormantTracker(); // get pointer to FormantTracker object
+	FormantParm* pFormantParms = pFormants->GetFormantParms();
+	CProcessFragments* pFragments = (CProcessFragments*)pDoc->GetFragments();
+	FmtParm* pFmtParm = pDoc->GetFmtParm(); // get sa parameters format member data
+	WORD wSmpSize = (WORD)(pFmtParm->wBlockAlign / pFmtParm->wChannels);  // calculate sample size in bytes
+	BOOL bDynamicUpdate = (pView->GetGraphUpdateMode() == DYNAMIC_UPDATE);
+	BOOL bDataValid = TRUE; 
 
-  // Get the formants.
-  short nResult = ProcessFormants();
-  nResult = CheckResult(nResult, pFormants); // check the process result
-  switch(nResult)
-  {
-    case PROCESS_CANCELED:
-      bDataValid = FALSE;
-      break;
-    case PROCESS_DATA_OVERLOAD:
-      {
-        int nWaveGraphIndex = pView->GetGraphIndexForIDD(IDD_RAWDATA);
-        CGraphWnd* pWaveGraph = pView->GetGraph(nWaveGraphIndex);
-        if (pWaveGraph)
-        {
-          CPlotWnd* pWavePlot = pWaveGraph->GetPlot();
-          if (bDynamicUpdate && pWavePlot)
-          {
-            // turn off highlighted area in raw data
-            pWavePlot->SetHighLightArea(0, 0);
-            pWavePlot->UpdateWindow();
-          }
-        }
-      }
-      bDataValid = FALSE;
-      break;
-    case PROCESS_ERROR:
-    case PROCESS_NO_DATA:
-    case PROCESS_UNVOICED:
-      bDataValid = FALSE;
-      break;
-    case PROCESS_DONE:
-      //  Invalidate();
-      //  return;
-      break;
-  }
+	// Get the formants.
+	short nResult = ProcessFormants();
+	nResult = CheckResult(nResult, pFormants); // check the process result
+	switch(nResult)
+	{
+	case PROCESS_CANCELED:
+		bDataValid = FALSE;
+		break;
+	case PROCESS_DATA_OVERLOAD:
+		{
+			int nWaveGraphIndex = pView->GetGraphIndexForIDD(IDD_RAWDATA);
+			CGraphWnd* pWaveGraph = pView->GetGraph(nWaveGraphIndex);
+			if (pWaveGraph)
+			{
+				CPlotWnd* pWavePlot = pWaveGraph->GetPlot();
+				if (bDynamicUpdate && pWavePlot)
+				{
+					// turn off highlighted area in raw data
+					pWavePlot->SetHighLightArea(0, 0);
+					pWavePlot->UpdateWindow();
+				}
+			}
+		}
+		bDataValid = FALSE;
+		break;
+	case PROCESS_ERROR:
+	case PROCESS_NO_DATA:
+	case PROCESS_UNVOICED:
+		bDataValid = FALSE;
+		break;
+	case PROCESS_DONE:
+		//  Invalidate();
+		//  return;
+		break;
+	}
 
-  zGraphStruct FormantChartParm;
-  memset(&FormantChartParm, zDEFAULT, sizeof(FormantChartParm));
+	zGraphStruct FormantChartParm;
+	memset(&FormantChartParm, zDEFAULT, sizeof(FormantChartParm));
 
 	// Allocate buffers for x, y, and z coordinates.  For a 3D graph, the y-axis is horizontal, the
 	// z-axis is vertical, and the x-axis is diagonal.  Data increases along the x-axis toward the lower
@@ -790,137 +794,137 @@ void CPlot3D::OnDraw(CDC * pDC, CRect rClient, CRect rClip, CSaView * pView)
 	double sizeFactorFT2Raw = (double)pFTFormants->GetDataSize() / (double)pDoc->GetDataSize() / (sizeof(FORMANT_FREQ) / 2);
 	double sizeFactorFT2Frag = sizeFactorFT2Raw * (stopCursorPos - startCursorPos) / (stopFrag - startFrag);
 	DWORD ftIndex = (DWORD)((double)startCursorPos * sizeFactorFT2Raw);
-    FTFormant = pFTFormants->GetFormant(ftIndex);
-	
+	FTFormant = pFTFormants->GetFormant(ftIndex);
+
 	double meanF1 = 0;
 	double meanF2 = 0;
 	double meanF3 = 0;
 
-    if (!FTFormant) 
-    {
-      bDataValid = FALSE;
-    }
+	if (!FTFormant) 
+	{
+		bDataValid = FALSE;
+	}
 
-  if(bDataValid)
-  {
-	int nPointsPerFrame = 1;
-    DWORD dwMaxNumberPoints = dwFormantFrameCount * nPointsPerFrame;
-    BOOL bCluster = (dwFormantFrameCount > 1);
-    if (bCluster) dwMaxNumberPoints++;
-    if (dwMaxNumberPoints > zNUM_POINTS) dwMaxNumberPoints = zNUM_POINTS; // limit number to buffer sizes
-    FormantChartParm.xdata = (double *)malloc(dwMaxNumberPoints * sizeof(double));
-    if (!FormantChartParm.xdata)
-    {
-      // memory allocation error
-      pApp->ErrorMessage(IDS_ERROR_MEMALLOC);
-      GetParent()->PostMessage(WM_SYSCOMMAND, SC_CLOSE, 0L); // close the graph
-      return;
-    }
-    FormantChartParm.ydata = (double *)malloc(dwMaxNumberPoints * sizeof(double));
-    if (!FormantChartParm.ydata)
-    {
-      // memory allocation error
-      free(FormantChartParm.xdata);
-      pApp->ErrorMessage(IDS_ERROR_MEMALLOC);
-      GetParent()->PostMessage(WM_SYSCOMMAND, SC_CLOSE, 0L); // close the graph
-      return;
-    }
-    FormantChartParm.zdata = (double *)malloc(dwMaxNumberPoints * sizeof(double));
-    if (!FormantChartParm.zdata)
-    {
-      // memory allocation error
-      free(FormantChartParm.xdata);
-      free(FormantChartParm.ydata);
-      pApp->ErrorMessage(IDS_ERROR_MEMALLOC);
-      GetParent()->PostMessage(WM_SYSCOMMAND, SC_CLOSE, 0L); // close the graph
-      return;
-    }
-    
-    // Collect formant frequency points for all frames.
-    DWORD ix = 0, iy = 0, iz = 0;
-    for (DWORD dwFormantFrame = 0; dwFormantFrame < dwFormantFrameCount; dwFormantFrame++)
-    {
+	if(bDataValid)
+	{
+		int nPointsPerFrame = 1;
+		DWORD dwMaxNumberPoints = dwFormantFrameCount * nPointsPerFrame;
+		BOOL bCluster = (dwFormantFrameCount > 1);
+		if (bCluster) dwMaxNumberPoints++;
+		if (dwMaxNumberPoints > zNUM_POINTS) dwMaxNumberPoints = zNUM_POINTS; // limit number to buffer sizes
+		FormantChartParm.xdata = (double *)malloc(dwMaxNumberPoints * sizeof(double));
+		if (!FormantChartParm.xdata)
+		{
+			// memory allocation error
+			pApp->ErrorMessage(IDS_ERROR_MEMALLOC);
+			GetParent()->PostMessage(WM_SYSCOMMAND, SC_CLOSE, 0L); // close the graph
+			return;
+		}
+		FormantChartParm.ydata = (double *)malloc(dwMaxNumberPoints * sizeof(double));
+		if (!FormantChartParm.ydata)
+		{
+			// memory allocation error
+			free(FormantChartParm.xdata);
+			pApp->ErrorMessage(IDS_ERROR_MEMALLOC);
+			GetParent()->PostMessage(WM_SYSCOMMAND, SC_CLOSE, 0L); // close the graph
+			return;
+		}
+		FormantChartParm.zdata = (double *)malloc(dwMaxNumberPoints * sizeof(double));
+		if (!FormantChartParm.zdata)
+		{
+			// memory allocation error
+			free(FormantChartParm.xdata);
+			free(FormantChartParm.ydata);
+			pApp->ErrorMessage(IDS_ERROR_MEMALLOC);
+			GetParent()->PostMessage(WM_SYSCOMMAND, SC_CLOSE, 0L); // close the graph
+			return;
+		}
+
+		// Collect formant frequency points for all frames.
+		DWORD ix = 0, iy = 0, iz = 0;
+		for (DWORD dwFormantFrame = 0; dwFormantFrame < dwFormantFrameCount; dwFormantFrame++)
+		{
 			DWORD dwFTFormantFrame = (DWORD)((double)dwFormantFrame * sizeFactorFT2Frag);
-      if (dwFormantFrame != 0) FTFormant = pFTFormants->GetFormant(ftIndex + dwFTFormantFrame);
-      if (FTFormant->F[1] != (float)UNDEFINED_DATA &&
-        FTFormant->F[2] != (float)UNDEFINED_DATA &&
-        FTFormant->F[3] != (float)UNDEFINED_DATA)
-      {
-		meanF1 = (meanF1 * ix + FTFormant->F[1]) / (ix + 1);
-		meanF2 = (meanF2 * iy + FTFormant->F[2]) / (iy + 1);
-		meanF3 = (meanF3 * iz + FTFormant->F[3]) / (iz + 1);
-        if (pFormantParms->bMelScale)
-        {
-          FormantChartParm.xdata[ix++] = Scale::ToMels((double)FTFormant->F[2]);
-          FormantChartParm.ydata[iy++] = Scale::ToMels((double)FTFormant->F[1]);
-          FormantChartParm.zdata[iz++] = Scale::ToMels((double)FTFormant->F[3]);
-        }
-        else
-        {
-          FormantChartParm.xdata[ix++] = (double)FTFormant->F[2];
-          FormantChartParm.ydata[iy++] = (double)FTFormant->F[1];
-          FormantChartParm.zdata[iz++] = (double)FTFormant->F[3];
-        }
-      }
-    }
-    
-    // Get mean if there is a tracking cluster.
-    if (bCluster)
-    {
-      if (pFormantParms->bMelScale)
-      {
-        FormantChartParm.xdata[ix++] = Scale::ToMels(meanF2);
-        FormantChartParm.ydata[iy++] = Scale::ToMels(meanF1);
-        FormantChartParm.zdata[iz++] = Scale::ToMels(meanF3);
-      }
-      else
-      {
-        FormantChartParm.xdata[ix++] = meanF2;
-        FormantChartParm.ydata[iy++] = meanF1;
-        FormantChartParm.zdata[iz++] = meanF3;
-      }
-    }
-    
-    FormantChartParm.n = (int)ix;  // set total number of data points
-  }
-  else
-  {
-    FormantChartParm.zdata = (double*)-1; // Force graph to still be 3D
-  }
+			if (dwFormantFrame != 0) FTFormant = pFTFormants->GetFormant(ftIndex + dwFTFormantFrame);
+			if (FTFormant->F[1] != (float)UNDEFINED_DATA &&
+				FTFormant->F[2] != (float)UNDEFINED_DATA &&
+				FTFormant->F[3] != (float)UNDEFINED_DATA)
+			{
+				meanF1 = (meanF1 * ix + FTFormant->F[1]) / (ix + 1);
+				meanF2 = (meanF2 * iy + FTFormant->F[2]) / (iy + 1);
+				meanF3 = (meanF3 * iz + FTFormant->F[3]) / (iz + 1);
+				if (pFormantParms->bMelScale)
+				{
+					FormantChartParm.xdata[ix++] = Scale::ToMels((double)FTFormant->F[2]);
+					FormantChartParm.ydata[iy++] = Scale::ToMels((double)FTFormant->F[1]);
+					FormantChartParm.zdata[iz++] = Scale::ToMels((double)FTFormant->F[3]);
+				}
+				else
+				{
+					FormantChartParm.xdata[ix++] = (double)FTFormant->F[2];
+					FormantChartParm.ydata[iy++] = (double)FTFormant->F[1];
+					FormantChartParm.zdata[iz++] = (double)FTFormant->F[3];
+				}
+			}
+		}
 
-  // Customize the axes.
-  FormantChartParm.x_axis_style = zLINEAR;
-  FormantChartParm.y_axis_style = zLINEAR;
-  FormantChartParm.x_axis_divisions = 5;                 // x-axis divisions
-  FormantChartParm.y_axis_divisions = 6;                 // y-axis divisions
-  FormantChartParm.H_Title = pFormantParms->bMelScale ? _T("F1(mels)"): _T("F1 (Hz)");  // horizontal axis title
-  FormantChartParm.V_Title = pFormantParms->bMelScale ? _T("F3 (mels)"): _T("F3 (Hz)");  // vertical axis title
-  FormantChartParm.item_title_format = zNUMBERS;         // show numbers along axes
-  FormantChartParm.line_connect = ON;		 	 ;
+		// Get mean if there is a tracking cluster.
+		if (bCluster)
+		{
+			if (pFormantParms->bMelScale)
+			{
+				FormantChartParm.xdata[ix++] = Scale::ToMels(meanF2);
+				FormantChartParm.ydata[iy++] = Scale::ToMels(meanF1);
+				FormantChartParm.zdata[iz++] = Scale::ToMels(meanF3);
+			}
+			else
+			{
+				FormantChartParm.xdata[ix++] = meanF2;
+				FormantChartParm.ydata[iy++] = meanF1;
+				FormantChartParm.zdata[iz++] = meanF3;
+			}
+		}
 
-  int nGender = pDoc->GetGender();
-  RANGE FormantScale = GetChartRange(2, nGender);
-  FormantChartParm.xstart = pFormantParms->bMelScale ? Scale::ToMels(FormantScale.Low): FormantScale.Low;
-  FormantChartParm.xend = pFormantParms->bMelScale ? Scale::ToMels(FormantScale.High): FormantScale.High;
-  FormantScale = GetChartRange(1, nGender);
-  FormantChartParm.ystart = pFormantParms->bMelScale ? Scale::ToMels(FormantScale.Low): FormantScale.Low;
-  FormantChartParm.yend = pFormantParms->bMelScale ? Scale::ToMels(FormantScale.High): FormantScale.High;
-  FormantScale = GetChartRange(3, nGender);
-  FormantChartParm.zstart = pFormantParms->bMelScale ? Scale::ToMels(FormantScale.Low): FormantScale.Low;
-  FormantChartParm.zend = pFormantParms->bMelScale ? Scale::ToMels(FormantScale.High): FormantScale.High;
+		FormantChartParm.n = (int)ix;  // set total number of data points
+	}
+	else
+	{
+		FormantChartParm.zdata = (double*)-1; // Force graph to still be 3D
+	}
 
-  // Draw the chart.
-  BOOL bFlipChart = FALSE;
-  BOOL bShowAxes = TRUE;
-  StandardPlot(pView, pDC, rClient, rClip, FormantChartParm, bFlipChart, bShowAxes, bDataValid);
+	// Customize the axes.
+	FormantChartParm.x_axis_style = zLINEAR;
+	FormantChartParm.y_axis_style = zLINEAR;
+	FormantChartParm.x_axis_divisions = 5;                 // x-axis divisions
+	FormantChartParm.y_axis_divisions = 6;                 // y-axis divisions
+	FormantChartParm.H_Title = pFormantParms->bMelScale ? _T("F1(mels)"): _T("F1 (Hz)");  // horizontal axis title
+	FormantChartParm.V_Title = pFormantParms->bMelScale ? _T("F3 (mels)"): _T("F3 (Hz)");  // vertical axis title
+	FormantChartParm.item_title_format = zNUMBERS;         // show numbers along axes
+	FormantChartParm.line_connect = ON;		 	 ;
 
-  if(bDataValid)
-  {
-    // Release data point buffers.
-    free(FormantChartParm.xdata);
-    free(FormantChartParm.ydata);
-    free(FormantChartParm.zdata);
-  }
+	int nGender = pDoc->GetGender();
+	RANGE FormantScale = GetChartRange(2, nGender);
+	FormantChartParm.xstart = pFormantParms->bMelScale ? Scale::ToMels(FormantScale.Low): FormantScale.Low;
+	FormantChartParm.xend = pFormantParms->bMelScale ? Scale::ToMels(FormantScale.High): FormantScale.High;
+	FormantScale = GetChartRange(1, nGender);
+	FormantChartParm.ystart = pFormantParms->bMelScale ? Scale::ToMels(FormantScale.Low): FormantScale.Low;
+	FormantChartParm.yend = pFormantParms->bMelScale ? Scale::ToMels(FormantScale.High): FormantScale.High;
+	FormantScale = GetChartRange(3, nGender);
+	FormantChartParm.zstart = pFormantParms->bMelScale ? Scale::ToMels(FormantScale.Low): FormantScale.Low;
+	FormantChartParm.zend = pFormantParms->bMelScale ? Scale::ToMels(FormantScale.High): FormantScale.High;
+
+	// Draw the chart.
+	BOOL bFlipChart = FALSE;
+	BOOL bShowAxes = TRUE;
+	StandardPlot(pView, pDC, rClient, rClip, FormantChartParm, bFlipChart, bShowAxes, bDataValid);
+
+	if(bDataValid)
+	{
+		// Release data point buffers.
+		free(FormantChartParm.xdata);
+		free(FormantChartParm.ydata);
+		free(FormantChartParm.zdata);
+	}
 }
 
 // %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  F1 F2 PLOT  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -938,9 +942,9 @@ IMPLEMENT_DYNCREATE(CPlotF1F2, CFormantChart)
 // CPlotF1F2 message map
 
 BEGIN_MESSAGE_MAP(CPlotF1F2, CPlotWnd)
-    //{{AFX_MSG_MAP(CPlotF1F2)
-    ON_WM_CREATE()
-    //}}AFX_MSG_MAP
+	//{{AFX_MSG_MAP(CPlotF1F2)
+	ON_WM_CREATE()
+	//}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
@@ -966,23 +970,23 @@ CPlotF1F2::~CPlotF1F2()
 /***************************************************************************/
 RANGE CPlotF1F2::GetChartRange(int nFormant, int nGender)
 {
-                            //              F1          F2
-  static RANGE Scale[3][3] = {{{0.,0.},{200., 800.},{600.,2600.}},  // man
-                              {{0.,0.},{280., 900.},{700.,3000.}},  // woman
-	                          {{0.,0.},{350.,1100.},{900.,3400.}}}; // child
-  if (nFormant < 0 || nFormant >= 3 || nGender < 0 || nGender >= 3)
-      nFormant = nGender = 0;
+	//              F1          F2
+	static RANGE Scale[3][3] = {{{0.,0.},{200., 800.},{600.,2600.}},  // man
+	{{0.,0.},{280., 900.},{700.,3000.}},  // woman
+	{{0.,0.},{350.,1100.},{900.,3400.}}}; // child
+	if (nFormant < 0 || nFormant >= 3 || nGender < 0 || nGender >= 3)
+		nFormant = nGender = 0;
 
-  return Scale[nGender][nFormant];
+	return Scale[nGender][nFormant];
 }
 
 /***************************************************************************/
 // CPlotF1F2::MapVowelsToChart  Map vowels to chart coordinates
 /***************************************************************************/
 POINT CPlotF1F2::MapVowelsToChart(CDC* /* pDC */, FORMANT_FREQ& Formant, int /* SymbolHeight */, zScatterGraph *pFormantChart,
-                                  zGraphStruct& /* ChartParms */, BOOL bFlip)
+								  zGraphStruct& /* ChartParms */, BOOL bFlip)
 {
-  return GetXYCoordinates(pFormantChart, Formant.F[1], Formant.F[2], bFlip); // converts 2D point to plot coordinates
+	return GetXYCoordinates(pFormantChart, Formant.F[1], Formant.F[2], bFlip); // converts 2D point to plot coordinates
 }
 /////////////////////////////////////////////////////////////////////////////
 // CPlotF1F2 message handlers
@@ -994,8 +998,8 @@ POINT CPlotF1F2::MapVowelsToChart(CDC* /* pDC */, FORMANT_FREQ& Formant, int /* 
 /***************************************************************************/
 int CPlotF1F2::OnCreate(LPCREATESTRUCT lpCreateStruct)
 {
-  if (CPlotWnd::OnCreate(lpCreateStruct) == -1) return -1;
-  return 0;
+	if (CPlotWnd::OnCreate(lpCreateStruct) == -1) return -1;
+	return 0;
 }
 
 /***************************************************************************/
@@ -1007,57 +1011,59 @@ int CPlotF1F2::OnCreate(LPCREATESTRUCT lpCreateStruct)
 /***************************************************************************/
 void CPlotF1F2::OnDraw(CDC * pDC, CRect rClient, CRect rClip, CSaView * pView)
 {
-  // Get pointer to application, document, and formant processing object.
-  CSaApp* pApp = (CSaApp*)AfxGetApp();
-  CSaDoc* pDoc = pView->GetDocument();
-  CProcessFormants* pFormants = (CProcessFormants*)pDoc->GetFormants();
-  CFormantTracker* pFTFormants = pDoc->GetFormantTracker(); // get pointer to FormantTracker object
-  FormantParm* pFormantParms = pFormants->GetFormantParms();
-  CProcessFragments* pFragments = (CProcessFragments*)pDoc->GetFragments();
-  FmtParm* pFmtParm = pDoc->GetFmtParm(); // get sa parameters format member data
-  WORD wSmpSize = (WORD)(pFmtParm->wBlockAlign / pFmtParm->wChannels);  // calculate sample size in bytes
-  BOOL bDynamicUpdate = (pView->GetGraphUpdateMode() == DYNAMIC_UPDATE);
-  BOOL bDataValid = TRUE; 
+	TRACE("CPlotF1F2::OnDraw\n");
 
-  // Get the formants.
-  short int nResult = ProcessFormants();
-  nResult = CheckResult(nResult, pFormants); // check the process result  
-  switch(nResult)
-  {
-    case PROCESS_CANCELED:
-      bDataValid = FALSE;
-      break;
-    case PROCESS_DATA_OVERLOAD:
-      {
-        int nWaveGraphIndex = pView->GetGraphIndexForIDD(IDD_RAWDATA);
-        CGraphWnd* pWaveGraph = pView->GetGraph(nWaveGraphIndex);
-        if (pWaveGraph)
-        {
-          CPlotWnd* pWavePlot = pWaveGraph->GetPlot();
-          if (bDynamicUpdate && pWavePlot)
-          {
-            // turn off highlighted area in raw data
-            pWavePlot->SetHighLightArea(0, 0);
-            pWavePlot->UpdateWindow();
-          }
-        }
-      }
-      bDataValid = FALSE;
-      break;
-    case PROCESS_ERROR:
-    case PROCESS_NO_DATA:
-    case PROCESS_UNVOICED:
-      bDataValid = FALSE;
-      break;
-    case PROCESS_DONE:
-      //  Invalidate();
-      //  return;
-      break;
-  }
+	// Get pointer to application, document, and formant processing object.
+	CSaApp* pApp = (CSaApp*)AfxGetApp();
+	CSaDoc* pDoc = pView->GetDocument();
+	CProcessFormants* pFormants = (CProcessFormants*)pDoc->GetFormants();
+	CFormantTracker* pFTFormants = pDoc->GetFormantTracker(); // get pointer to FormantTracker object
+	FormantParm* pFormantParms = pFormants->GetFormantParms();
+	CProcessFragments* pFragments = (CProcessFragments*)pDoc->GetFragments();
+	FmtParm* pFmtParm = pDoc->GetFmtParm(); // get sa parameters format member data
+	WORD wSmpSize = (WORD)(pFmtParm->wBlockAlign / pFmtParm->wChannels);  // calculate sample size in bytes
+	BOOL bDynamicUpdate = (pView->GetGraphUpdateMode() == DYNAMIC_UPDATE);
+	BOOL bDataValid = TRUE; 
 
-  zGraphStruct FormantChartParm;
-  memset(&FormantChartParm, zDEFAULT, sizeof(FormantChartParm));
-  
+	// Get the formants.
+	short int nResult = ProcessFormants();
+	nResult = CheckResult(nResult, pFormants); // check the process result  
+	switch(nResult)
+	{
+	case PROCESS_CANCELED:
+		bDataValid = FALSE;
+		break;
+	case PROCESS_DATA_OVERLOAD:
+		{
+			int nWaveGraphIndex = pView->GetGraphIndexForIDD(IDD_RAWDATA);
+			CGraphWnd* pWaveGraph = pView->GetGraph(nWaveGraphIndex);
+			if (pWaveGraph)
+			{
+				CPlotWnd* pWavePlot = pWaveGraph->GetPlot();
+				if (bDynamicUpdate && pWavePlot)
+				{
+					// turn off highlighted area in raw data
+					pWavePlot->SetHighLightArea(0, 0);
+					pWavePlot->UpdateWindow();
+				}
+			}
+		}
+		bDataValid = FALSE;
+		break;
+	case PROCESS_ERROR:
+	case PROCESS_NO_DATA:
+	case PROCESS_UNVOICED:
+		bDataValid = FALSE;
+		break;
+	case PROCESS_DONE:
+		//  Invalidate();
+		//  return;
+		break;
+	}
+
+	zGraphStruct FormantChartParm;
+	memset(&FormantChartParm, zDEFAULT, sizeof(FormantChartParm));
+
 	// Allocate buffers for x and y coordinates;
 	FORMANT_FREQ *FTFormant = NULL;
 	DWORD dwFormantFrameCount = pFormants->GetFormantFrameCount();
@@ -1068,138 +1074,145 @@ void CPlotF1F2::OnDraw(CDC * pDC, CRect rClient, CRect rClip, CSaView * pView)
 	double sizeFactorFT2Raw = (double)pFTFormants->GetDataSize() / (double)pDoc->GetDataSize() / (sizeof(FORMANT_FREQ) / 2);
 	double sizeFactorFT2Frag = sizeFactorFT2Raw * (stopCursorPos - startCursorPos) / (stopFrag - startFrag);
 	DWORD ftIndex = (DWORD)((double)startCursorPos * sizeFactorFT2Raw);
-    FTFormant = pFTFormants->GetFormant(ftIndex);
+	TRACE("bono %s[%d]\n",__FILE__,__LINE__);
+	FTFormant = pFTFormants->GetFormant(ftIndex);
 
 	double meanF1 = 0;
 	double meanF2 = 0;
 
-    if (!FTFormant)
-    {
-      bDataValid = FALSE;
-    }
+	if (!FTFormant)
+	{
+		bDataValid = FALSE;
+	}
 
-  if(bDataValid)
-  {
-	int nPointsPerFrame = 1;
-    if (nPointsPerFrame)
-    {
-      DWORD dwMaxNumberPoints = dwFormantFrameCount * nPointsPerFrame;
-      BOOL bCluster = (dwFormantFrameCount > 1);
-      if (bCluster) dwMaxNumberPoints++;
-      if (dwMaxNumberPoints > zNUM_POINTS) dwMaxNumberPoints = zNUM_POINTS; // limit number to buffer sizes
-      FormantChartParm.xdata = (double *)malloc(dwMaxNumberPoints * sizeof(double));
-      if (!FormantChartParm.xdata)
-      {
-        // memory allocation error
-        pApp->ErrorMessage(IDS_ERROR_MEMALLOC);
-        GetParent()->PostMessage(WM_SYSCOMMAND, SC_CLOSE, 0L); // close the graph
-        return;
-      }
-      FormantChartParm.ydata = (double *)malloc(dwMaxNumberPoints * sizeof(double));
-      if (!FormantChartParm.ydata)
-      {
-        // memory allocation error
-        free(FormantChartParm.xdata);
-        pApp->ErrorMessage(IDS_ERROR_MEMALLOC);
-        GetParent()->PostMessage(WM_SYSCOMMAND, SC_CLOSE, 0L); // close the graph
-        return;
-      }
-      FormantChartParm.zdata = NULL;
-      
-      // Collect formant frequency pairs for all frames.
-      DWORD ix = 0, iy = 0;
-      for (DWORD dwFormantFrame = 0; dwFormantFrame < dwFormantFrameCount; dwFormantFrame++)
-      {
-			DWORD dwFTFormantFrame = (DWORD)((double)dwFormantFrame * sizeFactorFT2Frag);
-		if (dwFormantFrame != 0) FTFormant = pFTFormants->GetFormant(ftIndex + dwFTFormantFrame);
-        if (FTFormant->F[1] != (float)UNDEFINED_DATA &&
-          FTFormant->F[2] != (float)UNDEFINED_DATA)
-        {
-			meanF1 = (meanF1 * ix + FTFormant->F[1]) / (ix + 1);
-			meanF2 = (meanF2 * iy + FTFormant->F[2]) / (iy + 1);
-          if (pFormantParms->bMelScale)
-          {
-            FormantChartParm.xdata[ix++] = Scale::ToMels((double)FTFormant->F[1]);
-            FormantChartParm.ydata[iy++] = Scale::ToMels((double)FTFormant->F[2]);
-          }
-          else
-          {
-            FormantChartParm.xdata[ix++] = (double)FTFormant->F[1];
-            FormantChartParm.ydata[iy++] = (double)FTFormant->F[2];
-          }
-        }
-      }
-      
-      // Get mean if there is a tracking cluster.
-      if (bCluster)
-      {
-        if (pFormantParms->bMelScale)
-        {
-			FormantChartParm.xdata[ix++] = Scale::ToMels(meanF1);
-			FormantChartParm.ydata[iy++] = Scale::ToMels(meanF2);
-        }
-        else
-        {
-			FormantChartParm.xdata[ix++] = meanF1;
-			FormantChartParm.ydata[iy++] = meanF2;
-        }
-      }
-      
-      
-      FormantChartParm.n = (int)ix;  // set total number of data points
-      
-      //FormantChartParm.symbols_flag = bDynamicUpdate ? FALSE: TRUE;
-    }
-  }
-    
-  // Customize the axes.
-  FormantChartParm.x_axis_style = zLINEAR;  
-  FormantChartParm.y_axis_style = zLINEAR;
-  FormantChartParm.x_axis_divisions = 6;                 // x-axis divisions
-  FormantChartParm.y_axis_divisions = 5;                 // y-axis divisions
-  FormantChartParm.item_title_format = zNUMBERS;         // no numbers along axes
-  FormantChartParm.line_connect = FALSE;           ;        
-  
-  int nGender = pDoc->GetGender();
-  RANGE FormantScale = GetChartRange(1, nGender);
-  FormantChartParm.xstart = pFormantParms->bMelScale ? Scale::ToMels(FormantScale.Low): FormantScale.Low;
-  FormantChartParm.xend = pFormantParms->bMelScale ? Scale::ToMels(FormantScale.High): FormantScale.High;
-  FormantScale = GetChartRange(2, nGender);
-  FormantChartParm.ystart = pFormantParms->bMelScale ? Scale::ToMels(FormantScale.Low): FormantScale.Low;
-  FormantChartParm.yend = pFormantParms->bMelScale ? Scale::ToMels(FormantScale.High): FormantScale.High;
-  FormantChartParm.zstart	= 0, FormantChartParm.zend = 0;
-  
-  // use CSaStrings so they autodelete
-  CSaString szHTitle;
-  CSaString szVTitle;
-  
+	if (bDataValid)
+	{
+		int nPointsPerFrame = 1;
+		if (nPointsPerFrame)
+		{
+			DWORD dwMaxNumberPoints = dwFormantFrameCount * nPointsPerFrame;
+			BOOL bCluster = (dwFormantFrameCount > 1);
+			if (bCluster) dwMaxNumberPoints++;
+			if (dwMaxNumberPoints > zNUM_POINTS) dwMaxNumberPoints = zNUM_POINTS; // limit number to buffer sizes
+			FormantChartParm.xdata = (double *)malloc(dwMaxNumberPoints * sizeof(double));
+			if (!FormantChartParm.xdata)
+			{
+				// memory allocation error
+				pApp->ErrorMessage(IDS_ERROR_MEMALLOC);
+				GetParent()->PostMessage(WM_SYSCOMMAND, SC_CLOSE, 0L); // close the graph
+				return;
+			}
+			FormantChartParm.ydata = (double *)malloc(dwMaxNumberPoints * sizeof(double));
+			if (!FormantChartParm.ydata)
+			{
+				// memory allocation error
+				free(FormantChartParm.xdata);
+				pApp->ErrorMessage(IDS_ERROR_MEMALLOC);
+				GetParent()->PostMessage(WM_SYSCOMMAND, SC_CLOSE, 0L); // close the graph
+				return;
+			}
+			FormantChartParm.zdata = NULL;
+
+			// Collect formant frequency pairs for all frames.
+			DWORD ix = 0, iy = 0;
+			for (DWORD dwFormantFrame = 0; dwFormantFrame < dwFormantFrameCount; dwFormantFrame++)
+			{
+				DWORD dwFTFormantFrame = (DWORD)((double)dwFormantFrame * sizeFactorFT2Frag);
+				if (dwFormantFrame != 0) 
+					FTFormant = pFTFormants->GetFormant(ftIndex + dwFTFormantFrame);
+
+				TRACE("ftIndex=%d\n",ftIndex+dwFTFormantFrame);
+
+				if (FTFormant->F[1] != (float)UNDEFINED_DATA &&
+					FTFormant->F[2] != (float)UNDEFINED_DATA)
+				{
+					meanF1 = (meanF1 * ix + FTFormant->F[1]) / (ix + 1);
+					meanF2 = (meanF2 * iy + FTFormant->F[2]) / (iy + 1);
+					if (pFormantParms->bMelScale)
+					{
+						FormantChartParm.xdata[ix++] = Scale::ToMels((double)FTFormant->F[1]);
+						FormantChartParm.ydata[iy++] = Scale::ToMels((double)FTFormant->F[2]);
+						TRACE("FTFormant %f %f (1)\n",FTFormant->F[1],FTFormant->F[2]);
+					}
+					else
+					{
+						FormantChartParm.xdata[ix++] = (double)FTFormant->F[1];
+						FormantChartParm.ydata[iy++] = (double)FTFormant->F[2];
+						TRACE("FTFormant %f %f (2)\n",FTFormant->F[1],FTFormant->F[2]);
+					}
+				}
+			}
+
+			// Get mean if there is a tracking cluster.
+			if (bCluster)
+			{
+				if (pFormantParms->bMelScale)
+				{
+					FormantChartParm.xdata[ix++] = Scale::ToMels(meanF1);
+					FormantChartParm.ydata[iy++] = Scale::ToMels(meanF2);
+				}
+				else
+				{
+					FormantChartParm.xdata[ix++] = meanF1;
+					FormantChartParm.ydata[iy++] = meanF2;
+				}
+			}
+
+
+			FormantChartParm.n = (int)ix;  // set total number of data points
+
+			//FormantChartParm.symbols_flag = bDynamicUpdate ? FALSE: TRUE;
+		}
+	}
+
+	// Customize the axes.
+	FormantChartParm.x_axis_style = zLINEAR;  
+	FormantChartParm.y_axis_style = zLINEAR;
+	FormantChartParm.x_axis_divisions = 6;                 // x-axis divisions
+	FormantChartParm.y_axis_divisions = 5;                 // y-axis divisions
+	FormantChartParm.item_title_format = zNUMBERS;         // no numbers along axes
+	FormantChartParm.line_connect = FALSE;           ;        
+
+	int nGender = pDoc->GetGender();
+	RANGE FormantScale = GetChartRange(1, nGender);
+	FormantChartParm.xstart = pFormantParms->bMelScale ? Scale::ToMels(FormantScale.Low): FormantScale.Low;
+	FormantChartParm.xend = pFormantParms->bMelScale ? Scale::ToMels(FormantScale.High): FormantScale.High;
+	FormantScale = GetChartRange(2, nGender);
+	FormantChartParm.ystart = pFormantParms->bMelScale ? Scale::ToMels(FormantScale.Low): FormantScale.Low;
+	FormantChartParm.yend = pFormantParms->bMelScale ? Scale::ToMels(FormantScale.High): FormantScale.High;
+	FormantChartParm.zstart	= 0, FormantChartParm.zend = 0;
+
+	// use CSaStrings so they autodelete
+	CSaString szHTitle;
+	CSaString szVTitle;
+
 #ifdef originalSizeZGraph
-  szHTitle.Format("F1 (%d %s/div)", (int)(fabs(FormantChartParm.xend - FormantChartParm.xstart) /
-    FormantChartParm.x_axis_divisions + 0.5),
-    pFormantParms->bMelScale ? "mels": "Hz");  // horizontal axis title
-  
-  szVTitle.Format("F2 (%d %s/div)", (int)(fabs(FormantChartParm.yend - FormantChartParm.ystart) /  
-    FormantChartParm.y_axis_divisions + 0.5), 
-    pFormantParms->bMelScale ? "mels": "Hz");          // vertical axis title
+	szHTitle.Format("F1 (%d %s/div)", (int)(fabs(FormantChartParm.xend - FormantChartParm.xstart) /
+		FormantChartParm.x_axis_divisions + 0.5),
+		pFormantParms->bMelScale ? "mels": "Hz");  // horizontal axis title
+
+	szVTitle.Format("F2 (%d %s/div)", (int)(fabs(FormantChartParm.yend - FormantChartParm.ystart) /  
+		FormantChartParm.y_axis_divisions + 0.5), 
+		pFormantParms->bMelScale ? "mels": "Hz");          // vertical axis title
 #else
-  szHTitle = pFormantParms->bMelScale ? "F1(mels)" : "F1 (Hz)";                  
-  szVTitle = pFormantParms->bMelScale ? "F2 (mels)" : "F2 (Hz)";                                                          
+	szHTitle = pFormantParms->bMelScale ? "F1(mels)" : "F1 (Hz)";                  
+	szVTitle = pFormantParms->bMelScale ? "F2 (mels)" : "F2 (Hz)";                                                          
 #endif
-  
-  FormantChartParm.H_Title = const_cast<LPTSTR>((LPCTSTR)szHTitle);
-  FormantChartParm.V_Title = const_cast<LPTSTR>((LPCTSTR)szVTitle);
-  
-  // Draw the chart.
-  BOOL bFlipChart = FALSE;
-  BOOL bShowAxes = TRUE;
-  StandardPlot(pView, pDC, rClient, rClip, FormantChartParm, bFlipChart, bShowAxes, bDataValid);
-  
-  if(bDataValid)
-  {
-    // Release data point and title buffers.
-    free(FormantChartParm.xdata);
-    free(FormantChartParm.ydata);
-  }
+
+	FormantChartParm.H_Title = const_cast<LPTSTR>((LPCTSTR)szHTitle);
+	FormantChartParm.V_Title = const_cast<LPTSTR>((LPCTSTR)szVTitle);
+
+	// Draw the chart.
+	BOOL bFlipChart = FALSE;
+	BOOL bShowAxes = TRUE;
+	StandardPlot(pView, pDC, rClient, rClip, FormantChartParm, bFlipChart, bShowAxes, bDataValid);
+
+	if(bDataValid)
+	{
+		// Release data point and title buffers.
+		free(FormantChartParm.xdata);
+		free(FormantChartParm.ydata);
+	}
 }
 
 
@@ -1219,9 +1232,9 @@ IMPLEMENT_DYNCREATE(CPlotF2F1, CPlotWnd)
 // CPlotF2F1 message map
 
 BEGIN_MESSAGE_MAP(CPlotF2F1, CPlotWnd)
-    //{{AFX_MSG_MAP(CPlotF2F1)
-    ON_WM_CREATE()
-    //}}AFX_MSG_MAP
+	//{{AFX_MSG_MAP(CPlotF2F1)
+	ON_WM_CREATE()
+	//}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
@@ -1247,22 +1260,22 @@ CPlotF2F1::~CPlotF2F1()
 /***************************************************************************/
 RANGE CPlotF2F1::GetChartRange(int nFormant, int nGender)
 {
-                           //               F1          F2
-  static RANGE Scale[3][3] = {{{0.,0.},{200., 800.},{600.,2600.}},  // man
-		                      {{0.,0.},{280., 900.},{700.,3000.}},  // woman
-	                          {{0.,0.},{350.,1100.},{900.,3400.}}}; // child
-  if (nFormant < 0 || nFormant >= 3 || nGender < 0 || nGender >= 3)
-      nFormant = nGender = 0;
-  return Scale[nGender][nFormant];
+	//               F1          F2
+	static RANGE Scale[3][3] = {{{0.,0.},{200., 800.},{600.,2600.}},  // man
+	{{0.,0.},{280., 900.},{700.,3000.}},  // woman
+	{{0.,0.},{350.,1100.},{900.,3400.}}}; // child
+	if (nFormant < 0 || nFormant >= 3 || nGender < 0 || nGender >= 3)
+		nFormant = nGender = 0;
+	return Scale[nGender][nFormant];
 }
 
 /***************************************************************************/
 // CPlotF2F1::MapVowelsToChart  Map vowels to chart coordinates
 /***************************************************************************/
 POINT CPlotF2F1::MapVowelsToChart(CDC* /* pDC */, FORMANT_FREQ& Formant, int /* SymbolHeight */, zScatterGraph *pFormantChart,
-                                  zGraphStruct& /* ChartParms */, BOOL bFlip)
+								  zGraphStruct& /* ChartParms */, BOOL bFlip)
 {
-  return GetXYCoordinates(pFormantChart, Formant.F[2], Formant.F[1], bFlip); // converts 2D point to plot coordinates
+	return GetXYCoordinates(pFormantChart, Formant.F[2], Formant.F[1], bFlip); // converts 2D point to plot coordinates
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -1275,8 +1288,8 @@ POINT CPlotF2F1::MapVowelsToChart(CDC* /* pDC */, FORMANT_FREQ& Formant, int /* 
 /***************************************************************************/
 int CPlotF2F1::OnCreate(LPCREATESTRUCT lpCreateStruct)
 {
-  if (CPlotWnd::OnCreate(lpCreateStruct) == -1) return -1;
-  return 0;
+	if (CPlotWnd::OnCreate(lpCreateStruct) == -1) return -1;
+	return 0;
 }
 
 /***************************************************************************/
@@ -1288,56 +1301,56 @@ int CPlotF2F1::OnCreate(LPCREATESTRUCT lpCreateStruct)
 /***************************************************************************/
 void CPlotF2F1::OnDraw(CDC * pDC, CRect rClient, CRect rClip, CSaView * pView)
 {
-  // Get pointer to application, document, and formant processing object.
-  CSaApp* pApp = (CSaApp*)AfxGetApp();
-  CSaDoc* pDoc = pView->GetDocument();
-  CProcessFormants* pFormants = (CProcessFormants*)pDoc->GetFormants();
-  CFormantTracker* pFTFormants = pDoc->GetFormantTracker(); // get pointer to FormantTracker object
-  FormantParm* pFormantParms = pFormants->GetFormantParms();
-  CProcessFragments* pFragments = (CProcessFragments*)pDoc->GetFragments();
-  FmtParm* pFmtParm = pDoc->GetFmtParm(); // get sa parameters format member data
-  WORD wSmpSize = (WORD)(pFmtParm->wBlockAlign / pFmtParm->wChannels);  // calculate sample size in bytes
-  BOOL bDynamicUpdate = (pView->GetGraphUpdateMode() == DYNAMIC_UPDATE);
-  BOOL bDataValid = TRUE; 
+	// Get pointer to application, document, and formant processing object.
+	CSaApp* pApp = (CSaApp*)AfxGetApp();
+	CSaDoc* pDoc = pView->GetDocument();
+	CProcessFormants* pFormants = (CProcessFormants*)pDoc->GetFormants();
+	CFormantTracker* pFTFormants = pDoc->GetFormantTracker(); // get pointer to FormantTracker object
+	FormantParm* pFormantParms = pFormants->GetFormantParms();
+	CProcessFragments* pFragments = (CProcessFragments*)pDoc->GetFragments();
+	FmtParm* pFmtParm = pDoc->GetFmtParm(); // get sa parameters format member data
+	WORD wSmpSize = (WORD)(pFmtParm->wBlockAlign / pFmtParm->wChannels);  // calculate sample size in bytes
+	BOOL bDynamicUpdate = (pView->GetGraphUpdateMode() == DYNAMIC_UPDATE);
+	BOOL bDataValid = TRUE; 
 
-  // Get the formants.
-  short int nResult = ProcessFormants();
-  nResult = CheckResult(nResult, pFormants); // check the process result   //!!bDynamicUpdate?
-  switch(nResult)
-  {
-    case PROCESS_CANCELED:
-      bDataValid = FALSE;
-      break;
-    case PROCESS_DATA_OVERLOAD:
-      {
-        int nWaveGraphIndex = pView->GetGraphIndexForIDD(IDD_RAWDATA);
-        CGraphWnd* pWaveGraph = pView->GetGraph(nWaveGraphIndex);
-        if (pWaveGraph)
-        {
-          CPlotWnd* pWavePlot = pWaveGraph->GetPlot();
-          if (bDynamicUpdate && pWavePlot)
-          {
-            // turn off highlighted area in raw data
-            pWavePlot->SetHighLightArea(0, 0);
-            pWavePlot->UpdateWindow();
-          }
-        }
-      }
-      bDataValid = FALSE;
-      break;
-    case PROCESS_ERROR:
-    case PROCESS_NO_DATA:
-    case PROCESS_UNVOICED:
-      bDataValid = FALSE;
-      break;
-    case PROCESS_DONE:
-      //  Invalidate();
-      //  return;
-      break;
-  }
+	// Get the formants.
+	short int nResult = ProcessFormants();
+	nResult = CheckResult(nResult, pFormants); // check the process result   //!!bDynamicUpdate?
+	switch(nResult)
+	{
+	case PROCESS_CANCELED:
+		bDataValid = FALSE;
+		break;
+	case PROCESS_DATA_OVERLOAD:
+		{
+			int nWaveGraphIndex = pView->GetGraphIndexForIDD(IDD_RAWDATA);
+			CGraphWnd* pWaveGraph = pView->GetGraph(nWaveGraphIndex);
+			if (pWaveGraph)
+			{
+				CPlotWnd* pWavePlot = pWaveGraph->GetPlot();
+				if (bDynamicUpdate && pWavePlot)
+				{
+					// turn off highlighted area in raw data
+					pWavePlot->SetHighLightArea(0, 0);
+					pWavePlot->UpdateWindow();
+				}
+			}
+		}
+		bDataValid = FALSE;
+		break;
+	case PROCESS_ERROR:
+	case PROCESS_NO_DATA:
+	case PROCESS_UNVOICED:
+		bDataValid = FALSE;
+		break;
+	case PROCESS_DONE:
+		//  Invalidate();
+		//  return;
+		break;
+	}
 
-  zGraphStruct FormantChartParm;
-  memset(&FormantChartParm, zDEFAULT, sizeof(FormantChartParm));
+	zGraphStruct FormantChartParm;
+	memset(&FormantChartParm, zDEFAULT, sizeof(FormantChartParm));
 
 	// Allocate buffers for x and y coordinates;
 	FORMANT_FREQ *FTFormant = NULL;
@@ -1349,131 +1362,131 @@ void CPlotF2F1::OnDraw(CDC * pDC, CRect rClient, CRect rClip, CSaView * pView)
 	double sizeFactorFT2Raw = (double)pFTFormants->GetDataSize() / (double)pDoc->GetDataSize() / (sizeof(FORMANT_FREQ) / 2);
 	double sizeFactorFT2Frag = sizeFactorFT2Raw * (stopCursorPos - startCursorPos) / (stopFrag - startFrag);
 	DWORD ftIndex = (DWORD)((double)startCursorPos * sizeFactorFT2Raw);
-    FTFormant = pFTFormants->GetFormant(ftIndex);
+	FTFormant = pFTFormants->GetFormant(ftIndex);
 
 	double meanF1 = 0;
 	double meanF2 = 0;
 
-    if (!FTFormant) 
-    {
-      bDataValid = FALSE;
-    }
+	if (!FTFormant) 
+	{
+		bDataValid = FALSE;
+	}
 
-  if(bDataValid)
-  {
-	int nPointsPerFrame = 1;
-    DWORD dwMaxNumberPoints = dwFormantFrameCount * nPointsPerFrame;
-    BOOL bCluster = (dwFormantFrameCount > 1);
-    if (bCluster) dwMaxNumberPoints++;
-    if (dwMaxNumberPoints > zNUM_POINTS) dwMaxNumberPoints = zNUM_POINTS; // limit number to buffer sizes
-    FormantChartParm.xdata = (double *)malloc(dwMaxNumberPoints * sizeof(double));
-    if (!FormantChartParm.xdata)
-    {
-      // memory allocation error
-      pApp->ErrorMessage(IDS_ERROR_MEMALLOC);
-      GetParent()->PostMessage(WM_SYSCOMMAND, SC_CLOSE, 0L); // close the graph
-      return;
-    }
-    FormantChartParm.ydata = (double *)malloc(dwMaxNumberPoints * sizeof(double));
-    if (!FormantChartParm.ydata)
-    {
-      // memory allocation error
-      free(FormantChartParm.xdata);
-      pApp->ErrorMessage(IDS_ERROR_MEMALLOC);
-      GetParent()->PostMessage(WM_SYSCOMMAND, SC_CLOSE, 0L); // close the graph
-      return;
-    }
-    FormantChartParm.zdata = NULL;
-    
-    // Collect formant frequency pairs for all frames.
-    DWORD ix = 0, iy = 0;
-    for (DWORD dwFormantFrame = 0; dwFormantFrame < dwFormantFrameCount; dwFormantFrame++)
-    {
+	if (bDataValid)
+	{
+		int nPointsPerFrame = 1;
+		DWORD dwMaxNumberPoints = dwFormantFrameCount * nPointsPerFrame;
+		BOOL bCluster = (dwFormantFrameCount > 1);
+		if (bCluster) dwMaxNumberPoints++;
+		if (dwMaxNumberPoints > zNUM_POINTS) dwMaxNumberPoints = zNUM_POINTS; // limit number to buffer sizes
+		FormantChartParm.xdata = (double *)malloc(dwMaxNumberPoints * sizeof(double));
+		if (!FormantChartParm.xdata)
+		{
+			// memory allocation error
+			pApp->ErrorMessage(IDS_ERROR_MEMALLOC);
+			GetParent()->PostMessage(WM_SYSCOMMAND, SC_CLOSE, 0L); // close the graph
+			return;
+		}
+		FormantChartParm.ydata = (double *)malloc(dwMaxNumberPoints * sizeof(double));
+		if (!FormantChartParm.ydata)
+		{
+			// memory allocation error
+			free(FormantChartParm.xdata);
+			pApp->ErrorMessage(IDS_ERROR_MEMALLOC);
+			GetParent()->PostMessage(WM_SYSCOMMAND, SC_CLOSE, 0L); // close the graph
+			return;
+		}
+		FormantChartParm.zdata = NULL;
+
+		// Collect formant frequency pairs for all frames.
+		DWORD ix = 0, iy = 0;
+		for (DWORD dwFormantFrame = 0; dwFormantFrame < dwFormantFrameCount; dwFormantFrame++)
+		{
 			DWORD dwFTFormantFrame = (DWORD)((double)dwFormantFrame * sizeFactorFT2Frag);
-      if (dwFormantFrame != 0) FTFormant = pFTFormants->GetFormant(ftIndex + dwFTFormantFrame);
-      if (FTFormant->F[2] != (float)UNDEFINED_DATA &&
-        FTFormant->F[1] != (float)UNDEFINED_DATA)
-      {
-		meanF1 = (meanF1 * ix + FTFormant->F[1]) / (ix + 1);
-		meanF2 = (meanF2 * iy + FTFormant->F[2]) / (iy + 1);
-        if (pFormantParms->bMelScale)
-        {
-          FormantChartParm.xdata[ix++] = Scale::ToMels((double)FTFormant->F[2]);
-          FormantChartParm.ydata[iy++] = Scale::ToMels((double)FTFormant->F[1]);
-        }
-        else
-        {
-          FormantChartParm.xdata[ix++] = (double)FTFormant->F[2];
-          FormantChartParm.ydata[iy++] = (double)FTFormant->F[1];
-        }
-      }
-    }
-    
-    // Get mean if there is a tracking cluster.
-    if (bCluster)
-    {
-      if (pFormantParms->bMelScale)
-      {
-        FormantChartParm.xdata[ix++] = Scale::ToMels(meanF2);
-        FormantChartParm.ydata[iy++] = Scale::ToMels(meanF1);
-      }
-      else
-      {
-        FormantChartParm.xdata[ix++] = meanF2;
-        FormantChartParm.ydata[iy++] = meanF1;
-      }
-    }
-    
-    FormantChartParm.n = (int)ix;  // set total number of data points
-  }
+			if (dwFormantFrame != 0) FTFormant = pFTFormants->GetFormant(ftIndex + dwFTFormantFrame);
+			if (FTFormant->F[2] != (float)UNDEFINED_DATA &&
+				FTFormant->F[1] != (float)UNDEFINED_DATA)
+			{
+				meanF1 = (meanF1 * ix + FTFormant->F[1]) / (ix + 1);
+				meanF2 = (meanF2 * iy + FTFormant->F[2]) / (iy + 1);
+				if (pFormantParms->bMelScale)
+				{
+					FormantChartParm.xdata[ix++] = Scale::ToMels((double)FTFormant->F[2]);
+					FormantChartParm.ydata[iy++] = Scale::ToMels((double)FTFormant->F[1]);
+				}
+				else
+				{
+					FormantChartParm.xdata[ix++] = (double)FTFormant->F[2];
+					FormantChartParm.ydata[iy++] = (double)FTFormant->F[1];
+				}
+			}
+		}
 
-  // Customize the axes.
-  FormantChartParm.line_connect = FALSE;           ;        
-  FormantChartParm.x_axis_style = zLINEAR;  
-  FormantChartParm.y_axis_style = zLINEAR;
-  FormantChartParm.x_axis_divisions = 5;                 // x-axis divisions
-  FormantChartParm.y_axis_divisions = 6;                 // y-axis divisions
-//  FormantChartParm.item_title_format = zNO_ITEM_TITLES;  // no numbers along axes
-  FormantChartParm.item_title_format = zNUMBERS; 
-  
-  int nGender = pDoc->GetGender();
-  RANGE FormantScale = GetChartRange(2, nGender);
-  FormantChartParm.xend = pFormantParms->bMelScale ? Scale::ToMels(FormantScale.Low): FormantScale.Low;
-  FormantChartParm.xstart = pFormantParms->bMelScale ? Scale::ToMels(FormantScale.High): FormantScale.High;
-  FormantScale = GetChartRange(1, nGender);
-  FormantChartParm.yend = pFormantParms->bMelScale ? Scale::ToMels(FormantScale.Low): FormantScale.Low;
-  FormantChartParm.ystart = pFormantParms->bMelScale ? Scale::ToMels(FormantScale.High): FormantScale.High;
-  FormantChartParm.zstart = 0, FormantChartParm.zend = 0;    
+		// Get mean if there is a tracking cluster.
+		if (bCluster)
+		{
+			if (pFormantParms->bMelScale)
+			{
+				FormantChartParm.xdata[ix++] = Scale::ToMels(meanF2);
+				FormantChartParm.ydata[iy++] = Scale::ToMels(meanF1);
+			}
+			else
+			{
+				FormantChartParm.xdata[ix++] = meanF2;
+				FormantChartParm.ydata[iy++] = meanF1;
+			}
+		}
 
-  CSaString szHTitle;
-  CSaString szVTitle;
-    
+		FormantChartParm.n = (int)ix;  // set total number of data points
+	}
+
+	// Customize the axes.
+	FormantChartParm.line_connect = FALSE;           ;        
+	FormantChartParm.x_axis_style = zLINEAR;  
+	FormantChartParm.y_axis_style = zLINEAR;
+	FormantChartParm.x_axis_divisions = 5;                 // x-axis divisions
+	FormantChartParm.y_axis_divisions = 6;                 // y-axis divisions
+	//  FormantChartParm.item_title_format = zNO_ITEM_TITLES;  // no numbers along axes
+	FormantChartParm.item_title_format = zNUMBERS; 
+
+	int nGender = pDoc->GetGender();
+	RANGE FormantScale = GetChartRange(2, nGender);
+	FormantChartParm.xend = pFormantParms->bMelScale ? Scale::ToMels(FormantScale.Low): FormantScale.Low;
+	FormantChartParm.xstart = pFormantParms->bMelScale ? Scale::ToMels(FormantScale.High): FormantScale.High;
+	FormantScale = GetChartRange(1, nGender);
+	FormantChartParm.yend = pFormantParms->bMelScale ? Scale::ToMels(FormantScale.Low): FormantScale.Low;
+	FormantChartParm.ystart = pFormantParms->bMelScale ? Scale::ToMels(FormantScale.High): FormantScale.High;
+	FormantChartParm.zstart = 0, FormantChartParm.zend = 0;    
+
+	CSaString szHTitle;
+	CSaString szVTitle;
+
 #ifdef originalSizeZGraph
-  szHTitle.Format("F2 (%d %s/div)", (int)(fabs(FormantChartParm.xend - FormantChartParm.xstart) /
-                                    FormantChartParm.x_axis_divisions + 0.5),
-                                    pFormantParms->bMelScale ? "mels": "Hz");          // horizontal axis title
-  szVTitle.Format("F1 (%d %s/div)", (int)(fabs(FormantChartParm.yend - FormantChartParm.ystart) /
-                                    FormantChartParm.y_axis_divisions + 0.5),
-                                    pFormantParms->bMelScale ? "mels": "Hz");          // vertical axis title 
+	szHTitle.Format("F2 (%d %s/div)", (int)(fabs(FormantChartParm.xend - FormantChartParm.xstart) /
+		FormantChartParm.x_axis_divisions + 0.5),
+		pFormantParms->bMelScale ? "mels": "Hz");          // horizontal axis title
+	szVTitle.Format("F1 (%d %s/div)", (int)(fabs(FormantChartParm.yend - FormantChartParm.ystart) /
+		FormantChartParm.y_axis_divisions + 0.5),
+		pFormantParms->bMelScale ? "mels": "Hz");          // vertical axis title 
 #else
-  szHTitle = pFormantParms->bMelScale ? "F2(mels)" : "F2 (Hz)";
-  szVTitle = pFormantParms->bMelScale ? "F1 (mels)" : "F1 (Hz)";
+	szHTitle = pFormantParms->bMelScale ? "F2(mels)" : "F2 (Hz)";
+	szVTitle = pFormantParms->bMelScale ? "F1 (mels)" : "F1 (Hz)";
 #endif
 
-  FormantChartParm.H_Title = const_cast<LPTSTR>((LPCTSTR)szHTitle);
-  FormantChartParm.V_Title = const_cast<LPTSTR>((LPCTSTR)szVTitle);
+	FormantChartParm.H_Title = const_cast<LPTSTR>((LPCTSTR)szHTitle);
+	FormantChartParm.V_Title = const_cast<LPTSTR>((LPCTSTR)szVTitle);
 
-  // Draw the chart.
-  BOOL bFlipChart = FALSE;
-  BOOL bShowAxes = TRUE;
-  StandardPlot(pView, pDC, rClient, rClip, FormantChartParm, bFlipChart, bShowAxes, bDataValid);
+	// Draw the chart.
+	BOOL bFlipChart = FALSE;
+	BOOL bShowAxes = TRUE;
+	StandardPlot(pView, pDC, rClient, rClip, FormantChartParm, bFlipChart, bShowAxes, bDataValid);
 
-  if(bDataValid)
-  {
-    // Release data point and title buffers.
-    free(FormantChartParm.xdata);
-    free(FormantChartParm.ydata);
-  }
+	if(bDataValid)
+	{
+		// Release data point and title buffers.
+		free(FormantChartParm.xdata);
+		free(FormantChartParm.ydata);
+	}
 }
 
 
@@ -1493,9 +1506,9 @@ IMPLEMENT_DYNCREATE(CPlotF2F1F1, CFormantChart)
 // CPlotF2F1F1 message map
 
 BEGIN_MESSAGE_MAP(CPlotF2F1F1, CPlotWnd)
-    //{{AFX_MSG_MAP(CPlotF2F1F1)
-    ON_WM_CREATE()
-    //}}AFX_MSG_MAP
+	//{{AFX_MSG_MAP(CPlotF2F1F1)
+	ON_WM_CREATE()
+	//}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
@@ -1519,9 +1532,9 @@ CPlotF2F1F1::~CPlotF2F1F1()
 // CPlotF2F1F1::MapVowelsToChart  Map vowels to chart coordinates
 /***************************************************************************/
 POINT CPlotF2F1F1::MapVowelsToChart(CDC* /* pDC */, FORMANT_FREQ& Formant, int /* SymbolHeight */, zScatterGraph *pFormantChart,
-                                    zGraphStruct& /* ChartParms */, BOOL bFlip)
+									zGraphStruct& /* ChartParms */, BOOL bFlip)
 {
-  return GetXYCoordinates(pFormantChart, Formant.F[2] - Formant.F[1], Formant.F[1], bFlip); // converts 2D point to plot coordinates
+	return GetXYCoordinates(pFormantChart, Formant.F[2] - Formant.F[1], Formant.F[1], bFlip); // converts 2D point to plot coordinates
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -1534,8 +1547,8 @@ POINT CPlotF2F1F1::MapVowelsToChart(CDC* /* pDC */, FORMANT_FREQ& Formant, int /
 /***************************************************************************/
 int CPlotF2F1F1::OnCreate(LPCREATESTRUCT lpCreateStruct)
 {
-  if (CPlotWnd::OnCreate(lpCreateStruct) == -1) return -1;
-  return 0;
+	if (CPlotWnd::OnCreate(lpCreateStruct) == -1) return -1;
+	return 0;
 }
 
 /***************************************************************************/
@@ -1547,56 +1560,56 @@ int CPlotF2F1F1::OnCreate(LPCREATESTRUCT lpCreateStruct)
 /***************************************************************************/
 void CPlotF2F1F1::OnDraw(CDC * pDC, CRect rClient, CRect rClip, CSaView * pView)
 {
-  // Get pointer to application, document, and formant processing object.
-  CSaApp* pApp = (CSaApp*)AfxGetApp();
-  CSaDoc* pDoc = pView->GetDocument();
-  CProcessFormants* pFormants = (CProcessFormants*)pDoc->GetFormants();
-  CFormantTracker* pFTFormants = pDoc->GetFormantTracker(); // get pointer to spectrogram object
-  FormantParm* pFormantParms = pFormants->GetFormantParms();
-  CProcessFragments* pFragments = (CProcessFragments*)pDoc->GetFragments();
-  FmtParm* pFmtParm = pDoc->GetFmtParm(); // get sa parameters format member data
-  WORD wSmpSize = (WORD)(pFmtParm->wBlockAlign / pFmtParm->wChannels);  // calculate sample size in bytes
-  BOOL bDynamicUpdate = (pView->GetGraphUpdateMode() == DYNAMIC_UPDATE);
-  BOOL bDataValid = TRUE; 
+	// Get pointer to application, document, and formant processing object.
+	CSaApp* pApp = (CSaApp*)AfxGetApp();
+	CSaDoc* pDoc = pView->GetDocument();
+	CProcessFormants* pFormants = (CProcessFormants*)pDoc->GetFormants();
+	CFormantTracker* pFTFormants = pDoc->GetFormantTracker(); // get pointer to spectrogram object
+	FormantParm* pFormantParms = pFormants->GetFormantParms();
+	CProcessFragments* pFragments = (CProcessFragments*)pDoc->GetFragments();
+	FmtParm* pFmtParm = pDoc->GetFmtParm(); // get sa parameters format member data
+	WORD wSmpSize = (WORD)(pFmtParm->wBlockAlign / pFmtParm->wChannels);  // calculate sample size in bytes
+	BOOL bDynamicUpdate = (pView->GetGraphUpdateMode() == DYNAMIC_UPDATE);
+	BOOL bDataValid = TRUE; 
 
-  // Get the formants.
-  short int nResult = ProcessFormants();
-  nResult = CheckResult(nResult, pFormants); // check the process result   //!!bDynamicUpdate?
-  switch(nResult)
-  {
-    case PROCESS_CANCELED:
-      bDataValid = FALSE;
-      break;
-    case PROCESS_DATA_OVERLOAD:
-      {
-        int nWaveGraphIndex = pView->GetGraphIndexForIDD(IDD_RAWDATA);
-        CGraphWnd* pWaveGraph = pView->GetGraph(nWaveGraphIndex);
-        if (pWaveGraph)
-        {
-          CPlotWnd* pWavePlot = pWaveGraph->GetPlot();
-          if (bDynamicUpdate && pWavePlot)
-          {
-            // turn off highlighted area in raw data
-            pWavePlot->SetHighLightArea(0, 0);
-            pWavePlot->UpdateWindow();
-          }
-        }
-      }
-      bDataValid = FALSE;
-      break;
-    case PROCESS_ERROR:
-    case PROCESS_NO_DATA:
-    case PROCESS_UNVOICED:
-      bDataValid = FALSE;
-      break;
-    case PROCESS_DONE:
-      //  Invalidate();
-      //  return;
-      break;
-  }
+	// Get the formants.
+	short int nResult = ProcessFormants();
+	nResult = CheckResult(nResult, pFormants); // check the process result   //!!bDynamicUpdate?
+	switch(nResult)
+	{
+	case PROCESS_CANCELED:
+		bDataValid = FALSE;
+		break;
+	case PROCESS_DATA_OVERLOAD:
+		{
+			int nWaveGraphIndex = pView->GetGraphIndexForIDD(IDD_RAWDATA);
+			CGraphWnd* pWaveGraph = pView->GetGraph(nWaveGraphIndex);
+			if (pWaveGraph)
+			{
+				CPlotWnd* pWavePlot = pWaveGraph->GetPlot();
+				if (bDynamicUpdate && pWavePlot)
+				{
+					// turn off highlighted area in raw data
+					pWavePlot->SetHighLightArea(0, 0);
+					pWavePlot->UpdateWindow();
+				}
+			}
+		}
+		bDataValid = FALSE;
+		break;
+	case PROCESS_ERROR:
+	case PROCESS_NO_DATA:
+	case PROCESS_UNVOICED:
+		bDataValid = FALSE;
+		break;
+	case PROCESS_DONE:
+		//  Invalidate();
+		//  return;
+		break;
+	}
 
-  zGraphStruct FormantChartParm;
-  memset(&FormantChartParm, zDEFAULT, sizeof(FormantChartParm));
+	zGraphStruct FormantChartParm;
+	memset(&FormantChartParm, zDEFAULT, sizeof(FormantChartParm));
 
 	// Allocate buffers for x and y coordinates;
 	FORMANT_FREQ *FTFormant = NULL;
@@ -1608,145 +1621,145 @@ void CPlotF2F1F1::OnDraw(CDC * pDC, CRect rClient, CRect rClip, CSaView * pView)
 	double sizeFactorFT2Raw = (double)pFTFormants->GetDataSize() / (double)pDoc->GetDataSize() / (sizeof(FORMANT_FREQ) / 2);
 	double sizeFactorFT2Frag = sizeFactorFT2Raw * (stopCursorPos - startCursorPos) / (stopFrag - startFrag);
 	DWORD ftIndex = (DWORD)((double)startCursorPos * sizeFactorFT2Raw);
-    FTFormant = pFTFormants->GetFormant(ftIndex);
+	FTFormant = pFTFormants->GetFormant(ftIndex);
 
 	double meanF1 = 0;
 	double meanF2 = 0;
 
-    if (!FTFormant)
-    {
-      bDataValid = FALSE;
-    }
+	if (!FTFormant)
+	{
+		bDataValid = FALSE;
+	}
 
-  if(bDataValid)
-  {
-	int nPointsPerFrame = 1;
-    DWORD dwMaxNumberPoints = dwFormantFrameCount * nPointsPerFrame;
-    BOOL bCluster = (dwFormantFrameCount > 1);
-    if (bCluster) dwMaxNumberPoints++;
-    if (dwMaxNumberPoints > zNUM_POINTS) dwMaxNumberPoints = zNUM_POINTS; // limit number to buffer sizes
-    FormantChartParm.xdata = (double *)malloc(dwMaxNumberPoints * sizeof(double));
-    if (!FormantChartParm.xdata)
-    {
-      // memory allocation error
-      pApp->ErrorMessage(IDS_ERROR_MEMALLOC);
-      GetParent()->PostMessage(WM_SYSCOMMAND, SC_CLOSE, 0L); // close the graph
-      return;
-    }
-    FormantChartParm.ydata = (double *)malloc(dwMaxNumberPoints * sizeof(double));
-    if (!FormantChartParm.ydata)
-    {
-      // memory allocation error
-      free(FormantChartParm.xdata);
-      pApp->ErrorMessage(IDS_ERROR_MEMALLOC);
-      GetParent()->PostMessage(WM_SYSCOMMAND, SC_CLOSE, 0L); // close the graph
-      return;
-    }
-    FormantChartParm.zdata = NULL;
-    
-    // Collect formant frequency pairs for all frames.
-    DWORD ix = 0, iy = 0;
-    for (DWORD dwFormantFrame = 0; dwFormantFrame < dwFormantFrameCount; dwFormantFrame++)
-    {
+	if(bDataValid)
+	{
+		int nPointsPerFrame = 1;
+		DWORD dwMaxNumberPoints = dwFormantFrameCount * nPointsPerFrame;
+		BOOL bCluster = (dwFormantFrameCount > 1);
+		if (bCluster) dwMaxNumberPoints++;
+		if (dwMaxNumberPoints > zNUM_POINTS) dwMaxNumberPoints = zNUM_POINTS; // limit number to buffer sizes
+		FormantChartParm.xdata = (double *)malloc(dwMaxNumberPoints * sizeof(double));
+		if (!FormantChartParm.xdata)
+		{
+			// memory allocation error
+			pApp->ErrorMessage(IDS_ERROR_MEMALLOC);
+			GetParent()->PostMessage(WM_SYSCOMMAND, SC_CLOSE, 0L); // close the graph
+			return;
+		}
+		FormantChartParm.ydata = (double *)malloc(dwMaxNumberPoints * sizeof(double));
+		if (!FormantChartParm.ydata)
+		{
+			// memory allocation error
+			free(FormantChartParm.xdata);
+			pApp->ErrorMessage(IDS_ERROR_MEMALLOC);
+			GetParent()->PostMessage(WM_SYSCOMMAND, SC_CLOSE, 0L); // close the graph
+			return;
+		}
+		FormantChartParm.zdata = NULL;
+
+		// Collect formant frequency pairs for all frames.
+		DWORD ix = 0, iy = 0;
+		for (DWORD dwFormantFrame = 0; dwFormantFrame < dwFormantFrameCount; dwFormantFrame++)
+		{
 			DWORD dwFTFormantFrame = (DWORD)((double)dwFormantFrame * sizeFactorFT2Frag);
-      if (dwFormantFrame != 0) FTFormant = pFTFormants->GetFormant(ftIndex + dwFTFormantFrame);
-      if (FTFormant->F[1] != (float)UNDEFINED_DATA &&
-        FTFormant->F[2] != (float)UNDEFINED_DATA)
-      {
-		meanF1 = (meanF1 * ix + FTFormant->F[1]) / (ix + 1);
-		meanF2 = (meanF2 * iy + FTFormant->F[2]) / (iy + 1);
-        if (pFormantParms->bMelScale)
-        {
-          FormantChartParm.xdata[ix++] = Scale::ToMels((double)FTFormant->F[2]) - Scale::ToMels((double)FTFormant->F[1]);
-          FormantChartParm.ydata[iy++] = Scale::ToMels((double)FTFormant->F[1]);
-        }
-        else
-        {
-          FormantChartParm.xdata[ix++] = (double)FTFormant->F[2] - (double)FTFormant->F[1];
-          FormantChartParm.ydata[iy++] = (double)FTFormant->F[1];
-        }
-      }
-    }
-    
-    // Get mean if there is a tracking cluster.
-    if (bCluster)
-    {
-      if (pFormantParms->bMelScale)
-      {
-        FormantChartParm.xdata[ix++] = Scale::ToMels(meanF2) - Scale::ToMels(meanF1);
-        FormantChartParm.ydata[iy++] = Scale::ToMels(meanF1);
-      }
-      else
-      {
-        FormantChartParm.xdata[ix++] = meanF2 - meanF1;
-        FormantChartParm.ydata[iy++] = meanF1;
-      }
-    }
-    
-    FormantChartParm.n = (int)ix;  // set total number of data points
-  }
+			if (dwFormantFrame != 0) FTFormant = pFTFormants->GetFormant(ftIndex + dwFTFormantFrame);
+			if (FTFormant->F[1] != (float)UNDEFINED_DATA &&
+				FTFormant->F[2] != (float)UNDEFINED_DATA)
+			{
+				meanF1 = (meanF1 * ix + FTFormant->F[1]) / (ix + 1);
+				meanF2 = (meanF2 * iy + FTFormant->F[2]) / (iy + 1);
+				if (pFormantParms->bMelScale)
+				{
+					FormantChartParm.xdata[ix++] = Scale::ToMels((double)FTFormant->F[2]) - Scale::ToMels((double)FTFormant->F[1]);
+					FormantChartParm.ydata[iy++] = Scale::ToMels((double)FTFormant->F[1]);
+				}
+				else
+				{
+					FormantChartParm.xdata[ix++] = (double)FTFormant->F[2] - (double)FTFormant->F[1];
+					FormantChartParm.ydata[iy++] = (double)FTFormant->F[1];
+				}
+			}
+		}
 
-  // Customize the chart.
-  int nGender = pDoc->GetGender();
-  switch(nGender)  // set the frequency ranges
-  {
-    case 0:  // male
-      FormantChartParm.xend	= 0  , FormantChartParm.xstart = 2500;
-      FormantChartParm.yend	= 200, FormantChartParm.ystart = 800;
-      break;
-    case 1:  // female
-      FormantChartParm.xend	= 0,   FormantChartParm.xstart = 3000;
-      FormantChartParm.yend	= 280, FormantChartParm.ystart = 900;
-      break;
-    case 2:  // child
-      FormantChartParm.xend	= 0,   FormantChartParm.xstart = 3000;
-      FormantChartParm.yend	= 350, FormantChartParm.ystart = 1100;
-  }
-  if (pFormantParms->bMelScale)
-  {
-	FormantChartParm.xstart = Scale::ToMels(FormantChartParm.xstart);
-	FormantChartParm.xend = Scale::ToMels(FormantChartParm.xend);
-	FormantChartParm.ystart = Scale::ToMels(FormantChartParm.ystart);
-	FormantChartParm.yend = Scale::ToMels(FormantChartParm.yend);
-  }
-  FormantChartParm.zstart = 0, FormantChartParm.zend = 0;    
-  FormantChartParm.line_connect = FALSE;           ;        
-  FormantChartParm.x_axis_style = zLINEAR;  
-  FormantChartParm.y_axis_style = zLINEAR;
-  FormantChartParm.x_axis_divisions = 6;                 // x-axis divisions
-  FormantChartParm.y_axis_divisions = 5;                 // y-axis divisions
-//  FormantChartParm.item_title_format = zNO_ITEM_TITLES;  // no numbers along axes
-  FormantChartParm.item_title_format = zNUMBERS; 
+		// Get mean if there is a tracking cluster.
+		if (bCluster)
+		{
+			if (pFormantParms->bMelScale)
+			{
+				FormantChartParm.xdata[ix++] = Scale::ToMels(meanF2) - Scale::ToMels(meanF1);
+				FormantChartParm.ydata[iy++] = Scale::ToMels(meanF1);
+			}
+			else
+			{
+				FormantChartParm.xdata[ix++] = meanF2 - meanF1;
+				FormantChartParm.ydata[iy++] = meanF1;
+			}
+		}
 
-  CSaString szHTitle;
-  CSaString szVTitle;
-    
+		FormantChartParm.n = (int)ix;  // set total number of data points
+	}
+
+	// Customize the chart.
+	int nGender = pDoc->GetGender();
+	switch(nGender)  // set the frequency ranges
+	{
+	case 0:  // male
+		FormantChartParm.xend	= 0  , FormantChartParm.xstart = 2500;
+		FormantChartParm.yend	= 200, FormantChartParm.ystart = 800;
+		break;
+	case 1:  // female
+		FormantChartParm.xend	= 0,   FormantChartParm.xstart = 3000;
+		FormantChartParm.yend	= 280, FormantChartParm.ystart = 900;
+		break;
+	case 2:  // child
+		FormantChartParm.xend	= 0,   FormantChartParm.xstart = 3000;
+		FormantChartParm.yend	= 350, FormantChartParm.ystart = 1100;
+	}
+	if (pFormantParms->bMelScale)
+	{
+		FormantChartParm.xstart = Scale::ToMels(FormantChartParm.xstart);
+		FormantChartParm.xend = Scale::ToMels(FormantChartParm.xend);
+		FormantChartParm.ystart = Scale::ToMels(FormantChartParm.ystart);
+		FormantChartParm.yend = Scale::ToMels(FormantChartParm.yend);
+	}
+	FormantChartParm.zstart = 0, FormantChartParm.zend = 0;    
+	FormantChartParm.line_connect = FALSE;           ;        
+	FormantChartParm.x_axis_style = zLINEAR;  
+	FormantChartParm.y_axis_style = zLINEAR;
+	FormantChartParm.x_axis_divisions = 6;                 // x-axis divisions
+	FormantChartParm.y_axis_divisions = 5;                 // y-axis divisions
+	//  FormantChartParm.item_title_format = zNO_ITEM_TITLES;  // no numbers along axes
+	FormantChartParm.item_title_format = zNUMBERS; 
+
+	CSaString szHTitle;
+	CSaString szVTitle;
+
 #ifdef originalSizeZGraph
-  szHTitle.Format("[F2-F1] (%d %s/div)", (int)(fabs(FormantChartParm.xend - FormantChartParm.xstart) /
-                                         FormantChartParm.x_axis_divisions + 0.5),
-                                         pFormantParms->bMelScale ? "mels": "Hz");          // horizontal axis title
-  szVTitle.Format("F1 (%d %s/div)", (int)(fabs(FormantChartParm.yend - FormantChartParm.ystart) /       
-                                    FormantChartParm.y_axis_divisions + 0.5),
-                                    pFormantParms->bMelScale ? "mels": "Hz");               // vertical axis title
+	szHTitle.Format("[F2-F1] (%d %s/div)", (int)(fabs(FormantChartParm.xend - FormantChartParm.xstart) /
+		FormantChartParm.x_axis_divisions + 0.5),
+		pFormantParms->bMelScale ? "mels": "Hz");          // horizontal axis title
+	szVTitle.Format("F1 (%d %s/div)", (int)(fabs(FormantChartParm.yend - FormantChartParm.ystart) /       
+		FormantChartParm.y_axis_divisions + 0.5),
+		pFormantParms->bMelScale ? "mels": "Hz");               // vertical axis title
 #else
-  szHTitle = "[F2-F1]";                  
-  szVTitle = pFormantParms->bMelScale ? "F1 (mels)" : "F1 (Hz)";                                                          
+	szHTitle = "[F2-F1]";                  
+	szVTitle = pFormantParms->bMelScale ? "F1 (mels)" : "F1 (Hz)";                                                          
 #endif
 
-  FormantChartParm.H_Title = const_cast<LPTSTR>((LPCTSTR)szHTitle);
-  FormantChartParm.V_Title = const_cast<LPTSTR>((LPCTSTR)szVTitle);
+	FormantChartParm.H_Title = const_cast<LPTSTR>((LPCTSTR)szHTitle);
+	FormantChartParm.V_Title = const_cast<LPTSTR>((LPCTSTR)szVTitle);
 
-  // Draw the chart.
-  BOOL bFlipChart = FALSE;
-  BOOL bShowAxes = TRUE;
-  StandardPlot(pView, pDC, rClient, rClip, FormantChartParm, bFlipChart, bShowAxes, bDataValid);
-    
-  if(bDataValid)
-  {
-    // Release data point and title buffers.
-    free(FormantChartParm.xdata);
-    free(FormantChartParm.ydata);  
-  }
+	// Draw the chart.
+	BOOL bFlipChart = FALSE;
+	BOOL bShowAxes = TRUE;
+	StandardPlot(pView, pDC, rClient, rClip, FormantChartParm, bFlipChart, bShowAxes, bDataValid);
+
+	if(bDataValid)
+	{
+		// Release data point and title buffers.
+		free(FormantChartParm.xdata);
+		free(FormantChartParm.ydata);  
+	}
 }
 
 
@@ -1763,9 +1776,9 @@ IMPLEMENT_DYNCREATE(CPlotInvSDP, CPlotWnd)
 // CPlotInvSDP message map
 
 BEGIN_MESSAGE_MAP(CPlotInvSDP, CPlotWnd)
-    //{{AFX_MSG_MAP(CPlotInvSDP)
-    ON_WM_CREATE()
-    //}}AFX_MSG_MAP
+	//{{AFX_MSG_MAP(CPlotInvSDP)
+	ON_WM_CREATE()
+	//}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
@@ -1776,9 +1789,9 @@ END_MESSAGE_MAP()
 /***************************************************************************/
 CPlotInvSDP::CPlotInvSDP()
 {
-  m_hDataX = NULL;
-  m_hDataY = NULL;
-  m_hDataSym = NULL;
+	m_hDataX = NULL;
+	m_hDataY = NULL;
+	m_hDataSym = NULL;
 }
 
 /***************************************************************************/
@@ -1786,17 +1799,17 @@ CPlotInvSDP::CPlotInvSDP()
 /***************************************************************************/
 CPlotInvSDP::~CPlotInvSDP()
 {
-  // free the buffer memory
-  if (m_hDataX)
-  {
-    ::GlobalUnlock(m_hDataX);
-    ::GlobalFree(m_hDataX);
-  }
-  if (m_hDataY)
-  {
-    ::GlobalUnlock(m_hDataY);
-    ::GlobalFree(m_hDataY);
-  }
+	// free the buffer memory
+	if (m_hDataX)
+	{
+		::GlobalUnlock(m_hDataX);
+		::GlobalFree(m_hDataX);
+	}
+	if (m_hDataY)
+	{
+		::GlobalUnlock(m_hDataY);
+		::GlobalFree(m_hDataY);
+	}
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -1809,22 +1822,22 @@ CPlotInvSDP::~CPlotInvSDP()
 /***************************************************************************/
 int CPlotInvSDP::OnCreate(LPCREATESTRUCT lpCreateStruct)
 {
-  if (CPlotWnd::OnCreate(lpCreateStruct) == -1) return -1;
-  // get pointer to document
-  CSaView* pView = (CSaView*)GetParent()->GetParent();
-  CSaDoc* pDoc = (CSaDoc*)pView->GetDocument();
-  // process workbench if necessary
-  pDoc->WorkbenchProcess();
-  // get pointer to process class
-  CProcessSDP* pSDP = GetSDP(pDoc); // get pointer to SDP object
-  // save process
-  m_pAreaProcess = pSDP;
-  return 0;
+	if (CPlotWnd::OnCreate(lpCreateStruct) == -1) return -1;
+	// get pointer to document
+	CSaView* pView = (CSaView*)GetParent()->GetParent();
+	CSaDoc* pDoc = (CSaDoc*)pView->GetDocument();
+	// process workbench if necessary
+	pDoc->WorkbenchProcess();
+	// get pointer to process class
+	CProcessSDP* pSDP = GetSDP(pDoc); // get pointer to SDP object
+	// save process
+	m_pAreaProcess = pSDP;
+	return 0;
 }
 
 CProcessSDP* CPlotInvSDP::GetSDP(CSaDoc *pDoc)
 {
-  return pDoc->GetSDP(2); // InvSDP has index == 2
+	return pDoc->GetSDP(2); // InvSDP has index == 2
 }
 
 /***************************************************************************/
@@ -1843,312 +1856,311 @@ void CPlotInvSDP::OnDraw(CDC * pDC, CRect rClient, CRect rClip, CSaView * pView)
 #define zMAX_NUMPANES  8
 #define zMAX_NUMPOINTS zNUM_SAMPLES * 2 * zMAX_NUMPANES
 
-  CSaDoc * pDoc = pView->GetDocument();
+	CSaDoc * pDoc = pView->GetDocument();
 
-  if (IsIconic()) return; // nothing to draw
-  // get pointer to view and document
-  // process workbench if necessary
-  pDoc->WorkbenchProcess();
-  // get the SDP parameters
-  SDPParm* pSDPParm = pDoc->GetSDPParm();
-  long lSteps = (long)pSDPParm->nSteps;
-  BOOL bAuto = (pSDPParm->nStepMode == 0);
-  BOOL bAverage = pSDPParm->bAverage;
-  // calculate the normfactor
-  double dfNormRadFactor = zTWOPI / 360.0 * (double)pSDPParm->nUpperBound;
-  // allocate the three data buffers
-  CSaApp* pApp = (CSaApp*)AfxGetApp();
-  if (!m_hDataX) // not yet allocated
-  {
-    m_hDataX = ::GlobalAlloc(GMEM_MOVEABLE | GMEM_SHARE, (DWORD)zNUM_SAMPLES * sizeof(double)); // allocate memory
-    if (!m_hDataX)
-    {
-      // memory allocation error
-      pApp->ErrorMessage(IDS_ERROR_MEMALLOC);
-      GetParent()->PostMessage(WM_SYSCOMMAND, SC_CLOSE, 0L); // close the graph
-      return;
-    }
-    m_lpDataX = (HPSTR)::GlobalLock(m_hDataX); // lock memory
-    if (!m_lpDataX)
-    {
-      // memory lock error
-      pApp->ErrorMessage(IDS_ERROR_MEMLOCK);
-      ::GlobalFree(m_hDataX);
-      m_hDataX = NULL;
-      GetParent()->PostMessage(WM_SYSCOMMAND, SC_CLOSE, 0L); // close the graph
-      return;
-    }
-  }
-  if (!m_hDataY) // not yet allocated
-  {
-    m_hDataY = ::GlobalAlloc(GMEM_MOVEABLE | GMEM_SHARE, (DWORD)zNUM_SAMPLES * sizeof(double)); // allocate memory
-    if (!m_hDataY)
-    {
-      // memory allocation error
-      pApp->ErrorMessage(IDS_ERROR_MEMALLOC);
-      GetParent()->PostMessage(WM_SYSCOMMAND, SC_CLOSE, 0L); // close the graph
-      return;
-    }
-    m_lpDataY = (HPSTR)::GlobalLock(m_hDataY); // lock memory
-    if (!m_lpDataY)
-    {
-      // memory lock error
-      pApp->ErrorMessage(IDS_ERROR_MEMLOCK);
-      ::GlobalFree(m_hDataY);
-      m_hDataY = NULL;
-      GetParent()->PostMessage(WM_SYSCOMMAND, SC_CLOSE, 0L); // close the graph
-      return;
-    }
-  }
-  if (!m_hDataSym) // not yet allocated
-  {
-    m_hDataSym = ::GlobalAlloc(GMEM_MOVEABLE | GMEM_SHARE, (DWORD)zNUM_SAMPLES * sizeof(short int)); // allocate memory
-    if (!m_hDataSym)
-    {
-      // memory allocation error
-      pApp->ErrorMessage(IDS_ERROR_MEMALLOC);
-      GetParent()->PostMessage(WM_SYSCOMMAND, SC_CLOSE, 0L); // close the graph
-      return;
-    }
-    m_lpDataSym = (HPSTR)::GlobalLock(m_hDataSym); // lock memory
-    if (!m_lpDataSym)
-    {
-      // memory lock error
-      pApp->ErrorMessage(IDS_ERROR_MEMLOCK);
-      ::GlobalFree(m_hDataSym);
-      m_hDataSym = NULL;
-      GetParent()->PostMessage(WM_SYSCOMMAND, SC_CLOSE, 0L); // close the graph
-      return;
-    }
-  }
-  // get pointer to process class
-  CProcessSDP* pSDP = GetSDP(pDoc); // get pointer to SDP object
-  // check if process is idle
-  if (pSDP->IsIdle())
-    m_HelperWnd.SetMode(MODE_TEXT | FRAME_POPOUT | POS_HCENTER | POS_VCENTER, IDS_HELPERWND_POSCUR, &rClient);
-  else
-  {
-    m_HelperWnd.SetMode(MODE_HIDDEN); // hide helper window
-    int nMaxValue = 1;
-    int nMinValue = 0;
-    BOOL bRadiusValid = TRUE;
-    DWORD dwStart = pSDP->GetAreaPosition();
-    DWORD dwNumber = pSDP->GetAreaLength();
-    if ((dwNumber - 1) > zNUM_SAMPLES) dwNumber = zNUM_SAMPLES + 1; // limit number to buffer sizes
-    // get a handle to windows for Z-graph
-    HDC hdc = pDC->GetSafeHdc();
-    // set up an array of colors to be used in the Z-graph
-    zRGB PlotColorArray[zMAX_DATA_SETS + 1];
-    // get pointer to color structure from main frame
-    CMainFrame* pMainWnd = (CMainFrame*)AfxGetMainWnd();
-    Colors* pColor = pMainWnd->GetColors();
-    for (int nLoop = 0; nLoop <= zMAX_DATA_SETS; nLoop++) PlotColorArray[nLoop] = pColor->cPlotData[0];
-    // cast the pointers to the data buffers
-    double * pDataX = (double *)m_lpDataX; // pointer to X-axis data
-    double * pDataY = (double *)m_lpDataY; // pointer to X-axis data
-    short int * pDataSym = (short int *)m_lpDataSym; // pointer to symbol data
+	if (IsIconic()) return; // nothing to draw
+	// get pointer to view and document
+	// process workbench if necessary
+	pDoc->WorkbenchProcess();
+	// get the SDP parameters
+	SDPParm* pSDPParm = pDoc->GetSDPParm();
+	long lSteps = (long)pSDPParm->nSteps;
+	BOOL bAuto = (pSDPParm->nStepMode == 0);
+	BOOL bAverage = pSDPParm->bAverage;
+	// calculate the normfactor
+	double dfNormRadFactor = zTWOPI / 360.0 * (double)pSDPParm->nUpperBound;
+	// allocate the three data buffers
+	CSaApp* pApp = (CSaApp*)AfxGetApp();
+	if (!m_hDataX) // not yet allocated
+	{
+		m_hDataX = ::GlobalAlloc(GMEM_MOVEABLE | GMEM_SHARE, (DWORD)zNUM_SAMPLES * sizeof(double)); // allocate memory
+		if (!m_hDataX)
+		{
+			// memory allocation error
+			pApp->ErrorMessage(IDS_ERROR_MEMALLOC);
+			GetParent()->PostMessage(WM_SYSCOMMAND, SC_CLOSE, 0L); // close the graph
+			return;
+		}
+		m_lpDataX = (HPSTR)::GlobalLock(m_hDataX); // lock memory
+		if (!m_lpDataX)
+		{
+			// memory lock error
+			pApp->ErrorMessage(IDS_ERROR_MEMLOCK);
+			::GlobalFree(m_hDataX);
+			m_hDataX = NULL;
+			GetParent()->PostMessage(WM_SYSCOMMAND, SC_CLOSE, 0L); // close the graph
+			return;
+		}
+	}
+	if (!m_hDataY) // not yet allocated
+	{
+		m_hDataY = ::GlobalAlloc(GMEM_MOVEABLE | GMEM_SHARE, (DWORD)zNUM_SAMPLES * sizeof(double)); // allocate memory
+		if (!m_hDataY)
+		{
+			// memory allocation error
+			pApp->ErrorMessage(IDS_ERROR_MEMALLOC);
+			GetParent()->PostMessage(WM_SYSCOMMAND, SC_CLOSE, 0L); // close the graph
+			return;
+		}
+		m_lpDataY = (HPSTR)::GlobalLock(m_hDataY); // lock memory
+		if (!m_lpDataY)
+		{
+			// memory lock error
+			pApp->ErrorMessage(IDS_ERROR_MEMLOCK);
+			::GlobalFree(m_hDataY);
+			m_hDataY = NULL;
+			GetParent()->PostMessage(WM_SYSCOMMAND, SC_CLOSE, 0L); // close the graph
+			return;
+		}
+	}
+	if (!m_hDataSym) // not yet allocated
+	{
+		m_hDataSym = ::GlobalAlloc(GMEM_MOVEABLE | GMEM_SHARE, (DWORD)zNUM_SAMPLES * sizeof(short int)); // allocate memory
+		if (!m_hDataSym)
+		{
+			// memory allocation error
+			pApp->ErrorMessage(IDS_ERROR_MEMALLOC);
+			GetParent()->PostMessage(WM_SYSCOMMAND, SC_CLOSE, 0L); // close the graph
+			return;
+		}
+		m_lpDataSym = (HPSTR)::GlobalLock(m_hDataSym); // lock memory
+		if (!m_lpDataSym)
+		{
+			// memory lock error
+			pApp->ErrorMessage(IDS_ERROR_MEMLOCK);
+			::GlobalFree(m_hDataSym);
+			m_hDataSym = NULL;
+			GetParent()->PostMessage(WM_SYSCOMMAND, SC_CLOSE, 0L); // close the graph
+			return;
+		}
+	}
+	// get pointer to process class
+	CProcessSDP* pSDP = GetSDP(pDoc); // get pointer to SDP object
+	// check if process is idle
+	if (pSDP->IsIdle())
+		m_HelperWnd.SetMode(MODE_TEXT | FRAME_POPOUT | POS_HCENTER | POS_VCENTER, IDS_HELPERWND_POSCUR, &rClient);
+	else
+	{
+		m_HelperWnd.SetMode(MODE_HIDDEN); // hide helper window
+		int nMaxValue = 1;
+		int nMinValue = 0;
+		BOOL bRadiusValid = TRUE;
+		DWORD dwStart = pSDP->GetAreaPosition();
+		DWORD dwNumber = pSDP->GetAreaLength();
+		if ((dwNumber - 1) > zNUM_SAMPLES) dwNumber = zNUM_SAMPLES + 1; // limit number to buffer sizes
+		// get a handle to windows for Z-graph
+		HDC hdc = pDC->GetSafeHdc();
+		// set up an array of colors to be used in the Z-graph
+		zRGB PlotColorArray[zMAX_DATA_SETS + 1];
+		// get pointer to color structure from main frame
+		CMainFrame* pMainWnd = (CMainFrame*)AfxGetMainWnd();
+		Colors* pColor = pMainWnd->GetColors();
+		for (int nLoop = 0; nLoop <= zMAX_DATA_SETS; nLoop++) PlotColorArray[nLoop] = pColor->cPlotData[0];
+		// cast the pointers to the data buffers
+		double * pDataX = (double *)m_lpDataX; // pointer to X-axis data
+		double * pDataY = (double *)m_lpDataY; // pointer to X-axis data
+		short int * pDataSym = (short int *)m_lpDataSym; // pointer to symbol data
 
-    pSDP->SetArea(pView);
-    if (TRUE)
-    {
-      // new data has to be processed
-      dwStart = pSDP->GetAreaPosition();
-      FmtParm* pFmtParm = pDoc->GetFmtParm(); // get sa parameters format member data
-      UINT nBlockAlign = pFmtParm->wBlockAlign;
-      if (bAuto)
-      {
-        // auto step mode, determine steps
-        lSteps = (long)(pSDP->GetAreaLength() / (zNUM_SAMPLES * (DWORD)nBlockAlign));
-        if (!lSteps) lSteps = 1;
-      }
-      dwNumber = (pSDP->GetAreaLength() - 1) / (DWORD)lSteps + 1;
-      if ((dwNumber - 1) > zNUM_SAMPLES) dwNumber = zNUM_SAMPLES + 1; // limit number to buffer sizes
-      if (dwNumber <= 2) return;
-      DWORD dwSmplSteps = (DWORD)lSteps * (DWORD)nBlockAlign;
-      DWORD dwRawBufferSize = GetBufferSize();
-      // fill up data buffers
-      HPSTR pData = pDoc->GetWaveData(dwStart, TRUE); // get pointer to wave data block
-      if (pData == NULL) return; // error occured while reading data block
-      DWORD dwDataPos = dwStart;
-      dwStart += dwRawBufferSize;
-      int nLastData = 0, nData;
-      nMaxValue = 0;
-      nMinValue = 0x7FFF;
-      bRadiusValid = FALSE;
-      // first find min and max values
-			DWORD dwLoop = 0;
-			for (; dwLoop < dwNumber; dwLoop++)
-      {
-        // read data
-        if (bAverage)
-        {
-          // build average inside step
-          long lAverageData = 0;
-          for (DWORD dwLoop = 0; dwLoop < (DWORD)lSteps; dwLoop++)
-          {
-            if (dwDataPos >= dwStart)
-            {
-              // reload data
-              pData = pDoc->GetWaveData(dwDataPos, TRUE); // get new data block
-              if (pData == NULL) return; // error occured while reading data block
-              dwStart = dwDataPos + dwRawBufferSize;
-            }
-            if (nBlockAlign == 1) // 8 bit data
-            {
-              BYTE bData = *pData++; // data range is 0...255 (128 is center)
-              nData = bData - 128;
-            }
-            else                  // 16 bit data
-            {
-              nData = *((short int*)pData++);
-              pData++;
-              dwDataPos++;
-            }
-            dwDataPos++;
-            lAverageData += (long)nData; // build data sum
-          }
-          nData = (int)(lAverageData / lSteps);
-        }
-        else
-        {
-          // take just one sample
-          if (dwDataPos >= dwStart)
-          {
-            // reload data
-            pData = pDoc->GetWaveData(dwDataPos, TRUE); // get new data block
-            if (pData == NULL) return; // error occured while reading data block
-            dwStart = dwDataPos + dwRawBufferSize;
-          }
-          if (nBlockAlign == 1) // 8 bit data
-          {
-            BYTE bData = *pData; // data range is 0...255 (128 is center)
-            nData = bData - 128;
-          }
-          else nData = *((short int*)pData); // 16 bit data
-          pData += dwSmplSteps;
-          dwDataPos += dwSmplSteps;
-        }
-        if (!dwLoop) nLastData = nData; // save first data
-        // find min and max values
-        if (nData > nMaxValue) nMaxValue = nData; // store higher value
-        if (nData < nMinValue) nMinValue = nData; // store lower value
-      }
-      // reset data pointers
-      dwStart = pSDP->GetAreaPosition();
-      pData = pDoc->GetWaveData(dwStart, TRUE); // get first wave data block
-      if (pData == NULL) return; // error occured while reading data block
-      dwDataPos = dwStart;
-      dwStart += dwRawBufferSize;
-      // now process the data and fill up the buffers
-      double dfHminL = 0.0001;
-      if (nMaxValue != nMinValue) dfHminL = (double)nMaxValue - (double)nMinValue;
-      pData += dwSmplSteps;
-      dwDataPos += dwSmplSteps;
-      for (dwLoop = 1; dwLoop < dwNumber; dwLoop++)
-      {
-        // read data
-        if (bAverage)
-        {
-          // build average inside step
-          long lAverageData = 0;
-          for (DWORD dwLoop = 0; dwLoop < (DWORD)lSteps; dwLoop++)
-          {
-            if (dwDataPos >= dwStart)
-            {
-              // reload data
-              pData = pDoc->GetWaveData(dwDataPos, TRUE); // get new data block
-              if (pData == NULL) return; // error occured while reading data block
-              dwStart = dwDataPos + dwRawBufferSize;
-            }
-            if (nBlockAlign == 1) // 8 bit data
-            {
-              BYTE bData = *pData++; // data range is 0...255 (128 is center)
-              nData = bData - 128;
-            }
-            else                  // 16 bit data
-            {
-              nData = *((short int*)pData++);
-              pData++;
-              dwDataPos++;
-            }
-            dwDataPos++;
-            lAverageData += (long)nData; // build data sum
-          }
-          nData = (int)(lAverageData / lSteps);
-        }
-        else
-        {
-          // take just one sample
-          if (dwDataPos >= dwStart)
-          {
-            // reload data
-            pData = pDoc->GetWaveData(dwDataPos, TRUE); // get new data block
-            if (pData == NULL) return; // error occured while reading data block
-            dwStart = dwDataPos + dwRawBufferSize;
-          }
-          if (nBlockAlign == 1) // 8 bit data
-          {
-            BYTE bData = *pData; // data range is 0...255 (128 is center)
-            nData = bData - 128;
-          }
-          else nData = *((short int*)pData); // 16 bit data
-          pData += dwSmplSteps;
-          dwDataPos += dwSmplSteps;
-        }
-        // calculate radius
-        double dfRadius = ((double)nLastData - (double)nMinValue) / dfHminL * (double)pSDPParm->nUpperBound; // radius
-        if (dfRadius) bRadiusValid = TRUE;
-        // calculate angle
-        double dfTheta = ((double)nData - (double)nMinValue) / dfHminL * dfNormRadFactor; // radius
-        *pDataY++ = dfRadius * sin(dfTheta);
-        *pDataX++ = dfRadius * cos(dfTheta);
-        *pDataSym++ = zDOT;
-        nLastData = nData;
-      }
-    }
-    // set up Z-graph structure
-    zGraphStruct zG;
-    // fill In the [zGraphStruct] structure elements
-    zG.hdc            = hdc            ; // windows HDC
-    zG.RWindow        = &rClient          ; // RECT with window dimensions
-    zG.xdata          = (double *)m_lpDataX; // x-data array, radius
-    zG.ydata          = (double *)m_lpDataY; // y-data array, angle (radian)
-    zG.zdata          = NULL           ; // z-data array
-    zG.symbols        = (int *)m_lpDataSym; // symbols array
-    if (((nMinValue == 0) && (nMaxValue == 0)) || !bRadiusValid) zG.n = 0; // nothing to display
-    else zG.n = (int)(dwNumber - 1)   ; // total number of data points
-    zG.axis_color     = pColor->cPlotGrid; // graph axis color
-    zG.bkg_color      = pColor->cPlotBkg; // graph bkg. color
-    zG.plot_color     = PlotColorArray ; // array of plot colors
-    zG.fill_style     = 0              ;
-    zG.title          = _T("\0")           ;
-    zG.H_Title    = _T("")        ; // horizontal axis title
-    zG.V_Title    = _T("Inverse SDP")   ; // vertical axis title
-    zG.legend_position = zNO_LEGEND    ;
-    zG.item_title_format = zNUMBERS    ; // show numbers along axes
-    zG.line_connect   = OFF            ;
-    zG.symbols_flag   = OFF            ;
-    zG.grid_flag      = HaveGrid()     ; // grid on/off for graph
-    zG.auto_scale     = OFF            ; // use manuel scaling
-    zG.draw_forward   = TRUE           ;
-    zG._3D_flag       = FALSE          ;
-    zG.bkg_gradient_mode = zNO_GRADIENT;
-    zG.x_axis_style = zLINEAR         ;
-    zG.y_axis_style = zLINEAR         ;
-    zG.x_axis_divisions = zBESTFIT_DIVISIONS; // x-axis divisions
-    zG.y_axis_divisions = zBESTFIT_DIVISIONS; // y-axis divisions
-    zG.digit_format = zFIXED        ; // round axis numbers to nearest whole integer
-    zG.digit_precision = 1        ;
-    zG.grid_pen_style = zDOTTED      ; // use dotted lines for grid
-    zG.shading_style = zNO_SHADING      ;
-    zG.xstart     = 0, zG.xend = pSDPParm->nUpperBound;
-    zG.ystart     = 0, zG.yend = pSDPParm->nUpperBound; // set the x, y ranges
-    zG.zstart     = 0,   zG.zend = 0;
-    zG.quality    = zG3D_QUALITY_HI;
-    zG.function    = NULL        ;
-    // draw the graph
-    ScatterGraph(&zG);
-  }
-  // finish the plot
-  PlotPaintFinish(pDC, rClient, rClip);
+		pSDP->SetArea(pView);
+		if (TRUE)
+		{
+			// new data has to be processed
+			dwStart = pSDP->GetAreaPosition();
+			FmtParm* pFmtParm = pDoc->GetFmtParm(); // get sa parameters format member data
+			UINT nBlockAlign = pFmtParm->wBlockAlign;
+			if (bAuto)
+			{
+				// auto step mode, determine steps
+				lSteps = (long)(pSDP->GetAreaLength() / (zNUM_SAMPLES * (DWORD)nBlockAlign));
+				if (!lSteps) lSteps = 1;
+			}
+			dwNumber = (pSDP->GetAreaLength() - 1) / (DWORD)lSteps + 1;
+			if ((dwNumber - 1) > zNUM_SAMPLES) dwNumber = zNUM_SAMPLES + 1; // limit number to buffer sizes
+			if (dwNumber <= 2) return;
+			DWORD dwSmplSteps = (DWORD)lSteps * (DWORD)nBlockAlign;
+			DWORD dwRawBufferSize = GetBufferSize();
+			// fill up data buffers
+			HPSTR pData = pDoc->GetWaveData(dwStart, TRUE); // get pointer to wave data block
+			if (pData == NULL) return; // error occured while reading data block
+			DWORD dwDataPos = dwStart;
+			dwStart += dwRawBufferSize;
+			int nLastData = 0, nData;
+			nMaxValue = 0;
+			nMinValue = 0x7FFF;
+			bRadiusValid = FALSE;
+			// first find min and max values
+			for (DWORD dwLoop = 0; dwLoop < dwNumber; dwLoop++)
+			{
+				// read data
+				if (bAverage)
+				{
+					// build average inside step
+					long lAverageData = 0;
+					for (DWORD dwLoop = 0; dwLoop < (DWORD)lSteps; dwLoop++)
+					{
+						if (dwDataPos >= dwStart)
+						{
+							// reload data
+							pData = pDoc->GetWaveData(dwDataPos, TRUE); // get new data block
+							if (pData == NULL) return; // error occured while reading data block
+							dwStart = dwDataPos + dwRawBufferSize;
+						}
+						if (nBlockAlign == 1) // 8 bit data
+						{
+							BYTE bData = *pData++; // data range is 0...255 (128 is center)
+							nData = bData - 128;
+						}
+						else                  // 16 bit data
+						{
+							nData = *((short int*)pData++);
+							pData++;
+							dwDataPos++;
+						}
+						dwDataPos++;
+						lAverageData += (long)nData; // build data sum
+					}
+					nData = (int)(lAverageData / lSteps);
+				}
+				else
+				{
+					// take just one sample
+					if (dwDataPos >= dwStart)
+					{
+						// reload data
+						pData = pDoc->GetWaveData(dwDataPos, TRUE); // get new data block
+						if (pData == NULL) return; // error occured while reading data block
+						dwStart = dwDataPos + dwRawBufferSize;
+					}
+					if (nBlockAlign == 1) // 8 bit data
+					{
+						BYTE bData = *pData; // data range is 0...255 (128 is center)
+						nData = bData - 128;
+					}
+					else nData = *((short int*)pData); // 16 bit data
+					pData += dwSmplSteps;
+					dwDataPos += dwSmplSteps;
+				}
+				if (!dwLoop) nLastData = nData; // save first data
+				// find min and max values
+				if (nData > nMaxValue) nMaxValue = nData; // store higher value
+				if (nData < nMinValue) nMinValue = nData; // store lower value
+			}
+			// reset data pointers
+			dwStart = pSDP->GetAreaPosition();
+			pData = pDoc->GetWaveData(dwStart, TRUE); // get first wave data block
+			if (pData == NULL) return; // error occured while reading data block
+			dwDataPos = dwStart;
+			dwStart += dwRawBufferSize;
+			// now process the data and fill up the buffers
+			double dfHminL = 0.0001;
+			if (nMaxValue != nMinValue) dfHminL = (double)nMaxValue - (double)nMinValue;
+			pData += dwSmplSteps;
+			dwDataPos += dwSmplSteps;
+			for (DWORD dwLoop = 1; dwLoop < dwNumber; dwLoop++)
+			{
+				// read data
+				if (bAverage)
+				{
+					// build average inside step
+					long lAverageData = 0;
+					for (DWORD dwLoop = 0; dwLoop < (DWORD)lSteps; dwLoop++)
+					{
+						if (dwDataPos >= dwStart)
+						{
+							// reload data
+							pData = pDoc->GetWaveData(dwDataPos, TRUE); // get new data block
+							if (pData == NULL) return; // error occured while reading data block
+							dwStart = dwDataPos + dwRawBufferSize;
+						}
+						if (nBlockAlign == 1) // 8 bit data
+						{
+							BYTE bData = *pData++; // data range is 0...255 (128 is center)
+							nData = bData - 128;
+						}
+						else                  // 16 bit data
+						{
+							nData = *((short int*)pData++);
+							pData++;
+							dwDataPos++;
+						}
+						dwDataPos++;
+						lAverageData += (long)nData; // build data sum
+					}
+					nData = (int)(lAverageData / lSteps);
+				}
+				else
+				{
+					// take just one sample
+					if (dwDataPos >= dwStart)
+					{
+						// reload data
+						pData = pDoc->GetWaveData(dwDataPos, TRUE); // get new data block
+						if (pData == NULL) return; // error occured while reading data block
+						dwStart = dwDataPos + dwRawBufferSize;
+					}
+					if (nBlockAlign == 1) // 8 bit data
+					{
+						BYTE bData = *pData; // data range is 0...255 (128 is center)
+						nData = bData - 128;
+					}
+					else nData = *((short int*)pData); // 16 bit data
+					pData += dwSmplSteps;
+					dwDataPos += dwSmplSteps;
+				}
+				// calculate radius
+				double dfRadius = ((double)nLastData - (double)nMinValue) / dfHminL * (double)pSDPParm->nUpperBound; // radius
+				if (dfRadius) bRadiusValid = TRUE;
+				// calculate angle
+				double dfTheta = ((double)nData - (double)nMinValue) / dfHminL * dfNormRadFactor; // radius
+				*pDataY++ = dfRadius * sin(dfTheta);
+				*pDataX++ = dfRadius * cos(dfTheta);
+				*pDataSym++ = zDOT;
+				nLastData = nData;
+			}
+		}
+		// set up Z-graph structure
+		zGraphStruct zG;
+		// fill In the [zGraphStruct] structure elements
+		zG.hdc = hdc;					// windows HDC
+		zG.RWindow = &rClient;			// RECT with window dimensions
+		zG.xdata = (double *)m_lpDataX; // x-data array, radius
+		zG.ydata = (double *)m_lpDataY; // y-data array, angle (radian)
+		zG.zdata = NULL;				// z-data array
+		zG.symbols = (int *)m_lpDataSym; // symbols array
+		if (((nMinValue == 0) && (nMaxValue == 0)) || !bRadiusValid) zG.n = 0; // nothing to display
+		else zG.n = (int)(dwNumber - 1); // total number of data points
+		zG.axis_color = pColor->cPlotGrid; // graph axis color
+		zG.bkg_color = pColor->cPlotBkg; // graph bkg. color
+		zG.plot_color = PlotColorArray; // array of plot colors
+		zG.fill_style = 0;
+		zG.title = _T("\0");
+		zG.H_Title = _T("");			// horizontal axis title
+		zG.V_Title = _T("Inverse SDP"); // vertical axis title
+		zG.legend_position = zNO_LEGEND;
+		zG.item_title_format = zNUMBERS; // show numbers along axes
+		zG.line_connect = OFF;
+		zG.symbols_flag = OFF;
+		zG.grid_flag = HaveGrid();		// grid on/off for graph
+		zG.auto_scale = OFF;			// use manuel scaling
+		zG.draw_forward = TRUE;
+		zG._3D_flag = FALSE;
+		zG.bkg_gradient_mode = zNO_GRADIENT;
+		zG.x_axis_style = zLINEAR;
+		zG.y_axis_style = zLINEAR;
+		zG.x_axis_divisions = zBESTFIT_DIVISIONS; // x-axis divisions
+		zG.y_axis_divisions = zBESTFIT_DIVISIONS; // y-axis divisions
+		zG.digit_format = zFIXED;		// round axis numbers to nearest whole integer
+		zG.digit_precision = 1;
+		zG.grid_pen_style = zDOTTED;	// use dotted lines for grid
+		zG.shading_style = zNO_SHADING;
+		zG.xstart = 0, zG.xend = pSDPParm->nUpperBound;
+		zG.ystart = 0, zG.yend = pSDPParm->nUpperBound; // set the x, y ranges
+		zG.zstart = 0,   zG.zend = 0;
+		zG.quality = zG3D_QUALITY_HI;
+		zG.function = NULL;
+		// draw the graph
+		ScatterGraph(&zG);
+	}
+	// finish the plot
+	PlotPaintFinish(pDC, rClient, rClip);
 }

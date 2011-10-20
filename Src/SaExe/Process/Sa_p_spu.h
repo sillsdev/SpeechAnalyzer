@@ -97,7 +97,7 @@ public:
     virtual long Process(void* pCaller, ISaDoc* pDoc, DWORD dwFrameStart, DWORD dwFrameSize,
                        SPECT_PROC_SELECT SpectraSelected, int nProgress = 0, int nLevel = 1);
     virtual DWORD GetDataSize() {return GetDataSize(sizeof(SPECT_VALUE));} // return processed data size in spectrum data structures
-    virtual DWORD GetDataSize(size_t nElements) {return CDataProcess::GetDataSize(nElements);} // return processed data size in LPC data structures
+    virtual DWORD GetDataSize(size_t nElements) {return (DWORD)CDataProcess::GetDataSize(nElements);} // return processed data size in LPC data structures
     virtual void* GetProcessedData(DWORD dwOffset, BOOL bBlockBegin = FALSE); // return spectrum data pointer on given position (offset)
     virtual int GetProcessedData(DWORD dwOffset, BOOL*); // return spectrum data from given position (offset)    
     virtual unsigned short GetSpectralCount() {return m_nSpectralBands;}    

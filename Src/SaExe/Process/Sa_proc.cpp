@@ -32,19 +32,19 @@ static char BASED_CODE THIS_FILE[] = __FILE__;
 /***************************************************************************/
 CDataProcess::CDataProcess()
 {
-  memset(this, 0, sizeof(CDataProcess));
-  m_pFile = NULL;
-  DeleteProcessFileName(); // no file name
-  m_lpData = NULL;
-  m_nMaxValue = 0;
-  m_nMinValue = 0;
-  m_dwBufferOffset = UNDEFINED_OFFSET; // buffer undefined, force buffer reload
-  CMainFrame* pMain = (CMainFrame*)AfxGetMainWnd();
-  if(pMain)
-    m_dwBufferSize = GetBufferSize();
-  else
-    m_dwBufferSize = 0;
-  SetStatus(PROCESS_IDLE);
+	memset(this, 0, sizeof(CDataProcess));
+	m_pFile = NULL;
+	DeleteProcessFileName(); // no file name
+	m_lpData = NULL;
+	m_nMaxValue = 0;
+	m_nMinValue = 0;
+	m_dwBufferOffset = UNDEFINED_OFFSET; // buffer undefined, force buffer reload
+	CMainFrame* pMain = (CMainFrame*)AfxGetMainWnd();
+	if(pMain)
+		m_dwBufferSize = GetBufferSize();
+	else
+		m_dwBufferSize = 0;
+	SetStatus(PROCESS_IDLE);
 }
 
 /***************************************************************************/
@@ -52,12 +52,12 @@ CDataProcess::CDataProcess()
 /***************************************************************************/
 CDataProcess::~CDataProcess()
 {   
-  // delete the temporary file
-  DeleteTempFile();
-  if (m_pFile)
-    delete m_pFile;
-  // free the buffer memory
-  if (m_lpData) delete [] m_lpData;
+	// delete the temporary file
+	DeleteTempFile();
+	if (m_pFile)
+		delete m_pFile;
+	// free the buffer memory
+	if (m_lpData) delete [] m_lpData;
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -65,10 +65,10 @@ CDataProcess::~CDataProcess()
 
 CProgressStatusBar* CDataProcess::pGetStatusBar()
 {
-  // get pointer to status bar
-  CMainFrame* pMainFrame = (CMainFrame*)AfxGetMainWnd();
-  CProgressStatusBar* pStatusBar = (CProgressStatusBar*)pMainFrame->GetProgressStatusBar();
-  return pStatusBar;
+	// get pointer to status bar
+	CMainFrame* pMainFrame = (CMainFrame*)AfxGetMainWnd();
+	CProgressStatusBar* pStatusBar = (CProgressStatusBar*)pMainFrame->GetProgressStatusBar();
+	return pStatusBar;
 }
 
 /***************************************************************************/
@@ -83,41 +83,43 @@ CProgressStatusBar* CDataProcess::pGetStatusBar()
 // allocated.
 /***************************************************************************/
 bool CDataProcess::StartProcess(void* pCaller, int nProcessID,
-                                DWORD dwBufferSize)
+								DWORD dwBufferSize)
 {   
-  TRACE(_T("CDataProcess::StartProcess ID:%d\n"), nProcessID);
-  
-  // get pointer to status bar
-  CProgressStatusBar* pStatusBar = pGetStatusBar();
-  CMainFrame* pMain = (CMainFrame*)AfxGetMainWnd();
-  
-  if(pMain)
-    m_dwBufferSize = GetBufferSize();
-  else
-    m_dwBufferSize = 0;
-  
-  // no previous process owner? you're the first, show to progress bar
-  if (!pStatusBar->GetProcessOwner()) pMain->ShowDataStatusBar(FALSE); // show the progress status bar
-  pStatusBar->SetProcessOwner(this, pCaller, nProcessID); // set the process owner
-  if (dwBufferSize)
-  { // allocate global buffer for the processed data
-    if (!m_lpData) // not yet allocated
-    { 
-      m_lpData = new char[dwBufferSize];
-      if (!m_lpData)
-      { // memory lock error
-        ErrorMessage(IDS_ERROR_MEMALLOC);
-        return false;
-      }
-    }
-  }
-  return true;
+	TRACE(_T("CDataProcess::StartProcess ID:%d\n"), nProcessID);
+
+	// get pointer to status bar
+	CProgressStatusBar* pStatusBar = pGetStatusBar();
+	CMainFrame* pMain = (CMainFrame*)AfxGetMainWnd();
+
+	if (pMain)
+		m_dwBufferSize = GetBufferSize();
+	else
+		m_dwBufferSize = 0;
+
+	// no previous process owner? you're the first, show to progress bar
+	if (!pStatusBar->GetProcessOwner()) 
+		pMain->ShowDataStatusBar(FALSE); // show the progress status bar
+	
+	pStatusBar->SetProcessOwner(this, pCaller, nProcessID); // set the process owner
+	if (dwBufferSize)
+	{ // allocate global buffer for the processed data
+		if (!m_lpData) // not yet allocated
+		{ 
+			m_lpData = new char[dwBufferSize];
+			if (!m_lpData)
+			{ // memory lock error
+				ErrorMessage(IDS_ERROR_MEMALLOC);
+				return false;
+			}
+		}
+	}
+	return true;
 }
 
-bool CDataProcess::StartProcess(void* pCaller, int nProcessID, BOOL bBuffer)
+bool CDataProcess::StartProcess( void* pCaller, int nProcessID, BOOL bBuffer)
 {
-  DWORD dwBufferSize = bBuffer ? GetBufferSize():0;
-  return StartProcess(pCaller, nProcessID, dwBufferSize);
+	DWORD dwBufferSize = bBuffer ? GetBufferSize():0;
+	return StartProcess(pCaller, nProcessID, dwBufferSize);
 }
 
 /***************************************************************************/
@@ -125,9 +127,9 @@ bool CDataProcess::StartProcess(void* pCaller, int nProcessID, BOOL bBuffer)
 /***************************************************************************/
 void CDataProcess::SetProgress(int nPercent)
 {          
-  CProgressStatusBar* pStatusBar = pGetStatusBar();
-  
-  pStatusBar->SetProgress(nPercent);
+	CProgressStatusBar* pStatusBar = pGetStatusBar();
+
+	pStatusBar->SetProgress(nPercent);
 }
 
 /***************************************************************************/
@@ -135,9 +137,9 @@ void CDataProcess::SetProgress(int nPercent)
 /***************************************************************************/
 void CDataProcess::ErrorMessage(UINT nTextID, LPCTSTR pszText1, LPCTSTR pszText2)
 {          
-  CSaApp* pApp = (CSaApp*) AfxGetApp();
-  
-  pApp->ErrorMessage(nTextID, pszText1, pszText2);
+	CSaApp* pApp = (CSaApp*) AfxGetApp();
+
+	pApp->ErrorMessage(nTextID, pszText1, pszText2);
 }
 
 /***************************************************************************/
@@ -147,14 +149,14 @@ void CDataProcess::ErrorMessage(UINT nTextID, LPCTSTR pszText1, LPCTSTR pszText2
 /***************************************************************************/
 void CDataProcess::EndProcess(BOOL bProcessBar)
 {
-  TRACE(_T("CDataProcess::EndProcess\n"));
-  if (bProcessBar)
-  {   
-    CMainFrame* pMainFrame = (CMainFrame*)AfxGetMainWnd();
-    pMainFrame->ShowDataStatusBar(TRUE); // show the data status bar
-    CProgressStatusBar* pStatusBar = pGetStatusBar();
-    pStatusBar->SetProcessOwner(NULL, NULL); // reset the process owner
-  }
+	TRACE(_T("CDataProcess::EndProcess\n"));
+	if (bProcessBar)
+	{   
+		CMainFrame* pMainFrame = (CMainFrame*)AfxGetMainWnd();
+		pMainFrame->ShowDataStatusBar(TRUE); // show the data status bar
+		CProgressStatusBar* pStatusBar = pGetStatusBar();
+		pStatusBar->SetProcessOwner(NULL, NULL); // reset the process owner
+	}
 }
 
 /***************************************************************************/
@@ -171,62 +173,62 @@ void CDataProcess::EndProcess(BOOL bProcessBar)
 /***************************************************************************/
 void* CDataProcess::GetProcessedData(DWORD dwOffset, BOOL bBlockBegin)
 {
-  if (dwOffset == UNDEFINED_OFFSET)
-  {
-    m_dwBufferOffset = UNDEFINED_OFFSET;
-    return NULL;
-  }
-  
-  DWORD dwByteOffset = dwOffset * 2;
-  
-  if (((!bBlockBegin) && ((dwByteOffset >= m_dwBufferOffset) && (dwByteOffset < (m_dwBufferOffset + GetProcessBufferSize()))))
-    || ((bBlockBegin) && (m_dwBufferOffset == dwByteOffset)))
-  { // this data is actually in buffer
-    return m_lpData; // return pointer to data
-  }
-  else // new data block has to be read
-  { 
-    if (bBlockBegin)
-    {
-      m_dwBufferOffset = dwByteOffset; // given offset is the first sample in data block
-    }
-    else
-    {
-      m_dwBufferOffset = dwByteOffset - (dwByteOffset % GetProcessBufferSize()); // new block offset
-    }
-    // open the temporary file
-    if (!Open(GetProcessFileName(), CFile::modeRead | CFile::shareExclusive))
-    { // error opening file
-      ErrorMessage(IDS_ERROR_OPENTEMPFILE, GetProcessFileName());
-      return NULL;
-    }
-    // find the right position in the data
-    if (m_dwBufferOffset != 0L)
-    { 
-      try
-      { m_pFile->Seek(m_dwBufferOffset, CFile::begin);
-      }
-      catch (CFileException e)
-      { // error seeking file
-        ErrorMessage(IDS_ERROR_READTEMPFILE, GetProcessFileName());
-        SetDataInvalid();// close the temporary file  
-        return NULL;
-      }
-    }
-    // read the processed data block
-    try
-    { m_pFile->Read((HPSTR)m_lpData, GetProcessBufferSize());
-    }
-    catch (CFileException e)
-    { // error reading file
-      ErrorMessage(IDS_ERROR_READTEMPFILE, GetProcessFileName());
-      SetDataInvalid();// close the temporary file  
-      return NULL;
-    }
-    CloseTempFile(FALSE); // close the temporary file
-    // return the new data pointer
-    return m_lpData;
-  }
+	if (dwOffset == UNDEFINED_OFFSET)
+	{
+		m_dwBufferOffset = UNDEFINED_OFFSET;
+		return NULL;
+	}
+
+	DWORD dwByteOffset = dwOffset * 2;
+
+	if (((!bBlockBegin) && ((dwByteOffset >= m_dwBufferOffset) && (dwByteOffset < (m_dwBufferOffset + GetProcessBufferSize()))))
+		|| ((bBlockBegin) && (m_dwBufferOffset == dwByteOffset)))
+	{ // this data is actually in buffer
+		return m_lpData; // return pointer to data
+	}
+	else // new data block has to be read
+	{ 
+		if (bBlockBegin)
+		{
+			m_dwBufferOffset = dwByteOffset; // given offset is the first sample in data block
+		}
+		else
+		{
+			m_dwBufferOffset = dwByteOffset - (dwByteOffset % GetProcessBufferSize()); // new block offset
+		}
+		// open the temporary file
+		if (!Open(GetProcessFileName(), CFile::modeRead | CFile::shareExclusive))
+		{ // error opening file
+			ErrorMessage(IDS_ERROR_OPENTEMPFILE, GetProcessFileName());
+			return NULL;
+		}
+		// find the right position in the data
+		if (m_dwBufferOffset != 0L)
+		{ 
+			try
+			{ m_pFile->Seek(m_dwBufferOffset, CFile::begin);
+			}
+			catch (CFileException e)
+			{ // error seeking file
+				ErrorMessage(IDS_ERROR_READTEMPFILE, GetProcessFileName());
+				SetDataInvalid();// close the temporary file  
+				return NULL;
+			}
+		}
+		// read the processed data block
+		try
+		{ m_pFile->Read((HPSTR)m_lpData, GetProcessBufferSize());
+		}
+		catch (CFileException e)
+		{ // error reading file
+			ErrorMessage(IDS_ERROR_READTEMPFILE, GetProcessFileName());
+			SetDataInvalid();// close the temporary file  
+			return NULL;
+		}
+		CloseTempFile(FALSE); // close the temporary file
+		// return the new data pointer
+		return m_lpData;
+	}
 }
 
 /***************************************************************************/
@@ -240,64 +242,64 @@ void* CDataProcess::GetProcessedData(DWORD dwOffset, BOOL bBlockBegin)
 /***************************************************************************/
 int CDataProcess::GetProcessedData(DWORD dwOffset, BOOL* pbRes)
 {
-  if (dwOffset == UNDEFINED_OFFSET)
-  {
-    m_dwBufferOffset = UNDEFINED_OFFSET;
-    return NULL;
-  }
-  
-  DWORD dwByteOffset = dwOffset * 2;
-  if ((dwByteOffset >= m_dwBufferOffset) && (dwByteOffset < (m_dwBufferOffset + GetProcessBufferSize())))
-  { // this data is actually in buffer
-    *pbRes = TRUE;  // set operation result
-    return *reinterpret_cast<short int*>(m_lpData + (dwByteOffset - m_dwBufferOffset)); // return data
-  }
-  else // new data block has to be read
-  { m_dwBufferOffset = dwByteOffset - (dwByteOffset % GetProcessBufferSize()); // new block offset
-  // open the temporary file
-  if (!Open(GetProcessFileName(), CFile::modeRead | CFile::shareExclusive))
-  { // error opening file
-    ErrorMessage(IDS_ERROR_OPENTEMPFILE, GetProcessFileName());
-    *pbRes = FALSE; // set operation result
-    m_dwBufferOffset = UNDEFINED_OFFSET;
-    return 0;
-  }
-  // find the right position in the data
-  if (m_dwBufferOffset != 0L)
-  { 
-    try
-    { 
-      m_pFile->Seek(m_dwBufferOffset, CFile::begin);
-    }
-    catch (CFileException e)
-    { 
-      // error seeking file
-      ErrorMessage(IDS_ERROR_READTEMPFILE, GetProcessFileName());
-      *pbRes = FALSE; // set operation result
-      m_dwBufferOffset = UNDEFINED_OFFSET;
-      CloseTempFile(FALSE); 
-      return 0;
-    }
-  }
-  // read the processed data block
-  try
-  { 
-    m_pFile->Read((HPSTR)m_lpData, GetProcessBufferSize());
-  }
-  catch (CFileException e)
-  { // error reading file
-    ErrorMessage(IDS_ERROR_READTEMPFILE, GetProcessFileName());
-    SetDataInvalid();// close the temporary file  
-    *pbRes = FALSE; // set operation result
-    m_dwBufferOffset = UNDEFINED_OFFSET;
-    return 0;
-  }
-  CloseTempFile(FALSE); // close the temporary file
-  // return the data
-  short int * lpData = (short int *)m_lpData; // cast buffer pointer
-  *pbRes = TRUE;  // set operation result
-  return *(lpData + (dwOffset - (m_dwBufferOffset / 2))); // return data
-  }
+	if (dwOffset == UNDEFINED_OFFSET)
+	{
+		m_dwBufferOffset = UNDEFINED_OFFSET;
+		return NULL;
+	}
+
+	DWORD dwByteOffset = dwOffset * 2;
+	if ((dwByteOffset >= m_dwBufferOffset) && (dwByteOffset < (m_dwBufferOffset + GetProcessBufferSize())))
+	{ // this data is actually in buffer
+		*pbRes = TRUE;  // set operation result
+		return *reinterpret_cast<short int*>(m_lpData + (dwByteOffset - m_dwBufferOffset)); // return data
+	}
+	else // new data block has to be read
+	{ m_dwBufferOffset = dwByteOffset - (dwByteOffset % GetProcessBufferSize()); // new block offset
+	// open the temporary file
+	if (!Open(GetProcessFileName(), CFile::modeRead | CFile::shareExclusive))
+	{ // error opening file
+		ErrorMessage(IDS_ERROR_OPENTEMPFILE, GetProcessFileName());
+		*pbRes = FALSE; // set operation result
+		m_dwBufferOffset = UNDEFINED_OFFSET;
+		return 0;
+	}
+	// find the right position in the data
+	if (m_dwBufferOffset != 0L)
+	{ 
+		try
+		{ 
+			m_pFile->Seek(m_dwBufferOffset, CFile::begin);
+		}
+		catch (CFileException e)
+		{ 
+			// error seeking file
+			ErrorMessage(IDS_ERROR_READTEMPFILE, GetProcessFileName());
+			*pbRes = FALSE; // set operation result
+			m_dwBufferOffset = UNDEFINED_OFFSET;
+			CloseTempFile(FALSE); 
+			return 0;
+		}
+	}
+	// read the processed data block
+	try
+	{ 
+		m_pFile->Read((HPSTR)m_lpData, GetProcessBufferSize());
+	}
+	catch (CFileException e)
+	{ // error reading file
+		ErrorMessage(IDS_ERROR_READTEMPFILE, GetProcessFileName());
+		SetDataInvalid();// close the temporary file  
+		*pbRes = FALSE; // set operation result
+		m_dwBufferOffset = UNDEFINED_OFFSET;
+		return 0;
+	}
+	CloseTempFile(FALSE); // close the temporary file
+	// return the data
+	short int * lpData = (short int *)m_lpData; // cast buffer pointer
+	*pbRes = TRUE;  // set operation result
+	return *(lpData + (dwOffset - (m_dwBufferOffset / 2))); // return data
+	}
 }
 
 /***************************************************************************/
@@ -313,64 +315,64 @@ int CDataProcess::GetProcessedData(DWORD dwOffset, BOOL* pbRes)
 /***************************************************************************/
 HPSTR CDataProcess::GetProcessedWaveData(DWORD dwOffset, BOOL bBlockBegin)
 {
-  if(GetProcessFileName() == NULL || GetProcessFileName()[0] == 0)
-    return NULL;
+	if(GetProcessFileName() == NULL || GetProcessFileName()[0] == 0)
+		return NULL;
 
-  if (dwOffset == UNDEFINED_OFFSET)
-  {
-    m_dwBufferOffset = UNDEFINED_OFFSET;
-    return NULL;
-  }
-  
-  if (((!bBlockBegin) && ((dwOffset >= m_dwBufferOffset) && (dwOffset < m_dwBufferOffset + GetProcessBufferSize())))
-    || ((bBlockBegin) && (m_dwBufferOffset == dwOffset)))
-  { // this data is actually in buffer
-    return m_lpData; // return pointer to data
-  }
-  else // new data block has to be read
-  { 
-    if (bBlockBegin) 
-      m_dwBufferOffset = dwOffset; // given offset ist first sample in data block
-    else 
-      m_dwBufferOffset = dwOffset - (dwOffset % GetProcessBufferSize()); // new block offset
-    // open the temporary file
-    if (!Open(GetProcessFileName(), CFile::modeRead | CFile::shareExclusive))
-    { 
-      // error opening file
-      ErrorMessage(IDS_ERROR_OPENTEMPFILE, GetProcessFileName());
-      return NULL;
-    }
-    // find the right position in the data
-    if (m_dwBufferOffset != 0L)
-    { 
-      try
-      { 
-        m_pFile->Seek(m_dwBufferOffset, CFile::begin);
-      }
-      catch (CFileException e)
-      { 
-        // error seeking file
-        ErrorMessage(IDS_ERROR_READTEMPFILE, GetProcessFileName());
-        SetDataInvalid();// close the temporary file  
-        return NULL;
-      }
-    }
-    // read the processed data block
-    try
-    { 
-      m_pFile->Read((HPSTR)m_lpData, GetProcessBufferSize());
-    }
-    catch (CFileException e)
-    { 
-      // error reading file
-      ErrorMessage(IDS_ERROR_READTEMPFILE, GetProcessFileName());
-      SetDataInvalid();// close the temporary file  
-      return NULL;
-    }
-    CloseTempFile(FALSE); // close the temporary file
-    // return the new data pointer
-    return m_lpData;
-  }
+	if (dwOffset == UNDEFINED_OFFSET)
+	{
+		m_dwBufferOffset = UNDEFINED_OFFSET;
+		return NULL;
+	}
+
+	if (((!bBlockBegin) && ((dwOffset >= m_dwBufferOffset) && (dwOffset < m_dwBufferOffset + GetProcessBufferSize())))
+		|| ((bBlockBegin) && (m_dwBufferOffset == dwOffset)))
+	{ // this data is actually in buffer
+		return m_lpData; // return pointer to data
+	}
+	else // new data block has to be read
+	{ 
+		if (bBlockBegin) 
+			m_dwBufferOffset = dwOffset; // given offset ist first sample in data block
+		else 
+			m_dwBufferOffset = dwOffset - (dwOffset % GetProcessBufferSize()); // new block offset
+		// open the temporary file
+		if (!Open(GetProcessFileName(), CFile::modeRead | CFile::shareExclusive))
+		{ 
+			// error opening file
+			ErrorMessage(IDS_ERROR_OPENTEMPFILE, GetProcessFileName());
+			return NULL;
+		}
+		// find the right position in the data
+		if (m_dwBufferOffset != 0L)
+		{ 
+			try
+			{ 
+				m_pFile->Seek(m_dwBufferOffset, CFile::begin);
+			}
+			catch (CFileException e)
+			{ 
+				// error seeking file
+				ErrorMessage(IDS_ERROR_READTEMPFILE, GetProcessFileName());
+				SetDataInvalid();// close the temporary file  
+				return NULL;
+			}
+		}
+		// read the processed data block
+		try
+		{ 
+			m_pFile->Read((HPSTR)m_lpData, GetProcessBufferSize());
+		}
+		catch (CFileException e)
+		{ 
+			// error reading file
+			ErrorMessage(IDS_ERROR_READTEMPFILE, GetProcessFileName());
+			SetDataInvalid();// close the temporary file  
+			return NULL;
+		}
+		CloseTempFile(FALSE); // close the temporary file
+		// return the new data pointer
+		return m_lpData;
+	}
 }
 
 /***************************************************************************/
@@ -379,15 +381,13 @@ HPSTR CDataProcess::GetProcessedWaveData(DWORD dwOffset, BOOL bBlockBegin)
 /***************************************************************************/
 void* CDataProcess::GetProcessedObject(DWORD dwIndex, size_t sObjectSize, BOOL bReverse)
 {
-  if (dwIndex == UNDEFINED_OFFSET)
-  {
-    m_dwBufferOffset = UNDEFINED_OFFSET;
-    return NULL;
-  }
-  
-  DWORD dwByteOffset = dwIndex * sObjectSize;
-  
-  return GetProcessedDataBlock(dwByteOffset, sObjectSize, bReverse);
+	if (dwIndex == UNDEFINED_OFFSET)
+	{
+		m_dwBufferOffset = UNDEFINED_OFFSET;
+		return NULL;
+	}
+	DWORD dwByteOffset = dwIndex * sObjectSize;
+	return GetProcessedDataBlock(dwByteOffset, sObjectSize, bReverse);
 }
 
 /***************************************************************************/
@@ -396,63 +396,65 @@ void* CDataProcess::GetProcessedObject(DWORD dwIndex, size_t sObjectSize, BOOL b
 /***************************************************************************/
 void* CDataProcess::GetProcessedDataBlock(DWORD dwByteOffset, size_t sObjectSize, BOOL bReverse)
 {
-  if (dwByteOffset == UNDEFINED_OFFSET)
-  {
-    m_dwBufferOffset = UNDEFINED_OFFSET;
-    return NULL;
-  }
-  
-  if ((dwByteOffset >= m_dwBufferOffset) && ((dwByteOffset+sObjectSize) < (m_dwBufferOffset + GetProcessBufferSize())))
-  { // this data is actually in buffer
-    return m_lpData + (dwByteOffset - m_dwBufferOffset); // return pointer to data
-  }
-  else // new data block has to be read
-  { 
-    m_dwBufferOffset = dwByteOffset; // given offset is the first sample in data block
-    if(bReverse)
-    {
-      // since we are traversing the file in reverse
-      // load buffer so that object is biased to end of buffer
-      m_dwBufferOffset = dwByteOffset + sObjectSize; 
-      if(m_dwBufferOffset > GetProcessBufferSize())
-        m_dwBufferOffset -= GetProcessBufferSize();
-      else
-        m_dwBufferOffset = 0;
-    }
-    
-    // open the temporary file
-    if (!Open(GetProcessFileName(), CFile::modeRead | CFile::shareExclusive))
-    { // error opening file
-      ErrorMessage(IDS_ERROR_OPENTEMPFILE, GetProcessFileName());
-      return NULL;
-    }
-    // find the right position in the data
-    if (m_dwBufferOffset != 0L)
-    { 
-      try
-      { m_pFile->Seek(m_dwBufferOffset, CFile::begin);
-      }
-      catch (...)
-      { // error seeking file
-        ErrorMessage(IDS_ERROR_READTEMPFILE, GetProcessFileName());
-        SetDataInvalid();// close the temporary file  
-        return NULL;
-      }
-    }
-    // read the processed data block
-    try
-    { m_pFile->Read((HPSTR)m_lpData, GetProcessBufferSize());
-    }
-    catch (...)
-    { // error reading file
-      ErrorMessage(IDS_ERROR_READTEMPFILE, GetProcessFileName());
-      SetDataInvalid();// close the temporary file  
-      return NULL;
-    }
-    CloseTempFile(FALSE); // close the temporary file
-    // return the new data pointer
-    return m_lpData + (dwByteOffset - m_dwBufferOffset); // return pointer to data
-  }
+	//TRACE("GetProcessedDataBlock %s[%d] %d %d %d\n",__FILE__,__LINE__,dwByteOffset, sObjectSize, bReverse);
+
+	if (dwByteOffset == UNDEFINED_OFFSET)
+	{
+		m_dwBufferOffset = UNDEFINED_OFFSET;
+		return NULL;
+	}
+
+	if ((dwByteOffset >= m_dwBufferOffset) && ((dwByteOffset+sObjectSize) < (m_dwBufferOffset + GetProcessBufferSize())))
+	{ // this data is actually in buffer
+		return m_lpData + (dwByteOffset - m_dwBufferOffset); // return pointer to data
+	}
+	else // new data block has to be read
+	{ 
+		m_dwBufferOffset = dwByteOffset; // given offset is the first sample in data block
+		if (bReverse)
+		{
+			// since we are traversing the file in reverse
+			// load buffer so that object is biased to end of buffer
+			m_dwBufferOffset = dwByteOffset + sObjectSize; 
+			if (m_dwBufferOffset > GetProcessBufferSize())
+				m_dwBufferOffset -= GetProcessBufferSize();
+			else
+				m_dwBufferOffset = 0;
+		}
+
+		// open the temporary file
+		if (!Open(GetProcessFileName(), CFile::modeRead | CFile::shareExclusive))
+		{ // error opening file
+			ErrorMessage(IDS_ERROR_OPENTEMPFILE, GetProcessFileName());
+			return NULL;
+		}
+		// find the right position in the data
+		if (m_dwBufferOffset != 0L)
+		{ 
+			try
+			{ m_pFile->Seek(m_dwBufferOffset, CFile::begin);
+			}
+			catch (...)
+			{ // error seeking file
+				ErrorMessage(IDS_ERROR_READTEMPFILE, GetProcessFileName());
+				SetDataInvalid();// close the temporary file  
+				return NULL;
+			}
+		}
+		// read the processed data block
+		try
+		{ m_pFile->Read((HPSTR)m_lpData, GetProcessBufferSize());
+		}
+		catch (...)
+		{ // error reading file
+			ErrorMessage(IDS_ERROR_READTEMPFILE, GetProcessFileName());
+			SetDataInvalid();// close the temporary file  
+			return NULL;
+		}
+		CloseTempFile(FALSE); // close the temporary file
+		// return the new data pointer
+		return m_lpData + (dwByteOffset - m_dwBufferOffset); // return pointer to data
+	}
 }
 
 /***************************************************************************/
@@ -460,7 +462,7 @@ void* CDataProcess::GetProcessedDataBlock(DWORD dwByteOffset, size_t sObjectSize
 /***************************************************************************/
 int CDataProcess::PropertiesDialog()
 {
-  return AfxMessageBox(IDS_DEFAULTPROPERTIES, MB_OK, 0);
+	return AfxMessageBox(IDS_DEFAULTPROPERTIES, MB_OK, 0);
 }
 
 /***************************************************************************/
@@ -470,53 +472,53 @@ int CDataProcess::PropertiesDialog()
 /***************************************************************************/
 BOOL CDataProcess::CreateTempFile(TCHAR* szName)
 {
-  DeleteTempFile();
-  
-  if(!CreateTempFile(szName, &m_fileStatus))
-  { // error
-    SetDataInvalid();// close the temporary file  
-    return FALSE;
-  }
-  m_dwBufferOffset = UNDEFINED_OFFSET; // buffer undefined, force buffer reload
-  return TRUE;
+	DeleteTempFile();
+
+	if(!CreateTempFile(szName, &m_fileStatus))
+	{ // error
+		SetDataInvalid();// close the temporary file  
+		return FALSE;
+	}
+	m_dwBufferOffset = UNDEFINED_OFFSET; // buffer undefined, force buffer reload
+	return TRUE;
 }
 
 BOOL CDataProcess::CreateTempFile(TCHAR* szName, CFileStatus *pFileStatus)
 {
-  TCHAR szTempPath[_MAX_PATH];
-  TCHAR lpszTempPath[_MAX_PATH];
-  GetTempPath(_MAX_PATH, lpszTempPath);
-  GetTempFileName(lpszTempPath, szName, 0, szTempPath);
-  // create and open the file
-  if (!Open(szTempPath, CFile::modeCreate | CFile::modeReadWrite | CFile::shareExclusive))
-  { // error opening file
-    ErrorMessage(IDS_ERROR_OPENTEMPFILE, szTempPath);
-    return FALSE;
-  }
+	TCHAR szTempPath[_MAX_PATH];
+	TCHAR lpszTempPath[_MAX_PATH];
+	GetTempPath(_MAX_PATH, lpszTempPath);
+	GetTempFileName(lpszTempPath, szName, 0, szTempPath);
+	// create and open the file
+	if (!Open(szTempPath, CFile::modeCreate | CFile::modeReadWrite | CFile::shareExclusive))
+	{ // error opening file
+		ErrorMessage(IDS_ERROR_OPENTEMPFILE, szTempPath);
+		return FALSE;
+	}
 
-  // read file status
-  if (!CFile::GetStatus(szTempPath, *pFileStatus))
-  { // error reading file status
-    ErrorMessage(IDS_ERROR_OPENTEMPFILE, szTempPath);
-    return FALSE;
-  }
+	// read file status
+	if (!CFile::GetStatus(szTempPath, *pFileStatus))
+	{ // error reading file status
+		ErrorMessage(IDS_ERROR_OPENTEMPFILE, szTempPath);
+		return FALSE;
+	}
 
-  return TRUE;
+	return TRUE;
 }
 
 BOOL CDataProcess::Open(LPCTSTR lpszFileName, UINT nOpenFlags, CFileException* pError)
 {
-  ASSERT (m_pFile == NULL);
-  ASSERT (lpszFileName);
-  ASSERT (lpszFileName[0] != 0);
+	ASSERT (m_pFile == NULL);
+	ASSERT (lpszFileName);
+	ASSERT (lpszFileName[0] != 0);
 
-  if(m_pFile)
-    delete m_pFile; // We shouldn't really get here...
-  
-  m_pFile = new CFile;
-  
-  return m_pFile->Open(lpszFileName, nOpenFlags, pError);
-  
+	if(m_pFile)
+		delete m_pFile; // We shouldn't really get here...
+
+	m_pFile = new CFile;
+
+	return m_pFile->Open(lpszFileName, nOpenFlags, pError);
+
 }
 
 /***************************************************************************/
@@ -531,23 +533,23 @@ BOOL CDataProcess::CreateAuxTempFile(TCHAR* szName, CFile* pFile, CFileStatus *p
 	if (!pFileStatus)
 		pFileStatus = new CFileStatus;
 
-  CSaApp* pApp = (CSaApp*)AfxGetApp();
+	CSaApp* pApp = (CSaApp*)AfxGetApp();
 	TCHAR szTempPath[_MAX_PATH];
-  TCHAR lpszTempPath[_MAX_PATH];
-  GetTempPath(sizeof(lpszTempPath), lpszTempPath);
-  GetTempFileName(lpszTempPath, szName, 0, szTempPath);
-  // create and open the file
-  if (!pFile->Open(szTempPath, CFile::modeCreate | CFile::modeReadWrite | CFile::shareExclusive))
-  { // error opening file
-    pApp->ErrorMessage(IDS_ERROR_OPENTEMPFILE, (LPTSTR)szTempPath);
-    return Exit(PROCESS_ERROR);
-  }
-  // read file status
-  if (!CFile::GetStatus(szTempPath, *pFileStatus))
-  { // error opening file
-    pApp->ErrorMessage(IDS_ERROR_OPENTEMPFILE, (LPTSTR)szTempPath);
-    return Exit(PROCESS_ERROR);
-  }
+	TCHAR lpszTempPath[_MAX_PATH];
+	GetTempPath(sizeof(lpszTempPath), lpszTempPath);
+	GetTempFileName(lpszTempPath, szName, 0, szTempPath);
+	// create and open the file
+	if (!pFile->Open(szTempPath, CFile::modeCreate | CFile::modeReadWrite | CFile::shareExclusive))
+	{ // error opening file
+		pApp->ErrorMessage(IDS_ERROR_OPENTEMPFILE, (LPTSTR)szTempPath);
+		return Exit(PROCESS_ERROR);
+	}
+	// read file status
+	if (!CFile::GetStatus(szTempPath, *pFileStatus))
+	{ // error opening file
+		pApp->ErrorMessage(IDS_ERROR_OPENTEMPFILE, (LPTSTR)szTempPath);
+		return Exit(PROCESS_ERROR);
+	}
 
 	return TRUE;
 }
@@ -557,24 +559,24 @@ BOOL CDataProcess::CreateAuxTempFile(TCHAR* szName, CFile* pFile, CFileStatus *p
 /***************************************************************************/
 BOOL CDataProcess::OpenFileToAppend()
 {
-  if (!Open(GetProcessFileName(), CFile::modeReadWrite | CFile::shareExclusive))
-  { // error opening file
-    
-    ErrorMessage(IDS_ERROR_OPENTEMPFILE, GetProcessFileName());
-    return FALSE;
-  }
-  
-  try
-  { m_pFile->SeekToEnd();
-  }
-  catch (CFileException e)
-  { // error writing file
-    ErrorMessage(IDS_ERROR_OPENTEMPFILE, GetProcessFileName());
-    SetDataInvalid();// close the temporary file  
-    return FALSE;
-  }
-  
-  return TRUE;
+	if (!Open(GetProcessFileName(), CFile::modeReadWrite | CFile::shareExclusive))
+	{ // error opening file
+
+		ErrorMessage(IDS_ERROR_OPENTEMPFILE, GetProcessFileName());
+		return FALSE;
+	}
+
+	try
+	{ m_pFile->SeekToEnd();
+	}
+	catch (CFileException e)
+	{ // error writing file
+		ErrorMessage(IDS_ERROR_OPENTEMPFILE, GetProcessFileName());
+		SetDataInvalid();// close the temporary file  
+		return FALSE;
+	}
+
+	return TRUE;
 }
 
 /***************************************************************************/
@@ -582,17 +584,17 @@ BOOL CDataProcess::OpenFileToAppend()
 /***************************************************************************/
 void CDataProcess::CloseTempFile(BOOL bUpdateStatus)
 {
-  // close the temporary file
-  if (m_pFile) 
-  {
-    delete m_pFile;
-    m_pFile = NULL;
-  }
-  if(bUpdateStatus)
-  {
-    CSaString path = GetProcessFileName();
-    CFile::GetStatus(path, m_fileStatus); // read the status
-  }
+	// close the temporary file
+	if (m_pFile) 
+	{
+		delete m_pFile;
+		m_pFile = NULL;
+	}
+	if(bUpdateStatus)
+	{
+		CSaString path = GetProcessFileName();
+		CFile::GetStatus(path, m_fileStatus); // read the status
+	}
 }
 
 /***************************************************************************/
@@ -600,18 +602,18 @@ void CDataProcess::CloseTempFile(BOOL bUpdateStatus)
 /***************************************************************************/
 void CDataProcess::DeleteTempFile()
 {
-  CloseTempFile(FALSE); // close the temporary file  
-  try
-  { // delete the temporary file
-    if (GetProcessFileName()[0] != 0)
-      CFile::Remove(GetProcessFileName());
-  }
-  catch (CFileException e)
-  { // error removing file
-    ErrorMessage(IDS_ERROR_DELTEMPFILE, GetProcessFileName());
-  }
-  DeleteProcessFileName();
-  m_fileStatus.m_size = 0;
+	CloseTempFile(FALSE); // close the temporary file  
+	try
+	{ // delete the temporary file
+		if (GetProcessFileName()[0] != 0)
+			CFile::Remove(GetProcessFileName());
+	}
+	catch (CFileException e)
+	{ // error removing file
+		ErrorMessage(IDS_ERROR_DELTEMPFILE, GetProcessFileName());
+	}
+	DeleteProcessFileName();
+	m_fileStatus.m_size = 0;
 }
 
 /***************************************************************************/
@@ -620,10 +622,10 @@ void CDataProcess::DeleteTempFile()
 /***************************************************************************/
 long CDataProcess::Exit(int nError)
 {
-  SetDataInvalid();
-  EndProcess(); // end data processing
-  EndWaitCursor();
-  return MAKELONG(nError, 100);
+	SetDataInvalid();
+	EndProcess(); // end data processing
+	EndWaitCursor();
+	return MAKELONG(nError, 100);
 }
 
 /***************************************************************************/
@@ -636,35 +638,35 @@ long CDataProcess::Exit(int nError)
 /***************************************************************************/
 BOOL CDataProcess::WriteDataBlock(DWORD dwPosition, HPSTR lpData, DWORD dwDataLength, size_t nElementSize)
 {   // open the temporary file
-  BOOL bClose = (m_pFile == NULL);
-  if (!m_pFile && !Open(GetProcessFileName(), CFile::modeReadWrite | CFile::shareExclusive))
-  { // error opening file
-    ErrorMessage(IDS_ERROR_OPENTEMPFILE, GetProcessFileName());
-    return FALSE;
-  }
-  // find the right position in the data
-  try
-  { m_pFile->Seek(dwPosition * nElementSize, CFile::begin);
-  }
-  catch (CFileException e)
-  { // error seeking file
-    ErrorMessage(IDS_ERROR_READTEMPFILE, GetProcessFileName());
-    SetDataInvalid();// close the temporary file  
-    return FALSE;
-  }
-  // write the data block from the buffer
-  try
-  { Write((HPSTR)lpData, dwDataLength * nElementSize);
-  }
-  catch (CFileException e)
-  { // error writing file
-    ErrorMessage(IDS_ERROR_WRITETEMPFILE, GetProcessFileName());
-    SetDataInvalid();// close the temporary file  
-    return FALSE;
-  }
-  if (bClose)
-    CloseTempFile(); // close the temporary file
-  return TRUE;
+	BOOL bClose = (m_pFile == NULL);
+	if (!m_pFile && !Open(GetProcessFileName(), CFile::modeReadWrite | CFile::shareExclusive))
+	{ // error opening file
+		ErrorMessage(IDS_ERROR_OPENTEMPFILE, GetProcessFileName());
+		return FALSE;
+	}
+	// find the right position in the data
+	try
+	{ m_pFile->Seek(dwPosition * nElementSize, CFile::begin);
+	}
+	catch (CFileException e)
+	{ // error seeking file
+		ErrorMessage(IDS_ERROR_READTEMPFILE, GetProcessFileName());
+		SetDataInvalid();// close the temporary file  
+		return FALSE;
+	}
+	// write the data block from the buffer
+	try
+	{ Write((HPSTR)lpData, dwDataLength * nElementSize);
+	}
+	catch (CFileException e)
+	{ // error writing file
+		ErrorMessage(IDS_ERROR_WRITETEMPFILE, GetProcessFileName());
+		SetDataInvalid();// close the temporary file  
+		return FALSE;
+	}
+	if (bClose)
+		CloseTempFile(); // close the temporary file
+	return TRUE;
 }
 
 /***************************************************************************/
@@ -684,122 +686,122 @@ BOOL CDataProcess::WriteDataBlock(DWORD dwPosition, HPSTR lpData, DWORD dwDataLe
 /***************************************************************************/
 BOOL CDataProcess::SmoothData(int nTimes)
 {   // allocate second global buffer for the smoothed data
-  HANDLE hSmoothData = ::GlobalAlloc(GMEM_MOVEABLE | GMEM_SHARE, GetProcessBufferSize()); // allocate memory
-  if (!hSmoothData)
-  { // memory allocation error
-    ErrorMessage(IDS_ERROR_MEMALLOC);
-    return FALSE;
-  }
-  HPSTR lpSmoothData = (HPSTR)::GlobalLock(hSmoothData); // lock memory
-  if (!lpSmoothData)
-  { // memory lock error
-    ErrorMessage(IDS_ERROR_MEMLOCK);
-    ::GlobalFree(hSmoothData);
-    return FALSE;
-  }
-  LONG dwDataPos; // current data position in unsmoothed data
-  int nData; // current data
-  UINT nDiv, nRes; // helper variables
-  BOOL bRes = TRUE; // operation result
-  DWORD dwDataSize = GetDataSize(); // get data size 
-  while (nTimes--)
-  { // first smooth backwards
-    DWORD dwSmoothPos = dwDataSize % (GetProcessBufferSize() / 2); // current data position in smoothed data buffer
-    DWORD dwBlockSize = dwSmoothPos; // save the block size
-    short int * pSmoothData = (short int *)lpSmoothData; // pointer to processed data
-    pSmoothData += ((dwDataSize - 1) % (GetProcessBufferSize() / 2)); // set buffer pointer
-    for(dwDataPos = dwDataSize - 1; dwDataPos >= 0; dwDataPos--)
-    { nData = GetProcessedData(dwDataPos, &bRes);
-    if (!bRes) break; 
-    if (nData >= 0)
-    { nDiv = 3;
-    nRes = (UINT)(nData * 3);
-    if ((dwDataPos - 1) >= 0)
-    { nData = GetProcessedData(dwDataPos - 1, &bRes);
-    if (!bRes) break; 
-    if (nData >= 0)
-    { nDiv += 2;
-    nRes += (UINT)(nData * 2);
-    if ((dwDataPos - 2) >= 0)
-    { nData = GetProcessedData(dwDataPos - 2, &bRes);
-    if (!bRes) break; 
-    if (nData >= 0)
-    { nDiv++;
-    nRes += nData;
-    }
-    }
-    }
-    }
-    // result in normal case: r[dwDataPos]=(3*r[dwDataPos]+2*r[dwDataPos-1]+r[dwDataPos-2])/6
-    *pSmoothData-- = (short int)((nRes + (nDiv / 2)) / nDiv); // save result
-    }
-    else *pSmoothData-- = (short int)nData;
-    if (--dwSmoothPos == 0) // smoothed buffer is full
-    { bRes = WriteDataBlock(dwDataPos, lpSmoothData, dwBlockSize); // write the buffer into the temporary file
-    if (!bRes) break;
-    dwSmoothPos = GetProcessBufferSize() / 2; // reset buffer position
-    dwBlockSize = dwSmoothPos; // save block size
-    pSmoothData = (short int *)(lpSmoothData + (GetProcessBufferSize() - 2)); // reset buffer pointer
-    }
-    }
-    m_dwBufferOffset = UNDEFINED_OFFSET;  // buffer undefined, force buffer reload
-    if (!bRes) break;
-    // and then smooth forwards
-    m_nMaxValue = 0;
-    m_nMinValue = 0x7FFF;
-    dwSmoothPos = 0; // reset buffer position
-    pSmoothData = (short int *)lpSmoothData; // reset buffer pointer
-    dwBlockSize = 0;
-    for(dwDataPos = 0; (DWORD)dwDataPos < dwDataSize; dwDataPos++)
-    { nData = GetProcessedData(dwDataPos, &bRes);
-    if (!bRes) break; 
-    if (nData >= 0)
-    { nDiv = 3;
-    nRes = (UINT)(nData * 3);
-    if (((DWORD)dwDataPos + 1) < dwDataSize)
-    { nData = GetProcessedData(dwDataPos + 1, &bRes);
-    if (!bRes) break; 
-    if (nData >= 0)
-    { nDiv += 2;
-    nRes += (UINT)(nData * 2);
-    if (((DWORD)dwDataPos + 2) < dwDataSize)
-    { nData = GetProcessedData(dwDataPos + 2, &bRes);
-    if (!bRes) break; 
-    if (nData >= 0)
-    { nDiv++;
-    nRes += nData;
-    }
-    }
-    }
-    }
-    // result in normal case, r[dwDataPos]=(3*r[dwDataPos]+2*r[dwDataPos+1]+r[dwDataPos+2])/6
-    *pSmoothData = (short int)((nRes + (nDiv / 2)) / nDiv); // save result
-    }
-    else *pSmoothData = (short int)nData;
-    if (*pSmoothData >= 0)
-    { // adjust max data level
-      if (*pSmoothData > m_nMaxValue) m_nMaxValue = *pSmoothData;
-      // adjust min data level
-      if (*pSmoothData < m_nMinValue) m_nMinValue = *pSmoothData;
-    }
-    *pSmoothData++;
-    if ((++dwSmoothPos == GetProcessBufferSize() / 2) // smoothed buffer is full
-      || ((DWORD)dwDataPos == dwDataSize - 1)) // last result in loop
-    { bRes = WriteDataBlock(dwBlockSize, lpSmoothData, dwSmoothPos); // write the buffer into the temporary file
-    if (!bRes) break;
-    dwSmoothPos = 0; // reset buffer position 
-    dwBlockSize = dwDataPos; // save data position
-    pSmoothData = (short int *)lpSmoothData; // reset buffer pointer
-    }
-    // overall smoothing is symmetrical
-    }
-    m_dwBufferOffset = UNDEFINED_OFFSET; // buffer undefined, force buffer reload
-    if (!bRes) break;
-  }
-  // free the smoothed data buffer
-  ::GlobalUnlock(hSmoothData);
-  ::GlobalFree(hSmoothData);
-  return bRes;
+	HANDLE hSmoothData = ::GlobalAlloc(GMEM_MOVEABLE | GMEM_SHARE, GetProcessBufferSize()); // allocate memory
+	if (!hSmoothData)
+	{ // memory allocation error
+		ErrorMessage(IDS_ERROR_MEMALLOC);
+		return FALSE;
+	}
+	HPSTR lpSmoothData = (HPSTR)::GlobalLock(hSmoothData); // lock memory
+	if (!lpSmoothData)
+	{ // memory lock error
+		ErrorMessage(IDS_ERROR_MEMLOCK);
+		::GlobalFree(hSmoothData);
+		return FALSE;
+	}
+	LONG dwDataPos; // current data position in unsmoothed data
+	int nData; // current data
+	UINT nDiv, nRes; // helper variables
+	BOOL bRes = TRUE; // operation result
+	DWORD dwDataSize = GetDataSize(); // get data size 
+	while (nTimes--)
+	{ // first smooth backwards
+		DWORD dwSmoothPos = dwDataSize % (GetProcessBufferSize() / 2); // current data position in smoothed data buffer
+		DWORD dwBlockSize = dwSmoothPos; // save the block size
+		short int * pSmoothData = (short int *)lpSmoothData; // pointer to processed data
+		pSmoothData += ((dwDataSize - 1) % (GetProcessBufferSize() / 2)); // set buffer pointer
+		for(dwDataPos = dwDataSize - 1; dwDataPos >= 0; dwDataPos--)
+		{ nData = GetProcessedData(dwDataPos, &bRes);
+		if (!bRes) break; 
+		if (nData >= 0)
+		{ nDiv = 3;
+		nRes = (UINT)(nData * 3);
+		if ((dwDataPos - 1) >= 0)
+		{ nData = GetProcessedData(dwDataPos - 1, &bRes);
+		if (!bRes) break; 
+		if (nData >= 0)
+		{ nDiv += 2;
+		nRes += (UINT)(nData * 2);
+		if ((dwDataPos - 2) >= 0)
+		{ nData = GetProcessedData(dwDataPos - 2, &bRes);
+		if (!bRes) break; 
+		if (nData >= 0)
+		{ nDiv++;
+		nRes += nData;
+		}
+		}
+		}
+		}
+		// result in normal case: r[dwDataPos]=(3*r[dwDataPos]+2*r[dwDataPos-1]+r[dwDataPos-2])/6
+		*pSmoothData-- = (short int)((nRes + (nDiv / 2)) / nDiv); // save result
+		}
+		else *pSmoothData-- = (short int)nData;
+		if (--dwSmoothPos == 0) // smoothed buffer is full
+		{ bRes = WriteDataBlock(dwDataPos, lpSmoothData, dwBlockSize); // write the buffer into the temporary file
+		if (!bRes) break;
+		dwSmoothPos = GetProcessBufferSize() / 2; // reset buffer position
+		dwBlockSize = dwSmoothPos; // save block size
+		pSmoothData = (short int *)(lpSmoothData + (GetProcessBufferSize() - 2)); // reset buffer pointer
+		}
+		}
+		m_dwBufferOffset = UNDEFINED_OFFSET;  // buffer undefined, force buffer reload
+		if (!bRes) break;
+		// and then smooth forwards
+		m_nMaxValue = 0;
+		m_nMinValue = 0x7FFF;
+		dwSmoothPos = 0; // reset buffer position
+		pSmoothData = (short int *)lpSmoothData; // reset buffer pointer
+		dwBlockSize = 0;
+		for(dwDataPos = 0; (DWORD)dwDataPos < dwDataSize; dwDataPos++)
+		{ nData = GetProcessedData(dwDataPos, &bRes);
+		if (!bRes) break; 
+		if (nData >= 0)
+		{ nDiv = 3;
+		nRes = (UINT)(nData * 3);
+		if (((DWORD)dwDataPos + 1) < dwDataSize)
+		{ nData = GetProcessedData(dwDataPos + 1, &bRes);
+		if (!bRes) break; 
+		if (nData >= 0)
+		{ nDiv += 2;
+		nRes += (UINT)(nData * 2);
+		if (((DWORD)dwDataPos + 2) < dwDataSize)
+		{ nData = GetProcessedData(dwDataPos + 2, &bRes);
+		if (!bRes) break; 
+		if (nData >= 0)
+		{ nDiv++;
+		nRes += nData;
+		}
+		}
+		}
+		}
+		// result in normal case, r[dwDataPos]=(3*r[dwDataPos]+2*r[dwDataPos+1]+r[dwDataPos+2])/6
+		*pSmoothData = (short int)((nRes + (nDiv / 2)) / nDiv); // save result
+		}
+		else *pSmoothData = (short int)nData;
+		if (*pSmoothData >= 0)
+		{ // adjust max data level
+			if (*pSmoothData > m_nMaxValue) m_nMaxValue = *pSmoothData;
+			// adjust min data level
+			if (*pSmoothData < m_nMinValue) m_nMinValue = *pSmoothData;
+		}
+		*pSmoothData++;
+		if ((++dwSmoothPos == GetProcessBufferSize() / 2) // smoothed buffer is full
+			|| ((DWORD)dwDataPos == dwDataSize - 1)) // last result in loop
+		{ bRes = WriteDataBlock(dwBlockSize, lpSmoothData, dwSmoothPos); // write the buffer into the temporary file
+		if (!bRes) break;
+		dwSmoothPos = 0; // reset buffer position 
+		dwBlockSize = dwDataPos; // save data position
+		pSmoothData = (short int *)lpSmoothData; // reset buffer pointer
+		}
+		// overall smoothing is symmetrical
+		}
+		m_dwBufferOffset = UNDEFINED_OFFSET; // buffer undefined, force buffer reload
+		if (!bRes) break;
+	}
+	// free the smoothed data buffer
+	::GlobalUnlock(hSmoothData);
+	::GlobalFree(hSmoothData);
+	return bRes;
 }
 
 /***************************************************************************/
@@ -810,11 +812,11 @@ BOOL CDataProcess::SmoothData(int nTimes)
 /***************************************************************************/
 long CDataProcess::Process(void * pCaller, ISaDoc *, int nProgress, int nLevel)
 {   
-  UNUSED_ALWAYS(pCaller);
-  if (IsDataReady()) return MAKELONG(--nLevel, nProgress); // data is already ready
-  // set ready flag
-  SetDataReady();
-  return MAKELONG(nLevel, nProgress);
+	UNUSED_ALWAYS(pCaller);
+	if (IsDataReady()) return MAKELONG(--nLevel, nProgress); // data is already ready
+	// set ready flag
+	SetDataReady();
+	return MAKELONG(nLevel, nProgress);
 }
 
 /***************************************************************************/
@@ -829,7 +831,7 @@ void CDataProcess::WriteProperties(Object_ostream& )
 /***************************************************************************/
 BOOL CDataProcess::bReadProperties(Object_istream& )
 {          
-  return FALSE;
+	return FALSE;
 }
 
 /***************************************************************************/
@@ -837,7 +839,7 @@ BOOL CDataProcess::bReadProperties(Object_istream& )
 /***************************************************************************/
 void CDataProcess::SetStatus(long nStatus)
 {          
-  m_nStatus = nStatus;
+	m_nStatus = nStatus;
 }
 
 
@@ -858,9 +860,9 @@ void CDataProcess::SetStatus(long nStatus)
 /***************************************************************************/
 CAreaDataProcess::CAreaDataProcess()
 {
-  // create the area arrays
-  m_dwAreaPos = 0;
-  m_dwAreaLength = 0;
+	// create the area arrays
+	m_dwAreaPos = 0;
+	m_dwAreaLength = 0;
 }
 
 /***************************************************************************/
@@ -878,19 +880,19 @@ CAreaDataProcess::~CAreaDataProcess()
 /***************************************************************************/
 BOOL CAreaDataProcess::SetArea(CSaView* pView)
 {   
-  if (IsStatusFlag(KEEP_AREA))
-    return FALSE; // not a new area
-  
-  // get new area boundaries
-  m_dwAreaPos = pView->GetStartCursorPosition();
-  
-  ISaDoc *pDoc = pView->GetDocument();
-  FmtParm* pFmtParm = pDoc->GetFmtParm(); // get sa parameters format member data
-  WORD wSmpSize = (WORD)(pFmtParm->wBlockAlign / pFmtParm->wChannels);
-  m_dwAreaLength = pView->GetStopCursorPosition() - m_dwAreaPos + wSmpSize;
-  
-  SetStatusFlag(KEEP_AREA);
-  return TRUE;
+	if (IsStatusFlag(KEEP_AREA))
+		return FALSE; // not a new area
+
+	// get new area boundaries
+	m_dwAreaPos = pView->GetStartCursorPosition();
+
+	ISaDoc *pDoc = pView->GetDocument();
+	FmtParm* pFmtParm = pDoc->GetFmtParm(); // get sa parameters format member data
+	WORD wSmpSize = (WORD)(pFmtParm->wBlockAlign / pFmtParm->wChannels);
+	m_dwAreaLength = pView->GetStopCursorPosition() - m_dwAreaPos + wSmpSize;
+
+	SetStatusFlag(KEEP_AREA);
+	return TRUE;
 }
 
 /***************************************************************************/
@@ -898,10 +900,10 @@ BOOL CAreaDataProcess::SetArea(CSaView* pView)
 /***************************************************************************/
 BOOL CAreaDataProcess::SetArea(DWORD dwAreaPos, DWORD dwAreaLength)
 {   
-  // get new area boundaries
-  m_dwAreaPos = dwAreaPos;
-  m_dwAreaLength = dwAreaLength;
-  
-  return TRUE;
+	// get new area boundaries
+	m_dwAreaPos = dwAreaPos;
+	m_dwAreaLength = dwAreaLength;
+
+	return TRUE;
 }
 

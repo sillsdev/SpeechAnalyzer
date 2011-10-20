@@ -174,174 +174,174 @@
 
 enum _Output_Devices_                   // Output Devices to Which GDI Calls
 {                                       //   Are to Be Directed
-  _zSCREEN_  = 0,                     //   (Screen = Default)
-    _zPRINTER_ = 1
+	_zSCREEN_  = 0,                     //   (Screen = Default)
+	_zPRINTER_ = 1
 };
 
 enum _The_Basic_Colors_
 {
-  zDARK_BLACK  ,  //  0               // The Basic 16 VGA Colors
-    zDARK_BLUE  ,   //  1
-    zDARK_GREEN ,   //  2
-    zDARK_CYAN  ,   //  3
-    zDARK_RED   ,   //  4
-    zDARK_MAGENTA,  //  5
-    zDARK_YELLOW,   //  6
-    zDARK_WHITE ,   //  7
-    zBRT_BLACK  ,   //  8
-    zBRT_BLUE   ,   //  9
-    zBRT_GREEN  ,   //  10
-    zBRT_CYAN   ,   //  11
-    zBRT_RED    ,   //  12
-    zBRT_MAGENTA,   //  13
-    zBRT_YELLOW ,   //  14
-    zBRT_WHITE      //  15
+	zDARK_BLACK  ,  //  0               // The Basic 16 VGA Colors
+	zDARK_BLUE  ,   //  1
+	zDARK_GREEN ,   //  2
+	zDARK_CYAN  ,   //  3
+	zDARK_RED   ,   //  4
+	zDARK_MAGENTA,  //  5
+	zDARK_YELLOW,   //  6
+	zDARK_WHITE ,   //  7
+	zBRT_BLACK  ,   //  8
+	zBRT_BLUE   ,   //  9
+	zBRT_GREEN  ,   //  10
+	zBRT_CYAN   ,   //  11
+	zBRT_RED    ,   //  12
+	zBRT_MAGENTA,   //  13
+	zBRT_YELLOW ,   //  14
+	zBRT_WHITE      //  15
 };
 
 enum _zText_Alignment_Options_         // Used to Justify Position of Text
 {
-  zALIGN_RIGHT_TOP = 0,
-    zALIGN_LEFT_TOP  = 1,
-    zALIGN_CENTER    = 2
+	zALIGN_RIGHT_TOP = 0,
+	zALIGN_LEFT_TOP  = 1,
+	zALIGN_CENTER    = 2
 };
 
 enum _zSmith_Graph_Data_Options_
 {
-  zIMPEDANCE        = -1,              // Plot Point as an Impedance
-    zREFLECTION_COEFF = 0                // Plot Point as a Reflect. Coeff.
+	zIMPEDANCE        = -1,              // Plot Point as an Impedance
+	zREFLECTION_COEFF = 0                // Plot Point as a Reflect. Coeff.
 };
 
 enum _zGraph_Axis_Styles_
 {                                       // Graph Axis Types
-  zLINEAR = 0,
-    zLOG    = 1,
-    zPOLAR  = 2,
-    z3D     = 3,
-    zRECTANGULAR  = 4
+	zLINEAR = 0,
+	zLOG    = 1,
+	zPOLAR  = 2,
+	z3D     = 3,
+	zRECTANGULAR  = 4
 };
 
 enum _zGrid_Style_Options_              // Graph Grid Styles
 {
-  z2D_GRID = 0,
-    z3D_GRID = 1,
-    zNO_GRID = 2
+	z2D_GRID = 0,
+	z3D_GRID = 1,
+	zNO_GRID = 2
 };
 
 enum zAxisLabelDirections
 {
-  zHORIZONTAL,
-    zVERTICAL
+	zHORIZONTAL,
+	zVERTICAL
 };
 
 enum _Numeric_Digit_Formats_    // Formats for Numbers Along Graph Axes
 {
-  zROUND_INTEGER   = -1,       // Show/Round Numbers to Nearest Whole Int.
-    zFLOAT_PT        =  0,       // Show Numbers Using Floating Pt (Default)
-    zSCI_NOTATION    =  1,       // Show Numbers in Sci. Notation
-    zFIXED           =  2        // User Specifies Number of Sig. Digits
+	zROUND_INTEGER   = -1,       // Show/Round Numbers to Nearest Whole Int.
+	zFLOAT_PT        =  0,       // Show Numbers Using Floating Pt (Default)
+	zSCI_NOTATION    =  1,       // Show Numbers in Sci. Notation
+	zFIXED           =  2        // User Specifies Number of Sig. Digits
 };
 
 enum _Fill_Pattern_Options_      // Hatch and Solid Fill Patterns
 {
-  zSOLID_FILL       = 0,
-    zCOLOR_HATCH_FILL = 1,
-    zMONO_HATCH_FILL  = 2
+	zSOLID_FILL       = 0,
+	zCOLOR_HATCH_FILL = 1,
+	zMONO_HATCH_FILL  = 2
 };
 
 enum _Grid_Pen_Style_Options_   // Pen Styles Used for Drawing Grid
 {
-  zSOLID     = 0,              // Solid Lines
-    zDASHED       ,              // Dashed Lines
-    zDOTTED       ,              // etc.
-    zDASH_DOT     ,
-    zDASH_DOT_DOT
+	zSOLID     = 0,              // Solid Lines
+	zDASHED       ,              // Dashed Lines
+	zDOTTED       ,              // etc.
+	zDASH_DOT     ,
+	zDASH_DOT_DOT
 };
 
 enum _G3D_Graph_Qual_Options_   // 3-D Surface Graph Quality Settings
 {
-  zG3D_QUALITY_MED  = 0 ,
-    zG3D_QUALITY_LOW  = 1 ,
-    zG3D_QUALITY_HI   = 2 ,
-    zG3D_MULTI_COLOR  = 4 ,
-    zG3D_SINGLE_COLOR = 8
+	zG3D_QUALITY_MED  = 0 ,
+	zG3D_QUALITY_LOW  = 1 ,
+	zG3D_QUALITY_HI   = 2 ,
+	zG3D_MULTI_COLOR  = 4 ,
+	zG3D_SINGLE_COLOR = 8
 };
 
 
 enum _Data_Marker_Options_      // Symbols/Markers Used to Identify Data
 {                               //   Points On Graphs (e.g., on X-Y Graphs)
-  zCROSS             = 1    ,
-    zCIRCLE            = 2    ,
-    zDIAMOND           = 4    ,
-    zHUGEDOT           = 0x1B , // ## created for SA
-    zBIGDOT            = 0x1C , // ## created for SA
-    zDOT               = 0x1D , // ## created for SA
-    zTRIANGLE          = 0x1E ,
-    zINVERTED_TRIANGLE = 0x1F ,
-    zBOX               = 0xFE
+	zCROSS             = 1    ,
+	zCIRCLE            = 2    ,
+	zDIAMOND           = 4    ,
+	zHUGEDOT           = 0x1B , // ## created for SA
+	zBIGDOT            = 0x1C , // ## created for SA
+	zDOT               = 0x1D , // ## created for SA
+	zTRIANGLE          = 0x1E ,
+	zINVERTED_TRIANGLE = 0x1F ,
+	zBOX               = 0xFE
 };
 
 enum _Graph_Legend_Options_     // Graph Legend and Positioning Options
 {
-  zLEFT      = 0,              // Put Legend to the Left of the Graph
-    zBOTTOM    = 1,              // Put Legend at Bottom of the Graph
-    zNO_LEGEND = 2               // Don't Draw a Graph Legend
+	zLEFT      = 0,              // Put Legend to the Left of the Graph
+	zBOTTOM    = 1,              // Put Legend at Bottom of the Graph
+	zNO_LEGEND = 2               // Don't Draw a Graph Legend
 } ;
 
 enum _Graph_Item_Title_Options_ // Graph Item Title Display Options
 {
-  zTEXT_STRINGS   = 0,         // Put Strings (in the ItemTitles[] Array)
-    zNUMBERS        = 1,         // Put Numbers Along the Axes
-    zNO_ITEM_TITLES = 2
+	zTEXT_STRINGS   = 0,         // Put Strings (in the ItemTitles[] Array)
+	zNUMBERS        = 1,         // Put Numbers Along the Axes
+	zNO_ITEM_TITLES = 2
 };
 
 enum _Pie_Graph_Sector_Styles_
 {
-  zNORMAL        = 0,     // Normal Pie Sector
-    zEXPLODED      = 1      // Exploded Pie Sector
+	zNORMAL        = 0,     // Normal Pie Sector
+	zEXPLODED      = 1      // Exploded Pie Sector
 };
 
 enum _Bkg_Color_Gradient_Options_
 {
-  zNO_GRADIENT   = 0,
-    zTOP_DOWN      = 1,
-    zBOTTOM_UP     = 2,
-    zCENTER_OUT    = 4,
-    zINTO_CENTER   = 8
+	zNO_GRADIENT   = 0,
+	zTOP_DOWN      = 1,
+	zBOTTOM_UP     = 2,
+	zCENTER_OUT    = 4,
+	zINTO_CENTER   = 8
 };
 
 enum _Bkg_Gradient_Color_Schemes_
 {
-  zWHITE_GRADIENT           = 0 ,
-    zBLUE_GRADIENT            = 1 ,
-    zGREEN_GRADIENT           = 2 ,
-    zCYAN_GRADIENT            = 3 ,
-    zRED_GRADIENT             = 4 ,
-    zMAGENTA_GRADIENT         = 5 ,
-    zYELLOW_GRADIENT          = 6 ,
-    zRED_TO_MAGENTA_GRADIENT  = 7 ,
-    zMAGENTA_TO_BLUE_GRADIENT = 8 ,
-    zBLUE_TO_CYAN_GRADIENT    = 9 ,
-    zCYAN_TO_GREEN_GRADIENT   = 10,
-    zGREEN_TO_YELLOW_GRADIENT = 11,
-    zYELLOW_TO_RED_GRADIENT   = 12,
-    zRED_TO_BLUE_GRADIENT     = 13,
-    zBLUE_TO_GREEN_GRADIENT   = 14,
-    zGREEN_TO_RED_GRADIENT    = 15
+	zWHITE_GRADIENT           = 0 ,
+	zBLUE_GRADIENT            = 1 ,
+	zGREEN_GRADIENT           = 2 ,
+	zCYAN_GRADIENT            = 3 ,
+	zRED_GRADIENT             = 4 ,
+	zMAGENTA_GRADIENT         = 5 ,
+	zYELLOW_GRADIENT          = 6 ,
+	zRED_TO_MAGENTA_GRADIENT  = 7 ,
+	zMAGENTA_TO_BLUE_GRADIENT = 8 ,
+	zBLUE_TO_CYAN_GRADIENT    = 9 ,
+	zCYAN_TO_GREEN_GRADIENT   = 10,
+	zGREEN_TO_YELLOW_GRADIENT = 11,
+	zYELLOW_TO_RED_GRADIENT   = 12,
+	zRED_TO_BLUE_GRADIENT     = 13,
+	zBLUE_TO_GREEN_GRADIENT   = 14,
+	zGREEN_TO_RED_GRADIENT    = 15
 };
 
 enum _3D_Shading_Options_      // Shading Options for 3-D Graphs
 {
-  zNO_SHADING         = 0,    // Don't Do Any Shading
-    zLIGHT_SHADING      = 1,    // Use Light Shading
-    zMEDIUM_SHADING     = 2,    // Use Medium Shading
-    zHEAVY_SHADING      = 3     // Use Heavy Shading
+	zNO_SHADING         = 0,    // Don't Do Any Shading
+	zLIGHT_SHADING      = 1,    // Use Light Shading
+	zMEDIUM_SHADING     = 2,    // Use Medium Shading
+	zHEAVY_SHADING      = 3     // Use Heavy Shading
 };
 
 enum _Print_Result_Codes_
 {
-  zCANNOT_PRINT =  -1,
-    zUSER_ABORTED =  -2,
-    zSUCCESS      =   0
+	zCANNOT_PRINT =  -1,
+	zUSER_ABORTED =  -2,
+	zSUCCESS      =   0
 };
 
 
@@ -375,17 +375,17 @@ typedef  HPAL       zPALETTE;   // For a Color Palette
 
 typedef struct tagRECT          //
 {                               // Define a RECT (Like OS/2's "RECTL")
-  int left   ;                 //
-  int top    ;
-  int right  ;
-  int bottom ;
+	int left   ;                 //
+	int top    ;
+	int right  ;
+	int bottom ;
 
 } RECT ;
 
 typedef struct tagPOINT         // Define a Point (like OS/2's "POINTL")
 {
-  int x;
-  int y;
+	int x;
+	int y;
 
 } POINT;
 #endif
@@ -411,17 +411,17 @@ typedef  long       zPALETTE;   // For a Color Palette
 
 typedef struct tagRECT          //
 {                               // Define a RECT
-  int left   ;                 //
-  int top    ;
-  int right  ;
-  int bottom ;
+	int left   ;                 //
+	int top    ;
+	int right  ;
+	int bottom ;
 
 } RECT ;
 
 typedef struct tagPOINT         // Define a Point
 {
-  int x;
-  int y;
+	int x;
+	int y;
 
 } POINT;
 #endif
@@ -446,17 +446,17 @@ typedef  long       zPALETTE;   // For a Color Palette
 
 typedef struct tagRECT          //
 {                               // Define a RECT
-  int left   ;                 //
-  int top    ;
-  int right  ;
-  int bottom ;
+	int left   ;                 //
+	int top    ;
+	int right  ;
+	int bottom ;
 
 } RECT ;
 
 typedef struct tagPOINT         // Define a Point
 {
-  int x;
-  int y;
+	int x;
+	int y;
 
 } POINT;
 
@@ -473,72 +473,72 @@ typedef struct zGraphStruct
 {
 
 #ifdef WINDOWS_PLATFORM
-  HDC    hdc              ; // Standard Windows HDC
+	HDC    hdc              ; // Standard Windows HDC
 #endif
 
 #ifdef OS2_PLATFORM
-  HWND   hwnd             ; // Standard OS/2 HWND
-  HPS    hps              ; // Standard OS/2 PM HPS
+	HWND   hwnd             ; // Standard OS/2 HWND
+	HPS    hps              ; // Standard OS/2 PM HPS
 #endif
 
-  RECT   *RWindow         ; // RECT Containing Window Client-Area Dimensions
-  double *xdata           ; // X-Data Array
-  double *ydata           ; // Y-Data Array
-  double *zdata           ; // Z-Data Array
-  INT    *symbols         ; // The Array of Symbols
-  INT    n                ; // The Number of Data Pts.
+	RECT   *RWindow         ; // RECT Containing Window Client-Area Dimensions
+	double *xdata           ; // X-Data Array
+	double *ydata           ; // Y-Data Array
+	double *zdata           ; // Z-Data Array
+	INT    *symbols         ; // The Array of Symbols
+	INT    n                ; // The Number of Data Pts.
 
-  zRGB   axis_color       ; // Color of Graph Axis
-  zRGB   bkg_color        ; // Graph Background Color
-  zRGB   *plot_color      ; // The Array of Plot Colors
+	zRGB   axis_color       ; // Color of Graph Axis
+	zRGB   bkg_color        ; // Graph Background Color
+	zRGB   *plot_color      ; // The Array of Plot Colors
 
-  INT    fill_style       ; // Graph Area Fill Style
+	INT    fill_style       ; // Graph Area Fill Style
 
-  PWCHAR  title            ; // Main Graph Title
-  PWCHAR  H_Title          ; // Horizontal Axis Title
-  PWCHAR  V_Title          ; // Vertical Axis Title
+	PWCHAR  title            ; // Main Graph Title
+	PWCHAR  H_Title          ; // Horizontal Axis Title
+	PWCHAR  V_Title          ; // Vertical Axis Title
 
-  WCHAR LegendTitles[zMAX_DATA_SETS    + 1] ; // The Legend Titles (A Group of Strings)
-  WCHAR ItemTitles  [zMAX_ITEM_TITLES  + 1] ; // The Item Titles (A Group of Strings)
+	WCHAR LegendTitles[zMAX_DATA_SETS    + 1] ; // The Legend Titles (A Group of Strings)
+	WCHAR ItemTitles  [zMAX_ITEM_TITLES  + 1] ; // The Item Titles (A Group of Strings)
 
-  INT  legend_position    ; // Graph Legend Position
-  //    (zLEFT / zBOTTOM / zNO_LEGEND)
-  INT  item_title_format  ; // Graph Item Title Display Format
-  //    (zTEXT_STRINGS / zNUMBERS / zNO_ITEM_TITLES)
+	INT  legend_position    ; // Graph Legend Position
+	//    (zLEFT / zBOTTOM / zNO_LEGEND)
+	INT  item_title_format  ; // Graph Item Title Display Format
+	//    (zTEXT_STRINGS / zNUMBERS / zNO_ITEM_TITLES)
 
-  BOOL line_connect       ; // FALSE = Don't connect lines, TRUE = Do Connect
-  BOOL symbols_flag       ; // FALSE = Don't show symbols, TRUE = Do Show
-  BOOL grid_flag          ; // ON = Show Grid, OFF = Hide Grid
-  BOOL auto_scale         ; // ON = Automatic Scale, OFF = Manual Scale
-  BOOL draw_forward       ; // TRUE = Front-to-Back, FALSE = Back-to-Front
-  BOOL _3D_flag           ; // TRUE for 3-D flag, FALSE for 2-D
+	BOOL line_connect       ; // FALSE = Don't connect lines, TRUE = Do Connect
+	BOOL symbols_flag       ; // FALSE = Don't show symbols, TRUE = Do Show
+	BOOL grid_flag          ; // ON = Show Grid, OFF = Hide Grid
+	BOOL auto_scale         ; // ON = Automatic Scale, OFF = Manual Scale
+	BOOL draw_forward       ; // TRUE = Front-to-Back, FALSE = Back-to-Front
+	BOOL _3D_flag           ; // TRUE for 3-D flag, FALSE for 2-D
 
-  INT  bkg_gradient_mode  ; // Type of Graded Bkg. Color Spectrum
-  //  [zNO_GRADIENT, zTOP_DOWN, zCENTER, zBOTTOM_UP]
+	INT  bkg_gradient_mode  ; // Type of Graded Bkg. Color Spectrum
+	//  [zNO_GRADIENT, zTOP_DOWN, zCENTER, zBOTTOM_UP]
 
-  INT  bkg_gradient_color_scheme;  // = zWHITE_GRADIENT, zBLUE_GRADIENT, etc.
+	INT  bkg_gradient_color_scheme;  // = zWHITE_GRADIENT, zBLUE_GRADIENT, etc.
 
-  INT  x_axis_style       ; // = zLINEAR (the Default) or zLOG
-  INT  y_axis_style       ; // = zLINEAR (the Default) or zLOG
-  INT  x_axis_divisions   ; // Number of X-Axis Divisions (-1 = Auto-Determine)
-  INT  y_axis_divisions   ; // Number of Y-Axis Divisions (-1 = Auto-Determine)
+	INT  x_axis_style       ; // = zLINEAR (the Default) or zLOG
+	INT  y_axis_style       ; // = zLINEAR (the Default) or zLOG
+	INT  x_axis_divisions   ; // Number of X-Axis Divisions (-1 = Auto-Determine)
+	INT  y_axis_divisions   ; // Number of Y-Axis Divisions (-1 = Auto-Determine)
 
-  INT  digit_format       ; // Style to Use for Displaying Numbers Along
-  //   Graph Axes [i.e., one of:  zROUND_INTEGER,
-  //   zFLOAT_PT, zSCI_NOTATION, zFIXED]
-  INT  digit_precision    ; // Number of Signif. Digits to Show in Numbers
+	INT  digit_format       ; // Style to Use for Displaying Numbers Along
+	//   Graph Axes [i.e., one of:  zROUND_INTEGER,
+	//   zFLOAT_PT, zSCI_NOTATION, zFIXED]
+	INT  digit_precision    ; // Number of Signif. Digits to Show in Numbers
 
-  INT  grid_pen_style     ; // Pen Style Used for Drawing Grid (zSOLID, etc.)
-  INT  shading_style      ; // Shading Style (zNO_SHADING, zLIGHT_SHADING, etc.)
+	INT  grid_pen_style     ; // Pen Style Used for Drawing Grid (zSOLID, etc.)
+	INT  shading_style      ; // Shading Style (zNO_SHADING, zLIGHT_SHADING, etc.)
 
-  double xstart, xend     ; // X-Data Ranges for Manual Scaling
-  double ystart, yend     ; // Y-Data Ranges for Manual Scaling
-  double zstart, zend     ; // Z-Data Ranges for Manual Scaling
+	double xstart, xend     ; // X-Data Ranges for Manual Scaling
+	double ystart, yend     ; // Y-Data Ranges for Manual Scaling
+	double zstart, zend     ; // Z-Data Ranges for Manual Scaling
 
-  INT   quality           ; // Precision of Z = F(X,Y) Graph
-  PWCHAR function          ; // This is a Function [F(X) or F(X,Y)]
+	INT   quality           ; // Precision of Z = F(X,Y) Graph
+	PWCHAR function          ; // This is a Function [F(X) or F(X,Y)]
 
-  char Reserved[ 128 ]    ; // Unused Now, But Reserved for Future Use!
+	char Reserved[ 128 ]    ; // Unused Now, But Reserved for Future Use!
 
 } zGraphStruct ;
 
@@ -554,15 +554,15 @@ typedef struct zGraphStruct
 #ifdef WINDOWS_PLATFORM
 BOOL ShowPrintSetupDialog(HWND hWnd);
 INT zPrintGraph(HWND hwnd,
-                HINSTANCE ghInstance,
-                void (FAR *GraphFunctionPtr)(zGraphStruct *),
-                zGraphStruct *zG);
+				HINSTANCE ghInstance,
+				void (FAR *GraphFunctionPtr)(zGraphStruct *),
+				zGraphStruct *zG);
 #endif
 
 #ifdef OS2_PLATFORM
 void  zPrintGraph(HWND hwnd,
-                  void (FAR *GraphFunctionPtr)(zGraphStruct *),
-                  zGraphStruct *zG);
+				  void (FAR *GraphFunctionPtr)(zGraphStruct *),
+				  zGraphStruct *zG);
 #endif
 
 //
@@ -575,10 +575,10 @@ double  parse(LPCSTR s, INT *att, double X, double Y = 0.0);
 zRGB    zGRAPH_TYPE RGB_color(INT color);
 zRGB    zMakeColor(BYTE red, BYTE green, BYTE blue);
 RECT    GetPercentOfRect(RECT  R,
-                         double LeftPercent,
-                         double TopPercent,
-                         double RightPercent,
-                         double BottomPercent);
+						 double LeftPercent,
+						 double TopPercent,
+						 double RightPercent,
+						 double BottomPercent);
 void    UNUSED_PARAMETERS(void *, ...);
 
 /////////////////////////////////////////////////////////////////////////////

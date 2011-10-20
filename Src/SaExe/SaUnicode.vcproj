@@ -113,7 +113,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="xcopy /d /y ..\..\DistFiles ..\..\Output\$(ConfigurationName)&#x0D;&#x0A;xcopy /d /i /y ..\..\DistFiles\AudioCon ..\..\Output\$(ConfigurationName)\AudioCon&#x0D;&#x0A;xcopy /d /i /y ..\..\DistFiles\dtds ..\..\Output\$(ConfigurationName)\dtds&#x0D;&#x0A;xcopy /d /i /y ..\..\DistFiles\Samples ..\..\Output\$(ConfigurationName)\Samples&#x0D;&#x0A;xcopy /d /i /y ..\..\DistFiles\Training ..\..\Output\$(ConfigurationName)\Training&#x0D;&#x0A;"
+				CommandLine=""
 			/>
 		</Configuration>
 		<Configuration
@@ -177,7 +177,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="mfc80u.lib mfcs80u.lib msvcrt.lib msvcprt.lib comdlg32.lib user32.lib gdi32.lib kernel32.lib advapi32.lib oldnames.lib winmm.lib version.lib imm32.lib ole32.lib oleaut32.lib uuid.lib comsuppw.lib HtmlHelp\htmlhelp.lib shell32.lib"
+				AdditionalDependencies="mfc90u.lib mfcs90u.lib msvcrt.lib msvcprt.lib comdlg32.lib user32.lib gdi32.lib kernel32.lib advapi32.lib oldnames.lib winmm.lib version.lib imm32.lib ole32.lib oleaut32.lib uuid.lib comsuppw.lib HtmlHelp\htmlhelp.lib shell32.lib"
 				OutputFile="..\..\Output\Release\SA.exe"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
@@ -3772,6 +3772,10 @@
 				>
 			</File>
 		</Filter>
+		<File
+			RelativePath=".\trace.txt"
+			>
+		</File>
 	</Files>
 	<Globals>
 	</Globals>

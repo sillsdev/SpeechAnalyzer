@@ -344,6 +344,30 @@
 			Name="Header Files"
 			Filter="h;hpp;hxx;hm;inl"
 			>
+			<File
+				RelativePath=".\LOWLEVEL.H"
+				>
+			</File>
+			<File
+				RelativePath=".\scatter.h"
+				>
+			</File>
+			<File
+				RelativePath=".\TOOLKIT.H"
+				>
+			</File>
+			<File
+				RelativePath=".\Zfont.h"
+				>
+			</File>
+			<File
+				RelativePath=".\ZGRAPH.H"
+				>
+			</File>
+			<File
+				RelativePath=".\ZRECT.H"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="Resource Files"

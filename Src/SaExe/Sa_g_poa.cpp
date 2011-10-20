@@ -41,8 +41,8 @@ IMPLEMENT_DYNCREATE(CPlotPOA, CPlotWnd)
 // CPlotPOA message map
 
 BEGIN_MESSAGE_MAP(CPlotPOA, CPlotWnd)
-    //{{AFX_MSG_MAP(CPlotPOA)
-    //}}AFX_MSG_MAP
+	//{{AFX_MSG_MAP(CPlotPOA)
+	//}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
@@ -53,10 +53,10 @@ END_MESSAGE_MAP()
 /***************************************************************************/
 CPlotPOA::CPlotPOA()
 {
-  m_bAnimationPlot = TRUE;
-  m_dwAnimationFrame = UNDEFINED_OFFSET;
-  m_dwFrameStart = UNDEFINED_OFFSET;  // set to invalid value to force change
-  m_bShowModelData = TRUE;
+	m_bAnimationPlot = TRUE;
+	m_dwAnimationFrame = UNDEFINED_OFFSET;
+	m_dwFrameStart = UNDEFINED_OFFSET;  // set to invalid value to force change
+	m_bShowModelData = TRUE;
 }
 
 /***************************************************************************/
@@ -64,7 +64,7 @@ CPlotPOA::CPlotPOA()
 /***************************************************************************/
 CPlotPOA::~CPlotPOA()
 {
-  GraphHasFocus(FALSE);
+	GraphHasFocus(FALSE);
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -78,263 +78,262 @@ CPlotPOA::~CPlotPOA()
 /***************************************************************************/
 void CPlotPOA::OnDraw(CDC * pDC, CRect rWnd, CRect /*rClip*/, CSaView * pView)
 {
-  // Get dimensions of client window.
-  int nWndWidth = rWnd.Width();
-  int nWndHeight = rWnd.Height();
+	// Get dimensions of client window.
+	int nWndWidth = rWnd.Width();
+	int nWndHeight = rWnd.Height();
 
-  // Get waveform and buffer parameters.
-  CMainFrame* pMainWnd = (CMainFrame*)AfxGetMainWnd();
-  CSaDoc*  pDoc = (CSaDoc*)pView->GetDocument();
-  FmtParm* pFmtParm = pDoc->GetFmtParm();      //get sample data format
-  WORD     wSmpSize = (WORD)(pFmtParm->wBlockAlign / pFmtParm->wChannels);   //compute sample size in bytes
+	// Get waveform and buffer parameters.
+	CMainFrame* pMainWnd = (CMainFrame*)AfxGetMainWnd();
+	CSaDoc*  pDoc = (CSaDoc*)pView->GetDocument();
+	FmtParm* pFmtParm = pDoc->GetFmtParm();      //get sample data format
+	WORD     wSmpSize = (WORD)(pFmtParm->wBlockAlign / pFmtParm->wChannels);   //compute sample size in bytes
 
-  // Get pointer to raw waveform plot.
-  int nWaveGraphIndex = pView->GetGraphIndexForIDD(IDD_RAWDATA);
-  CGraphWnd* pWaveGraph = pView->GetGraph(nWaveGraphIndex);
-  CPlotWnd* pWavePlot = NULL;
-  if (pWaveGraph) pWavePlot = pWaveGraph->GetPlot();
+	// Get pointer to raw waveform plot.
+	int nWaveGraphIndex = pView->GetGraphIndexForIDD(IDD_RAWDATA);
+	CGraphWnd* pWaveGraph = pView->GetGraph(nWaveGraphIndex);
+	CPlotWnd* pWavePlot = NULL;
+	if (pWaveGraph) pWavePlot = pWaveGraph->GetPlot();
 
-  // Get frame parameters.
-  BOOL bDynamicUpdate = (pView->GetGraphUpdateMode() == DYNAMIC_UPDATE);
-  CProcessGrappl* pAutoPitch = pDoc->GetGrappl();    // get pitch process object
-  CProcessFragments* pFragments = pDoc->GetFragments();  // get fragmenter object
-  short int nResult = LOWORD(pFragments->Process(this, pDoc)); // process data
-  if (nResult == PROCESS_ERROR || nResult == PROCESS_NO_DATA || nResult == PROCESS_CANCELED) 
-  {
-    if (!bDynamicUpdate) nResult = CheckResult(nResult, pFragments); // check the process result
-    return;
-  }
+	// Get frame parameters.
+	BOOL bDynamicUpdate = (pView->GetGraphUpdateMode() == DYNAMIC_UPDATE);
+	CProcessGrappl* pAutoPitch = pDoc->GetGrappl();    // get pitch process object
+	CProcessFragments* pFragments = pDoc->GetFragments();  // get fragmenter object
+	short int nResult = LOWORD(pFragments->Process(this, pDoc)); // process data
+	if (nResult == PROCESS_ERROR || nResult == PROCESS_NO_DATA || nResult == PROCESS_CANCELED) 
+	{
+		if (!bDynamicUpdate) nResult = CheckResult(nResult, pFragments); // check the process result
+		return;
+	}
 
-  DWORD dwStartCursorPosn = pView->GetStartCursorPosition();
-  DWORD dwFrameIndex;
-  if (bDynamicUpdate) 
-  {
-    if (m_dwAnimationFrame == UNDEFINED_OFFSET)
-    { // initialize animation frame for new graph
-     DWORD dwStartCursor = pView->GetStartCursorPosition();
-     m_dwAnimationFrame = pFragments->GetFragmentIndex(dwStartCursor/wSmpSize); 
-    } 
-    dwFrameIndex = m_dwAnimationFrame;
-  }
-  else dwFrameIndex = pFragments->GetFragmentIndex(dwStartCursorPosn / wSmpSize);
-  FRAG_PARMS FragParms = pFragments->GetFragmentParms(dwFrameIndex);
-  DWORD dwFrameStart = FragParms.dwOffset * wSmpSize;
-  DWORD dwFrameSize = (DWORD)FragParms.wLength * (DWORD)wSmpSize;
-  DWORD dwFrameEnd = dwFrameStart + dwFrameSize - wSmpSize;
+	DWORD dwStartCursorPosn = pView->GetStartCursorPosition();
+	DWORD dwFrameIndex;
+	if (bDynamicUpdate) 
+	{
+		if (m_dwAnimationFrame == UNDEFINED_OFFSET)
+		{ // initialize animation frame for new graph
+			DWORD dwStartCursor = pView->GetStartCursorPosition();
+			m_dwAnimationFrame = pFragments->GetFragmentIndex(dwStartCursor/wSmpSize); 
+		} 
+		dwFrameIndex = m_dwAnimationFrame;
+	}
+	else dwFrameIndex = pFragments->GetFragmentIndex(dwStartCursorPosn / wSmpSize);
+	FRAG_PARMS FragParms = pFragments->GetFragmentParms(dwFrameIndex);
+	DWORD dwFrameStart = FragParms.dwOffset * wSmpSize;
+	DWORD dwFrameSize = (DWORD)FragParms.wLength * (DWORD)wSmpSize;
+	DWORD dwFrameEnd = dwFrameStart + dwFrameSize - wSmpSize;
 
-  CGraphWnd* pGraph = GetGraph();
-  BOOL bFocus = (pGraph == pView->GetFocusedGraphWnd());
-  if (pWavePlot && (bDynamicUpdate || (!bDynamicUpdate && bFocus)))
-  {
-    // highlight fragment in raw data
-    pWavePlot->SetHighLightArea(dwFrameStart, dwFrameStart + dwFrameSize, TRUE, TRUE);
-    pWavePlot->UpdateWindow();
-  }
+	CGraphWnd* pGraph = GetGraph();
+	BOOL bFocus = (pGraph == pView->GetFocusedGraphWnd());
+	if (pWavePlot && (bDynamicUpdate || (!bDynamicUpdate && bFocus)))
+	{
+		// highlight fragment in raw data
+		pWavePlot->SetHighLightArea(dwFrameStart, dwFrameStart + dwFrameSize, TRUE, TRUE);
+		pWavePlot->UpdateWindow();
+	}
 
-  // Check for valid frame.
-  CProcessPOA* pPOA = (CProcessPOA*)pDoc->GetPOA(); // get pointer to POA object
-  if (!pAutoPitch->IsVoiced(pDoc, dwFrameStart) || !pAutoPitch->IsVoiced(pDoc, dwFrameStart + dwFrameSize - wSmpSize))
-  {
-    // frame is not entirely voiced
-    Colors* pColor = pMainWnd->GetColors();  // get application colors
-    CBrush Eraser(pColor->cPlotBkg);
-    pDC->FillRect(&rWnd, &Eraser);  // clear the plot area
-    if (!bDynamicUpdate) m_HelperWnd.SetMode(MODE_TEXT | FRAME_POPOUT | POS_HCENTER | POS_VCENTER, IDS_HELPERWND_SELECTVOICED, &rWnd);
-    else m_HelperWnd.SetMode(MODE_TEXT | FRAME_POPOUT | POS_HCENTER | POS_VCENTER, IDS_HELPERWND_UNVOICED, &rWnd);
-    if (pPOA->IsDataReady()) pPOA->SetDataInvalid();
-    return;
-  }
-  if (!bDynamicUpdate && dwStartCursorPosn != dwFrameStart)
-  {
-    // start cursor not aligned to start of a pitch period
-    m_HelperWnd.SetMode(MODE_TEXT | FRAME_POPOUT | POS_HCENTER | POS_VCENTER, IDS_HELPERWND_START2PITCH, &rWnd);
-    if (pPOA->IsDataReady()) pPOA->SetDataInvalid();
-    return;
-  }
-  // Determine if processing needs to be done.
-  if (dwFrameStart != m_dwFrameStart)
-  {
-    // cursor has been moved, so request processing
-    m_dwFrameStart = dwFrameStart;
-    pPOA->SetDataInvalid();   // force recalculation
-  }
+	// Check for valid frame.
+	CProcessPOA* pPOA = (CProcessPOA*)pDoc->GetPOA(); // get pointer to POA object
+	if (!pAutoPitch->IsVoiced(pDoc, dwFrameStart) || !pAutoPitch->IsVoiced(pDoc, dwFrameStart + dwFrameSize - wSmpSize))
+	{
+		// frame is not entirely voiced
+		Colors* pColor = pMainWnd->GetColors();  // get application colors
+		CBrush Eraser(pColor->cPlotBkg);
+		pDC->FillRect(&rWnd, &Eraser);  // clear the plot area
+		if (!bDynamicUpdate) m_HelperWnd.SetMode(MODE_TEXT | FRAME_POPOUT | POS_HCENTER | POS_VCENTER, IDS_HELPERWND_SELECTVOICED, &rWnd);
+		else m_HelperWnd.SetMode(MODE_TEXT | FRAME_POPOUT | POS_HCENTER | POS_VCENTER, IDS_HELPERWND_UNVOICED, &rWnd);
+		if (pPOA->IsDataReady()) pPOA->SetDataInvalid();
+		return;
+	}
+	if (!bDynamicUpdate && dwStartCursorPosn != dwFrameStart)
+	{
+		// start cursor not aligned to start of a pitch period
+		m_HelperWnd.SetMode(MODE_TEXT | FRAME_POPOUT | POS_HCENTER | POS_VCENTER, IDS_HELPERWND_START2PITCH, &rWnd);
+		if (pPOA->IsDataReady()) pPOA->SetDataInvalid();
+		return;
+	}
+	// Determine if processing needs to be done.
+	if (dwFrameStart != m_dwFrameStart)
+	{
+		// cursor has been moved, so request processing
+		m_dwFrameStart = dwFrameStart;
+		pPOA->SetDataInvalid();   // force recalculation
+	}
 
-  nResult = LOWORD(pPOA->Process(this, pDoc, dwFrameStart, dwFrameEnd));  // process data
-  nResult = CheckResult(nResult, pPOA); // check the process result
-  if (nResult == PROCESS_ERROR)
-  {
-    MessageBox(_T("Error occurred in vocal tract analysis"), _T("Vocal Tract"),
-      MB_OK | MB_ICONEXCLAMATION);
-    OnSysCommand(SC_CLOSE, 0L); // close the graph
-    return;
-  }
+	nResult = LOWORD(pPOA->Process(this, pDoc, dwFrameStart, dwFrameEnd));  // process data
+	nResult = CheckResult(nResult, pPOA); // check the process result
+	if (nResult == PROCESS_ERROR)
+	{
+		MessageBox(_T("Error occurred in vocal tract analysis"), _T("Vocal Tract"),
+			MB_OK | MB_ICONEXCLAMATION);
+		OnSysCommand(SC_CLOSE, 0L); // close the graph
+		return;
+	}
 
-  if (nResult != PROCESS_CANCELED)
-  {
-    m_HelperWnd.SetMode(MODE_HIDDEN);
-    VOCAL_TRACT_MODEL *pVocalTract = (VOCAL_TRACT_MODEL *)pPOA->GetProcessedData();
+	if (nResult != PROCESS_CANCELED)
+	{
+		m_HelperWnd.SetMode(MODE_HIDDEN);
+		VOCAL_TRACT_MODEL *pVocalTract = (VOCAL_TRACT_MODEL *)pPOA->GetProcessedData();
 
-    // Alter the face diagram.
-    CBitmap bmFace;
-    bmFace.LoadBitmap(IDB_FACE);      //load the face diagram
-    CBitmap bmJaw;
-    bmJaw.LoadBitmap(IDB_JAW);        //load the jaw bitmap
-    CBitmap bmTongue;
-    bmTongue.LoadBitmap(IDB_TONGUE);  //load the tongue bitmap
+		// Alter the face diagram.
+		CBitmap bmFace;
+		bmFace.LoadBitmap(IDB_FACE);      //load the face diagram
+		CBitmap bmJaw;
+		bmJaw.LoadBitmap(IDB_JAW);        //load the jaw bitmap
+		CBitmap bmTongue;
+		bmTongue.LoadBitmap(IDB_TONGUE);  //load the tongue bitmap
 
-    BITMAP FaceMetrics;
-    bmFace.GetObject(sizeof(FaceMetrics), &FaceMetrics);       //get dimensions of face
+		BITMAP FaceMetrics;
+		bmFace.GetObject(sizeof(FaceMetrics), &FaceMetrics);       //get dimensions of face
 
-    BITMAP JawMetrics;
-    bmJaw.GetObject(sizeof(JawMetrics), &JawMetrics);          //get dimensions of jaw
+		BITMAP JawMetrics;
+		bmJaw.GetObject(sizeof(JawMetrics), &JawMetrics);          //get dimensions of jaw
 
-    BITMAP TongueMetrics;
-    bmTongue.GetObject(sizeof(TongueMetrics), &TongueMetrics); //get dimensions of tongue
+		BITMAP TongueMetrics;
+		bmTongue.GetObject(sizeof(TongueMetrics), &TongueMetrics); //get dimensions of tongue
 
-    CDC  dcFace, dcJaw, dcTongue;
-    if (!dcFace.CreateCompatibleDC(pDC) ||
-      !dcJaw.CreateCompatibleDC(pDC) ||
-      !dcTongue.CreateCompatibleDC(pDC))   //create memory space with a compatible device context
-    {
-      MessageBox(_T("Error occurred in vocal tract plot"), _T("Vocal Tract"),
-        MB_OK | MB_ICONEXCLAMATION);
-      OnSysCommand(SC_CLOSE, 0L); //close the graph
-      return;
-    }
+		CDC  dcFace, dcJaw, dcTongue;
+		if (!dcFace.CreateCompatibleDC(pDC) ||
+			!dcJaw.CreateCompatibleDC(pDC) ||
+			!dcTongue.CreateCompatibleDC(pDC))   //create memory space with a compatible device context
+		{
+			MessageBox(_T("Error occurred in vocal tract plot"), _T("Vocal Tract"),
+				MB_OK | MB_ICONEXCLAMATION);
+			OnSysCommand(SC_CLOSE, 0L); //close the graph
+			return;
+		}
 
-    CBitmap* pOldFace = dcFace.SelectObject(&bmFace);       //load face bitmap into memory device
-    CBitmap* pOldTongue = dcTongue.SelectObject(&bmTongue); //load tongue bitmap into memory device
-    CBitmap* pOldJaw = dcJaw.SelectObject(&bmJaw);          //load jaw bitmap into memory device
+		CBitmap* pOldFace = dcFace.SelectObject(&bmFace);       //load face bitmap into memory device
+		CBitmap* pOldTongue = dcTongue.SelectObject(&bmTongue); //load tongue bitmap into memory device
+		CBitmap* pOldJaw = dcJaw.SelectObject(&bmJaw);          //load jaw bitmap into memory device
 
-    Colors* pColor = pMainWnd->GetColors();          //get application colors
-    CPen Pen(PS_SOLID, 1, pColor->cPlotData[0]);     //get pen
-    CPen* pOldPen = dcFace.SelectObject(&Pen);       //select pen for plotting
+		Colors* pColor = pMainWnd->GetColors();          //get application colors
+		CPen Pen(PS_SOLID, 1, pColor->cPlotData[0]);     //get pen
+		CPen* pOldPen = dcFace.SelectObject(&Pen);       //select pen for plotting
 
-    static VOCAL_TRACT_COORD VocalTractPlotSect[] =
-    {
+		static VOCAL_TRACT_COORD VocalTractPlotSect[] =
+		{
 #include "voctract.h"    //locate the vocal tract sections in the plot
-    };
+		};
 
-    dcFace.MoveTo(VocalTractPlotSect[0].X - GLOTTIS_DIAMETER, VocalTractPlotSect[0].Y); //start plotting
-    //from front of
-    //glottis
-    short x = 0, y = 0;
-		unsigned short i = 1;
-		for (; i <= pVocalTract->nNormCrossSectAreas - 3; i++)  //continue plotting front
-    {
-      //of vocal tract wall
-      double NormDiam = pow(pVocalTract->dNormCrossSectArea[pVocalTract->nNormCrossSectAreas-i-1], 0.5)*
-        GLOTTIS_DIAMETER; //normalize to glottis
-      x =  (short)Round((double)VocalTractPlotSect[i].X +
-        NormDiam*cos(VocalTractPlotSect[i].RadAng));
-      y =  (short)Round((double)VocalTractPlotSect[i].Y -
-        NormDiam*sin(VocalTractPlotSect[i].RadAng));
-      dcFace.LineTo(x, y);
-      dcFace.LineTo(VocalTractPlotSect[i].X, VocalTractPlotSect[i].Y);
-      dcFace.MoveTo(x, y);
-    }
+		dcFace.MoveTo(VocalTractPlotSect[0].X - GLOTTIS_DIAMETER, VocalTractPlotSect[0].Y); //start plotting
+		//from front of
+		//glottis
+		short x = 0, y = 0;
+		for (unsigned short i = 1; i <= pVocalTract->nNormCrossSectAreas - 3; i++)  //continue plotting front
+		{
+			//of vocal tract wall
+			double NormDiam = pow(pVocalTract->dNormCrossSectArea[pVocalTract->nNormCrossSectAreas-i-1], 0.5)*
+				GLOTTIS_DIAMETER; //normalize to glottis
+			x =  (short)Round((double)VocalTractPlotSect[i].X +
+				NormDiam*cos(VocalTractPlotSect[i].RadAng));
+			y =  (short)Round((double)VocalTractPlotSect[i].Y -
+				NormDiam*sin(VocalTractPlotSect[i].RadAng));
+			dcFace.LineTo(x, y);
+			dcFace.LineTo(VocalTractPlotSect[i].X, VocalTractPlotSect[i].Y);
+			dcFace.MoveTo(x, y);
+		}
 
-    CRect rTongue(TONGUE_ULX, TONGUE_ULY, TONGUE_LRX, TONGUE_LRY);
-    dcFace.BitBlt(x - rTongue.Width(), y, rTongue.Width(), rTongue.Height(),
-      &dcTongue, TONGUE_ULX, TONGUE_ULY, SRCAND);  //attach tongue tip
+		CRect rTongue(TONGUE_ULX, TONGUE_ULY, TONGUE_LRX, TONGUE_LRY);
+		dcFace.BitBlt(x - rTongue.Width(), y, rTongue.Width(), rTongue.Height(),
+			&dcTongue, TONGUE_ULX, TONGUE_ULY, SRCAND);  //attach tongue tip
 
-    //!! teeth
+		//!! teeth
 
-    CRect rJaw(JAW_ULX, JAW_ULY, JAW_LRX, JAW_LRY);
-    dcFace.BitBlt(VocalTractPlotSect[pVocalTract->nNormCrossSectAreas-1].X - 13,
-      VocalTractPlotSect[pVocalTract->nNormCrossSectAreas-1].Y +
-      (short)Round(pow(pVocalTract->dNormCrossSectArea[0], 0.5)*GLOTTIS_DIAMETER),
-      rJaw.Width(), rJaw.Height(),
-      &dcJaw, JAW_ULX, JAW_ULY, SRCAND);    //attach jaw
+		CRect rJaw(JAW_ULX, JAW_ULY, JAW_LRX, JAW_LRY);
+		dcFace.BitBlt(VocalTractPlotSect[pVocalTract->nNormCrossSectAreas-1].X - 13,
+			VocalTractPlotSect[pVocalTract->nNormCrossSectAreas-1].Y +
+			(short)Round(pow(pVocalTract->dNormCrossSectArea[0], 0.5)*GLOTTIS_DIAMETER),
+			rJaw.Width(), rJaw.Height(),
+			&dcJaw, JAW_ULX, JAW_ULY, SRCAND);    //attach jaw
 
-    // Copy the face diagram to the client window, sizing it to fit without changing
-    // the aspect ratio.
-    float fScaleFac;
-    int nTopMargin, nLeftMargin;
-    int nImageWidth, nImageHeight;
+		// Copy the face diagram to the client window, sizing it to fit without changing
+		// the aspect ratio.
+		float fScaleFac;
+		int nTopMargin, nLeftMargin;
+		int nImageWidth, nImageHeight;
 
-    if (nWndHeight < nWndWidth)   //scale along shorter dimension
-    {
-      fScaleFac = (float)nWndHeight/(float)FaceMetrics.bmHeight;
-      nImageWidth = (int)((float)FaceMetrics.bmWidth*fScaleFac + 0.5F);    //scale width
-      nImageHeight = (int)((float)FaceMetrics.bmHeight*fScaleFac + 0.5F);  //scale height
-      nLeftMargin = (nWndWidth - nImageWidth)/2;
-      nTopMargin = 0;
-    }
-    else
-    {
-      fScaleFac = (float)nWndWidth/(float)FaceMetrics.bmWidth;
-      nImageWidth = (int)((float)FaceMetrics.bmWidth*fScaleFac + 0.5F);    //scale width
-      nImageHeight = (int)((float)FaceMetrics.bmHeight*fScaleFac + 0.5F);  //scale height
-      nLeftMargin = 0;
-      nTopMargin = (nWndHeight - nImageHeight)/2;
-    }
+		if (nWndHeight < nWndWidth)   //scale along shorter dimension
+		{
+			fScaleFac = (float)nWndHeight/(float)FaceMetrics.bmHeight;
+			nImageWidth = (int)((float)FaceMetrics.bmWidth*fScaleFac + 0.5F);    //scale width
+			nImageHeight = (int)((float)FaceMetrics.bmHeight*fScaleFac + 0.5F);  //scale height
+			nLeftMargin = (nWndWidth - nImageWidth)/2;
+			nTopMargin = 0;
+		}
+		else
+		{
+			fScaleFac = (float)nWndWidth/(float)FaceMetrics.bmWidth;
+			nImageWidth = (int)((float)FaceMetrics.bmWidth*fScaleFac + 0.5F);    //scale width
+			nImageHeight = (int)((float)FaceMetrics.bmHeight*fScaleFac + 0.5F);  //scale height
+			nLeftMargin = 0;
+			nTopMargin = (nWndHeight - nImageHeight)/2;
+		}
 
-    pDC->StretchBlt(nLeftMargin, nTopMargin, //center the image
-      nImageWidth, nImageHeight, &dcFace, 0, 0,
-      FaceMetrics.bmWidth, FaceMetrics.bmHeight, SRCCOPY);
+		pDC->StretchBlt(nLeftMargin, nTopMargin, //center the image
+			nImageWidth, nImageHeight, &dcFace, 0, 0,
+			FaceMetrics.bmWidth, FaceMetrics.bmHeight, SRCCOPY);
 
-    if (m_bShowModelData)
-    {
-      // write model data
-      CFont TextFont;
-      int nRows = pVocalTract->nNormCrossSectAreas / 2 + 1;  //split across 2 columns and include heading
-      int nRowSpacing = 2;
-      int nCharHeight = (nImageHeight - (nRows - 1) * nRowSpacing) / nRows;
-      TCHAR* pszName = _T("MS Sans Serif");
-      TextFont.CreateFont(nCharHeight, 0, 0, 0, FW_NORMAL, 0, 0, 0,
-        ANSI_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS,
-        DEFAULT_QUALITY, (VARIABLE_PITCH | FF_ROMAN), pszName);
-      CFont* pOldFont = pDC->SelectObject(&TextFont);  //select font
-      // get text metrics
-      //TEXTMETRIC TextMetric;
-      //pDC->GetTextMetrics(&TextMetric);
-      CMainFrame* pMainWnd = (CMainFrame*)AfxGetMainWnd(); // get pointer to colors from main frame
-      Colors* pColors = pMainWnd->GetColors();
-      pDC->SetTextColor(pColors->cScaleFont); // set font color
-      pDC->SetBkMode(TRANSPARENT); // letters may overlap, so they must be transparent
-      TCHAR szText[sizeof("% Error: xxx.xx")];
-      _stprintf(szText, _T("%% Error: %6.2f"), pVocalTract->dErrorRatio * 100.);
-      CRect rText(0,0, nLeftMargin - 40, 10);
-      pDC->DrawText(szText, -1, rText, DT_SINGLELINE | DT_TOP | DT_RIGHT | DT_NOCLIP);
+		if (m_bShowModelData)
+		{
+			// write model data
+			CFont TextFont;
+			int nRows = pVocalTract->nNormCrossSectAreas / 2 + 1;  //split across 2 columns and include heading
+			int nRowSpacing = 2;
+			int nCharHeight = (nImageHeight - (nRows - 1) * nRowSpacing) / nRows;
+			TCHAR* pszName = _T("MS Sans Serif");
+			TextFont.CreateFont(nCharHeight, 0, 0, 0, FW_NORMAL, 0, 0, 0,
+				ANSI_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS,
+				DEFAULT_QUALITY, (VARIABLE_PITCH | FF_ROMAN), pszName);
+			CFont* pOldFont = pDC->SelectObject(&TextFont);  //select font
+			// get text metrics
+			//TEXTMETRIC TextMetric;
+			//pDC->GetTextMetrics(&TextMetric);
+			CMainFrame* pMainWnd = (CMainFrame*)AfxGetMainWnd(); // get pointer to colors from main frame
+			Colors* pColors = pMainWnd->GetColors();
+			pDC->SetTextColor(pColors->cScaleFont); // set font color
+			pDC->SetBkMode(TRANSPARENT); // letters may overlap, so they must be transparent
+			TCHAR szText[sizeof("% Error: xxx.xx")];
+			_stprintf(szText, _T("%% Error: %6.2f"), pVocalTract->dErrorRatio * 100.);
+			CRect rText(0,0, nLeftMargin - 40, 10);
+			pDC->DrawText(szText, -1, rText, DT_SINGLELINE | DT_TOP | DT_RIGHT | DT_NOCLIP);
 
-      int nRowPitch = nCharHeight + nRowSpacing;
-      int nRowX = nLeftMargin + nImageWidth;
-      int nRowY = nRowPitch;
-      for (i = 0; i < (UINT)nRows - 1; i++, nRowY += nRowPitch)    //left column
-      {
-        if (i == 0) _stprintf(szText, _T("  Lips:  %6.2f"), pVocalTract->dNormCrossSectArea[i]);
-        else _stprintf(szText, _T("         %6.2f"), pVocalTract->dNormCrossSectArea[i]);
-        rText.SetRect(0, nRowY, nLeftMargin - 40, 10);
-        pDC->DrawText(szText, -1, rText, DT_SINGLELINE | DT_TOP | DT_RIGHT | DT_NOCLIP);
-      }
+			int nRowPitch = nCharHeight + nRowSpacing;
+			int nRowX = nLeftMargin + nImageWidth;
+			int nRowY = nRowPitch;
+			for (int i = 0; i < (UINT)nRows - 1; i++, nRowY += nRowPitch)    //left column
+			{
+				if (i == 0) _stprintf(szText, _T("  Lips:  %6.2f"), pVocalTract->dNormCrossSectArea[i]);
+				else _stprintf(szText, _T("         %6.2f"), pVocalTract->dNormCrossSectArea[i]);
+				rText.SetRect(0, nRowY, nLeftMargin - 40, 10);
+				pDC->DrawText(szText, -1, rText, DT_SINGLELINE | DT_TOP | DT_RIGHT | DT_NOCLIP);
+			}
 
-      nRowX = nLeftMargin + nImageWidth;
-      nRowY = nRowPitch*(nRows - 1);
-      rText.SetRect(nRowX, nRowY, nWndWidth, nRowY + 10);
-      _stprintf(szText, _T("Glottis: %6.2f"), pVocalTract->dNormCrossSectArea[pVocalTract->nNormCrossSectAreas-1]);
-      pDC->DrawText(szText, -1, rText, DT_SINGLELINE | DT_TOP | DT_RIGHT | DT_NOCLIP | DT_CALCRECT);
-      int nRowXEnd = nRowX + rText.Width();
-      pDC->DrawText(szText, -1, rText, DT_SINGLELINE | DT_TOP | DT_RIGHT | DT_NOCLIP);
-      nRowY = 0;
-      for (i = 0; i < (UINT)nRows - 1; i++, nRowY += nRowPitch)    //right column
-      {
-        _stprintf(szText, _T("         %6.2f"), pVocalTract->dNormCrossSectArea[i + nRows - 1]);
-        //rText.SetRect(nWndWidth - strlen(szText)*TextMetric.tmMaxCharWidth, (nCharHeight+nRowSpacing)*i, 100, 10);
-        rText.SetRect(nRowX, nRowY, nRowXEnd, nRowY + 10);
-        pDC->DrawText(szText, -1, rText, DT_SINGLELINE | DT_TOP | DT_RIGHT | DT_NOCLIP);
-      }
-      pDC->SelectObject(pOldFont);   //restore old font
-    }
+			nRowX = nLeftMargin + nImageWidth;
+			nRowY = nRowPitch*(nRows - 1);
+			rText.SetRect(nRowX, nRowY, nWndWidth, nRowY + 10);
+			_stprintf(szText, _T("Glottis: %6.2f"), pVocalTract->dNormCrossSectArea[pVocalTract->nNormCrossSectAreas-1]);
+			pDC->DrawText(szText, -1, rText, DT_SINGLELINE | DT_TOP | DT_RIGHT | DT_NOCLIP | DT_CALCRECT);
+			int nRowXEnd = nRowX + rText.Width();
+			pDC->DrawText(szText, -1, rText, DT_SINGLELINE | DT_TOP | DT_RIGHT | DT_NOCLIP);
+			nRowY = 0;
+			for (int i = 0; i < (UINT)nRows - 1; i++, nRowY += nRowPitch)    //right column
+			{
+				_stprintf(szText, _T("         %6.2f"), pVocalTract->dNormCrossSectArea[i + nRows - 1]);
+				//rText.SetRect(nWndWidth - strlen(szText)*TextMetric.tmMaxCharWidth, (nCharHeight+nRowSpacing)*i, 100, 10);
+				rText.SetRect(nRowX, nRowY, nRowXEnd, nRowY + 10);
+				pDC->DrawText(szText, -1, rText, DT_SINGLELINE | DT_TOP | DT_RIGHT | DT_NOCLIP);
+			}
+			pDC->SelectObject(pOldFont);   //restore old font
+		}
 
-    dcFace.SelectObject(pOldPen);       //restore old pen
-    dcFace.SelectObject(pOldFace);      //restore bitmap for face object
-    dcTongue.SelectObject(pOldTongue);  //restore bitmap for tongue object
-    dcJaw.SelectObject(pOldJaw);        //restore bitmap for jaw object
-    bmFace.DeleteObject();              //delete bitmap from face object
-    bmTongue.DeleteObject();            //delete bitmap from tongue object
-    bmJaw.DeleteObject();               //delete bitmap from jaw object
-  }
+		dcFace.SelectObject(pOldPen);       //restore old pen
+		dcFace.SelectObject(pOldFace);      //restore bitmap for face object
+		dcTongue.SelectObject(pOldTongue);  //restore bitmap for tongue object
+		dcJaw.SelectObject(pOldJaw);        //restore bitmap for jaw object
+		bmFace.DeleteObject();              //delete bitmap from face object
+		bmTongue.DeleteObject();            //delete bitmap from tongue object
+		bmJaw.DeleteObject();               //delete bitmap from jaw object
+	}
 
 }
 
@@ -348,48 +347,48 @@ void CPlotPOA::OnDraw(CDC * pDC, CRect rWnd, CRect /*rClip*/, CSaView * pView)
 /***************************************************************************/
 void CPlotPOA::GraphHasFocus(BOOL bFocus)
 {
-  // Get pointer to raw waveform plot.
-  // the following method for getting to the View doesn't work properly when called from the destructor
-  //CGraphWnd* pGraphWnd = (CGraphWnd *)GetParent();
-  //CSaView* pView = (CSaView *)pGraphWnd->GetParent();
-  CMainFrame* pMainWnd = (CMainFrame*)AfxGetMainWnd();
-  CSaView* pView = (pMainWnd)?(CSaView*)pMainWnd->GetCurrSaView():NULL;
-  if(!pView) return;
-  int nWaveGraphIndex = pView->GetGraphIndexForIDD(IDD_RAWDATA);
-  CGraphWnd* pWaveGraph = pView->GetGraph(nWaveGraphIndex);
-  if (pWaveGraph)
-  {
-    CPlotWnd* pWavePlot = pWaveGraph->GetPlot();
-    if (bFocus)
-    {
-      CSaDoc* pDoc = pView->GetDocument();
-      FmtParm* pFmtParm = pDoc->GetFmtParm();      //get sample data format
-      WORD wSmpSize = (WORD)(pFmtParm->wBlockAlign / pFmtParm->wChannels);   //compute sample size in bytes
-      CProcessFragments* pFragments = pDoc->GetFragments();  // get fragmenter object
-      pFragments->Process(this, pDoc); // process data
-      if (pFragments->IsDataReady())
-      {
-        DWORD dwFrameIndex;
-        BOOL bDynamicUpdate = (pView->GetGraphUpdateMode() == DYNAMIC_UPDATE);
-		if (bDynamicUpdate && m_dwAnimationFrame != UNDEFINED_OFFSET) dwFrameIndex = m_dwAnimationFrame;
-		else
-		{ 
-          DWORD dwStartCursorPosn = pView->GetStartCursorPosition();  // get start cursor position in bytes
-          dwFrameIndex = pFragments->GetFragmentIndex(dwStartCursorPosn / wSmpSize);         
+	// Get pointer to raw waveform plot.
+	// the following method for getting to the View doesn't work properly when called from the destructor
+	//CGraphWnd* pGraphWnd = (CGraphWnd *)GetParent();
+	//CSaView* pView = (CSaView *)pGraphWnd->GetParent();
+	CMainFrame* pMainWnd = (CMainFrame*)AfxGetMainWnd();
+	CSaView* pView = (pMainWnd)?(CSaView*)pMainWnd->GetCurrSaView():NULL;
+	if(!pView) return;
+	int nWaveGraphIndex = pView->GetGraphIndexForIDD(IDD_RAWDATA);
+	CGraphWnd* pWaveGraph = pView->GetGraph(nWaveGraphIndex);
+	if (pWaveGraph)
+	{
+		CPlotWnd* pWavePlot = pWaveGraph->GetPlot();
+		if (bFocus)
+		{
+			CSaDoc* pDoc = pView->GetDocument();
+			FmtParm* pFmtParm = pDoc->GetFmtParm();      //get sample data format
+			WORD wSmpSize = (WORD)(pFmtParm->wBlockAlign / pFmtParm->wChannels);   //compute sample size in bytes
+			CProcessFragments* pFragments = pDoc->GetFragments();  // get fragmenter object
+			pFragments->Process(this, pDoc); // process data
+			if (pFragments->IsDataReady())
+			{
+				DWORD dwFrameIndex;
+				BOOL bDynamicUpdate = (pView->GetGraphUpdateMode() == DYNAMIC_UPDATE);
+				if (bDynamicUpdate && m_dwAnimationFrame != UNDEFINED_OFFSET) dwFrameIndex = m_dwAnimationFrame;
+				else
+				{ 
+					DWORD dwStartCursorPosn = pView->GetStartCursorPosition();  // get start cursor position in bytes
+					dwFrameIndex = pFragments->GetFragmentIndex(dwStartCursorPosn / wSmpSize);         
+				}
+				FRAG_PARMS FragParms = pFragments->GetFragmentParms(dwFrameIndex);
+				DWORD dwFrameStart = FragParms.dwOffset * wSmpSize;     // frame start in bytes
+				DWORD dwFrameSize = (DWORD)FragParms.wLength * (DWORD)wSmpSize;    // frame size in bytes
+				pWavePlot->SetHighLightArea(dwFrameStart, dwFrameStart + dwFrameSize, TRUE, TRUE);  // highlight the fragment in the raw waveform
+				pWavePlot->UpdateWindow();
+			}
 		}
-        FRAG_PARMS FragParms = pFragments->GetFragmentParms(dwFrameIndex);
-        DWORD dwFrameStart = FragParms.dwOffset * wSmpSize;     // frame start in bytes
-        DWORD dwFrameSize = (DWORD)FragParms.wLength * (DWORD)wSmpSize;    // frame size in bytes
-        pWavePlot->SetHighLightArea(dwFrameStart, dwFrameStart + dwFrameSize, TRUE, TRUE);  // highlight the fragment in the raw waveform
-        pWavePlot->UpdateWindow();
-      }
+		else if (!pView->IsAnimating())
+		{ // not in focus and not animating
+			pWavePlot->SetHighLightArea(0, 0);  // turn off highlighting in raw waveform
+			pWavePlot->UpdateWindow();
+		}
 	}
-    else if (!pView->IsAnimating())
-    { // not in focus and not animating
-      pWavePlot->SetHighLightArea(0, 0);  // turn off highlighting in raw waveform
-      pWavePlot->UpdateWindow();
-    }
-  }
 }
 
 
@@ -401,8 +400,8 @@ void CPlotPOA::GraphHasFocus(BOOL bFocus)
 /***************************************************************************/
 void CPlotPOA::AnimateFrame(DWORD dwFrameIndex)
 {
-  m_bShowModelData = FALSE;
-  CPlotWnd::StandardAnimateFrame(dwFrameIndex);
+	m_bShowModelData = FALSE;
+	CPlotWnd::StandardAnimateFrame(dwFrameIndex);
 }
 
 
@@ -414,6 +413,6 @@ void CPlotPOA::AnimateFrame(DWORD dwFrameIndex)
 /***************************************************************************/
 void CPlotPOA::EndAnimation()
 {
-  m_bShowModelData = TRUE;
-  CPlotWnd::StandardEndAnimation();
+	m_bShowModelData = TRUE;
+	CPlotWnd::StandardEndAnimation();
 }

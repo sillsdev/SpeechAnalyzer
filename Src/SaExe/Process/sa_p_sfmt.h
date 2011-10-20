@@ -23,22 +23,22 @@
 class CProcessSpectroFormants : public CDataProcess
 {   
 
-// Construction/destruction/creation
+	// Construction/destruction/creation
 public:
-  CProcessSpectroFormants();
-  virtual ~CProcessSpectroFormants();
-  
-  // Attributes
-  
-  // Operations
+	CProcessSpectroFormants();
+	virtual ~CProcessSpectroFormants();
+
+	// Attributes
+
+	// Operations
 protected:
 public:
-  virtual DWORD GetDataSize() {return GetDataSize(sizeof(FORMANT_FREQ));} // return processed data size in words (16 bit)
-  virtual DWORD GetDataSize(size_t nElements) {return CDataProcess::GetDataSize(nElements);} // return processed data size in LPC data structures
-  long Process(void* pCaller, CView* pView, int nWidth, int nHeight, int nProgress = 0, int nLevel = 1);
-  FORMANT_FREQ* GetFormant(DWORD dwIndex); // return spectrogram slice data
-  long ExtractFormants(ISaDoc *pDoc, DWORD dwWaveDataStart, DWORD dwWaveDataLength, BOOL bSmooth = TRUE, int nProgress = 0, int nLevel = 1);
-  BOOL AreFormantTracksReady(); // return TRUE if processed formants data is ready
+	virtual DWORD GetDataSize() {return GetDataSize(sizeof(FORMANT_FREQ));} // return processed data size in words (16 bit)
+	virtual DWORD GetDataSize(size_t nElements) {return (DWORD)CDataProcess::GetDataSize(nElements);} // return processed data size in LPC data structures
+	long Process(void* pCaller, CView* pView, int nWidth, int nHeight, int nProgress = 0, int nLevel = 1);
+	FORMANT_FREQ* GetFormant(DWORD dwIndex); // return spectrogram slice data
+	long ExtractFormants(ISaDoc *pDoc, DWORD dwWaveDataStart, DWORD dwWaveDataLength, BOOL bSmooth = TRUE, int nProgress = 0, int nLevel = 1);
+	BOOL AreFormantTracksReady(); // return TRUE if processed formants data is ready
 };
 
 #endif //_SA_P_SFMT_H

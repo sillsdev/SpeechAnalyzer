@@ -14,7 +14,7 @@
 
  typedef struct{
                 float F[MAX_NUM_FORMANTS+1];  //F[0] = pitch, F[1]... = formant frequencies
-               }FORMANT_FREQ;
+               } FORMANT_FREQ;
                
  typedef struct{
                 float FrequencyInHertz;

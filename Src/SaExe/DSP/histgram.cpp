@@ -189,10 +189,10 @@
 ////////////////////////////////////////////////////////////////////////////////////////
 char *CHistogram::Copyright(void)
 {
- static char Notice[] = {"Histogram, Version " VERSION_NUMBER "\n" 
-                         "Copyright (c) " COPYRIGHT_DATE " by Summer Institute of Linguistics. " 
-                         "All rights reserved.\n"};
- return(Notice);
+	static char Notice[] = {"Histogram, Version " VERSION_NUMBER "\n" 
+		"Copyright (c) " COPYRIGHT_DATE " by Summer Institute of Linguistics. " 
+		"All rights reserved.\n"};
+	return(Notice);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////
@@ -200,7 +200,7 @@ char *CHistogram::Copyright(void)
 ////////////////////////////////////////////////////////////////////////////////////////
 float CHistogram::Version(void)
 {
- return((float)atof(VERSION_NUMBER));
+	return((float)atof(VERSION_NUMBER));
 }
 
 
@@ -214,27 +214,27 @@ float CHistogram::Version(void)
 // Class function to validate Histogram settings and construct object.                //
 ////////////////////////////////////////////////////////////////////////////////////////
 dspError_t CHistogram::CreateObject(CHistogram** ppoHistogram, HIST_PARMS &stHistParms,
-                                PROC_PARMS &stProcParms)
+									PROC_PARMS &stProcParms)
 { // validate process parameters
-  if (!stProcParms.pBufferStart) return(Code(INVALID_BFR_PTR));
-  if (!stProcParms.dwBufferSize) return(Code(INVALID_BFR_SIZE));
-  if (stProcParms.dwBlockOffset > stProcParms.stSigParms.Length) return(Code(INVALID_BLOCK));
-  if (!stProcParms.dwBlockLength) return(Code(INVALID_BLOCK_LEN));
-  if (!stProcParms.stSigParms.Length) return(Code(INVALID_SIG_LEN));
-  if (stProcParms.stSigParms.SmpDataFmt != PCM_UBYTE && stProcParms.stSigParms.SmpDataFmt != PCM_2SSHORT)
-      return(Code(UNSUPP_SMP_DATA_FMT));
-  if (stProcParms.dwBlockOffset + stProcParms.dwBlockLength > stProcParms.stSigParms.Length)
-     return(Code(INVALID_BLOCK_LEN));
-  // validate histogram parameters
-  if (!stHistParms.nBins) return(Code(INVALID_BIN_COUNT));
-  for (uint16 i = 0; i < (stHistParms.nBins - 1); i++)
-  { if (stHistParms.pBinDivs[i] >= stHistParms.pBinDivs[i+1])
-      return(Code(INVALID_BIN_DIVS));
-  }
-  
-  *ppoHistogram = new CHistogram(stHistParms, stProcParms);
-  if (!*ppoHistogram) RetMemErr;
-  return(DONE);   
+	if (!stProcParms.pBufferStart) return(Code(INVALID_BFR_PTR));
+	if (!stProcParms.dwBufferSize) return(Code(INVALID_BFR_SIZE));
+	if (stProcParms.dwBlockOffset > stProcParms.stSigParms.Length) return(Code(INVALID_BLOCK));
+	if (!stProcParms.dwBlockLength) return(Code(INVALID_BLOCK_LEN));
+	if (!stProcParms.stSigParms.Length) return(Code(INVALID_SIG_LEN));
+	if (stProcParms.stSigParms.SmpDataFmt != PCM_UBYTE && stProcParms.stSigParms.SmpDataFmt != PCM_2SSHORT)
+		return(Code(UNSUPP_SMP_DATA_FMT));
+	if (stProcParms.dwBlockOffset + stProcParms.dwBlockLength > stProcParms.stSigParms.Length)
+		return(Code(INVALID_BLOCK_LEN));
+	// validate histogram parameters
+	if (!stHistParms.nBins) return(Code(INVALID_BIN_COUNT));
+	for (uint16 i = 0; i < (stHistParms.nBins - 1); i++)
+	{ if (stHistParms.pBinDivs[i] >= stHistParms.pBinDivs[i+1])
+	return(Code(INVALID_BIN_DIVS));
+	}
+
+	*ppoHistogram = new CHistogram(stHistParms, stProcParms);
+	if (!*ppoHistogram) RetMemErr;
+	return(DONE);   
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////
@@ -242,27 +242,27 @@ dspError_t CHistogram::CreateObject(CHistogram** ppoHistogram, HIST_PARMS &stHis
 ////////////////////////////////////////////////////////////////////////////////////////
 CHistogram::CHistogram(HIST_PARMS &stHistParms, PROC_PARMS &stProcParms) 
 {
-  // Update object member variables.
-  m_stProcParms = stProcParms;
-  m_stHistParms = stHistParms;
-  m_pSigBfr = stProcParms.pBufferStart;
-  m_dwBatchOffset = m_stProcParms.dwBlockOffset;
-  m_sbSmpFormat = stProcParms.stSigParms.SmpDataFmt;
-  m_pHistogram = new short[m_stHistParms.nBins];
-  m_nMinValue = 0x7FFF; // SDM was 0xFFFF  which became -1...
-  m_nMaxValue = 0;
-  m_dwTotalCounts = 0;
-  // zero out bins
-  uint16 j;
-  for (j = 0; j < m_stHistParms.nBins; j++)
-  {
-    m_pHistogram[j] = 0;
-  }
-  m_stHistParms.pBinDivs = new short[m_stHistParms.nBins + 1];
-  for (j = 0; j <= m_stHistParms.nBins; j++)
-  {
-    m_stHistParms.pBinDivs[j] = stHistParms.pBinDivs[j];
-  }
+	// Update object member variables.
+	m_stProcParms = stProcParms;
+	m_stHistParms = stHistParms;
+	m_pSigBfr = stProcParms.pBufferStart;
+	m_dwBatchOffset = m_stProcParms.dwBlockOffset;
+	m_sbSmpFormat = stProcParms.stSigParms.SmpDataFmt;
+	m_pHistogram = new short[m_stHistParms.nBins];
+	m_nMinValue = 0x7FFF; // SDM was 0xFFFF  which became -1...
+	m_nMaxValue = 0;
+	m_dwTotalCounts = 0;
+	// zero out bins
+	uint16 j;
+	for (j = 0; j < m_stHistParms.nBins; j++)
+	{
+		m_pHistogram[j] = 0;
+	}
+	m_stHistParms.pBinDivs = new short[m_stHistParms.nBins + 1];
+	for (j = 0; j <= m_stHistParms.nBins; j++)
+	{
+		m_stHistParms.pBinDivs[j] = stHistParms.pBinDivs[j];
+	}
 
 }
 
@@ -271,16 +271,16 @@ CHistogram::CHistogram(HIST_PARMS &stHistParms, PROC_PARMS &stProcParms)
 ////////////////////////////////////////////////////////////////////////////////////////
 CHistogram::~CHistogram()
 { 
- if (m_pHistogram)
- { 
-   delete [] m_pHistogram;
-   m_pHistogram = NULL;
- }
- if(m_stHistParms.pBinDivs)
- {
-   delete [] m_stHistParms.pBinDivs;
-   m_stHistParms.pBinDivs = NULL;
- }
+	if (m_pHistogram)
+	{ 
+		delete [] m_pHistogram;
+		m_pHistogram = NULL;
+	}
+	if(m_stHistParms.pBinDivs)
+	{
+		delete [] m_stHistParms.pBinDivs;
+		m_stHistParms.pBinDivs = NULL;
+	}
 }
 
 
@@ -296,15 +296,15 @@ void CHistogram::FreeHistMem(void)
 ////////////////////////////////////////////////////////////////////////////////////////
 dspError_t CHistogram::GenerateHistogram(void)
 {
- switch(m_sbSmpFormat)
-   {
-    case PCM_UBYTE:
-      return(Process((uint8 *)m_stProcParms.pBufferStart));
-    case PCM_2SSHORT:
-      return(Process((short *)m_stProcParms.pBufferStart));
-    default:
-      return(DONE);    
-   }                             
+	switch(m_sbSmpFormat)
+	{
+	case PCM_UBYTE:
+		return(Process((uint8 *)m_stProcParms.pBufferStart));
+	case PCM_2SSHORT:
+		return(Process((short *)m_stProcParms.pBufferStart));
+	default:
+		return(DONE);    
+	}                             
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////
@@ -312,67 +312,67 @@ dspError_t CHistogram::GenerateHistogram(void)
 ////////////////////////////////////////////////////////////////////////////////////////
 dspError_t CHistogram::GetBin(int32 & nBinValue, uint16 nBinNum, double fCoeff, uint16 wGraphForm)
 { 
-  switch (wGraphForm)
-  { 
-  case COUNTS:
-    nBinValue = (short)((double)m_pHistogram[nBinNum] / fCoeff);
-    break;
-    
-  case PDF:
-    nBinValue = (short)(m_pHistogram[nBinNum] / ((double)m_stProcParms.dwBlockLength * fCoeff));
-    break;
-    
-  case CDF:
-    {
+	switch (wGraphForm)
+	{ 
+	case COUNTS:
+		nBinValue = (short)((double)m_pHistogram[nBinNum] / fCoeff);
+		break;
+
+	case PDF:
+		nBinValue = (short)(m_pHistogram[nBinNum] / ((double)m_stProcParms.dwBlockLength * fCoeff));
+		break;
+
+	case CDF:
+		{
 			uint32 dwCumCounts = 0;
-      for (uint32 i = 0, dwCumCounts = 0; i <= nBinNum; i++)
-        dwCumCounts += m_pHistogram[i];
-      nBinValue = (short)(dwCumCounts / ((double)m_stProcParms.dwBlockLength * fCoeff));
-    }
-    break;
-  default:
-    nBinValue = 0;
-  }
-   
-  return (DONE);
+			for (uint32 i = 0; i <= nBinNum; i++)
+				dwCumCounts += m_pHistogram[i];
+			nBinValue = (short)(dwCumCounts / ((double)m_stProcParms.dwBlockLength * fCoeff));
+		}
+		break;
+	default:
+		nBinValue = 0;
+	}
+
+	return (DONE);
 }
 
 dspError_t CHistogram::GetBinByData(int32 & nBinValue, int16 nData, double fCoeff, uint16 wGraphForm)
 {
-  int32 nBinNum = -1;
-  GetBinNum(nBinNum, nData);
+	int32 nBinNum = -1;
+	GetBinNum(nBinNum, nData);
 
-  nBinValue = 0;
+	nBinValue = 0;
 
-  if(nBinNum < 0)
-    return (DONE);
+	if(nBinNum < 0)
+		return (DONE);
 
-  return GetBin(nBinValue, nBinNum, fCoeff, wGraphForm);
+	return GetBin(nBinValue, nBinNum, fCoeff, wGraphForm);
 }
 
 // Get bin number for data
 // set nBinNum to -1 if data does not fit in a bin
 dspError_t CHistogram::GetBinNum(int32 & nBinNum, int16 nData)
 {
-  nBinNum = -1;
-  if (nData < m_stHistParms.pBinDivs[0]) 
-    return (DONE);
-  if (nData > m_stHistParms.pBinDivs[m_stHistParms.nBins]) 
-    return (DONE);
+	nBinNum = -1;
+	if (nData < m_stHistParms.pBinDivs[0]) 
+		return (DONE);
+	if (nData > m_stHistParms.pBinDivs[m_stHistParms.nBins]) 
+		return (DONE);
 
-  int32 nMinBin = 0;
-  int32 nMaxBin = (uint16)(m_stHistParms.nBins - 1);
-  while (nMinBin != nMaxBin)
-  { 
-    int32 nMidBin = (uint16)((nMaxBin + nMinBin + 1) / 2);
-    if (nData < m_stHistParms.pBinDivs[nMidBin])
-      nMaxBin = (uint16)(nMidBin - 1);
-    else
-      nMinBin = nMidBin;
-  }
-  
-  nBinNum = nMinBin;
-  return (DONE);
+	int32 nMinBin = 0;
+	int32 nMaxBin = (uint16)(m_stHistParms.nBins - 1);
+	while (nMinBin != nMaxBin)
+	{ 
+		int32 nMidBin = (uint16)((nMaxBin + nMinBin + 1) / 2);
+		if (nData < m_stHistParms.pBinDivs[nMidBin])
+			nMaxBin = (uint16)(nMidBin - 1);
+		else
+			nMinBin = nMidBin;
+	}
+
+	nBinNum = nMinBin;
+	return (DONE);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////
@@ -380,36 +380,36 @@ dspError_t CHistogram::GetBinNum(int32 & nBinNum, int16 nData)
 ////////////////////////////////////////////////////////////////////////////////////////
 dspError_t CHistogram::GetHistogram(short* pBins, double fCoeff, uint16 wGraphForm)
 { uint32 i, dwCumCounts;
-  switch (wGraphForm)
-  { case COUNTS:
-      for (i = 0; i < m_stHistParms.nBins; i++)
-        pBins[i] = (short)(m_pHistogram[i] / fCoeff);
-      break;
-      
-    case PDF:
-      for (i = 0; i < m_stHistParms.nBins; i++)
-      {
-        // Make max value 0 if the total number of counts is 0. CLW 9/26/00
-        if (m_dwTotalCounts)
-          pBins[i] = (short)((double)m_pHistogram[i] / ((double)m_dwTotalCounts * fCoeff) + 0.5);
-        else
-          pBins[i] = 0;
-      }
-      break;
-      
-    case CDF:
-      for (i = 0, dwCumCounts = 0; i <= m_stHistParms.nBins; i++)
-      { dwCumCounts += m_pHistogram[i];
-        // Make max value 0 if the total number of counts is 0. CLW 9/26/00
-        if (m_dwTotalCounts)
-          pBins[i] = (short)((double)dwCumCounts / ((double)m_dwTotalCounts * fCoeff) + 0.5);
-        else
-          pBins[i] = 0;
-      }
-      break;
-  }
-  
-  return (DONE);
+switch (wGraphForm)
+{ case COUNTS:
+for (i = 0; i < m_stHistParms.nBins; i++)
+pBins[i] = (short)(m_pHistogram[i] / fCoeff);
+break;
+
+case PDF:
+	for (i = 0; i < m_stHistParms.nBins; i++)
+	{
+		// Make max value 0 if the total number of counts is 0. CLW 9/26/00
+		if (m_dwTotalCounts)
+			pBins[i] = (short)((double)m_pHistogram[i] / ((double)m_dwTotalCounts * fCoeff) + 0.5);
+		else
+			pBins[i] = 0;
+	}
+	break;
+
+case CDF:
+	for (i = 0, dwCumCounts = 0; i <= m_stHistParms.nBins; i++)
+	{ dwCumCounts += m_pHistogram[i];
+	// Make max value 0 if the total number of counts is 0. CLW 9/26/00
+	if (m_dwTotalCounts)
+		pBins[i] = (short)((double)dwCumCounts / ((double)m_dwTotalCounts * fCoeff) + 0.5);
+	else
+		pBins[i] = 0;
+	}
+	break;
+}
+
+return (DONE);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////
@@ -417,28 +417,28 @@ dspError_t CHistogram::GetHistogram(short* pBins, double fCoeff, uint16 wGraphFo
 ////////////////////////////////////////////////////////////////////////////////////////
 dspError_t CHistogram::Process(uint8 * pBuffer)  //for 8-bit unsigned data
 { 
-  uint32   dwBlockEnd = m_stProcParms.dwBlockOffset + m_stProcParms.dwBlockLength,
-          dwBatchSize = m_stProcParms.dwBufferSize / m_sbSmpFormat;
-  
-  if ((m_dwBatchOffset + dwBatchSize) > dwBlockEnd)
-    dwBatchSize = dwBlockEnd - m_dwBatchOffset;
-  for (uint16 nSamp = 0; nSamp < dwBatchSize; nSamp++)
-  { 
-    int32 nBin = -1;
-    
-    GetBinNum(nBin, (short)pBuffer[nSamp]);
-    
-    if(nBin < 0) continue;
-    
-    m_pHistogram[nBin]++;
-    m_dwTotalCounts++;
-    if (m_pHistogram[nBin] > m_nMaxValue) m_nMaxValue = m_pHistogram[nBin];
-    if (m_pHistogram[nBin] < m_nMinValue) m_nMinValue = m_pHistogram[nBin];
-  }
-  m_dwBatchOffset += dwBatchSize;
-  
-  if (m_dwBatchOffset < dwBlockEnd) return(HIST_BUFFER_CALLBACK);
-  return(DONE);
+	uint32   dwBlockEnd = m_stProcParms.dwBlockOffset + m_stProcParms.dwBlockLength,
+		dwBatchSize = m_stProcParms.dwBufferSize / m_sbSmpFormat;
+
+	if ((m_dwBatchOffset + dwBatchSize) > dwBlockEnd)
+		dwBatchSize = dwBlockEnd - m_dwBatchOffset;
+	for (uint16 nSamp = 0; nSamp < dwBatchSize; nSamp++)
+	{ 
+		int32 nBin = -1;
+
+		GetBinNum(nBin, (short)pBuffer[nSamp]);
+
+		if(nBin < 0) continue;
+
+		m_pHistogram[nBin]++;
+		m_dwTotalCounts++;
+		if (m_pHistogram[nBin] > m_nMaxValue) m_nMaxValue = m_pHistogram[nBin];
+		if (m_pHistogram[nBin] < m_nMinValue) m_nMinValue = m_pHistogram[nBin];
+	}
+	m_dwBatchOffset += dwBatchSize;
+
+	if (m_dwBatchOffset < dwBlockEnd) return(HIST_BUFFER_CALLBACK);
+	return(DONE);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////
@@ -446,30 +446,30 @@ dspError_t CHistogram::Process(uint8 * pBuffer)  //for 8-bit unsigned data
 ////////////////////////////////////////////////////////////////////////////////////////
 dspError_t CHistogram::Process(short * pBuffer)  //for 16-bit signed data
 { 
-  uint32   dwBlockEnd = m_stProcParms.dwBlockOffset + m_stProcParms.dwBlockLength,
-          dwBatchSize = m_stProcParms.dwBufferSize / m_sbSmpFormat;
-  
-  if ((m_dwBatchOffset + dwBatchSize) > dwBlockEnd)
-    dwBatchSize = dwBlockEnd - m_dwBatchOffset;
-  for (uint16 nSamp = 0; nSamp < dwBatchSize; nSamp++)
-  { 
-    int32 nBin = -1;
-    
-    GetBinNum(nBin, (short)pBuffer[nSamp]);
-    
-    if(nBin < 0) continue;
-    
-    m_pHistogram[nBin]++;
-    m_dwTotalCounts++;
-    if (m_pHistogram[nBin] > m_nMaxValue) m_nMaxValue = m_pHistogram[nBin];
-    if (m_pHistogram[nBin] < m_nMinValue) m_nMinValue = m_pHistogram[nBin];
-  }
-  m_dwBatchOffset += dwBatchSize;
-  
-  if (m_dwBatchOffset < dwBlockEnd) return(HIST_BUFFER_CALLBACK);
-  return(DONE);
+	uint32   dwBlockEnd = m_stProcParms.dwBlockOffset + m_stProcParms.dwBlockLength,
+		dwBatchSize = m_stProcParms.dwBufferSize / m_sbSmpFormat;
+
+	if ((m_dwBatchOffset + dwBatchSize) > dwBlockEnd)
+		dwBatchSize = dwBlockEnd - m_dwBatchOffset;
+	for (uint16 nSamp = 0; nSamp < dwBatchSize; nSamp++)
+	{ 
+		int32 nBin = -1;
+
+		GetBinNum(nBin, (short)pBuffer[nSamp]);
+
+		if(nBin < 0) continue;
+
+		m_pHistogram[nBin]++;
+		m_dwTotalCounts++;
+		if (m_pHistogram[nBin] > m_nMaxValue) m_nMaxValue = m_pHistogram[nBin];
+		if (m_pHistogram[nBin] < m_nMinValue) m_nMinValue = m_pHistogram[nBin];
+	}
+	m_dwBatchOffset += dwBatchSize;
+
+	if (m_dwBatchOffset < dwBlockEnd) return(HIST_BUFFER_CALLBACK);
+	return(DONE);
 }
-     
+
 
 #ifdef TEST_HISTGRAM
 #include <stdio.h>
@@ -477,7 +477,7 @@ dspError_t CHistogram::Process(short * pBuffer)  //for 16-bit signed data
 void main(void);
 void main(void)
 {
- return;
+	return;
 }
 
 #endif

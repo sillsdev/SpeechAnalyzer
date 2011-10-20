@@ -3586,7 +3586,7 @@ BOOL COleWaveDataSource::OnRenderData(LPFORMATETC lpFormatEtc, LPSTGMEDIUM lpStg
 			pFile = new CFile(m_szSourceFile,CFile::modeRead | CFile::shareExclusive);
 			dwLength = pFile->GetLength();
 		}
-		catch(const CException & e)
+		catch(const CException &)
 		{
 			if(pFile)
 			{
@@ -3650,7 +3650,7 @@ BOOL COleWaveDataSource::OnRenderData(LPFORMATETC lpFormatEtc, LPSTGMEDIUM lpStg
 			delete pFile;
 			::GlobalUnlock(hData);
 		}
-		catch(const CException & e)
+		catch(const CException &)
 		{
 			::GlobalFree(hData);
 			if(pFile)
@@ -3873,7 +3873,7 @@ BOOL CSaDoc::PasteClipboardToWave(DWORD dwPastePos)
 				pFile->Abort();
 				delete pFile;
 			}
-			catch(const CException & pException)
+			catch(const CException &)
 			{
 				if (pFile)
 				{
@@ -4814,8 +4814,7 @@ CSaString CSaDoc::GetMeasurementsString(DWORD dwOffset, DWORD dwLength, BOOL* pb
 	double fData;
 	double fSum = 0;
 	int count = 0;
-	DWORD i = dwStartPos;
-	for (; i <= dwEndPos; i++)
+	for (DWORD i = dwStartPos; i <= dwEndPos; i++)
 	{
 		fData = (float)m_pProcessGrappl->GetProcessedData(i, pbRes) / (float)PRECISION_MULTIPLIER;
 		if (fData > 0.)
@@ -4843,7 +4842,7 @@ CSaString CSaDoc::GetMeasurementsString(DWORD dwOffset, DWORD dwLength, BOOL* pb
 	int nRawData;
 	fSum = 0;
 	count = 0;
-	for (i = dwStartPos; i <= dwEndPos; i++)
+	for (DWORD i = dwStartPos; i <= dwEndPos; i++)
 	{
 		nRawData = m_pProcessLoudness->GetProcessedData(i, pbRes);
 		if (nRawData > 0.)
@@ -4866,7 +4865,7 @@ CSaString CSaDoc::GetMeasurementsString(DWORD dwOffset, DWORD dwLength, BOOL* pb
 	double fF3Sum = 0;
 	double fF4Sum = 0;
 	count = 0;
-	for (i = dwStartPos; i <= dwEndPos; i++)
+	for (DWORD i = dwStartPos; i <= dwEndPos; i++)
 	{
 		CProcessIterator<FORMANT_FREQ> iterFormants(*m_pProcessFormantTracker, i);
 		if ((*iterFormants).F[1] != (double)NA)
@@ -5539,8 +5538,7 @@ BOOL CSaDoc::AdvancedSegment()
 
 	// SDM1.5Test8.2
 	CSegment* pPreserve[ANNOT_WND_NUMBER];
-	int nLoop = GLOSS;
-	for(; nLoop < ANNOT_WND_NUMBER; nLoop++)
+	for(int nLoop = GLOSS; nLoop < ANNOT_WND_NUMBER; nLoop++)
 	{
 		pPreserve[nLoop] = m_apSegments[nLoop];
 		if(nLoop == GLOSS)
@@ -5558,7 +5556,7 @@ BOOL CSaDoc::AdvancedSegment()
 	CSaApp* pApp = (CSaApp*)AfxGetApp();
 
 	// restore preserved gloss etc. SDM 1.5Test8.2
-	for(nLoop = GLOSS; nLoop < ANNOT_WND_NUMBER; nLoop++)
+	for(int nLoop = GLOSS; nLoop < ANNOT_WND_NUMBER; nLoop++)
 	{
 		if(m_apSegments[nLoop]) delete m_apSegments[nLoop];
 		m_apSegments[nLoop] = pPreserve[nLoop];
@@ -5573,8 +5571,8 @@ BOOL CSaDoc::AdvancedSegment()
 		DWORD dwDistance;
 		int nPhonetic;
 		BOOL bInsert = FALSE;
-		int nGloss = 0;
-		for(;nGloss < pGloss->GetSize(); nGloss++)
+		int nGloss;
+		for(nGloss=0;nGloss < pGloss->GetSize(); nGloss++)
 		{
 			dwStart = pGloss->GetOffset(nGloss);
 			dwStop = dwStart + pGloss->GetDuration(nGloss);
