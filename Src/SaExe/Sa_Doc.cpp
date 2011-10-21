@@ -212,7 +212,7 @@ CSaDoc::CSaDoc()
 	m_pProcessSpectrogram = NULL; // create data processing object
 	m_pProcessSnapshot = NULL; // create data processing object
 	m_pProcessFormants = new CProcessFormants; // create data processing object
-	m_pProcessFormantTracker = new CFormantTracker(*m_pProcessRaw, *m_pProcessHilbert, *m_pProcessGrappl); // create data processing object
+	m_pProcessFormantTracker = new CFormantTracker( *m_pProcessRaw, *m_pProcessHilbert, *m_pProcessGrappl); // create data processing object
 	m_pProcessZCross   = new CProcessZCross;   // create data processing object
 	m_pProcessSpectrum = new CProcessSpectrum; // create data processing object
 	m_pProcessDurations = new CProcessDurations; // create data processing object

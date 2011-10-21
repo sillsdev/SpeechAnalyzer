@@ -299,7 +299,7 @@ long CFormantTracker::Process(void* pCaller, ISaDoc* pDoc, int nProgress, int nL
 	int nOldLevel = nLevel;			// save original level
 	int nOldProgress = nProgress;	// save original progress
 
-	if(m_pReal == NULL || m_pImag == NULL || m_pPitch == NULL)
+	if ((m_pReal == NULL) || (m_pImag == NULL) || (m_pPitch == NULL))
 		return MAKELONG(PROCESS_ERROR, nProgress);
 
 	if (!m_pReal->IsDataReady())
@@ -313,7 +313,7 @@ long CFormantTracker::Process(void* pCaller, ISaDoc* pDoc, int nProgress, int nL
 	if ((nLevel >= 0) && !m_pImag->IsDataReady())
 	{
 		SetDataInvalid();
-		long lResult = m_pImag->Process(pCaller, pDoc, nProgress, ++nLevel);
+		long lResult = m_pImag->Process( pCaller, pDoc, nProgress, ++nLevel);
 		nLevel = (short int)LOWORD(lResult);
 		nProgress = HIWORD(lResult);
 	}
@@ -328,6 +328,10 @@ long CFormantTracker::Process(void* pCaller, ISaDoc* pDoc, int nProgress, int nL
 			nProgress = HIWORD(lResult);
 		}
 	}
+
+	m_pReal->Dump(__FILE__);
+	m_pImag->Dump(__FILE__);
+	m_pPitch->Dump(__FILE__);
 
 	if ((nLevel == nOldLevel) && (IsDataReady())) 
 		return MAKELONG(--nLevel, nProgress); // data is already ready

@@ -51,18 +51,23 @@ static void StoreWaveData(int nData, int wSmpSize, void *pTargetData)
 
 long CIIRFilter::Process(void* pCaller, ISaDoc* pDoc, int nProgress, int nLevel)
 {
+	TRACE("IIRFilter::Process %d %d\n",nProgress,nLevel);
+
 	if (IsCanceled()) return MAKELONG(PROCESS_CANCELED, nProgress); // process canceled
+
 	// check if nested workbench processes
 	int nOldLevel = nLevel; // save original level
 	CDataProcess* pLowerProcess = NULL;
 	pLowerProcess = m_pSourceProcess;
 	if (pLowerProcess)
 	{
+		TRACE("process lower\n");
 		// there is at least one source processes to process first
 		long lResult = pLowerProcess->Process(pCaller, pDoc, nProgress, ++nLevel);
 		nLevel = (short int)LOWORD(lResult);
 		nProgress = HIWORD(lResult);
 	}
+
 	if ((nLevel == nOldLevel) && (IsDataReady())) 
 		return MAKELONG(--nLevel, nProgress); // data is already ready
 	else
@@ -75,6 +80,7 @@ long CIIRFilter::Process(void* pCaller, ISaDoc* pDoc, int nProgress, int nLevel)
 		return MAKELONG(nLevel, nProgress);
 	}
 
+	TRACE("start process\n");
 	// start process
 	BeginWaitCursor(); // wait cursor
 	if (!StartProcess(pCaller, IDS_STATTXT_PROCESSWBLP)) // start data processing
@@ -83,6 +89,7 @@ long CIIRFilter::Process(void* pCaller, ISaDoc* pDoc, int nProgress, int nLevel)
 		EndWaitCursor();
 		return MAKELONG(PROCESS_ERROR, nProgress);
 	}
+
 	// create the temporary file
 	if (!CreateTempFile(_T("IIR"))) // creating error
 	{
@@ -105,6 +112,7 @@ long CIIRFilter::Process(void* pCaller, ISaDoc* pDoc, int nProgress, int nLevel)
 	// start processing loop
 	if (!m_bReverse)
 	{
+		TRACE("forward\n");
 		m_bReverse = FALSE;
 		// get source data size
 		DWORD dwDataSize;
@@ -112,9 +120,11 @@ long CIIRFilter::Process(void* pCaller, ISaDoc* pDoc, int nProgress, int nLevel)
 		{
 			dwDataSize = pLowerProcess->GetProcessedWaveDataSize();
 		}
-		else 
+		else
+		{
 			dwDataSize = pDoc->GetUnprocessedDataSize(); // size of raw data
-
+		}
+		TRACE("dwDataSize=%d\n",dwDataSize);
 
 		WORD wSrcSmpSize = WORD(m_bSrcWBenchProcess ? pFmtParm->wBlockAlign / pFmtParm->wChannels : sizeof(short));
 
@@ -184,9 +194,11 @@ long CIIRFilter::Process(void* pCaller, ISaDoc* pDoc, int nProgress, int nLevel)
 				WriteWaveDataBlock(dwBlockStart, m_lpData, dwBufferSize*wDstSmpSize/wSrcSmpSize);
 			}
 		}
+		Dump("butterworth end forward");
 	}
 	else
 	{
+		TRACE("reverse\n");
 		// process in reverse
 		// first do forward pass
 		CIIRFilter forwardPass(m_bDstWBenchProcess);
@@ -206,7 +218,9 @@ long CIIRFilter::Process(void* pCaller, ISaDoc* pDoc, int nProgress, int nLevel)
 			return MAKELONG(nLevel, nProgress);
 		}
 
-		m_pSourceProcess = &forwardPass;;
+		m_pSourceProcess = &forwardPass;
+
+		forwardPass.Dump("forwardPass"	);
 
 		WORD wSmpSize = wDstSmpSize;
 		DWORD dwDataSize;
@@ -216,12 +230,14 @@ long CIIRFilter::Process(void* pCaller, ISaDoc* pDoc, int nProgress, int nLevel)
 			dwDataSize = (forwardPass.GetDataSize() - FilterFilterSilenceSamples())*wSmpSize;
 
 		dwDataPos = forwardPass.GetDataSize()*wSmpSize;
+		TRACE("wDstSmpSize=%d dwDataSize=%d dwDataPos=%d\n",wDstSmpSize,dwDataSize, dwDataPos);
+		m_zReverseTransform.Dump("reverse");
+
 		while (dwDataPos > dwDataSize)
 		{
 			// process silence 
 			dwDataPos-= wSmpSize;
 			int nData = ReadSourceData(dwDataPos, wSmpSize, pDoc);
-
 			// process data
 			nData = round(m_zReverseTransform.Tick(double(nData)));
 		}
@@ -248,10 +264,11 @@ long CIIRFilter::Process(void* pCaller, ISaDoc* pDoc, int nProgress, int nLevel)
 			DWORD dwBlockStart = dwBlockEnd;
 
 			pTargetData = m_lpData + dwBufferSize;
+			TRACE("dwDataPos=%d\n",dwDataPos);
 			while (dwDataPos > dwBlockEnd)
 			{
 				dwDataPos-= wSmpSize;
-				ULONGLONG nData = ReadSourceData(dwDataPos, wSmpSize, pDoc);
+				int nData = ReadSourceData( dwDataPos, wSmpSize, pDoc);
 
 				// process data
 				nData = round(m_zReverseTransform.Tick(double(nData)));
@@ -270,6 +287,7 @@ long CIIRFilter::Process(void* pCaller, ISaDoc* pDoc, int nProgress, int nLevel)
 
 		// Preserve source setting so that we can use it
 		m_pSourceProcess = forwardPass.m_pSourceProcess;
+		Dump("butterworth end reverse");
 	}
 
 	nProgress = nProgress + (int)(100 / nLevel); // calculate the actual progress
@@ -278,6 +296,9 @@ long CIIRFilter::Process(void* pCaller, ISaDoc* pDoc, int nProgress, int nLevel)
 	EndProcess((nProgress >= 95)); // end data processing
 	EndWaitCursor();
 	SetDataReady();
+
+	Dump("iirfilter end process");
+
 	return MAKELONG(nLevel, nProgress);
 }
 
@@ -667,9 +688,10 @@ const double CHilbert::Pole1000x96dB[] =
 	0 // Real Pole
 };
 
-
-CHilbert::CHilbert(CDataProcess * pSourceProcess, BOOL bWBenchProcess)
+CHilbert::CHilbert( CDataProcess * pSourceProcess, BOOL bWBenchProcess)
 {
+	pSourceProcess->Dump("hilbert");
+
 	const double *poles = Pole1000x96dB;
 	double fTauSq=0;
 	double rTauSq=0;
@@ -702,7 +724,7 @@ CHilbert::CHilbert(CDataProcess * pSourceProcess, BOOL bWBenchProcess)
 	double rTau = sqrt(rTauSq);  UNUSED_ALWAYS(rTau);
 
 	SetFilterFilterSilenceSamples(int(fTau*11+1.5)+poleLast);
-	SetSourceProcess(pSourceProcess, bWBenchProcess);
+	SetSourceProcess( pSourceProcess, bWBenchProcess);
 }
 
 CZTransform CHilbert::AllPass(double pole)

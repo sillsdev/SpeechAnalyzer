@@ -107,6 +107,8 @@ public:
 	virtual void WriteProperties(Object_ostream& obs);
 	virtual BOOL bReadProperties(Object_istream& obs);
 
+	void Dump(const char * tag);
+
 protected:
 	virtual long GetStatus() const { return m_nStatus;}
 	void SetStatus(long nStatus);

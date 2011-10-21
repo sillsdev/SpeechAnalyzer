@@ -217,7 +217,7 @@ template<class _Ty> int32 CZTransformGeneric<_Ty>::GetOrder() const
 
 template<class _Ty> void CZTransformGeneric<_Ty>::Dump( const char * tag) const 
 {
-	TRACE("%s order=%d\n",tag,m_nOrder);
+	TRACE("%s order=%d ",tag,m_nOrder);
 	if (m_nOrder>0) {
 		TRACE("numerator ");
 		for (int i=0;i<m_nOrder+1;i++) {

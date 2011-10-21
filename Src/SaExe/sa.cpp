@@ -287,8 +287,6 @@ BOOL CSaApp::InitInstance()
 	afxMemDF |= checkAlwaysMemDF;  // check for memory overwrites in debug version (see MSDN)
 #endif
 
-	TRACE("MSEA\n");
-
 #ifdef _DEBUG
 	m_hEnglishResources = LoadCompatibleLibrary(_T("SA_ENUd.DLL"));
 	m_hLocalizedResources = LoadCompatibleLibrary(_T("SA_LOCd.DLL"));

@@ -842,7 +842,10 @@ void CDataProcess::SetStatus(long nStatus)
 	m_nStatus = nStatus;
 }
 
-
+void CDataProcess::Dump( const char * tag)
+{
+	TRACE("DataProcess %s size=%d max=%d min=%d status=%d offset=%d\n",tag,m_dwBufferSize, m_nMaxValue, m_nMinValue,m_nStatus,m_dwBufferOffset);
+}
 
 //###########################################################################
 // CAreaDataProcess

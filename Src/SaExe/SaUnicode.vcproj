@@ -3396,6 +3396,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Process\Butterworth.H"
+				>
+			</File>
+			<File
 				RelativePath=".\Clip.hpp"
 				>
 			</File>

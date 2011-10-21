@@ -95,7 +95,7 @@ private:
 class CHilbert : public CIIRFilter
 {
 public:
-	CHilbert(CDataProcess * pSourceProcess = NULL, BOOL bWBenchProcess = FALSE);
+	CHilbert( CDataProcess * pSourceProcess = NULL, BOOL bWBenchProcess = FALSE);
 
 private:
 	static const double Pole1000x96dB[];

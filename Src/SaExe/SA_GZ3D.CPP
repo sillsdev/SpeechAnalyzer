@@ -1074,7 +1074,6 @@ void CPlotF1F2::OnDraw(CDC * pDC, CRect rClient, CRect rClip, CSaView * pView)
 	double sizeFactorFT2Raw = (double)pFTFormants->GetDataSize() / (double)pDoc->GetDataSize() / (sizeof(FORMANT_FREQ) / 2);
 	double sizeFactorFT2Frag = sizeFactorFT2Raw * (stopCursorPos - startCursorPos) / (stopFrag - startFrag);
 	DWORD ftIndex = (DWORD)((double)startCursorPos * sizeFactorFT2Raw);
-	TRACE("bono %s[%d]\n",__FILE__,__LINE__);
 	FTFormant = pFTFormants->GetFormant(ftIndex);
 
 	double meanF1 = 0;
