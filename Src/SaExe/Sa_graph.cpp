@@ -433,6 +433,7 @@ void CGraphWnd::SetCaptionStyle(int nStyle, BOOL bRedraw)
 //***************************************************************************/
 void CGraphWnd::ScrollGraph(CSaView* pView, DWORD dwNewPos, DWORD dwOldPos)
 {
+	//TRACE("ScrollGraph %lp %d %d\n",pView,dwNewPos,dwOldPos);
 	if (m_bAreaGraph)
 		return; // don't do anything
 	if (!HaveCursors())
@@ -450,21 +451,24 @@ void CGraphWnd::ScrollGraph(CSaView* pView, DWORD dwNewPos, DWORD dwOldPos)
 	if (m_bLegend)
 		rWnd.left = m_pLegend->GetWindowWidth();
 
-	if(m_pPlot)
+	if (m_pPlot) {
 		m_pPlot->GetClientRect(rWnd);
+	}
+
 	DWORD dwDataFrame = pView->AdjustDataFrame(rWnd.Width()); // number of data points displayed
 
-	BOOL bLessThanPage = ((dwNewPos > dwOldPos) && ((dwNewPos - dwOldPos) < dwDataFrame))
-		|| ((dwOldPos > dwNewPos) && ((dwOldPos - dwNewPos) < dwDataFrame));
-
+	BOOL bLessThanPage = ((dwNewPos > dwOldPos) && ((dwNewPos - dwOldPos) < dwDataFrame)) || 
+						 ((dwOldPos > dwNewPos) && ((dwOldPos - dwNewPos) < dwDataFrame));
+	bLessThanPage = FALSE;
+	
 	// check if there is less than a page to scroll
 	if (bLessThanPage)
 	{
 		// prepare scrolling
 		double fBytesPerPix = dwDataFrame / (double)rWnd.Width(); // calculate data samples per pixel
-		int nRealScroll = round(dwOldPos/fBytesPerPix)-round(dwNewPos/fBytesPerPix);
+		int nRealScroll = round((double)dwOldPos/fBytesPerPix)-round((double)dwNewPos/fBytesPerPix);
 
-		if(nRealScroll)
+		if (nRealScroll)
 		{
 			// scroll the plot window
 			m_pPlot->ScrollPlot(pView, nRealScroll, dwOldPos, dwDataFrame);
@@ -604,10 +608,10 @@ void CGraphWnd::RedrawGraph(BOOL bEntire, BOOL bLegend, BOOL bGraph)
 	// redraw the plot window
 	m_pPlot->RedrawPlot(bEntire);
 
-	if(bGraph)
+	if (bGraph)
 		InvalidateRect(NULL, FALSE);
 
-	if(bEntire)
+	if (bEntire)
 	{
 		// redraw the annotation windows
 		for (int nLoop = 0; nLoop < ANNOT_WND_NUMBER; nLoop++)
