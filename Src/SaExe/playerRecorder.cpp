@@ -1201,15 +1201,15 @@ void CDlgRecorder::SetSettingsText()
 	pDoc->GetSaParm(&saParm);
 
 	TCHAR szBuffer[60];
-	_stprintf(szBuffer, _T("%u Hz"), pFmtParm->dwSamplesPerSec);
+	swprintf_s(szBuffer, _T("%u Hz"), pFmtParm->dwSamplesPerSec);
 	if (pFmtParm->wChannels > 1)
-		_stprintf(szBuffer, _T("%s, %u-bit\nStereo"), szBuffer, pFmtParm->wBitsPerSample);
+		swprintf_s(szBuffer, _T("%s, %u-bit\nStereo"), szBuffer, pFmtParm->wBitsPerSample);
 	else
-		_stprintf(szBuffer, _T("%s, %u-bit\nMono"), szBuffer, pFmtParm->wBitsPerSample);
+		swprintf_s(szBuffer, _T("%s, %u-bit\nMono"), szBuffer, pFmtParm->wBitsPerSample);
 	if (saParm.wFlags & SA_FLAG_HIGHPASS)
-		_stprintf(szBuffer, _T("%s, Highpass"), szBuffer);
+		swprintf_s(szBuffer, _T("%s, Highpass"), szBuffer);
 	if (GetStaticSourceInfo().bEnable)
-		swprintf_s(szBuffer, _countof(szBuffer), _T("%s\nAdd file information"), szBuffer);
+		swprintf_s(szBuffer, _T("%s\nAdd file information"), szBuffer);
 	SetDlgItemText(IDC_SETTINGSTEXT, szBuffer);
 }
 

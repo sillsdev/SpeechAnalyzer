@@ -804,6 +804,7 @@ int CPlotWnd::GetPrivateCursorPosition()
 /***************************************************************************/
 void CPlotWnd::ScrollPlot(CSaView* pView, int nScrollAmount, DWORD dwOldPos, DWORD dwFrame)
 {
+	//TRACE("ScrollPlot %d\n",nScrollAmount);
 	// hide the helper windows (do not scroll them)
 	int nOldMode = m_HelperWnd.SetMode(MODE_HIDDEN);
 	// now scroll
@@ -2067,7 +2068,8 @@ void CPlotWnd::OnMouseMove(UINT nFlags, CPoint point)
 /***************************************************************************/
 void CPlotWnd::OnPaint()
 {
-	CPaintDC dc(this); // device context for painting
+	//TRACE("OnPaint %lp\n",this);
+	CPaintDC dc(this);				// device context for painting
 	CRect rWnd, rClip;
 	CGraphWnd* pGraph = (CGraphWnd*)GetParent();
 	CSaView* pView = (CSaView*)pGraph->GetParent();
@@ -2076,7 +2078,9 @@ void CPlotWnd::OnPaint()
 	dc.GetClipBox(&rClip);
 	dc.LPtoDP(&rClip);
 
-	OnDraw(&dc,rWnd,rClip, pView); // virtual
+	//TRACE("clip %d %d %d %d wnd %d %d %d %d\n",rClip.top,rClip.left,rClip.bottom,rClip.right,rWnd.top,rWnd.left,rWnd.bottom,rWnd.right);
+
+	OnDraw(&dc,rWnd,rClip, pView);	// virtual
 }
 
 CPlotWnd * CPlotWnd::NewCopy(void)

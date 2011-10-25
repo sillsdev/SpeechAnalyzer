@@ -48,7 +48,7 @@ BEGIN
             VALUE "Comments", "\0"
             VALUE "CompanyName", "SIL International\0"
             VALUE "FileDescription", "SA\0"
-            VALUE "FileVersion", "v3.0.1.2\0"
+            VALUE "FileVersion", "v3.0.1.3\0"
             VALUE "InternalName", "SA\0"
             VALUE "LegalCopyright", "© 1996-2011 SIL International (MSEA)\0"
             VALUE "LegalTrademarks", "\0"
@@ -4715,7 +4715,7 @@ STRINGTABLE PRELOAD DISCARDABLE
 BEGIN
     IDR_MAINFRAME           "Speech Analyzer"
     IDR_SA_ANNTYPE          "\nSA\nSA Document\nWAV Files (*.wav)\n.wav\nannFileType\nANN File Type"
-    VS_VERSION              "Version 3.0.1.2"
+    VS_VERSION              "Version 3.0.1.3"
     VS_COPYRIGHT            "© 1996-2011 SIL International (MSEA).\nAll Rights Reserved."
     IDR_SA_WBTYPE           "\nWB\nSA Workbench\nWB Files (*.wb)\n.wb\nwbFileType\nWB File Type"
 END

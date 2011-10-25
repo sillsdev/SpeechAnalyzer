@@ -3776,10 +3776,6 @@
 				>
 			</File>
 		</Filter>
-		<File
-			RelativePath=".\trace.txt"
-			>
-		</File>
 	</Files>
 	<Globals>
 	</Globals>

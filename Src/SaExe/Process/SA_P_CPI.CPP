@@ -114,7 +114,7 @@ long CProcessCustomPitch::Process(void* pCaller, ISaDoc* pDoc, int nProgress,
     if (GetBufferSize() < (DWORD)nWorkSpace)
     { // buffer too small
       TCHAR szText[6];
-      _stprintf(szText, _T("%u"), nWorkSpace);
+      swprintf_s(szText, _T("%u"), nWorkSpace);
       ErrorMessage(IDS_ERROR_GRAPPLSPACE, szText);
       return Exit(PROCESS_ERROR); // error, buffer too small
     }

@@ -921,7 +921,7 @@ void CSASelfTest::EndTest(BOOL bSuccess)
 	szStatusMessage.Format(_T("Completed %3.3d tests."),m_nTestsPassed+m_nTestsFailed);
 	LogFile.Write(szStatusMessage,szStatusMessage.GetLength());
 
-	if(bSuccess)
+	if (bSuccess)
 	{
 		LogFile.Seek(N_TESTS_PASSED,CFile::begin);
 		_itot(m_nTestsPassed,nNumber,10);

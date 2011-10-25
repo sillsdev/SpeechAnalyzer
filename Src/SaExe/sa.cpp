@@ -776,7 +776,7 @@ void CSaApp::ExamineCmdLine(LPCTSTR pCmdLine, WPARAM wParam)
 						}
 					}
 					szEntry = "File";
-					_stprintf(szTemp, _T("%i"), ++m_nEntry); // create new number
+					swprintf_s(szTemp, _T("%i"), ++m_nEntry); // create new number
 					szEntry += szTemp; // add new file number
 				}
 				// SDM 1.06.8 Process Commands in Batch File
@@ -887,7 +887,7 @@ void CSaApp::OnProcessBatchCommands()
 	CSaString szParameterList;
 
 
-	_stprintf(szEntry.GetBuffer(12), _T("command%i"), m_nCommand);
+	swprintf_s(szEntry.GetBuffer(12),12,_T("command%i"), m_nCommand);
 	szEntry.ReleaseBuffer();
 	szReturn = GetBatchString(_T("Commands"), szEntry, _T("")); // get the entry
 	szReturn.MakeUpper(); // convert the whole string to upper case letters
@@ -906,7 +906,7 @@ void CSaApp::OnProcessBatchCommands()
 			CDocument* pDoc = m_pDocTemplate->GetNextDoc(position); // get pointer to document
 			if (pDoc && pDoc->IsKindOf(RUNTIME_CLASS(CSaDoc)) && ((CSaDoc*)pDoc)->GetID() != -1)
 			{
-				_stprintf(szEntry.GetBuffer(12), _T("Offset%i"), ((CSaDoc*)pDoc)->GetID()); // create new number
+				swprintf_s(szEntry.GetBuffer(12),12,_T("Offset%i"), ((CSaDoc*)pDoc)->GetID()); // create new number
 				szEntry.ReleaseBuffer();
 				// get start cursor position
 				szReturn = GetBatchString(_T("BeginningWAVOffsets"), szEntry); // get the entry
@@ -1185,11 +1185,11 @@ void CSaApp::SetBatchFileChanged(CSaString szFileName, int nID, CDocument* pDoc)
 	if (nID == -1)
 	{
 		// no valid entry, new file
-		_stprintf(szTemp, _T("%i"), m_nEntry);
+		swprintf_s(szTemp, _T("%i"), m_nEntry);
 	}
 	else                                          // create entry number from ID
 	{
-		_stprintf(szTemp, _T("%i"), nID);                 // create number for entry
+		swprintf_s(szTemp, _T("%i"), nID);                 // create number for entry
 	}
 	szEntry += szTemp;                                     // create entry
 	TCHAR szShortName[MAX_PATH];

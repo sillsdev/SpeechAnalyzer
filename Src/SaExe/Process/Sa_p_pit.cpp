@@ -58,7 +58,9 @@ CProcessPitch::~CProcessPitch()
 // in the lower word of the long value and the end process progress
 // percentage in the higher word.  Uses WinCecil 2.2 pitch algorithm.
 /***************************************************************************/
-long CProcessPitch::Process(void* pCaller, ISaDoc* pDoc, int nProgress,
+long CProcessPitch::Process(void* pCaller, 
+							ISaDoc* pDoc, 
+							int nProgress,
 							int nLevel)
 {   
 	TRACE(_T("Process: CProcessPitch\n"));
@@ -117,7 +119,7 @@ long CProcessPitch::Process(void* pCaller, ISaDoc* pDoc, int nProgress,
 		if (GetBufferSize() < (DWORD)nWorkSpace)
 		{ // buffer too small
 			TCHAR szText[6];
-			_stprintf(szText, _T("%u"), nWorkSpace);
+			swprintf_s(szText, _T("%u"), nWorkSpace);
 			ErrorMessage(IDS_ERROR_GRAPPLSPACE, szText);
 			return Exit(PROCESS_ERROR); // error, buffer too small
 		}

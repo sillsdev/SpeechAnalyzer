@@ -1616,7 +1616,7 @@ void CSaView::ZoomIn(double fZoomAmount, BOOL bZoom)
 		m_fZoom = m_fMaxZoom;
 
 	m_dwScrollLine = GetDataFrame() * LINE_SCROLL_PIXELWIDTH / rWnd.Width(); // one line scroll width
-	if(m_dwScrollLine < wSmpSize)
+	if (m_dwScrollLine < wSmpSize)
 		m_dwScrollLine = wSmpSize;
 
 	// try to set data between the cursors into the middle of the frame
@@ -1627,10 +1627,13 @@ void CSaView::ZoomIn(double fZoomAmount, BOOL bZoom)
 	{
 		m_dwDataPosition = dwDataCenter - GetDataFrame() / 2; // set new data position
 		// for 16 bit data value must be even
-		if (wSmpSize == 2)
+		if (wSmpSize == 2) {
 			m_dwDataPosition &= ~1;
+		}
 	}
-	else m_dwDataPosition = 0;
+	else 
+		m_dwDataPosition = 0;
+
 	// limit right border
 	if (m_dwDataPosition > (pDoc->GetDataSize() - GetDataFrame())) // is data position too high?
 	{
@@ -1650,7 +1653,9 @@ void CSaView::ZoomIn(double fZoomAmount, BOOL bZoom)
 	// repaint all graphs (not area and private cursor graphs)
 	for (int nLoop = 0; nLoop < MAX_GRAPHS_NUMBER; nLoop++)
 	{
-		if (m_apGraphs[nLoop] && (!m_apGraphs[nLoop]->IsAreaGraph()) && (!m_apGraphs[nLoop]->HavePrivateCursor()))
+		if ((m_apGraphs[nLoop]) && 
+			(!m_apGraphs[nLoop]->IsAreaGraph()) && 
+			(!m_apGraphs[nLoop]->HavePrivateCursor()))
 			m_apGraphs[nLoop]->RedrawGraph(); // repaint whole graph without legend window
 	}
 	if (GraphIDtoPtr(IDD_RECORDING)) 
@@ -1712,15 +1717,17 @@ void CSaView::ZoomOut(double fZoomAmount)
 		// repaint all graphs
 		for (int nLoop = 0; nLoop < MAX_GRAPHS_NUMBER; nLoop++)
 		{
-			if (m_apGraphs[nLoop] && (!m_apGraphs[nLoop]->IsAreaGraph()) && (!m_apGraphs[nLoop]->HavePrivateCursor()))
+			if ((m_apGraphs[nLoop]) && (!m_apGraphs[nLoop]->IsAreaGraph()) && 
+				(!m_apGraphs[nLoop]->HavePrivateCursor()))
 				m_apGraphs[nLoop]->RedrawGraph(); // repaint whole graph without legend window
 		}
 		if (GraphIDtoPtr(IDD_RECORDING))
 			GraphIDtoPtr(IDD_RECORDING)->GetPlot()->RedrawWindow(NULL,NULL,RDW_INTERNALPAINT|RDW_UPDATENOW);
 
 		// if scrolling zoom enabled, set the new position
-		if (pViewMainFrame->IsScrollZoom())
+		if (pViewMainFrame->IsScrollZoom()) {
 			SetScrollPos(SB_VERT, (int)(m_fVScrollSteps + ZOOM_SCROLL_RESOLUTION - m_fVScrollSteps / m_fZoom), TRUE);
+		}
 		pViewMainFrame->SetPlayerTimes();
 	}
 }

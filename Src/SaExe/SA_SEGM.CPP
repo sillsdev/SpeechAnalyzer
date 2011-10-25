@@ -161,7 +161,7 @@ short int ArchiveTransfer::tShortInt(CArchive& ar, short int x)
 
 	if (ar.IsStoring())
 	{
-		_stprintf(shortInt.GetBuffer(100),_T("%d"),x);
+		swprintf_s(shortInt.GetBuffer(100),100,_T("%d"),x);
 		shortInt.ReleaseBuffer();
 		ar << shortInt;
 	}
@@ -182,7 +182,7 @@ int ArchiveTransfer::tInt(CArchive& ar, int x)
 
 	if (ar.IsStoring())
 	{
-		_stprintf(szInt.GetBuffer(100),_T("%d"),x);
+		swprintf_s(szInt.GetBuffer(100),100,_T("%d"),x);
 		szInt.ReleaseBuffer();
 		ar << szInt;
 	}
@@ -203,7 +203,7 @@ DWORD ArchiveTransfer::tDWORD(CArchive& ar, DWORD x)
 
 	if (ar.IsStoring())
 	{
-		_stprintf(dWord.GetBuffer(100),_T("%lu"),x);
+		swprintf_s(dWord.GetBuffer(100),100,_T("%lu"),x);
 		dWord.ReleaseBuffer();
 		ar << dWord;
 	}

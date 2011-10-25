@@ -475,7 +475,7 @@ void CPrintOptionsDlg::OnSpinRow()
 	if (m_NumRows > m_numGraphs) m_NumRows = m_numGraphs;
 	if (m_NumRows < 1) m_NumRows = 1;
 
-	_stprintf(m_strNumRows.GetBuffer(100),_T("%d"),m_NumRows);
+	swprintf_s(m_strNumRows.GetBuffer(100),100,_T("%d"),m_NumRows);
 	m_strNumRows.ReleaseBuffer();
 	UpdateData(FALSE);
 }
@@ -496,7 +496,7 @@ void CPrintOptionsDlg::OnSpinCol()
 	if (m_NumCols > m_numGraphs) m_NumCols = m_numGraphs;
 	if (m_NumCols < 1) m_NumCols = 1;
 
-	_stprintf(m_strNumCols.GetBuffer(100),_T("%d"),m_NumCols);
+	swprintf_s(m_strNumCols.GetBuffer(100),100,_T("%d"),m_NumCols);
 	m_strNumCols.ReleaseBuffer();
 	UpdateData(FALSE);
 }

@@ -92,7 +92,7 @@ BOOL CWbDlgProcesses::OnInitDialog()
 	CString szCaption;
 	GetWindowText(szCaption);
 	TCHAR szNumber[2];
-	_stprintf(szNumber, _T("%u"), m_nProcess + 1);
+	swprintf_s(szNumber, _T("%u"), m_nProcess + 1);
 	szCaption = szCaption + " " + szNumber;
 	SetWindowText(szCaption);
 	// initialize member data

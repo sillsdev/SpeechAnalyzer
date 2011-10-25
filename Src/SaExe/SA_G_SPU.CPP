@@ -387,7 +387,7 @@ void CPlotSpectrum::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView)
 					szTag[0] = 0;
 					if (pSpectrumParms->bShowFormantFreq)
 					{
-						int nTagLen = _stprintf(szTag, _T("%.0f"), (double)Formant.Lpc.FrequencyInHertz);
+						int nTagLen = swprintf_s(szTag, _T("%.0f"), (double)Formant.Lpc.FrequencyInHertz);
 						if (pSpectrumParms->bShowFormantBandwidth)
 							_stprintf(&szTag[nTagLen], _T("\xB1%.0f"), (double)Formant.Lpc.BandwidthInHertz/2.);
 						_tcscat(szTag, _T("Hz"));

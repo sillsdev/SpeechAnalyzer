@@ -1571,34 +1571,45 @@ void CSaView::OnUpdateGraphsZoomOut(CCmdUI* pCmdUI)
 /***************************************************************************/
 void CSaView::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
 {
-	CSaDoc* pDoc = GetDocument(); // get pointer to document
-	if (m_fZoom > 1.0) // zooming is enabled
+	TRACE("OnHScroll %d %d %d %d\n",nSBCode,nPos,m_dwDataPosition,m_dwScrollLine);
+	CSaDoc* pDoc = GetDocument();	// get pointer to document
+	if (m_fZoom > 1.0)				// zooming is enabled
 	{
 		DWORD dwOldDataPosition = m_dwDataPosition; // save actual data position
 		switch (nSBCode)
 		{
 		case SB_LEFT: // scroll to the leftmost position
-			m_dwDataPosition = 0; break;
+			m_dwDataPosition = 0; 
+			break;
 		case SB_LINELEFT: // scroll one line left
 			if (m_dwDataPosition >= m_dwScrollLine)
 				m_dwDataPosition -= m_dwScrollLine;
-			else m_dwDataPosition = 0; break;
+			else 
+				m_dwDataPosition = 0; 
+			break;
 		case SB_RIGHT: // scroll to the rightmost position
-			m_dwDataPosition = pDoc->GetDataSize() - GetDataFrame(); break;
+			m_dwDataPosition = pDoc->GetDataSize() - GetDataFrame(); 
+			break;
 		case SB_LINERIGHT: // scroll one line right
-			if ((m_dwDataPosition <= (pDoc->GetDataSize() - GetDataFrame() - m_dwScrollLine))
-				&& (pDoc->GetDataSize() >= (GetDataFrame() + m_dwScrollLine)))
+			if ((m_dwDataPosition <= (pDoc->GetDataSize() - GetDataFrame() - m_dwScrollLine)) && 
+				(pDoc->GetDataSize() >= (GetDataFrame() + m_dwScrollLine)))
 				m_dwDataPosition += m_dwScrollLine;
-			else m_dwDataPosition = pDoc->GetDataSize() - GetDataFrame(); break;
+			else 
+				m_dwDataPosition = pDoc->GetDataSize() - GetDataFrame(); 
+			break;
 		case SB_PAGELEFT: // scroll one page left
 			if (m_dwDataPosition >= GetDataFrame())
 				m_dwDataPosition -= GetDataFrame();
-			else m_dwDataPosition = 0; break;
+			else 
+				m_dwDataPosition = 0; 
+			break;
 		case SB_PAGERIGHT: // scroll one page right
-			if (m_dwDataPosition <= (pDoc->GetDataSize() - 2 * GetDataFrame())
-				&& (pDoc->GetDataSize() >= (2 * GetDataFrame())))
+			if ((m_dwDataPosition <= (pDoc->GetDataSize() - 2 * GetDataFrame())) && 
+				(pDoc->GetDataSize() >= (2 * GetDataFrame())))
 				m_dwDataPosition += GetDataFrame();
-			else m_dwDataPosition = pDoc->GetDataSize() - GetDataFrame(); break;
+			else 
+				m_dwDataPosition = pDoc->GetDataSize() - GetDataFrame(); 
+			break;
 		case SB_THUMBTRACK:
 		case SB_THUMBPOSITION: // scroll to position
 			m_dwDataPosition = nPos * m_dwHScrollFactor;
@@ -1606,7 +1617,8 @@ void CSaView::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
 				m_dwDataPosition = pDoc->GetDataSize() - GetDataFrame();
 			break;
 		case SB_ENDSCROLL:
-		default: break;
+		default: 
+			break;
 		}
 		// for 16 bit data value must be even
 		FmtParm* pFmtParm = pDoc->GetFmtParm();
@@ -1630,7 +1642,6 @@ void CSaView::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
 
 	CView::OnHScroll(nSBCode, nPos, pScrollBar);
 
-
 	pViewMainFrame->SetPlayerTimes();
 }
 
@@ -1639,34 +1650,41 @@ void CSaView::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
 /***************************************************************************/
 void CSaView::OnVScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
 {
+	TRACE("OnVScroll %d\n",nPos);
 	double fZoom = m_fZoom;
 	double fActualPos = m_fVScrollSteps / m_fZoom; // actual position
 	switch (nSBCode)
 	{
 	case SB_BOTTOM: // zoom maximum
-		fZoom = m_fMaxZoom; break;
+		fZoom = m_fMaxZoom; 
+		break;
 	case SB_LINEDOWN: // zoom one step more
-		fZoom = m_fVScrollSteps / (fActualPos - 1); break;
-	case SB_TOP: // no zoom
-		fZoom = (double)0.5; break; // to be sure it will be set to 1.0 (rounding errors)
+		fZoom = m_fVScrollSteps / (fActualPos - 1); 
+		break;
+	case SB_TOP:	// no zoom
+		fZoom = (double)0.5; 
+		break;		// to be sure it will be set to 1.0 (rounding errors)
 	case SB_LINEUP: // zoom one step less
-		fZoom = m_fVScrollSteps / (fActualPos + 1); break;
+		fZoom = m_fVScrollSteps / (fActualPos + 1); 
+		break;
 	case SB_PAGEDOWN: // double zoom
-		fZoom = 2.*m_fZoom; break;
+		fZoom = 2.*m_fZoom; 
+		break;
 	case SB_PAGEUP: // divide zoom by two
-		fZoom = 0.5*m_fZoom; break;
+		fZoom = 0.5*m_fZoom; 
+		break;
 	case SB_THUMBTRACK:
 	case SB_THUMBPOSITION: // zoom from position
 		{
 			SCROLLINFO info;
 			GetScrollInfo(SB_VERT, &info, SIF_TRACKPOS);
-
 			nPos = info.nTrackPos;
-
-			fZoom = (m_fVScrollSteps / (m_fVScrollSteps + ZOOM_SCROLL_RESOLUTION - (double)nPos)); break;
+			fZoom = (m_fVScrollSteps / (m_fVScrollSteps + ZOOM_SCROLL_RESOLUTION - (double)nPos)); 
+			break;
 		}
 	case SB_ENDSCROLL:
-	default: break;
+	default: 
+		break;
 	}
 	// is zooming necessary?
 	if (fZoom != m_fZoom) // zoom
