@@ -99,7 +99,7 @@ bool CDataProcess::StartProcess(void* pCaller, int nProcessID,
 	// no previous process owner? you're the first, show to progress bar
 	if (!pStatusBar->GetProcessOwner()) 
 		pMain->ShowDataStatusBar(FALSE); // show the progress status bar
-	
+
 	pStatusBar->SetProcessOwner(this, pCaller, nProcessID); // set the process owner
 	if (dwBufferSize)
 	{ // allocate global buffer for the processed data
@@ -217,7 +217,8 @@ void* CDataProcess::GetProcessedData(DWORD dwOffset, BOOL bBlockBegin)
 		}
 		// read the processed data block
 		try
-		{ m_pFile->Read((HPSTR)m_lpData, GetProcessBufferSize());
+		{ 
+			m_pFile->Read((HPSTR)m_lpData, GetProcessBufferSize());
 		}
 		catch (CFileException e)
 		{ // error reading file
@@ -443,7 +444,8 @@ void* CDataProcess::GetProcessedDataBlock(DWORD dwByteOffset, size_t sObjectSize
 		}
 		// read the processed data block
 		try
-		{ m_pFile->Read((HPSTR)m_lpData, GetProcessBufferSize());
+		{ 
+			m_pFile->Read((HPSTR)m_lpData, GetProcessBufferSize());
 		}
 		catch (...)
 		{ // error reading file
@@ -529,14 +531,14 @@ BOOL CDataProcess::Open(LPCTSTR lpszFileName, UINT nOpenFlags, CFileException* p
 BOOL CDataProcess::CreateAuxTempFile(TCHAR* szName, CFile* pFile, CFileStatus *pFileStatus)
 {
 	if (!pFile)
-		pFile = new CFile;
+		pFile = new CFile();
 	if (!pFileStatus)
 		pFileStatus = new CFileStatus;
 
 	CSaApp* pApp = (CSaApp*)AfxGetApp();
 	TCHAR szTempPath[_MAX_PATH];
 	TCHAR lpszTempPath[_MAX_PATH];
-	GetTempPath(sizeof(lpszTempPath), lpszTempPath);
+	GetTempPath(_countof(lpszTempPath), lpszTempPath);
 	GetTempFileName(lpszTempPath, szName, 0, szTempPath);
 	// create and open the file
 	if (!pFile->Open(szTempPath, CFile::modeCreate | CFile::modeReadWrite | CFile::shareExclusive))
