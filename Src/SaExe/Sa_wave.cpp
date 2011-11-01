@@ -788,7 +788,7 @@ void MMERR(MMRESULT mmr)
       pApp->ErrorMessage(IDS_ERROR_MMIO_ALRALLOC);
       break;
     case MMSYSERR_BADDEVICEID:
-			if (CMixer::GetWindowsVersion()<6)
+			if (::GetWindowsVersion()<6)
 				pApp->ErrorMessage(IDS_ERROR_MMIO_BADID);
 			else
 				pApp->ErrorMessage(IDS_ERROR_MMIO_BADID_VISTA);
