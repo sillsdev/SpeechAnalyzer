@@ -292,8 +292,9 @@ void CPlotPOA::OnDraw(CDC * pDC, CRect rWnd, CRect /*rClip*/, CSaView * pView)
 			Colors* pColors = pMainWnd->GetColors();
 			pDC->SetTextColor(pColors->cScaleFont); // set font color
 			pDC->SetBkMode(TRANSPARENT); // letters may overlap, so they must be transparent
-			TCHAR szText[sizeof("% Error: xxx.xx")];
-			_stprintf(szText, _T("%% Error: %6.2f"), pVocalTract->dErrorRatio * 100.);
+
+			TCHAR szText[128];
+			swprintf_s(szText, _countof(szText), _T("%% Error: %6.2f"), pVocalTract->dErrorRatio * 100.);
 			CRect rText(0,0, nLeftMargin - 40, 10);
 			pDC->DrawText(szText, -1, rText, DT_SINGLELINE | DT_TOP | DT_RIGHT | DT_NOCLIP);
 
@@ -302,8 +303,8 @@ void CPlotPOA::OnDraw(CDC * pDC, CRect rWnd, CRect /*rClip*/, CSaView * pView)
 			int nRowY = nRowPitch;
 			for (int i = 0; i < (UINT)nRows - 1; i++, nRowY += nRowPitch)    //left column
 			{
-				if (i == 0) _stprintf(szText, _T("  Lips:  %6.2f"), pVocalTract->dNormCrossSectArea[i]);
-				else _stprintf(szText, _T("         %6.2f"), pVocalTract->dNormCrossSectArea[i]);
+				if (i == 0) swprintf_s(szText,_countof(szText), _T("  Lips:  %6.2f"), pVocalTract->dNormCrossSectArea[i]);
+				else swprintf_s(szText, _countof(szText), _T("         %6.2f"), pVocalTract->dNormCrossSectArea[i]);
 				rText.SetRect(0, nRowY, nLeftMargin - 40, 10);
 				pDC->DrawText(szText, -1, rText, DT_SINGLELINE | DT_TOP | DT_RIGHT | DT_NOCLIP);
 			}
@@ -311,14 +312,14 @@ void CPlotPOA::OnDraw(CDC * pDC, CRect rWnd, CRect /*rClip*/, CSaView * pView)
 			nRowX = nLeftMargin + nImageWidth;
 			nRowY = nRowPitch*(nRows - 1);
 			rText.SetRect(nRowX, nRowY, nWndWidth, nRowY + 10);
-			_stprintf(szText, _T("Glottis: %6.2f"), pVocalTract->dNormCrossSectArea[pVocalTract->nNormCrossSectAreas-1]);
+			swprintf_s(szText,_countof(szText), _T("Glottis: %6.2f"), pVocalTract->dNormCrossSectArea[pVocalTract->nNormCrossSectAreas-1]);
 			pDC->DrawText(szText, -1, rText, DT_SINGLELINE | DT_TOP | DT_RIGHT | DT_NOCLIP | DT_CALCRECT);
 			int nRowXEnd = nRowX + rText.Width();
 			pDC->DrawText(szText, -1, rText, DT_SINGLELINE | DT_TOP | DT_RIGHT | DT_NOCLIP);
 			nRowY = 0;
 			for (int i = 0; i < (UINT)nRows - 1; i++, nRowY += nRowPitch)    //right column
 			{
-				_stprintf(szText, _T("         %6.2f"), pVocalTract->dNormCrossSectArea[i + nRows - 1]);
+				swprintf_s(szText, _countof(szText), _T("         %6.2f"), pVocalTract->dNormCrossSectArea[i + nRows - 1]);
 				//rText.SetRect(nWndWidth - strlen(szText)*TextMetric.tmMaxCharWidth, (nCharHeight+nRowSpacing)*i, 100, 10);
 				rText.SetRect(nRowX, nRowY, nRowXEnd, nRowY + 10);
 				pDC->DrawText(szText, -1, rText, DT_SINGLELINE | DT_TOP | DT_RIGHT | DT_NOCLIP);

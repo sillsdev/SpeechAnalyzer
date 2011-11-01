@@ -94,9 +94,9 @@ void zLogGraph::zShowXAxisNumbers()
       x_value *= 10.0;
     // Set Last Value to [xmax]
     if (i == x_axis_divisions  &&  x_axis_style == zLINEAR)
-      zConvertValue(xmax, zbuf);
+      zConvertValue(xmax, zbuf, _countof(zbuf));
     else
-      zConvertValue(x_value, zbuf);
+      zConvertValue(x_value, zbuf, _countof(zbuf));
 
     // Draw In this X-Axis Label
     AxisLabelFont.zDrawTextString(j, Y_BOTTOM + zY_ADJUST * 5,  zbuf);
@@ -125,7 +125,7 @@ void zLogGraph::zShowYAxisNumbers()
   //
   if (ymin == ymax)
   {
-    zConvertValue(ymin, zbuf);
+    zConvertValue(ymin, zbuf, _countof(zbuf));
 
     // Use Right Justification For Y-Axis Numbers--It Looks Cleaner
     AxisLabelFont.zRightAlignText(
@@ -152,9 +152,9 @@ void zLogGraph::zShowYAxisNumbers()
 
     // Set Last Value to [ymax]
     if (k >= y_axis_divisions  &&  y_axis_style == zLINEAR)
-      zConvertValue(ymax, zbuf);
+      zConvertValue(ymax, zbuf, _countof(zbuf));
     else
-      zConvertValue(y_value, zbuf);
+      zConvertValue(y_value, zbuf, _countof(zbuf));
 
     // Draw in this Y-axis Value Label
     AxisLabelFont.zRightAlignText(

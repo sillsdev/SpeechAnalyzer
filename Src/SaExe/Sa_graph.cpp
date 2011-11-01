@@ -1044,12 +1044,12 @@ void CGraphWnd::UpdateStatusBar(DWORD dwStartCursor, DWORD dwStopCursor, BOOL bF
 						if (pFormFreqCurr->F[n] > 0)
 						{
 							if (nPitchMode == HERTZ)
-								_stprintf(szText, _T("F%d: %.1f Hz"), n, pFormFreqCurr->F[n]);
+								swprintf_s(szText,_countof(szText), _T("F%d: %.1f Hz"), n, pFormFreqCurr->F[n]);
 							else
-								_stprintf(szText, _T("F%d: %.1f st"), GetSemitone(pFormFreqCurr->F[n]));
+								swprintf_s(szText,_countof(szText), _T("F%d: %.1f st"), GetSemitone(pFormFreqCurr->F[n]));
 						}
 						else
-							_stprintf(szText, _T("F%d:"), n);
+							swprintf_s(szText,_countof(szText), _T("F%d:"), n);
 						// write to position pane
 						pStat->SetPaneSymbol(ID_STATUSPANE_POSITION + n - 1, FALSE); // switch symbol off
 						pStat->SetPaneText(ID_STATUSPANE_POSITION + n - 1, szText);
@@ -1079,10 +1079,10 @@ void CGraphWnd::UpdateStatusBar(DWORD dwStartCursor, DWORD dwStopCursor, BOOL bF
 						Signal.SmpDataFmt = (nSmpSize == 1) ? (int8)PCM_UBYTE: (int8)PCM_2SSHORT;
 						Spectrogram::CalcPower(&fPowerInDb, fFreq, pSpectroParm->nResolution, (CWindowSettings::Type)ResearchSettings.m_cWindow.m_nType, Signal, bPreEmphasis);
 
-						_stprintf(szText, _T("%7.1f Hz"), fFreq);
+						swprintf_s(szText,_countof(szText), _T("%7.1f Hz"), fFreq);
 						pStat->SetPaneSymbol(ID_STATUSPANE_3, FALSE);
 						pStat->SetPaneText(ID_STATUSPANE_3, szText);
-						_stprintf(szText, _T("%6.1f dB"), fPowerInDb);
+						swprintf_s(szText,_countof(szText), _T("%6.1f dB"), fPowerInDb);
 						pStat->SetPaneSymbol(ID_STATUSPANE_4, FALSE);
 						pStat->SetPaneText(ID_STATUSPANE_4, szText);
 					}
@@ -1114,13 +1114,13 @@ void CGraphWnd::UpdateStatusBar(DWORD dwStartCursor, DWORD dwStopCursor, BOOL bF
 					for (int n = 1; n < 5; n++)
 					{
 						if (n > nFormants)
-							_stprintf(szText, _T("         "));          // default indicator
+							swprintf_s(szText,_countof(szText), _T("         "));          // default indicator
 						else if (pFormFreqCurr->F[n] > 0)
 						{
 							if (nPitchMode == HERTZ)
-								_stprintf(szText, _T("F%d: %.1f Hz"), n, pFormFreqCurr->F[n]);
+								swprintf_s(szText,_countof(szText), _T("F%d: %.1f Hz"), n, pFormFreqCurr->F[n]);
 							else
-								_stprintf(szText, _T("F%d: %.1f st"), GetSemitone(pFormFreqCurr->F[n]));
+								swprintf_s(szText,_countof(szText), _T("F%d: %.1f st"), GetSemitone(pFormFreqCurr->F[n]));
 						}
 						else
 							_stprintf(szText, _T("F%d:"), n);
@@ -1142,14 +1142,14 @@ void CGraphWnd::UpdateStatusBar(DWORD dwStartCursor, DWORD dwStopCursor, BOOL bF
 			{
 				// display percentage and raw value CLW 1/5/01
 				if (fData >= 99.95)
-					_stprintf(szText, _T("L:  %3.0f%%  (%d)"), 100.0, nData);
+					swprintf_s(szText,_countof(szText), _T("L:  %3.0f%%  (%d)"), 100.0, nData);
 				else if(fData <= -99.95)
-					_stprintf(szText, _T("L:  %3.0f%%  (%d)"), -100.0, nData);
+					swprintf_s(szText,_countof(szText), _T("L:  %3.0f%%  (%d)"), -100.0, nData);
 				else
-					_stprintf(szText, _T("L:  %3.1f%%  (%d)"), fData, nData);
+					swprintf_s(szText,_countof(szText), _T("L:  %3.1f%%  (%d)"), fData, nData);
 			}
 			else
-				_stprintf(szText, _T("L:"));
+				swprintf_s(szText,_countof(szText), _T("L:"));
 			// write to amplitude pane
 			pStat->SetPaneSymbol(ID_STATUSPANE_AMPLITUDE, FALSE); // switch symbol off
 			pStat->SetPaneText(ID_STATUSPANE_AMPLITUDE, szText);
@@ -1161,11 +1161,11 @@ void CGraphWnd::UpdateStatusBar(DWORD dwStartCursor, DWORD dwStopCursor, BOOL bF
 			{
 				// display percentage and raw value CLW 1/5/01
 				if (fData >= 99.95)
-					_stprintf(szText, _T("R:  %3.0f%%  (%d)"), 100.0, nData);
+					swprintf_s(szText,_countof(szText), _T("R:  %3.0f%%  (%d)"), 100.0, nData);
 				else if(fData <= -99.95)
-					_stprintf(szText, _T("R:  %3.0f%%  (%d)"), -100.0, nData);
+					swprintf_s(szText,_countof(szText), _T("R:  %3.0f%%  (%d)"), -100.0, nData);
 				else
-					_stprintf(szText, _T("R:  %3.1f%%  (%d)"), fData, nData);
+					swprintf_s(szText,_countof(szText), _T("R:  %3.1f%%  (%d)"), fData, nData);
 			}
 			else
 				_stprintf(szText, _T("R:"));
@@ -1192,9 +1192,9 @@ void CGraphWnd::UpdateStatusBar(DWORD dwStartCursor, DWORD dwStopCursor, BOOL bF
 				// read the data
 				nData = pZCross->GetProcessedData(dwDataPos, &bRes);
 				if (bRes) // no error reading data?
-					_stprintf(szText, _T("L:  %6d"), nData);
+					swprintf_s(szText,_countof(szText), _T("L:  %6d"), nData);
 				else
-					_stprintf(szText, _T("L:"));
+					swprintf_s(szText,_countof(szText), _T("L:"));
 				// write to amplitude pane
 				pStat->SetPaneSymbol(ID_STATUSPANE_AMPLITUDE, FALSE); // switch symbol off
 				pStat->SetPaneText(ID_STATUSPANE_AMPLITUDE, szText);
@@ -1205,9 +1205,9 @@ void CGraphWnd::UpdateStatusBar(DWORD dwStartCursor, DWORD dwStopCursor, BOOL bF
 				// read the data
 				nData = pZCross->GetProcessedData(dwDataPos, &bRes);
 				if (bRes) // no error reading data?
-					_stprintf(szText, _T("R:  %6d"), nData);
+					swprintf_s(szText,_countof(szText), _T("R:  %6d"), nData);
 				else
-					_stprintf(szText, _T("R:"));
+					swprintf_s(szText,_countof(szText), _T("R:"));
 				// write to pitch pane
 				pStat->SetPaneSymbol(ID_STATUSPANE_PITCH, FALSE); // switch symbol off
 				pStat->SetPaneText(ID_STATUSPANE_PITCH, szText);
@@ -1363,14 +1363,14 @@ void CGraphWnd::UpdateStatusBar(DWORD dwStartCursor, DWORD dwStopCursor, BOOL bF
 				// read the data
 				nData = pLoudness->GetProcessedData(dwDataPos, &bRes);
 				if (bRes && nData > 0)
-					_stprintf(szText, _T("      %.1f dB"), 20. * log10(double(nData)/32767.) + 6.);
+					swprintf_s(szText,_countof(szText), _T("      %.1f dB"), 20. * log10(double(nData)/32767.) + 6.);
 				// write to amplitude pane
 				pStat->SetPaneSymbol(ID_STATUSPANE_AMPLITUDE); // switch symbol on
 				pStat->SetPaneText(ID_STATUSPANE_AMPLITUDE, szText);
 
 				// put percentage magnitude in pitch pane
 				if (bRes && nData > 0)
-					_stprintf(szText, _T("      %2d%% fullscale"), (short)(double(nData) / (32767./(2)) * 100.0 + 0.5));
+					swprintf_s(szText,_countof(szText), _T("      %2d%% fullscale"), (short)(double(nData) / (32767./(2)) * 100.0 + 0.5));
 				pStat->SetPaneSymbol(ID_STATUSPANE_PITCH, FALSE); // pitch symbol
 				pStat->SetPaneText(ID_STATUSPANE_PITCH, szText);  // pitch indicator
 			}
@@ -1387,7 +1387,7 @@ void CGraphWnd::UpdateStatusBar(DWORD dwStartCursor, DWORD dwStopCursor, BOOL bF
 				if (nSegmentIndex > 0)
 				{
 					fData = (float)pDuration->GetProcessedData(nSegmentIndex);
-					_stprintf(szText, _T("     %.2f ms"), fData * 1000.F / (float)(pFmtParm->wBlockAlign *
+					swprintf_s(szText,_countof(szText), _T("     %.2f ms"), fData * 1000.F / (float)(pFmtParm->wBlockAlign *
 						pFmtParm->dwSamplesPerSec));
 				}
 			}
@@ -1418,9 +1418,9 @@ void CGraphWnd::UpdateStatusBar(DWORD dwStartCursor, DWORD dwStopCursor, BOOL bF
 					// read the data
 					int nData = pChange->GetProcessedData(dwDataPos, &bRes) / PRECISION_MULTIPLIER;
 					if (bRes) // no error reading data?
-						_stprintf(szText, _T("L:  %6d"), nData);
+						swprintf_s(szText,_countof(szText), _T("L:  %6d"), nData);
 					else
-						_stprintf(szText, _T("L:"));
+						swprintf_s(szText,_countof(szText), _T("L:"));
 					// write to amplitude pane
 					pStat->SetPaneSymbol(ID_STATUSPANE_AMPLITUDE, FALSE); // switch symbol off
 					pStat->SetPaneText(ID_STATUSPANE_AMPLITUDE, szText);
@@ -1430,9 +1430,9 @@ void CGraphWnd::UpdateStatusBar(DWORD dwStartCursor, DWORD dwStopCursor, BOOL bF
 					// read the data
 					nData = pChange->GetProcessedData(dwDataPos, &bRes) / PRECISION_MULTIPLIER;
 					if (bRes) // no error reading data?
-						_stprintf(szText, _T("R:  %6d"), nData);
+						swprintf_s(szText,_countof(szText), _T("R:  %6d"), nData);
 					else
-						_stprintf(szText, _T("R:"));
+						swprintf_s(szText,_countof(szText), _T("R:"));
 					// write to pitch pane
 					pStat->SetPaneSymbol(ID_STATUSPANE_PITCH, FALSE); // switch symbol off
 					pStat->SetPaneText(ID_STATUSPANE_PITCH, szText);
@@ -1462,9 +1462,9 @@ void CGraphWnd::UpdateStatusBar(DWORD dwStartCursor, DWORD dwStopCursor, BOOL bF
 				nMinutes = (int)fDataSec / 60;
 				fDataSec = fDataSec - (nMinutes * 60.);
 				if (nMinutes > 9)
-					_stprintf(szText, _T("       %02i:%5.3f"), nMinutes, fDataSec);
+					swprintf_s(szText,_countof(szText), _T("       %02i:%5.3f"), nMinutes, fDataSec);
 				else
-					_stprintf(szText, _T("       %01i:%6.4f"), nMinutes, fDataSec);
+					swprintf_s(szText,_countof(szText), _T("       %01i:%6.4f"), nMinutes, fDataSec);
 			}
 			else
 			{
@@ -1487,18 +1487,18 @@ void CGraphWnd::UpdateStatusBar(DWORD dwStartCursor, DWORD dwStopCursor, BOOL bF
 				nMinutes = (int)fDataSec / 60;
 				fDataSec = fDataSec - (nMinutes * 60.);
 				if (nMinutes > 9)
-					_stprintf(szText, _T("       %02i:%5.3f"), nMinutes, fDataSec);
+					swprintf_s(szText,_countof(szText), _T("       %02i:%5.3f"), nMinutes, fDataSec);
 				else if(nMinutes || fDataSec >= .01)
-					_stprintf(szText, _T("       %01i:%6.4f"), nMinutes, fDataSec);
+					swprintf_s(szText,_countof(szText), _T("       %01i:%6.4f"), nMinutes, fDataSec);
 				else
-					_stprintf(szText, _T("       %01i:%7.5f"), nMinutes, fDataSec);
+					swprintf_s(szText,_countof(szText), _T("       %01i:%7.5f"), nMinutes, fDataSec);
 			}
 			else
 			{
 				if (nPositionMode == SAMPLES)
-					_stprintf(szText, _T("       %.0f"), (double)((dwStopCursor - dwStartCursor) / nSmpSize));
+					swprintf_s(szText,_countof(szText), _T("       %.0f"), (double)((dwStopCursor - dwStartCursor) / nSmpSize));
 				else
-					_stprintf(szText, _T("       %.0f"), (double)(dwStopCursor - dwStartCursor));
+					swprintf_s(szText,_countof(szText), _T("       %.0f"), (double)(dwStopCursor - dwStartCursor));
 			}
 			// write to length pane
 			pStat->SetPaneSymbol(ID_STATUSPANE_LENGTH); // switch symbol on

@@ -917,7 +917,7 @@ static CVowelFormantsVector ParseVowelGrid(CFlexEditGrid &cGrid, BOOL &bSuccess)
     CSaString value;
     
     value = cGrid.GetTextMatrix(row,columnF1);
-    int scanned = _stscanf(value, _T("%lf"), &cVowel.F1);
+    int scanned = swscanf_s(value, _T("%lf"), &cVowel.F1);
     if (scanned != 1 || cVowel.F1 < 200. || cVowel.F1 > 5000.)
     {
       bSuccess = FALSE;
@@ -925,7 +925,7 @@ static CVowelFormantsVector ParseVowelGrid(CFlexEditGrid &cGrid, BOOL &bSuccess)
       continue;
     }
     value = cGrid.GetTextMatrix(row,columnF2);
-    scanned = _stscanf(value, _T("%lf"), &cVowel.F2);
+    scanned = swscanf_s(value, _T("%lf"), &cVowel.F2);
     if (scanned != 1 || cVowel.F2 < 200. || cVowel.F2 > 5000.)
     {
       bSuccess = FALSE;
@@ -933,7 +933,7 @@ static CVowelFormantsVector ParseVowelGrid(CFlexEditGrid &cGrid, BOOL &bSuccess)
       continue;
     }
     value = cGrid.GetTextMatrix(row,columnF3);
-    scanned = _stscanf(value, _T("%lf"), &cVowel.F3);
+    scanned = swscanf_s(value, _T("%lf"), &cVowel.F3);
     if (scanned != 1 || cVowel.F3 < 200. || cVowel.F3 > 5000.)
     {
       bSuccess = FALSE;
@@ -941,7 +941,7 @@ static CVowelFormantsVector ParseVowelGrid(CFlexEditGrid &cGrid, BOOL &bSuccess)
       continue;
     }
     value = cGrid.GetTextMatrix(row,columnF4);
-    scanned = _stscanf(value, _T("%lf"), &cVowel.F4);
+    scanned = swscanf_s(value, _T("%lf"), &cVowel.F4);
     if ((cVowel.F4 != -1)&&(cVowel.F4 < 200. || cVowel.F4 > 5000.))
     {
       bSuccess = FALSE;

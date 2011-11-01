@@ -749,7 +749,7 @@ void CDlgKlattAll::ParseConstantsGrid(int nGrid, CKlattConstants &cConstants)
 		CString value;
 
 		value = m_cGrid[nGrid].GetTextMatrix(row,2);
-		_stscanf(value, parameterInfo[i].typeScanf, ((char*)&cConstants)+parameterInfo[i].parameterOffset);
+		swscanf_s(value, parameterInfo[i].typeScanf, ((char*)&cConstants)+parameterInfo[i].parameterOffset);
 	}
 }
 
@@ -778,7 +778,7 @@ void CDlgKlattAll::ParseParameterGrid(int nGrid, CIpaCharVector &cChars)
 			CString value;
 
 			value = cGrid.GetTextMatrix(row,column);
-			int scanned = _stscanf(value, parameterInfo[i].typeScanf, ((char*)pTemporal)+parameterInfo[i].parameterOffset);
+			int scanned = swscanf_s(value, parameterInfo[i].typeScanf, ((char*)pTemporal)+parameterInfo[i].parameterOffset);
 			if (scanned == 1)
 			{
 				bColumnValid = TRUE;
@@ -789,7 +789,7 @@ void CDlgKlattAll::ParseParameterGrid(int nGrid, CIpaCharVector &cChars)
 			CString value;
 
 			value = cGrid.GetTextMatrix(rowDuration,column);
-			int nScanned = _stscanf(value, _T("%lf"), &columnChar.duration);
+			int nScanned = swscanf_s(value, _T("%lf"), &columnChar.duration);
 
 			if(nScanned != 1)
 				columnChar.duration = 0;
@@ -872,7 +872,7 @@ void CDlgKlattAll::ConvertCStringToCharVector(CString const &szGrid, CIpaCharVec
 				case rowDuration:
 					{
 						double value;
-						int scanned = _stscanf(szField, _T("%lf"), &value);
+						int scanned = swscanf_s(szField, _T("%lf"), &value);
 						if (scanned != 1)
 						{
 							columnChar.duration = value;
@@ -885,7 +885,7 @@ void CDlgKlattAll::ConvertCStringToCharVector(CString const &szGrid, CIpaCharVec
 					{
 						TEMPORAL *pTemporal = &columnChar.parameters;
 
-						int scanned = _stscanf(szField, parameterInfo[i].typeScanf, ((char*)pTemporal)+parameterInfo[i].parameterOffset);
+						int scanned = swscanf_s(szField, parameterInfo[i].typeScanf, ((char*)pTemporal)+parameterInfo[i].parameterOffset);
 						if (scanned == 1)
 						{
 							bColumnValid = TRUE;
@@ -1910,13 +1910,13 @@ void CDlgKlattAll::OnKlattApplyIpaDefaults(CFlexEditGrid &cGrid)
 static double InterpolateWeight(double dLocation, double dBreakPoint, double dEndPoint)
 {
 	// second order 
-	if(dLocation < dBreakPoint)
+	if (dLocation < dBreakPoint)
 		return 1.0 - 0.5*(dLocation / dBreakPoint)*(dLocation / dBreakPoint);
 	else
 		return 0.5* (dEndPoint - dLocation) / (dEndPoint - dBreakPoint) * (dEndPoint - dLocation) / (dEndPoint - dBreakPoint);
 
 	// simple linear for now
-	if(dLocation < dBreakPoint)
+	if (dLocation < dBreakPoint)
 		return 1.0 - 0.5*(dLocation / dBreakPoint);
 	else
 		return 0.5* (dEndPoint - dLocation) / (dEndPoint - dBreakPoint);
@@ -2260,7 +2260,7 @@ static double NextValue(const TCHAR * szString,unsigned &uIndex)
 		uIndex++;
 	}
 	if(!szString[uIndex]) return NEXTVALUE_ERROR;
-	_stscanf(szField,_T("%lf"),&iReturn);
+	swscanf_s(szField,_T("%lf"),&iReturn);
 	uIndex++;  // skip field delimiter
 
 	return iReturn;
@@ -2304,7 +2304,7 @@ void CDlgKlattAll::OnSmoothe(void)
 				iValue[1] = iValue[0] - ((iValue[0]-iValue[2]) / 2);
 			}
 			// output the number
-			_gcvt(iValue[0],6,szNumber);
+			_gcvt_s(szNumber,_countof(szNumber),iValue[0],6);
 			szOutstring += szNumber;
 			szOutstring += _T("\n");
 			// shift values to prepare for next one
@@ -2315,13 +2315,13 @@ void CDlgKlattAll::OnSmoothe(void)
 
 			if(iValue[3] == NEXTVALUE_ERROR) // finished, output stored values
 			{
-				_gcvt(iValue[0],6,szNumber);
+				_gcvt_s(szNumber,_countof(szNumber),iValue[0],6);
 				szOutstring += szNumber;
 				szOutstring += _T("\n");
-				_gcvt(iValue[1],6,szNumber);
+				_gcvt_s(szNumber,_countof(szNumber),iValue[1],6);
 				szOutstring += szNumber;
 				szOutstring += _T("\n");
-				_gcvt(iValue[2],6,szNumber);
+				_gcvt_s(szNumber,_countof(szNumber),iValue[2],6);
 				szOutstring += szNumber;
 				szOutstring += _T("\n");
 				break;
@@ -2535,7 +2535,7 @@ void CIpaCharVector::Load(CString szPath)
 			CString value;
 
 			value = extractTabField(line, i+1);
-			_stscanf(value, parameterInfo[i].typeScanf, ((char*)pTemporal)+parameterInfo[i].parameterOffset);
+			swscanf_s(value, parameterInfo[i].typeScanf, ((char*)pTemporal)+parameterInfo[i].parameterOffset);
 		}
 
 		this->push_back(CIpaChar(extractTabField(line, 0), cTemporal));
@@ -2667,7 +2667,7 @@ void CDlgKlattAll::OnAdjustCells()
 				CString szValue = m_cGrid[m_nSelectedView].GetTextMatrix(y, x);
 				double value;
 
-				if(!szValue.IsEmpty() && _stscanf(szValue, _T("%lf"), &value))
+				if(!szValue.IsEmpty() && swscanf_s(szValue, _T("%lf"), &value))
 				{
 					CString szNewValue;
 					szNewValue.Format(_T("%.5g"), dlg.m_dScale*value + dlg.m_dOffset);

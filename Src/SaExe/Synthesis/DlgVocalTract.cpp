@@ -119,39 +119,39 @@ void CIpaVTCharVector::Load(CString szPath)
 
 		columnChar.m_duration = 0;
 		value = extractTabField(line, field++);
-		int nScanned = _stscanf(value, _T("%lf"), &columnChar.m_duration);
+		int nScanned = swscanf_s(value, _T("%lf"), &columnChar.m_duration);
 
 		columnChar.m_dFrameEnergy = 0;
 		value = extractTabField(line, field++);
-		nScanned = _stscanf(value, _T("%lf"), &columnChar.m_dFrameEnergy);
+		nScanned = swscanf_s(value, _T("%lf"), &columnChar.m_dFrameEnergy);
 
 		columnChar.m_stimulus.Pitch = 0;
 		value = extractTabField(line, field++);
-		nScanned = _stscanf(value, _T("%lf"), &columnChar.m_stimulus.Pitch);
+		nScanned = swscanf_s(value, _T("%lf"), &columnChar.m_stimulus.Pitch);
 
 		columnChar.m_stimulus.AV = 0;
 		value = extractTabField(line, field++);
-		nScanned = _stscanf(value, _T("%lf"), &columnChar.m_stimulus.AV);
+		nScanned = swscanf_s(value, _T("%lf"), &columnChar.m_stimulus.AV);
 
 		columnChar.m_stimulus.AF = 0;
 		value = extractTabField(line, field++);
-		nScanned = _stscanf(value, _T("%lf"), &columnChar.m_stimulus.AF);
+		nScanned = swscanf_s(value, _T("%lf"), &columnChar.m_stimulus.AF);
 
 		columnChar.m_stimulus.AH = 0;
 		value = extractTabField(line, field++);
-		nScanned = _stscanf(value, _T("%lf"), &columnChar.m_stimulus.AH);
+		nScanned = swscanf_s(value, _T("%lf"), &columnChar.m_stimulus.AH);
 
 		columnChar.m_stimulus.VHX = 0;
 		value = extractTabField(line, field++);
-		nScanned = _stscanf(value, _T("%lf"), &columnChar.m_stimulus.VHX);
+		nScanned = swscanf_s(value, _T("%lf"), &columnChar.m_stimulus.VHX);
 
 		columnChar.m_dVTGain = 0;
 		value = extractTabField(line, field++);
-		nScanned = _stscanf(value, _T("%lf"), &columnChar.m_dVTGain);
+		nScanned = swscanf_s(value, _T("%lf"), &columnChar.m_dVTGain);
 
 		value = extractTabField(line, field++);
 		int i = 0;
-		_stscanf(value,_T("%d"),&i);
+		swscanf_s(value,_T("%d"),&i);
 		const int VTAreas = i;
 		columnChar.m_areas.reserve(VTAreas);
 		for(i = 0; i < VTAreas; i++)
@@ -160,13 +160,13 @@ void CIpaVTCharVector::Load(CString szPath)
 			double dValue = 1.;
 
 			szValue = extractTabField(line, field++);
-			_stscanf(szValue, _T("%lf"), &dValue);
+			swscanf_s(szValue, _T("%lf"), &dValue);
 			columnChar.m_areas.push_back(dValue);
 		}
 
 		value = extractTabField(line, field++);
 		i = 0;
-		_stscanf(value,_T("%d"),&i);
+		swscanf_s(value,_T("%d"),&i);
 		const int VTReflections = i;
 		columnChar.m_reflection.reserve(VTReflections);
 		for(i = 0; i < VTReflections; i++)
@@ -175,13 +175,13 @@ void CIpaVTCharVector::Load(CString szPath)
 			double dValue = 0.;
 
 			szValue = extractTabField(line, field++);
-			_stscanf(szValue, _T("%lf"), &dValue);
+			swscanf_s(szValue, _T("%lf"), &dValue);
 			columnChar.m_reflection.push_back(dValue);
 		}
 
 		value = extractTabField(line, field++);
 		i = 0;
-		_stscanf(value,_T("%d"),&i);
+		swscanf_s(value,_T("%d"),&i);
 		const int VTPreds = i;
 		columnChar.m_pred.reserve(VTPreds);
 		for(i = 0; i < VTPreds; i++)
@@ -190,7 +190,7 @@ void CIpaVTCharVector::Load(CString szPath)
 			double dValue = 0.;
 
 			szValue = extractTabField(line, field++);
-			_stscanf(szValue, _T("%lf"), &dValue);
+			swscanf_s(szValue, _T("%lf"), &dValue);
 			columnChar.m_pred.push_back(dValue);
 		}
 
@@ -1510,13 +1510,13 @@ void CDlgVocalTract::OnGetFragments(CFlexEditGrid &cGrid)
 static double InterpolateWeight(double dLocation, double dBreakPoint, double dEndPoint)
 {
 	// second order 
-	if(dLocation < dBreakPoint)
+	if (dLocation < dBreakPoint)
 		return 1.0 - 0.5*(dLocation / dBreakPoint)*(dLocation / dBreakPoint);
 	else
 		return 0.5* (dEndPoint - dLocation) / (dEndPoint - dBreakPoint) * (dEndPoint - dLocation) / (dEndPoint - dBreakPoint);
 
 	// simple linear for now
-	if(dLocation < dBreakPoint)
+	if (dLocation < dBreakPoint)
 		return 1.0 - 0.5*(dLocation / dBreakPoint);
 	else
 		return 0.5* (dEndPoint - dLocation) / (dEndPoint - dBreakPoint);
@@ -1677,7 +1677,7 @@ void CDlgVocalTract::ParseParameterGrid(CFlexEditGrid &cGrid, int column, CIpaVT
 		double dValue = 1.;
 
 		szValue = cGrid.GetTextMatrix(i + getRow(rAreaFirst),column);
-		_stscanf(szValue, _T("%lf"), &dValue);
+		swscanf_s(szValue, _T("%lf"), &dValue);
 		columnChar.m_areas.push_back(dValue);
 	}
 
@@ -1689,7 +1689,7 @@ void CDlgVocalTract::ParseParameterGrid(CFlexEditGrid &cGrid, int column, CIpaVT
 		double dValue = 0.;
 
 		szValue = cGrid.GetTextMatrix(i + getRow(rReflectionFirst),column);
-		_stscanf(szValue, _T("%lf"), &dValue);
+		swscanf_s(szValue, _T("%lf"), &dValue);
 		columnChar.m_reflection.push_back(dValue);
 	}
 
@@ -1701,7 +1701,7 @@ void CDlgVocalTract::ParseParameterGrid(CFlexEditGrid &cGrid, int column, CIpaVT
 		double dValue = 0.;
 
 		szValue = cGrid.GetTextMatrix(i + getRow(rPredFirst),column);
-		_stscanf(szValue, _T("%lf"), &dValue);
+		swscanf_s(szValue, _T("%lf"), &dValue);
 		columnChar.m_pred.push_back(dValue);
 	}
 	if(TRUE)
@@ -1710,35 +1710,35 @@ void CDlgVocalTract::ParseParameterGrid(CFlexEditGrid &cGrid, int column, CIpaVT
 
 		columnChar.m_duration = 0;
 		value = cGrid.GetTextMatrix(rowDuration,column);
-		int nScanned = _stscanf(value, _T("%lf"), &columnChar.m_duration);
+		int nScanned = swscanf_s(value, _T("%lf"), &columnChar.m_duration);
 
 		columnChar.m_stimulus.Pitch = 0;
 		value = cGrid.GetTextMatrix(rowPitch,column);
-		nScanned = _stscanf(value, _T("%lf"), &columnChar.m_stimulus.Pitch);
+		nScanned = swscanf_s(value, _T("%lf"), &columnChar.m_stimulus.Pitch);
 
 		columnChar.m_dFrameEnergy = 0;
 		value = cGrid.GetTextMatrix(rowFEnergy,column);
-		nScanned = _stscanf(value, _T("%lf"), &columnChar.m_dFrameEnergy);
+		nScanned = swscanf_s(value, _T("%lf"), &columnChar.m_dFrameEnergy);
 
 		columnChar.m_stimulus.AV = 0;
 		value = cGrid.GetTextMatrix(rowAV,column);
-		nScanned = _stscanf(value, _T("%lf"), &columnChar.m_stimulus.AV);
+		nScanned = swscanf_s(value, _T("%lf"), &columnChar.m_stimulus.AV);
 
 		columnChar.m_stimulus.AH = 0;
 		value = cGrid.GetTextMatrix(rowAH,column);
-		nScanned = _stscanf(value, _T("%lf"), &columnChar.m_stimulus.AH);
+		nScanned = swscanf_s(value, _T("%lf"), &columnChar.m_stimulus.AH);
 
 		columnChar.m_stimulus.AF = 0;
 		value = cGrid.GetTextMatrix(rowAF,column);
-		nScanned = _stscanf(value, _T("%lf"), &columnChar.m_stimulus.AF);
+		nScanned = swscanf_s(value, _T("%lf"), &columnChar.m_stimulus.AF);
 
 		columnChar.m_stimulus.VHX = 0;
 		value = cGrid.GetTextMatrix(rowVHX,column);
-		nScanned = _stscanf(value, _T("%lf"), &columnChar.m_stimulus.VHX);
+		nScanned = swscanf_s(value, _T("%lf"), &columnChar.m_stimulus.VHX);
 
 		columnChar.m_dVTGain = 0;
 		value = cGrid.GetTextMatrix(rowVTGain,column);
-		nScanned = _stscanf(value, _T("%lf"), &columnChar.m_dVTGain);
+		nScanned = swscanf_s(value, _T("%lf"), &columnChar.m_dVTGain);
 	}
 }
 
@@ -2665,7 +2665,7 @@ void CDlgVocalTract::OnAdjustCells()
 				CString szValue = m_cGrid[m_nSelectedView].GetTextMatrix(y, x);
 				double value;
 
-				if(!szValue.IsEmpty() && _stscanf(szValue, _T("%lf"), &value))
+				if(!szValue.IsEmpty() && swscanf_s(szValue, _T("%lf"), &value))
 				{
 					CString szNewValue;
 					szNewValue.Format(_T("%.5g"), dlg.m_dScale*value + dlg.m_dOffset);

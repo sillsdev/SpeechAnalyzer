@@ -836,7 +836,7 @@ void CDlgOptionsFontPage::OnSelChangeAnnotList()
   // selected annotation.
   //**************************************************************
   CString szSize;
-  _itot(nPoints, szSize.GetBuffer(3), 10);
+  _itow_s(nPoints, szSize.GetBuffer(3), 3, 10);
   szSize.ReleaseBuffer();
   m_szAnnotFontInfo = "Current Setting:  " + m_GraphFonts.GetAt(nIndex);
   m_szAnnotFontInfo += (", " + szSize + " pt.");

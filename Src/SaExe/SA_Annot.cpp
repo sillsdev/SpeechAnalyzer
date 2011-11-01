@@ -784,7 +784,7 @@ void CLegendWnd::OnDraw(CDC * pDC,
 
 			logFont.lfHeight = -13;
 
-			_stprintf(logFont.lfFaceName, _T("%s"), _T("Arial"));
+			swprintf_s(logFont.lfFaceName,32,_T("%s"), _T("Arial"));
 			CFont vFont;
 			vFont.CreateFontIndirect(&logFont); // create the vertical font
 			pDC->SelectObject(&vFont); // select the vertical font
@@ -875,7 +875,7 @@ void CLegendWnd::OnDraw(CDC * pDC,
 					{
 						CRect rText(rWnd.left, nPixelPos - tm.tmHeight, rWnd.right - 9, nPixelPos + tm.tmHeight);
 						TCHAR szText[16];
-						_stprintf(szText, _T("%d"), nBase * nLogDisp);
+						swprintf_s(szText, _T("%d"), nBase * nLogDisp);
 						pDC->DrawText(szText, -1, rText, DT_SINGLELINE | DT_VCENTER | DT_RIGHT | DT_NOCLIP);
 						nLastNumber = nPixelPos;
 					}
@@ -926,7 +926,7 @@ void CLegendWnd::OnDraw(CDC * pDC,
 								int nWidth = (int) -log10(m_fBase);
 								if(nWidth < 0)
 									nWidth = 0;
-								_stprintf(szText, _T("%.*f"), nWidth, dLoop);
+								swprintf_s(szText, _T("%.*f"), nWidth, dLoop);
 								pDC->DrawText(szText, -1, rText, DT_SINGLELINE | DT_VCENTER | DT_RIGHT | DT_NOCLIP);
 							}
 						}
@@ -955,19 +955,22 @@ void CLegendWnd::OnDraw(CDC * pDC,
 			rWnd.top += (rWnd.Height() - nHeight) / 2;
 			// get sa parameters document member data
 			SaParm* pSaParm = pDoc->GetSaParm();
+			
 			// create and write effective sample size text
-			_stprintf(szText, _T("%u Bit"), pSaParm->byQuantization);
+			swprintf_s(szText, _T("%u Bit"), pSaParm->byQuantization);
 			pDC->DrawText(szText, -1, rWnd, DT_SINGLELINE | DT_TOP | DT_LEFT | DT_NOCLIP);
 			rWnd.top += 5 * tm.tmHeight / 4;
 			// get sa parameters format member data
 			FmtParm* pFmtParm = pDoc->GetFmtParm();
+			
 			// create and write sample rate text
-			_stprintf(szText, _T("%ld Hz"), pFmtParm->dwSamplesPerSec);
+			swprintf_s(szText, _T("%ld Hz"), pFmtParm->dwSamplesPerSec);
 			pDC->DrawText(szText, -1, rWnd, DT_SINGLELINE | DT_TOP | DT_LEFT | DT_NOCLIP);
 			rWnd.top += 5 * tm.tmHeight / 4;
+			
 			// create and write length text
 			double fDataSec = pDoc->GetTimeFromBytes(pDoc->GetUnprocessedDataSize()); // get sampled data size in seconds
-			_stprintf(szText, _T("%-5.1f sec"), fDataSec);
+			swprintf_s(szText, _T("%-5.1f sec"), fDataSec);
 			pDC->DrawText(szText, -1, rWnd, DT_SINGLELINE | DT_TOP | DT_LEFT | DT_NOCLIP);
 		}
 	}
@@ -1620,7 +1623,7 @@ void CXScaleWnd::OnDraw(CDC * pDC,
 						CRect rText(nPos - nTextWidth2, nVertPos + 3, nPos + nTextWidth2, rWnd.bottom);
 						TCHAR szText[16];
 						if (m_nScaleMode & TIME_FROM_VIEW)
-							_stprintf(szText, _T("%8.3f"), fPosition);
+							swprintf_s(szText, _T("%8.3f"), fPosition);
 						else
 							swprintf_s(szText, _countof(szText), _T("%5.0f"), fPosition);
 						pDC->DrawText(szText, -1, rText, DT_SINGLELINE | DT_TOP | DT_CENTER | DT_NOCLIP);

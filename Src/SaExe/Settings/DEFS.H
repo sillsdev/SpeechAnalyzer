@@ -26,7 +26,7 @@ typedef int ItemIndex;  // Hungarian: itm
 inline BOOL bEqual(const char* pszA, const char* pszB)
     { return (strcmp(pszA, pszB) == 0); }
 inline BOOL bEqualDisregardingCase(const char* pszA, const char* pszB)
-    { return (stricmp(pszA, pszB) == 0); }
+    { return (_stricmp(pszA, pszB) == 0); }
     
 inline BOOL bMemberOfCharSet(char ch, const char* pszCharSet)
     { return (strchr(pszCharSet, ch) != NULL); }

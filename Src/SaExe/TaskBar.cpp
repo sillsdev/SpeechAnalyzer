@@ -513,12 +513,10 @@ void CTaskButton::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 void CTaskBar::OnGetInfoTip(NMHDR* pNMHDR, LRESULT* pResult) 
 {
 	NMLVGETINFOTIP* pInfo = (NMLVGETINFOTIP*)pNMHDR;
-
 	CTaskPage *pPage = m_pPages[m_nSelectedPage];
-
-	if(pPage->m_cItemList.size() >= (unsigned) pInfo->iItem)
+	if (pPage->m_cItemList.size() >= (unsigned) pInfo->iItem)
 	{
-		_tcsncpy(pInfo->pszText, pPage->m_cItemList[pInfo->iItem].szTip, pInfo->cchTextMax);
+		wcsncpy(pInfo->pszText, pPage->m_cItemList[pInfo->iItem].szTip, pInfo->cchTextMax);
 	}
 
 	*pResult = 0;

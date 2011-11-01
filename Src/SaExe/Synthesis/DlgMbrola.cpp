@@ -231,7 +231,7 @@ void CDlgMbrola::OnLeaveCellMbrolaGrid()
 		double value;
 		char dummy[3];
 		CString cellText = m_cGrid.GetText();
-		if(cellText.GetLength() && _stscanf(cellText,_T("%f%2s"), &value, &dummy) != 1)
+		if(cellText.GetLength() && swscanf_s(cellText,_T("%f%2s"), &value, &dummy) != 1)
 		{
 			CString error;
 			error.Format(_T("\"%s\" is not a number. Please correct"), LPCTSTR(cellText));

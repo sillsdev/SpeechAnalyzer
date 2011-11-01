@@ -168,7 +168,7 @@ short int ArchiveTransfer::tShortInt(CArchive& ar, short int x)
 	else
 	{
 		ar >> shortInt;
-		_stscanf(shortInt.GetBuffer(100),_T("%d"),&ret);
+		swscanf_s(shortInt.GetBuffer(100),_T("%d"),&ret);
 		shortInt.ReleaseBuffer();
 	}
 
@@ -189,7 +189,7 @@ int ArchiveTransfer::tInt(CArchive& ar, int x)
 	else
 	{
 		ar >> szInt;
-		_stscanf(szInt.GetBuffer(100),_T("%d"),&ret);
+		swscanf_s(szInt.GetBuffer(100),_T("%d"),&ret);
 		szInt.ReleaseBuffer();
 	}
 
@@ -210,7 +210,7 @@ DWORD ArchiveTransfer::tDWORD(CArchive& ar, DWORD x)
 	else
 	{
 		ar >> dWord;
-		_stscanf(dWord.GetBuffer(100),_T("%lu"),&ret);
+		swscanf_s(dWord.GetBuffer(100),_T("%lu"),&ret);
 		dWord.ReleaseBuffer();
 	}
 
@@ -2183,13 +2183,13 @@ long CPhoneticSegment::Process(void* pCaller, CSaDoc* pSaDoc, int nProgress, int
 
 	// start segmenting
 	BeginWaitCursor(); // wait cursor
-	if(!StartProcess(pCaller, IDS_STATTXT_SEGMENTING, FALSE)) // memory allocation failed
+	if (!StartProcess(pCaller, IDS_STATTXT_SEGMENTING, FALSE)) // memory allocation failed
 	{
 		EndProcess(); // end data processing
 		EndWaitCursor();
 		return MAKELONG(PROCESS_ERROR, nProgress);
 	}
-	ULONGLONG dwLoopEnd = pChange->GetDataSize();; // end of loop
+	DWORD dwLoopEnd = pChange->GetDataSize();; // end of loop
 	// prepare parameters
 	CMainFrame* pMainFrame = (CMainFrame*)AfxGetMainWnd();
 	ASSERT(pMainFrame->IsKindOf(RUNTIME_CLASS(CMainFrame)));
@@ -2715,7 +2715,7 @@ long CGlossSegment::Process(void* pCaller, CSaDoc* pSaDoc, int nProgress, int nL
 		EndWaitCursor();
 		return MAKELONG(PROCESS_ERROR, nProgress);
 	}
-	ULONGLONG dwLoopEnd = pLoudness->GetDataSize();; // end of loop
+	DWORD dwLoopEnd = pLoudness->GetDataSize();; // end of loop
 	// prepare parameters
 	CMainFrame* pMainFrame = (CMainFrame*)AfxGetMainWnd();
 	ASSERT(pMainFrame->IsKindOf(RUNTIME_CLASS(CMainFrame)));

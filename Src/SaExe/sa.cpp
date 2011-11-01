@@ -616,11 +616,11 @@ void CSaApp::ExamineCmdLine(LPCTSTR pCmdLine, WPARAM wParam)
 			}
 			else // SDM 1.5Test10.4
 			{
-				szCmdLine = " " + szCmdLine; // prepend space to allow _stscanf to suceed
+				szCmdLine = " " + szCmdLine; // prepend space to allow swscanf_s to suceed
 			}
 
 			// sa has to read list file and open documents // SDM 1.5Test8.3
-			_stscanf(szCmdLine, _T("%*[ 0123456789]%[^\n]"), m_szCmdFileName.GetBuffer(szCmdLine.GetLength()));
+			swscanf_s(szCmdLine, _T("%*[ 0123456789]%[^\n]"), m_szCmdFileName.GetBuffer(szCmdLine.GetLength()));
 			m_szCmdFileName.ReleaseBuffer();
 
 
@@ -637,7 +637,7 @@ void CSaApp::ExamineCmdLine(LPCTSTR pCmdLine, WPARAM wParam)
 			CSaString szString = GetBatchString(_T("Settings"), _T("ShowWindow"), _T("")); // get the entry // SDM 1.5Test8.5
 			CSaString szReturn = szString;// SDM 1.5Test10.0
 			CSaString szParam;
-			_stscanf(szString,_T("%16[^(]%(%20[^)]"),szReturn.GetBuffer(szReturn.GetLength()),szParam.GetBuffer(szReturn.GetLength()));// SDM 1.5Test10.0
+			swscanf_s(szString,_T("%16[^(]%(%20[^)]"),szReturn.GetBuffer(szReturn.GetLength()),szParam.GetBuffer(szReturn.GetLength()));// SDM 1.5Test10.0
 			szReturn.ReleaseBuffer();
 			szParam.ReleaseBuffer();
 			szReturn.MakeUpper(); // convert the whole string to upper case letters
@@ -678,7 +678,7 @@ void CSaApp::ExamineCmdLine(LPCTSTR pCmdLine, WPARAM wParam)
 			{
 				// set mainframe position and show it
 				int left,top,width,height;
-				if (_stscanf(szParam,_T("%d%,%d%,%d%,%d"),&left,&top, &width, &height) == 4)
+				if (swscanf_s(szParam,_T("%d%,%d%,%d%,%d"),&left,&top, &width, &height) == 4)
 				{
 					m_pMainWnd->ShowWindow(SW_RESTORE);// SDM 1.5Test10.0
 					m_pMainWnd->SetWindowPos(NULL,left, top, width, height,SWP_SHOWWINDOW|SWP_NOZORDER);// SDM 1.5Test10.0
@@ -693,7 +693,7 @@ void CSaApp::ExamineCmdLine(LPCTSTR pCmdLine, WPARAM wParam)
 			else // Use cmd line size information // SDM 1.5Test8.3
 			{
 				CSaString szPosition;
-				if (_stscanf(szCmdLine," %16[0123456789]", szPosition.GetBuffer(17)))
+				if (swscanf_s(szCmdLine," %16[0123456789]", szPosition.GetBuffer(17)))
 				{
 					szPosition.ReleaseBuffer();
 					TRACE(_T("Using Position %s\n"), szPosition);
@@ -893,7 +893,7 @@ void CSaApp::OnProcessBatchCommands()
 	szReturn.MakeUpper(); // convert the whole string to upper case letters
 	szParameterList = "";
 	szEntry = szReturn;
-	_stscanf(szEntry,_T("%[^(]%(%[^)]"),szReturn.GetBuffer(szReturn.GetLength()), szParameterList.GetBuffer(szReturn.GetLength()));
+	swscanf_s(szEntry,_T("%[^(]%(%[^)]"),szReturn.GetBuffer(szReturn.GetLength()), szParameterList.GetBuffer(szReturn.GetLength()));
 	szReturn.ReleaseBuffer();
 	szParameterList.ReleaseBuffer();
 
@@ -995,7 +995,7 @@ void CSaApp::OnProcessBatchCommands()
 	else if (szReturn.Left(10) == "SELECTFILE")
 	{
 		int nID = 1;
-		_stscanf(szParameterList, _T("%d"), &nID);
+		swscanf_s(szParameterList, _T("%d"), &nID);
 		POSITION position = m_pDocTemplate->GetFirstDocPosition();
 		while (position != NULL)
 		{
@@ -1036,7 +1036,7 @@ void CSaApp::OnProcessBatchCommands()
 		//Get speed
 		pKeys->nSpeed[Player_Batch_Settings] = 50;        // default replay speed in %
 		CSaString szField = extractCommaField(szParameterList, 0);
-		_stscanf(szField, _T("%u"), &(pKeys->nSpeed[Player_Batch_Settings]));
+		swscanf_s(szField, _T("%u"), &(pKeys->nSpeed[Player_Batch_Settings]));
 		if (pKeys->nSpeed[Player_Batch_Settings] < 10)
 			pKeys->nSpeed[Player_Batch_Settings] = 10;
 		if (pKeys->nSpeed[Player_Batch_Settings] > 333)
@@ -1045,7 +1045,7 @@ void CSaApp::OnProcessBatchCommands()
 		//Get volume
 		pKeys->nVolume[Player_Batch_Settings] = 50;       // default play volume in %
 		szField = extractCommaField(szParameterList, 1);
-		_stscanf(szField, _T("%u"), &(pKeys->nVolume[Player_Batch_Settings]));
+		swscanf_s(szField, _T("%u"), &(pKeys->nVolume[Player_Batch_Settings]));
 		if (pKeys->nVolume[Player_Batch_Settings] < 0)
 			pKeys->nVolume[Player_Batch_Settings] = 0;
 		if (pKeys->nVolume[Player_Batch_Settings] > 100)
@@ -1054,12 +1054,12 @@ void CSaApp::OnProcessBatchCommands()
 		//Get Start Position
 		DWORD dwStart = 0;
 		szField = extractCommaField(szParameterList, 2);
-		_stscanf(szField, _T("%lu"), &dwStart);
+		swscanf_s(szField, _T("%lu"), &dwStart);
 
 		//Get Stop Position
 		DWORD dwStop = pDoc->GetUnprocessedDataSize();
 		szField = extractCommaField(szParameterList, 3);
-		_stscanf(szField, _T("%lu"), &dwStop);
+		swscanf_s(szField, _T("%lu"), &dwStop);
 
 		// set start and stop cursors
 		pView->SetStartCursorPosition(dwStart);
@@ -1097,7 +1097,7 @@ void CSaApp::OnProcessBatchCommands()
 	else if (szReturn.Left(6) == "RETURN")
 	{
 		int nHide = 1;
-		_stscanf(szParameterList, _T("%d"), &nHide);
+		swscanf_s(szParameterList, _T("%d"), &nHide);
 		m_nCommand = -1;
 		FileReturn(nHide > 0);
 		return;

@@ -424,7 +424,7 @@ void CExportXML::OutputXMLField(CFile* pFile,const TCHAR *szFieldName,const CSaS
 		else if(szContents[i]<0)
 		{
 			CSaString szS;
-			_stprintf(szS.GetBuffer(25),_T("&#%ld;"),(unsigned char) szContents[i]);
+			swprintf_s(szS.GetBuffer(25),25,_T("&#%ld;"),(unsigned char) szContents[i]);
 			szString += szS;
 		}
 		else szString += szContents[i];
@@ -491,7 +491,7 @@ void CExportXML::OnOK()
 		}
 		if (m_bFileSize) // %%% 5 %%%
 		{
-			_stprintf(szString.GetBuffer(25),_T("%ld Bytes"),pFileStatus->m_size);
+			swprintf_s(szString.GetBuffer(25),25,_T("%ld Bytes"),pFileStatus->m_size);
 			szString.ReleaseBuffer();
 			OutputXMLField(pFile,_T("FileSize"),szString);
 		}
@@ -640,13 +640,13 @@ void CExportXML::OnOK()
 			if (nNumber < 0) break;
 			}
 		}
-		_stprintf(szString.GetBuffer(25),_T("%u"), nLoop);
+		swprintf_s(szString.GetBuffer(25),25,_T("%u"), nLoop);
 		szString.ReleaseBuffer();
 		OutputXMLField(pFile,_T("NumPhones"),szString);
 	}
 	if (m_bWords) // %%% 17 %%%
 	{
-		_stprintf(szString.GetBuffer(25),_T("%u"), ((CTextSegment*)pDoc->GetSegment(GLOSS))->CountWords());
+		swprintf_s(szString.GetBuffer(25),25,_T("%u"), ((CTextSegment*)pDoc->GetSegment(GLOSS))->CountWords());
 		szString.ReleaseBuffer();
 		OutputXMLField(pFile,_T("NumWords"),szString);
 	}
@@ -655,7 +655,7 @@ void CExportXML::OnOK()
 	pFile->Write("<DataInfo>\r\n",12);
 	if (m_bNumberSamples) // %%% 18 %%%
 	{
-		_stprintf(szString.GetBuffer(25),_T("%ld"), pDoc->GetDataSize() / pDoc->GetFmtParm()->wBlockAlign);
+		swprintf_s(szString.GetBuffer(25),25,_T("%ld"), pDoc->GetDataSize() / pDoc->GetFmtParm()->wBlockAlign);
 		szString.ReleaseBuffer();
 		OutputXMLField(pFile,_T("NumSamples"),szString);
 	}
@@ -666,24 +666,24 @@ void CExportXML::OnOK()
 		int nMinutes = (int)fDataSec / 60;
 
 		if (nMinutes == 0) // length is less than one minute
-			_stprintf(szString.GetBuffer(25),_T("%5.3f Seconds"), fDataSec);
+			swprintf_s(szString.GetBuffer(25),25,_T("%5.3f Seconds"), fDataSec);
 		else // length is equal or more than one minute
 		{
 			fDataSec = fDataSec - (float)(nMinutes * 60);
-			_stprintf(szString.GetBuffer(25),_T("%i:%5.3f (Min:Sec)"), nMinutes, fDataSec);
+			swprintf_s(szString.GetBuffer(25),25,_T("%i:%5.3f (Min:Sec)"), nMinutes, fDataSec);
 		}
 		szString.ReleaseBuffer();
 		OutputXMLField(pFile,_T("Length"),szString);
 	}
 	if (m_bSampleRate) // %%% 20 %%%
 	{
-		_stprintf(szString.GetBuffer(25),_T("%lu Hz"),pDoc->GetFmtParm()->dwSamplesPerSec);
+		swprintf_s(szString.GetBuffer(25),25,_T("%lu Hz"),pDoc->GetFmtParm()->dwSamplesPerSec);
 		szString.ReleaseBuffer();
 		OutputXMLField(pFile,_T("SamplingFreq"),szString);
 	}
 	if (m_bBandwidth) // %%% 21 %%%
 	{
-		_stprintf(szString.GetBuffer(25),_T("%lu Hz"),pDoc->GetSaParm()->dwRecordBandWidth);
+		swprintf_s(szString.GetBuffer(25),25,_T("%lu Hz"),pDoc->GetSaParm()->dwRecordBandWidth);
 		szString.ReleaseBuffer();
 		OutputXMLField(pFile,_T("Bandwidth"),szString);
 	}
@@ -694,13 +694,13 @@ void CExportXML::OnOK()
 	}
 	if (m_bBits) // %%% 23 %%%
 	{
-		_stprintf(szString.GetBuffer(25),_T("%d Bits"),pDoc->GetFmtParm()->wBitsPerSample);
+		swprintf_s(szString.GetBuffer(25),25,_T("%d Bits"),pDoc->GetFmtParm()->wBitsPerSample);
 		szString.ReleaseBuffer();
 		OutputXMLField(pFile,_T("StorageFormat"),szString);
 	}
 	if (m_bQuantization) // %%% 24 %%%
 	{
-		_stprintf(szString.GetBuffer(25),_T("%d Bits"),(int)pDoc->GetSaParm()->byRecordSmpSize);
+		swprintf_s(szString.GetBuffer(25),25,_T("%d Bits"),(int)pDoc->GetSaParm()->byRecordSmpSize);
 		szString.ReleaseBuffer();
 		OutputXMLField(pFile,_T("QuantizSize"),szString);
 	}
@@ -998,14 +998,14 @@ void CExportSFM::OnOK()
 			if (nNumber < 0) break;
 			}
 		}
-		_stprintf(szString.GetBuffer(25),_T("%u"), nLoop);
+		swprintf_s(szString.GetBuffer(25),25,_T("%u"), nLoop);
 		szString.ReleaseBuffer();
 		szString = "\\np " +  szString + szCrLf;
 		WriteFileUtf8(pFile, szString);
 	}
 	if (m_bWords)// \nw   Number of Words
 	{
-		_stprintf(szString.GetBuffer(25),_T("%u"), ((CTextSegment*)pDoc->GetSegment(GLOSS))->CountWords());
+		swprintf_s(szString.GetBuffer(25),25,_T("%u"), ((CTextSegment*)pDoc->GetSegment(GLOSS))->CountWords());
 		szString.ReleaseBuffer();
 		szString = "\\nw " +  szString + szCrLf;
 		WriteFileUtf8(pFile, szString);
@@ -1026,7 +1026,7 @@ void CExportSFM::OnOK()
 		}
 		if (m_bFileSize) // \size File size in bytes
 		{
-			_stprintf(szString.GetBuffer(25),_T("%ld Bytes"),pFileStatus->m_size);
+			swprintf_s(szString.GetBuffer(25),25,_T("%ld Bytes"),pFileStatus->m_size);
 			szString.ReleaseBuffer();
 			szString = "\\size " +  szString + szCrLf;
 			WriteFileUtf8(pFile, szString);
@@ -1045,7 +1045,7 @@ void CExportSFM::OnOK()
 
 	if (m_bNumberSamples)// \samp Number of Samples
 	{
-		_stprintf(szString.GetBuffer(25),_T("%ld"), pDoc->GetDataSize() / pDoc->GetFmtParm()->wBlockAlign);
+		swprintf_s(szString.GetBuffer(25),25,_T("%ld"), pDoc->GetDataSize() / pDoc->GetFmtParm()->wBlockAlign);
 		szString.ReleaseBuffer();
 		szString = "\\samp " +  szString + szCrLf;
 		WriteFileUtf8(pFile, szString);
@@ -1057,11 +1057,11 @@ void CExportSFM::OnOK()
 		int nMinutes = (int)fDataSec / 60;
 
 		if (nMinutes == 0) // length is less than one minute
-			_stprintf(szString.GetBuffer(25),_T("%5.3f Seconds"), fDataSec);
+			swprintf_s(szString.GetBuffer(25),25,_T("%5.3f Seconds"), fDataSec);
 		else // length is equal or more than one minute
 		{
 			fDataSec = fDataSec - (float)(nMinutes * 60);
-			_stprintf(szString.GetBuffer(25),_T("%i:%5.3f (Min:Sec)"), nMinutes, fDataSec);
+			swprintf_s(szString.GetBuffer(25),25,_T("%i:%5.3f (Min:Sec)"), nMinutes, fDataSec);
 		}
 		szString.ReleaseBuffer();
 		szString = "\\len " +  szString + szCrLf;
@@ -1069,14 +1069,14 @@ void CExportSFM::OnOK()
 	}
 	if (m_bSampleRate)// \freq Sampling Frequency
 	{
-		_stprintf(szString.GetBuffer(25),_T("%lu Hz"),pDoc->GetFmtParm()->dwSamplesPerSec);
+		swprintf_s(szString.GetBuffer(25),25,_T("%lu Hz"),pDoc->GetFmtParm()->dwSamplesPerSec);
 		szString.ReleaseBuffer();
 		szString = "\\freq " +  szString + szCrLf;
 		WriteFileUtf8(pFile, szString);
 	}
 	if (m_bBandwidth)// \bw   Bandwidth
 	{
-		_stprintf(szString.GetBuffer(25),_T("%lu Hz"),pDoc->GetSaParm()->dwRecordBandWidth);
+		swprintf_s(szString.GetBuffer(25),25,_T("%lu Hz"),pDoc->GetSaParm()->dwRecordBandWidth);
 		szString.ReleaseBuffer();
 		szString = "\\bw " +  szString + szCrLf;
 		WriteFileUtf8(pFile, szString);
@@ -1089,14 +1089,14 @@ void CExportSFM::OnOK()
 	}
 	if (m_bBits)// \bits Storage Format
 	{
-		_stprintf(szString.GetBuffer(25),_T("%d Bits"),pDoc->GetFmtParm()->wBitsPerSample);
+		swprintf_s(szString.GetBuffer(25),25,_T("%d Bits"),pDoc->GetFmtParm()->wBitsPerSample);
 		szString.ReleaseBuffer();
 		szString = "\\bits " +  szString + szCrLf;
 		WriteFileUtf8(pFile, szString);
 	}
 	if (m_bQuantization)// \size Quantization Size
 	{
-		_stprintf(szString.GetBuffer(25),_T("%d Bits"),(int)pDoc->GetSaParm()->byRecordSmpSize);
+		swprintf_s(szString.GetBuffer(25),25,_T("%d Bits"),(int)pDoc->GetSaParm()->byRecordSmpSize);
 		szString.ReleaseBuffer();
 		szString = "\\qsize " +  szString + szCrLf;
 		WriteFileUtf8(pFile, szString);
@@ -1423,7 +1423,7 @@ void CExportTable::OnOK()
 		int nInterval = 20;
 		if(m_szIntervalTime.GetLength() != 0)
 		{
-			_stscanf(m_szIntervalTime, _T("%d"), &nInterval);
+			swscanf_s(m_szIntervalTime, _T("%d"), &nInterval);
 		}
 		if (nInterval < 1) nInterval = 20;
 		dwIncrement = pDoc->GetBytesFromTime(nInterval/1000.0);
@@ -1433,7 +1433,7 @@ void CExportTable::OnOK()
 			dwIncrement++;
 			dwIncrement &= ~1;
 		}
-		_stprintf(m_szIntervalTime.GetBuffer(20), _T("%d"), nInterval);
+		swprintf_s(m_szIntervalTime.GetBuffer(20),20, _T("%d"), nInterval);
 		m_szIntervalTime.ReleaseBuffer();
 	}
 
@@ -1564,7 +1564,7 @@ void CExportTable::OnOK()
 
 		if (m_bSampleTime)
 		{
-			_stprintf(szString.GetBuffer(25),_T("%.3f\t"),pDoc->GetTimeFromBytes(dwOffset));
+			swprintf_s(szString.GetBuffer(25),25,_T("%.3f\t"),pDoc->GetTimeFromBytes(dwOffset));
 			szString.ReleaseBuffer();
 			WriteFileUtf8(pFile, szString);
 		}
@@ -1574,13 +1574,13 @@ void CExportTable::OnOK()
 			DWORD dwPhonetic = pPhonetic->GetOffset(nIndex);
 			if (m_bSegmentStart)
 			{
-				_stprintf(szString.GetBuffer(25),_T("%.3f\t"),pDoc->GetTimeFromBytes(dwPhonetic));
+				swprintf_s(szString.GetBuffer(25),25,_T("%.3f\t"),pDoc->GetTimeFromBytes(dwPhonetic));
 				szString.ReleaseBuffer();
 				WriteFileUtf8(pFile, szString);
 			}
 			if (m_bSegmentLength)
 			{
-				_stprintf(szString.GetBuffer(25),_T("%.3f\t"),pDoc->GetTimeFromBytes(pPhonetic->GetDuration(nIndex)));
+				swprintf_s(szString.GetBuffer(25),25,_T("%.3f\t"),pDoc->GetTimeFromBytes(pPhonetic->GetDuration(nIndex)));
 				szString.ReleaseBuffer();
 				WriteFileUtf8(pFile, szString);
 			}
@@ -1713,7 +1713,7 @@ void CExportTable::OnOK()
 					fData = fLoudnessMax/10000.;
 
 				double db = 20.0 * log10(fData/32767.) + 9.;  // loudness is rms full scale would be 9dB over recommended recording level
-				_stprintf(szString.GetBuffer(25),_T("%0.1f\t"),db);
+				swprintf_s(szString.GetBuffer(25),25,_T("%0.1f\t"),db);
 				szString.ReleaseBuffer();
 			}
 			else
@@ -1739,7 +1739,7 @@ void CExportTable::OnOK()
 			if(dwSamples && bRes)
 			{
 				double fData = double(nData) / PRECISION_MULTIPLIER/ dwSamples;
-				_stprintf(szString.GetBuffer(25),_T("%.1f\t"),fData);
+				swprintf_s(szString.GetBuffer(25),25,_T("%.1f\t"),fData);
 				szString.ReleaseBuffer();
 			}
 			else
@@ -1764,7 +1764,7 @@ void CExportTable::OnOK()
 			if(dwSamples && bRes)
 			{
 				double fData = double(nData) / PRECISION_MULTIPLIER/ dwSamples;
-				_stprintf(szString.GetBuffer(25),_T("%.1f\t"),fData);
+				swprintf_s(szString.GetBuffer(25),25,_T("%.1f\t"),fData);
 				szString.ReleaseBuffer();
 			}
 			else
@@ -1789,7 +1789,7 @@ void CExportTable::OnOK()
 			if(dwSamples && bRes)
 			{
 				double fData = double(nData) / PRECISION_MULTIPLIER/ dwSamples;
-				_stprintf(szString.GetBuffer(25),_T("%.1f\t"),fData);
+				swprintf_s(szString.GetBuffer(25),25,_T("%.1f\t"),fData);
 				szString.ReleaseBuffer();
 			}
 			else
@@ -1815,7 +1815,7 @@ void CExportTable::OnOK()
 			if(dwSamples && bRes)
 			{
 				double fData = double(nData) / 100.0 / dwSamples;
-				_stprintf(szString.GetBuffer(25),_T("%.2f\t"),fData);
+				swprintf_s(szString.GetBuffer(25),25,_T("%.2f\t"),fData);
 				szString.ReleaseBuffer();
 			}
 			else
@@ -1837,7 +1837,7 @@ void CExportTable::OnOK()
 			if(dwSamples && bRes)
 			{
 				nData = nData/ dwSamples;
-				_stprintf(szString.GetBuffer(25),_T("%d\t"),(int)nData);
+				swprintf_s(szString.GetBuffer(25),25,_T("%d\t"),(int)nData);
 				szString.ReleaseBuffer();
 			}
 			else
@@ -1873,7 +1873,7 @@ void CExportTable::OnOK()
 				{
 					if(dwSamples[n])
 					{
-						_stprintf(szString.GetBuffer(25),_T("%.1f\t"),(double) pFormFreq[n]);
+						swprintf_s(szString.GetBuffer(25),25,_T("%.1f\t"),(double) pFormFreq[n]);
 						szString.ReleaseBuffer();
 					}
 					else

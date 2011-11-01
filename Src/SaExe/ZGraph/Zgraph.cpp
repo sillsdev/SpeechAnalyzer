@@ -548,7 +548,7 @@ void zGraph::zGetLongestLegendString(PWCHAR TemplateBuf)
 
 ////////////////////////// zConvertValue() ////////////////////////////////
 
-void zGraph::zConvertValue(double d, PWCHAR buf)
+void zGraph::zConvertValue(double d, PWCHAR buf, size_t len)
 {
 	//
 	// Converts a double value [d] to a string [Buf], Based Upon the Desired
@@ -571,26 +571,26 @@ void zGraph::zConvertValue(double d, PWCHAR buf)
 				TempBuf[i] = buffer[i];
 			}
 		}
-		_tcscpy(buf, TempBuf);
+		wcscpy_s( buf, len, TempBuf);
 		return;
 
 		// If User Wants Whole Numbers Only,
 	case zROUND_INTEGER:          //   Round to Nearest Whole Integer
-		_stprintf(TempBuf, _T("%-6.0lf"), d);
-		_tcscpy(buf, TempBuf);
+		swprintf_s(TempBuf, _countof(TempBuf), _T("%-6.0lf"), d);
+		wcscpy_s(buf, len, TempBuf);
 		break;
 
 
 	case zFIXED:                   // User Specified Number of Sig. Digits
-		_stprintf(TempBuf, _T("%-6.*lf"), //   That Should Be Shown After
-			digit_precision, d);     //   the Decimal Point
-		_tcscpy(buf, TempBuf);
+		swprintf_s(TempBuf, _countof(TempBuf), _T("%-6.*lf"), //   That Should Be Shown After
+		digit_precision, d);     //   the Decimal Point
+		wcscpy_s(buf, len, TempBuf);
 		break;
 
 	case zFLOAT_PT:               // If Just Using
 	default:                      //    Regular Floating Pt. Format
-		_stprintf(TempBuf, _T("%-6.*lf"), zDEFAULT_FLOAT_PRECISION, d);
-		_tcscpy(buf, TempBuf);
+		swprintf_s(TempBuf, _countof(TempBuf), _T("%-6.*lf"), zDEFAULT_FLOAT_PRECISION, d);
+		wcscpy_s(buf, len, TempBuf);
 		{
 			//
 			// Trim Any Spaces and Zeroes Off the End of the String.
@@ -687,13 +687,12 @@ void zGraph::zzShowXAxisNumbers(INT x_left, INT x_right)
 			// Show a Text String
 			//
 			if (i < zMAX_ITEM_TITLES  &&  ItemTitle[i] != NULL)
-				_stprintf(zbuf, _T("%s"), ItemTitle[i]);
+				swprintf_s(zbuf, _countof(zbuf), _T("%s"), ItemTitle[i]);
 			else
 			{
 				// Alert User that Not Enough Item Titles Were Given
 				//  Or Perhaps There Are Too Many Axis Divisions!
-
-				_stprintf(zbuf, _T("%s"), _T("?"));
+				swprintf_s(zbuf, _countof(zbuf), _T("%s"), _T("?"));
 			}
 		}
 		else
@@ -701,7 +700,7 @@ void zGraph::zzShowXAxisNumbers(INT x_left, INT x_right)
 			//
 			// Show a Number.  Set Last Value to [xmax]
 			//
-			zConvertValue(((i == x_axis_divisions) ? xmax : x_value), zbuf);
+			zConvertValue(((i == x_axis_divisions) ? xmax : x_value), zbuf, _countof(zbuf));
 		}
 
 
@@ -765,7 +764,7 @@ void zGraph::zzShowYAxisNumbers(INT y_bottom, INT y_top)
 	//
 	if (ymin == ymax)
 	{
-		zConvertValue(ymin, zbuf);
+		zConvertValue(ymin, zbuf, _countof(zbuf));
 
 		// Use Right Justification For Y-Axis Numbers--It Looks Cleaner
 		AxisLabelFont.zRightAlignText(
@@ -785,7 +784,7 @@ void zGraph::zzShowYAxisNumbers(INT y_bottom, INT y_top)
 		y_value = ymin + (double)k * y_inc;
 
 		// Set Last Value to [ymax]
-		zConvertValue(((k >= y_axis_divisions) ? ymax : y_value), zbuf);
+		zConvertValue(((k >= y_axis_divisions) ? ymax : y_value), zbuf, _countof(zbuf));
 
 		// Draw in this Y-axis Value Label
 		AxisLabelFont.zRightAlignText(
@@ -2035,7 +2034,7 @@ void zGraph::zDrawLegend(BOOL UseColorFills /* = TRUE */)
 		&& (index < num_sets);  index++)
 	{
 		// Get This Legend Title
-		_tcscpy(zbuf, &(LegendTitle[ index ]));
+		wcscpy_s(zbuf, _countof(zbuf), &(LegendTitle[ index ]));
 
 
 #ifdef OS2_PLATFORM

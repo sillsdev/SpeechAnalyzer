@@ -200,7 +200,7 @@ void zPolarGraph::zShowYAxisNumbers()
   do
   {
     y_value = -rad_max + (double)k * y_inc;
-    zConvertValue(y_value, buf1);
+    zConvertValue(y_value, buf1, 100);
 
     j = Y_BOTTOM - y_step * k ;
 

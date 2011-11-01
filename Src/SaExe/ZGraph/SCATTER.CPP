@@ -357,7 +357,7 @@ void zScatterGraph::zDrawGraphAxes()
     double y_value = ymin + (double)i * y_inc;
 
     // Show This Axis Number.  Set Last Value to [ymax]
-    zConvertValue(y_value, zbuf);
+    zConvertValue(y_value, zbuf, _countof(zbuf));
 
     // Draw In this Text/Number String
     j = y_left - charsize + zRound(ytmp * i);
@@ -391,7 +391,7 @@ void zScatterGraph::zDrawGraphAxes()
     x_value = xmin + (double)i * x_inc;
 
     // Convert tic mark value to text string
-    zConvertValue(x_value, zbuf);
+    zConvertValue(x_value, zbuf, _countof(zbuf));
 
     // Draw in this X-Axis Value Label
     AxisLabelFont.zDrawTextString(j + charsize*3, k - charheight/2, zbuf);
@@ -415,7 +415,7 @@ void zScatterGraph::zDrawGraphAxes()
     z_value = zmin + (double)i * z_inc;
 
     // Convert tic mark value to text string
-    zConvertValue(z_value, zbuf);
+    zConvertValue(z_value, zbuf, _countof(zbuf));
 
     // Draw in this Z-Axis Value Label
     // Use Right Justification For Axis Numbers--It Looks Cleaner

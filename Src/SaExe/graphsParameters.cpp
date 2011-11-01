@@ -555,7 +555,7 @@ void CDlgParametersPitchPage::OnVoicingScroll()
 	GetDlgItemText(IDC_PITCH_LOUDNESS, szData.GetBuffer(_MAX_PATH), 5);
 	double fData = 0;
 
-	_stscanf(szData.GetBuffer(_MAX_PATH), _T("%lf"), &fData);
+	swscanf_s(szData.GetBuffer(_MAX_PATH), _T("%lf"), &fData);
 
 	if (m_SpinVoicing.UpperButtonClicked())
 		fData += 0.1;
@@ -583,7 +583,7 @@ void CDlgParametersPitchPage::OnKillfocusVoicing()
 	GetDlgItemText(IDC_PITCH_LOUDNESS, szData.GetBuffer(_MAX_PATH), 5);
 	double fData = 0;
 
-	_stscanf(szData.GetBuffer(_MAX_PATH), _T("%lf"), &fData);
+	swscanf_s(szData.GetBuffer(_MAX_PATH), _T("%lf"), &fData);
 
 	if (fData > 5.0) fData = 5.0;
 	if (fData < 0.) fData = 0.;
