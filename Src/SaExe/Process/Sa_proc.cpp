@@ -648,7 +648,8 @@ BOOL CDataProcess::WriteDataBlock(DWORD dwPosition, HPSTR lpData, DWORD dwDataLe
 	}
 	// find the right position in the data
 	try
-	{ m_pFile->Seek(dwPosition * nElementSize, CFile::begin);
+	{ 
+		m_pFile->Seek(dwPosition * nElementSize, CFile::begin);
 	}
 	catch (CFileException e)
 	{ // error seeking file
@@ -658,7 +659,8 @@ BOOL CDataProcess::WriteDataBlock(DWORD dwPosition, HPSTR lpData, DWORD dwDataLe
 	}
 	// write the data block from the buffer
 	try
-	{ Write((HPSTR)lpData, dwDataLength * nElementSize);
+	{ 
+		Write((HPSTR)lpData, dwDataLength * nElementSize);
 	}
 	catch (CFileException e)
 	{ // error writing file
@@ -712,39 +714,46 @@ BOOL CDataProcess::SmoothData(int nTimes)
 		DWORD dwBlockSize = dwSmoothPos; // save the block size
 		short int * pSmoothData = (short int *)lpSmoothData; // pointer to processed data
 		pSmoothData += ((dwDataSize - 1) % (GetProcessBufferSize() / 2)); // set buffer pointer
-		for(dwDataPos = dwDataSize - 1; dwDataPos >= 0; dwDataPos--)
-		{ nData = GetProcessedData(dwDataPos, &bRes);
-		if (!bRes) break; 
-		if (nData >= 0)
-		{ nDiv = 3;
-		nRes = (UINT)(nData * 3);
-		if ((dwDataPos - 1) >= 0)
-		{ nData = GetProcessedData(dwDataPos - 1, &bRes);
-		if (!bRes) break; 
-		if (nData >= 0)
-		{ nDiv += 2;
-		nRes += (UINT)(nData * 2);
-		if ((dwDataPos - 2) >= 0)
-		{ nData = GetProcessedData(dwDataPos - 2, &bRes);
-		if (!bRes) break; 
-		if (nData >= 0)
-		{ nDiv++;
-		nRes += nData;
-		}
-		}
-		}
-		}
-		// result in normal case: r[dwDataPos]=(3*r[dwDataPos]+2*r[dwDataPos-1]+r[dwDataPos-2])/6
-		*pSmoothData-- = (short int)((nRes + (nDiv / 2)) / nDiv); // save result
-		}
-		else *pSmoothData-- = (short int)nData;
-		if (--dwSmoothPos == 0) // smoothed buffer is full
-		{ bRes = WriteDataBlock(dwDataPos, lpSmoothData, dwBlockSize); // write the buffer into the temporary file
-		if (!bRes) break;
-		dwSmoothPos = GetProcessBufferSize() / 2; // reset buffer position
-		dwBlockSize = dwSmoothPos; // save block size
-		pSmoothData = (short int *)(lpSmoothData + (GetProcessBufferSize() - 2)); // reset buffer pointer
-		}
+		for (dwDataPos = dwDataSize - 1; dwDataPos >= 0; dwDataPos--)
+		{ 
+			nData = GetProcessedData(dwDataPos, &bRes);
+			if (!bRes) break; 
+			if (nData >= 0)
+			{ 
+				nDiv = 3;
+				nRes = (UINT)(nData * 3);
+				if ((dwDataPos - 1) >= 0)
+				{ 
+					nData = GetProcessedData(dwDataPos - 1, &bRes);
+					if (!bRes) break; 
+					if (nData >= 0)
+					{ 
+						nDiv += 2;
+						nRes += (UINT)(nData * 2);
+						if ((dwDataPos - 2) >= 0)
+						{ 
+							nData = GetProcessedData(dwDataPos - 2, &bRes);
+							if (!bRes) break; 
+							if (nData >= 0)
+							{ 
+								nDiv++;
+								nRes += nData;
+							}
+						}
+					}
+				}
+				// result in normal case: r[dwDataPos]=(3*r[dwDataPos]+2*r[dwDataPos-1]+r[dwDataPos-2])/6
+				*pSmoothData-- = (short int)((nRes + (nDiv / 2)) / nDiv); // save result
+			}
+			else *pSmoothData-- = (short int)nData;
+			if (--dwSmoothPos == 0) // smoothed buffer is full
+			{ 
+				bRes = WriteDataBlock(dwDataPos, lpSmoothData, dwBlockSize); // write the buffer into the temporary file
+				if (!bRes) break;
+				dwSmoothPos = GetProcessBufferSize() / 2; // reset buffer position
+				dwBlockSize = dwSmoothPos; // save block size
+				pSmoothData = (short int *)(lpSmoothData + (GetProcessBufferSize() - 2)); // reset buffer pointer
+			}
 		}
 		m_dwBufferOffset = UNDEFINED_OFFSET;  // buffer undefined, force buffer reload
 		if (!bRes) break;
@@ -755,47 +764,53 @@ BOOL CDataProcess::SmoothData(int nTimes)
 		pSmoothData = (short int *)lpSmoothData; // reset buffer pointer
 		dwBlockSize = 0;
 		for(dwDataPos = 0; (DWORD)dwDataPos < dwDataSize; dwDataPos++)
-		{ nData = GetProcessedData(dwDataPos, &bRes);
-		if (!bRes) break; 
-		if (nData >= 0)
-		{ nDiv = 3;
-		nRes = (UINT)(nData * 3);
-		if (((DWORD)dwDataPos + 1) < dwDataSize)
-		{ nData = GetProcessedData(dwDataPos + 1, &bRes);
-		if (!bRes) break; 
-		if (nData >= 0)
-		{ nDiv += 2;
-		nRes += (UINT)(nData * 2);
-		if (((DWORD)dwDataPos + 2) < dwDataSize)
-		{ nData = GetProcessedData(dwDataPos + 2, &bRes);
-		if (!bRes) break; 
-		if (nData >= 0)
-		{ nDiv++;
-		nRes += nData;
-		}
-		}
-		}
-		}
-		// result in normal case, r[dwDataPos]=(3*r[dwDataPos]+2*r[dwDataPos+1]+r[dwDataPos+2])/6
-		*pSmoothData = (short int)((nRes + (nDiv / 2)) / nDiv); // save result
-		}
-		else *pSmoothData = (short int)nData;
-		if (*pSmoothData >= 0)
-		{ // adjust max data level
-			if (*pSmoothData > m_nMaxValue) m_nMaxValue = *pSmoothData;
-			// adjust min data level
-			if (*pSmoothData < m_nMinValue) m_nMinValue = *pSmoothData;
-		}
-		*pSmoothData++;
-		if ((++dwSmoothPos == GetProcessBufferSize() / 2) // smoothed buffer is full
-			|| ((DWORD)dwDataPos == dwDataSize - 1)) // last result in loop
-		{ bRes = WriteDataBlock(dwBlockSize, lpSmoothData, dwSmoothPos); // write the buffer into the temporary file
-		if (!bRes) break;
-		dwSmoothPos = 0; // reset buffer position 
-		dwBlockSize = dwDataPos; // save data position
-		pSmoothData = (short int *)lpSmoothData; // reset buffer pointer
-		}
-		// overall smoothing is symmetrical
+		{ 
+			nData = GetProcessedData(dwDataPos, &bRes);
+			if (!bRes) break; 
+			if (nData >= 0)
+			{ 
+				nDiv = 3;
+				nRes = (UINT)(nData * 3);
+				if (((DWORD)dwDataPos + 1) < dwDataSize)
+				{ 
+					nData = GetProcessedData(dwDataPos + 1, &bRes);
+					if (!bRes) break; 
+					if (nData >= 0)
+					{ 
+						nDiv += 2;
+						nRes += (UINT)(nData * 2);
+						if (((DWORD)dwDataPos + 2) < dwDataSize)
+						{ 
+							nData = GetProcessedData(dwDataPos + 2, &bRes);
+							if (!bRes) break; 
+							if (nData >= 0)
+							{ 
+								nDiv++;
+								nRes += nData;
+							}
+						}
+					}
+				}
+				// result in normal case, r[dwDataPos]=(3*r[dwDataPos]+2*r[dwDataPos+1]+r[dwDataPos+2])/6
+				*pSmoothData = (short int)((nRes + (nDiv / 2)) / nDiv); // save result
+			}
+			else *pSmoothData = (short int)nData;
+			if (*pSmoothData >= 0)
+			{ // adjust max data level
+				if (*pSmoothData > m_nMaxValue) m_nMaxValue = *pSmoothData;
+				// adjust min data level
+				if (*pSmoothData < m_nMinValue) m_nMinValue = *pSmoothData;
+			}
+			*pSmoothData++;
+			if ((++dwSmoothPos == GetProcessBufferSize() / 2) // smoothed buffer is full
+				|| ((DWORD)dwDataPos == dwDataSize - 1)) // last result in loop
+			{ bRes = WriteDataBlock(dwBlockSize, lpSmoothData, dwSmoothPos); // write the buffer into the temporary file
+			if (!bRes) break;
+			dwSmoothPos = 0; // reset buffer position 
+			dwBlockSize = dwDataPos; // save data position
+			pSmoothData = (short int *)lpSmoothData; // reset buffer pointer
+			}
+			// overall smoothing is symmetrical
 		}
 		m_dwBufferOffset = UNDEFINED_OFFSET; // buffer undefined, force buffer reload
 		if (!bRes) break;

@@ -307,7 +307,7 @@ public:
 
 private:
 	CDataProcess &m_cProcess;
-	int m_nSamples;
+	DWORD m_nSamples;
 };
 
 class CDataSourceValidate : public CDataSource
@@ -320,7 +320,7 @@ public:
 
 private:
 	CDataProcess &m_cProcess;
-	int m_nSamples;
+	DWORD m_nSamples;
 	BOOL m_bSkipUnset;   // Values of -1 are "Unset"
 	BOOL m_bSkipMissing; // Values of -2 are "Missing"
 };

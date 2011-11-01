@@ -35,22 +35,22 @@
 // S T A T I C  V A R I A B L E S
 //**************************************************************************
 static double h_coeff4[] = {0.2303778133088964,
-								  				  0.7148465705529154,
-													  0.6308807679298587,
-												    -.0279837694168599,
-												    -.1870348117190931,
-												    0.0308413818355607,
-													  0.0328830116668852,
-													  -.0105974017850690};
+0.7148465705529154,
+0.6308807679298587,
+-.0279837694168599,
+-.1870348117190931,
+0.0308413818355607,
+0.0328830116668852,
+-.0105974017850690};
 
 static double g_coeff4[] = {-.0105974017850690,
-														-.0328830116668852,
-														0.0308413818355607,
-														0.1870348117190931,
-														-.0279837694168599,
-														-.6308807679298587,
-														0.7148465705529154,
-														0.2303778133088964};
+-.0328830116668852,
+0.0308413818355607,
+0.1870348117190931,
+-.0279837694168599,
+-.6308807679298587,
+0.7148465705529154,
+0.2303778133088964};
 
 
 
@@ -101,11 +101,11 @@ CProcessWavelet::~CProcessWavelet()
 //*  Returns       : 
 //************************************************************************** 
 long CProcessWavelet::Process(void* pCaller, ISaDoc* , int nWidth, int /*nHeight*/,
-                                  int nProgress, int nLevel)
+							  int nProgress, int nLevel)
 {   
-  UNUSED_ALWAYS(nWidth);
-	
-  TRACE(_T("Process: CProcessWavelet\n"));
+	UNUSED_ALWAYS(nWidth);
+
+	TRACE(_T("Process: CProcessWavelet\n"));
 
 
 	//************************************************************************** 
@@ -113,35 +113,35 @@ long CProcessWavelet::Process(void* pCaller, ISaDoc* , int nWidth, int /*nHeight
 	//************************************************************************** 
 
 	// check canceled
-  if(data_status & PROCESS_CANCEL)
-    return MAKELONG(PROCESS_CANCELED, nProgress); // process canceled
-  
-  // check if data ready
-  if(data_status & DATA_READY)
+	if(data_status & PROCESS_CANCEL)
+		return MAKELONG(PROCESS_CANCELED, nProgress); // process canceled
+
+	// check if data ready
+	if(data_status & DATA_READY)
 		return MAKELONG(--nLevel, nProgress);
 
 	//************************************************************************** 
 	// Compute
 	//************************************************************************** 
-	
+
 	// wait cursor
 	BeginWaitCursor(); 
 
-  if(!StartProcess(pCaller, IDS_STATTXT_PROCESSWVL)) // memory allocation failed
-  {
-    EndProcess(); // end data processing
-    EndWaitCursor();
-    return MAKELONG(PROCESS_ERROR, nProgress);
-  }
+	if(!StartProcess(pCaller, IDS_STATTXT_PROCESSWVL)) // memory allocation failed
+	{
+		EndProcess(); // end data processing
+		EndWaitCursor();
+		return MAKELONG(PROCESS_ERROR, nProgress);
+	}
 
-  nProgress = nProgress + (int)(100 / nLevel); // calculate the actual progress
-  EndProcess((nProgress >= 95)); // end data processing
-  EndWaitCursor();
+	nProgress = nProgress + (int)(100 / nLevel); // calculate the actual progress
+	EndProcess((nProgress >= 95)); // end data processing
+	EndWaitCursor();
 
-  // close the temporary file and read the status
+	// close the temporary file and read the status
 
-  data_status = TRUE;
-  return MAKELONG(nLevel, nProgress);
+	data_status = TRUE;
+	return MAKELONG(nLevel, nProgress);
 }
 
 
@@ -214,12 +214,12 @@ CWaveletNode::~CWaveletNode()
 //************************************************************************** 
 BOOL CreateTree(char *tree_definition, CWaveletNode **root_node)
 {
-	
+
 	stack<CWaveletNode *> tempStack;
 	unsigned long str_index;
-	
+
 	CWaveletNode *tempNode;
-	
+
 	// Parse the string
 	for (str_index = 0; str_index < strlen(tree_definition); str_index++)
 	{
@@ -234,10 +234,10 @@ BOOL CreateTree(char *tree_definition, CWaveletNode **root_node)
 		case 's':	// Join two nodes
 		case 'S':
 			tempNode = new CWaveletNode();
-			
+
 			tempNode->SetLeftNode(tempStack.top());
 			tempStack.pop();
-			
+
 			tempNode->SetRightNode(tempStack.top());
 			tempStack.pop();
 
@@ -257,7 +257,7 @@ BOOL CreateTree(char *tree_definition, CWaveletNode **root_node)
 			break;
 		}
 	}
-	
+
 	*root_node = tempStack.top();
 	tempStack.pop();
 
@@ -275,7 +275,7 @@ BOOL CreateTree(char *tree_definition, CWaveletNode **root_node)
 
 		return FALSE;
 	}
-	
+
 }
 
 
@@ -305,22 +305,22 @@ BOOL CWaveletNode::_DoMRAAnalysisTree(long stride)
 	if ((left_node != NULL)	&& (right_node != NULL))		// both leaves need to be split futher
 	{
 		// Allocate the memory of the leaves
-		
+
 		if (!left_node->SetDataNode(NULL, dwDataSize, lower_freq, mid)) return FALSE;
 		if (!right_node->SetDataNode(NULL, dwDataSize, mid, upper_freq)) return FALSE;
 
 		// Store basic leaf information
 		left_node->SetParentNode(this);
 		right_node->SetParentNode(this);
-		
+
 
 		// do the transform, storing the high band in the left node, and the low band
 		// in the right
 		if (!WaveletTransformNode(left_node->GetDataPtr(), 
-															right_node->GetDataPtr(), 
-															DEBAUCHES4, 
-															stride)) return FALSE;
-		
+			right_node->GetDataPtr(), 
+			DEBAUCHES4, 
+			stride)) return FALSE;
+
 
 		// Next time we will have two more signals per band (because we don't downsample, 2X extra info is generated)
 		stride *= 2;
@@ -330,7 +330,7 @@ BOOL CWaveletNode::_DoMRAAnalysisTree(long stride)
 		return TRUE;
 
 	}
-	
+
 	// The tree will usually be balanced so the above code will usually be called, but just in
 	// case someone wants only half of the data, the following two blocks are used
 
@@ -346,9 +346,9 @@ BOOL CWaveletNode::_DoMRAAnalysisTree(long stride)
 
 		// Do the transform, storing the low band and throwing away the high band
 		if (!WaveletTransformNode(left_node->GetDataPtr(),
-															NULL,
-															DEBAUCHES4,
-															stride)) return FALSE;
+			NULL,
+			DEBAUCHES4,
+			stride)) return FALSE;
 
 		stride *= 2;
 		if (!left_node->_DoMRAAnalysisTree(stride)) return FALSE;
@@ -369,9 +369,9 @@ BOOL CWaveletNode::_DoMRAAnalysisTree(long stride)
 
 		// Do the transform, storing the high band and throwing away the low band
 		if (!WaveletTransformNode(NULL, 
-															right_node->GetDataPtr(),
-															DEBAUCHES4, 
-															stride)) return FALSE;
+			right_node->GetDataPtr(),
+			DEBAUCHES4, 
+			stride)) return FALSE;
 
 
 		stride *= 2;
@@ -410,13 +410,13 @@ BOOL CWaveletNode::_DoMRAAnalysisTree(long stride)
 //*									 FALSE otherwise
 //************************************************************************** 
 BOOL CWaveletNode::WaveletTransformNode(long *pFinalLow, 
-																				long *pFinalHigh,
-																				long wavelet_type,
-																				long stride)
+										long *pFinalHigh,
+										long wavelet_type,
+										long stride)
 {
 	long data_index;
 	long coefficient_index;
-  long filter_index;
+	long filter_index;
 
 	double datapoint;				// temp for getting each datapoint
 
@@ -426,94 +426,88 @@ BOOL CWaveletNode::WaveletTransformNode(long *pFinalLow,
 
 	switch (wavelet_type)
 	{
-		case DEBAUCHES4:
-			// zero the arrays
+	case DEBAUCHES4:
+		// zero the arrays
+		for (data_index = 0; data_index < dwDataSize; data_index++)
+		{
+			pFinalLow[data_index] = 0;
+			pFinalHigh[data_index] = 0;
+		}
+
+
+		// Do the high pass
+		if (pFinalHigh != NULL)
+		{	
+
+			// Transform each datapoint
+			filter_index = 0;
 			for (data_index = 0; data_index < dwDataSize; data_index++)
 			{
-				pFinalLow[data_index] = 0;
-				pFinalHigh[data_index] = 0;
-			}
 
-
-			// Do the high pass
-			if (pFinalHigh != NULL)
-			{	
-
-				// Transform each datapoint
-				filter_index = 0;
-				for (data_index = 0; data_index < dwDataSize; data_index++)
+				// Do the convolution
+				coefficient_index = 0;
+				for (filter_index = (-4 * stride); filter_index < (4 * stride); filter_index+=stride)
 				{
+					coefficient_index++;
 
-					// Do the convolution
-					coefficient_index = 0;
-					for (filter_index = (-4 * stride); filter_index < (4 * stride); filter_index+=stride)
-					{
-						coefficient_index++;
+					// Check for wrap around to the left
+					if ((data_index + filter_index) < 0)
+						datapoint = data[dwDataSize + data_index + filter_index]; 							
 
-						// Check for wrap around to the left
-						if ((data_index + filter_index) < 0)
-							datapoint = data[dwDataSize + data_index + filter_index]; 							
-						
-						// Check for wrap around to the right
-						else if ((data_index + filter_index) > dwDataSize)
-							datapoint = data[dwDataSize - data_index + filter_index];
-								
-						// Normal case
-						else
-							datapoint = data[data_index + filter_index];					
-					
-						// Normal convolution formula: final[x] = transform[y] * data[x + y]
-						(pFinalHigh)[data_index] += long(g_coeff4[coefficient_index] * datapoint);
-					}
+					// Check for wrap around to the right
+					else if ((data_index + filter_index) > dwDataSize)
+						datapoint = data[dwDataSize - data_index + filter_index];
+
+					// Normal case
+					else
+						datapoint = data[data_index + filter_index];					
+
+					// Normal convolution formula: final[x] = transform[y] * data[x + y]
+					(pFinalHigh)[data_index] += long(g_coeff4[coefficient_index] * datapoint);
 				}
 			}
+		}
 
 
-			
-			// Do the low pass
-			if (pFinalLow != NULL)
-			{	
 
-				// Transform each datapoint
-				filter_index = 0;
-				for (data_index = 0; data_index < dwDataSize; data_index++)
+		// Do the low pass
+		if (pFinalLow != NULL)
+		{	
+
+			// Transform each datapoint
+			filter_index = 0;
+			for (data_index = 0; data_index < dwDataSize; data_index++)
+			{
+
+				// Do the convolution
+				coefficient_index = 0;
+				for (filter_index = (-4 * stride); filter_index < (4 * stride); filter_index+=stride)
 				{
+					coefficient_index++;
 
-					// Do the convolution
-					coefficient_index = 0;
-					for (filter_index = (-4 * stride); filter_index < (4 * stride); filter_index+=stride)
-					{
-						coefficient_index++;
+					// Check for wrap around to the left
+					if ((data_index + filter_index) < 0)
+						datapoint = data[dwDataSize + data_index + filter_index]; 							
 
-						// Check for wrap around to the left
-						if ((data_index + filter_index) < 0)
-							datapoint = data[dwDataSize + data_index + filter_index]; 							
-						
-						// Check for wrap around to the right
-						else if ((data_index + filter_index) > dwDataSize)
-							datapoint = data[dwDataSize - data_index + filter_index];
-								
-						// Normal case
-						else
-							datapoint = data[data_index + filter_index];					
-					
-						// Normal convolution formula: final[x] = transform[y] * data[x + y]
-						(pFinalLow)[data_index] += long(h_coeff4[coefficient_index] * datapoint);
-					}
+					// Check for wrap around to the right
+					else if ((data_index + filter_index) > dwDataSize)
+						datapoint = data[dwDataSize - data_index + filter_index];
+
+					// Normal case
+					else
+						datapoint = data[data_index + filter_index];					
+
+					// Normal convolution formula: final[x] = transform[y] * data[x + y]
+					(pFinalLow)[data_index] += long(h_coeff4[coefficient_index] * datapoint);
 				}
 			}
+		}
+		return TRUE;
 
-
-			return TRUE;
-			break;
-
-		default:
-			return FALSE;
-			break;
+	default:
+		return FALSE;
 	}
-
 	return FALSE;
-
 }
 
 
@@ -664,7 +658,7 @@ BOOL CWaveletNode::TransformSmoothingNode()
 
 	for (long x = 0; x < num_coeff; x++)
 		smooth[x] = 1.0/double(num_coeff);
-	
+
 	// Transform each datapoint
 	filter_index = 0;
 	for (data_index = 0; data_index < dwDataSize; data_index++)
@@ -679,23 +673,23 @@ BOOL CWaveletNode::TransformSmoothingNode()
 			// Check for wrap around to the left
 			if ((data_index + filter_index) < 0)
 				datapoint = 0; 							
-						
+
 			// Check for wrap around to the right
 			else if ((data_index + filter_index) > dwDataSize)
 				datapoint = 0;
-								
+
 			// Normal case
 			else
 				datapoint = data[data_index + filter_index];					
-					
+
 			// Normal convolution formula: final[x] = transform[y] * data[x + y]
 			data[data_index] += long(smooth[coefficient_index] * datapoint);
-			
+
 		}
 	}
 
-	
-	
+
+
 	return TRUE;
 }
 
@@ -753,15 +747,15 @@ BOOL CWaveletNode::TransformFitWindowNode(CRect *rWnd)
 //*									 FALSE - on error
 //************************************************************************** 
 BOOL CWaveletNode::DrawColorBandTree(unsigned char *pBits,		// this is a (candy) Wrapper function
-																		 CRect *rWnd,
-																		 double high,
-																		 double start,
-																		 double end)	
+									 CRect *rWnd,
+									 double high,
+									 double start,
+									 double end)	
 {
 	long num_leaves;
 	long thickness;
 
-	
+
 	num_leaves = GetNumLeaves();
 	thickness = long(floor((double)rWnd->Height() / (double)num_leaves));			// Compute the thickness so we use all screeb space
 
@@ -771,12 +765,12 @@ BOOL CWaveletNode::DrawColorBandTree(unsigned char *pBits,		// this is a (candy)
 
 }
 long CWaveletNode::_DrawColorBandTree(unsigned char *pBits,
-																			CRect *rWnd,
-																			long thickness,
-																			long y,
-																			double high,
-																			double start,
-																			double end)
+									  CRect *rWnd,
+									  long thickness,
+									  long y,
+									  double high,
+									  double start,
+									  double end)
 {
 	// if the left node is a leaf, draw it!
 	if (left_node->IsLeaf())
@@ -829,11 +823,11 @@ BOOL CWaveletNode::DrawColorBandNode(unsigned char *pBits, CRect *rWnd, long thi
 
 	ASSERT(pBits != NULL);
 
-  
+
 	ColorScale = (num_colors / high);
 	fHScale = (double)((double)(end - start)/ (double)rWnd->Width()); // Scale our data to fit our width
 
-	
+
 	// Draw
 	for (long y = y_start; y < (y_start + thickness); y++)		// Draw "thickness" num of lines
 	{
@@ -844,7 +838,7 @@ BOOL CWaveletNode::DrawColorBandNode(unsigned char *pBits, CRect *rWnd, long thi
 			datapoint = data[(long)floor(data_index)];
 			data_index += fHScale;
 			if (data_index > dwDataSize) break;
-	
+
 			// FIX THIS!!!! we can't have the mod 4 here!!!		
 			final_color  = (long)((double)datapoint * ColorScale);
 			pBits[y * (rWnd->Width() + (4 - (rWnd->Width() % 4))) + x] = unsigned char(num_colors - final_color);
@@ -874,13 +868,13 @@ BOOL CWaveletNode::DrawColorBandNode(unsigned char *pBits, CRect *rWnd, long thi
 //*									 FALSE - otherwise
 //************************************************************************** 
 BOOL CWaveletNode::ScatterPlotDataTree(CDC *pDC, 
-													 					   CRect *rWnd, 
-																		   COLORREF crColor, 
-													 					   long which_leaf, 
-																		   double start, double end)
+									   CRect *rWnd, 
+									   COLORREF crColor, 
+									   long which_leaf, 
+									   double start, double end)
 {
 	CWaveletNode *node_ptr;
-	
+
 	node_ptr = GetNode(which_leaf);
 	if (node_ptr == NULL) return FALSE;
 
@@ -915,11 +909,11 @@ BOOL CWaveletNode::ScatterPlotDataNode(CDC *pDC, CRect *rWnd, COLORREF crColor, 
 	struct tagPOINT point_coords;
 
 	// Get the color
-  CPen penPlot(PS_SOLID, 1, crColor);
-  pDC->SelectObject(&penPlot);
+	CPen penPlot(PS_SOLID, 1, crColor);
+	pDC->SelectObject(&penPlot);
 
 	// Scale the data to fit in our window
- 	fHScale = (double)((double)(end - start)/ (double)rWnd->Width());
+	fHScale = (double)((double)(end - start)/ (double)rWnd->Width());
 
 	data_index = start;
 	pDC->MoveTo(0, data[0]);
@@ -927,7 +921,7 @@ BOOL CWaveletNode::ScatterPlotDataNode(CDC *pDC, CRect *rWnd, COLORREF crColor, 
 	// Do the drawing
 	for (double x = 0; x < rWnd->Width(); x++)
 	{	
-		
+
 		datapoint = data[(long)floor(data_index)];											// Get the data
 		data_index += fHScale;																					// Advance the data_index
 		//data_index++;
@@ -936,10 +930,10 @@ BOOL CWaveletNode::ScatterPlotDataNode(CDC *pDC, CRect *rWnd, COLORREF crColor, 
 		point_coords.x = long(x);
 		point_coords.y = datapoint;
 		point_coords.y = rWnd->Height() - point_coords.y;								// Need to print it upside down, because bitmaps are funny look'n
-		
+
 		//pDC->SetPixel(point_coords, crColor);													// for drawing pixels
 		pDC->LineTo(point_coords);																			// for connecting the dots
-		
+
 
 	}
 	return TRUE;
@@ -971,7 +965,7 @@ CWaveletNode *CWaveletNode::_GetNode(long level, bool reset)
 	// Use a static variable to keep track of our count between static function calls
 	static long count;
 
-	
+
 	if (reset == true)
 	{
 		count = 0;		// Reset the count only on the first call
@@ -1222,7 +1216,7 @@ double CWaveletNode::_GetMaxTreeBounds(double max, long start, long end)
 //*  Description   : A messy function based off of the sa_g_raw onDraw function
 //*                  It returns an allocated pointer containing the raw data
 //*									 of the waveform
-//*  Parameters    : int **pDataOut (out) - a pointer to the pointer to recieve
+//*  Parameters    : int **pDataOut (out) - a pointer to the pointer to receive
 //*																					the data
 //*									 DWORD *dwDataSize (out) - a pointer to the dword to recieve
 //*																						 how much data we have
@@ -1253,7 +1247,7 @@ BOOL CProcessWavelet::Get_Raw_Data(long **pDataOut, DWORD *dwDataSizeOut, ISaDoc
 
 
 	*pDataOut = (long *)malloc(dwDataSizeBytes * 2);
-	
+
 	if (*pDataOut == NULL)
 		return FALSE;
 
@@ -1273,13 +1267,13 @@ BOOL CProcessWavelet::Get_Raw_Data(long **pDataOut, DWORD *dwDataSizeOut, ISaDoc
 	while(1)
 	{
 		pData = pDoc->GetWaveData(dwDataPosBytes, TRUE);
-		
+
 
 		// Get the bitrate (8 or 16bit data)
 		//blockAlign = m_fmtParm.wBlockAlign;
 
 		// FIX: pad the data with 0's if we have 8 bit data
-	
+
 
 		// copy the data into our buffer
 		for (DWORD index = 0; index < dwChunkSizeBytes; index+=2)
@@ -1307,9 +1301,9 @@ BOOL CProcessWavelet::Get_Raw_Data(long **pDataOut, DWORD *dwDataSizeOut, ISaDoc
 	}
 
 	*dwDataSizeOut = (dwDataSizeBytes / 2);
-	
+
 
 	return TRUE;
-  
-	
+
+
 }

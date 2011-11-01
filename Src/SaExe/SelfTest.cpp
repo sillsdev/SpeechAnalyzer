@@ -52,7 +52,7 @@
 //
 void CSASelfTest::SelfTest()
 {
-    BOOL bFileOpened = FALSE;
+	BOOL bFileOpened = FALSE;
 	BOOL bTestSuccess = FALSE;
 	CSaDoc *pDoc = NULL;
 	CSaView *pView = NULL;
@@ -68,32 +68,32 @@ void CSASelfTest::SelfTest()
 
 	if(StartTest("CHFrench UI open","Open CHFRENCH.WAV thru UI"))
 	{
-		CString szTestFileName = m_szTestFolderPath + "chfrench.wav";
-		if(FileExists(szTestFileName))
-		{
-			// THIS CODE USES DDOBATCH TO SEND KEYSTROKES
-			//char szProgramFileName[_MAX_PATH];
-			//char szScriptFileName[_MAX_PATH];
-			//GetShortPathName(m_szTestFolderPath + "UIOpen.ini",szScriptFileName,_MAX_PATH);
-			//GetShortPathName(m_szTestFolderPath + "DDOBatch.exe",szProgramFileName,_MAX_PATH);
-			//_spawnl(_P_NOWAIT ,szProgramFileName, szProgramFileName, szScriptFileName, NULL);
-			//MessageLoop(10000);
+	CString szTestFileName = m_szTestFolderPath + "chfrench.wav";
+	if(FileExists(szTestFileName))
+	{
+	// THIS CODE USES DDOBATCH TO SEND KEYSTROKES
+	//char szProgramFileName[_MAX_PATH];
+	//char szScriptFileName[_MAX_PATH];
+	//GetShortPathName(m_szTestFolderPath + "UIOpen.ini",szScriptFileName,_MAX_PATH);
+	//GetShortPathName(m_szTestFolderPath + "DDOBatch.exe",szProgramFileName,_MAX_PATH);
+	//_spawnl(_P_NOWAIT ,szProgramFileName, szProgramFileName, szScriptFileName, NULL);
+	//MessageLoop(10000);
 
-			m_pMain->PostMessage(WM_COMMAND,ID_FILE_OPEN,0);
-			::PostMessage(GetFocus(),WM_CHAR,50,0);
-			MessageLoop(3000);
-			CMDIChildWnd *Baby = m_pMain->MDIGetActive();
-			if(Baby)
-			{
-				pDoc = (CSaDoc*) Baby->GetActiveDocument();
-				pView = (CSaView*) Baby->GetActiveView();
-			}
-		}
-		bFileOpened = (pDoc !=NULL);
-		EndTest(bFileOpened);
-		bTestSuccess = m_pMain->SendMessage(WM_COMMAND,ID_FILE_CLOSE,0);
-		pDoc = NULL;
-		bFileOpened = FALSE;
+	m_pMain->PostMessage(WM_COMMAND,ID_FILE_OPEN,0);
+	::PostMessage(GetFocus(),WM_CHAR,50,0);
+	MessageLoop(3000);
+	CMDIChildWnd *Baby = m_pMain->MDIGetActive();
+	if(Baby)
+	{
+	pDoc = (CSaDoc*) Baby->GetActiveDocument();
+	pView = (CSaView*) Baby->GetActiveView();
+	}
+	}
+	bFileOpened = (pDoc !=NULL);
+	EndTest(bFileOpened);
+	bTestSuccess = m_pMain->SendMessage(WM_COMMAND,ID_FILE_CLOSE,0);
+	pDoc = NULL;
+	bFileOpened = FALSE;
 	}
 	*/
 
@@ -273,13 +273,13 @@ void CSASelfTest::SelfTest()
 	if(bFileOpened && StartTest("CHFrench Fragment","Test fragment process."))
 	{
 		CProcessFragments * pFragment = pDoc->GetFragments();
-        pFragment->SetDataInvalid();
-        pDoc->EnableBackgroundProcessing(FALSE);
-        pFragment->RestartProcess();
+		pFragment->SetDataInvalid();
+		pDoc->EnableBackgroundProcessing(FALSE);
+		pFragment->RestartProcess();
 		pFragment->Process(this, (CSaDoc *)pDoc); // process data
 		// wait for idle loop to finish
 		while(!pFragment->IsDataReady())
-		  MessageLoop(10);
+			MessageLoop(10);
 		EndTest(!FileCompare(pFragment->GetProcessFileName()));
 	}
 
@@ -321,39 +321,39 @@ void CSASelfTest::SelfTest()
 
 	if(bFileOpened && StartTest("CHFrench Spectrogram","Test spectrogram process."))
 	{
-      CProcessSpectrogram* pSpectrogram =
-        (CProcessSpectrogram*)pDoc->GetSpectrogram(TRUE); // get pointer to	spectrogram object
+		CProcessSpectrogram* pSpectrogram =
+			(CProcessSpectrogram*)pDoc->GetSpectrogram(TRUE); // get pointer to	spectrogram object
 
-      pSpectrogram->SetDataInvalid();
-      // set spectrogram parameters
-      SpectroParm cSpectroParm = pSpectrogram->GetSpectroParm();
-      SpectroParm* pSpectroParm = &cSpectroParm;
-      pSpectroParm->nResolution = 2;
-      pSpectroParm->nColor = 0;
-      pSpectroParm->nOverlay = 0;
-      pSpectroParm->bShowPitch = 1;
-	  pSpectroParm->bShowF1 = 1;
-      pSpectroParm->bShowF2 = 1;
-      pSpectroParm->bShowF3 = 1;
-      pSpectroParm->bShowF4 = 1;
-      pSpectroParm->bShowF5andUp = 0;
-      pSpectroParm->bSmoothFormantTracks = 1;
-      pSpectroParm->nFrequency = 8000;
-      pSpectroParm->nMinThreshold = 1;
-      pSpectroParm->nMaxThreshold = 233;
-      pSpectroParm->nNumberFormants = 3;
-      pSpectroParm->bSmoothSpectra = 1;
-      pSpectrogram->SetSpectroParm(*pSpectroParm);
-      // process spectrogram
-      int nResult = pSpectrogram->Process(this,
-        pDoc, pView, 752, // some arbitrary plot width
-        500, // some arbitrary plot height (ignored)
-        0, 1);
-      if (nResult != PROCESS_ERROR && nResult != PROCESS_CANCELED)
-        EndTest(!FileCompare(pSpectrogram->GetProcessFileName()/*,7*/));
-      else EndTest(FALSE);
+		pSpectrogram->SetDataInvalid();
+		// set spectrogram parameters
+		SpectroParm cSpectroParm = pSpectrogram->GetSpectroParm();
+		SpectroParm* pSpectroParm = &cSpectroParm;
+		pSpectroParm->nResolution = 2;
+		pSpectroParm->nColor = 0;
+		pSpectroParm->nOverlay = 0;
+		pSpectroParm->bShowPitch = 1;
+		pSpectroParm->bShowF1 = 1;
+		pSpectroParm->bShowF2 = 1;
+		pSpectroParm->bShowF3 = 1;
+		pSpectroParm->bShowF4 = 1;
+		pSpectroParm->bShowF5andUp = 0;
+		pSpectroParm->bSmoothFormantTracks = 1;
+		pSpectroParm->nFrequency = 8000;
+		pSpectroParm->nMinThreshold = 1;
+		pSpectroParm->nMaxThreshold = 233;
+		pSpectroParm->nNumberFormants = 3;
+		pSpectroParm->bSmoothSpectra = 1;
+		pSpectrogram->SetSpectroParm(*pSpectroParm);
+		// process spectrogram
+		int nResult = pSpectrogram->Process(this,
+			pDoc, pView, 752, // some arbitrary plot width
+			500, // some arbitrary plot height (ignored)
+			0, 1);
+		if (nResult != PROCESS_ERROR && nResult != PROCESS_CANCELED)
+			EndTest(!FileCompare(pSpectrogram->GetProcessFileName()/*,7*/));
+		else EndTest(FALSE);
 
-    }
+	}
 
 	//
 	// this process does not create a temp file, so we have to create one
@@ -364,7 +364,7 @@ void CSASelfTest::SelfTest()
 
 		SpectrumParm* stParmSpec = pSpectrum->GetSpectrumParms();
 		stParmSpec->nSmoothLevel = 3;
-	    stParmSpec->nPeakSharpFac = 3;
+		stParmSpec->nPeakSharpFac = 3;
 		pSpectrum->SetSpectrumParms(stParmSpec);
 
 		SPECT_PROC_SELECT SpectraSelected;
@@ -372,8 +372,8 @@ void CSASelfTest::SelfTest()
 		SpectraSelected.bLpcSpectrum = TRUE;          // use Lpc method for estimating formants
 
 		short int nResult = LOWORD(pSpectrum->Process(this, pDoc,30870,4410,SpectraSelected)); // process data
-		
-		ULONGLONG dwDataSize = pSpectrum->GetDataSize();
+
+		DWORD dwDataSize = pSpectrum->GetDataSize();
 		void *pData = (char*) pSpectrum->GetProcessedData(0);
 		CString szFileName = this->m_szTempPath + "Spectrum.tmp";
 
@@ -426,61 +426,61 @@ void CSASelfTest::SelfTest()
 		if (nResult != PROCESS_ERROR && nResult != PROCESS_CANCELED)
 			EndTest(!FileCompare(szFileName/*,33*/));
 		else EndTest(FALSE);
-		
+
 		_tunlink(szFileName);
 	}
 
 	if(bFileOpened && StartTest("CHFrench TWC","Test tonal weighting chart process."))
 	{
 		CProcessTonalWeightChart * pTWC = pDoc->GetTonalWeightChart();
-    CProcessMelogram* pMelogram = (CProcessMelogram*)pDoc->GetMelogram(); // get pointer to melogram object
-    int nLevel = 0, nProgress = 0;
-    long lResult = pMelogram->Process(this, pDoc, nProgress, ++nLevel); // process data
-    ULONGLONG dwMelDataSize = pMelogram->GetDataSize() * 2; // size of melogram data
-    nLevel = (short int)LOWORD(lResult);
-    if ((nLevel == PROCESS_CANCELED) || !dwMelDataSize) 
-      EndTest(FALSE);
-    else
-    {
-      FmtParm* pFmtParm = pDoc->GetFmtParm(); // get sa parameters format member data
-      UINT nBlockAlign = pFmtParm->wBlockAlign;
-      WORD wSmpSize = WORD(nBlockAlign / pFmtParm->wChannels);
-      
-      DWORD dwRawDataSize = pDoc->GetDataSize(); // size of raw data
-      double fScaleFactor = (double)dwRawDataSize / (double)dwMelDataSize;
-      DWORD dwFrameStart = (DWORD)((double)pView->GetStartCursorPosition() / fScaleFactor) & ~1; // must be multiple of two
-      ULONGLONG dwFrameSize  = ((DWORD)((double)pView->GetStopCursorPosition() / fScaleFactor) & ~1) - dwFrameStart + wSmpSize;
-      if (pView->Get_m_bStaticTWC())
-      {
-        dwFrameStart = 0;
-        dwFrameSize  = dwMelDataSize;
-      }
-      
-      short int nResult = LOWORD(pTWC->Process(this, pDoc,dwFrameStart, dwFrameSize, 37,59)); // process data
-      if (nResult != PROCESS_ERROR && nResult != PROCESS_CANCELED)
-        EndTest(!FileCompare(pTWC->GetProcessFileName()));
-      else EndTest(FALSE);
-    }
+		CProcessMelogram* pMelogram = (CProcessMelogram*)pDoc->GetMelogram(); // get pointer to melogram object
+		int nLevel = 0, nProgress = 0;
+		long lResult = pMelogram->Process(this, pDoc, nProgress, ++nLevel); // process data
+		DWORD dwMelDataSize = pMelogram->GetDataSize() * 2; // size of melogram data
+		nLevel = (short int)LOWORD(lResult);
+		if ((nLevel == PROCESS_CANCELED) || !dwMelDataSize) 
+			EndTest(FALSE);
+		else
+		{
+			FmtParm* pFmtParm = pDoc->GetFmtParm(); // get sa parameters format member data
+			UINT nBlockAlign = pFmtParm->wBlockAlign;
+			WORD wSmpSize = WORD(nBlockAlign / pFmtParm->wChannels);
+
+			DWORD dwRawDataSize = pDoc->GetDataSize(); // size of raw data
+			double fScaleFactor = (double)dwRawDataSize / (double)dwMelDataSize;
+			DWORD dwFrameStart = (DWORD)((double)pView->GetStartCursorPosition() / fScaleFactor) & ~1; // must be multiple of two
+			DWORD dwFrameSize  = ((DWORD)((double)pView->GetStopCursorPosition() / fScaleFactor) & ~1) - dwFrameStart + wSmpSize;
+			if (pView->Get_m_bStaticTWC())
+			{
+				dwFrameStart = 0;
+				dwFrameSize  = dwMelDataSize;
+			}
+
+			short int nResult = LOWORD( pTWC->Process(this, pDoc,dwFrameStart,dwFrameSize, 37,59)); // process data
+			if (nResult != PROCESS_ERROR && nResult != PROCESS_CANCELED)
+				EndTest(!FileCompare(pTWC->GetProcessFileName()));
+			else EndTest(FALSE);
+		}
 	}
 
 	/* This one causes an exception
 	if(bFileOpened && StartTest("CHFrench GlottalWave","Test glottal wave process."))
 	{
-		CProcessGlottis * pGlottalWave = pDoc->GetGlottalWave();
-		short int nResult = LOWORD(pGlottalWave->Process(this, pDoc)); // process data
-		if (nResult != PROCESS_ERROR && nResult != PROCESS_CANCELED)
-			EndTest(!FileCompare(pGlottalWave->GetProcessFileName()));
-		else EndTest(FALSE);
+	CProcessGlottis * pGlottalWave = pDoc->GetGlottalWave();
+	short int nResult = LOWORD(pGlottalWave->Process(this, pDoc)); // process data
+	if (nResult != PROCESS_ERROR && nResult != PROCESS_CANCELED)
+	EndTest(!FileCompare(pGlottalWave->GetProcessFileName()));
+	else EndTest(FALSE);
 	}*/
 
 	/* This one causes an exception
 	if(bFileOpened && StartTest("CHFrench Ratio","Test ratio process."))
 	{
-		CProcessRatio * pRatio = pDoc->GetRatio();
-		short int nResult = LOWORD(pRatio->Process(this, pDoc)); // process data
-		if (nResult != PROCESS_ERROR && nResult != PROCESS_CANCELED)
-			EndTest(!FileCompare(pRatio->GetProcessFileName()));
-		else EndTest(FALSE);
+	CProcessRatio * pRatio = pDoc->GetRatio();
+	short int nResult = LOWORD(pRatio->Process(this, pDoc)); // process data
+	if (nResult != PROCESS_ERROR && nResult != PROCESS_CANCELED)
+	EndTest(!FileCompare(pRatio->GetProcessFileName()));
+	else EndTest(FALSE);
 	}*/
 
 
@@ -533,57 +533,57 @@ void CSASelfTest::SelfTest()
 		}
 		if(StartTest("CHFrench visual Loudness","Visual check of loudness graph."))
 		{
-				UINT GrphIDs[MAX_GRAPHS_NUMBER] = {IDD_RAWDATA,IDD_LOUDNESS,0,0,0,0,0,0,0,0};
-				pView->OnGraphsTypesPostProcess(GrphIDs,-1);
-				if(m_pMain->MessageBox(_T("Does this graph seem correct?"),m_szTestNumber,MB_YESNO)==IDYES)
-					EndTest();
-				else
-					EndTest(FALSE);
+			UINT GrphIDs[MAX_GRAPHS_NUMBER] = {IDD_RAWDATA,IDD_LOUDNESS,0,0,0,0,0,0,0,0};
+			pView->OnGraphsTypesPostProcess(GrphIDs,-1);
+			if(m_pMain->MessageBox(_T("Does this graph seem correct?"),m_szTestNumber,MB_YESNO)==IDYES)
+				EndTest();
+			else
+				EndTest(FALSE);
 		}
 		if(StartTest("CHFrench visual Melogram","Visual check of melogram graph."))
 		{
-				UINT GrphIDs[MAX_GRAPHS_NUMBER] = {IDD_RAWDATA,IDD_MELOGRAM,0,0,0,0,0,0,0,0};
-				pView->OnGraphsTypesPostProcess(GrphIDs,-1);
-				if(m_pMain->MessageBox(_T("Does this graph seem correct?"),m_szTestNumber,MB_YESNO)==IDYES)
-					EndTest();
-				else
-					EndTest(FALSE);
+			UINT GrphIDs[MAX_GRAPHS_NUMBER] = {IDD_RAWDATA,IDD_MELOGRAM,0,0,0,0,0,0,0,0};
+			pView->OnGraphsTypesPostProcess(GrphIDs,-1);
+			if(m_pMain->MessageBox(_T("Does this graph seem correct?"),m_szTestNumber,MB_YESNO)==IDYES)
+				EndTest();
+			else
+				EndTest(FALSE);
 		}
 		if(StartTest("CHFrench visual Change","Visual check of change graph."))
 		{
-				UINT GrphIDs[MAX_GRAPHS_NUMBER] = {IDD_RAWDATA,IDD_CHANGE,0,0,0,0,0,0,0,0};
-				pView->OnGraphsTypesPostProcess(GrphIDs,-1);
-				if(m_pMain->MessageBox(_T("Does this graph seem correct?"),m_szTestNumber,MB_YESNO)==IDYES)
-					EndTest();
-				else
-					EndTest(FALSE);
+			UINT GrphIDs[MAX_GRAPHS_NUMBER] = {IDD_RAWDATA,IDD_CHANGE,0,0,0,0,0,0,0,0};
+			pView->OnGraphsTypesPostProcess(GrphIDs,-1);
+			if(m_pMain->MessageBox(_T("Does this graph seem correct?"),m_szTestNumber,MB_YESNO)==IDYES)
+				EndTest();
+			else
+				EndTest(FALSE);
 		}
 		if(StartTest("CHFrench visual Spectrogram","Visual check of spectrogram graph."))
 		{
-				UINT GrphIDs[MAX_GRAPHS_NUMBER] = {IDD_RAWDATA,IDD_SPECTROGRAM,0,0,0,0,0,0,0,0};
-				pView->OnGraphsTypesPostProcess(GrphIDs,-1);
-				if(m_pMain->MessageBox(_T("Does this graph seem correct?"),m_szTestNumber,MB_YESNO)==IDYES)
-					EndTest();
-				else
-					EndTest(FALSE);
+			UINT GrphIDs[MAX_GRAPHS_NUMBER] = {IDD_RAWDATA,IDD_SPECTROGRAM,0,0,0,0,0,0,0,0};
+			pView->OnGraphsTypesPostProcess(GrphIDs,-1);
+			if(m_pMain->MessageBox(_T("Does this graph seem correct?"),m_szTestNumber,MB_YESNO)==IDYES)
+				EndTest();
+			else
+				EndTest(FALSE);
 		}
 		if(StartTest("CHFrench visual Spectrum","Visual check of spectrum graph."))
 		{
-				UINT GrphIDs[MAX_GRAPHS_NUMBER] = {IDD_RAWDATA,IDD_SPECTRUM,0,0,0,0,0,0,0,0};
-				pView->OnGraphsTypesPostProcess(GrphIDs,-1);
-				if(m_pMain->MessageBox(_T("Does this graph seem correct?"),m_szTestNumber,MB_YESNO)==IDYES)
-					EndTest();
-				else
-					EndTest(FALSE);
+			UINT GrphIDs[MAX_GRAPHS_NUMBER] = {IDD_RAWDATA,IDD_SPECTRUM,0,0,0,0,0,0,0,0};
+			pView->OnGraphsTypesPostProcess(GrphIDs,-1);
+			if(m_pMain->MessageBox(_T("Does this graph seem correct?"),m_szTestNumber,MB_YESNO)==IDYES)
+				EndTest();
+			else
+				EndTest(FALSE);
 		}
 		if(StartTest("CHFrench visual POA","Visual check of point of articulation graph."))
 		{
-				UINT GrphIDs[MAX_GRAPHS_NUMBER] = {IDD_RAWDATA,IDD_POA,0,0,0,0,0,0,0,0};
-				pView->OnGraphsTypesPostProcess(GrphIDs,-1);
-				if(m_pMain->MessageBox(_T("Does this graph seem correct?"),m_szTestNumber,MB_YESNO)==IDYES)
-					EndTest();
-				else
-					EndTest(FALSE);
+			UINT GrphIDs[MAX_GRAPHS_NUMBER] = {IDD_RAWDATA,IDD_POA,0,0,0,0,0,0,0,0};
+			pView->OnGraphsTypesPostProcess(GrphIDs,-1);
+			if(m_pMain->MessageBox(_T("Does this graph seem correct?"),m_szTestNumber,MB_YESNO)==IDYES)
+				EndTest();
+			else
+				EndTest(FALSE);
 		}
 	}
 
@@ -656,9 +656,9 @@ void CSASelfTest::SelfTest()
 CSASelfTest::CSASelfTest()
 {
 	TCHAR szString[_MAX_PATH] = _T("");
-	
-    m_pApp = (CSaApp*) AfxGetApp();
-    m_pMain = (CMainFrame*) AfxGetMainWnd();   
+
+	m_pApp = (CSaApp*) AfxGetApp();
+	m_pMain = (CMainFrame*) AfxGetMainWnd();   
 
 	TCHAR szExeFilename[_MAX_PATH];
 	GetModuleFileName(AfxGetInstanceHandle(),szExeFilename,_MAX_PATH);
@@ -676,7 +676,7 @@ CSASelfTest::CSASelfTest()
 
 	CreateDirectory(m_szTestFolderPath,NULL);
 	CFile LogFile(m_szLogFileName,CFile::modeWrite|CFile::modeCreate);
-    LogFile.Write("<?xml version=\"1.0\" ?>\r\n",24);
+	LogFile.Write("<?xml version=\"1.0\" ?>\r\n",24);
 	LogFile.Write("<SelfTest>\r\n",12);
 
 	LogFile.Write("\t<Summary>\r\n",12);
@@ -692,8 +692,8 @@ CSASelfTest::CSASelfTest()
 	LogFile.Write("</DateTime>\r\n",13);
 
 	LogFile.Write("\t\t<TestsPassed>0</TestsPassed>  \r\n"
-				  "\t\t<TestsFailed>0</TestsFailed>  \r\n"
-				  "\t</Summary>\r\n",81);
+		"\t\t<TestsFailed>0</TestsFailed>  \r\n"
+		"\t</Summary>\r\n",81);
 
 	LogFile.Write("\t<SysInfo>\r\n",12);
 
@@ -719,17 +719,17 @@ CSASelfTest::CSASelfTest()
 	::GetVersionEx(&vi);
 	switch(vi.dwPlatformId)
 	{
-		case VER_PLATFORM_WIN32s:
-			szVersion.Format(_T("Windows %lu.%lu (build %u) with Win32s"),vi.dwMajorVersion,vi.dwMinorVersion,(UINT)LOWORD(vi.dwBuildNumber));
-			break;
-		case VER_PLATFORM_WIN32_WINDOWS:
-			if(vi.dwMinorVersion==0)
-				szVersion.Format(_T("Windows 95 (%lu.%lu, build %u)"),vi.dwMajorVersion,vi.dwMinorVersion,(UINT)LOWORD(vi.dwBuildNumber));
-			else
-				szVersion.Format(_T("Windows %s (%lu.%lu, build %lu)"),
-					vi.dwMinorVersion>50?_T("ME"):_T("98"),vi.dwMajorVersion,vi.dwMinorVersion,vi.dwBuildNumber);
-			break;
-		case VER_PLATFORM_WIN32_NT:
+	case VER_PLATFORM_WIN32s:
+		szVersion.Format(_T("Windows %lu.%lu (build %u) with Win32s"),vi.dwMajorVersion,vi.dwMinorVersion,(UINT)LOWORD(vi.dwBuildNumber));
+		break;
+	case VER_PLATFORM_WIN32_WINDOWS:
+		if(vi.dwMinorVersion==0)
+			szVersion.Format(_T("Windows 95 (%lu.%lu, build %u)"),vi.dwMajorVersion,vi.dwMinorVersion,(UINT)LOWORD(vi.dwBuildNumber));
+		else
+			szVersion.Format(_T("Windows %s (%lu.%lu, build %lu)"),
+			vi.dwMinorVersion>50?_T("ME"):_T("98"),vi.dwMajorVersion,vi.dwMinorVersion,vi.dwBuildNumber);
+		break;
+	case VER_PLATFORM_WIN32_NT:
 		{
 			char *szType = "NT";
 			if(vi.dwMajorVersion==5 && vi.dwMinorVersion < 50) szType = "2000";
@@ -744,29 +744,29 @@ CSASelfTest::CSASelfTest()
 		LogFile.Write(vi.szCSDVersion,_tcslen(vi.szCSDVersion));
 	}
 	LogFile.Write("</OS>\r\n",7);
-	
+
 	LogFile.Write("\t\t<Processor>",13);
 	switch(si.wProcessorArchitecture)
 	{
-		case PROCESSOR_ARCHITECTURE_INTEL:
-			switch(si.dwProcessorType)
-			{
-				case PROCESSOR_INTEL_386:
-					LogFile.Write("386",3); break;
-				case PROCESSOR_INTEL_486:
-					LogFile.Write("486",3); break;
-				case PROCESSOR_INTEL_PENTIUM:
-					LogFile.Write("Pentium",7); break;
-			}
-			break;
-		case PROCESSOR_ARCHITECTURE_MIPS:
-			LogFile.Write("MIPS",5); break;
-		case PROCESSOR_ARCHITECTURE_ALPHA:
-			LogFile.Write("ALPHA",5); break;
-		case PROCESSOR_ARCHITECTURE_PPC:
-			LogFile.Write("PPC",5); break;
-		case PROCESSOR_ARCHITECTURE_UNKNOWN:
-			LogFile.Write("UNKNOWN",5); break;
+	case PROCESSOR_ARCHITECTURE_INTEL:
+		switch(si.dwProcessorType)
+		{
+		case PROCESSOR_INTEL_386:
+			LogFile.Write("386",3); break;
+		case PROCESSOR_INTEL_486:
+			LogFile.Write("486",3); break;
+		case PROCESSOR_INTEL_PENTIUM:
+			LogFile.Write("Pentium",7); break;
+		}
+		break;
+	case PROCESSOR_ARCHITECTURE_MIPS:
+		LogFile.Write("MIPS",5); break;
+	case PROCESSOR_ARCHITECTURE_ALPHA:
+		LogFile.Write("ALPHA",5); break;
+	case PROCESSOR_ARCHITECTURE_PPC:
+		LogFile.Write("PPC",5); break;
+	case PROCESSOR_ARCHITECTURE_UNKNOWN:
+		LogFile.Write("UNKNOWN",5); break;
 	}
 	LogFile.Write("</Processor>\r\n",14);
 
@@ -778,7 +778,7 @@ CSASelfTest::CSASelfTest()
 
 	LogFile.Write("\t</SysInfo>\r\n",13);
 
-	
+
 	LogFile.Write("</SelfTest>\r\n",13);
 	LogFile.Flush();
 	LogFile.Close();
@@ -827,7 +827,7 @@ CSASelfTest::~CSASelfTest()
 									szRestOfCommand.TrimLeft();
 									szCommand = szCommand.Left(nEnd);
 								}
-								
+
 							}
 							else
 							{
@@ -839,11 +839,11 @@ CSASelfTest::~CSASelfTest()
 								}
 							}
 #ifdef _UNICODE
-              _wspawnl(_P_NOWAIT, (const TCHAR*)szCommand, (const TCHAR*)szRestOfCommand, (const TCHAR*)m_szLogFileName, NULL);
+							_wspawnl(_P_NOWAIT, (const TCHAR*)szCommand, (const TCHAR*)szRestOfCommand, (const TCHAR*)m_szLogFileName, NULL);
 #else
-              _spawnl(_P_NOWAIT, szCommand, szRestOfCommand, m_szLogFileName, NULL);
+							_spawnl(_P_NOWAIT, szCommand, szRestOfCommand, m_szLogFileName, NULL);
 #endif
-									//"file:////" + m_szTestFolderPath + "selftest.xml", NULL);
+							//"file:////" + m_szTestFolderPath + "selftest.xml", NULL);
 						}
 					}
 				}
@@ -870,7 +870,7 @@ BOOL CSASelfTest::StartTest(const CString szTestNumber, const CString szDescript
 	CString szStatusMessage;
 	szStatusMessage.Format(_T("TEST %3.3d IN PROGRESS"),m_nTestsPassed+m_nTestsFailed+1);
 	LogFile.Write(szStatusMessage,szStatusMessage.GetLength());
-	
+
 	LogFile.Seek(-13,CFile::end);
 	LogFile.Write("\t<Test ID=\"",11);
 	LogFile.Write(m_szTestNumber,m_szTestNumber.GetLength());
@@ -924,14 +924,14 @@ void CSASelfTest::EndTest(BOOL bSuccess)
 	if (bSuccess)
 	{
 		LogFile.Seek(N_TESTS_PASSED,CFile::begin);
-		_itot(m_nTestsPassed,nNumber,10);
+		_itow_s(m_nTestsPassed,nNumber,_countof(nNumber),10);
 		LogFile.Write(nNumber,_tcslen(nNumber));
 		LogFile.Write("</TestsPassed>",14);
 	}
 	else
 	{
 		LogFile.Seek(N_TESTS_FAILED,CFile::begin);
-		_itot(m_nTestsFailed,nNumber,10);
+		_itow_s(m_nTestsFailed,nNumber,_countof(nNumber),10);
 		LogFile.Write(nNumber,_tcslen(nNumber));
 		LogFile.Write("</TestsFailed>",14);
 	}
@@ -1023,9 +1023,9 @@ int CSASelfTest::FileCompare(const CString szFileOne, long nTolerableDifferences
 	char Buffer1[BUFFERSIZE], Buffer2[BUFFERSIZE];
 
 
-	ULONGLONG dwFile1Len=File1.GetLength();
-	ULONGLONG dwFile2Len=File2.GetLength();
-	if(dwFile1Len!=dwFile2Len)// Files are different length
+	DWORD dwFile1Len=File1.GetLength();
+	DWORD dwFile2Len=File2.GetLength();
+	if (dwFile1Len!=dwFile2Len)// Files are different length
 	{
 		CString szLen;
 		szLen.Format(_T("%lu"),dwFile1Len);
@@ -1038,7 +1038,7 @@ int CSASelfTest::FileCompare(const CString szFileOne, long nTolerableDifferences
 		return -1;
 	}
 
-	
+
 	for(UINT nChunkNumber = 0;;++nChunkNumber)
 	{
 		UINT nRead = File1.Read((void*)Buffer1,BUFFERSIZE);
@@ -1064,7 +1064,7 @@ int CSASelfTest::FileCompare(const CString szFileOne, long nTolerableDifferences
 		szDifferences.Format(_T("Files differ in %ld of %lu bytes"),nFileDifferences,File1.GetLength());
 		LogEntry(szDifferences);
 		LogHexDataCompare(File1,File2,nFirstDifference);
-		
+
 		File1.Close();
 		File2.Close();
 		return nFileDifferences;

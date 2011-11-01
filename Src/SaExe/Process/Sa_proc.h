@@ -73,10 +73,19 @@ public:
 
 	virtual void* GetProcessedData(DWORD dwOffset, BOOL bBlockBegin = FALSE); // return processed data pointer on given position (offset)
 	virtual int GetProcessedData(DWORD dwOffset, BOOL*); // return processed data from given position (offset)    
-	virtual DWORD GetProcessedData(int /*nSegmentIndex*/) {return 0;}  // return processed data for a given segment
+	virtual DWORD GetProcessedData(int /*nSegmentIndex*/) {
+		// return processed data for a given segment
+		return 0;
+	}  
 
-	virtual ULONGLONG GetDataSize() const {return GetDataSize(2);} // return processed data size in words (16 bit)
-	virtual ULONGLONG GetDataSize(size_t nElementSize) const {return m_fileStatus.m_size / nElementSize;} // return processed data size in words (16 bit)
+	virtual DWORD GetDataSize() const {
+		// return processed data size in words (16 bit)
+		return GetDataSize(2);
+	} 
+	virtual DWORD GetDataSize(size_t nElementSize) const {
+		// return processed data size in words (16 bit)
+		return (DWORD)(m_fileStatus.m_size / nElementSize);
+	} 
 	virtual void* GetProcessedDataBlock(DWORD dwOffset, size_t sObjectSize, BOOL bReverse=FALSE); // return processed data pointer to object staring at dwOffset
 	virtual void* GetProcessedObject(DWORD dwIndex, size_t sObjectSize, BOOL bReverse=FALSE); // return processed data pointer to object staring at dwOffset
 
@@ -91,8 +100,14 @@ public:
 
 	// special workbench helper functions
 	virtual HPSTR GetProcessedWaveData(DWORD dwOffset, BOOL bBlockBegin = FALSE); // return pointer to block of processed wave source   
-	virtual ULONGLONG GetProcessedWaveDataSize() {return GetDataSize(1);} // return processed wave source data size
-	virtual DWORD GetProcessBufferIndex(size_t nSize = 1) {return m_dwBufferOffset >= 0x40000000 ? UNDEFINED_OFFSET : m_dwBufferOffset/nSize;} // return index to process buffer
+	virtual DWORD GetProcessedWaveDataSize() {
+		// return processed wave source data size
+		return GetDataSize(1);
+	} 
+	virtual DWORD GetProcessBufferIndex(size_t nSize = 1) {
+		// return index to process buffer
+		return m_dwBufferOffset >= 0x40000000 ? UNDEFINED_OFFSET : m_dwBufferOffset/nSize;
+	} 
 
 	DWORD GetProcessBufferSize() {return m_dwBufferSize;}  // return process buffer size 
 	void SetProcessBufferSize(DWORD dwSize) { m_dwBufferSize = dwSize;}
@@ -126,7 +141,9 @@ protected:
 	virtual long Exit(int nError); // exit processing on error
 	virtual BOOL WriteDataBlock(DWORD dwPosition, HPSTR lpData, DWORD dwDataLength, size_t nElementSize = 2); // write a block into the temporary file
 	virtual void SetDataReady(BOOL bReady = TRUE) { SetStatusFlag(DATA_READY, bReady); }
-	virtual void Write( const void* lpBuf, UINT nCount ) { m_pFile->Write(lpBuf, nCount);}
+	virtual void Write( const void* lpBuf, UINT nCount ) { 
+		m_pFile->Write(lpBuf, nCount);
+	}
 
 	// Special case used to bypass file
 	virtual void SetDataSize(int nElements, size_t nElementSize = 1) { m_fileStatus.m_size = nElements * nElementSize;}

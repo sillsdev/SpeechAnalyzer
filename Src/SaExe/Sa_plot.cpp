@@ -2048,7 +2048,7 @@ void CPlotWnd::OnMouseMove(UINT nFlags, CPoint point)
 {
 	m_MousePointerPosn = point;
 	m_MouseButtonState = nFlags;
-
+	//TRACE("x/y %d %d\n",point.x,point.y);
 	CGraphWnd* pGraph = (CGraphWnd *)GetParent();
 	CSaView* pView = (CSaView *)pGraph->GetParent();
 

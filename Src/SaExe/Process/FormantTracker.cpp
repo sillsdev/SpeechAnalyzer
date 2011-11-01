@@ -341,7 +341,7 @@ long CFormantTracker::Process(void* pCaller, ISaDoc* pDoc, int nProgress, int nL
 
 	// get source data size
 	DWORD dwDataSize = m_pReal->GetDataSize();
-	TRACE("m_pReal dwDataSize=%d\n",dwDataSize);
+	TRACE("m_pReal dwDataSize=%lu\n",dwDataSize);
 
 	if (nLevel < 0) // memory allocation failed or previous processing error
 	{

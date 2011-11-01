@@ -40,7 +40,10 @@ public:
   virtual void* GetProcessedDataBlock(DWORD dwOffset, size_t sObjectSize, BOOL bReverse=FALSE); // return processed data pointer to object staring at dwOffset
   virtual HPSTR GetProcessedWaveData(DWORD dwOffset, BOOL bBlockBegin = FALSE); // return pointer to block of processed wave source   
 
-  virtual DWORD GetProcessBufferIndex(size_t nSize = 1) {return ProcessImpersonate() ? ProcessImpersonate()->GetProcessBufferIndex(nSize) : CButterworth::GetProcessBufferIndex(nSize);} // return index to process buffer
+  virtual DWORD GetProcessBufferIndex(size_t nSize = 1) {
+	  // return index to process buffer
+	  return ProcessImpersonate() ? ProcessImpersonate()->GetProcessBufferIndex(nSize) : CButterworth::GetProcessBufferIndex(nSize);
+  } 
 
 private:
   CDataProcess* ProcessImpersonate() const;
