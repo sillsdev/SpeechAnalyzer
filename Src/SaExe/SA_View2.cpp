@@ -190,6 +190,7 @@ BEGIN_MESSAGE_MAP(CSaView, CView)
 	ON_UPDATE_COMMAND_UI(ID_EDIT_ADD_WORD, OnUpdateEditAddWord)
 	ON_COMMAND(ID_EDIT_ADD_BOOKMARK, OnEditAddBookmark)
 	ON_UPDATE_COMMAND_UI(ID_EDIT_ADD_BOOKMARK, OnUpdateEditAddBookmark)
+	ON_COMMAND(ID_MOVE_STOP_CURSOR_HERE, OnMoveStopCursorHere)
 	ON_COMMAND(ID_EDIT_CURSOR_START_LEFT, OnEditCursorStartLeft)
 	ON_COMMAND(ID_EDIT_CURSOR_STOP_LEFT, OnEditCursorStopLeft)
 	ON_COMMAND(ID_EDIT_CURSOR_START_RIGHT, OnEditCursorStartRight)
@@ -2138,7 +2139,9 @@ DWORD CSaView::AdjustDataFrame(int nWndWidth)
 /***************************************************************************/
 // CSaView::SetCursorPosition Set the specified cursor position
 /***************************************************************************/
-void CSaView::SetCursorPosition(int nCursorSelect, DWORD dwNewPos, SNAP_DIRECTION nSnapDirection,
+void CSaView::SetCursorPosition(int nCursorSelect, 
+								DWORD dwNewPos, 
+								SNAP_DIRECTION nSnapDirection,
 								CURSOR_ALIGNMENT nCursorAlignment)
 {
 	switch(nCursorSelect)
@@ -2185,7 +2188,10 @@ void CSaView::SetStopCursorPosition(DWORD dwNewPos, SNAP_DIRECTION nSnapDirectio
 // we update the graphs in case the previous stop position is invalid
 // for the new graph.
 /***************************************************************************/
-void CSaView::SetStartStopCursorPosition( DWORD dwNewStartPos,  DWORD dwNewStopPos, SNAP_DIRECTION nSnapDirection, CURSOR_ALIGNMENT nCursorAlignment)
+void CSaView::SetStartStopCursorPosition( DWORD dwNewStartPos,  
+										  DWORD dwNewStopPos, 
+										  SNAP_DIRECTION nSnapDirection, 
+										  CURSOR_ALIGNMENT nCursorAlignment)
 {
 	if (nCursorAlignment == ALIGN_USER_SETTING)
 		nCursorAlignment = GetCursorAlignment();
@@ -3814,18 +3820,18 @@ void CSaView::OnEditCursorStopLeft()
 
 	dwOffset = GetStartCursorPosition();
 	dwOffsetNew = dwOffset;
-	if(dwOffsetNew + minSeparation > dwStopNew)
+	if (dwOffsetNew + minSeparation > dwStopNew)
 		dwOffsetNew = pDoc->SnapCursor(START_CURSOR, (dwStopNew > minSeparation) ? (dwStopNew - minSeparation): 0, SNAP_LEFT);
-	if(dwOffsetNew + minSeparation > dwStopNew)
+	if (dwOffsetNew + minSeparation > dwStopNew)
 		dwStopNew = pDoc->SnapCursor(STOP_CURSOR, dwOffsetNew + minSeparation, SNAP_RIGHT);
 
-	if(dwOffsetNew + minSeparation > dwStopNew)
+	if (dwOffsetNew + minSeparation > dwStopNew)
 		return;
 
-	if(dwOffset != dwOffsetNew)
+	if (dwOffset != dwOffsetNew)
 		SetStartCursorPosition(dwOffsetNew);
 
-	if(dwStop != dwStopNew)
+	if (dwStop != dwStopNew)
 		SetStopCursorPosition(dwStopNew);
 }
 
@@ -5282,8 +5288,86 @@ void CSaView::OnUpdateSpectroFormants(CCmdUI* pCmdUI)
 		|| cParm.bShowF4
 		|| cParm.bShowF5andUp
 		|| cParm.bShowPitch;
-	if(bFormantSelected && pDoc->GetSpectrogram(TRUE)->GetFormantProcess()->IsCanceled())
+	if (bFormantSelected && pDoc->GetSpectrogram(TRUE)->GetFormantProcess()->IsCanceled())
 		OnSpectroFormants();
 
 	pCmdUI->SetCheck(bFormantSelected);
+}
+
+void CSaView::OnMoveStopCursorHere() {
+
+	// prevent crash
+	if (m_pFocusedGraph==NULL) {
+		TRACE("no graph in focus\n");
+		return;
+	}
+
+	CPlotWnd * pPlot = m_pFocusedGraph->GetPlot();
+	if (pPlot==NULL) {
+		TRACE("no plot in focus\n");
+		return;
+	}
+
+	// set the new positions
+	CSaDoc* pDoc = GetDocument();						// get pointer to document
+
+	CPoint point = pPlot->GetMousePointerPosition();
+	// calculate plot client coordinates
+	CRect rWnd;
+	pPlot->GetClientRect(rWnd);
+
+	// get actual data position, frame and data size and alignment
+	double fDataPos;
+	DWORD dwDataFrame;
+	// check if area graph type
+	if (m_pFocusedGraph->IsAreaGraph())
+	{
+		// get necessary data from area plot
+		fDataPos = pPlot->GetAreaPosition();
+		dwDataFrame = pPlot->GetAreaLength();
+	}
+	else
+	{
+		// get necessary data from document and from view
+		fDataPos = GetDataPosition(rWnd.Width());		// data index of first sample to display
+		dwDataFrame = AdjustDataFrame(rWnd.Width());	// number of data points to display
+	}
+
+	DWORD dwDataSize = pDoc->GetDataSize();
+	int nSmpSize = pDoc->GetFmtParm()->wBlockAlign / pDoc->GetFmtParm()->wChannels;
+	// calculate data samples per pixel
+	ASSERT(rWnd.Width());
+	double fSamplesPerPix = (double)dwDataFrame / (double)(rWnd.Width()*nSmpSize);
+
+	TRACE("sampperpix=%f\n",fSamplesPerPix);
+
+	// calculate the start cursor position
+	DWORD dwStopCursor = (DWORD) round(fDataPos/nSmpSize + ((double)point.x) * fSamplesPerPix);
+	dwStopCursor = dwStopCursor*nSmpSize;
+	// check the range
+	if (dwStopCursor < (DWORD)nSmpSize) {
+		dwStopCursor = (DWORD)nSmpSize;
+	}
+	// check the range
+	if (dwStopCursor >= (dwDataSize - (DWORD)nSmpSize)) 
+		dwStopCursor = dwDataSize - (DWORD)nSmpSize;
+
+	// calculate maximum position for start cursor
+	DWORD dwDifference = (DWORD)(CURSOR_MIN_DISTANCE * fSamplesPerPix * nSmpSize);
+	DWORD dwStartCursor = 0;
+	if (dwStopCursor > dwDifference) {
+		dwStartCursor = dwStopCursor - dwDifference;
+	}
+
+	// check the calculated start position against the current setting
+	if (GetStartCursorPosition() <= dwStartCursor)
+	{
+		dwStartCursor = GetStartCursorPosition();
+	}
+
+	TRACE("start=%lu stop=%lu\n",dwStartCursor,dwStopCursor);
+
+	// move stop cursor also
+	SetStartCursorPosition(dwStartCursor);
+	SetStopCursorPosition(dwStopCursor);
 }

@@ -1,5 +1,5 @@
 //{{NO_DEPENDENCIES}}
-// Microsoft Developer Studio generated include file.
+// Microsoft Visual C++ generated include file.
 // Used by SA.rc
 //
 #define IDS_ACTIVEX                     1
@@ -80,7 +80,6 @@
 #define IDB_KNOBHORIZ                   174
 #define IDD_RECORDEDIT                  175
 #define IDB_KNOBVERT                    175
-#define IDC_HAND                        184
 #define IDD_INPUT                       186
 #define IDD_MAGNIFY                     187
 #define IDD_PROCESSCANCEL               188
@@ -1920,6 +1919,7 @@
 #define ID_HELP_TRAINING_INSTRUCTOR     33211
 #define ID_HELP_TRAINING_EXERCISES      33212
 #define ID_EDIT_COPY_MEASUREMENTS       33213
+#define ID_MOVE_STOP_CURSOR_HERE        33214
 #define ID_GRAPHTYPES_SELECT_FIRST      40000
 #define ID_GRAPHTYPES_SELECT_LAST       40011
 #define ID_GRAPHTYPES_SELECT_END_RESERVED_RANGE 40099
@@ -2039,7 +2039,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_3D_CONTROLS                     1
 #define _APS_NEXT_RESOURCE_VALUE        360
-#define _APS_NEXT_COMMAND_VALUE         33214
+#define _APS_NEXT_COMMAND_VALUE         33215
 #define _APS_NEXT_CONTROL_VALUE         2033
 #define _APS_NEXT_SYMED_VALUE           104
 #endif
