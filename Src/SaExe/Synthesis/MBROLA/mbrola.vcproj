@@ -18,7 +18,7 @@
 		<Configuration
 			Name="Debug|Win32"
 			OutputDirectory=".\..\..\..\..\Output\Debug"
-			IntermediateDirectory=".\Debug"
+			IntermediateDirectory="$(ConfigurationName)"
 			ConfigurationType="2"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC60.vsprops"
 			UseOfMFC="0"
@@ -53,10 +53,6 @@
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
-				PrecompiledHeaderFile=".\Debug/mbrola.pch"
-				AssemblerListingLocation=".\Debug/"
-				ObjectFile=".\Debug/"
-				ProgramDataBaseFileName=".\Debug/"
 				WarningLevel="3"
 				SuppressStartupBanner="true"
 				DebugInformationFormat="4"
@@ -99,7 +95,6 @@
 			<Tool
 				Name="VCBscMakeTool"
 				SuppressStartupBanner="true"
-				OutputFile=".\..\..\..\..\Output\Debug/mbrola.bsc"
 			/>
 			<Tool
 				Name="VCFxCopTool"
@@ -114,7 +109,7 @@
 		<Configuration
 			Name="Release|Win32"
 			OutputDirectory=".\..\..\..\..\Output\Release"
-			IntermediateDirectory=".\Release"
+			IntermediateDirectory="$(ConfigurationName)"
 			ConfigurationType="2"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC60.vsprops"
 			UseOfMFC="0"
@@ -146,14 +141,10 @@
 				Name="VCCLCompilerTool"
 				Optimization="4"
 				InlineFunctionExpansion="2"
-				PreprocessorDefinitions="_WINDOWS;_USRDLL;MBROLA_EXPORTS;WIN32;NDEBUG"
+				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;MBROLA_EXPORTS"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="2"
-				PrecompiledHeaderFile=".\Release/mbrola.pch"
-				AssemblerListingLocation=".\Release/"
-				ObjectFile=".\Release/"
-				ProgramDataBaseFileName=".\Release/"
 				BrowseInformation="1"
 				WarningLevel="4"
 				SuppressStartupBanner="true"
@@ -197,7 +188,6 @@
 			<Tool
 				Name="VCBscMakeTool"
 				SuppressStartupBanner="true"
-				OutputFile=".\..\..\..\..\Output\Release/mbrola.bsc"
 			/>
 			<Tool
 				Name="VCFxCopTool"

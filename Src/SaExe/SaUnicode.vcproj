@@ -19,7 +19,7 @@
 		<Configuration
 			Name="Debug|Win32"
 			OutputDirectory=".\..\..\Output\Debug"
-			IntermediateDirectory=".\Debug"
+			IntermediateDirectory="$(ConfigurationName)"
 			ConfigurationType="1"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC60.vsprops"
 			UseOfMFC="2"
@@ -51,13 +51,9 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories=".,..\lib"
-				PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;WINDOWS_PLATFORM;WINVER=0x400;_WIN32_IE=0x0400"
+				PreprocessorDefinitions="_WINDOWS;WINDOWS_PLATFORM;_DEBUG;WIN32;WINVER=0x0501"
 				MinimalRebuild="true"
 				RuntimeLibrary="3"
-				PrecompiledHeaderFile=".\Debug/SaUnicode.pch"
-				AssemblerListingLocation=".\Debug/"
-				ObjectFile=".\Debug/"
-				ProgramDataBaseFileName=".\Debug/"
 				BrowseInformation="1"
 				WarningLevel="4"
 				SuppressStartupBanner="true"
@@ -84,7 +80,6 @@
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile=".\..\..\Output\Debug/SA.pdb"
 				GenerateMapFile="true"
-				MapFileName=".\..\..\Output\Debug/SA.map"
 				SubSystem="2"
 				StackReserveSize="1048576"
 				EntryPointSymbol="wWinMainCRTStartup"
@@ -103,7 +98,6 @@
 			<Tool
 				Name="VCBscMakeTool"
 				SuppressStartupBanner="true"
-				OutputFile=".\..\..\Output\Debug/SaUnicode.bsc"
 			/>
 			<Tool
 				Name="VCFxCopTool"
@@ -119,7 +113,7 @@
 		<Configuration
 			Name="Release|Win32"
 			OutputDirectory=".\..\..\Output\Release"
-			IntermediateDirectory=".\Release"
+			IntermediateDirectory="$(ConfigurationName)"
 			ConfigurationType="1"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC60.vsprops"
 			UseOfMFC="2"
@@ -152,13 +146,9 @@
 				Optimization="4"
 				InlineFunctionExpansion="2"
 				AdditionalIncludeDirectories=".,..\lib"
-				PreprocessorDefinitions="_WINDOWS;WINDOWS_PLATFORM;WINVER=0x400;_WIN32_IE=0x0400;WIN32;NDEBUG;_CRT_SECURE_NO_WARNINGS"
+				PreprocessorDefinitions="_WINDOWS;WINDOWS_PLATFORM;WIN32;NDEBUG;WINVER=0x501"
 				MinimalRebuild="true"
 				RuntimeLibrary="2"
-				PrecompiledHeaderFile=".\Release/SaUnicode.pch"
-				AssemblerListingLocation=".\Release/"
-				ObjectFile=".\Release/"
-				ProgramDataBaseFileName=".\Release/"
 				BrowseInformation="1"
 				WarningLevel="4"
 				SuppressStartupBanner="true"
@@ -185,7 +175,6 @@
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile=".\..\..\Output\Release/SA.pdb"
 				GenerateMapFile="true"
-				MapFileName=".\..\..\Output\Release/SA.map"
 				SubSystem="2"
 				StackReserveSize="1048576"
 				EntryPointSymbol="wWinMainCRTStartup"
@@ -204,7 +193,6 @@
 			<Tool
 				Name="VCBscMakeTool"
 				SuppressStartupBanner="true"
-				OutputFile=".\..\..\Output\Release/SaUnicode.bsc"
 			/>
 			<Tool
 				Name="VCFxCopTool"

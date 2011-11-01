@@ -17,8 +17,8 @@
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory=".\Debug"
-			IntermediateDirectory=".\Debug"
+			OutputDirectory=".\..\..\..\..\Output\Debug"
+			IntermediateDirectory="$(ConfigurationName)"
 			ConfigurationType="4"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC60.vsprops"
 			UseOfMFC="0"
@@ -43,14 +43,10 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				PreprocessorDefinitions="_DEBUG;WIN32;_MBCS;_LIB;WINVER=0x400;_WIN32_IE=0x0400"
+				PreprocessorDefinitions="_DEBUG;WIN32;_MBCS;_LIB"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
-				PrecompiledHeaderFile=".\Debug/SA_KLATT.pch"
-				AssemblerListingLocation=".\Debug/"
-				ObjectFile=".\Debug/"
-				ProgramDataBaseFileName=".\Debug/"
 				BrowseInformation="1"
 				WarningLevel="3"
 				SuppressStartupBanner="true"
@@ -69,7 +65,7 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile=".\..\..\..\Output\Debug\SA_KLATT.lib"
+				OutputFile=".\..\..\..\..\Output\Debug\SA_KLATT.lib"
 				SuppressStartupBanner="true"
 			/>
 			<Tool
@@ -81,7 +77,6 @@
 			<Tool
 				Name="VCBscMakeTool"
 				SuppressStartupBanner="true"
-				OutputFile=".\..\..\..\Output\Debug/SA_KLATT.bsc"
 			/>
 			<Tool
 				Name="VCFxCopTool"
@@ -92,8 +87,8 @@
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
-			OutputDirectory=".\Release"
-			IntermediateDirectory=".\Release"
+			OutputDirectory=".\..\..\..\..\Output\Release"
+			IntermediateDirectory="$(ConfigurationName)"
 			ConfigurationType="4"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC60.vsprops"
 			UseOfMFC="0"
@@ -119,14 +114,10 @@
 				Name="VCCLCompilerTool"
 				Optimization="4"
 				InlineFunctionExpansion="2"
-				PreprocessorDefinitions="_MBCS;_LIB;WINVER=0x400;_WIN32_IE=0x0400;WIN32;NDEBUG"
+				PreprocessorDefinitions="NDEBUG;WIN32;_MBCS;_LIB"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="2"
-				PrecompiledHeaderFile=".\Release/SA_KLATT.pch"
-				AssemblerListingLocation=".\Release/"
-				ObjectFile=".\Release/"
-				ProgramDataBaseFileName=".\Release/"
 				BrowseInformation="1"
 				WarningLevel="4"
 				SuppressStartupBanner="true"
@@ -157,7 +148,6 @@
 			<Tool
 				Name="VCBscMakeTool"
 				SuppressStartupBanner="true"
-				OutputFile=".\..\..\..\Output\Release/SA_KLATT.bsc"
 			/>
 			<Tool
 				Name="VCFxCopTool"

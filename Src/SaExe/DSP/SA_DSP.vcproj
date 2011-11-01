@@ -52,7 +52,6 @@
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
-				ObjectFile=".\Debug/"
 				WarningLevel="3"
 				SuppressStartupBanner="true"
 				DebugInformationFormat="4"
@@ -79,7 +78,6 @@
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile=".\..\..\..\Output\Debug/SA_DSP.pdb"
 				GenerateMapFile="true"
-				MapFileName=".\..\..\..\Output\Debug/SA_DSP.map"
 				RandomizedBaseAddress="1"
 				DataExecutionPrevention="0"
 				ImportLibrary=".\..\..\..\Output\Debug/SA_DSP.lib"
@@ -97,7 +95,6 @@
 			<Tool
 				Name="VCBscMakeTool"
 				SuppressStartupBanner="true"
-				OutputFile=".\..\..\..\Output\Debug/SA_DSP.bsc"
 			/>
 			<Tool
 				Name="VCFxCopTool"
@@ -143,7 +140,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="4"
 				InlineFunctionExpansion="2"
-				PreprocessorDefinitions="_WINDOWS;_USRDLL;SA_DSP_EXPORTS;WIN32;NDEBUG"
+				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;SA_DSP_EXPORTS"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="2"
@@ -174,7 +171,6 @@
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile=".\..\..\..\Output\Release/SA_DSP.pdb"
 				GenerateMapFile="true"
-				MapFileName=".\..\..\..\Output\Release/SA_DSP.map"
 				RandomizedBaseAddress="1"
 				DataExecutionPrevention="0"
 				ImportLibrary=".\..\..\..\Output\Release/SA_DSP.lib"
@@ -192,7 +188,6 @@
 			<Tool
 				Name="VCBscMakeTool"
 				SuppressStartupBanner="true"
-				OutputFile=".\..\..\..\Output\Release/SA_DSP.bsc"
 			/>
 			<Tool
 				Name="VCFxCopTool"
