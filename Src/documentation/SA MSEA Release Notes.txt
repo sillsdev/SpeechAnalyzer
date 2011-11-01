@@ -1,0 +1,28 @@
+SA 3.0.1.2 - 10/20/2011
+
+1) Fix for F1 Formant issue.  A ULONGLONG value should have been an int.  This was causing data corruption when converted to a double.
+2) Fixed F2-F1 graph exception
+3) Fixed TaskBar bug - icons not showing.
+Disabled musicxml load during opening of document.
+4) Fix for gcvt bug
+Code was casting char buffer into widechar buffer and corrupt output of gcvt call.
+5) Fix for Semitone2Name exception.
+6) Merged VS2005 changes to MSEA branch.
+  Made minimal changes required to get project to compile in VS2008.
+
+
+SA 3.0.1.3 - 10/24/2011
+1) Converting _stprintf to swprintf_s to remove compiler warnings.
+2) Fix for horizontal scrolling bug.  White lines were being displayed when horizontally scrolling zoomed-in window.  Disabled scrolling code - forced repaint of window.
+3) Fix for GPF caused by stack overwrite when creating temporary file name. CreateAuxTempFile was using 'sizeof' function on wide character string.  Probably introduced during Unicode conversion.
+	To duplicate:
+	Run SA
+	Open ChFrench
+	Right click in the Auto Pitch graph
+	Select Types/ Change
+
+SA 3.0.1.4 - 10/31/2011
+1) ‘MoveStopCursorHere’ feature added to graph popup menu.  This feature allows the user to locate the stop cursor by using the right-click/popup menu on a graph instead of a key-press and a left mouse click.
+2) Cleanup of CRT_SECURE warnings.  
+3) Workaround for ‘SaveAs’ dialog box.  Presently the SaveAs dialog box was crashing when launched by the user because of a Vista/XP compatibility issue.  The offending code was disabled.  The code is now using the WINVER=0x501 define to allow WinXP compatibility.  The problem will be fixed more completely in a later release.
+4) Made project (.vcproj) files more consistent.
