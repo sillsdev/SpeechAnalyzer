@@ -2393,7 +2393,7 @@ BOOL CSaDoc::CopyWaveToTemp(const TCHAR* pszSourcePathName, CAlignInfo info)
 
 /***************************************************************************/
 /***************************************************************************/
-static LONG sGetFileSize(LPCTSTR szFile)
+static DWORD sGetFileSize(LPCTSTR szFile)
 {
 	CFileStatus tempFileStat;
 	if (!CFile::GetStatus(szFile, tempFileStat))
@@ -2690,7 +2690,7 @@ BOOL CSaDoc::CopyFile(const TCHAR* pszSourceName, const TCHAR* pszTargetName, DW
 		return FALSE;
 	}
 	DWORD dwSize = rStatus.m_size;
-	if(dwSize < dwStart)
+	if (dwSize < dwStart)
 		return TRUE; // Empty file
 	try
 	{
@@ -3495,7 +3495,7 @@ BOOL CSaDoc::CopySectionToNewWavFile(DWORD dwSectionStart, DWORD dwSectionLength
 	try
 	{
 		m_szRawDataWrk[0] = szTempNewTemp;
-		if(!WriteDataFiles(szNewWave, TRUE, TRUE))
+		if (!WriteDataFiles(szNewWave, TRUE, TRUE))
 		{
 			AfxThrowFileException(CFileException::generic, -1);
 		}
@@ -3506,7 +3506,7 @@ BOOL CSaDoc::CopySectionToNewWavFile(DWORD dwSectionStart, DWORD dwSectionLength
 		CFile::Remove(szTempNewTemp);  // Done with this file
 		Undo(FALSE);  // return segments to original state
 	}
-	catch(const CException & e)
+	catch( const CException & e)
 	{
 		m_szRawDataWrk[0] = szTempName;
 		m_dwDataSize = dwDataSize;
@@ -3580,7 +3580,7 @@ BOOL COleWaveDataSource::OnRenderData(LPFORMATETC lpFormatEtc, LPSTGMEDIUM lpStg
 		// We have a wave file
 		CFile *pFile = NULL;
 		CFileStatus temp;
-		ULONGLONG dwLength;
+		DWORD dwLength;
 		try
 		{
 			pFile = new CFile(m_szSourceFile,CFile::modeRead | CFile::shareExclusive);
@@ -3600,7 +3600,7 @@ BOOL COleWaveDataSource::OnRenderData(LPFORMATETC lpFormatEtc, LPSTGMEDIUM lpStg
 
 		// allocate clipboard buffer
 		HGLOBAL hData = NULL;
-		if(lpStgMedium->tymed == TYMED_NULL)
+		if (lpStgMedium->tymed == TYMED_NULL)
 		{
 			hData = ::GlobalAlloc(GMEM_MOVEABLE | GMEM_SHARE, dwLength);
 		}
@@ -3716,7 +3716,7 @@ BOOL CSaDoc::PutWaveToClipboard(DWORD dwSectionStart, DWORD dwSectionLength, BOO
 
 	szTempNewWave.ReleaseBuffer();
 
-	LONG tempSize = sGetFileSize(GetRawDataWrk(0));
+	DWORD tempSize = sGetFileSize(GetRawDataWrk(0));
 
 	if(!CopySectionToNewWavFile(dwSectionStart, dwSectionLength, szTempNewWave))
 		return FALSE;
@@ -5139,21 +5139,19 @@ BOOL CSaDoc::DoFileSave()
 			fileName = fileName.Left(nFind); // extract part left of :
 		}
 
-		CFileDialog *pSaveAs = new CFileDialog(FALSE, _T("wav"), fileName, OFN_PATHMUSTEXIST | OFN_OVERWRITEPROMPT, _T("WAV Files (*.wav)|*.wav||"));
+		CFileDialog dlg(FALSE, _T("wav"), fileName, OFN_PATHMUSTEXIST | OFN_OVERWRITEPROMPT, _T("WAV Files (*.wav)|*.wav||"));
 
 		CSaString szDefault = static_cast<CSaApp*>(AfxGetApp())->DefaultDir(); // need to save copy (return value is destroyed)
-		if(pSaveAs) pSaveAs->m_ofn.lpstrInitialDir = szDefault;
+		dlg.m_ofn.lpstrInitialDir = szDefault;
 
-		if(!pSaveAs || pSaveAs->DoModal() != IDOK)
+		if (dlg.DoModal()!=IDOK)
 		{
-			if(pSaveAs) delete pSaveAs;
 			return FALSE;
 		}
 		else
 		{
-			szCaption = pSaveAs->GetFileTitle();
-			szPathName = pSaveAs->GetPathName();
-			delete pSaveAs;
+			szCaption = dlg.GetFileTitle();
+			szPathName = dlg.GetPathName();
 		}
 
 		CFileStatus fileStat;
@@ -5163,7 +5161,7 @@ BOOL CSaDoc::DoFileSave()
 		}
 
 		bResult = OnSaveDocument(szPathName, bSaveAudio);
-		if(bResult)
+		if (bResult)
 			SetPathName(szPathName);
 
 		if (!szGraphTitle.IsEmpty())
@@ -5205,7 +5203,7 @@ void CSaDoc::OnUpdateFileSave(CCmdUI* pCmdUI)
 void CSaDoc::OnFileSaveAs()
 {
 	CSaString fileName=GetPathName();
-	if(fileName.IsEmpty())
+	if (fileName.IsEmpty())
 	{
 		fileName = GetTitle(); // get the current view caption string
 		int nFind = fileName.Find(':');
@@ -5218,24 +5216,23 @@ void CSaDoc::OnFileSaveAs()
 	CSaString fileExt = _T(".wav");
 	fileName = SetFileExtension(fileName, fileExt);
 
-	CDlgSaveAsOptions *pSaveAs = new CDlgSaveAsOptions(_T("wav"), fileName, OFN_PATHMUSTEXIST | OFN_OVERWRITEPROMPT, _T("WAV Files (*.wav)|*.wav||"));
+	CDlgSaveAsOptions dlg(_T("wav"), fileName, OFN_PATHMUSTEXIST | OFN_OVERWRITEPROMPT, _T("WAV Files (*.wav)|*.wav||"));
 
 	CSaString szDefault = static_cast<CSaApp*>(AfxGetApp())->DefaultDir(); // need to save copy (return value is destroyed)
-	pSaveAs->m_ofn.lpstrInitialDir = szDefault;
+	dlg.m_ofn.lpstrInitialDir = szDefault;
 
-	if(!pSaveAs || pSaveAs->DoModal() != IDOK)
+	if (dlg.DoModal()!=IDOK)
 	{
-		if(pSaveAs) delete pSaveAs;
 		return;
 	}
 
-	fileName = pSaveAs->GetPathName();
+	fileName = dlg.GetPathName();
 
 	BOOL bSameFileName = FALSE;
 	if(fileName == GetPathName())
 	{
 		bSameFileName = TRUE;
-		pSaveAs->m_nShowFiles = CDlgSaveAsOptions::showNew; // There is only one file.
+		dlg.m_nShowFiles = CDlgSaveAsOptions::showNew; // There is only one file.
 	}
 	else if (static_cast<CSaApp*>(AfxGetApp())->IsFileOpened(fileName))
 	{
@@ -5246,7 +5243,7 @@ void CSaDoc::OnFileSaveAs()
 
 
 	CFileStatus newFileStatus;
-	if(CFile::GetStatus(fileName, newFileStatus))
+	if (CFile::GetStatus(fileName, newFileStatus))
 	{
 		// File exists overwrite existing file
 		try
@@ -5256,7 +5253,6 @@ void CSaDoc::OnFileSaveAs()
 		catch(... )
 		{
 			((CSaApp*) AfxGetApp())->ErrorMessage(IDS_ERROR_FILEWRITE, fileName);
-			if(pSaveAs) delete pSaveAs;
 			return;
 		}
 	}
@@ -5265,7 +5261,7 @@ void CSaDoc::OnFileSaveAs()
 
 	BOOL bSuccess = FALSE;
 
-	if(pSaveAs->m_nSaveArea == CDlgSaveAsOptions::saveCursors)
+	if (dlg.m_nSaveArea == CDlgSaveAsOptions::saveCursors)
 	{
 		CSaDoc* pDoc = this;
 		POSITION pos = pDoc->GetFirstViewPosition();
@@ -5275,7 +5271,7 @@ void CSaDoc::OnFileSaveAs()
 
 		bSuccess = CopySectionToNewWavFile(dwStart,dwStop-dwStart,fileName);
 	}
-	else if(pSaveAs->m_nSaveArea == CDlgSaveAsOptions::saveView)
+	else if(dlg.m_nSaveArea == CDlgSaveAsOptions::saveView)
 	{
 		CSaDoc* pDoc = this;
 		POSITION pos = pDoc->GetFirstViewPosition();
@@ -5289,7 +5285,7 @@ void CSaDoc::OnFileSaveAs()
 
 		bSuccess = CopySectionToNewWavFile(dwStart,dwFrame,fileName);
 	}
-	else if(pSaveAs->m_nShowFiles != CDlgSaveAsOptions::showNew)
+	else if(dlg.m_nShowFiles != CDlgSaveAsOptions::showNew)
 	{
 		bSuccess = CopySectionToNewWavFile(0,GetUnprocessedDataSize(),fileName);
 	}
@@ -5319,7 +5315,6 @@ void CSaDoc::OnFileSaveAs()
 			// error copying file
 			((CSaApp*) AfxGetApp())->ErrorMessage(IDS_ERROR_FILEWRITE, fileName);
 			EndWaitCursor();
-			if(pSaveAs) delete pSaveAs;
 			return;
 		}
 
@@ -5337,7 +5332,7 @@ void CSaDoc::OnFileSaveAs()
 		}
 	}
 
-	if(!bSuccess)
+	if (!bSuccess)
 	{
 		// be sure to delete the file
 		try
@@ -5349,7 +5344,6 @@ void CSaDoc::OnFileSaveAs()
 			TRACE0("Warning: failed to delete file after failed SaveAs\n");
 		}
 		EndWaitCursor();
-		if(pSaveAs) delete pSaveAs;
 		return;
 	}
 
@@ -5359,16 +5353,15 @@ void CSaDoc::OnFileSaveAs()
 		CFile::SetStatus(fileName, m_fileStat);
 	}
 
-	if(pSaveAs->m_nShowFiles == CDlgSaveAsOptions::showBoth)
+	if(dlg.m_nShowFiles == CDlgSaveAsOptions::showBoth)
 	{
 		AfxGetApp()->OpenDocumentFile(fileName); // Open new document
 	}
-	if(pSaveAs->m_nShowFiles == CDlgSaveAsOptions::showNew  &&   fileName != GetPathName())
+	if(dlg.m_nShowFiles == CDlgSaveAsOptions::showNew && fileName != GetPathName())
 	{
 		AfxGetApp()->OpenDocumentFile(fileName); // Open new document
 		OnCloseDocument();  // Close Original
 	}
-	if(pSaveAs) delete pSaveAs;
 
 	EndWaitCursor();
 

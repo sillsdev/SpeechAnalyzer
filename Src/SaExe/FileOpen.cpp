@@ -17,24 +17,24 @@ static char THIS_FILE[] = __FILE__;
 IMPLEMENT_DYNAMIC(CDlgFileOpen, CFileDialog)
 
 CDlgFileOpen::CDlgFileOpen(LPCTSTR lpszDefExt, LPCTSTR lpszFileName, DWORD dwFlags, LPCTSTR lpszFilter, CWnd* pParentWnd) :
-              CFileDialog(TRUE, lpszDefExt, lpszFileName, dwFlags, lpszFilter, pParentWnd)
+CFileDialog(TRUE, lpszDefExt, lpszFileName, dwFlags, lpszFilter, pParentWnd)
 {
 	// SetTemplate not supported on Vista and above
-	if (CMixer::GetWindowsVersion()<6)
+	if (::GetWindowsVersion()<6)
 		SetTemplate(IDD, IDD);
 
-  m_ofn.hInstance = AfxFindResourceHandle(MAKEINTRESOURCE(IDD),RT_DIALOG);
+	m_ofn.hInstance = AfxFindResourceHandle(MAKEINTRESOURCE(IDD),RT_DIALOG);
 }
 
 
 BEGIN_MESSAGE_MAP(CDlgFileOpen, CFileDialog)
-//{{AFX_MSG_MAP(CDlgFileOpen)
-    ON_BN_CLICKED(IDC_PLAY, OnPlay)
-//}}AFX_MSG_MAP
+	//{{AFX_MSG_MAP(CDlgFileOpen)
+	ON_BN_CLICKED(IDC_PLAY, OnPlay)
+	//}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
 
 void CDlgFileOpen::OnPlay()
 {  
-  PlaySound(GetPathName(), 0, SND_ASYNC | SND_NODEFAULT | SND_FILENAME );  
+	PlaySound(GetPathName(), 0, SND_ASYNC | SND_NODEFAULT | SND_FILENAME );  
 }
