@@ -53,6 +53,7 @@
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
+				ProgramDataBaseFileName="$(IntDir)\mbrola.pdb"
 				WarningLevel="3"
 				SuppressStartupBanner="true"
 				DebugInformationFormat="4"
@@ -71,16 +72,16 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="odbc32.lib odbccp32.lib msvcrtd.lib"
-				OutputFile=".\..\..\..\..\Output\Debug/mbrola.dll"
+				OutputFile=".\..\..\..\..\Output\Debug\mbrola.dll"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
 				IgnoreAllDefaultLibraries="true"
 				ModuleDefinitionFile=".\mbrola.def"
 				GenerateDebugInformation="true"
-				ProgramDatabaseFile=".\..\..\..\..\Output\Debug/mbrola.pdb"
+				ProgramDatabaseFile=".\..\..\..\..\Output\Debug\mbrola.pdb"
 				RandomizedBaseAddress="1"
 				DataExecutionPrevention="0"
-				ImportLibrary=".\..\..\..\..\Output\Debug/mbrola.lib"
+				ImportLibrary=".\..\..\..\..\Output\Debug\mbrola.lib"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -145,6 +146,7 @@
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="2"
+				ProgramDataBaseFileName="$(IntDir)\mbrola.pdb"
 				BrowseInformation="1"
 				WarningLevel="4"
 				SuppressStartupBanner="true"
@@ -164,16 +166,16 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="odbc32.lib odbccp32.lib msvcrt.lib"
-				OutputFile=".\..\..\..\..\Output\Release/mbrola.dll"
+				OutputFile=".\..\..\..\..\Output\Release\mbrola.dll"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
 				IgnoreAllDefaultLibraries="true"
 				ModuleDefinitionFile=".\mbrola.def"
 				GenerateDebugInformation="true"
-				ProgramDatabaseFile=".\..\..\..\..\Output\Release/mbrola.pdb"
+				ProgramDatabaseFile=".\..\..\..\..\Output\Release\mbrola.pdb"
 				RandomizedBaseAddress="1"
 				DataExecutionPrevention="0"
-				ImportLibrary=".\..\..\..\..\Output\Release/mbrola.lib"
+				ImportLibrary=".\..\..\..\..\Output\Release\mbrola.lib"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -276,11 +278,6 @@
 				RelativePath="ussampa2.h"
 				>
 			</File>
-		</Filter>
-		<Filter
-			Name="Resource Files"
-			Filter="ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe"
-			>
 		</Filter>
 	</Files>
 	<Globals>
