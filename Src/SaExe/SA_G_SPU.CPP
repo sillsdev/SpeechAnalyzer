@@ -389,11 +389,11 @@ void CPlotSpectrum::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView)
 					{
 						int nTagLen = swprintf_s(szTag, _T("%.0f"), (double)Formant.Lpc.FrequencyInHertz);
 						if (pSpectrumParms->bShowFormantBandwidth)
-							_stprintf(&szTag[nTagLen], _T("\xB1%.0f"), (double)Formant.Lpc.BandwidthInHertz/2.);
-						_tcscat(szTag, _T("Hz"));
+							swprintf_s(&szTag[nTagLen], _countof(szTag)-nTagLen, _T("\xB1%.0f"), (double)Formant.Lpc.BandwidthInHertz/2.);
+						wcscat_s(szTag, _countof(szTag), _T("Hz"));
 					}
 					if (pSpectrumParms->bShowFormantPower)
-						_stprintf((LPTSTR)szTag+_tcslen(szTag), _T(" %.1fdB"), (double)Formant.Lpc.PowerInDecibels-LpcRef);
+						swprintf_s((LPTSTR)szTag+_tcslen(szTag), _countof(szTag)-_tcslen(szTag), _T(" %.1fdB"), (double)Formant.Lpc.PowerInDecibels-LpcRef);
 
 					CSize sizeTag = pDC->GetTextExtent(szTag, _tcslen(szTag));
 					CRect rTag(tx, ty, tx+sizeTag.cx, ty+sizeTag.cy);
