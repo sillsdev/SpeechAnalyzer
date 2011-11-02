@@ -10,7 +10,6 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-
 static AFX_EXTENSION_MODULE SA_ENUDLL = { NULL, NULL };
 
 extern "C" int APIENTRY
@@ -22,7 +21,7 @@ DllMain(HINSTANCE hInstance, DWORD dwReason, LPVOID lpReserved)
 	if (dwReason == DLL_PROCESS_ATTACH)
 	{
 		TRACE0("SA_ENU.DLL Initializing!\n");
-		
+
 		// Extension DLL one-time initialization
 		if (!AfxInitExtensionModule(SA_ENUDLL, hInstance))
 			return 0;

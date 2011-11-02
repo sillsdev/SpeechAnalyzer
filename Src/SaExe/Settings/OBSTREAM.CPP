@@ -7,8 +7,6 @@
 // 1.5Test8.2
 //        SDM Added WriteWindowPlacement(const char*,WINDOWPLACEMENT&)
 /////////////////////////////////////////////////////////////////////////////
-
-
 #include "stdSettings.h"
 #include <windows.h>
 #include <fstream>
@@ -672,8 +670,6 @@ void Object_istream::ReadLine()
 
 // **************************************************************************
 
-
-
 BOOL Object_istream::bReadUInt(const char* pszMarker, UINT& ui) // Read an unsigned integer (unsigned short)
 {
 	const char* s;
@@ -685,8 +681,6 @@ BOOL Object_istream::bReadUInt(const char* pszMarker, UINT& ui) // Read an unsig
 
 	return TRUE;
 }
-
-
 
 void Object_istream::SkipToEndMarker(const char* pszMarker)
 {

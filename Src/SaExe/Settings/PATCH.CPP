@@ -16,7 +16,7 @@ const char* Shw_pszOtherWhiteSpace = "\t\n";  // above, other than space itself
 
 bool Shw_bAtWhiteSpace(const char* psz)
 {
-  return (strchr(Shw_pszWhiteSpace, *psz) != NULL); 
+	return (strchr(Shw_pszWhiteSpace, *psz) != NULL); 
 }
 
 
