@@ -1,16 +1,16 @@
 /*
- * FPMs-TCTS SOFTWARE LIBRARY
- *
- * File    : mbrola.cpp
- * Purpose : Mbrola interface with the MBROLA synthesizer DLL
- * Author  : Alain Ruelle
- * Email   : ruelle@tcts.fpms.ac.be
- * 
- * 31/08/98 : New Interface, using functions instead of Object 
- *
- * Copyright (c) 1997 Faculte Polytechnique de Mons (TCTS lab)
- * All rights reserved.
- */
+* FPMs-TCTS SOFTWARE LIBRARY
+*
+* File    : mbrola.cpp
+* Purpose : Mbrola interface with the MBROLA synthesizer DLL
+* Author  : Alain Ruelle
+* Email   : ruelle@tcts.fpms.ac.be
+* 
+* 31/08/98 : New Interface, using functions instead of Object 
+*
+* Copyright (c) 1997 Faculte Polytechnique de Mons (TCTS lab)
+* All rights reserved.
+*/
 #include <windows.h>
 #include <stdio.h>
 #include <string.h>
@@ -93,7 +93,7 @@ BOOL load_MBR()
 		|| (!close_Phone)
 		|| (!appendf0_Phone))
 	{
-    	FreeLibrary (hinstDllMBR); 
+		FreeLibrary (hinstDllMBR); 
 		hinstDllMBR=NULL;
 		return FALSE;
 	}

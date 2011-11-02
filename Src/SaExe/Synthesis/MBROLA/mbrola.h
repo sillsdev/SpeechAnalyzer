@@ -1,20 +1,20 @@
 /*
- * FPMs-TCTS SOFTWARE LIBRARY
- *
- * Copyright (c) 95-98 Faculte Polytechnique de Mons (TCTS lab)
- * All rights reserved.
- * PERMISSION IS HEREBY DENIED TO USE, COPY, MODIFY, OR DISTRIBUTE THIS
- * SOFTWARE OR ITS DOCUMENTATION FOR ANY PURPOSE WITHOUT WRITTEN
- * AGREEMENT OR ROYALTY FEES.
- *
- * File:    mbrola.h
- * Purpose: Diphone-based MBROLA speech synthesizer.
- *          Interface of the WWW DLL
- * Author:  Vincent Pagel
- * Email :  mbrola@tcts.fpms.ac.be
- *
- * 28/08/98: Created from one_channel.h
- */
+* FPMs-TCTS SOFTWARE LIBRARY
+*
+* Copyright (c) 95-98 Faculte Polytechnique de Mons (TCTS lab)
+* All rights reserved.
+* PERMISSION IS HEREBY DENIED TO USE, COPY, MODIFY, OR DISTRIBUTE THIS
+* SOFTWARE OR ITS DOCUMENTATION FOR ANY PURPOSE WITHOUT WRITTEN
+* AGREEMENT OR ROYALTY FEES.
+*
+* File:    mbrola.h
+* Purpose: Diphone-based MBROLA speech synthesizer.
+*          Interface of the WWW DLL
+* Author:  Vincent Pagel
+* Email :  mbrola@tcts.fpms.ac.be
+*
+* 28/08/98: Created from one_channel.h
+*/
 #ifndef __MBROLA_H__
 #define __MBROLA_H__
 
@@ -24,10 +24,10 @@
 #define TIME_SWITCH		";; T = "
 
 typedef enum {
-  LIN16=0,     /* same as intern computation format: 16 bits linear  */
-  LIN8,        /* unsigned linear 8 bits, worse than telephone        */
-  ULAW,        /* MU law -> 8bits, telephone. Roughly equ. to 12bits */
-  ALAW         /* A law  -> 8bits, equivallent to mulaw              */
+	LIN16=0,     /* same as intern computation format: 16 bits linear  */
+	LIN8,        /* unsigned linear 8 bits, worse than telephone        */
+	ULAW,        /* MU law -> 8bits, telephone. Roughly equ. to 12bits */
+	ALAW         /* A law  -> 8bits, equivallent to mulaw              */
 } AudioType;
 
 typedef void (WINAPI *PROCVV)(void);
