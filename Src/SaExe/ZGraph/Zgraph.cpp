@@ -583,7 +583,7 @@ void zGraph::zConvertValue(double d, PWCHAR buf, size_t len)
 
 	case zFIXED:                   // User Specified Number of Sig. Digits
 		swprintf_s(TempBuf, _countof(TempBuf), _T("%-6.*lf"), //   That Should Be Shown After
-		digit_precision, d);     //   the Decimal Point
+			digit_precision, d);     //   the Decimal Point
 		wcscpy_s(buf, len, TempBuf);
 		break;
 
