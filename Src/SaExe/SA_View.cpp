@@ -533,9 +533,8 @@ void CSaView::OnUpdateLayout(CCmdUI* pCmdUI)
 /***************************************************************************/
 void CSaView::OnExportXML()
 {
-	CExportXML* pExport = new CExportXML(((CSaDoc*)GetDocument())->GetTitle());
-	pExport->DoModal();
-	if (pExport) delete pExport;
+	CExportXML dlg(((CSaDoc*)GetDocument())->GetTitle());
+	dlg.DoModal();
 }
 
 /***************************************************************************/
@@ -545,9 +544,8 @@ void CSaView::OnExportXML()
 /***************************************************************************/
 void CSaView::OnExportSFM()
 {
-	CExportSFM* pExport = new CExportSFM(((CSaDoc*)GetDocument())->GetTitle());
-	pExport->DoModal();
-	if (pExport) delete pExport;
+	CExportSFM dlg(((CSaDoc*)GetDocument())->GetTitle());
+	dlg.DoModal();
 }
 
 /***************************************************************************/
@@ -555,9 +553,8 @@ void CSaView::OnExportSFM()
 /***************************************************************************/
 void CSaView::OnExportTimeTable()
 {
-	CExportTable* pExport = new CExportTable(((CSaDoc*)GetDocument())->GetTitle());
-	pExport->DoModal();
-	if (pExport) delete pExport;
+	CExportTable dlg(((CSaDoc*)GetDocument())->GetTitle());
+	dlg.DoModal();
 }
 
 /***************************************************************************/

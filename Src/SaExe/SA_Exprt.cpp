@@ -222,7 +222,9 @@ void CExportBasicDialog::OnAllAnnotations()
 	if (m_bAllAnnotations)
 	{
 		m_bReference = m_bPhonetic = m_bTone = m_bPhonemic = m_bOrtho = m_bGloss = m_bPOS = m_bPhrase = TRUE;
-
+		UpdateData(FALSE);
+	} else {
+		m_bReference = m_bPhonetic = m_bTone = m_bPhonemic = m_bOrtho = m_bGloss = m_bPOS = m_bPhrase = FALSE;
 		UpdateData(FALSE);
 	}
 
@@ -239,7 +241,9 @@ void CExportBasicDialog::OnAllFileInfo()
 	if (m_bAllFile)
 	{
 		m_bOriginalDate = m_bLastModified = m_bOriginalFormat = m_bFileSize = TRUE;
-
+		UpdateData(FALSE);
+	} else {
+		m_bOriginalDate = m_bLastModified = m_bOriginalFormat = m_bFileSize = FALSE;
 		UpdateData(FALSE);
 	}
 }
@@ -259,7 +263,9 @@ void CExportBasicDialog::OnAllParameters()
 	if (m_bAllParameters)
 	{
 		m_bNumberSamples = m_bLength = m_bSampleRate = m_bBandwidth = m_bHighPass = m_bBits = m_bQuantization = TRUE;
-
+		UpdateData(FALSE);
+	} else {
+		m_bNumberSamples = m_bLength = m_bSampleRate = m_bBandwidth = m_bHighPass = m_bBits = m_bQuantization = FALSE;
 		UpdateData(FALSE);
 	}
 
@@ -284,9 +290,13 @@ void CExportBasicDialog::OnAllSource()
 	{
 		m_bLanguage = m_bDialect = m_bSpeaker = m_bGender = m_bEthnologue = m_bFamily = m_bRegion = m_bNotebookRef =
 			m_bTranscriber = m_bComments = m_bCountry = TRUE;
-
+		UpdateData(FALSE);
+	} else {
+		m_bLanguage = m_bDialect = m_bSpeaker = m_bGender = m_bEthnologue = m_bFamily = m_bRegion = m_bNotebookRef =
+			m_bTranscriber = m_bComments = m_bCountry = FALSE;
 		UpdateData(FALSE);
 	}
+
 }
 
 BOOL CExportBasicDialog::OnInitDialog()
@@ -311,7 +321,7 @@ void CExportBasicDialog::SetEnable(int nItem, BOOL bEnable)
 {
 	CWnd* pWnd = GetDlgItem(nItem);
 
-	if(pWnd)
+	if (pWnd)
 	{
 		pWnd->EnableWindow(bEnable);
 	}
