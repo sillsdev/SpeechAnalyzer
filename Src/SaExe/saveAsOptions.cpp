@@ -19,10 +19,9 @@ int CDlgSaveAsOptions::m_nSaveArea = saveEntire;
 int CDlgSaveAsOptions::m_nShowFiles = showNew;
 
 CDlgSaveAsOptions::CDlgSaveAsOptions(LPCTSTR lpszDefExt, LPCTSTR lpszFileName, DWORD dwFlags, LPCTSTR lpszFilter, CWnd* pParentWnd )
-: CFileDialog(FALSE, lpszDefExt, lpszFileName, dwFlags, lpszFilter, pParentWnd)
+: CFileDialog(FALSE, lpszDefExt, lpszFileName, dwFlags, lpszFilter, pParentWnd, 0, FALSE)
 {
-	if (::GetWindowsVersion()<6)
-		SetTemplate(IDD, IDD);
+	SetTemplate(IDD, IDD);
 	m_ofn.hInstance = AfxFindResourceHandle(MAKEINTRESOURCE(IDD),RT_DIALOG);
 	//{{AFX_DATA_INIT(CDlgSaveAsOptions)
 	//}}AFX_DATA_INIT

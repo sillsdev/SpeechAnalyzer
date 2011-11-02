@@ -17,7 +17,11 @@ class CDlgFileOpen : public CFileDialog
 	DECLARE_DYNAMIC(CDlgFileOpen)
 
 public:
-	CDlgFileOpen(LPCTSTR lpszDefExt = NULL, LPCTSTR lpszFileName = NULL, DWORD dwFlags = OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT, LPCTSTR lpszFilter = NULL, CWnd* pParentWnd = NULL);
+	CDlgFileOpen( LPCTSTR lpszDefExt = NULL, 
+				  LPCTSTR lpszFileName = NULL, 
+				  DWORD dwFlags = OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT, 
+				  LPCTSTR lpszFilter = NULL, 
+				  CWnd* pParentWnd = NULL);
 
 // Dialog Data
 	//{{AFX_DATA(CDlgSaveAsOptions)

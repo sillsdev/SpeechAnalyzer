@@ -16,13 +16,14 @@ static char THIS_FILE[] = __FILE__;
 
 IMPLEMENT_DYNAMIC(CDlgFileOpen, CFileDialog)
 
-CDlgFileOpen::CDlgFileOpen(LPCTSTR lpszDefExt, LPCTSTR lpszFileName, DWORD dwFlags, LPCTSTR lpszFilter, CWnd* pParentWnd) :
-CFileDialog(TRUE, lpszDefExt, lpszFileName, dwFlags, lpszFilter, pParentWnd)
+CDlgFileOpen::CDlgFileOpen( LPCTSTR lpszDefExt, 
+							LPCTSTR lpszFileName, 
+							DWORD dwFlags, 
+							LPCTSTR lpszFilter, 
+							CWnd* pParentWnd) :
+CFileDialog(TRUE, lpszDefExt, lpszFileName, dwFlags, lpszFilter, pParentWnd, 0, FALSE)
 {
-	// SetTemplate not supported on Vista and above
-	if (::GetWindowsVersion()<6)
-		SetTemplate(IDD, IDD);
-
+	SetTemplate(IDD, IDD);
 	m_ofn.hInstance = AfxFindResourceHandle(MAKEINTRESOURCE(IDD),RT_DIALOG);
 }
 

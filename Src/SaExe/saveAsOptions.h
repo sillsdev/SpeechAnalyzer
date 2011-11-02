@@ -16,7 +16,11 @@ class CDlgSaveAsOptions : public CFileDialog
 {
 // Construction
 public:
-	CDlgSaveAsOptions( LPCTSTR lpszDefExt = NULL, LPCTSTR lpszFileName = NULL, DWORD dwFlags = OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT, LPCTSTR lpszFilter = NULL, CWnd* pParentWnd = NULL );
+	CDlgSaveAsOptions( LPCTSTR lpszDefExt = NULL, 
+					   LPCTSTR lpszFileName = NULL, 
+					   DWORD dwFlags = OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT, 
+					   LPCTSTR lpszFilter = NULL, 
+					   CWnd* pParentWnd = NULL );
 
 // Dialog Data
 	static int m_nSaveArea;

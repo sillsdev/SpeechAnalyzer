@@ -1559,16 +1559,19 @@ void CSaApp::FileOpen()
 
 	SetOpenAsID(id);
 
-	CDlgFileOpen dlgFile(_T("wav"), _T("*.wav"), OFN_HIDEREADONLY | OFN_FILEMUSTEXIST,
-		_T("WAV Files (*.wav)|*.wav|Other Audio Files (*.mp3;*.wma )|*.mp3;*.wma|Speech Analyzer Workbench Files (*.wb) |*.wb||"));
+	CDlgFileOpen dlgFile(_T("wav"), 
+						 _T("*.wav"), 
+						 OFN_HIDEREADONLY | OFN_FILEMUSTEXIST,
+						 _T("WAV Files (*.wav)|*.wav|Other Audio Files (*.mp3;*.wma )|*.mp3;*.wma|Speech Analyzer Workbench Files (*.wb) |*.wb||"));
 
 	CSaString szDefault = DefaultDir(); // need to save copy (return value is destroyed)
 	dlgFile.m_ofn.lpstrInitialDir = szDefault;
 
-	if (dlgFile.DoModal() == IDOK)
+	if (dlgFile.DoModal() == IDOK) {
 		OpenDocumentFile(dlgFile.GetPathName());
+	}
 
-	if(pDoc)
+	if (pDoc)
 	{
 		pDoc->OnCloseDocument();
 	}
@@ -1576,7 +1579,7 @@ void CSaApp::FileOpen()
 
 CSaString CSaApp::DefaultDir(CSaString *pFilename) const
 {
-	if(pFilename)
+	if (pFilename)
 	{
 		CSaString szPath = *pFilename;
 		int nFind = szPath.ReverseFind('\\');
