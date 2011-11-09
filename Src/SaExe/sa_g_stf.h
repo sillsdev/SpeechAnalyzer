@@ -28,8 +28,8 @@ private:
   HWND StaffControl;
   CSaView* m_pView;          // DDO - 08/14/00
 
-  char* NoteNum2Name(double dMIDINumber, char* sMusique, BOOL bHalfFlatSharp);  // DDO - 08/14/00
-  double QNotes2Dur(double dNoteQtrNotes, char *sDuration);
+  char* NoteNum2Name(double dMIDINumber, char* sMusique, size_t len, BOOL bHalfFlatSharp);  // DDO - 08/14/00
+  double QNotes2Dur(double dNoteQtrNotes, char *sDuration, size_t len);
   double Note2String(double dNoteQtrNotes, double dMIDINumber, CString & sMusique, double dNoteTol, BOOL bHalfFlatSharp);
 
   // Operations

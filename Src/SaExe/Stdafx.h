@@ -60,7 +60,9 @@ static inline DWORD GetBufferSize() {return 0x10000;}
 // TRUE                               Enables access
 // FALSE                              Completely disables access
 // (GetKeyState(VK_CONTROL) < 0)      Enables access via control key only
-#define EXPERIMENTAL_ACCESS (GetKeyState(VK_CONTROL) < 0)
+//#define EXPERIMENTAL_ACCESS (GetKeyState(VK_CONTROL) < 0)
+#define EXPERIMENTAL_ACCESS true
+
 #define PROGRAMMER_ACCESS ((GetKeyState(VK_CONTROL) & GetKeyState(VK_SHIFT)) < 0)
 
 //{{AFX_INSERT_LOCATION}}

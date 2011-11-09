@@ -153,8 +153,8 @@ BEGIN_MESSAGE_MAP(CSaDoc, CDocument)
 	ON_UPDATE_COMMAND_UI(ID_ADVANCED_PARSE, OnUpdateAdvancedParse)
 	ON_COMMAND(ID_ADVANCED_SEGMENT, OnAdvancedSegment)
 	ON_UPDATE_COMMAND_UI(ID_ADVANCED_SEGMENT, OnUpdateAdvancedSegment)
-	ON_COMMAND(ID_ADVANCED_PARAMETERS, OnAdvancedParameters)
-	ON_UPDATE_COMMAND_UI(ID_ADVANCED_PARAMETERS, OnUpdateAdvancedParameters)
+	//ON_COMMAND(ID_ADVANCED_PARAMETERS, OnAdvancedParameters)
+	//ON_UPDATE_COMMAND_UI(ID_ADVANCED_PARAMETERS, OnUpdateAdvancedParameters)
 	ON_COMMAND(ID_TOOLS_IMPORT, OnToolsImport)
 	ON_COMMAND(ID_AUTO_ALIGN, OnAutoAlign)
 	ON_UPDATE_COMMAND_UI(ID_AUTO_ALIGN, OnUpdateAutoAlign)
@@ -5445,15 +5445,30 @@ void CSaDoc::OnUpdateFileSaveAs(CCmdUI* pCmdUI)
 void CSaDoc::OnAdvancedParse()
 {
 	CSegment* pSegment = m_apSegments[GLOSS];
-	if (!pSegment->IsEmpty()) // SDM 1.5Test8.2 moved from CGlossSegment::Process
+	
+	// SDM 1.5Test8.2 moved from CGlossSegment::Process
+	if (!pSegment->IsEmpty()) 
 	{
 		// doesn't user want to keep existing gloss?
-		if (!(AfxMessageBox(IDS_QUESTION_DELETEGLOSS, MB_YESNO | MB_ICONQUESTION, 0) == IDYES))
+		if (!(AfxMessageBox(IDS_QUESTION_DELETEGLOSS, MB_YESNO | MB_ICONQUESTION, 0) == IDYES)) {
 			return;
+		}
 	}
+
 	CheckPoint();
 
-	AdvancedParse();
+	// display the parameters box
+	CSaString szCaption;
+	// load caption string
+	szCaption.LoadString(IDS_DLGTITLE_ADVANCED); 
+	// create the property sheet
+	CDlgAdvanced dlg( szCaption, NULL, 0, CDlgAdvanced::SHOW_PARSE);
+	if (dlg.DoModal()!=IDOK) {
+		// undo the changes
+		POSITION pos = GetFirstViewPosition();
+		CSaView* pView = (CSaView*)GetNextView(pos);
+		pView->SendMessage(WM_COMMAND,ID_EDIT_UNDO,0);
+	};
 }
 
 // Split function SDM 1.5Test8.2
@@ -5472,7 +5487,7 @@ BOOL CSaDoc::AdvancedParse()
 	RestartAllProcesses();
 	pSegment->RestartProcess(); // for the case of a cancelled process
 	pSegment->SetDataInvalid(); // SDM 1.5Test10.7
-	short int nResult = LOWORD(pSegment->Process(NULL, this)); // process data
+	short int nResult = LOWORD( pSegment->Process(NULL, this)); // process data
 	CSaApp* pApp = (CSaApp*)AfxGetApp();
 	if (nResult == PROCESS_ERROR)
 	{
@@ -5512,9 +5527,21 @@ void CSaDoc::OnAdvancedSegment()
 		if (!(AfxMessageBox(IDS_QUESTION_DELETE_KEEPGLOSS, MB_YESNO | MB_ICONQUESTION, 0) == IDYES))
 			return;
 	}
+	
 	CheckPoint();
 
-	if(!AdvancedSegment()) Undo(FALSE);
+	// display the parameters box
+	CSaString szCaption;
+	// load caption string
+	szCaption.LoadString(IDS_DLGTITLE_ADVANCED); 
+	// create the property sheet
+	CDlgAdvanced dlg( szCaption, NULL, 0, CDlgAdvanced::SHOW_SEGMENT);
+	if (dlg.DoModal()!=IDOK) {
+		// undo the changes
+		POSITION pos = GetFirstViewPosition();
+		CSaView* pView = (CSaView*)GetNextView(pos);
+		pView->SendMessage(WM_COMMAND,ID_EDIT_UNDO,0);
+	};
 }
 
 // Split function SDM 1.5Test8.2
@@ -5663,11 +5690,16 @@ void CSaDoc::OnAdvancedParameters()
 {
 	CSaString szCaption;
 	szCaption.LoadString(IDS_DLGTITLE_ADVANCED); // load caption string
+
+	// the dialog allows users to 'apply now', so we will
+	// allow them to revert if needed.
+	CheckPoint();
+
 	// create the property sheet
-	CDlgAdvanced* dlgAdvanced; // advanced parameters dialog
-	dlgAdvanced = new CDlgAdvanced(szCaption, NULL, 0);
-	dlgAdvanced->DoModal();
-	delete dlgAdvanced;
+	CDlgAdvanced dlg(szCaption, NULL, 0, CDlgAdvanced::SHOW_BOTH);
+	if (dlg.DoModal()!=IDOK) {
+		Undo(FALSE);
+	}
 }
 
 

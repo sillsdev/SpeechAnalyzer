@@ -24,8 +24,8 @@ IMPLEMENT_DYNCREATE(CUndoRedoDoc, CDocument)
 // CUndoRedoDoc::CUndoRedoDoc constructor
 /***************************************************************************/
 CUndoRedoDoc::CUndoRedoDoc(long undolevels, UINT growsize)
-             :m_growsize(growsize),
-              m_undoLevels(undolevels)
+:m_growsize(growsize),
+m_undoLevels(undolevels)
 {
 }
 
@@ -34,8 +34,8 @@ CUndoRedoDoc::CUndoRedoDoc(long undolevels, UINT growsize)
 /***************************************************************************/
 CUndoRedoDoc::~CUndoRedoDoc()
 {
-  ClearList(&m_undolist);
-  ClearList(&m_redolist);
+	ClearList(&m_undolist);
+	ClearList(&m_redolist);
 }
 
 /***************************************************************************/
@@ -43,10 +43,10 @@ CUndoRedoDoc::~CUndoRedoDoc()
 /***************************************************************************/
 void CUndoRedoDoc::AddRedo()
 {
-  CMemFile * file = new CMemFile(m_growsize);
-  ASSERT(file);
-  Store(file);
-  AddRedo(file);
+	CMemFile * file = new CMemFile(m_growsize);
+	ASSERT(file);
+	Store(file);
+	AddRedo(file);
 }
 
 /***************************************************************************/
@@ -57,19 +57,19 @@ void CUndoRedoDoc::AddRedo()
 /***************************************************************************/
 void CUndoRedoDoc::Undo(BOOL bAddRedo, BOOL bUndo)
 {
-  if (CanUndo())
-  {
-    if (bAddRedo)
-    {
-      AddRedo();
-    }
-    CMemFile * file = (CMemFile *)m_undolist.GetHead();
-    ASSERT(file);
-    if (bUndo) Load(file);
-    // SDM delete removed CMemFiles Here this is our last opportunity
-    delete file;
-    m_undolist.RemoveHead();
-  }
+	if (CanUndo())
+	{
+		if (bAddRedo)
+		{
+			AddRedo();
+		}
+		CMemFile * file = (CMemFile *)m_undolist.GetHead();
+		ASSERT(file);
+		if (bUndo) Load(file);
+		// SDM delete removed CMemFiles Here this is our last opportunity
+		delete file;
+		m_undolist.RemoveHead();
+	}
 }
 
 
@@ -79,19 +79,19 @@ void CUndoRedoDoc::Undo(BOOL bAddRedo, BOOL bUndo)
 /***************************************************************************/
 void CUndoRedoDoc::Redo()
 {
-  if (CanRedo())
-  {
-    CMemFile * file = new CMemFile(m_growsize);
-    ASSERT(file);
-    Store(file);
-    AddUndo(file);
-    file = (CMemFile *)m_redolist.GetHead();
-    ASSERT(file);
-    Load(file);
-    // SDM delete removed CMemFiles Here this is our last opportunity
-    delete file;
-    m_redolist.RemoveHead();
-  }
+	if (CanRedo())
+	{
+		CMemFile * file = new CMemFile(m_growsize);
+		ASSERT(file);
+		Store(file);
+		AddUndo(file);
+		file = (CMemFile *)m_redolist.GetHead();
+		ASSERT(file);
+		Load(file);
+		// SDM delete removed CMemFiles Here this is our last opportunity
+		delete file;
+		m_redolist.RemoveHead();
+	}
 }
 
 
@@ -104,21 +104,22 @@ void CUndoRedoDoc::Redo()
 /***************************************************************************/
 void CUndoRedoDoc::CheckPoint()
 {
-  CMemFile * file = NULL;
-  try // SDM 1.06.8 (exceptions thrown below may still cause memory leaks)
-  {
-    file = new CMemFile(m_growsize);
-    ASSERT(file);
-    Store(file);
-  }
-  catch(...)
-  {
-    if (file) delete file;
-    return;
-  }
+	CMemFile * file = NULL;
+	// SDM 1.06.8 (exceptions thrown below may still cause memory leaks)
+	try 
+	{
+		file = new CMemFile(m_growsize);
+		ASSERT(file);
+		Store(file);
+	}
+	catch(...)
+	{
+		if (file) delete file;
+		return;
+	}
 
-  AddUndo(file);
-  ClearList(&m_redolist);
+	AddUndo(file);
+	ClearList(&m_redolist);
 }
 
 /***************************************************************************/
@@ -126,20 +127,20 @@ void CUndoRedoDoc::CheckPoint()
 /***************************************************************************/
 void CUndoRedoDoc::ClearList(CObList * pList)
 {
-  POSITION pos = pList->GetHeadPosition();
-  CMemFile * nextFile = NULL;
+	POSITION pos = pList->GetHeadPosition();
+	CMemFile * nextFile = NULL;
 
-  while (pos)
-  {
-    nextFile = (CMemFile *)pList->GetNext(pos);
-    ASSERT(nextFile);
-    if (nextFile)
-    {
-      delete nextFile;
-    }
-  }
+	while (pos)
+	{
+		nextFile = (CMemFile *)pList->GetNext(pos);
+		ASSERT(nextFile);
+		if (nextFile)
+		{
+			delete nextFile;
+		}
+	}
 
-  pList->RemoveAll();
+	pList->RemoveAll();
 }
 
 
@@ -150,13 +151,13 @@ void CUndoRedoDoc::ClearList(CObList * pList)
 /***************************************************************************/
 void CUndoRedoDoc::AddUndo(CMemFile * file)
 {
-  if (m_undolist.GetCount() > m_undoLevels)
-  {
-    CMemFile * pFile = (CMemFile *)m_undolist.RemoveTail();
-    ASSERT(pFile);
-    delete  pFile;
-  }
-  m_undolist.AddHead(file);
+	if (m_undolist.GetCount() > m_undoLevels)
+	{
+		CMemFile * pFile = (CMemFile *)m_undolist.RemoveTail();
+		ASSERT(pFile);
+		delete  pFile;
+	}
+	m_undolist.AddHead(file);
 }
 
 
@@ -167,12 +168,12 @@ void CUndoRedoDoc::AddUndo(CMemFile * file)
 /***************************************************************************/
 void CUndoRedoDoc::AddRedo(CMemFile * file)
 {
-  ASSERT(file);
+	ASSERT(file);
 
-  if (file)
-  {
-    m_redolist.AddHead(file);
-  }
+	if (file)
+	{
+		m_redolist.AddHead(file);
+	}
 };
 
 
@@ -182,17 +183,16 @@ void CUndoRedoDoc::AddRedo(CMemFile * file)
 /***************************************************************************/
 void CUndoRedoDoc::Store(CMemFile * file)
 {
-  ASSERT(file);
+	ASSERT(file);
 
-  if (file)
-  {
-    file->SeekToBegin();
-    CArchive ar(file, CArchive::store);
-    SerializeForUndoRedo(ar);
-    ar.Close();
-  }
+	if (file)
+	{
+		file->SeekToBegin();
+		CArchive ar(file, CArchive::store);
+		SerializeForUndoRedo(ar);
+		ar.Close();
+	}
 }
-
 
 
 /***************************************************************************/
@@ -200,22 +200,17 @@ void CUndoRedoDoc::Store(CMemFile * file)
 /***************************************************************************/
 void CUndoRedoDoc::Load(CMemFile * file)
 {
-  ASSERT(file);
+	ASSERT(file);
 
-  if (file)
-  {
-    file->SeekToBegin();
-    CArchive ar(file, CArchive::load);
-    SerializeForUndoRedo(ar);
-    ar.Close();
-  }
+	if (file)
+	{
+		file->SeekToBegin();
+		CArchive ar(file, CArchive::load);
+		SerializeForUndoRedo(ar);
+		ar.Close();
+	}
 }
 
 void CUndoRedoDoc::Serialize(CArchive& /*ar*/)
 {
 }
-
-
-
-
-

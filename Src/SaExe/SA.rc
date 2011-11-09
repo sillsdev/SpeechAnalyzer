@@ -2599,8 +2599,6 @@ BEGIN
             MENUITEM "Auto &Segment",               ID_ADVANCED_SEGMENT
             MENUITEM "Auto &Parse",                 ID_ADVANCED_PARSE
             MENUITEM "Auto &Align...",              ID_AUTO_ALIGN
-            MENUITEM "",                            2
-            MENUITEM "Para&meters...",              ID_ADVANCED_PARAMETERS
         END
         MENUITEM SEPARATOR
         MENUITEM "&Options...",                 ID_TOOLS_OPTIONS
@@ -3772,7 +3770,7 @@ STRINGTABLE
 BEGIN
     IDR_MAINFRAME           "Speech Analyzer"
     IDR_SA_ANNTYPE          "\nSA\nSA Document\nWAV Files (*.wav)\n.wav\nannFileType\nANN File Type"
-    VS_VERSION              "Version 3.0.1.5"
+    VS_VERSION              "Version 3.0.1.6"
     VS_COPYRIGHT            "© 1996-2011 SIL International (MSEA).\nAll Rights Reserved."
     IDR_SA_WBTYPE           "\nWB\nSA Workbench\nWB Files (*.wb)\n.wb\nwbFileType\nWB File Type"
 END
@@ -4335,11 +4333,6 @@ STRINGTABLE
 BEGIN
     IDR_SA_FLOATINGPOPUP    "Change the current graph type to plot E\nPlot E"
     IDR_MAINFRAME_SAS       "SA Server"
-END
-
-STRINGTABLE 
-BEGIN
-    ID_ADVANCED_PARAMETERS  "Change parameters of advanced functions\nAdvanced Parameters"
 END
 
 STRINGTABLE 
