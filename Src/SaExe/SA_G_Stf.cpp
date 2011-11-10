@@ -333,7 +333,8 @@ char* CPlotStaff::NoteNum2Name(double dMIDINumber, char* sMusique, size_t len, B
 		// construct note name
 		strcpy_s(sMusique, len, &sNoteNamesHalfSharp[nInterval][0]);
 	}
-	strcat_s(sMusique, len, itoa(nOctave, pASCII, 10));
+	_itoa_s(nOctave, pASCII, _countof(pASCII), 10);
+	strcat_s(sMusique, len, pASCII);
 
 	return sMusique;
 }

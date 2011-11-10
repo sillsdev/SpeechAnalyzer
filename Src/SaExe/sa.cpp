@@ -1315,7 +1315,7 @@ void CSaApp::PasteClipboardToNewFile(HGLOBAL hData)
 		pFile->Write(lpData, dwSize);
 		delete pFile;
 	}
-	catch(const CException & pException)
+	catch(const CException & e)
 	{
 		if (pFile)
 		{

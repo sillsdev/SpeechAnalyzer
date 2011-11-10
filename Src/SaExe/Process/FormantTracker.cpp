@@ -523,10 +523,6 @@ void CFormantTracker::WriteTrack( CTrackState &state, double samplingRate, int p
 		bIsDataValid = (i < pRoots.size()) && (pitch > 0);
 		FormantFreq.F[i] = float(bIsDataValid ? atan2(pRoots[i].imag(), pRoots[i].real())*samplingRate/2/pi : UNDEFINED_DATA);
 	}
-	if (pitch==147) {
-		TRACE("FormantFreq.F[1]=%f pRoots[1].imag()=%f pRoots[1].real()=%f\n",FormantFreq.F[1],pRoots[1].imag(),pRoots[1].real());
-		TRACE("WriteTrack F[0]=%f F[1]=%f F[2]=%f %f %d\n",FormantFreq.F[0],FormantFreq.F[1],FormantFreq.F[2],samplingRate,pitch);
-	}
 
 	// write unvoiced formant frame
 	Write((HPSTR)&FormantFreq, (UINT)sizeof(FormantFreq));

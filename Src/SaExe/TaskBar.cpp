@@ -516,7 +516,7 @@ void CTaskBar::OnGetInfoTip(NMHDR* pNMHDR, LRESULT* pResult)
 	CTaskPage *pPage = m_pPages[m_nSelectedPage];
 	if (pPage->m_cItemList.size() >= (unsigned) pInfo->iItem)
 	{
-		wcsncpy(pInfo->pszText, pPage->m_cItemList[pInfo->iItem].szTip, pInfo->cchTextMax);
+		wcsncpy_s( pInfo->pszText, pInfo->cchTextMax, pPage->m_cItemList[pInfo->iItem].szTip, pInfo->cchTextMax);
 	}
 
 	*pResult = 0;

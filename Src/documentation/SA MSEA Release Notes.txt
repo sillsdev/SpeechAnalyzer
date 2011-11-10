@@ -40,3 +40,10 @@ SA 3.0.1.5 - 11/1/2011
 4) Cleaned up project files.
 5) Reformatted code.
 6) Fix for Vista compatibility issue in FileOpen/FileSaveAs dialog boxes.
+
+
+SA 3.0.1.6 - 11/8/2011
+-----------------------
+1) Fixed more CRT_SECURE warnings.
+2) Modified way AutoParse and AutoSegment work.  Selecting either menu item now displays 'parameters' dialog box.  The Apply button actually works now, as well as Cancel and OK.  Using the Cancel button issues a 'undo' message to reset the graphs to their original state.
+3) Unhid 'experimental features' menu item

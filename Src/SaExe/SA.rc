@@ -2736,6 +2736,8 @@ BEGIN
     END
     POPUP "Popup Graph"
     BEGIN
+        MENUITEM "&Move End cursor here",       ID_MOVE_STOP_CURSOR_HERE
+        MENUITEM SEPARATOR
         MENUITEM "&Layout",                     ID_GRAPHS_LAYOUT
         POPUP "T&ypes"
         BEGIN

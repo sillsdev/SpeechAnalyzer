@@ -279,7 +279,7 @@ struct PartWindowData
   unsigned Width(unsigned From, unsigned Through);
   unsigned Position(unsigned Pixels);
   void AutoScrollRight(void);
-  DWORD Ticks2Dur(DWORD dwNoteTicks, DWORD dwTolerance, char* sMusique);
+  DWORD Ticks2Dur(DWORD dwNoteTicks, DWORD dwTolerance, char* sMusique, size_t len);
   BOOL MusicXMLIn(const char *filename);
   BOOL MusicXMLOut(const char *filename);
   BOOL MIDIIn(const char *filename);
