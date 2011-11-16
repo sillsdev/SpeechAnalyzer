@@ -178,6 +178,7 @@
 #define IDC_MFINGERN                    355
 #define IDC_MFINGERNW                   356
 #define IDC_MHANDN                      357
+#define IDD_SPLIT                       360
 #define IDC_HIGHPASS                    502
 #define IDC_CHANGE_DISPLAYMODE          504
 #define ID_PALETTE_BASE                 601
@@ -1566,6 +1567,10 @@
 #define IDC_STATIC_DATA_SET             2029
 #define IDC_MORE_INFO                   2031
 #define IDC_FORMANT_NOTE                2032
+#define IDC_SPLIT_CONVENTION            2033
+#define IDC_SPLIT_FOLDER                2034
+#define IDC_COMBO3                      2035
+#define IDC_SPLIT_LOCATION              2035
 #define IDS_PLAYER_SMALL                3000
 #define IDS_PLAYER_LARGE                3001
 #define IDS_STATTXT_PROCESSING          4000
@@ -1918,7 +1923,12 @@
 #define ID_HELP_TRAINING_INSTRUCTOR     33211
 #define ID_HELP_TRAINING_EXERCISES      33212
 #define ID_EDIT_COPY_MEASUREMENTS       33213
+#define IDS_SPLIT_NO_SELECTION          33213
 #define ID_MOVE_STOP_CURSOR_HERE        33214
+#define IDS_SPLIT_NO_ANNOTATION         33214
+#define ID_FILE_SPLIT                   33215
+#define IDS_SPLIT_BAD_DIRECTORY         33215
+#define IDS_EMPTY_ANNOTATIONS           33216
 #define ID_GRAPHTYPES_SELECT_FIRST      40000
 #define ID_GRAPHTYPES_SELECT_LAST       40011
 #define ID_GRAPHTYPES_SELECT_END_RESERVED_RANGE 40099
@@ -2037,9 +2047,9 @@
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_3D_CONTROLS                     1
-#define _APS_NEXT_RESOURCE_VALUE        360
-#define _APS_NEXT_COMMAND_VALUE         33215
-#define _APS_NEXT_CONTROL_VALUE         2033
+#define _APS_NEXT_RESOURCE_VALUE        362
+#define _APS_NEXT_COMMAND_VALUE         33216
+#define _APS_NEXT_CONTROL_VALUE         2035
 #define _APS_NEXT_SYMED_VALUE           104
 #endif
 #endif

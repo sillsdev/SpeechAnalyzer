@@ -125,6 +125,7 @@
 #include "saveAsOptions.h"
 #include "autorecorder.h"
 #include "Process\FormantTracker.h"
+#include "dlgsplit.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE
@@ -149,6 +150,8 @@ BEGIN_MESSAGE_MAP(CSaDoc, CDocument)
 	ON_UPDATE_COMMAND_UI(ID_FILE_SAVE, OnUpdateFileSave)
 	ON_COMMAND(ID_FILE_SAVE_AS, OnFileSaveAs)
 	ON_UPDATE_COMMAND_UI(ID_FILE_SAVE_AS, OnUpdateFileSaveAs)
+	ON_COMMAND(ID_FILE_SPLIT, OnFileSplit)
+	ON_UPDATE_COMMAND_UI(ID_FILE_SPLIT, OnUpdateFileSplit)
 	ON_COMMAND(ID_ADVANCED_PARSE, OnAdvancedParse)
 	ON_UPDATE_COMMAND_UI(ID_ADVANCED_PARSE, OnUpdateAdvancedParse)
 	ON_COMMAND(ID_ADVANCED_SEGMENT, OnAdvancedSegment)
@@ -2051,13 +2054,20 @@ void CSaDoc::WriteScoreData(ISaAudioDocumentWriterPtr saAudioDocWriter)
 
 	TCHAR *pMusicScore = new TCHAR[nMusicScoreSize + 1];
 	if (nMusicScoreSize)
+	{
 		if (!pMusicStaff->GetWindowText(pMusicScore, nMusicScoreSize))
+		{
 			nMusicScoreSize = 0;
+		}
+	}
 	pMusicScore[nMusicScoreSize] = 0;
 
 	saAudioDocWriter->WriteAsMusicXML((_bstr_t)pMusicScore);
 	if (pMusicStaff)
+	{
 		pMusicStaff->SetModifiedFlag(FALSE);
+	}
+	delete [] pMusicScore;
 	SetTransModifiedFlag(FALSE); // transcription data has been modified
 }
 
@@ -3497,7 +3507,7 @@ BOOL CSaDoc::CopySectionToNewWavFile(DWORD dwSectionStart, DWORD dwSectionLength
 		m_szRawDataWrk[0] = szTempNewTemp;
 		if (!WriteDataFiles(szNewWave, TRUE, TRUE))
 		{
-			AfxThrowFileException(CFileException::generic, -1);
+			AfxThrowFileException(CFileException::genericException, -1);
 		}
 		//Restore Document
 		m_saParm.wFlags = wFlags;
@@ -3506,7 +3516,7 @@ BOOL CSaDoc::CopySectionToNewWavFile(DWORD dwSectionStart, DWORD dwSectionLength
 		CFile::Remove(szTempNewTemp);  // Done with this file
 		Undo(FALSE);  // return segments to original state
 	}
-	catch( const CException & e)
+	catch( const CException &)
 	{
 		m_szRawDataWrk[0] = szTempName;
 		m_dwDataSize = dwDataSize;
@@ -5321,7 +5331,7 @@ void CSaDoc::OnFileSaveAs()
 		BOOL bSaveAudio = TRUE;
 		bSuccess = OnSaveDocument(fileName, bSaveAudio);
 
-		if(bSuccess) 
+		if (bSuccess) 
 		{
 			// Change the document name
 			SetPathName(fileName);
@@ -5353,11 +5363,11 @@ void CSaDoc::OnFileSaveAs()
 		CFile::SetStatus(fileName, m_fileStat);
 	}
 
-	if(dlg.m_nShowFiles == CDlgSaveAsOptions::showBoth)
+	if (dlg.m_nShowFiles == CDlgSaveAsOptions::showBoth)
 	{
 		AfxGetApp()->OpenDocumentFile(fileName); // Open new document
 	}
-	if(dlg.m_nShowFiles == CDlgSaveAsOptions::showNew && fileName != GetPathName())
+	if (dlg.m_nShowFiles == CDlgSaveAsOptions::showNew && fileName != GetPathName())
 	{
 		AfxGetApp()->OpenDocumentFile(fileName); // Open new document
 		OnCloseDocument();  // Close Original
@@ -5365,6 +5375,241 @@ void CSaDoc::OnFileSaveAs()
 
 	EndWaitCursor();
 
+}
+
+/***************************************************************************/
+// CSaDoc::OnUpdateFileSave Menu Update
+/***************************************************************************/
+void CSaDoc::OnUpdateFileSplit(CCmdUI* pCmdUI)
+{
+	pCmdUI->Enable(!((CSaApp*) AfxGetApp())->GetBatchMode() && !IsStereo());
+}
+
+/**
+* Generate a file name for a split file
+* 
+* Since the Ref+space+Gloss string will become the filename, protect the 
+* Windows Write function from crashing by testing for invalid characters 
+* in the string (i.e. \ / : * ? “ < > | ); 
+* If you find one I suggest you replace it with a hyphen so the user knows 
+* something is not correct.
+*
+* For the Split File feature, after talking to one of the instructors, here 
+* is a revision to the filename process.
+*
+* The conditions for building a valid filename are:
+* - Ref field can be alpha-numeric including <space>
+* - Gloss field can be alpha-numeric including <space>
+* - Ref field can be blank
+* - Gloss field can be blank
+* - Ref field and Gloss field cannot both be blank at the same time
+* - Ref field cannot have duplicate data
+* - Gloss field cannot have duplicate data unless Ref is different
+* - Ref field and Gloss field cannot use invalid characters
+*
+* For now if an error condition exists, then put up a message that says 
+* something like “Invalid Filename - Failed to any save data”
+* In the future the offending item can be displayed so the user can more 
+* easily fix the problem.
+*/
+CString CSaDoc::FilterSplitName( CString text)
+{
+	CString result;
+	for (int i=0;i<text.GetLength();i++) {
+		wchar_t c = text.GetAt(i);
+		switch (c)
+		{
+		case '\\':
+		case '/':
+		case ':':
+		case '*':
+		case '?':
+		case '“':
+		case '<':
+		case '>':
+		case '|':
+		case '^':
+			c = '-';
+			//ignore
+			break;
+		default:
+			break;
+		}
+		result.AppendChar(c);
+	}
+	if (result.GetAt(0)=='#') {
+		result = result.Mid(1);
+	}
+	result = result.Trim();
+	return result;
+}
+
+CString CSaDoc::GenerateSplitName( CSaView* pView, int convention, int index)
+{
+	wchar_t buffer[MAX_PATH];
+	memset(buffer,0,sizeof(buffer));
+
+	CString result;
+	// generate the filename based on the dialog selection
+	switch (convention) {
+	default:
+	case 1:	//ref+gloss
+		CSegment * g = pView->GetAnnotation(GLOSS);
+		DWORD dwStart = g->GetOffset(index);
+		CString gloss = g->GetSegmentString(index);
+		// find the ref based on the gloss position, since GLOSS is the iterator
+		CSegment * r = pView->GetAnnotation(REFERENCE);
+		int rindex = -1;
+		for (int j=0;j<r->GetSize();j++) {
+			DWORD dwOffset = r->GetOffset(j);
+			if (dwStart==dwOffset) {
+				rindex = j;
+				break;
+			} else if (dwStart<dwOffset) {
+				// we passed it
+				rindex = j-1;
+				break;
+			}
+		}
+		CString ref;
+		if (rindex!=-1) {
+			ref = pView->GetAnnotation(REFERENCE)->GetSegmentString(rindex);
+		}
+
+		gloss = FilterSplitName(gloss);
+		ref = FilterSplitName(ref);
+		if (ref.GetLength()!=0)
+		{
+			if (gloss.GetLength()!=0)
+			{
+				swprintf_s(buffer,_countof(buffer),L"%s %s.wav",(LPCTSTR)ref,(LPCTSTR)gloss);
+			}
+			else
+			{
+				swprintf_s(buffer,_countof(buffer),L"%s.wav",(LPCTSTR)ref);
+			}
+		}
+		else if (gloss.GetLength()!=0) 
+		{
+			swprintf_s(buffer,_countof(buffer),L"%s.wav",(LPCTSTR)gloss);
+		}
+		else
+		{
+			CSaApp* pApp = (CSaApp*)AfxGetApp();
+			CString szNumber;
+			szNumber.Format(_T("%d"), index);
+			pApp->ErrorMessage(IDS_EMPTY_ANNOTATIONS,(LPCTSTR)szNumber);
+		}
+		break;
+	}
+	result = buffer;
+	return result;
+}
+
+/***************************************************************************/
+// CSaDoc::OnFileSplit
+// Splits a file based on user defined keys such as reference or gloss
+/***************************************************************************/
+void CSaDoc::OnFileSplit()
+{
+	CString fileName = GetPathName();
+	wchar_t buffer[MAX_PATH];
+	swprintf_s(buffer,_countof(buffer),fileName);
+	wchar_t drive[_MAX_DRIVE];
+	wchar_t dir[_MAX_DIR];
+	wchar_t fname[_MAX_FNAME];
+	wchar_t ext[_MAX_EXT];
+	_wsplitpath_s( buffer, drive, dir, fname, ext );
+
+	wchar_t newpath[MAX_PATH];
+	swprintf_s(newpath,_countof(newpath),L"%s%s%s",drive,dir,L"Split\\");
+	
+	CDlgSplit dlg;
+	dlg.m_FolderName = newpath;
+	if (dlg.DoModal()!=IDOK)
+	{
+		return;
+	}
+
+	CSaApp* pApp = (CSaApp*)AfxGetApp();
+
+	swprintf_s(newpath,_countof(newpath),dlg.m_FolderName.Left(dlg.m_FolderName.GetLength()-1));
+
+	CFileStatus status;
+	if (CFile::GetStatus(newpath,status)) {
+		if (status.m_attribute&CFile::directory) 
+		{
+			// it's there and it's a directory
+			TRACE1("directory %s already exists\n",newpath);
+		}
+		else
+		{
+			// it exists, but it's not a directory
+			TRACE1("%s already exists, but it's not a directory\n",newpath);
+			pApp->ErrorMessage(IDS_SPLIT_BAD_DIRECTORY);
+			return;
+		}
+	} 
+	else 
+	{
+		TRACE1("creating %s\n",newpath);
+		// it doesn't exist - create it!
+		CreateDirectory(newpath, NULL);
+	}
+
+	POSITION pos = GetFirstViewPosition();
+	CSaView* pView = (CSaView*)GetNextView(pos);
+	// we need a focused graph!
+	if (pView->GetFocusedGraphWnd()==NULL) {
+		pApp->ErrorMessage(IDS_SPLIT_NO_SELECTION);
+		return;
+	}
+
+	// key off of gloss for now
+	int nLoop = pView->GetAnnotation(GLOSS)->GetSize();
+	if (nLoop==0) {
+		pApp->ErrorMessage(IDS_SPLIT_NO_ANNOTATION);
+		return;
+	}
+
+	BeginWaitCursor();
+
+	// loop for each annotation
+	for (int i=0;i<nLoop;i++) {
+		
+		BOOL bSuccess = FALSE;
+
+		CSegment * g = pView->GetAnnotation(GLOSS);
+		DWORD dwStart = g->GetOffset(i);
+		DWORD dwStop = dwStart + g->GetDuration(i);
+
+		// can we piece the name together?
+		CString name = GenerateSplitName( pView, dlg.m_iConvention, i);
+		if (name.GetLength()==0) 
+		{
+			continue;
+		}
+		wchar_t buffer[MAX_PATH];
+		swprintf_s( buffer, _countof(buffer), L"%s\\%s",newpath,(LPCTSTR)name);
+
+		bSuccess = CopySectionToNewWavFile(dwStart,dwStop-dwStart,buffer);
+		if (!bSuccess)
+		{
+			// be sure to delete the file
+			try
+			{
+				CFile::Remove(buffer);
+			}
+			catch (...)
+			{
+				TRACE0("Warning: failed to delete file after failed SaveAs\n");
+			}
+			EndWaitCursor();
+			return;
+		}
+	}
+
+	EndWaitCursor();
 }
 
 /***************************************************************************/
@@ -5436,7 +5681,6 @@ void CSaDoc::OnUpdateFileSaveAs(CCmdUI* pCmdUI)
 }
 
 // SDM 1.06.5 Removed unused command handlers
-
 
 // Split function SDM 1.5Test8.2
 /***************************************************************************/

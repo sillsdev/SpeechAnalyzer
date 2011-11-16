@@ -2043,6 +2043,10 @@
 					</FileConfiguration>
 				</File>
 				<File
+					RelativePath=".\DlgSplit.cpp"
+					>
+				</File>
+				<File
 					RelativePath="DlgVowelFormants.cpp"
 					>
 					<FileConfiguration
@@ -3406,6 +3410,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\DlgSplit.h"
+				>
+			</File>
+			<File
 				RelativePath=".\DlgVowelFormants.h"
 				>
 			</File>
@@ -3768,5 +3776,9 @@
 		</Filter>
 	</Files>
 	<Globals>
+		<Global
+			Name="RESOURCE_FILE"
+			Value="SA.rc"
+		/>
 	</Globals>
 </VisualStudioProject>

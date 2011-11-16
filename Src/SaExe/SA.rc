@@ -28,7 +28,7 @@ LANGUAGE LANG_NEUTRAL, SUBLANG_NEUTRAL
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 3,0,1,5
+ FILEVERSION 3,0,1,7
  PRODUCTVERSION 1,0,0,1
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
@@ -46,7 +46,7 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "SIL International"
             VALUE "FileDescription", "SA"
-            VALUE "FileVersion", "v3.0.1.5"
+            VALUE "FileVersion", "v3.0.1.7"
             VALUE "InternalName", "SA"
             VALUE "LegalCopyright", "© 1996-2011 SIL International (MSEA)"
             VALUE "ProductName", "SA"
@@ -2013,6 +2013,21 @@ BEGIN
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,83,139,10
 END
 
+IDD_SPLIT DIALOGEX 0, 0, 262, 131
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Split File"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "Split",IDOK,152,110,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,205,110,50,14
+    COMBOBOX        IDC_SPLIT_CONVENTION,7,22,248,30,CBS_DROPDOWN | CBS_SORT | WS_DISABLED | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "Audio Filename Convention",IDC_STATIC,7,11,247,8
+    LTEXT           "Audio Folder Name",IDC_STATIC,7,43,247,8
+    COMBOBOX        IDC_SPLIT_LOCATION,7,85,248,30,CBS_DROPDOWN | CBS_SORT | WS_DISABLED | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "Audio Folder Location",IDC_STATIC,7,75,248,8
+    EDITTEXT        IDC_SPLIT_FOLDER,7,54,247,14,ES_AUTOHSCROLL | WS_DISABLED
+END
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -2124,6 +2139,14 @@ BEGIN
         RIGHTMARGIN, 294
         TOPMARGIN, 7
         BOTTOMMARGIN, 187
+    END
+
+    IDD_SPLIT, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 255
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 124
     END
 END
 #endif    // APSTUDIO_INVOKED
@@ -2341,6 +2364,7 @@ BEGIN
         MENUITEM "Open Startup...",             ID_FILE_OPEN_SPECIAL
         MENUITEM "&Close",                      ID_FILE_CLOSE
         MENUITEM "&Save\tCtrl+S",               ID_FILE_SAVE
+        MENUITEM "Sp&lit ...",                  ID_FILE_SPLIT
         MENUITEM "Save &As...",                 ID_FILE_SAVE_AS
         MENUITEM SEPARATOR
         POPUP "&Import"
@@ -2594,11 +2618,11 @@ BEGIN
         MENUITEM "Waveform &Generator...",      ID_WAVEFORM_GENERATOR
         MENUITEM SEPARATOR
         MENUITEM "Audio &Converter Program",    ID_AUDIO_CON
-        POPUP "&Experimental Features"
+        POPUP "Automatic &Markup"
         BEGIN
-            MENUITEM "Auto &Segment",               ID_ADVANCED_SEGMENT
-            MENUITEM "Auto &Parse",                 ID_ADVANCED_PARSE
-            MENUITEM "Auto &Align...",              ID_AUTO_ALIGN
+            MENUITEM "Locate Phonetic &Segments",   ID_ADVANCED_SEGMENT
+            MENUITEM "Locate Words or &Phrases",    ID_ADVANCED_PARSE
+            MENUITEM "&Align Transcription Data...", ID_AUTO_ALIGN
         END
         MENUITEM SEPARATOR
         MENUITEM "&Options...",                 ID_TOOLS_OPTIONS
@@ -3750,6 +3774,16 @@ BEGIN
     0
 END
 
+IDD_SPLIT DLGINIT
+BEGIN
+    IDC_SPLIT_CONVENTION, 0x403, 12, 0
+0x6552, 0x2066, 0x202b, 0x6c47, 0x736f, 0x0073, 
+    IDC_SPLIT_LOCATION, 0x403, 26, 0
+0x6153, 0x656d, 0x6120, 0x2073, 0x7563, 0x7272, 0x6e65, 0x2074, 0x706f, 
+0x6e65, 0x6620, 0x6c69, 0x0065, 
+    0
+END
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -4482,8 +4516,8 @@ END
 
 STRINGTABLE 
 BEGIN
-    IDS_AWIZ_CAPTION_IMPORT "Transcription Import Wizard"
-    IDS_AWIZ_CAPTION_ALIGN  "Transcription Alignment Wizard"
+    IDS_AWIZ_CAPTION_IMPORT "Transcription Import"
+    IDS_AWIZ_CAPTION_ALIGN  "Transcription Alignment"
     IDS_AWIZ_TITLE_INIT     "Select Transcriptions To Modify"
     IDS_AWIZ_TITLE_PHONETIC "Modify Phonetic Transcription"
     IDS_AWIZ_TITLE_PHONEMIC "Modify Phonemic Transcription"
@@ -4714,6 +4748,9 @@ BEGIN
     ID_HELP_TRAINING_INSTRUCTOR 
                             "Open the Instructor Guide for the training materials."
     ID_HELP_TRAINING_EXERCISES "Open the student exercises"
+    IDS_SPLIT_NO_SELECTION  "Please select a graph to split!"
+    IDS_SPLIT_NO_ANNOTATION "Please select a graph with a Gloss Annontation"
+    IDS_SPLIT_BAD_DIRECTORY "Invalid destination.  Please select directory for storing the split output files."
 END
 
 STRINGTABLE 
@@ -4727,6 +4764,11 @@ BEGIN
                             "This would move the cursor too far to the right."
     IDS_ERROR_SCREEN_CAPTURE_SAVE "Can't create png file"
     IDS_ERROR_SCREEN_CAPTURE_OPEN "Can't open file"
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_EMPTY_ANNOTATIONS   "The annotations for segment %d were empty.  The segment will not be saved because a filename get could not be generated\n"""
 END
 
 #endif    // English (U.S.) resources

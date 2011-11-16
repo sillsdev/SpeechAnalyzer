@@ -46,7 +46,7 @@
 //###########################################################################
 // CSaDoc document
 
-
+class CSaView;
 class CFontTable;
 class CProcessDoc;
 class CProcessAdjust;
@@ -270,6 +270,8 @@ private:
 	void WriteTranscription(int transType, ISaAudioDocumentWriterPtr saAudioDocWriter);
 	void WriteGlossPosAndRefSegments(ISaAudioDocumentWriterPtr saAudioDocWriter);
 	void WriteScoreData(ISaAudioDocumentWriterPtr saAudioDocWriter);
+	CString GenerateSplitName( CSaView* pView, int convention, int index);
+	CString FilterSplitName( CString text);
 
 public:
 	void vGetAlignInfo( CAlignInfo & alignInfo);
@@ -338,6 +340,8 @@ protected:
 	afx_msg void OnUpdateFileSave(CCmdUI* pCmdUI);
 	afx_msg void OnFileSaveAs();
 	afx_msg void OnUpdateFileSaveAs(CCmdUI* pCmdUI);
+	afx_msg void OnFileSplit();
+	afx_msg void OnUpdateFileSplit(CCmdUI* pCmdUI);
 	afx_msg void OnAdvancedParse();
 	afx_msg void OnUpdateAdvancedParse(CCmdUI* pCmdUI);
 	afx_msg void OnAdvancedSegment();
