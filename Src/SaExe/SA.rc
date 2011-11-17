@@ -3806,7 +3806,7 @@ STRINGTABLE
 BEGIN
     IDR_MAINFRAME           "Speech Analyzer"
     IDR_SA_ANNTYPE          "\nSA\nSA Document\nWAV Files (*.wav)\n.wav\nannFileType\nANN File Type"
-    VS_VERSION              "Version 3.0.1.6"
+    VS_VERSION              "Version 3.0.1.7"
     VS_COPYRIGHT            "© 1996-2011 SIL International (MSEA).\nAll Rights Reserved."
     IDR_SA_WBTYPE           "\nWB\nSA Workbench\nWB Files (*.wb)\n.wb\nwbFileType\nWB File Type"
 END
@@ -4768,7 +4768,9 @@ END
 
 STRINGTABLE 
 BEGIN
-    IDS_EMPTY_ANNOTATIONS   "The annotations for segment %d were empty.  The segment will not be saved because a filename get could not be generated\n"""
+    IDS_EMPTY_ANNOTATIONS   "The annotations for segment %1 were empty.  The segment will not be saved because a filename get could not be generated."""
+    IDS_SPLIT_BAD_COPY      "Unable to complete copy of transcription data for %1.\nThe transcription data is lost."
+    IDS_SPLIT_COMPLETE      "The split is complete.  %1 segments were created."
 END
 
 #endif    // English (U.S.) resources

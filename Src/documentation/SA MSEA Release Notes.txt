@@ -47,3 +47,10 @@ SA 3.0.1.6 - 11/8/2011
 1) Fixed more CRT_SECURE warnings.
 2) Modified way AutoParse and AutoSegment work.  Selecting either menu item now displays 'parameters' dialog box.  The Apply button actually works now, as well as Cancel and OK.  Using the Cancel button issues a 'undo' message to reset the graphs to their original state.
 3) Unhid 'experimental features' menu item
+
+
+SA 3.0.1.7 - 11/16/2011
+-----------------------
+1) Fixed 'move cursor here' bug.
+2) Implemented 'File Split' feature.  Splits a audio file and transcription data based on user selected parameters.
+3) Renamed some of the 'experimental' features.

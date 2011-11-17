@@ -2675,14 +2675,16 @@ BOOL CSaDoc::SaveModified()
 // SDM 1.06.6U2 Added start and max parameters to copy a file portion
 /***************************************************************************/
 // CSaDoc::CopyFile Copy a file
-// The function returns TRUE, if the copying was successfull and FALSE, if
+// The function returns TRUE, if the copying was successful and FALSE, if
 // not. It uses the data read buffer to copy the files data. The buffer
 // contents will be destroyed after the call.  dwStart indicates position in
 // source file to copy from.  dwMax indicates maximum size to copy.
 /***************************************************************************/
 BOOL CSaDoc::CopyFile(const TCHAR* pszSourceName, const TCHAR* pszTargetName, DWORD dwStart/*=0*/, DWORD dwMax/*=UNDEFINED_OFFSET*/, BOOL bTruncate)
 {
-	CFile SourceFile, TargetFile; // destructor will close the files
+	CFile SourceFile;
+	CFile TargetFile; // destructor will close the files
+	
 	CFileStatus rStatus;
 	// open the files
 	if (!SourceFile.Open(pszSourceName, CFile::modeRead))
@@ -5482,16 +5484,16 @@ CString CSaDoc::GenerateSplitName( CSaView* pView, int convention, int index)
 		{
 			if (gloss.GetLength()!=0)
 			{
-				swprintf_s(buffer,_countof(buffer),L"%s %s.wav",(LPCTSTR)ref,(LPCTSTR)gloss);
+				swprintf_s(buffer,_countof(buffer),L"%s %s",(LPCTSTR)ref,(LPCTSTR)gloss);
 			}
 			else
 			{
-				swprintf_s(buffer,_countof(buffer),L"%s.wav",(LPCTSTR)ref);
+				swprintf_s(buffer,_countof(buffer),L"%s",(LPCTSTR)ref);
 			}
 		}
 		else if (gloss.GetLength()!=0) 
 		{
-			swprintf_s(buffer,_countof(buffer),L"%s.wav",(LPCTSTR)gloss);
+			swprintf_s(buffer,_countof(buffer),L"%s",(LPCTSTR)gloss);
 		}
 		else
 		{
@@ -5526,8 +5528,7 @@ void CSaDoc::OnFileSplit()
 	
 	CDlgSplit dlg;
 	dlg.m_FolderName = newpath;
-	if (dlg.DoModal()!=IDOK)
-	{
+	if (dlg.DoModal()!=IDOK) {
 		return;
 	}
 
@@ -5537,21 +5538,16 @@ void CSaDoc::OnFileSplit()
 
 	CFileStatus status;
 	if (CFile::GetStatus(newpath,status)) {
-		if (status.m_attribute&CFile::directory) 
-		{
+		if (status.m_attribute&CFile::directory) {
 			// it's there and it's a directory
 			TRACE1("directory %s already exists\n",newpath);
-		}
-		else
-		{
+		} else {
 			// it exists, but it's not a directory
 			TRACE1("%s already exists, but it's not a directory\n",newpath);
 			pApp->ErrorMessage(IDS_SPLIT_BAD_DIRECTORY);
 			return;
 		}
-	} 
-	else 
-	{
+	}  else {
 		TRACE1("creating %s\n",newpath);
 		// it doesn't exist - create it!
 		CreateDirectory(newpath, NULL);
@@ -5574,6 +5570,7 @@ void CSaDoc::OnFileSplit()
 
 	BeginWaitCursor();
 
+	int count = 0;
 	// loop for each annotation
 	for (int i=0;i<nLoop;i++) {
 		
@@ -5585,31 +5582,44 @@ void CSaDoc::OnFileSplit()
 
 		// can we piece the name together?
 		CString name = GenerateSplitName( pView, dlg.m_iConvention, i);
-		if (name.GetLength()==0) 
-		{
+		if (name.GetLength()==0)  {
 			continue;
 		}
 		wchar_t buffer[MAX_PATH];
-		swprintf_s( buffer, _countof(buffer), L"%s\\%s",newpath,(LPCTSTR)name);
+		swprintf_s( buffer, _countof(buffer), L"%s\\%s.wav",newpath,(LPCTSTR)name);
 
 		bSuccess = CopySectionToNewWavFile(dwStart,dwStop-dwStart,buffer);
-		if (!bSuccess)
-		{
+		if (!bSuccess) {
 			// be sure to delete the file
-			try
-			{
+			try {
 				CFile::Remove(buffer);
-			}
-			catch (...)
-			{
+			} catch (...) {
 				TRACE0("Warning: failed to delete file after failed SaveAs\n");
 			}
 			EndWaitCursor();
 			return;
 		}
+
+		// copy the saxml.tmp file to .saxml
+		wchar_t oldsaxml[MAX_PATH];
+		wchar_t newsaxml[MAX_PATH];
+		swprintf_s( oldsaxml, _countof(oldsaxml), L"%s\\%s.saxml.tmp",newpath,name);
+		swprintf_s( newsaxml, _countof(newsaxml), L"%s\\%s.saxml",newpath,name);
+		bSuccess = CopyFile(oldsaxml,newsaxml);
+		if (!bSuccess) {
+			pApp->ErrorMessage(IDS_SPLIT_BAD_COPY,buffer);
+		} else {
+			count++;
+		}
 	}
 
 	EndWaitCursor();
+
+	CString szText;
+	wchar_t szNumber[128];
+	swprintf_s(szNumber,_countof(szNumber),L"%d",count);
+	AfxFormatString1(szText, IDS_SPLIT_COMPLETE, szNumber);
+	AfxMessageBox(szText,MB_OK|MB_ICONINFORMATION,0);
 }
 
 /***************************************************************************/
