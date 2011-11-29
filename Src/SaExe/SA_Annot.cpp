@@ -2227,15 +2227,15 @@ void CAnnotationWnd::OnLButtonDown(UINT nFlags, CPoint point)
 		double fBytesPerPix = (double)dwDataFrame / (double)rWnd.Width();
 		// calculate clicked data position
 		LONG dwPosition = (LONG)((double)point.x * fBytesPerPix + (double)fDataStart);
-
 		//SDM 1.06.5
 		//SDM 1.06.6
 		//SDM 1.5Test8.5
-		if (((CMainFrame*)AfxGetMainWnd())->IsEditAllowed()&&(!pView->ASelection().SelectFromPosition(pView, m_nIndex, dwPosition))&&(pView->ASelection().GetSelection().nAnnotationIndex!=-1))//SDM 1.5Test8.5
-		{
+		if (((CMainFrame*)AfxGetMainWnd())->IsEditAllowed() &&
+			(!pView->ASelection().SelectFromPosition( pView, m_nIndex, dwPosition)) &&
+			(pView->ASelection().GetSelection().nAnnotationIndex!=-1)) {
+			//SDM 1.5Test8.5
 			// Selection not changed
-			if (GetTickCount() < (m_nSelectTickCount + SLOW_CLICK_TIME_LIMIT * 1000))
-			{
+			if (GetTickCount() < (m_nSelectTickCount + SLOW_CLICK_TIME_LIMIT * 1000)) {
 				OnCreateEdit();
 			}
 		};

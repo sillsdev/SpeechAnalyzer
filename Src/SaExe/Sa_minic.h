@@ -30,11 +30,11 @@ public:
 
 	// Attributes
 protected:
-	int    m_iNCHeight;    // height of the caption
-	int    m_ixSizFrame;  // width of sizeable window frame
-	int    m_iySizFrame;  // height of sizeable window frame
-	BOOL    m_bFocus;       // TRUE if this window has focus
-	int     m_nCaption;     // graph caption style
+	int m_iNCHeight;		// height of the caption
+	int m_ixSizFrame;		// width of sizeable window frame
+	int m_iySizFrame;		// height of sizeable window frame
+	BOOL m_bFocus;			// TRUE if this window has focus
+	int m_nCaption;			// graph caption style
 
 	// Operations
 public:

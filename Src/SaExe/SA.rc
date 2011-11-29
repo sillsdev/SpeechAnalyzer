@@ -28,7 +28,7 @@ LANGUAGE LANG_NEUTRAL, SUBLANG_NEUTRAL
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 3,0,1,7
+ FILEVERSION 3,0,1,8
  PRODUCTVERSION 1,0,0,1
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
@@ -46,7 +46,7 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "SIL International"
             VALUE "FileDescription", "SA"
-            VALUE "FileVersion", "v3.0.1.7"
+            VALUE "FileVersion", "v3.0.1.8"
             VALUE "InternalName", "SA"
             VALUE "LegalCopyright", "© 1996-2011 SIL International (MSEA)"
             VALUE "ProductName", "SA"
@@ -2364,7 +2364,7 @@ BEGIN
         MENUITEM "Open Startup...",             ID_FILE_OPEN_SPECIAL
         MENUITEM "&Close",                      ID_FILE_CLOSE
         MENUITEM "&Save\tCtrl+S",               ID_FILE_SAVE
-        MENUITEM "Sp&lit ...",                  ID_FILE_SPLIT
+        MENUITEM "Sp&lit File ...",             ID_FILE_SPLIT
         MENUITEM "Save &As...",                 ID_FILE_SAVE_AS
         MENUITEM SEPARATOR
         POPUP "&Import"
@@ -2422,6 +2422,8 @@ BEGIN
             MENUITEM "Add Phrase L4 Segment",       ID_EDIT_ADD_PHRASE_L4
             MENUITEM SEPARATOR
             MENUITEM "&Update All Boundaries",      ID_EDIT_AUTO_SNAP_UPDATE
+            MENUITEM SEPARATOR
+            MENUITEM "Copy Phonetic to Phonemic",   ID_EDIT_COPY_PHONETIC_TO_PHONEMIC
         END
         MENUITEM "Segment &Boundaries\tINS",    ID_EDIT_BOUNDARIES
         MENUITEM SEPARATOR
@@ -3806,7 +3808,7 @@ STRINGTABLE
 BEGIN
     IDR_MAINFRAME           "Speech Analyzer"
     IDR_SA_ANNTYPE          "\nSA\nSA Document\nWAV Files (*.wav)\n.wav\nannFileType\nANN File Type"
-    VS_VERSION              "Version 3.0.1.7"
+    VS_VERSION              "Version 3.0.1.8"
     VS_COPYRIGHT            "© 1996-2011 SIL International (MSEA).\nAll Rights Reserved."
     IDR_SA_WBTYPE           "\nWB\nSA Workbench\nWB Files (*.wb)\n.wb\nwbFileType\nWB File Type"
 END
@@ -4193,7 +4195,7 @@ END
 STRINGTABLE 
 BEGIN
     IDS_QUESTION_DELETEGLOSS 
-                            "This process will delete existing gloss. Do you really want to delete it? "
+                            "This process will delete existing gloss. Do you really want to delete it?"
 END
 
 STRINGTABLE 
@@ -4771,6 +4773,8 @@ BEGIN
     IDS_EMPTY_ANNOTATIONS   "The annotations for segment %1 were empty.  The segment will not be saved because a filename get could not be generated."""
     IDS_SPLIT_BAD_COPY      "Unable to complete copy of transcription data for %1.\nThe transcription data is lost."
     IDS_SPLIT_COMPLETE      "The split is complete.  %1 segments were created."
+    IDS_CONFIRM_PHONEMIC_COPY 
+                            "This process will delete the existing phonemic data. Do you want to continue?"
 END
 
 #endif    // English (U.S.) resources

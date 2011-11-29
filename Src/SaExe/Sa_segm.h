@@ -80,95 +80,93 @@ class CSaView;
 //###########################################################################
 // CSegment data processing
 
-class CSegment : public CDataProcess
-{
+class CSegment : public CDataProcess {
 
-  // Construction/destruction/creation
+	// Construction/destruction/creation
 public:
-  CSegment(int index, int master = -1);
-  virtual ~CSegment();
-  virtual void Serialize(CArchive& ar);
+	CSegment(int index, int master = -1);
+	virtual ~CSegment();
+	virtual void Serialize(CArchive& ar);
 
 
-  // Attributes
+	// Attributes
 protected:
-  CSaString*      m_pAnnotation;        // annotation string
-  CDWordArray*  m_pOffset;            // array of offsets
-  CDWordArray*  m_pDuration;          // array of durations
-  int           m_nSelection;         // selected segment
-  int           m_nAnnotationIndex;
-  int           m_nMasterIndex;
+	CSaString * m_pAnnotation;			// annotation string
+	CDWordArray * m_pOffset;            // array of offsets
+	CDWordArray * m_pDuration;          // array of durations
+	int m_nSelection;					// selected segment
+	int m_nAnnotationIndex;
+	int m_nMasterIndex;
 
 
-  // Operations
+	// Operations
 protected:
-  // SDM 1.06.3b
-  typedef BOOL (CALLBACK EXPORT *TpInputFilterProc)(CSaString&);
+	// SDM 1.06.3b
+	typedef BOOL (CALLBACK EXPORT *TpInputFilterProc)(CSaString&);
 public:
-  int                 GetMasterIndex(void) const {return m_nMasterIndex;};
-  int                 GetAnnotationIndex(void) const {return m_nAnnotationIndex;};
-  virtual TpInputFilterProc GetInputFilter(void) const {return NULL;}; // filter function for input
-  // get copies of internal data.  (const functions)
-  virtual CFontTable* NewFontTable() const = 0; // return selected font table
-  int                 GetSize() const {return m_pOffset->GetSize();};
-  DWORD               GetOffset(const int nIndex)   const // return offset
-  {return ((nIndex < GetSize())&&(nIndex >= 0)) ? m_pOffset->GetAt(nIndex) : 0L;}
-  DWORD               GetDuration(const int nIndex) const // return duration
-  {return (nIndex < GetSize()&&(nIndex >= 0)) ? m_pDuration->GetAt(nIndex) : 0L;}
-  DWORD               GetStop(const int nIndex) const // return stop
-  {return GetOffset(nIndex)+GetDuration(nIndex);}
-  TCHAR               GetChar(int nIndex)     const {return m_pAnnotation->GetAt(nIndex);} // return annotation character
-  int                 GetSelection()          const {return m_nSelection;} // return the index of the selected character
-  int                 GetPrevious(int nIndex = -1) const; // return the index of the previous segment
-  int                 GetNext(int nIndex = -1) const; // return the index of the next segment
-  int                 FindOffset(DWORD dwOffset) const; // return segment with matching offset
-  int                 FindStop(DWORD dwOffset) const; // return segment with matching stop
-  int                 FindFromPosition(DWORD dwPosition, BOOL bWithin = FALSE) const; // get segment index from position
-  virtual BOOL        Match(int index, const CSaString & strToFind);
-  virtual int         FindNext(int fromIndex, const CSaString & strToFind, CSaDoc & SaDoc);
-  virtual int         FindPrev(int fromIndex, const CSaString & strToFind, CSaDoc & SaDoc);
-  virtual CSaString     GetSegmentString(int nIndex) const; // return segment string
-  virtual int         GetSegmentLength(int nIndex) const; // return segment length
-  int                 CheckCursors(CSaDoc*, BOOL bOverlap) const; // checks the position of the cursors for new segment
+	int GetMasterIndex(void) const {return m_nMasterIndex;};
+	int GetAnnotationIndex(void) const {return m_nAnnotationIndex;};
+	virtual TpInputFilterProc GetInputFilter(void) const {return NULL;}; // filter function for input
+	// get copies of internal data.  (const functions)
+	virtual CFontTable* NewFontTable() const = 0; // return selected font table
+	int GetSize() const {return m_pOffset->GetSize();};
+	DWORD GetOffset(const int nIndex) const // return offset
+		{return ((nIndex < GetSize())&&(nIndex >= 0)) ? m_pOffset->GetAt(nIndex) : 0L;}
+	DWORD GetDuration(const int nIndex) const // return duration
+		{return (nIndex < GetSize()&&(nIndex >= 0)) ? m_pDuration->GetAt(nIndex) : 0L;}
+	DWORD GetStop(const int nIndex) const // return stop
+		{return GetOffset(nIndex)+GetDuration(nIndex);}
+	TCHAR GetChar(int nIndex) const {return m_pAnnotation->GetAt(nIndex);} // return annotation character
+	int GetSelection() const {return m_nSelection;} // return the index of the selected character
+	int GetPrevious(int nIndex = -1) const; // return the index of the previous segment
+	int GetNext(int nIndex = -1) const; // return the index of the next segment
+	int FindOffset(DWORD dwOffset) const; // return segment with matching offset
+	int FindStop(DWORD dwOffset) const; // return segment with matching stop
+	int FindFromPosition(DWORD dwPosition, BOOL bWithin = FALSE) const; // get segment index from position
+	virtual BOOL Match(int index, const CSaString & strToFind);
+	virtual int FindNext(int fromIndex, const CSaString & strToFind, CSaDoc & SaDoc);
+	virtual int FindPrev(int fromIndex, const CSaString & strToFind, CSaDoc & SaDoc);
+	virtual CSaString GetSegmentString(int nIndex) const; // return segment string
+	virtual int GetSegmentLength(int nIndex) const; // return segment length
+	int CheckCursors(CSaDoc*, BOOL bOverlap) const; // checks the position of the cursors for new segment
 
-  enum
-  {
-      MODE_AUTOMATIC,
-      MODE_EDIT,
-      MODE_ADD
-  };
-  virtual int         CheckPosition(CSaDoc*,DWORD dwStart,DWORD dwStop, int nMode=MODE_AUTOMATIC,BOOL bOverlap=TRUE) const = 0;
-  enum
-  {
-      LIMIT_MOVING_START=1,
-      LIMIT_MOVING_STOP=2,
-      LIMIT_MOVING_BOTH=3,
-      LIMIT_NO_OVERLAP=4
-  };
-  virtual void        LimitPosition(CSaDoc*,DWORD& dwStart,DWORD& dwStop, int nMode=LIMIT_MOVING_BOTH) const = 0;
-  virtual CSaString       GetText(int /*nIndex*/) const {return *m_pAnnotation;} // return text string
-  BOOL                NeedToScroll(CSaView & saView, int nIndex) const;
-  int                 FirstVisibleIndex(CSaDoc & saDoc) const;
-  int                 LastVisibleIndex(CSaDoc & saDoc) const;
-  BOOL                IsEmpty() const { return m_pOffset->GetSize() == 0; };
+	enum {
+		MODE_AUTOMATIC,
+		MODE_EDIT,
+		MODE_ADD
+	};
+	virtual int         CheckPosition(CSaDoc*,DWORD dwStart,DWORD dwStop, int nMode=MODE_AUTOMATIC,BOOL bOverlap=TRUE) const = 0;
+	enum {
+		LIMIT_MOVING_START=1,
+		LIMIT_MOVING_STOP=2,
+		LIMIT_MOVING_BOTH=3,
+		LIMIT_NO_OVERLAP=4
+	};
 
-  // give pointers to internal data, allowing caller to modify data.
-  CSaString   * GetString()    {return m_pAnnotation;} // return pointer to annotation string
-  CDWordArray * GetOffsets()   {return m_pOffset;} // return pointer to offset array object
-  CDWordArray * GetDurations() {return m_pDuration;} // return pointer to duration array object
-  virtual const CStringArray* GetTexts() {return NULL;} // return pointer to text string array object
+	virtual void LimitPosition(CSaDoc*,DWORD& dwStart,DWORD& dwStop, int nMode=LIMIT_MOVING_BOTH) const = 0;
+	virtual CSaString GetText(int /*nIndex*/) const {return *m_pAnnotation;} // return text string
+	BOOL NeedToScroll(CSaView & saView, int nIndex) const;
+	int FirstVisibleIndex(CSaDoc & saDoc) const;
+	int LastVisibleIndex(CSaDoc & saDoc) const;
+	BOOL IsEmpty() const { return m_pOffset->GetSize() == 0; };
 
-  // modify internal data
-  void SelectSegment(CSaDoc & pSaDoc, int segIdx);
-  void AdjustCursorsToSnap(CDocument* pDoc); // adjust cursors to apropriate snap position
-  void SetSelection(int nIndex); // set selection
-  virtual void Remove(CDocument*, BOOL bCheck = TRUE); // remove a segment
-  virtual DWORD RemoveNoRefresh(CDocument*); // remove a segment
-  virtual void ReplaceSelectedSegment(CDocument* pSaDoc, const CSaString & str);
-  virtual void DeleteContents(); // delete all contents of the segment arrays
-  virtual void Adjust(CSaDoc* saDoc, int nIndex, DWORD dwOffset, DWORD dwDuration = 0); // adjust position of segment
-  virtual BOOL Insert(int nIndex, const CSaString*, int nDelimiter, DWORD dwStart, DWORD dwDuration); // insert a new segment
-  virtual long Process(void* /*pCaller*/, CSaDoc* /*pDoc*/, int /*nProgress*/ = 0, int /*Level*/ = 1) { return PROCESS_ERROR; };
+	// give pointers to internal data, allowing caller to modify data.
+	CSaString * GetString() {return m_pAnnotation;} // return pointer to annotation string
+	CDWordArray * GetOffsets() {return m_pOffset;} // return pointer to offset array object
+	CDWordArray * GetDurations() {return m_pDuration;} // return pointer to duration array object
+	virtual const CStringArray* GetTexts() {return NULL;} // return pointer to text string array object
+
+	// modify internal data
+	void SelectSegment(CSaDoc & pSaDoc, int segIdx);
+	void AdjustCursorsToSnap(CDocument* pDoc); // adjust cursors to apropriate snap position
+	void SetSelection(int nIndex); // set selection
+	virtual void Remove(CDocument*, BOOL bCheck = TRUE); // remove a segment
+	virtual DWORD RemoveNoRefresh(CDocument*); // remove a segment
+	virtual void ReplaceSelectedSegment(CDocument* pSaDoc, const CSaString & str);
+	virtual void DeleteContents(); // delete all contents of the segment arrays
+	virtual void Adjust(CSaDoc* saDoc, int nIndex, DWORD dwOffset, DWORD dwDuration = 0); // adjust position of segment
+	virtual BOOL Insert(int nIndex, const CSaString*, int nDelimiter, DWORD dwStart, DWORD dwDuration); // insert a new segment
+	virtual long Process(void* /*pCaller*/, CSaDoc* /*pDoc*/, int /*nProgress*/ = 0, int /*Level*/ = 1) { return PROCESS_ERROR; };
 };
 
 //###########################################################################
@@ -177,23 +175,23 @@ public:
 class CDependentSegment : public CSegment
 {
 public:
-  CDependentSegment(int index, int master = -1): CSegment(index,master) {};
+	CDependentSegment(int index, int master = -1): CSegment(index,master) {};
 
-  // Attributes
+	// Attributes
 private:
 
-  // Operations
+	// Operations
 protected:
-  int AlignOffsetToMaster(CDocument*, DWORD* pdwOffset) const; // find the nearest master segment to the given position
-  int AlignStopToMaster(CDocument*, DWORD* pdwStop) const; // find the nearest master segment to the given position
+	int AlignOffsetToMaster(CDocument*, DWORD* pdwOffset) const; // find the nearest master segment to the given position
+	int AlignStopToMaster(CDocument*, DWORD* pdwStop) const; // find the nearest master segment to the given position
 public:
-  void AdjustCursorsToMaster(CDocument* pSaDoc, BOOL bAdjust = TRUE, DWORD* pdwOffset = NULL, DWORD* pdwStop = NULL) const; // adjust cursors to the nearest phonetic segment to the given position SDM 1.06.1.2 Added function
-  int AdjustPositionToMaster(CDocument* pSaDoc, DWORD& pdwOffset, DWORD& pdwStop) const;
-  int  CheckPositionToMaster(CSaDoc*,DWORD dwStart,DWORD dwStop, int nMode) const;
-  virtual int  CheckPosition(CSaDoc* pDoc, DWORD dwStart, DWORD dwStop, int nMode=MODE_AUTOMATIC, BOOL /*bUnused*/=TRUE) const
-  { return CheckPositionToMaster(pDoc, dwStart, dwStop, nMode);};
-  virtual void LimitPosition(CSaDoc*,DWORD& dwStart,DWORD& dwStop, int nMode=LIMIT_MOVING_BOTH) const;
-  virtual void Add(CSaDoc* pDoc, DWORD dwStart, CSaString& szString, BOOL bDelimiter = FALSE, BOOL bCheck = TRUE); // add a segment
+	void AdjustCursorsToMaster(CDocument* pSaDoc, BOOL bAdjust = TRUE, DWORD* pdwOffset = NULL, DWORD* pdwStop = NULL) const; // adjust cursors to the nearest phonetic segment to the given position SDM 1.06.1.2 Added function
+	int AdjustPositionToMaster(CDocument* pSaDoc, DWORD& pdwOffset, DWORD& pdwStop) const;
+	int CheckPositionToMaster(CSaDoc*,DWORD dwStart,DWORD dwStop, int nMode) const;
+	virtual int  CheckPosition(CSaDoc* pDoc, DWORD dwStart, DWORD dwStop, int nMode=MODE_AUTOMATIC, BOOL /*bUnused*/=TRUE) const
+		{ return CheckPositionToMaster(pDoc, dwStart, dwStop, nMode);};
+	virtual void LimitPosition(CSaDoc*,DWORD& dwStart,DWORD& dwStop, int nMode=LIMIT_MOVING_BOTH) const;
+	virtual void Add(CSaDoc* pDoc, DWORD dwStart, CSaString& szString, BOOL bDelimiter = FALSE, BOOL bCheck = TRUE); // add a segment
 };
 
 //###########################################################################
@@ -202,48 +200,48 @@ public:
 class CTextSegment : public CDependentSegment
 {
 
-  // Construction/destruction/creation
+	// Construction/destruction/creation
 public:
-  CTextSegment(int index, int master = -1);
+	CTextSegment(int index, int master = -1);
 
-  virtual ~CTextSegment();
-  virtual void Serialize(CArchive& ar);
+	virtual ~CTextSegment();
+	virtual void Serialize(CArchive& ar);
 
-  // Attributes
+	// Attributes
 protected:
-  CStringArray* m_pTexts;             // array of text strings
+	CStringArray* m_pTexts;             // array of text strings
 
-  // Operations
+	// Operations
 protected:
-  CSaString      GetText(int nIndex) {return m_pTexts->GetAt(nIndex);} // return text string
+	CSaString      GetText(int nIndex) {return m_pTexts->GetAt(nIndex);} // return text string
 public:
-  virtual const CStringArray* GetTexts() {return m_pTexts;} // return pointer to text string array object
-  virtual BOOL Insert(int nIndex, const CSaString*, int nDelimiter, DWORD dwStart, DWORD dwDuration); // insert a new segment
-  virtual void DeleteContents(); // delete all contents of the segment arrays
-  virtual int  GetSegmentLength(int /*nIndex*/) const {return 1;} // return segment length always 1
-  virtual CSaString GetSegmentString(int nIndex) const {return m_pTexts->GetAt(nIndex);} // return segment string
-  virtual void Add(CSaDoc* pDoc, DWORD dwStart, CSaString& szString, BOOL bDelimiter = FALSE, BOOL bCheck = TRUE); // add a segment
-  virtual void Remove(CDocument*, BOOL bCheck = TRUE); // remove a segment
-  virtual void ReplaceSelectedSegment(CDocument* pSaDoc, const CSaString & str);
-  virtual DWORD RemoveNoRefresh(CDocument* pSaDoc = NULL);
-  virtual BOOL Match(int index, const CSaString & strToFind);
-  virtual int FindNext(int fromIndex, const CSaString & strToFind, CSaDoc & SaDoc);
-  virtual int FindPrev(int fromIndex, const CSaString & strToFind, CSaDoc & SaDoc);
-  virtual int CheckPosition(CSaDoc*,DWORD dwStart,DWORD dwStop, int nMode=MODE_AUTOMATIC, BOOL bUnused = TRUE) const;
-  virtual void  LimitPosition(CSaDoc*,DWORD& dwStart,DWORD& dwStop, int nMode=LIMIT_MOVING_BOTH) const;
-  int CountWords();
-  DWORD CalculateDuration(CSaDoc* pDoc, const int nIndex) const;
+	virtual const CStringArray* GetTexts() {return m_pTexts;} // return pointer to text string array object
+	virtual BOOL Insert(int nIndex, const CSaString*, int nDelimiter, DWORD dwStart, DWORD dwDuration); // insert a new segment
+	virtual void DeleteContents(); // delete all contents of the segment arrays
+	virtual int  GetSegmentLength(int /*nIndex*/) const {return 1;} // return segment length always 1
+	virtual CSaString GetSegmentString(int nIndex) const {return m_pTexts->GetAt(nIndex);} // return segment string
+	virtual void Add(CSaDoc* pDoc, DWORD dwStart, CSaString& szString, BOOL bDelimiter = FALSE, BOOL bCheck = TRUE); // add a segment
+	virtual void Remove(CDocument*, BOOL bCheck = TRUE); // remove a segment
+	virtual void ReplaceSelectedSegment(CDocument* pSaDoc, const CSaString & str);
+	virtual DWORD RemoveNoRefresh(CDocument* pSaDoc = NULL);
+	virtual BOOL Match(int index, const CSaString & strToFind);
+	virtual int FindNext(int fromIndex, const CSaString & strToFind, CSaDoc & SaDoc);
+	virtual int FindPrev(int fromIndex, const CSaString & strToFind, CSaDoc & SaDoc);
+	virtual int CheckPosition(CSaDoc*,DWORD dwStart,DWORD dwStop, int nMode=MODE_AUTOMATIC, BOOL bUnused = TRUE) const;
+	virtual void  LimitPosition(CSaDoc*,DWORD& dwStart,DWORD& dwStop, int nMode=LIMIT_MOVING_BOTH) const;
+	int CountWords();
+	DWORD CalculateDuration(CSaDoc* pDoc, const int nIndex) const;
 };
 
 class CDependentTextSegment : public CTextSegment
 {
 public:
-  CDependentTextSegment(int index, int master = -1): CTextSegment(index,master) {};
+	CDependentTextSegment(int index, int master = -1): CTextSegment(index,master) {};
 
-  virtual void LimitPosition(CSaDoc*,DWORD& dwStart,DWORD& dwStop, int /*nMode*/=LIMIT_MOVING_BOTH) const {dwStart=GetOffset(GetSelection());dwStop=GetStop(GetSelection());return;};
-  virtual BOOL Insert(int nIndex, const CSaString*, int nDelimiter, DWORD dwStart, DWORD dwDuration); // insert a new segment
-  int  CheckPositionToMaster(CSaDoc*,DWORD dwStart,DWORD dwStop, int nMode) const;
-  virtual void Add(CSaDoc* pDoc, DWORD dwStart, CSaString& szString, BOOL bDelimiter = FALSE, BOOL bCheck = TRUE); // add a segment
+	virtual void LimitPosition(CSaDoc*,DWORD& dwStart,DWORD& dwStop, int /*nMode*/=LIMIT_MOVING_BOTH) const {dwStart=GetOffset(GetSelection());dwStop=GetStop(GetSelection());return;};
+	virtual BOOL Insert(int nIndex, const CSaString*, int nDelimiter, DWORD dwStart, DWORD dwDuration); // insert a new segment
+	int  CheckPositionToMaster(CSaDoc*,DWORD dwStart,DWORD dwStop, int nMode) const;
+	virtual void Add(CSaDoc* pDoc, DWORD dwStart, CSaString& szString, BOOL bDelimiter = FALSE, BOOL bCheck = TRUE); // add a segment
 };
 
 //###########################################################################
@@ -251,34 +249,33 @@ public:
 
 class CIndependentSegment : public CSegment
 {
-  // Operations
+	// Operations
 public:
-  CIndependentSegment(int index, int master = -1): CSegment(index,master) {};
-  virtual int CheckPosition(CSaDoc*,DWORD dwStart,DWORD dwStop, int nMode=MODE_AUTOMATIC,BOOL bOverlap=TRUE) const;
-  virtual void LimitPosition(CSaDoc*,DWORD& dwStart,DWORD& dwStop, int nMode=LIMIT_MOVING_BOTH) const;
+	CIndependentSegment(int index, int master = -1): CSegment(index,master) {};
+	virtual int CheckPosition(CSaDoc*,DWORD dwStart,DWORD dwStop, int nMode=MODE_AUTOMATIC,BOOL bOverlap=TRUE) const;
+	virtual void LimitPosition(CSaDoc*,DWORD& dwStart,DWORD& dwStop, int nMode=LIMIT_MOVING_BOTH) const;
 };
 
 //###########################################################################
 // CPhoneticSegment data processing
 
-class CPhoneticSegment : public CIndependentSegment
-{
-  // Operations
+class CPhoneticSegment : public CIndependentSegment {
+	// Operations
 public:
-  CPhoneticSegment(int index, int master = -1): CIndependentSegment(index,master) {};
+	CPhoneticSegment(int index, int master = -1): CIndependentSegment(index,master) {};
 protected:
-  virtual long Exit(int nError); // exit processing on error
+	virtual long Exit(int nError); // exit processing on error
 
 public:
-  virtual TpInputFilterProc GetInputFilter(void) const {return gIPAInputFilter;}; // filter function for input
-  virtual long Process(void* pCaller, CSaDoc* pDoc, int nProgress = 0, int nLevel = 1);
-  virtual void Remove(CDocument*, BOOL bCheck = TRUE); // remove a segment
-  virtual DWORD RemoveNoRefresh(CDocument* pSaDoc);
-  virtual void ReplaceSelectedSegment(CDocument* pSaDoc, const CSaString & str);
+	virtual TpInputFilterProc GetInputFilter(void) const {return gIPAInputFilter;}; // filter function for input
+	virtual long Process(void* pCaller, CSaDoc* pDoc, int nProgress = 0, int nLevel = 1);
+	virtual void Remove(CDocument*, BOOL bCheck = TRUE); // remove a segment
+	virtual DWORD RemoveNoRefresh(CDocument* pSaDoc);
+	virtual void ReplaceSelectedSegment(CDocument* pSaDoc, const CSaString & str);
 
-  // Attributes
+	// Attributes
 private:
-  virtual CFontTable* NewFontTable() const {return new CFontTableIPA;};
+	virtual CFontTable* NewFontTable() const {return new CFontTableIPA;};
 };
 
 //###########################################################################
@@ -286,14 +283,14 @@ private:
 
 class CMusicPhraseSegment : public CIndependentSegment
 {
-  // Operations
+	// Operations
 public:
-  CMusicPhraseSegment(int index, int master = -1): CIndependentSegment(index,master) {};
-  virtual int CheckPosition(CSaDoc*,DWORD dwStart,DWORD dwStop, int nMode=MODE_AUTOMATIC,BOOL bOverlap=TRUE) const;
+	CMusicPhraseSegment(int index, int master = -1): CIndependentSegment(index,master) {};
+	virtual int CheckPosition(CSaDoc*,DWORD dwStart,DWORD dwStop, int nMode=MODE_AUTOMATIC,BOOL bOverlap=TRUE) const;
 
-  // Attributes
+	// Attributes
 private:
-  virtual CFontTable* NewFontTable() const {return new CFontTableANSI;};
+	virtual CFontTable* NewFontTable() const {return new CFontTableANSI;};
 };
 
 //###########################################################################
@@ -301,28 +298,27 @@ private:
 
 class CToneSegment : public CDependentSegment
 {
-  // Operations
+	// Operations
 public:
-  CToneSegment(int index, int master = -1): CDependentSegment(index,master) {};
+	CToneSegment(int index, int master = -1): CDependentSegment(index,master) {};
 
-  // Attributes
+	// Attributes
 private:
-  virtual CFontTable* NewFontTable() const {return new CFontTableANSI;};
+	virtual CFontTable* NewFontTable() const {return new CFontTableANSI;};
 };
 
 //###########################################################################
 // CPhonemicSegment data processing
 
-class CPhonemicSegment : public CDependentSegment
-{
-  // Operations
+class CPhonemicSegment : public CDependentSegment {
+	// Operations
 public:
-  CPhonemicSegment(int index, int master = -1): CDependentSegment(index,master) {};
-  virtual TpInputFilterProc GetInputFilter(void) const {return gIPAInputFilter;}; // filter function for input
+	CPhonemicSegment(int index, int master = -1) : CDependentSegment(index,master) {};
+	virtual TpInputFilterProc GetInputFilter(void) const {return gIPAInputFilter;}; // filter function for input
 
-  // Attributes
+	// Attributes
 private:
-  virtual CFontTable* NewFontTable() const {return new CFontTableIPA;};
+	virtual CFontTable* NewFontTable() const {return new CFontTableIPA;};
 };
 
 //###########################################################################
@@ -331,11 +327,11 @@ private:
 class COrthoSegment : public CDependentSegment
 {
 public:
-  COrthoSegment(int index, int master = -1): CDependentSegment(index,master) {};
+	COrthoSegment(int index, int master = -1): CDependentSegment(index,master) {};
 
-  // Attributes
+	// Attributes
 private:
-  virtual CFontTable* NewFontTable() const {return new CFontTableANSI;};
+	virtual CFontTable* NewFontTable() const {return new CFontTableANSI;};
 };
 
 //###########################################################################
@@ -344,30 +340,30 @@ private:
 class CGlossSegment : public CTextSegment
 {
 
-  // Construction/destruction/creation
+	// Construction/destruction/creation
 public:
-  CGlossSegment(int index, int master = -1);
-  virtual ~CGlossSegment();
+	CGlossSegment(int index, int master = -1);
+	virtual ~CGlossSegment();
 
-  // Attributes
+	// Attributes
 private:
-  CStringArray* m_pPOS;                    // array of text strings
-  virtual CFontTable* NewFontTable() const {return new CFontTableANSI;};
+	CStringArray* m_pPOS;                    // array of text strings
+	virtual CFontTable* NewFontTable() const {return new CFontTableANSI;};
 
-  // Operations
+	// Operations
 protected:
-  long Exit(int nError); // exit processing on error
+	long Exit(int nError); // exit processing on error
 
 public:
-  virtual long Process(void* pCaller, CSaDoc* pDoc, int nProgress = 0, int nLevel = 1);
-  virtual BOOL Insert(int nIndex, const CSaString*, int nDelimiter, DWORD dwStart, DWORD dwDuration); // insert a new segment
-  virtual void DeleteContents(); // delete all contents of the segment arrays
-  virtual DWORD RemoveNoRefresh(CDocument* pSaDoc = NULL);
-  virtual void Remove(CDocument*, BOOL bCheck = TRUE); // remove a segment
-  virtual void ReplaceSelectedSegment(CDocument* pSaDoc, const CSaString & str);
-  CStringArray* GetPOSs() { return m_pPOS;}
-  void CorrectGlossDurations(CSaDoc* pSaDoc);
-  virtual void Serialize(CArchive& ar);
+	virtual long Process(void* pCaller, CSaDoc* pDoc, int nProgress = 0, int nLevel = 1);
+	virtual BOOL Insert(int nIndex, const CSaString*, int nDelimiter, DWORD dwStart, DWORD dwDuration); // insert a new segment
+	virtual void DeleteContents(); // delete all contents of the segment arrays
+	virtual DWORD RemoveNoRefresh(CDocument* pSaDoc = NULL);
+	virtual void Remove(CDocument*, BOOL bCheck = TRUE); // remove a segment
+	virtual void ReplaceSelectedSegment(CDocument* pSaDoc, const CSaString & str);
+	CStringArray* GetPOSs() { return m_pPOS;}
+	void CorrectGlossDurations(CSaDoc* pSaDoc);
+	virtual void Serialize(CArchive& ar);
 
 };
 
@@ -375,19 +371,19 @@ public:
 class CReferenceSegment : public CDependentTextSegment
 {
 public:
-  CReferenceSegment(int index, int master = -1): CDependentTextSegment(index,master) {};
+	CReferenceSegment(int index, int master = -1): CDependentTextSegment(index,master) {};
 
-  // Attributes
+	// Attributes
 private:
-  virtual CFontTable* NewFontTable() const {return new CFontTableANSI;};
+	virtual CFontTable* NewFontTable() const {return new CFontTableANSI;};
 };
 
 class ArchiveTransfer
 {
 public:
-  static int tInt(CArchive& ar, int x=0);
-  static short int tShortInt(CArchive& ar, short int x=0);
-  static DWORD tDWORD(CArchive& ar, DWORD x=0);
+	static int tInt(CArchive& ar, int x=0);
+	static short int tShortInt(CArchive& ar, short int x=0);
+	static DWORD tDWORD(CArchive& ar, DWORD x=0);
 };
 
 

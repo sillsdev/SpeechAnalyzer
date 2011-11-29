@@ -120,7 +120,7 @@ void CPlotTonalWeightChart::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView *
   double fInvScaleFactor = (double)dwMelDataSize / (double)dwRawDataSize;
   DWORD dwFrameStart = (DWORD)((double)pView->GetStartCursorPosition() * fInvScaleFactor) & ~1; // must be multiple of two
   DWORD dwFrameSize  = ((DWORD)((double)pView->GetStopCursorPosition() * fInvScaleFactor) & ~1) - dwFrameStart + wSmpSize;
-  if (pView->Get_m_bStaticTWC())
+  if (pView->GetStaticTWC())
   {
     dwFrameStart = 0;
     dwFrameSize  = dwMelDataSize;

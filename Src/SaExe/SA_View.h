@@ -312,16 +312,16 @@ public:
 	void ShowInitialTopState();
 	void WriteProperties(Object_ostream& obs); // Save (Project) Settings
 	BOOL bReadProperties(Object_istream& obs, BOOL createGraphs); // Autoloading
-	BOOL bReadGraphListProperties(Object_istream& obs, BOOL createGraphs); // Autoloading
+	BOOL ReadGraphListProperties(Object_istream& obs, BOOL createGraphs); // Autoloading
 	static void s_SetObjectStream(Object_istream& obs);
 	static void s_ClearObjectStream();
-	BOOL bReadGraphListProperties(const CSaView & fromThis);
+	BOOL ReadGraphListProperties(const CSaView & fromThis);
 	void InitialUpdate(BOOL bTemp=FALSE); // called first time after construct and when applying new wave
 	void CreateOpenAsGraphs(UINT OpenAsID);
-	BOOL Get_m_bStaticTWC()                   {return m_bStaticTWC;}          // TCJ 6/23/00
-	void Set_m_bStaticTWC(BOOL bChecked)      {m_bStaticTWC = bChecked;}      // TCJ 6/23/00
-	BOOL Get_m_bNormalMelogram()              {return m_bNormalMelogram;}     // TCJ 6/23/00
-	void Set_m_bNormalMelogram(BOOL bChecked) {m_bNormalMelogram = bChecked;} // TCJ 6/23/00
+	BOOL GetStaticTWC()                   {return m_bStaticTWC;}          // TCJ 6/23/00
+	void SetStaticTWC(BOOL bChecked)      {m_bStaticTWC = bChecked;}      // TCJ 6/23/00
+	BOOL GetNormalMelogram()              {return m_bNormalMelogram;}     // TCJ 6/23/00
+	void SetNormalMelogram(BOOL bChecked) {m_bNormalMelogram = bChecked;} // TCJ 6/23/00
 
 	void MoveStartCursorRight();                                              // TCJ 7/6/00
 	void MoveStartCursorLeft();                                               // TCJ 7/6/00
@@ -589,6 +589,8 @@ protected:
 	afx_msg void OnRemoveOverlay();
 	afx_msg void OnUpdateRemoveOverlay(CCmdUI* pCmdUI);
 	afx_msg void OnRemoveOverlays();
+	afx_msg void OnEditCopyPhoneticToPhonemic();
+	afx_msg void OnUpdateEditCopyPhoneticToPhonemic(CCmdUI* pCmdUI);
 	DECLARE_MESSAGE_MAP()
 
 };

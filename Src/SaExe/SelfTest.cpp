@@ -450,7 +450,7 @@ void CSASelfTest::SelfTest()
 			double fScaleFactor = (double)dwRawDataSize / (double)dwMelDataSize;
 			DWORD dwFrameStart = (DWORD)((double)pView->GetStartCursorPosition() / fScaleFactor) & ~1; // must be multiple of two
 			DWORD dwFrameSize  = ((DWORD)((double)pView->GetStopCursorPosition() / fScaleFactor) & ~1) - dwFrameStart + wSmpSize;
-			if (pView->Get_m_bStaticTWC())
+			if (pView->GetStaticTWC())
 			{
 				dwFrameStart = 0;
 				dwFrameSize  = dwMelDataSize;

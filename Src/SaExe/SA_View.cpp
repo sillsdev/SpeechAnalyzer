@@ -3461,7 +3461,7 @@ BOOL CSaView::bReadProperties(Object_istream& obs, BOOL bCreateGraphs)
 			pwndFrame->SetWindowPlacement(&wpl);
 		}
 		else if (obs.bReadInteger(psz_z, m_z));
-		else if (bReadGraphListProperties(obs, bCreateGraphs));
+		else if (ReadGraphListProperties(obs, bCreateGraphs));
 		else if (m_pPageLayout->bReadProperties(obs));
 		else if (obs.bReadUInt(psz_layout, m_nLayout));
 		else if (obs.bReadBool(psz_legendall, m_bLegendAll));
@@ -3499,7 +3499,7 @@ BOOL CSaView::bReadProperties(Object_istream& obs, BOOL bCreateGraphs)
 // graphs being read are properties for graphs in the permanent template
 // view.
 /***************************************************************************/
-BOOL CSaView::bReadGraphListProperties(Object_istream& obs, BOOL bCreateGraphs)
+BOOL CSaView::ReadGraphListProperties(Object_istream& obs, BOOL bCreateGraphs)
 {
 	if (!obs.bReadBeginMarker(psz_graphlist)) return FALSE;
 
@@ -3579,7 +3579,7 @@ BOOL CSaView::bReadGraphListProperties(Object_istream& obs, BOOL bCreateGraphs)
 // This function to read graph properties is used when the graphs are being
 // created from a template view.
 /***************************************************************************/
-BOOL CSaView::bReadGraphListProperties(const CSaView & pTemplateView)
+BOOL CSaView::ReadGraphListProperties(const CSaView & pTemplateView)
 {
 	int OpenAsID = pSaApp->GetOpenAsID();
 

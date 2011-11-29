@@ -2744,8 +2744,8 @@ BOOL CDlgParametersMusicPage::OnInitDialog()
 	CMainFrame* pMDIFrameWnd = (CMainFrame*)AfxGetMainWnd();
 	ASSERT(pMDIFrameWnd->IsKindOf(RUNTIME_CLASS(CMainFrame)));
 	CSaView* pView = (CSaView*)pMDIFrameWnd->GetCurrSaView();
-	m_nDynamic  = !pView->Get_m_bStaticTWC();
-	m_nWeighted = !pView->Get_m_bNormalMelogram();
+	m_nDynamic  = !pView->GetStaticTWC();
+	m_nWeighted = !pView->GetNormalMelogram();
 
 	// get pointer to document
 	CSaDoc* pDoc = (CSaDoc*)pView->GetDocument();
@@ -3137,8 +3137,6 @@ void CDlgParametersMusicPage::OnCalcRange()
 	UpdateData(FALSE);
 }
 
-
-
 /***************************************************************************/
 // 09/25/2000 - DDO
 /***************************************************************************/
@@ -3151,8 +3149,8 @@ void CDlgParametersMusicPage::Apply()
 		CMainFrame* pMDIFrameWnd = (CMainFrame*)AfxGetMainWnd();
 		ASSERT(pMDIFrameWnd->IsKindOf(RUNTIME_CLASS(CMainFrame)));
 		CSaView* pView = (CSaView*)pMDIFrameWnd->GetCurrSaView();
-		pView->Set_m_bStaticTWC(!m_nDynamic);
-		pView->Set_m_bNormalMelogram(!m_nWeighted);
+		pView->SetStaticTWC(!m_nDynamic);
+		pView->SetNormalMelogram(!m_nWeighted);
 		// get pointer to document
 		CSaDoc* pDoc = (CSaDoc*)pView->GetDocument();
 		MusicParm cParm = *pDoc->GetMusicParm();

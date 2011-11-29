@@ -152,8 +152,6 @@ void CSegment::DeleteContents()
 	m_nSelection = -1; // SDM 1.5Test8.1 empty segments can not be selected
 }
 
-
-
 short int ArchiveTransfer::tShortInt(CArchive& ar, short int x)
 {
 	short int ret = 0;
@@ -296,7 +294,7 @@ void CSegment::ReplaceSelectedSegment(CDocument* pSaDoc, const CSaString & str)
 	POSITION pos = pDoc->GetFirstViewPosition();
 	CSaView* pView = (CSaView*)pDoc->GetNextView(pos);
 
-	if(m_nSelection != -1) // SDM 1.5Test8.3
+	if (m_nSelection != -1) // SDM 1.5Test8.3
 	{
 		DWORD dwOffset = GetOffset(m_nSelection);
 		DWORD dwDuration = GetDuration(m_nSelection);
@@ -325,8 +323,7 @@ DWORD CSegment::RemoveNoRefresh(CDocument*)
 	int nLength = GetSegmentLength(m_nSelection);
 
 	// change the dependent arrays
-	*m_pAnnotation = m_pAnnotation->Left(m_nSelection)
-		+ m_pAnnotation->Right(m_pAnnotation->GetLength() - nLength - m_nSelection);
+	*m_pAnnotation = m_pAnnotation->Left(m_nSelection) + m_pAnnotation->Right(m_pAnnotation->GetLength() - nLength - m_nSelection);
 	m_pOffset->RemoveAt(m_nSelection, nLength);
 	GetDurations()->RemoveAt(m_nSelection, nLength);
 	return 0;
@@ -338,20 +335,17 @@ DWORD CSegment::RemoveNoRefresh(CDocument*)
 // Returns FALSE if an error occured. nDelimiter is not used in this basic
 // version of the function.
 /***************************************************************************/
-BOOL CSegment::Insert(int nIndex, const CSaString* pszString, int ,
-					  DWORD dwStart, DWORD dwDuration)
-{
+BOOL CSegment::Insert( int nIndex, const CSaString * pszString, int ,DWORD dwStart, DWORD dwDuration) {
+
 	int nStringLength = pszString->GetLength(); // get the length of the new string
-	try
-	{
-		if (nIndex < m_pAnnotation->GetLength()) // insert
+	try {
+		if (nIndex < m_pAnnotation->GetLength()) { // insert
 			*m_pAnnotation = m_pAnnotation->Left(nIndex) + *pszString + m_pAnnotation->Right(m_pAnnotation->GetLength() - nIndex);
+		}
 		else *m_pAnnotation += *pszString; // append
 		m_pOffset->InsertAt(nIndex, dwStart, nStringLength);
 		GetDurations()->InsertAt(nIndex, dwDuration, nStringLength);
-	}
-	catch(CMemoryException e)
-	{
+	} catch(CMemoryException e) {
 		// memory allocation error
 		ErrorMessage(IDS_ERROR_MEMALLOC);
 		return FALSE;
@@ -366,8 +360,11 @@ BOOL CSegment::Insert(int nIndex, const CSaString* pszString, int ,
 /***************************************************************************/
 void CSegment::SetSelection(int nIndex)
 {
-	if (m_nSelection == nIndex) m_nSelection = -1; // deselect
-	else m_nSelection = nIndex; // store the index
+	if (m_nSelection == nIndex) {
+		m_nSelection = -1; // deselect
+	} else {
+		m_nSelection = nIndex; // store the index
+	}
 }
 
 /***************************************************************************/
@@ -381,21 +378,24 @@ int CSegment::GetPrevious(int nIndex) const
 {
 	// find out, which character is the reference
 	int nReference;
-	if (nIndex >= 0)
-	{
+	if (nIndex >= 0) {
 		nReference = nIndex - 1; // user defined reference
-		if (nReference >= GetSize()) nReference = GetSize() - 1;
+		if (nReference >= GetSize()) {
+			nReference = GetSize() - 1;
+		}
+	} else { // take current selection
+		if (m_nSelection != -1) {
+			nReference = m_nSelection - 1;
+		} else {
+			nReference = GetSize() - 1; // default for nothing has been selected yet
+		}
 	}
-	else // take current selection
-	{
-		if (m_nSelection != -1) nReference = m_nSelection - 1;
-		else nReference = GetSize() - 1; // default for nothing has been selected yet
+	if (nReference < 0) {
+		return -1; // there is no previous character
 	}
-	if (nReference < 0) return -1; // there is no previous character
 	DWORD dwOffset = GetOffset(nReference);
 	nReference--;
-	while ((nReference >= 0) && (GetOffset(nReference) == dwOffset))
-	{
+	while ((nReference >= 0) && (GetOffset(nReference) == dwOffset)) {
 		nReference--;
 	}
 	return ++nReference;
@@ -1232,21 +1232,24 @@ CTextSegment::~CTextSegment()
 // Returns FALSE if an error occured. If the pointer to the string is NULL
 // there will be no string added.
 /***************************************************************************/
-BOOL CTextSegment::Insert(int nIndex, const CSaString* pszString, int nDelimiter,
-						  DWORD dwStart, DWORD dwDuration)
+BOOL CTextSegment::Insert(int nIndex, 
+						  const CSaString* pszString, 
+						  int nDelimiter,
+						  DWORD dwStart, 
+						  DWORD dwDuration)
 {
 	// prepare delimiter
 	CSaString szDelimiter = WORD_DELIMITER;
-	if (nDelimiter) szDelimiter.SetAt(0, TEXT_DELIMITER);
-	try
-	{
-		if (pszString) m_pTexts->InsertAt(nIndex, szDelimiter + *pszString, 1);
+	if (nDelimiter) {
+		szDelimiter.SetAt(0, TEXT_DELIMITER);
+	}
+
+	try {
+		if (pszString!=NULL) m_pTexts->InsertAt(nIndex, szDelimiter + *pszString, 1);
 		else m_pTexts->InsertAt(nIndex, szDelimiter, 1);
 		m_pOffset->InsertAt(nIndex, dwStart, 1);
 		m_pDuration->InsertAt(nIndex, dwDuration, 1);
-	}
-	catch(CMemoryException e)
-	{
+	} catch(CMemoryException e) {
 		// memory allocation error
 		ErrorMessage(IDS_ERROR_MEMALLOC);
 		return FALSE;
@@ -1456,10 +1459,11 @@ void CTextSegment::Add(CSaDoc* pDoc, DWORD dwStart, CSaString& szString, BOOL bD
 	ASSERT(dwStop > dwStart);
 
 	// save state for undo ability
-	if(bCheck) pDoc->CheckPoint();
+	if (bCheck) pDoc->CheckPoint();
 
 	// insert or append the new segment
-	if (!Insert(nPos, &szString, bDelimiter, dwStart, dwStop - dwStart)) return; // return on error
+	if (!Insert(nPos, &szString, bDelimiter, dwStart, dwStop - dwStart)) 
+		return; // return on error
 
 	// move the end of the previous text segment
 	if (nPos > 0)
@@ -1522,7 +1526,9 @@ void CTextSegment::ReplaceSelectedSegment(CDocument* pSaDoc, const CSaString & s
 	POSITION pos = pDoc->GetFirstViewPosition();
 	CSaView* pView = (CSaView*)pDoc->GetNextView(pos);
 
-	if(m_nSelection != -1) m_pTexts->SetAt(m_nSelection, str1);
+	if (m_nSelection != -1) {
+		m_pTexts->SetAt(m_nSelection, str1);
+	}
 
 	pDoc->SetModifiedFlag(TRUE); // document has been modified
 	pDoc->SetTransModifiedFlag(TRUE); // transcription data has been modified
@@ -1735,30 +1741,23 @@ void CDependentTextSegment::Add(CSaDoc* pDoc, DWORD dwStart, CSaString& szString
 /***************************************************************************/
 void CIndependentSegment::LimitPosition(CSaDoc* pSaDoc, DWORD& dwStart,DWORD& dwStop, int nMode) const
 {
-	if ((m_nSelection != -1)&&!(nMode&LIMIT_NO_OVERLAP)) // segment selected (edit)
-	{
-		if (m_nSelection > 0)
-		{
+	if ((m_nSelection != -1)&&!(nMode&LIMIT_NO_OVERLAP)) { // segment selected (edit)
+		if (m_nSelection > 0) {
 			DWORD dwStartMinus = pSaDoc->SnapCursor(START_CURSOR, dwStart,0,dwStart,SNAP_LEFT);
 			DWORD dwStopMinus = pSaDoc->SnapCursor(STOP_CURSOR, dwStop,dwStart,dwStop,SNAP_LEFT);
 
 			// check if not more than 40% overlap of start with previous character
-			if (dwStartMinus < (GetOffset(m_nSelection - 1) + GetDuration(m_nSelection - 1) *3/5))
-			{
+			if (dwStartMinus < (GetOffset(m_nSelection - 1) + GetDuration(m_nSelection - 1) *3/5)) {
 				dwStart = GetOffset(m_nSelection - 1) + GetDuration(m_nSelection - 1) *3/5;
 				dwStart = pSaDoc->SnapCursor(START_CURSOR, dwStart,dwStart,dwStop-2,SNAP_RIGHT);
 				dwStartMinus = dwStart; // snap will not move
 			}
 			// check if more than 40% overlap of previous stop with current character
-			if ((dwStartMinus*3 + dwStopMinus*2)/5 <= GetStop(m_nSelection - 1))
-			{
-				if(nMode==LIMIT_MOVING_STOP)
-				{
+			if ((dwStartMinus*3 + dwStopMinus*2)/5 <= GetStop(m_nSelection - 1)) {
+				if(nMode==LIMIT_MOVING_STOP) {
 					dwStop = (GetStop(m_nSelection - 1)*5 - dwStart*3)/2 + 2;
 					dwStop = pSaDoc->SnapCursor(STOP_CURSOR, dwStop,dwStop,pSaDoc->GetUnprocessedDataSize(),SNAP_RIGHT);
-				}
-				else
-				{
+				} else {
 					dwStart = (GetStop(m_nSelection - 1)*5 - dwStop*2)/3 + 2;
 					dwStart = pSaDoc->SnapCursor(START_CURSOR, dwStart,dwStart,dwStop-2,SNAP_RIGHT);
 				}
@@ -1766,76 +1765,65 @@ void CIndependentSegment::LimitPosition(CSaDoc* pSaDoc, DWORD& dwStart,DWORD& dw
 		}
 		// find offset of next character
 		int nNext = GetNext(m_nSelection);
-		if (nNext != -1)
-		{
+		if (nNext != -1) {
 			DWORD dwStartPlus = pSaDoc->SnapCursor(START_CURSOR, dwStart,dwStart,pSaDoc->GetUnprocessedDataSize(),SNAP_RIGHT);
 			DWORD dwStopPlus = pSaDoc->SnapCursor(STOP_CURSOR, dwStop,dwStop,pSaDoc->GetUnprocessedDataSize(),SNAP_RIGHT);
 
 			// check if not more than 40% overlap with stop
-			if (dwStopPlus > (GetOffset(nNext) + GetDuration(nNext) *2/5))
-			{
+			if (dwStopPlus > (GetOffset(nNext) + GetDuration(nNext) *2/5)) {
 				dwStop = GetOffset(nNext) + GetDuration(nNext) *2/5;
 				dwStop = pSaDoc->SnapCursor(STOP_CURSOR, dwStop,dwStart,dwStop,SNAP_LEFT);
 				dwStopPlus = dwStop; // snap will not move
 			}
 			// check if next character overlaps more than 40% of current character
-			if ((dwStartPlus*2 + dwStopPlus*3)/5 >= GetOffset(nNext))
-			{
-				if(nMode==LIMIT_MOVING_START)
-				{
+			if ((dwStartPlus*2 + dwStopPlus*3)/5 >= GetOffset(nNext)) {
+				if(nMode==LIMIT_MOVING_START) {
 					dwStart = (GetOffset(nNext)*5 - dwStop*3)/2 - 2;
 					dwStart = pSaDoc->SnapCursor(START_CURSOR, dwStart,0,dwStart,SNAP_LEFT);
-				}
-				else
-				{
+				} else {
 					dwStop = (GetOffset(nNext)*5 - dwStart*2)/3 - 2;
 					dwStop = pSaDoc->SnapCursor(STOP_CURSOR, dwStop,dwStart+2,dwStop,SNAP_LEFT);
 				}
 			}
 		}
-	}
-	else if ((m_nSelection != -1)&&(nMode&LIMIT_NO_OVERLAP)) // SDM 1.5Test8.1
-	{
+	} else if ((m_nSelection != -1)&&(nMode&LIMIT_NO_OVERLAP)) { // SDM 1.5Test8.1
 		DWORD dwStartMin=0;
 		DWORD dwStopMax= pSaDoc->GetUnprocessedDataSize();
 
-		if (m_nSelection > 0)
-		{
+		if (m_nSelection > 0) {
 			int nPrevious = GetPrevious(m_nSelection);
 			dwStartMin = GetOffset(nPrevious) + pSaDoc->GetBytesFromTime(MIN_EDIT_SEGMENT_TIME);
-			if(nPrevious > 0)
-			{
-				if(GetOffset(nPrevious) < GetStop(nPrevious-1)) // overlap
-				{
+			if (nPrevious > 0) {
+				if(GetOffset(nPrevious) < GetStop(nPrevious-1)) { // overlap
 					DWORD dwOverlap = GetStop(nPrevious-1) - GetOffset(nPrevious);
-					if(dwStartMin < (GetOffset(nPrevious) + dwOverlap*5/2 + 2))
-					{
+					if(dwStartMin < (GetOffset(nPrevious) + dwOverlap*5/2 + 2)) {
 						dwStartMin = (GetOffset(nPrevious) + dwOverlap*5/2 + 2);
 					}
 				}
 			}
-
 			int nBlockAlign = pSaDoc->GetFmtParm()->wBlockAlign;
 			if((nBlockAlign == 2)&&(dwStartMin & 1)) dwStartMin++;
 		}
 		// find offset of next character
 		int nNext = GetNext(m_nSelection);
-		if (nNext != -1)
-		{
+		if (nNext != -1) {
 			dwStopMax = GetStop(nNext);
-			if(dwStopMax > pSaDoc->GetBytesFromTime(MIN_EDIT_SEGMENT_TIME)) dwStopMax -= pSaDoc->GetBytesFromTime(MIN_EDIT_SEGMENT_TIME);
-			else dwStopMax = 0;
+			if (dwStopMax > pSaDoc->GetBytesFromTime(MIN_EDIT_SEGMENT_TIME)) {
+				dwStopMax -= pSaDoc->GetBytesFromTime(MIN_EDIT_SEGMENT_TIME);
+			} else {
+				dwStopMax = 0;
+			}
 
-			if(GetNext(nNext) > 0)
-			{
-				if(GetStop(nNext) > GetOffset(GetNext(nNext))) // overlap
-				{
+			if (GetNext(nNext) > 0) {
+				if(GetStop(nNext) > GetOffset(GetNext(nNext))) { // overlap
 					DWORD dwOverlap = GetStop(nNext) - GetOffset(GetNext(nNext));
 					DWORD dwStopNext = GetStop(nNext);
-					if(dwStopNext > (dwOverlap*5/2 + 2)) dwStopNext -= (dwOverlap*5/2 + 2);
-					else dwStopNext = 0;
-					if(dwStopMax > dwStopNext)
-					{
+					if (dwStopNext > (dwOverlap*5/2 + 2)) {
+						dwStopNext -= (dwOverlap*5/2 + 2);
+					} else { 
+						dwStopNext = 0;
+					}
+					if(dwStopMax > dwStopNext) {
 						dwStopMax = dwStopNext;
 					}
 				}
@@ -1850,32 +1838,26 @@ void CIndependentSegment::LimitPosition(CSaDoc* pSaDoc, DWORD& dwStart,DWORD& dw
 
 		if(dwStart < dwStartMin) dwStart = dwStartMin;
 		if(dwStop > dwStopMax) dwStop = dwStopMax;
-		if(dwStop < (dwStart + pSaDoc->GetBytesFromTime(MIN_EDIT_SEGMENT_TIME)))
-		{
+		if(dwStop < (dwStart + pSaDoc->GetBytesFromTime(MIN_EDIT_SEGMENT_TIME))) {
 			int nBlockAlign = pSaDoc->GetFmtParm()->wBlockAlign;
-			if(nMode & LIMIT_MOVING_STOP)
-			{
+			if(nMode & LIMIT_MOVING_STOP) {
 				dwStop = dwStart + pSaDoc->GetBytesFromTime(MIN_EDIT_SEGMENT_TIME);
-				if((nBlockAlign == 2)&&(dwStop & 1)) dwStop++;
+				if ((nBlockAlign == 2)&&(dwStop & 1)) dwStop++;
 				dwStop = pSaDoc->SnapCursor(STOP_CURSOR, dwStop,dwStop,dwStopMax+2,SNAP_RIGHT);
-				if(dwStop > dwStopMax)
-				{
+				if (dwStop > dwStopMax) {
 					dwStop = dwStopMax;
 					dwStart = dwStop - pSaDoc->GetBytesFromTime(MIN_EDIT_SEGMENT_TIME);
 					if((nBlockAlign == 2)&&(dwStart & 1)) dwStart--;
 					dwStart = pSaDoc->SnapCursor(START_CURSOR, dwStart,dwStartMin,dwStart,SNAP_LEFT);
 				}
-			}
-			else
-			{
+			} else {
 				dwStart = dwStop - pSaDoc->GetBytesFromTime(MIN_EDIT_SEGMENT_TIME);
 				if((nBlockAlign == 2)&&(dwStart & 1)) dwStart--;
 				dwStart = pSaDoc->SnapCursor(START_CURSOR, dwStart,0,dwStart,SNAP_LEFT);
-				if(dwStart < dwStartMin)
-				{
+				if (dwStart < dwStartMin) {
 					dwStart = dwStartMin;
 					dwStop = dwStart + pSaDoc->GetBytesFromTime(MIN_EDIT_SEGMENT_TIME);
-					if((nBlockAlign == 2)&&(dwStop & 1)) dwStop++;
+					if ((nBlockAlign == 2)&&(dwStop & 1)) dwStop++;
 					dwStop = pSaDoc->SnapCursor(STOP_CURSOR, dwStop,dwStop,dwStopMax,SNAP_RIGHT);
 				}
 			}
@@ -2572,11 +2554,14 @@ void CGlossSegment::Remove(CDocument* pSaDoc, BOOL bCheck)
 	CSaDoc* pDoc = (CSaDoc*) pSaDoc;
 
 	DWORD dwOldOffset = DWORD(~0);
-	if(m_nSelection != -1)
+	if (m_nSelection != -1) {
 		dwOldOffset = GetOffset(m_nSelection);
+	}
 	CTextSegment::Remove(pSaDoc, bCheck);
 
-	if(dwOldOffset == ~0) return;
+	if (dwOldOffset == ~0) { 
+		return;
+	}
 	for (int nLoop = GLOSS + 1; nLoop < ANNOT_WND_NUMBER; nLoop++)
 	{
 		CSegment* pSegment = pDoc->GetSegment(nLoop);
@@ -2621,15 +2606,15 @@ void CGlossSegment::DeleteContents()
 // Returns FALSE if an error occured. If the pointer to the string is NULL
 // there will be no string added.
 /***************************************************************************/
-BOOL CGlossSegment::Insert(int nIndex, const CSaString* pszString, int nDelimiter,
-						   DWORD dwStart, DWORD dwDuration)
+BOOL CGlossSegment::Insert(int nIndex, 
+						   const CSaString* pszString, 
+						   int nDelimiter,
+						   DWORD dwStart, 
+						   DWORD dwDuration)
 {
-	try
-	{
+	try {
 		m_pPOS->InsertAt(nIndex, NULL,  1);
-	}
-	catch(CMemoryException e)
-	{
+	} catch(CMemoryException e) {
 		// memory allocation error
 		ErrorMessage(IDS_ERROR_MEMALLOC);
 		return FALSE;

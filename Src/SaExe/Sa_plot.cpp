@@ -1701,7 +1701,7 @@ void CPlotWnd::SetHighLightArea(DWORD dwStart, DWORD dwStop, BOOL bRedraw, BOOL 
 		if ((dwStop > 0) && (dwStop < (pDoc->GetDataSize() - nSampleSize)))
 			dwStop = pDoc->SnapCursor(STOP_CURSOR, dwStop, 0, pDoc->GetDataSize() - nSampleSize);
 
-		if(m_dwHighLightPosition == dwStart && m_dwHighLightLength == dwStop - dwStart)
+		if (m_dwHighLightPosition == dwStart && m_dwHighLightLength == dwStop - dwStart)
 			return;
 
 		if (bRedraw)
