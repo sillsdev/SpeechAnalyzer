@@ -319,7 +319,7 @@ void CSASelfTest::SelfTest()
 		else EndTest(FALSE);
 	}
 
-	if(bFileOpened && StartTest("CHFrench Spectrogram","Test spectrogram process."))
+	if (bFileOpened && StartTest("CHFrench Spectrogram","Test spectrogram process."))
 	{
 		CProcessSpectrogram* pSpectrogram =
 			(CProcessSpectrogram*)pDoc->GetSpectrogram(TRUE); // get pointer to	spectrogram object

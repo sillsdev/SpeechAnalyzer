@@ -1977,7 +1977,7 @@
 				Name="Dialogs"
 				>
 				<File
-					RelativePath="advancedParameters.cpp"
+					RelativePath="autoRecorder.cpp"
 					>
 					<FileConfiguration
 						Name="Debug|Win32"
@@ -1999,26 +1999,12 @@
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath="autoRecorder.cpp"
+					RelativePath=".\DlgAdvancedParse.cpp"
 					>
-					<FileConfiguration
-						Name="Debug|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-						/>
-					</FileConfiguration>
+				</File>
+				<File
+					RelativePath=".\DlgAdvancedSegment.cpp"
+					>
 				</File>
 				<File
 					RelativePath="DlgAudio.cpp"
@@ -3378,10 +3364,6 @@
 			Name="Header Files"
 			>
 			<File
-				RelativePath=".\advancedParameters.h"
-				>
-			</File>
-			<File
 				RelativePath=".\AppDefs.h"
 				>
 			</File>
@@ -3406,18 +3388,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\DlgAudio.h"
-				>
-			</File>
-			<File
-				RelativePath=".\DlgSplit.h"
-				>
-			</File>
-			<File
-				RelativePath=".\DlgVowelFormants.h"
-				>
-			</File>
-			<File
 				RelativePath=".\DocList.h"
 				>
 			</File>
@@ -3435,18 +3405,6 @@
 			</File>
 			<File
 				RelativePath=".\FnKeys.h"
-				>
-			</File>
-			<File
-				RelativePath=".\graphsMagnify.h"
-				>
-			</File>
-			<File
-				RelativePath=".\graphsParameters.h"
-				>
-			</File>
-			<File
-				RelativePath=".\graphsTypes.h"
 				>
 			</File>
 			<File
@@ -3482,10 +3440,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\PickOver.h"
-				>
-			</File>
-			<File
 				RelativePath=".\playerRecorder.h"
 				>
 			</File>
@@ -3498,15 +3452,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\PrintOpt.h"
-				>
-			</File>
-			<File
 				RelativePath=".\resource.h"
-				>
-			</File>
-			<File
-				RelativePath=".\RESULT.H"
 				>
 			</File>
 			<File
@@ -3551,14 +3497,6 @@
 			</File>
 			<File
 				RelativePath=".\SA_DPlot.h"
-				>
-			</File>
-			<File
-				RelativePath=".\SA_Edit.h"
-				>
-			</File>
-			<File
-				RelativePath=".\SA_Exprt.h"
 				>
 			</File>
 			<File
@@ -3698,15 +3636,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Sa_start.h"
-				>
-			</File>
-			<File
 				RelativePath=".\SA_View.h"
-				>
-			</File>
-			<File
-				RelativePath=".\SA_W_DLG.H"
 				>
 			</File>
 			<File
@@ -3746,10 +3676,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\TARGVIEW.H"
-				>
-			</File>
-			<File
 				RelativePath=".\TaskBar.h"
 				>
 			</File>
@@ -3773,6 +3699,74 @@
 				RelativePath=".\waveformGenerator.h"
 				>
 			</File>
+			<Filter
+				Name="Dialogs"
+				>
+				<File
+					RelativePath=".\DlgAdvancedParse.h"
+					>
+				</File>
+				<File
+					RelativePath=".\DlgAdvancedSegment.h"
+					>
+				</File>
+				<File
+					RelativePath=".\DlgAudio.h"
+					>
+				</File>
+				<File
+					RelativePath=".\DlgSplit.h"
+					>
+				</File>
+				<File
+					RelativePath=".\DlgVowelFormants.h"
+					>
+				</File>
+				<File
+					RelativePath=".\graphsMagnify.h"
+					>
+				</File>
+				<File
+					RelativePath=".\graphsParameters.h"
+					>
+				</File>
+				<File
+					RelativePath=".\graphsTypes.h"
+					>
+				</File>
+				<File
+					RelativePath=".\PickOver.h"
+					>
+				</File>
+				<File
+					RelativePath=".\PrintOpt.h"
+					>
+				</File>
+				<File
+					RelativePath=".\RESULT.H"
+					>
+				</File>
+				<File
+					RelativePath=".\SA_Edit.h"
+					>
+				</File>
+				<File
+					RelativePath=".\SA_Exprt.h"
+					>
+				</File>
+				<File
+					RelativePath=".\Sa_start.h"
+					>
+				</File>
+				<File
+					RelativePath=".\SA_W_DLG.H"
+					>
+				</File>
+				<File
+					RelativePath=".\TARGVIEW.H"
+					>
+				</File>
+			</Filter>
 		</Filter>
 	</Files>
 	<Globals>

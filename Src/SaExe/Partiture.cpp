@@ -802,7 +802,10 @@ public:
 	InstrumentMenu(int Instrument=0);
 	~InstrumentMenu();
 	void Check(int Instrument);
-	HMENU Menu() {return hInstrumentMnu;}
+	HMENU Menu() 
+	{
+		return hInstrumentMnu;
+	}
 };
 
 InstrumentMenu::InstrumentMenu(int /*Instrument*/)
@@ -1002,7 +1005,10 @@ public:
 	TempoMenu(int iTempo=0);
 	~TempoMenu();
 	void Check(int iTempo);
-	HMENU Menu() {return hTempoMnu;}
+	HMENU Menu() 
+	{
+		return hTempoMnu;
+	}
 };
 
 TempoMenu::TempoMenu(int /*iTempo*/)
@@ -3749,9 +3755,12 @@ LRESULT CALLBACK PartitureProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam)
 				OPENFILENAME ofn;
 
 				char *szFile = (char*)malloc(256);
-				if (lParam && *((char*)lParam)) {
+				if (lParam && *((char*)lParam)) 
+				{
 					strcpy_s(szFile,256,(char*)lParam);
-				} else {
+				} 
+				else 
+				{
 					szFile[0] = '\0';
 				}
 

@@ -28,7 +28,7 @@ LANGUAGE LANG_NEUTRAL, SUBLANG_NEUTRAL
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 3,0,1,8
+ FILEVERSION 3,0,1,9
  PRODUCTVERSION 1,0,0,1
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
@@ -46,7 +46,7 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "SIL International"
             VALUE "FileDescription", "SA"
-            VALUE "FileVersion", "v3.0.1.8"
+            VALUE "FileVersion", "v3.0.1.9"
             VALUE "InternalName", "SA"
             VALUE "LegalCopyright", "© 1996-2011 SIL International (MSEA)"
             VALUE "ProductName", "SA"
@@ -236,40 +236,40 @@ BEGIN
     LTEXT           "undefined",IDC_EDITDATE,72,36,192,8
 END
 
-IDD_PARAMETERSSPECTROPAGE DIALOGEX 0, 0, 252, 150
+IDD_PARAMETERSSPECTROPAGE DIALOGEX 0, 0, 260, 166
 STYLE DS_SETFONT | WS_CHILD | WS_VISIBLE | WS_DISABLED | WS_CAPTION | WS_SYSMENU
 CAPTION "Spectrogram"
 FONT 8, "MS Sans Serif", 0, 0, 0x1
 BEGIN
-    CONTROL         "Slider1",IDC_SLIDER_FREQ,"msctls_trackbar32",TBS_BOTH | TBS_NOTICKS | WS_TABSTOP,7,21,87,15
-    CONTROL         "Slider1",IDC_SLIDER_MAX,"msctls_trackbar32",TBS_NOTICKS | WS_TABSTOP,7,47,87,15
-    CONTROL         "Slider2",IDC_SLIDER_MIN,"msctls_trackbar32",TBS_TOP | TBS_NOTICKS | WS_TABSTOP,7,61,87,15
-    CONTROL         "Smooth Spectra",IDC_SMOOTH_SPECTRA,"Button",BS_AUTOCHECKBOX | NOT WS_VISIBLE,97,89,67,10
-    CONTROL         "&Color",IDC_COLOR,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,140,16,32,10
-    CONTROL         "&Monochrome",IDC_MONO,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,140,27,57,10
-    CONTROL         "&Narrow Band Filter (45 Hz) ",IDC_FINE,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,140,55,101,10
-    CONTROL         "Me&dium Band Filter (172 Hz)",IDC_MEDIUM,"Button",BS_AUTORADIOBUTTON,140,66,105,10
-    CONTROL         "&Wide Band Filter (300 Hz)",IDC_COARSE,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,140,77,97,10
-    GROUPBOX        "",IDC_STATIC,5,94,243,50,WS_GROUP
-    CONTROL         "&Formants Tracks",IDC_FORMANTS,"Button",BS_AUTOCHECKBOX | WS_GROUP | WS_TABSTOP,12,94,69,10
-    CONTROL         "&Pitch",IDC_SHOW_PITCH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,109,32,10
-    CONTROL         "F&1",IDC_F1,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,52,109,24,10
-    CONTROL         "F&2",IDC_F2,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,82,109,24,10
-    CONTROL         "F&3",IDC_F3,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,112,109,24,10
-    CONTROL         "F&4",IDC_F4,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,142,109,24,10
-    CONTROL         "O&verlaid",IDC_OVERLAID,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,14,126,42,10
-    CONTROL         "O&nly",IDC_ONLY,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,64,126,30,10
-    CONTROL         "Color",IDC_FORMANT_COLOR,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,112,126,32,10
-    GROUPBOX        "Color mode",IDC_STATIC,136,4,111,37,WS_GROUP
-    GROUPBOX        "Display",IDC_STATIC,5,4,126,86
-    LTEXT           "Frequency",IDC_STATIC,11,13,34,8
-    GROUPBOX        "Spectral Resolution",IDC_STATIC,136,44,111,46
-    LTEXT           "Thresholds",IDC_STATIC,11,38,36,8
-    RTEXT           "Max",IDC_MAX_STATIC,94,50,31,8
-    RTEXT           "Min",IDC_MIN_STATIC,94,65,32,8
-    RTEXT           "11025 Hz",IDC_FREQ_STATIC,94,24,32,8
-    LTEXT           "Note: Formant tracks do not exactly match LPC formant values in Spectrum graph.",IDC_FORMANT_NOTE,178,99,66,32,NOT WS_GROUP,WS_EX_TRANSPARENT
-    PUSHBUTTON      "More Info...",IDC_MORE_INFO,178,132,42,10,0,WS_EX_ACCEPTFILES | WS_EX_STATICEDGE
+    CONTROL         "Slider1",IDC_SLIDER_FREQ,"msctls_trackbar32",TBS_BOTH | TBS_NOTICKS | WS_TABSTOP,6,21,87,15
+    CONTROL         "Slider1",IDC_SLIDER_MAX,"msctls_trackbar32",TBS_NOTICKS | WS_TABSTOP,6,47,87,15
+    CONTROL         "Slider2",IDC_SLIDER_MIN,"msctls_trackbar32",TBS_TOP | TBS_NOTICKS | WS_TABSTOP,6,61,87,15
+    CONTROL         "Smooth Spectra",IDC_SMOOTH_SPECTRA,"Button",BS_AUTOCHECKBOX | NOT WS_VISIBLE,145,88,67,10
+    CONTROL         "&Color",IDC_COLOR,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,145,16,32,10
+    CONTROL         "&Monochrome",IDC_MONO,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,145,27,57,10
+    CONTROL         "&Narrow Band Filter (45 Hz) ",IDC_FINE,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,145,55,101,10
+    CONTROL         "Me&dium Band Filter (172 Hz)",IDC_MEDIUM,"Button",BS_AUTORADIOBUTTON,145,66,105,10
+    CONTROL         "&Wide Band Filter (300 Hz)",IDC_COARSE,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,145,77,97,10
+    GROUPBOX        "",IDC_STATIC,4,99,248,61,WS_GROUP
+    CONTROL         "&Formants Tracks",IDC_FORMANTS,"Button",BS_AUTOCHECKBOX | WS_GROUP | WS_TABSTOP,12,101,69,10
+    CONTROL         "&Pitch",IDC_SHOW_PITCH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,116,30,10
+    CONTROL         "F&1",IDC_F1,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,51,116,22,10
+    CONTROL         "F&2",IDC_F2,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,80,116,22,10
+    CONTROL         "F&3",IDC_F3,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,109,116,22,10
+    CONTROL         "F&4 and above",IDC_F4,"Button",BS_AUTOCHECKBOX | BS_MULTILINE | WS_TABSTOP,138,111,35,20
+    CONTROL         "O&verlaid",IDC_OVERLAID,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,14,135,42,10
+    CONTROL         "O&nly",IDC_ONLY,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,64,135,30,10
+    CONTROL         "Color",IDC_FORMANT_COLOR,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,109,135,32,10
+    GROUPBOX        "Color mode",IDC_STATIC,140,4,111,37,WS_GROUP
+    GROUPBOX        "Display",IDC_STATIC,4,4,132,94
+    LTEXT           "Frequency",IDC_STATIC,10,13,34,8
+    GROUPBOX        "Spectral Resolution",IDC_STATIC,140,44,111,55
+    LTEXT           "Thresholds",IDC_STATIC,10,38,36,8
+    RTEXT           "Max",IDC_MAX_STATIC,93,50,31,8
+    RTEXT           "Min",IDC_MIN_STATIC,93,65,32,8
+    RTEXT           "11025 Hz",IDC_FREQ_STATIC,93,24,32,8
+    LTEXT           "Note: Formant tracks do not exactly match LPC formant values in Spectrum graph.",IDC_FORMANT_NOTE,180,107,66,33,NOT WS_GROUP,WS_EX_TRANSPARENT
+    PUSHBUTTON      "More Info...",IDC_MORE_INFO,178,143,42,12,0,WS_EX_ACCEPTFILES
 END
 
 IDD_INFORMATIONWAVEPAGE DIALOG  0, 0, 276, 139
@@ -312,23 +312,26 @@ BEGIN
     LTEXT           "Phonetic",IDC_STATIC,2,82,72,8
 END
 
-IDD_ADVANCEDSEGMENTPAGE DIALOG  0, 0, 207, 127
-STYLE DS_SETFONT | WS_CHILD | WS_VISIBLE | WS_DISABLED | WS_CAPTION
-CAPTION "Segment"
-FONT 8, "MS Sans Serif"
+IDD_ADVANCEDSEGMENT DIALOGEX 0, 0, 207, 141
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Automatic Segment"
+FONT 8, "MS Sans Serif", 0, 0, 0x0
 BEGIN
     EDITTEXT        IDC_SEGMENTWIDTHEDIT,94,25,19,12
     EDITTEXT        IDC_CHANGEMINEDIT,94,43,19,12
-    GROUPBOX        "Analysis",IDC_STATIC,4,6,200,113
+    EDITTEXT        IDC_ZEROCROSSINGMINEDIT,94,61,19,12
+    LTEXT           "",IDC_SEGMENTWIDTHSCROLL,113,25,12,12
+    LTEXT           "",IDC_CHANGEMINSCROLL,113,43,10,12
+    LTEXT           "",IDC_ZEROCROSSINGMINSCROLL,113,60,10,12
+    DEFPUSHBUTTON   "OK",IDOK,43,119,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,96,119,50,14
+    PUSHBUTTON      "Preview",IDC_APPLY,149,119,50,14
+    GROUPBOX        "Analysis",IDC_STATIC,4,6,200,131
     LTEXT           "Min Segment Width",IDC_STATIC,11,27,69,8
     LTEXT           "ms",IDC_STATIC,127,27,10,8
     LTEXT           "Change Peak Min",IDC_STATIC,11,45,68,8
     LTEXT           "%",IDC_STATIC,127,46,10,8
-    LTEXT           "",IDC_SEGMENTWIDTHSCROLL,113,25,10,12
-    LTEXT           "",IDC_CHANGEMINSCROLL,113,43,10,12
-    EDITTEXT        IDC_ZEROCROSSINGMINEDIT,94,61,19,12
     LTEXT           "Zero Crossing Peak Min",IDC_STATIC,11,63,79,8
-    LTEXT           "",IDC_ZEROCROSSINGMINSCROLL,113,60,10,12
     LTEXT           "* Increasing Change or Zero Crossing Peak Mins will result in fewer segmentations.",IDC_STATIC,14,82,179,16
     LTEXT           "Typical values: Change 10-50%, Zero Crossing 30-100.",IDC_STATIC,14,102,179,8
     LTEXT           "Defaults",IDC_STATIC,163,15,28,8
@@ -338,30 +341,37 @@ BEGIN
     GROUPBOX        "",IDC_STATIC,9,75,189,40
 END
 
-IDD_ADVANCEDPARSEPAGE DIALOG  0, 0, 208, 125
-STYLE DS_SETFONT | WS_CHILD | WS_VISIBLE | WS_DISABLED | WS_CAPTION
-CAPTION "Parse"
-FONT 8, "MS Sans Serif"
+IDD_ADVANCEDPARSE DIALOGEX 0, 0, 207, 144
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Automatic Parse"
+FONT 8, "MS Sans Serif", 0, 0, 0x0
 BEGIN
-    EDITTEXT        IDC_BREAKWIDTHEDIT,91,25,19,12
-    EDITTEXT        IDC_PARSEMAXTHRESHOLDEDIT,91,43,19,12
-    EDITTEXT        IDC_PARSEMINTHRESHOLDEDIT,91,61,19,12
-    GROUPBOX        "Analysis",IDC_STATIC,4,6,200,113
+    EDITTEXT        IDC_BREAKWIDTHEDIT,84,25,19,12
+    EDITTEXT        IDC_PARSEMAXTHRESHOLDEDIT,84,43,19,12
+    EDITTEXT        IDC_PARSEMINTHRESHOLDEDIT,84,61,19,12
+    LTEXT           "",IDC_BREAKWIDTHSCROLL,106,25,10,12
+    LTEXT           "",IDC_PARSEMAXTHRESHOLDSCROLL,106,43,10,12
+    LTEXT           "",IDC_PARSEMINTHRESHOLDSCROLL,106,62,10,12
+    DEFPUSHBUTTON   "OK",IDOK,43,120,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,96,120,50,14
+    PUSHBUTTON      "Preview",IDC_APPLY,149,120,50,14
+    GROUPBOX        "Analysis",IDC_STATIC,3,2,200,137
     LTEXT           "Min Break Width",IDC_STATIC,11,27,60,8
-    LTEXT           "ms",IDC_STATIC,124,27,10,8
+    LTEXT           "ms",IDC_STATIC,120,27,10,8
     LTEXT           "Max Threshold",IDC_STATIC,11,45,60,8
-    LTEXT           "%",IDC_STATIC,124,46,10,8
-    LTEXT           "Min Threshold",IDC_STATIC,11,63,60,8
-    LTEXT           "%",IDC_STATIC,124,64,8,10
-    LTEXT           "",IDC_BREAKWIDTHSCROLL,110,25,10,12
-    LTEXT           "",IDC_PARSEMAXTHRESHOLDSCROLL,110,43,10,12
-    LTEXT           "",IDC_PARSEMINTHRESHOLDSCROLL,111,62,10,12
-    GROUPBOX        "",IDC_STATIC,9,75,189,40
-    LTEXT           "* If the magnitude goes below Min Threshold and then stays below Max Threshold for Min Break Width, a Breath Group Marker is inserted.",IDC_STATIC,14,84,179,26
-    LTEXT           "Defaults",IDC_STATIC,163,15,28,8
-    CTEXT           "25",IDC_STATIC,172,27,10,8
-    CTEXT           "10",IDC_STATIC,172,45,10,8
-    CTEXT           "5",IDC_STATIC,172,63,10,8
+    LTEXT           "%",IDC_STATIC,120,45,10,8
+    LTEXT           "Min Threshold",IDC_STATIC,11,63,46,8
+    LTEXT           "%",IDC_STATIC,120,63,8,8
+    GROUPBOX        "",IDC_STATIC,9,77,189,40
+    LTEXT           "* If the magnitude goes below Min Threshold and then stays below Max Threshold for Min Break Width, a Breath Group Marker is inserted.",IDC_STATIC,14,85,179,27
+    CTEXT           "Word Defaults",IDC_STATIC,135,8,29,16
+    CTEXT           "25",IDC_STATIC,145,27,10,8
+    CTEXT           "10",IDC_STATIC,145,45,10,8
+    CTEXT           "5",IDC_STATIC,146,63,8,8
+    CTEXT           "Phrase Defaults",IDC_STATIC,170,8,28,16
+    CTEXT           "500",IDC_STATIC,177,27,13,8
+    CTEXT           "10",IDC_STATIC,179,45,9,8
+    CTEXT           "5",IDC_STATIC,181,63,8,8
 END
 
 IDD_RECORDEROPTIONS DIALOG  0, 0, 135, 141
@@ -2055,6 +2065,23 @@ BEGIN
         BOTTOMMARGIN, 22
     END
 
+    IDD_PARAMETERSSPECTROPAGE, DIALOG
+    BEGIN
+        RIGHTMARGIN, 256
+        BOTTOMMARGIN, 161
+    END
+
+    IDD_ADVANCEDSEGMENT, DIALOG
+    BEGIN
+        BOTTOMMARGIN, 137
+    END
+
+    IDD_ADVANCEDPARSE, DIALOG
+    BEGIN
+        RIGHTMARGIN, 206
+        BOTTOMMARGIN, 141
+    END
+
     IDD_OPTIONSFONTPAGE, DIALOG
     BEGIN
         VERTGUIDE, 270
@@ -2624,7 +2651,7 @@ BEGIN
         BEGIN
             MENUITEM "Locate Phonetic &Segments",   ID_ADVANCED_SEGMENT
             MENUITEM "Locate Words or &Phrases",    ID_ADVANCED_PARSE
-            MENUITEM "&Align Transcription Data...", ID_AUTO_ALIGN
+            MENUITEM "&Align Transcription Data",   ID_AUTO_ALIGN
         END
         MENUITEM SEPARATOR
         MENUITEM "&Options...",                 ID_TOOLS_OPTIONS
@@ -3808,7 +3835,7 @@ STRINGTABLE
 BEGIN
     IDR_MAINFRAME           "Speech Analyzer"
     IDR_SA_ANNTYPE          "\nSA\nSA Document\nWAV Files (*.wav)\n.wav\nannFileType\nANN File Type"
-    VS_VERSION              "Version 3.0.1.8"
+    VS_VERSION              "Version 3.0.1.9"
     VS_COPYRIGHT            "© 1996-2011 SIL International (MSEA).\nAll Rights Reserved."
     IDR_SA_WBTYPE           "\nWB\nSA Workbench\nWB Files (*.wb)\n.wb\nwbFileType\nWB File Type"
 END
@@ -4072,7 +4099,6 @@ BEGIN
     IDS_DLGTITLE_GRAPHSPARA "Graph Parameters"
     IDS_DLGTITLE_TOOLSOPTIO "Options"
     IDS_DLGTITLE_PHONETIC   "Phonetic Character Chart"
-    IDS_DLGTITLE_ADVANCED   "Advanced Parameters"
     IDS_DLGTITLE_GRAPHSTYPES "Select Desired Graphs"
     IDS_DLGTITLE_CHARCHART  "Character Chart"
     IDS_TABTITLE_SPECTROGRAM "Spectrogram"
@@ -4194,14 +4220,6 @@ END
 
 STRINGTABLE 
 BEGIN
-    IDS_QUESTION_DELETEGLOSS 
-                            "This process will delete existing gloss. Do you really want to delete it?"
-END
-
-STRINGTABLE 
-BEGIN
-    IDS_QUESTION_DELETE_KEEPGLOSS 
-                            "This process will delete existing phonetic, phonemic, and tone segments.  Do you really want to delete them? "
     IDS_QUESTION_APPLYRECORD "Apply the recorded data into a waveform graph?"
     IDS_QUESTION_BUFFERRESTART 
                             "In order to change the size of the data buffers, all open documents have to be closed. Do you want to close them now?"

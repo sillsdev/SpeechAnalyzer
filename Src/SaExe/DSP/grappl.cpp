@@ -845,7 +845,10 @@ static  int16  calculate_findbest(pGrappl work,int16 avoid)
   return(bestindx);
 }
 
-static int32 forever() { return true; };
+static int32 forever() 
+{ 
+	return true; 
+};
 
 static  void  calculate_lagacfs(pGrappl work)
 {  /* set up seed acf values for up to first Maxlag zero-crossings in pitch period range */

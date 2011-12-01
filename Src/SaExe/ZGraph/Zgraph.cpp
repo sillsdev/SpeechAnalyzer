@@ -567,7 +567,8 @@ void zGraph::zConvertValue(double d, PWCHAR buf, size_t len)
 			memset(buffer,0,BUF_SIZE);
 			_gcvt_s( buffer, BUF_SIZE, d, digit_precision);
 			// perform wide char conversion
-			for (unsigned int i=0;i<BUF_SIZE;i++) {
+			for (unsigned int i=0;i<BUF_SIZE;i++) 
+			{
 				TempBuf[i] = buffer[i];
 			}
 		}

@@ -378,51 +378,73 @@ CPlotWnd::CPlotWnd()
 void CPlotWnd::CopyTo(CPlotWnd * pTarg)
 {
 	// copies don't have any cursors.
-	pTarg->m_pStartCursor   = NULL;
-	pTarg->m_pStopCursor    = NULL;
+	pTarg->m_pStartCursor = NULL;
+	pTarg->m_pStopCursor = NULL;
 	pTarg->m_pPrivateCursor = NULL;
 	pTarg->m_bPrivateCursor = FALSE;
 
 	// copies don't have a process???
-	pTarg->m_pAreaProcess        = NULL;
-	pTarg->m_pLastProcess        = NULL;
-	pTarg->m_bBoundaries         = m_bBoundaries;
-	pTarg->m_bLineDraw           = m_bLineDraw;
-	pTarg->m_bDotDraw            = m_bDotDraw;
-	pTarg->m_bCursors            = m_bCursors;
-	pTarg->m_bGrid               = m_bGrid;
-	pTarg->m_fMagnify            = m_fMagnify;
-	pTarg->m_dProcessMultiplier  = m_dProcessMultiplier;
-	pTarg->m_szPlotName          = m_szPlotName;
+	pTarg->m_pAreaProcess = NULL;
+	pTarg->m_pLastProcess = NULL;
+	pTarg->m_bBoundaries = m_bBoundaries;
+	pTarg->m_bLineDraw = m_bLineDraw;
+	pTarg->m_bDotDraw = m_bDotDraw;
+	pTarg->m_bCursors = m_bCursors;
+	pTarg->m_bGrid = m_bGrid;
+	pTarg->m_fMagnify = m_fMagnify;
+	pTarg->m_dProcessMultiplier = m_dProcessMultiplier;
+	pTarg->m_szPlotName = m_szPlotName;
 	pTarg->m_dwHighLightPosition = 0;
-	pTarg->m_dwHighLightLength   = 0;
+	pTarg->m_dwHighLightLength = 0;
 }
 
 
 /***************************************************************************/
 // CPlotWnd::~CPlotWnd Destructor
 /***************************************************************************/
-CPlotWnd::~CPlotWnd()
+CPlotWnd::~CPlotWnd() 
 {
-	if (m_pStartCursor)    delete m_pStartCursor;
-	if (m_pStopCursor)     delete m_pStopCursor;
-	if (m_pPrivateCursor)  delete m_pPrivateCursor;
-	if (m_pPlaybackCursor) delete m_pPlaybackCursor;
+
+	if (m_pStartCursor) 
+	{
+		delete m_pStartCursor;
+		m_pStartCursor=NULL;
+	}
+	if (m_pStopCursor) 
+	{
+		delete m_pStopCursor;
+		m_pStopCursor=NULL;
+	}
+	if (m_pPrivateCursor) 
+	{
+		delete m_pPrivateCursor;
+		m_pPrivateCursor=NULL;
+	}
+	if (m_pPlaybackCursor) 
+	{
+		delete m_pPlaybackCursor;
+		m_pPlaybackCursor=NULL;
+	}
 
 	// turn off any highlighting in raw waveform due to dynamic update mode
 	CMainFrame* pMainWnd = (CMainFrame*)AfxGetMainWnd();
 	CSaView* pView = (pMainWnd)?(CSaView*)pMainWnd->GetCurrSaView():NULL;
-	if (!pView) return;
+	if (!pView) 
+	{
+		return;
+	}
 	BOOL bDynamicUpdate = (pView->GetGraphUpdateMode() == DYNAMIC_UPDATE);
 	BOOL bAnimationPlot = this->IsAnimationPlot();
-	if (bDynamicUpdate && bAnimationPlot)
+	
+	if (bDynamicUpdate && bAnimationPlot) 
 	{
 		int nWaveGraphIndex = pView->GetGraphIndexForIDD(IDD_RAWDATA);
 		CGraphWnd* pWaveGraph = pView->GetGraph(nWaveGraphIndex);
-		if (pWaveGraph)
-		{ // there is a raw waveform graph
+		if (pWaveGraph) 
+		{ 
+			// there is a raw waveform graph
 			CPlotWnd* pWavePlot = pWaveGraph->GetPlot();
-			if(pWavePlot)
+			if(pWavePlot) 
 			{
 				pWavePlot->SetHighLightArea(0, 0);
 				pWavePlot->UpdateWindow();
@@ -666,9 +688,9 @@ void CPlotWnd::SetStartCursor(CSaView* pView)
 /***************************************************************************/
 // CPlotWnd::SetStopCursor Position the stop cursor
 /***************************************************************************/
-void CPlotWnd::SetStopCursor(CSaView* pView)
+void CPlotWnd::SetStopCursor(CSaView* pView) 
 {
-	if (m_pStopCursor)
+	if (m_pStopCursor) 
 	{
 		ChangeCursorPosition(pView, pView->GetStopCursorPosition(), m_pStopCursor);
 	}
@@ -677,9 +699,9 @@ void CPlotWnd::SetStopCursor(CSaView* pView)
 /***************************************************************************/
 // CPlotWnd::SetPlaybackPosition
 /***************************************************************************/
-void CPlotWnd::SetPlaybackCursor(CSaView* pSaView, DWORD dwPos)
+void CPlotWnd::SetPlaybackCursor(CSaView* pSaView, DWORD dwPos) 
 {
-	if (m_pPlaybackCursor)
+	if (m_pPlaybackCursor) 
 	{
 		ChangeCursorPosition(pSaView, dwPos, m_pPlaybackCursor);
 	}
@@ -697,7 +719,7 @@ void CPlotWnd::MoveStartCursor(CSaView* pView, DWORD dwNewPosition)
 /***************************************************************************/
 // CPlotWnd::MoveStopCursor Move the stop cursor
 /***************************************************************************/
-void CPlotWnd::MoveStopCursor(CSaView* pView, DWORD dwNewPosition)
+void CPlotWnd::MoveStopCursor(CSaView* pView, DWORD dwNewPosition) 
 {
 	if (!m_bCursors) return; // no cursors visible
 	ChangeCursorPosition(pView, dwNewPosition, m_pStopCursor, TRUE);
@@ -706,12 +728,13 @@ void CPlotWnd::MoveStopCursor(CSaView* pView, DWORD dwNewPosition)
 /***************************************************************************/
 // CPlotWnd::SetInitialPrivateCursor Initialize the private cursor window
 /***************************************************************************/
-void CPlotWnd::SetInitialPrivateCursor()
+void CPlotWnd::SetInitialPrivateCursor() 
 {
+	
 	CRect rWnd;
 	// get the coordinates of the private cursor
 	m_pPrivateCursor->GetClientRect(rWnd);
-	if (rWnd.Height() == 0)
+	if (rWnd.Height() == 0) 
 	{
 		// private cursor has not been initialized yet
 		GetClientRect(rWnd);
@@ -829,21 +852,22 @@ void CPlotWnd::ScrollPlot(CSaView* pView, int nScrollAmount, DWORD dwOldPos, DWO
 // else only the part between (and with) the cursor windows are repainted,
 // but only if boundaries are displayed.
 /***************************************************************************/
-void CPlotWnd::RedrawPlot(BOOL bEntire)
+void CPlotWnd::RedrawPlot(BOOL bEntire) 
 {
 	// kg - in case we don't have a window yet..
 	if (IsWindow(m_hWnd) == FALSE) return;
 	CRect rWnd;
 	GetClientRect(rWnd);
-	if (bEntire)
+	if (bEntire) 
 	{
 		// invalidate entire plot window
 		InvalidateRect(NULL);
-	}
-	else
+	} 
+	else 
 	{
-		if (HaveBoundaries() && HaveCursors()) // boundaries displayed?
+		if (HaveBoundaries() && HaveCursors()) 
 		{
+			// boundaries displayed?
 			// invalidate region between (and with) cursor windows
 			CRect rStart, rStop;
 			m_pStartCursor->GetWindowRect(rStart);
@@ -864,8 +888,10 @@ void CPlotWnd::RedrawPlot(BOOL bEntire)
 short int CPlotWnd::CheckResult(short int nResult, CDataProcess* pProcess)
 {
 	m_pLastProcess = pProcess; // save pointer to process object for further use
-	if(!this->GetSafeHwnd())
+	if (!this->GetSafeHwnd())
+	{
 		return nResult;
+	}
 
 	CRect rClient;
 	GetClientRect(rClient);
@@ -1780,13 +1806,13 @@ int CPlotWnd::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	m_pPlaybackCursor = new CPrivateCursorWnd();
 	CRect rWnd(0, 0, 0, 0);
 	// create the start cursor
-	if (!m_pStartCursor->Create(NULL, _T("Cursor"), WS_CHILD | WS_VISIBLE, rWnd, this, 0))
+	if (!m_pStartCursor->Create(NULL, _T("Cursor"), WS_CHILD | WS_VISIBLE, rWnd, this, 0)) 
 	{
 		delete m_pStartCursor;
 		m_pStartCursor = NULL;
 	}
 	// create the stop cursor
-	if (!m_pStopCursor->Create(NULL, _T("Cursor"), WS_CHILD | WS_VISIBLE, rWnd, this, 0))
+	if (!m_pStopCursor->Create(NULL, _T("Cursor"), WS_CHILD | WS_VISIBLE, rWnd, this, 0)) 
 	{
 		delete m_pStopCursor;
 		m_pStopCursor = NULL;

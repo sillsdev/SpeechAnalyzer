@@ -190,10 +190,13 @@ void CMiniCaptionWnd::CalcNCAreas(BOOL isPrinting, const CRect & printRect, BOOL
 	CRect rcWnd;
 	int ncHeight;
 
-	if (isPrinting) {
+	if (isPrinting) 
+	{
 		rcWnd = printRect;
 		ncHeight = (printDoubleHeight) ? m_iNCHeight * 2 : m_iNCHeight;
-	} else {
+	} 
+	else 
+	{
 		ncHeight = m_iNCHeight;
 		GetWindowRect(&rcWnd);
 	}
@@ -202,12 +205,15 @@ void CMiniCaptionWnd::CalcNCAreas(BOOL isPrinting, const CRect & printRect, BOOL
 	int nCorr = 0; // correction because of 3D border for Win95
 	if (wpl.showCmd != SW_SHOWMAXIMIZED) nCorr = 1;
 	// set caption frame rectangle
-	if (bClientCoords) {
+	if (bClientCoords) 
+	{
 		// client coordinates
 		prcNC->top = 0;
 		prcNC->left = m_ixSizFrame - nCorr;
 		prcNC->right = rcWnd.Width() - m_ixSizFrame + nCorr;
-	} else {
+	} 
+	else 
+	{
 		// screen coordinates
 		prcNC->top = rcWnd.top;
 		prcNC->left = rcWnd.left + m_ixSizFrame - nCorr;
@@ -219,9 +225,12 @@ void CMiniCaptionWnd::CalcNCAreas(BOOL isPrinting, const CRect & printRect, BOOL
 	int nButtonTop, nButtonWidth, nButtonHeight, nButtonGap = 0;
 	nButtonGap = (ncHeight + 1) / 10; // gap between buttons and border and buttons
 	nButtonTop = prcNC->top;
-	if (m_nCaption != Normal) {
+	if (m_nCaption != Normal) 
+	{
 		nButtonWidth = MINICAPTION_HEIGHT + 1;
-	} else {
+	} 
+	else 
+	{
 		nButtonWidth = GetSystemMetrics(SM_CXSIZE);
 	}
 	nButtonHeight = MINICAPTION_HEIGHT; 
@@ -315,7 +324,8 @@ void CMiniCaptionWnd::OnNcCalcSize(BOOL bCalcValidRects, NCCALCSIZE_PARAMS * lpn
 	// modes - NoneThin, None, Mini, MiniWithCaption, Normal,
 	if ((m_nCaption == None) || 
 		(m_nCaption == NoneThin) || 
-		(m_nCaption == Normal)) {
+		(m_nCaption == Normal)) 
+	{
 		return; // standard
 	}
 
@@ -325,10 +335,13 @@ void CMiniCaptionWnd::OnNcCalcSize(BOOL bCalcValidRects, NCCALCSIZE_PARAMS * lpn
 	GetWindowPlacement(&wpl);
 
 	// adjust the client area to compensate for the nonclient area
-	if (wpl.showCmd != SW_SHOWMAXIMIZED) {
+	if (wpl.showCmd != SW_SHOWMAXIMIZED) 
+	{
 		// window is not maximized
 		lpncsp->rgrc[0].top += m_iNCHeight - 1;
-	} else {
+	} 
+	else 
+	{
 		// window is maximized
 		lpncsp->rgrc[0].top += m_iNCHeight; // because of 3D border for Win95
 		lpncsp->rgrc[0].bottom -= 1;
@@ -338,7 +351,8 @@ void CMiniCaptionWnd::OnNcCalcSize(BOOL bCalcValidRects, NCCALCSIZE_PARAMS * lpn
 
 	// if there's no room for the client area, set top and bottom equal to each other.
 	// This should give the non-client area the room it needs
-	if (lpncsp->rgrc[0].top > lpncsp->rgrc[0].bottom) {
+	if (lpncsp->rgrc[0].top > lpncsp->rgrc[0].bottom) 
+	{
 		lpncsp->rgrc[0].bottom = lpncsp->rgrc[0].top;
 	}
 }
@@ -506,9 +520,12 @@ void CMiniCaptionWnd::OnNcDraw(CDC * pDC, const CRect & printRect, BOOL bPrintDo
 					// create and select system font
 					LOGFONT lFont;
 					SystemParametersInfo(SPI_GETICONTITLELOGFONT, sizeof(lFont), &lFont, 0);
-					if (lFont.lfHeight<0) {
+					if (lFont.lfHeight<0) 
+					{
 						lFont.lfHeight+=2;
-					} else {
+					} 
+					else 
+					{
 						lFont.lfHeight = rcWnd.bottom - rcWnd.top - 1;
 					}
 					CFont font;

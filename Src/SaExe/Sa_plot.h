@@ -137,41 +137,38 @@ public:
 	void SetMouseButtonState(UINT state) {m_MouseButtonState = state;}
 
 protected:
-	virtual void PostNcDestroy()
-	{
-		delete this;
-	};
+	virtual void PostNcDestroy() { delete this;};
 
 	// Attributes
 protected:
-	BOOL         m_bInitialPlot;          // TRUE = initial plot
-	CString      m_szPlotName;
-	CGraphWnd  * m_pParent;
-	CPlotHelperWnd m_HelperWnd;           // helper window embedded object
-	CStartCursorWnd* m_pStartCursor;      // start cursor window embedded object
-	CStopCursorWnd* m_pStopCursor;        // stop cursor window embedded object
-	CPrivateCursorWnd* m_pPrivateCursor;  // private cursor window embedded object
-	CPrivateCursorWnd* m_pPlaybackCursor; // private cursor window embedded object
-	CDataProcess* m_pLastProcess;     // pointer to MRU process
-	CAreaDataProcess* m_pAreaProcess;     // pointer to area process (needs deleting)
-	BOOL  m_bBoundaries;                  // TRUE = boundaries shown
-	BOOL  m_bLineDraw;                    // TRUE = drawing style is line
-	BOOL  m_bDotDraw;                     // TRUE = drawing style is dots
-	BOOL  m_bCursors;                     // TRUE = cursors visible
-	BOOL  m_bPrivateCursor;               // TRUE = private cursor visible
-	BOOL  m_bGrid;                        // TRUE = gridlines visible
-	double m_fMagnify;                    // magnify factor
-	double m_fVScale;                     // vertical scale
+	BOOL m_bInitialPlot;					// TRUE = initial plot
+	CString m_szPlotName;
+	CGraphWnd * m_pParent;
+	CPlotHelperWnd m_HelperWnd;				// helper window embedded object
+	CStartCursorWnd * m_pStartCursor;		// start cursor window embedded object
+	CStopCursorWnd * m_pStopCursor;			// stop cursor window embedded object
+	CPrivateCursorWnd * m_pPrivateCursor;	// private cursor window embedded object
+	CPrivateCursorWnd * m_pPlaybackCursor;	// private cursor window embedded object
+	CDataProcess * m_pLastProcess;			// pointer to MRU process
+	CAreaDataProcess * m_pAreaProcess;		// pointer to area process (needs deleting)
+	BOOL  m_bBoundaries;					// TRUE = boundaries shown
+	BOOL  m_bLineDraw;						// TRUE = drawing style is line
+	BOOL  m_bDotDraw;						// TRUE = drawing style is dots
+	BOOL  m_bCursors;						// TRUE = cursors visible
+	BOOL  m_bPrivateCursor;					// TRUE = private cursor visible
+	BOOL  m_bGrid;							// TRUE = gridlines visible
+	double m_fMagnify;						// magnify factor
+	double m_fVScale;						// vertical scale
 	double m_dProcessMultiplier;
-	DWORD m_dwHighLightPosition;          // highlighted area position
-	DWORD m_dwHighLightLength;            // highlighted area length
+	DWORD m_dwHighLightPosition;			// highlighted area position
+	DWORD m_dwHighLightLength;				// highlighted area length
 	BOOL	m_bAnimationPlot;               // TRUE = plot can be animated (defaults to FALSE)
-	DWORD m_dwAnimationFrame;             // animation frame index
-	CPoint m_MousePointerPosn;            // mouse pointer position 
-	UINT m_MouseButtonState;              // mouse button flags
-	CBitmap* m_pBitmapSave;               // pointer to original bitmap
-	HWND DynamicCB;                       // 'Dynamic' check box TWC control
-	HWND WeightedButton;                  // 'Weighted' radio button melogram control
+	DWORD m_dwAnimationFrame;				// animation frame index
+	CPoint m_MousePointerPosn;				// mouse pointer position 
+	UINT m_MouseButtonState;				// mouse button flags
+	CBitmap* m_pBitmapSave;					// pointer to original bitmap
+	HWND DynamicCB;							// 'Dynamic' check box TWC control
+	HWND WeightedButton;					// 'Weighted' radio button melogram control
 
 	// Operations
 private:
@@ -181,6 +178,7 @@ private:
 
 protected:
 	void ChangeCursorPosition(CSaView* pView, DWORD dwNewPosition, CCursorWnd*, BOOL bMove = FALSE); // change the current cursor position
+
 public:
 	void SetRtOverlay();
 	bool bIsRtOverlay();
@@ -202,20 +200,20 @@ public:
 	BOOL ShowGrid(BOOL bShow, BOOL bRedraw = FALSE);    // show or hide gridlines
 	void ScrollPlot(CSaView* pView, int nAmount, DWORD dwOldPos, DWORD dwFrame); // scroll plot and cursors
 	void RedrawPlot(BOOL bEntire = TRUE);               // repaint plot (entire or partial)
-	virtual void SetStartCursor(CSaView* pView);          // position the start cursor window
-	virtual void SetStopCursor(CSaView* pView);           // position the stop cursor window
+	virtual void SetStartCursor(CSaView* pView);        // position the start cursor window
+	virtual void SetStopCursor(CSaView* pView);         // position the stop cursor window
 	void SetPlaybackCursor(CSaView* pView, DWORD dwPos);
 	void MoveStartCursor(CSaView* pView, DWORD dwNewPositon); // move the start cursor window
 	void MoveStopCursor(CSaView* pView, DWORD dwNewPositon);  // move the stop cursor window
 	CStartCursorWnd* GetStartCursorWnd() {return m_pStartCursor;} // return pointer to start cursor window
 	CStopCursorWnd* GetStopCursorWnd() {return m_pStopCursor;} // return pointer to start cursor window
 	CPrivateCursorWnd* GetPrivateCursorWnd() {return m_pPrivateCursor;} // return pointer to private cursor window
-	int  GetStartCursorPosition();                   // return the pos. in pixel coord. of the start cursor
-	int  GetStopCursorPosition();                    // return the pos. in pixel coord. of the stop cursor
-	void SetInitialPrivateCursor();                  // set the initial private cursor
-	int  GetPrivateCursorPosition();                 // return the pos. in pixel coord. of the private cursor
-	BOOL IsCanceled();                               // return canceled state
-	virtual void RestartProcess();                   // restart canceled process
+	int  GetStartCursorPosition();						// return the pos. in pixel coord. of the start cursor
+	int  GetStopCursorPosition();						// return the pos. in pixel coord. of the stop cursor
+	void SetInitialPrivateCursor();						// set the initial private cursor
+	int  GetPrivateCursorPosition();					// return the pos. in pixel coord. of the private cursor
+	BOOL IsCanceled();									// return canceled state
+	virtual void RestartProcess();						// restart canceled process
 	virtual DWORD GetAreaPosition();                         // return area position
 	virtual DWORD GetAreaLength(CRect * pRwnd = NULL);       // return area length
 	virtual void OnDraw(CDC * /*pDC*/, CRect /*rWnd*/, CRect /*rClip*/, CSaView * /*pView*/) {};

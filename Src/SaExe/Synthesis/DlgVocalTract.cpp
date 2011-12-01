@@ -1528,13 +1528,13 @@ static void WeightChars(CIpaVTChar &cPrev, CIpaVTChar &cNext, double dWeight, CI
 
 	unsigned int i;
 
-	for(i=0; i<cThis.m_areas.size(); i++)
+	for (i=0; i<cThis.m_areas.size(); i++)
 		WeightParameter(m_areas[i]);
 
-	for(i=0; i<cThis.m_reflection.size(); i++)
+	for (i=0; i<cThis.m_reflection.size(); i++)
 		WeightParameter(m_reflection[i]);
 
-	for(i=0; i<cThis.m_pred.size(); i++)
+	for (i=0; i<cThis.m_pred.size(); i++)
 		WeightParameter(m_pred[i]);
 
 	// These parameters will need work

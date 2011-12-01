@@ -265,7 +265,9 @@ BOOL CreateTree(char *tree_definition, CWaveletNode **root_node)
 	if (tempStack.empty()) 
 	{
 		return TRUE; 
-	} else {
+	} 
+	else 
+	{
 		while (!tempStack.empty())
 		{
 			tempNode = tempStack.top();
@@ -958,7 +960,11 @@ BOOL CWaveletNode::ScatterPlotDataNode(CDC *pDC, CRect *rWnd, COLORREF crColor, 
 //*  Returns       : NULL - if the leaf was not found, otherwise
 //*									 pointer to the Node
 //************************************************************************** 
-CWaveletNode *CWaveletNode::GetNode(long level) { return _GetNode(level, true); }		// Wrapper
+CWaveletNode *CWaveletNode::GetNode(long level) 
+{ 
+	return _GetNode(level, true); 
+}		// Wrapper
+
 CWaveletNode *CWaveletNode::_GetNode(long level, bool reset)
 {
 	CWaveletNode *finalNode = NULL;
@@ -1153,7 +1159,9 @@ double CWaveletNode::_GetMaxTree(double max)
 	{
 		if (left_node->GetMaxNode() > max) 
 			max = left_node->GetMaxNode();
-	} else {
+	} 
+	else 
+	{
 		max = left_node->_GetMaxTree(max);
 	}
 
@@ -1162,7 +1170,9 @@ double CWaveletNode::_GetMaxTree(double max)
 	{
 		if (right_node->GetMaxNode() > max) 
 			max = right_node->GetMaxNode();
-	} else {
+	} 
+	else 
+	{
 		max = right_node->_GetMaxTree(max);
 	}
 
@@ -1187,7 +1197,9 @@ double CWaveletNode::_GetMaxTreeBounds(double max, long start, long end)
 	{
 		if (left_node->GetMaxNodeBounds(start, end) > max) 
 			max = left_node->GetMaxNodeBounds(start, end);
-	} else {
+	} 
+	else 
+	{
 		max = left_node->_GetMaxTreeBounds(max, start, end);
 	}
 
@@ -1196,7 +1208,9 @@ double CWaveletNode::_GetMaxTreeBounds(double max, long start, long end)
 	{
 		if (right_node->GetMaxNodeBounds(start, end) > max) 
 			max = right_node->GetMaxNodeBounds(start, end);
-	} else {
+	} 
+	else 
+	{
 		max = right_node->_GetMaxTreeBounds(max, start, end);
 	}
 
@@ -1299,11 +1313,6 @@ BOOL CProcessWavelet::Get_Raw_Data(long **pDataOut, DWORD *dwDataSizeOut, ISaDoc
 		else
 			dwChunkSizeBytes = dwBufferSizeBytes;
 	}
-
 	*dwDataSizeOut = (dwDataSizeBytes / 2);
-
-
 	return TRUE;
-
-
 }

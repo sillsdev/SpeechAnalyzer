@@ -2232,10 +2232,12 @@ void CAnnotationWnd::OnLButtonDown(UINT nFlags, CPoint point)
 		//SDM 1.5Test8.5
 		if (((CMainFrame*)AfxGetMainWnd())->IsEditAllowed() &&
 			(!pView->ASelection().SelectFromPosition( pView, m_nIndex, dwPosition)) &&
-			(pView->ASelection().GetSelection().nAnnotationIndex!=-1)) {
+			(pView->ASelection().GetSelection().nAnnotationIndex!=-1)) 
+		{
 			//SDM 1.5Test8.5
 			// Selection not changed
-			if (GetTickCount() < (m_nSelectTickCount + SLOW_CLICK_TIME_LIMIT * 1000)) {
+			if (GetTickCount() < (m_nSelectTickCount + SLOW_CLICK_TIME_LIMIT * 1000)) 
+			{
 				OnCreateEdit();
 			}
 		};

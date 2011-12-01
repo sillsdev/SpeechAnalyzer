@@ -6,23 +6,23 @@
 
 class CResult : public CDialog
 {
-  // Construction
+	// Construction
 public:
-  CResult(CString result, CWnd* pParent = NULL);  // standard constructor
+	CResult(CString result, CWnd* pParent = NULL);  // standard constructor
 
-  // Dialog Data
-  //{{AFX_DATA(CResult)
-  enum { IDD = IDD_RESULT };
-  CString m_szResult;
-  //}}AFX_DATA
+	// Dialog Data
+	//{{AFX_DATA(CResult)
+	enum { IDD = IDD_RESULT };
+	CString m_szResult;
+	//}}AFX_DATA
 
-  // Implementation
+	// Implementation
 protected:
-  virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
+	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
 
-  // Generated message map functions
-  //{{AFX_MSG(CResult)
-  virtual void OnCancel();
-  //}}AFX_MSG
-  DECLARE_MESSAGE_MAP()
+	// Generated message map functions
+	//{{AFX_MSG(CResult)
+	virtual void OnCancel();
+	//}}AFX_MSG
+	DECLARE_MESSAGE_MAP()
 };

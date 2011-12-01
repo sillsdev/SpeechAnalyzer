@@ -501,5 +501,9 @@
 		</Filter>
 	</Files>
 	<Globals>
+		<Global
+			Name="RESOURCE_FILE"
+			Value="\Working\SIL\MSEA.git\Src\SaExe\SA.rc"
+		/>
 	</Globals>
 </VisualStudioProject>

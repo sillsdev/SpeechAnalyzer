@@ -147,7 +147,10 @@ void CGraphWnd::SetStopCursor(CSaView* pView)
 {
 	//if (HaveCursors())    //!! commented out by AKE to hide cursors for graph editing
 	m_pPlot->SetStopCursor(pView);
-	if (!m_pPlot->HaveCursors()) m_pPlot->Invalidate();
+	if (!m_pPlot->HaveCursors())
+	{
+		m_pPlot->Invalidate();
+	}
 	/*
 	if (HavePrivateCursor())
 	{

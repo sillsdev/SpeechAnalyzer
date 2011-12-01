@@ -2542,16 +2542,20 @@ void CSaView::OnUpdatePopupgraphXScale(CCmdUI* pCmdUI)
 //                  current view when the view is first being started up.
 //                  I don't understand what the deal is.
 /***************************************************************************/
-void CSaView::ShowAnnotation(int nAnnot)
+void CSaView::ShowAnnotation( int nAnnot)
 {
-	if(m_pFocusedGraph)
-		m_pFocusedGraph->ShowAnnotation(nAnnot, !m_pFocusedGraph->HaveAnnotation(nAnnot), TRUE);
+	if (m_pFocusedGraph)
+	{
+		m_pFocusedGraph->ShowAnnotation( nAnnot, !m_pFocusedGraph->HaveAnnotation(nAnnot), TRUE);
+	}
 
 	if (m_nFocusedID == IDD_MELOGRAM)
 	{
 		int i = GetGraphIndexForIDD(IDD_TWC);
 		if ((i != -1) && m_apGraphs[i])
+		{
 			m_apGraphs[i]->ShowAnnotation(nAnnot, !m_apGraphs[i]->HaveAnnotation(nAnnot), TRUE);
+		}
 	}
 }
 

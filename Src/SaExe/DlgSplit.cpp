@@ -31,5 +31,3 @@ void CDlgSplit::DoDataExchange(CDataExchange* pDX)
 
 BEGIN_MESSAGE_MAP(CDlgSplit, CDialog)
 END_MESSAGE_MAP()
-
-// CDlgSplit message handlers

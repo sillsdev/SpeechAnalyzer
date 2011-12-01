@@ -93,8 +93,10 @@ void CAnalyticLpcAnalysis::BuildPredictorReflectionCoefficients(const CAnalyticL
 class CProcessTrackState : public CFormantTracker::CTrackState
 {
 public:
-	CProcessTrackState() {;}
-	virtual ~CProcessTrackState() {;}
+	CProcessTrackState() 
+	{;}
+	virtual ~CProcessTrackState() 
+	{;}
 
 	typedef std::complex<double> CDBL;
 	typedef std::vector<CDBL> VECTOR_CDBL;
@@ -282,7 +284,8 @@ void CFormantTracker::BuildTrack(CTrackState &state, double samplingRate, int pi
 		// Store Frequency & BW
 		CDBL predictor = lpc.GetPredictor()[1];
 		trackOut[formant] = predictor;
-		if (formant==1) {
+		if (formant==1) 
+		{
 			//for (int i=0;i<filtered.size();i++) {
 			//	TRACE("filtered[%d]=%f\n",i,filtered[i]);
 			//}
@@ -392,7 +395,8 @@ long CFormantTracker::Process(void* pCaller, ISaDoc* pDoc, int nProgress, int nL
 	DspWin window = DspWin::FromBandwidth(FormantTrackerOptions.m_dWindowBandwidth,pDoc->GetFmtParm()->dwSamplesPerSec,FormantTrackerOptions.m_nWindowType);
 	state.GetWindow().assign(window.WindowDouble(),window.WindowDouble()+window.Length());
 
-	for (int i=0;i<3;i++) {
+	for (int i=0;i<3;i++) 
+	{
 		TRACE("to[%d]=%f\n",i,state.GetTrackOut()[i]);
 	}
 
@@ -408,7 +412,8 @@ long CFormantTracker::Process(void* pCaller, ISaDoc* pDoc, int nProgress, int nL
 	AdvanceData(state, dwDataPos, dwInitial);
 
 	// start processing loop
-	for (int i=0;i<3;i++) {
+	for (int i=0;i<3;i++) 
+	{
 		TRACE("to[%d]=%f\n",i,state.GetTrackOut()[i]);
 	}
 

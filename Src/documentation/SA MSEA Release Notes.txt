@@ -62,3 +62,16 @@ SA 3.0.1.8 - 11/28/2011
 3) Fixed minicap text height issue.
 4) Fixed minicap rendering issues when minimized.
 5) Added 'copy phonetic to phonemic' feature
+
+SA 3.0.1.8 - 11/30/2011
+-----------------------
+1) For Spectrograph parameters dialog - making F4 checkbox perform as 'F4 and above'
+2) Made 'Auto Parse' and 'Auto Segment' property pages full fledged dialog boxes.
+3) Renamed buttons for Auto Parse and Auto Segment dialog boxes
+4) Added text to 'Auto Parse' dialog box
+5) Fixed bug regarding loading of defaults for 'Auto Parse' dialog box.
+6) Fixed 'copy phonetic to phonemic' bug.
+7) Added 'cursor selection' feature.
+
+
+

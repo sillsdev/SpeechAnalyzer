@@ -110,7 +110,8 @@
 #include "Process\sa_p_rat.h"
 #include "Process\sa_p_twc.h"
 #include "playerRecorder.h"
-#include "advancedParameters.h"
+#include "dlgadvancedsegment.h"
+#include "dlgadvancedparse.h"
 
 #include "sa.h"
 #include "sa_view.h"
@@ -156,8 +157,6 @@ BEGIN_MESSAGE_MAP(CSaDoc, CDocument)
 	ON_UPDATE_COMMAND_UI(ID_ADVANCED_PARSE, OnUpdateAdvancedParse)
 	ON_COMMAND(ID_ADVANCED_SEGMENT, OnAdvancedSegment)
 	ON_UPDATE_COMMAND_UI(ID_ADVANCED_SEGMENT, OnUpdateAdvancedSegment)
-	//ON_COMMAND(ID_ADVANCED_PARAMETERS, OnAdvancedParameters)
-	//ON_UPDATE_COMMAND_UI(ID_ADVANCED_PARAMETERS, OnUpdateAdvancedParameters)
 	ON_COMMAND(ID_TOOLS_IMPORT, OnToolsImport)
 	ON_COMMAND(ID_AUTO_ALIGN, OnAutoAlign)
 	ON_UPDATE_COMMAND_UI(ID_AUTO_ALIGN, OnUpdateAutoAlign)
@@ -868,7 +867,8 @@ BOOL CSaDoc::LoadTranscriptionData(const TCHAR* pszWavePath, BOOL bTemp)
 	try {
 		initSucceeded = saAudioDocRdr->Initialize(pszWavePath, (short)bTemp);
 	}
-	catch(...) {
+	catch(...) 
+	{
 		CSaString szError;
 		szError.Format(_T("Unexpected exception thrown from 'SaAudioDocumentReader::Initialize()'"));
 		pApp->ErrorMessage(szError);
@@ -5417,7 +5417,8 @@ void CSaDoc::OnUpdateFileSplit(CCmdUI* pCmdUI)
 CString CSaDoc::FilterSplitName( CString text)
 {
 	CString result;
-	for (int i=0;i<text.GetLength();i++) {
+	for (int i=0;i<text.GetLength();i++) 
+	{
 		wchar_t c = text.GetAt(i);
 		switch (c)
 		{
@@ -5439,7 +5440,8 @@ CString CSaDoc::FilterSplitName( CString text)
 		}
 		result.AppendChar(c);
 	}
-	if (result.GetAt(0)=='#') {
+	if (result.GetAt(0)=='#') 
+	{
 		result = result.Mid(1);
 	}
 	result = result.Trim();
@@ -5453,7 +5455,8 @@ CString CSaDoc::GenerateSplitName( CSaView* pView, int convention, int index)
 
 	CString result;
 	// generate the filename based on the dialog selection
-	switch (convention) {
+	switch (convention) 
+	{
 	default:
 	case 1:	//ref+gloss
 		CSegment * g = pView->GetAnnotation(GLOSS);
@@ -5462,19 +5465,24 @@ CString CSaDoc::GenerateSplitName( CSaView* pView, int convention, int index)
 		// find the ref based on the gloss position, since GLOSS is the iterator
 		CSegment * r = pView->GetAnnotation(REFERENCE);
 		int rindex = -1;
-		for (int j=0;j<r->GetSize();j++) {
+		for (int j=0;j<r->GetSize();j++) 
+		{
 			DWORD dwOffset = r->GetOffset(j);
-			if (dwStart==dwOffset) {
+			if (dwStart==dwOffset) 
+			{
 				rindex = j;
 				break;
-			} else if (dwStart<dwOffset) {
+			} 
+			else if (dwStart<dwOffset) 
+			{
 				// we passed it
 				rindex = j-1;
 				break;
 			}
 		}
 		CString ref;
-		if (rindex!=-1) {
+		if (rindex!=-1) 
+		{
 			ref = pView->GetAnnotation(REFERENCE)->GetSegmentString(rindex);
 		}
 
@@ -5528,7 +5536,8 @@ void CSaDoc::OnFileSplit()
 	
 	CDlgSplit dlg;
 	dlg.m_FolderName = newpath;
-	if (dlg.DoModal()!=IDOK) {
+	if (dlg.DoModal()!=IDOK) 
+	{
 		return;
 	}
 
@@ -5537,17 +5546,23 @@ void CSaDoc::OnFileSplit()
 	swprintf_s(newpath,_countof(newpath),dlg.m_FolderName.Left(dlg.m_FolderName.GetLength()-1));
 
 	CFileStatus status;
-	if (CFile::GetStatus(newpath,status)) {
-		if (status.m_attribute&CFile::directory) {
+	if (CFile::GetStatus(newpath,status)) 
+	{
+		if (status.m_attribute&CFile::directory) 
+		{
 			// it's there and it's a directory
 			TRACE1("directory %s already exists\n",newpath);
-		} else {
+		} 
+		else 
+		{
 			// it exists, but it's not a directory
 			TRACE1("%s already exists, but it's not a directory\n",newpath);
 			pApp->ErrorMessage(IDS_SPLIT_BAD_DIRECTORY);
 			return;
 		}
-	}  else {
+	}  
+	else 
+	{
 		TRACE1("creating %s\n",newpath);
 		// it doesn't exist - create it!
 		CreateDirectory(newpath, NULL);
@@ -5556,14 +5571,16 @@ void CSaDoc::OnFileSplit()
 	POSITION pos = GetFirstViewPosition();
 	CSaView* pView = (CSaView*)GetNextView(pos);
 	// we need a focused graph!
-	if (pView->GetFocusedGraphWnd()==NULL) {
+	if (pView->GetFocusedGraphWnd()==NULL) 
+	{
 		pApp->ErrorMessage(IDS_SPLIT_NO_SELECTION);
 		return;
 	}
 
 	// key off of gloss for now
 	int nLoop = pView->GetAnnotation(GLOSS)->GetSize();
-	if (nLoop==0) {
+	if (nLoop==0) 
+	{
 		pApp->ErrorMessage(IDS_SPLIT_NO_ANNOTATION);
 		return;
 	}
@@ -5572,8 +5589,8 @@ void CSaDoc::OnFileSplit()
 
 	int count = 0;
 	// loop for each annotation
-	for (int i=0;i<nLoop;i++) {
-		
+	for (int i=0;i<nLoop;i++) 
+	{
 		BOOL bSuccess = FALSE;
 
 		CSegment * g = pView->GetAnnotation(GLOSS);
@@ -5582,18 +5599,23 @@ void CSaDoc::OnFileSplit()
 
 		// can we piece the name together?
 		CString name = GenerateSplitName( pView, dlg.m_iConvention, i);
-		if (name.GetLength()==0)  {
+		if (name.GetLength()==0)  
+		{
 			continue;
 		}
 		wchar_t buffer[MAX_PATH];
 		swprintf_s( buffer, _countof(buffer), L"%s\\%s.wav",newpath,(LPCTSTR)name);
 
 		bSuccess = CopySectionToNewWavFile(dwStart,dwStop-dwStart,buffer);
-		if (!bSuccess) {
+		if (!bSuccess) 
+		{
 			// be sure to delete the file
-			try {
+			try 
+			{
 				CFile::Remove(buffer);
-			} catch (...) {
+			} 
+			catch (...) 
+			{
 				TRACE0("Warning: failed to delete file after failed SaveAs\n");
 			}
 			EndWaitCursor();
@@ -5606,9 +5628,12 @@ void CSaDoc::OnFileSplit()
 		swprintf_s( oldsaxml, _countof(oldsaxml), L"%s\\%s.saxml.tmp",newpath,name);
 		swprintf_s( newsaxml, _countof(newsaxml), L"%s\\%s.saxml",newpath,name);
 		bSuccess = CopyFile(oldsaxml,newsaxml);
-		if (!bSuccess) {
+		if (!bSuccess) 
+		{
 			pApp->ErrorMessage(IDS_SPLIT_BAD_COPY,buffer);
-		} else {
+		} 
+		else 
+		{
 			count++;
 		}
 	}
@@ -5698,31 +5723,10 @@ void CSaDoc::OnUpdateFileSaveAs(CCmdUI* pCmdUI)
 /***************************************************************************/
 void CSaDoc::OnAdvancedParse()
 {
-	CSegment* pSegment = m_apSegments[GLOSS];
-	
-	// SDM 1.5Test8.2 moved from CGlossSegment::Process
-	if (!pSegment->IsEmpty()) 
-	{
-		// doesn't user want to keep existing gloss?
-		if (!(AfxMessageBox(IDS_QUESTION_DELETEGLOSS, MB_YESNO | MB_ICONQUESTION, 0) == IDYES)) {
-			return;
-		}
-	}
-
 	CheckPoint();
 
-	// display the parameters box
-	CSaString szCaption;
-	// load caption string
-	szCaption.LoadString(IDS_DLGTITLE_ADVANCED); 
-	// create the property sheet
-	CDlgAdvanced dlg( szCaption, NULL, 0, CDlgAdvanced::SHOW_PARSE);
-	if (dlg.DoModal()!=IDOK) {
-		// undo the changes
-		POSITION pos = GetFirstViewPosition();
-		CSaView* pView = (CSaView*)GetNextView(pos);
-		pView->SendMessage(WM_COMMAND,ID_EDIT_UNDO,0);
-	};
+	CDlgAdvancedParse dlg;
+	dlg.DoModal();
 }
 
 // Split function SDM 1.5Test8.2
@@ -5731,6 +5735,7 @@ void CSaDoc::OnAdvancedParse()
 /***************************************************************************/
 BOOL CSaDoc::AdvancedParse()
 {
+
 	// get pointer to view
 	POSITION pos = GetFirstViewPosition();
 	CSaView* pView = (CSaView*)GetNextView(pos);
@@ -5773,29 +5778,10 @@ void CSaDoc::OnUpdateAdvancedParse(CCmdUI* pCmdUI)
 /***************************************************************************/
 void CSaDoc::OnAdvancedSegment()
 {
-	CSegment* pSegment = m_apSegments[PHONETIC];
-	if (!pSegment->IsEmpty()) // SDM 1.5Test8.2
-	{
-		// SDM 1.06.4 Moved from CPhoneticSegment::Process()
-		// doesn't user want to keep existing annotations?
-		if (!(AfxMessageBox(IDS_QUESTION_DELETE_KEEPGLOSS, MB_YESNO | MB_ICONQUESTION, 0) == IDYES))
-			return;
-	}
-	
 	CheckPoint();
 
-	// display the parameters box
-	CSaString szCaption;
-	// load caption string
-	szCaption.LoadString(IDS_DLGTITLE_ADVANCED); 
-	// create the property sheet
-	CDlgAdvanced dlg( szCaption, NULL, 0, CDlgAdvanced::SHOW_SEGMENT);
-	if (dlg.DoModal()!=IDOK) {
-		// undo the changes
-		POSITION pos = GetFirstViewPosition();
-		CSaView* pView = (CSaView*)GetNextView(pos);
-		pView->SendMessage(WM_COMMAND,ID_EDIT_UNDO,0);
-	};
+	CDlgAdvancedSegment dlg;
+	dlg.DoModal();
 }
 
 // Split function SDM 1.5Test8.2
@@ -5804,6 +5790,7 @@ void CSaDoc::OnAdvancedSegment()
 /***************************************************************************/
 BOOL CSaDoc::AdvancedSegment()
 {
+
 	POSITION pos = GetFirstViewPosition();
 	CSaView* pView = (CSaView*)GetNextView(pos);
 	CSaDoc* pDoc = pView->GetDocument();
@@ -5812,13 +5799,17 @@ BOOL CSaDoc::AdvancedSegment()
 
 	// SDM1.5Test8.2
 	CSegment* pPreserve[ANNOT_WND_NUMBER];
-	for(int nLoop = GLOSS; nLoop < ANNOT_WND_NUMBER; nLoop++)
+	for (int nLoop = GLOSS; nLoop < ANNOT_WND_NUMBER; nLoop++)
 	{
 		pPreserve[nLoop] = m_apSegments[nLoop];
-		if(nLoop == GLOSS)
+		if (nLoop == GLOSS)
+		{
 			m_apSegments[nLoop] = new CGlossSegment(GLOSS,PHONETIC);
+		}
 		else
+		{
 			m_apSegments[nLoop] = new CReferenceSegment(REFERENCE,GLOSS);
+		}
 	}
 
 	CPhoneticSegment* pSegment = (CPhoneticSegment*)m_apSegments[PHONETIC];
@@ -5933,34 +5924,6 @@ BOOL CSaDoc::AdvancedSegment()
 // CSaDoc::OnUpdateAdvancedSegment Menu update
 /***************************************************************************/
 void CSaDoc::OnUpdateAdvancedSegment(CCmdUI* pCmdUI)
-{
-	pCmdUI->Enable(GetUnprocessedDataSize() != 0); // enable if data is available
-}
-
-/***************************************************************************/
-// CSaDoc::OnAdvancedParameters Change advanced parameters
-/***************************************************************************/
-void CSaDoc::OnAdvancedParameters()
-{
-	CSaString szCaption;
-	szCaption.LoadString(IDS_DLGTITLE_ADVANCED); // load caption string
-
-	// the dialog allows users to 'apply now', so we will
-	// allow them to revert if needed.
-	CheckPoint();
-
-	// create the property sheet
-	CDlgAdvanced dlg(szCaption, NULL, 0, CDlgAdvanced::SHOW_BOTH);
-	if (dlg.DoModal()!=IDOK) {
-		Undo(FALSE);
-	}
-}
-
-
-/***************************************************************************/
-// CSaDoc::OnUpdateAdvancedParameters Menu update
-/***************************************************************************/
-void CSaDoc::OnUpdateAdvancedParameters(CCmdUI* pCmdUI)
 {
 	pCmdUI->Enable(GetUnprocessedDataSize() != 0); // enable if data is available
 }

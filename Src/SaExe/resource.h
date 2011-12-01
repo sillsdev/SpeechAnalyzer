@@ -230,9 +230,9 @@
 #define IDS_ERROR_FORMATPCM             1007
 #define IDD_PARAMETERSLOUDNESSPAGE      1008
 #define IDS_ERROR_FORMATMONO            1008
-#define IDD_ADVANCEDSEGMENTPAGE         1008
+#define IDD_ADVANCEDSEGMENT             1008
 #define IDS_ERROR_DATACHUNK             1009
-#define IDD_ADVANCEDPARSEPAGE           1009
+#define IDD_ADVANCEDPARSE               1009
 #define IDD_OPTIONSCOLORSPAGE           1010
 #define IDS_ERROR_NODATA                1010
 #define IDD_RECORDEROPTIONS             1011
@@ -823,12 +823,10 @@
 #define IDS_QUESTION_DELETEANNOT        1502
 #define IDC_CHART_CV456                 1502
 #define IDC_PHONEMIC                    1502
-#define IDS_QUESTION_DELETEGLOSS        1503
 #define IDC_CHART_CV457                 1503
 #define IDC_ORTHOGRAPHIC                1503
 #define IDC_CHART_CV453                 1504
 #define IDC_GLOSS                       1504
-#define IDS_QUESTION_DELETE_KEEPGLOSS   1504
 #define IDS_QUESTION_APPLYRECORD        1505
 #define IDC_CHART_CV712                 1505
 #define IDC_IMPORT                      1505
@@ -1461,7 +1459,6 @@
 #define IDC_PITCH_MANUAL_DEFAULT_FILE   1936
 #define IDC_F3                          1937
 #define IDC_F4                          1938
-#define IDC_F5                          1939
 #define IDC_IPA_A6_INTERP_0             1940
 #define IDC_MEDIUM                      1940
 #define IDC_IPA_A6_INTERP_1             1941
@@ -1571,6 +1568,7 @@
 #define IDC_SPLIT_FOLDER                2034
 #define IDC_COMBO3                      2035
 #define IDC_SPLIT_LOCATION              2035
+#define IDC_SCROLLBAR1                  2036
 #define IDS_PLAYER_SMALL                3000
 #define IDS_PLAYER_LARGE                3001
 #define IDS_STATTXT_PROCESSING          4000
@@ -1657,7 +1655,6 @@
 #define IDS_DLGTITLE_GRAPHSPARA         10001
 #define IDS_DLGTITLE_TOOLSOPTIO         10002
 #define IDS_DLGTITLE_PHONETIC           10003
-#define IDS_DLGTITLE_ADVANCED           10004
 #define IDS_DLGTITLE_GRAPHSTYPES        10005
 #define IDS_DLGTITLE_CHARCHART          10006
 #define IDS_TABTITLE_SPECTROGRAM        10007
@@ -2055,7 +2052,7 @@
 #define _APS_3D_CONTROLS                     1
 #define _APS_NEXT_RESOURCE_VALUE        362
 #define _APS_NEXT_COMMAND_VALUE         33221
-#define _APS_NEXT_CONTROL_VALUE         2035
+#define _APS_NEXT_CONTROL_VALUE         2037
 #define _APS_NEXT_SYMED_VALUE           104
 #endif
 #endif

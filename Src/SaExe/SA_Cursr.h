@@ -19,20 +19,20 @@
 #ifndef SA_CURSR_DEF
 #define SA_CURSR_DEF
 
-class CCursorWnd : public CWnd
+class CCursorWnd : public CWnd 
 {
-  // Construction/destruction/creation
+	// Construction/destruction/creation
 public:
-  CCursorWnd() { bDrawn = FALSE;};
-  BOOL bDrawn;
-  
-  // Attributes
-private:
-   
-  // Operations
+	CCursorWnd() 
+	{ 
+		bDrawn = FALSE;
+	};
+	BOOL bDrawn;
+
+	// Operations
 public:
-  BOOL IsDrawn() { return bDrawn;};
-  void SetDrawn(BOOL bNewDrawn) { bDrawn = bNewDrawn;};
+	BOOL IsDrawn() { return bDrawn;};
+	void SetDrawn(BOOL bNewDrawn) { bDrawn = bNewDrawn;};
 };
 
 //###########################################################################
@@ -41,42 +41,42 @@ public:
 class CStartCursorWnd : public CCursorWnd
 {
 
-  // Construction/destruction/creation
+	// Construction/destruction/creation
 public:
-  CStartCursorWnd();
-  virtual ~CStartCursorWnd();
-  virtual BOOL Create(LPCTSTR lpszClassName, LPCTSTR lpszWindowName, DWORD dwStyle,
-    const RECT& rect, CWnd* pParentWnd, UINT nID, CCreateContext* pContext = NULL);
-  virtual BOOL PreCreateWindow(CREATESTRUCT& cs);
-  virtual void OnDraw(CDC * pDC, const CRect & printRect);
+	CStartCursorWnd();
+	virtual ~CStartCursorWnd();
+	virtual BOOL Create(LPCTSTR lpszClassName, LPCTSTR lpszWindowName, DWORD dwStyle,
+		const RECT& rect, CWnd* pParentWnd, UINT nID, CCreateContext* pContext = NULL);
+	virtual BOOL PreCreateWindow(CREATESTRUCT& cs);
+	virtual void OnDraw(CDC * pDC, const CRect & printRect);
 
 
-  // Attributes
+	// Attributes
 private:
-  CRect    m_rWnd;              // cursor window coordinates
-  BOOL     m_bCursorDrag;       // cursor drag by mouse
-  DWORD    m_dwStartDragPos;    // cursor position when starting drag
-  DWORD    m_dwDragPos;         // current drag position
-  int      m_nEditBoundaries;   // editing boundaries
+	CRect    m_rWnd;              // cursor window coordinates
+	BOOL     m_bCursorDrag;       // cursor drag by mouse
+	DWORD    m_dwStartDragPos;    // cursor position when starting drag
+	DWORD    m_dwDragPos;         // current drag position
+	int      m_nEditBoundaries;   // editing boundaries
 
-  // Operations
+	// Operations
 public:
-  void ResetPosition() {m_rWnd.SetRect(0, 0, 0, 0);} // reset old cursor position
-  DWORD CalculateCursorPosition(CView*, int nPosition, int nWidth, DWORD* pStopCursor); // calculate the current cursor position (in data samples)
-  BOOL IsDragging() {return m_bCursorDrag;}
+	void ResetPosition() {m_rWnd.SetRect(0, 0, 0, 0);} // reset old cursor position
+	DWORD CalculateCursorPosition(CView*, int nPosition, int nWidth, DWORD* pStopCursor); // calculate the current cursor position (in data samples)
+	BOOL IsDragging() {return m_bCursorDrag;}
 
-  // Generated message map functions
+	// Generated message map functions
 protected:
-  //{{AFX_MSG(CStartCursorWnd)
-  afx_msg void OnPaint();
-  afx_msg void OnMouseMove(UINT nFlags, CPoint point);
-  afx_msg void OnRButtonDown(UINT nFlags, CPoint point);
-  afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
-  afx_msg void OnLButtonUp(UINT nFlags, CPoint point);
-  afx_msg void OnKeyUp(UINT nChar, UINT nRepCnt, UINT nFlags);
-  afx_msg void OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags);
-  //}}AFX_MSG
-  DECLARE_MESSAGE_MAP()
+	//{{AFX_MSG(CStartCursorWnd)
+	afx_msg void OnPaint();
+	afx_msg void OnMouseMove(UINT nFlags, CPoint point);
+	afx_msg void OnRButtonDown(UINT nFlags, CPoint point);
+	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
+	afx_msg void OnLButtonUp(UINT nFlags, CPoint point);
+	afx_msg void OnKeyUp(UINT nChar, UINT nRepCnt, UINT nFlags);
+	afx_msg void OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags);
+	//}}AFX_MSG
+	DECLARE_MESSAGE_MAP()
 };
 
 //###########################################################################
@@ -85,41 +85,41 @@ protected:
 class CStopCursorWnd : public CCursorWnd
 {
 
-  // Construction/destruction/creation
+	// Construction/destruction/creation
 public:
-  CStopCursorWnd();
-  virtual ~CStopCursorWnd();
-  virtual BOOL Create(LPCTSTR lpszClassName, LPCTSTR lpszWindowName, DWORD dwStyle,
-    const RECT& rect, CWnd* pParentWnd, UINT nID, CCreateContext* pContext = NULL);
-  virtual BOOL PreCreateWindow(CREATESTRUCT& cs);
+	CStopCursorWnd();
+	virtual ~CStopCursorWnd();
+	virtual BOOL Create(LPCTSTR lpszClassName, LPCTSTR lpszWindowName, DWORD dwStyle,
+		const RECT& rect, CWnd* pParentWnd, UINT nID, CCreateContext* pContext = NULL);
+	virtual BOOL PreCreateWindow(CREATESTRUCT& cs);
 
-  // Attributes
+	// Attributes
 private:
-  CRect    m_rWnd;              // cursor window coordinates
-  BOOL     m_bCursorDrag;       // cursor drag by mouse
-  DWORD    m_dwDragPos;         // current drag position
-  int      m_nEditBoundaries;   // editing boundaries
+	CRect    m_rWnd;              // cursor window coordinates
+	BOOL     m_bCursorDrag;       // cursor drag by mouse
+	DWORD    m_dwDragPos;         // current drag position
+	int      m_nEditBoundaries;   // editing boundaries
 
 
-  // Operations
+	// Operations
 public:
-  void ResetPosition() {m_rWnd.SetRect(0, 0, 0, 0);} // reset old cursor position
-  DWORD CalculateCursorPosition(CView*, int nPosition, int nWidth, DWORD* pStartCursor); // calculate the current cursor position (in data samples)
-  BOOL IsDragging() {return m_bCursorDrag;}
-  virtual void OnDraw(CDC * pDC, const CRect & printRect);
+	void ResetPosition() {m_rWnd.SetRect(0, 0, 0, 0);} // reset old cursor position
+	DWORD CalculateCursorPosition(CView*, int nPosition, int nWidth, DWORD* pStartCursor); // calculate the current cursor position (in data samples)
+	BOOL IsDragging() {return m_bCursorDrag;}
+	virtual void OnDraw(CDC * pDC, const CRect & printRect);
 
-  // Generated message map functions
+	// Generated message map functions
 protected:
-  //{{AFX_MSG(CStopCursorWnd)
-  afx_msg void OnPaint();
-  afx_msg void OnMouseMove(UINT nFlags, CPoint point);
-  afx_msg void OnRButtonDown(UINT nFlags, CPoint point);
-  afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
-  afx_msg void OnLButtonUp(UINT nFlags, CPoint point);
-  afx_msg void OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags);
-  afx_msg void OnKeyUp(UINT nChar, UINT nRepCnt, UINT nFlags);
-  //}}AFX_MSG
-  DECLARE_MESSAGE_MAP()
+	//{{AFX_MSG(CStopCursorWnd)
+	afx_msg void OnPaint();
+	afx_msg void OnMouseMove(UINT nFlags, CPoint point);
+	afx_msg void OnRButtonDown(UINT nFlags, CPoint point);
+	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
+	afx_msg void OnLButtonUp(UINT nFlags, CPoint point);
+	afx_msg void OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags);
+	afx_msg void OnKeyUp(UINT nChar, UINT nRepCnt, UINT nFlags);
+	//}}AFX_MSG
+	DECLARE_MESSAGE_MAP()
 };
 
 //###########################################################################
@@ -128,38 +128,38 @@ protected:
 class CPrivateCursorWnd : public CCursorWnd
 {
 
-  // Construction/destruction/creation
+	// Construction/destruction/creation
 public:
-  CPrivateCursorWnd();
-  virtual ~CPrivateCursorWnd();
-  virtual BOOL Create(LPCTSTR lpszClassName, LPCTSTR lpszWindowName, DWORD dwStyle,
-    const RECT& rect, CWnd* pParentWnd, UINT nID, CCreateContext* pContext = NULL);
-  virtual BOOL PreCreateWindow(CREATESTRUCT& cs);
+	CPrivateCursorWnd();
+	virtual ~CPrivateCursorWnd();
+	virtual BOOL Create(LPCTSTR lpszClassName, LPCTSTR lpszWindowName, DWORD dwStyle,
+		const RECT& rect, CWnd* pParentWnd, UINT nID, CCreateContext* pContext = NULL);
+	virtual BOOL PreCreateWindow(CREATESTRUCT& cs);
 
-  // Attributes
+	// Attributes
 private:
-  BOOL     m_bCursorDrag;       // cursor drag by mouse
-  CRect    m_rWnd;              // cursor window coordinates
+	BOOL     m_bCursorDrag;       // cursor drag by mouse
+	CRect    m_rWnd;              // cursor window coordinates
 
-  // Operations
+	// Operations
 public:
-  void ResetPosition() {m_rWnd.SetRect(0, 0, 0, 0);} // reset old cursor position
-  virtual void OnDraw(CDC * pDC, const CRect & printRect);
-  virtual void OnDrawHorizontalCursor(CDC * pDC, const CRect & printRect);
-  void ChangeCursorPosition(CPoint point);
-  void ChangeHorizontalCursorPosition(CPoint point);
-  BOOL IsDragging() {return m_bCursorDrag;}
+	void ResetPosition() {m_rWnd.SetRect(0, 0, 0, 0);} // reset old cursor position
+	virtual void OnDraw(CDC * pDC, const CRect & printRect);
+	virtual void OnDrawHorizontalCursor(CDC * pDC, const CRect & printRect);
+	void ChangeCursorPosition(CPoint point);
+	void ChangeHorizontalCursorPosition(CPoint point);
+	BOOL IsDragging() {return m_bCursorDrag;}
 
-  // Generated message map functions
+	// Generated message map functions
 protected:
-  //{{AFX_MSG(CPrivateCursorWnd)
-  afx_msg void OnPaint();
-  afx_msg void OnMouseMove(UINT nFlags, CPoint point);
-  afx_msg void OnRButtonDown(UINT nFlags, CPoint point);
-  afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
-  afx_msg void OnLButtonUp(UINT nFlags, CPoint point);
-  //}}AFX_MSG
-  DECLARE_MESSAGE_MAP()
+	//{{AFX_MSG(CPrivateCursorWnd)
+	afx_msg void OnPaint();
+	afx_msg void OnMouseMove(UINT nFlags, CPoint point);
+	afx_msg void OnRButtonDown(UINT nFlags, CPoint point);
+	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
+	afx_msg void OnLButtonUp(UINT nFlags, CPoint point);
+	//}}AFX_MSG
+	DECLARE_MESSAGE_MAP()
 };
 
 #endif

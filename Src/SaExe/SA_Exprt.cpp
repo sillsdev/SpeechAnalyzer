@@ -223,7 +223,9 @@ void CExportBasicDialog::OnAllAnnotations()
 	{
 		m_bReference = m_bPhonetic = m_bTone = m_bPhonemic = m_bOrtho = m_bGloss = m_bPOS = m_bPhrase = TRUE;
 		UpdateData(FALSE);
-	} else {
+	}
+	else 
+	{
 		m_bReference = m_bPhonetic = m_bTone = m_bPhonemic = m_bOrtho = m_bGloss = m_bPOS = m_bPhrase = FALSE;
 		UpdateData(FALSE);
 	}
@@ -242,7 +244,9 @@ void CExportBasicDialog::OnAllFileInfo()
 	{
 		m_bOriginalDate = m_bLastModified = m_bOriginalFormat = m_bFileSize = TRUE;
 		UpdateData(FALSE);
-	} else {
+	} 
+	else 
+	{
 		m_bOriginalDate = m_bLastModified = m_bOriginalFormat = m_bFileSize = FALSE;
 		UpdateData(FALSE);
 	}
@@ -264,7 +268,9 @@ void CExportBasicDialog::OnAllParameters()
 	{
 		m_bNumberSamples = m_bLength = m_bSampleRate = m_bBandwidth = m_bHighPass = m_bBits = m_bQuantization = TRUE;
 		UpdateData(FALSE);
-	} else {
+	} 
+	else 
+	{
 		m_bNumberSamples = m_bLength = m_bSampleRate = m_bBandwidth = m_bHighPass = m_bBits = m_bQuantization = FALSE;
 		UpdateData(FALSE);
 	}
@@ -291,7 +297,9 @@ void CExportBasicDialog::OnAllSource()
 		m_bLanguage = m_bDialect = m_bSpeaker = m_bGender = m_bEthnologue = m_bFamily = m_bRegion = m_bNotebookRef =
 			m_bTranscriber = m_bComments = m_bCountry = TRUE;
 		UpdateData(FALSE);
-	} else {
+	} 
+	else 
+	{
 		m_bLanguage = m_bDialect = m_bSpeaker = m_bGender = m_bEthnologue = m_bFamily = m_bRegion = m_bNotebookRef =
 			m_bTranscriber = m_bComments = m_bCountry = FALSE;
 		UpdateData(FALSE);
@@ -2531,9 +2539,9 @@ BOOL CImport::ReadTable(Object_istream &obs, int nMode)
 		obs.getIos().seekg(pos);  // return to top of table
 		obs.getIos().clear();  // clear the EOF flag
 	}
-	else if(nMode == AUTO)
+	else if (nMode == AUTO)
 	{
-		if(!pDoc->AdvancedSegment())
+		if (!pDoc->AdvancedSegment())
 		{
 			// process canceled by user
 			pDoc->Undo(FALSE);

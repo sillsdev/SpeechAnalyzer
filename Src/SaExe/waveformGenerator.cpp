@@ -29,8 +29,12 @@ CDlgWaveformGenerator dlgWaveformGenerator;
 class CDlgWaveformGenerator::settings::process : public CDataProcess
 {
 public:
-  process() {};
-  virtual ~process() {};
+  process() 
+  {
+  };
+  virtual ~process() 
+  {
+  };
   
   long Process(settings &parms, void* pCaller = NULL, int nProgress = 0, int nLevel = 1);
 };

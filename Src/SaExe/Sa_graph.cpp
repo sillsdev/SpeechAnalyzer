@@ -451,7 +451,8 @@ void CGraphWnd::ScrollGraph(CSaView* pView, DWORD dwNewPos, DWORD dwOldPos)
 	if (m_bLegend)
 		rWnd.left = m_pLegend->GetWindowWidth();
 
-	if (m_pPlot) {
+	if (m_pPlot) 
+	{
 		m_pPlot->GetClientRect(rWnd);
 	}
 
@@ -1031,8 +1032,7 @@ void CGraphWnd::UpdateStatusBar(DWORD dwStartCursor, DWORD dwStopCursor, BOOL bF
 				// prepare spectrograms formant data, if ready
 				CProcessSpectrogram* pSpectrogram = pDoc->GetSpectrogram(m_nPlotID==IDD_SPECTROGRAM); // get pointer to spectrogram object
 				const SpectroParm* pSpectroParm = &pSpectrogram->GetSpectroParm();
-				BOOL bShowFormants = pSpectroParm->bShowF1 || pSpectroParm->bShowF2 || pSpectroParm->bShowF3 ||
-					pSpectroParm->bShowF4 || pSpectroParm->bShowF5andUp;
+				BOOL bShowFormants = pSpectroParm->bShowF1 || pSpectroParm->bShowF2 || pSpectroParm->bShowF3 || pSpectroParm->bShowF4 || pSpectroParm->bShowF5andUp;
 				if (bShowFormants && pSpectroFormants->IsDataReady())
 				{
 					double fSizeFactor = (double)pDoc->GetDataSize() / (double)(pSpectroFormants->GetDataSize() - 1);

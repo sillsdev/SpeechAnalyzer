@@ -1117,6 +1117,8 @@ void CDlgParametersSpectroPage::Apply()
 		pSpectroParm->bShowF2 = m_bF2;
 		pSpectroParm->bShowF3 = m_bF3;
 		pSpectroParm->bShowF4 = m_bF4;
+		// if F4 is selected, also enable everything else
+		pSpectroParm->bShowF5andUp = m_bF4;
 		pSpectroParm->bSmoothFormantTracks = m_bSmoothFormantTracks;
 		pSpectroParm->bSmoothSpectra = m_bSmoothSpectra;
 		pSpectroParm->bFormantColor = m_bFormantColor;
@@ -1360,14 +1362,15 @@ void CDlgParametersSpectroPage::OnModifiedFormants(BOOL bMessage)
 	BOOL bOldFormants = m_bFormants;
 	BOOL bMasterEnableChange = !bMessage;
 
-	if(bMessage)
+	if (bMessage)
 	{
 		UpdateData(TRUE);
 		SetModified(TRUE); // data modified, enable apply button
 		m_bModified = TRUE;
 	}
 
-	if((m_bFormants != bOldFormants) || (!m_bFormants && (m_bShowPitch || m_bF1 || m_bF2 || m_bF3 || m_bF4)))
+	if ((m_bFormants != bOldFormants) || 
+		(!m_bFormants && (m_bShowPitch || m_bF1 || m_bF2 || m_bF3 || m_bF4)))
 	{
 		m_bF1 = m_bF2 = m_bF3 = m_bF4 = m_bFormants;
 		m_bShowPitch = FALSE;
@@ -1377,7 +1380,7 @@ void CDlgParametersSpectroPage::OnModifiedFormants(BOOL bMessage)
 		bMasterEnableChange = TRUE;
 	}  
 
-	if(bMasterEnableChange)
+	if (bMasterEnableChange)
 	{
 		GetDlgItem(IDC_SHOW_PITCH)->EnableWindow(m_bFormants);
 		GetDlgItem(IDC_F1)->EnableWindow(m_bFormants);

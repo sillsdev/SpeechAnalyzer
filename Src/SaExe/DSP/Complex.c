@@ -1,10 +1,10 @@
 #define COMPLEX_C
 /* CAUTION: This is the ANSI C (only) version of the Numerical Recipes
-   utility file complex.c.  Do not confuse this file with the same-named
-   file complex.c that is supplied in the same subdirectory or archive
-   as the header file complex.h.  *That* file contains both ANSI and
-   traditional K&R versions, along with #ifdef macros to select the
-   correct version.  *This* file contains only ANSI C.               */
+utility file complex.c.  Do not confuse this file with the same-named
+file complex.c that is supplied in the same subdirectory or archive
+as the header file complex.h.  *That* file contains both ANSI and
+traditional K&R versions, along with #ifdef macros to select the
+correct version.  *This* file contains only ANSI C.               */
 
 #include <math.h>
 #include "complex.h"
@@ -54,12 +54,15 @@ COMPLEX_RECT_FLOAT Cdiv(COMPLEX_RECT_FLOAT a, COMPLEX_RECT_FLOAT b)
 {
 	COMPLEX_RECT_FLOAT c;
 	float r,den;
-	if (fabs(b.real) >= fabs(b.imag)) {
+	if (fabs(b.real) >= fabs(b.imag)) 
+	{
 		r=b.imag/b.real;
 		den=b.real+r*b.imag;
 		c.real=(a.real+r*a.imag)/den;
 		c.imag=(a.imag-r*a.real)/den;
-	} else {
+	} 
+	else 
+	{
 		r=b.real/b.imag;
 		den=b.imag+r*b.real;
 		c.real=(a.real*r+a.imag)/den;
@@ -77,10 +80,13 @@ float Cabs(COMPLEX_RECT_FLOAT z)
 		ans=y;
 	else if (y == 0.0)
 		ans=x;
-	else if (x > y) {
+	else if (x > y) 
+	{
 		temp=y/x;
 		ans=x*sqrt(1.0+(double)temp*(double)temp);
-	} else {
+	} 
+	else 
+	{
 		temp=x/y;
 		ans=y*sqrt(1.0+(double)temp*(double)temp);
 	}
@@ -91,24 +97,33 @@ COMPLEX_RECT_FLOAT Csqrt(COMPLEX_RECT_FLOAT z)
 {
 	COMPLEX_RECT_FLOAT c;
 	double x,y,w,r;
-	if ((z.real == 0.0) && (z.imag == 0.0)) {
+	if ((z.real == 0.0) && (z.imag == 0.0)) 
+	{
 		c.real=0.0;
 		c.imag=0.0;
 		return c;
-	} else {
+	} 
+	else 
+	{
 		x=fabs((double)z.real);
 		y=fabs((double)z.imag);
-		if (x >= y) {
+		if (x >= y) 
+		{
 			r=y/x;
 			w=sqrt(x)*sqrt(0.5*(1.0+sqrt(1.0+(double)r*(double)r)));
-		} else {
+		}
+		else 
+		{
 			r=x/y;
 			w=sqrt(y)*sqrt(0.5*(r+sqrt(1.0+(double)r*(double)r)));
 		}
-		if (z.real >= 0.0) {
+		if (z.real >= 0.0) 
+		{
 			c.real=(float)w;
 			c.imag=(float)((double)z.imag/(2.0*w));
-		} else {
+		} 
+		else 
+		{
 			c.imag=(z.imag >= 0) ? (float)w : (float)-w;
 			c.real=(float)(z.imag/(2.0*c.imag));
 		}

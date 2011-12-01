@@ -264,7 +264,8 @@ CProcessSmoothLoudness::~CProcessSmoothLoudness()
 	{ // error removing file
 		ErrorMessage(IDS_ERROR_DELTEMPFILE, m_SRDfileStatus.m_szFullName);
 	}
-	if (m_pSRDfile) {
+	if (m_pSRDfile) 
+	{
 		delete m_pSRDfile;
 		m_pSRDfile = NULL;
 	}
@@ -651,7 +652,8 @@ long CProcessSmoothLoudness::Process(void* pCaller, ISaDoc* pDoc,
 	// close the temporary file and read the status
 	CloseTempFile(); // close the file
 	// close the smoothed raw data temp file and read the status 
-	if (m_pSRDfile) {
+	if (m_pSRDfile) 
+	{
 		m_pSRDfile->Abort();
 	}
 
@@ -767,7 +769,8 @@ HPSTR CProcessSmoothLoudness::GetSmoothRawData(DWORD dwOffset, BOOL bBlockBegin)
 		}
 
 		// close the temporary file
-		if (m_pSRDfile) {
+		if (m_pSRDfile) 
+		{
 			m_pSRDfile->Abort();
 		}
 

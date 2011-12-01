@@ -5,7 +5,6 @@
 class CDlgSplit : public CDialog
 {
 	DECLARE_DYNAMIC(CDlgSplit)
-
 public:
 	CDlgSplit(CWnd* pParent = NULL);   // standard constructor
 	virtual ~CDlgSplit();
@@ -15,8 +14,8 @@ public:
 
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
-
 	DECLARE_MESSAGE_MAP()
+
 public:
 	int m_iConvention;
 	int m_iLocation;

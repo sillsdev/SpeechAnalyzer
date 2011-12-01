@@ -150,14 +150,11 @@ BOOL CPrintOptionsDlg::OnInitDialog()
 	return TRUE;
 }
 
-
 void CPrintOptionsDlg::ShowLandscapeBitmap(BOOL show)
 {
 	GetDlgItem(IDC_PORTBMP)->ShowWindow(!show);
 	GetDlgItem(IDC_LANDBMP)->ShowWindow(show);
 }
-
-
 
 /***************************************************************************/
 // CPrintOptionsDlg::SetGraphsPtr
@@ -169,7 +166,6 @@ void CPrintOptionsDlg::SetGraphsPtr(CGraphWnd * pGraphs[])
 		m_apGraphs[i] = pGraphs[i];
 	}
 }
-
 
 /***************************************************************************/
 // CPrintOptionsDlg::SetupGraphsList
@@ -218,8 +214,6 @@ void CPrintOptionsDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_SELECT_GRAPHS2PRINT,  m_listBoxGraphsToPrint);
 	//}}AFX_DATA_MAP
 }
-
-
 
 /***************************************************************************/
 // CPrintOptionsDlg::OnOK

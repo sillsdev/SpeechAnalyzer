@@ -1453,14 +1453,19 @@ void CSaView::ChangeAnnotationSelection(CSegment* pSegment,
 	// set start- and stop cursor if not deselecting
 	BOOL bSelect = FALSE;
 
-	if (nSelection != pSegment->GetSelection()) {
-		if (nSelection != -1) {
+	if (nSelection != pSegment->GetSelection()) 
+	{
+		if (nSelection != -1) 
+		{
 			// added conditional to prevent cursors from being set if just deselecting  AKE 8/3/2001      
-			if (pSegment->GetOffset(nSelection) > GetStopCursorPosition()) {
+			if (pSegment->GetOffset(nSelection) > GetStopCursorPosition()) 
+			{
 				// new segment is right of current cursor location
 				SetStopCursorPosition(dwStop, SNAP_LEFT);
 				SetStartCursorPosition(dwStart, SNAP_RIGHT);        
-			} else { // new segment is left of current cursor location
+			} 
+			else 
+			{ // new segment is left of current cursor location
 				SetStartCursorPosition(dwStart, SNAP_RIGHT);
 				SetStopCursorPosition(dwStop, SNAP_LEFT);
 			}      
@@ -1468,27 +1473,37 @@ void CSaView::ChangeAnnotationSelection(CSegment* pSegment,
 		bSelect = TRUE;
 	}
 	// select this segment, deselect all the others
-	for (int nLoop = 0; nLoop < ANNOT_WND_NUMBER; nLoop++) {
+	for (int nLoop = 0; nLoop < ANNOT_WND_NUMBER; nLoop++) 
+	{
 		CSegment* pSegments = GetAnnotation(nLoop);
-		if (pSegment == pSegments) {
+		if (pSegment == pSegments) 
+		{
 			// this is the segment to select
 			pSegment->SetSelection(nSelection);
 			// change it in all graphs
-			for (int nGraphLoop = 0; nGraphLoop < MAX_GRAPHS_NUMBER; nGraphLoop++) {
-				if (m_apGraphs[nGraphLoop]) {
+			for (int nGraphLoop = 0; nGraphLoop < MAX_GRAPHS_NUMBER; nGraphLoop++) 
+			{
+				if (m_apGraphs[nGraphLoop]) 
+				{
 					m_apGraphs[nGraphLoop]->ChangeAnnotationSelection(nLoop);
-					if (bSelect) {
+					if (bSelect) 
+					{
 						m_apGraphs[nGraphLoop]->GetPlot()->SetHighLightArea(0, 0); // deselect
 					}
 				}
 			}
-		} else {
-			if (pSegments->GetSelection() != -1) {
+		} 
+		else 
+		{
+			if (pSegments->GetSelection() != -1) 
+			{
 				// this segment is to deselect
 				pSegments->SetSelection(-1);
 				// change it in all graphs
-				for (int nGraphLoop = 0; nGraphLoop < MAX_GRAPHS_NUMBER; nGraphLoop++) {
-					if (m_apGraphs[nGraphLoop]) {
+				for (int nGraphLoop = 0; nGraphLoop < MAX_GRAPHS_NUMBER; nGraphLoop++) 
+				{
+					if (m_apGraphs[nGraphLoop]) 
+					{
 						m_apGraphs[nGraphLoop]->ChangeAnnotationSelection(nLoop);
 					}
 				}
@@ -1514,7 +1529,8 @@ void CSaView::ChangeAnnotationSelection(CSegment* pSegment, int nSelection)
 void CSaView::DeselectAnnotations(void)
 {
 	CSegment* pSegment = FindSelectedAnnotation();
-	if (pSegment) {
+	if (pSegment) 
+	{
 		ChangeAnnotationSelection(pSegment, -1);
 	}
 	// clear virtual selection
@@ -1525,12 +1541,15 @@ void CSaView::DeselectAnnotations(void)
 // CSaView::SetFocusedGraph Set the graph with focus
 // Give graph, pWnd focus and change its caption to the graphs title.
 /***************************************************************************/
-void CSaView::SetFocusedGraph(CGraphWnd* pWnd) {
+void CSaView::SetFocusedGraph(CGraphWnd* pWnd) 
+{
 
-	if (m_pFocusedGraph == pWnd) {
+	if (m_pFocusedGraph == pWnd) 
+	{
 		return;
 	}
-	if (!pWnd) {
+	if (!pWnd) 
+	{
 		return; // have to set focus to some window...
 	}
 
@@ -1569,7 +1588,8 @@ void CSaView::SetFocusedGraph(CGraphWnd* pWnd) {
 
 	CSaDoc* pDoc = (CSaDoc*)GetDocument();
 	// update the status bar
-	if (pDoc->GetDataSize() > 0) {
+	if (pDoc->GetDataSize() > 0) 
+	{
 		pWnd->UpdateStatusBar(GetStartCursorPosition(), GetStopCursorPosition(), TRUE);
 	}
 }
@@ -1629,7 +1649,8 @@ void CSaView::ZoomIn(double fZoomAmount, BOOL bZoom)
 	{
 		m_dwDataPosition = dwDataCenter - GetDataFrame() / 2; // set new data position
 		// for 16 bit data value must be even
-		if (wSmpSize == 2) {
+		if (wSmpSize == 2) 
+		{
 			m_dwDataPosition &= ~1;
 		}
 	}
@@ -1727,7 +1748,8 @@ void CSaView::ZoomOut(double fZoomAmount)
 			GraphIDtoPtr(IDD_RECORDING)->GetPlot()->RedrawWindow(NULL,NULL,RDW_INTERNALPAINT|RDW_UPDATENOW);
 
 		// if scrolling zoom enabled, set the new position
-		if (pViewMainFrame->IsScrollZoom()) {
+		if (pViewMainFrame->IsScrollZoom()) 
+		{
 			SetScrollPos(SB_VERT, (int)(m_fVScrollSteps + ZOOM_SCROLL_RESOLUTION - m_fVScrollSteps / m_fZoom), TRUE);
 		}
 		pViewMainFrame->SetPlayerTimes();
@@ -1771,11 +1793,14 @@ void CSaView::SetInitialCursors()
 		{
 			double fBytesPerPix = (double)GetDataFrame() / (double)rWnd.Width(); // calculate data samples per pixel
 			if ((DWORD)rWnd.Width() > GetDataFrame())
+			{
 				fBytesPerPix = (double)pDoc->GetFmtParm()->wBlockAlign;
+			}
 			dwOffset = (DWORD)(CURSOR_WINDOW_HALFWIDTH / 2 * fBytesPerPix);
 		}
-		DWORD dwStop = (pDoc->GetDataSize() == 0)? 0 : pDoc->GetDataSize() - 1 - dwOffset;
-		SetStartStopCursorPosition(dwOffset, dwStop, SNAP_BOTH); // start cursor position is first sample plus offset
+		//DWORD dwStop = (pDoc->GetDataSize() == 0)? 0 : pDoc->GetDataSize() - 1 - dwOffset;
+		DWORD dwStop = dwOffset*2;
+		SetStartStopCursorPosition( dwOffset, dwStop, SNAP_BOTH); // start cursor position is first sample plus offset
 	}
 }
 
@@ -1848,23 +1873,31 @@ void CSaView::OnInitialUpdate()
 /***************************************************************************/
 // CSaView::InitialUpdate initialization
 /***************************************************************************/
-void CSaView::InitialUpdate(BOOL bTemp) {
+void CSaView::InitialUpdate(BOOL bTemp) 
+{
 
-	if (s_pobsAutoload) {
+	if (s_pobsAutoload) 
+	{
 		bReadProperties(*s_pobsAutoload, TRUE);
-	} else if ((pSaApp->IsCreatingNewFile()) ||
-				(!pViewMainFrame) ||
-				(!pViewMainFrame->DefaultIsValid())) {
+	} 
+	else if ((pSaApp->IsCreatingNewFile()) ||
+		(!pViewMainFrame) ||
+		(!pViewMainFrame->DefaultIsValid())) 
+	{
 		CSaDoc *pDoc = GetDocument();
 		CSaString docPath = pDoc->GetPathName();
 		CFileStatus fileStatus;
-		if (CFile::GetStatus(docPath, fileStatus) && (fileStatus.m_attribute & CFile::readOnly)) {
+		if (CFile::GetStatus(docPath, fileStatus) && (fileStatus.m_attribute & CFile::readOnly)) 
+		{
 			CSaString docTitle = pDoc->GetTitle() + " (Read-Only)";
 			pDoc->SetTitle(docTitle);
 		}
 		CreateOpenAsGraphs(pSaApp->GetOpenAsID()); // SDM don't open 10-20 blank graphs...
-	} else {
-		if (bTemp) {
+	} 
+	else 
+	{
+		if (bTemp) 
+		{
 			DeleteGraphs(); // ReadGraphListProperties assumes no graphs
 		}
 		PartialCopy(*(pViewMainFrame->pDefaultViewConfig()));
@@ -1878,7 +1911,8 @@ void CSaView::InitialUpdate(BOOL bTemp) {
 		//pViewMainFrame->SetDocDefaultFonts(this);
 	}
 
-	if (!bTemp) {
+	if (!bTemp) 
+	{
 		CView::OnInitialUpdate();
 	}
 
@@ -1896,10 +1930,13 @@ void CSaView::InitialUpdate(BOOL bTemp) {
 	// if scrolling zoom enabled, show the scroll bar and set the
 	// new position otherwise hide the vertical scroll bar.
 	//**************************************************************
-	if ((pViewMainFrame->IsScrollZoom()) && (GetDocument()->GetDataSize() != 0)) {
+	if ((pViewMainFrame->IsScrollZoom()) && (GetDocument()->GetDataSize() != 0)) 
+	{
 		SetScrollRange(SB_VERT, ZOOM_SCROLL_RESOLUTION, (int)m_fVScrollSteps, FALSE);
 		SetScrollPos(SB_VERT, (int)(m_fVScrollSteps + ZOOM_SCROLL_RESOLUTION - m_fVScrollSteps / m_fZoom), TRUE);
-	} else {
+	} 
+	else 
+	{
 		SetScrollRange(SB_VERT, 0, 0, FALSE);
 	}
 
@@ -2193,7 +2230,9 @@ void CSaView::SetStartStopCursorPosition( DWORD dwNewStartPos,
 										 CURSOR_ALIGNMENT nCursorAlignment)
 {
 	if (nCursorAlignment == ALIGN_USER_SETTING)
+	{
 		nCursorAlignment = GetCursorAlignment();
+	}
 
 	CSaDoc* pDoc = (CSaDoc*) GetDocument(); // get pointer to document
 	m_dwStartCursor = dwNewStartPos;
@@ -2219,12 +2258,12 @@ void CSaView::SetStartStopCursorPosition( DWORD dwNewStartPos,
 	// snap the start cursor if necessary
 	int nSampleSize = 1;
 	if (pFmtParm->wBlockAlign > 1)
+	{
 		nSampleSize = 2;
+	}
 
-	m_dwStartCursor = pDoc->SnapCursor(START_CURSOR, m_dwStartCursor, 0, m_dwStopCursor - nSampleSize,
-		nSnapDirection, nCursorAlignment);
-	m_dwStopCursor = pDoc->SnapCursor(STOP_CURSOR, m_dwStopCursor, m_dwStartCursor + nSampleSize,
-		GetDocument()->GetDataSize() - nSampleSize, nSnapDirection, nCursorAlignment);
+	m_dwStartCursor = pDoc->SnapCursor(START_CURSOR, m_dwStartCursor, 0, m_dwStopCursor - nSampleSize, nSnapDirection, nCursorAlignment);
+	m_dwStopCursor = pDoc->SnapCursor(STOP_CURSOR, m_dwStopCursor, m_dwStartCursor + nSampleSize, GetDocument()->GetDataSize() - nSampleSize, nSnapDirection, nCursorAlignment);
 
 	// move start cursors in all the graphs
 	for (int nLoop = 0; nLoop < MAX_GRAPHS_NUMBER; nLoop++)
@@ -3502,9 +3541,11 @@ CSaString CSaView::GetSelectedAnnotationString(void)
 /***************************************************************************/
 // CSaView::FindSelectedAnnotation
 /***************************************************************************/
-CSegment * CSaView::FindSelectedAnnotation() {
+CSegment * CSaView::FindSelectedAnnotation() 
+{
 
-	for (int nLoop = 0; nLoop < ANNOT_WND_NUMBER; nLoop++) {
+	for (int nLoop = 0; nLoop < ANNOT_WND_NUMBER; nLoop++) 
+	{
 		CSegment* pSegments = GetAnnotation(nLoop);
 		if ((pSegments!=NULL) && (pSegments->GetSelection() != -1)) 		{
 			return pSegments;
@@ -5212,16 +5253,11 @@ void CSaView::OnSpectroFormants()
 
 	SpectroParm cParm = pDoc->GetSpectrogram(TRUE)->GetSpectroParm();
 
-	BOOL bFormantSelected = cParm.bShowF1
-		|| cParm.bShowF2
-		|| cParm.bShowF3
-		|| cParm.bShowF4
-		|| cParm.bShowF5andUp
-		|| cParm.bShowPitch;
+	BOOL bFormantSelected = cParm.bShowF1 || cParm.bShowF2 || cParm.bShowF3 || cParm.bShowF4 || cParm.bShowF5andUp || cParm.bShowPitch;
 
 	bFormantSelected = !bFormantSelected;
 
-	for(int AB = FALSE; AB <= TRUE; AB++)
+	for (int AB = FALSE; AB <= TRUE; AB++)
 	{
 		bool ab = (AB == TRUE);
 		SpectroParm cParm = pDoc->GetSpectrogram(ab)->GetSpectroParm();
@@ -5263,8 +5299,10 @@ void CSaView::OnSpectroFormants()
 		pMain->SetSnapshotParmDefaults(cParm);
 	}
 
-	if(bFormantSelected && pDoc->GetSpectrogram(TRUE)->GetFormantProcess()->IsCanceled())
+	if (bFormantSelected && pDoc->GetSpectrogram(TRUE)->GetFormantProcess()->IsCanceled())
+	{
 		pDoc->RestartAllProcesses();
+	}
 
 	RefreshGraphs();
 }
@@ -5275,28 +5313,26 @@ void CSaView::OnUpdateSpectroFormants(CCmdUI* pCmdUI)
 
 	SpectroParm cParm = pDoc->GetSpectrogram(TRUE)->GetSpectroParm();
 
-	BOOL bFormantSelected = cParm.bShowF1
-		|| cParm.bShowF2
-		|| cParm.bShowF3
-		|| cParm.bShowF4
-		|| cParm.bShowF5andUp
-		|| cParm.bShowPitch;
+	BOOL bFormantSelected = cParm.bShowF1 || cParm.bShowF2 || cParm.bShowF3 || cParm.bShowF4 || cParm.bShowF5andUp || cParm.bShowPitch;
 	if (bFormantSelected && pDoc->GetSpectrogram(TRUE)->GetFormantProcess()->IsCanceled())
 		OnSpectroFormants();
 
 	pCmdUI->SetCheck(bFormantSelected);
 }
 
-void CSaView::OnMoveStopCursorHere() {
+void CSaView::OnMoveStopCursorHere() 
+{
 
 	// prevent crash
-	if (m_pFocusedGraph==NULL) {
+	if (m_pFocusedGraph==NULL) 
+	{
 		TRACE("no graph in focus\n");
 		return;
 	}
 
 	CPlotWnd * pPlot = m_pFocusedGraph->GetPlot();
-	if (pPlot==NULL) {
+	if (pPlot==NULL) 
+	{
 		TRACE("no plot in focus\n");
 		return;
 	}
@@ -5313,11 +5349,14 @@ void CSaView::OnMoveStopCursorHere() {
 	double fDataPos;
 	DWORD dwDataFrame;
 	// check if area graph type
-	if (m_pFocusedGraph->IsAreaGraph()) {
+	if (m_pFocusedGraph->IsAreaGraph()) 
+	{
 		// get necessary data from area plot
 		fDataPos = pPlot->GetAreaPosition();
 		dwDataFrame = pPlot->GetAreaLength();
-	} else {
+	} 
+	else 
+	{
 		// get necessary data from document and from view
 		fDataPos = GetDataPosition(rWnd.Width());		// data index of first sample to display
 		dwDataFrame = AdjustDataFrame(rWnd.Width());	// number of data points to display
@@ -5335,18 +5374,21 @@ void CSaView::OnMoveStopCursorHere() {
 	DWORD dwStopCursor = (DWORD) round(fDataPos/nSmpSize + ((double)point.x) * fSamplesPerPix);
 	dwStopCursor = dwStopCursor*nSmpSize;
 	// check the range
-	if (dwStopCursor < (DWORD)nSmpSize) {
+	if (dwStopCursor < (DWORD)nSmpSize) 
+	{
 		dwStopCursor = (DWORD)nSmpSize;
 	}
 	// check the range
-	if (dwStopCursor >= (dwDataSize - (DWORD)nSmpSize)) { 
+	if (dwStopCursor >= (dwDataSize - (DWORD)nSmpSize)) 
+	{ 
 		dwStopCursor = dwDataSize - (DWORD)nSmpSize;
 	}
 
 	// calculate maximum position for start cursor
 	DWORD dwDifference = (DWORD)(CURSOR_MIN_DISTANCE * fSamplesPerPix * nSmpSize);
 	DWORD dwStartCursor = 0;
-	if (dwStopCursor > dwDifference) {
+	if (dwStopCursor > dwDifference) 
+	{
 		dwStartCursor = dwStopCursor - dwDifference;
 	}
 
@@ -5357,13 +5399,15 @@ void CSaView::OnMoveStopCursorHere() {
 	}
 
 	int nLoop = FindSelectedAnnotationIndex();
-	if (nLoop!=-1) {
+	if (nLoop!=-1) 
+	{
 		// Added and modified from CStartCursorWnd::OnLButtonUp and modified by AKE 7/22/01 to deselect segment
 		// while cursor is moving
 		CSegment * pSegment = FindSelectedAnnotation();
 		int nIndex = pSegment->GetSelection();
 		if ((dwStopCursor > pSegment->GetStop(nIndex)) ||
-			(dwStartCursor < pSegment->GetOffset(nIndex))) {
+			(dwStartCursor < pSegment->GetOffset(nIndex))) 
+		{
 			// Deselect segment
 			DeselectAnnotations();
 		}
@@ -5382,23 +5426,27 @@ void CSaView::OnMoveStopCursorHere() {
 void CSaView::OnEditCopyPhoneticToPhonemic(void)
 {
 	// doesn't user want to keep existing gloss?
-	if (AfxMessageBox(IDS_CONFIRM_PHONEMIC_COPY, MB_YESNO | MB_ICONQUESTION, 0) != IDYES) {
+	if (AfxMessageBox(IDS_CONFIRM_PHONEMIC_COPY, MB_YESNO | MB_ICONQUESTION, 0) != IDYES) 
+	{
 		return;
 	}
 
 	BeginWaitCursor();
 
 	CSegment * pPhonemic = GetAnnotation(PHONEMIC);
-	if (pPhonemic!=NULL) {
+	if (pPhonemic!=NULL) 
+	{
 		pPhonemic->DeleteContents();
 	}
 
 	DWORD lastOffset = -1;
 	CPhoneticSegment * pPhonetic = (CPhoneticSegment*)GetAnnotation(PHONETIC);
 	int size = pPhonetic->GetSize();
-	for (int i=0;i<pPhonetic->GetSize();i++) {
+	for (int i=0;i<pPhonetic->GetSize();i++) 
+	{
 		DWORD offset = pPhonetic->GetOffset(i);
-		if (offset==lastOffset) {
+		if (offset==lastOffset) 
+		{
 			continue;
 		}
 		lastOffset = offset;
@@ -5408,7 +5456,14 @@ void CSaView::OnEditCopyPhoneticToPhonemic(void)
 		pPhonemic->Insert(i,&text,0,offset,duration);
 	}
 
-	ShowAnnotation(PHONEMIC);
+	// show the phonemic annotation if it isn't already displaed
+	if (m_pFocusedGraph!=NULL) 
+	{
+		if (!m_pFocusedGraph->HaveAnnotation(PHONEMIC))
+		{
+			ShowAnnotation(PHONEMIC);
+		}
+	}
 
 	RefreshGraphs(TRUE);
 
@@ -5422,4 +5477,3 @@ void CSaView::OnUpdateEditCopyPhoneticToPhonemic(CCmdUI* pCmdUI)
 {
 	pCmdUI->Enable(TRUE);
 }
-

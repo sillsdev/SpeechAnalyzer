@@ -25,45 +25,45 @@ class CSaApp;
 
 class CStartModeDlg : public CDialog
 {
-  // Construction
+	// Construction
 public:
-  CStartModeDlg(CWnd* pParent = NULL);  // standard constructor
+	CStartModeDlg(CWnd* pParent = NULL);  // standard constructor
 
-  // Dialog Data
-  //{{AFX_DATA(CStartModeDlg)
-  enum { IDD = IDD_START_MODE };
-  CListBox  m_lbRecentFiles;
-  BOOL  m_nDontShowAgain;
-  BOOL  m_bShowDontShowAgainOption;
-  int   m_nDataMode;
-  //}}AFX_DATA
+	// Dialog Data
+	//{{AFX_DATA(CStartModeDlg)
+	enum { IDD = IDD_START_MODE };
+	CListBox  m_lbRecentFiles;
+	BOOL  m_nDontShowAgain;
+	BOOL  m_bShowDontShowAgainOption;
+	int   m_nDataMode;
+	//}}AFX_DATA
 
-  // Attributes
+	// Attributes
 private:
-  CSaApp* pSaApp;
+	CSaApp* pSaApp;
 
-  CFont m_Font;
+	CFont m_Font;
 
-  // Implementation
+	// Implementation
 public:
 	void OnHelpStartMode();
 protected:
-  virtual void DoDataExchange(CDataExchange* pDX);  // DDX/DDV support
+	virtual void DoDataExchange(CDataExchange* pDX);  // DDX/DDV support
 
-  bool Cleanup();
+	bool Cleanup();
 
-  // Generated message map functions
-  //{{AFX_MSG(CStartModeDlg)
-  virtual BOOL OnInitDialog();
-  afx_msg void OnStartModeRecord();
-  afx_msg void OnCloseButton();
-  afx_msg void OnDblclkRecentlist();
-  afx_msg void OnOk();
-  afx_msg void OnPlay();
-  afx_msg void OnSelchangeRecentlist();
+	// Generated message map functions
+	//{{AFX_MSG(CStartModeDlg)
+	virtual BOOL OnInitDialog();
+	afx_msg void OnStartModeRecord();
+	afx_msg void OnCloseButton();
+	afx_msg void OnDblclkRecentlist();
+	afx_msg void OnOk();
+	afx_msg void OnPlay();
+	afx_msg void OnSelchangeRecentlist();
 	afx_msg void OnStop();
 	//}}AFX_MSG
-  DECLARE_MESSAGE_MAP()
+	DECLARE_MESSAGE_MAP()
 };
 
 #endif //_SA_START_H

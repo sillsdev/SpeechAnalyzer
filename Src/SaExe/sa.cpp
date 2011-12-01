@@ -303,7 +303,7 @@ BOOL CSaApp::InitInstance()
 
 	BOOL bInit = CSaAppBase::InitInstance();
 
-	if (bInit)
+	if (bInit) 
 	{
 
 		AfxEnableControlContainer();
@@ -1562,7 +1562,8 @@ void CSaApp::FileOpen()
 	CSaString szDefault = DefaultDir(); // need to save copy (return value is destroyed)
 	dlgFile.m_ofn.lpstrInitialDir = szDefault;
 
-	if (dlgFile.DoModal() == IDOK) {
+	if (dlgFile.DoModal() == IDOK) 
+	{
 		OpenDocumentFile(dlgFile.GetPathName());
 	}
 
