@@ -3440,10 +3440,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\playerRecorder.h"
-				>
-			</File>
-			<File
 				RelativePath=".\plotwndInfo.h"
 				>
 			</File>
@@ -3736,6 +3732,10 @@
 				</File>
 				<File
 					RelativePath=".\PickOver.h"
+					>
+				</File>
+				<File
+					RelativePath=".\playerRecorder.h"
 					>
 				</File>
 				<File

@@ -16,6 +16,8 @@
 #include "sa_dlwnd.h"
 #include "resource.h"
 
+class CSaDoc;
+
 //###########################################################################
 // CDlgAdvancedSegment property page
 
@@ -23,8 +25,12 @@ class CDlgAdvancedSegment : public CDialog
 {
 	DECLARE_DYNAMIC(CDlgAdvancedSegment)
 public:
-	CDlgAdvancedSegment(CWnd* pParent = NULL); // standard constructor
-	virtual ~CDlgAdvancedSegment() {};
+	CDlgAdvancedSegment(CSaDoc * pDoc); // standard constructor
+	virtual ~CDlgAdvancedSegment();
+	
+	BOOL Create();
+	void Show( LPCTSTR title);
+
 private:
 	CSpinControl m_SpinSegment;
 	CSpinControl m_SpinChangeMin;
@@ -52,12 +58,15 @@ protected:
 	afx_msg void OnSegmentWidthScroll();
 	afx_msg void OnChangeMinScroll();
 	afx_msg void OnZeroCrossMinScroll();
+	afx_msg void OnBnClickedApply();
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()
 	virtual void OnOK();
 	virtual void OnCancel();
+
 public:
 	CButton m_OKButton;
 	CButton m_ApplyButton;
-	afx_msg void OnBnClickedApply();
+
+	CSaDoc * m_pDoc;
 };

@@ -1010,7 +1010,7 @@ void CDlgPlayer::OnClose()
 	OnStop(); // stop the player
 	CDialog::OnClose();
 	bPlayer = FALSE;
-	if(m_pWave) delete m_pWave;
+	if (m_pWave) delete m_pWave;
 	m_pWave = NULL;
 	DestroyWindow();
 }

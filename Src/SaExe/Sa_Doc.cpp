@@ -239,6 +239,9 @@ CSaDoc::CSaDoc()
 	SetStereoFlag(FALSE);
 	m_szTempConvertedWave.Empty();
 	m_bIsWave = TRUE;
+
+	m_pDlgAdvancedSegment = NULL;
+	m_pDlgAdvancedParse = NULL;
 }
 
 /***************************************************************************/
@@ -309,6 +312,17 @@ CSaDoc::~CSaDoc()
 	{
 		delete [] m_lpData;
 	}
+	if (m_pDlgAdvancedSegment)
+	{
+		delete m_pDlgAdvancedSegment;
+		m_pDlgAdvancedSegment = NULL;
+	}
+	if (m_pDlgAdvancedParse)
+	{
+		delete m_pDlgAdvancedParse;
+		m_pDlgAdvancedParse = NULL;
+	}
+
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -5725,8 +5739,18 @@ void CSaDoc::OnAdvancedParse()
 {
 	CheckPoint();
 
-	CDlgAdvancedParse dlg;
-	dlg.DoModal();
+	if (m_pDlgAdvancedParse==NULL)
+	{
+		m_pDlgAdvancedParse = new CDlgAdvancedParse(this);
+		if (!m_pDlgAdvancedParse->Create()) {
+			CSaApp* pApp = (CSaApp*)AfxGetApp();
+			pApp->ErrorMessage(IDS_ERROR_NO_DIALOG);
+			delete m_pDlgAdvancedParse;
+			m_pDlgAdvancedParse = NULL;
+			return;
+		}
+	}
+	m_pDlgAdvancedParse->Show((LPCTSTR)GetTitle());
 }
 
 // Split function SDM 1.5Test8.2
@@ -5780,8 +5804,18 @@ void CSaDoc::OnAdvancedSegment()
 {
 	CheckPoint();
 
-	CDlgAdvancedSegment dlg;
-	dlg.DoModal();
+	if (m_pDlgAdvancedSegment==NULL)
+	{
+		m_pDlgAdvancedSegment = new CDlgAdvancedSegment(this);
+		if (!m_pDlgAdvancedSegment->Create()) {
+			CSaApp* pApp = (CSaApp*)AfxGetApp();
+			pApp->ErrorMessage(IDS_ERROR_NO_DIALOG);
+			delete m_pDlgAdvancedParse;
+			m_pDlgAdvancedParse = NULL;
+			return;
+		}
+	}
+	m_pDlgAdvancedSegment->Show((LPCTSTR)GetTitle());
 }
 
 // Split function SDM 1.5Test8.2
@@ -5827,7 +5861,7 @@ BOOL CSaDoc::AdvancedSegment()
 		m_apSegments[nLoop] = pPreserve[nLoop];
 	}
 
-	if(!m_apSegments[GLOSS]->IsEmpty()) // Gloss segments need to be aligned to phonetic SDM 1.5Test8.2
+	if (!m_apSegments[GLOSS]->IsEmpty()) // Gloss segments need to be aligned to phonetic SDM 1.5Test8.2
 	{
 		CGlossSegment* pGloss = (CGlossSegment*) m_apSegments[GLOSS];
 		DWORD dwStart;
@@ -5875,7 +5909,7 @@ BOOL CSaDoc::AdvancedSegment()
 				}
 			}
 
-			if(bInsert)
+			if (bInsert)
 			{
 				dwStart = pGloss->GetOffset(nGloss); // Insert in same location as old segment
 				if(nPhonetic ==-1) nPhonetic = pSegment->GetSize(); // insert at end
@@ -5891,7 +5925,7 @@ BOOL CSaDoc::AdvancedSegment()
 			{
 				pGloss->Adjust(this, nGloss, dwStart, dwStop - dwStart);
 			}
-			if(nGloss > 0)  // Adjust previous gloss segment
+			if (nGloss > 0)  // Adjust previous gloss segment
 			{
 				pGloss->Adjust(pDoc, nGloss-1, pGloss->GetOffset(nGloss-1), pGloss->CalculateDuration(pDoc, nGloss-1));
 			}
@@ -6322,3 +6356,23 @@ void CSaDoc::OnUpdateToolsAdjustZero(CCmdUI* pCmdUI)
 
 	pCmdUI->SetCheck(cAdjust.GetZero());
 }
+
+void CSaDoc::DestroyAdvancedSegment()
+{
+	if (m_pDlgAdvancedSegment!=NULL)
+	{
+		delete m_pDlgAdvancedSegment;
+		m_pDlgAdvancedSegment=NULL;
+	}
+}
+
+void CSaDoc::DestroyAdvancedParse()
+{
+	if (m_pDlgAdvancedSegment!=NULL)
+	{
+		delete m_pDlgAdvancedSegment;
+		m_pDlgAdvancedSegment=NULL;
+	}
+}
+
+

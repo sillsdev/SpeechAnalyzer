@@ -19,8 +19,8 @@
 
 IMPLEMENT_DYNAMIC(CDlgAdvancedParse, CDialog)
 
-CDlgAdvancedParse::CDlgAdvancedParse( CWnd* pParent /*=NULL*/) : 
-	CDialog(CDlgAdvancedParse::IDD, pParent)
+CDlgAdvancedParse::CDlgAdvancedParse( CSaDoc * pDoc) : 
+	CDialog(CDlgAdvancedParse::IDD, NULL)
 {
 	// Set parsing parameters to default values.
 	CMainFrame * pMainWnd = (CMainFrame*)AfxGetMainWnd();
@@ -28,6 +28,33 @@ CDlgAdvancedParse::CDlgAdvancedParse( CWnd* pParent /*=NULL*/) :
 	m_nBreakWidth = (int)(1000.0 * pParseParm->fBreakWidth);
 	m_nMaxThreshold = pParseParm->nMaxThreshold;
 	m_nMinThreshold = pParseParm->nMinThreshold;
+	m_pDoc = pDoc;
+}
+
+BOOL CDlgAdvancedParse::Create()
+{
+	return CDialog::Create(CDlgAdvancedParse::IDD);
+}
+
+CDlgAdvancedParse::~CDlgAdvancedParse()
+{
+		DestroyWindow();
+}
+
+void CDlgAdvancedParse::Show(LPCTSTR title)
+{
+	CString text;
+	GetWindowTextW(text);
+	text.Append(L" - ");
+	CString a(title);
+	int mark = a.Find(L":");
+	if (mark!=-1)
+	{
+		a.Truncate(mark);
+	}
+	text.Append(a);
+	SetWindowTextW(text);
+	ShowWindow(SW_SHOW);
 }
 
 void CDlgAdvancedParse::DoDataExchange(CDataExchange* pDX)
@@ -83,9 +110,7 @@ void CDlgAdvancedParse::Apply()
 	pParseParm->nMaxThreshold = m_nMaxThreshold;
 	pParseParm->nMinThreshold = m_nMinThreshold;
 
-	CSaView* pView = pMainFrame->GetCurrSaView();
-	CSaDoc* pDoc = (CSaDoc*)pView->GetDocument();
-	if (!pDoc->AdvancedParse()) 
+	if (!m_pDoc->AdvancedParse()) 
 	{
 		Undo();
 	}
@@ -93,10 +118,8 @@ void CDlgAdvancedParse::Apply()
 
 void CDlgAdvancedParse::Undo() 
 {
-
-	CMainFrame* pMainFrame = (CMainFrame*)AfxGetMainWnd();
-	ASSERT(pMainFrame->IsKindOf(RUNTIME_CLASS(CMainFrame)));
-	CSaView* pView = pMainFrame->GetCurrSaView();
+	POSITION pos = m_pDoc->GetFirstViewPosition();
+	CSaView* pView = (CSaView*)m_pDoc->GetNextView(pos);
 	pView->SendMessage(WM_COMMAND,ID_EDIT_UNDO,0);
 	pView->RefreshGraphs();
 }

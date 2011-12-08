@@ -353,7 +353,7 @@ CMainFrame::~CMainFrame()
 	}
 	if (m_pDlgPlayer)
 	{
-		delete m_pDlgPlayer; // player
+		delete m_pDlgPlayer;
 		m_pDlgPlayer = NULL;
 	}
 	if (m_pDlgEditor)
@@ -927,7 +927,7 @@ CDlgPlayer* CMainFrame::GetPlayer(BOOL bCreate)
 {
 	if (!CDlgPlayer::bPlayer) // player dialog not launched
 	{
-		if(!bCreate)
+		if (!bCreate)
 			return NULL;
 
 		if (m_pDlgPlayer) delete m_pDlgPlayer; // delete old dialog object
@@ -2398,9 +2398,12 @@ void CMainFrame::NotifyFragmentDone(void * /*pCaller*/ )
 /***************************************************************************/
 void CMainFrame::DestroyPlayer()
 {
-	delete m_pDlgPlayer;
-	CDlgPlayer::bPlayer = FALSE;
-	m_pDlgPlayer = NULL;
+	if (m_pDlgPlayer!=NULL)
+	{
+		delete m_pDlgPlayer;
+		CDlgPlayer::bPlayer = FALSE;
+		m_pDlgPlayer = NULL;
+	}
 }
 
 void CMainFrame::OnWaveformGenerator() 

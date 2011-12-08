@@ -28,7 +28,7 @@ LANGUAGE LANG_NEUTRAL, SUBLANG_NEUTRAL
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 3,0,1,9
+ FILEVERSION 3,0,1,10
  PRODUCTVERSION 1,0,0,1
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
@@ -46,7 +46,7 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "SIL International"
             VALUE "FileDescription", "SA"
-            VALUE "FileVersion", "v3.0.1.9"
+            VALUE "FileVersion", "v3.0.1.10"
             VALUE "InternalName", "SA"
             VALUE "LegalCopyright", "© 1996-2011 SIL International (MSEA)"
             VALUE "ProductName", "SA"
@@ -3835,7 +3835,7 @@ STRINGTABLE
 BEGIN
     IDR_MAINFRAME           "Speech Analyzer"
     IDR_SA_ANNTYPE          "\nSA\nSA Document\nWAV Files (*.wav)\n.wav\nannFileType\nANN File Type"
-    VS_VERSION              "Version 3.0.1.9"
+    VS_VERSION              "Version 3.0.1.10"
     VS_COPYRIGHT            "© 1996-2011 SIL International (MSEA).\nAll Rights Reserved."
     IDR_SA_WBTYPE           "\nWB\nSA Workbench\nWB Files (*.wb)\n.wb\nwbFileType\nWB File Type"
 END
@@ -4784,6 +4784,7 @@ BEGIN
                             "This would move the cursor too far to the right."
     IDS_ERROR_SCREEN_CAPTURE_SAVE "Can't create png file"
     IDS_ERROR_SCREEN_CAPTURE_OPEN "Can't open file"
+    IDS_ERROR_NO_DIALOG     "Unable to create dialog box."
 END
 
 STRINGTABLE 

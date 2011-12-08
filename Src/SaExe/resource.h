@@ -6,6 +6,7 @@
 #define IDS_ACTIVEX_PPG                 2
 #define ID_START_MODE_WAVE              3
 #define IDC_CUSTOM                      3
+#define IDS_STRING3                     3
 #define ID_START_MODE_RECORD            4
 #define ID_PRINT                        90
 #define ID_PREVIEW                      91
@@ -2044,6 +2045,7 @@
 #define IDS_EQUALIZE_TOO_FAR_RIGHT      61252
 #define IDS_ERROR_SCREEN_CAPTURE_SAVE   61253
 #define IDS_ERROR_SCREEN_CAPTURE_OPEN   61254
+#define IDS_ERROR_NO_DIALOG             61255
 
 // Next default values for new objects
 // 

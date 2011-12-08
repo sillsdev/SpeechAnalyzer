@@ -17,14 +17,19 @@
 #include "resource.h"
 #include "afxwin.h"
 
+class CSaDoc;
+
 class CDlgAdvancedParse : public CDialog
 {
 	DECLARE_DYNAMIC(CDlgAdvancedParse)
 
 	// Construction/destruction/creation
 public:
-	CDlgAdvancedParse(CWnd* pParent = NULL); // standard constructor
-	virtual ~CDlgAdvancedParse() {};
+	CDlgAdvancedParse(CSaDoc * pDoc); // standard constructor
+	virtual ~CDlgAdvancedParse();
+	
+	BOOL Create();
+	void Show(LPCTSTR title);
 
 	// Attributes
 private:
@@ -52,12 +57,14 @@ protected:
 	afx_msg void OnBreakWidthScroll();
 	afx_msg void OnMaxThresholdScroll();
 	afx_msg void OnMinThresholdScroll();
+	afx_msg void OnBnClickedApply();
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()
 	virtual void OnOK();
 	virtual void OnCancel();
 public:
+
 	CButton m_ApplyButton;
 	CButton m_OKButton;
-	afx_msg void OnBnClickedApply();
+	CSaDoc * m_pDoc;
 };

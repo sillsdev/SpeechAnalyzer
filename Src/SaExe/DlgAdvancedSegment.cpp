@@ -26,14 +26,41 @@ IMPLEMENT_DYNAMIC(CDlgAdvancedSegment, CDialog)
 /***************************************************************************/
 // CDlgAdvancedSegment::CDlgAdvancedSegment Constructor
 /***************************************************************************/
-CDlgAdvancedSegment::CDlgAdvancedSegment(CWnd* pParent) :
-	CDialog(CDlgAdvancedSegment::IDD,pParent)
+CDlgAdvancedSegment::CDlgAdvancedSegment(CSaDoc * pDoc) :
+	CDialog(CDlgAdvancedSegment::IDD,NULL)
 {
 	//{{AFX_DATA_INIT(CDlgAdvancedSegment)
 	m_nSegmentWidth = 20;
 	m_nChMinThreshold = 17;
 	m_nZCMinThreshold = 50;
 	//}}AFX_DATA_INIT
+	m_pDoc = pDoc;
+}
+
+BOOL CDlgAdvancedSegment::Create()
+{
+	return CDialog::Create(CDlgAdvancedSegment::IDD);
+}
+
+CDlgAdvancedSegment::~CDlgAdvancedSegment()
+{
+		DestroyWindow();
+}
+
+void CDlgAdvancedSegment::Show( LPCTSTR title)
+{
+	CString text;
+	GetWindowTextW(text);
+	text.Append(L" - ");
+	CString a(title);
+	int mark = a.Find(L":");
+	if (mark!=-1)
+	{
+		a.Truncate(mark);
+	}
+	text.Append(a);
+	SetWindowTextW(text);
+	ShowWindow(SW_SHOW);
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -93,9 +120,7 @@ void CDlgAdvancedSegment::Apply()
 	pSegmentParm->nChThreshold = m_nChMinThreshold;
 	pSegmentParm->nZCThreshold = m_nZCMinThreshold;
 
-	CSaView* pView = pMainFrame->GetCurrSaView();
-	CSaDoc* pDoc = (CSaDoc*)pView->GetDocument();
-	if (!pDoc->AdvancedSegment()) 
+	if (!m_pDoc->AdvancedSegment()) 
 	{
 		Undo();
 	}
@@ -103,10 +128,8 @@ void CDlgAdvancedSegment::Apply()
 
 void CDlgAdvancedSegment::Undo() 
 {
-
-	CMainFrame* pMainFrame = (CMainFrame*)AfxGetMainWnd();
-	ASSERT(pMainFrame->IsKindOf(RUNTIME_CLASS(CMainFrame)));
-	CSaView* pView = pMainFrame->GetCurrSaView();
+	POSITION pos = m_pDoc->GetFirstViewPosition();
+	CSaView* pView = (CSaView*)m_pDoc->GetNextView(pos);
 	pView->SendMessage(WM_COMMAND,ID_EDIT_UNDO,0);
 	pView->RefreshGraphs();
 }
