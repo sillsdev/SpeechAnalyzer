@@ -18,6 +18,6 @@ protected:
 
 public:
 	int m_iConvention;
-	int m_iLocation;
 	CString m_FolderName;
+	CString m_FolderLocation;
 };

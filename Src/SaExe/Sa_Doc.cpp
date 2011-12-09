@@ -5401,39 +5401,17 @@ void CSaDoc::OnUpdateFileSplit(CCmdUI* pCmdUI)
 	pCmdUI->Enable(!((CSaApp*) AfxGetApp())->GetBatchMode() && !IsStereo());
 }
 
-/**
-* Generate a file name for a split file
-* 
-* Since the Ref+space+Gloss string will become the filename, protect the 
-* Windows Write function from crashing by testing for invalid characters 
-* in the string (i.e. \ / : * ? “ < > | ); 
-* If you find one I suggest you replace it with a hyphen so the user knows 
-* something is not correct.
-*
-* For the Split File feature, after talking to one of the instructors, here 
-* is a revision to the filename process.
-*
-* The conditions for building a valid filename are:
-* - Ref field can be alpha-numeric including <space>
-* - Gloss field can be alpha-numeric including <space>
-* - Ref field can be blank
-* - Gloss field can be blank
-* - Ref field and Gloss field cannot both be blank at the same time
-* - Ref field cannot have duplicate data
-* - Gloss field cannot have duplicate data unless Ref is different
-* - Ref field and Gloss field cannot use invalid characters
-*
-* For now if an error condition exists, then put up a message that says 
-* something like “Invalid Filename - Failed to any save data”
-* In the future the offending item can be displayed so the user can more 
-* easily fix the problem.
-*/
-CString CSaDoc::FilterSplitName( CString text)
+CString CSaDoc::FilterName( CString text)
 {
 	CString result;
+
 	for (int i=0;i<text.GetLength();i++) 
 	{
 		wchar_t c = text.GetAt(i);
+		if (c==0)
+		{
+			break;
+		}
 		switch (c)
 		{
 		case '\\':
@@ -5462,20 +5440,73 @@ CString CSaDoc::FilterSplitName( CString text)
 	return result;
 }
 
+/**
+* Generate a file name for a split file
+* 
+* Since the Ref+space+Gloss string will become the filename, protect the 
+* Windows Write function from crashing by testing for invalid characters 
+* in the string (i.e. \ / : * ? “ < > | ); 
+* If you find one I suggest you replace it with a hyphen so the user knows 
+* something is not correct.
+*
+* For the Split File feature, after talking to one of the instructors, here 
+* is a revision to the filename process.
+*
+* The conditions for building a valid filename are:
+* - Ref field can be alpha-numeric including <space>
+* - Gloss field can be alpha-numeric including <space>
+* - Ref field can be blank
+* - Gloss field can be blank
+* - Ref field and Gloss field cannot both be blank at the same time
+* - Ref field cannot have duplicate data
+* - Gloss field cannot have duplicate data unless Ref is different
+* - Ref field and Gloss field cannot use invalid characters
+*
+* For now if an error condition exists, then put up a message that says 
+* something like “Invalid Filename - Failed to any save data”
+* In the future the offending item can be displayed so the user can more 
+* easily fix the problem.
+*
+* Convention
+* 0 - gloss only
+* 1 - ref and gloss
+*/
 CString CSaDoc::GenerateSplitName( CSaView* pView, int convention, int index)
 {
 	wchar_t buffer[MAX_PATH];
 	memset(buffer,0,sizeof(buffer));
 
 	CString result;
+	CString gloss(L"");
+	CString ref(L"");
+	DWORD dwStart = 0;
+	CSegment * g = NULL;
 	// generate the filename based on the dialog selection
 	switch (convention) 
 	{
+	case 0: //gloss
+		g = pView->GetAnnotation(GLOSS);
+		dwStart = g->GetOffset(index);
+		gloss = g->GetSegmentString(index);
+		gloss = FilterName(gloss);
+		if (gloss.GetLength()!=0) 
+		{
+			swprintf_s(buffer,_countof(buffer),L"%s",(LPCTSTR)gloss);
+		}
+		else
+		{
+			CSaApp* pApp = (CSaApp*)AfxGetApp();
+			CString szNumber;
+			szNumber.Format(_T("%d"), index);
+			pApp->ErrorMessage(IDS_EMPTY_ANNOTATIONS,(LPCTSTR)szNumber);
+		}
+		break;
+
 	default:
 	case 1:	//ref+gloss
-		CSegment * g = pView->GetAnnotation(GLOSS);
-		DWORD dwStart = g->GetOffset(index);
-		CString gloss = g->GetSegmentString(index);
+		g = pView->GetAnnotation(GLOSS);
+		dwStart = g->GetOffset(index);
+		gloss = g->GetSegmentString(index);
 		// find the ref based on the gloss position, since GLOSS is the iterator
 		CSegment * r = pView->GetAnnotation(REFERENCE);
 		int rindex = -1;
@@ -5494,14 +5525,13 @@ CString CSaDoc::GenerateSplitName( CSaView* pView, int convention, int index)
 				break;
 			}
 		}
-		CString ref;
 		if (rindex!=-1) 
 		{
 			ref = pView->GetAnnotation(REFERENCE)->GetSegmentString(rindex);
 		}
 
-		gloss = FilterSplitName(gloss);
-		ref = FilterSplitName(ref);
+		gloss = FilterName(gloss);
+		ref = FilterName(ref);
 		if (ref.GetLength()!=0)
 		{
 			if (gloss.GetLength()!=0)
@@ -5530,6 +5560,32 @@ CString CSaDoc::GenerateSplitName( CSaView* pView, int convention, int index)
 	return result;
 }
 
+bool CSaDoc::CreateFolder( CString folder)
+{
+	CFileStatus status;
+	if (CFile::GetStatus(folder,status)) 
+	{
+		if (status.m_attribute & CFile::directory) 
+		{
+			// it's there and it's a directory
+			TRACE1("directory %s already exists\n",folder);
+		} 
+		else 
+		{
+			// it exists, but it's not a directory
+			TRACE1("%s already exists, but it's not a directory\n",folder);
+			return false;
+		}
+	}  
+	else 
+	{
+		TRACE1("creating %s\n",folder);
+		// it doesn't exist - create it!
+		CreateDirectory(folder, NULL);
+	}
+	return true;
+}
+
 /***************************************************************************/
 // CSaDoc::OnFileSplit
 // Splits a file based on user defined keys such as reference or gloss
@@ -5544,12 +5600,12 @@ void CSaDoc::OnFileSplit()
 	wchar_t fname[_MAX_FNAME];
 	wchar_t ext[_MAX_EXT];
 	_wsplitpath_s( buffer, drive, dir, fname, ext );
-
-	wchar_t newpath[MAX_PATH];
-	swprintf_s(newpath,_countof(newpath),L"%s%s%s",drive,dir,L"Split\\");
 	
 	CDlgSplit dlg;
-	dlg.m_FolderName = newpath;
+	dlg.m_FolderLocation.Format(L"%s%s",drive,dir);
+	dlg.m_FolderName.Format(L"Split-%s",fname);
+	dlg.m_FolderName = FilterName(dlg.m_FolderName);
+
 	if (dlg.DoModal()!=IDOK) 
 	{
 		return;
@@ -5557,29 +5613,15 @@ void CSaDoc::OnFileSplit()
 
 	CSaApp* pApp = (CSaApp*)AfxGetApp();
 
-	swprintf_s(newpath,_countof(newpath),dlg.m_FolderName.Left(dlg.m_FolderName.GetLength()-1));
+	CString newPath;
+	newPath.Format(L"%s%s",dlg.m_FolderLocation,dlg.m_FolderName);
 
-	CFileStatus status;
-	if (CFile::GetStatus(newpath,status)) 
+	if ((!CreateFolder(newPath))||
+		(!CreateFolder(newPath+L"\\Phrases"))||
+		(!CreateFolder(newPath+L"\\Words")))
 	{
-		if (status.m_attribute&CFile::directory) 
-		{
-			// it's there and it's a directory
-			TRACE1("directory %s already exists\n",newpath);
-		} 
-		else 
-		{
-			// it exists, but it's not a directory
-			TRACE1("%s already exists, but it's not a directory\n",newpath);
-			pApp->ErrorMessage(IDS_SPLIT_BAD_DIRECTORY);
-			return;
-		}
-	}  
-	else 
-	{
-		TRACE1("creating %s\n",newpath);
-		// it doesn't exist - create it!
-		CreateDirectory(newpath, NULL);
+		pApp->ErrorMessage(IDS_SPLIT_BAD_DIRECTORY);
+		return;
 	}
 
 	POSITION pos = GetFirstViewPosition();
@@ -5618,7 +5660,7 @@ void CSaDoc::OnFileSplit()
 			continue;
 		}
 		wchar_t buffer[MAX_PATH];
-		swprintf_s( buffer, _countof(buffer), L"%s\\%s.wav",newpath,(LPCTSTR)name);
+		swprintf_s( buffer, _countof(buffer), L"%s\\%s.wav",newPath,(LPCTSTR)name);
 
 		bSuccess = CopySectionToNewWavFile(dwStart,dwStop-dwStart,buffer);
 		if (!bSuccess) 
@@ -5639,8 +5681,8 @@ void CSaDoc::OnFileSplit()
 		// copy the saxml.tmp file to .saxml
 		wchar_t oldsaxml[MAX_PATH];
 		wchar_t newsaxml[MAX_PATH];
-		swprintf_s( oldsaxml, _countof(oldsaxml), L"%s\\%s.saxml.tmp",newpath,name);
-		swprintf_s( newsaxml, _countof(newsaxml), L"%s\\%s.saxml",newpath,name);
+		swprintf_s( oldsaxml, _countof(oldsaxml), L"%s\\%s.saxml.tmp",newPath,name);
+		swprintf_s( newsaxml, _countof(newsaxml), L"%s\\%s.saxml",newPath,name);
 		bSuccess = CopyFile(oldsaxml,newsaxml);
 		if (!bSuccess) 
 		{

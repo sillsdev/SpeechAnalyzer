@@ -1,6 +1,8 @@
-SA 3.0.1.10 - 12/7/2011
+SA 3.0.1.10 - 12/8/2011
 -----------------------
 1) Made 'Auto Parse' and 'Auto Segment' dialogs modeless.
+2) Added 'Gloss' convention to split file dialog box.
+3) Modified file directory structuring and naming when saving split files.
 
 
 SA 3.0.1.9 - 11/30/2011

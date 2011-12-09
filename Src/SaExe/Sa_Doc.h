@@ -272,8 +272,10 @@ private:
 	void				WriteTranscription(int transType, ISaAudioDocumentWriterPtr saAudioDocWriter);
 	void				WriteGlossPosAndRefSegments(ISaAudioDocumentWriterPtr saAudioDocWriter);
 	void				WriteScoreData(ISaAudioDocumentWriterPtr saAudioDocWriter);
+	
 	CString				GenerateSplitName( CSaView* pView, int convention, int index);
-	CString				FilterSplitName( CString text);
+	CString				FilterName( CString text);
+	bool				CreateFolder( CString folder);
 
 public:
 	void				vGetAlignInfo( CAlignInfo & alignInfo);

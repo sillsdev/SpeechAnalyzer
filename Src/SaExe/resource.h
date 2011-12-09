@@ -6,7 +6,6 @@
 #define IDS_ACTIVEX_PPG                 2
 #define ID_START_MODE_WAVE              3
 #define IDC_CUSTOM                      3
-#define IDS_STRING3                     3
 #define ID_START_MODE_RECORD            4
 #define ID_PRINT                        90
 #define ID_PREVIEW                      91
@@ -1567,8 +1566,11 @@
 #define IDC_FORMANT_NOTE                2032
 #define IDC_SPLIT_CONVENTION            2033
 #define IDC_SPLIT_FOLDER                2034
+#define IDC_SPLIT_FOLDER_LOCATION       2034
 #define IDC_COMBO3                      2035
 #define IDC_SPLIT_LOCATION              2035
+#define IDC_SPLIT_FOLDER2               2035
+#define IDC_SPLIT_FOLDER_NAME           2035
 #define IDC_SCROLLBAR1                  2036
 #define IDS_PLAYER_SMALL                3000
 #define IDS_PLAYER_LARGE                3001
