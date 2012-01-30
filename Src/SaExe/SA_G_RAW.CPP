@@ -109,10 +109,7 @@ BOOL CPlotRawData::SetLegendScale()
 // function PlotPaintFinish at the end of the drawing to let the plot base
 // class do common jobs like drawing the cursors.
 /***************************************************************************/
-void CPlotRawData::OnDraw( CDC * pDC, 
-						   CRect rWnd, 
-						   CRect rClip, 
-						   CSaView * pView)
+void CPlotRawData::OnDraw( CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView)
 {
 	// get pointer to graph, view and document
 	CSaDoc   * pDoc   = pView->GetDocument();
@@ -123,14 +120,14 @@ void CPlotRawData::OnDraw( CDC * pDC,
 	if (nResult == PROCESS_ERROR) return;
 	if (nResult != PROCESS_CANCELED)
 	{
-		if(SetLegendScale())
+		if (SetLegendScale())
 			return; // set legend scale invalidated entire graph no point in drawing now
 		SetProcessMultiplier(32768./100.);
 		// do common plot paint jobs
 		PlotPrePaint(pDC, rWnd, rClip);
 		PlotStandardPaint(pDC, rWnd, rClip, pRaw, pDoc, (m_bDotDraw ? PAINT_CROSSES : 0)  | PAINT_MIN); // do standard data paint
 	}
-	if(ResearchSettings.m_bShowHilbertTransform)
+	if (ResearchSettings.m_bShowHilbertTransform)
 	{
 		// create raw data
 		CHilbert* pHilbert = pDoc->GetHilbert(); // get pointer to change object
