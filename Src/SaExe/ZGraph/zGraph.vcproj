@@ -49,7 +49,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;ZGRAPH_EXPORTS;WINDOWS_PLATFORM"
+				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;ZGRAPH_EXPORTS;WINDOWS_PLATFORM;_CRT_SECURE_NO_WARNINGS"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -145,7 +145,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="4"
 				InlineFunctionExpansion="2"
-				PreprocessorDefinitions="_WINDOWS;_USRDLL;ZGRAPH_EXPORTS;WINDOWS_PLATFORM;WIN32;NDEBUG"
+				PreprocessorDefinitions="_WINDOWS;_USRDLL;ZGRAPH_EXPORTS;WINDOWS_PLATFORM;WIN32;NDEBUG;_CRT_SECURE_NO_WARNINGS"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="2"

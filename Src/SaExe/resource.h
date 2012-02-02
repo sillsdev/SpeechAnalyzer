@@ -80,7 +80,6 @@
 #define IDB_KNOBHORIZ                   174
 #define IDD_RECORDEDIT                  175
 #define IDB_KNOBVERT                    175
-#define IDC_HAND                        184
 #define IDD_INPUT                       186
 #define IDD_MAGNIFY                     187
 #define IDD_PROCESSCANCEL               188
