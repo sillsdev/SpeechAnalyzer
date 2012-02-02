@@ -36,8 +36,8 @@ IMPLEMENT_DYNCREATE(CPlotLoudness, CPlotWnd)
 // CPlotLoudness message map
 
 BEGIN_MESSAGE_MAP(CPlotLoudness, CPlotWnd)
-    //{{AFX_MSG_MAP(CPlotLoudness)
-    //}}AFX_MSG_MAP
+	//{{AFX_MSG_MAP(CPlotLoudness)
+	//}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
@@ -54,18 +54,18 @@ CPlotLoudness::CPlotLoudness()
 
 void  CPlotLoudness::CopyTo(CPlotWnd * pT)
 {
-  CPlotWnd::CopyTo(pT);
+	CPlotWnd::CopyTo(pT);
 }
 
 
 
 CPlotWnd * CPlotLoudness::NewCopy(void)
 {
-  CPlotWnd * pRet = new CPlotLoudness();
+	CPlotWnd * pRet = new CPlotLoudness();
 
-  CopyTo(pRet);
+	CopyTo(pRet);
 
-  return pRet;
+	return pRet;
 }
 
 
@@ -90,68 +90,68 @@ CPlotLoudness::~CPlotLoudness()
 /***************************************************************************/
 void CPlotLoudness::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView)
 {
-  // get pointer to main frame, graph, and document
-  CGraphWnd* pGraph = (CGraphWnd*)GetParent();
-  CSaDoc * pDoc = pView->GetDocument();
-  // create loudness data
-  CProcessLoudness* pLoudness = (CProcessLoudness*)pDoc->GetLoudness(); // get pointer to loudness object
-  short int nResult = LOWORD(pLoudness->Process(this, pDoc)); // process data
-  nResult = CheckResult(nResult, pLoudness); // check the process result
-  if (nResult == PROCESS_ERROR) return;
-  if (nResult != PROCESS_CANCELED)
-  {
-    BOOL bPercent = pDoc->GetIntensityParm().nScaleMode == 1;
-    if(bPercent)
-    {
-      double dLoudToPercent = 32767/2/100.0;
-      double dMaxPercent = 103.;
+	// get pointer to main frame, graph, and document
+	CGraphWnd* pGraph = (CGraphWnd*)GetParent();
+	CSaDoc * pDoc = pView->GetDocument();
+	// create loudness data
+	CProcessLoudness* pLoudness = (CProcessLoudness*)pDoc->GetLoudness(); // get pointer to loudness object
+	short int nResult = LOWORD(pLoudness->Process(this, pDoc)); // process data
+	nResult = CheckResult(nResult, pLoudness); // chaeck the process result
+	if (nResult == PROCESS_ERROR) return;
+	if (nResult != PROCESS_CANCELED)
+	{
+		BOOL bPercent = pDoc->GetIntensityParm().nScaleMode == 1;
+		if(bPercent)
+		{
+			double dLoudToPercent = 32767/2/100.0;
+			double dMaxPercent = 103.;
 
-      pGraph->SetLegendScale(SCALE | NUMBERS , 0, int(dMaxPercent), _T("Linear Magnitude (%)")); // set legend scale
-      // do common plot paint jobs
-      PlotPrePaint(pDC, rWnd, rClip);
-      SetProcessMultiplier(dLoudToPercent);
-    }
-    else
-    {
-      // dB
-      pGraph->SetLegendScale(SCALE | NUMBERS , -31, 3, _T("Relative Intensity (dB)")); // set legend scale
-      // do common plot paint jobs
-      PlotPrePaint(pDC, rWnd, rClip);
-      SetProcessMultiplier(PRECISION_MULTIPLIER);
-    }
+			pGraph->SetLegendScale(SCALE | NUMBERS , 0, int(dMaxPercent), _T("Linear Magnitude (%)")); // set legend scale
+			// do common plot paint jobs
+			PlotPrePaint(pDC, rWnd, rClip);
+			SetProcessMultiplier(dLoudToPercent);
+		}
+		else
+		{
+			// dB
+			pGraph->SetLegendScale(SCALE | NUMBERS , -31, 3, _T("Relative Intensity (dB)")); // set legend scale
+			// do common plot paint jobs
+			PlotPrePaint(pDC, rWnd, rClip);
+			SetProcessMultiplier(PRECISION_MULTIPLIER);
+		}
 
-    PlotStandardPaint(pDC, rWnd, rClip, pLoudness, pDoc, bPercent ? 0 : PAINT_DB); // do standard data paint
-  }
-  if(ResearchSettings.m_bShowInstantaneousPower)
-  {
-    // create raw data
-    CProcessInstantaneousPower power;
-    CProcessInstantaneousPower* pPower = &power;
-    nResult = LOWORD(pPower->Process(this, pDoc)); // process data
-    nResult = CheckResult(nResult, pPower); // check the process result
-    if (nResult == PROCESS_ERROR) return;
-    if (nResult != PROCESS_CANCELED)
-    {
-      BOOL bPercent = pDoc->GetIntensityParm().nScaleMode == 1;
-      if(bPercent)
-      {
-        double dLoudToPercent = 32767/4/100.0;
-        
-        SetProcessMultiplier(dLoudToPercent);
-      }
-      else
-      {
-        // dB
-        SetProcessMultiplier(32768);
-      }
-      CMainFrame* pMainWnd = (CMainFrame*)AfxGetMainWnd();
-      pMainWnd->SwapInOverlayColors(4);
-      PlotStandardPaint(pDC, rWnd, rClip, pPower, pDoc, bPercent ? 0 : PAINT_DB); // do standard data paint
-      pMainWnd->SwapOutOverlayColors();
-    }
-  }
-  // do common plot paint jobs
-  PlotPaintFinish(pDC, rWnd, rClip);
+		PlotStandardPaint(pDC, rWnd, rClip, pLoudness, pDoc, bPercent ? 0 : PAINT_DB); // do standard data paint
+	}
+	if(ResearchSettings.m_bShowInstantaneousPower)
+	{
+		// create raw data
+		CProcessInstantaneousPower power;
+		CProcessInstantaneousPower* pPower = &power;
+		nResult = LOWORD(pPower->Process(this, pDoc)); // process data
+		nResult = CheckResult(nResult, pPower); // check the process result
+		if (nResult == PROCESS_ERROR) return;
+		if (nResult != PROCESS_CANCELED)
+		{
+			BOOL bPercent = pDoc->GetIntensityParm().nScaleMode == 1;
+			if(bPercent)
+			{
+				double dLoudToPercent = 32767/4/100.0;
+
+				SetProcessMultiplier(dLoudToPercent);
+			}
+			else
+			{
+				// dB
+				SetProcessMultiplier(32768);
+			}
+			CMainFrame* pMainWnd = (CMainFrame*)AfxGetMainWnd();
+			pMainWnd->SwapInOverlayColors(4);
+			PlotStandardPaint(pDC, rWnd, rClip, pPower, pDoc, bPercent ? 0 : PAINT_DB); // do standard data paint
+			pMainWnd->SwapOutOverlayColors();
+		}
+	}
+	// do common plot paint jobs
+	PlotPaintFinish(pDC, rWnd, rClip);
 }
 
 
