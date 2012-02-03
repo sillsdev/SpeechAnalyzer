@@ -268,9 +268,9 @@ void CProcessWbEquation::WriteProperties(Object_ostream& obs)
 }
 
 /***************************************************************************/
-// CProcessWbEquation::bReadProperties Read equation properties
+// CProcessWbEquation::ReadProperties Read equation properties
 /***************************************************************************/
-BOOL CProcessWbEquation::bReadProperties(Object_istream& obs)
+BOOL CProcessWbEquation::ReadProperties(Object_istream& obs)
 {
 	CString szSafe = m_szEquation;
 	if (!obs.bAtBackslash() || !obs.bReadBeginMarker(psz_equation)) return FALSE;

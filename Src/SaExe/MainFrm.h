@@ -225,7 +225,7 @@ public:
 	void           OnSetDefaultParameters();
 
 	void WriteProperties(Object_ostream& obs);
-	BOOL bReadProperties(Object_istream& obs);
+	BOOL ReadProperties(Object_istream& obs);
 	BOOL bReadDefaultView(Object_istream& obs);
 	void WriteDefaultView(Object_ostream& obs);
 	void DisplayPlot(CDisplayPlot* pPlot) {m_pDisplayPlot = pPlot;}

@@ -239,8 +239,8 @@ public:
 	void				AutoSnapUpdate(void);
 	// methods for saving the window settings and program options.
 	void				WriteProperties(Object_ostream& obs);
-	static BOOL			s_bReadProperties(Object_istream& obs);
-	static BOOL			s_bReadPropertiesOfViews(Object_istream& obs, const CSaString & str);
+	static BOOL			ReadProperties(Object_istream& obs);
+	static BOOL			ReadPropertiesOfViews(Object_istream& obs, const CSaString & str);
 
 protected:
 	virtual void		DeleteContents();
@@ -274,13 +274,16 @@ private:
 	void				WriteScoreData(ISaAudioDocumentWriterPtr saAudioDocWriter);
 	
 	CString				GenerateSplitName( CSaView* pView, int convention, int index);
+	CString				GeneratePhraseSplitName( CSaView* pView, Annotations type, int index);
 	CString				FilterName( CString text);
 	bool				CreateFolder( CString folder);
+	bool				ExportWord( int & count, int convention, CString path);
+	bool				ExportPhrase(Annotations type, int & count, CString path);
 
 public:
-	void				vGetAlignInfo( CAlignInfo & alignInfo);
-	void				vSetTempOverlay();
-	bool				bIsTempOverlay();
+	void				GetAlignInfo( CAlignInfo & alignInfo);
+	void				SetTempOverlay();
+	bool				IsTempOverlay();
 	virtual void		OnCloseDocument();
 	virtual BOOL		DoFileSave();
 

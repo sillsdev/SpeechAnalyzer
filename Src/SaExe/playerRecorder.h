@@ -230,7 +230,7 @@ public:
 		sourceInfo() { source.nGender = -1;};
 
 		void WriteProperties(Object_ostream& obs);
-		BOOL bReadProperties(Object_istream& obs);
+		BOOL ReadProperties(Object_istream& obs);
 	};
 
 	static sourceInfo & GetStaticSourceInfo();

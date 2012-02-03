@@ -111,7 +111,7 @@ public:
   bool operator==(const CGraphConfiguration &compare) const { return compare.m_nLayout == m_nLayout ? CGraphList::operator ==(compare) : FALSE;}
 
   void WriteProperties(Object_ostream& obs, BOOL bPredefined) const;
-  BOOL bReadProperties(Object_istream& obs, BOOL &bPredefined);
+  BOOL ReadProperties(Object_istream& obs, BOOL &bPredefined);
 
   int     m_nLayout;
 };

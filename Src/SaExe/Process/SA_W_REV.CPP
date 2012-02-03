@@ -293,9 +293,9 @@ void CProcessWbEcho::WriteProperties(Object_ostream& obs)
 }
 
 /***************************************************************************/
-// CProcessWbEcho::bReadProperties Read echo properties
+// CProcessWbEcho::ReadProperties Read echo properties
 /***************************************************************************/
-BOOL CProcessWbEcho::bReadProperties(Object_istream& obs)
+BOOL CProcessWbEcho::ReadProperties(Object_istream& obs)
 {
 	UINT nDelay = m_nDelay;
 	int nGain = m_nGain;
@@ -581,9 +581,9 @@ void CProcessWbReverb::WriteProperties(Object_ostream& obs)
 }
 
 /***************************************************************************/
-// CProcessWbReverb::bReadProperties Read reverb properties
+// CProcessWbReverb::ReadProperties Read reverb properties
 /***************************************************************************/
-BOOL CProcessWbReverb::bReadProperties(Object_istream& obs)
+BOOL CProcessWbReverb::ReadProperties(Object_istream& obs)
 {
 	UINT nDelay = m_nDelay;
 	int nGain = m_nGain;

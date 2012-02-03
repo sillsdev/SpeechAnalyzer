@@ -54,7 +54,7 @@ public:
   CPlotWnd * NewPlotFromID(UINT plotID);
   BOOL IsIDincluded(UINT id);
   void WriteProperties(Object_ostream& obs); // Save (Project) Settings
-  BOOL bReadProperties(Object_istream& obs); // Autoloading
+  BOOL ReadProperties(Object_istream& obs); // Autoloading
   BOOL bSetProperties(int nNewID); // Set graph's default properties (needed for "FileOpenAs->Phonetic/Music Analysis")
 
   // Attributes

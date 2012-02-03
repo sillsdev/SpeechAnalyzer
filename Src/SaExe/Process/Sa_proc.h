@@ -120,7 +120,7 @@ public:
 	virtual int PropertiesDialog(); // calls the properties dialog for this process
 
 	virtual void WriteProperties(Object_ostream& obs);
-	virtual BOOL bReadProperties(Object_istream& obs);
+	virtual BOOL ReadProperties(Object_istream& obs);
 
 	void Dump(const char * tag);
 

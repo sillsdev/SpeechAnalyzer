@@ -2222,7 +2222,7 @@ BOOL CImport::Import(int nMode)
 	{
 		if(!bTable)
 		{
-			CDlgAnnotationWizard Align(NULL, CDlgAnnotationWizard::ALIGN, pDoc);
+			CDlgAnnotation Align(NULL, CDlgAnnotation::ALIGN, pDoc);
 
 			Align.AutoAlign(pPhonetic, pPhonemic, pOrtho, pGloss);
 		}
@@ -2330,7 +2330,7 @@ static void CreateWordSegments(const int nWord, int& nSegments)
 		// remove excess segments
 		int nCount = 0;
 		int nIndex = nPhonetic;
-		while((nIndex != -1)&&(pPhonetic->GetOffset(nIndex) < dwStop))
+		while ((nIndex != -1)&&(pPhonetic->GetOffset(nIndex) < dwStop))
 		{
 			if(nCount >= nSegments)
 			{
@@ -2346,9 +2346,9 @@ static void CreateWordSegments(const int nWord, int& nSegments)
 				nCount++;
 			}
 		}
-		if(nSegments == 0) return; // done
+		if (nSegments == 0) return; // done
 		// add segments
-		while(nCount < nSegments)
+		while (nCount < nSegments)
 		{
 			if(nIndex == -1) nIndex = pPhonetic->GetSize();
 			DWORD dwBegin = dwStart + nCount;
@@ -2725,16 +2725,16 @@ BOOL CImportDlg::OnInitDialog()
 
 
 /////////////////////////////////////////////////////////////////////////////
-// CDlgAnnotationWizardImport private dialog
+// CDlgAnnotationImport private dialog
 
-class CDlgAnnotationWizardImport : public CDialog
+class CDlgAnnotationImport : public CDialog
 {
 	// Construction
 public:
-	CDlgAnnotationWizardImport(BOOL bPhonetic, BOOL bPhonemic, BOOL bOrtho, CWnd* pParent = NULL);   // standard constructor
+	CDlgAnnotationImport(BOOL bPhonetic, BOOL bPhonemic, BOOL bOrtho, CWnd* pParent = NULL);   // standard constructor
 
 	// Dialog Data
-	//{{AFX_DATA(CDlgAnnotationWizardImport)
+	//{{AFX_DATA(CDlgAnnotationImport)
 	enum { IDD = IDD_ANNOTATION_WZD_IMPORT };
 	BOOL    m_bGloss;
 	BOOL    m_bPhonemic;
@@ -2752,7 +2752,7 @@ protected:
 	void SetEnable(int nItem, BOOL bEnable);
 
 	// Generated message map functions
-	//{{AFX_MSG(CDlgAnnotationWizardImport)
+	//{{AFX_MSG(CDlgAnnotationImport)
 	afx_msg void OnImportPlainText();
 	virtual BOOL OnInitDialog();
 	//}}AFX_MSG
@@ -2760,13 +2760,13 @@ protected:
 };
 
 /////////////////////////////////////////////////////////////////////////////
-// CDlgAnnotationWizardImport dialog
+// CDlgAnnotationImport dialog
 
 
-CDlgAnnotationWizardImport::CDlgAnnotationWizardImport(BOOL bPhonetic, BOOL bPhonemic, BOOL bOrtho, CWnd* pParent /*=NULL*/)
-: CDialog(CDlgAnnotationWizardImport::IDD, pParent)
+CDlgAnnotationImport::CDlgAnnotationImport(BOOL bPhonetic, BOOL bPhonemic, BOOL bOrtho, CWnd* pParent /*=NULL*/)
+: CDialog(CDlgAnnotationImport::IDD, pParent)
 {
-	//{{AFX_DATA_INIT(CDlgAnnotationWizardImport)
+	//{{AFX_DATA_INIT(CDlgAnnotationImport)
 	m_bGloss = FALSE;
 	m_bPhonemic = bPhonemic;
 	m_bPhonetic = bPhonetic;
@@ -2778,10 +2778,10 @@ CDlgAnnotationWizardImport::CDlgAnnotationWizardImport(BOOL bPhonetic, BOOL bPho
 	//}}AFX_DATA_INIT
 }
 
-void CDlgAnnotationWizardImport::DoDataExchange(CDataExchange* pDX)
+void CDlgAnnotationImport::DoDataExchange(CDataExchange* pDX)
 {
 	CDialog::DoDataExchange(pDX);
-	//{{AFX_DATA_MAP(CDlgAnnotationWizardImport)
+	//{{AFX_DATA_MAP(CDlgAnnotationImport)
 	DDX_Check(pDX, IDC_GLOSS_ENABLED, m_bGloss);
 	DDX_Check(pDX, IDC_PHONEMIC_ENABLED, m_bPhonemic);
 	DDX_Check(pDX, IDC_PHONETIC_ENABLED, m_bPhonetic);
@@ -2793,17 +2793,17 @@ void CDlgAnnotationWizardImport::DoDataExchange(CDataExchange* pDX)
 	//}}AFX_DATA_MAP
 }
 
-BEGIN_MESSAGE_MAP(CDlgAnnotationWizardImport, CDialog)
-	//{{AFX_MSG_MAP(CDlgAnnotationWizardImport)
+BEGIN_MESSAGE_MAP(CDlgAnnotationImport, CDialog)
+	//{{AFX_MSG_MAP(CDlgAnnotationImport)
 	ON_BN_CLICKED(IDC_IMPORT_PLAIN_TEXT, OnImportPlainText)
 	//}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
 
 /***************************************************************************/
-// CDlgAnnotationWizard::SetEnable Enables/Disables controls
+// CDlgAnnotation::SetEnable Enables/Disables controls
 /***************************************************************************/
-void CDlgAnnotationWizardImport::SetEnable(int nItem, BOOL bEnable)
+void CDlgAnnotationImport::SetEnable(int nItem, BOOL bEnable)
 {
 	CWnd* pWnd = GetDlgItem(nItem);
 
@@ -2814,21 +2814,21 @@ void CDlgAnnotationWizardImport::SetEnable(int nItem, BOOL bEnable)
 }
 
 /////////////////////////////////////////////////////////////////////////////
-// CDlgAnnotationWizardImport message handlers
+// CDlgAnnotationImport message handlers
 
 /***************************************************************************/
-// CDlgAnnotationWizard::OnImportPlainText Plain Text Button hit
+// CDlgAnnotation::OnImportPlainText Plain Text Button hit
 /***************************************************************************/
-void CDlgAnnotationWizardImport::OnImportPlainText()
+void CDlgAnnotationImport::OnImportPlainText()
 {
 	EndDialog(IDC_IMPORT_PLAIN_TEXT);
 }
 
 
 /***************************************************************************/
-// CDlgAnnotationWizard::OnInitDialog
+// CDlgAnnotation::OnInitDialog
 /***************************************************************************/
-BOOL CDlgAnnotationWizardImport::OnInitDialog()
+BOOL CDlgAnnotationImport::OnInitDialog()
 {
 	CDialog::OnInitDialog();
 
@@ -2845,14 +2845,14 @@ BOOL CDlgAnnotationWizardImport::OnInitDialog()
 }
 
 /////////////////////////////////////////////////////////////////////////////
-// CDlgAnnotationWizard dialog
+// CDlgAnnotation dialog
 
 
-CDlgAnnotationWizard::CDlgAnnotationWizard(CWnd* pParent, MODE mode, CSaDoc* pSaDoc)
-: CDialog(CDlgAnnotationWizard::IDD, pParent),  m_szPhonemicNullSegment("^"), m_szOrthographicNullSegment("_")
+CDlgAnnotation::CDlgAnnotation(CWnd* pParent, MODE mode, CSaDoc* pSaDoc)
+: CDialog(CDlgAnnotation::IDD, pParent),  m_szPhonemicNullSegment("^"), m_szOrthographicNullSegment("_")
 {
 	// SDM 1.5Test8.2 changed default initialization
-	//{{AFX_DATA_INIT(CDlgAnnotationWizard)
+	//{{AFX_DATA_INIT(CDlgAnnotation)
 	m_bOrthographic = FALSE;
 	m_bPhonemic = FALSE;
 	m_bPhonetic = TRUE;
@@ -2875,16 +2875,16 @@ CDlgAnnotationWizard::CDlgAnnotationWizard(CWnd* pParent, MODE mode, CSaDoc* pSa
 	m_szGloss = BuildString(GLOSS);
 }
 
-CDlgAnnotationWizard::~CDlgAnnotationWizard()
+CDlgAnnotation::~CDlgAnnotation()
 {
 	delete m_pFont;
 	CDialog::~CDialog();//Call Base class destructor
 }
 
-void CDlgAnnotationWizard::DoDataExchange(CDataExchange* pDX)
+void CDlgAnnotation::DoDataExchange(CDataExchange* pDX)
 {
 	CDialog::DoDataExchange(pDX);
-	//{{AFX_DATA_MAP(CDlgAnnotationWizard)
+	//{{AFX_DATA_MAP(CDlgAnnotation)
 	DDX_Check(pDX, IDC_ORTHOGRAPHIC, m_bOrthographic);
 	DDX_Check(pDX, IDC_PHONEMIC, m_bPhonemic);
 	DDX_Check(pDX, IDC_PHONETIC, m_bPhonetic);
@@ -2892,8 +2892,8 @@ void CDlgAnnotationWizard::DoDataExchange(CDataExchange* pDX)
 	//}}AFX_DATA_MAP
 }
 
-BEGIN_MESSAGE_MAP(CDlgAnnotationWizard, CDialog)
-	//{{AFX_MSG_MAP(CDlgAnnotationWizard)
+BEGIN_MESSAGE_MAP(CDlgAnnotation, CDialog)
+	//{{AFX_MSG_MAP(CDlgAnnotation)
 	ON_BN_CLICKED(IDC_BACK, OnBack)
 	ON_BN_CLICKED(IDC_NEXT, OnNext)
 	ON_BN_CLICKED(IDC_CHARACTER, OnRadio)
@@ -2910,9 +2910,9 @@ END_MESSAGE_MAP()
 
 
 /***************************************************************************/
-// CDlgAnnotationWizard::SetVisible Sets the visibility of dialog items
+// CDlgAnnotation::SetVisible Sets the visibility of dialog items
 /***************************************************************************/
-void CDlgAnnotationWizard::SetVisible(int nItem, BOOL bVisible)
+void CDlgAnnotation::SetVisible(int nItem, BOOL bVisible)
 {
 	CWnd* pWnd = GetDlgItem(nItem);
 
@@ -2931,9 +2931,9 @@ void CDlgAnnotationWizard::SetVisible(int nItem, BOOL bVisible)
 }
 
 /***************************************************************************/
-// CDlgAnnotationWizard::SetEnable Enables/Disables controls
+// CDlgAnnotation::SetEnable Enables/Disables controls
 /***************************************************************************/
-void CDlgAnnotationWizard::SetEnable(int nItem, BOOL bEnable)
+void CDlgAnnotation::SetEnable(int nItem, BOOL bEnable)
 {
 	CWnd* pWnd = GetDlgItem(nItem);
 
@@ -2944,9 +2944,9 @@ void CDlgAnnotationWizard::SetEnable(int nItem, BOOL bEnable)
 }
 
 /***************************************************************************/
-// CDlgAnnotationWizard::SetText Sets control text to string
+// CDlgAnnotation::SetText Sets control text to string
 /***************************************************************************/
-void CDlgAnnotationWizard::SetText(int nItem, CSaString szText)
+void CDlgAnnotation::SetText(int nItem, CSaString szText)
 {
 	CWnd* pWnd = GetDlgItem(nItem);
 
@@ -2957,9 +2957,9 @@ void CDlgAnnotationWizard::SetText(int nItem, CSaString szText)
 }
 
 /***************************************************************************/
-// CDlgAnnotationWizard::SetText Sets control text to string from IDS
+// CDlgAnnotation::SetText Sets control text to string from IDS
 /***************************************************************************/
-void CDlgAnnotationWizard::SetText(int nItem, UINT nIDS)
+void CDlgAnnotation::SetText(int nItem, UINT nIDS)
 {
 	CWnd* pWnd = GetDlgItem(nItem);
 	CSaString szText;
@@ -2973,9 +2973,9 @@ void CDlgAnnotationWizard::SetText(int nItem, UINT nIDS)
 }
 
 /***************************************************************************/
-// CDlgAnnotationWizard::BuildString builds an annotation string
+// CDlgAnnotation::BuildString builds an annotation string
 /***************************************************************************/
-const CSaString CDlgAnnotationWizard::BuildString(int nSegment)
+const CSaString CDlgAnnotation::BuildString(int nSegment)
 {
 	CSaString szBuild = "";
 	CSaString szWorking = "";
@@ -3076,9 +3076,9 @@ const CSaString CDlgAnnotationWizard::BuildString(int nSegment)
 
 
 /***************************************************************************/
-// CDlgAnnotationWizard::SetState set state of wizard
+// CDlgAnnotation::SetState set state of wizard
 /***************************************************************************/
-void CDlgAnnotationWizard::SetState(int nState)
+void CDlgAnnotation::SetState(int nState)
 {
 	// Set controls to default
 	SaveAnnotation();
@@ -3266,9 +3266,9 @@ void CDlgAnnotationWizard::SetState(int nState)
 
 
 /***************************************************************************/
-// CDlgAnnotationWizard::SetAnnotation Sets annotation font and text
+// CDlgAnnotation::SetAnnotation Sets annotation font and text
 /***************************************************************************/
-void CDlgAnnotationWizard::SetAnnotation(void)
+void CDlgAnnotation::SetAnnotation(void)
 {
 	CFont* pFont = NULL;
 
@@ -3297,9 +3297,9 @@ void CDlgAnnotationWizard::SetAnnotation(void)
 }
 
 /***************************************************************************/
-// CDlgAnnotationWizard::SaveAnnotation saves the annotation text
+// CDlgAnnotation::SaveAnnotation saves the annotation text
 /***************************************************************************/
-void CDlgAnnotationWizard::SaveAnnotation(void)
+void CDlgAnnotation::SaveAnnotation(void)
 {
 	CWnd* pWnd = GetDlgItem(IDC_ANNOTATION);
 
@@ -3323,13 +3323,13 @@ void CDlgAnnotationWizard::SaveAnnotation(void)
 }
 
 /////////////////////////////////////////////////////////////////////////////
-// CDlgAnnotationWizard message handlers
+// CDlgAnnotation message handlers
 
 
 /***************************************************************************/
-// CDlgAnnotationWizard::OnInitDialog Dialog initialization
+// CDlgAnnotation::OnInitDialog Dialog initialization
 /***************************************************************************/
-BOOL CDlgAnnotationWizard::OnInitDialog()
+BOOL CDlgAnnotation::OnInitDialog()
 {
 	CDialog::OnInitDialog();
 	CenterWindow(); // center dialog on frame window
@@ -3351,21 +3351,21 @@ BOOL CDlgAnnotationWizard::OnInitDialog()
 	return TRUE;  // return TRUE  unless you set the focus to a control
 }
 
-void CDlgAnnotationWizard::OnBack()
+void CDlgAnnotation::OnBack()
 {
 	UpdateData(TRUE);
 	SetState(BACK);
 	UpdateData(FALSE);
 }
 
-void CDlgAnnotationWizard::OnNext()
+void CDlgAnnotation::OnNext()
 {
 	UpdateData(TRUE);
 	SetState(NEXT);
 	UpdateData(FALSE);
 }
 
-void CDlgAnnotationWizard::OnRadio()
+void CDlgAnnotation::OnRadio()
 {
 	switch(m_nState)
 	{
@@ -3407,9 +3407,9 @@ void CDlgAnnotationWizard::OnRadio()
 }
 
 /***************************************************************************/
-// CDlgAnnotationWizard::OnImport Opens a plain text file and imports
+// CDlgAnnotation::OnImport Opens a plain text file and imports
 /***************************************************************************/
-void CDlgAnnotationWizard::OnImport()
+void CDlgAnnotation::OnImport()
 {
 	CFileDialog* pFileDialog = new CFileDialog(TRUE, NULL, NULL, OFN_HIDEREADONLY, _T("Standard Format (*.sfm) |*.sfm| Text Files (*.txt) |*.txt| All Files (*.*) |*.*||"), this );
 	if (pFileDialog->DoModal() == IDOK)
@@ -3428,7 +3428,7 @@ void CDlgAnnotationWizard::OnImport()
 
 		if ( obs.bAtBackslash() ) // assume SFM
 		{
-			CDlgAnnotationWizardImport Import(m_bPhonetic,m_bPhonemic,m_bOrthographic);
+			CDlgAnnotationImport Import(m_bPhonetic,m_bPhonemic,m_bOrthographic);
 
 			int result = Import.DoModal();
 
@@ -3469,9 +3469,9 @@ void CDlgAnnotationWizard::OnImport()
 }
 
 /***************************************************************************/
-// CDlgAnnotationWizard::OnRevert reverts to document annotation
+// CDlgAnnotation::OnRevert reverts to document annotation
 /***************************************************************************/
-void CDlgAnnotationWizard::OnRevert()
+void CDlgAnnotation::OnRevert()
 {
 	switch(m_nState)
 	{
@@ -3497,9 +3497,9 @@ void CDlgAnnotationWizard::OnRevert()
 }
 
 /***************************************************************************/
-// CDlgAnnotationWizard::OnUpdateAnnotation records annotation changes
+// CDlgAnnotation::OnUpdateAnnotation records annotation changes
 /***************************************************************************/
-void CDlgAnnotationWizard::OnUpdateAnnotation()
+void CDlgAnnotation::OnUpdateAnnotation()
 {
 	switch(m_nState)
 	{
@@ -3524,9 +3524,9 @@ void CDlgAnnotationWizard::OnUpdateAnnotation()
 
 //SDM 1.06.8 Split from OnOk
 /***************************************************************************/
-// CDlgAnnotationWizard::OK Execute changes
+// CDlgAnnotation::OK Execute changes
 /***************************************************************************/
-void CDlgAnnotationWizard::OK()
+void CDlgAnnotation::OK()
 {
 	// save state for undo ability
 	m_pSaDoc->CheckPoint();
@@ -4052,18 +4052,18 @@ void CDlgAnnotationWizard::OK()
 
 // SDM 1.06.8 Split
 /***************************************************************************/
-// CDlgAnnotationWizard::OnOK Execute changes
+// CDlgAnnotation::OnOK Execute changes
 /***************************************************************************/
-void CDlgAnnotationWizard::OnOK()
+void CDlgAnnotation::OnOK()
 {
 	OK();
 	CDialog::OnOK();
 }
 
 /***************************************************************************/
-// CDlgAnnotationWizard::AutoAlign Execute changes by request from batch file
+// CDlgAnnotation::AutoAlign Execute changes by request from batch file
 /***************************************************************************/
-void CDlgAnnotationWizard::AutoAlign(const CSaString& Phonetic, const CSaString& Phonemic,
+void CDlgAnnotation::AutoAlign(const CSaString& Phonetic, const CSaString& Phonemic,
 									 const CSaString& Ortho, const CSaString& Gloss,
 									 CSaString& Alignment, CSaString& Segmentation)
 {
@@ -4098,9 +4098,9 @@ void CDlgAnnotationWizard::AutoAlign(const CSaString& Phonetic, const CSaString&
 
 
 /***************************************************************************/
-// CDlgAnnotationWizard::AutoAlign Execute changes by request from batch file
+// CDlgAnnotation::AutoAlign Execute changes by request from batch file
 /***************************************************************************/
-void CDlgAnnotationWizard::AutoAlign(const CSaString* Phonetic, const CSaString* Phonemic,
+void CDlgAnnotation::AutoAlign(const CSaString* Phonetic, const CSaString* Phonemic,
 									 const CSaString* Ortho, const CSaString* Gloss)
 {
 	m_bPhonetic = (Phonetic != 0);
@@ -4127,9 +4127,9 @@ void CDlgAnnotationWizard::AutoAlign(const CSaString* Phonetic, const CSaString*
 
 
 /***************************************************************************/
-// CDlgAnnotationWizard::ReadFile Execute changes
+// CDlgAnnotation::ReadFile Execute changes
 /***************************************************************************/
-const CSaString CDlgAnnotationWizard::ReadFile(const CSaString& Pathname)
+const CSaString CDlgAnnotation::ReadFile(const CSaString& Pathname)
 {
 	CFileStatus TheStatus;
 	if (!CFile::GetStatus(Pathname, TheStatus)) return CSaString(_T("")); // file does not exist

@@ -1572,6 +1572,11 @@
 #define IDC_SPLIT_FOLDER2               2035
 #define IDC_SPLIT_FOLDER_NAME           2035
 #define IDC_SCROLLBAR1                  2036
+#define IDC_SPLIT_PHRASE_SUBFOLDER_NAME 2036
+#define IDC_SPLIT_FOLDER_LOCATION3      2037
+#define IDC_SPLIT_WORD_SUBFOLDER_NAME   2037
+#define IDC_EXPORT_PHRASE               2038
+#define IDC_EXPORT_WORD                 2039
 #define IDS_PLAYER_SMALL                3000
 #define IDS_PLAYER_LARGE                3001
 #define IDS_STATTXT_PROCESSING          4000
@@ -2056,7 +2061,7 @@
 #define _APS_3D_CONTROLS                     1
 #define _APS_NEXT_RESOURCE_VALUE        362
 #define _APS_NEXT_COMMAND_VALUE         33221
-#define _APS_NEXT_CONTROL_VALUE         2037
+#define _APS_NEXT_CONTROL_VALUE         2039
 #define _APS_NEXT_SYMED_VALUE           104
 #endif
 #endif

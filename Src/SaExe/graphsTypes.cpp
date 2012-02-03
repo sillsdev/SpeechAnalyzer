@@ -779,7 +779,7 @@ void CGraphConfiguration::WriteProperties(Object_ostream& obs, BOOL bPredefined)
 }
 
 // Read spectrumParm properties from *.psa file.
-BOOL CGraphConfiguration::bReadProperties(Object_istream& obs, BOOL &bPredefined)
+BOOL CGraphConfiguration::ReadProperties(Object_istream& obs, BOOL &bPredefined)
 {
 	if ( !obs.bAtBackslash() || !obs.bReadBeginMarker(psz_Configuration) )
 	{
@@ -820,7 +820,7 @@ BOOL CGraphConfigurationVector::Load(LPCTSTR szFilename, int nTaskType)
 			{
 				CGraphConfiguration newSet;
 				BOOL bPredefined;
-				if(newSet.bReadProperties(obs, bPredefined))
+				if(newSet.ReadProperties(obs, bPredefined))
 				{
 					if(!bPredefined && nSkip == 0)
 						push_back(newSet);

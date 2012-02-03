@@ -32,7 +32,7 @@ void FnKeys::WriteProperties(Object_ostream& obs)
 
 
 
-BOOL FnKeys::bReadProperties(Object_istream& obs)
+BOOL FnKeys::ReadProperties(Object_istream& obs)
 {
   if ( !obs.bAtBackslash() || !obs.bReadBeginMarker(psz_fnkeys) ) 
   {

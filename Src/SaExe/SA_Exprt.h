@@ -242,17 +242,17 @@ protected:
 };
 
 /////////////////////////////////////////////////////////////////////////////
-// CDlgAnnotationWizard dialog
+// CDlgAnnotation dialog
 
 class CSaDoc;
 
-class CDlgAnnotationWizard : public CDialog
+class CDlgAnnotation : public CDialog
 {
 	// Construction
 public:
 	enum MODE { IMPORT, ALIGN };
-	CDlgAnnotationWizard(CWnd* pParent, MODE mode, CSaDoc* pSaDoc);
-	~CDlgAnnotationWizard();
+	CDlgAnnotation(CWnd* pParent, MODE mode, CSaDoc* pSaDoc);
+	~CDlgAnnotation();
 
 	// Attributes
 protected:
@@ -278,7 +278,7 @@ protected:
 
 public:
 	// Dialog Data
-	//{{AFX_DATA(CDlgAnnotationWizard)
+	//{{AFX_DATA(CDlgAnnotation)
 	enum { IDD = IDD_ANNOTATIONWIZARD };
 	BOOL    m_bOrthographic;
 	BOOL    m_bPhonemic;
@@ -310,7 +310,7 @@ protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
 
 	// Generated message map functions
-	//{{AFX_MSG(CDlgAnnotationWizard)
+	//{{AFX_MSG(CDlgAnnotation)
 	virtual BOOL OnInitDialog();
 	afx_msg void OnBack();
 	afx_msg void OnNext();

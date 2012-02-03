@@ -1261,7 +1261,7 @@ BOOL CSaDoc::InsertTranscription(int transType, ISaAudioDocumentReaderPtr saAudi
 
 	// which segment includes the insertion position?
 	int nIndex = 0;
-	if((dwPos > 0)&&!pSegment->IsEmpty())
+	if ((dwPos > 0)&&!pSegment->IsEmpty())
 	{
 		while((nIndex!=-1)&&(pSegment->GetOffset(nIndex) <= dwPos))
 			nIndex = pSegment->GetNext(nIndex);
@@ -3455,14 +3455,14 @@ BOOL CSaDoc::CopySectionToNewWavFile(DWORD dwSectionStart, DWORD dwSectionLength
 	else if(m_szTempWave.GetLength() !=0)
 		szOriginalWave = m_szTempWave;
 
-	if(szOriginalWave.GetLength() == 0) return FALSE; //Original not found
+	if (szOriginalWave.GetLength() == 0) return FALSE; //Original not found
 
 	BOOL bSameFileName = (szNewWave == szOriginalWave);
 
 	CFileStatus temp;
-	if(!bSameFileName && !CopyFile(szOriginalWave, szNewWave))
+	if (!bSameFileName && !CopyFile(szOriginalWave, szNewWave))
 	{
-		if(CFile::GetStatus(szNewWave, temp)) CFile::Remove(szNewWave);
+		if (CFile::GetStatus(szNewWave, temp)) CFile::Remove(szNewWave);
 		return FALSE;
 	}
 
@@ -3472,15 +3472,15 @@ BOOL CSaDoc::CopySectionToNewWavFile(DWORD dwSectionStart, DWORD dwSectionLength
 	TCHAR szTempNewTemp[_MAX_PATH];
 	GetTempFileName(lpszTempPath, _T("TMP"), 0, szTempNewTemp);
 
-	if(!CopyFile(GetRawDataWrk(0), szTempNewTemp, dwSectionStart, dwSectionLength))
+	if (!CopyFile(GetRawDataWrk(0), szTempNewTemp, dwSectionStart, dwSectionLength))
 	{
 		if(!bSameFileName)
 			CFile::Remove(szNewWave);
-		if(CFile::GetStatus(szTempNewTemp, temp)) CFile::Remove(szTempNewTemp);
+		if (CFile::GetStatus(szTempNewTemp, temp)) CFile::Remove(szTempNewTemp);
 		return FALSE;
 	}
 
-	if(!bSameFileName)
+	if (!bSameFileName)
 		//Save segment data we will use this documents segments for calculations
 		CheckPoint();  // save file state for Undo below
 
@@ -3488,7 +3488,7 @@ BOOL CSaDoc::CopySectionToNewWavFile(DWORD dwSectionStart, DWORD dwSectionLength
 	AdjustSegments(dwSectionStart+dwSectionLength, GetUnprocessedDataSize()-(dwSectionStart+dwSectionLength), TRUE); // adjust segments to new file size
 	AdjustSegments(0, dwSectionStart, TRUE); // adjust segments to new file size
 
-	if(bSameFileName)
+	if (bSameFileName)
 	{
 		// Set document to use new wave data
 		m_dwDataSize = dwSectionLength;
@@ -3545,7 +3545,7 @@ BOOL CSaDoc::CopySectionToNewWavFile(DWORD dwSectionStart, DWORD dwSectionLength
 		}
 		try
 		{
-			if(CFile::GetStatus(szTempNewTemp, temp))CFile::Remove(szTempNewTemp);
+			if (CFile::GetStatus(szTempNewTemp, temp))CFile::Remove(szTempNewTemp);
 		}
 		catch(CFileException e)
 		{
@@ -5560,6 +5560,64 @@ CString CSaDoc::GenerateSplitName( CSaView* pView, int convention, int index)
 	return result;
 }
 
+/**
+* Generate a file name for a phrase split file
+* 
+* Since the Ref+space+Gloss string will become the filename, protect the 
+* Windows Write function from crashing by testing for invalid characters 
+* in the string (i.e. \ / : * ? “ < > | ); 
+* If you find one I suggest you replace it with a hyphen so the user knows 
+* something is not correct.
+*
+* For the Split File feature, after talking to one of the instructors, here 
+* is a revision to the filename process.
+*
+* The conditions for building a valid filename are:
+* - Ref field can be alpha-numeric including <space>
+* - Gloss field can be alpha-numeric including <space>
+* - Ref field can be blank
+* - Gloss field can be blank
+* - Ref field and Gloss field cannot both be blank at the same time
+* - Ref field cannot have duplicate data
+* - Gloss field cannot have duplicate data unless Ref is different
+* - Ref field and Gloss field cannot use invalid characters
+*
+* For now if an error condition exists, then put up a message that says 
+* something like “Invalid Filename - Failed to any save data”
+* In the future the offending item can be displayed so the user can more 
+* easily fix the problem.
+*
+* Convention
+* 0 - gloss only
+* 1 - ref and gloss
+*/
+CString CSaDoc::GeneratePhraseSplitName( CSaView* pView, Annotations type, int index)
+{
+	wchar_t buffer[MAX_PATH];
+	memset(buffer,0,sizeof(buffer));
+
+	CString result;
+	CString gloss(L"");
+	CString ref(L"");
+
+	CSegment * g = pView->GetAnnotation(type);
+	CString str = g->GetSegmentString(index);
+	str = FilterName(str);
+	if (str.GetLength()==0) 
+	{
+		swprintf_s(buffer,_countof(buffer),L"%s",(LPCTSTR)str);
+	}
+	else
+	{
+		CSaApp* pApp = (CSaApp*)AfxGetApp();
+		CString szNumber;
+		szNumber.Format(_T("%d"), index);
+		pApp->ErrorMessage(IDS_EMPTY_ANNOTATIONS,(LPCTSTR)szNumber);
+	}
+	result = buffer;
+	return result;
+}
+
 bool CSaDoc::CreateFolder( CString folder)
 {
 	CFileStatus status;
@@ -5586,6 +5644,144 @@ bool CSaDoc::CreateFolder( CString folder)
 	return true;
 }
 
+/**
+* export words for the given file
+*/
+bool CSaDoc::ExportWord( int & count, int convention, CString path)
+{
+	CSaApp* pApp = (CSaApp*)AfxGetApp();
+	POSITION pos = GetFirstViewPosition();
+	CSaView* pView = (CSaView*)GetNextView(pos);
+
+	// key off of gloss for now
+	int nLoop = pView->GetAnnotation(GLOSS)->GetSize();
+	if (nLoop==0) 
+	{
+		pApp->ErrorMessage(IDS_SPLIT_NO_ANNOTATION);
+		return false;
+	}
+
+	// loop for each annotation
+	for (int i=0;i<nLoop;i++) 
+	{
+		BOOL bSuccess = FALSE;
+
+		CSegment * g = pView->GetAnnotation(GLOSS);
+		DWORD dwStart = g->GetOffset(i);
+		DWORD dwStop = dwStart + g->GetDuration(i);
+
+		// can we piece the name together?
+		CString name = GenerateSplitName( pView, convention, i);
+		if (name.GetLength()==0)  
+		{
+			continue;
+		}
+
+		// copy the audio portion
+		wchar_t buffer[MAX_PATH];
+		swprintf_s( buffer, _countof(buffer), L"%s\\%s.wav",path,(LPCTSTR)name);
+		bSuccess = CopySectionToNewWavFile(dwStart,dwStop-dwStart,buffer);
+		if (!bSuccess) 
+		{
+			// be sure to delete the file
+			try 
+			{
+				CFile::Remove(buffer);
+			} 
+			catch (...) 
+			{
+				TRACE0("Warning: failed to delete file after failed SaveAs\n");
+			}
+			return false;
+		}
+
+		// copy the saxml.tmp file to .saxml
+		wchar_t oldsaxml[MAX_PATH];
+		wchar_t newsaxml[MAX_PATH];
+		swprintf_s( oldsaxml, _countof(oldsaxml), L"%s\\%s.saxml.tmp",path,name);
+		swprintf_s( newsaxml, _countof(newsaxml), L"%s\\%s.saxml",path,name);
+		bSuccess = CopyFile(oldsaxml,newsaxml);
+		if (!bSuccess) 
+		{
+			pApp->ErrorMessage(IDS_SPLIT_BAD_COPY,buffer);
+		} 
+		else 
+		{
+			count++;
+		}
+	}
+	return true;
+}
+
+/**
+* export phrases from the given file
+*/
+bool CSaDoc::ExportPhrase( Annotations type, int & count, CString path)
+{
+	CSaApp* pApp = (CSaApp*)AfxGetApp();
+	POSITION pos = GetFirstViewPosition();
+	CSaView* pView = (CSaView*)GetNextView(pos);
+
+	// key off of gloss for now
+	int nLoop = pView->GetAnnotation(type)->GetSize();
+	if (nLoop==0) 
+	{
+		pApp->ErrorMessage(IDS_SPLIT_NO_ANNOTATION);
+		return false;
+	}
+
+	// loop for each annotation
+	for (int i=0;i<nLoop;i++) 
+	{
+		BOOL bSuccess = FALSE;
+
+		CSegment * g = pView->GetAnnotation( type);
+		DWORD dwStart = g->GetOffset(i);
+		DWORD dwStop = dwStart + g->GetDuration(i);
+
+		// can we piece the name together?
+		CString name = GeneratePhraseSplitName( pView, type, i);
+		if (name.GetLength()==0)  
+		{
+			continue;
+		}
+
+		// copy the audio portion
+		wchar_t buffer[MAX_PATH];
+		swprintf_s( buffer, _countof(buffer), L"%s\\%s.wav",path,(LPCTSTR)name);
+		bSuccess = CopySectionToNewWavFile(dwStart,dwStop-dwStart,buffer);
+		if (!bSuccess) 
+		{
+			// be sure to delete the file
+			try 
+			{
+				CFile::Remove(buffer);
+			} 
+			catch (...) 
+			{
+				TRACE0("Warning: failed to delete file after failed SaveAs\n");
+			}
+			return false;
+		}
+
+		// copy the saxml.tmp file to .saxml
+		wchar_t oldsaxml[MAX_PATH];
+		wchar_t newsaxml[MAX_PATH];
+		swprintf_s( oldsaxml, _countof(oldsaxml), L"%s\\%s.saxml.tmp",path,name);
+		swprintf_s( newsaxml, _countof(newsaxml), L"%s\\%s.saxml",path,name);
+		bSuccess = CopyFile(oldsaxml,newsaxml);
+		if (!bSuccess) 
+		{
+			pApp->ErrorMessage(IDS_SPLIT_BAD_COPY,buffer);
+		} 
+		else 
+		{
+			count++;
+		}
+	}
+	return true;
+}
+
 /***************************************************************************/
 // CSaDoc::OnFileSplit
 // Splits a file based on user defined keys such as reference or gloss
@@ -5605,6 +5801,10 @@ void CSaDoc::OnFileSplit()
 	dlg.m_FolderLocation.Format(L"%s%s",drive,dir);
 	dlg.m_FolderName.Format(L"Split-%s",fname);
 	dlg.m_FolderName = FilterName(dlg.m_FolderName);
+	dlg.m_PhraseFolderName.Format(L"Split-%s-Phrase",fname);
+	dlg.m_PhraseFolderName = FilterName(dlg.m_PhraseFolderName);
+	dlg.m_WordFolderName.Format(L"Split-%s-Word",fname);
+	dlg.m_WordFolderName = FilterName(dlg.m_WordFolderName);
 
 	if (dlg.DoModal()!=IDOK) 
 	{
@@ -5614,11 +5814,15 @@ void CSaDoc::OnFileSplit()
 	CSaApp* pApp = (CSaApp*)AfxGetApp();
 
 	CString newPath;
+	CString wordPath;
+	CString phrasePath;
 	newPath.Format(L"%s%s",dlg.m_FolderLocation,dlg.m_FolderName);
+	wordPath.Format(L"%s%s\\%s",dlg.m_FolderLocation,dlg.m_FolderName,dlg.m_WordFolderName);
+	phrasePath.Format(L"%s%s\\%s",dlg.m_FolderLocation,dlg.m_FolderName,dlg.m_PhraseFolderName);
 
 	if ((!CreateFolder(newPath))||
-		(!CreateFolder(newPath+L"\\Phrases"))||
-		(!CreateFolder(newPath+L"\\Words")))
+		(!CreateFolder(phrasePath))||
+		(!CreateFolder(wordPath)))
 	{
 		pApp->ErrorMessage(IDS_SPLIT_BAD_DIRECTORY);
 		return;
@@ -5633,67 +5837,20 @@ void CSaDoc::OnFileSplit()
 		return;
 	}
 
-	// key off of gloss for now
-	int nLoop = pView->GetAnnotation(GLOSS)->GetSize();
-	if (nLoop==0) 
-	{
-		pApp->ErrorMessage(IDS_SPLIT_NO_ANNOTATION);
-		return;
-	}
-
+	int count=0;
 	BeginWaitCursor();
-
-	int count = 0;
-	// loop for each annotation
-	for (int i=0;i<nLoop;i++) 
+	if (ExportWord(count,dlg.m_iConvention,wordPath))
 	{
-		BOOL bSuccess = FALSE;
-
-		CSegment * g = pView->GetAnnotation(GLOSS);
-		DWORD dwStart = g->GetOffset(i);
-		DWORD dwStop = dwStart + g->GetDuration(i);
-
-		// can we piece the name together?
-		CString name = GenerateSplitName( pView, dlg.m_iConvention, i);
-		if (name.GetLength()==0)  
-		{
-			continue;
-		}
-		wchar_t buffer[MAX_PATH];
-		swprintf_s( buffer, _countof(buffer), L"%s\\%s.wav",newPath,(LPCTSTR)name);
-
-		bSuccess = CopySectionToNewWavFile(dwStart,dwStop-dwStart,buffer);
-		if (!bSuccess) 
-		{
-			// be sure to delete the file
-			try 
+		// shall we export the phrase data?
+		if (dlg.m_ExportPhrase) {
+			if (ExportPhrase(MUSIC_PL1,count,phrasePath))
 			{
-				CFile::Remove(buffer);
-			} 
-			catch (...) 
-			{
-				TRACE0("Warning: failed to delete file after failed SaveAs\n");
+				if (ExportPhrase(MUSIC_PL2,count,phrasePath))
+				{
+				}
 			}
-			EndWaitCursor();
-			return;
-		}
-
-		// copy the saxml.tmp file to .saxml
-		wchar_t oldsaxml[MAX_PATH];
-		wchar_t newsaxml[MAX_PATH];
-		swprintf_s( oldsaxml, _countof(oldsaxml), L"%s\\%s.saxml.tmp",newPath,name);
-		swprintf_s( newsaxml, _countof(newsaxml), L"%s\\%s.saxml",newPath,name);
-		bSuccess = CopyFile(oldsaxml,newsaxml);
-		if (!bSuccess) 
-		{
-			pApp->ErrorMessage(IDS_SPLIT_BAD_COPY,buffer);
-		} 
-		else 
-		{
-			count++;
 		}
 	}
-
 	EndWaitCursor();
 
 	CString szText;
@@ -5808,17 +5965,18 @@ BOOL CSaDoc::AdvancedParse()
 
 	pView->SendMessage(WM_COMMAND, ID_GLOSS_ALL);
 
-	CSegment* pSegment = m_apSegments[GLOSS];
+	CSaApp* pApp = (CSaApp*)AfxGetApp();
+
+	CSegment * pSegment = m_apSegments[GLOSS];
 	RestartAllProcesses();
 	pSegment->RestartProcess(); // for the case of a cancelled process
 	pSegment->SetDataInvalid(); // SDM 1.5Test10.7
 	short int nResult = LOWORD( pSegment->Process(NULL, this)); // process data
-	CSaApp* pApp = (CSaApp*)AfxGetApp();
 	if (nResult == PROCESS_ERROR)
 	{
 		// error parsing
 		pApp->ErrorMessage(IDS_ERROR_PARSE);
-		return FALSE;
+		return FALSE;	
 	}
 	if (nResult == PROCESS_CANCELED)
 	{
@@ -5826,6 +5984,32 @@ BOOL CSaDoc::AdvancedParse()
 		pApp->ErrorMessage(IDS_CANCELED);
 		return FALSE;
 	}
+
+	// set the L1 and L2 segments to match the GLOSS
+	CSegment * pSegmentPho = m_apSegments[PHONETIC];
+	CSegment * pSegmentL1 = m_apSegments[MUSIC_PL1];
+	pSegmentL1->DeleteContents();
+	CSegment * pSegmentL2 = m_apSegments[MUSIC_PL2];
+	pSegmentL2->DeleteContents();
+
+	// iterate through gloss segments and insert 
+	// segments into L1 and L2
+	CSaString delimiter = SEGMENT_DEFAULT_CHAR;
+	DWORD dwLast = -1;
+	DWORD dwOrder = 0;
+	for (int i=0;i<pSegmentPho->GetSize();i++)
+	{
+		DWORD dwStart = pSegmentPho->GetOffset(i);
+		DWORD dwDuration = pSegmentPho->GetDuration(i);
+		if (dwStart!=dwLast)
+		{
+			pSegmentL1->Insert(dwOrder,&delimiter,0,dwStart,dwDuration);
+			pSegmentL2->Insert(dwOrder,&delimiter,0,dwStart,dwDuration);
+			dwLast=dwStart;
+			dwOrder++;
+		}
+	}
+
 	pView->RefreshGraphs(); // redraw graphs without legend window
 	return TRUE;
 }
@@ -6032,7 +6216,7 @@ void CSaDoc::WriteProperties(Object_ostream& obs)
 }
 
 
-BOOL CSaDoc::s_bReadProperties(Object_istream& obs)
+BOOL CSaDoc::ReadProperties(Object_istream& obs)
 {
 	CSaString sPath;
 	if ( !obs.bReadBeginMarker(psz_sadoc, &sPath) )
@@ -6049,7 +6233,7 @@ BOOL CSaDoc::s_bReadProperties(Object_istream& obs)
 
 	while ( !obs.bAtEnd() )
 	{
-		if ( CSaDoc::s_bReadPropertiesOfViews(obs, sPath) ) ;
+		if ( CSaDoc::ReadPropertiesOfViews(obs, sPath) ) ;
 		else if ( obs.bReadEndMarker(psz_sadoc) )
 			break;
 		else if ( obs.bAtBeginOrEndMarker() )
@@ -6064,7 +6248,7 @@ BOOL CSaDoc::s_bReadProperties(Object_istream& obs)
 
 
 
-BOOL CSaDoc::s_bReadPropertiesOfViews(Object_istream& obs, const CSaString & sPath)
+BOOL CSaDoc::ReadPropertiesOfViews(Object_istream& obs, const CSaString & sPath)
 {
 	CSaDoc* pdoc = NULL;
 
@@ -6121,8 +6305,8 @@ BOOL CSaDoc::s_bReadPropertiesOfViews(Object_istream& obs, const CSaString & sPa
 
 void CSaDoc::OnToolsImport()
 {
-	CDlgAnnotationWizard* dlg; // annotation wizard dialog
-	dlg = new CDlgAnnotationWizard(NULL, CDlgAnnotationWizard::IMPORT, this);
+	CDlgAnnotation* dlg; // annotation wizard dialog
+	dlg = new CDlgAnnotation(NULL, CDlgAnnotation::IMPORT, this);
 	dlg->DoModal();
 	delete dlg;
 }
@@ -6138,8 +6322,8 @@ void CSaDoc::OnUpdateToolsImport(CCmdUI* pCmdUI)
 /***************************************************************************/
 void CSaDoc::OnAutoAlign()
 {
-	CDlgAnnotationWizard* dlg; // annotation wizard dialog
-	dlg = new CDlgAnnotationWizard(NULL, CDlgAnnotationWizard::ALIGN, this);
+	CDlgAnnotation* dlg; // annotation wizard dialog
+	dlg = new CDlgAnnotation(NULL, CDlgAnnotation::ALIGN, this);
 	dlg->DoModal();
 	delete dlg;
 }
@@ -6198,18 +6382,17 @@ void CSaDoc::NotifyFragmentDone(void* pCaller)
 	}
 }
 
-
-bool CSaDoc::bIsTempOverlay()
+bool CSaDoc::IsTempOverlay()
 {
 	return m_bTempOverlay;
 }
 
-void CSaDoc::vSetTempOverlay()
+void CSaDoc::SetTempOverlay()
 {
 	m_bTempOverlay = true;
 }
 
-void CSaDoc::vGetAlignInfo( CAlignInfo & info)
+void CSaDoc::GetAlignInfo( CAlignInfo & info)
 {
 
 	// get source data size

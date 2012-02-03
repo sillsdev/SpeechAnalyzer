@@ -86,7 +86,7 @@
 // 07/05/2000
 //        AE  Moved some stuff to file Sa_View2.CPP
 // 07/25/2000
-//        RLJ Changed bReadProperties() and bWriteProperties() so that they
+//        RLJ Changed ReadProperties() and bWriteProperties() so that they
 //              work with both 16 and 32 bit compilers
 // 07/26/2000
 //        DDO Changed the five canned layout with types menus to the Graph
@@ -99,7 +99,7 @@
 //        RLJ Changes to CreateOpenAsGraphs(), including removing
 //              Staff graph from list of graphs automatically opened
 // 08/02/2000
-//        DDO Fixed bReadProperties() to get the parent window the old way.
+//        DDO Fixed ReadProperties() to get the parent window the old way.
 //            it was changed so it would compile in WIN32 but that breaks
 //            it for WIN16 when loading a .wav file from the .psa file.
 //            I #ifdef'd the problem code. However, it should probably be
@@ -192,7 +192,7 @@ void CSaView::CreateOneGraphStepOne(UINT nID, CGraphWnd **pGraph, CREATE_HOW how
 		case CREATE_FROMSTREAM:
 			ASSERT(pObs);
 			if (*pGraph)
-				m_WeJustReadTheProperties = (*pGraph)->bReadProperties(*pObs);
+				m_WeJustReadTheProperties = (*pGraph)->ReadProperties(*pObs);
 			else
 				pObs->SkipToEndMarker(psz_sagraph);
 			break;
@@ -3444,7 +3444,7 @@ void CSaView::WriteProperties(Object_ostream& obs)
 
 /***************************************************************************/
 /***************************************************************************/
-BOOL CSaView::bReadProperties(Object_istream& obs, BOOL bCreateGraphs)
+BOOL CSaView::ReadProperties(Object_istream& obs, BOOL bCreateGraphs)
 {
 	CWnd * pwndFrame = NULL;
 	WINDOWPLACEMENT wpl;
@@ -3466,7 +3466,7 @@ BOOL CSaView::bReadProperties(Object_istream& obs, BOOL bCreateGraphs)
 		}
 		else if (obs.bReadInteger(psz_z, m_z));
 		else if (ReadGraphListProperties(obs, bCreateGraphs));
-		else if (m_pPageLayout->bReadProperties(obs));
+		else if (m_pPageLayout->ReadProperties(obs));
 		else if (obs.bReadUInt(psz_layout, m_nLayout));
 		else if (obs.bReadBool(psz_legendall, m_bLegendAll));
 		else if (obs.bReadBool(psz_legendnone, m_bLegendNone));
@@ -3551,7 +3551,7 @@ BOOL CSaView::ReadGraphListProperties(Object_istream& obs, BOOL bCreateGraphs)
 				if ((m_apGraphs[i]))
 				{
 					m_anGraphID[i] = id;
-					m_WeJustReadTheProperties = m_apGraphs[i]->bReadProperties(obs);
+					m_WeJustReadTheProperties = m_apGraphs[i]->ReadProperties(obs);
 					bSkipToEnd = FALSE;
 				}
 

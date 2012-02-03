@@ -2242,7 +2242,7 @@ void CDlgRecorder::sourceInfo::WriteProperties(Object_ostream& obs)
 	obs.WriteEndMarker(psz_sourceInfo);
 }
 
-BOOL CDlgRecorder::sourceInfo::bReadProperties(Object_istream& obs)
+BOOL CDlgRecorder::sourceInfo::ReadProperties(Object_istream& obs)
 {
 	if ( !obs.bAtBackslash() || !obs.bReadBeginMarker(psz_sourceInfo) )
 	{

@@ -135,7 +135,9 @@ public:
 		MODE_EDIT,
 		MODE_ADD
 	};
+
 	virtual int         CheckPosition(CSaDoc*,DWORD dwStart,DWORD dwStop, int nMode=MODE_AUTOMATIC,BOOL bOverlap=TRUE) const = 0;
+	
 	enum {
 		LIMIT_MOVING_START=1,
 		LIMIT_MOVING_STOP=2,
@@ -148,6 +150,7 @@ public:
 	BOOL NeedToScroll(CSaView & saView, int nIndex) const;
 	int FirstVisibleIndex(CSaDoc & saDoc) const;
 	int LastVisibleIndex(CSaDoc & saDoc) const;
+	/** returns true if there are no offsets */
 	BOOL IsEmpty() const { return m_pOffset->GetSize() == 0; };
 
 	// give pointers to internal data, allowing caller to modify data.
@@ -385,8 +388,6 @@ public:
 	static short int tShortInt(CArchive& ar, short int x=0);
 	static DWORD tDWORD(CArchive& ar, DWORD x=0);
 };
-
-
 
 #endif //_SA_SEGM_H
 

@@ -29,7 +29,7 @@ public:
 	BOOL         bKeepParse;        // TRUE if existing parse to keep
 
 	void WriteProperties(Object_ostream& obs);
-	BOOL bReadProperties(Object_istream& obs);
+	BOOL ReadProperties(Object_istream& obs);
 
 	void Init();
 };
@@ -44,7 +44,7 @@ public:
 	BOOL         bKeepSegments;     // TRUE if existing segments to keep
 
 	void WriteProperties(Object_ostream& obs);
-	BOOL bReadProperties(Object_istream& obs);
+	BOOL ReadProperties(Object_istream& obs);
 
 	void Init();
 };
@@ -68,7 +68,7 @@ public:
 	int          nManualPitchLower; // temporary location to save manual pitch lower boundary
 
 	void WriteProperties(Object_ostream& obs);
-	BOOL bReadProperties(Object_istream& obs);
+	BOOL ReadProperties(Object_istream& obs);
 
 	void Init();
 	static void GetAutoRange(CSaDoc *pDoc, int &nUpperBound, int &nLowerBound);
@@ -106,7 +106,7 @@ public:
 	int          nManualCalcLower;         // temporary location to save manual lower boundary
 
 	void WriteProperties(Object_ostream& obs);
-	BOOL bReadProperties(Object_istream& obs);
+	BOOL ReadProperties(Object_istream& obs);
 
 	void Init();
 	static void GetAutoRange(CSaDoc *pDoc, int &nUpperBound, int &nLowerBound);
@@ -120,7 +120,7 @@ public:
 	int          nScaleMode;             // 0 - dB, 1 - Percent
 
 	void WriteProperties(Object_ostream& obs);
-	BOOL bReadProperties(Object_istream& obs);
+	BOOL ReadProperties(Object_istream& obs);
 
 	void Init();
 };
@@ -147,8 +147,8 @@ public:
 
 	void WritePropertiesA(Object_ostream& obs);
 	void WritePropertiesB(Object_ostream& obs);
-	BOOL bReadPropertiesA(Object_istream& obs);
-	BOOL bReadPropertiesB(Object_istream& obs);
+	BOOL ReadPropertiesA(Object_istream& obs);
+	BOOL ReadPropertiesB(Object_istream& obs);
 
 	void Init();
 	static const float DspWinBandwidth[3];
@@ -157,7 +157,7 @@ public:
 
 private:
 	void WriteProperties(const char* pszMarker, Object_ostream& obs);
-	BOOL bReadProperties(const char* pszMarker, Object_istream& obs);
+	BOOL ReadProperties(const char* pszMarker, Object_istream& obs);
 };
 
 
@@ -173,7 +173,7 @@ public:
 	BOOL bSmoothSpectra;    // TRUE = smooth spectra
 
 	void WriteProperties(Object_ostream& obs);
-	BOOL bReadProperties(Object_istream& obs);
+	BOOL ReadProperties(Object_istream& obs);
 
 	void Init();
 };
@@ -199,7 +199,7 @@ public:
 	BOOL         bShowFormantPower; // TRUE = show formant powers
 
 	void WriteProperties(Object_ostream& obs);
-	BOOL bReadProperties(Object_istream& obs);
+	BOOL ReadProperties(Object_istream& obs);
 
 	void Init();
 };
@@ -215,7 +215,7 @@ public:
 	BOOL         bMelScale;              // TRUE = use mel-scale for grids
 
 	void WriteProperties(Object_ostream& obs);
-	BOOL bReadProperties(Object_istream& obs);
+	BOOL ReadProperties(Object_istream& obs);
 
 	void Init();
 };
@@ -229,7 +229,7 @@ public:
 	int     nMode;      // Recording mode (0=mono, 1=stereo)
 
 	void WriteProperties(Object_ostream& obs);
-	BOOL bReadProperties(Object_istream& obs);
+	BOOL ReadProperties(Object_istream& obs);
 
 	void Init();
 };

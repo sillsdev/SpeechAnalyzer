@@ -948,7 +948,7 @@ void CDlgAutoRecorder::StartShutdown()
 	CSaDoc * pDoc = docList.pdocFirst();
 	while (pDoc)
 	{
-		if (pDoc->bIsTempOverlay())
+		if (pDoc->IsTempOverlay())
 		{
 			POSITION pos = pDoc->GetFirstViewPosition();
 			CView * pView = pDoc->GetNextView(pos);

@@ -54,7 +54,7 @@ public:
   void CallPropertiesDialog(int nProcess, int nFilter); // calls the properties dialog of a workbench process
   void LoadAndSortFilter(int nProcess, int* pnFilter1, int* pnFilter2, int* pnFilter3, BOOL bLoad = TRUE); // loads and sorts (left align) filters
   virtual void WriteProperties(Object_ostream& obs);
-  virtual BOOL bReadProperties(Object_istream& obs);
+  virtual BOOL ReadProperties(Object_istream& obs);
 
   // Generated message map functions
 protected:

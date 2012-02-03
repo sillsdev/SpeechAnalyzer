@@ -1206,7 +1206,7 @@ CRecGraphWnd* CSaView::CreateRecGraph(CRecGraphWnd *pFromGraph, Object_istream *
 	if (pFromGraph)
 		pRecGraph->PartialCopy(*pFromGraph);
 	else if (pObs)
-		pRecGraph->bReadProperties(*pObs);
+		pRecGraph->ReadProperties(*pObs);
 	else
 	{
 		pRecGraph->ShowXScale(TRUE, FALSE);
@@ -1878,7 +1878,7 @@ void CSaView::InitialUpdate(BOOL bTemp)
 
 	if (s_pobsAutoload) 
 	{
-		bReadProperties(*s_pobsAutoload, TRUE);
+		ReadProperties(*s_pobsAutoload, TRUE);
 	} 
 	else if ((pSaApp->IsCreatingNewFile()) ||
 		(!pViewMainFrame) ||

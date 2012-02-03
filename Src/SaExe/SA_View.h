@@ -311,7 +311,7 @@ public:
 	void ShowInitialStateAndZ();
 	void ShowInitialTopState();
 	void WriteProperties(Object_ostream& obs); // Save (Project) Settings
-	BOOL bReadProperties(Object_istream& obs, BOOL createGraphs); // Autoloading
+	BOOL ReadProperties(Object_istream& obs, BOOL createGraphs); // Autoloading
 	BOOL ReadGraphListProperties(Object_istream& obs, BOOL createGraphs); // Autoloading
 	static void s_SetObjectStream(Object_istream& obs);
 	static void s_ClearObjectStream();

@@ -547,7 +547,7 @@ void CPrintOptionsDlg::WriteProperties(Object_ostream& obs)
 }
 
 
-BOOL CPrintOptionsDlg::bReadProperties(Object_istream& obs)
+BOOL CPrintOptionsDlg::ReadProperties(Object_istream& obs)
 {
 	if ( !obs.bAtBackslash() || !obs.bReadBeginMarker(psz_printoptions) )
 	{

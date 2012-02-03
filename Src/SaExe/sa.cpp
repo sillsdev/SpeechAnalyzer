@@ -2341,7 +2341,7 @@ void CSaApp::WriteProperties(Object_ostream& obs)
 /***************************************************************************/
 // read the open databases and windows
 /***************************************************************************/
-BOOL CSaApp::bReadProperties(Object_istream& obs)
+BOOL CSaApp::ReadProperties(Object_istream& obs)
 {
 	CSaString szLastVersion;
 
@@ -2356,11 +2356,11 @@ BOOL CSaApp::bReadProperties(Object_istream& obs)
 
 	while (!obs.bAtEnd())
 	{
-		if (((CMainFrame *)m_pMainWnd)->bReadProperties(obs));
-		else if (!GetBatchMode() && CSaDoc::s_bReadProperties(obs));
+		if (((CMainFrame *)m_pMainWnd)->ReadProperties(obs));
+		else if (!GetBatchMode() && CSaDoc::ReadProperties(obs));
 		else if (((CMainFrame *)m_pMainWnd)->bReadDefaultView(obs));
 		else if (obs.bReadString(psz_workbench, &m_szWbPath));
-		else if (CDlgRecorder::GetStaticSourceInfo().bReadProperties(obs));
+		else if (CDlgRecorder::GetStaticSourceInfo().ReadProperties(obs));
 		else if (obs.bEnd(psz_SaApp))
 			break;
 	}
@@ -2501,7 +2501,7 @@ BOOL CSaApp::ReadSettings()
 
 	if (!obs.getIos().fail())
 	{
-		ret = bReadProperties(obs);
+		ret = ReadProperties(obs);
 	}
 
 	return ret;

@@ -49,7 +49,7 @@ void CVowelFormants::WriteProperties(Object_ostream& obs) const
 }
 
 // Read spectrumParm properties from *.psa file.
-BOOL CVowelFormants::bReadProperties(Object_istream& obs)
+BOOL CVowelFormants::ReadProperties(Object_istream& obs)
 {
 	if ( !obs.bAtBackslash() || !obs.bReadBeginMarker(psz_Vowel, &m_szVowel) )
 	{
@@ -78,7 +78,7 @@ void CVowelSetVersion::WriteProperties(Object_ostream& obs) const
 	obs.WriteEndMarker(psz_Version);
 }
 
-BOOL CVowelSetVersion::bReadProperties(Object_istream& obs)
+BOOL CVowelSetVersion::ReadProperties(Object_istream& obs)
 {
 	if ( !obs.bAtBackslash() || !obs.bReadBeginMarker(psz_Version, &m_szVersion) )
 	{
@@ -128,7 +128,7 @@ void CVowelFormantSet::WriteProperties(Object_ostream& obs) const
 	obs.WriteEndMarker(psz_VowelSet);
 }
 
-BOOL CVowelFormantSet::bReadProperties(Object_istream& obs)
+BOOL CVowelFormantSet::ReadProperties(Object_istream& obs)
 // Read spectrumParm properties from *.psa file.
 {
 	if ( !obs.bAtBackslash() || !obs.bReadBeginMarker(psz_VowelSet, &m_szSetName) )
@@ -158,7 +158,7 @@ BOOL CVowelFormantSet::bReadProperties(Object_istream& obs)
 
 			while ( !obs.bAtEnd() )
 			{
-				if ( cVowel.bReadProperties(obs))
+				if ( cVowel.ReadProperties(obs))
 				{
 					m_vowels[gender].push_back(cVowel);
 				}
@@ -196,13 +196,13 @@ BOOL CVowelFormantSets::Load(const CSaString &szFilename)
 		Object_istream obs(szFilename);
 
 		CVowelSetVersion version;
-		if (!version.bReadProperties(obs))
+		if (!version.ReadProperties(obs))
 			version.SetVersion(_T("2.9"));
 
 		while ( !obs.bAtEnd() )
 		{
 			CVowelFormantSet newSet;
-			if(newSet.bReadProperties(obs))
+			if(newSet.ReadProperties(obs))
 			{
 				if(newSet.IsUser()) // Do not load predefined sets, saved as templates
 					push_back(newSet);      

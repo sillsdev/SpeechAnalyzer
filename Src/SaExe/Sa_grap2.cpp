@@ -761,7 +761,7 @@ void CGraphWnd::WriteProperties(Object_ostream& obs)
 	obs.WriteEndMarker(psz_sagraph);
 }
 
-BOOL CGraphWnd::bReadProperties(Object_istream& obs)
+BOOL CGraphWnd::ReadProperties(Object_istream& obs)
 {
 	if (!obs.bReadBeginMarker(psz_sagraph))
 		return FALSE;

@@ -185,7 +185,7 @@ public:
   // Operations on the MDI child view [window] list, ordered by z-order.
   void SetZ();
   // Set the current z-order of all MDI child views.
-  BOOL bReadProperties(Object_istream& obs); // read the open databases and windows
+  BOOL ReadProperties(Object_istream& obs); // read the open databases and windows
   BOOL bReadMRUList(Object_istream& obs); // Read in Most Recently Used file list
   void WriteProperties(Object_ostream& obs); // write the open databases and windows
 	CSaString GetStartupMessage(CSaString szLastVersion);

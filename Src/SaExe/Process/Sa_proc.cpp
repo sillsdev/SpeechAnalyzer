@@ -844,9 +844,9 @@ void CDataProcess::WriteProperties(Object_ostream& )
 }
 
 /***************************************************************************/
-// CDataProcess::bReadProperties Dummy properties reading
+// CDataProcess::ReadProperties Dummy properties reading
 /***************************************************************************/
-BOOL CDataProcess::bReadProperties(Object_istream& )
+BOOL CDataProcess::ReadProperties(Object_istream& )
 {          
 	return FALSE;
 }

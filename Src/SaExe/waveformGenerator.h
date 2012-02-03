@@ -55,7 +55,7 @@ private:
   public:
     virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
     virtual void WriteProperties(Object_ostream& obs);
-    virtual BOOL bReadProperties(Object_istream& obs);
+    virtual BOOL ReadProperties(Object_istream& obs);
     BOOL Synthesize(TCHAR* szFileName);
     void SynthesizeSamples(HPSTR pTargetData, DWORD dwDataPos, DWORD dwBufferSize);
   };

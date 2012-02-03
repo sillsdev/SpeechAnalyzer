@@ -118,7 +118,7 @@ static char BASED_CODE THIS_FILE[] = __FILE__;
 /***************************************************************************/
 // CSegment::CSegment Constructor
 /***************************************************************************/
-CSegment::CSegment(int index, int master)
+CSegment::CSegment( int index, int master)
 {
 	m_nAnnotationIndex = index;
 	m_nMasterIndex = master;
@@ -266,7 +266,7 @@ void CSegment::Serialize(CArchive& ar)
 /***************************************************************************/
 // CSegment::Remove Remove dependent annotation segment
 /***************************************************************************/
-void CSegment::Remove(CDocument* pSaDoc, BOOL bCheck)
+void CSegment::Remove( CDocument* pSaDoc, BOOL bCheck)
 {
 	// get pointer to view
 	CSaDoc* pDoc = (CSaDoc*)pSaDoc; // cast pointer
@@ -317,7 +317,7 @@ void CSegment::ReplaceSelectedSegment(CDocument* pSaDoc, const CSaString & str)
 /***************************************************************************/
 // CSegment::RemoveNoRefresh Remove dependent annotation segment
 /***************************************************************************/
-DWORD CSegment::RemoveNoRefresh(CDocument*)
+DWORD CSegment::RemoveNoRefresh( CDocument * )
 {
 	// find length of string to delete
 	int nLength = GetSegmentLength(m_nSelection);
@@ -345,10 +345,14 @@ BOOL CSegment::Insert( int nIndex, const CSaString * pszString, int ,DWORD dwSta
 			// insert
 			*m_pAnnotation = m_pAnnotation->Left(nIndex) + *pszString + m_pAnnotation->Right(m_pAnnotation->GetLength() - nIndex);
 		}
-		else *m_pAnnotation += *pszString; // append
-		m_pOffset->InsertAt(nIndex, dwStart, nStringLength);
+		else
+		{
+			*m_pAnnotation += *pszString; // append
+		}
+		m_pOffset->InsertAt( nIndex, dwStart, nStringLength);
 		GetDurations()->InsertAt(nIndex, dwDuration, nStringLength);
-	} catch(CMemoryException e) 
+	} 
+	catch(CMemoryException e) 
 	{
 		// memory allocation error
 		ErrorMessage(IDS_ERROR_MEMALLOC);
@@ -453,23 +457,20 @@ int CSegment::GetNext(int nIndex) const
 int CSegment::FindOffset(DWORD dwOffset) const
 {
 	if (!m_pOffset->GetSize())
+	{
 		return -1;
+	}
 
 	DWORD *pFirst = &((*m_pOffset)[0]);
 	DWORD *pLast = pFirst + m_pOffset->GetSize();
 	DWORD *pLowerBound = std::lower_bound(pFirst, pLast, dwOffset);
 
 	if (pLowerBound != pLast && *pLowerBound == dwOffset)
+	{
 		return pLowerBound - pFirst;
-	else
-		return -1;
+	}
 
-	//  for (int nLoop = 0; nLoop < GetSize(); nLoop++)
-	//  {
-	//    if (GetOffset(nLoop) == dwOffset) return nLoop; // match
-	//  }
-
-	//  return -1; // no match
+	return -1;
 }
 
 // SDM 1.5 Test 11.0
@@ -688,8 +689,6 @@ int CSegment::LastVisibleIndex(CSaDoc & SaDoc) const
 
 	return 0;
 }
-
-
 
 /***************************************************************************/
 // CSegment::FindPrev find next segment matching strToFind and hilite it.
@@ -1188,7 +1187,7 @@ int CDependentSegment::CheckPositionToMaster(CSaDoc* pSaDoc, DWORD dwStart, DWOR
 /***************************************************************************/
 // CDependentSegment::Add Add dependent annotation segment
 /***************************************************************************/
-void CDependentSegment::Add(CSaDoc* pDoc, DWORD dwStart, CSaString& szString, BOOL , BOOL bCheck)
+void CDependentSegment::Add( CSaDoc* pDoc, DWORD dwStart, CSaString& szString, BOOL , BOOL bCheck)
 {
 	// get pointer to view
 	POSITION pos = pDoc->GetFirstViewPosition();
@@ -1673,12 +1672,15 @@ void CTextSegment::Serialize(CArchive& ar)
 // Returns FALSE if an error occured. If the pointer to the string is NULL
 // there will be no string added.
 /***************************************************************************/
-BOOL CDependentTextSegment::Insert(int nIndex, const CSaString* pszString, int ,
-								   DWORD dwStart, DWORD dwDuration)
+BOOL CDependentTextSegment::Insert( int nIndex, 
+								    const CSaString* pszString, 
+									int ,
+									DWORD dwStart, 
+									DWORD dwDuration)
 {
 	try
 	{
-		if (pszString && pszString->GetLength())
+		if ((pszString) && (pszString->GetLength()))
 		{
 			m_pTexts->InsertAt(nIndex, *pszString, 1);
 			m_pOffset->InsertAt(nIndex, dwStart, 1);
@@ -2105,15 +2107,15 @@ void CPhoneticSegment::ReplaceSelectedSegment(CDocument* pSaDoc, const CSaString
 // All the dependent segments that are aligned to the removed master
 // segment have to be removed too. The user will be informed before.
 /***************************************************************************/
-void CPhoneticSegment::Remove(CDocument* pSaDoc, BOOL bCheck)
+void CPhoneticSegment::Remove( CDocument* pDoc, BOOL bCheck)
 {
 	// get pointer to view
-	CSaDoc* pDoc = (CSaDoc*)pSaDoc; // cast pointer
 	POSITION pos = pDoc->GetFirstViewPosition();
 	CSaView* pView = (CSaView*)pDoc->GetNextView(pos);
+	CSaDoc* pSaDoc = (CSaDoc*)pDoc;
 
 	// save state for undo ability
-	if (bCheck) pDoc->CheckPoint();
+	if (bCheck) pSaDoc->CheckPoint();
 	int nSelection = m_nSelection;
 	DWORD dwOldStop = GetStop(nSelection);
 	DWORD dwOldOffset = RemoveNoRefresh(pSaDoc);
@@ -2123,13 +2125,13 @@ void CPhoneticSegment::Remove(CDocument* pSaDoc, BOOL bCheck)
 	}
 
 	pDoc->SetModifiedFlag(TRUE); // document has been modified
-	pDoc->SetTransModifiedFlag(TRUE); // transcription data has been modified
+	pSaDoc->SetTransModifiedFlag(TRUE); // transcription data has been modified
 	pView->ChangeAnnotationSelection(this, m_nSelection, 0, 0); // deselect
 	pView->RefreshGraphs(FALSE); // refresh the graphs between cursors
 	// delete aligned dependent segments and gloss
 	for (int nLoop = 1; nLoop <= GLOSS; nLoop++) //SDM 1.5Test8.1 segments after gloss are dependent on gloss
 	{
-		CSegment* pSegment = pDoc->GetSegment(nLoop);
+		CSegment* pSegment = pSaDoc->GetSegment(nLoop);
 		if (pSegment)
 		{
 			int nIndex = pSegment->FindOffset(dwOldOffset);
@@ -2143,14 +2145,14 @@ void CPhoneticSegment::Remove(CDocument* pSaDoc, BOOL bCheck)
 				else
 				{
 					DWORD dwOffset = GetOffset(nSelection);
-					pSegment->Adjust(pDoc,nIndex, dwOffset, pSegment->GetStop(nIndex) - dwOffset);
+					pSegment->Adjust( pSaDoc, nIndex, dwOffset, pSegment->GetStop(nIndex) - dwOffset);
 				}
 			}
 			nIndex = pSegment->FindStop(dwOldStop);
 			if (nIndex != -1)
 			{
 				DWORD dwStop = GetStop(GetPrevious(nSelection));
-				pSegment->Adjust(pDoc, nIndex, pSegment->GetOffset(nIndex), dwStop - pSegment->GetOffset(nIndex));
+				pSegment->Adjust( pSaDoc, nIndex, pSegment->GetOffset(nIndex), dwStop - pSegment->GetOffset(nIndex));
 			}
 		}
 	}
@@ -2163,7 +2165,7 @@ void CPhoneticSegment::Remove(CDocument* pSaDoc, BOOL bCheck)
 // All the dependent segments that are aligned to the removed phonetic
 // segment have to be removed too. The user will be informed before.
 /***************************************************************************/
-DWORD CPhoneticSegment::RemoveNoRefresh(CDocument* )
+DWORD CPhoneticSegment::RemoveNoRefresh(CDocument * )
 {
 	// find length of string to delete
 	int nLength = GetSegmentLength(m_nSelection); // find length of string to delete
@@ -2193,13 +2195,13 @@ DWORD CPhoneticSegment::RemoveNoRefresh(CDocument* )
 // in the lower word of the long value and the end process progress percen-
 // tage in the higher word.
 /***************************************************************************/
-long CPhoneticSegment::Process(void* pCaller, CSaDoc* pSaDoc, int nProgress, int nLevel)
+long CPhoneticSegment::Process(void* pCaller, CSaDoc* pDoc, int nProgress, int nLevel)
 {
 	TRACE(_T("Process: CPhoneticSegment\n"));
 	if (IsCanceled()) return MAKELONG(PROCESS_CANCELED, nProgress); // process canceled
 	if (IsDataReady()) return MAKELONG(--nLevel, nProgress); // data is already ready
+
 	// create change and zero crossing data, it is needed to do segmentation
-	CSaDoc* pDoc = (CSaDoc*)pSaDoc; // cast pointer
 	CProcessChange* pChange = (CProcessChange*)pDoc->GetChange(); // get pointer to change object
 	pChange->Process(pCaller, pDoc, nProgress, ++nLevel); // process change data
 
@@ -2217,8 +2219,10 @@ long CPhoneticSegment::Process(void* pCaller, CSaDoc* pSaDoc, int nProgress, int
 
 	if (nLevel < 0) // previous processing error
 	{
-		if ((nLevel == PROCESS_CANCELED)) 
+		if ((nLevel == PROCESS_CANCELED))
+		{
 			CancelProcess(); // set your own cancel flag
+		}
 		return MAKELONG(nLevel, nProgress);
 	}
 
@@ -2230,6 +2234,7 @@ long CPhoneticSegment::Process(void* pCaller, CSaDoc* pSaDoc, int nProgress, int
 		EndWaitCursor();
 		return MAKELONG(PROCESS_ERROR, nProgress);
 	}
+
 	DWORD dwLoopEnd = pChange->GetDataSize();; // end of loop
 	// prepare parameters
 	CMainFrame* pMainFrame = (CMainFrame*)AfxGetMainWnd();
@@ -2668,14 +2673,16 @@ void CGlossSegment::DeleteContents()
 // there will be no string added.
 /***************************************************************************/
 BOOL CGlossSegment::Insert(int nIndex, 
-						   const CSaString* pszString, 
+						   const CSaString * pszString, 
 						   int nDelimiter,
 						   DWORD dwStart, 
 						   DWORD dwDuration)
 {
-	try {
+	try 
+	{
 		m_pPOS->InsertAt(nIndex, NULL,  1);
-	} catch(CMemoryException e) 
+	} 
+	catch(CMemoryException e) 
 	{
 		// memory allocation error
 		ErrorMessage(IDS_ERROR_MEMALLOC);

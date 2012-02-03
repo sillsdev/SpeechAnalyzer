@@ -9,6 +9,8 @@ public:
 	CDlgSplit(CWnd* pParent = NULL);   // standard constructor
 	virtual ~CDlgSplit();
 
+	virtual BOOL OnInitDialog();
+
 // Dialog Data
 	enum { IDD = IDD_SPLIT };
 
@@ -18,6 +20,12 @@ protected:
 
 public:
 	int m_iConvention;
-	CString m_FolderName;
 	CString m_FolderLocation;
+	CString m_FolderName;
+	CString m_PhraseFolderName;
+	CString m_WordFolderName;
+	BOOL m_ExportPhrase;
+	BOOL m_ExportWord;
+	afx_msg void OnBnClickedExportWord();
+	afx_msg void OnBnClickedExportPhrase();
 };

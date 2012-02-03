@@ -28,7 +28,7 @@ LANGUAGE LANG_NEUTRAL, SUBLANG_NEUTRAL
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 3,0,1,10
+ FILEVERSION 3,0,1,11
  PRODUCTVERSION 1,0,0,1
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
@@ -46,7 +46,7 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "SIL International"
             VALUE "FileDescription", "SA"
-            VALUE "FileVersion", "v3.0.1.10"
+            VALUE "FileVersion", "v3.0.1.11"
             VALUE "InternalName", "SA"
             VALUE "LegalCopyright", "© 1996-2011 SIL International (MSEA)"
             VALUE "ProductName", "SA"
@@ -2023,19 +2023,23 @@ BEGIN
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,83,139,10
 END
 
-IDD_SPLIT DIALOGEX 0, 0, 262, 131
+IDD_SPLIT DIALOGEX 0, 0, 262, 218
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Split File"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
-    DEFPUSHBUTTON   "Split",IDOK,152,110,50,14
-    PUSHBUTTON      "Cancel",IDCANCEL,205,110,50,14
-    COMBOBOX        IDC_SPLIT_CONVENTION,7,22,248,63,CBS_DROPDOWNLIST | CBS_SORT | WS_TABSTOP
-    LTEXT           "Audio Filename Convention",IDC_STATIC,7,11,247,8
-    LTEXT           "Audio Folder Name",IDC_STATIC,7,74,247,8
-    LTEXT           "Audio Folder Location",IDC_STATIC,7,43,247,8
-    EDITTEXT        IDC_SPLIT_FOLDER_LOCATION,7,54,247,14,ES_AUTOHSCROLL | WS_DISABLED
-    EDITTEXT        IDC_SPLIT_FOLDER_NAME,7,84,247,14,ES_AUTOHSCROLL | WS_DISABLED
+    DEFPUSHBUTTON   "Split",IDOK,152,197,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,205,197,50,14
+    COMBOBOX        IDC_SPLIT_CONVENTION,7,155,247,63,CBS_DROPDOWNLIST | CBS_SORT | WS_TABSTOP
+    LTEXT           "Filename Convention",IDC_STATIC,7,144,247,8
+    LTEXT           "Folder Name",IDC_STATIC,7,43,247,8
+    LTEXT           "Folder Location",IDC_STATIC,7,11,247,8
+    EDITTEXT        IDC_SPLIT_FOLDER_LOCATION,7,22,247,14,ES_AUTOHSCROLL | WS_DISABLED
+    EDITTEXT        IDC_SPLIT_FOLDER_NAME,7,54,247,14,ES_AUTOHSCROLL | WS_DISABLED
+    EDITTEXT        IDC_SPLIT_PHRASE_SUBFOLDER_NAME,7,88,247,14,ES_AUTOHSCROLL | WS_DISABLED
+    EDITTEXT        IDC_SPLIT_WORD_SUBFOLDER_NAME,7,123,247,14,ES_AUTOHSCROLL | WS_DISABLED
+    CONTROL         "Phrase Sub-Folder name",IDC_EXPORT_PHRASE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,75,247,10
+    CONTROL         "Word Sub-Folder name",IDC_EXPORT_WORD,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,109,247,10
 END
 
 
@@ -2173,7 +2177,7 @@ BEGIN
         LEFTMARGIN, 7
         RIGHTMARGIN, 255
         TOPMARGIN, 7
-        BOTTOMMARGIN, 124
+        BOTTOMMARGIN, 211
     END
 END
 #endif    // APSTUDIO_INVOKED
@@ -2391,7 +2395,7 @@ BEGIN
         MENUITEM "Open Startup...",             ID_FILE_OPEN_SPECIAL
         MENUITEM "&Close",                      ID_FILE_CLOSE
         MENUITEM "&Save\tCtrl+S",               ID_FILE_SAVE
-        MENUITEM "Sp&lit File ...",             ID_FILE_SPLIT
+        MENUITEM "Sp&lit File...",              ID_FILE_SPLIT
         MENUITEM "Save &As...",                 ID_FILE_SAVE_AS
         MENUITEM SEPARATOR
         POPUP "&Import"
@@ -3834,7 +3838,7 @@ STRINGTABLE
 BEGIN
     IDR_MAINFRAME           "Speech Analyzer"
     IDR_SA_ANNTYPE          "\nSA\nSA Document\nWAV Files (*.wav)\n.wav\nannFileType\nANN File Type"
-    VS_VERSION              "Version 3.0.1.10"
+    VS_VERSION              "Version 3.0.1.11"
     VS_COPYRIGHT            "© 1996-2011 SIL International (MSEA).\nAll Rights Reserved."
     IDR_SA_WBTYPE           "\nWB\nSA Workbench\nWB Files (*.wb)\n.wb\nwbFileType\nWB File Type"
 END

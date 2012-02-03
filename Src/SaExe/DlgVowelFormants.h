@@ -22,7 +22,7 @@ public:
   double F4;
 
   void WriteProperties(Object_ostream& obs) const;
-  BOOL bReadProperties(Object_istream& obs);
+  BOOL ReadProperties(Object_istream& obs);
 
   void Init(const CSaString &szVowel, double inF1, double inF2, double inF3, double inF4 = UNDEFINED_DATA);
 };
@@ -35,7 +35,7 @@ public:
   CVowelSetVersion(const CSaString szVersion = _T("3.0")) {m_szVersion = szVersion;};
 
   void WriteProperties(Object_ostream& obs) const;
-  BOOL bReadProperties(Object_istream& obs);
+  BOOL ReadProperties(Object_istream& obs);
 
 	CSaString GetVersion() {return m_szVersion;};
 	void SetVersion(const CSaString& szVersion) {m_szVersion = szVersion;};
@@ -51,7 +51,7 @@ public:
   CVowelFormantSet(const CSaString &szSetName, const CVowelFormantsVector vowels[3], BOOL bUser = TRUE);
 
   void WriteProperties(Object_ostream& obs) const;
-  BOOL bReadProperties(Object_istream& obs);
+  BOOL ReadProperties(Object_istream& obs);
 
   const CSaString& GetName() const {return m_szSetName;};
   void SetName(const CSaString& szName) {m_szSetName = szName;};

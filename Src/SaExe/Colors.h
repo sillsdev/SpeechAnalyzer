@@ -12,7 +12,7 @@ class Colors
 public:
 
   void WriteProperties(Object_ostream& obs);
-  BOOL bReadProperties(Object_istream& obs);
+  BOOL ReadProperties(Object_istream& obs);
   void SetupDefault(BOOL bSystem= TRUE, BOOL bPrinting= FALSE);
   void SetupSystemColors();
 

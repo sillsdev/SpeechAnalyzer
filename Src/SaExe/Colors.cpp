@@ -63,7 +63,7 @@ void Colors::WriteProperties(Object_ostream& obs)
 
 
 
-BOOL Colors::bReadProperties(Object_istream& obs)
+BOOL Colors::ReadProperties(Object_istream& obs)
 {
   int i = 0;
   

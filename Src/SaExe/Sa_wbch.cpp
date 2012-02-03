@@ -830,9 +830,9 @@ void CSaWorkbenchView::WriteProperties(Object_ostream& obs)
 }
 
 /***************************************************************************/
-// CSaWorkbenchView::bReadProperties Read workbench properties
+// CSaWorkbenchView::ReadProperties Read workbench properties
 /***************************************************************************/
-BOOL CSaWorkbenchView::bReadProperties(Object_istream& obs)
+BOOL CSaWorkbenchView::ReadProperties(Object_istream& obs)
 {
 	CMainFrame* pMain = (CMainFrame*)AfxGetMainWnd();
 	// clear all old processes first if you are loading a new file
@@ -876,7 +876,7 @@ BOOL CSaWorkbenchView::bReadProperties(Object_istream& obs)
 					pMain->SetWbFilterID(nLoop, nInnerLoop, nFilterID);
 				}
 				else pProcess = pMain->GetWbProcess(nLoop, nInnerLoop);
-				if (pProcess) bRet = pProcess->bReadProperties(obs);
+				if (pProcess) bRet = pProcess->ReadProperties(obs);
 				else bRet = FALSE;
 			}
 			nInnerLoop++;

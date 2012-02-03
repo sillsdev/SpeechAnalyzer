@@ -39,7 +39,7 @@ void ParseParm::WriteProperties(Object_ostream& obs)
 	obs.WriteEndMarker(psz_parse);
 }
 
-BOOL ParseParm::bReadProperties(Object_istream& obs)
+BOOL ParseParm::ReadProperties(Object_istream& obs)
 {
 	if ( !obs.bAtBackslash() || !obs.bReadBeginMarker(psz_parse) )
 	{
@@ -87,7 +87,7 @@ void SegmentParm::WriteProperties(Object_ostream& obs)
 	obs.WriteEndMarker(psz_segment);
 }
 
-BOOL SegmentParm::bReadProperties(Object_istream& obs)
+BOOL SegmentParm::ReadProperties(Object_istream& obs)
 {
 	if ( !obs.bAtBackslash() || !obs.bReadBeginMarker(psz_segment) )
 	{
@@ -149,7 +149,7 @@ void PitchParm::WriteProperties(Object_ostream& obs)
 	obs.WriteEndMarker(psz_pitch);
 }
 
-BOOL PitchParm::bReadProperties(Object_istream& obs)
+BOOL PitchParm::ReadProperties(Object_istream& obs)
 {
 	if ( !obs.bAtBackslash() || !obs.bReadBeginMarker(psz_pitch) )
 	{
@@ -304,7 +304,7 @@ void MusicParm::WriteProperties(Object_ostream& obs)
 	obs.WriteEndMarker(psz_music);
 }
 
-BOOL MusicParm::bReadProperties(Object_istream& obs)
+BOOL MusicParm::ReadProperties(Object_istream& obs)
 {
 	if ( !obs.bAtBackslash() || !obs.bReadBeginMarker(psz_music) )
 	{
@@ -390,7 +390,7 @@ void IntensityParm::WriteProperties(Object_ostream& obs)
 	obs.WriteEndMarker(psz_intensity);
 }
 
-BOOL IntensityParm::bReadProperties(Object_istream& obs)
+BOOL IntensityParm::ReadProperties(Object_istream& obs)
 {
 	if ( !obs.bAtBackslash() || !obs.bReadBeginMarker(psz_intensity) )
 	{
@@ -463,18 +463,18 @@ void SpectroParm::WriteProperties(const char * pszMarker, Object_ostream& obs)
 	obs.WriteEndMarker(pszMarker);
 }
 
-BOOL SpectroParm::bReadPropertiesA(Object_istream& obs)
+BOOL SpectroParm::ReadPropertiesA(Object_istream& obs)
 {
-	return bReadProperties(psz_spectroA, obs);
+	return ReadProperties(psz_spectroA, obs);
 }
 
-BOOL SpectroParm::bReadPropertiesB(Object_istream& obs)
+BOOL SpectroParm::ReadPropertiesB(Object_istream& obs)
 {
-	return bReadProperties(psz_spectroB, obs);
+	return ReadProperties(psz_spectroB, obs);
 }
 
 // Read spectroParm properties from *.psa file.
-BOOL SpectroParm::bReadProperties(const char * pszMarker, Object_istream& obs)
+BOOL SpectroParm::ReadProperties(const char * pszMarker, Object_istream& obs)
 {
 	if ( !obs.bAtBackslash() || !obs.bReadBeginMarker(pszMarker) )
 	{
@@ -547,7 +547,7 @@ void WaveletParm::WriteProperties(Object_ostream& obs)
 
 
 // ARH 8/1/01 Added for wavelet scalogram graph
-BOOL WaveletParm::bReadProperties(Object_istream& obs)
+BOOL WaveletParm::ReadProperties(Object_istream& obs)
 // Read waveletParm properties from *.psa file.
 {
 	if ( !obs.bAtBackslash() || !obs.bReadBeginMarker(psz_wavelet) )
@@ -623,7 +623,7 @@ void SpectrumParm::WriteProperties(Object_ostream& obs)
 }
 
 
-BOOL SpectrumParm::bReadProperties(Object_istream& obs)
+BOOL SpectrumParm::ReadProperties(Object_istream& obs)
 // Read spectrumParm properties from *.psa file.
 {
 	if ( !obs.bAtBackslash() || !obs.bReadBeginMarker(psz_spectrum) )
@@ -697,7 +697,7 @@ void FormantParm::WriteProperties(Object_ostream& obs)
 }
 
 
-BOOL FormantParm::bReadProperties(Object_istream& obs)
+BOOL FormantParm::ReadProperties(Object_istream& obs)
 // Read FormantParm properties from *.psa file.
 {
 	if ( !obs.bAtBackslash() || !obs.bReadBeginMarker(psz_spectrum) )
@@ -751,7 +751,7 @@ void RecordingParm::WriteProperties(Object_ostream& obs)
 	obs.WriteEndMarker(psz_Recording);
 }
 
-BOOL RecordingParm::bReadProperties(Object_istream& obs)
+BOOL RecordingParm::ReadProperties(Object_istream& obs)
 // Read spectrumParm properties from *.psa file.
 {
 	if ( !obs.bAtBackslash() || !obs.bReadBeginMarker(psz_Recording) )

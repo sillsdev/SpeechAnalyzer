@@ -94,7 +94,7 @@ BOOL CWorkbenchDoc::OnOpenDocument(const TCHAR* pszPathName)
     CSaString path(pszPathName);
     Object_istream obs(path);
     POSITION pos = GetFirstViewPosition();
-    bRet = ((CSaWorkbenchView*)GetNextView(pos))->bReadProperties(obs);
+    bRet = ((CSaWorkbenchView*)GetNextView(pos))->ReadProperties(obs);
   }
   catch(...)
   {

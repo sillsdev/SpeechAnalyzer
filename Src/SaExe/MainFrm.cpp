@@ -2061,7 +2061,7 @@ void CMainFrame::WriteProperties(Object_ostream& obs)
 //********************************************************************
 // Read the open databases and windows
 //********************************************************************
-BOOL CMainFrame::bReadProperties(Object_istream& obs)
+BOOL CMainFrame::ReadProperties(Object_istream& obs)
 {
 	if ( !obs.bAtBackslash() || !obs.bReadBeginMarker(psz_mainframe) ) 
 	{
@@ -2149,19 +2149,19 @@ BOOL CMainFrame::bReadProperties(Object_istream& obs)
 		else if (obs.bReadInteger(psz_animationRate, m_nAnimationRate));
 		else if (obs.bReadInteger(psz_cursorMode, nValue))
 			m_nCursorAlignment = (CURSOR_ALIGNMENT) nValue;
-		else if (m_colors.bReadProperties(obs));
-		else if (m_fnKeys.bReadProperties(obs));
-		else if (m_grid.bReadProperties(obs));
-		else if (dlgWaveformGenerator.current.bReadProperties(obs));
+		else if (m_colors.ReadProperties(obs));
+		else if (m_fnKeys.ReadProperties(obs));
+		else if (m_grid.ReadProperties(obs));
+		else if (dlgWaveformGenerator.current.ReadProperties(obs));
 		else if (obs.bReadInteger(psz_captionstyle, m_nCaptionStyle));
-		else if (m_parseParmDefaults.bReadProperties(obs));
-		else if (m_segmentParmDefaults.bReadProperties(obs));
-		else if (m_pitchParmDefaults.bReadProperties(obs));
-		else if (m_musicParmDefaults.bReadProperties(obs));
-		else if (m_intensityParmDefaults.bReadProperties(obs));
-		else if (m_spectrumParmDefaults.bReadProperties(obs));
-		else if (m_spectrogramParmDefaults.bReadPropertiesA(obs));
-		else if (m_snapshotParmDefaults.bReadPropertiesB(obs));
+		else if (m_parseParmDefaults.ReadProperties(obs));
+		else if (m_segmentParmDefaults.ReadProperties(obs));
+		else if (m_pitchParmDefaults.ReadProperties(obs));
+		else if (m_musicParmDefaults.ReadProperties(obs));
+		else if (m_intensityParmDefaults.ReadProperties(obs));
+		else if (m_spectrumParmDefaults.ReadProperties(obs));
+		else if (m_spectrogramParmDefaults.ReadPropertiesA(obs));
+		else if (m_snapshotParmDefaults.ReadPropertiesB(obs));
 		else if (obs.bReadBeginMarker(psz_graphfontarray)) 
 		{
 			for (int nLoop = 0; nLoop < ANNOT_WND_NUMBER; nLoop++) 
@@ -2207,7 +2207,7 @@ BOOL CMainFrame::bReadDefaultView(Object_istream& obs)
 
 	while ( !obs.bAtEnd() ) 
 	{
-		if (m_pDefaultViewConfig ? m_pDefaultViewConfig->bReadProperties(obs, FALSE) : FALSE)
+		if (m_pDefaultViewConfig ? m_pDefaultViewConfig->ReadProperties(obs, FALSE) : FALSE)
 		{
 			if(m_pDefaultViewConfig->GetLayout() < ID_LAYOUT_FIRST ||
 				m_pDefaultViewConfig->GetLayout() > ID_LAYOUT_LAST || 
@@ -2295,7 +2295,7 @@ void CMainFrame::WriteReadDefaultViewToTempFile(BOOL bWrite)
 				delete m_pDefaultViewConfig;
 			m_pDefaultViewConfig = new CSaView();
 
-			m_pDefaultViewConfig->bReadProperties(obs, FALSE);
+			m_pDefaultViewConfig->ReadProperties(obs, FALSE);
 			obs.getIos().close();
 			std::string szUtf8 = szPath.utf8();
 			remove(szUtf8.c_str());
@@ -2590,12 +2590,12 @@ void CMainFrame::OnRecordOverlay()
 		MDIActivate(pSourceView->pwndChildFrame());
 
 		// launch recorder in this new view
-		pDoc->vSetTempOverlay();	//mark this for reuse.
+		pDoc->SetTempOverlay();	//mark this for reuse.
 		POSITION pos = pDoc->GetFirstViewPosition();
 		CSaDoc * pSourceDoc = pSourceView->GetDocument();
 		CAlignInfo alignInfo;
 		memset(&alignInfo,0,sizeof(alignInfo));
-		pSourceDoc->vGetAlignInfo(alignInfo);
+		pSourceDoc->GetAlignInfo(alignInfo);
 		if (pos)
 		{
 			CSaView * pView = (CSaView *)pDoc->GetNextView(pos);

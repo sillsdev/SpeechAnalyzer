@@ -416,9 +416,9 @@ void CDlgWaveformGenerator::settings::WriteProperties(Object_ostream& obs)
 }
 
 /***************************************************************************/
-// CDlgWaveformGenerator::settings::bReadProperties Read echo properties
+// CDlgWaveformGenerator::settings::ReadProperties Read echo properties
 /***************************************************************************/
-BOOL CDlgWaveformGenerator::settings::bReadProperties(Object_istream& obs)
+BOOL CDlgWaveformGenerator::settings::ReadProperties(Object_istream& obs)
 {
   BOOL* enables[] =
   {&m_bSinusoid1,&m_bSinusoid2,&m_bSinusoid3,&m_bComb,&m_bSquareWave,&m_bTriangle,&m_bSawtooth};

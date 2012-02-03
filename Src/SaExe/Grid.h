@@ -15,7 +15,7 @@ public:
   int          nYStyle;           // y-grid style
 
   void WriteProperties(Object_ostream& obs);
-  BOOL bReadProperties(Object_istream& obs);
+  BOOL ReadProperties(Object_istream& obs);
 
   void Init();
 };
