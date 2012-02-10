@@ -14,6 +14,7 @@
 using System;
 using System.Text;
 using System.Runtime.InteropServices;
+using System.Runtime.InteropServices.ComTypes;
 
 namespace Yeti.WMFSdk
 {
@@ -115,7 +116,7 @@ namespace Yeti.WMFSdk
     void GetStreamNumberForOutput( [In] uint dwOutputNum, [Out] out ushort pwStreamNum );
     void GetMaxOutputSampleSize( [In] uint dwOutput, [Out] out uint pcbMax );
     void GetMaxStreamSampleSize( [In] ushort wStream, [Out] out uint pcbMax );
-    void OpenStream( [In, MarshalAs(UnmanagedType.Interface)] UCOMIStream pStream );
+    void OpenStream( [In, MarshalAs(UnmanagedType.Interface)] IStream pStream );
   }
 
   [ComImport]
@@ -165,7 +166,7 @@ namespace Yeti.WMFSdk
     new void GetStreamNumberForOutput( [In] uint dwOutputNum, [Out] out ushort pwStreamNum );
     new void GetMaxOutputSampleSize( [In] uint dwOutput, [Out] out uint pcbMax );
     new void GetMaxStreamSampleSize( [In] ushort wStream, [Out] out uint pcbMax );
-    new void OpenStream( [In, MarshalAs(UnmanagedType.Interface)] UCOMIStream pStream );
+    new void OpenStream( [In, MarshalAs(UnmanagedType.Interface)] IStream pStream );
     //IWMSyncReader2
     void SetRangeByTimecode( [In] ushort wStreamNum,
                              [In] ref WMT_TIMECODE_EXTENSION_DATA pStart,
@@ -317,7 +318,7 @@ namespace Yeti.WMFSdk
     void SetLogClientID( [In, MarshalAs(UnmanagedType.Bool)] bool fLogClientID );
     void GetLogClientID( [Out, MarshalAs(UnmanagedType.Bool)] out bool pfLogClientID );
     void StopBuffering( );
-    void OpenStream( [In, MarshalAs(UnmanagedType.Interface)] UCOMIStream pStream,
+    void OpenStream( [In, MarshalAs(UnmanagedType.Interface)] IStream pStream,
                      [In, MarshalAs(UnmanagedType.Interface)] IWMReaderCallback pCallback,
                      [In] IntPtr pvContext );
   }
@@ -381,7 +382,7 @@ namespace Yeti.WMFSdk
     new void SetLogClientID( [In, MarshalAs(UnmanagedType.Bool)] bool fLogClientID );
     new void GetLogClientID( [Out, MarshalAs(UnmanagedType.Bool)] out bool pfLogClientID );
     new void StopBuffering( );
-    new void OpenStream( [In, MarshalAs(UnmanagedType.Interface)] UCOMIStream pStream,
+    new void OpenStream( [In, MarshalAs(UnmanagedType.Interface)] IStream pStream,
       [In, MarshalAs(UnmanagedType.Interface)] IWMReaderCallback pCallback,
       [In] IntPtr pvContext );
     //IWMReaderAdvanced3
@@ -453,7 +454,7 @@ namespace Yeti.WMFSdk
     new void SetLogClientID( [In, MarshalAs(UnmanagedType.Bool)] bool fLogClientID );
     new void GetLogClientID( [Out, MarshalAs(UnmanagedType.Bool)] out bool pfLogClientID );
     new void StopBuffering( );
-    new void OpenStream( [In, MarshalAs(UnmanagedType.Interface)] UCOMIStream pStream,
+    new void OpenStream( [In, MarshalAs(UnmanagedType.Interface)] IStream pStream,
       [In, MarshalAs(UnmanagedType.Interface)] IWMReaderCallback pCallback,
       [In] IntPtr pvContext );
     //IWMReaderAdvanced3
