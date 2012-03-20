@@ -140,19 +140,19 @@ private:
 	CProcessPOA*      m_pProcessPOA;      // data processing object
 	CProcessGlottis*  m_pProcessGlottis;  // data processing object
 	CProcessTonalWeightChart* m_pProcessTonalWeightChart; // data processing object CLW 11/5/99
-	CSegment* m_apSegments[ANNOT_WND_NUMBER]; // array of pointers to the segment objects
-	CStringArray* m_pFontFaces;  // array of graph font face strings
-	CUIntArray* m_pFontSizes;// array of graph font sizes
-	CObArray* m_pCreatedFonts;
-	HPSTR     m_lpData;           // pointer to wave data
-	DWORD     m_dwRdBufferOffset; // actual read buffer offset
-	BOOL      m_bBlockBegin;      // actual block begin flag
-	CSaString	m_szTempWave;       // file name and path of temp file for wave data chunk
-	CSaString	m_szTempConvertedWave;	// path of temp wave file converted from non-wave audio
-	BOOL      m_bWaveUndoNow;     // TRUE, if wave file change is to undo
-	int       m_nCheckPointCount; // counter for checkpoints (wave undo)
-	_bstr_t   m_szMD5HashCode;    // assigned from SA wave doc reader COM object
-	BOOL			m_bIsWave;					// FALSE, if audio file is non-wave (mp3, wma, etc.)
+	CSegment*		m_apSegments[ANNOT_WND_NUMBER]; // array of pointers to the segment objects
+	CStringArray*	m_pFontFaces;  // array of graph font face strings
+	CUIntArray*		m_pFontSizes;// array of graph font sizes
+	CObArray*		m_pCreatedFonts;
+	HPSTR			m_lpData;           // pointer to wave data
+	DWORD			m_dwRdBufferOffset; // actual read buffer offset
+	BOOL			m_bBlockBegin;      // actual block begin flag
+	CSaString		m_szTempWave;       // file name and path of temp file for wave data chunk
+	CSaString		m_szTempConvertedWave;	// path of temp wave file converted from non-wave audio
+	BOOL			m_bWaveUndoNow;     // TRUE, if wave file change is to undo
+	int				m_nCheckPointCount; // counter for checkpoints (wave undo)
+	_bstr_t			m_szMD5HashCode;    // assigned from SA wave doc reader COM object
+	bool			m_bUsingTempFile;	// FALSE, if audio file is non-wave (mp3, wma, etc.) or standard wave
 
 public:
 
@@ -280,7 +280,7 @@ public:
 
 	BOOL LoadDataFiles(const TCHAR* pszPathName, BOOL bTemp = FALSE);
 	BOOL WriteDataFiles(const TCHAR* pszPathName, BOOL bSaveAudio = TRUE, BOOL bIsClipboardFile = FALSE);
-	DWORD CheckWaveFormat(const TCHAR* pszPathName, FmtParm &fmtParm);
+	DWORD CheckWaveFormat(const TCHAR* pszPathName, FmtParm &fmtParm, bool silent);
 	DWORD CheckWaveFormatForPaste(const TCHAR* pszPathName);
 	DWORD CheckWaveFormatForOpen(const TCHAR* pszPathName);
 	BOOL IsStandardWaveFormat(const TCHAR* pszPathName);
