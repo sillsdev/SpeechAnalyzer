@@ -36,19 +36,19 @@ public:
 	ECONVERT Run( const TCHAR * filename, const TCHAR * outfilename, CProgressStatusBar * pStatusBar);
 
 private:
-	double limit( double val);
-	long round( double val);
-	long conv_bit_size( unsigned long in, int bps);
+	double Limit( double val);
+	long Round( double val);
+	long ConvBitSize( unsigned long in, int bps);
 	unsigned long GCD( unsigned long m, unsigned long n);
 	unsigned long LCM(unsigned long m, unsigned long n);
 	double BessI0(float x);
 
 	// filter processing functions
-	void calculateCoefficients( DWORD nSamplesPerSec,
+	void CalculateCoefficients( DWORD nSamplesPerSec,
 								WORD wBitsPerSample,
 								double *& coeffs, 
 								size_t & coeffsLen);
-	void func( size_t bufferLen, 
+	void Func( size_t bufferLen, 
 			   double * buffer, 
 			   size_t coeffsLen, 
 			   double * coeffs, 

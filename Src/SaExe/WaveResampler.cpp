@@ -15,16 +15,16 @@
 
 typedef unsigned short USHORT;
 
-double CWaveResampler::limit( double val) {
+double CWaveResampler::Limit( double val) {
 	return (val>1.0)?1.0:((val<-1.0)?-1.0:val);
 }
 
-long CWaveResampler::round( double val) {
+long CWaveResampler::Round( double val) {
 	double result = val+0.5;
 	return (long)result;
 }
 
-long CWaveResampler::conv_bit_size( unsigned long in, int bps) {
+long CWaveResampler::ConvBitSize( unsigned long in, int bps) {
 	const unsigned long max = (1 << (bps-1)) - 1;
 	return in > max ? in - (max<<1) : in;
 }
@@ -66,7 +66,7 @@ double CWaveResampler::BessI0(float x) {
     return ans;
 }
 
-void CWaveResampler::calculateCoefficients( DWORD inSampleRate,
+void CWaveResampler::CalculateCoefficients( DWORD inSampleRate,
 										    WORD sampleSize, // wBitsPerSample bit size for one sample on one channel
 										    double *& coeffs, 
 											size_t & coeffsLen) {
@@ -190,7 +190,7 @@ void CWaveResampler::calculateCoefficients( DWORD inSampleRate,
 /**
 using history buffers via output buffer index and threads
 */
-void CWaveResampler::func( size_t bufferLen,
+void CWaveResampler::Func( size_t bufferLen,
 						   double * buffer,
 						   size_t coeffsLen,
 						   double * coeffs,
@@ -538,11 +538,11 @@ CWaveResampler::ECONVERT CWaveResampler::Run( const TCHAR * src,
 							unsigned long val = b1;
 							val = val<<8L;
 							val += b0;
-							long result = conv_bit_size(val,16);
+							long result = ConvBitSize(val,16);
 							result *= 0x10000;
 							double temp = result;
 							temp /= (double)0x7fffffff;
-							temp = limit(temp);
+							temp = Limit(temp);
 							buffer[j++]=temp;
 						}
 					}
@@ -560,11 +560,11 @@ CWaveResampler::ECONVERT CWaveResampler::Run( const TCHAR * src,
 							val += b1;
 							val = val<<8L;
 							val += b0;
-							long result = conv_bit_size(val,24);
+							long result = ConvBitSize(val,24);
 							result *= 0x100;
 							double temp = result;
 							temp /= (double)0x7fffffff;
-							temp = limit(temp);
+							temp = Limit(temp);
 							buffer[j++]=temp;
 						}
 					}
@@ -585,10 +585,10 @@ CWaveResampler::ECONVERT CWaveResampler::Run( const TCHAR * src,
 							val += b1;
 							val = val<<8L;
 							val += b0;
-							long result = conv_bit_size(val,32);
+							long result = ConvBitSize(val,32);
 							double temp = result;
 							temp /= (double)0x7fffffff;
-							temp = limit(temp);
+							temp = Limit(temp);
 							buffer[j++]=temp;
 						}
 					}
@@ -611,7 +611,7 @@ CWaveResampler::ECONVERT CWaveResampler::Run( const TCHAR * src,
 						int z = i*nChannels;
 						for (unsigned int c=0;c<nChannels;c++) {
 							double temp = samples[z+c];
-							temp = limit(temp);
+							temp = Limit(temp);
 							buffer[j++] = temp;
 						}
 					}
@@ -762,10 +762,10 @@ CWaveResampler::ECONVERT CWaveResampler::Run( const TCHAR * src,
 			// build the filter
 			size_t coeffsLen = 0;
 			double * coeffs = NULL;
-			calculateCoefficients( nSamplesPerSec, wBitsPerSample, coeffs, coeffsLen);
+			CalculateCoefficients( nSamplesPerSec, wBitsPerSample, coeffs, coeffsLen);
 			TRACE("coeffsLen=%d\n",coeffsLen);
 			// do the work!
-			func( bufferLen, buffer, coeffsLen, coeffs, upSmpFactor, dwnSmpFactor, datal, pStatusBar);
+			Func( bufferLen, buffer, coeffsLen, coeffs, upSmpFactor, dwnSmpFactor, datal, pStatusBar);
 
 			delete [] coeffs;
 		}
@@ -886,7 +886,7 @@ CWaveResampler::ECONVERT CWaveResampler::Run( const TCHAR * src,
 			size_t k=0;
 			for (size_t i=0;i<length;i++) {
 				double dval = datal[i];
-				dval = limit(dval);
+				dval = Limit(dval);
 				long lval = (long)(dval*(double)0x7fffffff);
 				lval /= 0x10000;
 				__int16 ival = (__int16)lval;
