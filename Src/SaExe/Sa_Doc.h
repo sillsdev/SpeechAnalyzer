@@ -154,7 +154,7 @@ private:
 	BOOL				m_bWaveUndoNow;     // TRUE, if wave file change is to undo
 	int					m_nCheckPointCount; // counter for checkpoints (wave undo)
 	_bstr_t				m_szMD5HashCode;    // assigned from SA wave doc reader COM object
-	BOOL				m_bIsWave;					// FALSE, if audio file is non-wave (mp3, wma, etc.)
+	bool				m_bUsingTempFile;	// FALSE, if audio file is non-wave (mp3, wma, etc.) or standard wave
 	CDlgAdvancedSegment * m_pDlgAdvancedSegment;
 	CDlgAdvancedParse * m_pDlgAdvancedParse;
 
@@ -289,7 +289,7 @@ public:
 
 	BOOL				LoadDataFiles(const TCHAR* pszPathName, BOOL bTemp = FALSE);
 	BOOL				WriteDataFiles(const TCHAR* pszPathName, BOOL bSaveAudio = TRUE, BOOL bIsClipboardFile = FALSE);
-	DWORD				CheckWaveFormat(const TCHAR* pszPathName, FmtParm &fmtParm);
+	DWORD				CheckWaveFormat(const TCHAR* pszPathName, FmtParm &fmtParm, bool silent);
 	DWORD				CheckWaveFormatForPaste(const TCHAR* pszPathName);
 	DWORD				CheckWaveFormatForOpen(const TCHAR* pszPathName);
 	BOOL				IsStandardWaveFormat(const TCHAR* pszPathName);
@@ -302,8 +302,8 @@ public:
 	void				ApplyWaveFile(const TCHAR * pszFileName, DWORD dwDataSize, BOOL bInialUpdate=TRUE); // apply a new recorded wave file
 	void				ApplyWaveFile(const TCHAR * pszFileName, DWORD dwDataSize, CAlignInfo alignInfo); // Update for rt auto-pitch
 	DWORD				SnapCursor(CURSOR_SELECT nCursorSelect, DWORD dwCursorOffset, DWORD dwLowerLimit, DWORD dwUpperLimit,
-								SNAP_DIRECTION nSnapDirection = SNAP_BOTH,
-								CURSOR_ALIGNMENT nCursorAlignment = ALIGN_USER_SETTING); // align cursors
+									SNAP_DIRECTION nSnapDirection = SNAP_BOTH,
+									CURSOR_ALIGNMENT nCursorAlignment = ALIGN_USER_SETTING); // align cursors
 	DWORD				SnapCursor(CURSOR_SELECT nCursorSelect, DWORD dwCursorOffset, SNAP_DIRECTION nSnapDirection = SNAP_BOTH);
 	void				InvalidateAllProcesses(); // invalidates all the graph processes
 	void				RestartAllProcesses(); // invalidates all the processes

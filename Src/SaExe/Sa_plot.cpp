@@ -1479,12 +1479,13 @@ void CPlotWnd::PlotStandardPaint(CDC* pDC, CRect rWnd, CRect rClip,
 			pDC->SelectObject(&penData);
 			pSegment->SetColor(pColor->cPlotData[0]);
 
-			CRect tmp;
-			pDC->GetClipBox(tmp);
-			tmp.DeflateRect(2,2);
+      CRect tmp;
+      //pDC->GetClipBox(tmp);
+	  tmp = rWnd;
+      tmp.DeflateRect(2,2);
 
-			CBrush brush(pColor->cSysBtnFace);
-			pDC->FrameRect(tmp, &brush);
+      CBrush brush(pColor->cSysBtnFace);
+      pDC->FrameRect(tmp, &brush);
 
 			rClipPortion.InflateRect(nLineThickness+1,0);
 			DrawData(rClipPortion, *pSource, *pXScale, *pYScale, *pSegment);

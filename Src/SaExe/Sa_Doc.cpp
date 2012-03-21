@@ -127,6 +127,7 @@
 #include "autorecorder.h"
 #include "Process\FormantTracker.h"
 #include "dlgsplit.h"
+#include "waveresampler.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE
@@ -238,7 +239,7 @@ CSaDoc::CSaDoc()
 	m_nCheckPointCount = 0;
 	SetStereoFlag(FALSE);
 	m_szTempConvertedWave.Empty();
-	m_bIsWave = TRUE;
+	m_bUsingTempFile = false;
 
 	m_pDlgAdvancedSegment = NULL;
 	m_pDlgAdvancedParse = NULL;
@@ -322,7 +323,6 @@ CSaDoc::~CSaDoc()
 		delete m_pDlgAdvancedParse;
 		m_pDlgAdvancedParse = NULL;
 	}
-
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -697,9 +697,12 @@ BOOL CSaDoc::OnOpenDocument(const TCHAR* pszPathName)
 
 	if (!IsStandardWaveFormat(pszPathName))
 	{
-		m_bIsWave = FALSE;
+		m_bUsingTempFile = true;
 		if (!ConvertToWave(pszPathName))
-			return FALSE; // couldn't convert to wave
+		{
+			// couldn't convert to wave
+			return FALSE; 
+		}
 		szWavePath = m_szTempConvertedWave;
 	}
 
@@ -807,8 +810,10 @@ BOOL CSaDoc::LoadDataFiles(const TCHAR* pszPathName, BOOL bTemp/*=FALSE*/)
 {
 	BeginWaitCursor(); // wait cursor
 	CSaString szWavePath = pszPathName;
-	if (!m_bIsWave)
+	if (m_bUsingTempFile) 
+	{
 		szWavePath = m_szTempConvertedWave;
+	}
 
 	if (!ReadRiff(szWavePath))
 	{
@@ -1355,8 +1360,12 @@ void CSaDoc::InsertGlossPosAndRefTranscription(ISaAudioDocumentReaderPtr saAudio
 /***************************************************************************/
 // CSaDoc::CheckWaveFormat Checks basic format of a WAV file and populates
 // fmtParm
+// silent if this is true, do not display an error on NON-PCM files as they
+//        will be retried for conversion at a later point.
 /***************************************************************************/
-DWORD CSaDoc::CheckWaveFormat(const TCHAR* pszPathName, FmtParm &fmtParm)
+DWORD CSaDoc::CheckWaveFormat(const TCHAR* pszPathName, 
+							  FmtParm &fmtParm,
+							  bool silent)
 {
 	DWORD dwDataSize;
 
@@ -1393,10 +1402,13 @@ DWORD CSaDoc::CheckWaveFormat(const TCHAR* pszPathName, FmtParm &fmtParm)
 		lError = mmioRead(hmmioFile, (HPSTR)&fmtParm.wTag, sizeof(WORD)); // read format tag
 		if (fmtParm.wTag != WAVE_FORMAT_PCM) // check if PCM format
 		{
-			// error testing pcm format
-			pApp->ErrorMessage(IDS_ERROR_FORMATPCM, pszPathName);
 			mmioClose(hmmioFile, 0);
-			EndWaitCursor();
+			// error testing pcm format
+			if (!silent) 
+			{
+				pApp->ErrorMessage(IDS_ERROR_FORMATPCM, pszPathName);
+				EndWaitCursor();
+			}
 			return FALSE;
 		}
 		if (lError != -1)
@@ -1471,7 +1483,7 @@ DWORD CSaDoc::CheckWaveFormat(const TCHAR* pszPathName, FmtParm &fmtParm)
 DWORD CSaDoc::CheckWaveFormatForPaste(const TCHAR* pszPathName)
 {
 	FmtParm fmtParm;
-	DWORD dwDataSize = CheckWaveFormat(pszPathName, fmtParm);
+	DWORD dwDataSize = CheckWaveFormat( pszPathName, fmtParm, false);
 
 	CSaApp* pApp = (CSaApp*)AfxGetApp();
 
@@ -1497,7 +1509,7 @@ DWORD CSaDoc::CheckWaveFormatForPaste(const TCHAR* pszPathName)
 DWORD CSaDoc::CheckWaveFormatForOpen(const TCHAR* pszPathName)
 {
 	FmtParm fmtParm;
-	DWORD dwDataSize = CheckWaveFormat(pszPathName, fmtParm);
+	DWORD dwDataSize = CheckWaveFormat( pszPathName, fmtParm, false);
 
 	CSaApp* pApp = (CSaApp*)AfxGetApp();
 
@@ -1537,14 +1549,14 @@ BOOL CSaDoc::IsStandardWaveFormat(const TCHAR* pszPathName)
 
 	// check if sample size is standard (16 or 8 bit)
 	FmtParm fmtParm;
-	CheckWaveFormat(pszPathName, fmtParm);
+	CheckWaveFormat(pszPathName, fmtParm, true);
 	return (fmtParm.wBitsPerSample == 16 || fmtParm.wBitsPerSample == 8);
 }
 
 /***************************************************************************/
 // CSaDoc::ConvertToWave Converts file to 22kHz, 16bit, Mono WAV format
 /***************************************************************************/
-BOOL CSaDoc::ConvertToWave(const TCHAR* pszPathName)
+BOOL CSaDoc::ConvertToWave( const TCHAR* pszPathName)
 {
 	BOOL result = TRUE;
 	CSaApp* pApp = (CSaApp*)AfxGetApp();
@@ -1553,7 +1565,9 @@ BOOL CSaDoc::ConvertToWave(const TCHAR* pszPathName)
 	CMainFrame* pMainFrame = (CMainFrame*)AfxGetMainWnd();
 	CProgressStatusBar* pStatusBar = (CProgressStatusBar*)pMainFrame->GetProgressStatusBar();
 	if (!pStatusBar->GetProcessOwner())
+	{
 		pMainFrame->ShowDataStatusBar(FALSE); // show the progress status bar
+	}
 	CString szText;
 	szText.LoadString(IDS_STATTXT_PROCESSRAW);
 	pStatusBar->SetPaneText(ID_PROGRESSPANE_1, szText);
@@ -1565,6 +1579,17 @@ BOOL CSaDoc::ConvertToWave(const TCHAR* pszPathName)
 	GetTempPath(_MAX_PATH, szTempFolderPath);
 	GetTempFileName(szTempFolderPath, _T("WAV"), 0, szTempFilePath);
 	m_szTempConvertedWave = szTempFilePath;
+
+	// if it's a wave file, but in a different format then try and convert it
+	// if this errors, we wil just continue on trying with ST_Audio
+	{
+		CWaveResampler resampler;
+		if (resampler.Run( pszPathName, szTempFilePath, pStatusBar)==CWaveResampler::EC_SUCCESS) 
+		{
+			pMainFrame->ShowDataStatusBar(TRUE); // restore data status bar
+			return TRUE;
+		}
+	}
 
 	// convert to wave
 	CoInitialize(NULL);
@@ -3448,21 +3473,27 @@ BOOL CSaDoc::CopySectionToNewWavFile(DWORD dwSectionStart, DWORD dwSectionLength
 	// Make new wave file with selected data and segments
 
 	CSaString szOriginalWave;
-	if (!m_bIsWave)
+	if (m_bUsingTempFile) 
+	{
 		szOriginalWave = m_szTempConvertedWave;
+	}
 	else if((GetPathName().GetLength() !=0))
+	{
 		szOriginalWave = GetPathName();
+	}
 	else if(m_szTempWave.GetLength() !=0)
+	{
 		szOriginalWave = m_szTempWave;
+	}
 
-	if (szOriginalWave.GetLength() == 0) return FALSE; //Original not found
+	if(szOriginalWave.GetLength() == 0) return FALSE; //Original not found
 
 	BOOL bSameFileName = (szNewWave == szOriginalWave);
 
 	CFileStatus temp;
-	if (!bSameFileName && !CopyFile(szOriginalWave, szNewWave))
+	if(!bSameFileName && !CopyFile(szOriginalWave, szNewWave))
 	{
-		if (CFile::GetStatus(szNewWave, temp)) CFile::Remove(szNewWave);
+		if(CFile::GetStatus(szNewWave, temp)) CFile::Remove(szNewWave);
 		return FALSE;
 	}
 
@@ -3472,15 +3503,15 @@ BOOL CSaDoc::CopySectionToNewWavFile(DWORD dwSectionStart, DWORD dwSectionLength
 	TCHAR szTempNewTemp[_MAX_PATH];
 	GetTempFileName(lpszTempPath, _T("TMP"), 0, szTempNewTemp);
 
-	if (!CopyFile(GetRawDataWrk(0), szTempNewTemp, dwSectionStart, dwSectionLength))
+	if(!CopyFile(GetRawDataWrk(0), szTempNewTemp, dwSectionStart, dwSectionLength))
 	{
 		if(!bSameFileName)
 			CFile::Remove(szNewWave);
-		if (CFile::GetStatus(szTempNewTemp, temp)) CFile::Remove(szTempNewTemp);
+		if(CFile::GetStatus(szTempNewTemp, temp)) CFile::Remove(szTempNewTemp);
 		return FALSE;
 	}
 
-	if (!bSameFileName)
+	if(!bSameFileName)
 		//Save segment data we will use this documents segments for calculations
 		CheckPoint();  // save file state for Undo below
 
@@ -3488,7 +3519,7 @@ BOOL CSaDoc::CopySectionToNewWavFile(DWORD dwSectionStart, DWORD dwSectionLength
 	AdjustSegments(dwSectionStart+dwSectionLength, GetUnprocessedDataSize()-(dwSectionStart+dwSectionLength), TRUE); // adjust segments to new file size
 	AdjustSegments(0, dwSectionStart, TRUE); // adjust segments to new file size
 
-	if (bSameFileName)
+	if(bSameFileName)
 	{
 		// Set document to use new wave data
 		m_dwDataSize = dwSectionLength;
@@ -5120,7 +5151,7 @@ BOOL CSaDoc::DoFileSave()
 		return OnSaveDocument(szPathName, FALSE);
 
 	// this isn't a wave file, so let the user Save As...
-	if (!m_bIsWave)
+	if (m_bUsingTempFile)
 	{
 		OnFileSaveAs();
 		return TRUE;
@@ -5334,7 +5365,7 @@ void CSaDoc::OnFileSaveAs()
 		else
 			szGraphTitle = _T("");
 
-		CSaString sourceFileName = (m_bIsWave ? GetPathName() : m_szTempConvertedWave);
+		CSaString sourceFileName = ((!m_bUsingTempFile) ? GetPathName() : m_szTempConvertedWave);
 
 		if (sourceFileName.GetLength() && !CopyFile(sourceFileName, fileName)) // SDM 1.5Test10.2
 		{
@@ -6305,8 +6336,8 @@ BOOL CSaDoc::ReadPropertiesOfViews(Object_istream& obs, const CSaString & sPath)
 
 void CSaDoc::OnToolsImport()
 {
-	CDlgAnnotation* dlg; // annotation wizard dialog
-	dlg = new CDlgAnnotation(NULL, CDlgAnnotation::IMPORT, this);
+	// annotation wizard dialog
+	CDlgAnnotation * dlg = new CDlgAnnotation(NULL, CDlgAnnotation::IMPORT, this);
 	dlg->DoModal();
 	delete dlg;
 }
