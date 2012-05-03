@@ -1,6 +1,6 @@
 Speech Analyzer Technical Support
 
-Speech Analyzer 3.0.1, including AudioCon 3.21
+Speech Analyzer 3.1, including AudioCon 3.21
 
 1. Go to the Help menu
 
