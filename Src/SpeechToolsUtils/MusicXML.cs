@@ -363,25 +363,7 @@ namespace SIL.SpeechTools.Utils
 			if (doctype != null)
 				m_doc.RemoveChild(doctype);
 
-			// Create a new document type node
-			string inetDTDPath = "http://www.musicxml.org/dtds/partwise.dtd";
-
-			try
-			{
-				doctype = m_doc.CreateDocumentType("score-partwise", "-//Recordare//DTD MusicXML 1.1 Partwise//EN", inetDTDPath, null);
-			}
-			catch
-			{
-				try // the second attempt usually succeeds for some reason
-				{
-					doctype = m_doc.CreateDocumentType("score-partwise", "-//Recordare//DTD MusicXML 1.1 Partwise//EN", inetDTDPath, null);
-				}
-				catch
-				{
-					SilUtils.Utils.STMsgBox("Unable to create document type element.", MessageBoxButtons.OK);
-				}
-			}
-
+			doctype = m_doc.CreateDocumentType("score-partwise", "-//Recordare//DTD MusicXML 1.1 Partwise//EN", null, null);
 			m_doc.InsertAfter(doctype, decl);
 
 			return doctype;
