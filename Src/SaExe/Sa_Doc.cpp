@@ -111,7 +111,8 @@
 #include "Process\sa_p_twc.h"
 #include "playerRecorder.h"
 #include "dlgadvancedsegment.h"
-#include "dlgadvancedparse.h"
+#include "dlgadvancedparsewords.h"
+#include "dlgadvancedparsephrases.h"
 
 #include "sa.h"
 #include "sa_view.h"
@@ -154,8 +155,10 @@ BEGIN_MESSAGE_MAP(CSaDoc, CDocument)
 	ON_UPDATE_COMMAND_UI(ID_FILE_SAVE_AS, OnUpdateFileSaveAs)
 	ON_COMMAND(ID_FILE_SPLIT, OnFileSplit)
 	ON_UPDATE_COMMAND_UI(ID_FILE_SPLIT, OnUpdateFileSplit)
-	ON_COMMAND(ID_ADVANCED_PARSE, OnAdvancedParse)
-	ON_UPDATE_COMMAND_UI(ID_ADVANCED_PARSE, OnUpdateAdvancedParse)
+	ON_COMMAND(ID_ADVANCED_PARSE_WORD, OnAdvancedParseWords)
+	ON_UPDATE_COMMAND_UI(ID_ADVANCED_PARSE_WORD, OnUpdateAdvancedParseWords)
+	ON_COMMAND(ID_ADVANCED_PARSE_PHRASE, OnAdvancedParsePhrases)
+	ON_UPDATE_COMMAND_UI(ID_ADVANCED_PARSE_PHRASE, OnUpdateAdvancedParsePhrases)
 	ON_COMMAND(ID_ADVANCED_SEGMENT, OnAdvancedSegment)
 	ON_UPDATE_COMMAND_UI(ID_ADVANCED_SEGMENT, OnUpdateAdvancedSegment)
 	ON_COMMAND(ID_TOOLS_IMPORT, OnToolsImport)
@@ -242,7 +245,8 @@ CSaDoc::CSaDoc()
 	m_bUsingTempFile = false;
 
 	m_pDlgAdvancedSegment = NULL;
-	m_pDlgAdvancedParse = NULL;
+	m_pDlgAdvancedParseWords = NULL;
+	m_pDlgAdvancedParsePhrases = NULL;
 }
 
 /***************************************************************************/
@@ -318,10 +322,15 @@ CSaDoc::~CSaDoc()
 		delete m_pDlgAdvancedSegment;
 		m_pDlgAdvancedSegment = NULL;
 	}
-	if (m_pDlgAdvancedParse)
+	if (m_pDlgAdvancedParseWords)
 	{
-		delete m_pDlgAdvancedParse;
-		m_pDlgAdvancedParse = NULL;
+		delete m_pDlgAdvancedParseWords;
+		m_pDlgAdvancedParseWords = NULL;
+	}
+	if (m_pDlgAdvancedParsePhrases)
+	{
+		delete m_pDlgAdvancedParsePhrases;
+		m_pDlgAdvancedParsePhrases = NULL;
 	}
 }
 
@@ -1133,7 +1142,7 @@ void CSaDoc::ReadTranscription(int transType, ISaAudioDocumentReaderPtr saAudioD
 		CSaString sztmpAnnotation = *annotation;
 		szFullTrans += sztmpAnnotation;
 
-		// Loop throught the codepoints in the annotation and save
+		// Loop through the codepoints in the annotation and save
 		// offsets and durations for each.
 		for (int i = 0; i < sztmpAnnotation.GetLength(); i++)
 		{
@@ -1143,8 +1152,10 @@ void CSaDoc::ReadTranscription(int transType, ISaAudioDocumentReaderPtr saAudioD
 	}
 
 	*pSegment->GetString() = szFullTrans;
-	pSegment->GetOffsets()->InsertAt(0, &dwOffsets);
-	pSegment->GetDurations()->InsertAt(0, &dwDurations);
+	ASSERT(dwOffsets.GetSize()==dwDurations.GetSize());
+	for (int i=0;i<dwOffsets.GetSize();i++) {
+		pSegment->InsertAt(i,dwOffsets[i],dwDurations[i]);
+	}
 
 	free(annotation);
 }
@@ -1271,8 +1282,8 @@ BOOL CSaDoc::InsertTranscription(int transType, ISaAudioDocumentReaderPtr saAudi
 		while((nIndex!=-1)&&(pSegment->GetOffset(nIndex) <= dwPos))
 			nIndex = pSegment->GetNext(nIndex);
 
-		if(nIndex==-1)
-			nIndex = pSegment->GetSize();
+		if (nIndex==-1)
+			nIndex = pSegment->GetOffsetSize();
 	}
 
 	while (saAudioDocRdr->ReadSegment((long)transType, &offset, &length, annotation))
@@ -1291,13 +1302,14 @@ BOOL CSaDoc::InsertTranscription(int transType, ISaAudioDocumentReaderPtr saAudi
 
 	CSaString szFullTrans = *pSegment->GetString();
 	*pSegment->GetString() = szFullTrans.Left(nIndex) + szInsertTrans + szFullTrans.Mid(nIndex);
-	pSegment->GetOffsets()->InsertAt(nIndex, &dwOffsets);
-	pSegment->GetDurations()->InsertAt(nIndex, &dwDurations);
+	for (int i=0;i<dwOffsets.GetSize();i++) {
+		pSegment->InsertAt(nIndex,dwOffsets[i],dwDurations[i]);
+	}
 
 	free(annotation);
 
 	// apply input filter to transcription data
-	if(pSegment->GetInputFilter())
+	if (pSegment->GetInputFilter())
 	{
 		BOOL bChanged = (pSegment->GetInputFilter())(*pSegment->GetString());
 		if(bChanged)
@@ -1335,7 +1347,7 @@ void CSaDoc::InsertGlossPosAndRefTranscription(ISaAudioDocumentReaderPtr saAudio
 			nIndex = pGloss->GetNext(nIndex);
 
 		if(nIndex==-1)
-			nIndex = pGloss->GetSize();
+			nIndex = pGloss->GetOffsetSize();
 	}
 
 	while (saAudioDocRdr->ReadMarkSegment(&offset, &length, gloss, pos, ref, &isBookmark))
@@ -3320,9 +3332,13 @@ void CSaDoc::RestartAllProcesses()
 		for(int i=0; i < MAX_FILTER_NUMBER; i++)
 		{
 			if (!pMain->GetWbProcess(m_nWbProcess - 1, i))
+			{
 				break;
+			}
 			if (!((CDataProcess*)pMain->GetWbProcess(m_nWbProcess - 1, i))->IsCanceled())
+			{
 				continue;
+			}
 			((CDataProcess*)pMain->GetWbProcess(m_nWbProcess - 1, 0))->SetDataInvalid();
 			((CDataProcess*)pMain->GetWbProcess(m_nWbProcess - 1, i))->RestartProcess();
 		}
@@ -4116,7 +4132,7 @@ void CSaDoc::AdjustSegments(DWORD dwSectionStart, DWORD dwSectionLength, BOOL bS
 	if (bShrink)
 	{
 		// save new file size for later
-		int nGlossIndex = m_apSegments[GLOSS]->GetSize() - 1;
+		int nGlossIndex = m_apSegments[GLOSS]->GetOffsetSize() - 1;
 		DWORD dwNewDataSize ;
 		if(nGlossIndex != -1)  // we don't need the value if there is no gloss
 		{
@@ -4179,8 +4195,7 @@ void CSaDoc::AdjustSegments(DWORD dwSectionStart, DWORD dwSectionLength, BOOL bS
 					int nLength = m_apSegments[independent]->GetSegmentLength(nIndex);
 					CString* pAnnotation = m_apSegments[independent]->GetString();
 					*pAnnotation = pAnnotation->Left(nIndex) + pAnnotation->Right(pAnnotation->GetLength() - nLength - nIndex);
-					m_apSegments[independent]->GetOffsets()->RemoveAt(nIndex, nLength);
-					m_apSegments[independent]->GetDurations()->RemoveAt(nIndex, nLength);
+					m_apSegments[independent]->RemoveAt(nIndex,nLength);
 					// delete aligned dependent segments and gloss
 					for (int nLoop = 1; nLoop < ANNOT_WND_NUMBER; nLoop++)
 					{
@@ -4221,7 +4236,7 @@ void CSaDoc::AdjustSegments(DWORD dwSectionStart, DWORD dwSectionLength, BOOL bS
 	else
 	{
 		// save new file size for later
-		int nGlossIndex = m_apSegments[GLOSS]->GetSize() - 1;
+		int nGlossIndex = m_apSegments[GLOSS]->GetOffsetSize() - 1;
 		DWORD dwNewDataSize ;
 		if(nGlossIndex != -1)  // we don't need the value if there is no gloss
 		{
@@ -5039,7 +5054,7 @@ void CSaDoc::SerializeForUndoRedo(CArchive& ar)
 		ArchiveTransfer::tDWORD(ar, pView->GetStopCursorPosition());
 		for (int nLoop = 0; nLoop < ANNOT_WND_NUMBER; nLoop++)
 		{
-			if (m_apSegments[nLoop] && m_apSegments[nLoop]->GetSize())
+			if (m_apSegments[nLoop] && m_apSegments[nLoop]->GetOffsetSize())
 			{
 				ar << CSaString("7");
 				m_apSegments[nLoop]->Serialize(ar);
@@ -5541,7 +5556,7 @@ CString CSaDoc::GenerateSplitName( CSaView* pView, int convention, int index)
 		// find the ref based on the gloss position, since GLOSS is the iterator
 		CSegment * r = pView->GetAnnotation(REFERENCE);
 		int rindex = -1;
-		for (int j=0;j<r->GetSize();j++) 
+		for (int j=0;j<r->GetOffsetSize();j++) 
 		{
 			DWORD dwOffset = r->GetOffset(j);
 			if (dwStart==dwOffset) 
@@ -5685,7 +5700,7 @@ bool CSaDoc::ExportWord( int & count, int convention, CString path)
 	CSaView* pView = (CSaView*)GetNextView(pos);
 
 	// key off of gloss for now
-	int nLoop = pView->GetAnnotation(GLOSS)->GetSize();
+	int nLoop = pView->GetAnnotation(GLOSS)->GetOffsetSize();
 	if (nLoop==0) 
 	{
 		pApp->ErrorMessage(IDS_SPLIT_NO_ANNOTATION);
@@ -5754,7 +5769,7 @@ bool CSaDoc::ExportPhrase( Annotations type, int & count, CString path)
 	CSaView* pView = (CSaView*)GetNextView(pos);
 
 	// key off of gloss for now
-	int nLoop = pView->GetAnnotation(type)->GetSize();
+	int nLoop = pView->GetAnnotation(type)->GetOffsetSize();
 	if (nLoop==0) 
 	{
 		pApp->ErrorMessage(IDS_SPLIT_NO_ANNOTATION);
@@ -5963,46 +5978,95 @@ void CSaDoc::OnUpdateFileSaveAs(CCmdUI* pCmdUI)
 
 // Split function SDM 1.5Test8.2
 /***************************************************************************/
-// CSaDoc::OnAdvancedParse Parse wave data
+// CSaDoc::OnAdvancedParseWords Parse wave data
 /***************************************************************************/
-void CSaDoc::OnAdvancedParse()
+void CSaDoc::OnAdvancedParseWords()
 {
 	CheckPoint();
 
-	if (m_pDlgAdvancedParse==NULL)
+	if (m_pDlgAdvancedParseWords==NULL)
 	{
-		m_pDlgAdvancedParse = new CDlgAdvancedParse(this);
-		if (!m_pDlgAdvancedParse->Create()) {
+		m_pDlgAdvancedParseWords = new CDlgAdvancedParseWords(this);
+		if (!m_pDlgAdvancedParseWords->Create()) {
 			CSaApp* pApp = (CSaApp*)AfxGetApp();
 			pApp->ErrorMessage(IDS_ERROR_NO_DIALOG);
-			delete m_pDlgAdvancedParse;
-			m_pDlgAdvancedParse = NULL;
+			delete m_pDlgAdvancedParseWords;
+			m_pDlgAdvancedParseWords = NULL;
 			return;
 		}
 	}
-	m_pDlgAdvancedParse->Show((LPCTSTR)GetTitle());
+	m_pDlgAdvancedParseWords->Show((LPCTSTR)GetTitle());
+}
+
+/***************************************************************************/
+// CSaDoc::OnUpdateAdvancedParseWords Menu update
+/***************************************************************************/
+void CSaDoc::OnUpdateAdvancedParseWords(CCmdUI* pCmdUI)
+{
+	pCmdUI->Enable(GetUnprocessedDataSize() != 0); // enable if data is available
+}
+
+// Split function SDM 1.5Test8.2
+/***************************************************************************/
+// CSaDoc::OnAdvancedParsePhrases Parse wave data
+/***************************************************************************/
+void CSaDoc::OnAdvancedParsePhrases()
+{
+	CheckPoint();
+
+	if (m_pDlgAdvancedParsePhrases==NULL)
+	{
+		m_pDlgAdvancedParsePhrases = new CDlgAdvancedParsePhrases(this);
+		if (!m_pDlgAdvancedParsePhrases->Create()) {
+			CSaApp* pApp = (CSaApp*)AfxGetApp();
+			pApp->ErrorMessage(IDS_ERROR_NO_DIALOG);
+			delete m_pDlgAdvancedParsePhrases;
+			m_pDlgAdvancedParsePhrases = NULL;
+			return;
+		}
+	}
+	m_pDlgAdvancedParsePhrases->Show((LPCTSTR)GetTitle());
+}
+
+/***************************************************************************/
+// CSaDoc::OnUpdateAdvancedParsePhrases Menu update
+/***************************************************************************/
+void CSaDoc::OnUpdateAdvancedParsePhrases(CCmdUI* pCmdUI)
+{
+	pCmdUI->Enable(GetUnprocessedDataSize() != 0); // enable if data is available
+}
+
+/**
+* delete the contents of a segment type
+*/
+void CSaDoc::DeleteSegmentContents(Annotations type) {
+
+	CSegment * pSegment = m_apSegments[type];
+	pSegment->DeleteContents();
 }
 
 // Split function SDM 1.5Test8.2
 /***************************************************************************/
 // CSaDoc::AdvancedParse Parse wave data
 /***************************************************************************/
-BOOL CSaDoc::AdvancedParse()
+BOOL CSaDoc::AdvancedParseAuto()
 {
-
 	// get pointer to view
 	POSITION pos = GetFirstViewPosition();
 	CSaView* pView = (CSaView*)GetNextView(pos);
 
+	// add the gloss transcription bar to all views
 	pView->SendMessage(WM_COMMAND, ID_GLOSS_ALL);
 
 	CSaApp* pApp = (CSaApp*)AfxGetApp();
 
 	CSegment * pSegment = m_apSegments[GLOSS];
+
 	RestartAllProcesses();
+
 	pSegment->RestartProcess(); // for the case of a cancelled process
 	pSegment->SetDataInvalid(); // SDM 1.5Test10.7
-	short int nResult = LOWORD( pSegment->Process(NULL, this)); // process data
+	short int nResult = LOWORD( pSegment->Process( NULL, this)); // process data
 	if (nResult == PROCESS_ERROR)
 	{
 		// error parsing
@@ -6016,19 +6080,102 @@ BOOL CSaDoc::AdvancedParse()
 		return FALSE;
 	}
 
+	// for importing this is as far as we need to go
+	pView->RefreshGraphs(); // redraw graphs without legend window
+	return TRUE;
+}
+
+// Split function SDM 1.5Test8.2
+/***************************************************************************/
+// CSaDoc::AdvancedParse Parse wave data
+/***************************************************************************/
+BOOL CSaDoc::AdvancedParseWord()
+{
+	// get pointer to view
+	POSITION pos = GetFirstViewPosition();
+	CSaView* pView = (CSaView*)GetNextView(pos);
+
+	// add the gloss transcription bar to all views
+	pView->SendMessage(WM_COMMAND, ID_GLOSS_ALL);
+
+	CSaApp* pApp = (CSaApp*)AfxGetApp();
+
+	RestartAllProcesses();
+
+	DeleteSegmentContents(PHONETIC);
+	DeleteSegmentContents(GLOSS);
+
+	CSegment * pSegment = m_apSegments[GLOSS];
+	pSegment->RestartProcess(); // for the case of a cancelled process
+	pSegment->SetDataInvalid(); // SDM 1.5Test10.7
+	short int nResult = LOWORD( pSegment->Process( NULL, this)); // process data
+	if (nResult == PROCESS_ERROR)
+	{
+		// error parsing
+		pApp->ErrorMessage(IDS_ERROR_PARSE);
+		return FALSE;	
+	}
+	if (nResult == PROCESS_CANCELED)
+	{
+		// error canceled parsing
+		pApp->ErrorMessage(IDS_CANCELED);
+		return FALSE;
+	}
+
+	pView->RefreshGraphs(); // redraw graphs without legend window
+	return TRUE;
+}
+
+// Split function SDM 1.5Test8.2
+/***************************************************************************/
+// CSaDoc::AdvancedParse Parse wave data
+/***************************************************************************/
+BOOL CSaDoc::AdvancedParsePhrase()
+{
+	// get pointer to view
+	POSITION pos = GetFirstViewPosition();
+	CSaView* pView = (CSaView*)GetNextView(pos);
+
+	// add the gloss transcription bar to all views
+	pView->SendMessage(WM_COMMAND, ID_GLOSS_ALL);
+
+	CSaApp* pApp = (CSaApp*)AfxGetApp();
+
+	RestartAllProcesses();
+
 	// set the L1 and L2 segments to match the GLOSS
+	DeleteSegmentContents(PHONETIC);
+	DeleteSegmentContents(GLOSS);
+	DeleteSegmentContents(MUSIC_PL1);
+	DeleteSegmentContents(MUSIC_PL2);
+
+	CSegment * pSegment = m_apSegments[GLOSS];
+	pSegment->RestartProcess(); // for the case of a cancelled process
+	pSegment->SetDataInvalid(); // SDM 1.5Test10.7
+	short int nResult = LOWORD( pSegment->Process( NULL, this)); // process data
+	if (nResult == PROCESS_ERROR)
+	{
+		// error parsing
+		pApp->ErrorMessage(IDS_ERROR_PARSE);
+		return FALSE;	
+	}
+	if (nResult == PROCESS_CANCELED)
+	{
+		// error canceled parsing
+		pApp->ErrorMessage(IDS_CANCELED);
+		return FALSE;
+	}
+
 	CSegment * pSegmentPho = m_apSegments[PHONETIC];
 	CSegment * pSegmentL1 = m_apSegments[MUSIC_PL1];
-	pSegmentL1->DeleteContents();
 	CSegment * pSegmentL2 = m_apSegments[MUSIC_PL2];
-	pSegmentL2->DeleteContents();
 
 	// iterate through gloss segments and insert 
 	// segments into L1 and L2
 	CSaString delimiter = SEGMENT_DEFAULT_CHAR;
 	DWORD dwLast = -1;
 	DWORD dwOrder = 0;
-	for (int i=0;i<pSegmentPho->GetSize();i++)
+	for (int i=0;i<pSegmentPho->GetOffsetSize();i++)
 	{
 		DWORD dwStart = pSegmentPho->GetOffset(i);
 		DWORD dwDuration = pSegmentPho->GetDuration(i);
@@ -6045,14 +6192,6 @@ BOOL CSaDoc::AdvancedParse()
 	return TRUE;
 }
 
-/***************************************************************************/
-// CSaDoc::OnUpdateAdvancedParse Menu update
-/***************************************************************************/
-void CSaDoc::OnUpdateAdvancedParse(CCmdUI* pCmdUI)
-{
-	pCmdUI->Enable(GetUnprocessedDataSize() != 0); // enable if data is available
-}
-
 // Split function SDM 1.5Test8.2
 /***************************************************************************/
 // CSaDoc::OnAdvancedSegment Segment wave data
@@ -6067,8 +6206,8 @@ void CSaDoc::OnAdvancedSegment()
 		if (!m_pDlgAdvancedSegment->Create()) {
 			CSaApp* pApp = (CSaApp*)AfxGetApp();
 			pApp->ErrorMessage(IDS_ERROR_NO_DIALOG);
-			delete m_pDlgAdvancedParse;
-			m_pDlgAdvancedParse = NULL;
+			delete m_pDlgAdvancedSegment;
+			m_pDlgAdvancedSegment = NULL;
 			return;
 		}
 	}
@@ -6128,7 +6267,7 @@ BOOL CSaDoc::AdvancedSegment()
 		int nPhonetic;
 		BOOL bInsert = FALSE;
 		int nGloss;
-		for(nGloss=0;nGloss < pGloss->GetSize(); nGloss++)
+		for(nGloss=0;nGloss < pGloss->GetOffsetSize(); nGloss++)
 		{
 			dwStart = pGloss->GetOffset(nGloss);
 			dwStop = dwStart + pGloss->GetDuration(nGloss);
@@ -6169,7 +6308,7 @@ BOOL CSaDoc::AdvancedSegment()
 			if (bInsert)
 			{
 				dwStart = pGloss->GetOffset(nGloss); // Insert in same location as old segment
-				if(nPhonetic ==-1) nPhonetic = pSegment->GetSize(); // insert at end
+				if(nPhonetic ==-1) nPhonetic = pSegment->GetOffsetSize(); // insert at end
 				int nPrevious = pSegment->GetPrevious(nPhonetic);
 				if(nPrevious != -1)
 				{

@@ -1999,7 +1999,11 @@
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath=".\DlgAdvancedParse.cpp"
+					RelativePath=".\DlgAdvancedParsePhrases.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\DlgAdvancedParseWords.cpp"
 					>
 				</File>
 				<File
@@ -3703,7 +3707,11 @@
 				Name="Dialogs"
 				>
 				<File
-					RelativePath=".\DlgAdvancedParse.h"
+					RelativePath=".\DlgAdvancedParsePhrases.h"
+					>
+				</File>
+				<File
+					RelativePath=".\DlgAdvancedParseWords.h"
 					>
 				</File>
 				<File
@@ -3770,11 +3778,11 @@
 					RelativePath=".\TARGVIEW.H"
 					>
 				</File>
-        <File
-          RelativePath=".\WaveResampler.h"
-				>
-        </File>
-      </Filter>
+				<File
+					RelativePath=".\WaveResampler.h"
+					>
+				</File>
+			</Filter>
 		</Filter>
 	</Files>
 	<Globals>

@@ -968,7 +968,7 @@ void CSaApp::OnProcessBatchCommands()
 			if ((pDoc->GetSegment(GLOSS)->IsEmpty())&& (nMode!=CImport::KEEP))
 			{
 				// auto parse
-				if (!pDoc->AdvancedParse())
+				if (!pDoc->AdvancedParseAuto())
 				{
 					// process canceled by user
 					pDoc->Undo(FALSE);

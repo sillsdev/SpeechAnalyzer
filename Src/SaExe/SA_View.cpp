@@ -339,7 +339,7 @@ DWORD CSaView::OnPlaybackWord()
 	if (nActualGloss == -1)
 	{
 		// nothing within, check if there is gloss
-		if (pSegment->GetSize() > 0)
+		if (pSegment->GetOffsetSize() > 0)
 		{
 			// there is gloss, so the segment must be below the first gloss
 			pSegment->SelectSegment(*pDoc, 0); // select first gloss

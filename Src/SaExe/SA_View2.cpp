@@ -2345,10 +2345,7 @@ int CSaView::iGetStartCursorSegment(int iSegment)
 	ASSERT(pSegment);
 
 	// get pointer to annotation offsets
-	CDWordArray* pOffsets = pSegment->GetOffsets();
-	ASSERT(pOffsets);
-
-	if (pOffsets->GetSize() > 0) // there is at least one segment
+	if (pSegment->GetOffsetSize() > 0) // there is at least one segment
 		// get the segment index at the given position
 		idxPosition = pSegment->FindFromPosition(m_dwStartCursor);
 
@@ -2366,12 +2363,11 @@ int CSaView::iGetStopCursorSegment(int iSegment)
 	ASSERT(pSegment);
 
 	// get pointer to annotation offsets
-	CDWordArray* pOffsets = pSegment->GetOffsets();
-	ASSERT(pOffsets);
-
-	if (pOffsets->GetSize() > 0) // there is at least one segment
+	if (pSegment->GetOffsetSize() > 0) { 
+		// there is at least one segment
 		// get the segment index at the given position
 		idxPosition = pSegment->FindFromPosition(m_dwStopCursor);
+	}
 
 	return idxPosition;
 }
@@ -3613,8 +3609,6 @@ void CSaView::RemoveSelectedAnnotation()
 	}
 }
 
-
-
 /***************************************************************************/
 // CSaView::OnUpdateEditPaste
 // If something for the clipboard is selected, it enables the item.
@@ -4469,7 +4463,7 @@ void CSaView::OnUpdateEditAddWord(CCmdUI* pCmdUI)
 			nPos++;
 
 		DWORD dwStop;
-		if ((nPos == -1) || (nPos >= pSeg->GetSize()))
+		if ((nPos == -1) || (nPos >= pSeg->GetOffsetSize()))
 			dwStop = pDoc->GetUnprocessedDataSize();
 		else dwStop = pSeg->GetOffset(nPos);
 
@@ -4511,7 +4505,7 @@ void CSaView::OnUpdateEditAddBookmark(CCmdUI* pCmdUI)
 			nPos++;
 
 		DWORD dwStop;
-		if ((nPos == -1) || (nPos >= pSeg->GetSize()))
+		if ((nPos == -1) || (nPos >= pSeg->GetOffsetSize()))
 			dwStop = pDoc->GetUnprocessedDataSize();
 		else
 			dwStop = pSeg->GetOffset(nPos);
@@ -5441,8 +5435,8 @@ void CSaView::OnEditCopyPhoneticToPhonemic(void)
 
 	DWORD lastOffset = -1;
 	CPhoneticSegment * pPhonetic = (CPhoneticSegment*)GetAnnotation(PHONETIC);
-	int size = pPhonetic->GetSize();
-	for (int i=0;i<pPhonetic->GetSize();i++) 
+	int size = pPhonetic->GetOffsetSize();
+	for (int i=0;i<pPhonetic->GetOffsetSize();i++) 
 	{
 		DWORD offset = pPhonetic->GetOffset(i);
 		if (offset==lastOffset) 

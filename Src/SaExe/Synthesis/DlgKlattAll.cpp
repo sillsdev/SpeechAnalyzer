@@ -2381,7 +2381,7 @@ void CDlgKlattAll::LabelDocument(CSaDoc* pDoc)
 
 				szIndex.Format(_T("%d"),i+1);
 
-				pIndexSeg->Insert(pIndexSeg->GetSize(), &szIndex, '#', dwStart, dwDuration);
+				pIndexSeg->Insert(pIndexSeg->GetOffsetSize(), &szIndex, '#', dwStart, dwDuration);
 
 				labelTime = elapsedTime + length;
 			}
@@ -2401,7 +2401,7 @@ void CDlgKlattAll::LabelDocument(CSaDoc* pDoc)
 			DWORD dwDuration = DWORD(length*spkrDef.SR+0.5)*2;
 			CSaString szIpa(cChars[i].ipa);
 
-			pCharSeg->Insert(pCharSeg->GetSize(), &szIpa, '#', dwStart, dwDuration);
+			pCharSeg->Insert(pCharSeg->GetOffsetSize(), &szIpa, '#', dwStart, dwDuration);
 
 			lastCharStopTime += length;
 		}

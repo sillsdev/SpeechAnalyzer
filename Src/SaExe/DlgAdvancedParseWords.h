@@ -19,14 +19,14 @@
 
 class CSaDoc;
 
-class CDlgAdvancedParse : public CDialog
+class CDlgAdvancedParseWords : public CDialog
 {
-	DECLARE_DYNAMIC(CDlgAdvancedParse)
+	DECLARE_DYNAMIC(CDlgAdvancedParseWords)
 
 	// Construction/destruction/creation
 public:
-	CDlgAdvancedParse(CSaDoc * pDoc); // standard constructor
-	virtual ~CDlgAdvancedParse();
+	CDlgAdvancedParseWords(CSaDoc * pDoc); // standard constructor
+	virtual ~CDlgAdvancedParseWords();
 	
 	BOOL Create();
 	void Show(LPCTSTR title);
@@ -39,7 +39,7 @@ private:
 
 	// Dialog Data
 	//{{AFX_DATA(CDlgAdvancedParse)
-	enum { IDD = IDD_ADVANCEDPARSE };
+	enum { IDD = IDD_ADVANCEDPARSEWORD };
 	int m_nBreakWidth;
 	int m_nMaxThreshold;
 	int m_nMinThreshold;
@@ -52,7 +52,7 @@ protected:
 	void Undo();
 
 	// Generated message map functions
-	//{{AFX_MSG(CDlgAdvancedParse)
+	//{{AFX_MSG(CDlgAdvancedParseWords)
 	virtual BOOL OnInitDialog();
 	afx_msg void OnBreakWidthScroll();
 	afx_msg void OnMaxThresholdScroll();

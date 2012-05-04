@@ -2291,7 +2291,7 @@ static void CreateWordSegments(const int nWord, int& nSegments)
 {
 	CSaDoc* pDoc = (CSaDoc*)((CMainFrame*)AfxGetMainWnd())->GetCurrSaView()->GetDocument();
 
-	if(pDoc->GetSegment(GLOSS)->GetSize() > nWord)
+	if(pDoc->GetSegment(GLOSS)->GetOffsetSize() > nWord)
 	{
 		DWORD dwStart;
 		DWORD dwStop;
@@ -2336,7 +2336,7 @@ static void CreateWordSegments(const int nWord, int& nSegments)
 			{
 				pPhonetic->SetSelection(nIndex);
 				pPhonetic->Remove(pDoc, FALSE); // no checkpoint
-				if(nIndex >= pPhonetic->GetSize()) break;
+				if(nIndex >= pPhonetic->GetOffsetSize()) break;
 			}
 			else
 			{
@@ -2350,7 +2350,7 @@ static void CreateWordSegments(const int nWord, int& nSegments)
 		// add segments
 		while (nCount < nSegments)
 		{
-			if(nIndex == -1) nIndex = pPhonetic->GetSize();
+			if(nIndex == -1) nIndex = pPhonetic->GetOffsetSize();
 			DWORD dwBegin = dwStart + nCount;
 			CSaString szEmpty(SEGMENT_DEFAULT_CHAR);
 			pPhonetic->Insert(nIndex, &szEmpty, FALSE, dwBegin, 1);
@@ -2364,7 +2364,7 @@ static void CreateWordSegments(const int nWord, int& nSegments)
 			dwSize &= ~1;
 		};
 		dwSize += pDoc->GetFmtParm()->wBlockAlign;
-		if(nIndex == -1) nIndex = pPhonetic->GetSize();
+		if(nIndex == -1) nIndex = pPhonetic->GetOffsetSize();
 		nIndex = pPhonetic->GetPrevious(nIndex);
 		while((nIndex != -1)&&(pPhonetic->GetOffset(nIndex) >= dwStart))
 		{
@@ -2555,7 +2555,7 @@ BOOL CImport::ReadTable(Object_istream &obs, int nMode)
 	CSaString szString = WORD_DELIMITER;
 	if(nAnnotField[GLOSS] != -1)
 	{
-		for(int nIndex = 0; nIndex < pGloss->GetSize(); nIndex++)
+		for(int nIndex = 0; nIndex < pGloss->GetOffsetSize(); nIndex++)
 		{
 			if(pGloss->GetSelection() != nIndex) pGloss->SetSelection(nIndex);
 			pGloss->ReplaceSelectedSegment(pDoc, szString);
@@ -2564,7 +2564,7 @@ BOOL CImport::ReadTable(Object_istream &obs, int nMode)
 	szString = SEGMENT_DEFAULT_CHAR;
 	if(nAnnotField[PHONETIC] != -1)
 	{
-		for(int nIndex = 0; nIndex < pPhonetic->GetSize(); nIndex++)
+		for(int nIndex = 0; nIndex < pPhonetic->GetOffsetSize(); nIndex++)
 		{
 			pView->ASelection().SelectFromPosition(pView, PHONETIC, pPhonetic->GetOffset(nIndex), CASegmentSelection::FIND_EXACT);
 			pView->ASelection().SetSelectedAnnotationString(pView, szString, TRUE, FALSE);
@@ -2577,7 +2577,7 @@ BOOL CImport::ReadTable(Object_istream &obs, int nMode)
 	}
 	if(nAnnotField[ANNOT_WND_NUMBER/* POS*/] != -1)
 	{
-		for(int nIndex = 0; nIndex < pDoc->GetSegment(GLOSS)->GetSize(); nIndex++)
+		for(int nIndex = 0; nIndex < pDoc->GetSegment(GLOSS)->GetOffsetSize(); nIndex++)
 			((CGlossSegment*)pDoc->GetSegment(GLOSS))->GetPOSs()->SetAt(nIndex, "");
 	}
 
@@ -2599,16 +2599,16 @@ BOOL CImport::ReadTable(Object_istream &obs, int nMode)
 		if(szString.GetLength()) // gloss found
 		{
 			nIndexGloss++;
-			if(nIndexGloss >= pGloss->GetSize())
+			if(nIndexGloss >= pGloss->GetOffsetSize())
 			{
 				nIndexGloss--;
-				if(nIndexPhonetic == pPhonetic->GetPrevious(pPhonetic->GetSize()))
+				if(nIndexPhonetic == pPhonetic->GetPrevious(pPhonetic->GetOffsetSize()))
 				{
 					bAppendPhonetic = TRUE;
 				}
 				else
 				{
-					nIndexPhonetic = pPhonetic->GetPrevious(pPhonetic->GetSize());
+					nIndexPhonetic = pPhonetic->GetPrevious(pPhonetic->GetOffsetSize());
 					bAppendPhonetic = FALSE;
 				}
 				bAppendGloss = TRUE;
@@ -2659,10 +2659,10 @@ BOOL CImport::ReadTable(Object_istream &obs, int nMode)
 		nIndexPhonetic = pPhonetic->GetNext(nIndexPhonetic);
 		if(nIndexPhonetic == -1)
 		{
-			nIndexPhonetic = pPhonetic->GetPrevious(pPhonetic->GetSize());
+			nIndexPhonetic = pPhonetic->GetPrevious(pPhonetic->GetOffsetSize());
 			bAppendPhonetic = TRUE;
 		}
-		else if(((nIndexGloss + 1) < pGloss->GetSize()) && (pPhonetic->GetOffset(nIndexPhonetic) >= pGloss->GetOffset(nIndexGloss + 1)))
+		else if(((nIndexGloss + 1) < pGloss->GetOffsetSize()) && (pPhonetic->GetOffset(nIndexPhonetic) >= pGloss->GetOffset(nIndexGloss + 1)))
 		{
 			nIndexPhonetic = pPhonetic->GetPrevious(nIndexPhonetic);
 			bAppendPhonetic = TRUE;
@@ -3570,7 +3570,7 @@ void CDlgAnnotation::OK()
 	if (m_pSaDoc->GetSegment(GLOSS)->IsEmpty())
 	{
 		// auto parse
-		if (!m_pSaDoc->AdvancedParse())
+		if (!m_pSaDoc->AdvancedParseAuto())
 		{
 			// process canceled by user
 			m_pSaDoc->Undo(FALSE);
@@ -3590,10 +3590,16 @@ void CDlgAnnotation::OK()
 				m_pSaDoc->Undo(FALSE);
 				return;
 			}
-			pArray[CHARACTER_OFFSETS].InsertAt(0,pSegment->GetOffsets()); // Copy Arrays
-			pArray[CHARACTER_DURATIONS].InsertAt(0,pSegment->GetDurations());
-
-			pArray[WORD_OFFSETS].InsertAt(0,m_pSaDoc->GetSegment(GLOSS)->GetOffsets()); // Copy gloss segments SDM 1.5Test8.2
+			for (int i=0;i<pSegment->GetOffsetSize();i++) {
+				pArray[CHARACTER_OFFSETS].InsertAt(i,pSegment->GetOffset(i)); // Copy Arrays
+			}
+			for (int i=0;i<pSegment->GetDurationSize();i++) {
+				pArray[CHARACTER_DURATIONS].InsertAt(i,pSegment->GetDuration(i));
+			}
+			// Copy gloss segments SDM 1.5Test8.2
+			for (int i=0;i<m_pSaDoc->GetSegment(GLOSS)->GetOffsetSize();i++) {
+				pArray[WORD_OFFSETS].InsertAt(i,m_pSaDoc->GetSegment(GLOSS)->GetOffset(i)); 
+			}
 			// Create a gloss break at initial position SDM 1.5Test8.2
 			if (pArray[WORD_OFFSETS][0] != pArray[CHARACTER_OFFSETS][0])
 			{
@@ -3609,7 +3615,9 @@ void CDlgAnnotation::OK()
 		}
 	case IDC_MANUAL: // SDM 1.5Test8.2
 		{
-			pArray[WORD_OFFSETS].InsertAt(0,m_pSaDoc->GetSegment(GLOSS)->GetOffsets()); // Copy gloss segments SDM 1.5Test8.2
+			for (int i=0;i<m_pSaDoc->GetSegment(GLOSS)->GetOffsetSize();i++) {
+				pArray[WORD_OFFSETS].InsertAt(i,m_pSaDoc->GetSegment(GLOSS)->GetOffset(i)); // Copy gloss segments SDM 1.5Test8.2
+			}
 			switch(m_nAlignBy)
 			{
 			case IDC_NONE:
@@ -3679,7 +3687,10 @@ void CDlgAnnotation::OK()
 		}
 	case IDC_KEEP: // SDM 1.5Test8.2
 		{
-			pArray[WORD_OFFSETS].InsertAt(0,m_pSaDoc->GetSegment(GLOSS)->GetOffsets()); // Copy gloss segments SDM 1.5Test8.2
+			// Copy gloss segments SDM 1.5Test8.2
+			for (int i=0;i<m_pSaDoc->GetSegment(GLOSS)->GetOffsetSize();i++) {
+				pArray[WORD_OFFSETS].InsertAt(0,m_pSaDoc->GetSegment(GLOSS)->GetOffset(i));
+			}
 			// copy segment locations not character counts
 			int nIndex = 0;
 
@@ -3738,7 +3749,7 @@ void CDlgAnnotation::OK()
 				case IDC_NONE:
 					szNext = pTable->GetNext(nAlignMode, nStringIndex, m_szPhonetic);
 					if (szNext.GetLength()==0)szNext+=SEGMENT_DEFAULT_CHAR;
-					pSegment->Insert(pSegment->GetSize(),&szNext, FALSE,
+					pSegment->Insert(pSegment->GetOffsetSize(),&szNext, FALSE,
 						pArray[CHARACTER_OFFSETS][nIndex], pArray[CHARACTER_DURATIONS][nIndex]);
 					break;
 				case IDC_WORD:
@@ -3757,7 +3768,7 @@ void CDlgAnnotation::OK()
 						nGlossIndex++;  // Increment word index
 					}
 					if (szNext.GetLength()==0)szNext+=SEGMENT_DEFAULT_CHAR;
-					pSegment->Insert(pSegment->GetSize(),&szNext, FALSE,
+					pSegment->Insert(pSegment->GetOffsetSize(),&szNext, FALSE,
 						pArray[CHARACTER_OFFSETS][nIndex], pArray[CHARACTER_DURATIONS][nIndex]);
 					break;
 				case IDC_CHARACTER:
@@ -3795,14 +3806,14 @@ void CDlgAnnotation::OK()
 					}
 
 					if (szNext.GetLength()==0)szNext+=SEGMENT_DEFAULT_CHAR;
-					pSegment->Insert(pSegment->GetSize(),&szNext, FALSE,
+					pSegment->Insert(pSegment->GetOffsetSize(),&szNext, FALSE,
 						pArray[CHARACTER_OFFSETS][nIndex], pArray[CHARACTER_DURATIONS][nIndex]);
 					break;
 				}
 			}
 			szNext = pTable->GetRemainder(nAlignMode, nStringIndex, m_szPhonetic);
 			if (szNext.GetLength()==0)szNext+=SEGMENT_DEFAULT_CHAR;
-			pSegment->Insert(pSegment->GetSize(),&szNext,FALSE,
+			pSegment->Insert(pSegment->GetOffsetSize(),&szNext,FALSE,
 				pArray[CHARACTER_OFFSETS][nOffsetSize-1], pArray[CHARACTER_DURATIONS][nOffsetSize-1]);
 			// SDM 1.06.8 apply input filter to segment
 			if (pSegment->GetInputFilter())
@@ -3829,7 +3840,7 @@ void CDlgAnnotation::OK()
 				case IDC_NONE:
 					szNext = pTable->GetNext(nAlignMode, nStringIndex, m_szPhonemic);
 					if (szNext.GetLength()!=0) // Skip Empty Segments
-						pSegment->Insert(pSegment->GetSize(),&szNext, FALSE,
+						pSegment->Insert(pSegment->GetOffsetSize(),&szNext, FALSE,
 						pArray[CHARACTER_OFFSETS][nIndex], pArray[CHARACTER_DURATIONS][nIndex]);
 					break;
 				case IDC_WORD:
@@ -3848,7 +3859,7 @@ void CDlgAnnotation::OK()
 						nGlossIndex++;  // Increment word index
 					}
 					if (szNext.GetLength()==0) continue; // Skip NULL strings
-					pSegment->Insert(pSegment->GetSize(),&szNext, FALSE,
+					pSegment->Insert(pSegment->GetOffsetSize(),&szNext, FALSE,
 						pArray[CHARACTER_OFFSETS][nIndex], pArray[CHARACTER_DURATIONS][nIndex]);
 					break;
 				case IDC_CHARACTER:
@@ -3886,14 +3897,14 @@ void CDlgAnnotation::OK()
 					}
 
 					if (szNext.GetLength()==0) continue; // Skip NULL strings
-					pSegment->Insert(pSegment->GetSize(),&szNext, FALSE,
+					pSegment->Insert(pSegment->GetOffsetSize(),&szNext, FALSE,
 						pArray[CHARACTER_OFFSETS][nIndex], pArray[CHARACTER_DURATIONS][nIndex]);
 					break;
 				}
 			}
 			szNext = pTable->GetRemainder(nAlignMode, nStringIndex, m_szPhonemic);
 			if (szNext.GetLength()!=0) // Skip empty segments
-				pSegment->Insert(pSegment->GetSize(),&szNext,FALSE,
+				pSegment->Insert(pSegment->GetOffsetSize(),&szNext,FALSE,
 				pArray[CHARACTER_OFFSETS][nOffsetSize-1], pArray[CHARACTER_DURATIONS][nOffsetSize-1]);
 			// SDM 1.06.8 apply input filter to segment
 			if (pSegment->GetInputFilter())
@@ -3930,7 +3941,7 @@ void CDlgAnnotation::OK()
 				case IDC_NONE:
 					szNext = pTable->GetNext(nAlignMode, nStringIndex, m_szOrthographic);
 					if (szNext.GetLength()!=0) // Skip Empty Segments
-						pSegment->Insert(pSegment->GetSize(),&szNext, FALSE,
+						pSegment->Insert(pSegment->GetOffsetSize(),&szNext, FALSE,
 						pArray[CHARACTER_OFFSETS][nIndex], pArray[CHARACTER_DURATIONS][nIndex]);
 					break;
 				case IDC_WORD:
@@ -3949,7 +3960,7 @@ void CDlgAnnotation::OK()
 						nGlossIndex++;  // Increment word index
 					}
 					if (szNext.GetLength()==0) continue; // Skip NULL words
-					pSegment->Insert(pSegment->GetSize(),&szNext, FALSE,
+					pSegment->Insert(pSegment->GetOffsetSize(),&szNext, FALSE,
 						pArray[CHARACTER_OFFSETS][nIndex], pArray[CHARACTER_DURATIONS][nIndex]);
 					break;
 				case IDC_CHARACTER:
@@ -3987,14 +3998,14 @@ void CDlgAnnotation::OK()
 					}
 
 					if (szNext.GetLength()==0) continue; // Skip NULL strings
-					pSegment->Insert(pSegment->GetSize(),&szNext, FALSE,
+					pSegment->Insert(pSegment->GetOffsetSize(),&szNext, FALSE,
 						pArray[CHARACTER_OFFSETS][nIndex], pArray[CHARACTER_DURATIONS][nIndex]);
 					break;
 				}
 			}
 			szNext = pTable->GetRemainder(nAlignMode, nStringIndex, m_szOrthographic);
 			if (szNext.GetLength()!=0) // Skip empty segments
-				pSegment->Insert(pSegment->GetSize(),&szNext,FALSE,
+				pSegment->Insert(pSegment->GetOffsetSize(),&szNext,FALSE,
 				pArray[CHARACTER_OFFSETS][nOffsetSize-1], pArray[CHARACTER_DURATIONS][nOffsetSize-1]);
 			// SDM 1.06.8 apply input filter to segment
 			if (pSegment->GetInputFilter())

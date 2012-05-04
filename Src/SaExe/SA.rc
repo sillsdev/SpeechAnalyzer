@@ -341,37 +341,62 @@ BEGIN
     GROUPBOX        "",IDC_STATIC,9,75,189,40
 END
 
-IDD_ADVANCEDPARSE DIALOGEX 0, 0, 207, 144
+IDD_ADVANCEDPARSEWORD DIALOGEX 0, 0, 178, 144
 STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Automatic Parse"
+CAPTION "Automatic Word Parse"
 FONT 8, "MS Sans Serif", 0, 0, 0x0
 BEGIN
     EDITTEXT        IDC_BREAKWIDTHEDIT,84,25,19,12
     EDITTEXT        IDC_PARSEMAXTHRESHOLDEDIT,84,43,19,12
     EDITTEXT        IDC_PARSEMINTHRESHOLDEDIT,84,61,19,12
-    LTEXT           "",IDC_BREAKWIDTHSCROLL,106,25,10,12
-    LTEXT           "",IDC_PARSEMAXTHRESHOLDSCROLL,106,43,10,12
-    LTEXT           "",IDC_PARSEMINTHRESHOLDSCROLL,106,62,10,12
-    DEFPUSHBUTTON   "OK",IDOK,43,120,50,14
-    PUSHBUTTON      "Cancel",IDCANCEL,96,120,50,14
-    PUSHBUTTON      "Preview",IDC_APPLY,149,120,50,14
-    GROUPBOX        "Analysis",IDC_STATIC,3,2,200,137
+    LTEXT           "",IDC_BREAKWIDTHSCROLL,105,25,10,12
+    LTEXT           "",IDC_PARSEMAXTHRESHOLDSCROLL,105,43,10,12
+    LTEXT           "",IDC_PARSEMINTHRESHOLDSCROLL,105,62,10,12
+    DEFPUSHBUTTON   "OK",IDOK,11,120,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,64,120,50,14
+    PUSHBUTTON      "Preview",IDC_APPLY,117,120,50,14
+    GROUPBOX        "Analysis",IDC_STATIC,2,4,173,137
     LTEXT           "Min Break Width",IDC_STATIC,11,27,60,8
-    LTEXT           "ms",IDC_STATIC,120,27,10,8
     LTEXT           "Max Threshold",IDC_STATIC,11,45,60,8
-    LTEXT           "%",IDC_STATIC,120,45,10,8
-    LTEXT           "Min Threshold",IDC_STATIC,11,63,46,8
-    LTEXT           "%",IDC_STATIC,120,63,8,8
-    GROUPBOX        "",IDC_STATIC,9,77,189,40
-    LTEXT           "* If the magnitude goes below Min Threshold and then stays below Max Threshold for Min Break Width, a Breath Group Marker is inserted.",IDC_STATIC,14,85,179,27
-    CTEXT           "Word Defaults",IDC_STATIC,135,8,29,16
-    CTEXT           "25",IDC_STATIC,145,27,10,8
-    CTEXT           "10",IDC_STATIC,145,45,10,8
-    CTEXT           "5",IDC_STATIC,146,63,8,8
-    CTEXT           "Phrase Defaults",IDC_STATIC,170,8,28,16
-    CTEXT           "500",IDC_STATIC,177,27,13,8
-    CTEXT           "10",IDC_STATIC,179,45,9,8
-    CTEXT           "5",IDC_STATIC,181,63,8,8
+    LTEXT           "Min Threshold",IDC_STATIC,11,63,60,8
+    LTEXT           "ms",IDC_STATIC,117,27,10,8
+    LTEXT           "%",IDC_STATIC,117,45,10,8
+    LTEXT           "%",IDC_STATIC,117,64,10,8
+    GROUPBOX        "",IDC_STATIC,6,77,164,40
+    LTEXT           "* If the magnitude goes below Min Threshold and then stays below Max Threshold for Min Break Width, a Breath Group Marker is inserted.",IDC_STATIC,11,85,153,27
+    CTEXT           "Defaults",IDC_STATIC,131,16,29,9
+    CTEXT           "25",IDC_STATIC,131,27,28,8
+    CTEXT           "10",IDC_STATIC,131,45,28,8
+    CTEXT           "5",IDC_STATIC,131,63,28,8
+END
+
+IDD_ADVANCEDPARSEPHRASE DIALOGEX 0, 0, 178, 144
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Automatic Phrase Parse"
+FONT 8, "MS Sans Serif", 0, 0, 0x0
+BEGIN
+    EDITTEXT        IDC_BREAKWIDTHEDIT,84,25,19,12
+    EDITTEXT        IDC_PARSEMAXTHRESHOLDEDIT,84,43,19,12
+    EDITTEXT        IDC_PARSEMINTHRESHOLDEDIT,84,61,19,12
+    LTEXT           "",IDC_BREAKWIDTHSCROLL,105,25,10,12
+    LTEXT           "",IDC_PARSEMAXTHRESHOLDSCROLL,105,43,10,12
+    LTEXT           "",IDC_PARSEMINTHRESHOLDSCROLL,105,62,10,11
+    DEFPUSHBUTTON   "OK",IDOK,11,120,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,64,120,50,14
+    PUSHBUTTON      "Preview",IDC_APPLY,117,120,50,14
+    GROUPBOX        "Analysis",IDC_STATIC,2,4,173,137
+    LTEXT           "Min Break Width",IDC_STATIC,11,27,60,8
+    LTEXT           "Max Threshold",IDC_STATIC,11,45,60,8
+    LTEXT           "Min Threshold",IDC_STATIC,11,63,60,8
+    LTEXT           "ms",IDC_STATIC,117,27,10,8
+    LTEXT           "%",IDC_STATIC,117,45,10,8
+    LTEXT           "%",IDC_STATIC,117,64,10,8
+    GROUPBOX        "",IDC_STATIC,6,77,165,40
+    LTEXT           "* If the magnitude goes below Min Threshold and then stays below Max Threshold for Min Break Width, a Breath Group Marker is inserted.",IDC_STATIC,11,85,153,27
+    CTEXT           "Defaults",IDC_STATIC,131,16,28,8
+    CTEXT           "500",IDC_STATIC,131,27,28,8
+    CTEXT           "10",IDC_STATIC,131,45,28,8
+    CTEXT           "5",IDC_STATIC,131,63,28,8
 END
 
 IDD_RECORDEROPTIONS DIALOG  0, 0, 135, 141
@@ -2080,9 +2105,15 @@ BEGIN
         BOTTOMMARGIN, 137
     END
 
-    IDD_ADVANCEDPARSE, DIALOG
+    IDD_ADVANCEDPARSEWORD, DIALOG
     BEGIN
-        RIGHTMARGIN, 206
+        RIGHTMARGIN, 177
+        BOTTOMMARGIN, 141
+    END
+
+    IDD_ADVANCEDPARSEPHRASE, DIALOG
+    BEGIN
+        RIGHTMARGIN, 177
         BOTTOMMARGIN, 141
     END
 
@@ -2654,7 +2685,8 @@ BEGIN
         POPUP "Automatic &Markup"
         BEGIN
             MENUITEM "Locate Phonetic &Segments",   ID_ADVANCED_SEGMENT
-            MENUITEM "Locate Words or &Phrases",    ID_ADVANCED_PARSE
+            MENUITEM "Locate &Phrases",             ID_ADVANCED_PARSE_PHRASE
+            MENUITEM "Locate &Words",               ID_ADVANCED_PARSE_WORD
             MENUITEM "&Align Transcription Data",   ID_AUTO_ALIGN
         END
         MENUITEM SEPARATOR
@@ -3839,7 +3871,7 @@ BEGIN
     IDR_MAINFRAME           "Speech Analyzer"
     IDR_SA_ANNTYPE          "\nSA\nSA Document\nWAV Files (*.wav)\n.wav\nannFileType\nANN File Type"
     VS_VERSION              "Version 3.0.1.11"
-    VS_COPYRIGHT            "© 1996-2011 SIL International (MSEA).\nAll Rights Reserved."
+    VS_COPYRIGHT            "© 1996-2012 SIL International (MSEA).\nAll Rights Reserved."
     IDR_SA_WBTYPE           "\nWB\nSA Workbench\nWB Files (*.wb)\n.wb\nwbFileType\nWB File Type"
 END
 
@@ -4060,9 +4092,11 @@ BEGIN
     ID_TYPES_LOUDNESS       "Change the current graph type to loudness\nLoudness"
     ID_DRAWING_STANDARD     "Use standard algorithm for graph drawing\nStandard Algorithm"
     ID_DRAWING_ZGRAPH       "Use Z-Graph algorithm for graph drawing\nZ-Graph Algorithm"
-    ID_ADVANCED_PARSE       "Auto parse the wave file into phrases\nAuto Parse"
     ID_ADVANCED_SEGMENT     "Auto segment the wave file into phones\nAuto Segment"
     ID_ADVANCED_AUTOALIGN   "Auto align the phonetic to the phone segments in the wave file\nAuto Align"
+    ID_ADVANCED_PARSE_WORD  "Auto parse the wave file into words\nAuto Parse Words"
+    ID_ADVANCED_PARSE_PHRASE 
+                            "Auto parse the wave file into phrases\nAuto Parse Phrases"
 END
 
 STRINGTABLE 
@@ -4623,6 +4657,10 @@ BEGIN
     IDS_HELPERWND_SNAPSHOT  "Zoom other graphs as needed and click the Snapshot Spectrogram button."
     IDS_HELPERWND_NO_DURATIONS "Add Phonetic Segments"
     IDS_HELPERWND_OUT_OF_RANGE "Data out of range"
+    IDS_CONFIRM_GLOSS_NOT_EMPTY 
+                            "This graph already contains gloss or phonetic data in the transcription bar.\nIf you continue, it will be overwritten.  Do you wish to continue?"
+    IDS_CONFIRM_TRANSCRIPTION_NOT_EMPTY 
+                            "This graph already contains phonetic, gloss or phrase transcription data.\nIf you continue, it will be overwritten.  Do you wish to continue?"
 END
 
 STRINGTABLE 
@@ -4792,11 +4830,11 @@ END
 
 STRINGTABLE 
 BEGIN
-    IDS_EMPTY_ANNOTATIONS   "The annotations for segment %1 were empty.  The segment will not be saved because a filename get could not be generated."""
+    IDS_EMPTY_ANNOTATIONS   "The annotations for segment %1 were empty.  The segment will not be saved because a filename get could not be generated."
     IDS_SPLIT_BAD_COPY      "Unable to complete copy of transcription data for %1.\nThe transcription data is lost."
     IDS_SPLIT_COMPLETE      "The split is complete.  %1 segments were created."
     IDS_CONFIRM_PHONEMIC_COPY 
-                            "This process will delete the existing phonemic data. Do you want to continue?"
+                            "This process will delete the existing phonemic data.\nDo you want to continue?"
 END
 
 #endif    // English (U.S.) resources

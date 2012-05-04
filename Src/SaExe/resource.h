@@ -172,7 +172,6 @@
 #define IDI_PREV                        350
 #define IDI_UP                          351
 #define IDI_DOWN                        352
-#define IDC_HAND_UP                     352
 #define IDD_GRAPHTYPES_ORDER            353
 #define IDR_SYNTHESIS_VOCAL_TRACT       353
 #define IDC_MFINGERN                    355
@@ -232,7 +231,6 @@
 #define IDS_ERROR_FORMATMONO            1008
 #define IDD_ADVANCEDSEGMENT             1008
 #define IDS_ERROR_DATACHUNK             1009
-#define IDD_ADVANCEDPARSE               1009
 #define IDD_OPTIONSCOLORSPAGE           1010
 #define IDS_ERROR_NODATA                1010
 #define IDD_RECORDEROPTIONS             1011
@@ -1577,6 +1575,8 @@
 #define IDC_SPLIT_WORD_SUBFOLDER_NAME   2037
 #define IDC_EXPORT_PHRASE               2038
 #define IDC_EXPORT_WORD                 2039
+#define IDD_ADVANCEDPARSEWORD           2040
+#define IDD_ADVANCEDPARSEPHRASE         2041
 #define IDS_PLAYER_SMALL                3000
 #define IDS_PLAYER_LARGE                3001
 #define IDS_STATTXT_PROCESSING          4000
@@ -1692,6 +1692,10 @@
 #define IDS_HELPERWND_SNAPSHOT          11018
 #define IDS_HELPERWND_NO_DURATIONS      11019
 #define IDS_HELPERWND_OUT_OF_RANGE      11020
+#define IDS_GLOSS_NOT_EMPTY             11021
+#define IDS_CONFIRM_GLOSS_NOT_EMPTY     11021
+#define IDS_CONFIRM_GLOSS_NOT_EMPTY2    11022
+#define IDS_CONFIRM_TRANSCRIPTION_NOT_EMPTY 11022
 #define ID_FILE_RECORD                  32776
 #define ID_EDIT_SCREENCAPTURE           32778
 #define ID_EDIT_EQUALIZELENGTH          32785
@@ -1733,9 +1737,10 @@
 #define ID_TYPES_LOUDNESS               32886
 #define ID_DRAWING_STANDARD             32888
 #define ID_DRAWING_ZGRAPH               32889
-#define ID_ADVANCED_PARSE               32891
 #define ID_ADVANCED_SEGMENT             32892
 #define ID_ADVANCED_AUTOALIGN           32893
+#define ID_ADVANCED_PARSE_WORD          32894
+#define ID_ADVANCED_PARSE_PHRASE        32895
 #define ID_POPUP0_PRINT                 32900
 #define ID_POPUP0_GRIDLINES             32901
 #define ID_DRAWING_BORDERS              32908

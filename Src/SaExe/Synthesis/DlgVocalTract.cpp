@@ -1291,7 +1291,7 @@ void CDlgVocalTract::OnGetSegments(CFlexEditGrid &cGrid)
 	int column = columnFirst;
 	const DWORD dwMinSilence = pDoc->GetBytesFromTime(0.0001);
 
-	cGrid.SetCols(0, pPhonetic->GetSize());
+	cGrid.SetCols(0, pPhonetic->GetOffsetSize());
 
 	WORD wSmpSize = WORD(pDoc->GetFmtParm()->wBlockAlign / pDoc->GetFmtParm()->wChannels);
 
@@ -2298,9 +2298,9 @@ void CDlgVocalTract::LabelDocument(CSaDoc* pDoc)
 	double labelTime = 0;
 	CSaString szIPA;
 	double lastCharStopTime = 0;
-	for(unsigned int i = 0;i < cChars.size();i++)
+	for (unsigned int i = 0;i < cChars.size();i++)
 	{
-		if(labelTime <= elapsedTime)
+		if (labelTime <= elapsedTime)
 		{
 			const double minLabelTime = 0.005;
 			DWORD dwStart = DWORD(elapsedTime*SR+0.5)*2;
@@ -2310,18 +2310,19 @@ void CDlgVocalTract::LabelDocument(CSaDoc* pDoc)
 
 			szIndex.Format(_T("%d"),i+1);
 
-			pIndexSeg->Insert(pIndexSeg->GetSize(), &szIndex, '#', dwStart, dwDuration);
+			pIndexSeg->Insert(pIndexSeg->GetOffsetSize(), &szIndex, '#', dwStart, dwDuration);
 
 			labelTime = elapsedTime + minLabelTime;
 		}
-		if(szIPA != cChars[i].m_ipa || i == cChars.size() - 1)
+		if (szIPA != cChars[i].m_ipa || i == cChars.size() - 1)
 		{
 			DWORD dwStart = DWORD(lastCharStopTime*SR+0.5)*2;
 			double length = elapsedTime - lastCharStopTime;
 			DWORD dwDuration = DWORD(length*SR+0.5)*2;
 
-			if(dwDuration)
-				pCharSeg->Insert(pCharSeg->GetSize(), &szIPA, '#', dwStart, dwDuration);
+			if (dwDuration) {
+				pCharSeg->Insert(pCharSeg->GetOffsetSize(), &szIPA, '#', dwStart, dwDuration);
+			}
 			szIPA = cChars[i].m_ipa;
 
 			lastCharStopTime += length;

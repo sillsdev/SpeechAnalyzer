@@ -60,25 +60,24 @@ long CProcessDurations::Process(void* pCaller, ISaDoc* pDoc, int nProgress, int 
     if (IsCanceled()) return MAKELONG(PROCESS_CANCELED, nProgress); // process canceled
     if (IsDataReady()) return MAKELONG(--nLevel, nProgress); // data is already ready
     BeginWaitCursor(); // wait cursor
-    if(!StartProcess(pCaller, IDS_STATTXT_PROCESSDUR)) // memory allocation failed
+    if (!StartProcess(pCaller, IDS_STATTXT_PROCESSDUR)) // memory allocation failed
     { 
-      EndProcess(); // end data processing
-      EndWaitCursor();
-      return MAKELONG(PROCESS_ERROR, nProgress);
+		EndProcess(); // end data processing
+		EndWaitCursor();
+		return MAKELONG(PROCESS_ERROR, nProgress);
     }
     
     // set pointer to segment durations
     CSegment* pSegment = pDoc->GetSegment(PHONETIC);
     CString* pPhonetic = pSegment->GetString();
-    m_pDurations = pSegment->GetDurations();
     
     // find min and max durations
     m_dwMaxValue = 0;
     m_dwMinValue = ULONG_MAX;
     for (int i = 0; i < pPhonetic->GetLength(); i++)
     {     
-     m_dwMaxValue = max(m_dwMaxValue, m_pDurations->GetAt(i));
-     m_dwMinValue = min(m_dwMinValue, m_pDurations->GetAt(i));
+		m_dwMaxValue = max(m_dwMaxValue, pSegment->GetDurationAt(i));
+		m_dwMinValue = min(m_dwMinValue, pSegment->GetDurationAt(i));
     } 
     
     SetDataReady();

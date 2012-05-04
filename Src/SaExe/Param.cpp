@@ -22,10 +22,11 @@
 #include "Process\sa_p_pit.h"
 #include "Process\sa_p_spi.h"
 
-static const char* psz_parse   = "parse";
-static const char* psz_breakWidth   = "break_ms";
-static const char* psz_minThreshold   = "minThreshold";
-static const char* psz_maxThreshold   = "maxThreshold";
+static const char* psz_parse			= "parse";
+static const char* psz_breakWidth		= "break_ms";
+static const char* psz_phraseBreakWidth	= "phrase_break_ms";
+static const char* psz_minThreshold		= "minThreshold";
+static const char* psz_maxThreshold		= "maxThreshold";
 
 void ParseParm::WriteProperties(Object_ostream& obs)
 {
@@ -33,6 +34,7 @@ void ParseParm::WriteProperties(Object_ostream& obs)
 
 	// write out properties
 	obs.WriteInteger(psz_breakWidth, (int)(fBreakWidth * 1000.0 + 0.5));
+	obs.WriteInteger(psz_phraseBreakWidth, (int)(fPhraseBreakWidth * 1000.0 + 0.5));
 	obs.WriteInteger(psz_maxThreshold, nMaxThreshold);
 	obs.WriteInteger(psz_minThreshold, nMinThreshold);
 
@@ -41,33 +43,42 @@ void ParseParm::WriteProperties(Object_ostream& obs)
 
 BOOL ParseParm::ReadProperties(Object_istream& obs)
 {
-	if ( !obs.bAtBackslash() || !obs.bReadBeginMarker(psz_parse) )
+	if ((!obs.bAtBackslash()) || 
+		(!obs.bReadBeginMarker(psz_parse)))
 	{
 		return FALSE;
 	}
 
 	int nTemp;
-
 	while ( !obs.bAtEnd() )
 	{
 		if ( obs.bReadInteger(psz_breakWidth, nTemp) )
+		{
 			fBreakWidth = (float) nTemp/1000.0f;
-		else if ( obs.bReadInteger(psz_maxThreshold, nMaxThreshold) );
-		else if ( obs.bReadInteger(psz_minThreshold, nMinThreshold) );
+		}
+		else if ( obs.bReadInteger(psz_phraseBreakWidth, nTemp) )
+		{
+			fPhraseBreakWidth = (float) nTemp/1000.0f;
+		}
+		else if (obs.bReadInteger(psz_maxThreshold, nMaxThreshold)) {
+		}
+		else if ( obs.bReadInteger(psz_minThreshold, nMinThreshold) ) {
+		}
 		else if ( obs.bEnd(psz_parse) )
+		{
 			break;
+		}
 	}
-
 	return TRUE;
 }
 
 void ParseParm::Init()
 {
-	fBreakWidth = (float) 0.025;  // CLW 1.07a
+	fBreakWidth = (float) 0.025;		// CLW 1.07a
+	fPhraseBreakWidth = (float) 0.5;
 	nMaxThreshold = 10;
 	nMinThreshold = 5;
 	nParseMode = 2;
-	bKeepParse = TRUE;
 }
 
 static const char* psz_segment   = "segment";

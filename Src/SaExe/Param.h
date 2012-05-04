@@ -12,21 +12,21 @@
 //      RLJ Added RecordingParm class
 /////////////////////////////////////////////////////////////////////////////
 #ifndef _PARAM_H
+#define _PARAM_H
 
 #include "dsp\dspWins.h"
-#define _PARAM_H
 
 class Object_ostream;
 class Object_istream;
 
-class ParseParm                   // parsing parameters
+class ParseParm                 // parsing parameters
 {
 public:
-	float        fBreakWidth;       // minimum width of break (ms)
-	int          nMaxThreshold;     // minimum threshold (%)
-	int          nMinThreshold;     // maximum threshold (%)
-	int          nParseMode;        // parsing mode
-	BOOL         bKeepParse;        // TRUE if existing parse to keep
+	float	fBreakWidth;		// minimum width of break (ms) for words
+	float	fPhraseBreakWidth;	// minimum width of break (ms) for phrases
+	int		nMaxThreshold;		// minimum threshold (%)
+	int     nMinThreshold;		// maximum threshold (%)
+	int     nParseMode;			// parsing mode
 
 	void WriteProperties(Object_ostream& obs);
 	BOOL ReadProperties(Object_istream& obs);
@@ -282,6 +282,3 @@ public:
 
 extern CFormantTrackerOptions FormantTrackerOptions;
 #endif // _PARAM_H
-
-
-

@@ -71,6 +71,7 @@
 
 #include "sa_ipa.h"  // Support for CFontTable
 #include "CSaString.h"
+#include "process\sa_proc.h"
 
 BOOL CALLBACK EXPORT gIPAInputFilter(CSaString&);
 
@@ -90,10 +91,11 @@ public:
 
 
 	// Attributes
-protected:
-	CSaString * m_pAnnotation;			// annotation string
+private:
 	CDWordArray * m_pOffset;            // array of offsets
 	CDWordArray * m_pDuration;          // array of durations
+protected:
+	CSaString * m_pAnnotation;			// annotation string
 	int m_nSelection;					// selected segment
 	int m_nAnnotationIndex;
 	int m_nMasterIndex;
@@ -109,13 +111,11 @@ public:
 	virtual TpInputFilterProc GetInputFilter(void) const {return NULL;}; // filter function for input
 	// get copies of internal data.  (const functions)
 	virtual CFontTable* NewFontTable() const = 0; // return selected font table
-	int GetSize() const {return m_pOffset->GetSize();};
-	DWORD GetOffset(const int nIndex) const // return offset
-		{return ((nIndex < GetSize())&&(nIndex >= 0)) ? m_pOffset->GetAt(nIndex) : 0L;}
-	DWORD GetDuration(const int nIndex) const // return duration
-		{return (nIndex < GetSize()&&(nIndex >= 0)) ? m_pDuration->GetAt(nIndex) : 0L;}
-	DWORD GetStop(const int nIndex) const // return stop
-		{return GetOffset(nIndex)+GetDuration(nIndex);}
+	int GetOffsetSize() const;
+	int GetDurationSize() const;
+	DWORD GetOffset(const int nIndex) const; // return offset
+	DWORD GetDuration(const int nIndex) const; // return duration
+	DWORD GetStop(const int nIndex) const; // return stop
 	TCHAR GetChar(int nIndex) const {return m_pAnnotation->GetAt(nIndex);} // return annotation character
 	int GetSelection() const {return m_nSelection;} // return the index of the selected character
 	int GetPrevious(int nIndex = -1) const; // return the index of the previous segment
@@ -129,6 +129,12 @@ public:
 	virtual CSaString GetSegmentString(int nIndex) const; // return segment string
 	virtual int GetSegmentLength(int nIndex) const; // return segment length
 	int CheckCursors(CSaDoc*, BOOL bOverlap) const; // checks the position of the cursors for new segment
+	
+	DWORD GetDurationAt(int index) const;
+	void SetDurationAt(int index, DWORD duration);
+	void InsertAt(int index, DWORD offset, DWORD duration);
+	// remove offset and duration
+	void RemoveAt(int index, int length);
 
 	enum {
 		MODE_AUTOMATIC,
@@ -136,7 +142,7 @@ public:
 		MODE_ADD
 	};
 
-	virtual int         CheckPosition(CSaDoc*,DWORD dwStart,DWORD dwStop, int nMode=MODE_AUTOMATIC,BOOL bOverlap=TRUE) const = 0;
+	virtual int CheckPosition(CSaDoc*,DWORD dwStart,DWORD dwStop, int nMode=MODE_AUTOMATIC,BOOL bOverlap=TRUE) const = 0;
 	
 	enum {
 		LIMIT_MOVING_START=1,
@@ -151,13 +157,11 @@ public:
 	int FirstVisibleIndex(CSaDoc & saDoc) const;
 	int LastVisibleIndex(CSaDoc & saDoc) const;
 	/** returns true if there are no offsets */
-	BOOL IsEmpty() const { return m_pOffset->GetSize() == 0; };
+	BOOL IsEmpty() const;
 
 	// give pointers to internal data, allowing caller to modify data.
-	CSaString * GetString() {return m_pAnnotation;} // return pointer to annotation string
-	CDWordArray * GetOffsets() {return m_pOffset;} // return pointer to offset array object
-	CDWordArray * GetDurations() {return m_pDuration;} // return pointer to duration array object
-	virtual const CStringArray* GetTexts() {return NULL;} // return pointer to text string array object
+	CSaString * GetString(); // return pointer to annotation string
+	virtual const CStringArray* GetTexts(); // return pointer to text string array object
 
 	// modify internal data
 	void SelectSegment(CSaDoc & pSaDoc, int segIdx);

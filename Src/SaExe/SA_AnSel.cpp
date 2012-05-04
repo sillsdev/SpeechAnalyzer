@@ -141,7 +141,7 @@ BOOL CASegmentSelection::SelectFromPosition(CSaView* pView, int nSegmentIndex, D
 				if((pSegment->GetStop(nInsertAt-1) +  pDoc->GetBytesFromTime(MIN_ADD_SEGMENT_TIME)) > dwStart)
 					dwStart = pSegment->GetStop(nInsertAt-1);
 
-			if(nInsertAt < pSegment->GetSize())
+			if(nInsertAt < pSegment->GetOffsetSize())
 			{
 				if((dwStart+pDoc->GetBytesFromTime(DEFAULT_ADD_SEGMENT_TIME) + pDoc->GetBytesFromTime(MIN_ADD_SEGMENT_TIME)) < pSegment->GetOffset(nInsertAt))
 				{
@@ -300,7 +300,7 @@ BOOL CASegmentSelection::SelectFromStopPosition(CSaView* pView, int nSegmentInde
 			if(m_Selection.bVirtual)
 				RefreshAnnotation(pView, m_Selection.nAnnotationIndex);
 
-			if(nInsertAt < pSegment->GetSize())
+			if(nInsertAt < pSegment->GetOffsetSize())
 				if(pSegment->GetOffset(nInsertAt) < (dwStop +  pDoc->GetBytesFromTime(MIN_ADD_SEGMENT_TIME)))
 					dwStop = pSegment->GetOffset(nInsertAt);
 

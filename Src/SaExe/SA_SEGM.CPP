@@ -124,8 +124,8 @@ CSegment::CSegment( int index, int master)
 	m_nMasterIndex = master;
 	m_nSelection = - 1; // no segment selected
 	m_pAnnotation = new CSaString();  // create annotation string object
-	m_pOffset = new CDWordArray;    // create offset array object
-	m_pDuration = new CDWordArray;  // create duration array object
+	m_pOffset = new CDWordArray();    // create offset array object
+	m_pDuration = new CDWordArray();  // create duration array object
 }
 
 /***************************************************************************/
@@ -133,9 +133,18 @@ CSegment::CSegment( int index, int master)
 /***************************************************************************/
 CSegment::~CSegment()
 {
-	if (m_pAnnotation) delete m_pAnnotation;
-	if (m_pOffset) delete m_pOffset;
-	if (m_pDuration) delete m_pDuration;
+	if (m_pAnnotation) {
+		delete m_pAnnotation;
+		m_pAnnotation = NULL;
+	}
+	if (m_pOffset) {
+		delete m_pOffset;
+		m_pOffset = NULL;
+	}
+	if (m_pDuration) {
+		delete m_pDuration;
+		m_pDuration = NULL;
+	}
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -148,7 +157,7 @@ void CSegment::DeleteContents()
 {
 	m_pAnnotation->Empty();
 	m_pOffset->RemoveAll();
-	GetDurations()->RemoveAll();
+	m_pDuration->RemoveAll();
 	m_nSelection = -1; // SDM 1.5Test8.1 empty segments can not be selected
 }
 
@@ -215,25 +224,21 @@ DWORD ArchiveTransfer::tDWORD(CArchive& ar, DWORD x)
 	return ret;
 }
 
-
-
-
-
 void CSegment::Serialize(CArchive& ar)
 {
 	if (ar.IsStoring())
 	{
 		ar << CSaString("integrityCheck");
 		ar << CSaString(*m_pAnnotation);        // annotation string
-		int x = GetSize();
+		int x = GetOffsetSize();
 		SA_ASSERT(x);
 		ArchiveTransfer::tInt(ar, x);
-		for (int i = 0; i< GetSize(); i++)
+		for (int i = 0; i< GetOffsetSize(); i++)
 		{
 			ArchiveTransfer::tDWORD(ar, GetOffset(i));
 		}
-		ArchiveTransfer::tInt(ar, GetSize());
-		for (int i = 0; i< GetSize(); i++)
+		ArchiveTransfer::tInt(ar, GetDurationSize());
+		for (int i = 0; i< GetDurationSize(); i++)
 		{
 			ArchiveTransfer::tDWORD(ar, GetDuration(i));
 		}
@@ -248,15 +253,14 @@ void CSegment::Serialize(CArchive& ar)
 		int x = ArchiveTransfer::tInt(ar);
 		SA_ASSERT(x);
 		m_pOffset->SetSize(x);
-		for (int i=0; i< GetSize(); i++)
+		for (int i=0; i< m_pOffset->GetSize(); i++)
 		{
 			m_pOffset->SetAt(i, ArchiveTransfer::tDWORD(ar));
 		}
-		CDWordArray* pDurations = GetDurations();
-		pDurations->SetSize(ArchiveTransfer::tInt(ar));
-		for (int i=0;i<GetSize(); i++)
+		m_pDuration->SetSize(ArchiveTransfer::tInt(ar));
+		for (int i=0; i<m_pDuration->GetSize(); i++)
 		{
-			pDurations->SetAt(i, ArchiveTransfer::tDWORD(ar));
+			m_pDuration->SetAt(i, ArchiveTransfer::tDWORD(ar));
 		}
 		m_nSelection = ArchiveTransfer::tInt(ar);
 	}
@@ -324,8 +328,7 @@ DWORD CSegment::RemoveNoRefresh( CDocument * )
 
 	// change the dependent arrays
 	*m_pAnnotation = m_pAnnotation->Left(m_nSelection) + m_pAnnotation->Right(m_pAnnotation->GetLength() - nLength - m_nSelection);
-	m_pOffset->RemoveAt(m_nSelection, nLength);
-	GetDurations()->RemoveAt(m_nSelection, nLength);
+	RemoveAt(m_nSelection,nLength);
 	return 0;
 }
 
@@ -337,7 +340,6 @@ DWORD CSegment::RemoveNoRefresh( CDocument * )
 /***************************************************************************/
 BOOL CSegment::Insert( int nIndex, const CSaString * pszString, int ,DWORD dwStart, DWORD dwDuration) 
 {
-
 	int nStringLength = pszString->GetLength(); // get the length of the new string
 	try {
 		if (nIndex < m_pAnnotation->GetLength()) 
@@ -350,7 +352,7 @@ BOOL CSegment::Insert( int nIndex, const CSaString * pszString, int ,DWORD dwSta
 			*m_pAnnotation += *pszString; // append
 		}
 		m_pOffset->InsertAt( nIndex, dwStart, nStringLength);
-		GetDurations()->InsertAt(nIndex, dwDuration, nStringLength);
+		m_pDuration->InsertAt( nIndex, dwDuration, nStringLength);
 	} 
 	catch(CMemoryException e) 
 	{
@@ -392,9 +394,9 @@ int CSegment::GetPrevious(int nIndex) const
 	if (nIndex >= 0) 
 	{
 		nReference = nIndex - 1; // user defined reference
-		if (nReference >= GetSize()) 
+		if (nReference >= GetOffsetSize()) 
 		{
-			nReference = GetSize() - 1;
+			nReference = GetOffsetSize() - 1;
 		}
 	} 
 	else 
@@ -405,7 +407,7 @@ int CSegment::GetPrevious(int nIndex) const
 		} 
 		else 
 		{
-			nReference = GetSize() - 1; // default for nothing has been selected yet
+			nReference = GetOffsetSize() - 1; // default for nothing has been selected yet
 		}
 	}
 	if (nReference < 0) 
@@ -440,32 +442,33 @@ int CSegment::GetNext(int nIndex) const
 	}
 	DWORD dwOffset = GetOffset(nReference);
 	nReference++;
-	while ((nReference < GetSize()) && (GetOffset(nReference) == dwOffset))
+	while ((nReference < GetOffsetSize()) && (GetOffset(nReference) == dwOffset))
 	{
 		nReference++;
 	}
-	if (nReference == GetSize()) return -1; // no next character
+	if (nReference == GetOffsetSize()) return -1; // no next character
 	return nReference;
 }
 
 /***************************************************************************/
 // CSegment::FindOffset Find the annotation segment offset match
 // Returns the index of the annotation segment (first character in the
-// string) whichs offset matches the parameter. If there is no match, the
-// function returns -1.
+// string) which offset matches the parameter. 
+// If there is no match, the function returns -1.
 /***************************************************************************/
 int CSegment::FindOffset(DWORD dwOffset) const
 {
-	if (!m_pOffset->GetSize())
+	int size = m_pOffset->GetSize();
+	if (size==0)
 	{
 		return -1;
 	}
 
 	DWORD *pFirst = &((*m_pOffset)[0]);
-	DWORD *pLast = pFirst + m_pOffset->GetSize();
-	DWORD *pLowerBound = std::lower_bound(pFirst, pLast, dwOffset);
+	DWORD *pLast = pFirst + (size-1);
+	DWORD *pLowerBound = std::lower_bound( pFirst, pLast, dwOffset);
 
-	if (pLowerBound != pLast && *pLowerBound == dwOffset)
+	if ((pLowerBound != pLast) && (*pLowerBound == dwOffset))
 	{
 		return pLowerBound - pFirst;
 	}
@@ -482,15 +485,15 @@ int CSegment::FindOffset(DWORD dwOffset) const
 /***************************************************************************/
 int CSegment::FindStop(DWORD dwStop) const
 {
-	int nLoop = GetSize() - 1;
+	int nLoop = GetOffsetSize() - 1;
 
-	if(nLoop < 0)
+	if (nLoop < 0)
 		return -1;
 
 	// Use std::lower_bound which has O(log(N)) for performance reasons
 	// Needed fo large annotated files
 	DWORD *pFirst = &((*m_pOffset)[0]);
-	DWORD *pLast = pFirst + m_pOffset->GetSize();
+	DWORD *pLast = pFirst + (GetOffsetSize()-1);
 	DWORD *pLowerBound = std::lower_bound(pFirst, pLast, dwStop);
 
 	if (pLowerBound != pLast)
@@ -499,46 +502,59 @@ int CSegment::FindStop(DWORD dwStop) const
 	for (; nLoop >= 0; --nLoop)
 	{
 		if (GetStop(nLoop) < dwStop)
+		{
 			return -1; // no match
+		}
 		if (GetStop(nLoop) == dwStop)
 		{
-			while(nLoop && GetStop(nLoop -1) == dwStop)
+			while (nLoop && GetStop(nLoop -1) == dwStop)
+			{
 				--nLoop;
+			}
 			return nLoop; // match
 		}
 	}
 	return -1; // no match
 }
 
-/***************************************************************************/
-// CSegment::FindFromPosition Find annotation segment from position
-// Returns the index of the annotation segment (first character in the
-// string) whichs position-duration area contains the given position. If the
-// position is not inside an area, it returns the next higher segment index.
-// If it is above the last area it returns the last index. If there is no
-// segment, it returns -1. This is true, if the flag bWithin is FALSE
-// (default). If it is TRUE, the index is only returned, if the position
-// is really within a segment, else it returns -1.
-/***************************************************************************/
+/***************************************************************************
+* CSegment::FindFromPosition 
+* Find annotation segment from position
+* Returns the index of the annotation segment (first character in the string) 
+* which position-duration area contains the given position. 
+*
+* If the position is not inside an area, it returns the next higher segment index.
+*
+* If there is no segment, it returns -1. 
+* If it is above the last area it returns the last index. 
+* This is true, if the flag bWithin is FALSE (default). 
+* If it is TRUE, the index is only returned, if the position is really 
+* within a segment, else it returns -1.
+***************************************************************************/
 int CSegment::FindFromPosition(DWORD dwPosition, BOOL bWithin) const
 {
-	if (GetSize() == 0) return -1; // no segment
+	if (GetOffsetSize() == 0) 
+	{
+		return -1; // no segment
+	}
 
 	// check if position above highest segment
 	DWORD dwTempPos = dwPosition;
-	if (GetStop(GetSize() - 1) <= dwPosition)
-		dwTempPos = GetStop(GetSize() - 1) - 1;
+	if (GetStop(GetOffsetSize() - 1) <= dwPosition) 
+	{
+		dwTempPos = GetStop(GetOffsetSize() - 1) - 1;
+	}
 
 	// look for the right segment, starting with prelast character
-	int nLoop = GetSize() - 1;
+	int nLoop = GetOffsetSize() - 1;
 
-	if(nLoop < 0)
+	if (nLoop < 0)
 		return -1;
 
 	// Use std::lower_bound which has O(log(N)) for performance reasons
 	// Needed for large annotated files
 	DWORD *pFirst = &((*m_pOffset)[0]);
-	DWORD *pLast = pFirst + m_pOffset->GetSize();
+	DWORD *pLast = pFirst + (GetOffsetSize()-1);
 	DWORD *pLowerBound = std::lower_bound(pFirst, pLast, dwPosition);
 
 	if (pLowerBound != pLast)
@@ -554,8 +570,9 @@ int CSegment::FindFromPosition(DWORD dwPosition, BOOL bWithin) const
 		nLoop = 0;
 	if (bWithin)
 	{
-		if (!(dwPosition >= GetOffset(nLoop)) || (!(dwPosition <= GetStop(nLoop))))
+		if (!(dwPosition >= GetOffset(nLoop)) || (!(dwPosition <= GetStop(nLoop)))) {
 			return -1;
+		}
 	}
 	return nLoop;
 }
@@ -598,15 +615,17 @@ void CSegment::Adjust(CSaDoc* pDoc, int nIndex, DWORD dwOffset, DWORD dwDuration
 	DWORD dwOldOffset = GetOffset(nIndex);
 	DWORD dwOldStop = GetStop(nIndex);
 
-	for (int nLoop = nIndex; nLoop < GetSize(); nLoop++)
+	for (int nLoop = nIndex; nLoop < GetOffsetSize(); nLoop++)
 	{
 		if (GetOffset(nLoop) == dwOldOffset)
 		{
-			m_pOffset->SetAt(nLoop, dwOffset); // set new offset
-			GetDurations()->SetAt(nLoop, dwDuration); // set new duration
+			m_pOffset->SetAt(nLoop, dwOffset);			// set new offset
+			m_pDuration->SetAt(nLoop, dwDuration);		// set new duration
 		}
 		else
+		{
 			break;
+		}
 	}
 
 	for (int nLoop = 0; nLoop < ANNOT_WND_NUMBER; nLoop++)
@@ -617,11 +636,15 @@ void CSegment::Adjust(CSaDoc* pDoc, int nIndex, DWORD dwOffset, DWORD dwDuration
 			int nIndex = pSegment->FindOffset(dwOldOffset);
 
 			if (nIndex != -1)
+			{
 				pSegment->Adjust(pDoc, nIndex, dwOffset, pSegment->GetStop(nIndex) - dwOffset);
+			}
 
 			nIndex = pSegment->FindStop(dwOldStop);
 			if (nIndex != -1)
+			{
 				pSegment->Adjust(pDoc, nIndex, pSegment->GetOffset(nIndex), dwOffset + dwDuration - pSegment->GetOffset(nIndex));
+			}
 		}
 	}
 }
@@ -646,7 +669,7 @@ int CSegment::CheckCursors(CSaDoc* pDoc, BOOL bOverlap) const
 
 BOOL CSegment::NeedToScroll(CSaView & saView, int index) const
 {
-	ASSERT(index >= 0 && index < GetSize());
+	ASSERT(index >= 0 && index < GetOffsetSize());
 
 	DWORD    viewLeftEdge = (int) saView.GetDataPosition(0);
 	DWORD    viewRightEdge = viewLeftEdge + saView.GetDataFrame();
@@ -663,7 +686,7 @@ int CSegment::FirstVisibleIndex(CSaDoc & SaDoc) const
 	POSITION pos = SaDoc.GetFirstViewPosition();
 	CSaView  * pView = (CSaView*)SaDoc.GetNextView(pos);
 
-	for (int index=0;index<GetSize();index++)
+	for (int index=0;index<GetOffsetSize();index++)
 	{
 		if (!NeedToScroll(*pView,index))
 		{
@@ -679,7 +702,7 @@ int CSegment::LastVisibleIndex(CSaDoc & SaDoc) const
 	POSITION pos = SaDoc.GetFirstViewPosition();
 	CSaView  * pView = (CSaView*)SaDoc.GetNextView(pos);
 
-	for (int index=GetSize()-1;index>=0;index--)
+	for (int index=GetOffsetSize()-1;index>=0;index--)
 	{
 		if (!NeedToScroll(*pView,index))
 		{
@@ -865,7 +888,7 @@ int CDependentSegment::AlignOffsetToMaster(CDocument* pSaDoc, DWORD* pdwOffset) 
 	CSaDoc* pDoc = (CSaDoc*)pSaDoc; // cast pointer
 	// get pointer to master offset array
 	CSegment* pSegment = pDoc->GetSegment(m_nMasterIndex);
-	int nLength = pSegment->GetSize();
+	int nLength = pSegment->GetOffsetSize();
 	if (nLength == 0) return -1; // no master segment yet
 	// check the position
 	int nLoop;
@@ -892,7 +915,7 @@ int CDependentSegment::AlignStopToMaster(CDocument* pSaDoc, DWORD* pdwStop) cons
 	CSaDoc* pDoc = (CSaDoc*)pSaDoc; // cast pointer
 	// get pointer to master offset array
 	CSegment* pSegment = pDoc->GetSegment(m_nMasterIndex);
-	int nLength = pSegment->GetSize();
+	int nLength = pSegment->GetOffsetSize();
 	if (nLength == 0) return -1; // no master segment yet
 	// check the position
 	int nLoop;
@@ -985,7 +1008,7 @@ int CDependentSegment::AdjustPositionToMaster(CDocument* pSaDoc, DWORD& dwNewOff
 	int nIndex = AlignOffsetToMaster(pDoc, dwAlignStart);
 	if(nIndex == -1)
 	{
-		if(GetSize() > 0)
+		if(GetOffsetSize() > 0)
 		{
 			dwNewOffset = GetOffset(0);
 			ret = 0;
@@ -1025,10 +1048,10 @@ int CDependentSegment::AdjustPositionToMaster(CDocument* pSaDoc, DWORD& dwNewOff
 	nIndex = AlignStopToMaster(pDoc, dwAlignStop);
 	if(nIndex == -1)
 	{
-		if(GetSize() > 0) // SDM 1.5Test11.0 if less than one segment stop is end of file
+		if(GetOffsetSize() > 0) // SDM 1.5Test11.0 if less than one segment stop is end of file
 			dwNewStop = GetStop(0);
 		else
-			dwNewStop = pMaster->GetStop(pMaster->GetSize() - 1);
+			dwNewStop = pMaster->GetStop(pMaster->GetOffsetSize() - 1);
 	}
 	else
 	{
@@ -1040,7 +1063,7 @@ int CDependentSegment::AdjustPositionToMaster(CDocument* pSaDoc, DWORD& dwNewOff
 		}
 		else
 		{
-			dwAlignStop[1] = pMaster->GetStop(pMaster->GetSize() - 1);
+			dwAlignStop[1] = pMaster->GetStop(pMaster->GetOffsetSize() - 1);
 		}
 
 		if((dwAlignStop[1]-dwNewStop) < (dwNewStop - dwAlignStop[0]))
@@ -1167,7 +1190,7 @@ int CDependentSegment::CheckPositionToMaster(CSaDoc* pSaDoc, DWORD dwStart, DWOR
 		int nSegment = AlignOffsetToMaster(pSaDoc, &dwStart);
 		if (nSegment == -1) return -1; // wrong place
 		// now check if this position is already occupied
-		int nLength = GetSize();
+		int nLength = GetOffsetSize();
 		if (nLength == 0) return 0; // no segment yet
 		int nLoop;
 		for (nLoop = 0; nLoop < nLength; nLoop++)
@@ -1261,11 +1284,17 @@ BOOL CTextSegment::Insert(int nIndex,
 	}
 
 	try {
-		if (pszString!=NULL) m_pTexts->InsertAt(nIndex, szDelimiter + *pszString, 1);
-		else m_pTexts->InsertAt(nIndex, szDelimiter, 1);
-		m_pOffset->InsertAt(nIndex, dwStart, 1);
-		m_pDuration->InsertAt(nIndex, dwDuration, 1);
-	} catch(CMemoryException e) 
+		if (pszString!=NULL) 
+		{
+			m_pTexts->InsertAt(nIndex, szDelimiter + *pszString, 1);
+		}
+		else 
+		{
+			m_pTexts->InsertAt(nIndex, szDelimiter, 1);
+		}
+		InsertAt(nIndex,dwStart,dwDuration);
+	} 
+	catch(CMemoryException e) 
 	{
 		// memory allocation error
 		ErrorMessage(IDS_ERROR_MEMALLOC);
@@ -1281,11 +1310,11 @@ DWORD CTextSegment::CalculateDuration(CSaDoc* pDoc, const int nIndex) const
 {
 	CSegment* pMaster = (CSegment*) pDoc->GetSegment(m_nMasterIndex);
 
-	if((nIndex < 0) || (nIndex >= (GetSize())))
+	if((nIndex < 0) || (nIndex >= (GetOffsetSize())))
 		return DWORD(-1);
-	if((nIndex + 1) == GetSize())
+	if((nIndex + 1) == GetOffsetSize())
 	{
-		return pMaster->GetStop(pMaster->GetSize()-1) - GetOffset(nIndex);
+		return pMaster->GetStop(pMaster->GetOffsetSize()-1) - GetOffset(nIndex);
 	}
 	else
 	{
@@ -1366,7 +1395,7 @@ void CTextSegment::LimitPosition(CSaDoc* pSaDoc, DWORD& dwStart, DWORD& dwStop, 
 		}
 		else // last gloss
 		{
-			dwStop = pMaster->GetStop(pMaster->GetSize() - 1);
+			dwStop = pMaster->GetStop(pMaster->GetOffsetSize() - 1);
 		}
 
 		AdjustPositionToMaster(pDoc, dwStart, dwStop);
@@ -1427,7 +1456,7 @@ int CTextSegment::CheckPosition(CSaDoc* pSaDoc, DWORD dwStart, DWORD dwStop, int
 			nTextIndex = GetNext(nTextIndex);
 		}
 
-		if(nTextIndex == -1) return GetSize(); // Insert at End
+		if(nTextIndex == -1) return GetOffsetSize(); // Insert at End
 
 		if(GetOffset(nTextIndex) == dwAlignedStart) return -1;
 
@@ -1455,9 +1484,9 @@ void CTextSegment::Add(CSaDoc* pDoc, DWORD dwStart, CSaString& szString, BOOL bD
 	CSegment* pMaster = pDoc->GetSegment(m_nMasterIndex);
 	int nMaster;
 
-	if ((nPos == -1) || (nPos >= GetSize()) || dwStart > GetStop(nPos))
+	if ((nPos == -1) || (nPos >= GetOffsetSize()) || dwStart > GetStop(nPos))
 	{
-		nMaster = pMaster->GetSize();
+		nMaster = pMaster->GetOffsetSize();
 	}
 	else
 	{
@@ -1507,15 +1536,10 @@ void CTextSegment::Remove(CDocument* pSaDoc, BOOL bCheck)
 	// move the end of the previous text segment
 	if (m_nSelection > 0)
 	{
-		m_pDuration->SetAt(m_nSelection - 1,
-			GetStop(m_nSelection)
-			- GetOffset(m_nSelection - 1));
+		SetDurationAt(m_nSelection - 1, GetStop(m_nSelection) - GetOffset(m_nSelection - 1));
 	}
-
 	CDependentSegment::Remove(pSaDoc, FALSE);
 }
-
-
 
 /***************************************************************************/
 // CTextSegment::RemoveNoRefresh Remove text segment
@@ -1527,8 +1551,7 @@ DWORD CTextSegment::RemoveNoRefresh(CDocument*)
 
 	// change the segment arrays
 	m_pTexts->RemoveAt(m_nSelection, 1);
-	m_pOffset->RemoveAt(m_nSelection, 1);
-	m_pDuration->RemoveAt(m_nSelection, 1);
+	RemoveAt(m_nSelection,1);
 
 	return dwOffset;
 }
@@ -1673,18 +1696,16 @@ void CTextSegment::Serialize(CArchive& ar)
 // there will be no string added.
 /***************************************************************************/
 BOOL CDependentTextSegment::Insert( int nIndex, 
-								    const CSaString* pszString, 
-									int ,
-									DWORD dwStart, 
-									DWORD dwDuration)
-{
+								   const CSaString* pszString, 
+								   int ,
+								   DWORD dwStart, 
+								   DWORD dwDuration) {
 	try
 	{
 		if ((pszString) && (pszString->GetLength()))
 		{
 			m_pTexts->InsertAt(nIndex, *pszString, 1);
-			m_pOffset->InsertAt(nIndex, dwStart, 1);
-			m_pDuration->InsertAt(nIndex, dwDuration, 1);
+			InsertAt(nIndex,dwStart,dwDuration);
 		}
 	}
 	catch(CMemoryException e)
@@ -1937,7 +1958,7 @@ void CIndependentSegment::LimitPosition(CSaDoc* pSaDoc, DWORD& dwStart,DWORD& dw
 /***************************************************************************/
 int CIndependentSegment::CheckPosition(CSaDoc* pDoc, DWORD dwStart,DWORD dwStop, int nMode, BOOL bOverlap) const
 {
-	int nLength = GetSize();
+	int nLength = GetOffsetSize();
 	if (nLength == 0) return 0; // no character yet, ok
 	if (((nMode==MODE_EDIT)||(nMode==MODE_AUTOMATIC))&&(m_nSelection != -1)) // segment selected (edit)
 	{
@@ -2174,10 +2195,8 @@ DWORD CPhoneticSegment::RemoveNoRefresh(CDocument * )
 	DWORD dwOldOffset = GetOffset(m_nSelection);
 
 	// change the phonetic arrays
-	*m_pAnnotation = m_pAnnotation->Left(m_nSelection)
-		+ m_pAnnotation->Right(m_pAnnotation->GetLength() - nLength - m_nSelection);
-	m_pOffset->RemoveAt(m_nSelection, nLength);
-	GetDurations()->RemoveAt(m_nSelection, nLength);
+	*m_pAnnotation = m_pAnnotation->Left(m_nSelection) + m_pAnnotation->Right(m_pAnnotation->GetLength() - nLength - m_nSelection);
+	RemoveAt(m_nSelection,nLength);
 
 	return dwOldOffset;
 }
@@ -2538,7 +2557,7 @@ long CPhoneticSegment::Process(void* pCaller, CSaDoc* pDoc, int nProgress, int n
 /***************************************************************************/
 int CMusicPhraseSegment::CheckPosition(CSaDoc* pDoc, DWORD dwStart,DWORD dwStop, int nMode, BOOL bOverlap) const
 {
-	int nLength = GetSize();
+	int nLength = GetOffsetSize();
 	if (nLength == 0) return 0; // no character yet, ok
 	if (((nMode==MODE_EDIT)||(nMode==MODE_AUTOMATIC))&&(m_nSelection != -1)) // segment selected (edit)
 	{
@@ -2736,7 +2755,7 @@ long CGlossSegment::Exit(int nError)
 // in the lower word of the long value and the end process progress percen-
 // tage in the higher word.
 /***************************************************************************/
-long CGlossSegment::Process(void* pCaller, CSaDoc* pSaDoc, int nProgress, int nLevel)
+long CGlossSegment::Process( void* pCaller, CSaDoc* pSaDoc, int nProgress, int nLevel)
 {
 	TRACE(_T("Process: CGlossSegment\n"));
 	if (IsCanceled()) return MAKELONG(PROCESS_CANCELED, nProgress); // process canceled
@@ -2763,7 +2782,7 @@ long CGlossSegment::Process(void* pCaller, CSaDoc* pSaDoc, int nProgress, int nL
 
 	// start parsing
 	BeginWaitCursor(); // wait cursor
-	if(!StartProcess(pCaller, IDS_STATTXT_PARSING, FALSE)) // memory allocation failed or previous processing error
+	if (!StartProcess(pCaller, IDS_STATTXT_PARSING, FALSE)) // memory allocation failed or previous processing error
 	{
 		EndProcess(); // end data processing
 		EndWaitCursor();
@@ -2777,28 +2796,31 @@ long CGlossSegment::Process(void* pCaller, CSaDoc* pSaDoc, int nProgress, int nL
 	ParseParm* pParseParm = pMainFrame->GetParseParm(); // get parsing parameters
 	float fFactor = (float)pDoc->GetUnprocessedDataSize() / (float)dwLoopEnd; // size factor
 	DWORD dwBreakWidth = (DWORD)(pDoc->GetBytesFromTime(pParseParm->fBreakWidth) / fFactor); // break width in process words
-	if (!dwBreakWidth) dwBreakWidth = 1;
+	if (!dwBreakWidth) {
+		dwBreakWidth = 1;
+	}
+
 	// CLW 1.07a
 	int nMaxThreshold = (int)((long)pLoudness->GetMaxValue() * (long)pParseParm->nMaxThreshold / 100); // threshold
 	int nMinThreshold = (int)((long)pLoudness->GetMaxValue() * (long)pParseParm->nMinThreshold / 100); // threshold
 	DWORD dwLoopPos = 0;
 	BOOL bRes = TRUE;
 	int nBlockAlign = pDoc->GetFmtParm()->wBlockAlign;
+
 	// prepare gloss data
 	int nGlossIndex = 0;
-	//    if (!pParseParm->bKeepParse) // not yet implemented
-	if (TRUE)
-	{
-		// remove all gloss and deselect gloss
-		DeleteContents();
-		if (GetSelection() != -1) SetSelection(-1);
-		//      pDoc->GetSaParm()->nWordCount = 1;
-		pDoc->SetModifiedFlag(TRUE); // document has been modified
-		pDoc->SetTransModifiedFlag(TRUE); // transcription data has been modified
+
+	// remove all gloss and deselect gloss
+	DeleteContents();
+	if (GetSelection() != -1) {
+		SetSelection(-1);
 	}
-	DWORD dwBreakCount = dwBreakWidth; // allow early word SDM 1.5Test 11.0
-	DWORD dwBreakStart = 0;
-	DWORD dwBreakEnd = 0;
+	pDoc->SetModifiedFlag(TRUE);		// document has been modified
+	pDoc->SetTransModifiedFlag(TRUE);	// transcription data has been modified
+
+	DWORD dwBreakCount = dwBreakWidth;	// allow early word SDM 1.5Test 11.0
+	DWORD dwBreakStart = 0;				// the start of the break
+	DWORD dwBreakEnd = 0;				// the end of the break
 
 	CPhoneticSegment* pPhonetic = (CPhoneticSegment*)pDoc->GetSegment(PHONETIC); // get pointer to phonetic segment
 	pDoc->AutoSnapUpdate(); // Snap phonetic SDM 1.5Test11.0
@@ -2822,14 +2844,16 @@ long CGlossSegment::Process(void* pCaller, CSaDoc* pSaDoc, int nProgress, int nL
 				// adjust to phonetic
 				if (nPhonetic != -1)
 				{
-					if((pPhonetic->GetNext(nPhonetic) != -1) &&
+					if ((pPhonetic->GetNext(nPhonetic) != -1) &&
 						((pPhonetic->GetOffset(pPhonetic->GetNext(nPhonetic)) - dwGlossStart) < (dwGlossStart - pPhonetic->GetOffset(nPhonetic))))
 					{
 						// next segment is closer SDM 1.5Test11.0
 						dwGlossStart = pPhonetic->GetOffset(pPhonetic->GetNext(nPhonetic));
 					}
 					else
+					{
 						dwGlossStart = pPhonetic->GetOffset(nPhonetic);
+					}
 				}
 				else
 				{
@@ -2856,18 +2880,20 @@ long CGlossSegment::Process(void* pCaller, CSaDoc* pSaDoc, int nProgress, int nL
 				}
 				// write gloss
 				bRes = Insert(nGlossIndex++, NULL, 0, dwGlossStart, 0);
-				if (!bRes) return Exit(PROCESS_ERROR); // error, writing gloss failed
+				if (!bRes) 
+				{
+					return Exit(PROCESS_ERROR); // error, writing gloss failed
+				}
 
 				//adjust previous phonetic SDM 1.5Test11.0
 				nPhonetic = pPhonetic->GetPrevious(pPhonetic->FindOffset(dwGlossStart));
-				if((nPhonetic != -1) && (pPhonetic->GetDuration(nPhonetic)==0))
+				if ((nPhonetic != -1) && (pPhonetic->GetDuration(nPhonetic)==0))
 				{
 					DWORD dwPhoneticStop = nBlockAlign * (DWORD)(dwBreakStart * fFactor/nBlockAlign);
 					dwPhoneticStop = pDoc->SnapCursor(STOP_CURSOR, dwPhoneticStop,dwPhoneticStop,pDoc->GetUnprocessedDataSize(),SNAP_RIGHT);
 
-					if(dwPhoneticStop > pPhonetic->GetOffset(nPhonetic))
-						pPhonetic->Adjust(pDoc, nPhonetic, pPhonetic->GetOffset(nPhonetic),
-						dwPhoneticStop - pPhonetic->GetOffset(nPhonetic));
+					if (dwPhoneticStop > pPhonetic->GetOffset(nPhonetic))
+						pPhonetic->Adjust(pDoc, nPhonetic, pPhonetic->GetOffset(nPhonetic), dwPhoneticStop - pPhonetic->GetOffset(nPhonetic));
 				}
 
 				pDoc->SetModifiedFlag(TRUE); // document has been modified
@@ -2881,48 +2907,54 @@ long CGlossSegment::Process(void* pCaller, CSaDoc* pSaDoc, int nProgress, int nL
 			if (nLoudnessData <= nMinThreshold)  // point is under min threshold
 			{
 				dwBreakEnd = dwLoopPos;
-				if(!dwBreakCount) dwBreakStart = dwLoopPos - 1;// SDM 1.5 Test 11.0
+				if (dwBreakCount == 0) 
+				{
+					dwBreakStart = dwLoopPos - 1;// SDM 1.5 Test 11.0
+				}
 				dwBreakCount++;
 			}
-			else if (dwBreakCount) // SDM 1.5 Test 11.0
+			else if (dwBreakCount > 0) // SDM 1.5 Test 11.0
+			{
 				dwBreakCount++;
+			}
 		}
 		// set progress bar
 		SetProgress(nProgress + (int)(100 * dwLoopPos / dwLoopEnd / (DWORD)nLevel));
-		if (IsCanceled()) return Exit(PROCESS_CANCELED); // process canceled
+		if (IsCanceled()) {
+			return Exit(PROCESS_CANCELED); // process canceled
+		}
 	}
+
 	//adjust last phonetic SDM 1.5Test11.0
 	int nPhonetic = pPhonetic->GetPrevious(-1);
-	if((nPhonetic != -1) && (pPhonetic->GetDuration(nPhonetic)==0))
+	if ((nPhonetic != -1) && (pPhonetic->GetDuration(nPhonetic)==0))
 	{
 		DWORD dwPhoneticStop = nBlockAlign*(DWORD)(dwBreakStart * fFactor/nBlockAlign);
 		dwPhoneticStop = pDoc->SnapCursor(STOP_CURSOR, dwPhoneticStop,dwPhoneticStop,pDoc->GetUnprocessedDataSize(),SNAP_RIGHT);
 
 		if(dwPhoneticStop > pPhonetic->GetOffset(nPhonetic))
-			pPhonetic->Adjust(pDoc,nPhonetic, pPhonetic->GetOffset(nPhonetic),
-			dwPhoneticStop - pPhonetic->GetOffset(nPhonetic));
+			pPhonetic->Adjust(pDoc,nPhonetic, pPhonetic->GetOffset(nPhonetic),dwPhoneticStop - pPhonetic->GetOffset(nPhonetic));
 	}
+
 	// Adjust durations of inserted phonetic segments
-	if(!(pPhonetic->IsEmpty()))
+	if (!(pPhonetic->IsEmpty()))
 	{
 		int nPhonetic = 0;
 		CSaString szSegment = SEGMENT_DEFAULT_CHAR;
 		while (nPhonetic != -1)
 		{
 			int nNext = pPhonetic->GetNext(nPhonetic);
-			if((pPhonetic->GetDuration(nPhonetic)==0)&&(pPhonetic->GetSegmentString(nPhonetic) == szSegment))
+			if ((pPhonetic->GetDuration(nPhonetic)==0) && (pPhonetic->GetSegmentString(nPhonetic) == szSegment))
 			{
 				//Inserted phonetic segment
-				if(nNext != -1)
+				if (nNext != -1)
 				{
-					pPhonetic->Adjust(pDoc, nPhonetic, pPhonetic->GetOffset(nPhonetic),
-						pPhonetic->GetOffset(nNext) - pPhonetic->GetOffset(nPhonetic));
+					pPhonetic->Adjust(pDoc, nPhonetic, pPhonetic->GetOffset(nPhonetic),pPhonetic->GetOffset(nNext) - pPhonetic->GetOffset(nPhonetic));
 				}
 				else
 				{
 					// Last phonetic segment
-					pPhonetic->Adjust(pDoc, nPhonetic, pPhonetic->GetOffset(nPhonetic),
-						pDoc->GetUnprocessedDataSize() - 1 - pPhonetic->GetOffset(nPhonetic));
+					pPhonetic->Adjust(pDoc, nPhonetic, pPhonetic->GetOffset(nPhonetic),pDoc->GetUnprocessedDataSize() - 1 - pPhonetic->GetOffset(nPhonetic));
 				}
 			}
 			nPhonetic = nNext;
@@ -2976,4 +3008,61 @@ BOOL CALLBACK EXPORT gIPAInputFilter(CSaString& szString)
 	return bChanged;
 }
 
+int CSegment::GetOffsetSize() const {
+	ASSERT(m_pOffset);
+	return m_pOffset->GetSize();
+}
+
+int CSegment::GetDurationSize() const {
+	ASSERT(m_pDuration);
+	return m_pDuration->GetSize();
+}
+
+DWORD CSegment::GetOffset(const int nIndex) const {
+	return ((nIndex < GetOffsetSize())&&(nIndex >= 0)) ? m_pOffset->GetAt(nIndex) : 0L;
+}
+
+DWORD CSegment::GetDuration(const int nIndex) const {
+	return (nIndex < GetDurationSize()&&(nIndex >= 0)) ? m_pDuration->GetAt(nIndex) : 0L;
+}
+
+DWORD CSegment::GetStop(const int nIndex) const {
+	return GetOffset(nIndex)+GetDuration(nIndex);
+}
+
+/** returns true if there are no offsets */
+BOOL CSegment::IsEmpty() const { 
+	return (m_pOffset->GetSize() == 0);
+};
+
+// return pointer to annotation string
+CSaString * CSegment::GetString() {
+	return m_pAnnotation;
+}
+
+// return pointer to text string array object
+const CStringArray* CSegment::GetTexts() {
+	return NULL;
+} 
+
+DWORD CSegment::GetDurationAt(int index) const {
+	return m_pDuration->GetAt(index);
+}
+
+void CSegment::InsertAt(int index, DWORD offset, DWORD duration) {
+	m_pOffset->InsertAt(index,offset,1);
+	m_pDuration->InsertAt(index,duration,1);
+}
+
+/**
+* remove offset and duration
+*/
+void CSegment::RemoveAt(int index, int length) {
+	m_pOffset->RemoveAt(index,length);
+	m_pDuration->RemoveAt(index,length);
+}
+
+void CSegment::SetDurationAt(int index, DWORD duration) {
+	m_pDuration->SetAt(index,duration);
+}
 

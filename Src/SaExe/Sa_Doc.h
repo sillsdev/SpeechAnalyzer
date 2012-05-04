@@ -75,7 +75,8 @@ class CProcessGlottis;
 class CProcessTonalWeightChart;
 class CSegment;
 class CDlgAdvancedSegment;
-class CDlgAdvancedParse;
+class CDlgAdvancedParseWords;
+class CDlgAdvancedParsePhrases;
 
 class CAlignInfo
 {
@@ -88,6 +89,7 @@ public:
 
 class CSaDoc : public CUndoRedoDoc, public ISaDoc
 {   
+
 	DECLARE_DYNCREATE(CSaDoc)
 
 	// Construction/destruction/creation
@@ -156,7 +158,8 @@ private:
 	_bstr_t				m_szMD5HashCode;    // assigned from SA wave doc reader COM object
 	bool				m_bUsingTempFile;	// FALSE, if audio file is non-wave (mp3, wma, etc.) or standard wave
 	CDlgAdvancedSegment * m_pDlgAdvancedSegment;
-	CDlgAdvancedParse * m_pDlgAdvancedParse;
+	CDlgAdvancedParseWords * m_pDlgAdvancedParseWords;
+	CDlgAdvancedParsePhrases * m_pDlgAdvancedParsePhrases;
 
 	// Operations
 public:
@@ -241,6 +244,7 @@ public:
 	void				WriteProperties(Object_ostream& obs);
 	static BOOL			ReadProperties(Object_istream& obs);
 	static BOOL			ReadPropertiesOfViews(Object_istream& obs, const CSaString & str);
+	void				DeleteSegmentContents(Annotations type);
 
 protected:
 	virtual void		DeleteContents();
@@ -321,7 +325,9 @@ public:
 	BOOL				AutoSnapUpdateNeeded(void);
 	virtual				~CSaDoc();
 	virtual void		SerializeForUndoRedo(CArchive& ar);   // overridden for document i/o
-	BOOL				AdvancedParse();
+	BOOL				AdvancedParsePhrase();
+	BOOL				AdvancedParseWord();
+	BOOL				AdvancedParseAuto();
 	BOOL				AdvancedSegment();
 	virtual HMENU		GetDefaultMenu(); // get menu depending on state
 	virtual HACCEL		GetDefaultAccel();
@@ -349,8 +355,10 @@ protected:
 	afx_msg void OnUpdateFileSaveAs(CCmdUI* pCmdUI);
 	afx_msg void OnFileSplit();
 	afx_msg void OnUpdateFileSplit(CCmdUI* pCmdUI);
-	afx_msg void OnAdvancedParse();
-	afx_msg void OnUpdateAdvancedParse(CCmdUI* pCmdUI);
+	afx_msg void OnAdvancedParseWords();
+	afx_msg void OnUpdateAdvancedParseWords(CCmdUI* pCmdUI);
+	afx_msg void OnAdvancedParsePhrases();
+	afx_msg void OnUpdateAdvancedParsePhrases(CCmdUI* pCmdUI);
 	afx_msg void OnAdvancedSegment();
 	afx_msg void OnUpdateAdvancedSegment(CCmdUI* pCmdUI);
 	afx_msg void OnToolsImport();

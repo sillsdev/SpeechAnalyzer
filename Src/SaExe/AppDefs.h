@@ -38,9 +38,7 @@
 //        RLJ Added OpenModeType
 /////////////////////////////////////////////////////////////////////////////
 #ifndef _APPDEFS_H
-
 #define _APPDEFS_H
-
 
 // system defines
 #define SM_CAPTION                      _T("Phonology Assistant") // caption text of SM  //Name changed  -ALB
@@ -62,6 +60,7 @@ enum UPDATE_MODE
     STATIC_UPDATE =  0,
     DYNAMIC_UPDATE = 1
 };
+
 #define UNDEFINED_DATA                  -1          // data not yet defined
 #define UNDEFINED_OFFSET                0xFFFFFFFF  // offset not yet defined
 #define CALCULATION_INTERVAL(samplingRate)            (100*22050/samplingRate)         // number of raw data samples taken to build a processed data result
@@ -287,6 +286,7 @@ enum GraphCaption                       // graph caption style
     MiniWithCaption,
     Normal,
 };
+
 enum OpenModeType
 {
     DEFAULT,
