@@ -3,7 +3,7 @@ SA 3.0.1.10 - 5/3/2012
 1) Split 'Auto Parse' dialog into 'Auto Parse Phrase' and 'Auto Parse Word' dialog boxes.
 2) Updated sa3.psa format to store settings for the two new dialog boxes.  New parameter for phrase break parameter is "\phrase_break_ms". Word break default is stored in "\break_ms" property, as before.
 3) Fixed bug in CSegment class that was indexing beyond the end of the segment offset and durations tables.
-
+4) Contains all bug fixes for Speech Analyzer release 3.1.
 
 SA 3.0.1.10 - 12/8/2011
 -----------------------
