@@ -4,7 +4,7 @@ using System.IO;
 using System.Security.Cryptography;
 using System.Text;
 using System.Windows.Forms;
-using SilEncConverters31;
+using SilEncConverters40;
 using SilUtils;
 
 namespace SIL.SpeechTools.Utils

@@ -3,7 +3,7 @@ using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
 using SIL.SpeechTools.Utils.Properties;
-using SilEncConverters31;
+using SilEncConverters40;
 using SilUtils;
 using ECInterfaces;
 
