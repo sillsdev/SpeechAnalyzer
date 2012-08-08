@@ -10,6 +10,8 @@
 
 #include "waveresampler.h"
 
+#include "dlgmultichannel.h"
+
 #define PI  3.14159265359
 #define PERCENT_TRANSITION   .10F
 
@@ -654,6 +656,13 @@ CWaveResampler::ECONVERT CWaveResampler::Run( const TCHAR * src,
 	// anything to do?
 	if (nChannels!=1) {
 
+		CDlgMultiChannel dlg(nChannels,true);
+		if (dlg.DoModal()!=IDOK) {
+			delete [] datal;
+			return EC_USERABORT;
+		}
+		int selectedChannel = dlg.m_nChannel;
+
 		size_t numSamples = length/nChannels;
 		size_t bufferSize = numSamples;
 		double * buffer = new double[bufferSize];
@@ -670,9 +679,16 @@ CWaveResampler::ECONVERT CWaveResampler::Run( const TCHAR * src,
 					datal = NULL;
 					return EC_SOFTWARE;
 				}
-				sum += datal[k++];
+				if ((selectedChannel==nChannels)||(selectedChannel==c)) {
+					sum += datal[k];
+				}
+				k++;
 			}
-			sum /= (double)nChannels;
+			if (selectedChannel==nChannels) {
+				sum /= (double)nChannels;
+			} else {
+				// it's a single channel - do nothing
+			}
 			buffer[j++]=sum;
 		}
 		if (j!=bufferSize) {

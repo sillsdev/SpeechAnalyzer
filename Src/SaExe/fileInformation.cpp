@@ -223,7 +223,7 @@ BOOL CDlgInformationWavePage::OnInitDialog()
 	SetDlgItemText(IDC_SAMPLERATE, szBuffer);
 	// create and write sample format text
 	CString szFormat;
-	CString szChannels = pDoc->IsStereo() ? "Stereo" : "Mono";
+	CString szChannels = pDoc->IsMultiChannel() ? "Stereo" : "Mono";
 	szFormat.Format(_T("%u Bits %s"), pFmtParm->wBlockAlign * 8, szChannels);
 	SetDlgItemText(IDC_SAMPLEFORMAT, szFormat);
 	// create and write number of phones text

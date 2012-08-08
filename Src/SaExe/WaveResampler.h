@@ -30,7 +30,8 @@ public:
 		EC_WRITEFAIL	=-8,
 		EC_NOTSUPPORTED	=-9,
 		EC_SOFTWARE		=-10,
-		EC_TOOLARGE		=-11
+		EC_TOOLARGE		=-11,
+		EC_USERABORT    =-12
 	};
 
 	ECONVERT Run( const TCHAR * filename, const TCHAR * outfilename, CProgressStatusBar * pStatusBar);

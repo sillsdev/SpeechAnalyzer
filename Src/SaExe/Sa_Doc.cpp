@@ -129,6 +129,7 @@
 #include "Process\FormantTracker.h"
 #include "dlgsplit.h"
 #include "waveresampler.h"
+#include "dlgmultichannel.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE
@@ -240,7 +241,7 @@ CSaDoc::CSaDoc()
 	m_bBlockBegin = FALSE;
 	m_bWaveUndoNow = FALSE;
 	m_nCheckPointCount = 0;
-	SetStereoFlag(FALSE);
+	SetMultiChannelFlag(false);
 	m_szTempConvertedWave.Empty();
 	m_bUsingTempFile = false;
 
@@ -704,8 +705,26 @@ BOOL CSaDoc::OnOpenDocument(const TCHAR* pszPathName)
 		return FALSE;
 	}
 
-	if (!IsStandardWaveFormat(pszPathName))
+	// if the return value is zero, the file is not in an acceptable format
+	bool conversionNeeded = !IsStandardWaveFormat(pszPathName);
+	if (!conversionNeeded) {
+		int numChannels = 0;
+		// it's a standard wave file, but is it multichannel?
+		// if the input was not already converted then we
+		// need to check how to handle multiple channels
+		if (IsMultiChannelWave(pszPathName,numChannels)) 
+		{
+			// if the user allows us to make a copy, then the conversion process will
+			// handle selecting the appropriate channel.
+			// if they don't then SA will select a single channel and use a non-editable copy
+			conversionNeeded = (AfxMessageBox(IDS_SUPPORT_WAVE, MB_YESNO|MB_ICONQUESTION,0)==IDYES);
+		}
+	}
+
+	if (conversionNeeded) 
 	{
+		// convert to wave will select or merge the channels.  
+		// the output will be a single channel file
 		m_bUsingTempFile = true;
 		if (!ConvertToWave(pszPathName))
 		{
@@ -732,78 +751,116 @@ BOOL CSaDoc::OnOpenDocument(const TCHAR* pszPathName)
 	}
 
 	return LoadDataFiles(pszPathName);
-
 }
 
+/*
+* helper class for splitting channels
+*/
+class CChannel {
+public:
+	HPSTR pData;
+	CFile * pFile;
+};
+
 /***************************************************************************/
-// CSaDoc::SplitStereoTempFile
+// CSaDoc::SplitMultiChannelTempFile
 /***************************************************************************/
-bool CSaDoc::SplitStereoTempFile()
+bool CSaDoc::SplitMultiChannelTempFile( int numChannels, int selectedChannel)
 {
-	ASSERT (GetRawDataWrk(1).IsEmpty());
-	ASSERT (GetRawDataWrk(2).IsEmpty());
+	ASSERT(numChannels>1);
+
+	//just increased array size
+	for (int i=0;i<numChannels;i++) {
+		ASSERT(GetRawDataWrk(i+1).IsEmpty());
+	}
 
 	bool bResult = TRUE;
 
 	m_szRawDataWrk[0] = m_szRawDataWrk[0];
-	m_szRawDataWrk[1] = m_szRawDataWrk[0] + _T("Left");
-	m_szRawDataWrk[2] = m_szRawDataWrk[0] + _T("Right");
+	for (int i=0;i<numChannels;i++) {
+		if (i==0) {
+			m_szRawDataWrk[1] = m_szRawDataWrk[0] + _T("Left");
+		} else if (i==1) {
+			m_szRawDataWrk[2] = m_szRawDataWrk[0] + _T("Right");
+		} else {
+			TCHAR buf[10];
+			wsprintf(buf,L"CH%d",(i+1));
+			m_szRawDataWrk[i+1] = m_szRawDataWrk[0] + buf;
+		}
+	}
 
+	/*
+	* BlockAlign == NumChannels * BitsPerSample/8
+    *               The number of bytes for one sample including all channels. 
+	* BitsPerSample    8 bits = 8, 16 bits = 16, etc.
+	*/
 	const int nSamples = GetUnprocessedDataSize()/m_fmtParm.wBlockAlign;
-	const int nSampleBytes = m_fmtParm.wBlockAlign/m_fmtParm.wChannels;
+	// 1 for 8-bit data, 2 for 16-bit
+	const int nSampleBytes = m_fmtParm.wBitsPerSample/8;
 
-	HPSTR pLeft = NULL;
-	HPSTR pRight = NULL;
-	try
-	{
-		CFile cLeft(m_szRawDataWrk[1], CFile::modeCreate|CFile::modeWrite|CFile::shareExclusive|CFile::typeBinary);
-		CFile cRight(m_szRawDataWrk[2], CFile::modeCreate|CFile::modeWrite|CFile::shareExclusive|CFile::typeBinary);
+	CChannel * channel = new CChannel[numChannels];
 
+	try {
 		HPSTR pData = GetUnprocessedWaveData(0, TRUE, FALSE);
-		const int nSize = GetBufferSize()/2 & ~1;
+		const int nSize = GetBufferSize()/numChannels & ~1;
 
-		pLeft = new char[nSize];
-		pRight = new char[nSize];
+		for (int i=0;i<numChannels;i++) {
+			channel[i].pData = new char[nSize];
+			channel[i].pFile = new CFile(m_szRawDataWrk[i+1], CFile::modeCreate|CFile::modeWrite|CFile::shareExclusive|CFile::typeBinary);
+		}
 
 		int nUsed = 0;
-		for (int nSample = 0; nSample < nSamples;)
-		{
-			if(nUsed == nSize)
-			{
+		for (int nSample = 0; nSample < nSamples;) {
+			if (nUsed == nSize) {
 				nUsed = 0;
-				DWORD dwOffset = nSample*nSampleBytes*2;
-
+				DWORD dwOffset = nSample*nSampleBytes*numChannels;
 				pData = GetUnprocessedWaveData(dwOffset, TRUE, FALSE);
 			}
 
-			pLeft[nUsed] = pData[nUsed*2];
-			pRight[nUsed] = pData[nUsed*2+nSampleBytes];      
+			// the data is interleaved 
+			// so for stereo 8 bit, the data is ordered 
+			// left, right, left, right
+			// for stereo 16 bit, the data is ordered
+			// left(low), left(high), right(low), right(high)
 
-			if(nSampleBytes == 2)
-			{
-				pLeft[nUsed+1] = pData[nUsed*2+1];
-				pRight[nUsed+1] = pData[nUsed*2+nSampleBytes+1];
+			int start = nUsed*numChannels;
+			for (int i=0;i<numChannels;i++) {
+				channel[i].pData[nUsed] = pData[start+(nSampleBytes*i)];
+			}
+			if (nSampleBytes==2) {
+				for (int i=0;i<numChannels;i++) {
+					channel[i].pData[nUsed+1] = pData[start+(nSampleBytes*i)+1];
+				}
 			}
 
 			nUsed += nSampleBytes;
 			nSample++;
-			if(nUsed == nSize || nSample >= nSamples)
-			{
-				cLeft.Write(pLeft, nUsed);
-				cRight.Write(pRight, nUsed);
+			if ((nUsed == nSize) || (nSample >= nSamples)) {
+				for (int i=0;i<numChannels;i++) {
+					channel[i].pFile->Write(channel[i].pData,nUsed);
+				}
 			}
 		}
 	}
-	catch(...)
-	{
+	catch(...) {
 		bResult = FALSE;
 	}
 
-	if(pLeft)
-		delete [] pLeft;
-	if(pRight)
-		delete [] pRight;
-	std::swap(m_szRawDataWrk[0],m_szRawDataWrk[1]); // Make the Left channel the default channel
+	for (int i=0;i<numChannels;i++) {
+		if (channel[i].pData!=NULL) {
+			delete [] channel[i].pData;
+			channel[i].pData = NULL;
+		}
+		if (channel[i].pFile!=NULL) {
+			channel[i].pFile->Flush();
+			channel[i].pFile->Close();
+			delete channel[i].pFile;
+			channel[i].pFile = NULL;
+		}
+	}
+
+	// make the selected channel the default channel
+	std::swap(m_szRawDataWrk[0],m_szRawDataWrk[selectedChannel+1]); 
 
 	return bResult;
 }
@@ -815,7 +872,7 @@ bool CSaDoc::SplitStereoTempFile()
 // stores it into data members. From the wave data itself only the first
 // block of data is read and stored in the data buffer.
 /***************************************************************************/
-BOOL CSaDoc::LoadDataFiles(const TCHAR* pszPathName, BOOL bTemp/*=FALSE*/)
+BOOL CSaDoc::LoadDataFiles(const TCHAR* pszPathName, bool bTemp/*=FALSE*/)
 {
 	BeginWaitCursor(); // wait cursor
 	CSaString szWavePath = pszPathName;
@@ -824,6 +881,7 @@ BOOL CSaDoc::LoadDataFiles(const TCHAR* pszPathName, BOOL bTemp/*=FALSE*/)
 		szWavePath = m_szTempConvertedWave;
 	}
 
+	// this will reload the m_fmtParm structure
 	if (!ReadRiff(szWavePath))
 	{
 		EndWaitCursor();
@@ -844,16 +902,26 @@ BOOL CSaDoc::LoadDataFiles(const TCHAR* pszPathName, BOOL bTemp/*=FALSE*/)
 		CopyWaveToTemp(szWavePath);
 	}
 
-	SetStereoFlag(m_fmtParm.wChannels == 2);  // This flag will be the only signature of a "Stereo file"
-	if (IsStereo()) 
+	SetMultiChannelFlag(m_fmtParm.wChannels > 1);  // This flag will be the only signature of a "Stereo file"
+	if (IsMultiChannel()) 
 	{
 		// stereo SA is expecting a mono file (so we will make this a mono file)
-		m_fmtParm.dwAvgBytesPerSec /= 2;
-		m_fmtParm.wBlockAlign /= 2;
-		m_fmtParm.wChannels = 1;
-		m_dwDataSize /= 2;
-		if (!SplitStereoTempFile())
+		m_fmtParm.dwAvgBytesPerSec /= m_fmtParm.wChannels;
+		m_fmtParm.wBlockAlign /= m_fmtParm.wChannels;
+		m_dwDataSize /= m_fmtParm.wChannels;
+		
+		CDlgMultiChannel dlg(m_fmtParm.wChannels,false);
+		if (dlg.DoModal()!=IDOK) {
+			return FALSE;
+		}
+		int selectedChannel = dlg.m_nChannel;
+		int numChannels = m_fmtParm.wChannels;
+
+		if (!SplitMultiChannelTempFile(numChannels,selectedChannel))
+		{
 			return FALSE; // error
+		}
+		m_fmtParm.wChannels = 1;
 	}
 
 	s_bDocumentWasAlreadyOpen = FALSE;
@@ -999,6 +1067,7 @@ BOOL CSaDoc::ReadRiff(const TCHAR* pszPathName)
 		if (lError != -1)
 		{
 			lError = mmioRead(hmmioFile, (HPSTR)&m_fmtParm.wChannels, sizeof(WORD)); // read channel number
+			/*
 			if (m_fmtParm.wChannels > 2) // check if too many channels
 			{
 				// error testing channel number
@@ -1006,6 +1075,7 @@ BOOL CSaDoc::ReadRiff(const TCHAR* pszPathName)
 				mmioClose(hmmioFile, 0);
 				return FALSE;
 			}
+			*/
 		}
 
 		if (lError != -1) lError = mmioRead(hmmioFile, (HPSTR)&m_fmtParm.dwSamplesPerSec, sizeof(DWORD)); // read sampling rate
@@ -1370,16 +1440,16 @@ void CSaDoc::InsertGlossPosAndRefTranscription(ISaAudioDocumentReaderPtr saAudio
 }
 
 /***************************************************************************/
-// CSaDoc::CheckWaveFormat Checks basic format of a WAV file and populates
+// CSaDoc::GetWaveFormatParams Checks basic format of a WAV file and populates
 // fmtParm
 // silent if this is true, do not display an error on NON-PCM files as they
 //        will be retried for conversion at a later point.
 /***************************************************************************/
-DWORD CSaDoc::CheckWaveFormat(const TCHAR* pszPathName, 
-							  FmtParm &fmtParm,
-							  bool silent)
+bool CSaDoc::GetWaveFormatParams( const TCHAR* pszPathName, 
+								  FmtParm & fmtParm, 
+								  DWORD & dwDataSize)
 {
-	DWORD dwDataSize;
+	dwDataSize = 0;
 
 	CSaApp* pApp = (CSaApp*)AfxGetApp();
 
@@ -1388,21 +1458,20 @@ DWORD CSaDoc::CheckWaveFormat(const TCHAR* pszPathName,
 	hmmioFile = mmioOpen(const_cast<TCHAR*>(pszPathName), NULL, MMIO_READ | MMIO_DENYWRITE);
 	if (!hmmioFile)
 	{
-		// error opening file
 		pApp->ErrorMessage(IDS_ERROR_FILEOPEN, pszPathName);
 		EndWaitCursor();
-		return FALSE;
+		return false;
 	}
 	// locate a 'RIFF' chunk with a 'WAVE' form type to make sure it's a WAVE file.
 	MMCKINFO mmckinfoParent;
 	mmckinfoParent.fccType = mmioFOURCC('W', 'A', 'V', 'E'); // prepare search code
 	if (mmioDescend(hmmioFile, (LPMMCKINFO)&mmckinfoParent, NULL, MMIO_FINDRIFF))
 	{
+		mmioClose(hmmioFile, 0);
 		// error descending into wave chunk
 		pApp->ErrorMessage(IDS_ERROR_WAVECHUNK, pszPathName);
-		mmioClose(hmmioFile, 0);
 		EndWaitCursor();
-		return FALSE;
+		return false;
 	}
 	// find the format chunk. It should be a subchunk of the 'RIFF' parent chunk
 	MMCKINFO mmckinfoSubchunk;
@@ -1416,23 +1485,20 @@ DWORD CSaDoc::CheckWaveFormat(const TCHAR* pszPathName,
 		{
 			mmioClose(hmmioFile, 0);
 			// error testing pcm format
-			if (!silent) 
-			{
-				pApp->ErrorMessage(IDS_ERROR_FORMATPCM, pszPathName);
-				EndWaitCursor();
-			}
-			return FALSE;
+			pApp->ErrorMessage(IDS_ERROR_FORMATPCM, pszPathName);
+			EndWaitCursor();
+			return false;
 		}
 		if (lError != -1)
 		{
 			lError = mmioRead(hmmioFile, (HPSTR)&fmtParm.wChannels, sizeof(WORD)); // read channel number
-			if (lError != -1 && fmtParm.wChannels > 2) // check if too many channels
+			if ((lError != -1) && (fmtParm.wChannels > 2)) // check if too many channels
 			{
 				// error testing channel number
 				pApp->ErrorMessage(IDS_ERROR_FORMAT_CHANNELS, pszPathName);
 				mmioClose(hmmioFile, 0);
 				EndWaitCursor();
-				return FALSE;
+				return false;
 			}
 		}
 		if (lError != -1) lError = mmioRead(hmmioFile, (HPSTR)&fmtParm.dwSamplesPerSec, sizeof(DWORD)); // read sampling rate
@@ -1448,7 +1514,7 @@ DWORD CSaDoc::CheckWaveFormat(const TCHAR* pszPathName,
 			pApp->ErrorMessage(IDS_ERROR_READFORMAT, pszPathName);
 			mmioClose(hmmioFile, 0);
 			EndWaitCursor();
-			return FALSE;
+			return false;
 		}
 	}
 	else
@@ -1457,7 +1523,7 @@ DWORD CSaDoc::CheckWaveFormat(const TCHAR* pszPathName,
 		pApp->ErrorMessage(IDS_ERROR_FORMATCHUNK, pszPathName);
 		mmioClose(hmmioFile, 0);
 		EndWaitCursor();
-		return FALSE;
+		return false;
 	}
 	// determine how much sound data is in the file. Find the data subchunk
 	mmckinfoSubchunk.ckid = mmioFOURCC('d', 'a', 't', 'a');
@@ -1467,7 +1533,7 @@ DWORD CSaDoc::CheckWaveFormat(const TCHAR* pszPathName,
 		pApp->ErrorMessage(IDS_ERROR_DATACHUNK, pszPathName);
 		mmioClose(hmmioFile, 0);
 		EndWaitCursor();
-		return FALSE;
+		return false;
 	}
 	// get the size of the data subchunk
 	dwDataSize = mmckinfoSubchunk.cksize;
@@ -1477,7 +1543,7 @@ DWORD CSaDoc::CheckWaveFormat(const TCHAR* pszPathName,
 		pApp->ErrorMessage(IDS_ERROR_NODATA, pszPathName);
 		mmioClose(hmmioFile, 0);
 		EndWaitCursor();
-		return FALSE;
+		return false;
 	}
 	// ascend out of the data chunk
 	mmioAscend(hmmioFile, &mmckinfoSubchunk, 0);
@@ -1485,7 +1551,207 @@ DWORD CSaDoc::CheckWaveFormat(const TCHAR* pszPathName,
 	// close the wave file
 	mmioClose(hmmioFile, 0);
 
-	return dwDataSize; // OK return data chunk length
+	return true;
+}
+
+/***************************************************************************
+* CSaDoc::IsStandardWaveFormat 
+* Checks basic format of a WAV file and populates fmtParm.
+* Returns false if the file is not a wave file, a non-PCM file, or is not 
+* in the standard PCM 16/8 bit 22k format that SA uses.
+* No errors will be displayed.  Other code will attempt to read the file
+* and convert it.
+***************************************************************************/
+bool CSaDoc::IsStandardWaveFormat(const TCHAR* pszPathName)
+{
+
+	// open file
+	HMMIO hmmioFile = mmioOpen(const_cast<TCHAR*>(pszPathName), NULL, MMIO_READ | MMIO_DENYWRITE);
+	if (!hmmioFile)
+	{
+		return false;
+	}
+
+	// locate a 'RIFF' chunk with a 'WAVE' form type to make sure it's a WAVE file.
+	MMCKINFO mmckinfoParent;
+	mmckinfoParent.fccType = mmioFOURCC('W', 'A', 'V', 'E'); // prepare search code
+	if (mmioDescend(hmmioFile, (LPMMCKINFO)&mmckinfoParent, NULL, MMIO_FINDRIFF))
+	{
+		mmioClose(hmmioFile, 0);
+		return false;
+	}
+
+	FmtParm fmtParm;
+	// find the format chunk. It should be a subchunk of the 'RIFF' parent chunk
+	MMCKINFO mmckinfoSubchunk;
+	mmckinfoSubchunk.ckid = mmioFOURCC('f', 'm', 't', ' '); // prepare search code
+	LONG lError = mmioDescend(hmmioFile, &mmckinfoSubchunk, &mmckinfoParent, MMIO_FINDCHUNK);
+	if (lError!=MMSYSERR_NOERROR)
+	{
+		mmioClose(hmmioFile, 0);
+		return false;
+	}
+
+	// fmt chunk found
+	lError = mmioRead(hmmioFile, (HPSTR)&fmtParm.wTag, sizeof(WORD)); // read format tag
+	if (lError == -1)
+	{
+		mmioClose(hmmioFile, 0);
+		return false;
+	}
+
+	if (fmtParm.wTag != WAVE_FORMAT_PCM) // check if PCM format
+	{
+		mmioClose(hmmioFile, 0);
+		return false;
+	}
+
+	lError = mmioRead(hmmioFile, (HPSTR)&fmtParm.wChannels, sizeof(WORD)); // read channel number
+	if (lError == -1) 
+	{
+		mmioClose(hmmioFile, 0);
+		return false;
+	}
+
+	lError = mmioRead(hmmioFile, (HPSTR)&fmtParm.dwSamplesPerSec, sizeof(DWORD)); // read sampling rate
+	if (lError == -1) 
+	{
+		mmioClose(hmmioFile, 0);
+		return false;
+	}
+
+	lError = mmioRead(hmmioFile, (HPSTR)&fmtParm.dwAvgBytesPerSec, sizeof(DWORD)); // read throughput
+	if (lError == -1) 
+	{
+		mmioClose(hmmioFile, 0);
+		return false;
+	}
+
+	lError = mmioRead(hmmioFile, (HPSTR)&fmtParm.wBlockAlign, sizeof(WORD)); // read sampling rate for all channels
+	if (lError == -1) 
+	{
+		mmioClose(hmmioFile, 0);
+		return false;
+	}
+
+	lError = mmioRead(hmmioFile, (HPSTR)&fmtParm.wBitsPerSample, sizeof(WORD)); // read sample word size
+	if (lError == -1)
+	{
+		mmioClose(hmmioFile, 0);
+		return false;
+	}
+
+	// if it's not in the expected 8/16 bit format, we will use the conversion
+	// routine
+	if ((fmtParm.wBitsPerSample != 16) && (fmtParm.wBitsPerSample != 8))
+	{
+		mmioClose(hmmioFile, 0);
+		return false;
+	}
+
+	// get out of 'fmt ' chunk
+	lError = mmioAscend(hmmioFile, &mmckinfoSubchunk, 0);
+	if (lError != MMSYSERR_NOERROR)
+	{
+		mmioClose(hmmioFile, 0);
+		return false;
+	}
+
+	// determine how much sound data is in the file. Find the data subchunk
+	mmckinfoSubchunk.ckid = mmioFOURCC('d', 'a', 't', 'a');
+	lError = mmioDescend(hmmioFile, &mmckinfoSubchunk, &mmckinfoParent, MMIO_FINDCHUNK);
+	if (lError != MMSYSERR_NOERROR)
+	{
+		mmioClose(hmmioFile, 0);
+		return false;
+	}
+
+	// get the size of the data subchunk
+	DWORD dwDataSize = mmckinfoSubchunk.cksize;
+	if (dwDataSize == 0L)
+	{
+		mmioClose(hmmioFile, 0);
+		return false;
+	}
+
+	// ascend out of the data chunk
+	mmioAscend(hmmioFile, &mmckinfoSubchunk, 0);
+
+	// close the wave file
+	mmioClose(hmmioFile, 0);
+
+	return true;
+}
+
+/***************************************************************************
+* CSaDoc::IsMultiChannelWave 
+* Returns true if this is a standard wave file and it contains multi channel
+* data.
+* This function assumes IsStandardWaveFormat was called first
+***************************************************************************/
+bool CSaDoc::IsMultiChannelWave(const TCHAR* pszPathName, int & channels)
+{
+	channels = 0;
+
+	// open file
+	HMMIO hmmioFile = mmioOpen(const_cast<TCHAR*>(pszPathName), NULL, MMIO_READ | MMIO_DENYWRITE);
+	if (!hmmioFile)
+	{
+		return false;
+	}
+
+	// locate a 'RIFF' chunk with a 'WAVE' form type to make sure it's a WAVE file.
+	MMCKINFO mmckinfoParent;
+	mmckinfoParent.fccType = mmioFOURCC('W', 'A', 'V', 'E'); // prepare search code
+	if (mmioDescend(hmmioFile, (LPMMCKINFO)&mmckinfoParent, NULL, MMIO_FINDRIFF))
+	{
+		mmioClose(hmmioFile, 0);
+		return false;
+	}
+
+	FmtParm fmtParm;
+	// find the format chunk. It should be a subchunk of the 'RIFF' parent chunk
+	MMCKINFO mmckinfoSubchunk;
+	mmckinfoSubchunk.ckid = mmioFOURCC('f', 'm', 't', ' '); // prepare search code
+	LONG lError = mmioDescend(hmmioFile, &mmckinfoSubchunk, &mmckinfoParent, MMIO_FINDCHUNK);
+	if (lError!=MMSYSERR_NOERROR)
+	{
+		mmioClose(hmmioFile, 0);
+		return false;
+	}
+
+	// fmt chunk found
+	lError = mmioRead(hmmioFile, (HPSTR)&fmtParm.wTag, sizeof(WORD)); // read format tag
+	if (lError == -1)
+	{
+		mmioClose(hmmioFile, 0);
+		return false;
+	}
+
+	if (fmtParm.wTag != WAVE_FORMAT_PCM) // check if PCM format
+	{
+		mmioClose(hmmioFile, 0);
+		return false;
+	}
+
+	lError = mmioRead(hmmioFile, (HPSTR)&fmtParm.wChannels, sizeof(WORD)); // read channel number
+	if (lError == -1) 
+	{
+		mmioClose(hmmioFile, 0);
+		return false;
+	}
+
+	// if it's multi channel, we will convert the file
+	channels = fmtParm.wChannels;
+	if (fmtParm.wChannels>1)
+	{
+		mmioClose(hmmioFile, 0);
+		return true;
+	}
+
+	mmioClose(hmmioFile, 0);
+
+	return false;
 }
 
 /***************************************************************************/
@@ -1495,16 +1761,25 @@ DWORD CSaDoc::CheckWaveFormat(const TCHAR* pszPathName,
 DWORD CSaDoc::CheckWaveFormatForPaste(const TCHAR* pszPathName)
 {
 	FmtParm fmtParm;
-	DWORD dwDataSize = CheckWaveFormat( pszPathName, fmtParm, false);
+	DWORD dwDataSize;
+	
+	if (!GetWaveFormatParams( pszPathName, fmtParm, dwDataSize)) 
+	{
+		// there is an error in the file. 
+		// an error message will have already been displayed
+		return 0;
+	}
 
 	CSaApp* pApp = (CSaApp*)AfxGetApp();
 
-	if(dwDataSize)
+	if (dwDataSize)
 	{
 		FmtParm* pFmtParm = &fmtParm;
-		if ((m_fmtParm.wChannels != pFmtParm->wChannels) || (m_fmtParm.dwSamplesPerSec != pFmtParm->dwSamplesPerSec)
-			|| (m_fmtParm.dwAvgBytesPerSec != pFmtParm->dwAvgBytesPerSec) || (m_fmtParm.wBlockAlign != pFmtParm->wBlockAlign)
-			|| (m_fmtParm.wBitsPerSample != pFmtParm->wBitsPerSample))
+		if ((m_fmtParm.wChannels != pFmtParm->wChannels) || 
+			(m_fmtParm.dwSamplesPerSec != pFmtParm->dwSamplesPerSec) || 
+			(m_fmtParm.dwAvgBytesPerSec != pFmtParm->dwAvgBytesPerSec) || 
+			(m_fmtParm.wBlockAlign != pFmtParm->wBlockAlign) || 
+			(m_fmtParm.wBitsPerSample != pFmtParm->wBitsPerSample))
 		{
 			// not the right format
 			pApp->ErrorMessage(IDS_ERROR_PASTEFORMAT);
@@ -1521,17 +1796,23 @@ DWORD CSaDoc::CheckWaveFormatForPaste(const TCHAR* pszPathName)
 DWORD CSaDoc::CheckWaveFormatForOpen(const TCHAR* pszPathName)
 {
 	FmtParm fmtParm;
-	DWORD dwDataSize = CheckWaveFormat( pszPathName, fmtParm, false);
+	DWORD dwDataSize = 0;
+	if (!GetWaveFormatParams( pszPathName, fmtParm, dwDataSize)) 
+	{
+		// there is an error in the file.
+		// an error message will have already been displayed
+		return 0;
+	}
 
 	CSaApp* pApp = (CSaApp*)AfxGetApp();
 
-	if(dwDataSize)
+	if (dwDataSize)
 	{
 		if (fmtParm.dwSamplesPerSec < 1)
 		{
 			// not the right format
 			pApp->ErrorMessage(IDS_ERROR_INVALID_SAMPLING_RATE, pszPathName);
-			return FALSE;
+			return 0;
 		}
 	}
 
@@ -1539,38 +1820,11 @@ DWORD CSaDoc::CheckWaveFormatForOpen(const TCHAR* pszPathName)
 }
 
 /***************************************************************************/
-// CSaDoc::IsStandardWaveFormat Checks if file is in standard WAV format
-/***************************************************************************/
-BOOL CSaDoc::IsStandardWaveFormat(const TCHAR* pszPathName)
-{
-	// open file
-	HMMIO hmmioFile; // file handle
-	hmmioFile = mmioOpen(const_cast<TCHAR*>(pszPathName), NULL, MMIO_READ | MMIO_DENYWRITE);
-	if (!hmmioFile)
-		return FALSE; // error opening file
-
-	// check for WAV format ('RIFF' chunk with 'WAVE' form type)
-	MMCKINFO mmckinfoParent;
-	mmckinfoParent.fccType = mmioFOURCC('W', 'A', 'V', 'E'); // prepare search code
-	if (mmioDescend(hmmioFile, (LPMMCKINFO)&mmckinfoParent, NULL, MMIO_FINDRIFF))
-	{
-		mmioClose(hmmioFile, 0);
-		return FALSE; // error descending into wave chunk
-	}
-	mmioClose(hmmioFile, 0);
-
-	// check if sample size is standard (16 or 8 bit)
-	FmtParm fmtParm;
-	CheckWaveFormat(pszPathName, fmtParm, true);
-	return (fmtParm.wBitsPerSample == 16 || fmtParm.wBitsPerSample == 8);
-}
-
-/***************************************************************************/
 // CSaDoc::ConvertToWave Converts file to 22kHz, 16bit, Mono WAV format
 /***************************************************************************/
-BOOL CSaDoc::ConvertToWave( const TCHAR* pszPathName)
+bool CSaDoc::ConvertToWave( const TCHAR* pszPathName)
 {
-	BOOL result = TRUE;
+	bool result = true;
 	CSaApp* pApp = (CSaApp*)AfxGetApp();
 
 	// display status bar message
@@ -1593,13 +1847,20 @@ BOOL CSaDoc::ConvertToWave( const TCHAR* pszPathName)
 	m_szTempConvertedWave = szTempFilePath;
 
 	// if it's a wave file, but in a different format then try and convert it
-	// if this errors, we wil just continue on trying with ST_Audio
+	// if this errors, we will just continue on trying with ST_Audio
 	{
 		CWaveResampler resampler;
-		if (resampler.Run( pszPathName, szTempFilePath, pStatusBar)==CWaveResampler::EC_SUCCESS) 
+		CWaveResampler::ECONVERT result = resampler.Run( pszPathName, szTempFilePath, pStatusBar);
+		if (result==CWaveResampler::EC_SUCCESS) 
 		{
 			pMainFrame->ShowDataStatusBar(TRUE); // restore data status bar
-			return TRUE;
+			return true;
+		} 
+		else if (result==CWaveResampler::EC_USERABORT) 
+		{
+			// the user chose to quite
+			pMainFrame->ShowDataStatusBar(TRUE); // restore data status bar
+			return false;
 		}
 	}
 
@@ -1613,18 +1874,18 @@ BOOL CSaDoc::ConvertToWave( const TCHAR* pszPathName)
 		szCreateResult.Format(_T("%x"), createResult);
 		pApp->ErrorMessage(IDS_ERROR_CREATE_INSTANCE, _T("STAudio.CreateInstance()"), szCreateResult);
 		pMainFrame->ShowDataStatusBar(TRUE); // restore data status bar
-		return FALSE;
+		return false;
 	}
 	pStatusBar->SetProgress(30);
 	try
 	{
-		result = stAudio->ConvertToWAV(_bstr_t(pszPathName), _bstr_t(szTempFilePath), 22050, 16, 1);
+		result = (stAudio->ConvertToWAV(_bstr_t(pszPathName), _bstr_t(szTempFilePath), 22050, 16, 1)==TRUE);
 	}
 	catch (...)
 	{
 		pApp->ErrorMessage(IDS_ERROR_FORMATPCM, pszPathName);
 		pMainFrame->ShowDataStatusBar(TRUE); // restore data status bar
-		return FALSE;
+		return false;
 	}
 	pStatusBar->SetProgress(90);
 	stAudio->Release();
@@ -1864,7 +2125,7 @@ DWORD CSaDoc::WriteRiff(const TCHAR* pszPathName)
 
 		CFile cFile;
 		CFile *pTempFile = &cFile;
-		const int nFile = IsStereo() ? 1 : 0;
+		const int nFile = IsMultiChannel() ? 1 : 0;
 
 		// open the temporary wave file
 		CopyProcessTempFile(); // copy the Adjust or Workbench temp file if necessary
@@ -1967,7 +2228,7 @@ void CSaDoc::WriteNonSegmentData(DWORD dwDataSize, ISaAudioDocumentWriterPtr saA
 	saAudioDocWriter->RecordBandWidth = m_saParm.dwRecordBandWidth;
 	saAudioDocWriter->RecordSampleSize = m_saParm.byRecordSmpSize;
 	saAudioDocWriter->RecordTimeStamp = m_saParm.RecordTimeStamp.GetTime();
-	DWORD dwSingleChannelDataSize = IsStereo() ? dwDataSize/2 : dwDataSize;
+	DWORD dwSingleChannelDataSize = IsMultiChannel() ? dwDataSize/2 : dwDataSize;
 	saAudioDocWriter->NumberOfSamples = dwSingleChannelDataSize / m_fmtParm.wBlockAlign;
 	saAudioDocWriter->SignalMax = m_saParm.lSignalMax;
 	saAudioDocWriter->SignalMin = m_saParm.lSignalMin;
@@ -2494,7 +2755,7 @@ BOOL CSaDoc::CopyWaveToTemp(const TCHAR* pszSourcePathName,
 	CSaApp* pApp = (CSaApp*)AfxGetApp();
 	CFile cFile;
 	CFile *pTempFile = &cFile;
-	if(!bInsert)
+	if (!bInsert)
 	{
 		// create and open or just open the file
 		if (!pTempFile->Open(pszTempPathName, CFile::modeCreate | CFile::modeReadWrite | CFile::shareExclusive))
@@ -2593,7 +2854,9 @@ BOOL CSaDoc::CopyWaveToTemp(const TCHAR* pszSourcePathName,
 		}
 
 		if ((DWORD)lSizeRead > dwSizeLeft)
+		{
 			lSizeRead = (long)dwSizeLeft;
+		}
 		dwSizeLeft -= (DWORD)lSizeRead;
 
 		// write the data block from the buffer
@@ -2622,23 +2885,17 @@ BOOL CSaDoc::CopyWaveToTemp(const TCHAR* pszSourcePathName,
 	mmioClose(hmmioFile, 0);
 
 	// read temporary file status and set new data size
-	if(bInsert) 
+	if (bInsert) 
+	{
 		m_dwDataSize = sGetFileSize(GetRawDataWrk(0));
+	}
 	else
+	{
 		m_szRawDataWrk[0] = pszTempPathName;
-
+	}
 
 	// fragment the waveform
 	m_pProcessFragments->SetDataInvalid();  // remove old fragmented data
-	/*  Now done in background
-	short int nResult = LOWORD(m_pProcessFragments->Process(this, this)); // find new fragments
-	if (nResult == PROCESS_ERROR)
-	{
-	// error fragmenting
-	pApp->ErrorMessage(IDS_ERROR_FRAGMENT);
-	return FALSE;
-	}
-	*/
 
 	return TRUE;
 }
@@ -2830,17 +3087,17 @@ void CSaDoc::ApplyWaveFile(const TCHAR* pszFileName, DWORD dwDataSize, BOOL bIni
 	POSITION pos = GetFirstViewPosition();
 	CSaView* pView = (CSaView*)GetNextView(pos);
 
-	if(bInitialUpdate)
+	if (bInitialUpdate)
 	{
 		// SDM 1.06.6U5 Load default graph settings
 		// set scrolling parameters, cursors and refresh graph(s)
-		pView->InitialUpdate(TRUE); // Load default graph settings ...
+		pView->InitialUpdate(TRUE);		// Load default graph settings ...
 	}
 	InvalidateAllProcesses();
-	pView->RefreshGraphs(TRUE, TRUE); // repaint whole graphs
+	pView->RefreshGraphs(TRUE, TRUE);	// repaint whole graphs
 	m_uttParm.Init(m_fmtParm.wBitsPerSample); // re-initialize utterance parameters
-	SetUttParm(&m_uttParm, TRUE);  // Copy uttParms to original for safe keeping
-	SetModifiedFlag(); // document is modified
+	SetUttParm(&m_uttParm, TRUE);		// Copy uttParms to original for safe keeping
+	SetModifiedFlag();					// document is modified
 	SetAudioModifiedFlag();
 }
 
@@ -3973,10 +4230,12 @@ BOOL CSaDoc::PasteClipboardToWave(DWORD dwPastePos)
 	}
 
 	DWORD dwPasteSize = CheckWaveFormatForPaste(szTempPath);
-	if(dwPasteSize == 0) 
+	if (dwPasteSize == 0) 
 	{
-		if(cMedium.tymed != TYMED_FILE)
+		if (cMedium.tymed != TYMED_FILE)
+		{
 			CFile::Remove(szTempPath);
+		}
 		ReleaseStgMedium(&cMedium);
 		return FALSE;
 	}
@@ -5444,7 +5703,7 @@ void CSaDoc::OnFileSaveAs()
 /***************************************************************************/
 void CSaDoc::OnUpdateFileSplit(CCmdUI* pCmdUI)
 {
-	pCmdUI->Enable(!((CSaApp*) AfxGetApp())->GetBatchMode() && !IsStereo());
+	pCmdUI->Enable(!((CSaApp*) AfxGetApp())->GetBatchMode() && !IsMultiChannel());
 }
 
 CString CSaDoc::FilterName( CString text)
@@ -5971,7 +6230,7 @@ void CSaDoc::CopyProcessTempFile()
 /***************************************************************************/
 void CSaDoc::OnUpdateFileSaveAs(CCmdUI* pCmdUI)
 {
-	pCmdUI->Enable(!((CSaApp*) AfxGetApp())->GetBatchMode() && !IsStereo());  // SDM 1.5Test8.2
+	pCmdUI->Enable(!((CSaApp*) AfxGetApp())->GetBatchMode() && !IsMultiChannel());  // SDM 1.5Test8.2
 }
 
 // SDM 1.06.5 Removed unused command handlers

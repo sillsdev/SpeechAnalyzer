@@ -2033,6 +2033,10 @@
 					</FileConfiguration>
 				</File>
 				<File
+					RelativePath=".\DlgMultiChannel.cpp"
+					>
+				</File>
+				<File
 					RelativePath=".\DlgSplit.cpp"
 					>
 				</File>
@@ -3720,6 +3724,10 @@
 				</File>
 				<File
 					RelativePath=".\DlgAudio.h"
+					>
+				</File>
+				<File
+					RelativePath=".\DlgMultiChannel.h"
 					>
 				</File>
 				<File

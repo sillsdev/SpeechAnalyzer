@@ -3301,7 +3301,7 @@ BOOL CSaView::SaDoPreparePrinting(CPrintInfo* pInfo, BOOL isLandscape)
 BOOL CSaView::IsCutAllowed()
 {
 	BOOL bHighLighted = FALSE;
-	if ((m_nFocusedID == IDD_RAWDATA) && !GetDocument()->GetWbProcess() && !GetDocument()->IsStereo() &&
+	if ((m_nFocusedID == IDD_RAWDATA) && !GetDocument()->GetWbProcess() && !GetDocument()->IsMultiChannel() &&
 		(m_pFocusedGraph->GetPlot()->GetHighLightLength() > 0))
 	{
 		bHighLighted = TRUE;
@@ -3628,9 +3628,9 @@ void CSaView::OnUpdateEditPaste(CCmdUI* pCmdUI)
 			CloseClipboard();
 		}
 	}
-	if ((m_nFocusedID == IDD_RAWDATA) 
-		&& !((CSaDoc*)GetDocument())->IsStereo()
-		&& !((CSaDoc*)GetDocument())->GetWbProcess())
+	if ((m_nFocusedID == IDD_RAWDATA) && 
+		(!((CSaDoc*)GetDocument())->IsMultiChannel()) && 
+		(!((CSaDoc*)GetDocument())->GetWbProcess()))
 	{
 		if ((OpenClipboard()) &&
 			(IsClipboardFormatAvailable(CF_WAVE)))

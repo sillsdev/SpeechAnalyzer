@@ -375,7 +375,7 @@ void CStartCursorWnd::OnMouseMove(UINT nFlags, CPoint point)
 		if ((pView->GetFocusedGraphID() == IDD_RAWDATA) && 
 			((nFlags&(MK_CONTROL|MK_SHIFT)) == MK_CONTROL) && 
 			(!pView->GetEditBoundaries(nFlags)) && 
-			(!pView->GetDocument()->IsStereo()) && 
+			(!pView->GetDocument()->IsMultiChannel()) && 
 			((pView->GetGraphUpdateMode() == STATIC_UPDATE) || 
 			 (!pView->GetDynamicGraphCount()))) 
 		{

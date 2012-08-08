@@ -46,7 +46,7 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "SIL International"
             VALUE "FileDescription", "SA"
-            VALUE "FileVersion", "v3.0.1.11"
+            VALUE "FileVersion", "v3.0.1.11c"
             VALUE "InternalName", "SA"
             VALUE "LegalCopyright", "© 1996-2011 SIL International (MSEA)"
             VALUE "ProductName", "SA"
@@ -422,10 +422,10 @@ BEGIN
     GROUPBOX        "Sampling Rate",IDC_STATIC,6,6,66,53
 END
 
-IDD_OPTIONSCOLORSPAGE DIALOG  0, 0, 276, 154
+IDD_OPTIONSCOLORSPAGE DIALOGEX 0, 0, 276, 154
 STYLE DS_SETFONT | WS_CHILD | WS_VISIBLE | WS_DISABLED | WS_CAPTION
 CAPTION "Colors"
-FONT 8, "MS Sans Serif"
+FONT 8, "MS Sans Serif", 0, 0, 0x0
 BEGIN
     COMBOBOX        IDC_COLORSGRAPHSETUP,62,29,104,337,CBS_DROPDOWNLIST | CBS_OWNERDRAWVARIABLE | WS_BORDER | WS_VSCROLL | WS_TABSTOP
     PUSHBUTTON      "...",IDC_CHGCOLOR_GRAPH,168,29,12,13
@@ -2067,6 +2067,18 @@ BEGIN
     CONTROL         "Word Sub-Folder name",IDC_EXPORT_WORD,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,109,247,10
 END
 
+IDD_MULTICHANNEL DIALOGEX 0, 0, 309, 79
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Multi Channel File Options"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,194,58,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,252,58,50,14
+    COMBOBOX        IDC_MULTICHANNEL_COMBO,7,36,294,180,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "Please select a single channel to use, or select 'combine' to combine all the channels together into a single wave form.",IDC_STATIC,7,18,294,18
+    LTEXT           "The file you are loading contains multiple audio channels.",IDC_STATIC,7,7,294,12
+END
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -2209,6 +2221,14 @@ BEGIN
         RIGHTMARGIN, 255
         TOPMARGIN, 7
         BOTTOMMARGIN, 211
+    END
+
+    IDD_MULTICHANNEL, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 302
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 72
     END
 END
 #endif    // APSTUDIO_INVOKED
@@ -3870,7 +3890,7 @@ STRINGTABLE
 BEGIN
     IDR_MAINFRAME           "Speech Analyzer"
     IDR_SA_ANNTYPE          "\nSA\nSA Document\nWAV Files (*.wav)\n.wav\nannFileType\nANN File Type"
-    VS_VERSION              "Version 3.0.1.11"
+    VS_VERSION              "Version 3.0.1.11c"
     VS_COPYRIGHT            "© 1996-2012 SIL International (MSEA).\nAll Rights Reserved."
     IDR_SA_WBTYPE           "\nWB\nSA Workbench\nWB Files (*.wb)\n.wb\nwbFileType\nWB File Type"
 END
@@ -4661,6 +4681,7 @@ BEGIN
                             "This graph already contains gloss or phonetic data in the transcription bar.\nIf you continue, it will be overwritten.  Do you wish to continue?"
     IDS_CONFIRM_TRANSCRIPTION_NOT_EMPTY 
                             "This graph already contains phonetic, gloss or phrase transcription data.\nIf you continue, it will be overwritten.  Do you wish to continue?"
+    IDS_MC_CHANNEL          "Channel %1"
 END
 
 STRINGTABLE 
@@ -4835,6 +4856,14 @@ BEGIN
     IDS_SPLIT_COMPLETE      "The split is complete.  %1 segments were created."
     IDS_CONFIRM_PHONEMIC_COPY 
                             "This process will delete the existing phonemic data.\nDo you want to continue?"
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_MC_COMBINE          "Combine All Channels"
+    IDS_MC_CHANNEL_LEFT     "Channel %1 (Left)"
+    IDS_MC_CHANNEL_RIGHT    "Channel %1 (Right)"
+    IDS_SUPPORT_WAVE        "The file you are loading is not in a format that Speech Analyzer can edit directly.\nDo you wish to make a copy so that you will be able to edit the file?"
 END
 
 #endif    // English (U.S.) resources

@@ -373,22 +373,6 @@ BOOL CSaApp::InitInstance()
 		free((void*)m_pszHelpFilePath);
 		m_pszHelpFilePath = _tcsdup(szNewPath);
 
-		// check if SM (Speech Manager) is up
-		/* Check is no longer necessary, taken care of through file ownership  -ALB
-		if (pMainFrame->IsSMrunning())
-		{
-		// SM is up, if no batch mode inform user and cancel startup
-		if (!GetBatchMode())
-		{
-		AfxMessageBox(IDS_ERROR_SMRUNNING,MB_OK,0);
-		// Clean up these do not automatically get deleted in this abnormal termination SDM 1.06.8
-		delete m_pMainWnd;
-		m_pMainWnd = 0;
-		return FALSE;
-		}
-		}
-		*/
-
 		if(CSaString(m_pszExeName).Find(_T("SAS")) != -1)
 		{
 			if (!GetBatchMode())
@@ -414,7 +398,9 @@ BOOL CSaApp::InitInstance()
 			{
 				CSaString szCreateResult;
 				szCreateResult.Format(_T("%x"), createResult);
-				ErrorMessage(IDS_ERROR_CREATE_INSTANCE, _T("SplashScreen.CreateInstance()"), szCreateResult);
+				CSaString szText;
+				AfxFormatString2(szText, IDS_ERROR_CREATE_INSTANCE,  _T("SplashScreen.CreateInstance()"), szCreateResult);
+				AfxMessageBox(szText, MB_OK | MB_ICONEXCLAMATION, 0);
 				return FALSE;
 			}
 
@@ -429,11 +415,15 @@ BOOL CSaApp::InitInstance()
 			// Beta version display
 			int nBuildIndex = szVersion.Find(_T("Build"));
 			if (nBuildIndex > 0)
+			{
 				szVersion = szVersion.Left(nBuildIndex - 2);
+			}
 			// RC version display
 			int nRCIndex = szVersion.Find(_T("RC"));
 			if (nRCIndex > 0)
+			{
 				szVersion = szVersion.Left(nRCIndex - 1);
+			}
 			splash->ProdVersion = (_bstr_t)szVersion;
 			// load version info
 			CSaString szCopyright((LPCTSTR)VS_COPYRIGHT);
@@ -457,10 +447,14 @@ BOOL CSaApp::InitInstance()
 
 			// Dispatch commands specified on the command line
 			if (cmdInfo.m_nShellCommand != CCommandLineInfo::FileNew && !ProcessShellCommand(cmdInfo))
+			{
 				return FALSE;
+			}
 
 			if(!bSettingSuccess)
+			{
 				pMainFrame->ShowWindow(m_nCmdShow);
+			}
 			pMainFrame->UpdateWindow();
 
 			// Perform setup new user, if needed
@@ -478,12 +472,16 @@ BOOL CSaApp::InitInstance()
 
 			CSaString msg = GetStartupMessage(m_szLastVersion);
 			if (msg.GetLength())
+			{
 				AfxMessageBox(msg);
+			}
 
 			// Show startup dialog
 			CMainFrame* pMainWnd = (CMainFrame*)AfxGetMainWnd();
 			if (pMainWnd->GetShowStartupDlg() && !pMainWnd->GetCurrSaView())
+			{
 				ShowStartupDialog(TRUE);
+			}
 		}
 		else
 		{
@@ -513,10 +511,12 @@ int CSaApp::ExitInstance()
 	CoInitialize(NULL);
 	ISaAudioDocumentWriterPtr saAudioDocWriter;
 	saAudioDocWriter.CreateInstance(__uuidof(SaAudioDocumentWriter));
-	saAudioDocWriter->DeleteTempDB();
-	saAudioDocWriter->Close();
-	saAudioDocWriter->Release();
-	saAudioDocWriter = NULL;
+	if (saAudioDocWriter!=NULL) {
+		saAudioDocWriter->DeleteTempDB();
+		saAudioDocWriter->Close();
+		saAudioDocWriter->Release();
+		saAudioDocWriter = NULL;
+	}
 	CoUninitialize();
 
 	if(m_hEnglishResources)
@@ -1297,7 +1297,9 @@ void CSaApp::PasteClipboardToNewFile(HGLOBAL hData)
 	GetTempFileName(lpszTempPath, _T("WAV"), 0, szTempPath);
 
 	if ((::GlobalFlags(hData)&~GMEM_LOCKCOUNT)==GMEM_DISCARDED)
+	{
 		return;
+	}
 	HPSTR lpData = (HPSTR)::GlobalLock(hData); // lock memory
 	DWORD dwSize = ::GlobalSize(hData);
 	CFile* pFile=NULL;
@@ -1328,11 +1330,13 @@ void CSaApp::PasteClipboardToNewFile(HGLOBAL hData)
 	// open the new file
 	CSaDoc* pResult = OpenWavFileAsNew(szTempPath);
 
-	if(!pResult)    // Error opening file, destroy temp
+	if(!pResult)
+	{	// Error opening file, destroy temp
 		CFile::Remove(szTempPath);
+	}
 }
 
-CSaDoc* CSaApp::OpenWavFileAsNew(const TCHAR* szTempPath)
+CSaDoc* CSaApp::OpenWavFileAsNew( const TCHAR* szTempPath)
 {
 	// create new MDI child, sa type
 	POSITION posTemplate = GetFirstDocTemplatePosition();
@@ -1360,10 +1364,12 @@ CSaDoc* CSaApp::OpenWavFileAsNew(const TCHAR* szTempPath)
 	else
 	{
 		// Load temporarary file into document
-		if (!pDoc->LoadDataFiles(szTempPath, TRUE))
+		if (!pDoc->LoadDataFiles(szTempPath, true))
 		{
 			if (pDoc)
+			{
 				pDoc->OnCloseDocument();
+			}
 			return NULL;
 		}
 		return pDoc;

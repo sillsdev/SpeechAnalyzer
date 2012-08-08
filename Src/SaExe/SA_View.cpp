@@ -2927,7 +2927,8 @@ void CSaView::OnEditSelectWaveform()
 /***************************************************************************/
 void CSaView::OnUpdateEditSelectWaveform(CCmdUI* pCmdUI)
 {
-	pCmdUI->Enable(!GetDocument()->IsStereo());
+	//pCmdUI->Enable(!GetDocument()->IsMultiChannel());
+	pCmdUI->Enable(true);
 }
 
 /***************************************************************************/

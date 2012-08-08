@@ -101,11 +101,11 @@ private:
 	bool				m_bAudioModified;						// dirty flag for audio data
 	bool				m_bTransModified;						// dirty flag for transcription data
 	bool				m_bTempOverlay;
-	bool				m_bStereo;
+	bool				m_bMultiChannel;
 	int					m_ID;               // document ID
 	int					m_nWbProcess;       // workbench process number
 	CFileStatus			m_fileStat;         // file status information
-	CSaString			m_szRawDataWrk[3];  // wave working temporary files
+	CSaString			m_szRawDataWrk[10]; // wave working temporary files
 	DWORD				m_dwDataSize;       // size of the data subchunk
 	FmtParm				m_fmtParm;          // contains format parameters
 	SaParm				m_saParm;           // contains sa parameters
@@ -157,6 +157,7 @@ private:
 	int					m_nCheckPointCount; // counter for checkpoints (wave undo)
 	_bstr_t				m_szMD5HashCode;    // assigned from SA wave doc reader COM object
 	bool				m_bUsingTempFile;	// FALSE, if audio file is non-wave (mp3, wma, etc.) or standard wave
+
 	CDlgAdvancedSegment * m_pDlgAdvancedSegment;
 	CDlgAdvancedParseWords * m_pDlgAdvancedParseWords;
 	CDlgAdvancedParsePhrases * m_pDlgAdvancedParsePhrases;
@@ -167,7 +168,7 @@ public:
 	bool				IsAudioModified() const {return m_bAudioModified;}
 	void				SetTransModifiedFlag(bool bMod = true) {m_bTransModified = bMod;}
 	bool				IsTransModified() const {return m_bTransModified;}
-	bool				IsStereo() const {return m_bStereo;}
+	bool				IsMultiChannel() const { return m_bMultiChannel;}
 	void				SetID(int nID) {m_ID = nID;}				// set document ID
 	int					GetID() {return m_ID;}
 	void				SetWbProcess(int nProcess) {m_nWbProcess = nProcess;} // set workbench process number
@@ -258,8 +259,8 @@ protected:
 private:
 	const CSaString&	GetRawDataWrk(int nIndex) const {return m_szRawDataWrk[nIndex];}
 	virtual BOOL		CopyWaveToTemp(const TCHAR* pszSourcePathName, const TCHAR* pszTempPathName = NULL, BOOL bInsert=FALSE, DWORD dwPos=0);
-	void				SetStereoFlag(bool bStereo) { m_bStereo = bStereo;}
-	bool				SplitStereoTempFile();
+	void				SetMultiChannelFlag(bool bMultiChannel) { m_bMultiChannel = bMultiChannel;}
+	bool				SplitMultiChannelTempFile(int channels, int selectedChannel);
 	CSaString			SetFileExtension(CSaString fileName, CSaString fileExtension);
 
 	// Methods for loading a wave file and all it's transcription data.
@@ -291,20 +292,21 @@ public:
 	virtual void		OnCloseDocument();
 	virtual BOOL		DoFileSave();
 
-	BOOL				LoadDataFiles(const TCHAR* pszPathName, BOOL bTemp = FALSE);
+	BOOL				LoadDataFiles(const TCHAR* pszPathName, bool bTemp = false);
 	BOOL				WriteDataFiles(const TCHAR* pszPathName, BOOL bSaveAudio = TRUE, BOOL bIsClipboardFile = FALSE);
-	DWORD				CheckWaveFormat(const TCHAR* pszPathName, FmtParm &fmtParm, bool silent);
+	bool				GetWaveFormatParams(const TCHAR* pszPathName, FmtParm &fmtParm, DWORD & dwDataSize);
+	bool				IsStandardWaveFormat(const TCHAR* pszPathName);
+	bool				IsMultiChannelWave(const TCHAR* pszPathName, int & channels);
 	DWORD				CheckWaveFormatForPaste(const TCHAR* pszPathName);
 	DWORD				CheckWaveFormatForOpen(const TCHAR* pszPathName);
-	BOOL				IsStandardWaveFormat(const TCHAR* pszPathName);
-	BOOL				ConvertToWave(const TCHAR* pszPathName);
+	bool				ConvertToWave(const TCHAR* pszPathName);
 	BOOL				InsertTranscriptions(const TCHAR* pszPathName, DWORD dwPos);
 	BOOL				InsertTranscription(int transType, ISaAudioDocumentReaderPtr saAudioDocRdr, DWORD dwPos);
 	void				InsertGlossPosAndRefTranscription(ISaAudioDocumentReaderPtr saAudioDocRdr, DWORD dwPos);
 	virtual BOOL		CopyFile(const TCHAR* pszSourceName, const TCHAR* pszTargetName, DWORD dwStart=0, DWORD dwMax=0xFFFFFFFF, BOOL bTruncate=TRUE);
 	BOOL				CopySectionToNewWavFile(DWORD dwSectionStart, DWORD dwSectionLength, LPCTSTR szNewWave);
-	void				ApplyWaveFile(const TCHAR * pszFileName, DWORD dwDataSize, BOOL bInialUpdate=TRUE); // apply a new recorded wave file
-	void				ApplyWaveFile(const TCHAR * pszFileName, DWORD dwDataSize, CAlignInfo alignInfo); // Update for rt auto-pitch
+	void				ApplyWaveFile(const TCHAR * pszFileName, DWORD dwDataSize, BOOL bInialUpdate=TRUE);		// apply a new recorded wave file
+	void				ApplyWaveFile(const TCHAR * pszFileName, DWORD dwDataSize, CAlignInfo alignInfo);		// Update for rt auto-pitch
 	DWORD				SnapCursor(CURSOR_SELECT nCursorSelect, DWORD dwCursorOffset, DWORD dwLowerLimit, DWORD dwUpperLimit,
 									SNAP_DIRECTION nSnapDirection = SNAP_BOTH,
 									CURSOR_ALIGNMENT nCursorAlignment = ALIGN_USER_SETTING); // align cursors

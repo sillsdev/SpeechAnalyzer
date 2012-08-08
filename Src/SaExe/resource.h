@@ -178,6 +178,7 @@
 #define IDC_MFINGERNW                   356
 #define IDC_MHANDN                      357
 #define IDD_SPLIT                       360
+#define IDD_MULTICHANNEL                362
 #define IDC_HIGHPASS                    502
 #define IDC_CHANGE_DISPLAYMODE          504
 #define ID_PALETTE_BASE                 601
@@ -1575,6 +1576,7 @@
 #define IDC_SPLIT_WORD_SUBFOLDER_NAME   2037
 #define IDC_EXPORT_PHRASE               2038
 #define IDC_EXPORT_WORD                 2039
+#define IDC_MULTICHANNEL_COMBO          2039
 #define IDD_ADVANCEDPARSEWORD           2040
 #define IDD_ADVANCEDPARSEPHRASE         2041
 #define IDS_PLAYER_SMALL                3000
@@ -1694,8 +1696,12 @@
 #define IDS_HELPERWND_OUT_OF_RANGE      11020
 #define IDS_GLOSS_NOT_EMPTY             11021
 #define IDS_CONFIRM_GLOSS_NOT_EMPTY     11021
-#define IDS_CONFIRM_GLOSS_NOT_EMPTY2    11022
 #define IDS_CONFIRM_TRANSCRIPTION_NOT_EMPTY 11022
+#define IDS_MC_CHANNEL                  11023
+#define IDS_MC_COMBINE                  11024
+#define IDS_MC_CHANNEL_LEFT             11025
+#define IDS_MC_CHANNEL_RIGHT            11026
+#define IDS_SUPPORT_WAVE                11027
 #define ID_FILE_RECORD                  32776
 #define ID_EDIT_SCREENCAPTURE           32778
 #define ID_EDIT_EQUALIZELENGTH          32785
@@ -2064,9 +2070,9 @@
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_3D_CONTROLS                     1
-#define _APS_NEXT_RESOURCE_VALUE        362
+#define _APS_NEXT_RESOURCE_VALUE        363
 #define _APS_NEXT_COMMAND_VALUE         33221
-#define _APS_NEXT_CONTROL_VALUE         2039
+#define _APS_NEXT_CONTROL_VALUE         2042
 #define _APS_NEXT_SYMED_VALUE           104
 #endif
 #endif
