@@ -142,7 +142,12 @@ namespace SIL.SpeechTools.Utils
 			if (new string(Encoding.ASCII.GetChars(reader.ReadBytes(4))) != kidWave)
 				return false;
 
-			return true;
+            // Verify WAVE chunk exists
+            stream.Position = 12;
+            if (new string(Encoding.ASCII.GetChars(reader.ReadBytes(4))) != kidFmtChunk)
+                return false;
+
+            return true;
 		}
 
 		/// ------------------------------------------------------------------------------------
@@ -204,7 +209,8 @@ namespace SIL.SpeechTools.Utils
 			// if this is a wave file, only calculate on the data chunk
 			if (IsValidWaveFile(stream))
 			{
-				stream.Position = GetChunkOffset(stream, kidDataChunk) + 4;
+                stream.Position = GetChunkOffset(stream, kidDataChunk);
+				stream.Position += 4;
 				audioSize = reader.ReadInt32();
 			}
 
@@ -271,7 +277,7 @@ namespace SIL.SpeechTools.Utils
 				string id = new string(Encoding.ASCII.GetChars(reader.ReadBytes(4)));
 
 				// if we don't have a fmt tag to start with don't try to read anything else
-				if (stream.Position == 16 && id != "fmt ")
+				if ((stream.Position == 16) && (id != "fmt "))
 					return -1;
 
 				// If we've found the chunk id we're looking for, then return the
