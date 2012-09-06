@@ -385,7 +385,7 @@ BOOL CSaApp::InitInstance()
 		}
 
 		CTime splashStartTime; // keep track of when we first showed the splash screen
-		ISplashScreenPtr splash;
+		ISplashScreenPtr splash(NULL);
 		CSaString szSplashText;
 
 		// create splash window only if SA not in batchmode
@@ -478,7 +478,7 @@ BOOL CSaApp::InitInstance()
 
 			// Show startup dialog
 			CMainFrame* pMainWnd = (CMainFrame*)AfxGetMainWnd();
-			if (pMainWnd->GetShowStartupDlg() && !pMainWnd->GetCurrSaView())
+			if ((pMainWnd->GetShowStartupDlg()) && (!pMainWnd->GetCurrSaView()))
 			{
 				ShowStartupDialog(TRUE);
 			}
@@ -2326,14 +2326,17 @@ void CSaApp::WriteProperties(Object_ostream& obs)
 
 	((CMainFrame *)m_pMainWnd)->WriteProperties(obs);
 
-	if (!GetBatchMode() && ((CMainFrame *)m_pMainWnd)->GetSaveOpenFiles())
+	if ((!GetBatchMode()) && 
+		((CMainFrame *)m_pMainWnd)->GetSaveOpenFiles())
 	{
 		//tdg 09/03/97
 		CDocList doclst; // get list of currently open documents
 		for ( CSaDoc* pdoc = doclst.pdocFirst(); pdoc; pdoc = doclst.pdocNext() )
 		{
-			if(pdoc->GetPathName().GetLength()) // only write properties for files with paths
-				pdoc->WriteProperties(obs);
+			if (pdoc->GetPathName().GetLength()==0) continue;
+			if (pdoc->IsTempFile()) continue;
+			// only write properties for files with paths
+			pdoc->WriteProperties(obs);
 		}
 	}
 

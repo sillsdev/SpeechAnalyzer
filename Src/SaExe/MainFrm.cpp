@@ -241,6 +241,7 @@ CMainFrame::CMainFrame()
 	//m_bSaveOnExit = FALSE;     // DDO - 08/03/00 Don't need this setting anymore.
 	m_bShowStartupDlg = TRUE;    // DDO - 08/03/00
 	m_bSaveOpenFiles = FALSE;    // tdg - 09/03/97
+	m_bShowAdvancedAudio = FALSE;	
 	m_pGraphFontFaces = new CSaStringArray; // create graph font face strings array object
 	m_pGraphFontSizes = new CUIntArray; // create graph font size array object
 
@@ -733,10 +734,14 @@ void CMainFrame::OnToolsOptions()
 	if (m_pDlgToolsOptions->DoModal() == IDOK)         // OK button pressed
 	{
 		SendMessage(WM_USER_APPLY_TOOLSOPTIONS, 0, 0);   // do apply changes
-	}                 
+	}
+
 	// delete the dialog object
-	if (m_pDlgToolsOptions) delete m_pDlgToolsOptions;
-	m_pDlgToolsOptions = NULL;
+	if (m_pDlgToolsOptions) 
+	{
+		delete m_pDlgToolsOptions;
+		m_pDlgToolsOptions = NULL;
+	}
 }
 
 void CMainFrame::OnUpdateToolsOptions(CCmdUI* pCmdUI) 
@@ -920,6 +925,7 @@ LRESULT CMainFrame::OnApplyToolsOptions(WPARAM, LPARAM)
 	//***********************************************************
 	m_bShowStartupDlg = m_pDlgToolsOptions->m_dlgSavePage.m_showStartupDlg; // DDO - 08/03/00
 	m_bSaveOpenFiles = m_pDlgToolsOptions->m_dlgSavePage.m_saveOpenFiles;   // tdg - 09/03/97
+	m_bShowAdvancedAudio = m_pDlgToolsOptions->m_dlgAudioPage.m_bShowAdvancedAudio;
 	return 0;
 }
 
@@ -1929,6 +1935,7 @@ static const char* psz_mainframe          = "mainframe";
 static const char* psz_placementMain      = "placementMain";
 static const char* psz_placementEditor    = "placementEditor";
 static const char* psz_showstartupdlg     = "showstartupdlg";
+static const char* psz_showadvancedaudio  = "showadvancedaudio";
 static const char* psz_saveopenfiles      = "saveopenfiles";   //tdg 09/03/97
 static const char* psz_statusbar          = "statusbar";
 static const char* psz_statusposreadout   = "statusposreadout";
@@ -1997,6 +2004,7 @@ void CMainFrame::WriteProperties(Object_ostream& obs)
 	obs.WriteInteger(psz_startmode, m_nStartDataMode);      // DDO - 08/03/00
 	obs.WriteBool(psz_showstartupdlg, m_bShowStartupDlg);   // DDO - 08/03/00
 	obs.WriteBool(psz_saveopenfiles, m_bSaveOpenFiles);     // tdg - 09/03/97
+	obs.WriteBool(psz_showadvancedaudio, m_bShowAdvancedAudio);
 	obs.WriteBool(psz_statusbar , m_bStatusBar);
 	obs.WriteInteger(psz_statusposreadout, m_nStatusPosReadout);
 	obs.WriteInteger(psz_statuspitchreadout, m_nStatusPitchReadout);
@@ -2079,6 +2087,7 @@ BOOL CMainFrame::ReadProperties(Object_istream& obs)
 		if (obs.bReadInteger(psz_startmode, m_nStartDataMode));                     // DDO - 08/03/00
 		else if (obs.bReadBool(psz_showstartupdlg, m_bShowStartupDlg));             // DDO - 08/03/00
 		else if (obs.bReadBool(psz_saveopenfiles, m_bSaveOpenFiles));               // tdg - 09/03/97
+		else if (obs.bReadBool(psz_showadvancedaudio, m_bShowAdvancedAudio));
 		else if (obs.bReadWindowPlacement(psz_placementMain, wpl))
 		{
 			if ( wpl.showCmd == SW_SHOWMINIMIZED )

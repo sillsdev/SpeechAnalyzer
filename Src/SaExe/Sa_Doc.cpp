@@ -244,6 +244,7 @@ CSaDoc::CSaDoc()
 	SetMultiChannelFlag(false);
 	m_szTempConvertedWave.Empty();
 	m_bUsingTempFile = false;
+	m_bAllowEdit = true;
 
 	m_pDlgAdvancedSegment = NULL;
 	m_pDlgAdvancedParseWords = NULL;
@@ -698,14 +699,16 @@ BOOL CSaDoc::OnOpenDocument(const TCHAR* pszPathName)
 	DWORD dwSize = GetFileSize(hFile, NULL);
 	CloseHandle(hFile);
 
-	if (!dwSize || (dwSize == INVALID_FILE_SIZE))
+	if ((dwSize==0) || (dwSize == INVALID_FILE_SIZE))
 	{
 		pApp->ErrorMessage(IDS_ERROR_FILEOPEN, pszPathName);
 		EndWaitCursor();
 		return FALSE;
 	}
 
-	// if the return value is zero, the file is not in an acceptable format
+	m_bAllowEdit = true;
+
+	// if the return value is false, the file is not in an acceptable format
 	bool conversionNeeded = !IsStandardWaveFormat(pszPathName);
 	if (!conversionNeeded) {
 		int numChannels = 0;
@@ -718,7 +721,14 @@ BOOL CSaDoc::OnOpenDocument(const TCHAR* pszPathName)
 			// handle selecting the appropriate channel.
 			// if they don't then SA will select a single channel and use a non-editable copy
 			conversionNeeded = (AfxMessageBox(IDS_SUPPORT_WAVE, MB_YESNO|MB_ICONQUESTION,0)==IDYES);
+			if (!conversionNeeded)
+			{
+				m_bAllowEdit = false;
+			}
 		}
+	} else {
+		// tell the user what's going on!
+		AfxMessageBox(IDS_SUPPORT_WAVE_COPY, MB_OK|MB_ICONWARNING,0);
 	}
 
 	if (conversionNeeded) 
@@ -735,10 +745,14 @@ BOOL CSaDoc::OnOpenDocument(const TCHAR* pszPathName)
 	}
 
 	if (!CheckWaveFormatForOpen(szWavePath))
+	{
 		return FALSE; // can't open the wave file
+	}
 
 	if (!CDocument::OnOpenDocument(pszPathName))
+	{
 		return FALSE;
+	}
 
 	// allocate the wave file buffer
 	m_lpData = new char[GetBufferSize()];
@@ -874,6 +888,8 @@ bool CSaDoc::SplitMultiChannelTempFile( int numChannels, int selectedChannel)
 /***************************************************************************/
 BOOL CSaDoc::LoadDataFiles(const TCHAR* pszPathName, bool bTemp/*=FALSE*/)
 {
+	CMainFrame* pMainWnd = (CMainFrame*)AfxGetMainWnd();
+
 	BeginWaitCursor(); // wait cursor
 	CSaString szWavePath = pszPathName;
 	if (m_bUsingTempFile) 
@@ -910,11 +926,15 @@ BOOL CSaDoc::LoadDataFiles(const TCHAR* pszPathName, bool bTemp/*=FALSE*/)
 		m_fmtParm.wBlockAlign /= m_fmtParm.wChannels;
 		m_dwDataSize /= m_fmtParm.wChannels;
 		
-		CDlgMultiChannel dlg(m_fmtParm.wChannels,false);
-		if (dlg.DoModal()!=IDOK) {
-			return FALSE;
+		int selectedChannel = 0;
+		if (pMainWnd->GetShowAdvancedAudio()) {
+			CDlgMultiChannel dlg(m_fmtParm.wChannels,false);
+			if (dlg.DoModal()!=IDOK) {
+				return FALSE;
+			}
+			selectedChannel = dlg.m_nChannel;
 		}
-		int selectedChannel = dlg.m_nChannel;
+
 		int numChannels = m_fmtParm.wChannels;
 
 		if (!SplitMultiChannelTempFile(numChannels,selectedChannel))
@@ -1850,7 +1870,8 @@ bool CSaDoc::ConvertToWave( const TCHAR* pszPathName)
 	// if this errors, we will just continue on trying with ST_Audio
 	{
 		CWaveResampler resampler;
-		CWaveResampler::ECONVERT result = resampler.Run( pszPathName, szTempFilePath, pStatusBar);
+		BOOL bShowAdvancedAudio = pMainFrame->GetShowAdvancedAudio();
+		CWaveResampler::ECONVERT result = resampler.Run( pszPathName, szTempFilePath, pStatusBar,bShowAdvancedAudio);
 		if (result==CWaveResampler::EC_SUCCESS) 
 		{
 			pMainFrame->ShowDataStatusBar(TRUE); // restore data status bar
@@ -3750,7 +3771,7 @@ BOOL CSaDoc::CopySectionToNewWavFile(DWORD dwSectionStart, DWORD dwSectionLength
 	{
 		szOriginalWave = m_szTempConvertedWave;
 	}
-	else if((GetPathName().GetLength() !=0))
+	else if ((GetPathName().GetLength() !=0))
 	{
 		szOriginalWave = GetPathName();
 	}
@@ -3759,14 +3780,14 @@ BOOL CSaDoc::CopySectionToNewWavFile(DWORD dwSectionStart, DWORD dwSectionLength
 		szOriginalWave = m_szTempWave;
 	}
 
-	if(szOriginalWave.GetLength() == 0) return FALSE; //Original not found
+	if (szOriginalWave.GetLength() == 0) return FALSE; //Original not found
 
 	BOOL bSameFileName = (szNewWave == szOriginalWave);
 
 	CFileStatus temp;
-	if(!bSameFileName && !CopyFile(szOriginalWave, szNewWave))
+	if (!bSameFileName && !CopyFile(szOriginalWave, szNewWave))
 	{
-		if(CFile::GetStatus(szNewWave, temp)) CFile::Remove(szNewWave);
+		if (CFile::GetStatus(szNewWave, temp)) CFile::Remove(szNewWave);
 		return FALSE;
 	}
 
@@ -3776,15 +3797,15 @@ BOOL CSaDoc::CopySectionToNewWavFile(DWORD dwSectionStart, DWORD dwSectionLength
 	TCHAR szTempNewTemp[_MAX_PATH];
 	GetTempFileName(lpszTempPath, _T("TMP"), 0, szTempNewTemp);
 
-	if(!CopyFile(GetRawDataWrk(0), szTempNewTemp, dwSectionStart, dwSectionLength))
+	if (!CopyFile(GetRawDataWrk(0), szTempNewTemp, dwSectionStart, dwSectionLength))
 	{
-		if(!bSameFileName)
+		if (!bSameFileName)
 			CFile::Remove(szNewWave);
-		if(CFile::GetStatus(szTempNewTemp, temp)) CFile::Remove(szTempNewTemp);
+		if (CFile::GetStatus(szTempNewTemp, temp)) CFile::Remove(szTempNewTemp);
 		return FALSE;
 	}
 
-	if(!bSameFileName)
+	if (!bSameFileName)
 		//Save segment data we will use this documents segments for calculations
 		CheckPoint();  // save file state for Undo below
 
@@ -3792,7 +3813,7 @@ BOOL CSaDoc::CopySectionToNewWavFile(DWORD dwSectionStart, DWORD dwSectionLength
 	AdjustSegments(dwSectionStart+dwSectionLength, GetUnprocessedDataSize()-(dwSectionStart+dwSectionLength), TRUE); // adjust segments to new file size
 	AdjustSegments(0, dwSectionStart, TRUE); // adjust segments to new file size
 
-	if(bSameFileName)
+	if (bSameFileName)
 	{
 		// Set document to use new wave data
 		m_dwDataSize = dwSectionLength;
@@ -5622,7 +5643,7 @@ void CSaDoc::OnFileSaveAs()
 	}
 	else
 	{
-		if(bSameFileName)
+		if (bSameFileName)
 		{
 			SetModifiedFlag(); // Force SA to update file format
 			SetAudioModifiedFlag();
@@ -7029,4 +7050,23 @@ void CSaDoc::DestroyAdvancedParse()
 	}
 }
 
+/**
+* return true if this temp file is editable
+*/
+bool CSaDoc::CanEdit()
+{
+	return m_bAllowEdit;
+}
 
+/**
+* returns true if the file not a standard wave file
+* and the document is working on a copy of the original
+*/
+bool CSaDoc::IsTempFile()
+{
+	// non-wave files have this set...
+	if (m_bUsingTempFile) return true;
+	if (m_szTempConvertedWave.IsEmpty()) return false;
+	if (m_szTempConvertedWave.GetLength()==0) return false;
+	return true;
+}

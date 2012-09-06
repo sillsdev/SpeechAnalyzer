@@ -157,6 +157,7 @@ private:
 	int					m_nCheckPointCount; // counter for checkpoints (wave undo)
 	_bstr_t				m_szMD5HashCode;    // assigned from SA wave doc reader COM object
 	bool				m_bUsingTempFile;	// FALSE, if audio file is non-wave (mp3, wma, etc.) or standard wave
+	bool				m_bAllowEdit;		// TRUE if the file is editable
 
 	CDlgAdvancedSegment * m_pDlgAdvancedSegment;
 	CDlgAdvancedParseWords * m_pDlgAdvancedParseWords;
@@ -379,6 +380,9 @@ protected:
 	afx_msg void OnUpdateToolsAdjustZero(CCmdUI* pCmdUI);
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()
+public:
+	bool IsTempFile();
+	bool CanEdit();
 };
 
 /////////////////////////////////////////////////////////////////////////////

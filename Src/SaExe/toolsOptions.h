@@ -258,6 +258,35 @@ protected:
 };
 
 //###########################################################################
+// CDlgOptionsSavePage property page
+
+class CDlgOptionsAudioPage : public CPropertyPage
+{
+
+  // Construction/destruction/creation
+public:
+  CDlgOptionsAudioPage(); // standard constructor
+
+  // Attributes
+
+  // Dialog Data
+  //{{AFX_DATA(CDlgOptionsAudioPage)
+  enum { IDD = IDD_OPTIONSAUDIOPAGE };
+  BOOL  m_bShowAdvancedAudio;
+  //}}AFX_DATA
+  // Operations
+protected:
+  virtual void DoDataExchange(CDataExchange* pDX);
+
+  // Generated message map functions
+protected:
+  //{{AFX_MSG(CDlgOptionsAudioPage)
+  virtual BOOL OnInitDialog();
+  //}}AFX_MSG
+  DECLARE_MESSAGE_MAP()
+};
+
+//###########################################################################
 // CDlgToolsOptions property sheet
 
 class CDlgToolsOptions : public CPropertySheet
@@ -273,6 +302,7 @@ public:
   CDlgOptionsColorPage m_dlgColorPage;
   CDlgOptionsFontPage m_dlgFontPage;
   CDlgOptionsSavePage m_dlgSavePage;
+  CDlgOptionsAudioPage m_dlgAudioPage;
   void ApplyNow() { OnApplyNow(); };
 
   // Operations

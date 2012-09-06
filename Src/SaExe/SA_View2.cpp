@@ -1575,14 +1575,27 @@ void CSaView::SetFocusedGraph(CGraphWnd* pWnd)
 	// then change its caption.
 	//******************************************************
 	{
-		CSaString szGraph, szCaption;
+		CSaString szGraph;
+		CSaString szCaption;
 		pWnd->GetWindowText(szGraph.GetBuffer(64), 64);     // load the graph caption
 		szGraph.ReleaseBuffer(-1);
 		CSaDoc* pDoc = GetDocument();
 		szCaption = pDoc->GetTitle();                       // get current view's caption string
 		int nFind = szCaption.Find(':');
-		if (nFind != -1) szCaption = szCaption.Left(nFind); // extract part left of :
-		szCaption += ": " + szGraph;                        // add new document title
+		if (nFind != -1)
+		{
+			szCaption = szCaption.Left(nFind);				// extract part left of :
+		}
+		
+		if ((pDoc->IsTempFile())&&(pDoc->CanEdit()))
+		{
+			CString szCopy;
+			szCopy.LoadString(IDS_COPY);
+			szCaption.Append(L" : ");
+			szCaption += szCopy;
+		}
+		szCaption.Append(L" : ");
+		szCaption.Append(szGraph);							// add new document title
 		pDoc->SetTitle(szCaption);                          // write the new caption string
 	}
 
@@ -5435,7 +5448,6 @@ void CSaView::OnEditCopyPhoneticToPhonemic(void)
 
 	DWORD lastOffset = -1;
 	CPhoneticSegment * pPhonetic = (CPhoneticSegment*)GetAnnotation(PHONETIC);
-	int size = pPhonetic->GetOffsetSize();
 	for (int i=0;i<pPhonetic->GetOffsetSize();i++) 
 	{
 		DWORD offset = pPhonetic->GetOffset(i);

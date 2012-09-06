@@ -116,6 +116,7 @@ protected:
 	BOOL				m_nStartDataMode;         // 0 = Phonetic, 1 = Music  DDO - 08/08/00
 	BOOL				m_bSaveOpenFiles;         // if True, save current open files to re-load them next time   //tdg 09/03/97
 	BOOL				m_bStatusBar;             // status bar on/off
+	BOOL				m_bShowAdvancedAudio;
 	int					m_nStatusPosReadout;      // status bar position readout mode
 	int					m_nStatusPitchReadout;    // status bar pitch readout mode  
 	BOOL				m_bToneAbove;             // tone Above phonetic
@@ -190,6 +191,7 @@ public:
 	BOOL					GetShowStartupDlg(void) {return m_bShowStartupDlg;}       // DDO - 08/03/00
 	int						GetStartDataMode(void) {return m_nStartDataMode;}        // DDO - 08/08/00
 	BOOL					GetSaveOpenFiles(void) {return m_bSaveOpenFiles; }       // tdg - 09/03/97
+	BOOL					GetShowAdvancedAudio(void) {return m_bShowAdvancedAudio;}
 	void					SetShowStartupDlg(BOOL bShow) {m_bShowStartupDlg = bShow;}      // DDO - 08/03/00
 	void					SetStartDataMode(int nMode) {m_nStartDataMode = nMode;}       // DDO - 08/08/00
 	CDlgPlayer *			GetPlayer(BOOL bCreate = FALSE);

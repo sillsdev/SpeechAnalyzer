@@ -34,7 +34,10 @@ public:
 		EC_USERABORT    =-12
 	};
 
-	ECONVERT Run( const TCHAR * filename, const TCHAR * outfilename, CProgressStatusBar * pStatusBar);
+	ECONVERT Run( const TCHAR * filename, 
+				  const TCHAR * outfilename, 
+				  CProgressStatusBar * pStatusBar,
+				  BOOL bShowAdvancedAudio);
 
 private:
 	double Limit( double val);

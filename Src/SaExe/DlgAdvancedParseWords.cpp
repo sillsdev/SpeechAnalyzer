@@ -47,6 +47,7 @@ void CDlgAdvancedParseWords::Show(LPCTSTR title)
 	CString text;
 	GetWindowTextW(text);
 	text.Append(L" - ");
+	
 	CString a(title);
 	int mark = a.Find(L":");
 	if (mark!=-1)

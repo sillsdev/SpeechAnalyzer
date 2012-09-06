@@ -6,6 +6,8 @@
 #define IDS_ACTIVEX_PPG                 2
 #define ID_START_MODE_WAVE              3
 #define IDC_CUSTOM                      3
+#define IDS_STRING3                     3
+#define IDS_COPY                        3
 #define ID_START_MODE_RECORD            4
 #define ID_PRINT                        90
 #define ID_PREVIEW                      91
@@ -1579,6 +1581,8 @@
 #define IDC_MULTICHANNEL_COMBO          2039
 #define IDD_ADVANCEDPARSEWORD           2040
 #define IDD_ADVANCEDPARSEPHRASE         2041
+#define IDD_OPTIONSAUDIOPAGE            2042
+#define IDC_SHOW_ADVANCED_OPTIONS       2043
 #define IDS_PLAYER_SMALL                3000
 #define IDS_PLAYER_LARGE                3001
 #define IDS_STATTXT_PROCESSING          4000
@@ -1702,6 +1706,7 @@
 #define IDS_MC_CHANNEL_LEFT             11025
 #define IDS_MC_CHANNEL_RIGHT            11026
 #define IDS_SUPPORT_WAVE                11027
+#define IDS_SUPPORT_WAVE_COPY           11028
 #define ID_FILE_RECORD                  32776
 #define ID_EDIT_SCREENCAPTURE           32778
 #define ID_EDIT_EQUALIZELENGTH          32785
@@ -2072,7 +2077,7 @@
 #define _APS_3D_CONTROLS                     1
 #define _APS_NEXT_RESOURCE_VALUE        363
 #define _APS_NEXT_COMMAND_VALUE         33221
-#define _APS_NEXT_CONTROL_VALUE         2042
+#define _APS_NEXT_CONTROL_VALUE         2044
 #define _APS_NEXT_SYMED_VALUE           104
 #endif
 #endif

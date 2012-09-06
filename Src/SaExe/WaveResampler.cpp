@@ -270,7 +270,8 @@ void CWaveResampler::Func( size_t bufferLen,
 */
 CWaveResampler::ECONVERT CWaveResampler::Run( const TCHAR * src, 
 											  const TCHAR *  dst, 
-											  CProgressStatusBar * pStatusBar) {
+											  CProgressStatusBar * pStatusBar,
+											  BOOL bShowAdvancedAudio) {
 
 	// yes, I could have used smart pointers...I was in a hurry.
 
@@ -656,12 +657,15 @@ CWaveResampler::ECONVERT CWaveResampler::Run( const TCHAR * src,
 	// anything to do?
 	if (nChannels!=1) {
 
-		CDlgMultiChannel dlg(nChannels,true);
-		if (dlg.DoModal()!=IDOK) {
-			delete [] datal;
-			return EC_USERABORT;
+		int selectedChannel = 0;
+		if (bShowAdvancedAudio) {
+			CDlgMultiChannel dlg(nChannels,true);
+			if (dlg.DoModal()!=IDOK) {
+				delete [] datal;
+				return EC_USERABORT;
+			}
+			selectedChannel = dlg.m_nChannel;
 		}
-		int selectedChannel = dlg.m_nChannel;
 
 		size_t numSamples = length/nChannels;
 		size_t bufferSize = numSamples;
@@ -796,7 +800,6 @@ CWaveResampler::ECONVERT CWaveResampler::Run( const TCHAR * src,
 
 	pStatusBar->SetProgress(95);
 
-	TRACE("writing %s\n",dst);
 	{
 		//Creating new wav file. 
 		HMMIO hmmio = mmioOpen( const_cast<TCHAR*>(dst), 0, MMIO_CREATE | MMIO_WRITE); 

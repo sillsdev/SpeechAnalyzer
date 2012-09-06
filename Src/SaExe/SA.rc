@@ -46,9 +46,9 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "SIL International"
             VALUE "FileDescription", "SA"
-            VALUE "FileVersion", "v3.0.1.11c"
+            VALUE "FileVersion", "v3.0.1.12"
             VALUE "InternalName", "SA"
-            VALUE "LegalCopyright", "© 1996-2011 SIL International (MSEA)"
+            VALUE "LegalCopyright", "© 1996-2012 SIL International (MSEA)"
             VALUE "ProductName", "SA"
             VALUE "ProductVersion", "1.0.001"
         END
@@ -535,6 +535,16 @@ BEGIN
     RTEXT           "#",IDC_STATIC4,10,52,47,8
     RTEXT           "#",IDC_STATIC5,10,112,47,8
     LTEXT           "The start dialog will only show when no files get loaded at startup.",IDC_STATIC6,186,152,86,36
+END
+
+IDD_OPTIONSAUDIOPAGE DIALOGEX 0, 0, 282, 194
+STYLE DS_SETFONT | WS_CHILD | WS_VISIBLE | WS_DISABLED | WS_CAPTION | WS_HSCROLL
+CAPTION "Audio"
+FONT 8, "MS Sans Serif", 0, 0, 0x0
+BEGIN
+    CONTROL         "Show Advance File Processing Options",IDC_SHOW_ADVANCED_OPTIONS,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,8,10,158,8
+    LTEXT           "Enabling this allows SA to display additional dialogs when opening non-standard .WAV files.\nThe standard format is 22KHZ, 16-bit mono data.\nWithout this option, multi channel files will always be opened using the left channel only.",IDC_STATIC3,7,21,266,41
 END
 
 IDD_PLAYER DIALOG  0, 0, 280, 97
@@ -3890,7 +3900,7 @@ STRINGTABLE
 BEGIN
     IDR_MAINFRAME           "Speech Analyzer"
     IDR_SA_ANNTYPE          "\nSA\nSA Document\nWAV Files (*.wav)\n.wav\nannFileType\nANN File Type"
-    VS_VERSION              "Version 3.0.1.11c"
+    VS_VERSION              "Version 3.0.1.12"
     VS_COPYRIGHT            "© 1996-2012 SIL International (MSEA).\nAll Rights Reserved."
     IDR_SA_WBTYPE           "\nWB\nSA Workbench\nWB Files (*.wb)\n.wb\nwbFileType\nWB File Type"
 END
@@ -4581,7 +4591,7 @@ BEGIN
     ID_EDIT_UPDATE_BOUNDARIES 
                             "Update transcription segment boundaries\nUpdate Boundaries"
     ID_EDIT_ADD             "Add a phonetic segment\nAdd Phonetic Segment"
-    ID_EDIT_EDITOR          "Show/hide transcription editor\nToggle Editor"
+    ID_EDIT_EDITOR          "Show/Hide transcription editor\nToggle Editor"
     ID_EDIT_ADD_BOOKMARK    "Add gloss bookmark\nAdd Bookmark"
     ID_EDIT_REMOVE          "Remove a selected character or string\nRemove"
     ID_EDIT_UP              "Move up visible transcription\nUp Transcription"
@@ -4768,6 +4778,7 @@ STRINGTABLE
 BEGIN
     IDS_ACTIVEX             "Speech Analyzer Control"
     IDS_ACTIVEX_PPG         "Speech Analyzer Property Page"
+    IDS_COPY                "Copy"
 END
 
 STRINGTABLE 
@@ -4863,7 +4874,8 @@ BEGIN
     IDS_MC_COMBINE          "Combine All Channels"
     IDS_MC_CHANNEL_LEFT     "Channel %1 (Left)"
     IDS_MC_CHANNEL_RIGHT    "Channel %1 (Right)"
-    IDS_SUPPORT_WAVE        "The file you are loading is not in a format that Speech Analyzer can edit directly.\nDo you wish to make a copy so that you will be able to edit the file?"
+    IDS_SUPPORT_WAVE        "This files format is not directly editable by Speech Analyzer.\nSelect 'Yes' to allow Speech Analyzer to make a copy and convert the file to a supported format.\nSelect 'No' to make this file 'read only'."
+    IDS_SUPPORT_WAVE_COPY   "This files format is not directly editable by Speech Analyzer.\nSpeech Analyzer will now make a copy of the file and convert it to a supported format.\nYou can use 'Save As' to save this copy."
 END
 
 #endif    // English (U.S.) resources

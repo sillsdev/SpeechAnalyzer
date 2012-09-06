@@ -1098,6 +1098,62 @@ void CDlgOptionsSavePage::OnShowsStartupDlg()
 }
 
 //###########################################################################
+// CDlgOptionsAudioPage property page
+// Displays all important controls to change the saving behaviour of this
+// application.
+
+/////////////////////////////////////////////////////////////////////////////
+// CDlgOptionsFilePage message map
+
+BEGIN_MESSAGE_MAP(CDlgOptionsAudioPage, CPropertyPage)
+	//{{AFX_MSG_MAP(CDlgOptionsAudioPage)
+	//}}AFX_MSG_MAP
+END_MESSAGE_MAP()
+
+/////////////////////////////////////////////////////////////////////////////
+// CDlgOptionsFilePage construction/destruction/creation
+
+/***************************************************************************/
+// CDlgOptionsAudioPage::CDlgOptionsAudioPage Constructor
+/***************************************************************************/
+CDlgOptionsAudioPage::CDlgOptionsAudioPage() : CPropertyPage(CDlgOptionsAudioPage::IDD)
+{
+	//{{AFX_DATA_INIT(CDlgOptionsAudioPage)
+	//}}AFX_DATA_INIT
+	CMainFrame* pMainWnd = (CMainFrame*)AfxGetMainWnd();
+	m_bShowAdvancedAudio = pMainWnd->GetShowAdvancedAudio();
+
+}
+
+/////////////////////////////////////////////////////////////////////////////
+// CDlgOptionsFilePage helper functions
+
+/***************************************************************************/
+// CDlgOptionsFilePage::DoDataExchange Data exchange
+/***************************************************************************/
+void CDlgOptionsAudioPage::DoDataExchange(CDataExchange* pDX)
+{
+	CPropertyPage::DoDataExchange(pDX);
+	//{{AFX_DATA_MAP(CDlgOptionsAudioPage)
+	DDX_Check(pDX, IDC_SHOW_ADVANCED_OPTIONS, m_bShowAdvancedAudio);
+	//}}AFX_DATA_MAP
+}
+
+/////////////////////////////////////////////////////////////////////////////
+// CDlgOptionsAudioPage message handlers
+
+/***************************************************************************/
+// CDlgOptionsAudioPage::OnInitDialog Dialog initialization
+//
+/***************************************************************************/
+BOOL CDlgOptionsAudioPage::OnInitDialog()
+{
+	CPropertyPage::OnInitDialog();
+
+	return TRUE;
+}
+
+//###########################################################################
 // CDlgToolsOptions property sheet
 // Displays all important controls to customize this application.
 
@@ -1130,6 +1186,7 @@ CDlgToolsOptions::CDlgToolsOptions(LPCTSTR pszCaption, CWnd* pParent)
 	AddPage(&m_dlgColorPage);
 	AddPage(&m_dlgFontPage);
 	AddPage(&m_dlgSavePage);
+	AddPage(&m_dlgAudioPage);
 }
 
 /////////////////////////////////////////////////////////////////////////////

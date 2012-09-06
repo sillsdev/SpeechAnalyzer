@@ -1,4 +1,11 @@
-SA 3.0.1.10 - 5/3/2012
+SA 3.0.1.12- 9/6/2012
+-----------------------
+1) Added dialogs to allow users to select which channel should be imported when opening multi-channel wave files.
+2) Added 'Audio' tab to 'Tools/Options' dialog.  Audio tab allows users to select whether or not 'advanced audio' dialogs (see #1) should be presented during conversion of non-standard wave files.
+3) Added code to prevent automatic reopening of converted temporary files.  All non-standard wave and non-wave files are opened as temporary files.
+4) Fixed out-of-memory exception in SpeechToolsUtils.dll that occurs when opening 'broadcast wave extension' file formats.
+
+SA 3.0.1.11- 5/3/2012
 -----------------------
 1) Split 'Auto Parse' dialog into 'Auto Parse Phrase' and 'Auto Parse Word' dialog boxes.
 2) Updated sa3.psa format to store settings for the two new dialog boxes.  New parameter for phrase break parameter is "\phrase_break_ms". Word break default is stored in "\break_ms" property, as before.
