@@ -1751,18 +1751,30 @@ void CDependentTextSegment::Add(CSaDoc* pDoc, DWORD dwStart, CSaString& szString
 
 	// get the offset and duration from master
 	int nSegment = pDoc->GetSegment(GLOSS)->FindOffset(dwStart);
-	if(nSegment == -1) return; // return on error
+	if (nSegment == -1)
+	{
+		return; // return on error
+	}
 
 	DWORD dwDuration = pDoc->GetSegment(GLOSS)->GetDuration(nSegment);
 
 	int nPos = CheckPosition(pDoc, dwStart, dwStart + dwDuration, MODE_ADD); // get the insert position
-	if(nPos == -1) return; // return on error
+	if (nPos == -1)
+	{
+		return; // return on error
+	}
 
 	// save state for undo ability
-	if(bCheck) pDoc->CheckPoint();
+	if (bCheck)
+	{
+		pDoc->CheckPoint();
+	}
 
 	// insert or append the new dependent segment
-	if (!Insert(nPos, &szString, 0, dwStart, dwDuration)) return; // return on error
+	if (!Insert(nPos, &szString, 0, dwStart, dwDuration))
+	{
+		return; // return on error
+	}
 	pDoc->SetModifiedFlag(TRUE); // document has been modified
 	pDoc->SetTransModifiedFlag(TRUE); // transcription data has been modified
 	pView->ChangeAnnotationSelection(this, nPos, dwStart, dwStart + dwDuration); // change the selection

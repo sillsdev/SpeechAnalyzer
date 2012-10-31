@@ -445,23 +445,29 @@ CString CASegmentSelection::GetSelectedAnnotationString(CSaView* pView, BOOL bRe
 /***************************************************************************/
 BOOL CASegmentSelection::SetSelectedAnnotationString(CSaView* pView, CSaString& szString, BOOL bIncludesDelimiter, BOOL bCheck)
 {
-	if(m_Selection.nAnnotationIndex == -1) return FALSE;
+	if (m_Selection.nAnnotationIndex == -1) return FALSE;
 
 	int nIndex = m_Selection.nAnnotationIndex;
 	CSegment* pSegment = pView->GetAnnotation(nIndex);
 	CSaDoc *pDoc = pView->GetDocument();
 
 	// include delimiter;
-	if((!bIncludesDelimiter) && (nIndex == GLOSS))
+	if ((!bIncludesDelimiter) && (nIndex == GLOSS))
 	{
 		CString szDelimiter = GetSelectedAnnotationString(pView, FALSE).Left(1);
 		szString = szDelimiter + szString;
 	}
 
-	if(szString.GetLength() == 0)
+	if (szString.GetLength() == 0)
 	{
-		if(nIndex == GLOSS) szString = WORD_DELIMITER;
-		else if(nIndex == PHONETIC) szString = SEGMENT_DEFAULT_CHAR;
+		if (nIndex == GLOSS)
+		{
+			szString = WORD_DELIMITER;
+		}
+		else if (nIndex == PHONETIC) 
+		{
+			szString = SEGMENT_DEFAULT_CHAR;
+		}
 	}
 
 	// Save cursor positions
@@ -472,20 +478,24 @@ BOOL CASegmentSelection::SetSelectedAnnotationString(CSaView* pView, CSaString& 
 	pView->SetStartCursorPosition(m_Selection.dwStart);
 	pView->SetStopCursorPosition(m_Selection.dwStop);
 
-	if(m_Selection.bVirtual)
+	if (m_Selection.bVirtual)
 	{
-		if((nIndex == GLOSS)||(nIndex == PHONETIC)) return FALSE;
+		if ((nIndex == GLOSS)||(nIndex == PHONETIC)) return FALSE;
 
 		// Add refreshes graphs, set modified flag, & check point
-		if(pSegment->GetMasterIndex() != -1)
+		if (pSegment->GetMasterIndex() != -1)
+		{
 			((CDependentSegment*) pSegment)->Add(pView->GetDocument(), m_Selection.dwStart, szString, FALSE, bCheck);
+		}
 		else
 		{
 			int nInsertAt = pSegment->CheckPosition(pDoc,m_Selection.dwStart,m_Selection.dwStop,CSegment::MODE_ADD);
-			if(nInsertAt != -1)
+			if (nInsertAt != -1)
 			{
-				if(bCheck)
+				if (bCheck)
+				{
 					pDoc->CheckPoint();
+				}
 				pDoc->SetModifiedFlag(TRUE); // document has been modified
 				pDoc->SetTransModifiedFlag(TRUE); // transcription has been modified
 				pSegment->Insert(nInsertAt, &szString, '#', m_Selection.dwStart,m_Selection.dwDuration);

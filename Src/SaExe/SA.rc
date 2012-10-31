@@ -46,7 +46,7 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "SIL International"
             VALUE "FileDescription", "SA"
-            VALUE "FileVersion", "v3.0.1.12"
+            VALUE "FileVersion", "v3.0.1.13"
             VALUE "InternalName", "SA"
             VALUE "LegalCopyright", "© 1996-2012 SIL International (MSEA)"
             VALUE "ProductName", "SA"
@@ -2089,6 +2089,27 @@ BEGIN
     LTEXT           "The file you are loading contains multiple audio channels.",IDC_STATIC,7,7,294,12
 END
 
+IDD_AUTO_REFERENCE_DATA DIALOGEX 0, 0, 208, 146
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Reference Data"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    GROUPBOX        "",IDC_STATIC,6,3,195,64
+    LTEXT           "Auto number the current Reference fields beginning at 1\nin steps of 1 until the end of the file.\nOr select a Custom Range below.\n\nExisting Reference Data will not be overwritten.\nNumbering starts at the first field.",IDC_STATIC,12,12,184,49
+    LTEXT           "Customize",IDC_STATIC,11,71,75,8
+    LTEXT           "Range",IDC_STATIC,151,71,22,8
+    LTEXT           "Begin Numbering at:",IDC_STATIC,11,90,75,8
+    EDITTEXT        IDC_AUTO_REF_DATA_BEGIN_EDIT,89,88,31,14
+    LTEXT           "",IDC_AUTO_REF_DATA_BEGIN_SPIN,123,88,11,14
+    LTEXT           "0 - 10,000",IDC_STATIC,149,90,35,8
+    LTEXT           "End Numbering at:",IDC_STATIC,11,106,75,8
+    EDITTEXT        IDC_AUTO_REF_DATA_END_EDIT,89,104,31,14
+    LTEXT           "",IDC_AUTO_REF_DATA_END_SPIN,124,104,11,14
+    LTEXT           "0 - 10,000",IDC_STATIC,149,106,35,8
+    DEFPUSHBUTTON   "OK",IDOK,98,125,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,151,125,50,14
+END
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -2239,6 +2260,14 @@ BEGIN
         RIGHTMARGIN, 302
         TOPMARGIN, 7
         BOTTOMMARGIN, 72
+    END
+
+    IDD_AUTO_REFERENCE_DATA, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 201
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 139
     END
 END
 #endif    // APSTUDIO_INVOKED
@@ -2718,6 +2747,7 @@ BEGIN
             MENUITEM "Locate &Phrases",             ID_ADVANCED_PARSE_PHRASE
             MENUITEM "Locate &Words",               ID_ADVANCED_PARSE_WORD
             MENUITEM "&Align Transcription Data",   ID_AUTO_ALIGN
+            MENUITEM "&Reference Data",             ID_AUTOMATICMARKUP_REFERENCEDATA
         END
         MENUITEM SEPARATOR
         MENUITEM "&Options...",                 ID_TOOLS_OPTIONS
@@ -3900,7 +3930,7 @@ STRINGTABLE
 BEGIN
     IDR_MAINFRAME           "Speech Analyzer"
     IDR_SA_ANNTYPE          "\nSA\nSA Document\nWAV Files (*.wav)\n.wav\nannFileType\nANN File Type"
-    VS_VERSION              "Version 3.0.1.12"
+    VS_VERSION              "Version 3.0.1.13"
     VS_COPYRIGHT            "© 1996-2012 SIL International (MSEA).\nAll Rights Reserved."
     IDR_SA_WBTYPE           "\nWB\nSA Workbench\nWB Files (*.wb)\n.wb\nwbFileType\nWB File Type"
 END
@@ -4858,6 +4888,8 @@ BEGIN
     IDS_ERROR_SCREEN_CAPTURE_SAVE "Can't create png file"
     IDS_ERROR_SCREEN_CAPTURE_OPEN "Can't open file"
     IDS_ERROR_NO_DIALOG     "Unable to create dialog box."
+    IDS_ERROR_NO_WORDS_ON_AUTO_REFERENCE 
+                            "No Reference fields were found.\nFirst enter Word breaks to enable the Reference fields."
 END
 
 STRINGTABLE 
@@ -4867,6 +4899,7 @@ BEGIN
     IDS_SPLIT_COMPLETE      "The split is complete.  %1 segments were created."
     IDS_CONFIRM_PHONEMIC_COPY 
                             "This process will delete the existing phonemic data.\nDo you want to continue?"
+    ID_AUTOMATICMARKUP_REFERENCEDATA "Renumber the Reference Data"
 END
 
 STRINGTABLE 

@@ -113,6 +113,7 @@
 #include "dlgadvancedsegment.h"
 #include "dlgadvancedparsewords.h"
 #include "dlgadvancedparsephrases.h"
+#include "dlgautoreferencedata.h"
 
 #include "sa.h"
 #include "sa_view.h"
@@ -162,9 +163,9 @@ BEGIN_MESSAGE_MAP(CSaDoc, CDocument)
 	ON_UPDATE_COMMAND_UI(ID_ADVANCED_PARSE_PHRASE, OnUpdateAdvancedParsePhrases)
 	ON_COMMAND(ID_ADVANCED_SEGMENT, OnAdvancedSegment)
 	ON_UPDATE_COMMAND_UI(ID_ADVANCED_SEGMENT, OnUpdateAdvancedSegment)
-	ON_COMMAND(ID_TOOLS_IMPORT, OnToolsImport)
 	ON_COMMAND(ID_AUTO_ALIGN, OnAutoAlign)
 	ON_UPDATE_COMMAND_UI(ID_AUTO_ALIGN, OnUpdateAutoAlign)
+	ON_COMMAND(ID_TOOLS_IMPORT, OnToolsImport)
 	ON_UPDATE_COMMAND_UI(ID_TOOLS_IMPORT, OnUpdateToolsImport)
 	ON_COMMAND(ID_EDIT_UPDATE_BOUNDARIES, OnUpdateBoundaries)
 	ON_UPDATE_COMMAND_UI(ID_EDIT_UPDATE_BOUNDARIES, OnUpdateUpdateBoundaries)
@@ -176,6 +177,8 @@ BEGIN_MESSAGE_MAP(CSaDoc, CDocument)
 	ON_UPDATE_COMMAND_UI(ID_TOOLS_ADJUST_NORMALIZE, OnUpdateToolsAdjustNormalize)
 	ON_COMMAND(ID_TOOLS_ADJUST_ZERO, OnToolsAdjustZero)
 	ON_UPDATE_COMMAND_UI(ID_TOOLS_ADJUST_ZERO, OnUpdateToolsAdjustZero)
+	ON_COMMAND(ID_AUTOMATICMARKUP_REFERENCEDATA, OnAutoReferenceData)
+	ON_UPDATE_COMMAND_UI(ID_AUTOMATICMARKUP_REFERENCEDATA, OnUpdateAutoReferenceData)
 	//}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
@@ -6756,9 +6759,8 @@ BOOL CSaDoc::ReadPropertiesOfViews(Object_istream& obs, const CSaString & sPath)
 void CSaDoc::OnToolsImport()
 {
 	// annotation wizard dialog
-	CDlgAnnotation * dlg = new CDlgAnnotation(NULL, CDlgAnnotation::IMPORT, this);
-	dlg->DoModal();
-	delete dlg;
+	CDlgAnnotation dlg(NULL, CDlgAnnotation::IMPORT, this);
+	dlg.DoModal();
 }
 
 void CSaDoc::OnUpdateToolsImport(CCmdUI* pCmdUI)
@@ -6772,10 +6774,8 @@ void CSaDoc::OnUpdateToolsImport(CCmdUI* pCmdUI)
 /***************************************************************************/
 void CSaDoc::OnAutoAlign()
 {
-	CDlgAnnotation* dlg; // annotation wizard dialog
-	dlg = new CDlgAnnotation(NULL, CDlgAnnotation::ALIGN, this);
-	dlg->DoModal();
-	delete dlg;
+	CDlgAnnotation dlg(NULL, CDlgAnnotation::ALIGN, this);
+	dlg.DoModal();
 }
 
 void CSaDoc::OnUpdateAutoAlign(CCmdUI* pCmdUI)
@@ -6934,16 +6934,20 @@ void CSaDoc::GetAlignInfo( CAlignInfo & info)
 CProcessSpectrogram* CSaDoc::GetSpectrogram(bool bRealTime)
 {
 	CMainFrame* pMainWnd = (CMainFrame*)AfxGetMainWnd();
-	if(bRealTime)
+	if (bRealTime)
 	{
-		if(!m_pProcessSpectrogram)
+		if (!m_pProcessSpectrogram)
+		{
 			m_pProcessSpectrogram = new CProcessSpectrogram(*pMainWnd->GetSpectrogramParmDefaults(),this,bRealTime);
+		}
 		return m_pProcessSpectrogram;
 	}
 	else
 	{
-		if(!m_pProcessSnapshot)
+		if (!m_pProcessSnapshot)
+		{
 			m_pProcessSnapshot = new CProcessSpectrogram(*pMainWnd->GetSnapshotParmDefaults(),this,bRealTime);
+		}
 		return m_pProcessSnapshot;
 	}
 }
@@ -6973,7 +6977,6 @@ void CSaDoc::OnToolsAdjustInvert()
 
 	POSITION pos = GetFirstViewPosition();
 	CSaView *pView = ((CSaView*)GetNextView(pos));
-
 	pView->RefreshGraphs();
 }
 
@@ -6997,7 +7000,6 @@ void CSaDoc::OnToolsAdjustNormalize()
 
 	POSITION pos = GetFirstViewPosition();
 	CSaView *pView = ((CSaView*)GetNextView(pos));
-
 	pView->RefreshGraphs();
 }
 
@@ -7070,3 +7072,72 @@ bool CSaDoc::IsTempFile()
 	if (m_szTempConvertedWave.GetLength()==0) return false;
 	return true;
 }
+
+// SDM 1.06.4
+/***************************************************************************/
+// CSaDoc::OnAutoAlign Start Align Wizard
+/***************************************************************************/
+void CSaDoc::OnAutoReferenceData()
+{
+	CheckPoint();
+
+	// determine how many words there are
+	CGlossSegment * pGloss = (CGlossSegment*)m_apSegments[GLOSS];
+	int begin = 1;
+	int end = pGloss->GetOffsetSize();
+	if (end==0) {
+		CSaApp* pApp = (CSaApp*)AfxGetApp();
+		pApp->ErrorMessage(IDS_ERROR_NO_WORDS_ON_AUTO_REFERENCE);
+		return;
+	}
+
+	// query the user
+	CDlgAutoReferenceData dlg( NULL, begin, end);
+	if (dlg.DoModal()!=IDOK) {
+		// do nothing on cancel
+		return;
+	}
+
+	// apply the number
+	int val = dlg.mAutoReferenceDataBegin;
+
+	// iterate through the gloss segments and add number to empty reference fields
+	CReferenceSegment * pReference = (CReferenceSegment*)m_apSegments[REFERENCE];
+	for (int i = 0; i < pGloss->GetOffsetSize(); i++) {
+		
+		DWORD offset = pGloss->GetOffset(i);
+		DWORD duration = pGloss->GetDuration(i);
+
+		bool populated = false;
+		for (int j=0;j<pReference->GetOffsetSize();j++) {
+			DWORD offset2 = pReference->GetOffset(j);
+			if (offset2==offset) {
+				populated = true;
+				break;
+			}
+		}
+
+		if (!populated) {
+			CSaString text;
+			text.Format(L"%d",val);
+			pReference->Insert(i,&text,0,offset,duration);
+		}
+
+		if (val==dlg.mAutoReferenceDataEnd) {
+			break;
+		}
+		val++;
+	}
+
+	// refresh the tables
+	POSITION pos = GetFirstViewPosition();
+	CSaView *pView = ((CSaView*)GetNextView(pos));
+	pView->RefreshGraphs();
+}
+
+void CSaDoc::OnUpdateAutoReferenceData(CCmdUI* pCmdUI)
+{
+	// enable if data is available
+	pCmdUI->Enable(GetUnprocessedDataSize() != 0); 
+}
+

@@ -364,9 +364,11 @@ protected:
 	afx_msg void OnUpdateAdvancedParsePhrases(CCmdUI* pCmdUI);
 	afx_msg void OnAdvancedSegment();
 	afx_msg void OnUpdateAdvancedSegment(CCmdUI* pCmdUI);
-	afx_msg void OnToolsImport();
 	afx_msg void OnAutoAlign();
 	afx_msg void OnUpdateAutoAlign(CCmdUI* pCmdUI);
+	afx_msg void OnAutoReferenceData();
+	afx_msg void OnUpdateAutoReferenceData(CCmdUI* pCmdUI);
+	afx_msg void OnToolsImport();
 	afx_msg void OnUpdateToolsImport(CCmdUI* pCmdUI);
 	afx_msg void OnUpdateBoundaries();
 	afx_msg void OnUpdateUpdateBoundaries(CCmdUI* pCmdUI);

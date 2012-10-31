@@ -2033,6 +2033,10 @@
 					</FileConfiguration>
 				</File>
 				<File
+					RelativePath=".\DlgAutoReferenceData.cpp"
+					>
+				</File>
+				<File
 					RelativePath=".\DlgMultiChannel.cpp"
 					>
 				</File>
@@ -3727,6 +3731,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\DlgAutoReferenceData.h"
+					>
+				</File>
+				<File
 					RelativePath=".\DlgMultiChannel.h"
 					>
 				</File>
@@ -3792,6 +3800,10 @@
 				</File>
 			</Filter>
 		</Filter>
+		<File
+			RelativePath=".\ClassDiagram1.cd"
+			>
+		</File>
 	</Files>
 	<Globals>
 		<Global

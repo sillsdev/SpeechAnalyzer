@@ -1,3 +1,7 @@
+SA 3.0.1.13 - 10/30/2012
+-----------------------
+1) Added Automatic Reference Data numbering feature.  Dialog is located in Tools->Automatic Markup->Reference Data.
+
 SA 3.0.1.12- 9/6/2012
 -----------------------
 1) Added dialogs to allow users to select which channel should be imported when opening multi-channel wave files.

@@ -47,18 +47,18 @@
 // CDlgEditor message map
 
 BEGIN_MESSAGE_MAP(CDlgEditor, CDialog)
-    //{{AFX_MSG_MAP(CDlgEditor)
-    ON_BN_CLICKED(IDC_CHARACTERCHART, OnCharacterChart)
-    ON_BN_CLICKED(IDC_PLAYSEGMENT, OnPlaybackSegment)
-    ON_BN_CLICKED(IDC_PLAYWORD, OnPlaybackWord)
-    ON_EN_UPDATE(IDC_INPUTSTRING, OnUpdateInputstring)
-    ON_WM_DESTROY()
-    ON_WM_ACTIVATE()
-    ON_WM_PAINT()
-    ON_WM_CLOSE()
-		ON_COMMAND(IDHELP, OnHelpEdit)
-    ON_COMMAND(IDCANCEL, OnCancel)
-    //}}AFX_MSG_MAP
+	//{{AFX_MSG_MAP(CDlgEditor)
+	ON_BN_CLICKED(IDC_CHARACTERCHART, OnCharacterChart)
+	ON_BN_CLICKED(IDC_PLAYSEGMENT, OnPlaybackSegment)
+	ON_BN_CLICKED(IDC_PLAYWORD, OnPlaybackWord)
+	ON_EN_UPDATE(IDC_INPUTSTRING, OnUpdateInputstring)
+	ON_WM_DESTROY()
+	ON_WM_ACTIVATE()
+	ON_WM_PAINT()
+	ON_WM_CLOSE()
+	ON_COMMAND(IDHELP, OnHelpEdit)
+	ON_COMMAND(IDCANCEL, OnCancel)
+	//}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
@@ -69,20 +69,20 @@ END_MESSAGE_MAP()
 /***************************************************************************/
 CDlgEditor::CDlgEditor(CWnd* pParent) : CDialog(CDlgEditor::IDD, pParent)
 {
-  //{{AFX_DATA_INIT(CDlgEditor)
-  //}}AFX_DATA_INIT
-  bEditor = FALSE;
-  m_pPreviousSaView = NULL;
-  m_bActivated = FALSE;
+	//{{AFX_DATA_INIT(CDlgEditor)
+	//}}AFX_DATA_INIT
+	bEditor = FALSE;
+	m_pPreviousSaView = NULL;
+	m_bActivated = FALSE;
 }
 
 BOOL CDlgEditor::OnCmdMsg(UINT nID, int nCode, void* pExtra, AFX_CMDHANDLERINFO* pHandlerInfo)
 {
-  if(!CDialog::OnCmdMsg(nID, nCode, pExtra, pHandlerInfo))
-  {
-    return MainFrame()->OnCmdMsg(nID, nCode, pExtra, pHandlerInfo);
-  }
-  return TRUE;
+	if(!CDialog::OnCmdMsg(nID, nCode, pExtra, pHandlerInfo))
+	{
+		return MainFrame()->OnCmdMsg(nID, nCode, pExtra, pHandlerInfo);
+	}
+	return TRUE;
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -94,16 +94,16 @@ BOOL CDlgEditor::OnCmdMsg(UINT nID, int nCode, void* pExtra, AFX_CMDHANDLERINFO*
 /***************************************************************************/
 BOOL CDlgEditor::CreateSafe( UINT nIDTemplate, CWnd* pParentWnd, WINDOWPLACEMENT* pWPL )
 {
-  if(!bEditor)
-  {
-    bEditor = CDialog::Create(nIDTemplate, pParentWnd);
+	if(!bEditor)
+	{
+		bEditor = CDialog::Create(nIDTemplate, pParentWnd);
 
-    if(pWPL && pWPL->length)
-    {
-      SetWindowPos(NULL,pWPL->rcNormalPosition.left,pWPL->rcNormalPosition.top,0,0,SWP_NOSIZE|SWP_NOZORDER|SWP_NOACTIVATE);
-    }
-  }
-  return bEditor;
+		if(pWPL && pWPL->length)
+		{
+			SetWindowPos(NULL,pWPL->rcNormalPosition.left,pWPL->rcNormalPosition.top,0,0,SWP_NOSIZE|SWP_NOZORDER|SWP_NOACTIVATE);
+		}
+	}
+	return bEditor;
 };
 
 /***************************************************************************/
@@ -111,8 +111,8 @@ BOOL CDlgEditor::CreateSafe( UINT nIDTemplate, CWnd* pParentWnd, WINDOWPLACEMENT
 /***************************************************************************/
 void CDlgEditor::DoDataExchange(CDataExchange* pDX)
 {
-  CDialog::DoDataExchange(pDX);
-  //{{AFX_DATA_MAP(CDlgEditor)
+	CDialog::DoDataExchange(pDX);
+	//{{AFX_DATA_MAP(CDlgEditor)
 	DDX_Control(pDX, ID_EDIT_NEXT, m_cNextButton);
 	DDX_Control(pDX, ID_EDIT_PREVIOUS, m_cPreviousButton);
 	DDX_Control(pDX, ID_EDIT_UP, m_cUpButton);
@@ -125,11 +125,11 @@ void CDlgEditor::DoDataExchange(CDataExchange* pDX)
 /***************************************************************************/
 CSaView* CDlgEditor::SaView() const
 {
-  CSaView* pSaView = MainFrame()->GetCurrSaView();
+	CSaView* pSaView = MainFrame()->GetCurrSaView();
 
-  if (pSaView && !pSaView->IsKindOf(RUNTIME_CLASS(CSaView))) pSaView = NULL; // Verify View is a CSaView type.
+	if (pSaView && !pSaView->IsKindOf(RUNTIME_CLASS(CSaView))) pSaView = NULL; // Verify View is a CSaView type.
 
-  return pSaView;
+	return pSaView;
 }
 
 CSaDoc* CDlgEditor::SaDoc() const { return SaView() ? SaView()->GetDocument() : NULL;};
@@ -143,18 +143,18 @@ CSegment* CDlgEditor::GetSelectedSegment() const {return SaView() ? SaView()->Fi
 /***************************************************************************/
 BOOL CDlgEditor::OnInitDialog()
 {
-  CDialog::OnInitDialog();
+	CDialog::OnInitDialog();
 
-  CenterWindow(); // center dialog on frame window
+	CenterWindow(); // center dialog on frame window
 
-  // Load button icons
-  m_cNextButton.SetIcon((HICON)LoadImage(AfxFindResourceHandle(MAKEINTRESOURCE(IDI_NEXT),RT_GROUP_ICON),MAKEINTRESOURCE(IDI_NEXT),IMAGE_ICON,0,0,LR_LOADMAP3DCOLORS | LR_LOADTRANSPARENT));
-  m_cPreviousButton.SetIcon((HICON)LoadImage(AfxFindResourceHandle(MAKEINTRESOURCE(IDI_PREV),RT_GROUP_ICON),MAKEINTRESOURCE(IDI_PREV),IMAGE_ICON,0,0,LR_LOADMAP3DCOLORS | LR_LOADTRANSPARENT));
-  m_cUpButton.SetIcon((HICON)LoadImage(AfxFindResourceHandle(MAKEINTRESOURCE(IDI_UP),RT_GROUP_ICON),MAKEINTRESOURCE(IDI_UP),IMAGE_ICON,0,0,LR_LOADMAP3DCOLORS));
-  m_cDownButton.SetIcon((HICON)LoadImage(AfxFindResourceHandle(MAKEINTRESOURCE(IDI_DOWN),RT_GROUP_ICON),MAKEINTRESOURCE(IDI_DOWN),IMAGE_ICON,17,15,LR_LOADMAP3DCOLORS | LR_LOADTRANSPARENT));
+	// Load button icons
+	m_cNextButton.SetIcon((HICON)LoadImage(AfxFindResourceHandle(MAKEINTRESOURCE(IDI_NEXT),RT_GROUP_ICON),MAKEINTRESOURCE(IDI_NEXT),IMAGE_ICON,0,0,LR_LOADMAP3DCOLORS | LR_LOADTRANSPARENT));
+	m_cPreviousButton.SetIcon((HICON)LoadImage(AfxFindResourceHandle(MAKEINTRESOURCE(IDI_PREV),RT_GROUP_ICON),MAKEINTRESOURCE(IDI_PREV),IMAGE_ICON,0,0,LR_LOADMAP3DCOLORS | LR_LOADTRANSPARENT));
+	m_cUpButton.SetIcon((HICON)LoadImage(AfxFindResourceHandle(MAKEINTRESOURCE(IDI_UP),RT_GROUP_ICON),MAKEINTRESOURCE(IDI_UP),IMAGE_ICON,0,0,LR_LOADMAP3DCOLORS));
+	m_cDownButton.SetIcon((HICON)LoadImage(AfxFindResourceHandle(MAKEINTRESOURCE(IDI_DOWN),RT_GROUP_ICON),MAKEINTRESOURCE(IDI_DOWN),IMAGE_ICON,17,15,LR_LOADMAP3DCOLORS | LR_LOADTRANSPARENT));
 
-  m_cNextButton.SetFocus();
-  return FALSE;  // return TRUE  unless you set the focus to a control
+	m_cNextButton.SetFocus();
+	return FALSE;  // return TRUE  unless you set the focus to a control
 }
 
 /***************************************************************************/
@@ -162,20 +162,20 @@ BOOL CDlgEditor::OnInitDialog()
 /***************************************************************************/
 void CDlgEditor::OnCharacterChart()
 {
-  // create the character chart property sheet
-  CString szCaption;
-  szCaption.LoadString(IDS_DLGTITLE_CHARCHART); // load caption string
-  CDlgCharChart* pDlgCharChart;
-  pDlgCharChart = new CDlgCharChart(szCaption, NULL, 0); // create the property sheet
-  pDlgCharChart->SetInitialState(GetDlgItem(IDC_INPUTSTRING)->GetFont());
-  if (pDlgCharChart->DoModal() == IDOK)
-  {
-    // insert the new string
-    ((CEdit*)GetDlgItem(IDC_INPUTSTRING))->ReplaceSel(pDlgCharChart->m_szString);
-    UpdateData(TRUE);
-  }
-  if (pDlgCharChart) delete pDlgCharChart;
-  GotoDlgCtrl(GetDlgItem(IDC_INPUTSTRING)); // set focus to edit control
+	// create the character chart property sheet
+	CString szCaption;
+	szCaption.LoadString(IDS_DLGTITLE_CHARCHART); // load caption string
+	CDlgCharChart* pDlgCharChart;
+	pDlgCharChart = new CDlgCharChart(szCaption, NULL, 0); // create the property sheet
+	pDlgCharChart->SetInitialState(GetDlgItem(IDC_INPUTSTRING)->GetFont());
+	if (pDlgCharChart->DoModal() == IDOK)
+	{
+		// insert the new string
+		((CEdit*)GetDlgItem(IDC_INPUTSTRING))->ReplaceSel(pDlgCharChart->m_szString);
+		UpdateData(TRUE);
+	}
+	if (pDlgCharChart) delete pDlgCharChart;
+	GotoDlgCtrl(GetDlgItem(IDC_INPUTSTRING)); // set focus to edit control
 }
 
 /***************************************************************************/
@@ -184,12 +184,12 @@ void CDlgEditor::OnCharacterChart()
 /***************************************************************************/
 void CDlgEditor::OnPlaybackSegment()
 {
-  if(!SaView()) return; // require doc and view
-  SaView()->OnPlaybackSegment();
+	if(!SaView()) return; // require doc and view
+	SaView()->OnPlaybackSegment();
 
-  // display pending error messages
-  CSaApp* pApp = (CSaApp*)AfxGetApp(); // get pointer to application
-  pApp->DisplayErrorMessage();
+	// display pending error messages
+	CSaApp* pApp = (CSaApp*)AfxGetApp(); // get pointer to application
+	pApp->DisplayErrorMessage();
 }
 
 /***************************************************************************/
@@ -198,12 +198,12 @@ void CDlgEditor::OnPlaybackSegment()
 /***************************************************************************/
 void CDlgEditor::OnPlaybackWord()
 {
-  if(!SaView()) return; // require doc and view
-  SaView()->OnPlaybackWord();
+	if(!SaView()) return; // require doc and view
+	SaView()->OnPlaybackWord();
 
-  // display pending error messages
-  CSaApp* pApp = (CSaApp*)AfxGetApp(); // get pointer to application
-  pApp->DisplayErrorMessage();
+	// display pending error messages
+	CSaApp* pApp = (CSaApp*)AfxGetApp(); // get pointer to application
+	pApp->DisplayErrorMessage();
 }
 
 /***************************************************************************/
@@ -212,43 +212,43 @@ void CDlgEditor::OnPlaybackWord()
 /***************************************************************************/
 void CDlgEditor::OnUpdateInputstring()
 {
-  if (!SaView())
-  {
-    UpdateDialog();
-    return;
-  }
+	if (!SaView())
+	{
+		UpdateDialog();
+		return;
+	}
 
-  SaView()->ASelection().Update(SaView());
-  if(SaView()->ASelection().GetSelection().nAnnotationIndex == -1)
-  {
-    UpdateDialog();
-    return;
-  }
+	SaView()->ASelection().Update(SaView());
+	if(SaView()->ASelection().GetSelection().nAnnotationIndex == -1)
+	{
+		UpdateDialog();
+		return;
+	}
 
-  CEdit* pEdit = (CEdit*) GetDlgItem(IDC_INPUTSTRING);
-  CSaString szString;
-  pEdit->GetWindowText(szString);
-  // Filter Inputstring if input filter specified
-  if(SaView()->GetAnnotation(SaView()->ASelection().GetSelection().nAnnotationIndex)->GetInputFilter() != NULL)
-  {
-    BOOL bChanged = (SaView()->GetAnnotation(SaView()->ASelection().GetSelection().nAnnotationIndex)->GetInputFilter())(szString);
-    if(bChanged)
-    {
-      DWORD dwSelection = pEdit->GetSel();
-      pEdit->SetWindowText(szString);
-      pEdit->SetSel(dwSelection);
-    }
-  }
+	CEdit* pEdit = (CEdit*) GetDlgItem(IDC_INPUTSTRING);
+	CSaString szString;
+	pEdit->GetWindowText(szString);
+	// Filter Inputstring if input filter specified
+	if(SaView()->GetAnnotation(SaView()->ASelection().GetSelection().nAnnotationIndex)->GetInputFilter() != NULL)
+	{
+		BOOL bChanged = (SaView()->GetAnnotation(SaView()->ASelection().GetSelection().nAnnotationIndex)->GetInputFilter())(szString);
+		if(bChanged)
+		{
+			DWORD dwSelection = pEdit->GetSel();
+			pEdit->SetWindowText(szString);
+			pEdit->SetSel(dwSelection);
+		}
+	}
 
-  if(!IsDifferent(FALSE)) // Insure selection has not changed
-  {
-    SaView()->ASelection().SetSelectedAnnotationString(SaView(), szString, FALSE, m_bCheck);
-    // We only want one checkpoint per changed segment
-    m_bCheck = FALSE;
-    // Update IsDifferent check to changed string
-    IsDifferent(TRUE);
-  }
-  else UpdateDialog(); // Lose keystroke, avoid corrupting data...should never get here
+	if(!IsDifferent(FALSE)) // Insure selection has not changed
+	{
+		SaView()->ASelection().SetSelectedAnnotationString(SaView(), szString, FALSE, m_bCheck);
+		// We only want one checkpoint per changed segment
+		m_bCheck = FALSE;
+		// Update IsDifferent check to changed string
+		IsDifferent(TRUE);
+	}
+	else UpdateDialog(); // Lose keystroke, avoid corrupting data...should never get here
 }
 
 /***************************************************************************/
@@ -256,79 +256,79 @@ void CDlgEditor::OnUpdateInputstring()
 /***************************************************************************/
 void CDlgEditor::UpdateDialog()
 {
-  if((!SaView())||(SaDoc()->GetUnprocessedDataSize()==0)) // CSaView not active or no WAV data
-  {
-    if(IsWindowVisible())
-    {
-      ShowWindow(SW_HIDE);
-    }
-    return;
-  }
+	if((!SaView())||(SaDoc()->GetUnprocessedDataSize()==0)) // CSaView not active or no WAV data
+	{
+		if(IsWindowVisible())
+		{
+			ShowWindow(SW_HIDE);
+		}
+		return;
+	}
 
-  {
-    CFont* pFont = NULL;
+	{
+		CFont* pFont = NULL;
 
-    CString     szText("Disabled - select or add a segment");
+		CString     szText("Disabled - select or add a segment");
 
-    BOOL bEnable = FALSE;
-    BOOL bEnableChart = FALSE;
-    BOOL bFontASAPSIL = FALSE;
+		BOOL bEnable = FALSE;
+		BOOL bEnableChart = FALSE;
+		BOOL bFontASAPSIL = FALSE;
 
-    // Update all command buttons
-    UpdateDialogControls(MainFrame(), FALSE);
+		// Update all command buttons
+		UpdateDialogControls(MainFrame(), FALSE);
 
-    SaView()->ASelection().Update(SaView());
-    if(SaView()->ASelection().GetSelection().nAnnotationIndex != -1) //selection
-    {
-      int nAnnotation = SaView()->ASelection().GetSelection().nAnnotationIndex;
-      pFont = SaDoc()->GetFont(nAnnotation);
+		SaView()->ASelection().Update(SaView());
+		if(SaView()->ASelection().GetSelection().nAnnotationIndex != -1) //selection
+		{
+			int nAnnotation = SaView()->ASelection().GetSelection().nAnnotationIndex;
+			pFont = SaDoc()->GetFont(nAnnotation);
 
-      szText = SaView()->ASelection().GetSelectedAnnotationString(SaView());
+			szText = SaView()->ASelection().GetSelectedAnnotationString(SaView());
 
-      bEnable = TRUE;
-      CString fontFace = MainFrame()->GetFontFace(nAnnotation);
-      bFontASAPSIL = (fontFace.Left(8) == "ASAP SIL");
+			bEnable = TRUE;
+			CString fontFace = MainFrame()->GetFontFace(nAnnotation);
+			bFontASAPSIL = (fontFace.Left(8) == "ASAP SIL");
 
-    }
-    else
-    {
-      pFont = SaDoc()->GetFont(GLOSS);
-    }
+		}
+		else
+		{
+			pFont = SaDoc()->GetFont(GLOSS);
+		}
 
-    if((pFont)&&(((CFontTable*)pFont)->IsIPA())) bEnableChart = bFontASAPSIL;
+		if((pFont)&&(((CFontTable*)pFont)->IsIPA())) bEnableChart = bFontASAPSIL;
 
-    CWnd* pChart = GetDlgItem(IDC_CHARACTERCHART);
-    if(pChart)
-    {
+		CWnd* pChart = GetDlgItem(IDC_CHARACTERCHART);
+		if(pChart)
+		{
 #ifdef _UNICODE
-      pChart->EnableWindow(TRUE);
+			pChart->EnableWindow(TRUE);
 #else
-      pChart->EnableWindow(bFontASAPSIL);
+			pChart->EnableWindow(bFontASAPSIL);
 #endif
-    }
+		}
 
-    CEdit* pWnd = (CEdit*) GetDlgItem(IDC_INPUTSTRING);
-    if(pWnd!=NULL)
-    {
-      if(pFont) pWnd->SetFont(pFont);
-      if(IsDifferent(TRUE))
-      {
-        pWnd->SetWindowText(szText);
-        if(bEnable)
-          pWnd->SetSel(0,-1); // Select all text
-        else
-          pWnd->SetSel(-1,-1); // Select all text
-        pWnd->EnableWindow(bEnable);
-        if(bEnable && m_bActivated) pWnd->SetFocus();
-        else
-        {
-          CWnd* pWnd = &m_cNextButton;
-          if(pWnd && m_bActivated && !bEnable) pWnd->SetFocus();
-        }
-      }
-      m_bCheck = TRUE;
-    }
-  }
+		CEdit* pWnd = (CEdit*) GetDlgItem(IDC_INPUTSTRING);
+		if(pWnd!=NULL)
+		{
+			if(pFont) pWnd->SetFont(pFont);
+			if(IsDifferent(TRUE))
+			{
+				pWnd->SetWindowText(szText);
+				if(bEnable)
+					pWnd->SetSel(0,-1); // Select all text
+				else
+					pWnd->SetSel(-1,-1); // Select all text
+				pWnd->EnableWindow(bEnable);
+				if(bEnable && m_bActivated) pWnd->SetFocus();
+				else
+				{
+					CWnd* pWnd = &m_cNextButton;
+					if(pWnd && m_bActivated && !bEnable) pWnd->SetFocus();
+				}
+			}
+			m_bCheck = TRUE;
+		}
+	}
 }
 
 /***************************************************************************/
@@ -336,51 +336,51 @@ void CDlgEditor::UpdateDialog()
 /***************************************************************************/
 BOOL CDlgEditor::IsDifferent(BOOL bUpdate)
 {
-  BOOL ret = FALSE;
-  if (m_pPreviousSaView != SaView())
-  {
-    ret = TRUE;
-    if(bUpdate)
-    {
-      m_pPreviousSaView = SaView();
-    }
-  }
-  if(!SaView()) return ret;
+	BOOL ret = FALSE;
+	if (m_pPreviousSaView != SaView())
+	{
+		ret = TRUE;
+		if(bUpdate)
+		{
+			m_pPreviousSaView = SaView();
+		}
+	}
+	if(!SaView()) return ret;
 
 
-  SaView()->ASelection().Update(SaView());
-  CASegmentSelection::CASelection cSelection = SaView()->ASelection().GetSelection();
-  if (m_nPreviousAnnotationIndex != cSelection.nAnnotationIndex)
-  {
-    ret = TRUE;
-    if(bUpdate) m_nPreviousAnnotationIndex = cSelection.nAnnotationIndex;
-  }
-  if(cSelection.nAnnotationIndex==-1) return ret;
+	SaView()->ASelection().Update(SaView());
+	CASegmentSelection::CASelection cSelection = SaView()->ASelection().GetSelection();
+	if (m_nPreviousAnnotationIndex != cSelection.nAnnotationIndex)
+	{
+		ret = TRUE;
+		if(bUpdate) m_nPreviousAnnotationIndex = cSelection.nAnnotationIndex;
+	}
+	if(cSelection.nAnnotationIndex==-1) return ret;
 
-  if((m_dwPreviousStart != cSelection.dwStart)||(m_dwPreviousStop != cSelection.dwStop))
-  {
-    ret = TRUE;
-    if(bUpdate)
-    {
-      m_dwPreviousStart = cSelection.dwStart;
-      m_dwPreviousStop = cSelection.dwStop;
-    }
-  }
+	if((m_dwPreviousStart != cSelection.dwStart)||(m_dwPreviousStop != cSelection.dwStop))
+	{
+		ret = TRUE;
+		if(bUpdate)
+		{
+			m_dwPreviousStart = cSelection.dwStart;
+			m_dwPreviousStop = cSelection.dwStop;
+		}
+	}
 
-  if(m_szPreviousString != SaView()->ASelection().GetSelectedAnnotationString(SaView(), FALSE))
-  {
-    ret = TRUE;
-    if(bUpdate) m_szPreviousString = SaView()->ASelection().GetSelectedAnnotationString(SaView(),FALSE);
-  }
+	if(m_szPreviousString != SaView()->ASelection().GetSelectedAnnotationString(SaView(), FALSE))
+	{
+		ret = TRUE;
+		if(bUpdate) m_szPreviousString = SaView()->ASelection().GetSelectedAnnotationString(SaView(),FALSE);
+	}
 
-  return ret;
+	return ret;
 }
 
 
 void CDlgEditor::OnDestroy()
 {
-  CDialog::OnDestroy();
-  bEditor = FALSE;
+	CDialog::OnDestroy();
+	bEditor = FALSE;
 }
 
 
@@ -391,74 +391,74 @@ void CDlgEditor::OnDestroy()
 /***************************************************************************/
 BOOL CDlgEditor::PreTranslateMessage( MSG* pMsg )
 {
-  CMainFrame* pMain = MainFrame();
-  // translate accelerators for frame and any children
-  if (pMain && (pMain->GetCurrSaView()) && (pMsg->message >= WM_KEYFIRST && pMsg->message <= WM_KEYLAST))// 1.5Test8.5
-  {
-    switch(pMsg->wParam)
-    {
-      case VK_RETURN:
-        if(pMsg->message == WM_KEYDOWN) SaView()->SendMessage(WM_COMMAND, ID_EDIT_NEXT, 0);//SDM 1.5Test10.0
-        return TRUE;
-      case VK_DELETE:
-        if(GetKeyState(VK_SHIFT) >= 0) break; // Only translate if shift key is down (fall through)
-      case VK_ESCAPE:
-        if(pMsg->message == WM_KEYDOWN) OnCancel();//SDM 1.5Test10.0
-        return TRUE;
-      case VK_LEFT:
-        {
-          int nFirst = 0, nLast = 0;
-          CEdit* pWnd = (CEdit*) GetDlgItem(IDC_INPUTSTRING);
-          if(pWnd && pWnd->IsWindowEnabled())
-            pWnd->GetSel(nFirst, nLast);
-          if((pMsg->message == WM_KEYDOWN || pMsg->message == WM_SYSKEYDOWN) && nFirst == 0 && nLast == nFirst)
-          {
-            SaView()->SendMessage(WM_COMMAND, ID_EDIT_PREVIOUS, 0);
-            return TRUE;
-          }
-          else
-          {
-            return FALSE;
-          }
-        }
-      case VK_RIGHT:
-        {
-          int nFirst = 0, nLast = 0, nLength = 0;
-          CEdit* pWnd = (CEdit*) GetDlgItem(IDC_INPUTSTRING);
-          if(pWnd && pWnd->IsWindowEnabled())
-          {
-            pWnd->GetSel(nFirst, nLast);
-            nLength = pWnd->LineLength();
-          }
-          if((pMsg->message == WM_KEYDOWN || pMsg->message == WM_SYSKEYDOWN) && nFirst == nLength && nLast == nFirst)
-          {
-            SaView()->SendMessage(WM_COMMAND, ID_EDIT_NEXT, 0);
-            return TRUE;
-          }
-          else
-          {
-            return FALSE;
-          }
-        }
-      case VK_UP:
-        if((pMsg->message == WM_KEYDOWN || pMsg->message == WM_SYSKEYDOWN))
-          SaView()->SendMessage(WM_COMMAND, ID_EDIT_UP, 0);
-        return TRUE;
-      case VK_DOWN:
-        if((pMsg->message == WM_KEYDOWN || pMsg->message == WM_SYSKEYDOWN))
-          SaView()->SendMessage(WM_COMMAND, ID_EDIT_DOWN, 0);
-        return TRUE;
-      default:
-        // Translate these accelerators
-        if(pMain->GetCurrSaView()->PreTranslateMessage(pMsg))// 1.5Test8.5
-        {
-          return TRUE;
-        }
-    }
-  }
+	CMainFrame* pMain = MainFrame();
+	// translate accelerators for frame and any children
+	if (pMain && (pMain->GetCurrSaView()) && (pMsg->message >= WM_KEYFIRST && pMsg->message <= WM_KEYLAST))// 1.5Test8.5
+	{
+		switch(pMsg->wParam)
+		{
+		case VK_RETURN:
+			if(pMsg->message == WM_KEYDOWN) SaView()->SendMessage(WM_COMMAND, ID_EDIT_NEXT, 0);//SDM 1.5Test10.0
+			return TRUE;
+		case VK_DELETE:
+			if(GetKeyState(VK_SHIFT) >= 0) break; // Only translate if shift key is down (fall through)
+		case VK_ESCAPE:
+			if(pMsg->message == WM_KEYDOWN) OnCancel();//SDM 1.5Test10.0
+			return TRUE;
+		case VK_LEFT:
+			{
+				int nFirst = 0, nLast = 0;
+				CEdit* pWnd = (CEdit*) GetDlgItem(IDC_INPUTSTRING);
+				if(pWnd && pWnd->IsWindowEnabled())
+					pWnd->GetSel(nFirst, nLast);
+				if((pMsg->message == WM_KEYDOWN || pMsg->message == WM_SYSKEYDOWN) && nFirst == 0 && nLast == nFirst)
+				{
+					SaView()->SendMessage(WM_COMMAND, ID_EDIT_PREVIOUS, 0);
+					return TRUE;
+				}
+				else
+				{
+					return FALSE;
+				}
+			}
+		case VK_RIGHT:
+			{
+				int nFirst = 0, nLast = 0, nLength = 0;
+				CEdit* pWnd = (CEdit*) GetDlgItem(IDC_INPUTSTRING);
+				if(pWnd && pWnd->IsWindowEnabled())
+				{
+					pWnd->GetSel(nFirst, nLast);
+					nLength = pWnd->LineLength();
+				}
+				if((pMsg->message == WM_KEYDOWN || pMsg->message == WM_SYSKEYDOWN) && nFirst == nLength && nLast == nFirst)
+				{
+					SaView()->SendMessage(WM_COMMAND, ID_EDIT_NEXT, 0);
+					return TRUE;
+				}
+				else
+				{
+					return FALSE;
+				}
+			}
+		case VK_UP:
+			if((pMsg->message == WM_KEYDOWN || pMsg->message == WM_SYSKEYDOWN))
+				SaView()->SendMessage(WM_COMMAND, ID_EDIT_UP, 0);
+			return TRUE;
+		case VK_DOWN:
+			if((pMsg->message == WM_KEYDOWN || pMsg->message == WM_SYSKEYDOWN))
+				SaView()->SendMessage(WM_COMMAND, ID_EDIT_DOWN, 0);
+			return TRUE;
+		default:
+			// Translate these accelerators
+			if(pMain->GetCurrSaView()->PreTranslateMessage(pMsg))// 1.5Test8.5
+			{
+				return TRUE;
+			}
+		}
+	}
 
-  // Then call default handling
-  return CDialog::PreTranslateMessage( pMsg );
+	// Then call default handling
+	return CDialog::PreTranslateMessage( pMsg );
 }
 
 
@@ -469,21 +469,21 @@ BOOL CDlgEditor::PreTranslateMessage( MSG* pMsg )
 /***************************************************************************/
 void CDlgEditor::OnActivate(UINT nState, CWnd* pWndOther, BOOL bMinimized)
 {
-  UpdateDialog();
+	UpdateDialog();
 
-  CDialog::OnActivate(nState, pWndOther, bMinimized);
+	CDialog::OnActivate(nState, pWndOther, bMinimized);
 
-  m_bActivated = (nState != WA_INACTIVE);
+	m_bActivated = (nState != WA_INACTIVE);
 
-  CEdit* pWnd = (CEdit*) GetDlgItem(IDC_INPUTSTRING);
+	CEdit* pWnd = (CEdit*) GetDlgItem(IDC_INPUTSTRING);
 
-  if(pWnd && pWnd->IsWindowEnabled()) pWnd->SetFocus();
-  else
-  {
-    CWnd* pWnd = &m_cNextButton;
-    if(pWnd && pWnd->IsWindowEnabled()) 
-      pWnd->SetFocus();
-  }
+	if(pWnd && pWnd->IsWindowEnabled()) pWnd->SetFocus();
+	else
+	{
+		CWnd* pWnd = &m_cNextButton;
+		if(pWnd && pWnd->IsWindowEnabled()) 
+			pWnd->SetFocus();
+	}
 }
 
 
@@ -493,39 +493,39 @@ void CDlgEditor::OnActivate(UINT nState, CWnd* pWndOther, BOOL bMinimized)
 /***************************************************************************/
 void CDlgEditor::OnPaint()
 {
-  CPaintDC dc(this); // device context for painting
+	CPaintDC dc(this); // device context for painting
 
-  CWnd* pWnd = GetDlgItem(IDC_START);
-  if(pWnd)
-  {
-    CRect rWnd;
-    pWnd->GetWindowRect(&rWnd); //In screen coordinates
-    ScreenToClient(&rWnd);
-    CPen pen(PS_SOLID, 1, MainFrame()->GetColors()->cPlotStartCursor);
-    CPen* pOldPen = dc.SelectObject(&pen);
-    CBrush brush(MainFrame()->GetColors()->cPlotStartCursor);
-    CBrush* pOldBrush = (CBrush*)dc.SelectObject(&brush);
-    dc.Rectangle(rWnd.left, rWnd.top, rWnd.right, rWnd.bottom);
-    dc.SelectObject(pOldBrush);
-    dc.SelectObject(pOldPen);
-  }
+	CWnd* pWnd = GetDlgItem(IDC_START);
+	if(pWnd)
+	{
+		CRect rWnd;
+		pWnd->GetWindowRect(&rWnd); //In screen coordinates
+		ScreenToClient(&rWnd);
+		CPen pen(PS_SOLID, 1, MainFrame()->GetColors()->cPlotStartCursor);
+		CPen* pOldPen = dc.SelectObject(&pen);
+		CBrush brush(MainFrame()->GetColors()->cPlotStartCursor);
+		CBrush* pOldBrush = (CBrush*)dc.SelectObject(&brush);
+		dc.Rectangle(rWnd.left, rWnd.top, rWnd.right, rWnd.bottom);
+		dc.SelectObject(pOldBrush);
+		dc.SelectObject(pOldPen);
+	}
 
-  pWnd = GetDlgItem(IDC_STOP);
-  if(pWnd)
-  {
-    CRect rWnd;
-    pWnd->GetWindowRect(rWnd); //In screen coordinates
-    ScreenToClient(&rWnd);
-    CPen pen(PS_SOLID, 1, MainFrame()->GetColors()->cPlotStopCursor);
-    CPen* pOldPen = dc.SelectObject(&pen);
-    CBrush brush(MainFrame()->GetColors()->cPlotStopCursor);
-    CBrush* pOldBrush = (CBrush*)dc.SelectObject(&brush);
-    dc.Rectangle(rWnd.left, rWnd.top, rWnd.right, rWnd.bottom);
-    dc.SelectObject(pOldBrush);
-    dc.SelectObject(pOldPen);
-  }
+	pWnd = GetDlgItem(IDC_STOP);
+	if(pWnd)
+	{
+		CRect rWnd;
+		pWnd->GetWindowRect(rWnd); //In screen coordinates
+		ScreenToClient(&rWnd);
+		CPen pen(PS_SOLID, 1, MainFrame()->GetColors()->cPlotStopCursor);
+		CPen* pOldPen = dc.SelectObject(&pen);
+		CBrush brush(MainFrame()->GetColors()->cPlotStopCursor);
+		CBrush* pOldBrush = (CBrush*)dc.SelectObject(&brush);
+		dc.Rectangle(rWnd.left, rWnd.top, rWnd.right, rWnd.bottom);
+		dc.SelectObject(pOldBrush);
+		dc.SelectObject(pOldPen);
+	}
 
-  // Do not call CDialog::OnPaint() for painting messages
+	// Do not call CDialog::OnPaint() for painting messages
 }
 
 /***************************************************************************/
@@ -533,8 +533,8 @@ void CDlgEditor::OnPaint()
 /***************************************************************************/
 void CDlgEditor::OnCancel()
 {
-  if(SaView() && (!m_bCheck) && !IsDifferent(FALSE)) SaView()->SendMessage(WM_COMMAND, ID_EDIT_UNDO, 0);
-  CDialog::OnCancel();
+	if(SaView() && (!m_bCheck) && !IsDifferent(FALSE)) SaView()->SendMessage(WM_COMMAND, ID_EDIT_UNDO, 0);
+	CDialog::OnCancel();
 }
 
 // SDM 1.5Test8.2
@@ -543,7 +543,7 @@ void CDlgEditor::OnCancel()
 /***************************************************************************/
 void CDlgEditor::OnClose()
 {
-  SendMessage(WM_COMMAND, IDOK, 0);
+	SendMessage(WM_COMMAND, IDOK, 0);
 }
 
 /***************************************************************************/
@@ -551,10 +551,10 @@ void CDlgEditor::OnClose()
 /***************************************************************************/
 void CDlgEditor::OnHelpEdit()
 {
-  // create the pathname
+	// create the pathname
 	CString szPath = AfxGetApp()->m_pszHelpFilePath;
-  szPath = szPath + "::/User_Interface/Menus/Edit/Transcription/Transcription_Editor.htm";
-  ::HtmlHelp(NULL, szPath, HH_DISPLAY_TOPIC, NULL);
+	szPath = szPath + "::/User_Interface/Menus/Edit/Transcription/Transcription_Editor.htm";
+	::HtmlHelp(NULL, szPath, HH_DISPLAY_TOPIC, NULL);
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -564,31 +564,31 @@ void CDlgEditor::OnHelpEdit()
 CAnnotationEdit::CAnnotationEdit(CWnd* pParent /*=NULL*/)
 : CDialog(CAnnotationEdit::IDD, pParent)
 {
-  //{{AFX_DATA_INIT(CAnnotationEdit)
-  // NOTE: the ClassWizard will add member initialization here
-  //}}AFX_DATA_INIT
-  m_bClosing = FALSE;
-  m_bChanged = FALSE;
+	//{{AFX_DATA_INIT(CAnnotationEdit)
+	// NOTE: the ClassWizard will add member initialization here
+	//}}AFX_DATA_INIT
+	m_bClosing = FALSE;
+	m_bChanged = FALSE;
 }
 
 void CAnnotationEdit::DoDataExchange(CDataExchange* pDX)
 {
-  CDialog::DoDataExchange(pDX);
-  //{{AFX_DATA_MAP(CAnnotationEdit)
-  // NOTE: the ClassWizard will add DDX and DDV calls here
-  //}}AFX_DATA_MAP
+	CDialog::DoDataExchange(pDX);
+	//{{AFX_DATA_MAP(CAnnotationEdit)
+	// NOTE: the ClassWizard will add DDX and DDV calls here
+	//}}AFX_DATA_MAP
 }
 
 BEGIN_MESSAGE_MAP(CAnnotationEdit, CDialog)
-    //{{AFX_MSG_MAP(CAnnotationEdit)
-    ON_WM_SIZE()
-    ON_EN_UPDATE(IDC_INPUTSTRING, OnUpdateInputstring)
-    ON_WM_ACTIVATE()
-    ON_WM_CLOSE()
-    ON_COMMAND(IDOK, OnOK)
-    ON_COMMAND(IDCANCEL, OnCancel)
-    ON_WM_PARENTNOTIFY()
-    //}}AFX_MSG_MAP
+	//{{AFX_MSG_MAP(CAnnotationEdit)
+	ON_WM_SIZE()
+	ON_EN_UPDATE(IDC_INPUTSTRING, OnUpdateInputstring)
+	ON_WM_ACTIVATE()
+	ON_WM_CLOSE()
+	ON_COMMAND(IDOK, OnOK)
+	ON_COMMAND(IDCANCEL, OnCancel)
+	ON_WM_PARENTNOTIFY()
+	//}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
 
@@ -600,20 +600,19 @@ END_MESSAGE_MAP()
 /***************************************************************************/
 void CAnnotationEdit::OnOK()
 {
-  if(!m_bClosing)
-  {
-    m_bClosing = TRUE;
-    if((SaView()) && m_bChanged)
-    {
-      SaView()->ASelection().Update(SaView());
-      CEdit* pEdit = (CEdit*) GetDlgItem(IDC_INPUTSTRING);
-      CSaString szString;
-      pEdit->GetWindowText(szString);
-
-      SaView()->ASelection().SetSelectedAnnotationString(SaView(), szString, FALSE, TRUE);
-    }
-    DestroyWindow();
-  }
+	if(!m_bClosing)
+	{
+		m_bClosing = TRUE;
+		if ((SaView()) && m_bChanged)
+		{
+			SaView()->ASelection().Update(SaView());
+			CEdit* pEdit = (CEdit*)GetDlgItem(IDC_INPUTSTRING);
+			CSaString szString;
+			pEdit->GetWindowText(szString);
+			SaView()->ASelection().SetSelectedAnnotationString(SaView(), szString, FALSE, TRUE);
+		}
+		DestroyWindow();
+	}
 }
 
 // SDM 1.5Test8.2
@@ -622,7 +621,7 @@ void CAnnotationEdit::OnOK()
 /***************************************************************************/
 void CAnnotationEdit::OnClose()
 {
-  OnOK();
+	OnOK();
 }
 
 /***************************************************************************/
@@ -630,11 +629,11 @@ void CAnnotationEdit::OnClose()
 /***************************************************************************/
 void CAnnotationEdit::OnCancel()
 {
-  if(!m_bClosing)
-  {
-    m_bClosing = TRUE;
-    DestroyWindow();
-  }
+	if(!m_bClosing)
+	{
+		m_bClosing = TRUE;
+		DestroyWindow();
+	}
 }
 
 /***************************************************************************/
@@ -642,8 +641,8 @@ void CAnnotationEdit::OnCancel()
 /***************************************************************************/
 void CAnnotationEdit::PostNcDestroy()
 {
-  CDialog::PostNcDestroy();
-  delete this;
+	CDialog::PostNcDestroy();
+	delete this;
 }
 
 /***************************************************************************/
@@ -651,14 +650,14 @@ void CAnnotationEdit::PostNcDestroy()
 /***************************************************************************/
 void CAnnotationEdit::OnSize(UINT nType, int cx, int cy)
 {
-  CDialog::OnSize(nType, cx, cy);
+	CDialog::OnSize(nType, cx, cy);
 
-  CEdit* pWnd = (CEdit*) GetDlgItem(IDC_INPUTSTRING);
+	CEdit* pWnd = (CEdit*) GetDlgItem(IDC_INPUTSTRING);
 
-  if(pWnd && pWnd->m_hWnd)
-  {
-    pWnd->SetWindowPos(NULL,0,0,cx,cy,SWP_NOACTIVATE);
-  }
+	if(pWnd && pWnd->m_hWnd)
+	{
+		pWnd->SetWindowPos(NULL,0,0,cx,cy,SWP_NOACTIVATE);
+	}
 }
 
 /***************************************************************************/
@@ -666,16 +665,16 @@ void CAnnotationEdit::OnSize(UINT nType, int cx, int cy)
 /***************************************************************************/
 CString CAnnotationEdit::SetText(const CString &szString)
 {
-  OnUpdateInputstring();
-  CEdit* pEdit = (CEdit*) GetDlgItem(IDC_INPUTSTRING);
-  CString szOldString;
-  pEdit->GetWindowText(szOldString);
-  pEdit->SetWindowText(szString);
-  int nLength = szString.GetLength();
-  pEdit->SetSel(nLength,nLength); // Select all text
-  OnUpdateInputstring();
+	OnUpdateInputstring();
+	CEdit* pEdit = (CEdit*) GetDlgItem(IDC_INPUTSTRING);
+	CString szOldString;
+	pEdit->GetWindowText(szOldString);
+	pEdit->SetWindowText(szString);
+	int nLength = szString.GetLength();
+	pEdit->SetSel(nLength,nLength); // Select all text
+	OnUpdateInputstring();
 
-  return szOldString;
+	return szOldString;
 }
 
 /***************************************************************************/
@@ -683,33 +682,33 @@ CString CAnnotationEdit::SetText(const CString &szString)
 /***************************************************************************/
 void CAnnotationEdit::OnUpdateInputstring()
 {
-  if (!SaView())
-  {
-    OnCancel();// Should never happen
-  }
+	if (!SaView())
+	{
+		OnCancel();// Should never happen
+	}
 
-  SaView()->ASelection().Update(SaView());
-  if(SaView()->ASelection().GetSelection().nAnnotationIndex == -1)
-  {
-    OnCancel();// Should never happen
-  }
+	SaView()->ASelection().Update(SaView());
+	if(SaView()->ASelection().GetSelection().nAnnotationIndex == -1)
+	{
+		OnCancel();// Should never happen
+	}
 
-  m_bChanged = TRUE;
+	m_bChanged = TRUE;
 
-  // Filter Inputstring if input filter specified
-  if(SaView()->GetAnnotation(SaView()->ASelection().GetSelection().nAnnotationIndex)->GetInputFilter() != NULL)
-  {
-    CEdit* pEdit = (CEdit*) GetDlgItem(IDC_INPUTSTRING);
-    CSaString szString;
-    pEdit->GetWindowText(szString);
-    BOOL bChanged = (SaView()->GetAnnotation(SaView()->ASelection().GetSelection().nAnnotationIndex)->GetInputFilter())(szString);
-    if(bChanged)
-    {
-      DWORD dwSelection = pEdit->GetSel();
-      pEdit->SetWindowText(szString);
-      pEdit->SetSel(dwSelection);
-    }
-  }
+	// Filter Inputstring if input filter specified
+	if(SaView()->GetAnnotation(SaView()->ASelection().GetSelection().nAnnotationIndex)->GetInputFilter() != NULL)
+	{
+		CEdit* pEdit = (CEdit*) GetDlgItem(IDC_INPUTSTRING);
+		CSaString szString;
+		pEdit->GetWindowText(szString);
+		BOOL bChanged = (SaView()->GetAnnotation(SaView()->ASelection().GetSelection().nAnnotationIndex)->GetInputFilter())(szString);
+		if(bChanged)
+		{
+			DWORD dwSelection = pEdit->GetSel();
+			pEdit->SetWindowText(szString);
+			pEdit->SetSel(dwSelection);
+		}
+	}
 }
 
 /***************************************************************************/
@@ -717,11 +716,13 @@ void CAnnotationEdit::OnUpdateInputstring()
 /***************************************************************************/
 CSaView* CAnnotationEdit::SaView() const
 {
-  CSaView* pSaView = MainFrame()->GetCurrSaView();
-
-  if (pSaView && !pSaView->IsKindOf(RUNTIME_CLASS(CSaView))) pSaView = NULL; // Verify View is a CSaView type.
-
-  return pSaView;
+	CSaView* pSaView = MainFrame()->GetCurrSaView();
+	// Verify View is a CSaView type.
+	if ((pSaView) && (!pSaView->IsKindOf(RUNTIME_CLASS(CSaView))))
+	{
+		pSaView = NULL; 
+	}
+	return pSaView;
 }
 
 CSaDoc* CAnnotationEdit::SaDoc() const { return SaView() ? SaView()->GetDocument() : NULL;};
@@ -731,9 +732,9 @@ CSaDoc* CAnnotationEdit::SaDoc() const { return SaView() ? SaView()->GetDocument
 /***************************************************************************/
 void CAnnotationEdit::OnActivate(UINT nState, CWnd* pWndOther, BOOL bMinimized)
 {
-  CDialog::OnActivate(nState, pWndOther, bMinimized);
+	CDialog::OnActivate(nState, pWndOther, bMinimized);
 
-  if(!m_bClosing && (nState == WA_INACTIVE)) OnOK();
+	if(!m_bClosing && (nState == WA_INACTIVE)) OnOK();
 }
 
 /***************************************************************************/
@@ -741,38 +742,38 @@ void CAnnotationEdit::OnActivate(UINT nState, CWnd* pWndOther, BOOL bMinimized)
 /***************************************************************************/
 BOOL CAnnotationEdit::OnInitDialog()
 {
-  CDialog::OnInitDialog();
+	CDialog::OnInitDialog();
 
-  if(!SaView()) // CSaView not active
-  {
-    OnCancel();
-  }
-  else
-  {
-    CFont* pFont = NULL;
+	if (!SaView()) // CSaView not active
+	{
+		OnCancel();
+	}
+	else
+	{
+		CFont* pFont = NULL;
 
-    SaView()->ASelection().Update(SaView());
-    if(SaView()->ASelection().GetSelection().nAnnotationIndex != -1) //selection
-    {
-      int nAnnotation = SaView()->ASelection().GetSelection().nAnnotationIndex;
-      pFont = SaDoc()->GetFont(nAnnotation);
-      CString szText = SaView()->ASelection().GetSelectedAnnotationString(SaView());
+		SaView()->ASelection().Update(SaView());
+		if(SaView()->ASelection().GetSelection().nAnnotationIndex != -1) //selection
+		{
+			int nAnnotation = SaView()->ASelection().GetSelection().nAnnotationIndex;
+			pFont = SaDoc()->GetFont(nAnnotation);
+			CString szText = SaView()->ASelection().GetSelectedAnnotationString(SaView());
 
-      CEdit* pWnd = (CEdit*) GetDlgItem(IDC_INPUTSTRING);
-      if(pWnd!=NULL)
-      {
-        if(pFont) pWnd->SetFont(pFont);
-        pWnd->SetWindowText(szText);
-        pWnd->SetSel(0,-1); // Select all text
-      }
-    }
-    else
-    {
-      OnCancel();
-    }
-  }
+			CEdit* pWnd = (CEdit*) GetDlgItem(IDC_INPUTSTRING);
+			if(pWnd!=NULL)
+			{
+				if(pFont) pWnd->SetFont(pFont);
+				pWnd->SetWindowText(szText);
+				pWnd->SetSel(0,-1); // Select all text
+			}
+		}
+		else
+		{
+			OnCancel();
+		}
+	}
 
-  return TRUE;  // return TRUE  unless you set the focus to a control
+	return TRUE;  // return TRUE  unless you set the focus to a control
 
 }
 
@@ -785,74 +786,74 @@ BOOL CAnnotationEdit::OnInitDialog()
 /***************************************************************************/
 BOOL CAnnotationEdit::PreTranslateMessage( MSG* pMsg )
 {
-  CMainFrame* pMain = MainFrame();
-  // translate accelerators for frame and any children
-  if (pMain && (pMain->GetCurrSaView()) && (pMsg->message >= WM_KEYFIRST && pMsg->message <= WM_KEYLAST))
-  {
-    switch(pMsg->wParam)
-    {
-      case VK_ESCAPE:
-        if(pMsg->message == WM_KEYDOWN) OnCancel();//SDM 1.5Test8.6
-        return TRUE;
-      case VK_LEFT:
-        {
-          int nFirst = 0, nLast = 0;
-          CEdit* pWnd = (CEdit*) GetDlgItem(IDC_INPUTSTRING);
-          if(pWnd && pWnd->IsWindowEnabled())
-            pWnd->GetSel(nFirst, nLast);
-          if((pMsg->message == WM_KEYDOWN || pMsg->message == WM_SYSKEYDOWN) && nFirst == 0 && nLast == nFirst)
-          {
-            OnOK();
-            SaView()->SendMessage(WM_COMMAND, ID_EDIT_PREVIOUS, 0);
-            SaView()->SendMessage(WM_COMMAND, ID_EDIT_INPLACE, 0);
-            return TRUE;
-          }
-          else
-          {
-            return FALSE;
-          }
-        }
-      case VK_RIGHT:
-        {
-          int nFirst = 0, nLast = 0, nLength = 0;
-          CEdit* pWnd = (CEdit*) GetDlgItem(IDC_INPUTSTRING);
-          if(pWnd && pWnd->IsWindowEnabled())
-          {
-            pWnd->GetSel(nFirst, nLast);
-            nLength = pWnd->LineLength();
-          }
-          if((pMsg->message == WM_KEYDOWN || pMsg->message == WM_SYSKEYDOWN) && nFirst == nLength && nLast == nFirst)
-          {
-            OnOK();
-            SaView()->SendMessage(WM_COMMAND, ID_EDIT_NEXT, 0);
-            SaView()->SendMessage(WM_COMMAND, ID_EDIT_INPLACE, 0);
-            return TRUE;
-          }
-          else
-          {
-            return FALSE;
-          }
-        }
-      case VK_UP:
-        if((pMsg->message == WM_KEYDOWN || pMsg->message == WM_SYSKEYDOWN))
-        {
-          OnOK();
-          SaView()->SendMessage(WM_COMMAND, ID_EDIT_UP, 0);
-          SaView()->SendMessage(WM_COMMAND, ID_EDIT_INPLACE, 0);
-        }
-        return TRUE;
-      case VK_DOWN:
-        if((pMsg->message == WM_KEYDOWN || pMsg->message == WM_SYSKEYDOWN))
-        {
-          OnOK();
-          SaView()->SendMessage(WM_COMMAND, ID_EDIT_DOWN, 0);
-          SaView()->SendMessage(WM_COMMAND, ID_EDIT_INPLACE, 0);
-        }
-        return TRUE;
-    }
-  }
+	CMainFrame* pMain = MainFrame();
+	// translate accelerators for frame and any children
+	if (pMain && (pMain->GetCurrSaView()) && (pMsg->message >= WM_KEYFIRST && pMsg->message <= WM_KEYLAST))
+	{
+		switch(pMsg->wParam)
+		{
+		case VK_ESCAPE:
+			if(pMsg->message == WM_KEYDOWN) OnCancel();//SDM 1.5Test8.6
+			return TRUE;
+		case VK_LEFT:
+			{
+				int nFirst = 0, nLast = 0;
+				CEdit* pWnd = (CEdit*) GetDlgItem(IDC_INPUTSTRING);
+				if(pWnd && pWnd->IsWindowEnabled())
+					pWnd->GetSel(nFirst, nLast);
+				if((pMsg->message == WM_KEYDOWN || pMsg->message == WM_SYSKEYDOWN) && nFirst == 0 && nLast == nFirst)
+				{
+					OnOK();
+					SaView()->SendMessage(WM_COMMAND, ID_EDIT_PREVIOUS, 0);
+					SaView()->SendMessage(WM_COMMAND, ID_EDIT_INPLACE, 0);
+					return TRUE;
+				}
+				else
+				{
+					return FALSE;
+				}
+			}
+		case VK_RIGHT:
+			{
+				int nFirst = 0, nLast = 0, nLength = 0;
+				CEdit* pWnd = (CEdit*) GetDlgItem(IDC_INPUTSTRING);
+				if (pWnd && pWnd->IsWindowEnabled())
+				{
+					pWnd->GetSel(nFirst, nLast);
+					nLength = pWnd->LineLength();
+				}
+				if ((pMsg->message == WM_KEYDOWN || pMsg->message == WM_SYSKEYDOWN) && nFirst == nLength && nLast == nFirst)
+				{
+					OnOK();
+					SaView()->SendMessage(WM_COMMAND, ID_EDIT_NEXT, 0);
+					SaView()->SendMessage(WM_COMMAND, ID_EDIT_INPLACE, 0);
+					return TRUE;
+				}
+				else
+				{
+					return FALSE;
+				}
+			}
+		case VK_UP:
+			if((pMsg->message == WM_KEYDOWN || pMsg->message == WM_SYSKEYDOWN))
+			{
+				OnOK();
+				SaView()->SendMessage(WM_COMMAND, ID_EDIT_UP, 0);
+				SaView()->SendMessage(WM_COMMAND, ID_EDIT_INPLACE, 0);
+			}
+			return TRUE;
+		case VK_DOWN:
+			if((pMsg->message == WM_KEYDOWN || pMsg->message == WM_SYSKEYDOWN))
+			{
+				OnOK();
+				SaView()->SendMessage(WM_COMMAND, ID_EDIT_DOWN, 0);
+				SaView()->SendMessage(WM_COMMAND, ID_EDIT_INPLACE, 0);
+			}
+			return TRUE;
+		}
+	}
 
-  // Then call default handling
-  return CDialog::PreTranslateMessage( pMsg );
+	// Then call default handling
+	return CDialog::PreTranslateMessage( pMsg );
 }
 

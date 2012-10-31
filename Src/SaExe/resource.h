@@ -181,6 +181,7 @@
 #define IDC_MHANDN                      357
 #define IDD_SPLIT                       360
 #define IDD_MULTICHANNEL                362
+#define IDD_AUTO_REFERENCE_DATA         363
 #define IDC_HIGHPASS                    502
 #define IDC_CHANGE_DISPLAYMODE          504
 #define ID_PALETTE_BASE                 601
@@ -1583,6 +1584,11 @@
 #define IDD_ADVANCEDPARSEPHRASE         2041
 #define IDD_OPTIONSAUDIOPAGE            2042
 #define IDC_SHOW_ADVANCED_OPTIONS       2043
+#define IDC_AUTO_REF_DATA_BEGIN_SPIN    2044
+#define IDC_AUTO_REF_DATA_BEGIN         2045
+#define IDC_AUTO_REF_DATA_BEGIN_EDIT    2045
+#define IDC_AUTO_REF_DATA_END_EDIT      2046
+#define IDC_AUTO_REF_DATA_END_SPIN      2047
 #define IDS_PLAYER_SMALL                3000
 #define IDS_PLAYER_LARGE                3001
 #define IDS_STATTXT_PROCESSING          4000
@@ -1956,6 +1962,7 @@
 #define IDS_STRING33219                 33219
 #define IDS_CONFIRM_PHONEMIC_COPY       33219
 #define ID_EDIT_COPY_PHONETIC_TO_PHONEMIC 33220
+#define ID_AUTOMATICMARKUP_REFERENCEDATA 33221
 #define ID_GRAPHTYPES_SELECT_FIRST      40000
 #define ID_GRAPHTYPES_SELECT_LAST       40011
 #define ID_GRAPHTYPES_SELECT_END_RESERVED_RANGE 40099
@@ -2069,15 +2076,17 @@
 #define IDS_ERROR_SCREEN_CAPTURE_SAVE   61253
 #define IDS_ERROR_SCREEN_CAPTURE_OPEN   61254
 #define IDS_ERROR_NO_DIALOG             61255
+#define IDS_ERROR_NO_WORDS              61256
+#define IDS_ERROR_NO_WORDS_ON_AUTO_REFERENCE 61256
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_3D_CONTROLS                     1
-#define _APS_NEXT_RESOURCE_VALUE        363
-#define _APS_NEXT_COMMAND_VALUE         33221
-#define _APS_NEXT_CONTROL_VALUE         2044
+#define _APS_NEXT_RESOURCE_VALUE        364
+#define _APS_NEXT_COMMAND_VALUE         33222
+#define _APS_NEXT_CONTROL_VALUE         2049
 #define _APS_NEXT_SYMED_VALUE           104
 #endif
 #endif
