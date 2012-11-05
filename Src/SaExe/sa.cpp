@@ -310,7 +310,10 @@ BOOL CSaApp::InitInstance()
 
 		SetRegistryKey(_T("SIL"));
 
-		m_pszErrors = new CStringArray; // create the error message string array
+		// create the error message string array
+		m_pszErrors = new CStringArray; 
+		m_pszMessages = new CStringArray;
+
 		// Standard initialization
 		// If you are not using these features and wish to reduce the size
 		// of your final executable, you should remove from the following
@@ -505,8 +508,7 @@ BOOL CSaApp::InitInstance()
 // CSaApp::ExitInstance Application exit
 // Called by framework to exit the application.
 /***************************************************************************/
-int CSaApp::ExitInstance()
-{
+int CSaApp::ExitInstance() {
 	// delete the temp transcription DB
 	CoInitialize(NULL);
 	ISaAudioDocumentWriterPtr saAudioDocWriter;
@@ -519,25 +521,26 @@ int CSaApp::ExitInstance()
 	}
 	CoUninitialize();
 
-	if(m_hEnglishResources)
+	if (m_hEnglishResources)
 		FreeLibrary(m_hEnglishResources);
-	if(m_hLocalizedResources)
+	if (m_hLocalizedResources)
 		FreeLibrary(m_hLocalizedResources);
 
 	BOOL bOK = FALSE;
-	try
-	{
-		if (m_pszErrors)
-		{
+	try {
+		if (m_pszErrors) {
 			delete m_pszErrors;
+			m_pszErrors = NULL;
+		}
+		if (m_pszMessages) {
+			delete m_pszMessages;
+			m_pszMessages = NULL;
 		}
 		bOK = CSaAppBase::ExitInstance();
 
 		// standard implementation: save initialisation
 		SaveStdProfileSettings();
-	}
-	catch(...)
-	{
+	} catch(...) {
 	}
 	// standard implementation: save initialisation
 	if (bOK)
@@ -1111,38 +1114,51 @@ void CSaApp::OnProcessBatchCommands()
 // CSaApp::ErrorMessage Set error message
 // Set an error message in the queue to be displayed as soon as possible.
 /***************************************************************************/
-void CSaApp::ErrorMessage(UINT nTextID, LPCTSTR pszText1, LPCTSTR pszText2)
-{
+void CSaApp::ErrorMessage(UINT nTextID, LPCTSTR pszText1, LPCTSTR pszText2) {
 #ifdef _DEBUG
 	ASSERT(FALSE);
 #endif
 	CSaString szText;
-	try
-	{
+	try {
 		// create the text
-		if (pszText1)
-		{
-			if (pszText2)
-			{
+		if (pszText1) {
+			if (pszText2) {
 				AfxFormatString2(szText, nTextID, pszText1, pszText2);
-			}
-			else
-			{
+			} else {
 				AfxFormatString1(szText, nTextID, pszText1);
 			}
-		}
-		else
-		{
+		} else {
 			szText.LoadString(nTextID);
 		}
 		m_pszErrors->Add(szText); // add the string to the array
-	}
-	catch (CMemoryException e)
-	{
+	} catch (CMemoryException e) {
 		// memory allocation error
 		ErrorMessage(IDS_ERROR_MEMALLOC);
 	}
+}
 
+/***************************************************************************/
+// CSaApp::Message Set error message
+// Set an error message in the queue to be displayed as soon as possible.
+/***************************************************************************/
+void CSaApp::Message(UINT nTextID, LPCTSTR pszText1, LPCTSTR pszText2) {
+	CSaString szText;
+	try {
+		// create the text
+		if (pszText1) {
+			if (pszText2) {
+				AfxFormatString2(szText, nTextID, pszText1, pszText2);
+			} else {
+				AfxFormatString1(szText, nTextID, pszText1);
+			}
+		} else {
+			szText.LoadString(nTextID);
+		}
+		m_pszMessages->Add(szText); // add the string to the array
+	} catch (CMemoryException e) {
+		// memory allocation error
+		ErrorMessage(IDS_ERROR_MEMALLOC);
+	}
 }
 
 /***************************************************************************/
@@ -1843,7 +1859,7 @@ BOOL CSaApp::OnIdle(LONG lCount)
 	}
 	BOOL bMore = CSaAppBase::OnIdle(lCount);
 	// display error message if present
-	DisplayErrorMessage();
+	DisplayMessages();
 
 	if(bMore)
 		return TRUE; // more idle processing necessary
@@ -1893,15 +1909,18 @@ BOOL CSaApp::OnIdle(LONG lCount)
 }
 
 /***************************************************************************/
-// CSaApp::DisplayErrorMessage Displays a stored error message
+// CSaApp::DisplayMessages Displays a stored error message
 /***************************************************************************/
-void CSaApp::DisplayErrorMessage()
-{
-	if (m_pszErrors->GetSize() > 0)
-	{
+void CSaApp::DisplayMessages() {
+	if (m_pszErrors->GetSize() > 0)	{
 		CSaString error = m_pszErrors->GetAt(0);
 		m_pszErrors->RemoveAt(0, 1); // remove message (before we lose process thread)
 		AfxMessageBox(error, MB_OK | MB_ICONEXCLAMATION, 0);
+	}
+	if (m_pszMessages->GetSize() > 0)	{
+		CSaString error = m_pszMessages->GetAt(0);
+		m_pszMessages->RemoveAt(0, 1); // remove message (before we lose process thread)
+		AfxMessageBox(error, MB_OK | MB_ICONINFORMATION, 0);
 	}
 }
 

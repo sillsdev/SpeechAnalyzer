@@ -40,10 +40,10 @@
                                        PITCH_PARMS &stPitchParm, short *pPitchBfr, uint32 dwPitchBfrLength);
                dspError_t Fragment(void);
                ~CFragment();
-               uint32 GetWaveBlockIndex() {return m_dwWaveBlock;}
-               uint32 GetPitchBlockIndex() {return m_dwPitchBlock;}
-               uint32 GetFragmentBlockLength() {return m_dwFragBlockLength;}
-               uint32 GetFragmentCount() {return m_dwFragCount;}
+               uint32 GetWaveBlockIndex() { return m_dwWaveBlock;}
+               uint32 GetPitchBlockIndex() { return m_dwPitchBlock;}
+               uint32 GetFragmentBlockLength() { return m_dwFragBlockLength;}
+               uint32 GetFragmentCount() { return m_dwFragCount;}
  
              private:
                static dspError_t ValidateSignalParms(SIG_PARMS &stSignal);

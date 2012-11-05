@@ -26,10 +26,10 @@
              dspError_t GetBinNum(int32 & nBinNum, int16 nData);
              dspError_t GetHistogram(short* pBins, double fCoeff, uint16 wGraphForm);
              ~CHistogram();                
-             virtual const HIST_PARMS& GetHistogramParms() const {return m_stHistParms;} // return histogram parms as const
-             virtual short GetMaxValue(void* /*pCaller*/) {return m_nMaxValue;} // return maximum value
-             virtual short GetMinValue(void* /*pCaller*/) {return m_nMinValue;} // return minimum value
-             virtual uint32 GetTotalCounts(void* /*pCaller*/) {return m_dwTotalCounts;} // return total counts
+             virtual const HIST_PARMS& GetHistogramParms() const { return m_stHistParms;} // return histogram parms as const
+             virtual short GetMaxValue(void* /*pCaller*/) { return m_nMaxValue;} // return maximum value
+             virtual short GetMinValue(void* /*pCaller*/) { return m_nMinValue;} // return minimum value
+             virtual uint32 GetTotalCounts(void* /*pCaller*/) { return m_dwTotalCounts;} // return total counts
            private:  
              CHistogram(HIST_PARMS &stHistParms, PROC_PARMS &stProcParms);
              dspError_t Process(uint8 * pBuffer);

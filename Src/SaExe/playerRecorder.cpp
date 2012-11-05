@@ -1541,7 +1541,7 @@ void CDlgRecorder::SetRecorderMode(UINT nMode)
 	}
 	// display pending error messages
 	CSaApp* pApp = (CSaApp*)AfxGetApp(); // get pointer to application
-	pApp->DisplayErrorMessage();
+	pApp->DisplayMessages();
 }
 
 /***************************************************************************/
@@ -3052,7 +3052,7 @@ void CDlgFnKeys::OnTest()
 		}
 	}
 	// display pending error messages
-	pApp->DisplayErrorMessage();
+	pApp->DisplayMessages();
 }
 
 /***************************************************************************/

@@ -27,8 +27,8 @@
             dspError_t DoBackwardPass(short *pProcessBuffer, uint32 dwProcessLength /* in samples */);
             void GenTestSuite(void *pProcessBuffer, uint32 dwProcessLength, uint16 wSmpSize);               
           #endif               
-            short GetBlockMin() {return m_nBlockMin;}
-            short GetBlockMax() {return m_nBlockMax;}
+            short GetBlockMin() { return m_nBlockMin;}
+            short GetBlockMax() { return m_nBlockMax;}
             ~CHighPassFilter70();
  
           private:

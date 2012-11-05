@@ -2218,13 +2218,11 @@ BOOL CImport::Import(int nMode)
 	{
 	}
 
-	if(pPhonetic || pPhonemic || pOrtho || pGloss)
+	if (pPhonetic || pPhonemic || pOrtho || pGloss)
 	{
-		if(!bTable)
-		{
-			CDlgAnnotation Align(NULL, CDlgAnnotation::ALIGN, pDoc);
-
-			Align.AutoAlign(pPhonetic, pPhonemic, pOrtho, pGloss);
+		if(!bTable) {
+			CDlgAnnotation dlg(NULL, CDlgAnnotation::ALIGN, pDoc);
+			dlg.AutoAlign(pPhonetic, pPhonemic, pOrtho, pGloss);
 		}
 
 		CSaString Report;
@@ -2785,10 +2783,10 @@ void CDlgAnnotationImport::DoDataExchange(CDataExchange* pDX)
 	DDX_Check(pDX, IDC_GLOSS_ENABLED, m_bGloss);
 	DDX_Check(pDX, IDC_PHONEMIC_ENABLED, m_bPhonemic);
 	DDX_Check(pDX, IDC_PHONETIC_ENABLED, m_bPhonetic);
-	DDX_Text(pDX, IDC_PHONEMIC, m_szPhonemic);
-	DDX_Text(pDX, IDC_GLOSS, m_szGloss);
-	DDX_Text(pDX, IDC_PHONETIC, m_szPhonetic);
 	DDX_Check(pDX, IDC_ORTHO_ENABLED, m_bOrthographic);
+	DDX_Text(pDX, IDC_GLOSS, m_szGloss);
+	DDX_Text(pDX, IDC_PHONEMIC, m_szPhonemic);
+	DDX_Text(pDX, IDC_PHONETIC, m_szPhonetic);
 	DDX_Text(pDX, IDC_ORTHOGRAPHIC, m_szOrthographic);
 	//}}AFX_DATA_MAP
 }
@@ -2912,19 +2910,13 @@ END_MESSAGE_MAP()
 /***************************************************************************/
 // CDlgAnnotation::SetVisible Sets the visibility of dialog items
 /***************************************************************************/
-void CDlgAnnotation::SetVisible(int nItem, BOOL bVisible)
-{
+void CDlgAnnotation::SetVisible(int nItem, BOOL bVisible) {
 	CWnd* pWnd = GetDlgItem(nItem);
-
-	if (pWnd)
-	{
+	if (pWnd){
 		pWnd->EnableWindow(bVisible);// disable invisible items, enable on show
-		if (bVisible)
-		{
+		if (bVisible) {
 			pWnd->SetWindowPos(NULL, 0,0,0,0,SWP_NOMOVE+SWP_NOSIZE+SWP_NOZORDER+SWP_SHOWWINDOW);
-		}
-		else
-		{
+		} else {
 			pWnd->SetWindowPos(NULL, 0,0,0,0,SWP_NOMOVE+SWP_NOSIZE+SWP_NOZORDER+SWP_HIDEWINDOW);
 		}
 	}
@@ -2933,12 +2925,10 @@ void CDlgAnnotation::SetVisible(int nItem, BOOL bVisible)
 /***************************************************************************/
 // CDlgAnnotation::SetEnable Enables/Disables controls
 /***************************************************************************/
-void CDlgAnnotation::SetEnable(int nItem, BOOL bEnable)
-{
-	CWnd* pWnd = GetDlgItem(nItem);
+void CDlgAnnotation::SetEnable(int nItem, BOOL bEnable) {
 
-	if (pWnd)
-	{
+	CWnd* pWnd = GetDlgItem(nItem);
+	if (pWnd) {
 		pWnd->EnableWindow(bEnable);
 	}
 }
@@ -2946,12 +2936,10 @@ void CDlgAnnotation::SetEnable(int nItem, BOOL bEnable)
 /***************************************************************************/
 // CDlgAnnotation::SetText Sets control text to string
 /***************************************************************************/
-void CDlgAnnotation::SetText(int nItem, CSaString szText)
-{
-	CWnd* pWnd = GetDlgItem(nItem);
+void CDlgAnnotation::SetText(int nItem, CSaString szText) {
 
-	if (pWnd)
-	{
+	CWnd* pWnd = GetDlgItem(nItem);
+	if (pWnd) {
 		pWnd->SetWindowText(szText);
 	}
 }
@@ -2959,15 +2947,12 @@ void CDlgAnnotation::SetText(int nItem, CSaString szText)
 /***************************************************************************/
 // CDlgAnnotation::SetText Sets control text to string from IDS
 /***************************************************************************/
-void CDlgAnnotation::SetText(int nItem, UINT nIDS)
-{
+void CDlgAnnotation::SetText(int nItem, UINT nIDS) {
+
 	CWnd* pWnd = GetDlgItem(nItem);
 	CSaString szText;
-
 	szText.LoadString(nIDS);
-
-	if (pWnd)
-	{
+	if (pWnd) {
 		pWnd->SetWindowText(szText);
 	}
 }
@@ -3154,7 +3139,7 @@ void CDlgAnnotation::SetState(int nState)
 		SetVisible(IDC_PHONETIC,TRUE);
 		SetVisible(IDC_PHONEMIC,TRUE);
 		SetVisible(IDC_ORTHOGRAPHIC,TRUE);
-		//SetVisible(IDC_GLOSS,TRUE);//SDM 1.5 Test10.0
+		SetVisible(IDC_GLOSS,TRUE);	//SDM 1.5 Test10.0
 		SetVisible(IDC_DETAILS,TRUE);
 		SetText(IDC_TITLE, IDS_AWIZ_TITLE_INIT);
 		SetText(IDC_INSTRUCTION, IDS_AWIZ_INST_INIT);
@@ -4025,15 +4010,17 @@ void CDlgAnnotation::OK()
 			nAlignMode = CFontTable::DELIMITEDWORD;
 			nOffsetSize = pArray[WORD_OFFSETS].GetSize();
 			pSegment->SelectSegment(*m_pSaDoc,-1); // Don't Select this segment SDM 1.5Test8.2
-			for(nIndex = 0; nIndex < (nOffsetSize-1);nIndex++)
-			{
+			for(nIndex = 0; nIndex < (nOffsetSize-1);nIndex++) {
 				szNext = pTable->GetNext(nAlignMode, nStringIndex, m_szGloss);
 				if (szNext.GetLength()==0) szNext = WORD_DELIMITER; //SDM 1.5Test8.2
 				pSegment->SelectSegment(*m_pSaDoc,nIndex);
 				((CGlossSegment*)pSegment)->ReplaceSelectedSegment(m_pSaDoc,szNext);
 			};
 			szNext = pTable->GetRemainder(nAlignMode, nStringIndex, m_szGloss);
-			if (szNext.GetLength()==0) szNext = WORD_DELIMITER; //SDM 1.5Test8.2
+			if (szNext.GetLength()==0) {
+				//SDM 1.5Test8.2
+				szNext = WORD_DELIMITER; 
+			}
 			pSegment->SelectSegment(*m_pSaDoc,nIndex);
 			((CGlossSegment*)pSegment)->ReplaceSelectedSegment(m_pSaDoc,szNext);
 		}
@@ -4042,19 +4029,16 @@ void CDlgAnnotation::OK()
 	pView->ChangeAnnotationSelection(pSegment, -1);
 
 	CGraphWnd *pGraph = pView->GraphIDtoPtr(IDD_RAWDATA);
-
-	if(pGraph)
-	{
-		if(m_bPhonetic)
+	if (pGraph) {
+		if (m_bPhonetic)
 			pGraph->ShowAnnotation(PHONETIC, TRUE, TRUE);
-		if(m_bPhonemic)
+		if (m_bPhonemic)
 			pGraph->ShowAnnotation(PHONEMIC, TRUE, TRUE);
-		if(m_bOrthographic)
+		if (m_bOrthographic)
 			pGraph->ShowAnnotation(ORTHO, TRUE, TRUE);
-		if(m_bGloss)
+		if (m_bGloss)
 			pGraph->ShowAnnotation(GLOSS, TRUE, TRUE);
 	}
-
 
 	pView->RefreshGraphs(); // redraw all graphs without legend window
 
@@ -4065,8 +4049,7 @@ void CDlgAnnotation::OK()
 /***************************************************************************/
 // CDlgAnnotation::OnOK Execute changes
 /***************************************************************************/
-void CDlgAnnotation::OnOK()
-{
+void CDlgAnnotation::OnOK() {
 	OK();
 	CDialog::OnOK();
 }
@@ -4074,9 +4057,12 @@ void CDlgAnnotation::OnOK()
 /***************************************************************************/
 // CDlgAnnotation::AutoAlign Execute changes by request from batch file
 /***************************************************************************/
-void CDlgAnnotation::AutoAlign(const CSaString& Phonetic, const CSaString& Phonemic,
-									 const CSaString& Ortho, const CSaString& Gloss,
-									 CSaString& Alignment, CSaString& Segmentation)
+void CDlgAnnotation::AutoAlign(const CSaString& Phonetic, 
+							   const CSaString& Phonemic,
+							   const CSaString& Ortho, 
+							   const CSaString& Gloss,
+							   CSaString& Alignment, 
+							   CSaString& Segmentation)
 {
 	m_bPhonetic = (Phonetic.GetLength() != 0);
 	m_bPhonemic = (Phonemic.GetLength() != 0);
@@ -4112,7 +4098,7 @@ void CDlgAnnotation::AutoAlign(const CSaString& Phonetic, const CSaString& Phone
 // CDlgAnnotation::AutoAlign Execute changes by request from batch file
 /***************************************************************************/
 void CDlgAnnotation::AutoAlign(const CSaString* Phonetic, const CSaString* Phonemic,
-									 const CSaString* Ortho, const CSaString* Gloss)
+							   const CSaString* Ortho, const CSaString* Gloss)
 {
 	m_bPhonetic = (Phonetic != 0);
 	m_bPhonemic = (Phonemic != 0);

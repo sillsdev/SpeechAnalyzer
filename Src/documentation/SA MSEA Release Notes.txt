@@ -1,3 +1,18 @@
+SA - 3.0.1.14 - 11/04/2012
+1) Fix for bug preventing retention of last field in reference transcription bar.
+2) Added 'Gloss' checkbox to 'Transcription Alignment' dialog box.
+3) Added 'Ref' selection in dropdown box in 'Split File' dialog box.
+4) Enabled 'Browse' button for 'Folder Name' field in 'Split File' dialog box.
+5) Changed titles in 'Split File' dialog box.
+6) Added processing for 'Ref' selection in 'Split File' dialog box.
+7) The 'Gloss Transcription' bug seems to be resolved now with the fix in #1
+8) Fixed 'file save' bug in 'auto reference numbering' feature/dialog box.
+9) Modified 'auto reference numbering feature to overwrite existing data.
+10) Fixed size and position of static text field in 'Transcription Alignment' dialog box.
+11) Fixed capitalization errors in 'Transcription Alignment' dialog box.
+12) Removed use of 'wizard' from 'Transcription Alignment' dialog box.
+
+
 SA 3.0.1.13 - 10/30/2012
 -----------------------
 1) Added Automatic Reference Data numbering feature.  Dialog is located in Tools->Automatic Markup->Reference Data.

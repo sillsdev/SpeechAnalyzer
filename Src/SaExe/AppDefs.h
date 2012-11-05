@@ -235,8 +235,8 @@ enum CURSOR_ALIGNMENT
 #define MAX_FILTER_NUMBER               3           // number of filters in workbench processes
 // global structure defines
 typedef UINT MMRESULT;                  // MMIO function call results
-typedef struct FmtParm
-{
+
+typedef struct FmtParm {
   WORD        wTag;               // format tag
   WORD        wChannels;          // number of record channels
   DWORD       dwSamplesPerSec;    // sampling rate
@@ -244,8 +244,8 @@ typedef struct FmtParm
   WORD        wBlockAlign;        // block align
   WORD        wBitsPerSample;     // data width
 } FmtParm;                        // RIFF file header fmt parameters
-typedef struct SDPParm
-{
+
+typedef struct SDPParm {
   UINT         nPanes;            // number of mirror panes
   UINT         nUpperBound;       // upper display boundary
   int          nStepMode;         // steps mode
@@ -253,8 +253,7 @@ typedef struct SDPParm
   BOOL         bAverage;          // TRUE, if average used
 } SDPParm;                        // SDP parameters
 
-enum Annotations                        // annotation windows
-{
+enum Annotations {                       // annotation windows
     PHONETIC=0,
     TONE,
     PHONEMIC,
@@ -265,21 +264,21 @@ enum Annotations                        // annotation windows
     MUSIC_PL2,
     MUSIC_PL3,
     MUSIC_PL4,
-    ANNOT_WND_NUMBER                 // number of annotation windows
+    ANNOT_WND_NUMBER					// number of annotation windows
 };
-enum PositionReadout                    // status bar position readout mode
-{
+
+enum PositionReadout {                  // status bar position readout mode
     TIME,
     SAMPLES,
     BYTES,
 };
-enum PitchReadout                       // status bar pitch readout mode
-{
+
+enum PitchReadout {                      // status bar pitch readout mode
     HERTZ,
     HALFTONES,
 };
-enum GraphCaption                       // graph caption style
-{
+
+enum GraphCaption {                      // graph caption style
     NoneThin,
     None,
     Mini,
@@ -287,18 +286,22 @@ enum GraphCaption                       // graph caption style
     Normal,
 };
 
-enum OpenModeType
-{
+enum OpenModeType {
     DEFAULT,
     PHONANALYSIS,
     MUSIANALYSIS,
 };
 
-enum BOUNDARIES
-{
+enum BOUNDARIES {
     BOUNDARIES_EDIT_NULL = 0,
     BOUNDARIES_EDIT_OVERLAP = 1,
     BOUNDARIES_EDIT_NO_OVERLAP = 2
+};
+
+enum EFilenameConvention { 
+	FC_REF,
+	FC_GLOSS,
+	FC_REF_GLOSS
 };
 
 #include "grid.h"

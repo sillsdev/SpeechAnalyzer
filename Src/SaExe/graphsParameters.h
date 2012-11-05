@@ -141,9 +141,9 @@ protected:
 	afx_msg void OnKillfocusMedianFilter();
 	afx_msg void OnChange();
 	afx_msg void OnPitchManualDefaultFile();
-	//}}AFX_MSG
 	afx_msg void OnPitchManualDefaultApp(); 
 	afx_msg void OnPitchManualDefault(BOOL bAppDefaults);
+	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()
 };
 

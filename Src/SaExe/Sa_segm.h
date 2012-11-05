@@ -247,7 +247,8 @@ public:
 
 	virtual void LimitPosition(CSaDoc*,DWORD& dwStart,DWORD& dwStop, int /*nMode*/=LIMIT_MOVING_BOTH) const {dwStart=GetOffset(GetSelection());dwStop=GetStop(GetSelection());return;};
 	virtual BOOL Insert(int nIndex, const CSaString*, int nDelimiter, DWORD dwStart, DWORD dwDuration); // insert a new segment
-	int  CheckPositionToMaster(CSaDoc*,DWORD dwStart,DWORD dwStop, int nMode) const;
+	virtual BOOL SetText(int nIndex, const CSaString*, int nDelimiter, DWORD dwStart, DWORD dwDuration); // insert a new segment
+	int CheckPositionToMaster(CSaDoc*,DWORD dwStart,DWORD dwStop, int nMode) const;
 	virtual void Add(CSaDoc* pDoc, DWORD dwStart, CSaString& szString, BOOL bDelimiter = FALSE, BOOL bCheck = TRUE); // add a segment
 };
 

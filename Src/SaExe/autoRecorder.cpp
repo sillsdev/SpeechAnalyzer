@@ -559,7 +559,7 @@ void CDlgAutoRecorder::SetRecorderMode( eRecordMode eMode)
 
 	// display pending error messages
 	CSaApp* pApp = (CSaApp*)AfxGetApp(); // get pointer to application
-	pApp->DisplayErrorMessage();
+	pApp->DisplayMessages();
 }
 
 /***************************************************************************/

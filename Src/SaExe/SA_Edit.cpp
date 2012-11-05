@@ -189,7 +189,7 @@ void CDlgEditor::OnPlaybackSegment()
 
 	// display pending error messages
 	CSaApp* pApp = (CSaApp*)AfxGetApp(); // get pointer to application
-	pApp->DisplayErrorMessage();
+	pApp->DisplayMessages();
 }
 
 /***************************************************************************/
@@ -203,7 +203,7 @@ void CDlgEditor::OnPlaybackWord()
 
 	// display pending error messages
 	CSaApp* pApp = (CSaApp*)AfxGetApp(); // get pointer to application
-	pApp->DisplayErrorMessage();
+	pApp->DisplayMessages();
 }
 
 /***************************************************************************/

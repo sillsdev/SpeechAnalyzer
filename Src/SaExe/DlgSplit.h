@@ -1,5 +1,6 @@
 #pragma once
 #include "afxwin.h"
+#include "appdefs.h"
 
 // CDlgSplit dialog
 class CDlgSplit : public CDialog
@@ -16,16 +17,25 @@ public:
 
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
-	DECLARE_MESSAGE_MAP()
+
+private:
+	int m_iConvention;
 
 public:
-	int m_iConvention;
 	CString m_FolderLocation;
 	CString m_FolderName;
 	CString m_PhraseFolderName;
-	CString m_WordFolderName;
+	CString m_GlossFolderName;
 	BOOL m_ExportPhrase;
-	BOOL m_ExportWord;
-	afx_msg void OnBnClickedExportWord();
+	BOOL m_ExportGloss;
+
+	//{{AFX_MSG(CDlgParametersPitchPage)
+	afx_msg void OnBnClickedExportGloss();
 	afx_msg void OnBnClickedExportPhrase();
+	afx_msg void OnBnClickedBrowseFolder();
+	//}}AFX_MSG
+
+	enum EFilenameConvention GetFilenameConvention();
+
+	DECLARE_MESSAGE_MAP()
 };

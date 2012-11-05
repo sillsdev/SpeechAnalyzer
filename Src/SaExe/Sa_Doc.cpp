@@ -5800,8 +5800,8 @@ CString CSaDoc::FilterName( CString text)
 * 0 - gloss only
 * 1 - ref and gloss
 */
-CString CSaDoc::GenerateSplitName( CSaView* pView, int convention, int index)
-{
+CString CSaDoc::GenerateSplitName( CSaView* pView, EFilenameConvention convention, int index) {
+
 	wchar_t buffer[MAX_PATH];
 	memset(buffer,0,sizeof(buffer));
 
@@ -5811,77 +5811,99 @@ CString CSaDoc::GenerateSplitName( CSaView* pView, int convention, int index)
 	DWORD dwStart = 0;
 	CSegment * g = NULL;
 	// generate the filename based on the dialog selection
-	switch (convention) 
-	{
-	case 0: //gloss
-		g = pView->GetAnnotation(GLOSS);
-		dwStart = g->GetOffset(index);
-		gloss = g->GetSegmentString(index);
-		gloss = FilterName(gloss);
-		if (gloss.GetLength()!=0) 
+	switch (convention) {
+
+	case FC_GLOSS:  //gloss
 		{
-			swprintf_s(buffer,_countof(buffer),L"%s",(LPCTSTR)gloss);
-		}
-		else
-		{
-			CSaApp* pApp = (CSaApp*)AfxGetApp();
-			CString szNumber;
-			szNumber.Format(_T("%d"), index);
-			pApp->ErrorMessage(IDS_EMPTY_ANNOTATIONS,(LPCTSTR)szNumber);
+			g = pView->GetAnnotation(GLOSS);
+			dwStart = g->GetOffset(index);
+			gloss = g->GetSegmentString(index);
+			gloss = FilterName(gloss);
+			if (gloss.GetLength()!=0) {
+				swprintf_s(buffer,_countof(buffer),L"%s",(LPCTSTR)gloss);
+			} else {
+				CSaApp* pApp = (CSaApp*)AfxGetApp();
+				CString szNumber;
+				szNumber.Format(_T("%d"), index);
+				pApp->ErrorMessage(IDS_EMPTY_ANNOTATIONS,(LPCTSTR)szNumber);
+			}
 		}
 		break;
 
 	default:
-	case 1:	//ref+gloss
-		g = pView->GetAnnotation(GLOSS);
-		dwStart = g->GetOffset(index);
-		gloss = g->GetSegmentString(index);
-		// find the ref based on the gloss position, since GLOSS is the iterator
-		CSegment * r = pView->GetAnnotation(REFERENCE);
-		int rindex = -1;
-		for (int j=0;j<r->GetOffsetSize();j++) 
+	case FC_REF_GLOSS:	//ref+gloss
 		{
-			DWORD dwOffset = r->GetOffset(j);
-			if (dwStart==dwOffset) 
-			{
-				rindex = j;
-				break;
-			} 
-			else if (dwStart<dwOffset) 
-			{
-				// we passed it
-				rindex = j-1;
-				break;
+			g = pView->GetAnnotation(GLOSS);
+			dwStart = g->GetOffset(index);
+			gloss = g->GetSegmentString(index);
+			// find the ref based on the gloss position, since GLOSS is the iterator
+			CSegment * r = pView->GetAnnotation(REFERENCE);
+			int rindex = -1;
+			for (int j=0;j<r->GetOffsetSize();j++) {
+				DWORD dwOffset = r->GetOffset(j);
+				if (dwStart==dwOffset) {
+					rindex = j;
+					break;
+				} else if (dwStart<dwOffset) {
+					// we passed it
+					rindex = j-1;
+					break;
+				}
 			}
-		}
-		if (rindex!=-1) 
-		{
-			ref = pView->GetAnnotation(REFERENCE)->GetSegmentString(rindex);
-		}
+			if (rindex!=-1) {
+				ref = pView->GetAnnotation(REFERENCE)->GetSegmentString(rindex);
+			}
 
-		gloss = FilterName(gloss);
-		ref = FilterName(ref);
-		if (ref.GetLength()!=0)
-		{
-			if (gloss.GetLength()!=0)
-			{
-				swprintf_s(buffer,_countof(buffer),L"%s %s",(LPCTSTR)ref,(LPCTSTR)gloss);
+			gloss = FilterName(gloss);
+			ref = FilterName(ref);
+			if (ref.GetLength()!=0) {
+				if (gloss.GetLength()!=0) {
+					swprintf_s(buffer,_countof(buffer),L"%s %s",(LPCTSTR)ref,(LPCTSTR)gloss);
+				} else {
+					swprintf_s(buffer,_countof(buffer),L"%s",(LPCTSTR)ref);
+				}
+			} else if (gloss.GetLength()!=0) {
+				swprintf_s(buffer,_countof(buffer),L"%s",(LPCTSTR)gloss);
+			} else {
+				CSaApp* pApp = (CSaApp*)AfxGetApp();
+				CString szNumber;
+				szNumber.Format(_T("%d"), index);
+				pApp->ErrorMessage(IDS_EMPTY_ANNOTATIONS,(LPCTSTR)szNumber);
 			}
-			else
-			{
+		}
+		break;
+
+	case FC_REF:	//ref
+		{
+			g = pView->GetAnnotation(GLOSS);
+			dwStart = g->GetOffset(index);
+			// find the ref based on the gloss position, since GLOSS is the iterator
+			CSegment * r = pView->GetAnnotation(REFERENCE);
+			int rindex = -1;
+			for (int j=0;j<r->GetOffsetSize();j++) {
+				DWORD dwOffset = r->GetOffset(j);
+				if (dwStart==dwOffset) {
+					rindex = j;
+					break;
+				} else if (dwStart<dwOffset) {
+					// we passed it
+					rindex = j-1;
+					break;
+				}
+			}
+			if (rindex!=-1) {
+				ref = pView->GetAnnotation(REFERENCE)->GetSegmentString(rindex);
+			}
+
+			ref = FilterName(ref);
+			if (ref.GetLength()!=0) {
 				swprintf_s(buffer,_countof(buffer),L"%s",(LPCTSTR)ref);
+			} else {
+				CSaApp* pApp = (CSaApp*)AfxGetApp();
+				CString szNumber;
+				szNumber.Format(_T("%d"), index);
+				pApp->ErrorMessage(IDS_EMPTY_ANNOTATIONS,(LPCTSTR)szNumber);
 			}
-		}
-		else if (gloss.GetLength()!=0) 
-		{
-			swprintf_s(buffer,_countof(buffer),L"%s",(LPCTSTR)gloss);
-		}
-		else
-		{
-			CSaApp* pApp = (CSaApp*)AfxGetApp();
-			CString szNumber;
-			szNumber.Format(_T("%d"), index);
-			pApp->ErrorMessage(IDS_EMPTY_ANNOTATIONS,(LPCTSTR)szNumber);
 		}
 		break;
 	}
@@ -5976,33 +5998,34 @@ bool CSaDoc::CreateFolder( CString folder)
 /**
 * export words for the given file
 */
-bool CSaDoc::ExportWord( int & count, int convention, CString path)
+bool CSaDoc::ExportWord( int & count, Annotations type, EFilenameConvention convention, CString path)
 {
 	CSaApp* pApp = (CSaApp*)AfxGetApp();
 	POSITION pos = GetFirstViewPosition();
 	CSaView* pView = (CSaView*)GetNextView(pos);
 
 	// key off of gloss for now
-	int nLoop = pView->GetAnnotation(GLOSS)->GetOffsetSize();
-	if (nLoop==0) 
-	{
-		pApp->ErrorMessage(IDS_SPLIT_NO_ANNOTATION);
+	int nLoop = pView->GetAnnotation(type)->GetOffsetSize();
+	if (nLoop==0) {
+		if (type==REFERENCE) {
+			pApp->ErrorMessage(IDS_SPLIT_NO_ANNOTATION2);
+		} else {
+			pApp->ErrorMessage(IDS_SPLIT_NO_ANNOTATION);
+		}
 		return false;
 	}
 
 	// loop for each annotation
-	for (int i=0;i<nLoop;i++) 
-	{
+	for (int i=0;i<nLoop;i++) {
 		BOOL bSuccess = FALSE;
 
-		CSegment * g = pView->GetAnnotation(GLOSS);
+		CSegment * g = pView->GetAnnotation(type);
 		DWORD dwStart = g->GetOffset(i);
 		DWORD dwStop = dwStart + g->GetDuration(i);
 
 		// can we piece the name together?
 		CString name = GenerateSplitName( pView, convention, i);
-		if (name.GetLength()==0)  
-		{
+		if (name.GetLength()==0) {
 			continue;
 		}
 
@@ -6010,15 +6033,11 @@ bool CSaDoc::ExportWord( int & count, int convention, CString path)
 		wchar_t buffer[MAX_PATH];
 		swprintf_s( buffer, _countof(buffer), L"%s\\%s.wav",path,(LPCTSTR)name);
 		bSuccess = CopySectionToNewWavFile(dwStart,dwStop-dwStart,buffer);
-		if (!bSuccess) 
-		{
+		if (!bSuccess) {
 			// be sure to delete the file
-			try 
-			{
+			try {
 				CFile::Remove(buffer);
-			} 
-			catch (...) 
-			{
+			} catch (...) {
 				TRACE0("Warning: failed to delete file after failed SaveAs\n");
 			}
 			return false;
@@ -6030,12 +6049,9 @@ bool CSaDoc::ExportWord( int & count, int convention, CString path)
 		swprintf_s( oldsaxml, _countof(oldsaxml), L"%s\\%s.saxml.tmp",path,name);
 		swprintf_s( newsaxml, _countof(newsaxml), L"%s\\%s.saxml",path,name);
 		bSuccess = CopyFile(oldsaxml,newsaxml);
-		if (!bSuccess) 
-		{
+		if (!bSuccess) {
 			pApp->ErrorMessage(IDS_SPLIT_BAD_COPY,buffer);
-		} 
-		else 
-		{
+		} else {
 			count++;
 		}
 	}
@@ -6115,8 +6131,8 @@ bool CSaDoc::ExportPhrase( Annotations type, int & count, CString path)
 // CSaDoc::OnFileSplit
 // Splits a file based on user defined keys such as reference or gloss
 /***************************************************************************/
-void CSaDoc::OnFileSplit()
-{
+void CSaDoc::OnFileSplit() {
+
 	CString fileName = GetPathName();
 	wchar_t buffer[MAX_PATH];
 	swprintf_s(buffer,_countof(buffer),fileName);
@@ -6127,31 +6143,32 @@ void CSaDoc::OnFileSplit()
 	_wsplitpath_s( buffer, drive, dir, fname, ext );
 	
 	CDlgSplit dlg;
+
 	dlg.m_FolderLocation.Format(L"%s%s",drive,dir);
 	dlg.m_FolderName.Format(L"Split-%s",fname);
 	dlg.m_FolderName = FilterName(dlg.m_FolderName);
 	dlg.m_PhraseFolderName.Format(L"Split-%s-Phrase",fname);
 	dlg.m_PhraseFolderName = FilterName(dlg.m_PhraseFolderName);
-	dlg.m_WordFolderName.Format(L"Split-%s-Word",fname);
-	dlg.m_WordFolderName = FilterName(dlg.m_WordFolderName);
+	dlg.m_GlossFolderName.Format(L"Split-%s-Gloss",fname);
+	dlg.m_GlossFolderName = FilterName(dlg.m_GlossFolderName);
 
-	if (dlg.DoModal()!=IDOK) 
-	{
+	if (dlg.DoModal()!=IDOK) {
 		return;
 	}
 
 	CSaApp* pApp = (CSaApp*)AfxGetApp();
 
 	CString newPath;
-	CString wordPath;
+	CString glossPath;
 	CString phrasePath;
+
 	newPath.Format(L"%s%s",dlg.m_FolderLocation,dlg.m_FolderName);
-	wordPath.Format(L"%s%s\\%s",dlg.m_FolderLocation,dlg.m_FolderName,dlg.m_WordFolderName);
+	glossPath.Format(L"%s%s\\%s",dlg.m_FolderLocation,dlg.m_FolderName,dlg.m_GlossFolderName);
 	phrasePath.Format(L"%s%s\\%s",dlg.m_FolderLocation,dlg.m_FolderName,dlg.m_PhraseFolderName);
 
 	if ((!CreateFolder(newPath))||
 		(!CreateFolder(phrasePath))||
-		(!CreateFolder(wordPath)))
+		(!CreateFolder(glossPath)))
 	{
 		pApp->ErrorMessage(IDS_SPLIT_BAD_DIRECTORY);
 		return;
@@ -6160,33 +6177,35 @@ void CSaDoc::OnFileSplit()
 	POSITION pos = GetFirstViewPosition();
 	CSaView* pView = (CSaView*)GetNextView(pos);
 	// we need a focused graph!
-	if (pView->GetFocusedGraphWnd()==NULL) 
-	{
+	if (pView->GetFocusedGraphWnd()==NULL) {
 		pApp->ErrorMessage(IDS_SPLIT_NO_SELECTION);
 		return;
 	}
 
 	int count=0;
 	BeginWaitCursor();
-	if (ExportWord(count,dlg.m_iConvention,wordPath))
-	{
+
+	bool usingRef = (dlg.GetFilenameConvention()==FC_REF);
+	CString path = (usingRef)?newPath:glossPath;
+	if (ExportWord(count,(usingRef)?REFERENCE:GLOSS,dlg.GetFilenameConvention(),path)) {
 		// shall we export the phrase data?
 		if (dlg.m_ExportPhrase) {
-			if (ExportPhrase(MUSIC_PL1,count,phrasePath))
-			{
-				if (ExportPhrase(MUSIC_PL2,count,phrasePath))
-				{
+			if (ExportPhrase(MUSIC_PL1,count,phrasePath)) {
+				if (ExportPhrase(MUSIC_PL2,count,phrasePath)) {
 				}
 			}
 		}
 	}
 	EndWaitCursor();
 
-	CString szText;
-	wchar_t szNumber[128];
-	swprintf_s(szNumber,_countof(szNumber),L"%d",count);
-	AfxFormatString1(szText, IDS_SPLIT_COMPLETE, szNumber);
-	AfxMessageBox(szText,MB_OK|MB_ICONINFORMATION,0);
+	if (count==0) {
+		pApp->ErrorMessage(IDS_SPLIT_INCOMPLETE);
+	} else {
+		CString szText;
+		wchar_t szNumber[128];
+		swprintf_s(szNumber,_countof(szNumber),L"%d",count);
+		pApp->Message(IDS_SPLIT_COMPLETE,szNumber);
+	}
 }
 
 /***************************************************************************/
@@ -7108,31 +7127,28 @@ void CSaDoc::OnAutoReferenceData()
 		DWORD offset = pGloss->GetOffset(i);
 		DWORD duration = pGloss->GetDuration(i);
 
-		bool populated = false;
-		for (int j=0;j<pReference->GetOffsetSize();j++) {
-			DWORD offset2 = pReference->GetOffset(j);
-			if (offset2==offset) {
-				populated = true;
-				break;
-			}
-		}
-
-		if (!populated) {
-			CSaString text;
-			text.Format(L"%d",val);
+		CSaString text;
+		text.Format(L"%d",val);
+		DWORD roffset = pReference->GetOffset(i);
+		if (roffset==0) {
 			pReference->Insert(i,&text,0,offset,duration);
+		} else {
+			pReference->SetText(i,&text,0,offset,duration);
 		}
-
+	
 		if (val==dlg.mAutoReferenceDataEnd) {
 			break;
 		}
 		val++;
 	}
 
+	SetModifiedFlag(TRUE); // data has been modified
+
 	// refresh the tables
 	POSITION pos = GetFirstViewPosition();
 	CSaView *pView = ((CSaView*)GetNextView(pos));
 	pView->RefreshGraphs();
+
 }
 
 void CSaDoc::OnUpdateAutoReferenceData(CCmdUI* pCmdUI)

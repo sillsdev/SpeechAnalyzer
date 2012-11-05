@@ -279,11 +279,11 @@ private:
 	void				WriteGlossPosAndRefSegments(ISaAudioDocumentWriterPtr saAudioDocWriter);
 	void				WriteScoreData(ISaAudioDocumentWriterPtr saAudioDocWriter);
 	
-	CString				GenerateSplitName( CSaView* pView, int convention, int index);
+	CString				GenerateSplitName( CSaView* pView, EFilenameConvention convention, int index);
 	CString				GeneratePhraseSplitName( CSaView* pView, Annotations type, int index);
 	CString				FilterName( CString text);
 	bool				CreateFolder( CString folder);
-	bool				ExportWord( int & count, int convention, CString path);
+	bool				ExportWord( int & count, Annotations type, EFilenameConvention convention, CString path);
 	bool				ExportPhrase(Annotations type, int & count, CString path);
 
 public:

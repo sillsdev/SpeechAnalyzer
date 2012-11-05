@@ -456,20 +456,19 @@ int CSegment::GetNext(int nIndex) const
 // string) which offset matches the parameter. 
 // If there is no match, the function returns -1.
 /***************************************************************************/
-int CSegment::FindOffset(DWORD dwOffset) const
-{
+int CSegment::FindOffset(DWORD dwOffset) const {
+	
 	int size = m_pOffset->GetSize();
-	if (size==0)
-	{
+	if (size==0) {
 		return -1;
 	}
 
 	DWORD *pFirst = &((*m_pOffset)[0]);
-	DWORD *pLast = pFirst + (size-1);
+	// pLast should be set to the last position + 1
+	DWORD *pLast = pFirst + size;
 	DWORD *pLowerBound = std::lower_bound( pFirst, pLast, dwOffset);
 
-	if ((pLowerBound != pLast) && (*pLowerBound == dwOffset))
-	{
+	if ((pLowerBound != pLast) && (*pLowerBound == dwOffset)) {
 		return pLowerBound - pFirst;
 	}
 
@@ -483,12 +482,12 @@ int CSegment::FindOffset(DWORD dwOffset) const
 // string) whichs offset matches the parameter. If there is no match, the
 // function returns -1.
 /***************************************************************************/
-int CSegment::FindStop(DWORD dwStop) const
-{
+int CSegment::FindStop(DWORD dwStop) const {
 	int nLoop = GetOffsetSize() - 1;
 
-	if (nLoop < 0)
+	if (nLoop < 0) {
 		return -1;
+	}
 
 	// Use std::lower_bound which has O(log(N)) for performance reasons
 	// Needed fo large annotated files
@@ -499,16 +498,12 @@ int CSegment::FindStop(DWORD dwStop) const
 	if (pLowerBound != pLast)
 		nLoop = pLowerBound - pFirst;
 
-	for (; nLoop >= 0; --nLoop)
-	{
-		if (GetStop(nLoop) < dwStop)
-		{
+	for (; nLoop >= 0; --nLoop) {
+		if (GetStop(nLoop) < dwStop) {
 			return -1; // no match
 		}
-		if (GetStop(nLoop) == dwStop)
-		{
-			while (nLoop && GetStop(nLoop -1) == dwStop)
-			{
+		if (GetStop(nLoop) == dwStop) {
+			while (nLoop && GetStop(nLoop -1) == dwStop) {
 				--nLoop;
 			}
 			return nLoop; // match
@@ -531,25 +526,24 @@ int CSegment::FindStop(DWORD dwStop) const
 * If it is TRUE, the index is only returned, if the position is really 
 * within a segment, else it returns -1.
 ***************************************************************************/
-int CSegment::FindFromPosition(DWORD dwPosition, BOOL bWithin) const
-{
-	if (GetOffsetSize() == 0) 
-	{
+int CSegment::FindFromPosition(DWORD dwPosition, BOOL bWithin) const {
+	
+	if (GetOffsetSize() == 0) {
 		return -1; // no segment
 	}
 
 	// check if position above highest segment
 	DWORD dwTempPos = dwPosition;
-	if (GetStop(GetOffsetSize() - 1) <= dwPosition) 
-	{
+	if (GetStop(GetOffsetSize() - 1) <= dwPosition) {
 		dwTempPos = GetStop(GetOffsetSize() - 1) - 1;
 	}
 
 	// look for the right segment, starting with prelast character
 	int nLoop = GetOffsetSize() - 1;
 
-	if (nLoop < 0)
+	if (nLoop < 0) {
 		return -1;
+	}
 
 	// Use std::lower_bound which has O(log(N)) for performance reasons
 	// Needed for large annotated files
@@ -557,19 +551,21 @@ int CSegment::FindFromPosition(DWORD dwPosition, BOOL bWithin) const
 	DWORD *pLast = pFirst + (GetOffsetSize()-1);
 	DWORD *pLowerBound = std::lower_bound(pFirst, pLast, dwPosition);
 
-	if (pLowerBound != pLast)
+	if (pLowerBound != pLast) {
 		nLoop = pLowerBound - pFirst;
+	}
 
-	for (; nLoop >= 0; nLoop = GetPrevious(nLoop))
-	{
+	for (; nLoop >= 0; nLoop = GetPrevious(nLoop)) {
 		if (GetStop(nLoop) <= dwTempPos) break; // this is it
 	}
-	if(nLoop >=0)
+	
+	if (nLoop >=0) {
 		nLoop = GetNext(nLoop);  // selected character is one position higher
-	else
+	} else {
 		nLoop = 0;
-	if (bWithin)
-	{
+	}
+
+	if (bWithin) {
 		if (!(dwPosition >= GetOffset(nLoop)) || (!(dwPosition <= GetStop(nLoop)))) {
 			return -1;
 		}
@@ -1218,12 +1214,12 @@ void CDependentSegment::Add( CSaDoc* pDoc, DWORD dwStart, CSaString& szString, B
 
 	// get the offset and duration from master
 	int nSegment = pDoc->GetSegment(m_nMasterIndex)->FindOffset(dwStart);
-	if(nSegment == -1) return; // return on error
+	if (nSegment == -1) return; // return on error
 
 	DWORD dwDuration = pDoc->GetSegment(m_nMasterIndex)->GetDuration(nSegment);
 
 	int nPos = CheckPosition(pDoc, dwStart, dwStart + dwDuration, MODE_ADD); // get the insert position
-	if(nPos == -1) return; // return on error
+	if (nPos == -1) return; // return on error
 
 	// save state for undo ability
 	if(bCheck) pDoc->CheckPoint();
@@ -1259,7 +1255,11 @@ CTextSegment::CTextSegment(int index, int master) : CDependentSegment(index,mast
 /***************************************************************************/
 CTextSegment::~CTextSegment()
 {
-	if (m_pTexts) delete m_pTexts;
+	if (m_pTexts) 
+	{
+		delete m_pTexts;
+		m_pTexts = NULL;
+	}
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -1696,20 +1696,42 @@ void CTextSegment::Serialize(CArchive& ar)
 // there will be no string added.
 /***************************************************************************/
 BOOL CDependentTextSegment::Insert( int nIndex, 
-								   const CSaString* pszString, 
-								   int ,
-								   DWORD dwStart, 
-								   DWORD dwDuration) {
-	try
-	{
-		if ((pszString) && (pszString->GetLength()))
-		{
+								    const CSaString* pszString, 
+								    int ,
+								    DWORD dwStart, 
+								    DWORD dwDuration) {
+	try {
+		if ((pszString) && (pszString->GetLength())) {
 			m_pTexts->InsertAt(nIndex, *pszString, 1);
 			InsertAt(nIndex,dwStart,dwDuration);
 		}
+	} catch(CMemoryException e) {
+		// memory allocation error
+		ErrorMessage(IDS_ERROR_MEMALLOC);
+		return FALSE;
 	}
-	catch(CMemoryException e)
-	{
+	return TRUE;
+}
+
+//SDM 1.5Test8.1
+/////////////////////////////////////////////////////////////////////////////
+// CDependentTextSegment helper functions
+
+/***************************************************************************/
+// CDependentTextSegment::Insert Insert/append a text segment
+// Returns FALSE if an error occured. If the pointer to the string is NULL
+// there will be no string added.
+/***************************************************************************/
+BOOL CDependentTextSegment::SetText( int nIndex, 
+								     const CSaString* pszString, 
+								     int ,
+								     DWORD dwStart, 
+								     DWORD dwDuration) {
+	try {
+		if ((pszString) && (pszString->GetLength())) {
+			m_pTexts->SetAt(nIndex, *pszString);
+		}
+	} catch(CMemoryException e) {
 		// memory allocation error
 		ErrorMessage(IDS_ERROR_MEMALLOC);
 		return FALSE;

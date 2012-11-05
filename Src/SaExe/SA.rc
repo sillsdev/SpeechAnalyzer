@@ -46,7 +46,7 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "SIL International"
             VALUE "FileDescription", "SA"
-            VALUE "FileVersion", "v3.0.1.13"
+            VALUE "FileVersion", "v3.0.1.14"
             VALUE "InternalName", "SA"
             VALUE "LegalCopyright", "© 1996-2012 SIL International (MSEA)"
             VALUE "ProductName", "SA"
@@ -1461,13 +1461,13 @@ BEGIN
     LTEXT           "",IDC_CHART_T1201,151,43,198,16,NOT WS_VISIBLE | WS_DISABLED | NOT WS_GROUP
 END
 
-IDD_ANNOTATIONWIZARD DIALOG  0, 0, 255, 186
+IDD_ANNOTATIONWIZARD DIALOGEX 0, 0, 255, 186
 STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
 CAPTION "Annotation Wizard"
-FONT 8, "MS Sans Serif"
+FONT 8, "MS Sans Serif", 0, 0, 0x0
 BEGIN
-    LTEXT           "Select Annotations To Modify",IDC_TITLE,18,7,230,10
-    LTEXT           "",IDC_INSTRUCTION,17,18,225,33
+    LTEXT           "Select Annotations To Modify",IDC_TITLE,6,7,243,10
+    LTEXT           "",IDC_INSTRUCTION,6,19,243,47
     PUSHBUTTON      "&Revert",IDC_REVERT,165,73,60,14,NOT WS_VISIBLE | WS_DISABLED
     GROUPBOX        "Modify",IDC_GROUP,17,95,60,54
     LTEXT           "",IDC_DETAILS,82,100,165,50
@@ -2069,12 +2069,13 @@ BEGIN
     LTEXT           "Filename Convention",IDC_STATIC,7,144,247,8
     LTEXT           "Folder Name",IDC_STATIC,7,43,247,8
     LTEXT           "Folder Location",IDC_STATIC,7,11,247,8
-    EDITTEXT        IDC_SPLIT_FOLDER_LOCATION,7,22,247,14,ES_AUTOHSCROLL | WS_DISABLED
-    EDITTEXT        IDC_SPLIT_FOLDER_NAME,7,54,247,14,ES_AUTOHSCROLL | WS_DISABLED
+    EDITTEXT        IDC_SPLIT_FOLDER_LOCATION,7,22,195,14,ES_AUTOHSCROLL | WS_DISABLED
+    EDITTEXT        IDC_SPLIT_FOLDER_NAME,7,54,247,14,ES_AUTOHSCROLL
     EDITTEXT        IDC_SPLIT_PHRASE_SUBFOLDER_NAME,7,88,247,14,ES_AUTOHSCROLL | WS_DISABLED
     EDITTEXT        IDC_SPLIT_WORD_SUBFOLDER_NAME,7,123,247,14,ES_AUTOHSCROLL | WS_DISABLED
     CONTROL         "Phrase Sub-Folder name",IDC_EXPORT_PHRASE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,75,247,10
-    CONTROL         "Word Sub-Folder name",IDC_EXPORT_WORD,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,109,247,10
+    CONTROL         "Gloss Sub-Folder name",IDC_EXPORT_WORD,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,109,247,10
+    PUSHBUTTON      "Browse...",IDC_BROWSE_FOLDER,205,22,50,14
 END
 
 IDD_MULTICHANNEL DIALOGEX 0, 0, 309, 79
@@ -2095,7 +2096,7 @@ CAPTION "Reference Data"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
     GROUPBOX        "",IDC_STATIC,6,3,195,64
-    LTEXT           "Auto number the current Reference fields beginning at 1\nin steps of 1 until the end of the file.\nOr select a Custom Range below.\n\nExisting Reference Data will not be overwritten.\nNumbering starts at the first field.",IDC_STATIC,12,12,184,49
+    LTEXT           "Auto number the current Reference fields beginning at 1\nin steps of 1 until the end of the file.\nOr select a Custom Range below.\n\nNumbering starts at the first field.",IDC_STATIC,12,12,184,49
     LTEXT           "Customize",IDC_STATIC,11,71,75,8
     LTEXT           "Range",IDC_STATIC,151,71,22,8
     LTEXT           "Begin Numbering at:",IDC_STATIC,11,90,75,8
@@ -3901,6 +3902,8 @@ END
 
 IDD_SPLIT DLGINIT
 BEGIN
+    IDC_SPLIT_CONVENTION, 0x403, 4, 0
+0x6552, 0x0066, 
     IDC_SPLIT_CONVENTION, 0x403, 6, 0
 0x6c47, 0x736f, 0x0073, 
     IDC_SPLIT_CONVENTION, 0x403, 12, 0
@@ -3930,7 +3933,7 @@ STRINGTABLE
 BEGIN
     IDR_MAINFRAME           "Speech Analyzer"
     IDR_SA_ANNTYPE          "\nSA\nSA Document\nWAV Files (*.wav)\n.wav\nannFileType\nANN File Type"
-    VS_VERSION              "Version 3.0.1.13"
+    VS_VERSION              "Version 3.0.1.14"
     VS_COPYRIGHT            "© 1996-2012 SIL International (MSEA).\nAll Rights Reserved."
     IDR_SA_WBTYPE           "\nWB\nSA Workbench\nWB Files (*.wb)\n.wb\nwbFileType\nWB File Type"
 END
@@ -4643,7 +4646,7 @@ BEGIN
     IDS_AWIZ_TITLE_SEGMENTBY "Select Segmentation Method"
     IDS_AWIZ_TITLE_ALIGNBY  "Choose the Transcription Alignment"
     IDS_AWIZ_TITLE_FINISH   "Complete Task"
-    IDS_AWIZ_INST_INIT      "The transcription wizard aids the process of importing transcription and aligning the transcriptions to the utterance.\n\nPlease select the transcriptions to be modified."
+    IDS_AWIZ_INST_INIT      "The Transcription Alignment tool aids the process of importing transcription and aligning them to the utterance.\n\nPlease select the transcriptions to be modified."
     IDS_AWIZ_INST_PHONETIC  "Make any necessary changes to the phonetic transcription.\n\nThe import button will import a transcription from either a plain text or SFM-formatted file.  The revert button will reload the current transcription."
     IDS_AWIZ_INST_PHONEMIC  "Make any necessary changes to the phonemic transcription.\n\nThe import buttons will import a transcription from either a plain text or SFM-formatted file.  The revert button will reload the current transcription."
     IDS_AWIZ_INST_ORTHOGRAPHIC 
@@ -4661,7 +4664,7 @@ BEGIN
     IDS_AWIZ_DTL_KEEP       "Keep segmentation will leave existing segments intact, replacing the transcription."
     IDS_AWIZ_DTL_AUTOMATIC  "Automatic segmentation will use the automatic segmentation tool to segment the transcription."
     IDS_AWIZ_DTL_MANUAL     "Equal Space segmentation will break each word into equally spaced segments. "
-    IDS_AWIZ_INST_FINISH    "Please select finish to perform automatic import and alignment.\n\nNOTE: The result can be undone using the undo command in the edit menu."
+    IDS_AWIZ_INST_FINISH    "Please select Finish to perform automatic import and alignment.\n\nNOTE: The result can be undone using the Undo command in the edit menu."
     IDS_AWIZ_DTL_INIT       "The transcriptions are synchronized using the spaces as embedded word delimiters. "
     IDS_AWIZ_PH_MARKER      "ph"
     IDS_AWIZ_PM_MARKER      "pm"
@@ -4872,7 +4875,7 @@ BEGIN
                             "Open the Instructor Guide for the training materials."
     ID_HELP_TRAINING_EXERCISES "Open the student exercises"
     IDS_SPLIT_NO_SELECTION  "Please select a graph to split!"
-    IDS_SPLIT_NO_ANNOTATION "Please select a graph with a Gloss Annontation"
+    IDS_SPLIT_NO_ANNOTATION "Please select a graph with a Gloss Annontation."
     IDS_SPLIT_BAD_DIRECTORY "Invalid destination.  Please select directory for storing the split output files."
 END
 
@@ -4899,7 +4902,10 @@ BEGIN
     IDS_SPLIT_COMPLETE      "The split is complete.  %1 segments were created."
     IDS_CONFIRM_PHONEMIC_COPY 
                             "This process will delete the existing phonemic data.\nDo you want to continue?"
+    IDS_SPLIT_INCOMPLETE    "The split was not completed.  No segments were found."
     ID_AUTOMATICMARKUP_REFERENCEDATA "Renumber the Reference Data"
+    IDS_SPLIT_NO_ANNOTATION2 
+                            "Please select a graph with a Reference Annontation."
 END
 
 STRINGTABLE 
