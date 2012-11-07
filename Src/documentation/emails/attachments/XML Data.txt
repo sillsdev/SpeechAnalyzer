@@ -1,0 +1,65 @@
+﻿CURRENT OUTPUT
+--------------
+
+<?xml version="1.0"?>
+
+<!DOCTYPE SAData>
+-<SAdoc> 
+	-<FileInfo> <AudioFile>C:\Program Files (x86)\SIL\Chfrench.wav</AudioFile> </FileInfo> 
+	-<LinguisticInfo> 
+		<PhoneticText>mɛʁsi buku ʌ tu lez æmi ki sɒ̃t isioʒoʁdyi</PhoneticText> 
+		<PhonemicText>mɛʁsi boku a tu lez ami ki sɒ̃t isioʒuʁdɥ</PhonemicText> 
+		<Orthographic>merci beaucoup à tous les amis qui sont iciaujourd'hu</Orthographic> 
+		<Gloss>thanks many to all the frends who are here</Gloss> 
+		<Reference>1 2 3 4 5 6 7 8 </Reference> 
+	</LinguisticInfo> 
+	<DataInfo> </DataInfo> 
+	<SourceInfo> </SourceInfo> 
+	<Data> </Data> 
+</SAdoc>
+
+=================================
+
+NEW MULTI-RECORD OUTPUT
+-----------------------
+
+<?xml version="1.0"?>
+
+<!DOCTYPE SAData>-<SAdoc> 
+	-<FileInfo> <AudioFile>C:\Program Files (x86)\SIL\Chfrench.wav</AudioFile> </FileInfo> 
+	-<LinguisticInfo> 
+		<PhoneticText>mɛʁsi</PhoneticText> 
+		<PhonemicText>mɛʁsi</PhonemicText> 
+		<Orthographic>merci</Orthographic> 
+		<Gloss>thanks many</Gloss> 
+		<Reference>1</Reference> 
+
+		<PhoneticText>buku</PhoneticText> 
+		<PhonemicText>boku</PhonemicText> 
+		<Orthographic>beaucoup</Orthographic> 
+		<Gloss> many</Gloss> 
+		<Reference>2</Reference>
+
+ 		<PhoneticText>ʌ</PhoneticText> 
+		<PhonemicText>a</PhonemicText> 
+		<Orthographic>àu</Orthographic> 
+		<Gloss>to</Gloss> 
+		<Reference>3</Reference>
+
+ 		<PhoneticText>tu</PhoneticText> 
+		<PhonemicText>tu</PhonemicText> 
+		<Orthographic>tous</Orthographic> 
+		<Gloss>all</Gloss> 
+		<Reference>4</Reference>
+
+ 		<PhoneticText>lez</PhoneticText> 
+		<PhonemicText>lezɥ</PhonemicText> 
+		<Orthographic>les</Orthographic> 
+		<Gloss>the frends</Gloss> 
+		<Reference>5</Reference>
+ 
+	</LinguisticInfo> 
+	<DataInfo> </DataInfo> 
+	<SourceInfo> </SourceInfo> 
+	<Data> </Data> 
+</SAdoc>
