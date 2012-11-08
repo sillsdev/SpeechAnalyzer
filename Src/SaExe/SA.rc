@@ -46,7 +46,7 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "SIL International"
             VALUE "FileDescription", "SA"
-            VALUE "FileVersion", "v3.0.1.14"
+            VALUE "FileVersion", "v3.0.1.15"
             VALUE "InternalName", "SA"
             VALUE "LegalCopyright", "© 1996-2012 SIL International (MSEA)"
             VALUE "ProductName", "SA"
@@ -3933,7 +3933,7 @@ STRINGTABLE
 BEGIN
     IDR_MAINFRAME           "Speech Analyzer"
     IDR_SA_ANNTYPE          "\nSA\nSA Document\nWAV Files (*.wav)\n.wav\nannFileType\nANN File Type"
-    VS_VERSION              "Version 3.0.1.14"
+    VS_VERSION              "Version 3.0.1.15"
     VS_COPYRIGHT            "© 1996-2012 SIL International (MSEA).\nAll Rights Reserved."
     IDR_SA_WBTYPE           "\nWB\nSA Workbench\nWB Files (*.wb)\n.wb\nwbFileType\nWB File Type"
 END
@@ -4648,9 +4648,9 @@ BEGIN
     IDS_AWIZ_TITLE_FINISH   "Complete Task"
     IDS_AWIZ_INST_INIT      "The Transcription Alignment tool aids the process of importing transcription and aligning them to the utterance.\n\nPlease select the transcriptions to be modified."
     IDS_AWIZ_INST_PHONETIC  "Make any necessary changes to the phonetic transcription.\n\nThe import button will import a transcription from either a plain text or SFM-formatted file.  The revert button will reload the current transcription."
-    IDS_AWIZ_INST_PHONEMIC  "Make any necessary changes to the phonemic transcription.\n\nThe import buttons will import a transcription from either a plain text or SFM-formatted file.  The revert button will reload the current transcription."
+    IDS_AWIZ_INST_PHONEMIC  "Make any necessary changes to the phonemic transcription.\n\nThe import button will import a transcription from either a plain text or SFM-formatted file.  The revert button will reload the current transcription."
     IDS_AWIZ_INST_ORTHOGRAPHIC 
-                            "Make any necessary changes to the orthographic transcription.\n\nThe import button will import an transcription from either a plain text or SFM-formatted file.  The revert button will reload the current transcription."
+                            "Make any necessary changes to the orthographic transcription.\n\nThe import button will import a transcription from either a plain text or SFM-formatted file.  The revert button will reload the current transcription."
     IDS_AWIZ_INST_GLOSS     "Make any necessary changes to the gloss.\n\nThe import button will import an transcription from either a plain text or SFM-formatted file.  The revert button will reload the current transcription."
     IDS_AWIZ_INST_ALIGNBY   "The transcription may be aligned to the utterance at three distinct levels of precision.\n\nPlease choose an alignment precision."
 END
