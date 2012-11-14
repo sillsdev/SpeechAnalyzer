@@ -435,8 +435,10 @@ BOOL CDlgParametersPitchPage::OnSetActive()
 void CDlgParametersPitchPage::OnChangeScroll()
 {
 	int nData = GetDlgItemInt(IDC_PITCH_CHANGE, NULL, TRUE);
-	if (m_SpinChange.UpperButtonClicked()) nData++;
-	else nData--;
+	if (m_SpinChange.UpperButtonClicked())
+		nData++;
+	else
+		nData--;
 	if (nData > 20) nData = 20;
 	if (nData < 1) nData = 1;
 	if (nData != m_nChange)
@@ -2260,7 +2262,10 @@ BOOL CDlgParametersFormantsPage::OnInitDialog()
 	CheckDlgButton(IDC_FORMANTS_MELSCALE, pFormantParms->bMelScale);
 	UpdateData(TRUE);
 	PopulateVowelSetCombo(m_cVowelSet);
-	m_cFormantVowelEdit.EnableWindow(GetVowelSets()[m_cVowelSet.GetCurSel()].IsUser());
+
+	int curSel = m_cVowelSet.GetCurSel();
+	BOOL enable = GetVowelSets()[curSel].IsUser();
+	m_cFormantVowelEdit.EnableWindow(TRUE);
 	return TRUE;
 }
 
@@ -2292,7 +2297,9 @@ void CDlgParametersFormantsPage::OnEditChangeFormantVowels()
 	m_bModified = TRUE;
 	SetModified(TRUE); // data modified, enable apply button
 
-	m_cFormantVowelEdit.EnableWindow(GetVowelSets()[m_cVowelSet.GetCurSel()].IsUser());
+	int curSel = m_cVowelSet.GetCurSel();
+	BOOL enable = GetVowelSets()[curSel].IsUser();
+	m_cFormantVowelEdit.EnableWindow(TRUE);
 }
 
 
