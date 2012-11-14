@@ -131,6 +131,7 @@
 #include "dlgsplit.h"
 #include "waveresampler.h"
 #include "dlgmultichannel.h"
+#include "dlgannotation.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE

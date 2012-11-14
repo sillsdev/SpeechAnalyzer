@@ -12,16 +12,13 @@
 //
 /////////////////////////////////////////////////////////////////////////////
 #ifndef _AUTORECORDER__
+#define _AUTORECORDER__
 
 #include "sa_doc.h"
-
 #include "sa_dlwnd.h"
-
 #include "sa_wave.h"
 #include "dlgaudio.h"
 #include "playerrecorder.h"
-
-#define _AUTORECORDER__
 
 //###########################################################################
 // CDlgAutoRecorder dialog

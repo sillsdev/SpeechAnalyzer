@@ -2011,6 +2011,14 @@
 					>
 				</File>
 				<File
+					RelativePath=".\DlgAnnotation.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\DlgAnnotationImport.cpp"
+					>
+				</File>
+				<File
 					RelativePath="DlgAudio.cpp"
 					>
 					<FileConfiguration
@@ -2065,6 +2073,10 @@
 							PreprocessorDefinitions=""
 						/>
 					</FileConfiguration>
+				</File>
+				<File
+					RelativePath=".\ExportBasicDialog.cpp"
+					>
 				</File>
 				<File
 					RelativePath="FileInformation.cpp"
@@ -3727,6 +3739,14 @@
 					>
 				</File>
 				<File
+					RelativePath=".\DlgAnnotation.h"
+					>
+				</File>
+				<File
+					RelativePath=".\DlgAnnotationImport.h"
+					>
+				</File>
+				<File
 					RelativePath=".\DlgAudio.h"
 					>
 				</File>
@@ -3744,6 +3764,10 @@
 				</File>
 				<File
 					RelativePath=".\DlgVowelFormants.h"
+					>
+				</File>
+				<File
+					RelativePath=".\ExportBasicDialog.h"
 					>
 				</File>
 				<File
