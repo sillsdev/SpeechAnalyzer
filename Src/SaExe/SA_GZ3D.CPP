@@ -687,9 +687,10 @@ CPlot3D::~CPlot3D()
 RANGE CPlot3D::GetChartRange(int nFormant, int nGender)
 {
 	//               F1          F2            F3
-	static RANGE Scale[3][4] = {{{0.,0.},{200., 800.},{650.,2500.},{1500.,3200.}},  // man
-	{{0.,0.},{280., 900.},{700.,3000.},{1850.,3500.}},  // woman
-	{{0.,0.},{350.,1100.},{900.,3400.},{1950.,3900.}}}; // child
+	static RANGE Scale[3][4] = 
+	{{{0.,0.},{200.,1000.},{650.,2500.},{1500.,3200.}},  // man
+	 {{0.,0.},{280.,1000.},{700.,3000.},{1850.,3500.}},  // woman
+	 {{0.,0.},{350.,1100.},{900.,3400.},{1950.,3900.}}}; // child
 	if (nFormant < 0 || nFormant >= 4 || nGender < 0 || nGender >= 3)
 		nFormant = nGender = 0;
 	return Scale[nGender][nFormant];
@@ -1260,9 +1261,11 @@ CPlotF2F1::~CPlotF2F1()
 RANGE CPlotF2F1::GetChartRange(int nFormant, int nGender)
 {
 	//               F1          F2
-	static RANGE Scale[3][3] = {{{0.,0.},{200., 800.},{600.,2600.}},  // man
-	{{0.,0.},{280., 900.},{700.,3000.}},  // woman
-	{{0.,0.},{350.,1100.},{900.,3400.}}}; // child
+	static RANGE Scale[3][3] = 
+	{{{0.,0.},{200., 800.},{600.,2600.}},  // man
+	 {{0.,0.},{280., 900.},{700.,3000.}},  // woman
+	 {{0.,0.},{350.,1100.},{900.,3400.}}}; // child
+
 	if (nFormant < 0 || nFormant >= 3 || nGender < 0 || nGender >= 3)
 		nFormant = nGender = 0;
 	return Scale[nGender][nFormant];
@@ -1704,11 +1707,11 @@ void CPlotF2F1F1::OnDraw(CDC * pDC, CRect rClient, CRect rClip, CSaView * pView)
 	{
 	case 0:  // male
 		FormantChartParm.xend	= 0  , FormantChartParm.xstart = 2500;
-		FormantChartParm.yend	= 200, FormantChartParm.ystart = 800;
+		FormantChartParm.yend	= 200, FormantChartParm.ystart = 1000;
 		break;
 	case 1:  // female
 		FormantChartParm.xend	= 0,   FormantChartParm.xstart = 3000;
-		FormantChartParm.yend	= 280, FormantChartParm.ystart = 900;
+		FormantChartParm.yend	= 280, FormantChartParm.ystart = 1000;
 		break;
 	case 2:  // child
 		FormantChartParm.xend	= 0,   FormantChartParm.xstart = 3000;

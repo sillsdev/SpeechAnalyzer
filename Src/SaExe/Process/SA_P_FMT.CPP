@@ -40,9 +40,9 @@
 static char BASED_CODE THIS_FILE[] = __FILE__;
 #endif
 
-static const RANGE MenRange[4] = {{200,800},{650,2500},{1500,3200},{3300,3700}};
-static const RANGE WomenRange[4] = {{280,900},{700,3000},{1850,3500}, {3900, 4400}};
-static const RANGE ChildrenRange[4] = {{350,1100},{900,3400},{1950,3900}, {3700, 4700}};
+static const RANGE MenRange[4] =      {{200,1000},{650,2500},{1500,3200}, {3300,3700}};
+static const RANGE WomenRange[4] =    {{280,1000},{700,3000},{1850,3500}, {3900,4400}};
+static const RANGE ChildrenRange[4] = {{350,1100},{900,3400},{1950,3900}, {3700,4700}};
 
 //###########################################################################
 // CProcessFormants
