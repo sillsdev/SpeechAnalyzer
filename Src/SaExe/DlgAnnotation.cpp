@@ -128,6 +128,10 @@ BEGIN_MESSAGE_MAP(CDlgAnnotation, CDialog)
 	ON_BN_CLICKED(IDC_NONE, OnRadio)
 	ON_BN_CLICKED(IDC_WORD, OnRadio)
 	ON_BN_CLICKED(IDC_AUTOMATIC, OnRadio)
+	ON_BN_CLICKED(IDC_PHONETIC, OnCheck)
+	ON_BN_CLICKED(IDC_PHONEMIC, OnCheck)
+	ON_BN_CLICKED(IDC_GLOSS, OnCheck)
+	ON_BN_CLICKED(IDC_ORTHOGRAPHIC, OnCheck)
 	//}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
@@ -345,9 +349,11 @@ void CDlgAnnotation::SetState(int nState)
 			SetState(m_nState-1);
 		}
 		break;
+
 	case NEXT:
 		SetState(m_nState+1);
 		break;
+	
 	case INIT:
 		SetEnable(IDC_BACK,FALSE);
 		SetVisible(IDC_GROUP,TRUE);
@@ -362,6 +368,7 @@ void CDlgAnnotation::SetState(int nState)
 		SetText(IDC_DETAILS, IDS_AWIZ_DTL_INIT);
 		m_nState = INIT;
 		break;
+	
 	case PHONETICTEXT:
 		if (m_bPhonetic)
 		{
@@ -377,6 +384,7 @@ void CDlgAnnotation::SetState(int nState)
 			m_nState = PHONETICTEXT;
 			break;
 		}
+
 	case PHONEMICTEXT:
 		if (m_bPhonemic)
 		{
@@ -392,6 +400,7 @@ void CDlgAnnotation::SetState(int nState)
 			m_nState = PHONEMICTEXT;
 			break;
 		}
+
 	case ORTHOGRAPHICTEXT:
 		if (m_bOrthographic)
 		{
@@ -407,6 +416,7 @@ void CDlgAnnotation::SetState(int nState)
 			m_nState = ORTHOGRAPHICTEXT;
 			break;
 		}
+
 	case GLOSSTEXT:
 		if (m_bGloss)
 		{
@@ -422,6 +432,7 @@ void CDlgAnnotation::SetState(int nState)
 			m_nState = GLOSSTEXT;
 			break;
 		}
+
 	case ALIGNBY:
 		SetVisible(IDC_GROUP,TRUE);
 		SetVisible(IDC_NONE,TRUE);
@@ -435,6 +446,7 @@ void CDlgAnnotation::SetState(int nState)
 		CheckRadioButton(IDC_NONE, IDC_CHARACTER, m_nAlignBy);
 		OnRadio(); // Set Detail Text
 		break;
+
 	case SEGMENTBY:
 		SetVisible(IDC_GROUP,TRUE);
 		SetVisible(IDC_KEEP,TRUE);
@@ -448,6 +460,7 @@ void CDlgAnnotation::SetState(int nState)
 		CheckRadioButton(IDC_KEEP, IDC_AUTOMATIC,m_nSegmentBy);
 		OnRadio();// Set Detail Text
 		break;
+
 	case FINISH:
 		SetVisible(IDOK,TRUE);
 		SetVisible(IDC_NEXT,FALSE);
@@ -458,6 +471,7 @@ void CDlgAnnotation::SetState(int nState)
 		GotoDlgCtrl(GetDlgItem(IDOK));
 		m_nState = FINISH;
 		break;
+
 	default:
 		SetState(INIT);
 	}
@@ -604,6 +618,15 @@ void CDlgAnnotation::OnRadio()
 		}
 		break;
 	}
+}
+
+void CDlgAnnotation::OnCheck()
+{
+	BOOL enable = ((IsDlgButtonChecked(IDC_PHONETIC))||
+				   (IsDlgButtonChecked(IDC_PHONEMIC))||
+				   (IsDlgButtonChecked(IDC_GLOSS))||
+				   (IsDlgButtonChecked(IDC_ORTHOGRAPHIC)));
+	SetEnable(IDC_NEXT,enable);
 }
 
 /***************************************************************************/

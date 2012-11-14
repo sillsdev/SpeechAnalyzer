@@ -88,6 +88,7 @@ protected:
 	afx_msg void OnBack();
 	afx_msg void OnNext();
 	afx_msg void OnRadio();
+	afx_msg void OnCheck();
 	afx_msg void OnImport();
 	afx_msg void OnRevert();
 	afx_msg void OnUpdateAnnotation();
