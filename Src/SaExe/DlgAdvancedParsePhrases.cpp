@@ -111,15 +111,6 @@ void CDlgAdvancedParsePhrases::Apply()
 	pParseParm->nMaxThreshold = m_nMaxThreshold;
 	pParseParm->nMinThreshold = m_nMinThreshold;
 
-	if ((!m_pDoc->GetSegment(GLOSS)->IsEmpty())||
-		(!m_pDoc->GetSegment(PHONETIC)->IsEmpty())||
-		(!m_pDoc->GetSegment(MUSIC_PL1)->IsEmpty())||
-		(!m_pDoc->GetSegment(MUSIC_PL2)->IsEmpty())) {
-		if (AfxMessageBox(IDS_CONFIRM_TRANSCRIPTION_NOT_EMPTY, MB_YESNO|MB_ICONQUESTION,0)!=IDYES) {
-			return;
-		}
-	}
-
 	if (!m_pDoc->AdvancedParsePhrase()) 
 	{
 		Undo();

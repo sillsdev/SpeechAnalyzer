@@ -99,6 +99,9 @@ BOOL CDlgAdvancedParseWords::OnInitDialog()
 	return TRUE;  // return TRUE  unless you set the focus to a control
 }
 
+/**
+* the user has selected 'OK' we will now apply the changes..
+*/
 void CDlgAdvancedParseWords::Apply()
 {
 	UpdateData(TRUE);
@@ -111,13 +114,6 @@ void CDlgAdvancedParseWords::Apply()
 	pParseParm->fBreakWidth = (float)m_nBreakWidth / (float)1000;
 	pParseParm->nMaxThreshold = m_nMaxThreshold;
 	pParseParm->nMinThreshold = m_nMinThreshold;
-
-	if ((!m_pDoc->GetSegment(GLOSS)->IsEmpty())||
-		(!m_pDoc->GetSegment(PHONETIC)->IsEmpty())) {
-		if (AfxMessageBox(IDS_GLOSS_NOT_EMPTY, MB_YESNO|MB_ICONQUESTION,0)!=IDYES) {
-			return;
-		}
-	}
 
 	if (!m_pDoc->AdvancedParseWord()) 
 	{

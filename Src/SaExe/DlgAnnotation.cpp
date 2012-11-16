@@ -217,24 +217,25 @@ const CSaString CDlgAnnotation::BuildString(int nSegment)
 			if (szWorking != szSegmentDefault)
 			{
 				szBuild += szWorking;
-				//szBuild += wordDelimiter;
+				szBuild += wordDelimiter;
 			}
 			nIndex = pSegment->GetNext(nIndex);
-
-			// SDM 1.06.8 Skip first word break
-			if ((pGloss!=NULL)&&(nIndex != -1))
-			{
-				// Check For Gloss Word Break
-				if (pGloss->FindOffset(pSegment->GetOffset(nIndex))!=-1)
-				{
-					szBuild += wordDelimiter;
-				}
-			}
-
 		}
 		break;
 
 	case PHONEMIC:
+		while (nIndex != -1)
+		{
+			szWorking = pSegment->GetSegmentString(nIndex);
+			if (szWorking != szSegmentDefault)
+			{
+				szBuild += szWorking;
+				szBuild += wordDelimiter;
+			}
+			nIndex = pSegment->GetNext(nIndex);
+		}
+		break;
+
 	case ORTHO:
 		if (pPhonetic == NULL) break;
 		while (nIndex != -1)
@@ -246,7 +247,6 @@ const CSaString CDlgAnnotation::BuildString(int nSegment)
 				if (szWorking != szSegmentDefault) // Normal segment
 				{
 					szBuild += szWorking;
-//					szBuild += wordDelimiter;
 				}
 			}
 			nIndex = pPhonetic->GetNext(nIndex);
@@ -268,7 +268,9 @@ const CSaString CDlgAnnotation::BuildString(int nSegment)
 		while (nIndex != -1)
 		{
 			szWorking = pSegment->GetSegmentString(nIndex);
-			szBuild += szWorking.Left(1) + " " + szWorking.Mid(1) + " ";// SDM 1.5Test8.2
+			szWorking.Remove(WORD_DELIMITER);
+			szBuild += szWorking;
+			szBuild += wordDelimiter;
 			nIndex = pSegment->GetNext(nIndex);
 		}
 		break;
@@ -835,6 +837,7 @@ void CDlgAnnotation::OK()
 			}
 			break;
 		}
+
 	case IDC_MANUAL: // SDM 1.5Test8.2
 		{
 			for (int i=0;i<m_pSaDoc->GetSegment(GLOSS)->GetOffsetSize();i++) {
@@ -1003,45 +1006,8 @@ void CDlgAnnotation::OK()
 					pSegment->Insert(pSegment->GetOffsetSize(),&szNext, FALSE, pArray[CHARACTER_OFFSETS][nIndex], pArray[CHARACTER_DURATIONS][nIndex]);
 					break;
 				case IDC_CHARACTER:
-					// we need to remove the word breaks (spaces)
-					// to do so, we will observe the gloss fields and watch for word breaks
-					
-					// No more word breaks continue one character at a time
-					if (nGlossIndex>=pArray[WORD_OFFSETS].GetSize()) 
-					{
-						szNext = pTable->GetNext(nAlignMode, nStringIndex, m_szPhonetic);
-					}
-					else // SDM 1.5Test8.2
-					{
-						if (nStringIndex == 0) // Load first word
-						{
-							szNextWord = pTable->GetNext(CFontTable::DELIMITEDWORD, nStringIndex, m_szPhonetic);
-							nGlossIndex++;  // Increment word index
-						}
-
-						// If next phonetic offset not new word append one character
-						int nOffset = pArray[CHARACTER_OFFSETS][nIndex+1];
-						int nNextWordOffset = pArray[CHARACTER_OFFSETS][nIndex+1] + 1;
-						if (nGlossIndex < pArray[WORD_OFFSETS].GetSize())
-						{
-							nNextWordOffset = pArray[WORD_OFFSETS][nGlossIndex];
-						}
-
-						if (nOffset < nNextWordOffset)
-						{
-							szNext = pTable->GetNext(nAlignMode, nWordIndex, szNextWord);
-						}
-						else // finish word and get next word
-						{
-							szNext = pTable->GetRemainder(nAlignMode, nWordIndex, szNextWord);
-							nGlossIndex++;  // Increment word index
-							if (nGlossIndex<pArray[WORD_OFFSETS].GetSize()) // More word breaks load next word
-							{
-								szNextWord = pTable->GetNext(CFontTable::DELIMITEDWORD, nStringIndex, m_szPhonetic);
-								nWordIndex = 0; // Start at beginning of next word
-							}
-						}
-					}
+					// the line is entered one character per segment
+					szNext = pTable->GetNext( nAlignMode, nStringIndex, m_szPhonetic);
 					if (szNext.GetLength()==0)
 					{
 						szNext+=SEGMENT_DEFAULT_CHAR;
@@ -1107,39 +1073,7 @@ void CDlgAnnotation::OK()
 						pArray[CHARACTER_OFFSETS][nIndex], pArray[CHARACTER_DURATIONS][nIndex]);
 					break;
 				case IDC_CHARACTER:
-					if (nGlossIndex>=pArray[WORD_OFFSETS].GetSize()) // No more word breaks continue one character at a time
-					{
-						szNext = pTable->GetNext(nAlignMode, nStringIndex, m_szPhonemic);
-					}
-					else // SDM 1.5Test8.2
-					{
-						if (nStringIndex == 0) // Load first word
-						{
-							szNextWord = pTable->GetNext(CFontTable::DELIMITEDWORD, nStringIndex, m_szPhonemic);
-							nGlossIndex++;  // Increment word index
-						}
-						// If next phonetic offset not new word append one character
-						int nOffset = pArray[CHARACTER_OFFSETS][nIndex+1];
-						int nNextWordOffset = pArray[CHARACTER_OFFSETS][nIndex+1] + 1;
-						if (nGlossIndex < pArray[WORD_OFFSETS].GetSize())
-							nNextWordOffset = pArray[WORD_OFFSETS][nGlossIndex];
-
-						if (nOffset < nNextWordOffset)
-						{
-							szNext = pTable->GetNext(nAlignMode, nWordIndex, szNextWord);
-						}
-						else // finish word and get next word
-						{
-							szNext = pTable->GetRemainder(nAlignMode, nWordIndex, szNextWord);
-							nGlossIndex++;  // Increment word index
-							if (nGlossIndex<pArray[WORD_OFFSETS].GetSize()) // More word breaks load next word
-							{
-								szNextWord = pTable->GetNext(CFontTable::DELIMITEDWORD, nStringIndex, m_szPhonemic);
-								nWordIndex = 0; // Start at beginning of next word
-							}
-						}
-					}
-
+					szNext = pTable->GetNext(nAlignMode, nStringIndex, m_szPhonemic);
 					if (szNext.GetLength()==0)
 					{
 						continue; // Skip NULL strings
@@ -1148,6 +1082,7 @@ void CDlgAnnotation::OK()
 					break;
 				}
 			}
+
 			szNext = pTable->GetRemainder(nAlignMode, nStringIndex, m_szPhonemic);
 			// Skip empty segments
 			if (szNext.GetLength()!=0)

@@ -1,3 +1,23 @@
+SA - 3.0.1.16 - 11/16/2012
+Addressing the following emails:
+   11/03/12 - Re Split File Work
+   10/31/12 - Transcription Alignment Bug
+   10/31/12 - Transcription Alignment Selection
+   11/13/12 - Formant Chart Range
+   11/12/12 - SA bug in F2-F1 Data Set dialog
+   11/02/12 - Formant Chart Properties
+   11/11/12 - Re sa with auto-transcription fix
+   11/05/12 - The Locate Options
+   11/15/12 - re sa with auto transcription fix	
+1) Modifications to auto transcription alignment.  Phonetic and Phonemic alignment are now generated as one character per segment.
+2) Format Chart ranges and been changed for men and women to 1000 from (800/900)
+3) Disable 'Next' button when nothing is checked on first dialog in auto transcription alignment feature.
+4) Disabled edits in F1-F2 combo box in F2-F1 data set dialog
+5) Enabled edits of default formant tables
+6) Removed redundant checks on 'Locate Word/Phrases' features that occur when data already exists
+   
+SA - 3.0.1.15 - skipped
+
 SA - 3.0.1.14 - 11/04/2012
 1) Fix for bug preventing retention of last field in reference transcription bar.
 2) Added 'Gloss' checkbox to 'Transcription Alignment' dialog box.

@@ -28,7 +28,7 @@ LANGUAGE LANG_NEUTRAL, SUBLANG_NEUTRAL
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 3,0,1,15
+ FILEVERSION 3,0,1,16
  PRODUCTVERSION 1,0,0,1
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
@@ -46,7 +46,7 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "SIL International"
             VALUE "FileDescription", "SA"
-            VALUE "FileVersion", "v3.0.1.15"
+            VALUE "FileVersion", "v3.0.1.16"
             VALUE "InternalName", "SA"
             VALUE "LegalCopyright", "© 1996-2012 SIL International (MSEA)"
             VALUE "ProductName", "SA"
@@ -4720,10 +4720,6 @@ BEGIN
     IDS_HELPERWND_SNAPSHOT  "Zoom other graphs as needed and click the Snapshot Spectrogram button."
     IDS_HELPERWND_NO_DURATIONS "Add Phonetic Segments"
     IDS_HELPERWND_OUT_OF_RANGE "Data out of range"
-    IDS_CONFIRM_GLOSS_NOT_EMPTY 
-                            "This graph already contains gloss or phonetic data in the transcription bar.\nIf you continue, it will be overwritten.  Do you wish to continue?"
-    IDS_CONFIRM_TRANSCRIPTION_NOT_EMPTY 
-                            "This graph already contains phonetic, gloss or phrase transcription data.\nIf you continue, it will be overwritten.  Do you wish to continue?"
     IDS_MC_CHANNEL          "Channel %1"
 END
 
