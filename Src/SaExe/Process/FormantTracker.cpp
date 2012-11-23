@@ -104,20 +104,44 @@ public:
 	typedef double DBL;
 	typedef std::vector<DBL> VECTOR_DBL;
 
-	virtual DEQUE_CDBL & GetData() { return m_data;}
-	virtual VECTOR_DBL & GetWindow() { return m_window;}
+	virtual DEQUE_CDBL & GetData() 
+	{ 
+		return m_data;
+	}
+	virtual VECTOR_DBL & GetWindow() 
+	{ 
+		return m_window;
+	}
 
 	// Previous track position
-	virtual VECTOR_CDBL & GetTrackIn() {return m_trackIn;}
+	virtual VECTOR_CDBL & GetTrackIn() 
+	{
+		return m_trackIn;
+	}
 
 	// Result track position
-	virtual VECTOR_CDBL & GetTrackOut() {return m_trackOut;}
+	virtual VECTOR_CDBL & GetTrackOut() 
+	{
+		return m_trackOut;
+	}
 
 	// Working intermediates to eliminate memory thrashing
-	virtual VECTOR_CDBL & GetWindowed() {return m_windowed;}
-	virtual VECTOR_CDBL & GetFiltered() {return m_filtered;}
-	virtual VECTOR_CDBL & GetZeroFilterCDBL() {return m_zeroFilterCDBL;}
-	virtual VECTOR_DBL & GetZeroFilterDBL() {return m_zeroFilterDBL;}
+	virtual VECTOR_CDBL & GetWindowed() 
+	{
+		return m_windowed;
+	}
+	virtual VECTOR_CDBL & GetFiltered() 
+	{
+		return m_filtered;
+	}
+	virtual VECTOR_CDBL & GetZeroFilterCDBL() 
+	{
+		return m_zeroFilterCDBL;
+	}
+	virtual VECTOR_DBL & GetZeroFilterDBL() 
+	{
+		return m_zeroFilterDBL;
+	}
 
 protected:
 	DEQUE_CDBL m_data;

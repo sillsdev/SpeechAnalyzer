@@ -23,7 +23,7 @@
 #define PITCH_SWITCH	";; F = "
 #define TIME_SWITCH		";; T = "
 
-typedef enum {
+typedef enum EAudioType {
 	LIN16=0,     /* same as intern computation format: 16 bits linear  */
 	LIN8,        /* unsigned linear 8 bits, worse than telephone        */
 	ULAW,        /* MU law -> 8bits, telephone. Roughly equ. to 12bits */

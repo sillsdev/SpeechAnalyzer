@@ -9,9 +9,10 @@
  
  enum {COUNTS = 0, PDF = 1, CDF = 2};
  
- typedef struct{ uint16  nBins;        // Number of bins in histogram
-          short * pBinDivs; // Pointer to an array containing the bin divisions
-          } HIST_PARMS;
+ typedef struct { 
+	 uint16  nBins;        // Number of bins in histogram
+     short * pBinDivs; // Pointer to an array containing the bin divisions
+} HIST_PARMS;
 
                
  class CHistogram{

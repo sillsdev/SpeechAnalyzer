@@ -3,9 +3,9 @@
 #define _PRINTDIM_H
 
 
-typedef struct {
-  int numerator;
-  int denominator;
+typedef struct SFraction {
+	int numerator;
+	int denominator;
 } fraction;
   
 inline int fract_multiply(fraction f, int scaler) { return ((f.numerator * scaler) / f.denominator); }

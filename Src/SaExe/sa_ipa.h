@@ -86,11 +86,19 @@ public:
 	virtual BOOL IsIPA() const { return TRUE; };
 
 private:
-	void AddChar(int nAccessCode, int nIPAClassification, char* szIPADescription, tPhoneticClassification nClassification,
-		char* szClassSub1, char* szClassSub2, char* szClassSub3, char* szClassSub4,tGlyphType nType);
+	void AddChar(int nAccessCode, 
+				 int nIPAClassification, 
+				 char* szIPADescription, 
+				 tPhoneticClassification nClassification,
+				 char* szClassSub1, 
+				 char* szClassSub2, 
+				 char* szClassSub3, 
+				 char* szClassSub4,
+				 tGlyphType nType);
+	
 	tGlyphType GlyphType(int nAccessCode) const
 	{
-		if((nAccessCode < 256)&&(nAccessCode >=0)) return m_pChar[nAccessCode].glyphType;
+		if ((nAccessCode < 256)&&(nAccessCode >=0)) return m_pChar[nAccessCode].glyphType;
 		else return INDEPENDENT;
 	};
 };

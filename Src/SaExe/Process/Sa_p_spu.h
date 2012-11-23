@@ -11,9 +11,9 @@
  
 #define _SA_P_SPU_H
 
-  enum {CEPSTRAL_SPECTRUM = 0x0001, LPC_SPECTRUM = 0x0002};   // spectra selections
+enum ESPECTRUM {CEPSTRAL_SPECTRUM = 0x0001, LPC_SPECTRUM = 0x0002};   // spectra selections
                                                                             
-  typedef struct{
+typedef struct SSPECT_PROC_SELECT {
                  BOOL bCepstralSpectrum   : 1;
                  BOOL bLpcSpectrum        : 1;
                  BOOL bSpare4             : 1;
@@ -30,25 +30,25 @@
                  BOOL bSpare8k            : 1;
                  BOOL bSpare16k           : 1;                
                  BOOL bSpare32k           : 1;
-                }SPECT_PROC_SELECT;
+                } SPECT_PROC_SELECT;
                
 #pragma pack(1)
-  typedef struct{
+  typedef struct SSPECT_VALUE{
                  float Raw;
                  float Smooth;
                  float Lpc;
-                }SPECT_VALUE;
+                } SPECT_VALUE;
 #pragma pack()
 
               
-  typedef struct{
+  typedef struct SSPECT_PWR_RANGE{
                  SPECT_VALUE Max;
                  SPECT_VALUE Min;
                  float       fdBRef;
                 }SPECT_PWR_RANGE;
 
 #pragma pack(1)
-  typedef struct{
+  typedef struct SFORMANT{
                  FORMANT_VALUES Cepstral;
                  FORMANT_VALUES Lpc; 
                 }FORMANT;
@@ -56,10 +56,10 @@
 
 
 #pragma pack(1)
-typedef struct{
+typedef struct SFORMANT_FRAME{
 				double LpcErrorInPercent;
 				FORMANT Formant[MAX_NUM_FORMANTS+1];
-              }FORMANT_FRAME;
+              } FORMANT_FRAME;
 #pragma pack()
 
 #define LPC_ERROR_THRESHOLD  15

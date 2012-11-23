@@ -1,5 +1,4 @@
 LIBRARY   Mbrola
-DESCRIPTION "Mbrola Synthesis Engine"
 EXPORTS
 ?load_MBR@@YAHXZ
 ?unload_MBR@@YAXXZ

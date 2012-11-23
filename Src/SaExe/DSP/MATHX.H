@@ -19,7 +19,7 @@
  #define FLT_MIN_NEG  (-FLT_MIN)
 
 // Type definitions
-typedef struct{double Mean; double StdDev;} STATISTIC;
+typedef struct SSTATISTIC { double Mean; double StdDev;} STATISTIC;
 
 // Miscellaneous definitions
  enum Comparison{LESS = -1, EQUAL = 0, GREATER = 1};

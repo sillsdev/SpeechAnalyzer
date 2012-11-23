@@ -1303,8 +1303,8 @@ BOOL CSaApp::CloseWorkbench(CDocument* pDoc)
 // CSaApp::PasteClipboardToNewFile Create a new file and paste wave data into it
 // This function creates a new document.
 /***************************************************************************/
-void CSaApp::PasteClipboardToNewFile(HGLOBAL hData)
-{
+void CSaApp::PasteClipboardToNewFile(HGLOBAL hData) {
+
 	//because we now use true CF_WAVE we can save as temp then open
 	// temporary target file has to be created
 	TCHAR szTempPath[_MAX_PATH];
@@ -1312,30 +1312,27 @@ void CSaApp::PasteClipboardToNewFile(HGLOBAL hData)
 	GetTempPath(_MAX_PATH, lpszTempPath);
 	GetTempFileName(lpszTempPath, _T("WAV"), 0, szTempPath);
 
-	if ((::GlobalFlags(hData)&~GMEM_LOCKCOUNT)==GMEM_DISCARDED)
-	{
+	if ((::GlobalFlags(hData)&~GMEM_LOCKCOUNT)==GMEM_DISCARDED) {
 		return;
 	}
+
 	HPSTR lpData = (HPSTR)::GlobalLock(hData); // lock memory
 	DWORD dwSize = ::GlobalSize(hData);
 	CFile* pFile=NULL;
 	CFileStatus status;
 
-	try
-	{
+	try {
 		// create and open the file
 		pFile = new CFile(szTempPath, CFile::modeCreate | CFile::modeReadWrite | CFile::shareExclusive);
 		pFile->Write(lpData, dwSize);
 		delete pFile;
-	}
-	catch( const CException &)
-	{
-		if (pFile)
-		{
+	} catch( const CException &) {
+		if (pFile) {
 			delete pFile;
 			// File may exist should be removed
-			if (CFile::GetStatus(szTempPath, status))
+			if (CFile::GetStatus(szTempPath, status)) {
 				CFile::Remove(szTempPath);
+			}
 		}
 		return;
 	}
@@ -1346,8 +1343,8 @@ void CSaApp::PasteClipboardToNewFile(HGLOBAL hData)
 	// open the new file
 	CSaDoc* pResult = OpenWavFileAsNew(szTempPath);
 
-	if(!pResult)
-	{	// Error opening file, destroy temp
+	if (!pResult) {	
+		// Error opening file, destroy temp
 		CFile::Remove(szTempPath);
 	}
 }
@@ -1393,8 +1390,8 @@ CSaDoc* CSaApp::OpenWavFileAsNew( const TCHAR* szTempPath)
 }
 
 /***************************************************************************/
-// CSaApp::CopyClipboardTranscription Copies the transcription
-// associated with the last clipboard file from SA.
+// CSaApp::CopyClipboardTranscription 
+// Copies the transcription associated with the last clipboard file from SA.
 // If the wave data on the clipboard doesn't match the last data copied
 // from SA, nothing is copied since it's from another app.
 /***************************************************************************/

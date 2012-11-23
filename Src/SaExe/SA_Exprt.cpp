@@ -2371,10 +2371,11 @@ BOOL CImport::ReadTable(Object_istream &obs, int nMode)
 				bAppendPhonetic = FALSE;
 				bAppendGloss = FALSE;
 			}
-			if(bAppendGloss)
+			if (bAppendGloss)
 				szString = pGloss->GetSegmentString(nIndexGloss) + " " + szString;
-			if(pGloss->GetSelection() != nIndexGloss) pGloss->SetSelection(nIndexGloss);
-			if((szString[0] != WORD_DELIMITER) || (szString[0] != TEXT_DELIMITER))
+			if (pGloss->GetSelection() != nIndexGloss)
+				pGloss->SetSelection(nIndexGloss);
+			if ((szString[0] != WORD_DELIMITER) || (szString[0] != TEXT_DELIMITER))
 				szString = WORD_DELIMITER + szString;
 			pGloss->ReplaceSelectedSegment(pDoc, szString);
 

@@ -12,17 +12,17 @@
  #define LPC_16BIT_DB_PWR_REF  126.190F
  
 
- enum {REFL_COEFF = 0x0001, PRED_COEFF = 0x0002, CORR_VALUES = 0x0004, 
-       LOG_AREA_RATIOS = 0x0008, NORM_CROSS_SECT = 0x0010, ENERGY = 0x0020, GAIN = 0x0040, 
-       FORMANTS = 0x0080, WINDOW_SIGNAL = 0x100, PRE_EMPHASIS = 0x0200, NO_DC_BIAS = 0x0400, PRED_SIGNAL = 0x0800, 
-       MEAN_SQ_ERR = 0x1000, RESIDUAL = 0x2000, POWER_SPECTRUM = 0x4000};   //list of LPC analysis
-                                                                            //parameter sets
- enum FORMANT_METHOD{
+ enum E_ANALYSIS_PARAMETERS_SETS { 
+		REFL_COEFF = 0x0001, PRED_COEFF = 0x0002, CORR_VALUES = 0x0004, 
+		LOG_AREA_RATIOS = 0x0008, NORM_CROSS_SECT = 0x0010, ENERGY = 0x0020, GAIN = 0x0040, 
+		FORMANTS = 0x0080, WINDOW_SIGNAL = 0x100, PRE_EMPHASIS = 0x0200, NO_DC_BIAS = 0x0400, PRED_SIGNAL = 0x0800, 
+		MEAN_SQ_ERR = 0x1000, RESIDUAL = 0x2000, POWER_SPECTRUM = 0x4000};   // list of LPC analysis parameter sets
+ enum FORMANT_METHOD {
 	  FROM_POLES,
 	  FROM_SPECTRUM
       };
                                                                             
- typedef struct{
+ typedef struct SLPC_PARM_SETS {
                 uint16 bReflCoeff          : 1;
                 uint16 bPredCoeff          : 1;
                 uint16 bCorrValues         : 1;
@@ -41,26 +41,26 @@
                 uint16 bSpare32k           : 1;
                }LPC_PARM_SETS;
         
- typedef union{       
+ typedef union ULPC_PROC_REQ{       
                LPC_PARM_SETS  ParmSet;  
                uint16 Flags;                                                     
-              }LPC_PROC_REQ;
+} LPC_PROC_REQ;
       
       
- enum{LPC_COVAR_LATTICE = 0, LPC_AUTOCOR = 1, LPC_CEPSTRAL = 2};                      //LPC analysis methods
+ enum EANALYSIS_METHODS {LPC_COVAR_LATTICE = 0, LPC_AUTOCOR = 1, LPC_CEPSTRAL = 2};		//LPC analysis methods
  typedef struct LPC_SETTINGS {
    LPC_SETTINGS() {nMethod = 0; nOrder = 0; nFrameLen = 0; fFFTRadius = 1.; dPitch = 0; dClosurePhase = 0;}
 
-   uint16  nMethod;                            //LPC analysis method selected from above
-   uint16  nOrder;                             //order of LPC analysis (number of stages or sections)
-   uint32   nFrameLen;                          //frame length in samples
-   float   fFFTRadius;                          //for POWER_SPECTRUM, radius for spectral evaluation, >0 and <= 1.F
-   double     dPitch;                            // pitch for closed phase analysis
-   double     dClosurePhase;                     // phase of glottal closure relative to signal start in radians 
-   LPC_PROC_REQ Process;                      //LPC parameter sets to process
+   uint16	nMethod;                            // LPC analysis method selected from above
+   uint16	nOrder;                             // order of LPC analysis (number of stages or sections)
+   uint32   nFrameLen;                          // frame length in samples
+   float    fFFTRadius;                         // for POWER_SPECTRUM, radius for spectral evaluation, >0 and <= 1.F
+   double   dPitch;                             // pitch for closed phase analysis
+   double   dClosurePhase;                      // phase of glottal closure relative to signal start in radians 
+   LPC_PROC_REQ Process;						// LPC parameter sets to process
  }LPC_SETTINGS; 
  
- typedef struct{
+ typedef struct SLPC_MODEL {
                 uint32  nFrameLen;                           //frame length in samples
                 short   *pFrameBfr;                          //pointer to frame buffer
                 short   *pWinFrameBfr;                       //pointer to windowed frame buffer
@@ -103,29 +103,29 @@
                                                              //    equal to pitch if the frame corresponds to 1 pitch period
                                                              //  Formant[1] corresponds to F1, Formant[2] to F2, and 
                                                              //  Formant[3] to F3, etc.
-               }LPC_MODEL;
+               } LPC_MODEL;
                
 // #define LPC_MODEL_INIT  {0, NULL, 0, 0, 0.F, 0.F, 0, NULL, 0, NULL, 0.F, 0.F, 0, NULL, 0, NULL, 0, NULL, 0, NULL, 0, NULL}
 
 #pragma pack(1)
- typedef struct{
-                double     dErrorRatio;                       // ratio of prediction error to signal frame energy
-                uint16  nNormCrossSectAreas;               //number of normalized cross sectional areas
-                double     dNormCrossSectArea[1];             //normalized cross sectional area array
-               }VOCAL_TRACT_MODEL;               
+ typedef struct SVOCAL_TRACT_MODEL {
+				double		dErrorRatio;                    // ratio of prediction error to signal frame energy
+				uint16		nNormCrossSectAreas;            //number of normalized cross sectional areas
+				double		dNormCrossSectArea[1];          //normalized cross sectional area array
+} VOCAL_TRACT_MODEL;               
 #pragma pack() 
               
- typedef struct{
-                LPC_PROC_REQ   Process;                    //LPC parameter sets to process
-                double      **ppCovarMatrix;              //pointer to array of row pointers into 
-                                                           //covariance matrix
-                double           *pScratchArray;              //pointer to scratch array used in covariance 
-                                                           //lattice harmonic mean method
-                float          fFFTRadius;                 //radius used to calculate power spectrum                             
-                double     dPitch;                              // pitch for closed phase analysis
-                double     dClosurePhase;                       // phase of glottal closure relative to signal start in radians 
-                LPC_MODEL      Model;                      //structure containing LPC model
-               }LPC_PARMS;              
+ typedef struct SLPC_PARMS {
+                LPC_PROC_REQ	Process;					//LPC parameter sets to process
+                double			**ppCovarMatrix;            //pointer to array of row pointers into 
+                                                            //covariance matrix
+                double          *pScratchArray;             //pointer to scratch array used in covariance 
+                                                            //lattice harmonic mean method
+                float			fFFTRadius;                 //radius used to calculate power spectrum                             
+                double			dPitch;                     // pitch for closed phase analysis
+                double			dClosurePhase;              // phase of glottal closure relative to signal start in radians 
+                LPC_MODEL		Model;                      //structure containing LPC model
+               } LPC_PARMS;
                
 // #define LPC_PARMS_INIT  {0, NULL, NULL, LPC_MODEL_INIT}
 

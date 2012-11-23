@@ -411,7 +411,7 @@ CString CFontTableIPA::GetNext(tUnit nInUnits, int &nIndex, const CString& szStr
 
 	if((nIndex < 0) || (nIndex >= szString.GetLength())) return szReturn;
 
-	switch(nInUnits)
+	switch (nInUnits)
 	{
 	case BYTE:
 		return szString[nIndex++];
@@ -429,7 +429,7 @@ CString CFontTableIPA::GetNext(tUnit nInUnits, int &nIndex, const CString& szStr
 			int nWrkIndex;
 			for(nWrkIndex = nIndex; nWrkIndex < szString.GetLength(); nWrkIndex++)
 			{
-				switch(GlyphType(szString[nWrkIndex]))
+				switch (GlyphType(szString[nWrkIndex]))
 				{
 				case ENDofSTRING:
 					if(bIndependent==FALSE)
@@ -513,13 +513,10 @@ CString CFontTableIPA::GetNext(tUnit nInUnits, int &nIndex, const CString& szStr
 			szReturn = szString.Mid(nIndex);
 			int nDelimiter = szReturn.Find(m_wordDelimiter);
 
-			if(nDelimiter != -1)
-			{
+			if (nDelimiter != -1) {
 				szReturn = szReturn.Mid(0, nDelimiter);
 				nIndex += nDelimiter + 1;
-			}
-			else
-			{
+			} else {
 				nIndex = szString.GetLength();
 			}
 			return szReturn;
@@ -542,7 +539,7 @@ CString CFontTableANSI::GetNext(tUnit nInUnits, int &nIndex, const CString& szSt
 {
 	CString szReturn = "";
 
-	if((nIndex < 0) || (nIndex >= szString.GetLength())) return szReturn;
+	if ((nIndex < 0) || (nIndex >= szString.GetLength())) return szReturn;
 
 	switch(nInUnits)
 	{
@@ -556,9 +553,7 @@ CString CFontTableANSI::GetNext(tUnit nInUnits, int &nIndex, const CString& szSt
 		{
 			szReturn = szString.Mid(nIndex);
 			int nDelimiter = szReturn.Find(m_wordDelimiter);
-
-
-			if(nDelimiter != -1)
+			if (nDelimiter != -1)
 			{
 				szReturn = szReturn.Mid(0, nDelimiter);
 				nIndex += nDelimiter + 1;

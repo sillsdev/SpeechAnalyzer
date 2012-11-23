@@ -39,13 +39,26 @@ public:
 	float real;
 	float imaginary;
 
-	inline complexFloat(const float &in_real = 0, const float &in_imaginary = 0) { real = in_real; imaginary = in_imaginary; }
+	inline complexFloat(const float &in_real = 0, const float &in_imaginary = 0)
+	{ 
+		real = in_real; imaginary = in_imaginary; 
+	}
 
-	inline complexFloat&  operator=(const complexFloat &other) { real = other.real; imaginary = other.imaginary; return *this; }
+	inline complexFloat&  operator=(const complexFloat &other) 
+	{ 
+		real = other.real; imaginary = other.imaginary; return *this; 
+	}
+	
 	inline const complexFloat&  operator*=(const complexFloat &other)
-	{ float realnew = real*other.real-imaginary*other.imaginary; imaginary = imaginary*other.real+real*other.imaginary; real = realnew; return *this; }
+	{ 
+		float realnew = real*other.real-imaginary*other.imaginary; imaginary = imaginary*other.real+real*other.imaginary; real = realnew; return *this; 
+	}
+	
 	inline const complexFloat&  operator+=(const complexFloat &other)
-	{ real = real+other.real; imaginary = imaginary+other.imaginary; return *this;}
+	{ 
+		real = real+other.real; imaginary = imaginary+other.imaginary; return *this;
+	}
+	
 	inline const complexFloat&  operator-=(const complexFloat &other)
 	{ real = real-other.real; imaginary = imaginary-other.imaginary; return *this;}
 	inline const complexFloat  operator*(const complexFloat &other) const 

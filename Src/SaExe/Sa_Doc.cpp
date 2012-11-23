@@ -3140,7 +3140,13 @@ void CSaDoc::ApplyWaveFile( const TCHAR* pszFileName, DWORD dwDataSize, CAlignIn
 	// save the temporary file
 	if(!m_szTempWave.IsEmpty())
 	{
-		try { CFile::Remove(m_szTempWave); } catch(...){}
+		try 
+		{ 
+			CFile::Remove(m_szTempWave); 
+		} 
+		catch(...)
+		{
+		}
 	}
 	m_szTempWave = pszFileName;
 	// set the data size
@@ -3766,32 +3772,38 @@ BOOL CSaDoc::WorkbenchProcess(BOOL bInvalidate, BOOL bRestart)
 // CSaDoc::ClipWavToFile Copies wave data out of the wave file
 // and places in a new wav file
 /***************************************************************************/
-BOOL CSaDoc::CopySectionToNewWavFile(DWORD dwSectionStart, DWORD dwSectionLength, LPCTSTR szNewWave)
-{
+BOOL CSaDoc::CopySectionToNewWavFile(DWORD dwSectionStart, DWORD dwSectionLength, LPCTSTR szNewWave) {
 	// Make new wave file with selected data and segments
 
 	CSaString szOriginalWave;
 	if (m_bUsingTempFile) 
 	{
 		szOriginalWave = m_szTempConvertedWave;
-	}
+	} 
 	else if ((GetPathName().GetLength() !=0))
 	{
 		szOriginalWave = GetPathName();
-	}
-	else if(m_szTempWave.GetLength() !=0)
+	} 
+	else if (m_szTempWave.GetLength() !=0) 
 	{
 		szOriginalWave = m_szTempWave;
 	}
 
-	if (szOriginalWave.GetLength() == 0) return FALSE; //Original not found
+	if (szOriginalWave.GetLength() == 0) 
+	{
+		//Original not found
+		return FALSE;
+	}
 
 	BOOL bSameFileName = (szNewWave == szOriginalWave);
 
 	CFileStatus temp;
-	if (!bSameFileName && !CopyFile(szOriginalWave, szNewWave))
+	if ((!bSameFileName) && (!CopyFile(szOriginalWave, szNewWave))) 
 	{
-		if (CFile::GetStatus(szNewWave, temp)) CFile::Remove(szNewWave);
+		if (CFile::GetStatus(szNewWave, temp)) 
+		{
+			CFile::Remove(szNewWave);
+		}
 		return FALSE;
 	}
 
@@ -3801,23 +3813,30 @@ BOOL CSaDoc::CopySectionToNewWavFile(DWORD dwSectionStart, DWORD dwSectionLength
 	TCHAR szTempNewTemp[_MAX_PATH];
 	GetTempFileName(lpszTempPath, _T("TMP"), 0, szTempNewTemp);
 
-	if (!CopyFile(GetRawDataWrk(0), szTempNewTemp, dwSectionStart, dwSectionLength))
+	if (!CopyFile(GetRawDataWrk(0), szTempNewTemp, dwSectionStart, dwSectionLength)) 
 	{
-		if (!bSameFileName)
+		if (!bSameFileName) 
+		{
 			CFile::Remove(szNewWave);
-		if (CFile::GetStatus(szTempNewTemp, temp)) CFile::Remove(szTempNewTemp);
+		}
+		if (CFile::GetStatus(szTempNewTemp, temp)) 
+		{
+			CFile::Remove(szTempNewTemp);
+		}
 		return FALSE;
 	}
 
-	if (!bSameFileName)
+	if (!bSameFileName) 
+	{
 		//Save segment data we will use this documents segments for calculations
 		CheckPoint();  // save file state for Undo below
+	}
 
 	// Set segments to selected wave
 	AdjustSegments(dwSectionStart+dwSectionLength, GetUnprocessedDataSize()-(dwSectionStart+dwSectionLength), TRUE); // adjust segments to new file size
 	AdjustSegments(0, dwSectionStart, TRUE); // adjust segments to new file size
 
-	if (bSameFileName)
+	if (bSameFileName) 
 	{
 		// Set document to use new wave data
 		m_dwDataSize = dwSectionLength;
@@ -3833,8 +3852,11 @@ BOOL CSaDoc::CopySectionToNewWavFile(DWORD dwSectionStart, DWORD dwSectionLength
 		pView->SetStartStopCursorPosition(0, GetUnprocessedDataSize());
 		pView->RefreshGraphs();
 
-		while(CanUndo()) // remove undo list
+		while(CanUndo()) 
+		{
+			// remove undo list
 			Undo(FALSE, FALSE);
+		}
 		return TRUE;
 	}
 
@@ -3847,10 +3869,10 @@ BOOL CSaDoc::CopySectionToNewWavFile(DWORD dwSectionStart, DWORD dwSectionLength
 	m_dwDataSize = dwSectionLength;
 
 	// Create Wave file
-	try
+	try 
 	{
 		m_szRawDataWrk[0] = szTempNewTemp;
-		if (!WriteDataFiles(szNewWave, TRUE, TRUE))
+		if (!WriteDataFiles(szNewWave, TRUE, TRUE)) 
 		{
 			AfxThrowFileException(CFileException::genericException, -1);
 		}
@@ -3860,23 +3882,23 @@ BOOL CSaDoc::CopySectionToNewWavFile(DWORD dwSectionStart, DWORD dwSectionLength
 		m_szRawDataWrk[0] = szTempName;
 		CFile::Remove(szTempNewTemp);  // Done with this file
 		Undo(FALSE);  // return segments to original state
-	}
-	catch( const CException &)
+	} catch( const CException &) 
 	{
 		m_szRawDataWrk[0] = szTempName;
 		m_dwDataSize = dwDataSize;
-		try
+		try 
 		{
 			CFile::Remove(szNewWave);
-		}
-		catch(CFileException e)
+		} 
+		catch(CFileException e) 
 		{
 		}
-		try
+		try 
 		{
-			if (CFile::GetStatus(szTempNewTemp, temp))CFile::Remove(szTempNewTemp);
-		}
-		catch(CFileException e)
+			if (CFile::GetStatus(szTempNewTemp, temp))
+				CFile::Remove(szTempNewTemp);
+		} 
+		catch(CFileException e) 
 		{
 		}
 		Undo(FALSE);
@@ -4057,7 +4079,7 @@ BOOL COleWaveDataSource::OnRenderData(LPFORMATETC lpFormatEtc, LPSTGMEDIUM lpStg
 /***************************************************************************/
 BOOL CSaDoc::PutWaveToClipboard(DWORD dwSectionStart, DWORD dwSectionLength, BOOL bDelete)
 {
-	//because we now use true CF_WAVE we support annotations embedded in the data
+	// because we now use true CF_WAVE we support annotations embedded in the data
 	// temporary target file has to be created
 
 	// Make new wave file with selected data and segments
@@ -4073,8 +4095,9 @@ BOOL CSaDoc::PutWaveToClipboard(DWORD dwSectionStart, DWORD dwSectionLength, BOO
 
 	DWORD tempSize = sGetFileSize(GetRawDataWrk(0));
 
-	if(!CopySectionToNewWavFile(dwSectionStart, dwSectionLength, szTempNewWave))
+	if (!CopySectionToNewWavFile(dwSectionStart, dwSectionLength, szTempNewWave)) {
 		return FALSE;
+	}
 
 	COleWaveDataSource &cClipData = *new COleWaveDataSource(szTempNewWave);
 
@@ -5823,10 +5846,12 @@ CString CSaDoc::GenerateSplitName( CSaView* pView, EFilenameConvention conventio
 			if (gloss.GetLength()!=0) {
 				swprintf_s(buffer,_countof(buffer),L"%s",(LPCTSTR)gloss);
 			} else {
+				CSaString type;
+				type.LoadStringW(IDS_WINDOW_GLOSS);
 				CSaApp* pApp = (CSaApp*)AfxGetApp();
 				CString szNumber;
 				szNumber.Format(_T("%d"), index);
-				pApp->ErrorMessage(IDS_EMPTY_ANNOTATIONS,(LPCTSTR)szNumber);
+				pApp->ErrorMessage(IDS_EMPTY_ANNOTATION,(LPCTSTR)type,(LPCTSTR)szNumber);
 			}
 		}
 		break;
@@ -5866,10 +5891,12 @@ CString CSaDoc::GenerateSplitName( CSaView* pView, EFilenameConvention conventio
 			} else if (gloss.GetLength()!=0) {
 				swprintf_s(buffer,_countof(buffer),L"%s",(LPCTSTR)gloss);
 			} else {
+				CSaString type;
+				type.LoadStringW(IDS_WINDOW_GLOSS);
 				CSaApp* pApp = (CSaApp*)AfxGetApp();
 				CString szNumber;
 				szNumber.Format(_T("%d"), index);
-				pApp->ErrorMessage(IDS_EMPTY_ANNOTATIONS,(LPCTSTR)szNumber);
+				pApp->ErrorMessage(IDS_EMPTY_ANNOTATION,(LPCTSTR)type,(LPCTSTR)szNumber);
 			}
 		}
 		break;
@@ -5900,10 +5927,12 @@ CString CSaDoc::GenerateSplitName( CSaView* pView, EFilenameConvention conventio
 			if (ref.GetLength()!=0) {
 				swprintf_s(buffer,_countof(buffer),L"%s",(LPCTSTR)ref);
 			} else {
+				CSaString type;
+				type.LoadStringW(IDS_WINDOW_REFERENCE2);
 				CSaApp* pApp = (CSaApp*)AfxGetApp();
 				CString szNumber;
 				szNumber.Format(_T("%d"), index);
-				pApp->ErrorMessage(IDS_EMPTY_ANNOTATIONS,(LPCTSTR)szNumber);
+				pApp->ErrorMessage(IDS_EMPTY_ANNOTATION,(LPCTSTR)type,(LPCTSTR)szNumber);
 			}
 		}
 		break;
@@ -5955,16 +5984,18 @@ CString CSaDoc::GeneratePhraseSplitName( CSaView* pView, Annotations type, int i
 	CSegment * g = pView->GetAnnotation(type);
 	CString str = g->GetSegmentString(index);
 	str = FilterName(str);
-	if (str.GetLength()==0) 
+	if (str.GetLength()>0) 
 	{
 		swprintf_s(buffer,_countof(buffer),L"%s",(LPCTSTR)str);
 	}
 	else
 	{
+		CSaString type2;
+		type2.LoadStringW(IDS_WINDOW_MUSIC_PL1);
 		CSaApp* pApp = (CSaApp*)AfxGetApp();
 		CString szNumber;
 		szNumber.Format(_T("%d"), index);
-		pApp->ErrorMessage(IDS_EMPTY_ANNOTATIONS,(LPCTSTR)szNumber);
+		pApp->ErrorMessage(IDS_EMPTY_ANNOTATION,(LPCTSTR)type2,(LPCTSTR)szNumber);
 	}
 	result = buffer;
 	return result;
@@ -6049,9 +6080,9 @@ bool CSaDoc::ExportWord( int & count, Annotations type, EFilenameConvention conv
 		wchar_t newsaxml[MAX_PATH];
 		swprintf_s( oldsaxml, _countof(oldsaxml), L"%s\\%s.saxml.tmp",path,name);
 		swprintf_s( newsaxml, _countof(newsaxml), L"%s\\%s.saxml",path,name);
-		bSuccess = CopyFile(oldsaxml,newsaxml);
+		bSuccess = MoveFile(oldsaxml,newsaxml);
 		if (!bSuccess) {
-			pApp->ErrorMessage(IDS_SPLIT_BAD_COPY,buffer);
+			pApp->ErrorMessage(IDS_SPLIT_BAD_MOVE,buffer);
 		} else {
 			count++;
 		}
@@ -6072,7 +6103,7 @@ bool CSaDoc::ExportPhrase( Annotations type, int & count, CString path)
 	int nLoop = pView->GetAnnotation(type)->GetOffsetSize();
 	if (nLoop==0) 
 	{
-		pApp->ErrorMessage(IDS_SPLIT_NO_ANNOTATION);
+		pApp->ErrorMessage(IDS_SPLIT_NO_ANNOTATION3);
 		return false;
 	}
 
@@ -6115,10 +6146,10 @@ bool CSaDoc::ExportPhrase( Annotations type, int & count, CString path)
 		wchar_t newsaxml[MAX_PATH];
 		swprintf_s( oldsaxml, _countof(oldsaxml), L"%s\\%s.saxml.tmp",path,name);
 		swprintf_s( newsaxml, _countof(newsaxml), L"%s\\%s.saxml",path,name);
-		bSuccess = CopyFile(oldsaxml,newsaxml);
+		bSuccess = MoveFile(oldsaxml,newsaxml);
 		if (!bSuccess) 
 		{
-			pApp->ErrorMessage(IDS_SPLIT_BAD_COPY,buffer);
+			pApp->ErrorMessage(IDS_SPLIT_BAD_MOVE,buffer);
 		} 
 		else 
 		{
@@ -6489,6 +6520,13 @@ BOOL CSaDoc::AdvancedParsePhrase()
 			dwLast=dwStart;
 			dwOrder++;
 		}
+	}
+
+	CGraphWnd * pGraph = pView->GraphIDtoPtr(IDD_RAWDATA);
+	if (pGraph!=NULL) {
+		pGraph->ShowAnnotation(PHONETIC, TRUE, TRUE);
+		pGraph->ShowAnnotation(MUSIC_PL1, TRUE, TRUE);
+		pGraph->ShowAnnotation(MUSIC_PL2, TRUE, TRUE);
 	}
 
 	pView->RefreshGraphs(); // redraw graphs without legend window
@@ -7148,6 +7186,12 @@ void CSaDoc::OnAutoReferenceData()
 	// refresh the tables
 	POSITION pos = GetFirstViewPosition();
 	CSaView *pView = ((CSaView*)GetNextView(pos));
+
+	CGraphWnd * pGraph = pView->GraphIDtoPtr(IDD_RAWDATA);
+	if (pGraph!=NULL) {
+		pGraph->ShowAnnotation(REFERENCE, TRUE, TRUE);
+	}
+
 	pView->RefreshGraphs();
 
 }

@@ -1,5 +1,4 @@
 LIBRARY   sfSettings
-DESCRIPTION "Standard Format utilities"
 EXPORTS
 ?bFileExists@@YA_NPBD@Z
 ?Shw_pszOtherWhiteSpace@@3PBDB

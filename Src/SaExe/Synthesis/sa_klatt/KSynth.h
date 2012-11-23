@@ -54,7 +54,7 @@
 
 
 /* Coefficients structure */
-typedef struct {
+typedef struct SCoefficients {
 	Float asp_amp;
 	Float fric_amp;
 	Float f1p_amp;

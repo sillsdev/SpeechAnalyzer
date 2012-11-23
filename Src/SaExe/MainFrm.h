@@ -67,7 +67,7 @@ class CFontTable;
 
 typedef UINT (CALLBACK *DLGHOOKPROC)(HWND, UINT, WPARAM, LPARAM);
 
-typedef struct {
+typedef struct SDefaultViewInfo {
 	CSaView       *pView;
 	BOOL           bMaximize;
 	int            nHeight;

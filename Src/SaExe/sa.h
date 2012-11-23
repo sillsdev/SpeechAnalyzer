@@ -148,8 +148,8 @@ public:
 	void       ErrorMessage(CSaString& szText);
 	void       DisplayMessages();								// displays a stored error message
 	void       SetBatchFileChanged(CSaString, int, CDocument*); // set file changed in batch mode list file
-	int        GetBatchMode() {return m_nBatchMode;} // return application mode (batch or not, exit allowed)
-	void       CancelBatchMode() {if(m_nBatchMode != 0)m_nBatchMode = 3;} // allow SA to exit
+	int        GetBatchMode() { return m_nBatchMode;} // return application mode (batch or not, exit allowed)
+	void       CancelBatchMode() { if(m_nBatchMode != 0)m_nBatchMode = 3;} // allow SA to exit
 	CDocument* IsFileOpened(const TCHAR* pszFileName); // check is this file already opened
 	bool			 IsDocumentOpened( const CSaDoc * pDoc); // check is this file already opened
 	BOOL       CloseWorkbench(CDocument*); // close an already opened workbench document
@@ -160,12 +160,12 @@ public:
 	BOOL       SaGetPrinterDeviceDefaults(PRINTDLG * pPrintDlg, BOOL landscape);
 	BOOL       IsCreatingNewFile() {return m_bNewDocument;} // return TRUE if file new operation running
 	CDocument* GetWbDoc() {return m_pWbDoc;} // return pointer to workbench document
-	void       SetWbOpenOnExit(BOOL bOpen) {m_bWbOpenOnExit = bOpen;}
+	void       SetWbOpenOnExit(BOOL bOpen) { m_bWbOpenOnExit = bOpen;}
 	void       FileReturn(BOOL bHide=TRUE); // return to calling application
 	CWnd*      IsAppRunning();
-	UINT       GetOpenAsID()         {return m_OpenAsID;}    // return m_OpenAsID
-	void       SetOpenAsID(UINT OpenAsID)     {m_OpenAsID = OpenAsID;}  // set m_OpenAsID
-	void       SetLastClipboardPath(CSaString szPath) {m_szLastClipboardPath = szPath;}
+	UINT       GetOpenAsID() { return m_OpenAsID;}    // return m_OpenAsID
+	void       SetOpenAsID(UINT OpenAsID) { m_OpenAsID = OpenAsID;}  // set m_OpenAsID
+	void       SetLastClipboardPath(CSaString szPath) { m_szLastClipboardPath = szPath;}
 	void       FileOpen();
 	void GetMRUFilePath( int i, CSaString & buffer) const
 	{

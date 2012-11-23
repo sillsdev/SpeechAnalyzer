@@ -25,9 +25,9 @@
 #define _TOOLS_OPTIONS_H
 
 
-typedef struct {
-  TCHAR     *pszColorItem;
-  COLORREF  cColor;
+typedef struct SColorComboInfo {
+	TCHAR     *pszColorItem;
+	COLORREF  cColor;
 } ColorComboInfo;
 
 //###########################################################################

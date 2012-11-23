@@ -60,9 +60,11 @@ BOOL ParseParm::ReadProperties(Object_istream& obs)
 		{
 			fPhraseBreakWidth = (float) nTemp/1000.0f;
 		}
-		else if (obs.bReadInteger(psz_maxThreshold, nMaxThreshold)) {
+		else if (obs.bReadInteger(psz_maxThreshold, nMaxThreshold)) 
+		{
 		}
-		else if ( obs.bReadInteger(psz_minThreshold, nMinThreshold) ) {
+		else if ( obs.bReadInteger(psz_minThreshold, nMinThreshold) ) 
+		{
 		}
 		else if ( obs.bEnd(psz_parse) )
 		{

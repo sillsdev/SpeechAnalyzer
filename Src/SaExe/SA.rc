@@ -28,7 +28,7 @@ LANGUAGE LANG_NEUTRAL, SUBLANG_NEUTRAL
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 3,0,1,16
+ FILEVERSION 3,1,0,17
  PRODUCTVERSION 1,0,0,1
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
@@ -46,7 +46,7 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "SIL International"
             VALUE "FileDescription", "SA"
-            VALUE "FileVersion", "v3.0.1.16"
+            VALUE "FileVersion", "v3.1.0.17"
             VALUE "InternalName", "SA"
             VALUE "LegalCopyright", "© 1996-2012 SIL International (MSEA)"
             VALUE "ProductName", "SA"
@@ -1461,7 +1461,7 @@ BEGIN
     LTEXT           "",IDC_CHART_T1201,151,43,198,16,NOT WS_VISIBLE | WS_DISABLED | NOT WS_GROUP
 END
 
-IDD_ANNOTATIONWIZARD DIALOGEX 0, 0, 255, 186
+IDD_ANNOTATION_WIZARD DIALOGEX 0, 0, 255, 186
 STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
 CAPTION "Annotation Wizard"
 FONT 8, "MS Sans Serif", 0, 0, 0x0
@@ -2744,11 +2744,12 @@ BEGIN
         MENUITEM "Audio &Converter Program",    ID_AUDIO_CON
         POPUP "Automatic &Markup"
         BEGIN
-            MENUITEM "Locate Phonetic &Segments",   ID_ADVANCED_SEGMENT
-            MENUITEM "Locate &Phrases",             ID_ADVANCED_PARSE_PHRASE
-            MENUITEM "Locate &Words",               ID_ADVANCED_PARSE_WORD
-            MENUITEM "&Align Transcription Data",   ID_AUTO_ALIGN
             MENUITEM "&Reference Data",             ID_AUTOMATICMARKUP_REFERENCEDATA
+            MENUITEM "&Align Transcription Data",   ID_AUTO_ALIGN
+            MENUITEM SEPARATOR
+            MENUITEM "Locate Phonetic &Segments",   ID_ADVANCED_SEGMENT
+            MENUITEM "Locate &Words",               ID_ADVANCED_PARSE_WORD
+            MENUITEM "Locate &Phrases",             ID_ADVANCED_PARSE_PHRASE
         END
         MENUITEM SEPARATOR
         MENUITEM "&Options...",                 ID_TOOLS_OPTIONS
@@ -3933,7 +3934,7 @@ STRINGTABLE
 BEGIN
     IDR_MAINFRAME           "Speech Analyzer"
     IDR_SA_ANNTYPE          "\nSA\nSA Document\nWAV Files (*.wav)\n.wav\nannFileType\nANN File Type"
-    VS_VERSION              "Version 3.0.1.15"
+    VS_VERSION              "Version 3.1.0.17"
     VS_COPYRIGHT            "© 1996-2012 SIL International (MSEA).\nAll Rights Reserved."
     IDR_SA_WBTYPE           "\nWB\nSA Workbench\nWB Files (*.wb)\n.wb\nwbFileType\nWB File Type"
 END
@@ -4347,6 +4348,7 @@ BEGIN
     IDS_WINDOW_MUSIC_PL2    "Phrase L2"
     IDS_WINDOW_MUSIC_PL3    "Phrase L3"
     IDS_WINDOW_MUSIC_PL4    "Phrase L4"
+    IDS_WINDOW_REFERENCE2   "Reference"
 END
 
 STRINGTABLE 
@@ -4893,8 +4895,8 @@ END
 
 STRINGTABLE 
 BEGIN
-    IDS_EMPTY_ANNOTATIONS   "The annotations for segment %1 were empty.  The segment will not be saved because a filename get could not be generated."
-    IDS_SPLIT_BAD_COPY      "Unable to complete copy of transcription data for %1.\nThe transcription data is lost."
+    IDS_EMPTY_ANNOTATION    "The annotation for %1 segment %2 was empty.  The segment will not be saved because a filename get could not be generated."
+    IDS_SPLIT_BAD_MOVE      "Unable to complete move of transcription data for %1.\nThe transcription data is lost."
     IDS_SPLIT_COMPLETE      "The split is complete.  %1 segments were created."
     IDS_CONFIRM_PHONEMIC_COPY 
                             "This process will delete the existing phonemic data.\nDo you want to continue?"
@@ -4902,6 +4904,8 @@ BEGIN
     ID_AUTOMATICMARKUP_REFERENCEDATA "Renumber the Reference Data"
     IDS_SPLIT_NO_ANNOTATION2 
                             "Please select a graph with a Reference Annontation."
+    IDS_SPLIT_NO_ANNOTATION3 
+                            "Please select a graph with a Phrase Annontation."
 END
 
 STRINGTABLE 

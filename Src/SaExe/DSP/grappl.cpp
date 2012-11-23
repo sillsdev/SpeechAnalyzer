@@ -40,55 +40,56 @@ typedef int16 *Shortptr;
 enum{  Idle,WantIn,WantOut };
 
 /* hardcoded parameter values */
-enum{   Badcoeff=-20000,  /* invalid acf coeff */
-  Baseweighting=20,  /* base for freq reliability weights for contouring algorithm */
-  NsampAcf=15,    /* no. of samples for acf calcs */
-  NsampMag=21,    /* no. of samples for magnitude calcs */
-  Maxlag=10,    /* max. zero-crossing lags to consider */
-  Optimrange_pc100=500,  /* optimise best zero-crossing acfs +/- 5% */
-  Nsmoothpass=2    /* no. of smoothing passes to generate smooth16 */
-  };
+enum {   
+	Badcoeff=-20000,	/* invalid acf coeff */
+	Baseweighting=20,	/* base for freq reliability weights for contouring algorithm */
+	NsampAcf=15,		/* no. of samples for acf calcs */
+	NsampMag=21,		/* no. of samples for magnitude calcs */
+	Maxlag=10,			/* max. zero-crossing lags to consider */
+	Optimrange_pc100=500,  /* optimise best zero-crossing acfs +/- 5% */
+	Nsmoothpass=2		/* no. of smoothing passes to generate smooth16 */
+};
 
 /* private data structures */
 /* acf data for particular zero-crossing interval */
-typedef struct{
-  int16  nxing;    /* no of zero-crossings this dist represents */
-  int16  coeff;    /* acf coeff for this dist */
-  uint16 dist16;  /* dist in data samples (x16) */
-  } Lagelem;
+typedef struct SLagelem {
+	int16  nxing;    /* no of zero-crossings this dist represents */
+	int16  coeff;    /* acf coeff for this dist */
+	uint16 dist16;  /* dist in data samples (x16) */
+} Lagelem;
 typedef Lagelem *pLagelem;
 
 /* raw pitch estimate */
-typedef struct{
-  int16  pitch16;  /* pitch estimate in Hz (x16) */
-  int16  coeff;    /* associated acf coeff */
-  int16  weight;    /* associated weight */
-  } Fraw;
+typedef struct SFraw {
+	int16  pitch16;  /* pitch estimate in Hz (x16) */
+	int16  coeff;    /* associated acf coeff */
+	int16  weight;    /* associated weight */
+} Fraw;
 typedef Fraw *pFraw;
 
 /* private intermediate results data */
-typedef struct{
+typedef struct SSysres {
   uint8 voiced;    /* data is voiced */
   uint8 selected;    /* used in locating tone contours */
   int16  magnitude;  /* smoothed magnitude in range 0-100 */
   int16  weight;    /* final point weight */
   Fraw  fraw[2];  /* raw pitch estimates */
-  } Sysres;
+} Sysres;
 typedef Sysres *pSres;
 
 /* pitch contour tracking */
-typedef struct{
-  int16  ipos,isubpos;
-  int16  itarget;
-  int16  direc;
-  int32  weight,subweight;
-  int32  magnitude,submag;
-  int16  pitch16;
-  int16  prevpitch16;
-  int16  confirm;
-  } Route;
+typedef struct SRoute {
+	int16  ipos,isubpos;
+	int16  itarget;
+	int16  direc;
+	int32  weight,subweight;
+	int32  magnitude,submag;
+	int16  pitch16;
+	int16  prevpitch16;
+	int16  confirm;
+} Route;
 
-typedef struct{
+typedef struct {
   /* overall flow control */
   int16  state;      /* Idle, Wantin or Wantout */
   int16  error;      /* error state */

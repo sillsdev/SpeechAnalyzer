@@ -2314,13 +2314,15 @@ void CDlgVocalTract::LabelDocument(CSaDoc* pDoc)
 
 			labelTime = elapsedTime + minLabelTime;
 		}
+		
 		if (szIPA != cChars[i].m_ipa || i == cChars.size() - 1)
 		{
 			DWORD dwStart = DWORD(lastCharStopTime*SR+0.5)*2;
 			double length = elapsedTime - lastCharStopTime;
 			DWORD dwDuration = DWORD(length*SR+0.5)*2;
 
-			if (dwDuration) {
+			if (dwDuration) 
+			{
 				pCharSeg->Insert(pCharSeg->GetOffsetSize(), &szIPA, '#', dwStart, dwDuration);
 			}
 			szIPA = cChars[i].m_ipa;

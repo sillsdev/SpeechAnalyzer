@@ -1,12 +1,11 @@
 LIBRARY   SA_DSP
-DESCRIPTION "DSP algorithms for Speech Analyzer."
 EXPORTS
-  ?grapplGetResults@@YAFPAXPAPAUGrappl_res@@PAF2@Z
-  ?grapplSetInbuff@@YAFPAX0GF@Z
-  ?grapplInit@@YAFPAXPAUGrappl_parms@@@Z
-  ?grapplWorkspace@@YAIXZ
-  ?FormantRange@CFormantPicker@@SA?AURANGE@@HI@Z
-  ?grapplSetInbuff@@YAFPAX0GF@Z
+?grapplGetResults@@YAFPAXPAPAUGrappl_res@@PAF2@Z
+?grapplSetInbuff@@YAFPAX0GF@Z
+?grapplInit@@YAFPAXPAUGrappl_parms@@@Z
+?grapplWorkspace@@YAIXZ
+?FormantRange@CFormantPicker@@SA?AURANGE@@HI@Z
+?grapplSetInbuff@@YAFPAX0GF@Z
 ?grapplInit@@YAFPAXPAUGrappl_parms@@@Z
 ?grapplWorkspace@@YAIXZ
 ?FormantRange@CFormantPicker@@SA?AURANGE@@HI@Z

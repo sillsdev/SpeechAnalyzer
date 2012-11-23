@@ -2647,11 +2647,10 @@ CGlossSegment::~CGlossSegment()
 // CGlossSegment::ReplaceSelectedSegment
 // Replaces the selected segment with the string passes in.
 /***************************************************************************/
-void CGlossSegment::ReplaceSelectedSegment(CDocument* pSaDoc, const CSaString & str)
-{
+void CGlossSegment::ReplaceSelectedSegment(CDocument* pSaDoc, const CSaString & str) {
+
 	CSaString POS;
-	if(m_nSelection != -1)
-	{
+	if (m_nSelection != -1) {
 		POS = m_pPOS->GetAt(m_nSelection); //SDM 1.5Test8.2
 	}
 

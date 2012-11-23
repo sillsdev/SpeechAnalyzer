@@ -21,7 +21,7 @@
 typedef void* LPPHONE;
 
 /* Return values of the nextphone function */
-typedef enum {
+typedef enum EStatePhone {
 	PHO_OK,
 	PHO_EOF,
 	PHO_FLUSH 

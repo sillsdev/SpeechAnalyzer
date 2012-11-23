@@ -1,5 +1,4 @@
 LIBRARY   zGraph
-DESCRIPTION "zGraph library used in Speech Analyzer"
 EXPORTS
 ?zzDrawGraphAxes@zGraph@@QAEXHH@Z
 ?zFlip@zScatterGraph@@QAEXXZ

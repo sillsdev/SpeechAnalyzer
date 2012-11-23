@@ -4,7 +4,7 @@
 
 #define _SA_PARM_H__
 
-typedef struct
+typedef struct SSourceParm
 {
   CSaString     szLanguage;         // language name
   CSaString     szEthnoID;          // ethnologue ID

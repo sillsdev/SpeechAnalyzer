@@ -299,7 +299,8 @@ CWaveResampler::ECONVERT CWaveResampler::Run( const TCHAR * src,
 		/* Tell Windows to locate a WAVE Group header somewhere in the file, and read it in.
 		This marks the start of any embedded WAVE format within the file */
 		waveChunk.fccType = mmioFOURCC('W', 'A', 'V', 'E'); 
-		if (mmioDescend( hmmio, (LPMMCKINFO)&waveChunk, NULL, MMIO_FINDRIFF)){
+		if (mmioDescend( hmmio, (LPMMCKINFO)&waveChunk, NULL, MMIO_FINDRIFF))
+		{
 			/* Oops! No embedded WAVE format within this file */
 			TRACE("mmioDescend fail\n");
 			mmioClose(hmmio, 0);
@@ -310,17 +311,20 @@ CWaveResampler::ECONVERT CWaveResampler::Run( const TCHAR * src,
 		memset(&fmtChunk,0,sizeof(fmtChunk));
 		/* Tell Windows to locate the WAVE's "fmt " chunk and read in its header */
 		fmtChunk.ckid = mmioFOURCC('f', 'm', 't', ' '); 
-		if (mmioDescend(hmmio, &fmtChunk, &waveChunk, MMIO_FINDCHUNK)) {
+		if (mmioDescend(hmmio, &fmtChunk, &waveChunk, MMIO_FINDCHUNK)) 
+		{
 			TRACE("mmioDescend fail\n");
 			mmioClose(hmmio, 0);
 			return EC_READFAIL;
 		}
 
-		if ((fmtChunk.cksize==16)||(fmtChunk.cksize==18)) {
+		if ((fmtChunk.cksize==16)||(fmtChunk.cksize==18)) 
+		{
 			/* Tell Windows to read in the "fmt " chunk into a WAVEFORMATEX structure */
 			WAVEFORMATEX format;
 			memset(&format,0,sizeof(format));
-			if (mmioRead(hmmio, (HPSTR)&format, fmtChunk.cksize) != (LRESULT)fmtChunk.cksize) {	
+			if (mmioRead(hmmio, (HPSTR)&format, fmtChunk.cksize) != (LRESULT)fmtChunk.cksize) 
+			{	
 				TRACE("mmioRead fail\n");
 				mmioClose(hmmio, 0);
 				return EC_READFAIL;
@@ -336,7 +340,8 @@ CWaveResampler::ECONVERT CWaveResampler::Run( const TCHAR * src,
 			WAVEFORMATEXTENSIBLE waveInEx;
 			memset(&waveInEx,0,sizeof(WAVEFORMATEXTENSIBLE));
 			/* Tell Windows to read in the "fmt " chunk into a WAVEFORMATEX structure */
-			if (mmioRead(hmmio, (HPSTR)&waveInEx, fmtChunk.cksize) != (LRESULT)fmtChunk.cksize) {	
+			if (mmioRead(hmmio, (HPSTR)&waveInEx, fmtChunk.cksize) != (LRESULT)fmtChunk.cksize) 
+			{	
 				TRACE("mmioRead fail\n");
 				mmioClose(hmmio, 0);
 				return EC_READFAIL;
@@ -359,7 +364,8 @@ CWaveResampler::ECONVERT CWaveResampler::Run( const TCHAR * src,
 			return EC_READFAIL;
 		}
 
-		if (mmioAscend(hmmio, &fmtChunk, 0)) {
+		if (mmioAscend(hmmio, &fmtChunk, 0)) 
+		{
 			TRACE("mmioAscend fail\n");
 			mmioClose(hmmio, 0);
 			return EC_READFAIL;
@@ -378,7 +384,8 @@ CWaveResampler::ECONVERT CWaveResampler::Run( const TCHAR * src,
 		memset(&dataChunk,0,sizeof(dataChunk));
 		/* Tell Windows to locate the WAVE's "fmt " chunk and read in its header */
 		dataChunk.ckid = mmioFOURCC('d', 'a', 't', 'a'); 
-		if (mmioDescend(hmmio, &dataChunk, NULL, MMIO_FINDCHUNK)) {
+		if (mmioDescend(hmmio, &dataChunk, NULL, MMIO_FINDCHUNK)) 
+		{
 			TRACE("mmioDescend fail\n");
 			mmioClose(hmmio, 0);
 			return EC_NODATA;
@@ -388,7 +395,8 @@ CWaveResampler::ECONVERT CWaveResampler::Run( const TCHAR * src,
 		data = new BYTE[dataChunk.cksize];
 
 		/** read the data */
-		if (mmioRead(hmmio, (HPSTR)data, dataChunk.cksize) != (LRESULT)dataChunk.cksize) {	
+		if (mmioRead(hmmio, (HPSTR)data, dataChunk.cksize) != (LRESULT)dataChunk.cksize) 
+		{	
 			TRACE("mmioRead fail\n");
 			mmioClose(hmmio, 0);
 			delete [] data;
@@ -396,7 +404,8 @@ CWaveResampler::ECONVERT CWaveResampler::Run( const TCHAR * src,
 			return EC_READFAIL;
 		}
 
-		if (mmioAscend(hmmio, &dataChunk, 0)) {
+		if (mmioAscend(hmmio, &dataChunk, 0)) 
+		{
 			TRACE("mmioAscend fail\n");
 			mmioClose(hmmio, 0);
 			delete [] data;
@@ -415,7 +424,8 @@ CWaveResampler::ECONVERT CWaveResampler::Run( const TCHAR * src,
 
 	// convert incoming format if possible
 	if ((wFormatTag!=WAVE_FORMAT_PCM)&&
-		(wFormatTag!=WAVE_FORMAT_IEEE_FLOAT)) {
+		(wFormatTag!=WAVE_FORMAT_IEEE_FLOAT)) 
+	{
 
 		HACMSTREAM hacm = 0;
 		HACMDRIVER had = NULL;
@@ -436,7 +446,8 @@ CWaveResampler::ECONVERT CWaveResampler::Run( const TCHAR * src,
 		DWORD_PTR dwCallback = 0;
 		DWORD_PTR dwInstance = 0;
 		DWORD fdwOpen = ACM_STREAMOPENF_NONREALTIME;
-		if (acmStreamOpen(&hacm,had,&fxSrc,&fxDst,pwfltr,dwCallback,dwInstance,fdwOpen)) {
+		if (acmStreamOpen(&hacm,had,&fxSrc,&fxDst,pwfltr,dwCallback,dwInstance,fdwOpen)) 
+		{
 			TRACE("acmStreamOpen fail\n");
 			delete [] data;
 			data = NULL;
@@ -446,7 +457,8 @@ CWaveResampler::ECONVERT CWaveResampler::Run( const TCHAR * src,
 		DWORD cbInput = length;
 		DWORD outputBytes = 0;
 		DWORD fdwSize = ACM_STREAMSIZEF_SOURCE;
-		if (acmStreamSize(hacm,cbInput,&outputBytes,fdwSize)) {
+		if (acmStreamSize(hacm,cbInput,&outputBytes,fdwSize)) 
+		{
 			TRACE("acmStreamSize fail\n");
 			acmStreamClose(hacm,0);
 			delete [] data;
@@ -468,7 +480,8 @@ CWaveResampler::ECONVERT CWaveResampler::Run( const TCHAR * src,
 		ash.cbDstLengthUsed = 0;
 		ash.dwDstUser = NULL;
 
-		if (acmStreamPrepareHeader(hacm,&ash,0)) {
+		if (acmStreamPrepareHeader(hacm,&ash,0)) 
+		{
 			TRACE("acmStreamPrepareHeader fail\n");
 			acmStreamClose(hacm,0);
 			delete [] data;
@@ -476,7 +489,8 @@ CWaveResampler::ECONVERT CWaveResampler::Run( const TCHAR * src,
 			return EC_CONVERTFORMATFAIL;
 		}
 
-		if (acmStreamConvert(hacm,&ash,0)) {
+		if (acmStreamConvert(hacm,&ash,0)) 
+		{
 			TRACE("acmStreamConvert fail\n");
 			acmStreamClose(hacm,0);
 			delete [] data;
@@ -507,7 +521,8 @@ CWaveResampler::ECONVERT CWaveResampler::Run( const TCHAR * src,
 		delete [] data;
 		data = ash.pbDst;
 
-		if (acmStreamClose(hacm,0)) {
+		if (acmStreamClose(hacm,0)) 
+		{
 			TRACE("acmStreamClose fail\n");
 			delete [] data;
 			data = NULL;
@@ -529,12 +544,14 @@ CWaveResampler::ECONVERT CWaveResampler::Run( const TCHAR * src,
 
 		size_t j = 0;
 		size_t k = 0;
-		if (wFormatTag==WAVE_FORMAT_PCM) {
+		if (wFormatTag==WAVE_FORMAT_PCM) 
+		{
 			// if it's 32 bit, we also don't need to do this
 			switch (wBitsPerSample) {
 			case 16:
 				{
-					for (size_t i=0;i<numSamples;i++) {
+					for (size_t i=0;i<numSamples;i++) 
+					{
 						for (unsigned int c=0;c<nChannels;c++) {
 							unsigned long b0 = data[k++];
 							unsigned long b1 = data[k++];
@@ -553,7 +570,8 @@ CWaveResampler::ECONVERT CWaveResampler::Run( const TCHAR * src,
 				break;
 			case 24:
 				{
-					for (size_t i=0;i<numSamples;i++) {
+					for (size_t i=0;i<numSamples;i++) 
+					{
 						for (unsigned int c=0;c<nChannels;c++) {
 							unsigned long b0 = data[k++];
 							unsigned long b1 = data[k++];
@@ -575,7 +593,8 @@ CWaveResampler::ECONVERT CWaveResampler::Run( const TCHAR * src,
 				break;
 			case 32:
 				{
-					for (size_t i=0;i<numSamples;i++) {
+					for (size_t i=0;i<numSamples;i++) 
+					{
 						for (unsigned int c=0;c<nChannels;c++) {
 							unsigned long b0 = data[k++];
 							unsigned long b1 = data[k++];
@@ -604,15 +623,18 @@ CWaveResampler::ECONVERT CWaveResampler::Run( const TCHAR * src,
 				data = NULL;
 				return EC_WRONGFORMAT;
 			}
-		} else if (wFormatTag==WAVE_FORMAT_IEEE_FLOAT) {
+		} else if (wFormatTag==WAVE_FORMAT_IEEE_FLOAT) 
+		{
 			// assume float
 			switch (wBitsPerSample) {
 			case 32:
 				{
 					float * samples = (float *)data;
-					for (size_t i=0;i<numSamples;i++) {
+					for (size_t i=0;i<numSamples;i++) 
+					{
 						int z = i*nChannels;
-						for (unsigned int c=0;c<nChannels;c++) {
+						for (unsigned int c=0;c<nChannels;c++) 
+						{
 							double temp = samples[z+c];
 							temp = Limit(temp);
 							buffer[j++] = temp;
@@ -658,9 +680,11 @@ CWaveResampler::ECONVERT CWaveResampler::Run( const TCHAR * src,
 	if (nChannels!=1) {
 
 		int selectedChannel = 0;
-		if (bShowAdvancedAudio) {
+		if (bShowAdvancedAudio) 
+		{
 			CDlgMultiChannel dlg(nChannels,true);
-			if (dlg.DoModal()!=IDOK) {
+			if (dlg.DoModal()!=IDOK) 
+			{
 				delete [] datal;
 				return EC_USERABORT;
 			}
@@ -673,9 +697,11 @@ CWaveResampler::ECONVERT CWaveResampler::Run( const TCHAR * src,
 
 		size_t k=0;
 		size_t j=0;
-		for (size_t i=0;i<numSamples;i++) {
+		for (size_t i=0;i<numSamples;i++) 
+		{
 			double sum = 0;
-			for (size_t c=0;c<nChannels;c++) {
+			for (size_t c=0;c<nChannels;c++) 
+			{
 				if (k>=length) {
 					TRACE("buffer index problem\n");
 					delete [] buffer;
@@ -683,19 +709,22 @@ CWaveResampler::ECONVERT CWaveResampler::Run( const TCHAR * src,
 					datal = NULL;
 					return EC_SOFTWARE;
 				}
-				if ((selectedChannel==nChannels)||(selectedChannel==c)) {
+				if ((selectedChannel==nChannels)||(selectedChannel==c)) 
+				{
 					sum += datal[k];
 				}
 				k++;
 			}
-			if (selectedChannel==nChannels) {
+			if (selectedChannel==nChannels) 
+			{
 				sum /= (double)nChannels;
 			} else {
 				// it's a single channel - do nothing
 			}
 			buffer[j++]=sum;
 		}
-		if (j!=bufferSize) {
+		if (j!=bufferSize) 
+		{
 			TRACE("buffer size problem\n");
 			delete [] buffer;
 			delete [] datal;
@@ -745,12 +774,14 @@ CWaveResampler::ECONVERT CWaveResampler::Run( const TCHAR * src,
 	*/
 
 	// is there anything to do?
-	if ((nSamplesPerSec!=22050)) {
+	if ((nSamplesPerSec!=22050)) 
+	{
 
 		// data is already in float
 		// convert to even number of samples (why?)
 		size_t numSamples = length;
-		if ((numSamples-((numSamples/2)*2))>0) {
+		if ((numSamples-((numSamples/2)*2))>0) 
+		{
 			numSamples--;
 		}
 		
@@ -769,7 +800,8 @@ CWaveResampler::ECONVERT CWaveResampler::Run( const TCHAR * src,
 
 		// create the output buffer
 		size_t bufferLen = workLen/dwnSmpFactor;
-		if (bufferLen > 0x7fffffff) {
+		if (bufferLen > 0x7fffffff) 
+		{
 			TRACE("data is too large!\n");
 			delete [] datal;
 			datal = NULL;
@@ -803,7 +835,8 @@ CWaveResampler::ECONVERT CWaveResampler::Run( const TCHAR * src,
 	{
 		//Creating new wav file. 
 		HMMIO hmmio = mmioOpen( const_cast<TCHAR*>(dst), 0, MMIO_CREATE | MMIO_WRITE); 
-		if (hmmio==NULL) {
+		if (hmmio==NULL) 
+		{
 			TRACE("mmioOpen fail\n");
 			delete [] datal;
 			datal = NULL;
@@ -816,7 +849,8 @@ CWaveResampler::ECONVERT CWaveResampler::Run( const TCHAR * src,
 		// set chunk size
 		riffChunk.cksize = 4+8+16+8+length;
 		//Creating RIFF chunk 
-		if (mmioCreateChunk(hmmio, &riffChunk, MMIO_CREATERIFF)) { 
+		if (mmioCreateChunk(hmmio, &riffChunk, MMIO_CREATERIFF)) 
+		{ 
 			TRACE("mmioCreateChunk fail\n");
 			mmioClose(hmmio,0);
 			delete [] datal;
@@ -833,7 +867,8 @@ CWaveResampler::ECONVERT CWaveResampler::Run( const TCHAR * src,
 		// set chunk size
 		formatChunk.cksize = 16;
 		//Creating format chunk and inserting information from source file 
-		if (mmioCreateChunk(hmmio, &formatChunk, 0)) { 
+		if (mmioCreateChunk(hmmio, &formatChunk, 0)) 
+		{ 
 			TRACE("mmioCreateChunk fail\n");
 			mmioClose(hmmio,0);
 			delete [] datal;
@@ -842,7 +877,8 @@ CWaveResampler::ECONVERT CWaveResampler::Run( const TCHAR * src,
 		}
 		// write the format parameters into 'fmt ' chunk
 		LONG len = mmioWrite(hmmio, (HPSTR)&wFormatTag, sizeof(WORD));
-		if (len!=sizeof(WORD)) {
+		if (len!=sizeof(WORD)) 
+		{
 			TRACE("mmioWrite fail\n");
 			mmioClose(hmmio,0);
 			delete [] datal;
@@ -858,7 +894,8 @@ CWaveResampler::ECONVERT CWaveResampler::Run( const TCHAR * src,
 			return EC_WRITEFAIL;
 		}
 		len = mmioWrite(hmmio, (HPSTR)&nSamplesPerSec, sizeof(DWORD));
-		if (len!=sizeof(DWORD)) {
+		if (len!=sizeof(DWORD)) 
+		{
 			TRACE("mmioWrite fail\n");
 			mmioClose(hmmio,0);
 			delete [] datal;
@@ -867,7 +904,8 @@ CWaveResampler::ECONVERT CWaveResampler::Run( const TCHAR * src,
 		}
 		DWORD nAvgBytesPerSec = nSamplesPerSec*nBlockAlign;
 		len = mmioWrite(hmmio, (HPSTR)&nAvgBytesPerSec, sizeof(DWORD));
-		if (len!=sizeof(DWORD)) {
+		if (len!=sizeof(DWORD)) 
+		{
 			TRACE("mmioWrite fail\n");
 			mmioClose(hmmio,0);
 			delete [] datal;
@@ -875,7 +913,8 @@ CWaveResampler::ECONVERT CWaveResampler::Run( const TCHAR * src,
 			return EC_WRITEFAIL;
 		}
 		len = mmioWrite(hmmio, (HPSTR)&nBlockAlign, sizeof(WORD));
-		if (len!=sizeof(WORD)) {
+		if (len!=sizeof(WORD)) 
+		{
 			TRACE("mmioWrite fail\n");
 			mmioClose(hmmio,0);
 			delete [] datal;
@@ -883,14 +922,16 @@ CWaveResampler::ECONVERT CWaveResampler::Run( const TCHAR * src,
 			return EC_WRITEFAIL;
 		}
 		len = mmioWrite(hmmio, (HPSTR)&wBitsPerSample, sizeof(WORD));
-		if (len!=sizeof(WORD)) {
+		if (len!=sizeof(WORD)) 
+		{
 			TRACE("mmioWrite fail\n");
 			mmioClose(hmmio,0);
 			delete [] datal;
 			datal = NULL;
 			return EC_WRITEFAIL;
 		}
-		if (mmioAscend(hmmio, &formatChunk, 0)) { 
+		if (mmioAscend(hmmio, &formatChunk, 0)) 
+		{ 
 			TRACE("mmioAscend fail\n");
 			mmioClose(hmmio,0);
 			delete [] datal;
@@ -903,7 +944,8 @@ CWaveResampler::ECONVERT CWaveResampler::Run( const TCHAR * src,
 			DWORD bufferSize = length*2;
 			BYTE * buffer = new BYTE[bufferSize];
 			size_t k=0;
-			for (size_t i=0;i<length;i++) {
+			for (size_t i=0;i<length;i++) 
+			{
 				double dval = datal[i];
 				dval = Limit(dval);
 				long lval = (long)(dval*(double)0x7fffffff);
@@ -919,7 +961,8 @@ CWaveResampler::ECONVERT CWaveResampler::Run( const TCHAR * src,
 			MMCKINFO dataChunk; 
 			dataChunk.ckid = mmioFOURCC('d', 'a', 't', 'a');
 			dataChunk.cksize = bufferSize;
-			if (mmioCreateChunk( hmmio, &dataChunk, 0)) {
+			if (mmioCreateChunk( hmmio, &dataChunk, 0)) 
+			{
 				TRACE("mmioCreateChunk fail\n");
 				delete [] buffer;
 				mmioClose(hmmio,0);
@@ -932,7 +975,8 @@ CWaveResampler::ECONVERT CWaveResampler::Run( const TCHAR * src,
 
 			delete [] buffer;
 
-			if (len!=dataChunk.cksize) {
+			if (len!=dataChunk.cksize) 
+			{
 				TRACE("mmioWrite fail\n");
 				mmioClose(hmmio,0);
 				delete [] datal;
@@ -940,7 +984,8 @@ CWaveResampler::ECONVERT CWaveResampler::Run( const TCHAR * src,
 				return EC_WRITEFAIL;
 			}
 
-			if (mmioAscend(hmmio, &dataChunk, 0)) { 
+			if (mmioAscend(hmmio, &dataChunk, 0)) 
+			{ 
 				TRACE("mmioAscend fail\n");
 				mmioClose(hmmio,0);
 				delete [] datal;
@@ -950,7 +995,8 @@ CWaveResampler::ECONVERT CWaveResampler::Run( const TCHAR * src,
 		}
 
 		// Close the file.  
-		if (mmioClose(hmmio, 0)) {
+		if (mmioClose(hmmio, 0)) 
+		{
 			TRACE("mmioClose fail\n");
 			delete [] datal;
 			datal = NULL;

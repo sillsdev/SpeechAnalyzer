@@ -55,7 +55,7 @@
 
 #define _SA_VIEW_H
 
-typedef enum { CREATE_STANDARD=0, CREATE_FROMSTREAM=1, CREATE_FROMGRAPH=2, CREATE_FROMSCRATCH=3 } CREATE_HOW;
+typedef enum ECREATE_HOW { CREATE_STANDARD=0, CREATE_FROMSTREAM=1, CREATE_FROMGRAPH=2, CREATE_FROMSCRATCH=3 } CREATE_HOW;
 
 //###########################################################################
 // CSaView view

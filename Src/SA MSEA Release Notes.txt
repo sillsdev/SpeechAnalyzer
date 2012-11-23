@@ -1,3 +1,16 @@
+SA - 3.1.0.17 - 11/23/2012
+1) Removed saxml.tmp file left over during split file operations.
+2) Fixed wrong error message when that occurs when split files with gloss/ref naming convention.
+3) Modified TAT feature so that '#' marks are maintained when numbering is encountered.  If no '#' marks on found on import data, TAT uses spaces to delimit.  The code also no longer injects '.'s when numbers are found.
+4) Named various enumeration and struct structures throughout code.
+5) Updated error message text that is displayed when empty segments are found during the split file export feature.
+6) Reordered 'Automaric Markup' popup menu.
+
+SA - 3.0.1.16b - 11/18/2012
+Simplified auto transcription alignment.
+Phonetic, Phonemic and Orthographic transcriptions use the space delimiter as the word break both for building the displayed input string and for processing the transcriptions
+Gloss uses the space delimitier as a word break, but also supports incoming '#' characters or single digit number as breaks. 
+
 SA - 3.0.1.16 - 11/16/2012
 Addressing the following emails:
    11/03/12 - Re Split File Work
