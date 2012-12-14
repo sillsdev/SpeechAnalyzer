@@ -38,7 +38,10 @@ class DspWin
 {
 public:
 	DspWin(const DspWin &from) :
-	  m_nLength(from.m_nLength), m_smpRate(from.m_smpRate), m_windowType(from.m_windowType), m_bWindowBuilt(false) {;}
+	  m_nLength(from.m_nLength), m_smpRate(from.m_smpRate), m_windowType(from.m_windowType), m_bWindowBuilt(false) 
+	  {
+		  ;
+	  }
 
 	  DspWin& operator=(const DspWin& from) 
 	  {

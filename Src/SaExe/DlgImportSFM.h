@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////////////////
 // DlgAnnotation.cpp:
-// Implementation of the CDlgAnnotation class.
+// Implementation of the CDlgImportSFM class.
 // Author: Steve MacLean
 // copyright 2012 JAARS Inc. SIL
 //
@@ -25,28 +25,28 @@
 //             class when the user picks one of the export menu items.
 //
 /////////////////////////////////////////////////////////////////////////////
-#ifndef DLGANNOTATIONIMPORT_H
-#define DLGANNOTATIONIMPORT_H
+#ifndef DLGIMPORTSFM_H
+#define DLGIMPORTSFM_H
 
 /////////////////////////////////////////////////////////////////////////////
-// CDlgAnnotationImport private dialog
+// CDlgImportSFM private dialog
 
-class CDlgAnnotationImport : public CDialog
+class CDlgImportSFM : public CDialog
 {
 	// Construction
 public:
-	CDlgAnnotationImport(BOOL bPhonetic, BOOL bPhonemic, BOOL bOrtho, CWnd* pParent = NULL);   // standard constructor
+	CDlgImportSFM(BOOL bPhonetic, BOOL bPhonemic, BOOL bOrtho, CWnd* pParent = NULL);   // standard constructor
 
 	// Dialog Data
-	//{{AFX_DATA(CDlgAnnotationImport)
-	enum { IDD = IDD_ANNOTATION_WZD_IMPORT };
+	//{{AFX_DATA(CDlgImportSFM)
+	enum { IDD = IDD_ANNOTATION_IMPORT_SFM };
 	BOOL    m_bGloss;
 	BOOL    m_bPhonemic;
 	BOOL    m_bPhonetic;
+	BOOL    m_bOrthographic;
 	CSaString m_szPhonemic;
 	CSaString m_szGloss;
 	CSaString m_szPhonetic;
-	BOOL    m_bOrthographic;
 	CSaString m_szOrthographic;
 	//}}AFX_DATA
 
@@ -56,7 +56,7 @@ protected:
 	void SetEnable(int nItem, BOOL bEnable);
 
 	// Generated message map functions
-	//{{AFX_MSG(CDlgAnnotationImport)
+	//{{AFX_MSG(CDlgImportSFM)
 	afx_msg void OnImportPlainText();
 	virtual BOOL OnInitDialog();
 	//}}AFX_MSG

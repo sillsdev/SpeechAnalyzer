@@ -94,6 +94,7 @@ public:
 private:
 	CDWordArray * m_pOffset;            // array of offsets
 	CDWordArray * m_pDuration;          // array of durations
+
 protected:
 	CSaString * m_pAnnotation;			// annotation string
 	int m_nSelection;					// selected segment
@@ -172,7 +173,7 @@ public:
 	virtual void ReplaceSelectedSegment(CDocument* pSaDoc, const CSaString & str);
 	virtual void DeleteContents(); // delete all contents of the segment arrays
 	virtual void Adjust(CSaDoc* saDoc, int nIndex, DWORD dwOffset, DWORD dwDuration = 0); // adjust position of segment
-	virtual BOOL Insert(int nIndex, const CSaString*, int nDelimiter, DWORD dwStart, DWORD dwDuration); // insert a new segment
+	virtual BOOL Insert(int nIndex, const CSaString*, bool delimiter, DWORD dwStart, DWORD dwDuration); // insert a new segment
 	virtual long Process(void* /*pCaller*/, CSaDoc* /*pDoc*/, int /*nProgress*/ = 0, int /*Level*/ = 1) { return PROCESS_ERROR; };
 };
 
@@ -220,14 +221,14 @@ protected:
 
 	// Operations
 protected:
-	CSaString      GetText(int nIndex) {return m_pTexts->GetAt(nIndex);} // return text string
+	CSaString GetText(int nIndex) {return m_pTexts->GetAt(nIndex);} // return text string
 public:
 	virtual const CStringArray* GetTexts() {return m_pTexts;} // return pointer to text string array object
-	virtual BOOL Insert(int nIndex, const CSaString*, int nDelimiter, DWORD dwStart, DWORD dwDuration); // insert a new segment
+	virtual BOOL Insert(int nIndex, const CSaString*, bool delimiter, DWORD dwStart, DWORD dwDuration); // insert a new segment
 	virtual void DeleteContents(); // delete all contents of the segment arrays
 	virtual int  GetSegmentLength(int /*nIndex*/) const {return 1;} // return segment length always 1
 	virtual CSaString GetSegmentString(int nIndex) const {return m_pTexts->GetAt(nIndex);} // return segment string
-	virtual void Add(CSaDoc* pDoc, DWORD dwStart, CSaString& szString, BOOL bDelimiter = FALSE, BOOL bCheck = TRUE); // add a segment
+	virtual void Add(CSaDoc* pDoc, DWORD dwStart, CSaString & szString, bool bDelimiter = false, bool bCheck = true); // add a segment
 	virtual void Remove(CDocument*, BOOL bCheck = TRUE); // remove a segment
 	virtual void ReplaceSelectedSegment(CDocument* pSaDoc, const CSaString & str);
 	virtual DWORD RemoveNoRefresh(CDocument* pSaDoc = NULL);
@@ -246,7 +247,7 @@ public:
 	CDependentTextSegment(int index, int master = -1): CTextSegment(index,master) {};
 
 	virtual void LimitPosition(CSaDoc*,DWORD& dwStart,DWORD& dwStop, int /*nMode*/=LIMIT_MOVING_BOTH) const {dwStart=GetOffset(GetSelection());dwStop=GetStop(GetSelection());return;};
-	virtual BOOL Insert(int nIndex, const CSaString*, int nDelimiter, DWORD dwStart, DWORD dwDuration); // insert a new segment
+	virtual BOOL Insert(int nIndex, const CSaString*, bool delimiter, DWORD dwStart, DWORD dwDuration); // insert a new segment
 	virtual BOOL SetText(int nIndex, const CSaString*, int nDelimiter, DWORD dwStart, DWORD dwDuration); // insert a new segment
 	int CheckPositionToMaster(CSaDoc*,DWORD dwStart,DWORD dwStop, int nMode) const;
 	virtual void Add(CSaDoc* pDoc, DWORD dwStart, CSaString& szString, BOOL bDelimiter = FALSE, BOOL bCheck = TRUE); // add a segment
@@ -364,7 +365,7 @@ protected:
 
 public:
 	virtual long Process(void* pCaller, CSaDoc* pDoc, int nProgress = 0, int nLevel = 1);
-	virtual BOOL Insert(int nIndex, const CSaString*, int nDelimiter, DWORD dwStart, DWORD dwDuration); // insert a new segment
+	virtual BOOL Insert(int nIndex, const CSaString*, bool delimiter, DWORD dwStart, DWORD dwDuration); // insert a new segment
 	virtual void DeleteContents(); // delete all contents of the segment arrays
 	virtual DWORD RemoveNoRefresh(CDocument* pSaDoc = NULL);
 	virtual void Remove(CDocument*, BOOL bCheck = TRUE); // remove a segment

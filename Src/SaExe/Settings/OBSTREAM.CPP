@@ -381,25 +381,23 @@ BOOL Object_istream::bReadEndMarkerWithQualifier(const char* pszMarker, const ch
 BOOL Object_istream::bReadString(const IUtf8String &szMarker, IUtf8String* s)
 {
 	std::string szUtf8 = szMarker.utf8();
-
 	return bReadString(szUtf8.c_str(), s);
 }
 
 BOOL Object_istream::bReadString(const char* pszMarker, IUtf8String* s)
 {
-	const char * read;
-
+	const char * read = NULL;
 	BOOL result = bReadString(pszMarker, &read);
-
-	if(result)
+	if (result)
+	{
 		s->setUtf8(read);
-
+	}
 	return result;
 }
 
 BOOL Object_istream::bReadString(const char* pszMarker, const char** s)
 {
-	const char* pszMarkerRead;
+	const char* pszMarkerRead = NULL;
 	const char* pszStringRead = NULL;
 	ReadMarkedString(&pszMarkerRead, &pszStringRead);
 
@@ -415,7 +413,7 @@ BOOL Object_istream::bReadString(const char* pszMarker, const char** s)
 
 BOOL Object_istream::bReadBool(const char* pszMarker, BOOL& b)
 {
-	const char* s;
+	const char * s = NULL;
 	if ( !bReadString(pszMarker, &s) )
 		return FALSE;
 
@@ -425,14 +423,18 @@ BOOL Object_istream::bReadBool(const char* pszMarker, BOOL& b)
 
 BOOL Object_istream::bReadCOLORREF(const char* pszMarker, COLORREF& rgb)
 {
-	const char* s;
+	const char * s = NULL;
 	if ( !bReadString(pszMarker, &s) )
 		return FALSE;
 
-	short int r,g,b;
+	short int r = 0;
+	short int g = 0;
+	short int b = 0;
 	// 1997-05-17 MRP: sscanf not defined in DLLs -- reimplement
 	if ( sscanf_s(s, "%hd,%hd,%hd", &r, &g, &b) == 0 )
+	{
 		return FALSE;
+	}
 
 	rgb = RGB(r,g,b);
 	return TRUE;
@@ -440,9 +442,11 @@ BOOL Object_istream::bReadCOLORREF(const char* pszMarker, COLORREF& rgb)
 
 BOOL Object_istream::bReadInteger(const char* pszMarker, int& i)
 {
-	const char* s;
+	const char * s = NULL;
 	if ( !bReadString(pszMarker, &s) )
+	{
 		return FALSE;
+	}
 
 	i = atoi(s);
 	return TRUE;
@@ -452,9 +456,11 @@ BOOL Object_istream::bReadInteger(const char* pszMarker, int& i)
 
 BOOL Object_istream::bReadDouble(const char* pszMarker, double& i)
 {
-	const char* s;
+	const char* s = NULL;
 	if ( !bReadString(pszMarker, &s) )
+	{
 		return FALSE;
+	}
 
 	i = atof(s);
 	return TRUE;
@@ -464,13 +470,17 @@ BOOL Object_istream::bReadDouble(const char* pszMarker, double& i)
 
 BOOL Object_istream::bReadNumberOf(const char* pszMarker, NumberOf& num)
 {
-	const char* s;
+	const char * s = NULL;
 	if ( !bReadString(pszMarker, &s) )
+	{
 		return FALSE;
+	}
 
 	ASSERT( sizeof(unsigned long) == sizeof(NumberOf) );
 	if ( sscanf_s(s, "%lu", &num) == 0 )
+	{
 		return FALSE;
+	}
 
 	return TRUE;
 }
@@ -487,12 +497,13 @@ void Object_istream::peekMarkedString(const char** ppszMarker, IUtf8String* ppsz
 
 void Object_istream::ReadMarkedString() // Generic eat of one marker and its string
 {
-	const char* pszMarkerRead;
+	const char* pszMarkerRead = NULL;
 	const char* pszStringRead = NULL;
 	ReadMarkedString(&pszMarkerRead, &pszStringRead);
 }
 
-BOOL Object_istream::bEnd( const char* pszMarker ) // Read given end marker, stop any begin marker, for error recovery on objects with unrecognized names AB 1-18-95
+// Read given end marker, stop any begin marker, for error recovery on objects with unrecognized names AB 1-18-95
+BOOL Object_istream::bEnd( const char* pszMarker ) 
 {
 	if ( bReadEndMarker( pszMarker ) ) // If desired end marker, return true for successfully found end
 		return TRUE;
@@ -522,7 +533,7 @@ BOOL Object_istream::bEndWithQualifier( const char* pszMarker, const char* pszQu
 #ifndef NO_INTERFACE
 BOOL Object_istream::bReadWindowPlacement(const char* pszMarker, WINDOWPLACEMENT& wpl)
 {
-	const char* sPlacement;
+	const char* sPlacement = NULL;
 	if ( !bReadString(pszMarker, &sPlacement) )
 		return FALSE;
 
@@ -692,4 +703,16 @@ void Object_istream::SkipToEndMarker(const char* pszMarker)
 		}
 		ReadMarkedString();  // Skip unexpected field
 	}
+}
+
+void Object_istream::Rewind() 
+{
+	m_ios.seekg(0);
+	// reset all internal data
+	m_pszMStringBuf = new char[maxsizMString];
+	m_pszEnd = NULL;
+	m_pszMarker = NULL;
+	m_pszString = NULL;
+	m_bUnRead = FALSE;
+	m_chEndOfLine = '\n';  // Default for Mac and Windows
 }

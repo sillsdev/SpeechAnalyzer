@@ -1987,7 +1987,7 @@ void CMainFrame::WriteProperties(Object_ostream& obs)
 	this->GetWindowPlacement(&wpl);
 	obs.WriteWindowPlacement(psz_placementMain, wpl);
 
-	if(m_pDlgEditor)
+	if (m_pDlgEditor)
 	{
 		m_pDlgEditor->GetWindowPlacement(&wpl);
 		obs.WriteWindowPlacement(psz_placementEditor, wpl);
@@ -2047,7 +2047,7 @@ void CMainFrame::WriteProperties(Object_ostream& obs)
 	BOOL bMaximized;
 
 	//SDM 1.06.6U5 if there is an active child save its maximized state and normal size as the defaults
-	if(MDIGetActive(&bMaximized))
+	if (MDIGetActive(&bMaximized))
 	{
 		m_bDefaultMaximizeView = bMaximized;
 		WINDOWPLACEMENT WP;

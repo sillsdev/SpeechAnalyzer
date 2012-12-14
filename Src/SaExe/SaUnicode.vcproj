@@ -213,94 +213,6 @@
 		<Filter
 			Name="Source Files"
 			>
-			<File
-				RelativePath="Synthesis\DlgKlattAll.cpp"
-				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath="Synthesis\DlgMbrola.cpp"
-				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath="Synthesis\DlgSynthesis.cpp"
-				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath="Synthesis\DlgVocalTract.cpp"
-				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-			</File>
 			<Filter
 				Name="Processes"
 				>
@@ -2011,11 +1923,27 @@
 					>
 				</File>
 				<File
-					RelativePath=".\DlgAnnotation.cpp"
+					RelativePath=".\DlgAlignTranscriptionData.cpp"
 					>
 				</File>
 				<File
-					RelativePath=".\DlgAnnotationImport.cpp"
+					RelativePath=".\DlgAlignTranscriptionDataAlignByPage.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\DlgAlignTranscriptionDataFinishPage.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\DlgAlignTranscriptionDataInitPage.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\DlgAlignTranscriptionDataSegmentByPage.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\DlgAlignTranscriptionDataSheet.cpp"
 					>
 				</File>
 				<File
@@ -2045,12 +1973,100 @@
 					>
 				</File>
 				<File
+					RelativePath="Synthesis\DlgKlattAll.cpp"
+					>
+					<FileConfiguration
+						Name="Debug|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							AdditionalIncludeDirectories=""
+							PreprocessorDefinitions=""
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							AdditionalIncludeDirectories=""
+							PreprocessorDefinitions=""
+						/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="Synthesis\DlgMbrola.cpp"
+					>
+					<FileConfiguration
+						Name="Debug|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							AdditionalIncludeDirectories=""
+							PreprocessorDefinitions=""
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							AdditionalIncludeDirectories=""
+							PreprocessorDefinitions=""
+						/>
+					</FileConfiguration>
+				</File>
+				<File
 					RelativePath=".\DlgMultiChannel.cpp"
 					>
 				</File>
 				<File
 					RelativePath=".\DlgSplit.cpp"
 					>
+				</File>
+				<File
+					RelativePath="Synthesis\DlgSynthesis.cpp"
+					>
+					<FileConfiguration
+						Name="Debug|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							AdditionalIncludeDirectories=""
+							PreprocessorDefinitions=""
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							AdditionalIncludeDirectories=""
+							PreprocessorDefinitions=""
+						/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="Synthesis\DlgVocalTract.cpp"
+					>
+					<FileConfiguration
+						Name="Debug|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							AdditionalIncludeDirectories=""
+							PreprocessorDefinitions=""
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							AdditionalIncludeDirectories=""
+							PreprocessorDefinitions=""
+						/>
+					</FileConfiguration>
 				</File>
 				<File
 					RelativePath="DlgVowelFormants.cpp"
@@ -2616,6 +2632,22 @@
 					</FileConfiguration>
 				</File>
 				<File
+					RelativePath=".\DlgAlignTranscriptionDataImportRefPage.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\DlgAlignTranscriptionDataTextPage.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\DlgImportSFM.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\DlgImportSFMRef.cpp"
+					>
+				</File>
+				<File
 					RelativePath="MainFrm.cpp"
 					>
 					<FileConfiguration
@@ -2699,26 +2731,6 @@
 						<Tool
 							Name="VCCLCompilerTool"
 							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-						/>
-					</FileConfiguration>
-				</File>
-				<File
-					RelativePath="SA.rc"
-					>
-					<FileConfiguration
-						Name="Debug|Win32"
-						>
-						<Tool
-							Name="VCResourceCompilerTool"
-							PreprocessorDefinitions=""
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release|Win32"
-						>
-						<Tool
-							Name="VCResourceCompilerTool"
 							PreprocessorDefinitions=""
 						/>
 					</FileConfiguration>
@@ -3032,6 +3044,10 @@
 					</FileConfiguration>
 				</File>
 				<File
+					RelativePath=".\SFMHelper.cpp"
+					>
+				</File>
+				<File
 					RelativePath="Stdafx.cpp"
 					>
 					<FileConfiguration
@@ -3100,6 +3116,22 @@
 							PreprocessorDefinitions=""
 						/>
 					</FileConfiguration>
+				</File>
+				<File
+					RelativePath=".\TextHelper.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\TranscriptionData.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\TranscriptionDataSettings.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\TranscriptionHelper.cpp"
+					>
 				</File>
 				<File
 					RelativePath="Undoredo.cpp"
@@ -3284,10 +3316,6 @@
 				>
 			</File>
 			<File
-				RelativePath="MainFrm.bmp"
-				>
-			</File>
-			<File
 				RelativePath="RES\MCAP_CL.BMP"
 				>
 			</File>
@@ -3346,6 +3374,26 @@
 			<File
 				RelativePath="RES\SA.ICO"
 				>
+			</File>
+			<File
+				RelativePath="SA.rc"
+				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCResourceCompilerTool"
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCResourceCompilerTool"
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="res\sa.rc2"
@@ -3739,11 +3787,27 @@
 					>
 				</File>
 				<File
-					RelativePath=".\DlgAnnotation.h"
+					RelativePath=".\DlgAlignTranscriptionData.h"
 					>
 				</File>
 				<File
-					RelativePath=".\DlgAnnotationImport.h"
+					RelativePath=".\DlgAlignTranscriptionDataAlignByPage.h"
+					>
+				</File>
+				<File
+					RelativePath=".\DlgAlignTranscriptionDataFinishPage.h"
+					>
+				</File>
+				<File
+					RelativePath=".\DlgAlignTranscriptionDataInitPage.h"
+					>
+				</File>
+				<File
+					RelativePath=".\DlgAlignTranscriptionDataSegmentByPage.h"
+					>
+				</File>
+				<File
+					RelativePath=".\DlgAlignTranscriptionDataSheet.h"
 					>
 				</File>
 				<File
@@ -3824,6 +3888,42 @@
 				</File>
 			</Filter>
 		</Filter>
+		<File
+			RelativePath=".\DlgAlignTranscriptionDataImportRefPage.h"
+			>
+		</File>
+		<File
+			RelativePath=".\DlgAlignTranscriptionDataTextPage.h"
+			>
+		</File>
+		<File
+			RelativePath=".\DlgImportSFM.h"
+			>
+		</File>
+		<File
+			RelativePath=".\DlgImportSFMRef.h"
+			>
+		</File>
+		<File
+			RelativePath=".\SFMHelper.h"
+			>
+		</File>
+		<File
+			RelativePath=".\TextHelper.h"
+			>
+		</File>
+		<File
+			RelativePath=".\TranscriptionData.h"
+			>
+		</File>
+		<File
+			RelativePath=".\TranscriptionDataSettings.h"
+			>
+		</File>
+		<File
+			RelativePath=".\TranscriptionHelper.h"
+			>
+		</File>
 	</Files>
 	<Globals>
 		<Global

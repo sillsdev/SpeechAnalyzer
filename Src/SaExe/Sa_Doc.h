@@ -39,6 +39,8 @@
 #include "saParm.h"
 #include "sourceParm.h"
 #include "ISa_Doc.h"
+#include "TranscriptionData.h"
+#include "DlgAutoReferenceData.h"
 
 #import "speechtoolsutils.tlb" no_namespace named_guids
 #import "st_audio.tlb" no_namespace named_guids
@@ -74,12 +76,15 @@ class CProcessPOA;
 class CProcessGlottis;
 class CProcessTonalWeightChart;
 class CSegment;
+class CGlossSegment;
 class CDlgAdvancedSegment;
 class CDlgAdvancedParseWords;
 class CDlgAdvancedParsePhrases;
+class CTranscriptionDataSettings;
 
-class CAlignInfo
+class CAlignInfo 
 {
+
 public:
 	CAlignInfo() { bValid = FALSE; }
 	bool bValid;
@@ -217,23 +222,24 @@ public:
 	CProcessPitch*		GetPitch() {return m_pProcessPitch;}     // process pointer to pitch object
 	CProcessCustomPitch* GetCustomPitch() {return m_pProcessCustomPitch;} // process pointer to custom pitch object
 	CProcessSmoothedPitch* GetSmoothedPitch() {return m_pProcessSmoothedPitch;} // process pointer to smoothed pitch object
-	CProcessChange*		GetChange() {return m_pProcessChange;}    // process pointer to change object
-	CProcessRaw*		GetRaw() {return m_pProcessRaw;}    // process pointer to change object
+	CProcessChange*		GetChange() {return m_pProcessChange;}		// process pointer to change object
+	CProcessRaw*		GetRaw() {return m_pProcessRaw;}			// process pointer to change object
 	CHilbert*			GetHilbert() {return m_pProcessHilbert;}    // process pointer to change object
-	CProcessSpectrogram* GetSpectrogram(bool bRealTime); // returns either the spectrogram or snapshot process dependent on flag
-	CProcessWavelet*	GetWavelet() {return m_pProcessWavelet;} // process pointer to wavelet object  ARH 8/2/01 added for wavelet graph
+	CProcessSpectrogram* GetSpectrogram(bool bRealTime);			// returns either the spectrogram or snapshot process dependent on flag
+	CProcessWavelet*	GetWavelet() {return m_pProcessWavelet;}	// process pointer to wavelet object  ARH 8/2/01 added for wavelet graph
 	CProcessSpectrum*	GetSpectrum() {return m_pProcessSpectrum;}  // process pointer to spectrum object
-	CProcessGrappl*		GetGrappl() {return m_pProcessGrappl;}    // process pointer to grappl object
-	CProcessMelogram*   GetMelogram() {return m_pProcessMelogram;}    // process pointer to melogram object
+	CProcessGrappl*		GetGrappl() {return m_pProcessGrappl;}		// process pointer to grappl object
+	CProcessMelogram*   GetMelogram() {return m_pProcessMelogram;}  // process pointer to melogram object
 	CProcessFormants*	GetFormants() {return m_pProcessFormants;}  // process pointer to spectrogram object
 	CFormantTracker*	GetFormantTracker() {return m_pProcessFormantTracker;}  // process pointer to spectrogram object
 	CProcessDurations*	GetDurations() {return m_pProcessDurations; } // process pointer to phonetic segment durations
-	CProcessSDP*		GetSDP(int nIndex);             // process pointer to SDP object
+	CProcessSDP*		GetSDP(int nIndex);							// process pointer to SDP object
 	CProcessRatio*		GetRatio() {return m_pProcessRatio;}        // process pointer to ratio object
 	CProcessPOA*		GetPOA() {return m_pProcessPOA;}            // process pointer to vocal tract model for finding place of articulation
 	CProcessGlottis*	GetGlottalWave(){return m_pProcessGlottis;} // process pointer to glottal waveform object
 	CProcessTonalWeightChart* GetTonalWeightChart() {return m_pProcessTonalWeightChart;} // process pointer to tonal weighting chart CLW 11/8/99
-	CSegment*			GetSegment(int nIndex) {return m_apSegments[nIndex];} // get the pointers to a segment object
+	CSegment*			GetSegment(int nIndex);						// get the pointers to a segment object
+	CGlossSegment *		GetGlossSegment();
 	CFontTable*			GetFont(int nIndex) {return (CFontTable*)m_pCreatedFonts->GetAt(nIndex);} // return font size
 	CSaString			GetMeasurementsString(DWORD dwOffset, DWORD dwLength, BOOL* pbRes);
 
@@ -247,6 +253,7 @@ public:
 	static BOOL			ReadProperties(Object_istream& obs);
 	static BOOL			ReadPropertiesOfViews(Object_istream& obs, const CSaString & str);
 	void				DeleteSegmentContents(Annotations type);
+	CSaString			GetLastTranscriptionImport();
 
 protected:
 	virtual void		DeleteContents();
@@ -368,8 +375,6 @@ protected:
 	afx_msg void OnUpdateAutoAlign(CCmdUI* pCmdUI);
 	afx_msg void OnAutoReferenceData();
 	afx_msg void OnUpdateAutoReferenceData(CCmdUI* pCmdUI);
-	afx_msg void OnToolsImport();
-	afx_msg void OnUpdateToolsImport(CCmdUI* pCmdUI);
 	afx_msg void OnUpdateBoundaries();
 	afx_msg void OnUpdateUpdateBoundaries(CCmdUI* pCmdUI);
 	afx_msg void OnAutoSnapUpdate();
@@ -385,6 +390,16 @@ protected:
 public:
 	bool IsTempFile();
 	bool CanEdit();
+	const CSaString BuildString( int nSegment);
+	const CSaString BuildImportString( BOOL gloss, BOOL phonetic, BOOL phonemic, BOOL orthographic);
+	const CTranscriptionData ImportTranscription( CSaString & filename, BOOL gloss, BOOL phonetic, BOOL phonemic, BOOL orthographic);
+
+protected:
+	void AlignTranscriptionData( CTranscriptionDataSettings & settings);
+	void AlignTranscriptionDataByRef( CTranscriptionData & td);
+
+	// cached dialogs
+	CDlgAutoReferenceData autoReferenceDlg;
 };
 
 /////////////////////////////////////////////////////////////////////////////

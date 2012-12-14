@@ -16,7 +16,7 @@
 #include "dsp\AcousticTube.h"
 #include "Process\Butterworth.h"
 #include "mainfrm.h"
-
+#include <iterator>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -2307,10 +2307,8 @@ void CDlgVocalTract::LabelDocument(CSaDoc* pDoc)
 			double length = minLabelTime > cChars[i].m_duration/1000. ? minLabelTime : cChars[i].m_duration/1000.;
 			DWORD dwDuration = DWORD(length*SR+0.5)*2;
 			CSaString szIndex;
-
 			szIndex.Format(_T("%d"),i+1);
-
-			pIndexSeg->Insert(pIndexSeg->GetOffsetSize(), &szIndex, '#', dwStart, dwDuration);
+			pIndexSeg->Insert(pIndexSeg->GetOffsetSize(), &szIndex, true, dwStart, dwDuration);
 
 			labelTime = elapsedTime + minLabelTime;
 		}
@@ -2323,7 +2321,7 @@ void CDlgVocalTract::LabelDocument(CSaDoc* pDoc)
 
 			if (dwDuration) 
 			{
-				pCharSeg->Insert(pCharSeg->GetOffsetSize(), &szIPA, '#', dwStart, dwDuration);
+				pCharSeg->Insert(pCharSeg->GetOffsetSize(), &szIPA, true, dwStart, dwDuration);
 			}
 			szIPA = cChars[i].m_ipa;
 

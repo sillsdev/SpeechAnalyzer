@@ -4,6 +4,7 @@
 
 #include "stddsp.h"
 #include "Roots.h"
+#include <iterator>
 
 #ifdef _DEBUG
 #undef THIS_FILE

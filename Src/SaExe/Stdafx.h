@@ -36,6 +36,7 @@
 #include <map>
 #include <limits>
 #include <complex>
+#include <afxdlgs.h>
 
 inline static int round(double value)
 { return (int)floor(value + 0.5);}

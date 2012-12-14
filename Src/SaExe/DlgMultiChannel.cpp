@@ -17,7 +17,8 @@ CDlgMultiChannel::CDlgMultiChannel( int nChannel, bool allowCombine) :
 	CDialog(CDlgMultiChannel::IDD,NULL), 
 	m_nChannels(nChannel),
 	m_bAllowCombine(allowCombine),
-	m_nChannel(0) {
+	m_nChannel(0) 
+	{
 	//{{AFX_DATA_INIT(CDlgMultiChannel)
 	//}}AFX_DATA_INIT
 }
@@ -46,7 +47,8 @@ BOOL CDlgMultiChannel::OnInitDialog()
 
 	CString szText;
 	CString szNum;
-	if (m_nChannels>=1) {
+	if (m_nChannels>=1)
+	{
 		szNum.Format(L"%d",1);
 		AfxFormatString1(szText,IDS_MC_CHANNEL_LEFT, szNum);
 		m_MultiChannelCombo.AddString(szText);
@@ -55,7 +57,8 @@ BOOL CDlgMultiChannel::OnInitDialog()
 			AfxFormatString1(szText,IDS_MC_CHANNEL_RIGHT, szNum);
 			m_MultiChannelCombo.AddString(szText);
 			if (m_nChannels>=3) {
-				for (int i=2;i<m_nChannels;i++) {
+				for (int i=2;i<m_nChannels;i++)
+				{
 					szNum.Format(L"%d",i+1);
 					AfxFormatString1(szText,IDS_MC_CHANNEL, szNum);
 					m_MultiChannelCombo.AddString(szText);
@@ -63,7 +66,8 @@ BOOL CDlgMultiChannel::OnInitDialog()
 			}
 		}
 	}
-	if (m_bAllowCombine) {
+	if (m_bAllowCombine)
+	{
 		szText.LoadString(IDS_MC_COMBINE);
 		m_MultiChannelCombo.AddString(szText);
 	}

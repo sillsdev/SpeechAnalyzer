@@ -508,12 +508,14 @@ BOOL CSaApp::InitInstance()
 // CSaApp::ExitInstance Application exit
 // Called by framework to exit the application.
 /***************************************************************************/
-int CSaApp::ExitInstance() {
+int CSaApp::ExitInstance()
+{
 	// delete the temp transcription DB
 	CoInitialize(NULL);
 	ISaAudioDocumentWriterPtr saAudioDocWriter;
 	saAudioDocWriter.CreateInstance(__uuidof(SaAudioDocumentWriter));
-	if (saAudioDocWriter!=NULL) {
+	if (saAudioDocWriter!=NULL) 
+	{
 		saAudioDocWriter->DeleteTempDB();
 		saAudioDocWriter->Close();
 		saAudioDocWriter->Release();
@@ -528,11 +530,13 @@ int CSaApp::ExitInstance() {
 
 	BOOL bOK = FALSE;
 	try {
-		if (m_pszErrors) {
+		if (m_pszErrors)
+		{
 			delete m_pszErrors;
 			m_pszErrors = NULL;
 		}
-		if (m_pszMessages) {
+		if (m_pszMessages)
+		{
 			delete m_pszMessages;
 			m_pszMessages = NULL;
 		}
@@ -540,7 +544,9 @@ int CSaApp::ExitInstance() {
 
 		// standard implementation: save initialisation
 		SaveStdProfileSettings();
-	} catch(...) {
+	} 
+	catch(...) 
+	{
 	}
 	// standard implementation: save initialisation
 	if (bOK)
@@ -1114,20 +1120,27 @@ void CSaApp::OnProcessBatchCommands()
 // CSaApp::ErrorMessage Set error message
 // Set an error message in the queue to be displayed as soon as possible.
 /***************************************************************************/
-void CSaApp::ErrorMessage(UINT nTextID, LPCTSTR pszText1, LPCTSTR pszText2) {
+void CSaApp::ErrorMessage(UINT nTextID, LPCTSTR pszText1, LPCTSTR pszText2)
+{
 #ifdef _DEBUG
 	ASSERT(FALSE);
 #endif
 	CSaString szText;
 	try {
 		// create the text
-		if (pszText1) {
-			if (pszText2) {
+		if (pszText1)
+		{
+			if (pszText2)
+			{
 				AfxFormatString2(szText, nTextID, pszText1, pszText2);
-			} else {
+			}
+			else
+			{
 				AfxFormatString1(szText, nTextID, pszText1);
 			}
-		} else {
+		}
+		else
+		{
 			szText.LoadString(nTextID);
 		}
 		m_pszErrors->Add(szText); // add the string to the array
@@ -1145,17 +1158,25 @@ void CSaApp::Message(UINT nTextID, LPCTSTR pszText1, LPCTSTR pszText2) {
 	CSaString szText;
 	try {
 		// create the text
-		if (pszText1) {
-			if (pszText2) {
+		if (pszText1)
+		{
+			if (pszText2)
+			{
 				AfxFormatString2(szText, nTextID, pszText1, pszText2);
-			} else {
+			} 
+			else
+			{
 				AfxFormatString1(szText, nTextID, pszText1);
 			}
-		} else {
+		} 
+		else 
+		{
 			szText.LoadString(nTextID);
 		}
 		m_pszMessages->Add(szText); // add the string to the array
-	} catch (CMemoryException e) {
+	} 
+	catch (CMemoryException e) 
+	{
 		// memory allocation error
 		ErrorMessage(IDS_ERROR_MEMALLOC);
 	}
@@ -2447,7 +2468,7 @@ BOOL CSaApp::WriteSettings()
 	CSaString szPath = ((CWinApp*)this)->GetProfileString(_T(""), _T("DataLocation"));
 	szPath += "\\";
 
-	if(GetBatchMode())
+	if (GetBatchMode())
 		szPath += psz_batchsettingsfile;
 	else    
 		szPath += psz_settingsfile;

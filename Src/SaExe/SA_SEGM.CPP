@@ -338,10 +338,11 @@ DWORD CSegment::RemoveNoRefresh( CDocument * )
 // Returns FALSE if an error occured. nDelimiter is not used in this basic
 // version of the function.
 /***************************************************************************/
-BOOL CSegment::Insert( int nIndex, const CSaString * pszString, int ,DWORD dwStart, DWORD dwDuration) 
+BOOL CSegment::Insert( int nIndex, const CSaString * pszString, bool, DWORD dwStart, DWORD dwDuration) 
 {
 	int nStringLength = pszString->GetLength(); // get the length of the new string
-	try {
+	try 
+	{
 		if (nIndex < m_pAnnotation->GetLength()) 
 		{ 
 			// insert
@@ -1270,20 +1271,17 @@ CTextSegment::~CTextSegment()
 // Returns FALSE if an error occured. If the pointer to the string is NULL
 // there will be no string added.
 /***************************************************************************/
-BOOL CTextSegment::Insert(int nIndex, 
-						  const CSaString* pszString, 
-						  int nDelimiter,
-						  DWORD dwStart, 
-						  DWORD dwDuration)
+BOOL CTextSegment::Insert(int nIndex, const CSaString* pszString, bool delimiter, DWORD dwStart, DWORD dwDuration)
 {
 	// prepare delimiter
 	CSaString szDelimiter = WORD_DELIMITER;
-	if (nDelimiter) 
+	if (delimiter) 
 	{
 		szDelimiter.SetAt(0, TEXT_DELIMITER);
 	}
 
-	try {
+	try 
+	{
 		if (pszString!=NULL) 
 		{
 			m_pTexts->InsertAt(nIndex, szDelimiter + *pszString, 1);
@@ -1292,7 +1290,7 @@ BOOL CTextSegment::Insert(int nIndex,
 		{
 			m_pTexts->InsertAt(nIndex, szDelimiter, 1);
 		}
-		InsertAt(nIndex,dwStart,dwDuration);
+		InsertAt( nIndex, dwStart, dwDuration);
 	} 
 	catch(CMemoryException e) 
 	{
@@ -1469,7 +1467,7 @@ int CTextSegment::CheckPosition(CSaDoc* pSaDoc, DWORD dwStart, DWORD dwStop, int
 /***************************************************************************/
 // CTextSegment::Add Add text segment
 /***************************************************************************/
-void CTextSegment::Add(CSaDoc* pDoc, DWORD dwStart, CSaString& szString, BOOL bDelimiter, BOOL bCheck) // add a segment
+void CTextSegment::Add(CSaDoc* pDoc, DWORD dwStart, CSaString& szString, bool bDelimiter, bool bCheck) // add a segment
 {
 	// get pointer to view
 	POSITION pos = pDoc->GetFirstViewPosition();
@@ -1695,17 +1693,17 @@ void CTextSegment::Serialize(CArchive& ar)
 // Returns FALSE if an error occured. If the pointer to the string is NULL
 // there will be no string added.
 /***************************************************************************/
-BOOL CDependentTextSegment::Insert( int nIndex, 
-								    const CSaString* pszString, 
-								    int ,
-								    DWORD dwStart, 
-								    DWORD dwDuration) {
-	try {
-		if ((pszString) && (pszString->GetLength())) {
+BOOL CDependentTextSegment::Insert( int nIndex, const CSaString* pszString, bool, DWORD dwStart, DWORD dwDuration) {
+	try 
+	{
+		if ((pszString) && (pszString->GetLength())) 
+		{
 			m_pTexts->InsertAt(nIndex, *pszString, 1);
 			InsertAt(nIndex,dwStart,dwDuration);
 		}
-	} catch(CMemoryException e) {
+	} 
+	catch(CMemoryException e) 
+	{
 		// memory allocation error
 		ErrorMessage(IDS_ERROR_MEMALLOC);
 		return FALSE;
@@ -1722,16 +1720,17 @@ BOOL CDependentTextSegment::Insert( int nIndex,
 // Returns FALSE if an error occured. If the pointer to the string is NULL
 // there will be no string added.
 /***************************************************************************/
-BOOL CDependentTextSegment::SetText( int nIndex, 
-								     const CSaString* pszString, 
-								     int ,
-								     DWORD dwStart, 
-								     DWORD dwDuration) {
-	try {
-		if ((pszString) && (pszString->GetLength())) {
+BOOL CDependentTextSegment::SetText( int nIndex, const CSaString* pszString, int, DWORD, DWORD)
+{
+	try
+	{
+		if ((pszString) && (pszString->GetLength()))
+		{
 			m_pTexts->SetAt(nIndex, *pszString);
 		}
-	} catch(CMemoryException e) {
+	} 
+	catch(CMemoryException e)
+	{
 		// memory allocation error
 		ErrorMessage(IDS_ERROR_MEMALLOC);
 		return FALSE;
@@ -2724,11 +2723,7 @@ void CGlossSegment::DeleteContents()
 // Returns FALSE if an error occured. If the pointer to the string is NULL
 // there will be no string added.
 /***************************************************************************/
-BOOL CGlossSegment::Insert(int nIndex, 
-						   const CSaString * pszString, 
-						   int nDelimiter,
-						   DWORD dwStart, 
-						   DWORD dwDuration)
+BOOL CGlossSegment::Insert(int nIndex, const CSaString * pszString, bool delimiter, DWORD dwStart, DWORD dwDuration)
 {
 	try 
 	{
@@ -2740,7 +2735,7 @@ BOOL CGlossSegment::Insert(int nIndex,
 		ErrorMessage(IDS_ERROR_MEMALLOC);
 		return FALSE;
 	}
-	return CTextSegment::Insert(nIndex, pszString, nDelimiter, dwStart, dwDuration);
+	return CTextSegment::Insert(nIndex, pszString, delimiter, dwStart, dwDuration);
 }
 
 

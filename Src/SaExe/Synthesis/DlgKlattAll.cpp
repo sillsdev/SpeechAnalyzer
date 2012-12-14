@@ -2369,9 +2369,9 @@ void CDlgKlattAll::LabelDocument(CSaDoc* pDoc)
 
 		int nFrame = int(time*spkrDef.SR/spkrDef.UI+0.5);
 
-		if(labelTime <= elapsedTime)
+		if (labelTime <= elapsedTime)
 		{
-			if(cChars[i].duration)
+			if (cChars[i].duration)
 			{
 				const double minLabelTime = 0.005;
 				DWORD dwStart = DWORD(elapsedTime*spkrDef.SR+0.5)*2;
@@ -2381,7 +2381,7 @@ void CDlgKlattAll::LabelDocument(CSaDoc* pDoc)
 
 				szIndex.Format(_T("%d"),i+1);
 
-				pIndexSeg->Insert(pIndexSeg->GetOffsetSize(), &szIndex, '#', dwStart, dwDuration);
+				pIndexSeg->Insert(pIndexSeg->GetOffsetSize(), &szIndex, true, dwStart, dwDuration);
 
 				labelTime = elapsedTime + length;
 			}
@@ -2389,20 +2389,18 @@ void CDlgKlattAll::LabelDocument(CSaDoc* pDoc)
 		elapsedTime += double(nFrame*spkrDef.UI)/spkrDef.SR;
 		time -= double(nFrame*spkrDef.UI)/spkrDef.SR;
 
-		if(i == cChars.size() - 1)
+		if (i == cChars.size() - 1)
 			szIPANext = "";
 		else
 			szIPANext = cChars[i+1].ipa;
 
-		if(cChars[i].ipa != szIPANext)
+		if (cChars[i].ipa != szIPANext)
 		{
 			DWORD dwStart = DWORD(lastCharStopTime*spkrDef.SR+0.5)*2;
 			double length = elapsedTime - lastCharStopTime;
 			DWORD dwDuration = DWORD(length*spkrDef.SR+0.5)*2;
 			CSaString szIpa(cChars[i].ipa);
-
-			pCharSeg->Insert(pCharSeg->GetOffsetSize(), &szIpa, '#', dwStart, dwDuration);
-
+			pCharSeg->Insert(pCharSeg->GetOffsetSize(), &szIpa, true, dwStart, dwDuration);
 			lastCharStopTime += length;
 		}
 	}

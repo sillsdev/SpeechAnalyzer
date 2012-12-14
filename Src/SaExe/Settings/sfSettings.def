@@ -38,3 +38,4 @@ EXPORTS
 ?peekMarkedString@Object_istream@@QAEXPAPBDPAVIUtf8String@@H@Z
 ?ReadMarkedString@Object_istream@@QAEXXZ
 ?SkipToEndMarker@Object_istream@@QAEXPBD@Z
+?Rewind@Object_istream@@QAEXXZ

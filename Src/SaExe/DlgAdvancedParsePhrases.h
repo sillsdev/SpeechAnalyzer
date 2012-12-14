@@ -25,7 +25,7 @@ class CDlgAdvancedParsePhrases : public CDialog
 
 	// Construction/destruction/creation
 public:
-	CDlgAdvancedParsePhrases(CSaDoc * pDoc); // standard constructor
+	CDlgAdvancedParsePhrases( CSaDoc * pDoc); // standard constructor
 	virtual ~CDlgAdvancedParsePhrases();
 	
 	BOOL Create();
@@ -62,8 +62,8 @@ protected:
 	DECLARE_MESSAGE_MAP()
 	virtual void OnOK();
 	virtual void OnCancel();
-public:
 
+public:
 	CButton m_ApplyButton;
 	CButton m_OKButton;
 	CSaDoc * m_pDoc;

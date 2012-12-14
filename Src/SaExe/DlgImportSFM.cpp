@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////////////////
 // DlgAnnotationImport.cpp:
-// Implementation of the CDlgAnnotationImport class.
+// Implementation of the CDlgImportSFM class.
 // Author: Steve MacLean
 // copyright 2012 JAARS Inc. SIL
 //
@@ -56,7 +56,8 @@ using std::ifstream;
 using std::ios;
 using std::streampos;
 
-#include "dlgannotationimport.h"
+#include "dlgimportsfm.h"
+#include "TranscriptionDataSettings.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE
@@ -64,31 +65,31 @@ static char BASED_CODE THIS_FILE[] = __FILE__;
 #endif
 
 /////////////////////////////////////////////////////////////////////////////
-// CDlgAnnotationImport dialog
+// CDlgImportSFM dialog
 static const char* psz_Phonemic = "pm";
 static const char* psz_Gloss = "gl";
 static const char* psz_Phonetic = "ph";
 static const char* psz_Orthographic = "or";
 
-CDlgAnnotationImport::CDlgAnnotationImport(BOOL bPhonetic, BOOL bPhonemic, BOOL bOrtho, CWnd* pParent /*=NULL*/)
-: CDialog(CDlgAnnotationImport::IDD, pParent)
+CDlgImportSFM::CDlgImportSFM(BOOL bPhonetic, BOOL bPhonemic, BOOL bOrtho, CWnd* pParent /*=NULL*/)
+: CDialog(CDlgImportSFM::IDD, pParent)
 {
-	//{{AFX_DATA_INIT(CDlgAnnotationImport)
+	//{{AFX_DATA_INIT(CDlgImportSFM)
 	m_bGloss = FALSE;
 	m_bPhonemic = bPhonemic;
 	m_bPhonetic = bPhonetic;
+	m_bOrthographic = bOrtho;
 	m_szPhonemic = psz_Phonemic;
 	m_szGloss = psz_Gloss;
 	m_szPhonetic = psz_Phonetic;
-	m_bOrthographic = bOrtho;
 	m_szOrthographic = psz_Orthographic;
 	//}}AFX_DATA_INIT
 }
 
-void CDlgAnnotationImport::DoDataExchange(CDataExchange* pDX)
+void CDlgImportSFM::DoDataExchange(CDataExchange* pDX)
 {
 	CDialog::DoDataExchange(pDX);
-	//{{AFX_DATA_MAP(CDlgAnnotationImport)
+	//{{AFX_DATA_MAP(CDlgImportSFM)
 	DDX_Check(pDX, IDC_GLOSS_ENABLED, m_bGloss);
 	DDX_Check(pDX, IDC_PHONEMIC_ENABLED, m_bPhonemic);
 	DDX_Check(pDX, IDC_PHONETIC_ENABLED, m_bPhonetic);
@@ -100,8 +101,8 @@ void CDlgAnnotationImport::DoDataExchange(CDataExchange* pDX)
 	//}}AFX_DATA_MAP
 }
 
-BEGIN_MESSAGE_MAP(CDlgAnnotationImport, CDialog)
-	//{{AFX_MSG_MAP(CDlgAnnotationImport)
+BEGIN_MESSAGE_MAP(CDlgImportSFM, CDialog)
+	//{{AFX_MSG_MAP(CDlgImportSFM)
 	ON_BN_CLICKED(IDC_IMPORT_PLAIN_TEXT, OnImportPlainText)
 	//}}AFX_MSG_MAP
 END_MESSAGE_MAP()
@@ -110,10 +111,9 @@ END_MESSAGE_MAP()
 /***************************************************************************/
 // CDlgAnnotation::SetEnable Enables/Disables controls
 /***************************************************************************/
-void CDlgAnnotationImport::SetEnable(int nItem, BOOL bEnable)
+void CDlgImportSFM::SetEnable(int nItem, BOOL bEnable)
 {
 	CWnd* pWnd = GetDlgItem(nItem);
-
 	if (pWnd)
 	{
 		pWnd->EnableWindow(bEnable);
@@ -121,12 +121,12 @@ void CDlgAnnotationImport::SetEnable(int nItem, BOOL bEnable)
 }
 
 /////////////////////////////////////////////////////////////////////////////
-// CDlgAnnotationImport message handlers
+// CDlgImportSFM message handlers
 
 /***************************************************************************/
 // CDlgAnnotation::OnImportPlainText Plain Text Button hit
 /***************************************************************************/
-void CDlgAnnotationImport::OnImportPlainText()
+void CDlgImportSFM::OnImportPlainText()
 {
 	EndDialog(IDC_IMPORT_PLAIN_TEXT);
 }
@@ -135,7 +135,7 @@ void CDlgAnnotationImport::OnImportPlainText()
 /***************************************************************************/
 // CDlgAnnotation::OnInitDialog
 /***************************************************************************/
-BOOL CDlgAnnotationImport::OnInitDialog()
+BOOL CDlgImportSFM::OnInitDialog()
 {
 	CDialog::OnInitDialog();
 
@@ -150,4 +150,3 @@ BOOL CDlgAnnotationImport::OnInitDialog()
 
 	return TRUE;  // return TRUE  unless you set the focus to a control
 }
-

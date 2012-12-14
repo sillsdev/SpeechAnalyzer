@@ -2317,7 +2317,7 @@ BOOL PartWindowData::MIDIOut(const char *filename)
 			if ((Melody[i]->Name>='A'&&Melody[i]->Name<='G')||Melody[i]->Name=='R')
 			{
 				// NOTE
-				auto unsigned char cNote = (BYTE)(Melody[i]->MIDINote());
+				unsigned char cNote = (BYTE)(Melody[i]->MIDINote());
 
 				if (!cNote || bTiedNote) // rest or tied note -- no "note on" needed
 				{
@@ -3294,7 +3294,8 @@ LRESULT CALLBACK PartitureProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam)
 					unsigned UniCharLen = 3 + (unsigned) log10((double)MUSIQUE_FONT_SIZE);
 					size_t len = 4 + RTFTextWLen * UniCharLen + 4 * UniCharLen + 1;
 					RTFText = new char[len];
-					auto int i=0;
+
+					int i=0;
 					RTFText[i++]='\\';
 					RTFText[i++]='u';
 					RTFText[i++]='c';

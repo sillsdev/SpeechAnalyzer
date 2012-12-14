@@ -1,3 +1,7 @@
+SA - 3.1.0.18 - 12/14/2012
+1) Modifications to Auto Ref dialog box to implement 4 radio buttons and allow importing of word list file.
+2) Modifications to Automatic Transcription dialog to allow importing of wordlists.  Added 'Use Reference Data...' checkbox on first page controls dialog sequence and processing.
+
 SA - 3.1.0.17 - 11/23/2012
 1) Removed saxml.tmp file left over during split file operations.
 2) Fixed wrong error message when that occurs when split files with gloss/ref naming convention.

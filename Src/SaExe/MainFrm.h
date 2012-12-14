@@ -110,7 +110,7 @@ protected:
 
 	//***********************************************************
 	// DDO - 08/03/00 Don't need this setting anymore.
-	//BOOL              m_bSaveOnExit;         // if TRUE, save all SA settings on Exit.
+	//BOOL              m_bSaveOnExit;			  // if TRUE, save all SA settings on Exit.
 	//***********************************************************
 	BOOL				m_bShowStartupDlg;        // True if start dialog box gets shown after splash screen.
 	BOOL				m_nStartDataMode;         // 0 = Phonetic, 1 = Music  DDO - 08/08/00

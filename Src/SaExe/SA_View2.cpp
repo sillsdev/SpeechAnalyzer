@@ -2084,7 +2084,6 @@ void CSaView::OnUpdatePrintPreview(CCmdUI* pCmdUI)
 	pCmdUI->Enable(TRUE);
 }
 
-
 /***************************************************************************/
 // CSaView::OnPrintPageSetup - Setup page layout preferences for printing
 /***************************************************************************/
@@ -3917,7 +3916,7 @@ void CSaView::OnEditAddSyllable()
 		if (dwStop <= dwMaxStop) // enough room
 		{
 			pSeg->Adjust(pDoc,nSelection,dwStop,pSeg->GetDuration(nSelection)+dwStop-pSeg->GetOffset(nSelection));
-			pSeg->Insert(nSelection, &szString, '#', dwStart,dwStop - dwStart);
+			pSeg->Insert(nSelection, &szString, true, dwStart,dwStop - dwStart);
 			pDoc->SetModifiedFlag(TRUE); // document has been modified
 			pDoc->SetTransModifiedFlag(TRUE); // transcription data has been modified
 			pSeg->SetSelection(-1);
@@ -4012,7 +4011,7 @@ void CSaView::OnEditAdd()
 			pSeg->Adjust(pDoc, nNext,GetStopCursorPosition(),pSeg->GetStop(nNext)-GetStopCursorPosition());
 		}
 
-		pSeg->Insert(nInsertAt, &szString, '#', GetStartCursorPosition(),GetStopCursorPosition()-GetStartCursorPosition());
+		pSeg->Insert(nInsertAt, &szString, true, GetStartCursorPosition(), GetStopCursorPosition()-GetStartCursorPosition());
 		// Adjust Gloss
 		if ((!pGloss->IsEmpty()) && pSeg->GetPrevious(nInsertAt))
 		{
@@ -4075,7 +4074,7 @@ void CSaView::OnEditAdd()
 
 				nInsertAt = pSeg->CheckPosition(pDoc,dwStart,dwStop,CSegment::MODE_ADD);
 				ASSERT(nInsertAt >= 0);
-				pSeg->Insert(nInsertAt, &szString, '#', dwStart,dwStop - dwStart);
+				pSeg->Insert(nInsertAt, &szString, true, dwStart,dwStop - dwStart);
 				// Adjust Gloss
 				if ((!pGloss->IsEmpty()) && pSeg->GetPrevious(nInsertAt))
 				{
@@ -4200,7 +4199,7 @@ void CSaView::OnEditAddPhrase(CMusicPhraseSegment *pSeg)
 			if(pSeg->GetOffset(nNext) < GetStopCursorPosition()+pDoc->GetBytesFromTime(MAX_ADD_JOIN_TIME)) // SDM 1.5Test10.2
 				pSeg->Adjust(pDoc, nNext,GetStopCursorPosition(),pSeg->GetStop(nNext)-GetStopCursorPosition());
 		}
-		pSeg->Insert(nInsertAt, &szString, '#', GetStartCursorPosition(),GetStopCursorPosition()-GetStartCursorPosition());
+		pSeg->Insert(nInsertAt, &szString, true, GetStartCursorPosition(),GetStopCursorPosition()-GetStartCursorPosition());
 		pDoc->SetModifiedFlag(TRUE); // document has been modified
 		pDoc->SetTransModifiedFlag(TRUE); // transcription data has been modified
 		RefreshGraphs(TRUE);
@@ -4254,7 +4253,7 @@ void CSaView::OnEditAddPhrase(CMusicPhraseSegment *pSeg)
 					dwStop = pDoc->SnapCursor(STOP_CURSOR, dwStop, dwStart, dwMaxStop, SNAP_LEFT);
 
 				nInsertAt = pSeg->CheckPosition(pDoc,dwStart,dwStop,CSegment::MODE_ADD);
-				pSeg->Insert(nInsertAt, &szString, '#', dwStart,dwStop - dwStart);
+				pSeg->Insert(nInsertAt, &szString, true, dwStart,dwStop - dwStart);
 				pDoc->SetModifiedFlag(TRUE); // document has been modified
 				pDoc->SetTransModifiedFlag(TRUE); // transcription data has been modified
 				RefreshGraphs(TRUE);
@@ -4369,7 +4368,7 @@ void CSaView::OnUpdateEditAddPhraseL4(CCmdUI* pCmdUI)
 /***************************************************************************/
 void CSaView::OnEditAddWord()
 {
-	EditAddGloss(FALSE);
+	EditAddGloss(false);
 }
 
 //SDM 1.06.5
@@ -4378,14 +4377,14 @@ void CSaView::OnEditAddWord()
 /***************************************************************************/
 void CSaView::OnEditAddBookmark()
 {
-	EditAddGloss(TRUE);
+	EditAddGloss(true);
 }
 
 //SDM 1.06.5
 /***************************************************************************/
 // CSaView::EditAddGloss Add Gloss Segment
 /***************************************************************************/
-void CSaView::EditAddGloss(int nDelimiter)
+void CSaView::EditAddGloss(bool bDelimiter)
 {
 	CSaDoc* pDoc = (CSaDoc*)GetDocument(); // get pointer to document
 	CSaString szString = ""; //Fill new segment with default character
@@ -4398,7 +4397,7 @@ void CSaView::EditAddGloss(int nDelimiter)
 
 		pSeg->AdjustCursorsToMaster(pDoc, FALSE, &dwStart);
 
-		pSeg->Add(GetDocument(), dwStart, szString, nDelimiter, TRUE); // add a segment
+		pSeg->Add(GetDocument(), dwStart, szString, bDelimiter, TRUE); // add a segment
 	}
 	else
 	{
@@ -4422,7 +4421,7 @@ void CSaView::EditAddGloss(int nDelimiter)
 			OnEditAdd();
 
 			pSeg->AdjustCursorsToMaster(pDoc, FALSE, &dwStart);
-			pSeg->Add(pDoc, dwStart, szString, nDelimiter, FALSE); // add a segment
+			pSeg->Add(pDoc, dwStart, szString, bDelimiter, FALSE); // add a segment
 
 			int i = GetGraphIndexForIDD(IDD_RAWDATA);
 			if ((i != -1) && m_apGraphs[i])
@@ -4434,7 +4433,7 @@ void CSaView::EditAddGloss(int nDelimiter)
 		else if (pSeg->GetSelection()!=-1) // Set Delimiter
 		{
 			CSaString szString = GetSelectedAnnotationString();
-			if (nDelimiter == TRUE)
+			if (bDelimiter)
 				szString = TEXT_DELIMITER + szString.Mid(1);
 			else
 				szString = WORD_DELIMITER + szString.Mid(1);

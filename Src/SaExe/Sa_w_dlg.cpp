@@ -428,7 +428,7 @@ void CWbDlgFilterPass::DoDataExchange(CDataExchange* pDX)
 {
 	CDialog::DoDataExchange(pDX);
 	//{{AFX_DATA_MAP(CWbDlgFilterPass)
-	DDX_Text(pDX, IDC_PASS_LOWERREDIT, m_nLowerFreq);
+	DDX_Text(pDX, IDC_PASS_LOWEREDIT, m_nLowerFreq);
 	DDX_Text(pDX, IDC_PASS_UPPEREDIT, m_nUpperFreq);
 	DDX_Text(pDX, IDC_PASS_FILTER_ORDER, m_nOrder);
 	DDV_MinMaxUInt(pDX, m_nOrder, 1, 99);

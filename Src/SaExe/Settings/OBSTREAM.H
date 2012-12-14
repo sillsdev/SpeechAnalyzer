@@ -77,14 +77,15 @@ class Object_istream // Hungarian: obs
 {
 public:
 	Object_istream(const IUtf8String &filename);
-	~Object_istream(); // Destructor
+	~Object_istream();		// Destructor
 
 	ifstream& getIos() {return m_ios;};
+	void Rewind();				// skip back to the beginning and reset
 
-	void SkipBOM(); // Skip opening BOM, if present
-	BOOL bAtEnd(); // True if at eof
-	BOOL bAtBackslash(); // True if at a backslash
-	BOOL bAtBeginMarker(); // True if at any begin marker
+	void SkipBOM();			// Skip opening BOM, if present
+	BOOL bAtEnd();			// True if at eof
+	BOOL bAtBackslash();	// True if at a backslash
+	BOOL bAtBeginMarker();	// True if at any begin marker
 	BOOL bAtBeginOrEndMarker(); // True if at any begin or end marker
 	BOOL bAtBeginMarker(const char* pszMarker, const char* pszName = NULL ); // True if at the desired begin marker followed by the requested name
 	BOOL bAtBeginMarker(const char* pszMarker, IUtf8String *pszName); // True if at the desired begin marker followed by the requested name
@@ -126,23 +127,26 @@ protected:
 	void ReadMarkedString(const char** ppszMarker, const char** ppszString,
 		BOOL bTrimWhiteSpace = TRUE); // Read any marked string
 	void peekMarkedString(const char** ppszMarker, const char** ppszString,BOOL bTrimWhiteSpace = TRUE)
-	{ ReadMarkedString(ppszMarker, ppszString,bTrimWhiteSpace); // Read any marked string
-
-	UnReadMarkedString(); }// Store most recently read marked string for next read
+	{ 
+		// Read any marked string
+		ReadMarkedString(ppszMarker, ppszString,bTrimWhiteSpace); 
+		// Store most recently read marked string for next read
+		UnReadMarkedString(); 
+	}
 	BOOL Object_istream::bReadString(const char* pszMarker, const char** s);
 	void UnReadMarkedString(); // Store most recently read marked string for next read
 
 private:
 	void ReadMarkedLine(const char** ppszMarker, const char** ppszString); // Read any marked line
-	void ReadLine(); // Read one line
+	void ReadLine();		// Read one line
 
-	ifstream m_ios;  // iostream from which input is read
-	char* m_pszMStringBuf; // input buffer for a marked string
-	char* m_pszEnd; // end of string (i.e. its null) where next line is read
-	BOOL m_bUnRead; // buffer contains a marked string which has been "unread"
-	char* m_pszMarker; // beginning of unread marker
-	char* m_pszString; // beginning of unread string
-	char m_chEndOfLine;  // delimiter for the get-one-line function
+	ifstream m_ios;			// iostream from which input is read
+	char * m_pszMStringBuf; // input buffer for a marked string
+	char * m_pszEnd;		// end of string (i.e. its null) where next line is read
+	BOOL m_bUnRead;			// buffer contains a marked string which has been "unread"
+	char * m_pszMarker;		// beginning of unread marker
+	char * m_pszString;		// beginning of unread string
+	char m_chEndOfLine;		// delimiter for the get-one-line function
 
 	BOOL bReadMarker(char cFirstChar, const char* pszMarker); // low level read begin or end marker
 

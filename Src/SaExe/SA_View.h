@@ -184,7 +184,7 @@ private:
 
 	BOOL IsFocusGraph(UINT id);
 	BOOL GraphIDincluded(UINT id);
-	void EditAddGloss(int nDelimiter);
+	void EditAddGloss( bool bDelimiter);
 	//    void SendPlayMessage(UINT Int1, UINT Int2);
 	void SendPlayMessage(WORD Int1, WORD Int2);
 	BOOL StartAnimation(DWORD dwStartWaveIndex, DWORD dwStopWaveIndex);

@@ -310,7 +310,8 @@ void CFormantTracker::BuildTrack(CTrackState &state, double samplingRate, int pi
 		trackOut[formant] = predictor;
 		if (formant==1) 
 		{
-			//for (int i=0;i<filtered.size();i++) {
+			//for (int i=0;i<filtered.size();i++) 
+			//{
 			//	TRACE("filtered[%d]=%f\n",i,filtered[i]);
 			//}
 			//TRACE("trackOut[%d]=%f\n",formant,predictor);
