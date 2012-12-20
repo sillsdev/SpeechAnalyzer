@@ -825,17 +825,20 @@ IMPLEMENT_DYNCREATE(CSaDoc, CUndoRedoDoc)
 
 		CChannel * channel = new CChannel[numChannels];
 
-		try {
+		try 
+		{
 			HPSTR pData = GetUnprocessedWaveData(0, TRUE, FALSE);
 			const int nSize = GetBufferSize()/numChannels & ~1;
 
-			for (int i=0;i<numChannels;i++) {
+			for (int i=0;i<numChannels;i++) 
+			{
 				channel[i].pData = new char[nSize];
 				channel[i].pFile = new CFile(m_szRawDataWrk[i+1], CFile::modeCreate|CFile::modeWrite|CFile::shareExclusive|CFile::typeBinary);
 			}
 
 			int nUsed = 0;
-			for (int nSample = 0; nSample < nSamples;) {
+			for (int nSample = 0; nSample < nSamples;) 
+			{
 				if (nUsed == nSize) {
 					nUsed = 0;
 					DWORD dwOffset = nSample*nSampleBytes*numChannels;
@@ -4734,14 +4737,12 @@ IMPLEMENT_DYNCREATE(CSaDoc, CUndoRedoDoc)
 			pView->SetStopCursorPosition(GetSegment(nLoop)->GetStop(nIndex), SNAP_LEFT);
 
 			// If independent segment boundaries have moved they need to be updated for snapping
-			if(((GetSegment(nLoop)->GetMasterIndex()==-1)&&((pView->GetStartCursorPosition()!=GetSegment(nLoop)->GetOffset(nIndex))
-				||(pView->GetStopCursorPosition()!=(GetSegment(nLoop)->GetStop(nIndex))))))
+			if (((GetSegment(nLoop)->GetMasterIndex()==-1) && 
+				((pView->GetStartCursorPosition()!=GetSegment(nLoop)->GetOffset(nIndex)) || 
+				(pView->GetStopCursorPosition()!=(GetSegment(nLoop)->GetStop(nIndex))))))
 			{
-				// Phonetic Segment was not snapped
-				if (AfxMessageBox(IDS_QUESTION_AUTOSNAPUPDATE, MB_YESNO | MB_ICONQUESTION, 0) == IDYES)
-				{
-					pView->PostMessage(WM_COMMAND, ID_EDIT_AUTO_SNAP_UPDATE, 0L);
-				}
+				// Phonetic Segment was not snapped - automatically update it
+				pView->PostMessage(WM_COMMAND, ID_EDIT_AUTO_SNAP_UPDATE, 0L);
 			}
 
 			CheckPoint(); // Save state
@@ -7938,6 +7939,10 @@ IMPLEMENT_DYNCREATE(CSaDoc, CUndoRedoDoc)
 			CSaString thisRef = pReferences->GetAt(i);
 			DWORD start = pReference->GetOffset(i);
 			DWORD duration = pReference->GetDuration(i);
+			int gidx = 0;
+			int pmidx = 0;
+			int pnidx = 0;
+			int oidx = 0;
 			MarkerList::iterator git = td.m_TranscriptionData[td.m_MarkerDefs[GLOSS]].begin();
 			MarkerList::iterator pmit = td.m_TranscriptionData[td.m_MarkerDefs[PHONEMIC]].begin();
 			MarkerList::iterator pnit = td.m_TranscriptionData[td.m_MarkerDefs[PHONETIC]].begin();
@@ -7950,23 +7955,27 @@ IMPLEMENT_DYNCREATE(CSaDoc, CUndoRedoDoc)
 					if (td.m_bPhonetic) 
 					{
 						CSaString text = *pnit;
-						pPhonetic->Insert(i,&text,false,start,duration);
+						pPhonetic->Insert(pnidx,&text,false,start,duration);
+						pnidx += text.GetLength();
 					}
 					if (td.m_bPhonemic) 
 					{
 						CSaString text = *pmit;
-						pPhonemic->Insert(i,&text,false,start,duration);
+						pPhonemic->Insert(pmidx,&text,false,start,duration);
+						pmidx += text.GetLength();
 					}
 					if (td.m_bOrthographic) 
 					{
 						CSaString text = *oit;
-						pOrthographic->Insert(i,&text,false,start,duration);
+						pOrthographic->Insert(oidx,&text,false,start,duration);
+						oidx += text.GetLength();
 					}
 					if (td.m_bGloss) 
 					{
 						CSaString text = *git;
 						if (text[0]==WORD_DELIMITER) text = text.Mid(1);
-						pGloss->Insert(i,&text,false,start,duration);
+						pGloss->Insert(gidx,&text,false,start,duration);
+						gidx += text.GetLength();
 					}
 				}
 				if (td.m_bPhonetic) pnit++;

@@ -602,8 +602,8 @@ void CStartCursorWnd::OnLButtonUp(UINT nFlags, CPoint point)
 
 	// detect update request
 	//  If CTRL+SHIFT update segment boundaries
-	if ((m_nEditBoundaries&&(nLoop!=-1)) &&
-		(pView->GetAnnotation(nLoop)->CheckCursors(pView->GetDocument(),m_nEditBoundaries==BOUNDARIES_EDIT_OVERLAP) != -1)) 
+	if (( m_nEditBoundaries && (nLoop!=-1)) &&
+		(pView->GetAnnotation(nLoop)->CheckCursors(pView->GetDocument(), m_nEditBoundaries==BOUNDARIES_EDIT_OVERLAP) != -1)) 
 	{
 
 		CSaDoc* pDoc = pView->GetDocument();

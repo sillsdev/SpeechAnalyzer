@@ -1425,6 +1425,7 @@
 #define ID_EDIT_BOUNDARIES              33126
 #define ID_GRAPHS_ZOOM_CURSORS          33127
 #define ID_IMPORT_MIDI                  33128
+#define ID_EDIT_SEGMENT_SIZE            33129
 #define ID_FILE_OPENAS_NEW              33141
 #define ID_PLAYBACK_LTOSTOP             33142
 #define ID_PLAYBACK_STOPTOR             33143
@@ -1617,6 +1618,7 @@
 #define IDS_ERROR_BAD_START_END_REF     61260
 #define IDS_ERROR_NO_PARSE              61261
 #define IDS_ERROR_FILENAME              61262
+#define IDS_ERROR_NO_IPAHELP            61263
 
 // Next default values for new objects
 // 

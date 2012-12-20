@@ -408,6 +408,8 @@ protected:
 	afx_msg void OnGraphsParameters();
 	afx_msg void OnEditBoundaries();
 	afx_msg void OnUpdateEditBoundaries(CCmdUI *pCmdUI);
+	afx_msg void OnEditSegmentSize();
+	afx_msg void OnUpdateEditSegmentSize(CCmdUI *pCmdUI);
 	afx_msg void OnExportStaff();
 	afx_msg void OnUpdateExportStaff(CCmdUI *pCmdUI);
 	afx_msg void OnImportStaff();

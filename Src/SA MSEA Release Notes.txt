@@ -1,3 +1,10 @@
+SA - 3.1.0.19 - 12/18/2012
+1) Fix for transcription display bug.  Text was not being inserted correctly into transcription segment object with the correct index value.
+2) Added phrase level shortcut keys.
+3) Fixed bug where application prompts user to see if they wish to automatically snap segment boundaries.  The message was removed and the operation is always performed.
+4) Added toolbar button and menu item for 'edit segment size'.
+5) Updated IPA Chart dialog to prompt user and disable controls if IPA Help is not installed.
+
 SA - 3.1.0.18 - 12/14/2012
 1) Modifications to Auto Ref dialog box to implement 4 radio buttons and allow importing of word list file.
 2) Modifications to Automatic Transcription dialog to allow importing of wordlists.  Added 'Use Reference Data...' checkbox on first page controls dialog sequence and processing.

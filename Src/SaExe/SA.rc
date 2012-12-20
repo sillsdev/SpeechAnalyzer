@@ -26,7 +26,7 @@ LANGUAGE LANG_NEUTRAL, SUBLANG_NEUTRAL
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 3,1,0,18
+ FILEVERSION 3,1,0,19
  PRODUCTVERSION 1,0,0,1
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
@@ -44,7 +44,7 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "SIL International"
             VALUE "FileDescription", "SA"
-            VALUE "FileVersion", "v3.1.0.18"
+            VALUE "FileVersion", "v3.1.0.19"
             VALUE "InternalName", "SA"
             VALUE "LegalCopyright", "© 1996-2012 SIL International (MSEA)"
             VALUE "ProductName", "SA"
@@ -2319,9 +2319,17 @@ BEGIN
         BOTTOMMARGIN, 126
     END
 
+    IDD_CHARTVOWELSPAGE, DIALOG
+    BEGIN
+    END
+
     IDD_CHARTCONSONANTSPAGE, DIALOG
     BEGIN
         TOPMARGIN, 3
+    END
+
+    IDD_CHARTDIACRITICSPAGE, DIALOG
+    BEGIN
     END
 
     IDD_CHARTSUPRASEGSPAGE, DIALOG
@@ -2545,6 +2553,7 @@ BEGIN
     BUTTON      ID_EDIT_ADD
     BUTTON      ID_EDIT_ADD_WORD
     BUTTON      ID_EDIT_BOUNDARIES
+    BUTTON      ID_EDIT_SEGMENT_SIZE
     SEPARATOR
     BUTTON      ID_GRAPHS_TYPES
     BUTTON      ID_RESTART_PROCESS
@@ -2579,6 +2588,7 @@ BEGIN
     BUTTON      ID_EDIT_ADD_SYLLABLE
     BUTTON      ID_EDIT_ADD_WORD
     BUTTON      ID_EDIT_BOUNDARIES
+    BUTTON      ID_EDIT_SEGMENT_SIZE
     SEPARATOR
     BUTTON      ID_GRAPHS_TYPES
     BUTTON      ID_RESTART_PROCESS
@@ -2734,16 +2744,17 @@ BEGIN
             MENUITEM "Add &Syllable Segment\tCtrl+L", ID_EDIT_ADD_SYLLABLE
             MENUITEM "Add Gloss &Word Segment\tCtrl+W", ID_EDIT_ADD_WORD
             MENUITEM "Add Gloss &Bookmark\tCtrl+B", ID_EDIT_ADD_BOOKMARK
-            MENUITEM "Add Phrase L1 Segment",       ID_EDIT_ADD_PHRASE_L1
-            MENUITEM "Add Phrase L2 Segment",       ID_EDIT_ADD_PHRASE_L2
-            MENUITEM "Add Phrase L3 Segment",       ID_EDIT_ADD_PHRASE_L3
-            MENUITEM "Add Phrase L4 Segment",       ID_EDIT_ADD_PHRASE_L4
+            MENUITEM "Add Phrase L&1 Segment\tCtrl+1", ID_EDIT_ADD_PHRASE_L1
+            MENUITEM "Add Phrase L&2 Segment\tCtrl+2", ID_EDIT_ADD_PHRASE_L2
+            MENUITEM "Add Phrase L&3 Segment\tCtrl+3", ID_EDIT_ADD_PHRASE_L3
+            MENUITEM "Add Phrase L&4 Segment\tCtrl+4", ID_EDIT_ADD_PHRASE_L4
             MENUITEM SEPARATOR
             MENUITEM "&Update All Boundaries",      ID_EDIT_AUTO_SNAP_UPDATE
             MENUITEM SEPARATOR
             MENUITEM "Copy Phonetic to Phonemic",   ID_EDIT_COPY_PHONETIC_TO_PHONEMIC
         END
         MENUITEM "Segment &Boundaries\tINS",    ID_EDIT_BOUNDARIES
+        MENUITEM "Segment Size\tCtrl+Shift",    ID_EDIT_SEGMENT_SIZE
         MENUITEM SEPARATOR
         MENUITEM "Cu&t\tCtrl+X",                ID_EDIT_CUT
         MENUITEM "&Copy\tCtrl+C",               ID_EDIT_COPY
@@ -3608,6 +3619,10 @@ BEGIN
     VK_TAB,         ID_EDIT_NEXT,           VIRTKEY, NOINVERT
     VK_TAB,         ID_NEXT_GRAPH,          VIRTKEY, SHIFT, NOINVERT
     VK_UP,          ID_EDIT_UP,             VIRTKEY, ALT, NOINVERT
+    "1",            ID_EDIT_ADD_PHRASE_L1,  VIRTKEY, CONTROL, NOINVERT
+    "2",            ID_EDIT_ADD_PHRASE_L2,  VIRTKEY, CONTROL, NOINVERT
+    "3",            ID_EDIT_ADD_PHRASE_L3,  VIRTKEY, CONTROL, NOINVERT
+    "4",            ID_EDIT_ADD_PHRASE_L4,  VIRTKEY, CONTROL, NOINVERT
     "W",            ID_EDIT_ADD_WORD,       VIRTKEY, CONTROL, NOINVERT
     "X",            ID_EDIT_CUT,            VIRTKEY, CONTROL, NOINVERT
     "Y",            ID_EDIT_REDO,           VIRTKEY, CONTROL, NOINVERT
@@ -4130,7 +4145,7 @@ STRINGTABLE
 BEGIN
     IDR_MAINFRAME           "Speech Analyzer"
     IDR_SA_ANNTYPE          "\nSA\nSA Document\nWAV Files (*.wav)\n.wav\nannFileType\nANN File Type"
-    VS_VERSION              "Version 3.1.0.18"
+    VS_VERSION              "Version 3.1.0.19"
     VS_COPYRIGHT            "© 1996-2012 SIL International (MSEA).\nAll Rights Reserved."
     IDR_SA_WBTYPE           "\nWB\nSA Workbench\nWB Files (*.wb)\n.wb\nwbFileType\nWB File Type"
 END
@@ -4138,8 +4153,6 @@ END
 STRINGTABLE
 BEGIN
     IDR_WORKBENCH           "Workbench"
-    IDS_QUESTION_AUTOSNAPUPDATE 
-                            "The current document contains segment boundaries that are not properly snapped.  Would you like to automatically update all segment boundaries to correct snap alignment (Recommended)?"
     IDS_QUESTION_APPNOTFOUND 
                             "Calling Application not found.  Would you like to exit?"
     IDR_SA_MIDTYPE          "\nMID\nSA MIDI\nMIDI Files (*.mid)\n.mid\nmidFileType\nMID File Type"
@@ -4936,6 +4949,7 @@ BEGIN
     ID_EDIT_BOUNDARIES      "Edit transcription segment boundaries\nEdit Boundaries"
     ID_GRAPHS_ZOOM_CURSORS  "Zoom to View Between Cursors\nZoom Cursors"
     ID_IMPORT_MIDI          "Import Midi file into staff\nImport Staff"
+    ID_EDIT_SEGMENT_SIZE    "Edit transcription segment sizes\nEdit Segment Size"
 END
 
 STRINGTABLE
@@ -5093,6 +5107,7 @@ BEGIN
                             "The ending reference field must follow the beginning reference field."
     IDS_ERROR_NO_PARSE      "The wordlist does not contain any usable data.  Please select another wordlist."
     IDS_ERROR_FILENAME      "The filename '%1' does not exist or is not readable."
+    IDS_ERROR_NO_IPAHELP    "The IPA Sounds option requires the installation of the IPA Help program to provide the audio.\n\nwww.sil.org/computing/speechtools"
 END
 
 STRINGTABLE

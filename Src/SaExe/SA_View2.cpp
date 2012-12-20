@@ -68,6 +68,8 @@ BEGIN_MESSAGE_MAP(CSaView, CView)
 	ON_COMMAND(ID_GRAPHS_PARAMETERS, OnGraphsParameters)
 	ON_COMMAND(ID_EDIT_BOUNDARIES, OnEditBoundaries)
 	ON_UPDATE_COMMAND_UI(ID_EDIT_BOUNDARIES, OnUpdateEditBoundaries)
+	ON_COMMAND(ID_EDIT_SEGMENT_SIZE, OnEditSegmentSize)
+	ON_UPDATE_COMMAND_UI(ID_EDIT_SEGMENT_SIZE, OnUpdateEditSegmentSize)
 	ON_COMMAND(ID_EXPORT_MIDI, OnExportStaff)
 	ON_UPDATE_COMMAND_UI(ID_EXPORT_MIDI, OnUpdateExportStaff)
 	ON_COMMAND(ID_IMPORT_MIDI, OnImportStaff)
@@ -634,6 +636,23 @@ void CSaView::OnEditBoundaries()
 // CSaView::OnUpdateEditGraphs
 /***************************************************************************/
 void CSaView::OnUpdateEditBoundaries(CCmdUI* pCmdUI)
+{
+	pCmdUI->Enable(TRUE);
+	pCmdUI->SetCheck(GetEditBoundaries(0,FALSE)!=0);
+}
+
+/***************************************************************************/
+// CSaView::OnEditSegmentSize
+/***************************************************************************/
+void CSaView::OnEditSegmentSize()
+{
+	m_bEditBoundaries = !m_bEditBoundaries;
+}
+
+/***************************************************************************/
+// CSaView::OnUpdateEditGraphs
+/***************************************************************************/
+void CSaView::OnUpdateEditSegmentSize(CCmdUI* pCmdUI)
 {
 	pCmdUI->Enable(TRUE);
 	pCmdUI->SetCheck(GetEditBoundaries(0,FALSE)!=0);
@@ -4012,6 +4031,7 @@ void CSaView::OnEditAdd()
 		}
 
 		pSeg->Insert(nInsertAt, &szString, true, GetStartCursorPosition(), GetStopCursorPosition()-GetStartCursorPosition());
+
 		// Adjust Gloss
 		if ((!pGloss->IsEmpty()) && pSeg->GetPrevious(nInsertAt))
 		{

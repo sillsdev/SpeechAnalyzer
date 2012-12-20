@@ -1144,7 +1144,9 @@ void CSaApp::ErrorMessage(UINT nTextID, LPCTSTR pszText1, LPCTSTR pszText2)
 			szText.LoadString(nTextID);
 		}
 		m_pszErrors->Add(szText); // add the string to the array
-	} catch (CMemoryException e) {
+	} 
+	catch (CMemoryException e) 
+	{
 		// memory allocation error
 		ErrorMessage(IDS_ERROR_MEMALLOC);
 	}
@@ -1154,9 +1156,11 @@ void CSaApp::ErrorMessage(UINT nTextID, LPCTSTR pszText1, LPCTSTR pszText2)
 // CSaApp::Message Set error message
 // Set an error message in the queue to be displayed as soon as possible.
 /***************************************************************************/
-void CSaApp::Message(UINT nTextID, LPCTSTR pszText1, LPCTSTR pszText2) {
+void CSaApp::Message(UINT nTextID, LPCTSTR pszText1, LPCTSTR pszText2) 
+{
 	CSaString szText;
-	try {
+	try 
+	{
 		// create the text
 		if (pszText1)
 		{
@@ -1324,7 +1328,8 @@ BOOL CSaApp::CloseWorkbench(CDocument* pDoc)
 // CSaApp::PasteClipboardToNewFile Create a new file and paste wave data into it
 // This function creates a new document.
 /***************************************************************************/
-void CSaApp::PasteClipboardToNewFile(HGLOBAL hData) {
+void CSaApp::PasteClipboardToNewFile(HGLOBAL hData) 
+{
 
 	//because we now use true CF_WAVE we can save as temp then open
 	// temporary target file has to be created
@@ -1333,7 +1338,8 @@ void CSaApp::PasteClipboardToNewFile(HGLOBAL hData) {
 	GetTempPath(_MAX_PATH, lpszTempPath);
 	GetTempFileName(lpszTempPath, _T("WAV"), 0, szTempPath);
 
-	if ((::GlobalFlags(hData)&~GMEM_LOCKCOUNT)==GMEM_DISCARDED) {
+	if ((::GlobalFlags(hData)&~GMEM_LOCKCOUNT)==GMEM_DISCARDED) 
+	{
 		return;
 	}
 
@@ -1342,16 +1348,21 @@ void CSaApp::PasteClipboardToNewFile(HGLOBAL hData) {
 	CFile* pFile=NULL;
 	CFileStatus status;
 
-	try {
+	try 
+	{
 		// create and open the file
 		pFile = new CFile(szTempPath, CFile::modeCreate | CFile::modeReadWrite | CFile::shareExclusive);
 		pFile->Write(lpData, dwSize);
 		delete pFile;
-	} catch( const CException &) {
-		if (pFile) {
+	} 
+	catch( const CException &) 
+	{
+		if (pFile) 
+		{
 			delete pFile;
 			// File may exist should be removed
-			if (CFile::GetStatus(szTempPath, status)) {
+			if (CFile::GetStatus(szTempPath, status)) 
+			{
 				CFile::Remove(szTempPath);
 			}
 		}
@@ -1364,7 +1375,8 @@ void CSaApp::PasteClipboardToNewFile(HGLOBAL hData) {
 	// open the new file
 	CSaDoc* pResult = OpenWavFileAsNew(szTempPath);
 
-	if (!pResult) {	
+	if (!pResult) 
+	{	
 		// Error opening file, destroy temp
 		CFile::Remove(szTempPath);
 	}

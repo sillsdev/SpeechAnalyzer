@@ -1021,6 +1021,9 @@
   <ItemGroup>
     <ClInclude Include="AppDefs.h" />
     <ClInclude Include="autoRecorder.h" />
+    <ClInclude Include="chrchart\ch_dlg.h" />
+    <ClInclude Include="chrchart\ch_dlwnd.h" />
+    <ClInclude Include="chrchart\ch_table.h" />
     <ClInclude Include="DlgAlignTranscriptionDataImportRefPage.h" />
     <ClInclude Include="DlgAlignTranscriptionDataTextPage.h" />
     <ClInclude Include="DlgImportSFMRef.h" />

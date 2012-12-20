@@ -333,11 +333,12 @@ DWORD CSegment::RemoveNoRefresh( CDocument * )
 }
 
 
-/***************************************************************************/
-// CSegment::Insert Insert/append an annotation segment
-// Returns FALSE if an error occured. nDelimiter is not used in this basic
-// version of the function.
-/***************************************************************************/
+/***************************************************************************
+* CSegment::Insert Insert/append an annotation segment
+* Returns FALSE if an error occured. 
+* nDelimiter is not used in this basic version of the function.
+* nIndex index into annotation string
+***************************************************************************/
 BOOL CSegment::Insert( int nIndex, const CSaString * pszString, bool, DWORD dwStart, DWORD dwDuration) 
 {
 	int nStringLength = pszString->GetLength(); // get the length of the new string

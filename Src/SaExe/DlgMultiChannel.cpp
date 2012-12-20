@@ -52,11 +52,13 @@ BOOL CDlgMultiChannel::OnInitDialog()
 		szNum.Format(L"%d",1);
 		AfxFormatString1(szText,IDS_MC_CHANNEL_LEFT, szNum);
 		m_MultiChannelCombo.AddString(szText);
-		if (m_nChannels>=2) {
+		if (m_nChannels>=2) 
+		{
 			szNum.Format(L"%d",2);
 			AfxFormatString1(szText,IDS_MC_CHANNEL_RIGHT, szNum);
 			m_MultiChannelCombo.AddString(szText);
-			if (m_nChannels>=3) {
+			if (m_nChannels>=3) 
+			{
 				for (int i=2;i<m_nChannels;i++)
 				{
 					szNum.Format(L"%d",i+1);
