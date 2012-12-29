@@ -2090,25 +2090,17 @@ void CSaView::OnUpdatePopupgraphStyleDots(CCmdUI* pCmdUI)
 /***************************************************************************/
 void CSaView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 {
-	CProgressStatusBar* pStatusBar;
-	CDataProcess* pProcessOwner;
+	TRACE("keydown %d %d %d\n",nChar, nRepCnt, nFlags);
+	CProgressStatusBar* pStatusBar = NULL;
+	CDataProcess * pProcessOwner = NULL;
 	CRect rWnd;
-	enum
-	{
-		NONE = 0,
-		CTRL = 1,
-		SHIFT = 2,
-	};
-	int keyState = NONE;
-	if (GetAsyncKeyState(VK_SHIFT) < 0)
-		keyState|=SHIFT;
-	if (GetAsyncKeyState(VK_CONTROL) < 0)
-		keyState|=CTRL;
 
+	// are these keys already pressed?
+	bool ctrlPressed = (GetAsyncKeyState(VK_CONTROL) < 0);
+	bool shiftPressed = (GetAsyncKeyState(VK_SHIFT) < 0);
+	TRACE("ctrlPressed=%d shiftPressed=%d\n",ctrlPressed,shiftPressed);
 
-	switch (keyState)
-	{
-	case NONE:
+	if ((!ctrlPressed)&&(!shiftPressed)) {
 		switch(nChar)
 		{
 		case VK_HOME:
@@ -2153,32 +2145,33 @@ void CSaView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 			CView::OnKeyDown(nChar, nRepCnt, nFlags);
 			break;
 		}
-		break;
 
-	case SHIFT:
-		//        switch(nChar)
-		//        {
-		//          default:
+	} else if ((shiftPressed)&&(!ctrlPressed)) {
+		
 		CView::OnKeyDown(nChar, nRepCnt, nFlags);
-		//            break;
-		//        }
-		break;
+	
+	} else if ((ctrlPressed)&&(!shiftPressed)) {
 
-	case CTRL:
 		switch(nChar)
 		{
 		case VK_END:
 			OnVScroll(SB_BOTTOM, 0, GetScrollBarCtrl(SB_VERT)); // zoom to maximum
 			break;
+
 		default:
 			CView::OnKeyDown(nChar, nRepCnt, nFlags);
 			break;
 		}
-		break;
 
-	default:
+	} else if ((ctrlPressed)&&(shiftPressed)) {
+
+		PostMessage(WM_COMMAND, ID_EDIT_SEGMENT_SIZE);
 		CView::OnKeyDown(nChar, nRepCnt, nFlags);
-		break;
+
+	} else {
+		
+		// everything sels
+		CView::OnKeyDown(nChar, nRepCnt, nFlags);
 	}
 }
 
@@ -2278,7 +2271,9 @@ BOOL CSaView::GraphTypeEnabled(int nID, BOOL bIncludeCtrlKeyCheck)
 
 	bTest &= (nID != IDD_RATIO);
 
-	if (bIncludeCtrlKeyCheck) bTest &= (GetKeyState(VK_CONTROL) < 0);
+	if (bIncludeCtrlKeyCheck)
+		bTest &= (GetKeyState(VK_CONTROL) < 0);
+
 	return bTest;
 }
 
@@ -3631,7 +3626,7 @@ void CSaView::OnChar(UINT nChar, UINT nRepCnt, UINT nFlags)
 	m_advancedSelection.Update(this);
 	int nAnnotationIndex = m_advancedSelection.GetSelection().nAnnotationIndex;
 
-	if(nChar < 32)
+	if (nChar < 32)
 	{
 		CView::OnChar(nChar, nRepCnt, nFlags);
 		return;

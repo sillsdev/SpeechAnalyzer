@@ -23,9 +23,7 @@ class CMiniCaptionWnd : public CWnd
 public:
 	CMiniCaptionWnd();
 	virtual ~CMiniCaptionWnd();
-	virtual BOOL Create(LPCTSTR lpszClassName, LPCTSTR lpszWindowName, DWORD dwStyle,
-		const RECT& rect, CWnd* pParentWnd,
-		UINT nID, CCreateContext* pContext = NULL);
+	virtual BOOL Create(LPCTSTR lpszClassName, LPCTSTR lpszWindowName, DWORD dwStyle, const RECT& rect, CWnd* pParentWnd, UINT nID, CCreateContext* pContext = NULL);
 	virtual BOOL PreCreateWindow(CREATESTRUCT& cs);
 
 	// Attributes
@@ -52,7 +50,6 @@ private:
 
 	// Generated message map functions
 protected:
-	//{{AFX_MSG(CMiniCaptionWnd)
 	afx_msg LRESULT OnNcHitTest(CPoint point);
 	afx_msg void OnNcCalcSize(BOOL bCalcValidRects, NCCALCSIZE_PARAMS * lpncsp);
 	afx_msg void OnNcPaint();
@@ -66,7 +63,7 @@ protected:
 	afx_msg void OnInitMenu(CMenu*);
 	afx_msg void OnSysCommand(UINT nID, LPARAM lParam);
 	afx_msg void OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags);
-	//}}AFX_MSG
+
 	DECLARE_MESSAGE_MAP()
 
 	void DrawCaptionText(CDC * pDC, const CRect & rcWnd);

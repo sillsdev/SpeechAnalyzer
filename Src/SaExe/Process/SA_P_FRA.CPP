@@ -77,7 +77,8 @@ long CProcessFragments::Process(void* pCaller, ISaDoc* pDoc, int nProgress,
 	{
 		if ((nResult == PROCESS_CANCELED)) 
 			CancelProcess(); // set your own cancel flag
-		if (!bBackground) EndWaitCursor();
+		if (!bBackground)
+			EndWaitCursor();
 		return MAKELONG(nResult, nProgress);    
 	}
 	DWORD dwOldPitchBlock = pAutoPitch->GetProcessBufferIndex();  // save current pitch buffer block offset   

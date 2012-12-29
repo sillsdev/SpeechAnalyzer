@@ -120,7 +120,8 @@ private:
 	BOOL  m_bBoundariesAll;              // boundaries show/hide all
 	BOOL  m_bBoundariesNone;             // boundaries hide all
 	BOOL  m_bUpdateBoundaries;           // boundaries updated or not in transcription editor
-	int  m_bEditBoundaries;              // TRUE = button pressed
+	bool  m_bEditBoundaries;			 // TRUE = INS pressed
+	bool  m_bEditSegmentSize;			 // TRUE = CTRL_SHIFT pressed
 	BOOL  m_bDrawStyleLine;              // graph drawing style line or solid
 	DWORD m_dwDataPosition;              // current start position of displayed data
 	double m_fMagnify;                   // magnify factor

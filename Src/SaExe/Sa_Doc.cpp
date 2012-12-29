@@ -4638,15 +4638,15 @@ IMPLEMENT_DYNCREATE(CSaDoc, CUndoRedoDoc)
 		POSITION pos = GetFirstViewPosition();
 		CSaView* pView = (CSaView*)GetNextView(pos);
 
-		for(int independent=0;independent<ANNOT_WND_NUMBER;independent++)
+		for (int independent=0;independent<ANNOT_WND_NUMBER;independent++)
 		{
-			if(m_apSegments[independent]->GetMasterIndex() != -1)
+			if (m_apSegments[independent]->GetMasterIndex() != -1)
 				continue;
 
 			CSegment* pIndependent = GetSegment(independent);
 
 
-			if(pIndependent->IsEmpty())
+			if (pIndependent->IsEmpty())
 				continue;
 
 			int nLoop = 0;
@@ -4669,7 +4669,7 @@ IMPLEMENT_DYNCREATE(CSaDoc, CUndoRedoDoc)
 					if (pGraph->HaveAnnotation(nInnerLoop))
 						pGraph->GetAnnotationWnd(nInnerLoop)->Invalidate(); // redraw annotation window
 				}
-				if(pGraph->HaveBoundaries())
+				if (pGraph->HaveBoundaries())
 				{
 					pGraph->GetPlot()->Invalidate();
 				}
@@ -4685,21 +4685,21 @@ IMPLEMENT_DYNCREATE(CSaDoc, CUndoRedoDoc)
 	{
 		BOOL enable = FALSE;
 
-		for(int independent=0;independent<ANNOT_WND_NUMBER;independent++)
+		for (int independent=0;independent<ANNOT_WND_NUMBER;independent++)
 		{
-			if(m_apSegments[independent]->GetMasterIndex() != -1)
+			if (m_apSegments[independent]->GetMasterIndex() != -1)
 				continue;
 
 			CSegment* pIndependent = GetSegment(independent);
 
-			if(pIndependent->IsEmpty())
+			if (pIndependent->IsEmpty())
 				continue;
 
 			int nLoop = 0;
 
 			while (nLoop != -1)
 			{
-				if(pIndependent->GetOffset(nLoop) != SnapCursor(START_CURSOR, pIndependent->GetOffset(nLoop)))
+				if (pIndependent->GetOffset(nLoop) != SnapCursor(START_CURSOR, pIndependent->GetOffset(nLoop)))
 				{
 					enable = TRUE;
 					break;
@@ -6886,11 +6886,12 @@ IMPLEMENT_DYNCREATE(CSaDoc, CUndoRedoDoc)
 		CMainFrame* pMainWnd = (CMainFrame*)AfxGetMainWnd();
 		pMainWnd->NotifyFragmentDone(pCaller);
 
-		if(pView->GetCursorAlignment() == ALIGN_AT_FRAGMENT && AutoSnapUpdateNeeded())
+		if ((pView->GetCursorAlignment() == ALIGN_AT_FRAGMENT) && 
+			(AutoSnapUpdateNeeded()))
 		{
 			// Phonetic Segment was not snapped to Fragments
 			CSaApp *pApp = static_cast<CSaApp*>(AfxGetApp());
-			if (pApp->GetBatchMode() == 0 && (IsModified() || AfxMessageBox(IDS_QUESTION_AUTOSNAPUPDATE, MB_YESNO | MB_ICONQUESTION, 0) == IDYES))
+			if (pApp->GetBatchMode() == 0)
 			{
 				pView->SendMessage(WM_COMMAND, ID_EDIT_AUTO_SNAP_UPDATE, 0L);
 			}

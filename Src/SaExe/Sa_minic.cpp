@@ -36,7 +36,6 @@ IMPLEMENT_DYNCREATE(CMiniCaptionWnd, CWnd)
 // CMiniCaptionWnd message map
 
 BEGIN_MESSAGE_MAP(CMiniCaptionWnd, CWnd)
-	//{{AFX_MSG_MAP(CMiniCaptionWnd)
 	ON_WM_NCHITTEST()
 	ON_WM_NCCALCSIZE()
 	ON_WM_NCPAINT()
@@ -50,7 +49,6 @@ BEGIN_MESSAGE_MAP(CMiniCaptionWnd, CWnd)
 	ON_WM_INITMENU()
 	ON_WM_SYSCOMMAND()
 	ON_WM_KEYDOWN()
-	//}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
@@ -999,8 +997,6 @@ void CMiniCaptionWnd::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 	GetParent()->SendMessage(WM_KEYDOWN, nChar, MAKELONG(nRepCnt, nFlags));
 	CWnd::OnKeyDown(nChar, nRepCnt, nFlags);
 }
-
-
 
 void CMiniCaptionWnd::DrawCaptionText(CDC * pDC, const CRect & rcWnd)
 {

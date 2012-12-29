@@ -1,3 +1,8 @@
+SA - 3.1.0.20 - 12/20/2012
+1) Completed 'edit segment size' feature.
+2) Removed popup-dialog with missing text. (resource problem)
+3) Adjusted 'edit segment size' icon.
+
 SA - 3.1.0.19 - 12/18/2012
 1) Fix for transcription display bug.  Text was not being inserted correctly into transcription segment object with the correct index value.
 2) Added phrase level shortcut keys.

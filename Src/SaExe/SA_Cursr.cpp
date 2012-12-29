@@ -59,7 +59,6 @@ static char BASED_CODE THIS_FILE[] = __FILE__;
 // CStartCursorWnd message map
 
 BEGIN_MESSAGE_MAP(CStartCursorWnd, CCursorWnd)
-	//{{AFX_MSG_MAP(CStartCursorWnd)
 	ON_WM_PAINT()
 	ON_WM_MOUSEMOVE()
 	ON_WM_RBUTTONDOWN()
@@ -67,7 +66,6 @@ BEGIN_MESSAGE_MAP(CStartCursorWnd, CCursorWnd)
 	ON_WM_LBUTTONUP()
 	ON_WM_KEYUP()
 	ON_WM_KEYDOWN()
-	//}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
@@ -374,7 +372,7 @@ void CStartCursorWnd::OnMouseMove(UINT nFlags, CPoint point)
 		// set the highlight area for raw data
 		if ((pView->GetFocusedGraphID() == IDD_RAWDATA) && 
 			((nFlags&(MK_CONTROL|MK_SHIFT)) == MK_CONTROL) && 
-			(!pView->GetEditBoundaries(nFlags)) && 
+			(pView->GetEditBoundaries(nFlags)!=BOUNDARIES_EDIT_NULL) && 
 			(!pView->GetDocument()->IsMultiChannel()) && 
 			((pView->GetGraphUpdateMode() == STATIC_UPDATE) || 
 			 (!pView->GetDynamicGraphCount()))) 
@@ -440,7 +438,7 @@ void CStartCursorWnd::OnLButtonDown(UINT nFlags, CPoint point)
 	// set boundaries mode
 	CRect rCursorRect;
 	GetClientRect(rCursorRect);
-	if (rCursorRect.PtInRect(point) || !pView->GetEditBoundaries(nFlags)) 
+	if (rCursorRect.PtInRect(point) || (pView->GetEditBoundaries(nFlags)!=BOUNDARIES_EDIT_NULL)) 
 	{
 		m_nEditBoundaries = pView->GetEditBoundaries(nFlags);
 	} 
@@ -650,14 +648,13 @@ void CStartCursorWnd::OnKeyUp(UINT nChar, UINT nRepCnt, UINT nFlags)
 	CWnd* pWnd = GetParent();
 	CGraphWnd* pGraph = (CGraphWnd*)pWnd->GetParent();
 
-	if(m_bCursorDrag)
+	if (m_bCursorDrag)
 	{
 		CSaView* pView = (CSaView*)pGraph->GetParent();
 		int nLoop = pView->FindSelectedAnnotationIndex();
-		if(nLoop != -1)
+		if (nLoop != -1)
 		{
-			//int m_nEditBoundaries = pView->GetEditBoundaries(nFlags);
-			if(pGraph->HaveAnnotation(nLoop))// Selected annotation is visible
+			if (pGraph->HaveAnnotation(nLoop))// Selected annotation is visible
 			{
 				CAnnotationWnd* pWnd = pGraph->GetAnnotationWnd(nLoop);
 				pWnd->SetHintUpdateBoundaries(m_nEditBoundaries!=0,m_nEditBoundaries == BOUNDARIES_EDIT_OVERLAP);
@@ -677,14 +674,13 @@ void CStartCursorWnd::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 	CWnd* pWnd = GetParent();
 	CGraphWnd* pGraph = (CGraphWnd*)pWnd->GetParent();
 
-	if(m_bCursorDrag)
+	if (m_bCursorDrag)
 	{
 		CSaView* pView = (CSaView*)pGraph->GetParent();
 		int nLoop = pView->FindSelectedAnnotationIndex();
-		if(nLoop != -1)
+		if (nLoop != -1)
 		{
-			//int editBoundaries = pView->GetEditBoundaries(nFlags);
-			if(pGraph->HaveAnnotation(nLoop))// Selected annotation is visible
+			if (pGraph->HaveAnnotation(nLoop))// Selected annotation is visible
 			{
 				CAnnotationWnd* pWnd = pGraph->GetAnnotationWnd(nLoop);
 				pWnd->SetHintUpdateBoundaries(m_nEditBoundaries!=0,m_nEditBoundaries == BOUNDARIES_EDIT_OVERLAP);
@@ -708,7 +704,6 @@ void CStartCursorWnd::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 // CStopCursorWnd message map
 
 BEGIN_MESSAGE_MAP(CStopCursorWnd, CCursorWnd)
-	//{{AFX_MSG_MAP(CStopCursorWnd)
 	ON_WM_PAINT()
 	ON_WM_MOUSEMOVE()
 	ON_WM_RBUTTONDOWN()
@@ -716,7 +711,6 @@ BEGIN_MESSAGE_MAP(CStopCursorWnd, CCursorWnd)
 	ON_WM_LBUTTONUP()
 	ON_WM_KEYDOWN()
 	ON_WM_KEYUP()
-	//}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
@@ -1084,7 +1078,7 @@ void CStopCursorWnd::OnLButtonDown( UINT nFlags, CPoint point)
 	// set boundaries mode
 	CRect rCursorRect;
 	GetClientRect(rCursorRect);
-	if (rCursorRect.PtInRect(point) || !pView->GetEditBoundaries(nFlags)) 
+	if (rCursorRect.PtInRect(point) || (pView->GetEditBoundaries(nFlags)!=BOUNDARIES_EDIT_NULL)) 
 	{
 		m_nEditBoundaries = pView->GetEditBoundaries(nFlags);
 	} 
@@ -1287,14 +1281,13 @@ void CStopCursorWnd::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 	CWnd* pWnd = GetParent();
 	CGraphWnd* pGraph = (CGraphWnd*)pWnd->GetParent();
 
-	if(m_bCursorDrag)
+	if (m_bCursorDrag)
 	{
 		CSaView* pView = (CSaView*)pGraph->GetParent();
 		int nLoop = pView->FindSelectedAnnotationIndex();
-		if(nLoop != -1)
+		if (nLoop != -1)
 		{
-			//int m_nEditBoundaries = pView->GetEditBoundaries(nFlags);
-			if(pGraph->HaveAnnotation(nLoop))// Selected annotation is visible
+			if (pGraph->HaveAnnotation(nLoop))// Selected annotation is visible
 			{
 				CAnnotationWnd* pWnd = pGraph->GetAnnotationWnd(nLoop);
 				pWnd->SetHintUpdateBoundaries(m_nEditBoundaries!=0,m_nEditBoundaries == BOUNDARIES_EDIT_OVERLAP);//SDM 1.5Test8.1
@@ -1314,14 +1307,13 @@ void CStopCursorWnd::OnKeyUp(UINT nChar, UINT nRepCnt, UINT nFlags)
 	CWnd* pWnd = GetParent();
 	CGraphWnd* pGraph = (CGraphWnd*)pWnd->GetParent();
 
-	if(m_bCursorDrag)
+	if (m_bCursorDrag)
 	{
 		CSaView* pView = (CSaView*)pGraph->GetParent();
 		int nLoop = pView->FindSelectedAnnotationIndex();
-		if(nLoop != -1)
+		if (nLoop != -1)
 		{
-			//int m_nEditBoundaries = pView->GetEditBoundaries(nFlags);
-			if(pGraph->HaveAnnotation(nLoop))// Selected annotation is visible
+			if (pGraph->HaveAnnotation(nLoop))// Selected annotation is visible
 			{
 				CAnnotationWnd* pWnd = pGraph->GetAnnotationWnd(nLoop);
 				pWnd->SetHintUpdateBoundaries(m_nEditBoundaries!=0,m_nEditBoundaries == BOUNDARIES_EDIT_OVERLAP);//SDM 1.5Test8.1

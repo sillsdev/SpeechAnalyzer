@@ -1549,7 +1549,6 @@ void CGraphWnd::RemoveRtPlots()
 
 void CGraphWnd::OnChar(UINT nChar, UINT nRepCnt, UINT nFlags) 
 {
-	// forward character to parent to handle we don't handle characters at this level (yet)
 	GetParent()->SendMessage(WM_CHAR, nChar, MAKELONG(nRepCnt, nFlags));
 }
 

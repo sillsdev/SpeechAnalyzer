@@ -316,7 +316,6 @@ IMPLEMENT_DYNCREATE(CPlotWnd, CWnd)
 // CPlotWnd message map
 
 BEGIN_MESSAGE_MAP(CPlotWnd, CWnd)
-	//{{AFX_MSG_MAP(CPlotWnd)
 	ON_WM_PAINT()
 	ON_WM_CREATE()
 	ON_WM_SIZE()
@@ -325,10 +324,7 @@ BEGIN_MESSAGE_MAP(CPlotWnd, CWnd)
 	ON_WM_RBUTTONDOWN()
 	ON_WM_LBUTTONDOWN()
 	ON_WM_LBUTTONUP()
-	ON_WM_KEYDOWN()
-	ON_WM_KEYUP()
 	ON_WM_SYSCOMMAND()
-	//}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////

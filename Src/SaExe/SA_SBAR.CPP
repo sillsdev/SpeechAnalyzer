@@ -484,14 +484,14 @@ void CProgressStatusBar::MessageLoop()
 	static volatile DWORD dwTickLast = 0; // This will allow first call to succeed
 	DWORD dwThis = GetTickCount(); // MS since system start
 
-	if(dwThis - dwTickLast > 90)
+	if (dwThis - dwTickLast > 90)
 	{
 		dwTickLast = dwThis; // Update when timer has expired
 		MSG msg;
 
 		m_nInMessageLoop++;
 
-		if(GetAsyncKeyState(VK_ESCAPE) < 0) // This is risky so only do it if the escape key is pressed
+		if (GetAsyncKeyState(VK_ESCAPE) < 0) // This is risky so only do it if the escape key is pressed
 		{
 			while (::PeekMessage(&msg, NULL, WM_KEYDOWN, WM_KEYDOWN, PM_NOREMOVE))
 			{

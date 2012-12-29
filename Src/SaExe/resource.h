@@ -15,7 +15,6 @@
 #define VS_COPYRIGHT                    94
 #define IDR_SA_WBTYPE                   95
 #define IDR_WORKBENCH                   96
-#define IDS_QUESTION_AUTOSNAPUPDATE     97
 #define IDS_QUESTION_APPNOTFOUND        98
 #define IDR_SA_MIDTYPE                  99
 #define IDD_GRAPHSTYPES                 101
@@ -1626,7 +1625,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_3D_CONTROLS                     1
 #define _APS_NEXT_RESOURCE_VALUE        365
-#define _APS_NEXT_COMMAND_VALUE         33222
+#define _APS_NEXT_COMMAND_VALUE         33224
 #define _APS_NEXT_CONTROL_VALUE         2061
 #define _APS_NEXT_SYMED_VALUE           104
 #endif

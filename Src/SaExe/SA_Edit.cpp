@@ -398,12 +398,13 @@ BOOL CDlgEditor::PreTranslateMessage( MSG* pMsg )
 		switch(pMsg->wParam)
 		{
 		case VK_RETURN:
-			if(pMsg->message == WM_KEYDOWN) SaView()->SendMessage(WM_COMMAND, ID_EDIT_NEXT, 0);//SDM 1.5Test10.0
+			if (pMsg->message == WM_KEYDOWN)
+				SaView()->SendMessage(WM_COMMAND, ID_EDIT_NEXT, 0);//SDM 1.5Test10.0
 			return TRUE;
 		case VK_DELETE:
-			if(GetKeyState(VK_SHIFT) >= 0) break; // Only translate if shift key is down (fall through)
+			if (GetKeyState(VK_SHIFT) >= 0) break; // Only translate if shift key is down (fall through)
 		case VK_ESCAPE:
-			if(pMsg->message == WM_KEYDOWN) OnCancel();//SDM 1.5Test10.0
+			if (pMsg->message == WM_KEYDOWN) OnCancel();//SDM 1.5Test10.0
 			return TRUE;
 		case VK_LEFT:
 			{

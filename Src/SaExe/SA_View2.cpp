@@ -60,7 +60,6 @@ IMPLEMENT_DYNCREATE(CSaView, CView)
 // CSaView message map
 
 BEGIN_MESSAGE_MAP(CSaView, CView)
-	//{{AFX_MSG_MAP(CSaView)
 	ON_WM_CREATE()
 	ON_UPDATE_COMMAND_UI(ID_FILE_PRINT_PREVIEW, OnUpdatePrintPreview)
 	ON_UPDATE_COMMAND_UI(ID_FILE_NEW, OnUpdateFilenew)
@@ -131,6 +130,8 @@ BEGIN_MESSAGE_MAP(CSaView, CView)
 	ON_UPDATE_COMMAND_UI(ID_POPUPGRAPH_STYLE_SOLID, OnUpdatePopupgraphStyleSolid)
 	ON_COMMAND(ID_POPUPGRAPH_STYLE_DOTS, OnPopupgraphStyleDots)
 	ON_UPDATE_COMMAND_UI(ID_POPUPGRAPH_STYLE_DOTS, OnUpdatePopupgraphStyleDots)
+	ON_WM_CHAR()
+	ON_WM_KEYUP()
 	ON_WM_KEYDOWN()
 	ON_WM_DESTROY()
 	ON_UPDATE_COMMAND_UI(ID_GRAPHS_TYPES, OnUpdateGraphsTypes)
@@ -206,8 +207,6 @@ BEGIN_MESSAGE_MAP(CSaView, CView)
 	ON_UPDATE_COMMAND_UI(ID_DP_SPECTROGRAM, OnUpdateDpSpectrogram)
 	ON_WM_TIMER()
 	ON_COMMAND(ID_EDIT_INPLACE, OnEditInplace)
-	ON_WM_CHAR()
-	ON_WM_KEYUP()
 	ON_UPDATE_COMMAND_UI(ID_PLAYBACK_FILE, OnUpdatePlayback)
 	ON_UPDATE_COMMAND_UI(ID_PLAYBACK_WINDOW, OnUpdatePlayback)
 	ON_UPDATE_COMMAND_UI(ID_PLAYER, OnUpdatePlayback)
@@ -226,8 +225,6 @@ BEGIN_MESSAGE_MAP(CSaView, CView)
 	ON_UPDATE_COMMAND_UI(ID_PLAYBACK_SLOW, OnUpdatePlayback)
 	ON_COMMAND(ID_SPECTRO_FORMANTS, OnSpectroFormants)
 	ON_UPDATE_COMMAND_UI(ID_SPECTRO_FORMANTS, OnUpdateSpectroFormants)
-	//}}AFX_MSG_MAP
-	// Mapped messages n/a from class wizard.
 	ON_COMMAND_RANGE(ID_LAYOUT_FIRST, ID_LAYOUT_LAST, OnLayout)
 	ON_UPDATE_COMMAND_UI(ID_LAYOUT_LAST, OnUpdateLayout)
 	ON_COMMAND_RANGE(ID_PLAY_F1, ID_PLAY_F24, OnPlayFKey)
@@ -629,16 +626,36 @@ void CSaView::OnUpdateGraphsParameters(CCmdUI* pCmdUI)
 void CSaView::OnEditBoundaries()
 {
 	m_bEditBoundaries = !m_bEditBoundaries;
+	m_bEditSegmentSize = false;
 }
 
 
 /***************************************************************************/
-// CSaView::OnUpdateEditGraphs
+// CSaView::OnUpdateEditBoundaries
 /***************************************************************************/
 void CSaView::OnUpdateEditBoundaries(CCmdUI* pCmdUI)
 {
 	pCmdUI->Enable(TRUE);
-	pCmdUI->SetCheck(GetEditBoundaries(0,FALSE)!=0);
+	pCmdUI->SetCheck(GetEditBoundaries(0)==BOUNDARIES_EDIT_NO_OVERLAP);
+}
+
+/***************************************************************************/
+// CSaView::GetEditBoundaries
+/***************************************************************************/
+int CSaView::GetEditBoundaries( int nFlags, BOOL checkKeys)
+{
+	if ((m_bEditSegmentSize) && (checkKeys))
+	{
+		return BOUNDARIES_EDIT_OVERLAP;
+	}
+	if ((m_bEditBoundaries) || ((GetAsyncKeyState(VK_MENU) < 0) && (checkKeys)))
+	{
+		return BOUNDARIES_EDIT_NO_OVERLAP;
+	}
+	else
+	{
+		return BOUNDARIES_EDIT_NULL;
+	}
 }
 
 /***************************************************************************/
@@ -646,31 +663,17 @@ void CSaView::OnUpdateEditBoundaries(CCmdUI* pCmdUI)
 /***************************************************************************/
 void CSaView::OnEditSegmentSize()
 {
-	m_bEditBoundaries = !m_bEditBoundaries;
+	m_bEditSegmentSize = !m_bEditSegmentSize;
+	m_bEditBoundaries = false;
 }
 
 /***************************************************************************/
-// CSaView::OnUpdateEditGraphs
+// CSaView::OnUpdateEditSegmentSize
 /***************************************************************************/
 void CSaView::OnUpdateEditSegmentSize(CCmdUI* pCmdUI)
 {
 	pCmdUI->Enable(TRUE);
-	pCmdUI->SetCheck(GetEditBoundaries(0,FALSE)!=0);
-}
-
-/***************************************************************************/
-// CSaView::GetEditBoundaries
-/***************************************************************************/
-int CSaView::GetEditBoundaries(int nFlags, BOOL checkKeys)
-{
-	if((nFlags&MK_CONTROL)&&(nFlags&MK_SHIFT)&&checkKeys)
-	{
-		return BOUNDARIES_EDIT_OVERLAP;
-	}
-	if(m_bEditBoundaries || ((GetAsyncKeyState(VK_MENU) < 0)&&checkKeys))
-		return BOUNDARIES_EDIT_NO_OVERLAP;
-	else
-		return BOUNDARIES_EDIT_NULL;
+	pCmdUI->SetCheck(GetEditBoundaries(0)==BOUNDARIES_EDIT_OVERLAP);
 }
 
 /***************************************************************************/
@@ -828,7 +831,9 @@ CSaView::CSaView(const CSaView *pToBeCopied)
 	m_bViewCreated = FALSE;
 	VERIFY(CStopwatch::CreateObject(&m_pStopwatch));
 
-	m_bEditBoundaries = FALSE;
+	m_bEditBoundaries = false;
+	m_bEditSegmentSize = false;
+
 	//kg 11/24/00 causes exceptions without this
 	m_dwStopCursor = 0;
 	m_dwStartCursor = 0;
