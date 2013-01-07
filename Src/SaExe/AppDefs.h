@@ -298,10 +298,17 @@ enum BOUNDARIES {
     BOUNDARIES_EDIT_NO_OVERLAP = 2
 };
 
-enum EFilenameConvention { 
-	FC_REF,
-	FC_GLOSS,
-	FC_REF_GLOSS
+enum EWordFilenameConvention { 
+	WFC_REF,
+	WFC_GLOSS,
+	WFC_REF_GLOSS
+};
+
+enum EPhraseFilenameConvention { 
+	PFC_REF,
+	PFC_GLOSS,
+	PFC_REF_GLOSS,
+	PFC_PHRASE
 };
 
 #include "grid.h"

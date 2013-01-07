@@ -12,30 +12,29 @@ public:
 
 	virtual BOOL OnInitDialog();
 
-// Dialog Data
 	enum { IDD = IDD_SPLIT };
 
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
 
 private:
-	int m_iConvention;
+	int m_WordConvention;
+	int m_PhraseConvention;
+
+public:
+	DECLARE_MESSAGE_MAP()
+	afx_msg void OnBnClickedBrowseFolder();
+	afx_msg void OnBnClickedEditPhraseFolder();
+	afx_msg void OnBnClickedEditGlossFolder();
 
 public:
 	CString m_FolderLocation;
 	CString m_FolderName;
 	CString m_PhraseFolderName;
 	CString m_GlossFolderName;
-	BOOL m_ExportPhrase;
-	BOOL m_ExportGloss;
 
-	//{{AFX_MSG(CDlgParametersPitchPage)
-	afx_msg void OnBnClickedExportGloss();
-	afx_msg void OnBnClickedExportPhrase();
-	afx_msg void OnBnClickedBrowseFolder();
-	//}}AFX_MSG
-
-	enum EFilenameConvention GetFilenameConvention();
-
-	DECLARE_MESSAGE_MAP()
+	enum EWordFilenameConvention GetWordFilenameConvention();
+	enum EPhraseFilenameConvention GetPhraseFilenameConvention();
+	CButton m_CheckGlossEmpty;
+	BOOL m_SkipGlossEmpty;
 };

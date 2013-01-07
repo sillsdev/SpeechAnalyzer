@@ -599,9 +599,8 @@ void CDlgAlignTranscriptionData::OnRadio()
 	}
 }
 
-void CDlgAlignTranscriptionData::OnCheck()
+void CDlgAlignTranscriptionData::OnCheck() 
 {
-
 	BOOL enable = ((IsDlgButtonChecked(IDC_PHONETIC))||
 				   (IsDlgButtonChecked(IDC_PHONEMIC))||
 				   (IsDlgButtonChecked(IDC_GLOSS))||
@@ -612,11 +611,11 @@ void CDlgAlignTranscriptionData::OnCheck()
 /***************************************************************************/
 // CDlgAlignTranscriptionData::OnImport Opens a plain text file and imports
 /***************************************************************************/
-void CDlgAlignTranscriptionData::OnImport()
+void CDlgAlignTranscriptionData::OnImport() 
 {
 
 	CFileDialog* pFileDialog = new CFileDialog(TRUE, NULL, NULL, OFN_HIDEREADONLY, _T("Standard Format (*.sfm) |*.sfm| Text Files (*.txt) |*.txt| All Files (*.*) |*.*||"), this );
-	if (pFileDialog->DoModal() == IDOK)
+	if (pFileDialog->DoModal() == IDOK) 
 	{
 		CSaString path = pFileDialog->GetPathName();
 		Object_istream obs(path);
@@ -630,7 +629,7 @@ void CDlgAlignTranscriptionData::OnImport()
 
 		SaveAnnotation();
 
-		if ( obs.bAtBackslash() )
+		if ( obs.bAtBackslash()) 
 		{ // assume SFM
 			CDlgImportSFM dlg(m_bPhonetic,m_bPhonemic,m_bOrthographic);
 			int result = dlg.DoModal();
@@ -641,8 +640,11 @@ void CDlgAlignTranscriptionData::OnImport()
 				return;
 			}
 
-			if (result == IDOK) // User confirmed it is an SFM
+			if (result == IDOK) 
+			{
+				// User confirmed it is an SFM
 				SFM = TRUE;
+			}
 
 			while ( SFM && !obs.bAtEnd()) 
 			{
@@ -653,11 +655,13 @@ void CDlgAlignTranscriptionData::OnImport()
 				else if ( obs.bEnd(psz_ImportEnd) )
 					break;
 			}
-			if (SFM)
+			if (SFM) 
+			{
 				SetAnnotation();
+			}
 		}
 
-		if (!SFM)
+		if (!SFM) 
 		{
 			const int MAXLINE = 32000;
 			char* pBuf = new char[MAXLINE];

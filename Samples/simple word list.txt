@@ -1,0 +1,10 @@
+1	sky
+2	sun
+3	moon
+4	star
+5	cloud
+6	mist
+7	rain
+8	rainbow
+9	lightning
+10	thunder

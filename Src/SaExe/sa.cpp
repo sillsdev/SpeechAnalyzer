@@ -288,8 +288,8 @@ BOOL CSaApp::InitInstance()
 #endif
 
 #ifdef _DEBUG
-	m_hEnglishResources = LoadCompatibleLibrary(_T("SA_ENUd.DLL"));
-	m_hLocalizedResources = LoadCompatibleLibrary(_T("SA_LOCd.DLL"));
+	m_hEnglishResources = LoadCompatibleLibrary(_T("SA_ENU.DLL"));
+	m_hLocalizedResources = LoadCompatibleLibrary(_T("SA_LOC.DLL"));
 #else
 	m_hEnglishResources = LoadCompatibleLibrary(_T("SA_ENU.DLL"));
 	m_hLocalizedResources = LoadCompatibleLibrary(_T("SA_LOCAL.DLL"));
@@ -529,7 +529,8 @@ int CSaApp::ExitInstance()
 		FreeLibrary(m_hLocalizedResources);
 
 	BOOL bOK = FALSE;
-	try {
+	try 
+	{
 		if (m_pszErrors)
 		{
 			delete m_pszErrors;
@@ -1126,7 +1127,8 @@ void CSaApp::ErrorMessage(UINT nTextID, LPCTSTR pszText1, LPCTSTR pszText2)
 	ASSERT(FALSE);
 #endif
 	CSaString szText;
-	try {
+	try 
+	{
 		// create the text
 		if (pszText1)
 		{

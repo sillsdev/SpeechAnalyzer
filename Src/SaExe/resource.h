@@ -1115,7 +1115,6 @@
 #define IDC_RESEARCH_HILBERT            2012
 #define IDS_WINDOW_MUSIC_PL4            2013
 #define IDC_RESEARCH_INSTANTANEOUS_POWER 2014
-#define IDS_WINDOW_REFERENCE2           2014
 #define IDC_RESEARCH_LPC_ORDER_FS_MULT_EDIT 2015
 #define IDC_RESEARCH_LPC_ORDER_EXTRA_EDIT 2016
 #define IDC_RESEARCH_LPC_ORDER_AUX_MAX_EDIT 2017
@@ -1131,9 +1130,10 @@
 #define IDC_FTRACKER_AZF_DISCARD_LPC_BANDWIDTH 2027
 #define IDC_STATIC_TEXT                 2028
 #define IDC_STATIC_DATA_SET             2029
+#define IDC_SPLIT_WORD_CONVENTION       2030
 #define IDC_MORE_INFO                   2031
 #define IDC_FORMANT_NOTE                2032
-#define IDC_SPLIT_CONVENTION            2033
+#define IDC_SPLIT_PHRASE_CONVENTION     2033
 #define IDC_SPLIT_FOLDER_LOCATION       2034
 #define IDC_SPLIT_FOLDER_NAME           2035
 #define IDC_SPLIT_PHRASE_SUBFOLDER_NAME 2036
@@ -1153,8 +1153,10 @@
 #define IDC_BROWSE_FOLDER               2049
 #define IDC_BROWSE_BUTTON               2049
 #define IDC_USE_REFERENCE               2050
+#define IDC_EDIT_PHRASE_FOLDER          2050
 #define IDC_NUMBERS_GLOSS               2051
 #define IDC_NUMBERS_RADIO               2051
+#define IDC_EDIT_GLOSS_FOLDER           2051
 #define IDC_FILENAME_COMBO              2052
 #define IDC_BEGIN_SPIN                  2053
 #define IDC_END_SPIN                    2054
@@ -1165,6 +1167,7 @@
 #define IDC_END_LABEL                   2059
 #define IDC_BEGIN_COMBO                 2060
 #define IDC_END_COMBO                   2061
+#define IDC_CHECK_GLOSS_EMPTY           2062
 #define IDS_PLAYER_SMALL                3000
 #define IDS_PLAYER_LARGE                3001
 #define IDS_STATTXT_PROCESSING          4000
@@ -1480,6 +1483,7 @@
 #define ID_SYNTH_SHOW                   33203
 #define ID_SYNTH_HIDE                   33204
 #define ID_HELP_WORKBENCH               33206
+#define ID_FILE_SPLIT                   33207
 #define ID_HELP_GRAPHS                  33209
 #define ID_HELP_TRAINING_STUDENT        33210
 #define ID_HELP_TRAINING_INSTRUCTOR     33211
@@ -1487,18 +1491,18 @@
 #define ID_EDIT_COPY_MEASUREMENTS       33213
 #define IDS_SPLIT_NO_SELECTION          33213
 #define ID_MOVE_STOP_CURSOR_HERE        33214
-#define IDS_SPLIT_NO_ANNOTATION         33214
-#define ID_FILE_SPLIT                   33215
+#define IDS_SPLIT_NO_PHRASE_ANNOTATION  33214
 #define IDS_SPLIT_BAD_DIRECTORY         33215
-#define IDS_EMPTY_ANNOTATION            33216
-#define IDS_SPLIT_BAD_MOVE              33217
+#define IDS_GLOSS_EMPTY_ANNOTATION      33216
 #define IDS_SPLIT_COMPLETE              33218
 #define IDS_CONFIRM_PHONEMIC_COPY       33219
 #define ID_EDIT_COPY_PHONETIC_TO_PHONEMIC 33220
 #define IDS_SPLIT_INCOMPLETE            33220
 #define ID_AUTOMATICMARKUP_REFERENCEDATA 33221
-#define IDS_SPLIT_NO_ANNOTATION2        33222
-#define IDS_SPLIT_NO_ANNOTATION3        33223
+#define IDS_SPLIT_NO_GLOSS              33225
+#define IDS_SPLIT_NO_REF                33226
+#define IDS_SPLIT_NO_WRITE              33227
+#define IDS_SPLIT_NO_PHRASE              33228
 #define ID_GRAPHTYPES_SELECT_FIRST      40000
 #define ID_GRAPHTYPES_SELECT_LAST       40011
 #define ID_PHONETIC_ALL                 40100
@@ -1626,7 +1630,7 @@
 #define _APS_3D_CONTROLS                     1
 #define _APS_NEXT_RESOURCE_VALUE        365
 #define _APS_NEXT_COMMAND_VALUE         33224
-#define _APS_NEXT_CONTROL_VALUE         2061
+#define _APS_NEXT_CONTROL_VALUE         2066
 #define _APS_NEXT_SYMED_VALUE           104
 #endif
 #endif

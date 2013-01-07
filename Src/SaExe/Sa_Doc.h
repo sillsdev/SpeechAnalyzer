@@ -42,8 +42,12 @@
 #include "TranscriptionData.h"
 #include "DlgAutoReferenceData.h"
 
+#include <string>
+
 #import "speechtoolsutils.tlb" no_namespace named_guids
 #import "st_audio.tlb" no_namespace named_guids
+
+using std::wstring;
 
 //###########################################################################
 // CSaDoc document
@@ -81,10 +85,10 @@ class CDlgAdvancedSegment;
 class CDlgAdvancedParseWords;
 class CDlgAdvancedParsePhrases;
 class CTranscriptionDataSettings;
+class CMusicPhraseSegment;
 
 class CAlignInfo 
 {
-
 public:
 	CAlignInfo() { bValid = FALSE; }
 	bool bValid;
@@ -286,12 +290,17 @@ private:
 	void				WriteGlossPosAndRefSegments(ISaAudioDocumentWriterPtr saAudioDocWriter);
 	void				WriteScoreData(ISaAudioDocumentWriterPtr saAudioDocWriter);
 	
-	CString				GenerateSplitName( CSaView* pView, EFilenameConvention convention, int index);
-	CString				GeneratePhraseSplitName( CSaView* pView, Annotations type, int index);
-	CString				FilterName( CString text);
-	bool				CreateFolder( CString folder);
-	bool				ExportWord( int & count, Annotations type, EFilenameConvention convention, CString path);
-	bool				ExportPhrase(Annotations type, int & count, CString path);
+	// split file feature methods
+	wstring				GenerateWordSplitName( CGlossSegment * g, CSaView* pView, EWordFilenameConvention convention, int index);
+	bool				GeneratePhraseSplitName( Annotations type, CMusicPhraseSegment * s, CSaView* pView, EPhraseFilenameConvention convention, int index, wstring & result);
+	wstring				FilterName( wstring text);
+	bool				CreateFolder( wstring & folder);
+	bool				ValidateWordFilenames( EWordFilenameConvention & convention, wstring & path, BOOL skipEmptyGloss);
+	bool				ValidatePhraseFilenames( Annotations & type, EPhraseFilenameConvention & convention, wstring & path);
+	bool				ExportWordSegments( int & count, EWordFilenameConvention & convention, wstring & glossPath, BOOL skipEmptyGloss);
+	bool				ExportPhraseSegments( Annotations type, int & count, EPhraseFilenameConvention & convention, wstring & phrasePath);
+	int					FindNearestGlossIndex( class CGlossSegment * g, DWORD dwStart, DWORD dwStop);
+	int					FindNearestReferenceIndex( class CReferenceSegment * r, DWORD dwStart, DWORD dwStop);
 
 public:
 	void				GetAlignInfo( CAlignInfo & alignInfo);
@@ -312,7 +321,7 @@ public:
 	BOOL				InsertTranscription(int transType, ISaAudioDocumentReaderPtr saAudioDocRdr, DWORD dwPos);
 	void				InsertGlossPosAndRefTranscription(ISaAudioDocumentReaderPtr saAudioDocRdr, DWORD dwPos);
 	virtual BOOL		CopyFile(const TCHAR* pszSourceName, const TCHAR* pszTargetName, DWORD dwStart=0, DWORD dwMax=0xFFFFFFFF, BOOL bTruncate=TRUE);
-	BOOL				CopySectionToNewWavFile(DWORD dwSectionStart, DWORD dwSectionLength, LPCTSTR szNewWave);
+	BOOL				CopySectionToNewWavFile(DWORD dwSectionStart, DWORD dwSectionLength, LPCTSTR szNewWave, BOOL usingClipboard);
 	void				ApplyWaveFile(const TCHAR * pszFileName, DWORD dwDataSize, BOOL bInialUpdate=TRUE);		// apply a new recorded wave file
 	void				ApplyWaveFile(const TCHAR * pszFileName, DWORD dwDataSize, CAlignInfo alignInfo);		// Update for rt auto-pitch
 	DWORD				SnapCursor(CURSOR_SELECT nCursorSelect, DWORD dwCursorOffset, DWORD dwLowerLimit, DWORD dwUpperLimit,

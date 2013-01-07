@@ -133,7 +133,9 @@ LRESULT CDlgAlignTranscriptionDataSheet::CalculateBack( int currentIDD)
 			return import.IDD;
 		}
 		return init.IDD;
-	} else {
+	} 
+	else 
+	{
 		switch (currentIDD) 
 		{
 		case IDD_ANNOTATION_ALIGN_PAGE:

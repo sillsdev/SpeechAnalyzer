@@ -98,7 +98,6 @@ void CDlgAlignTranscriptionDataImportRefPage::OnClickedImport()
 
 void CDlgAlignTranscriptionDataImportRefPage::OnClickedRevert() 
 {
-
 	m_bModified = false;
 	CDlgAlignTranscriptionDataSheet * pParent = GetParent();
 
@@ -125,6 +124,7 @@ void CDlgAlignTranscriptionDataImportRefPage::OnClickedRevert()
 
 void CDlgAlignTranscriptionDataImportRefPage::SaveAnnotation(void) 
 {
+
 	CWnd* pWnd = GetDlgItem( IDC_ANNOTATION);
 	if (pWnd == NULL) 
 	{

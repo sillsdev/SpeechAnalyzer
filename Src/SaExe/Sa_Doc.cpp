@@ -140,6 +140,9 @@
 #include "TranscriptionHelper.h"
 #include <sys/stat.h>
 
+#include <string>
+
+using std::wstring;
 using std::find;
 using std::distance;
 
@@ -721,7 +724,8 @@ IMPLEMENT_DYNCREATE(CSaDoc, CUndoRedoDoc)
 
 		// if the return value is false, the file is not in an acceptable format
 		bool conversionNeeded = !IsStandardWaveFormat(pszPathName);
-		if (!conversionNeeded) {
+		if (!conversionNeeded) 
+		{
 			int numChannels = 0;
 			// it's a standard wave file, but is it multichannel?
 			// if the input was not already converted then we
@@ -737,7 +741,9 @@ IMPLEMENT_DYNCREATE(CSaDoc, CUndoRedoDoc)
 					m_bAllowEdit = false;
 				}
 			}
-		} else {
+		} 
+		else 
+		{
 			// tell the user what's going on!
 			AfxMessageBox(IDS_SUPPORT_WAVE_COPY, MB_OK|MB_ICONWARNING,0);
 		}
@@ -795,19 +801,26 @@ IMPLEMENT_DYNCREATE(CSaDoc, CUndoRedoDoc)
 		ASSERT(numChannels>1);
 
 		//just increased array size
-		for (int i=0;i<numChannels;i++) {
+		for (int i=0;i<numChannels;i++) 
+		{
 			ASSERT(GetRawDataWrk(i+1).IsEmpty());
 		}
 
 		bool bResult = TRUE;
 
 		m_szRawDataWrk[0] = m_szRawDataWrk[0];
-		for (int i=0;i<numChannels;i++) {
-			if (i==0) {
+		for (int i=0;i<numChannels;i++) 
+		{
+			if (i==0) 
+			{
 				m_szRawDataWrk[1] = m_szRawDataWrk[0] + _T("Left");
-			} else if (i==1) {
+			} 
+			else if (i==1) 
+			{
 				m_szRawDataWrk[2] = m_szRawDataWrk[0] + _T("Right");
-			} else {
+			} 
+			else 
+			{
 				TCHAR buf[10];
 				wsprintf(buf,L"CH%d",(i+1));
 				m_szRawDataWrk[i+1] = m_szRawDataWrk[0] + buf;
@@ -839,7 +852,8 @@ IMPLEMENT_DYNCREATE(CSaDoc, CUndoRedoDoc)
 			int nUsed = 0;
 			for (int nSample = 0; nSample < nSamples;) 
 			{
-				if (nUsed == nSize) {
+				if (nUsed == nSize) 
+				{
 					nUsed = 0;
 					DWORD dwOffset = nSample*nSampleBytes*numChannels;
 					pData = GetUnprocessedWaveData(dwOffset, TRUE, FALSE);
@@ -852,34 +866,43 @@ IMPLEMENT_DYNCREATE(CSaDoc, CUndoRedoDoc)
 				// left(low), left(high), right(low), right(high)
 
 				int start = nUsed*numChannels;
-				for (int i=0;i<numChannels;i++) {
+				for (int i=0;i<numChannels;i++) 
+				{
 					channel[i].pData[nUsed] = pData[start+(nSampleBytes*i)];
 				}
-				if (nSampleBytes==2) {
-					for (int i=0;i<numChannels;i++) {
+				if (nSampleBytes==2) 
+				{
+					for (int i=0;i<numChannels;i++) 
+					{
 						channel[i].pData[nUsed+1] = pData[start+(nSampleBytes*i)+1];
 					}
 				}
 
 				nUsed += nSampleBytes;
 				nSample++;
-				if ((nUsed == nSize) || (nSample >= nSamples)) {
-					for (int i=0;i<numChannels;i++) {
+				if ((nUsed == nSize) || (nSample >= nSamples)) 
+				{
+					for (int i=0;i<numChannels;i++) 
+					{
 						channel[i].pFile->Write(channel[i].pData,nUsed);
 					}
 				}
 			}
 		}
-		catch(...) {
+		catch(...) 
+		{
 			bResult = FALSE;
 		}
 
-		for (int i=0;i<numChannels;i++) {
-			if (channel[i].pData!=NULL) {
+		for (int i=0;i<numChannels;i++) 
+		{
+			if (channel[i].pData!=NULL) 
+			{
 				delete [] channel[i].pData;
 				channel[i].pData = NULL;
 			}
-			if (channel[i].pFile!=NULL) {
+			if (channel[i].pFile!=NULL) 
+			{
 				channel[i].pFile->Flush();
 				channel[i].pFile->Close();
 				delete channel[i].pFile;
@@ -941,9 +964,11 @@ IMPLEMENT_DYNCREATE(CSaDoc, CUndoRedoDoc)
 			m_dwDataSize /= m_fmtParm.wChannels;
 
 			int selectedChannel = 0;
-			if (pMainWnd->GetShowAdvancedAudio()) {
+			if (pMainWnd->GetShowAdvancedAudio()) 
+			{
 				CDlgMultiChannel dlg(m_fmtParm.wChannels,false);
-				if (dlg.DoModal()!=IDOK) {
+				if (dlg.DoModal()!=IDOK) 
+				{
 					return FALSE;
 				}
 				selectedChannel = dlg.m_nChannel;
@@ -994,7 +1019,8 @@ IMPLEMENT_DYNCREATE(CSaDoc, CUndoRedoDoc)
 		}
 
 		short initSucceeded = TRUE;
-		try {
+		try 
+		{
 			initSucceeded = saAudioDocRdr->Initialize(pszWavePath, (short)bTemp);
 		}
 		catch(...) 
@@ -1257,7 +1283,8 @@ IMPLEMENT_DYNCREATE(CSaDoc, CUndoRedoDoc)
 
 		*pSegment->GetString() = szFullTrans;
 		ASSERT(dwOffsets.GetSize()==dwDurations.GetSize());
-		for (int i=0;i<dwOffsets.GetSize();i++) {
+		for (int i=0;i<dwOffsets.GetSize();i++) 
+		{
 			pSegment->InsertAt(i,dwOffsets[i],dwDurations[i]);
 		}
 
@@ -1406,7 +1433,8 @@ IMPLEMENT_DYNCREATE(CSaDoc, CUndoRedoDoc)
 
 		CSaString szFullTrans = *pSegment->GetString();
 		*pSegment->GetString() = szFullTrans.Left(nIndex) + szInsertTrans + szFullTrans.Mid(nIndex);
-		for (int i=0;i<dwOffsets.GetSize();i++) {
+		for (int i=0;i<dwOffsets.GetSize();i++) 
+		{
 			pSegment->InsertAt(nIndex,dwOffsets[i],dwDurations[i]);
 		}
 
@@ -2025,9 +2053,13 @@ IMPLEMENT_DYNCREATE(CSaDoc, CUndoRedoDoc)
 			}
 			m_szTempWave.Empty(); // empty the new file name string
 		}
+
 		DeleteWaveFromUndo(); // delete wave undo entry
-		if(!WriteDataFiles(pszPathName, bSaveAudio))
+		if (!WriteDataFiles(pszPathName, bSaveAudio))
+		{
 			return FALSE;
+		}
+
 		// get file information
 		CFile::GetStatus(pszPathName, m_fileStat);
 		EndWaitCursor();
@@ -2036,7 +2068,9 @@ IMPLEMENT_DYNCREATE(CSaDoc, CUndoRedoDoc)
 		SetAudioModifiedFlag(FALSE);
 		// if batch mode, set file in changed state
 		if (pApp->GetBatchMode() != 0)
+		{
 			pApp->SetBatchFileChanged(pszPathName, m_ID, this); // set changed state
+		}
 		return TRUE;
 	}
 
@@ -2046,7 +2080,9 @@ IMPLEMENT_DYNCREATE(CSaDoc, CUndoRedoDoc)
 	// the document (wave file). The fmt and data chunks have to be there al-
 	// ready! The temporary wave file data will be copied into the wave chunk.
 	/***************************************************************************/
-	BOOL CSaDoc::WriteDataFiles(const TCHAR* pszPathName, BOOL bSaveAudio/*=TRUE*/, BOOL bIsClipboardFile/*=FALSE*/)
+	BOOL CSaDoc::WriteDataFiles( const TCHAR* pszPathName, 
+								 BOOL bSaveAudio/*=TRUE*/, 
+								 BOOL bIsClipboardFile/*=FALSE*/) 
 	{
 		CSaApp* pApp = (CSaApp*)AfxGetApp();
 
@@ -2072,13 +2108,14 @@ IMPLEMENT_DYNCREATE(CSaDoc, CUndoRedoDoc)
 		}
 
 		_bstr_t szMD5HashCode = (!m_szMD5HashCode ? (wchar_t *)0 : m_szMD5HashCode);
-		// TODO: revise COM object to only create one record for the clipboard temp file
-		if (bIsClipboardFile)
-			szMD5HashCode = (wchar_t *)0; 
 
-		if (!saAudioDocWriter->Initialize(pszPathName, szMD5HashCode, (short)bIsClipboardFile))
+		if (bIsClipboardFile) 
 		{
-			// TODO: Display a meaningful error.
+			szMD5HashCode = (wchar_t *)0;
+		}
+
+		if (!saAudioDocWriter->Initialize( pszPathName, szMD5HashCode, (short)bIsClipboardFile))
+		{
 			CSaApp* pApp = (CSaApp*)AfxGetApp(); // get pointer to application
 			pApp->ErrorMessage(IDS_ERROR_WRITEPHONETIC, pszPathName);
 			EndWaitCursor();
@@ -2305,7 +2342,7 @@ IMPLEMENT_DYNCREATE(CSaDoc, CUndoRedoDoc)
 	// CSaDoc::WriteTranscription  Write the transcription from the document
 	// to the transcription database.
 	/***************************************************************************/
-	void CSaDoc::WriteTranscription(int transType, ISaAudioDocumentWriterPtr saAudioDocWriter)
+	void CSaDoc::WriteTranscription( int transType, ISaAudioDocumentWriterPtr saAudioDocWriter)
 	{
 		CSaString szFullTrans = *m_apSegments[transType]->GetString();
 		WORD wTransLength = (WORD)szFullTrans.GetLength();
@@ -2426,7 +2463,7 @@ IMPLEMENT_DYNCREATE(CSaDoc, CUndoRedoDoc)
 	// pathname pszSourcePathName points to to the file (the tempfile or the one
 	// with the pathname pszPathName points to).
 	/***************************************************************************/
-	BOOL CSaDoc::CopyWaveToTemp(const TCHAR* pszSourcePathName, CAlignInfo info)
+	BOOL CSaDoc::CopyWaveToTemp( const TCHAR* pszSourcePathName, CAlignInfo info)
 	{
 		TCHAR szTempPath[_MAX_PATH];
 		// temporary target file has to be created
@@ -2734,16 +2771,8 @@ IMPLEMENT_DYNCREATE(CSaDoc, CUndoRedoDoc)
 		WriteDataFiles(pszSourcePathName);
 
 		// fragment the waveform
-		m_pProcessFragments->SetDataInvalid();  // remove old fragmented data
-		/*  Now done in background
-		int nResult = LOWORD(m_pProcessFragments->Process(this, this)); // find new fragments
-		if (nResult == PROCESS_ERROR)
-		{
-		// error fragmenting
-		pApp->ErrorMessage(IDS_ERROR_FRAGMENT);
-		return FALSE;
-		}
-		*/
+		// remove old fragmented data
+		m_pProcessFragments->SetDataInvalid();  
 
 		return TRUE;
 	}
@@ -3030,29 +3059,40 @@ IMPLEMENT_DYNCREATE(CSaDoc, CUndoRedoDoc)
 
 		CFileStatus rStatus;
 		// open the files
-		if (!SourceFile.Open(pszSourceName, CFile::modeRead))
-			return FALSE;
-		if (!TargetFile.Open(pszTargetName, CFile::modeWrite | CFile::modeCreate | (bTruncate ? 0 : CFile::modeNoTruncate)))
+		if (!SourceFile.Open(pszSourceName, CFile::modeRead)) 
 		{
+			return FALSE;
+		}
+
+		CFileException ex;
+		if (!TargetFile.Open(pszTargetName, CFile::modeWrite | CFile::modeCreate | (bTruncate ? 0 : CFile::modeNoTruncate), &ex)) 
+		{
+			TCHAR szError[1024];
+			ex.GetErrorMessage(szError, 1024);
 			SourceFile.Abort(); // close the source file
 			return FALSE;
 		}
+		
 		// get the source file status
-		if (!SourceFile.GetStatus(rStatus))
+		if (!SourceFile.GetStatus(rStatus)) 
 		{
 			SourceFile.Abort(); // close the source file
 			TargetFile.Abort(); // close the target file
 			return FALSE;
 		}
+
 		DWORD dwSize = rStatus.m_size;
-		if (dwSize < dwStart)
+		if (dwSize < dwStart) 
+		{
 			return TRUE; // Empty file
-		try
+		}
+
+		try 
 		{
 			TargetFile.SeekToEnd();
 			SourceFile.Seek(dwStart, CFile::begin);
-		}
-		catch (CFileException e)
+		} 
+		catch (CFileException e) 
 		{
 			SourceFile.Abort(); // close the source file
 			TargetFile.Abort(); // close the target file
@@ -3063,15 +3103,15 @@ IMPLEMENT_DYNCREATE(CSaDoc, CUndoRedoDoc)
 
 		DWORD dwCopied;
 		DWORD dwCopy;
-		while (dwSize > 0)
+		while (dwSize > 0) 
 		{
-			try
+			try 
 			{
 				dwCopy = (dwSize > GetBufferSize()) ? GetBufferSize() : dwSize;
 				dwCopied = SourceFile.Read((HPSTR)m_lpData, dwCopy);
 				TargetFile.Write((HPSTR)m_lpData, dwCopied);
-			}
-			catch (CFileException e)
+			} 
+			catch (CFileException e) 
 			{
 				SourceFile.Abort(); // close the source file
 				TargetFile.Abort(); // close the target file
@@ -3079,6 +3119,7 @@ IMPLEMENT_DYNCREATE(CSaDoc, CUndoRedoDoc)
 			}
 			dwSize -= dwCopied;
 		}
+
 		// kg close the files, we are done!
 		// GetWaveData is going to try to open the temp file.
 		SourceFile.Abort();
@@ -3086,7 +3127,7 @@ IMPLEMENT_DYNCREATE(CSaDoc, CUndoRedoDoc)
 
 		DWORD dwRdBufferOffset = m_dwRdBufferOffset;
 		m_dwRdBufferOffset = UNDEFINED_OFFSET;         // force reload
-		if (dwRdBufferOffset != UNDEFINED_OFFSET)
+		if (dwRdBufferOffset != UNDEFINED_OFFSET) 
 		{
 			HPSTR pData = GetWaveData(dwRdBufferOffset, TRUE);     // restore wave data
 			// save us from empty data sets...
@@ -3779,10 +3820,11 @@ IMPLEMENT_DYNCREATE(CSaDoc, CUndoRedoDoc)
 	}
 
 	/***************************************************************************/
-	// CSaDoc::ClipWavToFile Copies wave data out of the wave file
+	// CSaDoc::CopySectionToNewWavFile Copies wave data out of the wave file
 	// and places in a new wav file
 	/***************************************************************************/
-	BOOL CSaDoc::CopySectionToNewWavFile(DWORD dwSectionStart, DWORD dwSectionLength, LPCTSTR szNewWave) {
+	BOOL CSaDoc::CopySectionToNewWavFile( DWORD dwSectionStart, DWORD dwSectionLength, LPCTSTR szNewWave, BOOL usingClipboard) 
+	{
 		// Make new wave file with selected data and segments
 
 		CSaString szOriginalWave;
@@ -3790,7 +3832,7 @@ IMPLEMENT_DYNCREATE(CSaDoc, CUndoRedoDoc)
 		{
 			szOriginalWave = m_szTempConvertedWave;
 		} 
-		else if ((GetPathName().GetLength() !=0))
+		else if ((GetPathName().GetLength() !=0)) 
 		{
 			szOriginalWave = GetPathName();
 		} 
@@ -3836,15 +3878,16 @@ IMPLEMENT_DYNCREATE(CSaDoc, CUndoRedoDoc)
 			return FALSE;
 		}
 
-		if (!bSameFileName) 
+		if (!bSameFileName)
 		{
 			//Save segment data we will use this documents segments for calculations
 			CheckPoint();  // save file state for Undo below
 		}
 
 		// Set segments to selected wave
-		AdjustSegments(dwSectionStart+dwSectionLength, GetUnprocessedDataSize()-(dwSectionStart+dwSectionLength), TRUE); // adjust segments to new file size
-		AdjustSegments(0, dwSectionStart, TRUE); // adjust segments to new file size
+		// adjust segments to new file size
+		AdjustSegments( dwSectionStart+dwSectionLength, GetUnprocessedDataSize()-(dwSectionStart+dwSectionLength), TRUE); 
+		AdjustSegments( 0, dwSectionStart, TRUE); 
 
 		if (bSameFileName) 
 		{
@@ -3862,7 +3905,7 @@ IMPLEMENT_DYNCREATE(CSaDoc, CUndoRedoDoc)
 			pView->SetStartStopCursorPosition(0, GetUnprocessedDataSize());
 			pView->RefreshGraphs();
 
-			while(CanUndo()) 
+			while (CanUndo()) 
 			{
 				// remove undo list
 				Undo(FALSE, FALSE);
@@ -3882,7 +3925,7 @@ IMPLEMENT_DYNCREATE(CSaDoc, CUndoRedoDoc)
 		try 
 		{
 			m_szRawDataWrk[0] = szTempNewTemp;
-			if (!WriteDataFiles(szNewWave, TRUE, TRUE)) 
+			if (!WriteDataFiles(szNewWave, TRUE, usingClipboard)) 
 			{
 				AfxThrowFileException(CFileException::genericException, -1);
 			}
@@ -3892,7 +3935,8 @@ IMPLEMENT_DYNCREATE(CSaDoc, CUndoRedoDoc)
 			m_szRawDataWrk[0] = szTempName;
 			CFile::Remove(szTempNewTemp);  // Done with this file
 			Undo(FALSE);  // return segments to original state
-		} catch( const CException &) 
+		} 
+		catch( const CException &) 
 		{
 			m_szRawDataWrk[0] = szTempName;
 			m_dwDataSize = dwDataSize;
@@ -3900,13 +3944,15 @@ IMPLEMENT_DYNCREATE(CSaDoc, CUndoRedoDoc)
 			{
 				CFile::Remove(szNewWave);
 			} 
-			catch(CFileException e) 
+			catch (CFileException e) 
 			{
 			}
 			try 
 			{
 				if (CFile::GetStatus(szTempNewTemp, temp))
+				{
 					CFile::Remove(szTempNewTemp);
+				}
 			} 
 			catch(CFileException e) 
 			{
@@ -4105,15 +4151,14 @@ IMPLEMENT_DYNCREATE(CSaDoc, CUndoRedoDoc)
 
 		DWORD tempSize = sGetFileSize(GetRawDataWrk(0));
 
-		if (!CopySectionToNewWavFile(dwSectionStart, dwSectionLength, szTempNewWave)) {
+		if (!CopySectionToNewWavFile(dwSectionStart, dwSectionLength, szTempNewWave, TRUE)) 
+		{
 			return FALSE;
 		}
 
 		COleWaveDataSource &cClipData = *new COleWaveDataSource(szTempNewWave);
 
 		cClipData.SetClipboard();
-
-		// CFile::Remove(szTempNewWave); deferred to clipboard
 
 		if (bDelete)
 		{
@@ -4129,7 +4174,10 @@ IMPLEMENT_DYNCREATE(CSaDoc, CUndoRedoDoc)
 				return FALSE;
 			}
 			DWORD dwDataTail = tempSize - dwSectionStart - dwSectionLength;
-			if (dwDataTail) m_dwRdBufferOffset = UNDEFINED_OFFSET; // buffer undefined
+			if (dwDataTail) 
+			{
+					m_dwRdBufferOffset = UNDEFINED_OFFSET; // buffer undefined
+			}
 			DWORD dwSectionPos = dwSectionStart;
 			while (dwDataTail)
 			{
@@ -4451,33 +4499,41 @@ IMPLEMENT_DYNCREATE(CSaDoc, CUndoRedoDoc)
 			// save new file size for later
 			int nGlossIndex = m_apSegments[GLOSS]->GetOffsetSize() - 1;
 			DWORD dwNewDataSize ;
-			if(nGlossIndex != -1)  // we don't need the value if there is no gloss
+			if (nGlossIndex != -1)  // we don't need the value if there is no gloss
 			{
 				dwNewDataSize = m_apSegments[GLOSS]->GetStop(nGlossIndex) - dwSectionLength;
 			}
 
-			for(int independent=0;independent<ANNOT_WND_NUMBER;independent++)
+			for (int independent=0;independent<ANNOT_WND_NUMBER;independent++)
 			{
-				if(m_apSegments[independent]->GetMasterIndex() != -1)
+				if (m_apSegments[independent]->GetMasterIndex() != -1)
+				{
 					continue;
+				}
 
 				// section in file deleted, find segments to delete
 				int nIndex = m_apSegments[independent]->FindFromPosition(dwSectionStart);
 				while (nIndex != -1)
 				{
 					DWORD dwOldOffset = m_apSegments[independent]->GetOffset(nIndex);
-					if (dwOldOffset > (dwSectionStart + dwSectionLength)) break; // no more to delete
-					if (m_apSegments[independent]->GetSelection() != nIndex) m_apSegments[independent]->SetSelection(nIndex);
+					if (dwOldOffset > (dwSectionStart + dwSectionLength))
+					{
+						break; // no more to delete
+					}
+					if (m_apSegments[independent]->GetSelection() != nIndex) 
+					{
+						m_apSegments[independent]->SetSelection(nIndex);
+					}
 					//SDM 1.06.6U1 if segments overlap adjust if its valid
 					BOOL bAdjusted;
 					bAdjusted = FALSE;
-					if(dwOldOffset < dwSectionStart)
+					if (dwOldOffset < dwSectionStart)
 					{
-						if((m_apSegments[independent]->GetDuration(nIndex)+dwOldOffset) > (dwSectionStart+dwSectionLength))
+						if ((m_apSegments[independent]->GetDuration(nIndex)+dwOldOffset) > (dwSectionStart+dwSectionLength))
 						{
 							//Segment overlaps entire cut region
 							DWORD dwNewStop = m_apSegments[independent]->GetDuration(nIndex)+dwOldOffset-dwSectionLength;
-							if(m_apSegments[independent]->CheckPosition(this, dwOldOffset, dwNewStop, CSegment::MODE_EDIT)!=-1)
+							if (m_apSegments[independent]->CheckPosition(this, dwOldOffset, dwNewStop, CSegment::MODE_EDIT)!=-1)
 							{
 								bAdjusted = TRUE;
 								((CIndependentSegment*)m_apSegments[independent])->Adjust(this, nIndex, dwOldOffset, dwNewStop-dwOldOffset);
@@ -4495,17 +4551,17 @@ IMPLEMENT_DYNCREATE(CSaDoc, CUndoRedoDoc)
 						else
 							bAdjusted = TRUE; // segment ends before the cut region
 					}
-					else if((m_apSegments[independent]->GetDuration(nIndex)+dwOldOffset) > (dwSectionStart+dwSectionLength))
+					else if ((m_apSegments[independent]->GetDuration(nIndex)+dwOldOffset) > (dwSectionStart+dwSectionLength))
 					{
 						//Segment starts in cut region
 						DWORD dwNewStop = m_apSegments[independent]->GetDuration(nIndex)+dwSectionStart-(dwSectionStart+dwSectionLength-dwOldOffset);
-						if(m_apSegments[independent]->CheckPosition(this, dwSectionStart, dwNewStop, CSegment::MODE_EDIT)!=-1)
+						if (m_apSegments[independent]->CheckPosition(this, dwSectionStart, dwNewStop, CSegment::MODE_EDIT)!=-1)
 						{
 							bAdjusted = TRUE;
 							((CIndependentSegment*)m_apSegments[independent])->Adjust(this, nIndex, dwSectionStart, dwNewStop-dwSectionStart);
 						}
 					}
-					if(!bAdjusted)
+					if (!bAdjusted)
 					{
 						// delete segment
 						// change the independent arrays
@@ -5655,10 +5711,9 @@ IMPLEMENT_DYNCREATE(CSaDoc, CUndoRedoDoc)
 			CSaView* pView = (CSaView*)pDoc->GetNextView(pos);
 			DWORD dwStart = pView->GetStartCursorPosition();
 			DWORD dwStop = pView->GetStopCursorPosition();
-
-			bSuccess = CopySectionToNewWavFile(dwStart,dwStop-dwStart,fileName);
+			bSuccess = CopySectionToNewWavFile(dwStart,dwStop-dwStart,fileName, TRUE);
 		}
-		else if(dlg.m_nSaveArea == CDlgSaveAsOptions::saveView)
+		else if (dlg.m_nSaveArea == CDlgSaveAsOptions::saveView)
 		{
 			CSaDoc* pDoc = this;
 			POSITION pos = pDoc->GetFirstViewPosition();
@@ -5667,14 +5722,15 @@ IMPLEMENT_DYNCREATE(CSaDoc, CUndoRedoDoc)
 			DWORD dwFrame;
 			pView->GetDataFrame(dwStart, dwFrame);
 
-			if(pDoc->GetFmtParm()->wBitsPerSample == 16)
+			if (pDoc->GetFmtParm()->wBitsPerSample == 16)
+			{
 				dwFrame &= ~0x1; // force even if file is 16 bit.
-
-			bSuccess = CopySectionToNewWavFile(dwStart,dwFrame,fileName);
+			}
+			bSuccess = CopySectionToNewWavFile(dwStart,dwFrame,fileName, TRUE);
 		}
-		else if(dlg.m_nShowFiles != CDlgSaveAsOptions::showNew)
+		else if (dlg.m_nShowFiles != CDlgSaveAsOptions::showNew)
 		{
-			bSuccess = CopySectionToNewWavFile(0,GetUnprocessedDataSize(),fileName);
+			bSuccess = CopySectionToNewWavFile(0,GetUnprocessedDataSize(),fileName, TRUE);
 		}
 		else
 		{
@@ -5691,9 +5747,13 @@ IMPLEMENT_DYNCREATE(CSaDoc, CUndoRedoDoc)
 			szGraphTitle = GetTitle(); // get the current view caption string
 			int nFind = szGraphTitle.Find(':');
 			if (nFind != -1)
+			{
 				szGraphTitle = szGraphTitle.Right(szGraphTitle.GetLength() - nFind); // extract part right of and with :
+			}
 			else
+			{
 				szGraphTitle = _T("");
+			}
 
 			CSaString sourceFileName = ((!m_bUsingTempFile) ? GetPathName() : m_szTempConvertedWave);
 
@@ -5762,19 +5822,137 @@ IMPLEMENT_DYNCREATE(CSaDoc, CUndoRedoDoc)
 		pCmdUI->Enable(!((CSaApp*) AfxGetApp())->GetBatchMode() && !IsMultiChannel());
 	}
 
-	CString CSaDoc::FilterName( CString text)
+	/***************************************************************************/
+	// CSaDoc::OnFileSplit
+	// Splits a file based on user defined keys such as reference or gloss
+	/***************************************************************************/
+	void CSaDoc::OnFileSplit() 
 	{
-		CString result;
 
-		for (int i=0;i<text.GetLength();i++) 
+		CString fileName = GetPathName();
+		wchar_t buffer[MAX_PATH];
+		swprintf_s(buffer,_countof(buffer),fileName);
+		wchar_t drive[_MAX_DRIVE];
+		wchar_t dir[_MAX_DIR];
+		wchar_t fname[_MAX_FNAME];
+		wchar_t ext[_MAX_EXT];
+		_wsplitpath_s( buffer, drive, dir, fname, ext );
+
+		CDlgSplit dlg;
+
+		dlg.m_FolderLocation.Format(L"%s%s",drive,dir);
+		dlg.m_FolderName.Format(L"Split-%s",fname);
+		dlg.m_FolderName = FilterName((LPCTSTR)dlg.m_FolderName).c_str();
+		dlg.m_PhraseFolderName.Format(L"Split-%s-Phrase",fname);
+		dlg.m_PhraseFolderName = FilterName((LPCTSTR)dlg.m_PhraseFolderName).c_str();
+		dlg.m_GlossFolderName.Format(L"Split-%s-Gloss",fname);
+		dlg.m_GlossFolderName = FilterName((LPCTSTR)dlg.m_GlossFolderName).c_str();
+
+		if (dlg.DoModal()!=IDOK) 
 		{
-			wchar_t c = text.GetAt(i);
+			return;
+		}
+
+		CSaApp* pApp = (CSaApp*)AfxGetApp();
+		POSITION pos = GetFirstViewPosition();
+		CSaView* pView = (CSaView*)GetNextView(pos);
+
+		// we need a focused graph!
+		if (pView->GetFocusedGraphWnd()==NULL) 
+		{
+			pApp->ErrorMessage(IDS_SPLIT_NO_SELECTION);
+			return;
+		}
+
+
+		// key off of gloss for now
+		int offsetSize = pView->GetAnnotation(GLOSS)->GetOffsetSize();
+		bool hasGloss = (offsetSize!=0);
+
+		wstring newPath;
+		wstring glossPath;
+		wstring phrasePath;
+
+		newPath.append(dlg.m_FolderLocation).append(dlg.m_FolderName);
+		glossPath.append(dlg.m_FolderLocation).append(dlg.m_FolderName).append(L"\\").append(dlg.m_GlossFolderName);
+		phrasePath.append(dlg.m_FolderLocation).append(dlg.m_FolderName).append(L"\\").append(dlg.m_PhraseFolderName);
+
+		if (!CreateFolder(newPath)) 
+		{
+			pApp->ErrorMessage(IDS_SPLIT_BAD_DIRECTORY,newPath.c_str());
+			return;
+		}
+
+		int count=0;
+		BeginWaitCursor();
+
+		EWordFilenameConvention wordConvention = dlg.GetWordFilenameConvention();
+		EPhraseFilenameConvention phraseConvention = dlg.GetPhraseFilenameConvention();
+
+		if ((hasGloss) || (!dlg.m_SkipGlossEmpty)) 
+		{
+			if (!CreateFolder(glossPath)) 
+			{
+				pApp->ErrorMessage(IDS_SPLIT_BAD_DIRECTORY,glossPath.c_str());
+				EndWaitCursor();
+				return;
+			}
+
+			if (!ExportWordSegments( count, wordConvention, glossPath, dlg.m_SkipGlossEmpty)) 
+			{
+				EndWaitCursor();
+				return;
+			}
+		}
+
+		if (!CreateFolder(phrasePath)) 
+		{
+			pApp->ErrorMessage(IDS_SPLIT_BAD_DIRECTORY,phrasePath.c_str());
+			return;
+		}
+
+		if (!ExportPhraseSegments( MUSIC_PL1, count, phraseConvention, phrasePath)) 
+		{
+			EndWaitCursor();
+			return;
+		}
+
+		if (!ExportPhraseSegments( MUSIC_PL2, count, phraseConvention, phrasePath)) 
+		{
+			EndWaitCursor();
+			return;
+		}
+
+		EndWaitCursor();
+
+		if (count==0) 
+		{
+			pApp->ErrorMessage(IDS_SPLIT_INCOMPLETE);
+		} 
+		else 
+		{
+			CString szText;
+			wchar_t szNumber[128];
+			swprintf_s(szNumber,_countof(szNumber),L"%d",count);
+			pApp->Message(IDS_SPLIT_COMPLETE,szNumber);
+		}
+	}
+
+	/**
+	* filters a segment name so that it is usable in a filename
+	*/
+	wstring CSaDoc::FilterName( wstring text) 
+	{
+		wstring result;
+
+		for (int i=0;i<text.length();i++) 
+		{
+			wchar_t c = text[i];
 			if (c==0)
 			{
 				break;
 			}
-			switch (c)
-			{
+			switch (c){
 			case '\\':
 			case '/':
 			case ':':
@@ -5791,13 +5969,19 @@ IMPLEMENT_DYNCREATE(CSaDoc, CUndoRedoDoc)
 			default:
 				break;
 			}
-			result.AppendChar(c);
+			result = result + c;
 		}
-		if (result.GetAt(0)=='#') 
+		
+		if (result.length()>0)
 		{
-			result = result.Mid(1);
+			if (result[0]=='#') 
+			{
+				result = result.substr(1);
+			}
 		}
-		result = result.Trim();
+
+		CString temp = result.c_str();
+		result = temp.Trim();
 		return result;
 	}
 
@@ -5831,126 +6015,96 @@ IMPLEMENT_DYNCREATE(CSaDoc, CUndoRedoDoc)
 	* Convention
 	* 0 - gloss only
 	* 1 - ref and gloss
+	*
+	* @return returns an empty string if an error has occurred
 	*/
-	CString CSaDoc::GenerateSplitName( CSaView* pView, EFilenameConvention convention, int index) {
+	wstring CSaDoc::GenerateWordSplitName( CGlossSegment * g, CSaView * pView, EWordFilenameConvention convention, int index) 
+	{
 
-		wchar_t buffer[MAX_PATH];
-		memset(buffer,0,sizeof(buffer));
-
-		CString result;
-		CString gloss(L"");
-		CString ref(L"");
+		wstring gloss(L"");
+		wstring ref(L"");
 		DWORD dwStart = 0;
-		CSegment * g = NULL;
-		// generate the filename based on the dialog selection
-		switch (convention) {
+		DWORD dwStop = 0;
+		int rindex = -1;
 
-		case FC_GLOSS:  //gloss
+		CReferenceSegment * r = (CReferenceSegment*)pView->GetAnnotation(REFERENCE);
+
+		// generate the filename based on the dialog selection
+		switch (convention) 
+		{
+
+		case WFC_GLOSS:   //gloss
+			dwStart = g->GetOffset(index);
+			dwStop = dwStart + g->GetOffsetSize();
+			gloss = g->GetSegmentString(index);
+			if ((gloss.length()>0) && (gloss[0]=='#')) 
 			{
-				g = pView->GetAnnotation(GLOSS);
-				dwStart = g->GetOffset(index);
-				gloss = g->GetSegmentString(index);
-				gloss = FilterName(gloss);
-				if (gloss.GetLength()!=0) {
-					swprintf_s(buffer,_countof(buffer),L"%s",(LPCTSTR)gloss);
-				} else {
-					CSaString type;
-					type.LoadStringW(IDS_WINDOW_GLOSS);
-					CSaApp* pApp = (CSaApp*)AfxGetApp();
-					CString szNumber;
-					szNumber.Format(_T("%d"), index);
-					pApp->ErrorMessage(IDS_EMPTY_ANNOTATION,(LPCTSTR)type,(LPCTSTR)szNumber);
-				}
+				gloss = gloss.substr(1);
 			}
-			break;
+			gloss = FilterName(gloss);
+			// return empty or not
+			return gloss;
+
+		case WFC_REF:	//ref
+			dwStart = g->GetOffset(index);
+			dwStop = dwStart + g->GetOffsetSize();
+			// find the ref based on the gloss position, since GLOSS is the iterator
+			rindex = FindNearestReferenceIndex(r,dwStart,dwStop);
+			if (rindex!=-1) 
+			{
+				ref = pView->GetAnnotation(REFERENCE)->GetSegmentString(rindex);
+			}
+			ref = FilterName(ref);
+			// normal case
+			return ref;
 
 		default:
-		case FC_REF_GLOSS:	//ref+gloss
+		case WFC_REF_GLOSS: 	//ref+gloss
+			dwStart = g->GetOffset(index);
+			dwStop = dwStart + g->GetOffsetSize();
+			gloss = g->GetSegmentString(index);
+			if ((gloss.length()>0) && (gloss[0]=='#')) 
 			{
-				g = pView->GetAnnotation(GLOSS);
-				dwStart = g->GetOffset(index);
-				gloss = g->GetSegmentString(index);
-				// find the ref based on the gloss position, since GLOSS is the iterator
-				CSegment * r = pView->GetAnnotation(REFERENCE);
-				int rindex = -1;
-				for (int j=0;j<r->GetOffsetSize();j++) {
-					DWORD dwOffset = r->GetOffset(j);
-					if (dwStart==dwOffset) {
-						rindex = j;
-						break;
-					} else if (dwStart<dwOffset) {
-						// we passed it
-						rindex = j-1;
-						break;
-					}
+				gloss = gloss.substr(1);
+			}
+			// find the ref based on the gloss position, since GLOSS is the iterator
+			rindex = FindNearestReferenceIndex(r,dwStart,dwStop);
+			if (rindex!=-1) 
+			{
+				ref = pView->GetAnnotation(REFERENCE)->GetSegmentString(rindex);
+			}
+			gloss = FilterName(gloss);
+			ref = FilterName(ref);
+			if (ref.length()!=0) 
+			{
+				if (gloss.length()!=0) 
+				{
+					ref = ref.append(L" ").append(gloss);
+					return ref;
+				} 
+				else 
+				{
+					return ref;
 				}
-				if (rindex!=-1) {
-					ref = pView->GetAnnotation(REFERENCE)->GetSegmentString(rindex);
-				}
-
-				gloss = FilterName(gloss);
-				ref = FilterName(ref);
-				if (ref.GetLength()!=0) {
-					if (gloss.GetLength()!=0) {
-						swprintf_s(buffer,_countof(buffer),L"%s %s",(LPCTSTR)ref,(LPCTSTR)gloss);
-					} else {
-						swprintf_s(buffer,_countof(buffer),L"%s",(LPCTSTR)ref);
-					}
-				} else if (gloss.GetLength()!=0) {
-					swprintf_s(buffer,_countof(buffer),L"%s",(LPCTSTR)gloss);
-				} else {
-					CSaString type;
-					type.LoadStringW(IDS_WINDOW_GLOSS);
-					CSaApp* pApp = (CSaApp*)AfxGetApp();
-					CString szNumber;
-					szNumber.Format(_T("%d"), index);
-					pApp->ErrorMessage(IDS_EMPTY_ANNOTATION,(LPCTSTR)type,(LPCTSTR)szNumber);
+			} 
+			else 
+			{
+				// ref is empty
+				if (gloss.length()!=0) 
+				{
+					return gloss;
+				} 
+				else 
+				{
+					// it's empty, return anyway
+					return ref;
 				}
 			}
-			break;
-
-		case FC_REF:	//ref
-			{
-				g = pView->GetAnnotation(GLOSS);
-				dwStart = g->GetOffset(index);
-				// find the ref based on the gloss position, since GLOSS is the iterator
-				CSegment * r = pView->GetAnnotation(REFERENCE);
-				int rindex = -1;
-				for (int j=0;j<r->GetOffsetSize();j++) {
-					DWORD dwOffset = r->GetOffset(j);
-					if (dwStart==dwOffset) {
-						rindex = j;
-						break;
-					} else if (dwStart<dwOffset) {
-						// we passed it
-						rindex = j-1;
-						break;
-					}
-				}
-				if (rindex!=-1) {
-					ref = pView->GetAnnotation(REFERENCE)->GetSegmentString(rindex);
-				}
-
-				ref = FilterName(ref);
-				if (ref.GetLength()!=0) {
-					swprintf_s(buffer,_countof(buffer),L"%s",(LPCTSTR)ref);
-				} else {
-					CSaString type;
-					type.LoadStringW(IDS_WINDOW_REFERENCE2);
-					CSaApp* pApp = (CSaApp*)AfxGetApp();
-					CString szNumber;
-					szNumber.Format(_T("%d"), index);
-					pApp->ErrorMessage(IDS_EMPTY_ANNOTATION,(LPCTSTR)type,(LPCTSTR)szNumber);
-				}
-			}
-			break;
 		}
-		result = buffer;
-		return result;
 	}
 
 	/**
-	* Generate a file name for a phrase split file
+	* Generate a file name for a split file
 	* 
 	* Since the Ref+space+Gloss string will become the filename, protect the 
 	* Windows Write function from crashing by testing for invalid characters 
@@ -5979,40 +6133,208 @@ IMPLEMENT_DYNCREATE(CSaDoc, CUndoRedoDoc)
 	* Convention
 	* 0 - gloss only
 	* 1 - ref and gloss
+	*
+	* @return returns an empty string if an error has occurred
 	*/
-	CString CSaDoc::GeneratePhraseSplitName( CSaView* pView, Annotations type, int index)
+	bool CSaDoc::GeneratePhraseSplitName( Annotations type, CMusicPhraseSegment * s, CSaView * pView, EPhraseFilenameConvention convention, int index, wstring & result) 
 	{
-		wchar_t buffer[MAX_PATH];
-		memset(buffer,0,sizeof(buffer));
 
-		CString result;
-		CString gloss(L"");
-		CString ref(L"");
+		wstring gloss(L"");
+		wstring ref(L"");
+		wstring phrase(L"");
+		int gindex = -1;
+		int rindex = -1;
 
-		CSegment * g = pView->GetAnnotation(type);
-		CString str = g->GetSegmentString(index);
-		str = FilterName(str);
-		if (str.GetLength()>0) 
+		DWORD dwStart = s->GetOffset(index);
+		DWORD dwStop = dwStart + s->GetDuration(index);
+
+		CSaApp* pApp = (CSaApp*)AfxGetApp();
+		CGlossSegment * g = (CGlossSegment*)pView->GetAnnotation(GLOSS);
+		CReferenceSegment * r = (CReferenceSegment*)pView->GetAnnotation(REFERENCE);
+
+		CString szNumber;
+		szNumber.Format(L"%d",index);
+
+		CString szPhrase;
+		szPhrase.LoadStringW(((type==MUSIC_PL1)?IDS_WINDOW_MUSIC_PL1:IDS_WINDOW_MUSIC_PL2));
+
+		CString szTag;
+		szTag = ((type==MUSIC_PL1)?L"PL1":L"PL2");
+
+		// generate the filename based on the dialog selection
+		switch (convention) 
 		{
-			swprintf_s(buffer,_countof(buffer),L"%s",(LPCTSTR)str);
+
+		case PFC_REF:	//ref
+			// find the ref based on the gloss position, since GLOSS is the iterator
+			rindex = FindNearestReferenceIndex( r, dwStart, dwStop);
+			if (rindex!=-1) 
+			{
+				ref = r->GetSegmentString(rindex);
+			}
+			result = FilterName(ref);
+			if (result.length()==0)
+			{
+				pApp->ErrorMessage(IDS_SPLIT_NO_REF,(LPCTSTR)szPhrase,(LPCTSTR)szNumber);
+				return false;
+			}
+			result.append(L" ").append(szTag);
+			return true;
+
+		case PFC_GLOSS:   //gloss
+			gindex = FindNearestGlossIndex( g, dwStart, dwStop);
+			if (gindex != -1) 
+			{
+				gloss = g->GetSegmentString(gindex);
+				if ((gloss.length()>0) && (gloss[0]=='#')) 
+				{
+					gloss = gloss.substr(1);
+				}
+			}
+			result = FilterName(gloss);
+			if (result.length()==0)
+			{
+				pApp->ErrorMessage(IDS_SPLIT_NO_GLOSS,(LPCTSTR)szPhrase,(LPCTSTR)szNumber);
+				return false;
+			}
+			result.append(L" ").append(szTag);
+			return true;
+
+		case PFC_REF_GLOSS: 	//ref+gloss
+			gindex = FindNearestGlossIndex( g, dwStart, dwStop);
+			if (gindex!=-1)
+			{
+				gloss = g->GetSegmentString(gindex);
+				if ((gloss.length()>0) && (gloss[0]=='#')) 
+				{
+					gloss = gloss.substr(1);
+				}
+			}
+			gloss = FilterName(gloss);
+			// find the ref based on the gloss position, since GLOSS is the iterator
+			rindex = FindNearestReferenceIndex(r,dwStart,dwStop);
+			if (rindex!=-1) 
+			{
+				ref = pView->GetAnnotation(REFERENCE)->GetSegmentString(rindex);
+			}
+			ref = FilterName(ref);
+			if ((ref.length()>0) && (gloss.length()>0))
+			{
+				result = ref.append(L" ").append(gloss).append(L" ").append(szTag);
+				return true;
+			}
+			else if ((ref.length()>0)&&(gloss.length()==0))
+			{
+				result = ref;
+				result.append(L" ").append(szTag);
+				return true;
+			}
+			else if ((ref.length()==0)&&(gloss.length()>0))
+			{
+				result = gloss;
+				result.append(L" ").append(szTag);
+				return true;
+			}
+
+			// both are empty, complain about gloss
+			pApp->ErrorMessage(IDS_SPLIT_NO_GLOSS,(LPCTSTR)szPhrase,(LPCTSTR)szNumber);
+			return false;
+
+		default:
+		case PFC_PHRASE:
+			phrase = s->GetSegmentString(index);
+			result = FilterName(phrase);
+			if (result.length()>0)
+			{
+				return true;
+			}
+			pApp->ErrorMessage(IDS_SPLIT_NO_PHRASE,(LPCTSTR)szPhrase,(LPCTSTR)szNumber);
+			return false;
 		}
-		else
-		{
-			CSaString type2;
-			type2.LoadStringW(IDS_WINDOW_MUSIC_PL1);
-			CSaApp* pApp = (CSaApp*)AfxGetApp();
-			CString szNumber;
-			szNumber.Format(_T("%d"), index);
-			pApp->ErrorMessage(IDS_EMPTY_ANNOTATION,(LPCTSTR)type2,(LPCTSTR)szNumber);
-		}
-		result = buffer;
-		return result;
 	}
 
-	bool CSaDoc::CreateFolder( CString folder)
+	/**
+	* Given a gloss offset, find the nearest reference segment.
+	* This will be the one that overlaps, or starts with
+	* the same offset, or the next one before the end of the
+	* gloss segment
+	*
+	* returns -1 on error
+	*/
+	int CSaDoc::FindNearestReferenceIndex( CReferenceSegment * r, DWORD dwStart, DWORD dwStop) 
 	{
+
+		TRACE("trying to find ref segment for %d\n",dwStart);
+		for (int j=0;j<r->GetOffsetSize();j++) 
+		{
+			DWORD dwRStart = r->GetOffset(j);
+			DWORD dwRStop = dwRStart+r->GetOffsetSize();
+			TRACE("comparing start=%d end=%d\n",dwRStart,dwRStop);
+			if (dwStart==dwRStart) 
+			{
+				TRACE("found identical start\n");
+				return j;
+			} 
+			else if ((dwRStart<dwStart)&&(dwStart<=dwRStop)) 
+			{
+				TRACE("ref overlaps gloss\n");
+				return j;
+			} 
+			else if ((dwStart<dwRStart)&&(dwRStop<dwStop)) 
+			{
+				TRACE("ref contained in gloss\n");
+				return j;
+			}
+		}
+		TRACE("no match found!\n");
+		return -1;
+	}
+
+	/**
+	* Given a gloss offset, find the nearest reference segment.
+	* This will be the one that overlaps, or starts with
+	* the same offset, or the next one before the end of the
+	* gloss segment
+	*
+	* returns -1 on error
+	*/
+	int CSaDoc::FindNearestGlossIndex( CGlossSegment * g, DWORD dwStart, DWORD dwStop) 
+	{
+
+		TRACE("trying to find gloss segment for %d\n",dwStart);
+		for (int j=0;j<g->GetOffsetSize();j++) 
+		{
+			DWORD dwGStart = g->GetOffset(j);
+			DWORD dwGStop = dwGStart+g->GetOffsetSize();
+			TRACE("comparing start=%d end=%d\n",dwGStart,dwGStop);
+			if (dwStart==dwGStart) 
+			{
+				TRACE("found identical start\n");
+				return j;
+			} 
+			else if ((dwGStart<dwStart)&&(dwStart<=dwGStop)) 
+			{
+				TRACE("gloss overlaps phrase\n");
+				return j;
+			} 
+			else if ((dwStart<dwGStart)&&(dwGStop<dwStop)) 
+			{
+				TRACE("gloss contained in phrase\n");
+				return j;
+			}
+		}
+		TRACE("no match found!\n");
+		return -1;
+	}
+
+	/**
+	* create a non-exitent folder
+	*/
+	bool CSaDoc::CreateFolder( wstring & folder) 
+	{
+
 		CFileStatus status;
-		if (CFile::GetStatus(folder,status)) 
+		if (CFile::GetStatus(folder.c_str(),status)) 
 		{
 			if (status.m_attribute & CFile::directory) 
 			{
@@ -6025,12 +6347,122 @@ IMPLEMENT_DYNCREATE(CSaDoc, CUndoRedoDoc)
 				TRACE1("%s already exists, but it's not a directory\n",folder);
 				return false;
 			}
-		}  
+		} 
 		else 
 		{
 			TRACE1("creating %s\n",folder);
 			// it doesn't exist - create it!
-			CreateDirectory(folder, NULL);
+			CreateDirectory(folder.c_str(), NULL);
+		}
+		return true;
+	}
+
+	/**
+	* walk through the gloss and reference transcriptions to see if everything
+	* is in order
+	*/
+	bool CSaDoc::ValidateWordFilenames( EWordFilenameConvention & convention, wstring & path, BOOL skipEmptyGloss)
+	{
+		CSaApp* pApp = (CSaApp*)AfxGetApp();
+		POSITION pos = GetFirstViewPosition();
+		CSaView* pView = (CSaView*)GetNextView(pos);
+
+		if (!CreateFolder(path)) 
+		{
+			pApp->ErrorMessage(IDS_SPLIT_BAD_DIRECTORY,path.c_str());
+			return false;
+		}
+
+		CString szGloss;
+		szGloss.LoadStringW(IDS_WINDOW_GLOSS);
+
+		CGlossSegment * g = (CGlossSegment*)pView->GetAnnotation(GLOSS);
+
+		// loop through the gloss segments
+		int nLoop = g->GetOffsetSize();
+		for (int i=0;i<nLoop;i++) 
+		{
+			CString szNumber;
+			szNumber.Format(_T("%d"), i);
+
+			// check for empty gloss strings
+			wstring gloss = g->GetSegmentString(i);
+			if (gloss.length()==0) 
+			{
+				if (skipEmptyGloss) 
+				{
+					continue;
+				}
+				else
+				{
+					pApp->ErrorMessage(IDS_SPLIT_NO_GLOSS,(LPCTSTR)szGloss,(LPCTSTR)szNumber);
+					return false;
+				}
+			} 
+			else if ((gloss.length()==1)&&(gloss[0]=='#')) 
+			{
+				if (skipEmptyGloss) 
+				{
+					continue;
+				}
+				else
+				{
+					pApp->ErrorMessage(IDS_SPLIT_NO_GLOSS,(LPCTSTR)szGloss,(LPCTSTR)szNumber);
+					return false;
+				}
+			}
+
+			/**
+			* if we are ignoring blank gloss fields, then we have already
+			* bypassed this section.
+			* if not, then we have already errored on an empty gloss
+			* so, for this following check, it can only fail if the reference is empty
+			*/
+			// can we piece the name together?
+			wstring splitname = GenerateWordSplitName( g, pView, convention, i);
+			if (splitname.length()==0) 
+			{
+				pApp->ErrorMessage(IDS_SPLIT_NO_REF,(LPCTSTR)szGloss,(LPCTSTR)szNumber);
+				return false;
+			}
+		}
+		return true;
+	}
+
+	/**
+	* walk through the gloss and reference transcriptions to see if everything
+	* is in order
+	*/
+	bool CSaDoc::ValidatePhraseFilenames( Annotations & type, EPhraseFilenameConvention & convention, wstring & path)
+	{
+		CSaApp* pApp = (CSaApp*)AfxGetApp();
+		POSITION pos = GetFirstViewPosition();
+		CSaView* pView = (CSaView*)GetNextView(pos);
+
+		CMusicPhraseSegment * s = (CMusicPhraseSegment*)pView->GetAnnotation(type);
+
+		// depending on the convention
+		// loop through the annontation segments
+		DWORD lastOffset = -1;
+		int nLoop = s->GetOffsetSize();
+		for (int i=0;i<nLoop;i++) 
+		{
+			int offset = s->GetOffset(i);
+			if (offset==lastOffset)
+			{
+				continue;
+			}
+
+			// we are on a new segment
+			lastOffset = offset;
+
+			// we are at the start of a segment
+			wstring splitname;
+			if (!GeneratePhraseSplitName( type, s, pView, convention, i, splitname))
+			{
+				// function will generate error message
+				return false;
+			}
 		}
 		return true;
 	}
@@ -6038,214 +6470,137 @@ IMPLEMENT_DYNCREATE(CSaDoc, CUndoRedoDoc)
 	/**
 	* export words for the given file
 	*/
-	bool CSaDoc::ExportWord( int & count, Annotations type, EFilenameConvention convention, CString path)
+	bool CSaDoc::ExportWordSegments( int & count, EWordFilenameConvention & convention, wstring & glossPath, BOOL skipEmptyGloss) 
 	{
 		CSaApp* pApp = (CSaApp*)AfxGetApp();
 		POSITION pos = GetFirstViewPosition();
 		CSaView* pView = (CSaView*)GetNextView(pos);
 
-		// key off of gloss for now
-		int nLoop = pView->GetAnnotation(type)->GetOffsetSize();
-		if (nLoop==0) {
-			if (type==REFERENCE) {
-				pApp->ErrorMessage(IDS_SPLIT_NO_ANNOTATION2);
-			} else {
-				pApp->ErrorMessage(IDS_SPLIT_NO_ANNOTATION);
-			}
-			return false;
-		}
-
-		// loop for each annotation
-		for (int i=0;i<nLoop;i++) {
-			BOOL bSuccess = FALSE;
-
-			CSegment * g = pView->GetAnnotation(type);
-			DWORD dwStart = g->GetOffset(i);
-			DWORD dwStop = dwStart + g->GetDuration(i);
-
-			// can we piece the name together?
-			CString name = GenerateSplitName( pView, convention, i);
-			if (name.GetLength()==0) {
-				continue;
-			}
-
-			// copy the audio portion
-			wchar_t buffer[MAX_PATH];
-			swprintf_s( buffer, _countof(buffer), L"%s\\%s.wav",path,(LPCTSTR)name);
-			bSuccess = CopySectionToNewWavFile(dwStart,dwStop-dwStart,buffer);
-			if (!bSuccess) {
-				// be sure to delete the file
-				try {
-					CFile::Remove(buffer);
-				} catch (...) {
-					TRACE0("Warning: failed to delete file after failed SaveAs\n");
-				}
-				return false;
-			}
-
-			// copy the saxml.tmp file to .saxml
-			wchar_t oldsaxml[MAX_PATH];
-			wchar_t newsaxml[MAX_PATH];
-			swprintf_s( oldsaxml, _countof(oldsaxml), L"%s\\%s.saxml.tmp",path,name);
-			swprintf_s( newsaxml, _countof(newsaxml), L"%s\\%s.saxml",path,name);
-			bSuccess = MoveFile(oldsaxml,newsaxml);
-			if (!bSuccess) {
-				pApp->ErrorMessage(IDS_SPLIT_BAD_MOVE,buffer);
-			} else {
-				count++;
-			}
-		}
-		return true;
-	}
-
-	/**
-	* export phrases from the given file
-	*/
-	bool CSaDoc::ExportPhrase( Annotations type, int & count, CString path)
-	{
-		CSaApp* pApp = (CSaApp*)AfxGetApp();
-		POSITION pos = GetFirstViewPosition();
-		CSaView* pView = (CSaView*)GetNextView(pos);
-
-		// key off of gloss for now
-		int nLoop = pView->GetAnnotation(type)->GetOffsetSize();
-		if (nLoop==0) 
+		// the validation function will display a error message on failure
+		if (!ValidateWordFilenames( convention, glossPath, skipEmptyGloss)) 
 		{
-			pApp->ErrorMessage(IDS_SPLIT_NO_ANNOTATION3);
+			// function will display message on failure
 			return false;
 		}
 
-		// loop for each annotation
+		// loop through the gloss segments
+		CGlossSegment * g = (CGlossSegment*)pView->GetAnnotation(GLOSS);
+		int nLoop = g->GetOffsetSize();
 		for (int i=0;i<nLoop;i++) 
 		{
 			BOOL bSuccess = FALSE;
-
-			CSegment * g = pView->GetAnnotation( type);
 			DWORD dwStart = g->GetOffset(i);
 			DWORD dwStop = dwStart + g->GetDuration(i);
+			TRACE("dwStart=%d dwStop=%d\n",dwStart,dwStop);
+
+			wstring gloss = g->GetSegmentString(i);
+			if (gloss.length()==0) 
+			{
+				if (skipEmptyGloss) 
+				{
+					continue;
+				}
+			} 
+			else if ((gloss.length()==1)&&(gloss[0]=='#')) 
+			{
+				if (skipEmptyGloss) 
+				{
+					continue;
+				}
+			}
 
 			// can we piece the name together?
-			CString name = GeneratePhraseSplitName( pView, type, i);
-			if (name.GetLength()==0)  
+			wstring splitname = GenerateWordSplitName( g, pView, convention, i);
+			if (splitname.length()==0) 
 			{
-				continue;
+				break;
 			}
 
 			// copy the audio portion
-			wchar_t buffer[MAX_PATH];
-			swprintf_s( buffer, _countof(buffer), L"%s\\%s.wav",path,(LPCTSTR)name);
-			bSuccess = CopySectionToNewWavFile(dwStart,dwStop-dwStart,buffer);
+			wstring splitfilename;
+			splitfilename.append(glossPath).append(L"\\").append(splitname).append(L".wav");
+			bSuccess = CopySectionToNewWavFile(dwStart,dwStop-dwStart,splitfilename.c_str(),FALSE);
 			if (!bSuccess) 
 			{
 				// be sure to delete the file
 				try 
 				{
-					CFile::Remove(buffer);
+					CFile::Remove(splitfilename.c_str());
 				} 
 				catch (...) 
 				{
 					TRACE0("Warning: failed to delete file after failed SaveAs\n");
 				}
+				pApp->ErrorMessage(IDS_SPLIT_NO_WRITE,splitfilename.c_str());
 				return false;
 			}
 
-			// copy the saxml.tmp file to .saxml
-			wchar_t oldsaxml[MAX_PATH];
-			wchar_t newsaxml[MAX_PATH];
-			swprintf_s( oldsaxml, _countof(oldsaxml), L"%s\\%s.saxml.tmp",path,name);
-			swprintf_s( newsaxml, _countof(newsaxml), L"%s\\%s.saxml",path,name);
-			bSuccess = MoveFile(oldsaxml,newsaxml);
-			if (!bSuccess) 
-			{
-				pApp->ErrorMessage(IDS_SPLIT_BAD_MOVE,buffer);
-			} 
-			else 
-			{
-				count++;
-			}
+			count++;
 		}
 		return true;
 	}
 
-	/***************************************************************************/
-	// CSaDoc::OnFileSplit
-	// Splits a file based on user defined keys such as reference or gloss
-	/***************************************************************************/
-	void CSaDoc::OnFileSplit() {
-
-		CString fileName = GetPathName();
-		wchar_t buffer[MAX_PATH];
-		swprintf_s(buffer,_countof(buffer),fileName);
-		wchar_t drive[_MAX_DRIVE];
-		wchar_t dir[_MAX_DIR];
-		wchar_t fname[_MAX_FNAME];
-		wchar_t ext[_MAX_EXT];
-		_wsplitpath_s( buffer, drive, dir, fname, ext );
-
-		CDlgSplit dlg;
-
-		dlg.m_FolderLocation.Format(L"%s%s",drive,dir);
-		dlg.m_FolderName.Format(L"Split-%s",fname);
-		dlg.m_FolderName = FilterName(dlg.m_FolderName);
-		dlg.m_PhraseFolderName.Format(L"Split-%s-Phrase",fname);
-		dlg.m_PhraseFolderName = FilterName(dlg.m_PhraseFolderName);
-		dlg.m_GlossFolderName.Format(L"Split-%s-Gloss",fname);
-		dlg.m_GlossFolderName = FilterName(dlg.m_GlossFolderName);
-
-		if (dlg.DoModal()!=IDOK) {
-			return;
-		}
-
+	/**
+	* export words for the given file
+	*/
+	bool CSaDoc::ExportPhraseSegments( Annotations type, int & count, EPhraseFilenameConvention & convention, wstring & phrasePath) 
+	{
 		CSaApp* pApp = (CSaApp*)AfxGetApp();
-
-		CString newPath;
-		CString glossPath;
-		CString phrasePath;
-
-		newPath.Format(L"%s%s",dlg.m_FolderLocation,dlg.m_FolderName);
-		glossPath.Format(L"%s%s\\%s",dlg.m_FolderLocation,dlg.m_FolderName,dlg.m_GlossFolderName);
-		phrasePath.Format(L"%s%s\\%s",dlg.m_FolderLocation,dlg.m_FolderName,dlg.m_PhraseFolderName);
-
-		if ((!CreateFolder(newPath))||
-			(!CreateFolder(phrasePath))||
-			(!CreateFolder(glossPath)))
-		{
-			pApp->ErrorMessage(IDS_SPLIT_BAD_DIRECTORY);
-			return;
-		}
-
 		POSITION pos = GetFirstViewPosition();
 		CSaView* pView = (CSaView*)GetNextView(pos);
-		// we need a focused graph!
-		if (pView->GetFocusedGraphWnd()==NULL) {
-			pApp->ErrorMessage(IDS_SPLIT_NO_SELECTION);
-			return;
+
+		if (!ValidatePhraseFilenames( type, convention, phrasePath)) 
+		{
+			return false;
 		}
 
-		int count=0;
-		BeginWaitCursor();
-
-		bool usingRef = (dlg.GetFilenameConvention()==FC_REF);
-		CString path = (usingRef)?newPath:glossPath;
-		if (ExportWord(count,(usingRef)?REFERENCE:GLOSS,dlg.GetFilenameConvention(),path)) {
-			// shall we export the phrase data?
-			if (dlg.m_ExportPhrase) {
-				if (ExportPhrase(MUSIC_PL1,count,phrasePath)) {
-					if (ExportPhrase(MUSIC_PL2,count,phrasePath)) {
-					}
-				}
+		DWORD lastOffset = -1;
+		// loop through the PL1 segments
+		CMusicPhraseSegment * s = (CMusicPhraseSegment*)pView->GetAnnotation(type);
+		int nLoop = s->GetOffsetSize();
+		for (int i=0;i<nLoop;i++) 
+		{
+			DWORD offset = s->GetOffset(i);
+			if (offset==lastOffset)
+			{
+				continue;
 			}
-		}
-		EndWaitCursor();
+			// we are on a new segment
+			lastOffset = offset;
 
-		if (count==0) {
-			pApp->ErrorMessage(IDS_SPLIT_INCOMPLETE);
-		} else {
-			CString szText;
-			wchar_t szNumber[128];
-			swprintf_s(szNumber,_countof(szNumber),L"%d",count);
-			pApp->Message(IDS_SPLIT_COMPLETE,szNumber);
+			DWORD dwStart = s->GetOffset(i);
+			DWORD dwStop = dwStart + s->GetDuration(i);
+			TRACE("dwStart=%d dwStop=%d\n",dwStart,dwStop);
+
+			// can we piece the name together?
+			wstring splitname;
+			if (!GeneratePhraseSplitName( type, s, pView, convention, i, splitname))
+			{
+				break;
+			}
+
+			// copy the audio portion
+			wstring splitfilename;
+			splitfilename.append(phrasePath).append(L"\\").append(splitname).append(L".wav");
+			BOOL bSuccess = CopySectionToNewWavFile(dwStart,dwStop-dwStart,splitfilename.c_str(),FALSE);
+			if (!bSuccess) 
+			{
+				// be sure to delete the file
+				try 
+				{
+					CFile::Remove(splitfilename.c_str());
+				} 
+				catch (...) 
+				{
+					TRACE0("Warning: failed to delete file after failed SaveAs\n");
+				}
+				pApp->ErrorMessage(IDS_SPLIT_NO_WRITE,splitfilename.c_str());
+				return false;
+			}
+
+			count++;
 		}
+		return true;
 	}
 
 	/***************************************************************************/
@@ -6329,7 +6684,8 @@ IMPLEMENT_DYNCREATE(CSaDoc, CUndoRedoDoc)
 		if (m_pDlgAdvancedParseWords==NULL)
 		{
 			m_pDlgAdvancedParseWords = new CDlgAdvancedParseWords(this);
-			if (!m_pDlgAdvancedParseWords->Create()) {
+			if (!m_pDlgAdvancedParseWords->Create()) 
+			{
 				CSaApp* pApp = (CSaApp*)AfxGetApp();
 				pApp->ErrorMessage(IDS_ERROR_NO_DIALOG);
 				delete m_pDlgAdvancedParseWords;
@@ -6359,7 +6715,8 @@ IMPLEMENT_DYNCREATE(CSaDoc, CUndoRedoDoc)
 		if (m_pDlgAdvancedParsePhrases==NULL)
 		{
 			m_pDlgAdvancedParsePhrases = new CDlgAdvancedParsePhrases(this);
-			if (!m_pDlgAdvancedParsePhrases->Create()) {
+			if (!m_pDlgAdvancedParsePhrases->Create()) 
+			{
 				CSaApp* pApp = (CSaApp*)AfxGetApp();
 				pApp->ErrorMessage(IDS_ERROR_NO_DIALOG);
 				delete m_pDlgAdvancedParsePhrases;
@@ -6381,7 +6738,8 @@ IMPLEMENT_DYNCREATE(CSaDoc, CUndoRedoDoc)
 	/**
 	* delete the contents of a segment type
 	*/
-	void CSaDoc::DeleteSegmentContents(Annotations type) {
+	void CSaDoc::DeleteSegmentContents(Annotations type) 
+	{
 
 		CSegment * pSegment = m_apSegments[type];
 		pSegment->DeleteContents();
@@ -6531,7 +6889,8 @@ IMPLEMENT_DYNCREATE(CSaDoc, CUndoRedoDoc)
 		}
 
 		CGraphWnd * pGraph = pView->GraphIDtoPtr(IDD_RAWDATA);
-		if (pGraph!=NULL) {
+		if (pGraph!=NULL) 
+		{
 			pGraph->ShowAnnotation(PHONETIC, TRUE, TRUE);
 			pGraph->ShowAnnotation(MUSIC_PL1, TRUE, TRUE);
 			pGraph->ShowAnnotation(MUSIC_PL2, TRUE, TRUE);
@@ -6552,7 +6911,8 @@ IMPLEMENT_DYNCREATE(CSaDoc, CUndoRedoDoc)
 		if (m_pDlgAdvancedSegment==NULL)
 		{
 			m_pDlgAdvancedSegment = new CDlgAdvancedSegment(this);
-			if (!m_pDlgAdvancedSegment->Create()) {
+			if (!m_pDlgAdvancedSegment->Create()) 
+			{
 				CSaApp* pApp = (CSaApp*)AfxGetApp();
 				pApp->ErrorMessage(IDS_ERROR_NO_DIALOG);
 				delete m_pDlgAdvancedSegment;
@@ -6823,10 +7183,6 @@ IMPLEMENT_DYNCREATE(CSaDoc, CUndoRedoDoc)
 	/***************************************************************************/
 	void CSaDoc::OnAutoAlign()
 	{
-		//CDlgAlignTranscriptionData dlg(NULL, this);
-		//if (dlg.DoModal()==IDOK) {
-		//}
-
 		CDlgAlignTranscriptionDataSheet dlg(NULL,this);
 		dlg.SetWizardMode();
 		if (dlg.DoModal()==ID_WIZFINISH) 
@@ -7207,8 +7563,6 @@ IMPLEMENT_DYNCREATE(CSaDoc, CUndoRedoDoc)
 			TranscriptionDataMap & map = td.m_TranscriptionData;
 			MarkerList::iterator begin = find(map[ref].begin(),map[ref].end(),autoReferenceDlg.mBeginRef);
 			MarkerList::iterator end = find(map[ref].begin(),map[ref].end(),autoReferenceDlg.mEndRef);
-			int sindex = distance(map[ref].begin(), begin);
-			int eindex = distance(map[ref].begin(), end);
 
 			// iterate through the gloss segments and add number to empty reference fields
 			CReferenceSegment * pReference = (CReferenceSegment*)m_apSegments[REFERENCE];
@@ -7486,7 +7840,8 @@ IMPLEMENT_DYNCREATE(CSaDoc, CUndoRedoDoc)
 						pSegment->Insert(pSegment->GetOffsetSize(),&szNext, FALSE, pArray[CHARACTER_OFFSETS][nIndex], pArray[CHARACTER_DURATIONS][nIndex]);
 						break;
 					case IDC_WORD:
-						if (nGlossIndex>=pArray[WORD_OFFSETS].GetSize()) { // No more word breaks continue one character at a time
+						if (nGlossIndex>=pArray[WORD_OFFSETS].GetSize()) 
+						{ // No more word breaks continue one character at a time
 							szNext = pTable->GetNext(nAlignMode, nStringIndex, settings.m_szPhonetic);
 						} 
 						else if (pArray[CHARACTER_OFFSETS][nIndex]<pArray[WORD_OFFSETS][nGlossIndex]) 
@@ -7575,12 +7930,14 @@ IMPLEMENT_DYNCREATE(CSaDoc, CUndoRedoDoc)
 				pSegment->DeleteContents(); // Delete contents and reinsert from scratch
 
 				nOffsetSize = pArray[CHARACTER_OFFSETS].GetSize();
-				for (nIndex = 0; nIndex < (nOffsetSize-1);nIndex++) {
+				for (nIndex = 0; nIndex < (nOffsetSize-1);nIndex++) 
+				{
 					switch(settings.m_nAlignBy) 
 					{
 					case IDC_NONE:
 						szNext = pTable->GetNext(nAlignMode, nStringIndex, settings.m_szPhonemic);
-						if (szNext.GetLength()!=0) {
+						if (szNext.GetLength()!=0) 
+						{
 							// Skip Empty Segments
 							pSegment->Insert(pSegment->GetOffsetSize(),&szNext, FALSE,pArray[CHARACTER_OFFSETS][nIndex], pArray[CHARACTER_DURATIONS][nIndex]);
 						}
@@ -7590,7 +7947,8 @@ IMPLEMENT_DYNCREATE(CSaDoc, CUndoRedoDoc)
 						{
 							// No more word breaks continue one character at a time
 							szNext = pTable->GetNext(nAlignMode, nStringIndex, settings.m_szPhonemic);
-						} else if (pArray[CHARACTER_OFFSETS][nIndex]<pArray[WORD_OFFSETS][nGlossIndex]) 
+						} 
+						else if (pArray[CHARACTER_OFFSETS][nIndex]<pArray[WORD_OFFSETS][nGlossIndex]) 
 						{
 							// Skip if phonetic offset does not correspond to word boundary
 							continue;
@@ -7616,11 +7974,13 @@ IMPLEMENT_DYNCREATE(CSaDoc, CUndoRedoDoc)
 							if (szTemp.GetLength()==0) 
 							{
 								break;
-							} else if ((szTemp.GetLength()==1)&&(szTemp[0]==EDIT_WORD_DELIMITER))
+							} 
+							else if ((szTemp.GetLength()==1)&&(szTemp[0]==EDIT_WORD_DELIMITER))
 							{
 								// time to stop!
 								break;
-							} else if (szTemp.GetLength()>1) 
+							} 
+							else if (szTemp.GetLength()>1) 
 							{
 								// in some situations if the trailing character is not a break
 								// it will be combined with the space.  we will break it here.
@@ -7686,7 +8046,8 @@ IMPLEMENT_DYNCREATE(CSaDoc, CUndoRedoDoc)
 				pSegment->DeleteContents(); // Delete contents and reinsert from scratch
 
 				nOffsetSize = pArray[CHARACTER_OFFSETS].GetSize();
-				for (nIndex = 0; nIndex < (nOffsetSize-1);nIndex++) {
+				for (nIndex = 0; nIndex < (nOffsetSize-1);nIndex++) 
+				{
 					switch(settings.m_nAlignBy) 
 					{
 					case IDC_NONE:
@@ -7702,7 +8063,8 @@ IMPLEMENT_DYNCREATE(CSaDoc, CUndoRedoDoc)
 						{
 							// No more word breaks continue one character at a time
 							szNext = pTable->GetNext(nAlignMode, nStringIndex, settings.m_szOrthographic);
-						} else if (pArray[CHARACTER_OFFSETS][nIndex]<pArray[WORD_OFFSETS][nGlossIndex]) 
+						} 
+						else if (pArray[CHARACTER_OFFSETS][nIndex]<pArray[WORD_OFFSETS][nGlossIndex]) 
 						{
 							// Skip if character offset does not correspond to word boundary
 							continue;
@@ -7723,16 +8085,19 @@ IMPLEMENT_DYNCREATE(CSaDoc, CUndoRedoDoc)
 					case IDC_CHARACTER:
 						// the line is entered one character per segment
 						szNext.Empty();
-						while (true) {
+						while (true) 
+						{
 							CSaString szTemp = pTable->GetNext( nAlignMode, nStringIndex, settings.m_szOrthographic);
 							if (szTemp.GetLength()==0) 
 							{
 								break;
-							} else if ((szTemp.GetLength()==1)&&(szTemp[0]==EDIT_WORD_DELIMITER)) 
+							} 
+							else if ((szTemp.GetLength()==1)&&(szTemp[0]==EDIT_WORD_DELIMITER)) 
 							{
 								// time to stop!
 								break;
-							} else if (szTemp.GetLength()>1) 
+							} 
+							else if (szTemp.GetLength()>1) 
 							{
 								// in some situations if the trailing character is not a break
 								// it will be combined with the space.  we will break it here.
@@ -7794,7 +8159,8 @@ IMPLEMENT_DYNCREATE(CSaDoc, CUndoRedoDoc)
 				// the normally the text is delimited with a #.
 				// if we see a # in the first position, we will continue
 				// to scan the segments util we
-				for (nIndex = 0; nIndex < (nOffsetSize-1);nIndex++) {
+				for (nIndex = 0; nIndex < (nOffsetSize-1);nIndex++) 
+				{
 
 					szNext = pTable->GetNext(nAlignMode, nStringIndex, settings.m_szGloss);
 					if (szNext.GetLength()==0) 
@@ -7819,7 +8185,8 @@ IMPLEMENT_DYNCREATE(CSaDoc, CUndoRedoDoc)
 					{
 						int nTempIndex = nStringIndex;
 						bool done = false;
-						while (!done) {
+						while (!done) 
+						{
 							int nLastIndex = nTempIndex;
 							CSaString szTemp = pTable->GetNext(nAlignMode, nTempIndex, settings.m_szGloss);
 							if (szTemp.GetLength()==0) 
@@ -7833,7 +8200,9 @@ IMPLEMENT_DYNCREATE(CSaDoc, CUndoRedoDoc)
 								{
 									szNext += CSaString(EDIT_WORD_DELIMITER);
 								}
-							} else {
+							} 
+							else 
+							{
 								if (szTemp[0]==WORD_DELIMITER) 
 								{
 									// we found the next line
@@ -7921,22 +8290,27 @@ IMPLEMENT_DYNCREATE(CSaDoc, CUndoRedoDoc)
 		CPhonemicSegment * pPhonemic = (CPhonemicSegment*)GetSegment(PHONEMIC);
 		COrthoSegment * pOrthographic = (COrthoSegment*)GetSegment(ORTHO);
 
-		if (td.m_bPhonetic) {
+		if (td.m_bPhonetic) 
+		{
 			pPhonetic->DeleteContents();
 		}
-		if (td.m_bPhonemic) {
+		if (td.m_bPhonemic) 
+		{
 			pPhonemic->DeleteContents();
 		}
-		if (td.m_bOrthographic) {
+		if (td.m_bOrthographic) 
+		{
 			pOrthographic->DeleteContents();
 		}
-		if (td.m_bGloss) {
+		if (td.m_bGloss) 
+		{
 			pGloss->DeleteContents();
 		}
 
 		const CStringArray * pReferences = pReference->GetTexts();
 
-		for (int i=0;i<pReference->GetOffsetSize();i++) {
+		for (int i=0;i<pReference->GetOffsetSize();i++) 
+		{
 			CSaString thisRef = pReferences->GetAt(i);
 			DWORD start = pReference->GetOffset(i);
 			DWORD duration = pReference->GetDuration(i);
@@ -7949,7 +8323,8 @@ IMPLEMENT_DYNCREATE(CSaDoc, CUndoRedoDoc)
 			MarkerList::iterator pnit = td.m_TranscriptionData[td.m_MarkerDefs[PHONETIC]].begin();
 			MarkerList::iterator oit = td.m_TranscriptionData[td.m_MarkerDefs[ORTHO]].begin();
 			MarkerList refs = td.m_TranscriptionData[td.m_szPrimary];
-			for (MarkerList::iterator it = refs.begin();it!=refs.end();it++) {
+			for (MarkerList::iterator it = refs.begin();it!=refs.end();it++) 
+			{
 				CSaString thatRef = *it;
 				if (thisRef.Compare(thatRef)==0) 
 				{

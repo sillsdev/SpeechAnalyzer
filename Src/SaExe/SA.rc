@@ -26,7 +26,7 @@ LANGUAGE LANG_NEUTRAL, SUBLANG_NEUTRAL
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 3,1,0,20
+ FILEVERSION 3,1,0,21
  PRODUCTVERSION 1,0,0,1
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
@@ -44,9 +44,9 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "SIL International"
             VALUE "FileDescription", "SA"
-            VALUE "FileVersion", "v3.1.0.20"
+            VALUE "FileVersion", "v3.1.0.21"
             VALUE "InternalName", "SA"
-            VALUE "LegalCopyright", "© 1996-2012 SIL International (MSEA)"
+            VALUE "LegalCopyright", "© 1996-2013 SIL International (MSEA)"
             VALUE "ProductName", "SA"
             VALUE "ProductVersion", "1.0.001"
         END
@@ -2145,24 +2145,30 @@ BEGIN
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,83,139,10
 END
 
-IDD_SPLIT DIALOGEX 0, 0, 262, 218
+IDD_SPLIT DIALOGEX 0, 0, 262, 259
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Split File"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
-    DEFPUSHBUTTON   "Split",IDOK,152,197,50,14
-    PUSHBUTTON      "Cancel",IDCANCEL,205,197,50,14
-    COMBOBOX        IDC_SPLIT_CONVENTION,7,155,247,63,CBS_DROPDOWNLIST | CBS_SORT | WS_TABSTOP
-    LTEXT           "Filename Convention",IDC_STATIC,7,144,247,8
+    DEFPUSHBUTTON   "Split",IDOK,152,238,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,205,238,50,14
+    COMBOBOX        IDC_SPLIT_WORD_CONVENTION,7,153,247,63,CBS_DROPDOWNLIST | WS_TABSTOP
+    COMBOBOX        IDC_SPLIT_PHRASE_CONVENTION,7,189,247,63,CBS_DROPDOWNLIST | WS_TABSTOP
+    LTEXT           "Word Filename Convention",IDC_STATIC,7,143,247,8
+    LTEXT           "Phrase Filename Convention",IDC_STATIC,7,179,247,8
     LTEXT           "Folder Name",IDC_STATIC,7,43,247,8
-    LTEXT           "Folder Location",IDC_STATIC,7,11,247,8
-    EDITTEXT        IDC_SPLIT_FOLDER_LOCATION,7,22,195,14,ES_AUTOHSCROLL | WS_DISABLED
-    EDITTEXT        IDC_SPLIT_FOLDER_NAME,7,54,247,14,ES_AUTOHSCROLL
-    EDITTEXT        IDC_SPLIT_PHRASE_SUBFOLDER_NAME,7,88,247,14,ES_AUTOHSCROLL | WS_DISABLED
-    EDITTEXT        IDC_SPLIT_WORD_SUBFOLDER_NAME,7,123,247,14,ES_AUTOHSCROLL | WS_DISABLED
-    CONTROL         "Phrase Sub-Folder name",IDC_EXPORT_PHRASE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,75,247,10
-    CONTROL         "Gloss Sub-Folder name",IDC_EXPORT_WORD,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,109,247,10
-    PUSHBUTTON      "Browse...",IDC_BROWSE_FOLDER,205,22,50,14
+    LTEXT           "Folder Location",IDC_STATIC,7,10,247,8
+    EDITTEXT        IDC_SPLIT_FOLDER_LOCATION,7,21,195,14,ES_AUTOHSCROLL | WS_DISABLED
+    EDITTEXT        IDC_SPLIT_FOLDER_NAME,7,53,247,14,ES_AUTOHSCROLL
+    EDITTEXT        IDC_SPLIT_PHRASE_SUBFOLDER_NAME,7,118,195,14,ES_AUTOHSCROLL | WS_DISABLED
+    EDITTEXT        IDC_SPLIT_WORD_SUBFOLDER_NAME,7,83,195,14,ES_AUTOHSCROLL | WS_DISABLED
+    PUSHBUTTON      "Browse...",IDC_BROWSE_FOLDER,205,21,50,14
+    PUSHBUTTON      "Edit",IDC_EDIT_PHRASE_FOLDER,205,118,50,14
+    PUSHBUTTON      "Edit",IDC_EDIT_GLOSS_FOLDER,205,83,50,14
+    LTEXT           "Phrase Sub-Folder Name",IDC_STATIC,7,107,247,8
+    LTEXT           "Transcription Data Sub-Folder Name",IDC_STATIC,7,73,247,9
+    CONTROL         "Do not save segment when Word is empty.",IDC_CHECK_GLOSS_EMPTY,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,221,247,10
 END
 
 IDD_MULTICHANNEL DIALOGEX 0, 0, 309, 79
@@ -2443,7 +2449,7 @@ BEGIN
         LEFTMARGIN, 7
         RIGHTMARGIN, 255
         TOPMARGIN, 7
-        BOTTOMMARGIN, 211
+        BOTTOMMARGIN, 252
     END
 
     IDD_MULTICHANNEL, DIALOG
@@ -4115,12 +4121,20 @@ END
 
 IDD_SPLIT DLGINIT
 BEGIN
-    IDC_SPLIT_CONVENTION, 0x403, 4, 0
+    IDC_SPLIT_WORD_CONVENTION, 0x403, 4, 0
 0x6552, 0x0066, 
-    IDC_SPLIT_CONVENTION, 0x403, 6, 0
+    IDC_SPLIT_WORD_CONVENTION, 0x403, 6, 0
 0x6c47, 0x736f, 0x0073, 
-    IDC_SPLIT_CONVENTION, 0x403, 12, 0
+    IDC_SPLIT_WORD_CONVENTION, 0x403, 12, 0
 0x6552, 0x2066, 0x202b, 0x6c47, 0x736f, 0x0073, 
+    IDC_SPLIT_PHRASE_CONVENTION, 0x403, 4, 0
+0x6552, 0x0066, 
+    IDC_SPLIT_PHRASE_CONVENTION, 0x403, 6, 0
+0x6c47, 0x736f, 0x0073, 
+    IDC_SPLIT_PHRASE_CONVENTION, 0x403, 12, 0
+0x6552, 0x2066, 0x202b, 0x6c47, 0x736f, 0x0073, 
+    IDC_SPLIT_PHRASE_CONVENTION, 0x403, 7, 0
+0x6850, 0x6172, 0x6573, "\000" 
     0
 END
 
@@ -4146,8 +4160,8 @@ STRINGTABLE
 BEGIN
     IDR_MAINFRAME           "Speech Analyzer"
     IDR_SA_ANNTYPE          "\nSA\nSA Document\nWAV Files (*.wav)\n.wav\nannFileType\nANN File Type"
-    VS_VERSION              "Version 3.1.0.20"
-    VS_COPYRIGHT            "© 1996-2012 SIL International (MSEA).\nAll Rights Reserved."
+    VS_VERSION              "Version 3.1.0.21"
+    VS_COPYRIGHT            "© 1996-2013 SIL International (MSEA).\nAll Rights Reserved."
     IDR_SA_WBTYPE           "\nWB\nSA Workbench\nWB Files (*.wb)\n.wb\nwbFileType\nWB File Type"
 END
 
@@ -4558,7 +4572,6 @@ BEGIN
     IDS_WINDOW_MUSIC_PL2    "Phrase L2"
     IDS_WINDOW_MUSIC_PL3    "Phrase L3"
     IDS_WINDOW_MUSIC_PL4    "Phrase L4"
-    IDS_WINDOW_REFERENCE2   "Reference"
 END
 
 STRINGTABLE
@@ -5083,8 +5096,24 @@ BEGIN
                             "Open the Instructor Guide for the training materials."
     ID_HELP_TRAINING_EXERCISES "Open the student exercises"
     IDS_SPLIT_NO_SELECTION  "Please select a graph to split!"
-    IDS_SPLIT_NO_ANNOTATION "Please select a graph with a Gloss Annontation."
-    IDS_SPLIT_BAD_DIRECTORY "Invalid destination.  Please select directory for storing the split output files."
+    IDS_SPLIT_NO_PHRASE_ANNOTATION 
+                            "Please select a graph with a Phrase Annontation."
+    IDS_SPLIT_BAD_DIRECTORY "Invalid directory name '%1'.  Please select directory for storing the split output files."
+END
+
+STRINGTABLE
+BEGIN
+    IDS_GLOSS_EMPTY_ANNOTATION 
+                            "The Gloss annotation for %1 segment %2 was empty.  The segment will not be saved because a filename get could not be generated."
+    IDS_SPLIT_COMPLETE      "The split is complete.  %1 segments were created."
+    IDS_CONFIRM_PHONEMIC_COPY 
+                            "This process will delete the existing phonemic data.\nDo you want to continue?"
+    IDS_SPLIT_INCOMPLETE    "The split was not completed.  No segments were found."
+    ID_AUTOMATICMARKUP_REFERENCEDATA "Renumber the Reference Data"
+    IDS_SPLIT_NO_GLOSS      "An empty Gloss transcription field was found at %1 segment %2.\nPlease correct the transcription or rerun the Split File feature and use the checkbox to allow skipping of blank words."
+    IDS_SPLIT_NO_REF        "An empty Reference transcription field was found at %1 segment %2.\nPlease correct the transcription field or rerun the Split File feature with a different filenaming convention."
+    IDS_SPLIT_NO_WRITE      "An error occurred while writing '%1'.  Please make sure the directory is writeable."
+    IDS_SPLIT_NO_PHRASE     "An empty Phrase transcription field was found at %1 segment %2.\nPlease correct the transcription or rerun the Split File feature with a different filenaming convention."
 END
 
 STRINGTABLE
@@ -5109,21 +5138,6 @@ BEGIN
     IDS_ERROR_NO_PARSE      "The wordlist does not contain any usable data.  Please select another wordlist."
     IDS_ERROR_FILENAME      "The filename '%1' does not exist or is not readable."
     IDS_ERROR_NO_IPAHELP    "The IPA Sounds option requires the installation of the IPA Help program to provide the audio.\n\nwww.sil.org/computing/speechtools"
-END
-
-STRINGTABLE
-BEGIN
-    IDS_EMPTY_ANNOTATION    "The annotation for %1 segment %2 was empty.  The segment will not be saved because a filename get could not be generated."
-    IDS_SPLIT_BAD_MOVE      "Unable to complete move of transcription data for %1.\nThe transcription data is lost."
-    IDS_SPLIT_COMPLETE      "The split is complete.  %1 segments were created."
-    IDS_CONFIRM_PHONEMIC_COPY 
-                            "This process will delete the existing phonemic data.\nDo you want to continue?"
-    IDS_SPLIT_INCOMPLETE    "The split was not completed.  No segments were found."
-    ID_AUTOMATICMARKUP_REFERENCEDATA "Renumber the Reference Data"
-    IDS_SPLIT_NO_ANNOTATION2 
-                            "Please select a graph with a Reference Annontation."
-    IDS_SPLIT_NO_ANNOTATION3 
-                            "Please select a graph with a Phrase Annontation."
 END
 
 STRINGTABLE

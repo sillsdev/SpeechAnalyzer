@@ -11,70 +11,61 @@ IMPLEMENT_DYNAMIC(CDlgSplit, CDialog)
 
 CDlgSplit::CDlgSplit(CWnd* pParent /*=NULL*/) : 
 CDialog(CDlgSplit::IDD, pParent), 
-m_iConvention(1), 
+m_WordConvention(2), 
+m_PhraseConvention(3), 
 m_FolderLocation(_T("")), 
 m_FolderName(_T("")), 
 m_PhraseFolderName(_T("")), 
-m_GlossFolderName(_T("")), 
-m_ExportPhrase(FALSE),
-m_ExportGloss(FALSE)
+m_GlossFolderName(_T("")) 
 {
 }
 
-CDlgSplit::~CDlgSplit() 
-{
+CDlgSplit::~CDlgSplit() {
 }
 
-BOOL CDlgSplit::OnInitDialog()
+BOOL CDlgSplit::OnInitDialog() 
 {
+
 	CDialog::OnInitDialog();
 	GetDlgItem(IDC_SPLIT_WORD_SUBFOLDER_NAME)->EnableWindow(FALSE);
 	GetDlgItem(IDC_SPLIT_PHRASE_SUBFOLDER_NAME)->EnableWindow(FALSE);
+
+	m_CheckGlossEmpty.SetCheck(TRUE);
+
 	UpdateData(TRUE);
 	return TRUE;
 }
 
-void CDlgSplit::DoDataExchange(CDataExchange* pDX)
+void CDlgSplit::DoDataExchange(CDataExchange* pDX) 
 {
 	CDialog::DoDataExchange(pDX);
-	DDX_CBIndex(pDX, IDC_SPLIT_CONVENTION, m_iConvention);
+	DDX_CBIndex(pDX, IDC_SPLIT_WORD_CONVENTION, m_WordConvention);
+	DDX_CBIndex(pDX, IDC_SPLIT_PHRASE_CONVENTION, m_PhraseConvention);
 	DDX_Text(pDX, IDC_SPLIT_FOLDER_LOCATION, m_FolderLocation);
 	DDX_Text(pDX, IDC_SPLIT_FOLDER_NAME, m_FolderName);
 	DDX_Text(pDX, IDC_SPLIT_PHRASE_SUBFOLDER_NAME, m_PhraseFolderName);
 	DDX_Text(pDX, IDC_SPLIT_WORD_SUBFOLDER_NAME, m_GlossFolderName);
-	DDX_Check(pDX, IDC_EXPORT_PHRASE, m_ExportPhrase);
-	DDX_Check(pDX, IDC_EXPORT_WORD, m_ExportGloss);
+	DDX_Control(pDX, IDC_CHECK_GLOSS_EMPTY, m_CheckGlossEmpty);
+	DDX_Check(pDX, IDC_CHECK_GLOSS_EMPTY, m_SkipGlossEmpty);
 }
 
-BEGIN_MESSAGE_MAP(CDlgSplit, CDialog)
-	ON_BN_CLICKED(IDC_EXPORT_WORD, &CDlgSplit::OnBnClickedExportGloss)
-	ON_BN_CLICKED(IDC_EXPORT_PHRASE, &CDlgSplit::OnBnClickedExportPhrase)
+BEGIN_MESSAGE_MAP(CDlgSplit, CDialog) 
 	ON_BN_CLICKED(IDC_BROWSE_FOLDER, &CDlgSplit::OnBnClickedBrowseFolder)
+	ON_BN_CLICKED(IDC_EDIT_PHRASE_FOLDER, &CDlgSplit::OnBnClickedEditPhraseFolder)
+	ON_BN_CLICKED(IDC_EDIT_GLOSS_FOLDER, &CDlgSplit::OnBnClickedEditGlossFolder)
 END_MESSAGE_MAP()
-
-void CDlgSplit::OnBnClickedExportGloss()
-{
-	BOOL state = IsDlgButtonChecked(IDC_EXPORT_WORD);
-	GetDlgItem(IDC_SPLIT_WORD_SUBFOLDER_NAME)->EnableWindow(state);
-}
-
-void CDlgSplit::OnBnClickedExportPhrase()
-{
-	BOOL state = IsDlgButtonChecked(IDC_EXPORT_PHRASE);
-	GetDlgItem(IDC_SPLIT_PHRASE_SUBFOLDER_NAME)->EnableWindow(state);
-}
 
 static int CALLBACK BrowseCallbackProc( HWND hwnd,UINT uMsg, LPARAM lParam, LPARAM lpData) 
 {
 
 	// If the BFFM_INITIALIZED message is received    
 	// set the path to the start path.    
-	switch (uMsg)
-	{        
+	switch (uMsg) 
+	{
 	case BFFM_INITIALIZED: 
-		{            
-			if (NULL != lpData)
-			{                
+		{
+			if (NULL != lpData) 
+			{
 				SendMessage(hwnd, BFFM_SETSELECTION, TRUE, lpData);            
 			}        
 		}    
@@ -82,9 +73,8 @@ static int CALLBACK BrowseCallbackProc( HWND hwnd,UINT uMsg, LPARAM lParam, LPAR
 	return 0; 
 } 
 
-void CDlgSplit::OnBnClickedBrowseFolder()
+void CDlgSplit::OnBnClickedBrowseFolder() 
 {
-
 	// szCurrent is an optional start folder. Can be NULL.
 	// szPath receives the selected path on success. Must be MAX_PATH characters in length.
 	
@@ -104,8 +94,7 @@ void CDlgSplit::OnBnClickedBrowseFolder()
 	bi.lpfn = BrowseCallbackProc;    
 	bi.lParam = (LPARAM)(LPCTSTR)m_FolderLocation;     
 	LPITEMIDLIST pidl = SHBrowseForFolder(&bi);
-	if (pidl==NULL)
-	{
+	if (pidl==NULL) {
 		// they cancelled...
 		CoUninitialize();
 		return;
@@ -113,11 +102,11 @@ void CDlgSplit::OnBnClickedBrowseFolder()
 
 	BOOL retval = SHGetPathFromIDList(pidl, szPath);        
 	CoTaskMemFree(pidl);    
-	if (!retval)
+	if (!retval) 
 	{
 		szPath[0] = TEXT('\0');
 	} 
-	else
+	else 
 	{
 		GetDlgItem(IDC_SPLIT_FOLDER_LOCATION)->SetWindowText(szPath);
 	}
@@ -125,18 +114,32 @@ void CDlgSplit::OnBnClickedBrowseFolder()
 	CoUninitialize();
 }
 
-enum EFilenameConvention CDlgSplit::GetFilenameConvention()
+enum EWordFilenameConvention CDlgSplit::GetWordFilenameConvention() 
 {
-	if (m_iConvention==1)
-	{
-		return FC_REF;
-	} 
-	else if (m_iConvention==0)
-	{
-		return FC_GLOSS;
-	} 
-	else
-	{
-		return FC_REF_GLOSS;
+	switch (m_WordConvention) {
+	case 0: return WFC_REF;
+	case 1: return WFC_GLOSS;
+	default:case 2: return WFC_REF_GLOSS;
 	}
+	return WFC_REF_GLOSS;
+}
+
+enum EPhraseFilenameConvention CDlgSplit::GetPhraseFilenameConvention() 
+{
+	switch (m_PhraseConvention) {
+	case 0: return PFC_REF;
+	case 1: return PFC_GLOSS;
+	case 2: return PFC_REF_GLOSS;
+	default:case 3: return PFC_PHRASE;
+	}
+}
+
+void CDlgSplit::OnBnClickedEditPhraseFolder() 
+{
+	GetDlgItem(IDC_SPLIT_PHRASE_SUBFOLDER_NAME)->EnableWindow(TRUE);
+}
+
+void CDlgSplit::OnBnClickedEditGlossFolder() 
+{
+	GetDlgItem(IDC_SPLIT_WORD_SUBFOLDER_NAME)->EnableWindow(TRUE);
 }

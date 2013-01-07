@@ -144,7 +144,8 @@ void CDlgAutoReferenceData::DoDataExchange(CDataExchange* pDX)
 		{
 			struct _stat buffer;
 			// update the dialog display
-			if (mLastImport.GetLength()==0) {
+			if (mLastImport.GetLength()==0) 
+			{
 				mComboBegin.ResetContent();
 				mComboEnd.ResetContent();
 			} 
