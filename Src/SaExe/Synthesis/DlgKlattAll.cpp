@@ -79,7 +79,7 @@ CDlgKlattAll::CDlgKlattAll(CWnd* pParent /*=NULL*/, int nSelectedView)
 	m_cConstants = (const CKlattConstants) GetGlobalKlattDefaults();
 	m_cConstants.SR = 22050;  // override default sampling rate.
 	m_cDefaults.Load(GetDefaultsPath());
-	if(nSelectedView >= 0)
+	if (nSelectedView >= 0)
 		m_nSelectedMethod = nSelectedView;
 	m_nSelectedView = m_nSelectedMethod;
 	m_bGetFragments = (m_nSelectedView == kFragment);
@@ -110,7 +110,7 @@ CDlgKlattAll::CDlgKlattAll(CWnd* pParent /*=NULL*/, int nSelectedView)
 	ASSERT(bResult);
 
 	CRect rc(20,20,400,400); // arbitrary rect
-	if(pParent)
+	if (pParent)
 		pParent->GetWindowRect(rc);
 	rc.DeflateRect(20,20);
 	MoveWindow(rc);
@@ -138,10 +138,10 @@ void CDlgKlattAll::CreateSynthesizer(CWnd* pParent, int nMode)
 
 void CDlgKlattAll::DestroySynthesizer()
 {
-	if(m_pDlgSynthesisKlatt)
+	if (m_pDlgSynthesisKlatt)
 		m_pDlgSynthesisKlatt->DestroyWindow();
 
-	if(m_pDlgSynthesisKlatt)
+	if (m_pDlgSynthesisKlatt)
 	{
 		delete m_pDlgSynthesisKlatt;
 		m_pDlgSynthesisKlatt = NULL;
@@ -157,7 +157,7 @@ void CDlgKlattAll::OnDestroy()
 
 void CDlgKlattAll::PostNcDestroy() 
 {
-	if(m_pDlgSynthesisKlatt)
+	if (m_pDlgSynthesisKlatt)
 	{
 		delete m_pDlgSynthesisKlatt;
 		m_pDlgSynthesisKlatt = NULL;
@@ -267,7 +267,7 @@ void CDlgKlattAll::OnSize(UINT nType, int cx, int cy)
 	CRect rc;
 
 	this->GetClientRect(rc);
-	if(m_cGrid[m_nSelectedView].GetSafeHwnd())
+	if (m_cGrid[m_nSelectedView].GetSafeHwnd())
 		m_cGrid[m_nSelectedView].MoveWindow(rc);	
 }
 
@@ -297,10 +297,10 @@ void CDlgKlattAll::PopulateParameterGrid(CFlexEditGrid &cGrid, const CIpaCharVec
 
 void CDlgKlattAll::PopulateParameterGrid(CFlexEditGrid &cGrid, const CIpaChar &cChar, int nColumn, BOOL bDuration)
 {
-	if(nColumn >= cGrid.GetCols(0))
+	if (nColumn >= cGrid.GetCols(0))
 		cGrid.SetCols(0, nColumn + 1);
 	cGrid.SetTextMatrix(rowIpa,nColumn, cChar.ipa);
-	if(bDuration)
+	if (bDuration)
 	{
 		CString szDuration;
 		szDuration.Format(_T("%f"),cChar.duration);
@@ -313,16 +313,16 @@ void CDlgKlattAll::PopulateParameterGrid(CFlexEditGrid &cGrid, const TEMPORAL *p
 {
 	const PARAMETER_DESC *parameterInfo = GetTemporalKlattDesc();
 
-	if(nColumn >= cGrid.GetCols(0))
+	if (nColumn >= cGrid.GetCols(0))
 		cGrid.SetCols(0, nColumn + 1);
 	for(int i=0;parameterInfo[i].parameterOffset != -1; i++)
 	{
 		int row = i + rowParameters;
 
-		if(row >= cGrid.GetRows())
+		if (row >= cGrid.GetRows())
 			cGrid.SetRows(row+1);
 		CString value;
-		if(parameterInfo[i].typeScanf[1] != 'd')
+		if (parameterInfo[i].typeScanf[1] != 'd')
 			value.Format(parameterInfo[i].typeScanf, *(Float*)(((char*)pParameters)+parameterInfo[i].parameterOffset));
 		else
 			value.Format(parameterInfo[i].typeScanf, *(int*)(((char*)pParameters)+parameterInfo[i].parameterOffset));
@@ -334,7 +334,7 @@ void CDlgKlattAll::PopulateParameterGrid(CFlexEditGrid &cGrid, const TEMPORAL *p
 void CDlgKlattAll::ShowGrid(int nGrid) 
 {
 
-	if(nGrid < 0 || nGrid >= kGrids)
+	if (nGrid < 0 || nGrid >= kGrids)
 	{
 		ASSERT(FALSE);
 		return;
@@ -345,7 +345,7 @@ void CDlgKlattAll::ShowGrid(int nGrid)
 	m_nSelectedView = nGrid;
 
 	this->GetClientRect(rc);
-	if(m_cGrid[nGrid].GetSafeHwnd())
+	if (m_cGrid[nGrid].GetSafeHwnd())
 	{
 		m_cGrid[nGrid].MoveWindow(rc);	
 		m_cGrid[nGrid].SetEnabled(TRUE);
@@ -355,7 +355,7 @@ void CDlgKlattAll::ShowGrid(int nGrid)
 	// hide all others
 	for(int i=0; i < kGrids; i++)
 	{
-		if(i != nGrid)
+		if (i != nGrid)
 		{
 			m_cGrid[i].MoveWindow(0,0,0,0);
 			m_cGrid[i].SetEnabled(FALSE);
@@ -365,12 +365,12 @@ void CDlgKlattAll::ShowGrid(int nGrid)
 	CString szText;
 	GetWindowText(szText);
 	int nStart = szText.Find(_T(" - "));
-	if(nStart != -1)
+	if (nStart != -1)
 		szText = szText.Left(nStart);
 	szText += _T(" - ") + m_szGrid[nGrid];
 	SetWindowText(szText);
 
-	if(nGrid == kFragment && !m_bGetFragments)
+	if (nGrid == kFragment && !m_bGetFragments)
 	{
 		m_bGetFragments = TRUE;
 		OnKlattGetAll();
@@ -384,7 +384,7 @@ void CDlgKlattAll::OnKlattDisplay()
 	CFileStatus fileStatus; // file status
 	if (CFile::GetStatus(m_szSynthesizedFilename, fileStatus))
 	{
-		if(fileStatus.m_size)
+		if (fileStatus.m_size)
 		{
 			// file created open in SA
 			CSaApp *pApp = (CSaApp*)(AfxGetApp());
@@ -394,7 +394,7 @@ void CDlgKlattAll::OnKlattDisplay()
 
 			LabelDocument(pDoc);
 
-			if(m_bMinimize)
+			if (m_bMinimize)
 				ShowWindow(SW_MINIMIZE);
 		}
 	}
@@ -411,14 +411,14 @@ void CDlgKlattAll::OnSynthShow()
 	CFileStatus fileStatus; // file status
 	if (CFile::GetStatus(m_szSynthesizedFilename, fileStatus))
 	{
-		if(fileStatus.m_size)
+		if (fileStatus.m_size)
 		{
 			// file created open in SA
 			CSaApp *pApp = (CSaApp*)(AfxGetApp());
 
 			CSaDoc* pDoc = pApp->IsDocumentOpened(m_pShowDoc) ? m_pShowDoc : NULL;
 
-			if(pDoc && pDoc->GetFileStatus()->m_szFullName != m_szSynthesizedFilename)
+			if (pDoc && pDoc->GetFileStatus()->m_szFullName != m_szSynthesizedFilename)
 				pDoc = NULL;
 
 			// Load temporarary file into document
@@ -427,7 +427,7 @@ void CDlgKlattAll::OnSynthShow()
 				pDoc->ApplyWaveFile(m_szSynthesizedFilename, pDoc->GetUnprocessedDataSize(), FALSE);
 			}
 
-			if(!pDoc)
+			if (!pDoc)
 			{
 				pDoc = pApp->OpenWavFileAsNew(m_szSynthesizedFilename);
 			}
@@ -435,7 +435,7 @@ void CDlgKlattAll::OnSynthShow()
 
 			LabelDocument(pDoc);
 
-			if(m_bMinimize)
+			if (m_bMinimize)
 				ShowWindow(SW_MINIMIZE);
 
 			m_szSynthesizedFilename = szSave; 
@@ -448,7 +448,7 @@ void CDlgKlattAll::OnKlattFragments()
 {
 	m_nSelectedMethod = kFragment;
 
-	if(m_nSelectedView != kFragment)
+	if (m_nSelectedView != kFragment)
 		ShowGrid(m_nSelectedMethod);
 }
 
@@ -461,7 +461,7 @@ void CDlgKlattAll::OnKlattIpa()
 {
 	m_nSelectedMethod = kSegment;
 
-	if(m_nSelectedView != kSegment)
+	if (m_nSelectedView != kSegment)
 		ShowGrid(m_nSelectedMethod);
 }
 
@@ -475,7 +475,7 @@ void CDlgKlattAll::OnKlattIpaBlend()
 {
 	m_nSelectedMethod = kIpaBlended;
 
-	if(m_nSelectedView != kIpaBlended)
+	if (m_nSelectedView != kIpaBlended)
 		ShowGrid(m_nSelectedMethod);
 }
 
@@ -486,7 +486,7 @@ void CDlgKlattAll::OnUpdateKlattIpaBlend(CCmdUI* pCmdUI)
 
 void CDlgKlattAll::OnKlattIpaDefaults() 
 {
-	if(m_nSelectedView != kDefaults)
+	if (m_nSelectedView != kDefaults)
 		ShowGrid(kDefaults);
 	else
 		ShowGrid(m_nSelectedMethod);
@@ -499,7 +499,7 @@ void CDlgKlattAll::OnUpdateKlattIpaDefaults(CCmdUI* pCmdUI)
 
 void CDlgKlattAll::OnKlattConst() 
 {
-	if(m_nSelectedView != kConstants)
+	if (m_nSelectedView != kConstants)
 		ShowGrid(kConstants);
 	else
 		ShowGrid(m_nSelectedMethod);
@@ -519,13 +519,13 @@ void CDlgKlattAll::OnPlayBoth()
 void CDlgKlattAll::OnPlaySynth() 
 {
 	OnSynthesize();
-	if(m_szSynthesizedFilename.GetLength())
+	if (m_szSynthesizedFilename.GetLength())
 		PlaySound(m_szSynthesizedFilename, 0, SND_SYNC | SND_NODEFAULT | SND_FILENAME );
 }
 
 void CDlgKlattAll::OnPlaySource() 
 {
-	if(m_szSourceFilename.GetLength())
+	if (m_szSourceFilename.GetLength())
 		PlaySound(m_szSourceFilename, 0, SND_SYNC | SND_NODEFAULT | SND_FILENAME );
 }
 
@@ -634,7 +634,7 @@ BOOL CDlgKlattAll::SynthesizeWave(const TCHAR* pszPathName, CIpaCharVector &cCha
 		double timeScale = m_dTimeScale;
 
 		// initialize resonators (prevents initial "explosions")
-		if(cChars[0].parameters.AV)
+		if (cChars[0].parameters.AV)
 		{
 			CIpaChar cInitColumn;
 			cInitColumn.parameters = GetTemporalKlattDefaults();	         // use parameter defaults
@@ -669,7 +669,7 @@ BOOL CDlgKlattAll::SynthesizeWave(const TCHAR* pszPathName, CIpaCharVector &cCha
 	// At file end what is file position
 	// SDM 1.5Test10.2
 	MMIOINFO mmioinfo;
-	if(mmioGetInfo(hmmioFile,&mmioinfo,0))
+	if (mmioGetInfo(hmmioFile,&mmioinfo,0))
 	{
 		// error writing RIFF chunk
 		pApp->ErrorMessage(IDS_ERROR_WRITERIFFCHUNK, pszPathName);
@@ -694,7 +694,7 @@ BOOL CDlgKlattAll::SynthesizeWave(const TCHAR* pszPathName, CIpaCharVector &cCha
 		mmioClose(hmmioFile, 0);
 		return FALSE;
 	}
-	if(!mmioClose(hmmioFile, 0)) // close file
+	if (!mmioClose(hmmioFile, 0)) // close file
 	{
 		// Set File Length ...
 		// SDM 1.5Test10.2
@@ -707,7 +707,7 @@ BOOL CDlgKlattAll::SynthesizeWave(const TCHAR* pszPathName, CIpaCharVector &cCha
 
 void CDlgKlattAll::OnUpdateSourceName()
 {
-	if(m_szSourceFilename.IsEmpty() || !static_cast<CSaApp*>(AfxGetApp())->IsFileOpened(m_szSourceFilename))
+	if (m_szSourceFilename.IsEmpty() || !static_cast<CSaApp*>(AfxGetApp())->IsFileOpened(m_szSourceFilename))
 	{
 		m_szSourceFilename.Empty();
 		m_szShowFilename.Empty();
@@ -718,9 +718,9 @@ void CDlgKlattAll::OnUpdateSourceName()
 		while(pChild)
 		{
 			CDocument* pDoc = pChild->GetActiveDocument(); // get pointer to document
-			if(pDoc && pDoc->IsKindOf(RUNTIME_CLASS(CSaDoc)))
+			if (pDoc && pDoc->IsKindOf(RUNTIME_CLASS(CSaDoc)))
 				m_szSourceFilename = pDoc->GetPathName();
-			if(!m_szSourceFilename.IsEmpty()) 
+			if (!m_szSourceFilename.IsEmpty()) 
 				break;
 			pChild = (CMDIChildWnd*) pChild->GetNextWindow();
 		}
@@ -731,9 +731,7 @@ CString CDlgKlattAll::GetDefaultsPath()
 {
 	CSaString szPath = AfxGetApp()->GetProfileString(_T(""), _T("DataLocation"));
 	szPath += "\\";
-
 	szPath += "IpaDefaults.txt";
-
 	return szPath;
 }
 
@@ -765,7 +763,7 @@ void CDlgKlattAll::ParseParameterGrid(int nGrid, CIpaCharVector &cChars)
 		CIpaChar columnChar;
 		BOOL bColumnValid = FALSE;
 		columnChar.ipa = cGrid.GetTextMatrix(rowIpa,column);
-		if(columnChar.ipa.IsEmpty())
+		if (columnChar.ipa.IsEmpty())
 			continue;
 
 		columnChar.parameters = GetTemporalKlattDefaults();
@@ -784,14 +782,14 @@ void CDlgKlattAll::ParseParameterGrid(int nGrid, CIpaCharVector &cChars)
 				bColumnValid = TRUE;
 			}
 		}
-		if(bColumnValid)
+		if (bColumnValid)
 		{
 			CString value;
 
 			value = cGrid.GetTextMatrix(rowDuration,column);
 			int nScanned = swscanf_s(value, _T("%lf"), &columnChar.duration);
 
-			if(nScanned != 1)
+			if (nScanned != 1)
 				columnChar.duration = 0;
 
 			cChars.push_back(columnChar); // add to end of list
@@ -806,10 +804,10 @@ void CDlgKlattAll::OnSynthesize()
 	ParseConstantsGrid(kConstants, m_cConstants);
 	ParseParameterGrid(m_nSelectedMethod, cChars);
 
-	if(cChars.begin() == cChars.end())
+	if (cChars.begin() == cChars.end())
 		return;
 
-	if(m_szSynthesizedFilename.IsEmpty())
+	if (m_szSynthesizedFilename.IsEmpty())
 	{
 		TCHAR lpszTempPath[_MAX_PATH];
 		GetTempPath(_MAX_PATH, lpszTempPath);
@@ -833,12 +831,12 @@ void CDlgKlattAll::ConvertCStringToCharVector(CString const &szGrid, CIpaCharVec
 	{
 		int nLineEnd = szGrid.Find(_T("\n"),nLineStart);
 
-		if(nLineEnd == -1)
+		if (nLineEnd == -1)
 			nLineEnd = nLength;
 
 		CString szLine = szGrid.Mid(nLineStart,nLineEnd-nLineStart);
 
-		if(szLine.IsEmpty())
+		if (szLine.IsEmpty())
 			continue;
 
 		CIpaChar columnChar;
@@ -855,13 +853,13 @@ void CDlgKlattAll::ConvertCStringToCharVector(CString const &szGrid, CIpaCharVec
 		{
 			int nFieldEnd = szLine.Find(_T("\t"), nFieldStart);
 
-			if(nFieldEnd == -1)
+			if (nFieldEnd == -1)
 				// may not have a trailing \t
 				nFieldEnd = nLineLength;
 
 			CString szField = szLine.Mid(nFieldStart,nFieldEnd-nFieldStart);
 
-			if(!szField.IsEmpty())
+			if (!szField.IsEmpty())
 			{
 				int i = row - rowParameters;
 				switch (row)
@@ -881,7 +879,7 @@ void CDlgKlattAll::ConvertCStringToCharVector(CString const &szGrid, CIpaCharVec
 					}
 					break;
 				default:
-					if(row >= rowParameters && parameterInfo[i].parameterOffset != -1)
+					if (row >= rowParameters && parameterInfo[i].parameterOffset != -1)
 					{
 						TEMPORAL *pTemporal = &columnChar.parameters;
 
@@ -896,7 +894,7 @@ void CDlgKlattAll::ConvertCStringToCharVector(CString const &szGrid, CIpaCharVec
 
 			nFieldStart = nFieldEnd+1;
 		}
-		if(bColumnValid)
+		if (bColumnValid)
 			cChars.push_back(columnChar); // add to end of list
 
 		nLineStart = nLineEnd + 1;
@@ -905,10 +903,10 @@ void CDlgKlattAll::ConvertCStringToCharVector(CString const &szGrid, CIpaCharVec
 
 void CDlgKlattAll::LabelGrid(int nGrid)
 {
-	if(nGrid == -1)
+	if (nGrid == -1)
 		nGrid = m_nSelectedView;
 
-	if(m_cGrid[nGrid].GetCols(0) <= columnFirst)
+	if (m_cGrid[nGrid].GetCols(0) <= columnFirst)
 		m_cGrid[nGrid].SetCols(0,columnFirst+1);
 	m_cGrid[nGrid].SetFixedCols(columnFirst);
 	m_cGrid[nGrid].SetTextMatrix(rowHeading,columnDescription, _T("Description"));
@@ -917,11 +915,11 @@ void CDlgKlattAll::LabelGrid(int nGrid)
 	m_cGrid[nGrid].SetColWidth(columnDescription,0, 4400);
 	m_cGrid[nGrid].SetColWidth(columnSym,0, 600);
 	m_cGrid[nGrid].SetColWidth(columnDef,0, 600);
-	if(nGrid == kConstants)
+	if (nGrid == kConstants)
 	{
 		m_cGrid[nGrid].SetColWidth(columnDescription,0, 5400);
 		// Label Grid
-		if(m_cGrid[nGrid].GetRows() < 3)
+		if (m_cGrid[nGrid].GetRows() < 3)
 			m_cGrid[nGrid].SetRows(3);
 		m_cGrid[nGrid].SetFixedCols(2);
 
@@ -931,18 +929,18 @@ void CDlgKlattAll::LabelGrid(int nGrid)
 		{
 			int row = i + rowFirst;
 
-			if(row >= m_cGrid[nGrid].GetRows())
+			if (row >= m_cGrid[nGrid].GetRows())
 				m_cGrid[nGrid].SetRows(row+1);
 
 			CString description;
 
-			if(parameterInfo[i].units)
+			if (parameterInfo[i].units)
 				description.Format(_T("%s, in %s"),parameterInfo[i].description,parameterInfo[i].units);
 			else
 				description = parameterInfo[i].description;
 
 			CString value;
-			if(parameterInfo[i].typeScanf[1] != 'd')
+			if (parameterInfo[i].typeScanf[1] != 'd')
 				value.Format(parameterInfo[i].typeScanf, *(Float*)(((char*)&m_cConstants)+parameterInfo[i].parameterOffset));
 			else
 				value.Format(parameterInfo[i].typeScanf, *(int*)(((char*)&m_cConstants)+parameterInfo[i].parameterOffset));
@@ -959,9 +957,9 @@ void CDlgKlattAll::LabelGrid(int nGrid)
 	else
 	{ 
 		// Label Grid
-		if(m_cGrid[nGrid].GetCols(0) < 100)
+		if (m_cGrid[nGrid].GetCols(0) < 100)
 			m_cGrid[nGrid].SetCols(0,100);
-		if(m_cGrid[nGrid].GetRows() < rowParameters)
+		if (m_cGrid[nGrid].GetRows() < rowParameters)
 			m_cGrid[nGrid].SetRows(rowParameters);
 		m_cGrid[nGrid].SetTextMatrix(rowIpa,columnDescription, _T("IPA"));
 		m_cGrid[nGrid].SetTextMatrix(rowIpa,columnSym, _T("IPA"));
@@ -981,12 +979,12 @@ void CDlgKlattAll::LabelGrid(int nGrid)
 		{
 			int row = i+rowParameters;
 
-			if(row >= m_cGrid[nGrid].GetRows())
+			if (row >= m_cGrid[nGrid].GetRows())
 				m_cGrid[nGrid].SetRows(row+1);
 
 			CString description;
 
-			if(parameterInfo[i].units)
+			if (parameterInfo[i].units)
 				description.Format(_T("%s, in %s"),parameterInfo[i].description,parameterInfo[i].units);
 			else
 				description = parameterInfo[i].description;      
@@ -1044,25 +1042,25 @@ static void CurveFitPitch(CSaDoc *pDoc, double fSizeFactor, double dBeginWAV, do
 			n++;
 		}
 	}
-	if(n>0)
+	if (n>0)
 	{
 		double localSlope;
-		if(sumX)
+		if (sumX)
 			localSlope = (n*sumXY - sumX*sumY)/(n*sumXX - sumX*sumX);
 		else
 			localSlope = 0; // if no change in x, assume 0 slope
 		double localOffset = sumY/n - localSlope*sumX/n;
 
-		if(offset)
+		if (offset)
 			*offset = localOffset;
-		if(slope)
+		if (slope)
 			*slope = localSlope;
 	}
 	else
 	{
-		if(offset)
+		if (offset)
 			*offset = - 1.;
-		if(slope)
+		if (slope)
 			*slope = 0;
 	}
 }
@@ -1075,7 +1073,7 @@ void CDlgKlattAll::OnKlattGetAll()
 	ParseParameterGrid(kDefaults, m_cDefaults);
 	OnKlattApplyIpaDefaults(m_cGrid[kSegment]);
 	OnKlattBlendSegments(kSegment,m_cGrid[kIpaBlended]);
-	if(m_bGetFragments)
+	if (m_bGetFragments)
 	{
 		OnKlattGetFrames(m_cGrid[kFragment], 
 			(int)dKlattFrameWindowMs, (int)dKlattFrameIntervalMs,
@@ -1096,7 +1094,7 @@ void CDlgKlattAll::OnKlattGetSegments(CFlexEditGrid &cGrid)
 
 	CSaApp* pApp = (CSaApp*)AfxGetApp();
 	CSaDoc* pDoc = (CSaDoc*)pApp->IsFileOpened(szFilename);
-	if(!pDoc)
+	if (!pDoc)
 		return;
 	CSegment* pPhonetic = pDoc->GetSegment(PHONETIC);
 
@@ -1142,7 +1140,7 @@ void CDlgKlattAll::OnKlattGetSegments(CFlexEditGrid &cGrid)
 			szString.Format(_T("silence"));
 			cGrid.SetTextMatrix(rowIpa,column,szString);
 
-			if(m_bDuration)
+			if (m_bDuration)
 			{
 				dwDuration = dwOffset - (dwPrevOffset + dwDuration);
 				szString.Format(_T("%.2f"),pDoc->GetTimeFromBytes(dwDuration)*1000.);
@@ -1161,19 +1159,19 @@ void CDlgKlattAll::OnKlattGetSegments(CFlexEditGrid &cGrid)
 		szString = pPhonetic->GetSegmentString(nIndex);
 		cGrid.SetTextMatrix(rowIpa,column,szString);
 
-		if(m_bDuration)
+		if (m_bDuration)
 		{
 			szString.Format(_T("%.2f"),pDoc->GetTimeFromBytes(pPhonetic->GetDuration(nIndex))*1000.);
 			cGrid.SetTextMatrix(rowDuration,column,szString);
 		}
 
-		if(m_bPitch)
+		if (m_bPitch)
 		{
 			double offset;
 			double slope;
 
 			CurveFitPitch(pDoc, fSizeFactor[PITCH], dwOffset, pPhonetic->GetStop(nIndex), &offset, &slope);
-			if(offset > 0)
+			if (offset > 0)
 				szString.Format(_T("%.5g"),offset + slope*pPhonetic->GetDuration(nIndex)/2.);
 			else
 				szString.Empty();
@@ -1184,7 +1182,7 @@ void CDlgKlattAll::OnKlattGetSegments(CFlexEditGrid &cGrid)
 
 		column++;
 
-		if(column >= cGrid.GetCols(0))
+		if (column >= cGrid.GetCols(0))
 		{
 			cGrid.SetCols(0, column+10);
 			cGrid.SetFont(PHONETIC_DEFAULT_FONT,PHONETIC_DEFAULT_FONTSIZE,rowIpa,column,1,-1);
@@ -1205,7 +1203,7 @@ void CDlgKlattAll::OnKlattGetSegments(CFlexEditGrid &cGrid)
 		szString.Format(_T("silence"));
 		cGrid.SetTextMatrix(rowIpa,column,szString);
 
-		if(m_bDuration)
+		if (m_bDuration)
 		{
 			dwDuration = dwOffset - (dwPrevOffset + dwDuration);
 			szString.Format(_T("%.2f"),pDoc->GetTimeFromBytes(dwDuration)*1000.);
@@ -1239,7 +1237,7 @@ void CDlgKlattAll::SilentColumn(CFlexEditGrid &cGrid, int column, CSaDoc *pDoc, 
 	szString.Format(_T("silence"));
 	cGrid.SetTextMatrix(rowIpa,column,szString);
 
-	if(dwDuration)
+	if (dwDuration)
 	{
 		szString.Format(_T("%.2f"),pDoc->GetTimeFromBytes(dwDuration * wSmpSize)*1000.);
 		cGrid.SetTextMatrix(rowDuration,column,szString);
@@ -1331,9 +1329,9 @@ BOOL CDlgKlattAll::GetFormants(CFlexEditGrid &cGrid, int column, CSaView *pView,
 	enum {ABSOLUTE_CALC, RELATIVE_CALC, CALCULATION};
 	int nAmplitudeCalculation = ABSOLUTE_CALC;
 
-	if(cGrid.GetTextMatrix(rowAV,column) != "0")
+	if (cGrid.GetTextMatrix(rowAV,column) != "0")
 	{
-		if(!m_cConstants.CP)
+		if (!m_cConstants.CP)
 		{
 			switch (nAmplitudeCalculation)
 			{
@@ -1348,10 +1346,10 @@ BOOL CDlgKlattAll::GetFormants(CFlexEditGrid &cGrid, int column, CSaView *pView,
 						nAV += (unsigned)(fAPWt * (fPowerAll +  85.0));
 					else
 						nAF += (unsigned)(fAPWt * (fPowerAll + 100.0));
-					if(nAF>70) nAF=70; // Avoid clipping
+					if (nAF>70) nAF=70; // Avoid clipping
 					// Check to see if this is an unvoiced fricative
 					int nZC = pZCross->GetProcessedData(dwFrameStart / 100, &bRes);
-					if(nZC > 90)
+					if (nZC > 90)
 						nAV = 0; // turn voicing off completely
 				}
 				break;
@@ -1399,7 +1397,7 @@ BOOL CDlgKlattAll::GetFormants(CFlexEditGrid &cGrid, int column, CSaView *pView,
 	for(int n = 1; n <= 6; n++)
 	{
 		FORMANT form = pSpectrum->GetFormant((unsigned short) n);
-		if(form.Lpc.FrequencyInHertz == UNDEFINED_DATA || form.Lpc.PowerInDecibels == FLT_MAX_NEG)
+		if (form.Lpc.FrequencyInHertz == UNDEFINED_DATA || form.Lpc.PowerInDecibels == FLT_MAX_NEG)
 		{
 			continue;
 		}
@@ -1411,11 +1409,11 @@ BOOL CDlgKlattAll::GetFormants(CFlexEditGrid &cGrid, int column, CSaView *pView,
 		double fParmPrev, fParmCalc, fParmChange, fParmChangeMax, fParmChangeMin;
 		const double fParmChangeMaxAbs = 1.3;
 		fParmPrev = pFormFreq[n]; // store previous value
-		if(nAV) // lock frequency value through unvoiced regions
+		if (nAV) // lock frequency value through unvoiced regions
 			fParmCalc = form.Lpc.FrequencyInHertz;
 		else
 			fParmCalc = fParmPrev;
-		if(3==column) fParmPrev = fParmCalc; // always use calculated formant value for first column
+		if (3==column) fParmPrev = fParmCalc; // always use calculated formant value for first column
 		// prevent wild changes in formant values
 		fParmChange = fParmCalc/fParmPrev;
 		switch(n)
@@ -1440,13 +1438,13 @@ BOOL CDlgKlattAll::GetFormants(CFlexEditGrid &cGrid, int column, CSaView *pView,
 			fParmChangeMin = (pFormFreq[n-1]/fParmPrev+1)/2;
 			if (fParmChangeMax < 1/fParmChangeMaxAbs) fParmChangeMax = 1/fParmChangeMaxAbs;
 		}
-		if(fParmChange>fParmChangeMax) fParmChange=fParmChangeMax;
-		if(fParmChange<fParmChangeMin) fParmChange=fParmChangeMin;
+		if (fParmChange>fParmChangeMax) fParmChange=fParmChangeMax;
+		if (fParmChange<fParmChangeMin) fParmChange=fParmChangeMin;
 		pFormFreq[n] = fParmChange * fParmPrev;
 
 		// get bandwidth values
 		// pFormBW[n] = pow(10, pFormFreq[n]/6000.0 + 0.85 - (form.Lpc.PowerInDecibels-LpcRef)/20.0);
-		if(column>3) // use defaults for first column
+		if (column>3) // use defaults for first column
 		{
 			// voiced bandwidths
 			fParmPrev = _ttoi(cGrid.GetTextMatrix(rowB1+2*(n-(1==n)), column-1));
@@ -1473,11 +1471,11 @@ BOOL CDlgKlattAll::GetFormants(CFlexEditGrid &cGrid, int column, CSaView *pView,
 				fParmChangeMin = (pFormBW[n-1] / pFormBW[n] + 1) / 2;
 				if (fParmChangeMax < 1/fParmChangeMaxAbs) fParmChangeMax = 1/fParmChangeMaxAbs;
 			}
-			if(fParmChange > fParmChangeMax) fParmChange = fParmChangeMax;
-			if(fParmChange < fParmChangeMin) fParmChange = fParmChangeMin;
+			if (fParmChange > fParmChangeMax) fParmChange = fParmChangeMax;
+			if (fParmChange < fParmChangeMin) fParmChange = fParmChangeMin;
 			pFormBW[n] = fParmChange * fParmPrev;
 			int nParameterRow = 10+2*(n-(1==n));
-			if(pFormBW[n] < parameterInfo[nParameterRow].min)
+			if (pFormBW[n] < parameterInfo[nParameterRow].min)
 				pFormBW[n] = parameterInfo[nParameterRow].min;
 
 			// unvoiced bandwidths
@@ -1505,11 +1503,11 @@ BOOL CDlgKlattAll::GetFormants(CFlexEditGrid &cGrid, int column, CSaView *pView,
 				fParmChangeMin = (pFormBWF[n-1] / pFormBWF[n] + 1) / 2;
 				if (fParmChangeMax < 1/fParmChangeMaxAbs) fParmChangeMax = 1/fParmChangeMaxAbs;
 			}
-			if(fParmChange > fParmChangeMax) fParmChange = fParmChangeMax;
-			if(fParmChange < fParmChangeMin) fParmChange = fParmChangeMin;
+			if (fParmChange > fParmChangeMax) fParmChange = fParmChangeMax;
+			if (fParmChange < fParmChangeMin) fParmChange = fParmChangeMin;
 			pFormBWF[n] = fParmChange * fParmPrev;
 			nParameterRow = 37+2*(n-(1==n));
-			if(pFormBWF[n] < parameterInfo[nParameterRow].min)
+			if (pFormBWF[n] < parameterInfo[nParameterRow].min)
 				pFormBWF[n] = parameterInfo[nParameterRow].min;
 		}
 		form.Lpc.PowerInDecibels -= (float) GainAtResonance(form.Lpc.FrequencyInHertz,form.Lpc.BandwidthInHertz);
@@ -1518,7 +1516,7 @@ BOOL CDlgKlattAll::GetFormants(CFlexEditGrid &cGrid, int column, CSaView *pView,
 	}
 
 	AdjustParallelAVs(pFormAV, pFormFreq);
-	if(pFormBW[1])
+	if (pFormBW[1])
 	{
 		szString.Format(_T("%.5g"),pFormFreq[1]);
 		cGrid.SetTextMatrix(rowF1,column,szString);
@@ -1527,7 +1525,7 @@ BOOL CDlgKlattAll::GetFormants(CFlexEditGrid &cGrid, int column, CSaView *pView,
 		szString.Format(_T("%.5g"),pFormAV[1]);
 		cGrid.SetTextMatrix(rowA1V,column,szString);
 	}
-	if(pFormBW[2])
+	if (pFormBW[2])
 	{
 		szString.Format(_T("%.5g"),pFormFreq[2]);
 		cGrid.SetTextMatrix(rowF2,column,szString);
@@ -1540,7 +1538,7 @@ BOOL CDlgKlattAll::GetFormants(CFlexEditGrid &cGrid, int column, CSaView *pView,
 		szString.Format(_T("%.5g"),pFormAV[2] - PreEmphasisAdjust(pFormFreq[2],m_cConstants.SR));
 		cGrid.SetTextMatrix(rowA2V,column,szString);
 	}
-	if(pFormBW[3])
+	if (pFormBW[3])
 	{
 		szString.Format(_T("%.5g"),pFormFreq[3]);
 		cGrid.SetTextMatrix(rowF3,column,szString);
@@ -1553,7 +1551,7 @@ BOOL CDlgKlattAll::GetFormants(CFlexEditGrid &cGrid, int column, CSaView *pView,
 		szString.Format(_T("%.5g"),pFormAV[3] - PreEmphasisAdjust(pFormFreq[2],m_cConstants.SR));
 		cGrid.SetTextMatrix(rowA3V,column,szString);
 	}
-	if(pFormBW[4])
+	if (pFormBW[4])
 	{
 		szString.Format(_T("%.5g"),pFormFreq[4]);
 		cGrid.SetTextMatrix(rowF4,column,szString);
@@ -1566,7 +1564,7 @@ BOOL CDlgKlattAll::GetFormants(CFlexEditGrid &cGrid, int column, CSaView *pView,
 		szString.Format(_T("%.5g"),pFormAV[4] - PreEmphasisAdjust(pFormFreq[2],m_cConstants.SR));
 		cGrid.SetTextMatrix(rowA4V,column,szString);
 	}
-	if(pFormBW[5])
+	if (pFormBW[5])
 	{
 		szString.Format(_T("%.5g"),pFormFreq[5]);
 		cGrid.SetTextMatrix(rowF5,column,szString);
@@ -1577,7 +1575,7 @@ BOOL CDlgKlattAll::GetFormants(CFlexEditGrid &cGrid, int column, CSaView *pView,
 		szString.Format(_T("%.5g"),pFormEnergy[5] - PreEmphasisAdjust(pFormFreq[2],m_cConstants.SR));
 		cGrid.SetTextMatrix(rowA5F,column,szString);
 	}
-	if(pFormBW[6])
+	if (pFormBW[6])
 	{
 		szString.Format(_T("%.5g"),pFormFreq[6]);
 		cGrid.SetTextMatrix(rowF6,column,szString);
@@ -1613,19 +1611,19 @@ BOOL CDlgKlattAll::GetFrame(CFlexEditGrid &cGrid, int &column, CSaView *pView,
 	}
 
 	int nIndex = pPhonetic->FindFromPosition((dwStart + dwLength/2)*wSmpSize, TRUE);
-	if(nIndex != -1)
+	if (nIndex != -1)
 		szString = pPhonetic->GetSegmentString(nIndex);
 	else
 		szString = "silence";
 	cGrid.SetTextMatrix(rowIpa,column,szString);
 
-	if(bDuration)
+	if (bDuration)
 	{
 		szString.Format(_T("%.2f"),pDoc->GetTimeFromBytes(((DWORD)dwInterval * wSmpSize) * 1000));
 		cGrid.SetTextMatrix(rowDuration,column,szString);
 	}
 
-	if(bPitch)
+	if (bPitch)
 	{
 		double offset;
 		double slope;
@@ -1633,7 +1631,7 @@ BOOL CDlgKlattAll::GetFrame(CFlexEditGrid &cGrid, int &column, CSaView *pView,
 
 		CurveFitPitch(pDoc, fSizeFactor, dwStart * wSmpSize,
 			(dwStart + dwLength) * wSmpSize, &offset, &slope);
-		if(offset > 0)
+		if (offset > 0)
 		{
 			szString.Format(_T("%.5g"),offset + slope*(dwLength + 1)/2.);
 			cGrid.SetTextMatrix(rowF0,column,szString);
@@ -1643,7 +1641,7 @@ BOOL CDlgKlattAll::GetFrame(CFlexEditGrid &cGrid, int &column, CSaView *pView,
 	}
 
 	// Formant info
-	if(bFormants)
+	if (bFormants)
 	{
 		BOOL bRes = GetFormants(cGrid, column, pView, pSpectrum, pAutoPitch, pZCross, dwStart, dwLength, pFormFreq);
 
@@ -1653,7 +1651,7 @@ BOOL CDlgKlattAll::GetFrame(CFlexEditGrid &cGrid, int &column, CSaView *pView,
 
 	column++;
 
-	if(column >= cGrid.GetCols(0))
+	if (column >= cGrid.GetCols(0))
 	{
 		cGrid.SetCols(0, column+10);
 		cGrid.SetFont(PHONETIC_DEFAULT_FONT,PHONETIC_DEFAULT_FONTSIZE,rowIpa,column,1,-1);
@@ -1672,7 +1670,7 @@ void CDlgKlattAll::OnKlattGetFrames(CFlexEditGrid &cGrid, int nFrameLengthInMs, 
 
 	CSaApp* pApp = (CSaApp*)AfxGetApp();
 	CSaDoc* pDoc = (CSaDoc*)pApp->IsFileOpened(szFilename);
-	if(!pDoc) return;
+	if (!pDoc) return;
 	POSITION pos = pDoc->GetFirstViewPosition();
 	CSaView* pView = (CSaView*)pDoc->GetNextView(pos); // get pointer to view
 	CSegment* pPhonetic = pDoc->GetSegment(PHONETIC);
@@ -1718,7 +1716,7 @@ void CDlgKlattAll::OnKlattGetFrames(CFlexEditGrid &cGrid, int nFrameLengthInMs, 
 		pUttParm->nMaxChange = 10;
 		pUttParm->nMinGroup = 6;
 		pUttParm->nMaxInterp = 7;
-		if(pUttParm->nMinFreq != pSavedUttParm->nMinFreq
+		if (pUttParm->nMinFreq != pSavedUttParm->nMinFreq
 			|| pUttParm->nMaxFreq != pSavedUttParm->nMaxFreq
 			|| pUttParm->nCritLoud != pSavedUttParm->nCritLoud
 			|| pUttParm->nMaxChange != pSavedUttParm->nMaxChange
@@ -1774,34 +1772,34 @@ void CDlgKlattAll::OnKlattGetFrames(CFlexEditGrid &cGrid, int nFrameLengthInMs, 
 		DWORD dwStart = dwOffset > dwFrameLengthSamples/2 ? dwOffset - dwFrameLengthSamples/2 : 0;
 		DWORD dwEnd =  dwOffset + dwFrameLengthSamples/2 < dwDataLength ? dwOffset + dwFrameLengthSamples/2 : dwDataLength - 1;
 
-		if(dwStart && nFrameLengthInFrags)
+		if (dwStart && nFrameLengthInFrags)
 		{
 			DWORD dwOffsetIndex = pFragment->GetFragmentIndex(dwOffset);
 			DWORD dwStartIndex = pFragment->GetFragmentIndex(dwStart);
 
-			if(dwStartIndex + (nFrameLengthInFrags+1)/2 > dwOffsetIndex)
+			if (dwStartIndex + (nFrameLengthInFrags+1)/2 > dwOffsetIndex)
 			{
 				dwStartIndex = dwOffsetIndex > DWORD(nFrameLengthInFrags-1)/2 ? dwOffsetIndex - (nFrameLengthInFrags-1)/2 : 0;
 
 				FRAG_PARMS stFragment = pFragment->GetFragmentParms(dwStartIndex);
 
-				if(dwStart > stFragment.dwOffset)
+				if (dwStart > stFragment.dwOffset)
 					dwStart = stFragment.dwOffset;
 			}
 		}
 
-		if(nFrameLengthInFrags)
+		if (nFrameLengthInFrags)
 		{
 			DWORD dwOffsetIndex = pFragment->GetFragmentIndex(dwOffset);
 			DWORD dwEndIndex = pFragment->GetFragmentIndex(dwEnd);
 
-			if(dwOffsetIndex + (nFrameLengthInFrags+1)/2 > dwEndIndex)
+			if (dwOffsetIndex + (nFrameLengthInFrags+1)/2 > dwEndIndex)
 			{
 				dwEndIndex = dwOffsetIndex + (nFrameLengthInFrags-1)/2 < dwLastFragmentIndex ? dwOffsetIndex + (nFrameLengthInFrags-1)/2 : dwLastFragmentIndex;
 
 				FRAG_PARMS stFragment = pFragment->GetFragmentParms(dwEndIndex);
 
-				if(dwEnd < stFragment.dwOffset + stFragment.wLength - 1)
+				if (dwEnd < stFragment.dwOffset + stFragment.wLength - 1)
 					dwEnd = stFragment.dwOffset + stFragment.wLength - 1;
 			}
 		}
@@ -1813,15 +1811,15 @@ void CDlgKlattAll::OnKlattGetFrames(CFlexEditGrid &cGrid, int nFrameLengthInMs, 
 		dwPrev = dwOffset;
 		dwOffset += dwSamplesPerFrame;
 
-		if(nFrameIntervalInFrags)
+		if (nFrameIntervalInFrags)
 		{
 			DWORD dwFragmentIndex = pFragment->GetFragmentIndex(dwPrev);
-			if(dwFragmentIndex == dwLastFragmentIndex)
+			if (dwFragmentIndex == dwLastFragmentIndex)
 				break;
 
 			FRAG_PARMS stFragment = pFragment->GetFragmentParms(dwFragmentIndex);
 
-			if(dwOffset < stFragment.dwOffset + stFragment.wLength)
+			if (dwOffset < stFragment.dwOffset + stFragment.wLength)
 			{
 				dwOffset = stFragment.dwOffset + stFragment.wLength;
 			}
@@ -1839,10 +1837,10 @@ void CDlgKlattAll::OnKlattGetFrames(CFlexEditGrid &cGrid, int nFrameLengthInMs, 
 	}
 
 	// Get rid of smoothed pitch data so it doesn't interfere with an existing graph
-	if(bPitch)
+	if (bPitch)
 		pDoc->GetSmoothedPitch()->SetDataInvalid();
 
-	if(bTempTranscription)
+	if (bTempTranscription)
 		pPhonetic->DeleteContents();
 }
 
@@ -1880,14 +1878,14 @@ void CDlgKlattAll::OnKlattApplyIpaDefaults(CFlexEditGrid &cGrid)
 	{
 		CString ipa = cGrid.GetTextMatrix(rowIpa,column);
 		CString szPitch = cGrid.GetTextMatrix(rowF0,column);
-		if(ipa.GetLength())
+		if (ipa.GetLength())
 		{
 			CIpaCharMap::const_iterator pParm = pMap->find(ipa);
 
-			if(pParm == pMap->end())
+			if (pParm == pMap->end())
 				pParm = pMap->find("undefined");
 
-			if(pParm != pMap->end())
+			if (pParm != pMap->end())
 			{
 				bFound = TRUE;
 
@@ -1895,10 +1893,10 @@ void CDlgKlattAll::OnKlattApplyIpaDefaults(CFlexEditGrid &cGrid)
 
 				PopulateParameterGrid(cGrid, pTemporal, column);
 			}
-			if(m_bPitch)
+			if (m_bPitch)
 			{
 				bFound = TRUE;
-				if(szPitch.IsEmpty()) szPitch = "0";
+				if (szPitch.IsEmpty()) szPitch = "0";
 				cGrid.SetTextMatrix(rowF0,column, szPitch);
 			}
 		}
@@ -2018,7 +2016,7 @@ void CDlgKlattAll::OnKlattBlendSegments(int nSrc, CFlexEditGrid &cGrid)
 
 	for(unsigned int nIndex = 0; nIndex < cSegments.size(); nIndex++)
 	{
-		if(cSegments[nIndex].parameters.AH == 0. &&
+		if (cSegments[nIndex].parameters.AH == 0. &&
 			cSegments[nIndex].parameters.AF == 0. &&
 			(cSegments[nIndex].parameters.AV == 0. || cSegments[nIndex].parameters.F0 == 0.))
 		{
@@ -2080,15 +2078,15 @@ void CDlgKlattAll::OnKlattBlendSegments(int nSrc, CFlexEditGrid &cGrid)
 	CString szPrevious;
 	for(unsigned int nIndex = 0; nIndex < cInterpolated.size(); nIndex++)
 	{
-		if(szPrevious != cInterpolated[nIndex].ipa)
+		if (szPrevious != cInterpolated[nIndex].ipa)
 		{
 			dBreakPoint = nIndex - 0.5;
 			szPrevious = cInterpolated[nIndex].ipa;
 		}
 
-		if(cInterpolated[nIndex].duration == 0)
+		if (cInterpolated[nIndex].duration == 0)
 		{
-			if(dBreakPoint >= nLastMarker && nIndex)
+			if (dBreakPoint >= nLastMarker && nIndex)
 			{
 				// Interpolate between markers
 				Interpolate(cInterpolated, nLastMarker, dBreakPoint, nIndex);
@@ -2104,7 +2102,7 @@ void CDlgKlattAll::OnKlattBlendSegments(int nSrc, CFlexEditGrid &cGrid)
 
 		CSaApp* pApp = (CSaApp*)AfxGetApp();
 		CSaDoc* pDoc = (CSaDoc*)pApp->IsFileOpened(szFilename);
-		if(!pDoc) return;
+		if (!pDoc) return;
 
 		enum {PITCH, CALCULATIONS};
 		double fSizeFactor[CALCULATIONS];
@@ -2128,7 +2126,7 @@ void CDlgKlattAll::OnKlattBlendSegments(int nSrc, CFlexEditGrid &cGrid)
 			pUttParm->nMaxChange = 10;
 			pUttParm->nMinGroup = 6;
 			pUttParm->nMaxInterp = 7;
-			if(pUttParm->nMinFreq != pSavedUttParm->nMinFreq
+			if (pUttParm->nMinFreq != pSavedUttParm->nMinFreq
 				|| pUttParm->nMaxFreq != pSavedUttParm->nMaxFreq
 				|| pUttParm->nCritLoud != pSavedUttParm->nCritLoud
 				|| pUttParm->nMaxChange != pSavedUttParm->nMaxChange
@@ -2150,14 +2148,14 @@ void CDlgKlattAll::OnKlattBlendSegments(int nSrc, CFlexEditGrid &cGrid)
 		// construct table entries
 		for(unsigned int nIndex = 0; nIndex < cInterpolated.size(); nIndex++)
 		{
-			if(bPitch && cInterpolated[nIndex].duration)
+			if (bPitch && cInterpolated[nIndex].duration)
 			{
 				double offset;
 				double slope;
 
 				CurveFitPitch(pDoc, fSizeFactor[PITCH], nTime,
 					(nTime + cInterpolated[nIndex].duration), &offset, &slope);
-				if(offset > 0)
+				if (offset > 0)
 				{
 					offset += slope*(cInterpolated[nIndex].duration)/2.;
 					cInterpolated[nIndex].parameters.F0 = offset;
@@ -2198,7 +2196,7 @@ void CDlgKlattAll::OnFileOpen()
 		CString szExt(dlg.GetFileExt());
 		szExt.MakeUpper();
 		m_cGrid[m_nSelectedView].ClearRange(rowFirst, columnFirst, rowATV, m_cGrid[m_nSelectedView].GetCols(0) - 1);
-		if(szExt == "GRD")
+		if (szExt == "GRD")
 			m_cGrid[m_nSelectedView].LoadRange(0, 0, szData, FALSE);
 		else
 			m_cGrid[m_nSelectedView].LoadRange(rowFirst, columnFirst, szData, TRUE);
@@ -2220,7 +2218,7 @@ void CDlgKlattAll::OnFileSaveAs()
 		CString szData;
 		CString szExt(dlg.GetFileExt());
 		szExt.MakeUpper();
-		if(szExt == "GRD")
+		if (szExt == "GRD")
 		{
 			// skip column numbers since they number entire grid, we need size of user area
 			szData = m_cGrid[m_nSelectedView].SaveRange(rowFirst, 0, m_cGrid[m_nSelectedView].GetRows(), m_cGrid[m_nSelectedView].GetCols(0), FALSE);
@@ -2229,13 +2227,13 @@ void CDlgKlattAll::OnFileSaveAs()
 
 			for(int i = 0; i < szData.GetLength(); i++)
 			{
-				if(szData[i] == _T('\t'))
+				if (szData[i] == _T('\t'))
 				{
 					nColumns++;
-					if(nColumns > nColumnsMax)
+					if (nColumns > nColumnsMax)
 						nColumnsMax = nColumns;
 				}
-				else if(szData[i] == _T('\n'))
+				else if (szData[i] == _T('\n'))
 					nColumns = 1;
 			}
 			szData = m_cGrid[m_nSelectedView].SaveRange(0, 0, m_cGrid[m_nSelectedView].GetRows(), nColumnsMax, FALSE);
@@ -2259,7 +2257,7 @@ static double NextValue(const TCHAR * szString,unsigned &uIndex)
 		szField += szString[uIndex];
 		uIndex++;
 	}
-	if(!szString[uIndex]) return NEXTVALUE_ERROR;
+	if (!szString[uIndex]) return NEXTVALUE_ERROR;
 	swscanf_s(szField,_T("%lf"),&iReturn);
 	uIndex++;  // skip field delimiter
 
@@ -2273,7 +2271,7 @@ void CDlgKlattAll::OnSmoothe(void)
 	for(register int cRow = rowF0; cRow<rowA8V; ++cRow)
 	{
 		CString szData = m_cGrid[m_nSelectedView].SaveRange(cRow, columnFirst, cRow+1, m_cGrid[m_nSelectedView].GetCols(0), TRUE);
-		if(!szData.GetLength())
+		if (!szData.GetLength())
 			continue;
 
 		unsigned iData = (unsigned) szData.GetLength();
@@ -2282,13 +2280,13 @@ void CDlgKlattAll::OnSmoothe(void)
 		double iValue[4] = {0,0,0,0};
 
 		iValue[0] = NextValue((LPCTSTR)szData,uIndex);
-		if(iValue[0]== NEXTVALUE_ERROR) return;
+		if (iValue[0]== NEXTVALUE_ERROR) return;
 		iValue[1] = NextValue((LPCTSTR)szData,uIndex);
-		if(iValue[1]== NEXTVALUE_ERROR) return;
+		if (iValue[1]== NEXTVALUE_ERROR) return;
 		iValue[2] = NextValue((LPCTSTR)szData,uIndex);
-		if(iValue[2]== NEXTVALUE_ERROR) return;
+		if (iValue[2]== NEXTVALUE_ERROR) return;
 		iValue[3] = NextValue((LPCTSTR)szData,uIndex);
-		if(iValue[3]== NEXTVALUE_ERROR) return;
+		if (iValue[3]== NEXTVALUE_ERROR) return;
 
 		CString szOutstring = "";
 		char szNumber[100];
@@ -2299,7 +2297,7 @@ void CDlgKlattAll::OnSmoothe(void)
 			// make next value 1/2 way to the following one
 #define ABdistance() fabs(iValue[0]-iValue[1])
 #define ACdistance() fabs(iValue[0]-iValue[2])
-			if( ACdistance()*2<ABdistance())
+			if ( ACdistance()*2<ABdistance())
 			{
 				iValue[1] = iValue[0] - ((iValue[0]-iValue[2]) / 2);
 			}
@@ -2313,7 +2311,7 @@ void CDlgKlattAll::OnSmoothe(void)
 			iValue[2] = iValue[3];
 			iValue[3] = NextValue(szData,uIndex);
 
-			if(iValue[3] == NEXTVALUE_ERROR) // finished, output stored values
+			if (iValue[3] == NEXTVALUE_ERROR) // finished, output stored values
 			{
 				_gcvt_s(szNumber,_countof(szNumber),iValue[0],6);
 				szOutstring += szNumber;
@@ -2414,7 +2412,7 @@ void CDlgKlattAll::LabelDocument(CSaDoc* pDoc)
 // synthesized wave file by a scale factor (2x currently)
 void CDlgKlattAll::OnKlattElongate() 
 {
-	if(m_dTimeScale <= 1.0)
+	if (m_dTimeScale <= 1.0)
 		m_dTimeScale = 2.0;
 	else
 		m_dTimeScale = 1.0;
@@ -2490,7 +2488,7 @@ static const CString extractTabField(const CString& szLine, const int nField)
 
 	while((nLoop < szLine.GetLength()) && (nCount < nField))
 	{
-		if(szLine[nLoop] == '\t')
+		if (szLine[nLoop] == '\t')
 			nCount++;
 		nLoop++;
 	}
@@ -2523,7 +2521,7 @@ void CIpaCharVector::Load(CString szPath)
 	{
 		TEMPORAL cTemporal;
 
-		if(line[0] == '#') // skip comments
+		if (line[0] == '#') // skip comments
 			continue; 
 
 		for(int i=0;parameterInfo[i].parameterOffset != -1; i++)
@@ -2549,7 +2547,7 @@ void CIpaCharVector::Save(CString szPath)
 	CFile file;
 
 	UINT nSuccess = file.Open(szPath,CFile::modeWrite | CFile::modeCreate | CFile::shareDenyWrite);
-	if(!nSuccess)
+	if (!nSuccess)
 	{ 
 		//MsgBox(GetDesktopWindow(), "Could not open IpaDefaults.txt. Check Read-Only status.", "IPADefaults", MB_OK);
 		::MessageBox(::GetDesktopWindow(),_T("Could not open IpaDefaults.txt.\n    Check Read-Only status."),
@@ -2571,7 +2569,7 @@ void CIpaCharVector::Save(CString szPath)
 		for(int i=0;parameterInfo[i].parameterOffset != -1; i++)
 		{
 			CString value;
-			if(parameterInfo[i].typeScanf[1] != 'd')
+			if (parameterInfo[i].typeScanf[1] != 'd')
 				value.Format(parameterInfo[i].typeScanf, *(Float*)(((char*)pTemporal)+parameterInfo[i].parameterOffset));
 			else
 				value.Format(parameterInfo[i].typeScanf, *(int*)(((char*)pTemporal)+parameterInfo[i].parameterOffset));
@@ -2651,7 +2649,7 @@ void CDlgKlattAll::OnAdjustCells()
 {
 	CDlgSynthesisAdjustCells dlg;
 
-	if(dlg.DoModal() == IDOK)
+	if (dlg.DoModal() == IDOK)
 	{
 		long rowEnd = m_cGrid[m_nSelectedView].GetRowSel();
 		long colEnd = m_cGrid[m_nSelectedView].GetColSel();
@@ -2665,7 +2663,7 @@ void CDlgKlattAll::OnAdjustCells()
 				CString szValue = m_cGrid[m_nSelectedView].GetTextMatrix(y, x);
 				double value;
 
-				if(!szValue.IsEmpty() && swscanf_s(szValue, _T("%lf"), &value))
+				if (!szValue.IsEmpty() && swscanf_s(szValue, _T("%lf"), &value))
 				{
 					CString szNewValue;
 					szNewValue.Format(_T("%.5g"), dlg.m_dScale*value + dlg.m_dOffset);

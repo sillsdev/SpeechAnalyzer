@@ -82,7 +82,7 @@ long CProcessZCross::Process(void* pCaller, ISaDoc* pDoc, int nProgress,
 
     // start zero crossing process
     BeginWaitCursor(); // wait cursor
-    if(!StartProcess(pCaller, IDS_STATTXT_PROCESSZCR)) // memory allocation failed
+    if (!StartProcess(pCaller, IDS_STATTXT_PROCESSZCR)) // memory allocation failed
     { 
       EndProcess(); // end data processing
       EndWaitCursor();

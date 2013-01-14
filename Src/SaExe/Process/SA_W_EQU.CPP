@@ -110,7 +110,7 @@ long CProcessWbEquation::Process(void* pCaller, ISaDoc* pDoc, int nProgress,
 
 	// start process
 	BeginWaitCursor(); // wait cursor
-	if(!StartProcess(pCaller, IDS_STATTXT_PROCESSWBEQU)) // memory allocation failed
+	if (!StartProcess(pCaller, IDS_STATTXT_PROCESSWBEQU)) // memory allocation failed
 	{
 		EndProcess(); // end data processing
 		EndWaitCursor();

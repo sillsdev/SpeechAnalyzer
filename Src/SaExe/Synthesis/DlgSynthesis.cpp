@@ -62,7 +62,7 @@ CDlgSynthesis::CDlgSynthesis(LPCTSTR pszCaption, CWnd* pParent, UINT iSelectPage
 /***************************************************************************/
 CDlgSynthesis::~CDlgSynthesis()
 {
-  if(m_pDlgMbrolaPage) delete m_pDlgMbrolaPage;
+  if (m_pDlgMbrolaPage) delete m_pDlgMbrolaPage;
 }
 
 
@@ -96,7 +96,7 @@ BOOL CDlgSynthesis::OnInitDialog()
 
     CRect newRect(0,0,75,23);
     CWnd *pWnd = GetDlgItem(IDOK);
-    if(pWnd)
+    if (pWnd)
     {
       pWnd->GetWindowRect(newRect);
       // this button is already on the form, but MFC has hidden and disabled it

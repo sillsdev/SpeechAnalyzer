@@ -123,7 +123,7 @@ DspWin::CWindowParms DspWin::WindowParms(int32 windowType)
 
 void DspWin::Build()
 {
-  if(m_bWindowBuilt)
+  if (m_bWindowBuilt)
     return;
 
   CWindowParms window = WindowParms(m_windowType);

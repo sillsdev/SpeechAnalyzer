@@ -76,7 +76,7 @@ void CProcessSpectrogram::SetSpectroParm(const SpectroParm& cSpectroParm)
   ISaDoc *pDoc = GetDocument();
   
   // Clip frequency limit to Nyquist limit
-  if(m_SpectroParm.nFrequency >= int(pDoc->GetFmtParm()->dwSamplesPerSec/2))
+  if (m_SpectroParm.nFrequency >= int(pDoc->GetFmtParm()->dwSamplesPerSec/2))
     m_SpectroParm.nFrequency = pDoc->GetFmtParm()->dwSamplesPerSec/2 - 1;    
 }
 
@@ -109,12 +109,12 @@ long CProcessSpectrogram::Process(void* pCaller, ISaDoc* pDoc, CSaView *pView, i
   FmtParm* pFmtParm = pDoc->GetFmtParm(); // get sa parameters format member data
   WORD wSmpSize = (WORD)(pFmtParm->wBlockAlign / pFmtParm->wChannels);
   // check canceled
-  if(IsCanceled())
+  if (IsCanceled())
     return MAKELONG(PROCESS_CANCELED, nProgress); // process canceled
   // get area boundaries
   BOOL bRealTime = m_bRealTime;
   DWORD dwDataStart, dwDataLength;
-  if(IsStatusFlag(KEEP_AREA))
+  if (IsStatusFlag(KEEP_AREA))
   {
     // old boundaries are to keep
     SetStatusFlag(KEEP_AREA, FALSE);
@@ -128,28 +128,28 @@ long CProcessSpectrogram::Process(void* pCaller, ISaDoc* pDoc, CSaView *pView, i
     dwDataLength = pView->GetDataFrame(); // number of data points to display
   }
   // check if data ready
-  if(IsDataReady())
+  if (IsDataReady())
   {
-    if(!bRealTime)
+    if (!bRealTime)
       return MAKELONG(--nLevel, nProgress);
     
     BOOL bNeedMaxResolution = TRUE;
-    if(!bNeedMaxResolution || IsStatusFlag(MAX_RESOLUTION))
+    if (!bNeedMaxResolution || IsStatusFlag(MAX_RESOLUTION))
     {
-      if(GetAreaPosition() <= dwDataStart)
-        if(GetAreaPosition() + GetAreaLength() >= dwDataStart + dwDataLength)
+      if (GetAreaPosition() <= dwDataStart)
+        if (GetAreaPosition() + GetAreaLength() >= dwDataStart + dwDataLength)
           return MAKELONG(--nLevel, nProgress);
     }
   }
   BeginWaitCursor(); // wait cursor
-  if(!StartProcess(pCaller, IDS_STATTXT_PROCESSSPG)) // memory allocation failed
+  if (!StartProcess(pCaller, IDS_STATTXT_PROCESSSPG)) // memory allocation failed
   {
     EndProcess(); // end data processing
     EndWaitCursor();
     return MAKELONG(PROCESS_ERROR, nProgress);
   }
   
-  if(!CreateTempFile(_T("SPG"))) // creating error
+  if (!CreateTempFile(_T("SPG"))) // creating error
   { 
     EndProcess(); // end data processing
     EndWaitCursor();
@@ -173,7 +173,7 @@ long CProcessSpectrogram::Process(void* pCaller, ISaDoc* pDoc, CSaView *pView, i
     int minSpectraInterval = 
       wSmpSize*(NyquistSpectraInterval(pFmtParm->dwSamplesPerSec)/2 + 1);
     BOOL bRealTime = m_bRealTime;
-    if(!bRealTime)
+    if (!bRealTime)
     {
       // Increase Resolution for high quality snapshot
       int maxWidth = (dwDataLength / minSpectraInterval + 1)*4;
@@ -216,7 +216,7 @@ long CProcessSpectrogram::Process(void* pCaller, ISaDoc* pDoc, CSaView *pView, i
   
   // Spectrogram class will choke if it gets too much data in one batch.
   DWORD dwWidth = (DWORD) floor((GetProcessBufferSize() - 2*wHalfCalcWindow)/ wSmpSize / fSpectraInterval);
-  if(dwWidth > ((DWORD)nWidth / 5))
+  if (dwWidth > ((DWORD)nWidth / 5))
     dwWidth = nWidth / 5;
   
   SpgmSetting.SpectBatchLength = (USHORT)(dwWidth & ~1);  // must be even ?
@@ -237,7 +237,7 @@ long CProcessSpectrogram::Process(void* pCaller, ISaDoc* pDoc, CSaView *pView, i
     DWORD dwDataPos = dwDataStart + round(wLoop*fSpectraInterval)*wSmpSize;
     DWORD dwBufferStart = 0;
     
-    if(dwDataPos > (DWORD)wHalfCalcWindow)
+    if (dwDataPos > (DWORD)wHalfCalcWindow)
       dwBufferStart = dwDataPos - (DWORD)wHalfCalcWindow;
 
     SpgmSetting.SigBlkOffset = (dwDataPos - dwBufferStart) / nBlockAlign;         
@@ -245,7 +245,7 @@ long CProcessSpectrogram::Process(void* pCaller, ISaDoc* pDoc, CSaView *pView, i
 
     DWORD dwBufferLength = (DWORD) ceil((SpgmSetting.SpectBatchLength)*wSmpSize*fSpectraInterval) + (DWORD)2*wHalfCalcWindow + wSmpSize;
 
-    if((dwBufferStart + dwBufferLength) > pDoc->GetDataSize())
+    if ((dwBufferStart + dwBufferLength) > pDoc->GetDataSize())
     {
       dwBufferLength = pDoc->GetDataSize() - dwBufferStart;
       SpgmSetting.SpectBatchLength = USHORT(nWidth - wLoop);
@@ -256,24 +256,24 @@ long CProcessSpectrogram::Process(void* pCaller, ISaDoc* pDoc, CSaView *pView, i
     SpgmSetting.SpectCnt = SpgmSetting.SpectBatchLength;                             
 
     Err = Spectrogram::CreateObject(&pSpectrogram, SpgmSetting, Signal);  
-    if(Err)
+    if (Err)
       return Exit(PROCESS_ERROR); // error, setup failed
     
     int nXIndex = 0;
 
     dspError_t Status = pSpectrogram->Generate();
-    if(Status < DONE)
+    if (Status < DONE)
     {
       delete pSpectrogram; // delete the spectrogram object
       return Exit(PROCESS_ERROR); // error, process failed
     }
     // write the processed spectrogram data block into the temporary file
     int nBatchWidth = SpgmSetting.SpectBatchLength;
-    if((nWidth - wLoop) < nBatchWidth)
+    if ((nWidth - wLoop) < nBatchWidth)
       nBatchWidth = (nWidth - wLoop) & ~1; // must be even
     // set progress bar
     SetProgress(nProgress + (int)(100 * (DWORD)(wLoop + nBatchWidth) / nWidth / (DWORD)nLevel));
-    if(IsCanceled())
+    if (IsCanceled())
     {
       // spectrogram canceled
       delete pSpectrogram; // delete the spectrogram object
@@ -285,7 +285,7 @@ long CProcessSpectrogram::Process(void* pCaller, ISaDoc* pDoc, CSaView *pView, i
       {
         dspError_t err;
         uint8 * pPower = pSpectrogram->ReadPowerSlice(&err, (WORD)nXIndex++);
-        if(!pPower)
+        if (!pPower)
         { 
           delete pSpectrogram; // delete the spectrogram object
           return Exit(PROCESS_ERROR); // error, writing failed

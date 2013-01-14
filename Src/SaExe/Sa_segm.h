@@ -196,8 +196,7 @@ public:
 	void AdjustCursorsToMaster(CDocument* pSaDoc, BOOL bAdjust = TRUE, DWORD* pdwOffset = NULL, DWORD* pdwStop = NULL) const; // adjust cursors to the nearest phonetic segment to the given position SDM 1.06.1.2 Added function
 	int AdjustPositionToMaster(CDocument* pSaDoc, DWORD& pdwOffset, DWORD& pdwStop) const;
 	int CheckPositionToMaster(CSaDoc*,DWORD dwStart,DWORD dwStop, int nMode) const;
-	virtual int  CheckPosition(CSaDoc* pDoc, DWORD dwStart, DWORD dwStop, int nMode=MODE_AUTOMATIC, BOOL /*bUnused*/=TRUE) const
-		{ return CheckPositionToMaster(pDoc, dwStart, dwStop, nMode);};
+	virtual int CheckPosition(CSaDoc* pDoc, DWORD dwStart, DWORD dwStop, int nMode=MODE_AUTOMATIC, BOOL /*bUnused*/=TRUE) const;
 	virtual void LimitPosition(CSaDoc*,DWORD& dwStart,DWORD& dwStop, int nMode=LIMIT_MOVING_BOTH) const;
 	virtual void Add(CSaDoc* pDoc, DWORD dwStart, CSaString& szString, BOOL bDelimiter = FALSE, BOOL bCheck = TRUE); // add a segment
 };

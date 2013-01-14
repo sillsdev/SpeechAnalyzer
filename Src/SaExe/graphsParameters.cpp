@@ -262,7 +262,7 @@ void CDlgParametersPitchPage::Apply()
 		pPitchParm->nUpperBound = m_nUpperBound;
 		pPitchParm->nLowerBound = m_nLowerBound;
 		pPitchParm->nRangeMode = m_nPitchRange;
-		if(m_nPitchRange)
+		if (m_nPitchRange)
 		{
 			CMainFrame* pMainFrame = (CMainFrame*)AfxGetMainWnd();
 			ASSERT(pMainFrame->IsKindOf(RUNTIME_CLASS(CMainFrame)));
@@ -383,7 +383,7 @@ BOOL CDlgParametersPitchPage::OnInitDialog()
 	// Enable manual analysis control for custom or smooth pitch graphs.
 	UINT nFocusedID = pView->GetFocusedGraphID();
 
-	if(nFocusedID != IDD_CEPPITCH && nFocusedID != IDD_SMPITCH
+	if (nFocusedID != IDD_CEPPITCH && nFocusedID != IDD_SMPITCH
 		&& nFocusedID != IDD_CHPITCH && nFocusedID != IDD_PITCH)
 	{
 		GetDlgItem(IDC_PITCH_MANUAL_GROUP)->EnableWindow(FALSE);
@@ -402,7 +402,7 @@ BOOL CDlgParametersPitchPage::OnInitDialog()
 		GetDlgItem(IDC_PITCH_MANUAL_DEFAULT_APP)->EnableWindow(FALSE);
 	}
 
-	if(nFocusedID != IDD_CEPPITCH && nFocusedID != IDD_SMPITCH && nFocusedID != IDD_CHPITCH)
+	if (nFocusedID != IDD_CEPPITCH && nFocusedID != IDD_SMPITCH && nFocusedID != IDD_CHPITCH)
 	{
 		GetDlgItem(IDC_PITCH_CHANGETXT)->EnableWindow(FALSE);
 		GetDlgItem(IDC_PITCH_CHANGE)->EnableWindow(FALSE);
@@ -861,7 +861,7 @@ void CDlgParametersPitchPage::OnRange()
 	int nOldPitchRange = m_nPitchRange;
 	UpdateData(TRUE);
 
-	if(nOldPitchRange == m_nPitchRange)
+	if (nOldPitchRange == m_nPitchRange)
 		return;  // no change
 
 	if (!m_nPitchRange)
@@ -975,7 +975,7 @@ void CDlgParametersPitchPage::OnPitchManualDefault(BOOL bAppDefaults)
 	CSaDoc* pDoc = (CSaDoc*)pView->GetDocument();
 	// get format parameters
 	FmtParm* pFmtParm = pDoc->GetFmtParm();
-	if(bAppDefaults)
+	if (bAppDefaults)
 	{
 		// initialize utterance parameters
 		pUttParm->Init(pFmtParm->wBitsPerSample);
@@ -2309,7 +2309,7 @@ void CDlgParametersFormantsPage::OnFormantVowelsEdit()
 
 	CDlgVowelFormants cEdit(GetVowelSets()[m_cVowelSet.GetCurSel()], this);
 
-	if(cEdit.DoModal() == IDOK) // Edited
+	if (cEdit.DoModal() == IDOK) // Edited
 	{
 		PopulateVowelSetCombo(m_cVowelSet);
 
@@ -2947,7 +2947,7 @@ void CDlgParametersMusicPage::OnRange()
 	int nOldRange = m_nRange;
 	UpdateData(TRUE);
 
-	if(nOldRange == m_nRange)
+	if (nOldRange == m_nRange)
 		return;  // no change
 
 	if (!m_nRange)
@@ -3103,7 +3103,7 @@ void CDlgParametersMusicPage::OnCalcRange()
 	int nOldRange = m_nCalcRange;
 	UpdateData(TRUE);
 
-	if(nOldRange == m_nCalcRange)
+	if (nOldRange == m_nCalcRange)
 		return;  // no change
 
 	if (!m_nCalcRange)
@@ -3168,7 +3168,7 @@ void CDlgParametersMusicPage::Apply()
 		pParm->nUpperBound = m_nUpperBound;
 		pParm->nLowerBound = m_nLowerBound;
 		pParm->nRangeMode = m_nRange;
-		if(m_nRange)
+		if (m_nRange)
 		{
 			CMainFrame* pMainFrame = (CMainFrame*)AfxGetMainWnd();
 			ASSERT(pMainFrame->IsKindOf(RUNTIME_CLASS(CMainFrame)));
@@ -3181,7 +3181,7 @@ void CDlgParametersMusicPage::Apply()
 		pParm->nCalcLowerBound = m_nCalcLowerBound;
 		pParm->nCalcRangeMode = m_nCalcRange;
 		pDoc->SetMusicParm(cParm);
-		if(m_nCalcRange)
+		if (m_nCalcRange)
 		{
 			CMainFrame* pMainFrame = (CMainFrame*)AfxGetMainWnd();
 			ASSERT(pMainFrame->IsKindOf(RUNTIME_CLASS(CMainFrame)));
@@ -3342,7 +3342,7 @@ BOOL CDlgParametersResearchPage::OnInitDialog()
 		szString.Format(_T("%d"), researchSmoothSettings[i]);
 		m_cSmooth.AddString(szString);
 
-		if(researchSmoothSettings[i] == ResearchSettings.m_nLpcCepstralSmooth)
+		if (researchSmoothSettings[i] == ResearchSettings.m_nLpcCepstralSmooth)
 			nSelect = i;
 	}
 	m_cSmooth.SetCurSel(nSelect);
@@ -3379,7 +3379,7 @@ void CDlgParametersResearchPage::Apply()
 			(ResearchSettings.m_nLpcCepstralSharp != m_workingSettings.m_nLpcCepstralSharp ||
 			ResearchSettings.m_nLpcCepstralSmooth != m_workingSettings.m_nLpcCepstralSmooth));
 
-		if(bSpectrumSettingsChanged)
+		if (bSpectrumSettingsChanged)
 		{
 			pDoc->GetSpectrogram(TRUE)->GetFormantProcess()->SetDataInvalid();
 			CProcessSpectrum* pSpectrum = pDoc->GetSpectrum();
@@ -3633,7 +3633,7 @@ CDlgGraphsParameters::CDlgGraphsParameters(LPCTSTR pszCaption, CWnd* pParent)
 	{
 		AddPage(&m_dlgRawdataPage);
 
-		if(nFocusedID == IDD_RAWDATA || nFocusedID == IDD_MAGNITUDE || nFocusedID == IDD_RECORDING)
+		if (nFocusedID == IDD_RAWDATA || nFocusedID == IDD_MAGNITUDE || nFocusedID == IDD_RECORDING)
 			nPage = GetPageCount() - 1;
 	}
 
@@ -3643,7 +3643,7 @@ CDlgGraphsParameters::CDlgGraphsParameters(LPCTSTR pszCaption, CWnd* pParent)
 	{
 		AddPage(&m_dlgPitchPage);
 
-		if(nFocusedID == IDD_CEPPITCH || nFocusedID == IDD_GRAPITCH || nFocusedID == IDD_SMPITCH
+		if (nFocusedID == IDD_CEPPITCH || nFocusedID == IDD_GRAPITCH || nFocusedID == IDD_SMPITCH
 			|| nFocusedID == IDD_CHPITCH || nFocusedID == IDD_PITCH)
 		{
 			nPage = GetPageCount() - 1;
@@ -3655,7 +3655,7 @@ CDlgGraphsParameters::CDlgGraphsParameters(LPCTSTR pszCaption, CWnd* pParent)
 		m_pDlgSpectrogramPage = new CDlgParametersSpectroPage(IDS_TABTITLE_SPECTROGRAM,
 			IDD_SPECTROGRAM, pMainWnd->GetSpectrogramParmDefaults());
 		AddPage(m_pDlgSpectrogramPage);
-		if(nFocusedID == IDD_SPECTROGRAM)
+		if (nFocusedID == IDD_SPECTROGRAM)
 			nPage = GetPageCount() - 1;
 	}
 
@@ -3665,7 +3665,7 @@ CDlgGraphsParameters::CDlgGraphsParameters(LPCTSTR pszCaption, CWnd* pParent)
 		m_pDlgSnapshotPage = new CDlgParametersSpectroPage(IDS_TABTITLE_SNAPSHOT,
 			IDD_SNAPSHOT, pMainWnd->GetSnapshotParmDefaults());
 		AddPage(m_pDlgSnapshotPage);
-		if(nFocusedID == IDD_SNAPSHOT)
+		if (nFocusedID == IDD_SNAPSHOT)
 			nPage = GetPageCount() - 1;
 	}
 
@@ -3673,7 +3673,7 @@ CDlgGraphsParameters::CDlgGraphsParameters(LPCTSTR pszCaption, CWnd* pParent)
 	if (pView->GetGraphIndexForIDD(IDD_SPECTRUM) >= 0)
 	{
 		AddPage(&m_dlgSpectrumPage);
-		if(nFocusedID == IDD_SPECTRUM)
+		if (nFocusedID == IDD_SPECTRUM)
 			nPage = GetPageCount() - 1;
 	}
 
@@ -3685,7 +3685,7 @@ CDlgGraphsParameters::CDlgGraphsParameters(LPCTSTR pszCaption, CWnd* pParent)
 		AddPage(&m_dlgFormantsPage);
 		m_dlgFormantsPage.m_bAccess = EXPERIMENTAL_ACCESS;
 
-		if(nFocusedID == IDD_F1F2 || nFocusedID == IDD_F2F1 || nFocusedID == IDD_F2F1F1 || nFocusedID == IDD_3D)
+		if (nFocusedID == IDD_F1F2 || nFocusedID == IDD_F2F1 || nFocusedID == IDD_F2F1F1 || nFocusedID == IDD_3D)
 			nPage = GetPageCount() - 1;
 	}
 
@@ -3694,7 +3694,7 @@ CDlgGraphsParameters::CDlgGraphsParameters(LPCTSTR pszCaption, CWnd* pParent)
 	{
 		AddPage(&m_dlgSDPPage);
 
-		if(nFocusedID == IDD_SDP_A || nFocusedID == IDD_SDP_B || nFocusedID == IDD_INVSDP)
+		if (nFocusedID == IDD_SDP_A || nFocusedID == IDD_SDP_B || nFocusedID == IDD_INVSDP)
 			nPage = GetPageCount() - 1;
 	}
 
@@ -3703,7 +3703,7 @@ CDlgGraphsParameters::CDlgGraphsParameters(LPCTSTR pszCaption, CWnd* pParent)
 	{
 		AddPage(&m_dlgMusicPage);
 
-		if(nFocusedID == IDD_MELOGRAM || nFocusedID == IDD_TWC)
+		if (nFocusedID == IDD_MELOGRAM || nFocusedID == IDD_TWC)
 			nPage = GetPageCount() - 1;
 	}
 
@@ -3712,7 +3712,7 @@ CDlgGraphsParameters::CDlgGraphsParameters(LPCTSTR pszCaption, CWnd* pParent)
 	{
 		AddPage(&m_dlgIntensityPage);
 
-		if(nFocusedID == IDD_LOUDNESS)
+		if (nFocusedID == IDD_LOUDNESS)
 			nPage = GetPageCount() - 1;
 	}
 

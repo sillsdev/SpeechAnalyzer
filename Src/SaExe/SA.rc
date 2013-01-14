@@ -26,7 +26,7 @@ LANGUAGE LANG_NEUTRAL, SUBLANG_NEUTRAL
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 3,1,0,21
+ FILEVERSION 3,1,0,22
  PRODUCTVERSION 1,0,0,1
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
@@ -44,7 +44,7 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "SIL International"
             VALUE "FileDescription", "SA"
-            VALUE "FileVersion", "v3.1.0.21"
+            VALUE "FileVersion", "v3.1.0.22"
             VALUE "InternalName", "SA"
             VALUE "LegalCopyright", "© 1996-2013 SIL International (MSEA)"
             VALUE "ProductName", "SA"
@@ -2145,30 +2145,31 @@ BEGIN
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,83,139,10
 END
 
-IDD_SPLIT DIALOGEX 0, 0, 262, 259
+IDD_SPLIT DIALOGEX 0, 0, 262, 267
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Split File"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
-    DEFPUSHBUTTON   "Split",IDOK,152,238,50,14
-    PUSHBUTTON      "Cancel",IDCANCEL,205,238,50,14
-    COMBOBOX        IDC_SPLIT_WORD_CONVENTION,7,153,247,63,CBS_DROPDOWNLIST | WS_TABSTOP
+    DEFPUSHBUTTON   "Split",IDOK,152,246,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,205,246,50,14
+    COMBOBOX        IDC_SPLIT_WORD_CONVENTION,8,118,247,63,CBS_DROPDOWNLIST | WS_TABSTOP
     COMBOBOX        IDC_SPLIT_PHRASE_CONVENTION,7,189,247,63,CBS_DROPDOWNLIST | WS_TABSTOP
-    LTEXT           "Word Filename Convention",IDC_STATIC,7,143,247,8
-    LTEXT           "Phrase Filename Convention",IDC_STATIC,7,179,247,8
-    LTEXT           "Folder Name",IDC_STATIC,7,43,247,8
+    LTEXT           "Transcription Data Filename Convention",IDC_STATIC,8,107,247,8
+    LTEXT           "Folder Name",IDC_STATIC,7,42,247,8
     LTEXT           "Folder Location",IDC_STATIC,7,10,247,8
     EDITTEXT        IDC_SPLIT_FOLDER_LOCATION,7,21,195,14,ES_AUTOHSCROLL | WS_DISABLED
     EDITTEXT        IDC_SPLIT_FOLDER_NAME,7,53,247,14,ES_AUTOHSCROLL
-    EDITTEXT        IDC_SPLIT_PHRASE_SUBFOLDER_NAME,7,118,195,14,ES_AUTOHSCROLL | WS_DISABLED
-    EDITTEXT        IDC_SPLIT_WORD_SUBFOLDER_NAME,7,83,195,14,ES_AUTOHSCROLL | WS_DISABLED
+    EDITTEXT        IDC_SPLIT_PHRASE_SUBFOLDER_NAME,7,153,195,14,ES_AUTOHSCROLL | WS_DISABLED
+    EDITTEXT        IDC_SPLIT_WORD_SUBFOLDER_NAME,7,84,195,14,ES_AUTOHSCROLL | WS_DISABLED
     PUSHBUTTON      "Browse...",IDC_BROWSE_FOLDER,205,21,50,14
-    PUSHBUTTON      "Edit",IDC_EDIT_PHRASE_FOLDER,205,118,50,14
-    PUSHBUTTON      "Edit",IDC_EDIT_GLOSS_FOLDER,205,83,50,14
-    LTEXT           "Phrase Sub-Folder Name",IDC_STATIC,7,107,247,8
-    LTEXT           "Transcription Data Sub-Folder Name",IDC_STATIC,7,73,247,9
-    CONTROL         "Do not save segment when Word is empty.",IDC_CHECK_GLOSS_EMPTY,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,221,247,10
+    PUSHBUTTON      "Edit",IDC_EDIT_PHRASE_FOLDER,205,153,50,14
+    PUSHBUTTON      "Edit",IDC_EDIT_GLOSS_FOLDER,205,84,50,14
+    LTEXT           "Phrase Sub-Folder Name",IDC_STATIC,7,142,247,8
+    LTEXT           "Transcription Data Sub-Folder Name",IDC_STATIC,7,72,247,9
+    CONTROL         "Do not save segment when Word Gloss is empty.",IDC_CHECK_GLOSS_EMPTY,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,211,247,10
+    LTEXT           "Phrase Filename Prefix",IDC_STATIC,7,179,247,8
+    CONTROL         "Overwrite existing data.",IDC_CHECK_OVERWRITE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,226,94,10
 END
 
 IDD_MULTICHANNEL DIALOGEX 0, 0, 309, 79
@@ -2449,7 +2450,7 @@ BEGIN
         LEFTMARGIN, 7
         RIGHTMARGIN, 255
         TOPMARGIN, 7
-        BOTTOMMARGIN, 252
+        BOTTOMMARGIN, 260
     END
 
     IDD_MULTICHANNEL, DIALOG
@@ -4160,7 +4161,7 @@ STRINGTABLE
 BEGIN
     IDR_MAINFRAME           "Speech Analyzer"
     IDR_SA_ANNTYPE          "\nSA\nSA Document\nWAV Files (*.wav)\n.wav\nannFileType\nANN File Type"
-    VS_VERSION              "Version 3.1.0.21"
+    VS_VERSION              "Version 3.1.0.22"
     VS_COPYRIGHT            "© 1996-2013 SIL International (MSEA).\nAll Rights Reserved."
     IDR_SA_WBTYPE           "\nWB\nSA Workbench\nWB Files (*.wb)\n.wb\nwbFileType\nWB File Type"
 END
@@ -4271,7 +4272,7 @@ BEGIN
     ID_APP_ABOUT            "Display program information, version number and copyright\nAbout"
     ID_APP_EXIT             "Quit the application; prompts to save documents\nQuit"
     ID_HELP_INDEX           "List Help topics\nHelp Index"
-    ID_HELP_USING           "Display instructions about how to use help\nUsing Help"
+    ID_HELP_USING           "The '%1' directory already exists.\nClick OK to overwrite the existing data.\nClick CANCEL to cancel split file processing."
     ID_CONTEXT_HELP         "Display help for clicked on buttons, menus and windows\nContext Help"
     ID_HELP                 "Display help for current task or command"
 END
@@ -5105,7 +5106,7 @@ STRINGTABLE
 BEGIN
     IDS_GLOSS_EMPTY_ANNOTATION 
                             "The Gloss annotation for %1 segment %2 was empty.  The segment will not be saved because a filename get could not be generated."
-    IDS_SPLIT_COMPLETE      "The split is complete.  %1 segments were created."
+    IDS_SPLIT_COMPLETE      "The split is complete.  %1 files were created."
     IDS_CONFIRM_PHONEMIC_COPY 
                             "This process will delete the existing phonemic data.\nDo you want to continue?"
     IDS_SPLIT_INCOMPLETE    "The split was not completed.  No segments were found."
@@ -5114,6 +5115,8 @@ BEGIN
     IDS_SPLIT_NO_REF        "An empty Reference transcription field was found at %1 segment %2.\nPlease correct the transcription field or rerun the Split File feature with a different filenaming convention."
     IDS_SPLIT_NO_WRITE      "An error occurred while writing '%1'.  Please make sure the directory is writeable."
     IDS_SPLIT_NO_PHRASE     "An empty Phrase transcription field was found at %1 segment %2.\nPlease correct the transcription or rerun the Split File feature with a different filenaming convention."
+    IDS_SPLIT_FOLDER_EXISTS "The '%1' directory already exists.\n\nClick OK to overwrite the existing data.\nClick CANCEL to cancel split file processing."
+    IDS_SPLIT_FILE_EXISTS   "A file with the name '%1' already exists.\n\nPlease remove the file or choose another split file directory path."
 END
 
 STRINGTABLE

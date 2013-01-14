@@ -213,7 +213,7 @@ BOOL CGraphWnd::SetLegendScale(int nMode, double dMinValue, double dMaxValue, TC
 {                                               
 	// set legend scale
 	BOOL bNewScale = m_pLegend->SetScale(nMode, dMinValue, dMaxValue, pszDimension, nDivisions, d3dOffset);
-	if(bNewScale && m_nPlotID != ID_GRAPHS_OVERLAY)
+	if (bNewScale && m_nPlotID != ID_GRAPHS_OVERLAY)
 		RedrawGraph(TRUE, m_bLegend, FALSE); // redraw whole graph
 
 	return bNewScale && m_nPlotID != ID_GRAPHS_OVERLAY;
@@ -774,7 +774,7 @@ BOOL CGraphWnd::ReadProperties(Object_istream& obs)
 		{
 			for (int i = 0; i < ANNOT_WND_NUMBER; i++)
 			{
-				if(!obs.bReadBool(psz_showwnd, m_abAnnWnd[i]))
+				if (!obs.bReadBool(psz_showwnd, m_abAnnWnd[i]))
 					break;
 			}
 			obs.SkipToEndMarker(psz_annotwnd);

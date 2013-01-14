@@ -138,8 +138,10 @@
 #include "SFMHelper.h"
 #include "TextHelper.h"
 #include "TranscriptionHelper.h"
-#include <sys/stat.h>
 
+#include "Shlobj.h"
+
+#include <sys/stat.h>
 #include <string>
 
 using std::wstring;
@@ -306,7 +308,7 @@ IMPLEMENT_DYNCREATE(CSaDoc, CUndoRedoDoc)
 			for(int i=0;i<m_pCreatedFonts->GetSize();i++)
 			{
 				CFontTable* pFont =  (CFontTable*) m_pCreatedFonts->GetAt(i);
-				if(pFont)
+				if (pFont)
 					delete pFont;
 			}
 			delete m_pCreatedFonts;
@@ -612,7 +614,7 @@ IMPLEMENT_DYNCREATE(CSaDoc, CUndoRedoDoc)
 			try
 			{
 				CFileStatus status;
-				if(CFile::GetStatus(m_szTempWave, status))CFile::Remove(m_szTempWave);
+				if (CFile::GetStatus(m_szTempWave, status))CFile::Remove(m_szTempWave);
 				m_szTempWave.Empty();
 			}
 			catch(CFileException e)
@@ -641,7 +643,7 @@ IMPLEMENT_DYNCREATE(CSaDoc, CUndoRedoDoc)
 				pMain->SetFontFace(i, pMain->m_pGraphFontFaces->GetAt(i));
 				pMain->SetFontSize(i, pMain->m_pGraphFontSizes->GetAt(i));
 
-				if(m_pCreatedFonts->GetSize() > i && GetFont(i))
+				if (m_pCreatedFonts->GetSize() > i && GetFont(i))
 					delete GetFont(i);
 				m_pCreatedFonts->SetAtGrow(i, GetSegment(i)->NewFontTable());
 				CAnnotationWnd::CreateAnnotationFont(GetFont(i), pMain->GetFontSize(i), pMain->GetFontFace(i));
@@ -1444,7 +1446,7 @@ IMPLEMENT_DYNCREATE(CSaDoc, CUndoRedoDoc)
 		if (pSegment->GetInputFilter())
 		{
 			BOOL bChanged = (pSegment->GetInputFilter())(*pSegment->GetString());
-			if(bChanged)
+			if (bChanged)
 			{
 				SetModifiedFlag(TRUE);
 				SetTransModifiedFlag(TRUE); // transcription data has been modified
@@ -1473,12 +1475,12 @@ IMPLEMENT_DYNCREATE(CSaDoc, CUndoRedoDoc)
 		int nIndex = 0;
 
 		// which segment includes the insertion position?
-		if((dwPos > 0)&&!pGloss->IsEmpty())
+		if ((dwPos > 0)&&!pGloss->IsEmpty())
 		{
 			while((nIndex!=-1)&&(pGloss->GetOffset(nIndex) <= dwPos))
 				nIndex = pGloss->GetNext(nIndex);
 
-			if(nIndex==-1)
+			if (nIndex==-1)
 				nIndex = pGloss->GetOffsetSize();
 		}
 
@@ -2265,7 +2267,7 @@ IMPLEMENT_DYNCREATE(CSaDoc, CUndoRedoDoc)
 			return 0;
 		}
 
-		if(!mmioClose(hmmioFile, 0)) // close file
+		if (!mmioClose(hmmioFile, 0)) // close file
 		{
 			// Set File Length ...
 			// mmioAscend() does not set mmioinfo.lDiskOffset correctly under
@@ -2657,7 +2659,7 @@ IMPLEMENT_DYNCREATE(CSaDoc, CUndoRedoDoc)
 						break;
 					}
 				}
-				if(bDone)
+				if (bDone)
 					break;
 			}
 
@@ -2752,7 +2754,7 @@ IMPLEMENT_DYNCREATE(CSaDoc, CUndoRedoDoc)
 			mmioClose(hmmioFile, 0);
 		}
 
-		if(!m_szRawDataWrk[0].IsEmpty())
+		if (!m_szRawDataWrk[0].IsEmpty())
 		{
 			try
 			{
@@ -3099,7 +3101,7 @@ IMPLEMENT_DYNCREATE(CSaDoc, CUndoRedoDoc)
 			return FALSE;
 		}
 		dwSize -= dwStart; // size to copy
-		if(dwSize > dwMax) dwSize = dwMax;
+		if (dwSize > dwMax) dwSize = dwMax;
 
 		DWORD dwCopied;
 		DWORD dwCopy;
@@ -3189,7 +3191,7 @@ IMPLEMENT_DYNCREATE(CSaDoc, CUndoRedoDoc)
 	void CSaDoc::ApplyWaveFile( const TCHAR* pszFileName, DWORD dwDataSize, CAlignInfo info)
 	{
 		// save the temporary file
-		if(!m_szTempWave.IsEmpty())
+		if (!m_szTempWave.IsEmpty())
 		{
 			try 
 			{ 
@@ -3363,20 +3365,20 @@ IMPLEMENT_DYNCREATE(CSaDoc, CUndoRedoDoc)
 					dwDataPos+=wSmpSize;
 				}
 
-				if(dwLeft == dwCursorOffset)
+				if (dwLeft == dwCursorOffset)
 					dwRight = dwCursorOffset;
 
-				if(dwRight == dwCursorOffset)
+				if (dwRight == dwCursorOffset)
 					dwLeft = dwCursorOffset;
 
 
-				if((nSnapDirection == SNAP_BOTH)&&((dwRight > dwUpperLimit)||(dwRight < dwCursorOffset)))
+				if ((nSnapDirection == SNAP_BOTH)&&((dwRight > dwUpperLimit)||(dwRight < dwCursorOffset)))
 					nSnapDirection = SNAP_LEFT;
 
-				if((nSnapDirection == SNAP_BOTH)&&((dwLeft < dwLowerLimit)||(dwLeft > dwCursorOffset)))
+				if ((nSnapDirection == SNAP_BOTH)&&((dwLeft < dwLowerLimit)||(dwLeft > dwCursorOffset)))
 					nSnapDirection = SNAP_RIGHT;
 
-				if(nSnapDirection == SNAP_BOTH)
+				if (nSnapDirection == SNAP_BOTH)
 				{
 					if (dwRight - dwCursorOffset < dwCursorOffset - dwLeft)
 					{
@@ -3386,7 +3388,7 @@ IMPLEMENT_DYNCREATE(CSaDoc, CUndoRedoDoc)
 						return dwLeft;
 				}
 
-				if(nSnapDirection == SNAP_RIGHT)
+				if (nSnapDirection == SNAP_RIGHT)
 				{
 					if ((dwRight > dwUpperLimit)||(dwRight < dwCursorOffset))
 						return dwCursorOffset;
@@ -3394,7 +3396,7 @@ IMPLEMENT_DYNCREATE(CSaDoc, CUndoRedoDoc)
 						return dwRight;
 				}
 
-				if(nSnapDirection == SNAP_LEFT)
+				if (nSnapDirection == SNAP_LEFT)
 				{
 					if ((dwLeft > dwCursorOffset)||(dwLeft < dwLowerLimit))
 						return dwCursorOffset;
@@ -3443,21 +3445,21 @@ IMPLEMENT_DYNCREATE(CSaDoc, CUndoRedoDoc)
 							dwLeft = 0;
 					}
 
-					if(dwLeft == dwCursorOffset)
+					if (dwLeft == dwCursorOffset)
 						dwRight = dwCursorOffset;
 
-					if(dwRight == dwCursorOffset)
+					if (dwRight == dwCursorOffset)
 						dwLeft = dwCursorOffset;
 
 
-					if((nSnapDirection == SNAP_BOTH)&&((dwRight > dwUpperLimit)||(dwRight < dwCursorOffset)))
+					if ((nSnapDirection == SNAP_BOTH)&&((dwRight > dwUpperLimit)||(dwRight < dwCursorOffset)))
 						nSnapDirection = SNAP_LEFT;
 
-					if((nSnapDirection == SNAP_BOTH)&&((dwLeft < dwLowerLimit)||(dwLeft > dwCursorOffset)))
+					if ((nSnapDirection == SNAP_BOTH)&&((dwLeft < dwLowerLimit)||(dwLeft > dwCursorOffset)))
 						nSnapDirection = SNAP_RIGHT;
 
 
-					if(nSnapDirection == SNAP_BOTH)
+					if (nSnapDirection == SNAP_BOTH)
 					{
 						if (dwRight - dwCursorOffset < dwCursorOffset - dwLeft)
 						{
@@ -3467,7 +3469,7 @@ IMPLEMENT_DYNCREATE(CSaDoc, CUndoRedoDoc)
 							return dwLeft;
 					}
 
-					if(nSnapDirection == SNAP_RIGHT)
+					if (nSnapDirection == SNAP_RIGHT)
 					{
 						if ((dwRight > dwUpperLimit)||(dwRight < dwCursorOffset))
 							return dwCursorOffset;
@@ -3475,7 +3477,7 @@ IMPLEMENT_DYNCREATE(CSaDoc, CUndoRedoDoc)
 							return dwRight;
 					}
 
-					if(nSnapDirection == SNAP_LEFT)
+					if (nSnapDirection == SNAP_LEFT)
 					{
 						if ((dwLeft > dwCursorOffset)||(dwLeft < dwLowerLimit))
 							return dwCursorOffset;
@@ -3654,12 +3656,12 @@ IMPLEMENT_DYNCREATE(CSaDoc, CUndoRedoDoc)
 		}
 		if (m_pProcessSpectrogram) 
 		{
-			if(m_pProcessSpectrogram->IsCanceled())
+			if (m_pProcessSpectrogram->IsCanceled())
 			{
 				m_pProcessSpectrogram->SetDataInvalid();
 				m_pProcessSpectrogram->RestartProcess();
 			}
-			if(m_pProcessSpectrogram->GetFormantProcess()->IsCanceled())
+			if (m_pProcessSpectrogram->GetFormantProcess()->IsCanceled())
 			{
 				m_pProcessSpectrogram->GetFormantProcess()->SetDataInvalid();
 				m_pProcessSpectrogram->GetFormantProcess()->RestartProcess();
@@ -3998,7 +4000,7 @@ IMPLEMENT_DYNCREATE(CSaDoc, CUndoRedoDoc)
 	COleWaveDataSource::~COleWaveDataSource()
 	{
 		CFileStatus status;
-		if(CFile::GetStatus(m_szSourceFile, status))
+		if (CFile::GetStatus(m_szSourceFile, status))
 			CFile::Remove(m_szSourceFile);
 
 		::SysFreeString(m_pszWSourceFile);
@@ -4021,7 +4023,7 @@ IMPLEMENT_DYNCREATE(CSaDoc, CUndoRedoDoc)
 			}
 			catch(const CException &)
 			{
-				if(pFile)
+				if (pFile)
 				{
 					pFile->Abort();
 					delete pFile;
@@ -4043,7 +4045,7 @@ IMPLEMENT_DYNCREATE(CSaDoc, CUndoRedoDoc)
 
 				DWORD dwMaxReserved = ::GlobalSize(hData);
 
-				if(dwLength > dwMaxReserved)
+				if (dwLength > dwMaxReserved)
 					hData = NULL;
 			}
 
@@ -4051,7 +4053,7 @@ IMPLEMENT_DYNCREATE(CSaDoc, CUndoRedoDoc)
 			{
 				// memory allocation error
 				pApp->ErrorMessage(IDS_ERROR_MEMALLOC);
-				if(pFile)
+				if (pFile)
 				{
 					pFile->Abort();
 					delete pFile;
@@ -4064,9 +4066,9 @@ IMPLEMENT_DYNCREATE(CSaDoc, CUndoRedoDoc)
 			{
 				// memory lock error
 				pApp->ErrorMessage(IDS_ERROR_MEMLOCK);
-				if(lpStgMedium->tymed == TYMED_NULL)
+				if (lpStgMedium->tymed == TYMED_NULL)
 					::GlobalFree(hData);
-				if(pFile)
+				if (pFile)
 				{
 					pFile->Abort();
 					delete pFile;
@@ -4086,7 +4088,7 @@ IMPLEMENT_DYNCREATE(CSaDoc, CUndoRedoDoc)
 			catch(const CException &)
 			{
 				::GlobalFree(hData);
-				if(pFile)
+				if (pFile)
 				{
 					pFile->Abort();
 					delete pFile;
@@ -4103,7 +4105,7 @@ IMPLEMENT_DYNCREATE(CSaDoc, CUndoRedoDoc)
 		if (lpFormatEtc->tymed & TYMED_FILE)
 		{
 			CSaString szTempNewWave;
-			if(lpStgMedium->tymed == TYMED_NULL)
+			if (lpStgMedium->tymed == TYMED_NULL)
 			{
 				lpStgMedium->lpszFileName = m_pszWSourceFile;
 
@@ -4255,7 +4257,7 @@ IMPLEMENT_DYNCREATE(CSaDoc, CUndoRedoDoc)
 		TCHAR lpszTempPath[_MAX_PATH];
 		GetTempPath(_MAX_PATH, lpszTempPath);
 
-		if(OleGetClipboard(&pDataObject) == S_OK)
+		if (OleGetClipboard(&pDataObject) == S_OK)
 		{
 			FORMATETC cFormat;
 
@@ -4268,7 +4270,7 @@ IMPLEMENT_DYNCREATE(CSaDoc, CUndoRedoDoc)
 
 			pDataObject->GetData(&cFormat, &cMedium);
 
-			if(cMedium.tymed == TYMED_NULL)
+			if (cMedium.tymed == TYMED_NULL)
 			{
 				cFormat.tymed = TYMED_HGLOBAL;
 				pDataObject->GetData(&cFormat, &cMedium);
@@ -4276,10 +4278,10 @@ IMPLEMENT_DYNCREATE(CSaDoc, CUndoRedoDoc)
 
 			pDataObject->Release();
 
-			if(cMedium.tymed == TYMED_NULL)
+			if (cMedium.tymed == TYMED_NULL)
 				return FALSE;
 
-			if(cMedium.tymed == TYMED_HGLOBAL)
+			if (cMedium.tymed == TYMED_HGLOBAL)
 			{
 				//Old clipboard format falsely claimed to be CF_WAVE
 				//it was in fact a proprietary format
@@ -4291,7 +4293,7 @@ IMPLEMENT_DYNCREATE(CSaDoc, CUndoRedoDoc)
 
 				HGLOBAL hData = cMedium.hGlobal;
 
-				if((::GlobalFlags(hData)&~GMEM_LOCKCOUNT)==GMEM_DISCARDED)
+				if ((::GlobalFlags(hData)&~GMEM_LOCKCOUNT)==GMEM_DISCARDED)
 				{
 					ReleaseStgMedium(&cMedium);
 					return FALSE;
@@ -4316,7 +4318,7 @@ IMPLEMENT_DYNCREATE(CSaDoc, CUndoRedoDoc)
 						pFile->Abort();
 						delete pFile;
 						// File may exist should be removed
-						if(CFile::GetStatus(szTempPath, status)) 
+						if (CFile::GetStatus(szTempPath, status)) 
 							CFile::Remove(szTempPath);
 					}
 					ReleaseStgMedium(&cMedium);
@@ -4324,7 +4326,7 @@ IMPLEMENT_DYNCREATE(CSaDoc, CUndoRedoDoc)
 				}      
 				::GlobalUnlock(hData);
 			}
-			else if(cMedium.tymed == TYMED_FILE)
+			else if (cMedium.tymed == TYMED_FILE)
 			{
 				szTempPath = cMedium.lpszFileName;
 			}
@@ -4359,7 +4361,7 @@ IMPLEMENT_DYNCREATE(CSaDoc, CUndoRedoDoc)
 				//Get new wave data
 				if (!CopyWaveToTemp(szTempPath, lpszRawTempPath, TRUE, dwPastePos))
 				{
-					if(cMedium.tymed != TYMED_FILE)
+					if (cMedium.tymed != TYMED_FILE)
 						CFile::Remove(szTempPath);
 					ReleaseStgMedium(&cMedium);
 					Undo(FALSE);
@@ -4370,7 +4372,7 @@ IMPLEMENT_DYNCREATE(CSaDoc, CUndoRedoDoc)
 			{
 				// error writing file
 				pApp->ErrorMessage(IDS_ERROR_WRITETEMPFILE, lpszRawTempPath);
-				if(cMedium.tymed != TYMED_FILE)
+				if (cMedium.tymed != TYMED_FILE)
 					CFile::Remove(szTempPath);
 				ReleaseStgMedium(&cMedium);
 				return FALSE;
@@ -4401,7 +4403,7 @@ IMPLEMENT_DYNCREATE(CSaDoc, CUndoRedoDoc)
 		//Get new segments
 		InsertTranscriptions(szTempPath, dwPastePos);
 
-		if(cMedium.tymed != TYMED_FILE)
+		if (cMedium.tymed != TYMED_FILE)
 			CFile::Remove(szTempPath);
 
 		ReleaseStgMedium(&cMedium);
@@ -4450,7 +4452,7 @@ IMPLEMENT_DYNCREATE(CSaDoc, CUndoRedoDoc)
 		}
 
 		CFileStatus status;
-		if(CFile::GetStatus(GetRawDataWrk(0), status))
+		if (CFile::GetStatus(GetRawDataWrk(0), status))
 			CFile::Remove(GetRawDataWrk(0));
 
 		CopyWaveToTemp(m_fileStat.m_szFullName);
@@ -4542,7 +4544,7 @@ IMPLEMENT_DYNCREATE(CSaDoc, CUndoRedoDoc)
 						else if ((m_apSegments[independent]->GetDuration(nIndex) + dwOldOffset) > dwSectionStart)
 						{
 							//Segment ends in cut region
-							if(m_apSegments[independent]->CheckPosition(this, dwOldOffset, dwSectionStart, CSegment::MODE_EDIT)!=-1)
+							if (m_apSegments[independent]->CheckPosition(this, dwOldOffset, dwSectionStart, CSegment::MODE_EDIT)!=-1)
 							{
 								bAdjusted = TRUE;
 								((CIndependentSegment*)m_apSegments[independent])->Adjust(this, nIndex, dwOldOffset, dwSectionStart-dwOldOffset);
@@ -4585,11 +4587,11 @@ IMPLEMENT_DYNCREATE(CSaDoc, CUndoRedoDoc)
 						}
 						nIndex--; // segment deleted decrement to point to last segment
 					}
-					if(nIndex==-1)
+					if (nIndex==-1)
 					{
 						// GetNext does not work correctly for (nIndex==-1)
 						nIndex = 0;
-						if(m_apSegments[independent]->IsEmpty()) return;  // nothing more to do
+						if (m_apSegments[independent]->IsEmpty()) return;  // nothing more to do
 					}
 					else
 					{
@@ -4611,14 +4613,14 @@ IMPLEMENT_DYNCREATE(CSaDoc, CUndoRedoDoc)
 			// save new file size for later
 			int nGlossIndex = m_apSegments[GLOSS]->GetOffsetSize() - 1;
 			DWORD dwNewDataSize ;
-			if(nGlossIndex != -1)  // we don't need the value if there is no gloss
+			if (nGlossIndex != -1)  // we don't need the value if there is no gloss
 			{
 				dwNewDataSize = m_apSegments[GLOSS]->GetStop(nGlossIndex) + dwSectionLength;
 			}
 
 			for(int independent=0;independent<ANNOT_WND_NUMBER;independent++)
 			{
-				if(m_apSegments[independent]->GetMasterIndex() != -1)
+				if (m_apSegments[independent]->GetMasterIndex() != -1)
 					continue;
 
 				m_apSegments[independent]->SetSelection(-1); // make sure nothing selected
@@ -4630,7 +4632,7 @@ IMPLEMENT_DYNCREATE(CSaDoc, CUndoRedoDoc)
 					DWORD dwOldOffset = m_apSegments[independent]->GetOffset(nIndex);
 					DWORD dwOldDuration = m_apSegments[independent]->GetDuration(nIndex);
 
-					if(dwOldOffset < dwSectionStart)
+					if (dwOldOffset < dwSectionStart)
 						break;
 
 					((CIndependentSegment*)m_apSegments[independent])->Adjust(this, nIndex, dwOldOffset + dwSectionLength, dwOldDuration);
@@ -4644,7 +4646,7 @@ IMPLEMENT_DYNCREATE(CSaDoc, CUndoRedoDoc)
 					DWORD dwOldOffset = m_apSegments[independent]->GetOffset(nIndex);
 					DWORD dwOldDuration = m_apSegments[independent]->GetDuration(nIndex);
 
-					if(dwOldOffset <= dwSectionStart)
+					if (dwOldOffset <= dwSectionStart)
 					{
 						// check if insertion into segment happened
 						DWORD dwOldCenter = dwOldOffset + dwOldDuration/2;
@@ -4830,7 +4832,7 @@ IMPLEMENT_DYNCREATE(CSaDoc, CUndoRedoDoc)
 			DWORD dwStart = pView->GetStartCursorPosition();
 			DWORD dwStop = pView->GetStopCursorPosition();
 
-			if((GetSegment(nLoop)->GetMasterIndex()==-1)
+			if ((GetSegment(nLoop)->GetMasterIndex()==-1)
 				&& ((dwStart != GetSegment(nLoop)->GetOffset(nSelection)) ||
 				(dwStop != GetSegment(nLoop)->GetStop(nSelection))))
 			{
@@ -4838,11 +4840,11 @@ IMPLEMENT_DYNCREATE(CSaDoc, CUndoRedoDoc)
 			}
 			else
 			{
-				if(dwStart != SnapCursor(START_CURSOR, GetSegment(nLoop)->GetOffset(nSelection),0,GetUnprocessedDataSize(), SNAP_RIGHT))
+				if (dwStart != SnapCursor(START_CURSOR, GetSegment(nLoop)->GetOffset(nSelection),0,GetUnprocessedDataSize(), SNAP_RIGHT))
 				{
 					enable = TRUE;
 				}
-				if(dwStop != SnapCursor(STOP_CURSOR, GetSegment(nLoop)->GetStop(nSelection),0,GetUnprocessedDataSize(),SNAP_LEFT))
+				if (dwStop != SnapCursor(STOP_CURSOR, GetSegment(nLoop)->GetStop(nSelection),0,GetUnprocessedDataSize(),SNAP_LEFT))
 				{
 					enable = TRUE;
 				}
@@ -4890,7 +4892,7 @@ IMPLEMENT_DYNCREATE(CSaDoc, CUndoRedoDoc)
 					if (pGraph->HaveAnnotation(nInnerLoop))
 						pGraph->GetAnnotationWnd(nInnerLoop)->Invalidate(); // redraw annotation window
 				}
-				if(pGraph->HaveBoundaries())
+				if (pGraph->HaveBoundaries())
 				{
 					pGraph->GetPlot()->Invalidate();
 				}
@@ -4931,17 +4933,17 @@ IMPLEMENT_DYNCREATE(CSaDoc, CUndoRedoDoc)
 			dwNewOffset = SnapCursor(START_CURSOR, dwNewOffset);
 			dwNewStop = SnapCursor(STOP_CURSOR, dwNewStop);
 
-			if(dwNewOffset >= dwNewStop)
+			if (dwNewOffset >= dwNewStop)
 				return FALSE;
 
 			//SDM 1.5Test8.1
-			if((dwNewOffset == dwOffset) && (dwNewStop == dwStop)) return FALSE;
+			if ((dwNewOffset == dwOffset) && (dwNewStop == dwStop)) return FALSE;
 
-			if(!bOverlap) // Move neighbors
+			if (!bOverlap) // Move neighbors
 			{
 				int nPrevious = pSegment->GetPrevious(nSelection);
 				int nNext = pSegment->GetNext(nSelection);
-				if((dwNewOffset != dwOffset) && (nPrevious != -1))
+				if ((dwNewOffset != dwOffset) && (nPrevious != -1))
 				{
 					DWORD dwNewPreviousStop = SnapCursor(STOP_CURSOR, dwNewOffset);
 
@@ -4949,7 +4951,7 @@ IMPLEMENT_DYNCREATE(CSaDoc, CUndoRedoDoc)
 						pSegment->GetOffset(nPrevious),
 						dwNewPreviousStop - pSegment->GetOffset(nPrevious));
 				}
-				if(((dwNewStop) != (dwStop)) && (nNext != -1))
+				if (((dwNewStop) != (dwStop)) && (nNext != -1))
 				{
 					DWORD dwNewNextOffset = SnapCursor(START_CURSOR, dwNewStop);
 
@@ -4963,7 +4965,7 @@ IMPLEMENT_DYNCREATE(CSaDoc, CUndoRedoDoc)
 
 			pSegment->Adjust(this, nSelection, dwNewOffset, dwNewStop - dwNewOffset);
 		}
-		if(nLoop==GLOSS)
+		if (nLoop==GLOSS)
 		{
 			// gloss mode
 			// Prepare for Update Boundaries
@@ -4979,17 +4981,17 @@ IMPLEMENT_DYNCREATE(CSaDoc, CUndoRedoDoc)
 			// Adjust Offset for current & Duration for previous segment & dependent segments
 			((CGlossSegment *)pSegment)->Adjust(pDoc, nSelection, dwNewOffset, dwNewStop - dwNewOffset);
 
-			if(dwOffset!=dwNewOffset)
+			if (dwOffset!=dwNewOffset)
 			{
-				if(nSelection > 0)  // Adjust previous segment
+				if (nSelection > 0)  // Adjust previous segment
 				{
 					((CGlossSegment *)pSegment)->Adjust(pDoc, nSelection-1, pSegment->GetOffset(nSelection-1), ((CGlossSegment *)pSegment)->CalculateDuration(pDoc, nSelection-1));
 				}
 			}
 
-			if((dwStop)!=(dwNewStop))
+			if ((dwStop)!=(dwNewStop))
 			{
-				if(nNextSegment != -1)
+				if (nNextSegment != -1)
 				{
 					CSegment* pPhonetic = GetSegment(PHONETIC);
 					DWORD dwNextStop = pSegment->GetStop(nNextSegment);
@@ -5000,14 +5002,14 @@ IMPLEMENT_DYNCREATE(CSaDoc, CUndoRedoDoc)
 				}
 			}
 		}
-		if((nLoop==TONE)||(nLoop==PHONEMIC)||(nLoop==ORTHO))
+		if ((nLoop==TONE)||(nLoop==PHONEMIC)||(nLoop==ORTHO))
 		{
 			DWORD dwOffset = pSegment->GetOffset(nSelection);
 			DWORD dwStop = pSegment->GetStop(nSelection);
 
 			((CDependentSegment *)pSegment)->AdjustPositionToMaster(pDoc, dwNewOffset, dwNewStop);
 
-			if((dwNewOffset == dwOffset) && (dwNewStop == dwStop)) return FALSE;
+			if ((dwNewOffset == dwOffset) && (dwNewStop == dwStop)) return FALSE;
 
 			m_bModified = TRUE; // document has been modified
 
@@ -5111,7 +5113,7 @@ IMPLEMENT_DYNCREATE(CSaDoc, CUndoRedoDoc)
 	/***************************************************************************/
 	HPSTR CSaDoc::GetUnprocessedWaveData(DWORD dwOffset, BOOL bBlockBegin, BOOL bAdjusted)
 	{
-		if( bAdjusted )
+		if ( bAdjusted )
 		{
 			return GetAdjust()->GetProcessedWaveData(dwOffset, bBlockBegin);
 		}
@@ -5137,7 +5139,7 @@ IMPLEMENT_DYNCREATE(CSaDoc, CUndoRedoDoc)
 			if (!pTempFile->Open(GetRawDataWrk(0), CFile::modeRead, &exception))
 			{
 				// error opening file
-				if(GetUnprocessedDataSize())
+				if (GetUnprocessedDataSize())
 				{
 					pApp->ErrorMessage(IDS_ERROR_OPENTEMPFILE, GetRawDataWrk(0));
 					m_dwDataSize = 0; // no data available
@@ -5546,7 +5548,7 @@ IMPLEMENT_DYNCREATE(CSaDoc, CUndoRedoDoc)
 		BOOL bSaveAudio = TRUE;
 		if (!szPathName.IsEmpty())
 		{
-			if(SetFileAttributes(szPathName, (DWORD)m_fileStat.m_attribute)) 
+			if (SetFileAttributes(szPathName, (DWORD)m_fileStat.m_attribute)) 
 			{
 				if (m_fileStat.m_attribute & CFile::readOnly)
 				{
@@ -5598,7 +5600,7 @@ IMPLEMENT_DYNCREATE(CSaDoc, CUndoRedoDoc)
 			}
 
 			CFileStatus fileStat;
-			if(CFile::GetStatus(szPathName, fileStat))
+			if (CFile::GetStatus(szPathName, fileStat))
 			{
 				CFile::SetStatus(szPathName, fileStat);
 			}
@@ -5672,7 +5674,7 @@ IMPLEMENT_DYNCREATE(CSaDoc, CUndoRedoDoc)
 		fileName = dlg.GetPathName();
 
 		BOOL bSameFileName = FALSE;
-		if(fileName == GetPathName())
+		if (fileName == GetPathName())
 		{
 			bSameFileName = TRUE;
 			dlg.m_nShowFiles = CDlgSaveAsOptions::showNew; // There is only one file.
@@ -5817,7 +5819,7 @@ IMPLEMENT_DYNCREATE(CSaDoc, CUndoRedoDoc)
 	/***************************************************************************/
 	// CSaDoc::OnUpdateFileSave Menu Update
 	/***************************************************************************/
-	void CSaDoc::OnUpdateFileSplit(CCmdUI* pCmdUI)
+	void CSaDoc::OnUpdateFileSplit(CCmdUI* pCmdUI) 
 	{
 		pCmdUI->Enable(!((CSaApp*) AfxGetApp())->GetBatchMode() && !IsMultiChannel());
 	}
@@ -5838,20 +5840,36 @@ IMPLEMENT_DYNCREATE(CSaDoc, CUndoRedoDoc)
 		wchar_t ext[_MAX_EXT];
 		_wsplitpath_s( buffer, drive, dir, fname, ext );
 
+		CString homeDefault = AfxGetApp()->GetProfileString(_T(""), _T("DataLocation"));
+		if (homeDefault.GetLength()==0) 
+		{
+			homeDefault.Format(L"%s%s",drive,dir);
+		}
+		if (homeDefault.Right(1) != _T("\\")) 
+		{
+			homeDefault += _T("\\");
+		}
+
 		CDlgSplit dlg;
 
-		dlg.m_FolderLocation.Format(L"%s%s",drive,dir);
-		dlg.m_FolderName.Format(L"Split-%s",fname);
-		dlg.m_FolderName = FilterName((LPCTSTR)dlg.m_FolderName).c_str();
-		dlg.m_PhraseFolderName.Format(L"Split-%s-Phrase",fname);
-		dlg.m_PhraseFolderName = FilterName((LPCTSTR)dlg.m_PhraseFolderName).c_str();
-		dlg.m_GlossFolderName.Format(L"Split-%s-Gloss",fname);
-		dlg.m_GlossFolderName = FilterName((LPCTSTR)dlg.m_GlossFolderName).c_str();
+		dlg.m_szFolderLocation = AfxGetApp()->GetProfileString(L"SplitFile",L"Home",(LPCTSTR)homeDefault);
+		dlg.m_szFolderName.Format(L"Split-%s",fname);
+		dlg.m_szFolderName = FilterName((LPCTSTR)dlg.m_szFolderName).c_str();
+		dlg.m_szPhraseFolderName.Format(L"Split-%s-Phrase",fname);
+		dlg.m_szPhraseFolderName = FilterName((LPCTSTR)dlg.m_szPhraseFolderName).c_str();
+		dlg.m_szGlossFolderName.Format(L"Split-%s-Gloss",fname);
+		dlg.m_szGlossFolderName = FilterName((LPCTSTR)dlg.m_szGlossFolderName).c_str();
+		dlg.m_bOverwriteData = (AfxGetApp()->GetProfileInt(L"SplitFile",L"OverwriteData",0)!=0);
+		dlg.m_bSkipGlossEmpty = (AfxGetApp()->GetProfileInt(L"SplitFile",L"SkipEmptyGloss",1)!=0);
 
 		if (dlg.DoModal()!=IDOK) 
 		{
 			return;
 		}
+
+		AfxGetApp()->WriteProfileInt(L"SplitFile",L"OverwriteData",(dlg.m_bOverwriteData)?1:0);
+		AfxGetApp()->WriteProfileInt(L"SplitFile",L"SkipEmptyGloss",(dlg.m_bSkipGlossEmpty)?1:0);
+		AfxGetApp()->WriteProfileString(L"SplitFile",L"Home",dlg.m_szFolderLocation);
 
 		CSaApp* pApp = (CSaApp*)AfxGetApp();
 		POSITION pos = GetFirstViewPosition();
@@ -5864,7 +5882,6 @@ IMPLEMENT_DYNCREATE(CSaDoc, CUndoRedoDoc)
 			return;
 		}
 
-
 		// key off of gloss for now
 		int offsetSize = pView->GetAnnotation(GLOSS)->GetOffsetSize();
 		bool hasGloss = (offsetSize!=0);
@@ -5873,51 +5890,89 @@ IMPLEMENT_DYNCREATE(CSaDoc, CUndoRedoDoc)
 		wstring glossPath;
 		wstring phrasePath;
 
-		newPath.append(dlg.m_FolderLocation).append(dlg.m_FolderName);
-		glossPath.append(dlg.m_FolderLocation).append(dlg.m_FolderName).append(L"\\").append(dlg.m_GlossFolderName);
-		phrasePath.append(dlg.m_FolderLocation).append(dlg.m_FolderName).append(L"\\").append(dlg.m_PhraseFolderName);
+		newPath.append(dlg.m_szFolderLocation).append(dlg.m_szFolderName);
+		glossPath.append(dlg.m_szFolderLocation).append(dlg.m_szFolderName).append(L"\\").append(dlg.m_szGlossFolderName);
+		phrasePath.append(dlg.m_szFolderLocation).append(dlg.m_szFolderName).append(L"\\").append(dlg.m_szPhraseFolderName);
 
-		if (!CreateFolder(newPath)) 
+		// check the for preexistence of the folders.
+		if (FileExists(glossPath.c_str())) 
+		{
+			pApp->ErrorMessage(IDS_SPLIT_FILE_EXISTS,glossPath.c_str());
+			return;
+		}
+
+		if (FileExists(phrasePath.c_str())) 
+		{
+			pApp->ErrorMessage(IDS_SPLIT_FILE_EXISTS,phrasePath.c_str());
+			return;
+		}
+
+		if (!dlg.m_bOverwriteData) {
+			// check the for preexistence of the folders.
+			if (FolderExists(newPath.c_str())) 
+			{
+				CString msg;
+				msg.FormatMessage(IDS_SPLIT_FOLDER_EXISTS,newPath.c_str());
+				if (AfxMessageBox(msg, MB_OKCANCEL | MB_ICONQUESTION, 0) == IDCANCEL) 
+				{
+					return;
+				}
+			} else if (FolderExists(glossPath.c_str())) {
+				CString msg;
+				msg.FormatMessage(IDS_SPLIT_FOLDER_EXISTS,glossPath.c_str());
+				if (AfxMessageBox(msg, MB_OKCANCEL | MB_ICONQUESTION, 0) == IDCANCEL) 
+				{
+					return;
+				}
+			} else if (FolderExists(phrasePath.c_str())) {
+				CString msg;
+				msg.FormatMessage(IDS_SPLIT_FOLDER_EXISTS,phrasePath.c_str());
+				if (AfxMessageBox(msg, MB_OKCANCEL | MB_ICONQUESTION, 0) == IDCANCEL) 
+				{
+					return;
+				}
+			}
+		}
+
+		// create the folders.
+		if (!CreateFolder(newPath.c_str())) 
 		{
 			pApp->ErrorMessage(IDS_SPLIT_BAD_DIRECTORY,newPath.c_str());
+			return;
+		}
+		if (!CreateFolder(glossPath.c_str())) 
+		{
+			pApp->ErrorMessage(IDS_SPLIT_BAD_DIRECTORY,glossPath.c_str());
+			return;
+		}
+		if (!CreateFolder(phrasePath.c_str())) 
+		{
+			pApp->ErrorMessage(IDS_SPLIT_BAD_DIRECTORY,phrasePath.c_str());
 			return;
 		}
 
 		int count=0;
 		BeginWaitCursor();
 
-		EWordFilenameConvention wordConvention = dlg.GetWordFilenameConvention();
-		EPhraseFilenameConvention phraseConvention = dlg.GetPhraseFilenameConvention();
+		EWordFilenameConvention m_dWordConvention = dlg.GetWordFilenameConvention();
+		EPhraseFilenameConvention m_dPhraseConvention = dlg.GetPhraseFilenameConvention();
 
-		if ((hasGloss) || (!dlg.m_SkipGlossEmpty)) 
+		if ((hasGloss) || (!dlg.m_bSkipGlossEmpty)) 
 		{
-			if (!CreateFolder(glossPath)) 
-			{
-				pApp->ErrorMessage(IDS_SPLIT_BAD_DIRECTORY,glossPath.c_str());
-				EndWaitCursor();
-				return;
-			}
-
-			if (!ExportWordSegments( count, wordConvention, glossPath, dlg.m_SkipGlossEmpty)) 
+			if (!ExportWordSegments( count, m_dWordConvention, glossPath, dlg.m_bSkipGlossEmpty)) 
 			{
 				EndWaitCursor();
 				return;
 			}
 		}
 
-		if (!CreateFolder(phrasePath)) 
-		{
-			pApp->ErrorMessage(IDS_SPLIT_BAD_DIRECTORY,phrasePath.c_str());
-			return;
-		}
-
-		if (!ExportPhraseSegments( MUSIC_PL1, count, phraseConvention, phrasePath)) 
+		if (!ExportPhraseSegments( MUSIC_PL1, count, m_dPhraseConvention, phrasePath)) 
 		{
 			EndWaitCursor();
 			return;
 		}
 
-		if (!ExportPhraseSegments( MUSIC_PL2, count, phraseConvention, phrasePath)) 
+		if (!ExportPhraseSegments( MUSIC_PL2, count, m_dPhraseConvention, phrasePath)) 
 		{
 			EndWaitCursor();
 			return;
@@ -5948,7 +6003,7 @@ IMPLEMENT_DYNCREATE(CSaDoc, CUndoRedoDoc)
 		for (int i=0;i<text.length();i++) 
 		{
 			wchar_t c = text[i];
-			if (c==0)
+			if (c==0) 
 			{
 				break;
 			}
@@ -5972,7 +6027,7 @@ IMPLEMENT_DYNCREATE(CSaDoc, CUndoRedoDoc)
 			result = result + c;
 		}
 		
-		if (result.length()>0)
+		if (result.length()>0) 
 		{
 			if (result[0]=='#') 
 			{
@@ -6236,8 +6291,8 @@ IMPLEMENT_DYNCREATE(CSaDoc, CUndoRedoDoc)
 				return true;
 			}
 
-			// both are empty, complain about gloss
-			pApp->ErrorMessage(IDS_SPLIT_NO_GLOSS,(LPCTSTR)szPhrase,(LPCTSTR)szNumber);
+			// both are empty, complain about reference
+			pApp->ErrorMessage(IDS_SPLIT_NO_REF,(LPCTSTR)szPhrase,(LPCTSTR)szNumber);
 			return false;
 
 		default:
@@ -6246,6 +6301,7 @@ IMPLEMENT_DYNCREATE(CSaDoc, CUndoRedoDoc)
 			result = FilterName(phrase);
 			if (result.length()>0)
 			{
+				result.append(L" ").append(szTag);
 				return true;
 			}
 			pApp->ErrorMessage(IDS_SPLIT_NO_PHRASE,(LPCTSTR)szPhrase,(LPCTSTR)szNumber);
@@ -6328,32 +6384,47 @@ IMPLEMENT_DYNCREATE(CSaDoc, CUndoRedoDoc)
 	}
 
 	/**
-	* create a non-exitent folder
+	* return true if the path exists as a folder
 	*/
-	bool CSaDoc::CreateFolder( wstring & folder) 
-	{
+	bool CSaDoc::FileExists( LPCTSTR path) {
 
 		CFileStatus status;
-		if (CFile::GetStatus(folder.c_str(),status)) 
-		{
-			if (status.m_attribute & CFile::directory) 
-			{
-				// it's there and it's a directory
-				TRACE1("directory %s already exists\n",folder);
-			} 
-			else 
-			{
-				// it exists, but it's not a directory
-				TRACE1("%s already exists, but it's not a directory\n",folder);
-				return false;
+		if (CFile::GetStatus(path,status)) {
+			if (!(status.m_attribute & CFile::directory)) {
+				return true;
 			}
-		} 
-		else 
-		{
-			TRACE1("creating %s\n",folder);
-			// it doesn't exist - create it!
-			CreateDirectory(folder.c_str(), NULL);
 		}
+		return false;
+	}
+
+	/**
+	* return true if the path exists as a folder
+	*/
+	bool CSaDoc::FolderExists( LPCTSTR path) {
+
+		CFileStatus status;
+		if (CFile::GetStatus(path,status)) {
+			if (status.m_attribute & CFile::directory) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/**
+	* create a non-exitent folder
+	*/
+	bool CSaDoc::CreateFolder( LPCTSTR path) {
+
+		if (FolderExists(path)) return true;
+		if (FileExists(path)) {
+			// it exists, but it's not a directory
+			TRACE1("%s already exists, but it's not a directory\n",path);
+			return false;
+		}
+		TRACE1("creating %s\n",path);
+		// it doesn't exist - create it!
+		CreateDirectory(path, NULL);
 		return true;
 	}
 
@@ -6366,12 +6437,6 @@ IMPLEMENT_DYNCREATE(CSaDoc, CUndoRedoDoc)
 		CSaApp* pApp = (CSaApp*)AfxGetApp();
 		POSITION pos = GetFirstViewPosition();
 		CSaView* pView = (CSaView*)GetNextView(pos);
-
-		if (!CreateFolder(path)) 
-		{
-			pApp->ErrorMessage(IDS_SPLIT_BAD_DIRECTORY,path.c_str());
-			return false;
-		}
 
 		CString szGloss;
 		szGloss.LoadStringW(IDS_WINDOW_GLOSS);
@@ -6962,7 +7027,7 @@ IMPLEMENT_DYNCREATE(CSaDoc, CUndoRedoDoc)
 		// restore preserved gloss etc. SDM 1.5Test8.2
 		for(int nLoop = GLOSS; nLoop < ANNOT_WND_NUMBER; nLoop++)
 		{
-			if(m_apSegments[nLoop]) delete m_apSegments[nLoop];
+			if (m_apSegments[nLoop]) delete m_apSegments[nLoop];
 			m_apSegments[nLoop] = pPreserve[nLoop];
 		}
 
@@ -6983,13 +7048,13 @@ IMPLEMENT_DYNCREATE(CSaDoc, CUndoRedoDoc)
 				dwTemp = dwStop;
 				nPhonetic = pGloss->AdjustPositionToMaster(this, dwStart, dwTemp);
 
-				if(dwStart > pGloss->GetOffset(nGloss))
+				if (dwStart > pGloss->GetOffset(nGloss))
 					dwDistance = dwStart - pGloss->GetOffset(nGloss);
 				else
 					dwDistance = pGloss->GetOffset(nGloss) - dwStart;
 
 				bInsert = FALSE;
-				if(nPhonetic == -1) // empty phonetic
+				if (nPhonetic == -1) // empty phonetic
 				{
 					bInsert = TRUE;
 					nPhonetic = 0;
@@ -6997,7 +7062,7 @@ IMPLEMENT_DYNCREATE(CSaDoc, CUndoRedoDoc)
 				else if (dwDistance > GetBytesFromTime(MAX_AUTOSEGMENT_MOVE_GLOSS_TIME)) // too far away
 				{
 					bInsert = TRUE;
-					if(dwStart < pGloss->GetOffset(nGloss)) nPhonetic = pSegment->GetNext(nPhonetic);
+					if (dwStart < pGloss->GetOffset(nGloss)) nPhonetic = pSegment->GetNext(nPhonetic);
 				}
 				else if (nGloss && (dwStart == pGloss->GetOffset(nGloss-1))) // last gloss attached to nearest phonetic
 				{
@@ -7006,7 +7071,7 @@ IMPLEMENT_DYNCREATE(CSaDoc, CUndoRedoDoc)
 				}
 				else if ((pGloss->GetNext(nGloss) != -1) && ((dwStart+dwTemp)/2 <= pGloss->GetOffset(nGloss+1))) // next gloss nearest to same phonetic
 				{
-					if( (pGloss->GetOffset(nGloss+1) < dwStart)
+					if ( (pGloss->GetOffset(nGloss+1) < dwStart)
 						||(dwDistance > (pGloss->GetOffset(nGloss+1) - dwStart) )) // next gloss closer
 					{
 						bInsert = TRUE;
@@ -7017,9 +7082,9 @@ IMPLEMENT_DYNCREATE(CSaDoc, CUndoRedoDoc)
 				if (bInsert)
 				{
 					dwStart = pGloss->GetOffset(nGloss); // Insert in same location as old segment
-					if(nPhonetic ==-1) nPhonetic = pSegment->GetOffsetSize(); // insert at end
+					if (nPhonetic ==-1) nPhonetic = pSegment->GetOffsetSize(); // insert at end
 					int nPrevious = pSegment->GetPrevious(nPhonetic);
-					if(nPrevious != -1)
+					if (nPrevious != -1)
 					{
 						pSegment->Adjust(this, nPrevious, pSegment->GetOffset(nPrevious), dwStart - pSegment->GetOffset(nPrevious));
 					}
@@ -7035,7 +7100,7 @@ IMPLEMENT_DYNCREATE(CSaDoc, CUndoRedoDoc)
 					pGloss->Adjust(pDoc, nGloss-1, pGloss->GetOffset(nGloss-1), pGloss->CalculateDuration(pDoc, nGloss-1));
 				}
 			}
-			if(nGloss > 0)  // Adjust previous gloss segment (last)
+			if (nGloss > 0)  // Adjust previous gloss segment (last)
 			{
 				pGloss->Adjust(pDoc, nGloss-1, pGloss->GetOffset(nGloss-1), pGloss->CalculateDuration(pDoc, nGloss-1));
 			}
@@ -7379,7 +7444,7 @@ IMPLEMENT_DYNCREATE(CSaDoc, CUndoRedoDoc)
 		if (nIndex < 0 || nIndex >= 3)
 			return NULL;
 
-		if(!m_pProcessSDP[nIndex])
+		if (!m_pProcessSDP[nIndex])
 			m_pProcessSDP[nIndex] = new CProcessSDP;
 
 		return m_pProcessSDP[nIndex];

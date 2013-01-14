@@ -86,12 +86,12 @@ CDisplayPlot::CDisplayPlot(CString& szPlot)
 
 	// Tile or maximize
 	CDocList List;
-	if(!List.pdocFirst())
+	if (!List.pdocFirst())
 	{
 		m_pMainFrame->PostMessage(WM_COMMAND, ID_PROCESS_BATCH_COMMANDS, 0L);
 		return;
 	}
-	if(List.pdocNext())
+	if (List.pdocNext())
 	{
 		m_pMainFrame->SendMessage(WM_COMMAND, ID_WINDOW_TILE_HORZ, 0); // tile documents
 	}
@@ -110,11 +110,11 @@ CDisplayPlot::CDisplayPlot(CString& szPlot)
 	m_pMainFrame->SendMessageToMDIDescendants(WM_COMMAND, ID_LAYOUT_1, 0L);
 	// plot type
 	szPlot.MakeUpper();
-	if(szPlot.Find(_T("PITCH"))!=-1)
+	if (szPlot.Find(_T("PITCH"))!=-1)
 		m_pMainFrame->SendMessageToMDIDescendants(WM_COMMAND, IDD_GRAPITCH, 0L);
-	else if(szPlot.Find(_T("WAVE"))!=-1)
+	else if (szPlot.Find(_T("WAVE"))!=-1)
 		m_pMainFrame->SendMessageToMDIDescendants(WM_COMMAND, IDD_RAWDATA, 0L);
-	else if(szPlot.Find(_T("SPECTRO"))!=-1)
+	else if (szPlot.Find(_T("SPECTRO"))!=-1)
 	{
 		m_pMainFrame->SendMessageToMDIDescendants(WM_COMMAND, IDD_SPECTROGRAM, 0L);
 		m_pMainFrame->SendMessageToMDIDescendants(WM_COMMAND, ID_RESTART_PROCESS, 0L);
@@ -131,7 +131,7 @@ CDisplayPlot::CDisplayPlot(CString& szPlot)
 
 CDisplayPlot::~CDisplayPlot()
 {
-	if(m_pModal)
+	if (m_pModal)
 	{
 		m_pModal->SendMessage(WM_CLOSE, 0, 0);
 		m_pModal = NULL;
@@ -171,13 +171,13 @@ CDisplayPlot::~CDisplayPlot()
 	m_pMainFrame->OnUpdateFrameMenu(NULL);
 	m_pMainFrame->DrawMenuBar();
 
-	if(hMenu) ::DestroyMenu(hMenu);
+	if (hMenu) ::DestroyMenu(hMenu);
 
 	// restore Accel
 	HACCEL hAccel = m_pMainFrame->GetNewAccel();
 	m_pMainFrame->SetNewAccel(m_hNewAccel);
 
-	if(hAccel) ::FreeResource((HGLOBAL)hAccel);
+	if (hAccel) ::FreeResource((HGLOBAL)hAccel);
 
 	// restore popup
 	m_pMainFrame->SetPopup(m_nPopup);

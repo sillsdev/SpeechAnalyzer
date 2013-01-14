@@ -113,11 +113,11 @@ long CProcessWavelet::Process(void* pCaller, ISaDoc* , int nWidth, int /*nHeight
 	//************************************************************************** 
 
 	// check canceled
-	if(data_status & PROCESS_CANCEL)
+	if (data_status & PROCESS_CANCEL)
 		return MAKELONG(PROCESS_CANCELED, nProgress); // process canceled
 
 	// check if data ready
-	if(data_status & DATA_READY)
+	if (data_status & DATA_READY)
 		return MAKELONG(--nLevel, nProgress);
 
 	//************************************************************************** 
@@ -127,7 +127,7 @@ long CProcessWavelet::Process(void* pCaller, ISaDoc* , int nWidth, int /*nHeight
 	// wait cursor
 	BeginWaitCursor(); 
 
-	if(!StartProcess(pCaller, IDS_STATTXT_PROCESSWVL)) // memory allocation failed
+	if (!StartProcess(pCaller, IDS_STATTXT_PROCESSWVL)) // memory allocation failed
 	{
 		EndProcess(); // end data processing
 		EndWaitCursor();

@@ -18,8 +18,8 @@ protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
 
 private:
-	int m_WordConvention;
-	int m_PhraseConvention;
+	int m_dWordConvention;
+	int m_dPhraseConvention;
 
 public:
 	DECLARE_MESSAGE_MAP()
@@ -28,13 +28,14 @@ public:
 	afx_msg void OnBnClickedEditGlossFolder();
 
 public:
-	CString m_FolderLocation;
-	CString m_FolderName;
-	CString m_PhraseFolderName;
-	CString m_GlossFolderName;
+	CString m_szFolderLocation;
+	CString m_szFolderName;
+	CString m_szPhraseFolderName;
+	CString m_szGlossFolderName;
 
 	enum EWordFilenameConvention GetWordFilenameConvention();
 	enum EPhraseFilenameConvention GetPhraseFilenameConvention();
-	CButton m_CheckGlossEmpty;
-	BOOL m_SkipGlossEmpty;
+
+	BOOL m_bSkipGlossEmpty;
+	BOOL m_bOverwriteData;
 };

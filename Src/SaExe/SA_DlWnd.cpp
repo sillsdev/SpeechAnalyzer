@@ -1415,7 +1415,7 @@ void CComboGridlines::DrawItem(LPDRAWITEMSTRUCT lpDIS)
     {
       bDraw = TRUE;
     }
-    if(bDraw)
+    if (bDraw)
     {
       COLORREF colorText = bHighlight ? GetSysColor(COLOR_HIGHLIGHTTEXT) : GetSysColor(COLOR_WINDOWTEXT);
       COLORREF colorBack = bHighlight ? GetSysColor(COLOR_HIGHLIGHT) : GetSysColor(COLOR_WINDOW);

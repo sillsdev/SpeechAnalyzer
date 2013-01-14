@@ -101,7 +101,7 @@ void CPlotLoudness::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView)
 	if (nResult != PROCESS_CANCELED)
 	{
 		BOOL bPercent = pDoc->GetIntensityParm().nScaleMode == 1;
-		if(bPercent)
+		if (bPercent)
 		{
 			double dLoudToPercent = 32767/2/100.0;
 			double dMaxPercent = 103.;
@@ -122,7 +122,7 @@ void CPlotLoudness::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView)
 
 		PlotStandardPaint(pDC, rWnd, rClip, pLoudness, pDoc, bPercent ? 0 : PAINT_DB); // do standard data paint
 	}
-	if(ResearchSettings.m_bShowInstantaneousPower)
+	if (ResearchSettings.m_bShowInstantaneousPower)
 	{
 		// create raw data
 		CProcessInstantaneousPower power;
@@ -133,7 +133,7 @@ void CPlotLoudness::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView)
 		if (nResult != PROCESS_CANCELED)
 		{
 			BOOL bPercent = pDoc->GetIntensityParm().nScaleMode == 1;
-			if(bPercent)
+			if (bPercent)
 			{
 				double dLoudToPercent = 32767/4/100.0;
 

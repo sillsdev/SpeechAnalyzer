@@ -208,7 +208,7 @@ int CPlotHelperWnd::SetMode(int nMode, int nID, CRect* prParent)
 		default: // default mode is hidden window
 			break;
 		}
-		if(GetSafeHwnd())
+		if (GetSafeHwnd())
 			MoveWindow(rWnd);
 	}
 	return nOldMode; // return old mode
@@ -440,7 +440,7 @@ CPlotWnd::~CPlotWnd()
 		{ 
 			// there is a raw waveform graph
 			CPlotWnd* pWavePlot = pWaveGraph->GetPlot();
-			if(pWavePlot) 
+			if (pWavePlot) 
 			{
 				pWavePlot->SetHighLightArea(0, 0);
 				pWavePlot->UpdateWindow();
@@ -581,7 +581,7 @@ void CPlotWnd::ChangeCursorPosition(CSaView* pView, DWORD dwNewPosition, CCursor
 	// get window coordinates
 	CRect rWnd, rNewWnd, rNewLine, rOldLine;
 	GetClientRect(rWnd);
-	if(rWnd.Width() == 0) return; // cursor not visible SDM 1.5Test8.5
+	if (rWnd.Width() == 0) return; // cursor not visible SDM 1.5Test8.5
 	rNewWnd = rWnd;
 	// get actual data position and frame
 	double fDataPos;
@@ -636,7 +636,7 @@ void CPlotWnd::ChangeCursorPosition(CSaView* pView, DWORD dwNewPosition, CCursor
 	if (rOldLine != rNewLine)
 	{
 		// invalidate and update old position
-		if(pWnd->IsDrawn())  // SDM 1.5Test10.5
+		if (pWnd->IsDrawn())  // SDM 1.5Test10.5
 			InvalidateRect(rOldLine, TRUE); // redraw old cursor position
 		pWnd->MoveWindow(rNewWnd, FALSE); // move the cursor window to the new position
 		pWnd->SetDrawn(FALSE);  // SDM 1.5Test10.5
@@ -950,10 +950,10 @@ BOOL CPlotWnd::PlotPrePaintDots(CDC* pDC, int nTop, CRect rClip,
 	double fXDistance = pXScale->GetGridDistance();
 	double fYDistance = pLegend->GetGridDistance();
 
-	if(fXDistance == 0. || fXDistance == std::numeric_limits<double>::infinity())
+	if (fXDistance == 0. || fXDistance == std::numeric_limits<double>::infinity())
 		return TRUE;
 
-	if(fYDistance == 0. || fYDistance == std::numeric_limits<double>::infinity())
+	if (fYDistance == 0. || fYDistance == std::numeric_limits<double>::infinity())
 		return TRUE;
 
 	int nXCount = (int) ceil((rClip.left - 2 - dXFirstGridPos)/fXDistance);
@@ -1032,7 +1032,7 @@ void CPlotWnd::PlotPrePaint(CDC* pDC, CRect rWnd, CRect rClip, CLegendWnd* pLege
 	CMainFrame* pMainWnd = (CMainFrame*)AfxGetMainWnd();
 	const Grid cGrid = GetGrid();
 	const Grid *pGrid = &cGrid;
-	if(!pLegend)
+	if (!pLegend)
 		pLegend = pGraph->GetLegendWnd();
 	CXScaleWnd* pXScale = pGraph->GetXScaleWnd();
 	// calculate the scales
@@ -1088,7 +1088,7 @@ void CPlotWnd::PlotPrePaint(CDC* pDC, CRect rWnd, CRect rClip, CLegendWnd* pLege
 				double fDistance = pXScale->GetGridDistance();
 				double fGridPos = (double)pLegend->GetFirstGridPosition();
 				double fGridDistance = pLegend->GetGridDistance()/8.;
-				if(fDistance > 0.)
+				if (fDistance > 0.)
 				{
 					int nCount = (int) ceil((rClip.left - 2 - fStartPos)/fDistance);
 					double dPos = fStartPos + nCount * fDistance;
@@ -1277,7 +1277,7 @@ void DrawData(CRect &rClip, CDataSource &cData, const CXScale &cXScale, const CY
 void CPlotWnd::PlotStandardPaint(CDC* pDC, CRect rWnd, CRect rClip,
 								 CDataProcess* pProcess, CSaDoc *pProcessDoc, int nFlags)
 {
-	if(rClip.IsRectEmpty())
+	if (rClip.IsRectEmpty())
 		return;
 
 	// get pointer to graph, view, document mainframe and legend window
@@ -1334,10 +1334,10 @@ void CPlotWnd::PlotStandardPaint(CDC* pDC, CRect rWnd, CRect rClip,
 	else // linear scale
 	{
 		double dScaleMin = pLegend->GetScaleMinValue();
-		if(dScaleMin < 0.)
+		if (dScaleMin < 0.)
 			dScaleMin /= GetMagnify(); // this is dumb... legend should report the actual
 
-		if(nFlags & PAINT_DB)
+		if (nFlags & PAINT_DB)
 		{
 			// calculate vertical scaling factor
 			fBase = pLegend->GetScaleBase();
@@ -1348,7 +1348,7 @@ void CPlotWnd::PlotStandardPaint(CDC* pDC, CRect rWnd, CRect rClip,
 
 			pYScale = new CYScaleDB(-m_fVScale, dCenterPos, dblDbReference, 20.);
 		}
-		else if(nFlags & PAINT_SEMITONES)
+		else if (nFlags & PAINT_SEMITONES)
 		{
 			// calculate vertical scaling factor
 			fBase = pLegend->GetScaleBase();
@@ -1428,7 +1428,7 @@ void CPlotWnd::PlotStandardPaint(CDC* pDC, CRect rWnd, CRect rClip,
 		GetClipRgn(pDC->m_hDC, cClipRgn);
 
 
-		if(nXStart > rClip.left)
+		if (nXStart > rClip.left)
 		{
 			rClipPortion.left=rClip.left;
 			rClipPortion.right=nXStart;
@@ -1445,7 +1445,7 @@ void CPlotWnd::PlotStandardPaint(CDC* pDC, CRect rWnd, CRect rClip,
 
 			ExtSelectClipRgn(pDC->m_hDC, cClipRgn, RGN_COPY);
 		}
-		if(nXStart < rClip.right && nXEnd >= rClip.left)
+		if (nXStart < rClip.right && nXEnd >= rClip.left)
 		{
 			pDC->SelectObject(&penData);
 			rClipPortion.left = nXStart;
@@ -1463,7 +1463,7 @@ void CPlotWnd::PlotStandardPaint(CDC* pDC, CRect rWnd, CRect rClip,
 
 			ExtSelectClipRgn(pDC->m_hDC, cClipRgn, RGN_COPY);
 		}
-		if(nXEnd < rClip.right)
+		if (nXEnd < rClip.right)
 		{
 			rClipPortion.left = nXEnd;
 			rClipPortion.right = rClip.right;
@@ -1636,7 +1636,7 @@ void CPlotWnd::RestartProcess()
 		pGraph->RedrawGraph(TRUE, TRUE); // repaint whole graph
 	}
 
-	if(m_pLastProcess && IsCanceled())
+	if (m_pLastProcess && IsCanceled())
 	{
 		m_pLastProcess->RestartProcess();
 		RedrawPlot(); // repaint whole plot
@@ -1657,7 +1657,7 @@ DWORD CPlotWnd::GetAreaPosition()
 		{
 			// area length is zero, so return the views position
 			CRect rWnd(0,0,0,0);
-			if(GetSafeHwnd())
+			if (GetSafeHwnd())
 				GetClientRect(rWnd);
 			return (DWORD)GetDataPosition(rWnd.Width());
 		}
@@ -1913,7 +1913,7 @@ BOOL CPlotWnd::EraseBkgnd(CDC* pDC)
 		if (nWidth > rClip.Width()) nWidth = rClip.Width();
 		COLORREF cHighlight = pMainWnd->GetColors()->cPlotHiBkg;
 
-		//    if(m_dwHighLightPosition != pView->GetStartCursorPosition() || 
+		//    if (m_dwHighLightPosition != pView->GetStartCursorPosition() || 
 		//       m_dwHighLightPosition + m_dwHighLightLength != pView->GetStartCursorPosition())
 		//    {
 		//      // Light Highlight for fragment
@@ -1959,7 +1959,7 @@ void CPlotWnd::OnRButtonDown(UINT nFlags, CPoint point)
 		// attach the layout menu
 		CMenu* mLayout = new CLayoutMenu;
 		TCHAR szString[256]; // don't change the string
-		if(pFloatingPopup.GetMenuString(ID_GRAPHS_LAYOUT, szString, sizeof(szString)/sizeof(TCHAR), MF_BYCOMMAND)) // SDM 1.5Test8.5
+		if (pFloatingPopup.GetMenuString(ID_GRAPHS_LAYOUT, szString, sizeof(szString)/sizeof(TCHAR), MF_BYCOMMAND)) // SDM 1.5Test8.5
 		{
 			if (mLayout) VERIFY(pFloatingPopup.ModifyMenu(ID_GRAPHS_LAYOUT, MF_BYCOMMAND | MF_POPUP, (UINT)mLayout->m_hMenu, szString));
 		}
@@ -2187,7 +2187,7 @@ void CPlotWnd::GraphHasFocus(BOOL bFocus)
 {
 	CMainFrame* pMainWnd = (CMainFrame*)AfxGetMainWnd();
 	CSaView* pView = (CSaView*)pMainWnd->GetCurrSaView();
-	if(!pView) return;
+	if (!pView) return;
 	if (m_bAnimationPlot)
 	{
 		int nWaveGraphIndex = pView->GetGraphIndexForIDD(IDD_RAWDATA);
@@ -2315,7 +2315,7 @@ void CDataSourceSimple::GetValues(int &nFirstSample, int nLastSample, CValues &v
 
 	if (nFirstSample < 0) 
 		nFirstSample = 0;
-	if((nLastSample - nFirstSample)*sizeof(short int) >= m_cProcess.GetProcessBufferSize())
+	if ((nLastSample - nFirstSample)*sizeof(short int) >= m_cProcess.GetProcessBufferSize())
 		nLastSample = nFirstSample + m_cProcess.GetProcessBufferSize()/(4*sizeof(short int));
 
 	int nMax = INT_MIN;
@@ -2354,7 +2354,7 @@ void CDataSourceValidate::GetValues(int &nFirstSample, int nLastSample, CValues 
 
 	if (nFirstSample < 0) 
 		nFirstSample = 0;
-	if((nLastSample - nFirstSample)*sizeof(short int) >= m_cProcess.GetProcessBufferSize())
+	if ((nLastSample - nFirstSample)*sizeof(short int) >= m_cProcess.GetProcessBufferSize())
 		nLastSample = nFirstSample + m_cProcess.GetProcessBufferSize()/(4*sizeof(short int));
 
 	int nMax = INT_MIN;
@@ -2370,7 +2370,7 @@ void CDataSourceValidate::GetValues(int &nFirstSample, int nLastSample, CValues 
 		int nTemp = pData[nSampleIndex];
 		if ((m_bSkipUnset && nTemp == -1) || (m_bSkipMissing && nTemp == -2))
 		{
-			if(nSampleIndex)
+			if (nSampleIndex)
 			{
 				// Everything up to this point is valid
 				nLastSample = nFirstSample + nSampleIndex - 1;
@@ -2407,7 +2407,7 @@ const double CYScaleSemitones::dSemitoneReference =  + (69. - log10(440.0)* 12.0
 
 void CDrawSegment::DrawTo(int x, CDataSource::CValues &values, const CYScale &cYScale, BOOL bValid)
 {
-	if(bValid && values.nMax != values.nMin)
+	if (bValid && values.nMax != values.nMin)
 	{
 		DrawTo(x, values.nFirst, cYScale, bValid);
 		DrawTo(x, values.nMax, cYScale, bValid);
@@ -2422,7 +2422,7 @@ void CDrawSegment::DrawTo(int x, CDataSource::CValues &values, const CYScale &cY
 
 void CDrawSegment::DrawTo(CDataSource::CValues &values, const CXScale &cXScale, int y, BOOL bValid)
 {
-	if(bValid && values.nMax != values.nMin)
+	if (bValid && values.nMax != values.nMin)
 	{
 		DrawTo(values.nFirst, cXScale, y, bValid);
 		DrawTo(values.nMax, cXScale, y, bValid);
@@ -2437,20 +2437,20 @@ void CDrawSegment::DrawTo(CDataSource::CValues &values, const CXScale &cXScale, 
 
 void CDrawSegmentSolid::DrawTo(int x, int value, const CYScale &cYScale, BOOL bValid)
 {
-	if(x==m_nCurrentX)
+	if (x==m_nCurrentX)
 	{
-		if(bValid)
+		if (bValid)
 		{
-			if(value > m_nMaxValue)
+			if (value > m_nMaxValue)
 				m_nMaxValue = value;
-			if(value < m_nMinValue)
+			if (value < m_nMinValue)
 				m_nMinValue = value;
 		}
 	}
 	else
 	{
 		// new x value draw old
-		if(m_nOldX != m_nCurrentX && m_nMinValue <= m_nMaxValue)
+		if (m_nOldX != m_nCurrentX && m_nMinValue <= m_nMaxValue)
 		{
 			CRect cRect;
 			cRect.left = (m_nOldX + m_nCurrentX + 1)/2;
@@ -2461,15 +2461,15 @@ void CDrawSegmentSolid::DrawTo(int x, int value, const CYScale &cYScale, BOOL bV
 
 			cRect.NormalizeRect();
 
-			if(cRect.top > m_nReferenceY)
+			if (cRect.top > m_nReferenceY)
 				cRect.top = m_nReferenceY;
 
-			if(cRect.bottom < m_nReferenceY)
+			if (cRect.bottom < m_nReferenceY)
 				cRect.bottom = m_nReferenceY;
 
 			m_cDC.FillSolidRect(cRect, m_clr);
 		}
-		if(bValid)
+		if (bValid)
 		{
 			m_nMinValue = m_nMaxValue = value;
 		}
@@ -2485,12 +2485,12 @@ void CDrawSegmentSolid::DrawTo(int x, int value, const CYScale &cYScale, BOOL bV
 
 void CDrawSegmentLine::DrawTo(int x, int value, const CYScale &cYScale, BOOL bValid)
 {
-	if(bValid)
+	if (bValid)
 	{
 		CPoint point(x,cYScale.GetY(value));
 		m_pPoints[m_nSize++] = point;
 
-		if(m_nSize >= 100)
+		if (m_nSize >= 100)
 		{
 			Flush();
 			m_pPoints[m_nSize++] = point;
@@ -2504,12 +2504,12 @@ void CDrawSegmentLine::DrawTo(int x, int value, const CYScale &cYScale, BOOL bVa
 
 void CDrawSegmentLine::DrawTo(int x, const CXScale &cXScale, int y, BOOL bValid)
 {
-	if(bValid)
+	if (bValid)
 	{
 		CPoint point(cXScale.GetX(x),y);
 		m_pPoints[m_nSize++] = point;
 
-		if(m_nSize >= 100)
+		if (m_nSize >= 100)
 		{
 			Flush();
 			m_pPoints[m_nSize++] = point;
@@ -2523,7 +2523,7 @@ void CDrawSegmentLine::DrawTo(int x, const CXScale &cXScale, int y, BOOL bValid)
 
 void CDrawSegmentLine::Flush()
 {
-	if(m_nSize >= 2)
+	if (m_nSize >= 2)
 		Polyline(m_cDC.m_hDC, m_pPoints, m_nSize);
 
 	m_nSize = 0;
@@ -2531,7 +2531,7 @@ void CDrawSegmentLine::Flush()
 
 void CDrawSegmentSample::DrawTo(int x, CDataSource::CValues &values, const CYScale &cYScale, BOOL bValid)
 {
-	if(bValid && values.nMax != values.nMin)
+	if (bValid && values.nMax != values.nMin)
 	{
 		DrawTo(x, values.nMax, cYScale, bValid);
 		DrawTo(x, values.nMin, cYScale, bValid);
@@ -2544,7 +2544,7 @@ void CDrawSegmentSample::DrawTo(int x, CDataSource::CValues &values, const CYSca
 
 void CDrawSegmentSample::DrawTo(int x, int value, const CYScale &cYScale, BOOL bValid)
 {
-	if(bValid)
+	if (bValid)
 	{
 		int y = cYScale.GetY(value);
 		CYScaleLinear cIdentity(1,0);
@@ -2559,7 +2559,7 @@ void CDrawSegmentSample::DrawTo(int x, int value, const CYScale &cYScale, BOOL b
 
 void CDrawSegmentDotOnly::DrawTo(int x, CDataSource::CValues &values, const CYScale &cYScale, BOOL bValid)
 {
-	if(bValid && values.nMax != values.nMin)
+	if (bValid && values.nMax != values.nMin)
 	{
 		DrawTo(x, values.nMax, cYScale, bValid);
 		DrawTo(x, values.nMin, cYScale, bValid);
@@ -2572,7 +2572,7 @@ void CDrawSegmentDotOnly::DrawTo(int x, CDataSource::CValues &values, const CYSc
 
 void CDrawSegmentDotOnly::DrawTo(int x, int value, const CYScale &cYScale, BOOL bValid)
 {
-	if(bValid)
+	if (bValid)
 	{
 		int y = cYScale.GetY(value);
 		CYScaleLinear cIdentity(1,0);

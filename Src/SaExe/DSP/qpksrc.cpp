@@ -33,7 +33,7 @@ FindNextPeak(const float * & first, const float * const last,
   // Handle degenerate cases:
   
   // If only one or two points, not enough for a peak.
-  if(last - first < 2)
+  if (last - first < 2)
     return NULL;
     
   // Handle usual cases.
@@ -52,7 +52,7 @@ FindNextPeak(const float * & first, const float * const last,
     FitParabola(p, y);
     
     // The second derivative at y+1 is given by p[2]*2
-    if(p[2]*2.0f < concavityThreshold)
+    if (p[2]*2.0f < concavityThreshold)
       break;
 
     y++;
@@ -64,12 +64,12 @@ FindNextPeak(const float * & first, const float * const last,
   {
     FitParabola(p, y);
     // If we've passed to a region of convexity, stop
-    if(p[2]*2.0f > concavityThreshold)
+    if (p[2]*2.0f > concavityThreshold)
       break;
     
     // The derivative at y+1 is given by p[1].
     // If we've found a flatter spot, save it.
-    if(float(fabs(p[1])) < bestDerivative)
+    if (float(fabs(p[1])) < bestDerivative)
     {
       bestDerivative = float(fabs(p[1]));
       bestLocation = y+1;
@@ -78,7 +78,7 @@ FindNextPeak(const float * & first, const float * const last,
     y++;
   }
   
-  if(y+2 < last)
+  if (y+2 < last)
   {
     // Means we found a complete peak
     assert(bestDerivative < FLT_MAX);
@@ -109,7 +109,7 @@ QuadraticPeakSource::Search(const float * start, const float * end)
   myEnd = end;
   myMark = start;
                  
-  if(start == end)
+  if (start == end)
   {
     imDone = 1;
   }
@@ -131,7 +131,7 @@ QuadraticPeakSource::Next()
   
   const float * peakLocation = FindNextPeak(myMark, myEnd, myThreshold);
   
-  if(peakLocation)
+  if (peakLocation)
   {
     myLocation = float(peakLocation - myStart);
     myValue = *peakLocation;

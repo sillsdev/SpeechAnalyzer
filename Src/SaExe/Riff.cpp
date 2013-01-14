@@ -124,7 +124,7 @@ BOOL CRiff::NewWav(const TCHAR *pszPathName, PCMWAVEFORMAT &pcm, const TCHAR *sz
       do
       {
         nBytesRead = long(pFile->Read(pCopyBuf, BUFFER_SIZE));
-        if(nBytesRead && (mmioWrite(hmmioFile, pCopyBuf, nBytesRead) != nBytesRead))
+        if (nBytesRead && (mmioWrite(hmmioFile, pCopyBuf, nBytesRead) != nBytesRead))
           throw IDS_ERROR_WRITEDATACHUNK;
       } while (nBytesRead == BUFFER_SIZE);
 
@@ -134,8 +134,8 @@ BOOL CRiff::NewWav(const TCHAR *pszPathName, PCMWAVEFORMAT &pcm, const TCHAR *sz
     }
     catch (...)
     {
-      if(pFile) delete pFile;
-      if(pCopyBuf) delete [] pCopyBuf;
+      if (pFile) delete pFile;
+      if (pCopyBuf) delete [] pCopyBuf;
       // error writing data chunk
       pApp->ErrorMessage(IDS_ERROR_WRITEDATACHUNK, pszPathName);
       mmioClose(hmmioFile, 0);
@@ -145,7 +145,7 @@ BOOL CRiff::NewWav(const TCHAR *pszPathName, PCMWAVEFORMAT &pcm, const TCHAR *sz
 
   // At file end what is file position
   MMIOINFO mmioinfo;
-  if(mmioGetInfo(hmmioFile,&mmioinfo,0))
+  if (mmioGetInfo(hmmioFile,&mmioinfo,0))
   {
     // error writing RIFF chunk
     pApp->ErrorMessage(IDS_ERROR_WRITERIFFCHUNK, pszPathName);
@@ -170,7 +170,7 @@ BOOL CRiff::NewWav(const TCHAR *pszPathName, PCMWAVEFORMAT &pcm, const TCHAR *sz
     mmioClose(hmmioFile, 0);
     return FALSE;
   }
-  if(!mmioClose(hmmioFile, 0)) // close file
+  if (!mmioClose(hmmioFile, 0)) // close file
   {
     // Set File Length ...
     // SDM 1.5Test10.2

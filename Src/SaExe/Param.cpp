@@ -214,13 +214,13 @@ void PitchParm::GetAutoRange(CSaDoc *pDoc, int &nUpperBound, int &nLowerBound)
 
 	CDataProcess * pGrappl = (CProcessGrappl*)pDoc->GetGrappl(); // get pointer to grappl object
 	// If auto pitch is not done look for alternates
-	if(!pGrappl->IsDataReady())
+	if (!pGrappl->IsDataReady())
 		pGrappl = pDoc->GetSmoothedPitch();
-	if(!pGrappl->IsDataReady())
+	if (!pGrappl->IsDataReady())
 		pGrappl = pDoc->GetPitch();
-	if(!pGrappl->IsDataReady())
+	if (!pGrappl->IsDataReady())
 		pGrappl = pDoc->GetCustomPitch();
-	if(pGrappl->IsDataReady() && !pGrappl->IsStatusFlag(PROCESS_NO_PITCH))
+	if (pGrappl->IsDataReady() && !pGrappl->IsStatusFlag(PROCESS_NO_PITCH))
 	{
 		// auto range mode
 		int nMinData = pGrappl->GetMinValue();
@@ -240,7 +240,7 @@ void PitchParm::GetAutoRange(CSaDoc *pDoc, int &nUpperBound, int &nLowerBound)
 		// Add a little space to the top/bottom
 		nMaxData = int(nMaxData * 1.05);
 		nMinData = int(nMinData / 1.05);
-		if(nMinData < 0)
+		if (nMinData < 0)
 			nMinData = 0;
 
 		temp.nUpperBound = nMaxData;
@@ -263,7 +263,7 @@ void UttParm::Init(int nBitsPerSample)
 
 int UttParm::TruncatedCritLoud(int nBitsPerSample) const
 {
-	if(nCritLoud<128) return nCritLoud;
+	if (nCritLoud<128) return nCritLoud;
 
 	int nResult=nCritLoud;
 
@@ -370,7 +370,7 @@ void MusicParm::GetAutoRange(CSaDoc *pDoc, int &nUpperBound, int &nLowerBound)
 
 	CProcessMelogram* pMelogram = (CProcessMelogram*)pDoc->GetMelogram(); // get pointer to melogram object
 
-	if(pMelogram->IsDataReady() && !pMelogram->IsStatusFlag(PROCESS_NO_PITCH))
+	if (pMelogram->IsDataReady() && !pMelogram->IsStatusFlag(PROCESS_NO_PITCH))
 	{
 		int nLowerBound = (int)floor((double)pMelogram->GetMinValue() / 100.0);
 		int nUpperBound = (int)ceil((double)pMelogram->GetMaxValue() / 100.0);

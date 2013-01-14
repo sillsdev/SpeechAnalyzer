@@ -206,7 +206,7 @@ HMODULE LoadCompatibleLibrary(LPCTSTR szCName)
 	CSaString szName = szCName;
 
 	int nFind = szApp.ReverseFind('\\');
-	if(nFind != -1)
+	if (nFind != -1)
 	{
 		szName = szApp.Left(nFind+1) + szCName;
 	}
@@ -215,12 +215,12 @@ HMODULE LoadCompatibleLibrary(LPCTSTR szCName)
 
 	DWORD dwSize = GetFileVersionInfoSize(szName.GetBuffer(0), &dwHandle);
 
-	if(!dwSize)
+	if (!dwSize)
 		return 0;
 
 	void* pLibVersion = (void*) new char[dwSize];
 
-	if(!GetFileVersionInfo(szName.GetBuffer(0), dwHandle, dwSize, pLibVersion))
+	if (!GetFileVersionInfo(szName.GetBuffer(0), dwHandle, dwSize, pLibVersion))
 	{
 		delete [] pLibVersion;
 		return 0;
@@ -228,7 +228,7 @@ HMODULE LoadCompatibleLibrary(LPCTSTR szCName)
 
 	VS_FIXEDFILEINFO *pLibVS = NULL;
 	unsigned int nLen;
-	if(!VerQueryValue(pLibVersion, _T("\\"), (void**) &pLibVS, &nLen))
+	if (!VerQueryValue(pLibVersion, _T("\\"), (void**) &pLibVS, &nLen))
 	{
 		delete [] pLibVersion;
 		return 0;
@@ -236,12 +236,12 @@ HMODULE LoadCompatibleLibrary(LPCTSTR szCName)
 
 	dwSize = GetFileVersionInfoSize(szApp.GetBuffer(0), &dwHandle);
 
-	if(!dwSize)
+	if (!dwSize)
 		return 0;
 
 	void* pAppVersion = (void*) new char[dwSize];
 
-	if(!GetFileVersionInfo(szApp.GetBuffer(0), dwHandle, dwSize, pAppVersion))
+	if (!GetFileVersionInfo(szApp.GetBuffer(0), dwHandle, dwSize, pAppVersion))
 	{
 		delete [] pLibVersion;
 		delete [] pAppVersion;
@@ -249,14 +249,14 @@ HMODULE LoadCompatibleLibrary(LPCTSTR szCName)
 	}
 
 	VS_FIXEDFILEINFO *pAppVS = NULL;
-	if(!VerQueryValue(pAppVersion, _T("\\"), (void**) &pAppVS, &nLen))
+	if (!VerQueryValue(pAppVersion, _T("\\"), (void**) &pAppVS, &nLen))
 	{
 		delete [] pLibVersion;
 		delete [] pAppVersion;
 		return 0;
 	}
 
-	if(pAppVS->dwFileVersionLS != pLibVS->dwFileVersionLS ||
+	if (pAppVS->dwFileVersionLS != pLibVS->dwFileVersionLS ||
 		pAppVS->dwFileVersionMS != pLibVS->dwFileVersionMS || 
 		pAppVS->dwProductVersionLS != pLibVS->dwProductVersionLS || 
 		pAppVS->dwProductVersionMS != pLibVS->dwProductVersionMS || 
@@ -295,7 +295,7 @@ BOOL CSaApp::InitInstance()
 	m_hLocalizedResources = LoadCompatibleLibrary(_T("SA_LOCAL.DLL"));
 #endif
 
-	if(!m_hEnglishResources && !m_hLocalizedResources)
+	if (!m_hEnglishResources && !m_hLocalizedResources)
 	{
 		AfxMessageBox(_T("No resources found, exiting"));
 		return FALSE;
@@ -354,7 +354,7 @@ BOOL CSaApp::InitInstance()
 
 		// create main MDI Frame window
 		CMainFrame* pMainFrame = new CMainFrame;
-		if(CSaString(m_pszExeName).Find(_T("SAS")) == -1)
+		if (CSaString(m_pszExeName).Find(_T("SAS")) == -1)
 		{
 			if (!pMainFrame->LoadFrame(IDR_MAINFRAME))
 			{
@@ -376,7 +376,7 @@ BOOL CSaApp::InitInstance()
 		free((void*)m_pszHelpFilePath);
 		m_pszHelpFilePath = _tcsdup(szNewPath);
 
-		if(CSaString(m_pszExeName).Find(_T("SAS")) != -1)
+		if (CSaString(m_pszExeName).Find(_T("SAS")) != -1)
 		{
 			if (!GetBatchMode())
 			{
@@ -454,7 +454,7 @@ BOOL CSaApp::InitInstance()
 				return FALSE;
 			}
 
-			if(!bSettingSuccess)
+			if (!bSettingSuccess)
 			{
 				pMainFrame->ShowWindow(m_nCmdShow);
 			}
@@ -771,7 +771,7 @@ void CSaApp::ExamineCmdLine(LPCTSTR pCmdLine, WPARAM wParam)
 							// get pointer to view
 							POSITION pos = pDoc->GetFirstViewPosition();
 							CSaView* pView = (CSaView*)pDoc->GetNextView(pos); // get pointer to view
-							if(dwStop > dwStart)
+							if (dwStop > dwStart)
 							{
 								// set start and stop cursors and view frame
 								pView->SetStartCursorPosition(dwStart);
@@ -801,15 +801,15 @@ void CSaApp::ExamineCmdLine(LPCTSTR pCmdLine, WPARAM wParam)
 #ifdef WeShouldNotGetHere // We are now using MFC default command line processing for this mode
 			CSaString szCursors;
 
-			if(szCmdLine[0] == '\"')
+			if (szCmdLine[0] == '\"')
 			{
 				// Filename in Quotes
 				int nIndex = szCmdLine.Find("\"",1);
 
-				if(nIndex != -1)
+				if (nIndex != -1)
 				{
 					m_szCmdFileName = szCmdLine.Mid(1, nIndex-1);
-					if((nIndex = szCmdLine.Find(' ', nIndex)) != -1)
+					if ((nIndex = szCmdLine.Find(' ', nIndex)) != -1)
 						szCursors = szCmdLine.Mid(nIndex+1);
 				}
 				else
@@ -829,7 +829,7 @@ void CSaApp::ExamineCmdLine(LPCTSTR pCmdLine, WPARAM wParam)
 			// set start and stop cursors
 			if (pDoc)
 			{
-				if(!szCursors.IsEmpty())
+				if (!szCursors.IsEmpty())
 				{
 					if (szCursors.Find(' ') != -1) // space found -> start and stop cursor given
 					{
@@ -924,7 +924,7 @@ void CSaApp::OnProcessBatchCommands()
 					// get pointer to view
 					POSITION pos = pDoc->GetFirstViewPosition();
 					CSaView* pView = (CSaView*)pDoc->GetNextView(pos); // get pointer to view
-					if(dwStop > dwStart)
+					if (dwStop > dwStart)
 					{
 						// set start and stop cursors and view frame
 						pView->SetStartCursorPosition(dwStart);
@@ -1123,9 +1123,6 @@ void CSaApp::OnProcessBatchCommands()
 /***************************************************************************/
 void CSaApp::ErrorMessage(UINT nTextID, LPCTSTR pszText1, LPCTSTR pszText2)
 {
-#ifdef _DEBUG
-	ASSERT(FALSE);
-#endif
 	CSaString szText;
 	try 
 	{
@@ -1640,7 +1637,7 @@ CSaString CSaApp::DefaultDir(CSaString *pFilename) const
 
 			CFileStatus cStatus;
 
-			if(CFile::GetStatus(szPath, cStatus) && cStatus.m_attribute & CFile::directory)
+			if (CFile::GetStatus(szPath, cStatus) && cStatus.m_attribute & CFile::directory)
 				return szPath + "\\";
 		}
 	}
@@ -1658,7 +1655,7 @@ CSaString CSaApp::DefaultDir(CSaString *pFilename) const
 			{
 				CFileStatus cStatus;
 
-				if(CFile::GetStatus(szPath.Left(nFind), cStatus) && cStatus.m_attribute & CFile::directory)
+				if (CFile::GetStatus(szPath.Left(nFind), cStatus) && cStatus.m_attribute & CFile::directory)
 				{
 					workingDir = szPath.Left(nFind + 1);
 					break;
@@ -1671,13 +1668,13 @@ CSaString CSaApp::DefaultDir(CSaString *pFilename) const
 		}
 	}
 
-	if(workingDir.IsEmpty())
+	if (workingDir.IsEmpty())
 	{
 		// check data location in registry
 		workingDir = ((CWinApp*)this)->GetProfileString(_T(""), _T("DataLocation"));
 	}
 
-	if(workingDir.IsEmpty())
+	if (workingDir.IsEmpty())
 	{
 		// fall back to the current directory
 		TCHAR Buffer[MAX_PATH];
@@ -1817,7 +1814,7 @@ void CSaApp::FileReturn(BOOL bHide)
 				m_nCmdShow = SW_HIDE; // to prevent MFC to restore on startup
 			}
 			pWnd->SendMessage(WM_USER_SPEECHAPPLICATION, SPEECH_WPARAM_SHOWSM, 0);
-			if(bHide)
+			if (bHide)
 			{
 				CancelBatchMode();
 				OnAppExit();
@@ -1893,7 +1890,7 @@ BOOL CSaApp::OnIdle(LONG lCount)
 	// display error message if present
 	DisplayMessages();
 
-	if(bMore)
+	if (bMore)
 		return TRUE; // more idle processing necessary
 
 	// get active document
@@ -2345,8 +2342,6 @@ CSaView* CSaApp::pviewNeighbor(CSaView* pviewCur, UINT uNextOrPrev)
 
 /***************************************************************************/
 /***************************************************************************/
-static const char* psz_mrulst       = "mrulst";
-static const char* psz_mru          = "mru";
 static const char* psz_SaApp        = "SaApp";
 static const char* psz_settingsfile = "sa3.psa";
 static const char* psz_batchsettingsfile = "sa batch.psa";
@@ -2432,38 +2427,13 @@ BOOL CSaApp::ReadProperties(Object_istream& obs)
 	}
 
 	// activate top window (not last document)
-	if(pviewTop())  // only if there is a top window
+	if (pviewTop())  // only if there is a top window
+	{
 		pviewTop()->ShowInitialTopState();
-
-	return TRUE;
-}
-
-/***************************************************************************/
-// Read in Most Recently Used file list on the File menu
-/***************************************************************************/
-BOOL CSaApp::bReadMRUList(Object_istream& obs)
-{
-	if (!obs.bReadBeginMarker(psz_mrulst))
-	{
-		return FALSE;
-	}
-
-	while (!obs.bAtEnd())
-	{
-		CSaString sFile;
-		if (obs.bReadString(psz_mru, &sFile))
-#ifdef BJY_5_23_96
-			AddToRecentFileList(sFile);
-#else
-			;
-#endif
-		else if (obs.bEnd(psz_mrulst))
-			break;
 	}
 
 	return TRUE;
 }
-
 
 /***************************************************************************/
 /* CSaApp::WriteSettings
@@ -2506,7 +2476,8 @@ BOOL CSaApp::WriteSettings()
 * documents are loaded and the state of the views.
 *
 * returns TRUE only if it succeeds.
-*/
+*
+* These settings are set in HKEY_CURRENT_USER/Software/SIL/Speech Analyzer
 /***************************************************************************/
 BOOL CSaApp::ReadSettings()
 {
@@ -2529,7 +2500,6 @@ BOOL CSaApp::ReadSettings()
 		if (hModule != NULL)
 		{
 			SHGETFOLDERPATH fnShGetFolderPath = (SHGETFOLDERPATH)GetProcAddress(hModule, "SHGetFolderPathW");
-
 			if (fnShGetFolderPath != NULL)
 			{
 				fnShGetFolderPath(NULL, CSIDL_PERSONAL, NULL, 0, buf);
@@ -2539,20 +2509,24 @@ BOOL CSaApp::ReadSettings()
 		}
 
 		if (szPath.Right(1) != "\\")
+		{
 			szPath += _T("\\");
+		}
 		szPath += _T("Speech Analyzer");
 		WriteProfileString(_T(""), _T("DataLocation"), szPath);
 	}
 	if (szPath.Right(1) == "\\")
+	{
 		szPath = szPath.Left(szPath.GetLength() - 1);
+	}
 
 	CFileStatus cStatus;
-	if(!(CFile::GetStatus(szPath, cStatus) && cStatus.m_attribute & CFile::directory))
+	if (!(CFile::GetStatus(szPath, cStatus) && cStatus.m_attribute & CFile::directory))
 		CreateDirectory(szPath, NULL);
 
 	szPath += "\\";
 
-	if(GetBatchMode())
+	if (GetBatchMode())
 		szPath += psz_batchsettingsfile;
 	else    
 		szPath += psz_settingsfile;
@@ -2650,7 +2624,7 @@ CDocument* CSaApp::OpenDocumentFile(LPCTSTR lpszFileName)
 
 	// Complicated Run-Time Dynamic Linking because GetLongPathName is not supported in Win95
 	HMODULE hKernel32 = GetModuleHandle(_T("KERNEL32"));
-	if(hKernel32)
+	if (hKernel32)
 	{
 		typedef DWORD (WINAPI *PGetLongPathName)( LPCTSTR lpszShortPath, LPTSTR  lpszLongPath, DWORD cchBuffer);
 
@@ -2660,7 +2634,7 @@ CDocument* CSaApp::OpenDocumentFile(LPCTSTR lpszFileName)
 		PGetLongPathName pGetLongPathName = (PGetLongPathName) GetProcAddress(hKernel32, "GetLongPathNameA"); 
 #endif // !UNICODE
 
-		if(pGetLongPathName)
+		if (pGetLongPathName)
 			// Convert path name to proper case (fixes asthetic problems)
 			(pGetLongPathName)(pszPretty, pszPretty, _MAX_PATH);
 	}

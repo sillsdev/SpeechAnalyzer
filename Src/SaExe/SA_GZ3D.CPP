@@ -95,7 +95,7 @@ void CFormantChart::SetStartCursor(CSaView* pView)
 	short int nResult = LOWORD(pAutoPitch->Process(this, pDoc)); // process data
 	if (nResult == PROCESS_ERROR || nResult == PROCESS_NO_DATA || nResult == PROCESS_CANCELED) 
 	{
-		if( nResult == PROCESS_CANCELED)
+		if ( nResult == PROCESS_CANCELED)
 			pFormants->CancelProcess();
 		return;
 	}
@@ -126,7 +126,7 @@ void CFormantChart::SetStopCursor(CSaView* pView)
 	short int nResult = LOWORD(pAutoPitch->Process(this, pDoc)); // process data
 	if (nResult == PROCESS_ERROR || nResult == PROCESS_NO_DATA || nResult == PROCESS_CANCELED) 
 	{
-		if( nResult == PROCESS_CANCELED)
+		if ( nResult == PROCESS_CANCELED)
 			pFormants->CancelProcess();
 	}
 	DWORD dwWaveStart = (pView->GetStartCursorPosition() / Grappl_calc_intvl) * Grappl_calc_intvl;
@@ -191,7 +191,7 @@ short int CFormantChart::ProcessFormants()
 	short int nResult = LOWORD(pAutoPitch->Process(this, pDoc)); // process data
 	if (nResult == PROCESS_ERROR || nResult == PROCESS_NO_DATA || nResult == PROCESS_CANCELED) 
 	{
-		if( nResult == PROCESS_CANCELED)
+		if ( nResult == PROCESS_CANCELED)
 			pFormants->CancelProcess();
 		return nResult;
 	}
@@ -201,7 +201,7 @@ short int CFormantChart::ProcessFormants()
 	nResult = LOWORD(pFragments->Process(this, pDoc)); // process data
 	if (nResult == PROCESS_ERROR || nResult == PROCESS_NO_DATA || nResult == PROCESS_CANCELED) 
 	{
-		if( nResult == PROCESS_CANCELED)
+		if ( nResult == PROCESS_CANCELED)
 			pFormants->CancelProcess();
 		return nResult;
 	}
@@ -329,7 +329,7 @@ void CFormantChart::StandardPlot(CSaView *pView, CDC *pDC, CRect rClient, CRect 
 	zG.quality		= zG3D_QUALITY_HI;
 	zG.function		= NULL		 	 ;
 
-	if(!bValidData && zG.zdata == (double *) -1)
+	if (!bValidData && zG.zdata == (double *) -1)
 		zG.zdata = NULL; // Patch, to allow 3D graph with no data
 
 	// draw the graph -- this could be done by calling the ScatterGraph function,
@@ -373,7 +373,7 @@ void CFormantChart::StandardPlot(CSaView *pView, CDC *pDC, CRect rClient, CRect 
 
 	// Draw Vowel Set Title
 	const CSaString &szVowelSetName = GetDefaultVowelSet().GetName();
-	if(!szVowelSetName.IsEmpty() && szVowelSetName != "(None)")
+	if (!szVowelSetName.IsEmpty() && szVowelSetName != "(None)")
 	{
 		CFont VowelTitleFont;
 		const _TCHAR VowelTitleTypeface[] = _T("Arial");
@@ -390,7 +390,7 @@ void CFormantChart::StandardPlot(CSaView *pView, CDC *pDC, CRect rClient, CRect 
 		COLORREF oldColor = pDC->SetTextColor(pColor->cPlotData[0]); // set font color
 		pDC->DrawText(szVowelSetName, rVowel,
 			DT_SINGLELINE | DT_TOP | DT_LEFT | DT_NOCLIP | DT_NOPREFIX);
-		if(pFormants->GetVowelCount(nGender) == 0)
+		if (pFormants->GetVowelCount(nGender) == 0)
 		{
 			int nTop = pFormantChart->Y_TOP + (pFormantChart->Y_BOTTOM - pFormantChart->Y_TOP)/3;
 			CRect rVowel(pFormantChart->X_LEFT, nTop, pFormantChart->X_RIGHT,pFormantChart->Y_BOTTOM);
@@ -501,7 +501,7 @@ void CFormantChart::StandardPlot(CSaView *pView, CDC *pDC, CRect rClient, CRect 
 	delete pFormantChart;
 	if (DataPointSymbol) delete [] DataPointSymbol;
 
-	if(zG._3D_flag)
+	if (zG._3D_flag)
 	{
 		// set legend scale
 		GetParent()->SetLegendScale(SCALE | NUMBERS | ARBITRARY, zG.zstart, zG.zend, zG.V_Title, 5, 0.25); 
@@ -608,7 +608,7 @@ void CFormantChart::GraphHasFocus(BOOL bFocus)
 {
 	CMainFrame* pMainWnd = (CMainFrame*)AfxGetMainWnd();
 	CSaView* pView = (pMainWnd)?(CSaView*)pMainWnd->GetCurrSaView():NULL;
-	if(!pView) return;
+	if (!pView) return;
 	if (m_bAnimationPlot)
 	{
 		int nWaveGraphIndex = pView->GetGraphIndexForIDD(IDD_RAWDATA);
@@ -806,7 +806,7 @@ void CPlot3D::OnDraw(CDC * pDC, CRect rClient, CRect rClip, CSaView * pView)
 		bDataValid = FALSE;
 	}
 
-	if(bDataValid)
+	if (bDataValid)
 	{
 		int nPointsPerFrame = 1;
 		DWORD dwMaxNumberPoints = dwFormantFrameCount * nPointsPerFrame;
@@ -919,7 +919,7 @@ void CPlot3D::OnDraw(CDC * pDC, CRect rClient, CRect rClip, CSaView * pView)
 	BOOL bShowAxes = TRUE;
 	StandardPlot(pView, pDC, rClient, rClip, FormantChartParm, bFlipChart, bShowAxes, bDataValid);
 
-	if(bDataValid)
+	if (bDataValid)
 	{
 		// Release data point buffers.
 		free(FormantChartParm.xdata);
@@ -1207,7 +1207,7 @@ void CPlotF1F2::OnDraw(CDC * pDC, CRect rClient, CRect rClip, CSaView * pView)
 	BOOL bShowAxes = TRUE;
 	StandardPlot(pView, pDC, rClient, rClip, FormantChartParm, bFlipChart, bShowAxes, bDataValid);
 
-	if(bDataValid)
+	if (bDataValid)
 	{
 		// Release data point and title buffers.
 		free(FormantChartParm.xdata);
@@ -1483,7 +1483,7 @@ void CPlotF2F1::OnDraw(CDC * pDC, CRect rClient, CRect rClip, CSaView * pView)
 	BOOL bShowAxes = TRUE;
 	StandardPlot(pView, pDC, rClient, rClip, FormantChartParm, bFlipChart, bShowAxes, bDataValid);
 
-	if(bDataValid)
+	if (bDataValid)
 	{
 		// Release data point and title buffers.
 		free(FormantChartParm.xdata);
@@ -1633,7 +1633,7 @@ void CPlotF2F1F1::OnDraw(CDC * pDC, CRect rClient, CRect rClip, CSaView * pView)
 		bDataValid = FALSE;
 	}
 
-	if(bDataValid)
+	if (bDataValid)
 	{
 		int nPointsPerFrame = 1;
 		DWORD dwMaxNumberPoints = dwFormantFrameCount * nPointsPerFrame;
@@ -1756,7 +1756,7 @@ void CPlotF2F1F1::OnDraw(CDC * pDC, CRect rClient, CRect rClip, CSaView * pView)
 	BOOL bShowAxes = TRUE;
 	StandardPlot(pView, pDC, rClient, rClip, FormantChartParm, bFlipChart, bShowAxes, bDataValid);
 
-	if(bDataValid)
+	if (bDataValid)
 	{
 		// Release data point and title buffers.
 		free(FormantChartParm.xdata);

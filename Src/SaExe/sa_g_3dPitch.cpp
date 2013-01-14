@@ -166,7 +166,7 @@ BOOL CPlot3dPitch::CreateSpectroPalette(CDC* pDC, CDocument* /*pSaDoc*/)
   if (nRasterCaps) nNumColors = pDC->GetDeviceCaps(SIZEPALETTE);
   else nNumColors = pDC->GetDeviceCaps(NUMCOLORS);
 
-  if(nNumColors == -1)
+  if (nNumColors == -1)
   {
     int nBits = pDC->GetDeviceCaps(BITSPIXEL);
     nNumColors = 1 << nBits;
@@ -205,7 +205,7 @@ BOOL CPlot3dPitch::CreateSpectroPalette(CDC* pDC, CDocument* /*pSaDoc*/)
     if (!lpLogPalette) return FALSE;
     lpLogPalette->palVersion = 0x300;
     lpLogPalette->palNumEntries = WORD(2 * nPaletteSize);
-    if(!bPaletteInit)
+    if (!bPaletteInit)
     {
       if (!SpectroPalette.CreatePalette(lpLogPalette)) return FALSE;
     }
@@ -246,7 +246,7 @@ BOOL CPlot3dPitch::CreateSpectroPalette(CDC* pDC, CDocument* /*pSaDoc*/)
   // select the new palette
   CPalette *pOldSysPalette;
   pOldSysPalette = pDC->SelectPalette(&SpectroPalette, FALSE);
-  if(pOldSysPalette) // SDM 1.5Test11.32
+  if (pOldSysPalette) // SDM 1.5Test11.32
     pOldSysPalette->UnrealizeObject();
   pDC->RealizePalette();
   return TRUE;
@@ -420,7 +420,7 @@ BOOL CPlot3dPitch::OnDrawCorrelations(CDC *pDC, CRect rWnd, CRect rClip, CSaView
     }
   }
 
-  if(pBitmap)
+  if (pBitmap)
     delete pBitmap;
 
   // do common plot paint jobs
@@ -505,7 +505,7 @@ void CPlot3dPitch::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView)
     void *pBits;
     HBITMAP hBitmap = CreateDIBSection(pMemDC->m_hDC,pInfo,DIB_RGB_COLORS, &pBits,NULL,0);
 
-    if(hBitmap)
+    if (hBitmap)
     {
       HBITMAP hOldBitmap = (HBITMAP) ::SelectObject(pMemDC->m_hDC,hBitmap);
       
@@ -519,7 +519,7 @@ void CPlot3dPitch::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView)
       GdiFlush();  // finish all drawing to pMemDC
       
       // copy to destination
-      if(!pDC->BitBlt(rWnd.left,rWnd.top,rWnd.Width(),rWnd.Height(),pMemDC,0,0, SRCCOPY))
+      if (!pDC->BitBlt(rWnd.left,rWnd.top,rWnd.Width(),rWnd.Height(),pMemDC,0,0, SRCCOPY))
       {
         CSaString szError;
         szError.Format(_T("BitBLT Failed in ")_T(__FILE__)_T(" line %d"),__LINE__);
@@ -533,7 +533,7 @@ void CPlot3dPitch::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView)
     }
     else
     {
-      if(pInfo->bmiHeader.biWidth && pInfo->bmiHeader.biHeight)
+      if (pInfo->bmiHeader.biWidth && pInfo->bmiHeader.biHeight)
       {
         CSaString szError;
         szError.Format(_T("CreateDIBSection Failed in ")_T(__FILE__)_T(" line %d"),__LINE__);
@@ -543,7 +543,7 @@ void CPlot3dPitch::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView)
   }
   else
   {
-    if(!pMemDC || !pInfo)
+    if (!pMemDC || !pInfo)
       {
         CSaString szError;
         szError.Format(_T("memory allocation error in ")_T(__FILE__)_T(" line %d"),__LINE__);
@@ -558,7 +558,7 @@ void CPlot3dPitch::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView)
   }
   if (pMemDC)
     delete pMemDC;
-  if(pInfo)
+  if (pInfo)
     delete pInfo;
 
 }

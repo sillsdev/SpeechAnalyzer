@@ -1168,6 +1168,8 @@
 #define IDC_BEGIN_COMBO                 2060
 #define IDC_END_COMBO                   2061
 #define IDC_CHECK_GLOSS_EMPTY           2062
+#define IDC_CHECK1                      2066
+#define IDC_CHECK_OVERWRITE             2066
 #define IDS_PLAYER_SMALL                3000
 #define IDS_PLAYER_LARGE                3001
 #define IDS_STATTXT_PROCESSING          4000
@@ -1502,7 +1504,9 @@
 #define IDS_SPLIT_NO_GLOSS              33225
 #define IDS_SPLIT_NO_REF                33226
 #define IDS_SPLIT_NO_WRITE              33227
-#define IDS_SPLIT_NO_PHRASE              33228
+#define IDS_SPLIT_NO_PHRASE             33228
+#define IDS_SPLIT_FOLDER_EXISTS         33229
+#define IDS_SPLIT_FILE_EXISTS           33230
 #define ID_GRAPHTYPES_SELECT_FIRST      40000
 #define ID_GRAPHTYPES_SELECT_LAST       40011
 #define ID_PHONETIC_ALL                 40100
@@ -1630,7 +1634,7 @@
 #define _APS_3D_CONTROLS                     1
 #define _APS_NEXT_RESOURCE_VALUE        365
 #define _APS_NEXT_COMMAND_VALUE         33224
-#define _APS_NEXT_CONTROL_VALUE         2066
+#define _APS_NEXT_CONTROL_VALUE         2067
 #define _APS_NEXT_SYMED_VALUE           104
 #endif
 #endif

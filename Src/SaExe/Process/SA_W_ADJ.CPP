@@ -102,7 +102,7 @@ long CProcessAdjust::Process(void* pCaller, ISaDoc* pDoc, int nProgress, int nLe
 
 		double dScale = m_bInvert ? -1 : 1;
 
-		if(m_bNormalize)
+		if (m_bNormalize)
 		{
 			CButterworth cNormalize;
 

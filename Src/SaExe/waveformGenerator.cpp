@@ -62,7 +62,7 @@ long CDlgWaveformGenerator::settings::process::Process(settings &parms, void* pC
 
   // start process
   BeginWaitCursor(); // wait cursor
-  if(!StartProcess(pCaller, IDS_STATTXT_PROCESSWBGENERATOR)) // memory allocation failed or previous processing error
+  if (!StartProcess(pCaller, IDS_STATTXT_PROCESSWBGENERATOR)) // memory allocation failed or previous processing error
   {
     EndProcess(); // end data processing
     EndWaitCursor();
@@ -273,34 +273,34 @@ void CDlgWaveformGenerator::settings::SynthesizeSamples(HPSTR pTargetData, DWORD
   {
     double intermediate = 0;
     
-    if(m_bSinusoid1)
+    if (m_bSinusoid1)
       intermediate += m_dAmplitude[0]*sin(nSample*radiansPerSample[0]+phaseRadians[0]);
-    if(m_bSinusoid2)
+    if (m_bSinusoid2)
       intermediate += m_dAmplitude[1]*sin(nSample*radiansPerSample[1]+phaseRadians[1]);
-    if(m_bSinusoid3)
+    if (m_bSinusoid3)
       intermediate += m_dAmplitude[2]*sin(nSample*radiansPerSample[2]+phaseRadians[2]);
     
-    if(m_bComb)
+    if (m_bComb)
     {
       double dCycles = nSample/samplesPerCycle[3] + m_dPhase[3]/360;
       
-      if(fmod(dCycles, 1.0)*samplesPerCycle[3] < 1.0)
+      if (fmod(dCycles, 1.0)*samplesPerCycle[3] < 1.0)
         intermediate += m_dAmplitude[3];
     }
     
-    if(m_nHandleDiscontinuities == 0) // ideal
+    if (m_nHandleDiscontinuities == 0) // ideal
     {
-      if(m_bSquareWave)  // Positive for 180 degrees then negative for 180 degrees
+      if (m_bSquareWave)  // Positive for 180 degrees then negative for 180 degrees
       {
         double dCycles = nSample/samplesPerCycle[4] + m_dPhase[4]/360;
         intermediate += m_dAmplitude[4]*(fmod(dCycles , 1.0) >= 0.5 ? -1. : 1.);
       }
-      if(m_bTriangle) // rising from -90 to 90 then falling from 90 to 270
+      if (m_bTriangle) // rising from -90 to 90 then falling from 90 to 270
       {
         double dCycles = nSample/samplesPerCycle[5] + m_dPhase[5]/360;
         intermediate += m_dAmplitude[5]*(1 - 4.* fabs(fmod((dCycles + 0.25) , 1.0)-0.5));
       }
-      if(m_bSawtooth)  // falling linearly from -180 to 180 then jump discontinuity and cycle repeats
+      if (m_bSawtooth)  // falling linearly from -180 to 180 then jump discontinuity and cycle repeats
       {
         double dCycles = nSample/samplesPerCycle[6] + m_dPhase[6]/360;
         intermediate += m_dAmplitude[6]*(1 - 2.*fmod((dCycles + 0.5) , 1.0));
@@ -308,7 +308,7 @@ void CDlgWaveformGenerator::settings::SynthesizeSamples(HPSTR pTargetData, DWORD
     }
     else
     {
-      if(m_bSquareWave)  // Positive for 180 degrees then negative for 180 degrees
+      if (m_bSquareWave)  // Positive for 180 degrees then negative for 180 degrees
       {
         double square = 0;
         
@@ -319,7 +319,7 @@ void CDlgWaveformGenerator::settings::SynthesizeSamples(HPSTR pTargetData, DWORD
         
         intermediate += m_dAmplitude[4]*4/pi*square;
       }
-      if(m_bTriangle) // rising from -90 to 90 then falling from 90 to 270
+      if (m_bTriangle) // rising from -90 to 90 then falling from 90 to 270
       {
         double triangle = 0;
         double sign = 1;
@@ -332,7 +332,7 @@ void CDlgWaveformGenerator::settings::SynthesizeSamples(HPSTR pTargetData, DWORD
         
         intermediate += m_dAmplitude[5]*8/pi/pi*triangle;
       }
-      if(m_bSawtooth)  // falling linearly from -180 to 180 then jump discontinuity and cycle repeats
+      if (m_bSawtooth)  // falling linearly from -180 to 180 then jump discontinuity and cycle repeats
       {
         double saw = 0;
         double sign = 1;
@@ -554,7 +554,7 @@ void CDlgWaveformGenerator::OnOK()
   TCHAR szFile[_MAX_PATH];
   // create temp filename for synthesized waveform
   GetTempFileName(lpszTempPath, _T("wav"), 0, szFile);
-  if(current.Synthesize(szFile))
+  if (current.Synthesize(szFile))
   {  
     CSaApp *pApp = (CSaApp*)(AfxGetApp());    
     pApp->OpenWavFileAsNew(szFile);
@@ -597,7 +597,7 @@ void CDlgWaveformGenerator::OnGeneratorBandwith()
 
   pWnd = GetDlgItem(IDC_GENERATOR_NUMBER_OF_HARMONICS);
 
-  if(pWnd)
+  if (pWnd)
     pWnd->EnableWindow(bEnable);
 }
 

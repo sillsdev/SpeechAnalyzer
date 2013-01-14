@@ -369,22 +369,22 @@ float Spectrogram::Version(void)
 dspError_t Spectrogram::CreateObject(Spectrogram** Spgm, SPGM_SETTINGS SpgmSetting, SIG_PARMS Signal)
 {
 	// Validate requested spectrogram settings and signal parameters.
-	if(!Spgm)
+	if (!Spgm)
 		return(Code(INVALID_PARM_PTR));  //address of pointer to spectrogram object
 	//  must not be NULL
 	*Spgm = NULL;
 	dspError_t dspError_t = ValidateSettings(SpgmSetting);    //check settings
-	if(dspError_t)
+	if (dspError_t)
 		return(dspError_t);
 	dspError_t = ValidateSignalParms(Signal);          //check signal parameters
-	if(dspError_t)
+	if (dspError_t)
 		return(dspError_t);
-	if(SpgmSetting.UprFreq > (float)Signal.SmpRate/2.F)  //upper frequency requested for
+	if (SpgmSetting.UprFreq > (float)Signal.SmpRate/2.F)  //upper frequency requested for
 		return(Code(INVALID_FREQ));                        //  spectrogram must not be
 	//  greater than signal bandwidth
-	if(SpgmSetting.SigBlkOffset + SpgmSetting.SigBlkLength > Signal.Length)
+	if (SpgmSetting.SigBlkOffset + SpgmSetting.SigBlkLength > Signal.Length)
 		return(Code(INVALID_BLOCK_LEN));  //block to calculate must not go beyond end of signal data
-	if(SpgmSetting.SpectCnt > Signal.Length)
+	if (SpgmSetting.SpectCnt > Signal.Length)
 		return(Code(INVALID_NUM_SPECTRA)); //number of spectra must not exceed signal length
 
 
@@ -397,7 +397,7 @@ dspError_t Spectrogram::CreateObject(Spectrogram** Spgm, SPGM_SETTINGS SpgmSetti
 	// Allocate memory for spectrogram based on number of points to display.
 	int32 Size = (int32)SpgmSetting.FreqCnt * (int32)SpgmSetting.SpectCnt;
 	uint8 *SpgmData = (uint8 *)malloc(Size * sizeof(uint8));
-	if(!SpgmData)
+	if (!SpgmData)
 	{
 		return(Code(OUT_OF_MEMORY));
 	}
@@ -405,7 +405,7 @@ dspError_t Spectrogram::CreateObject(Spectrogram** Spgm, SPGM_SETTINGS SpgmSetti
 	// Allocate memory for formant data.
 	FORMANT_FREQ *FmntData = (FORMANT_FREQ *)malloc((uint16)SpgmSetting.SpectCnt *
 		sizeof(FORMANT_FREQ));
-	if(!FmntData)
+	if (!FmntData)
 	{
 		free(SpgmData);
 		return(Code(OUT_OF_MEMORY));
@@ -416,7 +416,7 @@ dspError_t Spectrogram::CreateObject(Spectrogram** Spgm, SPGM_SETTINGS SpgmSetti
 	Size = (int32)(SpgmSetting.SpectBatchLength + (SpgmSetting.SpectBatchLength % 2)) *
 		(int32)SpgmSetting.FreqCnt;
 	uint8 * ScreenData = new uint8[Size];
-	if(!ScreenData)
+	if (!ScreenData)
 	{
 		free(FmntData);
 		free(SpgmData);
@@ -428,7 +428,7 @@ dspError_t Spectrogram::CreateObject(Spectrogram** Spgm, SPGM_SETTINGS SpgmSetti
 
 	// Construct spectrogram object.
 	*Spgm = new Spectrogram(SpgmSetting, SpgmData, FmntData, Window, NBWindow, Signal, ScreenData);
-	if(!*Spgm)
+	if (!*Spgm)
 	{                                                     //!!put in function
 		delete [] ScreenData;
 		free(FmntData);
@@ -1006,7 +1006,7 @@ dspError_t Spectrogram::PwrFFT(uint8 *PwrSpect)
 	// Calculate power for spectral locations to be displayed, aligning them with nearest FFT
 	// points.  Some error is introduced here, but true interpolation would be too costly.
 
-	if(m_SpectLen + 1 == m_SpgmHgt && m_FreqScale == m_SpectScale)
+	if (m_SpectLen + 1 == m_SpgmHgt && m_FreqScale == m_SpectScale)
 	{
 		const double dDbMin = db[m_PreEmphSw][SmpByteSize].Min;
 		const double dDbMax = db[m_PreEmphSw][SmpByteSize].Max;
@@ -1055,7 +1055,7 @@ dspError_t Spectrogram::PwrFFT(uint8 *PwrSpect)
 		{
 			i = (uint16)(Freq/m_SpectScale + 0.5F);  //set to nearest FFT point
 
-			if(i != m_SpectLen)
+			if (i != m_SpectLen)
 				break;
 			ENCODE_DPOWER_AS_DB(dBVal, dPower);
 
@@ -1066,7 +1066,7 @@ dspError_t Spectrogram::PwrFFT(uint8 *PwrSpect)
 		for (; j < m_SpgmHgt; Freq -= m_FreqScale, j++)
 		{
 			i = (uint16)(Freq/m_SpectScale + 0.5F);  //set to nearest FFT point
-			if(i==0)
+			if (i==0)
 				break;
 			dPower = (SpectCoeff[i].real*SpectCoeff[i].real +
 				SpectCoeff[i].imag*SpectCoeff[i].imag);
@@ -1267,7 +1267,7 @@ MIN_LOG_PWR : 0.5F*(float)log10(spectCoeff[i].real*
 
 	hiPeakPtr = FindHighestPeak(cepstralCoeff + m_MinPitchPeriod,
 		cepstralCoeff + m_MaxPitchPeriod, 0);
-	if(hiPeakPtr != NULL)
+	if (hiPeakPtr != NULL)
 	{
 		hiPeakLoc = hiPeakPtr - cepstralCoeff;
 		hiPeakVal = *hiPeakPtr;
@@ -1280,7 +1280,7 @@ MIN_LOG_PWR : 0.5F*(float)log10(spectCoeff[i].real*
 	// and we record its time as the pitch period and calculate
 	// the pitch frequency from it.  If it's too low, this sound
 	// is unvoiced.
-	if(hiPeakVal > MIN_PITCHPEAK_THD)   //!!MIN_PEAK_THD > FLT_MIN_NEG
+	if (hiPeakVal > MIN_PITCHPEAK_THD)   //!!MIN_PEAK_THD > FLT_MIN_NEG
 		fmnt->F[0] = (float)m_SmpRate/(float)hiPeakLoc;
 	else
 		fmnt->F[0] = UNVOICED;

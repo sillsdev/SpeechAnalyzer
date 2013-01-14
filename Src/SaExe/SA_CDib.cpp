@@ -75,7 +75,7 @@ void CDib::Construct(CDC* pDC, int nBt, BOOL bCompr)
 		m_nBits = bm.bmPlanes * bm.bmBitsPixel; // color bits per pixel
 	}
 
-	if(m_nBits > 8)
+	if (m_nBits > 8)
 		m_nBits = 24;
 
 	if (m_nBits == 1)
@@ -237,12 +237,12 @@ void CDib::Serialize(CArchive& ar)
 ///////////////////////////////////////////////////////////////////
 void CDib::CaptureWindow(CWnd* pCaptureThis, CRect rectCrop, BOOL bClient)
 {
-	if(pCaptureThis)
+	if (pCaptureThis)
 	{
 		pCaptureThis->UpdateWindow();
 	}
 	CDC* pScreen;
-	if(bClient)
+	if (bClient)
 		pScreen = new CClientDC(pCaptureThis);
 	else
 		pScreen = new CWindowDC(pCaptureThis);
@@ -311,12 +311,12 @@ void CDib::CaptureWindow(CWnd* pCaptureThis, CRect rectCrop, BOOL bClient)
 ///////////////////////////////////////////////////////////////////
 void CDib::CopyToClipboard(CWnd* pWnd) const
 {
-	if((!pWnd) || (m_lpData == NULL)) return;
+	if ((!pWnd) || (m_lpData == NULL)) return;
 
 	size_t szColors=0;
-	if(m_lpBMIH->biClrUsed)
+	if (m_lpBMIH->biClrUsed)
 	{
-		if(m_lpBMIH->biClrUsed%2)m_lpBMIH->biClrUsed++;// must use even colors to keep data on DWORD boundary
+		if (m_lpBMIH->biClrUsed%2)m_lpBMIH->biClrUsed++;// must use even colors to keep data on DWORD boundary
 		szColors = (size_t) m_lpBMIH->biClrUsed * sizeof(RGBQUAD);
 	}
 	else
@@ -325,9 +325,9 @@ void CDib::CopyToClipboard(CWnd* pWnd) const
 	}
 
 	HGLOBAL hDIB = GlobalAlloc(GMEM_MOVEABLE, m_lpBMIH->biSize+m_lpBMIH->biSizeImage+szColors);
-	if(hDIB == NULL)
+	if (hDIB == NULL)
 	{
-		if(hDIB) GlobalFree(hDIB);
+		if (hDIB) GlobalFree(hDIB);
 		return;
 	}
 
@@ -354,7 +354,7 @@ void CDib::CopyToClipboard(CWnd* pWnd) const
 	}
 	else
 	{
-		if(hDIB) GlobalFree(hDIB);
+		if (hDIB) GlobalFree(hDIB);
 		return;
 	}
 
@@ -379,11 +379,11 @@ void CDib::Save(void)
 		while ((nResult = dlg.DoModal()) == IDOK)
 		{
 			szPathnameExtended = dlg.GetPathName();
-			if(dlg.GetFileExt().IsEmpty())
+			if (dlg.GetFileExt().IsEmpty())
 			{
 				CSaString szExtension;
 
-				if(dlg.m_ofn.nFilterIndex == 2)
+				if (dlg.m_ofn.nFilterIndex == 2)
 					szExtension = ".bmp";
 				else
 					szExtension = ".png";
@@ -391,10 +391,10 @@ void CDib::Save(void)
 				szPathnameExtended += szExtension;
 
 				CFileStatus status;
-				if(CFile::GetStatus(szPathnameExtended, status))
+				if (CFile::GetStatus(szPathnameExtended, status))
 				{
 					CSaString szPrompt = szPathnameExtended + _T(" already exists.\nDo you want to replace it?");
-					if(AfxMessageBox(szPrompt, MB_YESNO) == IDNO)
+					if (AfxMessageBox(szPrompt, MB_YESNO) == IDNO)
 					{
 						// User does not want to overwrite
 						//            dlg.m_ofn.lpstrInitialDir = dlg.GetFolderPath();
@@ -405,13 +405,13 @@ void CDib::Save(void)
 			break;
 		}
 
-		if(nResult == IDOK)
+		if (nResult == IDOK)
 		{
 			CFile file;
 			CSaString szBmpFilename;
 			CSaString szPngFilename;
 
-			if(dlg.m_ofn.nFilterIndex == 1)
+			if (dlg.m_ofn.nFilterIndex == 1)
 			{
 				szPngFilename = szPathnameExtended;
 
@@ -438,7 +438,7 @@ void CDib::Save(void)
 				Serialize(ar);
 				ar.Close();
 				file.Close();
-				if(!szPngFilename.IsEmpty())
+				if (!szPngFilename.IsEmpty())
 				{
 					try
 					{
@@ -448,7 +448,7 @@ void CDib::Save(void)
 						CSaString szQuotedPng = _T("\"") + szPngFilename + _T("\"");
 						int nResult = _wspawnlp(_P_WAIT, szB2PPath, 
 							_T("bmp2png.exe"), /*_T("-L"),*/ _T("-E"), _T("-Q"), _T("-O"), (LPCTSTR)szQuotedPng, (LPCTSTR)szQuotedBmp, NULL);
-						if(nResult != 0)
+						if (nResult != 0)
 						{
 							AfxMessageBox(IDS_ERROR_SCREEN_CAPTURE_SAVE);
 							TRACE(_T("bmp2png result = %d\n"), nResult);
@@ -680,7 +680,7 @@ BOOL CDib::Paint(CDC * pDC,
 		DIB_RGB_COLORS,                 // wUsage
 		SRCCOPY);                       // dwROP
 
-	if(bSuccess == 0) // SDM 1.5Test10.8
+	if (bSuccess == 0) // SDM 1.5Test10.8
 	{
 		CSaString szError = "Unable to scale color range. Please set your \nvideo card to 256 colors and try again.";
 		((CSaApp *)AfxGetApp())->ErrorMessage(szError);

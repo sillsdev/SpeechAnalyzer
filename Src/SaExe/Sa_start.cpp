@@ -281,7 +281,7 @@ void CStartModeDlg::OnPlay()
 {
   int nIndex = m_lbRecentFiles.GetCurSel();
 
-  if(nIndex > 0)
+  if (nIndex > 0)
   {
 		CSaApp* pApp = (CSaApp*)AfxGetApp();
     CSaString file;
@@ -310,7 +310,7 @@ void CStartModeDlg::OnSelchangeRecentlist()
   OnStop();
 
   CWnd *pWnd = GetDlgItem(IDC_PLAY);
-  if(!pWnd)
+  if (!pWnd)
     return;
 
 	CSaApp* pApp = (CSaApp*)AfxGetApp();

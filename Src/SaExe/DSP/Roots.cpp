@@ -89,7 +89,7 @@ bool LaguerreComplexDouble(const CDBL *coefficients, int32 nOrder, CDBL *rootEst
 
 		error *= epsilon;  // Worst case estimate of round off error in estimating
 
-		if(abs(polynomial) == 0 || (abs(polynomial) < error && extraPasses++ == 2))
+		if (abs(polynomial) == 0 || (abs(polynomial) < error && extraPasses++ == 2))
 			break; // We are within desired precision of root
 
 		// Laguerres distance calculation
@@ -101,7 +101,7 @@ bool LaguerreComplexDouble(const CDBL *coefficients, int32 nOrder, CDBL *rootEst
 		CDBL denominatorPlus = G + sqRoot;
 		CDBL denominatorMinus = G - sqRoot;
 
-		if(abs(denominatorPlus) > abs(denominatorMinus))
+		if (abs(denominatorPlus) > abs(denominatorMinus))
 			distance = double(nOrder)/denominatorPlus;
 		else
 			distance = double(nOrder)/denominatorMinus; 
@@ -109,10 +109,10 @@ bool LaguerreComplexDouble(const CDBL *coefficients, int32 nOrder, CDBL *rootEst
 		CDBL rootOld = root;
 
 		root = root - distance;
-		if(root == rootOld)
+		if (root == rootOld)
 			break; // we are as close as we are going to get
 
-		if(iter++ % nudge == 0)
+		if (iter++ % nudge == 0)
 		{
 			// We are not converging nudge root (it should be somewhere around here)
 			root += distance*nudges[iter/nudge]; 
@@ -120,10 +120,10 @@ bool LaguerreComplexDouble(const CDBL *coefficients, int32 nOrder, CDBL *rootEst
 		}
 	}
 
-	if(fabs(root.imag()) < abs(root)*error)
+	if (fabs(root.imag()) < abs(root)*error)
 		root = root.real();
 
-	if(iterations)
+	if (iterations)
 		*iterations = iter;
 
 	return iter >= maxIter;
@@ -152,7 +152,7 @@ bool roots(double Coeff[], int32 nOrder, CDBL Roots[], CDBL Seed[], int32 nSeeds
 	for(int32 nSeed = 0; nRoot < nOrder; nSeed++)
 	{
 		CDBL root;
-		if(nSeed < nSeeds)
+		if (nSeed < nSeeds)
 			root = Seed[nSeed];
 		else 
 			root = 1;
@@ -161,10 +161,10 @@ bool roots(double Coeff[], int32 nOrder, CDBL Roots[], CDBL Seed[], int32 nSeeds
 
 		bool error = Laguerre(&deflatedCoefficients[0], nDeflatedOrder, &root);
 
-		if(error && nSeed < nSeeds)
+		if (error && nSeed < nSeeds)
 			continue; // this seed failed to converge skip it
 
-		if(error)
+		if (error)
 			return true;  // We do not have any more initial guesses
 
 		Roots[nRoot++] = root;
@@ -179,7 +179,7 @@ bool roots(double Coeff[], int32 nOrder, CDBL Roots[], CDBL Seed[], int32 nSeeds
 		}
 	}
 
-	if(bRefine)
+	if (bRefine)
 	{
 		// According to Numerical Recipes in C 9.5, 
 		// we should deflate our polynomial in order of increasing abs(root)
@@ -203,7 +203,7 @@ bool roots(double Coeff[], int32 nOrder, CDBL Roots[], CDBL Seed[], int32 nSeeds
 #endif
 	}
 
-	if(bPolish)
+	if (bPolish)
 	{
 		// Deflation causes some inherent accuracy loss
 		// Recalculate the roots using the undeflated polynomial (called polishing)
@@ -218,7 +218,7 @@ bool roots(double Coeff[], int32 nOrder, CDBL Roots[], CDBL Seed[], int32 nSeeds
 			double distance = abs(Roots[n] - root);
 			double error = distance/abs(Roots[n]);
 
-			if(error < maxError)  // Suspect root loss
+			if (error < maxError)  // Suspect root loss
 				Roots[n] = root;
 		}
 	}

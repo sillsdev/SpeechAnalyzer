@@ -83,7 +83,7 @@ Float CKSynth::next_voice_sample(void)
 	register BOOL pulse;
 
 
-	if(spkrdef.SS > 3)
+	if (spkrdef.SS > 3)
 		return next_sil_voice_sample();
 
 	synth.global_time++;	/* flutter time runs continuously */
@@ -154,7 +154,7 @@ Float CKSynth::next_voice_sample(void)
 				spectral_tilt.InterAdjustGain(1.0 + (synth.TL-10)*(synth.TL-10) / 1000.);
 
 			/* setup pitch-synchronous formant_1_cascade and formant_1_special */
-			if(pars.DF1 || pars.DB1)
+			if (pars.DF1 || pars.DB1)
 			{
 				formant_1_cascade.InterPolePair(pars.F1 + pars.DF1,
 					pars.B1 + pars.DB1, spkrdef.SR);
@@ -198,7 +198,7 @@ Float CKSynth::next_voice_sample(void)
 			synth.voicing_time++;
 			synth.pulse = FALSE;
 			synth.period_ctr = synth.close_time;
-			if(pars.DF1 || pars.DB1)
+			if (pars.DF1 || pars.DB1)
 			{
 				formant_1_cascade.InterPolePair(pars.F1, pars.B1, spkrdef.SR);
 				formant_1_special.InterPolePair(pars.F1, pars.B1, spkrdef.SR);
@@ -275,7 +275,7 @@ Float CKSynth::next_sil_voice_sample(void)
 	{
 		// pitch synchronus parameter changes
 		m_silVoicing.F0 = pars.F0;
-		if(!m_silVoicing.F0)
+		if (!m_silVoicing.F0)
 		{
 			m_silVoicing.period_ctr = 0;	/* make sure we open glottis when F0 != 0 */
 			return spectral_tilt.AdvanceResonator(0.);
@@ -392,7 +392,7 @@ static double whiteHarmonics(int nHarmonics, double time, double freq, double ph
 	std::complex<double> whiteHarmonics = 0.;
 
 	// assume a1 = 1
-	if(cos(radiansR) != 1.)
+	if (cos(radiansR) != 1.)
 	{
 		std::complex<double> r(cos(radiansR),sin(radiansR));
 		std::complex<double> rN(cos(nHarmonics * radiansR),sin(nHarmonics * radiansR));

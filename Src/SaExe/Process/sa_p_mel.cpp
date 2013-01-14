@@ -73,7 +73,7 @@ long CProcessMelogram::Process(void* pCaller, ISaDoc* pDoc, int nProgress, int n
     {
       int nMinValidSemitone100;
       int nMaxValidSemitone100;
-      if(pDoc->GetMusicParm()->nCalcRangeMode)
+      if (pDoc->GetMusicParm()->nCalcRangeMode)
       {
         nMinValidSemitone100 = pDoc->GetMusicParm()->nCalcLowerBound*100;
         nMaxValidSemitone100 = pDoc->GetMusicParm()->nCalcUpperBound*100;          
@@ -101,7 +101,7 @@ long CProcessMelogram::Process(void* pCaller, ISaDoc* pDoc, int nProgress, int n
         }
       }
       // check if data needs to be recalculated
-      if(m_nMinValidSemitone100 != nMinValidSemitone100 || m_nMaxValidSemitone100 != nMaxValidSemitone100)
+      if (m_nMinValidSemitone100 != nMinValidSemitone100 || m_nMaxValidSemitone100 != nMaxValidSemitone100)
       {
         // invalidate data
         if (IsDataReady()) SetDataInvalid();
@@ -132,7 +132,7 @@ long CProcessMelogram::Process(void* pCaller, ISaDoc* pDoc, int nProgress, int n
 
     // start grappl process
     if (!bBackground) BeginWaitCursor(); // wait cursor
-    if(!StartProcess(pCaller, IDS_STATTXT_PROCESSMEL)) // memory allocation failed or previous processing error
+    if (!StartProcess(pCaller, IDS_STATTXT_PROCESSMEL)) // memory allocation failed or previous processing error
     { 
       EndProcess(); // end data processing
       if (!bBackground) EndWaitCursor();
@@ -234,7 +234,7 @@ long CProcessMelogram::Process(void* pCaller, ISaDoc* pDoc, int nProgress, int n
             if (nSemitone100 > m_nMaxValidSemitone100 || nSemitone100 < m_nMinValidSemitone100)
               nSemitone100 = -1; // set this point as unset
           }
-          if(nSemitone100 > 0)
+          if (nSemitone100 > 0)
           {
             // find min and max values      
             if (nSemitone100 > m_nMaxValue) m_nMaxValue = nSemitone100; // save maximum value

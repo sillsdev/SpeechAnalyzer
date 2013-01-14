@@ -35,7 +35,7 @@ private:
   // Operations
 public:
   virtual void OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView);
-  void SetFocusedGraph(CGraphWnd*cgw){if(m_pView) m_pView->SetFocusedGraph(cgw);OnSetFocus(cgw);};
+  void SetFocusedGraph(CGraphWnd*cgw){if (m_pView) m_pView->SetFocusedGraph(cgw);OnSetFocus(cgw);};
   void SetWindowText(LPCTSTR lpsz);
   void SetModifiedFlag(BOOL Modified);
   int GetWindowText(LPTSTR lpsz, int cbMax);
@@ -58,7 +58,7 @@ public:
   // Generated message map functions
 protected:
   //{{AFX_MSG(CPlotStaff)
-  afx_msg void OnSetFocus(CWnd *) { if((HWND)StaffControl) ::SetFocus((HWND)StaffControl);}
+  afx_msg void OnSetFocus(CWnd *) { if ((HWND)StaffControl) ::SetFocus((HWND)StaffControl);}
   afx_msg void OnParentNotify(UINT msg,LPARAM lParam);
   afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
   //}}AFX_MSG

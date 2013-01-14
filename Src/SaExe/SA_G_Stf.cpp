@@ -97,7 +97,7 @@ CPlotWnd * CPlotStaff::NewCopy()
 /***************************************************************************/
 CPlotStaff::~CPlotStaff()
 {
-	if(StaffControl)
+	if (StaffControl)
 	{
 		::DestroyWindow(StaffControl);
 		StaffControl = NULL;
@@ -113,18 +113,18 @@ void CPlotStaff::GraphHasFocus(BOOL bFocus)
 {
 	if (bFocus)
 	{
-		if(StaffControl)
+		if (StaffControl)
 			::InvalidateRect(StaffControl, NULL, FALSE);
 	}
 	else
 	{
-		if(m_pView)
+		if (m_pView)
 		{
 			CGraphWnd *pMelogram = m_pView->GraphIDtoPtr(IDD_MELOGRAM);
 			if (pMelogram)
 			{ 
 				CPlotWnd* pMelPlot = pMelogram->GetPlot();
-				if(pMelPlot)
+				if (pMelPlot)
 				{
 					pMelPlot->SetHighLightArea(0, 0);
 					pMelPlot->UpdateWindow();
@@ -139,7 +139,7 @@ void CPlotStaff::GraphHasFocus(BOOL bFocus)
 /***************************************************************************/
 void CPlotStaff::SetWindowText(LPCTSTR lpsz)
 {
-	if(StaffControl)
+	if (StaffControl)
 	{
 		::SetWindowText(StaffControl,lpsz);
 	}
@@ -150,7 +150,7 @@ void CPlotStaff::SetWindowText(LPCTSTR lpsz)
 /***************************************************************************/
 int CPlotStaff::GetWindowText(LPTSTR lpsz, int cbMax)
 {
-	if(StaffControl)
+	if (StaffControl)
 		return ::GetWindowText(StaffControl,lpsz,cbMax);
 	else return 0;
 }
@@ -160,7 +160,7 @@ int CPlotStaff::GetWindowText(LPTSTR lpsz, int cbMax)
 /***************************************************************************/
 int CPlotStaff::GetWindowTextLength(void)
 {
-	if(StaffControl)
+	if (StaffControl)
 		return ::GetWindowTextLength(StaffControl);
 	else return 0;
 }
@@ -171,7 +171,7 @@ int CPlotStaff::GetWindowTextLength(void)
 /***************************************************************************/
 int CPlotStaff::GetTempo()
 {
-	if(StaffControl)
+	if (StaffControl)
 		return ::SendMessage(StaffControl,WM_APP + 11,0,0);
 	else return 0;
 }
@@ -181,7 +181,7 @@ int CPlotStaff::GetTempo()
 /***************************************************************************/
 int CPlotStaff::SaveAsMIDI(char *szFileName)
 {
-	if(StaffControl)
+	if (StaffControl)
 		return (int) ::SendMessage(StaffControl,(WPARAM)WM_APP + 1,0,(LPARAM)szFileName);
 	else return 0;
 }
@@ -195,7 +195,7 @@ int CPlotStaff::ExportFile()
 		CSaView* pView = ((CMainFrame*)AfxGetMainWnd())->GetCurrSaView();
 		CSaDoc* pDoc = (CSaDoc*)pView->GetDocument();
 		CString csWavName = pDoc->GetPathName();
-		if(csWavName.IsEmpty())
+		if (csWavName.IsEmpty())
 			return (int) ::SendMessage(StaffControl,(WPARAM)WM_APP+1,0,0);
 
 		int iWavNameSize = csWavName.GetLength();
@@ -206,7 +206,7 @@ int CPlotStaff::ExportFile()
 		szSuggestName[iWavNameSize] = 0;
 
 		for(i=iWavNameSize;i&&(szSuggestName[i]!='.');--i);
-		if(!i) i=iWavNameSize;
+		if (!i) i=iWavNameSize;
 		strcpy_s(szSuggestName+i,iWavNameSize+4-i,".xml");
 		return (int) ::SendMessage(StaffControl,(WPARAM)WM_APP+1,1,(LPARAM)szSuggestName);
 	}
@@ -215,7 +215,7 @@ int CPlotStaff::ExportFile()
 
 int CPlotStaff::ImportFile()
 {
-	if(StaffControl)
+	if (StaffControl)
 		return (int) ::SendMessage(StaffControl,(WPARAM)WM_APP+3,0,0);
 	else return 0;
 }
@@ -225,7 +225,7 @@ int CPlotStaff::ImportFile()
 /***************************************************************************/
 int CPlotStaff::PlaySelection(BOOL bMidi, BOOL bWave)
 {
-	if(StaffControl)
+	if (StaffControl)
 		return (int) ::SendMessage(StaffControl,(WPARAM)WM_APP + 2,(WPARAM)bMidi ,bWave);
 	else return 0;
 }
@@ -235,7 +235,7 @@ int CPlotStaff::PlaySelection(BOOL bMidi, BOOL bWave)
 /***************************************************************************/
 int CPlotStaff::PausePlay(void)
 {
-	if(StaffControl)
+	if (StaffControl)
 		return (int) ::SendMessage(StaffControl,(WPARAM)WM_APP + 4,0,NULL);
 	else return 0;
 }
@@ -247,7 +247,7 @@ int CPlotStaff::StopPlay(void)
 {
 	//TRE : How to get Save button to display when we need it?
 	//      Here's a temporary solution
-	if(StaffControl && ::SendMessage(StaffControl,(WPARAM)EM_GETMODIFY,0,0))
+	if (StaffControl && ::SendMessage(StaffControl,(WPARAM)EM_GETMODIFY,0,0))
 	{
 		CSaDoc* pDoc = (CSaDoc*)m_pView->GetDocument();
 		pDoc->SetModifiedFlag(TRUE);
@@ -256,7 +256,7 @@ int CPlotStaff::StopPlay(void)
 
 	m_pView->SendMessage(WM_COMMAND, ID_PLAYER_STOP, 0L); // send message to stop player
 
-	if(StaffControl)
+	if (StaffControl)
 		return (int) ::SendMessage(StaffControl,(WPARAM)WM_APP + 5,0,NULL);
 	else return 0;
 }
@@ -266,7 +266,7 @@ int CPlotStaff::StopPlay(void)
 /***************************************************************************/
 int CPlotStaff::LoopPlay(void)
 {
-	if(StaffControl)
+	if (StaffControl)
 		return (int) ::SendMessage(StaffControl,(WPARAM)WM_APP + 6,0,NULL);
 	else return 0;
 }
@@ -276,7 +276,7 @@ int CPlotStaff::LoopPlay(void)
 /***************************************************************************/
 int CPlotStaff::HideButtons(void)
 {
-	if(StaffControl)
+	if (StaffControl)
 		return (int) ::SendMessage(StaffControl,(WPARAM)WM_APP + 7,0,NULL);
 	else return 0;
 }
@@ -286,7 +286,7 @@ int CPlotStaff::HideButtons(void)
 /***************************************************************************/
 int CPlotStaff::ChooseVoice(void)
 {
-	if(StaffControl)
+	if (StaffControl)
 		return (int) ::SendMessage(StaffControl,(WPARAM)WM_APP + 8,0,NULL);
 	else return 0;
 }
@@ -297,7 +297,7 @@ int CPlotStaff::ChooseVoice(void)
 /***************************************************************************/
 int CPlotStaff::ChooseTempo(void)
 {
-	if(StaffControl)
+	if (StaffControl)
 		return (int) ::SendMessage(StaffControl,(WPARAM)WM_APP + 9,0,NULL);
 	else return 0;
 }
@@ -321,7 +321,7 @@ char* CPlotStaff::NoteNum2Name(double dMIDINumber, char* sMusique, size_t len, B
 	// calculate interval and octave
 	double dSamaNumber = (dMIDINumber - 12); // shifted slightly from MIDI Numbers
 	short nOctave = (short)((dSamaNumber + 0.5 + 0.25*bHalfSharpFlat) / 12);
-	if(!bHalfSharpFlat || !(short(dSamaNumber*2 + 0.5)&0x1))
+	if (!bHalfSharpFlat || !(short(dSamaNumber*2 + 0.5)&0x1))
 	{
 		short nInterval = (short)(dSamaNumber - nOctave * 12 + 0.5);
 		// construct note name
@@ -408,7 +408,7 @@ double CPlotStaff::Note2String(double dNoteQtrNotes, double dMIDINumber, CString
 
 		if (dNoteQtrNotes >= dNoteTol)
 		{
-			if(!bRest)
+			if (!bRest)
 				sMusique += "_";
 			else
 				sMusique += " ";
@@ -456,7 +456,7 @@ void CPlotStaff::Convert(void)
 	int nUpperBound = pParm->nUpperBound;
 	int nLowerBound = pParm->nLowerBound;
 
-	if(pParm->nRangeMode == 0)
+	if (pParm->nRangeMode == 0)
 	{
 		MusicParm::GetAutoRange(pDoc, nUpperBound, nLowerBound);
 	}
@@ -520,30 +520,30 @@ void CPlotStaff::Convert(void)
 		BOOL bUnvoiced2Voiced = FALSE;
 		BOOL bRelease = FALSE;
 
-		if(bVoiced && pMelData[0] <= 0)
+		if (bVoiced && pMelData[0] <= 0)
 		{
 			bVoiced2Unvoiced = TRUE;
 		}
-		if(!bVoiced && pMelData[0] > 0)
+		if (!bVoiced && pMelData[0] > 0)
 		{
 			bUnvoiced2Voiced = TRUE;
 			dReleaseThreshold += 10000000; // disable release for about 20 samples
 		}
 
-		if(bVoiced && pLoudData[0] > dReleaseThreshold)
+		if (bVoiced && pLoudData[0] > dReleaseThreshold)
 		{
 			bRelease = TRUE;
 		}
 
 		dReleaseThreshold = dReleaseThreshold*0.80 + 1.2*(1-0.80)*pLoudData[0];
 
-		if(bVoiced2Unvoiced || bUnvoiced2Voiced || bRelease || (dwDataOffset+1) >= dwMelDataLength)
+		if (bVoiced2Unvoiced || bUnvoiced2Voiced || bRelease || (dwDataOffset+1) >= dwMelDataLength)
 		{
 			double dHistogramThreshold = 0.25;
 			int nStableFrames = 0;
 
 			CHistogram *pHistogram = NULL;
-			if(bVoiced)
+			if (bVoiced)
 			{
 				pHistogram = pTWC->MakeTwcHistogram(pMelogram, 10, dMinSemitone, dMaxSemitone, dwOffsetBegin, (dwDataOffset-dwOffsetBegin));
 
@@ -552,7 +552,7 @@ void CPlotStaff::Convert(void)
 					int nValue = 0;
 
 					pHistogram->GetBin(nValue, i, 1.0, COUNTS);
-					if(nValue > pHistogram->GetMaxValue(this)*dHistogramThreshold)
+					if (nValue > pHistogram->GetMaxValue(this)*dHistogramThreshold)
 						nStableFrames += nValue;
 				}
 			}
@@ -572,18 +572,18 @@ void CPlotStaff::Convert(void)
 			{
 				dQNotes += dQNotesPerFrame;
 
-				if(bVoiced)
+				if (bVoiced)
 				{
 					int nHistogramCount = 0;
 					pHistogram->GetBinByData(nHistogramCount, pMelData[i], 1.0, COUNTS);
 					BOOL bStableValue = (nHistogramCount > pHistogram->GetMaxValue(this)*dHistogramThreshold);
-					if(bStableValue)
+					if (bStableValue)
 					{
 						int nWeight = nNoteLength > nMelogramAverageInterval ? nMelogramAverageInterval : nNoteLength;
 						dSemitone = (dSemitone*nWeight + pMelData[i] / 100.) / (nWeight + 1);
 						nStableFrames--;
 						nNoteLength++;
-						if(nNoteLength <= nMelogramAverageInterval)
+						if (nNoteLength <= nMelogramAverageInterval)
 							dSemitoneString = dSemitone;  // We want a good solid average reference 
 					}
 				}
@@ -616,7 +616,7 @@ void CPlotStaff::Convert(void)
 
 				if (bLast || (bPitchChange && bRoomForMoreNotes))
 				{
-					if(dQNotes >= dNoteTol)
+					if (dQNotes >= dNoteTol)
 					{
 						// convert previous note
 						CString sNote;
@@ -642,7 +642,7 @@ void CPlotStaff::Convert(void)
 						}
 						dSemitoneStringPrev = dSemitoneString;              // hang on to the current semitone number
 
-						if(bLast)
+						if (bLast)
 							sNote += ' ';  // voicing/loudness changes are not slurred
 						else
 							sNote += '_';  // pitch change is slurred
@@ -665,7 +665,7 @@ void CPlotStaff::Convert(void)
 			}
 			dwOffsetBegin = dwDataOffset;
 
-			if(pHistogram)
+			if (pHistogram)
 				delete pHistogram;
 		}
 		bVoiced = (pMelData[0] > 0);
@@ -689,7 +689,7 @@ void CPlotStaff::Convert(void)
 /***************************************************************************/
 void CPlotStaff::OnDraw(CDC *, CRect, CRect, CSaView * pView)
 {
-	if(!m_pView && pView) // first access initialize score
+	if (!m_pView && pView) // first access initialize score
 	{
 
 		CSaDoc* pDoc = (CSaDoc *)pView->GetDocument();
@@ -707,7 +707,7 @@ void CPlotStaff::OnDraw(CDC *, CRect, CRect, CSaView * pView)
 	RECT NewSize;
 	::GetWindowRect(m_hWnd,&NewSize);
 
-	if(NewSize.left != LastSize.left
+	if (NewSize.left != LastSize.left
 		|| NewSize.top != LastSize.top
 		|| NewSize.right != LastSize.right
 		|| NewSize.bottom != LastSize.bottom)
@@ -728,7 +728,7 @@ void CPlotStaff::OnDraw(CDC *, CRect, CRect, CSaView * pView)
 
 void CPlotStaff::SetModifiedFlag(BOOL Modified)
 {
-	if(StaffControl)
+	if (StaffControl)
 		::SendMessage(StaffControl,EM_SETMODIFY,(WPARAM)Modified,0);
 }
 
@@ -755,13 +755,13 @@ void CPlotStaff::OnParentNotify(UINT msg,LPARAM lParam)
 		}
 	case WM_PAINT:
 		{
-			if(m_pView)
+			if (m_pView)
 			{
 				CGraphWnd *pMelogram = m_pView->GraphIDtoPtr(IDD_MELOGRAM);
 				if (pMelogram)
 				{ 
 					CPlotWnd* pMelPlot = pMelogram->GetPlot();
-					if(pMelPlot)
+					if (pMelPlot)
 					{
 						PartSelectionMS *pSel = (PartSelectionMS*) lParam;
 						CSaDoc* pDoc = (CSaDoc*)m_pView->GetDocument(); // cast pointer
@@ -776,7 +776,7 @@ void CPlotStaff::OnParentNotify(UINT msg,LPARAM lParam)
 	case WM_APP + 2: // play recording of selection
 		{
 			CMainFrame *pMain = (CMainFrame*) AfxGetMainWnd();
-			if(m_pView && pMain->GetCurrSaView() == m_pView)
+			if (m_pView && pMain->GetCurrSaView() == m_pView)
 			{
 				PartSelectionMS &sel = *(PartSelectionMS*) lParam;
 				SSpecific specific;
@@ -793,9 +793,9 @@ void CPlotStaff::OnParentNotify(UINT msg,LPARAM lParam)
 
 BOOL CPlotStaff::PreTranslateMessage(MSG *pMsg)
 {
-	if(pMsg->message == WM_CHAR) // these have already been translated
+	if (pMsg->message == WM_CHAR) // these have already been translated
 		return FALSE;
-	else if(pMsg->message == WM_KEYDOWN)
+	else if (pMsg->message == WM_KEYDOWN)
 	{
 		switch(pMsg->wParam)  // these are keystrokes (with or without control, shift or alt) defined as
 		{
@@ -822,7 +822,7 @@ int CPlotStaff::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	if (CPlotWnd::OnCreate(lpCreateStruct) == -1)
 		return -1;
 
-	if(!StaffControl)
+	if (!StaffControl)
 	{
 		INIT(theApp.m_hInstance);
 		StaffControl = CreateWindow(_T("Partiture"),_T("(CLEF2)"),

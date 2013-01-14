@@ -23,16 +23,13 @@ class CCursorWnd : public CWnd
 {
 	// Construction/destruction/creation
 public:
-	CCursorWnd() 
-	{ 
-		bDrawn = FALSE;
-	};
+	CCursorWnd();
 	BOOL bDrawn;
 
 	// Operations
 public:
-	BOOL IsDrawn() { return bDrawn;};
-	void SetDrawn(BOOL bNewDrawn) { bDrawn = bNewDrawn;};
+	BOOL IsDrawn();
+	void SetDrawn(BOOL bNewDrawn);
 };
 
 //###########################################################################
@@ -53,17 +50,17 @@ public:
 
 	// Attributes
 private:
-	CRect    m_rWnd;              // cursor window coordinates
-	BOOL     m_bCursorDrag;       // cursor drag by mouse
-	DWORD    m_dwStartDragPos;    // cursor position when starting drag
-	DWORD    m_dwDragPos;         // current drag position
-	int      m_nEditBoundaries;   // editing boundaries
+	CRect    m_rWnd;				// cursor window coordinates
+	BOOL     m_bCursorDrag;			// cursor drag by mouse
+	DWORD    m_dwStartDragPos;		// cursor position when starting drag
+	DWORD    m_dwDragPos;			// current drag position
+	int      m_nEditBoundaries;		// editing boundaries
 
 	// Operations
 public:
-	void ResetPosition() {m_rWnd.SetRect(0, 0, 0, 0);} // reset old cursor position
+	void ResetPosition();			// reset old cursor position
 	DWORD CalculateCursorPosition(CView*, int nPosition, int nWidth, DWORD* pStopCursor); // calculate the current cursor position (in data samples)
-	BOOL IsDragging() {return m_bCursorDrag;}
+	BOOL IsDragging();
 
 	// Generated message map functions
 protected:
@@ -89,23 +86,22 @@ class CStopCursorWnd : public CCursorWnd
 public:
 	CStopCursorWnd();
 	virtual ~CStopCursorWnd();
-	virtual BOOL Create(LPCTSTR lpszClassName, LPCTSTR lpszWindowName, DWORD dwStyle,
-		const RECT& rect, CWnd* pParentWnd, UINT nID, CCreateContext* pContext = NULL);
+	virtual BOOL Create(LPCTSTR lpszClassName, LPCTSTR lpszWindowName, DWORD dwStyle, const RECT& rect, CWnd* pParentWnd, UINT nID, CCreateContext* pContext = NULL);
 	virtual BOOL PreCreateWindow(CREATESTRUCT& cs);
 
 	// Attributes
 private:
-	CRect    m_rWnd;              // cursor window coordinates
-	BOOL     m_bCursorDrag;       // cursor drag by mouse
-	DWORD    m_dwDragPos;         // current drag position
-	int      m_nEditBoundaries;   // editing boundaries
+	CRect    m_rWnd;				// cursor window coordinates
+	BOOL     m_bCursorDrag;			// cursor drag by mouse
+	DWORD    m_dwDragPos;			// current drag position
+	int      m_nEditBoundaries;		// editing boundaries
 
 
 	// Operations
 public:
-	void ResetPosition() {m_rWnd.SetRect(0, 0, 0, 0);} // reset old cursor position
+	void ResetPosition();			// reset old cursor position
 	DWORD CalculateCursorPosition(CView*, int nPosition, int nWidth, DWORD* pStartCursor); // calculate the current cursor position (in data samples)
-	BOOL IsDragging() {return m_bCursorDrag;}
+	BOOL IsDragging();
 	virtual void OnDraw(CDC * pDC, const CRect & printRect);
 
 	// Generated message map functions
@@ -138,17 +134,17 @@ public:
 
 	// Attributes
 private:
-	BOOL     m_bCursorDrag;       // cursor drag by mouse
-	CRect    m_rWnd;              // cursor window coordinates
+	BOOL     m_bCursorDrag;			// cursor drag by mouse
+	CRect    m_rWnd;				// cursor window coordinates
 
 	// Operations
 public:
-	void ResetPosition() {m_rWnd.SetRect(0, 0, 0, 0);} // reset old cursor position
+	void ResetPosition();			// reset old cursor position
 	virtual void OnDraw(CDC * pDC, const CRect & printRect);
 	virtual void OnDrawHorizontalCursor(CDC * pDC, const CRect & printRect);
 	void ChangeCursorPosition(CPoint point);
 	void ChangeHorizontalCursorPosition(CPoint point);
-	BOOL IsDragging() {return m_bCursorDrag;}
+	BOOL IsDragging();
 
 	// Generated message map functions
 protected:

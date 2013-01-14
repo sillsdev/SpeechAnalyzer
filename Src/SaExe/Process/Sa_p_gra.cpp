@@ -77,7 +77,7 @@ long CProcessGrappl::Process(void* pCaller, ISaDoc* pDoc, int nProgress, int nLe
 
 	// start grappl process
 	if (!bBackground) BeginWaitCursor(); // wait cursor
-	if(!(bBackground?StartProcess(pCaller, IDS_STATTXT_BACKGNDGRA):
+	if (!(bBackground?StartProcess(pCaller, IDS_STATTXT_BACKGNDGRA):
 		StartProcess(pCaller, IDS_STATTXT_PROCESSGRA))) // memory allocation failed
 	{ 
 		EndProcess(); // end data processing

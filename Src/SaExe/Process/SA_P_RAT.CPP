@@ -78,7 +78,7 @@ long CProcessRatio::Process(void* pCaller, ISaDoc* pDoc, int nProgress,
 
   // start change process
   BeginWaitCursor(); // wait cursor
-  if(!StartProcess(pCaller, IDS_STATTXT_PROCESSRAT)) // memory allocation failed
+  if (!StartProcess(pCaller, IDS_STATTXT_PROCESSRAT)) // memory allocation failed
   { 
     EndProcess(); // end data processing
     EndWaitCursor();

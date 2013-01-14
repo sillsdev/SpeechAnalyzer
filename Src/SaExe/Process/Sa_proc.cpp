@@ -40,7 +40,7 @@ CDataProcess::CDataProcess()
 	m_nMinValue = 0;
 	m_dwBufferOffset = UNDEFINED_OFFSET; // buffer undefined, force buffer reload
 	CMainFrame* pMain = (CMainFrame*)AfxGetMainWnd();
-	if(pMain)
+	if (pMain)
 		m_dwBufferSize = GetBufferSize();
 	else
 		m_dwBufferSize = 0;
@@ -316,7 +316,7 @@ int CDataProcess::GetProcessedData(DWORD dwOffset, BOOL* pbRes)
 /***************************************************************************/
 HPSTR CDataProcess::GetProcessedWaveData(DWORD dwOffset, BOOL bBlockBegin)
 {
-	if(GetProcessFileName() == NULL || GetProcessFileName()[0] == 0)
+	if (GetProcessFileName() == NULL || GetProcessFileName()[0] == 0)
 		return NULL;
 
 	if (dwOffset == UNDEFINED_OFFSET)
@@ -476,7 +476,7 @@ BOOL CDataProcess::CreateTempFile(TCHAR* szName)
 {
 	DeleteTempFile();
 
-	if(!CreateTempFile(szName, &m_fileStatus))
+	if (!CreateTempFile(szName, &m_fileStatus))
 	{ // error
 		SetDataInvalid();// close the temporary file  
 		return FALSE;
@@ -514,7 +514,7 @@ BOOL CDataProcess::Open(LPCTSTR lpszFileName, UINT nOpenFlags, CFileException* p
 	ASSERT (lpszFileName);
 	ASSERT (lpszFileName[0] != 0);
 
-	if(m_pFile)
+	if (m_pFile)
 		delete m_pFile; // We shouldn't really get here...
 
 	m_pFile = new CFile;
@@ -592,7 +592,7 @@ void CDataProcess::CloseTempFile(BOOL bUpdateStatus)
 		delete m_pFile;
 		m_pFile = NULL;
 	}
-	if(bUpdateStatus)
+	if (bUpdateStatus)
 	{
 		CSaString path = GetProcessFileName();
 		CFile::GetStatus(path, m_fileStatus); // read the status

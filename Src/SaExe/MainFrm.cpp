@@ -623,7 +623,7 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 
 	// Create Task Bar last this affects its position Z-Order and therefore layout behavior
 	// Last in the Z-Order is preferrable for the task bar
-	if(!m_wndTaskBar.Create(this, IDD_TASKBAR, WS_CHILD | WS_VISIBLE | CBRS_ALIGN_LEFT
+	if (!m_wndTaskBar.Create(this, IDD_TASKBAR, WS_CHILD | WS_VISIBLE | CBRS_ALIGN_LEFT
 		| CBRS_TOOLTIPS | CBRS_FLYBY | CBRS_SIZE_FIXED, ID_VIEW_TASKBAR))
 	{
 		TRACE(_T("Failed to create data task bar\n"));
@@ -794,13 +794,13 @@ LRESULT CMainFrame::OnApplyToolsOptions(WPARAM, LPARAM)
 		m_bStatusBar = !m_bStatusBar;
 	}
 
-	if(m_nStatusPosReadout != m_pDlgToolsOptions->m_dlgViewPage.m_nPosMode)
+	if (m_nStatusPosReadout != m_pDlgToolsOptions->m_dlgViewPage.m_nPosMode)
 	{
 		m_nStatusPosReadout = m_pDlgToolsOptions->m_dlgViewPage.m_nPosMode;
 		CSaView *pView = GetCurrSaView();
 		CGraphWnd *pGraph = pView ? pView->GetFocusedGraphWnd() : NULL;
 
-		if(pGraph)
+		if (pGraph)
 			pGraph->UpdateStatusBar(pView->GetStartCursorPosition(), pView->GetStopCursorPosition(), TRUE); // update the status bar
 	}
 
@@ -822,7 +822,7 @@ LRESULT CMainFrame::OnApplyToolsOptions(WPARAM, LPARAM)
 	if (m_pDlgToolsOptions->m_dlgViewPage.m_bToneAbove != m_bToneAbove)
 	{
 		m_bToneAbove = !m_bToneAbove;
-		if(m_bToneAbove)
+		if (m_bToneAbove)
 		{
 			CGraphWnd::m_anAnnWndOrder[1] = TONE;
 			CGraphWnd::m_anAnnWndOrder[2] = PHONETIC;
@@ -1020,12 +1020,12 @@ LRESULT CMainFrame::OnPlayer(WPARAM wParam, LPARAM lParam, SSpecific *pSpecific)
 /***************************************************************************/
 void CMainFrame::OnEditor()
 {
-	if(!IsEditAllowed()) return;
-	if(!m_pDlgEditor) 
+	if (!IsEditAllowed()) return;
+	if (!m_pDlgEditor) 
 	{
 		m_pDlgEditor = new CDlgEditor(this);  // New Editor with view parent
 	}
-	if(m_pDlgEditor) 
+	if (m_pDlgEditor) 
 	{
 		// Create window if necessary
 		m_pDlgEditor->CreateSafe(CDlgEditor::IDD, this, &m_wplDlgEditor);
@@ -1033,7 +1033,7 @@ void CMainFrame::OnEditor()
 
 	if (m_pDlgEditor  && !m_pDlgEditor->IsWindowVisible())
 		m_pDlgEditor->SetWindowPos(&wndTop, 0, 0, 0, 0, SWP_NOMOVE|SWP_NOSIZE|SWP_SHOWWINDOW);
-	else if(m_pDlgEditor)
+	else if (m_pDlgEditor)
 		m_pDlgEditor->ShowWindow(SW_HIDE);
 }
 
@@ -1041,7 +1041,7 @@ void CMainFrame::OnEditor()
 /**************************************************************************/
 void CMainFrame::OnUpdateEditEditor(CCmdUI* pCmdUI)
 {
-	if(m_pDlgEditor  && m_pDlgEditor->IsWindowVisible())  
+	if (m_pDlgEditor  && m_pDlgEditor->IsWindowVisible())  
 		pCmdUI->SetText(_T("Hide Transcription Editor\tF4"));
 	else
 		pCmdUI->SetText(_T("Show Transcription Editor\tF4"));
@@ -1053,7 +1053,7 @@ void CMainFrame::OnUpdateEditEditor(CCmdUI* pCmdUI)
 /***************************************************************************/
 LRESULT CMainFrame::OnIdleUpdate(WPARAM /*wParam*/, LPARAM /*lParam*/)
 {
-	if(m_pDlgEditor) m_pDlgEditor->UpdateDialog();
+	if (m_pDlgEditor) m_pDlgEditor->UpdateDialog();
 
 	return 0;
 }
@@ -1064,7 +1064,7 @@ LRESULT CMainFrame::OnIdleUpdate(WPARAM /*wParam*/, LPARAM /*lParam*/)
 /***************************************************************************/
 BOOL CMainFrame::IsEditAllowed()
 {
-	if(m_pDisplayPlot) return FALSE;
+	if (m_pDisplayPlot) return FALSE;
 	else return TRUE;
 }
 
@@ -1229,23 +1229,33 @@ void CMainFrame::OnClose()
 	//******************************************************
 	// Workbench is still there, don't close
 	//******************************************************
-	if (((CSaApp *)AfxGetApp())->GetWbDoc()) return;
+	if (((CSaApp *)AfxGetApp())->GetWbDoc())
+	{
+		return;
+	}
 
 	//******************************************************
 	//******************************************************
-	//if (m_bSaveOnExit && !m_bPrintPreviewInProgress)
 	if (!m_bPrintPreviewInProgress)
+	{
 		((CSaApp *)AfxGetApp())->WriteSettings();
+	}
 
 	//******************************************************
 	// If player dialog open then close it.
 	//******************************************************
-	if (CDlgPlayer::bPlayer) m_pDlgPlayer->SendMessage(WM_CLOSE);
+	if (CDlgPlayer::bPlayer)
+	{
+		m_pDlgPlayer->SendMessage(WM_CLOSE);
+	}
 
 	//******************************************************
 	// If find dialog open then close it.
 	//******************************************************
-	if (m_pDlgFind) m_pDlgFind->SendMessage(WM_CLOSE);
+	if (m_pDlgFind)
+	{
+		m_pDlgFind->SendMessage(WM_CLOSE);
+	}
 
 	CMainFrameBase::OnClose();
 }
@@ -1400,11 +1410,11 @@ void CMainFrame::OnSaveScreenAsBMP()
 {
 	CDib * pCDib = new CDib;
 	CWnd* pWnd = GetTopLevelParent();
-	if(!pWnd)
+	if (!pWnd)
 		pWnd = this;
-	if(pCDib) pCDib->CaptureWindow(pWnd);
-	if(pCDib) pCDib->Save();
-	if(pCDib) delete pCDib;
+	if (pCDib) pCDib->CaptureWindow(pWnd);
+	if (pCDib) pCDib->Save();
+	if (pCDib) delete pCDib;
 }
 
 //SDM 1.06.6U5
@@ -1415,7 +1425,7 @@ void CMainFrame::OnSaveWindowAsBMP()
 {
 	CWnd* pWnd = this;
 
-	if(!pWnd) return;
+	if (!pWnd) return;
 	CDib * pCDib = new CDib;
 
 	CRect rectCrop(0,0,0,0);
@@ -1437,9 +1447,9 @@ void CMainFrame::OnSaveWindowAsBMP()
 		}
 	}
 
-	if(pCDib) pCDib->CaptureWindow(pWnd, rectCrop, TRUE);
-	if(pCDib) pCDib->Save();
-	if(pCDib) delete pCDib;
+	if (pCDib) pCDib->CaptureWindow(pWnd, rectCrop, TRUE);
+	if (pCDib) pCDib->Save();
+	if (pCDib) delete pCDib;
 }
 
 //SDM 1.06.6U4 
@@ -1449,12 +1459,12 @@ void CMainFrame::OnSaveWindowAsBMP()
 void CMainFrame::OnSaveGraphsAsBMP()
 {
 	CSaView* pSaView = GetCurrSaView();
-	if(!pSaView) return;
+	if (!pSaView) return;
 	CDib * pCDib = new CDib;
 	// SDM 1.06.6U5 capture client area
-	if(pCDib) pCDib->CaptureWindow(pSaView);
-	if(pCDib) pCDib->Save();
-	if(pCDib) delete pCDib;
+	if (pCDib) pCDib->CaptureWindow(pSaView);
+	if (pCDib) pCDib->Save();
+	if (pCDib) delete pCDib;
 }
 
 //SDM 1.06.6U4 
@@ -1465,11 +1475,11 @@ void CMainFrame::OnCopyScreenAsBMP()
 {
 	CDib * pCDib = new CDib;
 	CWnd* pWnd = GetTopLevelParent();
-	if(!pWnd)
+	if (!pWnd)
 		pWnd = this;
-	if(pCDib) pCDib->CaptureWindow(pWnd);
-	if(pCDib) pCDib->CopyToClipboard(pWnd);
-	if(pCDib) delete pCDib;
+	if (pCDib) pCDib->CaptureWindow(pWnd);
+	if (pCDib) pCDib->CopyToClipboard(pWnd);
+	if (pCDib) delete pCDib;
 }
 
 //SDM 1.06.6U5
@@ -1480,7 +1490,7 @@ void CMainFrame::OnCopyWindowAsBMP()
 {
 	CWnd* pWnd = this;
 
-	if(!pWnd) return;
+	if (!pWnd) return;
 	CDib * pCDib = new CDib;
 
 	CRect rectCrop(0,0,0,0);
@@ -1502,9 +1512,9 @@ void CMainFrame::OnCopyWindowAsBMP()
 		}
 	}
 
-	if(pCDib) pCDib->CaptureWindow(pWnd, rectCrop, TRUE);
-	if(pCDib) pCDib->CopyToClipboard(pWnd);
-	if(pCDib) delete pCDib;
+	if (pCDib) pCDib->CaptureWindow(pWnd, rectCrop, TRUE);
+	if (pCDib) pCDib->CopyToClipboard(pWnd);
+	if (pCDib) delete pCDib;
 }
 
 //SDM 1.06.6U4 
@@ -1723,7 +1733,7 @@ void CMainFrame::OnSetDefaultParameters()
 		CProcessSpectrogram* pSpectro               = (CProcessSpectrogram*)pDoc->GetSpectrogram(TRUE);
 		m_spectrogramParmDefaults = pSpectro->GetSpectroParm();
 
-		if(m_spectrogramParmDefaults.nFrequency >= int(pDoc->GetFmtParm()->dwSamplesPerSec*45/100))
+		if (m_spectrogramParmDefaults.nFrequency >= int(pDoc->GetFmtParm()->dwSamplesPerSec*45/100))
 			// This spectrogram is set to near nyquist
 			// Assume the user wants all spectrograms to be display at nyquist
 			// Set frequency above any reasonable sampling nyquist to force clipping to nyquist
@@ -1748,7 +1758,7 @@ void CMainFrame::OnSetDefaultParameters()
 		CProcessSpectrogram* pSpectro               = (CProcessSpectrogram*)pDoc->GetSpectrogram(FALSE);
 		m_snapshotParmDefaults = pSpectro->GetSpectroParm();
 
-		if(m_snapshotParmDefaults.nFrequency >= int(pDoc->GetFmtParm()->dwSamplesPerSec*45/100))
+		if (m_snapshotParmDefaults.nFrequency >= int(pDoc->GetFmtParm()->dwSamplesPerSec*45/100))
 			// This spectrogram is set to near nyquist
 			// Assume the user wants all spectrograms to be display at nyquist
 			// Set frequency above any reasonable sampling nyquist to force clipping to nyquist
@@ -1977,7 +1987,10 @@ void CMainFrame::WriteProperties(Object_ostream& obs)
 	// the temp. default view isn't the one written to the
 	// settings file.  DDO - 08/07/00
 	//*****************************************************
-	if (m_bDefaultViewExists) WriteReadDefaultViewToTempFile(FALSE);
+	if (m_bDefaultViewExists)
+	{
+		WriteReadDefaultViewToTempFile(FALSE);
+	}
 
 	obs.WriteBeginMarker(psz_mainframe);
 	obs.WriteNewline();
@@ -1992,8 +2005,10 @@ void CMainFrame::WriteProperties(Object_ostream& obs)
 		m_pDlgEditor->GetWindowPlacement(&wpl);
 		obs.WriteWindowPlacement(psz_placementEditor, wpl);
 	}
-	else if(m_wplDlgEditor.length)
+	else if (m_wplDlgEditor.length)
+	{
 		obs.WriteWindowPlacement(psz_placementEditor, m_wplDlgEditor);
+	}
 
 	//*****************************************************
 	// DDO - 08/03/00 Always save on exit so don't need
@@ -2052,7 +2067,7 @@ void CMainFrame::WriteProperties(Object_ostream& obs)
 		m_bDefaultMaximizeView = bMaximized;
 		WINDOWPLACEMENT WP;
 		WP.length = sizeof(WINDOWPLACEMENT);
-		if(MDIGetActive()->GetWindowPlacement(&WP)) // SDM 32bit conversion
+		if (MDIGetActive()->GetWindowPlacement(&WP)) // SDM 32bit conversion
 		{
 			m_nDefaultHeightView = WP.rcNormalPosition.bottom - WP.rcNormalPosition.top;
 			m_nDefaultWidthView = WP.rcNormalPosition.right - WP.rcNormalPosition.left;
@@ -2218,7 +2233,7 @@ BOOL CMainFrame::bReadDefaultView(Object_istream& obs)
 	{
 		if (m_pDefaultViewConfig ? m_pDefaultViewConfig->ReadProperties(obs, FALSE) : FALSE)
 		{
-			if(m_pDefaultViewConfig->GetLayout() < ID_LAYOUT_FIRST ||
+			if (m_pDefaultViewConfig->GetLayout() < ID_LAYOUT_FIRST ||
 				m_pDefaultViewConfig->GetLayout() > ID_LAYOUT_LAST || 
 				m_pDefaultViewConfig->GetGraphIDs()[0] == 0)
 			{
@@ -2300,7 +2315,7 @@ void CMainFrame::WriteReadDefaultViewToTempFile(BOOL bWrite)
 			obs.bReadBool(psz_bMaxView, m_bDefaultMaximizeView);
 			obs.bReadInteger(psz_HeightView, m_nDefaultHeightView);
 			obs.bReadInteger(psz_WidthView, m_nDefaultWidthView);
-			if(m_pDefaultViewConfig)
+			if (m_pDefaultViewConfig)
 				delete m_pDefaultViewConfig;
 			m_pDefaultViewConfig = new CSaView();
 
@@ -2323,7 +2338,7 @@ void CMainFrame::OnActivateApp(BOOL bActive, DWORD dwThreadID)
 {
 	CMainFrameBase::OnActivateApp(bActive, dwThreadID);
 
-	if(!bActive && m_pDisplayPlot) 
+	if (!bActive && m_pDisplayPlot) 
 	{
 		delete m_pDisplayPlot;
 		m_pDisplayPlot = NULL;
@@ -2342,13 +2357,13 @@ void CMainFrame::OnWindowTileHorz()
 
 	for ( CSaDoc* pdoc = doclst.pdocFirst(); pdoc; pdoc = doclst.pdocNext() )
 	{
-		if(pdoc->GetID() > maxID) maxID = pdoc->GetID();
+		if (pdoc->GetID() > maxID) maxID = pdoc->GetID();
 	}
 	for(nLoop = maxID; nLoop >= 0; nLoop--)
 	{
 		for ( CSaDoc* pdoc = doclst.pdocFirst(); pdoc; pdoc = doclst.pdocNext() )
 		{
-			if(pdoc->GetID() == nLoop)
+			if (pdoc->GetID() == nLoop)
 			{
 				POSITION pos = pdoc->GetFirstViewPosition();
 				CView* pFirstView = pdoc->GetNextView( pos );
@@ -2373,13 +2388,13 @@ void CMainFrame::OnWindowTileVert()
 
 	for ( CSaDoc* pdoc = doclst.pdocFirst(); pdoc; pdoc = doclst.pdocNext() )
 	{
-		if(pdoc->GetID() > maxID) maxID = pdoc->GetID();
+		if (pdoc->GetID() > maxID) maxID = pdoc->GetID();
 	}
 	for(nLoop = maxID; nLoop >= 0; nLoop--)
 	{
 		for ( CSaDoc* pdoc = doclst.pdocFirst(); pdoc; pdoc = doclst.pdocNext() )
 		{
-			if(pdoc->GetID() == nLoop)
+			if (pdoc->GetID() == nLoop)
 			{
 				POSITION pos = pdoc->GetFirstViewPosition();
 				CView* pFirstView = pdoc->GetNextView( pos );
@@ -2429,7 +2444,7 @@ void CMainFrame::OnSynthesis()
 	DestroySynthesizer();
 	ASSERT(s_pDlgSynthesis == NULL);
 	s_pDlgSynthesis = new CDlgSynthesis(_T("Synthesis"));
-	if(s_pDlgSynthesis)
+	if (s_pDlgSynthesis)
 		s_pDlgSynthesis->Create(this);
 }
 
@@ -2446,7 +2461,7 @@ void CMainFrame::OnUpdateSynthesis(CCmdUI* /*pCmdUI*/)
 /***************************************************************************/
 void CMainFrame::DestroySynthesizer()
 {
-	if(s_pDlgSynthesis)
+	if (s_pDlgSynthesis)
 	{
 		s_pDlgSynthesis->DestroyWindow();
 		delete s_pDlgSynthesis;
@@ -2507,13 +2522,13 @@ void CChildFrame::ActivateFrame(int nCmdShow)
 {
 	CMainFrame* pFrameWnd = (CMainFrame*) GetMDIFrame();
 
-	if(!pFrameWnd) return;
+	if (!pFrameWnd) return;
 
-	if(pFrameWnd->MDIGetActive()) 
+	if (pFrameWnd->MDIGetActive()) 
 	{
 		CMDIChildWnd::ActivateFrame(nCmdShow);  // maintain current state
 	}
-	else if(pFrameWnd->IsDefaultViewMaximized()) 
+	else if (pFrameWnd->IsDefaultViewMaximized()) 
 	{
 		CMDIChildWnd::ActivateFrame(SW_SHOWMAXIMIZED); 
 	}
@@ -2531,20 +2546,20 @@ void CChildFrame::ActivateFrame(int nCmdShow)
 	pFrameWnd->GetClientRect(&rParent);
 
 	GetWindowPlacement(&WP);
-	if((Size.x < rParent.Width())&&(Size.x > (rParent.Width()/10)))
+	if ((Size.x < rParent.Width())&&(Size.x > (rParent.Width()/10)))
 	{
 		WP.rcNormalPosition.right = WP.rcNormalPosition.left+Size.x;
 	}
-	else if(Size.x >= rParent.Width())
+	else if (Size.x >= rParent.Width())
 	{
 		WP.rcNormalPosition.right = rParent.Width();
 	}
 
-	if((Size.y < rParent.Height())&&(Size.y > (rParent.Height()/10)))
+	if ((Size.y < rParent.Height())&&(Size.y > (rParent.Height()/10)))
 	{
 		WP.rcNormalPosition.bottom = WP.rcNormalPosition.top+Size.y;
 	}
-	else if(Size.y >= rParent.Height())
+	else if (Size.y >= rParent.Height())
 	{
 		WP.rcNormalPosition.bottom = rParent.Height();
 	}
@@ -2612,12 +2627,12 @@ void CMainFrame::OnRecordOverlay()
 			{
 				CDlgAutoRecorder *pDlgAutoRecorder = new CDlgAutoRecorder(pDoc,(CSaView*)pView,pSourceView,alignInfo);
 
-				if(m_pDisplayPlot)
+				if (m_pDisplayPlot)
 					m_pDisplayPlot->m_pModal = pDlgAutoRecorder;
 
 				pDlgAutoRecorder->DoModal();
 
-				if(m_pDisplayPlot)
+				if (m_pDisplayPlot)
 					m_pDisplayPlot->m_pModal = NULL;
 
 				delete pDlgAutoRecorder;

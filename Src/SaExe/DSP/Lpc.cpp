@@ -382,11 +382,11 @@ dspError_t CLinPredCoding::CreateObject(CLinPredCoding **ppLpcObject, LPC_SETTIN
 	}   
 	LpcParm.dClosurePhase = LpcSetting.dClosurePhase;
 	LpcParm.dPitch = LpcSetting.dPitch;
-	if(LpcParm.dPitch != 0)
+	if (LpcParm.dPitch != 0)
 	{
-		if((LpcSetting.nFrameLen - LpcSetting.nOrder)/(Signal.SmpRate/LpcParm.dPitch)*2*PI - LpcParm.dClosurePhase < PI)
+		if ((LpcSetting.nFrameLen - LpcSetting.nOrder)/(Signal.SmpRate/LpcParm.dPitch)*2*PI - LpcParm.dClosurePhase < PI)
 			LpcParm.dPitch = 0;
-		else if( LpcParm.dClosurePhase < 0 || LpcParm.dClosurePhase >= 2*PI)
+		else if ( LpcParm.dClosurePhase < 0 || LpcParm.dClosurePhase >= 2*PI)
 			return(Code(INVALID_PARM));
 	}
 	USHORT NumRowPointers = (USHORT)(LpcParm.Model.nOrder + 1);
@@ -576,9 +576,9 @@ dspError_t CLinPredCoding::GetLpcModel(LPC_MODEL **ppLpcModel, uint8 *pFrame)  /
 	if (m_LpcParm.Process.ParmSet.bPreEmphasis) PreEmphasize(pFrame);  
 	else Transfer(pFrame);
 
-	if(m_LpcParm.Process.ParmSet.bNoDcBias) RemoveDcBias();
+	if (m_LpcParm.Process.ParmSet.bNoDcBias) RemoveDcBias();
 
-	if(m_LpcParm.Process.ParmSet.bWindowSignal) ApplyWindow();
+	if (m_LpcParm.Process.ParmSet.bWindowSignal) ApplyWindow();
 
 	switch(m_LpcParm.Model.nMethod)
 	{
@@ -626,9 +626,9 @@ dspError_t CLinPredCoding::GetLpcModel(LPC_MODEL **ppLpcModel, short *pFrame)  /
 	if (m_LpcParm.Process.ParmSet.bPreEmphasis) PreEmphasize(pFrame);  
 	else Transfer(pFrame);
 
-	if(m_LpcParm.Process.ParmSet.bNoDcBias) RemoveDcBias();
+	if (m_LpcParm.Process.ParmSet.bNoDcBias) RemoveDcBias();
 
-	if(m_LpcParm.Process.ParmSet.bWindowSignal) ApplyWindow();
+	if (m_LpcParm.Process.ParmSet.bWindowSignal) ApplyWindow();
 
 	switch(m_LpcParm.Model.nMethod)
 	{
@@ -832,7 +832,7 @@ void CLinPredCoding::CalcCovarMatrix(USHORT nMethod)
 
 	short *pWinFrame = m_LpcParm.Model.pFrameBfr;
 
-	if(m_LpcParm.Process.ParmSet.bWindowSignal)
+	if (m_LpcParm.Process.ParmSet.bWindowSignal)
 		pWinFrame = m_LpcParm.Model.pWinFrameBfr; // Use windowed signal for analysis
 
 	int subFrames = 1;
@@ -840,7 +840,7 @@ void CLinPredCoding::CalcCovarMatrix(USHORT nMethod)
 	int nClosureLen = m_LpcParm.Model.nFrameLen;
 	int nPitchLen = 0;
 
-	if(m_LpcParm.dClosurePhase != 0 && m_LpcParm.dPitch != 0)
+	if (m_LpcParm.dClosurePhase != 0 && m_LpcParm.dPitch != 0)
 	{
 		nPitchLen = int(m_Signal.SmpRate/m_LpcParm.dPitch);
 		nClosureLen = nPitchLen/2;
@@ -1031,7 +1031,7 @@ void CLinPredCoding::CalcCovarMatrix(USHORT nMethod)
 ////////////////////////////////////////////////////////////////////////////////////////
 void CLinPredCoding::CalcReflCoeff(void)
 {
-	if(m_LpcParm.Model.nMethod == LPC_COVAR_LATTICE)
+	if (m_LpcParm.Model.nMethod == LPC_COVAR_LATTICE)
 	{
 		double fplusb, c, sum1, sum3, sum4, sum6, sum7, sum9, y;
 		USHORT k, kp1, km1, i, j, ip1, km2, kmj, kmi;
@@ -1270,22 +1270,22 @@ struct FORMANT_ASSESSMENT
 
 static BOOL assessBest(FORMANT_ASSESSMENT &param1, FORMANT_ASSESSMENT &param2)
 {
-	if(!param1.bValidFrequency < !param2.bValidFrequency)
+	if (!param1.bValidFrequency < !param2.bValidFrequency)
 		return TRUE;
-	if(!param1.bValidFrequency > !param2.bValidFrequency)
+	if (!param1.bValidFrequency > !param2.bValidFrequency)
 		return FALSE;
 
-	if(param1.bShadow < param2.bShadow) 
+	if (param1.bShadow < param2.bShadow) 
 		return TRUE;
-	if(param1.bShadow > param2.bShadow) 
+	if (param1.bShadow > param2.bShadow) 
 		return FALSE;
 
-	if(param1.dLocalizedSecondDerivative < param2.dLocalizedSecondDerivative)
+	if (param1.dLocalizedSecondDerivative < param2.dLocalizedSecondDerivative)
 		return TRUE;
-	if(param1.dLocalizedSecondDerivative > param2.dLocalizedSecondDerivative)
+	if (param1.dLocalizedSecondDerivative > param2.dLocalizedSecondDerivative)
 		return FALSE;
 
-	if(param1.dSecondDerivative < param2.dSecondDerivative)
+	if (param1.dSecondDerivative < param2.dSecondDerivative)
 		return TRUE;
 
 	return FALSE;
@@ -1293,7 +1293,7 @@ static BOOL assessBest(FORMANT_ASSESSMENT &param1, FORMANT_ASSESSMENT &param2)
 
 static BOOL frequencyLess(FORMANT_VALUES &param1, FORMANT_VALUES &param2)
 {
-	if(param1.FrequencyInHertz < param2.FrequencyInHertz)
+	if (param1.FrequencyInHertz < param2.FrequencyInHertz)
 		return TRUE;
 
 	return FALSE;
@@ -1450,7 +1450,7 @@ void CLinPredCoding::CalcFormants(void)
 	}
 
 	int j = 1;
-	if(unfilteredFormants.size())
+	if (unfilteredFormants.size())
 	{
 		// So far what we have are all the LPC poles in the frequency domain
 		// We need to pick out the LPC poles which correspond to formants
@@ -1476,16 +1476,16 @@ void CLinPredCoding::CalcFormants(void)
 			FORMANT_VALUES &formant = unfilteredFormants[i];
 
 			// Delete if real pole (not resonant)
-			if(Round(formant.FrequencyInHertz) == 0 || Round(formant.FrequencyInHertz) == Round(m_Signal.SmpRate/2.))
+			if (Round(formant.FrequencyInHertz) == 0 || Round(formant.FrequencyInHertz) == Round(m_Signal.SmpRate/2.))
 				assessment[i].bValidFrequency = FALSE;
 
 			// Delete if in shadow of more dominant pole (previous)
-			if(i > 0 && formant.BandwidthInHertz > unfilteredFormants[i-1].BandwidthInHertz 
+			if (i > 0 && formant.BandwidthInHertz > unfilteredFormants[i-1].BandwidthInHertz 
 				&& formant.FrequencyInHertz < unfilteredFormants[i-1].FrequencyInHertz + formant.BandwidthInHertz/2)
 				assessment[i].bShadow = TRUE;
 
 			// Delete if in shadow of more dominant pole (next)
-			if(i < unfilteredFormants.size() - 1 && formant.BandwidthInHertz > unfilteredFormants[i+1].BandwidthInHertz 
+			if (i < unfilteredFormants.size() - 1 && formant.BandwidthInHertz > unfilteredFormants[i+1].BandwidthInHertz 
 				&& formant.FrequencyInHertz + formant.BandwidthInHertz/2 > unfilteredFormants[i+1].FrequencyInHertz)
 				assessment[i].bShadow = TRUE;
 
@@ -1509,9 +1509,9 @@ void CLinPredCoding::CalcFormants(void)
 			FORMANT_VALUES &formant = unfilteredFormants[i];
 			while (dUpperFrequency < formant.FrequencyInHertz + 2500)
 			{
-				if(nUpperIndex < unfilteredFormants.size())
+				if (nUpperIndex < unfilteredFormants.size())
 					dSumSecondDerivatives +=  assessment[nUpperIndex++].dSecondDerivative;
-				if(nUpperIndex < unfilteredFormants.size())
+				if (nUpperIndex < unfilteredFormants.size())
 					dUpperFrequency = unfilteredFormants[nUpperIndex].FrequencyInHertz;
 				else
 					dUpperFrequency = m_Signal.SmpRate + 3000;
@@ -1538,7 +1538,7 @@ void CLinPredCoding::CalcFormants(void)
 			FORMANT_ASSESSMENT &assess = assessment[i];
 			FORMANT_VALUES &formant = unfilteredFormants[assess.index];
 
-			if(j < nMaxFormants)
+			if (j < nMaxFormants)
 				m_LpcParm.Model.Formant[j++] = formant;
 		}
 	}
@@ -1682,7 +1682,7 @@ void CLinPredCoding::CalcMeanSqError(void)
 			(double)m_LpcParm.Model.pResidual[i]*m_LpcParm.Model.pResidual[i];
 		m_LpcParm.Model.dMeanSqPredError += error;
 		m_LpcParm.Model.dMeanQuadPredError += error*error;
-		if(error > m_LpcParm.Model.dPeakError) 
+		if (error > m_LpcParm.Model.dPeakError) 
 			m_LpcParm.Model.dPeakError = error;
 	}
 	m_LpcParm.Model.dMeanSqPredError /= (double)m_LpcParm.Model.nResiduals; //!!divide by 0?

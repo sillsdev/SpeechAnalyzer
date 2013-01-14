@@ -185,7 +185,7 @@ void swapOrder(complexFloat * const complexData, const int32 n)
 	for(uint32 swap = 0; swap < (uint32) n; swap++)
 	{
 		uint32 reverse = reverseBits(swap, n);
-		if(swap > reverse) // avoid swapping twice
+		if (swap > reverse) // avoid swapping twice
 		{
 			complexFloat temp = complexData[swap];
 			complexData[swap] = complexData[reverse];
@@ -201,7 +201,7 @@ static void cfft2f(complexFloat * const complexData, const int32 n, const int32 
 	// swap order
 	swapOrder(complexData, n);
 
-	if(idir == FORWARD)
+	if (idir == FORWARD)
 	{
 		// forward DFT
 		for(int32 pass = 1;(1 << pass) <= n;pass++)
@@ -270,7 +270,7 @@ extern "C" int32 slowrfft2f(float *pfarray, int32 n, int32 idir)
 	complexFloat *data = new complexFloat[n];
 	float* floatData = (float *) data; 
 
-	if(idir == FORWARD)
+	if (idir == FORWARD)
 	{
 		// copy real data to complex array
 		for(int32 i=0;i<n;i++)
@@ -315,7 +315,7 @@ extern "C" int32 slowrfft2f(float *pfarray, int32 n, int32 idir)
 extern "C" int32 rfft2f(float *pfarray, int32 n, int32 idir)
 {
 	int32 halfN = n/2;
-	if(idir == FORWARD)
+	if (idir == FORWARD)
 	{  
 		complexFloat Pm,Qm,Wm;    
 		complexFloat* data = (complexFloat *) pfarray;

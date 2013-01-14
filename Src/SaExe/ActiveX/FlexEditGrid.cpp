@@ -67,7 +67,7 @@ CFlexEditGrid::CFlexEditGrid()
 
 CFlexEditGrid::~CFlexEditGrid()
 {
-	if(m_pEdit)
+	if (m_pEdit)
 		delete m_pEdit;
 }
 
@@ -159,7 +159,7 @@ BOOL CFlexEditGrid::OnKeyDownGrid(short FAR* KeyCode, short Shift)
 
 BOOL CFlexEditGrid::handleEditBoxSpecialKeys(short FAR* KeyCode, short /*Shift*/, BOOL bHandleIt) 
 {
-	if(!bHandleIt)
+	if (!bHandleIt)
 	{
 		switch(*KeyCode)
 		{
@@ -179,7 +179,7 @@ BOOL CFlexEditGrid::handleEditBoxSpecialKeys(short FAR* KeyCode, short /*Shift*/
 	switch(*KeyCode)
 	{
 	case VK_UP:
-		if(GetRow() > GetFixedRows())
+		if (GetRow() > GetFixedRows())
 		{
 			OnUpdateGrid();
 			SetRow(GetRow() - 1);
@@ -187,7 +187,7 @@ BOOL CFlexEditGrid::handleEditBoxSpecialKeys(short FAR* KeyCode, short /*Shift*/
 		}
 		break;
 	case VK_DOWN:
-		if(GetRow() < (GetRows() - 1))
+		if (GetRow() < (GetRows() - 1))
 		{
 			OnUpdateGrid();
 			SetRow(GetRow() + 1);
@@ -195,7 +195,7 @@ BOOL CFlexEditGrid::handleEditBoxSpecialKeys(short FAR* KeyCode, short /*Shift*/
 		}
 		break;
 	case VK_LEFT:
-		if(GetCol() > GetFixedCols())
+		if (GetCol() > GetFixedCols())
 		{
 			OnUpdateGrid();
 			SetCol(GetCol() - 1);
@@ -203,7 +203,7 @@ BOOL CFlexEditGrid::handleEditBoxSpecialKeys(short FAR* KeyCode, short /*Shift*/
 		}
 		break;
 	case VK_RIGHT:
-		if(GetCol() < GetCols(0 /* Band */))
+		if (GetCol() < GetCols(0 /* Band */))
 		{
 			OnUpdateGrid();
 			SetCol(GetCol() + 1);
@@ -230,7 +230,7 @@ BOOL CFlexEditGrid::handleEditBoxSpecialKeys(short FAR* KeyCode, short /*Shift*/
 
 BOOL CFlexEditGrid::handleSpecialKeys(short FAR* KeyCode, short /*Shift*/, BOOL bHandleIt) 
 {
-	if(!bHandleIt)
+	if (!bHandleIt)
 	{
 		switch(*KeyCode)
 		{
@@ -266,7 +266,7 @@ BOOL CFlexEditGrid::handleSpecialKeys(short FAR* KeyCode, short /*Shift*/, BOOL 
 		} 
 	}	
 
-	if(!m_bFakeArrowKeys)
+	if (!m_bFakeArrowKeys)
 		return FALSE;
 
 	try
@@ -281,7 +281,7 @@ BOOL CFlexEditGrid::handleSpecialKeys(short FAR* KeyCode, short /*Shift*/, BOOL 
 		switch(*KeyCode)
 		{
 		case VK_UP:
-			if(row > fixedRows)
+			if (row > fixedRows)
 			{
 				OnUpdateGrid();
 				SetRow(--row);
@@ -291,13 +291,13 @@ BOOL CFlexEditGrid::handleSpecialKeys(short FAR* KeyCode, short /*Shift*/, BOOL 
 			}
 			break;
 		case VK_DOWN:
-			if(row < (rows - 1))
+			if (row < (rows - 1))
 			{
 				OnUpdateGrid();
 				SetRow(++row);
 
 				long rowPartial = row + 1;
-				if(rowPartial == rows)
+				if (rowPartial == rows)
 					rowPartial--;
 				while(!GetRowIsVisible(rowPartial))
 					SetTopRow(GetTopRow() + 1);
@@ -305,7 +305,7 @@ BOOL CFlexEditGrid::handleSpecialKeys(short FAR* KeyCode, short /*Shift*/, BOOL 
 			}
 			break;
 		case VK_LEFT:
-			if(col > fixedCols)
+			if (col > fixedCols)
 			{
 				OnUpdateGrid();
 				SetCol(--col);
@@ -315,13 +315,13 @@ BOOL CFlexEditGrid::handleSpecialKeys(short FAR* KeyCode, short /*Shift*/, BOOL 
 			}
 			break;
 		case VK_RIGHT:
-			if(col < (cols - 1))
+			if (col < (cols - 1))
 			{
 				OnUpdateGrid();
 				SetCol(++col);
 
 				long colPartial = col + 1;
-				if(colPartial == cols)
+				if (colPartial == cols)
 					colPartial--;
 				while(!GetColIsVisible(colPartial))
 					SetLeftCol(GetLeftCol() + 1);
@@ -376,11 +376,11 @@ void CFlexEditGrid::InvalidData()
 
 BOOL CFlexEditGrid::Undo(CString *redoText)
 {
-	if(m_nUndoRow != -1)
+	if (m_nUndoRow != -1)
 	{
 		SetRow(m_nUndoRow);
 		SetCol(m_nUndoCol);
-		if(redoText)
+		if (redoText)
 			*redoText = GetText();
 		SetText(m_cUndoString);
 		return TRUE;
@@ -495,7 +495,7 @@ BOOL CFlexEditWnd::SetVisible(BOOL bState)
 
 	m_bVisible = bState;
 
-	if(bState)
+	if (bState)
 		ShowWindow(SW_SHOW);
 	else
 		ShowWindow(SW_HIDE);
@@ -615,7 +615,7 @@ void CFlexEditGrid::OnEditPaste()
 
 void CFlexEditGrid::OnUpdateEditPaste(CCmdUI* pCmdUI) 
 {
-	if(IsClipboardFormatAvailable(CF_TEXT))
+	if (IsClipboardFormatAvailable(CF_TEXT))
 		pCmdUI->Enable();
 	else
 		pCmdUI->Enable(FALSE);	
@@ -631,15 +631,15 @@ CString CFlexEditGrid::SaveRange(int top, int left, int bottom, int right, BOOL 
 	CString szGrid;
 	CString szEmptyCols;
 
-	if(top > GetRows())
+	if (top > GetRows())
 		top = GetRows();
-	if(bottom > GetRows())
+	if (bottom > GetRows())
 		bottom = GetRows();
 
 	int xMin,xMax;
 	int yMin,yMax;
 
-	if(bRotate)
+	if (bRotate)
 	{
 		xMin = left;
 		xMax = right;
@@ -665,11 +665,11 @@ CString CFlexEditGrid::SaveRange(int top, int left, int bottom, int right, BOOL 
 
 		for(int y = yMin; y < yMax; y++)
 		{
-			if(bRotate)
+			if (bRotate)
 				szField = GetTextMatrix(y,x);
 			else
 				szField = GetTextMatrix(x,y);
-			if(!szField.IsEmpty())
+			if (!szField.IsEmpty())
 			{
 				szLine += szEmptyFields;
 				szLine += szField;
@@ -679,7 +679,7 @@ CString CFlexEditGrid::SaveRange(int top, int left, int bottom, int right, BOOL 
 			szEmptyFields += _T("\t");
 		}
 
-		if(!szLine.IsEmpty())
+		if (!szLine.IsEmpty())
 		{
 			szGrid += szEmptyCols;
 			szGrid += szLine;
@@ -704,7 +704,7 @@ void CFlexEditGrid::LoadRange(int top, int left, CString szGrid, BOOL bRotate)
 	int xMin;
 	int yMin;
 
-	if(bRotate)
+	if (bRotate)
 	{
 		xMin = left;
 		yMin = top;
@@ -719,23 +719,23 @@ void CFlexEditGrid::LoadRange(int top, int left, CString szGrid, BOOL bRotate)
 	{
 		int nLineEnd = szGrid.Find(_T("\n"),nLineStart);
 
-		if(nLineEnd == -1)
+		if (nLineEnd == -1)
 			nLineEnd = nLength;
 
 		CString szLine = szGrid.Mid(nLineStart,nLineEnd-nLineStart);
 
 		int nLineLength = szLine.GetLength();
 
-		if(szLine[nLineLength-1] == '\r')
+		if (szLine[nLineLength-1] == '\r')
 		{
 			// usually lines should be terminated by CrLf ("\r\n")
 			szLine = szLine.Left(nLineLength - 1);
 			nLineLength--;
 		}
 
-		if(!bRotate && x >= GetRows())
+		if (!bRotate && x >= GetRows())
 			SetRows(x + 1);
-		if(bRotate && x >= GetCols(0))
+		if (bRotate && x >= GetCols(0))
 			SetCols(0, x + 1);
 
 		int nFieldStart = 0;
@@ -743,18 +743,18 @@ void CFlexEditGrid::LoadRange(int top, int left, CString szGrid, BOOL bRotate)
 		{
 			int nFieldEnd = szLine.Find(_T("\t"), nFieldStart);
 
-			if(nFieldEnd == -1)
+			if (nFieldEnd == -1)
 				// clipboard may not have a trailing \t
 				nFieldEnd = nLineLength;
 
 			CString szField = szLine.Mid(nFieldStart,nFieldEnd-nFieldStart);
 
-			if(!bRotate && y >= GetCols(0))
+			if (!bRotate && y >= GetCols(0))
 				SetCols(0, y + 1);
-			if(bRotate && y >= GetRows())
+			if (bRotate && y >= GetRows())
 				SetRows(y + 1);
 
-			if(bRotate)
+			if (bRotate)
 				SetTextMatrix(y,x,szField);
 			else
 				SetTextMatrix(x,y,szField);

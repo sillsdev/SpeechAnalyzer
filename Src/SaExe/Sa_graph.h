@@ -142,7 +142,7 @@ protected:
 	//{{AFX_MSG(CGraphWnd)
 	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
 	afx_msg void OnSize(UINT nType, int cx, int cy);
-	afx_msg void OnSetFocus(CWnd* /*cwp*/) { if(IsPlotID(IDD_STAFF))  ::SetFocus(m_pPlot->m_hWnd);}
+	afx_msg void OnSetFocus(CWnd* /*cwp*/) { if (IsPlotID(IDD_STAFF))  ::SetFocus(m_pPlot->m_hWnd);}
 	afx_msg LRESULT OnGenderInfoChanged(WPARAM nGender, LPARAM lParam = 0L);
 	afx_msg LRESULT OnCursorClicked(WPARAM Cursor, LPARAM ButtonState);
 	afx_msg void OnNcMouseMove(UINT nHitTest, CPoint point);

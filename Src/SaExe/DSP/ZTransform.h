@@ -103,12 +103,12 @@ template<class _Ty> void CZTransformGeneric<_Ty>::SetTransform(const int32 nOrde
 
 	for(int32 i = 0; i <= m_nOrder; i++)
 	{
-		if(numeratorCoef)
+		if (numeratorCoef)
 			m_pNumerator[i] = numeratorCoef[i];
 		else
 			m_pNumerator[i] = (i == 0) ? 1. : 0.;
 
-		if(denominatorCoef)
+		if (denominatorCoef)
 			m_pDenominator[i] = denominatorCoef[i];
 		else
 			m_pDenominator[i] = (i == 0) ? 1. : 0.;
@@ -123,7 +123,7 @@ template<class _Ty> void CZTransformGeneric<_Ty>::SetTransform(const int32 nOrde
 
 template<class _Ty> CZTransformGeneric<_Ty>& CZTransformGeneric<_Ty>::operator *=(const CZT& value)
 {
-	if(m_nOrder + value.m_nOrder > 2)
+	if (m_nOrder + value.m_nOrder > 2)
 	{
 		m_cStages.push_back(value);
 		return *this;
@@ -146,9 +146,9 @@ template<class _Ty> CZTransformGeneric<_Ty>& CZTransformGeneric<_Ty>::operator *
 
 		for(int32 j=0;j<=i;j++)
 		{
-			if(i-j > nOldOrder)
+			if (i-j > nOldOrder)
 				continue;
-			if(j > value.m_nOrder)
+			if (j > value.m_nOrder)
 				break;
 			numerator += pNumerator[i-j]*value.GetNumerator(j);
 			denominator += pDenominator[i-j]*value.GetDenominator(j);
@@ -157,7 +157,7 @@ template<class _Ty> CZTransformGeneric<_Ty>& CZTransformGeneric<_Ty>::operator *
 		m_pDenominator[i] = denominator;
 		m_pState[i] = 0.;
 
-		if(i == m_nOrder && numerator == 0. && denominator == 0.)
+		if (i == m_nOrder && numerator == 0. && denominator == 0.)
 			// reduce the order of the filter
 			m_nOrder--;
 	}
@@ -191,7 +191,7 @@ template<class _Ty> _Ty CZTransformGeneric<_Ty>::Tick(_Ty dInput)
 		m_pState[i] = m_pState[i-1];
 	}
 
-	if(m_nOrder)  // Special reduced case no state info
+	if (m_nOrder)  // Special reduced case no state info
 		m_pState[1] = partialState;
 
 	for(int32 i=0; i<int32(m_cStages.size()); i++)

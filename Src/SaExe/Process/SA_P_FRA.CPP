@@ -84,7 +84,7 @@ long CProcessFragments::Process(void* pCaller, ISaDoc* pDoc, int nProgress,
 	DWORD dwOldPitchBlock = pAutoPitch->GetProcessBufferIndex();  // save current pitch buffer block offset   
 
 	// start processing fragments
-	if(!(bBackground?StartProcess(pCaller, IDS_STATTXT_BACKGNDFRA):
+	if (!(bBackground?StartProcess(pCaller, IDS_STATTXT_BACKGNDFRA):
 		StartProcess(pCaller, IDS_STATTXT_PROCESSFRA))) // memory allocation failed
 	{ 
 		EndProcess(); // end data processing

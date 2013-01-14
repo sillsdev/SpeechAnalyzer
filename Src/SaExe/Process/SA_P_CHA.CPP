@@ -257,7 +257,7 @@ long CProcessChange::Process(void* pCaller, ISaDoc* pDoc, int nProgress,
 	// allocate global buffer for the processed quality data
 	// start pitch process
 	BeginWaitCursor(); // wait cursor
-	if(!StartProcess(pCaller, IDS_STATTXT_PROCESSPIT, FALSE)) // start data processing
+	if (!StartProcess(pCaller, IDS_STATTXT_PROCESSPIT, FALSE)) // start data processing
 	{ 
 		EndProcess(); // end data processing
 		EndWaitCursor();
@@ -323,7 +323,7 @@ long CProcessChange::Process(void* pCaller, ISaDoc* pDoc, int nProgress,
 			continue;
 		if (nVal > nMaxLag) nVal = nMaxLag;
 		naACFlags[++nNumLags] = nVal;
-		if(nVal == nMaxLag) 
+		if (nVal == nMaxLag) 
 			break;
 	}
 	naACFlags[++nNumLags] = nMaxLag + 1; // extra value
@@ -392,7 +392,7 @@ long CProcessChange::Process(void* pCaller, ISaDoc* pDoc, int nProgress,
 					dwResult = CalculateACF8(pLoudness, (unsigned char *)pSRDdata, &bRes, nACFinterval, nLagData,
 					nLagHigh, &dwBlockPos, dwDataPos, nInnerLoop);
 				if (!bRes) break;
-				if(dwResult < dwMinCoeff)
+				if (dwResult < dwMinCoeff)
 				{ 
 					dwMinCoeff = dwResult;
 					nFoundLag = nLagData;
@@ -502,7 +502,7 @@ long CProcessChange::Process(void* pCaller, ISaDoc* pDoc, int nProgress,
 	}
 
 	// start change process
-	if(!StartProcess(pCaller, IDS_STATTXT_PROCESSCHA)) // start data processing
+	if (!StartProcess(pCaller, IDS_STATTXT_PROCESSCHA)) // start data processing
 	{ 
 		EndProcess(); // end data processing
 		EndWaitCursor();

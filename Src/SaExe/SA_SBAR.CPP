@@ -548,7 +548,7 @@ void CProgressStatusBar::SetProcessOwner(void* pProcess, void* pCaller, int nPro
 	m_pProcessOwner = pProcess;
 	m_pProcessCaller = pCaller;
 
-	if(GetSafeHwnd())
+	if (GetSafeHwnd())
 	{
 		CString szText;
 
@@ -596,7 +596,7 @@ void CProgressStatusBar::SetProgress(int nVal)
 		static DWORD dwTickLast = 0;
 		DWORD dwThis = GetTickCount();
 
-		if(dwThis - dwTickLast > 100)
+		if (dwThis - dwTickLast > 100)
 		{
 			dwTickLast = dwThis;
 			CMainFrame* pMainWnd = (CMainFrame*)AfxGetMainWnd();

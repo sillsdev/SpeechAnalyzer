@@ -276,7 +276,7 @@ CHistogram::~CHistogram()
 		delete [] m_pHistogram;
 		m_pHistogram = NULL;
 	}
-	if(m_stHistParms.pBinDivs)
+	if (m_stHistParms.pBinDivs)
 	{
 		delete [] m_stHistParms.pBinDivs;
 		m_stHistParms.pBinDivs = NULL;
@@ -344,7 +344,7 @@ dspError_t CHistogram::GetBinByData(int32 & nBinValue, int16 nData, double fCoef
 
 	nBinValue = 0;
 
-	if(nBinNum < 0)
+	if (nBinNum < 0)
 		return (DONE);
 
 	return GetBin(nBinValue, nBinNum, fCoeff, wGraphForm);
@@ -428,7 +428,7 @@ dspError_t CHistogram::Process(uint8 * pBuffer)  //for 8-bit unsigned data
 
 		GetBinNum(nBin, (short)pBuffer[nSamp]);
 
-		if(nBin < 0) continue;
+		if (nBin < 0) continue;
 
 		m_pHistogram[nBin]++;
 		m_dwTotalCounts++;
@@ -457,7 +457,7 @@ dspError_t CHistogram::Process(short * pBuffer)  //for 16-bit signed data
 
 		GetBinNum(nBin, (short)pBuffer[nSamp]);
 
-		if(nBin < 0) continue;
+		if (nBin < 0) continue;
 
 		m_pHistogram[nBin]++;
 		m_dwTotalCounts++;

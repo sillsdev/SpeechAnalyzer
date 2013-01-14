@@ -294,7 +294,9 @@ private:
 	wstring				GenerateWordSplitName( CGlossSegment * g, CSaView* pView, EWordFilenameConvention convention, int index);
 	bool				GeneratePhraseSplitName( Annotations type, CMusicPhraseSegment * s, CSaView* pView, EPhraseFilenameConvention convention, int index, wstring & result);
 	wstring				FilterName( wstring text);
-	bool				CreateFolder( wstring & folder);
+	bool				CreateFolder( LPCTSTR folder);
+	bool				FileExists( LPCTSTR folder);
+	bool				FolderExists( LPCTSTR folder);
 	bool				ValidateWordFilenames( EWordFilenameConvention & convention, wstring & path, BOOL skipEmptyGloss);
 	bool				ValidatePhraseFilenames( Annotations & type, EPhraseFilenameConvention & convention, wstring & path);
 	bool				ExportWordSegments( int & count, EWordFilenameConvention & convention, wstring & glossPath, BOOL skipEmptyGloss);
@@ -354,11 +356,8 @@ public:
 	virtual void		NotifyFragmentDone(void *pCaller);
 
 	// Overrides
-	// ClassWizard generated virtual function overrides
-	//{{AFX_VIRTUAL(CSaDoc)
 public:
 	virtual void		Serialize(CArchive& ar);
-	//}}AFX_VIRTUAL
 
 #ifdef _DEBUG
 	virtual void		AssertValid() const;
@@ -368,7 +367,6 @@ public:
 	// Generated message map functions
 protected:
 	// SDM 1.06.5 removed unused mesages
-	//{{AFX_MSG(CSaDoc)
 	afx_msg void OnUpdateFileSave(CCmdUI* pCmdUI);
 	afx_msg void OnFileSaveAs();
 	afx_msg void OnUpdateFileSaveAs(CCmdUI* pCmdUI);
@@ -394,8 +392,8 @@ protected:
 	afx_msg void OnUpdateToolsAdjustNormalize(CCmdUI* pCmdUI);
 	afx_msg void OnToolsAdjustZero();
 	afx_msg void OnUpdateToolsAdjustZero(CCmdUI* pCmdUI);
-	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()
+
 public:
 	bool IsTempFile();
 	bool CanEdit();

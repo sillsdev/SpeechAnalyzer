@@ -207,7 +207,7 @@ static  void  parse(pGrappl);
 #define    CHECKVAL  123456789L
 static void Check(pGrappl work)
 {
-  if(((pWorkspace)(work))->check != CHECKVAL)
+  if (((pWorkspace)(work))->check != CHECKVAL)
         { int16 i=2; i=2/(i-2); }
 }
 
@@ -229,19 +229,19 @@ Boolean  grapplGetResults(pGrappl work,pGrappl_res *res,int16 *nres,
 
   *nres=0;
   /* check expecting this call */
-  if(SysParams->state != WantOut)
+  if (SysParams->state != WantOut)
   {
-    if(SysParams->state == Idle) SysParams->error=E_idle;
+    if (SysParams->state == Idle) SysParams->error=E_idle;
     return(false);
   }
   else
   {
-    if(update_results(work,false))
+    if (update_results(work,false))
     {  /* results returned */
       *res=&(Ures(0));
       *nres=SysParams->nres;
 
-      if(SysParams->outalldone)
+      if (SysParams->outalldone)
       {  /* flag all done */
         *alldone=true;
         SysParams->state=Idle;
@@ -268,8 +268,8 @@ Boolean grapplInit(pGrappl work,pGrappl_parms parms)
 
   /* copy across and check/modify user parameters */
   SysParams->reslag=(parms->reslag == 0?Maxres:parms->reslag);
-  if(SysParams->reslag < 10) SysParams->error=E_badreslag;
-  if(SysParams->reslag > Maxres) SysParams->reslag=Maxres;
+  if (SysParams->reslag < 10) SysParams->error=E_badreslag;
+  if (SysParams->reslag > Maxres) SysParams->reslag=Maxres;
   SysParams->maxinterp_pc10=(parms->maxinterp_pc10 < 0?0:parms->maxinterp_pc10);
   SysParams->minmeanweight=(parms->minmeanweight < 0?0:parms->minmeanweight);
   SysParams->minsigpoints=(parms->minsigpoints < 1?1:parms->minsigpoints);
@@ -278,23 +278,23 @@ Boolean grapplInit(pGrappl work,pGrappl_parms parms)
   SysParams->calcint=(parms->calcint < 1?1:parms->calcint);
   SysParams->maxpitch=parms->maxpitch;
   SysParams->minpitch=parms->minpitch;
-  if(SysParams->maxpitch < 20 || SysParams->minpitch < 20 || SysParams->maxpitch > 4000 ||
+  if (SysParams->maxpitch < 20 || SysParams->minpitch < 20 || SysParams->maxpitch > 4000 ||
     SysParams->minpitch > 1000) SysParams->error=E_badfrange; // CLW 4/5/00
   else
   {
-    if(SysParams->minpitch *5 > SysParams->maxpitch *4) SysParams->error=E_badfgap;
+    if (SysParams->minpitch *5 > SysParams->maxpitch *4) SysParams->error=E_badfgap;
   }
   SysParams->mode=parms->mode;
-  if(SysParams->mode == 0 || (SysParams->mode & ~(Grappl_magnitude|Grappl_rawpitch|
+  if (SysParams->mode == 0 || (SysParams->mode & ~(Grappl_magnitude|Grappl_rawpitch|
     Grappl_fullpitch)) != 0) SysParams->error=E_badmode;
   SysParams->eightbit=parms->eightbit;
   SysParams->smoothfreq=parms->smoothfreq;
-  if(SysParams->smoothfreq != 0L && (SysParams->smoothfreq < 500L ||
+  if (SysParams->smoothfreq != 0L && (SysParams->smoothfreq < 500L ||
     SysParams->smoothfreq > 22000L)) SysParams->error=E_badsmooth; // CLW 4/5/00
   SysParams->sampfreq=parms->sampfreq;
-  if(SysParams->sampfreq < 5000L || SysParams->sampfreq > 50000L) SysParams->error=E_badsfreq;
+  if (SysParams->sampfreq < 5000L || SysParams->sampfreq > 50000L) SysParams->error=E_badsfreq;
 
-  if(! SysParams->error)
+  if (! SysParams->error)
   {  /* calculate derived variables */
     SysParams->minlen16=(uint16)((SysParams->sampfreq*16L+SysParams->maxpitch/2)/
       SysParams->maxpitch);
@@ -317,7 +317,7 @@ Boolean grapplInit(pGrappl work,pGrappl_parms parms)
     SysParams->prevfch[0]=SysParams->prevfch[1]=UNSET;
 
     /* initialise system */
-    if(! update_results(work,true)) SysParams->error=E_internal;
+    if (! update_results(work,true)) SysParams->error=E_internal;
   }
   return(! SysParams->error);
 }
@@ -330,7 +330,7 @@ Boolean grapplSetInbuff(pGrappl work,pGrappl data,uint16 length,int16 alldone)
   Check(work);
 
   /* check expecting input data */
-  if(SysParams->state != WantIn)
+  if (SysParams->state != WantIn)
   {
     SysParams->error=(SysParams->state == Idle?E_idle:E_badin);
     return(false);
@@ -341,7 +341,7 @@ Boolean grapplSetInbuff(pGrappl work,pGrappl data,uint16 length,int16 alldone)
   pending=(int32)SysParams->calcfrac+length;
   SysParams->calcfrac=(int16)(pending % SysParams->calcint);
   SysParams->calcpending+=(int16)(pending/SysParams->calcint);
-  if(alldone) SysParams->inalldone=true;
+  if (alldone) SysParams->inalldone=true;
   SysParams->state=WantOut;
   return(true);
 }
@@ -354,7 +354,7 @@ uint32 grapplWorkspace(void)
   enum{ Tab1=16,Tab2=23 };
   static int16 init=true;
 
-  if(init)
+  if (init)
   {
     init=false;
     io_io("\r\ncheck% %i\r\n",Tab1,sizeof(int32));
@@ -383,7 +383,7 @@ uint32 grapplWorkspace(void)
 static  Boolean  update_data(pGrappl work,int16 init)
 {  /* get enough data in to calculate results for next point */
   Sysparms *SysParams = &(((pWorkspace)(work))->sysparms);
-  if(init)
+  if (init)
   {  /* setup sampling widths etc, and calc how much data needs to be read
        before ready to calculate results for first point */
     uint16 sampwidth,i;
@@ -392,7 +392,7 @@ static  Boolean  update_data(pGrappl work,int16 init)
       SysParams->smoothfreq/2)/SysParams->smoothfreq:1); // CLW 4/5/00
     sampwidth=(uint16)(((SysParams->maxlen16>>3)+SysParams->loc_filterlen)*
       11L/10L+20);
-    if(sampwidth >= Maxdata) return(false); /* fatal error */
+    if (sampwidth >= Maxdata) return(false); /* fatal error */
     SysParams->loc_bytesreqd=sampwidth/2;
     /* initialise buffer contents and moving-average filter */
     for(i=0;i < SysParams->loc_bytesreqd;i++)
@@ -417,7 +417,7 @@ static  Boolean  update_data(pGrappl work,int16 init)
     while(SysParams->loc_bytesreqd && SysParams->incount)
     {
       /* read in next data sample and convert to signed char */
-      if(SysParams->eightbit)
+      if (SysParams->eightbit)
       {
         ch=(int8)( int16(*Ucharptr(SysParams->inptr))              -128);
         SysParams->inptr = Ucharptr(SysParams->inptr) + 1;
@@ -429,7 +429,7 @@ static  Boolean  update_data(pGrappl work,int16 init)
       }
       /* copy into raw waveform buffer */
       Wave(SysParams->loc_iadd)=ch;
-      if(smooth)
+      if (smooth)
       {
         /* get next smoothed waveform value */
         sch=(SysParams->loc_filterlen?(int8)(SysParams->loc_filtersum/
@@ -438,15 +438,15 @@ static  Boolean  update_data(pGrappl work,int16 init)
         SysParams->loc_filtersum+=(int16)ch-(int16)
           Wave(SysParams->loc_isubtract);
         /* track neg/pos transitions */
-        if(SysParams->loc_positive == UNSET)
+        if (SysParams->loc_positive == UNSET)
           SysParams->loc_positive=(sch > 0);
-        if(sch > 0)
+        if (sch > 0)
         {
-          if(! SysParams->loc_positive)
+          if (! SysParams->loc_positive)
           {  /* neg->pos transition located - store it */
             Cross(SysParams->xindx)=SysParams->loc_lcentre;
             SysParams->xindx++;
-            if(SysParams->xcount < Maxcross)
+            if (SysParams->xcount < Maxcross)
               SysParams->xcount++;
             SysParams->loc_positive=true;
           }
@@ -459,14 +459,14 @@ static  Boolean  update_data(pGrappl work,int16 init)
       SysParams->loc_bytesreqd--;
       SysParams->incount--;
     }
-    if(SysParams->loc_bytesreqd)
+    if (SysParams->loc_bytesreqd)
     {  /* no more bytes left in input buffer but more needed */
-      if(SysParams->inalldone)
+      if (SysParams->inalldone)
       {  /* passed end of data - pad with zeros */
         while(SysParams->loc_bytesreqd)
         {
           Wave(SysParams->loc_iadd)=0;
-          if(smooth)
+          if (smooth)
           {
             SysParams->loc_filtersum-=(int16)
               Wave(SysParams->loc_isubtract);
@@ -494,7 +494,7 @@ static  Boolean  update_data(pGrappl work,int16 init)
 static  Boolean  update_results(pGrappl work,int16 init)
 {  /* attempt to fill result buffer with fresh results */
   Sysparms *SysParams = &(((pWorkspace)(work))->sysparms);
-  if(init)
+  if (init)
   {  /* initialise system */
     magnitude(work,true);
     calculate(work,true);
@@ -505,7 +505,7 @@ static  Boolean  update_results(pGrappl work,int16 init)
     int16 i,results,calcdone;
 
     /* move up any pending results */
-    if(SysParams->nres < SysParams->ncalc)
+    if (SysParams->nres < SysParams->ncalc)
     {
       for(i=SysParams->nres;i < SysParams->ncalc;i++)
       {
@@ -521,10 +521,10 @@ static  Boolean  update_results(pGrappl work,int16 init)
     while(SysParams->ncalc < SysParams->reslag && SysParams->calcpending)
     {
       /* get enough wave data for next calc */
-      if(! update_data(work,false)) break;
+      if (! update_data(work,false)) break;
       /* calculate mag16 and/or fcalc16 results */
-      if(SysParams->mode & Grappl_magnitude) magnitude(work,false);
-      if(SysParams->mode & (Grappl_rawpitch|Grappl_fullpitch))
+      if (SysParams->mode & Grappl_magnitude) magnitude(work,false);
+      if (SysParams->mode & (Grappl_rawpitch|Grappl_fullpitch))
         calculate(work,false);
       SysParams->ncalc++;
       SysParams->calcpending--;
@@ -532,17 +532,17 @@ static  Boolean  update_results(pGrappl work,int16 init)
     /* decide whether to return results yet or not */
     calcdone=(SysParams->inalldone && SysParams->calcpending == 0);
     results=(SysParams->ncalc >= SysParams->reslag || (calcdone && SysParams->ncalc > 0));
-    if(results)
+    if (results)
     {  /* going to return results to user */
       SysParams->nres=SysParams->ncalc;
-      if(SysParams->mode & Grappl_fullpitch)
+      if (SysParams->mode & Grappl_fullpitch)
       {  /* do pitch contour tracking */
         select(work);
-        if(! calcdone)
+        if (! calcdone)
           parse(work); /* decide where to break (resets SysParams->nres) */
         smooth(work);
       }
-      if(calcdone) SysParams->outalldone=true;
+      if (calcdone) SysParams->outalldone=true;
       return(true);
     }
     else  return(false);
@@ -554,7 +554,7 @@ static  Boolean  update_results(pGrappl work,int16 init)
 static  void  magnitude(pGrappl work,int16 init)
 {  /* calc abs magnitude x16 for current point */
   Sysparms *SysParams = &(((pWorkspace)(work))->sysparms);
-  if(init)
+  if (init)
   {  /* initialise system */
     SysParams->loc_mstep=SysParams->magrange/(NsampMag-1);
     SysParams->loc_mstartpos=((SysParams->loc_mstep*(NsampMag-1))>>1);
@@ -570,7 +570,7 @@ static  void  magnitude(pGrappl work,int16 init)
     do
     {
       val=Wave(pos);
-      if(val < 0) val=-val;
+      if (val < 0) val=-val;
       sum+=val;
       pos+=SysParams->loc_mstep;
     } while(--i);
@@ -595,7 +595,7 @@ static  void  magnitude(pGrappl work,int16 init)
 static  void  calculate(pGrappl work,int16 init)
 {
   Sysparms *SysParams = &(((pWorkspace)(work))->sysparms);
-  if(init)
+  if (init)
   {  /* initialise system */
     SysParams->prev.coeff=SysParams->prev2.coeff=SysParams->prevprev.coeff=Badcoeff;
     (void)calculate_magnitude(work,true);
@@ -604,7 +604,7 @@ static  void  calculate(pGrappl work,int16 init)
   {
     /* determine whether voiced or not */
     calculate_voiced(work);
-    if(Sres(SysParams->ncalc).voiced)
+    if (Sres(SysParams->ncalc).voiced)
     {
       /* get two fraw pitch estimates and return best as fcalc16 */
       calculate_pitch(work);
@@ -646,7 +646,7 @@ static  void  calculate_addprev(pGrappl work)
     switch(itest)
     {
     case 0:  /* previous fcalc16 estimate */
-      if(SysParams->prev.coeff > Badcoeff)
+      if (SysParams->prev.coeff > Badcoeff)
       {
         dist16=SysParams->prev.dist16;
         nxing=SysParams->prev.nxing;
@@ -654,36 +654,36 @@ static  void  calculate_addprev(pGrappl work)
       break;
 
     case 1:  /* extrapolation from two prev fcalc16 estimates */
-      if(SysParams->prev.coeff == Badcoeff ||
+      if (SysParams->prev.coeff == Badcoeff ||
         SysParams->prevprev.coeff == Badcoeff) break;
       diff=(int32)SysParams->prev.dist16-(int32)SysParams->prevprev.dist16;
-      if(diff < 0) diff=-diff;
+      if (diff < 0) diff=-diff;
       mean=(SysParams->prev.dist16+SysParams->prevprev.dist16+1)>>1;
       percent10=(int16)((diff*1000L+(mean>>1))/mean);
-      if(percent10 > 200 || percent10 < 10) break;
+      if (percent10 > 200 || percent10 < 10) break;
       /* get extrapolated value */
       dist16=(uint16)((((int32)(SysParams->prev.dist16)<<1))-(int32)SysParams->prevprev.dist16);
       /* check in range */
-      if(dist16 < SysParams->minlen16 || dist16 >
+      if (dist16 < SysParams->minlen16 || dist16 >
         SysParams->maxlen16)
         dist16=UUNSET;
       else  nxing=SysParams->prev.nxing;
       break;
 
     case 2:  /* second best prev fcalc16 estimate */
-      if(SysParams->prev2.coeff > Badcoeff)
+      if (SysParams->prev2.coeff > Badcoeff)
       {
         dist16=SysParams->prev2.dist16;
         nxing=SysParams->prev2.nxing;
       }
       break;
     }
-    if(dist16 == UUNSET) continue;
+    if (dist16 == UUNSET) continue;
 
     /* fill in Lagelem fields maintaining correct dist16 order */
     coeff=calculate_acf16(work,dist16);
     for(j=0;j < SysParams->nlag;j++)
-      if(Lag(j).dist16 > dist16) break;
+      if (Lag(j).dist16 > dist16) break;
     SysParams->nlag++;
     for(k=SysParams->nlag;k > j;k--)
       Lag(k)=Lag(k-1);
@@ -707,7 +707,7 @@ static  int16  calculate_acf16(pGrappl work,uint16 offset16)
   frac=offset16&15;
   leftpos=Dataindx(SysParams->dataindx)-((step*(NsampAcf-1)+whole)>>1);
 
-  if(frac)
+  if (frac)
   {  /* acf lag is not integral number of data samples */
     uint16 rightpos;
     int16 val1,val2,diff;
@@ -772,7 +772,7 @@ static  void  calculate_choosebest2(pGrappl work)
     case 3:
       ibest=(SysParams->nlag == 2?1:(lptr[1].coeff >
         lptr[2].coeff?1:2));
-      if(lptr[0].coeff+Coeff_fix >= lptr[ibest].coeff)
+      if (lptr[0].coeff+Coeff_fix >= lptr[ibest].coeff)
       {
         best1=0;
         best2=ibest;
@@ -790,14 +790,14 @@ static  void  calculate_choosebest2(pGrappl work)
   for(ires=0;ires < 2;ires++)
   {
     ibest=(ires?best2:best1);
-    if(ibest == UNSET || Lag(ibest).coeff == Badcoeff)
+    if (ibest == UNSET || Lag(ibest).coeff == Badcoeff)
     {
       thiss->fraw[ires].pitch16=UNSET;
       thiss->fraw[ires].coeff=Badcoeff;
     }
     else
     {
-      if(ires == 0)
+      if (ires == 0)
       {  /* do two-stage optimisation on best */
         calculate_optimise(work,&Lag(ibest),
           Optimrange_pc100,8);
@@ -813,7 +813,7 @@ static  void  calculate_choosebest2(pGrappl work)
     }
   }
   /* check optimising hasn't reversed order */
-  if(thiss->fraw[1].coeff > thiss->fraw[0].coeff+Coeff_fix)
+  if (thiss->fraw[1].coeff > thiss->fraw[0].coeff+Coeff_fix)
   {
     ftemp=thiss->fraw[0];
     thiss->fraw[0]=thiss->fraw[1];
@@ -824,9 +824,9 @@ static  void  calculate_choosebest2(pGrappl work)
   }
 
   /* save bestlag info for future use */
-  if(best1 == UNSET) SysParams->bestlag.coeff=Badcoeff;
+  if (best1 == UNSET) SysParams->bestlag.coeff=Badcoeff;
   else  SysParams->bestlag=Lag(best1);
-  if(best2 == UNSET) SysParams->bestlag2.coeff=Badcoeff;
+  if (best2 == UNSET) SysParams->bestlag2.coeff=Badcoeff;
   else  SysParams->bestlag2=Lag(best2);
 }
 
@@ -837,7 +837,7 @@ static  int16  calculate_findbest(pGrappl work,int16 avoid)
 
   for(i=0,bestindx=UNSET,bestcoeff=Badcoeff;i < SysParams->nlag;i++)
   {
-    if(i != avoid && Lag(i).coeff > bestcoeff)
+    if (i != avoid && Lag(i).coeff > bestcoeff)
     {
       bestindx=i;
       bestcoeff=Lag(i).coeff;
@@ -865,13 +865,13 @@ static  void  calculate_lagacfs(pGrappl work)
   /* do rough acf for all zero-crossing gaps within range */
   while(forever())
   {
-    if(istart < 0) break;
+    if (istart < 0) break;
       /* no more crossings */
     ldist=Cross(iend)-Cross(istart);
-    if(ldist > (uint32)(SysParams->maxlen16>>4)) break; /* all done */
-    if(ldist >= (uint32)(SysParams->minlen16>>4))
+    if (ldist > (uint32)(SysParams->maxlen16>>4)) break; /* all done */
+    if (ldist >= (uint32)(SysParams->minlen16>>4))
     {
-      if(ilag >= Maxlag)
+      if (ilag >= Maxlag)
       {  /* array full */
         break;
       }
@@ -896,7 +896,7 @@ static  int16  calculate_magnitude(pGrappl work,int16 init)
   int32 pos,sum;
   int16 pt[NsampMag];
 
-  if(init)
+  if (init)
   {
     SysParams->loc_smstep=SysParams->smagrange/(NsampMag-1);
     SysParams->loc_smstartpos=((SysParams->loc_smstep*(NsampMag-1))>>1);
@@ -931,15 +931,15 @@ static  void  calculate_nextgap(pGrappl work,int16 *istart,int16 *iend,
   Sysparms *SysParams = &(((pWorkspace)(work))->sysparms);
   int16 low,high=0,mid;
 
-  if(init)
+  if (init)
   {  /* binary chop to find crossings which straddle pos */
-    if(SysParams->xcount < 2) low=-1; /* no gap found */
+    if (SysParams->xcount < 2) low=-1; /* no gap found */
     else
     {
       /* get range of indices */
       high=(int16)Crossindx(SysParams->xindx)-1;
       low=(int16)Crossindx(SysParams->xindx)-SysParams->xcount;
-      if(low < 0)
+      if (low < 0)
       {
         low+=Maxcross;
         high+=Maxcross;
@@ -950,7 +950,7 @@ static  void  calculate_nextgap(pGrappl work,int16 *istart,int16 *iend,
       while(high > low+1)
       {
         mid=(low+high)/2;
-        if(Cross(mid) > SysParams->dataindx)
+        if (Cross(mid) > SysParams->dataindx)
           high=mid;
         else  low=mid;
       }
@@ -960,12 +960,12 @@ static  void  calculate_nextgap(pGrappl work,int16 *istart,int16 *iend,
       while(low < SysParams->loc_maxhigh && Cross(low+1) <
         SysParams->dataindx) low++;
       high=low+1;
-      if(high > SysParams->loc_maxhigh)
+      if (high > SysParams->loc_maxhigh)
       {
         high--;
         low--;
       }
-      if(Cross(low) >= SysParams->dataindx ||
+      if (Cross(low) >= SysParams->dataindx ||
         Cross(high) < SysParams->dataindx) low=-1;
     }
   }
@@ -973,18 +973,18 @@ static  void  calculate_nextgap(pGrappl work,int16 *istart,int16 *iend,
   {  /* extend by one crossing, keeping as centred as poss */
     low=*istart;
     high=*iend;
-    if(low == SysParams->loc_maxlow && high == SysParams->loc_maxhigh)
+    if (low == SysParams->loc_maxlow && high == SysParams->loc_maxhigh)
     {
       *istart=-1;
       return;
     }
-    if(low == SysParams->loc_maxlow) high++;
+    if (low == SysParams->loc_maxlow) high++;
     else
     {
-      if(high == SysParams->loc_maxhigh) low--;
+      if (high == SysParams->loc_maxhigh) low--;
       else
       {
-        if(SysParams->dataindx-Cross(low-1) >
+        if (SysParams->dataindx-Cross(low-1) >
           Cross(high+1)-SysParams->dataindx)
           high++;
         else  low--;
@@ -1003,20 +1003,20 @@ static  void  calculate_optimise(pGrappl work,pLagelem lelem,
   int16 bestcoeff,coeff,i;
   uint16 bestdist16,range16,step16,dist16;
 
-  if(lelem->dist16 == UUNSET) return;
+  if (lelem->dist16 == UUNSET) return;
 
   bestcoeff=lelem->coeff;
   bestdist16=lelem->dist16;
   npos=(npos+1)/2;
   range16=(uint16)((lelem->dist16*(int32)range_pc100+5000L)/10000L);
   step16=(range16+npos/2)/npos;
-  if(step16 < 1) step16=1;
+  if (step16 < 1) step16=1;
   for(i=-npos;i <= npos;i++)
   {
-    if(i == 0) continue;
+    if (i == 0) continue;
     dist16=lelem->dist16+i*step16;
     coeff=calculate_acf16(work,dist16);
-    if(coeff > bestcoeff)
+    if (coeff > bestcoeff)
     {
       bestcoeff=coeff;
       bestdist16=dist16;
@@ -1024,7 +1024,7 @@ static  void  calculate_optimise(pGrappl work,pLagelem lelem,
   }
   lelem->dist16=bestdist16;
   lelem->coeff=bestcoeff;
-  if(lelem->dist16 > SysParams->maxlen16 || lelem->dist16 <
+  if (lelem->dist16 > SysParams->maxlen16 || lelem->dist16 <
     SysParams->minlen16)
   {
     lelem->dist16=UUNSET;
@@ -1065,10 +1065,10 @@ static  void  calculate_selectbest(pGrappl work)
   {
     percent10=(int16)(((int32)lptr[i+1].dist16-(int32)lptr[i].dist16)*2000L/
       ((int32)lptr[i].dist16+(int32)lptr[i+1].dist16));
-    if(percent10 <= 200)
+    if (percent10 <= 200)
     {
       SysParams->nlag--;
-      if(lptr[i+1].coeff > lptr[i].coeff)
+      if (lptr[i+1].coeff > lptr[i].coeff)
         lptr[i]=lptr[i+1];
       for(j=i+1;j < SysParams->nlag;j++)
         lptr[j]=lptr[j+1];
@@ -1079,18 +1079,18 @@ static  void  calculate_selectbest(pGrappl work)
   indx2=indx3=UNSET;
   /* get best */
   indx1=calculate_findbest(work,UNSET);
-  if(indx1 != UNSET)
+  if (indx1 != UNSET)
   {
     bestlag=lptr[indx1];
     /* get second best */
     indx2=calculate_findbest(work,indx1);
-    if(indx2 != UNSET)
+    if (indx2 != UNSET)
     {
       bestlag2=lptr[indx2];
       j=(indx2 < indx1?indx2:indx1);
       for(i=0;i < j;i++)
       {  /* smaller lag within required amount? */
-        if(bestlag.coeff-lptr[i].coeff <= 1000)
+        if (bestlag.coeff-lptr[i].coeff <= 1000)
         {
           indx3=i;
           break;
@@ -1100,13 +1100,13 @@ static  void  calculate_selectbest(pGrappl work)
   }
   i=0;
   /* and third 'special' */
-  if(indx3 != UNSET) lptr[i++]=lptr[indx3];
-  if(indx2 != UNSET)
+  if (indx3 != UNSET) lptr[i++]=lptr[indx3];
+  if (indx2 != UNSET)
   {
     lptr[i++]=(indx1 > indx2?bestlag2:bestlag);
     lptr[i++]=(indx1 > indx2?bestlag:bestlag2);
   }
-  else  if(indx1 != UNSET) lptr[i++]=bestlag;
+  else  if (indx1 != UNSET) lptr[i++]=bestlag;
   /* return in lag length order */
   SysParams->nlag=i;
 }
@@ -1121,7 +1121,7 @@ static  void  calculate_voiced(pGrappl work)
 
   /* convert abs mag to scaled value between 0 and 100 for later use */
   thiss->magnitude=(thiss->magnitude+4)>>3;
-  if(thiss->magnitude > 100) thiss->magnitude=100;
+  if (thiss->magnitude > 100) thiss->magnitude=100;
 }
 
 static  void  calculate_weights(pGrappl work)
@@ -1133,18 +1133,18 @@ static  void  calculate_weights(pGrappl work)
   pFraw fraw;
   pSres thiss=&Sres(SysParams->ncalc);
 
-  if(thiss->voiced)
+  if (thiss->voiced)
   {
     /* contribution from magnitude */
     mpart=thiss->magnitude;
 
     /* contribution from coeff difference */
-    if(thiss->fraw[1].coeff == Badcoeff) diff=100;
+    if (thiss->fraw[1].coeff == Badcoeff) diff=100;
     else
     {
       diff=(thiss->fraw[0].coeff-thiss->fraw[1].coeff)/50+50;
-      if(diff < -100) diff=-100;
-      if(diff > 100) diff=100;
+      if (diff < -100) diff=-100;
+      if (diff > 100) diff=100;
     }
     dpart[0]=diff;
     dpart[1]=100-diff;
@@ -1152,11 +1152,11 @@ static  void  calculate_weights(pGrappl work)
     for(i=0;i < 2;i++)
     {  /* calculate weight of each pitch estimate from components */
       fraw=&thiss->fraw[i];
-      if(fraw->coeff == Badcoeff) fraw->weight=0;
+      if (fraw->coeff == Badcoeff) fraw->weight=0;
       else
       {
         apart=(fraw->coeff-5000)/50;
-        if(apart < 0) apart=0;
+        if (apart < 0) apart=0;
         fraw->weight=(int16)(((int32)mpart*dpart[i]*apart
           +500L)/1000L);
       }
@@ -1176,9 +1176,9 @@ static  void  select(pGrappl work)
   voiced=false;
   for(indx=0;indx < SysParams->ncalc+1;indx++)
   {
-    if(voiced)
+    if (voiced)
     {
-      if(indx == SysParams->ncalc || ! Sres(indx).voiced ||
+      if (indx == SysParams->ncalc || ! Sres(indx).voiced ||
         Ures(indx).fcalc16 == UNSET)
       {  /* process this voiced section */
         voiced=false;
@@ -1188,14 +1188,14 @@ static  void  select(pGrappl work)
     }
     else
     {
-      if(indx != SysParams->ncalc && Sres(indx).voiced &&
+      if (indx != SysParams->ncalc && Sres(indx).voiced &&
         Ures(indx).fcalc16 != UNSET)
       {
         voiced=true;
         istart=indx;
       }
     }
-    if(! voiced && indx < SysParams->ncalc)
+    if (! voiced && indx < SysParams->ncalc)
     {  /* mark unvoiced sections */
       Sres(indx).selected=false;
       Ures(indx).fselect16=UNSET;
@@ -1210,20 +1210,20 @@ static  int16  select_continuous(pGrappl work,int16 this16,int16 mid16,
   int16 mean16,change_pc10;
 
   /* first check in range */
-  if(this16 > (SysParams->maxpitch<<4) || this16 < (SysParams->minpitch<<4))
+  if (this16 > (SysParams->maxpitch<<4) || this16 < (SysParams->minpitch<<4))
     return(false);
 
   /* then check % change from previous */
   change_pc10=(int16)((this16-mid16)*2000L/(this16+mid16));
-  if(change_pc10 < 0) change_pc10=-change_pc10;
-  if(change_pc10 > SysParams->maxchange_pc10)
+  if (change_pc10 < 0) change_pc10=-change_pc10;
+  if (change_pc10 > SysParams->maxchange_pc10)
     return(false);
 
   /* then look at % bend */
   mean16=(short)(((int32)this16+(int32)next16)/2); //CLW 4/5/00
   change_pc10=(int16)((mean16-mid16)*2000L/(mean16+mid16));
-  if(change_pc10 < 0) change_pc10=-change_pc10;
-  if(change_pc10 > SysParams->maxchange_pc10)
+  if (change_pc10 < 0) change_pc10=-change_pc10;
+  if (change_pc10 > SysParams->maxchange_pc10)
     return(false);
 
   return(true);
@@ -1239,11 +1239,11 @@ static  int16  select_route(pGrappl work,int16 istart,int16 iend,
 
   rt.confirm=(*ipos != UNSET);
 
-  if(! rt.confirm)
+  if (! rt.confirm)
   {  /* find seed position */
     for(i=istart,bestwt=UNSET;i <= iend;i++)
     {
-      if(! Sres(i).selected && Sres(i).fraw[0].weight >
+      if (! Sres(i).selected && Sres(i).fraw[0].weight >
         bestwt)
       {
         bestwt=Sres(i).fraw[0].weight;
@@ -1251,7 +1251,7 @@ static  int16  select_route(pGrappl work,int16 istart,int16 iend,
       }
     }
   }
-  if(*ipos == UNSET) return(false); /* return if no more to trace */
+  if (*ipos == UNSET) return(false); /* return if no more to trace */
 
   /* this is a seed position - must have at least 3 valid points */
   /* initialise tracking mechanism */
@@ -1263,7 +1263,7 @@ static  int16  select_route(pGrappl work,int16 istart,int16 iend,
     wt=Sres(indx).fraw[0].weight;
     rt.weight+=wt;
     rt.magnitude+=Sres(indx).magnitude;
-    if(rt.confirm)
+    if (rt.confirm)
     {
       Ures(indx).fselect16=p16[i];
       Sres(indx).weight=Baseweighting+wt;
@@ -1293,7 +1293,7 @@ static  int16  select_route(pGrappl work,int16 istart,int16 iend,
   /* calc mean weighting (in range 0-1000) */
   *weight=(int16)((rt.weight*100L+(rt.magnitude>>1))/(rt.magnitude == 0?
     1:rt.magnitude));
-  if(rt.confirm)
+  if (rt.confirm)
   {  /* clear remaining sections on either side, if any */
     for(i=istart;i < *isstart;i++) Sres(i).selected=false;
     for(i=*isend+1; i <= iend;i++) Sres(i).selected=false;
@@ -1308,7 +1308,7 @@ static  int16  select_routenext(pGrappl work,Route *rt)
      which an fcalc16 freq was continuous with the contour */
   int16 found,indx,this16,wt=0,idiv,i,actual_join=false;
 
-  if(rt->isubpos == rt->itarget) return(false);
+  if (rt->isubpos == rt->itarget) return(false);
 
   found=false;
 
@@ -1316,41 +1316,41 @@ static  int16  select_routenext(pGrappl work,Route *rt)
 
   /* first try best match */
   this16=Sres(indx).fraw[0].pitch16;
-  if(select_continuous(work,this16,rt->pitch16,rt->prevpitch16))
+  if (select_continuous(work,this16,rt->pitch16,rt->prevpitch16))
   {
     found=true;
     Sres(indx).selected=true;
     wt=Sres(indx).fraw[0].weight;
     actual_join=true;
   }
-  if(! found && Sres(indx).fraw[1].pitch16 != UNSET)
+  if (! found && Sres(indx).fraw[1].pitch16 != UNSET)
   {  /* try second guess at pitch */
     this16=Sres(indx).fraw[1].pitch16;
-    if(select_continuous(work,this16,rt->pitch16,rt->prevpitch16))
+    if (select_continuous(work,this16,rt->pitch16,rt->prevpitch16))
     {
       found=true;
       wt=Sres(indx).fraw[1].weight/2; /* give less weight */
     }
   }
-  if(! found)
+  if (! found)
   {  /* try multiple or division of best and second best */
     for(i=0;i < 2;i++)
     {
       this16=Sres(indx).fraw[i].pitch16;
-      if(this16 == UNSET) break;
-      if(this16 > rt->pitch16)
+      if (this16 == UNSET) break;
+      if (this16 > rt->pitch16)
       {
         idiv=(this16+((rt->pitch16)>>1))/(rt->pitch16);
-        if(idiv > 1) this16/=idiv;
+        if (idiv > 1) this16/=idiv;
       }
       else
       {
         idiv=(rt->pitch16+(this16>>1))/this16;
-        if(idiv > 1) this16*=idiv;
+        if (idiv > 1) this16*=idiv;
       }
-      if(idiv > 1)
+      if (idiv > 1)
       {
-        if(select_continuous(work,this16,rt->pitch16,
+        if (select_continuous(work,this16,rt->pitch16,
           rt->prevpitch16))
         {
           found=true;
@@ -1361,9 +1361,9 @@ static  int16  select_routenext(pGrappl work,Route *rt)
     }
   }
 
-  if(found)
+  if (found)
   {
-    if(actual_join)
+    if (actual_join)
     {  /* best fraw joins onto growing contour */
       rt->ipos=indx;
       rt->magnitude+=Sres(indx).magnitude+rt->submag;
@@ -1380,7 +1380,7 @@ static  int16  select_routenext(pGrappl work,Route *rt)
     }
     rt->prevpitch16=rt->pitch16;
     rt->pitch16=this16;
-    if(rt->confirm)
+    if (rt->confirm)
     {  /* fill in results fields */
       Ures(indx).fselect16=this16;
       Sres(indx).weight=wt+Baseweighting;
@@ -1400,19 +1400,19 @@ static  void  select_section(pGrappl work,int16 istart,int16 iend)
   for(i=istart;i <= iend;i++) Sres(i).selected=false;
 
   /* check potentially big enough to keep */
-  if(iend-istart+1 >= SysParams->minsigpoints)
+  if (iend-istart+1 >= SysParams->minsigpoints)
   {
     /* flag all points as processed which are not the middle of three
        contiguous best raw points */
     for(i=istart;i <= iend;i++)
     {
-      if(i == istart || i == iend) Sres(i).selected=true;
+      if (i == istart || i == iend) Sres(i).selected=true;
       else
       {
         f1=Sres(i-1).fraw[0].pitch16;
         f2=Sres(i).fraw[0].pitch16;
         f3=Sres(i+1).fraw[0].pitch16;
-        if(f1 == UNSET || f2 == UNSET || f3 == UNSET ||
+        if (f1 == UNSET || f2 == UNSET || f3 == UNSET ||
           ! select_continuous(work,f1,f2,f3) ||
           ! select_continuous(work,f3,f2,f1))
           Sres(i).selected=true;
@@ -1425,7 +1425,7 @@ static  void  select_section(pGrappl work,int16 istart,int16 iend)
     while(select_route(work,istart,iend,&ipos,&weight,&isstart,
       &isend))
     {
-      if(weight > bestwt && weight >= SysParams->minmeanweight &&
+      if (weight > bestwt && weight >= SysParams->minmeanweight &&
         isend-isstart+1 >= SysParams->minsigpoints)
       {
         ibestpos=ipos;
@@ -1435,17 +1435,17 @@ static  void  select_section(pGrappl work,int16 istart,int16 iend)
     }
   }
 
-  if(ibestpos != UNSET)
+  if (ibestpos != UNSET)
   {  /* choose and confirm best suitable connected path */
     (void)select_route(work,istart,iend,&ibestpos,&weight,&isstart,
       &isend);
     /* may be end sections which were not included and need
        recursively checking also */
-    if(isstart-1 >= istart) Ures(isstart-1).fselect16=UNSET; /* force gap */
-    if(isstart-2 >= istart) 
+    if (isstart-1 >= istart) Ures(isstart-1).fselect16=UNSET; /* force gap */
+    if (isstart-2 >= istart) 
       select_section(work,istart,(int16)(isstart-2));
-    if(isend+1 <= iend) Ures(isend+1).fselect16=UNSET;
-    if(isend+2 <= iend) 
+    if (isend+1 <= iend) Ures(isend+1).fselect16=UNSET;
+    if (isend+2 <= iend) 
       select_section(work,(int16)(isend+2),iend);
   }
   else
@@ -1470,23 +1470,23 @@ static  void  smooth(pGrappl work)
   iprevend=-1;
   prevpitch16=SysParams->lastfsmooth;
   lastindx=SysParams->nres+2; /* go beyond a bit if poss to smooth over join */
-  if(lastindx > SysParams->ncalc) lastindx=SysParams->ncalc;
+  if (lastindx > SysParams->ncalc) lastindx=SysParams->ncalc;
   for(indx=0;indx < lastindx;indx++)
   {
-    if(selected)
+    if (selected)
     {
-      if(Ures(indx).fselect16 == UNSET)
+      if (Ures(indx).fselect16 == UNSET)
       {
         /* if this is a single gap try to interpolate across */
-        if(indx < lastindx-1 &&
+        if (indx < lastindx-1 &&
           Ures(indx+1).fselect16 != UNSET)
         {
           f1=(indx > 0?Ures(indx-1).fselect16:
             SysParams->prevfch[0]);
           f2=Ures(indx+1).fselect16;
           change=(int16)((f1-f2)*2000L/(f1+f2));
-          if(change < 0) change=-change;
-          if(change <= SysParams->maxinterp_pc10)
+          if (change < 0) change=-change;
+          if (change <= SysParams->maxinterp_pc10)
           {
             Ures(indx).fselect16=
               (f1+f2+1)/2;
@@ -1496,7 +1496,7 @@ static  void  smooth(pGrappl work)
         }
         selected=false;
         iend=indx-1;
-        if(iend >= 0)
+        if (iend >= 0)
         {  /* smooth this section */
           smooth_section(work,istart,iend,
             iprevend,prevpitch16);
@@ -1507,13 +1507,13 @@ static  void  smooth(pGrappl work)
     }
     else
     {
-      if(Ures(indx).fselect16 != UNSET)
+      if (Ures(indx).fselect16 != UNSET)
       {
         selected=true;
         istart=indx;
       }
     }
-    if(! selected) Ures(indx).fsmooth16=UNSET;
+    if (! selected) Ures(indx).fsmooth16=UNSET;
   }
   /* ensure final section is smoothed and any preceding unvoiced section correctly
      handled */
@@ -1523,12 +1523,12 @@ static  void  smooth(pGrappl work)
   /* save values to subsequently paste over join */
   /* last fsmooth value for continuity of values across unvoiced sections */
   SysParams->lastfsmooth=Ures(SysParams->nres-1).fsmooth16;
-  if(SysParams->lastfsmooth < 0) SysParams->lastfsmooth=-SysParams->lastfsmooth;
+  if (SysParams->lastfsmooth < 0) SysParams->lastfsmooth=-SysParams->lastfsmooth;
   /* last two fselect values as basis for smoothing start of next section if voiced */
   for(i=0;i < 2;i++)
   {
     indx=SysParams->nres-i-1;
-    if(indx >= 0 && Ures(indx).fselect16 != UNSET)
+    if (indx >= 0 && Ures(indx).fselect16 != UNSET)
     {
       SysParams->prevwt[i]=Sres(indx).weight;
       SysParams->prevfch[i]=Ures(indx).fselect16;
@@ -1556,14 +1556,14 @@ static  void  smooth_section(pGrappl work,int16 istart,int16 iend,
     /* smooth the selected section */
     for(i=istart;i <= iend+2;i++)
     {
-      if(i <= iend)
+      if (i <= iend)
       {  /* calculate smoothed value and hold in temp storage */
         idiv=0;
         lval=0;
         for(j=i-2;j <= i+2;j++)
         {  /* sum weighted values */
-          if(j > iend) continue;
-          if(j >= istart)
+          if (j > iend) continue;
+          if (j >= istart)
           {
             wt=Sres(j).weight;
             fch=(ipass?Ures(j).fsmooth16:
@@ -1571,25 +1571,25 @@ static  void  smooth_section(pGrappl work,int16 istart,int16 iend,
           }
           else
           {  /* start of result block */
-            if(istart == 0)
+            if (istart == 0)
             {
               wt=SysParams->prevwt[-j-1];
               fch=SysParams->prevfch[-j-1];
             }
             else  wt=0;
           }
-          if(wt)
+          if (wt)
           {
-            if(j == i-1 || j == i+1)
+            if (j == i-1 || j == i+1)
               wt=(wt<<1);
-            if(j == i) wt=(wt<<2);
+            if (j == i) wt=(wt<<2);
             idiv+=wt;
             lval+=(int32)wt*fch;
           }
         }
         store[i % 3]=(int16)((lval+(idiv>>1))/idiv);
       }
-      if(i-2 >= istart)
+      if (i-2 >= istart)
       {  /* output from storage two behind */
         Ures(i-2).fsmooth16=store[(i+1) % 3];
       }
@@ -1597,16 +1597,16 @@ static  void  smooth_section(pGrappl work,int16 istart,int16 iend,
   }
 
   /* interpolate across the unvoiced gap */
-  if(istart <= iend)
+  if (istart <= iend)
   {  /* real data */
     pitch16=Ures(istart).fsmooth16;
-    if(prevpitch16 == UNSET) prevpitch16=SysParams->lastfsmooth;
-    if(prevpitch16 == UNSET) prevpitch16=pitch16;
+    if (prevpitch16 == UNSET) prevpitch16=SysParams->lastfsmooth;
+    if (prevpitch16 == UNSET) prevpitch16=pitch16;
   }
   else
   {  /* just interpolating to end of utterance */
-    if(prevpitch16 == UNSET) prevpitch16=SysParams->lastfsmooth;
-    if(prevpitch16 == UNSET)
+    if (prevpitch16 == UNSET) prevpitch16=SysParams->lastfsmooth;
+    if (prevpitch16 == UNSET)
       prevpitch16=(SysParams->minpitch+SysParams->maxpitch)*8;
     pitch16=prevpitch16;
   }
@@ -1634,9 +1634,9 @@ static  void  parse(pGrappl work)
   ibreak=iend=UNSET;
   for(indx=SysParams->ncalc-1;indx >= imid;indx--)
   {
-    if(Ures(indx).fcalc16 == UNSET)
+    if (Ures(indx).fcalc16 == UNSET)
     {
-      if(voiced)
+      if (voiced)
       {  /* mark as end of unvoiced section */
         iend=indx;
         voiced=false;
@@ -1644,46 +1644,46 @@ static  void  parse(pGrappl work)
     }
     else
     {
-      if(! voiced)
+      if (! voiced)
       {  /* transition found - break here */
         ibreak=indx+1;
         break;
       }
     }
   }
-  if(ibreak == UNSET)
+  if (ibreak == UNSET)
   {  /* find some other convenient place to break */
-    if(iend != UNSET)
+    if (iend != UNSET)
     {  /* first half is unvoiced; break within the unvoiced section */
       ibreak=(iend+imid+1)/2;
     }
   }
-  if(ibreak == UNSET)
+  if (ibreak == UNSET)
   {  /* whole of latter half is voiced */
     /* try to break on 'real' pitch point to ensure continuity - try for
        first such point after midway */
     lastok=SysParams->ncalc-SysParams->minsigpoints-2;
     for(indx=imid;indx < lastok;indx++)
     {
-      if(Ures(indx).fselect16 == Ures(indx).fcalc16)
+      if (Ures(indx).fselect16 == Ures(indx).fcalc16)
       {
         ibreak=indx;
         break;
       }
     }
   }
-  if(ibreak == UNSET)
+  if (ibreak == UNSET)
   {  /* try likewise before the halfway point */
     for(indx=(imid < lastok?imid:lastok);indx > 0;indx--)
     {
-      if(Ures(indx).fselect16 == Ures(indx).fcalc16)
+      if (Ures(indx).fselect16 == Ures(indx).fcalc16)
       {
         ibreak=indx;
         break;
       }
     }
   }
-  if(ibreak == UNSET) ibreak=imid; /* in rare case of no place yet found */
+  if (ibreak == UNSET) ibreak=imid; /* in rare case of no place yet found */
 
   SysParams->nres=ibreak;
 }

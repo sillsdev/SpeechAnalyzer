@@ -179,14 +179,14 @@ void CDlgAutoRecorder::BlockStored(UINT nLevel, DWORD dwPosition, BOOL *bSaveOve
 			SetRecorderMode(Record);			// start recording now
 			ChangeState(WaitingForVoice);
 		}
-		else if( nLevel >= MIN_VOICE_LEVEL)
+		else if ( nLevel >= MIN_VOICE_LEVEL)
 		{
 			m_dwTickCount = GetTickCount(); // Restart silence timer
 		}
 		break;
 	case WaitingForVoice:
 		ASSERT(m_eMode == Record);
-		if(bSaveOverride)
+		if (bSaveOverride)
 			*bSaveOverride = FALSE;
 		if (m_bStopPending)
 		{
@@ -195,7 +195,7 @@ void CDlgAutoRecorder::BlockStored(UINT nLevel, DWORD dwPosition, BOOL *bSaveOve
 		else if (nLevel > MIN_VOICE_LEVEL)
 		{
 			// start recording
-			if(bSaveOverride)
+			if (bSaveOverride)
 				*bSaveOverride = TRUE;
 			ChangeState(Recording);
 		}
@@ -219,7 +219,7 @@ void CDlgAutoRecorder::BlockStored(UINT nLevel, DWORD dwPosition, BOOL *bSaveOve
 				TRACE(_T("Stopping\n"));
 			}
 		}
-		else if( nLevel >= MAX_SILENCE_LEVEL)
+		else if ( nLevel >= MAX_SILENCE_LEVEL)
 		{
 			m_dwTickCount = GetTickCount();  // Restart silence timer
 		}
@@ -271,7 +271,7 @@ void CDlgAutoRecorder::BlockStored(UINT nLevel, DWORD dwPosition, BOOL *bSaveOve
 			if (!m_bStopPending)
 			{
 				CSaView* pTarget = GetTarget();
-				if(pTarget)
+				if (pTarget)
 				{
 					LRESULT lResult = OnAssignOverlay(m_pView);
 					if (lResult)
@@ -983,7 +983,7 @@ CSaView * CDlgAutoRecorder::GetTarget()
 			if (pos)
 			{
 				CView * pView = (CView *)pDoc->GetNextView(pos);
-				if(pView == m_pTargetUntested)
+				if (pView == m_pTargetUntested)
 					return m_pTargetUntested;
 			}
 		}
@@ -991,7 +991,7 @@ CSaView * CDlgAutoRecorder::GetTarget()
 		pDoc = docList.pdocNext();
 	}
 
-	if(m_pTargetUntested)
+	if (m_pTargetUntested)
 	{
 		// target view destroyed close dialog
 		m_pTargetUntested = NULL;
@@ -1078,7 +1078,7 @@ void CDlgAutoRecorder::SetRecVolume(int nVolume)
 {
 	BOOL bResult;
 	m_pWave->GetInDevice()->SetVolume(nVolume, &bResult);
-	if(!bResult)
+	if (!bResult)
 	{
 		EnableRecVolume(FALSE);
 		nVolume = 0;
@@ -1090,7 +1090,7 @@ void CDlgAutoRecorder::SetRecVolume(int nVolume)
 void CDlgAutoRecorder::EnableRecVolume(BOOL bEnable)
 {
 	CWnd* pWnd = GetDlgItem(IDC_RECVOLUMEEDIT);
-	if(pWnd)
+	if (pWnd)
 		pWnd->EnableWindow(bEnable);
 
 	m_SliderRecVolume.EnableWindow(bEnable);
@@ -1114,7 +1114,7 @@ LRESULT CDlgAutoRecorder::OnMixerControlChange(WPARAM, LPARAM)
 
 	m_nVolume = m_pWave->GetVolume(&bResult);
 
-	if(bResult)
+	if (bResult)
 	{
 		SetDlgItemInt(IDC_VOLUMEEDIT, m_nVolume, TRUE);
 		m_SliderVolume.SetPosition(m_nVolume);
@@ -1142,10 +1142,10 @@ BOOL CDlgAutoRecorder::OnAssignOverlay(CSaView *pSourceView)
 
 		graphIDs[i] = 0;
 
-		if(pGraph)
+		if (pGraph)
 		{
 			graphIDs[i] = pGraph->GetPlotID();
-			if(graphIDs[i] == ID_GRAPHS_OVERLAY)
+			if (graphIDs[i] == ID_GRAPHS_OVERLAY)
 			{
 				CMultiPlotWnd * pPlot = (CMultiPlotWnd*)pGraph->GetPlot();
 				graphIDs[i] = pPlot->GetBasePlotID();

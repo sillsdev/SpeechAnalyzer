@@ -53,7 +53,7 @@ public:
 
 	virtual CUnicodeString& operator=(const CUtf32String &szNew) {m_szContents = szNew.m_szContents;return *this;}
 	virtual CUnicodeString& operator=(const CUnicodeString &szNew) {m_szContents = CUtf32String(szNew).m_szContents;return *this;}
-	CUtf32String& operator+=(const unsigned long lChar) { if(IsValidUnicode(lChar)) m_szContents+=lChar; return *this;}
+	CUtf32String& operator+=(const unsigned long lChar) { if (IsValidUnicode(lChar)) m_szContents+=lChar; return *this;}
 	static BOOL IsValidUnicode(unsigned long lChar) { return (lChar < 0x110000);}
 
 	CUtf32String Left(int nChars) const;

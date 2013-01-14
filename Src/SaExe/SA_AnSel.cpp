@@ -49,13 +49,13 @@ BOOL CASegmentSelection::SelectFromPosition(CSaView* pView, int nSegmentIndex, D
 	CSaDoc *pDoc = pView->GetDocument();
 
 	BOOL bWithin = TRUE;
-	if((nSegmentIndex == GLOSS)||(nSegmentIndex == PHONETIC))
+	if ((nSegmentIndex == GLOSS)||(nSegmentIndex == PHONETIC))
 	{
 		bWithin = FALSE;
 	}
 
 	int nMaster = pSegment->GetMasterIndex();
-	if(nMaster == -1)
+	if (nMaster == -1)
 		nMaster = nSegmentIndex;
 	CSegment* pMaster = pView->GetDocument()->GetSegment(nMaster);
 
@@ -64,17 +64,17 @@ BOOL CASegmentSelection::SelectFromPosition(CSaView* pView, int nSegmentIndex, D
 	{
 		// get the segment index at the given position
 		int nSelection = pSegment->FindOffset(dwPosition); // More precise less robust
-		if((nSelection==-1)&&!(bWithin&&(nMode&FIND_EXACT))) nSelection = pSegment->FindFromPosition(dwPosition, bWithin); // Better Coverage
-		if((nSelection==-1)&&(bWithin&&(nMode&FIND_EXACT))&&(pSegment->GetSelection() == -1))
+		if ((nSelection==-1)&&!(bWithin&&(nMode&FIND_EXACT))) nSelection = pSegment->FindFromPosition(dwPosition, bWithin); // Better Coverage
+		if ((nSelection==-1)&&(bWithin&&(nMode&FIND_EXACT))&&(pSegment->GetSelection() == -1))
 		{
 			int nIndex = pMaster->FindOffset(dwPosition);
-			if(nIndex != -1)
+			if (nIndex != -1)
 				nSelection = pSegment->FindFromPosition(pMaster->GetOffset(nIndex) + pMaster->GetDuration(nIndex)/2, bWithin);
 		}
 		// change the selection
 		if (nSelection!=-1)
 		{
-			if(nSelection != pSegment->GetSelection()) //Don't deselect
+			if (nSelection != pSegment->GetSelection()) //Don't deselect
 				pView->ChangeAnnotationSelection(pSegment, nSelection, pSegment->GetOffset(nSelection), pSegment->GetStop(nSelection));
 		}
 		else
@@ -82,16 +82,16 @@ BOOL CASegmentSelection::SelectFromPosition(CSaView* pView, int nSegmentIndex, D
 	}
 	else pView->ChangeAnnotationSelection(pSegment, -1, 0, 0);
 
-	if((nMaster != nSegmentIndex) && (pSegment->GetSelection() == -1))
+	if ((nMaster != nSegmentIndex) && (pSegment->GetSelection() == -1))
 	{
 		int nSelection = pMaster->FindOffset(dwPosition); // More precise less robust
-		if((nSelection==-1))/*&&!(bWithin&&(nMode&FIND_EXACT)))*/ nSelection = pMaster->FindFromPosition(dwPosition, bWithin);
-		if(nSelection==-1) nSelection = pMaster->FindFromPosition(dwPosition, FALSE);
+		if ((nSelection==-1))/*&&!(bWithin&&(nMode&FIND_EXACT)))*/ nSelection = pMaster->FindFromPosition(dwPosition, bWithin);
+		if (nSelection==-1) nSelection = pMaster->FindFromPosition(dwPosition, FALSE);
 
-		if(nSelection != -1) //Set up virtual selection
+		if (nSelection != -1) //Set up virtual selection
 		{
 			// Deselect Virtual Selection
-			if(m_Selection.bVirtual) RefreshAnnotation(pView, m_Selection.nAnnotationIndex);
+			if (m_Selection.bVirtual) RefreshAnnotation(pView, m_Selection.nAnnotationIndex);
 			m_Selection.bVirtual = TRUE;
 			m_Selection.nAnnotationIndex = nSegmentIndex;
 			m_Selection.dwStart = pMaster->GetOffset(nSelection);
@@ -103,7 +103,7 @@ BOOL CASegmentSelection::SelectFromPosition(CSaView* pView, int nSegmentIndex, D
 		else
 		{
 			// Deselect Virtual Selection
-			if(m_Selection.bVirtual) RefreshAnnotation(pView, m_Selection.nAnnotationIndex);
+			if (m_Selection.bVirtual) RefreshAnnotation(pView, m_Selection.nAnnotationIndex);
 			m_Selection.bVirtual = FALSE;
 			m_Selection.nAnnotationIndex = -1;
 			m_Selection.dwStart = 0;
@@ -113,7 +113,7 @@ BOOL CASegmentSelection::SelectFromPosition(CSaView* pView, int nSegmentIndex, D
 	}
 
 	// highlight possible insertion point
-	if((nMaster == nSegmentIndex) && (nMaster != PHONETIC) && (pSegment->GetSelection() == -1))
+	if ((nMaster == nSegmentIndex) && (nMaster != PHONETIC) && (pSegment->GetSelection() == -1))
 	{
 		DWORD dwStart = dwPosition; // Start at current stop
 		DWORD dwStop;
@@ -123,7 +123,7 @@ BOOL CASegmentSelection::SelectFromPosition(CSaView* pView, int nSegmentIndex, D
 
 		dwStop = (dwStart + pDoc->GetBytesFromTime(MIN_ADD_SEGMENT_TIME));
 
-		if(pDoc->GetFmtParm()->wBlockAlign == 2)
+		if (pDoc->GetFmtParm()->wBlockAlign == 2)
 		{
 			dwStop = (dwStop + 1) & ~1; // Round up
 		}
@@ -131,19 +131,19 @@ BOOL CASegmentSelection::SelectFromPosition(CSaView* pView, int nSegmentIndex, D
 		dwStop = pDoc->SnapCursor(STOP_CURSOR, dwStop, dwStop, pDoc->GetUnprocessedDataSize(), SNAP_RIGHT);
 
 		int nInsertAt = pSegment->CheckPosition(pDoc,dwStart,dwStop,CSegment::MODE_ADD);
-		if(nInsertAt != -1)
+		if (nInsertAt != -1)
 		{
 			// Deselect Virtual Selection
-			if(m_Selection.bVirtual)
+			if (m_Selection.bVirtual)
 				RefreshAnnotation(pView, m_Selection.nAnnotationIndex);
 
-			if(nInsertAt > 0)
-				if((pSegment->GetStop(nInsertAt-1) +  pDoc->GetBytesFromTime(MIN_ADD_SEGMENT_TIME)) > dwStart)
+			if (nInsertAt > 0)
+				if ((pSegment->GetStop(nInsertAt-1) +  pDoc->GetBytesFromTime(MIN_ADD_SEGMENT_TIME)) > dwStart)
 					dwStart = pSegment->GetStop(nInsertAt-1);
 
-			if(nInsertAt < pSegment->GetOffsetSize())
+			if (nInsertAt < pSegment->GetOffsetSize())
 			{
-				if((dwStart+pDoc->GetBytesFromTime(DEFAULT_ADD_SEGMENT_TIME) + pDoc->GetBytesFromTime(MIN_ADD_SEGMENT_TIME)) < pSegment->GetOffset(nInsertAt))
+				if ((dwStart+pDoc->GetBytesFromTime(DEFAULT_ADD_SEGMENT_TIME) + pDoc->GetBytesFromTime(MIN_ADD_SEGMENT_TIME)) < pSegment->GetOffset(nInsertAt))
 				{
 					dwStop = (dwStart + pDoc->GetBytesFromTime(DEFAULT_ADD_SEGMENT_TIME));
 				}
@@ -154,7 +154,7 @@ BOOL CASegmentSelection::SelectFromPosition(CSaView* pView, int nSegmentIndex, D
 			}
 			else
 			{
-				if((dwStart+pDoc->GetBytesFromTime(DEFAULT_ADD_SEGMENT_TIME) + pDoc->GetBytesFromTime(MIN_ADD_SEGMENT_TIME)) < pDoc->GetUnprocessedDataSize())
+				if ((dwStart+pDoc->GetBytesFromTime(DEFAULT_ADD_SEGMENT_TIME) + pDoc->GetBytesFromTime(MIN_ADD_SEGMENT_TIME)) < pDoc->GetUnprocessedDataSize())
 				{
 					dwStop = (dwStart + pDoc->GetBytesFromTime(DEFAULT_ADD_SEGMENT_TIME));
 				}
@@ -164,7 +164,7 @@ BOOL CASegmentSelection::SelectFromPosition(CSaView* pView, int nSegmentIndex, D
 				}
 			}
 
-			if(pDoc->GetFmtParm()->wBlockAlign == 2)
+			if (pDoc->GetFmtParm()->wBlockAlign == 2)
 			{
 				dwStop = (dwStop + 1) & ~1; // Round up
 			}
@@ -183,7 +183,7 @@ BOOL CASegmentSelection::SelectFromPosition(CSaView* pView, int nSegmentIndex, D
 		else
 		{
 			// Deselect Virtual Selection
-			if(m_Selection.bVirtual)
+			if (m_Selection.bVirtual)
 				RefreshAnnotation(pView, m_Selection.nAnnotationIndex);
 			m_Selection.bVirtual = FALSE;
 			m_Selection.nAnnotationIndex = -1;
@@ -211,13 +211,13 @@ BOOL CASegmentSelection::SelectFromStopPosition(CSaView* pView, int nSegmentInde
 	CSegment* pSegment = pView->GetDocument()->GetSegment(nSegmentIndex);
 	CSaDoc *pDoc = pView->GetDocument();
 	BOOL bWithin = TRUE;
-	if((nSegmentIndex == GLOSS)||(nSegmentIndex == PHONETIC))
+	if ((nSegmentIndex == GLOSS)||(nSegmentIndex == PHONETIC))
 	{
 		bWithin = FALSE;
 	}
 
 	int nMaster = pSegment->GetMasterIndex();
-	if(nMaster == -1)
+	if (nMaster == -1)
 		nMaster = nSegmentIndex;
 	CSegment* pMaster = pView->GetDocument()->GetSegment(nMaster);
 
@@ -226,17 +226,17 @@ BOOL CASegmentSelection::SelectFromStopPosition(CSaView* pView, int nSegmentInde
 	{
 		// get the segment index at the given position
 		int nSelection = pSegment->FindStop(dwStop); // More precise less robust
-		if((nSelection==-1)&&!(bWithin&&(nMode&FIND_EXACT))) nSelection = pSegment->FindFromPosition(dwStop, bWithin); // Better Coverage
-		if((nSelection==-1)&&(bWithin&&(nMode&FIND_EXACT))&&(pSegment->GetSelection() == -1))
+		if ((nSelection==-1)&&!(bWithin&&(nMode&FIND_EXACT))) nSelection = pSegment->FindFromPosition(dwStop, bWithin); // Better Coverage
+		if ((nSelection==-1)&&(bWithin&&(nMode&FIND_EXACT))&&(pSegment->GetSelection() == -1))
 		{
 			int nIndex = pMaster->FindStop(dwStop);
-			if(nIndex != -1)
+			if (nIndex != -1)
 				nSelection = pSegment->FindFromPosition(pMaster->GetOffset(nIndex) + pMaster->GetDuration(nIndex)/2, bWithin);
 		}
 		// change the selection
-		if(nSelection!=-1)
+		if (nSelection!=-1)
 		{
-			if(nSelection != pSegment->GetSelection()) //Don't deselect
+			if (nSelection != pSegment->GetSelection()) //Don't deselect
 				pView->ChangeAnnotationSelection(pSegment, nSelection, pSegment->GetOffset(nSelection), pSegment->GetStop(nSelection));
 		}
 		else
@@ -244,16 +244,16 @@ BOOL CASegmentSelection::SelectFromStopPosition(CSaView* pView, int nSegmentInde
 	}
 	else pView->ChangeAnnotationSelection(pSegment, -1, 0, 0);
 
-	if((nMaster != nSegmentIndex) && (pSegment->GetSelection() == -1))
+	if ((nMaster != nSegmentIndex) && (pSegment->GetSelection() == -1))
 	{
 		int nSelection = pMaster->FindStop(dwStop); // More precise less robust
-		if((nSelection==-1))/*&&!(bWithin&&(nMode&FIND_EXACT)))*/ nSelection = pMaster->FindFromPosition(dwStop, bWithin);
-		if(nSelection==-1) nSelection = pMaster->FindFromPosition(dwStop, FALSE);
+		if ((nSelection==-1))/*&&!(bWithin&&(nMode&FIND_EXACT)))*/ nSelection = pMaster->FindFromPosition(dwStop, bWithin);
+		if (nSelection==-1) nSelection = pMaster->FindFromPosition(dwStop, FALSE);
 
-		if(nSelection != -1) //Set up virtual selection
+		if (nSelection != -1) //Set up virtual selection
 		{
 			// Deselect Virtual Selection
-			if(m_Selection.bVirtual) RefreshAnnotation(pView, m_Selection.nAnnotationIndex);
+			if (m_Selection.bVirtual) RefreshAnnotation(pView, m_Selection.nAnnotationIndex);
 			m_Selection.bVirtual = TRUE;
 			m_Selection.nAnnotationIndex = nSegmentIndex;
 			m_Selection.dwStart = pMaster->GetOffset(nSelection);
@@ -265,7 +265,7 @@ BOOL CASegmentSelection::SelectFromStopPosition(CSaView* pView, int nSegmentInde
 		else
 		{
 			// Deselect Virtual Selection
-			if(m_Selection.bVirtual) RefreshAnnotation(pView, m_Selection.nAnnotationIndex);
+			if (m_Selection.bVirtual) RefreshAnnotation(pView, m_Selection.nAnnotationIndex);
 			m_Selection.bVirtual = FALSE;
 			m_Selection.nAnnotationIndex = -1;
 			m_Selection.dwStart = 0;
@@ -274,7 +274,7 @@ BOOL CASegmentSelection::SelectFromStopPosition(CSaView* pView, int nSegmentInde
 		}
 	}
 	// highlight possible insertion point
-	if((nMaster == nSegmentIndex) && (nMaster != PHONETIC) && (pSegment->GetSelection() == -1))
+	if ((nMaster == nSegmentIndex) && (nMaster != PHONETIC) && (pSegment->GetSelection() == -1))
 	{
 		DWORD dwStart = 0;
 
@@ -286,7 +286,7 @@ BOOL CASegmentSelection::SelectFromStopPosition(CSaView* pView, int nSegmentInde
 		else
 			dwStart = 0;
 
-		if(pDoc->GetFmtParm()->wBlockAlign == 2)// SDM 1.5Test8.2
+		if (pDoc->GetFmtParm()->wBlockAlign == 2)// SDM 1.5Test8.2
 		{
 			dwStart = (dwStart + 1) & ~1; // Round up
 		}
@@ -294,19 +294,19 @@ BOOL CASegmentSelection::SelectFromStopPosition(CSaView* pView, int nSegmentInde
 		dwStart = pDoc->SnapCursor(START_CURSOR, dwStart, 0, dwStart, SNAP_LEFT);
 
 		int nInsertAt = pSegment->CheckPosition(pDoc,dwStart,dwStop,CSegment::MODE_ADD);
-		if(nInsertAt != -1)
+		if (nInsertAt != -1)
 		{
 			// Deselect Virtual Selection
-			if(m_Selection.bVirtual)
+			if (m_Selection.bVirtual)
 				RefreshAnnotation(pView, m_Selection.nAnnotationIndex);
 
-			if(nInsertAt < pSegment->GetOffsetSize())
-				if(pSegment->GetOffset(nInsertAt) < (dwStop +  pDoc->GetBytesFromTime(MIN_ADD_SEGMENT_TIME)))
+			if (nInsertAt < pSegment->GetOffsetSize())
+				if (pSegment->GetOffset(nInsertAt) < (dwStop +  pDoc->GetBytesFromTime(MIN_ADD_SEGMENT_TIME)))
 					dwStop = pSegment->GetOffset(nInsertAt);
 
-			if(nInsertAt > 0)
+			if (nInsertAt > 0)
 			{
-				if((pSegment->GetStop(nInsertAt-1)+pDoc->GetBytesFromTime(DEFAULT_ADD_SEGMENT_TIME) + pDoc->GetBytesFromTime(MIN_ADD_SEGMENT_TIME)) < dwStop)
+				if ((pSegment->GetStop(nInsertAt-1)+pDoc->GetBytesFromTime(DEFAULT_ADD_SEGMENT_TIME) + pDoc->GetBytesFromTime(MIN_ADD_SEGMENT_TIME)) < dwStop)
 				{
 					dwStart = (dwStop - pDoc->GetBytesFromTime(DEFAULT_ADD_SEGMENT_TIME));
 				}
@@ -317,7 +317,7 @@ BOOL CASegmentSelection::SelectFromStopPosition(CSaView* pView, int nSegmentInde
 			}
 			else
 			{
-				if((dwStart+pDoc->GetBytesFromTime(DEFAULT_ADD_SEGMENT_TIME) + pDoc->GetBytesFromTime(MIN_ADD_SEGMENT_TIME)) < pDoc->GetUnprocessedDataSize())
+				if ((dwStart+pDoc->GetBytesFromTime(DEFAULT_ADD_SEGMENT_TIME) + pDoc->GetBytesFromTime(MIN_ADD_SEGMENT_TIME)) < pDoc->GetUnprocessedDataSize())
 				{
 					dwStart = (dwStop - pDoc->GetBytesFromTime(DEFAULT_ADD_SEGMENT_TIME));
 				}
@@ -327,7 +327,7 @@ BOOL CASegmentSelection::SelectFromStopPosition(CSaView* pView, int nSegmentInde
 				}
 			}
 
-			if(pDoc->GetFmtParm()->wBlockAlign == 2)
+			if (pDoc->GetFmtParm()->wBlockAlign == 2)
 			{
 				dwStart = (dwStart + 1) & ~1; // Round up
 			}
@@ -346,7 +346,7 @@ BOOL CASegmentSelection::SelectFromStopPosition(CSaView* pView, int nSegmentInde
 		else
 		{
 			// Deselect Virtual Selection
-			if(m_Selection.bVirtual)
+			if (m_Selection.bVirtual)
 				RefreshAnnotation(pView, m_Selection.nAnnotationIndex);
 			m_Selection.bVirtual = FALSE;
 			m_Selection.nAnnotationIndex = -1;
@@ -366,10 +366,10 @@ BOOL CASegmentSelection::SelectFromStopPosition(CSaView* pView, int nSegmentInde
 /***************************************************************************/
 void CASegmentSelection::Update(CSaView* pView, BOOL bClearVirtual)
 {
-	if(pView->IsAnyAnnotationSelected())
+	if (pView->IsAnyAnnotationSelected())
 	{
 		// Deselect Virtual Selection
-		if(m_Selection.bVirtual) RefreshAnnotation(pView, m_Selection.nAnnotationIndex);
+		if (m_Selection.bVirtual) RefreshAnnotation(pView, m_Selection.nAnnotationIndex);
 		m_Selection.bVirtual = FALSE;
 		m_Selection.nAnnotationIndex = pView->FindSelectedAnnotationIndex();
 
@@ -382,12 +382,12 @@ void CASegmentSelection::Update(CSaView* pView, BOOL bClearVirtual)
 	}
 	else
 	{
-		if(bClearVirtual && m_Selection.bVirtual)
+		if (bClearVirtual && m_Selection.bVirtual)
 		{
 			RefreshAnnotation(pView, m_Selection.nAnnotationIndex);    
 			m_Selection.bVirtual = FALSE;
 		}
-		if(!m_Selection.bVirtual)
+		if (!m_Selection.bVirtual)
 		{
 			m_Selection.nAnnotationIndex = -1;
 			m_Selection.dwStart = 0;
@@ -403,7 +403,7 @@ void CASegmentSelection::Update(CSaView* pView, BOOL bClearVirtual)
 /***************************************************************************/
 void CASegmentSelection::RefreshAnnotation(CSaView* pView, int nAnnotationIndex)
 {
-	if((nAnnotationIndex < 0)||(nAnnotationIndex >= ANNOT_WND_NUMBER)) return;
+	if ((nAnnotationIndex < 0)||(nAnnotationIndex >= ANNOT_WND_NUMBER)) return;
 
 	for (int nGraphLoop = 0; nGraphLoop < MAX_GRAPHS_NUMBER; nGraphLoop++)
 	{
@@ -421,16 +421,16 @@ CString CASegmentSelection::GetSelectedAnnotationString(CSaView* pView, BOOL bRe
 {
 	CString ret;
 
-	if(m_Selection.bVirtual) return "";
+	if (m_Selection.bVirtual) return "";
 
 	ret = pView->GetSelectedAnnotationString();
 
-	if(bRemoveDelimiter)
+	if (bRemoveDelimiter)
 	{
-		if((ret[0] == SEGMENT_DEFAULT_CHAR) && (m_Selection.nAnnotationIndex != GLOSS))
+		if ((ret[0] == SEGMENT_DEFAULT_CHAR) && (m_Selection.nAnnotationIndex != GLOSS))
 			return ret.Mid(1);
 
-		if(((ret[0] == TEXT_DELIMITER)||(ret[0] == WORD_DELIMITER)) && (m_Selection.nAnnotationIndex == GLOSS))
+		if (((ret[0] == TEXT_DELIMITER)||(ret[0] == WORD_DELIMITER)) && (m_Selection.nAnnotationIndex == GLOSS))
 			return ret.Mid(1);
 	}
 
@@ -503,7 +503,7 @@ BOOL CASegmentSelection::SetSelectedAnnotationString(CSaView* pView, CSaString& 
 			}
 		}
 	}
-	else if(szString.GetLength() == 0) // We need to remove the dependent segment
+	else if (szString.GetLength() == 0) // We need to remove the dependent segment
 	{
 		DWORD dwPosition = m_Selection.dwStart;
 
@@ -513,7 +513,7 @@ BOOL CASegmentSelection::SetSelectedAnnotationString(CSaView* pView, CSaString& 
 	}
 	else
 	{
-		if(bCheck) pView->GetDocument()->CheckPoint();
+		if (bCheck) pView->GetDocument()->CheckPoint();
 		// ReplaceSelectedSegment refreshes graphs, sets modified flag
 		pSegment->ReplaceSelectedSegment(pView->GetDocument(),szString);
 	}

@@ -65,7 +65,7 @@ long CProcessGlottis::Process(void* pCaller, ISaDoc* pDoc,
   
   
   BeginWaitCursor(); // wait cursor
-  if(!StartProcess(pCaller)) // memory allocation failed
+  if (!StartProcess(pCaller)) // memory allocation failed
   { 
     EndProcess(); // end data processing
     EndWaitCursor();
@@ -208,7 +208,7 @@ long CProcessGlottis::Process(void* pCaller, ISaDoc* pDoc,
       
       // set progress bar
       SetProgress(nProgress + (int)(100 * dwWaveOffset / dwWaveSize / (DWORD)nLevel));
-      if(IsCanceled()) 
+      if (IsCanceled()) 
       {
         EndProcess(); // end data processing
         EndWaitCursor();
@@ -237,7 +237,7 @@ long CProcessGlottis::Process(void* pCaller, ISaDoc* pDoc,
     }
     pFrame += dwFrameInterval;   
   }
-  if(pLpcObject)
+  if (pLpcObject)
     delete pLpcObject;    
 
   int nTrailPadding = (dwWaveSize - dwLastOffset - dwFrameInterval)/wSmpSize - nLeadPadding;

@@ -1,3 +1,7 @@
+SA - 3.1.0.22 - 1/13/2013
+1) Updates for 'Split File' feature.  Added controls to allow user to control whether data is overwritten or not.  Changed dialog layout.
+2) Fixed CTRL-left click bug.
+
 SA - 3.1.0.21 - 1/7/2013
 1) Modified 'Split File' dialog box.
 2) Implemented basic functionality for the Split File feature.

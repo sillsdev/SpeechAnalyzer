@@ -73,7 +73,7 @@ long CProcess3dPitch::Process(void* pCaller, ISaDoc* pSaDoc, int nProgress, int 
 
 	// start process
 	BeginWaitCursor(); // wait cursor
-	if(!StartProcess(pCaller, IDS_STATTXT_PROCESSWBLP)) // memory allocation failed or previous processing error
+	if (!StartProcess(pCaller, IDS_STATTXT_PROCESSWBLP)) // memory allocation failed or previous processing error
 	{
 		EndProcess(); // end data processing
 		EndWaitCursor();
@@ -148,7 +148,7 @@ long CProcess3dPitch::Process(void* pCaller, ISaDoc* pSaDoc, int nProgress, int 
 
 			short sResult = 0;
 
-			if(dwDataPos > dwCorrelationLength)
+			if (dwDataPos > dwCorrelationLength)
 			{
 				double crossCorrelation = sumXnXnt/sqrt(sumXnXn*sumXntXnt);
 

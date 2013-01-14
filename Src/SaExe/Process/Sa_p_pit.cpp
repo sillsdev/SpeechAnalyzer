@@ -81,7 +81,7 @@ long CProcessPitch::Process(void* pCaller,
 
 	// start pitch process
 	BeginWaitCursor(); // wait cursor
-	if(!StartProcess(pCaller, IDS_STATTXT_PROCESSPIT)) // previous processing error
+	if (!StartProcess(pCaller, IDS_STATTXT_PROCESSPIT)) // previous processing error
 	{ 
 		EndProcess(); // end data processing
 		EndWaitCursor();

@@ -144,7 +144,7 @@ long CProcessFormants::Process(void* pCaller, ISaDoc* pDoc, BOOL bTrack,
 
 	// Start formant processing, allocating a process buffer for formant frame data.
 	BeginWaitCursor(); // wait cursor
-	if(!StartProcess(pCaller, IDS_STATTXT_PROCESSFMT)) // memory allocation failed
+	if (!StartProcess(pCaller, IDS_STATTXT_PROCESSFMT)) // memory allocation failed
 	{
 		SetDataReady(FALSE);
 		EndProcess(); // end data processing
@@ -235,7 +235,7 @@ long CProcessFormants::Process(void* pCaller, ISaDoc* pDoc, BOOL bTrack,
 	EndProcess((nProgress >= 100)); // end data processing
 	EndWaitCursor();
 
-	if(IsCanceled()) return MAKELONG(PROCESS_CANCELED, nProgress);
+	if (IsCanceled()) return MAKELONG(PROCESS_CANCELED, nProgress);
 
 	return MAKELONG(nLevel, nProgress);      
 }      
@@ -346,7 +346,7 @@ void CProcessFormants::SmoothMedian(ISaDoc *pDoc)
 			if (bValidF1F2F3)
 			{
 				m_dwValidFrameCount++;
-				if(dwFrame == 0)
+				if (dwFrame == 0)
 					for (nFormant = 1; nFormant <= 3; nFormant++) 
 					{
 						m_F[nFormant].Mean = FormantFrame[0][nFormant].Lpc.FrequencyInHertz;
@@ -518,7 +518,7 @@ FORMANT_FREQ CProcessFormants::GetVowelFreq(int nIndex, int nGender, BOOL bMelSc
 	// get frequency range
 	FORMANT_FREQ formants;
 
-	if(nIndex >= 0 && nIndex < (int)vowelVector.size())
+	if (nIndex >= 0 && nIndex < (int)vowelVector.size())
 	{
 		const CVowelFormants &vowel = vowelVector[nIndex];
 		formants.F[1] = (float)vowel.F1;
@@ -558,7 +558,7 @@ CSaString CProcessFormants::GetVowel(int nIndex, int nGender) const
 {
 	const CVowelFormantsVector &vowelVector = GetVowelVector(nGender);
 
-	if(nIndex >= 0 && nIndex < (int)vowelVector.size())
+	if (nIndex >= 0 && nIndex < (int)vowelVector.size())
 	{
 		const CVowelFormants &vowel = vowelVector[nIndex];
 		return vowel.m_szVowel;

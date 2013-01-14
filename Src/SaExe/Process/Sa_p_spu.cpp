@@ -217,7 +217,7 @@ long CProcessSpectrum::Process(void* pCaller, ISaDoc* pDoc, DWORD dwFrameStart, 
 	//!!frame size must be less than FFT length (2 x nSpectralBands)
 	m_nFormants = MAX_NUM_FORMANTS + 1;  // includes F[0], the fundamental frequency                                
 	SetDataSize((DWORD)m_nSpectralBands * sizeof(SPECT_VALUE) + sizeof(FORMANT_FRAME));
-	if(!StartProcess(pCaller, IDS_STATTXT_PROCESSSPU, (DWORD)GetDataSize(sizeof(char)))) 
+	if (!StartProcess(pCaller, IDS_STATTXT_PROCESSSPU, (DWORD)GetDataSize(sizeof(char)))) 
 	{ 
 		EndProcess(); // end data processing
 		EndWaitCursor();    
@@ -245,20 +245,20 @@ long CProcessSpectrum::Process(void* pCaller, ISaDoc* pDoc, DWORD dwFrameStart, 
 		nWindowSize = (int)(0.001*cWindow.m_dTime*pFmtParm->dwSamplesPerSec + 0.5);
 	case CWindowSettings::kBetweenCursors:
 	default:
-		if(cWindow.m_bEquivalentLength)
+		if (cWindow.m_bEquivalentLength)
 			nWindowSize = DspWin::CalcEquivalentLength(nWindowSize, cWindow.m_nType);
 		break;
 	}
 
 	nWindowStart -= nWindowSize/2;
-	if(cWindow.m_bCenter)
+	if (cWindow.m_bCenter)
 	{
 		nWindowStart += dwFrameSize / wSmpSize;
 	}
 
-	if(nWindowStart < 0) // shift start of window
+	if (nWindowStart < 0) // shift start of window
 		nWindowStart = 0;
-	if((nWindowStart+nWindowSize + 1) > int(pDoc->GetDataSize()/wSmpSize))
+	if ((nWindowStart+nWindowSize + 1) > int(pDoc->GetDataSize()/wSmpSize))
 	{
 		nWindowSize = (pDoc->GetDataSize()/wSmpSize) - 1 - nWindowStart;
 	}
@@ -396,7 +396,7 @@ long CProcessSpectrum::Process(void* pCaller, ISaDoc* pDoc, DWORD dwFrameStart, 
 
 		// The order of the LPC model must be less than the frame length 
 		// Should be less than half the frame length
-		if(stLpcSetting.nFrameLen < (USHORT)(stLpcSetting.nOrder*2))
+		if (stLpcSetting.nFrameLen < (USHORT)(stLpcSetting.nOrder*2))
 			stLpcSetting.nOrder = UCHAR(stLpcSetting.nFrameLen >> 1);
 
 		// Construct an LPC object.                                
@@ -534,7 +534,7 @@ long CProcessSpectrum::Process(void* pCaller, ISaDoc* pDoc, DWORD dwFrameStart, 
 	SetDataReady();
 	EndWaitCursor();
 
-	if(IsCanceled()) return MAKELONG(PROCESS_CANCELED, nProgress);
+	if (IsCanceled()) return MAKELONG(PROCESS_CANCELED, nProgress);
 
 	return MAKELONG(nLevel, nProgress);
 }

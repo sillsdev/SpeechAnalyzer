@@ -150,11 +150,11 @@ BOOL CVowelFormantSet::ReadProperties(Object_istream& obs)
 	while ( !obs.bAtEnd() )
 	{
 		CSaString szGenderID;
-		if(obs.bReadBeginMarker(psz_Gender, &szGenderID))
+		if (obs.bReadBeginMarker(psz_Gender, &szGenderID))
 		{
 			int gender = szGenderID[0] - _T('0');
 
-			if(gender >= 3 || gender < 0) gender = 0;
+			if (gender >= 3 || gender < 0) gender = 0;
 
 			while ( !obs.bAtEnd() )
 			{
@@ -188,7 +188,7 @@ BOOL CVowelFormantSets::Load(const CSaString &szFilename)
 
 	const size_type nPredefined = size();
 
-	if(szFilename.IsEmpty())
+	if (szFilename.IsEmpty())
 		return TRUE;
 
 	try
@@ -202,14 +202,14 @@ BOOL CVowelFormantSets::Load(const CSaString &szFilename)
 		while ( !obs.bAtEnd() )
 		{
 			CVowelFormantSet newSet;
-			if(newSet.ReadProperties(obs))
+			if (newSet.ReadProperties(obs))
 			{
-				if(newSet.IsUser()) // Do not load predefined sets, saved as templates
+				if (newSet.IsUser()) // Do not load predefined sets, saved as templates
 					push_back(newSet);      
 			}
-			else if(obs.bReadInteger(psz_DefaultSet, m_nDefaultSet))
+			else if (obs.bReadInteger(psz_DefaultSet, m_nDefaultSet))
 			{
-				if(m_nDefaultSet < 0 || m_nDefaultSet >= (int) size())
+				if (m_nDefaultSet < 0 || m_nDefaultSet >= (int) size())
 					m_nDefaultSet = 0;
 			}
 		}
@@ -239,7 +239,7 @@ BOOL CVowelFormantSets::Load(const CSaString &szFilename)
 
 int CVowelFormantSets::Save(const CSaString &szFilename) const
 {
-	if(szFilename.IsEmpty())
+	if (szFilename.IsEmpty())
 		return FALSE;
 
 	try
@@ -267,9 +267,9 @@ int CVowelFormantSets::SetDefaultSet(int nSet)
 {
 	int nOldSet = m_nDefaultSet;
 
-	if(nSet != m_nDefaultSet)
+	if (nSet != m_nDefaultSet)
 	{
-		if(nSet >=0 && nSet < (int)size())
+		if (nSet >=0 && nSet < (int)size())
 		{
 			m_nDefaultSet = nSet;
 		}
@@ -720,7 +720,9 @@ CVowelFormantSets& GetVowelSets()
 {
 	CSaString szPath(AfxGetApp()->GetProfileString(_T(""), _T("DataLocation")));
 	if (szPath.Right(1) != _T("\\"))
+	{
 		szPath += _T("\\");
+	}
 
 #ifdef _UNICODE
 	szPath = szPath + _T("vowelsUtf8.psa");
@@ -796,7 +798,7 @@ BOOL CDlgVowelFormants::OnValidateGenderChange()
 
 	CVowelFormantsVector cVowelVector = ParseVowelGrid(m_cGrid, bSuccess);
 
-	if(bSuccess)
+	if (bSuccess)
 	{
 		m_cSet.SetVowelFormants(m_nGender, cVowelVector);
 		UpdateData();
@@ -823,7 +825,7 @@ BOOL CDlgVowelFormants::OnInitDialog()
 void CDlgVowelFormants::OnOK() 
 {
 	UpdateData();
-	if(OnValidateGenderChange())
+	if (OnValidateGenderChange())
 	{
 		m_cSet.SetName(m_szSetName);
 		m_cVowelSetOK = m_cSet;
@@ -873,7 +875,7 @@ static void PopulateGrid(CFlexEditGrid	&cGrid, const CVowelFormantsVector &cVowe
 		szFormant.Format(_T("%g"), rVowel.F3);
 		cGrid.SetTextMatrix(nRow, columnF3, szFormant);
 
-		if(rVowel.F4 > 0)
+		if (rVowel.F4 > 0)
 		{
 			szFormant.Format(_T("%g"), rVowel.F4);
 			cGrid.SetTextMatrix(nRow, columnF4, szFormant);
@@ -904,9 +906,9 @@ static CVowelFormantsVector ParseVowelGrid(CFlexEditGrid &cGrid, BOOL &bSuccess)
 		cVowel.Init(_T(""),-1,-1,-1,-1);
 		BOOL bRowValid = TRUE;
 		cVowel.m_szVowel = cGrid.GetTextMatrix(row,columnIpa);
-		if(cVowel.m_szVowel.IsEmpty())
+		if (cVowel.m_szVowel.IsEmpty())
 		{
-			if(!(cGrid.GetTextMatrix(row,columnF1).IsEmpty()
+			if (!(cGrid.GetTextMatrix(row,columnF1).IsEmpty()
 				&& cGrid.GetTextMatrix(row,columnF2).IsEmpty()
 				&& cGrid.GetTextMatrix(row,columnF3).IsEmpty()
 				&& cGrid.GetTextMatrix(row,columnF4).IsEmpty()))
@@ -951,7 +953,7 @@ static CVowelFormantsVector ParseVowelGrid(CFlexEditGrid &cGrid, BOOL &bSuccess)
 			continue;
 		}
 
-		if(bRowValid)
+		if (bRowValid)
 		{
 			cVowels.push_back(cVowel); // add to end of list
 		}

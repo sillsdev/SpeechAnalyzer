@@ -225,7 +225,7 @@ void CFormantTracker::BuildTrack(CTrackState &state, double samplingRate, int pi
 		CZTransformCDBL AZF;
 
 		// Put a zero at pitch so formant 1 doesn't track pitch
-		if(FormantTrackerOptions.m_bAzfAddConjugateZeroes && pitchTrack.imag())
+		if (FormantTrackerOptions.m_bAzfAddConjugateZeroes && pitchTrack.imag())
 		{
 			CDBL numerator[] = { 1, -2 * pitchTrack.real() * radiusAZF, radiusAZF * radiusAZF };
 			AZF *= CZTransformCDBL(2, numerator, NULL);
@@ -484,7 +484,7 @@ void CFormantTracker::AdvanceData( CTrackState &state, DWORD dwDataPos, int nSam
 
 	if (nSamples > 0)
 	{
-		if(unsigned int(nSamples) > data.size())
+		if (unsigned int(nSamples) > data.size())
 		{
 			AdvanceData( state, dwDataPos + nSamples - data.size(), data.size());
 		}
@@ -514,7 +514,7 @@ void CFormantTracker::AdvanceData( CTrackState &state, DWORD dwDataPos, int nSam
 	}
 	else
 	{
-		if(unsigned int(-nSamples) > data.size())
+		if (unsigned int(-nSamples) > data.size())
 		{
 			AdvanceData(state, dwDataPos - nSamples + data.size(), data.size());
 		}

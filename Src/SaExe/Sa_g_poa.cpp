@@ -354,7 +354,7 @@ void CPlotPOA::GraphHasFocus(BOOL bFocus)
 	//CSaView* pView = (CSaView *)pGraphWnd->GetParent();
 	CMainFrame* pMainWnd = (CMainFrame*)AfxGetMainWnd();
 	CSaView* pView = (pMainWnd)?(CSaView*)pMainWnd->GetCurrSaView():NULL;
-	if(!pView) return;
+	if (!pView) return;
 	int nWaveGraphIndex = pView->GetGraphIndexForIDD(IDD_RAWDATA);
 	CGraphWnd* pWaveGraph = pView->GetGraph(nWaveGraphIndex);
 	if (pWaveGraph)

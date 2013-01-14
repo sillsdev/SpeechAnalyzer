@@ -334,7 +334,7 @@ CChartChar::~CChartChar()
 	{
 		m_pBubble->DestroyWindow();
 		delete m_pBubble;
-		if(m_pBubble == m_pLastBubble) m_pLastBubble = NULL;
+		if (m_pBubble == m_pLastBubble) m_pLastBubble = NULL;
 	}
 	if (m_nMode & ICH_BUBBLE)
 	{
@@ -358,7 +358,7 @@ void CChartChar::Setup(CString* pszChar, CString* pszSoundFile, UINT nID, int nT
 {
 	m_nID = nID;
 	m_szChar = *pszChar;
-	if(pszSoundFile)
+	if (pszSoundFile)
 		m_szSoundFile = *pszSoundFile;
 	else m_szSoundFile = "";
 	m_nType = nType;
@@ -550,7 +550,7 @@ void CChartChar::OnLButtonUp(UINT nFlags, CPoint point)
 		{
 			m_pBubble->DestroyWindow();
 			delete m_pBubble;
-			if(m_pBubble == m_pLastBubble) m_pLastBubble = NULL;
+			if (m_pBubble == m_pLastBubble) m_pLastBubble = NULL;
 			m_pBubble = NULL;
 		}
 		// check if cursor still in character window
@@ -597,7 +597,7 @@ void CChartChar::OnMouseMove(UINT nFlags, CPoint point)
 			{
 				m_pBubble->DestroyWindow();
 				delete m_pBubble;
-				if(m_pBubble == m_pLastBubble) m_pLastBubble = NULL;
+				if (m_pBubble == m_pLastBubble) m_pLastBubble = NULL;
 				m_pBubble = NULL;
 			}
 		}
@@ -613,11 +613,11 @@ static void playSoundFile(const CString &szSoundFile);
 void CChartChar::OnTimer(UINT nIDEvent)
 {
 	KillTimer(1);
-	if(m_nPlayState == kStateIdle)
+	if (m_nPlayState == kStateIdle)
 	{
 		m_pBubble = new CChartChar;
 
-		if(m_pLastBubble)
+		if (m_pLastBubble)
 		{
 			m_pLastBubble->m_pCreator->m_pBubble = NULL; // Disconnect From Creator
 			m_pLastBubble->DestroyWindow();
@@ -641,7 +641,7 @@ void CChartChar::OnTimer(UINT nIDEvent)
 
 		if (m_nPlayState == kStateWord)
 		{
-			if(!m_pCaller->m_bPlay[CDlgCharChart::kPlayWord])
+			if (!m_pCaller->m_bPlay[CDlgCharChart::kPlayWord])
 				m_nPlayState++;
 			else
 			{
@@ -652,7 +652,7 @@ void CChartChar::OnTimer(UINT nIDEvent)
 
 		if (m_nPlayState == kStateSegment)
 		{
-			if(!m_pCaller->m_bPlay[CDlgCharChart::kPlaySegment])
+			if (!m_pCaller->m_bPlay[CDlgCharChart::kPlaySegment])
 				m_nPlayState++;
 			else
 			{

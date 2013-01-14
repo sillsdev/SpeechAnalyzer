@@ -84,7 +84,7 @@ Grid CPlotMelogram::GetGrid() const
 {
   Grid modifiedGrid(*static_cast<CMainFrame*>(AfxGetMainWnd())->GetGrid());
 
-  if(GetTWC())
+  if (GetTWC())
   {
     // nPenStyle = PS_DASHDOT;
     modifiedGrid.nYStyle = 4; // Dashdot
@@ -105,15 +105,15 @@ bool CPlotMelogram::GetScaleValues(CSaDoc *pDoc, double *dMaxSemitone,double *dM
   int nUpperBound = pParm->nUpperBound;
   int nLowerBound = pParm->nLowerBound;
   
-  if(pParm->nRangeMode == 0)
+  if (pParm->nRangeMode == 0)
   {
     MusicParm::GetAutoRange(pDoc, nUpperBound, nLowerBound);
   }
 
-  if(dMaxSemitone)
+  if (dMaxSemitone)
     *dMaxSemitone = nUpperBound;
 
-  if(dMinSemitone)
+  if (dMinSemitone)
     *dMinSemitone = nLowerBound;
 
   CProcessMelogram* pMelogram = (CProcessMelogram*)pDoc->GetMelogram(); // get pointer to melogram object
@@ -155,7 +155,7 @@ void CPlotMelogram::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView)
 
     const MusicParm* pParm = pDoc->GetMusicParm();
 
-    if(pParm->nCalcRangeMode != 0)
+    if (pParm->nCalcRangeMode != 0)
     {
       // Load a font for tagging formants.
       CFont Font;
@@ -178,7 +178,7 @@ void CPlotMelogram::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView)
 
     // do common plot paint jobs
     SetTWC(pView->GetGraphIndexForIDD(IDD_TWC) != -1);
-    if(GetTWC())
+    if (GetTWC())
     {
       // We want to use TWC legend as the basis for Melograms gridlines
       {

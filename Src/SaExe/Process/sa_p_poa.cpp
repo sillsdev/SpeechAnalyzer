@@ -109,7 +109,7 @@ long CProcessPOA::Process(void* pCaller, ISaDoc* pDoc, DWORD dwStart, DWORD dwSt
     }      
 
     BeginWaitCursor();
-    if(!StartProcess(pCaller, IDS_STATTXT_PROCESSPOA, FALSE)) // memory allocation failed
+    if (!StartProcess(pCaller, IDS_STATTXT_PROCESSPOA, FALSE)) // memory allocation failed
     { 
       EndProcess(); // end data processing
       EndWaitCursor();
@@ -201,7 +201,7 @@ long CProcessPOA::Process(void* pCaller, ISaDoc* pDoc, DWORD dwStart, DWORD dwSt
     SetDataReady();
     EndWaitCursor();    
  
-    if(IsCanceled()) return MAKELONG(PROCESS_CANCELED, nProgress);
+    if (IsCanceled()) return MAKELONG(PROCESS_CANCELED, nProgress);
 
     return MAKELONG(nLevel, nProgress);
 }       

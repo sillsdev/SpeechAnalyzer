@@ -43,22 +43,22 @@ public:
 
 double & limit::bound(double &value)
 {
-	if(value == infinity())
+	if (value == infinity())
 		value = max();
-	if(value == -infinity())
+	if (value == -infinity())
 		value = min();
-	if(value == signaling_NaN())
+	if (value == signaling_NaN())
 		value = 0;
 	return value;
 }
 
 double & limit::boundsTest(double &value)
 {
-	if(value == infinity())
+	if (value == infinity())
 		throw infinity();
-	if(value == -infinity())
+	if (value == -infinity())
 		throw -infinity();
-	if(value == signaling_NaN())
+	if (value == signaling_NaN())
 		throw signaling_NaN();
 	return value;
 }
@@ -115,12 +115,12 @@ Float CResonator::AdvanceResonator(Float input)
 
 	Float result = State.Z1;
 
-	if(m_pAdjusted)
+	if (m_pAdjusted)
 	{
 		result *= double(m_nAdjustedBlend)/m_nAdjustedCycles;
 		result += (m_nAdjustedCycles - double(m_nAdjustedBlend))/m_nAdjustedCycles * m_pAdjusted->AdvanceResonator(input);
 		m_nAdjustedBlend++;
-		if(m_nAdjustedBlend == m_nAdjustedCycles)
+		if (m_nAdjustedBlend == m_nAdjustedCycles)
 		{
 			delete m_pAdjusted;
 			m_pAdjusted = 0;
@@ -155,12 +155,12 @@ Float CResonator::AdvanceAntiResonator(Float input)
 
 	Float result = temp2 + temp1;
 
-	if(m_pAdjusted)
+	if (m_pAdjusted)
 	{
 		result *= double(m_nAdjustedBlend)/m_nAdjustedCycles;
 		result += (m_nAdjustedCycles - double(m_nAdjustedBlend))/m_nAdjustedCycles * m_pAdjusted->AdvanceAntiResonator(input);
 		m_nAdjustedBlend++;
-		if(m_nAdjustedBlend == m_nAdjustedCycles)
+		if (m_nAdjustedBlend == m_nAdjustedCycles)
 		{
 			delete m_pAdjusted;
 			m_pAdjusted = 0;
@@ -195,7 +195,7 @@ void CResonator::SetPolePair(Float CF, Float BW, Float SF)
 
 void CResonator::InterPolePair(Float CF, Float BW, Float SF)
 {
-	if(!m_pAdjusted || m_nAdjustedBlend)
+	if (!m_pAdjusted || m_nAdjustedBlend)
 	{
 		CResonator* pRes = new CResonator(this);
 		m_pAdjusted = pRes;
@@ -216,7 +216,7 @@ void CResonator::SetZeroPair(Float CF, Float BW, Float SF)
 
 void CResonator::InterZeroPair(Float CF, Float BW, Float SF)
 {
-	if(!m_pAdjusted || m_nAdjustedBlend)
+	if (!m_pAdjusted || m_nAdjustedBlend)
 	{
 		CResonator* pRes = new CResonator(this);
 		m_pAdjusted = pRes;

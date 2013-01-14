@@ -199,12 +199,12 @@ dspError_t CFragment::CreateObject(CFragment** ppoFragment, FRAG_PARMS *pstFragP
  dspError_t Err = ValidateSignalParms(stSigParm);                   //check signal parameters
  if (Err) return(Err);
  if (!pWaveBfr) return(Code(INVALID_PARM_PTR));
- if(!dwWaveBfrLength) return(Code(INVALID_PARM));
+ if (!dwWaveBfrLength) return(Code(INVALID_PARM));
 
  Err = ValidatePitchParms(stPitchParm);                      //check pitch parameters
  if (Err) return(Err);
  if (!psPitchBfr) return(Code(INVALID_PARM_PTR));
- if(!dwPitchBfrLength) return(Code(INVALID_PARM));
+ if (!dwPitchBfrLength) return(Code(INVALID_PARM));
 
 
 // Construct filter object.

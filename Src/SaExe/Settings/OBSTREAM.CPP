@@ -133,7 +133,7 @@ void Object_ostream::WriteCOLORREF(const char* pszMarker, COLORREF rgb)
 void Object_ostream::WriteInteger(const char* pszMarker, int i, const char* pszComment)
 {
 	m_ios << '\\' << pszMarker << ' ' << i;
-	if(pszComment)
+	if (pszComment)
 		m_ios << " // " << pszComment;
 	m_ios << '\n';
 }
@@ -160,7 +160,7 @@ void Object_ostream::WriteUInt(const char* pszMarker, UINT u, const IUtf8String 
 void Object_ostream::WriteUInt(const char* pszMarker, UINT u, const char* pszComment)
 {
 	m_ios << '\\' << pszMarker << ' ' << u;
-	if(pszComment)
+	if (pszComment)
 		m_ios << " //" << pszComment;
 	m_ios << '\n';
 }

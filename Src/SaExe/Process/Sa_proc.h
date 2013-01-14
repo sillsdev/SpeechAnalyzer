@@ -204,9 +204,9 @@ public:
 
 	_Ty & operator*() 
 	{
-		if((m_nCurrentIndex < m_nBeginIndex) || (m_nCurrentIndex >= m_nEndIndex))
+		if ((m_nCurrentIndex < m_nBeginIndex) || (m_nCurrentIndex >= m_nEndIndex))
 			loadData();
-		if(m_pData == NULL) 
+		if (m_pData == NULL) 
 			throw 0; return 
 			m_pData[m_nCurrentIndex-m_nBeginIndex];
 	}
@@ -230,7 +230,7 @@ private:
 
 	void loadData()
 	{
-		if(m_bReverse)
+		if (m_bReverse)
 			m_nBeginIndex = m_nCurrentIndex > m_nLength ? m_nCurrentIndex + 1 - m_nLength : 0;
 		else
 			m_nBeginIndex = m_nCurrentIndex;

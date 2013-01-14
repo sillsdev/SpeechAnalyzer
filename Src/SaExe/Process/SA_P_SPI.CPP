@@ -76,7 +76,7 @@ long CProcessSmoothedPitch::Process(void* pCaller, ISaDoc* pDoc, int nProgress,
 
   // start pitch process
   BeginWaitCursor(); // wait cursor
-  if(!StartProcess(pCaller, IDS_STATTXT_PROCESSSPI)) // memory allocation failed
+  if (!StartProcess(pCaller, IDS_STATTXT_PROCESSSPI)) // memory allocation failed
   { 
     EndProcess(); // end data processing
     EndWaitCursor();

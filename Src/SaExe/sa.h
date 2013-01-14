@@ -149,7 +149,7 @@ public:
 	void       DisplayMessages();								// displays a stored error message
 	void       SetBatchFileChanged(CSaString, int, CDocument*); // set file changed in batch mode list file
 	int        GetBatchMode() { return m_nBatchMode;} // return application mode (batch or not, exit allowed)
-	void       CancelBatchMode() { if(m_nBatchMode != 0)m_nBatchMode = 3;} // allow SA to exit
+	void       CancelBatchMode() { if (m_nBatchMode != 0)m_nBatchMode = 3;} // allow SA to exit
 	CDocument* IsFileOpened(const TCHAR* pszFileName); // check is this file already opened
 	bool			 IsDocumentOpened( const CSaDoc * pDoc); // check is this file already opened
 	BOOL       CloseWorkbench(CDocument*); // close an already opened workbench document
@@ -170,9 +170,9 @@ public:
 	void GetMRUFilePath( int i, CSaString & buffer) const
 	{
 		buffer.Empty();
-		if(!m_pRecentFileList->GetSize()) // no entries, need to load from registry, this is the MRU list
+		if (!m_pRecentFileList->GetSize()) // no entries, need to load from registry, this is the MRU list
 			m_pRecentFileList->ReadList();
-		if(i < m_pRecentFileList->GetSize())
+		if (i < m_pRecentFileList->GetSize())
 			buffer = (*m_pRecentFileList)[i];
 	};
 
@@ -187,9 +187,8 @@ public:
 	// Operations on the MDI child view [window] list, ordered by z-order.
 	void SetZ();
 	// Set the current z-order of all MDI child views.
-	BOOL ReadProperties(Object_istream& obs); // read the open databases and windows
-	BOOL bReadMRUList(Object_istream& obs); // Read in Most Recently Used file list
-	void WriteProperties(Object_ostream& obs); // write the open databases and windows
+	BOOL ReadProperties(Object_istream& obs);	// read the open databases and windows
+	void WriteProperties(Object_ostream& obs);	// write the open databases and windows
 	CSaString GetStartupMessage(CSaString szLastVersion);
 	void SetupNewUser();
 

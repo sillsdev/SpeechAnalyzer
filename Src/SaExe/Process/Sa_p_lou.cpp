@@ -88,7 +88,7 @@ long CProcessLoudness::Process(void* pCaller, ISaDoc* pDoc, int nProgress,
 	short int nResult = LOWORD(pAutoPitch->Process(this, pDoc)); // process data
 	TRACE(_T("Process: CProcessLoudness\n"));
 	BeginWaitCursor(); // wait cursor
-	if(!StartProcess(pCaller, IDS_STATTXT_PROCESSLOU)) // memory allocation failed
+	if (!StartProcess(pCaller, IDS_STATTXT_PROCESSLOU)) // memory allocation failed
 	{ 
 		EndProcess(); // end data processing
 		EndWaitCursor();
@@ -173,7 +173,7 @@ long CProcessLoudness::Process(void* pCaller, ISaDoc* pDoc, int nProgress,
 			SetProgress(nProgress + (int)(100 * dwDataPos / dwDataSize / (DWORD)nLevel));
 			if (IsCanceled()) return Exit(PROCESS_CANCELED); // process canceled
 
-			if(dOldResult[2] >= 0)
+			if (dOldResult[2] >= 0)
 			{
 				*pLoudData++ = (short)(sqrt(dResult) + 0.5); // rms magnitude
 				if ((++dwLoudCount == GetProcessBufferSize() / 2) || (dwDataPos + nCalcDataLength/2 >= dwDataSize)) // loudness buffer is full or processing finished
@@ -183,7 +183,7 @@ long CProcessLoudness::Process(void* pCaller, ISaDoc* pDoc, int nProgress,
 					{ 
 						Write((HPSTR)m_lpData, dwLoudCount * 2);
 						*m_lpData = 0;
-						if(dwDataPos >= dwDataSize)
+						if (dwDataPos >= dwDataSize)
 							Write((HPSTR)m_lpData, 2);
 					}
 					catch (CFileException e)
@@ -510,7 +510,7 @@ long CProcessSmoothLoudness::Process(void* pCaller, ISaDoc* pDoc,
 	if (IsCanceled()) return MAKELONG(PROCESS_CANCELED, nProgress); // process canceled
 	if (IsDataReady()) return MAKELONG(--nLevel, nProgress); // data is already ready
 	BeginWaitCursor(); // wait cursor
-	if(!StartProcess(pCaller, IDS_STATTXT_PROCESSSLO)) // memory allocation failed
+	if (!StartProcess(pCaller, IDS_STATTXT_PROCESSSLO)) // memory allocation failed
 	{ 
 		EndProcess(); // end data processing
 		EndWaitCursor();

@@ -87,7 +87,7 @@ void CPlotTonalWeightChart::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView *
 {
   TRACE(_T("Draw TWC\n"));
   // if nothing to draw just return
-  if(!rClip.bottom && !rClip.right)
+  if (!rClip.bottom && !rClip.right)
 	return;
   rClip.top = 0; // drawing the entire vertical plot gets the correct maximum x value
   // get pointer to graph, view and document
@@ -99,7 +99,7 @@ void CPlotTonalWeightChart::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView *
   double dMaxSemitone;
   double dMinSemitone;
   
-  if(!CPlotMelogram::GetScaleValues(pDoc, &dMaxSemitone,&dMinSemitone))
+  if (!CPlotMelogram::GetScaleValues(pDoc, &dMaxSemitone,&dMinSemitone))
   {
     short nMelGraphIndex = (short)pView->GetGraphIndexForIDD(IDD_MELOGRAM);
     CGraphWnd* pMelGraph = pView->GetGraph(nMelGraphIndex);
@@ -166,7 +166,7 @@ void CPlotTonalWeightChart::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView *
       // calibrate semitones
       double dSemitoneOffset = dMinSemitone + double(dwMaxBin /*+ 0.5*/) / int(dwDataSize / (dMaxSemitone - dMinSemitone) + 0.5);
 
-      if(dSemitoneOffset > dMaxSemitone || dSemitoneOffset < dMinSemitone)
+      if (dSemitoneOffset > dMaxSemitone || dSemitoneOffset < dMinSemitone)
       {
         dSemitoneOffset = floor((dMaxSemitone + dMinSemitone)/2); // Just in case ???
       }
@@ -231,7 +231,7 @@ void CPlotTonalWeightChart::AdjustSemitoneOffset(WORD UpDown, BOOL bKeyShifted)
 double CPlotTonalWeightChart::SetSemitoneOffset(double dSemitoneOffset)
 {
   double dResult = m_dSemitoneOffset;
-  if(dSemitoneOffset != m_dSemitoneOffset)
+  if (dSemitoneOffset != m_dSemitoneOffset)
   {
     m_dSemitoneOffset = dSemitoneOffset;
 
@@ -270,7 +270,7 @@ void DrawHistogram(CRect &rClip, CDataSource &cData, const CXScale &cXScale, con
     // nSample is updated by GetValues
     cData.GetValues(nSample, nNext, cValues, bValid);
     
-    if(cValues.nMax==cValues.nMax)
+    if (cValues.nMax==cValues.nMax)
     {
       int yBegin = y;
       int yEnd = cYScale.GetY(nSampleGet+1);
@@ -293,7 +293,7 @@ void DrawHistogram(CRect &rClip, CDataSource &cData, const CXScale &cXScale, con
 void CPlotTonalWeightChart::PaintHelper(CDC* pDC, CRect rWnd, CRect rClip, 
                                         CProcessTonalWeightChart* pProcess, CSaDoc* /*pProcessDoc*/, int /*nFlags*/)
 {
-  if(rClip.IsRectEmpty())
+  if (rClip.IsRectEmpty())
     return;
 
   // get pointer to graph, view, document mainframe and legend window

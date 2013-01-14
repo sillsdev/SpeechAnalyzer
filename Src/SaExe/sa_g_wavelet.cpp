@@ -211,7 +211,7 @@ static struct RGB sparsePalette[sparsePaletteSize+1] =		// SDM 1.5Test10.3
 		// Create the bitmap
 		pTempBitmap = CreateDIBSection(pTempDC.m_hDC,pInfo,DIB_RGB_COLORS, (void **)&pBits,NULL,0);
 
-		if(!pTempBitmap)
+		if (!pTempBitmap)
 		{
 			pApp->ErrorMessage(IDS_ERROR_MEMALLOC);
 			pGraph->PostMessage(WM_SYSCOMMAND, SC_CLOSE, 0L);
@@ -361,7 +361,7 @@ static struct RGB sparsePalette[sparsePaletteSize+1] =		// SDM 1.5Test10.3
 		if (nRasterCaps) nNumColors = pDC->GetDeviceCaps(SIZEPALETTE);
 		else nNumColors = pDC->GetDeviceCaps(NUMCOLORS);
 
-		if(nNumColors == -1)
+		if (nNumColors == -1)
 		{
 			int nBits = pDC->GetDeviceCaps(BITSPIXEL);
 			nNumColors = 1 << nBits;
@@ -400,7 +400,7 @@ static struct RGB sparsePalette[sparsePaletteSize+1] =		// SDM 1.5Test10.3
 			if (!lpLogPalette) return FALSE;
 			lpLogPalette->palVersion = 0x300;
 			lpLogPalette->palNumEntries = WORD(2 * nPaletteSize);
-			if(!bPaletteInit)
+			if (!bPaletteInit)
 			{
 				if (!SpectroPalette.CreatePalette(lpLogPalette)) return FALSE;
 			}
@@ -441,7 +441,7 @@ static struct RGB sparsePalette[sparsePaletteSize+1] =		// SDM 1.5Test10.3
 		// select the new palette
 		CPalette *pOldSysPalette;
 		pOldSysPalette = pDC->SelectPalette(&SpectroPalette, FALSE);
-		if(pOldSysPalette) // SDM 1.5Test11.32
+		if (pOldSysPalette) // SDM 1.5Test11.32
 			pOldSysPalette->UnrealizeObject();
 		pDC->RealizePalette();
 		return TRUE;

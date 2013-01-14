@@ -472,7 +472,7 @@ void CSaView::OnGraphTypesSelect(UINT nID)
 /***************************************************************************/
 void CSaView::OnUpdateGraphTypesSelect(CCmdUI* pCmdUI)
 {
-	if(pCmdUI->m_nID >= ID_GRAPHTYPES_SELECT_FIRST && pCmdUI->m_nID <= ID_GRAPHTYPES_SELECT_LAST)
+	if (pCmdUI->m_nID >= ID_GRAPHTYPES_SELECT_FIRST && pCmdUI->m_nID <= ID_GRAPHTYPES_SELECT_LAST)
 		pCmdUI->Enable();
 	else
 		pCmdUI->Enable(FALSE);
@@ -550,7 +550,7 @@ void CSaView::OnGraphsTypesPostProcess(const UINT* anNewGraphID, int nLayout)
 		}
 	}
 
-	if(nLayout == -1)
+	if (nLayout == -1)
 		m_nLayout = SetLayout(&anTmpGraphID[0]);
 	else
 		m_nLayout = nLayout;
@@ -851,7 +851,7 @@ CSaView::CSaView(const CSaView *pToBeCopied)
 	m_printScaleX = 0;
 	m_printScaleY = 0;
 
-	if(pToBeCopied)
+	if (pToBeCopied)
 	{
 		*this = *pToBeCopied;
 	}
@@ -944,7 +944,7 @@ void  CSaView::Copy(const CSaView & fromThis)
 
 	for (int nLoop = 0; nLoop < MAX_GRAPHS_NUMBER; nLoop++)
 	{
-		if(fromThis.m_apGraphs[nLoop])
+		if (fromThis.m_apGraphs[nLoop])
 		{
 			m_apGraphs[nLoop] = new CGraphWnd(*(fromThis.m_apGraphs[nLoop]));
 			m_anGraphID[nLoop] = m_apGraphs[nLoop]->GetPlotID();
@@ -1195,7 +1195,7 @@ void CSaView::CreateGraph(int nPosition, int nNewID,
 	int nLoop = nPosition;
 	m_anGraphID[nLoop] = nNewID;
 
-	if(nNewID == IDD_RECORDING)
+	if (nNewID == IDD_RECORDING)
 	{
 		m_apGraphs[nLoop] = CreateRecGraph(reinterpret_cast<CRecGraphWnd*>(pFromGraph), pObs);
 		return;
@@ -1309,7 +1309,7 @@ void CSaView::ChangeGraph( int idx, int nID)
 				// if the graph we are changing is the focused graph, then reset it
 				if (idx == i)
 					SetFocusedGraph(m_apGraphs[idx]);
-				if(WP.showCmd != SW_HIDE)
+				if (WP.showCmd != SW_HIDE)
 					m_apGraphs[idx]->SetWindowPlacement(&WP);
 			}
 		}
@@ -1451,7 +1451,7 @@ void CSaView::RefreshGraphs(BOOL bEntire, BOOL bLegend, BOOL bLayout)
 	{
 		if (m_apGraphs[nLoop])
 		{
-			if(bLayout)
+			if (bLayout)
 				m_apGraphs[nLoop]->ResizeGraph(bEntire, bLegend);
 			else
 				m_apGraphs[nLoop]->RedrawGraph(bEntire, bLegend);
@@ -1767,7 +1767,7 @@ void CSaView::ZoomOut(double fZoomAmount)
 				m_dwDataPosition = pDoc->GetDataSize() - GetDataFrame(); // reduce data position to maximum
 			// set scroll bar
 			m_dwScrollLine = GetDataFrame() * LINE_SCROLL_PIXELWIDTH / rWnd.Width(); // one line scroll width
-			if(m_dwScrollLine < wSmpSize)
+			if (m_dwScrollLine < wSmpSize)
 				m_dwScrollLine = wSmpSize;
 
 			SetScrollRange(SB_HORZ, 0, (int)((pDoc->GetDataSize() - GetDataFrame()) / m_dwHScrollFactor), FALSE);
@@ -1802,10 +1802,10 @@ void CSaView::SetScrolling()
 	WORD wSmpSize = WORD(pDoc->GetFmtParm()->wBlockAlign / pDoc->GetFmtParm()->wChannels);
 	CRect rWnd;
 	GetClientRect(rWnd);
-	if(rWnd.Width())
+	if (rWnd.Width())
 	{
 		m_dwScrollLine = GetDataFrame() * LINE_SCROLL_PIXELWIDTH / rWnd.Width(); // one line scroll width
-		if(m_dwScrollLine < wSmpSize)
+		if (m_dwScrollLine < wSmpSize)
 			m_dwScrollLine = wSmpSize;
 		m_fMaxZoom = (double)(pDoc->GetDataSize() / pDoc->GetFmtParm()->wBlockAlign) / (double)rWnd.Width() * 8.;  // max zoom factor
 		m_fVScrollSteps = ZOOM_SCROLL_RESOLUTION * m_fMaxZoom;
@@ -2175,7 +2175,7 @@ double CSaView::GetDataPosition(int nWndWidth)
 	DWORD dwDataFrame = GetDataFrame(); // number of data points to display
 
 	// SDM 1.06.6U4 Calculate position based on pixel aligned graph
-	if(nWndWidth && dwDataFrame)
+	if (nWndWidth && dwDataFrame)
 	{
 		double fBytesPerPix = (double)dwDataFrame / (double)(nWndWidth); // calculate data samples per pixel
 		fDataPos = round(fDataPos/fBytesPerPix)*fBytesPerPix;
@@ -2318,9 +2318,9 @@ void CSaView::SetStartStopCursorPosition( DWORD dwNewStartPos,
 /***************************************************************************/
 void CSaView::SetPlaybackPosition(double dNewPos, int nSpeed, BOOL bEstimate)
 {
-	//if(!bEstimate)
+	//if (!bEstimate)
 	//  TRACE(_T("PlaybackPosition %8.1f Position %8.1f nSpeed %d Estimate %d\n"),m_dPlaybackPosition, dNewPos, nSpeed, bEstimate);
-	if(bEstimate)
+	if (bEstimate)
 	{
 		SetTimer( ID_PLAYER, /*PLAYBACK_CURSOR_UPDATE_INTERVAL * 1000 */ 1 , NULL );
 	}
@@ -2452,7 +2452,7 @@ void CSaView::SetDataFrame(DWORD dwStart, DWORD dwFrame)
 	// calculate zooming factor
 	DWORD dwDataSize = pDoc->GetDataSize();
 	double fZoom = (double)dwDataSize / (double)dwFrame; // zoom factor
-	if(fZoom > m_fMaxZoom)
+	if (fZoom > m_fMaxZoom)
 	{
 		fZoom = m_fMaxZoom;
 		dwFrame = DWORD(dwDataSize/fZoom);
@@ -2464,7 +2464,7 @@ void CSaView::SetDataFrame(DWORD dwStart, DWORD dwFrame)
 	{
 		// set new scrolling parameters
 		m_dwScrollLine = dwFrame * LINE_SCROLL_PIXELWIDTH / rWnd.Width(); // one line scroll width
-		if(m_dwScrollLine < wSmpSize)
+		if (m_dwScrollLine < wSmpSize)
 			m_dwScrollLine = wSmpSize;
 		SetScrollRange(SB_HORZ, 0, (int)((dwDataSize - dwFrame) / m_dwHScrollFactor), FALSE);
 		if (m_fZoom == 1.0) // first zoom in -> set scroll bar
@@ -2518,7 +2518,7 @@ LRESULT CSaView::OnCursorInFragment(WPARAM nCursorSelect, LPARAM dwFragmentIndex
 
 void CSaView::NotifyFragmentDone(void * /*pCaller*/)
 {
-	if(GetCursorAlignment() == ALIGN_AT_FRAGMENT)
+	if (GetCursorAlignment() == ALIGN_AT_FRAGMENT)
 		OnCursorAlignmentChanged();   // fragmenter finished, alignment mode just changed
 }
 
@@ -2677,7 +2677,7 @@ BOOL CSaView::StartAnimation(DWORD dwStartWaveIndex, DWORD dwStopWaveIndex)
 		for (int nLoop = 0; nLoop < MAX_GRAPHS_NUMBER; nLoop++)
 		{
 			// Any keydown might cancel animation
-			if(GetAsyncKeyState(VK_ESCAPE) < 0)
+			if (GetAsyncKeyState(VK_ESCAPE) < 0)
 			{
 				bCancelAnimation = TRUE;
 				break;
@@ -3372,7 +3372,7 @@ void CSaView::OnEditCopy()
 				int len = ctext.GetLength();
 				TCHAR * str = ctext.GetBuffer(len+1);
 				ASSERT(str);
-				if(nSegment == GLOSS)
+				if (nSegment == GLOSS)
 				{
 					str++; len--;
 				}
@@ -3828,12 +3828,12 @@ void CSaView::OnEditCursorStopRight()
 
 	dwStop = GetStopCursorPosition();
 
-	if(dwStop + movementScale >= dataSize)
+	if (dwStop + movementScale >= dataSize)
 		return;
 
 	dwStopNew = pDoc->SnapCursor(STOP_CURSOR, dwStop + movementScale, SNAP_RIGHT);
 
-	if(dwStop != dwStopNew)
+	if (dwStop != dwStopNew)
 		SetStopCursorPosition(dwStopNew);
 }
 
@@ -3851,12 +3851,12 @@ void CSaView::OnEditCursorStartLeft()
 
 	dwOffset = GetStartCursorPosition();
 
-	if(dwOffset < movementScale)
+	if (dwOffset < movementScale)
 		return;
 
 	dwOffsetNew = pDoc->SnapCursor(START_CURSOR, dwOffset - movementScale, SNAP_LEFT);
 
-	if(dwOffset != dwOffsetNew)
+	if (dwOffset != dwOffsetNew)
 		SetStartCursorPosition(dwOffsetNew);
 }
 
@@ -3877,7 +3877,7 @@ void CSaView::OnEditCursorStopLeft()
 
 	dwStop = GetStopCursorPosition();
 
-	if(dwStop < movementScale)
+	if (dwStop < movementScale)
 		return;
 
 	dwStopNew = pDoc->SnapCursor(STOP_CURSOR, dwStop - movementScale, SNAP_LEFT);
@@ -4139,7 +4139,7 @@ void CSaView::OnUpdateEditAdd(CCmdUI* pCmdUI)
 	{
 		ASelection().Update(this);
 		int nLoop = ASelection().GetSelection().nAnnotationIndex;
-		if(nLoop == -1)
+		if (nLoop == -1)
 			bEnable = TRUE;
 	}
 	else
@@ -4188,7 +4188,7 @@ void CSaView::OnUpdateEditAdd(CCmdUI* pCmdUI)
 					dwStop = pDoc->SnapCursor(STOP_CURSOR, dwStop, dwStart, dwMaxStop, SNAP_LEFT);
 
 				nInsertAt = pSeg->CheckPosition(pDoc,dwStart,dwStop,CSegment::MODE_ADD);
-				if(nInsertAt >= 0)
+				if (nInsertAt >= 0)
 					bEnable = TRUE;
 			}
 		}
@@ -4208,20 +4208,20 @@ void CSaView::OnEditAddPhrase(CMusicPhraseSegment *pSeg)
 	CSaString szString = SEGMENT_DEFAULT_CHAR; //Fill new segment with default character
 
 	int nInsertAt = pSeg->CheckPosition(pDoc,GetStartCursorPosition(),GetStopCursorPosition(),CSegment::MODE_ADD);
-	if(nInsertAt != -1)
+	if (nInsertAt != -1)
 	{
 		int nPrevious = pSeg->GetPrevious(nInsertAt);
-		if(nPrevious != -1)
+		if (nPrevious != -1)
 		{
-			if(pSeg->GetStop(nPrevious) + pDoc->GetBytesFromTime(MAX_ADD_JOIN_TIME)> GetStartCursorPosition()) // SDM 1.5Test10.2
+			if (pSeg->GetStop(nPrevious) + pDoc->GetBytesFromTime(MAX_ADD_JOIN_TIME)> GetStartCursorPosition()) // SDM 1.5Test10.2
 				pSeg->Adjust(pDoc, nPrevious,pSeg->GetOffset(nPrevious),GetStartCursorPosition() - pSeg->GetOffset(nPrevious));
 		}
 		int nNext  = -1;
-		if(nInsertAt > 0) nNext = pSeg->GetNext(nInsertAt - 1);
-		else if(!pSeg->IsEmpty()) nNext = nInsertAt;
-		if(nNext != -1)
+		if (nInsertAt > 0) nNext = pSeg->GetNext(nInsertAt - 1);
+		else if (!pSeg->IsEmpty()) nNext = nInsertAt;
+		if (nNext != -1)
 		{
-			if(pSeg->GetOffset(nNext) < GetStopCursorPosition()+pDoc->GetBytesFromTime(MAX_ADD_JOIN_TIME)) // SDM 1.5Test10.2
+			if (pSeg->GetOffset(nNext) < GetStopCursorPosition()+pDoc->GetBytesFromTime(MAX_ADD_JOIN_TIME)) // SDM 1.5Test10.2
 				pSeg->Adjust(pDoc, nNext,GetStopCursorPosition(),pSeg->GetStop(nNext)-GetStopCursorPosition());
 		}
 		pSeg->Insert(nInsertAt, &szString, true, GetStartCursorPosition(),GetStopCursorPosition()-GetStartCursorPosition());
@@ -4233,14 +4233,14 @@ void CSaView::OnEditAddPhrase(CMusicPhraseSegment *pSeg)
 	}
 	else  // Can we insert after selected segment
 	{
-		if(pSeg->GetSelection()!=-1) // Phonetic Segment Selected
+		if (pSeg->GetSelection()!=-1) // Phonetic Segment Selected
 		{
 			int nSelection = pSeg->GetSelection();
 			DWORD dwStart = pSeg->GetStop(nSelection); // Start at current stop
 			DWORD dwMaxStop;
 			DWORD dwStop;
 
-			if(pSeg->GetNext(nSelection) == -1) // Last Selection
+			if (pSeg->GetNext(nSelection) == -1) // Last Selection
 			{
 				dwMaxStop = pDoc->GetUnprocessedDataSize();
 			}
@@ -4254,19 +4254,19 @@ void CSaView::OnEditAddPhrase(CMusicPhraseSegment *pSeg)
 
 			dwStop = (dwStart + pDoc->GetBytesFromTime(MIN_ADD_SEGMENT_TIME));
 
-			if(pDoc->GetFmtParm()->wBlockAlign == 2)// SDM 1.5Test8.2
+			if (pDoc->GetFmtParm()->wBlockAlign == 2)// SDM 1.5Test8.2
 			{
 				dwStop = (dwStop + 1) & ~1; // Round up
 			}
 
-			if(pSeg->GetNext(nSelection) != -1)
+			if (pSeg->GetNext(nSelection) != -1)
 				dwStop = pDoc->SnapCursor(STOP_CURSOR, dwStop, dwStop, pDoc->GetUnprocessedDataSize(), SNAP_RIGHT);
 
-			if(dwStop <= dwMaxStop) // enough room
+			if (dwStop <= dwMaxStop) // enough room
 			{
 				dwStop = dwStart + pDoc->GetBytesFromTime(DEFAULT_ADD_SEGMENT_TIME);
 
-				if(pDoc->GetFmtParm()->wBlockAlign == 2)// SDM 1.5Test8.2
+				if (pDoc->GetFmtParm()->wBlockAlign == 2)// SDM 1.5Test8.2
 				{
 					dwStop = (dwStop + 1) & ~1; // Round up
 				}
@@ -4306,17 +4306,17 @@ void CSaView::OnUpdateEditAddPhrase(CCmdUI* pCmdUI, CMusicPhraseSegment* pSeg)
 	CSaDoc* pDoc = GetDocument(); // get pointer to document
 
 	int nInsertAt = pSeg->CheckPosition(pDoc,GetStartCursorPosition(),GetStopCursorPosition(),CSegment::MODE_ADD);
-	if(nInsertAt != -1)
+	if (nInsertAt != -1)
 		bEnable = TRUE;
 	{
-		if(pSeg->GetSelection()!=-1) // Phonetic Segment Selected
+		if (pSeg->GetSelection()!=-1) // Phonetic Segment Selected
 		{
 			int nSelection = pSeg->GetSelection();
 			DWORD dwStart = pSeg->GetStop(nSelection); // Start at current stop
 			DWORD dwMaxStop;
 			DWORD dwStop;
 
-			if(pSeg->GetNext(nSelection) == -1) // Last Selection
+			if (pSeg->GetNext(nSelection) == -1) // Last Selection
 			{
 				dwMaxStop = pDoc->GetUnprocessedDataSize();
 			}
@@ -4329,15 +4329,15 @@ void CSaView::OnUpdateEditAddPhrase(CCmdUI* pCmdUI, CMusicPhraseSegment* pSeg)
 			dwStart = pDoc->SnapCursor(START_CURSOR, dwStart, dwStart, dwMaxStop, SNAP_RIGHT);
 
 			dwStop = (dwStart + pDoc->GetBytesFromTime(MIN_ADD_SEGMENT_TIME));
-			if(pDoc->GetFmtParm()->wBlockAlign == 2)// SDM 1.5Test8.2
+			if (pDoc->GetFmtParm()->wBlockAlign == 2)// SDM 1.5Test8.2
 			{
 				dwStop = (dwStop + 1) & ~1; // Round up
 			}
 
-			if(pSeg->GetNext(nSelection) != -1)
+			if (pSeg->GetNext(nSelection) != -1)
 				dwStop = pDoc->SnapCursor(STOP_CURSOR, dwStop, dwStop, pDoc->GetUnprocessedDataSize(), SNAP_RIGHT);
 
-			if(dwStop <= dwMaxStop) // enough room
+			if (dwStop <= dwMaxStop) // enough room
 			{
 				bEnable = TRUE;
 			}
@@ -4436,8 +4436,10 @@ void CSaView::EditAddGloss(bool bDelimiter)
 			nPos++;
 
 		DWORD dwStop;
-		if ((nPos == -1) || (nPos >= pSeg->GetTexts()->GetSize())) dwStop = pDoc->GetUnprocessedDataSize();
-		else dwStop = pSeg->GetOffset(nPos);
+		if ((nPos == -1) || (nPos >= pSeg->GetTexts()->GetSize())) 
+			dwStop = pDoc->GetUnprocessedDataSize();
+		else 
+			dwStop = pSeg->GetOffset(nPos);
 
 		nInsertAt = GetAnnotation(PHONETIC)->CheckPosition(pDoc,dwStart,dwStop,CSegment::MODE_ADD);
 		if (nInsertAt != -1)
@@ -4618,7 +4620,7 @@ void CSaView::OnEditUp()
 		{
 			for(int nIndex = 0; nIndex < ANNOT_WND_NUMBER; nIndex++)
 			{
-				if(CGraphWnd::m_anAnnWndOrder[nIndex] == nLoop)
+				if (CGraphWnd::m_anAnnWndOrder[nIndex] == nLoop)
 				{
 					nLoop = nIndex;
 					break;
@@ -4634,7 +4636,7 @@ void CSaView::OnEditUp()
 			{
 				ASelection().SelectFromPosition(this, CGraphWnd::m_anAnnWndOrder[nLoop], dwOffset, CASegmentSelection::FIND_EXACT);// SDM 1.5Test8.1
 
-				if(ASelection().GetSelection().nAnnotationIndex == -1)
+				if (ASelection().GetSelection().nAnnotationIndex == -1)
 					ASelection().SelectFromPosition(this, CGraphWnd::m_anAnnWndOrder[nLoop], dwOffset);
 
 				if ((ASelection().GetSelection().dwStart <= m_dwDataPosition)
@@ -4680,7 +4682,7 @@ void CSaView::OnUpdateEditUp(CCmdUI* pCmdUI)
 		{
 			for(int nIndex = 0; nIndex < ANNOT_WND_NUMBER; nIndex++)
 			{
-				if(CGraphWnd::m_anAnnWndOrder[nIndex] == nLoop)
+				if (CGraphWnd::m_anAnnWndOrder[nIndex] == nLoop)
 				{
 					nLoop = nIndex;
 					break;
@@ -4739,7 +4741,7 @@ void CSaView::OnEditDown()
 		{
 			for(int nIndex = 0; nIndex < ANNOT_WND_NUMBER; nIndex++)
 			{
-				if(CGraphWnd::m_anAnnWndOrder[nIndex] == nLoop)
+				if (CGraphWnd::m_anAnnWndOrder[nIndex] == nLoop)
 				{
 					nLoop = nIndex;
 					break;
@@ -4755,7 +4757,7 @@ void CSaView::OnEditDown()
 			{
 				ASelection().SelectFromPosition(this, CGraphWnd::m_anAnnWndOrder[nLoop], dwOffset, CASegmentSelection::FIND_EXACT);// SDM 1.5Test8.1
 
-				if(ASelection().GetSelection().nAnnotationIndex == -1)
+				if (ASelection().GetSelection().nAnnotationIndex == -1)
 					ASelection().SelectFromPosition(this, CGraphWnd::m_anAnnWndOrder[nLoop], dwOffset);
 
 
@@ -4802,7 +4804,7 @@ void CSaView::OnUpdateEditDown(CCmdUI* pCmdUI)
 		{
 			for(int nIndex = 0; nIndex < ANNOT_WND_NUMBER; nIndex++)
 			{
-				if(CGraphWnd::m_anAnnWndOrder[nIndex] == nLoop)
+				if (CGraphWnd::m_anAnnWndOrder[nIndex] == nLoop)
 				{
 					nLoop = nIndex;
 					break;
@@ -4842,7 +4844,7 @@ void CSaView::OnEditPrevious()
 		ASelection().Update(this);
 		nLoop = ASelection().GetSelection().nAnnotationIndex;
 		// only work from visible selections
-		if(( nLoop != -1)&& !(m_pFocusedGraph->HaveAnnotation(nLoop) )) nLoop=-1; // only work from visible selections
+		if (( nLoop != -1)&& !(m_pFocusedGraph->HaveAnnotation(nLoop) )) nLoop=-1; // only work from visible selections
 
 		int nSelection;
 		if (nLoop == -1)
@@ -4861,25 +4863,25 @@ void CSaView::OnEditPrevious()
 			if (nLoop >= ANNOT_WND_NUMBER) return; // no possibility found
 			// try to find selection within start cursor or left of it
 			ASelection().SelectFromPosition(this, nLoop, GetStartCursorPosition(),CASegmentSelection::FIND_EXACT);
-			if(ASelection().GetSelection().nAnnotationIndex == -1)
+			if (ASelection().GetSelection().nAnnotationIndex == -1)
 				ASelection().SelectFromPosition(this, nLoop, GetStartCursorPosition());
 		}
 		else
 		{
 			int MASTER = GetAnnotation(nLoop)->GetMasterIndex();
-			if((MASTER!=-1)&&(nLoop != GLOSS)&&(nLoop != PHONETIC))
+			if ((MASTER!=-1)&&(nLoop != GLOSS)&&(nLoop != PHONETIC))
 			{
 				CSegment* pMaster=GetAnnotation(MASTER);
 
 				DWORD dwPosition = ASelection().GetSelection().dwStart;
 				int nIndexMaster = pMaster->FindOffset(dwPosition); // Should always find...
-				if(nIndexMaster==-1) nIndexMaster = pMaster->FindFromPosition(dwPosition, TRUE); // Better Coverage
+				if (nIndexMaster==-1) nIndexMaster = pMaster->FindFromPosition(dwPosition, TRUE); // Better Coverage
 
-				if(nIndexMaster == -1) return;
+				if (nIndexMaster == -1) return;
 				nIndexMaster = pMaster->GetPrevious(nIndexMaster);
-				if(nIndexMaster == -1) return;
+				if (nIndexMaster == -1) return;
 				ASelection().SelectFromStopPosition(this, nLoop, pMaster->GetStop(nIndexMaster),CASegmentSelection::FIND_EXACT);
-				if(ASelection().GetSelection().nAnnotationIndex == -1)
+				if (ASelection().GetSelection().nAnnotationIndex == -1)
 					ASelection().SelectFromStopPosition(this, nLoop, pMaster->GetStop(nIndexMaster));
 			}
 			else
@@ -4888,14 +4890,14 @@ void CSaView::OnEditPrevious()
 				DWORD dwStart;
 
 				nSelection = GetAnnotation(nLoop)->GetSelection();
-				if(nSelection == -1)
+				if (nSelection == -1)
 				{
 					dwStart = ASelection().GetSelection().dwStart;
 					nSelection = GetAnnotation(nLoop)->FindFromPosition(dwStart,FALSE);
-					if(nSelection == -1)
+					if (nSelection == -1)
 						return;
 
-					if(GetAnnotation(nLoop)->GetOffset(nSelection) < dwStart)
+					if (GetAnnotation(nLoop)->GetOffset(nSelection) < dwStart)
 					{
 						dwStop = GetAnnotation(nLoop)->GetStop(nSelection);
 					}
@@ -4921,16 +4923,16 @@ void CSaView::OnEditPrevious()
 						dwStop = GetAnnotation(nLoop)->GetStop(nPrevious);
 					}
 
-					if((nLoop != PHONETIC) && (nLoop != GLOSS) && (dwStop + GetDocument()->GetBytesFromTime(DEFAULT_ADD_SEGMENT_TIME)) < dwStart)
+					if ((nLoop != PHONETIC) && (nLoop != GLOSS) && (dwStop + GetDocument()->GetBytesFromTime(DEFAULT_ADD_SEGMENT_TIME)) < dwStart)
 						dwStop = dwStart - 2;
 				}
 
-				if(dwStop < GetDocument()->GetBytesFromTime(MIN_ADD_SEGMENT_TIME))
+				if (dwStop < GetDocument()->GetBytesFromTime(MIN_ADD_SEGMENT_TIME))
 					return;
 
 				// change the selection
 				ASelection().SelectFromStopPosition(this, nLoop, dwStop,CASegmentSelection::FIND_EXACT);
-				if(ASelection().GetSelection().nAnnotationIndex == -1)
+				if (ASelection().GetSelection().nAnnotationIndex == -1)
 					ASelection().SelectFromStopPosition(this, nLoop, dwStop);
 			}
 		}
@@ -4955,7 +4957,7 @@ void CSaView::OnUpdateEditPrevious(CCmdUI* pCmdUI)
 		ASelection().Update(this);
 		nLoop = ASelection().GetSelection().nAnnotationIndex;
 		// only work from visible selections
-		if(( nLoop != -1)&& !(m_pFocusedGraph->HaveAnnotation(nLoop) )) nLoop=-1; // only work from visible selections
+		if (( nLoop != -1)&& !(m_pFocusedGraph->HaveAnnotation(nLoop) )) nLoop=-1; // only work from visible selections
 
 		int nSelection;
 		if (nLoop == -1)
@@ -4977,17 +4979,17 @@ void CSaView::OnUpdateEditPrevious(CCmdUI* pCmdUI)
 		else
 		{
 			int MASTER = GetAnnotation(nLoop)->GetMasterIndex();
-			if((MASTER!=-1)&&(nLoop != GLOSS)&&(nLoop != PHONETIC))
+			if ((MASTER!=-1)&&(nLoop != GLOSS)&&(nLoop != PHONETIC))
 			{
 				CSegment* pMaster=GetAnnotation(MASTER);
 
 				DWORD dwPosition = ASelection().GetSelection().dwStart;
 				int nIndexMaster = pMaster->FindOffset(dwPosition); // Should always find...
-				if(nIndexMaster==-1) nIndexMaster = pMaster->FindFromPosition(dwPosition, TRUE); // Better Coverage
+				if (nIndexMaster==-1) nIndexMaster = pMaster->FindFromPosition(dwPosition, TRUE); // Better Coverage
 
-				if(nIndexMaster != -1)
+				if (nIndexMaster != -1)
 					nIndexMaster = pMaster->GetPrevious(nIndexMaster);
-				if(nIndexMaster != -1)
+				if (nIndexMaster != -1)
 					bEnable = TRUE;
 			}
 			else
@@ -4996,11 +4998,11 @@ void CSaView::OnUpdateEditPrevious(CCmdUI* pCmdUI)
 				DWORD dwStart;
 
 				nSelection = GetAnnotation(nLoop)->GetSelection();
-				if(nSelection == -1)
+				if (nSelection == -1)
 				{
 					dwStart = ASelection().GetSelection().dwStart;
 					nSelection = GetAnnotation(nLoop)->FindFromPosition(dwStart,FALSE);
-					if(nSelection != -1)
+					if (nSelection != -1)
 					{
 
 						int nPrevious = GetAnnotation(nLoop)->GetPrevious(nSelection);
@@ -5022,13 +5024,13 @@ void CSaView::OnUpdateEditPrevious(CCmdUI* pCmdUI)
 						dwStop = GetAnnotation(nLoop)->GetStop(nPrevious);
 					}
 
-					if((nLoop != PHONETIC) && (nLoop != GLOSS) && (dwStop + GetDocument()->GetBytesFromTime(DEFAULT_ADD_SEGMENT_TIME)) < dwStart)
+					if ((nLoop != PHONETIC) && (nLoop != GLOSS) && (dwStop + GetDocument()->GetBytesFromTime(DEFAULT_ADD_SEGMENT_TIME)) < dwStart)
 						dwStop = dwStart - 2;
 
 				}
 				bEnable = TRUE;
 
-				if(dwStop < GetDocument()->GetBytesFromTime(MIN_ADD_SEGMENT_TIME))
+				if (dwStop < GetDocument()->GetBytesFromTime(MIN_ADD_SEGMENT_TIME))
 					bEnable = FALSE;
 			}
 		}
@@ -5048,7 +5050,7 @@ void CSaView::OnEditNext()
 		ASelection().Update(this);
 		nLoop = ASelection().GetSelection().nAnnotationIndex;
 		// only work from visible selections
-		if(( nLoop != -1)&& !(m_pFocusedGraph->HaveAnnotation(nLoop) )) nLoop=-1; // only work from visible selections
+		if (( nLoop != -1)&& !(m_pFocusedGraph->HaveAnnotation(nLoop) )) nLoop=-1; // only work from visible selections
 
 		if (GetAnnotation(PHONETIC)->IsEmpty()) return; // no segments
 		int nSelection;
@@ -5068,25 +5070,25 @@ void CSaView::OnEditNext()
 			if (nLoop >= ANNOT_WND_NUMBER) return; // no possibility found
 			// try to find selection within start cursor or left of it
 			ASelection().SelectFromPosition(this, nLoop, GetStartCursorPosition(),CASegmentSelection::FIND_EXACT);
-			if(ASelection().GetSelection().nAnnotationIndex == -1)
+			if (ASelection().GetSelection().nAnnotationIndex == -1)
 				ASelection().SelectFromPosition(this, nLoop, GetStartCursorPosition());
 		}
 		else
 		{
 			int MASTER = GetAnnotation(nLoop)->GetMasterIndex();
-			if((MASTER!=-1)&&(nLoop != GLOSS)&&(nLoop != PHONETIC))
+			if ((MASTER!=-1)&&(nLoop != GLOSS)&&(nLoop != PHONETIC))
 			{
 				CSegment* pMaster=GetAnnotation(MASTER);
 
 				DWORD dwPosition = ASelection().GetSelection().dwStop;
 				int nIndexMaster = pMaster->FindStop(dwPosition); // Should always find...
-				if(nIndexMaster==-1) nIndexMaster = pMaster->FindFromPosition(dwPosition, TRUE); // Better Coverage
+				if (nIndexMaster==-1) nIndexMaster = pMaster->FindFromPosition(dwPosition, TRUE); // Better Coverage
 
-				if(nIndexMaster == -1) return;
+				if (nIndexMaster == -1) return;
 				nIndexMaster = pMaster->GetNext(nIndexMaster);
-				if(nIndexMaster == -1) return;
+				if (nIndexMaster == -1) return;
 				ASelection().SelectFromPosition(this, nLoop, pMaster->GetOffset(nIndexMaster),CASegmentSelection::FIND_EXACT);
-				if(ASelection().GetSelection().nAnnotationIndex == -1)
+				if (ASelection().GetSelection().nAnnotationIndex == -1)
 					ASelection().SelectFromPosition(this, nLoop, pMaster->GetOffset(nIndexMaster));
 			}
 			else
@@ -5095,14 +5097,14 @@ void CSaView::OnEditNext()
 				DWORD dwStart;
 
 				nSelection = GetAnnotation(nLoop)->GetSelection();
-				if(nSelection == -1)
+				if (nSelection == -1)
 				{
 					dwStop = ASelection().GetSelection().dwStop;
 					nSelection = GetAnnotation(nLoop)->FindFromPosition(dwStop,FALSE);
-					if(nSelection == -1)
+					if (nSelection == -1)
 						return;
 
-					if(dwStop >= GetAnnotation(nLoop)->GetOffset(nSelection))
+					if (dwStop >= GetAnnotation(nLoop)->GetOffset(nSelection))
 						return;
 
 					dwStart = GetAnnotation(nLoop)->GetOffset(nSelection);
@@ -5121,16 +5123,16 @@ void CSaView::OnEditNext()
 						dwStart = GetAnnotation(nLoop)->GetOffset(nNext);
 					}
 
-					if((dwStop + GetDocument()->GetBytesFromTime(DEFAULT_ADD_SEGMENT_TIME)) < dwStart)
+					if ((dwStop + GetDocument()->GetBytesFromTime(DEFAULT_ADD_SEGMENT_TIME)) < dwStart)
 						dwStart = dwStop + 2;
 				}
 
-				if(dwStart + GetDocument()->GetBytesFromTime(MIN_ADD_SEGMENT_TIME) > GetDocument()->GetUnprocessedDataSize())
+				if (dwStart + GetDocument()->GetBytesFromTime(MIN_ADD_SEGMENT_TIME) > GetDocument()->GetUnprocessedDataSize())
 					return;
 
 				// change the selection
 				ASelection().SelectFromPosition(this, nLoop, dwStart,CASegmentSelection::FIND_EXACT);
-				if(ASelection().GetSelection().nAnnotationIndex == -1)
+				if (ASelection().GetSelection().nAnnotationIndex == -1)
 					ASelection().SelectFromPosition(this, nLoop, dwStart);
 			}
 		}
@@ -5155,7 +5157,7 @@ void CSaView::OnUpdateEditNext(CCmdUI* pCmdUI)
 		ASelection().Update(this);
 		nLoop = ASelection().GetSelection().nAnnotationIndex;
 		// only work from visible selections
-		if(( nLoop != -1)&& !(m_pFocusedGraph->HaveAnnotation(nLoop) )) nLoop=-1; // only work from visible selections
+		if (( nLoop != -1)&& !(m_pFocusedGraph->HaveAnnotation(nLoop) )) nLoop=-1; // only work from visible selections
 
 		int nSelection;
 		if (nLoop == -1)
@@ -5177,17 +5179,17 @@ void CSaView::OnUpdateEditNext(CCmdUI* pCmdUI)
 		else
 		{
 			int MASTER = GetAnnotation(nLoop)->GetMasterIndex();
-			if((MASTER!=-1)&&(nLoop != GLOSS)&&(nLoop != PHONETIC))
+			if ((MASTER!=-1)&&(nLoop != GLOSS)&&(nLoop != PHONETIC))
 			{
 				CSegment* pMaster=GetAnnotation(MASTER);
 
 				DWORD dwPosition = ASelection().GetSelection().dwStop;
 				int nIndexMaster = pMaster->FindStop(dwPosition); // Should always find...
-				if(nIndexMaster==-1) nIndexMaster = pMaster->FindFromPosition(dwPosition, TRUE); // Better Coverage
+				if (nIndexMaster==-1) nIndexMaster = pMaster->FindFromPosition(dwPosition, TRUE); // Better Coverage
 
-				if(nIndexMaster != -1)
+				if (nIndexMaster != -1)
 					nIndexMaster = pMaster->GetNext(nIndexMaster);
-				if(nIndexMaster != -1)
+				if (nIndexMaster != -1)
 					bEnable = TRUE;
 			}
 			else
@@ -5198,15 +5200,15 @@ void CSaView::OnUpdateEditNext(CCmdUI* pCmdUI)
 				dwStart = GetDocument()->GetUnprocessedDataSize();
 
 				nSelection = GetAnnotation(nLoop)->GetSelection();
-				if(nSelection == -1)
+				if (nSelection == -1)
 				{
 					dwStop = ASelection().GetSelection().dwStop;
 					nSelection = GetAnnotation(nLoop)->FindFromPosition(dwStop,FALSE);
-					if(nSelection != -1)
+					if (nSelection != -1)
 					{
 						dwStart = GetAnnotation(nLoop)->GetOffset(nSelection);
 
-						if(dwStop > GetAnnotation(nLoop)->GetOffset(nSelection))
+						if (dwStop > GetAnnotation(nLoop)->GetOffset(nSelection))
 							dwStart = GetDocument()->GetUnprocessedDataSize();
 					}
 				}
@@ -5224,12 +5226,12 @@ void CSaView::OnUpdateEditNext(CCmdUI* pCmdUI)
 						dwStart = GetAnnotation(nLoop)->GetOffset(nNext);
 					}
 
-					if((dwStop + GetDocument()->GetBytesFromTime(DEFAULT_ADD_SEGMENT_TIME)) < dwStart)
+					if ((dwStop + GetDocument()->GetBytesFromTime(DEFAULT_ADD_SEGMENT_TIME)) < dwStart)
 						dwStart = dwStop + 2;
 				}
 				bEnable = TRUE;
 
-				if(dwStart + GetDocument()->GetBytesFromTime(MIN_ADD_SEGMENT_TIME) > GetDocument()->GetUnprocessedDataSize())
+				if (dwStart + GetDocument()->GetBytesFromTime(MIN_ADD_SEGMENT_TIME) > GetDocument()->GetUnprocessedDataSize())
 					bEnable = FALSE;
 			}
 		}
@@ -5242,7 +5244,7 @@ void CSaView::OnUpdateEditNext(CCmdUI* pCmdUI)
 /***************************************************************************/
 CURSOR_ALIGNMENT CSaView::GetCursorAlignment()
 {
-	if(GetDocument()->GetFragments()->IsDataReady())
+	if (GetDocument()->GetFragments()->IsDataReady())
 		return m_nCursorAlignment;
 	else
 		return m_nCursorAlignment == ALIGN_AT_FRAGMENT ? ALIGN_AT_ZERO_CROSSING : m_nCursorAlignment;
@@ -5253,7 +5255,7 @@ CURSOR_ALIGNMENT CSaView::GetCursorAlignment()
 /***************************************************************************/
 int CSaView::GetGraphUpdateMode()
 {
-	if(GetCursorAlignment() != ALIGN_AT_FRAGMENT)
+	if (GetCursorAlignment() != ALIGN_AT_FRAGMENT)
 		return STATIC_UPDATE;  // This file must be in static mode fragments disabled.
 	else
 		return MainFrame()->GetGraphUpdateMode();
@@ -5264,7 +5266,7 @@ int CSaView::GetGraphUpdateMode()
 /***************************************************************************/
 BOOL CSaView::IsAnimationRequested()
 {
-	if(GetGraphUpdateMode() == STATIC_UPDATE)
+	if (GetGraphUpdateMode() == STATIC_UPDATE)
 		return FALSE;  // This file must be in dynamic mode to animate
 	else
 		return MainFrame()->IsAnimationRequested();

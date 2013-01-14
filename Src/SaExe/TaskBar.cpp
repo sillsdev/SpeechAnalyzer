@@ -82,7 +82,7 @@ void CTaskBar::UpdateLayout()
 	else
 		rList.bottom = rList.top;
 
-	if(m_nSelectedPage >= 0)
+	if (m_nSelectedPage >= 0)
 		rList.OffsetRect(0,(m_nSelectedPage+1)*kButtonHeight);
 
 	for (int i = 0; i < nButtons; i++)
@@ -109,7 +109,7 @@ void CTaskBar::UpdateLayout()
 		m_cList.SetIconSpacing(szSpacing);
 		m_cList.MoveWindow(rList, TRUE);
 
-		if(m_nSelectedPage >= 0)
+		if (m_nSelectedPage >= 0)
 		{
 			CTaskPage *pPage = m_pPages[m_nSelectedPage];
 
@@ -125,7 +125,7 @@ void CTaskBar::UpdateLayout()
 				item.pszText = item.szLabel.GetBuffer(0);
 
 				int nResult = m_cList.InsertItem(&item);
-				if(nResult != i)
+				if (nResult != i)
 				{
 					TRACE(_T("Item insert failed\n"));
 					break;
@@ -200,7 +200,7 @@ BOOL CTaskBar::SetStatusText( int nHit)
 		if (item != -1)
 		{
 			nHit = m_cList.GetItemData(item);
-			if(nHit >= ID_GRAPHTYPES_SELECT_FIRST && nHit <= ID_GRAPHTYPES_SELECT_LAST)
+			if (nHit >= ID_GRAPHTYPES_SELECT_FIRST && nHit <= ID_GRAPHTYPES_SELECT_LAST)
 				nHit = ID_GRAPHTYPES_SELECT_FIRST;
 		}
 		else
@@ -218,7 +218,7 @@ void CTaskBar::OnSize(UINT nType, int cx, int cy)
 {
 	CDialogBar::OnSize(nType, cx, cy);
 
-	if(m_hWnd && cx > 0 && cy > 0)
+	if (m_hWnd && cx > 0 && cy > 0)
 		UpdateLayout();
 }
 
@@ -241,7 +241,7 @@ void CTaskBar::OnSelectPage(UINT wPageID)
 {
 	int nPage = wPageID - kSelectPageFirst;
 
-	if(nPage < (int) m_pPages.size() && m_nSelectedPage != nPage)
+	if (nPage < (int) m_pPages.size() && m_nSelectedPage != nPage)
 	{
 		m_nSelectedPage = nPage;
 		m_nHotItem = -1;
@@ -294,13 +294,13 @@ void CTaskBar::OnDrawTaskItem(NMHDR* pNMHDR, LRESULT* pResult)
 	NMLVCUSTOMDRAW* lplvcd = (NMLVCUSTOMDRAW*)pNMHDR;  
 	NMCUSTOMDRAW & cd = lplvcd->nmcd;
 
-	if(cd.dwDrawStage == CDDS_PREPAINT)
+	if (cd.dwDrawStage == CDDS_PREPAINT)
 	{
 		*pResult = CDRF_NOTIFYITEMDRAW; // We want to be notified as each item is drawn
 		return;
 	}
 
-	if(cd.dwDrawStage != CDDS_ITEMPREPAINT)
+	if (cd.dwDrawStage != CDDS_ITEMPREPAINT)
 	{
 		*pResult = CDRF_DODEFAULT;    
 		return;
@@ -313,7 +313,7 @@ void CTaskBar::OnDrawTaskItem(NMHDR* pNMHDR, LRESULT* pResult)
 			int nOldHotItem = m_nHotItem;
 			m_nHotItem = m_cList.GetHotItem();
 			// Clear any stuck state information
-			if(m_cList.GetItemState(nOldHotItem, UINT(-1)))
+			if (m_cList.GetItemState(nOldHotItem, UINT(-1)))
 				m_cList.SetItemState(nOldHotItem, 0, UINT(-1)); // Clear any state setting
 			// hover item changed, we need to force a redraw to erase the old hover item icon
 			m_cList.RedrawItems(nOldHotItem, nOldHotItem);
@@ -438,9 +438,9 @@ void CTaskBar::OnSetfocusTaskList(NMHDR* pNMHDR, LRESULT* pResult)
 
 	CSaView *pView = pWnd->GetCurrSaView();
 
-	if(pView)
+	if (pView)
 	{
-		if(pView->GetFocusedGraphWnd())
+		if (pView->GetFocusedGraphWnd())
 			((CWnd*)pView->GetFocusedGraphWnd())->SetFocus();
 		else
 			pView->SetFocus();
@@ -483,7 +483,7 @@ void CTaskButton::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 
 	BOOL bUp = (lpDrawItemStruct->itemState & ODS_SELECTED) == 0;
 
-	if(bUp && m_bSelected && (lpDrawItemStruct->itemState & ODS_FOCUS))
+	if (bUp && m_bSelected && (lpDrawItemStruct->itemState & ODS_FOCUS))
 		GetParent()->SetFocus();
 
 	m_bSelected = !bUp;

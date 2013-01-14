@@ -70,7 +70,7 @@ void CLayoutMenu::MeasureItem(LPMEASUREITEMSTRUCT lpMIS)
 {
   // all items are of fixed size
   lpMIS->itemWidth = LAYOUT_BOX_WIDTH;
-  if(lpMIS->itemID == ID_LAYOUT_4A)
+  if (lpMIS->itemID == ID_LAYOUT_4A)
     lpMIS->itemHeight = LAYOUT_BOX_HEIGHT - 2;
   else
     lpMIS->itemHeight = LAYOUT_BOX_HEIGHT;
@@ -97,10 +97,10 @@ void CLayoutListBox::SelectLayoutWithCount(int number)
 {
   ResetContent();
 
-  if(number != -1)
+  if (number != -1)
   {
-    if(number < 1) number = 1;
-    if(number > 6) number = 6;
+    if (number < 1) number = 1;
+    if (number > 6) number = 6;
   }
 
   m_number = number;
@@ -110,7 +110,7 @@ void CLayoutListBox::SelectLayoutWithCount(int number)
   for(int nLoop=0;GetLayoutFromSelection(nLoop);nLoop++)
   {
     AppendLayoutItem(GetLayoutFromSelection(nLoop) - ID_LAYOUT_FIRST);
-    if(GetLayoutFromSelection(nLoop) == GetPreferredLayout())
+    if (GetLayoutFromSelection(nLoop) == GetPreferredLayout())
       nSelect = GetCount() - 1;
   }
   ASSERT(GetCount());
@@ -131,12 +131,12 @@ int CLayoutListBox::GetLayoutFromSelection(int nIndex)
   const int six[] = { ID_LAYOUT_6A,ID_LAYOUT_6B,0 };
   const int *any[] = { one,two,three,four,five,six };
 
-  if(nIndex == -1) return GetPreferredLayout();
+  if (nIndex == -1) return GetPreferredLayout();
 
-  if(m_number <= 6 && m_number >= 1 )
+  if (m_number <= 6 && m_number >= 1 )
   {
     for(int nLoop = 0; nLoop < nIndex; nLoop++)
-      if(any[m_number-1][nIndex] == 0)
+      if (any[m_number-1][nIndex] == 0)
         return 0;
     return any[m_number-1][nIndex];
   }
@@ -154,7 +154,7 @@ int CLayoutListBox::GetPreferredLayout(int number)
     ID_LAYOUT_1,ID_LAYOUT_2A,ID_LAYOUT_3A,ID_LAYOUT_4B,ID_LAYOUT_5,ID_LAYOUT_6B,0
   };
 
-  if(number <= 6 && number >= 1 )
+  if (number <= 6 && number >= 1 )
     return preferred[number-1];
   else
     return -1;
@@ -207,7 +207,7 @@ static void DrawLayoutItem(LPDRAWITEMSTRUCT lpDIS, BOOL bMenu)
   CDC* pDC = CDC::FromHandle(lpDIS->hDC);
   // prepare text
   CString szText;
-  if(lpDIS->itemData >= 0 && lpDIS->itemData <= ID_LAYOUT_LAST - ID_LAYOUT_FIRST)
+  if (lpDIS->itemData >= 0 && lpDIS->itemData <= ID_LAYOUT_LAST - ID_LAYOUT_FIRST)
   {
     const char *szLabels[] = {"1","2a","2b","2c","3a","3b","3c","4a","4b","4c","5","6a","6b"};
     szText = szLabels[lpDIS->itemData];
@@ -229,7 +229,7 @@ static void DrawLayoutItem(LPDRAWITEMSTRUCT lpDIS, BOOL bMenu)
     penDarkGray.CreatePen(PS_SOLID, 1, GetSysColor(COLOR_BTNSHADOW));
     penLightText.CreatePen(PS_SOLID, 1, GetSysColor(COLOR_BTNHIGHLIGHT));
     penDarkText.CreatePen(PS_SOLID, 1, GetSysColor(COLOR_BTNSHADOW));
-    if(bMenu)
+    if (bMenu)
       br.CreateSolidBrush(GetSysColor(COLOR_MENU));
     else
       br.CreateSolidBrush(GetSysColor(COLOR_WINDOW));
@@ -252,7 +252,7 @@ static void DrawLayoutItem(LPDRAWITEMSTRUCT lpDIS, BOOL bMenu)
       // unselected (normal) item
       penLightGray.CreatePen(PS_SOLID, 1, GetSysColor(COLOR_BTNHIGHLIGHT));
       penDarkGray.CreatePen(PS_SOLID, 1, GetSysColor(COLOR_BTNSHADOW));
-      if(bMenu)
+      if (bMenu)
       {
         penLightText.CreatePen(PS_SOLID, 1, GetSysColor(COLOR_MENUTEXT));
         penDarkText.CreatePen(PS_SOLID, 1, GetSysColor(COLOR_MENUTEXT));

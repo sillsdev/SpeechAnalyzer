@@ -33,7 +33,7 @@ void CAcousticTube::SetTransform(const std::vector<double> &dDiameters, const st
     
   int32 nOrder = dReflection.size();
 
-  if(m_nOrder != nOrder)
+  if (m_nOrder != nOrder)
   {
     m_nOrder = nOrder;
 
@@ -55,7 +55,7 @@ double CAcousticTube::Tick(double dInput, bool bSourceReflect, bool bLattice)
   std::vector<double> &RCoefficients = bSourceReflect ? m_Reflection : m_RCoefficientsFromDiameters;
   // These are two synthesis structures should be numerically identical
   // Their behavior may be different when interpolating the vocal tract.
-  if(bLattice) 
+  if (bLattice) 
   {
     // All pole lattice
     double dForward = dInput;

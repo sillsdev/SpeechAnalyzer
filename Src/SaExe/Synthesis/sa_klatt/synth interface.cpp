@@ -17,7 +17,7 @@ CKSynth* CreateKSynth(SPKRDEF* spkrdef)
 
 void DestroyKSynth(CKSynth *synth)
 {
-	if(synth)
+	if (synth)
 		delete synth;
 }
 

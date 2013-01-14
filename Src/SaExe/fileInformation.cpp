@@ -333,7 +333,7 @@ BOOL CDlgInformationSourcePage::OnInitDialog()
 	UpdateData(FALSE);
 	// SDM 1.5Test10.4
 	CEdit* pWnd = (CEdit*) GetDlgItem(IDC_LANGUAGE);
-	if(pWnd!=NULL)
+	if (pWnd!=NULL)
 	{
 		pWnd->SetFocus();
 		pWnd->SetSel(0,0);
@@ -355,12 +355,12 @@ void CDlgInformationSourcePage::OnChangeEthnoid()
 	int nLeft;
 	int nRight;
 	((CEdit*)GetDlgItem(IDC_ETHNOID))->GetSel(nLeft,nRight);
-	if(m_szEthnoID.GetLength()>3)
+	if (m_szEthnoID.GetLength()>3)
 	{
 		m_szEthnoID = m_szEthnoID.Left(3);
 		UpdateData(FALSE);
-		if(nLeft > 3) nLeft = 3;
-		if(nRight > 3) nRight = 3;
+		if (nLeft > 3) nLeft = 3;
+		if (nRight > 3) nRight = 3;
 		((CEdit*)GetDlgItem(IDC_ETHNOID))->SetSel(nLeft,nRight);
 	}
 }
@@ -422,7 +422,7 @@ BOOL CDlgInformationUserPage::OnInitDialog()
 	m_TranscriptionDisp.Init(IDC_PHONETIC, this);
 	// SDM 1.5Test10.4
 	CEdit* pWnd = (CEdit*) GetDlgItem(IDC_FREETRANLATION);
-	if(pWnd!=NULL)
+	if (pWnd!=NULL)
 	{
 		pWnd->SetFocus();
 		pWnd->SetSel(0,0);
@@ -460,7 +460,7 @@ CDlgFileInformation::CDlgFileInformation(LPCTSTR pszCaption, CWnd* pParent, UINT
 	// NOTE: the ClassWizard will add member initialization here
 	//}}AFX_DATA_INIT
 	// add the property sheet pages
-	if(!bRecorder)
+	if (!bRecorder)
 	{
 		AddPage(&m_dlgFilePage);
 		AddPage(&m_dlgWavePage);

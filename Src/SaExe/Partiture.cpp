@@ -95,7 +95,7 @@ Note::Note(const unsigned char *Definition,int Clef)
 		DisplayOnset=DisplayAccidental=DisplayModDur=DisplayNote=DisplayConclusion='\0';
 		CalcValue(Clef);
 	}
-	else if(!Set(Definition,Clef)) // error in definition
+	else if (!Set(Definition,Clef)) // error in definition
 	{
 		Name = ANNOT_UNDEFINED;
 		Accidental=Octave=Onset=Duration=Duration2=Conclusion='\0';;
@@ -184,7 +184,7 @@ void Note::CalcValue(int Clef)
 		if (Value==-1) DisplayNote=DISPLAY_WHOLE_REST;
 		else if (Value<ClefRange[Clef][0])
 			DisplayNote=DISPLAY_WHOLE_TOO_LOW;
-		else if(Value>ClefRange[Clef][1])
+		else if (Value>ClefRange[Clef][1])
 			DisplayNote=DISPLAY_WHOLE_TOO_HIGH;
 		else
 			DisplayNote=(unsigned short)(DISPLAY_WHOLE+((Value-ClefRange[Clef][0])/NUMBER_OF_ACCIDENTALS));
@@ -972,13 +972,13 @@ InstrumentMenu::~InstrumentMenu()
 void InstrumentMenu::Check(int Instrument)
 {
 	CheckMenuItem(hInstrumentMnu,WM_USER+128+Instrument,MF_CHECKED);
-	if(Instrument<16||Instrument==47||Instrument==108||(Instrument>=112&&Instrument<=119))
+	if (Instrument<16||Instrument==47||Instrument==108||(Instrument>=112&&Instrument<=119))
 		CheckMenuItem(hInstrumentMnu,0,MF_BYPOSITION|MF_CHECKED); // Percussion
-	else if(Instrument>=56&&Instrument<=63)
+	else if (Instrument>=56&&Instrument<=63)
 		CheckMenuItem(hInstrumentMnu,2,MF_BYPOSITION|MF_CHECKED); // Brass
-	else if((Instrument>=16&&Instrument<=23)||(Instrument>=64&&Instrument<=79)||Instrument==109||Instrument==111)
+	else if ((Instrument>=16&&Instrument<=23)||(Instrument>=64&&Instrument<=79)||Instrument==109||Instrument==111)
 		CheckMenuItem(hInstrumentMnu,3,MF_BYPOSITION|MF_CHECKED); // Woodwind
-	else if((Instrument>=52&&Instrument<=54)||(Instrument>=80&&Instrument<=103)||(Instrument>=121&&Instrument<=127))
+	else if ((Instrument>=52&&Instrument<=54)||(Instrument>=80&&Instrument<=103)||(Instrument>=121&&Instrument<=127))
 		CheckMenuItem(hInstrumentMnu,4,MF_BYPOSITION|MF_CHECKED); // Miscellaneous
 	else
 		CheckMenuItem(hInstrumentMnu,1,MF_BYPOSITION|MF_CHECKED); // String
@@ -1089,15 +1089,15 @@ void TempoMenu::Check(int iTempo)
 {
 	CheckMenuItem(hTempoMnu,WM_TEMPO+iTempo,MF_CHECKED);
 
-	if(iTempo<76)
+	if (iTempo<76)
 		CheckMenuItem(hTempoMnu,0,MF_BYPOSITION|MF_CHECKED); // Adagio
-	else if(iTempo<100)
+	else if (iTempo<100)
 		CheckMenuItem(hTempoMnu,1,MF_BYPOSITION|MF_CHECKED); // Andante
-	else if(iTempo<124)
+	else if (iTempo<124)
 		CheckMenuItem(hTempoMnu,2,MF_BYPOSITION|MF_CHECKED); // Moderato
-	else if(iTempo<152)
+	else if (iTempo<152)
 		CheckMenuItem(hTempoMnu,3,MF_BYPOSITION|MF_CHECKED); // Alegro
-	else if(iTempo<176)
+	else if (iTempo<176)
 		CheckMenuItem(hTempoMnu,4,MF_BYPOSITION|MF_CHECKED); // Allegretto
 	else
 		CheckMenuItem(hTempoMnu,5,MF_BYPOSITION|MF_CHECKED); // Presto
@@ -1185,7 +1185,7 @@ PartWindowData::~PartWindowData()
 	{
 		for(unsigned int i=0;i<MelodyBufferSize;i++)
 		{
-			if(Melody[i])
+			if (Melody[i])
 			{
 				delete Melody[i];
 				Melody[i]=NULL;
@@ -1237,10 +1237,10 @@ int PartWindowData::WhichClef()
 
 	for (unsigned register i=0;i<MelodySize;++i)
 	{
-		if(!Melody[i] || Melody[i]->Value < 0) continue; // not a note
+		if (!Melody[i] || Melody[i]->Value < 0) continue; // not a note
 
 		for(register int j=0;j<5;++j)
-			if(Melody[i]->Value >= ClefRange[j][0] && Melody[i]->Value <= ClefRange[j][1])
+			if (Melody[i]->Value >= ClefRange[j][0] && Melody[i]->Value <= ClefRange[j][1])
 				++ClefHit[j];
 	}
 
@@ -1252,8 +1252,8 @@ int PartWindowData::WhichClef()
 	int NewClef = 0;
 	for(register int k=1;k<5;++k)
 	{
-		if(ClefHit[k]<ClefHit[NewClef]) continue;
-		if(ClefHit[k]==ClefHit[NewClef] && Clef!=k) continue;
+		if (ClefHit[k]<ClefHit[NewClef]) continue;
+		if (ClefHit[k]==ClefHit[NewClef] && Clef!=k) continue;
 		NewClef=k;
 	}
 
@@ -1326,7 +1326,7 @@ int PartWindowData::wcslenLimited(WCHAR *pWchar, int nPixels)
 	{
 		int nUsed = FontCharWidth[pWchar[nChar]];
 
-		if(nPixelsUsed > nPixels && nUsed)
+		if (nPixelsUsed > nPixels && nUsed)
 			break;
 
 		nPixelsUsed += nUsed;
@@ -1510,7 +1510,7 @@ int PartWindowData::Paint()
 			ANSI_CHARSET,OUT_DEFAULT_PRECIS,CLIP_DEFAULT_PRECIS|0x0400,DEFAULT_QUALITY,DEFAULT_PITCH|FF_DONTCARE,"Musique");
 		SelectObject(ps.hdc,hFont);
 		BOOL bResult = GetCharWidth32W(ps.hdc,0,MUSIQUE_FONT_SIZE-1,FontCharWidth);
-		if(!bResult)
+		if (!bResult)
 		{
 			GetCharWidthW(ps.hdc,0,MUSIQUE_FONT_SIZE-1,FontCharWidth);
 		}
@@ -1557,12 +1557,12 @@ int PartWindowData::Paint()
 			delete Sequence;
 		}
 
-		if(ViewBegin)
+		if (ViewBegin)
 		{
-			if(Enabled) SetTextColor(ps.hdc,DISPLAY_INACTIVE_TEXT);
+			if (Enabled) SetTextColor(ps.hdc,DISPLAY_INACTIVE_TEXT);
 			FullSequence[1] = DISPLAY_CONTINUED;
 			TextOutW(ps.hdc,2,2,FullSequence,2);
-			if(Enabled) SetTextColor(ps.hdc,DISPLAY_ACTIVE_TEXT);
+			if (Enabled) SetTextColor(ps.hdc,DISPLAY_ACTIVE_TEXT);
 		}
 		delete FullSequence;
 	}
@@ -1620,7 +1620,7 @@ int PartWindowData::Paint()
 
 	}
 
-	if(r.bottom>=50)
+	if (r.bottom>=50)
 	{
 		SetTextColor(ps.hdc, DISPLAY_ACTIVE_TEXT);
 		SetBkColor(ps.hdc,DISPLAY_BKG);
@@ -2093,7 +2093,7 @@ BOOL PartWindowData::MIDIIn(const char *filename)
 				{
 					if (bNoteOn && dwNoteDeltaTime)
 					{
-						if(!bySamaFlag)
+						if (!bySamaFlag)
 							do
 							{
 								*sMusique = '\0';
@@ -2369,23 +2369,23 @@ BOOL PartWindowData::MIDIOut(const char *filename)
 				else // rest or slurred/tied note
 				{
 					OutputVarLenNum(outfile,l);
-					if(Melody[i]->Name != 'R')
+					if (Melody[i]->Name != 'R')
 					{
 						BOOL bTieIt = FALSE;
-						if(Melody[i]->Conclusion == '_')
+						if (Melody[i]->Conclusion == '_')
 						{
 							// look to see if next note is same tone
 							for(register int j=1;i+j<End;++j)
 							{
-								if(Melody[i]->Value == Melody[i+j]->Value)
+								if (Melody[i]->Value == Melody[i+j]->Value)
 								{
 									bTieIt = TRUE;
 									break;
 								}
-								else if(Melody[i+j]->Value!=-2) break; // anything else (except annotations), don't tie!
+								else if (Melody[i+j]->Value!=-2) break; // anything else (except annotations), don't tie!
 							}
 						}
-						if(bTieIt)
+						if (bTieIt)
 						{
 							bTiedNote = TRUE;
 						}
@@ -2449,7 +2449,7 @@ BOOL PartWindowData::RTFOut(const char *filename)
 		outfile.put('u');
 		outfile.write(aString,strlen(aString));
 		WCHAR *wString = PartEncode(0,MelodySize);
-		if(wString)
+		if (wString)
 		{
 			for(register int i=0;wString[i];++i)
 			{
@@ -2503,7 +2503,7 @@ BOOL PartWindowData::TXTIn(const char *filename)
 		infile.close();
 
 		ReplaceString(Buffer,0,MelodySize);
-		if(strncmp(Buffer,"(CLEF",5)) SetClef(WhichClef());
+		if (strncmp(Buffer,"(CLEF",5)) SetClef(WhichClef());
 	}
 
 	infile.close();
@@ -2686,7 +2686,7 @@ LRESULT CALLBACK PartitureProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam)
 				break;
 			}
 
-			if(pwd && pwd->m_sPlay.Tempo)
+			if (pwd && pwd->m_sPlay.Tempo)
 			{
 				MessageBeep(MB_OK);
 				return 0;         // Do not allow editing if playing
@@ -2782,7 +2782,7 @@ LRESULT CALLBACK PartitureProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam)
 			case 'L':
 			case 'V':
 			case 'X':
-				if(pwd->Control)
+				if (pwd->Control)
 					SendMessage(hWnd,WM_CHAR,wParam-'@',lParam);
 				else
 					SendMessage(hWnd,WM_CHAR,wParam,lParam);
@@ -2793,11 +2793,11 @@ LRESULT CALLBACK PartitureProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam)
 			case '4':
 			case '5':
 			case '6':
-				if(pwd->Control)
+				if (pwd->Control)
 					pwd->SetClef(wParam-'1');
 				break;
 			case '0':
-				if(pwd->Control)
+				if (pwd->Control)
 					pwd->SetClef(pwd->WhichClef());
 				break;
 			}
@@ -2826,7 +2826,7 @@ LRESULT CALLBACK PartitureProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam)
 			struct PartWindowData *pwd;
 			pwd = (struct PartWindowData *) GetWindowLong(hWnd,GWL_USERDATA);
 
-			if(pwd && pwd->m_sPlay.Tempo)
+			if (pwd && pwd->m_sPlay.Tempo)
 			{
 				MessageBeep(MB_OK);
 				return 0;         // Do not allow editing if playing
@@ -2994,7 +2994,7 @@ LRESULT CALLBACK PartitureProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam)
 			pwd = (struct PartWindowData *) GetWindowLong(hWnd,GWL_USERDATA);
 			SendMessage(pwd->hMyParent,WM_PARENTNOTIFY,WM_SETFOCUS,lParam);
 
-			if(pwd && pwd->m_sPlay.Tempo)
+			if (pwd && pwd->m_sPlay.Tempo)
 			{
 				MessageBeep(MB_OK);
 				return 0;         // Do not allow editing if playing
@@ -3003,7 +3003,7 @@ LRESULT CALLBACK PartitureProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam)
 			if (pwd)
 			{
 				Note *note = NULL;
-				if(pwd->SelectMax() == pwd->SelectMin() + 1) // a single note is selected
+				if (pwd->SelectMax() == pwd->SelectMin() + 1) // a single note is selected
 					note = pwd->Melody[pwd->SelectMin()];
 
 				HMENU hMnu = CreatePopupMenu();
@@ -3056,7 +3056,7 @@ LRESULT CALLBACK PartitureProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam)
 				AppendMenu(hNameMnu,MF_ENABLED|MF_STRING,WM_USER+'G',"&G / Sol\tG");
 				AppendMenu(hNameMnu,MF_SEPARATOR,NULL,NULL);
 				AppendMenu(hNameMnu,MF_ENABLED|MF_STRING,WM_USER+'r',"&Rest\tR");
-				if(note) CheckMenuItem(hNameMnu,WM_USER+(note->Name=='R'?'r':note->Name),MF_BYCOMMAND|MF_CHECKED);
+				if (note) CheckMenuItem(hNameMnu,WM_USER+(note->Name=='R'?'r':note->Name),MF_BYCOMMAND|MF_CHECKED);
 				AppendMenu(hMnu,MF_ENABLED|MF_POPUP,(UINT)hNameMnu,"&Name");
 
 				AppendMenu(hAccidentMnu,MF_ENABLED|MF_STRING,WM_USER+'$',"11/2 sharp\t$");
@@ -3066,7 +3066,7 @@ LRESULT CALLBACK PartitureProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam)
 				AppendMenu(hAccidentMnu,MF_ENABLED|MF_STRING,WM_USER+'-',"Half flat\t-");
 				AppendMenu(hAccidentMnu,MF_ENABLED|MF_STRING,WM_USER+'@',"Flat\t@");
 				AppendMenu(hAccidentMnu,MF_ENABLED|MF_STRING,WM_USER+'!',"11/2 flat\t!");
-				if(note) CheckMenuItem(hAccidentMnu,WM_USER+note->Accidental,MF_BYCOMMAND|MF_CHECKED);
+				if (note) CheckMenuItem(hAccidentMnu,WM_USER+note->Accidental,MF_BYCOMMAND|MF_CHECKED);
 				AppendMenu(hMnu,MF_ENABLED|MF_POPUP,(UINT)hAccidentMnu,"Accidental");
 
 				AppendMenu(hDurationMnu,MF_ENABLED|MF_STRING,WM_USER+'w',"Whole note\tW");
@@ -3075,13 +3075,13 @@ LRESULT CALLBACK PartitureProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam)
 				AppendMenu(hDurationMnu,MF_ENABLED|MF_STRING,WM_USER+'i',"Eighth note\tI");
 				AppendMenu(hDurationMnu,MF_ENABLED|MF_STRING,WM_USER+'s',"Sixteenth note\tS");
 				AppendMenu(hDurationMnu,MF_ENABLED|MF_STRING,WM_USER+'z',"Grace note\tZ");
-				if(note) CheckMenuItem(hDurationMnu,WM_USER+note->Duration,MF_BYCOMMAND|MF_CHECKED);
+				if (note) CheckMenuItem(hDurationMnu,WM_USER+note->Duration,MF_BYCOMMAND|MF_CHECKED);
 				AppendMenu(hDurationMnu,MF_SEPARATOR,NULL,NULL);
 				AppendMenu(hDurationMnu,MF_ENABLED|MF_STRING,WM_USER+'.',"Dotted\t.");
 				AppendMenu(hDurationMnu,MF_ENABLED|MF_STRING,WM_USER+'t',"Triplet\tT");
 				AppendMenu(hDurationMnu,MF_ENABLED|MF_STRING,WM_USER+'v',"Quintuplet\tV");
 				AppendMenu(hDurationMnu,MF_ENABLED|MF_STRING,WM_USER+'n',"(normal)\tN");
-				if(note) CheckMenuItem(hDurationMnu,WM_USER+note->Duration2,MF_BYCOMMAND|MF_CHECKED);
+				if (note) CheckMenuItem(hDurationMnu,WM_USER+note->Duration2,MF_BYCOMMAND|MF_CHECKED);
 				AppendMenu(hMnu,MF_ENABLED|MF_POPUP,(UINT)hDurationMnu,"D&uration");
 
 				AppendMenu(hOctaveMnu,MF_ENABLED|MF_STRING,WM_USER+'7',"Octave &7 (Piccolo)\t7");
@@ -3092,7 +3092,7 @@ LRESULT CALLBACK PartitureProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam)
 				AppendMenu(hOctaveMnu,MF_ENABLED|MF_STRING,WM_USER+'2',"Octave &2 (Bass)\t2");
 				AppendMenu(hOctaveMnu,MF_ENABLED|MF_STRING,WM_USER+'1',"Octave &1 (Contrabass)\t1");
 				AppendMenu(hOctaveMnu,MF_ENABLED|MF_STRING,WM_USER+'0',"Octave &0\t0");
-				if(note) CheckMenuItem(hOctaveMnu,WM_USER+note->Octave,MF_BYCOMMAND|MF_CHECKED);
+				if (note) CheckMenuItem(hOctaveMnu,WM_USER+note->Octave,MF_BYCOMMAND|MF_CHECKED);
 				AppendMenu(hMnu,MF_ENABLED|MF_POPUP,(UINT)hOctaveMnu,"&Octave");
 
 				AppendMenu(hGlideMnu,MF_ENABLED|MF_STRING,WM_USER+'`',"Short fall after\t`");
@@ -3101,14 +3101,14 @@ LRESULT CALLBACK PartitureProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam)
 				AppendMenu(hGlideMnu,MF_ENABLED|MF_STRING,WM_USER+'/',"Long rise after\t/");
 				AppendMenu(hGlideMnu,MF_ENABLED|MF_STRING,WM_USER+'_',"Tied to next note\t_");
 				AppendMenu(hGlideMnu,MF_ENABLED|MF_STRING,WM_USER+'x',"None of the above\tX");
-				if(note) CheckMenuItem(hGlideMnu,WM_USER+(note->Conclusion==' '?'x':note->Conclusion),MF_BYCOMMAND|MF_CHECKED);
+				if (note) CheckMenuItem(hGlideMnu,WM_USER+(note->Conclusion==' '?'x':note->Conclusion),MF_BYCOMMAND|MF_CHECKED);
 				AppendMenu(hGlideMnu,MF_SEPARATOR,NULL,NULL);
 				AppendMenu(hGlideMnu,MF_ENABLED|MF_STRING,WM_USER+'~',"Short fall before\t~");
 				AppendMenu(hGlideMnu,MF_ENABLED|MF_STRING,WM_USER+'|',"Long fall before\t|");
 				AppendMenu(hGlideMnu,MF_ENABLED|MF_STRING,WM_USER+'\"',"Short rise before\t\"");
 				AppendMenu(hGlideMnu,MF_ENABLED|MF_STRING,WM_USER+'?',"Long rise before\t?");
 				AppendMenu(hGlideMnu,MF_ENABLED|MF_STRING,WM_USER+'*',"None of the above\t*");
-				if(note) CheckMenuItem(hGlideMnu,WM_USER+note->Onset,MF_BYCOMMAND|MF_CHECKED);
+				if (note) CheckMenuItem(hGlideMnu,WM_USER+note->Onset,MF_BYCOMMAND|MF_CHECKED);
 				AppendMenu(hMnu,MF_ENABLED|MF_POPUP,(UINT)hGlideMnu,"&Glide");
 				AppendMenu(hMnu,MF_SEPARATOR,NULL,NULL);
 
@@ -3141,7 +3141,7 @@ LRESULT CALLBACK PartitureProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam)
 
 			if (pwd)
 			{
-				if(!pwd->Active) break;
+				if (!pwd->Active) break;
 
 				unsigned NewSelect = pwd->Position(LOWORD(lParam));
 				if (pwd->SelectEnd != NewSelect)
@@ -3155,11 +3155,11 @@ LRESULT CALLBACK PartitureProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam)
 		}
 	case WM_SETFOCUS:
 		{
-			if(lParam)
+			if (lParam)
 			{
 				struct PartWindowData *pwd;
 				pwd = (struct PartWindowData *) GetWindowLong(hWnd,GWL_USERDATA);
-				if(pwd)
+				if (pwd)
 				{
 					pwd->Active = TRUE;
 					SendMessage(pwd->hMyParent,WM_PARENTNOTIFY,WM_SETFOCUS,lParam);
@@ -3169,11 +3169,11 @@ LRESULT CALLBACK PartitureProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam)
 		}
 	case WM_KILLFOCUS:
 		{
-			if(lParam)
+			if (lParam)
 			{
 				struct PartWindowData *pwd;
 				pwd = (struct PartWindowData *) GetWindowLong(hWnd,GWL_USERDATA);
-				if(pwd)
+				if (pwd)
 				{
 					pwd->Active = FALSE;
 					SendMessage(pwd->hMyParent,WM_PARENTNOTIFY,WM_KILLFOCUS,lParam);
@@ -3186,9 +3186,9 @@ LRESULT CALLBACK PartitureProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam)
 		{
 			struct PartWindowData *pwd;
 			pwd = (struct PartWindowData *) GetWindowLong(hWnd,GWL_USERDATA);
-			if(pwd)
+			if (pwd)
 			{
-				if(wParam==WA_INACTIVE)
+				if (wParam==WA_INACTIVE)
 					pwd->Active = FALSE;
 				else
 					pwd->Active = TRUE;
@@ -3210,7 +3210,7 @@ LRESULT CALLBACK PartitureProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam)
 		{
 			struct PartWindowData *pwd = (struct PartWindowData *)GetWindowLong(hWnd,GWL_USERDATA);
 
-			if(pwd && pwd->m_sPlay.Tempo)
+			if (pwd && pwd->m_sPlay.Tempo)
 			{
 				MessageBeep(MB_OK);
 				return 0;         // Do not allow editing if playing
@@ -3222,7 +3222,7 @@ LRESULT CALLBACK PartitureProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam)
 
 				int OldClef = pwd->Clef;
 				int NewClef = pwd->WhichClef();
-				if(NewClef!=OldClef)
+				if (NewClef!=OldClef)
 					pwd->SetClef(NewClef);
 				pwd->GoHome(hWnd);
 				return TRUE;
@@ -3262,7 +3262,7 @@ LRESULT CALLBACK PartitureProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam)
 	case WM_CUT:
 		{
 			struct PartWindowData *pwd = (struct PartWindowData *)GetWindowLong(hWnd,GWL_USERDATA);
-			if(pwd && pwd->m_sPlay.Tempo)
+			if (pwd && pwd->m_sPlay.Tempo)
 			{
 				MessageBeep(MB_OK);
 				return 0;         // Do not allow editing if playing
@@ -3366,7 +3366,7 @@ LRESULT CALLBACK PartitureProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam)
 	case WM_CLEAR:
 		{
 			struct PartWindowData *pwd = (struct PartWindowData *)GetWindowLong(hWnd,GWL_USERDATA);
-			if(pwd && pwd->m_sPlay.Tempo)
+			if (pwd && pwd->m_sPlay.Tempo)
 			{
 				MessageBeep(MB_OK);
 				return 0;         // Do not allow editing if playing
@@ -3392,7 +3392,7 @@ LRESULT CALLBACK PartitureProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam)
 			if (Clip.hasText())
 			{
 				struct PartWindowData *pwd = (struct PartWindowData *)GetWindowLong(hWnd,GWL_USERDATA);
-				if(pwd && pwd->m_sPlay.Tempo)
+				if (pwd && pwd->m_sPlay.Tempo)
 				{
 					MessageBeep(MB_OK);
 					return 0;         // Do not allow editing if playing
@@ -3617,7 +3617,7 @@ LRESULT CALLBACK PartitureProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam)
 				GetTempPath(sizeof(lpszTempPath), lpszTempPath);
 				GetTempFileName(lpszTempPath,"SIL",0,lpszTempFileName);
 				OpenFile(lpszTempFileName,&ofTmp,OF_DELETE); // Delete automatically created file
-				if(strlen(lpszTempFileName)>3)
+				if (strlen(lpszTempFileName)>3)
 					strcpy_s( lpszTempFileName + strlen(lpszTempFileName) - 3,
 					_countof(lpszTempFileName)-strlen(lpszTempFileName) + 3,
 					"mid");
@@ -3625,7 +3625,7 @@ LRESULT CALLBACK PartitureProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam)
 				// save to MIDI file
 				if (SendMessage(hWnd,WM_APP + 1,0,(LPARAM) lpszTempFileName))
 				{
-					if(pwd->SelectBegin != pwd->SelectEnd)
+					if (pwd->SelectBegin != pwd->SelectEnd)
 					{
 						pwd->m_sPlay.nMin = pwd->SelectMin();
 						pwd->m_sPlay.nMax = pwd->SelectMax();
@@ -3641,13 +3641,13 @@ LRESULT CALLBACK PartitureProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam)
 					pwd->m_sPlay.SelectEnd = pwd->SelectEnd;
 
 					int nResult = 0;
-					if(wParam)
+					if (wParam)
 					{
 						nResult = PlayMidiFile(lpszTempFileName,hWnd);
 					}
-					if(!nResult)
+					if (!nResult)
 					{
-						if(pwd->SelectBegin < pwd->ViewBegin)
+						if (pwd->SelectBegin < pwd->ViewBegin)
 							pwd->ViewBegin = pwd->SelectBegin;
 
 						pwd->m_sPlay.dwStartTime = GetTickCount();
@@ -3656,7 +3656,7 @@ LRESULT CALLBACK PartitureProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam)
 
 						SetTimer(hWnd,0,PLAY_TIMER_INTERVAL,NULL);
 						SendMessage(hWnd,WM_TIMER, 0, 0);
-						if(lParam)
+						if (lParam)
 						{
 							PartSelectionMS &selectionTime = pwd->m_sPlay.selectionTime;
 							double dHere = 0;
@@ -3692,7 +3692,7 @@ LRESULT CALLBACK PartitureProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam)
 			struct PartWindowData *pwd = (struct PartWindowData *) GetWindowLong(hWnd,GWL_USERDATA);
 			if (pwd)
 			{
-				if(!pwd->m_sPlay.Tempo)
+				if (!pwd->m_sPlay.Tempo)
 				{
 					KillTimer(hWnd, 0);
 					return 0;
@@ -3702,7 +3702,7 @@ LRESULT CALLBACK PartitureProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam)
 				double dElapsedTicks = dwElapsed * (pwd->m_sPlay.Tempo * TICKS_PER_Q/60000.);
 				double dPlayError = 100 * (pwd->m_sPlay.Tempo * TICKS_PER_Q/60000.); 
 
-				if(pwd->MelodySize < pwd->m_sPlay.nMax)
+				if (pwd->MelodySize < pwd->m_sPlay.nMax)
 					pwd->m_sPlay.nMax = pwd->MelodySize;
 
 				double dHere = 0;
@@ -3711,17 +3711,17 @@ LRESULT CALLBACK PartitureProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam)
 				{
 					dHere +=  pwd->Melody[i]->MIDIDuration();
 
-					if(dHere > dElapsedTicks - dPlayError)
+					if (dHere > dElapsedTicks - dPlayError)
 						break;
 				}
-				if(i < pwd->m_sPlay.nMax)
+				if (i < pwd->m_sPlay.nMax)
 				{
 					pwd->SelectBegin = i > pwd->m_sPlay.nMin ? i : pwd->m_sPlay.nMin;
 					for(; i < pwd->m_sPlay.nMax; i++)
 					{
 						dHere +=  pwd->Melody[i]->MIDIDuration();
 
-						if(dHere > dElapsedTicks + dPlayError)
+						if (dHere > dElapsedTicks + dPlayError)
 							break;
 					}           
 					pwd->SelectEnd = i < pwd->m_sPlay.nMax ? i+1 : pwd->m_sPlay.nMax ;
@@ -3729,7 +3729,7 @@ LRESULT CALLBACK PartitureProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam)
 					unsigned oldViewBegin = pwd->ViewBegin;
 					pwd->AutoScrollRight(); // Scoll playing notes into view
 
-					if(pwd->ViewBegin != oldViewBegin) // Scrolled
+					if (pwd->ViewBegin != oldViewBegin) // Scrolled
 						pwd->ViewBegin = pwd->SelectBegin; // Scroll a whole page to minimize scrolling
 
 					RedrawWindow(hWnd,NULL,NULL,RDW_INVALIDATE | RDW_UPDATENOW);
@@ -3745,7 +3745,7 @@ LRESULT CALLBACK PartitureProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam)
 	case WM_APP + 3: // read file
 		{
 			struct PartWindowData *pwd = (struct PartWindowData *) GetWindowLong(hWnd,GWL_USERDATA);
-			if(pwd && pwd->m_sPlay.Tempo)
+			if (pwd && pwd->m_sPlay.Tempo)
 			{
 				MessageBeep(MB_OK);
 				return 0;         // Do not allow editing if playing
@@ -3871,7 +3871,7 @@ LRESULT CALLBACK PartitureProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam)
 	case WM_APP + 8: // choose MIDI voice
 		{
 			struct PartWindowData *pwd = (struct PartWindowData *) GetWindowLong(hWnd,GWL_USERDATA);
-			if(pwd && pwd->m_sPlay.Tempo)
+			if (pwd && pwd->m_sPlay.Tempo)
 			{
 				MessageBeep(MB_OK);
 				return 0;         // Do not allow editing if playing
@@ -3890,7 +3890,7 @@ LRESULT CALLBACK PartitureProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam)
 	case WM_APP + 9: // set tempo
 		{
 			struct PartWindowData *pwd = (struct PartWindowData *) GetWindowLong(hWnd,GWL_USERDATA);
-			if(pwd && pwd->m_sPlay.Tempo)
+			if (pwd && pwd->m_sPlay.Tempo)
 			{
 				MessageBeep(MB_OK);
 				return 0;         // Do not allow editing if playing
@@ -3898,7 +3898,7 @@ LRESULT CALLBACK PartitureProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam)
 
 			if (pwd)
 			{
-				if(!wParam) // choose tempo?
+				if (!wParam) // choose tempo?
 				{
 					TempoMenu tm;
 					tm.Check(pwd->Tempo);
@@ -3916,7 +3916,7 @@ LRESULT CALLBACK PartitureProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam)
 		{
 			struct PartWindowData *pwd =
 				(struct PartWindowData *) GetWindowLong(hWnd,GWL_USERDATA);
-			if(pwd && pwd->m_sPlay.Tempo)
+			if (pwd && pwd->m_sPlay.Tempo)
 			{
 				MessageBeep(MB_OK);
 				return 0;         // Do not allow editing if playing
@@ -4014,23 +4014,23 @@ LRESULT CALLBACK PartitureProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam)
 			{
 				return SendMessage(hWnd,WM_APP+6,0,0);
 			}
-			else if(LOWORD(wParam)<=(WM_TEMPO+200) && LOWORD(wParam)>=WM_TEMPO)
+			else if (LOWORD(wParam)<=(WM_TEMPO+200) && LOWORD(wParam)>=WM_TEMPO)
 			{
 				return SendMessage(hWnd,WM_APP+9,LOWORD(wParam)-WM_TEMPO,0);
 			}
-			else if(!LOWORD(wParam)) // re-determine clef
+			else if (!LOWORD(wParam)) // re-determine clef
 			{
 				struct PartWindowData *pwd = (struct PartWindowData *) GetWindowLong(hWnd,GWL_USERDATA);
-				if(pwd)
+				if (pwd)
 				{
 					pwd->SetClef(pwd->WhichClef());
 					return 0;
 				}
 			}
-			else if(LOWORD(wParam) >= 27 && LOWORD(wParam) <= 31) // set clef
+			else if (LOWORD(wParam) >= 27 && LOWORD(wParam) <= 31) // set clef
 			{
 				struct PartWindowData *pwd = (struct PartWindowData *) GetWindowLong(hWnd,GWL_USERDATA);
-				if(pwd)
+				if (pwd)
 				{
 					pwd->SetClef(LOWORD(wParam)-27);
 					return 0;
@@ -4046,10 +4046,10 @@ LRESULT CALLBACK PartitureProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam)
 				if (LOWORD(wParam)<WM_USER+128) // KEYSTROKE
 				{
 					LRESULT ret = SendMessage(hWnd,WM_CHAR,LOWORD(wParam)-WM_USER,0L);
-					if(LOWORD(wParam)<WM_USER+26) // some keystrokes are handled by keyup instead
+					if (LOWORD(wParam)<WM_USER+26) // some keystrokes are handled by keyup instead
 					{
 						struct PartWindowData *pwd = (struct PartWindowData *) GetWindowLong(hWnd,GWL_USERDATA);
-						if(pwd)
+						if (pwd)
 						{
 							BOOL OldControl = pwd->Control;
 							pwd->Control = TRUE;
@@ -4059,7 +4059,7 @@ LRESULT CALLBACK PartitureProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam)
 					}
 					return ret;
 				}
-				else if(LOWORD(wParam)<WM_USER+256) // INSTRUMENT
+				else if (LOWORD(wParam)<WM_USER+256) // INSTRUMENT
 				{
 					struct PartWindowData *pwd
 						= (struct PartWindowData *) GetWindowLong(hWnd,GWL_USERDATA);
@@ -4201,7 +4201,7 @@ static DWORD StopMidiFile(HWND hWnd)
 	struct PartWindowData *pwd = (struct PartWindowData *) GetWindowLong(hWnd,GWL_USERDATA);
 	if (pwd)
 	{
-		if(pwd->m_sPlay.Tempo)
+		if (pwd->m_sPlay.Tempo)
 		{
 			KillTimer(hWnd, 0);
 

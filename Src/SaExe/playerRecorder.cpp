@@ -506,15 +506,15 @@ BOOL CDlgPlayer::SetPlayerMode(UINT nMode, UINT nSubMode, BOOL bFullSize, BOOL b
 				break;
 			case ID_PLAYBACK_SPECIFIC:
 				dwSize = pDoc->GetDataSize();
-				if(pSpecific)
+				if (pSpecific)
 				{
 					DWORD dwSpecificSize = pDoc->GetBytesFromTime(pSpecific->end);
 					DWORD dwSpecificStart = pDoc->GetBytesFromTime(pSpecific->begin);
 
-					if(dwSpecificStart < dwSize)
+					if (dwSpecificStart < dwSize)
 						dwStart = dwSpecificStart;
 
-					if(dwSpecificSize < dwSize)
+					if (dwSpecificSize < dwSize)
 					{
 						dwSize = dwSpecificSize;
 						if (dwSize > dwStart) 
@@ -624,7 +624,7 @@ void CDlgPlayer::EndPlayback()
 /***************************************************************************/
 void CDlgPlayer::ChangeView(CSaView* pView)
 {
-	if(m_pView == pView)
+	if (m_pView == pView)
 		return;
 	// set file name in players caption
 	m_pView = pView; // set the new pointer to the active view
@@ -728,7 +728,7 @@ BOOL CDlgPlayer::OnInitDialog()
 	m_rSize.left = 0;
 	m_rSize.top = 0;
 	CWnd* pWnd = GetDlgItem(IDC_MIXER);
-	if(pWnd)
+	if (pWnd)
 		pWnd->EnableWindow(m_pWave->GetOutDevice()->ShowMixer(FALSE));
 
 	// hide dialog
@@ -780,7 +780,7 @@ LRESULT CDlgPlayer::OnMixerControlChange(WPARAM, LPARAM)
 
 	m_nVolume = m_pWave->GetVolume(&bResult);
 
-	if(bResult)
+	if (bResult)
 	{
 		SetDlgItemInt(IDC_VOLUMEEDIT, m_nVolume, TRUE);
 		m_SliderVolume.SetPosition(m_nVolume);
@@ -996,7 +996,7 @@ void CDlgPlayer::OnOK()
 /***************************************************************************/
 void CDlgPlayer::OnCancel()
 {
-	if(IsPlaying())
+	if (IsPlaying())
 		OnStop();
 	else
 		OnClose();
@@ -1835,7 +1835,7 @@ BOOL CDlgRecorder::OnInitDialog()
 	m_SpinRecVolume.Init(IDC_RECVOLUMESCROLL, this);
 
 	pWnd = GetDlgItem(IDC_MIXER);
-	if(pWnd)
+	if (pWnd)
 		pWnd->EnableWindow(m_pWave->GetInDevice()->ShowMixer(FALSE));
 
 	OnMixerControlChange(0,0);
@@ -1891,7 +1891,7 @@ LRESULT CDlgRecorder::OnMixerControlChange(WPARAM, LPARAM)
 
 	m_nVolume = m_pWave->GetVolume(&bResult);
 
-	if(bResult)
+	if (bResult)
 	{
 		SetDlgItemInt(IDC_VOLUMEEDIT, m_nVolume, TRUE);
 		m_SliderVolume.SetPosition(m_nVolume);
@@ -1986,7 +1986,7 @@ void CDlgRecorder::SetRecVolume(int nVolume)
 {
 	BOOL bResult;
 	m_pWave->GetInDevice()->SetVolume(nVolume, &bResult);
-	if(!bResult)
+	if (!bResult)
 	{
 		EnableRecVolume(FALSE);
 		nVolume = 0;
@@ -1998,7 +1998,7 @@ void CDlgRecorder::SetRecVolume(int nVolume)
 void CDlgRecorder::EnableRecVolume(BOOL bEnable)
 {
 	CWnd* pWnd = GetDlgItem(IDC_RECVOLUMEEDIT);
-	if(pWnd)
+	if (pWnd)
 		pWnd->EnableWindow(bEnable);
 
 	m_SliderRecVolume.EnableWindow(bEnable);
@@ -2106,7 +2106,7 @@ void CDlgRecorder::OnSettings()
 		// set sa parameters
 		pDoc->SetSaParm(&saParm);
 
-		if(!GetStaticSourceInfo().bEnable)
+		if (!GetStaticSourceInfo().bEnable)
 		{
 			CSaDoc* pDoc = (CSaDoc*)m_pDoc; // cast document pointer
 			SourceParm* pSourceParm = pDoc->GetSourceParm();
@@ -2151,7 +2151,7 @@ void CDlgRecorder::OnApply()
 	ClearFileName(); // file has been overtaken from document
 	CloseRecorder(); // close the recorder
 	sourceInfo &m_source = GetStaticSourceInfo();
-	if(m_source.bEnable)
+	if (m_source.bEnable)
 	{
 		CSaDoc* pDoc = (CSaDoc*)m_pDoc; // cast document pointer
 		SourceParm* pSourceParm = pDoc->GetSourceParm();
@@ -2488,7 +2488,7 @@ void CDlgRecorderOptions::OnSource()
 	CSaDoc* pDoc = GetRecorder().GetDocument(); // cast document pointer
 	SourceParm* pSourceParm = pDoc->GetSourceParm();
 	CDlgRecorder::sourceInfo &m_source = CDlgRecorder::GetStaticSourceInfo();
-	if(m_source.bEnable)
+	if (m_source.bEnable)
 	{
 		pSourceParm->szCountry = m_source.source.szCountry;
 		pSourceParm->szDialect = m_source.source.szDialect;
@@ -2703,7 +2703,7 @@ LRESULT CDlgFnKeys::OnMixerControlChange(WPARAM, LPARAM)
 
 	m_nVolume = m_pWave->GetVolume(&bResult);
 
-	if(bResult)
+	if (bResult)
 	{
 		SetDlgItemInt(IDC_VOLUMEEDIT, m_nVolume, TRUE);
 		m_SliderVolume.SetPosition(m_nVolume);

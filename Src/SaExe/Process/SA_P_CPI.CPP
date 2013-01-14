@@ -76,7 +76,7 @@ long CProcessCustomPitch::Process(void* pCaller, ISaDoc* pDoc, int nProgress,
 
   // start pitch process
   BeginWaitCursor(); // wait cursor
-  if(!StartProcess(pCaller, IDS_STATTXT_PROCESSCPI)) // memory allocation failed
+  if (!StartProcess(pCaller, IDS_STATTXT_PROCESSCPI)) // memory allocation failed
   { 
     EndProcess(); // end data processing
     EndWaitCursor();

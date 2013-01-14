@@ -379,7 +379,7 @@ dspError_t CPeakPicker::FindNextBump(BUMP_TABLE_ENTRY *pBump, const float **ppSt
   Err = m_pParabola->CalcFirstDerivative(&FirstDeriv, y);
   if (Err) return(Err);
 
-  if(fabs(FirstDeriv) < MinFirstDeriv)
+  if (fabs(FirstDeriv) < MinFirstDeriv)
   {
     MinFirstDeriv = (float)fabs((float)FirstDeriv);
     pMinFirstDeriv = y;
@@ -482,7 +482,7 @@ FindNextPeak(const float * & first, const float * const last,
   // Handle degenerate cases:
 
   // If only one or two points, not enough for a peak.
-  if(last - first < 2)
+  if (last - first < 2)
     return NULL;
 
   // Handle usual cases.
@@ -501,7 +501,7 @@ FindNextPeak(const float * & first, const float * const last,
     FitParabola(p, y);
 
     // The second derivative at y+1 is given by 2*p[2]
-    if(p[2]*2.f < concavityThreshold)
+    if (p[2]*2.f < concavityThreshold)
       break;
 
     y++;
@@ -513,12 +513,12 @@ FindNextPeak(const float * & first, const float * const last,
   {
     FitParabola(p, y);
     // If we've passed to a region of convexity, stop
-    if(p[2]*2.f > concavityThreshold)
+    if (p[2]*2.f > concavityThreshold)
       break;
 
     // The derivative at y+1 is given by p[1].
     // If we've found a flatter spot, save it.
-    if(float(fabs(p[1])) < bestDerivative)
+    if (float(fabs(p[1])) < bestDerivative)
     {
       bestDerivative = float(fabs(p[1]));
       bestLocation = y+1;
@@ -527,7 +527,7 @@ FindNextPeak(const float * & first, const float * const last,
     y++;
   }
 
-  if(y+2 < last)
+  if (y+2 < last)
   {
     // Means we found a complete peak
     assert(bestDerivative < FLT_MAX);
@@ -556,11 +556,11 @@ FindHighestPeak(const float * first, const float * const last,
   {
     // q -> a peak or NULL, first -> stopping place
     q = FindNextPeak(first, last, concavityThreshold);
-    if(q == NULL)
+    if (q == NULL)
       break;
-    if(peak == NULL)
+    if (peak == NULL)
       peak = q;
-    if(*q > *peak)
+    if (*q > *peak)
       peak = q;
     foo = *peak;
     bar = *q;
@@ -595,7 +595,7 @@ FindHighEnergyPeaks(float * const peakTable, const float * const first,
     // Remember, mark is moved by FindNextPeak
     peakLocation = FindNextPeak(mark, last, concavityThreshold);
     // Stop if no more peaks
-    if(peakLocation == NULL)
+    if (peakLocation == NULL)
       break;
     point.second = peakLocation - first;
     point.first = *peakLocation;

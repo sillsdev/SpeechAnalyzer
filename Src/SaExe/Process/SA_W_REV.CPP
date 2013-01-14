@@ -95,7 +95,7 @@ long CProcessWbEcho::Process(void* pCaller, ISaDoc* pDoc, int nProgress,
 
 	// start process
 	BeginWaitCursor(); // wait cursor
-	if(!StartProcess(pCaller, IDS_STATTXT_PROCESSWBECHO)) // memory allocation failed
+	if (!StartProcess(pCaller, IDS_STATTXT_PROCESSWBECHO)) // memory allocation failed
 	{
 		EndProcess(); // end data processing
 		EndWaitCursor();
@@ -386,7 +386,7 @@ long CProcessWbReverb::Process(void* pCaller, ISaDoc* pDoc, int nProgress,
 
 	// start process
 	BeginWaitCursor(); // wait cursor
-	if(!StartProcess(pCaller, IDS_STATTXT_PROCESSWBREV)) // memory allocation failed
+	if (!StartProcess(pCaller, IDS_STATTXT_PROCESSWBREV)) // memory allocation failed
 	{
 		EndProcess(); // end data processing
 		EndWaitCursor();

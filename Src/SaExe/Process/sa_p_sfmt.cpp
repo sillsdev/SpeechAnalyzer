@@ -110,15 +110,15 @@ long CProcessSpectroFormants::ExtractFormants(ISaDoc *pDoc, DWORD dwWaveDataStar
 {
 	TRACE(_T("Process: CProcessSpectroFormants\n"));
 	// check canceled
-	if(IsCanceled())
+	if (IsCanceled())
 		return MAKELONG(PROCESS_CANCELED, nProgress); // process canceled
 	// check if data ready
-	if(IsDataReady())
+	if (IsDataReady())
 		return MAKELONG(--nLevel, nProgress);    
 	FmtParm* pFmtParm = pDoc->GetFmtParm();  // get sa parameters format member data
 	WORD nSmpSize = (WORD)(pFmtParm->wBlockAlign / pFmtParm->wChannels);
 
-	if(!StartProcess(this, IDS_STATTXT_PROCESSFMT))
+	if (!StartProcess(this, IDS_STATTXT_PROCESSFMT))
 	{ 
 		EndProcess(); // end data processing
 		return MAKELONG(PROCESS_ERROR, nProgress);
@@ -191,15 +191,15 @@ long CProcessSpectroFormants::ExtractFormants(ISaDoc *pDoc, DWORD dwWaveDataStar
 					DWORD dwFrameStartIndex, dwFrameEndIndex;
 
 					dwFrameStartIndex = DWORD(FragmentParmInfo.dwOffset+FragmentParmInfo.wLength/2.-0.005*pFmtParm->dwSamplesPerSec);
-					if(dwFrameStartIndex == UNDEFINED_OFFSET || dwFrameStartIndex > FragmentParmInfo.dwOffset + FragmentParmInfo.wLength)
+					if (dwFrameStartIndex == UNDEFINED_OFFSET || dwFrameStartIndex > FragmentParmInfo.dwOffset + FragmentParmInfo.wLength)
 						dwFrameStartIndex = 0;
-					if(dwFrameStartIndex > FragmentParmInfo.dwOffset)
+					if (dwFrameStartIndex > FragmentParmInfo.dwOffset)
 						dwFrameStartIndex = FragmentParmInfo.dwOffset;
 
 					dwFrameEndIndex = DWORD(FragmentParmInfo.dwOffset+FragmentParmInfo.wLength/2.+0.005*pFmtParm->dwSamplesPerSec);
-					if(dwFrameEndIndex == UNDEFINED_OFFSET || dwFrameEndIndex < FragmentParmInfo.dwOffset)
+					if (dwFrameEndIndex == UNDEFINED_OFFSET || dwFrameEndIndex < FragmentParmInfo.dwOffset)
 						dwFrameEndIndex = pDoc->GetDataSize()/nSmpSize;
-					if(dwFrameEndIndex < FragmentParmInfo.dwOffset+FragmentParmInfo.wLength)
+					if (dwFrameEndIndex < FragmentParmInfo.dwOffset+FragmentParmInfo.wLength)
 						dwFrameEndIndex = FragmentParmInfo.dwOffset+FragmentParmInfo.wLength;
 
 					BOOL bValidCount;

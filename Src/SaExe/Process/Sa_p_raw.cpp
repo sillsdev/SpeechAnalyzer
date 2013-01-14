@@ -53,7 +53,7 @@ long CProcessRaw::Process(void* pCaller, ISaDoc* pDoc, int nProgress,
 	if (IsDataReady()) return MAKELONG(--nLevel, nProgress); // data is already ready
 	TRACE(_T("Process: CProcessRaw\n"));
 	BeginWaitCursor(); // wait cursor
-	if(!StartProcess(pCaller, IDS_STATTXT_PROCESSRAW)) // memory allocation failed
+	if (!StartProcess(pCaller, IDS_STATTXT_PROCESSRAW)) // memory allocation failed
 	{
 		EndProcess(); // end data processing
 		EndWaitCursor();
@@ -89,7 +89,7 @@ long CProcessRaw::Process(void* pCaller, ISaDoc* pDoc, int nProgress,
 
 	while (dwDataPos < dwDataSize) // processing loop
 	{
-		if( dwDataPos >= dwDocWavBufferPosition + dwDocWaveBufferSize)
+		if ( dwDataPos >= dwDocWavBufferPosition + dwDocWaveBufferSize)
 		{
 			pDocData = pDoc->GetWaveData(dwDataPos,TRUE); // get pointer to data block
 			dwDocWavBufferPosition = pDoc->GetWaveBufferIndex();

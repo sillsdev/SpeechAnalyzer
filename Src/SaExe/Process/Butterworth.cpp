@@ -166,7 +166,7 @@ long CIIRFilter::Process(void* pCaller, ISaDoc* pDoc, int nProgress, int nLevel)
 			WriteWaveDataBlock(dwBlockStart, m_lpData, (dwBlockEnd-dwBlockStart)*wDstSmpSize/wSrcSmpSize);
 			dwDataPos = dwBlockEnd;
 		}
-		if(m_bFilterFilter)
+		if (m_bFilterFilter)
 		{
 			// Append some silence to handle phase lag
 			DWORD dwSettlingSize = FilterFilterSilenceSamples()*wSrcSmpSize;
@@ -306,7 +306,7 @@ void CIIRFilter::SetSourceProcess(CDataProcess * pSourceProcess, BOOL bWBenchPro
 {
 	m_bSrcWBenchProcess = bWBenchProcess;
 
-	if(m_pSourceProcess != pSourceProcess)
+	if (m_pSourceProcess != pSourceProcess)
 		SetDataInvalid();
 
 	m_pSourceProcess = pSourceProcess;
@@ -407,7 +407,7 @@ void CButterworth::CascadeLowPass(CZTransform &zTransform, int nOrder, double dF
 		pole *= dAnalogCutoffFreq;
 
 		// Generate digital filter
-		if((i * 2 + 1) == nOrder)  // last one is single real pole
+		if ((i * 2 + 1) == nOrder)  // last one is single real pole
 		{
 			// each first order analog filter takes the general form
 			//
@@ -493,7 +493,7 @@ void CButterworth::CascadeHighPass(CZTransform &zTransform, int nOrder, double d
 		//              s = 0.5 (1 + z  ) / (1 - z  )
 		//
 		// and substitute into the low pass equations, yielding the following coefficients
-		if((i * 2 + 1) == nOrder)  // last one is single real pole
+		if ((i * 2 + 1) == nOrder)  // last one is single real pole
 		{ // first order section
 			denominator[0] = 1.;
 			denominator[1] = (1. + 2.*pole.real()) / (1. - 2.*pole.real());
@@ -541,7 +541,7 @@ void CButterworth::ClearFilter()
 
 double CButterworth::FilterFilterNorm(int nOrder) const
 {
-	if(m_bFilterFilter)
+	if (m_bFilterFilter)
 		return exp(log(sqrt(2.) - 1.)/(2*nOrder));
 	else
 		return 1.;
@@ -581,7 +581,7 @@ long CButterworth::Process(void* pCaller, ISaDoc* pDoc, int nProgress, int nLeve
 
 void CButterworth::HighPass(int nOrder, double dFrequency, double dScale)
 {
-	if(m_nOrder != nOrder || m_dFrequency != dFrequency || m_dScale != dScale || m_ftFilterType != kftHighPass)
+	if (m_nOrder != nOrder || m_dFrequency != dFrequency || m_dScale != dScale || m_ftFilterType != kftHighPass)
 		SetDataInvalid();
 
 	m_nOrder = nOrder;
@@ -592,7 +592,7 @@ void CButterworth::HighPass(int nOrder, double dFrequency, double dScale)
 
 void CButterworth::LowPass(int nOrder, double dFrequency, double dScale)
 {
-	if(m_nOrder != nOrder || m_dFrequency != dFrequency || m_dScale != dScale || m_ftFilterType != kftLowPass)
+	if (m_nOrder != nOrder || m_dFrequency != dFrequency || m_dScale != dScale || m_ftFilterType != kftLowPass)
 		SetDataInvalid();
 
 	m_nOrder = nOrder;
@@ -603,7 +603,7 @@ void CButterworth::LowPass(int nOrder, double dFrequency, double dScale)
 
 void CButterworth::BandPass(int nOrder, double dFrequency, double dBandwidth, double dScale)
 {
-	if(m_nOrder != nOrder || m_dFrequency != dFrequency || m_dBandwidth != dBandwidth || m_dScale != dScale || m_ftFilterType != kftBandPass)
+	if (m_nOrder != nOrder || m_dFrequency != dFrequency || m_dBandwidth != dBandwidth || m_dScale != dScale || m_ftFilterType != kftBandPass)
 		SetDataInvalid();
 
 	m_nOrder = nOrder;
@@ -617,7 +617,7 @@ void CButterworth::ConfigureProcess(double dSampling)
 {
 	double tau = 0;
 	ClearFilter();
-	if(m_bReverse)
+	if (m_bReverse)
 	{
 		double rTau = 0;
 		switch(m_ftFilterType)

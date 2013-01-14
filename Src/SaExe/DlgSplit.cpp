@@ -5,22 +5,27 @@
 #include "sa.h"
 #include "dlgsplit.h"
 
+using std::wstring;
+
 // SA_Split dialog
 
 IMPLEMENT_DYNAMIC(CDlgSplit, CDialog)
 
 CDlgSplit::CDlgSplit(CWnd* pParent /*=NULL*/) : 
-CDialog(CDlgSplit::IDD, pParent), 
-m_WordConvention(2), 
-m_PhraseConvention(3), 
-m_FolderLocation(_T("")), 
-m_FolderName(_T("")), 
-m_PhraseFolderName(_T("")), 
-m_GlossFolderName(_T("")) 
+CDialog(CDlgSplit::IDD, pParent),
+m_bSkipGlossEmpty(TRUE),
+m_bOverwriteData(FALSE),
+m_dWordConvention(2), 
+m_dPhraseConvention(2), 
+m_szFolderLocation(_T("")), 
+m_szFolderName(_T("")), 
+m_szPhraseFolderName(_T("")), 
+m_szGlossFolderName(_T("")) 
 {
 }
 
-CDlgSplit::~CDlgSplit() {
+CDlgSplit::~CDlgSplit() 
+{
 }
 
 BOOL CDlgSplit::OnInitDialog() 
@@ -30,8 +35,6 @@ BOOL CDlgSplit::OnInitDialog()
 	GetDlgItem(IDC_SPLIT_WORD_SUBFOLDER_NAME)->EnableWindow(FALSE);
 	GetDlgItem(IDC_SPLIT_PHRASE_SUBFOLDER_NAME)->EnableWindow(FALSE);
 
-	m_CheckGlossEmpty.SetCheck(TRUE);
-
 	UpdateData(TRUE);
 	return TRUE;
 }
@@ -39,14 +42,14 @@ BOOL CDlgSplit::OnInitDialog()
 void CDlgSplit::DoDataExchange(CDataExchange* pDX) 
 {
 	CDialog::DoDataExchange(pDX);
-	DDX_CBIndex(pDX, IDC_SPLIT_WORD_CONVENTION, m_WordConvention);
-	DDX_CBIndex(pDX, IDC_SPLIT_PHRASE_CONVENTION, m_PhraseConvention);
-	DDX_Text(pDX, IDC_SPLIT_FOLDER_LOCATION, m_FolderLocation);
-	DDX_Text(pDX, IDC_SPLIT_FOLDER_NAME, m_FolderName);
-	DDX_Text(pDX, IDC_SPLIT_PHRASE_SUBFOLDER_NAME, m_PhraseFolderName);
-	DDX_Text(pDX, IDC_SPLIT_WORD_SUBFOLDER_NAME, m_GlossFolderName);
-	DDX_Control(pDX, IDC_CHECK_GLOSS_EMPTY, m_CheckGlossEmpty);
-	DDX_Check(pDX, IDC_CHECK_GLOSS_EMPTY, m_SkipGlossEmpty);
+	DDX_CBIndex(pDX, IDC_SPLIT_WORD_CONVENTION, m_dWordConvention);
+	DDX_CBIndex(pDX, IDC_SPLIT_PHRASE_CONVENTION, m_dPhraseConvention);
+	DDX_Text(pDX, IDC_SPLIT_FOLDER_LOCATION, m_szFolderLocation);
+	DDX_Text(pDX, IDC_SPLIT_FOLDER_NAME, m_szFolderName);
+	DDX_Text(pDX, IDC_SPLIT_PHRASE_SUBFOLDER_NAME, m_szPhraseFolderName);
+	DDX_Text(pDX, IDC_SPLIT_WORD_SUBFOLDER_NAME, m_szGlossFolderName);
+	DDX_Check(pDX, IDC_CHECK_GLOSS_EMPTY, m_bSkipGlossEmpty);
+	DDX_Check(pDX, IDC_CHECK_OVERWRITE, m_bOverwriteData);
 }
 
 BEGIN_MESSAGE_MAP(CDlgSplit, CDialog) 
@@ -60,8 +63,7 @@ static int CALLBACK BrowseCallbackProc( HWND hwnd,UINT uMsg, LPARAM lParam, LPAR
 
 	// If the BFFM_INITIALIZED message is received    
 	// set the path to the start path.    
-	switch (uMsg) 
-	{
+	switch (uMsg) {
 	case BFFM_INITIALIZED: 
 		{
 			if (NULL != lpData) 
@@ -92,9 +94,10 @@ void CDlgSplit::OnBnClickedBrowseFolder()
 	bi.lpszTitle = TEXT("Please choose a folder.");    
 	bi.ulFlags = BIF_RETURNONLYFSDIRS | BIF_NEWDIALOGSTYLE;    
 	bi.lpfn = BrowseCallbackProc;    
-	bi.lParam = (LPARAM)(LPCTSTR)m_FolderLocation;     
+	bi.lParam = (LPARAM)(LPCTSTR)m_szFolderLocation;     
 	LPITEMIDLIST pidl = SHBrowseForFolder(&bi);
-	if (pidl==NULL) {
+	if (pidl==NULL) 
+	{
 		// they cancelled...
 		CoUninitialize();
 		return;
@@ -108,7 +111,12 @@ void CDlgSplit::OnBnClickedBrowseFolder()
 	} 
 	else 
 	{
-		GetDlgItem(IDC_SPLIT_FOLDER_LOCATION)->SetWindowText(szPath);
+		wstring temp(szPath);
+		if (temp[temp.length()-1]!='\\') 
+		{
+			temp.append(L"\\");
+		}
+		GetDlgItem(IDC_SPLIT_FOLDER_LOCATION)->SetWindowText(temp.c_str());
 	}
 
 	CoUninitialize();
@@ -116,7 +124,8 @@ void CDlgSplit::OnBnClickedBrowseFolder()
 
 enum EWordFilenameConvention CDlgSplit::GetWordFilenameConvention() 
 {
-	switch (m_WordConvention) {
+	switch (m_dWordConvention) 
+	{
 	case 0: return WFC_REF;
 	case 1: return WFC_GLOSS;
 	default:case 2: return WFC_REF_GLOSS;
@@ -126,7 +135,8 @@ enum EWordFilenameConvention CDlgSplit::GetWordFilenameConvention()
 
 enum EPhraseFilenameConvention CDlgSplit::GetPhraseFilenameConvention() 
 {
-	switch (m_PhraseConvention) {
+	switch (m_dPhraseConvention) 
+	{
 	case 0: return PFC_REF;
 	case 1: return PFC_GLOSS;
 	case 2: return PFC_REF_GLOSS;

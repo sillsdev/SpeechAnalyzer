@@ -2120,7 +2120,7 @@ void zLowLevelGraphics::zDOSOpenGraphics()
 #ifdef MS_DOS_PLATFORM
 
 	// Set the Video Mode (Use VGA 640 x 480, 16 Color)
-	if( !_setvideomode(/* _MAXRESMODE */ _VRES16COLOR))
+	if ( !_setvideomode(/* _MAXRESMODE */ _VRES16COLOR))
 		exit(1);
 
 	// Load the Helvetica Font Set.  User Must Have "HELVB.FON" File!!!

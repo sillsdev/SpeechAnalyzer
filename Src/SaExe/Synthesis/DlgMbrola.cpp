@@ -123,21 +123,21 @@ static void CurveFitPitch(CSaDoc *pDoc, double fSizeFactor, DWORD dwBeginWAV, DW
 			n++;
 		}
 	}
-	if(n>0)
+	if (n>0)
 	{
 		double localSlope = (n*sumXY - sumX*sumY)/(n*sumXX - sumX*sumX);
 		double localOffset = sumY/n - localSlope*sumX/n;
 
-		if(offset)
+		if (offset)
 			*offset = localOffset;
-		if(slope)
+		if (slope)
 			*slope = localSlope;
 	}
 	else
 	{
-		if(offset)
+		if (offset)
 			*offset = - 1.;
-		if(slope)
+		if (slope)
 			*slope = 0;
 	}
 }
@@ -231,7 +231,7 @@ void CDlgMbrola::OnLeaveCellMbrolaGrid()
 		double value;
 		char dummy[3];
 		CString cellText = m_cGrid.GetText();
-		if(cellText.GetLength() && swscanf_s(cellText,_T("%f%2s"), &value, &dummy) != 1)
+		if (cellText.GetLength() && swscanf_s(cellText,_T("%f%2s"), &value, &dummy) != 1)
 		{
 			CString error;
 			error.Format(_T("\"%s\" is not a number. Please correct"), LPCTSTR(cellText));
@@ -251,7 +251,7 @@ void CDlgMbrola::OnMbrolaGet()
 	CString szFilename;
 
 	int nSource = m_cSource.GetCurSel();
-	if(nSource == CB_ERR) 
+	if (nSource == CB_ERR) 
 		return;
 	m_cSource.GetLBText(nSource, szFilename);
 
@@ -299,7 +299,7 @@ void CDlgMbrola::OnMbrolaGet()
 				szString.Format(_T("silence"));
 				m_cGrid.SetTextMatrix(rowIpa,column,szString);
 			}
-			if(m_bGetDuration)
+			if (m_bGetDuration)
 			{
 				dwDuration = dwOffset - (dwPrevOffset + dwDuration);
 				szString.Format(_T("%.4f"),pDoc->GetTimeFromBytes(dwDuration)*1000.);
@@ -312,20 +312,20 @@ void CDlgMbrola::OnMbrolaGet()
 		if (m_bGetIPA) m_cGrid.SetTextMatrix(rowIpa,column,szString);
 
 
-		if(m_bGetDuration)
+		if (m_bGetDuration)
 		{
 			szString.Format(_T("%.4f"),pDoc->GetTimeFromBytes(dwDuration)*1000.);
 			m_cGrid.SetTextMatrix(rowDuration,column,szString);
 		}
 
-		if(m_bGetPitch)
+		if (m_bGetPitch)
 		{
 			double offset;
 			double slope;
 			DWORD dwStop = pPhonetic->GetStop(nIndex);
 
 			CurveFitPitch(pDoc, fSizeFactor[PITCH], dwOffset, pPhonetic->GetStop(nIndex), &offset, &slope);
-			if(offset > 0)
+			if (offset > 0)
 				szString.Format(_T("%.5g"),offset + slope*pPhonetic->GetDuration(nIndex)/2.);
 			else
 				szString.Empty();
@@ -339,13 +339,13 @@ void CDlgMbrola::OnMbrolaGet()
 				DWORD dwBegin = dwHere;
 				DWORD dwEnd = dwHere + dwUpdateInterval;
 
-				if(dwEnd > dwStop)
+				if (dwEnd > dwStop)
 					dwEnd = dwStop;
-				if(dwHere >= dwOffset + dwUpdateInterval)
+				if (dwHere >= dwOffset + dwUpdateInterval)
 					dwBegin -= dwUpdateInterval;
 
 				CurveFitPitch(pDoc, fSizeFactor[PITCH], dwBegin, dwEnd, &offset, &slope);
-				if(offset > 0)
+				if (offset > 0)
 					szString.Format(_T("%.5g"),offset + slope*(dwHere-dwBegin));
 				else
 					szString.Empty();
@@ -364,7 +364,7 @@ void CDlgMbrola::OnMbrolaGet()
 				szString.Format(_T("silence"));
 				m_cGrid.SetTextMatrix(rowIpa,column,szString);
 			}
-			if(m_bGetDuration)
+			if (m_bGetDuration)
 			{
 				dwDuration = pDoc->GetDataSize() - (dwOffset + dwDuration);
 				szString.Format(_T("%.4f"),pDoc->GetTimeFromBytes(dwDuration)*1000.);
@@ -373,7 +373,7 @@ void CDlgMbrola::OnMbrolaGet()
 		}
 
 		column++;
-		if(column >= m_cGrid.GetCols(0))
+		if (column >= m_cGrid.GetCols(0))
 		{
 			m_cGrid.SetCols(0, column+10);
 			m_cGrid.SetFont(PHONETIC_DEFAULT_FONT,PHONETIC_DEFAULT_FONTSIZE,rowIpa,column,1, -1);
@@ -384,11 +384,11 @@ void CDlgMbrola::OnMbrolaGet()
 	for(;column < m_cGrid.GetCols(0); column++)
 	{
 		szString.Empty();
-		if(m_bGetIPA)
+		if (m_bGetIPA)
 			m_cGrid.SetTextMatrix(rowIpa,column,szString);
-		if(m_bGetDuration)
+		if (m_bGetDuration)
 			m_cGrid.SetTextMatrix(rowDuration,column,szString);
-		if(m_bGetPitch)
+		if (m_bGetPitch)
 		{
 			m_cGrid.SetTextMatrix(rowPitchAvg,column,szString);
 
@@ -410,9 +410,9 @@ void CDlgMbrola::OnMbrolaConvert()
 {
 	m_bConvertComplete = FALSE;
 
-	if(!m_bGetComplete)
+	if (!m_bGetComplete)
 		OnMbrolaGet();
-	if(!m_bGetComplete)
+	if (!m_bGetComplete)
 		return;
 
 	for(int i=columnFirst; i<m_cGrid.GetCols(0); i++)
@@ -421,9 +421,9 @@ void CDlgMbrola::OnMbrolaConvert()
 
 		CString IPA = m_cGrid.GetTextMatrix(rowIpa,i);
 
-		if(!IPA.IsEmpty())
+		if (!IPA.IsEmpty())
 		{
-			if(i >= m_cOutputGrid.GetCols(0))
+			if (i >= m_cOutputGrid.GetCols(0))
 				m_cOutputGrid.SetCols(0,i+1);
 
 
@@ -516,9 +516,9 @@ struct MBRolaVector
 
 void CDlgMbrola::OnMbrolaSynthesize()
 {
-	if(!m_bConvertComplete)
+	if (!m_bConvertComplete)
 		OnMbrolaConvert();
-	if(!m_bConvertComplete)
+	if (!m_bConvertComplete)
 		return;
 
 	int Voice = m_cDictionary.GetCurSel();
@@ -529,7 +529,7 @@ void CDlgMbrola::OnMbrolaSynthesize()
 	// create and open the synthesis file
 	CSaApp* pApp = (CSaApp*)AfxGetApp();
 	// create temp filename for synthesized waveform
-	if(m_szMBRolaName.IsEmpty())
+	if (m_szMBRolaName.IsEmpty())
 	{
 		TCHAR pszTempPathName[_MAX_PATH];
 		GetTempPath(_MAX_PATH, pszTempPathName);
@@ -617,7 +617,7 @@ void CDlgMbrola::OnMbrolaSynthesize()
 
 		thisColumn.Sampa = m_cOutputGrid.GetTextMatrix(rowSampa,i);
 
-		if(!thisColumn.Sampa.IsEmpty())
+		if (!thisColumn.Sampa.IsEmpty())
 		{
 			// There is an Sampa character assume valid column - write vectors to file
 
@@ -696,7 +696,7 @@ void CDlgMbrola::OnMbrolaSynthesize()
 void CDlgMbrola::OnMbrolaPlaySynth()
 {
 	OnMbrolaSynthesize();
-	if(m_szMBRolaName.GetLength())
+	if (m_szMBRolaName.GetLength())
 		PlaySound(m_szMBRolaName, 0, SND_SYNC | SND_NODEFAULT | SND_FILENAME );
 }
 
@@ -704,7 +704,7 @@ void CDlgMbrola::OnMbrolaPlaySource()
 {
 	CString szFilename;
 	int nSource = m_cSource.GetCurSel();
-	if(nSource == CB_ERR) 
+	if (nSource == CB_ERR) 
 		return;
 	m_cSource.GetLBText(nSource, szFilename);
 
@@ -721,14 +721,14 @@ void CDlgMbrola::OnMbrolaPlay()
 
 void CDlgMbrola::OnMbrolaDisplay() 
 {
-	if(m_szMBRolaName.IsEmpty())
+	if (m_szMBRolaName.IsEmpty())
 		OnMbrolaSynthesize();
 
 	// open synthesized wavefile in SA
 	CFileStatus fileStatus; // file status
 	if (CFile::GetStatus(m_szMBRolaName, fileStatus))
 	{
-		if(fileStatus.m_size)
+		if (fileStatus.m_size)
 		{
 			// file created open in SA
 			CSaApp *pApp = (CSaApp*)(AfxGetApp());
@@ -743,7 +743,7 @@ void CDlgMbrola::OnDropdownSource()
 {
 	CString szFilename;
 	int nSource = m_cSource.GetCurSel();
-	if(nSource != CB_ERR)
+	if (nSource != CB_ERR)
 		m_cSource.GetLBText(nSource, szFilename);
 
 	m_cSource.ResetContent();
@@ -757,22 +757,22 @@ void CDlgMbrola::OnDropdownSource()
 	{
 		CDocument* pDoc = pDocTemplate->GetNextDoc(position); // get pointer to document
 		CString path = pDoc->GetPathName();
-		if(!path.IsEmpty()) m_cSource.AddString(path);
+		if (!path.IsEmpty()) m_cSource.AddString(path);
 	}
 	m_cSource.SetCurSel(0);
-	if(!szFilename.IsEmpty())
+	if (!szFilename.IsEmpty())
 	{
 		int sel = m_cSource.FindStringExact(0,szFilename);
-		if(sel != CB_ERR)
+		if (sel != CB_ERR)
 			m_cSource.SetCurSel(sel);
 	}
 	else
 	{    
 		CMainFrame* pMDIFrameWnd = (CMainFrame*)AfxGetMainWnd();
-		if(pMDIFrameWnd)
+		if (pMDIFrameWnd)
 		{
 			CView* pView = pMDIFrameWnd->GetCurrSaView();
-			if(pView && !pView->GetDocument()->GetPathName().IsEmpty())
+			if (pView && !pView->GetDocument()->GetPathName().IsEmpty())
 				m_cSource.SelectString(-1,pView->GetDocument()->GetPathName());
 		}
 	}

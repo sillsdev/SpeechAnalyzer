@@ -1143,7 +1143,7 @@ void CGraphWnd::UpdateStatusBar(DWORD dwStartCursor, DWORD dwStopCursor, BOOL bF
 				// display percentage and raw value CLW 1/5/01
 				if (fData >= 99.95)
 					swprintf_s(szText,_countof(szText), _T("L:  %3.0f%%  (%d)"), 100.0, nData);
-				else if(fData <= -99.95)
+				else if (fData <= -99.95)
 					swprintf_s(szText,_countof(szText), _T("L:  %3.0f%%  (%d)"), -100.0, nData);
 				else
 					swprintf_s(szText,_countof(szText), _T("L:  %3.1f%%  (%d)"), fData, nData);
@@ -1162,7 +1162,7 @@ void CGraphWnd::UpdateStatusBar(DWORD dwStartCursor, DWORD dwStopCursor, BOOL bF
 				// display percentage and raw value CLW 1/5/01
 				if (fData >= 99.95)
 					swprintf_s(szText,_countof(szText), _T("R:  %3.0f%%  (%d)"), 100.0, nData);
-				else if(fData <= -99.95)
+				else if (fData <= -99.95)
 					swprintf_s(szText,_countof(szText), _T("R:  %3.0f%%  (%d)"), -100.0, nData);
 				else
 					swprintf_s(szText,_countof(szText), _T("R:  %3.1f%%  (%d)"), fData, nData);
@@ -1488,7 +1488,7 @@ void CGraphWnd::UpdateStatusBar(DWORD dwStartCursor, DWORD dwStopCursor, BOOL bF
 				fDataSec = fDataSec - (nMinutes * 60.);
 				if (nMinutes > 9)
 					swprintf_s(szText,_countof(szText), _T("       %02i:%5.3f"), nMinutes, fDataSec);
-				else if(nMinutes || fDataSec >= .01)
+				else if (nMinutes || fDataSec >= .01)
 					swprintf_s(szText,_countof(szText), _T("       %01i:%6.4f"), nMinutes, fDataSec);
 				else
 					swprintf_s(szText,_countof(szText), _T("       %01i:%7.5f"), nMinutes, fDataSec);

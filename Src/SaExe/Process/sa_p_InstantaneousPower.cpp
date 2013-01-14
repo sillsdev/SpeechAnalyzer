@@ -70,7 +70,7 @@ long CProcessInstantaneousPower::Process(void* pCaller, ISaDoc* pDoc,
 
 
 	BeginWaitCursor(); // wait cursor
-	if(!StartProcess(pCaller)) // memory allocation failed
+	if (!StartProcess(pCaller)) // memory allocation failed
 	{ 
 		EndProcess(); // end data processing
 		EndWaitCursor();
@@ -176,7 +176,7 @@ long CProcessInstantaneousPower::Process(void* pCaller, ISaDoc* pDoc,
 			pProcData = (short *)m_lpData; // reset pointer to begin of processed data buffer
 			// set progress bar
 			SetProgress(nProgress + (int)(100 * dwWaveOffset / dwWaveSize / (DWORD)nLevel));
-			if(IsCanceled()) 
+			if (IsCanceled()) 
 			{
 				EndProcess(); // end data processing
 				EndWaitCursor();

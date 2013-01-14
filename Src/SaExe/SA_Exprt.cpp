@@ -178,7 +178,7 @@ const char CExportXML::XML_FOOTER[] = "\r\n"
 
 void CExportXML::OutputXMLField(CFile* pFile,const TCHAR *szFieldName,const CSaString &szContents)
 {
-	if(!szContents || !*szContents) return;
+	if (!szContents || !*szContents) return;
 
 	CSaString szString;
 	szString = "\t<";
@@ -186,13 +186,13 @@ void CExportXML::OutputXMLField(CFile* pFile,const TCHAR *szFieldName,const CSaS
 	szString += ">";
 	for(register int i=0;i<szContents.GetLength();++i)
 	{
-		if(szContents[i]=='<')
+		if (szContents[i]=='<')
 			szString += "&#60;";
-		else if(szContents[i]=='>')
+		else if (szContents[i]=='>')
 			szString += "&#62;";
-		else if(szContents[i]=='&')
+		else if (szContents[i]=='&')
 			szString += "&#38;";
-		else if(szContents[i]<0)
+		else if (szContents[i]<0)
 		{
 			CSaString szS;
 			swprintf_s(szS.GetBuffer(25),25,_T("&#%ld;"),(unsigned char) szContents[i]);
@@ -980,7 +980,7 @@ CExportTable::CExportTable(const CSaString& szDocTitle, CWnd* pParent /*=NULL*/)
 
 	CSaDoc* pDoc = (CSaDoc*)((CMainFrame*)AfxGetMainWnd())->GetCurrSaView()->GetDocument();
 
-	if(pDoc->GetSegment(PHONETIC)->IsEmpty()) // no annotations
+	if (pDoc->GetSegment(PHONETIC)->IsEmpty()) // no annotations
 	{
 		m_bReference = m_bPhonetic = m_bTone = m_bPhonemic = m_bOrtho = m_bGloss = m_bPOS = FALSE;
 		m_bSegmentStart = m_bSegmentLength = FALSE; // no segments
@@ -1043,7 +1043,7 @@ END_MESSAGE_MAP()
 void CExportTable::OnAllAnnotations()
 {
 	UpdateData(TRUE);
-	if(m_nSampleRate == 0)
+	if (m_nSampleRate == 0)
 	{
 		SetVisible(IDC_EXTAB_TIME, FALSE);
 		SetVisible(IDC_EXTAB_START, TRUE);
@@ -1159,7 +1159,7 @@ void CExportTable::OnOK()
 
 	DWORD dwOffset = pView->GetStartCursorPosition();
 	DWORD dwStopPosition = pView->GetStopCursorPosition();
-	if(m_nRegion != 0) // entire file
+	if (m_nRegion != 0) // entire file
 	{
 		dwOffset = 0;
 		dwStopPosition = pDoc->GetDataSize() - pDoc->GetFmtParm()->wBlockAlign;
@@ -1192,7 +1192,7 @@ void CExportTable::OnOK()
 	if (m_nSampleRate == 1) // interval sampling
 	{
 		int nInterval = 20;
-		if(m_szIntervalTime.GetLength() != 0)
+		if (m_szIntervalTime.GetLength() != 0)
 		{
 			swscanf_s(m_szIntervalTime, _T("%d"), &nInterval);
 		}
@@ -1289,7 +1289,7 @@ void CExportTable::OnOK()
 	WriteFileUtf8(pFile, szString);
 
 	// \calc calculation method
-	if(m_nCalculationMethod == 0)
+	if (m_nCalculationMethod == 0)
 		szString = "\\calc "  "midpoint" + szCrLf;
 	else
 		szString = "\\calc "  "average" + szCrLf;
@@ -1379,41 +1379,41 @@ void CExportTable::OnOK()
 					szString = "\t";
 				WriteFileUtf8(pFile, szString);
 			}
-			if(m_bPhonemic)
+			if (m_bPhonemic)
 			{
 				int nIndex = pDoc->GetSegment(PHONEMIC)->FindOffset(dwPhonetic);
-				if(nIndex != -1)
+				if (nIndex != -1)
 					szString = pDoc->GetSegment(PHONEMIC)->GetSegmentString(nIndex) + "\t";
 				else
 					szString = "\t";
 				WriteFileUtf8(pFile, szString);
 			}
-			if(m_bOrtho)
+			if (m_bOrtho)
 			{
 				int nIndex = pDoc->GetSegment(ORTHO)->FindOffset(dwPhonetic);
-				if(nIndex != -1)
+				if (nIndex != -1)
 					szString = pDoc->GetSegment(ORTHO)->GetSegmentString(nIndex) + "\t";
 				else
 					szString = "\t";
 				WriteFileUtf8(pFile, szString);
 			}
-			if(m_bGloss)
+			if (m_bGloss)
 			{
 				int nIndex = pDoc->GetSegment(GLOSS)->FindOffset(dwPhonetic);
-				if(nIndex != -1)
+				if (nIndex != -1)
 				{
 					// SDM 1.5Test10.1
 					szString = pDoc->GetSegment(GLOSS)->GetSegmentString(nIndex);
-					if((szString.GetLength() > 1)&&(szString[0] == WORD_DELIMITER))
+					if ((szString.GetLength() > 1)&&(szString[0] == WORD_DELIMITER))
 						szString = szString.Mid(1); // Remove Word Delimiter
 					szString += "\t";
 				}
 				else
 					szString = "\t";
 				WriteFileUtf8(pFile, szString);
-				if(m_bPOS)
+				if (m_bPOS)
 				{
-					if(nIndex != -1)
+					if (nIndex != -1)
 						szString = ((CGlossSegment*) pDoc->GetSegment(GLOSS))->GetPOSs()->GetAt(nIndex) + "\t";
 					else
 						szString = "\t";
@@ -1422,14 +1422,14 @@ void CExportTable::OnOK()
 			}
 			nIndex = pPhonetic->GetNext(nIndex);
 		}
-		else if(m_bPhonetic && (m_nSampleRate==1) && !pPhonetic->IsEmpty())
+		else if (m_bPhonetic && (m_nSampleRate==1) && !pPhonetic->IsEmpty())
 		{
 			nIndex = 0;
 
 			while((nIndex != -1) && (pPhonetic->GetStop(nIndex) < dwOffset))
 				nIndex = pPhonetic->GetNext(nIndex);
 
-			if((nIndex != -1) && pPhonetic->GetOffset(nIndex) < dwNext) // this one overlaps
+			if ((nIndex != -1) && pPhonetic->GetOffset(nIndex) < dwNext) // this one overlaps
 			{
 				int nLast = pPhonetic->GetNext(nIndex);
 				szString = pPhonetic->GetSegmentString(nIndex);
@@ -1450,7 +1450,7 @@ void CExportTable::OnOK()
 		DWORD dwEnd;
 		DWORD dwCalcIncrement;
 		DWORD dwIndex;
-		if(m_nCalculationMethod == 0)
+		if (m_nCalculationMethod == 0)
 		{
 			dwBegin = dwEnd = (dwOffset + dwNext)/2;
 			dwEnd++;
@@ -1461,10 +1461,10 @@ void CExportTable::OnOK()
 			dwBegin = dwOffset;
 			dwEnd = dwNext;
 			dwCalcIncrement = (dwEnd - dwBegin)/20;
-			if(!dwCalcIncrement) dwCalcIncrement = 1;
+			if (!dwCalcIncrement) dwCalcIncrement = 1;
 		}
 
-		if(m_bMagnitude)
+		if (m_bMagnitude)
 		{
 			int dwSamples = 0;
 			BOOL bRes = TRUE;
@@ -1476,11 +1476,11 @@ void CExportTable::OnOK()
 				fData += pDoc->GetLoudness()->GetProcessedData(dwProcData, &bRes);
 				dwSamples++;
 			}
-			if(dwSamples && bRes)
+			if (dwSamples && bRes)
 			{
 				fData = fData/ dwSamples;
 				double fLoudnessMax = pDoc->GetLoudness()->GetMaxValue();
-				if(fData*10000. < fLoudnessMax)
+				if (fData*10000. < fLoudnessMax)
 					fData = fLoudnessMax/10000.;
 
 				double db = 20.0 * log10(fData/32767.) + 9.;  // loudness is rms full scale would be 9dB over recommended recording level
@@ -1491,7 +1491,7 @@ void CExportTable::OnOK()
 				szString = "\t";
 			WriteFileUtf8(pFile, szString);
 		}
-		if(m_bPitch)
+		if (m_bPitch)
 		{
 			int dwSamples = 0;
 			BOOL bRes = TRUE;
@@ -1507,7 +1507,7 @@ void CExportTable::OnOK()
 					dwSamples++;
 				}
 			}
-			if(dwSamples && bRes)
+			if (dwSamples && bRes)
 			{
 				double fData = double(nData) / PRECISION_MULTIPLIER/ dwSamples;
 				swprintf_s(szString.GetBuffer(25),25,_T("%.1f\t"),fData);
@@ -1532,7 +1532,7 @@ void CExportTable::OnOK()
 					dwSamples++;
 				}
 			}
-			if(dwSamples && bRes)
+			if (dwSamples && bRes)
 			{
 				double fData = double(nData) / PRECISION_MULTIPLIER/ dwSamples;
 				swprintf_s(szString.GetBuffer(25),25,_T("%.1f\t"),fData);
@@ -1557,7 +1557,7 @@ void CExportTable::OnOK()
 					dwSamples++;
 				}
 			}
-			if(dwSamples && bRes)
+			if (dwSamples && bRes)
 			{
 				double fData = double(nData) / PRECISION_MULTIPLIER/ dwSamples;
 				swprintf_s(szString.GetBuffer(25),25,_T("%.1f\t"),fData);
@@ -1567,7 +1567,7 @@ void CExportTable::OnOK()
 				szString = "\t";
 			WriteFileUtf8(pFile, szString);
 		}
-		if(m_bMelogram)
+		if (m_bMelogram)
 		{
 			int dwSamples = 0;                
 			BOOL bRes = TRUE;
@@ -1583,7 +1583,7 @@ void CExportTable::OnOK()
 					dwSamples++;
 				}
 			}
-			if(dwSamples && bRes)
+			if (dwSamples && bRes)
 			{
 				double fData = double(nData) / 100.0 / dwSamples;
 				swprintf_s(szString.GetBuffer(25),25,_T("%.2f\t"),fData);
@@ -1593,7 +1593,7 @@ void CExportTable::OnOK()
 				szString = "\t";
 			WriteFileUtf8(pFile, szString);
 		}
-		if(m_bZeroCrossings)
+		if (m_bZeroCrossings)
 		{
 			int dwSamples = 0;
 			BOOL bRes = TRUE;
@@ -1605,7 +1605,7 @@ void CExportTable::OnOK()
 				nData += pDoc->GetZCross()->GetProcessedData(dwProcData, &bRes);
 				dwSamples++;
 			}
-			if(dwSamples && bRes)
+			if (dwSamples && bRes)
 			{
 				nData = nData/ dwSamples;
 				swprintf_s(szString.GetBuffer(25),25,_T("%d\t"),(int)nData);
@@ -1616,7 +1616,7 @@ void CExportTable::OnOK()
 			WriteFileUtf8(pFile, szString);
 		}
 
-		if(m_bF1 || m_bF2 || m_bF3 || m_bF4)
+		if (m_bF1 || m_bF2 || m_bF3 || m_bF4)
 		{
 			int dwSamples[5] = {0,0,0,0,0};
 			double pFormFreq[5] = {0,0,0,0,0};
@@ -1629,7 +1629,7 @@ void CExportTable::OnOK()
 				FORMANT_FREQ* pFormFreqCurr = (FORMANT_FREQ*)pDoc->GetFormantTracker()->GetProcessedData(dwProcData, sizeof(FORMANT_FREQ));
 				for(int n = 1; n<5; n++)
 				{
-					if(pFormFreqCurr->F[n] == (float)NA)
+					if (pFormFreqCurr->F[n] == (float)NA)
 					{
 						continue;
 					}
@@ -1642,7 +1642,7 @@ void CExportTable::OnOK()
 				pFormFreq[n] /= dwSamples[n];
 				if (bFormOn[n])
 				{
-					if(dwSamples[n])
+					if (dwSamples[n])
 					{
 						swprintf_s(szString.GetBuffer(25),25,_T("%.1f\t"),(double) pFormFreq[n]);
 						szString.ReleaseBuffer();
@@ -1669,7 +1669,7 @@ void CExportTable::OnOK()
 				dwOffset = dwStopPosition;
 		}
 	}
-	if(pFile) delete pFile;
+	if (pFile) delete pFile;
 
 	CDialog::OnOK();
 }
@@ -1691,7 +1691,7 @@ BOOL CExportTable::OnInitDialog()
 
 	CSaDoc* pDoc = (CSaDoc*)((CMainFrame*)AfxGetMainWnd())->GetCurrSaView()->GetDocument();
 
-	if(pDoc->GetSegment(PHONETIC)->IsEmpty()) // no annotations
+	if (pDoc->GetSegment(PHONETIC)->IsEmpty()) // no annotations
 	{
 		BOOL bEnable = FALSE;
 		SetEnable(IDC_EXTAB_PHONETIC, bEnable);
@@ -1722,7 +1722,7 @@ void CExportTable::SetEnable(int nItem, BOOL bEnable)
 {
 	CWnd* pWnd = GetDlgItem(nItem);
 
-	if(pWnd)
+	if (pWnd)
 	{
 		pWnd->EnableWindow(bEnable);
 	}
@@ -1735,10 +1735,10 @@ void CExportTable::SetVisible(int nItem, BOOL bVisible, BOOL bEnable /*=TRUE*/)
 {
 	CWnd* pWnd = GetDlgItem(nItem);
 
-	if(pWnd)
+	if (pWnd)
 	{
 		pWnd->EnableWindow(bVisible && bEnable);// disable invisible items, enable on show
-		if(bVisible)
+		if (bVisible)
 		{
 			pWnd->SetWindowPos(NULL, 0,0,0,0,SWP_NOMOVE+SWP_NOSIZE+SWP_NOZORDER+SWP_SHOWWINDOW);
 		}
@@ -1757,7 +1757,7 @@ void CExportTable::OnUpdateIntervalTime()
 {
 	CWnd* pWnd = GetDlgItem(IDC_EXTAB_INTERVAL_TIME);
 
-	if(pWnd)
+	if (pWnd)
 	{
 		CSaString szText;
 		BOOL bChanged = FALSE;
@@ -1766,12 +1766,12 @@ void CExportTable::OnUpdateIntervalTime()
 
 		for(int nIndex=0; nIndex < szText.GetLength(); nIndex++)
 		{
-			if((szText[nIndex] < '0') || (szText[nIndex] > '9'))
+			if ((szText[nIndex] < '0') || (szText[nIndex] > '9'))
 			{
 				szText = szText.Left(nIndex) + szText.Mid(nIndex+1);
 				bChanged = TRUE;
 			}
-			if(bChanged) // only change if necessary (will cause infinite loop)
+			if (bChanged) // only change if necessary (will cause infinite loop)
 				pWnd->SetWindowText(szText);
 		}
 	}
@@ -1787,9 +1787,9 @@ void CExportTable::OnSample()
 	UpdateData(TRUE);
 	CSaDoc* pDoc = (CSaDoc*)((CMainFrame*)AfxGetMainWnd())->GetCurrSaView()->GetDocument();
 
-	if(pDoc->GetSegment(PHONETIC)->IsEmpty()) // no annotations
+	if (pDoc->GetSegment(PHONETIC)->IsEmpty()) // no annotations
 	{
-		if(m_nSampleRate == 0)
+		if (m_nSampleRate == 0)
 		{
 			AfxMessageBox(IDS_ERROR_NOSEGMENTS,MB_OK,0);
 			m_nSampleRate = 1;
@@ -1806,7 +1806,7 @@ void CExportTable::OnSample()
 void CExportTable::OnPhonetic()
 {
 	UpdateData(TRUE);
-	if(m_nSampleRate == 0)
+	if (m_nSampleRate == 0)
 		m_bPhonetic2 = m_bPhonetic;
 	else
 		m_bPhonetic = m_bPhonetic2;
@@ -1878,7 +1878,7 @@ BOOL CImport::Import(int nMode)
 				obs.getIos().seekg(pos);  // start before marker
 				obs.getIos().clear();
 				BOOL result = ReadTable(obs, nMode);
-				if(result)
+				if (result)
 				{
 					Imported += "\\" + CSaString(pszMarkerRead) + " (Entire Table)" + CrLf;
 					bTable = TRUE;
@@ -1909,9 +1909,9 @@ BOOL CImport::Import(int nMode)
 
 				String.MakeUpper();
 
-				if(String == "ADULT MALE") nGender = 0;         // male
-				else if(String == "ADULT FEMALE") nGender = 1;  // female
-				else if(String == "CHILD") nGender = 2;  // child
+				if (String == "ADULT MALE") nGender = 0;         // male
+				else if (String == "ADULT FEMALE") nGender = 1;  // female
+				else if (String == "CHILD") nGender = 2;  // child
 
 				pDoc->GetSourceParm()->nGender = nGender;
 			}
@@ -1925,28 +1925,28 @@ BOOL CImport::Import(int nMode)
 				pDoc->GetSaParm()->szDescription = String;
 			else if ( obs.bReadString(psz_Phonetic, &String) )
 			{
-				if(!pPhonetic)
+				if (!pPhonetic)
 					pPhonetic = new CSaString;
 				*pPhonetic = String;
 				continue;
 			}
 			else if ( obs.bReadString(psz_Phonemic, &String) )
 			{
-				if(!pPhonemic)
+				if (!pPhonemic)
 					pPhonemic = new CSaString;
 				*pPhonemic = String;
 				continue;
 			}
 			else if ( obs.bReadString(psz_Orthographic, &String) )
 			{
-				if(!pOrtho)
+				if (!pOrtho)
 					pOrtho = new CSaString;
 				*pOrtho = String;
 				continue;
 			}
 			else if ( obs.bReadString(psz_Gloss, &String) )
 			{
-				if(!pGloss)
+				if (!pGloss)
 					pGloss = new CSaString;
 				*pGloss = " " + String;
 
@@ -2592,7 +2592,7 @@ static const CSaString extractTabField(const CSaString& szLine, const int nField
 
 	while((nLoop < szLine.GetLength()) && (nCount < nField))
 	{
-		if(szLine[nLoop] == '\t')
+		if (szLine[nLoop] == '\t')
 			nCount++;
 		nLoop++;
 	}
@@ -2608,17 +2608,17 @@ static void CreateWordSegments(const int nWord, int& nSegments)
 {
 	CSaDoc* pDoc = (CSaDoc*)((CMainFrame*)AfxGetMainWnd())->GetCurrSaView()->GetDocument();
 
-	if(pDoc->GetSegment(GLOSS)->GetOffsetSize() > nWord)
+	if (pDoc->GetSegment(GLOSS)->GetOffsetSize() > nWord)
 	{
 		DWORD dwStart;
 		DWORD dwStop;
 		int nPhonetic;
 		CPhoneticSegment* pPhonetic = (CPhoneticSegment*) pDoc->GetSegment(PHONETIC);
 
-		if(nWord == -1)
+		if (nWord == -1)
 		{
 			dwStart = 0;
-			if(pDoc->GetSegment(GLOSS)->IsEmpty())
+			if (pDoc->GetSegment(GLOSS)->IsEmpty())
 			{
 				dwStop = pDoc->GetUnprocessedDataSize();
 			}
@@ -2626,7 +2626,7 @@ static void CreateWordSegments(const int nWord, int& nSegments)
 			{
 				dwStop = pDoc->GetSegment(GLOSS)->GetOffset(0);
 			}
-			if(dwStart + pDoc->GetBytesFromTime(MIN_EDIT_SEGMENT_TIME) > dwStop) return;
+			if (dwStart + pDoc->GetBytesFromTime(MIN_EDIT_SEGMENT_TIME) > dwStop) return;
 			nPhonetic = 0;
 		}
 		else
@@ -2637,11 +2637,11 @@ static void CreateWordSegments(const int nWord, int& nSegments)
 			nPhonetic = pPhonetic->FindOffset(dwStart);
 		}
 		// Limit number of segments
-		if(nSegments*pDoc->GetBytesFromTime(MIN_ADD_SEGMENT_TIME) > (dwStop -dwStart))
+		if (nSegments*pDoc->GetBytesFromTime(MIN_ADD_SEGMENT_TIME) > (dwStop -dwStart))
 		{
 			nSegments = (int)((dwStop -dwStart)/pDoc->GetBytesFromTime(MIN_ADD_SEGMENT_TIME));
-			if(!nSegments) nSegments = 1;
-			if(nSegments*pDoc->GetBytesFromTime(MIN_EDIT_SEGMENT_TIME) > (dwStop -dwStart))
+			if (!nSegments) nSegments = 1;
+			if (nSegments*pDoc->GetBytesFromTime(MIN_EDIT_SEGMENT_TIME) > (dwStop -dwStart))
 				return;
 		}
 		// remove excess segments
@@ -2649,11 +2649,11 @@ static void CreateWordSegments(const int nWord, int& nSegments)
 		int nIndex = nPhonetic;
 		while ((nIndex != -1)&&(pPhonetic->GetOffset(nIndex) < dwStop))
 		{
-			if(nCount >= nSegments)
+			if (nCount >= nSegments)
 			{
 				pPhonetic->SetSelection(nIndex);
 				pPhonetic->Remove(pDoc, FALSE); // no checkpoint
-				if(nIndex >= pPhonetic->GetOffsetSize()) break;
+				if (nIndex >= pPhonetic->GetOffsetSize()) break;
 			}
 			else
 			{
@@ -2667,7 +2667,7 @@ static void CreateWordSegments(const int nWord, int& nSegments)
 		// add segments
 		while (nCount < nSegments)
 		{
-			if(nIndex == -1) nIndex = pPhonetic->GetOffsetSize();
+			if (nIndex == -1) nIndex = pPhonetic->GetOffsetSize();
 			DWORD dwBegin = dwStart + nCount;
 			CSaString szEmpty(SEGMENT_DEFAULT_CHAR);
 			pPhonetic->Insert(nIndex, &szEmpty, FALSE, dwBegin, 1);
@@ -2676,19 +2676,19 @@ static void CreateWordSegments(const int nWord, int& nSegments)
 		}
 		// adjust segment spacing
 		DWORD dwSize = (dwStop - dwStart)/nSegments;
-		if(pDoc->GetFmtParm()->wBlockAlign==2)
+		if (pDoc->GetFmtParm()->wBlockAlign==2)
 		{
 			dwSize &= ~1;
 		};
 		dwSize += pDoc->GetFmtParm()->wBlockAlign;
-		if(nIndex == -1) nIndex = pPhonetic->GetOffsetSize();
+		if (nIndex == -1) nIndex = pPhonetic->GetOffsetSize();
 		nIndex = pPhonetic->GetPrevious(nIndex);
 		while((nIndex != -1)&&(pPhonetic->GetOffset(nIndex) >= dwStart))
 		{
 			nCount--;
 			DWORD dwBegin = dwStart+nCount*dwSize;
 			DWORD dwDuration = dwSize;
-			if((dwBegin + dwDuration) > dwStop) dwDuration = dwStop - dwBegin;
+			if ((dwBegin + dwDuration) > dwStop) dwDuration = dwStop - dwBegin;
 			pPhonetic->Adjust(pDoc, nIndex, dwBegin, dwDuration);
 			nIndex = pPhonetic->GetPrevious(nIndex);
 		}
@@ -2712,15 +2712,15 @@ BOOL CImport::ReadTable(Object_istream &obs, int nMode)
 	// eat table marker
 	obs.getIos().getline(pUtf8,MAXLINE);
 	szLine.setUtf8(pUtf8);
-	if(szLine.GetLength() >= (MAXLINE - 1)) // error
+	if (szLine.GetLength() >= (MAXLINE - 1)) // error
 		return FALSE;
-	if(szLine.Find(CString(psz_Table)) ==-1) // error
+	if (szLine.Find(CString(psz_Table)) ==-1) // error
 		return FALSE;
 
 	// read header
 	obs.getIos().getline(pUtf8,MAXLINE);
 	szLine.setUtf8(pUtf8);
-	if(szLine.GetLength() >= (MAXLINE - 1)) // error
+	if (szLine.GetLength() >= (MAXLINE - 1)) // error
 		return FALSE;
 
 	// parse header
@@ -2734,28 +2734,28 @@ BOOL CImport::ReadTable(Object_istream &obs, int nMode)
 	{
 		szField = extractTabField(szLine, nLoop);
 
-		if(szField.Find(_T("Time")) != -1)
+		if (szField.Find(_T("Time")) != -1)
 			return FALSE;  // table is not built on phonetic segment boundaries
-		else if(szField.Find(_T("Ref")) != -1)
+		else if (szField.Find(_T("Ref")) != -1)
 			nAnnotField[REFERENCE] = nLoop;
-		else if(szField.Find(_T("Etic")) != -1)
+		else if (szField.Find(_T("Etic")) != -1)
 			nAnnotField[PHONETIC] = nLoop;
-		else if(szField.Find(_T("Tone")) != -1)
+		else if (szField.Find(_T("Tone")) != -1)
 			nAnnotField[TONE] = nLoop;
-		else if(szField.Find(_T("Emic")) != -1)
+		else if (szField.Find(_T("Emic")) != -1)
 			nAnnotField[PHONEMIC] = nLoop;
-		else if(szField.Find(_T("Ortho")) != -1)
+		else if (szField.Find(_T("Ortho")) != -1)
 			nAnnotField[ORTHO] = nLoop;
-		else if(szField.Find(_T("Gloss")) != -1)
+		else if (szField.Find(_T("Gloss")) != -1)
 			nAnnotField[GLOSS] = nLoop;
-		else if(szField.Find(_T("POS")) != -1)
+		else if (szField.Find(_T("POS")) != -1)
 			nAnnotField[ANNOT_WND_NUMBER] = nLoop;
 	}
 	// create new segmentation
-	if(nMode == QUERY)
+	if (nMode == QUERY)
 	{
 		CImportDlg* pImport = new CImportDlg;
-		if(pImport->DoModal() != IDOK)
+		if (pImport->DoModal() != IDOK)
 		{
 			// process canceled by user
 			pDoc->Undo(FALSE);
@@ -2765,7 +2765,7 @@ BOOL CImport::ReadTable(Object_istream &obs, int nMode)
 		nMode = pImport->m_nMode;
 		if (pImport) delete pImport;
 	}
-	if((pDoc->GetSegment(GLOSS)->IsEmpty())&& (nMode!=KEEP))
+	if ((pDoc->GetSegment(GLOSS)->IsEmpty())&& (nMode!=KEEP))
 	{
 		// do equal segmentation (replaces auto parse)
 		streampos pos = obs.getIos().tellg();  // save top of file position
@@ -2779,9 +2779,9 @@ BOOL CImport::ReadTable(Object_istream &obs, int nMode)
 			// read line
 			obs.getIos().getline(pUtf8,MAXLINE);
 			szLine.setUtf8(pUtf8);
-			if(szLine.GetLength() >= (MAXLINE - 1)) // error
+			if (szLine.GetLength() >= (MAXLINE - 1)) // error
 				return FALSE;
-			if(extractTabField(szLine, nAnnotField[GLOSS]).GetLength()) // gloss found
+			if (extractTabField(szLine, nAnnotField[GLOSS]).GetLength()) // gloss found
 			{
 				nSegmentToBeginWord[nWords] = nSegmentCount;
 				nWords++;
@@ -2829,10 +2829,10 @@ BOOL CImport::ReadTable(Object_istream &obs, int nMode)
 		}
 	}
 
-	if((nMode == MANUAL) && (nAnnotField[GLOSS] == -1))
+	if ((nMode == MANUAL) && (nAnnotField[GLOSS] == -1))
 		nMode = AUTO;
 
-	if(nMode == MANUAL)
+	if (nMode == MANUAL)
 	{
 		streampos pos = obs.getIos().tellg();  // save top of file position
 
@@ -2843,9 +2843,9 @@ BOOL CImport::ReadTable(Object_istream &obs, int nMode)
 			// read line
 			obs.getIos().getline(pUtf8,MAXLINE);
 			szLine.setUtf8(pUtf8);
-			if(szLine.GetLength() >= (MAXLINE - 1)) // error
+			if (szLine.GetLength() >= (MAXLINE - 1)) // error
 				return FALSE;
-			if(extractTabField(szLine, nAnnotField[GLOSS]).GetLength()) // gloss found
+			if (extractTabField(szLine, nAnnotField[GLOSS]).GetLength()) // gloss found
 			{
 				CreateWordSegments(nWordCount, nSegmentCount);
 				nWordCount++;
@@ -2870,16 +2870,16 @@ BOOL CImport::ReadTable(Object_istream &obs, int nMode)
 	CSegment* pPhonetic = pDoc->GetSegment(PHONETIC);
 	CGlossSegment* pGloss = (CGlossSegment*) pDoc->GetSegment(GLOSS);
 	CSaString szString = WORD_DELIMITER;
-	if(nAnnotField[GLOSS] != -1)
+	if (nAnnotField[GLOSS] != -1)
 	{
 		for(int nIndex = 0; nIndex < pGloss->GetOffsetSize(); nIndex++)
 		{
-			if(pGloss->GetSelection() != nIndex) pGloss->SetSelection(nIndex);
+			if (pGloss->GetSelection() != nIndex) pGloss->SetSelection(nIndex);
 			pGloss->ReplaceSelectedSegment(pDoc, szString);
 		}
 	}
 	szString = SEGMENT_DEFAULT_CHAR;
-	if(nAnnotField[PHONETIC] != -1)
+	if (nAnnotField[PHONETIC] != -1)
 	{
 		for(int nIndex = 0; nIndex < pPhonetic->GetOffsetSize(); nIndex++)
 		{
@@ -2889,10 +2889,10 @@ BOOL CImport::ReadTable(Object_istream &obs, int nMode)
 	}
 	for(int nIndex = PHONETIC+1; nIndex < ANNOT_WND_NUMBER; nIndex++)
 	{
-		if((nAnnotField[nIndex] != -1)&& (nIndex != GLOSS))
+		if ((nAnnotField[nIndex] != -1)&& (nIndex != GLOSS))
 			pDoc->GetSegment(nIndex)->DeleteContents();
 	}
-	if(nAnnotField[ANNOT_WND_NUMBER/* POS*/] != -1)
+	if (nAnnotField[ANNOT_WND_NUMBER/* POS*/] != -1)
 	{
 		for(int nIndex = 0; nIndex < pDoc->GetSegment(GLOSS)->GetOffsetSize(); nIndex++)
 			((CGlossSegment*)pDoc->GetSegment(GLOSS))->GetPOSs()->SetAt(nIndex, "");
@@ -2903,23 +2903,23 @@ BOOL CImport::ReadTable(Object_istream &obs, int nMode)
 	int nIndexGloss = -1;
 	BOOL bAppendGloss;
 	BOOL bAppendPhonetic = FALSE;
-	if(pPhonetic->IsEmpty()) return FALSE; // no where to go
+	if (pPhonetic->IsEmpty()) return FALSE; // no where to go
 	while(obs.getIos().peek() != EOF)
 	{
 		// read line
 		obs.getIos().getline(pUtf8,MAXLINE);
 		szLine.setUtf8(pUtf8);
-		if(szLine.GetLength() >= (MAXLINE - 1)) // error
+		if (szLine.GetLength() >= (MAXLINE - 1)) // error
 			return FALSE;
 
 		szString = extractTabField(szLine, nAnnotField[GLOSS]);
-		if(szString.GetLength()) // gloss found
+		if (szString.GetLength()) // gloss found
 		{
 			nIndexGloss++;
-			if(nIndexGloss >= pGloss->GetOffsetSize())
+			if (nIndexGloss >= pGloss->GetOffsetSize())
 			{
 				nIndexGloss--;
-				if(nIndexPhonetic == pPhonetic->GetPrevious(pPhonetic->GetOffsetSize()))
+				if (nIndexPhonetic == pPhonetic->GetPrevious(pPhonetic->GetOffsetSize()))
 				{
 					bAppendPhonetic = TRUE;
 				}
@@ -2946,18 +2946,18 @@ BOOL CImport::ReadTable(Object_istream &obs, int nMode)
 
 			// POS
 			szString = extractTabField(szLine, nAnnotField[ANNOT_WND_NUMBER/*POS*/]);
-			if(szString.GetLength())
+			if (szString.GetLength())
 			{
-				if(bAppendGloss)
+				if (bAppendGloss)
 					szString = pGloss->GetPOSs()->GetAt(nIndexGloss) + " " + szString;
 				pGloss->GetPOSs()->SetAt(nIndexGloss, szString);
 			}
 			// Reference
 			szString = extractTabField(szLine, nAnnotField[REFERENCE]);
-			if(szString.GetLength())
+			if (szString.GetLength())
 			{
 				pView->ASelection().SelectFromPosition(pView, REFERENCE, pGloss->GetOffset(nIndexGloss), CASegmentSelection::FIND_EXACT);
-				if(bAppendGloss)
+				if (bAppendGloss)
 					szString = pView->ASelection().GetSelectedAnnotationString(pView,FALSE) + " " + szString;
 				pView->ASelection().SetSelectedAnnotationString(pView, szString, TRUE, FALSE);
 			}
@@ -2965,22 +2965,22 @@ BOOL CImport::ReadTable(Object_istream &obs, int nMode)
 		for(int nIndex = PHONETIC; nIndex < GLOSS; nIndex++)
 		{
 			szString = extractTabField(szLine, nAnnotField[nIndex]);
-			if(szString.GetLength())
+			if (szString.GetLength())
 			{
 				pView->ASelection().SelectFromPosition(pView, nIndex, pPhonetic->GetOffset(nIndexPhonetic), CASegmentSelection::FIND_EXACT);
-				if(bAppendPhonetic)
+				if (bAppendPhonetic)
 					szString = pView->ASelection().GetSelectedAnnotationString(pView,FALSE) + /*" " +*/ szString; // SDM 1.5Test10.7 remove spaces
 				pView->ASelection().SetSelectedAnnotationString(pView, szString, TRUE, FALSE);
 			}
 		}
 
 		nIndexPhonetic = pPhonetic->GetNext(nIndexPhonetic);
-		if(nIndexPhonetic == -1)
+		if (nIndexPhonetic == -1)
 		{
 			nIndexPhonetic = pPhonetic->GetPrevious(pPhonetic->GetOffsetSize());
 			bAppendPhonetic = TRUE;
 		}
-		else if(((nIndexGloss + 1) < pGloss->GetOffsetSize()) && (pPhonetic->GetOffset(nIndexPhonetic) >= pGloss->GetOffset(nIndexGloss + 1)))
+		else if (((nIndexGloss + 1) < pGloss->GetOffsetSize()) && (pPhonetic->GetOffset(nIndexPhonetic) >= pGloss->GetOffset(nIndexGloss + 1)))
 		{
 			nIndexPhonetic = pPhonetic->GetPrevious(nIndexPhonetic);
 			bAppendPhonetic = TRUE;

@@ -137,8 +137,8 @@ void CPlotDurations::DurationsPaint(DWORD /*dwMinDuration*/, DWORD dwMaxDuration
 		if (dwDataFrame == 0) return; // nothing to draw
 
 		// Conditionally inflate drawing area
-		if(rDraw.left > 0) rDraw.left--;
-		if(rDraw.right < rWnd.Width()) rDraw.right++;
+		if (rDraw.left > 0) rDraw.left--;
+		if (rDraw.right < rWnd.Width()) rDraw.right++;
 
 		double fHPixPerByte = (double)rWnd.Width() / (double)dwDataFrame;
 		double fDataPos   = pView->GetDataPosition(rWnd.Width()); // data index of first sample to display
@@ -209,7 +209,7 @@ void CPlotDurations::DurationsPaint(DWORD /*dwMinDuration*/, DWORD dwMaxDuration
 			pDC->LineTo(rBar.right, rBar.bottom);  // right side of bar
 
 			nSymbol = pSegment->GetNext(nSymbol);
-			if(nSymbol == -1) break;
+			if (nSymbol == -1) break;
 		}
 
 		// restore old pen

@@ -118,7 +118,7 @@ long CProcessTonalWeightChart::Process(void* pCaller, ISaDoc * pDoc, DWORD dwFra
     // start tonal weighting chart process
     BeginWaitCursor(); // wait cursor
     // to do: need new status bar text for TWC
-    if(!StartProcess(pCaller, IDS_STATTXT_PROCESSTWC)) // memory allocation failed
+    if (!StartProcess(pCaller, IDS_STATTXT_PROCESSTWC)) // memory allocation failed
     { 
       EndProcess(); // end data processing
       EndWaitCursor();
@@ -143,7 +143,7 @@ long CProcessTonalWeightChart::Process(void* pCaller, ISaDoc * pDoc, DWORD dwFra
     m_dMaxSemitone = nMaxSemitone;
     
     CHistogram* ppoHist = MakeTwcHistogram(pMelogram, m_nBinsPerSemitone, m_dMinSemitone, m_dMaxSemitone, dwFrameStart/2, dwFrameSize/2);
-    if(!ppoHist)
+    if (!ppoHist)
     { ProcessFreeMem;
       return Exit(PROCESS_ERROR); // error, reading failed
     }

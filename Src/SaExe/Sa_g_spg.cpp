@@ -238,7 +238,7 @@ BOOL CPlotSpectrogram::CreateSpectroPalette(CDC* pDC, CDocument* /*pSaDoc*/)
 	if (nRasterCaps) nNumColors = pDC->GetDeviceCaps(SIZEPALETTE);
 	else nNumColors = pDC->GetDeviceCaps(NUMCOLORS);
 
-	if(nNumColors == -1)
+	if (nNumColors == -1)
 	{
 		int nBits = pDC->GetDeviceCaps(BITSPIXEL);
 		nNumColors = 1 << nBits;
@@ -277,7 +277,7 @@ BOOL CPlotSpectrogram::CreateSpectroPalette(CDC* pDC, CDocument* /*pSaDoc*/)
 		if (!lpLogPalette) return FALSE;
 		lpLogPalette->palVersion = 0x300;
 		lpLogPalette->palNumEntries = WORD(2 * nPaletteSize);
-		if(!bPaletteInit)
+		if (!bPaletteInit)
 		{
 			if (!SpectroPalette.CreatePalette(lpLogPalette)) return FALSE;
 		}
@@ -318,7 +318,7 @@ BOOL CPlotSpectrogram::CreateSpectroPalette(CDC* pDC, CDocument* /*pSaDoc*/)
 	// select the new palette
 	CPalette *pOldSysPalette;
 	pOldSysPalette = pDC->SelectPalette(&SpectroPalette, FALSE);
-	if(pOldSysPalette) // SDM 1.5Test11.32
+	if (pOldSysPalette) // SDM 1.5Test11.32
 		pOldSysPalette->UnrealizeObject();
 	pDC->RealizePalette();
 	return TRUE;
@@ -489,7 +489,7 @@ BOOL CPlotSpectrogram::OnDrawSpectrogram(CDC *pDC, CRect rWnd, CRect rClip, CSaV
 	double fDataStart = pView->GetDataPosition(rWnd.Width()); // byte offset of first sample to displayed in raw waveform plot
 	DWORD dwDataLength = pView->GetDataFrame(); // number of bytes displayed in raw waveform plot
 
-	if(!IsRealTime())
+	if (!IsRealTime())
 	{
 		// Snapshot(Spectrogram B) special case
 		fDataStart = dwSpgmStart;
@@ -503,7 +503,7 @@ BOOL CPlotSpectrogram::OnDrawSpectrogram(CDC *pDC, CRect rWnd, CRect rClip, CSaV
 	double fSpectraPerPix = fSpectraPerSample * fSamplesPerPix;
 	double fSpectrum = (fSample-double(dwSpgmStart/nSmpSize)) * fSpectraPerSample; 
 
-	if(bAliased && fSpectraPerPix > 1.0)
+	if (bAliased && fSpectraPerPix > 1.0)
 		*bAliased = TRUE;
 
 	fSpectrum += rClip.left*fSpectraPerPix;
@@ -517,7 +517,7 @@ BOOL CPlotSpectrogram::OnDrawSpectrogram(CDC *pDC, CRect rWnd, CRect rClip, CSaV
 
 	int nSpectrumIndex = int(dSpectrumPoints);
 	double *dlog = NULL;
-	if(bEnhanceFormants)
+	if (bEnhanceFormants)
 	{
 		dlog = new double[nSpectrumIndex + 1];
 		for (; nSpectrumIndex>0; nSpectrumIndex--)
@@ -531,7 +531,7 @@ BOOL CPlotSpectrogram::OnDrawSpectrogram(CDC *pDC, CRect rWnd, CRect rClip, CSaV
 	// built in. If the graph is larger than it was when the spectrogram was generated,
 	// then the missing pixels will just be copied from existing data
 	// points. If it is smaller, data points will be skipped.
-	if(bSmooth)
+	if (bSmooth)
 	{
 		short* pPowerLeft = new short[rWnd.bottom];
 		short* pPowerRight = new short[rWnd.bottom];
@@ -573,9 +573,9 @@ BOOL CPlotSpectrogram::OnDrawSpectrogram(CDC *pDC, CRect rWnd, CRect rClip, CSaV
 
 				nLeftRightStatus = (nLeftRightStatus * 2) & 0x3;
 
-				if(!bWhite)
+				if (!bWhite)
 				{
-					if(bEnhanceFormants)
+					if (bEnhanceFormants)
 					{
 						double dOffset = 0;
 						double localSlope = 0;
@@ -598,7 +598,7 @@ BOOL CPlotSpectrogram::OnDrawSpectrogram(CDC *pDC, CRect rWnd, CRect rClip, CSaV
 
 							n++;
 						}
-						if(sumX)
+						if (sumX)
 						{
 							localSlope = (n*sumXY - sumX*sumY)/(n*sumXX - sumX*sumX);
 							dOffset = sumY/n - localSlope*sumX/n;
@@ -612,7 +612,7 @@ BOOL CPlotSpectrogram::OnDrawSpectrogram(CDC *pDC, CRect rWnd, CRect rClip, CSaV
 							dMinPower = min(dMinPower, pPower[nSpectrumIndex] - (dlog[nSpectrumIndex]*localSlope + dOffset));
 						}
 
-						if(dMaxPower < dMinPower + 12)
+						if (dMaxPower < dMinPower + 12)
 							dMaxPower = dMinPower + 12;
 
 						// Vertical Linear Interpolation
@@ -643,7 +643,7 @@ BOOL CPlotSpectrogram::OnDrawSpectrogram(CDC *pDC, CRect rWnd, CRect rClip, CSaV
 					nLeftRightStatus += 1;
 				}
 
-				if(dwPrevSpectrum == (DWORD)UNDEFINED_OFFSET)
+				if (dwPrevSpectrum == (DWORD)UNDEFINED_OFFSET)
 				{
 					// initial pass we need to preload left (just finished)
 					// then load right
@@ -656,7 +656,7 @@ BOOL CPlotSpectrogram::OnDrawSpectrogram(CDC *pDC, CRect rWnd, CRect rClip, CSaV
 
 			uint8 *pPixel = ((uint8*)pBitmap->bmBits) + x;
 
-			if(nLeftRightStatus == 0x3)
+			if (nLeftRightStatus == 0x3)
 			{
 				// Horizontal linear interpolation
 				double dLeft = dwSpectrum - fSpectrum;
@@ -745,7 +745,7 @@ BOOL CPlotSpectrogram::OnDrawSpectrogram(CDC *pDC, CRect rWnd, CRect rClip, CSaV
 
 
 	delete [] dlog;
-	if(pBitmap)
+	if (pBitmap)
 		delete pBitmap;
 
 	// do common plot paint jobs
@@ -760,9 +760,9 @@ BOOL CPlotSpectrogram::OnDrawFormantTracks(CDC * pDC, CRect rWnd, CRect rClip, C
 	BOOL bTime = !FormantTrackerOptions.m_bShowOriginalFormantTracks;
 	BOOL bFragment = FormantTrackerOptions.m_bShowOriginalFormantTracks;
 
-	if(bTime)
+	if (bTime)
 		bResult &= OnDrawFormantTracksTime(pDC, rWnd, rClip, pView);
-	if(bFragment)
+	if (bFragment)
 		bResult &= OnDrawFormantTracksFragment(pDC, rWnd, rClip, pView);
 
 	return bResult;
@@ -807,7 +807,7 @@ BOOL CPlotSpectrogram::OnDrawFormantTracksFragment(CDC * pDC, CRect rWnd, CRect 
 		double fDataStart = pView->GetDataPosition(rWnd.Width()) / nSmpSize; // index of first sample displayed in raw waveform plot
 		DWORD dwDataLength = pView->GetDataFrame() / nSmpSize;   // number of samples displayed in raw waveform plot
 
-		if(!IsRealTime())
+		if (!IsRealTime())
 		{
 			// Spectrogram B special case
 			CProcessSpectrogram* pSpectrogram = GetSpectrogram(pDoc); // get pointer to spectrogram object
@@ -885,7 +885,7 @@ BOOL CPlotSpectrogram::OnDrawFormantTracksFragment(CDC * pDC, CRect rWnd, CRect 
 				else bSkip = TRUE;
 			}
 
-			if(bPlot && !bOnScreen)
+			if (bPlot && !bOnScreen)
 				break;
 		}
 		pDC->SelectObject(pOldPen);
@@ -932,7 +932,7 @@ BOOL CPlotSpectrogram::OnDrawFormantTracksTime(CDC * pDC, CRect rWnd, CRect rCli
 		double fDataStart = pView->GetDataPosition(rWnd.Width()) / nSmpSize; // index of first sample displayed in raw waveform plot
 		DWORD dwDataLength = pView->GetDataFrame() / nSmpSize;   // number of samples displayed in raw waveform plot
 
-		if(!IsRealTime())
+		if (!IsRealTime())
 		{
 			// Spectrogram B special case
 			CProcessSpectrogram* pSpectrogram = GetSpectrogram(pDoc); // get pointer to spectrogram object
@@ -1000,7 +1000,7 @@ BOOL CPlotSpectrogram::OnDrawFormantTracksTime(CDC * pDC, CRect rWnd, CRect rCli
 				++iterFormants; // move to next slice
 			}
 
-			if(bPlot && !bOnScreen)
+			if (bPlot && !bOnScreen)
 				break;
 		}
 		pDC->SelectObject(pOldPen);
@@ -1147,17 +1147,17 @@ void CPlotSpectrogram::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pVie
 		void *pBits;
 		HBITMAP hBitmap = CreateDIBSection(pMemDC->m_hDC,pInfo,DIB_RGB_COLORS, &pBits,NULL,0);
 
-		if(hBitmap)
+		if (hBitmap)
 		{
 			HBITMAP hOldBitmap = (HBITMAP) ::SelectObject(pMemDC->m_hDC,hBitmap);
 
 			// paint the data into the bitmap
-			if(OnDraw2(pMemDC, rWnd, rClip, pView))
+			if (OnDraw2(pMemDC, rWnd, rClip, pView))
 			{      
 				GdiFlush();  // finish all drawing to pMemDC
 
 				// copy to destination
-				if(!pDC->BitBlt(rWnd.left,rWnd.top,rWnd.Width(),rWnd.Height(),pMemDC,0,0, SRCCOPY))
+				if (!pDC->BitBlt(rWnd.left,rWnd.top,rWnd.Width(),rWnd.Height(),pMemDC,0,0, SRCCOPY))
 				{
 					CSaString szError;
 					szError.Format(_T("BitBLT Failed in ")_T(__FILE__)_T(" line %d"),__LINE__);
@@ -1180,7 +1180,7 @@ void CPlotSpectrogram::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pVie
 		}
 		else
 		{
-			if(pInfo->bmiHeader.biWidth && pInfo->bmiHeader.biHeight)
+			if (pInfo->bmiHeader.biWidth && pInfo->bmiHeader.biHeight)
 			{
 				CSaString szError;
 				szError.Format(_T("CreateDIBSection Failed in ")_T(__FILE__)_T(" line %d"),__LINE__);
@@ -1190,7 +1190,7 @@ void CPlotSpectrogram::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pVie
 	}
 	else
 	{
-		if(!pMemDC || !pInfo)
+		if (!pMemDC || !pInfo)
 		{
 			CSaString szError;
 			szError.Format(_T("memory allocation error in ")_T(__FILE__)_T(" line %d"),__LINE__);
@@ -1205,7 +1205,7 @@ void CPlotSpectrogram::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pVie
 	}
 	if (pMemDC)
 		delete pMemDC;
-	if(pInfo)
+	if (pInfo)
 		delete pInfo;
 
 	pSpectroParm->nColor = backupNcolor;

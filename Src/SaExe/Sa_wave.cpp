@@ -147,7 +147,7 @@ BOOL CWave::ProcessData(int nBuffer)
     if (dwDataSize)
     {
       HPSTR pData = m_pNotifyObj->GetWaveData(m_pView, m_dwPlayPosition, dwDataSize);
-      if(!pData) return FALSE;
+      if (!pData) return FALSE;
       CopyBuffer(pData, pTarget, dwDataSize, (wSmpSize == 1), &nMaxValue, &nMinValue);
       m_dwPlayPosition += dwDataSize;
       if (m_dwPlayPosition >= m_dwEnd) m_bProcessDone = TRUE;
@@ -201,9 +201,9 @@ BOOL CWave::ProcessData(int nBuffer)
     m_dwPlayPosition += (dwPlayLength*m_nSpeed+50)/100*wSmpSize; 
 
     // Use requested fragment to limit position (avoid runout errors)
-    if(m_dwPlayPosition < m_stCallData.dwOffset * wSmpSize)
+    if (m_dwPlayPosition < m_stCallData.dwOffset * wSmpSize)
       m_dwPlayPosition = m_stCallData.dwOffset * wSmpSize;
-    else if(m_dwPlayPosition > (m_stCallData.dwOffset + m_stCallData.wLength) * wSmpSize)
+    else if (m_dwPlayPosition > (m_stCallData.dwOffset + m_stCallData.wLength) * wSmpSize)
       m_dwPlayPosition = (m_stCallData.dwOffset + m_stCallData.wLength) * wSmpSize;
 
     // Don't go beyond end
@@ -413,7 +413,7 @@ BOOL CWave::Play(DWORD dwStart, DWORD dwSize, UINT nVolume, UINT nSpeed,
   m_bBackgroundEnabled = pDoc->IsBackgroundProcessing();
   if (m_bBackgroundEnabled) pDoc->EnableBackgroundProcessing(FALSE);    // disable background processing during playback
   
-  if((nSpeed != 100) && !pFragmenter->IsDataReady())
+  if ((nSpeed != 100) && !pFragmenter->IsDataReady())
   {
     // finish fragmenting
     short int nResult = LOWORD(pFragmenter->Process(this, (CSaDoc *)pDoc)); // process data
@@ -461,7 +461,7 @@ BOOL CWave::Play(DWORD dwStart, DWORD dwSize, UINT nVolume, UINT nSpeed,
 
     m_nNextBlock = ++m_nNextBlock % m_kPlayBuffers;
 
-    if(m_bProcessDone)
+    if (m_bProcessDone)
       break;
   }
   if (m_pNotifyObj && !m_bPlayDone)
@@ -515,7 +515,7 @@ BOOL CWave::Record(HMMIO hmmioFile, CView* pView, DWORD dwOffset,
         return FALSE;
       }
 
-  if(!m_pInDev->GetPreparedBuffers())
+  if (!m_pInDev->GetPreparedBuffers())
   {
     m_nActiveBlock = 0; // use block 0 first
     // We are not already recording/monitoring
@@ -596,7 +596,7 @@ void CWave::NextBlock()
     }
   }
 
-  if(m_bPlayDone)
+  if (m_bPlayDone)
   {
     // shutdown playback device if processing complete
     m_pOutDev->Close(); // close sound device
@@ -747,7 +747,7 @@ CWaveInDevice::~CWaveInDevice()
 {
   if (m_pMixer)
     delete m_pMixer;
-  if(m_pHighPassFilter)
+  if (m_pHighPassFilter)
     delete m_pHighPassFilter;
 }
 
@@ -944,7 +944,7 @@ BOOL CWaveInDevice::Record(int nBuffer, CWave *pWave, BOOL bStart)
     return FALSE;
   }
   
-  if(bStart)
+  if (bStart)
   {
     // start the recording
     mmr = waveInStart(m_hInDev);
@@ -975,7 +975,7 @@ UINT CWaveInDevice::GetVolume(BOOL *pResult)
     FmtParm* pFmtParm = pDoc->GetFmtParm(); // get pointer to wave format parameters
     mmr = waveInOpen (&m_hInDev , WAVE_MAPPER, (WAVEFORMATEX*)pFmtParm, NULL, 0, CALLBACK_NULL);
   }
-  if(!mmr) mmr = m_pMixer->GetVolume(m_hInDev, &dwVolume);
+  if (!mmr) mmr = m_pMixer->GetVolume(m_hInDev, &dwVolume);
 
   if (!bWasOpen)
   {
@@ -1013,7 +1013,7 @@ void CWaveInDevice::SetVolume(UINT nVolume, BOOL *pResult)
     mmr = waveInOpen (&m_hInDev , WAVE_MAPPER, (WAVEFORMATEX*)pFmtParm, NULL, 0, CALLBACK_NULL);
   }
 
-  if(!mmr) mmr = m_pMixer->SetVolume(m_hInDev, dwVolume);
+  if (!mmr) mmr = m_pMixer->SetVolume(m_hInDev, dwVolume);
 
   if (!bWasOpen)
   {
@@ -1049,8 +1049,8 @@ BOOL CWaveInDevice::ShowMixer(BOOL bShow)
     mmr = waveInOpen (&m_hInDev , WAVE_MAPPER, (WAVEFORMATEX*)pFmtParm, NULL, 0, CALLBACK_NULL);
   }
 
-  if(bShow && !mmr) bResult = m_pMixer->ShowMixerControls(m_hInDev);
-  if(!bShow && !mmr) bResult = m_pMixer->CanShowMixerControls(m_hInDev);
+  if (bShow && !mmr) bResult = m_pMixer->ShowMixerControls(m_hInDev);
+  if (!bShow && !mmr) bResult = m_pMixer->CanShowMixerControls(m_hInDev);
 
   if (!bWasOpen)
   {
@@ -1084,7 +1084,7 @@ BOOL CWaveInDevice::ConnectMixer(CWnd* pCallback)
     mmr = waveInOpen(&m_hInDev, WAVE_MAPPER, (WAVEFORMATEX*)pFmtParm, NULL, 0, CALLBACK_NULL);
   }
 
-  if(!mmr) bConnected = m_pMixer->Connect(m_hInDev, pCallback->GetSafeHwnd());
+  if (!mmr) bConnected = m_pMixer->Connect(m_hInDev, pCallback->GetSafeHwnd());
 
   if (!bWasOpen)
   {
@@ -1179,7 +1179,7 @@ CWaveOutDevice::CWaveOutDevice()
 CWaveOutDevice::~CWaveOutDevice()
 {
   ASSERT(m_hOutDev == NULL);
-  if(m_pMixer)
+  if (m_pMixer)
     delete m_pMixer;
 }
 
@@ -1313,7 +1313,7 @@ BOOL CWaveOutDevice::Play(int nBuffer, UINT nVolume, CWave *pWave, BOOL bPause)
     }
     // set the volume
     SetVolume(nVolume);
-    if(bPause)
+    if (bPause)
     {
       mmr = waveOutPause(m_hOutDev);
       if (mmr)
@@ -1330,7 +1330,7 @@ BOOL CWaveOutDevice::Play(int nBuffer, UINT nVolume, CWave *pWave, BOOL bPause)
       return FALSE;
     }
 
-    if(!bPause)
+    if (!bPause)
     {
       mmr = waveOutRestart(m_hOutDev);
       if (mmr)
@@ -1362,7 +1362,7 @@ UINT CWaveOutDevice::GetVolume(BOOL *pResult)
     FmtParm* pFmtParm = pDoc->GetFmtParm(); // get pointer to wave format parameters
     mmr = waveOutOpen(&m_hOutDev, WAVE_MAPPER, (WAVEFORMATEX*)pFmtParm, NULL, 0, CALLBACK_NULL);
   }
-  if(!mmr) mmr = m_pMixer->GetVolume(m_hOutDev, &dwVolume);
+  if (!mmr) mmr = m_pMixer->GetVolume(m_hOutDev, &dwVolume);
 
   if (!bWasOpen)
   {
@@ -1398,7 +1398,7 @@ void CWaveOutDevice::SetVolume(UINT nVolume, BOOL *pResult)
     mmr = waveOutOpen(&m_hOutDev, WAVE_MAPPER, (WAVEFORMATEX*)pFmtParm, NULL, 0, CALLBACK_NULL);
   }
 
-  if(!mmr) mmr = m_pMixer->SetVolume(m_hOutDev, dwVolume);
+  if (!mmr) mmr = m_pMixer->SetVolume(m_hOutDev, dwVolume);
 
   if (!bWasOpen)
   {
@@ -1434,8 +1434,8 @@ BOOL CWaveOutDevice::ShowMixer(BOOL bShow)
     mmr = waveOutOpen(&m_hOutDev, WAVE_MAPPER, (WAVEFORMATEX*)pFmtParm, NULL, 0, CALLBACK_NULL);
   }
 
-  if(bShow && !mmr) bResult = m_pMixer->ShowMixerControls(m_hOutDev);
-  if(!bShow && !mmr) bResult = m_pMixer->CanShowMixerControls(m_hOutDev);
+  if (bShow && !mmr) bResult = m_pMixer->ShowMixerControls(m_hOutDev);
+  if (!bShow && !mmr) bResult = m_pMixer->CanShowMixerControls(m_hOutDev);
 
   if (!bWasOpen)
   {
@@ -1470,7 +1470,7 @@ BOOL CWaveOutDevice::ConnectMixer(CWnd* pCallback)
     mmr = waveOutOpen(&m_hOutDev, WAVE_MAPPER, (WAVEFORMATEX*)pFmtParm, NULL, 0, CALLBACK_NULL);
   }
 
-  if(!mmr) bConnected = m_pMixer->Connect(m_hOutDev, pCallback->GetSafeHwnd());
+  if (!mmr) bConnected = m_pMixer->Connect(m_hOutDev, pCallback->GetSafeHwnd());
 
   if (!bWasOpen)
   {

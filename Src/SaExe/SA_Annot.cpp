@@ -287,7 +287,7 @@ void CLegendWnd::CalculateScale(CDC* pDC, CRect* prWnd)
 	if (m_nScaleMode & LOG10)
 	{
 		// logarithmic scale
-		if(dMinValue < 0.)
+		if (dMinValue < 0.)
 			// Log plots must draw ranges greater than zero
 			dMinValue = std::numeric_limits<double>::min();
 		if (dMaxValue < dMinValue)
@@ -313,7 +313,7 @@ void CLegendWnd::CalculateScale(CDC* pDC, CRect* prWnd)
 	{
 		// linear scale
 		m_fNumbPerPix = (dMaxValue - dMinValue) / ((double)prWnd->Height()/* - 3*/);
-		if(m_nGridDivisions == -1)
+		if (m_nGridDivisions == -1)
 		{
 			TEXTMETRIC tm;
 			// check if pDC known
@@ -356,7 +356,7 @@ void CLegendWnd::CalculateScale(CDC* pDC, CRect* prWnd)
 		// calculate grid distance
 		m_fGridDistance = m_fBase / m_fNumbPerPix; // gridline distance in pixels
 		// calculate first (top) gridline position in plot window client coordinates
-		if(!(m_nScaleMode & ARBITRARY))
+		if (!(m_nScaleMode & ARBITRARY))
 			m_dFirstGridPos = prWnd->bottom - (floor(dMaxValue/(m_fBase))*m_fBase - dMinValue) / m_fNumbPerPix;
 		else
 			m_dFirstGridPos = prWnd->top;
@@ -892,7 +892,7 @@ void CLegendWnd::OnDraw(CDC * pDC,
 
 				BOOL bLargeLine = TRUE;
 
-				if(!(m_nScaleMode & ARBITRARY))
+				if (!(m_nScaleMode & ARBITRARY))
 				{
 					int nHalfTicks = (int) floor(-dScaleMinLoopValue/(m_fBase/2));
 
@@ -924,7 +924,7 @@ void CLegendWnd::OnDraw(CDC * pDC,
 								CRect rText(rWnd.left, nPos - tm.tmHeight, rWnd.right - 9, nPos + tm.tmHeight);
 								TCHAR szText[16];
 								int nWidth = (int) -log10(m_fBase);
-								if(nWidth < 0)
+								if (nWidth < 0)
 									nWidth = 0;
 								swprintf_s(szText, _T("%.*f"), nWidth, dLoop);
 								pDC->DrawText(szText, -1, rText, DT_SINGLELINE | DT_VCENTER | DT_RIGHT | DT_NOCLIP);
@@ -1393,7 +1393,7 @@ void CXScaleWnd::CalculateScale(CDC* pDC, int nWidth)
 	m_fMinValueUsed = m_fScaleMinValue;
 	m_fMaxValueUsed = m_fScaleMaxValue;
 	m_fNumbPerPix = 1000 * (m_fScaleMaxValue - m_fScaleMinValue) / (double)nWidth;
-	if(m_nGridDivisions == -1)
+	if (m_nGridDivisions == -1)
 	{
 		TEXTMETRIC tm;
 		// check if pDC known
@@ -1777,7 +1777,7 @@ BOOL CAnnotationWnd::PreCreateWindow(CREATESTRUCT& cs)
 /***************************************************************************/
 int CAnnotationWnd::OnCreate(LPCREATESTRUCT lpCreateStruct)
 {
-	if(CWnd::OnCreate(lpCreateStruct) == -1)
+	if (CWnd::OnCreate(lpCreateStruct) == -1)
 		return -1;
 	return 0;
 }
@@ -2001,7 +2001,7 @@ void CAnnotationWnd::OnDraw(CDC * pDC, const CRect & printRect)
 						nDisplayPos = round((m_dwHintStart - fDataStart)/ fBytesPerPix);
 						nDisplayStop = round((m_dwHintStop - fDataStart)/ fBytesPerPix);
 					}
-					else if(((m_nIndex == PHONETIC) || (m_nIndex >= MUSIC_PL1 && m_nIndex <= MUSIC_PL4)) && !m_bOverlap)
+					else if (((m_nIndex == PHONETIC) || (m_nIndex >= MUSIC_PL1 && m_nIndex <= MUSIC_PL4)) && !m_bOverlap)
 					{
 						if (pSegment->GetSelection() == (nLoop)) // Segment before selected segment
 						{
@@ -2037,7 +2037,7 @@ void CAnnotationWnd::OnDraw(CDC * pDC, const CRect & printRect)
 
 				BOOL bNotEnough = (nDisplayStop - nDisplayPos) <= tm.tmAveCharWidth;
 
-				if(!bNotEnough)
+				if (!bNotEnough)
 				{
 					bNotEnough = ((nDisplayStop - nDisplayPos) <= (szAnnot.GetLength() * tm.tmAveCharWidth));
 				}
@@ -2163,7 +2163,7 @@ void CAnnotationWnd::OnRButtonDown(UINT nFlags, CPoint point)
 	{
 		CMenu& pmFloatingPopup = *mPopup.GetSubMenu(1);
 		ASSERT(&pmFloatingPopup != NULL && pmFloatingPopup.m_hMenu != NULL);
-		if(&pmFloatingPopup != NULL && pmFloatingPopup.m_hMenu != NULL)
+		if (&pmFloatingPopup != NULL && pmFloatingPopup.m_hMenu != NULL)
 		{
 			ClientToScreen(&point);
 			pmFloatingPopup.TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point.x, point.y, AfxGetMainWnd());
@@ -2281,7 +2281,7 @@ void CAnnotationWnd::OnLButtonDblClk(UINT nFlags, CPoint point)
 	}
 	CSaView* pView = (CSaView*)pGraph->GetParent();
 	// if nothing selected select it
-	if(pView->GetDocument()->GetSegment(m_nIndex)->GetSelection() == -1)
+	if (pView->GetDocument()->GetSegment(m_nIndex)->GetSelection() == -1)
 		SendMessage(WM_LBUTTONDOWN, nFlags, MAKELONG(point.x, point.y)); // send message to parent
 	AfxGetMainWnd()->PostMessage(WM_COMMAND, ID_EDIT_EDITOR, 0L);
 
@@ -2359,7 +2359,7 @@ void CAnnotationWnd::OnCreateEdit(const CString *szInitialString)
 			CAnnotationEdit* pAnnotationEdit = new CAnnotationEdit();
 			pAnnotationEdit->Create(CAnnotationEdit::IDD);
 			pAnnotationEdit->SetWindowPos(&wndTop,rEdit.left,rEdit.top + 1,rEdit.Width(),rEdit.Height() - 2,SWP_SHOWWINDOW);
-			if(szInitialString)
+			if (szInitialString)
 				pAnnotationEdit->SetText(*szInitialString);
 			pAnnotationEdit = NULL; // window needs to destroy itself
 		}
@@ -2377,11 +2377,11 @@ int CALLBACK EnumFontFamExProc(
 	UNUSED_ALWAYS(lpntme);
 	long &nCharset = *(long*) lParam;
 
-	if(nCharset == DEFAULT_CHARSET) nCharset = lpelfe->elfLogFont.lfCharSet;
+	if (nCharset == DEFAULT_CHARSET) nCharset = lpelfe->elfLogFont.lfCharSet;
 	else
 	{
 		// If ANSI is one of the many chose it.
-		if(lpelfe->elfLogFont.lfCharSet == ANSI_CHARSET)
+		if (lpelfe->elfLogFont.lfCharSet == ANSI_CHARSET)
 			nCharset = lpelfe->elfLogFont.lfCharSet;
 
 		// Otherwise we just keep the first enumerated charset (presumably the default)
@@ -2803,7 +2803,7 @@ void CReferenceWnd::OnDraw(CDC * pDC, const CRect & printRect)
 				}
 
 				BOOL bNotEnough = (nDisplayStop - nDisplayPos) <= tm.tmAveCharWidth;
-				if(!bNotEnough)
+				if (!bNotEnough)
 				{
 					bNotEnough = ((nDisplayStop - nDisplayPos) <= (string.GetLength() * tm.tmAveCharWidth));
 				}

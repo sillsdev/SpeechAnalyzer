@@ -29,7 +29,7 @@ void CFontTable::RemoveWordDelimiters(CString &szString) const
 
 	for(int nIndex = 0; nIndex < szString.GetLength(); nIndex++)
 	{
-		if(szString[nIndex]!=m_wordDelimiter) szProcessed += szString[nIndex];
+		if (szString[nIndex]!=m_wordDelimiter) szProcessed += szString[nIndex];
 	}
 	szString = szProcessed;
 }
@@ -54,7 +54,7 @@ int CFontTable::GetLength(tUnit nInUnits, const CString& szString) const
 			RemoveWordDelimiters(szWorking);
 			while(nIndex < szWorking.GetLength())
 			{
-				if(GetNext(CHARACTER,nIndex,szWorking).GetLength() > 0) nCount++;
+				if (GetNext(CHARACTER,nIndex,szWorking).GetLength() > 0) nCount++;
 			}
 			return nCount;
 			break;
@@ -91,7 +91,7 @@ CString CFontTable::GetRemainder(tUnit nInUnits, int nStringIndex, const CString
 	case CHARACTER:
 		{
 			CString szWorking = szString.Mid(nStringIndex);
-			if(nStringIndex != 0)
+			if (nStringIndex != 0)
 			{
 				// Prepend a dummy character to properly handle mid string processing
 				szWorking = "a" + szWorking;
@@ -126,7 +126,7 @@ CString CFontTable::GetRemainder(tUnit nInUnits, int nStringIndex, const CString
 void CFontTableIPA::AddChar(int nAccessCode, int , char* , tPhoneticClassification nClassification,
 							char* , char* , char* , char* ,tGlyphType nType)
 {
-	if((nAccessCode <= 255)&&(nAccessCode>=0))
+	if ((nAccessCode <= 255)&&(nAccessCode>=0))
 	{
 		m_pChar[nAccessCode].phoneticType = nClassification;
 		m_pChar[nAccessCode].glyphType = nType;
@@ -409,7 +409,7 @@ CString CFontTableIPA::GetNext(tUnit nInUnits, int &nIndex, const CString& szStr
 {
 	CString szReturn = "";
 
-	if((nIndex < 0) || (nIndex >= szString.GetLength())) return szReturn;
+	if ((nIndex < 0) || (nIndex >= szString.GetLength())) return szReturn;
 
 	switch (nInUnits)
 	{
@@ -432,9 +432,9 @@ CString CFontTableIPA::GetNext(tUnit nInUnits, int &nIndex, const CString& szStr
 				switch (GlyphType(szString[nWrkIndex]))
 				{
 				case ENDofSTRING:
-					if(bIndependent==FALSE)
+					if (bIndependent==FALSE)
 					{
-						if(nIndex == 0) szWorking+=szPostfix;
+						if (nIndex == 0) szWorking+=szPostfix;
 						nIndex = nWrkIndex;
 						return szWorking;
 					}
@@ -447,7 +447,7 @@ CString CFontTableIPA::GetNext(tUnit nInUnits, int &nIndex, const CString& szStr
 					break;
 				case INDEPENDENT:
 				case BREAK:
-					if((bIndependent == FALSE) && (szPostfix.IsEmpty() || (nIndex>0)))
+					if ((bIndependent == FALSE) && (szPostfix.IsEmpty() || (nIndex>0)))
 					{
 						bIndependent = TRUE;
 						nIndependent = nWrkIndex;
@@ -464,7 +464,7 @@ CString CFontTableIPA::GetNext(tUnit nInUnits, int &nIndex, const CString& szStr
 					}
 					break;
 				case PREFIX:
-					if(bAppendPrefix)
+					if (bAppendPrefix)
 					{
 						szWorking += szString[nWrkIndex];
 					}
@@ -474,7 +474,7 @@ CString CFontTableIPA::GetNext(tUnit nInUnits, int &nIndex, const CString& szStr
 					}
 					break;
 				case POSTFIX:
-					if(bAppendPostfix)
+					if (bAppendPostfix)
 					{
 						szWorking += szString[nWrkIndex];
 					}
@@ -493,9 +493,9 @@ CString CFontTableIPA::GetNext(tUnit nInUnits, int &nIndex, const CString& szStr
 				}
 			}
 
-			if(bIndependent==FALSE)
+			if (bIndependent==FALSE)
 			{
-				if(nIndex == 0) szWorking+=szPostfix;
+				if (nIndex == 0) szWorking+=szPostfix;
 				nIndex = nWrkIndex;
 				return szWorking;
 			}
