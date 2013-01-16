@@ -5857,82 +5857,116 @@ IMPLEMENT_DYNCREATE(CSaDoc, CUndoRedoDoc)
 		dlg.m_szFolderName = FilterName((LPCTSTR)dlg.m_szFolderName).c_str();
 		dlg.m_szPhraseFolderName.Format(L"Split-%s-Phrase",fname);
 		dlg.m_szPhraseFolderName = FilterName((LPCTSTR)dlg.m_szPhraseFolderName).c_str();
-		dlg.m_szGlossFolderName.Format(L"Split-%s-Gloss",fname);
+		dlg.m_szGlossFolderName.Format(L"Split-%s-Data",fname);
 		dlg.m_szGlossFolderName = FilterName((LPCTSTR)dlg.m_szGlossFolderName).c_str();
 		dlg.m_bOverwriteData = (AfxGetApp()->GetProfileInt(L"SplitFile",L"OverwriteData",0)!=0);
 		dlg.m_bSkipGlossEmpty = (AfxGetApp()->GetProfileInt(L"SplitFile",L"SkipEmptyGloss",1)!=0);
+		dlg.SetWordFilenameConvention(AfxGetApp()->GetProfileIntW(L"SplitFile",L"WordConvention",2));
+		dlg.SetPhraseFilenameConvention(AfxGetApp()->GetProfileIntW(L"SplitFile",L"PhraseConvention",2));
 
-		if (dlg.DoModal()!=IDOK) 
-		{
-			return;
-		}
-
-		AfxGetApp()->WriteProfileInt(L"SplitFile",L"OverwriteData",(dlg.m_bOverwriteData)?1:0);
-		AfxGetApp()->WriteProfileInt(L"SplitFile",L"SkipEmptyGloss",(dlg.m_bSkipGlossEmpty)?1:0);
-		AfxGetApp()->WriteProfileString(L"SplitFile",L"Home",dlg.m_szFolderLocation);
-
-		CSaApp* pApp = (CSaApp*)AfxGetApp();
-		POSITION pos = GetFirstViewPosition();
-		CSaView* pView = (CSaView*)GetNextView(pos);
-
-		// we need a focused graph!
-		if (pView->GetFocusedGraphWnd()==NULL) 
-		{
-			pApp->ErrorMessage(IDS_SPLIT_NO_SELECTION);
-			return;
-		}
-
-		// key off of gloss for now
-		int offsetSize = pView->GetAnnotation(GLOSS)->GetOffsetSize();
-		bool hasGloss = (offsetSize!=0);
+		bool retry = false;
 
 		wstring newPath;
 		wstring glossPath;
 		wstring phrasePath;
+		int offsetSize;
+		bool hasGloss;
 
-		newPath.append(dlg.m_szFolderLocation).append(dlg.m_szFolderName);
-		glossPath.append(dlg.m_szFolderLocation).append(dlg.m_szFolderName).append(L"\\").append(dlg.m_szGlossFolderName);
-		phrasePath.append(dlg.m_szFolderLocation).append(dlg.m_szFolderName).append(L"\\").append(dlg.m_szPhraseFolderName);
+		CSaApp * pApp = (CSaApp*)AfxGetApp();
+		POSITION pos = 0;
+		CSaView * pView = NULL;
 
-		// check the for preexistence of the folders.
-		if (FileExists(glossPath.c_str())) 
-		{
-			pApp->ErrorMessage(IDS_SPLIT_FILE_EXISTS,glossPath.c_str());
-			return;
-		}
+		do {
+			retry = false;
 
-		if (FileExists(phrasePath.c_str())) 
-		{
-			pApp->ErrorMessage(IDS_SPLIT_FILE_EXISTS,phrasePath.c_str());
-			return;
-		}
-
-		if (!dlg.m_bOverwriteData) {
-			// check the for preexistence of the folders.
-			if (FolderExists(newPath.c_str())) 
+			if (dlg.DoModal()!=IDOK) 
 			{
-				CString msg;
-				msg.FormatMessage(IDS_SPLIT_FOLDER_EXISTS,newPath.c_str());
-				if (AfxMessageBox(msg, MB_OKCANCEL | MB_ICONQUESTION, 0) == IDCANCEL) 
+				return;
+			}
+
+			AfxGetApp()->WriteProfileInt(L"SplitFile",L"WordConvention",(dlg.GetWordFilenameConvention()));
+			AfxGetApp()->WriteProfileInt(L"SplitFile",L"PhraseConvention",(dlg.GetPhraseFilenameConvention()));
+			AfxGetApp()->WriteProfileInt(L"SplitFile",L"OverwriteData",(dlg.m_bOverwriteData)?1:0);
+			AfxGetApp()->WriteProfileInt(L"SplitFile",L"SkipEmptyGloss",(dlg.m_bSkipGlossEmpty)?1:0);
+			AfxGetApp()->WriteProfileString(L"SplitFile",L"Home",dlg.m_szFolderLocation);
+
+			pos = GetFirstViewPosition();
+			pView = (CSaView*)GetNextView(pos);
+
+			// we need a focused graph!
+			if (pView->GetFocusedGraphWnd()==NULL) 
+			{
+				pApp->ErrorMessage(IDS_SPLIT_NO_SELECTION);
+				return;
+			}
+
+			// key off of gloss for now
+			offsetSize = pView->GetAnnotation(GLOSS)->GetOffsetSize();
+			hasGloss = (offsetSize!=0);
+
+			newPath = L"";
+			glossPath = L"";
+			phrasePath = L"";
+
+			newPath.append(dlg.m_szFolderLocation).append(dlg.m_szFolderName);
+			glossPath.append(dlg.m_szFolderLocation).append(dlg.m_szFolderName).append(L"\\").append(dlg.m_szGlossFolderName);
+			phrasePath.append(dlg.m_szFolderLocation).append(dlg.m_szFolderName).append(L"\\").append(dlg.m_szPhraseFolderName);
+
+			// check the for preexistence of the folders.
+			if (FileExists(glossPath.c_str())) 
+			{
+				pApp->ErrorMessage(IDS_SPLIT_FILE_EXISTS,glossPath.c_str());
+				return;
+			}
+
+			if (FileExists(phrasePath.c_str())) 
+			{
+				pApp->ErrorMessage(IDS_SPLIT_FILE_EXISTS,phrasePath.c_str());
+				return;
+			}
+
+			if (!dlg.m_bOverwriteData) {
+				// check the for preexistence of the folders.
+				if (FolderExists(newPath.c_str())) 
 				{
-					return;
-				}
-			} else if (FolderExists(glossPath.c_str())) {
-				CString msg;
-				msg.FormatMessage(IDS_SPLIT_FOLDER_EXISTS,glossPath.c_str());
-				if (AfxMessageBox(msg, MB_OKCANCEL | MB_ICONQUESTION, 0) == IDCANCEL) 
-				{
-					return;
-				}
-			} else if (FolderExists(phrasePath.c_str())) {
-				CString msg;
-				msg.FormatMessage(IDS_SPLIT_FOLDER_EXISTS,phrasePath.c_str());
-				if (AfxMessageBox(msg, MB_OKCANCEL | MB_ICONQUESTION, 0) == IDCANCEL) 
-				{
-					return;
+					CString msg;
+					msg.FormatMessage(IDS_SPLIT_FOLDER_EXISTS,newPath.c_str());
+					int result = AfxMessageBox(msg, MB_ABORTRETRYIGNORE | MB_ICONQUESTION, 0);
+					if (result == IDABORT) 
+					{
+						return;
+					}
+					if (result == IDRETRY)
+					{
+						retry=true;
+					}
+				} else if (FolderExists(glossPath.c_str())) {
+					CString msg;
+					msg.FormatMessage(IDS_SPLIT_FOLDER_EXISTS,glossPath.c_str());
+					int result = AfxMessageBox(msg, MB_ABORTRETRYIGNORE | MB_ICONQUESTION, 0);
+					if (result == IDABORT) 
+					{
+						return;
+					}
+					if (result == IDRETRY)
+					{
+						retry=true;
+					}
+				} else if (FolderExists(phrasePath.c_str())) {
+					CString msg;
+					msg.FormatMessage(IDS_SPLIT_FOLDER_EXISTS,phrasePath.c_str());
+					int result = AfxMessageBox(msg, MB_ABORTRETRYIGNORE | MB_ICONQUESTION, 0);
+					if (result == IDABORT) 
+					{
+						return;
+					}
+					if (result == IDRETRY)
+					{
+						retry=true;
+					}
 				}
 			}
-		}
+		} while (retry);
 
 		// create the folders.
 		if (!CreateFolder(newPath.c_str())) 
@@ -5954,25 +5988,25 @@ IMPLEMENT_DYNCREATE(CSaDoc, CUndoRedoDoc)
 		int count=0;
 		BeginWaitCursor();
 
-		EWordFilenameConvention m_dWordConvention = dlg.GetWordFilenameConvention();
-		EPhraseFilenameConvention m_dPhraseConvention = dlg.GetPhraseFilenameConvention();
+		EWordFilenameConvention wordConvention = dlg.GetWordFilenameConvention();
+		EPhraseFilenameConvention phraseConvention = dlg.GetPhraseFilenameConvention();
 
 		if ((hasGloss) || (!dlg.m_bSkipGlossEmpty)) 
 		{
-			if (!ExportWordSegments( count, m_dWordConvention, glossPath, dlg.m_bSkipGlossEmpty)) 
+			if (!ExportWordSegments( count, wordConvention, glossPath, dlg.m_bSkipGlossEmpty)) 
 			{
 				EndWaitCursor();
 				return;
 			}
 		}
 
-		if (!ExportPhraseSegments( MUSIC_PL1, count, m_dPhraseConvention, phrasePath)) 
+		if (!ExportPhraseSegments( MUSIC_PL1, count, phraseConvention, phrasePath)) 
 		{
 			EndWaitCursor();
 			return;
 		}
 
-		if (!ExportPhraseSegments( MUSIC_PL2, count, m_dPhraseConvention, phrasePath)) 
+		if (!ExportPhraseSegments( MUSIC_PL2, count, phraseConvention, phrasePath)) 
 		{
 			EndWaitCursor();
 			return;
@@ -6089,8 +6123,6 @@ IMPLEMENT_DYNCREATE(CSaDoc, CUndoRedoDoc)
 		{
 
 		case WFC_GLOSS:   //gloss
-			dwStart = g->GetOffset(index);
-			dwStop = dwStart + g->GetOffsetSize();
 			gloss = g->GetSegmentString(index);
 			if ((gloss.length()>0) && (gloss[0]=='#')) 
 			{
@@ -6102,7 +6134,7 @@ IMPLEMENT_DYNCREATE(CSaDoc, CUndoRedoDoc)
 
 		case WFC_REF:	//ref
 			dwStart = g->GetOffset(index);
-			dwStop = dwStart + g->GetOffsetSize();
+			dwStop = dwStart + g->GetDuration(index);
 			// find the ref based on the gloss position, since GLOSS is the iterator
 			rindex = FindNearestReferenceIndex(r,dwStart,dwStop);
 			if (rindex!=-1) 
@@ -6110,13 +6142,13 @@ IMPLEMENT_DYNCREATE(CSaDoc, CUndoRedoDoc)
 				ref = pView->GetAnnotation(REFERENCE)->GetSegmentString(rindex);
 			}
 			ref = FilterName(ref);
-			// normal case
+			// return empty or not
 			return ref;
 
 		default:
 		case WFC_REF_GLOSS: 	//ref+gloss
 			dwStart = g->GetOffset(index);
-			dwStop = dwStart + g->GetOffsetSize();
+			dwStop = dwStart + g->GetDuration(index);
 			gloss = g->GetSegmentString(index);
 			if ((gloss.length()>0) && (gloss[0]=='#')) 
 			{
@@ -6130,30 +6162,22 @@ IMPLEMENT_DYNCREATE(CSaDoc, CUndoRedoDoc)
 			}
 			gloss = FilterName(gloss);
 			ref = FilterName(ref);
-			if (ref.length()!=0) 
+			if (ref.length()==0)
 			{
-				if (gloss.length()!=0) 
-				{
-					ref = ref.append(L" ").append(gloss);
-					return ref;
-				} 
-				else 
-				{
-					return ref;
-				}
+				// if ref is empty, return an empty string to cause an 
+				// error, regardless of gloss
+				return ref;
+			}
+
+			// we know we have ref at this point
+			if (gloss.length()!=0) 
+			{
+				ref = ref.append(L" ").append(gloss);
+				return ref;
 			} 
 			else 
 			{
-				// ref is empty
-				if (gloss.length()!=0) 
-				{
-					return gloss;
-				} 
-				else 
-				{
-					// it's empty, return anyway
-					return ref;
-				}
+				return ref;
 			}
 		}
 	}
@@ -6324,7 +6348,7 @@ IMPLEMENT_DYNCREATE(CSaDoc, CUndoRedoDoc)
 		for (int j=0;j<r->GetOffsetSize();j++) 
 		{
 			DWORD dwRStart = r->GetOffset(j);
-			DWORD dwRStop = dwRStart+r->GetOffsetSize();
+			DWORD dwRStop = dwRStart+r->GetDuration(j);
 			TRACE("comparing start=%d end=%d\n",dwRStart,dwRStop);
 			if (dwStart==dwRStart) 
 			{
@@ -6361,7 +6385,7 @@ IMPLEMENT_DYNCREATE(CSaDoc, CUndoRedoDoc)
 		for (int j=0;j<g->GetOffsetSize();j++) 
 		{
 			DWORD dwGStart = g->GetOffset(j);
-			DWORD dwGStop = dwGStart+g->GetOffsetSize();
+			DWORD dwGStop = dwGStart+g->GetDuration(j);
 			TRACE("comparing start=%d end=%d\n",dwGStart,dwGStop);
 			if (dwStart==dwGStart) 
 			{
@@ -6458,22 +6482,12 @@ IMPLEMENT_DYNCREATE(CSaDoc, CUndoRedoDoc)
 				{
 					continue;
 				}
-				else
-				{
-					pApp->ErrorMessage(IDS_SPLIT_NO_GLOSS,(LPCTSTR)szGloss,(LPCTSTR)szNumber);
-					return false;
-				}
 			} 
 			else if ((gloss.length()==1)&&(gloss[0]=='#')) 
 			{
 				if (skipEmptyGloss) 
 				{
 					continue;
-				}
-				else
-				{
-					pApp->ErrorMessage(IDS_SPLIT_NO_GLOSS,(LPCTSTR)szGloss,(LPCTSTR)szNumber);
-					return false;
 				}
 			}
 

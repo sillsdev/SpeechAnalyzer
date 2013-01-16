@@ -1,3 +1,15 @@
+SA - 3.1.0.23 - 1/15/2013
+1) Changed name of 'Reference Data' dialog to 'Reference Numbers' and modified menu item.
+2) SplitFile - added error message when reference field is empty.
+3) Modified dialog that informs user they are about to overwrite data so that they can either quit, retry or continue.
+4) Fixed bug that wasn't calculate reference and gloss segments lengths correctly, which was causing spurious error messages.
+5) Changed default transcription data folder name from xxx-gloss to xxx-data
+6) Changed 'Phrase' to 'Phrase Text' in drop list for Phrase filename prefix.
+7) Moved location of 'Split File' menu item so that it isn't near 'Save'
+8) Added 'Redo' to toolbar
+9) Fixed 'phrase level 2' bug (see #4)
+10) Added error message for 'Auto Reference Numbering'.
+
 SA - 3.1.0.22 - 1/13/2013
 1) Updates for 'Split File' feature.  Added controls to allow user to control whether data is overwritten or not.  Changed dialog layout.
 2) Fixed CTRL-left click bug.

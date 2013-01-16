@@ -1626,6 +1626,11 @@
 #define IDS_ERROR_NO_PARSE              61261
 #define IDS_ERROR_FILENAME              61262
 #define IDS_ERROR_NO_IPAHELP            61263
+#define IDS_AUTO_REF_MAIN               61300
+#define IDS_AUTO_REF_MAIN_1             61300
+#define IDS_AUTO_REF_MAIN_2             61301
+#define IDS_AUTO_REF_MAIN_3             61303
+#define IDS_AUTO_REF_MAIN_4             61305
 
 // Next default values for new objects
 // 

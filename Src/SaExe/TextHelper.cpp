@@ -71,7 +71,10 @@ TranscriptionDataMap attemptTabDelimitedRefOnly( const vector<wstring> & lines, 
 
 	TranscriptionDataMap map;
 
-	if (markers.size()!=1) return map;
+	if (markers.size()!=1) {
+		TRACE(L"Skipping TabDelimitedRefOnly because there's more than one column\n");
+		return map;
+	}
 
 	// now tokenize the lines
 	vector<vector<wstring>> list2;
@@ -101,7 +104,10 @@ TranscriptionDataMap attemptTabDelimitedRefOnly( const vector<wstring> & lines, 
 
 	// count the tokens if the lengths are the same then this is a simple list...
 	// and the length matches the marker size, this is as easy as it gets!
-	if (min!=max) return map;
+	if (min!=max) {
+		TRACE(L"Skipping TabDelimitedRefOnly because there's a discrepancy in the list\n");
+		return map;
+	}
 
 	for (vector<vector<wstring>>::iterator it = list2.begin();it!=list2.end();it++) {
 		vector<wstring> tokens = *it;
@@ -150,8 +156,14 @@ TranscriptionDataMap attemptTabDelimited( vector<wstring> lines, MarkerList mark
 
 	// count the tokens if the lengths are the same then this is a simple list...
 	// and the length matches the marker size, this is as easy as it gets!
-	if (min!=max) return map;
-	if (min!=markers.size()) return map;
+	if (min!=max) {
+		TRACE(L"Skipping TabDelimited because there's a discrepancy in the list\n");
+		return map;
+	}
+	if (min!=markers.size()) {
+		TRACE(L"Skipping TabDelimited because a line is missing data\n");
+		return map;
+	}
 
 	for (vector<vector<wstring>>::iterator it = list2.begin();it!=list2.end();it++) {
 		vector<wstring> tokens = *it;
@@ -200,8 +212,14 @@ TranscriptionDataMap attemptWhitespaceDelimited( vector<wstring> lines, MarkerLi
 
 	// count the tokens if the lengths are the same then this is a simple list...
 	// and the length matches the marker size, this is as easy as it gets!
-	if (min!=max) return map;
-	if (min!=markers.size()) return map;
+	if (min!=max) {
+		TRACE(L"Skipping TabDelimitedRefOnly because there's missing data\n");
+		return map;
+	}
+	if (min!=markers.size()) {
+		TRACE(L"Skipping TabDelimitedRefOnly because there's a discrepancy in the list\n");
+		return map;
+	}
 
 	for (vector<vector<wstring>>::iterator it = list2.begin();it!=list2.end();it++) {
 		vector<wstring> tokens = *it;
@@ -222,7 +240,10 @@ TranscriptionDataMap attemptTwoMarkerWhitespaceDelimited( vector<wstring> lines,
 
 	TranscriptionDataMap map;
 
-	if (markers.size()!=2) return map;
+	if (markers.size()!=2) {
+		TRACE(L"Skipping AttemptTwoMarkerWhitespaceDelimited because marker size != 2\n");
+		return map;
+	}
 
 	// now tokenize the lines
 	vector<vector<wstring>> list2;
@@ -254,8 +275,13 @@ TranscriptionDataMap attemptTwoMarkerWhitespaceDelimited( vector<wstring> lines,
 	}
 
 	// we are only expecting two tokens per line
-	if (min!=markers.size()) return map;
-	if (max<markers.size()) return map;
+	if (min!=markers.size()) {
+		TRACE("Skipping AttemptTwoMarkerWhitespaceDelimited because there's missing data\n");
+		return map;
+	}
+	if (max<markers.size()) {
+		return map;
+	}
 
 	for (vector<vector<wstring>>::iterator it = list2.begin();it!=list2.end();it++) {
 		vector<wstring> tokens = *it;
@@ -358,14 +384,8 @@ TranscriptionDataMap CTextHelper::ImportText( const CSaString & filename, const 
 	map = attemptTwoMarkerWhitespaceDelimited(lines,markers);
 	if (map.size()>0) return map;
 
-	bool first=true;
 	for (MarkerList::const_iterator it=markers.begin();it!=markers.end();it++) {
-		if (first) {
-			map[*it].push_back("Parser: I don't know what to do!");
-		} else {
-			map[*it].push_back("");
-		}
-		first=false;
+		map[*it].push_back("");
 	}
 
 	return map;

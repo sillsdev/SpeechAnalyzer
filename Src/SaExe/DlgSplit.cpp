@@ -15,8 +15,8 @@ CDlgSplit::CDlgSplit(CWnd* pParent /*=NULL*/) :
 CDialog(CDlgSplit::IDD, pParent),
 m_bSkipGlossEmpty(TRUE),
 m_bOverwriteData(FALSE),
-m_dWordConvention(2), 
-m_dPhraseConvention(2), 
+m_nWordConvention(2), 
+m_nPhraseConvention(2), 
 m_szFolderLocation(_T("")), 
 m_szFolderName(_T("")), 
 m_szPhraseFolderName(_T("")), 
@@ -42,8 +42,8 @@ BOOL CDlgSplit::OnInitDialog()
 void CDlgSplit::DoDataExchange(CDataExchange* pDX) 
 {
 	CDialog::DoDataExchange(pDX);
-	DDX_CBIndex(pDX, IDC_SPLIT_WORD_CONVENTION, m_dWordConvention);
-	DDX_CBIndex(pDX, IDC_SPLIT_PHRASE_CONVENTION, m_dPhraseConvention);
+	DDX_CBIndex(pDX, IDC_SPLIT_WORD_CONVENTION, m_nWordConvention);
+	DDX_CBIndex(pDX, IDC_SPLIT_PHRASE_CONVENTION, m_nPhraseConvention);
 	DDX_Text(pDX, IDC_SPLIT_FOLDER_LOCATION, m_szFolderLocation);
 	DDX_Text(pDX, IDC_SPLIT_FOLDER_NAME, m_szFolderName);
 	DDX_Text(pDX, IDC_SPLIT_PHRASE_SUBFOLDER_NAME, m_szPhraseFolderName);
@@ -124,7 +124,7 @@ void CDlgSplit::OnBnClickedBrowseFolder()
 
 enum EWordFilenameConvention CDlgSplit::GetWordFilenameConvention() 
 {
-	switch (m_dWordConvention) 
+	switch (m_nWordConvention) 
 	{
 	case 0: return WFC_REF;
 	case 1: return WFC_GLOSS;
@@ -135,7 +135,7 @@ enum EWordFilenameConvention CDlgSplit::GetWordFilenameConvention()
 
 enum EPhraseFilenameConvention CDlgSplit::GetPhraseFilenameConvention() 
 {
-	switch (m_dPhraseConvention) 
+	switch (m_nPhraseConvention) 
 	{
 	case 0: return PFC_REF;
 	case 1: return PFC_GLOSS;
@@ -153,3 +153,32 @@ void CDlgSplit::OnBnClickedEditGlossFolder()
 {
 	GetDlgItem(IDC_SPLIT_WORD_SUBFOLDER_NAME)->EnableWindow(TRUE);
 }
+
+void CDlgSplit::SetWordFilenameConvention( int value) 
+{
+	switch (value)
+	{
+	case 0:
+	case 1:
+	case 2:
+		m_nWordConvention = value; break;
+	default:
+		m_nWordConvention = 2; break;
+	}
+}
+
+void CDlgSplit::SetPhraseFilenameConvention( int value)
+{
+	switch (value)
+	{
+	case 0:
+	case 1:
+	case 2:
+	case 3:
+		m_nPhraseConvention = value; break;
+	default:
+		m_nPhraseConvention = 3; break;
+	}
+}
+
+	

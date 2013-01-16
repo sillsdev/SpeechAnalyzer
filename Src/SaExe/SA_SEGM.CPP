@@ -3054,12 +3054,12 @@ int CSegment::GetDurationSize() const
 
 DWORD CSegment::GetOffset(const int nIndex) const 
 {
-	return ((nIndex < GetOffsetSize())&&(nIndex >= 0)) ? m_pOffset->GetAt(nIndex) : 0L;
+	return ((nIndex < GetOffsetSize()) && (nIndex >= 0)) ? m_pOffset->GetAt(nIndex) : 0L;
 }
 
 DWORD CSegment::GetDuration(const int nIndex) const 
 {
-	return (nIndex < GetDurationSize()&&(nIndex >= 0)) ? m_pDuration->GetAt(nIndex) : 0L;
+	return (nIndex < GetDurationSize() && (nIndex >= 0)) ? m_pDuration->GetAt(nIndex) : 0L;
 }
 
 DWORD CSegment::GetStop(const int nIndex) const 

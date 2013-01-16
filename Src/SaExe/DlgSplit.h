@@ -18,8 +18,8 @@ protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
 
 private:
-	int m_dWordConvention;
-	int m_dPhraseConvention;
+	int m_nWordConvention;
+	int m_nPhraseConvention;
 
 public:
 	DECLARE_MESSAGE_MAP()
@@ -33,6 +33,8 @@ public:
 	CString m_szPhraseFolderName;
 	CString m_szGlossFolderName;
 
+	void SetWordFilenameConvention( int value);
+	void SetPhraseFilenameConvention( int value);
 	enum EWordFilenameConvention GetWordFilenameConvention();
 	enum EPhraseFilenameConvention GetPhraseFilenameConvention();
 

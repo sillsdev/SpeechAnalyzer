@@ -205,6 +205,20 @@ void CDlgAutoReferenceData::DoDataExchange(CDataExchange* pDX)
 			}
 
 			CTranscriptionData td = mSaDoc->ImportTranscription(CSaString(mLastImport),FALSE,FALSE,FALSE,FALSE);
+
+			if (td.m_TranscriptionData.size()==1) {
+				pDX->PrepareEditCtrl(IDC_FILENAME);
+				CString msg;
+				msg.LoadStringW(IDS_AUTO_REF_MAIN_1);
+				CString msg2;
+				msg2.LoadStringW(IDS_AUTO_REF_MAIN_2);
+				msg.Append(msg2);
+				msg2.LoadStringW(IDS_AUTO_REF_MAIN_3);
+				msg.Append(msg2);
+				AfxMessageBox(msg,MB_OK|MB_ICONEXCLAMATION);
+				pDX->Fail();
+			}
+
 			CString ref = td.m_szPrimary;
 			TranscriptionDataMap & tdm = td.m_TranscriptionData;
 			MarkerList::iterator begin = find(tdm[ref].begin(),tdm[ref].end(),mBeginRef);
