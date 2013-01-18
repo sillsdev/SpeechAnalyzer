@@ -159,19 +159,29 @@ void CDlgAutoReferenceData::DoDataExchange(CDataExchange* pDX)
 			} 
 			else 
 			{
-				CTranscriptionData td = mSaDoc->ImportTranscription(CSaString(mLastImport),FALSE,FALSE,FALSE,FALSE);
-				CString ref = td.m_szPrimary;
-				mComboBegin.ResetContent();
-				mComboEnd.ResetContent();
-				TranscriptionDataMap & tdm = td.m_TranscriptionData;
-				MarkerList refs = tdm[ref];
-				for (MarkerList::iterator it = refs.begin();it!=refs.end();it++) 
+				CTranscriptionData td;
+				if (mSaDoc->ImportTranscription(CSaString(mLastImport),FALSE,FALSE,FALSE,FALSE,td)) 
 				{
-					mComboBegin.AddString(*it);
-					mComboEnd.AddString(*it);
+					CString ref = td.m_szPrimary;
+					mComboBegin.ResetContent();
+					mComboEnd.ResetContent();
+					TranscriptionDataMap & tdm = td.m_TranscriptionData;
+					MarkerList refs = tdm[ref];
+					for (MarkerList::iterator it = refs.begin();it!=refs.end();it++) 
+					{
+						mComboBegin.AddString(*it);
+						mComboEnd.AddString(*it);
+					}
+					mComboBegin.SelectString(-1,mBeginRef);
+					mComboEnd.SelectString(-1,mEndRef);
 				}
-				mComboBegin.SelectString(-1,mBeginRef);
-				mComboEnd.SelectString(-1,mEndRef);
+				else
+				{
+					mComboBegin.ResetContent();
+					mComboEnd.ResetContent();
+					mComboBegin.SetCurSel(-1);
+					mComboEnd.SetCurSel(-1);
+				}
 			}
 		}
 	} 
@@ -204,9 +214,8 @@ void CDlgAutoReferenceData::DoDataExchange(CDataExchange* pDX)
 				pDX->Fail();
 			}
 
-			CTranscriptionData td = mSaDoc->ImportTranscription(CSaString(mLastImport),FALSE,FALSE,FALSE,FALSE);
-
-			if (td.m_TranscriptionData.size()==1) {
+			CTranscriptionData td;
+			if (!mSaDoc->ImportTranscription(CSaString(mLastImport),FALSE,FALSE,FALSE,FALSE,td)) {
 				pDX->PrepareEditCtrl(IDC_FILENAME);
 				CString msg;
 				msg.LoadStringW(IDS_AUTO_REF_MAIN_1);

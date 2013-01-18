@@ -1,3 +1,8 @@
+SA - 3.1.0.24 - 1/18/2013
+1) Split lines in TAT import error message.
+2) Fixed toolbar alignment problem.
+3) Modified how errors are propogated in AutoRef import operation.  Fixes problem where errors are returned correctly.
+
 SA - 3.1.0.23 - 1/15/2013
 1) Changed name of 'Reference Data' dialog to 'Reference Numbers' and modified menu item.
 2) SplitFile - added error message when reference field is empty.

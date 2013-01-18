@@ -28,7 +28,7 @@ LANGUAGE LANG_NEUTRAL, SUBLANG_NEUTRAL
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 3,1,0,23
+ FILEVERSION 3,1,0,24
  PRODUCTVERSION 1,0,0,1
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
@@ -46,7 +46,7 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "SIL International"
             VALUE "FileDescription", "SA"
-            VALUE "FileVersion", "v3.1.0.23"
+            VALUE "FileVersion", "v3.1.0.24"
             VALUE "InternalName", "SA"
             VALUE "LegalCopyright", "© 1996-2013 SIL International (MSEA)"
             VALUE "ProductName", "SA"
@@ -2507,8 +2507,8 @@ BEGIN
     SEPARATOR
     BUTTON      ID_FILE_INFORMATION
     SEPARATOR
-    BUTTON      ID_EDIT_REDO
     BUTTON      ID_EDIT_UNDO
+    BUTTON      ID_EDIT_REDO
     SEPARATOR
     BUTTON      ID_EDIT_ADD
     BUTTON      ID_EDIT_ADD_WORD
@@ -2540,8 +2540,8 @@ BEGIN
     SEPARATOR
     BUTTON      ID_FILE_INFORMATION
     SEPARATOR
-    BUTTON      ID_EDIT_REDO
     BUTTON      ID_EDIT_UNDO
+    BUTTON      ID_EDIT_REDO
     BUTTON      ID_EDIT_PREVIOUS
     BUTTON      ID_EDIT_NEXT
     SEPARATOR
@@ -4115,7 +4115,7 @@ STRINGTABLE
 BEGIN
     IDR_MAINFRAME           "Speech Analyzer"
     IDR_SA_ANNTYPE          "\nSA\nSA Document\nWAV Files (*.wav)\n.wav\nannFileType\nANN File Type"
-    VS_VERSION              "Version 3.1.0.23"
+    VS_VERSION              "Version 3.1.0.24"
     VS_COPYRIGHT            "© 1996-2013 SIL International (MSEA).\nAll Rights Reserved."
     IDR_SA_WBTYPE           "\nWB\nSA Workbench\nWB Files (*.wb)\n.wb\nwbFileType\nWB File Type"
 END
@@ -5109,7 +5109,7 @@ END
 STRINGTABLE 
 BEGIN
     IDS_AUTO_REF_MAIN_1     "Speech Anaylzer was unable to parse the file because it is not in a usable format.  Please check the following suggestions:\n\n"
-    IDS_AUTO_REF_MAIN_2     "1) If the file is suppose to contain only reference numbers, make sure there aren't extra tabs or columns in the data.\n"
+    IDS_AUTO_REF_MAIN_2     "1) If the file is suppose to contain only reference numbers, make sure there aren't extra tabs or columns in the data.\n\n"
     IDS_AUTO_REF_MAIN_3     "2) If the file is suppose to be delimited, make sure there are an equal number of tabs or spaces in each row and that there are no missing fields within a row.\n"
 END
 

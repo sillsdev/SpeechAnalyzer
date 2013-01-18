@@ -399,7 +399,7 @@ public:
 	bool CanEdit();
 	const CSaString BuildString( int nSegment);
 	const CSaString BuildImportString( BOOL gloss, BOOL phonetic, BOOL phonemic, BOOL orthographic);
-	const CTranscriptionData ImportTranscription( CSaString & filename, BOOL gloss, BOOL phonetic, BOOL phonemic, BOOL orthographic);
+	const bool ImportTranscription( CSaString & filename, BOOL gloss, BOOL phonetic, BOOL phonemic, BOOL orthographic, CTranscriptionData & td);
 
 protected:
 	void AlignTranscriptionData( CTranscriptionDataSettings & settings);

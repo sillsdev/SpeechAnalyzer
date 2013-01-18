@@ -7637,7 +7637,21 @@ IMPLEMENT_DYNCREATE(CSaDoc, CUndoRedoDoc)
 		else
 		{
 			// data should be fully validated by dialog!
-			CTranscriptionData td = ImportTranscription(CSaString(autoReferenceDlg.mLastImport),FALSE,FALSE,FALSE,FALSE);
+			CTranscriptionData td;
+			if (!ImportTranscription(CSaString(autoReferenceDlg.mLastImport),FALSE,FALSE,FALSE,FALSE,td))
+			{
+				CSaApp* pApp = (CSaApp*)AfxGetApp();
+				CString msg;
+				msg.LoadStringW(IDS_AUTO_REF_MAIN_1);
+				CString msg2;
+				msg2.LoadStringW(IDS_AUTO_REF_MAIN_2);
+				msg.Append(msg2);
+				msg2.LoadStringW(IDS_AUTO_REF_MAIN_3);
+				msg.Append(msg2);
+				AfxMessageBox(msg,MB_OK|MB_ICONEXCLAMATION);
+				return;
+			}
+
 			CString ref = td.m_szPrimary;
 			TranscriptionDataMap & map = td.m_TranscriptionData;
 			MarkerList::iterator begin = find(map[ref].begin(),map[ref].end(),autoReferenceDlg.mBeginRef);
@@ -8550,11 +8564,10 @@ IMPLEMENT_DYNCREATE(CSaDoc, CUndoRedoDoc)
 	/**
 	* Read the incoming stream and return the transcription line
 	* This is used by the automatic transcription feature
+	* returns false on failure
 	*/
-	const CTranscriptionData CSaDoc::ImportTranscription( CSaString & filename, BOOL gloss, BOOL phonetic, BOOL phonemic, BOOL orthographic)  
+	const bool CSaDoc::ImportTranscription( CSaString & filename, BOOL gloss, BOOL phonetic, BOOL phonemic, BOOL orthographic, CTranscriptionData & td)  
 	{
-		CTranscriptionData td;
-
 		td.m_MarkerDefs[REFERENCE] = psz_Reference;
 		td.m_szPrimary = psz_Reference;
 
@@ -8589,12 +8602,14 @@ IMPLEMENT_DYNCREATE(CSaDoc, CUndoRedoDoc)
 		{
 			CDlgImportSFMRef dlg( phonetic, phonemic, orthographic, gloss);
 			int result = dlg.DoModal();
-			if (result==IDCANCEL) return td;
+			if (result==IDCANCEL)
+			{
+				return true;
+			}
 
 			if (result==IDC_IMPORT_PLAIN_TEXT) 
 			{
-				td.m_TranscriptionData = CTextHelper::ImportText(filename,td.m_szPrimary,td.m_Markers);
-				return td;
+				return CTextHelper::ImportText(filename,td.m_szPrimary,td.m_Markers,td.m_TranscriptionData);
 			}
 
 			// proceeding as SFM	
@@ -8633,7 +8648,7 @@ IMPLEMENT_DYNCREATE(CSaDoc, CUndoRedoDoc)
 			if (CSFMHelper::IsMultiRecordSFM( filename, dlg.m_szReference)) 
 			{
 				td.m_TranscriptionData = CSFMHelper::ImportMultiRecordSFM( filename, sync, td.m_Markers);
-				return td;
+				return true;
 			}
 			else
 			{
@@ -8642,8 +8657,7 @@ IMPLEMENT_DYNCREATE(CSaDoc, CUndoRedoDoc)
 		}
 
 		// proceeding as text
-		td.m_TranscriptionData = CTextHelper::ImportText(filename,td.m_szPrimary,td.m_Markers);
-		return td;
+		return CTextHelper::ImportText(filename,td.m_szPrimary,td.m_Markers,td.m_TranscriptionData);
 	}
 
 	CSegment * CSaDoc::GetSegment(int nIndex) 

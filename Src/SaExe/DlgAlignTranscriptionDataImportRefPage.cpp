@@ -37,12 +37,19 @@ BOOL CDlgAlignTranscriptionDataImportRefPage::OnSetActive()
 	CSaString path = m_pSaDoc->GetLastTranscriptionImport();
 	if (path.GetLength()!=0)
 	{
-		m_TranscriptionData = m_pSaDoc->ImportTranscription(path,
-															pParent->init.m_bGloss,
-															pParent->init.m_bPhonetic,
-									 						pParent->init.m_bPhonemic,
-															pParent->init.m_bOrthographic);
-		m_szText = CTranscriptionHelper::Render(m_TranscriptionData);
+		if (m_pSaDoc->ImportTranscription(path,
+									  pParent->init.m_bGloss,
+									  pParent->init.m_bPhonetic,
+									  pParent->init.m_bPhonemic,
+									  pParent->init.m_bOrthographic,
+									  m_TranscriptionData)) 
+		{
+			m_szText = CTranscriptionHelper::Render(m_TranscriptionData);
+		} 
+		else 
+		{
+			m_szText = L"";
+		}
 	}
 	else
 	{
@@ -71,13 +78,20 @@ void CDlgAlignTranscriptionDataImportRefPage::OnClickedImport()
 	CDlgAlignTranscriptionDataSheet * pParent = GetParent();
 
 	m_bModified = true;
-	m_TranscriptionData = m_pSaDoc->ImportTranscription(path,
-													    pParent->init.m_bGloss,
-													    pParent->init.m_bPhonetic,
-									 				    pParent->init.m_bPhonemic,
-													    pParent->init.m_bOrthographic);
+	if (m_pSaDoc->ImportTranscription(path,
+									pParent->init.m_bGloss,
+									pParent->init.m_bPhonetic,
+									pParent->init.m_bPhonemic,
+									pParent->init.m_bOrthographic,
+									m_TranscriptionData))
+	{
+		m_szText = CTranscriptionHelper::Render(m_TranscriptionData);
+	}
+	else
+	{
+		m_szText = L"";
+	}
 
-	m_szText = CTranscriptionHelper::Render(m_TranscriptionData);
 	CWnd* pWnd = GetDlgItem(IDC_REVERT);
 	if (pWnd!=NULL) 
 	{

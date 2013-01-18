@@ -298,14 +298,12 @@ TranscriptionDataMap attemptTwoMarkerWhitespaceDelimited( vector<wstring> lines,
 	return map;
 }
 
-TranscriptionDataMap CTextHelper::ImportText( const CSaString & filename, const CSaString & sync, const MarkerList & markers) {
-
-	TranscriptionDataMap map;
+bool CTextHelper::ImportText( const CSaString & filename, const CSaString & sync, const MarkerList & markers, TranscriptionDataMap & map) {
 
 	ifstream file(filename, std::ios::binary);
 	if (!file) {
 		// file failed to open
-		return map;
+		return false;
 	}
 
 	// determine size
@@ -339,7 +337,7 @@ TranscriptionDataMap CTextHelper::ImportText( const CSaString & filename, const 
 		length = 0;
 	} else if (isUTF32((BYTE*)buffer,length)) {
 		// not supported yet
-		return map;
+		return false;
 	} else if (isASCII((BYTE*)buffer,length)) {
 		// assume ascii
 		length2 = MultiByteToWideChar(CP_ACP,0,buffer,length,NULL,0);
@@ -376,19 +374,19 @@ TranscriptionDataMap CTextHelper::ImportText( const CSaString & filename, const 
 	delete [] obuffer;
 
 	map = attemptTabDelimitedRefOnly(lines,markers);
-	if (map.size()>0) return map;
+	if (map.size()>0) return true;
 	map = attemptTabDelimited(lines,markers);
-	if (map.size()>0) return map;
+	if (map.size()>0) return true;
 	map = attemptWhitespaceDelimited(lines,markers);
-	if (map.size()>0) return map;
+	if (map.size()>0) return true;
 	map = attemptTwoMarkerWhitespaceDelimited(lines,markers);
-	if (map.size()>0) return map;
+	if (map.size()>0) return true;
 
 	for (MarkerList::const_iterator it=markers.begin();it!=markers.end();it++) {
 		map[*it].push_back("");
 	}
 
-	return map;
+	return false;
 }
 
 vector<string> Tokenize( const string & str, const string & delimiters) {
