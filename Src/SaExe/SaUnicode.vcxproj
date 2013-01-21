@@ -293,6 +293,7 @@
     <ClCompile Include="WaveResampler.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Segments.cd" />
     <None Include="RES\1.ICO" />
     <None Include="RES\2A.ICO" />
     <None Include="RES\2B.ICO" />

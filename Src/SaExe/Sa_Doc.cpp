@@ -7263,9 +7263,24 @@ IMPLEMENT_DYNCREATE(CSaDoc, CUndoRedoDoc)
 	void CSaDoc::OnAutoAlign()
 	{
 		CDlgAlignTranscriptionDataSheet dlg(NULL,this);
+
+		dlg.init.m_bGloss = (AfxGetApp()->GetProfileInt(L"TranscriptionAlignment",L"Gloss",0)!=0);	
+		dlg.init.m_bOrthographic = (AfxGetApp()->GetProfileInt(L"TranscriptionAlignment",L"Orthographic",0)!=0);
+		dlg.init.m_bPhonemic = (AfxGetApp()->GetProfileInt(L"TranscriptionAlignment",L"Phonemic",0)!=0);
+		dlg.init.m_bPhonetic = (AfxGetApp()->GetProfileInt(L"TranscriptionAlignment",L"Phonetic",1)!=0);
+		dlg.init.m_bReference = (AfxGetApp()->GetProfileInt(L"TranscriptionAlignment",L"Reference",1)!=0);
+		dlg.init.m_bUseReference = (AfxGetApp()->GetProfileInt(L"TranscriptionAlignment",L"UseReference",0)!=0);
+
 		dlg.SetWizardMode();
 		if (dlg.DoModal()==ID_WIZFINISH) 
 		{
+			AfxGetApp()->WriteProfileInt(L"TranscriptionAlignment",L"Gloss",(dlg.init.m_bGloss)?1:0);	
+			AfxGetApp()->WriteProfileInt(L"TranscriptionAlignment",L"Orthographic",(dlg.init.m_bOrthographic)?1:0);
+			AfxGetApp()->WriteProfileInt(L"TranscriptionAlignment",L"Phonemic",(dlg.init.m_bPhonemic)?1:0);
+			AfxGetApp()->WriteProfileInt(L"TranscriptionAlignment",L"Phonetic",(dlg.init.m_bPhonetic)?1:0);
+			AfxGetApp()->WriteProfileInt(L"TranscriptionAlignment",L"Reference",(dlg.init.m_bReference)?1:0);
+			AfxGetApp()->WriteProfileInt(L"TranscriptionAlignment",L"UseReference",(dlg.init.m_bUseReference)?1:0);
+
 			CTranscriptionDataSettings settings = dlg.GetSettings();
 			if (!settings.m_bUseReference) 
 			{
@@ -7612,6 +7627,9 @@ IMPLEMENT_DYNCREATE(CSaDoc, CUndoRedoDoc)
 			// iterate through the gloss segments and add number to empty reference fields
 			CReferenceSegment * pReference = (CReferenceSegment*)m_apSegments[REFERENCE];
 			int start = (autoReferenceDlg.mUsingFirstGloss)?0:selection;
+			// if we are inserting, we need to make sure
+			// that any segments in between either have existing
+			// reference segments, or we need to add a blank one
 			for (int i = start; i < pGloss->GetOffsetSize(); i++)
 			{
 				DWORD offset = pGloss->GetOffset(i);
@@ -7621,7 +7639,8 @@ IMPLEMENT_DYNCREATE(CSaDoc, CUndoRedoDoc)
 				DWORD roffset = pReference->GetOffset(i);
 				if (roffset==0) 
 				{
-					pReference->Insert(i,&text,0,offset,duration);
+					int j = pReference->GetOffsetSize();
+					pReference->Insert(j,&text,0,offset,duration);
 				} 
 				else 
 				{
@@ -8383,6 +8402,11 @@ IMPLEMENT_DYNCREATE(CSaDoc, CUndoRedoDoc)
 		CPhonemicSegment * pPhonemic = (CPhonemicSegment*)GetSegment(PHONEMIC);
 		COrthoSegment * pOrthographic = (COrthoSegment*)GetSegment(ORTHO);
 
+		if (pReference->GetOffsetSize()==0) {
+			AfxMessageBox(IDS_ERROR_TAT_NO_REFERENCE,MB_OK|MB_ICONEXCLAMATION,0);
+			return;
+		}
+
 		if (td.m_bPhonetic) 
 		{
 			pPhonetic->DeleteContents();
@@ -8402,15 +8426,14 @@ IMPLEMENT_DYNCREATE(CSaDoc, CUndoRedoDoc)
 
 		const CStringArray * pReferences = pReference->GetTexts();
 
+		int pmidx = 0;
+		int pnidx = 0;
+		int oidx = 0;
 		for (int i=0;i<pReference->GetOffsetSize();i++) 
 		{
 			CSaString thisRef = pReferences->GetAt(i);
 			DWORD start = pReference->GetOffset(i);
 			DWORD duration = pReference->GetDuration(i);
-			int gidx = 0;
-			int pmidx = 0;
-			int pnidx = 0;
-			int oidx = 0;
 			MarkerList::iterator git = td.m_TranscriptionData[td.m_MarkerDefs[GLOSS]].begin();
 			MarkerList::iterator pmit = td.m_TranscriptionData[td.m_MarkerDefs[PHONEMIC]].begin();
 			MarkerList::iterator pnit = td.m_TranscriptionData[td.m_MarkerDefs[PHONETIC]].begin();
@@ -8443,8 +8466,7 @@ IMPLEMENT_DYNCREATE(CSaDoc, CUndoRedoDoc)
 					{
 						CSaString text = *git;
 						if (text[0]==WORD_DELIMITER) text = text.Mid(1);
-						pGloss->Insert(gidx,&text,false,start,duration);
-						gidx += text.GetLength();
+						pGloss->Insert(i,&text,false,start,duration);
 					}
 				}
 				if (td.m_bPhonetic) pnit++;

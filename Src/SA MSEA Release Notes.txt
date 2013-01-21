@@ -1,3 +1,8 @@
+SA - 3.1.0.25 - 1/20/2013
+1) Fix for bug where TAT was incorrectly inserting text into segment list
+2) Fixed bug where TAT removes all gloss fields when no ref fields exist.  (added error message)
+3) Fixed bug where AutoRef corrupts reference fields when inserting a field after one or more empty fields.
+
 SA - 3.1.0.24 - 1/18/2013
 1) Split lines in TAT import error message.
 2) Fixed toolbar alignment problem.

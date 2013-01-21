@@ -17,10 +17,8 @@
 // Neutral resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_NEU)
-#ifdef _WIN32
 LANGUAGE LANG_NEUTRAL, SUBLANG_NEUTRAL
 #pragma code_page(1252)
-#endif //_WIN32
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -28,7 +26,7 @@ LANGUAGE LANG_NEUTRAL, SUBLANG_NEUTRAL
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 3,1,0,24
+ FILEVERSION 3,1,0,25
  PRODUCTVERSION 1,0,0,1
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
@@ -46,7 +44,7 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "SIL International"
             VALUE "FileDescription", "SA"
-            VALUE "FileVersion", "v3.1.0.24"
+            VALUE "FileVersion", "v3.1.0.25"
             VALUE "InternalName", "SA"
             VALUE "LegalCopyright", "© 1996-2013 SIL International (MSEA)"
             VALUE "ProductName", "SA"
@@ -74,7 +72,7 @@ IDR_MAINFRAME           ICON                    "RES\\SA.ICO"
 // String Table
 //
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     AFX_IDS_APP_TITLE       "Speech Analyzer"
 END
@@ -84,13 +82,11 @@ END
 
 
 /////////////////////////////////////////////////////////////////////////////
-// English (U.S.) resources
+// English (United States) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
-#ifdef _WIN32
 LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 #pragma code_page(1252)
-#endif //_WIN32
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -127,7 +123,7 @@ IDR_SYNTHESIS_VOCAL_TRACT ICON                    "res\\idr_synthesis_vocal_trac
 // Dialog
 //
 
-IDD_SAVEAS DIALOG  0, 0, 209, 76
+IDD_SAVEAS DIALOG 0, 0, 209, 76
 STYLE DS_SETFONT | DS_3DLOOK | DS_CONTROL | WS_CHILD | WS_CLIPSIBLINGS
 FONT 8, "MS Sans Serif"
 BEGIN
@@ -166,7 +162,7 @@ BEGIN
     PUSHBUTTON      "&Help",IDHELP,239,182,50,14
 END
 
-IDD_PARAMETERSPITCHPAGE DIALOG  0, 0, 252, 150
+IDD_PARAMETERSPITCHPAGE DIALOG 0, 0, 252, 150
 STYLE DS_SETFONT | WS_CHILD | WS_VISIBLE | WS_DISABLED | WS_CAPTION
 CAPTION "Pitch"
 FONT 8, "MS Sans Serif"
@@ -217,7 +213,7 @@ BEGIN
     PUSHBUTTON      "File Defaults",IDC_PITCH_MANUAL_DEFAULT_FILE,134,127,50,14
 END
 
-IDD_INFORMATIONFILEPAGE DIALOG  0, 0, 276, 139
+IDD_INFORMATIONFILEPAGE DIALOG 0, 0, 276, 139
 STYLE DS_SETFONT | WS_CHILD | WS_VISIBLE | WS_DISABLED | WS_CAPTION | WS_SYSMENU
 CAPTION "File"
 FONT 8, "MS Sans Serif"
@@ -272,7 +268,7 @@ BEGIN
     PUSHBUTTON      "More Info...",IDC_MORE_INFO,178,143,42,12,0,WS_EX_ACCEPTFILES
 END
 
-IDD_INFORMATIONWAVEPAGE DIALOG  0, 0, 276, 139
+IDD_INFORMATIONWAVEPAGE DIALOG 0, 0, 276, 139
 STYLE DS_SETFONT | WS_CHILD | WS_VISIBLE | WS_DISABLED | WS_CAPTION
 CAPTION "Data"
 FONT 8, "MS Sans Serif"
@@ -299,7 +295,7 @@ BEGIN
     LTEXT           "unknown",IDC_HPFSTATUS,97,54,150,8
 END
 
-IDD_INFORMATIONUSERPAGE DIALOG  0, 0, 276, 147
+IDD_INFORMATIONUSERPAGE DIALOG 0, 0, 276, 147
 STYLE DS_SETFONT | WS_CHILD | WS_VISIBLE | WS_DISABLED | WS_CAPTION
 CAPTION "Comments"
 FONT 8, "MS Sans Serif"
@@ -399,7 +395,7 @@ BEGIN
     CTEXT           "5",IDC_STATIC,131,63,28,8
 END
 
-IDD_RECORDEROPTIONS DIALOG  0, 0, 135, 141
+IDD_RECORDEROPTIONS DIALOG 0, 0, 135, 141
 STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
 CAPTION "Recorder Settings"
 FONT 8, "MS Sans Serif"
@@ -446,7 +442,7 @@ BEGIN
     LTEXT           "Reset colors to SA default colors.",IDC_STATIC2,193,90,73,20
 END
 
-IDD_RECORDER DIALOG  0, 0, 334, 91
+IDD_RECORDER DIALOG 0, 0, 334, 91
 STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
 CAPTION "Recorder"
 FONT 8, "MS Sans Serif"
@@ -481,7 +477,7 @@ BEGIN
     PUSHBUTTON      "&Help",IDHELP,284,72,45,14
 END
 
-IDD_OPTIONSFONTPAGE DIALOG  0, 0, 276, 180
+IDD_OPTIONSFONTPAGE DIALOG 0, 0, 276, 180
 STYLE DS_SETFONT | WS_CHILD | WS_VISIBLE | WS_DISABLED | WS_CAPTION
 CAPTION "Fonts"
 FONT 8, "MS Sans Serif"
@@ -500,7 +496,7 @@ BEGIN
                     "Button",BS_AUTOCHECKBOX | NOT WS_VISIBLE | WS_DISABLED | WS_TABSTOP,6,159,135,10
 END
 
-IDD_FONT_TEMPLATE_ANNOTATION DIALOG  13, 54, 231, 138
+IDD_FONT_TEMPLATE_ANNOTATION DIALOG 13, 54, 231, 138
 STYLE DS_SETFONT | DS_MODALFRAME | DS_3DLOOK | DS_CONTEXTHELP | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Font"
 FONT 8, "MS Shell Dlg"
@@ -515,7 +511,7 @@ BEGIN
     PUSHBUTTON      "&Help",1038,180,64,45,14,NOT WS_VISIBLE | WS_GROUP
 END
 
-IDD_OPTIONSSAVEPAGE DIALOG  0, 0, 282, 194
+IDD_OPTIONSSAVEPAGE DIALOG 0, 0, 282, 194
 STYLE DS_SETFONT | WS_CHILD | WS_VISIBLE | WS_DISABLED | WS_CAPTION
 CAPTION "Startup"
 FONT 8, "MS Sans Serif"
@@ -547,7 +543,7 @@ BEGIN
     LTEXT           "Enabling this allows SA to display additional dialogs when opening non-standard .WAV files.\nThe standard format is 22KHZ, 16-bit mono data.\nWithout this option, multi channel files will always be opened using the left channel only.",IDC_STATIC3,7,21,266,41
 END
 
-IDD_PLAYER DIALOG  0, 0, 280, 97
+IDD_PLAYER DIALOG 0, 0, 280, 97
 STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
 CAPTION "Player"
 FONT 8, "MS Sans Serif"
@@ -587,7 +583,7 @@ BEGIN
     PUSHBUTTON      "&Mixer...",IDC_PLAY_CONTROLS,227,55,50,14
 END
 
-IDD_MAGNIFY DIALOG  0, 0, 117, 44
+IDD_MAGNIFY DIALOG 0, 0, 117, 44
 STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
 CAPTION "Input Magnify Factor"
 FONT 8, "MS Sans Serif"
@@ -597,7 +593,7 @@ BEGIN
     PUSHBUTTON      "Cancel",IDCANCEL,61,25,50,14
 END
 
-IDD_FINDREPLACE DIALOG  30, 73, 250, 130
+IDD_FINDREPLACE DIALOG 30, 73, 250, 130
 STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Find and Replace"
 FONT 8, "Helv"
@@ -621,7 +617,7 @@ BEGIN
     PUSHBUTTON      "&Help",IDHELP,193,112,51,14
 END
 
-IDD_PRINTOPTIONS DIALOG  0, 0, 245, 214
+IDD_PRINTOPTIONS DIALOG 0, 0, 245, 214
 STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
 CAPTION "Page Setup"
 FONT 8, "MS Sans Serif"
@@ -659,7 +655,7 @@ BEGIN
     PUSHBUTTON      "&Help",IDHELP,187,45,50,14
 END
 
-IDD_PARAMETERSSPECTRUMPAGE DIALOG  0, 0, 252, 150
+IDD_PARAMETERSSPECTRUMPAGE DIALOG 0, 0, 252, 150
 STYLE DS_SETFONT | WS_CHILD | WS_VISIBLE | WS_DISABLED | WS_CAPTION | WS_SYSMENU
 CAPTION "Spectrum"
 FONT 8, "MS Sans Serif"
@@ -704,7 +700,7 @@ BEGIN
     CONTROL         "&Bandwidth",IDC_SPECTRUM_FORMANTBANDWIDTH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,145,110,91,14
 END
 
-IDD_FNKEYS DIALOG  0, 0, 258, 121
+IDD_FNKEYS DIALOG 0, 0, 258, 121
 STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
 CAPTION "Function Keys Setup"
 FONT 8, "MS Sans Serif"
@@ -736,7 +732,7 @@ BEGIN
     LTEXT           "Play",IDC_STATIC,66,101,14,8
 END
 
-IDD_INFORMATIONSOURCEPAGE DIALOG  0, 0, 276, 139
+IDD_INFORMATIONSOURCEPAGE DIALOG 0, 0, 276, 139
 STYLE DS_SETFONT | WS_CHILD | WS_VISIBLE | WS_DISABLED | WS_CAPTION
 CAPTION "Source"
 FONT 8, "MS Sans Serif"
@@ -789,7 +785,7 @@ BEGIN
     LTEXT           "Gender is determined by gender setting in File Information dialog",IDC_STATIC_TEXT,12,126,201,8,NOT WS_VISIBLE
 END
 
-IDD_EQUALIZE DIALOG  0, 0, 227, 130
+IDD_EQUALIZE DIALOG 0, 0, 227, 130
 STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
 CAPTION "Equalize Length"
 FONT 8, "MS Sans Serif"
@@ -804,7 +800,7 @@ BEGIN
     LTEXT           "The source document is:  ",IDC_STATIC,6,27,160,10
 END
 
-IDD_PARAMETERSSDPPAGE DIALOG  0, 0, 252, 150
+IDD_PARAMETERSSDPPAGE DIALOG 0, 0, 252, 150
 STYLE DS_SETFONT | WS_CHILD | WS_VISIBLE | WS_DISABLED | WS_CAPTION | WS_SYSMENU
 CAPTION "SDP"
 FONT 8, "MS Sans Serif"
@@ -826,7 +822,7 @@ BEGIN
     LTEXT           "Mode",IDC_STATIC,134,22,33,8
 END
 
-IDD_WORKBENCH DIALOG  0, 0, 315, 219
+IDD_WORKBENCH DIALOG 0, 0, 315, 219
 STYLE DS_SETFONT | WS_CHILD
 FONT 8, "MS Sans Serif"
 BEGIN
@@ -876,7 +872,7 @@ BEGIN
     LTEXT           "",IDC_ARROW30,240,25,23,12
 END
 
-IDD_PARAMETERSRAWDATAPAGE DIALOG  0, 0, 252, 150
+IDD_PARAMETERSRAWDATAPAGE DIALOG 0, 0, 252, 150
 STYLE DS_SETFONT | WS_CHILD | WS_VISIBLE | WS_DISABLED | WS_CAPTION
 CAPTION "Waveform"
 FONT 8, "MS Sans Serif"
@@ -885,7 +881,7 @@ BEGIN
     GROUPBOX        "Data Source",-1,6,6,117,139
 END
 
-IDD_WB_PROCESSES DIALOG  0, 0, 341, 127
+IDD_WB_PROCESSES DIALOG 0, 0, 341, 127
 STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
 CAPTION "Process"
 FONT 8, "MS Sans Serif"
@@ -907,7 +903,7 @@ BEGIN
     LTEXT           "Apply to",IDC_STATIC,156,101,29,10
 END
 
-IDD_WB_FILTERREVERB DIALOG  0, 0, 155, 66
+IDD_WB_FILTERREVERB DIALOG 0, 0, 155, 66
 STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
 CAPTION "Echo/Reverb Properties"
 FONT 8, "MS Sans Serif"
@@ -926,7 +922,7 @@ BEGIN
     GROUPBOX        "",IDC_STATIC,6,3,87,56
 END
 
-IDD_WB_FILTERPASS DIALOG  0, 0, 155, 103
+IDD_WB_FILTERPASS DIALOG 0, 0, 155, 103
 STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
 CAPTION "High/Low$Band pass Properties"
 FONT 8, "MS Sans Serif"
@@ -950,7 +946,7 @@ BEGIN
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,11,89,97,10
 END
 
-IDD_WB_FILTEREQUATION DIALOG  0, 0, 254, 66
+IDD_WB_FILTEREQUATION DIALOG 0, 0, 254, 66
 STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
 CAPTION "Equation Properties"
 FONT 8, "MS Sans Serif"
@@ -964,7 +960,7 @@ BEGIN
     LTEXT           "Example: 10 + 3 * sin(x / x)",IDC_EQUATION_TEXT1,12,46,173,9
 END
 
-IDD_PICKOVERLAY DIALOG  0, 0, 234, 146
+IDD_PICKOVERLAY DIALOG 0, 0, 234, 146
 STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
 CAPTION "Choose Overlay Graphs"
 FONT 8, "MS Sans Serif"
@@ -977,7 +973,7 @@ BEGIN
     PUSHBUTTON      "&Help",IDHELP,176,122,52,16
 END
 
-IDD_CHARTVOWELSPAGE DIALOG  0, 0, 348, 219
+IDD_CHARTVOWELSPAGE DIALOG 0, 0, 348, 219
 STYLE DS_SETFONT | WS_CHILD | WS_VISIBLE | WS_DISABLED | WS_CAPTION
 CAPTION "Vowels"
 FONT 8, "MS Sans Serif"
@@ -1038,7 +1034,7 @@ BEGIN
     LTEXT           "L352",IDC_CHART_L352,194,110,20,8,NOT WS_VISIBLE | WS_DISABLED | NOT WS_GROUP
 END
 
-IDD_CHARTCONSONANTSPAGE DIALOG  0, 0, 405, 218
+IDD_CHARTCONSONANTSPAGE DIALOG 0, 0, 405, 218
 STYLE DS_SETFONT | WS_CHILD | WS_VISIBLE | WS_DISABLED | WS_CAPTION
 CAPTION "Consonants"
 FONT 8, "MS Sans Serif"
@@ -1220,7 +1216,7 @@ BEGIN
     LTEXT           "",IDC_CHART_CV111,92,55,16,14,NOT WS_VISIBLE | WS_DISABLED | NOT WS_GROUP
 END
 
-IDD_CHARTDIACRITICSPAGE DIALOG  0, 0, 348, 219
+IDD_CHARTDIACRITICSPAGE DIALOG 0, 0, 348, 219
 STYLE DS_SETFONT | WS_CHILD | WS_VISIBLE | WS_DISABLED | WS_CAPTION
 CAPTION "Diacritics"
 FONT 8, "MS Sans Serif"
@@ -1357,7 +1353,7 @@ BEGIN
     LTEXT           "No audible release",IDC_CHART_T406,207,118,61,16,NOT WS_VISIBLE | WS_DISABLED | NOT WS_GROUP
 END
 
-IDD_CHARTSUPRASEGSPAGE DIALOG  0, 0, 354, 218
+IDD_CHARTSUPRASEGSPAGE DIALOG 0, 0, 354, 218
 STYLE DS_SETFONT | WS_CHILD | WS_VISIBLE | WS_DISABLED | WS_CAPTION
 CAPTION "Suprasegmentals"
 FONT 8, "MS Sans Serif"
@@ -1581,7 +1577,7 @@ BEGIN
     LTEXT           "Please select Finish to perform automatic import and alignment.\n\nNOTE: The result can be undone using the Undo command in the edit menu.",IDC_INSTRUCTION,6,19,243,47
 END
 
-IDD_EDITOR DIALOG  0, 0, 250, 95
+IDD_EDITOR DIALOG 0, 0, 250, 95
 STYLE DS_SETFONT | WS_CLIPSIBLINGS | WS_CAPTION | WS_SYSMENU
 CAPTION "Transcription Editor"
 FONT 8, "MS Sans Serif"
@@ -1605,7 +1601,7 @@ BEGIN
     PUSHBUTTON      "&Help",IDHELP,195,19,45,12
 END
 
-IDD_ANNOTATION_EDIT DIALOG  0, 0, 579, 138
+IDD_ANNOTATION_EDIT DIALOG 0, 0, 579, 138
 STYLE DS_SETFONT | WS_POPUP
 FONT 8, "MS Sans Serif"
 BEGIN
@@ -1613,7 +1609,7 @@ BEGIN
     DEFPUSHBUTTON   "OK",IDOK,235,34,55,24,NOT WS_VISIBLE | NOT WS_TABSTOP
 END
 
-IDD_EXPORT_TABLE DIALOG  0, 0, 271, 161
+IDD_EXPORT_TABLE DIALOG 0, 0, 271, 161
 STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
 CAPTION "Export Time Table"
 FONT 8, "MS Sans Serif"
@@ -1657,7 +1653,7 @@ BEGIN
     PUSHBUTTON      "&Help",IDHELP,222,144,38,14
 END
 
-IDD_EXPORT_SFM DIALOG  0, 0, 295, 202
+IDD_EXPORT_SFM DIALOG 0, 0, 295, 202
 STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
 CAPTION "Export Speech Format"
 FONT 8, "MS Sans Serif"
@@ -1708,7 +1704,7 @@ BEGIN
     PUSHBUTTON      "&Help",IDHELP,241,184,38,14
 END
 
-IDD_IMPORT_DIALOG DIALOG  0, 0, 187, 95
+IDD_IMPORT_DIALOG DIALOG 0, 0, 187, 95
 STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
 CAPTION "Import Table "
 FONT 8, "MS Sans Serif"
@@ -1755,7 +1751,7 @@ BEGIN
     LTEXT           "Alignment",IDC_VIEW_ALIGNTEXT,10,99,56,11
 END
 
-IDD_START_MODE DIALOG  0, 0, 270, 215
+IDD_START_MODE DIALOG 0, 0, 270, 215
 STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_VISIBLE | WS_CAPTION
 CAPTION "Start Mode"
 FONT 8, "MS Sans Serif"
@@ -1781,7 +1777,7 @@ BEGIN
     PUSHBUTTON      "&Help",IDHELP,224,197,42,14
 END
 
-IDD_PARAMETERSMUSICPAGE DIALOG  0, 0, 252, 150
+IDD_PARAMETERSMUSICPAGE DIALOG 0, 0, 252, 150
 STYLE DS_SETFONT | WS_CHILD | WS_VISIBLE | WS_DISABLED | WS_CAPTION | WS_SYSMENU
 CAPTION "Music"
 FONT 8, "MS Sans Serif"
@@ -1815,7 +1811,7 @@ BEGIN
     LTEXT           "st",IDC_CALC_LOWERBOUNDTEXT,110,122,8,8
 END
 
-IDD_RESULT DIALOG  0, 0, 311, 290
+IDD_RESULT DIALOG 0, 0, 311, 290
 STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_VISIBLE | WS_CAPTION
 CAPTION "Result"
 FONT 8, "MS Sans Serif"
@@ -1825,7 +1821,7 @@ BEGIN
     EDITTEXT        IDC_EDIT,6,5,302,257,ES_MULTILINE | ES_READONLY | WS_VSCROLL | WS_HSCROLL
 END
 
-IDD_WAVEFORM_GENERATOR DIALOG  0, 0, 265, 241
+IDD_WAVEFORM_GENERATOR DIALOG 0, 0, 265, 241
 STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
 CAPTION "Waveform Generator"
 FONT 8, "MS Sans Serif"
@@ -1878,7 +1874,7 @@ BEGIN
     PUSHBUTTON      "&Help",IDHELP,218,220,42,14
 END
 
-IDD_GRAPHSTYPES_CUSTOM DIALOG  110, 80, 328, 180
+IDD_GRAPHSTYPES_CUSTOM DIALOG 110, 80, 328, 180
 STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
 CAPTION "Custom Graph Types"
 FONT 8, "MS Sans Serif"
@@ -1940,7 +1936,7 @@ BEGIN
     LTEXT           "SFM Marker",IDC_STATIC,97,11,43,8
 END
 
-IDD_MBROLA DIALOG  0, 0, 651, 354
+IDD_MBROLA DIALOG 0, 0, 651, 354
 STYLE DS_SETFONT | WS_CHILD | WS_DISABLED | WS_CAPTION | WS_SYSMENU
 CAPTION "MBROLA"
 FONT 8, "MS Sans Serif"
@@ -1964,7 +1960,7 @@ BEGIN
     CONTROL         "IPA",IDC_MBROLA_IPA,"Button",BS_AUTOCHECKBOX | WS_DISABLED,14,315,27,10
 END
 
-IDD_AUTORECORDER DIALOG  0, 0, 337, 74
+IDD_AUTORECORDER DIALOG 0, 0, 337, 74
 STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
 CAPTION "Record Overlay"
 FONT 8, "MS Sans Serif"
@@ -2000,7 +1996,7 @@ BEGIN
     CONTROL         "List1",IDC_TASK_LIST,"SysListView32",LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_SHAREIMAGELISTS | LVS_NOSCROLL | LVS_NOCOLUMNHEADER | LVS_NOSORTHEADER | WS_TABSTOP,0,0,45,192
 END
 
-IDD_VOWEL_FORMANTS DIALOG  0, 0, 264, 234
+IDD_VOWEL_FORMANTS DIALOG 0, 0, 264, 234
 STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Vowel Formants Data Set"
 FONT 8, "MS Sans Serif"
@@ -2017,7 +2013,7 @@ BEGIN
     LTEXT           "Each vowel may include diacritics\nEach formant frequency MUST be between 200 and 5000\nF1, F2, F3 are REQUIRED, F4 is optional and can be blank.  ",IDC_STATIC,4,15,253,27,SS_SUNKEN
 END
 
-IDD_GRAPHTYPES_ORDER DIALOG  0, 0, 301, 194
+IDD_GRAPHTYPES_ORDER DIALOG 0, 0, 301, 194
 STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Graph Types Order"
 FONT 8, "MS Sans Serif"
@@ -2031,7 +2027,7 @@ BEGIN
     PUSHBUTTON      "&Help",IDHELP,244,173,50,14
 END
 
-IDD_PARAMETERS_INTENSITY_PAGE DIALOG  0, 0, 252, 150
+IDD_PARAMETERS_INTENSITY_PAGE DIALOG 0, 0, 252, 150
 STYLE DS_SETFONT | WS_CHILD | WS_VISIBLE | WS_DISABLED | WS_CAPTION
 CAPTION "Intensity"
 FONT 8, "MS Sans Serif"
@@ -2041,7 +2037,7 @@ BEGIN
     CONTROL         "Linear Magnitude (%)",IDC_RADIO2,"Button",BS_AUTORADIOBUTTON,13,38,82,10
 END
 
-IDD_ORDER DIALOG  0, 0, 117, 44
+IDD_ORDER DIALOG 0, 0, 117, 44
 STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
 CAPTION "Input Order"
 FONT 8, "MS Sans Serif"
@@ -2051,7 +2047,7 @@ BEGIN
     PUSHBUTTON      "Cancel",IDCANCEL,61,25,50,14
 END
 
-IDD_PARAMETERS_RESEARCH DIALOG  0, 0, 252, 182
+IDD_PARAMETERS_RESEARCH DIALOG 0, 0, 252, 182
 STYLE DS_SETFONT | WS_CHILD | WS_VISIBLE | WS_DISABLED | WS_CAPTION
 CAPTION "Research"
 FONT 8, "MS Sans Serif"
@@ -2100,7 +2096,7 @@ BEGIN
     LTEXT           "(max) aux poles",IDC_STATIC,196,109,51,9
 END
 
-IDD_SYNTHESIS_ADJUST_CELLS DIALOG  0, 0, 148, 97
+IDD_SYNTHESIS_ADJUST_CELLS DIALOG 0, 0, 148, 97
 STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
 CAPTION "Adjust Selected Cells"
 FONT 8, "MS Sans Serif"
@@ -2114,7 +2110,7 @@ BEGIN
     LTEXT           "NewValue = Scale*OldValue + Offset",IDC_STATIC,7,9,118,8
 END
 
-IDD_PARAMETERS_FORMANT_TRACKER DIALOG  0, 0, 252, 182
+IDD_PARAMETERS_FORMANT_TRACKER DIALOG 0, 0, 252, 182
 STYLE DS_SETFONT | WS_CHILD | WS_VISIBLE | WS_DISABLED | WS_CAPTION
 CAPTION "Formant Tracker"
 FONT 8, "MS Sans Serif"
@@ -2271,7 +2267,7 @@ END
 //
 
 #ifdef APSTUDIO_INVOKED
-GUIDELINES DESIGNINFO 
+GUIDELINES DESIGNINFO
 BEGIN
     IDD_SAVEAS, DIALOG
     BEGIN
@@ -2499,7 +2495,7 @@ IDR_TASKBAR             BITMAP                  "res\\taskbar.bmp"
 // Toolbar
 //
 
-IDR_BAR_BASIC TOOLBAR  16, 15
+IDR_BAR_BASIC TOOLBAR 16, 15
 BEGIN
     BUTTON      ID_FILE_RECORD
     BUTTON      ID_FILE_OPEN
@@ -2532,7 +2528,7 @@ BEGIN
     BUTTON      ID_POPUP_RECORD_OVERLAY
 END
 
-IDR_BAR_ADVANCED TOOLBAR  16, 15
+IDR_BAR_ADVANCED TOOLBAR 16, 15
 BEGIN
     BUTTON      ID_FILE_RECORD
     BUTTON      ID_FILE_OPEN
@@ -2572,7 +2568,7 @@ BEGIN
     BUTTON      ID_POPUP_RECORD_OVERLAY
 END
 
-IDR_TASKBAR TOOLBAR  30, 32
+IDR_TASKBAR TOOLBAR 30, 32
 BEGIN
     BUTTON      IDD_TASKBAR_ICON
     BUTTON      IDD_TASKBAR_ICON
@@ -2597,7 +2593,7 @@ END
 // Menu
 //
 
-IDR_MAINFRAME MENU 
+IDR_MAINFRAME MENU
 BEGIN
     POPUP "&File"
     BEGIN
@@ -2643,7 +2639,7 @@ BEGIN
     END
 END
 
-IDR_SA_ANNTYPE MENU 
+IDR_SA_ANNTYPE MENU
 BEGIN
     POPUP "&File"
     BEGIN
@@ -2947,7 +2943,7 @@ BEGIN
     END
 END
 
-IDR_SA_FLOATINGPOPUP MENU 
+IDR_SA_FLOATINGPOPUP MENU
 BEGIN
     POPUP "Popup Graph"
     BEGIN
@@ -3152,7 +3148,7 @@ BEGIN
     END
 END
 
-IDR_SA_WBTYPE MENU 
+IDR_SA_WBTYPE MENU
 BEGIN
     POPUP "&File"
     BEGIN
@@ -3194,7 +3190,7 @@ BEGIN
     END
 END
 
-IDR_SA_DISPLAYPLOT MENU 
+IDR_SA_DISPLAYPLOT MENU
 BEGIN
     POPUP "&File"
     BEGIN
@@ -3276,7 +3272,7 @@ BEGIN
     END
 END
 
-IDR_SA_DP_POPUP MENU 
+IDR_SA_DP_POPUP MENU
 BEGIN
     POPUP "Popup Graph"
     BEGIN
@@ -3326,7 +3322,7 @@ BEGIN
     END
 END
 
-IDR_MAINFRAME_SAS MENU 
+IDR_MAINFRAME_SAS MENU
 BEGIN
     POPUP "&File"
     BEGIN
@@ -3353,7 +3349,7 @@ BEGIN
     END
 END
 
-IDR_KLATT MENU 
+IDR_KLATT MENU
 BEGIN
     POPUP "&File"
     BEGIN
@@ -3424,7 +3420,7 @@ BEGIN
     END
 END
 
-IDR_SYNTHESIS_VOCAL_TRACT MENU 
+IDR_SYNTHESIS_VOCAL_TRACT MENU
 BEGIN
     POPUP "&File"
     BEGIN
@@ -3501,14 +3497,14 @@ END
 // Accelerator
 //
 
-IDR_SA_WBTYPE ACCELERATORS 
+IDR_SA_WBTYPE ACCELERATORS
 BEGIN
     "O",            ID_FILE_OPEN,           VIRTKEY, CONTROL, NOINVERT
     "S",            ID_FILE_SAVE,           VIRTKEY, CONTROL, NOINVERT
     VK_F1,          ID_HELP_CONTENTS,       VIRTKEY, NOINVERT
 END
 
-IDR_SA_ANNTYPE ACCELERATORS 
+IDR_SA_ANNTYPE ACCELERATORS
 BEGIN
     "=",            ID_EDIT_ADD,            ASCII,  ALT, NOINVERT
     VK_ADD,         ID_EDIT_ADD,            VIRTKEY, ALT, NOINVERT
@@ -3591,7 +3587,7 @@ BEGIN
     VK_RETURN,      ID_RESTART_PROCESS,     VIRTKEY, NOINVERT
 END
 
-IDR_SA_DISPLAYPLOT ACCELERATORS 
+IDR_SA_DISPLAYPLOT ACCELERATORS
 BEGIN
     "P",            ID_FILE_PRINT,          VIRTKEY, CONTROL, NOINVERT
     "T",            ID_GRAPHS_TILE,         VIRTKEY, CONTROL, NOINVERT
@@ -3601,7 +3597,7 @@ BEGIN
     VK_RETURN,      ID_RESTART_PROCESS,     VIRTKEY, NOINVERT
 END
 
-IDR_MAINFRAME ACCELERATORS 
+IDR_MAINFRAME ACCELERATORS
 BEGIN
     "O",            ID_FILE_OPEN,           VIRTKEY, CONTROL, NOINVERT
     "R",            ID_FILE_RECORD,         VIRTKEY, CONTROL, NOINVERT
@@ -3610,14 +3606,14 @@ BEGIN
     VK_F1,          ID_HELP_CONTENTS,       VIRTKEY, NOINVERT
 END
 
-IDR_MAINFRAME_SAS ACCELERATORS 
+IDR_MAINFRAME_SAS ACCELERATORS
 BEGIN
     "O",            ID_FILE_OPEN,           VIRTKEY, CONTROL, NOINVERT
     "R",            ID_FILE_RECORD,         VIRTKEY, CONTROL, NOINVERT
     VK_F1,          ID_HELP_CONTENTS,       VIRTKEY, NOINVERT
 END
 
-IDR_KLATT ACCELERATORS 
+IDR_KLATT ACCELERATORS
 BEGIN
     "C",            ID_EDIT_COPY,           VIRTKEY, CONTROL, NOINVERT
     "O",            ID_FILE_OPEN,           VIRTKEY, CONTROL, NOINVERT
@@ -3635,7 +3631,7 @@ BEGIN
     "X",            ID_EDIT_CUT,            VIRTKEY, CONTROL, NOINVERT
 END
 
-IDR_SYNTHESIS_VOCAL_TRACT ACCELERATORS 
+IDR_SYNTHESIS_VOCAL_TRACT ACCELERATORS
 BEGIN
     "C",            ID_EDIT_COPY,           VIRTKEY, CONTROL, NOINVERT
     "O",            ID_FILE_OPEN,           VIRTKEY, CONTROL, NOINVERT
@@ -4111,16 +4107,16 @@ IDC_MHANDN              CURSOR                  "res\\MedHandN.cur"
 // String Table
 //
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     IDR_MAINFRAME           "Speech Analyzer"
     IDR_SA_ANNTYPE          "\nSA\nSA Document\nWAV Files (*.wav)\n.wav\nannFileType\nANN File Type"
-    VS_VERSION              "Version 3.1.0.24"
+    VS_VERSION              "Version 3.1.0.25"
     VS_COPYRIGHT            "© 1996-2013 SIL International (MSEA).\nAll Rights Reserved."
     IDR_SA_WBTYPE           "\nWB\nSA Workbench\nWB Files (*.wb)\n.wb\nwbFileType\nWB File Type"
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     IDR_WORKBENCH           "Workbench"
     IDS_QUESTION_APPNOTFOUND 
@@ -4128,7 +4124,7 @@ BEGIN
     IDR_SA_MIDTYPE          "\nMID\nSA MIDI\nMIDI Files (*.mid)\n.mid\nmidFileType\nMID File Type"
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     IDS_ERROR_MMIO_INVALIDPARAM "Sound device error: invalid parameter."
     IDS_EMPTY_REPLACE       "You cannot replace with an empty string."
@@ -4147,14 +4143,14 @@ BEGIN
                             "A serious error has occurred. If this error persists, try reinstalling the application.\n\nModule: %1\nError Code: 0x%2"
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     AFX_IDS_APP_TITLE       "Speech Analyzer"
     AFX_IDS_IDLEMESSAGE     "For Help, press F1"
     AFX_IDS_HELPMODEMESSAGE "Select an object on which to get Help"
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     AFX_IDS_SCSIZE          "Change the window size"
     AFX_IDS_SCMOVE          "Change the window position"
@@ -4165,20 +4161,20 @@ BEGIN
     AFX_IDS_SCCLOSE         "Close the active window and prompts to save the documents"
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     AFX_IDS_SCRESTORE       "Restore the window to normal size"
     AFX_IDS_SCTASKLIST      "Activate Task List"
     AFX_IDS_MDICHILD        "Activate this window"
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     ID_FILE_RECORD          "Record a new document\nRecord"
     ID_EDIT_SCREENCAPTURE   "Capture whole SA screen and put it on the clipboard\nCapture Screen"
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     ID_FILE_NEW             "Create a new workbench document\nNew"
     ID_FILE_OPEN            "Open an existing document\nOpen"
@@ -4191,7 +4187,7 @@ BEGIN
     ID_FILE_PRINT_PREVIEW   "Display a full page print preview\nPrint Preview"
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     ID_POPUP0_PHONETIC      "Switch the phonetic window on top of the current graph on or off\nTranscription On/Off"
     ID_POPUP0_GLOSS         "Switch the parse window on top of the current graph on or off\nParse On/Off"
@@ -4205,7 +4201,7 @@ BEGIN
     ID_GRAPHS_TILE          "Retile graph windows\nRetile Graphs"
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     ID_GRAPHS_TYPES         "Choose graph types to display\nGraph Types"
     ID_FILE_INFORMATION     "Edit/create the description of the file\nFile Information"
@@ -4213,7 +4209,7 @@ BEGIN
     ID_GRAPHS_STYLE_SOLID   "Choose graph display style solid\nStyle Solid"
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     ID_FILE_MRU_FILE1       "Open this document\nOpen"
     ID_FILE_MRU_FILE2       "Open this document\nOpen"
@@ -4221,7 +4217,7 @@ BEGIN
     ID_FILE_MRU_FILE4       "Open this document\nOpen"
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     ID_APP_ABOUT            "Display program information, version number and copyright\nAbout"
     ID_APP_EXIT             "Quit the application; prompts to save documents\nQuit"
@@ -4231,7 +4227,7 @@ BEGIN
     ID_HELP                 "Display help for current task or command"
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     ID_EDIT_CLEAR           "Delete selected text\nClear"
     ID_EDIT_COPY            "Copy the selection and put it on the clipboard\nCopy"
@@ -4243,7 +4239,7 @@ BEGIN
     ID_EDIT_REDO            "Undo an undo\nRedo"
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     ID_PHONETIC_ALL         "Show/Hide phonetic window on top of all graphs\nPhonetic All"
     ID_TONE_ALL             "Show/Hide tone window on top of all graphs\nTone All"
@@ -4257,7 +4253,7 @@ BEGIN
     ID_PHRASE_L4_ALL        "Show/Hide phrase window on top of all graphs\nPhrase All"
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     ID_PHRASE_L3_NONE       "Hide phrase window in all graphs\nPhrase None"
     ID_PHRASE_L4_NONE       "Hide phrase window in all graphs\nPhrase None"
@@ -4270,7 +4266,7 @@ BEGIN
     ID_ORTHO_RAWDATA        "Show/Hide orthographic window only on top of waveform graph\nOrthographic Waveform"
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     ID_GLOSS_RAWDATA        "Show/Hide gloss window only on top of waveform graph\nGloss Waveform"
     ID_REFERENCE_RAWDATA    "Show/Hide reference window only on top of waveform graph\nReference Waveform"
@@ -4283,7 +4279,7 @@ BEGIN
     ID_BOUNDARIES_RAWDATA   "Show/Hide segment boundaries only in waveform graph\nWaveform Segment Boundaries"
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     ID_POPUP0_PRINT         "Print the current graph\nPrint"
     ID_POPUP0_GRIDLINES     "Change the gridlines for the current graph\nGridlines"
@@ -4292,13 +4288,13 @@ BEGIN
                             "Equalize the scaling of the different document views\nEqualize Length"
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     ID_EDIT_EQUALIZELENGTH  "Equalize the scaling of the different document views\nEqualize Length"
     IDS_FINDFIELDS          "Phonetic\nTone\nPhonemic\nOrthographic\nGloss\nReference\nPhrase L1\nPhrase L2\nPhrase L3\nPhrase L4"
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     ID_TYPES_RAWDATA        "Change the current graph type to raw data\nRaw Data"
     ID_TYPES_ZEROCROSSING   "Change the current graph type to zero crossing\nZero Crossing"
@@ -4307,7 +4303,7 @@ BEGIN
     ID_TYPES_MIDDLECHANGE   "Change the current graph type to middle change\nMiddle Change"
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     ID_LAYOUT_1             "Display only one graph\nOne Graph Display"
     ID_LAYOUT_2A            "Display two graphs tiled\nTwo Graphs Display"
@@ -4324,7 +4320,7 @@ BEGIN
     ID_LAYOUT_6B            "Display six graphs tiled\nSix Graphs Display"
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     ID_TYPES_LOWCHANGE      "Change the current graph type to low change\nLow Change"
     ID_TYPES_HIGHCHANGE     "Change the current graph type to high change\nHigh Change"
@@ -4342,12 +4338,12 @@ BEGIN
                             "Auto parse the wave file into phrases\nAuto Parse Phrases"
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     ID_GRAPHS_PARAMETERS    "Change parameters of graphs\nParameters"
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     ID_GRAPHS_OVERLAY       "Overlay graphs from different documents\nOverlay"
     IDS_CHART_COMBOTEXT     "Display"
@@ -4356,7 +4352,7 @@ BEGIN
     IDS_CHART_PLAYSPEECH    "Play speech"
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     ID_PLAYBACK_CURSORS     "Plays between the cursors in the window\nPlay Between Cursors"
     ID_PLAYBACK_WINDOW      "Plays the wave file shown in the window\nPlay Window"
@@ -4366,14 +4362,14 @@ BEGIN
     ID_TOOLS_OPTIONS        "User configuration\nConfiguration"
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     ID_WINDOW_CASCADE       "Arrange windows so they overlap\nCascade"
     ID_WINDOW_TILE_HORZ     "Arrange windows as non-overlapping horizontal tiles\nTile Horizontal"
     ID_WINDOW_TILE_VERT     "Arrange windows as non-overlapping vertical tiles\nTile Vertical"
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     IDS_DLGTITLE_FILEINFO   "File Information"
     IDS_DLGTITLE_GRAPHSPARA "Graph Parameters"
@@ -4388,7 +4384,7 @@ BEGIN
     IDS_GRAPHTYPES_TAB_MUSIC "Music"
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     IDS_HELPERWND_ALIASED   "aliased data"
     IDS_HELPERWND_POSCUR    "Position cursors and click on graph Recalc button."
@@ -4400,7 +4396,7 @@ BEGIN
     IDS_HELPERWND_CURFARTHER "Move cursors further apart."
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     IDS_ERROR_NOTIMER       "No more system timers free. Some SA timer functions will not be available."
     IDS_ERROR_FILEOPEN      "Failed to open wave file '%1'."
@@ -4412,7 +4408,7 @@ BEGIN
     IDS_ERROR_FORMATPCM     "Unable to load %1\n\nFile format was not recognized. Try converting to 8 or 16 bit mono WAV format."
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     IDS_ERROR_GRAPPLSPACE   "Auto pitch needs a buffer with a size of at least %1 byte, to be successful. Please assign a larger buffer size (Tools, Options, Memory)."
     IDS_ERROR_MULTIPLEFILTER 
@@ -4435,7 +4431,7 @@ BEGIN
     IDS_FIND_NONE           "The search item was not found."
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     IDS_ERROR_FORMATMONO    "Data in file '%1' has not been recorded in mono."
     IDS_ERROR_DATACHUNK     "Can't find data chunk in file '%1'."
@@ -4456,7 +4452,7 @@ BEGIN
     IDS_ERROR_MMIO_BADID    "Sound device error: bad device ID."
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     IDS_ERROR_MMIO_INVHANDLE "Sound device error: invalid device handle."
     IDS_ERROR_MMIO_NOHEADER "Sound device error: unprepared header."
@@ -4478,7 +4474,7 @@ BEGIN
                             "Failed storing the recorded data block into temporary file '%1'. Be sure, there is enough hard disk space to record."
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     IDS_STATTXT_PROCESSING  "Processing data. Please wait..."
     IDS_STATTXT_PROCESSCHA  "Processing change data. Please wait..."
@@ -4498,7 +4494,7 @@ BEGIN
     IDS_CANCELED            "The process has been canceled. Transcription data may be corrupted."
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     IDS_QUESTION_APPLYRECORD "Apply the recorded data into a waveform graph?"
     IDS_QUESTION_BUFFERRESTART 
@@ -4511,7 +4507,7 @@ BEGIN
                             "Sound device unavailable.\n\nCheck your microphone and speaker connections."
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     IDS_FILETYPE_UTT        "utterance (UTT)"
     IDS_FILETYPE_WAV        "wave file (WAV)"
@@ -4529,26 +4525,26 @@ BEGIN
     IDS_WINDOW_MUSIC_PL4    "Phrase L4"
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     IDS_PLAYER_SMALL        "M&inimize Player"
     IDS_PLAYER_LARGE        "M&aximize Player"
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     IDS_STATTXT_ESCTOCANCEL "Press Esc to Cancel"
     IDS_STATTXT_PROCESSDUR  "Processing duration data..."
     IDS_STATTXT_PROCESSWVL  "Processing wavelet data..."
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     IDS_UNDEFINED           "undefined"
     IDS_STOP_TEST           "Stop Test"
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     ID_GRAPHS_SCREENCAPTURE "Capture whole SA screen and save it in a file\nSave Screenshot"
     ID_POPUP0_OVERLAY       "Overlay graphs from different documents\nOverlay"
@@ -4558,14 +4554,14 @@ BEGIN
     ID_TYPES_CEPSPECTROGRAM "Change the current graph type to cepstral spectrogram\nCepstral Spectrogram"
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     ID_TYPES_CEPPITCH       "Change the current graph type to ceptral pitch\nCeptral Pitch"
     ID_POPUPGRAPH_GRIDLINES "Show/Hide the gridlines for the current graph\nGridlines On/Off"
     ID_POPUPGRAPH_PRINT     "Print the current graph\nPrint"
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     ID_LEGEND_ALL           "Show/Hide legend window in all graphs\nLegend All"
     ID_XSCALE_ALL           "Show/Hide x-scale window in all graphs\nX-Scale All"
@@ -4580,7 +4576,7 @@ BEGIN
     ID_PHRASE_L2_NONE       "Hide phrase window in all graphs\nPhrase None"
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     ID_POPUPGRAPH_PHONETIC  "Show/Hide phonetic window on top of the current graph\nPhonetic On/Off"
     ID_POPUPGRAPH_TONE      "Show/Hide tone window on top of the current graph\nTone On/Off"
@@ -4594,7 +4590,7 @@ BEGIN
     ID_POPUPGRAPH_MUSIC_PL4 "Show/Hide phrase window on top of the current graph\nPhrase On/Off"
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     IDD_FORMANT             "Change the current graph type to duration\nDuration"
     IDD_GRAPITCH            "Change the current graph type to CECIL auto pitch\nAuto Pitch"
@@ -4607,17 +4603,17 @@ BEGIN
     IDD_SMPITCH             "Change the current graph type to CECIL smoothed pitch\nCECIL Smoothed Pitch"
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     IDD_GLOTWAVE            "Change the current graph type to glottal wave\nGlottal Wave"
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     IDD_3D_PITCH            "Change the current graph type to 3D Pitch\n3D Pitch"
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     IDD_ZCROSS              "Change the current graph type to zero crossing\nZero Crossing"
     IDD_POA                 "Change the current graph type to vocal tract diagram\nVocal Tract"
@@ -4632,7 +4628,7 @@ BEGIN
     IDD_BLANK               "Change the current graph type to a blank graph\nBlank"
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     IDD_CEPPITCH            "Change the current graph type to ceptral pitch\nCeptral Pitch"
     IDD_SPECTROGRAM         "Change the current graph type to spectrogram\nSpectrogram"
@@ -4642,7 +4638,7 @@ BEGIN
     IDD_CHPITCH             "Change the current graph type to CECIL custom pitch\nCECIL Custom Pitch"
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     ID_EDIT_PREVIOUS        "Select previous transcription segment\nPrevious Segment"
     ID_EDIT_NEXT            "Select next transcription segment\nNext Segment"
@@ -4652,7 +4648,7 @@ BEGIN
     ID_GRAPHS_MAGNIFY4      "Show graph data vertically magnified by 4\nMagnify x4"
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     ID_POPUPGRAPH_MAGNIFY1  "Show graph data as is\nMagnify x1"
     ID_POPUPGRAPH_MAGNIFY2  "Show graph data vertically magnified by 2\nMagnify x2"
@@ -4665,19 +4661,19 @@ BEGIN
     ID_RESTART_PROCESS      "Snapshot Spectrogram\nSnapshot Spectrogram"
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     IDR_SA_FLOATINGPOPUP    "Change the current graph type to plot E\nPlot E"
     IDR_MAINFRAME_SAS       "SA Server"
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     ID_POPUPGRAPH_LEGEND    "Show/Hide legend window in current graph\nLegend On/Off"
     ID_POPUPGRAPH_XSCALE    "Show/Hide time-scale window in current graph\nX-Scale On/Off"
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     IDS_ERROR_WRITERIFFCHUNK "Failed writing RIFF chunk into file '%1'."
     IDS_ERROR_WRITEDATACHUNK "Failed writing data chunk into file '%1'."
@@ -4697,11 +4693,13 @@ BEGIN
     IDS_ERROR_READLANGCHUNK "Failed reading language chunk from file '%1'."
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     IDS_ERROR_WRITETONE     "Failed writing tone chunk into file '%1'."
     IDS_ERROR_PASTEFORMAT   "The format of the wave data on the clipboard differs from the one in the wave file. This wave data can not be pasted into this file."
     IDS_ERROR_PASTENEW      "The paste operation to a new file failed."
+    IDS_ERROR_TAT_NO_REFERENCE 
+                            "The current graph does not contain any usable Reference segments.  The import operation will not be performed."
     IDS_ERROR_NOSEGMENTS    "No phonetic segments.  Sample on time interval."
     IDS_ERROR_SAS           "SA Server is intended to be used as a Server.  Not intended for general purpose use."
     IDS_ERROR_WRITEGLOSS    "Failed writing gloss chunk into file '%1'."
@@ -4716,12 +4714,12 @@ BEGIN
     IDS_ERROR_PLAYMODE      "Can't playback in this mode.  Begin cursor is positioned outside of current window."
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     ID_EXPORT_XML           "Export the document data using Extensible Markup Language\nExport XML"
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     ID_PLAY_F1              "Plays the wave file according to the function key setup\nPlay Function Key"
     ID_PLAY_F2              "Plays the wave file according to the function key setup\nPlay Function Key"
@@ -4740,7 +4738,7 @@ BEGIN
     ID_PLAY_F15             "Plays the wave file according to the function key setup\nPlay Function Key"
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     ID_PLAY_F16             "Plays the wave file according to the function key setup\nPlay Function Key"
     ID_PLAY_F17             "Plays the wave file according to the function key setup\nPlay Function Key"
@@ -4761,7 +4759,7 @@ BEGIN
     ID_FILTER_PROPERTIES    "Filter Properties\nFilter Properties"
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     ID_PROCESS0_PROPERTIES  "Open properties dialog for process 1\nProperties Process 1"
     ID_PROCESS1_PROPERTIES  "Open properties dialog for process 2\nProperties Process 2"
@@ -4775,7 +4773,7 @@ BEGIN
     ID_EDIT_SELECTWAVEFORM  "Select waveform data between cursors\nSelect Waveform"
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     IDS_ERROR_WRITEREFCHUNK "Failed writing reference chunk into file '%1'."
     IDS_ERROR_READREFCHUNK  "Failed reading reference chunk from file '%1'."
@@ -4790,12 +4788,12 @@ BEGIN
     IDS_STATTXT_PROCESSRAW  "Opening wave data.  Please wait..."
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     IDS_TASK_PAGE_BUTTON    "Select Task Page\nSelect Page"
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     ID_AUTO_ALIGN           "Automatic alignment of transcriptions\nAlign transcriptions"
     ID_EDIT_AUTO_SNAP_UPDATE 
@@ -4813,7 +4811,7 @@ BEGIN
     ID_GRAPHS_GRAPHSCAPTURE "Capture graphs screenshot and save it in a file\nSave Graphs"
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     IDS_AWIZ_CAPTION_IMPORT "Transcription Import"
     IDS_AWIZ_CAPTION_ALIGN  "Transcription Alignment"
@@ -4834,7 +4832,7 @@ BEGIN
     IDS_AWIZ_INST_ALIGNBY   "The transcription may be aligned to the utterance at three distinct levels of precision.\n\nPlease choose an alignment precision."
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     IDS_AWIZ_DTL_CHARACTER  "Character alignment will align the transcription by base character.  Diacritics and suprasegmentals will be kept with base character. (Recommended)"
     IDS_AWIZ_DTL_WORD       "Word alignment will align word breaks to the transcription.  Spaces ('#' & '!' for Gloss) will be interpreted as word breaks."
@@ -4854,7 +4852,7 @@ BEGIN
     IDS_STARTUP_3_0         "Speech Analyzer now stores transcription data for each audio \nfile in a companion .saxml file. This should also be copied \nwhen copying, moving or archiving the audio file.\n\nFor more details on transcription storage see the Speech \nAnalyzer help file."
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     ID_GRAPHS_GRAPHSCOPY    "Copy graphs screenshot to clipboard\nCopy Graphs"
     ID_EDIT_ADD_SYLLABLE    "Add syllable break\nAdd Syllable Segment"
@@ -4868,7 +4866,7 @@ BEGIN
     ID_DP_RAWDATA           "Change the current graph type to waveform\nWaveform"
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     ID_DP_GRAPITCH          "Change the current graph type to auto pitch\nAuto Pitch"
     ID_DP_SPECTROGRAM       "Change the current graph type to spectrogram\nSpectrogram"
@@ -4883,7 +4881,7 @@ BEGIN
     ID_HELP_USINGHELP       "Help about how to use help\nUsing Help"
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     IDS_HELPERWND_NODATA    "No data"
     IDS_HELPERWND_CURRECALC "Move cursors closer together and click on graph Recalc button."
@@ -4902,14 +4900,14 @@ BEGIN
     IDS_MC_CHANNEL          "Channel %1"
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     ID_HELP_MUSIC           "Help about doing musical analysis\nMusic Analysis"
     ID_HELP_TROUBLE         "Help about troubleshooting\nTroubleshooting"
     ID_FILE_OPEN_SPECIAL    "Open using startup dialog\nOpen Startup"
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     ID_EDIT_ADD_PHRASE_L1   "Add Phrase L1 Segment\nAdd Phrase"
     ID_EDIT_ADD_PHRASE_L2   "Add Phrase L2 Segment\nAdd Phrase"
@@ -4921,7 +4919,7 @@ BEGIN
     ID_EDIT_SEGMENT_SIZE    "Edit transcription segment sizes\nEdit Segment Size"
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     ID_PLAYBACK_LTOSTOP     "Plays between the left window border and the end cursor\nPlay Left -> End Cursor"
     ID_PLAYBACK_STOPTOR     "Plays between the end cursor and the right window border\nPlay End Cursor -> Right"
@@ -4931,7 +4929,7 @@ BEGIN
     ID_SYNTHESIS            "Future synthesis option, Construction in progress"
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     ID_WAVEFORM_GENERATOR   "Generate New Waveform\nWaveform Generator"
     ID_PLAY_SYNTH           "Play Synthesized Waveform\nPlay Synthesized"
@@ -4949,7 +4947,7 @@ BEGIN
     ID_POPUP_RECORD_OVERLAY "Record and overlay onto this graph\nRecord Overlay"
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     ID_REMOVE_OVERLAYS      "Remove all overlays from an overlay graph\nRemove Overlays"
     ID_SPECTRO_FORMANTS     "Toggle Formant Tracks\nFormant Tracks"
@@ -4960,7 +4958,7 @@ BEGIN
     ID_SYNTHESIS_VTRACT     "Future synthesis option, Construction in progress"
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     IDD_MELOGRAM            "Change the current graph type to melogram\nMelogram"
     IDD_TWC                 "Change the current graph type to TWC\nTWC"
@@ -4968,51 +4966,51 @@ BEGIN
     IDD_STAFF               "Change the current graph type to staff\nStaff"
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     IDD_MAGNITUDE           "Change the current graph type to magnitude\nMagnitude"
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     AFX_ID_PREVIEW_PREV     "Speech Analyzer has reached the beginning of the transcription. Do you want to continue searching from the end?"
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     ID_CLOSE                "Close dialog\nClose"
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     IDS_ACTIVEX             "Speech Analyzer Control"
     IDS_ACTIVEX_PPG         "Speech Analyzer Property Page"
     IDS_COPY                "Copy"
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     IDR_KLATT               "Klatt Synthesizer"
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     ID_GRAPHTYPES_SELECT_FIRST "Select Graph Types"
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     IDS_VOWEL_FORMANTS_INVALID 
                             "There is an error in the formant data.  Please correct before proceeding (See instructions on dialog).  "
     IDS_EMPTY_FORMANT_VOWEL_SET "No Vowels Defined For Selected Gender"
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     IDR_SYNTHESIS_VOCAL_TRACT "Vocal Tract Synthesizer"
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     ID_SYNTHESIS_KLATT_INTERVAL_0MS "0ms analysis interval"
     ID_SYNTHESIS_KLATT_INTERVAL_5MS "5ms analysis interval"
@@ -5022,7 +5020,7 @@ BEGIN
     ID_SYNTHESIS_KLATT_INTERVAL_25MS "25ms analysis interval"
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     ID_SYNTHESIS_KLATT_INTERVAL_0FRAG "0 fragment analysis interval"
     ID_SYNTHESIS_KLATT_INTERVAL_1FRAG "1 fragment analysis interval"
@@ -5032,7 +5030,7 @@ BEGIN
     ID_SYNTHESIS_KLATT_WINDOW_15MS "15ms analysis window"
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     ID_SYNTHESIS_KLATT_WINDOW_20MS "20ms analysis window"
     ID_SYNTHESIS_KLATT_WINDOW_25MS "25ms analysis window"
@@ -5042,7 +5040,7 @@ BEGIN
     ID_SYNTHESIS_KLATT_WINDOW_5FRAG "5 fragment analysis window"
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     ID_SYNTHESIS_ADJUST_CELLS "Adjust Selected Cells"
     ID_HELP_GRAPHS          "Help about using Graphs\nGraphs"
@@ -5056,7 +5054,7 @@ BEGIN
     IDS_SPLIT_BAD_DIRECTORY "Invalid directory name '%1'.  Please select directory for storing the split output files."
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     IDS_GLOSS_EMPTY_ANNOTATION 
                             "The Gloss annotation for %1 segment %2 was empty.  The segment will not be saved because a filename get could not be generated."
@@ -5073,7 +5071,7 @@ BEGIN
     IDS_SPLIT_FILE_EXISTS   "A file with the name '%1' already exists.\n\nPlease remove the file or choose another split file directory path."
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     IDS_ERROR_AUDIOCON_MISSING "Unable to locate Audio Converter program."
     IDS_ERROR_AUDIOCON_UNKNOWN 
@@ -5097,7 +5095,7 @@ BEGIN
     IDS_ERROR_NO_IPAHELP    "The IPA Sounds option requires the installation of the IPA Help program to provide the audio.\n\nwww.sil.org/computing/speechtools"
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     IDS_MC_COMBINE          "Combine All Channels"
     IDS_MC_CHANNEL_LEFT     "Channel %1 (Left)"
@@ -5106,14 +5104,14 @@ BEGIN
     IDS_SUPPORT_WAVE_COPY   "This files format is not directly editable by Speech Analyzer.\nSpeech Analyzer will now make a copy of the file and convert it to a supported format.\nYou can use 'Save As' to save this copy."
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     IDS_AUTO_REF_MAIN_1     "Speech Anaylzer was unable to parse the file because it is not in a usable format.  Please check the following suggestions:\n\n"
     IDS_AUTO_REF_MAIN_2     "1) If the file is suppose to contain only reference numbers, make sure there aren't extra tabs or columns in the data.\n\n"
     IDS_AUTO_REF_MAIN_3     "2) If the file is suppose to be delimited, make sure there are an equal number of tabs or spaces in each row and that there are no missing fields within a row.\n"
 END
 
-#endif    // English (U.S.) resources
+#endif    // English (United States) resources
 /////////////////////////////////////////////////////////////////////////////
 
 

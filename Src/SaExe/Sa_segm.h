@@ -216,7 +216,7 @@ public:
 
 	// Attributes
 protected:
-	CStringArray* m_pTexts;             // array of text strings
+	CStringArray * m_pTexts;             // array of text strings
 
 	// Operations
 protected:

@@ -1695,6 +1695,10 @@ void CTextSegment::Serialize(CArchive& ar)
 // CDependentTextSegment::Insert Insert/append a text segment
 // Returns FALSE if an error occured. If the pointer to the string is NULL
 // there will be no string added.
+//
+// When inserting beyond the end of the current list, nIndex is the next
+// available index.  For example if we are inserting at the 4 gloss segment
+// but only reference segments 0 and 1 exist, then the next index is 2, not 3.
 /***************************************************************************/
 BOOL CDependentTextSegment::Insert( int nIndex, const CSaString* pszString, bool, DWORD dwStart, DWORD dwDuration) {
 	try 
@@ -1705,7 +1709,7 @@ BOOL CDependentTextSegment::Insert( int nIndex, const CSaString* pszString, bool
 			InsertAt(nIndex,dwStart,dwDuration);
 		}
 	} 
-	catch(CMemoryException e) 
+	catch (CMemoryException e) 
 	{
 		// memory allocation error
 		ErrorMessage(IDS_ERROR_MEMALLOC);
@@ -1795,10 +1799,11 @@ void CDependentTextSegment::Add(CSaDoc* pDoc, DWORD dwStart, CSaString& szString
 	}
 
 	// insert or append the new dependent segment
-	if (!Insert(nPos, &szString, 0, dwStart, dwDuration))
+	if (!Insert( nPos, &szString, 0, dwStart, dwDuration))
 	{
 		return; // return on error
 	}
+
 	pDoc->SetModifiedFlag(TRUE); // document has been modified
 	pDoc->SetTransModifiedFlag(TRUE); // transcription data has been modified
 	pView->ChangeAnnotationSelection(this, nPos, dwStart, dwStart + dwDuration); // change the selection
@@ -2730,7 +2735,7 @@ BOOL CGlossSegment::Insert(int nIndex, const CSaString * pszString, bool delimit
 {
 	try 
 	{
-		m_pPOS->InsertAt(nIndex, NULL,  1);
+		m_pPOS->InsertAt( nIndex, NULL,  1);
 	} 
 	catch(CMemoryException e) 
 	{

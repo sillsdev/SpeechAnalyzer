@@ -256,6 +256,8 @@
 #define IDS_ERROR_PASTENEW              1042
 #define IDD_AUTORECORDER                1042
 #define IDD_FILEOPEN                    1043
+#define IDS_STRING1043                  1043
+#define IDS_ERROR_TAT_NO_REFERENCE      1043
 #define IDS_ERROR_NOSEGMENTS            1044
 #define IDD_VOWEL_FORMANTS              1044
 #define IDS_ERROR_SAS                   1045
