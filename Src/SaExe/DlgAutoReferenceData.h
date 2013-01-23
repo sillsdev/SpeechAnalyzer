@@ -12,13 +12,14 @@
 #include "resource.h"
 #include "CSaString.h"
 #include "TranscriptionData.h"
+#include "sa_doc.h"
 
 class CDlgAutoReferenceData : public CDialog
 {
 	DECLARE_DYNAMIC(CDlgAutoReferenceData)
 
 public:
-	CDlgAutoReferenceData();
+	CDlgAutoReferenceData( CSaDoc * pSaDoc, int numWords);
 	virtual ~CDlgAutoReferenceData();
 
 	enum { IDD = IDD_AUTO_REFERENCE_DATA };
@@ -49,17 +50,14 @@ private:
 	CButton mRadioNumbers;
 	CButton mRadioFile;
 
-	bool mGlossSelected;
-	int mSize;
 	class CSaDoc * mSaDoc;
 
 public:
-	void Init( CSaDoc * pSaDoc, int begin, int end, bool glossSelected);
-
 	// radio selection
 	bool mUsingFirstGloss;
 	bool mUsingNumbers;
 	CString mLastImport;
+	bool mGlossSelected;
 
 	// for word list selections
 	CString mBeginRef;
@@ -68,5 +66,13 @@ public:
 	// for numbering
 	int mBegin;
 	int mEnd;
+
+	const int MIN_NUM_VALUE;
+	const int MAX_NUM_VALUE;
+
+private:
+	void ValidateRange( CDataExchange * pDX, UINT field, int value, int min, int max);
+
+	int mNumWords;
 
 };

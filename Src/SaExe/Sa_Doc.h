@@ -257,7 +257,6 @@ public:
 	static BOOL			ReadProperties(Object_istream& obs);
 	static BOOL			ReadPropertiesOfViews(Object_istream& obs, const CSaString & str);
 	void				DeleteSegmentContents(Annotations type);
-	CSaString			GetLastTranscriptionImport();
 
 protected:
 	virtual void		DeleteContents();
@@ -405,8 +404,6 @@ protected:
 	void AlignTranscriptionData( CTranscriptionDataSettings & settings);
 	void AlignTranscriptionDataByRef( CTranscriptionData & td);
 
-	// cached dialogs
-	CDlgAutoReferenceData autoReferenceDlg;
 };
 
 /////////////////////////////////////////////////////////////////////////////

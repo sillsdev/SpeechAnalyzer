@@ -1,3 +1,17 @@
+SA - 3.1.0.26 - 1/22/2013
+1) Fix for AutoRef where code was validating 'end' value before it had been loaded from control.
+2) Modified validation of auto ref 'begin' and 'end' parameters.
+
+NOTE:  The following rules are used:
+'begin' - must be >=0 and <= 10000.
+'end' - must be >= begin and <= 10000.
+The code internally limits the actual iterations to the number of gloss segments on the screen, so if the 'end' number is beyond the actual gloss count, the logic will terminate at the correct point - the last gloss word.
+
+3) Modified the way defaults are stored for the autoref dialog.  They are now stored in the registry.
+4) Widened the TAT dialog box.
+5) Fixed bugs in TAT that occur when a user tries to reimport the same or a different file on the second page (when using reference numbers).  The edit field would always be blank because the internal data structure was in an uninitialized state to the second import, cause errors.
+Also, if the user imports another file, and it successfully loads, it will be set as the default.
+
 SA - 3.1.0.25 - 1/20/2013
 1) Fix for bug where TAT was incorrectly inserting text into segment list
 2) Fixed bug where TAT removes all gloss fields when no ref fields exist.  (added error message)

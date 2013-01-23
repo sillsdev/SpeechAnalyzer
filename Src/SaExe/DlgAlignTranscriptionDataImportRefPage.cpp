@@ -9,6 +9,7 @@
 #include "CSaString.h"
 #include "Sa_segm.h"
 #include "TranscriptionData.h"
+#include "sa.h"
 
 CDlgAlignTranscriptionDataImportRefPage::CDlgAlignTranscriptionDataImportRefPage(  CSaDoc * pSaDoc) :
 CPropertyPage(IDD),
@@ -34,7 +35,11 @@ BOOL CDlgAlignTranscriptionDataImportRefPage::OnSetActive()
 {
 	CDlgAlignTranscriptionDataSheet * pParent = GetParent();
 
-	CSaString path = m_pSaDoc->GetLastTranscriptionImport();
+	CSaApp* pApp = (CSaApp*)AfxGetApp();
+	CSaString path = pApp->GetProfileString(L"AutoRef",L"LastImport",L"");
+
+	m_TranscriptionData = CTranscriptionData();
+
 	if (path.GetLength()!=0)
 	{
 		if (m_pSaDoc->ImportTranscription( path,
@@ -77,6 +82,8 @@ void CDlgAlignTranscriptionDataImportRefPage::OnClickedImport()
 
 	CDlgAlignTranscriptionDataSheet * pParent = GetParent();
 
+	m_TranscriptionData = CTranscriptionData();
+
 	m_bModified = true;
 	if (m_pSaDoc->ImportTranscription(path,
 									pParent->init.m_bGloss,
@@ -86,6 +93,10 @@ void CDlgAlignTranscriptionDataImportRefPage::OnClickedImport()
 									m_TranscriptionData))
 	{
 		m_szText = CTranscriptionHelper::Render(m_TranscriptionData);
+
+		CSaApp* pApp = (CSaApp*)AfxGetApp();
+		pApp->WriteProfileString(L"AutoRef",L"LastImport",(LPCTSTR)path);
+
 	}
 	else
 	{

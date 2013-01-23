@@ -26,7 +26,7 @@ LANGUAGE LANG_NEUTRAL, SUBLANG_NEUTRAL
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 3,1,0,25
+ FILEVERSION 3,1,0,26
  PRODUCTVERSION 1,0,0,1
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
@@ -44,7 +44,7 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "SIL International"
             VALUE "FileDescription", "SA"
-            VALUE "FileVersion", "v3.1.0.25"
+            VALUE "FileVersion", "v3.1.0.26"
             VALUE "InternalName", "SA"
             VALUE "LegalCopyright", "© 1996-2013 SIL International (MSEA)"
             VALUE "ProductName", "SA"
@@ -1457,17 +1457,17 @@ BEGIN
     LTEXT           "",IDC_CHART_T1201,151,43,198,16,NOT WS_VISIBLE | WS_DISABLED | NOT WS_GROUP
 END
 
-IDD_ANNOTATION_WIZARD DIALOGEX 0, 0, 255, 186
+IDD_ANNOTATION_WIZARD DIALOGEX 0, 0, 335, 186
 STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
 CAPTION "Annotation Wizard"
 FONT 8, "MS Sans Serif", 0, 0, 0x0
 BEGIN
-    LTEXT           "Select Annotations To Modify",IDC_TITLE,6,7,243,10
+    LTEXT           "Select Annotations To Modify",IDC_TITLE,6,7,323,10
     LTEXT           "",IDC_INSTRUCTION,6,19,243,47
-    PUSHBUTTON      "&Revert",IDC_REVERT,165,73,60,14,NOT WS_VISIBLE | WS_DISABLED
+    PUSHBUTTON      "&Revert",IDC_REVERT,170,77,45,14,NOT WS_VISIBLE | WS_DISABLED
     GROUPBOX        "Modify",IDC_GROUP,17,95,60,54
     LTEXT           "",IDC_DETAILS,82,100,165,50
-    EDITTEXT        IDC_ANNOTATION,6,94,243,60,ES_MULTILINE | ES_AUTOVSCROLL | ES_NOHIDESEL | ES_WANTRETURN | NOT WS_VISIBLE
+    EDITTEXT        IDC_ANNOTATION,5,94,324,60,ES_MULTILINE | ES_AUTOVSCROLL | ES_NOHIDESEL | ES_WANTRETURN | NOT WS_VISIBLE
     CONTROL         "Non&e",IDC_NONE,"Button",BS_AUTORADIOBUTTON | NOT WS_VISIBLE | WS_GROUP | WS_TABSTOP,20,106,54,10
     CONTROL         "&Word",IDC_WORD,"Button",BS_AUTORADIOBUTTON | NOT WS_VISIBLE | WS_TABSTOP,20,116,54,10
     CONTROL         "&Character",IDC_CHARACTER,"Button",BS_AUTORADIOBUTTON | NOT WS_VISIBLE | WS_TABSTOP,20,126,54,10
@@ -1478,23 +1478,23 @@ BEGIN
     CONTROL         "P&honemic",IDC_PHONEMIC,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,20,116,54,10
     CONTROL         "&Orthographic",IDC_ORTHOGRAPHIC,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,20,126,54,10
     CONTROL         "&Gloss",IDC_GLOSS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,20,136,54,10
-    CONTROL         "",IDC_STATIC,"Static",SS_BLACKRECT,6,159,243,1
-    PUSHBUTTON      "< &Back ",IDC_BACK,85,168,45,14,WS_DISABLED
-    DEFPUSHBUTTON   "&Next >",IDC_NEXT,130,168,45,14
-    PUSHBUTTON      "Finish",IDOK,130,168,45,14,NOT WS_VISIBLE
-    PUSHBUTTON      "Cancel",IDCANCEL,195,168,45,14
-    DEFPUSHBUTTON   "&Import ",IDC_IMPORT,93,73,45,14,NOT WS_VISIBLE
+    CONTROL         "",IDC_STATIC,"Static",SS_BLACKRECT,6,159,322,1
+    PUSHBUTTON      "< &Back ",IDC_BACK,113,168,45,14,WS_DISABLED
+    DEFPUSHBUTTON   "&Next >",IDC_NEXT,162,168,45,14
+    PUSHBUTTON      "Finish",IDOK,162,168,45,14,NOT WS_VISIBLE
+    PUSHBUTTON      "Cancel",IDCANCEL,227,168,45,14
+    DEFPUSHBUTTON   "&Import ",IDC_IMPORT,120,77,45,14,NOT WS_VISIBLE
 END
 
-IDD_ANNOTATION_INIT_PAGE DIALOGEX 0, 0, 255, 186
+IDD_ANNOTATION_INIT_PAGE DIALOGEX 0, 0, 335, 186
 STYLE DS_SETFONT | WS_CHILD | WS_DISABLED | WS_CAPTION
 CAPTION "Transcription Alignment"
 FONT 8, "MS Sans Serif", 0, 0, 0x0
 BEGIN
-    LTEXT           "Select Transcriptions To Modify",IDC_TITLE,6,7,243,10
-    LTEXT           "The Transcription Alignment tool aids the process of importing transcription and aligning them to the utterance.\n\nPlease select the transcriptions to be modified.",IDC_INSTRUCTION,6,19,243,47
+    LTEXT           "Select Transcriptions To Modify",IDC_TITLE,5,7,324,10
+    LTEXT           "The Transcription Alignment tool aids the process of importing transcription and aligning them to the utterance.\n\nPlease select the transcriptions to be modified.",IDC_INSTRUCTION,5,19,324,47
     GROUPBOX        "Modify",IDC_GROUP,17,96,60,65
-    LTEXT           "The transcriptions are synchronized using the spaces as embedded word delimiters.",IDC_DETAILS,82,100,165,50
+    LTEXT           "The transcriptions are synchronized using the spaces as embedded word delimiters.",IDC_DETAILS,82,100,247,50
     CONTROL         "&Phonetic",IDC_PHONETIC,"Button",BS_AUTOCHECKBOX | WS_GROUP | WS_TABSTOP,20,117,54,10
     CONTROL         "P&honemic",IDC_PHONEMIC,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,20,127,54,10
     CONTROL         "&Orthographic",IDC_ORTHOGRAPHIC,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,20,137,54,10
@@ -1504,77 +1504,77 @@ BEGIN
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,21,67,159,10
 END
 
-IDD_ANNOTATION_ORTHOGRAPHIC_PAGE DIALOGEX 0, 0, 255, 186
+IDD_ANNOTATION_ORTHOGRAPHIC_PAGE DIALOGEX 0, 0, 335, 186
 STYLE DS_SETFONT | WS_CHILD | WS_DISABLED | WS_CAPTION
 CAPTION "Transcription Alignment"
 FONT 8, "MS Sans Serif", 0, 0, 0x0
 BEGIN
-    LTEXT           "Modify Orthographic Transcription",IDC_TITLE,6,7,243,10
-    LTEXT           "Make any necessary changes to the orthographic transcription.\n\nThe import button will import a transcription from either a plain text or SFM-formatted file.  The revert button will reload the current transcription.",IDC_INSTRUCTION,6,19,243,47
-    PUSHBUTTON      "&Revert",IDC_REVERT,134,73,60,14
-    EDITTEXT        IDC_ANNOTATION,6,94,243,60,ES_MULTILINE | ES_AUTOVSCROLL | ES_NOHIDESEL | ES_WANTRETURN
-    DEFPUSHBUTTON   "&Import ",IDC_IMPORT,62,73,45,14
+    LTEXT           "Modify Orthographic Transcription",IDC_TITLE,5,7,324,10
+    LTEXT           "Make any necessary changes to the orthographic transcription.\n\nThe import button will import a transcription from either a plain text or SFM-formatted file.\nThe revert button will reload the current transcription.",IDC_INSTRUCTION,5,19,324,47
+    PUSHBUTTON      "&Revert",IDC_REVERT,170,77,45,14
+    EDITTEXT        IDC_ANNOTATION,5,94,324,60,ES_MULTILINE | ES_AUTOVSCROLL | ES_NOHIDESEL | ES_WANTRETURN
+    DEFPUSHBUTTON   "&Import ",IDC_IMPORT,120,77,45,14
 END
 
-IDD_ANNOTATION_PHONETIC_PAGE DIALOGEX 0, 0, 255, 186
+IDD_ANNOTATION_PHONETIC_PAGE DIALOGEX 0, 0, 335, 186
 STYLE DS_SETFONT | WS_CHILD | WS_DISABLED | WS_CAPTION
 CAPTION "Transcription Alignment"
 FONT 8, "MS Sans Serif", 0, 0, 0x0
 BEGIN
-    LTEXT           "Modify Phonetic Transcription",IDC_TITLE,6,7,243,10
-    LTEXT           "Make any necessary changes to the phonetic transcription.\n\nThe import button will import a transcription from either a plain text or SFM-formatted file.  The revert button will reload the current transcription.",IDC_INSTRUCTION,6,19,243,47
-    PUSHBUTTON      "&Revert",IDC_REVERT,134,73,60,14
-    EDITTEXT        IDC_ANNOTATION,6,94,243,60,ES_MULTILINE | ES_AUTOVSCROLL | ES_NOHIDESEL | ES_WANTRETURN
-    DEFPUSHBUTTON   "&Import ",IDC_IMPORT,62,73,45,14
+    LTEXT           "Modify Phonetic Transcription",IDC_TITLE,5,7,324,10
+    LTEXT           "Make any necessary changes to the phonetic transcription.\n\nThe import button will import a transcription from either a plain text or SFM-formatted file.\nThe revert button will reload the current transcription.",IDC_INSTRUCTION,5,19,324,47
+    PUSHBUTTON      "&Revert",IDC_REVERT,170,77,45,14
+    EDITTEXT        IDC_ANNOTATION,5,94,324,60,ES_MULTILINE | ES_AUTOVSCROLL | ES_NOHIDESEL | ES_WANTRETURN
+    DEFPUSHBUTTON   "&Import ",IDC_IMPORT,120,77,45,14
 END
 
-IDD_ANNOTATION_PHONEMIC_PAGE DIALOGEX 0, 0, 255, 186
+IDD_ANNOTATION_PHONEMIC_PAGE DIALOGEX 0, 0, 335, 186
 STYLE DS_SETFONT | WS_CHILD | WS_DISABLED | WS_CAPTION
 CAPTION "Transcription Alignment"
 FONT 8, "MS Sans Serif", 0, 0, 0x0
 BEGIN
-    LTEXT           "Modify Phonemic Transcription",IDC_TITLE,6,7,243,10
-    LTEXT           "Make any necessary changes to the phonemic transcription.\n\nThe import button will import a transcription from either a plain text or SFM-formatted file.  The revert button will reload the current transcription.",IDC_INSTRUCTION,6,19,243,47
-    PUSHBUTTON      "&Revert",IDC_REVERT,134,73,60,14
-    EDITTEXT        IDC_ANNOTATION,6,94,243,60,ES_MULTILINE | ES_AUTOVSCROLL | ES_NOHIDESEL | ES_WANTRETURN
-    DEFPUSHBUTTON   "&Import ",IDC_IMPORT,62,73,45,14
+    LTEXT           "Modify Phonemic Transcription",IDC_TITLE,5,7,324,10
+    LTEXT           "Make any necessary changes to the phonemic transcription.\n\nThe import button will import a transcription from either a plain text or SFM-formatted file.\nThe revert button will reload the current transcription.",IDC_INSTRUCTION,5,19,324,47
+    PUSHBUTTON      "&Revert",IDC_REVERT,170,77,45,14
+    EDITTEXT        IDC_ANNOTATION,5,94,324,60,ES_MULTILINE | ES_AUTOVSCROLL | ES_NOHIDESEL | ES_WANTRETURN
+    DEFPUSHBUTTON   "&Import ",IDC_IMPORT,120,77,45,14
 END
 
-IDD_ANNOTATION_ALIGN_PAGE DIALOGEX 0, 0, 255, 186
+IDD_ANNOTATION_ALIGN_PAGE DIALOGEX 0, 0, 335, 186
 STYLE DS_SETFONT | WS_CHILD | WS_DISABLED | WS_CAPTION
 CAPTION "Transcription Alignment"
 FONT 8, "MS Sans Serif", 0, 0, 0x0
 BEGIN
-    LTEXT           "Choose the Transcription Alignment",IDC_TITLE,6,7,243,10
-    LTEXT           "The transcription may be aligned to the utterance at three distinct levels of precision.\n\nPlease choose an alignment precision.",IDC_INSTRUCTION,6,19,243,47
+    LTEXT           "Choose the Transcription Alignment",IDC_TITLE,5,7,324,10
+    LTEXT           "The transcription may be aligned to the utterance at three distinct levels of precision.\n\nPlease choose an alignment precision.",IDC_INSTRUCTION,5,19,324,47
     GROUPBOX        "Modify",IDC_GROUP,17,95,60,54
-    LTEXT           "",IDC_DETAILS,82,100,165,50
+    LTEXT           "",IDC_DETAILS,82,100,247,50
     CONTROL         "Non&e",IDC_NONE,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,20,106,54,10
     CONTROL         "&Word",IDC_WORD,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,20,116,54,10
     CONTROL         "&Character",IDC_CHARACTER,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,20,126,54,10
 END
 
-IDD_ANNOTATION_SEGMENT_PAGE DIALOGEX 0, 0, 255, 186
+IDD_ANNOTATION_SEGMENT_PAGE DIALOGEX 0, 0, 335, 186
 STYLE DS_SETFONT | WS_CHILD | WS_DISABLED | WS_CAPTION
 CAPTION "Transcription Alignment"
 FONT 8, "MS Sans Serif", 0, 0, 0x0
 BEGIN
-    LTEXT           "Select Segmentation Method",IDC_TITLE,6,7,243,10
-    LTEXT           "The utterance may be segmented using three different methods.\n\nPlease choose an alignment method.",IDC_INSTRUCTION,6,19,243,47
+    LTEXT           "Select Segmentation Method",IDC_TITLE,5,7,324,10
+    LTEXT           "The utterance may be segmented using three different methods.\n\nPlease choose an alignment method.",IDC_INSTRUCTION,5,19,324,47
     GROUPBOX        "Modify",IDC_GROUP,17,95,60,54
-    LTEXT           "",IDC_DETAILS,82,100,165,50
+    LTEXT           "",IDC_DETAILS,82,100,247,50
     CONTROL         "&Keep",IDC_KEEP,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,20,106,54,10
     CONTROL         "&Automatic",IDC_AUTOMATIC,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,20,116,54,10
     CONTROL         "&Equal Space",IDC_MANUAL,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,20,126,54,11
 END
 
-IDD_ANNOTATION_FINISH_PAGE DIALOGEX 0, 0, 255, 186
+IDD_ANNOTATION_FINISH_PAGE DIALOGEX 0, 0, 335, 186
 STYLE DS_SETFONT | WS_CHILD | WS_DISABLED | WS_CAPTION
 CAPTION "Transcription Alignment"
 FONT 8, "MS Sans Serif", 0, 0, 0x0
 BEGIN
-    LTEXT           "Complete Task",IDC_TITLE,6,7,243,10
-    LTEXT           "Please select Finish to perform automatic import and alignment.\n\nNOTE: The result can be undone using the Undo command in the edit menu.",IDC_INSTRUCTION,6,19,243,47
+    LTEXT           "Complete Task",IDC_TITLE,5,7,324,10
+    LTEXT           "Please select Finish to perform automatic import and alignment.\n\nNOTE: The result can be undone using the Undo command in the edit menu.",IDC_INSTRUCTION,5,19,324,47
 END
 
 IDD_EDITOR DIALOG 0, 0, 250, 95
@@ -2212,29 +2212,29 @@ BEGIN
     COMBOBOX        IDC_END_COMBO,177,113,58,30,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
 END
 
-IDD_ANNOTATION_GLOSS_PAGE DIALOGEX 0, 0, 255, 186
+IDD_ANNOTATION_GLOSS_PAGE DIALOGEX 0, 0, 335, 186
 STYLE DS_SETFONT | WS_CHILD | WS_DISABLED | WS_CAPTION
 CAPTION "Transcription Alignment"
 FONT 8, "MS Sans Serif", 0, 0, 0x0
 BEGIN
-    LTEXT           "Modify Gloss Transcription",IDC_TITLE,6,7,243,10
-    LTEXT           "Make any necessary changes to the gloss.\n\nThe import button will import an transcription from either a plain text or SFM-formatted file.  The revert button will reload the current transcription.",IDC_INSTRUCTION,6,19,243,47
-    PUSHBUTTON      "&Revert",IDC_REVERT,134,73,60,14
-    EDITTEXT        IDC_ANNOTATION,6,94,243,60,ES_MULTILINE | ES_AUTOVSCROLL | ES_NOHIDESEL | ES_WANTRETURN
-    DEFPUSHBUTTON   "&Import ",IDC_IMPORT,62,73,45,14
+    LTEXT           "Modify Gloss Transcription",IDC_TITLE,5,7,324,10
+    LTEXT           "Make any necessary changes to the gloss.\n\nThe import button will import an transcription from either a plain text or SFM-formatted file.\nThe revert button will reload the current transcription.",IDC_INSTRUCTION,5,19,324,47
+    PUSHBUTTON      "&Revert",IDC_REVERT,169,76,45,14
+    EDITTEXT        IDC_ANNOTATION,5,94,324,60,ES_MULTILINE | ES_AUTOVSCROLL | ES_NOHIDESEL | ES_WANTRETURN
+    DEFPUSHBUTTON   "&Import ",IDC_IMPORT,120,76,45,14
 END
 
-IDD_ANNOTATION_IMPORT_REF DIALOGEX 0, 0, 255, 183
+IDD_ANNOTATION_IMPORT_REF DIALOGEX 0, 0, 335, 183
 STYLE DS_SETFONT | WS_CHILD | WS_DISABLED | WS_CAPTION
 CAPTION "Transcription Alignment"
 FONT 8, "MS Sans Serif", 0, 0, 0x0
 BEGIN
-    LTEXT           "Import Wordlist Data",IDC_TITLE,6,7,243,10
-    LTEXT           "The marked-up text must use tabs, commas or spaces to seperate the data.",IDC_INSTRUCTION,5,42,243,16
-    PUSHBUTTON      "&Revert",IDC_REVERT,134,77,60,14
-    EDITTEXT        IDC_ANNOTATION,6,98,243,78,ES_MULTILINE | ES_AUTOVSCROLL | ES_NOHIDESEL | ES_READONLY | ES_WANTRETURN | WS_VSCROLL
-    DEFPUSHBUTTON   "&Import ",IDC_IMPORT,62,77,45,14
-    LTEXT           "The import button will import an transcription from either marked-up text or SFM-formatted file.  The revert button will reload the current transcription.",IDC_INSTRUCTION2,5,20,243,18
+    LTEXT           "Import Wordlist Data",IDC_TITLE,5,7,324,10
+    LTEXT           "The marked-up text must use tabs, commas or spaces to seperate the data.",IDC_INSTRUCTION,5,42,324,16
+    PUSHBUTTON      "&Revert",IDC_REVERT,170,76,45,14
+    EDITTEXT        IDC_ANNOTATION,5,94,324,60,ES_MULTILINE | ES_AUTOVSCROLL | ES_NOHIDESEL | ES_READONLY | ES_WANTRETURN | WS_VSCROLL
+    DEFPUSHBUTTON   "&Import ",IDC_IMPORT,120,76,45,14
+    LTEXT           "The import button will import an transcription from either marked-up text or SFM-formatted file.\nThe revert button will reload the current transcription.",IDC_INSTRUCTION2,5,20,324,18
 END
 
 IDD_ANNOTATION_IMPORT_SFM_WITH_REF DIALOGEX 0, 0, 222, 111
@@ -2336,6 +2336,42 @@ BEGIN
         RIGHTMARGIN, 352
     END
 
+    IDD_ANNOTATION_WIZARD, DIALOG
+    BEGIN
+    END
+
+    IDD_ANNOTATION_INIT_PAGE, DIALOG
+    BEGIN
+    END
+
+    IDD_ANNOTATION_ORTHOGRAPHIC_PAGE, DIALOG
+    BEGIN
+    END
+
+    IDD_ANNOTATION_PHONETIC_PAGE, DIALOG
+    BEGIN
+    END
+
+    IDD_ANNOTATION_PHONEMIC_PAGE, DIALOG
+    BEGIN
+    END
+
+    IDD_ANNOTATION_ALIGN_PAGE, DIALOG
+    BEGIN
+    END
+
+    IDD_ANNOTATION_SEGMENT_PAGE, DIALOG
+    BEGIN
+    END
+
+    IDD_ANNOTATION_FINISH_PAGE, DIALOG
+    BEGIN
+    END
+
+    IDD_ANNOTATION_EDIT, DIALOG
+    BEGIN
+    END
+
     IDD_EXPORT_TABLE, DIALOG
     BEGIN
         RIGHTMARGIN, 270
@@ -2423,6 +2459,14 @@ BEGIN
         RIGHTMARGIN, 267
         TOPMARGIN, 7
         BOTTOMMARGIN, 156
+    END
+
+    IDD_ANNOTATION_GLOSS_PAGE, DIALOG
+    BEGIN
+    END
+
+    IDD_ANNOTATION_IMPORT_REF, DIALOG
+    BEGIN
     END
 
     IDD_ANNOTATION_IMPORT_SFM_WITH_REF, DIALOG
@@ -4111,7 +4155,7 @@ STRINGTABLE
 BEGIN
     IDR_MAINFRAME           "Speech Analyzer"
     IDR_SA_ANNTYPE          "\nSA\nSA Document\nWAV Files (*.wav)\n.wav\nannFileType\nANN File Type"
-    VS_VERSION              "Version 3.1.0.25"
+    VS_VERSION              "Version 3.1.0.26"
     VS_COPYRIGHT            "© 1996-2013 SIL International (MSEA).\nAll Rights Reserved."
     IDR_SA_WBTYPE           "\nWB\nSA Workbench\nWB Files (*.wb)\n.wb\nwbFileType\nWB File Type"
 END
@@ -4129,6 +4173,7 @@ BEGIN
     IDS_ERROR_MMIO_INVALIDPARAM "Sound device error: invalid parameter."
     IDS_EMPTY_REPLACE       "You cannot replace with an empty string."
     IDS_ERROR_EQUATION      "The function you entered contains errors. Please revise it."
+    IDS_ERROR_RANGE         "Please enter an integer between %1 to %2."
     IDS_ERROR_READMDATCHUNK "Failed reading musical score from file '%1'."
     IDS_ERROR_INVALID_SAMPLING_RATE 
                             "Wav file '%1' is sampled at an invalid sampling rate.  Currently 11.025kHz, 16kHz, 22.050kHz, 44.100kHz, and 48kHz are supported.  Please use AudioCon to convert."

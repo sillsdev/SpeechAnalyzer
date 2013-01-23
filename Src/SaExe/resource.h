@@ -301,6 +301,7 @@
 #define IDC_SPEEDEDIT                   1074
 #define IDS_ERROR_EQUATION              1074
 #define IDC_SPEEDSCROLL                 1075
+#define IDS_ERROR_RANGE                 1075
 #define IDS_ERROR_READMDATCHUNK         1076
 #define IDS_ERROR_INVALID_SAMPLING_RATE 1077
 #define IDS_AUTO_WAITING                1078

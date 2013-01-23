@@ -16,32 +16,25 @@ using std::find;
 // CDlgAutoReferenceData dialog
 IMPLEMENT_DYNAMIC(CDlgAutoReferenceData, CDialog)
 
-CDlgAutoReferenceData::CDlgAutoReferenceData() : 
+CDlgAutoReferenceData::CDlgAutoReferenceData( CSaDoc * pSaDoc, int numWords) : 
 CDialog(CDlgAutoReferenceData::IDD, NULL),
+mLastImport(L""),
+mSaDoc(pSaDoc),
+mNumWords(numWords),
+mGlossSelected(false),
+mUsingNumbers(false),
+mUsingFirstGloss(false),
+mBeginRef(L""),
+mEndRef(L""),
 mBegin(0),
 mEnd(0),
-mSize(1),
-mLastImport(L""),
-mSaDoc(NULL),
-mGlossSelected(false),
-mUsingNumbers(true),
-mUsingFirstGloss(true),
-mBeginRef(L""),
-mEndRef(L"")
+MIN_NUM_VALUE(0),
+MAX_NUM_VALUE(10000)
 {
 }
 
 CDlgAutoReferenceData::~CDlgAutoReferenceData() 
 {
-}
-
-void CDlgAutoReferenceData::Init( CSaDoc * pSaDoc, int begin, int end, bool glossSelected) 
-{
-	mSaDoc = pSaDoc;
-	mBegin = begin;
-	mEnd = end;
-	mSize = end-begin+1;
-	mGlossSelected = glossSelected;
 }
 
 BOOL CDlgAutoReferenceData::OnInitDialog() 
@@ -87,6 +80,7 @@ BOOL CDlgAutoReferenceData::OnInitDialog()
 	OnRadio();
 
 	mSpinBegin.SetRange(0,10000);
+
 	mSpinBegin.SetPos(mBegin);
 	mSpinEnd.SetRange(1,10000);
 	mSpinEnd.SetPos(mEnd);
@@ -128,9 +122,7 @@ void CDlgAutoReferenceData::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_FILENAME, mLastImport);
 	DDV_MaxChars(pDX, mLastImport, 256);
 	DDX_Text(pDX, IDC_BEGIN_EDIT, mBegin);
-	DDV_MinMaxInt(pDX, mBegin, 0, mEnd+1);
 	DDX_Text(pDX, IDC_END_EDIT, mEnd);
-	DDV_MinMaxInt(pDX, mEnd, mBegin, 10000);
 	DDX_Control(pDX, IDC_FILENAME, mEditFilename);
 	DDX_Control(pDX, IDC_BEGIN_COMBO, mComboBegin);
 	DDX_Control(pDX, IDC_END_COMBO, mComboEnd);
@@ -139,7 +131,7 @@ void CDlgAutoReferenceData::DoDataExchange(CDataExchange* pDX)
 
 	if (!pDX->m_bSaveAndValidate) 
 	{
-
+		// display on screen
 		if (!mUsingNumbers) 
 		{
 			struct _stat buffer;
@@ -253,7 +245,34 @@ void CDlgAutoReferenceData::DoDataExchange(CDataExchange* pDX)
 				pDX->Fail();
 			}
 		}
+		else
+		{
+			// same regardless of start selection
+			// we will start number of first gloss in graph
+			int min = MIN_NUM_VALUE;
+			int max = MAX_NUM_VALUE;
+			ValidateRange( pDX, IDC_BEGIN_EDIT, mBegin, min, max);
+
+			min = mBegin;
+			max = MAX_NUM_VALUE;
+			ValidateRange( pDX, IDC_END_EDIT, mEnd, min, max);
+		}
 	}
+}
+
+void CDlgAutoReferenceData::ValidateRange( CDataExchange * pDX, UINT field, int value, int min, int max)
+{
+	if ((value>=min)&&(value<=max)) return;
+
+	CString param1;
+	param1.Format(L"%d",min);
+	CString param2;
+	param2.Format(L"%d",max);
+	CString msg;
+	AfxFormatString2(msg,IDS_ERROR_RANGE,param1,param2);
+	pDX->PrepareEditCtrl(field);
+	AfxMessageBox(msg, MB_OK|MB_ICONEXCLAMATION,0);
+	pDX->Fail();
 }
 
 BEGIN_MESSAGE_MAP(CDlgAutoReferenceData, CDialog)
@@ -287,7 +306,6 @@ void CDlgAutoReferenceData::OnRadio()
 
 		mEditFilename.EnableWindow(FALSE);
 		mButtonBrowse.EnableWindow(FALSE);
-
 	} 
 	else 
 	{
@@ -307,6 +325,10 @@ void CDlgAutoReferenceData::OnRadio()
 
 		mEditFilename.EnableWindow(TRUE);
 		mButtonBrowse.EnableWindow(TRUE);
+
+		if (mLastImport.GetLength()>0) {
+			UpdateData(FALSE);
+		}
 	}
 }
 
@@ -316,7 +338,7 @@ void CDlgAutoReferenceData::OnDeltaposBeginSpin(NMHDR *pNMHDR, LRESULT *pResult)
 
 	mBegin = GetDlgItemInt(IDC_BEGIN_EDIT, NULL, TRUE);
 	mBegin += pNMUpDown->iDelta;
-	if (mBegin>10000) mBegin = 10000;
+	if (mBegin>MAX_NUM_VALUE) mBegin = MAX_NUM_VALUE;
 	if (mBegin<0) mBegin = 0;
 	SetDlgItemInt( IDC_BEGIN_EDIT, mBegin, TRUE);
 
@@ -360,4 +382,3 @@ void CDlgAutoReferenceData::OnKillfocusFilename()
 	GetDlgItemTextW(IDC_FILENAME,mLastImport);
 	UpdateData(FALSE);
 }
-

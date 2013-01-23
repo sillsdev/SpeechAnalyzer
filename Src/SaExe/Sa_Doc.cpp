@@ -7611,22 +7611,39 @@ IMPLEMENT_DYNCREATE(CSaDoc, CUndoRedoDoc)
 		int selection = pGloss->GetSelection();
 		bool glossSelected = (selection!=-1);
 
-		// query the user
-		autoReferenceDlg.Init( this, begin, end, glossSelected);
+		CSaApp* pApp = (CSaApp*)AfxGetApp();
 
-		if (autoReferenceDlg.DoModal()!=IDOK) 
+		int numWords = pGloss->GetOffsetSize();
+
+		// query the user
+		CDlgAutoReferenceData dlg( this, numWords);
+		dlg.mLastImport = pApp->GetProfileString(L"AutoRef",L"LastImport",L"");
+		dlg.mBeginRef = pApp->GetProfileString(L"AutoRef",L"BeginRef",L"");
+		dlg.mEndRef = pApp->GetProfileString(L"AutoRef",L"EndRef",L"");
+		dlg.mUsingNumbers = (pApp->GetProfileInt(L"AutoRef",L"UsingNumbers",1)!=0)?true:false;
+		dlg.mUsingFirstGloss = (pApp->GetProfileInt(L"AutoRef",L"UsingFirstGloss",1)!=0)?true:false;
+		dlg.mBegin = begin;
+		dlg.mEnd = end;
+		dlg.mGlossSelected = glossSelected;
+		if (dlg.DoModal()!=IDOK) 
 		{
 			// do nothing on cancel
 			return;
 		}
 
-		if (autoReferenceDlg.mUsingNumbers)
+		pApp->WriteProfileString(L"AutoRef",L"LastImport",dlg.mLastImport);
+		pApp->WriteProfileString(L"AutoRef",L"BeginRef",dlg.mBeginRef);
+		pApp->WriteProfileString(L"AutoRef",L"EndRef",dlg.mEndRef);
+		pApp->WriteProfileInt(L"AutoRef",L"UsingNumbers",((dlg.mUsingNumbers!=0)?1:0));
+		pApp->WriteProfileInt(L"AutoRef",L"UsingFirstGloss",((dlg.mUsingFirstGloss!=0)?1:0));
+
+		if (dlg.mUsingNumbers)
 		{
 			// apply the number
-			int val = autoReferenceDlg.mBegin;
+			int val = dlg.mBegin;
 			// iterate through the gloss segments and add number to empty reference fields
 			CReferenceSegment * pReference = (CReferenceSegment*)m_apSegments[REFERENCE];
-			int start = (autoReferenceDlg.mUsingFirstGloss)?0:selection;
+			int start = (dlg.mUsingFirstGloss)?0:selection;
 			// if we are inserting, we need to make sure
 			// that any segments in between either have existing
 			// reference segments, or we need to add a blank one
@@ -7646,7 +7663,7 @@ IMPLEMENT_DYNCREATE(CSaDoc, CUndoRedoDoc)
 				{
 					pReference->SetText(i,&text,0,offset,duration);
 				}
-				if (val==autoReferenceDlg.mEnd) 
+				if (val==dlg.mEnd) 
 				{
 					break;
 				}
@@ -7657,7 +7674,7 @@ IMPLEMENT_DYNCREATE(CSaDoc, CUndoRedoDoc)
 		{
 			// data should be fully validated by dialog!
 			CTranscriptionData td;
-			if (!ImportTranscription(CSaString(autoReferenceDlg.mLastImport),FALSE,FALSE,FALSE,FALSE,td))
+			if (!ImportTranscription(CSaString(dlg.mLastImport),FALSE,FALSE,FALSE,FALSE,td))
 			{
 				CSaApp* pApp = (CSaApp*)AfxGetApp();
 				CString msg;
@@ -7673,12 +7690,12 @@ IMPLEMENT_DYNCREATE(CSaDoc, CUndoRedoDoc)
 
 			CString ref = td.m_szPrimary;
 			TranscriptionDataMap & map = td.m_TranscriptionData;
-			MarkerList::iterator begin = find(map[ref].begin(),map[ref].end(),autoReferenceDlg.mBeginRef);
-			MarkerList::iterator end = find(map[ref].begin(),map[ref].end(),autoReferenceDlg.mEndRef);
+			MarkerList::iterator begin = find(map[ref].begin(),map[ref].end(),dlg.mBeginRef);
+			MarkerList::iterator end = find(map[ref].begin(),map[ref].end(),dlg.mEndRef);
 
 			// iterate through the gloss segments and add number to empty reference fields
 			CReferenceSegment * pReference = (CReferenceSegment*)m_apSegments[REFERENCE];
-			int start = (autoReferenceDlg.mUsingFirstGloss)?0:selection;
+			int start = (dlg.mUsingFirstGloss)?0:selection;
 			for (int i = start; i < pGloss->GetOffsetSize(); i++)
 			{
 				DWORD offset = pGloss->GetOffset(i);
@@ -8691,13 +8708,3 @@ IMPLEMENT_DYNCREATE(CSaDoc, CUndoRedoDoc)
 	{
 		return (CGlossSegment *)m_apSegments[GLOSS];
 	}
-
-	/**
-	* Return the file last used for importing transcriptions.
-	* If the file no longer exists, we will erase the filename.
-	*/
-	CSaString CSaDoc::GetLastTranscriptionImport()
-	{
-		return autoReferenceDlg.mLastImport;
-	}
-
