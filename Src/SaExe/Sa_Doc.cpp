@@ -131,7 +131,6 @@
 #include "dlgsplit.h"
 #include "waveresampler.h"
 #include "dlgmultichannel.h"
-#include "dlgaligntranscriptiondata.h"
 #include "dlgaligntranscriptiondatasheet.h"
 #include "TranscriptionDataSettings.h"
 #include "dlgimportsfmref.h"
@@ -7262,6 +7261,7 @@ IMPLEMENT_DYNCREATE(CSaDoc, CUndoRedoDoc)
 	/***************************************************************************/
 	void CSaDoc::OnAutoAlign()
 	{
+		m_nTranscriptionApplicationCount = 0;
 		CDlgAlignTranscriptionDataSheet dlg(NULL,this);
 
 		dlg.init.m_bGloss = (AfxGetApp()->GetProfileInt(L"TranscriptionAlignment",L"Gloss",0)!=0);	
@@ -7272,7 +7272,8 @@ IMPLEMENT_DYNCREATE(CSaDoc, CUndoRedoDoc)
 		dlg.init.m_bUseReference = (AfxGetApp()->GetProfileInt(L"TranscriptionAlignment",L"UseReference",0)!=0);
 
 		dlg.SetWizardMode();
-		if (dlg.DoModal()==ID_WIZFINISH) 
+		int result = dlg.DoModal();
+		if (result==ID_WIZFINISH) 
 		{
 			AfxGetApp()->WriteProfileInt(L"TranscriptionAlignment",L"Gloss",(dlg.init.m_bGloss)?1:0);	
 			AfxGetApp()->WriteProfileInt(L"TranscriptionAlignment",L"Orthographic",(dlg.init.m_bOrthographic)?1:0);
@@ -7280,16 +7281,39 @@ IMPLEMENT_DYNCREATE(CSaDoc, CUndoRedoDoc)
 			AfxGetApp()->WriteProfileInt(L"TranscriptionAlignment",L"Phonetic",(dlg.init.m_bPhonetic)?1:0);
 			AfxGetApp()->WriteProfileInt(L"TranscriptionAlignment",L"Reference",(dlg.init.m_bReference)?1:0);
 			AfxGetApp()->WriteProfileInt(L"TranscriptionAlignment",L"UseReference",(dlg.init.m_bUseReference)?1:0);
+		}
+		else if (result==IDCANCEL)
+		{
+			while (m_nTranscriptionApplicationCount>0)
+			{
+				RevertTranscriptionChanges();
+			}
+		}
+	}
 
-			CTranscriptionDataSettings settings = dlg.GetSettings();
-			if (!settings.m_bUseReference) 
-			{
-				AlignTranscriptionData(settings);
-			}
-			else
-			{
-				AlignTranscriptionDataByRef(settings.m_TranscriptionData);
-			}
+	void CSaDoc::ApplyTranscriptionChanges( CTranscriptionDataSettings & settings)
+	{
+		if (!settings.m_bUseReference) 
+		{
+			AlignTranscriptionData(settings);
+		}
+		else
+		{
+			AlignTranscriptionDataByRef(settings.m_TranscriptionData);
+		}
+		m_nTranscriptionApplicationCount++;
+	}
+
+	void CSaDoc::RevertTranscriptionChanges()
+	{
+		Undo(FALSE);
+		POSITION pos = GetFirstViewPosition();
+		CSaView* pView = (CSaView*)GetNextView(pos);
+		pView->SendMessage(WM_COMMAND,ID_EDIT_UNDO,0);
+		pView->RefreshGraphs();
+		if (m_nTranscriptionApplicationCount>0) 
+		{
+			m_nTranscriptionApplicationCount--;
 		}
 	}
 
@@ -7743,7 +7767,6 @@ IMPLEMENT_DYNCREATE(CSaDoc, CUndoRedoDoc)
 
 	void CSaDoc::AlignTranscriptionData( CTranscriptionDataSettings & settings) 
 	{
-
 		// save state for undo ability
 		CheckPoint();
 		SetModifiedFlag(TRUE); // document has been modified
@@ -8518,7 +8541,7 @@ IMPLEMENT_DYNCREATE(CSaDoc, CUndoRedoDoc)
 	}
 
 	/***************************************************************************/
-	// CDlgAlignTranscriptionData::BuildString builds an annotation string
+	// CSaDoc::BuildString builds an annotation string
 	/***************************************************************************/
 	const CSaString CSaDoc::BuildString(int nSegment) 
 	{
@@ -8583,7 +8606,7 @@ IMPLEMENT_DYNCREATE(CSaDoc, CUndoRedoDoc)
 	}
 
 	/***************************************************************************/
-	// CDlgAlignTranscriptionData::BuildString builds an annotation string
+	// CSaDoc::BuildString builds an annotation string
 	/***************************************************************************/
 	const CSaString CSaDoc::BuildImportString( BOOL gloss, BOOL phonetic, BOOL phonemic, BOOL orthographic) 
 	{

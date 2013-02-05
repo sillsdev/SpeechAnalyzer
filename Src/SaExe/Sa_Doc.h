@@ -401,8 +401,14 @@ public:
 	const bool ImportTranscription( CSaString & filename, BOOL gloss, BOOL phonetic, BOOL phonemic, BOOL orthographic, CTranscriptionData & td);
 
 protected:
+	// automatic transcription alignment functions
 	void AlignTranscriptionData( CTranscriptionDataSettings & settings);
 	void AlignTranscriptionDataByRef( CTranscriptionData & td);
+public:
+	void ApplyTranscriptionChanges( CTranscriptionDataSettings & settings);
+	void RevertTranscriptionChanges();
+private:
+	int m_nTranscriptionApplicationCount;
 
 };
 

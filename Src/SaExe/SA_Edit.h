@@ -97,6 +97,7 @@ protected:
 	afx_msg void OnCharacterChart();
 	afx_msg void OnPlaybackSegment();
 	afx_msg void OnPlaybackWord();
+	afx_msg void OnPlaybackPhraseL2();
 	afx_msg void OnUpdateInputstring();
 	afx_msg void OnDestroy();
 	afx_msg void OnActivate(UINT nState, CWnd* pWndOther, BOOL bMinimized);

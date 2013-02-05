@@ -1,3 +1,11 @@
+SA - 3.1.0.28 - 2/4/2013
+1) Added 'singleton' feature to SA.  The feature is disabled if SA is launched with Batch mode or as a server.
+2) Added capability to play Phrase List 2 from the transcription editor.
+3) Fixed undo bugs in TAT.
+
+SA - 3.1.0.27 - 1/23/2013
+1) Added 'Preview' functionality to Transcription Alignment dialog box.  No text changes yet.
+
 SA - 3.1.0.26 - 1/22/2013
 1) Fix for AutoRef where code was validating 'end' value before it had been loaded from control.
 2) Modified validation of auto ref 'begin' and 'end' parameters.

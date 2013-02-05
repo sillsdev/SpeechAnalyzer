@@ -18,6 +18,7 @@ ortho(pSaDoc,ORTHO,IDD_ANNOTATION_ORTHOGRAPHIC_PAGE),
 phonemic(pSaDoc,PHONEMIC,IDD_ANNOTATION_PHONEMIC_PAGE),
 phonetic(pSaDoc,PHONETIC,IDD_ANNOTATION_PHONETIC_PAGE),
 import(pSaDoc),
+finish(pSaDoc),
 CPropertySheet(IDS_AWIZ_CAPTION_ALIGN, pParentWnd, 0) 
 {
 	AddPage(&init);

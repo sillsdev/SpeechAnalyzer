@@ -283,6 +283,7 @@ public:
 	CSegment *GetAnnotation(int annotSetID);
 	DWORD OnPlaybackSegment();
 	DWORD OnPlaybackWord();
+	DWORD OnPlaybackPhraseL2();
 
 	//SDM 1.06.5
 	CASegmentSelection& ASelection() {return m_advancedSelection;};

@@ -307,7 +307,6 @@ public:
 
 	// Generated message map functions
 protected:
-	//{{AFX_MSG(CMainFrame)
 	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
 	afx_msg void OnInitMenu(CMenu* pMenu);
 	afx_msg void OnToolsOptions();
@@ -333,7 +332,6 @@ protected:
 	afx_msg void OnWindowTileVert();
 	afx_msg void OnWaveformGenerator();
 	afx_msg void OnUpdateToolsOptions(CCmdUI* pCmdUI);
-	//}}AFX_MSG
 	afx_msg void OnSynthesis();
 	afx_msg void OnUpdateSynthesis(CCmdUI* pCmdUI);
 	afx_msg void OnSynthesisKlattIpa();
@@ -350,6 +348,8 @@ protected:
 	afx_msg void OnUpdateProgressPane(CCmdUI *pCmdUI);
 	afx_msg void OnEqualizeLength();
 	afx_msg void OnUpdateEqualizeLength(CCmdUI *pCmdUI);
+	afx_msg BOOL OnCopyData(  CWnd * pWnd, COPYDATASTRUCT * pCopyDataStruct);
+
 	DECLARE_MESSAGE_MAP()
 
 };
@@ -371,10 +371,7 @@ public:
 public:
 
 	// Overrides
-	// ClassWizard generated virtual function overrides
-	//{{AFX_VIRTUAL(CChildFrame)
 	virtual void ActivateFrame(int nCmdShow = -1) ;
-	//}}AFX_VIRTUAL
 
 	// Implementation
 public:
@@ -386,10 +383,6 @@ public:
 
 	// Generated message map functions
 protected:
-	//{{AFX_MSG(CChildFrame)
-	// NOTE - the ClassWizard will add and remove member functions here.
-	//    DO NOT EDIT what you see in these blocks of generated code!
-	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()
 };
 

@@ -49,8 +49,9 @@
 BEGIN_MESSAGE_MAP(CDlgEditor, CDialog)
 	//{{AFX_MSG_MAP(CDlgEditor)
 	ON_BN_CLICKED(IDC_CHARACTERCHART, OnCharacterChart)
-	ON_BN_CLICKED(IDC_PLAYSEGMENT, OnPlaybackSegment)
-	ON_BN_CLICKED(IDC_PLAYWORD, OnPlaybackWord)
+	ON_BN_CLICKED(IDC_PLAY_SEGMENT, OnPlaybackSegment)
+	ON_BN_CLICKED(IDC_PLAY_WORD, OnPlaybackWord)
+	ON_BN_CLICKED(IDC_PLAY_PHRASE_L2, OnPlaybackPhraseL2)
 	ON_EN_UPDATE(IDC_INPUTSTRING, OnUpdateInputstring)
 	ON_WM_DESTROY()
 	ON_WM_ACTIVATE()
@@ -203,6 +204,20 @@ void CDlgEditor::OnPlaybackWord()
 
 	// display pending error messages
 	CSaApp* pApp = (CSaApp*)AfxGetApp(); // get pointer to application
+	pApp->DisplayMessages();
+}
+
+/***************************************************************************/
+// CDlgEditor::OnPlaybackPhraseL2 Button playback Phrase L2 hit
+// Sends a message to the player to playback the original phrase selection.
+/***************************************************************************/
+void CDlgEditor::OnPlaybackPhraseL2()
+{
+	if (!SaView()) return;					// require doc and view
+	SaView()->OnPlaybackPhraseL2();
+
+	// display pending error messages
+	CSaApp* pApp = (CSaApp*)AfxGetApp();	// get pointer to application
 	pApp->DisplayMessages();
 }
 

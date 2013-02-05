@@ -13,9 +13,9 @@
 
 CDlgAlignTranscriptionDataImportRefPage::CDlgAlignTranscriptionDataImportRefPage(  CSaDoc * pSaDoc) :
 CPropertyPage(IDD),
-	m_pSaDoc(pSaDoc),
-	m_bModified(false),
-	m_szText("") 
+m_pSaDoc(pSaDoc),
+m_bModified(false),
+m_szText("") 
 {
 }
 
@@ -79,6 +79,9 @@ void CDlgAlignTranscriptionDataImportRefPage::OnClickedImport()
 	}
 
 	CSaString path = dlg.GetPathName();
+
+	CSaApp* pApp = (CSaApp*)AfxGetApp();
+	pApp->WriteProfileString(L"AutoRef",L"LastImport",(LPCTSTR)path);
 
 	CDlgAlignTranscriptionDataSheet * pParent = GetParent();
 

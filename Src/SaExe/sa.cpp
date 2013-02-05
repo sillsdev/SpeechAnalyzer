@@ -76,7 +76,6 @@
 //             then the start mode dialog isn't shown.
 //
 /////////////////////////////////////////////////////////////////////////////
-
 #include "stdafx.h"
 #include "sa.h"
 #include "playerRecorder.h"
@@ -103,11 +102,45 @@ using std::ios;
 #include "fileOpen.h"
 #include <windows.h>
 
+#pragma comment(linker, "/SECTION:.shr,RWS")
+#pragma data_seg(".shr")
+HWND hGlobal = NULL;
+#pragma data_seg()
+
+
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #undef THIS_FILE
 static char THIS_FILE[] = __FILE__;
 #endif
+
+
+// Name:        CSingleInstanceData
+// Parent:       N/A
+// Description: Manages shared data between applications, could be anything,
+//              but for this case it is the "command line arguments"
+class CSingleInstanceData
+{
+public :
+	// Constructor/Destructor
+	CSingleInstanceData ( LPCTSTR aName );
+	virtual ~CSingleInstanceData ();
+
+	// Getter/Setter
+	void SetValue ( LPCTSTR aData );
+	CString GetValue () const;
+
+private :
+	enum { MAX_DATA = 512 };
+
+	// Data pointer
+	LPTSTR  mData;
+	// File handle
+	HANDLE  mMap;
+	// Acces mutex
+	CMutex* mMutex;
+} ;
+
 
 typedef HMODULE  (__stdcall *SHGETFOLDERPATH)(HWND, int, HANDLE, DWORD, LPTSTR);
 #define CSIDL_PERSONAL                  0x0005        // My Documents
@@ -131,8 +164,7 @@ struct VS_VERSIONINFO
 /////////////////////////////////////////////////////////////////////////////
 // CSaApp message map
 
-BEGIN_MESSAGE_MAP(CSaApp, CSaAppBase)
-	//{{AFX_MSG_MAP(CSaApp)
+BEGIN_MESSAGE_MAP(CSaApp, CWinApp)
 	ON_COMMAND(ID_APP_ABOUT, OnAppAbout)
 	ON_COMMAND(ID_FILE_NEW, OnFileCreate)
 	ON_UPDATE_COMMAND_UI(ID_FILE_NEW, OnUpdateFileCreate)
@@ -160,10 +192,9 @@ BEGIN_MESSAGE_MAP(CSaApp, CSaAppBase)
 	ON_COMMAND(ID_WORKBENCH, OnWorkbenchOpen)
 	ON_UPDATE_COMMAND_UI(ID_WORKBENCH, OnUpdateWorkbenchOpen)
 	ON_COMMAND(ID_PROCESS_BATCH_COMMANDS, OnProcessBatchCommands)
-	//}}AFX_MSG_MAP
 	// Standard file based document commands
 	// Standard print setup command
-	ON_COMMAND(ID_FILE_PRINT_SETUP, CSaAppBase::OnFilePrintSetup)
+	ON_COMMAND(ID_FILE_PRINT_SETUP, CWinApp::OnFilePrintSetup)
 	ON_UPDATE_COMMAND_UI_RANGE(ID_FILE_MRU_FIRST, ID_FILE_MRU_LAST, OnUpdateRecentFileMenu)
 END_MESSAGE_MAP()
 
@@ -175,10 +206,10 @@ END_MESSAGE_MAP()
 /***************************************************************************/
 CSaApp::CSaApp()
 {
-	m_nBatchMode = FALSE; // no batch mode
+	m_nBatchMode = 0;		// no batch mode
 	m_bModified = FALSE;
-	m_nEntry = 0;         // reset number of entries in batch list file
-	m_nCommand =-1; // SDM 1.5Test8.5 (not processing batch commands)
+	m_nEntry = 0;			// reset number of entries in batch list file
+	m_nCommand =-1;			// SDM 1.5Test8.5 (not processing batch commands)
 	m_bNewDocument = FALSE;
 	m_pWbDoc = NULL;
 	m_szWbPath.Empty();
@@ -186,6 +217,15 @@ CSaApp::CSaApp()
 	m_bNewUser = FALSE;
 
 	m_OpenAsID = ID_FILE_OPEN;
+
+	InitSingleton();
+}
+
+CSaApp::~CSaApp() {
+
+	TRACE("destroy CSaApp\n");
+
+	DestroySingleton();
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -216,7 +256,9 @@ HMODULE LoadCompatibleLibrary(LPCTSTR szCName)
 	DWORD dwSize = GetFileVersionInfoSize(szName.GetBuffer(0), &dwHandle);
 
 	if (!dwSize)
+	{
 		return 0;
+	}
 
 	void* pLibVersion = (void*) new char[dwSize];
 
@@ -283,225 +325,217 @@ HMODULE LoadCompatibleLibrary(LPCTSTR szCName)
 /***************************************************************************/
 BOOL CSaApp::InitInstance()
 {
+	// handle single instance
+	if (CreateAsSingleton( _T("418486C0-7EEE-448d-AD39-2522F5D553A7"))==FALSE)
+	{
+	    return FALSE;
+	}
+
 #ifdef DEBUG_MEMORY_OVERWRITE
 	afxMemDF |= checkAlwaysMemDF;  // check for memory overwrites in debug version (see MSDN)
 #endif
 
-#ifdef _DEBUG
 	m_hEnglishResources = LoadCompatibleLibrary(_T("SA_ENU.DLL"));
 	m_hLocalizedResources = LoadCompatibleLibrary(_T("SA_LOC.DLL"));
-#else
-	m_hEnglishResources = LoadCompatibleLibrary(_T("SA_ENU.DLL"));
-	m_hLocalizedResources = LoadCompatibleLibrary(_T("SA_LOCAL.DLL"));
-#endif
 
-	if (!m_hEnglishResources && !m_hLocalizedResources)
+	if ((!m_hEnglishResources) && (!m_hLocalizedResources))
 	{
 		AfxMessageBox(_T("No resources found, exiting"));
 		return FALSE;
 	}
 
-	BOOL bInit = CSaAppBase::InitInstance();
-
-	if (bInit) 
+	if (!CWinApp::InitInstance())
 	{
+		return FALSE;
+	}
 
-		AfxEnableControlContainer();
+	AfxEnableControlContainer();
 
-		SetRegistryKey(_T("SIL"));
+	SetRegistryKey(_T("SIL"));
 
-		// create the error message string array
-		m_pszErrors = new CStringArray; 
-		m_pszMessages = new CStringArray;
+	// create the error message string array
+	m_pszErrors = new CStringArray(); 
+	m_pszMessages = new CStringArray();
 
-		// Standard initialization
-		// If you are not using these features and wish to reduce the size
-		// of your final executable, you should remove from the following
-		// the specific initialization routines you do not need.
+	// Standard initialization
+	// If you are not using these features and wish to reduce the size
+	// of your final executable, you should remove from the following
+	// the specific initialization routines you do not need.
 
 #ifdef _DEBUG
-		//    afxTraceEnabled = 1;
-		//    afxTraceFlags = 1;
+	//    afxTraceEnabled = 1;
+	//    afxTraceFlags = 1;
 #endif
 
-		// Set dialog background color
-		SetDialogBkColor(GetSysColor(COLOR_BTNFACE));
-		// Load standard INI file options (including MRU)
-		LoadStdProfileSettings(8);
+	// Set dialog background color
+	SetDialogBkColor(GetSysColor(COLOR_BTNFACE));
+	// Load standard INI file options (including MRU)
+	LoadStdProfileSettings(8);
 
-		AfxOleInit();
+	AfxOleInit();
 
+	// Register the application's document templates. Document templates
+	// serve as the connection between documents, frame windows and views.
+	m_pDocTemplate = new CMultiDocTemplate(IDR_SA_ANNTYPE,
+											RUNTIME_CLASS(CSaDoc),
+											RUNTIME_CLASS(CChildFrame),
+											RUNTIME_CLASS(CSaView));
+	AddDocTemplate(m_pDocTemplate);
+	// add workbench template
+	AddDocTemplate(new CMultiDocTemplate(IDR_SA_WBTYPE,
+											RUNTIME_CLASS(CWorkbenchDoc),
+											RUNTIME_CLASS(CMDIChildWnd),
+											RUNTIME_CLASS(CSaWorkbenchView)));
 
-		// Register the application's document templates. Document templates
-		// serve as the connection between documents, frame windows and views.
-		m_pDocTemplate = new CMultiDocTemplate(IDR_SA_ANNTYPE,
-			RUNTIME_CLASS(CSaDoc),
-			RUNTIME_CLASS(CChildFrame),
-			RUNTIME_CLASS(CSaView));
-		AddDocTemplate(m_pDocTemplate);
-		// add workbench template
-		AddDocTemplate(new CMultiDocTemplate(IDR_SA_WBTYPE,
-			RUNTIME_CLASS(CWorkbenchDoc),
-			RUNTIME_CLASS(CMDIChildWnd),
-			RUNTIME_CLASS(CSaWorkbenchView)));
-
-		// underlying functionality not implemented we can't add this template SDM
-		// add MIDI template
-		//AddDocTemplate(new CMultiDocTemplate(IDR_SA_MIDTYPE,
-		//                                     RUNTIME_CLASS(CMidiDoc),
-		//                                     RUNTIME_CLASS(CMDIChildWnd),
-		//                                     RUNTIME_CLASS(CMidiView)));
-
-		// create main MDI Frame window
-		CMainFrame* pMainFrame = new CMainFrame;
-		if (CSaString(m_pszExeName).Find(_T("SAS")) == -1)
+	// create main MDI Frame window
+	CMainFrame* pMainFrame = new CMainFrame();
+	if (!IsSAS())
+	{
+		if (!pMainFrame->LoadFrame(IDR_MAINFRAME))
 		{
-			if (!pMainFrame->LoadFrame(IDR_MAINFRAME))
-			{
-				return FALSE;
-			}
+			return FALSE;
 		}
-		else if (!pMainFrame->LoadFrame(IDR_MAINFRAME_SAS))
+	}
+	else if (!pMainFrame->LoadFrame(IDR_MAINFRAME_SAS))
+	{
+		return FALSE;
+	}
+
+	m_pMainWnd = pMainFrame;
+	// check if SA runs in batchmode
+	m_nBatchMode = CheckForBatchMode(m_lpCmdLine);
+
+	// update help file path
+	CSaString szNewPath = m_pszHelpFilePath;
+	szNewPath = szNewPath.Left(szNewPath.ReverseFind('\\')) + _T("\\Speech_Analyzer_Help.chm");
+	free((void*)m_pszHelpFilePath);
+	m_pszHelpFilePath = _tcsdup(szNewPath);
+
+	if (IsSAS())
+	{
+		if (!GetBatchMode())
+		{
+			AfxMessageBox(IDS_ERROR_SAS,MB_OK,0);
+			delete m_pMainWnd;
+			m_pMainWnd = 0;
+			return FALSE;
+		}
+	}
+
+	CTime splashStartTime; // keep track of when we first showed the splash screen
+	ISplashScreenPtr splash(NULL);
+	CSaString szSplashText;
+
+	// create splash window only if SA not in batchmode
+	if (!GetBatchMode())
+	{
+		// display splash screen
+		CoInitialize(NULL);
+		HRESULT createResult = splash.CreateInstance(__uuidof(SplashScreen));
+		if (createResult)
+		{
+			CSaString szCreateResult;
+			szCreateResult.Format(_T("%x"), createResult);
+			CSaString szText;
+			AfxFormatString2(szText, IDS_ERROR_CREATE_INSTANCE,  _T("SplashScreen.CreateInstance()"), szCreateResult);
+			AfxMessageBox(szText, MB_OK | MB_ICONEXCLAMATION, 0);
+			return FALSE;
+		}
+
+		splash->Show();
+		szSplashText.LoadString(IDS_SPLASH_LOADING);
+		splash->Message = (_bstr_t)szSplashText;
+		szSplashText.LoadString(IDR_MAINFRAME);
+		splash->ProdName = (_bstr_t)szSplashText;
+		// load version info
+		CSaString szVersion((LPCTSTR)VS_VERSION);
+		szVersion = szVersion.Right(szVersion.GetLength() - szVersion.Find(' ') - 1);
+		// Beta version display
+		int nBuildIndex = szVersion.Find(_T("Build"));
+		if (nBuildIndex > 0)
+		{
+			szVersion = szVersion.Left(nBuildIndex - 2);
+		}
+		// RC version display
+		int nRCIndex = szVersion.Find(_T("RC"));
+		if (nRCIndex > 0)
+		{
+			szVersion = szVersion.Left(nRCIndex - 1);
+		}
+		splash->ProdVersion = (_bstr_t)szVersion;
+		// load version info
+		CSaString szCopyright((LPCTSTR)VS_COPYRIGHT);
+		splash->Copyright = (_bstr_t)szCopyright;
+		splash->Activate();
+		splashStartTime = CTime::GetCurrentTime();
+	}
+	// enable file manager drag/drop
+	m_pMainWnd->DragAcceptFiles();
+
+	m_szLastVersion = _T("2.7");
+	if (!GetBatchMode())
+	{
+		// RegisterShellFileTypes(FALSE); 
+		EnableShellOpen();
+		// Parse command line for standard shell commands, DDE, file open
+		CCommandLineInfo cmdInfo;
+		ParseCommandLine(cmdInfo);
+
+		BOOL bSettingSuccess = ReadSettings();
+
+		// Dispatch commands specified on the command line
+		if ((cmdInfo.m_nShellCommand != CCommandLineInfo::FileNew) && 
+			(!ProcessShellCommand(cmdInfo)))
 		{
 			return FALSE;
 		}
 
-		m_pMainWnd = pMainFrame;
-		// check if SA runs in batchmode
-		m_nBatchMode = CheckForBatchMode(m_lpCmdLine);
-
-		// update help file path
-		CSaString szNewPath = m_pszHelpFilePath;
-		szNewPath = szNewPath.Left(szNewPath.ReverseFind('\\')) + _T("\\Speech_Analyzer_Help.chm");
-		free((void*)m_pszHelpFilePath);
-		m_pszHelpFilePath = _tcsdup(szNewPath);
-
-		if (CSaString(m_pszExeName).Find(_T("SAS")) != -1)
+		if (!bSettingSuccess)
 		{
-			if (!GetBatchMode())
-			{
-				AfxMessageBox(IDS_ERROR_SAS,MB_OK,0);
-				delete m_pMainWnd;
-				m_pMainWnd = 0;
-				return FALSE;
-			}
+			pMainFrame->ShowWindow(m_nCmdShow);
 		}
+		pMainFrame->UpdateWindow();
 
-		CTime splashStartTime; // keep track of when we first showed the splash screen
-		ISplashScreenPtr splash(NULL);
-		CSaString szSplashText;
-
-		// create splash window only if SA not in batchmode
-		if (!GetBatchMode())
+		// Perform setup new user, if needed
+		if (m_bNewUser)
 		{
-			// display splash screen
-			CoInitialize(NULL);
-			HRESULT createResult = splash.CreateInstance(__uuidof(SplashScreen));
-			if (createResult)
-			{
-				CSaString szCreateResult;
-				szCreateResult.Format(_T("%x"), createResult);
-				CSaString szText;
-				AfxFormatString2(szText, IDS_ERROR_CREATE_INSTANCE,  _T("SplashScreen.CreateInstance()"), szCreateResult);
-				AfxMessageBox(szText, MB_OK | MB_ICONEXCLAMATION, 0);
-				return FALSE;
-			}
-
-			splash->Show();
-			szSplashText.LoadString(IDS_SPLASH_LOADING);
+			szSplashText.LoadString(IDS_SPLASH_NEW_USER_SETUP);
 			splash->Message = (_bstr_t)szSplashText;
-			szSplashText.LoadString(IDR_MAINFRAME);
-			splash->ProdName = (_bstr_t)szSplashText;
-			// load version info
-			CSaString szVersion((LPCTSTR)VS_VERSION);
-			szVersion = szVersion.Right(szVersion.GetLength() - szVersion.Find(' ') - 1);
-			// Beta version display
-			int nBuildIndex = szVersion.Find(_T("Build"));
-			if (nBuildIndex > 0)
-			{
-				szVersion = szVersion.Left(nBuildIndex - 2);
-			}
-			// RC version display
-			int nRCIndex = szVersion.Find(_T("RC"));
-			if (nRCIndex > 0)
-			{
-				szVersion = szVersion.Left(nRCIndex - 1);
-			}
-			splash->ProdVersion = (_bstr_t)szVersion;
-			// load version info
-			CSaString szCopyright((LPCTSTR)VS_COPYRIGHT);
-			splash->Copyright = (_bstr_t)szCopyright;
-			splash->Activate();
-			splashStartTime = CTime::GetCurrentTime();
+			SetupNewUser();
 		}
-		// enable file manager drag/drop
-		m_pMainWnd->DragAcceptFiles();
 
-		m_szLastVersion = _T("2.7");
-		if (!GetBatchMode())
+		splash->Close();
+		splash->Release();
+		splash = NULL;
+		CoUninitialize();
+
+		CSaString msg = GetStartupMessage(m_szLastVersion);
+		if (msg.GetLength())
 		{
-			// RegisterShellFileTypes(FALSE); 
-			EnableShellOpen();
-			// Parse command line for standard shell commands, DDE, file open
-			CCommandLineInfo cmdInfo;
-			ParseCommandLine(cmdInfo);
-
-			BOOL bSettingSuccess = ReadSettings();
-
-			// Dispatch commands specified on the command line
-			if (cmdInfo.m_nShellCommand != CCommandLineInfo::FileNew && !ProcessShellCommand(cmdInfo))
-			{
-				return FALSE;
-			}
-
-			if (!bSettingSuccess)
-			{
-				pMainFrame->ShowWindow(m_nCmdShow);
-			}
-			pMainFrame->UpdateWindow();
-
-			// Perform setup new user, if needed
-			if (m_bNewUser)
-			{
-				szSplashText.LoadString(IDS_SPLASH_NEW_USER_SETUP);
-				splash->Message = (_bstr_t)szSplashText;
-				SetupNewUser();
-			}
-
-			splash->Close();
-			splash->Release();
-			splash = NULL;
-			CoUninitialize();
-
-			CSaString msg = GetStartupMessage(m_szLastVersion);
-			if (msg.GetLength())
-			{
-				AfxMessageBox(msg);
-			}
-
-			// Show startup dialog
-			CMainFrame* pMainWnd = (CMainFrame*)AfxGetMainWnd();
-			if ((pMainWnd->GetShowStartupDlg()) && (!pMainWnd->GetCurrSaView()))
-			{
-				ShowStartupDialog(TRUE);
-			}
+			AfxMessageBox(msg);
 		}
-		else
-		{
-			if (!ReadSettings())
-			{
-				// settings read failed.  at least show the window correctly.
-				pMainFrame->ShowWindow(m_nCmdShow + 3);
-			}
 
-			// SDM 1.06.8 window size in this function needs to take precedence over save settings
-			// examine command line
-			ExamineCmdLine(m_lpCmdLine);
-			pMainFrame->UpdateWindow();
+		// Show startup dialog
+		CMainFrame* pMainWnd = (CMainFrame*)AfxGetMainWnd();
+		if ((pMainWnd->GetShowStartupDlg()) && (!pMainWnd->GetCurrSaView()))
+		{
+			ShowStartupDialog(TRUE);
 		}
 	}
+	else
+	{
+		if (!ReadSettings())
+		{
+			// settings read failed.  at least show the window correctly.
+			pMainFrame->ShowWindow(m_nCmdShow + 3);
+		}
 
-	return bInit;
+		// SDM 1.06.8 window size in this function needs to take precedence over save settings
+		// examine command line
+		ExamineCmdLine(m_lpCmdLine);
+		pMainFrame->UpdateWindow();
+	}
+	return TRUE;
 }
 
 /***************************************************************************/
@@ -541,7 +575,7 @@ int CSaApp::ExitInstance()
 			delete m_pszMessages;
 			m_pszMessages = NULL;
 		}
-		bOK = CSaAppBase::ExitInstance();
+		bOK = CWinApp::ExitInstance();
 
 		// standard implementation: save initialisation
 		SaveStdProfileSettings();
@@ -549,6 +583,7 @@ int CSaApp::ExitInstance()
 	catch(...) 
 	{
 	}
+
 	// standard implementation: save initialisation
 	if (bOK)
 		return AfxGetCurrentMessage()->wParam; // Returns the value from \QuitMessage
@@ -560,24 +595,25 @@ int CSaApp::ExitInstance()
 // CSaApp::CheckForBatchMode Check if SA runs in batch mode
 // The function returns TRUE, if SA should run in batch mode.
 /***************************************************************************/
-BOOL CSaApp::CheckForBatchMode(LPTSTR pCmdLine)
+int CSaApp::CheckForBatchMode(LPTSTR pCmdLine)
 {
-	if ((pCmdLine[0] == '-') && ((pCmdLine[1] == 'L') || (pCmdLine[1] == 'l')
-		|| (pCmdLine[1] == 'R') || (pCmdLine[1] == 'r')))
+	if ((pCmdLine[0] == '-') && 
+		((pCmdLine[1] == 'L') || 
+		 (pCmdLine[1] == 'l') || 
+		 (pCmdLine[1] == 'R') || 
+		 (pCmdLine[1] == 'r')))
 	{
-		return TRUE;
+		return 1;
 	}
-	else return FALSE;
+
+	return 0;
 }
 
 CSaString CSaApp::GetBatchString(LPCTSTR lpSection, LPCTSTR lpKey, LPCTSTR lpDefault)
 {
 	TCHAR lpBuffer[_MAX_PATH];
-
 	lpBuffer[0] = 0;
-
 	GetPrivateProfileString(lpSection, lpKey, lpDefault, lpBuffer, _MAX_PATH, m_szCmdFileName);
-
 	return CSaString(lpBuffer);
 }
 
@@ -627,7 +663,6 @@ void CSaApp::ExamineCmdLine(LPCTSTR pCmdLine, WPARAM wParam)
 			// sa has to read list file and open documents // SDM 1.5Test8.3
 			swscanf_s(szCmdLine, _T("%*[ 0123456789]%[^\n]"), m_szCmdFileName.GetBuffer(szCmdLine.GetLength()));
 			m_szCmdFileName.ReleaseBuffer();
-
 
 			CFileStatus TheStatus;
 			if ((m_szCmdFileName.GetLength()==0) || !CFile::GetStatus(m_szCmdFileName,TheStatus))
@@ -798,53 +833,6 @@ void CSaApp::ExamineCmdLine(LPCTSTR pCmdLine, WPARAM wParam)
 		}
 		else // normal mode
 		{
-#ifdef WeShouldNotGetHere // We are now using MFC default command line processing for this mode
-			CSaString szCursors;
-
-			if (szCmdLine[0] == '\"')
-			{
-				// Filename in Quotes
-				int nIndex = szCmdLine.Find("\"",1);
-
-				if (nIndex != -1)
-				{
-					m_szCmdFileName = szCmdLine.Mid(1, nIndex-1);
-					if ((nIndex = szCmdLine.Find(' ', nIndex)) != -1)
-						szCursors = szCmdLine.Mid(nIndex+1);
-				}
-				else
-					m_szCmdFileName = szCmdLine.Mid(1);
-			}
-			else if (szCmdLine.Find(' ') != -1) // space found -> start/stop cursors given
-			{
-				// space found filename terminator
-				m_szCmdFileName = szCmdLine.Left(szCmdLine.Find(' ')); // separate file path and name
-				szCursors = szCmdLine.Right(szCmdLine.GetLength() - szCmdLine.Find(' ') - 1);
-			}
-			else m_szCmdFileName = szCmdLine;
-
-			// open the document
-			CSaDoc* pDoc = (CSaDoc*)OpenDocumentFile(m_szCmdFileName);
-
-			// set start and stop cursors
-			if (pDoc)
-			{
-				if (!szCursors.IsEmpty())
-				{
-					if (szCursors.Find(' ') != -1) // space found -> start and stop cursor given
-					{
-						dwStop = _ttol(szCursors.Right(szCursors.GetLength() - szCursors.Find(' ') - 1));
-						dwStart = _ttol(szCursors.Left(szCursors.Find(' ')));
-					}
-					else dwStart = _ttol(szCursors); // copy file path and name
-				}
-
-				POSITION pos = pDoc->GetFirstViewPosition();
-				CSaView* pView = (CSaView*)pDoc->GetNextView(pos); // get pointer to view
-				pView->SetStartCursorPosition(dwStart);
-				if (dwStop > dwStart) pView->SetStopCursorPosition(dwStop);
-			}
-#endif
 		}
 	}
 }
@@ -1766,7 +1754,7 @@ void CSaApp::OnUpdateRecentFileMenu(CCmdUI* pCmdUI)
 	int nIndex = pCmdUI->m_nIndex;
 	// MFC only calls for first MRU entry
 	if (pCmdUI->m_nID == ID_FILE_MRU_FILE1)
-		CSaAppBase::OnUpdateRecentFileMenu(pCmdUI);
+		CWinApp::OnUpdateRecentFileMenu(pCmdUI);
 	// MFC skips other entries force full update
 	pCmdUI->m_nIndex= nIndex;
 	pCmdUI->Enable(!GetBatchMode()); // enabled only if no batch mode
@@ -1886,7 +1874,7 @@ BOOL CSaApp::OnIdle(LONG lCount)
 		}
 
 	}
-	BOOL bMore = CSaAppBase::OnIdle(lCount);
+	BOOL bMore = CWinApp::OnIdle(lCount);
 	// display error message if present
 	DisplayMessages();
 
@@ -2621,25 +2609,356 @@ CDocument* CSaApp::OpenDocumentFile(LPCTSTR lpszFileName)
 {
 	CSaString szPrettyName = lpszFileName;
 	LPTSTR pszPretty = szPrettyName.GetBuffer(_MAX_PATH);
-
-	// Complicated Run-Time Dynamic Linking because GetLongPathName is not supported in Win95
-	HMODULE hKernel32 = GetModuleHandle(_T("KERNEL32"));
-	if (hKernel32)
-	{
-		typedef DWORD (WINAPI *PGetLongPathName)( LPCTSTR lpszShortPath, LPTSTR  lpszLongPath, DWORD cchBuffer);
-
-#ifdef UNICODE
-		PGetLongPathName pGetLongPathName = (PGetLongPathName) GetProcAddress(hKernel32, "GetLongPathNameW"); 
-#else
-		PGetLongPathName pGetLongPathName = (PGetLongPathName) GetProcAddress(hKernel32, "GetLongPathNameA"); 
-#endif // !UNICODE
-
-		if (pGetLongPathName)
-			// Convert path name to proper case (fixes asthetic problems)
-			(pGetLongPathName)(pszPretty, pszPretty, _MAX_PATH);
-	}
-
-	return CSaAppBase::OpenDocumentFile(pszPretty);
+	GetLongPathNameW( pszPretty, pszPretty, _MAX_PATH);
+	return CWinApp::OpenDocumentFile(pszPretty);
 }
 
 BOOL CSaApp::m_bUseUnicodeEncoding = FALSE;
+
+// return application mode (batch or not, exit allowed)
+int CSaApp::GetBatchMode() 
+{ 
+	return m_nBatchMode;
+} 
+
+// allow SA to exit
+void CSaApp::CancelBatchMode() 
+{ 
+	if (m_nBatchMode != 0)
+	{
+		m_nBatchMode = 3;
+	}
+} 
+
+void CSaApp::GetMRUFilePath( int i, CSaString & buffer) const
+{
+	buffer.Empty();
+	if (!m_pRecentFileList->GetSize()) // no entries, need to load from registry, this is the MRU list
+		m_pRecentFileList->ReadList();
+	if (i < m_pRecentFileList->GetSize())
+		buffer = (*m_pRecentFileList)[i];
+}
+
+bool CSaApp::IsSAS() {
+	return (CSaString(m_pszExeName).Find(_T("SAS")) != -1);
+}
+
+// Name:        CSingleInstanceData
+// Type:        Constructor
+// Description: Create shared memory mapped file or create view of it
+CSingleInstanceData::CSingleInstanceData ( LPCTSTR aName ) 
+{   
+
+	// Build names
+	CString lFileName = aName ;
+	lFileName += _T("-Data-Mapping-File");
+
+	CString lMutexName = aName ;
+	lMutexName += _T("-Data-Mapping-Mutex");
+
+	// Create mutex, global scope
+	mMutex = new CMutex( FALSE, lMutexName );
+
+	// Create file mapping
+	mMap = CreateFileMapping((HANDLE)0xFFFFFFFF, NULL, PAGE_READWRITE, 0,sizeof ( TCHAR ) * MAX_DATA, lFileName);
+	if (GetLastError() == ERROR_ALREADY_EXISTS ) 
+	{
+		// Close handle
+		CloseHandle ( mMap ); 
+		// Open existing file mapping
+		mMap = OpenFileMapping ( FILE_MAP_WRITE, FALSE, lFileName );           
+	}
+
+	// Set up data mapping
+	mData = (LPTSTR) MapViewOfFile ( mMap, FILE_MAP_WRITE, 0, 0, sizeof ( TCHAR ) * MAX_DATA);
+
+	// Lock file
+	CSingleLock lock( mMutex, TRUE);
+	if ( lock.IsLocked() )
+	{
+		// Clear data
+		ZeroMemory ( mData, sizeof ( TCHAR ) * MAX_DATA);
+	}
+}
+
+// Name:        ~CSingleInstanceData
+// Type:        Destructor
+// Description: Close memory mapped file
+CSingleInstanceData::~CSingleInstanceData () 
+{
+	if ( mMap!=NULL)
+	{
+		// Unmap data from file
+		UnmapViewOfFile( mData);
+		// Close file
+		CloseHandle( mMap);
+	}
+
+	// Clean up mutex
+	if ( mMutex!=NULL)
+	{
+		delete mMutex;
+		mMutex = NULL;
+	}
+}
+
+// Name:        SetValue 
+// Type:        Function
+// Description: Set value in memory mapped file
+void CSingleInstanceData::SetValue ( LPCTSTR aData)
+{
+	// Lock file
+	CSingleLock lock( mMutex, TRUE);
+	if ( lock.IsLocked())
+	{
+		// Check data length, prevent buffer over run
+		if ( _tcslen( aData) < MAX_DATA)
+		{
+			// Copy data
+			wcscpy_s( mData, MAX_DATA, aData);
+		}
+	}
+}
+
+// Name:        GetValue 
+// Type:        Function
+// Description: Get value from memory mapped file
+CString CSingleInstanceData::GetValue () const
+{
+	// Lock file
+	CSingleLock lock( mMutex, TRUE);
+	if ( lock.IsLocked())
+	{
+		// Return the data
+		return mData;
+	}
+	// Not locked to return empty data
+	return _T("");
+}
+
+// Name:        Create
+// Type:        Function
+// Description: Pass message to implementor
+// return TRUE if this app instance is the singleton
+// return FALSE if another app instance is the singleton
+// return TRUE on failure
+BOOL CSaApp::CreateAsSingleton( LPCTSTR aName) 
+{
+	// evaluate the command line to see if we are running 'normally'
+	// we don't support single instance in batch mode
+	if (CheckForBatchMode(m_lpCmdLine)!=0)
+	{
+		TRACE("SingleInstance not supported in batch mode\n");
+		return TRUE;
+	}
+	if (IsSAS())
+	{
+		TRACE("SingleInstance not supported in server mode\n");
+		return TRUE;
+	}
+
+	// Default error condition
+	BOOL lResult = FALSE;
+
+	// Create shared data
+	mData = new CSingleInstanceData( aName );
+	if (mData==NULL)
+	{
+		TRACE("Unable to create shared data object\n");
+		AfxMessageBox(IDS_ERROR_SINGLETON, MB_OK|MB_ICONEXCLAMATION);
+		return TRUE;
+	}
+
+	// Create event name
+	CString lEventName = aName;
+	lEventName += _T("-Event");
+
+	// Create named event, global scope
+	mEvent = new CEvent( FALSE, FALSE, lEventName);
+	if (mEvent==NULL)
+	{
+		delete mData;
+		mData = NULL;
+		TRACE("Unable to create global event\n");
+		AfxMessageBox(IDS_ERROR_SINGLETON, MB_OK|MB_ICONEXCLAMATION);
+		return TRUE;
+	}
+
+	// Check we have a handle to a valid event
+	// Check last error status
+	DWORD lLastError = GetLastError();
+	if ( lLastError == ERROR_ALREADY_EXISTS)
+	{
+		// Set command line data
+		mData->SetValue( GetCommandLine());
+		// Not our event, so an instance is already running, signal thread in other instance to wake up
+		if (!mEvent->SetEvent())
+		{
+			// we couldn't notify the other application
+			delete mData;
+			mData = NULL;
+			delete mEvent;
+			mEvent = NULL;
+			TRACE("Unable to signal singleton instance\n");
+			AfxMessageBox(IDS_ERROR_SINGLETON, MB_OK|MB_ICONEXCLAMATION);
+			return TRUE;
+		}
+
+		delete mData;
+		mData = NULL;
+		delete mEvent;
+		mEvent = NULL;
+		// another application is the singleton
+		return FALSE;
+	}
+
+	// we are the first process - setup a mechanism to wait for other processes
+	// Create event of thread syncronization, nameless local scope
+	mSignal = new CEvent();
+	if (mSignal==NULL) {
+		delete mData;
+		mData = NULL;
+		delete mEvent;
+		mEvent = NULL;
+		TRACE("Unable to create Signal event\n");
+		AfxMessageBox(IDS_ERROR_SINGLETON, MB_OK|MB_ICONEXCLAMATION);
+		return TRUE;
+	}
+
+	// Create thread
+	AfxBeginThread( (AFX_THREADPROC)Sleeper, (LPVOID)this );
+	return true;
+} 
+
+// Name:        WakeUp
+// Type:        Callback function
+// Description: Default action, find main application window and make foreground.
+// We send a message because we are on a thread and we need to get on the 
+// message loops thread.  If we don't we will found some resources are not valid.
+void CSaApp::WakeUp( LPCTSTR aCommandLine)
+{
+	// Find application and main window
+	CWinApp * pApp = AfxGetApp();
+	if (pApp==NULL)
+	{
+		TRACE("Unable to retrieve application pointer\n");
+		return;
+	}
+	if (pApp->m_pMainWnd==NULL)
+	{
+		TRACE("Unable to retrieve application main window\n");
+		return;
+	}
+
+	// Make main window foreground, flashy, flashy time
+	pApp->m_pMainWnd->SetForegroundWindow();  
+
+	// we are expecting only one filename at this point
+	// parse the command line
+	LPWSTR *szArglist = NULL;
+	int nArgs = 0;
+	szArglist = CommandLineToArgvW( aCommandLine, &nArgs);
+	if ( NULL == szArglist )
+	{
+		TRACE(L"Unable to parse command line\n");
+		return;
+	}
+	if (nArgs!=2)
+	{
+		TRACE("Unexpected number of arguments in commandline\n");
+		return;
+	}
+
+	wchar_t buffer[512];
+	memset(buffer,0,_countof(buffer)*2);
+	wcscpy_s(buffer,_countof(buffer),szArglist[1]);
+	LocalFree(szArglist);
+
+	GetLongPathNameW( buffer, buffer, _MAX_PATH);
+
+	// structure holding data information.
+	COPYDATASTRUCT stCopyData = { 0 };
+	stCopyData.lpData = (void*)buffer;
+	stCopyData.cbData = wcslen(buffer)*2;
+
+	// Send the data.
+	HWND me = pApp->m_pMainWnd->GetSafeHwnd();
+	LRESULT result = ::SendMessage( me, WM_COPYDATA, (UINT)me, (ULONG) &stCopyData);
+}
+
+// Name:        Sleeper
+// Type:        Thread function
+// Description: Sleep on events, wake and activate application or wake and quit.
+UINT CSaApp::Sleeper( CSaApp * pOwner)
+{
+	// Build event handle array
+	CSyncObject * lEvents [] = 
+	{ 
+		pOwner->mEvent, 
+		pOwner->mSignal 
+	};
+
+	// Forever
+	BOOL lForever = TRUE;
+	while ( lForever )
+	{
+		CMultiLock lock( lEvents, 2);
+		// Goto sleep until one of the events signals, zero CPU overhead
+		DWORD lResult = lock.Lock( INFINITE, FALSE);
+		// What signaled, 0 = event, another instance started
+		if ( lResult == WAIT_OBJECT_0 + 0)
+		{
+			if ( pOwner!=NULL)
+			{   
+				// Wake up the owner with the data (last command line)
+				pOwner->WakeUp( pOwner->mData->GetValue());
+			}
+		}
+		// 1 = signal, time to exit the thread
+		else if ( lResult == WAIT_OBJECT_0 + 1)
+		{
+			// Break the forever loop
+			lForever = FALSE;  
+		}
+		lock.Unlock();
+	}   
+
+	// Set event to say thread is exiting
+	pOwner->mEvent->SetEvent();
+	return 0;
+}
+
+void CSaApp::InitSingleton() {
+	// single instance handling members
+	mEvent = NULL;
+	mSignal = NULL;
+	mData = NULL;
+}
+
+void CSaApp::DestroySingleton() {
+
+	// If event and signal exist
+	if ((mEvent!=NULL) && (mSignal!=NULL))
+	{
+		// Set signal event to allow thread to exit
+		if (mSignal->SetEvent())
+		{
+			// Wait for thread to start exiting
+			CSingleLock lock( mEvent, FALSE);
+			lock.Lock();
+		}
+
+		// Close all open handles
+		delete mEvent;
+		mEvent = NULL;
+		delete mSignal;
+		mSignal = NULL;
+	}       
+
+	if (mData!=NULL)
+	{
+		delete mData;
+		mData = NULL;
+	}
+}
+

@@ -110,7 +110,7 @@ static const UINT NEAR nMsgFindReplace = ::RegisterWindowMessage(szFINDMSGSTRING
 // CMainFrame message map
 
 BEGIN_MESSAGE_MAP(CMainFrame, CMainFrameBase)
-	//{{AFX_MSG_MAP(CMainFrame)
+	ON_WM_COPYDATA()
 	ON_WM_CREATE()
 	ON_WM_INITMENU()
 	ON_COMMAND(ID_TOOLS_OPTIONS, OnToolsOptions)
@@ -137,7 +137,6 @@ BEGIN_MESSAGE_MAP(CMainFrame, CMainFrameBase)
 	ON_COMMAND(ID_WAVEFORM_GENERATOR, OnWaveformGenerator)
 	ON_UPDATE_COMMAND_UI(ID_TOOLS_OPTIONS, OnUpdateToolsOptions)
 	ON_UPDATE_COMMAND_UI(ID_GRAPHS_GRAPHSCOPY, OnUpdateGraphsAsBMP)
-	//}}AFX_MSG_MAP
 	ON_COMMAND(ID_SYNTHESIS, OnSynthesis)
 	ON_UPDATE_COMMAND_UI(ID_SYNTHESIS, OnUpdateSynthesis)
 	ON_COMMAND(ID_KLATT_IPA_BLEND, OnSynthesisKlattIpa)
@@ -2667,3 +2666,18 @@ void CMainFrame::OnUpdateRecordOverlay(CCmdUI* pCmdUI)
 
 	pCmdUI->Enable(bEnable);
 }
+
+BOOL CMainFrame::OnCopyData(  CWnd * pWnd, COPYDATASTRUCT * pCopyDataStruct) {
+
+	// length is in bytes
+	int len = pCopyDataStruct->cbData;
+	wchar_t * buffer = new wchar_t[(len/2)+1];
+	memset(buffer,0,len+2);
+	memcpy(buffer,pCopyDataStruct->lpData,len);
+	
+	CSaApp* pApp = (CSaApp*)AfxGetApp();
+	pApp->OpenDocumentFile(buffer);
+
+	return TRUE;
+}
+

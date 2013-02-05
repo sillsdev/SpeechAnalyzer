@@ -1923,10 +1923,6 @@
 					>
 				</File>
 				<File
-					RelativePath=".\DlgAlignTranscriptionData.cpp"
-					>
-				</File>
-				<File
 					RelativePath=".\DlgAlignTranscriptionDataAlignByPage.cpp"
 					>
 				</File>
@@ -3784,10 +3780,6 @@
 				</File>
 				<File
 					RelativePath=".\DlgAdvancedSegment.h"
-					>
-				</File>
-				<File
-					RelativePath=".\DlgAlignTranscriptionData.h"
 					>
 				</File>
 				<File

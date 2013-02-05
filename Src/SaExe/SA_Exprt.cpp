@@ -59,7 +59,6 @@ using std::ios;
 using std::streampos;
 
 #include "exportbasicdialog.h"
-#include "dlgaligntranscriptiondata.h"
 #include "sa_exprt.h"
 #include "result.h"
 #include <math.h>
@@ -2015,7 +2014,7 @@ BOOL CImport::Import(int nMode)
 }
 
 /***************************************************************************/
-// CDlgAlignTranscriptionData::AutoAlign Execute changes by request from batch file
+// CImport::AutoAlign Execute changes by request from batch file
 /***************************************************************************/
 void CImport::AutoAlign( CSaDoc * pSaDoc, const CSaString * Phonetic, const CSaString * Phonemic, const CSaString * Ortho, const CSaString * Gloss)
 {

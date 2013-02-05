@@ -44,7 +44,6 @@ private:
 public:
 	virtual LRESULT OnWizardNext();
 	virtual LRESULT OnWizardBack();
-	CEdit m_Edit;
 };
 
 

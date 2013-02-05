@@ -402,7 +402,7 @@ void CDlgInformationUserPage::DoDataExchange(CDataExchange* pDX)
 	//{{AFX_DATA_MAP(CDlgInformationUserPage)
 	DDX_Text(pDX, IDC_FILEDESC, m_szFileDesc);
 	DDV_MaxChars(pDX, m_szFileDesc, 255);
-	DDX_Text(pDX, IDC_FREETRANLATION, m_szFreeTranslation);
+	DDX_Text(pDX, IDC_FREE_TRANSLATION, m_szFreeTranslation);
 	//}}AFX_DATA_MAP
 }
 
@@ -421,7 +421,7 @@ BOOL CDlgInformationUserPage::OnInitDialog()
 	// build and place the transcription display window
 	m_TranscriptionDisp.Init(IDC_PHONETIC, this);
 	// SDM 1.5Test10.4
-	CEdit* pWnd = (CEdit*) GetDlgItem(IDC_FREETRANLATION);
+	CEdit* pWnd = (CEdit*) GetDlgItem(IDC_FREE_TRANSLATION);
 	if (pWnd!=NULL)
 	{
 		pWnd->SetFocus();

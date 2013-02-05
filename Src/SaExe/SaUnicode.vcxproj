@@ -216,7 +216,6 @@
     <ClCompile Include="DlgAdvancedParsePhrases.cpp" />
     <ClCompile Include="DlgAdvancedParseWords.cpp" />
     <ClCompile Include="DlgAdvancedSegment.cpp" />
-    <ClCompile Include="DlgAlignTranscriptionData.cpp" />
     <ClCompile Include="DlgAlignTranscriptionDataAlignByPage.cpp" />
     <ClCompile Include="DlgAlignTranscriptionDataFinishPage.cpp" />
     <ClCompile Include="DlgAlignTranscriptionDataInitPage.cpp" />
@@ -293,6 +292,7 @@
     <ClCompile Include="WaveResampler.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="ClassDiagram1.cd" />
     <None Include="Segments.cd" />
     <None Include="RES\1.ICO" />
     <None Include="RES\2A.ICO" />
@@ -457,7 +457,6 @@
     <ClInclude Include="DlgAdvancedParsePhrases.h" />
     <ClInclude Include="DlgAdvancedParseWords.h" />
     <ClInclude Include="DlgAdvancedSegment.h" />
-    <ClInclude Include="DlgAlignTranscriptionData.h" />
     <ClInclude Include="DlgAlignTranscriptionDataAlignByPage.h" />
     <ClInclude Include="DlgAlignTranscriptionDataFinishPage.h" />
     <ClInclude Include="DlgAlignTranscriptionDataInitPage.h" />

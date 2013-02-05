@@ -380,6 +380,76 @@ DWORD CSaView::OnPlaybackWord()
 	return dwReturn;
 }
 
+/***************************************************************************/
+// CSaView::OnPlaybackPhraseL2 Playback current selected phrase
+/***************************************************************************/
+DWORD CSaView::OnPlaybackPhraseL2()
+{
+	// find actual gloss segment for playback
+	CSaDoc* pDoc = GetDocument();
+	if (!pDoc) return 0; //no document
+	CSegment* pSegment = pDoc->GetSegment(MUSIC_PL2);
+	CSegment* pSelected = FindSelectedAnnotation();
+	int nActualPhrase = -1;
+	int nSelection = -1;
+	DWORD dwStart = GetStartCursorPosition();
+	DWORD dwStop = GetStopCursorPosition();
+
+	if (pSelected)
+	{
+		nSelection = pSelected->GetSelection();
+		nActualPhrase = pSegment->FindFromPosition(pSelected->GetOffset(nSelection), TRUE);
+	}
+	if (nActualPhrase == -1)
+	{
+		// nothing within, check if there is phrase
+		if (pSegment->GetOffsetSize() > 0)
+		{
+			// there is phrase, so the segment must be below the first phrase
+			pSegment->SelectSegment(*pDoc, 0); // select first phrase
+			// playback below start cursor
+			SetStartCursorPosition(0);
+			SetStopCursorPosition(pSegment->GetOffset(0));
+		}
+		else
+		{
+			// there is no gloss, playback the whole file
+			OnPlaybackFile();
+			return pDoc->GetDataSize();
+		}
+	}
+	else
+	{
+		if (pSegment->GetSelection()==nActualPhrase)
+		{
+			pSegment->SelectSegment(*pDoc, -1);
+		}
+		pSegment->SelectSegment(*pDoc, nActualPhrase);
+	}
+
+	DWORD dwReturn = GetStopCursorPosition() - GetStartCursorPosition();
+
+	// playback
+	OnPlaybackCursors();
+
+	pSegment->SelectSegment(*pDoc, -1);
+
+	// set back actual segment
+	if (nSelection != -1)
+	{
+		// Select segment (do not toggle off.)
+		if (pSelected->GetSelection()!=nSelection)
+		{
+			pSelected->SelectSegment(*pDoc, nSelection);
+		}
+	}
+	// return cursors
+	SetStartCursorPosition(dwStart);
+	SetStopCursorPosition(dwStop);
+
+	return dwReturn;
+}
+
 // SDM 1.5Test10.2
 /***************************************************************************/
 // CSaView::OnPlaybackSlow Slowly playback between cursors
@@ -3768,3 +3838,4 @@ void CSaView::SetScrollRange(int nBar, int nMinPos, int nMaxPos, BOOL bRedraw)
 		CView::SetScrollRange(nBar, nMinPos, nMaxPos, bRedraw);
 	}
 }
+

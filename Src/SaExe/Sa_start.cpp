@@ -42,11 +42,11 @@ static char BASED_CODE THIS_FILE[] = __FILE__;
 // RLJ - April 14, 2000
 
 BEGIN_MESSAGE_MAP(CStartModeDlg, CDialog)
-  //{{AFX_MSG_MAP(CStartModeDlg)
-  ON_BN_CLICKED(ID_START_MODE_RECORD, OnStartModeRecord)
-  ON_BN_CLICKED(ID_CLOSE, OnCloseButton)
-  ON_LBN_DBLCLK(IDC_RECENTLIST, OnDblclkRecentlist)
-  ON_BN_CLICKED(ID_STARTMODE_OK, OnOk)
+	//{{AFX_MSG_MAP(CStartModeDlg)
+	ON_BN_CLICKED(ID_START_MODE_RECORD, OnStartModeRecord)
+	ON_BN_CLICKED(ID_CLOSE, OnCloseButton)
+	ON_LBN_DBLCLK(IDC_RECENTLIST, OnDblclkRecentlist)
+	ON_BN_CLICKED(ID_STARTMODE_OK, OnOk)
 	ON_COMMAND(IDC_PLAY, OnPlay)
 	ON_LBN_SELCHANGE(IDC_RECENTLIST, OnSelchangeRecentlist)
 	ON_BN_CLICKED(IDC_STOP, OnStop)
@@ -57,21 +57,21 @@ END_MESSAGE_MAP()
 //CStartModeDlg::CStartModeDlg(CWnd* pParent /*=NULL*/)
 CStartModeDlg::CStartModeDlg(CWnd* pParent) : CDialog(CStartModeDlg::IDD, pParent)
 {
-  //{{AFX_DATA_INIT(CStartModeDlg)
-  m_nDontShowAgain = FALSE;
-  m_bShowDontShowAgainOption = TRUE;
-  m_nDataMode = -1;
-  //}}AFX_DATA_INIT
+	//{{AFX_DATA_INIT(CStartModeDlg)
+	m_nDontShowAgain = FALSE;
+	m_bShowDontShowAgainOption = TRUE;
+	m_nDataMode = -1;
+	//}}AFX_DATA_INIT
 }
 
 void CStartModeDlg::DoDataExchange(CDataExchange* pDX)
 {
-  CDialog::DoDataExchange(pDX);
-  //{{AFX_DATA_MAP(CStartModeDlg)
-  DDX_Control(pDX, IDC_RECENTLIST, m_lbRecentFiles);
-  DDX_Check(pDX, IDC_STARTMODE_DONTSHOW, m_nDontShowAgain);
-  DDX_Radio(pDX, IDC_STARTMODE_TEMPLATE, m_nDataMode);
-  //}}AFX_DATA_MAP
+	CDialog::DoDataExchange(pDX);
+	//{{AFX_DATA_MAP(CStartModeDlg)
+	DDX_Control(pDX, IDC_RECENTLIST, m_lbRecentFiles);
+	DDX_Check(pDX, IDC_STARTMODE_DONTSHOW, m_nDontShowAgain);
+	DDX_Radio(pDX, IDC_STARTMODE_TEMPLATE, m_nDataMode);
+	//}}AFX_DATA_MAP
 }
 
 
@@ -82,145 +82,145 @@ void CStartModeDlg::DoDataExchange(CDataExchange* pDX)
 //****************************************************************
 BOOL CStartModeDlg::OnInitDialog()
 {
-  CDialog::OnInitDialog();
-  // center dialog on framewindow
-  CenterWindow();
+	CDialog::OnInitDialog();
+	// center dialog on framewindow
+	CenterWindow();
 
-  //**************************************************
-  // Add the more item to the MRU list and initialize
-  // the list box so the first item is current.
-  //**************************************************
-  m_lbRecentFiles.AddString(_T("More Files..."));
-  m_lbRecentFiles.SetCurSel(0);
+	//**************************************************
+	// Add the more item to the MRU list and initialize
+	// the list box so the first item is current.
+	//**************************************************
+	m_lbRecentFiles.AddString(_T("More Files..."));
+	m_lbRecentFiles.SetCurSel(0);
 
-  //**************************************************
-  // Fill the MRU list.
-  //**************************************************
-  CSaApp* pApp = (CSaApp*)AfxGetApp();
+	//**************************************************
+	// Fill the MRU list.
+	//**************************************************
+	CSaApp* pApp = (CSaApp*)AfxGetApp();
 
-  CSaString workDir;
-  int     dx=0;
-  CDC*    pDC = m_lbRecentFiles.GetDC();
-  int nOldMapMode = pDC->SetMapMode(MM_TEXT);
-  CFont *pOldFont = pDC->SelectObject(m_lbRecentFiles.GetFont());
-  TEXTMETRIC tm;
-  pDC->GetTextMetrics(&tm);
-  // get coordinates of static text control
-  CRect rWnd;
-  m_lbRecentFiles.GetClientRect(rWnd);
-  // calculate number of characters possible to display and limit the string
-  int nChars = (rWnd.right / tm.tmAveCharWidth * 8 / 10); // experience values
-  for (int i = 0; i < _AFX_MRU_MAX_COUNT; i++)
-  {
-    CFileStatus status;
+	CSaString workDir;
+	int     dx=0;
+	CDC*    pDC = m_lbRecentFiles.GetDC();
+	int nOldMapMode = pDC->SetMapMode(MM_TEXT);
+	CFont *pOldFont = pDC->SelectObject(m_lbRecentFiles.GetFont());
+	TEXTMETRIC tm;
+	pDC->GetTextMetrics(&tm);
+	// get coordinates of static text control
+	CRect rWnd;
+	m_lbRecentFiles.GetClientRect(rWnd);
+	// calculate number of characters possible to display and limit the string
+	int nChars = (rWnd.right / tm.tmAveCharWidth * 8 / 10); // experience values
+	for (int i = 0; i < _AFX_MRU_MAX_COUNT; i++)
+	{
+		CFileStatus status;
 
-    pApp->GetMRUFilePath(i,workDir);
-    if ((workDir.GetLength() > 0)  && CFile::GetStatus(workDir, status))
-    {
+		pApp->GetMRUFilePath(i,workDir);
+		if ((workDir.GetLength() > 0)  && CFile::GetStatus(workDir, status))
+		{
 			if (workDir.GetLength() > nChars) // file path is too long
 			{
 				CSaString szRightPath = workDir.Right(nChars - 6);
 				szRightPath = szRightPath.Right(szRightPath.GetLength() - szRightPath.Find(_T("\\")));
 				workDir = workDir.Left(3) + "..." + szRightPath; // drive...rest
 			}
-      m_lbRecentFiles.AddString(workDir);
-      CSize sz = pDC->GetTextExtent(workDir);
+			m_lbRecentFiles.AddString(workDir);
+			CSize sz = pDC->GetTextExtent(workDir);
 
-      if (sz.cx > dx)
-        dx = sz.cx;
-    }
+			if (sz.cx > dx)
+				dx = sz.cx;
+		}
 
-  }
-  pDC->SelectObject(pOldFont);
-  pDC->SetMapMode(nOldMapMode);
-  m_lbRecentFiles.ReleaseDC(pDC);
+	}
+	pDC->SelectObject(pOldFont);
+	pDC->SetMapMode(nOldMapMode);
+	m_lbRecentFiles.ReleaseDC(pDC);
 
-  // Set the horizontal extent so every character of all strings 
-  // can be scrolled to.
-  m_lbRecentFiles.SetHorizontalExtent(dx + 10);
+	// Set the horizontal extent so every character of all strings 
+	// can be scrolled to.
+	m_lbRecentFiles.SetHorizontalExtent(dx + 10);
 
-  //**************************************************
-  // Remove the ugly default Win 3.1 bold attribute
-  // on several of the static controls.
-  //**************************************************
-  LOGFONT logFont;
-  CFont* pFont = GetDlgItem(IDC_STATIC1)->GetFont();  // get the standard font
-  pFont->GetObject(sizeof(LOGFONT), (void*)&logFont); // fill up logFont
-  logFont.lfWeight = FW_NORMAL;                       // make font not bold
-  m_Font.CreateFontIndirect(&logFont);                // create the modified font
+	//**************************************************
+	// Remove the ugly default Win 3.1 bold attribute
+	// on several of the static controls.
+	//**************************************************
+	LOGFONT logFont;
+	CFont* pFont = GetDlgItem(IDC_STATIC1)->GetFont();  // get the standard font
+	pFont->GetObject(sizeof(LOGFONT), (void*)&logFont); // fill up logFont
+	logFont.lfWeight = FW_NORMAL;                       // make font not bold
+	m_Font.CreateFontIndirect(&logFont);                // create the modified font
 
-  GetDlgItem(IDC_STATIC1)->SetFont(&m_Font);
-  GetDlgItem(IDC_STATIC2)->SetFont(&m_Font);
-  GetDlgItem(IDC_STATIC3)->SetFont(&m_Font);
-  GetDlgItem(IDC_STATIC4)->SetFont(&m_Font);
+	GetDlgItem(IDC_STATIC1)->SetFont(&m_Font);
+	GetDlgItem(IDC_STATIC2)->SetFont(&m_Font);
+	GetDlgItem(IDC_STATIC3)->SetFont(&m_Font);
+	GetDlgItem(IDC_STATIC4)->SetFont(&m_Font);
 
-  if (!m_bShowDontShowAgainOption)
-    GetDlgItem(IDC_STARTMODE_DONTSHOW)->ShowWindow(SW_HIDE);
+	if (!m_bShowDontShowAgainOption)
+		GetDlgItem(IDC_STARTMODE_DONTSHOW)->ShowWindow(SW_HIDE);
 
-  //**************************************************
-  // Get whether or not the user has specified a
-  // permanent default view template.
-  //**************************************************
-  BOOL bEnableUserSpec = ((CMainFrame*)AfxGetMainWnd())->DefaultIsValid();
+	//**************************************************
+	// Get whether or not the user has specified a
+	// permanent default view template.
+	//**************************************************
+	BOOL bEnableUserSpec = ((CMainFrame*)AfxGetMainWnd())->DefaultIsValid();
 
-  //**************************************************
-  // If they have not and the current data mode is
-  // User Specified, then change the data mode to
-  // Phonetic.
-  //**************************************************
-  if (m_nDataMode == 0 && !bEnableUserSpec)
-  {
-    m_nDataMode = 1;
-    UpdateData(FALSE);
-  }
+	//**************************************************
+	// If they have not and the current data mode is
+	// User Specified, then change the data mode to
+	// Phonetic.
+	//**************************************************
+	if (m_nDataMode == 0 && !bEnableUserSpec)
+	{
+		m_nDataMode = 1;
+		UpdateData(FALSE);
+	}
 
-  //**************************************************
-  // Determine whether or not the User Specified
-  // radio button should be enabled. Don't enable it
-  // if the user hasn't previously specified a
-  // permanent default layout and graph list (i.e.
-  // under Tools/Start Options).
-  //**************************************************
-  GetDlgItem(IDC_STARTMODE_TEMPLATE)->EnableWindow(bEnableUserSpec);
-  GetDlgItem(IDC_STATIC1)->EnableWindow(bEnableUserSpec);
-  GetDlgItem(IDC_PLAY)->EnableWindow(FALSE);
+	//**************************************************
+	// Determine whether or not the User Specified
+	// radio button should be enabled. Don't enable it
+	// if the user hasn't previously specified a
+	// permanent default layout and graph list (i.e.
+	// under Tools/Start Options).
+	//**************************************************
+	GetDlgItem(IDC_STARTMODE_TEMPLATE)->EnableWindow(bEnableUserSpec);
+	GetDlgItem(IDC_STATIC1)->EnableWindow(bEnableUserSpec);
+	GetDlgItem(IDC_PLAY)->EnableWindow(FALSE);
 
-  return TRUE;  // return TRUE  unless you set the focus to a control
+	return TRUE;  // return TRUE  unless you set the focus to a control
 }
 
 //****************************************************************
 //****************************************************************
 void CStartModeDlg::OnStartModeRecord()
 {
-  if (!Cleanup()) return;
-  // create new file and launch recorder
-  (CMainFrame*)AfxGetMainWnd()->PostMessage(WM_COMMAND, ID_FILE_RECORD, 0L);
-  CDialog::OnOK();
+	if (!Cleanup()) return;
+	// create new file and launch recorder
+	(CMainFrame*)AfxGetMainWnd()->PostMessage(WM_COMMAND, ID_FILE_RECORD, 0L);
+	CDialog::OnOK();
 }
 
 //****************************************************************
 //****************************************************************
 void CStartModeDlg::OnCloseButton()
 {
-  if (!Cleanup()) return;
-  CDialog::OnOK();
+	if (!Cleanup()) return;
+	CDialog::OnOK();
 }
 
 //****************************************************************
 //****************************************************************
 bool CStartModeDlg::Cleanup()
 {
-  //**************************************************
-  // Enable this radio button first or UpdateData
-  // will bomb.
-  //**************************************************
-  //kg why is this needed?
-  //  GetDlgItem(IDC_STARTMODE_TEMPLATE)->EnableWindow(TRUE);
+	//**************************************************
+	// Enable this radio button first or UpdateData
+	// will bomb.
+	//**************************************************
+	//kg why is this needed?
+	//  GetDlgItem(IDC_STARTMODE_TEMPLATE)->EnableWindow(TRUE);
 
-  if (!UpdateData(TRUE)) return false;
-  ((CMainFrame*)AfxGetMainWnd())->SetShowStartupDlg(!m_nDontShowAgain);
-  ((CMainFrame*)AfxGetMainWnd())->SetStartDataMode(m_nDataMode);
-  return true;
+	if (!UpdateData(TRUE)) return false;
+	((CMainFrame*)AfxGetMainWnd())->SetShowStartupDlg(!m_nDontShowAgain);
+	((CMainFrame*)AfxGetMainWnd())->SetStartDataMode(m_nDataMode);
+	return true;
 }
 
 //****************************************************************
@@ -228,42 +228,42 @@ bool CStartModeDlg::Cleanup()
 //****************************************************************
 void CStartModeDlg::OnDblclkRecentlist()
 {
-  UINT nOpenID = ID_FILE_OPEN;
-  int nIndex = m_lbRecentFiles.GetCurSel();
-  CMainFrame* pMainWnd = (CMainFrame*)AfxGetMainWnd();
+	UINT nOpenID = ID_FILE_OPEN;
+	int nIndex = m_lbRecentFiles.GetCurSel();
+	CMainFrame* pMainWnd = (CMainFrame*)AfxGetMainWnd();
 
-  if (!Cleanup()) return;
+	if (!Cleanup()) return;
 
-  switch(m_nDataMode)
-  {
-    case 0: nOpenID = ID_FILE_OPEN;                    break;
-    case 1: nOpenID = ID_FILE_OPENAS_PHONETICANALYSIS; break;
-    case 2: nOpenID = ID_FILE_OPENAS_MUSICANALYSIS;    break;
-  }
+	switch(m_nDataMode)
+	{
+	case 0: nOpenID = ID_FILE_OPEN;                    break;
+	case 1: nOpenID = ID_FILE_OPENAS_PHONETICANALYSIS; break;
+	case 2: nOpenID = ID_FILE_OPENAS_MUSICANALYSIS;    break;
+	}
 
-  if (nIndex == 0)
-  {
-    pMainWnd->PostMessage(WM_COMMAND, nOpenID, 0L);
-  }
-  else
-  {
-    CSaApp* pApp = ((CSaApp *)AfxGetApp());
-      
-    pApp->SetOpenAsID(nOpenID);
+	if (nIndex == 0)
+	{
+		pMainWnd->PostMessage(WM_COMMAND, nOpenID, 0L);
+	}
+	else
+	{
+		CSaApp* pApp = ((CSaApp *)AfxGetApp());
+
+		pApp->SetOpenAsID(nOpenID);
 
 		CSaString szFile;
 		CFileStatus status;
 		for (int i = 0; i < nIndex; i++)
 		{
-      pApp->GetMRUFilePath(i,szFile);
+			pApp->GetMRUFilePath(i,szFile);
 			if (!CFile::GetStatus(szFile, status))
 				nIndex++;
 		}
 
 		pMainWnd->PostMessage(WM_COMMAND, ID_FILE_MRU_FIRST + nIndex - 1, 0L);
-  }
+	}
 
-  CDialog::OnOK();
+	CDialog::OnOK();
 }
 
 //****************************************************************
@@ -271,7 +271,7 @@ void CStartModeDlg::OnDblclkRecentlist()
 //****************************************************************
 void CStartModeDlg::OnOk()
 {
-  OnDblclkRecentlist();
+	OnDblclkRecentlist();
 }
 
 //****************************************************************
@@ -279,17 +279,17 @@ void CStartModeDlg::OnOk()
 //****************************************************************
 void CStartModeDlg::OnPlay() 
 {
-  int nIndex = m_lbRecentFiles.GetCurSel();
+	int nIndex = m_lbRecentFiles.GetCurSel();
 
-  if (nIndex > 0)
-  {
+	if (nIndex > 0)
+	{
 		CSaApp* pApp = (CSaApp*)AfxGetApp();
-    CSaString file;
- 
+		CSaString file;
+
 		pApp->GetMRUFilePath(nIndex - 1,file);
 
-    PlaySound(LPCTSTR(file), 0, SND_ASYNC | SND_NODEFAULT | SND_FILENAME );
-  }
+		PlaySound(LPCTSTR(file), 0, SND_ASYNC | SND_NODEFAULT | SND_FILENAME );
+	}
 }
 
 //****************************************************************
@@ -297,7 +297,7 @@ void CStartModeDlg::OnPlay()
 //****************************************************************
 void CStartModeDlg::OnStop() 
 {
-  PlaySound(NULL, 0, SND_PURGE | SND_NODEFAULT );	
+	PlaySound(NULL, 0, SND_PURGE | SND_NODEFAULT );	
 }
 
 //****************************************************************
@@ -305,25 +305,25 @@ void CStartModeDlg::OnStop()
 //****************************************************************
 void CStartModeDlg::OnSelchangeRecentlist() 
 {
-  int nIndex = m_lbRecentFiles.GetCurSel();
+	int nIndex = m_lbRecentFiles.GetCurSel();
 
-  OnStop();
+	OnStop();
 
-  CWnd *pWnd = GetDlgItem(IDC_PLAY);
-  if (!pWnd)
-    return;
+	CWnd *pWnd = GetDlgItem(IDC_PLAY);
+	if (!pWnd)
+		return;
 
 	CSaApp* pApp = (CSaApp*)AfxGetApp();
-  CSaString file;
+	CSaString file;
 	if (nIndex > 0)
 		pApp->GetMRUFilePath(nIndex - 1,file);
 
-  CFileStatus status;
+	CFileStatus status;
 
-  if ((nIndex > 0) && CFile::GetStatus(LPCTSTR(file), status))
-    pWnd->EnableWindow();
-  else
-    pWnd->EnableWindow(FALSE);
+	if ((nIndex > 0) && CFile::GetStatus(LPCTSTR(file), status))
+		pWnd->EnableWindow();
+	else
+		pWnd->EnableWindow(FALSE);
 
 }
 

@@ -56,6 +56,7 @@
 #include "CSaString.h"
 #include "resource.h"       // main symbols
 #include "sa_dlwnd.h"
+#include <afxmt.h>
 
 #import "speechtoolsutils.tlb" no_namespace named_guids
 
@@ -91,14 +92,13 @@ class Object_ostream;
 //###########################################################################
 // CSaApp window
 
-#define CSaAppBase CWinApp
-
-class CSaApp : public CSaAppBase
+class CSaApp : public CWinApp
 {
 
 	// Construction/destruction/creation
 public:
 	CSaApp();
+	~CSaApp();
 
 	// Attributes
 private:
@@ -138,43 +138,36 @@ public:
 	static BOOL CSaApp::m_bUseUnicodeEncoding;
 
 private:
-	BOOL CheckForBatchMode(LPTSTR); // check if SA runs in batch mode
-	void CopyClipboardTranscription(const TCHAR* szTempPath);
+	int			CheckForBatchMode(LPTSTR);						// check if SA runs in batch mode
+	void		CopyClipboardTranscription(const TCHAR* szTempPath);
 
 public:
-	void       ExamineCmdLine(LPCTSTR, WPARAM wParam = 0);		// examine the command line
-	void       ErrorMessage(UINT nTextID, LPCTSTR pszText1 = NULL, LPCTSTR pszText2 = NULL);
-	void       Message(UINT nTextID, LPCTSTR pszText1 = NULL, LPCTSTR pszText2 = NULL);
-	void       ErrorMessage(CSaString& szText);
-	void       DisplayMessages();								// displays a stored error message
-	void       SetBatchFileChanged(CSaString, int, CDocument*); // set file changed in batch mode list file
-	int        GetBatchMode() { return m_nBatchMode;} // return application mode (batch or not, exit allowed)
-	void       CancelBatchMode() { if (m_nBatchMode != 0)m_nBatchMode = 3;} // allow SA to exit
-	CDocument* IsFileOpened(const TCHAR* pszFileName); // check is this file already opened
-	bool			 IsDocumentOpened( const CSaDoc * pDoc); // check is this file already opened
-	BOOL       CloseWorkbench(CDocument*); // close an already opened workbench document
-	void       WorkbenchClosed() {m_pWbDoc = NULL;} // signal, that workbench has been closed
-	void       SetWorkbenchPath(CSaString* pszPath); // set the workbenchs document pathname
-	CSaString*   GetWorkbenchPath() {return &m_szWbPath;} // returns a pointer to the workbench pathname
-	int        SaDoPrintDialog(CPrintDialog* pPD, BOOL landscape);
-	BOOL       SaGetPrinterDeviceDefaults(PRINTDLG * pPrintDlg, BOOL landscape);
-	BOOL       IsCreatingNewFile() {return m_bNewDocument;} // return TRUE if file new operation running
-	CDocument* GetWbDoc() {return m_pWbDoc;} // return pointer to workbench document
-	void       SetWbOpenOnExit(BOOL bOpen) { m_bWbOpenOnExit = bOpen;}
-	void       FileReturn(BOOL bHide=TRUE); // return to calling application
-	CWnd*      IsAppRunning();
-	UINT       GetOpenAsID() { return m_OpenAsID;}    // return m_OpenAsID
-	void       SetOpenAsID(UINT OpenAsID) { m_OpenAsID = OpenAsID;}  // set m_OpenAsID
-	void       SetLastClipboardPath(CSaString szPath) { m_szLastClipboardPath = szPath;}
-	void       FileOpen();
-	void GetMRUFilePath( int i, CSaString & buffer) const
-	{
-		buffer.Empty();
-		if (!m_pRecentFileList->GetSize()) // no entries, need to load from registry, this is the MRU list
-			m_pRecentFileList->ReadList();
-		if (i < m_pRecentFileList->GetSize())
-			buffer = (*m_pRecentFileList)[i];
-	};
+	void		ExamineCmdLine(LPCTSTR, WPARAM wParam = 0);		// examine the command line
+	void		ErrorMessage(UINT nTextID, LPCTSTR pszText1 = NULL, LPCTSTR pszText2 = NULL);
+	void		Message(UINT nTextID, LPCTSTR pszText1 = NULL, LPCTSTR pszText2 = NULL);
+	void		ErrorMessage(CSaString& szText);
+	void		DisplayMessages();								// displays a stored error message
+	void		SetBatchFileChanged(CSaString, int, CDocument*);// set file changed in batch mode list file
+	int			GetBatchMode();									// return application mode (batch or not, exit allowed)
+	void		CancelBatchMode();								// allow SA to exit
+	CDocument*	IsFileOpened(const TCHAR* pszFileName);			// check is this file already opened
+	bool		IsDocumentOpened( const CSaDoc * pDoc);			// check is this file already opened
+	BOOL		CloseWorkbench(CDocument*);						// close an already opened workbench document
+	void		WorkbenchClosed() {m_pWbDoc = NULL;}			// signal, that workbench has been closed
+	void		SetWorkbenchPath(CSaString* pszPath);			// set the workbenchs document pathname
+	CSaString*  GetWorkbenchPath() {return &m_szWbPath;}		// returns a pointer to the workbench pathname
+	int			SaDoPrintDialog(CPrintDialog* pPD, BOOL landscape);
+	BOOL		SaGetPrinterDeviceDefaults(PRINTDLG * pPrintDlg, BOOL landscape);
+	BOOL		IsCreatingNewFile() {return m_bNewDocument;}	// return TRUE if file new operation running
+	CDocument*	GetWbDoc() {return m_pWbDoc;}					// return pointer to workbench document
+	void		SetWbOpenOnExit(BOOL bOpen) { m_bWbOpenOnExit = bOpen;}
+	void		FileReturn(BOOL bHide=TRUE);					// return to calling application
+	CWnd*		IsAppRunning();
+	UINT		GetOpenAsID() { return m_OpenAsID;}				// return m_OpenAsID
+	void		SetOpenAsID(UINT OpenAsID) { m_OpenAsID = OpenAsID;}  // set m_OpenAsID
+	void		SetLastClipboardPath(CSaString szPath) { m_szLastClipboardPath = szPath;}
+	void		FileOpen();
+	void		GetMRUFilePath( int i, CSaString & buffer) const;
 
 	// methods for saving the settings and window state.
 	CSaView* pviewActive();
@@ -201,16 +194,13 @@ private:
 
 	// Overrides
 	// ClassWizard generated virtual function overrides
-	//{{AFX_VIRTUAL(CSaApp)
 public:
 	virtual BOOL InitInstance();
 	virtual int ExitInstance();
 	virtual CDocument* OpenDocumentFile(LPCTSTR lpszFileName);
-	//}}AFX_VIRTUAL
 
 protected:
 
-	//{{AFX_MSG(CSaApp)
 	afx_msg void OnAppAbout();
 	afx_msg void OnFileCreate();
 	afx_msg void OnUpdateFileCreate(CCmdUI* pCmdUI);
@@ -241,18 +231,29 @@ protected:
 	afx_msg void OnWorkbenchOpen();
 	afx_msg void OnUpdateWorkbenchOpen(CCmdUI* pCmdUI);
 	afx_msg void OnProcessBatchCommands();
-	//}}AFX_MSG
+
 	DECLARE_MESSAGE_MAP()
 
 	// more methods for saving the settings and window state.
 	CSaView* pviewEnd(UINT uNextOrPrev);
 	CSaView* pviewNeighbor(CSaView* pviewCur, UINT uNextOrPrev);
+
+protected:
+	// methods for handling single instance
+	void InitSingleton();
+	void DestroySingleton();
+	// Creates the instance handler
+	BOOL CreateAsSingleton( LPCTSTR aName);
+	// Callback when the instance is woken up by another
+	virtual void WakeUp( LPCTSTR aCommandLine);
+	// Sleeping thread waiting for activation
+	static UINT Sleeper( CSaApp * aObject);
+	bool IsSAS();
+
+	// Events to signal new instance, and kill thread
+	CEvent * mEvent;
+	CEvent * mSignal;
+	class CSingleInstanceData * mData;
 };
-
-
-/////////////////////////////////////////////////////////////////////////////
-
-//{{AFX_INSERT_LOCATION}}
-// Microsoft Visual C++ will insert additional declarations immediately before the previous line.
 
 #endif // __SA_H__

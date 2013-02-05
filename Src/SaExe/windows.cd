@@ -1,0 +1,60 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="CSaApp" Collapsed="true">
+    <Position X="3.5" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>x6AeCVBCDAcJ4LDSdooFJCmBwUChxdwAMEBhZMWglLw=</HashCode>
+      <FileName>sa.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CWinApp" Collapsed="true">
+    <Position X="3.5" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>57Zg4NIZMRIwEDOIuKSX1AplESlJxcwkSSNipVAHtHc=</HashCode>
+      <FileName>c:\program files (x86)\microsoft visual studio 10.0\vc\atlmfc\include\afxwin.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CSaView" Collapsed="true">
+    <Position X="8" Y="4.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>/eT528d289/f/7fnf/f/34X72//b+8///8///ej+v38=</HashCode>
+      <FileName>SA_View.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CView" Collapsed="true">
+    <Position X="8" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AIKBACQAAEBSEACCmABgjSAAgCQQEISAAAwYKgEoFQA=</HashCode>
+      <FileName>c:\program files (x86)\microsoft visual studio 10.0\vc\atlmfc\include\afxwin.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CMainFrame" Collapsed="true">
+    <Position X="11" Y="4.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>9zZzqsjasY0zWrj8+etdjxbodP4hP66w8M+uiQ6Bdco=</HashCode>
+      <FileName>MainFrm.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CMDIFrameWnd" Collapsed="true">
+    <Position X="11" Y="3" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAKBARwWAAEYASoECAAEgEAQgJBAAARAAwAICAAAAkA=</HashCode>
+      <FileName>c:\program files (x86)\microsoft visual studio 10.0\vc\atlmfc\include\afxwin.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CFrameWnd" Collapsed="true">
+    <Position X="11" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>k0yJUpw3ZFmZ0rrIzxMZ3AwUwfcQUHEOZo56pYUD3rA=</HashCode>
+      <FileName>c:\program files (x86)\microsoft visual studio 10.0\vc\atlmfc\include\afxwin.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CWnd" Collapsed="true">
+    <Position X="9.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>v977//bff7//b//96f/P/f/97/+e33f39uv7/d///7c=</HashCode>
+      <FileName>c:\program files (x86)\microsoft visual studio 10.0\vc\atlmfc\include\afxwin.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

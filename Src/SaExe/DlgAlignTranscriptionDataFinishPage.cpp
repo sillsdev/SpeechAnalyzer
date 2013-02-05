@@ -4,11 +4,15 @@
 #include "stdafx.h"
 #include "DlgAlignTranscriptionDataFinishPage.h"
 #include "DlgAlignTranscriptionDataSheet.h"
+#include "TranscriptionDataSettings.h"
+
+class CSaDoc;
 
 // CDlgAlignTranscriptionDataFinishPage
 
-CDlgAlignTranscriptionDataFinishPage::CDlgAlignTranscriptionDataFinishPage()
-:CPropertyPage(CDlgAlignTranscriptionDataFinishPage::IDD)
+CDlgAlignTranscriptionDataFinishPage::CDlgAlignTranscriptionDataFinishPage( CSaDoc * pSaDoc) : 
+CPropertyPage(CDlgAlignTranscriptionDataFinishPage::IDD),
+m_pSaDoc(pSaDoc)
 {
 }
 
@@ -30,14 +34,26 @@ BOOL CDlgAlignTranscriptionDataFinishPage::OnWizardFinish()
 
 BOOL CDlgAlignTranscriptionDataFinishPage::OnSetActive()
 {
-	CPropertySheet * pSheet = reinterpret_cast<CPropertySheet *>(GetParent());
+
+	CDlgAlignTranscriptionDataSheet * pSheet = GetParent();
 	pSheet->SetWizardButtons(PSWIZB_BACK|PSWIZB_FINISH);
+
+	m_pSaDoc->ApplyTranscriptionChanges(pSheet->GetSettings());
+
 	return CPropertyPage::OnSetActive();
 }
 
 
 LRESULT CDlgAlignTranscriptionDataFinishPage::OnWizardBack()
 {
-	CDlgAlignTranscriptionDataSheet * pSheet = reinterpret_cast<CDlgAlignTranscriptionDataSheet *>(GetParent());
+	CDlgAlignTranscriptionDataSheet * pSheet = GetParent();
+
+	m_pSaDoc->RevertTranscriptionChanges();
+
 	return pSheet->CalculateBack( IDD);
+}
+
+CDlgAlignTranscriptionDataSheet * CDlgAlignTranscriptionDataFinishPage::GetParent() 
+{
+	return reinterpret_cast<CDlgAlignTranscriptionDataSheet *>(((CPropertySheet*)this)->GetParent());
 }
