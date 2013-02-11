@@ -23,7 +23,7 @@ bool isUTF16( BYTE * buffer, std::ios::pos_type length) {
 	//FF FE			UTF-16, little-endian
 	if (length<2) return false;
 	if ((buffer[0]==0xfe)&&(buffer[1]==0xff)) return true;
-	if ((buffer[0]==0xef)&&(buffer[1]==0xfe)) return true;
+	if ((buffer[0]==0xff)&&(buffer[1]==0xfe)) return true;
 	return false;
 }
 
@@ -356,10 +356,15 @@ bool CTextHelper::ImportText( const CSaString & filename, const CSaString & sync
 		length = 0;
 	}
 
+	int start = 0;
+	if ((obuffer[0]==0xfeff)||(obuffer[0]==0xfffe)) {
+		start = 1;
+	}
+
 	// now tokenize the buffer
 	vector<wstring> lines;
 	wstring line;
-	for (int i=0;i<length2;i++) {
+	for (int i=start;i<length2;i++) {
 		wchar_t c = obuffer[i];
 		if ((c==0x0d)||(c==0x0a)) {
 			if (line.size()>0) {

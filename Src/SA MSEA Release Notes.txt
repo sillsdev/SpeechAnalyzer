@@ -1,3 +1,9 @@
+SA - 3.1.0.29 - 2/11/2013
+1) Modified Transcription Editor dialog so that long strings of cause the edit field to scroll vertically.  A scroll bar is now available.
+2) Fixed '0' segment problem.  Code was carrying Unicode BOM in string, causing string compare to fail.
+3) Fixed problems are related to replacing existing segment strings.  Code now longer does 'DeleteContents' before apply TAT changes.
+4) Fixed problem where extra 'undo' was being applied in TAT dialog.
+
 SA - 3.1.0.28 - 2/4/2013
 1) Added 'singleton' feature to SA.  The feature is disabled if SA is launched with Batch mode or as a server.
 2) Added capability to play Phrase List 2 from the transcription editor.

@@ -26,7 +26,7 @@ LANGUAGE LANG_NEUTRAL, SUBLANG_NEUTRAL
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 3,1,0,28
+ FILEVERSION 3,1,0,29
  PRODUCTVERSION 1,0,0,1
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
@@ -44,7 +44,7 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "SIL International"
             VALUE "FileDescription", "SA"
-            VALUE "FileVersion", "v3.1.0.28"
+            VALUE "FileVersion", "v3.1.0.29"
             VALUE "InternalName", "SA"
             VALUE "LegalCopyright", "© 1996-2013 SIL International (MSEA)"
             VALUE "ProductName", "SA"
@@ -1553,7 +1553,7 @@ STYLE DS_SETFONT | WS_CLIPSIBLINGS | WS_CAPTION | WS_SYSMENU
 CAPTION "Transcription Editor"
 FONT 8, "MS Sans Serif", 0, 0, 0x0
 BEGIN
-    EDITTEXT        IDC_INPUTSTRING,5,10,180,52,ES_MULTILINE | ES_AUTOHSCROLL
+    EDITTEXT        IDC_INPUTSTRING,5,10,180,52,ES_MULTILINE | WS_VSCROLL
     PUSHBUTTON      "Wor&d",ID_EDIT_ADD_WORD,10,75,45,12,WS_GROUP
     PUSHBUTTON      "Book&mark",ID_EDIT_ADD_BOOKMARK,10,90,45,12
     PUSHBUTTON      "&Add",ID_EDIT_ADD,70,75,45,12,WS_GROUP
@@ -4128,7 +4128,7 @@ STRINGTABLE
 BEGIN
     IDR_MAINFRAME           "Speech Analyzer"
     IDR_SA_ANNTYPE          "\nSA\nSA Document\nWAV Files (*.wav)\n.wav\nannFileType\nANN File Type"
-    VS_VERSION              "Version 3.1.0.28"
+    VS_VERSION              "Version 3.1.0.29"
     VS_COPYRIGHT            "© 1996-2013 SIL International (MSEA).\nAll Rights Reserved."
     IDR_SA_WBTYPE           "\nWB\nSA Workbench\nWB Files (*.wb)\n.wb\nwbFileType\nWB File Type"
 END

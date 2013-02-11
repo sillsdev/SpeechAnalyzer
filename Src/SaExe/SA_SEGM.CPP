@@ -332,6 +332,74 @@ DWORD CSegment::RemoveNoRefresh( CDocument * )
 	return 0;
 }
 
+/***************************************************************************
+* CSegment::Insert Insert/append an annotation segment
+* Returns FALSE if an error occured. 
+* nDelimiter is not used in this basic version of the function.
+* nIndex index into annotation string
+***************************************************************************/
+BOOL CSegment::SetAt( const CSaString * pszString, bool, DWORD dwStart, DWORD dwDuration) 
+{
+	try 
+	{
+		int nStringLength = pszString->GetLength(); // get the length of the new string
+		if (m_pOffset->GetCount()==0) {
+			ASSERT(m_pDuration->GetCount()==0);
+			ASSERT(m_pAnnotation->GetLength()==0);
+			*m_pAnnotation += *pszString;
+			m_pOffset->InsertAt(0,dwStart,nStringLength);
+			m_pDuration->InsertAt(0,dwDuration,nStringLength);
+		} else {
+			int nIndex = FindOffset( dwStart);
+			if (nIndex>=0) {
+				// index was found
+
+				// remove the existing string
+				// find length of string to delete
+				int nSegmentLength = GetSegmentLength(nIndex);
+				*m_pAnnotation = m_pAnnotation->Left(nIndex) + m_pAnnotation->Right(m_pAnnotation->GetLength() - nSegmentLength - nIndex);
+				RemoveAt( nIndex, nSegmentLength);
+
+				// now insert the new String
+				if (nIndex < m_pAnnotation->GetLength()) 
+				{ 
+					// insert
+					*m_pAnnotation = m_pAnnotation->Left(nIndex) + *pszString + m_pAnnotation->Right(m_pAnnotation->GetLength() - nIndex);
+				}
+				else
+				{
+					*m_pAnnotation += *pszString; // append
+				}
+				m_pOffset->InsertAt(nIndex,dwStart,nStringLength);
+				m_pDuration->InsertAt(nIndex,dwDuration,nStringLength);
+			} else {
+				// index was at end of string
+				nIndex = m_pOffset->GetCount();
+				if (nIndex < m_pAnnotation->GetLength()) 
+				{ 
+					// insert
+					*m_pAnnotation = m_pAnnotation->Left(nIndex) + *pszString + m_pAnnotation->Right(m_pAnnotation->GetLength() - nIndex);
+				}
+				else
+				{
+					*m_pAnnotation += *pszString; // append
+				}
+				m_pOffset->InsertAt(nIndex,dwStart,nStringLength);
+				m_pDuration->InsertAt(nIndex,dwDuration,nStringLength);
+			}
+		}
+	} 
+	catch(CMemoryException e) 
+	{
+		// memory allocation error
+		ErrorMessage(IDS_ERROR_MEMALLOC);
+		return FALSE;
+	}
+	int n2 = m_pAnnotation->GetLength();
+	ASSERT(m_pAnnotation->GetLength()==m_pOffset->GetSize());
+	ASSERT(m_pAnnotation->GetLength()==m_pDuration->GetSize());
+	return TRUE;
+}
 
 /***************************************************************************
 * CSegment::Insert Insert/append an annotation segment
@@ -485,6 +553,7 @@ int CSegment::FindOffset(DWORD dwOffset) const {
 // function returns -1.
 /***************************************************************************/
 int CSegment::FindStop(DWORD dwStop) const {
+
 	int nLoop = GetOffsetSize() - 1;
 
 	if (nLoop < 0) {
@@ -1274,6 +1343,43 @@ CTextSegment::~CTextSegment()
 // Returns FALSE if an error occured. If the pointer to the string is NULL
 // there will be no string added.
 /***************************************************************************/
+BOOL CTextSegment::SetAt( const CSaString* pszString, bool delimiter, DWORD dwStart, DWORD dwDuration)
+{
+	// prepare delimiter
+	CSaString szDelimiter = WORD_DELIMITER;
+	if (delimiter) 
+	{
+		szDelimiter.SetAt(0, TEXT_DELIMITER);
+	}
+
+	try 
+	{
+		int nIndex = FindOffset( dwStart);
+		ASSERT(nIndex>=0);
+		if (pszString!=NULL) 
+		{
+			m_pTexts->SetAtGrow(nIndex, szDelimiter + *pszString);
+		}
+		else 
+		{
+			m_pTexts->SetAtGrow(nIndex, szDelimiter);
+		}
+		CSegment::SetAt( nIndex, dwStart, dwDuration);
+	} 
+	catch(CMemoryException e) 
+	{
+		// memory allocation error
+		ErrorMessage(IDS_ERROR_MEMALLOC);
+		return FALSE;
+	}
+	return TRUE;
+}
+
+/***************************************************************************/
+// CTextSegment::Insert Insert/append a text segment
+// Returns FALSE if an error occured. If the pointer to the string is NULL
+// there will be no string added.
+/***************************************************************************/
 BOOL CTextSegment::Insert(int nIndex, const CSaString* pszString, bool delimiter, DWORD dwStart, DWORD dwDuration)
 {
 	// prepare delimiter
@@ -1690,6 +1796,35 @@ void CTextSegment::Serialize(CArchive& ar)
 //SDM 1.5Test8.1
 /////////////////////////////////////////////////////////////////////////////
 // CDependentTextSegment helper functions
+
+/***************************************************************************/
+// CDependentTextSegment::Insert Insert/append a text segment
+// Returns FALSE if an error occured. If the pointer to the string is NULL
+// there will be no string added.
+//
+// When inserting beyond the end of the current list, nIndex is the next
+// available index.  For example if we are inserting at the 4 gloss segment
+// but only reference segments 0 and 1 exist, then the next index is 2, not 3.
+/***************************************************************************/
+BOOL CDependentTextSegment::SetAt( const CSaString* pszString, bool, DWORD dwStart, DWORD dwDuration) {
+	try 
+	{
+		if ((pszString) && (pszString->GetLength())) 
+		{
+			int nIndex = FindOffset( dwStart);
+			ASSERT(nIndex>=0);
+			m_pTexts->SetAtGrow(nIndex, *pszString);
+			CSegment::SetAt(nIndex,dwStart,dwDuration);
+		}
+	} 
+	catch (CMemoryException e) 
+	{
+		// memory allocation error
+		ErrorMessage(IDS_ERROR_MEMALLOC);
+		return FALSE;
+	}
+	return TRUE;
+}
 
 /***************************************************************************/
 // CDependentTextSegment::Insert Insert/append a text segment
@@ -2639,7 +2774,7 @@ int CMusicPhraseSegment::CheckPosition(CSaDoc* pDoc, DWORD dwStart,DWORD dwStop,
 /***************************************************************************/
 CGlossSegment::CGlossSegment(int index, int master) : CTextSegment(index,master)
 {
-	m_pPOS = new CStringArray;//SDM 1.5Test8.1
+	m_pPOS = new CStringArray();
 }
 
 /***************************************************************************/
@@ -2647,7 +2782,10 @@ CGlossSegment::CGlossSegment(int index, int master) : CTextSegment(index,master)
 /***************************************************************************/
 CGlossSegment::~CGlossSegment()
 {
-	if (m_pPOS) delete m_pPOS;//SDM 1.5Test8.1
+	if (m_pPOS!=NULL) {
+		delete m_pPOS;
+		m_pPOS = NULL;
+	}
 }
 
 /***************************************************************************/
@@ -2711,7 +2849,6 @@ DWORD CGlossSegment::RemoveNoRefresh(CDocument* pDoc)
 {
 	// change the segment arrays
 	m_pPOS->RemoveAt(m_nSelection, 1);
-
 	return CTextSegment::RemoveNoRefresh(pDoc);
 }
 
@@ -2723,6 +2860,29 @@ void CGlossSegment::DeleteContents()
 {
 	m_pPOS->RemoveAll();
 	CTextSegment::DeleteContents(); // call the base class to delete positions
+}
+
+//SDM 1.5Test8.1
+/***************************************************************************/
+// CGlossSegment::Insert Insert/append a gloss segment
+// Returns FALSE if an error occured. If the pointer to the string is NULL
+// there will be no string added.
+/***************************************************************************/
+BOOL CGlossSegment::SetAt( const CSaString * pszString, bool delimiter, DWORD dwStart, DWORD dwDuration)
+{
+	int nIndex = FindOffset( dwStart);
+	ASSERT(nIndex>=0);
+	try 
+	{
+		m_pPOS->SetAtGrow( nIndex, NULL);
+	} 
+	catch(CMemoryException e) 
+	{
+		// memory allocation error
+		ErrorMessage(IDS_ERROR_MEMALLOC);
+		return FALSE;
+	}
+	return CTextSegment::SetAt( pszString, delimiter, dwStart, dwDuration);
 }
 
 //SDM 1.5Test8.1
@@ -2745,7 +2905,6 @@ BOOL CGlossSegment::Insert(int nIndex, const CSaString * pszString, bool delimit
 	}
 	return CTextSegment::Insert(nIndex, pszString, delimiter, dwStart, dwDuration);
 }
-
 
 //SDM 1.5Test8.1
 void CGlossSegment::Serialize(CArchive& ar)
@@ -3093,6 +3252,12 @@ const CStringArray* CSegment::GetTexts()
 DWORD CSegment::GetDurationAt(int index) const 
 {
 	return m_pDuration->GetAt(index);
+}
+
+void CSegment::SetAt(int index, DWORD offset, DWORD duration) 
+{
+	m_pOffset->SetAtGrow(index,offset);
+	m_pDuration->SetAtGrow(index,duration);
 }
 
 void CSegment::InsertAt(int index, DWORD offset, DWORD duration) 

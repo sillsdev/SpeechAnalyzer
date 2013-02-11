@@ -7309,7 +7309,7 @@ IMPLEMENT_DYNCREATE(CSaDoc, CUndoRedoDoc)
 		Undo(FALSE);
 		POSITION pos = GetFirstViewPosition();
 		CSaView* pView = (CSaView*)GetNextView(pos);
-		pView->SendMessage(WM_COMMAND,ID_EDIT_UNDO,0);
+		//pView->SendMessage(WM_COMMAND,ID_EDIT_UNDO,0);
 		pView->RefreshGraphs();
 		if (m_nTranscriptionApplicationCount>0) 
 		{
@@ -8447,28 +8447,8 @@ IMPLEMENT_DYNCREATE(CSaDoc, CUndoRedoDoc)
 			return;
 		}
 
-		if (td.m_bPhonetic) 
-		{
-			pPhonetic->DeleteContents();
-		}
-		if (td.m_bPhonemic) 
-		{
-			pPhonemic->DeleteContents();
-		}
-		if (td.m_bOrthographic) 
-		{
-			pOrthographic->DeleteContents();
-		}
-		if (td.m_bGloss) 
-		{
-			pGloss->DeleteContents();
-		}
-
 		const CStringArray * pReferences = pReference->GetTexts();
 
-		int pmidx = 0;
-		int pnidx = 0;
-		int oidx = 0;
 		for (int i=0;i<pReference->GetOffsetSize();i++) 
 		{
 			CSaString thisRef = pReferences->GetAt(i);
@@ -8487,26 +8467,23 @@ IMPLEMENT_DYNCREATE(CSaDoc, CUndoRedoDoc)
 					if (td.m_bPhonetic) 
 					{
 						CSaString text = *pnit;
-						pPhonetic->Insert(pnidx,&text,false,start,duration);
-						pnidx += text.GetLength();
+						pPhonetic->SetAt(&text,false,start,duration);
 					}
 					if (td.m_bPhonemic) 
 					{
 						CSaString text = *pmit;
-						pPhonemic->Insert(pmidx,&text,false,start,duration);
-						pmidx += text.GetLength();
+						pPhonemic->SetAt(&text,false,start,duration);
 					}
 					if (td.m_bOrthographic) 
 					{
 						CSaString text = *oit;
-						pOrthographic->Insert(oidx,&text,false,start,duration);
-						oidx += text.GetLength();
+						pOrthographic->SetAt(&text,false,start,duration);
 					}
 					if (td.m_bGloss) 
 					{
 						CSaString text = *git;
 						if (text[0]==WORD_DELIMITER) text = text.Mid(1);
-						pGloss->Insert(i,&text,false,start,duration);
+						pGloss->SetAt(&text,false,start,duration);
 					}
 				}
 				if (td.m_bPhonetic) pnit++;

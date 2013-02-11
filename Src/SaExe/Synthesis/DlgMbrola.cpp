@@ -143,13 +143,13 @@ static void CurveFitPitch(CSaDoc *pDoc, double fSizeFactor, DWORD dwBeginWAV, DW
 }
 
 
-struct DictionaryList
+struct SDictionaryList
 {
 	TCHAR* description;
 	char* path;
 };
 
-DictionaryList Dictionary[] =
+SDictionaryList Dictionary[] =
 {
 	_T("American English - Male"), "c:\\mbrola\\voices\\us2", // filename placeholder
 	_T("American English - Female"), "c:\\mbrola\\voices\\us1",

@@ -2347,15 +2347,15 @@ BOOL CSaView::GraphTypeEnabled(int nID, BOOL bIncludeCtrlKeyCheck)
 	return bTest;
 }
 
-struct GraphTypeInfo
+struct SGraphTypeInfo
 {
 	int nID;
 	BOOL bIncludeCtrlKeyCheck;
 } ;
 
-static const GraphTypeInfo* GetGraphTypeInfo(int nID)
+static const SGraphTypeInfo* GetGraphTypeInfo(int nID)
 {
-	static const GraphTypeInfo kGraphTypeInfo[] = 
+	static const SGraphTypeInfo kGraphTypeInfo[] = 
 	{
 		// nID              bCtrl
 		{  IDD_3D,          FALSE },
@@ -2414,7 +2414,7 @@ void CSaView::OnChangeGraph(UINT nID)
 /***************************************************************************/
 void CSaView::OnUpdateChangeGraph(CCmdUI* pCmdUI)
 {
-	const GraphTypeInfo *pInfo = GetGraphTypeInfo(pCmdUI->m_nID);
+	const SGraphTypeInfo *pInfo = GetGraphTypeInfo(pCmdUI->m_nID);
 	ASSERT(pInfo);
 
 	BOOL bSelected = GraphIDincluded(pCmdUI->m_nID);
