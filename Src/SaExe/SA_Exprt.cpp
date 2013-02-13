@@ -1,6 +1,7 @@
 /////////////////////////////////////////////////////////////////////////////
 // sa_exprt.cpp:
-// Implementation of the CExportSFM
+// Implementation of the CExportFW
+//						 CExportSFM
 //                       CExportXML
 //                       CExportTabbed class.
 // Author: Steve MacLean
@@ -102,8 +103,6 @@ static CSaString GetExportFilename(CSaString szTitle, CSaString szFilter,TCHAR *
 // CExportXML dialog
 
 BEGIN_MESSAGE_MAP(CExportXML, CExportBasicDialog)
-	//{{AFX_MSG_MAP(CExportXML)
-	//}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
 // TRE 01-31-2001 Broke the header in two for size restrictions
@@ -539,12 +538,167 @@ void CExportXML::OnOK()
 /////////////////////////////////////////////////////////////////////////////
 // CExportSFM dialog
 
-BEGIN_MESSAGE_MAP(CExportSFM, CExportBasicDialog)
-	//{{AFX_MSG_MAP(CExportSFM)
-	//}}AFX_MSG_MAP
+BEGIN_MESSAGE_MAP(CExportFW, CExportBasicDialog)
 END_MESSAGE_MAP()
 
+/*
+\name name of file
+\wav  Audio FileName
+\ph   Phonetic text
+\tn   Tone
+\pm   Phonemic text
+\or   Orthographic
+\gl   Gloss
+\pos  Part of Speech
+\ref  Reference
+\ft   Free Translation
+\np   Number of Phones
+\nw   Number of Words
 
+\od   Original Date (Creation Time)
+\lud  Date Last updated
+\size File size in bytes
+\of   Original Format
+\samp Number of Samples
+\len  Length
+\freq Sampling Frequency
+\bw   Bandwidth
+\hpf  HighPass Filter
+\bits Storage Format
+\qsize Quantization Size
+
+\ln   Language Name
+\dlct Dialect
+\cnt  Country
+\spkr Speaker Name
+\gen  Gender
+\id   Ethnologue ID number
+\fam  Family
+\reg  Region
+\nbr  Notebook Reference
+\tr   Transcriber
+\desc Description
+*/
+
+/////////////////////////////////////////////////////////////////////////////
+// CExportSFM message handlers
+
+void CExportFW::OnOK() {
+
+	if ((m_szFileName = GetExportFilename(m_szDocTitle, _T("Standard Format (*.sfm) |*.sfm||"),_T("sfm"))) == "") return;
+
+	UpdateData(TRUE);
+
+	// process all flags
+	if (m_bAllAnnotations) {
+		m_bReference = m_bPhonetic = m_bTone = m_bPhonemic = m_bOrtho = m_bGloss = m_bPOS = m_bPhrase = TRUE;
+	}
+
+	if (m_bAllFile) {
+		m_bOriginalDate = m_bLastModified = m_bOriginalFormat = m_bFileSize = TRUE;
+	}
+
+	if (m_bAllParameters) {
+		m_bNumberSamples = m_bLength = m_bSampleRate = m_bBandwidth = m_bHighPass = m_bBits = m_bQuantization = TRUE;
+	}
+
+	if (m_bAllSource) {
+		m_bLanguage = m_bDialect = m_bSpeaker = m_bGender = m_bEthnologue = m_bFamily = m_bRegion = m_bNotebookRef = m_bTranscriber = m_bComments = m_bCountry = TRUE;
+	}
+
+	CFile* pFile = new CFile(m_szFileName, CFile::modeCreate|CFile::modeWrite);
+	CSaString szString;
+	CSaString szCrLf = "\r\n";
+
+	CSaDoc* pDoc = (CSaDoc*)((CMainFrame*)AfxGetMainWnd())->GetCurrSaView()->GetDocument();
+
+	if (!pDoc->GetSegment(PHONETIC)->IsEmpty()) {
+		
+		int nNumber = 0;
+		while (nNumber != -1) {
+
+			// this segment should be matching
+			DWORD dwOffset = pDoc->GetSegment(PHONETIC)->GetOffset(nNumber);
+			
+			// try and determine end based on gloss
+			CSaString szTemp = "";
+			int nStart = pDoc->GetSegment(GLOSS)->FindOffset(dwOffset);
+			if (nStart!=-1) {
+				if ((nStart+1)<pDoc->GetSegment(GLOSS)->GetOffsetSize()) {
+					int nEnd = pDoc->GetSegment(GLOSS)->GetOffset(nStart+1);
+					ASSERT(nEnd!=-1);
+					int nNext = nNumber;
+					// scroll through phonetic until we find next gloss
+					szTemp = pDoc->GetSegment(PHONETIC)->GetSegmentString(nNext);
+					while (true) {
+						nNext++;
+						DWORD dwOffset2 = pDoc->GetSegment(PHONETIC)->GetOffset(nNext);
+						if ((dwOffset2<dwOffset)||(dwOffset2>=nEnd)) {
+							break;
+						} else {
+							szTemp += pDoc->GetSegment(PHONETIC)->GetSegmentString(nNext);
+						}
+					}
+				} else {
+					// extract everything to end
+					int nNext = nNumber;
+					// scroll through phonetic until we find next gloss
+					szTemp = pDoc->GetSegment(PHONETIC)->GetSegmentString(nNext);
+					while (true) {
+						nNext++;
+						if (nNext>=pDoc->GetSegment(PHONETIC)->GetOffsetSize()) {
+							break;
+						} else {
+							szTemp += pDoc->GetSegment(PHONETIC)->GetSegmentString(nNext);
+						}
+					}
+				}
+				if (szTemp.GetLength()>0) {
+					szString = "\\lx  " + szTemp + szCrLf;
+					WriteFileUtf8(pFile, szString);
+				}
+
+				int nFind = pDoc->GetSegment(GLOSS)->FindOffset(dwOffset);
+				if (nFind != -1) {
+					szString = "\\ge  " + pDoc->GetSegment(GLOSS)->GetSegmentString(nFind).Mid(1) + szCrLf;
+					WriteFileUtf8(pFile, szString);
+				}
+
+				nFind = pDoc->GetSegment(REFERENCE)->FindOffset(dwOffset);
+				if (nFind != -1) {
+					szString = "\\ref " + pDoc->GetSegment(REFERENCE)->GetSegmentString(nFind) + szCrLf;
+					WriteFileUtf8(pFile, szString);
+				}
+
+				WriteFileUtf8(pFile, szCrLf);
+			}
+
+			nNumber = pDoc->GetSegment(PHONETIC)->GetNext(nNumber);
+		}
+	}
+
+	if (m_bFileName) { // \wav  Audio FileName
+		szString = "\\pf " + pDoc->GetPathName() + szCrLf;
+		WriteFileUtf8(pFile, szString);
+	}
+
+	// \date write current time
+	CTime time = CTime::GetCurrentTime();
+	szString = "\\dt " + time.Format("%A, %B %d, %Y, %X") + "\r\n";
+	WriteFileUtf8(pFile, szString);
+
+	if (pFile) {
+		delete pFile;
+		pFile = NULL;
+	}
+	CDialog::OnOK();
+}
+
+/////////////////////////////////////////////////////////////////////////////
+// CExportSFM dialog
+
+BEGIN_MESSAGE_MAP(CExportSFM, CExportBasicDialog)
+END_MESSAGE_MAP()
 
 /*
 \name name of file
@@ -3002,22 +3156,16 @@ BOOL CImport::ReadTable(Object_istream &obs, int nMode)
 CImportDlg::CImportDlg(CWnd* pParent /*=NULL*/)
 : CDialog(CImportDlg::IDD, pParent)
 {
-	//{{AFX_DATA_INIT(CImportDlg)
 	m_nMode = 0;
-	//}}AFX_DATA_INIT
 }
 
 void CImportDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialog::DoDataExchange(pDX);
-	//{{AFX_DATA_MAP(CImportDlg)
 	DDX_Radio(pDX, IDC_KEEP, m_nMode);
-	//}}AFX_DATA_MAP
 }
 
 BEGIN_MESSAGE_MAP(CImportDlg, CDialog)
-	//{{AFX_MSG_MAP(CImportDlg)
-	//}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
 
@@ -3027,15 +3175,87 @@ END_MESSAGE_MAP()
 void CImportDlg::OnOK()
 {
 	UpdateData(TRUE); // retrieve data
-
 	CDialog::OnOK();
 }
 
 BOOL CImportDlg::OnInitDialog()
 {
 	CDialog::OnInitDialog();
-
 	CenterWindow();
-
 	return TRUE;  // return TRUE  unless you set the focus to a control
+}
+
+CExportFW::CExportFW( const CSaString & szDocTitle, CWnd* pParent) : CExportBasicDialog( szDocTitle, pParent) 
+{
+	m_bAllParameters = FALSE;
+	m_bAllSource = FALSE;
+}
+
+CExportSFM::CExportSFM( const CSaString & szDocTitle, CWnd* pParent) : CExportBasicDialog( szDocTitle, pParent) 
+{
+}
+
+CExportXML::CExportXML( const CSaString & szDocTitle, CWnd* pParent) : CExportBasicDialog( szDocTitle, pParent) 
+{
+}
+
+void CExportFW::InitializeDialog() 
+{
+	SetEnable(IDC_EX_SFM_RECORD_DATA, FALSE);
+	SetEnable(IDC_EX_SFM_BANDWIDTH, FALSE);
+	SetEnable(IDC_EX_SFM_BITS, FALSE);
+	SetEnable(IDC_EX_SFM_QUANTIZATION, FALSE);
+	SetEnable(IDC_EX_SFM_HIGHPASS, FALSE);
+	SetEnable(IDC_EX_SFM_LENGTH, FALSE);
+	SetEnable(IDC_EX_SFM_NUMBER_OF_SAMPLES, FALSE);
+	SetEnable(IDC_EX_SFM_RATE, FALSE);
+
+	SetEnable(IDC_EX_SFM_ALL_SOURCE, FALSE);
+	SetEnable(IDC_EX_SFM_LANGUAGE, FALSE);
+	SetEnable(IDC_EX_SFM_DIALECT, FALSE);
+	SetEnable(IDC_EX_SFM_SPEAKER, FALSE);
+	SetEnable(IDC_EX_SFM_GENDER, FALSE);
+	SetEnable(IDC_EX_SFM_ETHNOLOGUE_ID, FALSE);
+	SetEnable(IDC_EX_SFM_FAMILY, FALSE);
+	SetEnable(IDC_EX_SFM_REGION, FALSE);
+	SetEnable(IDC_EX_SFM_COUNTRY, FALSE);
+	SetEnable(IDC_EX_SFM_NOTEBOOKREF, FALSE);
+	SetEnable(IDC_EX_SFM_TRANSCRIBER, FALSE);
+	SetEnable(IDC_EX_SFM_COMMENTS, FALSE);
+
+	SetEnable(IDC_EX_SFM_FREE, FALSE);
+	SetCheck(IDC_EX_SFM_FREE, FALSE);
+
+	SetEnable(IDC_EX_SFM_PHONES, FALSE);
+	SetCheck(IDC_EX_SFM_PHONES, FALSE);
+
+	SetEnable(IDC_EX_SFM_WORDS, FALSE);
+	SetCheck(IDC_EX_SFM_WORDS, FALSE);
+
+	SetEnable(IDC_EX_SFM_FILENAME, FALSE);
+	SetCheck(IDC_EX_SFM_FILENAME, TRUE);
+
+	SetEnable(IDC_EX_SFM_FILE_INFO, FALSE);
+	SetCheck(IDC_EX_SFM_FILE_INFO, TRUE);
+
+	SetEnable(IDC_EXTAB_ANNOTATIONS, FALSE);
+	SetCheck(IDC_EXTAB_ANNOTATIONS, TRUE);
+	SetCheck(IDC_EXTAB_POS, FALSE);
+	SetCheck(IDC_EXTAB_TONE, FALSE);
+	SetCheck(IDC_EXTAB_PHRASE, FALSE);
+	SetCheck(IDC_EXTAB_PHONEMIC, FALSE);
+	SetCheck(IDC_EXTAB_ORTHO, FALSE);
+
+	SetEnable(IDC_EX_SFM_MULTIRECORD, FALSE);
+	SetEnable(IDC_EX_SFM_INTERLINEAR, FALSE);
+	SetCheck(IDC_EX_SFM_MULTIRECORD, TRUE);
+}
+
+void CExportSFM::InitializeDialog() 
+{
+}
+
+void CExportXML::InitializeDialog() 
+{
+	SetEnable(IDC_EX_SFM_INTERLINEAR, FALSE);
 }

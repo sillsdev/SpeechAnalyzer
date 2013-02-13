@@ -295,20 +295,15 @@
 #define IDS_FIND_WRAP_PAST_END          1070
 #define IDS_FIND_NONE                   1071
 #define IDS_FIND_WRAP_PAST_START        1072
-#define IDS_ERROR_MMIO_INVALIDPARAM     1072
 #define IDS_EMPTY_REPLACE               1073
 #define IDC_SPEEDEDIT                   1074
-#define IDS_ERROR_EQUATION              1074
 #define IDC_SPEEDSCROLL                 1075
-#define IDS_ERROR_RANGE                 1075
 #define IDS_ERROR_READMDATCHUNK         1076
 #define IDS_ERROR_INVALID_SAMPLING_RATE 1077
 #define IDS_AUTO_WAITING                1078
 #define IDS_AUTO_RECORD                 1079
 #define IDC_COLORSGRAPHSETUP            1080
-#define IDS_AUTO_STOPPING               1080
 #define IDC_COLORSANNOTSETUP            1081
-#define IDS_AUTO_PROCESSING             1081
 #define IDC_COLORSOVERLAY               1082
 #define IDS_ERROR_READ_ONLY             1082
 #define IDS_AUTO_WAITING_SILENCE        1083
@@ -316,12 +311,15 @@
 #define IDC_VIEWCAPTION                 1085
 #define IDS_ERROR_CREATE_INSTANCE       1085
 #define IDC_COLORSSCALESETUP            1086
-#define IDS_ERROR_SINGLETON             1086
 #define IDC_PLAY                        1094
 #define IDC_STOP                        1096
 #define IDC_PAUSE                       1097
-#define ICD_STATIC                      1103
-#define ICD_STATIC2                     1104
+#define IDS_ERROR_MMIO_INVALIDPARAM     1098
+#define IDS_ERROR_EQUATION              1099
+#define IDS_AUTO_STOPPING               1100
+#define IDS_ERROR_SINGLETON             1101
+#define IDS_ERROR_RANGE                 1102
+#define IDS_AUTO_PROCESSING             1103
 #define IDC_RECORD                      1109
 #define IDC_FONTSGRAPHSETUP             1126
 #define IDC_FONT                        1130
@@ -790,6 +788,8 @@
 #define IDC_EX_SFM_COUNTRY              1598
 #define IDD_STAFF                       1598
 #define IDC_CHART_L352                  1599
+#define IDC_EX_SFM_INTERLINEAR2         1599
+#define IDC_EX_SFM_MULTIRECORD          1599
 #define IDC_CHART_CV514                 1600
 #define IDD_MAGNITUDE                   1600
 #define IDC_CHART_CV515                 1601
@@ -1297,6 +1297,7 @@
 #define ID_GRAPHS_ZOOM_OUT              32860
 #define ID_GRAPHS_ZOOM_ALL              32861
 #define ID_GRAPHS_TILE                  32862
+#define ID_EXPORT_FW                    32863
 #define ID_TYPES_RAWDATA                32875
 #define ID_TYPES_ZEROCROSSING           32876
 #define ID_TYPES_FORMANT                32877
@@ -1504,6 +1505,7 @@
 #define ID_EDIT_COPY_PHONETIC_TO_PHONEMIC 33220
 #define IDS_SPLIT_INCOMPLETE            33220
 #define ID_AUTOMATICMARKUP_REFERENCEDATA 33221
+#define ID_FILE_PHONOLOGYASSISTANT      33224
 #define IDS_SPLIT_NO_GLOSS              33225
 #define IDS_SPLIT_NO_REF                33226
 #define IDS_SPLIT_NO_WRITE              33227
@@ -1621,7 +1623,6 @@
 #define IDS_ERROR_SCREEN_CAPTURE_OPEN   61254
 #define IDS_ERROR_NO_DIALOG             61255
 #define IDS_ERROR_NO_WORDS_ON_AUTO_REFERENCE 61256
-#define IDS_STRING61257                 61257
 #define IDS_ERROR_NOT_IMPLEMENTED       61257
 #define IDS_ERROR_BAD_START_REF         61258
 #define IDS_ERROR_BAD_END_REF           61259
@@ -1629,9 +1630,11 @@
 #define IDS_ERROR_NO_PARSE              61261
 #define IDS_ERROR_FILENAME              61262
 #define IDS_ERROR_NO_IPAHELP            61263
+#define IDS_ERROR_REGISTRY              61264
 #define IDS_AUTO_REF_MAIN               61300
 #define IDS_AUTO_REF_MAIN_1             61300
 #define IDS_AUTO_REF_MAIN_2             61301
+#define IDS_ENABLE_PA                   61302
 #define IDS_AUTO_REF_MAIN_3             61303
 #define IDS_AUTO_REF_MAIN_4             61305
 
@@ -1641,7 +1644,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_3D_CONTROLS                     1
 #define _APS_NEXT_RESOURCE_VALUE        365
-#define _APS_NEXT_COMMAND_VALUE         33224
+#define _APS_NEXT_COMMAND_VALUE         33225
 #define _APS_NEXT_CONTROL_VALUE         2067
 #define _APS_NEXT_SYMED_VALUE           104
 #endif

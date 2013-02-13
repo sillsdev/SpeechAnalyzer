@@ -1,3 +1,14 @@
+SA - 3.1.0.31 - 2/12/2013
+1) Fixed Tools menu bug.
+2) Implemented feature to write registry entries for PA
+3) Fixed memory overwrite bug caused by improper use of scanf.
+
+SA - 3.1.0.30 - 2/11/2013
+1) Prototype for FW .SFM export feature.
+2) Reordered Tools menu.
+3) Fix for #1 error on Find/Replace problems.  String resource was missing.
+4) Fix for #2 error on Find/Replace bugs - disabled hightlight.
+
 SA - 3.1.0.29 - 2/11/2013
 1) Modified Transcription Editor dialog so that long strings of cause the edit field to scroll vertically.  A scroll bar is now available.
 2) Fixed '0' segment problem.  Code was carrying Unicode BOM in string, causing string compare to fail.

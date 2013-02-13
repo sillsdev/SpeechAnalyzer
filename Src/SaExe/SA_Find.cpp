@@ -566,7 +566,7 @@ void CSaFindDlg::OnNext()
 	   }
 	   else
 	   {
-		   if (AfxMessageBox(IDS_FIND_WRAP_PAST_END, MB_YESNO|MB_ICONQUESTION,0)==IDYES)
+		   if (AfxMessageBox( IDS_FIND_WRAP_PAST_END, MB_YESNO|MB_ICONQUESTION,0)==IDYES)
 		   {
 			   m_curPos = -1;
 			   m_wraped = TRUE;
@@ -574,7 +574,7 @@ void CSaFindDlg::OnNext()
 		   }
 		   else
 		   {
-			   pAnnot->SelectSegment(*pDoc,m_curPos);
+			   //pAnnot->SelectSegment(*pDoc,m_curPos);
 			   ResetCompletionCheck();
 		   }
 	   }
@@ -635,8 +635,7 @@ void CSaFindDlg::OnPrevious()
 	   }
 	   else
 	   {
-		   if (AfxMessageBox(IDS_FIND_WRAP_PAST_START,
-			   MB_YESNO|MB_ICONQUESTION,0)==IDYES)
+		   if (AfxMessageBox(IDS_FIND_WRAP_PAST_START, MB_YESNO|MB_ICONQUESTION,0)==IDYES)
 		   {
 			   m_curPos = -1;
 			   m_wraped = TRUE;

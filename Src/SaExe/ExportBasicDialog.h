@@ -23,7 +23,6 @@ public:
 
 public:
 	// Dialog Data
-	//{{AFX_DATA(CExportBasicDialog)
 	enum { IDD = IDD_EXPORT_SFM };
 	BOOL  m_bAllSource;
 	BOOL  m_bBandwidth;
@@ -39,6 +38,7 @@ public:
 	BOOL  m_bGender;
 	BOOL  m_bHighPass;
 	BOOL  m_bInterlinear;
+	BOOL  m_bMultiRecord;
 	BOOL  m_bLanguage;
 	BOOL  m_bLastModified;
 	BOOL  m_bLength;
@@ -64,8 +64,8 @@ public:
 	BOOL  m_bCountry;
 	BOOL  m_bQuantization;
 	BOOL    m_bPhrase;
-	//}}AFX_DATA
 protected:
+	virtual void InitializeDialog() = 0;
 	CSaString m_szFileName;
 	CSaString m_szDocTitle;
 
@@ -74,18 +74,20 @@ public:
 	void OnHelpExportBasic();
 protected:
 	void SetEnable(int nItem, BOOL bEnable);
+	void SetCheck(int nItem, BOOL bCheck);
 	virtual void DoDataExchange(CDataExchange* pDX);  // DDX/DDV support
 	virtual void OnOK() = 0; // this must be implented by the derived types
 
 	// Generated message map functions
-	//{{AFX_MSG(CExportBasicDialog)
 	afx_msg void OnAllSource();
 	afx_msg void OnAllFileInfo();
 	afx_msg void OnAllParameters();
 	virtual BOOL OnInitDialog();
 	afx_msg void OnAllAnnotations();
-	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()
+public:
+	afx_msg void OnClickedExSfmInterlinear();
+	afx_msg void OnClickedExSfmMultirecord();
 };
 
 #endif

@@ -177,8 +177,6 @@ protected:
 	HMENU				m_hNewMenu;
 	HACCEL				m_hNewAccel;
 	int					m_nPopup;
-	HMENU				m_hExpMenu;
-	CString				m_szExpMenuTitle;
 
 	// Operations
 public:

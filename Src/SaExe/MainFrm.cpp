@@ -309,8 +309,6 @@ CMainFrame::CMainFrame()
 	m_hNewMenu = NULL; // SDM 1.5Test8.5
 	m_hNewAccel = NULL; // SDM 1.5Test8.5
 	m_nPopup = 0; // SDM 1.5Test8.5
-	m_hExpMenu = NULL;
-	m_szExpMenuTitle = "";
 
 	// Initialize parsing, segmenting, pitch, spectrum and spectrogram parameter defaults // RLJ 11.1A
 	m_parseParmDefaults.Init();
@@ -660,20 +658,6 @@ void CMainFrame::OnInitMenu(CMenu* pMenu)
 				VERIFY(pMenu->ModifyMenu(ID_GRAPHS_LAYOUT, MF_BYCOMMAND | MF_POPUP, (UINT)m_LayoutMenu.m_hMenu, szString));
 				m_bMenuModified = TRUE; // modification done
 			}
-		}
-
-		// Show Experimental Features submenu on control-click
-		CMenu* pToolsMenu = pMenu->GetSubMenu(5);
-		ASSERT_VALID(pToolsMenu);
-		bool bExpMenuPresent = (pToolsMenu->GetSubMenu(5) != NULL);
-		if (EXPERIMENTAL_ACCESS && !bExpMenuPresent)
-			pToolsMenu->InsertMenu(5, MF_BYPOSITION | MF_POPUP, (UINT)m_hExpMenu, m_szExpMenuTitle);
-		// remove it if control key not pressed
-		if (!EXPERIMENTAL_ACCESS && bExpMenuPresent)
-		{
-			m_hExpMenu = pToolsMenu->GetSubMenu(5)->m_hMenu;
-			pToolsMenu->GetMenuString(5, m_szExpMenuTitle, MF_BYPOSITION);
-			pToolsMenu->RemoveMenu(5, MF_BYPOSITION);
 		}
 	}
 }

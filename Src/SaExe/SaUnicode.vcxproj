@@ -84,6 +84,7 @@
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
       <DataExecutionPrevention>
       </DataExecutionPrevention>
+      <UACExecutionLevel>HighestAvailable</UACExecutionLevel>
     </Link>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
@@ -293,6 +294,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="ClassDiagram1.cd" />
+    <None Include="ClassDiagram2.cd" />
     <None Include="Segments.cd" />
     <None Include="RES\1.ICO" />
     <None Include="RES\2A.ICO" />

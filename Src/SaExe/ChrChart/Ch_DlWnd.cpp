@@ -684,14 +684,17 @@ bool checkIPAHelp() {
 
 	// retrieve IPA Help location from registry
 	TCHAR szPathBuf[_MAX_PATH + 1];
-	HKEY hKey;
+	HKEY hKey = NULL;
 	DWORD dwBufLen = MAX_PATH + 1;
-	if (RegOpenKeyEx( HKEY_CURRENT_USER, _T("Software\\SIL\\IPA Help"), 0, KEY_QUERY_VALUE, &hKey ))
+
+	if (RegOpenKeyEx( HKEY_CURRENT_USER, _T("Software\\SIL\\IPA Help"), 0, KEY_QUERY_VALUE, &hKey )) {
 		return false;
+	}
 	long nError = RegQueryValueEx( hKey, _T("Location"), NULL, NULL, (LPBYTE) szPathBuf, &dwBufLen);
 	RegCloseKey(hKey);
-	if (nError || !wcslen(szPathBuf))
+	if ((nError) || (!wcslen(szPathBuf))) {
 		return false;
+	}
 
 	// check for existence
 	return (_taccess(szPathBuf,0)!=-1);
@@ -699,24 +702,29 @@ bool checkIPAHelp() {
 
 static void playSoundFile(const CString &szSoundFile)
 {
-	if (szSoundFile.IsEmpty())
+	if (szSoundFile.IsEmpty()) {
 		return;
+	}
 
 	// retrieve IPA Help location from registry
 	TCHAR szPathBuf[_MAX_PATH + 1];
-	HKEY hKey;
+	HKEY hKey = NULL;
 	DWORD dwBufLen = MAX_PATH + 1;
-	if (RegOpenKeyEx( HKEY_CURRENT_USER, _T("Software\\SIL\\IPA Help"), 0, KEY_QUERY_VALUE, &hKey ))
+
+	if (RegOpenKeyEx( HKEY_CURRENT_USER, _T("Software\\SIL\\IPA Help"), 0, KEY_QUERY_VALUE, &hKey )) {
 		return;
+	}
 	long nError = RegQueryValueEx( hKey, _T("Location"), NULL, NULL, (LPBYTE) szPathBuf, &dwBufLen);
 	RegCloseKey(hKey);
 
-	if (nError || !wcslen(szPathBuf))
+	if ((nError) || (!wcslen(szPathBuf))) {
 		return;
+	}
 
 	CSaString szPath = szPathBuf;
-	if (!(szPath.Right(1) == _T("\\")))
+	if (!(szPath.Right(1) == _T("\\"))) {
 		szPath += _T("\\");
+	}
 	szPath += _T("Sounds - IPA\\");
 	szPath += szSoundFile;
 	szPath += ".wav";

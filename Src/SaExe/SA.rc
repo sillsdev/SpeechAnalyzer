@@ -26,7 +26,7 @@ LANGUAGE LANG_NEUTRAL, SUBLANG_NEUTRAL
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 3,1,0,29
+ FILEVERSION 3,1,0,31
  PRODUCTVERSION 1,0,0,1
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
@@ -44,7 +44,7 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "SIL International"
             VALUE "FileDescription", "SA"
-            VALUE "FileVersion", "v3.1.0.29"
+            VALUE "FileVersion", "v3.1.0.31"
             VALUE "InternalName", "SA"
             VALUE "LegalCopyright", "© 1996-2013 SIL International (MSEA)"
             VALUE "ProductName", "SA"
@@ -472,8 +472,8 @@ BEGIN
     LTEXT           "",IDC_VUBAR,16,14,94,23
     GROUPBOX        "Record Level",IDC_STATIC,9,4,106,36
     LTEXT           "Settings:",IDC_SETTINGSTITLE,122,45,61,8
-    GROUPBOX        "Play Vol.",ICD_STATIC,240,4,37,82
-    GROUPBOX        "Rec Vol.",ICD_STATIC2,196,4,37,82
+    GROUPBOX        "Play Vol.",IDC_STATIC,240,4,37,82
+    GROUPBOX        "Rec Vol.",IDC_STATIC2,196,4,37,82
     PUSHBUTTON      "&Help",IDHELP,284,72,45,14
 END
 
@@ -593,28 +593,28 @@ BEGIN
     PUSHBUTTON      "Cancel",IDCANCEL,61,25,50,14
 END
 
-IDD_FINDREPLACE DIALOG 30, 73, 250, 130
+IDD_FINDREPLACE DIALOGEX 30, 73, 250, 130
 STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Find and Replace"
-FONT 8, "Helv"
+FONT 8, "Helv", 0, 0, 0x0
 BEGIN
+    LTEXT           "Find What:",IDC_STATIC1,6,10,38,8,NOT WS_GROUP
     EDITTEXT        IDC_INPUTSTRING,58,6,128,22,ES_MULTILINE
     DEFPUSHBUTTON   "Find &Next",IDC_NEXT,193,6,51,14
     PUSHBUTTON      "Find &Previous",IDC_PREVIOUS,193,23,51,14
-    PUSHBUTTON      "Close",IDCANCEL,136,112,51,14
-    PUSHBUTTON      "&IPA Chart",IDC_CHARACTERCHART,193,83,51,14
+    LTEXT           "Replace With:",IDC_STATIC2,6,37,48,18,NOT WS_GROUP
+    EDITTEXT        IDC_REPLACESTRING,58,35,128,22,ES_MULTILINE
+    COMBOBOX        IDC_CBOFIELD2,58,35,128,58,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
     PUSHBUTTON      "&Replace",IDC_REPLACE,193,40,51,14
     PUSHBUTTON      "Replace &All",IDC_REPLACEALL,193,57,51,14
-    COMBOBOX        IDC_CBOFIELD2,58,35,128,58,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "Search In:",IDC_STATIC3,6,64,37,8,NOT WS_GROUP
+    COMBOBOX        IDC_CBOFIELD,58,62,128,58,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    PUSHBUTTON      "&IPA Chart",IDC_CHARACTERCHART,193,83,51,14
     CONTROL         "Word &Break",IDC_INPUTBREAK,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,66,92,54,10
     CONTROL         "Book&mark",IDC_INPUTGLOSS,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,121,93,48,10
     GROUPBOX        "Gloss",IDC_STATICGLOSS,58,80,128,28,WS_GROUP
-    EDITTEXT        IDC_REPLACESTRING,58,35,128,22,ES_MULTILINE
-    COMBOBOX        IDC_CBOFIELD,58,62,128,58,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
-    LTEXT           "Find What:",IDC_STATIC1,6,10,38,8,NOT WS_GROUP
-    LTEXT           "Search In:",IDC_STATIC3,6,64,37,8,NOT WS_GROUP
-    LTEXT           "Replace With:",IDC_STATIC2,6,37,48,18,NOT WS_GROUP
     PUSHBUTTON      "&Help",IDHELP,193,112,51,14
+    PUSHBUTTON      "Close",IDCANCEL,136,112,51,14
 END
 
 IDD_PRINTOPTIONS DIALOG 0, 0, 245, 214
@@ -719,7 +719,7 @@ BEGIN
     LTEXT           "",IDC_DELAYSLIDER,159,23,24,54
     EDITTEXT        IDC_DELAYEDIT,151,80,20,12
     COMBOBOX        IDC_PLAYMODE,81,99,113,157,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
-    GROUPBOX        "Volume",ICD_STATIC,65,13,40,81
+    GROUPBOX        "Volume",IDC_STATIC,65,13,40,81
     GROUPBOX        "Speed",IDC_STATIC,107,13,40,81
     LTEXT           "%",IDC_VOLUMETEXT,95,83,8,8
     LTEXT           "%",IDC_SPEEDTEXT,137,83,8,8
@@ -1625,10 +1625,10 @@ BEGIN
     PUSHBUTTON      "&Help",IDHELP,222,144,38,14
 END
 
-IDD_EXPORT_SFM DIALOG 0, 0, 295, 202
+IDD_EXPORT_SFM DIALOGEX 0, 0, 295, 202
 STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
 CAPTION "Export Speech Format"
-FONT 8, "MS Sans Serif"
+FONT 8, "MS Sans Serif", 0, 0, 0x0
 BEGIN
     CONTROL         "Audio File Name",IDC_EX_SFM_FILENAME,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,19,18,67,10
     CONTROL         "All Transcriptions",IDC_EXTAB_ANNOTATIONS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,19,30,69,10
@@ -1667,13 +1667,13 @@ BEGIN
     CONTROL         "Notebook Ref.",IDC_EX_SFM_NOTEBOOKREF,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,198,126,63,10
     CONTROL         "Transcriber",IDC_EX_SFM_TRANSCRIBER,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,198,138,51,10
     CONTROL         "Comments",IDC_EX_SFM_COMMENTS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,198,150,49,10
-    CONTROL         "Interlinearize Transcriptions",IDC_EX_SFM_INTERLINEAR,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,19,184,100,10
+    CONTROL         "Interlinearize",IDC_EX_SFM_INTERLINEAR,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,19,184,54,10
     PUSHBUTTON      "Cancel",IDCANCEL,154,184,38,14
     DEFPUSHBUTTON   "Export",IDOK,198,184,38,14
     GROUPBOX        "Include",-1,10,5,269,173
     CONTROL         "Quantization Size",IDC_EX_SFM_QUANTIZATION,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,104,162,71,10
     PUSHBUTTON      "&Help",IDHELP,241,184,38,14
+    CONTROL         "Multi-Record",IDC_EX_SFM_MULTIRECORD,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,82,184,54,10
 END
 
 IDD_IMPORT_DIALOG DIALOG 0, 0, 187, 95
@@ -1951,12 +1951,12 @@ BEGIN
     LTEXT           "",IDC_VUBAR,9,13,101,23
     GROUPBOX        "Record Level",IDC_STATIC,6,3,109,36
     LTEXT           "",IDC_RECVOLUMESLIDER,202,13,24,41
-    GROUPBOX        "Rec Vol.",ICD_STATIC2,196,3,37,66
+    GROUPBOX        "Rec Vol.",IDC_STATIC2,196,3,37,66
     LTEXT           "",IDC_VOLUMESLIDER,247,13,24,41
     EDITTEXT        IDC_VOLUMEEDIT,242,54,16,12
     LTEXT           "",IDC_VOLUMESCROLL,258,54,10,12
     LTEXT           "%",IDC_VOLUMETEXT,268,56,8,8
-    GROUPBOX        "Play Vol.",ICD_STATIC,240,3,37,66
+    GROUPBOX        "Play Vol.",IDC_STATIC,240,3,37,66
     PUSHBUTTON      "&Help",IDHELP,282,25,50,14
 END
 
@@ -2351,6 +2351,10 @@ BEGIN
         BOTTOMMARGIN, 146
     END
 
+    IDD_EXPORT_SFM, DIALOG
+    BEGIN
+    END
+
     IDD_OPTIONSVIEWPAGE, DIALOG
     BEGIN
         BOTTOMMARGIN, 150
@@ -2633,9 +2637,8 @@ BEGIN
             MENUITEM "&Zero Offset",                ID_TOOLS_ADJUST_ZERO
         END
         MENUITEM "&Workbench",                  ID_WORKBENCH
-        MENUITEM "Waveform &Generator...",      ID_WAVEFORM_GENERATOR
         MENUITEM SEPARATOR
-        MENUITEM "Audio &Converter Program",    ID_AUDIO_CON
+        MENUITEM "Waveform &Generator...",      ID_WAVEFORM_GENERATOR
         MENUITEM SEPARATOR
         MENUITEM "&Options...",                 ID_TOOLS_OPTIONS, GRAYED
     END
@@ -2676,6 +2679,7 @@ BEGIN
         END
         POPUP "&Export"
         BEGIN
+            MENUITEM "&Fieldworks (.SFM)",          ID_EXPORT_FW
             MENUITEM "&Standard Format (.SFM)",     ID_EXPORT_SFM
             MENUITEM "SFM &Time Table (.SFT)",      ID_EXPORT_TIME_TABLE
             MENUITEM "E&xtensible Markup (.XML)",   ID_EXPORT_XML
@@ -2698,6 +2702,8 @@ BEGIN
         MENUITEM "Page Se&tup...",              ID_FILE_PAGE_SETUP
         MENUITEM "Print Pre&view",              ID_FILE_PRINT_PREVIEW
         MENUITEM "&Print...\tCtrl+P",           ID_FILE_PRINT
+        MENUITEM SEPARATOR
+        MENUITEM "Phonology Assistant...",      ID_FILE_PHONOLOGYASSISTANT
         MENUITEM SEPARATOR
         MENUITEM "Recent File",                 ID_FILE_MRU_FILE1, GRAYED
         MENUITEM SEPARATOR
@@ -2919,10 +2925,6 @@ BEGIN
             MENUITEM "&Normalize",                  ID_TOOLS_ADJUST_NORMALIZE
             MENUITEM "&Zero Offset",                ID_TOOLS_ADJUST_ZERO
         END
-        MENUITEM "&Workbench",                  ID_WORKBENCH
-        MENUITEM "Waveform &Generator...",      ID_WAVEFORM_GENERATOR
-        MENUITEM SEPARATOR
-        MENUITEM "Audio &Converter Program",    ID_AUDIO_CON
         POPUP "Automatic &Markup"
         BEGIN
             MENUITEM "Add &Reference Numbers",      ID_AUTOMATICMARKUP_REFERENCEDATA
@@ -2932,6 +2934,9 @@ BEGIN
             MENUITEM "Locate &Words",               ID_ADVANCED_PARSE_WORD
             MENUITEM "Locate &Phrases",             ID_ADVANCED_PARSE_PHRASE
         END
+        MENUITEM SEPARATOR
+        MENUITEM "Waveform &Generator...",      ID_WAVEFORM_GENERATOR
+        MENUITEM "&Workbench",                  ID_WORKBENCH
         MENUITEM SEPARATOR
         MENUITEM "&Options...",                 ID_TOOLS_OPTIONS
     END
@@ -4128,7 +4133,7 @@ STRINGTABLE
 BEGIN
     IDR_MAINFRAME           "Speech Analyzer"
     IDR_SA_ANNTYPE          "\nSA\nSA Document\nWAV Files (*.wav)\n.wav\nannFileType\nANN File Type"
-    VS_VERSION              "Version 3.1.0.29"
+    VS_VERSION              "Version 3.1.0.31"
     VS_COPYRIGHT            "© 1996-2013 SIL International (MSEA).\nAll Rights Reserved."
     IDR_SA_WBTYPE           "\nWB\nSA Workbench\nWB Files (*.wb)\n.wb\nwbFileType\nWB File Type"
 END
@@ -4144,22 +4149,28 @@ END
 STRINGTABLE
 BEGIN
     IDS_ERROR_MMIO_INVALIDPARAM "Sound device error: invalid parameter."
-    IDS_EMPTY_REPLACE       "You cannot replace with an empty string."
     IDS_ERROR_EQUATION      "The function you entered contains errors. Please revise it."
+    IDS_AUTO_STOPPING       "Stopping..."
+    IDS_ERROR_SINGLETON     "An error occurred while trying to initialize resources to run Speech Analyzer as a singleton.  The feature is disabled."
     IDS_ERROR_RANGE         "Please enter an integer between %1 to %2."
+    IDS_AUTO_PROCESSING     "Processing..."
+END
+
+STRINGTABLE
+BEGIN
+    IDS_FIND_WRAP_PAST_START 
+                            "Speech Analyzer has reached the start of the transcription.\nDo you want to continue searching from the end?"
+    IDS_EMPTY_REPLACE       "You cannot replace with an empty string."
     IDS_ERROR_READMDATCHUNK "Failed reading musical score from file '%1'."
     IDS_ERROR_INVALID_SAMPLING_RATE 
                             "Wav file '%1' is sampled at an invalid sampling rate.  Currently 11.025kHz, 16kHz, 22.050kHz, 44.100kHz, and 48kHz are supported.  Please use AudioCon to convert."
     IDS_AUTO_WAITING        "Waiting for input..."
     IDS_AUTO_RECORD         "Recording..."
-    IDS_AUTO_STOPPING       "Stopping..."
-    IDS_AUTO_PROCESSING     "Processing..."
     IDS_ERROR_READ_ONLY     "Unable to save to read-only file '%1'"
     IDS_AUTO_WAITING_SILENCE "Waiting for 2 Seconds of Silence..."
     IDS_ERROR_FORMAT_CHANNELS "Data in file '%1' has too many channels"
     IDS_ERROR_CREATE_INSTANCE 
                             "A serious error has occurred. If this error persists, try reinstalling the application.\n\nModule: %1\nError Code: 0x%2"
-    IDS_ERROR_SINGLETON     "An error occurred while trying to initialize resources to run Speech Analyzer as a singleton.  The feature is disabled."
 END
 
 STRINGTABLE
@@ -4218,6 +4229,7 @@ BEGIN
     ID_GRAPHS_ZOOM_OUT      "Zoom out of graphs\nZoom Step Out"
     ID_GRAPHS_ZOOM_ALL      "Show whole data in graph (unzoomed)\nZoom Full"
     ID_GRAPHS_TILE          "Retile graph windows\nRetile Graphs"
+    ID_EXPORT_FW            "Export the document data using Standard Format Markers\nExport Fieldworks"
 END
 
 STRINGTABLE
@@ -4446,7 +4458,7 @@ BEGIN
     IDS_ERROR_BAD_PRINTLAYOUT 
                             "The number of graphs you have selected won't fit evenly in the number of rows and columns per page selected."
     IDS_FIND_FINISHED       "Speech Analyzer has finished searching the transcription."
-    IDS_FIND_WRAP_PAST_END  "Speech Analyzer has reached the end of the transcription.  Do you want to continue searching from the beginning?"
+    IDS_FIND_WRAP_PAST_END  "Speech Analyzer has reached the end of the transcription.\nDo you want to continue searching from the beginning?"
     IDS_FIND_NONE           "The search item was not found."
 END
 
@@ -5131,7 +5143,13 @@ STRINGTABLE
 BEGIN
     IDS_AUTO_REF_MAIN_1     "Speech Anaylzer was unable to parse the file because it is not in a usable format.  Please check the following suggestions:\n\n"
     IDS_AUTO_REF_MAIN_2     "1) If the file is suppose to contain only reference numbers, make sure there aren't extra tabs or columns in the data.\n\n"
+    IDS_ENABLE_PA           "Enable Phonology Assistant to find Speech Analyzer?"
     IDS_AUTO_REF_MAIN_3     "2) If the file is suppose to be delimited, make sure there are an equal number of tabs or spaces in each row and that there are no missing fields within a row.\n"
+END
+
+STRINGTABLE
+BEGIN
+    IDS_ERROR_REGISTRY      "Unable to update registry!"
 END
 
 #endif    // English (United States) resources

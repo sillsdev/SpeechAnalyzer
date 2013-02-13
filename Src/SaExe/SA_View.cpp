@@ -164,6 +164,7 @@
 #include "sa_g_stf.h"
 #include "sa_segm.h"
 #include "graphsTypes.h"
+#include "resource.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE
@@ -608,6 +609,17 @@ void CSaView::OnExportXML()
 }
 
 /***************************************************************************/
+// CSaView::OnExportFW Export wave file data using Standard Format Markers
+//
+// Modified on 07/27/2000
+/***************************************************************************/
+void CSaView::OnExportFW()
+{
+	CExportFW dlg(((CSaDoc*)GetDocument())->GetTitle());
+	dlg.DoModal();
+}
+
+/***************************************************************************/
 // CSaView::OnExportSFM Export wave file data using Standard Format Markers
 //
 // Modified on 07/27/2000
@@ -721,6 +733,58 @@ void CSaView::OnImportSFT()
 		delete pImport;
 }
 
+void CSaView::OnFilePhonologyAssistant() 
+{
+	if (AfxMessageBox( IDS_ENABLE_PA, MB_OKCANCEL, 0)!=IDOK) return;
+
+	OSVERSIONINFO OSInfo;
+	ZeroMemory(&OSInfo, sizeof(OSVERSIONINFO));
+	OSInfo.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
+	::GetVersionEx(&OSInfo);
+	bool vista = (OSInfo.dwMajorVersion>=6);
+
+	BOOL wow64 = FALSE;
+	::IsWow64Process(GetCurrentProcess(),&wow64);
+
+	TRACE("running Vista or Greater = %d\n",vista);
+	TRACE("running on x64 = %d\n",wow64);
+
+	// obtain the location of the currently running app.
+	CString exeName = L"";
+	exeName.Append(AfxGetApp()->m_pszExeName);
+	exeName.Append( L".exe" );
+	HMODULE hmod = GetModuleHandle(exeName);
+
+	TCHAR fullPath[_MAX_PATH + 1];
+	DWORD pathLen = ::GetModuleFileName( hmod, fullPath, MAX_PATH);
+
+	REGSAM sam = (wow64)?KEY_ALL_ACCESS | KEY_WOW64_64KEY:KEY_ALL_ACCESS;
+	TCHAR szPathBuf[_MAX_PATH + 1];
+	HKEY hKey = 0;
+	DWORD dwBufLen = MAX_PATH + 1;
+	DWORD disposition = 0;
+	LONG lResult = RegCreateKeyEx( HKEY_LOCAL_MACHINE, _T("Software\\SIL\\Speech Analyzer"), 0, NULL, 0, sam, NULL, &hKey, &disposition);
+	if (lResult!=ERROR_SUCCESS)
+	{
+		AfxMessageBox(IDS_ERROR_REGISTRY, MB_OK|MB_ICONEXCLAMATION, 0);
+		return;
+	}
+	DWORD len = (wcslen(fullPath)+1)*sizeof(TCHAR);
+	lResult = RegSetValueEx( hKey, L"Location", 0, REG_SZ, (const BYTE *)fullPath, len);
+	if (lResult!=ERROR_SUCCESS)
+	{
+		RegCloseKey(hKey);
+		AfxMessageBox(IDS_ERROR_REGISTRY, MB_OK|MB_ICONEXCLAMATION, 0);
+		return;
+	}
+	lResult = RegCloseKey( hKey);
+	if (lResult!=ERROR_SUCCESS)
+	{
+		AfxMessageBox(IDS_ERROR_REGISTRY, MB_OK|MB_ICONEXCLAMATION, 0);
+		return;
+	}
+}
+
 /***************************************************************************/
 // CSaView::OnFileInformation File information
 /***************************************************************************/
@@ -730,38 +794,37 @@ void CSaView::OnFileInformation()
 	CSaDoc* pDoc = (CSaDoc*)GetDocument();
 	SourceParm* pSourceParm = pDoc->GetSourceParm();
 	CSaString szCaption, szTitle;
-	szCaption.LoadString(IDS_DLGTITLE_FILEINFO);                 // load caption string
-	szTitle = pDoc->GetTitle();                                  // load file name
+	szCaption.LoadString(IDS_DLGTITLE_FILEINFO);                // load caption string
+	szTitle = pDoc->GetTitle();                                 // load file name
 	int nFind = szTitle.Find(':');
-	if (nFind != -1)
-		szTitle = szTitle.Left(nFind);              // extract part left of :
-	szCaption += " - " + szTitle;                                // build new caption string
-	CDlgFileInformation* dlgFileInformation;                     // file information dialog
-	dlgFileInformation = new CDlgFileInformation(szCaption, NULL, 0);  // create the property sheet
+	if (nFind != -1) {
+		szTitle = szTitle.Left(nFind);							// extract part left of :
+	}
+	szCaption += " - " + szTitle;                               // build new caption string
+	
+	CDlgFileInformation dlg(szCaption, NULL, 0);                // file information dialog
 	// set file description string
-	dlgFileInformation->m_dlgUserPage.m_szFileDesc =
-		pDoc->GetSaParm()->szDescription;
-	dlgFileInformation->m_dlgUserPage.m_szFreeTranslation =
-		pSourceParm->szFreeTranslation;
-	if (dlgFileInformation->DoModal() == IDOK)
+	dlg.m_dlgUserPage.m_szFileDesc = pDoc->GetSaParm()->szDescription;
+	dlg.m_dlgUserPage.m_szFreeTranslation = pSourceParm->szFreeTranslation;
+	if (dlg.DoModal() == IDOK)
 	{
 		// get new file description string
 		BOOL modified = FALSE;
-		if (pDoc->GetSaParm()->szDescription != dlgFileInformation->m_dlgUserPage.m_szFileDesc)
+		if (pDoc->GetSaParm()->szDescription != dlg.m_dlgUserPage.m_szFileDesc)
 			modified = TRUE;
-		if (pSourceParm->szFreeTranslation != dlgFileInformation->m_dlgUserPage.m_szFreeTranslation)
+		if (pSourceParm->szFreeTranslation != dlg.m_dlgUserPage.m_szFreeTranslation)
 			modified = TRUE;
 
-		BOOL bCountryChanged     = (pSourceParm->szCountry != dlgFileInformation->m_dlgSourcePage.m_szCountry);
-		BOOL bDailectChanged     = (pSourceParm->szDialect != dlgFileInformation->m_dlgSourcePage.m_szDialect);
-		BOOL bEthnoIDChanged     = (pSourceParm->szEthnoID != dlgFileInformation->m_dlgSourcePage.m_szEthnoID);
-		BOOL bFamilyChanged      = (pSourceParm->szFamily != dlgFileInformation->m_dlgSourcePage.m_szFamily);
-		BOOL bLanguageChanged    = (pSourceParm->szLanguage != dlgFileInformation->m_dlgSourcePage.m_szLanguage);
-		BOOL bGenderChanged      = (pSourceParm->nGender != dlgFileInformation->m_dlgSourcePage.m_nGender);
-		BOOL bRegionChanged      = (pSourceParm->szRegion != dlgFileInformation->m_dlgSourcePage.m_szRegion);
-		BOOL bSpeakerChanged     = (pSourceParm->szSpeaker != dlgFileInformation->m_dlgSourcePage.m_szSpeaker);
-		BOOL bReferenceChanged   = (pSourceParm->szReference != dlgFileInformation->m_dlgSourcePage.m_szReference);
-		BOOL bTranscriberChanged = (pSourceParm->szTranscriber != dlgFileInformation->m_dlgSourcePage.m_szTranscriber);
+		BOOL bCountryChanged     = (pSourceParm->szCountry != dlg.m_dlgSourcePage.m_szCountry);
+		BOOL bDailectChanged     = (pSourceParm->szDialect != dlg.m_dlgSourcePage.m_szDialect);
+		BOOL bEthnoIDChanged     = (pSourceParm->szEthnoID != dlg.m_dlgSourcePage.m_szEthnoID);
+		BOOL bFamilyChanged      = (pSourceParm->szFamily != dlg.m_dlgSourcePage.m_szFamily);
+		BOOL bLanguageChanged    = (pSourceParm->szLanguage != dlg.m_dlgSourcePage.m_szLanguage);
+		BOOL bGenderChanged      = (pSourceParm->nGender != dlg.m_dlgSourcePage.m_nGender);
+		BOOL bRegionChanged      = (pSourceParm->szRegion != dlg.m_dlgSourcePage.m_szRegion);
+		BOOL bSpeakerChanged     = (pSourceParm->szSpeaker != dlg.m_dlgSourcePage.m_szSpeaker);
+		BOOL bReferenceChanged   = (pSourceParm->szReference != dlg.m_dlgSourcePage.m_szReference);
+		BOOL bTranscriberChanged = (pSourceParm->szTranscriber != dlg.m_dlgSourcePage.m_szTranscriber);
 		if (bCountryChanged || bDailectChanged || bEthnoIDChanged || bFamilyChanged || bLanguageChanged ||
 			bGenderChanged  || bRegionChanged  || bSpeakerChanged  || bReferenceChanged || bTranscriberChanged)
 			modified = TRUE;
@@ -770,42 +833,41 @@ void CSaView::OnFileInformation()
 			pDoc->CheckPoint();
 
 
-		if (pDoc->GetSaParm()->szDescription != dlgFileInformation->m_dlgUserPage.m_szFileDesc)
+		if (pDoc->GetSaParm()->szDescription != dlg.m_dlgUserPage.m_szFileDesc)
 		{
-			pDoc->GetSaParm()->szDescription = dlgFileInformation->m_dlgUserPage.m_szFileDesc;
-			pDoc->SetModifiedFlag(TRUE);                           // document has been modified
-			pDoc->SetTransModifiedFlag(TRUE); // transcription data has been modified
+			pDoc->GetSaParm()->szDescription = dlg.m_dlgUserPage.m_szFileDesc;
+			pDoc->SetModifiedFlag(TRUE);                        // document has been modified
+			pDoc->SetTransModifiedFlag(TRUE);					// transcription data has been modified
 		}
-		if (pSourceParm->szFreeTranslation != dlgFileInformation->m_dlgUserPage.m_szFreeTranslation)
+		if (pSourceParm->szFreeTranslation != dlg.m_dlgUserPage.m_szFreeTranslation)
 		{
-			pSourceParm->szFreeTranslation = dlgFileInformation->m_dlgUserPage.m_szFreeTranslation;
-			pDoc->SetModifiedFlag(TRUE);                           // document has been modified
-			pDoc->SetTransModifiedFlag(TRUE); // transcription data has been modified
+			pSourceParm->szFreeTranslation = dlg.m_dlgUserPage.m_szFreeTranslation;
+			pDoc->SetModifiedFlag(TRUE);                        // document has been modified
+			pDoc->SetTransModifiedFlag(TRUE);					// transcription data has been modified
 		}
 
 
 		if (bCountryChanged || bDailectChanged || bEthnoIDChanged || bFamilyChanged || bLanguageChanged ||
 			bGenderChanged  || bRegionChanged  || bSpeakerChanged  || bReferenceChanged || bTranscriberChanged)
 		{
-			pSourceParm->szCountry = dlgFileInformation->m_dlgSourcePage.m_szCountry;
-			pSourceParm->szDialect = dlgFileInformation->m_dlgSourcePage.m_szDialect;
-			if (dlgFileInformation->m_dlgSourcePage.m_szEthnoID.GetLength() < 3)
-				dlgFileInformation->m_dlgSourcePage.m_szEthnoID += "   ";
-			pSourceParm->szEthnoID = dlgFileInformation->m_dlgSourcePage.m_szEthnoID.Left(3);
-			pSourceParm->szFamily = dlgFileInformation->m_dlgSourcePage.m_szFamily;
-			pSourceParm->szLanguage = dlgFileInformation->m_dlgSourcePage.m_szLanguage;
-			pSourceParm->nGender = dlgFileInformation->m_dlgSourcePage.m_nGender;
-			pSourceParm->szRegion = dlgFileInformation->m_dlgSourcePage.m_szRegion;
-			pSourceParm->szSpeaker = dlgFileInformation->m_dlgSourcePage.m_szSpeaker;
-			pSourceParm->szReference = dlgFileInformation->m_dlgSourcePage.m_szReference;
-			pSourceParm->szTranscriber = dlgFileInformation->m_dlgSourcePage.m_szTranscriber;
-			pDoc->SetModifiedFlag(TRUE);                              // document has been modified
-			pDoc->SetTransModifiedFlag(TRUE); // transcription data has been modified
+			pSourceParm->szCountry = dlg.m_dlgSourcePage.m_szCountry;
+			pSourceParm->szDialect = dlg.m_dlgSourcePage.m_szDialect;
+			if (dlg.m_dlgSourcePage.m_szEthnoID.GetLength() < 3)
+				dlg.m_dlgSourcePage.m_szEthnoID += "   ";
+			pSourceParm->szEthnoID = dlg.m_dlgSourcePage.m_szEthnoID.Left(3);
+			pSourceParm->szFamily = dlg.m_dlgSourcePage.m_szFamily;
+			pSourceParm->szLanguage = dlg.m_dlgSourcePage.m_szLanguage;
+			pSourceParm->nGender = dlg.m_dlgSourcePage.m_nGender;
+			pSourceParm->szRegion = dlg.m_dlgSourcePage.m_szRegion;
+			pSourceParm->szSpeaker = dlg.m_dlgSourcePage.m_szSpeaker;
+			pSourceParm->szReference = dlg.m_dlgSourcePage.m_szReference;
+			pSourceParm->szTranscriber = dlg.m_dlgSourcePage.m_szTranscriber;
+			pDoc->SetModifiedFlag(TRUE);                        // document has been modified
+			pDoc->SetTransModifiedFlag(TRUE);					// transcription data has been modified
 		}
 
 		if (bGenderChanged) BroadcastMessage(WM_USER_INFO_GENDERCHANGED, pSourceParm->nGender);
 	}
-	delete dlgFileInformation;                                    // delete the property sheet
 }
 
 /***************************************************************************/

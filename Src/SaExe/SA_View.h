@@ -427,11 +427,13 @@ protected:
 	afx_msg void OnUpdatePlayerStop(CCmdUI* pCmdUI);
 	afx_msg void OnPlayer();
 	afx_msg void OnExportXML();
+	afx_msg void OnExportFW();
 	afx_msg void OnExportSFM();
 	afx_msg void OnExportTimeTable();
 	afx_msg void OnExportMIDI();
 	afx_msg void OnImportSFM();
 	afx_msg void OnImportSFT();
+	afx_msg void OnFilePhonologyAssistant();
 	afx_msg void OnFileInformation();
 	afx_msg void OnGraphsRetile();
 	afx_msg void OnNextGraph();

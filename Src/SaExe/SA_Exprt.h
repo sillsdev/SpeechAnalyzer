@@ -16,21 +16,38 @@
 #include "exportbasicdialog.h"
 
 /////////////////////////////////////////////////////////////////////////////
+// CExportFW dialog
+class CExportFW : public CExportBasicDialog
+{
+	// Construction
+public:
+	CExportFW( const CSaString & szDocTitle, CWnd* pParent = NULL);
+
+public:
+	// Implementation
+
+protected:
+	// Generated message map functions
+	virtual void OnOK();
+	virtual void InitializeDialog();
+	DECLARE_MESSAGE_MAP()
+};
+
+/////////////////////////////////////////////////////////////////////////////
 // CExportSFM dialog
 
 class CExportSFM : public CExportBasicDialog
 {
 	// Construction
 public:
-	CExportSFM( const CSaString& szDocTitle, CWnd* pParent = NULL) : CExportBasicDialog( szDocTitle, pParent) {} // standard constructor
+	CExportSFM( const CSaString& szDocTitle, CWnd* pParent = NULL);
 
 public:
 	// Implementation
 protected:
 	// Generated message map functions
-	//{{AFX_MSG(CExportSFM)
 	virtual void OnOK();
-	//}}AFX_MSG
+	virtual void InitializeDialog();
 	DECLARE_MESSAGE_MAP()
 };
 
@@ -41,7 +58,7 @@ class CExportXML : public CExportBasicDialog
 {
 	// Construction
 public:
-	CExportXML( const CSaString& szDocTitle, CWnd* pParent = NULL) : CExportBasicDialog(szDocTitle, pParent) {} // standard constructor
+	CExportXML( const CSaString& szDocTitle, CWnd* pParent = NULL);
 
 public:
 	// Implementation
@@ -52,9 +69,8 @@ public:
 
 protected:
 	// Generated message map functions
-	//{{AFX_MSG(CExportXML)
 	virtual void OnOK();
-	//}}AFX_MSG
+	virtual void InitializeDialog();
 	DECLARE_MESSAGE_MAP()
 };
 
@@ -69,7 +85,6 @@ public:
 	CExportTable(const CSaString& szDocTitle, CWnd* pParent = NULL); // standard constructor
 
 	// Dialog Data
-	//{{AFX_DATA(CExportTable)
 	enum { IDD = IDD_EXPORT_TABLE };
 	BOOL  m_bAnnotations;
 	BOOL  m_bCalculations;
@@ -97,7 +112,6 @@ public:
 	BOOL  m_bPhonetic2;
 	int     m_nRegion;
 	BOOL	m_bMelogram;
-	//}}AFX_DATA
 private:
 	CSaString m_szFileName;
 	CSaString m_szDocTitle;
@@ -105,13 +119,13 @@ private:
 	// Implementation
 public:
 	void OnHelpExportTable();
+
 protected:
 	void SetEnable(int nItem, BOOL bEnable);
 	void SetVisible(int nItem, BOOL bVisible, BOOL bEnable = TRUE);
 	virtual void DoDataExchange(CDataExchange* pDX);  // DDX/DDV support
 
 	// Generated message map functions
-	//{{AFX_MSG(CExportTable)
 	afx_msg void OnAllAnnotations();
 	afx_msg void OnAllFormants();
 	afx_msg void OnAllCalculations();
@@ -120,7 +134,6 @@ protected:
 	afx_msg void OnUpdateIntervalTime();
 	afx_msg void OnSample();
 	afx_msg void OnPhonetic();
-	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()
 };
 

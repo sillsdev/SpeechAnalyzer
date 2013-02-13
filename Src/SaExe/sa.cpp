@@ -661,8 +661,14 @@ void CSaApp::ExamineCmdLine(LPCTSTR pCmdLine, WPARAM wParam)
 			}
 
 			// sa has to read list file and open documents // SDM 1.5Test8.3
-			swscanf_s(szCmdLine, _T("%*[ 0123456789]%[^\n]"), m_szCmdFileName.GetBuffer(szCmdLine.GetLength()));
-			m_szCmdFileName.ReleaseBuffer();
+			TCHAR in[512];
+			memset(in,0,512*sizeof(TCHAR));
+			wcscpy(in,szCmdLine);
+
+			TCHAR buffer[512];
+			memset(buffer,0,512*sizeof(TCHAR));
+			swscanf_s(in, _T("%*[ 0123456789]%[^\n]"), buffer, 512);
+			m_szCmdFileName = buffer;
 
 			CFileStatus TheStatus;
 			if ((m_szCmdFileName.GetLength()==0) || !CFile::GetStatus(m_szCmdFileName,TheStatus))
@@ -677,7 +683,7 @@ void CSaApp::ExamineCmdLine(LPCTSTR pCmdLine, WPARAM wParam)
 			CSaString szString = GetBatchString(_T("Settings"), _T("ShowWindow"), _T("")); // get the entry // SDM 1.5Test8.5
 			CSaString szReturn = szString;// SDM 1.5Test10.0
 			CSaString szParam;
-			swscanf_s(szString,_T("%16[^(]%(%20[^)]"),szReturn.GetBuffer(szReturn.GetLength()),szParam.GetBuffer(szReturn.GetLength()));// SDM 1.5Test10.0
+			swscanf_s(szString,_T("%16[^(]%(%20[^)]"),szReturn.GetBuffer(szReturn.GetLength()),szReturn.GetLength(),szParam.GetBuffer(szParam.GetLength()),szParam.GetLength());// SDM 1.5Test10.0
 			szReturn.ReleaseBuffer();
 			szParam.ReleaseBuffer();
 			szReturn.MakeUpper(); // convert the whole string to upper case letters
@@ -886,7 +892,7 @@ void CSaApp::OnProcessBatchCommands()
 	szReturn.MakeUpper(); // convert the whole string to upper case letters
 	szParameterList = "";
 	szEntry = szReturn;
-	swscanf_s(szEntry,_T("%[^(]%(%[^)]"),szReturn.GetBuffer(szReturn.GetLength()), szParameterList.GetBuffer(szReturn.GetLength()));
+	swscanf_s(szEntry,_T("%[^(]%(%[^)]"),szReturn.GetBuffer(szReturn.GetLength()), szReturn.GetLength(), szParameterList.GetBuffer(szParameterList.GetLength()),szParameterList.GetLength());
 	szReturn.ReleaseBuffer();
 	szParameterList.ReleaseBuffer();
 

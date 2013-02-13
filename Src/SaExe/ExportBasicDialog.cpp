@@ -68,10 +68,9 @@ static char BASED_CODE THIS_FILE[] = __FILE__;
 /////////////////////////////////////////////////////////////////////////////
 // CExportBasicDialog dialog
 
-CExportBasicDialog::CExportBasicDialog(const CSaString& szDocTitle, CWnd* pParent /*=NULL*/)
+CExportBasicDialog::CExportBasicDialog( const CSaString& szDocTitle, CWnd* pParent /*=NULL*/)
 : CDialog(CExportBasicDialog::IDD, pParent)
 {
-	//{{AFX_DATA_INIT(CExportBasicDialog)
 	m_bAllSource = TRUE;
 	m_bBandwidth = FALSE;
 	m_bBits = FALSE;
@@ -86,6 +85,7 @@ CExportBasicDialog::CExportBasicDialog(const CSaString& szDocTitle, CWnd* pParen
 	m_bGender = FALSE;
 	m_bHighPass = FALSE;
 	m_bInterlinear = FALSE;
+	m_bMultiRecord = FALSE;
 	m_bLanguage = FALSE;
 	m_bLastModified = FALSE;
 	m_bLength = FALSE;
@@ -111,14 +111,12 @@ CExportBasicDialog::CExportBasicDialog(const CSaString& szDocTitle, CWnd* pParen
 	m_bPhrase = FALSE;
 	m_bCountry = FALSE;
 	m_bQuantization = FALSE;
-	//}}AFX_DATA_INIT
 	m_szDocTitle = szDocTitle;
 }
 
 void CExportBasicDialog::DoDataExchange(CDataExchange* pDX)
 {
 	CDialog::DoDataExchange(pDX);
-	//{{AFX_DATA_MAP(CExportBasicDialog)
 	DDX_Check(pDX, IDC_EX_SFM_ALL_SOURCE, m_bAllSource);
 	DDX_Check(pDX, IDC_EX_SFM_BANDWIDTH, m_bBandwidth);
 	DDX_Check(pDX, IDC_EX_SFM_BITS, m_bBits);
@@ -133,6 +131,7 @@ void CExportBasicDialog::DoDataExchange(CDataExchange* pDX)
 	DDX_Check(pDX, IDC_EX_SFM_GENDER, m_bGender);
 	DDX_Check(pDX, IDC_EX_SFM_HIGHPASS, m_bHighPass);
 	DDX_Check(pDX, IDC_EX_SFM_INTERLINEAR, m_bInterlinear);
+	DDX_Check(pDX, IDC_EX_SFM_MULTIRECORD, m_bMultiRecord);
 	DDX_Check(pDX, IDC_EX_SFM_LANGUAGE, m_bLanguage);
 	DDX_Check(pDX, IDC_EX_SFM_LAST_DATE, m_bLastModified);
 	DDX_Check(pDX, IDC_EX_SFM_LENGTH, m_bLength);
@@ -158,19 +157,17 @@ void CExportBasicDialog::DoDataExchange(CDataExchange* pDX)
 	DDX_Check(pDX, IDC_EXTAB_PHRASE, m_bPhrase);
 	DDX_Check(pDX, IDC_EX_SFM_COUNTRY, m_bCountry);
 	DDX_Check(pDX, IDC_EX_SFM_QUANTIZATION, m_bQuantization);
-	//}}AFX_DATA_MAP
 }
 
 BEGIN_MESSAGE_MAP(CExportBasicDialog, CDialog)
-	//{{AFX_MSG_MAP(CExportBasicDialog)
 	ON_BN_CLICKED(IDC_EX_SFM_ALL_SOURCE, OnAllSource)
 	ON_BN_CLICKED(IDC_EX_SFM_FILE_INFO, OnAllFileInfo)
 	ON_BN_CLICKED(IDC_EX_SFM_RECORD_DATA, OnAllParameters)
 	ON_BN_CLICKED(IDC_EXTAB_ANNOTATIONS, OnAllAnnotations)
 	ON_COMMAND(IDHELP, OnHelpExportBasic)
-	//}}AFX_MSG_MAP
+	ON_BN_CLICKED(IDC_EX_SFM_INTERLINEAR, &CExportBasicDialog::OnClickedExSfmInterlinear)
+	ON_BN_CLICKED(IDC_EX_SFM_MULTIRECORD, &CExportBasicDialog::OnClickedExSfmMultirecord)
 END_MESSAGE_MAP()
-
 
 /////////////////////////////////////////////////////////////////////////////
 // CExportBasicDialog message handlers
@@ -271,7 +268,6 @@ void CExportBasicDialog::OnAllSource()
 			m_bTranscriber = m_bComments = m_bCountry = FALSE;
 		UpdateData(FALSE);
 	}
-
 }
 
 BOOL CExportBasicDialog::OnInitDialog()
@@ -282,6 +278,8 @@ BOOL CExportBasicDialog::OnInitDialog()
 	OnAllSource();
 	OnAllParameters();
 	OnAllFileInfo();
+
+	InitializeDialog();
 
 	CenterWindow();
 
@@ -295,10 +293,18 @@ BOOL CExportBasicDialog::OnInitDialog()
 void CExportBasicDialog::SetEnable(int nItem, BOOL bEnable)
 {
 	CWnd* pWnd = GetDlgItem(nItem);
-
 	if (pWnd)
 	{
 		pWnd->EnableWindow(bEnable);
+	}
+}
+
+void CExportBasicDialog::SetCheck(int nItem, BOOL bChecked)
+{
+	CButton * pWnd = (CButton*)GetDlgItem(nItem);
+	if (pWnd)
+	{
+		pWnd->SetCheck(bChecked);
 	}
 }
 
@@ -311,4 +317,20 @@ void CExportBasicDialog::OnHelpExportBasic()
 	CString szPath = AfxGetApp()->m_pszHelpFilePath;
 	szPath = szPath + "::/User_Interface/Menus/File/Export/Standard_format_or_extensible_markup.htm";
 	::HtmlHelp(NULL, szPath, HH_DISPLAY_TOPIC, NULL);
+}
+
+void CExportBasicDialog::OnClickedExSfmInterlinear()
+{
+	CButton * pWnd = (CButton*)GetDlgItem(IDC_EX_SFM_MULTIRECORD);
+	if (pWnd) {
+		pWnd->SetCheck(FALSE);
+	}
+}
+
+void CExportBasicDialog::OnClickedExSfmMultirecord()
+{
+	CButton * pWnd = (CButton*)GetDlgItem(IDC_EX_SFM_INTERLINEAR);
+	if (pWnd) {
+		pWnd->SetCheck(FALSE);
+	}
 }

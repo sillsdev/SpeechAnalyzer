@@ -747,7 +747,7 @@ void CDlgKlattAll::ParseConstantsGrid(int nGrid, CKlattConstants &cConstants)
 		CString value;
 
 		value = m_cGrid[nGrid].GetTextMatrix(row,2);
-		swscanf_s(value, parameterInfo[i].typeScanf, ((char*)&cConstants)+parameterInfo[i].parameterOffset);
+		swscanf(value, parameterInfo[i].typeScanf, ((char*)&cConstants)+parameterInfo[i].parameterOffset);
 	}
 }
 
@@ -776,7 +776,7 @@ void CDlgKlattAll::ParseParameterGrid(int nGrid, CIpaCharVector &cChars)
 			CString value;
 
 			value = cGrid.GetTextMatrix(row,column);
-			int scanned = swscanf_s(value, parameterInfo[i].typeScanf, ((char*)pTemporal)+parameterInfo[i].parameterOffset);
+			int scanned = swscanf(value, parameterInfo[i].typeScanf, ((char*)pTemporal)+parameterInfo[i].parameterOffset);
 			if (scanned == 1)
 			{
 				bColumnValid = TRUE;
@@ -883,7 +883,7 @@ void CDlgKlattAll::ConvertCStringToCharVector(CString const &szGrid, CIpaCharVec
 					{
 						TEMPORAL *pTemporal = &columnChar.parameters;
 
-						int scanned = swscanf_s(szField, parameterInfo[i].typeScanf, ((char*)pTemporal)+parameterInfo[i].parameterOffset);
+						int scanned = swscanf(szField, parameterInfo[i].typeScanf, ((char*)pTemporal)+parameterInfo[i].parameterOffset);
 						if (scanned == 1)
 						{
 							bColumnValid = TRUE;
@@ -2531,7 +2531,7 @@ void CIpaCharVector::Load(CString szPath)
 			CString value;
 
 			value = extractTabField(line, i+1);
-			swscanf_s(value, parameterInfo[i].typeScanf, ((char*)pTemporal)+parameterInfo[i].parameterOffset);
+			swscanf(value, parameterInfo[i].typeScanf, ((char*)pTemporal)+parameterInfo[i].parameterOffset);
 		}
 
 		this->push_back(CIpaChar(extractTabField(line, 0), cTemporal));
