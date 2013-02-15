@@ -328,7 +328,7 @@ public:
 	void MoveStartCursorRight();                                              // TCJ 7/6/00
 	void MoveStartCursorLeft();                                               // TCJ 7/6/00
 
-	int GetEditBoundaries(int nFlags, BOOL checkKeys = TRUE);
+	EBoundaries GetEditBoundaries(int nFlags, BOOL checkKeys = TRUE);
 	BOOL AssignOverlay( CGraphWnd * pTarget, CSaView * pSourceView);		// change graph type
 
 protected:

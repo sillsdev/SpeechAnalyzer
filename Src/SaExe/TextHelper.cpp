@@ -1,6 +1,7 @@
 #include "Stdafx.h"
 #include "TextHelper.h"
 #include "Settings/OBSTREAM.H"
+#include "resource.h"
 
 #include <iostream>
 #include <fstream>
@@ -298,7 +299,14 @@ TranscriptionDataMap attemptTwoMarkerWhitespaceDelimited( vector<wstring> lines,
 	return map;
 }
 
-bool CTextHelper::ImportText( const CSaString & filename, const CSaString & sync, const MarkerList & markers, TranscriptionDataMap & map) {
+/**
+* addTag - true if we should add 'Tag' to the beginning of reference markers
+*/
+bool CTextHelper::ImportText( const CSaString & filename, 
+							  const CSaString & sync, 
+							  const MarkerList & markers, 
+							  TranscriptionDataMap & map,
+							  bool addTag) {
 
 	ifstream file(filename, std::ios::binary);
 	if (!file) {
@@ -378,14 +386,29 @@ bool CTextHelper::ImportText( const CSaString & filename, const CSaString & sync
 
 	delete [] obuffer;
 
+	CString tag;
+	tag.LoadStringW(IDS_AUTO_REF_TAG);
+
 	map = attemptTabDelimitedRefOnly(lines,markers);
-	if (map.size()>0) return true;
+	if (map.size()>0) {
+		if (addTag) map[sync].push_front(tag);
+		return true;
+	}
 	map = attemptTabDelimited(lines,markers);
-	if (map.size()>0) return true;
+	if (map.size()>0) { 
+		if (addTag) map[sync].push_front(tag);
+		return true;
+	}
 	map = attemptWhitespaceDelimited(lines,markers);
-	if (map.size()>0) return true;
+	if (map.size()>0) {
+		if (addTag) map[sync].push_front(tag);
+		return true;
+	}
 	map = attemptTwoMarkerWhitespaceDelimited(lines,markers);
-	if (map.size()>0) return true;
+	if (map.size()>0) {
+		if (addTag) map[sync].push_front(tag);
+		return true;
+	}
 
 	for (MarkerList::const_iterator it=markers.begin();it!=markers.end();it++) {
 		map[*it].push_back("");

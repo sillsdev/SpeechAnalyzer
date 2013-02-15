@@ -666,7 +666,7 @@ void CExportFW::OnOK() {
 
 				nFind = pDoc->GetSegment(REFERENCE)->FindOffset(dwOffset);
 				if (nFind != -1) {
-					szString = "\\ref " + pDoc->GetSegment(REFERENCE)->GetSegmentString(nFind) + szCrLf;
+					szString = "\\rf " + pDoc->GetSegment(REFERENCE)->GetSegmentString(nFind) + szCrLf;
 					WriteFileUtf8(pFile, szString);
 				}
 

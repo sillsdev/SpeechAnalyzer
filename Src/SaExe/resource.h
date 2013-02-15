@@ -1636,6 +1636,7 @@
 #define IDS_AUTO_REF_MAIN_2             61301
 #define IDS_ENABLE_PA                   61302
 #define IDS_AUTO_REF_MAIN_3             61303
+#define IDS_AUTO_REF_TAG                61304
 #define IDS_AUTO_REF_MAIN_4             61305
 
 // Next default values for new objects

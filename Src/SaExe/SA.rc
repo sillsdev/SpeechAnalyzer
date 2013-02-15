@@ -26,7 +26,7 @@ LANGUAGE LANG_NEUTRAL, SUBLANG_NEUTRAL
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 3,1,0,31
+ FILEVERSION 3,1,0,32
  PRODUCTVERSION 1,0,0,1
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
@@ -44,7 +44,7 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "SIL International"
             VALUE "FileDescription", "SA"
-            VALUE "FileVersion", "v3.1.0.31"
+            VALUE "FileVersion", "v3.1.0.32"
             VALUE "InternalName", "SA"
             VALUE "LegalCopyright", "© 1996-2013 SIL International (MSEA)"
             VALUE "ProductName", "SA"
@@ -2734,7 +2734,7 @@ BEGIN
             MENUITEM "Copy Phonetic to Phonemic",   ID_EDIT_COPY_PHONETIC_TO_PHONEMIC
         END
         MENUITEM "Segment &Boundaries\tINS",    ID_EDIT_BOUNDARIES
-        MENUITEM "Segment Size\tCtrl+Shift",    ID_EDIT_SEGMENT_SIZE
+        MENUITEM "Segment Size\tCtrl+Ins",      ID_EDIT_SEGMENT_SIZE
         MENUITEM SEPARATOR
         MENUITEM "Cu&t\tCtrl+X",                ID_EDIT_CUT
         MENUITEM "&Copy\tCtrl+C",               ID_EDIT_COPY
@@ -4133,7 +4133,7 @@ STRINGTABLE
 BEGIN
     IDR_MAINFRAME           "Speech Analyzer"
     IDR_SA_ANNTYPE          "\nSA\nSA Document\nWAV Files (*.wav)\n.wav\nannFileType\nANN File Type"
-    VS_VERSION              "Version 3.1.0.31"
+    VS_VERSION              "Version 3.1.0.32"
     VS_COPYRIGHT            "© 1996-2013 SIL International (MSEA).\nAll Rights Reserved."
     IDR_SA_WBTYPE           "\nWB\nSA Workbench\nWB Files (*.wb)\n.wb\nwbFileType\nWB File Type"
 END
@@ -5145,6 +5145,7 @@ BEGIN
     IDS_AUTO_REF_MAIN_2     "1) If the file is suppose to contain only reference numbers, make sure there aren't extra tabs or columns in the data.\n\n"
     IDS_ENABLE_PA           "Enable Phonology Assistant to find Speech Analyzer?"
     IDS_AUTO_REF_MAIN_3     "2) If the file is suppose to be delimited, make sure there are an equal number of tabs or spaces in each row and that there are no missing fields within a row.\n"
+    IDS_AUTO_REF_TAG        "Tag"
 END
 
 STRINGTABLE

@@ -220,31 +220,31 @@ IMPLEMENT_DYNCREATE(CSaDoc, CUndoRedoDoc)
 		m_bProcessBackground = TRUE;                     // enable background processing
 		m_pProcessUnprocessed = new CProcessDoc(this); // create data processing object
 		m_pProcessAdjust = new CProcessAdjust(this); // create data processing object
-		m_pProcessFragments = new CProcessFragments;  //create data processing object
-		m_pProcessLoudness = new CProcessLoudness; // create data processing object
-		m_pProcessSmoothLoudness = new CProcessSmoothLoudness; // create data processing object
-		m_pProcessPitch    = new CProcessPitch;    // create data processing object
-		m_pProcessCustomPitch = new CProcessCustomPitch; // create data processing object
-		m_pProcessSmoothedPitch = new CProcessSmoothedPitch; // create data processing object
-		m_pProcessGrappl   = new CProcessGrappl;   // create data processing object
-		m_pProcessMelogram = new CProcessMelogram; // create data processing object CLW 4/5/00
-		m_pProcessChange   = new CProcessChange;   // create data processing object
-		m_pProcessRaw   = new CProcessRaw;   // create data processing object
+		m_pProcessFragments = new CProcessFragments();  //create data processing object
+		m_pProcessLoudness = new CProcessLoudness(); // create data processing object
+		m_pProcessSmoothLoudness = new CProcessSmoothLoudness(); // create data processing object
+		m_pProcessPitch    = new CProcessPitch();    // create data processing object
+		m_pProcessCustomPitch = new CProcessCustomPitch(); // create data processing object
+		m_pProcessSmoothedPitch = new CProcessSmoothedPitch(); // create data processing object
+		m_pProcessGrappl   = new CProcessGrappl();   // create data processing object
+		m_pProcessMelogram = new CProcessMelogram(); // create data processing object CLW 4/5/00
+		m_pProcessChange   = new CProcessChange();   // create data processing object
+		m_pProcessRaw   = new CProcessRaw();   // create data processing object
 		m_pProcessHilbert   = new CHilbert(m_pProcessRaw);   // create data processing object
 		m_pProcessSpectrogram = NULL; // create data processing object
 		m_pProcessSnapshot = NULL; // create data processing object
-		m_pProcessFormants = new CProcessFormants; // create data processing object
+		m_pProcessFormants = new CProcessFormants(); // create data processing object
 		m_pProcessFormantTracker = new CFormantTracker( *m_pProcessRaw, *m_pProcessHilbert, *m_pProcessGrappl); // create data processing object
-		m_pProcessZCross   = new CProcessZCross;   // create data processing object
-		m_pProcessSpectrum = new CProcessSpectrum; // create data processing object
-		m_pProcessDurations = new CProcessDurations; // create data processing object
-		m_pProcessGlottis  = new CProcessGlottis;  // create data processing object
-		m_pProcessPOA = new CProcessPOA;           // create data processing object
+		m_pProcessZCross   = new CProcessZCross();   // create data processing object
+		m_pProcessSpectrum = new CProcessSpectrum(); // create data processing object
+		m_pProcessDurations = new CProcessDurations(); // create data processing object
+		m_pProcessGlottis  = new CProcessGlottis();  // create data processing object
+		m_pProcessPOA = new CProcessPOA();           // create data processing object
 		m_pProcessSDP[0] = NULL;
 		m_pProcessSDP[1] = NULL;
 		m_pProcessSDP[2] = NULL;
-		m_pProcessRatio    = new CProcessRatio;    // create data processing object
-		m_pProcessTonalWeightChart = new CProcessTonalWeightChart; // create data processing object CLW 11/4/99
+		m_pProcessRatio    = new CProcessRatio();    // create data processing object
+		m_pProcessTonalWeightChart = new CProcessTonalWeightChart(); // create data processing object CLW 11/4/99
 		m_pCreatedFonts = new CObArray; // create graph font array object
 
 		//SDM 1.06.6U2
@@ -6513,7 +6513,6 @@ IMPLEMENT_DYNCREATE(CSaDoc, CUndoRedoDoc)
 	*/
 	bool CSaDoc::ValidatePhraseFilenames( Annotations & type, EPhraseFilenameConvention & convention, wstring & path)
 	{
-		CSaApp* pApp = (CSaApp*)AfxGetApp();
 		POSITION pos = GetFirstViewPosition();
 		CSaView* pView = (CSaView*)GetNextView(pos);
 
@@ -7623,14 +7622,14 @@ IMPLEMENT_DYNCREATE(CSaDoc, CUndoRedoDoc)
 
 		// determine how many words there are
 		CGlossSegment * pGloss = (CGlossSegment*)m_apSegments[GLOSS];
-		int begin = 1;
-		int end = pGloss->GetOffsetSize();
-		if (end==0) 
-		{
+		if (pGloss->IsEmpty()) {
 			CSaApp* pApp = (CSaApp*)AfxGetApp();
 			pApp->ErrorMessage(IDS_ERROR_NO_WORDS_ON_AUTO_REFERENCE);
 			return;
 		}
+
+		int begin = 1;
+		int end = pGloss->GetOffsetSize();
 
 		int selection = pGloss->GetSelection();
 		bool glossSelected = (selection!=-1);
@@ -7641,6 +7640,7 @@ IMPLEMENT_DYNCREATE(CSaDoc, CUndoRedoDoc)
 
 		// query the user
 		CDlgAutoReferenceData dlg( this, numWords);
+
 		dlg.mLastImport = pApp->GetProfileString(L"AutoRef",L"LastImport",L"");
 		dlg.mBeginRef = pApp->GetProfileString(L"AutoRef",L"BeginRef",L"");
 		dlg.mEndRef = pApp->GetProfileString(L"AutoRef",L"EndRef",L"");
@@ -7649,6 +7649,7 @@ IMPLEMENT_DYNCREATE(CSaDoc, CUndoRedoDoc)
 		dlg.mBegin = begin;
 		dlg.mEnd = end;
 		dlg.mGlossSelected = glossSelected;
+
 		if (dlg.DoModal()!=IDOK) 
 		{
 			// do nothing on cancel
@@ -7698,9 +7699,8 @@ IMPLEMENT_DYNCREATE(CSaDoc, CUndoRedoDoc)
 		{
 			// data should be fully validated by dialog!
 			CTranscriptionData td;
-			if (!ImportTranscription(CSaString(dlg.mLastImport),FALSE,FALSE,FALSE,FALSE,td))
+			if (!ImportTranscription(CSaString(dlg.mLastImport),false,false,false,false,td,true))
 			{
-				CSaApp* pApp = (CSaApp*)AfxGetApp();
 				CString msg;
 				msg.LoadStringW(IDS_AUTO_REF_MAIN_1);
 				CString msg2;
@@ -8605,7 +8605,7 @@ IMPLEMENT_DYNCREATE(CSaDoc, CUndoRedoDoc)
 	* This is used by the automatic transcription feature
 	* returns false on failure
 	*/
-	const bool CSaDoc::ImportTranscription( CSaString & filename, BOOL gloss, BOOL phonetic, BOOL phonemic, BOOL orthographic, CTranscriptionData & td)  
+	const bool CSaDoc::ImportTranscription( CSaString & filename, bool gloss, bool phonetic, bool phonemic, bool orthographic, CTranscriptionData & td, bool addTag)  
 	{
 		td.m_MarkerDefs[REFERENCE] = psz_Reference;
 		td.m_szPrimary = psz_Reference;
@@ -8648,7 +8648,7 @@ IMPLEMENT_DYNCREATE(CSaDoc, CUndoRedoDoc)
 
 			if (result==IDC_IMPORT_PLAIN_TEXT) 
 			{
-				return CTextHelper::ImportText(filename,td.m_szPrimary,td.m_Markers,td.m_TranscriptionData);
+				return CTextHelper::ImportText(filename,td.m_szPrimary,td.m_Markers,td.m_TranscriptionData, addTag);
 			}
 
 			// proceeding as SFM	
@@ -8686,17 +8686,16 @@ IMPLEMENT_DYNCREATE(CSaDoc, CUndoRedoDoc)
 
 			if (CSFMHelper::IsMultiRecordSFM( filename, dlg.m_szReference)) 
 			{
-				td.m_TranscriptionData = CSFMHelper::ImportMultiRecordSFM( filename, sync, td.m_Markers);
+				td.m_TranscriptionData = CSFMHelper::ImportMultiRecordSFM( filename, sync, td.m_Markers, addTag);
 				return true;
 			}
-			else
-			{
-				//map = CSFMHelper::ImportSFM( stream);
-			}
+
+			//map = CSFMHelper::ImportSFM( stream);
+			return false;
 		}
 
 		// proceeding as text
-		return CTextHelper::ImportText(filename,td.m_szPrimary,td.m_Markers,td.m_TranscriptionData);
+		return CTextHelper::ImportText(filename,td.m_szPrimary,td.m_Markers,td.m_TranscriptionData, addTag);
 	}
 
 	CSegment * CSaDoc::GetSegment(int nIndex) 

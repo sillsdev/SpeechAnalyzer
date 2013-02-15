@@ -230,8 +230,6 @@ long CIIRFilter::Process(void* pCaller, ISaDoc* pDoc, int nProgress, int nLevel)
 			dwDataSize = (forwardPass.GetDataSize() - FilterFilterSilenceSamples())*wSmpSize;
 
 		dwDataPos = forwardPass.GetDataSize()*wSmpSize;
-		TRACE("wDstSmpSize=%d dwDataSize=%d dwDataPos=%d\n",wDstSmpSize,dwDataSize, dwDataPos);
-		m_zReverseTransform.Dump("reverse");
 
 		while (dwDataPos > dwDataSize)
 		{
@@ -717,9 +715,6 @@ CHilbert::CHilbert( CDataProcess * pSourceProcess, BOOL bWBenchProcess)
 		rTauSq += 2/(rlp*rlp);
 	}
 
-	m_zForwardTransform.Dump("forward");
-	m_zReverseTransform.Dump("reverse");
-
 	double fTau = sqrt(fTauSq);
 	double rTau = sqrt(rTauSq);  UNUSED_ALWAYS(rTau);
 
@@ -729,13 +724,9 @@ CHilbert::CHilbert( CDataProcess * pSourceProcess, BOOL bWBenchProcess)
 
 CZTransform CHilbert::AllPass(double pole)
 {
-	TRACE("pole=%f\n",pole);
-
 	double numerator[3];
 	double denominator[3];
 	double beta = pole*pole;
-
-	TRACE("beta=%f\n",beta);
 
 	numerator[0] = beta;
 	numerator[1] = 0;
@@ -745,7 +736,6 @@ CZTransform CHilbert::AllPass(double pole)
 	denominator[2] = -beta;
 
 	CZTransform result(2, numerator, denominator);
-	result.Dump("AllPass");
 	return result;
 }
 

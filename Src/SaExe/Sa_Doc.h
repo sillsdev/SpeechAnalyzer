@@ -398,7 +398,7 @@ public:
 	bool CanEdit();
 	const CSaString BuildString( int nSegment);
 	const CSaString BuildImportString( BOOL gloss, BOOL phonetic, BOOL phonemic, BOOL orthographic);
-	const bool ImportTranscription( CSaString & filename, BOOL gloss, BOOL phonetic, BOOL phonemic, BOOL orthographic, CTranscriptionData & td);
+	const bool ImportTranscription( CSaString & filename, bool gloss, bool phonetic, bool phonemic, bool orthographic, CTranscriptionData & td, bool addTag);
 
 protected:
 	// automatic transcription alignment functions

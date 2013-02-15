@@ -644,7 +644,7 @@ void CSaView::OnUpdateEditBoundaries(CCmdUI* pCmdUI)
 /***************************************************************************/
 // CSaView::GetEditBoundaries
 /***************************************************************************/
-int CSaView::GetEditBoundaries( int nFlags, BOOL checkKeys)
+EBoundaries CSaView::GetEditBoundaries( int nFlags, BOOL checkKeys)
 {
 	if ((m_bEditSegmentSize) && (checkKeys))
 	{
@@ -4485,40 +4485,88 @@ void CSaView::EditAddGloss(bool bDelimiter)
 /***************************************************************************/
 void CSaView::OnUpdateEditAddWord(CCmdUI* pCmdUI)
 {
-	BOOL bEnable = FALSE;
-	CSaDoc* pDoc = (CSaDoc*) GetDocument(); // get pointer to document
+	// get pointer to document
+	CSaDoc* pDoc = (CSaDoc*) GetDocument(); 
 
 	CSegment* pSeg = GetAnnotation(GLOSS);
-	int nInsertAt = pSeg->CheckPosition(pDoc,GetStartCursorPosition(),GetStopCursorPosition(),CSegment::MODE_ADD);
-	if (nInsertAt != -1)
-		bEnable = TRUE;
-	else
-	{
-		//SDM 1.5Test8.2
-		DWORD dwStart = GetStartCursorPosition();
+	if (pSeg->CheckPosition(pDoc,GetStartCursorPosition(),GetStopCursorPosition(),CSegment::MODE_ADD) != -1) {
+		// if we are completely within a segment we are good...
+		pCmdUI->Enable(TRUE);
+		return;
+	}
+	
+	//SDM 1.5Test8.2
+	DWORD dwStart = GetStartCursorPosition();
+	int nPos = pSeg->FindFromPosition(dwStart,TRUE);
+	if (nPos==-1) {
 
-		int nPos = pSeg->FindFromPosition(dwStart,TRUE);
-		if (nPos==-1)
-			nPos = pSeg->FindFromPosition(dwStart,FALSE);
-		else
-			nPos++;
+		// if we are outside and beyond the last segment we are done.
+		if (dwStart > pSeg->GetStop(pSeg->GetOffsetSize()-1)) {
+			pCmdUI->Enable(FALSE);
+			return;
+		}
 
-		DWORD dwStop;
-		if ((nPos == -1) || (nPos >= pSeg->GetOffsetSize()))
+		// start cursor was not within a segment
+		nPos = pSeg->FindFromPosition(dwStart,FALSE);
+		DWORD dwStop = 0;
+		// if we weren't within a segment or we are on the last segment
+		if ((nPos == -1) || (nPos >= pSeg->GetOffsetSize())) {
+			// stop will be at end of data
 			dwStop = pDoc->GetUnprocessedDataSize();
-		else dwStop = pSeg->GetOffset(nPos);
+		} else {
+			// stop is at end of selected segment
+			dwStop = pSeg->GetOffset(nPos);
+		}
+		// if segments are within phonetic
+		if (GetAnnotation(PHONETIC)->CheckPosition(pDoc,dwStart,dwStop,CSegment::MODE_ADD) != -1) {
+			pCmdUI->Enable(TRUE);
+			return;
+		}
 
-		nInsertAt = GetAnnotation(PHONETIC)->CheckPosition(pDoc,dwStart,dwStop,CSegment::MODE_ADD);
-		if (nInsertAt != -1)
-			bEnable = TRUE;
-		else if (pSeg->GetSelection()!=-1) // Set Delimiter
-		{
+		// if a gloss character is selected...
+		if (pSeg->GetSelection()!=-1) { 
+			// Set Delimiter
 			CSaString szString = GetSelectedAnnotationString();
-			if (szString[0] != WORD_DELIMITER)
-				bEnable = TRUE;
+			if (szString[0] != WORD_DELIMITER) {
+				pCmdUI->Enable(TRUE);
+				return;
+			}
+		}
+
+		pCmdUI->Enable(FALSE);
+		return;
+	}
+
+	// at this point we were within a segment
+	// point to the next segment
+	nPos++;
+	DWORD dwStop = 0;
+	// if we weren't within a segment or we are on the last segment
+	if (nPos >= pSeg->GetOffsetSize()) {
+		// stop will be at end of data
+		dwStop = pDoc->GetUnprocessedDataSize();
+	} else {
+		// stop is at end of selected segment
+		dwStop = pSeg->GetOffset(nPos);
+	}
+
+	// if segments are within phonetic
+	if (GetAnnotation(PHONETIC)->CheckPosition(pDoc,dwStart,dwStop,CSegment::MODE_ADD) != -1) {
+		pCmdUI->Enable(TRUE);
+		return;
+	}
+		
+	// if a gloss character is selected...
+	if (pSeg->GetSelection()!=-1) { 
+		// Set Delimiter
+		CSaString szString = GetSelectedAnnotationString();
+		if (szString[0] != WORD_DELIMITER) {
+			pCmdUI->Enable(TRUE);
+			return;
 		}
 	}
-	pCmdUI->Enable(bEnable);
+
+	pCmdUI->Enable(FALSE);
 }
 
 //SDM 1.06.5
@@ -5402,8 +5450,6 @@ void CSaView::OnMoveStopCursorHere()
 	// calculate data samples per pixel
 	ASSERT(rWnd.Width());
 	double fSamplesPerPix = (double)dwDataFrame / (double)(rWnd.Width()*nSmpSize);
-
-	TRACE("sampperpix=%f\n",fSamplesPerPix);
 
 	// calculate the start cursor position
 	DWORD dwStopCursor = (DWORD) round(fDataPos/nSmpSize + ((double)point.x) * fSamplesPerPix);

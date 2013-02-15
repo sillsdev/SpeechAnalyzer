@@ -522,6 +522,7 @@ void CStartCursorWnd::OnLButtonDown(UINT nFlags, CPoint point)
 		m_dwDragPos = m_dwStartDragPos;
 		pView->SendMessage(WM_USER_CURSOR_IN_FRAGMENT, START_CURSOR, dwFragmentIndex);
 	}
+
 	// Set Focus to receive key events so we can track CTRL-SHIFT changes during drag
 	SetFocus();
 	ClipCursor(rWnd);
@@ -798,8 +799,6 @@ DWORD CStopCursorWnd::CalculateCursorPosition( CView* pSaView,
 	// calculate data samples per pixel
 	ASSERT(nWidth);
 	double fSamplesPerPix = (double)dwDataFrame / (double)(nWidth*nSmpSize);
-
-	TRACE("sampperpix=%f\n",fSamplesPerPix);
 
 	// calculate the start cursor position
 	DWORD dwCursor = (DWORD) round(fDataPos/nSmpSize + ((double)nPosition) * fSamplesPerPix);

@@ -29,8 +29,6 @@ public:
 
 	bool IsIdentity();
 
-	void Dump(const char * tag) const;
-
 	typedef std::vector<CZT> CZStageVector;
 
 private:
@@ -213,26 +211,6 @@ template<class _Ty> int32 CZTransformGeneric<_Ty>::GetOrder() const
 		nOrder += m_cStages[i].GetOrder();
 
 	return nOrder;
-}
-
-template<class _Ty> void CZTransformGeneric<_Ty>::Dump( const char * tag) const 
-{
-	TRACE("%s order=%d ",tag,m_nOrder);
-	if (m_nOrder>0) {
-		TRACE("numerator ");
-		for (int i=0;i<m_nOrder+1;i++) {
-			TRACE("%f ",m_pNumerator[i]);
-		}
-		TRACE(" denominator ");
-		for (int i=0;i<m_nOrder+1;i++) {
-			TRACE("%f ",m_pDenominator[i]);
-		}
-		TRACE(" state ");
-		for (int i=0;i<m_nOrder+1;i++) {
-			TRACE("%f ",m_pState[i]);
-		}
-		TRACE("\n");
-	}
 }
 
 typedef CZTransformGeneric<double> CZTransform;

@@ -61,7 +61,7 @@ bool CSFMHelper::IsMultiRecordSFM( CSaString & filename, CSaString & marker) {
 * Whenever syncMarker is encountered, the list will be balanced for consistency
 * Return a map using key marker as a key and the list of value for that marker
 */
-TranscriptionDataMap CSFMHelper::ImportMultiRecordSFM(  CSaString & filename, CSaString & syncMarker, MarkerList & markers) {
+TranscriptionDataMap CSFMHelper::ImportMultiRecordSFM(  CSaString & filename, CSaString & syncMarker, MarkerList & markers, bool addTag) {
 
 	TranscriptionDataMap result;
 

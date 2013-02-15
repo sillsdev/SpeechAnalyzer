@@ -138,13 +138,13 @@ public:
 	// remove offset and duration
 	void RemoveAt(int index, int length);
 
-	enum {
+	enum EMode {
 		MODE_AUTOMATIC,
 		MODE_EDIT,
 		MODE_ADD
 	};
 
-	virtual int CheckPosition(CSaDoc*,DWORD dwStart,DWORD dwStop, int nMode=MODE_AUTOMATIC,BOOL bOverlap=TRUE) const = 0;
+	virtual int CheckPosition(CSaDoc*,DWORD dwStart,DWORD dwStop, EMode nMode=MODE_AUTOMATIC, BOOL bOverlap=TRUE) const = 0;
 	
 	enum {
 		LIMIT_MOVING_START=1,
@@ -197,8 +197,8 @@ protected:
 public:
 	void AdjustCursorsToMaster(CDocument* pSaDoc, BOOL bAdjust = TRUE, DWORD* pdwOffset = NULL, DWORD* pdwStop = NULL) const; // adjust cursors to the nearest phonetic segment to the given position SDM 1.06.1.2 Added function
 	int AdjustPositionToMaster(CDocument* pSaDoc, DWORD& pdwOffset, DWORD& pdwStop) const;
-	int CheckPositionToMaster(CSaDoc*,DWORD dwStart,DWORD dwStop, int nMode) const;
-	virtual int CheckPosition(CSaDoc* pDoc, DWORD dwStart, DWORD dwStop, int nMode=MODE_AUTOMATIC, BOOL /*bUnused*/=TRUE) const;
+	int CheckPositionToMaster( CSaDoc* pDoc, DWORD dwStart, DWORD dwStop, EMode nMode) const;
+	virtual int CheckPosition( CSaDoc* pDoc, DWORD dwStart, DWORD dwStop, EMode nMode=MODE_AUTOMATIC, BOOL /*bUnused*/=TRUE) const;
 	virtual void LimitPosition(CSaDoc*,DWORD& dwStart,DWORD& dwStop, int nMode=LIMIT_MOVING_BOTH) const;
 	virtual void Add(CSaDoc* pDoc, DWORD dwStart, CSaString& szString, BOOL bDelimiter = FALSE, BOOL bCheck = TRUE); // add a segment
 };
@@ -237,7 +237,7 @@ public:
 	virtual BOOL Match(int index, const CSaString & strToFind);
 	virtual int FindNext(int fromIndex, const CSaString & strToFind, CSaDoc & SaDoc);
 	virtual int FindPrev(int fromIndex, const CSaString & strToFind, CSaDoc & SaDoc);
-	virtual int CheckPosition(CSaDoc*,DWORD dwStart,DWORD dwStop, int nMode=MODE_AUTOMATIC, BOOL bUnused = TRUE) const;
+	virtual int CheckPosition(CSaDoc*,DWORD dwStart,DWORD dwStop, EMode nMode=MODE_AUTOMATIC, BOOL bUnused = TRUE) const;
 	virtual void  LimitPosition(CSaDoc*,DWORD& dwStart,DWORD& dwStop, int nMode=LIMIT_MOVING_BOTH) const;
 	int CountWords();
 	DWORD CalculateDuration(CSaDoc* pDoc, const int nIndex) const;
@@ -252,7 +252,7 @@ public:
 	virtual BOOL SetAt( const CSaString*, bool delimiter, DWORD dwStart, DWORD dwDuration); // insert a new segment
 	virtual BOOL Insert(int nIndex, const CSaString*, bool delimiter, DWORD dwStart, DWORD dwDuration); // insert a new segment
 	virtual BOOL SetText(int nIndex, const CSaString*, int nDelimiter, DWORD dwStart, DWORD dwDuration); // insert a new segment
-	int CheckPositionToMaster(CSaDoc*,DWORD dwStart,DWORD dwStop, int nMode) const;
+	int CheckPositionToMaster(CSaDoc*,DWORD dwStart,DWORD dwStop, EMode nMode) const;
 	virtual void Add(CSaDoc* pDoc, DWORD dwStart, CSaString& szString, BOOL bDelimiter = FALSE, BOOL bCheck = TRUE); // add a segment
 };
 
@@ -264,7 +264,7 @@ class CIndependentSegment : public CSegment
 	// Operations
 public:
 	CIndependentSegment(int index, int master = -1): CSegment(index,master) {};
-	virtual int CheckPosition(CSaDoc*,DWORD dwStart,DWORD dwStop, int nMode=MODE_AUTOMATIC,BOOL bOverlap=TRUE) const;
+	virtual int CheckPosition(CSaDoc*,DWORD dwStart,DWORD dwStop, EMode nMode=MODE_AUTOMATIC,BOOL bOverlap=TRUE) const;
 	virtual void LimitPosition(CSaDoc*,DWORD& dwStart,DWORD& dwStop, int nMode=LIMIT_MOVING_BOTH) const;
 };
 
@@ -298,7 +298,7 @@ class CMusicPhraseSegment : public CIndependentSegment
 	// Operations
 public:
 	CMusicPhraseSegment(int index, int master = -1): CIndependentSegment(index,master) {};
-	virtual int CheckPosition(CSaDoc*,DWORD dwStart,DWORD dwStop, int nMode=MODE_AUTOMATIC,BOOL bOverlap=TRUE) const;
+	virtual int CheckPosition(CSaDoc*,DWORD dwStart,DWORD dwStop, EMode nMode=MODE_AUTOMATIC,BOOL bOverlap=TRUE) const;
 
 	// Attributes
 private:

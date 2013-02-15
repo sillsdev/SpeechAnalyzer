@@ -10,6 +10,7 @@
 #include "stdafx.h"
 #include "DlgAutoReferenceData.h"
 #include "Sa_Doc.h"
+#include "resource.h"
 
 using std::find;
 
@@ -80,7 +81,6 @@ BOOL CDlgAutoReferenceData::OnInitDialog()
 	OnRadio();
 
 	mSpinBegin.SetRange(0,10000);
-
 	mSpinBegin.SetPos(mBegin);
 	mSpinEnd.SetRange(1,10000);
 	mSpinEnd.SetPos(mEnd);
@@ -129,6 +129,7 @@ void CDlgAutoReferenceData::DoDataExchange(CDataExchange* pDX)
 	DDX_CBString(pDX, IDC_BEGIN_COMBO, mBeginRef);
 	DDX_CBString(pDX, IDC_END_COMBO, mEndRef);
 
+	// load up the controls
 	if (!pDX->m_bSaveAndValidate) 
 	{
 		// display on screen
@@ -152,7 +153,7 @@ void CDlgAutoReferenceData::DoDataExchange(CDataExchange* pDX)
 			else 
 			{
 				CTranscriptionData td;
-				if (mSaDoc->ImportTranscription(CSaString(mLastImport),FALSE,FALSE,FALSE,FALSE,td)) 
+				if (mSaDoc->ImportTranscription(CSaString(mLastImport),false,false,false,false,td,true)) 
 				{
 					CString ref = td.m_szPrimary;
 					mComboBegin.ResetContent();
@@ -164,7 +165,20 @@ void CDlgAutoReferenceData::DoDataExchange(CDataExchange* pDX)
 						mComboBegin.AddString(*it);
 						mComboEnd.AddString(*it);
 					}
-					mComboBegin.SelectString(-1,mBeginRef);
+					if (refs.size()>1) {
+						// the table is not empty
+						if (mBeginRef.GetLength()==0) {
+							// the user didn't previously select something
+							MarkerList::iterator it = refs.begin();
+							it++;
+							mBeginRef = *it;
+							mComboBegin.SelectString(-1,mBeginRef);
+						} else {
+							mComboBegin.SelectString(-1,mBeginRef);
+						}
+					} else {
+						mComboBegin.SelectString(-1,mBeginRef);
+					}
 					mComboEnd.SelectString(-1,mEndRef);
 				}
 				else
@@ -179,7 +193,6 @@ void CDlgAutoReferenceData::DoDataExchange(CDataExchange* pDX)
 	} 
 	else 
 	{
-
 		// transfer dialog controls to member variables
 		mUsingNumbers = (IsDlgButtonChecked(IDC_NUMBERS_RADIO)!=0);
 		mUsingFirstGloss = (IsDlgButtonChecked(IDC_FIRST_GLOSS_RADIO)!=0);
@@ -207,7 +220,7 @@ void CDlgAutoReferenceData::DoDataExchange(CDataExchange* pDX)
 			}
 
 			CTranscriptionData td;
-			if (!mSaDoc->ImportTranscription(CSaString(mLastImport),FALSE,FALSE,FALSE,FALSE,td)) {
+			if (!mSaDoc->ImportTranscription(CSaString(mLastImport),false,false,false,false,td,true)) {
 				pDX->PrepareEditCtrl(IDC_FILENAME);
 				CString msg;
 				msg.LoadStringW(IDS_AUTO_REF_MAIN_1);

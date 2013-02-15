@@ -1,3 +1,7 @@
+SA - 3.1.0.32 - 2/15/2013
+1) Fixed bug that was allowing word to be added beyond last segment.
+2) Add 'tag' prefix to reference numbers when using 'auto ref'
+
 SA - 3.1.0.31 - 2/12/2013
 1) Fixed Tools menu bug.
 2) Implemented feature to write registry entries for PA

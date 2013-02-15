@@ -2524,7 +2524,7 @@ void CIpaCharVector::Load(CString szPath)
 		if (line[0] == '#') // skip comments
 			continue; 
 
-		for(int i=0;parameterInfo[i].parameterOffset != -1; i++)
+		for (int i=0;parameterInfo[i].parameterOffset != -1; i++)
 		{
 			TEMPORAL *pTemporal = &cTemporal;
 

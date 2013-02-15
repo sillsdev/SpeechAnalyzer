@@ -292,7 +292,7 @@ enum OpenModeType {
     MUSIANALYSIS,
 };
 
-enum BOUNDARIES {
+enum EBoundaries {
     BOUNDARIES_EDIT_NULL = 0,
     BOUNDARIES_EDIT_OVERLAP = 1,
     BOUNDARIES_EDIT_NO_OVERLAP = 2
