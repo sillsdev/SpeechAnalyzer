@@ -22,6 +22,7 @@
 #include "sa_doc.h"
 #include "sa_view.h"
 #include "mainfrm.h"
+#include "TextSegment.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE

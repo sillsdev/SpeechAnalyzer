@@ -26,7 +26,7 @@ LANGUAGE LANG_NEUTRAL, SUBLANG_NEUTRAL
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 3,1,0,32
+ FILEVERSION 3,1,0,33
  PRODUCTVERSION 1,0,0,1
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
@@ -44,7 +44,7 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "SIL International"
             VALUE "FileDescription", "SA"
-            VALUE "FileVersion", "v3.1.0.32"
+            VALUE "FileVersion", "v3.1.0.33"
             VALUE "InternalName", "SA"
             VALUE "LegalCopyright", "© 1996-2013 SIL International (MSEA)"
             VALUE "ProductName", "SA"
@@ -1483,7 +1483,7 @@ BEGIN
     LTEXT           "Modify Orthographic Transcription",IDC_TITLE,5,7,324,10
     LTEXT           "Make any necessary changes to the orthographic transcription.\n\nThe import button will import a transcription from either a plain text or SFM-formatted file.\nThe revert button will reload the current transcription.",IDC_INSTRUCTION,5,19,324,47
     PUSHBUTTON      "&Revert",IDC_REVERT,170,77,45,14
-    EDITTEXT        IDC_ANNOTATION,5,94,324,60,ES_MULTILINE | ES_AUTOVSCROLL | ES_NOHIDESEL | ES_WANTRETURN
+    EDITTEXT        IDC_ANNOTATION,5,94,324,87,ES_MULTILINE | ES_AUTOVSCROLL | ES_NOHIDESEL | ES_WANTRETURN
     DEFPUSHBUTTON   "&Import ",IDC_IMPORT,120,77,45,14
 END
 
@@ -1495,7 +1495,7 @@ BEGIN
     LTEXT           "Modify Phonetic Transcription",IDC_TITLE,5,7,324,10
     LTEXT           "Make any necessary changes to the phonetic transcription.\n\nThe import button will import a transcription from either a plain text or SFM-formatted file.\nThe revert button will reload the current transcription.",IDC_INSTRUCTION,5,19,324,47
     PUSHBUTTON      "&Revert",IDC_REVERT,170,77,45,14
-    EDITTEXT        IDC_ANNOTATION,5,94,324,60,ES_MULTILINE | ES_AUTOVSCROLL | ES_NOHIDESEL | ES_WANTRETURN
+    EDITTEXT        IDC_ANNOTATION,5,94,324,87,ES_MULTILINE | ES_AUTOVSCROLL | ES_NOHIDESEL | ES_WANTRETURN
     DEFPUSHBUTTON   "&Import ",IDC_IMPORT,120,77,45,14
 END
 
@@ -1507,7 +1507,7 @@ BEGIN
     LTEXT           "Modify Phonemic Transcription",IDC_TITLE,5,7,324,10
     LTEXT           "Make any necessary changes to the phonemic transcription.\n\nThe import button will import a transcription from either a plain text or SFM-formatted file.\nThe revert button will reload the current transcription.",IDC_INSTRUCTION,5,19,324,47
     PUSHBUTTON      "&Revert",IDC_REVERT,170,77,45,14
-    EDITTEXT        IDC_ANNOTATION,5,94,324,60,ES_MULTILINE | ES_AUTOVSCROLL | ES_NOHIDESEL | ES_WANTRETURN
+    EDITTEXT        IDC_ANNOTATION,5,94,324,87,ES_MULTILINE | ES_AUTOVSCROLL | ES_NOHIDESEL | ES_WANTRETURN
     DEFPUSHBUTTON   "&Import ",IDC_IMPORT,120,77,45,14
 END
 
@@ -2192,11 +2192,11 @@ BEGIN
     LTEXT           "Modify Gloss Transcription",IDC_TITLE,5,7,324,10
     LTEXT           "Make any necessary changes to the gloss.\n\nThe import button will import an transcription from either a plain text or SFM-formatted file.\nThe revert button will reload the current transcription.",IDC_INSTRUCTION,5,19,324,47
     PUSHBUTTON      "&Revert",IDC_REVERT,169,76,45,14
-    EDITTEXT        IDC_ANNOTATION,5,94,324,60,ES_MULTILINE | ES_AUTOVSCROLL | ES_NOHIDESEL | ES_WANTRETURN
+    EDITTEXT        IDC_ANNOTATION,5,94,324,87,ES_MULTILINE | ES_AUTOVSCROLL | ES_NOHIDESEL | ES_WANTRETURN
     DEFPUSHBUTTON   "&Import ",IDC_IMPORT,120,76,45,14
 END
 
-IDD_ANNOTATION_IMPORT_REF DIALOGEX 0, 0, 335, 183
+IDD_ANNOTATION_IMPORT_REF DIALOGEX 0, 0, 335, 186
 STYLE DS_SETFONT | WS_CHILD | WS_DISABLED | WS_CAPTION
 CAPTION "Transcription Alignment"
 FONT 8, "MS Sans Serif", 0, 0, 0x0
@@ -2204,7 +2204,7 @@ BEGIN
     LTEXT           "Import Wordlist Data",IDC_TITLE,5,7,324,10
     LTEXT           "The marked-up text must use tabs, commas or spaces to seperate the data.",IDC_INSTRUCTION,5,42,324,16
     PUSHBUTTON      "&Revert",IDC_REVERT,170,76,45,14
-    EDITTEXT        IDC_ANNOTATION,5,94,324,60,ES_MULTILINE | ES_AUTOVSCROLL | ES_NOHIDESEL | ES_READONLY | ES_WANTRETURN | WS_VSCROLL
+    EDITTEXT        IDC_ANNOTATION,5,94,324,87,ES_MULTILINE | ES_AUTOVSCROLL | ES_NOHIDESEL | ES_READONLY | ES_WANTRETURN | WS_VSCROLL
     DEFPUSHBUTTON   "&Import ",IDC_IMPORT,120,76,45,14
     LTEXT           "The import button will import an transcription from either marked-up text or SFM-formatted file.\nThe revert button will reload the current transcription.",IDC_INSTRUCTION2,5,20,324,18
 END
@@ -2444,6 +2444,7 @@ BEGIN
 
     IDD_ANNOTATION_IMPORT_REF, DIALOG
     BEGIN
+        BOTTOMMARGIN, 183
     END
 
     IDD_ANNOTATION_IMPORT_SFM_WITH_REF, DIALOG
@@ -2734,7 +2735,7 @@ BEGIN
             MENUITEM "Copy Phonetic to Phonemic",   ID_EDIT_COPY_PHONETIC_TO_PHONEMIC
         END
         MENUITEM "Segment &Boundaries\tINS",    ID_EDIT_BOUNDARIES
-        MENUITEM "Segment Size\tCtrl+Ins",      ID_EDIT_SEGMENT_SIZE
+        MENUITEM "Segment Size\tCtrl+Q",        ID_EDIT_SEGMENT_SIZE
         MENUITEM SEPARATOR
         MENUITEM "Cu&t\tCtrl+X",                ID_EDIT_CUT
         MENUITEM "&Copy\tCtrl+C",               ID_EDIT_COPY
@@ -3559,7 +3560,7 @@ BEGIN
     VK_LEFT,        ID_EDIT_PREVIOUS,       VIRTKEY, ALT, NOINVERT
     "Y",            ID_EDIT_REDO,           VIRTKEY, CONTROL, NOINVERT
     VK_DELETE,      ID_EDIT_REMOVE,         VIRTKEY, NOINVERT
-    VK_LCONTROL,    ID_EDIT_SEGMENT_SIZE,   VIRTKEY, SHIFT, CONTROL, NOINVERT
+	"Q",            ID_EDIT_SEGMENT_SIZE,   VIRTKEY, CONTROL, NOINVERT
     "A",            ID_EDIT_SELECTWAVEFORM, VIRTKEY, CONTROL, NOINVERT
     VK_BACK,        ID_EDIT_UNDO,           VIRTKEY, ALT, NOINVERT
     "Z",            ID_EDIT_UNDO,           VIRTKEY, CONTROL, NOINVERT
@@ -4133,7 +4134,7 @@ STRINGTABLE
 BEGIN
     IDR_MAINFRAME           "Speech Analyzer"
     IDR_SA_ANNTYPE          "\nSA\nSA Document\nWAV Files (*.wav)\n.wav\nannFileType\nANN File Type"
-    VS_VERSION              "Version 3.1.0.32"
+    VS_VERSION              "Version 3.1.0.33"
     VS_COPYRIGHT            "© 1996-2013 SIL International (MSEA).\nAll Rights Reserved."
     IDR_SA_WBTYPE           "\nWB\nSA Workbench\nWB Files (*.wb)\n.wb\nwbFileType\nWB File Type"
 END

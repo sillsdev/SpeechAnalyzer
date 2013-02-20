@@ -44,6 +44,9 @@
 #include "settings\obstream.h"
 #include "sa_exprt.h"
 #include "sa_g_stf.h"
+#include "GlossSegment.h"
+#include "MusicPhraseSegment.h"
+#include "PhoneticSegment.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE
@@ -4420,10 +4423,8 @@ void CSaView::EditAddGloss(bool bDelimiter)
 	int nInsertAt = pSeg->CheckPosition(pDoc,GetStartCursorPosition(),GetStopCursorPosition(),CSegment::MODE_ADD);
 	if (nInsertAt != -1)
 	{
-		DWORD dwStart;
-
+		DWORD dwStart = 0;
 		pSeg->AdjustCursorsToMaster(pDoc, FALSE, &dwStart);
-
 		pSeg->Add(GetDocument(), dwStart, szString, bDelimiter, TRUE); // add a segment
 	}
 	else
@@ -4488,7 +4489,7 @@ void CSaView::OnUpdateEditAddWord(CCmdUI* pCmdUI)
 	// get pointer to document
 	CSaDoc* pDoc = (CSaDoc*) GetDocument(); 
 
-	CSegment* pSeg = GetAnnotation(GLOSS);
+	CSegment * pSeg = GetAnnotation(GLOSS);
 	if (pSeg->CheckPosition(pDoc,GetStartCursorPosition(),GetStopCursorPosition(),CSegment::MODE_ADD) != -1) {
 		// if we are completely within a segment we are good...
 		pCmdUI->Enable(TRUE);
@@ -4498,7 +4499,13 @@ void CSaView::OnUpdateEditAddWord(CCmdUI* pCmdUI)
 	//SDM 1.5Test8.2
 	DWORD dwStart = GetStartCursorPosition();
 	int nPos = pSeg->FindFromPosition(dwStart,TRUE);
-	if (nPos==-1) {
+	if (nPos == -1) {
+
+		// if there aren't any segments yet...
+		if (pSeg->GetOffsetSize()==0) {
+			pCmdUI->Enable(TRUE);
+			return;
+		}
 
 		// if we are outside and beyond the last segment we are done.
 		if (dwStart > pSeg->GetStop(pSeg->GetOffsetSize()-1)) {

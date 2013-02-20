@@ -17,6 +17,8 @@
 #include "DlgKlattAll.h"
 #include "dsp\mathx.h"
 #include "mainfrm.h"
+#include "..\MusicPhraseSegment.h"
+#include "..\PhoneticSegment.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW

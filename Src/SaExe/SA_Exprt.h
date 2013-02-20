@@ -1,8 +1,6 @@
 /////////////////////////////////////////////////////////////////////////////
 // sa_exprt.h:
-// Interface of the      CExportSFM class.
-//                       CExportTabbed class.
-//                       CImport class.
+// Interface of the      CExportTabbed class.
 //
 // Author: Steve MacLean
 // copyright 1999 JAARS Inc. SIL
@@ -12,8 +10,16 @@
 //         SDM Original version
 //
 /////////////////////////////////////////////////////////////////////////////
+#ifndef SA_EXPRT_H
+#define SA_EXPRT_H
 
 #include "exportbasicdialog.h"
+#include "Settings\OBSTREAM.H"
+
+class CSaDoc;
+
+extern void WriteFileUtf8( CFile *pFile, const CSaString szString);
+extern CSaString GetExportFilename( CSaString szTitle, CSaString szFilter, TCHAR *szExtension=_T("txt"));
 
 /////////////////////////////////////////////////////////////////////////////
 // CExportFW dialog
@@ -32,48 +38,6 @@ protected:
 	virtual void InitializeDialog();
 	DECLARE_MESSAGE_MAP()
 };
-
-/////////////////////////////////////////////////////////////////////////////
-// CExportSFM dialog
-
-class CExportSFM : public CExportBasicDialog
-{
-	// Construction
-public:
-	CExportSFM( const CSaString& szDocTitle, CWnd* pParent = NULL);
-
-public:
-	// Implementation
-protected:
-	// Generated message map functions
-	virtual void OnOK();
-	virtual void InitializeDialog();
-	DECLARE_MESSAGE_MAP()
-};
-
-/////////////////////////////////////////////////////////////////////////////
-// CExportXML dialog
-
-class CExportXML : public CExportBasicDialog
-{
-	// Construction
-public:
-	CExportXML( const CSaString& szDocTitle, CWnd* pParent = NULL);
-
-public:
-	// Implementation
-	static const char XML_HEADER1[];
-	static const char XML_HEADER2[];
-	static const char XML_FOOTER[];
-	static void CExportXML::OutputXMLField(CFile* pFile,const TCHAR *szFieldName,const CSaString &szContents);
-
-protected:
-	// Generated message map functions
-	virtual void OnOK();
-	virtual void InitializeDialog();
-	DECLARE_MESSAGE_MAP()
-};
-
 
 /////////////////////////////////////////////////////////////////////////////
 // CExportTable dialog
@@ -110,8 +74,8 @@ public:
 	int   m_nSampleRate;
 	int   m_nCalculationMethod;
 	BOOL  m_bPhonetic2;
-	int     m_nRegion;
-	BOOL	m_bMelogram;
+	int   m_nRegion;
+	BOOL  m_bMelogram;
 private:
 	CSaString m_szFileName;
 	CSaString m_szDocTitle;
@@ -137,45 +101,4 @@ protected:
 	DECLARE_MESSAGE_MAP()
 };
 
-class CImport{
-public:
-	CImport(const CSaString& szFileName, BOOL batch=FALSE) {m_szPath = szFileName;m_bBatch = batch;}; // standard constructor
-
-	CSaString m_szPath;
-	BOOL m_bBatch;
-
-	enum { KEEP = 0, AUTO = 1, MANUAL = 2, QUERY = 3 };
-
-	BOOL Import(int nMode = QUERY);
-	void AutoAlign( CSaDoc * pSaDoc, const CSaString * Phonetic, const CSaString * Phonemic, const CSaString * Ortho, const CSaString * Gloss);
-
-private:
-	BOOL ReadTable(Object_istream &ios, int nMode = QUERY);
-};
-
-/////////////////////////////////////////////////////////////////////////////
-// CImportDlg dialog
-
-class CImportDlg : public CDialog
-{
-	// Construction
-public:
-	CImportDlg(CWnd* pParent = NULL); // standard constructor
-
-	// Dialog Data
-	//{{AFX_DATA(CImportDlg)
-	enum { IDD = IDD_IMPORT_DIALOG };
-	int   m_nMode;
-	//}}AFX_DATA
-
-	// Implementation
-protected:
-	virtual void DoDataExchange(CDataExchange* pDX);  // DDX/DDV support
-
-	// Generated message map functions
-	//{{AFX_MSG(CImportDlg)
-	virtual void OnOK();
-	virtual BOOL OnInitDialog();
-	//}}AFX_MSG
-	DECLARE_MESSAGE_MAP()
-};
+#endif SA_EXPRT_H

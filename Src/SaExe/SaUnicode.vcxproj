@@ -135,9 +135,22 @@
     </Bscmake>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="ArchiveTransfer.cpp" />
+    <ClCompile Include="DependentSegment.cpp" />
+    <ClCompile Include="DependentTextSegment.cpp" />
     <ClCompile Include="DlgAlignTranscriptionDataImportRefPage.cpp" />
     <ClCompile Include="DlgAlignTranscriptionDataTextPage.cpp" />
+    <ClCompile Include="DlgExportSFM.cpp" />
+    <ClCompile Include="DlgExportXML.cpp" />
+    <ClCompile Include="DlgImport.cpp" />
     <ClCompile Include="DlgImportSFMRef.cpp" />
+    <ClCompile Include="GlossSegment.cpp" />
+    <ClCompile Include="Import.cpp" />
+    <ClCompile Include="IndependentSegment.cpp" />
+    <ClCompile Include="MusicPhraseSegment.cpp" />
+    <ClCompile Include="OrthoSegment.cpp" />
+    <ClCompile Include="PhonemicSegment.cpp" />
+    <ClCompile Include="PhoneticSegment.cpp" />
     <ClCompile Include="Process\Butterworth.cpp" />
     <ClCompile Include="Process\FormantTracker.cpp" />
     <ClCompile Include="Dsp\Lpc.cpp" />
@@ -174,6 +187,7 @@
     <ClCompile Include="Clip.cpp" />
     <ClCompile Include="Partiture.cpp" />
     <ClCompile Include="PickOver.cpp" />
+    <ClCompile Include="ReferenceSegment.cpp" />
     <ClCompile Include="SA_Annot.cpp" />
     <ClCompile Include="SA_Cursr.cpp" />
     <ClCompile Include="sa_g_3dPitch.cpp" />
@@ -251,6 +265,8 @@
     <ClCompile Include="saveAsOptions.cpp" />
     <ClCompile Include="Targview.cpp" />
     <ClCompile Include="TextHelper.cpp" />
+    <ClCompile Include="TextSegment.cpp" />
+    <ClCompile Include="ToneSegment.cpp" />
     <ClCompile Include="toolsOptions.cpp" />
     <ClCompile Include="TranscriptionData.cpp" />
     <ClCompile Include="TranscriptionDataSettings.cpp" />
@@ -293,8 +309,6 @@
     <ClCompile Include="WaveResampler.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="ClassDiagram1.cd" />
-    <None Include="ClassDiagram2.cd" />
     <None Include="Segments.cd" />
     <None Include="RES\1.ICO" />
     <None Include="RES\2A.ICO" />
@@ -363,13 +377,26 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AppDefs.h" />
+    <ClInclude Include="ArchiveTransfer.h" />
     <ClInclude Include="autoRecorder.h" />
     <ClInclude Include="chrchart\ch_dlg.h" />
     <ClInclude Include="chrchart\ch_dlwnd.h" />
     <ClInclude Include="chrchart\ch_table.h" />
+    <ClInclude Include="DependentSegment.h" />
+    <ClInclude Include="DependentTextSegment.h" />
     <ClInclude Include="DlgAlignTranscriptionDataImportRefPage.h" />
     <ClInclude Include="DlgAlignTranscriptionDataTextPage.h" />
+    <ClInclude Include="DlgExportSFM.h" />
+    <ClInclude Include="DlgExportXML.h" />
+    <ClInclude Include="DlgImport.h" />
     <ClInclude Include="DlgImportSFMRef.h" />
+    <ClInclude Include="GlossSegment.h" />
+    <ClInclude Include="Import.h" />
+    <ClInclude Include="IndependentSegment.h" />
+    <ClInclude Include="MusicPhraseSegment.h" />
+    <ClInclude Include="OrthoSegment.h" />
+    <ClInclude Include="PhonemicSegment.h" />
+    <ClInclude Include="PhoneticSegment.h" />
     <ClInclude Include="Process\Butterworth.H" />
     <ClInclude Include="Clip.hpp" />
     <ClInclude Include="Colors.h" />
@@ -389,6 +416,7 @@
     <ClInclude Include="Partiture.hpp" />
     <ClInclude Include="plotwndInfo.h" />
     <ClInclude Include="PrintDim.h" />
+    <ClInclude Include="ReferenceSegment.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="Riff.h" />
     <ClInclude Include="Rs_MiniC.h" />
@@ -448,6 +476,8 @@
     <ClInclude Include="stpwatch.h" />
     <ClInclude Include="TaskBar.h" />
     <ClInclude Include="TextHelper.h" />
+    <ClInclude Include="TextSegment.h" />
+    <ClInclude Include="ToneSegment.h" />
     <ClInclude Include="toolsOptions.h" />
     <ClInclude Include="TranscriptionData.h" />
     <ClInclude Include="TranscriptionDataSettings.h" />

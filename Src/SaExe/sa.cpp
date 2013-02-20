@@ -101,6 +101,7 @@ using std::ios;
 #include <shellapi.h>
 #include "fileOpen.h"
 #include <windows.h>
+#include "Import.h"
 
 #pragma comment(linker, "/SECTION:.shr,RWS")
 #pragma data_seg(".shr")
@@ -949,9 +950,8 @@ void CSaApp::OnProcessBatchCommands()
 		CFileStatus status;
 		if (szPath.GetLength() && CFile::GetStatus(szPath, status))// SDM 1.5Test10.0
 		{
-			CImport* pImport = new CImport(szPath, TRUE);
-			pImport->Import(nMode);
-			if (pImport) delete pImport;
+			CImport helper(szPath, TRUE);
+			helper.Import(nMode);
 
 			try // SDM 1.5Test10.0
 			{
@@ -963,7 +963,6 @@ void CSaApp::OnProcessBatchCommands()
 				// error removing file
 				ErrorMessage(IDS_ERROR_DELLISTFILE, szPath);
 			}
-
 		}
 		else
 		{

@@ -214,37 +214,38 @@ public:
 	int					GetWaveData(DWORD dwOffset, BOOL*); // return wave source (one sample) on given position (offset)
 	HPSTR				GetUnprocessedWaveData(DWORD dwOffset, BOOL bBlockBegin = FALSE, BOOL bAdjusted = TRUE); // return wave data pointer on given position (offset)
 	DWORD				GetWaveBufferIndex();    // return index for wave source data buffer
-	CSaString			GetMusicScore() {return m_szMusicScore;}
-	BOOL				IsBackgroundProcessing() {return m_bProcessBackground;}
-	BOOL				EnableBackgroundProcessing(BOOL bState = TRUE) {BOOL result = m_bProcessBackground;m_bProcessBackground = bState;return result;}  // background processing: TRUE = enabled
-	CProcessDoc*		GetUnprocessed() {return m_pProcessUnprocessed;}  // process pointer to Unprocessed
-	CProcessAdjust*		GetAdjust() {return m_pProcessAdjust;}  // process pointer to adjust
-	CProcessFragments*	GetFragments() {return m_pProcessFragments;}  // process pointer to fragment object
-	CProcessLoudness*	GetLoudness() {return m_pProcessLoudness;}  // process pointer to loudness object
-	CProcessSmoothLoudness* GetSmoothLoudness() {return m_pProcessSmoothLoudness;} // process pointer to smooth loudness object
-	CProcessZCross*		GetZCross() {return m_pProcessZCross;}    // process pointer to zero crossings object
-	CProcessPitch*		GetPitch() {return m_pProcessPitch;}     // process pointer to pitch object
-	CProcessCustomPitch* GetCustomPitch() {return m_pProcessCustomPitch;} // process pointer to custom pitch object
-	CProcessSmoothedPitch* GetSmoothedPitch() {return m_pProcessSmoothedPitch;} // process pointer to smoothed pitch object
-	CProcessChange*		GetChange() {return m_pProcessChange;}		// process pointer to change object
-	CProcessRaw*		GetRaw() {return m_pProcessRaw;}			// process pointer to change object
-	CHilbert*			GetHilbert() {return m_pProcessHilbert;}    // process pointer to change object
+	CSaString			GetMusicScore();
+	BOOL				IsBackgroundProcessing();
+	BOOL				EnableBackgroundProcessing(BOOL bState = TRUE);  // background processing: TRUE = enabled
+	CProcessDoc*		GetUnprocessed();  // process pointer to Unprocessed
+	CProcessAdjust*		GetAdjust();  // process pointer to adjust
+	CProcessFragments*	GetFragments();								// process pointer to fragment object
+	CProcessLoudness*	GetLoudness();								// process pointer to loudness object
+	CProcessSmoothLoudness* GetSmoothLoudness();					// process pointer to smooth loudness object
+	CProcessZCross*		GetZCross();								// process pointer to zero crossings object
+	CProcessPitch*		GetPitch();									// process pointer to pitch object
+	CProcessCustomPitch* GetCustomPitch();							// process pointer to custom pitch object
+	CProcessSmoothedPitch* GetSmoothedPitch();						// process pointer to smoothed pitch object
+	CProcessChange*		GetChange();								// process pointer to change object
+	CProcessRaw*		GetRaw();									// process pointer to change object
+	CHilbert*			GetHilbert();							    // process pointer to change object
 	CProcessSpectrogram* GetSpectrogram(bool bRealTime);			// returns either the spectrogram or snapshot process dependent on flag
-	CProcessWavelet*	GetWavelet() {return m_pProcessWavelet;}	// process pointer to wavelet object  ARH 8/2/01 added for wavelet graph
-	CProcessSpectrum*	GetSpectrum() {return m_pProcessSpectrum;}  // process pointer to spectrum object
-	CProcessGrappl*		GetGrappl() {return m_pProcessGrappl;}		// process pointer to grappl object
-	CProcessMelogram*   GetMelogram() {return m_pProcessMelogram;}  // process pointer to melogram object
-	CProcessFormants*	GetFormants() {return m_pProcessFormants;}  // process pointer to spectrogram object
-	CFormantTracker*	GetFormantTracker() {return m_pProcessFormantTracker;}  // process pointer to spectrogram object
-	CProcessDurations*	GetDurations() {return m_pProcessDurations; } // process pointer to phonetic segment durations
+	CProcessWavelet*	GetWavelet();								// process pointer to wavelet object  ARH 8/2/01 added for wavelet graph
+	CProcessSpectrum*	GetSpectrum();								// process pointer to spectrum object
+	CProcessGrappl*		GetGrappl();								// process pointer to grappl object
+	CProcessMelogram*   GetMelogram();								// process pointer to melogram object
+	CProcessFormants*	GetFormants();								// process pointer to spectrogram object
+	CFormantTracker*	GetFormantTracker();						// process pointer to spectrogram object
+	CProcessDurations*	GetDurations();								// process pointer to phonetic segment durations
 	CProcessSDP*		GetSDP(int nIndex);							// process pointer to SDP object
-	CProcessRatio*		GetRatio() {return m_pProcessRatio;}        // process pointer to ratio object
-	CProcessPOA*		GetPOA() {return m_pProcessPOA;}            // process pointer to vocal tract model for finding place of articulation
-	CProcessGlottis*	GetGlottalWave(){return m_pProcessGlottis;} // process pointer to glottal waveform object
-	CProcessTonalWeightChart* GetTonalWeightChart() {return m_pProcessTonalWeightChart;} // process pointer to tonal weighting chart CLW 11/8/99
+	CProcessRatio*		GetRatio();									// process pointer to ratio object
+	CProcessPOA*		GetPOA();									// process pointer to vocal tract model for finding place of articulation
+	CProcessGlottis*	GetGlottalWave();							// process pointer to glottal waveform object
+	CProcessTonalWeightChart* GetTonalWeightChart();				// process pointer to tonal weighting chart CLW 11/8/99
+	int					GetSegmentSize(Annotations nIndex);			// get the pointers to a segment object
 	CSegment*			GetSegment(int nIndex);						// get the pointers to a segment object
 	CGlossSegment *		GetGlossSegment();
-	CFontTable*			GetFont(int nIndex) {return (CFontTable*)m_pCreatedFonts->GetAt(nIndex);} // return font size
+	CFontTable*			GetFont(int nIndex);						// return font size
 	CSaString			GetMeasurementsString(DWORD dwOffset, DWORD dwLength, BOOL* pbRes);
 
 	void				DestroyAdvancedSegment();

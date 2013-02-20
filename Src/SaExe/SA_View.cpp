@@ -165,6 +165,9 @@
 #include "sa_segm.h"
 #include "graphsTypes.h"
 #include "resource.h"
+#include "DlgExportXML.h"
+#include "Import.h"
+#include "DlgExportSFM.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE
@@ -604,7 +607,7 @@ void CSaView::OnUpdateLayout(CCmdUI* pCmdUI)
 /***************************************************************************/
 void CSaView::OnExportXML()
 {
-	CExportXML dlg(((CSaDoc*)GetDocument())->GetTitle());
+	CDlgExportXML dlg(((CSaDoc*)GetDocument())->GetTitle());
 	dlg.DoModal();
 }
 
@@ -626,7 +629,7 @@ void CSaView::OnExportFW()
 /***************************************************************************/
 void CSaView::OnExportSFM()
 {
-	CExportSFM dlg(((CSaDoc*)GetDocument())->GetTitle());
+	CDlgExportSFM dlg(((CSaDoc*)GetDocument())->GetTitle());
 	dlg.DoModal();
 }
 
@@ -699,11 +702,8 @@ void CSaView::OnImportSFM()
 		return;
 
 	CSaString szPath = dlgFile.GetPathName();
-	CImport* pImport = new CImport(szPath);
-
-	pImport->Import();
-	if (pImport)
-		delete pImport;
+	CImport import(szPath);
+	import.Import();
 }
 
 /***************************************************************************/
@@ -726,11 +726,9 @@ void CSaView::OnImportSFT()
 		return;
 
 	CSaString szPath = dlgFile.GetPathName();
-	CImport* pImport = new CImport(szPath);
-
-	pImport->Import();
-	if (pImport)
-		delete pImport;
+	
+	CImport import(szPath);
+	import.Import();
 }
 
 void CSaView::OnFilePhonologyAssistant() 
@@ -2294,11 +2292,6 @@ void CSaView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 			CView::OnKeyDown(nChar, nRepCnt, nFlags);
 			break;
 		}
-
-	} else if ((ctrlPressed)&&(shiftPressed)) {
-
-		PostMessage(WM_COMMAND, ID_EDIT_SEGMENT_SIZE);
-		CView::OnKeyDown(nChar, nRepCnt, nFlags);
 
 	} else {
 		

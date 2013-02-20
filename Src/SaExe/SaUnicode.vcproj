@@ -213,6 +213,10 @@
 		<Filter
 			Name="Source Files"
 			>
+			<File
+				RelativePath=".\Import.cpp"
+				>
+			</File>
 			<Filter
 				Name="Processes"
 				>
@@ -1931,6 +1935,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\DlgAlignTranscriptionDataImportRefPage.h"
+					>
+				</File>
+				<File
 					RelativePath=".\DlgAlignTranscriptionDataInitPage.cpp"
 					>
 				</File>
@@ -1940,6 +1948,10 @@
 				</File>
 				<File
 					RelativePath=".\DlgAlignTranscriptionDataSheet.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\DlgAlignTranscriptionDataTextPage.h"
 					>
 				</File>
 				<File
@@ -1966,6 +1978,18 @@
 				</File>
 				<File
 					RelativePath=".\DlgAutoReferenceData.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\DlgExportSFM.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\DlgExportXML.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\DlgImport.cpp"
 					>
 				</File>
 				<File
@@ -3178,6 +3202,58 @@
 					>
 				</File>
 			</Filter>
+			<Filter
+				Name="Segments"
+				>
+				<File
+					RelativePath=".\ArchiveTransfer.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\DependentSegment.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\DependentTextSegment.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\GlossSegment.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\IndependentSegment.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\MusicPhraseSegment.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\OrthoSegment.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\PhonemicSegment.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\PhoneticSegment.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ReferenceSegment.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\TextSegment.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ToneSegment.cpp"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="Resource Files"
@@ -3440,6 +3516,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ArchiveTransfer.h"
+				>
+			</File>
+			<File
 				RelativePath=".\autoRecorder.h"
 				>
 			</File>
@@ -3460,6 +3540,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\DependentSegment.h"
+				>
+			</File>
+			<File
+				RelativePath=".\DependentTextSegment.h"
+				>
+			</File>
+			<File
 				RelativePath=".\DocList.h"
 				>
 			</File>
@@ -3477,6 +3565,10 @@
 			</File>
 			<File
 				RelativePath=".\FnKeys.h"
+				>
+			</File>
+			<File
+				RelativePath=".\GlossSegment.h"
 				>
 			</File>
 			<File
@@ -3504,6 +3596,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\MusicPhraseSegment.h"
+				>
+			</File>
+			<File
+				RelativePath=".\OrthoSegment.h"
+				>
+			</File>
+			<File
 				RelativePath=".\Param.h"
 				>
 			</File>
@@ -3512,11 +3612,23 @@
 				>
 			</File>
 			<File
+				RelativePath=".\PhonemicSegment.h"
+				>
+			</File>
+			<File
+				RelativePath=".\PhoneticSegment.h"
+				>
+			</File>
+			<File
 				RelativePath=".\plotwndInfo.h"
 				>
 			</File>
 			<File
 				RelativePath=".\PrintDim.h"
+				>
+			</File>
+			<File
+				RelativePath=".\ReferenceSegment.h"
 				>
 			</File>
 			<File
@@ -3732,6 +3844,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\SFMHelper.h"
+				>
+			</File>
+			<File
 				RelativePath=".\sourceParm.h"
 				>
 			</File>
@@ -3748,7 +3864,31 @@
 				>
 			</File>
 			<File
+				RelativePath=".\TextHelper.h"
+				>
+			</File>
+			<File
+				RelativePath=".\TextSegment.h"
+				>
+			</File>
+			<File
+				RelativePath=".\ToneSegment.h"
+				>
+			</File>
+			<File
 				RelativePath=".\toolsOptions.h"
+				>
+			</File>
+			<File
+				RelativePath=".\TranscriptionData.h"
+				>
+			</File>
+			<File
+				RelativePath=".\TranscriptionDataSettings.h"
+				>
+			</File>
+			<File
+				RelativePath=".\TranscriptionHelper.h"
 				>
 			</File>
 			<File
@@ -3808,6 +3948,26 @@
 				</File>
 				<File
 					RelativePath=".\DlgAutoReferenceData.h"
+					>
+				</File>
+				<File
+					RelativePath=".\DlgExportSFM.h"
+					>
+				</File>
+				<File
+					RelativePath=".\DlgExportXML.h"
+					>
+				</File>
+				<File
+					RelativePath=".\DlgImport.h"
+					>
+				</File>
+				<File
+					RelativePath=".\DlgImportSFM.h"
+					>
+				</File>
+				<File
+					RelativePath=".\DlgImportSFMRef.h"
 					>
 				</File>
 				<File
@@ -3880,42 +4040,6 @@
 				</File>
 			</Filter>
 		</Filter>
-		<File
-			RelativePath=".\DlgAlignTranscriptionDataImportRefPage.h"
-			>
-		</File>
-		<File
-			RelativePath=".\DlgAlignTranscriptionDataTextPage.h"
-			>
-		</File>
-		<File
-			RelativePath=".\DlgImportSFM.h"
-			>
-		</File>
-		<File
-			RelativePath=".\DlgImportSFMRef.h"
-			>
-		</File>
-		<File
-			RelativePath=".\SFMHelper.h"
-			>
-		</File>
-		<File
-			RelativePath=".\TextHelper.h"
-			>
-		</File>
-		<File
-			RelativePath=".\TranscriptionData.h"
-			>
-		</File>
-		<File
-			RelativePath=".\TranscriptionDataSettings.h"
-			>
-		</File>
-		<File
-			RelativePath=".\TranscriptionHelper.h"
-			>
-		</File>
 	</Files>
 	<Globals>
 		<Global

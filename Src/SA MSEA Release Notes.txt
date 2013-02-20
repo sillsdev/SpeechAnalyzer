@@ -1,3 +1,9 @@
+SA - 3.1.0.33 - 2/19/2013
+1) Implemented multirecord support working for SFM.
+2) Changed 'edit segment size' to use CTRL-Q
+3) Resized edit fields in TAT
+4) Fixed problem that was preventing user from adding a word when no words exist.
+
 SA - 3.1.0.32 - 2/15/2013
 1) Fixed bug that was allowing word to be added beyond last segment.
 2) Add 'tag' prefix to reference numbers when using 'auto ref'

@@ -12,6 +12,8 @@
 #ifndef EXPORTBASICDIALOG_H
 #define EXPORTBASICDIALOG_H
 
+#include "resource.h"
+
 /////////////////////////////////////////////////////////////////////////////
 // CExportBasicDialog
 

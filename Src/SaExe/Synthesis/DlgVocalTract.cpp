@@ -3,10 +3,10 @@
 
 #include "stdafx.h"
 #include "..\sa.h"
-#include "sa_doc.h"
+#include "..\sa_doc.h"
 #include "Process\sa_proc.h"
-#include "sa_segm.h"
-#include "sa_view.h"
+#include "..\sa_segm.h"
+#include "..\sa_view.h"
 #include "Process\sa_p_gra.h"
 #include "Process\sa_p_spi.h"
 #include "Process\sa_p_poa.h"
@@ -15,8 +15,10 @@
 #include "dlgvocaltract.h"
 #include "dsp\AcousticTube.h"
 #include "Process\Butterworth.h"
-#include "mainfrm.h"
+#include "..\mainfrm.h"
 #include <iterator>
+#include "..\MusicPhraseSegment.h"
+#include "..\PhoneticSegment.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW

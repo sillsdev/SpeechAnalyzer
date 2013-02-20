@@ -26,6 +26,7 @@
 #include "sa_doc.h"
 #include "sa.h"
 #include "sa_view.h"
+#include "DependentSegment.h"
 
 CASegmentSelection::CASegmentSelection()
 {
