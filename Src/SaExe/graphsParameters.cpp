@@ -43,6 +43,7 @@
 #include "dsp\ZTransform.h"
 #include "Process\FormantTracker.h"
 #include <math.h>
+#include "PrivateCursorWnd.h"
 
 //###########################################################################
 // CDlgParametersRawdataPage property page
@@ -65,9 +66,7 @@ END_MESSAGE_MAP()
 /***************************************************************************/
 CDlgParametersRawdataPage::CDlgParametersRawdataPage() : CPropertyPage(CDlgParametersRawdataPage::IDD)
 {
-	//{{AFX_DATA_INIT(CDlgParametersRawdataPage)
 	m_nProcess = 0;
-	//}}AFX_DATA_INIT
 }
 
 /////////////////////////////////////////////////////////////////////////////

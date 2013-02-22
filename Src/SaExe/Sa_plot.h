@@ -24,18 +24,19 @@
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef _SA_PLOT_H
+#define _SA_PLOT_H
 
 #include "sa_cursr.h"
 #include "sa_annot.h"
 #include "grid.h"
-
-#define _SA_PLOT_H
+#include "StopCursorWnd.h"
 
 class CGraphWnd;
 class CSaDoc;
 class CSaView;
 class CDataProcess;
 class CAreaDataProcess;
+class CPrivateCursorWnd;
 
 #define IDM_CONVERT          106 // was 105
 #define IDM_CONVERT_DYNAMIC  107 // was 106

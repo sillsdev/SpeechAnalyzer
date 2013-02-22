@@ -51,6 +51,7 @@
 #include "mainfrm.h"
 #include "math.h"
 #include "string.h"
+#include "PrivateCursorWnd.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE

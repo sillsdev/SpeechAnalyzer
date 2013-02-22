@@ -96,6 +96,7 @@
 #include "settings\obstream.h"
 #include "time.h"
 #include <afxpriv.h>
+#include "PrivateCursorWnd.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE

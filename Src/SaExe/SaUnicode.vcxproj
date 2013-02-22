@@ -141,6 +141,7 @@
     <ClCompile Include="DlgAlignTranscriptionDataImportRefPage.cpp" />
     <ClCompile Include="DlgAlignTranscriptionDataTextPage.cpp" />
     <ClCompile Include="DlgExportSFM.cpp" />
+    <ClCompile Include="DlgExportTable.cpp" />
     <ClCompile Include="DlgExportXML.cpp" />
     <ClCompile Include="DlgImport.cpp" />
     <ClCompile Include="DlgImportSFMRef.cpp" />
@@ -151,6 +152,7 @@
     <ClCompile Include="OrthoSegment.cpp" />
     <ClCompile Include="PhonemicSegment.cpp" />
     <ClCompile Include="PhoneticSegment.cpp" />
+    <ClCompile Include="PrivateCursorWnd.cpp" />
     <ClCompile Include="Process\Butterworth.cpp" />
     <ClCompile Include="Process\FormantTracker.cpp" />
     <ClCompile Include="Dsp\Lpc.cpp" />
@@ -240,6 +242,7 @@
     <ClCompile Include="DlgAutoReferenceData.cpp" />
     <ClCompile Include="DlgImportSFM.cpp" />
     <ClCompile Include="SFMHelper.cpp" />
+    <ClCompile Include="StopCursorWnd.cpp" />
     <ClCompile Include="Synthesis\DlgKlattAll.cpp" />
     <ClCompile Include="Synthesis\DlgMbrola.cpp" />
     <ClCompile Include="DlgMultiChannel.cpp" />
@@ -387,6 +390,7 @@
     <ClInclude Include="DlgAlignTranscriptionDataImportRefPage.h" />
     <ClInclude Include="DlgAlignTranscriptionDataTextPage.h" />
     <ClInclude Include="DlgExportSFM.h" />
+    <ClInclude Include="DlgExportTable.h" />
     <ClInclude Include="DlgExportXML.h" />
     <ClInclude Include="DlgImport.h" />
     <ClInclude Include="DlgImportSFMRef.h" />
@@ -397,6 +401,7 @@
     <ClInclude Include="OrthoSegment.h" />
     <ClInclude Include="PhonemicSegment.h" />
     <ClInclude Include="PhoneticSegment.h" />
+    <ClInclude Include="PrivateCursorWnd.h" />
     <ClInclude Include="Process\Butterworth.H" />
     <ClInclude Include="Clip.hpp" />
     <ClInclude Include="Colors.h" />
@@ -473,6 +478,7 @@
     <ClInclude Include="SFMHelper.h" />
     <ClInclude Include="sourceParm.h" />
     <ClInclude Include="Stdafx.h" />
+    <ClInclude Include="StopCursorWnd.h" />
     <ClInclude Include="stpwatch.h" />
     <ClInclude Include="TaskBar.h" />
     <ClInclude Include="TextHelper.h" />

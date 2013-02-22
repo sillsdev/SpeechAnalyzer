@@ -202,12 +202,9 @@ public:
 	void SetMusicParm(const MusicParm &parm) { m_musicParm = parm;}
 	const IntensityParm&    GetIntensityParm() const {return m_intensityParm;}   // pointer to music parameters structure
 	void SetIntensityParm(const IntensityParm &parm) { m_intensityParm = parm;}
-	SDPParm*			GetSDPParm()      {return &m_SDPParm;}     // pointer to SDP parameters structure
-	DWORD				GetDataSize();                             // return wave source data size
-	DWORD				GetUnprocessedDataSize() {
-		// return sampled data size from wave file
-		return m_dwDataSize;
-	} 
+	SDPParm*			GetSDPParm()      {return &m_SDPParm;}		// pointer to SDP parameters structure
+	DWORD				GetDataSize();								// return wave source data size
+	DWORD				GetUnprocessedDataSize();					// return sampled data size from wave file
 	double				GetTimeFromBytes(DWORD); // return the length of the sampled data in seconds
 	DWORD				GetBytesFromTime(double); // return the length of the sampled data in bytes
 	HPSTR				GetWaveData(DWORD dwOffset, BOOL bBlockBegin = FALSE); // return wave source data pointer on given position (offset)
@@ -326,10 +323,15 @@ public:
 	BOOL				CopySectionToNewWavFile(DWORD dwSectionStart, DWORD dwSectionLength, LPCTSTR szNewWave, BOOL usingClipboard);
 	void				ApplyWaveFile(const TCHAR * pszFileName, DWORD dwDataSize, BOOL bInialUpdate=TRUE);		// apply a new recorded wave file
 	void				ApplyWaveFile(const TCHAR * pszFileName, DWORD dwDataSize, CAlignInfo alignInfo);		// Update for rt auto-pitch
-	DWORD				SnapCursor(CURSOR_SELECT nCursorSelect, DWORD dwCursorOffset, DWORD dwLowerLimit, DWORD dwUpperLimit,
+	DWORD				SnapCursor( CURSOR_SELECT nCursorSelect, 
+									DWORD dwCursorOffset, 
+									DWORD dwLowerLimit, 
+									DWORD dwUpperLimit,
 									SNAP_DIRECTION nSnapDirection = SNAP_BOTH,
 									CURSOR_ALIGNMENT nCursorAlignment = ALIGN_USER_SETTING); // align cursors
-	DWORD				SnapCursor(CURSOR_SELECT nCursorSelect, DWORD dwCursorOffset, SNAP_DIRECTION nSnapDirection = SNAP_BOTH);
+	DWORD				SnapCursor( CURSOR_SELECT nCursorSelect, 
+									DWORD dwCursorOffset, 
+									SNAP_DIRECTION nSnapDirection = SNAP_BOTH);
 	void				InvalidateAllProcesses(); // invalidates all the graph processes
 	void				RestartAllProcesses(); // invalidates all the processes
 	BOOL				AnyProcessCanceled(); // invalidates all the processes

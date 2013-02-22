@@ -156,9 +156,7 @@ enum CURSOR_SELECT
 {
     // selection
     START_CURSOR,
-    STOP_CURSOR,
-    EITHER_CURSOR,
-    BOTH_CURSORS
+    STOP_CURSOR
 };
 enum SNAP_DIRECTION
 {

@@ -14,22 +14,22 @@
  
   
 #pragma pack(1)
- typedef struct{
-                uint32  dwOffset;                  // sample offset into waveform
-                uint16 wLength;                   // length of fragment in samples
-                short  nPitch;                    // pitch value for fragment
-                uint16 wAvgMag;                   // average magnitude of samples within fragment
-               }FRAG_PARMS;
+ typedef struct {
+                uint32 dwOffset;					// sample offset into waveform
+                uint16 wLength;						// length of fragment in samples
+                short  nPitch;						// pitch value for fragment
+                uint16 wAvgMag;						// average magnitude of samples within fragment
+               } FRAG_PARMS;
 #pragma pack()
                
  typedef struct{
-                uint16       wSmpIntvl;           // calculation interval in waveform samples
-                uint16       wScaleFac;           // scale factor
-                uint16       wCalcRangeMin;       // min pitch allowed
-                uint16       wCalcRangeMax;       // max pitch allowed
-                uint32        dwContourLength;     // number of pitch data values, including unvoiced portions
-                short  *psContour;           // pointer to pitch data
-               }PITCH_PARMS;
+                uint16		wSmpIntvl;				// calculation interval in waveform samples
+                uint16      wScaleFac;				// scale factor
+                uint16      wCalcRangeMin;			// min pitch allowed
+                uint16      wCalcRangeMax;			// max pitch allowed
+                uint32      dwContourLength;		// number of pitch data values, including unvoiced portions
+                short		*psContour;				// pointer to pitch data
+               } PITCH_PARMS;
                
   class CFragment{
              public:

@@ -1,14 +1,11 @@
-// FormantTracker.h: interface for the CFormantTracker class.
-//
-//////////////////////////////////////////////////////////////////////
-
-#if !defined(AFX_FORMANTTRACKER_H__218E7094_C1EF_4F82_9E03_C9BBDEE50B75__INCLUDED_)
-#define AFX_FORMANTTRACKER_H__218E7094_C1EF_4F82_9E03_C9BBDEE50B75__INCLUDED_
+#if !defined FORMANTTRACKER_H
+#define  FORMANTTRACKER_H
 
 #if _MSC_VER > 1000
 #pragma once
 #endif // _MSC_VER > 1000
 
+#include "..\DSP\ZTransform.h"
 
 class CAnalyticLpcAnalysis
 {
@@ -88,4 +85,4 @@ private:
 	void BuildTrack(CTrackState &state, double samplingRate, int pitch);
 };
 
-#endif // !defined(AFX_FORMANTTRACKER_H__218E7094_C1EF_4F82_9E03_C9BBDEE50B75__INCLUDED_)
+#endif

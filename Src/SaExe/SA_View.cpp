@@ -168,6 +168,7 @@
 #include "DlgExportXML.h"
 #include "Import.h"
 #include "DlgExportSFM.h"
+#include "DlgExportTable.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE
@@ -638,7 +639,7 @@ void CSaView::OnExportSFM()
 /***************************************************************************/
 void CSaView::OnExportTimeTable()
 {
-	CExportTable dlg(((CSaDoc*)GetDocument())->GetTitle());
+	CDlgExportTable dlg(((CSaDoc*)GetDocument())->GetTitle());
 	dlg.DoModal();
 }
 

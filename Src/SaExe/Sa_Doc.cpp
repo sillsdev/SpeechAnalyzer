@@ -3253,7 +3253,7 @@ void CSaDoc::ApplyWaveFile( const TCHAR* pszFileName, DWORD dwDataSize, CAlignIn
 // it is set to the last sample in the nearest fragment if SNAP_BOTH directions is
 // requested, or to the end of the current fragment if not.
 /***************************************************************************/
-DWORD CSaDoc::SnapCursor(CURSOR_SELECT nCursorSelect, DWORD dwCursorOffset, SNAP_DIRECTION nSnapDirection)
+DWORD CSaDoc::SnapCursor( CURSOR_SELECT nCursorSelect, DWORD dwCursorOffset, SNAP_DIRECTION nSnapDirection)
 {
 	return SnapCursor(nCursorSelect, dwCursorOffset, 0, GetDataSize() - m_fmtParm.wBlockAlign, nSnapDirection);
 }
@@ -3274,17 +3274,25 @@ DWORD CSaDoc::SnapCursor(CURSOR_SELECT nCursorSelect, DWORD dwCursorOffset, SNAP
 // (SNAP_LEFT) or right (SNAP_RIGHT).
 //
 // If the cursor is to be aligned to waveform fragments, the first parameter is
-// used to determine where the cursor will be set.  If START_CURSOR is specified,
+// used to determine where the cursor will be set.  
+// If START_CURSOR is specified, 
 // it is set to the beginning of the nearest fragment if SNAP_BOTH directions is
-// requested, or to the current fragment if not. If STOP_CURSOR is specified,
+// requested, or to the current fragment if not. 
+// If STOP_CURSOR is specified,
 // it is set to the last sample in the nearest fragment if SNAP_BOTH directions is
 // requested, or to the end of the current fragment if not.
 /***************************************************************************/
-DWORD CSaDoc::SnapCursor(CURSOR_SELECT nCursorSelect, DWORD dwCursorOffset, DWORD dwLowerLimit, DWORD dwUpperLimit,
-	SNAP_DIRECTION nSnapDirection, CURSOR_ALIGNMENT nCursorAlignment)
+DWORD CSaDoc::SnapCursor( CURSOR_SELECT nCursorSelect, 
+						  DWORD dwCursorOffset, 
+						  DWORD dwLowerLimit, 
+						  DWORD dwUpperLimit,
+						  SNAP_DIRECTION nSnapDirection, 
+						  CURSOR_ALIGNMENT nCursorAlignment)
 {
-	if ((GetUnprocessedDataSize() == 0))
+	if (GetUnprocessedDataSize() == 0) 
+	{
 		return dwCursorOffset;
+	}
 
 	if (nCursorAlignment == ALIGN_USER_SETTING)
 	{
@@ -3302,17 +3310,17 @@ DWORD CSaDoc::SnapCursor(CURSOR_SELECT nCursorSelect, DWORD dwCursorOffset, DWOR
 
 	case ALIGN_AT_ZERO_CROSSING:
 		{
-			DWORD dwDataPos;
 			BOOL bOk = TRUE;
 			DWORD dwRight = dwUpperLimit + wSmpSize;
 			DWORD dwLeft = 0;
-			int nData;
 
 			// search for left zero crossing first
-			dwDataPos = dwCursorOffset;
-			nData = GetWaveData(dwDataPos, &bOk); // get actual data block
-			if (!bOk)
+			DWORD dwDataPos = dwCursorOffset;
+			int nData = GetWaveData(dwDataPos, &bOk); // get actual data block
+			if (!bOk) 
+			{
 				return dwCursorOffset; // error, return current position
+			}
 			dwDataPos-=wSmpSize;
 
 			while ((dwDataPos >= dwLowerLimit) && (dwDataPos <= dwUpperLimit))
@@ -3321,7 +3329,9 @@ DWORD CSaDoc::SnapCursor(CURSOR_SELECT nCursorSelect, DWORD dwCursorOffset, DWOR
 
 				nData = GetWaveData(dwDataPos, &bOk); // get actual data block
 				if (!bOk)
+				{
 					return dwCursorOffset; // error, return current position
+				}
 
 				// check if positive zero crossing
 				if ((nData < 0) && (nOldData >= 0))
@@ -3333,7 +3343,9 @@ DWORD CSaDoc::SnapCursor(CURSOR_SELECT nCursorSelect, DWORD dwCursorOffset, DWOR
 						dwLeft = dwDataPos + wSmpSize;
 					}
 					else
+					{
 						dwLeft = dwDataPos;
+					}
 					break;
 				}
 
@@ -3347,7 +3359,9 @@ DWORD CSaDoc::SnapCursor(CURSOR_SELECT nCursorSelect, DWORD dwCursorOffset, DWOR
 			dwDataPos = dwCursorOffset;
 			nData = GetWaveData(dwDataPos, &bOk); // get actual data block
 			if (!bOk)
+			{
 				return dwCursorOffset; // error, return current position
+			}
 			dwDataPos+=wSmpSize;
 
 			while ((dwDataPos >= dwLowerLimit) && (dwDataPos <= dwUpperLimit))
@@ -3356,7 +3370,9 @@ DWORD CSaDoc::SnapCursor(CURSOR_SELECT nCursorSelect, DWORD dwCursorOffset, DWOR
 
 				nData = GetWaveData(dwDataPos, &bOk); // get actual data block
 				if (!bOk)
+				{
 					return dwCursorOffset; // error, return current position
+				}
 
 				// check if positive zero crossing
 				if ((nData >= 0) && (nOldData < 0))
@@ -3368,24 +3384,34 @@ DWORD CSaDoc::SnapCursor(CURSOR_SELECT nCursorSelect, DWORD dwCursorOffset, DWOR
 						dwRight = dwDataPos;
 					}
 					else
+					{
 						dwRight = dwDataPos - wSmpSize;
+					}
 					break;
 				}
 				dwDataPos+=wSmpSize;
 			}
 
 			if (dwLeft == dwCursorOffset)
+			{
 				dwRight = dwCursorOffset;
+			}
 
 			if (dwRight == dwCursorOffset)
+			{
 				dwLeft = dwCursorOffset;
+			}
 
 
 			if ((nSnapDirection == SNAP_BOTH)&&((dwRight > dwUpperLimit)||(dwRight < dwCursorOffset)))
+			{
 				nSnapDirection = SNAP_LEFT;
+			}
 
 			if ((nSnapDirection == SNAP_BOTH)&&((dwLeft < dwLowerLimit)||(dwLeft > dwCursorOffset)))
+			{
 				nSnapDirection = SNAP_RIGHT;
+			}
 
 			if (nSnapDirection == SNAP_BOTH)
 			{
@@ -3394,23 +3420,33 @@ DWORD CSaDoc::SnapCursor(CURSOR_SELECT nCursorSelect, DWORD dwCursorOffset, DWOR
 					return dwRight;
 				}
 				else
+				{
 					return dwLeft;
+				}
 			}
 
 			if (nSnapDirection == SNAP_RIGHT)
 			{
 				if ((dwRight > dwUpperLimit)||(dwRight < dwCursorOffset))
+				{
 					return dwCursorOffset;
+				}
 				else
+				{
 					return dwRight;
+				}
 			}
 
 			if (nSnapDirection == SNAP_LEFT)
 			{
 				if ((dwLeft > dwCursorOffset)||(dwLeft < dwLowerLimit))
+				{
 					return dwCursorOffset;
+				}
 				else
+				{
 					return dwLeft;
+				}
 			}
 		}
 
@@ -3421,13 +3457,18 @@ DWORD CSaDoc::SnapCursor(CURSOR_SELECT nCursorSelect, DWORD dwCursorOffset, DWOR
 				DWORD dwFragmentCount = m_pProcessFragments->GetFragmentCount();
 				DWORD dwCursorIndex = dwCursorOffset / wSmpSize;
 				DWORD dwFragmentIndex = m_pProcessFragments->GetFragmentIndex(dwCursorIndex);
-				if (dwFragmentIndex == UNDEFINED_OFFSET)
+
+				if (dwFragmentIndex == UNDEFINED_OFFSET) 
+				{
 					return dwCursorOffset;
+				}
+
 				FRAG_PARMS stFragment = m_pProcessFragments->GetFragmentParms(dwFragmentIndex);
 				DWORD dwFragmentStart = stFragment.dwOffset * wSmpSize;
 				DWORD dwFragmentEnd = (stFragment.dwOffset + stFragment.wLength - 1) * wSmpSize;
-				DWORD dwRight;
-				DWORD dwLeft;
+				
+				DWORD dwRight = 0;
+				DWORD dwLeft = 0;
 
 				if (nCursorSelect == START_CURSOR)
 				{
@@ -3439,10 +3480,19 @@ DWORD CSaDoc::SnapCursor(CURSOR_SELECT nCursorSelect, DWORD dwCursorOffset, DWOR
 						dwRight = stFragment.dwOffset * wSmpSize;
 					}
 					else
+					{
 						dwRight = dwUpperLimit + wSmpSize;
+					}
 				}
 				else
 				{
+					// if we are at the end of the data, then simply pick the start
+					// of the last fragment, which is the last valid data chunk.
+					if (dwFragmentIndex==(dwFragmentCount-1)) 
+					{
+						return dwFragmentStart;
+					}
+
 					dwRight = dwFragmentEnd;
 					if (dwFragmentIndex > 0)
 					{
@@ -3451,56 +3501,73 @@ DWORD CSaDoc::SnapCursor(CURSOR_SELECT nCursorSelect, DWORD dwCursorOffset, DWOR
 						dwLeft = (stFragment.dwOffset + stFragment.wLength - 1) * wSmpSize;
 					}
 					else
+					{
 						dwLeft = 0;
+					}
 				}
 
 				if (dwLeft == dwCursorOffset)
+				{
 					dwRight = dwCursorOffset;
+				}
 
 				if (dwRight == dwCursorOffset)
+				{
 					dwLeft = dwCursorOffset;
+				}
 
-
-				if ((nSnapDirection == SNAP_BOTH)&&((dwRight > dwUpperLimit)||(dwRight < dwCursorOffset)))
+				if ((nSnapDirection == SNAP_BOTH) && 
+					((dwRight > dwUpperLimit) || (dwRight < dwCursorOffset))) {
 					nSnapDirection = SNAP_LEFT;
+				}
 
-				if ((nSnapDirection == SNAP_BOTH)&&((dwLeft < dwLowerLimit)||(dwLeft > dwCursorOffset)))
+				if ((nSnapDirection == SNAP_BOTH) && 
+					((dwLeft < dwLowerLimit)||(dwLeft > dwCursorOffset))) {
 					nSnapDirection = SNAP_RIGHT;
-
+				}
 
 				if (nSnapDirection == SNAP_BOTH)
 				{
-					if (dwRight - dwCursorOffset < dwCursorOffset - dwLeft)
+					if ((dwRight - dwCursorOffset) < (dwCursorOffset - dwLeft))
 					{
 						return dwRight;
 					}
-					else
+					else 
+					{
 						return dwLeft;
+					}
 				}
 
 				if (nSnapDirection == SNAP_RIGHT)
 				{
 					if ((dwRight > dwUpperLimit)||(dwRight < dwCursorOffset))
+					{
 						return dwCursorOffset;
+					}
 					else
+					{
 						return dwRight;
+					}
 				}
 
 				if (nSnapDirection == SNAP_LEFT)
 				{
-					if ((dwLeft > dwCursorOffset)||(dwLeft < dwLowerLimit))
+					if ((dwLeft > dwCursorOffset) || (dwLeft < dwLowerLimit))
+					{
 						return dwCursorOffset;
+					}
 					else
+					{
 						return dwLeft;
+					}
 				}
 			}
-			return SnapCursor(nCursorSelect, dwCursorOffset, dwLowerLimit, dwUpperLimit,
-				nSnapDirection, ALIGN_AT_ZERO_CROSSING);
+
+			return SnapCursor(nCursorSelect, dwCursorOffset, dwLowerLimit, dwUpperLimit, nSnapDirection, ALIGN_AT_ZERO_CROSSING);
 		}
 
 	default:
-		return SnapCursor(nCursorSelect, dwCursorOffset, dwLowerLimit, dwUpperLimit,
-			nSnapDirection, ALIGN_AT_FRAGMENT);
+		return SnapCursor(nCursorSelect, dwCursorOffset, dwLowerLimit, dwUpperLimit, nSnapDirection, ALIGN_AT_FRAGMENT);
 	}
 
 }
@@ -8750,3 +8817,8 @@ CProcessPOA*		CSaDoc::GetPOA() {return m_pProcessPOA;}            // process poi
 CProcessGlottis*	CSaDoc::GetGlottalWave(){return m_pProcessGlottis;} // process pointer to glottal waveform object
 CProcessTonalWeightChart* CSaDoc::GetTonalWeightChart() {return m_pProcessTonalWeightChart;} // process pointer to tonal weighting chart CLW 11/8/99
 CFontTable*			CSaDoc::GetFont(int nIndex) {return (CFontTable*)m_pCreatedFonts->GetAt(nIndex);} // return font size
+
+DWORD CSaDoc::GetUnprocessedDataSize() {
+	// return sampled data size from wave file
+	return m_dwDataSize;
+} 
