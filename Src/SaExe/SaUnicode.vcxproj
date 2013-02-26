@@ -227,7 +227,9 @@
     <ClCompile Include="Grid.cpp" />
     <ClCompile Include="Param.cpp" />
     <ClCompile Include="Chrchart\Ch_dlg.cpp" />
-    <ClCompile Include="Chrchart\Ch_dlwnd.cpp" />
+    <ClCompile Include="Chrchart\Ch_dlwnd.cpp">
+      <ShowIncludes Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ShowIncludes>
+    </ClCompile>
     <ClCompile Include="Chrchart\Ch_table.cpp" />
     <ClCompile Include="autoRecorder.cpp" />
     <ClCompile Include="DlgAdvancedParsePhrases.cpp" />

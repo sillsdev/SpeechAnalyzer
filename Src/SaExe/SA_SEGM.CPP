@@ -937,7 +937,7 @@ CSaString * CSegment::GetString() {
 }
 
 // return pointer to text string array object
-const CStringArray* CSegment::GetTexts() 
+const CStringArray * CSegment::GetTexts() 
 {
 	return NULL;
 } 
@@ -973,7 +973,10 @@ void CSegment::SetDurationAt(int index, DWORD duration)
 	m_pDuration->SetAt(index,duration);
 }
 
-CSaString CSegment::GetTextFor( DWORD dwStart, DWORD dwStop) {
+/*
+* Returns the text that is within the start and stop markers
+*/
+CSaString CSegment::GetContainedText( DWORD dwStart, DWORD dwStop) {
 	
 	CSaString szText;
 	for (int i=0;i<GetOffsetSize();i++) {
@@ -981,6 +984,22 @@ CSaString CSegment::GetTextFor( DWORD dwStart, DWORD dwStop) {
 		if ((offset>=dwStart)&&(offset<=dwStop)) {
 			szText.AppendChar(m_pAnnotation->GetAt(i));
 		}
+	}
+	return szText;
+}
+
+/*
+* Returns the text that contains the start and stop markers
+*/
+CSaString CSegment::GetOverlappingText( DWORD dwStart, DWORD dwStop) {
+
+	CSaString szText;
+	for (int i=0;i<GetOffsetSize();i++) {
+		DWORD begin = GetOffset(i);
+		DWORD end = begin+GetDurationAt(i);
+		if (end<dwStart) continue;
+		if (begin>dwStop) continue;
+		szText.AppendChar(m_pAnnotation->GetAt(i));
 	}
 	return szText;
 }

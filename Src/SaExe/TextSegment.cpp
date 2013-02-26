@@ -519,7 +519,7 @@ void CTextSegment::Serialize(CArchive& ar)
 	m_pTexts->Serialize(ar);
 }
 
-CSaString CTextSegment::GetTextFor( DWORD dwStart, DWORD dwStop) {
+CSaString CTextSegment::GetContainedText( DWORD dwStart, DWORD dwStop) {
 
 	CSaString szText;
 	for (int i=0;i<GetOffsetSize();i++) {

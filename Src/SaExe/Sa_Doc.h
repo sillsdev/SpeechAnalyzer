@@ -137,25 +137,25 @@ private:
 	CProcessCustomPitch* m_pProcessCustomPitch; // data processing object
 	CProcessSmoothedPitch* m_pProcessSmoothedPitch; // data processing object
 	CProcessGrappl*		m_pProcessGrappl;   // data processing object
-	CProcessMelogram*   m_pProcessMelogram;   // data processing object
+	CProcessMelogram*   m_pProcessMelogram; // data processing object
 	CProcessChange*		m_pProcessChange;   // data processing object
-	CProcessRaw*		m_pProcessRaw;   // data processing object
-	CHilbert*			m_pProcessHilbert;   // data processing object
+	CProcessRaw*		m_pProcessRaw;		// data processing object
+	CHilbert*			m_pProcessHilbert;  // data processing object
 	CProcessSpectrum*	m_pProcessSpectrum; // data processing object
 	CProcessSpectrogram* m_pProcessSpectrogram; // data processing object
-	CProcessSpectrogram* m_pProcessSnapshot; // data processing object
-	CProcessWavelet*	m_pProcessWavelet; // data processing object  ARH 8/2/01 Added for wavelet graph
+	CProcessSpectrogram* m_pProcessSnapshot;// data processing object
+	CProcessWavelet*	m_pProcessWavelet;	// data processing object  ARH 8/2/01 Added for wavelet graph
 	CProcessFormants*	m_pProcessFormants; // data processing object
 	CFormantTracker*	m_pProcessFormantTracker; // data processing object
-	CProcessDurations*	m_pProcessDurations; // data processing object
-	CProcessSDP*		m_pProcessSDP[3];      // data processing object
+	CProcessDurations*	m_pProcessDurations;// data processing object
+	CProcessSDP*		m_pProcessSDP[3];   // data processing object
 	CProcessRatio*		m_pProcessRatio;    // data processing object
 	CProcessPOA*		m_pProcessPOA;      // data processing object
 	CProcessGlottis*	m_pProcessGlottis;  // data processing object
 	CProcessTonalWeightChart* m_pProcessTonalWeightChart; // data processing object CLW 11/5/99
 	CSegment*			m_apSegments[ANNOT_WND_NUMBER]; // array of pointers to the segment objects
-	CStringArray*		m_pFontFaces;  // array of graph font face strings
-	CUIntArray*			m_pFontSizes;// array of graph font sizes
+	CStringArray*		m_pFontFaces;		// array of graph font face strings
+	CUIntArray*			m_pFontSizes;		// array of graph font sizes
 	CObArray*			m_pCreatedFonts;
 	HPSTR				m_lpData;           // pointer to wave data
 	DWORD				m_dwRdBufferOffset; // actual read buffer offset
@@ -174,27 +174,27 @@ private:
 
 	// Operations
 public:
-	void				SetAudioModifiedFlag(bool bMod = true) {m_bAudioModified = bMod;}
-	bool				IsAudioModified() const {return m_bAudioModified;}
-	void				SetTransModifiedFlag(bool bMod = true) {m_bTransModified = bMod;}
-	bool				IsTransModified() const {return m_bTransModified;}
-	bool				IsMultiChannel() const { return m_bMultiChannel;}
-	void				SetID(int nID) {m_ID = nID;}				// set document ID
-	int					GetID() {return m_ID;}
-	void				SetWbProcess(int nProcess) {m_nWbProcess = nProcess;} // set workbench process number
-	int					GetWbProcess() {return m_nWbProcess;}		// return workbench process number
-	CFileStatus*		GetFileStatus() {return &m_fileStat;}		// pointer to file status structure
-	FmtParm*			GetFmtParm() {return &m_fmtParm;}			// pointer to format parameters structure
-	SaParm*				GetSaParm() {return &m_saParm;}				// pointer to sa parameters structure
-	SourceParm*			GetSourceParm() {return &m_sourceParm;}		// pointer to source parameters structure
-	int					GetGender();                               // returns gender: 0 = male, 1 = female, 2 = child
-	// guesses if undefined in source parameters
-	const UttParm*		GetUttParm()      {return &m_uttParm;}     // pointer to utterance parameters structure
-	void				GetFmtParm(FmtParm*);                      // get a copy of the format parameters structure
-	void				GetSaParm(SaParm*);                        // get a copy of the sa parameters structure
+	void				SetAudioModifiedFlag(bool bMod = true);
+	bool				IsAudioModified() const;
+	void				SetTransModifiedFlag(bool bMod = true);
+	bool				IsTransModified() const;
+	bool				IsMultiChannel() const;
+	void				SetID(int nID);								// set document ID
+	int					GetID();
+	void				SetWbProcess(int nProcess);					// set workbench process number
+	int					GetWbProcess();								// return workbench process number
+	CFileStatus*		GetFileStatus();							// pointer to file status structure
+	FmtParm*			GetFmtParm();								// pointer to format parameters structure
+	SaParm*				GetSaParm();								// pointer to sa parameters structure
+	SourceParm*			GetSourceParm();							// pointer to source parameters structure
+	int					GetGender();								// returns gender: 0 = male, 1 = female, 2 = child
+																	// guesses if undefined in source parameters
+	const UttParm*		GetUttParm()      {return &m_uttParm;}		// pointer to utterance parameters structure
+	void				GetFmtParm(FmtParm*);						// get a copy of the format parameters structure
+	void				GetSaParm(SaParm*);							// get a copy of the sa parameters structure
 	void				GetUttParm(UttParm*, BOOL bOriginal=FALSE); // get a copy of the utterance parameters structure
 	void				SetFmtParm(FmtParm*, BOOL bAdjustSpectro = TRUE); // set format parameters structure
-	void				SetSaParm(SaParm*);                        // set sa parameters structure
+	void				SetSaParm(SaParm*);							// set sa parameters structure
 	void				SetUttParm(const UttParm*, BOOL bOriginal = FALSE);      // set utterance parameters structure
 	const PitchParm*    GetPitchParm() const {return &m_pitchParm;}   // pointer to pitch parameters structure
 	void SetPitchParm(const PitchParm &parm) { m_pitchParm = parm;}
@@ -205,12 +205,12 @@ public:
 	SDPParm*			GetSDPParm()      {return &m_SDPParm;}		// pointer to SDP parameters structure
 	DWORD				GetDataSize();								// return wave source data size
 	DWORD				GetUnprocessedDataSize();					// return sampled data size from wave file
-	double				GetTimeFromBytes(DWORD); // return the length of the sampled data in seconds
-	DWORD				GetBytesFromTime(double); // return the length of the sampled data in bytes
+	double				GetTimeFromBytes(DWORD);					// return the length of the sampled data in seconds
+	DWORD				GetBytesFromTime(double);					// return the length of the sampled data in bytes
 	HPSTR				GetWaveData(DWORD dwOffset, BOOL bBlockBegin = FALSE); // return wave source data pointer on given position (offset)
-	int					GetWaveData(DWORD dwOffset, BOOL*); // return wave source (one sample) on given position (offset)
+	int					GetWaveData(DWORD dwOffset, BOOL*);			// return wave source (one sample) on given position (offset)
 	HPSTR				GetUnprocessedWaveData(DWORD dwOffset, BOOL bBlockBegin = FALSE, BOOL bAdjusted = TRUE); // return wave data pointer on given position (offset)
-	DWORD				GetWaveBufferIndex();    // return index for wave source data buffer
+	DWORD				GetWaveBufferIndex();						// return index for wave source data buffer
 	CSaString			GetMusicScore();
 	BOOL				IsBackgroundProcessing();
 	BOOL				EnableBackgroundProcessing(BOOL bState = TRUE);  // background processing: TRUE = enabled
@@ -356,9 +356,6 @@ public:
 	virtual HACCEL		GetDefaultAccel();
 	virtual void		NotifyAutoPitchDone(void *pCaller);
 	virtual void		NotifyFragmentDone(void *pCaller);
-
-	// Overrides
-public:
 	virtual void		Serialize(CArchive& ar);
 
 #ifdef _DEBUG
@@ -403,13 +400,12 @@ public:
 	const CSaString BuildImportString( BOOL gloss, BOOL phonetic, BOOL phonemic, BOOL orthographic);
 	const bool ImportTranscription( CSaString & filename, bool gloss, bool phonetic, bool phonemic, bool orthographic, CTranscriptionData & td, bool addTag);
 
+	void ApplyTranscriptionChanges( CTranscriptionDataSettings & settings);
+	void RevertTranscriptionChanges();
 protected:
 	// automatic transcription alignment functions
 	void AlignTranscriptionData( CTranscriptionDataSettings & settings);
 	void AlignTranscriptionDataByRef( CTranscriptionData & td);
-public:
-	void ApplyTranscriptionChanges( CTranscriptionDataSettings & settings);
-	void RevertTranscriptionChanges();
 private:
 	int m_nTranscriptionApplicationCount;
 

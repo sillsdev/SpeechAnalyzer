@@ -243,20 +243,12 @@ void CDlgExportSFM::ExportMultiRec() {
 
 	ExportFile( pDoc, file);
 
-	if (!TryExportSegmentsBy(MUSIC_PL4,pDoc,file)) {
-		if (!TryExportSegmentsBy(MUSIC_PL3,pDoc,file)) {
-			if (!TryExportSegmentsBy(MUSIC_PL2,pDoc,file)) {
-				if (!TryExportSegmentsBy(MUSIC_PL1,pDoc,file)) {
-					if (!TryExportSegmentsBy(REFERENCE,pDoc,file)) {
-						if (!TryExportSegmentsBy(GLOSS,pDoc,file)) {
-							if (!TryExportSegmentsBy(ORTHO,pDoc,file)) {
-								if (!TryExportSegmentsBy(PHONEMIC,pDoc,file)) {
-									if (!TryExportSegmentsBy(TONE,pDoc,file)) {
-										TryExportSegmentsBy(PHONETIC,pDoc,file);
-									}
-								}
-							}
-						}
+	if (!TryExportSegmentsBy(REFERENCE,pDoc,file)) {
+		if (!TryExportSegmentsBy(GLOSS,pDoc,file)) {
+			if (!TryExportSegmentsBy(ORTHO,pDoc,file)) {
+				if (!TryExportSegmentsBy(PHONEMIC,pDoc,file)) {
+					if (!TryExportSegmentsBy(TONE,pDoc,file)) {
+						TryExportSegmentsBy(PHONETIC,pDoc,file);
 					}
 				}
 			}
@@ -281,9 +273,10 @@ bool CDlgExportSFM::TryExportSegmentsBy( Annotations master, CSaDoc * pDoc, CFil
 
 	WriteFileUtf8( &file, szCrLf);
 
-	// music phrase segments may have several segments with the same
-	// starting offset.  there will be one for each character.
-	// we can skip the duplicates in this outer loop
+	CSaString results[ANNOT_WND_NUMBER];
+	for (int i=0;i<ANNOT_WND_NUMBER;i++) {
+		results[i] = L"";
+	}
 	DWORD last = pSeg->GetOffset(0)-1;
 	for (int i=0;i<pSeg->GetOffsetSize();i++) {
 		DWORD dwStart = pSeg->GetOffset(i);
@@ -291,18 +284,56 @@ bool CDlgExportSFM::TryExportSegmentsBy( Annotations master, CSaDoc * pDoc, CFil
 		if (dwStart==last) continue;
 		last = dwStart;
 		for (int j=master;j>=0;j--) {
-			CSaString szTag = GetTag(GetAnnotation(j));
-			CSaString szText =  pDoc->GetSegment(j)->GetTextFor(dwStart,dwStop);
-			szText = szText.Trim();
-			if (szText.GetLength()!=0) {
-				CSaString szString = szTag + L" " + szText + szCrLf;
-				WriteFileUtf8( &file, szString);
-			}
+			Annotations target = GetAnnotation(j);
+			results[target] = BuildRecord(target,dwStart,dwStop,pDoc);
 		}
+
+		if (m_bPhrase) {
+			results[MUSIC_PL1] = BuildPhrase( MUSIC_PL1, dwStart, dwStop, pDoc);
+			results[MUSIC_PL2] = BuildPhrase( MUSIC_PL2, dwStart, dwStop, pDoc);
+			results[MUSIC_PL3] = BuildPhrase( MUSIC_PL3, dwStart, dwStop, pDoc);
+			results[MUSIC_PL4] = BuildPhrase( MUSIC_PL4, dwStart, dwStop, pDoc);
+		}
+
+		if (results[REFERENCE].GetLength()>0) WriteFileUtf8( &file, results[REFERENCE]);
+		if (results[PHONETIC].GetLength()>0) WriteFileUtf8( &file, results[PHONETIC]);
+		if (results[TONE].GetLength()>0) WriteFileUtf8( &file, results[TONE]);
+		if (results[PHONEMIC].GetLength()>0) WriteFileUtf8( &file, results[PHONEMIC]);
+		if (results[ORTHO].GetLength()>0) WriteFileUtf8( &file, results[ORTHO]);
+		if (results[GLOSS].GetLength()>0) WriteFileUtf8( &file, results[GLOSS]);
+		if (results[MUSIC_PL1].GetLength()>0) WriteFileUtf8( &file, results[MUSIC_PL1]);
+		if (results[MUSIC_PL2].GetLength()>0) WriteFileUtf8( &file, results[MUSIC_PL2]);
+		if (results[MUSIC_PL3].GetLength()>0) WriteFileUtf8( &file, results[MUSIC_PL3]);
+		if (results[MUSIC_PL4].GetLength()>0) WriteFileUtf8( &file, results[MUSIC_PL4]);
 		WriteFileUtf8( &file, szCrLf);
 	}
 
 	return true;
+}
+
+CSaString CDlgExportSFM::BuildRecord( Annotations target, DWORD dwStart, DWORD dwStop, CSaDoc * pDoc) {
+
+	CSaString szTag = GetTag(target);
+	CSegment * pSegment = pDoc->GetSegment(target);
+	CSaString szText = pSegment->GetContainedText(dwStart,dwStop);
+	szText = szText.Trim();
+	if (szText.GetLength()==0) return L"";
+	if (target==GLOSS) {
+		if (szText[0]==WORD_DELIMITER) {
+			szText = szText.Right(szText.GetLength()-1);
+		}
+	}
+	return szTag + L" " + szText + szCrLf;
+}
+
+CSaString CDlgExportSFM::BuildPhrase( Annotations target, DWORD dwStart, DWORD dwStop, CSaDoc * pDoc) {
+
+	CSaString szTag = GetTag(target);
+	CSegment * pSegment = pDoc->GetSegment(GetIndex(target));
+	CSaString szText =  pSegment->GetOverlappingText(dwStart,dwStop);
+	szText = szText.Trim();
+	if (szText.GetLength()==0) return L"";
+	return szTag + L" " + szText + szCrLf;
 }
 
 bool CDlgExportSFM::GetFlag( Annotations val) {

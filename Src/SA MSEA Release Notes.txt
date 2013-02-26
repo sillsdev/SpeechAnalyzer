@@ -1,3 +1,9 @@
+SA - 3.1.0.35 - 2/25/2013
+All changes apply to SFM multi-record exporting only.
+1) Sorted record output according to email chain..
+2) Phrase transcriptions are now written with their associated 'parent' transcriptions.
+3) '#' was removed from gloss transcription
+
 SA - 3.1.0.34 - 2/21/2013
 1) A fix for the notorious 'missing end cursor' bug.
 

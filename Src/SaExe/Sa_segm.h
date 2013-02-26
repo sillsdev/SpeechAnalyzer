@@ -170,7 +170,8 @@ public:
 	virtual BOOL SetAt( const CSaString*, bool delimiter, DWORD dwStart, DWORD dwDuration);	// sets a new segment
 	virtual BOOL Insert(int nIndex, const CSaString*, bool delimiter, DWORD dwStart, DWORD dwDuration); // insert a new segment
 	virtual long Process(void* /*pCaller*/, CSaDoc* /*pDoc*/, int /*nProgress*/ = 0, int /*Level*/ = 1) { return PROCESS_ERROR; };
-	virtual CSaString GetTextFor( DWORD dwStart, DWORD dwStop);
+	virtual CSaString GetContainedText( DWORD dwStart, DWORD dwStop);
+	virtual CSaString GetOverlappingText( DWORD dwStart, DWORD dwStop);
 };
 
 #endif

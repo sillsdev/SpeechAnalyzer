@@ -233,7 +233,8 @@ void CSASelfTest::SelfTest()
 		short int nResult = LOWORD(pPitch->Process(this, pDoc)); // process data
 		if (nResult != PROCESS_ERROR && nResult != PROCESS_CANCELED)
 			EndTest(!FileCompare(pPitch->GetProcessFileName()));
-		else EndTest(FALSE);
+		else 
+			EndTest(FALSE);
 	}
 
 	if (bFileOpened && StartTest("CHFrench CustomPitch","Test custom pitch process."))

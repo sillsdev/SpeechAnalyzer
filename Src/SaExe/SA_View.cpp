@@ -758,7 +758,6 @@ void CSaView::OnFilePhonologyAssistant()
 	DWORD pathLen = ::GetModuleFileName( hmod, fullPath, MAX_PATH);
 
 	REGSAM sam = (wow64)?KEY_ALL_ACCESS | KEY_WOW64_64KEY:KEY_ALL_ACCESS;
-	TCHAR szPathBuf[_MAX_PATH + 1];
 	HKEY hKey = 0;
 	DWORD dwBufLen = MAX_PATH + 1;
 	DWORD disposition = 0;

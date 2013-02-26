@@ -1,16 +1,6 @@
-//#include "stdMbrola.h"
 #include <string.h>
 #include <search.h>
-//#include "dsp\dspTypes.h"
 #include "ipasampa.h"
-
-//CCharConverter::CCharConverter()
-//{
-//}
-
-//CCharConverter::~CCharConverter()
-//{
-//}
 
 /*------------------------------------------------------------------------*\
 |                        Translation Tables                              |  

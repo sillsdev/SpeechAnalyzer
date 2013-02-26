@@ -41,7 +41,7 @@ public:
 	virtual void  LimitPosition(CSaDoc*,DWORD& dwStart,DWORD& dwStop, int nMode=LIMIT_MOVING_BOTH) const;
 	int CountWords();
 	DWORD CalculateDuration(CSaDoc* pDoc, const int nIndex) const;
-	virtual CSaString CTextSegment::GetTextFor( DWORD dwStart, DWORD dwStop);
+	virtual CSaString GetContainedText( DWORD dwStart, DWORD dwStop);
 
 };
 

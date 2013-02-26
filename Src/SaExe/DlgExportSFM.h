@@ -29,6 +29,8 @@ protected:
 	void ExportAllFileInformation( CSaDoc * pDoc, CFile & file);
 	void ExportAllParameters( CSaDoc * pDoc, CFile & file);
 	void ExportAllSource( CSaDoc * pDoc, CFile & file);
+	CSaString BuildRecord( Annotations target, DWORD dwStart, DWORD dwStop, CSaDoc * pDoc);
+	CSaString BuildPhrase( Annotations target, DWORD dwStart, DWORD dwStop, CSaDoc * pDoc);
 
 private:
 	Annotations GetAnnotation( int val);

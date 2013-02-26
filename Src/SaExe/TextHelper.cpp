@@ -2,7 +2,7 @@
 #include "TextHelper.h"
 #include "Settings/OBSTREAM.H"
 #include "resource.h"
-
+#include "AppDefs.h"
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -53,7 +53,7 @@ bool containsTabs( wchar_t * buffer, int length) {
 
 bool containsPoundSigns( wchar_t * buffer, int length) {
 	for (int i=0;i<length;i++) {
-		if (buffer[i]=='#') return true;
+		if (buffer[i]==WORD_DELIMITER) return true;
 	}
 	return false;
 }

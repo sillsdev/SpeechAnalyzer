@@ -85,8 +85,8 @@
 #include "sa_doc.h"
 #include "sa_plot.h"
 #include "sa_graph.h"
-#include "Process\sa_proc.h"
 #include "sa_segm.h"
+#include "Process\sa_proc.h"
 #include "Process\sa_p_doc.h"
 #include "Process\sa_w_adj.h"
 #include "Process\sa_p_fra.h"
@@ -109,6 +109,7 @@
 #include "Process\sa_p_poa.h"
 #include "Process\sa_p_rat.h"
 #include "Process\sa_p_twc.h"
+#include "Process\FormantTracker.h"
 #include "playerRecorder.h"
 #include "dlgadvancedsegment.h"
 #include "dlgadvancedparsewords.h"
@@ -127,7 +128,6 @@
 #include "sa_exprt.h"
 #include "saveAsOptions.h"
 #include "autorecorder.h"
-#include "Process\FormantTracker.h"
 #include "dlgsplit.h"
 #include "waveresampler.h"
 #include "dlgmultichannel.h"
@@ -203,6 +203,20 @@ BEGIN_MESSAGE_MAP(CSaDoc, CDocument)
 	ON_UPDATE_COMMAND_UI(ID_AUTOMATICMARKUP_REFERENCEDATA, OnUpdateAutoReferenceData)
 	//}}AFX_MSG_MAP
 END_MESSAGE_MAP()
+
+static const char * IMPORT_END = "import";
+static const wchar_t * EMPTY = L"";
+
+// default tags for text importing
+static const char* psz_Phonemic = "pm";
+static const char* psz_Gloss = "gl";
+static const char* psz_Phonetic = "ph";
+static const char* psz_Orthographic = "or";
+static const char* psz_Reference = "ref";
+
+static const char* psz_sadoc  = "sadoc";
+static const char* psz_wndlst = "wndlst";
+static const char* psz_saview = "saview";
 
 /////////////////////////////////////////////////////////////////////////////
 // CSaDoc construction/destruction/creation
@@ -6136,7 +6150,7 @@ wstring CSaDoc::FilterName( wstring text)
 		}
 		result = result + c;
 	}
-		
+
 	if (result.length()>0) 
 	{
 		if (result[0]=='#') 
@@ -7220,10 +7234,6 @@ void CSaDoc::OnUpdateAdvancedSegment(CCmdUI* pCmdUI)
 {
 	pCmdUI->Enable(GetUnprocessedDataSize() != 0); // enable if data is available
 }
-
-static const char* psz_sadoc  = "sadoc";
-static const char* psz_wndlst = "wndlst";
-static const char* psz_saview = "saview";
 
 void CSaDoc::WriteProperties(Object_ostream& obs)
 {
@@ -8667,16 +8677,6 @@ const CSaString CSaDoc::BuildImportString( BOOL gloss, BOOL phonetic, BOOL phone
 	return CSaString("");
 }
 
-static const char * IMPORT_END = "import";
-static const wchar_t * EMPTY = L"";
-
-// default tags for text importing
-static const char* psz_Phonemic = "pm";
-static const char* psz_Gloss = "gl";
-static const char* psz_Phonetic = "ph";
-static const char* psz_Orthographic = "or";
-static const char* psz_Reference = "ref";
-
 /**
 * Read the incoming stream and return the transcription line
 * This is used by the automatic transcription feature
@@ -8790,35 +8790,183 @@ CGlossSegment * CSaDoc::GetGlossSegment()
 	return (CGlossSegment *)m_apSegments[GLOSS];
 }
 
-CSaString			CSaDoc::GetMusicScore() {return m_szMusicScore;}
-BOOL				CSaDoc::IsBackgroundProcessing() {return m_bProcessBackground;}
-BOOL				CSaDoc::EnableBackgroundProcessing(BOOL bState) {BOOL result = m_bProcessBackground;m_bProcessBackground = bState;return result;}  // background processing: TRUE = enabled
-CProcessDoc*		CSaDoc::GetUnprocessed() {return m_pProcessUnprocessed;}  // process pointer to Unprocessed
-CProcessAdjust*		CSaDoc::GetAdjust() {return m_pProcessAdjust;}  // process pointer to adjust
-CProcessFragments*	CSaDoc::GetFragments() {return m_pProcessFragments;}  // process pointer to fragment object
-CProcessLoudness*	CSaDoc::GetLoudness() {return m_pProcessLoudness;}  // process pointer to loudness object
-CProcessSmoothLoudness* CSaDoc::GetSmoothLoudness() {return m_pProcessSmoothLoudness;} // process pointer to smooth loudness object
-CProcessZCross*		CSaDoc::GetZCross() {return m_pProcessZCross;}    // process pointer to zero crossings object
-CProcessPitch*		CSaDoc::GetPitch() {return m_pProcessPitch;}     // process pointer to pitch object
-CProcessCustomPitch* CSaDoc::GetCustomPitch() {return m_pProcessCustomPitch;} // process pointer to custom pitch object
-CProcessSmoothedPitch* CSaDoc::GetSmoothedPitch() {return m_pProcessSmoothedPitch;} // process pointer to smoothed pitch object
-CProcessChange*		CSaDoc::GetChange() {return m_pProcessChange;}		// process pointer to change object
-CProcessRaw*		CSaDoc::GetRaw() {return m_pProcessRaw;}			// process pointer to change object
-CHilbert*			CSaDoc::GetHilbert() {return m_pProcessHilbert;}    // process pointer to change object
-CProcessWavelet*	CSaDoc::GetWavelet() {return m_pProcessWavelet;}	// process pointer to wavelet object  ARH 8/2/01 added for wavelet graph
-CProcessSpectrum*	CSaDoc::GetSpectrum() {return m_pProcessSpectrum;}  // process pointer to spectrum object
-CProcessGrappl*		CSaDoc::GetGrappl() {return m_pProcessGrappl;}		// process pointer to grappl object
-CProcessMelogram*   CSaDoc::GetMelogram() {return m_pProcessMelogram;}  // process pointer to melogram object
-CProcessFormants*	CSaDoc::GetFormants() {return m_pProcessFormants;}  // process pointer to spectrogram object
-CFormantTracker*	CSaDoc::GetFormantTracker() {return m_pProcessFormantTracker;}  // process pointer to spectrogram object
-CProcessDurations*	CSaDoc::GetDurations() {return m_pProcessDurations; } // process pointer to phonetic segment durations
-CProcessRatio*		CSaDoc::GetRatio() {return m_pProcessRatio;}        // process pointer to ratio object
-CProcessPOA*		CSaDoc::GetPOA() {return m_pProcessPOA;}            // process pointer to vocal tract model for finding place of articulation
-CProcessGlottis*	CSaDoc::GetGlottalWave(){return m_pProcessGlottis;} // process pointer to glottal waveform object
-CProcessTonalWeightChart* CSaDoc::GetTonalWeightChart() {return m_pProcessTonalWeightChart;} // process pointer to tonal weighting chart CLW 11/8/99
-CFontTable*			CSaDoc::GetFont(int nIndex) {return (CFontTable*)m_pCreatedFonts->GetAt(nIndex);} // return font size
+CSaString CSaDoc::GetMusicScore()
+{
+	return m_szMusicScore;
+}
+BOOL CSaDoc::IsBackgroundProcessing()
+{
+	return m_bProcessBackground;
+}
+BOOL CSaDoc::EnableBackgroundProcessing(BOOL bState)
+{
+	BOOL result = m_bProcessBackground;
+	m_bProcessBackground = bState;
+	return result;
+}
+CProcessDoc * CSaDoc::GetUnprocessed()
+{
+	return m_pProcessUnprocessed;
+}
+CProcessAdjust * CSaDoc::GetAdjust()
+{
+	return m_pProcessAdjust;
+}
+CProcessFragments * CSaDoc::GetFragments()
+{
+	return m_pProcessFragments;
+}
+CProcessLoudness * CSaDoc::GetLoudness()
+{
+	return m_pProcessLoudness;
+}
+CProcessSmoothLoudness * CSaDoc::GetSmoothLoudness()
+{
+	return m_pProcessSmoothLoudness;
+}
+CProcessZCross * CSaDoc::GetZCross()
+{
+	return m_pProcessZCross;
+}
+CProcessPitch * CSaDoc::GetPitch()
+{
+	return m_pProcessPitch;
+}
+CProcessCustomPitch * CSaDoc::GetCustomPitch()
+{
+	return m_pProcessCustomPitch;
+}
+CProcessSmoothedPitch * CSaDoc::GetSmoothedPitch()
+{
+	return m_pProcessSmoothedPitch;
+}
+CProcessChange * CSaDoc::GetChange()
+{
+	return m_pProcessChange;
+}
+CProcessRaw * CSaDoc::GetRaw()
+{
+	return m_pProcessRaw;
+}
+CHilbert * CSaDoc::GetHilbert()
+{
+	return m_pProcessHilbert;
+}
+CProcessWavelet * CSaDoc::GetWavelet()
+{
+	return m_pProcessWavelet;
+}
+CProcessSpectrum * CSaDoc::GetSpectrum()
+{
+	return m_pProcessSpectrum;
+}
+CProcessGrappl * CSaDoc::GetGrappl()
+{
+	return m_pProcessGrappl;
+}
+CProcessMelogram * CSaDoc::GetMelogram()
+{
+	return m_pProcessMelogram;
+}
+CProcessFormants * CSaDoc::GetFormants()
+{
+	return m_pProcessFormants;
+}
+CFormantTracker * CSaDoc::GetFormantTracker()
+{
+	return m_pProcessFormantTracker;
+}
+CProcessDurations * CSaDoc::GetDurations()
+{
+	return m_pProcessDurations;
+}
+CProcessRatio * CSaDoc::GetRatio()
+{
+	return m_pProcessRatio;
+}
+CProcessPOA * CSaDoc::GetPOA()
+{
+	return m_pProcessPOA;
+}
+CProcessGlottis * CSaDoc::GetGlottalWave()
+{
+	return m_pProcessGlottis;
+}
+CProcessTonalWeightChart * CSaDoc::GetTonalWeightChart()
+{
+	return m_pProcessTonalWeightChart;
+}
+CFontTable  * CSaDoc::GetFont(int nIndex)
+{
+	return (CFontTable *)m_pCreatedFonts->GetAt(nIndex);
+}
 
-DWORD CSaDoc::GetUnprocessedDataSize() {
-	// return sampled data size from wave file
+DWORD CSaDoc::GetUnprocessedDataSize()
+{
 	return m_dwDataSize;
-} 
+}
+
+void CSaDoc::SetAudioModifiedFlag(bool bMod)
+{
+	m_bAudioModified = bMod;
+}
+
+bool CSaDoc::IsAudioModified() const
+{
+	return m_bAudioModified;
+}
+
+void CSaDoc::SetTransModifiedFlag(bool bMod)
+{
+	m_bTransModified = bMod;
+}
+
+bool CSaDoc::IsTransModified() const
+{
+	return m_bTransModified;
+}
+
+bool CSaDoc::IsMultiChannel() const
+{
+	return m_bMultiChannel;
+}
+
+void CSaDoc::SetID(int nID)
+{
+	m_ID = nID;
+}
+
+int CSaDoc::GetID()
+{
+	return m_ID;
+}
+
+void CSaDoc::SetWbProcess(int nProcess)
+{
+	m_nWbProcess = nProcess;
+}
+
+int CSaDoc::GetWbProcess()
+{
+	return m_nWbProcess;
+}
+
+CFileStatus * CSaDoc::GetFileStatus()
+{
+	return &m_fileStat;
+}
+
+FmtParm * CSaDoc::GetFmtParm()
+{
+	return &m_fmtParm;
+}
+
+SaParm * CSaDoc::GetSaParm()
+{
+	return &m_saParm;
+}
+
+SourceParm * CSaDoc::GetSourceParm()
+{
+	return &m_sourceParm;
+}
