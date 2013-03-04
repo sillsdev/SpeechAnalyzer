@@ -95,7 +95,7 @@ using std::ifstream;
 using std::ofstream;
 using std::ios;
 
-#include "sa_exprt.h"
+#include "DlgExportFW.h"
 #include "sa_dplot.h"
 #include "sa_start.h"
 #include <shellapi.h>

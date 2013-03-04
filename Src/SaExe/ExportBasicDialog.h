@@ -13,6 +13,7 @@
 #define EXPORTBASICDIALOG_H
 
 #include "resource.h"
+#include "CSaString.h"
 
 /////////////////////////////////////////////////////////////////////////////
 // CExportBasicDialog

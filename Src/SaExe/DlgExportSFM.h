@@ -2,7 +2,7 @@
 #define DLGEXPORTSFM_H
 
 #include "CSaString.h"
-#include "SA_Exprt.h"
+#include "ExportBasicDialog.h"
 #include "AppDefs.h"
 
 /////////////////////////////////////////////////////////////////////////////
@@ -20,23 +20,22 @@ protected:
 	virtual void InitializeDialog();
 	DECLARE_MESSAGE_MAP()
 
+private:
 	void ExportStandard();
 	void ExportMultiRec();
-
-	bool TryExportSegmentsBy( Annotations master, CSaDoc * pDoc, CFile & file);
 	void ExportFile( CSaDoc * pDoc, CFile & file);
 	void ExportCounts( CSaDoc * pDoc, CFile & file);
 	void ExportAllFileInformation( CSaDoc * pDoc, CFile & file);
 	void ExportAllParameters( CSaDoc * pDoc, CFile & file);
 	void ExportAllSource( CSaDoc * pDoc, CFile & file);
+	bool TryExportSegmentsBy( Annotations master, CSaDoc * pDoc, CFile & file);
 	CSaString BuildRecord( Annotations target, DWORD dwStart, DWORD dwStop, CSaDoc * pDoc);
 	CSaString BuildPhrase( Annotations target, DWORD dwStart, DWORD dwStop, CSaDoc * pDoc);
-
-private:
 	Annotations GetAnnotation( int val);
-	bool GetFlag( Annotations val);
+	BOOL GetFlag( Annotations val);
 	int GetIndex( Annotations val);
 	LPCTSTR GetTag( Annotations val);
+	CSaString GetExportFilename( CSaString szTitle, CSaString szFilter, TCHAR *szExtension=_T("txt"));
 };
 
 #endif DLGEXPORTSFM_H

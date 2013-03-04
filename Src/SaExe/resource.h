@@ -311,6 +311,7 @@
 #define IDC_VIEWCAPTION                 1085
 #define IDS_ERROR_CREATE_INSTANCE       1085
 #define IDC_COLORSSCALESETUP            1086
+#define IDD_EXPORT_FW                   1087
 #define IDC_PLAY                        1094
 #define IDC_STOP                        1096
 #define IDC_PAUSE                       1097
@@ -1140,6 +1141,7 @@
 #define IDC_SPLIT_FOLDER_LOCATION       2034
 #define IDC_SPLIT_FOLDER_NAME           2035
 #define IDC_SPLIT_PHRASE_SUBFOLDER_NAME 2036
+#define IDC_EDIT_OTHER_FOLDER           2036
 #define IDC_SPLIT_WORD_SUBFOLDER_NAME   2037
 #define IDC_EXPORT_PHRASE               2038
 #define IDC_EXPORT_WORD                 2039
@@ -1157,14 +1159,15 @@
 #define IDC_BROWSE_BUTTON               2049
 #define IDC_USE_REFERENCE               2050
 #define IDC_EDIT_PHRASE_FOLDER          2050
+#define IDC_BROWSE_OTHER                2050
 #define IDC_NUMBERS_GLOSS               2051
-#define IDC_NUMBERS_RADIO               2051
+#define IDC_RADIO_NUMBERS               2051
 #define IDC_EDIT_GLOSS_FOLDER           2051
 #define IDC_FILENAME_COMBO              2052
 #define IDC_BEGIN_SPIN                  2053
 #define IDC_END_SPIN                    2054
 #define IDC_FIRST_GLOSS_RADIO           2055
-#define IDC_FILE_RADIO                  2056
+#define IDC_RADIO_FILE                  2056
 #define IDC_EDIT1                       2057
 #define IDC_BEGIN_LABEL                 2058
 #define IDC_END_LABEL                   2059
@@ -1173,6 +1176,14 @@
 #define IDC_CHECK_GLOSS_EMPTY           2062
 #define IDC_CHECK1                      2066
 #define IDC_CHECK_OVERWRITE             2066
+#define IDC_RADIO_FIELDWORKS            2067
+#define IDC_RADIO_OTHER                 2068
+#define IDC_EDIT_FIELDWORKS_FOLDER      2071
+#define IDC_STATIC_OTHER                2072
+#define IDC_STATIC_FIELDWORKS           2073
+#define IDC_COMBO_FIELDWORKS_PROJECT    2074
+#define IDC_STATIC_FIELDWORKS_PROJECT   2075
+#define IDC_STATIC_TAGS                 2076
 #define IDS_PLAYER_SMALL                3000
 #define IDS_PLAYER_LARGE                3001
 #define IDS_STATTXT_PROCESSING          4000
@@ -1638,6 +1649,7 @@
 #define IDS_AUTO_REF_MAIN_3             61303
 #define IDS_AUTO_REF_TAG                61304
 #define IDS_AUTO_REF_MAIN_4             61305
+#define IDS_SFM_TAGS                    61305
 
 // Next default values for new objects
 // 
@@ -1646,7 +1658,7 @@
 #define _APS_3D_CONTROLS                     1
 #define _APS_NEXT_RESOURCE_VALUE        365
 #define _APS_NEXT_COMMAND_VALUE         33225
-#define _APS_NEXT_CONTROL_VALUE         2067
+#define _APS_NEXT_CONTROL_VALUE         2077
 #define _APS_NEXT_SYMED_VALUE           104
 #endif
 #endif

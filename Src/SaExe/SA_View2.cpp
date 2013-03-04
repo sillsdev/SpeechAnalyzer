@@ -42,7 +42,7 @@
 #include "sa_mplot.h"
 #include "pickover.h"
 #include "settings\obstream.h"
-#include "sa_exprt.h"
+#include "DlgExportFW.h"
 #include "sa_g_stf.h"
 #include "GlossSegment.h"
 #include "MusicPhraseSegment.h"

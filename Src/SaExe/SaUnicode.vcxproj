@@ -140,11 +140,13 @@
     <ClCompile Include="DependentTextSegment.cpp" />
     <ClCompile Include="DlgAlignTranscriptionDataImportRefPage.cpp" />
     <ClCompile Include="DlgAlignTranscriptionDataTextPage.cpp" />
+    <ClCompile Include="DlgExportFW.cpp" />
     <ClCompile Include="DlgExportSFM.cpp" />
     <ClCompile Include="DlgExportTable.cpp" />
     <ClCompile Include="DlgExportXML.cpp" />
     <ClCompile Include="DlgImport.cpp" />
     <ClCompile Include="DlgImportSFMRef.cpp" />
+    <ClCompile Include="FileUtils.cpp" />
     <ClCompile Include="GlossSegment.cpp" />
     <ClCompile Include="Import.cpp" />
     <ClCompile Include="IndependentSegment.cpp" />
@@ -244,6 +246,7 @@
     <ClCompile Include="DlgAutoReferenceData.cpp" />
     <ClCompile Include="DlgImportSFM.cpp" />
     <ClCompile Include="SFMHelper.cpp" />
+    <ClCompile Include="SplitFileUtils.cpp" />
     <ClCompile Include="StopCursorWnd.cpp" />
     <ClCompile Include="Synthesis\DlgKlattAll.cpp" />
     <ClCompile Include="Synthesis\DlgMbrola.cpp" />
@@ -264,7 +267,6 @@
     <ClCompile Include="Result.cpp" />
     <ClCompile Include="SA_DlWnd.cpp" />
     <ClCompile Include="SA_Edit.cpp" />
-    <ClCompile Include="SA_Exprt.cpp" />
     <ClCompile Include="SA_Find.cpp" />
     <ClCompile Include="Sa_start.cpp" />
     <ClCompile Include="saveAsOptions.cpp" />
@@ -391,11 +393,13 @@
     <ClInclude Include="DependentTextSegment.h" />
     <ClInclude Include="DlgAlignTranscriptionDataImportRefPage.h" />
     <ClInclude Include="DlgAlignTranscriptionDataTextPage.h" />
+    <ClInclude Include="DlgExportFW.h" />
     <ClInclude Include="DlgExportSFM.h" />
     <ClInclude Include="DlgExportTable.h" />
     <ClInclude Include="DlgExportXML.h" />
     <ClInclude Include="DlgImport.h" />
     <ClInclude Include="DlgImportSFMRef.h" />
+    <ClInclude Include="FileUtils.h" />
     <ClInclude Include="GlossSegment.h" />
     <ClInclude Include="Import.h" />
     <ClInclude Include="IndependentSegment.h" />
@@ -479,6 +483,7 @@
     <ClInclude Include="SelfTest.h" />
     <ClInclude Include="SFMHelper.h" />
     <ClInclude Include="sourceParm.h" />
+    <ClInclude Include="SplitFileUtils.h" />
     <ClInclude Include="Stdafx.h" />
     <ClInclude Include="StopCursorWnd.h" />
     <ClInclude Include="stpwatch.h" />
@@ -517,7 +522,6 @@
     <ClInclude Include="PrintOpt.h" />
     <ClInclude Include="RESULT.H" />
     <ClInclude Include="SA_Edit.h" />
-    <ClInclude Include="SA_Exprt.h" />
     <ClInclude Include="Sa_start.h" />
     <ClInclude Include="SA_W_DLG.H" />
     <ClInclude Include="TARGVIEW.H" />

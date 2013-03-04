@@ -1,3 +1,14 @@
+SA - 3.1.0.36 - 3/4/2013
+All changes are associated with 'FieldWorks Export' feature..
+1) Implemented backend support for FieldWorks exporting
+2) Added code to disable 'Export' button if data is incompleted in dialog.
+3) Added SFM mapping table
+4) Removed SFMExport 'includes' checkboxes that are no longer used.
+5) Removed Multi-record and Interlinear checkboxes.
+6) Removed Browse button associated with FieldWorks base project directory.
+7) Removed initial selection of project in FieldWorks project list.
+8) Changed title on dialog
+
 SA - 3.1.0.35 - 2/25/2013
 All changes apply to SFM multi-record exporting only.
 1) Sorted record output according to email chain..

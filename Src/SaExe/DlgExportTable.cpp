@@ -17,9 +17,9 @@
 #include "Process\FormantTracker.h"
 #include "Sa_segm.h"
 #include "MainFrm.h"
-#include "SA_Exprt.h"
 #include "GlossSegment.h"
 #include "PhoneticSegment.h"
+#include "DlgExportFW.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE
@@ -196,6 +196,35 @@ void CDlgExportTable::OnAllCalculations()
 
 		OnAllFormants();
 	}
+}
+
+//****************************************************************************
+// Added on 07/27/200 by DDO.
+//****************************************************************************
+CSaString CDlgExportTable::GetExportFilename( CSaString szTitle, CSaString szFilter, TCHAR *szExtension)
+{
+	//**************************************
+	// Extract what's to left of :
+	//**************************************
+	int nFind = szTitle.Find(':');
+	if (nFind != -1) {
+		szTitle = szTitle.Left(nFind);
+	}
+	nFind = szTitle.ReverseFind('.');
+
+	//**************************************
+	// Remove extension if necessary.
+	//**************************************
+	szTitle.Trim();
+	if (nFind >= ((szTitle.GetLength() > 3) ? (szTitle.GetLength() - 4) : 0)) {
+		szTitle = szTitle.Left(nFind);
+	}
+
+	CFileDialog dlg( FALSE, szExtension, szTitle, OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT, szFilter, NULL);
+	if (dlg.DoModal() != IDOK) {
+		return "";
+	}
+	return dlg.GetPathName();
 }
 
 void CDlgExportTable::OnOK()

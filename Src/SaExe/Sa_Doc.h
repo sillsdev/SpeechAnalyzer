@@ -104,6 +104,7 @@ class CSaDoc : public CUndoRedoDoc, public ISaDoc
 	// Construction/destruction/creation
 protected:
 	CSaDoc();
+	virtual ~ CSaDoc();
 
 	// Attributes
 private:
@@ -196,13 +197,13 @@ public:
 	void				SetFmtParm(FmtParm*, BOOL bAdjustSpectro = TRUE); // set format parameters structure
 	void				SetSaParm(SaParm*);							// set sa parameters structure
 	void				SetUttParm(const UttParm*, BOOL bOriginal = FALSE);      // set utterance parameters structure
-	const PitchParm*    GetPitchParm() const {return &m_pitchParm;}   // pointer to pitch parameters structure
-	void SetPitchParm(const PitchParm &parm) { m_pitchParm = parm;}
-	const MusicParm*    GetMusicParm() const {return &m_musicParm;}   // pointer to music parameters structure
-	void SetMusicParm(const MusicParm &parm) { m_musicParm = parm;}
-	const IntensityParm&    GetIntensityParm() const {return m_intensityParm;}   // pointer to music parameters structure
-	void SetIntensityParm(const IntensityParm &parm) { m_intensityParm = parm;}
-	SDPParm*			GetSDPParm()      {return &m_SDPParm;}		// pointer to SDP parameters structure
+	const PitchParm *   GetPitchParm() const;						// pointer to pitch parameters structure
+	void				SetPitchParm(const PitchParm &parm);
+	const MusicParm *   GetMusicParm() const;						// pointer to music parameters structure
+	void				SetMusicParm(const MusicParm &parm);
+	const IntensityParm & GetIntensityParm() const;			    // pointer to music parameters structure
+	void				SetIntensityParm(const IntensityParm &parm);
+	SDPParm*			GetSDPParm();								// pointer to SDP parameters structure
 	DWORD				GetDataSize();								// return wave source data size
 	DWORD				GetUnprocessedDataSize();					// return sampled data size from wave file
 	double				GetTimeFromBytes(DWORD);					// return the length of the sampled data in seconds
@@ -287,20 +288,6 @@ private:
 	void				WriteGlossPosAndRefSegments(ISaAudioDocumentWriterPtr saAudioDocWriter);
 	void				WriteScoreData(ISaAudioDocumentWriterPtr saAudioDocWriter);
 	
-	// split file feature methods
-	wstring				GenerateWordSplitName( CGlossSegment * g, CSaView* pView, EWordFilenameConvention convention, int index);
-	bool				GeneratePhraseSplitName( Annotations type, CMusicPhraseSegment * s, CSaView* pView, EPhraseFilenameConvention convention, int index, wstring & result);
-	wstring				FilterName( wstring text);
-	bool				CreateFolder( LPCTSTR folder);
-	bool				FileExists( LPCTSTR folder);
-	bool				FolderExists( LPCTSTR folder);
-	bool				ValidateWordFilenames( EWordFilenameConvention & convention, wstring & path, BOOL skipEmptyGloss);
-	bool				ValidatePhraseFilenames( Annotations & type, EPhraseFilenameConvention & convention, wstring & path);
-	bool				ExportWordSegments( int & count, EWordFilenameConvention & convention, wstring & glossPath, BOOL skipEmptyGloss);
-	bool				ExportPhraseSegments( Annotations type, int & count, EPhraseFilenameConvention & convention, wstring & phrasePath);
-	int					FindNearestGlossIndex( class CGlossSegment * g, DWORD dwStart, DWORD dwStop);
-	int					FindNearestReferenceIndex( class CReferenceSegment * r, DWORD dwStart, DWORD dwStop);
-
 public:
 	void				GetAlignInfo( CAlignInfo & alignInfo);
 	void				SetTempOverlay();
@@ -308,6 +295,7 @@ public:
 	virtual void		OnCloseDocument();
 	virtual BOOL		DoFileSave();
 
+	BOOL				CopySectionToNewWavFile(DWORD dwSectionStart, DWORD dwSectionLength, LPCTSTR szNewWave, BOOL usingClipboard);
 	BOOL				LoadDataFiles(const TCHAR* pszPathName, bool bTemp = false);
 	BOOL				WriteDataFiles(const TCHAR* pszPathName, BOOL bSaveAudio = TRUE, BOOL bIsClipboardFile = FALSE);
 	bool				GetWaveFormatParams(const TCHAR* pszPathName, FmtParm &fmtParm, DWORD & dwDataSize);
@@ -320,7 +308,6 @@ public:
 	BOOL				InsertTranscription(int transType, ISaAudioDocumentReaderPtr saAudioDocRdr, DWORD dwPos);
 	void				InsertGlossPosAndRefTranscription(ISaAudioDocumentReaderPtr saAudioDocRdr, DWORD dwPos);
 	virtual BOOL		CopyFile(const TCHAR* pszSourceName, const TCHAR* pszTargetName, DWORD dwStart=0, DWORD dwMax=0xFFFFFFFF, BOOL bTruncate=TRUE);
-	BOOL				CopySectionToNewWavFile(DWORD dwSectionStart, DWORD dwSectionLength, LPCTSTR szNewWave, BOOL usingClipboard);
 	void				ApplyWaveFile(const TCHAR * pszFileName, DWORD dwDataSize, BOOL bInialUpdate=TRUE);		// apply a new recorded wave file
 	void				ApplyWaveFile(const TCHAR * pszFileName, DWORD dwDataSize, CAlignInfo alignInfo);		// Update for rt auto-pitch
 	DWORD				SnapCursor( CURSOR_SELECT nCursorSelect, 
@@ -346,7 +333,6 @@ public:
 	BOOL				UpdateSegmentBoundaries(BOOL bOverlap); // update segment boundaries
 	BOOL				UpdateSegmentBoundaries(BOOL bOverlap, int nAnnotation, int nSelection, DWORD start, DWORD stop);
 	BOOL				AutoSnapUpdateNeeded(void);
-	virtual				~CSaDoc();
 	virtual void		SerializeForUndoRedo(CArchive& ar);   // overridden for document i/o
 	BOOL				AdvancedParsePhrase();
 	BOOL				AdvancedParseWord();
@@ -369,7 +355,7 @@ protected:
 	afx_msg void OnUpdateFileSave(CCmdUI* pCmdUI);
 	afx_msg void OnFileSaveAs();
 	afx_msg void OnUpdateFileSaveAs(CCmdUI* pCmdUI);
-	afx_msg void OnFileSplit();
+	afx_msg void OnFileSplitFile();
 	afx_msg void OnUpdateFileSplit(CCmdUI* pCmdUI);
 	afx_msg void OnAdvancedParseWords();
 	afx_msg void OnUpdateAdvancedParseWords(CCmdUI* pCmdUI);
@@ -411,9 +397,4 @@ private:
 
 };
 
-/////////////////////////////////////////////////////////////////////////////
-
-//{{AFX_INSERT_LOCATION}}
-// Microsoft Visual C++ will insert additional declarations immediately before the previous line.
-
-#endif //_SA_DOC_H
+#endif

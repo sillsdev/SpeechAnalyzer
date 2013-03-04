@@ -160,7 +160,7 @@
 #include "sa_mplot.h"
 #include "pickover.h"
 #include "settings\obstream.h"
-#include "sa_exprt.h"
+#include "DlgExportFW.h"
 #include "sa_g_stf.h"
 #include "sa_segm.h"
 #include "graphsTypes.h"
@@ -619,7 +619,7 @@ void CSaView::OnExportXML()
 /***************************************************************************/
 void CSaView::OnExportFW()
 {
-	CExportFW dlg(((CSaDoc*)GetDocument())->GetTitle());
+	CDlgExportFW dlg(((CSaDoc*)GetDocument())->GetTitle());
 	dlg.DoModal();
 }
 
@@ -759,7 +759,6 @@ void CSaView::OnFilePhonologyAssistant()
 
 	REGSAM sam = (wow64)?KEY_ALL_ACCESS | KEY_WOW64_64KEY:KEY_ALL_ACCESS;
 	HKEY hKey = 0;
-	DWORD dwBufLen = MAX_PATH + 1;
 	DWORD disposition = 0;
 	LONG lResult = RegCreateKeyEx( HKEY_LOCAL_MACHINE, _T("Software\\SIL\\Speech Analyzer"), 0, NULL, 0, sam, NULL, &hKey, &disposition);
 	if (lResult!=ERROR_SUCCESS)

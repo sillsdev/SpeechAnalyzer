@@ -50,6 +50,7 @@ protected:
 	void SetEnable(int nItem, BOOL bEnable);
 	void SetVisible(int nItem, BOOL bVisible, BOOL bEnable = TRUE);
 	virtual void DoDataExchange(CDataExchange* pDX);  // DDX/DDV support
+	CSaString GetExportFilename( CSaString szTitle, CSaString szFilter, TCHAR *szExtension=_T("txt"));
 
 	// Generated message map functions
 	afx_msg void OnAllAnnotations();

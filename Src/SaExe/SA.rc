@@ -26,7 +26,7 @@ LANGUAGE LANG_NEUTRAL, SUBLANG_NEUTRAL
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 3,1,0,35
+ FILEVERSION 3,1,0,36
  PRODUCTVERSION 1,0,0,1
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
@@ -44,7 +44,7 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "SIL International"
             VALUE "FileDescription", "SA"
-            VALUE "FileVersion", "v3.1.0.35"
+            VALUE "FileVersion", "v3.1.0.36"
             VALUE "InternalName", "SA"
             VALUE "LegalCopyright", "© 1996-2013 SIL International (MSEA)"
             VALUE "ProductName", "SA"
@@ -1676,6 +1676,35 @@ BEGIN
     CONTROL         "Multi-Record",IDC_EX_SFM_MULTIRECORD,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,82,184,54,10
 END
 
+IDD_EXPORT_FW DIALOGEX 0, 0, 291, 301
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
+CAPTION "Export FieldWorks"
+FONT 8, "MS Sans Serif", 0, 0, 0x0
+BEGIN
+    CONTROL         "All Transcriptions",IDC_EXTAB_ANNOTATIONS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,19,23,69,10
+    CONTROL         "Reference",IDC_EXTAB_REFERENCE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,27,35,49,10
+    CONTROL         "Phonetic",IDC_EXTAB_PHONETIC,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,27,47,44,10
+    CONTROL         "Tone",IDC_EXTAB_TONE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,27,59,33,10
+    CONTROL         "Phonemic",IDC_EXTAB_PHONEMIC,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,27,71,47,10
+    CONTROL         "Orthographic",IDC_EXTAB_ORTHO,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,27,82,57,10
+    CONTROL         "Gloss",IDC_EXTAB_GLOSS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,27,94,33,10
+    CONTROL         "Part of Speech",IDC_EXTAB_POS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,27,106,63,10
+    CONTROL         "Phrase Levels",IDC_EXTAB_PHRASE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,27,118,61,10
+    PUSHBUTTON      "Cancel",IDCANCEL,145,280,38,14
+    DEFPUSHBUTTON   "Export",IDOK,189,280,38,14
+    GROUPBOX        "Include",IDC_STATIC,9,7,270,149
+    PUSHBUTTON      "&Help",IDHELP,232,280,38,14
+    LTEXT           "FieldWorks Project",IDC_STATIC_FIELDWORKS_PROJECT,9,202,270,8
+    EDITTEXT        IDC_EDIT_FIELDWORKS_FOLDER,9,182,269,14,ES_AUTOHSCROLL | WS_DISABLED
+    EDITTEXT        IDC_EDIT_OTHER_FOLDER,9,253,215,14,ES_AUTOHSCROLL
+    PUSHBUTTON      "Browse...",IDC_BROWSE_OTHER,227,253,51,14
+    CONTROL         "Export To FieldWorks Directory",IDC_RADIO_FIELDWORKS,
+                    "Button",BS_AUTORADIOBUTTON,9,169,270,10
+    CONTROL         "Export To Another Location",IDC_RADIO_OTHER,"Button",BS_AUTORADIOBUTTON,9,240,270,10
+    COMBOBOX        IDC_COMBO_FIELDWORKS_PROJECT,9,213,270,101,CBS_DROPDOWN | CBS_SORT | WS_DISABLED | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "Standard Format Marker Mapping",IDC_STATIC_TAGS,115,18,152,124,WS_BORDER
+END
+
 IDD_IMPORT_DIALOG DIALOG 0, 0, 187, 95
 STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
 CAPTION "Import Table "
@@ -2167,9 +2196,9 @@ BEGIN
     CONTROL         "Begin at the first Selected Gloss word and number the Reference field using the settings below.",IDC_SELECTED_GLOSS_RADIO,
                     "Button",BS_AUTORADIOBUTTON | BS_TOP | BS_MULTILINE,10,33,252,18
     GROUPBOX        "",IDC_STATIC,6,56,261,47
-    CONTROL         "Use numbers in the range of: 0-10,000",IDC_NUMBERS_RADIO,
+    CONTROL         "Use numbers in the range of: 0-10,000",IDC_RADIO_NUMBERS,
                     "Button",BS_AUTORADIOBUTTON | WS_GROUP,10,65,234,10
-    CONTROL         "",IDC_FILE_RADIO,"Button",BS_AUTORADIOBUTTON,10,84,8,10
+    CONTROL         "",IDC_RADIO_FILE,"Button",BS_AUTORADIOBUTTON,10,84,8,10
     PUSHBUTTON      "Browse...",IDC_BROWSE_BUTTON,212,82,50,14
     LTEXT           "Begin at:",IDC_BEGIN_LABEL,37,115,30,8
     EDITTEXT        IDC_BEGIN_EDIT,71,113,49,14
@@ -2353,6 +2382,11 @@ BEGIN
 
     IDD_EXPORT_SFM, DIALOG
     BEGIN
+    END
+
+    IDD_EXPORT_FW, DIALOG
+    BEGIN
+        RIGHTMARGIN, 290
     END
 
     IDD_OPTIONSVIEWPAGE, DIALOG
@@ -3560,7 +3594,7 @@ BEGIN
     VK_LEFT,        ID_EDIT_PREVIOUS,       VIRTKEY, ALT, NOINVERT
     "Y",            ID_EDIT_REDO,           VIRTKEY, CONTROL, NOINVERT
     VK_DELETE,      ID_EDIT_REMOVE,         VIRTKEY, NOINVERT
-	"Q",            ID_EDIT_SEGMENT_SIZE,   VIRTKEY, CONTROL, NOINVERT
+    "Q",            ID_EDIT_SEGMENT_SIZE,   VIRTKEY, CONTROL, NOINVERT
     "A",            ID_EDIT_SELECTWAVEFORM, VIRTKEY, CONTROL, NOINVERT
     VK_BACK,        ID_EDIT_UNDO,           VIRTKEY, ALT, NOINVERT
     "Z",            ID_EDIT_UNDO,           VIRTKEY, CONTROL, NOINVERT
@@ -4134,7 +4168,7 @@ STRINGTABLE
 BEGIN
     IDR_MAINFRAME           "Speech Analyzer"
     IDR_SA_ANNTYPE          "\nSA\nSA Document\nWAV Files (*.wav)\n.wav\nannFileType\nANN File Type"
-    VS_VERSION              "Version 3.1.0.35"
+    VS_VERSION              "Version 3.1.0.36"
     VS_COPYRIGHT            "© 1996-2013 SIL International (MSEA).\nAll Rights Reserved."
     IDR_SA_WBTYPE           "\nWB\nSA Workbench\nWB Files (*.wb)\n.wb\nwbFileType\nWB File Type"
 END
@@ -5147,6 +5181,7 @@ BEGIN
     IDS_ENABLE_PA           "Enable Phonology Assistant to find Speech Analyzer?"
     IDS_AUTO_REF_MAIN_3     "2) If the file is suppose to be delimited, make sure there are an equal number of tabs or spaces in each row and that there are no missing fields within a row.\n"
     IDS_AUTO_REF_TAG        "Tag"
+    IDS_SFM_TAGS            "\nStandard Format Marker Mapping\n\n\t\\ref\t>\t\\rf\n\t\\ph\t>\t\\lx-ph\n\t\\pm\t>\t\\lx-pm\n\t\\or\t>\t\\lx-or\n\t\\gl\t>\t\\ge\n\t\\pos\t>\t\\ps\n\t\\wav\t>\t\\pf\n\t\\wav\t>\t\\tn\n\t\\ph\n\t\\phr1\t>\t\\pf\n\t\\phr2\t>\t\\tn\n"
 END
 
 STRINGTABLE

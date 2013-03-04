@@ -6,6 +6,7 @@
 #include "Sa_segm.h"
 #include "GlossSegment.h"
 #include "TextSegment.h"
+#include "DlgExportFW.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE
@@ -17,8 +18,6 @@ static char BASED_CODE THIS_FILE[] = __FILE__;
 
 BEGIN_MESSAGE_MAP(CDlgExportSFM, CExportBasicDialog)
 END_MESSAGE_MAP()
-
-CSaString szCrLf = "\r\n";
 
 /*
 \name name of file
@@ -67,6 +66,35 @@ void CDlgExportSFM::InitializeDialog()
 {
 }
 
+//****************************************************************************
+// Added on 07/27/200 by DDO.
+//****************************************************************************
+CSaString CDlgExportSFM::GetExportFilename( CSaString szTitle, CSaString szFilter, TCHAR *szExtension)
+{
+	//**************************************
+	// Extract what's to left of :
+	//**************************************
+	int nFind = szTitle.Find(':');
+	if (nFind != -1) {
+		szTitle = szTitle.Left(nFind);
+	}
+	nFind = szTitle.ReverseFind('.');
+
+	//**************************************
+	// Remove extension if necessary.
+	//**************************************
+	szTitle.Trim();
+	if (nFind >= ((szTitle.GetLength() > 3) ? (szTitle.GetLength() - 4) : 0)) {
+		szTitle = szTitle.Left(nFind);
+	}
+
+	CFileDialog dlg( FALSE, szExtension, szTitle, OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT, szFilter, NULL);
+	if (dlg.DoModal() != IDOK) {
+		return "";
+	}
+	return dlg.GetPathName();
+}
+
 void CDlgExportSFM::OnOK()
 {
 	if ((m_szFileName = GetExportFilename(m_szDocTitle, _T("Standard Format (*.sfm) |*.sfm||"), _T("sfm"))) == "") return;
@@ -96,6 +124,9 @@ void CDlgExportSFM::OnOK()
 	CDialog::OnOK();
 }
 
+/**
+* output the SFM file in standard format
+*/
 void CDlgExportSFM::ExportStandard() {
 
 	CFile file(m_szFileName, CFile::modeCreate|CFile::modeWrite);
@@ -233,11 +264,13 @@ void CDlgExportSFM::ExportStandard() {
 	file.Close();
 }
 
+/**
+* Output the SFM file in multi-record format
+*/
 void CDlgExportSFM::ExportMultiRec() {
 
 	CFile file(m_szFileName, CFile::modeCreate|CFile::modeWrite);
 	CSaString szString;
-	CSaString szCrLf = "\r\n";
 
 	CSaDoc* pDoc = (CSaDoc*)((CMainFrame*)AfxGetMainWnd())->GetCurrSaView()->GetDocument();
 
@@ -285,6 +318,7 @@ bool CDlgExportSFM::TryExportSegmentsBy( Annotations master, CSaDoc * pDoc, CFil
 		last = dwStart;
 		for (int j=master;j>=0;j--) {
 			Annotations target = GetAnnotation(j);
+			if (!GetFlag(target)) continue;
 			results[target] = BuildRecord(target,dwStart,dwStop,pDoc);
 		}
 
@@ -336,7 +370,7 @@ CSaString CDlgExportSFM::BuildPhrase( Annotations target, DWORD dwStart, DWORD d
 	return szTag + L" " + szText + szCrLf;
 }
 
-bool CDlgExportSFM::GetFlag( Annotations val) {
+BOOL CDlgExportSFM::GetFlag( Annotations val) {
 	switch (val) {
 	case PHONETIC: return m_bPhonetic;
 	case TONE: return m_bTone;

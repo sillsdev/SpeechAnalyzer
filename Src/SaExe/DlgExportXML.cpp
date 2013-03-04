@@ -6,6 +6,7 @@
 #include "SA_View.h"
 #include "GlossSegment.h"
 #include "TextSegment.h"
+#include "DlgExportFW.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE
@@ -123,9 +124,38 @@ void CDlgExportXML::OutputXMLField( CFile* pFile, const TCHAR *szFieldName, cons
 /////////////////////////////////////////////////////////////////////////////
 // CDlgExportXML message handlers
 
+//****************************************************************************
+// Added on 07/27/200 by DDO.
+//****************************************************************************
+CSaString CDlgExportXML::GetExportFilename( CSaString szTitle, CSaString szFilter, TCHAR *szExtension)
+{
+	//**************************************
+	// Extract what's to left of :
+	//**************************************
+	int nFind = szTitle.Find(':');
+	if (nFind != -1) {
+		szTitle = szTitle.Left(nFind);
+	}
+	nFind = szTitle.ReverseFind('.');
+
+	//**************************************
+	// Remove extension if necessary.
+	//**************************************
+	szTitle.Trim();
+	if (nFind >= ((szTitle.GetLength() > 3) ? (szTitle.GetLength() - 4) : 0)) {
+		szTitle = szTitle.Left(nFind);
+	}
+
+	CFileDialog dlg( FALSE, szExtension, szTitle, OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT, szFilter, NULL);
+	if (dlg.DoModal() != IDOK) {
+		return "";
+	}
+	return dlg.GetPathName();
+}
+
 void CDlgExportXML::OnOK()
 {
-	if ((m_szFileName = ::GetExportFilename( m_szDocTitle, _T("Extensible Markup (*.xml) |*.xml||"), _T("xml"))) == "") return;
+	if ((m_szFileName = GetExportFilename( m_szDocTitle, _T("Extensible Markup (*.xml) |*.xml||"), _T("xml"))) == "") return;
 
 	UpdateData(TRUE);
 

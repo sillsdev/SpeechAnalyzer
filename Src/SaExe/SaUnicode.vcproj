@@ -476,6 +476,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\DlgExportFW.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\DlgExportSFM.cpp"
 				>
 			</File>
@@ -664,6 +668,10 @@
 						PreprocessorDefinitions=""
 					/>
 				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\FileUtils.cpp"
+				>
 			</File>
 			<File
 				RelativePath="ActiveX\FlexEditGrid.cpp"
@@ -1363,28 +1371,6 @@
 			</File>
 			<File
 				RelativePath="SA_Edit.cpp"
-				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath="SA_Exprt.cpp"
 				>
 				<FileConfiguration
 					Name="Debug|Win32"
@@ -2996,6 +2982,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\SplitFileUtils.cpp"
+				>
+			</File>
+			<File
 				RelativePath="Stdafx.cpp"
 				>
 				<FileConfiguration
@@ -3563,6 +3553,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\DlgExportFW.h"
+				>
+			</File>
+			<File
 				RelativePath=".\DlgExportSFM.h"
 				>
 			</File>
@@ -3616,6 +3610,10 @@
 			</File>
 			<File
 				RelativePath=".\FileOpen.h"
+				>
+			</File>
+			<File
+				RelativePath=".\FileUtils.h"
 				>
 			</File>
 			<File
@@ -3768,10 +3766,6 @@
 			</File>
 			<File
 				RelativePath=".\SA_Edit.h"
-				>
-			</File>
-			<File
-				RelativePath=".\SA_Exprt.h"
 				>
 			</File>
 			<File

@@ -71,11 +71,11 @@ BOOL CDlgAutoReferenceData::OnInitDialog()
 
 	if (mUsingNumbers) 
 	{
-		CheckDlgButton(IDC_NUMBERS_RADIO,BST_CHECKED);
+		CheckDlgButton(IDC_RADIO_NUMBERS,BST_CHECKED);
 	} 
 	else 
 	{
-		CheckDlgButton(IDC_FILE_RADIO,BST_CHECKED);
+		CheckDlgButton(IDC_RADIO_FILE,BST_CHECKED);
 	}
 	
 	OnRadio();
@@ -117,8 +117,8 @@ void CDlgAutoReferenceData::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_BROWSE_BUTTON, mButtonBrowse);
 	DDX_Control(pDX, IDC_FIRST_GLOSS_RADIO, mRadioFirstGloss);
 	DDX_Control(pDX, IDC_SELECTED_GLOSS_RADIO, mRadioSelectedGloss);
-	DDX_Control(pDX, IDC_NUMBERS_RADIO, mRadioNumbers);
-	DDX_Control(pDX, IDC_FILE_RADIO, mRadioFile);
+	DDX_Control(pDX, IDC_RADIO_NUMBERS, mRadioNumbers);
+	DDX_Control(pDX, IDC_RADIO_FILE, mRadioFile);
 	DDX_Text(pDX, IDC_FILENAME, mLastImport);
 	DDV_MaxChars(pDX, mLastImport, 256);
 	DDX_Text(pDX, IDC_BEGIN_EDIT, mBegin);
@@ -194,7 +194,7 @@ void CDlgAutoReferenceData::DoDataExchange(CDataExchange* pDX)
 	else 
 	{
 		// transfer dialog controls to member variables
-		mUsingNumbers = (IsDlgButtonChecked(IDC_NUMBERS_RADIO)!=0);
+		mUsingNumbers = (IsDlgButtonChecked(IDC_RADIO_NUMBERS)!=0);
 		mUsingFirstGloss = (IsDlgButtonChecked(IDC_FIRST_GLOSS_RADIO)!=0);
 
 		if (!mUsingNumbers) 
@@ -289,8 +289,8 @@ void CDlgAutoReferenceData::ValidateRange( CDataExchange * pDX, UINT field, int 
 }
 
 BEGIN_MESSAGE_MAP(CDlgAutoReferenceData, CDialog)
-	ON_COMMAND(IDC_NUMBERS_RADIO, &CDlgAutoReferenceData::OnRadio)
-	ON_COMMAND(IDC_FILE_RADIO, &CDlgAutoReferenceData::OnRadio)
+	ON_COMMAND(IDC_RADIO_NUMBERS, &CDlgAutoReferenceData::OnRadio)
+	ON_COMMAND(IDC_RADIO_FILE, &CDlgAutoReferenceData::OnRadio)
 	ON_BN_CLICKED(IDC_BROWSE_BUTTON, &CDlgAutoReferenceData::OnClickedBrowseButton)
 	ON_NOTIFY(UDN_DELTAPOS, IDC_BEGIN_SPIN, &CDlgAutoReferenceData::OnDeltaposBeginSpin)
 	ON_NOTIFY(UDN_DELTAPOS, IDC_END_SPIN, &CDlgAutoReferenceData::OnDeltaposEndSpin)
@@ -300,7 +300,7 @@ END_MESSAGE_MAP()
 void CDlgAutoReferenceData::OnRadio() 
 {
 
-	mUsingNumbers  = (IsDlgButtonChecked(IDC_NUMBERS_RADIO)!=0);
+	mUsingNumbers  = (IsDlgButtonChecked(IDC_RADIO_NUMBERS)!=0);
 	if (mUsingNumbers) 
 	{
 		mEditBegin.EnableWindow(TRUE);

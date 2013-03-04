@@ -2,7 +2,7 @@
 #define DLGEXPORTXML_H
 
 #include "CSaString.h"
-#include "sa_exprt.h"
+#include "ExportBasicDialog.h"
 
 /////////////////////////////////////////////////////////////////////////////
 // CDlgExportXML dialog
@@ -24,6 +24,8 @@ protected:
 	// Generated message map functions
 	virtual void OnOK();
 	virtual void InitializeDialog();
+	CSaString GetExportFilename( CSaString szTitle, CSaString szFilter, TCHAR *szExtension=_T("txt"));
+
 	DECLARE_MESSAGE_MAP()
 };
 
