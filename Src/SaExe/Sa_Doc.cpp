@@ -124,11 +124,10 @@
 #include "settings\obstream.h"
 #include "settings\tools.h"
 #include "dsp\fragment.h"
-//#include <io.h>  // _access
 #include "DlgExportFW.h"
 #include "saveAsOptions.h"
 #include "autorecorder.h"
-#include "dlgsplit.h"
+#include "DlgSplitFile.h"
 #include "waveresampler.h"
 #include "dlgmultichannel.h"
 #include "dlgaligntranscriptiondatasheet.h"
@@ -137,10 +136,7 @@
 #include "SFMHelper.h"
 #include "TextHelper.h"
 #include "TranscriptionHelper.h"
-
 #include "Shlobj.h"
-
-#include <string>
 #include "ArchiveTransfer.h"
 #include "ReferenceSegment.h"
 #include "GlossSegment.h"
@@ -154,6 +150,7 @@
 #include "FileUtils.h"
 #include "SplitFileUtils.h"
 
+#include <string>
 using std::wstring;
 using std::find;
 using std::distance;
@@ -226,6 +223,7 @@ static const char * psz_saview = "saview";
 // CSaDoc::CSaDoc Constructor
 /***************************************************************************/
 CSaDoc::CSaDoc() {
+
     m_bAudioModified = false;
     m_bTransModified = false;
     m_bTempOverlay = false;
@@ -5372,7 +5370,7 @@ void CSaDoc::OnFileSplitFile() {
         homeDefault += _T("\\");
     }
 
-    CDlgSplit dlg;
+    CDlgSplitFile dlg;
 
     dlg.m_szFolderLocation = AfxGetApp()->GetProfileString(L"SplitFile",L"Home",(LPCTSTR)homeDefault);
     dlg.m_szFolderName.Format(L"Split-%s",fname);
@@ -5502,7 +5500,7 @@ void CSaDoc::OnFileSplitFile() {
     if ((hasGloss) || (!dlg.m_bSkipGlossEmpty)) {
 
 		// the validation function will display a error message on failure
-		if (!ValidateWordFilenames( wordConvention, glossPath.c_str(), dlg.m_bSkipGlossEmpty)) {
+		if (!ValidateWordFilenames( wordConvention, dlg.m_bSkipGlossEmpty)) {
 			EndWaitCursor();
 			return;
 		}
@@ -6443,7 +6441,8 @@ void CSaDoc::OnAutoReferenceData() {
     } else {
         // data should be fully validated by dialog!
         CTranscriptionData td;
-        if (!ImportTranscription(CSaString(dlg.mLastImport),false,false,false,false,td,true)) {
+		CSaString temp = dlg.mLastImport;
+        if (!ImportTranscription(temp,false,false,false,false,td,true)) {
             CString msg;
             msg.LoadStringW(IDS_AUTO_REF_MAIN_1);
             CString msg2;
@@ -7048,7 +7047,7 @@ void CSaDoc::AlignTranscriptionDataByRef(CTranscriptionData & td) {
     POSITION pos = GetFirstViewPosition();
     CSaView * pView = (CSaView *)GetNextView(pos);
 
-    // cycle through referenc and assign the other fields
+    // cycle through reference and assign the other fields
     CReferenceSegment * pReference = (CReferenceSegment *)GetSegment(REFERENCE);
     CGlossSegment * pGloss = GetGlossSegment();
     CPhoneticSegment * pPhonetic = (CPhoneticSegment *)GetSegment(PHONETIC);
@@ -7188,7 +7187,7 @@ const CSaString CSaDoc::BuildString(int nSegment) {
 /***************************************************************************/
 // CSaDoc::BuildString builds an annotation string
 /***************************************************************************/
-const CSaString CSaDoc::BuildImportString(BOOL gloss, BOOL phonetic, BOOL phonemic, BOOL orthographic) {
+const CSaString CSaDoc::BuildImportString( BOOL /*gloss*/, BOOL /*phonetic*/, BOOL /*phonemic*/, BOOL /*orthographic*/) {
     return CSaString("");
 }
 
@@ -7198,7 +7197,8 @@ const CSaString CSaDoc::BuildImportString(BOOL gloss, BOOL phonetic, BOOL phonem
 * returns false on failure
 */
 const bool CSaDoc::ImportTranscription(CSaString & filename, bool gloss, bool phonetic, bool phonemic, bool orthographic, CTranscriptionData & td, bool addTag) {
-    td.m_MarkerDefs[REFERENCE] = psz_Reference;
+    
+	td.m_MarkerDefs[REFERENCE] = psz_Reference;
     td.m_szPrimary = psz_Reference;
 
     // setup the default list
@@ -7455,7 +7455,8 @@ SDPParm * CSaDoc::GetSDPParm() {
 // and places in a new wav file
 /***************************************************************************/
 BOOL CSaDoc::CopySectionToNewWavFile(DWORD dwSectionStart, DWORD dwSectionLength, LPCTSTR szNewWave, BOOL usingClipboard) {
-    CSaString szOriginalWave;
+    
+	CSaString szOriginalWave;
     if (m_bUsingTempFile) {
         szOriginalWave = m_szTempConvertedWave;
     } else if ((GetPathName().GetLength() !=0)) {
@@ -7569,3 +7570,354 @@ BOOL CSaDoc::CopySectionToNewWavFile(DWORD dwSectionStart, DWORD dwSectionLength
 
     return TRUE;
 }
+
+void CSaDoc::DoExportFieldWorks( CExportFWData data) {
+
+	wstring filename;
+	TCHAR szBuffer[MAX_PATH];
+	wcscpy_s(szBuffer,MAX_PATH,data.szPath);
+	int result = GetSaveAsFilename( data.szDocTitle, _T("Standard Format (*.sfm) |*.sfm||"), _T("sfm"), szBuffer, filename);
+	if (result!=IDOK) {
+		return;
+	}
+
+	if (filename.length()==0) {
+		CSaApp* pApp = (CSaApp*)AfxGetApp(); // get pointer to application
+		pApp->ErrorMessage(IDS_ERROR_NO_FW_FILE);
+		return;
+	}
+
+	bool skipEmptyGloss = true;
+
+	TCHAR szPath[MAX_PATH];
+	memset(szPath, 0, MAX_PATH);
+	wcscpy_s(szPath,MAX_PATH,data.szPath);
+
+	if (!FolderExists(szPath)) {
+		CreateFolder(szPath);
+	}
+	wcscat_s(szPath,MAX_PATH,L"LinkedFiles\\");
+	if (!FolderExists(szPath)) {
+		CreateFolder(szPath);
+	}
+	wcscat_s(szPath,MAX_PATH,L"AudioVisual\\");
+	if (!FolderExists(szPath)) {
+		CreateFolder(szPath);
+	}
+
+	if (!ValidateWordFilenames(WFC_REF_GLOSS,skipEmptyGloss)) {
+		return;
+	}
+
+	if (!ValidatePhraseFilenames(MUSIC_PL1,PFC_REF_GLOSS)) {
+		return;
+	}
+
+	if (!ValidatePhraseFilenames(MUSIC_PL2,PFC_REF_GLOSS)) {
+		return;
+	}
+
+	CFile file( filename.c_str(), CFile::modeCreate | CFile::modeWrite);
+	CSaString szString;
+	int count = 0;
+
+	if (!TryExportSegmentsBy(data,REFERENCE, file, count, skipEmptyGloss, szPath)) {
+		if (!TryExportSegmentsBy(data,GLOSS, file, count, skipEmptyGloss, szPath)) {
+			if (!TryExportSegmentsBy(data,ORTHO, file, count, skipEmptyGloss, szPath)) {
+				if (!TryExportSegmentsBy(data,PHONEMIC, file, count, skipEmptyGloss, szPath)) {
+					if (!TryExportSegmentsBy(data,TONE, file, count, skipEmptyGloss, szPath)) {
+						TryExportSegmentsBy(data,PHONETIC, file, count, skipEmptyGloss, szPath);
+					}
+				}
+			}
+		}
+	}
+
+	// \date write current time
+	CTime time = CTime::GetCurrentTime();
+	szString = "\\dt " + time.Format("%A, %B %d, %Y, %X") + "\r\n";
+	WriteFileUtf8( &file, szString);
+
+	file.Close();
+}
+
+bool CSaDoc::TryExportSegmentsBy( CExportFWData data, Annotations master, CFile & file, int & count, bool skipEmptyGloss, LPCTSTR szPath) {
+
+	EWordFilenameConvention wordConvention = WFC_REF_GLOSS;
+	EPhraseFilenameConvention phraseConvention = PFC_REF_GLOSS;
+
+	if (!GetFlag(master,data)) {
+		return false;
+	}
+
+	CSegment * pSeg = GetSegment(master);
+
+	if (pSeg->GetOffsetSize() == 0) {
+		return false;
+	}
+
+	CSaString szCrLf = "\r\n";
+	WriteFileUtf8(&file, szCrLf);
+
+	CSaString results[ANNOT_WND_NUMBER];
+	for(int i = 0; i < ANNOT_WND_NUMBER; i++) {
+		results[i] = L"";
+	}
+	DWORD last = pSeg->GetOffset(0) - 1;
+	for(int i = 0; i < pSeg->GetOffsetSize(); i++) {
+		DWORD dwStart = pSeg->GetOffset(i);
+		DWORD dwStop = pSeg->GetStop(i);
+		if (dwStart == last) {
+			continue;
+		}
+		last = dwStart;
+		for(int j = master; j >= 0; j--) {
+			Annotations target = GetAnnotation(j);
+			if (!GetFlag(target,data)) {
+				continue;
+			}
+			results[target] = BuildRecord(target, dwStart, dwStop);
+		}
+
+		if (data.bAllAnnotations|data.bPhrase) {
+			results[MUSIC_PL1] = BuildPhrase(MUSIC_PL1, dwStart, dwStop);
+			results[MUSIC_PL2] = BuildPhrase(MUSIC_PL2, dwStart, dwStop);
+			results[MUSIC_PL3] = BuildPhrase(MUSIC_PL3, dwStart, dwStop);
+			results[MUSIC_PL4] = BuildPhrase(MUSIC_PL4, dwStart, dwStop);
+		}
+
+		if (results[PHONETIC].GetLength() > 0) {
+			WriteFileUtf8(&file, results[PHONETIC]);
+		}
+		if (results[TONE].GetLength() > 0) {
+			WriteFileUtf8(&file, results[TONE]);
+		}
+		if (results[PHONEMIC].GetLength() > 0) {
+			WriteFileUtf8(&file, results[PHONEMIC]);
+		}
+		if (results[ORTHO].GetLength() > 0) {
+			WriteFileUtf8(&file, results[ORTHO]);
+		}
+		if (results[GLOSS].GetLength() > 0) {
+			WriteFileUtf8(&file, results[GLOSS]);
+		}
+		if (results[REFERENCE].GetLength() > 0) {
+			WriteFileUtf8(&file, results[REFERENCE]);
+		}
+		if (results[MUSIC_PL1].GetLength() > 0) {
+			WriteFileUtf8(&file, results[MUSIC_PL1]);
+		}
+		if (results[MUSIC_PL2].GetLength() > 0) {
+			WriteFileUtf8(&file, results[MUSIC_PL2]);
+		}
+		if (results[MUSIC_PL3].GetLength() > 0) {
+			WriteFileUtf8(&file, results[MUSIC_PL3]);
+		}
+		if (results[MUSIC_PL4].GetLength() > 0) {
+			WriteFileUtf8(&file, results[MUSIC_PL4]);
+		}
+
+		POSITION pos = GetFirstViewPosition();
+		CSaView * pView = (CSaView *) GetNextView(pos);  // get pointer to view
+		CGlossSegment * g = (CGlossSegment*)pView->GetAnnotation(GLOSS);
+		CMusicPhraseSegment * pl1 = (CMusicPhraseSegment*)pView->GetAnnotation(MUSIC_PL1);
+		CMusicPhraseSegment * pl2 = (CMusicPhraseSegment*)pView->GetAnnotation(MUSIC_PL2);
+		DWORD offsetSize = g->GetOffsetSize();
+		bool hasGloss = (offsetSize != 0);
+
+		if ((hasGloss) || (!skipEmptyGloss)) {
+
+			wstring filename;
+			int index = FindNearestGlossIndex(g,dwStart,dwStop);
+			int result = ComposeWordSegmentFilename( g, index, wordConvention, szPath, filename);
+			if (result==0) {
+				result = ExportWordSegment( count, g, index, filename.c_str(), skipEmptyGloss);
+				if (result<0) {
+					return false;
+				}
+				TCHAR szBuffer[MAX_PATH];
+				wmemset(szBuffer,0,MAX_PATH);
+				wcscat_s(szBuffer,MAX_PATH,L"\\pf ");
+				wcscat_s(szBuffer,MAX_PATH,filename.c_str());
+				wcscat_s(szBuffer,MAX_PATH,szCrLf);
+				WriteFileUtf8( &file, szBuffer);
+
+				wmemset(szBuffer,0,MAX_PATH);
+				wcscat_s(szBuffer,MAX_PATH,L"\\tn ");
+				wcscat_s(szBuffer,MAX_PATH,filename.c_str());
+				wcscat_s(szBuffer,MAX_PATH,szCrLf);
+				WriteFileUtf8( &file, szBuffer);
+			}
+
+			index = FindNearestPhraseIndex(pl1,dwStart,dwStop);
+			result = ComposePhraseSegmentFilename( MUSIC_PL1, pl1, index, phraseConvention, szPath, filename);
+			if (result==0) {
+				result = ExportPhraseSegment( count, pl1, index, filename);
+				if (result<0) {
+					return false;
+				}
+				TCHAR szBuffer[MAX_PATH];
+				wmemset(szBuffer,0,MAX_PATH);
+				wcscat_s(szBuffer,MAX_PATH,L"\\pf ");
+				wcscat_s(szBuffer,MAX_PATH,filename.c_str());
+				wcscat_s(szBuffer,MAX_PATH,szCrLf);
+				WriteFileUtf8( &file, szBuffer);
+			}
+
+			index = FindNearestPhraseIndex(pl2,dwStart,dwStop);
+			result = ComposePhraseSegmentFilename( MUSIC_PL2, pl2, index, phraseConvention, szPath, filename);
+			if (result==0) {
+				result = ExportPhraseSegment( count, pl2, index, filename);
+				if (result<0) {
+					return false;
+				}
+				TCHAR szBuffer[MAX_PATH];
+				wmemset(szBuffer,0,MAX_PATH);
+				wcscat_s(szBuffer,MAX_PATH,L"\\pf ");
+				wcscat_s(szBuffer,MAX_PATH,filename.c_str());
+				wcscat_s(szBuffer,MAX_PATH,szCrLf);
+				WriteFileUtf8( &file, szBuffer);
+			}
+
+
+
+		}
+
+		WriteFileUtf8(&file, szCrLf);
+	}
+
+	return true;
+}
+
+
+CSaString CSaDoc::BuildRecord(Annotations target, DWORD dwStart, DWORD dwStop) {
+
+	CSaString szTag = GetTag(target);
+	CSegment * pSegment = GetSegment(target);
+	CSaString szText = pSegment->GetContainedText(dwStart, dwStop);
+	szText = szText.Trim();
+	if (szText.GetLength() == 0) {
+		return L"";
+	}
+	if (target == GLOSS) {
+		if (szText[0] == WORD_DELIMITER) {
+			szText = szText.Right(szText.GetLength() - 1);
+		}
+	}
+	return szTag + L" " + szText + szCrLf;
+}
+
+CSaString CSaDoc::BuildPhrase( Annotations target, DWORD dwStart, DWORD dwStop) {
+
+	CSaString szTag = GetTag(target);
+	CSegment * pSegment = GetSegment(GetIndex(target));
+	CSaString szText =  pSegment->GetOverlappingText(dwStart, dwStop);
+	szText = szText.Trim();
+	if (szText.GetLength() == 0) {
+		return L"";
+	}
+	return szTag + L" " + szText + szCrLf;
+}
+
+BOOL CSaDoc::GetFlag( Annotations val, CExportFWData data) {
+	switch(val) {
+	case PHONETIC:
+		return data.bAllAnnotations|data.bPhonetic;
+	case PHONEMIC:
+		return data.bAllAnnotations|data.bPhonemic;
+	case ORTHO:
+		return data.bAllAnnotations|data.bOrtho;
+	case GLOSS:
+		return data.bAllAnnotations|data.bGloss;
+	case REFERENCE:
+		return data.bAllAnnotations|data.bReference;
+	case MUSIC_PL1:
+		return data.bAllAnnotations|data.bPhrase;
+	case MUSIC_PL2:
+		return data.bAllAnnotations|data.bPhrase;
+	case MUSIC_PL3:
+		return data.bAllAnnotations|data.bPhrase;
+	case MUSIC_PL4:
+		return data.bAllAnnotations|data.bPhrase;
+	}
+	return false;
+}
+
+int CSaDoc::GetIndex(Annotations val) {
+	switch(val) {
+	case PHONETIC:
+		return 0;
+	case TONE:
+		return 1;
+	case PHONEMIC:
+		return 2;
+	case ORTHO:
+		return 3;
+	case GLOSS:
+		return 4;
+	case REFERENCE:
+		return 5;
+	case MUSIC_PL1:
+		return 6;
+	case MUSIC_PL2:
+		return 7;
+	case MUSIC_PL3:
+		return 8;
+	case MUSIC_PL4:
+		return 9;
+	}
+	return false;
+}
+
+LPCTSTR CSaDoc::GetTag(Annotations val) {
+	switch(val) {
+	case PHONETIC:
+		return L"\\lx-ph";
+	case TONE:
+		return L"\\tn";
+	case PHONEMIC:
+		return L"\\lx-pm";
+	case ORTHO:
+		return L"\\lx-or";
+	case GLOSS:
+		return L"\\ge";
+	case REFERENCE:
+		return L"\\rf";
+	case MUSIC_PL1:
+		return L"\\pf";
+	case MUSIC_PL2:
+		return L"\\tn";
+	case MUSIC_PL3:
+		return L"\\pf";
+	case MUSIC_PL4:
+		return L"\\tn";
+	}
+	return L"";
+}
+
+Annotations CSaDoc::GetAnnotation(int val) {
+	switch(val) {
+	case 0:
+		return PHONETIC;
+	case 1:
+		return TONE;
+	case 2:
+		return PHONEMIC;
+	case 3:
+		return ORTHO;
+	case 4:
+		return GLOSS;
+	case 5:
+		return REFERENCE;
+	case 6:
+		return MUSIC_PL1;
+	case 7:
+		return MUSIC_PL2;
+	case 8:
+		return MUSIC_PL3;
+	case 9:
+		return MUSIC_PL4;
+	}
+	return PHONETIC;
+}
+

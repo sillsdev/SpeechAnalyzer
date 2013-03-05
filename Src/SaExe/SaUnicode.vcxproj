@@ -251,7 +251,7 @@
     <ClCompile Include="Synthesis\DlgKlattAll.cpp" />
     <ClCompile Include="Synthesis\DlgMbrola.cpp" />
     <ClCompile Include="DlgMultiChannel.cpp" />
-    <ClCompile Include="DlgSplit.cpp" />
+    <ClCompile Include="DlgSplitFile.cpp" />
     <ClCompile Include="Synthesis\DlgSynthesis.cpp" />
     <ClCompile Include="Synthesis\DlgVocalTract.cpp" />
     <ClCompile Include="DlgVowelFormants.cpp" />
@@ -511,7 +511,7 @@
     <ClInclude Include="DlgAudio.h" />
     <ClInclude Include="DlgAutoReferenceData.h" />
     <ClInclude Include="DlgMultiChannel.h" />
-    <ClInclude Include="DlgSplit.h" />
+    <ClInclude Include="DlgSplitFile.h" />
     <ClInclude Include="DlgVowelFormants.h" />
     <ClInclude Include="ExportBasicDialog.h" />
     <ClInclude Include="graphsMagnify.h" />

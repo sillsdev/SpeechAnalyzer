@@ -35,7 +35,6 @@ private:
 	BOOL GetFlag( Annotations val);
 	int GetIndex( Annotations val);
 	LPCTSTR GetTag( Annotations val);
-	CSaString GetExportFilename( CSaString szTitle, CSaString szFilter, TCHAR *szExtension=_T("txt"));
 };
 
 #endif DLGEXPORTSFM_H

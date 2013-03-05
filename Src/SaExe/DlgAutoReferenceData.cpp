@@ -153,7 +153,8 @@ void CDlgAutoReferenceData::DoDataExchange(CDataExchange* pDX)
 			else 
 			{
 				CTranscriptionData td;
-				if (mSaDoc->ImportTranscription(CSaString(mLastImport),false,false,false,false,td,true)) 
+				CSaString temp = mLastImport;
+				if (mSaDoc->ImportTranscription(temp,false,false,false,false,td,true)) 
 				{
 					CString ref = td.m_szPrimary;
 					mComboBegin.ResetContent();
@@ -220,7 +221,8 @@ void CDlgAutoReferenceData::DoDataExchange(CDataExchange* pDX)
 			}
 
 			CTranscriptionData td;
-			if (!mSaDoc->ImportTranscription(CSaString(mLastImport),false,false,false,false,td,true)) {
+			CSaString temp = mLastImport;
+			if (!mSaDoc->ImportTranscription(temp,false,false,false,false,td,true)) {
 				pDX->PrepareEditCtrl(IDC_FILENAME);
 				CString msg;
 				msg.LoadStringW(IDS_AUTO_REF_MAIN_1);

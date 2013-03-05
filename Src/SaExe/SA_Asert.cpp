@@ -27,7 +27,7 @@ int NEAR saIgnoreAssertCount = 0;               // for testing diagnostics
 LONG NEAR saAssertBusy = -1;
 #endif
 
-#pragma optimize("qgel", off) // assembler cannot be globally optimized
+#pragma optimize("g", off) // assembler cannot be globally optimized
 
 extern "C"
 void AFXAPI SaAssertFailedLine(LPCSTR lpszFileName, int nLine)

@@ -647,7 +647,7 @@ void CSaView::OnUpdateEditBoundaries(CCmdUI* pCmdUI)
 /***************************************************************************/
 // CSaView::GetEditBoundaries
 /***************************************************************************/
-EBoundaries CSaView::GetEditBoundaries( int nFlags, BOOL checkKeys)
+EBoundaries CSaView::GetEditBoundaries( int /*nFlags*/, BOOL checkKeys)
 {
 	if ((m_bEditSegmentSize) && (checkKeys))
 	{

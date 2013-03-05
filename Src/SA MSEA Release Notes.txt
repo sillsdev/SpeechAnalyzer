@@ -1,3 +1,11 @@
+SA - 3.1.0.37 - 3/5/2013
+1) FieldWorks export feature - added code to export phrase files.
+2) FieldWorks export feature - modified the way the checkbox interact with the 'all annotations' checkbox.
+3) FieldWorks export feature - reordered gloss and reference marks in SFM output file.
+4) FieldWorks export feature - removed double backslash in filename generator.
+5) Recompiled C# code with hopefully now correct version of SILEncConverters.
+6) Updated install to include sil website reference.
+
 SA - 3.1.0.36 - 3/4/2013
 All changes are associated with 'FieldWorks Export' feature..
 1) Implemented backend support for FieldWorks exporting

@@ -2,13 +2,13 @@
 #include "afxwin.h"
 #include "appdefs.h"
 
-// CDlgSplit dialog
-class CDlgSplit : public CDialog
+// CDlgSplitFile dialog
+class CDlgSplitFile : public CDialog
 {
-	DECLARE_DYNAMIC(CDlgSplit)
+	DECLARE_DYNAMIC(CDlgSplitFile)
 public:
-	CDlgSplit(CWnd* pParent = NULL);   // standard constructor
-	virtual ~CDlgSplit();
+	CDlgSplitFile(CWnd* pParent = NULL);   // standard constructor
+	virtual ~CDlgSplitFile();
 
 	virtual BOOL OnInitDialog();
 

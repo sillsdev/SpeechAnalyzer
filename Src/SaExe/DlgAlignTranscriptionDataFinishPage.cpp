@@ -38,7 +38,8 @@ BOOL CDlgAlignTranscriptionDataFinishPage::OnSetActive()
 	CDlgAlignTranscriptionDataSheet * pSheet = GetParent();
 	pSheet->SetWizardButtons(PSWIZB_BACK|PSWIZB_FINISH);
 
-	m_pSaDoc->ApplyTranscriptionChanges(pSheet->GetSettings());
+	CTranscriptionDataSettings tds = pSheet->GetSettings();
+	m_pSaDoc->ApplyTranscriptionChanges(tds);
 
 	return CPropertyPage::OnSetActive();
 }

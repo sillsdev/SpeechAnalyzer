@@ -1642,6 +1642,9 @@
 #define IDS_ERROR_FILENAME              61262
 #define IDS_ERROR_NO_IPAHELP            61263
 #define IDS_ERROR_REGISTRY              61264
+#define IDS_ERROR_NO_FILE               61265
+#define IDS_ERROR_NO_FW_FILE            61265
+#define IDS_ERROR_NO_REFERENCE          61266
 #define IDS_AUTO_REF_MAIN               61300
 #define IDS_AUTO_REF_MAIN_1             61300
 #define IDS_AUTO_REF_MAIN_2             61301

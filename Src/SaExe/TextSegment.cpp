@@ -38,7 +38,7 @@ const CStringArray* CTextSegment::GetTexts()
 	return m_pTexts;
 }
 
-int CTextSegment::GetSegmentLength(int nIndex) const 
+int CTextSegment::GetSegmentLength(int /*nIndex*/) const 
 {
 	return 1;
 }

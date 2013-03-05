@@ -779,3 +779,7 @@ HPSTR CProcessSmoothLoudness::GetSmoothRawData(DWORD dwOffset, BOOL bBlockBegin)
 	}
 }
 
+DWORD CProcessSmoothLoudness::GetSmoothRawDataSize() {
+	// return processed data size in words (16 bit)
+	return m_SRDfileStatus.m_size;
+} 

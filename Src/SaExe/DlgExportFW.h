@@ -23,6 +23,21 @@ class CSaDoc;
 extern CSaString szCrLf;
 extern void WriteFileUtf8( CFile *pFile, const CSaString szString);
 
+class CExportFWData {
+public:
+	CExportFWData( LPCTSTR szDocTitle);
+	BOOL bAllAnnotations;
+	BOOL bGloss;
+	BOOL bOrtho;
+	BOOL bPhonemic;
+	BOOL bPhonetic;
+	BOOL bPOS;
+	BOOL bReference;
+	BOOL bPhrase;
+	CString szDocTitle;
+	CString szPath;
+};
+
 /////////////////////////////////////////////////////////////////////////////
 // CDlgExportFW dialog
 class CDlgExportFW : public CDialog
@@ -31,61 +46,10 @@ class CDlgExportFW : public CDialog
 public:
 	CDlgExportFW( const CSaString & szDocTitle, CWnd* pParent = NULL);
 
-public:
-	// Implementation
-
-protected:
-	// Generated message map functions
-	virtual void OnOK();
-	DECLARE_MESSAGE_MAP()
-
-private:
-	bool TryExportSegmentsBy( Annotations master, CSaDoc * pDoc, CFile & file, int & count, bool skipEmptyGloss, EWordFilenameConvention convention, LPCTSTR szPath);
-	CSaString BuildRecord( Annotations target, DWORD dwStart, DWORD dwStop, CSaDoc * pDoc);
-	CSaString BuildPhrase( Annotations target, DWORD dwStart, DWORD dwStop, CSaDoc * pDoc);
-	Annotations GetAnnotation( int val);
-	BOOL GetFlag( Annotations val);
-	int GetIndex( Annotations val);
-	LPCTSTR GetTag( Annotations val);
-	void UpdateButtonState();
-
-public:
 	// Dialog Data
 	enum { IDD = IDD_EXPORT_FW };
-	BOOL  m_bAllAnnotations;
-	BOOL  m_bGloss;
-	BOOL  m_bOrtho;
-	BOOL  m_bPhonemic;
-	BOOL  m_bPhonetic;
-	BOOL  m_bPOS;
-	BOOL  m_bReference;
-	BOOL  m_bTone;
-	BOOL  m_bPhrase;
 
-protected:
-	CSaString m_szDocTitle;
-
-public:
-	void OnHelpExportBasic();
-
-protected:
-	void SetEnable(int nItem, BOOL bEnable);
-	void SetCheck(int nItem, BOOL bCheck);
-	virtual void DoDataExchange(CDataExchange* pDX);  // DDX/DDV support
-	void GetCurrentPath( LPTSTR szBuffer, size_t size);
-	CSaString GetExportFilename( CSaString szTitle, CSaString szFilter, TCHAR *szExtension=_T("txt"));
-
-	// Generated message map functions
-	virtual BOOL OnInitDialog();
-	afx_msg void OnAllAnnotations();
-	afx_msg void OnClickedExSfmInterlinear();
-	afx_msg void OnClickedExSfmMultirecord();
-	afx_msg void OnClickedBrowseFieldworks();
-	afx_msg void OnClickedBrowseOther();
-	afx_msg void OnRadioFieldworks();
-	afx_msg void OnRadioOther();
-
-public:
+	CExportFWData data;
 	CButton m_BrowseOther;
 	CEdit m_EditFieldWorksFolder;
 	CEdit m_EditOtherFolder;
@@ -94,9 +58,30 @@ public:
 	CButton m_RadioFieldWorks;
 	CButton m_RadioOther;
 	CButton m_ButtonOK;
+	CStatic m_StaticTags;
+
+protected:
+	// Generated message map functions
+	DECLARE_MESSAGE_MAP()
+
+	virtual BOOL OnInitDialog();
+	virtual void DoDataExchange(CDataExchange* pDX);  // DDX/DDV support
+
+	void SetEnable(int nItem, BOOL bEnable);
+	void SetCheck(int nItem, BOOL bCheck);
+	void GetCurrentPath( LPTSTR szBuffer, size_t size);
+	void UpdateButtonState();
+
+	afx_msg void OnAllAnnotations();
+	afx_msg void OnClickedExSfmInterlinear();
+	afx_msg void OnClickedExSfmMultirecord();
+	afx_msg void OnClickedBrowseFieldworks();
+	afx_msg void OnClickedBrowseOther();
+	afx_msg void OnRadioFieldworks();
+	afx_msg void OnRadioOther();
+	afx_msg void OnHelpExportBasic();
 	afx_msg void OnSelchangeComboFieldworksProject();
 	afx_msg void OnKillfocusComboFieldworksProject();
-	CStatic m_StaticTags;
 };
 
 #endif

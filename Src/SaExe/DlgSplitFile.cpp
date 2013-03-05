@@ -1,18 +1,18 @@
-// CDlgSplit.cpp : implementation file
+// CDlgSplitFile.cpp : implementation file
 //
 
 #include "stdafx.h"
 #include "sa.h"
-#include "dlgsplit.h"
+#include "DlgSplitFile.h"
 
 using std::wstring;
 
 // SA_Split dialog
 
-IMPLEMENT_DYNAMIC(CDlgSplit, CDialog)
+IMPLEMENT_DYNAMIC(CDlgSplitFile, CDialog)
 
-CDlgSplit::CDlgSplit(CWnd* pParent /*=NULL*/) : 
-CDialog(CDlgSplit::IDD, pParent),
+CDlgSplitFile::CDlgSplitFile(CWnd* pParent /*=NULL*/) : 
+CDialog(CDlgSplitFile::IDD, pParent),
 m_bSkipGlossEmpty(TRUE),
 m_bOverwriteData(FALSE),
 m_nWordConvention(2), 
@@ -24,11 +24,11 @@ m_szGlossFolderName(_T(""))
 {
 }
 
-CDlgSplit::~CDlgSplit() 
+CDlgSplitFile::~CDlgSplitFile() 
 {
 }
 
-BOOL CDlgSplit::OnInitDialog() 
+BOOL CDlgSplitFile::OnInitDialog() 
 {
 
 	CDialog::OnInitDialog();
@@ -39,7 +39,7 @@ BOOL CDlgSplit::OnInitDialog()
 	return TRUE;
 }
 
-void CDlgSplit::DoDataExchange(CDataExchange* pDX) 
+void CDlgSplitFile::DoDataExchange(CDataExchange* pDX) 
 {
 	CDialog::DoDataExchange(pDX);
 	DDX_CBIndex(pDX, IDC_SPLIT_WORD_CONVENTION, m_nWordConvention);
@@ -52,10 +52,10 @@ void CDlgSplit::DoDataExchange(CDataExchange* pDX)
 	DDX_Check(pDX, IDC_CHECK_OVERWRITE, m_bOverwriteData);
 }
 
-BEGIN_MESSAGE_MAP(CDlgSplit, CDialog) 
-	ON_BN_CLICKED(IDC_BROWSE_FOLDER, &CDlgSplit::OnBnClickedBrowseFolder)
-	ON_BN_CLICKED(IDC_EDIT_PHRASE_FOLDER, &CDlgSplit::OnBnClickedEditPhraseFolder)
-	ON_BN_CLICKED(IDC_EDIT_GLOSS_FOLDER, &CDlgSplit::OnBnClickedEditGlossFolder)
+BEGIN_MESSAGE_MAP(CDlgSplitFile, CDialog) 
+	ON_BN_CLICKED(IDC_BROWSE_FOLDER, &CDlgSplitFile::OnBnClickedBrowseFolder)
+	ON_BN_CLICKED(IDC_EDIT_PHRASE_FOLDER, &CDlgSplitFile::OnBnClickedEditPhraseFolder)
+	ON_BN_CLICKED(IDC_EDIT_GLOSS_FOLDER, &CDlgSplitFile::OnBnClickedEditGlossFolder)
 END_MESSAGE_MAP()
 
 static int CALLBACK BrowseCallbackProc( HWND hwnd,UINT uMsg, LPARAM lParam, LPARAM lpData) 
@@ -75,7 +75,7 @@ static int CALLBACK BrowseCallbackProc( HWND hwnd,UINT uMsg, LPARAM lParam, LPAR
 	return 0; 
 } 
 
-void CDlgSplit::OnBnClickedBrowseFolder() 
+void CDlgSplitFile::OnBnClickedBrowseFolder() 
 {
 	// szCurrent is an optional start folder. Can be NULL.
 	// szPath receives the selected path on success. Must be MAX_PATH characters in length.
@@ -122,7 +122,7 @@ void CDlgSplit::OnBnClickedBrowseFolder()
 	CoUninitialize();
 }
 
-enum EWordFilenameConvention CDlgSplit::GetWordFilenameConvention() 
+enum EWordFilenameConvention CDlgSplitFile::GetWordFilenameConvention() 
 {
 	switch (m_nWordConvention) 
 	{
@@ -133,7 +133,7 @@ enum EWordFilenameConvention CDlgSplit::GetWordFilenameConvention()
 	return WFC_REF_GLOSS;
 }
 
-enum EPhraseFilenameConvention CDlgSplit::GetPhraseFilenameConvention() 
+enum EPhraseFilenameConvention CDlgSplitFile::GetPhraseFilenameConvention() 
 {
 	switch (m_nPhraseConvention) 
 	{
@@ -144,17 +144,17 @@ enum EPhraseFilenameConvention CDlgSplit::GetPhraseFilenameConvention()
 	}
 }
 
-void CDlgSplit::OnBnClickedEditPhraseFolder() 
+void CDlgSplitFile::OnBnClickedEditPhraseFolder() 
 {
 	GetDlgItem(IDC_SPLIT_PHRASE_SUBFOLDER_NAME)->EnableWindow(TRUE);
 }
 
-void CDlgSplit::OnBnClickedEditGlossFolder() 
+void CDlgSplitFile::OnBnClickedEditGlossFolder() 
 {
 	GetDlgItem(IDC_SPLIT_WORD_SUBFOLDER_NAME)->EnableWindow(TRUE);
 }
 
-void CDlgSplit::SetWordFilenameConvention( int value) 
+void CDlgSplitFile::SetWordFilenameConvention( int value) 
 {
 	switch (value)
 	{
@@ -167,7 +167,7 @@ void CDlgSplit::SetWordFilenameConvention( int value)
 	}
 }
 
-void CDlgSplit::SetPhraseFilenameConvention( int value)
+void CDlgSplitFile::SetPhraseFilenameConvention( int value)
 {
 	switch (value)
 	{

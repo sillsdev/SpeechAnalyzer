@@ -7,6 +7,7 @@
 #include "GlossSegment.h"
 #include "TextSegment.h"
 #include "DlgExportFW.h"
+#include "FileUtils.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE
@@ -58,7 +59,8 @@ END_MESSAGE_MAP()
 \desc Description
 */
 
-CDlgExportSFM::CDlgExportSFM( const CSaString & szDocTitle, CWnd* pParent) : CExportBasicDialog( szDocTitle, pParent) 
+CDlgExportSFM::CDlgExportSFM( const CSaString & szDocTitle, CWnd* pParent) : 
+CExportBasicDialog( szDocTitle, pParent) 
 {
 }
 
@@ -66,38 +68,13 @@ void CDlgExportSFM::InitializeDialog()
 {
 }
 
-//****************************************************************************
-// Added on 07/27/200 by DDO.
-//****************************************************************************
-CSaString CDlgExportSFM::GetExportFilename( CSaString szTitle, CSaString szFilter, TCHAR *szExtension)
-{
-	//**************************************
-	// Extract what's to left of :
-	//**************************************
-	int nFind = szTitle.Find(':');
-	if (nFind != -1) {
-		szTitle = szTitle.Left(nFind);
-	}
-	nFind = szTitle.ReverseFind('.');
-
-	//**************************************
-	// Remove extension if necessary.
-	//**************************************
-	szTitle.Trim();
-	if (nFind >= ((szTitle.GetLength() > 3) ? (szTitle.GetLength() - 4) : 0)) {
-		szTitle = szTitle.Left(nFind);
-	}
-
-	CFileDialog dlg( FALSE, szExtension, szTitle, OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT, szFilter, NULL);
-	if (dlg.DoModal() != IDOK) {
-		return "";
-	}
-	return dlg.GetPathName();
-}
-
 void CDlgExportSFM::OnOK()
 {
-	if ((m_szFileName = GetExportFilename(m_szDocTitle, _T("Standard Format (*.sfm) |*.sfm||"), _T("sfm"))) == "") return;
+	wstring filename;
+	int result = GetSaveAsFilename(m_szDocTitle, _T("Standard Format (*.sfm) |*.sfm||"), _T("sfm"), NULL, filename);
+	if (result!=IDOK) return;
+	m_szFileName = filename.c_str();
+	if (m_szFileName == "") return;
 
 	UpdateData(TRUE);
 

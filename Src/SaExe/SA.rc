@@ -26,7 +26,7 @@ LANGUAGE LANG_NEUTRAL, SUBLANG_NEUTRAL
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 3,1,0,36
+ FILEVERSION 3,1,0,37
  PRODUCTVERSION 1,0,0,1
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
@@ -44,7 +44,7 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "SIL International"
             VALUE "FileDescription", "SA"
-            VALUE "FileVersion", "v3.1.0.36"
+            VALUE "FileVersion", "v3.1.0.37"
             VALUE "InternalName", "SA"
             VALUE "LegalCopyright", "© 1996-2013 SIL International (MSEA)"
             VALUE "ProductName", "SA"
@@ -1684,12 +1684,11 @@ BEGIN
     CONTROL         "All Transcriptions",IDC_EXTAB_ANNOTATIONS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,19,23,69,10
     CONTROL         "Reference",IDC_EXTAB_REFERENCE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,27,35,49,10
     CONTROL         "Phonetic",IDC_EXTAB_PHONETIC,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,27,47,44,10
-    CONTROL         "Tone",IDC_EXTAB_TONE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,27,59,33,10
-    CONTROL         "Phonemic",IDC_EXTAB_PHONEMIC,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,27,71,47,10
-    CONTROL         "Orthographic",IDC_EXTAB_ORTHO,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,27,82,57,10
-    CONTROL         "Gloss",IDC_EXTAB_GLOSS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,27,94,33,10
-    CONTROL         "Part of Speech",IDC_EXTAB_POS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,27,106,63,10
-    CONTROL         "Phrase Levels",IDC_EXTAB_PHRASE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,27,118,61,10
+    CONTROL         "Phonemic",IDC_EXTAB_PHONEMIC,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,27,58,47,10
+    CONTROL         "Orthographic",IDC_EXTAB_ORTHO,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,27,69,57,10
+    CONTROL         "Gloss",IDC_EXTAB_GLOSS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,27,81,33,10
+    CONTROL         "Part of Speech",IDC_EXTAB_POS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,27,93,63,10
+    CONTROL         "Phrase Levels",IDC_EXTAB_PHRASE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,27,105,61,10
     PUSHBUTTON      "Cancel",IDCANCEL,145,280,38,14
     DEFPUSHBUTTON   "Export",IDOK,189,280,38,14
     GROUPBOX        "Include",IDC_STATIC,9,7,270,149
@@ -1702,7 +1701,7 @@ BEGIN
                     "Button",BS_AUTORADIOBUTTON,9,169,270,10
     CONTROL         "Export To Another Location",IDC_RADIO_OTHER,"Button",BS_AUTORADIOBUTTON,9,240,270,10
     COMBOBOX        IDC_COMBO_FIELDWORKS_PROJECT,9,213,270,101,CBS_DROPDOWN | CBS_SORT | WS_DISABLED | WS_VSCROLL | WS_TABSTOP
-    LTEXT           "Standard Format Marker Mapping",IDC_STATIC_TAGS,115,18,152,124,WS_BORDER
+    LTEXT           "",IDC_STATIC_TAGS,115,18,152,124,WS_BORDER
 END
 
 IDD_IMPORT_DIALOG DIALOG 0, 0, 187, 95
@@ -4168,7 +4167,7 @@ STRINGTABLE
 BEGIN
     IDR_MAINFRAME           "Speech Analyzer"
     IDR_SA_ANNTYPE          "\nSA\nSA Document\nWAV Files (*.wav)\n.wav\nannFileType\nANN File Type"
-    VS_VERSION              "Version 3.1.0.36"
+    VS_VERSION              "Version 3.1.0.37"
     VS_COPYRIGHT            "© 1996-2013 SIL International (MSEA).\nAll Rights Reserved."
     IDR_SA_WBTYPE           "\nWB\nSA Workbench\nWB Files (*.wb)\n.wb\nwbFileType\nWB File Type"
 END
@@ -5181,12 +5180,13 @@ BEGIN
     IDS_ENABLE_PA           "Enable Phonology Assistant to find Speech Analyzer?"
     IDS_AUTO_REF_MAIN_3     "2) If the file is suppose to be delimited, make sure there are an equal number of tabs or spaces in each row and that there are no missing fields within a row.\n"
     IDS_AUTO_REF_TAG        "Tag"
-    IDS_SFM_TAGS            "\nStandard Format Marker Mapping\n\n\t\\ref\t>\t\\rf\n\t\\ph\t>\t\\lx-ph\n\t\\pm\t>\t\\lx-pm\n\t\\or\t>\t\\lx-or\n\t\\gl\t>\t\\ge\n\t\\pos\t>\t\\ps\n\t\\wav\t>\t\\pf\n\t\\wav\t>\t\\tn\n\t\\ph\n\t\\phr1\t>\t\\pf\n\t\\phr2\t>\t\\tn\n"
 END
 
 STRINGTABLE
 BEGIN
     IDS_ERROR_REGISTRY      "Unable to update registry!"
+    IDS_ERROR_NO_FW_FILE    "Please select a destination filename for the FieldWorks .SFM output file."
+    IDS_ERROR_NO_REFERENCE  "There are no Reference annotations.\nPlease added Reference numbers before exporting data to FieldWorks."
 END
 
 #endif    // English (United States) resources

@@ -20,6 +20,7 @@
 #include "GlossSegment.h"
 #include "PhoneticSegment.h"
 #include "DlgExportFW.h"
+#include "FileUtils.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE
@@ -198,38 +199,13 @@ void CDlgExportTable::OnAllCalculations()
 	}
 }
 
-//****************************************************************************
-// Added on 07/27/200 by DDO.
-//****************************************************************************
-CSaString CDlgExportTable::GetExportFilename( CSaString szTitle, CSaString szFilter, TCHAR *szExtension)
-{
-	//**************************************
-	// Extract what's to left of :
-	//**************************************
-	int nFind = szTitle.Find(':');
-	if (nFind != -1) {
-		szTitle = szTitle.Left(nFind);
-	}
-	nFind = szTitle.ReverseFind('.');
-
-	//**************************************
-	// Remove extension if necessary.
-	//**************************************
-	szTitle.Trim();
-	if (nFind >= ((szTitle.GetLength() > 3) ? (szTitle.GetLength() - 4) : 0)) {
-		szTitle = szTitle.Left(nFind);
-	}
-
-	CFileDialog dlg( FALSE, szExtension, szTitle, OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT, szFilter, NULL);
-	if (dlg.DoModal() != IDOK) {
-		return "";
-	}
-	return dlg.GetPathName();
-}
-
 void CDlgExportTable::OnOK()
 {
-	if ((m_szFileName = GetExportFilename( m_szDocTitle, _T("SFM Time Table (*.sft) |*.sft||"), _T("sft"))) == "") return;
+	wstring filename;
+	int result = GetSaveAsFilename( m_szDocTitle, _T("SFM Time Table (*.sft) |*.sft||"), _T("sft"), NULL, filename);
+	if (result!=IDOK) return;
+	m_szFileName = filename.c_str();
+	if (m_szFileName == "") return;
 
 	UpdateData(TRUE);
 	// process all flags

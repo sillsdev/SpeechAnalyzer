@@ -552,7 +552,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\DlgSplit.cpp"
+				RelativePath=".\DlgSplitFile.cpp"
 				>
 			</File>
 			<File
@@ -3585,7 +3585,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\DlgSplit.h"
+				RelativePath=".\DlgSplitFile.h"
 				>
 			</File>
 			<File

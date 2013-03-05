@@ -86,6 +86,7 @@ class CDlgAdvancedParseWords;
 class CDlgAdvancedParsePhrases;
 class CTranscriptionDataSettings;
 class CMusicPhraseSegment;
+class CExportFWData;
 
 class CAlignInfo 
 {
@@ -351,7 +352,6 @@ public:
 
 	// Generated message map functions
 protected:
-	// SDM 1.06.5 removed unused mesages
 	afx_msg void OnUpdateFileSave(CCmdUI* pCmdUI);
 	afx_msg void OnFileSaveAs();
 	afx_msg void OnUpdateFileSaveAs(CCmdUI* pCmdUI);
@@ -382,19 +382,32 @@ protected:
 public:
 	bool IsTempFile();
 	bool CanEdit();
+
+	// automatic transcription alignment functions
 	const CSaString BuildString( int nSegment);
 	const CSaString BuildImportString( BOOL gloss, BOOL phonetic, BOOL phonemic, BOOL orthographic);
 	const bool ImportTranscription( CSaString & filename, bool gloss, bool phonetic, bool phonemic, bool orthographic, CTranscriptionData & td, bool addTag);
-
 	void ApplyTranscriptionChanges( CTranscriptionDataSettings & settings);
 	void RevertTranscriptionChanges();
+
 protected:
-	// automatic transcription alignment functions
 	void AlignTranscriptionData( CTranscriptionDataSettings & settings);
 	void AlignTranscriptionDataByRef( CTranscriptionData & td);
+
 private:
 	int m_nTranscriptionApplicationCount;
 
+	// FieldWorks export functions
+public:
+	void DoExportFieldWorks( CExportFWData data);
+protected:
+	bool TryExportSegmentsBy( CExportFWData data, Annotations master, CFile & file, int & count, bool skipEmptyGloss, LPCTSTR szPath);
+	CSaString BuildRecord( Annotations target, DWORD dwStart, DWORD dwStop);
+	CSaString BuildPhrase( Annotations target, DWORD dwStart, DWORD dwStop);
+	Annotations GetAnnotation( int val);
+	BOOL GetFlag( Annotations val, CExportFWData data);
+	int GetIndex( Annotations val);
+	LPCTSTR GetTag( Annotations val);
 };
 
 #endif

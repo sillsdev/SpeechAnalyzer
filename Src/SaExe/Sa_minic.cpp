@@ -543,7 +543,7 @@ void CMiniCaptionWnd::OnNcDraw(CDC * pDC, const CRect & printRect, BOOL bPrintDo
 						szText = szText.Left(nNumberChars - 2) + "..."; // limit text
 
 					// draw the text (left aligned for Win95, centered in Win31
-					int iTmp = pDC->DrawText(szText, -1, rcWnd, DT_VCENTER | DT_SINGLELINE | DT_LEFT);
+					pDC->DrawText(szText, -1, rcWnd, DT_VCENTER | DT_SINGLELINE | DT_LEFT);
 					pDC->SelectObject(pOldFont); // allows for proper restoration
 				}
 			}

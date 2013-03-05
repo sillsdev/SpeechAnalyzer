@@ -324,7 +324,6 @@ BOOL CSegment::SetAt( const CSaString * pszString, bool, DWORD dwStart, DWORD dw
 		ErrorMessage(IDS_ERROR_MEMALLOC);
 		return FALSE;
 	}
-	int n2 = m_pAnnotation->GetLength();
 	ASSERT(m_pAnnotation->GetLength()==GetOffsetSize());
 	ASSERT(m_pAnnotation->GetLength()==m_pDuration->GetSize());
 	return TRUE;

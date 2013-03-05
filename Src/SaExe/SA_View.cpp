@@ -619,8 +619,18 @@ void CSaView::OnExportXML()
 /***************************************************************************/
 void CSaView::OnExportFW()
 {
-	CDlgExportFW dlg(((CSaDoc*)GetDocument())->GetTitle());
-	dlg.DoModal();
+	CSaDoc * pDoc = GetDocument();
+	int count = pDoc->GetSegmentSize(REFERENCE);
+	if (count==0) {
+		CSaApp* pApp = (CSaApp*)AfxGetApp(); // get pointer to application
+		pApp->ErrorMessage(IDS_ERROR_NO_REFERENCE);
+		return;
+	}
+
+	CDlgExportFW dlg(pDoc->GetTitle());
+	if (dlg.DoModal()==IDOK) {
+		pDoc->DoExportFieldWorks( dlg.data);
+	}
 }
 
 /***************************************************************************/
@@ -755,7 +765,7 @@ void CSaView::OnFilePhonologyAssistant()
 	HMODULE hmod = GetModuleHandle(exeName);
 
 	TCHAR fullPath[_MAX_PATH + 1];
-	DWORD pathLen = ::GetModuleFileName( hmod, fullPath, MAX_PATH);
+	::GetModuleFileName( hmod, fullPath, MAX_PATH);
 
 	REGSAM sam = (wow64)?KEY_ALL_ACCESS | KEY_WOW64_64KEY:KEY_ALL_ACCESS;
 	HKEY hKey = 0;
