@@ -315,11 +315,7 @@ void CDlgEditor::UpdateDialog()
 		CWnd* pChart = GetDlgItem(IDC_CHARACTERCHART);
 		if (pChart)
 		{
-#ifdef _UNICODE
 			pChart->EnableWindow(TRUE);
-#else
-			pChart->EnableWindow(bFontASAPSIL);
-#endif
 		}
 
 		CEdit* pWnd = (CEdit*) GetDlgItem(IDC_INPUTSTRING);

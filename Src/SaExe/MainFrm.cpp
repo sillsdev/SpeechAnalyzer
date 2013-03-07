@@ -88,6 +88,7 @@ using std::ios;
 #include "synthesis\DlgKlattAll.h"
 #include "synthesis\DlgVocalTract.h"
 #include "SelfTest.h"
+#include "AlignInfo.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE

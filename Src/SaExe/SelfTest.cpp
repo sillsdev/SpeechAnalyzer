@@ -839,11 +839,7 @@ CSASelfTest::~CSASelfTest()
 									szCommand = szCommand.Left(nEnd);
 								}
 							}
-#ifdef _UNICODE
 							_wspawnl(_P_NOWAIT, (const TCHAR*)szCommand, (const TCHAR*)szRestOfCommand, (const TCHAR*)m_szLogFileName, NULL);
-#else
-							_spawnl(_P_NOWAIT, szCommand, szRestOfCommand, m_szLogFileName, NULL);
-#endif
 							//"file:////" + m_szTestFolderPath + "selftest.xml", NULL);
 						}
 					}

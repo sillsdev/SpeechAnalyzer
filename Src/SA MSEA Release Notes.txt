@@ -1,3 +1,8 @@
+SA - 3.1.0.38 - 3/6/2013
+1) Fixed bugs on XML/SFM and FW export dialogs.
+2) Removed PL1 and PL2 SFM output from FW export data.
+3) Fixed bug in code that associates phrase segments with gloss segments during export of FW data.
+
 SA - 3.1.0.37 - 3/5/2013
 1) FieldWorks export feature - added code to export phrase files.
 2) FieldWorks export feature - modified the way the checkbox interact with the 'all annotations' checkbox.

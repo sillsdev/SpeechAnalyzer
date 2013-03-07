@@ -74,7 +74,6 @@ enum UPDATE_MODE
 #define MAX_ANIMATION_RATE              60          // animation rate limited only by processor speed
 
 // annotation windows defines
-#ifdef _UNICODE
 #define PHONETIC_DEFAULT_FONT           _T("Doulos SIL") // default font faces
 #define TONE_DEFAULT_FONT               _T("Doulos SIL")
 #define PHONEMIC_DEFAULT_FONT           _T("Doulos SIL")
@@ -82,15 +81,6 @@ enum UPDATE_MODE
 #define GLOSS_DEFAULT_FONT              _T("Doulos SIL")
 #define REFERENCE_DEFAULT_FONT          _T("Doulos SIL")
 #define MUSIC_PHRASE_DEFAULT_FONT       _T("Doulos SIL")
-#else
-#define PHONETIC_DEFAULT_FONT           _T("ASAP SILDoulos") // default font faces
-#define TONE_DEFAULT_FONT               _T("PitchContours")
-#define PHONEMIC_DEFAULT_FONT           _T("ASAP SILDoulos")
-#define ORTHOGRAPHIC_DEFAULT_FONT       _T("MS Sans Serif")
-#define GLOSS_DEFAULT_FONT              _T("MS Sans Serif")
-#define REFERENCE_DEFAULT_FONT          _T("MS Sans Serif")
-#define MUSIC_PHRASE_DEFAULT_FONT       _T("MS Sans Serif")
-#endif
 
 #define PHONETIC_DEFAULT_FONTSIZE       12          // default font point sizes
 #define TONE_DEFAULT_FONTSIZE           18
@@ -105,11 +95,7 @@ enum UPDATE_MODE
 #define EDIT_WORD_DELIMITER             0x20			// ' ' space
 #define EDIT_DELIMITER_REPLACEMENT      _T('.')         // Replace Delimiters with this character
 
-#ifdef _UNICODE
 #define SEGMENT_DEFAULT_CHAR            _T('\xFFFD')    // default 0xFFFD
-#else
-#define SEGMENT_DEFAULT_CHAR            _T('\xC5')         // default (empty) phonetic character 197 (-256 + char)
-#endif
 
 #define MIN_EDIT_SEGMENT_TIME           (0.005 /*5ms*/)
 #define MIN_ADD_SEGMENT_TIME            (0.020 /*20ms*/)

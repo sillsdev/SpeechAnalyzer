@@ -73,7 +73,7 @@
       <Culture>0x0409</Culture>
     </ResourceCompile>
     <Link>
-      <AdditionalDependencies>mfc100ud.lib;mfcs100ud.lib;atlsd.lib;msvcrtd.lib;msvcprtd.lib;comdlg32.lib;user32.lib;gdi32.lib;kernel32.lib;advapi32.lib;oldnames.lib;winmm.lib;version.lib;imm32.lib;ole32.lib;oleaut32.lib;uuid.lib;comsuppw.lib;HtmlHelp\htmlhelp.lib;shell32.lib;msacm32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>mfc100ud.lib;mfcs100ud.lib;atlsd.lib;msvcrtd.lib;msvcprtd.lib;comdlg32.lib;user32.lib;gdi32.lib;kernel32.lib;advapi32.lib;oldnames.lib;winmm.lib;version.lib;imm32.lib;ole32.lib;oleaut32.lib;uuid.lib;comsuppw.lib;htmlhelp.lib;shell32.lib;msacm32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <IgnoreAllDefaultLibraries>true</IgnoreAllDefaultLibraries>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -135,6 +135,7 @@
     </Bscmake>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="AlignInfo.cpp" />
     <ClCompile Include="ArchiveTransfer.cpp" />
     <ClCompile Include="DependentSegment.cpp" />
     <ClCompile Include="DependentTextSegment.cpp" />
@@ -255,7 +256,6 @@
     <ClCompile Include="Synthesis\DlgSynthesis.cpp" />
     <ClCompile Include="Synthesis\DlgVocalTract.cpp" />
     <ClCompile Include="DlgVowelFormants.cpp" />
-    <ClCompile Include="ExportBasicDialog.cpp" />
     <ClCompile Include="FileInformation.cpp" />
     <ClCompile Include="FileOpen.cpp" />
     <ClCompile Include="FnKeys.cpp" />
@@ -383,6 +383,7 @@
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AlignInfo.h" />
     <ClInclude Include="AppDefs.h" />
     <ClInclude Include="ArchiveTransfer.h" />
     <ClInclude Include="autoRecorder.h" />
@@ -513,7 +514,6 @@
     <ClInclude Include="DlgMultiChannel.h" />
     <ClInclude Include="DlgSplitFile.h" />
     <ClInclude Include="DlgVowelFormants.h" />
-    <ClInclude Include="ExportBasicDialog.h" />
     <ClInclude Include="graphsMagnify.h" />
     <ClInclude Include="graphsParameters.h" />
     <ClInclude Include="graphsTypes.h" />

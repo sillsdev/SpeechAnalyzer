@@ -41,8 +41,8 @@
 #include "ISa_Doc.h"
 #include "TranscriptionData.h"
 #include "DlgAutoReferenceData.h"
-
 #include <string>
+#include "AlignInfo.h"
 
 #import "speechtoolsutils.tlb" no_namespace named_guids
 #import "st_audio.tlb" no_namespace named_guids
@@ -86,16 +86,7 @@ class CDlgAdvancedParseWords;
 class CDlgAdvancedParsePhrases;
 class CTranscriptionDataSettings;
 class CMusicPhraseSegment;
-class CExportFWData;
-
-class CAlignInfo 
-{
-public:
-	CAlignInfo() { bValid = FALSE; }
-	bool bValid;
-	double dTotalLength;			// in seconds
-	double dStart;				    // in seconds
-};
+class CDlgExportFW;
 
 class CSaDoc : public CUndoRedoDoc, public ISaDoc
 {   
@@ -257,20 +248,21 @@ public:
 	static BOOL			ReadProperties(Object_istream& obs);
 	static BOOL			ReadPropertiesOfViews(Object_istream& obs, const CSaString & str);
 	void				DeleteSegmentContents(Annotations type);
+	bool				HasSegmentData( Annotations val);
 
 protected:
-	virtual void		DeleteContents();
-	virtual BOOL		OnNewDocument();
-	virtual BOOL		OnOpenDocument(const TCHAR* pszPathName);
-	virtual BOOL		OnSaveDocument(const TCHAR* pszPathName);
-	virtual BOOL		OnSaveDocument(const TCHAR* pszPathName, BOOL bSaveAudio);
-	virtual BOOL		CopyWaveToTemp(const TCHAR* pszSourcePathName, CAlignInfo info);
-	virtual BOOL		SaveModified(); // return TRUE if ok to continue
+	virtual void DeleteContents();
+	virtual BOOL OnNewDocument();
+	virtual BOOL OnOpenDocument(const TCHAR* pszPathName);
+	virtual BOOL OnSaveDocument(const TCHAR* pszPathName);
+	virtual BOOL OnSaveDocument(const TCHAR* pszPathName, BOOL bSaveAudio);
+	virtual BOOL CopyWaveToTemp(const TCHAR* pszSourcePathName, CAlignInfo info);
+	virtual BOOL SaveModified(); // return TRUE if ok to continue
 
 private:
-	const CSaString&	GetRawDataWrk(int nIndex) const {return m_szRawDataWrk[nIndex];}
+	const CSaString&	GetRawDataWrk(int nIndex) const;
 	virtual BOOL		CopyWaveToTemp(const TCHAR* pszSourcePathName, const TCHAR* pszTempPathName = NULL, BOOL bInsert=FALSE, DWORD dwPos=0);
-	void				SetMultiChannelFlag(bool bMultiChannel) { m_bMultiChannel = bMultiChannel;}
+	void				SetMultiChannelFlag(bool bMultiChannel);
 	bool				SplitMultiChannelTempFile(int channels, int selectedChannel);
 	CSaString			SetFileExtension(CSaString fileName, CSaString fileExtension);
 
@@ -346,11 +338,10 @@ public:
 	virtual void		Serialize(CArchive& ar);
 
 #ifdef _DEBUG
-	virtual void		AssertValid() const;
-	virtual void		Dump(CDumpContext& dc) const;
+	virtual void AssertValid() const;
+	virtual void Dump(CDumpContext& dc) const;
 #endif
 
-	// Generated message map functions
 protected:
 	afx_msg void OnUpdateFileSave(CCmdUI* pCmdUI);
 	afx_msg void OnFileSaveAs();
@@ -380,34 +371,27 @@ protected:
 	DECLARE_MESSAGE_MAP()
 
 public:
-	bool IsTempFile();
-	bool CanEdit();
-
-	// automatic transcription alignment functions
+	void DoExportFieldWorks( CDlgExportFW & dlg);
 	const CSaString BuildString( int nSegment);
 	const CSaString BuildImportString( BOOL gloss, BOOL phonetic, BOOL phonemic, BOOL orthographic);
 	const bool ImportTranscription( CSaString & filename, bool gloss, bool phonetic, bool phonemic, bool orthographic, CTranscriptionData & td, bool addTag);
 	void ApplyTranscriptionChanges( CTranscriptionDataSettings & settings);
 	void RevertTranscriptionChanges();
+	bool IsTempFile();
+	bool CanEdit();
 
 protected:
 	void AlignTranscriptionData( CTranscriptionDataSettings & settings);
 	void AlignTranscriptionDataByRef( CTranscriptionData & td);
-
-private:
-	int m_nTranscriptionApplicationCount;
-
-	// FieldWorks export functions
-public:
-	void DoExportFieldWorks( CExportFWData data);
-protected:
-	bool TryExportSegmentsBy( CExportFWData data, Annotations master, CFile & file, int & count, bool skipEmptyGloss, LPCTSTR szPath);
+	bool TryExportSegmentsBy( CDlgExportFW & dlg, Annotations master, CFile & file, int & count, bool skipEmptyGloss, LPCTSTR szPath);
 	CSaString BuildRecord( Annotations target, DWORD dwStart, DWORD dwStop);
-	CSaString BuildPhrase( Annotations target, DWORD dwStart, DWORD dwStop);
 	Annotations GetAnnotation( int val);
-	BOOL GetFlag( Annotations val, CExportFWData data);
+	BOOL GetFlag( Annotations val, CDlgExportFW & dlg);
 	int GetIndex( Annotations val);
 	LPCTSTR GetTag( Annotations val);
+	void WriteFileUtf8( CFile *pFile, const CSaString szString);
+
+	int m_nTranscriptionApplicationCount;
 };
 
 #endif

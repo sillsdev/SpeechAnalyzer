@@ -380,7 +380,7 @@ void CDependentSegment::Add( CSaDoc* pDoc, DWORD dwStart, CSaString& szString, B
 	pView->RefreshGraphs(FALSE); // refresh the graphs between cursors
 }
 
-int CDependentSegment::CheckPosition(CSaDoc* pDoc, DWORD dwStart, DWORD dwStop, EMode nMode, BOOL bUnused) const
+int CDependentSegment::CheckPosition(CSaDoc* pDoc, DWORD dwStart, DWORD dwStop, EMode nMode, BOOL /*bUnused*/) const
 { 
 	return CheckPositionToMaster(pDoc, dwStart, dwStop, nMode);
 }

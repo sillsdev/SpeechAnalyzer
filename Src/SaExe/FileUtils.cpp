@@ -1,6 +1,3 @@
-#ifndef FILEUTILS_H_
-#define FILEUTILS_H
-
 #include "stdafx.h"
 #include <FileUtils.h>
 #include <sys/stat.h>
@@ -60,8 +57,7 @@ void AppendDirSep( LPTSTR path, size_t size) {
 
 	if (path[len - 1] == '\\') return;
 
-	path[len] = '\\';
-	path[len+1] = 0;
+	wcscat_s(path,size,L"\\");
 }
 
 void AppendDirSep( wstring & path) {
@@ -112,5 +108,3 @@ int GetSaveAsFilename( LPCTSTR title, LPCTSTR filter, LPCTSTR extension, LPTSTR 
 	}
 	return result;
 }
-
-#endif

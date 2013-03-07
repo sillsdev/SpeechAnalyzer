@@ -252,7 +252,7 @@ bool GeneratePhraseSplitName( Annotations type, CMusicPhraseSegment * seg, CSaVi
 */
 int FindNearestReferenceIndex( CReferenceSegment * seg, DWORD dwStart, DWORD dwStop) {
 
-    TRACE("trying to find ref segment for %d\n",dwStart);
+    TRACE("trying to find ref segment for %d %d\n",dwStart,dwStop);
     for(int j=0; j<seg->GetOffsetSize(); j++) {
         DWORD dwRStart = seg->GetOffset(j);
         DWORD dwRStop = dwRStart+seg->GetDuration(j);
@@ -261,10 +261,10 @@ int FindNearestReferenceIndex( CReferenceSegment * seg, DWORD dwStart, DWORD dwS
             TRACE("found identical start\n");
             return j;
         } else if ((dwRStart<dwStart)&&(dwStart<=dwRStop)) {
-            TRACE("ref overlaps gloss\n");
+            TRACE("ref overlaps segment\n");
             return j;
-        } else if ((dwStart<dwRStart)&&(dwRStop<dwStop)) {
-            TRACE("ref contained in gloss\n");
+        } else if ((dwStart<dwRStart)&&(dwRStop<=dwStop)) {
+            TRACE("ref within segment\n");
             return j;
         }
     }
@@ -282,7 +282,7 @@ int FindNearestReferenceIndex( CReferenceSegment * seg, DWORD dwStart, DWORD dwS
 */
 int FindNearestGlossIndex( CGlossSegment * seg, DWORD dwStart, DWORD dwStop) {
 
-    TRACE("trying to find gloss segment for %d\n",dwStart);
+    TRACE("trying to find gloss segment for %d %d\n",dwStart,dwStop);
     for(int j=0; j<seg->GetOffsetSize(); j++) {
         DWORD dwGStart = seg->GetOffset(j);
         DWORD dwGStop = dwGStart+seg->GetDuration(j);
@@ -291,10 +291,10 @@ int FindNearestGlossIndex( CGlossSegment * seg, DWORD dwStart, DWORD dwStop) {
             TRACE("found identical start\n");
             return j;
         } else if ((dwGStart<dwStart)&&(dwStart<=dwGStop)) {
-            TRACE("gloss overlaps phrase\n");
+            TRACE("gloss overlaps segment\n");
             return j;
-        } else if ((dwStart<dwGStart)&&(dwGStop<dwStop)) {
-            TRACE("gloss contained in phrase\n");
+        } else if ((dwStart<dwGStart)&&(dwGStop<=dwStop)) {
+            TRACE("gloss within segment\n");
             return j;
         }
     }
@@ -304,31 +304,53 @@ int FindNearestGlossIndex( CGlossSegment * seg, DWORD dwStart, DWORD dwStop) {
 
 /**
 * Given a start/stop range, find the nearest phrase segment.
-* This will be the one that overlaps, or starts with
-* the same offset, or the next one before the end of the
-* phrase segment
+* priority:
+* segment starts within range
+* segment contained in range
+* segment overlaps range
+* segment ends in range
 *
 * returns -1 on error
 */
 int FindNearestPhraseIndex( CMusicPhraseSegment * seg, DWORD dwStart, DWORD dwStop) {
 
-	TRACE("trying to find gloss segment for %d\n",dwStart);
+	TRACE("trying to find phrase segment for %d %d\n",dwStart,dwStop);
 	for(int j=0; j<seg->GetOffsetSize(); j++) {
 		DWORD dwGStart = seg->GetOffset(j);
 		DWORD dwGStop = dwGStart+seg->GetDuration(j);
 		TRACE("comparing start=%d end=%d\n",dwGStart,dwGStop);
-		if (dwStart==dwGStart) {
-			TRACE("found identical start\n");
-			return j;
-		} else if ((dwGStart<dwStart)&&(dwStart<=dwGStop)) {
-			TRACE("gloss overlaps phrase\n");
-			return j;
-		} else if ((dwStart<dwGStart)&&(dwGStop<dwStop)) {
-			TRACE("gloss contained in phrase\n");
+		if ((dwStart<=dwGStart)&&(dwGStart<=dwStop)) {
+			TRACE("phrase starts in segment\n");
 			return j;
 		}
 	}
-	TRACE("no match found!\n");
+	for(int j=0; j<seg->GetOffsetSize(); j++) {
+		DWORD dwGStart = seg->GetOffset(j);
+		DWORD dwGStop = dwGStart+seg->GetDuration(j);
+		TRACE("comparing start=%d end=%d\n",dwGStart,dwGStop);
+		if ((dwStart<=dwGStart)&&(dwGStop<=dwStop)) {
+			TRACE("phrase within segment\n");
+			return j;
+		}
+	}
+	for(int j=0; j<seg->GetOffsetSize(); j++) {
+		DWORD dwGStart = seg->GetOffset(j);
+		DWORD dwGStop = dwGStart+seg->GetDuration(j);
+		TRACE("comparing start=%d end=%d\n",dwGStart,dwGStop);
+		if ((dwGStart<dwStart)&&(dwStop<dwGStop)) {
+			TRACE("phrase overlaps segment\n");
+			return j;
+		}
+	}
+	for(int j=0; j<seg->GetOffsetSize(); j++) {
+		DWORD dwGStart = seg->GetOffset(j);
+		DWORD dwGStop = dwGStart+seg->GetDuration(j);
+		TRACE("comparing start=%d end=%d\n",dwGStart,dwGStop);
+		if ((dwStart<dwGStop)&&(dwGStop<=dwStop)) {
+			TRACE("phrase ends in segment\n");
+			return j;
+		}
+	}
 	return -1;
 }
 
@@ -476,6 +498,8 @@ int ComposeWordSegmentFilename( CGlossSegment * seg, int index, EWordFilenameCon
 */
 int ExportWordSegment( int & count, CGlossSegment * seg, int index, LPCTSTR filename, BOOL skipEmptyGloss) {
 
+	TRACE("exporting gloss segment\n");
+
 	CSaDoc * pDoc = (CSaDoc *)((CMainFrame *) AfxGetMainWnd())->GetCurrSaView()->GetDocument();
 
     BOOL bSuccess = FALSE;
@@ -573,6 +597,8 @@ int ComposePhraseSegmentFilename( Annotations type, CMusicPhraseSegment * seg, i
 * export words for the given file
 */
 int ExportPhraseSegment( int & count, CMusicPhraseSegment * seg, int index, wstring & filename) {
+
+	TRACE("exporting phrase segment\n");
 
 	CSaDoc * pDoc = (CSaDoc *)((CMainFrame *) AfxGetMainWnd())->GetCurrSaView()->GetDocument();
 

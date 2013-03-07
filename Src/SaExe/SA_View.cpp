@@ -627,9 +627,18 @@ void CSaView::OnExportFW()
 		return;
 	}
 
-	CDlgExportFW dlg(pDoc->GetTitle());
+	CSaString title = pDoc->GetTitle();
+	BOOL gloss = pDoc->HasSegmentData(GLOSS);
+	BOOL ortho = pDoc->HasSegmentData(ORTHO);
+	BOOL phonemic = pDoc->HasSegmentData(PHONEMIC);
+	BOOL phonetic = pDoc->HasSegmentData(PHONETIC);
+	BOOL pos = FALSE;
+	BOOL reference = pDoc->HasSegmentData(REFERENCE);
+	BOOL phrase = pDoc->HasSegmentData(MUSIC_PL1)|pDoc->HasSegmentData(MUSIC_PL1);
+
+	CDlgExportFW dlg(title, gloss, ortho, phonemic, phonetic, pos, reference, phrase);
 	if (dlg.DoModal()==IDOK) {
-		pDoc->DoExportFieldWorks( dlg.data);
+		pDoc->DoExportFieldWorks( dlg);
 	}
 }
 
@@ -752,6 +761,11 @@ void CSaView::OnFilePhonologyAssistant()
 	::GetVersionEx(&OSInfo);
 	bool vista = (OSInfo.dwMajorVersion>=6);
 
+	/*
+	WOW64 is the x86 emulator that allows 32-bit Windows-based applications to run seamlessly on 64-bit Windows. 
+	WOW64 is provided with the operating system and does not have to be explicitly enabled. 
+	For more information, see WOW64 Implementation Details. http://msdn.microsoft.com/en-us/library/aa384274%28v=vs.85%29.aspx
+	*/
 	BOOL wow64 = FALSE;
 	::IsWow64Process(GetCurrentProcess(),&wow64);
 
@@ -767,7 +781,41 @@ void CSaView::OnFilePhonologyAssistant()
 	TCHAR fullPath[_MAX_PATH + 1];
 	::GetModuleFileName( hmod, fullPath, MAX_PATH);
 
-	REGSAM sam = (wow64)?KEY_ALL_ACCESS | KEY_WOW64_64KEY:KEY_ALL_ACCESS;
+	// write to both the 32-bit and 64-bit hives...
+
+	// KEY_WOW64_64KEY allows us to write to the 64-bit hive
+	// wow64 is true if we are a 32-bit app on a 64-bit system.
+	// we now write to the 64-bit hive
+	if (wow64) {
+		REGSAM sam = KEY_ALL_ACCESS|KEY_WOW64_64KEY;
+		HKEY hKey = 0;
+		DWORD disposition = 0;
+		LONG lResult = RegCreateKeyEx( HKEY_LOCAL_MACHINE, _T("Software\\SIL\\Speech Analyzer"), 0, NULL, 0, sam, NULL, &hKey, &disposition);
+		if (lResult!=ERROR_SUCCESS)
+		{
+			AfxMessageBox(IDS_ERROR_REGISTRY, MB_OK|MB_ICONEXCLAMATION, 0);
+			return;
+		}
+		DWORD len = (wcslen(fullPath)+1)*sizeof(TCHAR);
+		lResult = RegSetValueEx( hKey, L"Location", 0, REG_SZ, (const BYTE *)fullPath, len);
+		if (lResult!=ERROR_SUCCESS)
+		{
+			RegCloseKey(hKey);
+			AfxMessageBox(IDS_ERROR_REGISTRY, MB_OK|MB_ICONEXCLAMATION, 0);
+			return;
+		}
+		lResult = RegCloseKey( hKey);
+		if (lResult!=ERROR_SUCCESS)
+		{
+			AfxMessageBox(IDS_ERROR_REGISTRY, MB_OK|MB_ICONEXCLAMATION, 0);
+			return;
+		}
+	}
+
+	// KEY_WOW64_64KEY allows us to write to the 64-bit hive
+	// wow64 is true if we are a 32-bit app on a 64-bit system.
+	// we now write to the 32-bit hive
+	REGSAM sam = KEY_ALL_ACCESS;
 	HKEY hKey = 0;
 	DWORD disposition = 0;
 	LONG lResult = RegCreateKeyEx( HKEY_LOCAL_MACHINE, _T("Software\\SIL\\Speech Analyzer"), 0, NULL, 0, sam, NULL, &hKey, &disposition);

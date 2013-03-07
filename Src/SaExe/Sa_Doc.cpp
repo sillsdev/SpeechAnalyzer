@@ -115,7 +115,6 @@
 #include "dlgadvancedparsewords.h"
 #include "dlgadvancedparsephrases.h"
 #include "dlgautoreferencedata.h"
-
 #include "sa.h"
 #include "sa_view.h"
 #include "sa_wbch.h"
@@ -7571,12 +7570,12 @@ BOOL CSaDoc::CopySectionToNewWavFile(DWORD dwSectionStart, DWORD dwSectionLength
     return TRUE;
 }
 
-void CSaDoc::DoExportFieldWorks( CExportFWData data) {
+void CSaDoc::DoExportFieldWorks( CDlgExportFW & dlg) {
 
 	wstring filename;
 	TCHAR szBuffer[MAX_PATH];
-	wcscpy_s(szBuffer,MAX_PATH,data.szPath);
-	int result = GetSaveAsFilename( data.szDocTitle, _T("Standard Format (*.sfm) |*.sfm||"), _T("sfm"), szBuffer, filename);
+	wcscpy_s(szBuffer,MAX_PATH,dlg.szPath);
+	int result = GetSaveAsFilename( dlg.szDocTitle, _T("Standard Format (*.sfm) |*.sfm||"), _T("sfm"), szBuffer, filename);
 	if (result!=IDOK) {
 		return;
 	}
@@ -7591,7 +7590,7 @@ void CSaDoc::DoExportFieldWorks( CExportFWData data) {
 
 	TCHAR szPath[MAX_PATH];
 	memset(szPath, 0, MAX_PATH);
-	wcscpy_s(szPath,MAX_PATH,data.szPath);
+	wcscpy_s(szPath,MAX_PATH,dlg.szPath);
 
 	if (!FolderExists(szPath)) {
 		CreateFolder(szPath);
@@ -7621,12 +7620,12 @@ void CSaDoc::DoExportFieldWorks( CExportFWData data) {
 	CSaString szString;
 	int count = 0;
 
-	if (!TryExportSegmentsBy(data,REFERENCE, file, count, skipEmptyGloss, szPath)) {
-		if (!TryExportSegmentsBy(data,GLOSS, file, count, skipEmptyGloss, szPath)) {
-			if (!TryExportSegmentsBy(data,ORTHO, file, count, skipEmptyGloss, szPath)) {
-				if (!TryExportSegmentsBy(data,PHONEMIC, file, count, skipEmptyGloss, szPath)) {
-					if (!TryExportSegmentsBy(data,TONE, file, count, skipEmptyGloss, szPath)) {
-						TryExportSegmentsBy(data,PHONETIC, file, count, skipEmptyGloss, szPath);
+	if (!TryExportSegmentsBy(dlg,REFERENCE, file, count, skipEmptyGloss, szPath)) {
+		if (!TryExportSegmentsBy(dlg,GLOSS, file, count, skipEmptyGloss, szPath)) {
+			if (!TryExportSegmentsBy(dlg,ORTHO, file, count, skipEmptyGloss, szPath)) {
+				if (!TryExportSegmentsBy(dlg,PHONEMIC, file, count, skipEmptyGloss, szPath)) {
+					if (!TryExportSegmentsBy(dlg,TONE, file, count, skipEmptyGloss, szPath)) {
+						TryExportSegmentsBy(dlg,PHONETIC, file, count, skipEmptyGloss, szPath);
 					}
 				}
 			}
@@ -7641,12 +7640,16 @@ void CSaDoc::DoExportFieldWorks( CExportFWData data) {
 	file.Close();
 }
 
-bool CSaDoc::TryExportSegmentsBy( CExportFWData data, Annotations master, CFile & file, int & count, bool skipEmptyGloss, LPCTSTR szPath) {
+bool CSaDoc::TryExportSegmentsBy( CDlgExportFW & dlg, Annotations master, CFile & file, int & count, bool skipEmptyGloss, LPCTSTR szPath) {
+
+	TRACE("EXPORTING>>>>%d\n",master);
+
+	LPCTSTR szCrLf = L"\r\n";
 
 	EWordFilenameConvention wordConvention = WFC_REF_GLOSS;
 	EPhraseFilenameConvention phraseConvention = PFC_REF_GLOSS;
 
-	if (!GetFlag(master,data)) {
+	if (!GetFlag(master,dlg)) {
 		return false;
 	}
 
@@ -7656,7 +7659,6 @@ bool CSaDoc::TryExportSegmentsBy( CExportFWData data, Annotations master, CFile 
 		return false;
 	}
 
-	CSaString szCrLf = "\r\n";
 	WriteFileUtf8(&file, szCrLf);
 
 	CSaString results[ANNOT_WND_NUMBER];
@@ -7673,17 +7675,10 @@ bool CSaDoc::TryExportSegmentsBy( CExportFWData data, Annotations master, CFile 
 		last = dwStart;
 		for(int j = master; j >= 0; j--) {
 			Annotations target = GetAnnotation(j);
-			if (!GetFlag(target,data)) {
+			if (!GetFlag(target,dlg)) {
 				continue;
 			}
 			results[target] = BuildRecord(target, dwStart, dwStop);
-		}
-
-		if (data.bAllAnnotations|data.bPhrase) {
-			results[MUSIC_PL1] = BuildPhrase(MUSIC_PL1, dwStart, dwStop);
-			results[MUSIC_PL2] = BuildPhrase(MUSIC_PL2, dwStart, dwStop);
-			results[MUSIC_PL3] = BuildPhrase(MUSIC_PL3, dwStart, dwStop);
-			results[MUSIC_PL4] = BuildPhrase(MUSIC_PL4, dwStart, dwStop);
 		}
 
 		if (results[PHONETIC].GetLength() > 0) {
@@ -7704,18 +7699,6 @@ bool CSaDoc::TryExportSegmentsBy( CExportFWData data, Annotations master, CFile 
 		if (results[REFERENCE].GetLength() > 0) {
 			WriteFileUtf8(&file, results[REFERENCE]);
 		}
-		if (results[MUSIC_PL1].GetLength() > 0) {
-			WriteFileUtf8(&file, results[MUSIC_PL1]);
-		}
-		if (results[MUSIC_PL2].GetLength() > 0) {
-			WriteFileUtf8(&file, results[MUSIC_PL2]);
-		}
-		if (results[MUSIC_PL3].GetLength() > 0) {
-			WriteFileUtf8(&file, results[MUSIC_PL3]);
-		}
-		if (results[MUSIC_PL4].GetLength() > 0) {
-			WriteFileUtf8(&file, results[MUSIC_PL4]);
-		}
 
 		POSITION pos = GetFirstViewPosition();
 		CSaView * pView = (CSaView *) GetNextView(pos);  // get pointer to view
@@ -7725,62 +7708,67 @@ bool CSaDoc::TryExportSegmentsBy( CExportFWData data, Annotations master, CFile 
 		DWORD offsetSize = g->GetOffsetSize();
 		bool hasGloss = (offsetSize != 0);
 
+		TRACE("gloss %d %d\n",dwStart,dwStop);
+
 		if ((hasGloss) || (!skipEmptyGloss)) {
 
 			wstring filename;
 			int index = FindNearestGlossIndex(g,dwStart,dwStop);
-			int result = ComposeWordSegmentFilename( g, index, wordConvention, szPath, filename);
-			if (result==0) {
-				result = ExportWordSegment( count, g, index, filename.c_str(), skipEmptyGloss);
-				if (result<0) {
-					return false;
+			if (index>=0) {
+				int result = ComposeWordSegmentFilename( g, index, wordConvention, szPath, filename);
+				if (result==0) {
+					int result = ExportWordSegment( count, g, index, filename.c_str(), skipEmptyGloss);
+					if (result<0) {
+						return false;
+					}
+					TCHAR szBuffer[MAX_PATH];
+					wmemset(szBuffer,0,MAX_PATH);
+					wcscat_s(szBuffer,MAX_PATH,L"\\pf ");
+					wcscat_s(szBuffer,MAX_PATH,filename.c_str());
+					wcscat_s(szBuffer,MAX_PATH,szCrLf);
+					WriteFileUtf8( &file, szBuffer);
 				}
-				TCHAR szBuffer[MAX_PATH];
-				wmemset(szBuffer,0,MAX_PATH);
-				wcscat_s(szBuffer,MAX_PATH,L"\\pf ");
-				wcscat_s(szBuffer,MAX_PATH,filename.c_str());
-				wcscat_s(szBuffer,MAX_PATH,szCrLf);
-				WriteFileUtf8( &file, szBuffer);
-
-				wmemset(szBuffer,0,MAX_PATH);
-				wcscat_s(szBuffer,MAX_PATH,L"\\tn ");
-				wcscat_s(szBuffer,MAX_PATH,filename.c_str());
-				wcscat_s(szBuffer,MAX_PATH,szCrLf);
-				WriteFileUtf8( &file, szBuffer);
 			}
-
-			index = FindNearestPhraseIndex(pl1,dwStart,dwStop);
-			result = ComposePhraseSegmentFilename( MUSIC_PL1, pl1, index, phraseConvention, szPath, filename);
-			if (result==0) {
-				result = ExportPhraseSegment( count, pl1, index, filename);
-				if (result<0) {
-					return false;
+			
+			if (dlg.bPhrase) {
+				TRACE("--searching for PL1\n");
+				index = FindNearestPhraseIndex(pl1,dwStart,dwStop);
+				if (index>=0) {
+					TRACE("--exporting PL1\n");
+					int result = ComposePhraseSegmentFilename( MUSIC_PL1, pl1, index, phraseConvention, szPath, filename);
+					if (result==0) {
+						int result = ExportPhraseSegment( count, pl1, index, filename);
+						if (result<0) {
+							return false;
+						}
+						TCHAR szBuffer[MAX_PATH];
+						wmemset(szBuffer,0,MAX_PATH);
+						wcscat_s(szBuffer,MAX_PATH,L"\\pf ");
+						wcscat_s(szBuffer,MAX_PATH,filename.c_str());
+						wcscat_s(szBuffer,MAX_PATH,szCrLf);
+						WriteFileUtf8( &file, szBuffer);
+					}
 				}
-				TCHAR szBuffer[MAX_PATH];
-				wmemset(szBuffer,0,MAX_PATH);
-				wcscat_s(szBuffer,MAX_PATH,L"\\pf ");
-				wcscat_s(szBuffer,MAX_PATH,filename.c_str());
-				wcscat_s(szBuffer,MAX_PATH,szCrLf);
-				WriteFileUtf8( &file, szBuffer);
-			}
 
-			index = FindNearestPhraseIndex(pl2,dwStart,dwStop);
-			result = ComposePhraseSegmentFilename( MUSIC_PL2, pl2, index, phraseConvention, szPath, filename);
-			if (result==0) {
-				result = ExportPhraseSegment( count, pl2, index, filename);
-				if (result<0) {
-					return false;
+				TRACE("--searching for PL2\n");
+				index = FindNearestPhraseIndex(pl2,dwStart,dwStop);
+				if (index>=0) {
+					TRACE("--exporting PL2\n");
+					int result = ComposePhraseSegmentFilename( MUSIC_PL2, pl2, index, phraseConvention, szPath, filename);
+					if (result==0) {
+						int result = ExportPhraseSegment( count, pl2, index, filename);
+						if (result<0) {
+							return false;
+						}
+						TCHAR szBuffer[MAX_PATH];
+						wmemset(szBuffer,0,MAX_PATH);
+						wcscat_s(szBuffer,MAX_PATH,L"\\pf ");
+						wcscat_s(szBuffer,MAX_PATH,filename.c_str());
+						wcscat_s(szBuffer,MAX_PATH,szCrLf);
+						WriteFileUtf8( &file, szBuffer);
+					}
 				}
-				TCHAR szBuffer[MAX_PATH];
-				wmemset(szBuffer,0,MAX_PATH);
-				wcscat_s(szBuffer,MAX_PATH,L"\\pf ");
-				wcscat_s(szBuffer,MAX_PATH,filename.c_str());
-				wcscat_s(szBuffer,MAX_PATH,szCrLf);
-				WriteFileUtf8( &file, szBuffer);
 			}
-
-
-
 		}
 
 		WriteFileUtf8(&file, szCrLf);
@@ -7792,6 +7780,7 @@ bool CSaDoc::TryExportSegmentsBy( CExportFWData data, Annotations master, CFile 
 
 CSaString CSaDoc::BuildRecord(Annotations target, DWORD dwStart, DWORD dwStop) {
 
+	LPCTSTR szCrLf = L"\r\n";
 	CSaString szTag = GetTag(target);
 	CSegment * pSegment = GetSegment(target);
 	CSaString szText = pSegment->GetContainedText(dwStart, dwStop);
@@ -7807,38 +7796,26 @@ CSaString CSaDoc::BuildRecord(Annotations target, DWORD dwStart, DWORD dwStop) {
 	return szTag + L" " + szText + szCrLf;
 }
 
-CSaString CSaDoc::BuildPhrase( Annotations target, DWORD dwStart, DWORD dwStop) {
-
-	CSaString szTag = GetTag(target);
-	CSegment * pSegment = GetSegment(GetIndex(target));
-	CSaString szText =  pSegment->GetOverlappingText(dwStart, dwStop);
-	szText = szText.Trim();
-	if (szText.GetLength() == 0) {
-		return L"";
-	}
-	return szTag + L" " + szText + szCrLf;
-}
-
-BOOL CSaDoc::GetFlag( Annotations val, CExportFWData data) {
+BOOL CSaDoc::GetFlag( Annotations val, CDlgExportFW & dlg) {
 	switch(val) {
 	case PHONETIC:
-		return data.bAllAnnotations|data.bPhonetic;
+		return dlg.bPhonetic;
 	case PHONEMIC:
-		return data.bAllAnnotations|data.bPhonemic;
+		return dlg.bPhonemic;
 	case ORTHO:
-		return data.bAllAnnotations|data.bOrtho;
+		return dlg.bOrtho;
 	case GLOSS:
-		return data.bAllAnnotations|data.bGloss;
+		return dlg.bGloss;
 	case REFERENCE:
-		return data.bAllAnnotations|data.bReference;
+		return dlg.bReference;
 	case MUSIC_PL1:
-		return data.bAllAnnotations|data.bPhrase;
+		return dlg.bPhrase;
 	case MUSIC_PL2:
-		return data.bAllAnnotations|data.bPhrase;
+		return dlg.bPhrase;
 	case MUSIC_PL3:
-		return data.bAllAnnotations|data.bPhrase;
+		return dlg.bPhrase;
 	case MUSIC_PL4:
-		return data.bAllAnnotations|data.bPhrase;
+		return dlg.bPhrase;
 	}
 	return false;
 }
@@ -7921,3 +7898,20 @@ Annotations CSaDoc::GetAnnotation(int val) {
 	return PHONETIC;
 }
 
+void CSaDoc::WriteFileUtf8(CFile * pFile, const CSaString szString) {
+
+	std::string szUtf8 = szString.utf8();
+	pFile->Write(szUtf8.c_str(), szUtf8.size());
+}
+
+bool CSaDoc::HasSegmentData( Annotations val) {
+	return (m_apSegments[val]->GetOffsetSize()>0)?true:false;
+}
+
+const CSaString & CSaDoc::GetRawDataWrk(int nIndex) const {
+	return m_szRawDataWrk[nIndex];
+}
+
+void CSaDoc::SetMultiChannelFlag(bool bMultiChannel) { 
+	m_bMultiChannel = bMultiChannel;
+}

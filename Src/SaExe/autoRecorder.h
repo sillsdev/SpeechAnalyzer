@@ -19,6 +19,7 @@
 #include "sa_wave.h"
 #include "dlgaudio.h"
 #include "playerrecorder.h"
+#include "AlignInfo.h"
 
 //###########################################################################
 // CDlgAutoRecorder dialog

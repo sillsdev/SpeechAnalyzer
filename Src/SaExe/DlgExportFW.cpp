@@ -1,35 +1,30 @@
 /////////////////////////////////////////////////////////////////////////////
 // DlgExportFW.cpp:
 // Implementation of the CDlgExportFW class.
-// Author: Steve MacLean
-// copyright 1999 JAARS Inc. SIL
-//
-// Revision History
-// 1.5Test8.3
-//         SDM Original version
-// 1.5Test8.5
-//         SDM Changed Table headings to use Initial Uppercase ("Emic" & "Etic")
-// 1.5Test10.7
-//         SDM Changed Import to not pad extra phonetic with spaces
-// 1.5Test11.0
-//         SDM replaced GetOffset() + GetDuration() with CSegment::GetStop()
-//         SDM fixed bug in export which crashed if phonetic segment empty
-//         SDM changed export to export AutoPitch (Grappl)
-// 1.5Test11.3
-//         SDM changed CSegment::AdjustPositionAll to CSegment::Adjust
-//
-//    07/27/2000
-//         DDO Changed so these dialogs display before the user is asked
-//             what file to export. Therefore, I had to move the get filename
-//             dialog call into this module instead of doing it in the view
-//             class when the user picks one of the export menu items.
+// Author: Kent Gorham
+// copyright 2013 JAARS Inc. SIL
 //
 /////////////////////////////////////////////////////////////////////////////
-
 #include "stdafx.h"
 #include "DlgExportFW.h"
-#include "Process\sa_proc.h"
 #include "sa_segm.h"
+#include "sa_wbch.h"
+#include "sa.h"
+#include "sa_doc.h"
+#include "sa_view.h"
+#include "sa_graph.h"
+#include "mainfrm.h"
+#include "doclist.h"
+#include "result.h"
+#include <math.h>
+#include "TranscriptionDataSettings.h"
+#include "DlgImport.h"
+#include "GlossSegment.h"
+#include "PhoneticSegment.h"
+#include "FileUtils.h"
+#include "SplitFileUtils.h"
+#include "resource.h"
+#include "Process\sa_proc.h"
 #include "Process\sa_p_lou.h"
 #include "Process\sa_p_gra.h"
 #include "Process\sa_p_pit.h"
@@ -40,81 +35,20 @@
 #include "Process\sa_p_fra.h"
 #include "Process\sa_p_spu.h"
 #include "Process\sa_p_spg.h"
+#include "Process\formanttracker.h"
 #include "dsp\formants.h"
 #include "dsp\ztransform.h"
-#include "Process\formanttracker.h"
 #include "dsp\mathx.h"
-
-#include "sa_wbch.h"
-#include "sa.h"
-#include "sa_doc.h"
-#include "sa_view.h"
-#include "sa_graph.h"
-#include "mainfrm.h"
 #include "settings\obstream.h"
-#include "doclist.h"
+
 using std::ifstream;
 using std::ios;
 using std::streampos;
-
-#include "exportbasicdialog.h"
-#include "result.h"
-#include <math.h>
-#include "TranscriptionDataSettings.h"
-#include "DlgImport.h"
-#include "GlossSegment.h"
-#include "PhoneticSegment.h"
-#include "FileUtils.h"
-#include "SplitFileUtils.h"
-#include "resource.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE
 static char BASED_CODE THIS_FILE[] = __FILE__;
 #endif
-
-CSaString szCrLf = "\r\n";
-
-void WriteFileUtf8(CFile * pFile, const CSaString szString) {
-
-    std::string szUtf8 = szString.utf8();
-    pFile->Write(szUtf8.c_str(), szUtf8.size());
-}
-
-CExportFWData::CExportFWData( LPCTSTR szDocTitle) {
-
-	bAllAnnotations = TRUE;
-	bGloss = TRUE;
-	bOrtho = TRUE;
-	bPhonemic = TRUE;
-	bPhonetic = TRUE;
-	bPOS = FALSE;
-	bReference = TRUE;
-	bPhrase = FALSE;
-	CExportFWData::szDocTitle = szDocTitle;
-}
-
-/**
-* returns true if IPAHelp seems to be installed
-*/
-CSaString GetFieldWorksProjectDirectory() {
-
-    // retrieve IPA Help location from registry
-    TCHAR szPathBuf[_MAX_PATH + 1];
-    HKEY hKey = NULL;
-    DWORD dwBufLen = MAX_PATH + 1;
-
-    if (RegOpenKeyEx(HKEY_LOCAL_MACHINE, _T("Software\\SIL\\FieldWorks\\7.0"), 0, KEY_QUERY_VALUE, &hKey)) {
-        return L"";
-    }
-    long nError = RegQueryValueEx(hKey, _T("ProjectsDir"), NULL, NULL, (LPBYTE) szPathBuf, &dwBufLen);
-    RegCloseKey(hKey);
-    if ((nError) || (!wcslen(szPathBuf))) {
-        return L"";
-    }
-
-    return CSaString(szPathBuf);
-}
 
 /////////////////////////////////////////////////////////////////////////////
 // CDlgExportFW dialog
@@ -123,43 +57,55 @@ BEGIN_MESSAGE_MAP(CDlgExportFW, CDialog)
     ON_BN_CLICKED(IDC_EXTAB_ANNOTATIONS, OnAllAnnotations)
     ON_BN_CLICKED(IDC_EX_SFM_INTERLINEAR, OnClickedExSfmInterlinear)
     ON_BN_CLICKED(IDC_EX_SFM_MULTIRECORD, OnClickedExSfmMultirecord)
-    ON_COMMAND(IDHELP, OnHelpExportBasic)
     ON_BN_CLICKED(IDC_BROWSE_OTHER, OnClickedBrowseOther)
-    ON_COMMAND(IDC_RADIO_FIELDWORKS, OnRadioFieldworks)
-    ON_COMMAND(IDC_RADIO_OTHER, OnRadioOther)
-    ON_CBN_SELCHANGE(IDC_COMBO_FIELDWORKS_PROJECT, &CDlgExportFW::OnSelchangeComboFieldworksProject)
-    ON_CBN_KILLFOCUS(IDC_COMBO_FIELDWORKS_PROJECT, &CDlgExportFW::OnKillfocusComboFieldworksProject)
+    ON_CBN_SELCHANGE(IDC_COMBO_FIELDWORKS_PROJECT, OnSelchangeComboFieldworksProject)
+    ON_CBN_KILLFOCUS(IDC_COMBO_FIELDWORKS_PROJECT, OnKillfocusComboFieldworksProject)
+	ON_COMMAND(IDHELP, OnHelpExportBasic)
+	ON_COMMAND(IDC_RADIO_FIELDWORKS, OnRadioFieldworks)
+	ON_COMMAND(IDC_RADIO_OTHER, OnRadioOther)
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
 // CExportSFM message handlers
 
-CDlgExportFW::CDlgExportFW(const CSaString & szDocTitle, CWnd * pParent) : 
-CDialog(CDlgExportFW::IDD, pParent),
-data(szDocTitle) {
+CDlgExportFW::CDlgExportFW( LPCTSTR docTitle,
+							BOOL gloss,
+							BOOL ortho,
+							BOOL phonemic,
+							BOOL phonetic,
+							BOOL pos,
+							BOOL reference,
+							BOOL phrase,
+							CWnd* pParent) : 
+CDialog(CDlgExportFW::IDD, pParent) {
+
+	bGloss = bGlossDflt = gloss;
+	bOrtho = bOrthoDflt = ortho;
+	bPhonemic = bPhonemicDflt = phonemic;
+	bPhonetic = bPhoneticDflt = phonetic;
+	bPOS = bPOSDflt = pos;
+	bReference = bReferenceDflt = reference;
+	bPhrase = bPhraseDflt = phrase;
+	szDocTitle = docTitle;
 }
 
 BOOL CDlgExportFW::OnInitDialog() {
 
     CDialog::OnInitDialog();
 
-    OnAllAnnotations();
-
-    m_EditFieldWorksFolder.SetWindowTextW(GetFieldWorksProjectDirectory());
-
+    ctlEditFieldWorksFolder.SetWindowTextW(GetFieldWorksProjectDirectory());
     SetCheck(IDC_RADIO_FIELDWORKS, TRUE);
-
-    OnRadioFieldworks();
-
-    CenterWindow();
-
-    UpdateData(FALSE);
-
-	UpdateButtonState();
-
+	SetCheck(IDC_EXTAB_ANNOTATIONS, TRUE);
 	CString tags;
 	tags.LoadString(IDS_SFM_TAGS);
-	m_StaticTags.SetWindowTextW(tags);
+	ctlStaticTags.SetWindowTextW(tags);
+
+    OnRadioFieldworks();
+	OnAllAnnotations();
+    CenterWindow();
+	UpdateButtonState();
+
+	UpdateData(FALSE);
 
     return TRUE;  // return TRUE  unless you set the focus to a control
 }
@@ -167,31 +113,30 @@ BOOL CDlgExportFW::OnInitDialog() {
 void CDlgExportFW::DoDataExchange(CDataExchange * pDX) {
 
 	CDialog::DoDataExchange(pDX);
-	DDX_Check(pDX, IDC_EXTAB_ANNOTATIONS, data.bAllAnnotations);
-	DDX_Check(pDX, IDC_EXTAB_GLOSS, data.bGloss);
-	DDX_Check(pDX, IDC_EXTAB_ORTHO, data.bOrtho);
-	DDX_Check(pDX, IDC_EXTAB_PHONEMIC, data.bPhonemic);
-	DDX_Check(pDX, IDC_EXTAB_PHONETIC, data.bPhonetic);
-	DDX_Check(pDX, IDC_EXTAB_POS, data.bPOS);
-	DDX_Check(pDX, IDC_EXTAB_REFERENCE, data.bReference);
-	DDX_Check(pDX, IDC_EXTAB_PHRASE, data.bPhrase);
-	DDX_Control(pDX, IDC_BROWSE_OTHER, m_BrowseOther);
-	DDX_Control(pDX, IDC_EDIT_FIELDWORKS_FOLDER, m_EditFieldWorksFolder);
-	DDX_Control(pDX, IDC_EDIT_OTHER_FOLDER, m_EditOtherFolder);
-	DDX_Control(pDX, IDC_COMBO_FIELDWORKS_PROJECT, m_ComboFieldWorksProject);
-	DDX_Control(pDX, IDC_STATIC_FIELDWORKS_PROJECT, m_StaticFieldWorksProject);
-	DDX_Control(pDX, IDC_RADIO_FIELDWORKS, m_RadioFieldWorks);
-	DDX_Control(pDX, IDC_RADIO_OTHER, m_RadioOther);
-	DDX_Control(pDX, IDOK, m_ButtonOK);
-	DDX_Control(pDX, IDC_STATIC_TAGS, m_StaticTags);
+	DDX_Check(pDX, IDC_EXTAB_GLOSS, bGloss);
+	DDX_Check(pDX, IDC_EXTAB_ORTHO, bOrtho);
+	DDX_Check(pDX, IDC_EXTAB_PHONEMIC, bPhonemic);
+	DDX_Check(pDX, IDC_EXTAB_PHONETIC, bPhonetic);
+	DDX_Check(pDX, IDC_EXTAB_POS, bPOS);
+	DDX_Check(pDX, IDC_EXTAB_REFERENCE, bReference);
+	DDX_Check(pDX, IDC_EXTAB_PHRASE, bPhrase);
+	DDX_Control(pDX, IDC_BROWSE_OTHER, ctlButtonBrowseOther);
+	DDX_Control(pDX, IDC_EDIT_FIELDWORKS_FOLDER, ctlEditFieldWorksFolder);
+	DDX_Control(pDX, IDC_EDIT_OTHER_FOLDER, ctlEditOtherFolder);
+	DDX_Control(pDX, IDC_COMBO_FIELDWORKS_PROJECT, ctlComboFieldWorksProject);
+	DDX_Control(pDX, IDC_STATIC_FIELDWORKS_PROJECT, ctlStaticFieldWorksProject);
+	DDX_Control(pDX, IDC_RADIO_FIELDWORKS, ctlRadioFieldWorks);
+	DDX_Control(pDX, IDC_RADIO_OTHER, ctlRadioOther);
+	DDX_Control(pDX, IDOK, ctlButtonOK);
+	DDX_Control(pDX, IDC_STATIC_TAGS, ctlStaticTags);
 
 	if (!pDX->m_bSaveAndValidate) {
 
-		m_ComboFieldWorksProject.ResetContent();
+		ctlComboFieldWorksProject.ResetContent();
 
 		TCHAR szPath[MAX_PATH];
 		memset(szPath, 0, sizeof(szPath));
-		m_EditFieldWorksFolder.GetWindowTextW(szPath, MAX_PATH);
+		ctlEditFieldWorksFolder.GetWindowTextW(szPath, MAX_PATH);
 
 		CString path = szPath;
 		path.Append(L"\\");
@@ -209,19 +154,20 @@ void CDlgExportFW::DoDataExchange(CDataExchange * pDX) {
 				continue;
 			}
 			TRACE(L"Found %s\n", finder.GetFileName());
-			m_ComboFieldWorksProject.AddString((LPCTSTR) finder.GetFileName());
+			ctlComboFieldWorksProject.AddString((LPCTSTR) finder.GetFileName());
 		}
 	} else {
 		TCHAR szBuffer[MAX_PATH];
 		GetCurrentPath(szBuffer,MAX_PATH);
-		data.szPath = szBuffer;
+		szPath = szBuffer;
 	}
 }
 
 void CDlgExportFW::OnAllAnnotations() {
 
     UpdateData(TRUE);
-    BOOL bEnable = !data.bAllAnnotations;
+	bool checked = ::IsDlgButtonChecked(m_hWnd,IDC_EXTAB_ANNOTATIONS)?true:false;
+    BOOL bEnable = !checked;
     SetEnable(IDC_EXTAB_PHONETIC, bEnable);
     SetEnable(IDC_EXTAB_PHONEMIC, bEnable);
     SetEnable(IDC_EXTAB_ORTHO, bEnable);
@@ -229,6 +175,17 @@ void CDlgExportFW::OnAllAnnotations() {
     SetEnable(IDC_EXTAB_REFERENCE, bEnable);
     SetEnable(IDC_EXTAB_POS, bEnable);
     SetEnable(IDC_EXTAB_PHRASE, bEnable);
+	if (checked) {
+		bGloss = bGlossDflt;
+		bOrtho = bOrthoDflt;
+		bPhonemic = bPhonemicDflt;
+		bPhonetic = bPhoneticDflt;
+		bPOS = bPOSDflt;
+		bReference = bReferenceDflt;
+		bPhrase = bPhraseDflt;
+	} else {
+		bReference = bPhonetic = bPhonemic = bOrtho = bGloss = bPOS = bPhrase = FALSE;
+	}
 	UpdateData(FALSE);
 }
 
@@ -299,7 +256,7 @@ void CDlgExportFW::OnClickedBrowseOther() {
     TCHAR szFolderLocation[MAX_PATH];
     memset(szFolderLocation, 0, sizeof(szFolderLocation));
 
-    m_EditOtherFolder.GetWindowTextW(szFolderLocation, MAX_PATH);
+    ctlEditOtherFolder.GetWindowTextW(szFolderLocation, MAX_PATH);
 
     BROWSEINFO bi = { 0 };
     bi.hwndOwner = this->m_hWnd;
@@ -327,7 +284,7 @@ void CDlgExportFW::OnClickedBrowseOther() {
         if (temp[temp.length() - 1] != '\\') {
             temp.append(L"\\");
         }
-        m_EditOtherFolder.SetWindowText(temp.c_str());
+        ctlEditOtherFolder.SetWindowText(temp.c_str());
     }
 
     CoUninitialize();
@@ -336,22 +293,22 @@ void CDlgExportFW::OnClickedBrowseOther() {
 
 void CDlgExportFW::OnRadioFieldworks() {
     
-	m_EditFieldWorksFolder.EnableWindow(FALSE);
-    m_ComboFieldWorksProject.EnableWindow(TRUE);
-    m_StaticFieldWorksProject.EnableWindow(TRUE);
-    m_EditOtherFolder.EnableWindow(FALSE);
-	m_BrowseOther.EnableWindow(FALSE);
+	ctlEditFieldWorksFolder.EnableWindow(FALSE);
+    ctlComboFieldWorksProject.EnableWindow(TRUE);
+    ctlStaticFieldWorksProject.EnableWindow(TRUE);
+    ctlEditOtherFolder.EnableWindow(FALSE);
+	ctlButtonBrowseOther.EnableWindow(FALSE);
 	UpdateButtonState();
 }
 
 
 void CDlgExportFW::OnRadioOther() {
 
-    m_EditFieldWorksFolder.EnableWindow(FALSE);
-    m_ComboFieldWorksProject.EnableWindow(FALSE);
-    m_StaticFieldWorksProject.EnableWindow(FALSE);
-    m_EditOtherFolder.EnableWindow(TRUE);
-	m_BrowseOther.EnableWindow(TRUE);
+    ctlEditFieldWorksFolder.EnableWindow(FALSE);
+    ctlComboFieldWorksProject.EnableWindow(FALSE);
+    ctlStaticFieldWorksProject.EnableWindow(FALSE);
+    ctlEditOtherFolder.EnableWindow(TRUE);
+	ctlButtonBrowseOther.EnableWindow(TRUE);
 	UpdateButtonState();
 }
 
@@ -359,21 +316,21 @@ void CDlgExportFW::GetCurrentPath( LPTSTR szBuffer, size_t size) {
 
 	wmemset(szBuffer,0,MAX_PATH);
 
-    if (m_RadioFieldWorks.GetCheck() == BST_CHECKED) {
+    if (ctlRadioFieldWorks.GetCheck() == BST_CHECKED) {
 		TCHAR szTemp[MAX_PATH];
 		wmemset(szTemp,0,MAX_PATH);
-        m_EditFieldWorksFolder.GetWindowTextW(szTemp, MAX_PATH);
+        ctlEditFieldWorksFolder.GetWindowTextW(szTemp, MAX_PATH);
 		wcscat_s(szBuffer,size,szTemp);
 		AppendDirSep(szBuffer,size);
-        int sel = m_ComboFieldWorksProject.GetCurSel();
-        m_ComboFieldWorksProject.GetLBText(sel, szTemp);
+        int sel = ctlComboFieldWorksProject.GetCurSel();
+        ctlComboFieldWorksProject.GetLBText(sel, szTemp);
 		wcscat_s(szBuffer,size,szTemp);
 		AppendDirSep(szBuffer,MAX_PATH);
 		return;
     }
 
 	// at this point we are assuming they selected 'other'
-    m_EditOtherFolder.GetWindowTextW(szBuffer, MAX_PATH);
+    ctlEditOtherFolder.GetWindowTextW(szBuffer, MAX_PATH);
 	AppendDirSep(szBuffer,MAX_PATH);
 }
 
@@ -394,7 +351,36 @@ void CDlgExportFW::UpdateButtonState() {
 	GetCurrentPath(szBuffer,MAX_PATH);
 
 	bool valid = FolderExists(szBuffer);
-	bool selected = ((m_RadioOther.GetCheck()==BST_CHECKED)||(m_ComboFieldWorksProject.GetCurSel()!=-1));
+	bool selected = ((ctlRadioOther.GetCheck()==BST_CHECKED)||(ctlComboFieldWorksProject.GetCurSel()!=-1));
     
-	m_ButtonOK.EnableWindow(((valid)&&(selected))?TRUE:FALSE);
+	ctlButtonOK.EnableWindow(((valid)&&(selected))?TRUE:FALSE);
 }
+
+void CDlgExportFW::WriteFileUtf8(CFile * pFile, const CSaString szString) {
+
+	std::string szUtf8 = szString.utf8();
+	pFile->Write(szUtf8.c_str(), szUtf8.size());
+}
+
+/**
+* return the registered fieldworks project directory
+*/
+CSaString CDlgExportFW::GetFieldWorksProjectDirectory() {
+
+	// retrieve IPA Help location from registry
+	TCHAR szPathBuf[_MAX_PATH + 1];
+	HKEY hKey = NULL;
+	DWORD dwBufLen = MAX_PATH + 1;
+
+	if (RegOpenKeyEx(HKEY_LOCAL_MACHINE, _T("Software\\SIL\\FieldWorks\\7.0"), 0, KEY_QUERY_VALUE, &hKey)) {
+		return L"";
+	}
+	long nError = RegQueryValueEx(hKey, _T("ProjectsDir"), NULL, NULL, (LPBYTE) szPathBuf, &dwBufLen);
+	RegCloseKey(hKey);
+	if ((nError) || (!wcslen(szPathBuf))) {
+		return L"";
+	}
+
+	return CSaString(szPathBuf);
+}
+

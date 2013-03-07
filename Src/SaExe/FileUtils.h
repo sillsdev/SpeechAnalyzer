@@ -1,3 +1,6 @@
+#ifndef FILEUTILS_H
+#define FILEUTILS_H
+
 #define DIRECTORY_SEPARATOR '\\'
 
 #include <string>
@@ -9,3 +12,5 @@ extern bool CreateFolder( LPCTSTR path);
 extern void AppendDirSep( LPTSTR path, size_t size);
 extern void AppendDirSep( wstring & ref);
 extern int GetSaveAsFilename( LPCTSTR title, LPCTSTR filter, LPCTSTR extension, LPTSTR path, wstring & result);
+
+#endif

@@ -73,7 +73,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="mfc90ud.lib mfcs90ud.lib atlsd.lib msvcrtd.lib msvcprtd.lib comdlg32.lib user32.lib gdi32.lib kernel32.lib advapi32.lib oldnames.lib winmm.lib version.lib imm32.lib ole32.lib oleaut32.lib uuid.lib comsuppw.lib HtmlHelp\htmlhelp.lib shell32.lib msacm32.lib"
+				AdditionalDependencies="mfc90ud.lib mfcs90ud.lib atlsd.lib msvcrtd.lib msvcprtd.lib comdlg32.lib user32.lib gdi32.lib kernel32.lib advapi32.lib oldnames.lib winmm.lib version.lib imm32.lib ole32.lib oleaut32.lib uuid.lib comsuppw.lib htmlhelp.lib shell32.lib msacm32.lib"
 				OutputFile=".\..\..\Output\Debug\SA.exe"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
@@ -169,7 +169,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="mfc90u.lib mfcs90u.lib msvcrt.lib msvcprt.lib comdlg32.lib user32.lib gdi32.lib kernel32.lib advapi32.lib oldnames.lib winmm.lib version.lib imm32.lib ole32.lib oleaut32.lib uuid.lib comsuppw.lib HtmlHelp\htmlhelp.lib shell32.lib msacm32.lib"
+				AdditionalDependencies="mfc90u.lib mfcs90u.lib msvcrt.lib msvcprt.lib comdlg32.lib user32.lib gdi32.lib kernel32.lib advapi32.lib oldnames.lib winmm.lib version.lib imm32.lib ole32.lib oleaut32.lib uuid.lib comsuppw.lib shell32.lib msacm32.lib htmlhelp.lib"
 				OutputFile="..\..\Output\Release\SA.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
@@ -213,6 +213,10 @@
 		<Filter
 			Name="Source Files"
 			>
+			<File
+				RelativePath=".\AlignInfo.cpp"
+				>
+			</File>
 			<File
 				RelativePath=".\ArchiveTransfer.cpp"
 				>
@@ -620,10 +624,6 @@
 						PreprocessorDefinitions=""
 					/>
 				</FileConfiguration>
-			</File>
-			<File
-				RelativePath=".\ExportBasicDialog.cpp"
-				>
 			</File>
 			<File
 				RelativePath="FileInformation.cpp"
@@ -3477,6 +3477,10 @@
 			Name="Header Files"
 			>
 			<File
+				RelativePath=".\AlignInfo.h"
+				>
+			</File>
+			<File
 				RelativePath=".\AppDefs.h"
 				>
 			</File>
@@ -3594,10 +3598,6 @@
 			</File>
 			<File
 				RelativePath=".\DocList.h"
-				>
-			</File>
-			<File
-				RelativePath=".\ExportBasicDialog.h"
 				>
 			</File>
 			<File

@@ -6,11 +6,27 @@
 
 class CDlgExportTable : public CDialog
 {
-	// Construction
 public:
 	CDlgExportTable(const CSaString& szDocTitle, CWnd* pParent = NULL); // standard constructor
 
-	// Dialog Data
+protected:
+	virtual void OnOK();
+	virtual BOOL OnInitDialog();
+	void SetEnable(int nItem, BOOL bEnable);
+	void SetVisible(int nItem, BOOL bVisible, BOOL bEnable = TRUE);
+	virtual void DoDataExchange(CDataExchange* pDX);  // DDX/DDV support
+	void WriteFileUtf8( CFile *pFile, const CSaString szString);
+
+	afx_msg void OnAllAnnotations();
+	afx_msg void OnAllFormants();
+	afx_msg void OnAllCalculations();
+	afx_msg void OnUpdateIntervalTime();
+	afx_msg void OnSample();
+	afx_msg void OnPhonetic();
+	afx_msg void OnHelpExportTable();
+	
+	CSaString m_szFileName;
+	CSaString m_szDocTitle;
 	enum { IDD = IDD_EXPORT_TABLE };
 	BOOL  m_bAnnotations;
 	BOOL  m_bCalculations;
@@ -38,28 +54,7 @@ public:
 	BOOL  m_bPhonetic2;
 	int   m_nRegion;
 	BOOL  m_bMelogram;
-private:
-	CSaString m_szFileName;
-	CSaString m_szDocTitle;
 
-	// Implementation
-public:
-	void OnHelpExportTable();
-
-protected:
-	void SetEnable(int nItem, BOOL bEnable);
-	void SetVisible(int nItem, BOOL bVisible, BOOL bEnable = TRUE);
-	virtual void DoDataExchange(CDataExchange* pDX);  // DDX/DDV support
-
-	// Generated message map functions
-	afx_msg void OnAllAnnotations();
-	afx_msg void OnAllFormants();
-	afx_msg void OnAllCalculations();
-	virtual void OnOK();
-	virtual BOOL OnInitDialog();
-	afx_msg void OnUpdateIntervalTime();
-	afx_msg void OnSample();
-	afx_msg void OnPhonetic();
 	DECLARE_MESSAGE_MAP()
 };
 

@@ -234,9 +234,6 @@
 #define IDD_EXPORT_TABLE                1034
 #define IDC_CALC_UPPERBOUNDEDIT         1034
 #define IDC_PITCH_MINFREQSCROLL         1035
-#define IDS_ERROR_WRITEPHONEMIC         1035
-#define IDD_EXPORT_SFM                  1035
-#define IDC_CALC_UPPERBOUNDSCROLL       1035
 #define IDS_ERROR_PARSE                 1036
 #define IDD_WAVEFORM_GENERATOR          1036
 #define IDC_CALC_LOWERBOUNDEDIT         1036
@@ -335,6 +332,10 @@
 #define IDC_TEMPTEMPLATE                1138
 #define ID_SHOWSTARTUPDLG               1139
 #define ID_VIEW_STATUSBAR               1144
+#define IDS_ERROR_WRITEPHONEMIC         1145
+#define IDD_EXPORT_SFM                  1146
+#define IDC_CALC_UPPERBOUNDSCROLL       1147
+#define IDD_EXPORT_XML                  1148
 #define IDC_YGRIDTYPE                   1156
 #define IDC_XGRIDTYPE                   1157
 #define IDC_XGRID                       1158
@@ -1651,8 +1652,7 @@
 #define IDS_ENABLE_PA                   61302
 #define IDS_AUTO_REF_MAIN_3             61303
 #define IDS_AUTO_REF_TAG                61304
-#define IDS_AUTO_REF_MAIN_4             61305
-#define IDS_SFM_TAGS                    61305
+#define IDS_SFM_TAGS                    61306
 
 // Next default values for new objects
 // 

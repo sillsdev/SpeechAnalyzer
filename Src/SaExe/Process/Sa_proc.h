@@ -125,7 +125,7 @@ public:
 	void Dump(const char * tag);
 
 protected:
-	virtual long GetStatus() const { return m_nStatus;}
+	virtual long GetStatus() const;
 	void SetStatus(long nStatus);
 	void SetStatusFlag(long nStatus, BOOL bValue = TRUE) { SetStatus(bValue ? GetStatus() | nStatus : GetStatus() & ~nStatus);}
 	virtual bool StartProcess(void* pCaller, int nProcessID, DWORD dwBufferSize);      // start processing data

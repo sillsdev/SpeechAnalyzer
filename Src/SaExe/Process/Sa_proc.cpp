@@ -927,3 +927,7 @@ BOOL CAreaDataProcess::SetArea(DWORD dwAreaPos, DWORD dwAreaLength)
 	return TRUE;
 }
 
+long CDataProcess::GetStatus() const { 
+	return m_nStatus;
+}
+

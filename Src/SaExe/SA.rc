@@ -26,7 +26,7 @@ LANGUAGE LANG_NEUTRAL, SUBLANG_NEUTRAL
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 3,1,0,37
+ FILEVERSION 3,1,0,38
  PRODUCTVERSION 1,0,0,1
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
@@ -44,7 +44,7 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "SIL International"
             VALUE "FileDescription", "SA"
-            VALUE "FileVersion", "v3.1.0.37"
+            VALUE "FileVersion", "v3.1.0.38"
             VALUE "InternalName", "SA"
             VALUE "LegalCopyright", "© 1996-2013 SIL International (MSEA)"
             VALUE "ProductName", "SA"
@@ -1627,7 +1627,7 @@ END
 
 IDD_EXPORT_SFM DIALOGEX 0, 0, 295, 202
 STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
-CAPTION "Export Speech Format"
+CAPTION "Export Standard Format"
 FONT 8, "MS Sans Serif", 0, 0, 0x0
 BEGIN
     CONTROL         "Audio File Name",IDC_EX_SFM_FILENAME,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,19,18,67,10
@@ -1674,6 +1674,56 @@ BEGIN
     CONTROL         "Quantization Size",IDC_EX_SFM_QUANTIZATION,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,104,162,71,10
     PUSHBUTTON      "&Help",IDHELP,241,184,38,14
     CONTROL         "Multi-Record",IDC_EX_SFM_MULTIRECORD,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,82,184,54,10
+END
+
+IDD_EXPORT_XML DIALOGEX 0, 0, 295, 202
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
+CAPTION "Export Extensible Format"
+FONT 8, "MS Sans Serif", 0, 0, 0x0
+BEGIN
+    CONTROL         "Audio File Name",IDC_EX_SFM_FILENAME,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,19,18,67,10
+    CONTROL         "All Transcriptions",IDC_EXTAB_ANNOTATIONS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,19,30,69,10
+    CONTROL         "Reference",IDC_EXTAB_REFERENCE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,27,42,49,10
+    CONTROL         "Phonetic",IDC_EXTAB_PHONETIC,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,27,54,44,10
+    CONTROL         "Tone",IDC_EXTAB_TONE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,27,66,33,10
+    CONTROL         "Phonemic",IDC_EXTAB_PHONEMIC,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,27,78,47,10
+    CONTROL         "Orthographic",IDC_EXTAB_ORTHO,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,27,90,57,10
+    CONTROL         "Gloss",IDC_EXTAB_GLOSS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,27,102,33,10
+    CONTROL         "Part of Speech",IDC_EXTAB_POS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,27,114,63,10
+    CONTROL         "Phrase Levels",IDC_EXTAB_PHRASE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,27,126,60,10
+    CONTROL         "Free Translation",IDC_EX_SFM_FREE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,19,138,66,10
+    CONTROL         "Number of Phones",IDC_EX_SFM_PHONES,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,19,150,71,10
+    CONTROL         "Number of Words",IDC_EX_SFM_WORDS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,19,162,68,10
+    CONTROL         "All File Information",IDC_EX_SFM_FILE_INFO,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,96,18,73,10
+    CONTROL         "Creation Time",IDC_EX_SFM_ORIGINAL_DATE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,104,30,59,10
+    CONTROL         "Last Edit",IDC_EX_SFM_LAST_DATE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,104,42,43,10
+    CONTROL         "Size",IDC_EX_SFM_FILE_SIZE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,104,54,29,10
+    CONTROL         "Original Format",IDC_EX_SFM_ORIGINAL_FORMAT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,104,66,63,10
+    CONTROL         "All Parameters",IDC_EX_SFM_RECORD_DATA,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,96,78,61,10
+    CONTROL         "Number of Samples",IDC_EX_SFM_NUMBER_OF_SAMPLES,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,104,90,77,10
+    CONTROL         "Length",IDC_EX_SFM_LENGTH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,104,102,38,10
+    CONTROL         "Sampling Frequency",IDC_EX_SFM_RATE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,104,114,80,10
+    CONTROL         "Bandwidth",IDC_EX_SFM_BANDWIDTH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,104,126,49,10
+    CONTROL         "High Pass Filtered",IDC_EX_SFM_HIGHPASS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,104,138,73,10
+    CONTROL         "Storage Format",IDC_EX_SFM_BITS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,104,150,64,10
+    CONTROL         "All Source",IDC_EX_SFM_ALL_SOURCE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,190,18,48,10
+    CONTROL         "Language",IDC_EX_SFM_LANGUAGE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,198,30,48,10
+    CONTROL         "Dialect",IDC_EX_SFM_DIALECT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,198,42,38,10
+    CONTROL         "Family",IDC_EX_SFM_FAMILY,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,198,54,35,10
+    CONTROL         "Ethnologue ID",IDC_EX_SFM_ETHNOLOGUE_ID,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,198,66,61,10
+    CONTROL         "Country",IDC_EX_SFM_COUNTRY,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,198,78,40,10
+    CONTROL         "Region",IDC_EX_SFM_REGION,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,198,90,39,10
+    CONTROL         "Speaker Name",IDC_EX_SFM_SPEAKER,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,198,102,63,10
+    CONTROL         "Gender",IDC_EX_SFM_GENDER,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,198,114,39,10
+    CONTROL         "Notebook Ref.",IDC_EX_SFM_NOTEBOOKREF,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,198,126,63,10
+    CONTROL         "Transcriber",IDC_EX_SFM_TRANSCRIBER,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,198,138,51,10
+    CONTROL         "Comments",IDC_EX_SFM_COMMENTS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,198,150,49,10
+    CONTROL         "Interlinearize",IDC_EX_SFM_INTERLINEAR,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,19,184,54,10
+    PUSHBUTTON      "Cancel",IDCANCEL,154,184,38,14
+    DEFPUSHBUTTON   "Export",IDOK,198,184,38,14
+    GROUPBOX        "Include",-1,10,5,269,173
+    CONTROL         "Quantization Size",IDC_EX_SFM_QUANTIZATION,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,104,162,71,10
+    PUSHBUTTON      "&Help",IDHELP,241,184,38,14
 END
 
 IDD_EXPORT_FW DIALOGEX 0, 0, 291, 301
@@ -2375,17 +2425,18 @@ BEGIN
 
     IDD_EXPORT_TABLE, DIALOG
     BEGIN
-        RIGHTMARGIN, 270
-        BOTTOMMARGIN, 146
     END
 
     IDD_EXPORT_SFM, DIALOG
     BEGIN
     END
 
+    IDD_EXPORT_XML, DIALOG
+    BEGIN
+    END
+
     IDD_EXPORT_FW, DIALOG
     BEGIN
-        RIGHTMARGIN, 290
     END
 
     IDD_OPTIONSVIEWPAGE, DIALOG
@@ -4167,7 +4218,7 @@ STRINGTABLE
 BEGIN
     IDR_MAINFRAME           "Speech Analyzer"
     IDR_SA_ANNTYPE          "\nSA\nSA Document\nWAV Files (*.wav)\n.wav\nannFileType\nANN File Type"
-    VS_VERSION              "Version 3.1.0.37"
+    VS_VERSION              "Version 3.1.0.38"
     VS_COPYRIGHT            "© 1996-2013 SIL International (MSEA).\nAll Rights Reserved."
     IDR_SA_WBTYPE           "\nWB\nSA Workbench\nWB Files (*.wb)\n.wb\nwbFileType\nWB File Type"
 END
@@ -4531,12 +4582,16 @@ BEGIN
     IDS_ERROR_SPECTROPALETTE 
                             "Failed creating color palette for spectrogram. The graph has been closed."
     IDS_ERROR_READPHONEMIC  "Failed reading phonemic chunk from file '%1'."
-    IDS_ERROR_WRITEPHONEMIC "Failed writing phonemic chunk into file '%1'."
     IDS_ERROR_PARSE         "Failed parsing wave data. The gloss transcription may be corrupted."
     IDS_ERROR_SEGMENT       "Failed segmenting wave data. The phonetic transcription may be corrupted."
     IDS_ERROR_READTONE      "Failed reading tone chunk from file '%1'."
     IDS_ERROR_STOREWAVEBLOCK 
                             "Failed storing the recorded data block into temporary file '%1'. Be sure, there is enough hard disk space to record."
+END
+
+STRINGTABLE
+BEGIN
+    IDS_ERROR_WRITEPHONEMIC "Failed writing phonemic chunk into file '%1'."
 END
 
 STRINGTABLE
@@ -5180,6 +5235,7 @@ BEGIN
     IDS_ENABLE_PA           "Enable Phonology Assistant to find Speech Analyzer?"
     IDS_AUTO_REF_MAIN_3     "2) If the file is suppose to be delimited, make sure there are an equal number of tabs or spaces in each row and that there are no missing fields within a row.\n"
     IDS_AUTO_REF_TAG        "Tag"
+    IDS_SFM_TAGS            "\n Standard Format Marker Mapping\n\n\t\\ref\t>\t\\rf\n\t\\ph\t>\t\\lx-ph\n\t\\pm\t>\t\\lx-pm\n\t\\or\t>\t\\lx-or\n\t\\gl\t>\t\\ge\n\t\\pos\t>\t\\ps\n\t\\wav\t>\t\\pf\n\t\\wav\t>\t\\tn\n\t\\ph\n\t\\phr1\t>\t\\pf\n\t\\phr2\t>\t\\tn\n"
 END
 
 STRINGTABLE
