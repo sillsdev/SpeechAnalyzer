@@ -3,17 +3,11 @@
 
 #include "IndependentSegment.h"
 
-//###########################################################################
-// CMusicPhraseSegment data processing
-
-class CMusicPhraseSegment : public CIndependentSegment
-{
-	// Operations
+class CMusicPhraseSegment : public CIndependentSegment {
 public:
 	CMusicPhraseSegment(int index, int master = -1);
 	virtual int CheckPosition(CSaDoc*,DWORD dwStart,DWORD dwStop, EMode nMode=MODE_AUTOMATIC,BOOL bOverlap=TRUE) const;
 
-	// Attributes
 private:
 	virtual CFontTable* NewFontTable() const;
 };

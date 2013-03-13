@@ -78,7 +78,7 @@
 #include "Process\sa_p_zcr.h"
 #include "dsp\ztransform.h"
 #include "Process\formanttracker.h"
-#include "sa_segm.h"
+#include "Segment.h"
 
 
 #include "math.h"

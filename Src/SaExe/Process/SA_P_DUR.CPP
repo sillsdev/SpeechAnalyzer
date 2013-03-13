@@ -9,7 +9,7 @@
 #include "stdafx.h"
 #include "sa_proc.h"
 #include "sa_p_dur.h"
-#include "sa_segm.h"
+#include "Segment.h"
 
 #include <limits.h>
 #include "isa_doc.h"

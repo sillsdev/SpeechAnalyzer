@@ -7,7 +7,7 @@
 #include "settings\obstream.h"
 #include "Sa_Doc.h"
 #include "CSaString.h"
-#include "Sa_segm.h"
+#include "Segment.h"
 #include "DlgImportSFM.h"
 
 static const char* psz_ImportEnd = "import";

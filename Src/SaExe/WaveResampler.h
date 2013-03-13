@@ -1,4 +1,5 @@
-#pragma once
+#ifndef WAVERESAMPLER_H
+#define WAVERESAMPLER_H
 
 #include <stdio.h>
 #include <tchar.h>
@@ -62,3 +63,4 @@ private:
 			   CProgressStatusBar * pStatusBar);
 };
 
+#endif

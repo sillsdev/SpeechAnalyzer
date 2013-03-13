@@ -1,7 +1,7 @@
 #ifndef INDEPENDENTSEGMENT_H
 #define INDEPENDENTSEGMENT_H
 
-#include "sa_segm.h"
+#include "Segment.h"
 #include "Sa_Doc.h"
 
 //###########################################################################

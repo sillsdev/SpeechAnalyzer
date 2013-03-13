@@ -41,7 +41,7 @@
 #include "Process\sa_p_fra.h"
 #include "sa_minic.h"
 #include "sa_graph.h"
-#include "sa_segm.h"
+#include "Segment.h"
 #include "dsp\mathx.h"
 
 #include "sa_doc.h"

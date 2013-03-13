@@ -2,23 +2,24 @@
 //
 
 #include "stdafx.h"
-#include "..\sa.h"
-#include "..\sa_doc.h"
-#include "Process\sa_proc.h"
-#include "..\sa_segm.h"
-#include "..\sa_view.h"
+#include "sa.h"
+#include "sa_doc.h"
+#include "Segment.h"
+#include "sa_view.h"
+#include "Segment.h"
+#include "DlgKlattAll.h"
+#include "FileUtils.h"
+#include "dlgvocaltract.h"
+#include "mainfrm.h"
+#include "MusicPhraseSegment.h"
+#include "PhoneticSegment.h"
 #include "Process\sa_p_gra.h"
 #include "Process\sa_p_spi.h"
 #include "Process\sa_p_poa.h"
 #include "Process\sa_p_fra.h"
-#include "DlgKlattAll.h"
-#include "dlgvocaltract.h"
-#include "dsp\AcousticTube.h"
 #include "Process\Butterworth.h"
-#include "..\mainfrm.h"
+#include "dsp\AcousticTube.h"
 #include <iterator>
-#include "..\MusicPhraseSegment.h"
-#include "..\PhoneticSegment.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -1779,10 +1780,8 @@ void CDlgVocalTract::OnSynthesize()
 
 	if (m_szSynthesizedFilename.IsEmpty())
 	{
-		TCHAR lpszTempPath[_MAX_PATH];
-		GetTempPath(_MAX_PATH, lpszTempPath);
 		// create temp filename for synthesized waveform
-		GetTempFileName(lpszTempPath, _T("lvt"), 0, m_szSynthesizedFilename.GetBuffer(_MAX_PATH));
+		GetTempFileName( _T("lvt"), m_szSynthesizedFilename.GetBuffer(_MAX_PATH), _MAX_PATH);
 		m_szSynthesizedFilename.ReleaseBuffer();
 	}
 
@@ -2308,9 +2307,10 @@ void CDlgVocalTract::LabelDocument(CSaDoc* pDoc)
 			DWORD dwStart = DWORD(elapsedTime*SR+0.5)*2;
 			double length = minLabelTime > cChars[i].m_duration/1000. ? minLabelTime : cChars[i].m_duration/1000.;
 			DWORD dwDuration = DWORD(length*SR+0.5)*2;
+
 			CSaString szIndex;
 			szIndex.Format(_T("%d"),i+1);
-			pIndexSeg->Insert(pIndexSeg->GetOffsetSize(), &szIndex, true, dwStart, dwDuration);
+			pIndexSeg->Insert( pIndexSeg->GetOffsetSize(), szIndex, true, dwStart, dwDuration);
 
 			labelTime = elapsedTime + minLabelTime;
 		}
@@ -2323,7 +2323,7 @@ void CDlgVocalTract::LabelDocument(CSaDoc* pDoc)
 
 			if (dwDuration) 
 			{
-				pCharSeg->Insert(pCharSeg->GetOffsetSize(), &szIPA, true, dwStart, dwDuration);
+				pCharSeg->Insert( pCharSeg->GetOffsetSize(), szIPA, true, dwStart, dwDuration);
 			}
 			szIPA = cChars[i].m_ipa;
 

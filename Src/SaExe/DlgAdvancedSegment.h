@@ -11,7 +11,8 @@
 //    SDM   Extract from sa_dlg.h
 //
 /////////////////////////////////////////////////////////////////////////////
-#pragma once
+#ifndef DLGADVANCEDPARSESEGMENT_H
+#define DLGADVANCEDPARSESEGMENT_H
 
 #include "sa_dlwnd.h"
 #include "resource.h"
@@ -70,3 +71,5 @@ public:
 
 	CSaDoc * m_pDoc;
 };
+
+#endif

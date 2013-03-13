@@ -137,16 +137,21 @@
   <ItemGroup>
     <ClCompile Include="AlignInfo.cpp" />
     <ClCompile Include="ArchiveTransfer.cpp" />
+    <ClCompile Include="ChildFrame.cpp" />
+    <ClCompile Include="ClipboardHelper.cpp" />
     <ClCompile Include="DependentSegment.cpp" />
     <ClCompile Include="DependentTextSegment.cpp" />
     <ClCompile Include="DlgAlignTranscriptionDataImportRefPage.cpp" />
     <ClCompile Include="DlgAlignTranscriptionDataTextPage.cpp" />
     <ClCompile Include="DlgExportFW.cpp" />
+    <ClCompile Include="DlgExportFWResult.cpp" />
     <ClCompile Include="DlgExportSFM.cpp" />
     <ClCompile Include="DlgExportTable.cpp" />
     <ClCompile Include="DlgExportXML.cpp" />
     <ClCompile Include="DlgImport.cpp" />
     <ClCompile Include="DlgImportSFMRef.cpp" />
+    <ClCompile Include="DlgWaveformGenerator.cpp" />
+    <ClCompile Include="ExportFWSettings.cpp" />
     <ClCompile Include="FileUtils.cpp" />
     <ClCompile Include="GlossSegment.cpp" />
     <ClCompile Include="Import.cpp" />
@@ -188,7 +193,7 @@
     <ClCompile Include="Process\SA_W_EQU.CPP" />
     <ClCompile Include="Process\SA_W_PAS.CPP" />
     <ClCompile Include="Process\SA_W_REV.CPP" />
-    <ClCompile Include="Dsp\Wavewarp.cpp" />
+    <ClCompile Include="Dsp\WaveWarp.cpp" />
     <ClCompile Include="Clip.cpp" />
     <ClCompile Include="Partiture.cpp" />
     <ClCompile Include="PickOver.cpp" />
@@ -269,7 +274,7 @@
     <ClCompile Include="SA_Edit.cpp" />
     <ClCompile Include="SA_Find.cpp" />
     <ClCompile Include="Sa_start.cpp" />
-    <ClCompile Include="saveAsOptions.cpp" />
+    <ClCompile Include="DlgSaveAsOptions.cpp" />
     <ClCompile Include="Targview.cpp" />
     <ClCompile Include="TextHelper.cpp" />
     <ClCompile Include="TextSegment.cpp" />
@@ -278,7 +283,6 @@
     <ClCompile Include="TranscriptionData.cpp" />
     <ClCompile Include="TranscriptionDataSettings.cpp" />
     <ClCompile Include="TranscriptionHelper.cpp" />
-    <ClCompile Include="waveformGenerator.cpp" />
     <ClCompile Include="ActiveX\FlexEditGrid.cpp" />
     <ClCompile Include="ActiveX\font.cpp" />
     <ClCompile Include="ActiveX\mshflexgrid.cpp" />
@@ -298,7 +302,7 @@
     <ClCompile Include="Sa_menu.cpp" />
     <ClCompile Include="Sa_minic.cpp" />
     <ClCompile Include="Sa_sbar.cpp" />
-    <ClCompile Include="Sa_segm.cpp" />
+    <ClCompile Include="Segment.cpp" />
     <ClCompile Include="SA_View.cpp" />
     <ClCompile Include="SA_View2.cpp" />
     <ClCompile Include="Sa_wave.cpp" />
@@ -313,6 +317,8 @@
     <ClCompile Include="TaskBar.cpp" />
     <ClCompile Include="Undoredo.cpp" />
     <ClCompile Include="UnicodeString.cpp" />
+    <ClCompile Include="WaveformGeneratorProcess.cpp" />
+    <ClCompile Include="WaveformGeneratorSettings.cpp" />
     <ClCompile Include="WaveResampler.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -387,19 +393,25 @@
     <ClInclude Include="AppDefs.h" />
     <ClInclude Include="ArchiveTransfer.h" />
     <ClInclude Include="autoRecorder.h" />
+    <ClInclude Include="ChildFrame.h" />
     <ClInclude Include="chrchart\ch_dlg.h" />
     <ClInclude Include="chrchart\ch_dlwnd.h" />
     <ClInclude Include="chrchart\ch_table.h" />
+    <ClInclude Include="ClipboardHelper.h" />
     <ClInclude Include="DependentSegment.h" />
     <ClInclude Include="DependentTextSegment.h" />
     <ClInclude Include="DlgAlignTranscriptionDataImportRefPage.h" />
     <ClInclude Include="DlgAlignTranscriptionDataTextPage.h" />
     <ClInclude Include="DlgExportFW.h" />
+    <ClInclude Include="DlgExportFWResult.h" />
     <ClInclude Include="DlgExportSFM.h" />
     <ClInclude Include="DlgExportTable.h" />
     <ClInclude Include="DlgExportXML.h" />
     <ClInclude Include="DlgImport.h" />
     <ClInclude Include="DlgImportSFMRef.h" />
+    <ClInclude Include="DlgWaveformGenerator.h" />
+    <ClInclude Include="dsp\WaveWarp.h" />
+    <ClInclude Include="ExportFWSettings.h" />
     <ClInclude Include="FileUtils.h" />
     <ClInclude Include="GlossSegment.h" />
     <ClInclude Include="Import.h" />
@@ -474,13 +486,13 @@
     <ClInclude Include="SA_MPLOT.H" />
     <ClInclude Include="Sa_plot.h" />
     <ClInclude Include="SA_SBAR.H" />
-    <ClInclude Include="Sa_segm.h" />
+    <ClInclude Include="Segment.h" />
     <ClInclude Include="SA_View.h" />
     <ClInclude Include="SA_W_DOC.H" />
     <ClInclude Include="Sa_wave.h" />
     <ClInclude Include="Sa_wbch.h" />
     <ClInclude Include="saParm.h" />
-    <ClInclude Include="saveAsOptions.h" />
+    <ClInclude Include="DlgSaveAsOptions.h" />
     <ClInclude Include="SelfTest.h" />
     <ClInclude Include="SFMHelper.h" />
     <ClInclude Include="sourceParm.h" />
@@ -499,7 +511,6 @@
     <ClInclude Include="Undoredo.h" />
     <ClInclude Include="UnicodeString.h" />
     <ClInclude Include="voctract.h" />
-    <ClInclude Include="waveformGenerator.h" />
     <ClInclude Include="DlgAdvancedParsePhrases.h" />
     <ClInclude Include="DlgAdvancedParseWords.h" />
     <ClInclude Include="DlgAdvancedSegment.h" />
@@ -525,6 +536,8 @@
     <ClInclude Include="Sa_start.h" />
     <ClInclude Include="SA_W_DLG.H" />
     <ClInclude Include="TARGVIEW.H" />
+    <ClInclude Include="WaveformGeneratorProcess.h" />
+    <ClInclude Include="WaveformGeneratorSettings.h" />
     <ClInclude Include="WaveResampler.h" />
   </ItemGroup>
   <ItemGroup>

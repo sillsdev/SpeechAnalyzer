@@ -306,7 +306,7 @@ public:
 
 	void NotifyFragmentDone(void *pCaller);
 	// methods for saving the windows settings
-	static CSaView* s_pviewActiveChild(CMDIChildWnd* pwnd);
+	static CSaView* GetViewActiveChild(CMDIChildWnd* pwnd);
 	int z() const { return m_z; } // The bottom window's z is zero.
 	void SetZ(int z) { m_z = z; } // Greater z means above; lesser z means below.
 	CMDIChildWnd* pwndChildFrame() const;

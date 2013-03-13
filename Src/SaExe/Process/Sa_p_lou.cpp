@@ -17,9 +17,9 @@
 #include "sa_proc.h"
 #include "sa_p_lou.h"
 #include "sa_p_gra.h"
-
 #include "isa_doc.h"
 #include "resource.h"
+#include "FileUtils.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE
@@ -255,15 +255,7 @@ CProcessSmoothLoudness::CProcessSmoothLoudness()
 CProcessSmoothLoudness::~CProcessSmoothLoudness()
 {
 	// delete the temporary file
-	try
-	{ 
-		if (m_SRDfileStatus.m_szFullName[0] != 0)
-			CFile::Remove(m_SRDfileStatus.m_szFullName);
-	}
-	catch (CFileException e)
-	{ // error removing file
-		ErrorMessage(IDS_ERROR_DELTEMPFILE, m_SRDfileStatus.m_szFullName);
-	}
+	RemoveFile(m_SRDfileStatus.m_szFullName);
 	if (m_pSRDfile) 
 	{
 		delete m_pSRDfile;
@@ -286,17 +278,11 @@ CProcessSmoothLoudness::~CProcessSmoothLoudness()
 /***************************************************************************/
 long CProcessSmoothLoudness::Exit(int nError, HANDLE hSmoothBlock)
 {
-	if (m_pSRDfile) 
+	if (m_pSRDfile) {
 		m_pSRDfile->Abort();
-	try
-	{ // delete the smooth raw data temporary file
-		if (m_SRDfileStatus.m_szFullName[0] != 0)
-			CFile::Remove(m_SRDfileStatus.m_szFullName);
 	}
-	catch (CFileException e)
-	{ // error removing file
-		ErrorMessage(IDS_ERROR_DELTEMPFILE, m_SRDfileStatus.m_szFullName);
-	}
+
+	RemoveFile(m_SRDfileStatus.m_szFullName);
 	m_SRDfileStatus.m_szFullName[0] = 0;
 	// free the smoothed data buffer
 	::GlobalUnlock(hSmoothBlock);
@@ -478,15 +464,7 @@ HPSTR CProcessSmoothLoudness::SmoothRawData(ISaDoc* pDoc, HPSTR pTarget, UINT nS
 void CProcessSmoothLoudness::SetDataInvalid()
 {
 	CDataProcess::SetDataInvalid();
-	try
-	{ // delete the smooth raw data temporary file
-		if (m_SRDfileStatus.m_szFullName[0] != 0)
-			CFile::Remove(m_SRDfileStatus.m_szFullName);
-	}
-	catch (CFileException e)
-	{ // error removing file
-		ErrorMessage(IDS_ERROR_DELTEMPFILE, m_SRDfileStatus.m_szFullName);
-	}
+	RemoveFile(m_SRDfileStatus.m_szFullName);
 	m_SRDfileStatus.m_szFullName[0] = 0;
 }
 
@@ -672,15 +650,7 @@ long CProcessSmoothLoudness::Process(void* pCaller, ISaDoc* pDoc,
 		if (!m_hSRDdata)
 		{ // memory allocation error
 			ErrorMessage(IDS_ERROR_MEMALLOC);
-			try
-			{ // delete the smooth raw data temporary file
-				if (m_SRDfileStatus.m_szFullName[0] != 0)
-					CFile::Remove(m_SRDfileStatus.m_szFullName);
-			}
-			catch (CFileException e)
-			{ // error removing file
-				ErrorMessage(IDS_ERROR_DELTEMPFILE, m_SRDfileStatus.m_szFullName);
-			}
+			RemoveFile(m_SRDfileStatus.m_szFullName);
 			m_SRDfileStatus.m_szFullName[0] = 0;
 			SetDataInvalid();
 			return MAKELONG(PROCESS_ERROR, 100);
@@ -691,15 +661,7 @@ long CProcessSmoothLoudness::Process(void* pCaller, ISaDoc* pDoc,
 			ErrorMessage(IDS_ERROR_MEMLOCK);
 			::GlobalFree(m_hSRDdata);
 			m_hSRDdata = NULL;
-			try
-			{ // delete the smooth raw data temporary file
-				if (m_SRDfileStatus.m_szFullName[0] != 0)
-					CFile::Remove(m_SRDfileStatus.m_szFullName);
-			}
-			catch (CFileException e)
-			{ // error removing file
-				ErrorMessage(IDS_ERROR_DELTEMPFILE, m_SRDfileStatus.m_szFullName);
-			}
+			RemoveFile(m_SRDfileStatus.m_szFullName);
 			m_SRDfileStatus.m_szFullName[0] = 0;
 			SetDataInvalid();
 			return MAKELONG(PROCESS_ERROR, 100);

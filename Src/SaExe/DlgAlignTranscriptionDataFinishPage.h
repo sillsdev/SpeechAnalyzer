@@ -1,4 +1,5 @@
-#pragma once
+#ifndef DLGALIGNTRANSCRIPTIONDATAFINISHPAGE_H
+#define DLGALIGNTRANSCRIPTIONDATAFINISHPAGE_H
 
 #include "resource.h"
 
@@ -26,4 +27,4 @@ public:
 	virtual LRESULT OnWizardBack();
 };
 
-
+#endif

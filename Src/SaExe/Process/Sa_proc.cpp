@@ -8,11 +8,11 @@
 
 #include "stdafx.h"
 #include "sa_proc.h"
-
 #include "mainfrm.h"
 #include "sa_doc.h"
 #include "sa.h"
 #include "sa_view.h"
+#include "FileUtils.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE
@@ -488,9 +488,7 @@ BOOL CDataProcess::CreateTempFile(TCHAR* szName)
 BOOL CDataProcess::CreateTempFile(TCHAR* szName, CFileStatus *pFileStatus)
 {
 	TCHAR szTempPath[_MAX_PATH];
-	TCHAR lpszTempPath[_MAX_PATH];
-	GetTempPath(_MAX_PATH, lpszTempPath);
-	GetTempFileName(lpszTempPath, szName, 0, szTempPath);
+	GetTempFileName( szName, szTempPath, _countof(szTempPath));
 	// create and open the file
 	if (!Open(szTempPath, CFile::modeCreate | CFile::modeReadWrite | CFile::shareExclusive))
 	{ // error opening file
@@ -536,10 +534,9 @@ BOOL CDataProcess::CreateAuxTempFile(TCHAR* szName, CFile* pFile, CFileStatus *p
 		pFileStatus = new CFileStatus;
 
 	CSaApp* pApp = (CSaApp*)AfxGetApp();
+
 	TCHAR szTempPath[_MAX_PATH];
-	TCHAR lpszTempPath[_MAX_PATH];
-	GetTempPath(_countof(lpszTempPath), lpszTempPath);
-	GetTempFileName(lpszTempPath, szName, 0, szTempPath);
+	GetTempFileName( szName, szTempPath, _countof(szTempPath));
 	// create and open the file
 	if (!pFile->Open(szTempPath, CFile::modeCreate | CFile::modeReadWrite | CFile::shareExclusive))
 	{ // error opening file
@@ -605,15 +602,7 @@ void CDataProcess::CloseTempFile(BOOL bUpdateStatus)
 void CDataProcess::DeleteTempFile()
 {
 	CloseTempFile(FALSE); // close the temporary file  
-	try
-	{ // delete the temporary file
-		if (GetProcessFileName()[0] != 0)
-			CFile::Remove(GetProcessFileName());
-	}
-	catch (CFileException e)
-	{ // error removing file
-		ErrorMessage(IDS_ERROR_DELTEMPFILE, GetProcessFileName());
-	}
+	RemoveFile(GetProcessFileName());
 	DeleteProcessFileName();
 	m_fileStatus.m_size = 0;
 }

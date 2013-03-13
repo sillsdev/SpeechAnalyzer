@@ -25,7 +25,7 @@
 #include "sa_g_rec.h"
 #include "stpwatch.h"
 #include "Process\sa_proc.h"
-#include "sa_segm.h"
+#include "Segment.h"
 #include "Process\sa_p_fra.h"
 #include "Process\sa_p_spg.h"
 #include "Process\sa_p_sfmt.h"
@@ -3494,37 +3494,44 @@ void CSaView::OnEditCut()
 /***************************************************************************/
 // CSaView::OnEditPaste
 /***************************************************************************/
-void CSaView::OnEditPaste()
-{
-	CSaDoc* pDoc = (CSaDoc*)GetDocument(); // get pointer to document
-	if (IsAnyAnnotationSelected() && OpenClipboard())
-	{
-		HGLOBAL hClipData = NULL;
-		LPTSTR lpClipData = NULL;
+void CSaView::OnEditPaste() {
 
-		// get text from the clipboard
-		if (NULL!=(hClipData = GetClipboardData(CF_UNICODETEXT)))
-		{
-			if (NULL!=(lpClipData = (LPTSTR)GlobalLock(hClipData)))
+	// get pointer to document
+	CSaDoc* pDoc = (CSaDoc*)GetDocument(); 
+	// is an annotation selected?
+	if (IsAnyAnnotationSelected()) {
+		if (OpenClipboard()) {
+			HGLOBAL hClipData = NULL;
+			LPTSTR lpClipData = NULL;
+			// get text from the clipboard
+			if (NULL!=(hClipData = GetClipboardData(CF_UNICODETEXT)))
 			{
-				CSaString data(lpClipData);
-				ASelection().SetSelectedAnnotationString(this, data, FALSE, TRUE);
-				GlobalUnlock(hClipData);
-				RefreshGraphs();
+				if (NULL!=(lpClipData = (LPTSTR)GlobalLock(hClipData)))
+				{
+					CSaString data(lpClipData);
+					ASelection().SetSelectedAnnotationString(this, data, FALSE, TRUE);
+					GlobalUnlock(hClipData);
+					RefreshGraphs();
+				}
 			}
+			CloseClipboard();
 		}
-
-		CloseClipboard();
 	}
-	if (m_nFocusedID == IDD_RAWDATA)
-	{
-		if ((IsClipboardFormatAvailable(CF_WAVE)) &&
-			(pDoc->PasteClipboardToWave(GetStartCursorPosition())))
-		{
-			// get wave from the clipboard
-			pDoc->InvalidateAllProcesses();
-			RefreshGraphs();
-			m_pFocusedGraph->GetPlot()->SetHighLightArea(0, 0);
+	// is a wave selected?
+	if (m_nFocusedID == IDD_RAWDATA) {
+		if (OpenClipboard()) {
+			if (IsClipboardFormatAvailable(CF_WAVE)) {
+				HGLOBAL hGlobal = GetClipboardData(CF_WAVE);
+				if (hGlobal!=NULL) {
+					if (pDoc->PasteClipboardToWave( hGlobal, GetStartCursorPosition())) {
+						// get wave from the clipboard
+						pDoc->InvalidateAllProcesses();
+						RefreshGraphs();
+						m_pFocusedGraph->GetPlot()->SetHighLightArea(0, 0);
+					}
+				}
+			}
+			CloseClipboard();
 		}
 	}
 }
@@ -3534,8 +3541,7 @@ void CSaView::OnEditPaste()
 /***************************************************************************/
 void CSaView::OnEditPasteNew()
 {
-	if (OpenClipboard())
-	{
+	if (OpenClipboard()) {
 		if (IsClipboardFormatAvailable(CF_WAVE))
 		{
 			// call the application to create a new file and put in the clipboard contents
@@ -3658,46 +3664,44 @@ void CSaView::OnUpdateEditPaste(CCmdUI* pCmdUI)
 {
 	BOOL enablePaste = FALSE;
 
-	if (IsAnyAnnotationSelected())
-	{
-		if (OpenClipboard())
-		{
-			if (IsClipboardFormatAvailable(CF_UNICODETEXT))
-			{
+	if (IsAnyAnnotationSelected()) {
+		if (OpenClipboard()) {
+			if (IsClipboardFormatAvailable(CF_UNICODETEXT)) {
 				enablePaste = TRUE;
 			}
 			CloseClipboard();
 		}
 	}
-	if ((m_nFocusedID == IDD_RAWDATA) && 
-		(!((CSaDoc*)GetDocument())->IsMultiChannel()) && 
-		(!((CSaDoc*)GetDocument())->GetWbProcess()))
-	{
-		if ((OpenClipboard()) &&
-			(IsClipboardFormatAvailable(CF_WAVE)))
-		{
-			enablePaste = TRUE;
-		}
 
-		CloseClipboard();
+	CSaDoc * pDoc = GetDocument();
+	if (m_nFocusedID == IDD_RAWDATA) {
+		if (!pDoc->IsMultiChannel()) {
+			if (!pDoc->GetWbProcess()) {
+				if (OpenClipboard()) {
+					if (IsClipboardFormatAvailable(CF_WAVE)) {
+						enablePaste = TRUE;
+					}
+					CloseClipboard();
+				}
+			}
+		}
 	}
 	pCmdUI->Enable(enablePaste);
 }
 
 /***************************************************************************/
 // CSaView::OnUpdateEditPasteNew
-// If waveform avaiable on the clipboard, it enables the item.
+// If waveform available on the clipboard, it enables the item.
 /***************************************************************************/
 void CSaView::OnUpdateEditPasteNew(CCmdUI* pCmdUI)
 {
 	BOOL enablePaste = FALSE;
-	if ((OpenClipboard()) &&
-		(IsClipboardFormatAvailable(CF_WAVE)))
-	{
-		enablePaste = TRUE;
+	if (OpenClipboard()) {
+		if (IsClipboardFormatAvailable(CF_WAVE)) {
+			enablePaste = TRUE;
+		}
+		CloseClipboard();
 	}
-
-	CloseClipboard();
 	pCmdUI->Enable(enablePaste);
 }
 
@@ -3945,7 +3949,7 @@ void CSaView::OnEditAddSyllable()
 		if (dwStop <= dwMaxStop) // enough room
 		{
 			pSeg->Adjust(pDoc,nSelection,dwStop,pSeg->GetDuration(nSelection)+dwStop-pSeg->GetOffset(nSelection));
-			pSeg->Insert(nSelection, &szString, true, dwStart,dwStop - dwStart);
+			pSeg->Insert(nSelection, szString, true, dwStart,dwStop - dwStart);
 			pDoc->SetModifiedFlag(TRUE); // document has been modified
 			pDoc->SetTransModifiedFlag(TRUE); // transcription data has been modified
 			pSeg->SetSelection(-1);
@@ -4040,7 +4044,7 @@ void CSaView::OnEditAdd()
 			pSeg->Adjust(pDoc, nNext,GetStopCursorPosition(),pSeg->GetStop(nNext)-GetStopCursorPosition());
 		}
 
-		pSeg->Insert(nInsertAt, &szString, true, GetStartCursorPosition(), GetStopCursorPosition()-GetStartCursorPosition());
+		pSeg->Insert(nInsertAt, szString, true, GetStartCursorPosition(), GetStopCursorPosition()-GetStartCursorPosition());
 
 		// Adjust Gloss
 		if ((!pGloss->IsEmpty()) && pSeg->GetPrevious(nInsertAt))
@@ -4104,7 +4108,7 @@ void CSaView::OnEditAdd()
 
 				nInsertAt = pSeg->CheckPosition(pDoc,dwStart,dwStop,CSegment::MODE_ADD);
 				ASSERT(nInsertAt >= 0);
-				pSeg->Insert(nInsertAt, &szString, true, dwStart,dwStop - dwStart);
+				pSeg->Insert(nInsertAt, szString, true, dwStart,dwStop - dwStart);
 				// Adjust Gloss
 				if ((!pGloss->IsEmpty()) && pSeg->GetPrevious(nInsertAt))
 				{
@@ -4229,7 +4233,7 @@ void CSaView::OnEditAddPhrase(CMusicPhraseSegment *pSeg)
 			if (pSeg->GetOffset(nNext) < GetStopCursorPosition()+pDoc->GetBytesFromTime(MAX_ADD_JOIN_TIME)) // SDM 1.5Test10.2
 				pSeg->Adjust(pDoc, nNext,GetStopCursorPosition(),pSeg->GetStop(nNext)-GetStopCursorPosition());
 		}
-		pSeg->Insert(nInsertAt, &szString, true, GetStartCursorPosition(),GetStopCursorPosition()-GetStartCursorPosition());
+		pSeg->Insert(nInsertAt, szString, true, GetStartCursorPosition(),GetStopCursorPosition()-GetStartCursorPosition());
 		pDoc->SetModifiedFlag(TRUE); // document has been modified
 		pDoc->SetTransModifiedFlag(TRUE); // transcription data has been modified
 		RefreshGraphs(TRUE);
@@ -4283,7 +4287,7 @@ void CSaView::OnEditAddPhrase(CMusicPhraseSegment *pSeg)
 					dwStop = pDoc->SnapCursor(STOP_CURSOR, dwStop, dwStart, dwMaxStop, SNAP_LEFT);
 
 				nInsertAt = pSeg->CheckPosition(pDoc,dwStart,dwStop,CSegment::MODE_ADD);
-				pSeg->Insert(nInsertAt, &szString, true, dwStart,dwStop - dwStart);
+				pSeg->Insert(nInsertAt, szString, true, dwStart,dwStop - dwStart);
 				pDoc->SetModifiedFlag(TRUE); // document has been modified
 				pDoc->SetTransModifiedFlag(TRUE); // transcription data has been modified
 				RefreshGraphs(TRUE);
@@ -5540,10 +5544,10 @@ void CSaView::OnEditCopyPhoneticToPhonemic(void)
 		CSaString text = pPhonetic->GetSegmentString(i);
 		DWORD duration = pPhonetic->GetDuration(i);
 		TRACE(L"text=%s offset=%d duration=%d\n",(LPCTSTR)text,offset,duration);
-		pPhonemic->Insert(i,&text,0,offset,duration);
+		pPhonemic->Insert(i,text,0,offset,duration);
 	}
 
-	// show the phonemic annotation if it isn't already displaed
+	// show the phonemic annotation if it isn't already displayed
 	if (m_pFocusedGraph!=NULL) 
 	{
 		if (!m_pFocusedGraph->HaveAnnotation(PHONEMIC))

@@ -15,7 +15,7 @@
 //        SDM Added GetCurrSaView
 //   1.06.6U5
 //        SDM Added Class CSaMDIChildWindow
-//        SDM Added paramenters to settings DefaultView Maximized/Height/Width
+//        SDM Added parameters to settings DefaultView Maximized/Height/Width
 //        SDM Added CopyWindowAsBMP & SaveWindowAsBMP
 //        SDM Changed GraphAsBMP to refer to client area 
 //   1.06.8
@@ -56,16 +56,10 @@
 /////////////////////////////////////////////////////////////////////////////
 
 #include "stdafx.h"
-
 #include "mainfrm.h"
 #include "sa_graph.h"
 #include "playerRecorder.h"
 #include "toolsOptions.h"
-#include "Process\sa_proc.h"
-#include "Process\sa_p_spu.h"
-#include "Process\sa_p_fmt.h"
-#include "Process\sa_p_spg.h"
-
 #include "sa_wbch.h"
 #include "sa_edit.h"
 #include "sa_doc.h"
@@ -75,20 +69,24 @@
 #include "sa_find.h"    
 #include "sa_cdib.h"
 #include "targview.h"
-#include "settings\obstream.h"
-using std::ifstream;
-using std::ofstream;
-using std::ios;
-
 #include "sa_dplot.h"
 #include "autorecorder.h"
-#include "waveformGenerator.h"
-
+#include "DlgWaveformGenerator.h"
+#include "SelfTest.h"
+#include "AlignInfo.h"
+#include "FileUtils.h"
+#include "Process\sa_proc.h"
+#include "Process\sa_p_spu.h"
+#include "Process\sa_p_fmt.h"
+#include "Process\sa_p_spg.h"
+#include "settings\obstream.h"
 #include "synthesis\DlgSynthesis.h"
 #include "synthesis\DlgKlattAll.h"
 #include "synthesis\DlgVocalTract.h"
-#include "SelfTest.h"
-#include "AlignInfo.h"
+
+using std::ifstream;
+using std::ofstream;
+using std::ios;
 
 #ifdef _DEBUG
 #undef THIS_FILE
@@ -96,7 +94,6 @@ static char BASED_CODE THIS_FILE[] = __FILE__;
 #endif
 
 IMPLEMENT_DYNCREATE(CMainFrame, CMainFrameBase)
-
 
 //###########################################################################
 // CMainFrame
@@ -199,8 +196,8 @@ static UINT BASED_CODE progressIndicators[] =
 /***************************************************************************/
 CMainFrame::CMainFrame()
 {
-	// otions default settings
-	m_bStatusBar = TRUE;               // statusbar enabled at startup
+	// options default settings
+	m_bStatusBar = TRUE;               // status bar enabled at startup
 	m_nStatusPosReadout = TIME;        // position readout mode is time
 	m_nStatusPitchReadout = HERTZ;     // pitch readout mode is hertz
 	m_bToneAbove = FALSE;              // tone below phonetic by default SDM 1.5Test8.2
@@ -2019,7 +2016,7 @@ void CMainFrame::WriteProperties(Object_ostream& obs)
 	m_colors.WriteProperties(obs);
 	m_fnKeys.WriteProperties(obs);
 	m_grid.WriteProperties(obs);
-	dlgWaveformGenerator.current.WriteProperties(obs);
+	m_waveformGeneratorSettings.WriteProperties(obs);
 
 	// Write parsing, segmenting, pitch, spectrum, and spectrogram parameter defaults to *.PSA file.      // RLJ 11.1A
 	m_parseParmDefaults.WriteProperties(obs);
@@ -2160,7 +2157,7 @@ BOOL CMainFrame::ReadProperties(Object_istream& obs)
 		else if (m_colors.ReadProperties(obs));
 		else if (m_fnKeys.ReadProperties(obs));
 		else if (m_grid.ReadProperties(obs));
-		else if (dlgWaveformGenerator.current.ReadProperties(obs));
+		else if (m_waveformGeneratorSettings.ReadProperties(obs));
 		else if (obs.bReadInteger(psz_captionstyle, m_nCaptionStyle));
 		else if (m_parseParmDefaults.ReadProperties(obs));
 		else if (m_segmentParmDefaults.ReadProperties(obs));
@@ -2237,7 +2234,7 @@ BOOL CMainFrame::bReadDefaultView(Object_istream& obs)
 
 	// Now that documents and views have been opened, activate the top window
 	// and maximize it if it had been when SA was closed.
-	CSaView* pviewT = ((CSaApp *)AfxGetApp())->pviewTop();
+	CSaView* pviewT = ((CSaApp *)AfxGetApp())->GetViewTop();
 	if (pviewT) pviewT->ShowInitialTopState();
 
 	WriteReadDefaultViewToTempFile(TRUE);
@@ -2416,7 +2413,25 @@ void CMainFrame::DestroyPlayer()
 
 void CMainFrame::OnWaveformGenerator() 
 {
-	dlgWaveformGenerator.DoModal();
+	CDlgWaveformGenerator dlg;
+	dlg.working = m_waveformGeneratorSettings;
+	
+	if (dlg.DoModal()!=IDOK) return;
+
+	dlg.working.pcm.wf.nSamplesPerSec = _tcstol(dlg.m_szSamplingRate,NULL,10);
+	ASSERT(dlg.working.pcm.wf.nSamplesPerSec > 0);
+	dlg.working.pcm.wBitsPerSample = (unsigned short) _tcstol(dlg.m_szBits,NULL,10);
+	ASSERT(dlg.working.pcm.wBitsPerSample == 8 || dlg.working.pcm.wBitsPerSample == 16);
+	
+	m_waveformGeneratorSettings = dlg.working;
+
+	TCHAR szFile[_MAX_PATH];
+	// create temp filename for synthesized waveform
+	GetTempFileName( _T("WAV"), szFile, _MAX_PATH);
+	if (m_waveformGeneratorSettings.Synthesize(szFile)) {
+		CSaApp * pApp = (CSaApp *)(AfxGetApp());
+		pApp->OpenWavFileAsNew(szFile);
+	}
 }
 
 static CDlgSynthesis* s_pDlgSynthesis = NULL;
@@ -2476,99 +2491,6 @@ void CMainFrame::OnSynthesisVocalTract()
 {
 	CDlgVocalTract::CreateSynthesizer(this);
 }
-
-/////////////////////////////////////////////////////////////////////////////
-// CChildFrame
-
-IMPLEMENT_DYNCREATE(CChildFrame, CMDIChildWnd)
-
-BEGIN_MESSAGE_MAP(CChildFrame, CMDIChildWnd)
-	//{{AFX_MSG_MAP(CChildFrame)
-	// NOTE - the ClassWizard will add and remove mapping macros here.
-	//    DO NOT EDIT what you see in these blocks of generated code !
-	//}}AFX_MSG_MAP
-END_MESSAGE_MAP()
-
-/////////////////////////////////////////////////////////////////////////////
-// CChildFrame construction/destruction
-
-CChildFrame::CChildFrame()
-{
-	// TODO: add member initialization code here
-
-}
-
-CChildFrame::~CChildFrame()
-{
-}
-
-void CChildFrame::ActivateFrame(int nCmdShow) 
-{
-	CMainFrame* pFrameWnd = (CMainFrame*) GetMDIFrame();
-
-	if (!pFrameWnd) return;
-
-	if (pFrameWnd->MDIGetActive()) 
-	{
-		CMDIChildWnd::ActivateFrame(nCmdShow);  // maintain current state
-	}
-	else if (pFrameWnd->IsDefaultViewMaximized()) 
-	{
-		CMDIChildWnd::ActivateFrame(SW_SHOWMAXIMIZED); 
-	}
-	else
-	{
-		CMDIChildWnd::ActivateFrame(nCmdShow);  // default behavior
-	}
-
-	// Adjust size of child
-	CPoint Size = pFrameWnd->GetDefaultViewSize();
-	WINDOWPLACEMENT WP;
-	WP.length = sizeof(WINDOWPLACEMENT);
-	CRect rParent;
-
-	pFrameWnd->GetClientRect(&rParent);
-
-	GetWindowPlacement(&WP);
-	if ((Size.x < rParent.Width())&&(Size.x > (rParent.Width()/10)))
-	{
-		WP.rcNormalPosition.right = WP.rcNormalPosition.left+Size.x;
-	}
-	else if (Size.x >= rParent.Width())
-	{
-		WP.rcNormalPosition.right = rParent.Width();
-	}
-
-	if ((Size.y < rParent.Height())&&(Size.y > (rParent.Height()/10)))
-	{
-		WP.rcNormalPosition.bottom = WP.rcNormalPosition.top+Size.y;
-	}
-	else if (Size.y >= rParent.Height())
-	{
-		WP.rcNormalPosition.bottom = rParent.Height();
-	}
-
-	SetWindowPlacement(&WP);
-};
-
-/////////////////////////////////////////////////////////////////////////////
-// CChildFrame diagnostics
-
-#ifdef _DEBUG
-void CChildFrame::AssertValid() const
-{
-	CMDIChildWnd::AssertValid();
-}
-
-void CChildFrame::Dump(CDumpContext& dc) const
-{
-	CMDIChildWnd::Dump(dc);
-}
-
-#endif //_DEBUG
-
-/////////////////////////////////////////////////////////////////////////////
-// CChildFrame message handlers
 
 /******************************************************************************
 * used to create a new document, record and overlay in it and load it
@@ -2652,7 +2574,7 @@ void CMainFrame::OnUpdateRecordOverlay(CCmdUI* pCmdUI)
 	pCmdUI->Enable(bEnable);
 }
 
-BOOL CMainFrame::OnCopyData(  CWnd * pWnd, COPYDATASTRUCT * pCopyDataStruct) {
+BOOL CMainFrame::OnCopyData(  CWnd * /*pWnd*/, COPYDATASTRUCT * pCopyDataStruct) {
 
 	// length is in bytes
 	int len = pCopyDataStruct->cbData;

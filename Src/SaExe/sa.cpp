@@ -78,12 +78,7 @@
 /////////////////////////////////////////////////////////////////////////////
 #include "stdafx.h"
 #include "sa.h"
-#include "playerRecorder.h"
-#include "Process\sa_proc.h"
-#include "Process\sa_p_gra.h"
-#include "Process\sa_p_fra.h"
-#include "sa_segm.h"
-
+#include "Segment.h"
 #include "sa_doc.h"
 #include "sa_w_doc.h"
 #include "sa_view.h"
@@ -91,10 +86,6 @@
 #include "mainfrm.h"
 #include "settings\obstream.h"
 #include "doclist.h"
-using std::ifstream;
-using std::ofstream;
-using std::ios;
-
 #include "DlgExportFW.h"
 #include "sa_dplot.h"
 #include "sa_start.h"
@@ -102,12 +93,22 @@ using std::ios;
 #include "fileOpen.h"
 #include <windows.h>
 #include "Import.h"
+#include "ChildFrame.h"
+#include "playerRecorder.h"
+#include "ClipboardHelper.h"
+#include "FileUtils.h"
+#include "Process\sa_proc.h"
+#include "Process\sa_p_gra.h"
+#include "Process\sa_p_fra.h"
+
+using std::ifstream;
+using std::ofstream;
+using std::ios;
 
 #pragma comment(linker, "/SECTION:.shr,RWS")
 #pragma data_seg(".shr")
 HWND hGlobal = NULL;
 #pragma data_seg()
-
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -614,16 +615,16 @@ void CSaApp::ExamineCmdLine(LPCTSTR pCmdLine, WPARAM wParam) {
 
             // sa has to read list file and open documents // SDM 1.5Test8.3
             TCHAR in[512];
-            memset(in,0,512*sizeof(TCHAR));
-            wcscpy(in,szCmdLine);
+            wmemset(in,0,512);
+            wcscpy_s(in,512,szCmdLine);
 
             TCHAR buffer[512];
-            memset(buffer,0,512*sizeof(TCHAR));
+            wmemset(buffer,0,512);
             swscanf_s(in, _T("%*[ 0123456789]%[^\n]"), buffer, 512);
             m_szCmdFileName = buffer;
 
             CFileStatus TheStatus;
-            if((m_szCmdFileName.GetLength()==0) || !CFile::GetStatus(m_szCmdFileName,TheStatus)) {
+            if ((m_szCmdFileName.GetLength()==0) || !CFile::GetStatus(m_szCmdFileName,TheStatus)) {
                 // The file does not exist use original profile
                 ASSERT(wParam == SPEECH_WPARAM_SHOWSAREC);
             }
@@ -862,7 +863,7 @@ void CSaApp::OnProcessBatchCommands() {
 
             try { // SDM 1.5Test10.0
                 // delete the list file
-                CFile::Remove(szPath);
+                RemoveFile(szPath);
             } catch(CFileException e) {
                 // error removing file
                 ErrorMessage(IDS_ERROR_DELLISTFILE, szPath);
@@ -1163,53 +1164,28 @@ BOOL CSaApp::CloseWorkbench(CDocument * pDoc) {
 // CSaApp::PasteClipboardToNewFile Create a new file and paste wave data into it
 // This function creates a new document.
 /***************************************************************************/
-void CSaApp::PasteClipboardToNewFile(HGLOBAL hData) {
+void CSaApp::PasteClipboardToNewFile( HGLOBAL hData) {
 
     //because we now use true CF_WAVE we can save as temp then open
     // temporary target file has to be created
     TCHAR szTempPath[_MAX_PATH];
-    TCHAR lpszTempPath[_MAX_PATH];
-    GetTempPath(_MAX_PATH, lpszTempPath);
-    GetTempFileName(lpszTempPath, _T("WAV"), 0, szTempPath);
-
-    if((::GlobalFlags(hData)&~GMEM_LOCKCOUNT)==GMEM_DISCARDED) {
-        return;
-    }
-
-    HPSTR lpData = (HPSTR)::GlobalLock(hData); // lock memory
-    DWORD dwSize = ::GlobalSize(hData);
-    CFile * pFile=NULL;
-    CFileStatus status;
-
-    try {
-        // create and open the file
-        pFile = new CFile(szTempPath, CFile::modeCreate | CFile::modeReadWrite | CFile::shareExclusive);
-        pFile->Write(lpData, dwSize);
-        delete pFile;
-    } catch(const CException &) {
-        if(pFile) {
-            delete pFile;
-            // File may exist should be removed
-            if(CFile::GetStatus(szTempPath, status)) {
-                CFile::Remove(szTempPath);
-            }
-        }
-        return;
-    }
-    ::GlobalUnlock(hData);
+	if (!CClipboardHelper::LoadFileFromData( hData, szTempPath,_MAX_PATH)) {
+		TRACE("unable to load clipboard data into file");
+		return;
+	}
 
     CopyClipboardTranscription(szTempPath);
 
     // open the new file
     CSaDoc * pResult = OpenWavFileAsNew(szTempPath);
-
-    if(!pResult) {
+    if (!pResult) {
         // Error opening file, destroy temp
-        CFile::Remove(szTempPath);
+		RemoveFile(szTempPath);
     }
 }
 
 CSaDoc * CSaApp::OpenWavFileAsNew(const TCHAR * szTempPath) {
+
     // create new MDI child, sa type
     POSITION posTemplate = GetFirstDocTemplatePosition();
     if(!GetNextDocTemplate(posTemplate)) {
@@ -1249,23 +1225,21 @@ CSaDoc * CSaApp::OpenWavFileAsNew(const TCHAR * szTempPath) {
 // If the wave data on the clipboard doesn't match the last data copied
 // from SA, nothing is copied since it's from another app.
 /***************************************************************************/
-void CSaApp::CopyClipboardTranscription(const TCHAR * szTempPath) {
-    short bIsClipboardFile = (short)TRUE;
+void CSaApp::CopyClipboardTranscription( LPCTSTR szTempPath) {
+
     _bstr_t szMD5HashCode = (wchar_t *)0;
-    short bMD5MustMatch = (short)TRUE;
 
     CoInitialize(NULL);
     ISaAudioDocumentWriterPtr saAudioDocWriter;
     HRESULT createResult = saAudioDocWriter.CreateInstance(__uuidof(SaAudioDocumentWriter));
-    if(createResult) {
+    if (createResult) {
         CSaString szCreateResult;
         szCreateResult.Format(_T("%x"), createResult);
         ErrorMessage(IDS_ERROR_CREATE_INSTANCE, _T("SaAudioDocumentWriter.CreateInstance()"), szCreateResult);
         return;
     }
 
-
-    if(!saAudioDocWriter->Initialize((_bstr_t)m_szLastClipboardPath, szMD5HashCode, (short)bIsClipboardFile)) {
+    if (!saAudioDocWriter->Initialize((_bstr_t)m_szLastClipboardPath, szMD5HashCode, VARIANT_TRUE)) {
         // TODO: Display a meaningful error.
         ErrorMessage(IDS_ERROR_WRITEPHONETIC, m_szLastClipboardPath);
         EndWaitCursor();
@@ -1275,8 +1249,9 @@ void CSaApp::CopyClipboardTranscription(const TCHAR * szTempPath) {
         CoUninitialize();
         return;
     }
+
     _bstr_t szDest = szTempPath;
-    saAudioDocWriter->Copy(szDest, (short)bMD5MustMatch);
+    saAudioDocWriter->Copy( szDest, VARIANT_TRUE);
 }
 
 /***************************************************************************/
@@ -1579,17 +1554,8 @@ void CSaApp::FileReturn(BOOL bHide) {
         CloseAllDocuments(FALSE);
         if(!m_bModified) { // modified batch files are available
             // there are no changes in the list file, so delete the list file
-            try {
-                // delete the list file
-                CFileStatus status;
-                if(CFile::GetStatus(m_szCmdFileName, status)) { // SDM 1.5Test8.5 (if present)
-                    CFile::Remove(m_szCmdFileName);
-                }
-            } catch(CFileException e) {
-                // error removing file
-                ErrorMessage(IDS_ERROR_DELLISTFILE, m_szCmdFileName);
-            }
-
+            // delete the list file
+			RemoveFile(m_szCmdFileName);
         }
         CWnd * pWnd = IsAppRunning(); // SDM 1.5Test8.5
         if(pWnd) {
@@ -1999,7 +1965,7 @@ int CSaApp::SaDoPrintDialog(CPrintDialog * pPD, BOOL landscape) {
 
 /***************************************************************************/
 /***************************************************************************/
-CSaView * CSaApp::pviewActive() {
+CSaView * CSaApp::GetViewActive() {
 
     CMainFrame * pwndMainFrame = (CMainFrame *)m_pMainWnd;
     ASSERT(pwndMainFrame->IsKindOf(RUNTIME_CLASS(CMainFrame)));
@@ -2013,29 +1979,29 @@ CSaView * CSaApp::pviewActive() {
 
 /***************************************************************************/
 /***************************************************************************/
-CSaView * CSaApp::pviewTop() {
-    return pviewEnd(GW_HWNDPREV);
+CSaView * CSaApp::GetViewTop() {
+    return GetViewEnd(GW_HWNDPREV);
 }
 
 /***************************************************************************/
 /***************************************************************************/
-CSaView * CSaApp::pviewBottom() {
+CSaView * CSaApp::GetViewBottom() {
 
-    return pviewEnd(GW_HWNDNEXT);
+    return GetViewEnd(GW_HWNDNEXT);
 }
 
 /***************************************************************************/
 /***************************************************************************/
-CSaView * CSaApp::pviewAbove(CSaView * pviewCur) {
+CSaView * CSaApp::GetViewAbove(CSaView * pviewCur) {
 
-    return pviewNeighbor(pviewCur, GW_HWNDPREV);
+    return GetViewNeighbor(pviewCur, GW_HWNDPREV);
 }
 
 /***************************************************************************/
 /***************************************************************************/
-CSaView * CSaApp::pviewBelow(CSaView * pviewCur) {
+CSaView * CSaApp::GetViewBelow(CSaView * pviewCur) {
 
-    return pviewNeighbor(pviewCur, GW_HWNDNEXT);
+    return GetViewNeighbor(pviewCur, GW_HWNDNEXT);
 }
 
 /***************************************************************************/
@@ -2043,19 +2009,19 @@ CSaView * CSaApp::pviewBelow(CSaView * pviewCur) {
 void CSaApp::SetZ() {
 
     int z = 0;
-    CSaView * pview = pviewBottom();
-    for(; pview; pview = pviewAbove(pview)) {
+    CSaView * pview = GetViewBottom();
+    for(; pview; pview = GetViewAbove(pview)) {
         pview->SetZ(z++);
     }
 }
 
 /***************************************************************************/
 /***************************************************************************/
-CSaView * CSaApp::pviewEnd(UINT uNextOrPrev) {
+CSaView * CSaApp::GetViewEnd(UINT uNextOrPrev) {
 
-    CSaView * pview = pviewActive();
-    CSaView * pviewN = (pview ? pviewNeighbor(pview, uNextOrPrev) : NULL);
-    for(; pviewN; pviewN = pviewNeighbor(pviewN, uNextOrPrev)) {
+    CSaView * pview = GetViewActive();
+    CSaView * pviewN = (pview ? GetViewNeighbor(pview, uNextOrPrev) : NULL);
+    for(; pviewN; pviewN = GetViewNeighbor(pviewN, uNextOrPrev)) {
         pview = pviewN;
     }
 
@@ -2064,7 +2030,7 @@ CSaView * CSaApp::pviewEnd(UINT uNextOrPrev) {
 
 /***************************************************************************/
 /***************************************************************************/
-CSaView * CSaApp::pviewNeighbor(CSaView * pviewCur, UINT uNextOrPrev) {
+CSaView * CSaApp::GetViewNeighbor(CSaView * pviewCur, UINT uNextOrPrev) {
 
     ASSERT(pviewCur);
     CMDIChildWnd * pwndChildFrame = pviewCur->pwndChildFrame();
@@ -2081,7 +2047,7 @@ CSaView * CSaApp::pviewNeighbor(CSaView * pviewCur, UINT uNextOrPrev) {
         }
 
     CSaView * pview = (pwndNext ?
-                       CSaView::s_pviewActiveChild((CMDIChildWnd *)pwndNext) :
+                       CSaView::GetViewActiveChild((CMDIChildWnd *)pwndNext) :
                        NULL);
 
     return pview;
@@ -2173,8 +2139,8 @@ BOOL CSaApp::ReadProperties(Object_istream & obs) {
     }
 
     // activate top window (not last document)
-    if(pviewTop()) { // only if there is a top window
-        pviewTop()->ShowInitialTopState();
+    if (GetViewTop()) { // only if there is a top window
+        GetViewTop()->ShowInitialTopState();
     }
 
     return TRUE;
@@ -2345,7 +2311,7 @@ void CSaApp::SetupNewUser() {
         while(!bFinished) {
             szSourcePath = szAppLocation + subFolders[i] + FileData.cFileName;
             szDestPath = szDataLocation + subFolders[i] + FileData.cFileName;
-            CopyFile(szSourcePath, szDestPath, FALSE);
+            CopyFile( szSourcePath, szDestPath, FALSE);
 
             if(!FindNextFile(hSearch, &FileData) && (GetLastError() == ERROR_NO_MORE_FILES)) {
                 bFinished = TRUE;
@@ -2501,9 +2467,6 @@ BOOL CSaApp::CreateAsSingleton(LPCTSTR aName) {
         return TRUE;
     }
 
-    // Default error condition
-    BOOL lResult = FALSE;
-
     // Create shared data
     mData = new CSingleInstanceData(aName);
     if(mData==NULL) {
@@ -2619,7 +2582,7 @@ void CSaApp::WakeUp(LPCTSTR aCommandLine) {
 
     // Send the data.
     HWND me = pApp->m_pMainWnd->GetSafeHwnd();
-    LRESULT result = ::SendMessage(me, WM_COPYDATA, (UINT)me, (ULONG) &stCopyData);
+    ::SendMessage(me, WM_COPYDATA, (UINT)me, (ULONG) &stCopyData);
 }
 
 // Name:        Sleeper
@@ -2690,3 +2653,38 @@ void CSaApp::DestroySingleton() {
     }
 }
 
+void CSaApp::WorkbenchClosed() {
+	// signal, that workbench has been closed
+    m_pWbDoc = NULL;   
+}
+
+CSaString * CSaApp::GetWorkbenchPath() {
+	// returns a pointer to the workbench pathname
+    return &m_szWbPath;   
+}
+BOOL CSaApp::IsCreatingNewFile() {
+	// return TRUE if file new operation running
+    return m_bNewDocument;   
+}
+CDocument * CSaApp::GetWbDoc() {
+	// return pointer to workbench document
+    return m_pWbDoc;   
+}
+void CSaApp::SetWbOpenOnExit(BOOL bOpen) {
+    m_bWbOpenOnExit = bOpen;
+}
+UINT CSaApp::GetOpenAsID() {
+	// return m_OpenAsID
+    return m_OpenAsID;   
+}
+void CSaApp::SetOpenAsID(UINT OpenAsID) {
+	// set m_OpenAsID
+    m_OpenAsID = OpenAsID;   
+}
+void CSaApp::SetLastClipboardPath( LPCTSTR szPath) {
+    m_szLastClipboardPath = szPath;
+}
+
+LPCTSTR CSaApp::GetLastClipboardPath() {
+	return m_szLastClipboardPath;
+}

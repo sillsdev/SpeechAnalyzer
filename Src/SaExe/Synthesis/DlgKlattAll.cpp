@@ -1,24 +1,24 @@
 // DlgKlattAll.cpp : implementation file
 //
-
 #include "stdafx.h"
 #include <math.h>
 #include <ctype.h>
-#include "..\sa.h"
+#include "sa.h"
 #include "sa_doc.h"
-#include "Process\sa_proc.h"
-#include "sa_segm.h"
+#include "Segment.h"
 #include "sa_view.h"
+#include "DlgKlattAll.h"
+#include "FileUtils.h"
+#include "mainfrm.h"
+#include "MusicPhraseSegment.h"
+#include "PhoneticSegment.h"
+#include "Process\sa_proc.h"
 #include "Process\sa_p_gra.h"
 #include "Process\sa_p_spi.h"
 #include "Process\sa_p_spu.h"
 #include "Process\sa_p_fra.h"
 #include "Process\sa_p_zcr.h"
-#include "DlgKlattAll.h"
 #include "dsp\mathx.h"
-#include "mainfrm.h"
-#include "..\MusicPhraseSegment.h"
-#include "..\PhoneticSegment.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -122,13 +122,8 @@ CDlgKlattAll::CDlgKlattAll(CWnd* pParent /*=NULL*/, int nSelectedView)
 CDlgKlattAll::~CDlgKlattAll()
 {
 	m_cDefaults.Save(GetDefaultsPath());
-
-	// remove synthesized wavefile in SA
-	CFileStatus fileStatus; // file status    
-	if (!m_szSynthesizedFilename.IsEmpty() && CFile::GetStatus(m_szSynthesizedFilename, fileStatus))
-	{
-		CFile::Remove(m_szSynthesizedFilename);
-	}
+	// remove synthesized wave file in SA
+	RemoveFile(m_szSynthesizedFilename);
 }
 
 void CDlgKlattAll::CreateSynthesizer(CWnd* pParent, int nMode)
@@ -811,10 +806,8 @@ void CDlgKlattAll::OnSynthesize()
 
 	if (m_szSynthesizedFilename.IsEmpty())
 	{
-		TCHAR lpszTempPath[_MAX_PATH];
-		GetTempPath(_MAX_PATH, lpszTempPath);
 		// create temp filename for synthesized waveform
-		GetTempFileName(lpszTempPath, _T("klt"), 0, m_szSynthesizedFilename.GetBuffer(_MAX_PATH));
+		GetTempFileName( _T("klt"), m_szSynthesizedFilename.GetBuffer(_MAX_PATH), _MAX_PATH);
 		m_szSynthesizedFilename.ReleaseBuffer();
 	}
 
@@ -1681,7 +1674,7 @@ void CDlgKlattAll::OnKlattGetFrames(CFlexEditGrid &cGrid, int nFrameLengthInMs, 
 	if (pPhonetic->IsEmpty()) // no annotations
 	{
 		CSaString szTranscription = " ";
-		pPhonetic->Insert(0, &szTranscription, 0, 0, pDoc->GetDataSize());
+		pPhonetic->Insert(0, szTranscription, 0, 0, pDoc->GetDataSize());
 		bTempTranscription = TRUE;
 	}
 
@@ -2381,7 +2374,7 @@ void CDlgKlattAll::LabelDocument(CSaDoc* pDoc)
 
 				szIndex.Format(_T("%d"),i+1);
 
-				pIndexSeg->Insert(pIndexSeg->GetOffsetSize(), &szIndex, true, dwStart, dwDuration);
+				pIndexSeg->Insert(pIndexSeg->GetOffsetSize(), szIndex, true, dwStart, dwDuration);
 
 				labelTime = elapsedTime + length;
 			}
@@ -2400,7 +2393,7 @@ void CDlgKlattAll::LabelDocument(CSaDoc* pDoc)
 			double length = elapsedTime - lastCharStopTime;
 			DWORD dwDuration = DWORD(length*spkrDef.SR+0.5)*2;
 			CSaString szIpa(cChars[i].ipa);
-			pCharSeg->Insert(pCharSeg->GetOffsetSize(), &szIpa, true, dwStart, dwDuration);
+			pCharSeg->Insert(pCharSeg->GetOffsetSize(), szIpa, true, dwStart, dwDuration);
 			lastCharStopTime += length;
 		}
 	}

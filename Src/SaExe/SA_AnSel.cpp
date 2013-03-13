@@ -20,7 +20,7 @@
 #include "stdafx.h"
 #include "sa_ansel.h"
 #include "Process\sa_proc.h"
-#include "sa_segm.h"
+#include "Segment.h"
 #include "sa_graph.h"
 
 #include "sa_doc.h"
@@ -498,7 +498,7 @@ BOOL CASegmentSelection::SetSelectedAnnotationString(CSaView* pView, CSaString& 
 				}
 				pDoc->SetModifiedFlag(TRUE); // document has been modified
 				pDoc->SetTransModifiedFlag(TRUE); // transcription has been modified
-				pSegment->Insert(nInsertAt, &szString, true, m_Selection.dwStart,m_Selection.dwDuration);
+				pSegment->Insert(nInsertAt, szString, true, m_Selection.dwStart,m_Selection.dwDuration);
 				pView->ChangeAnnotationSelection(pSegment, nInsertAt);
 			}
 		}

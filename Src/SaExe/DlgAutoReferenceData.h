@@ -6,7 +6,8 @@
 // Copyright 2012 JAARS Inc. SIL
 //
 /////////////////////////////////////////////////////////////////////////////
-#pragma once
+#ifndef DLGAUTOREFERENCEDATA_H
+#define DLGAUTOREFERENCEDATA_H
 
 #include "sa_dlwnd.h"
 #include "resource.h"
@@ -76,3 +77,5 @@ private:
 	int mNumWords;
 
 };
+
+#endif

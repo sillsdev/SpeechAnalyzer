@@ -1,3 +1,8 @@
+SA - 3.1.0.39 - 3/13/2013
+1) Changed SFM tag text in FW Export dialog
+2) Added result dialog that is displayed after FW export operation.
+3) Fixed copy/paste bug
+
 SA - 3.1.0.38 - 3/6/2013
 1) Fixed bugs on XML/SFM and FW export dialogs.
 2) Removed PL1 and PL2 SFM output from FW export data.

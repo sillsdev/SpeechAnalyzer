@@ -32,13 +32,8 @@
 //        RLJ Added m_pitchParmDefaults, m_spectrumParmDefaults
 //        RLJ Added m_spectroAParmDefaults, m_spectroBParmDefaults
 /////////////////////////////////////////////////////////////////////////////
-#ifndef __MAINFRM_H__
-#define __MAINFRM_H__
-
-#if _MSC_VER > 1000
-#pragma once
-#endif // _MSC_VER > 1000
-
+#ifndef MAINFRM_H__
+#define MAINFRM_H__
 
 #include "sa_menu.h"
 #include "sa_sbar.h"
@@ -49,6 +44,7 @@
 #include "saParm.h"
 #include "sourceParm.h"
 #include "CSaString.h"
+#include "WaveformGeneratorSettings.h"
 
 class CSaFindDlg;
 class CSegment;
@@ -129,8 +125,8 @@ protected:
 	BOOL				m_bAnimate;               // TRUE = animation requested
 	int					m_nAnimationRate;         // frame rate for animations (in frames/sec)
 	CURSOR_ALIGNMENT	m_nCursorAlignment;       // cursor snap mode: align to sample, zero crossing, or fragment
-
 	BOOL				m_bDefaultViewExists;    // True if a default view configuration was read from the .psa file.
+	CWaveformGeneratorSettings m_waveformGeneratorSettings;
 	void WriteReadDefaultViewToTempFile(BOOL bWrite);
 
 	// Default values for various parameters                     // RLJ 11.1A
@@ -352,41 +348,4 @@ protected:
 
 };
 
-// ChildFrm.h : interface of the CChildFrame class
-//
-/////////////////////////////////////////////////////////////////////////////
-
-class CChildFrame : public CMDIChildWnd
-{
-	DECLARE_DYNCREATE(CChildFrame)
-public:
-	CChildFrame();
-
-	// Attributes
-public:
-
-	// Operations
-public:
-
-	// Overrides
-	virtual void ActivateFrame(int nCmdShow = -1) ;
-
-	// Implementation
-public:
-	virtual ~CChildFrame();
-#ifdef _DEBUG
-	virtual void AssertValid() const;
-	virtual void Dump(CDumpContext& dc) const;
 #endif
-
-	// Generated message map functions
-protected:
-	DECLARE_MESSAGE_MAP()
-};
-
-/////////////////////////////////////////////////////////////////////////////
-
-//{{AFX_INSERT_LOCATION}}
-// Microsoft Visual C++ will insert additional declarations immediately before the previous line.
-
-#endif // __MAINFRM_H__

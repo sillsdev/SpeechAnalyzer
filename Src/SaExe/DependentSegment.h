@@ -1,7 +1,7 @@
 #ifndef DEPENDENTSEGMENT_H
 #define DEPENDENTSEGMENT_H
 
-#include "sa_segm.h"
+#include "Segment.h"
 
 //###########################################################################
 // CDependentSegment data processing

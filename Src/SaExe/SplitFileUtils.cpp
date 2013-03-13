@@ -442,7 +442,7 @@ bool ValidatePhraseFilenames(Annotations type, EPhraseFilenameConvention convent
 /**
 * export words for the given file
 */
-bool ExportWordSegments(int & count, EWordFilenameConvention convention, LPCTSTR path, BOOL skipEmptyGloss) {
+bool ExportWordSegments( EWordFilenameConvention convention, LPCTSTR path, BOOL skipEmptyGloss, int & dataCount, int & wavCount) {
     
     CSaDoc * pDoc = (CSaDoc *)((CMainFrame *) AfxGetMainWnd())->GetCurrSaView()->GetDocument();
     POSITION pos = pDoc->GetFirstViewPosition();
@@ -457,7 +457,7 @@ bool ExportWordSegments(int & count, EWordFilenameConvention convention, LPCTSTR
 		if (result==1) {
 			break;
 		}
-        result = ExportWordSegment( count, g, i, dest.c_str(), skipEmptyGloss);
+        result = ExportWordSegment( g, i, dest.c_str(), skipEmptyGloss, dataCount, wavCount);
         if (result<0) {
             return false;
         }
@@ -496,7 +496,7 @@ int ComposeWordSegmentFilename( CGlossSegment * seg, int index, EWordFilenameCon
 * returns -1 on error
 * return 0 on continue
 */
-int ExportWordSegment( int & count, CGlossSegment * seg, int index, LPCTSTR filename, BOOL skipEmptyGloss) {
+int ExportWordSegment( CGlossSegment * seg, int index, LPCTSTR filename, BOOL skipEmptyGloss, int & dataCount, int & wavCount) {
 
 	TRACE("exporting gloss segment\n");
 
@@ -522,24 +522,21 @@ int ExportWordSegment( int & count, CGlossSegment * seg, int index, LPCTSTR file
     bSuccess = pDoc->CopySectionToNewWavFile(dwStart,dwStop-dwStart, filename, FALSE);
     if (!bSuccess) {
         // be sure to delete the file
-        try {
-            CFile::Remove(filename);
-        } catch(...) {
-            TRACE0("Warning: failed to delete file after failed SaveAs\n");
-        }
+        RemoveFile(filename);
 		CSaApp * pApp = (CSaApp *)AfxGetApp();
         pApp->ErrorMessage(IDS_SPLIT_NO_WRITE,filename);
         return -1;
     }
 
-    count++;
+	dataCount++;
+	wavCount++;
 	return 0;
 }
 
 /**
 * export words for the given file
 */
-bool ExportPhraseSegments(Annotations type, int & count, EPhraseFilenameConvention convention, wstring & path) {
+bool ExportPhraseSegments( Annotations type, EPhraseFilenameConvention convention, wstring & path, int & dataCount, int & wavCount) {
 
     CSaDoc * pDoc = (CSaDoc *)((CMainFrame *) AfxGetMainWnd())->GetCurrSaView()->GetDocument();
     POSITION pos = pDoc->GetFirstViewPosition();
@@ -558,7 +555,7 @@ bool ExportPhraseSegments(Annotations type, int & count, EPhraseFilenameConventi
 		if (result==1) {
 			break;
 		}
-		result = ExportPhraseSegment( count, seg, i, filename);
+		result = ExportPhraseSegment( seg, i, filename, dataCount, wavCount);
 		if (result<0) {
 			return false;
 		}
@@ -596,7 +593,7 @@ int ComposePhraseSegmentFilename( Annotations type, CMusicPhraseSegment * seg, i
 /**
 * export words for the given file
 */
-int ExportPhraseSegment( int & count, CMusicPhraseSegment * seg, int index, wstring & filename) {
+int ExportPhraseSegment( CMusicPhraseSegment * seg, int index, wstring & filename, int & dataCount, int & wavCount) {
 
 	TRACE("exporting phrase segment\n");
 
@@ -609,17 +606,14 @@ int ExportPhraseSegment( int & count, CMusicPhraseSegment * seg, int index, wstr
 	BOOL bSuccess = pDoc->CopySectionToNewWavFile(dwStart,dwStop-dwStart,filename.c_str(),FALSE);
 	if (!bSuccess) {
 		// be sure to delete the file
-		try {
-			CFile::Remove(filename.c_str());
-		} catch(...) {
-			TRACE0("Warning: failed to delete file after failed SaveAs\n");
-		}
+		RemoveFile(filename.c_str());
 		CSaApp * pApp = (CSaApp *)AfxGetApp();
 		pApp->ErrorMessage(IDS_SPLIT_NO_WRITE,filename.c_str());
 		return -1;
 	}
 
-	count++;
+	dataCount++;
+	wavCount++;
 	return 0;
 }
 

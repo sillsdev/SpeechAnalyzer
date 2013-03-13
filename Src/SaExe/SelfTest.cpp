@@ -1184,17 +1184,18 @@ BOOL CSASelfTest::LogHexDataCompare(CFile &FileOne,CFile &FileTwo,UINT Highlight
 
 void CSASelfTest::EmptyClipboard()
 {
-	::OpenClipboard(*m_pMain);
-	::EmptyClipboard();
-	::CloseClipboard();
+	if (::OpenClipboard(*m_pMain)) {
+		::EmptyClipboard();
+		::CloseClipboard();
+	}
 }
 
 BOOL CSASelfTest::CheckClipboard(UINT nFormat)//CF_BITMAP
 {
-	::OpenClipboard(*m_pMain);
-	BOOL bReturn = ::IsClipboardFormatAvailable(nFormat);
-	::CloseClipboard();
+	BOOL bReturn = FALSE;
+	if (::OpenClipboard(*m_pMain)) {
+		bReturn = ::IsClipboardFormatAvailable(nFormat);
+		::CloseClipboard();
+	}
 	return bReturn;
 }
-
-// EOF : SelfTest.cpp

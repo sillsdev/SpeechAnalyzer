@@ -332,6 +332,10 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\ChildFrame.cpp"
+				>
+			</File>
+			<File
 				RelativePath="Clip.cpp"
 				>
 				<FileConfiguration
@@ -352,6 +356,10 @@
 						PreprocessorDefinitions=""
 					/>
 				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\ClipboardHelper.cpp"
+				>
 			</File>
 			<File
 				RelativePath="Colors.cpp"
@@ -484,6 +492,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\DlgExportFWResult.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\DlgExportSFM.cpp"
 				>
 			</File>
@@ -556,6 +568,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\DlgSaveAsOptions.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\DlgSplitFile.cpp"
 				>
 			</File>
@@ -624,6 +640,14 @@
 						PreprocessorDefinitions=""
 					/>
 				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\DlgWaveformGenerator.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ExportFWSettings.cpp"
+				>
 			</File>
 			<File
 				RelativePath="FileInformation.cpp"
@@ -2670,28 +2694,6 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="Sa_segm.cpp"
-				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-			</File>
-			<File
 				RelativePath="Sa_start.cpp"
 				>
 				<FileConfiguration
@@ -2934,26 +2936,8 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="saveAsOptions.cpp"
+				RelativePath=".\Segment.cpp"
 				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="SelfTest.cpp"
@@ -3172,26 +3156,12 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="waveformGenerator.cpp"
+				RelativePath=".\WaveformGeneratorProcess.cpp"
 				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\WaveformGeneratorSettings.cpp"
+				>
 			</File>
 			<File
 				RelativePath=".\WaveResampler.cpp"
@@ -3497,7 +3467,15 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ChildFrame.h"
+				>
+			</File>
+			<File
 				RelativePath=".\Clip.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ClipboardHelper.h"
 				>
 			</File>
 			<File
@@ -3561,6 +3539,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\DlgExportFWResult.h"
+				>
+			</File>
+			<File
 				RelativePath=".\DlgExportSFM.h"
 				>
 			</File>
@@ -3589,6 +3571,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\DlgSaveAsOptions.h"
+				>
+			</File>
+			<File
 				RelativePath=".\DlgSplitFile.h"
 				>
 			</File>
@@ -3597,7 +3583,15 @@
 				>
 			</File>
 			<File
+				RelativePath=".\DlgWaveformGenerator.h"
+				>
+			</File>
+			<File
 				RelativePath=".\DocList.h"
+				>
+			</File>
+			<File
+				RelativePath=".\ExportFWSettings.h"
 				>
 			</File>
 			<File
@@ -3638,6 +3632,14 @@
 			</File>
 			<File
 				RelativePath=".\Grid.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Import.h"
+				>
+			</File>
+			<File
+				RelativePath=".\IndependentSegment.h"
 				>
 			</File>
 			<File
@@ -3901,10 +3903,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Sa_segm.h"
-				>
-			</File>
-			<File
 				RelativePath=".\Sa_start.h"
 				>
 			</File>
@@ -3933,7 +3931,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\saveAsOptions.h"
+				RelativePath=".\Segment.h"
 				>
 			</File>
 			<File
@@ -3946,6 +3944,10 @@
 			</File>
 			<File
 				RelativePath=".\sourceParm.h"
+				>
+			</File>
+			<File
+				RelativePath=".\SplitFileUtils.h"
 				>
 			</File>
 			<File
@@ -4009,7 +4011,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\waveformGenerator.h"
+				RelativePath=".\WaveformGeneratorProcess.h"
+				>
+			</File>
+			<File
+				RelativePath=".\WaveformGeneratorSettings.h"
 				>
 			</File>
 			<File

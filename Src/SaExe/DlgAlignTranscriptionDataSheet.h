@@ -1,4 +1,5 @@
-#pragma once
+#ifndef DLGALIGNTRANSCRIPTIONDATASHEET_H
+#define DLGALIGNTRANSCRIPTIONDATASHEET_H
 
 #include "dlgaligntranscriptiondatainitpage.h"
 #include "dlgaligntranscriptiondatatextpage.h"
@@ -38,4 +39,4 @@ public:
 	LRESULT CalculateNext(int currentIDD);
 };
 
-
+#endif

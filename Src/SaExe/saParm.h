@@ -1,11 +1,9 @@
 #ifndef _SOURCE_PARM_H__
+#define _SOURCE_PARM_H__
 
 #include "CSaString.h"
 
-#define _SOURCE_PARM_H__
-
-typedef struct SaParm
-{
+typedef struct SaParm {
   float       fVersion;           // version of sa/utt/ipa chunks (eg 2.1)
   CSaString     szDescription;      // file description
   WORD        wFlags;             // 16 bits of flags for chunks

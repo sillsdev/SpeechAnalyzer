@@ -25,7 +25,7 @@
 #include "dsp\dspTypes.h"
 
 #ifdef DUMP_FORMANT_TRACKS
-#include "sa_segm.h"
+#include "Segment.h"
 #endif
 
 #ifdef _DEBUG

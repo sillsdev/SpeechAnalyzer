@@ -5,7 +5,7 @@
 #include "sa_doc.h"
 #include "DlgAlignTranscriptionDataSheet.h"
 #include "resource.h"
-#include "sa_segm.h"
+#include "Segment.h"
 #include "TranscriptionDataSettings.h"
 
 // CDlgAlignTranscriptionDataSheet

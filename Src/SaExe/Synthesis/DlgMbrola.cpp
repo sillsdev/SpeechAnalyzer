@@ -1,16 +1,16 @@
 // DlgMbrola.cpp : implementation file
 //
-
 #include "stdafx.h"
 #include "sa.h"
 #include "DlgMbrola.h"
 #include "sa_doc.h"
-#include "Process\sa_proc.h"
-#include "sa_segm.h"
+#include "Segment.h"
 #include "sa_view.h"
 #include "mainfrm.h"
+#include "FileUtils.h"
 #include "Process\sa_p_gra.h"
 #include "Process\sa_p_spi.h"
+#include "Process\sa_proc.h"
 #include "synthesis\mbrola\IpaSampa.h"
 #include "synthesis\mbrola\mbrola.h"
 
@@ -34,21 +34,15 @@ CDlgMbrola::CDlgMbrola() : CPropertyPage(CDlgMbrola::IDD)
 	UNUSED_ALWAYS(Err);
 	m_bGetComplete = FALSE;
 	m_bConvertComplete = FALSE;
-	//{{AFX_DATA_INIT(CDlgMbrola)
 	m_bGetDuration = TRUE;
 	m_bGetIPA = TRUE;
 	m_bGetPitch = TRUE;
-	//}}AFX_DATA_INIT
 }
 
 CDlgMbrola::~CDlgMbrola()
 {
 	// remove synthesized wavefile in SA
-	CFileStatus fileStatus; // file status    
-	if (!m_szMBRolaName.IsEmpty() && CFile::GetStatus(m_szMBRolaName, fileStatus))
-	{
-		CFile::Remove(m_szMBRolaName);
-	}
+	RemoveFile(m_szMBRolaName);
 	unload_MBR();
 }
 
@@ -58,18 +52,15 @@ void CDlgMbrola::DoDataExchange(CDataExchange* pDX)
 	CPropertyPage::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_MBROLA_OUTPUT_GRID, m_cOutputGrid);
 	DDX_Check(pDX, IDC_MBROLA_IPA, m_bGetIPA);
-	//{{AFX_DATA_MAP(CDlgMbrola)
 	DDX_Control(pDX, IDC_MBROLA_SOURCE, m_cSource);
 	DDX_Control(pDX, IDC_MBROLA_DICTIONARY, m_cDictionary);
 	DDX_Check(pDX, IDC_MBROLA_DURATION, m_bGetDuration);
 	DDX_Control(pDX, IDC_MBROLA_GRID, m_cGrid);
 	DDX_Check(pDX, IDC_MBROLA_PITCH, m_bGetPitch);
-	//}}AFX_DATA_MAP
 }
 
 
 BEGIN_MESSAGE_MAP(CDlgMbrola, CPropertyPage)
-	//{{AFX_MSG_MAP(CDlgMbrola)
 	ON_BN_CLICKED(IDC_MBROLA_GET, OnMbrolaGet)
 	ON_BN_CLICKED(IDC_MBROLA_SYNTHESIZE, OnMbrolaSynthesize)
 	ON_BN_CLICKED(IDC_MBROLA_PLAY_SYNTH, OnMbrolaPlaySynth)
@@ -78,7 +69,6 @@ BEGIN_MESSAGE_MAP(CDlgMbrola, CPropertyPage)
 	ON_BN_CLICKED(IDC_MBROLA_CONVERT, OnMbrolaConvert)
 	ON_BN_CLICKED(IDC_MBROLA_DISPLAY, OnMbrolaDisplay)
 	ON_CBN_DROPDOWN(IDC_MBROLA_SOURCE, OnDropdownSource)
-	//}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
@@ -531,9 +521,7 @@ void CDlgMbrola::OnMbrolaSynthesize()
 	// create temp filename for synthesized waveform
 	if (m_szMBRolaName.IsEmpty())
 	{
-		TCHAR pszTempPathName[_MAX_PATH];
-		GetTempPath(_MAX_PATH, pszTempPathName);
-		GetTempFileName(pszTempPathName, _T("MBR"), 0, m_szMBRolaName.GetBuffer(_MAX_PATH));
+		GetTempFileName( _T("MBR"), m_szMBRolaName.GetBuffer(_MAX_PATH), _MAX_PATH);
 		m_szMBRolaName.ReleaseBuffer();
 	}
 	HMMIO hmmioFile = mmioOpen(const_cast<TCHAR*>(LPCTSTR(m_szMBRolaName)), NULL, MMIO_CREATE | MMIO_WRITE | MMIO_EXCLUSIVE);

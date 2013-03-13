@@ -13,7 +13,7 @@
 #include "stdafx.h"
 #include "sa_find.h"
 #include "Process\sa_proc.h"
-#include "sa_segm.h"
+#include "Segment.h"
 #include "sa_ipa.h"
 
 #include "sa_doc.h"

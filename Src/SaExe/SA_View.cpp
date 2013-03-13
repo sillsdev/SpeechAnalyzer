@@ -162,7 +162,7 @@
 #include "settings\obstream.h"
 #include "DlgExportFW.h"
 #include "sa_g_stf.h"
-#include "sa_segm.h"
+#include "Segment.h"
 #include "graphsTypes.h"
 #include "resource.h"
 #include "DlgExportXML.h"
@@ -638,7 +638,7 @@ void CSaView::OnExportFW()
 
 	CDlgExportFW dlg(title, gloss, ortho, phonemic, phonetic, pos, reference, phrase);
 	if (dlg.DoModal()==IDOK) {
-		pDoc->DoExportFieldWorks( dlg);
+		pDoc->DoExportFieldWorks( dlg.settings);
 	}
 }
 
@@ -3431,8 +3431,8 @@ void CSaView::ShowInitialStateAndZ()
 	int zThis = z();
 	CSaView* pviewAboveThis = NULL;
 
-	CSaView* pview = pSaApp->pviewBelow(this);
-	for ( ; pview; pview = pSaApp->pviewBelow(pview) )
+	CSaView* pview = pSaApp->GetViewBelow(this);
+	for ( ; pview; pview = pSaApp->GetViewBelow(pview) )
 		if ( zThis < pview->z() )
 			pviewAboveThis = pview;
 
@@ -3475,7 +3475,7 @@ CMDIChildWnd* CSaView::pwndChildFrame() const
 
 /***************************************************************************/
 /***************************************************************************/
-CSaView* CSaView::s_pviewActiveChild(CMDIChildWnd* pwnd)
+CSaView* CSaView::GetViewActiveChild(CMDIChildWnd* pwnd)
 {
 	ASSERT( pwnd->IsKindOf(RUNTIME_CLASS(CMDIChildWnd)) );
 	CSaView* pview = (CSaView*)pwnd->GetActiveView();

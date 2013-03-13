@@ -1,13 +1,8 @@
 // Butterworth.h: interface for the CButterworth class.
 //
 //////////////////////////////////////////////////////////////////////
-
-#if !defined(AFX_BUTTERWORTH_H__DB9351E2_3282_11D5_9FE4_00E098784E13__INCLUDED_)
-#define AFX_BUTTERWORTH_H__DB9351E2_3282_11D5_9FE4_00E098784E13__INCLUDED_
-
-#if _MSC_VER > 1000
-#pragma once
-#endif // _MSC_VER > 1000
+#ifndef BUTTERWORTH_H
+#define BUTTERWORTH_H
 
 #include "Sa_proc.h"
 #include "dsp\ZTransform.h"
@@ -104,4 +99,4 @@ private:
 	CZTransform DelayHalf();
 };
 
-#endif // !defined(AFX_BUTTERWORTH_H__DB9351E2_3282_11D5_9FE4_00E098784E13__INCLUDED_)
+#endif

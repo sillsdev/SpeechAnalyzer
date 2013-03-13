@@ -373,7 +373,7 @@ void CDependentSegment::Add( CSaDoc* pDoc, DWORD dwStart, CSaString& szString, B
 	if (bCheck) pDoc->CheckPoint();
 
 	// insert or append the new dependent segment
-	if (!Insert(nPos, &szString, 0, dwStart, dwDuration)) return; // return on error
+	if (!Insert(nPos, szString, 0, dwStart, dwDuration)) return; // return on error
 	pDoc->SetModifiedFlag(TRUE); // document has been modified
 	pDoc->SetTransModifiedFlag(TRUE); // transcription data has been modified
 	pView->ChangeAnnotationSelection(this, nPos, dwStart, dwStart + dwDuration); // change the selection

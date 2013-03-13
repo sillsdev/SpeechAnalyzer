@@ -5,7 +5,7 @@
 #include "resource.h"
 #include "Sa_Doc.h"
 #include "SA_View.h"
-#include "Sa_segm.h"
+#include "Segment.h"
 #include "Sa_plot.h"
 #include "Sa_graph.h"
 #include "MainFrm.h"

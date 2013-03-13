@@ -1,4 +1,5 @@
-#pragma once
+#ifndef PLOTWNDINFO_H
+#define PLOTWNDINFO_H
 
 class CPlotWndInfo
 {
@@ -19,3 +20,5 @@ public:
 };
 
 typedef CList< CPlotWndInfo *, CPlotWndInfo *> PlotWndListDef;
+
+#endif

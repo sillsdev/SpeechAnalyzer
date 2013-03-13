@@ -19,6 +19,7 @@
 #define IDR_SA_MIDTYPE                  99
 #define IDD_GRAPHSTYPES                 101
 #define IDD_PARAMETERSPITCHPAGE         103
+#define IDD_EXPORTFWRESULT              104
 #define IDD_INFORMATIONFILEPAGE         105
 #define IDC_FILEDESC                    106
 #define IDC_FILENAME                    107
@@ -1185,6 +1186,9 @@
 #define IDC_COMBO_FIELDWORKS_PROJECT    2074
 #define IDC_STATIC_FIELDWORKS_PROJECT   2075
 #define IDC_STATIC_TAGS                 2076
+#define IDC_STATIC_WAV_COUNT            2077
+#define IDC_STATIC_DATA_COUNT           2078
+#define IDC_STATIC_SFM_COUNT            2079
 #define IDS_PLAYER_SMALL                3000
 #define IDS_PLAYER_LARGE                3001
 #define IDS_STATTXT_PROCESSING          4000
@@ -1661,7 +1665,7 @@
 #define _APS_3D_CONTROLS                     1
 #define _APS_NEXT_RESOURCE_VALUE        365
 #define _APS_NEXT_COMMAND_VALUE         33225
-#define _APS_NEXT_CONTROL_VALUE         2077
-#define _APS_NEXT_SYMED_VALUE           104
+#define _APS_NEXT_CONTROL_VALUE         2080
+#define _APS_NEXT_SYMED_VALUE           105
 #endif
 #endif

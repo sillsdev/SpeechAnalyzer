@@ -27,6 +27,7 @@
 #include "sa.h"
 #include "mainfrm.h"
 #include "settings\obstream.h"
+#include "FileUtils.h"
 
 //###########################################################################
 // CDlgWaveNotifyObj Notify object for playing wave data
@@ -1553,9 +1554,7 @@ void CDlgRecorder::SetRecorderMode(UINT nMode)
 BOOL CDlgRecorder::CreateTempFile()
 {
 	// create the temporary file
-	TCHAR lpszTempPath[_MAX_PATH];
-	GetTempPath(_MAX_PATH, lpszTempPath);
-	GetTempFileName(lpszTempPath, _T("WAV"), 0, m_szFileName);
+	GetTempFileName( _T("WAV"), m_szFileName, _countof(m_szFileName));
 	// create and open the file
 	CSaApp* pApp = (CSaApp*)AfxGetApp();
 	m_hmmioFile = mmioOpen(m_szFileName, NULL, MMIO_CREATE | MMIO_READWRITE | MMIO_EXCLUSIVE);
@@ -1623,7 +1622,7 @@ void CDlgRecorder::DeleteTempFile()
 		if (m_hmmioFile) mmioClose(m_hmmioFile, 0);
 		try
 		{
-			CFile::Remove(m_szFileName);
+			RemoveFile(m_szFileName);
 			m_szFileName[0] = 0;
 		}
 		catch (CFileException e)

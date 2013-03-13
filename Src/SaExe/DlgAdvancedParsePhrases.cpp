@@ -16,7 +16,7 @@
 #include "mainfrm.h"
 #include "sa_view.h"
 #include "sa_doc.h"
-#include "sa_segm.h"
+#include "Segment.h"
 
 IMPLEMENT_DYNAMIC(CDlgAdvancedParsePhrases, CDialog)
 

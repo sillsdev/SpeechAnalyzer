@@ -1,9 +1,5 @@
-#if !defined FORMANTTRACKER_H
-#define  FORMANTTRACKER_H
-
-#if _MSC_VER > 1000
-#pragma once
-#endif // _MSC_VER > 1000
+#ifndef FORMANTTRACKER_H
+#define FORMANTTRACKER_H
 
 #include "..\DSP\ZTransform.h"
 

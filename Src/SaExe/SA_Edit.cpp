@@ -31,7 +31,7 @@
 #include "stdafx.h"
 #include "sa_edit.h"
 #include "Process\sa_proc.h"
-#include "sa_segm.h"
+#include "Segment.h"
 
 #include "chrchart\ch_dlg.h"
 #include "sa_doc.h"

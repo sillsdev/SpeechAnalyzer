@@ -17,6 +17,7 @@
 #include "sa.h"
 #include <windowsx.h>  // for GlobalAllocPtr
 #include <process.h>
+#include "FileUtils.h"
 
 IMPLEMENT_SERIAL(CDib, CObject, 0)
 
@@ -358,11 +359,11 @@ void CDib::CopyToClipboard(CWnd* pWnd) const
 		return;
 	}
 
-	pWnd->OpenClipboard();
-	EmptyClipboard();
-	SetClipboardData(CF_DIB, hDIB);
-	CloseClipboard();
-
+	if (pWnd->OpenClipboard()) {
+		EmptyClipboard();
+		SetClipboardData(CF_DIB, hDIB);
+		CloseClipboard();
+	}
 }
 
 // SDM 1.06.6U4 moved function from mainframe
@@ -415,16 +416,15 @@ void CDib::Save(void)
 			{
 				szPngFilename = szPathnameExtended;
 
-				TCHAR lpszTempPath[_MAX_PATH];
-				GetTempPath(_MAX_PATH, lpszTempPath);
-				GetTempFileName(lpszTempPath, _T("TMP"), 0, szBmpFilename.GetBuffer(_MAX_PATH));
-				szBmpFilename.ReleaseBuffer();
-				CFile::Remove(szBmpFilename); // delete temporary file automatically created by GetTempFileName
-				szBmpFilename += ".bmp";  // This is likely but not guaranteed to be unique, but bmp2png insist that bmp's have ".bmp" extension
+				GetTempFileName( _T("TMP"), szBmpFilename.GetBuffer(_MAX_PATH), MAX_PATH);
+				// delete temporary file automatically created by GetTempFileName
+				RemoveFile(szBmpFilename); 
+				// This is likely but not guaranteed to be unique, but bmp2png insist that bmp's have ".bmp" extension
+				szBmpFilename += L".bmp";
 			}
 			else
 			{
-				szBmpFilename = szPathnameExtended;
+				szBmpFilename =  szPathnameExtended;
 			}
 
 			if (!file.Open(szBmpFilename, CFile::modeCreate | CFile::modeWrite))
@@ -452,7 +452,7 @@ void CDib::Save(void)
 						{
 							AfxMessageBox(IDS_ERROR_SCREEN_CAPTURE_SAVE);
 							TRACE(_T("bmp2png result = %d\n"), nResult);
-							CFile::Remove(szBmpFilename); // delete temporary bmp
+							RemoveFile(szBmpFilename); // delete temporary bmp
 						}
 					}
 					catch(...)

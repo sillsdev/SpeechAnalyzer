@@ -1,4 +1,5 @@
-#pragma once
+#ifndef DLGALIGNTRANSCRIPTIONDATAINITPAGE_H
+#define DLGALIGNTRANSCRIPTIONDATAINITPAGE_H
 
 // CDlgAlignTranscriptionDataInitPage
 #include "resource.h"
@@ -31,4 +32,4 @@ public:
 	virtual LRESULT OnWizardNext();
 };
 
-
+#endif

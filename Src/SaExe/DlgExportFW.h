@@ -17,6 +17,7 @@
 #include "AppDefs.h"
 #include "CSaString.h"
 #include "resource.h"
+#include "ExportFWSettings.h"
 
 class CSaDoc;
 
@@ -35,15 +36,7 @@ public:
 				  BOOL phrase,
 				  CWnd* pParent = NULL);
 
-	BOOL bGloss;
-	BOOL bOrtho;
-	BOOL bPhonemic;
-	BOOL bPhonetic;
-	BOOL bPOS;
-	BOOL bReference;
-	BOOL bPhrase;
-	CString szDocTitle;
-	CString szPath;
+	CExportFWSettings settings;
 
 protected:
 	virtual BOOL OnInitDialog();

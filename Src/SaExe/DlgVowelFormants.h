@@ -1,18 +1,10 @@
-//{{AFX_INCLUDES()
-//}}AFX_INCLUDES
-#if !defined(AFX_DLGVOWELFORMANTS_H__72C28DC1_E58D_11D5_9FE4_00E0988A4887__INCLUDED_)
-#define AFX_DLGVOWELFORMANTS_H__72C28DC1_E58D_11D5_9FE4_00E0988A4887__INCLUDED_
-
-#if _MSC_VER > 1000
-#pragma once
-#endif // _MSC_VER > 1000
+#ifndef DLGVOWELFORMANTS_H
+#define DLGVOWELFORMANTS_H
 
 #include "activex\flexeditgrid.h"
-// DlgVowelFormants.h : header file
-//
 
-class CVowelFormants
-{
+class CVowelFormants {
+
 public:
 	CVowelFormants(const CSaString &szVowel, double inF1, double inF2, double inF3, double inF4 = UNDEFINED_DATA);
 	CSaString m_szVowel;
@@ -114,31 +106,21 @@ public:
 	CVowelFormantSet &m_cVowelSetOK;
 	CVowelFormantSet m_cSet;
 	CFlexEditGrid	m_cGrid;
-	//{{AFX_DATA(CDlgVowelFormants)
 	enum { IDD = IDD_VOWEL_FORMANTS };
 	int		m_nGender;
 	CSaString	m_szSetName;
-	//}}AFX_DATA
 
-
-	// Overrides
-	// ClassWizard generated virtual function overrides
-	//{{AFX_VIRTUAL(CDlgVowelFormants)
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
-	//}}AFX_VIRTUAL
 
 	// Implementation
 	BOOL OnValidateGenderChange();
 protected:
 
-	// Generated message map functions
-	//{{AFX_MSG(CDlgVowelFormants)
 	afx_msg void OnGenderChange();
 	virtual BOOL OnInitDialog();
 	virtual void OnOK();
 	virtual void OnCancel();
-	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()
 };
 
@@ -146,7 +128,4 @@ const CVowelFormantsVector& GetVowelVector(int nGender);
 const CVowelFormantSet& GetDefaultVowelSet();
 CVowelFormantSets& GetVowelSets();
 
-//{{AFX_INSERT_LOCATION}}
-// Microsoft Visual C++ will insert additional declarations immediately before the previous line.
-
-#endif // !defined(AFX_DLGVOWELFORMANTS_H__72C28DC1_E58D_11D5_9FE4_00E0988A4887__INCLUDED_)
+#endif

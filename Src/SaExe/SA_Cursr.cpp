@@ -31,7 +31,7 @@
 #include "sa_plot.h"
 #include "sa_graph.h"
 #include "Process\sa_proc.h"
-#include "sa_segm.h"
+#include "Segment.h"
 #include "Process\sa_p_fra.h"
 
 #include "math.h"

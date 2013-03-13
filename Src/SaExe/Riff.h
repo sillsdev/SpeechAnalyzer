@@ -9,16 +9,10 @@
 //   03/08/2001 SDM Initial version very rudimentary Riff support expect to collect 
 //                  various riff functionality from around SA.
 /////////////////////////////////////////////////////////////////////////////
+#ifndef RIFF_H
+#define RIFF_H
 
-#if !defined(_SA_RIFF_H)
-#define _SA_RIFF_H
-
-#if _MSC_VER > 1000
-#pragma once
-#endif // _MSC_VER > 1000
-
-class CRiff  
-{
+class CRiff  {
 public:
 	CRiff();
 	virtual ~CRiff();
@@ -26,4 +20,4 @@ public:
 	static BOOL NewWav(const TCHAR* szPathName, PCMWAVEFORMAT &pcm, const TCHAR* szRawDataPath);
 };
 
-#endif // _SA_RIFF_H
+#endif

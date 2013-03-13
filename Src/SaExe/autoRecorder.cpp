@@ -11,7 +11,6 @@
 //    SDM   Extract from sa_dlg2.cpp
 //
 /////////////////////////////////////////////////////////////////////////////
-
 #include "stdafx.h"
 #include "sa_plot.h"
 #include "Process\sa_proc.h"
@@ -25,6 +24,7 @@
 #include "doclist.h"
 #include "sa_mplot.h"
 #include "sa.h"
+#include "FileUtils.h"
 
 //###########################################################################
 // CDlgAutoRecorder dialog
@@ -575,7 +575,7 @@ BOOL CDlgAutoRecorder::CreateTempFile()
 	// create the temporary file
 	TCHAR lpszTempPath[_MAX_PATH];
 	GetTempPath(_MAX_PATH, lpszTempPath);
-	GetTempFileName(lpszTempPath, _T("WAV"), 0, m_szFileName);
+	GetTempFileName( lpszTempPath, _T("WAV"), 0, m_szFileName);
 
 	// create and open the file
 	CSaApp* pApp = (CSaApp*)AfxGetApp();
@@ -638,22 +638,14 @@ BOOL CDlgAutoRecorder::CreateTempFile()
 /***************************************************************************/
 void CDlgAutoRecorder::DeleteTempFile()
 {
-	if (m_szFileName[0] != 0)
-	{
+	if (m_szFileName[0] != 0) {
 		// close and delete the temporary wave file
-		if (m_hmmioFile) mmioClose(m_hmmioFile, 0);
-		m_hmmioFile = NULL;
-		try
-		{
-			CFile::Remove(m_szFileName);
-			m_szFileName[0] = 0;
+		if (m_hmmioFile) {
+			mmioClose(m_hmmioFile, 0);
+			m_hmmioFile = NULL;
 		}
-		catch (CFileException e)
-		{
-			// error deleting file
-			CSaApp* pApp = (CSaApp*)AfxGetApp();
-			pApp->ErrorMessage(IDS_ERROR_DELTEMPFILE, m_szFileName);
-		}
+		RemoveFile(m_szFileName);
+		wmemset(m_szFileName,0,_countof(m_szFileName));
 	}
 }
 

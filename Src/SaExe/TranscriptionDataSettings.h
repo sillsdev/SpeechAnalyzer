@@ -1,4 +1,5 @@
-#pragma once
+#ifndef TRANSCRIPTIONDATASETTINGS_H
+#define TRANSCRIPTIONDATASETTINGS_H
 
 #include "csastring.h"
 #include "TranscriptionHelper.h"
@@ -25,3 +26,4 @@ public:
 	CTranscriptionData m_TranscriptionData;
 };
 
+#endif

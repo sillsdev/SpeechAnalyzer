@@ -1,4 +1,5 @@
-#pragma once
+#ifndef DLGALIGNTRANSCRIPTIONDATAIMPORTREFPAGE_H
+#define DLGALIGNTRANSCRIPTIONDATAIMPORTREFPAGE_H
 
 #include "resource.h"
 #include "AppDefs.h"
@@ -46,4 +47,5 @@ public:
 	virtual LRESULT OnWizardBack();
 };
 
+#endif
 

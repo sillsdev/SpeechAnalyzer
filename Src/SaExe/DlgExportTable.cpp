@@ -3,7 +3,7 @@
 #include "CSaString.h"
 #include "Sa_Doc.h"
 #include "SA_View.h"
-#include "Sa_segm.h"
+#include "Segment.h"
 #include "MainFrm.h"
 #include "GlossSegment.h"
 #include "PhoneticSegment.h"
@@ -1011,7 +1011,7 @@ static void CreateWordSegments(const int nWord, int & nSegments) {
             }
             DWORD dwBegin = dwStart + nCount;
             CSaString szEmpty(SEGMENT_DEFAULT_CHAR);
-            pPhonetic->Insert(nIndex, &szEmpty, FALSE, dwBegin, 1);
+            pPhonetic->Insert(nIndex, szEmpty, FALSE, dwBegin, 1);
             nIndex = pPhonetic->GetNext(nIndex);
             nCount++;
         }

@@ -28,7 +28,7 @@
 
 #include "stdafx.h"
 #include "Process\sa_proc.h"
-#include "sa_segm.h"
+#include "Segment.h"
 #include "Process\sa_p_lou.h"
 #include "Process\sa_p_gra.h"
 #include "Process\sa_p_pit.h"

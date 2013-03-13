@@ -10,9 +10,9 @@
 #include "sa_p_cha.h"
 #include "sa_p_pit.h"
 #include "sa_p_lou.h"
-
 #include "isa_doc.h"
 #include "resource.h"
+#include "FileUtils.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE
@@ -47,21 +47,13 @@ CProcessChange::CProcessChange()
 CProcessChange::~CProcessChange()
 {
 	// delete the temporary quality file
-	try
-	{
-		if (m_qualityFileStatus.m_szFullName[0] != 0)
-			CFile::Remove(m_qualityFileStatus.m_szFullName);
-	}
-	catch (CFileException e)
-	{
-		// error removing file
-		ErrorMessage(IDS_ERROR_DELTEMPFILE, m_qualityFileStatus.m_szFullName);
-	}
+	RemoveFile(m_qualityFileStatus.m_szFullName);
 	if (m_pQualityFile) delete m_pQualityFile;
 	// free the quality buffer memory
 	if (m_hQualityData)
-	{ ::GlobalUnlock(m_hQualityData);
-	::GlobalFree(m_hQualityData);
+	{ 
+		::GlobalUnlock(m_hQualityData);
+		::GlobalFree(m_hQualityData);
 	}
 }
 
@@ -74,18 +66,10 @@ CProcessChange::~CProcessChange()
 /***************************************************************************/
 long CProcessChange::Exit(int nError)
 {
-	if (m_pQualityFile) m_pQualityFile->Abort();
-	try
-	{
-		// delete the quality temporary file
-		if (m_qualityFileStatus.m_szFullName[0] != 0)
-			CFile::Remove(m_qualityFileStatus.m_szFullName);
+	if (m_pQualityFile) {
+		m_pQualityFile->Abort();
 	}
-	catch (CFileException e)
-	{
-		// error removing file
-		ErrorMessage(IDS_ERROR_DELTEMPFILE, m_qualityFileStatus.m_szFullName);
-	}
+	RemoveFile(m_qualityFileStatus.m_szFullName);
 	m_qualityFileStatus.m_szFullName[0] = 0;
 	return CDataProcess::Exit(nError);
 }
@@ -202,17 +186,7 @@ DWORD CProcessChange::CalculateACF16(CDataProcess* pProc, unsigned char * pSRDda
 void CProcessChange::SetDataInvalid()
 {
 	CDataProcess::SetDataInvalid();
-	try
-	{
-		// delete the quality temporary file
-		if (m_qualityFileStatus.m_szFullName[0] != 0)
-			CFile::Remove(m_qualityFileStatus.m_szFullName);
-	}
-	catch (CFileException e)
-	{
-		// error removing file
-		ErrorMessage(IDS_ERROR_DELTEMPFILE, m_qualityFileStatus.m_szFullName);
-	}
+	RemoveFile(m_qualityFileStatus.m_szFullName);
 	m_qualityFileStatus.m_szFullName[0] = 0;
 }
 

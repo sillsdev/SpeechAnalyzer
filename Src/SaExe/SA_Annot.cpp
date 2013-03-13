@@ -91,7 +91,7 @@
 #include "sa_plot.h"
 #include "sa_graph.h"
 #include "Process\sa_proc.h"
-#include "sa_segm.h"
+#include "Segment.h"
 #include "dsp\dspTypes.h"
 // SDM 1.06.6
 #include "sa_edit.h"

@@ -75,8 +75,7 @@ CFlexEditGrid::~CFlexEditGrid()
 BOOL CFlexEditGrid::Create(LPCTSTR , LPCTSTR , DWORD dwStyle, const RECT& rect,
 	CWnd* pParentWnd, UINT nID)
 {
-	BSTR bstrLicense = ::SysAllocStringLen(pwchLicenseKeyMSHFlxGd,
-		sizeof(pwchLicenseKeyMSHFlxGd)/sizeof(WCHAR));
+	BSTR bstrLicense = ::SysAllocStringLen(pwchLicenseKeyMSHFlxGd, sizeof(pwchLicenseKeyMSHFlxGd)/sizeof(WCHAR));
 
 	BOOL bResult = CMSHFlexGrid::Create(NULL, dwStyle, rect, pParentWnd, nID, NULL, FALSE, bstrLicense);
 
@@ -597,7 +596,6 @@ void CFlexEditGrid::OnEditPaste()
 	{
 		HGLOBAL hClipData = NULL;
 		char * lpClipData = NULL;
-
 		// get text from the clipboard
 		if (NULL!=(hClipData = GetClipboardData(CF_TEXT)))
 		{
@@ -615,10 +613,12 @@ void CFlexEditGrid::OnEditPaste()
 
 void CFlexEditGrid::OnUpdateEditPaste(CCmdUI* pCmdUI) 
 {
-	if (IsClipboardFormatAvailable(CF_TEXT))
-		pCmdUI->Enable();
-	else
-		pCmdUI->Enable(FALSE);	
+	BOOL enable = FALSE;
+	if (OpenClipboard()) {
+		enable = IsClipboardFormatAvailable(CF_TEXT);
+		CloseClipboard();
+	}
+	pCmdUI->Enable(enable);
 }
 
 // Converts a range of grid cells to a string

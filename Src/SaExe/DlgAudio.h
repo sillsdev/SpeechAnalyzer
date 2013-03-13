@@ -1,7 +1,8 @@
 // DlgAudio.h: interface for the CDlgAudio class.
 //
 //////////////////////////////////////////////////////////////////////
-#pragma once
+#ifndef DLGAUDIO_H
+#define DLGAUDIO_H
 
 class CDlgAudio : public CDialog  
 {
@@ -22,3 +23,4 @@ public:
 
 };
 
+#endif

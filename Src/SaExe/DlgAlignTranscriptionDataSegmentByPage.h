@@ -1,4 +1,5 @@
-#pragma once
+#ifndef DLGALIGNTRANSCRIPTIONSEGMENTSBYPAGE_H
+#define DLGALIGNTRANSCRIPTIONSEGMENTSBYPAGE_H
 
 #include "resource.h"
 #include "CSaString.h"
@@ -23,3 +24,5 @@ public:
 
 	void SetText( int nItem, UINT nIDS);
 };
+
+#endif

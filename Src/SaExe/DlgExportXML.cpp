@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "DlgExportXML.h"
 #include "sa_doc.h"
-#include "Sa_segm.h"
+#include "Segment.h"
 #include "MainFrm.h"
 #include "SA_View.h"
 #include "GlossSegment.h"
@@ -389,7 +389,7 @@ void CDlgExportXML::OnOK() {
         // create and write number of phones text
         int nNumber = 0;
         int nLoop = 0;
-        if (pDoc->GetSegment(PHONETIC)->GetString()->GetLength() > 0) {
+        if (pDoc->GetSegment(PHONETIC)->GetStringLength() > 0) {
             // find number of phones
             while (TRUE) {
                 nLoop++;

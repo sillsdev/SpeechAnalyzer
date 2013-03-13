@@ -5,7 +5,7 @@
 #include "SA_View.h"
 #include "TranscriptionDataSettings.h"
 #include "RESULT.H"
-#include "Sa_segm.h"
+#include "Segment.h"
 #include "Sa_graph.h"
 #include "DlgImport.h"
 #include "GlossSegment.h"
@@ -294,7 +294,7 @@ void CImport::AutoAlign( CSaDoc * pSaDoc, const CSaString * Phonetic, const CSaS
 			// Create a gloss break at initial position SDM 1.5Test8.2
 			if (pArray[WORD_OFFSETS][0] != pArray[CHARACTER_OFFSETS][0]) {
 				CSaString szEmpty = "";
-				pSaDoc->GetSegment(GLOSS)->Insert(0, &szEmpty, FALSE, pArray[CHARACTER_OFFSETS][0], pArray[WORD_OFFSETS][0]-pArray[CHARACTER_OFFSETS][0]);
+				pSaDoc->GetSegment(GLOSS)->Insert(0, szEmpty, FALSE, pArray[CHARACTER_OFFSETS][0], pArray[WORD_OFFSETS][0]-pArray[CHARACTER_OFFSETS][0]);
 				pArray[WORD_OFFSETS].InsertAt(0,pArray[CHARACTER_OFFSETS][0]);
 				settings.m_szGloss = CSaString(EDIT_WORD_DELIMITER) + settings.m_szGloss;
 				settings.m_szPhonetic = CSaString(EDIT_WORD_DELIMITER) + settings.m_szPhonetic;
@@ -442,7 +442,7 @@ void CImport::AutoAlign( CSaDoc * pSaDoc, const CSaString * Phonetic, const CSaS
 					if (szNext.GetLength()==0) {
 						szNext+=SEGMENT_DEFAULT_CHAR;
 					}
-					pSegment->Insert(pSegment->GetOffsetSize(),&szNext, FALSE, pArray[CHARACTER_OFFSETS][nIndex], pArray[CHARACTER_DURATIONS][nIndex]);
+					pSegment->Insert(pSegment->GetOffsetSize(),szNext, FALSE, pArray[CHARACTER_OFFSETS][nIndex], pArray[CHARACTER_DURATIONS][nIndex]);
 					break;
 				case IDC_WORD:
 					if (nGlossIndex>=pArray[WORD_OFFSETS].GetSize()) { // No more word breaks continue one character at a time
@@ -457,7 +457,7 @@ void CImport::AutoAlign( CSaDoc * pSaDoc, const CSaString * Phonetic, const CSaS
 					if (szNext.GetLength()==0) {
 						szNext+=SEGMENT_DEFAULT_CHAR;
 					}
-					pSegment->Insert(pSegment->GetOffsetSize(),&szNext, FALSE, pArray[CHARACTER_OFFSETS][nIndex], pArray[CHARACTER_DURATIONS][nIndex]);
+					pSegment->Insert(pSegment->GetOffsetSize(),szNext, FALSE, pArray[CHARACTER_OFFSETS][nIndex], pArray[CHARACTER_DURATIONS][nIndex]);
 					break;
 				case IDC_CHARACTER:
 					// the line is entered one character per segment
@@ -489,7 +489,7 @@ void CImport::AutoAlign( CSaDoc * pSaDoc, const CSaString * Phonetic, const CSaS
 						}
 						szNext += szTemp;
 					}
-					pSegment->Insert( pSegment->GetOffsetSize(),&szNext, FALSE, pArray[CHARACTER_OFFSETS][nIndex], pArray[CHARACTER_DURATIONS][nIndex]);
+					pSegment->Insert( pSegment->GetOffsetSize(),szNext, FALSE, pArray[CHARACTER_OFFSETS][nIndex], pArray[CHARACTER_DURATIONS][nIndex]);
 					break;
 				}
 			}
@@ -498,7 +498,7 @@ void CImport::AutoAlign( CSaDoc * pSaDoc, const CSaString * Phonetic, const CSaS
 			if (szNext.GetLength()==0) {
 				szNext+=SEGMENT_DEFAULT_CHAR;
 			}
-			pSegment->Insert(pSegment->GetOffsetSize(),&szNext,FALSE,pArray[CHARACTER_OFFSETS][nOffsetSize-1], pArray[CHARACTER_DURATIONS][nOffsetSize-1]);
+			pSegment->Insert(pSegment->GetOffsetSize(),szNext,FALSE,pArray[CHARACTER_OFFSETS][nOffsetSize-1], pArray[CHARACTER_DURATIONS][nOffsetSize-1]);
 			
 			// SDM 1.06.8 apply input filter to segment
 			if (pSegment->GetInputFilter()) {
@@ -524,7 +524,7 @@ void CImport::AutoAlign( CSaDoc * pSaDoc, const CSaString * Phonetic, const CSaS
 					szNext = pTable->GetNext(nAlignMode, nStringIndex, settings.m_szPhonemic);
 					if (szNext.GetLength()!=0) {
 						// Skip Empty Segments
-						pSegment->Insert(pSegment->GetOffsetSize(),&szNext, FALSE,pArray[CHARACTER_OFFSETS][nIndex], pArray[CHARACTER_DURATIONS][nIndex]);
+						pSegment->Insert(pSegment->GetOffsetSize(),szNext, FALSE,pArray[CHARACTER_OFFSETS][nIndex], pArray[CHARACTER_DURATIONS][nIndex]);
 					}
 					break;
 				case IDC_WORD:
@@ -542,7 +542,7 @@ void CImport::AutoAlign( CSaDoc * pSaDoc, const CSaString * Phonetic, const CSaS
 						// Skip NULL strings
 						continue; 
 					}
-					pSegment->Insert(pSegment->GetOffsetSize(),&szNext, FALSE, pArray[CHARACTER_OFFSETS][nIndex], pArray[CHARACTER_DURATIONS][nIndex]);
+					pSegment->Insert(pSegment->GetOffsetSize(),szNext, FALSE, pArray[CHARACTER_OFFSETS][nIndex], pArray[CHARACTER_DURATIONS][nIndex]);
 					break;
 				case IDC_CHARACTER:
 					// the line is entered one character per segment
@@ -571,7 +571,7 @@ void CImport::AutoAlign( CSaDoc * pSaDoc, const CSaString * Phonetic, const CSaS
 						szNext += szTemp;
 					}
 					if (szNext.GetLength()>0) {
-						pSegment->Insert(pSegment->GetOffsetSize(),&szNext, FALSE,pArray[CHARACTER_OFFSETS][nIndex], pArray[CHARACTER_DURATIONS][nIndex]);
+						pSegment->Insert(pSegment->GetOffsetSize(),szNext, FALSE,pArray[CHARACTER_OFFSETS][nIndex], pArray[CHARACTER_DURATIONS][nIndex]);
 					}
 					break;
 				}
@@ -580,7 +580,7 @@ void CImport::AutoAlign( CSaDoc * pSaDoc, const CSaString * Phonetic, const CSaS
 			szNext = pTable->GetRemainder(nAlignMode, nStringIndex, settings.m_szPhonemic);
 			// Skip empty segments
 			if (szNext.GetLength()!=0) {
-				pSegment->Insert(pSegment->GetOffsetSize(),&szNext,FALSE, pArray[CHARACTER_OFFSETS][nOffsetSize-1], pArray[CHARACTER_DURATIONS][nOffsetSize-1]);
+				pSegment->Insert(pSegment->GetOffsetSize(),szNext,FALSE, pArray[CHARACTER_OFFSETS][nOffsetSize-1], pArray[CHARACTER_DURATIONS][nOffsetSize-1]);
 			}
 			// SDM 1.06.8 apply input filter to segment
 			if (pSegment->GetInputFilter()) {
@@ -616,7 +616,7 @@ void CImport::AutoAlign( CSaDoc * pSaDoc, const CSaString * Phonetic, const CSaS
 					szNext = pTable->GetNext(nAlignMode, nStringIndex, settings.m_szOrthographic);
 					if (szNext.GetLength()!=0) {
 						// Skip Empty Segments
-						pSegment->Insert(pSegment->GetOffsetSize(),&szNext, FALSE,pArray[CHARACTER_OFFSETS][nIndex], pArray[CHARACTER_DURATIONS][nIndex]);
+						pSegment->Insert(pSegment->GetOffsetSize(),szNext, FALSE,pArray[CHARACTER_OFFSETS][nIndex], pArray[CHARACTER_DURATIONS][nIndex]);
 					}
 					break;
 				case IDC_WORD:
@@ -635,7 +635,7 @@ void CImport::AutoAlign( CSaDoc * pSaDoc, const CSaString * Phonetic, const CSaS
 						// Skip NULL words
 						continue; 
 					}
-					pSegment->Insert(pSegment->GetOffsetSize(),&szNext, FALSE, pArray[CHARACTER_OFFSETS][nIndex], pArray[CHARACTER_DURATIONS][nIndex]);
+					pSegment->Insert(pSegment->GetOffsetSize(),szNext, FALSE, pArray[CHARACTER_OFFSETS][nIndex], pArray[CHARACTER_DURATIONS][nIndex]);
 					break;
 				case IDC_CHARACTER:
 					// the line is entered one character per segment
@@ -664,7 +664,7 @@ void CImport::AutoAlign( CSaDoc * pSaDoc, const CSaString * Phonetic, const CSaS
 						szNext += szTemp;
 					}
 					if (szNext.GetLength()>0) {
-						pSegment->Insert(pSegment->GetOffsetSize(),&szNext, FALSE,pArray[CHARACTER_OFFSETS][nIndex], pArray[CHARACTER_DURATIONS][nIndex]);
+						pSegment->Insert(pSegment->GetOffsetSize(),szNext, FALSE,pArray[CHARACTER_OFFSETS][nIndex], pArray[CHARACTER_DURATIONS][nIndex]);
 					}
 					break;
 				}
@@ -673,7 +673,7 @@ void CImport::AutoAlign( CSaDoc * pSaDoc, const CSaString * Phonetic, const CSaS
 			szNext = pTable->GetRemainder(nAlignMode, nStringIndex, settings.m_szOrthographic);
 			if (szNext.GetLength()!=0) {
 				// Skip empty segments
-				pSegment->Insert(pSegment->GetOffsetSize(),&szNext,FALSE,pArray[CHARACTER_OFFSETS][nOffsetSize-1], pArray[CHARACTER_DURATIONS][nOffsetSize-1]);
+				pSegment->Insert(pSegment->GetOffsetSize(),szNext,FALSE,pArray[CHARACTER_OFFSETS][nOffsetSize-1], pArray[CHARACTER_DURATIONS][nOffsetSize-1]);
 			}
 			
 			// SDM 1.06.8 apply input filter to segment
@@ -875,7 +875,7 @@ static void CreateWordSegments(const int nWord, int& nSegments)
 			if (nIndex == -1) nIndex = pPhonetic->GetOffsetSize();
 			DWORD dwBegin = dwStart + nCount;
 			CSaString szEmpty(SEGMENT_DEFAULT_CHAR);
-			pPhonetic->Insert(nIndex, &szEmpty, FALSE, dwBegin, 1);
+			pPhonetic->Insert(nIndex, szEmpty, FALSE, dwBegin, 1);
 			nIndex = pPhonetic->GetNext(nIndex);
 			nCount++;
 		}
@@ -1016,8 +1016,8 @@ BOOL CImport::ReadTable(Object_istream &obs, int nMode)
 				if (nIndex != -1) // adjust existing segments
 					pPhonetic->Adjust(pDoc, nWordCurr, dwStart, dwDuration);
 				else // add segments
-					pPhonetic->Insert(nWordCurr, &szEmpty, FALSE, dwStart, dwDuration);
-				pGloss->Insert(nWordCurr, &szEmptyGloss, 0, dwStart, dwDuration);
+					pPhonetic->Insert(nWordCurr, szEmpty, FALSE, dwStart, dwDuration);
+				pGloss->Insert(nWordCurr, szEmptyGloss, 0, dwStart, dwDuration);
 				nIndex = nWordCurr;
 				nWordCurr++;
 				dwStart += dwDuration;

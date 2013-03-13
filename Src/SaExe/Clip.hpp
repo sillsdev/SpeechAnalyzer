@@ -4,34 +4,34 @@
 #include <windows.h>
 #include <string.h>
 
-extern "C"
-{
+extern "C" {
 
-  class Clipboard {
+	class Clipboard {
 
-    HWND hWindow;
-    int clipboard_open;
-    void close();
-    void reportError();
-    char* string;
-    unsigned int RTFFormat;
+		HWND hWindow;
+		int clipboard_open;
+		void close();
+		void reportError();
+		char * string;
+		unsigned int RTFFormat;
 
-  public:
+	public:
+		Clipboard(HWND);
 
-    Clipboard(HWND);
+		Clipboard & operator <<(const char *);
+		Clipboard & operator >>(char *&);
+		int hasText();
 
-    Clipboard& operator <<(const char*);
-    Clipboard& operator >>(char*&);
-    int hasText();
+		void SetTextRTF(const char * RTFstring, const char * TEXTstring);
 
-    void SetTextRTF(const char* RTFstring, const char* TEXTstring);
-
-    ~Clipboard() {close();}
-  };
+		~Clipboard() {
+			close();
+		}
+	};
 
 }
 
-extern char *RTFprolog;
-extern char *RTFepilog;
+extern char * RTFprolog;
+extern char * RTFepilog;
 
 #endif

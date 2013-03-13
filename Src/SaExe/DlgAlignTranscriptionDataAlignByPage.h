@@ -1,4 +1,5 @@
-#pragma once
+#ifndef DLGALIGNTRANSCRIPTIONDATAALIGNBYPAGE_H
+#define DLGALIGNTRANSCRIPTIONDATAALIGNBYPAGE_H
 
 #include "resource.h"
 
@@ -22,3 +23,5 @@ public:
 	void SetText( int nItem, UINT nIDS);
 	virtual LRESULT OnWizardBack();
 };
+
+#endif

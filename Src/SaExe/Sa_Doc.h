@@ -43,6 +43,7 @@
 #include "DlgAutoReferenceData.h"
 #include <string>
 #include "AlignInfo.h"
+#include "ExportFWSettings.h"
 
 #import "speechtoolsutils.tlb" no_namespace named_guids
 #import "st_audio.tlb" no_namespace named_guids
@@ -86,7 +87,6 @@ class CDlgAdvancedParseWords;
 class CDlgAdvancedParsePhrases;
 class CTranscriptionDataSettings;
 class CMusicPhraseSegment;
-class CDlgExportFW;
 
 class CSaDoc : public CUndoRedoDoc, public ISaDoc
 {   
@@ -253,15 +253,15 @@ public:
 protected:
 	virtual void DeleteContents();
 	virtual BOOL OnNewDocument();
-	virtual BOOL OnOpenDocument(const TCHAR* pszPathName);
-	virtual BOOL OnSaveDocument(const TCHAR* pszPathName);
-	virtual BOOL OnSaveDocument(const TCHAR* pszPathName, BOOL bSaveAudio);
-	virtual BOOL CopyWaveToTemp(const TCHAR* pszSourcePathName, CAlignInfo info);
+	virtual BOOL OnOpenDocument(LPCTSTR pszPathName);
+	virtual BOOL OnSaveDocument(LPCTSTR pszPathName);
+	virtual BOOL OnSaveDocument(LPCTSTR pszPathName, BOOL bSaveAudio);
+	virtual BOOL CopyWaveToTemp(LPCTSTR pszSourcePathName, CAlignInfo info);
 	virtual BOOL SaveModified(); // return TRUE if ok to continue
 
 private:
 	const CSaString&	GetRawDataWrk(int nIndex) const;
-	virtual BOOL		CopyWaveToTemp(const TCHAR* pszSourcePathName, const TCHAR* pszTempPathName = NULL, BOOL bInsert=FALSE, DWORD dwPos=0);
+	virtual BOOL		CopyWaveToTemp(LPCTSTR pszSourcePathName, LPCTSTR pszTempPathName = NULL, BOOL bInsert=FALSE, DWORD dwPos=0);
 	void				SetMultiChannelFlag(bool bMultiChannel);
 	bool				SplitMultiChannelTempFile(int channels, int selectedChannel);
 	CSaString			SetFileExtension(CSaString fileName, CSaString fileExtension);
@@ -297,10 +297,10 @@ public:
 	DWORD				CheckWaveFormatForPaste(const TCHAR* pszPathName);
 	DWORD				CheckWaveFormatForOpen(const TCHAR* pszPathName);
 	bool				ConvertToWave(const TCHAR* pszPathName);
-	BOOL				InsertTranscriptions(const TCHAR* pszPathName, DWORD dwPos);
+	BOOL				InsertTranscriptions( LPCTSTR pszPathName, DWORD dwPos);
 	BOOL				InsertTranscription(int transType, ISaAudioDocumentReaderPtr saAudioDocRdr, DWORD dwPos);
-	void				InsertGlossPosAndRefTranscription(ISaAudioDocumentReaderPtr saAudioDocRdr, DWORD dwPos);
-	virtual BOOL		CopyFile(const TCHAR* pszSourceName, const TCHAR* pszTargetName, DWORD dwStart=0, DWORD dwMax=0xFFFFFFFF, BOOL bTruncate=TRUE);
+	void				InsertGlossPosRefTranscription(ISaAudioDocumentReaderPtr saAudioDocRdr, DWORD dwPos);
+	virtual BOOL		CopyWave(const TCHAR* pszSourceName, const TCHAR* pszTargetName, DWORD dwStart=0, DWORD dwMax=0xFFFFFFFF, BOOL bTruncate=TRUE);
 	void				ApplyWaveFile(const TCHAR * pszFileName, DWORD dwDataSize, BOOL bInialUpdate=TRUE);		// apply a new recorded wave file
 	void				ApplyWaveFile(const TCHAR * pszFileName, DWORD dwDataSize, CAlignInfo alignInfo);		// Update for rt auto-pitch
 	DWORD				SnapCursor( CURSOR_SELECT nCursorSelect, 
@@ -317,7 +317,7 @@ public:
 	BOOL				AnyProcessCanceled(); // invalidates all the processes
 	BOOL				WorkbenchProcess(BOOL bInvalidate = FALSE, BOOL bRestart = FALSE); // process the actually selected workbench process
 	BOOL				PutWaveToClipboard(DWORD dwSectionStart, DWORD dwSectionLength, BOOL bDelete = FALSE); // copies wave data out of the wave file
-	BOOL				PasteClipboardToWave(DWORD dwPastePos); // pastes wave data into the wave file
+	BOOL				PasteClipboardToWave( HGLOBAL hGlobal, DWORD dwPastePos); // pastes wave data into the wave file
 	void				DeleteWaveFromUndo(); // deletes a wave undo entry from the undo list
 	void				UndoWaveFile(); // undo a wave file change
 	BOOL				IsWaveToUndo() {return m_bWaveUndoNow;} // return TRUE, if wave file change is to undo
@@ -371,7 +371,7 @@ protected:
 	DECLARE_MESSAGE_MAP()
 
 public:
-	void DoExportFieldWorks( CDlgExportFW & dlg);
+	void DoExportFieldWorks( CExportFWSettings & settings);
 	const CSaString BuildString( int nSegment);
 	const CSaString BuildImportString( BOOL gloss, BOOL phonetic, BOOL phonemic, BOOL orthographic);
 	const bool ImportTranscription( CSaString & filename, bool gloss, bool phonetic, bool phonemic, bool orthographic, CTranscriptionData & td, bool addTag);
@@ -383,10 +383,10 @@ public:
 protected:
 	void AlignTranscriptionData( CTranscriptionDataSettings & settings);
 	void AlignTranscriptionDataByRef( CTranscriptionData & td);
-	bool TryExportSegmentsBy( CDlgExportFW & dlg, Annotations master, CFile & file, int & count, bool skipEmptyGloss, LPCTSTR szPath);
+	bool TryExportSegmentsBy( CExportFWSettings & settings, Annotations master, CFile & file, bool skipEmptyGloss, LPCTSTR szPath, int & dataCount, int & wavCount);
 	CSaString BuildRecord( Annotations target, DWORD dwStart, DWORD dwStop);
 	Annotations GetAnnotation( int val);
-	BOOL GetFlag( Annotations val, CDlgExportFW & dlg);
+	BOOL GetFlag( Annotations val, CExportFWSettings & settings);
 	int GetIndex( Annotations val);
 	LPCTSTR GetTag( Annotations val);
 	void WriteFileUtf8( CFile *pFile, const CSaString szString);

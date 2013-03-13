@@ -1,6 +1,4 @@
-// -*- c++ -*-
-
-#if !defined(EPKSRC_H)
+#ifndef EPKSRC_H
 #define EPKSRC_H
 
 #include "pksrc.h"
@@ -14,21 +12,16 @@
 //
 // This is an instance of the Decorator design pattern.
 
-class EnergyPeakSource : public PeakSource
-{
+class EnergyPeakSource : public PeakSource {
 public:
     // Construct this peak source as a wrapper around the given peak
     // source.
     EnergyPeakSource(PeakSource & ps);
-
-  ~EnergyPeakSource();
+    ~EnergyPeakSource();
 
     virtual void Search(const float * start, const float * end);
-
     virtual void Next();
-
     virtual void Get(float & location, float & value) const;
-
     virtual int IsDone() const;
 
 private:
@@ -37,7 +30,7 @@ private:
     const EnergyPeakSource & operator=(const EnergyPeakSource &);
 
     PeakSource & myPS;
-  pq_pair_float_float * myQ;
+    pq_pair_float_float * myQ;
 };
 
 #endif

@@ -2,15 +2,10 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#if !defined(AFX_ZTRANSFORM_H__DB9351E1_3282_11D5_9FE4_00E098784E13__INCLUDED_)
-#define AFX_ZTRANSFORM_H__DB9351E1_3282_11D5_9FE4_00E098784E13__INCLUDED_
-
-#if _MSC_VER > 1000
-#pragma once
-#endif // _MSC_VER > 1000
+#ifndef ZTRANSFORM_H
+#define ZTRANSFORM_H
 
 class CDataProcess;
-
 
 template<class _Ty>
 class CZTransformGeneric
@@ -215,4 +210,4 @@ template<class _Ty> int32 CZTransformGeneric<_Ty>::GetOrder() const
 
 typedef CZTransformGeneric<double> CZTransform;
 
-#endif // !defined(AFX_ZTRANSFORM_H__DB9351E1_3282_11D5_9FE4_00E098784E13__INCLUDED_)
+#endif

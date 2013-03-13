@@ -3,6 +3,29 @@
 #include <sys/stat.h>
 #include "CSaString.h"
 
+void GetTempFileName( LPCTSTR szPrefix, LPTSTR szFilename, size_t len) {
+
+	TCHAR lpszTempPath[_MAX_PATH];
+	wmemset(lpszTempPath,0,_MAX_PATH);
+	GetTempPath( _MAX_PATH, lpszTempPath);
+
+	wmemset(szFilename,0,len);
+	GetTempFileName( lpszTempPath, szPrefix, 0, szFilename);
+}
+
+void RemoveFile( LPCTSTR path) {
+	if (path==NULL) return;
+	if (wcslen(path)==0) return;
+	try {
+		CFileStatus status;
+		if (CFile::GetStatus(path, status)) {
+			CFile::Remove(path);
+		}
+	} catch (...) {
+		TRACE("failed to delete %s\n",path);
+	}
+}
+
 /**
 * return true if the path exists as a folder
 */

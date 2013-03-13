@@ -1,6 +1,4 @@
-// -*- c++ -*-
-
-#if !defined(QPKSRC_H)
+#ifndef QPKSRC_H
 #define QPKSRC_H
 
 #include "pksrc.h"
@@ -9,8 +7,7 @@
 // The peaks are returned in order of increasing location.
 // See class PeakSource for more documentation.
 
-class QuadraticPeakSource : public PeakSource
-{
+class QuadraticPeakSource : public PeakSource {
 public:
 
     // Construct a Quadratic peak source with the given concavity
@@ -18,11 +15,8 @@ public:
     QuadraticPeakSource(float threshold);
 
     virtual void Search(const float * start, const float * end);
-
     virtual void Next();
-
     virtual void Get(float & location, float & value) const;
-
     virtual int IsDone() const;
 
 private:

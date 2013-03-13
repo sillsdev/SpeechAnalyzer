@@ -6,9 +6,8 @@
 //###########################################################################
 // CTextSegment data processing
 
-class CTextSegment : public CDependentSegment
-{
-	// Construction/destruction/creation
+class CTextSegment : public CDependentSegment {
+
 public:
 	CTextSegment(int index, int master = -1);
 
@@ -26,7 +25,7 @@ protected:
 public:
 	virtual const CStringArray* GetTexts(); // return pointer to text string array object
 	virtual BOOL SetAt( const CSaString*, bool delimiter, DWORD dwStart, DWORD dwDuration);	// sets a new segment
-	virtual BOOL Insert(int nIndex, const CSaString*, bool delimiter, DWORD dwStart, DWORD dwDuration); // insert a new segment
+	virtual BOOL Insert(int nIndex, LPCTSTR pszString, bool delimiter, DWORD dwStart, DWORD dwDuration); // insert a new segment
 	virtual void DeleteContents(); // delete all contents of the segment arrays
 	virtual int  GetSegmentLength(int nIndex) const; // return segment length always 1
 	virtual CSaString GetSegmentString(int nIndex) const; // return segment string

@@ -11,7 +11,8 @@
 //    SDM   Extract from sa_dlg.h
 //
 /////////////////////////////////////////////////////////////////////////////
-#pragma once
+#ifndef DLGADVANCEDPARSEPHRASES_H
+#define DLGADVANCEDPARSEPHRASES_H
 
 #include "sa_dlwnd.h"
 #include "resource.h"
@@ -68,3 +69,5 @@ public:
 	CButton m_OKButton;
 	CSaDoc * m_pDoc;
 };
+
+#endif

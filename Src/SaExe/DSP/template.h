@@ -1,4 +1,4 @@
-#if !defined(TEMPLATE_H)
+#ifndef TEMPLATE_H
 #define TEMPLATE_H
 
 #define First float
@@ -43,6 +43,5 @@ int operator <(const rpair_float_float &, const rpair_float_float &);
 #undef Type
 #undef tpqueue
 #undef tvector
-  
 
 #endif

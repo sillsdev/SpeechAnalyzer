@@ -3,12 +3,10 @@
 
 #include "DependentSegment.h"
 
-class COrthoSegment : public CDependentSegment
-{
+class COrthoSegment : public CDependentSegment {
 public:
 	COrthoSegment(int index, int master = -1);
 
-	// Attributes
 private:
 	virtual CFontTable* NewFontTable() const;
 };

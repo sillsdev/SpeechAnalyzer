@@ -1,6 +1,4 @@
-// -*- c++ -*-
-
-#if !defined(PKSRC_H)
+#ifndef PKSRC_H
 #define PKSRC_H
 
 // A PeakSource is an iterator over peaks in a sampled function.
@@ -17,8 +15,7 @@
 // This is an instance of the Strategy design pattern, implemented as
 // an Iterator.
 
-class PeakSource
-{
+class PeakSource {
 public:
     virtual ~PeakSource() {};
 
@@ -43,7 +40,7 @@ public:
     virtual int IsDone() const = 0;
 
 protected:
-  PeakSource() {};
+    PeakSource() {};
 
 private:
     // These should never be called

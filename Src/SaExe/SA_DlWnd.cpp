@@ -22,7 +22,7 @@
 
 #include "stdafx.h"
 #include "Process\sa_proc.h"
-#include "sa_segm.h"
+#include "Segment.h"
 
 #include "sa_doc.h"
 #include "sa_view.h"

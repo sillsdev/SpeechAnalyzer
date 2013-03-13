@@ -7,7 +7,7 @@
 /////////////////////////////////////////////////////////////////////////////
 #include "stdafx.h"
 #include "DlgExportFW.h"
-#include "sa_segm.h"
+#include "Segment.h"
 #include "sa_wbch.h"
 #include "sa.h"
 #include "sa_doc.h"
@@ -79,14 +79,14 @@ CDlgExportFW::CDlgExportFW( LPCTSTR docTitle,
 							CWnd* pParent) : 
 CDialog(CDlgExportFW::IDD, pParent) {
 
-	bGloss = bGlossDflt = gloss;
-	bOrtho = bOrthoDflt = ortho;
-	bPhonemic = bPhonemicDflt = phonemic;
-	bPhonetic = bPhoneticDflt = phonetic;
-	bPOS = bPOSDflt = pos;
-	bReference = bReferenceDflt = reference;
-	bPhrase = bPhraseDflt = phrase;
-	szDocTitle = docTitle;
+	settings.bGloss = bGlossDflt = gloss;
+	settings.bOrtho = bOrthoDflt = ortho;
+	settings.bPhonemic = bPhonemicDflt = phonemic;
+	settings.bPhonetic = bPhoneticDflt = phonetic;
+	settings.bPOS = bPOSDflt = pos;
+	settings.bReference = bReferenceDflt = reference;
+	settings.bPhrase = bPhraseDflt = phrase;
+	settings.szDocTitle = docTitle;
 }
 
 BOOL CDlgExportFW::OnInitDialog() {
@@ -113,13 +113,13 @@ BOOL CDlgExportFW::OnInitDialog() {
 void CDlgExportFW::DoDataExchange(CDataExchange * pDX) {
 
 	CDialog::DoDataExchange(pDX);
-	DDX_Check(pDX, IDC_EXTAB_GLOSS, bGloss);
-	DDX_Check(pDX, IDC_EXTAB_ORTHO, bOrtho);
-	DDX_Check(pDX, IDC_EXTAB_PHONEMIC, bPhonemic);
-	DDX_Check(pDX, IDC_EXTAB_PHONETIC, bPhonetic);
-	DDX_Check(pDX, IDC_EXTAB_POS, bPOS);
-	DDX_Check(pDX, IDC_EXTAB_REFERENCE, bReference);
-	DDX_Check(pDX, IDC_EXTAB_PHRASE, bPhrase);
+	DDX_Check(pDX, IDC_EXTAB_GLOSS, settings.bGloss);
+	DDX_Check(pDX, IDC_EXTAB_ORTHO, settings.bOrtho);
+	DDX_Check(pDX, IDC_EXTAB_PHONEMIC, settings.bPhonemic);
+	DDX_Check(pDX, IDC_EXTAB_PHONETIC,settings. bPhonetic);
+	DDX_Check(pDX, IDC_EXTAB_POS, settings.bPOS);
+	DDX_Check(pDX, IDC_EXTAB_REFERENCE, settings.bReference);
+	DDX_Check(pDX, IDC_EXTAB_PHRASE, settings.bPhrase);
 	DDX_Control(pDX, IDC_BROWSE_OTHER, ctlButtonBrowseOther);
 	DDX_Control(pDX, IDC_EDIT_FIELDWORKS_FOLDER, ctlEditFieldWorksFolder);
 	DDX_Control(pDX, IDC_EDIT_OTHER_FOLDER, ctlEditOtherFolder);
@@ -159,7 +159,7 @@ void CDlgExportFW::DoDataExchange(CDataExchange * pDX) {
 	} else {
 		TCHAR szBuffer[MAX_PATH];
 		GetCurrentPath(szBuffer,MAX_PATH);
-		szPath = szBuffer;
+		settings.szPath = szBuffer;
 	}
 }
 
@@ -176,15 +176,15 @@ void CDlgExportFW::OnAllAnnotations() {
     SetEnable(IDC_EXTAB_POS, bEnable);
     SetEnable(IDC_EXTAB_PHRASE, bEnable);
 	if (checked) {
-		bGloss = bGlossDflt;
-		bOrtho = bOrthoDflt;
-		bPhonemic = bPhonemicDflt;
-		bPhonetic = bPhoneticDflt;
-		bPOS = bPOSDflt;
-		bReference = bReferenceDflt;
-		bPhrase = bPhraseDflt;
+		settings.bGloss = bGlossDflt;
+		settings.bOrtho = bOrthoDflt;
+		settings.bPhonemic = bPhonemicDflt;
+		settings.bPhonetic = bPhoneticDflt;
+		settings.bPOS = bPOSDflt;
+		settings.bReference = bReferenceDflt;
+		settings.bPhrase = bPhraseDflt;
 	} else {
-		bReference = bPhonetic = bPhonemic = bOrtho = bGloss = bPOS = bPhrase = FALSE;
+		settings.bReference = settings.bPhonetic = settings.bPhonemic = settings.bOrtho = settings.bGloss = settings.bPOS = settings.bPhrase = FALSE;
 	}
 	UpdateData(FALSE);
 }
@@ -345,7 +345,6 @@ void CDlgExportFW::OnKillfocusComboFieldworksProject() {
 }
 
 void CDlgExportFW::UpdateButtonState() {
-
 
     TCHAR szBuffer[MAX_PATH];
 	GetCurrentPath(szBuffer,MAX_PATH);

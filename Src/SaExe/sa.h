@@ -43,10 +43,6 @@
 #ifndef __SA_H__
 #define __SA_H__
 
-#if _MSC_VER > 1000
-#pragma once
-#endif // _MSC_VER > 1000
-
 #ifndef __AFXWIN_H__
 #error include 'stdafx.h' before including this file for PCH
 #endif
@@ -92,8 +88,7 @@ class Object_ostream;
 //###########################################################################
 // CSaApp window
 
-class CSaApp : public CWinApp
-{
+class CSaApp : public CWinApp {
 
 	// Construction/destruction/creation
 public:
@@ -139,7 +134,7 @@ public:
 
 private:
 	int			CheckForBatchMode(LPTSTR);						// check if SA runs in batch mode
-	void		CopyClipboardTranscription(const TCHAR* szTempPath);
+	void		CopyClipboardTranscription(LPCTSTR szTempPath);
 
 public:
 	void		ExamineCmdLine(LPCTSTR, WPARAM wParam = 0);		// examine the command line
@@ -153,30 +148,31 @@ public:
 	CDocument*	IsFileOpened(const TCHAR* pszFileName);			// check is this file already opened
 	bool		IsDocumentOpened( const CSaDoc * pDoc);			// check is this file already opened
 	BOOL		CloseWorkbench(CDocument*);						// close an already opened workbench document
-	void		WorkbenchClosed() {m_pWbDoc = NULL;}			// signal, that workbench has been closed
+	void		WorkbenchClosed();								// signal, that workbench has been closed
 	void		SetWorkbenchPath(CSaString* pszPath);			// set the workbenchs document pathname
-	CSaString*  GetWorkbenchPath() {return &m_szWbPath;}		// returns a pointer to the workbench pathname
+	CSaString*  GetWorkbenchPath();								// returns a pointer to the workbench pathname
 	int			SaDoPrintDialog(CPrintDialog* pPD, BOOL landscape);
 	BOOL		SaGetPrinterDeviceDefaults(PRINTDLG * pPrintDlg, BOOL landscape);
-	BOOL		IsCreatingNewFile() {return m_bNewDocument;}	// return TRUE if file new operation running
-	CDocument*	GetWbDoc() {return m_pWbDoc;}					// return pointer to workbench document
-	void		SetWbOpenOnExit(BOOL bOpen) { m_bWbOpenOnExit = bOpen;}
+	BOOL		IsCreatingNewFile();							// return TRUE if file new operation running
+	CDocument*	GetWbDoc();										// return pointer to workbench document
+	void		SetWbOpenOnExit(BOOL bOpen);
 	void		FileReturn(BOOL bHide=TRUE);					// return to calling application
 	CWnd*		IsAppRunning();
-	UINT		GetOpenAsID() { return m_OpenAsID;}				// return m_OpenAsID
-	void		SetOpenAsID(UINT OpenAsID) { m_OpenAsID = OpenAsID;}  // set m_OpenAsID
-	void		SetLastClipboardPath(CSaString szPath) { m_szLastClipboardPath = szPath;}
+	UINT		GetOpenAsID();									// return m_OpenAsID
+	void		SetOpenAsID(UINT OpenAsID);						// set m_OpenAsID
+	void		SetLastClipboardPath( LPCTSTR szPath);
+	LPCTSTR		GetLastClipboardPath();
 	void		FileOpen();
 	void		GetMRUFilePath( int i, CSaString & buffer) const;
 
 	// methods for saving the settings and window state.
-	CSaView* pviewActive();
+	CSaView* GetViewActive();
 	// Return the active MDI child record window;
 	// otherwise NULL, if there are no windows open.
-	CSaView* pviewTop();
-	CSaView* pviewBottom();
-	CSaView* pviewBelow(CSaView* pviewCur);
-	CSaView* pviewAbove(CSaView* pviewCur);
+	CSaView* GetViewTop();
+	CSaView* GetViewBottom();
+	CSaView* GetViewBelow(CSaView* pviewCur);
+	CSaView* GetViewAbove(CSaView* pviewCur);
 	// Operations on the MDI child view [window] list, ordered by z-order.
 	void SetZ();
 	// Set the current z-order of all MDI child views.
@@ -200,7 +196,6 @@ public:
 	virtual CDocument* OpenDocumentFile(LPCTSTR lpszFileName);
 
 protected:
-
 	afx_msg void OnAppAbout();
 	afx_msg void OnFileCreate();
 	afx_msg void OnUpdateFileCreate(CCmdUI* pCmdUI);
@@ -235,8 +230,8 @@ protected:
 	DECLARE_MESSAGE_MAP()
 
 	// more methods for saving the settings and window state.
-	CSaView* pviewEnd(UINT uNextOrPrev);
-	CSaView* pviewNeighbor(CSaView* pviewCur, UINT uNextOrPrev);
+	CSaView* GetViewEnd(UINT uNextOrPrev);
+	CSaView* GetViewNeighbor(CSaView* pviewCur, UINT uNextOrPrev);
 
 protected:
 	// methods for handling single instance

@@ -6,179 +6,196 @@
 //* Date Started     : 6/11/01                                              *
 //* Customer Name    : JAARS / SIL                                          *
 //* Description      : This is the main header file for the Wavelet         *
-//*                    process in SA																				*
+//*                    process in SA                                        *
 //* Revision History : 7/30/01 ARH - Imported file into Speech Analyzer     *
-//*																	 v2.0 project                           *
+//*                                  v2.0 project                           *
 //***************************************************************************
-
-
-
 #ifndef _SA_P_WAVELET_H
 #define _SA_P_WAVELET_H
 
-
-
-
 #include "sa_proc.h"
 
-#define DEBAUCHES4		4
+#define DEBAUCHES4      4
 
-//************************************************************************** 
+//**************************************************************************
 // CPlotWavelet Class
-//************************************************************************** 
+//**************************************************************************
 
-class CProcessWavelet : public CDataProcess
-{   
+class CProcessWavelet : public CDataProcess {
 private:
-	BOOL data_status;							// Is the data ready for display?
+    BOOL data_status;                           // Is the data ready for display?
 
-  WaveletParm   m_WaveletParm;	// wavelet parameters
+    WaveletParm   m_WaveletParm;  // wavelet parameters
 
 
 
 
 public:
-		// Function to get data from SA
-	BOOL Get_Raw_Data(long **pDataOut, DWORD *dwDataSize, ISaDoc *pDoc);
+    // Function to get data from SA
+    BOOL Get_Raw_Data(long ** pDataOut, DWORD * dwDataSize, ISaDoc * pDoc);
 
-	CProcessWavelet();
-	virtual ~CProcessWavelet();
-	
-  long Process(void* pCaller, ISaDoc* pDoc, int nWidth, int nHeight, int nProgress = 0, int nLevel = 1);
-  
+    CProcessWavelet();
+    virtual ~CProcessWavelet();
+
+    long Process(void * pCaller, ISaDoc * pDoc, int nWidth, int nHeight, int nProgress = 0, int nLevel = 1);
+
 };
 
 
 
 
 
-//************************************************************************** 
+//**************************************************************************
 // CWaveletNode Class
-//************************************************************************** 
+//**************************************************************************
 
-class CWaveletNode
-{
- 
-private:
-	// Typical tree links
-	CWaveletNode *parent_node;
-	CWaveletNode *left_node;
-	CWaveletNode *right_node;
-
-	// Data of this node
-	long					*data;	
-	long					dwDataSize;
-
-	// The frequency bounds of this node
-	double				upper_freq;
-	double				lower_freq;
+class CWaveletNode {
 
 private:
-	// Main Helper functions
-	BOOL					_DoMRAAnalysisTree(long stride);											// Recursive routine	
-	BOOL					WaveletTransformNode(long *pFinalLow,									// Convolution and most wavelet work
-																		 long *pFinalHigh,								// done here
-																		 long wavelet_type,
-																		 long stride);
+    // Typical tree links
+    CWaveletNode * parent_node;
+    CWaveletNode * left_node;
+    CWaveletNode * right_node;
 
-	// Drawing helper routines
-	long					_DrawColorBandTree(unsigned char *pBits,							// Recursive routine
-																	 CRect *rWnd,
-																	 long thickness,
-																	 long y,
-																	 double high,
-																	 double start, 
-																	 double end);
+    // Data of this node
+    long          *          data;
+    long                    dwDataSize;
 
-	BOOL					 DrawColorBandNode(unsigned char *pBits,							// Draws one color band
-																	 CRect *rWnd,
-																	 long thickness, 
-																	 long y_start,
-																	 double high,
-																	 double start, 
-																	 double end);
+    // The frequency bounds of this node
+    double              upper_freq;
+    double              lower_freq;
+
+private:
+    // Main Helper functions
+    BOOL                    _DoMRAAnalysisTree(long stride);                                            // Recursive routine
+    BOOL                    WaveletTransformNode(long * pFinalLow,                                  // Convolution and most wavelet work
+            long * pFinalHigh,                             // done here
+            long wavelet_type,
+            long stride);
+
+    // Drawing helper routines
+    long                    _DrawColorBandTree(unsigned char * pBits,                           // Recursive routine
+            CRect * rWnd,
+            long thickness,
+            long y,
+            double high,
+            double start,
+            double end);
+
+    BOOL                     DrawColorBandNode(unsigned char * pBits,                           // Draws one color band
+            CRect * rWnd,
+            long thickness,
+            long y_start,
+            double high,
+            double start,
+            double end);
 
 
-	
-	
-	// Private helper functions
-	double				 _GetMaxTree(double max);															// recursive routine
-	double				 _GetMaxTreeBounds(double max, long start, long end);	// recursive routine 
-	CWaveletNode	*_GetNode(long level, bool reset);										// recursive routine
+
+
+    // Private helper functions
+    double               _GetMaxTree(double max);                                                           // recursive routine
+    double               _GetMaxTreeBounds(double max, long start, long end);   // recursive routine
+    CWaveletNode  *  _GetNode(long level, bool reset);                                      // recursive routine
 
 
 public:
-	CWaveletNode();
-	~CWaveletNode();
+    CWaveletNode();
+    ~CWaveletNode();
 
-	// Main functions
-	BOOL					DoMRAAnalysisTree();																			// wraps _DoMRAAnalysisTree
-	BOOL					DrawColorBandTree(unsigned char *pBits,										// wraps _DrawColorBandTree
-																	CRect *rWnd, 
-																	double high, 
-																	double start, 
-																	double end);			
-	
-	BOOL					ScatterPlotDataTree(CDC *pDC,															// Does a scatter plot of "which_leaf"'s data
-												 					  CRect *rWnd, 
-																	  COLORREF crColor, 
-																	  long which_leaf, 
-																	  double start, double end);
+    // Main functions
+    BOOL                    DoMRAAnalysisTree();                                                                            // wraps _DoMRAAnalysisTree
+    BOOL                    DrawColorBandTree(unsigned char * pBits,                                    // wraps _DrawColorBandTree
+            CRect * rWnd,
+            double high,
+            double start,
+            double end);
 
-	BOOL					 ScatterPlotDataNode(CDC *pDC,														// Does a scatter plot of this leaf's data
-																		 CRect *rWnd,
-																		 COLORREF crColor, 
-																		 double start, 
-																		 double end);
+    BOOL                    ScatterPlotDataTree(CDC * pDC,                                                          // Does a scatter plot of "which_leaf"'s data
+            CRect * rWnd,
+            COLORREF crColor,
+            long which_leaf,
+            double start, double end);
+
+    BOOL                     ScatterPlotDataNode(CDC * pDC,                                                     // Does a scatter plot of this leaf's data
+            CRect * rWnd,
+            COLORREF crColor,
+            double start,
+            double end);
 
 
-	// Transform Functions - these are used for post processing after the wavelet has been generated
-	BOOL					TransformEnergyNode();
-	BOOL					TransformLogScalingNode(double high);
-	BOOL					TransformSmoothingNode();
+    // Transform Functions - these are used for post processing after the wavelet has been generated
+    BOOL                    TransformEnergyNode();
+    BOOL                    TransformLogScalingNode(double high);
+    BOOL                    TransformSmoothingNode();
 
-	BOOL					TransformEnergyTree();
-	BOOL					TransformLogScalingTree(double high);
-	BOOL					TransformSmoothingTree();
+    BOOL                    TransformEnergyTree();
+    BOOL                    TransformLogScalingTree(double high);
+    BOOL                    TransformSmoothingTree();
 
-	BOOL					TransformFitWindowNode(CRect *rWnd);
+    BOOL                    TransformFitWindowNode(CRect * rWnd);
 
-	// Accessor methods
-	BOOL					SetDataNode(long *data, DWORD dwDataSize, double _lower_freq, double _upper_freq);
-	BOOL					SetLeftNode(CWaveletNode *node) {right_node = node; return TRUE; }
-	BOOL					SetRightNode(CWaveletNode *node) {left_node = node; return TRUE; }
-	BOOL					SetParentNode(CWaveletNode *node) {parent_node = node; return TRUE; }
+    // Accessor methods
+    BOOL                    SetDataNode(long * data, DWORD dwDataSize, double _lower_freq, double _upper_freq);
+    BOOL                    SetLeftNode(CWaveletNode * node) {
+        right_node = node;
+        return TRUE;
+    }
+    BOOL                    SetRightNode(CWaveletNode * node) {
+        left_node = node;
+        return TRUE;
+    }
+    BOOL                    SetParentNode(CWaveletNode * node) {
+        parent_node = node;
+        return TRUE;
+    }
 
-	BOOL					SetUpperFrequencyBound(double freq) {upper_freq = freq; return TRUE; }
-	BOOL					SetLowerFrequencyBound(double freq) {lower_freq = freq; return TRUE; }
+    BOOL                    SetUpperFrequencyBound(double freq) {
+        upper_freq = freq;
+        return TRUE;
+    }
+    BOOL                    SetLowerFrequencyBound(double freq) {
+        lower_freq = freq;
+        return TRUE;
+    }
 
-	double				GetUpperFrequencyBound() {return upper_freq; }
-	double				GetLowerFrequencyBound() {return lower_freq; }
+    double              GetUpperFrequencyBound() {
+        return upper_freq;
+    }
+    double              GetLowerFrequencyBound() {
+        return lower_freq;
+    }
 
-	double				GetMaxNode();
-	double				GetMaxNodeBounds(long start, long end);				// Gets the maximum datapoint between a starting and ending datapoint (wraps _GetMaxTreeBounds)
-	
-	double				GetMinNode();
-	double				GetMinNodeBounds(long start, long end);				
+    double              GetMaxNode();
+    double              GetMaxNodeBounds(long start, long end);             // Gets the maximum datapoint between a starting and ending datapoint (wraps _GetMaxTreeBounds)
 
-	double				GetMaxTree();																	// wraps _GetMaxTree
-	double				GetMaxTreeBounds(long start, long end);
-	long					GetNumLeaves();
+    double              GetMinNode();
+    double              GetMinNodeBounds(long start, long end);
 
-	CWaveletNode *GetNode(long which_leaf);											// wraps _GetNode
+    double              GetMaxTree();                                                                   // wraps _GetMaxTree
+    double              GetMaxTreeBounds(long start, long end);
+    long                    GetNumLeaves();
 
-	long 				 *GetDataPtr()		{return data; }
-	CWaveletNode *GetLeftNode()		{return left_node; }
-	CWaveletNode *GetRightNode()	{return right_node; }
-	BOOL				 IsLeaf() {if ((left_node == NULL) && (right_node == NULL)) return TRUE; else return FALSE; }
+    CWaveletNode * GetNode(long which_leaf);                                        // wraps _GetNode
 
-	
+    long         *        GetDataPtr()      {
+        return data;
+    }
+    CWaveletNode * GetLeftNode()     {
+        return left_node;
+    }
+    CWaveletNode * GetRightNode()    {
+        return right_node;
+    }
+    BOOL                 IsLeaf() {
+        if ((left_node == NULL) && (right_node == NULL)) {
+            return TRUE;
+        } else {
+            return FALSE;
+        }
+    }
 };
 
-
-BOOL CreateTree(char *tree_definition, CWaveletNode **root_node);
-
-
-
+BOOL CreateTree(char * tree_definition, CWaveletNode ** root_node);
 
 #endif //_SA_P_WAVELET_H

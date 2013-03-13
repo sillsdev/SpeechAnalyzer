@@ -4,16 +4,13 @@
 //###########################################################################
 // CPhonemicSegment data processing
 
-CPhonemicSegment::CPhonemicSegment(int index, int master) : CDependentSegment(index,master) 
-{
+CPhonemicSegment::CPhonemicSegment(int index, int master) : CDependentSegment(index,master) {
 }
 
-CSegment::TpInputFilterProc CPhonemicSegment::GetInputFilter(void) const 
-{
-	return gIPAInputFilter;
+CSegment::TpInputFilterProc CPhonemicSegment::GetInputFilter(void) const {
+    return gIPAInputFilter;
 }
 
-CFontTable* CPhonemicSegment::NewFontTable() const 
-{
-	return new CFontTableIPA;
+CFontTable * CPhonemicSegment::NewFontTable() const {
+    return new CFontTableIPA;
 };

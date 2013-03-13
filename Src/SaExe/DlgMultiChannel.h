@@ -8,36 +8,35 @@
 // Revision History
 //
 /////////////////////////////////////////////////////////////////////////////
-#pragma once
+#ifndef DLGMULTICHANNEL_H
+#define DLGMULTICHANNEL_H
 
 #include "resource.h"
 #include "afxwin.h"
 
 class CSaDoc;
 
-class CDlgMultiChannel : public CDialog
-{
-	DECLARE_DYNAMIC( CDlgMultiChannel)
-public:
-	CDlgMultiChannel( int nChannels, bool allowCombine);
-	~CDlgMultiChannel();
+class CDlgMultiChannel : public CDialog {
 
-	//{{AFX_DATA(CDlgMultiChannel)
-	enum { IDD = IDD_MULTICHANNEL };
-	//}}AFX_DATA
+    DECLARE_DYNAMIC(CDlgMultiChannel)
+public:
+    CDlgMultiChannel(int nChannels, bool allowCombine);
+    ~CDlgMultiChannel();
+
+    enum { IDD = IDD_MULTICHANNEL };
 
 protected:
-	virtual void DoDataExchange(CDataExchange* pDX); // DDX/DDV support
-	//{{AFX_MSG(CDlgMultiChannel)
-	virtual BOOL OnInitDialog();
-	//}}AFX_MSG
-	DECLARE_MESSAGE_MAP()
+    virtual void DoDataExchange(CDataExchange * pDX);
+    virtual BOOL OnInitDialog();
+    DECLARE_MESSAGE_MAP()
 
 protected:
-	CComboBox m_MultiChannelCombo;
-	int m_nChannels;
-	bool m_bAllowCombine;
+    CComboBox m_MultiChannelCombo;
+    int m_nChannels;
+    bool m_bAllowCombine;
 
 public:
-	int m_nChannel;
+    int m_nChannel;
 };
+
+#endif
