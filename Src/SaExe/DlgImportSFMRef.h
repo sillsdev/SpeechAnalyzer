@@ -31,36 +31,35 @@
 /////////////////////////////////////////////////////////////////////////////
 // CDlgImportSFMRef private dialog
 
-class CDlgImportSFMRef : public CDialog
-{
-	// Construction
+class CDlgImportSFMRef : public CDialog {
+    // Construction
 public:
-	CDlgImportSFMRef( BOOL bPhonetic, BOOL bPhonemic, BOOL bOrtho, BOOL bGloss, CWnd* pParent = NULL);   // standard constructor
+    CDlgImportSFMRef(BOOL bPhonetic, BOOL bPhonemic, BOOL bOrtho, BOOL bGloss, CWnd * pParent = NULL);   // standard constructor
 
-	// Dialog Data
-	//{{AFX_DATA(CDlgImportSFMRef)
-	enum { IDD = IDD_ANNOTATION_IMPORT_SFM_WITH_REF };
-	BOOL    m_bGloss;
-	BOOL    m_bPhonemic;
-	BOOL    m_bPhonetic;
-	BOOL    m_bOrthographic;
-	CSaString m_szReference;
-	CSaString m_szPhonemic;
-	CSaString m_szGloss;
-	CSaString m_szPhonetic;
-	CSaString m_szOrthographic;
-	//}}AFX_DATA
+    // Dialog Data
+    //{{AFX_DATA(CDlgImportSFMRef)
+    enum { IDD = IDD_ANNOTATION_IMPORT_SFM_WITH_REF };
+    BOOL    m_bGloss;
+    BOOL    m_bPhonemic;
+    BOOL    m_bPhonetic;
+    BOOL    m_bOrthographic;
+    CSaString m_szReference;
+    CSaString m_szPhonemic;
+    CSaString m_szGloss;
+    CSaString m_szPhonetic;
+    CSaString m_szOrthographic;
+    //}}AFX_DATA
 
-	// Implementation
+    // Implementation
 protected:
-	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
-	void SetEnable(int nItem, BOOL bEnable);
+    virtual void DoDataExchange(CDataExchange * pDX);   // DDX/DDV support
+    void SetEnable(int nItem, BOOL bEnable);
 
-	// Generated message map functions
-	//{{AFX_MSG(CDlgImportSFMRef)
-	afx_msg void OnImportPlainText();
-	virtual BOOL OnInitDialog();
-	//}}AFX_MSG
-	DECLARE_MESSAGE_MAP()
+    // Generated message map functions
+    //{{AFX_MSG(CDlgImportSFMRef)
+    afx_msg void OnImportPlainText();
+    virtual BOOL OnInitDialog();
+    //}}AFX_MSG
+    DECLARE_MESSAGE_MAP()
 };
 #endif

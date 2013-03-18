@@ -14,7 +14,7 @@
 #include "doclist.h"
 #include "result.h"
 #include <math.h>
-#include "Process\sa_proc.h"
+#include "Process\Process.h"
 #include "Process\sa_p_lou.h"
 #include "Process\sa_p_gra.h"
 #include "Process\sa_p_pit.h"
@@ -25,7 +25,7 @@
 #include "Process\sa_p_fra.h"
 #include "Process\sa_p_spu.h"
 #include "Process\sa_p_spg.h"
-#include "Process\formanttracker.h"
+#include "Process\FormantTracker.h"
 #include "dsp\formants.h"
 #include "dsp\ztransform.h"
 #include "dsp\mathx.h"
@@ -132,16 +132,16 @@ CDlgExportSFM::CDlgExportSFM(const CSaString & szDocTitle, CWnd * pParent) :
 
 BOOL CDlgExportSFM::OnInitDialog() {
 
-	CDialog::OnInitDialog();
+    CDialog::OnInitDialog();
 
-	OnAllAnnotations();
-	OnAllSource();
-	OnAllParameters();
-	OnAllFileInfo();
+    OnAllAnnotations();
+    OnAllSource();
+    OnAllParameters();
+    OnAllFileInfo();
 
-	CenterWindow();
+    CenterWindow();
 
-	return TRUE;  // return TRUE  unless you set the focus to a control
+    return TRUE;  // return TRUE  unless you set the focus to a control
 }
 
 void CDlgExportSFM::DoDataExchange(CDataExchange * pDX) {
@@ -337,19 +337,19 @@ void CDlgExportSFM::ExportStandard() {
     }
 
     for (int nPhrase = MUSIC_PL1; nPhrase <= MUSIC_PL4; nPhrase++) {
+
         szString.Format(_T("\\phr%d "), nPhrase - MUSIC_PL1 + 1);
         CSaString szPhrase;
-
-        if (m_bPhrase && !pDoc->GetSegment(nPhrase)->IsEmpty()) {
+        if ((m_bPhrase) && (!pDoc->GetSegment(nPhrase)->IsEmpty())) {
             int nNumber = 0;
-
             while (nNumber != -1) {
                 szPhrase += pDoc->GetSegment(nPhrase)->GetSegmentString(nNumber);
-
+				szPhrase += L" ";
                 nNumber = pDoc->GetSegment(nPhrase)->GetNext(nNumber);
             }
         }
         if (m_bPhrase) { // \phr1-\phr3  Phrase Level
+			szPhrase.TrimRight();
             szString = szString + szPhrase + szCrLf;
             WriteFileUtf8(&file, szString);
         }
@@ -454,7 +454,8 @@ bool CDlgExportSFM::TryExportSegmentsBy(Annotations master, CSaDoc * pDoc, CFile
         if (results[GLOSS].GetLength()>0) {
             WriteFileUtf8(&file, results[GLOSS]);
         }
-        if (results[MUSIC_PL1].GetLength()>0) {
+
+		if (results[MUSIC_PL1].GetLength()>0) {
             WriteFileUtf8(&file, results[MUSIC_PL1]);
         }
         if (results[MUSIC_PL2].GetLength()>0) {
@@ -950,7 +951,7 @@ void CDlgExportSFM::OnClickedExSfmMultirecord() {
 
 void CDlgExportSFM::WriteFileUtf8(CFile * pFile, const CSaString szString) {
 
-	std::string szUtf8 = szString.utf8();
-	pFile->Write(szUtf8.c_str(), szUtf8.size());
+    std::string szUtf8 = szString.utf8();
+    pFile->Write(szUtf8.c_str(), szUtf8.size());
 }
 

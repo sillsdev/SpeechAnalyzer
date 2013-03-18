@@ -11,7 +11,9 @@
 #include "sa.h"
 #include "sa_graph.h"
 #include "doclist.h"
-#include "Process\sa_proc.h"
+#include "result.h"
+#include <math.h>
+#include "Process\Process.h"
 #include "Process\sa_p_lou.h"
 #include "Process\sa_p_gra.h"
 #include "Process\sa_p_pit.h"
@@ -22,13 +24,11 @@
 #include "Process\sa_p_fra.h"
 #include "Process\sa_p_spu.h"
 #include "Process\sa_p_spg.h"
-#include "Process\formanttracker.h"
+#include "Process\FormantTracker.h"
 #include "dsp\formants.h"
 #include "dsp\ztransform.h"
 #include "dsp\mathx.h"
 #include "settings\obstream.h"
-#include "result.h"
-#include <math.h>
 
 using std::ifstream;
 using std::ios;
@@ -43,13 +43,13 @@ static char BASED_CODE THIS_FILE[] = __FILE__;
 // CDlgExportXML dialog
 
 BEGIN_MESSAGE_MAP(CDlgExportXML, CDialog)
-	ON_BN_CLICKED(IDC_EX_SFM_ALL_SOURCE, OnAllSource)
-	ON_BN_CLICKED(IDC_EX_SFM_FILE_INFO, OnAllFileInfo)
-	ON_BN_CLICKED(IDC_EX_SFM_RECORD_DATA, OnAllParameters)
-	ON_BN_CLICKED(IDC_EXTAB_ANNOTATIONS, OnAllAnnotations)
-	ON_COMMAND(IDHELP, OnHelpExportBasic)
-	ON_BN_CLICKED(IDC_EX_SFM_INTERLINEAR, OnClickedExSfmInterlinear)
-	ON_BN_CLICKED(IDC_EX_SFM_MULTIRECORD, OnClickedExSfmMultirecord)
+    ON_BN_CLICKED(IDC_EX_SFM_ALL_SOURCE, OnAllSource)
+    ON_BN_CLICKED(IDC_EX_SFM_FILE_INFO, OnAllFileInfo)
+    ON_BN_CLICKED(IDC_EX_SFM_RECORD_DATA, OnAllParameters)
+    ON_BN_CLICKED(IDC_EXTAB_ANNOTATIONS, OnAllAnnotations)
+    ON_COMMAND(IDHELP, OnHelpExportBasic)
+    ON_BN_CLICKED(IDC_EX_SFM_INTERLINEAR, OnClickedExSfmInterlinear)
+    ON_BN_CLICKED(IDC_EX_SFM_MULTIRECORD, OnClickedExSfmMultirecord)
 END_MESSAGE_MAP()
 
 // TRE 01-31-2001 Broke the header in two for size restrictions
@@ -116,14 +116,12 @@ const char CDlgExportXML::XML_HEADER2[] =
     "<SAdoc>\r\n"
     "\r\n";
 
-const char CDlgExportXML::XML_FOOTER[] = "\r\n"
-        "\r\n"
-        "</SAdoc>";
+const char CDlgExportXML::XML_FOOTER[] = "\r\n\r\n</SAdoc>";
 
-CDlgExportXML::CDlgExportXML(const CSaString & szDocTitle, CWnd * pParent) : 
-CDialog(CDlgExportXML::IDD, pParent) {
+CDlgExportXML::CDlgExportXML(const CSaString & szDocTitle, CWnd * pParent) :
+    CDialog(CDlgExportXML::IDD, pParent) {
 
-	m_bAllSource = TRUE;
+    m_bAllSource = TRUE;
     m_bBandwidth = FALSE;
     m_bBits = FALSE;
     m_bComments = FALSE;
@@ -166,15 +164,15 @@ CDialog(CDlgExportXML::IDD, pParent) {
 }
 
 BOOL CDlgExportXML::OnInitDialog() {
-    
-	CDialog::OnInitDialog();
+
+    CDialog::OnInitDialog();
 
     OnAllAnnotations();
     OnAllSource();
     OnAllParameters();
     OnAllFileInfo();
 
-	SetEnable(IDC_EX_SFM_INTERLINEAR, FALSE);
+    SetEnable(IDC_EX_SFM_INTERLINEAR, FALSE);
 
     CenterWindow();
 
@@ -182,8 +180,8 @@ BOOL CDlgExportXML::OnInitDialog() {
 }
 
 void CDlgExportXML::OutputXMLField(CFile * pFile, const TCHAR * szFieldName, const CSaString & szContents) {
-    
-	if (!szContents || !*szContents) {
+
+    if (!szContents || !*szContents) {
         return;
     }
 
@@ -213,8 +211,8 @@ void CDlgExportXML::OutputXMLField(CFile * pFile, const TCHAR * szFieldName, con
 }
 
 void CDlgExportXML::OnOK() {
-    
-	wstring filename;
+
+    wstring filename;
     int result = GetSaveAsFilename(m_szDocTitle, _T("Extensible Markup (*.xml) |*.xml||"), _T("xml"), NULL, filename);
     if (result!=IDOK) {
         return;
@@ -253,27 +251,27 @@ void CDlgExportXML::OnOK() {
 
     pFile->Write("<FileInfo>\r\n",12);
 
-    if (m_bComments) { // %%% 1 %%%
+    if (m_bComments) {
         OutputXMLField(pFile,_T("Comments"),pDoc->GetSaParm()->szDescription);
     }
-    if (m_bFileName) { // %%% 2 %%%
+    if (m_bFileName) {
         OutputXMLField(pFile,_T("AudioFile"),pDoc->GetPathName());
     }
 
     CFileStatus * pFileStatus = pDoc->GetFileStatus();
     if (pFileStatus->m_szFullName[0] != 0) { // file name is defined
-        if (m_bOriginalDate) { // %%% 3 %%%
+        if (m_bOriginalDate) {
             OutputXMLField(pFile,_T("CreationTime"),pFileStatus->m_ctime.Format("%A, %B %d, %Y, %X"));
         }
-        if (m_bLastModified) { // %%% 4 %%%
+        if (m_bLastModified) {
             OutputXMLField(pFile,_T("LastEdit"),pFileStatus->m_mtime.Format("%A, %B %d, %Y, %X"));
         }
-        if (m_bFileSize) { // %%% 5 %%%
+        if (m_bFileSize) {
             swprintf_s(szString.GetBuffer(25),25,_T("%ld Bytes"),pFileStatus->m_size);
             szString.ReleaseBuffer();
             OutputXMLField(pFile,_T("FileSize"),szString);
         }
-        if (m_bOriginalFormat) { // %%% 6 %%%
+        if (m_bOriginalFormat) {
             SaParm * pSaParm = pDoc->GetSaParm();
             if (pSaParm->byRecordFileFormat <= FILE_FORMAT_TIMIT) {
                 szString.LoadString((UINT)pSaParm->byRecordFileFormat + IDS_FILETYPE_UTT);
@@ -286,6 +284,7 @@ void CDlgExportXML::OnOK() {
 
     pFile->Write("<LinguisticInfo>\r\n",18);
     if (!pDoc->GetSegment(PHONETIC)->IsEmpty()) {
+
         CSaString szAnnotation[ANNOT_WND_NUMBER];
         CSaString szPOS;
         int nMaxLength = 0;
@@ -340,52 +339,50 @@ void CDlgExportXML::OnOK() {
             nNumber = pDoc->GetSegment(PHONETIC)->GetNext(nNumber);
         }
         // write out results
-        if (m_bPhonetic) { // %%% 8 %%%
+        if (m_bPhonetic) {
             OutputXMLField(pFile,_T("PhoneticText"),szAnnotation[PHONETIC]);
         }
-        if (m_bTone) { // %%% 9 %%%
+        if (m_bTone) {
             OutputXMLField(pFile,_T("Tone"),szAnnotation[TONE]);
         }
-        if (m_bPhonemic) { // %%% 10 %%%
+        if (m_bPhonemic) {
             OutputXMLField(pFile,_T("PhonemicText"),szAnnotation[PHONEMIC]);
         }
-        if (m_bOrtho) { // %%% 11 %%%
+        if (m_bOrtho) {
             OutputXMLField(pFile,_T("Orthographic"),szAnnotation[ORTHO]);
         }
-        if (m_bGloss) { // %%% 12 %%%
+        if (m_bGloss) {
             OutputXMLField(pFile,_T("Gloss"),szAnnotation[GLOSS]);
         }
-        if (m_bPOS) { // %%% 13 %%%
+        if (m_bPOS) {
             OutputXMLField(pFile,_T("PartOfSpeech"),szPOS);
         }
-        if (m_bReference) { // %%% 14 %%%
+        if (m_bReference) {
             OutputXMLField(pFile,_T("Reference"),szAnnotation[REFERENCE]);
         }
     }
 
     for (int nPhrase = MUSIC_PL1; nPhrase <= MUSIC_PL4; nPhrase++) {
-        CSaString szPhrase;
-
-        szString.Format(_T("PhraseLevel%d "), nPhrase - MUSIC_PL1 + 1);
-
+		CSaString szPhrase;
+        szString.Format(_T("PhraseLevel%d"), nPhrase - MUSIC_PL1 + 1);
         if (m_bPhrase && !pDoc->GetSegment(nPhrase)->IsEmpty()) {
-            int nNumber = 0;
-
+			int nNumber = 0;
             while (nNumber != -1) {
                 szPhrase += pDoc->GetSegment(nPhrase)->GetSegmentString(nNumber);
-
+				szPhrase += L" ";
                 nNumber = pDoc->GetSegment(nPhrase)->GetNext(nNumber);
             }
         }
-        if (m_bPhrase) { // %%% 15 %%% - %%% 18 %%%
+        if (m_bPhrase) {
+			szPhrase.TrimRight();
             OutputXMLField(pFile,szString,szPhrase);
         }
     }
 
-    if (m_bFree) { // %%% 15 %%%
+    if (m_bFree) {
         OutputXMLField(pFile,_T("FreeTranslation"),pDoc->GetSourceParm()->szFreeTranslation);
     }
-    if (m_bPhones) { // %%% 16 %%%
+    if (m_bPhones) {
         // create and write number of phones text
         int nNumber = 0;
         int nLoop = 0;
@@ -403,7 +400,7 @@ void CDlgExportXML::OnOK() {
         szString.ReleaseBuffer();
         OutputXMLField(pFile,_T("NumPhones"),szString);
     }
-    if (m_bWords) { // %%% 17 %%%
+    if (m_bWords) {
         swprintf_s(szString.GetBuffer(25),25,_T("%u"), ((CTextSegment *)pDoc->GetSegment(GLOSS))->CountWords());
         szString.ReleaseBuffer();
         OutputXMLField(pFile,_T("NumWords"),szString);
@@ -411,45 +408,47 @@ void CDlgExportXML::OnOK() {
     pFile->Write("</LinguisticInfo>\r\n",19);
 
     pFile->Write("<DataInfo>\r\n",12);
-    if (m_bNumberSamples) { // %%% 18 %%%
+    if (m_bNumberSamples) {
         swprintf_s(szString.GetBuffer(25),25,_T("%ld"), pDoc->GetDataSize() / pDoc->GetFmtParm()->wBlockAlign);
         szString.ReleaseBuffer();
         OutputXMLField(pFile,_T("NumSamples"),szString);
     }
-    if (m_bLength) { // %%% 19 %%%
+    if (m_bLength) {
         // create and write length text
         double fDataSec = pDoc->GetTimeFromBytes(pDoc->GetUnprocessedDataSize()); // get sampled data size in seconds
         int nMinutes = (int)fDataSec / 60;
 
-        if (nMinutes == 0) { // length is less than one minute
+        if (nMinutes == 0) { 
+			// length is less than one minute
             swprintf_s(szString.GetBuffer(25),25,_T("%5.3f Seconds"), fDataSec);
-        } else { // length is equal or more than one minute
+        } else { 
+			// length is equal or more than one minute
             fDataSec = fDataSec - (float)(nMinutes * 60);
             swprintf_s(szString.GetBuffer(25),25,_T("%i:%5.3f (Min:Sec)"), nMinutes, fDataSec);
         }
         szString.ReleaseBuffer();
         OutputXMLField(pFile,_T("Length"),szString);
     }
-    if (m_bSampleRate) { // %%% 20 %%%
+    if (m_bSampleRate) {
         swprintf_s(szString.GetBuffer(25),25,_T("%lu Hz"),pDoc->GetFmtParm()->dwSamplesPerSec);
         szString.ReleaseBuffer();
         OutputXMLField(pFile,_T("SamplingFreq"),szString);
     }
-    if (m_bBandwidth) { // %%% 21 %%%
+    if (m_bBandwidth) {
         swprintf_s(szString.GetBuffer(25),25,_T("%lu Hz"),pDoc->GetSaParm()->dwRecordBandWidth);
         szString.ReleaseBuffer();
         OutputXMLField(pFile,_T("Bandwidth"),szString);
     }
-    if (m_bHighPass) { // %%% 22 %%%
+    if (m_bHighPass) {
         szString = pDoc->GetSaParm()->wFlags & SA_FLAG_HIGHPASS ? "Yes":"No";
         OutputXMLField(pFile,_T("HighPassFiltered"),szString);
     }
-    if (m_bBits) { // %%% 23 %%%
+    if (m_bBits) {
         swprintf_s(szString.GetBuffer(25),25,_T("%d Bits"),pDoc->GetFmtParm()->wBitsPerSample);
         szString.ReleaseBuffer();
         OutputXMLField(pFile,_T("StorageFormat"),szString);
     }
-    if (m_bQuantization) { // %%% 24 %%%
+    if (m_bQuantization) {
         swprintf_s(szString.GetBuffer(25),25,_T("%d Bits"),(int)pDoc->GetSaParm()->byRecordSmpSize);
         szString.ReleaseBuffer();
         OutputXMLField(pFile,_T("QuantizSize"),szString);
@@ -457,29 +456,29 @@ void CDlgExportXML::OnOK() {
     pFile->Write("</DataInfo>\r\n",13);
 
     pFile->Write("<SourceInfo>\r\n",14);
-    if (m_bLanguage) { // %%% 25 %%%
+    if (m_bLanguage) {
         OutputXMLField(pFile,_T("Language"),pDoc->GetSourceParm()->szLanguage);
     }
 
-    if (m_bDialect) { // %%% 26 %%%
+    if (m_bDialect) {
         OutputXMLField(pFile,_T("Dialect"),pDoc->GetSourceParm()->szDialect);
     }
-    if (m_bFamily) { // %%% 27 %%%
+    if (m_bFamily) {
         OutputXMLField(pFile,_T("Family"),pDoc->GetSourceParm()->szFamily);
     }
-    if (m_bCountry) { // %%% 28 %%%
+    if (m_bCountry) {
         OutputXMLField(pFile,_T("Country"),pDoc->GetSourceParm()->szCountry);
     }
-    if (m_bRegion) { // %%% 29 %%%
+    if (m_bRegion) {
         OutputXMLField(pFile,_T("Region"),pDoc->GetSourceParm()->szRegion);
     }
-    if (m_bEthnologue) { // %%% 30 %%%
+    if (m_bEthnologue) {
         OutputXMLField(pFile,_T("EthnologueID"),pDoc->GetSourceParm()->szEthnoID);
     }
-    if (m_bSpeaker) { // %%% 31 %%%
+    if (m_bSpeaker) {
         OutputXMLField(pFile,_T("SpeakerName"),pDoc->GetSourceParm()->szSpeaker);
     }
-    if (m_bGender) { // %%% 32 %%%
+    if (m_bGender) {
         switch (pDoc->GetSourceParm()->nGender) {
         case 0:
             szString = "Adult Male";
@@ -496,10 +495,10 @@ void CDlgExportXML::OnOK() {
         }
         OutputXMLField(pFile,_T("Gender"),szString);
     }
-    if (m_bNotebookRef) { // %%% 33 %%%
+    if (m_bNotebookRef) {
         OutputXMLField(pFile,_T("NotebookReference"),pDoc->GetSourceParm()->szReference);
     }
-    if (m_bTranscriber) { // %%% 34 %%%
+    if (m_bTranscriber) {
         OutputXMLField(pFile,_T("Transcriber"),pDoc->GetSourceParm()->szTranscriber);
     }
     pFile->Write("</SourceInfo>\r\n",14);
@@ -516,8 +515,8 @@ void CDlgExportXML::OnOK() {
 }
 
 void CDlgExportXML::DoDataExchange(CDataExchange * pDX) {
-   
-	CDialog::DoDataExchange(pDX);
+
+    CDialog::DoDataExchange(pDX);
     DDX_Check(pDX, IDC_EX_SFM_ALL_SOURCE, m_bAllSource);
     DDX_Check(pDX, IDC_EX_SFM_BANDWIDTH, m_bBandwidth);
     DDX_Check(pDX, IDC_EX_SFM_BITS, m_bBits);
@@ -560,8 +559,8 @@ void CDlgExportXML::DoDataExchange(CDataExchange * pDX) {
 }
 
 void CDlgExportXML::OnAllAnnotations() {
-    
-	UpdateData(TRUE);
+
+    UpdateData(TRUE);
     BOOL bEnable = !m_bAllAnnotations;
     SetEnable(IDC_EXTAB_PHONETIC, bEnable);
     SetEnable(IDC_EXTAB_TONE, bEnable);
@@ -581,8 +580,8 @@ void CDlgExportXML::OnAllAnnotations() {
 }
 
 void CDlgExportXML::OnAllFileInfo() {
-    
-	UpdateData(TRUE);
+
+    UpdateData(TRUE);
     BOOL bEnable = !m_bAllFile;
     SetEnable(IDC_EX_SFM_FILE_SIZE, bEnable);
     SetEnable(IDC_EX_SFM_LAST_DATE, bEnable);
@@ -598,8 +597,8 @@ void CDlgExportXML::OnAllFileInfo() {
 }
 
 void CDlgExportXML::OnAllParameters() {
-    
-	UpdateData(TRUE);
+
+    UpdateData(TRUE);
     BOOL bEnable = !m_bAllParameters;
     SetEnable(IDC_EX_SFM_BANDWIDTH, bEnable);
     SetEnable(IDC_EX_SFM_BITS, bEnable);
@@ -620,8 +619,8 @@ void CDlgExportXML::OnAllParameters() {
 }
 
 void CDlgExportXML::OnAllSource() {
-    
-	UpdateData(TRUE);
+
+    UpdateData(TRUE);
     BOOL bEnable = !m_bAllSource;
     SetEnable(IDC_EX_SFM_LANGUAGE, bEnable);
     SetEnable(IDC_EX_SFM_DIALECT, bEnable);
@@ -646,16 +645,16 @@ void CDlgExportXML::OnAllSource() {
 }
 
 void CDlgExportXML::SetEnable(int nItem, BOOL bEnable) {
-    
-	CWnd * pWnd = GetDlgItem(nItem);
+
+    CWnd * pWnd = GetDlgItem(nItem);
     if (pWnd) {
         pWnd->EnableWindow(bEnable);
     }
 }
 
 void CDlgExportXML::SetCheck(int nItem, BOOL bChecked) {
-    
-	CButton * pWnd = (CButton *)GetDlgItem(nItem);
+
+    CButton * pWnd = (CButton *)GetDlgItem(nItem);
     if (pWnd) {
         pWnd->SetCheck(bChecked);
     }
@@ -687,7 +686,7 @@ void CDlgExportXML::OnClickedExSfmMultirecord() {
 
 void CDlgExportXML::WriteFileUtf8(CFile * pFile, const CSaString szString) {
 
-	std::string szUtf8 = szString.utf8();
-	pFile->Write(szUtf8.c_str(), szUtf8.size());
+    std::string szUtf8 = szString.utf8();
+    pFile->Write(szUtf8.c_str(), szUtf8.size());
 }
 

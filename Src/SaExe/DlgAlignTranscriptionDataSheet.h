@@ -13,30 +13,30 @@ class CTranscriptionDataSettings;
 
 class CDlgAlignTranscriptionDataSheet : public CPropertySheet {
 
-	DECLARE_DYNAMIC(CDlgAlignTranscriptionDataSheet)
+    DECLARE_DYNAMIC(CDlgAlignTranscriptionDataSheet)
 
-	CDlgAlignTranscriptionDataInitPage init;
-	CDlgAlignTranscriptionDataImportRefPage import;
-	CDlgAlignTranscriptionDataTextPage gloss;
-	CDlgAlignTranscriptionDataTextPage phonetic;
-	CDlgAlignTranscriptionDataTextPage phonemic;
-	CDlgAlignTranscriptionDataTextPage ortho;
-	CDlgAlignTranscriptionDataAlignByPage align;
-	CDlgAlignTranscriptionDataSegmentByPage segment;
-	CDlgAlignTranscriptionDataFinishPage finish;
+    CDlgAlignTranscriptionDataInitPage init;
+    CDlgAlignTranscriptionDataImportRefPage import;
+    CDlgAlignTranscriptionDataTextPage gloss;
+    CDlgAlignTranscriptionDataTextPage phonetic;
+    CDlgAlignTranscriptionDataTextPage phonemic;
+    CDlgAlignTranscriptionDataTextPage ortho;
+    CDlgAlignTranscriptionDataAlignByPage align;
+    CDlgAlignTranscriptionDataSegmentByPage segment;
+    CDlgAlignTranscriptionDataFinishPage finish;
 
 public:
-	CDlgAlignTranscriptionDataSheet( CWnd* pParentWnd = NULL, CSaDoc* pSaDoc = NULL);
-	virtual ~CDlgAlignTranscriptionDataSheet();
+    CDlgAlignTranscriptionDataSheet(CWnd * pParentWnd = NULL, CSaDoc * pSaDoc = NULL);
+    virtual ~CDlgAlignTranscriptionDataSheet();
 
 protected:
-	DECLARE_MESSAGE_MAP()
+    DECLARE_MESSAGE_MAP()
 
 public:
-	CTranscriptionDataSettings GetSettings();
-	virtual BOOL OnInitDialog();
-	LRESULT CalculateBack(int currentIDD);
-	LRESULT CalculateNext(int currentIDD);
+    CTranscriptionDataSettings GetSettings();
+    virtual BOOL OnInitDialog();
+    LRESULT CalculateBack(int currentIDD);
+    LRESULT CalculateNext(int currentIDD);
 };
 
 #endif

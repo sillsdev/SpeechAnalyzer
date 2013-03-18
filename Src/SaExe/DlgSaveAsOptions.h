@@ -27,7 +27,7 @@ protected:
     afx_msg void OnClicked();
     virtual BOOL OnInitDialog();
 
-	DECLARE_MESSAGE_MAP()
+    DECLARE_MESSAGE_MAP()
 };
 
 #endif

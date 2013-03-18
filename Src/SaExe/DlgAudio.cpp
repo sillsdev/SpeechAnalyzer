@@ -16,12 +16,10 @@ static char THIS_FILE[]=__FILE__;
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
 
-CDlgAudio::CDlgAudio()
-{
+CDlgAudio::CDlgAudio() {
 
 }
 
-CDlgAudio::~CDlgAudio()
-{
+CDlgAudio::~CDlgAudio() {
 
 }

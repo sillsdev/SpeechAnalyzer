@@ -9,7 +9,7 @@
 #include "PhoneticSegment.h"
 #include "DlgExportFW.h"
 #include "FileUtils.h"
-#include "Process\sa_proc.h"
+#include "Process\Process.h"
 #include "Process\sa_p_lou.h"
 #include "Process\sa_p_gra.h"
 #include "Process\sa_p_pit.h"
@@ -30,10 +30,10 @@ static char BASED_CODE THIS_FILE[] = __FILE__;
 /////////////////////////////////////////////////////////////////////////////
 // CDlgExportTable dialog
 
-CDlgExportTable::CDlgExportTable(const CSaString & szDocTitle, CWnd * pParent /*=NULL*/) : 
-CDialog(CDlgExportTable::IDD, pParent) {
+CDlgExportTable::CDlgExportTable(const CSaString & szDocTitle, CWnd * pParent /*=NULL*/) :
+    CDialog(CDlgExportTable::IDD, pParent) {
 
-	m_bAnnotations = TRUE;
+    m_bAnnotations = TRUE;
     m_bCalculations = FALSE;
     m_bF1 = FALSE;
     m_bF2 = FALSE;
@@ -71,10 +71,10 @@ CDialog(CDlgExportTable::IDD, pParent) {
 }
 
 void CDlgExportTable::DoDataExchange(CDataExchange * pDX) {
-    
-	CDialog::DoDataExchange(pDX);
-    
-	DDX_Check(pDX, IDC_EXTAB_ANNOTATIONS, m_bAnnotations);
+
+    CDialog::DoDataExchange(pDX);
+
+    DDX_Check(pDX, IDC_EXTAB_ANNOTATIONS, m_bAnnotations);
     DDX_Check(pDX, IDC_EXTAB_CALC, m_bCalculations);
     DDX_Check(pDX, IDC_EXTAB_F1, m_bF1);
     DDX_Check(pDX, IDC_EXTAB_F2, m_bF2);
@@ -120,8 +120,8 @@ END_MESSAGE_MAP()
 // CDlgExportTable message handlers
 
 void CDlgExportTable::OnAllAnnotations() {
-    
-	UpdateData(TRUE);
+
+    UpdateData(TRUE);
     if (m_nSampleRate == 0) {
         SetVisible(IDC_EXTAB_TIME, FALSE);
         SetVisible(IDC_EXTAB_START, TRUE);
@@ -158,8 +158,8 @@ void CDlgExportTable::OnAllAnnotations() {
 }
 
 void CDlgExportTable::OnAllFormants() {
-    
-	UpdateData(TRUE);
+
+    UpdateData(TRUE);
     BOOL bEnable = !m_bFormants;
     SetEnable(IDC_EXTAB_F1, bEnable && !m_bFormants);
     SetEnable(IDC_EXTAB_F2, bEnable && !m_bFormants);
@@ -173,8 +173,8 @@ void CDlgExportTable::OnAllFormants() {
 }
 
 void CDlgExportTable::OnAllCalculations() {
-    
-	UpdateData(TRUE);
+
+    UpdateData(TRUE);
     BOOL bEnable = !m_bCalculations;
     SetEnable(IDC_EXTAB_FORMANTS, bEnable);
     SetEnable(IDC_EXTAB_F1, bEnable && !m_bFormants);
@@ -194,8 +194,8 @@ void CDlgExportTable::OnAllCalculations() {
 }
 
 void CDlgExportTable::OnOK() {
-    
-	wstring filename;
+
+    wstring filename;
     int result = GetSaveAsFilename(m_szDocTitle, _T("SFM Time Table (*.sft) |*.sft||"), _T("sft"), NULL, filename);
     if (result!=IDOK) {
         return;
@@ -355,7 +355,7 @@ void CDlgExportTable::OnOK() {
         }
     }
     if (m_bF1 || m_bF2 || m_bF3 || m_bF4) {
-        CFormantTracker * pSpectroFormants = pDoc->GetFormantTracker();
+        CProcessFormantTracker * pSpectroFormants = pDoc->GetFormantTracker();
 
         // If pitch processed successfully, generate formant data.
         if (pDoc->GetGrappl()->IsDataReady()) {
@@ -778,16 +778,16 @@ void CDlgExportTable::OnOK() {
 // CDlgExportTable::OnHelpExportTable Call Export Table help
 /***************************************************************************/
 void CDlgExportTable::OnHelpExportTable() {
-    
-	// create the pathname
+
+    // create the pathname
     CString szPath = AfxGetApp()->m_pszHelpFilePath;
     szPath = szPath + "::/User_Interface/Menus/File/Export/SFM_time_table.htm";
     ::HtmlHelp(NULL, szPath, HH_DISPLAY_TOPIC, NULL);
 }
 
 BOOL CDlgExportTable::OnInitDialog() {
-    
-	CDialog::OnInitDialog();
+
+    CDialog::OnInitDialog();
 
     CSaDoc * pDoc = (CSaDoc *)((CMainFrame *)AfxGetMainWnd())->GetCurrSaView()->GetDocument();
 
@@ -818,8 +818,8 @@ BOOL CDlgExportTable::OnInitDialog() {
 // CDlgExportTable::SetEnable Enables/Disables controls
 /***************************************************************************/
 void CDlgExportTable::SetEnable(int nItem, BOOL bEnable) {
-    
-	CWnd * pWnd = GetDlgItem(nItem);
+
+    CWnd * pWnd = GetDlgItem(nItem);
     if (pWnd) {
         pWnd->EnableWindow(bEnable);
     }
@@ -830,7 +830,7 @@ void CDlgExportTable::SetEnable(int nItem, BOOL bEnable) {
 /***************************************************************************/
 void CDlgExportTable::SetVisible(int nItem, BOOL bVisible, BOOL bEnable /*=TRUE*/) {
 
-	CWnd * pWnd = GetDlgItem(nItem);
+    CWnd * pWnd = GetDlgItem(nItem);
     if (pWnd) {
         pWnd->EnableWindow(bVisible && bEnable);// disable invisible items, enable on show
         if (bVisible) {
@@ -847,7 +847,7 @@ void CDlgExportTable::SetVisible(int nItem, BOOL bVisible, BOOL bEnable /*=TRUE*
 /***************************************************************************/
 void CDlgExportTable::OnUpdateIntervalTime() {
 
-	CWnd * pWnd = GetDlgItem(IDC_EXTAB_INTERVAL_TIME);
+    CWnd * pWnd = GetDlgItem(IDC_EXTAB_INTERVAL_TIME);
     if (pWnd) {
         CSaString szText;
         BOOL bChanged = FALSE;
@@ -873,7 +873,7 @@ void CDlgExportTable::OnUpdateIntervalTime() {
 /***************************************************************************/
 void CDlgExportTable::OnSample() {
 
-	UpdateData(TRUE);
+    UpdateData(TRUE);
     CSaDoc * pDoc = (CSaDoc *)((CMainFrame *)AfxGetMainWnd())->GetCurrSaView()->GetDocument();
 
     if (pDoc->GetSegment(PHONETIC)->IsEmpty()) { // no annotations
@@ -892,7 +892,7 @@ void CDlgExportTable::OnSample() {
 /***************************************************************************/
 void CDlgExportTable::OnPhonetic() {
 
-	UpdateData(TRUE);
+    UpdateData(TRUE);
     if (m_nSampleRate == 0) {
         m_bPhonetic2 = m_bPhonetic;
     } else {
@@ -926,8 +926,8 @@ static const char * psz_Table = "table";
 // extractTabField local helper function to get field from tab delimited string
 /***************************************************************************/
 static const CSaString extractTabField(const CSaString & szLine, const int nField) {
-    
-	int nCount = 0;
+
+    int nCount = 0;
     int nLoop = 0;
 
     if (nField < 0) {
@@ -948,8 +948,8 @@ static const CSaString extractTabField(const CSaString & szLine, const int nFiel
 }
 
 static void CreateWordSegments(const int nWord, int & nSegments) {
-    
-	CSaDoc * pDoc = (CSaDoc *)((CMainFrame *)AfxGetMainWnd())->GetCurrSaView()->GetDocument();
+
+    CSaDoc * pDoc = (CSaDoc *)((CMainFrame *)AfxGetMainWnd())->GetCurrSaView()->GetDocument();
 
     if (pDoc->GetSegment(GLOSS)->GetOffsetSize() > nWord) {
         DWORD dwStart;
@@ -1041,7 +1041,7 @@ static void CreateWordSegments(const int nWord, int & nSegments) {
 
 void CDlgExportTable::WriteFileUtf8(CFile * pFile, const CSaString szString) {
 
-	std::string szUtf8 = szString.utf8();
-	pFile->Write(szUtf8.c_str(), szUtf8.size());
+    std::string szUtf8 = szString.utf8();
+    pFile->Write(szUtf8.c_str(), szUtf8.size());
 }
 
