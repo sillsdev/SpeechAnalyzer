@@ -6,15 +6,14 @@
 //###########################################################################
 // CToneSegment data processing
 
-class CToneSegment : public CDependentSegment
-{
-	// Operations
+class CToneSegment : public CDependentSegment {
+    // Operations
 public:
-	CToneSegment(int index, int master = -1);
+    CToneSegment(int index, int master = -1);
 
-	// Attributes
+    // Attributes
 private:
-	virtual CFontTable* NewFontTable() const;
+    virtual CFontTable * NewFontTable() const;
 };
 
 #endif

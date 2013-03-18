@@ -1,24 +1,24 @@
 #include "stdafx.h"
-#include "WaveformGeneratorProcess.h"
-#include "Process\sa_proc.h"
+#include "WaveformGenerator.h"
+#include "Process\Process.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE
 static char BASED_CODE THIS_FILE[] = __FILE__;
 #endif
 
-CWaveformGeneratorProcess::CWaveformGeneratorProcess() {
+CProcessWaveformGenerator::CProcessWaveformGenerator() {
 }
 
-CWaveformGeneratorProcess::~CWaveformGeneratorProcess() {
+CProcessWaveformGenerator::~CProcessWaveformGenerator() {
 }
 
 /***************************************************************************/
 // CDlgWaveformGenerator::process::Process Generate wav file
 /***************************************************************************/
-long CWaveformGeneratorProcess::Process( CWaveformGeneratorSettings & parms, void * pCaller, int nProgress, int nLevel) {
-    
-	TRACE(_T("Process: CProcessWbGenerator\n"));
+long CProcessWaveformGenerator::Process(CWaveformGeneratorSettings & parms, void * pCaller, int nProgress, int nLevel) {
+
+    TRACE(_T("Process: CProcessWbGenerator\n"));
     if (IsCanceled()) {
         return MAKELONG(PROCESS_CANCELED, nProgress);    // process canceled
     }
@@ -64,7 +64,7 @@ long CWaveformGeneratorProcess::Process( CWaveformGeneratorSettings & parms, voi
         }
 
         // Synthesize
-        parms.SynthesizeSamples(m_lpData, dwDataPos, dwBufferSize);
+        parms.SynthesizeSamples(m_lpBuffer, dwDataPos, dwBufferSize);
 
         dwDataPos += dwBufferSize;
 
@@ -72,7 +72,7 @@ long CWaveformGeneratorProcess::Process( CWaveformGeneratorSettings & parms, voi
         if (dwDataPos >= dwBlockEnd) {
             // write the processed data block
             try {
-                Write((HPSTR)m_lpData, dwBufferSize);
+                Write((HPSTR)m_lpBuffer, dwBufferSize);
             } catch (CFileException e) {
                 // error writing file
                 ErrorMessage(IDS_ERROR_WRITETEMPFILE, GetProcessFileName());

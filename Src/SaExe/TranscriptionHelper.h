@@ -9,7 +9,7 @@ typedef std::map<CSaString,MarkerList> TranscriptionDataMap;
 
 class CTranscriptionHelper {
 public:
-	static CSaString Render( class CTranscriptionData & td);
+    static CSaString Render(class CTranscriptionData & td);
 };
 
 #endif

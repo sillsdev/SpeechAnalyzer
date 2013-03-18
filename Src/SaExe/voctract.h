@@ -1,5 +1,5 @@
-// Vocal Tract Sections                                        
-                                        
+// Vocal Tract Sections
+
 // x    y     radian angle
 { 335, 315, 3.14159265359  },  //glottis
 { 335, 310, 3.14159265359  },

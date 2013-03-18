@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "TextSegment.h"
-#include "Process\sa_proc.h"
+#include "Process\Process.h"
 #include "Segment.h"
 #include "Process\sa_p_cha.h"
 #include "Process\sa_p_zcr.h"
@@ -291,9 +291,9 @@ int CTextSegment::CheckPosition(CSaDoc * pSaDoc, DWORD dwStart, DWORD dwStop, EM
 /***************************************************************************/
 // CTextSegment::Add Add text segment
 /***************************************************************************/
-void CTextSegment::Add(CSaDoc * pDoc, DWORD dwStart, CSaString & szString, bool bDelimiter, bool bCheck) { 
+void CTextSegment::Add(CSaDoc * pDoc, DWORD dwStart, CSaString & szString, bool bDelimiter, bool bCheck) {
 
-	// add a segment
+    // add a segment
     // get pointer to view
     POSITION pos = pDoc->GetFirstViewPosition();
     CSaView * pView = (CSaView *)pDoc->GetNextView(pos);

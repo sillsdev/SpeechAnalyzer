@@ -7,7 +7,7 @@
 #include "sa_view.h"
 #include "settings\obstream.h"
 #include "riff.h"
-#include "WaveformGeneratorProcess.h"
+#include "WaveformGenerator.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE
@@ -265,12 +265,12 @@ BOOL CWaveformGeneratorSettings::ReadProperties(Object_istream & obs) {
     return TRUE;
 }
 
-BOOL CWaveformGeneratorSettings::Synthesize( LPCTSTR szFileName) {
+BOOL CWaveformGeneratorSettings::Synthesize(LPCTSTR szFileName) {
 
     pcm.wf.nBlockAlign = (unsigned short)(pcm.wf.nChannels*(pcm.wBitsPerSample/8));
     pcm.wf.nAvgBytesPerSec = pcm.wf.nSamplesPerSec*pcm.wf.nBlockAlign;
 
-    CWaveformGeneratorProcess * pProcess = new CWaveformGeneratorProcess();
+    CProcessWaveformGenerator * pProcess = new CProcessWaveformGenerator();
 
     short int nResult = LOWORD(pProcess->Process(*this));
     if (nResult == PROCESS_ERROR || nResult == PROCESS_NO_DATA || nResult == PROCESS_CANCELED) {
