@@ -39,7 +39,6 @@
 #undef tpqueue
 #undef tvector
 
-int32 operator <(const rpair_float_float & x, const rpair_float_float & y)
-{
-  return x.first > y.first;
+int32 operator <(const rpair_float_float & x, const rpair_float_float & y) {
+    return x.first > y.first;
 }

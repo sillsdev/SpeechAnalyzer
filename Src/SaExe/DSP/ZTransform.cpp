@@ -5,7 +5,7 @@
 //
 // This class is designed to implement generic Z-Transforms
 // The class currently implements a transform a cascade of low order
-// transform stages.  Each stage could actually be of any arbitrary 
+// transform stages.  Each stage could actually be of any arbitrary
 // order, but there is a tendency for high order transforms to overflow
 //
 //
@@ -17,7 +17,7 @@
 //
 // Using the model (b[0] must == 1)
 //
-//          x[n] ----> + ------> + -----> +.......+ ----  
+//          x[n] ----> + ------> + -----> +.......+ ----
 //                     ^         ^                      |
 //                     |         |                      |
 //                   -b[n]    -b[n-1]                   |

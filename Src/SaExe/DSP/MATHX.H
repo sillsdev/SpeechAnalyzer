@@ -12,22 +12,25 @@
 
 // Constant definitions
 #ifndef PI
- #define PI           3.14159265358979323846264338327950288419716939937511
+#define PI           3.14159265358979323846264338327950288419716939937511
 #endif
- #define LOG_2        0.30102999566398119521373889472449302678818988146211  // log 2 base 10
- #define FLT_MAX_NEG  (-FLT_MAX)
- #define FLT_MIN_NEG  (-FLT_MIN)
+#define LOG_2        0.30102999566398119521373889472449302678818988146211  // log 2 base 10
+#define FLT_MAX_NEG  (-FLT_MAX)
+#define FLT_MIN_NEG  (-FLT_MIN)
 
 // Type definitions
-typedef struct SSTATISTIC { double Mean; double StdDev;} STATISTIC;
+typedef struct SSTATISTIC {
+    double Mean;
+    double StdDev;
+} STATISTIC;
 
 // Miscellaneous definitions
- enum Comparison{LESS = -1, EQUAL = 0, GREATER = 1};
+enum Comparison {LESS = -1, EQUAL = 0, GREATER = 1};
 
 // Function prototypes
- float BessI0(float x);
- double Round(double x);
- bool IsSingleBitOn(unsigned short data);
+float BessI0(float x);
+double Round(double x);
+bool IsSingleBitOn(unsigned short data);
 
 
 #endif

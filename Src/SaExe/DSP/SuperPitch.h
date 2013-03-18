@@ -6,8 +6,8 @@
 
 class CSuperPitch {
 public:
-	CSuperPitch();
-	virtual ~CSuperPitch();
+    CSuperPitch();
+    virtual ~CSuperPitch();
 };
 
 #endif
