@@ -6,7 +6,7 @@
 //* Date Started     : 6/11/01                                              *
 //* Customer Name    : JAARS / SIL                                          *
 //* Description      : This is the main header file for the Wavelet         *
-//*                    graph in SA											*
+//*                    graph in SA                                          *
 //* Revision History : 7/30/01 ARH - Imported file into Speech Analyzer     *
 //*                                  v2.0 project                           *
 //***************************************************************************
@@ -17,8 +17,8 @@
 
 #define IDM_BUTTON1     300                     // used for the little arrow buttons on the side of the graph
 #define IDM_BUTTON2     301                     // these could be used for implementing a time/frequency zoom
-												// but currently control the "red line" showing the different
-												// energy bands
+// but currently control the "red line" showing the different
+// energy bands
 
 typedef unsigned char UBYTE;
 

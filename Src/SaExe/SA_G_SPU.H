@@ -10,30 +10,30 @@
 //###########################################################################
 // CPlotSpectrum plot window
 
-class CPlotSpectrum : public CPlotWnd
-{   DECLARE_DYNCREATE(CPlotSpectrum)
+class CPlotSpectrum : public CPlotWnd {
+    DECLARE_DYNCREATE(CPlotSpectrum)
 
 // Construction/destruction/creation
 public:
-  CPlotSpectrum();
-  virtual ~CPlotSpectrum();
+    CPlotSpectrum();
+    virtual ~CPlotSpectrum();
 
-  // Attributes
+    // Attributes
 public:
-  enum FreqScale {HALF_SCALE = 0, FULL_SCALE = 1};
+    enum FreqScale {HALF_SCALE = 0, FULL_SCALE = 1};
 private:
 
-  // Operations
+    // Operations
 public:
-  virtual void OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView);
-  virtual void AnimateFrame(DWORD dwFrameIndex);
-  virtual void EndAnimation();
+    virtual void OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView);
+    virtual void AnimateFrame(DWORD dwFrameIndex);
+    virtual void EndAnimation();
 
-  // Generated message map functions
+    // Generated message map functions
 protected:
-  //{{AFX_MSG(CPlotSpectrum)
-  //}}AFX_MSG
-  DECLARE_MESSAGE_MAP()
+    //{{AFX_MSG(CPlotSpectrum)
+    //}}AFX_MSG
+    DECLARE_MESSAGE_MAP()
 };
 
 #endif //_SA_G_SPU_H

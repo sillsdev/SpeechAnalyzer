@@ -16,37 +16,39 @@
 
 class CProcessTonalWeightChart;
 
-class CPlotTonalWeightChart : public CPlotWnd
-{   DECLARE_DYNCREATE(CPlotTonalWeightChart)
+class CPlotTonalWeightChart : public CPlotWnd {
+    DECLARE_DYNCREATE(CPlotTonalWeightChart)
 
 // Construction/destruction/creation
 public:
-  CPlotTonalWeightChart();
-  virtual ~CPlotTonalWeightChart();
+    CPlotTonalWeightChart();
+    virtual ~CPlotTonalWeightChart();
 
-  // Attributes
+    // Attributes
 private:
-  double   m_dSemitoneOffset;          // for adjusting Melogram and TWC y-scale (Semitone #)
-  BOOL     m_bSemitoneOffsetAdjusted;  // to indicate whether or not m_fSemitoneOffset has been adjusted yet.
+    double   m_dSemitoneOffset;          // for adjusting Melogram and TWC y-scale (Semitone #)
+    BOOL     m_bSemitoneOffsetAdjusted;  // to indicate whether or not m_fSemitoneOffset has been adjusted yet.
 
-  // Operations
+    // Operations
 public:
-  virtual void OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView);
-  void AdjustSemitoneOffset(WORD UpDown, BOOL bKeyShifted);
-  double SetSemitoneOffset(double dSemitoneOffset);
-  double GetSemitoneOffset() const { return m_dSemitoneOffset; }
-  virtual Grid GetGrid() const;
+    virtual void OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView);
+    void AdjustSemitoneOffset(WORD UpDown, BOOL bKeyShifted);
+    double SetSemitoneOffset(double dSemitoneOffset);
+    double GetSemitoneOffset() const {
+        return m_dSemitoneOffset;
+    }
+    virtual Grid GetGrid() const;
 
 private:
-  void PaintHelper(CDC* pDC, CRect rWnd, CRect rClip,
-                                 CProcessTonalWeightChart* pProcess, CSaDoc *pProcessDoc, int nFlags);
+    void PaintHelper(CDC * pDC, CRect rWnd, CRect rClip,
+                     CProcessTonalWeightChart * pProcess, CSaDoc * pProcessDoc, int nFlags);
 
 
-  // Generated message map functions
+    // Generated message map functions
 protected:
-  //{{AFX_MSG(CPlotTonalWeightChart)
-  //}}AFX_MSG
-  DECLARE_MESSAGE_MAP()
+    //{{AFX_MSG(CPlotTonalWeightChart)
+    //}}AFX_MSG
+    DECLARE_MESSAGE_MAP()
 };
 
 #endif //_sa_g_twc_H

@@ -14,112 +14,111 @@
 #ifndef INCLUDED_SA_IPA
 #define INCLUDED_SA_IPA
 
-class CFontTable : public CFont
-{
-	// Constructor/Destructor
+class CFontTable : public CFont {
+    // Constructor/Destructor
 public:
-	CFontTable();
-	//  virtual ~CFontTable() = 0; // Pure Virtual Class
+    CFontTable();
+    //  virtual ~CFontTable() = 0; // Pure Virtual Class
 
-	// Attributes
+    // Attributes
 public:
-	enum tUnit
-	{
-		BYTE,
-		CHARACTER,
-		DELIMITEDWORD,
-		NONE
-	};
+    enum tUnit {
+        BYTE,
+        CHARACTER,
+        DELIMITEDWORD,
+        NONE
+    };
 
-	char m_wordDelimiter;
+    char m_wordDelimiter;
 
-	// Operations
+    // Operations
 public:
-	int GetLength(tUnit nInUnits, const CString& szString) const;
-	virtual CString GetNext(tUnit nInUnits, int &nIndex, const CString& szString) const = 0;
-	CString GetRemainder(tUnit nInUnits, int nIndex, const CString& szString) const;
-	void RemoveWordDelimiters(CString &szString) const;
+    int GetLength(tUnit nInUnits, const CString & szString) const;
+    virtual CString GetNext(tUnit nInUnits, int & nIndex, const CString & szString) const = 0;
+    CString GetRemainder(tUnit nInUnits, int nIndex, const CString & szString) const;
+    void RemoveWordDelimiters(CString & szString) const;
 
-	virtual BOOL IsIPA() const = 0;
+    virtual BOOL IsIPA() const = 0;
 };
 
-class CFontTableIPA : public CFontTable
-{
-	// Constructor/Destructor
+class CFontTableIPA : public CFontTable {
+    // Constructor/Destructor
 public:
-	CFontTableIPA();
+    CFontTableIPA();
 
-	// Attributes
+    // Attributes
 public:
 
 private:
-	enum tGlyphType
-	{
-		ENDofSTRING,
-		INDEPENDENT,
-		PREFIX,
-		POSTFIX,
-		BREAK,
-		LINK
-	};
+    enum tGlyphType {
+        ENDofSTRING,
+        INDEPENDENT,
+        PREFIX,
+        POSTFIX,
+        BREAK,
+        LINK
+    };
 
-	enum tPhoneticClassification
-	{
-		UNDEFINED,
-		CONSONANT,
-		VOWEL,
-		DIACRITIC,
-		SUPRASEGMENTAL,
-		PUNCTUATION
-	};
+    enum tPhoneticClassification {
+        UNDEFINED,
+        CONSONANT,
+        VOWEL,
+        DIACRITIC,
+        SUPRASEGMENTAL,
+        PUNCTUATION
+    };
 
-	class
-	{
-	public:
-		tGlyphType glyphType;
-		tPhoneticClassification phoneticType;
-	} m_pChar[256];
+    class {
+    public:
+        tGlyphType glyphType;
+        tPhoneticClassification phoneticType;
+    } m_pChar[256];
 
-	// Operations
+    // Operations
 public:
-	CString GetNext(tUnit nInUnits, int &nIndex, const CString& szString) const;
-	virtual BOOL IsIPA() const { return TRUE; };
+    CString GetNext(tUnit nInUnits, int & nIndex, const CString & szString) const;
+    virtual BOOL IsIPA() const {
+        return TRUE;
+    };
 
 private:
-	void AddChar(int nAccessCode, 
-				 int nIPAClassification, 
-				 char* szIPADescription, 
-				 tPhoneticClassification nClassification,
-				 char* szClassSub1, 
-				 char* szClassSub2, 
-				 char* szClassSub3, 
-				 char* szClassSub4,
-				 tGlyphType nType);
-	
-	tGlyphType GlyphType(int nAccessCode) const
-	{
-		if ((nAccessCode < 256)&&(nAccessCode >=0)) return m_pChar[nAccessCode].glyphType;
-		else return INDEPENDENT;
-	};
+    void AddChar(int nAccessCode,
+                 int nIPAClassification,
+                 char * szIPADescription,
+                 tPhoneticClassification nClassification,
+                 char * szClassSub1,
+                 char * szClassSub2,
+                 char * szClassSub3,
+                 char * szClassSub4,
+                 tGlyphType nType);
+
+    tGlyphType GlyphType(int nAccessCode) const {
+        if ((nAccessCode < 256)&&(nAccessCode >=0)) {
+            return m_pChar[nAccessCode].glyphType;
+        } else {
+            return INDEPENDENT;
+        }
+    };
 };
 
 
-class CFontTableANSI : public CFontTable
-{
-	// Constructor/Destructor
+class CFontTableANSI : public CFontTable {
+    // Constructor/Destructor
 public:
-	CFontTableANSI(){};
+    CFontTableANSI() {};
 
-	// Attributes
+    // Attributes
 public:
 
 private:
 
-	// Operations
+    // Operations
 public:
-	int GetLength(tUnit nInUnits, const CString& szString) const;
-	CString GetNext(tUnit nInUnits, int &nIndex, const CString& szString) const;
-	virtual BOOL IsIPA() const { return FALSE; };
+    int GetLength(tUnit nInUnits, const CString & szString) const;
+    CString GetNext(tUnit nInUnits, int & nIndex, const CString & szString) const;
+    virtual BOOL IsIPA() const {
+        return FALSE;
+    };
 
 };
 

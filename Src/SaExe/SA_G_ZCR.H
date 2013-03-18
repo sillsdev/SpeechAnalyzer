@@ -10,27 +10,27 @@
 //###########################################################################
 // CPlotZCross plot window
 
-class CPlotZCross : public CPlotWnd
-{   DECLARE_DYNCREATE(CPlotZCross)
+class CPlotZCross : public CPlotWnd {
+    DECLARE_DYNCREATE(CPlotZCross)
 
 // Construction/destruction/creation
 public:
-  CPlotZCross();
-  virtual ~CPlotZCross();
-  virtual CPlotWnd * NewCopy(void);
+    CPlotZCross();
+    virtual ~CPlotZCross();
+    virtual CPlotWnd * NewCopy(void);
 
-  // Attributes
+    // Attributes
 private:
 
-  // Operations
+    // Operations
 public:
-  virtual void OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView);
+    virtual void OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView);
 
-  // Generated message map functions
+    // Generated message map functions
 protected:
-  //{{AFX_MSG(CPlotZCross)
-  //}}AFX_MSG
-  DECLARE_MESSAGE_MAP()
+    //{{AFX_MSG(CPlotZCross)
+    //}}AFX_MSG
+    DECLARE_MESSAGE_MAP()
 };
 
 #endif //_SA_G_ZCR_H

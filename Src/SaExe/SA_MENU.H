@@ -10,22 +10,21 @@
 //###########################################################################
 // CLayoutMenu custom menu
 
-class CLayoutMenu : public CMenu
-{
+class CLayoutMenu : public CMenu {
 
-  // Construction/destruction/creation
+    // Construction/destruction/creation
 public:
-  CLayoutMenu();
-  virtual ~CLayoutMenu();
+    CLayoutMenu();
+    virtual ~CLayoutMenu();
 
-  // Attributes
+    // Attributes
 private:
 
-  // Operations
+    // Operations
 public:
-  void AppendLayoutMenuItem(UINT nID, int nNumber);
-  virtual void MeasureItem(LPMEASUREITEMSTRUCT lpMIS);
-  virtual void DrawItem(LPDRAWITEMSTRUCT lpDIS);
+    void AppendLayoutMenuItem(UINT nID, int nNumber);
+    virtual void MeasureItem(LPMEASUREITEMSTRUCT lpMIS);
+    virtual void DrawItem(LPDRAWITEMSTRUCT lpDIS);
 };
 
 #endif //_SA_MENU_H

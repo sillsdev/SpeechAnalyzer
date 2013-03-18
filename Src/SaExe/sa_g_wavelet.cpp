@@ -408,7 +408,6 @@ void CPlotWavelet::populateBmiColors(RGBQUAD * QuadColors, CSaView * /*pView*/) 
     // create palette
     Color[235] = pColors->cPlotBkg;  // background
 
-    // SpectroParm* pSpectroParm = pDoc->GetSpectrogram()->GetSpectroParm(m_nProcessIndex);
     int bGrayScale = FALSE;             // COLOR OR GRAYSCALE YOU Decide, here
     int nMinThreshold = 0;
     int nMaxThreshold = 234;
