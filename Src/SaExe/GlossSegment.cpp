@@ -61,8 +61,8 @@ void CGlossSegment::ReplaceSelectedSegment(CDocument * pSaDoc, const CSaString &
 // segment have to be removed too. The user will be informed before.
 /***************************************************************************/
 void CGlossSegment::Remove(CDocument * pSaDoc, BOOL bCheck) {
-    
-	CSaDoc * pDoc = (CSaDoc *) pSaDoc;
+
+    CSaDoc * pDoc = (CSaDoc *) pSaDoc;
 
     DWORD dwOldOffset = DWORD(~0);
     if (m_nSelection != -1) {
@@ -91,8 +91,8 @@ void CGlossSegment::Remove(CDocument * pSaDoc, BOOL bCheck) {
 // CGlossSegment::RemoveNoRefresh Remove gloss segment
 /***************************************************************************/
 DWORD CGlossSegment::RemoveNoRefresh(CDocument * pDoc) {
-    
-	// change the segment arrays
+
+    // change the segment arrays
     m_pPOS->RemoveAt(m_nSelection, 1);
     return CTextSegment::RemoveNoRefresh(pDoc);
 }
@@ -102,8 +102,8 @@ DWORD CGlossSegment::RemoveNoRefresh(CDocument * pDoc) {
 // CGlossSegment::DeleteContents Delete all contents of the gloss arrays
 /***************************************************************************/
 void CGlossSegment::DeleteContents() {
-    
-	m_pPOS->RemoveAll();
+
+    m_pPOS->RemoveAll();
     CTextSegment::DeleteContents(); // call the base class to delete positions
 }
 
@@ -114,8 +114,8 @@ void CGlossSegment::DeleteContents() {
 // there will be no string added.
 /***************************************************************************/
 BOOL CGlossSegment::SetAt(const CSaString * pszString, bool delimiter, DWORD dwStart, DWORD dwDuration) {
-    
-	int nIndex = FindOffset(dwStart);
+
+    int nIndex = FindOffset(dwStart);
     ASSERT(nIndex>=0);
     try {
         m_pPOS->SetAtGrow(nIndex, NULL);
@@ -134,9 +134,9 @@ BOOL CGlossSegment::SetAt(const CSaString * pszString, bool delimiter, DWORD dwS
 // there will be no string added.
 /***************************************************************************/
 BOOL CGlossSegment::Insert(int nIndex, LPCTSTR pszString, bool delimiter, DWORD dwStart, DWORD dwDuration) {
-    
-	try {
-        m_pPOS->InsertAt( nIndex, NULL,  1);
+
+    try {
+        m_pPOS->InsertAt(nIndex, NULL,  1);
     } catch (CMemoryException e) {
         // memory allocation error
         ErrorMessage(IDS_ERROR_MEMALLOC);
@@ -148,7 +148,7 @@ BOOL CGlossSegment::Insert(int nIndex, LPCTSTR pszString, bool delimiter, DWORD 
 //SDM 1.5Test8.1
 void CGlossSegment::Serialize(CArchive & ar) {
 
-	CSegment::Serialize(ar);
+    CSegment::Serialize(ar);
     CTextSegment::Serialize(ar);
     if (ar.IsStoring()) {
         ar << CSaString("CGlossSegmentDetail tag");
@@ -166,8 +166,8 @@ void CGlossSegment::Serialize(CArchive & ar) {
 // Standard exit function if an error occured.
 /***************************************************************************/
 long CGlossSegment::Exit(int nError) {
-    
-	EndProcess(); // end data processing
+
+    EndProcess(); // end data processing
     EndWaitCursor();
     SetDataReady(FALSE);
     return MAKELONG(nError, 100);
@@ -387,8 +387,8 @@ long CGlossSegment::Process(void * pCaller, CSaDoc * pSaDoc, int nProgress, int 
 }
 
 void CGlossSegment::CorrectGlossDurations(CSaDoc * pDoc) {
-    
-	// Adjust Gloss Durations
+
+    // Adjust Gloss Durations
     if (!IsEmpty()) {
         int nGloss = 0;
         while (nGloss != -1) {

@@ -30,7 +30,7 @@
 #include <math.h>
 #include "PrivateCursorWnd.h"
 #include "DlgVowelFormants.h"
-#include "Process\sa_proc.h"
+#include "Process\Process.h"
 #include "Process\sa_p_spg.h"
 #include "Process\sa_p_sfmt.h"
 #include "Process\sa_p_cha.h"
@@ -48,46 +48,21 @@
 // CDlgParametersRawdataPage property page
 // Displays all controls to change raw data parameters.
 
-/////////////////////////////////////////////////////////////////////////////
-// CDlgParametersRawdataPage message map
-
 BEGIN_MESSAGE_MAP(CDlgParametersRawdataPage, CPropertyPage)
-    //{{AFX_MSG_MAP(CDlgParametersRawdataPage)
     ON_CBN_SELCHANGE(IDC_RAWDATA_PROCESS, OnProcess)
-    //}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
-/////////////////////////////////////////////////////////////////////////////
-// CDlgParametersRawdataPage construction/destruction/creation
-
-/***************************************************************************/
-// CDlgParametersRawdataPage::CDlgParametersRawdataPage Constructor
-/***************************************************************************/
 CDlgParametersRawdataPage::CDlgParametersRawdataPage() : CPropertyPage(CDlgParametersRawdataPage::IDD) {
 
     m_nProcess = 0;
 }
 
-/////////////////////////////////////////////////////////////////////////////
-// CDlgParametersRawdataPage helper functions
-
-/***************************************************************************/
-// CDlgParametersRawdataPage::DoDataExchange Data exchange
-/***************************************************************************/
 void CDlgParametersRawdataPage::DoDataExchange(CDataExchange * pDX) {
 
     CPropertyPage::DoDataExchange(pDX);
-    //{{AFX_DATA_MAP(CDlgParametersRawdataPage)
     DDX_CBIndex(pDX, IDC_RAWDATA_PROCESS, m_nProcess);
-    //}}AFX_DATA_MAP
 }
 
-/////////////////////////////////////////////////////////////////////////////
-// CDlgParametersRawdataPage message handlers
-
-/***************************************************************************/
-// CDlgParametersRawdataPage::OnInitDialog Dialog initialization
-/***************************************************************************/
 BOOL CDlgParametersRawdataPage::OnInitDialog() {
 
     CPropertyPage::OnInitDialog();
@@ -119,11 +94,7 @@ void CDlgParametersRawdataPage::OnProcess() {
 // CDlgParametersPitchPage property page
 // Displays all controls to change pitch calculation parameters.
 
-/////////////////////////////////////////////////////////////////////////////
-// CDlgParametersPitchPage message map
-
 BEGIN_MESSAGE_MAP(CDlgParametersPitchPage, CPropertyPage)
-    //{{AFX_MSG_MAP(CDlgParametersPitchPage)
     ON_COMMAND(IDC_PITCH_CHANGESCROLL, OnChangeScroll)
     ON_EN_KILLFOCUS(IDC_PITCH_CHANGE, OnKillfocusChange)
     ON_COMMAND(IDC_PITCH_GROUPSCROLL, OnGroupScroll)
@@ -155,28 +126,13 @@ BEGIN_MESSAGE_MAP(CDlgParametersPitchPage, CPropertyPage)
     ON_EN_CHANGE(IDC_MEDIANFILTERSIZE, OnChange)
     ON_BN_CLICKED(IDC_PITCH_MANUAL_DEFAULT_APP, OnPitchManualDefaultApp)
     ON_BN_CLICKED(IDC_PITCH_MANUAL_DEFAULT_FILE, OnPitchManualDefaultFile)
-    //}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
-/////////////////////////////////////////////////////////////////////////////
-// CDlgParametersPitchPage construction/destruction/creation
-
-/***************************************************************************/
-// CDlgParametersPitchPage::CDlgParametersPitchPage Constructor
-/***************************************************************************/
 CDlgParametersPitchPage::CDlgParametersPitchPage() : CPropertyPage(CDlgParametersPitchPage::IDD) {
 
-    //{{AFX_DATA_INIT(CDlgParametersPitchPage)
-    //}}AFX_DATA_INIT
     m_bModified = FALSE;
 }
 
-/////////////////////////////////////////////////////////////////////////////
-// CDlgParametersPitchPage helper functions
-
-/***************************************************************************/
-// CDlgParametersPitchPage::DoDataExchange Data exchange
-/***************************************************************************/
 void CDlgParametersPitchPage::DoDataExchange(CDataExchange * pDX) {
 
     CPropertyPage::DoDataExchange(pDX);
@@ -184,7 +140,6 @@ void CDlgParametersPitchPage::DoDataExchange(CDataExchange * pDX) {
     szVoicing.Format(_T("%5.1f"), m_fVoicing);
     szVoicing.TrimLeft();
     DDV_MinMaxInt(pDX, (int)m_fVoicing, 0, 99);
-    //{{AFX_DATA_MAP(CDlgParametersPitchPage)
     DDX_Text(pDX, IDC_PITCH_CHANGE, m_nChange);
     DDV_MinMaxInt(pDX, m_nChange, 1, 20);
     DDX_Text(pDX, IDC_PITCH_GROUP, m_nGroup);
@@ -202,8 +157,6 @@ void CDlgParametersPitchPage::DoDataExchange(CDataExchange * pDX) {
     DDX_CBIndex(pDX, IDC_PITCH_SCALING, m_nPitchScaling);
     DDX_Text(pDX, IDC_MEDIANFILTERSIZE, m_nCepMedianFilterSize);
     DDV_MinMaxInt(pDX, m_nCepMedianFilterSize, 1, 250);
-    //    DDX_Check(pDX, IDC_USEMEDIANFILTER, m_bUseCepMedianFilter);  (RLJ 1.5Test10.9B)
-    //}}AFX_DATA_MAP
 }
 
 /***************************************************************************/
@@ -276,12 +229,6 @@ void CDlgParametersPitchPage::Apply() {
     }
 }
 
-/////////////////////////////////////////////////////////////////////////////
-// CDlgParametersPitchPage message handlers
-
-/***************************************************************************/
-// CDlgParametersPitchPage::OnInitDialog Dialog initialization
-/***************************************************************************/
 BOOL CDlgParametersPitchPage::OnInitDialog() {
 
     CPropertyPage::OnInitDialog();
@@ -1094,12 +1041,7 @@ void CDlgParametersPitchPage::OnPitchManualDefault(BOOL bAppDefaults) {
 
 IMPLEMENT_DYNAMIC(CDlgParametersSpectroPage, CPropertyPage)
 
-/////////////////////////////////////////////////////////////////////////////
-// CDlgParametersSpectroPage message map
-
 BEGIN_MESSAGE_MAP(CDlgParametersSpectroPage, CPropertyPage)
-    //{{AFX_MSG_MAP(CDlgParametersSpectroPage)
-    //ON_BN_CLICKED(IDC_SMOOTH_FORMANTTRACKS, OnModifiedSmoothFormantTracks)
     ON_BN_CLICKED(IDC_COLOR, OnModifiedColor)
     ON_BN_CLICKED(IDC_COARSE, OnModifiedResolution)
     ON_BN_CLICKED(IDC_OVERLAID, OnModifiedOverlay)
@@ -1117,42 +1059,30 @@ BEGIN_MESSAGE_MAP(CDlgParametersSpectroPage, CPropertyPage)
     ON_BN_CLICKED(IDC_MORE_INFO, OnMoreInfo)
     ON_BN_CLICKED(IDC_FORMANT_COLOR, OnChange)
     ON_BN_CLICKED(IDC_SHOW_PITCH, OnModifiedFormants)
-    //}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
-/////////////////////////////////////////////////////////////////////////////
-// CDlgParametersSpectroPage construction/destruction/creation
-
-/***************************************************************************/
-// CDlgParametersSpectroPage::CDlgParametersSpectroPage Constructor
-/***************************************************************************/
-CDlgParametersSpectroPage::CDlgParametersSpectroPage(UINT nID, UINT graphId, const SpectroParm * pSpectroParmDefaults)
-    : CPropertyPage(CDlgParametersSpectroPage::IDD, nID) {
+CDlgParametersSpectroPage::CDlgParametersSpectroPage(UINT nID, UINT graphId, const CSpectroParm * pSpectroParmDefaults) : 
+CPropertyPage(CDlgParametersSpectroPage::IDD, nID) {
 
     m_GraphId = graphId;
-    //{{AFX_DATA_INIT(CDlgParametersSpectroPage)
     m_bShowPitch = FALSE;
-    //}}AFX_DATA_INIT
-    m_nResolution     = (UINT) pSpectroParmDefaults->nResolution;
-    m_nColor          = (UINT) pSpectroParmDefaults->nColor;
-    m_bF1             = (UINT) pSpectroParmDefaults->bShowF1;
-    m_bF2             = (UINT) pSpectroParmDefaults->bShowF2;
-    m_bF3             = (UINT) pSpectroParmDefaults->bShowF3;
-    m_bF4             = (UINT) pSpectroParmDefaults->bShowF4;
+    m_nResolution = (UINT) pSpectroParmDefaults->nResolution;
+    m_nColor = (UINT) pSpectroParmDefaults->nColor;
+    m_bF1 = (UINT) pSpectroParmDefaults->bShowF1;
+    m_bF2 = (UINT) pSpectroParmDefaults->bShowF2;
+    m_bF3 = (UINT) pSpectroParmDefaults->bShowF3;
+    m_bF4 = (UINT) pSpectroParmDefaults->bShowF4;
     m_bSmoothFormantTracks = (UINT) pSpectroParmDefaults->bSmoothFormantTracks;
-    m_nOverlay        = (UINT) pSpectroParmDefaults->nOverlay;
+    m_nOverlay = (UINT) pSpectroParmDefaults->nOverlay;
     m_bSmoothSpectra = pSpectroParmDefaults->bSmoothSpectra;
     m_bFormantColor = pSpectroParmDefaults->bFormantColor;
     m_bShowPitch = pSpectroParmDefaults->bShowPitch;
     m_bFormants = m_bShowPitch || m_bF1 || m_bF2 || m_bF3 || m_bF4;
-    m_nFrequency      = (UINT) pSpectroParmDefaults->nFrequency;
-    m_nMaxThreshold   = (UINT) pSpectroParmDefaults->nMaxThreshold;
-    m_nMinThreshold   = (UINT) pSpectroParmDefaults->nMinThreshold;
+    m_nFrequency = (UINT) pSpectroParmDefaults->nFrequency;
+    m_nMaxThreshold = (UINT) pSpectroParmDefaults->nMaxThreshold;
+    m_nMinThreshold = (UINT) pSpectroParmDefaults->nMinThreshold;
     m_bModified = FALSE;
 }
-
-/////////////////////////////////////////////////////////////////////////////
-// CDlgParametersSpectroPage helper functions
 
 /*
 Do the work of applying the settings in the dialog page.
@@ -1177,8 +1107,8 @@ void CDlgParametersSpectroPage::Apply() {
             }
         }
         // get spectrogram parameters
-        SpectroParm cSpectroParm = pDoc->GetSpectrogram(m_GraphId==IDD_SPECTROGRAM)->GetSpectroParm();
-        SpectroParm * pSpectroParm = &cSpectroParm;
+        CSpectroParm cSpectroParm = pDoc->GetSpectrogram(m_GraphId==IDD_SPECTROGRAM)->GetSpectroParm();
+        CSpectroParm * pSpectroParm = &cSpectroParm;
         // save member data
         if (pSpectroParm->nResolution != m_nResolution) {
             // processed data is invalid
@@ -1273,7 +1203,7 @@ BOOL CDlgParametersSpectroPage::OnInitDialog() {
         }
     }
     // get spectrogram parameters
-    const SpectroParm * pSpectroParm = &pDoc->GetSpectrogram(m_GraphId==IDD_SPECTROGRAM)->GetSpectroParm();
+    const CSpectroParm * pSpectroParm = &pDoc->GetSpectrogram(m_GraphId==IDD_SPECTROGRAM)->GetSpectroParm();
     // initialize member data
     m_nResolution = pSpectroParm->nResolution;
     m_nColor = pSpectroParm->nColor;
@@ -1350,7 +1280,7 @@ void CDlgParametersSpectroPage::OnChange() {
 int CDlgParametersSpectroPage::SetFrequency(int nData) {
 
     int nReturn = m_nFrequency;
-    int nLowerFreq = (int)SpectroParm::Bandwidth(m_nResolution);
+    int nLowerFreq = (int)CSpectroParm::Bandwidth(m_nResolution);
     if (nData + 25 > m_nFreqLimit) {
         nData = m_nFreqLimit;
     } else if (nData - 25 <= nLowerFreq) {
@@ -1457,7 +1387,7 @@ void CDlgParametersSpectroPage::OnModifiedFormants(BOOL bMessage) {
     }
 
     if ((m_bFormants != bOldFormants) ||
-            (!m_bFormants && (m_bShowPitch || m_bF1 || m_bF2 || m_bF3 || m_bF4))) {
+		(!m_bFormants && (m_bShowPitch || m_bF1 || m_bF2 || m_bF3 || m_bF4))) {
         m_bF1 = m_bF2 = m_bF3 = m_bF4 = m_bFormants;
         m_bShowPitch = FALSE;
 
@@ -2326,12 +2256,6 @@ void CDlgParametersFormantsPage::Apply() {
     }
 }
 
-/////////////////////////////////////////////////////////////////////////////
-// CDlgParametersFormantsPage message handlers
-
-/***************************************************************************/
-// CDlgParametersFormantsPage::OnInitDialog Dialog initialization
-/***************************************************************************/
 BOOL CDlgParametersFormantsPage::OnInitDialog() {
 
     // get pointer to document
@@ -2379,20 +2303,8 @@ BOOL CDlgParametersFormantsPage::OnInitDialog() {
     return TRUE;
 }
 
-/***************************************************************************/
-// CDlgParametersFormantsPage::OnModifiedSource Source modified
-/***************************************************************************/
 void CDlgParametersFormantsPage::OnModifiedSource() {
 
-    /*
-    int nSource = (int)IsDlgButtonChecked(IDC_FORMANTS_LPC);
-    if (nSource != m_nDataSource)
-    {
-    m_nDataSource = nSource;
-    m_bModified = TRUE;
-    SetModified(TRUE); // data modified, enable apply button
-    }
-    */
     BOOL bCepstralFormants= (BOOL)IsDlgButtonChecked(IDC_FORMANTS_CEPSTRAL);
     if (bCepstralFormants != m_bCepstralFormants) {
         m_bCepstralFormants = bCepstralFormants;
@@ -2491,11 +2403,7 @@ void CDlgParametersFormantsPage::OnModifiedScale() {
 // CDlgParametersSDPPage property page
 // Displays all controls to change SDP calculation parameters.
 
-/////////////////////////////////////////////////////////////////////////////
-// CDlgParametersSDPPage message map
-
 BEGIN_MESSAGE_MAP(CDlgParametersSDPPage, CPropertyPage)
-    //{{AFX_MSG_MAP(CDlgParametersSDPPage)
     ON_COMMAND(IDC_SDP_PANESSCROLL, OnPanesScroll)
     ON_EN_KILLFOCUS(IDC_SDP_PANESEDIT, OnKillfocusPanes)
     ON_COMMAND(IDC_SDP_STEPSSCROLL, OnStepsScroll)
@@ -2507,45 +2415,25 @@ BEGIN_MESSAGE_MAP(CDlgParametersSDPPage, CPropertyPage)
     ON_EN_CHANGE(IDC_SDP_PANESEDIT, OnChange)
     ON_EN_CHANGE(IDC_SDP_STEPSEDIT, OnChange)
     ON_EN_CHANGE(IDC_SDP_UPPEREDIT, OnChange)
-    //}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
-/////////////////////////////////////////////////////////////////////////////
-// CDlgParametersSDPPage construction/destruction/creation
-
-/***************************************************************************/
-// CDlgParametersSDPPage::CDlgParametersSDPPage Constructor
-/***************************************************************************/
 CDlgParametersSDPPage::CDlgParametersSDPPage() : CPropertyPage(CDlgParametersSDPPage::IDD) {
 
-    //{{AFX_DATA_INIT(CDlgParametersSDPPage)
     m_bAverage = FALSE;
     m_nStepMode = 0;
-    //}}AFX_DATA_INIT
     m_bModified = FALSE;
 }
 
-/////////////////////////////////////////////////////////////////////////////
-// CDlgParametersSDPPage helper functions
-
-/***************************************************************************/
-// CDlgParametersSDPPage::DoDataExchange Data exchange
-/***************************************************************************/
 void CDlgParametersSDPPage::DoDataExchange(CDataExchange * pDX) {
 
     CPropertyPage::DoDataExchange(pDX);
-    //{{AFX_DATA_MAP(CDlgParametersSDPPage)
     DDX_Text(pDX, IDC_SDP_PANESEDIT, m_nPanes);
     DDX_Text(pDX, IDC_SDP_STEPSEDIT, m_nSteps);
     DDX_Text(pDX, IDC_SDP_UPPEREDIT, m_nUpperBound);
     DDX_Check(pDX, IDC_SDP_AVERAGE, m_bAverage);
     DDX_CBIndex(pDX, IDC_SDP_STEPMODE, m_nStepMode);
-    //}}AFX_DATA_MAP
 }
 
-/***************************************************************************/
-// CDlgParametersSDPPage::Apply Apply button hit
-/***************************************************************************/
 void CDlgParametersSDPPage::Apply() {
 
     if (m_bModified) { // retrieve data
@@ -2556,7 +2444,7 @@ void CDlgParametersSDPPage::Apply() {
         CSaDoc * pDoc = (CSaDoc *)pView->GetDocument();
         SDPParm * pSDPParm = pDoc->GetSDPParm();
         // save the parameters
-        UpdateData(TRUE); // necessary for average checkbox
+        UpdateData(TRUE); // necessary for average check box
         pSDPParm->nPanes = m_nPanes;
         pSDPParm->nStepMode = m_nStepMode;
         pSDPParm->nSteps = m_nSteps;
@@ -2575,12 +2463,6 @@ void CDlgParametersSDPPage::Apply() {
     }
 }
 
-/////////////////////////////////////////////////////////////////////////////
-// CDlgParametersSDPPage message handlers
-
-/***************************************************************************/
-// CDlgParametersSDPPage::OnInitDialog Dialog initialization
-/***************************************************************************/
 BOOL CDlgParametersSDPPage::OnInitDialog() {
 
     CPropertyPage::OnInitDialog();
@@ -2782,15 +2664,10 @@ void CDlgParametersSDPPage::OnModified() {
 }
 
 
-//###########################################################################
-// 09/25/2000 - DDO
-//###########################################################################
 /////////////////////////////////////////////////////////////////////////////
 // CDlgParametersMusicPage dialog
 CDlgParametersMusicPage::CDlgParametersMusicPage() : CPropertyPage(CDlgParametersMusicPage::IDD) {
 
-    //{{AFX_DATA_INIT(CDlgParametersMusicPage)
-    //}}AFX_DATA_INIT
     m_nDynamic = FALSE;
     m_nWeighted = FALSE;
 }
@@ -2798,7 +2675,6 @@ CDlgParametersMusicPage::CDlgParametersMusicPage() : CPropertyPage(CDlgParameter
 void CDlgParametersMusicPage::DoDataExchange(CDataExchange * pDX) {
 
     CPropertyPage::DoDataExchange(pDX);
-    //{{AFX_DATA_MAP(CDlgParametersMusicPage)
     DDX_Check(pDX, IDC_TWC_DYNAMIC, m_nDynamic);
     DDX_Check(pDX, IDC_TWC_WEIGHTED, m_nWeighted);
     DDX_Text(pDX, IDC_PITCH_LOWERBOUNDEDIT, m_nLowerBound);
@@ -2807,11 +2683,9 @@ void CDlgParametersMusicPage::DoDataExchange(CDataExchange * pDX) {
     DDX_Text(pDX, IDC_CALC_LOWERBOUNDEDIT, m_nCalcLowerBound);
     DDX_Text(pDX, IDC_CALC_UPPERBOUNDEDIT, m_nCalcUpperBound);
     DDX_CBIndex(pDX, IDC_CALC_RANGE, m_nCalcRange);
-    //}}AFX_DATA_MAP
 }
 
 BEGIN_MESSAGE_MAP(CDlgParametersMusicPage, CPropertyPage)
-    //{{AFX_MSG_MAP(CDlgParametersMusicPage)
     ON_BN_CLICKED(IDC_TWC_WEIGHTED, OnClickWeighted)
     ON_BN_CLICKED(IDC_TWC_DYNAMIC, OnClickDynamic)
     ON_COMMAND(IDC_PITCH_UPPERBOUNDSCROLL, OnUpperBoundScroll)
@@ -2828,16 +2702,8 @@ BEGIN_MESSAGE_MAP(CDlgParametersMusicPage, CPropertyPage)
     ON_CBN_SELCHANGE(IDC_CALC_RANGE, OnCalcRange)
     ON_EN_CHANGE(IDC_CALC_UPPERBOUNDEDIT, OnChange)
     ON_EN_CHANGE(IDC_CALC_LOWERBOUNDEDIT, OnChange)
-    //}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
-
-/////////////////////////////////////////////////////////////////////////////
-// CDlgParametersMusicPage message handlers
-
-/***************************************************************************/
-// 09/25/2000 - DDO
-/***************************************************************************/
 BOOL CDlgParametersMusicPage::OnInitDialog() {
 
     CPropertyPage::OnInitDialog();
@@ -3618,8 +3484,8 @@ BOOL CFormantTrackerOptions::operator !=(const CFormantTrackerOptions & ref) con
         (m_bShowOriginalFormantTracks != ref.m_bShowOriginalFormantTracks);
 }
 
-CDlgParametersFormantTracker::CDlgParametersFormantTracker() : 
-CPropertyPage(CDlgParametersFormantTracker::IDD) {
+CDlgParametersFormantTracker::CDlgParametersFormantTracker() :
+    CPropertyPage(CDlgParametersFormantTracker::IDD) {
     m_workingSettings = FormantTrackerOptions;
 
     //{{AFX_DATA_INIT(CDlgParametersFormantTracker)

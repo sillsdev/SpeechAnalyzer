@@ -6,18 +6,17 @@
 class Object_ostream;
 class Object_istream;
 
-class Grid
-{
+class Grid {
 public:
-  BOOL         bXGrid;            // TRUE, if x-grid enabled
-  BOOL         bYGrid;            // TRUE, if y-grid enabled
-  int          nXStyle;           // x-grid style
-  int          nYStyle;           // y-grid style
+    BOOL         bXGrid;            // TRUE, if x-grid enabled
+    BOOL         bYGrid;            // TRUE, if y-grid enabled
+    int          nXStyle;           // x-grid style
+    int          nYStyle;           // y-grid style
 
-  void WriteProperties(Object_ostream& obs);
-  BOOL ReadProperties(Object_istream& obs);
+    void WriteProperties(Object_ostream & obs);
+    BOOL ReadProperties(Object_istream & obs);
 
-  void Init();
+    void Init();
 };
 
 #endif //_GRID_H

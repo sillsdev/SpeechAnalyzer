@@ -20,22 +20,21 @@
 class Object_ostream;
 class Object_istream;
 
-class FnKeys 
-{
+class FnKeys {
 public:
-  // SDM increased array size by one to allow use of
-  //      [24] by batch command processing 1.5Test8.3
-  //      [25] by SlowReplay processing 1.5Test10.2
-  BOOL	bRepeat[26];    // TRUE, if playback repeat enabled
-  UINT  nDelay[26];     // repeat delay time in ms
-  UINT  nVolume[26];    // play volume in %
-  UINT  nSpeed[26];     // replay speed in %
-  UINT  nMode[26];		// replay mode
+    // SDM increased array size by one to allow use of
+    //      [24] by batch command processing 1.5Test8.3
+    //      [25] by SlowReplay processing 1.5Test10.2
+    BOOL  bRepeat[26];    // TRUE, if playback repeat enabled
+    UINT  nDelay[26];     // repeat delay time in ms
+    UINT  nVolume[26];    // play volume in %
+    UINT  nSpeed[26];     // replay speed in %
+    UINT  nMode[26];      // replay mode
 
-  void WriteProperties(Object_ostream& obs);
-  BOOL ReadProperties(Object_istream& obs);
+    void WriteProperties(Object_ostream & obs);
+    BOOL ReadProperties(Object_istream & obs);
 
-  void SetupDefault(void);
+    void SetupDefault(void);
 
 };
 

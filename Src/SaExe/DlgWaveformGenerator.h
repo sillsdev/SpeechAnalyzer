@@ -8,7 +8,7 @@
 #define DLGWAVEFORM_GENERATOR_H
 
 #include "resource.h"
-#include "process\sa_proc.h"
+#include "process\Process.h"
 #include "WaveformGeneratorSettings.h"
 
 //###########################################################################
@@ -22,17 +22,17 @@ public:
     double  m_fFileLength;
     CString m_szSamplingRate;
     CString m_szBits;
-	CWaveformGeneratorSettings working;
+    CWaveformGeneratorSettings working;
 
 protected:
     virtual void DoDataExchange(CDataExchange * pDX);   // DDX/DDV support
     virtual BOOL OnInitDialog();
     afx_msg void OnGeneratorBandwith();
-	afx_msg void OnHelpWaveformGenerator();
-	
-	enum { IDD = IDD_WAVEFORM_GENERATOR };
+    afx_msg void OnHelpWaveformGenerator();
 
-DECLARE_MESSAGE_MAP()
+    enum { IDD = IDD_WAVEFORM_GENERATOR };
+
+    DECLARE_MESSAGE_MAP()
 
 };
 

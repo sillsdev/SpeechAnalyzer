@@ -20,32 +20,31 @@
 //###########################################################################
 // CDlgMagnify dialog
 
-class CDlgMagnify : public CDialog
-{
+class CDlgMagnify : public CDialog {
 
-  // Construction/destruction/creation
+    // Construction/destruction/creation
 public:
-  CDlgMagnify(CWnd* pParent = NULL);  // standard constructor
+    CDlgMagnify(CWnd * pParent = NULL); // standard constructor
 
-  // Attributes
+    // Attributes
 private:
 
-  // Dialog Data
+    // Dialog Data
 public:
-  //{{AFX_DATA(CDlgMagnify)
-  enum { IDD = IDD_MAGNIFY };
-  double   m_fMagnify;
-  //}}AFX_DATA
+    //{{AFX_DATA(CDlgMagnify)
+    enum { IDD = IDD_MAGNIFY };
+    double   m_fMagnify;
+    //}}AFX_DATA
 
-  // Operations
+    // Operations
 protected:
-  virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
+    virtual void DoDataExchange(CDataExchange * pDX);   // DDX/DDV support
 
-  // Generated message map functions
-  //{{AFX_MSG(CDlgMagnify)
-  virtual BOOL OnInitDialog();
-  //}}AFX_MSG
-  DECLARE_MESSAGE_MAP()
+    // Generated message map functions
+    //{{AFX_MSG(CDlgMagnify)
+    virtual BOOL OnInitDialog();
+    //}}AFX_MSG
+    DECLARE_MESSAGE_MAP()
 };
 
 #endif //_GRAPHS_MAGNIFY_H

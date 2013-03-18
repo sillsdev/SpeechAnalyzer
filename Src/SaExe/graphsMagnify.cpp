@@ -32,22 +32,20 @@ END_MESSAGE_MAP()
 /***************************************************************************/
 // CDlgMagnify::CDlgMagnify Constructor
 /***************************************************************************/
-CDlgMagnify::CDlgMagnify(CWnd* pParent) : CDialog(CDlgMagnify::IDD, pParent)
-{
-  //{{AFX_DATA_INIT(CDlgMagnify)
-  m_fMagnify = 1.0;
-  //}}AFX_DATA_INIT
+CDlgMagnify::CDlgMagnify(CWnd * pParent) : CDialog(CDlgMagnify::IDD, pParent) {
+    //{{AFX_DATA_INIT(CDlgMagnify)
+    m_fMagnify = 1.0;
+    //}}AFX_DATA_INIT
 }
 
 /***************************************************************************/
 // CDlgMagnify::DoDataExchange Data exchange
 /***************************************************************************/
-void CDlgMagnify::DoDataExchange(CDataExchange* pDX)
-{
-  CDialog::DoDataExchange(pDX);
-  //{{AFX_DATA_MAP(CDlgMagnify)
-  DDX_Text(pDX, IDC_MAGNIFY, m_fMagnify);
-  //}}AFX_DATA_MAP
+void CDlgMagnify::DoDataExchange(CDataExchange * pDX) {
+    CDialog::DoDataExchange(pDX);
+    //{{AFX_DATA_MAP(CDlgMagnify)
+    DDX_Text(pDX, IDC_MAGNIFY, m_fMagnify);
+    //}}AFX_DATA_MAP
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -57,10 +55,9 @@ void CDlgMagnify::DoDataExchange(CDataExchange* pDX)
 // CDlgMagnify::OnInitDialog Dialog initialization
 // The dialog is centered over the main frame window.
 /***************************************************************************/
-BOOL CDlgMagnify::OnInitDialog()
-{
-  CDialog::OnInitDialog();
-  CenterWindow(); // center dialog on frame window
-  return TRUE;  // return TRUE  unless you set the focus to a control
+BOOL CDlgMagnify::OnInitDialog() {
+    CDialog::OnInitDialog();
+    CenterWindow(); // center dialog on frame window
+    return TRUE;  // return TRUE  unless you set the focus to a control
 }
 

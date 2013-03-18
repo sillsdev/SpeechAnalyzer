@@ -692,10 +692,10 @@ const CVowelFormantsVector & GetVowelVector(int nGender) {
 static void PopulateGrid(CFlexEditGrid & cGrid, const CVowelFormantsVector & cVowels);
 static CVowelFormantsVector ParseVowelGrid(CFlexEditGrid & cGrid, BOOL & bSuccess);
 
-CDlgVowelFormants::CDlgVowelFormants(CVowelFormantSet & cVowelSet, CWnd * pParent) : 
-CDialog(CDlgVowelFormants::IDD, pParent),
-m_cVowelSetOK(cVowelSet),
-m_cSet(cVowelSet) {
+CDlgVowelFormants::CDlgVowelFormants(CVowelFormantSet & cVowelSet, CWnd * pParent) :
+    CDialog(CDlgVowelFormants::IDD, pParent),
+    m_cVowelSetOK(cVowelSet),
+    m_cSet(cVowelSet) {
 
     m_szSetName = m_cSet.GetName();
     m_nGender = 0;
@@ -769,8 +769,8 @@ void CDlgVowelFormants::OnCancel() {
 
 
 static void PopulateGrid(CFlexEditGrid & cGrid, const CVowelFormantsVector & cVowels) {
-    
-	enum { columnIpa = 0, columnF1, columnF2, columnF3, columnF4};
+
+    enum { columnIpa = 0, columnF1, columnF2, columnF3, columnF4};
 
     int nRow = 0;
     cGrid.Clear();
@@ -816,7 +816,7 @@ static void PopulateGrid(CFlexEditGrid & cGrid, const CVowelFormantsVector & cVo
 
 static CVowelFormantsVector ParseVowelGrid(CFlexEditGrid & cGrid, BOOL & bSuccess) {
 
-	bSuccess = TRUE;
+    bSuccess = TRUE;
 
     enum { columnIpa = 0, columnF1, columnF2, columnF3, columnF4};
 

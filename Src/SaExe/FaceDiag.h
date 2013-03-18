@@ -1,10 +1,10 @@
 #ifndef FACEDIAG_H
 #define FACEDIAG_H
 
-typedef struct SVOCAL_TRACT_COORD{
-	int32 X;
-	int32 Y;
-	double RadAng;
+typedef struct SVOCAL_TRACT_COORD {
+    int32 X;
+    int32 Y;
+    double RadAng;
 } VOCAL_TRACT_COORD;
 
 #define GLOTTIS_DIAMETER  31   //from FACE.BMP, extends from 304 to 335 in x dimension

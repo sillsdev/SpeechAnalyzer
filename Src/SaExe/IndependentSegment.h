@@ -7,13 +7,12 @@
 //###########################################################################
 // CIndependentSegment data processing
 
-class CIndependentSegment : public CSegment
-{
-	// Operations
+class CIndependentSegment : public CSegment {
+    // Operations
 public:
-	CIndependentSegment(int index, int master = -1);
-	virtual int CheckPosition( CSaDoc*,DWORD dwStart,DWORD dwStop, EMode nMode=MODE_AUTOMATIC,BOOL bOverlap=TRUE) const;
-	virtual void LimitPosition( CSaDoc*,DWORD& dwStart,DWORD& dwStop, int nMode=LIMIT_MOVING_BOTH) const;
+    CIndependentSegment(int index, int master = -1);
+    virtual int CheckPosition(CSaDoc *,DWORD dwStart,DWORD dwStop, EMode nMode=MODE_AUTOMATIC,BOOL bOverlap=TRUE) const;
+    virtual void LimitPosition(CSaDoc *,DWORD & dwStart,DWORD & dwStop, int nMode=LIMIT_MOVING_BOTH) const;
 };
 
 #endif
