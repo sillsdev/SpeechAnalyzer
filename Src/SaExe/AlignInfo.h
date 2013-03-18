@@ -3,10 +3,10 @@
 
 class CAlignInfo {
 public:
-	CAlignInfo();
-	bool bValid;
-	double dTotalLength;			// in seconds
-	double dStart;				    // in seconds
+    CAlignInfo();
+    bool bValid;
+    double dTotalLength;            // in seconds
+    double dStart;                  // in seconds
 };
 
 #endif

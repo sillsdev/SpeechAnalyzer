@@ -1,3 +1,22 @@
+SA - 3.1.0.41 - 3/18/2013
+1) Added Ctrl+Q accelerator for 'Add Phonetic Segment' command.  Left in 'Alt+='
+2) Remapped Ctrl+Q (segment size) to Ctrl+E
+3) Fixed menu enable/disable problem for Ctrl+C (copy) menu item.
+4) Added Alt+2 control sequence to automatically add PL2 segment.
+5) Relabled and retargeted 'Phrase L2' button on Transcription Editor to 'Phrase L1'
+6) Add Alt+Z control sequence to automatically add phonetic, gloss, PL1 and PL2 segments
+7) Fixed moving playback cursor problem that occurs after pause button is placed on player dialog.
+
+SA - 3.1.0.40 - 3/14/2013
+1) Fixed bug on spectrogram that was limiting calculation for formant tracks to 4.
+2) Reordered buttons on all four (xml/table/sfm/fw) export dialogs
+3) Changed default font size for ref,pl1,pl2,pl3 & pl4 transcriptions lines from 10pt to 12pt
+4) Fixed bug in SFM and XML exports where a space was not inserted between phrase transcriptions.
+
+--Code refactoring changes--
+1) Reformatted code base using AStyle.
+2) Removed activex and chrchart project subirectories
+
 SA - 3.1.0.39 - 3/13/2013
 1) Changed SFM tag text in FW Export dialog
 2) Added result dialog that is displayed after FW export operation.

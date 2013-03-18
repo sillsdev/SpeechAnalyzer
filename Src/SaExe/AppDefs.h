@@ -32,7 +32,7 @@
 //   1.5Test10.2
 //        SDM added MAX_ADD_JOIN_TIME
 //   1.5Test11.1A
-//        RLJ Changed PitchParm, SpectroParm, and SpectrumParm from
+//        RLJ Changed PitchParm, CSpectroParm, and SpectrumParm from
 //              structures here to classes in Param.h.
 //   05/31/2000
 //        RLJ Added OpenModeType
@@ -48,14 +48,12 @@
 #define MAX_SCREEN_WIDTH                2048        // maximum width of screen in pixels
 
 // data processing defines
-enum SEARCH_OPTIONS
-{
+enum SEARCH_OPTIONS {
     // search options
     LINEAR_SEARCH,
     BINARY_SEARCH
 };
-enum UPDATE_MODE
-{
+enum UPDATE_MODE {
     // graph update mode
     STATIC_UPDATE =  0,
     DYNAMIC_UPDATE = 1
@@ -68,8 +66,8 @@ enum UPDATE_MODE
 #define CALCULATION_DATALENGTH(samplingRate)          (300*22050/samplingRate)         // length of data used for calculation
 #define MAX_CALCULATION_FREQUENCY       500         // permissible parameter range
 #define PRECISION_MULTIPLIER            10          // multiplier to amount precision
-#define MEL_MULT 						100			// multiplier for melogram data
-#define MEL_ACCURACY					5			// accuracy of melogram data in cents
+#define MEL_MULT                        100         // multiplier for melogram data
+#define MEL_ACCURACY                    5           // accuracy of melogram data in cents
 #define MAX_ECHO_DELAY                  1000        // maximal echo delay in milliseconds
 #define MAX_ANIMATION_RATE              60          // animation rate limited only by processor speed
 
@@ -87,12 +85,12 @@ enum UPDATE_MODE
 #define PHONEMIC_DEFAULT_FONTSIZE       12
 #define ORTHOGRAPHIC_DEFAULT_FONTSIZE   10
 #define GLOSS_DEFAULT_FONTSIZE          10
-#define REFERENCE_DEFAULT_FONTSIZE      10
-#define MUSIC_PHRASE_DEFAULT_FONTSIZE   10
+#define REFERENCE_DEFAULT_FONTSIZE      12
+#define MUSIC_PHRASE_DEFAULT_FONTSIZE   12
 
 #define WORD_DELIMITER                  _T('#')         // '#' delimits words in text annotation windows
 #define TEXT_DELIMITER                  _T('!')         // '!' delimits text in text annotation windows
-#define EDIT_WORD_DELIMITER             0x20			// ' ' space
+#define EDIT_WORD_DELIMITER             0x20            // ' ' space
 #define EDIT_DELIMITER_REPLACEMENT      _T('.')         // Replace Delimiters with this character
 
 #define SEGMENT_DEFAULT_CHAR            _T('\xFFFD')    // default 0xFFFD
@@ -138,21 +136,18 @@ enum UPDATE_MODE
 #define ID_LAYOUT_LAST                  ID_LAYOUT_FIRST + 12
 
 // cursor definitions
-enum CURSOR_SELECT
-{
+enum CURSOR_SELECT {
     // selection
     START_CURSOR,
     STOP_CURSOR
 };
-enum SNAP_DIRECTION
-{
+enum SNAP_DIRECTION {
     // direction:
     SNAP_BOTH  = 0x0000,  //  snaps in both directions (must be 0)
     SNAP_RIGHT = 0x0001,  //  snaps only to the right
     SNAP_LEFT  = 0x0002,  //  snaps only to the left
 };
-enum CURSOR_ALIGNMENT
-{
+enum CURSOR_ALIGNMENT {
     // alignment
     ALIGN_AT_SAMPLE         =  0,
     ALIGN_AT_ZERO_CROSSING  =  1,
@@ -198,7 +193,7 @@ enum CURSOR_ALIGNMENT
 #define WM_USER_GRAPH_ORDERCHANGED      WM_USER + 23 // SDM 1.5Test8.1
 #define WM_USER_APP_MESSAGE             WM_USER + 24
 
-#define WM_USER_AUTO_RESTART			WM_USER + 27
+#define WM_USER_AUTO_RESTART            WM_USER + 27
 #define WM_USER_CURSOR_CLICKED          WM_USER + 29
 
 
@@ -221,20 +216,20 @@ enum CURSOR_ALIGNMENT
 typedef UINT MMRESULT;                  // MMIO function call results
 
 typedef struct FmtParm {
-  WORD        wTag;               // format tag
-  WORD        wChannels;          // number of record channels
-  DWORD       dwSamplesPerSec;    // sampling rate
-  DWORD       dwAvgBytesPerSec;   // bytes per second
-  WORD        wBlockAlign;        // block align
-  WORD        wBitsPerSample;     // data width
+    WORD        wTag;               // format tag
+    WORD        wChannels;          // number of record channels
+    DWORD       dwSamplesPerSec;    // sampling rate
+    DWORD       dwAvgBytesPerSec;   // bytes per second
+    WORD        wBlockAlign;        // block align
+    WORD        wBitsPerSample;     // data width
 } FmtParm;                        // RIFF file header fmt parameters
 
 typedef struct SDPParm {
-  UINT         nPanes;            // number of mirror panes
-  UINT         nUpperBound;       // upper display boundary
-  int          nStepMode;         // steps mode
-  UINT         nSteps;            // incremental steps in samples
-  BOOL         bAverage;          // TRUE, if average used
+    UINT         nPanes;            // number of mirror panes
+    UINT         nUpperBound;       // upper display boundary
+    int          nStepMode;         // steps mode
+    UINT         nSteps;            // incremental steps in samples
+    BOOL         bAverage;          // TRUE, if average used
 } SDPParm;                        // SDP parameters
 
 enum Annotations {                       // annotation windows
@@ -248,7 +243,7 @@ enum Annotations {                       // annotation windows
     MUSIC_PL2,
     MUSIC_PL3,
     MUSIC_PL4,
-    ANNOT_WND_NUMBER					// number of annotation windows
+    ANNOT_WND_NUMBER                    // number of annotation windows
 };
 
 enum PositionReadout {                  // status bar position readout mode
@@ -282,17 +277,17 @@ enum EBoundaries {
     BOUNDARIES_EDIT_NO_OVERLAP = 2
 };
 
-enum EWordFilenameConvention { 
-	WFC_REF,
-	WFC_GLOSS,
-	WFC_REF_GLOSS
+enum EWordFilenameConvention {
+    WFC_REF,
+    WFC_GLOSS,
+    WFC_REF_GLOSS
 };
 
-enum EPhraseFilenameConvention { 
-	PFC_REF,
-	PFC_GLOSS,
-	PFC_REF_GLOSS,
-	PFC_PHRASE
+enum EPhraseFilenameConvention {
+    PFC_REF,
+    PFC_GLOSS,
+    PFC_REF_GLOSS,
+    PFC_PHRASE
 };
 
 #include "grid.h"

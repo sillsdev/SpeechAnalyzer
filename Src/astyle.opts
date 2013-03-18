@@ -1,0 +1,9 @@
+--style=java 
+--indent=spaces=4 
+--align-pointer=middle 
+--align-reference=middle 
+--pad-header 
+--unpad-paren 
+--add-brackets 
+--convert-tabs 
+--mode=c
