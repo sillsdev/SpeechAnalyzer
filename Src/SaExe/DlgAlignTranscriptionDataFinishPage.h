@@ -9,22 +9,22 @@ class CSaDoc;
 class CDlgAlignTranscriptionDataFinishPage : public CPropertyPage {
 
 public:
-	CDlgAlignTranscriptionDataFinishPage( CSaDoc * pSaDoc);
-	virtual ~CDlgAlignTranscriptionDataFinishPage();
+    CDlgAlignTranscriptionDataFinishPage(CSaDoc * pSaDoc);
+    virtual ~CDlgAlignTranscriptionDataFinishPage();
 
-	enum { IDD = IDD_ANNOTATION_FINISH_PAGE };
+    enum { IDD = IDD_ANNOTATION_FINISH_PAGE };
 
 private:
-	CDlgAlignTranscriptionDataSheet * GetParent();
-	CSaDoc * m_pSaDoc;
+    CDlgAlignTranscriptionDataSheet * GetParent();
+    CSaDoc * m_pSaDoc;
 
 protected:
-	DECLARE_MESSAGE_MAP()
+    DECLARE_MESSAGE_MAP()
 
 public:
-	virtual BOOL OnWizardFinish();
-	virtual BOOL OnSetActive();
-	virtual LRESULT OnWizardBack();
+    virtual BOOL OnWizardFinish();
+    virtual BOOL OnSetActive();
+    virtual LRESULT OnWizardBack();
 };
 
 #endif

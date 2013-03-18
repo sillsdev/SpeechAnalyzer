@@ -6,25 +6,24 @@
 //###########################################################################
 // CDependentSegment data processing
 
-class CDependentSegment : public CSegment
-{
+class CDependentSegment : public CSegment {
 public:
-	CDependentSegment(int index, int master = -1): CSegment(index,master) {};
+    CDependentSegment(int index, int master = -1): CSegment(index,master) {};
 
-	// Attributes
+    // Attributes
 private:
 
-	// Operations
+    // Operations
 protected:
-	int AlignOffsetToMaster(CDocument*, DWORD* pdwOffset) const; // find the nearest master segment to the given position
-	int AlignStopToMaster(CDocument*, DWORD* pdwStop) const; // find the nearest master segment to the given position
+    int AlignOffsetToMaster(CDocument *, DWORD * pdwOffset) const; // find the nearest master segment to the given position
+    int AlignStopToMaster(CDocument *, DWORD * pdwStop) const; // find the nearest master segment to the given position
 public:
-	void AdjustCursorsToMaster(CDocument* pSaDoc, BOOL bAdjust = TRUE, DWORD* pdwOffset = NULL, DWORD* pdwStop = NULL) const; // adjust cursors to the nearest phonetic segment to the given position SDM 1.06.1.2 Added function
-	int AdjustPositionToMaster(CDocument* pSaDoc, DWORD& pdwOffset, DWORD& pdwStop) const;
-	int CheckPositionToMaster( CSaDoc* pDoc, DWORD dwStart, DWORD dwStop, EMode nMode) const;
-	virtual int CheckPosition( CSaDoc* pDoc, DWORD dwStart, DWORD dwStop, EMode nMode=MODE_AUTOMATIC, BOOL /*bUnused*/=TRUE) const;
-	virtual void LimitPosition(CSaDoc*,DWORD& dwStart,DWORD& dwStop, int nMode=LIMIT_MOVING_BOTH) const;
-	virtual void Add(CSaDoc* pDoc, DWORD dwStart, CSaString& szString, BOOL bDelimiter = FALSE, BOOL bCheck = TRUE); // add a segment
+    void AdjustCursorsToMaster(CDocument * pSaDoc, BOOL bAdjust = TRUE, DWORD * pdwOffset = NULL, DWORD * pdwStop = NULL) const; // adjust cursors to the nearest phonetic segment to the given position SDM 1.06.1.2 Added function
+    int AdjustPositionToMaster(CDocument * pSaDoc, DWORD & pdwOffset, DWORD & pdwStop) const;
+    int CheckPositionToMaster(CSaDoc * pDoc, DWORD dwStart, DWORD dwStop, EMode nMode) const;
+    virtual int CheckPosition(CSaDoc * pDoc, DWORD dwStart, DWORD dwStop, EMode nMode=MODE_AUTOMATIC, BOOL /*bUnused*/=TRUE) const;
+    virtual void LimitPosition(CSaDoc *,DWORD & dwStart,DWORD & dwStop, int nMode=LIMIT_MOVING_BOTH) const;
+    virtual void Add(CSaDoc * pDoc, DWORD dwStart, CSaString & szString, BOOL bDelimiter = FALSE, BOOL bCheck = TRUE); // add a segment
 };
 
 #endif

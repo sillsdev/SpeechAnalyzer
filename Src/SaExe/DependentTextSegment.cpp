@@ -19,7 +19,7 @@ CDependentTextSegment::CDependentTextSegment(int index, int master) :
 
 void CDependentTextSegment::LimitPosition(CSaDoc *, DWORD & dwStart, DWORD & dwStop, int /*nMode*/) const {
 
-	dwStart=GetOffset(GetSelection());
+    dwStart=GetOffset(GetSelection());
     dwStop=GetStop(GetSelection());
 }
 
@@ -33,8 +33,8 @@ void CDependentTextSegment::LimitPosition(CSaDoc *, DWORD & dwStart, DWORD & dwS
 // but only reference segments 0 and 1 exist, then the next index is 2, not 3.
 /***************************************************************************/
 BOOL CDependentTextSegment::SetAt(const CSaString * pszString, bool, DWORD dwStart, DWORD dwDuration) {
-    
-	try {
+
+    try {
         if ((pszString) && (pszString->GetLength())) {
             int nIndex = FindOffset(dwStart);
             ASSERT(nIndex>=0);
@@ -59,12 +59,14 @@ BOOL CDependentTextSegment::SetAt(const CSaString * pszString, bool, DWORD dwSta
 // but only reference segments 0 and 1 exist, then the next index is 2, not 3.
 /***************************************************************************/
 BOOL CDependentTextSegment::Insert(int nIndex, LPCTSTR pszString, bool, DWORD dwStart, DWORD dwDuration) {
-    
-	if (pszString==NULL) return TRUE;
 
-	try {
+    if (pszString==NULL) {
+        return TRUE;
+    }
+
+    try {
         if (wcslen(pszString)>0) {
-            m_pTexts->InsertAt( nIndex, pszString, 1);
+            m_pTexts->InsertAt(nIndex, pszString, 1);
             InsertAt(nIndex,dwStart,dwDuration);
         }
     } catch (CMemoryException e) {
@@ -85,10 +87,12 @@ BOOL CDependentTextSegment::Insert(int nIndex, LPCTSTR pszString, bool, DWORD dw
 // there will be no string added.
 /***************************************************************************/
 BOOL CDependentTextSegment::SetText(int nIndex, LPCTSTR pszString, int, DWORD, DWORD) {
-    
-	if (pszString==NULL) return TRUE;
 
-	try {
+    if (pszString==NULL) {
+        return TRUE;
+    }
+
+    try {
         if (wcslen(pszString)>0) {
             m_pTexts->SetAt(nIndex, pszString);
         }
@@ -110,8 +114,8 @@ BOOL CDependentTextSegment::SetText(int nIndex, LPCTSTR pszString, int, DWORD, D
 // another segment is aligned to, but there must be a segment to align to.
 /***************************************************************************/
 int CDependentTextSegment::CheckPositionToMaster(CSaDoc * pSaDoc, DWORD dwAlignedStart, DWORD dwStop, EMode nMode) const {
-    
-	int nTextIndex = GetSelection();
+
+    int nTextIndex = GetSelection();
     if (((nMode==MODE_EDIT)||(nMode==MODE_AUTOMATIC))&&(nTextIndex != -1)) { // segment selected (edit)
         return -1;
     } else { // Add
@@ -124,7 +128,7 @@ int CDependentTextSegment::CheckPositionToMaster(CSaDoc * pSaDoc, DWORD dwAligne
 /***************************************************************************/
 void CDependentTextSegment::Add(CSaDoc * pDoc, DWORD dwStart, CSaString & szString, BOOL, BOOL bCheck) {
 
-	// get pointer to view
+    // get pointer to view
     POSITION pos = pDoc->GetFirstViewPosition();
     CSaView * pView = (CSaView *)pDoc->GetNextView(pos);
 

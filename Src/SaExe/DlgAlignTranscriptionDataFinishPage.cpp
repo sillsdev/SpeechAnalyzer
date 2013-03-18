@@ -10,14 +10,12 @@ class CSaDoc;
 
 // CDlgAlignTranscriptionDataFinishPage
 
-CDlgAlignTranscriptionDataFinishPage::CDlgAlignTranscriptionDataFinishPage( CSaDoc * pSaDoc) : 
-CPropertyPage(CDlgAlignTranscriptionDataFinishPage::IDD),
-m_pSaDoc(pSaDoc)
-{
+CDlgAlignTranscriptionDataFinishPage::CDlgAlignTranscriptionDataFinishPage(CSaDoc * pSaDoc) :
+    CPropertyPage(CDlgAlignTranscriptionDataFinishPage::IDD),
+    m_pSaDoc(pSaDoc) {
 }
 
-CDlgAlignTranscriptionDataFinishPage::~CDlgAlignTranscriptionDataFinishPage()
-{
+CDlgAlignTranscriptionDataFinishPage::~CDlgAlignTranscriptionDataFinishPage() {
 }
 
 
@@ -26,35 +24,31 @@ END_MESSAGE_MAP()
 // CDlgAlignTranscriptionDataFinishPage message handlers
 
 
-BOOL CDlgAlignTranscriptionDataFinishPage::OnWizardFinish()
-{
-	return CPropertyPage::OnWizardFinish();
+BOOL CDlgAlignTranscriptionDataFinishPage::OnWizardFinish() {
+    return CPropertyPage::OnWizardFinish();
 }
 
 
-BOOL CDlgAlignTranscriptionDataFinishPage::OnSetActive()
-{
+BOOL CDlgAlignTranscriptionDataFinishPage::OnSetActive() {
 
-	CDlgAlignTranscriptionDataSheet * pSheet = GetParent();
-	pSheet->SetWizardButtons(PSWIZB_BACK|PSWIZB_FINISH);
+    CDlgAlignTranscriptionDataSheet * pSheet = GetParent();
+    pSheet->SetWizardButtons(PSWIZB_BACK|PSWIZB_FINISH);
 
-	CTranscriptionDataSettings tds = pSheet->GetSettings();
-	m_pSaDoc->ApplyTranscriptionChanges(tds);
+    CTranscriptionDataSettings tds = pSheet->GetSettings();
+    m_pSaDoc->ApplyTranscriptionChanges(tds);
 
-	return CPropertyPage::OnSetActive();
+    return CPropertyPage::OnSetActive();
 }
 
 
-LRESULT CDlgAlignTranscriptionDataFinishPage::OnWizardBack()
-{
-	CDlgAlignTranscriptionDataSheet * pSheet = GetParent();
+LRESULT CDlgAlignTranscriptionDataFinishPage::OnWizardBack() {
+    CDlgAlignTranscriptionDataSheet * pSheet = GetParent();
 
-	m_pSaDoc->RevertTranscriptionChanges();
+    m_pSaDoc->RevertTranscriptionChanges();
 
-	return pSheet->CalculateBack( IDD);
+    return pSheet->CalculateBack(IDD);
 }
 
-CDlgAlignTranscriptionDataSheet * CDlgAlignTranscriptionDataFinishPage::GetParent() 
-{
-	return reinterpret_cast<CDlgAlignTranscriptionDataSheet *>(((CPropertySheet*)this)->GetParent());
+CDlgAlignTranscriptionDataSheet * CDlgAlignTranscriptionDataFinishPage::GetParent() {
+    return reinterpret_cast<CDlgAlignTranscriptionDataSheet *>(((CPropertySheet *)this)->GetParent());
 }

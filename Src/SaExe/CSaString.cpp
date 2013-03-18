@@ -15,13 +15,13 @@
 
 std::string CSaString::utf8() const {
 
-	CUtf8String result(CUtf16String(*this));
-	return result.getUtf8();
+    CUtf8String result(CUtf16String(*this));
+    return result.getUtf8();
 }
 
 void CSaString::setUtf8(const char * pUtf8) {
 
-	*this = CUtf16String(CUtf8String(pUtf8)).getUtf16().c_str();
+    *this = CUtf16String(CUtf8String(pUtf8)).getUtf16().c_str();
 }
 
 
