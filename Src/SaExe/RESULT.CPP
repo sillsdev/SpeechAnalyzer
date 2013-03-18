@@ -14,21 +14,19 @@ static char BASED_CODE THIS_FILE[] = __FILE__;
 // CResult dialog
 
 
-CResult::CResult(CString string, CWnd* pParent /*=NULL*/)
-: CDialog(CResult::IDD, pParent)
-{
-  //{{AFX_DATA_INIT(CResult)
-  m_szResult = string;
-  //}}AFX_DATA_INIT
-  DoModal();
+CResult::CResult(CString string, CWnd * pParent /*=NULL*/)
+    : CDialog(CResult::IDD, pParent) {
+    //{{AFX_DATA_INIT(CResult)
+    m_szResult = string;
+    //}}AFX_DATA_INIT
+    DoModal();
 }
 
-void CResult::DoDataExchange(CDataExchange* pDX)
-{
-  CDialog::DoDataExchange(pDX);
-  //{{AFX_DATA_MAP(CResult)
-  DDX_Text(pDX, IDC_EDIT, m_szResult);
-  //}}AFX_DATA_MAP
+void CResult::DoDataExchange(CDataExchange * pDX) {
+    CDialog::DoDataExchange(pDX);
+    //{{AFX_DATA_MAP(CResult)
+    DDX_Text(pDX, IDC_EDIT, m_szResult);
+    //}}AFX_DATA_MAP
 }
 
 BEGIN_MESSAGE_MAP(CResult, CDialog)
@@ -40,9 +38,8 @@ END_MESSAGE_MAP()
 /////////////////////////////////////////////////////////////////////////////
 // CResult message handlers
 
-void CResult::OnCancel()
-{
-  SendMessage(WM_COMMAND, ID_EDIT_UNDO, 0);
+void CResult::OnCancel() {
+    SendMessage(WM_COMMAND, ID_EDIT_UNDO, 0);
 
-  CDialog::OnCancel();
+    CDialog::OnCancel();
 }

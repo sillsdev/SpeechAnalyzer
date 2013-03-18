@@ -5,11 +5,11 @@
 
 class CPhonemicSegment : public CDependentSegment {
 public:
-	CPhonemicSegment(int index, int master = -1);
-	virtual CSegment::TpInputFilterProc GetInputFilter() const; // filter function for input
+    CPhonemicSegment(int index, int master = -1);
+    virtual CSegment::TpInputFilterProc GetInputFilter() const; // filter function for input
 
 private:
-	virtual CFontTable* NewFontTable() const;
+    virtual CFontTable * NewFontTable() const;
 };
 
 #endif

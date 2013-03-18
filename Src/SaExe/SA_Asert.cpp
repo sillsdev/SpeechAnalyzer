@@ -30,94 +30,86 @@ LONG NEAR saAssertBusy = -1;
 #pragma optimize("g", off) // assembler cannot be globally optimized
 
 extern "C"
-void AFXAPI SaAssertFailedLine(LPCSTR lpszFileName, int nLine)
-{
+void AFXAPI SaAssertFailedLine(LPCSTR lpszFileName, int nLine) {
 #ifdef _DEBUG
-	if (saIgnoreAssertCount > 0)
-	{
-		saIgnoreAssertCount--;
-		return;
-	}
+    if (saIgnoreAssertCount > 0) {
+        saIgnoreAssertCount--;
+        return;
+    }
 
 #ifdef _WINDOWS
-	TCHAR sz[255];
-	static TCHAR szTitle[] = _T("Assertion Failed!");
-	static TCHAR szMessage[] = _T("%s: File %s, Line %d");
-	static TCHAR szUnknown[] = _T("<unknown application>");
+    TCHAR sz[255];
+    static TCHAR szTitle[] = _T("Assertion Failed!");
+    static TCHAR szMessage[] = _T("%s: File %s, Line %d");
+    static TCHAR szUnknown[] = _T("<unknown application>");
 
-	// In case _AfxGetAppDataFails.
-	if (++saAssertBusy > 0)
-	{
-		// assume the debugger or auxiliary port
-		swprintf_s(sz,szMessage,szUnknown,lpszFileName, nLine);
+    // In case _AfxGetAppDataFails.
+    if (++saAssertBusy > 0) {
+        // assume the debugger or auxiliary port
+        swprintf_s(sz,szMessage,szUnknown,lpszFileName, nLine);
 #ifdef _AFXCTL
-		// Checking afxTraceEnabled may cause infinite loop
-		// on faild AfxGetAppData.
+        // Checking afxTraceEnabled may cause infinite loop
+        // on faild AfxGetAppData.
 
-		AfxOutputDebugString(sz);
+        AfxOutputDebugString(sz);
 #else
-		if (afxTraceEnabled)
-			::OutputDebugString(sz);
+        if (afxTraceEnabled) {
+            ::OutputDebugString(sz);
+        }
 #endif
-		saAssertBusy--;
+        saAssertBusy--;
 
-		// break into the debugger (or Dr Watson log)
+        // break into the debugger (or Dr Watson log)
 #ifndef _PORTABLE
-		_asm
-		{
-			int 3
-		};
+        _asm {
+            int 3
+        };
 #endif
-		return;
-	}
+        return;
+    }
 
-	// get app name or NULL if unknown (don't call assert)
-	const TCHAR* pszAppName = AfxGetAppName();
-	swprintf_s(sz, szMessage, (pszAppName == NULL) ? szUnknown : pszAppName, lpszFileName, nLine);
+    // get app name or NULL if unknown (don't call assert)
+    const TCHAR * pszAppName = AfxGetAppName();
+    swprintf_s(sz, szMessage, (pszAppName == NULL) ? szUnknown : pszAppName, lpszFileName, nLine);
 
-	if (afxTraceEnabled)
-	{
-		// assume the debugger or auxiliary port
-		::OutputDebugString(sz);
-		::OutputDebugString(_T(", "));
-		::OutputDebugString(szTitle);
-		::OutputDebugString(_T("\n\r"));
-	}
+    if (afxTraceEnabled) {
+        // assume the debugger or auxiliary port
+        ::OutputDebugString(sz);
+        ::OutputDebugString(_T(", "));
+        ::OutputDebugString(szTitle);
+        ::OutputDebugString(_T("\n\r"));
+    }
 
-	int nCode = ::MessageBox(NULL, sz, szTitle,
-		MB_SYSTEMMODAL | MB_ICONHAND | MB_ABORTRETRYIGNORE);
-	saAssertBusy--;
+    int nCode = ::MessageBox(NULL, sz, szTitle,
+                             MB_SYSTEMMODAL | MB_ICONHAND | MB_ABORTRETRYIGNORE);
+    saAssertBusy--;
 
-	// break into the debugger (or Dr Watson log)
+    // break into the debugger (or Dr Watson log)
 #ifndef _PORTABLE
-	_asm
-	{
-		int 3
-	};
+    _asm {
+        int 3
+    };
 #endif
 
-	if (nCode == IDIGNORE)
-	{
-		return;     // ignore
-	}
-	else if (nCode == IDRETRY)
-	{
-		return; // ignore and continue in debugger to diagnose problem
-	}
-	// else fall through and call AfxAbort
+    if (nCode == IDIGNORE) {
+        return;     // ignore
+    } else if (nCode == IDRETRY) {
+        return; // ignore and continue in debugger to diagnose problem
+    }
+    // else fall through and call AfxAbort
 
 #else
-	static char szMessage[] = "Assertion Failed: file %Fs, line %d\r\n";
-	fprintf(stderr, szMessage, lpszFileName, nLine);
+    static char szMessage[] = "Assertion Failed: file %Fs, line %d\r\n";
+    fprintf(stderr, szMessage, lpszFileName, nLine);
 #endif // _WINDOWS
 
 #else
-	// parameters not used if non-debug
-	(void)lpszFileName;
-	(void)nLine;
+    // parameters not used if non-debug
+    (void)lpszFileName;
+    (void)nLine;
 #endif // _DEBUG
 
-	AfxAbort();
+    AfxAbort();
 }
 
 #pragma optimize("", on)

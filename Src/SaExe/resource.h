@@ -407,7 +407,7 @@
 #define IDC_PREVIOUS                    1261
 #define IDC_PLAY_SEGMENT                1262
 #define IDC_PLAY_WORD                   1263
-#define IDC_PLAY_PHRASE_L2              1264
+#define IDC_PLAY_PHRASE_L1              1264
 #define IDC_REPLACE                     1272
 #define IDC_REPLACEALL                  1273
 #define IDC_CBOFIELD                    1284
@@ -1408,6 +1408,7 @@
 #define ID_FILE_IMPORT                  33053
 #define ID_EDIT_PASTENEW                33054
 #define ID_EDIT_SELECTWAVEFORM          33055
+#define ID_EDIT_AUTO_ADD                33056
 #define ID_AUTO_ALIGN                   33060
 #define ID_EDIT_AUTO_SNAP_UPDATE        33061
 #define ID_EDIT_UPDATE_BOUNDARIES       33062
@@ -1442,6 +1443,7 @@
 #define ID_HELP_MUSIC                   33104
 #define ID_HELP_TROUBLE                 33105
 #define ID_FILE_OPEN_SPECIAL            33117
+#define ID_EDIT_ADD_AUTO_PHRASE_L2      33121
 #define ID_EDIT_ADD_PHRASE_L1           33122
 #define ID_EDIT_ADD_PHRASE_L2           33123
 #define ID_EDIT_ADD_PHRASE_L3           33124

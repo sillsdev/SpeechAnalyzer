@@ -5,11 +5,11 @@
 
 class CMusicPhraseSegment : public CIndependentSegment {
 public:
-	CMusicPhraseSegment(int index, int master = -1);
-	virtual int CheckPosition(CSaDoc*,DWORD dwStart,DWORD dwStop, EMode nMode=MODE_AUTOMATIC,BOOL bOverlap=TRUE) const;
+    CMusicPhraseSegment(int index, int master = -1);
+    virtual int CheckPosition(CSaDoc *,DWORD dwStart,DWORD dwStop, EMode nMode=MODE_AUTOMATIC,BOOL bOverlap=TRUE) const;
 
 private:
-	virtual CFontTable* NewFontTable() const;
+    virtual CFontTable * NewFontTable() const;
 };
 
 #endif

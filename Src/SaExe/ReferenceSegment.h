@@ -3,14 +3,13 @@
 
 #include "DependentTextSegment.h"
 
-class CReferenceSegment : public CDependentTextSegment
-{
+class CReferenceSegment : public CDependentTextSegment {
 public:
-	CReferenceSegment(int index, int master = -1);
+    CReferenceSegment(int index, int master = -1);
 
-	// Attributes
+    // Attributes
 private:
-	virtual CFontTable* NewFontTable() const;
+    virtual CFontTable * NewFontTable() const;
 };
 
 #endif

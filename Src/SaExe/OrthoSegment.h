@@ -5,10 +5,10 @@
 
 class COrthoSegment : public CDependentSegment {
 public:
-	COrthoSegment(int index, int master = -1);
+    COrthoSegment(int index, int master = -1);
 
 private:
-	virtual CFontTable* NewFontTable() const;
+    virtual CFontTable * NewFontTable() const;
 };
 
 #endif

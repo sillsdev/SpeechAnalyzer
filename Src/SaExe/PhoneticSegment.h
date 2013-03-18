@@ -6,19 +6,19 @@
 
 class CPhoneticSegment : public CIndependentSegment {
 public:
-	CPhoneticSegment(int index, int master = -1);
+    CPhoneticSegment(int index, int master = -1);
 
-	virtual CSegment::TpInputFilterProc GetInputFilter(void) const; // filter function for input
-	virtual long Process(void* pCaller, CSaDoc* pDoc, int nProgress = 0, int nLevel = 1);
-	virtual void Remove(CDocument*, BOOL bCheck = TRUE); // remove a segment
-	virtual DWORD RemoveNoRefresh(CDocument* pSaDoc);
-	virtual void ReplaceSelectedSegment(CDocument* pSaDoc, const CSaString & str);
+    virtual CSegment::TpInputFilterProc GetInputFilter(void) const; // filter function for input
+    virtual long Process(void * pCaller, CSaDoc * pDoc, int nProgress = 0, int nLevel = 1);
+    virtual void Remove(CDocument *, BOOL bCheck = TRUE); // remove a segment
+    virtual DWORD RemoveNoRefresh(CDocument * pSaDoc);
+    virtual void ReplaceSelectedSegment(CDocument * pSaDoc, const CSaString & str);
 
 protected:
-	virtual long Exit(int nError); // exit processing on error
+    virtual long Exit(int nError); // exit processing on error
 
 private:
-	virtual CFontTable* NewFontTable() const;
+    virtual CFontTable * NewFontTable() const;
 };
 
 #endif

@@ -17,52 +17,51 @@
 #define _SA_CDIB_
 
 // cdib.h
-class CDib : public CObject
-{
-  DECLARE_SERIAL(CDib)
+class CDib : public CObject {
+    DECLARE_SERIAL(CDib)
 private:
-  char * m_lpBuf;    // DIB data buffer
-  DWORD      m_dwLength; // total buffer length, including file header
-  int        m_nBits;    // number of color bits per pixel
-  //pointers for internal use
-  LPBITMAPFILEHEADER m_lpBMFH;
-  LPBITMAPINFOHEADER m_lpBMIH;
-  LPBITMAPINFO       m_lpBMI;
-  LPSTR              m_lpData;
-  CPalette *         m_pPal;
+    char * m_lpBuf;    // DIB data buffer
+    DWORD      m_dwLength; // total buffer length, including file header
+    int        m_nBits;    // number of color bits per pixel
+    //pointers for internal use
+    LPBITMAPFILEHEADER m_lpBMFH;
+    LPBITMAPINFOHEADER m_lpBMIH;
+    LPBITMAPINFO       m_lpBMI;
+    LPSTR              m_lpData;
+    CPalette     *     m_pPal;
 public:
-  CDib();
-  CDib(CDC* pDC, int nBt = 0, BOOL bCompr = FALSE);
-  void Construct(CDC* pDC, int nBt = 0, BOOL bCompr = FALSE);
-  // nBt = 0 means use default bits/pixel
-  ~CDib();
-  // These methods work great but are disabled because
-  // currently they are not needed.
+    CDib();
+    CDib(CDC * pDC, int nBt = 0, BOOL bCompr = FALSE);
+    void Construct(CDC * pDC, int nBt = 0, BOOL bCompr = FALSE);
+    // nBt = 0 means use default bits/pixel
+    ~CDib();
+    // These methods work great but are disabled because
+    // currently they are not needed.
 
-  virtual void Serialize(CArchive &ar);
-  void CopyToClipboard(CWnd*) const;
-  void CaptureWindow(CWnd*, CRect rectCrop = CRect(0,0,0,0), BOOL bClient = FALSE);
-  void Save();
+    virtual void Serialize(CArchive & ar);
+    void CopyToClipboard(CWnd *) const;
+    void CaptureWindow(CWnd *, CRect rectCrop = CRect(0,0,0,0), BOOL bClient = FALSE);
+    void Save();
 
-  BOOL Read(CFile* pFile);
-  BOOL Write(CFile* pFile);
-  CBitmap* MakeBitmap(CDC* pDC, CSize& bmSize); // bmsize returned
-  BOOL Display(CDC*, CPoint origin);
-  BOOL Stretch(CDC*, CPoint origin, CSize size);
-  BOOL Paint(CDC * pDC,
-    const CRect & targRect);
-  void CreateDIBPalette();
-  WORD NumColors(void) const;
-  int GetColorBits() const;  // bits per pixel
-  DWORD GetLength() const;
-  CSize GetSize() const;
-  void SetMonoColors(DWORD dwForeground, DWORD dwBackground);
-  BOOL GetMonoColors(DWORD& dwForeground, DWORD& dwBackground);
-  BOOL HasPalette(void);
-  BYTE static MakeGrey(COLORREF & rgb);
-  void GoGreyScale(void);
+    BOOL Read(CFile * pFile);
+    BOOL Write(CFile * pFile);
+    CBitmap * MakeBitmap(CDC * pDC, CSize & bmSize); // bmsize returned
+    BOOL Display(CDC *, CPoint origin);
+    BOOL Stretch(CDC *, CPoint origin, CSize size);
+    BOOL Paint(CDC * pDC,
+               const CRect & targRect);
+    void CreateDIBPalette();
+    WORD NumColors(void) const;
+    int GetColorBits() const;  // bits per pixel
+    DWORD GetLength() const;
+    CSize GetSize() const;
+    void SetMonoColors(DWORD dwForeground, DWORD dwBackground);
+    BOOL GetMonoColors(DWORD & dwForeground, DWORD & dwBackground);
+    BOOL HasPalette(void);
+    BYTE static MakeGrey(COLORREF & rgb);
+    void GoGreyScale(void);
 private:
-  BOOL AllocateMemory(BOOL bRealloc = FALSE);
+    BOOL AllocateMemory(BOOL bRealloc = FALSE);
 };
 
 

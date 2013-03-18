@@ -4,7 +4,7 @@
 #ifdef _DEBUG
 extern "C"
 {
-void AFXAPI SaAssertFailedLine(LPCSTR lpszFileName, int nLine);
+    void AFXAPI SaAssertFailedLine(LPCSTR lpszFileName, int nLine);
 }
 #define THIS_FILE          __FILE__
 #define SA_ASSERT(f)          ((f) ? (void)0 : \
@@ -12,4 +12,3 @@ void AFXAPI SaAssertFailedLine(LPCSTR lpszFileName, int nLine);
 #else
 #define SA_ASSERT(f)          ((void)(f))
 #endif // _DEBUG
-      

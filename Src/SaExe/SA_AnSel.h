@@ -24,48 +24,47 @@ class CSaString;
 // special class to allow selection of empty dependent segments.  Should also
 // provide a interface independent of data storage representation
 /***************************************************************************/
-class CASegmentSelection
-{
-  //Constructor/Destructor
+class CASegmentSelection {
+    //Constructor/Destructor
 public:
-  CASegmentSelection();
+    CASegmentSelection();
 
-  //Types
+    //Types
 public:
-  class CASelection
-  {
-  public:
-    DWORD dwStart;
-    DWORD dwStop;
-    DWORD dwDuration;
-    int nAnnotationIndex;
-    BOOL bVirtual;
-  protected:
-    //      int nInsertAtIndex;
-    //      int nPhoneticRelativeIndex;
-  };
-  enum
-  {
-    FIND_EXACT = 1
-  };
+    class CASelection {
+    public:
+        DWORD dwStart;
+        DWORD dwStop;
+        DWORD dwDuration;
+        int nAnnotationIndex;
+        BOOL bVirtual;
+    protected:
+        //      int nInsertAtIndex;
+        //      int nPhoneticRelativeIndex;
+    };
+    enum {
+        FIND_EXACT = 1
+    };
 
-  //Attributes
+    //Attributes
 protected:
-  CASelection m_Selection;
-  
-  
-  
-  // Operations
+    CASelection m_Selection;
+
+
+
+    // Operations
 public:
-  BOOL CASegmentSelection::SelectFromPosition(CSaView* pView, int nSegmentIndex, DWORD dwPosition, int nMode = NULL);
-  BOOL CASegmentSelection::SelectFromStopPosition(CSaView* pView, int nSegmentIndex, DWORD dwPosition, int nMode = NULL);
-  const CASelection& GetSelection() const {return m_Selection;}; //Access Selection Record
-  void Update(CSaView* pView, BOOL bClearVirtual = FALSE); //Update Selection Record
-  CString GetSelectedAnnotationString(CSaView* pView, BOOL bRemoveDelimiter = TRUE) const;
-  BOOL SetSelectedAnnotationString(CSaView* pView, CSaString& szString, BOOL bIncludesDelimiter = FALSE, BOOL bCheck=FALSE);
-  
+    BOOL CASegmentSelection::SelectFromPosition(CSaView * pView, int nSegmentIndex, DWORD dwPosition, int nMode = NULL);
+    BOOL CASegmentSelection::SelectFromStopPosition(CSaView * pView, int nSegmentIndex, DWORD dwPosition, int nMode = NULL);
+    const CASelection & GetSelection() const {
+        return m_Selection;
+    }; //Access Selection Record
+    void Update(CSaView * pView, BOOL bClearVirtual = FALSE); //Update Selection Record
+    CString GetSelectedAnnotationString(CSaView * pView, BOOL bRemoveDelimiter = TRUE) const;
+    BOOL SetSelectedAnnotationString(CSaView * pView, CSaString & szString, BOOL bIncludesDelimiter = FALSE, BOOL bCheck=FALSE);
+
 private:
-  void RefreshAnnotation(CSaView* pView, int nAnnotationIndex);
+    void RefreshAnnotation(CSaView * pView, int nAnnotationIndex);
 };
 
 

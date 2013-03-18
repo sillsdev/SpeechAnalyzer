@@ -6,32 +6,31 @@ class CMainFrame;
 /////////////////////////////////////////////////////////////////////////////
 // CDisplayPlot window
 
-class CDisplayPlot
-{
-  // Construction
+class CDisplayPlot {
+    // Construction
 public:
-  CDisplayPlot(CString& szPlot);
+    CDisplayPlot(CString & szPlot);
 
-  // Attributes
+    // Attributes
 public:
-  CMainFrame* m_pMainFrame;
-  HMENU m_hNewMenu;
-  HACCEL m_hNewAccel;
-  int m_nPopup;
-  BOOL m_bStatusBar;
-  BOOL m_bToolBar;
-  BOOL m_bTaskBar;
-  int m_nCaptionStyle;
-  BOOL m_bScrollZoom;
-  CDialog* m_pModal;
+    CMainFrame * m_pMainFrame;
+    HMENU m_hNewMenu;
+    HACCEL m_hNewAccel;
+    int m_nPopup;
+    BOOL m_bStatusBar;
+    BOOL m_bToolBar;
+    BOOL m_bTaskBar;
+    int m_nCaptionStyle;
+    BOOL m_bScrollZoom;
+    CDialog * m_pModal;
 
-  // Operations
+    // Operations
 public:
 
 
-  // Implementation
+    // Implementation
 public:
-  virtual ~CDisplayPlot();
+    virtual ~CDisplayPlot();
 
 protected:
 };

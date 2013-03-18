@@ -29,112 +29,120 @@
 #define LED_POINT_WIDTH     4  // width of a point or double point
 #define LED_DIGIT_SPACE     2  // space between digits
 
-class CLEDDisplay : public CWnd
-{   DECLARE_DYNCREATE(CLEDDisplay)
+class CLEDDisplay : public CWnd {
+    DECLARE_DYNCREATE(CLEDDisplay)
 
 // Construction/destruction/creation
 public:
-  CLEDDisplay();
-  ~CLEDDisplay();
+    CLEDDisplay();
+    ~CLEDDisplay();
 
-  // Attributes
+    // Attributes
 private:
-  CBitmap* m_pBmLED; // LED bitmap
-  char m_chMinMSD, m_chMinLSD;             // minutes display memory
-  char m_chSecMSD, m_chSecLSD, m_chSecDec; // seconds display memory
+    CBitmap * m_pBmLED; // LED bitmap
+    char m_chMinMSD, m_chMinLSD;             // minutes display memory
+    char m_chSecMSD, m_chSecLSD, m_chSecDec; // seconds display memory
 
-  // Operations
+    // Operations
 public:
-  void Init(UINT nID, CWnd* pParent);
-  void SetTime(int nMin, int nSec); // min > 99 displays "--", sec > 599 displays "--.-"
-  int GetMinutes() {return (m_chMinMSD * 10 + m_chMinLSD);} // return actually displayed minutes
-  int GetSeconds() {return (m_chSecMSD * 100 + m_chSecLSD * 10 + m_chSecDec);} // return actually displayed seconds
+    void Init(UINT nID, CWnd * pParent);
+    void SetTime(int nMin, int nSec); // min > 99 displays "--", sec > 599 displays "--.-"
+    int GetMinutes() {
+        return (m_chMinMSD * 10 + m_chMinLSD);   // return actually displayed minutes
+    }
+    int GetSeconds() {
+        return (m_chSecMSD * 100 + m_chSecLSD * 10 + m_chSecDec);   // return actually displayed seconds
+    }
 
-  // Generated message map functions
+    // Generated message map functions
 protected:
-  //{{AFX_MSG(CLEDDisplay)
-  afx_msg void OnPaint();
-  afx_msg BOOL OnEraseBkgnd(CDC* pDC);
-  //}}AFX_MSG
-  DECLARE_MESSAGE_MAP()
+    //{{AFX_MSG(CLEDDisplay)
+    afx_msg void OnPaint();
+    afx_msg BOOL OnEraseBkgnd(CDC * pDC);
+    //}}AFX_MSG
+    DECLARE_MESSAGE_MAP()
 };
 
 //###########################################################################
 // CSliderVertical dialog child window
 
-class CSliderVertical : public CWnd
-{   DECLARE_DYNCREATE(CSliderVertical)
+class CSliderVertical : public CWnd {
+    DECLARE_DYNCREATE(CSliderVertical)
 
 // Construction/destruction/creation
 public:
-  CSliderVertical();
-  ~CSliderVertical();
+    CSliderVertical();
+    ~CSliderVertical();
 
-  // Attributes
+    // Attributes
 private:
-  CBitmap* m_pBmKnob;        // knob bitmap
-  CRect  m_rPos;             // bitmap position and size
-  char   m_chPos;            // position display memory
-  BOOL   m_bKnobDrag;        // knob drag by mouse
-  int    m_nID;              // ID
+    CBitmap * m_pBmKnob;       // knob bitmap
+    CRect  m_rPos;             // bitmap position and size
+    char   m_chPos;            // position display memory
+    BOOL   m_bKnobDrag;        // knob drag by mouse
+    int    m_nID;              // ID
 
-  // Operations
+    // Operations
 private:
-  int GetPosFromMouse(CPoint point);
+    int GetPosFromMouse(CPoint point);
 public:
-  void Init(UINT nID, CWnd* pParent);
-  void SetPosition(int nVal);
-  int GetPosition() {return m_chPos;} // get actual slider position
+    void Init(UINT nID, CWnd * pParent);
+    void SetPosition(int nVal);
+    int GetPosition() {
+        return m_chPos;   // get actual slider position
+    }
 
-  // Generated message map functions
+    // Generated message map functions
 protected:
-  //{{AFX_MSG(CSliderVertical)
-  afx_msg void OnPaint();
-  afx_msg BOOL OnEraseBkgnd(CDC* pDC);
-  afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
-  afx_msg void OnLButtonUp(UINT nFlags, CPoint point);
-  afx_msg void OnMouseMove(UINT nFlags, CPoint point);
-  //}}AFX_MSG
-  DECLARE_MESSAGE_MAP()
+    //{{AFX_MSG(CSliderVertical)
+    afx_msg void OnPaint();
+    afx_msg BOOL OnEraseBkgnd(CDC * pDC);
+    afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
+    afx_msg void OnLButtonUp(UINT nFlags, CPoint point);
+    afx_msg void OnMouseMove(UINT nFlags, CPoint point);
+    //}}AFX_MSG
+    DECLARE_MESSAGE_MAP()
 };
 
 //###########################################################################
 // CSliderHorizontal dialog child window
 
-class CSliderHorizontal : public CWnd
-{   DECLARE_DYNCREATE(CSliderHorizontal)
+class CSliderHorizontal : public CWnd {
+    DECLARE_DYNCREATE(CSliderHorizontal)
 
 // Construction/destruction/creation
 public:
-  CSliderHorizontal();
-  ~CSliderHorizontal();
+    CSliderHorizontal();
+    ~CSliderHorizontal();
 
-  // Attributes
+    // Attributes
 private:
-  CBitmap* m_pBmKnob;         // knob bitmap
-  CRect   m_rPos;             // bitmap position and size
-  char    m_chPos;            // position display memory
-  BOOL    m_bKnobDrag;        // knob drag by mouse
-  int     m_nID;              // ID
+    CBitmap * m_pBmKnob;        // knob bitmap
+    CRect   m_rPos;             // bitmap position and size
+    char    m_chPos;            // position display memory
+    BOOL    m_bKnobDrag;        // knob drag by mouse
+    int     m_nID;              // ID
 
-  // Operations
+    // Operations
 private:
-  int GetPosFromMouse(CPoint point);
+    int GetPosFromMouse(CPoint point);
 public:
-  void Init(UINT nID, CWnd* pParent);
-  void SetPosition(int nVal);
-  int GetPosition() {return m_chPos;} // get actual slider position
+    void Init(UINT nID, CWnd * pParent);
+    void SetPosition(int nVal);
+    int GetPosition() {
+        return m_chPos;   // get actual slider position
+    }
 
-  // Generated message map functions
+    // Generated message map functions
 protected:
-  //{{AFX_MSG(CSliderHorizontal)
-  afx_msg void OnPaint();
-  afx_msg BOOL OnEraseBkgnd(CDC* pDC);
-  afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
-  afx_msg void OnLButtonUp(UINT nFlags, CPoint point);
-  afx_msg void OnMouseMove(UINT nFlags, CPoint point);
-  //}}AFX_MSG
-  DECLARE_MESSAGE_MAP()
+    //{{AFX_MSG(CSliderHorizontal)
+    afx_msg void OnPaint();
+    afx_msg BOOL OnEraseBkgnd(CDC * pDC);
+    afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
+    afx_msg void OnLButtonUp(UINT nFlags, CPoint point);
+    afx_msg void OnMouseMove(UINT nFlags, CPoint point);
+    //}}AFX_MSG
+    DECLARE_MESSAGE_MAP()
 };
 
 //###########################################################################
@@ -151,46 +159,46 @@ protected:
 #define VU_BAR_RED          17 // first red point
 #define VU_BAR_HOLDCOUNT    10 // peak hold time
 
-class CVUBar : public CWnd
-{   DECLARE_DYNCREATE(CVUBar)
+class CVUBar : public CWnd {
+    DECLARE_DYNCREATE(CVUBar)
 
 // Construction/destruction/creation
 public:
-  CVUBar();
-  ~CVUBar();
+    CVUBar();
+    ~CVUBar();
 
-  // Attributes
+    // Attributes
 private:
-  CFont m_font;           // VU display character font
-  int  m_nTextSpace;      // reserved space for text
-  char m_chLVU;           // VU display left channel value
-  char m_chLOldVU;        // VU display previous left channel value
-  char m_chRVU;           // VU display left channel value
-  char m_chROldVU;        // VU display previous left channel value
-  TCHAR m_chLText;         // left channel text
-  TCHAR m_chRText;         // right channel text
-  char m_chLPeak;         // left channel peak value
-  char m_chRPeak;         // right channel peak value
-  int  m_nLPeakHoldCount; // left channel peak holding counter
-  int  m_nRPeakHoldCount; // right channel peak holding counter
-  int  m_nPeakHold;       // peak holding time (count)
-  BOOL m_bPeak;           // TRUE, if peak holding enabled
+    CFont m_font;           // VU display character font
+    int  m_nTextSpace;      // reserved space for text
+    char m_chLVU;           // VU display left channel value
+    char m_chLOldVU;        // VU display previous left channel value
+    char m_chRVU;           // VU display left channel value
+    char m_chROldVU;        // VU display previous left channel value
+    TCHAR m_chLText;         // left channel text
+    TCHAR m_chRText;         // right channel text
+    char m_chLPeak;         // left channel peak value
+    char m_chRPeak;         // right channel peak value
+    int  m_nLPeakHoldCount; // left channel peak holding counter
+    int  m_nRPeakHoldCount; // right channel peak holding counter
+    int  m_nPeakHold;       // peak holding time (count)
+    BOOL m_bPeak;           // TRUE, if peak holding enabled
 
-  // Operations
+    // Operations
 public:
-  void Init(UINT nID, CWnd* pParent);
-  void InitVU(char chLText, char chRText, BOOL bPeak, int nPeakHold);
-  void SetVU(int nLVal, int nRVal = -1); // set the level (left only for mono display)
-  void Reset(); // resets the peak settings
+    void Init(UINT nID, CWnd * pParent);
+    void InitVU(char chLText, char chRText, BOOL bPeak, int nPeakHold);
+    void SetVU(int nLVal, int nRVal = -1); // set the level (left only for mono display)
+    void Reset(); // resets the peak settings
 
-  // Generated message map functions
+    // Generated message map functions
 protected:
-  //{{AFX_MSG(CVUBar)
-  afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
-  afx_msg void OnPaint();
-  afx_msg BOOL OnEraseBkgnd(CDC* pDC);
-  //}}AFX_MSG
-  DECLARE_MESSAGE_MAP()
+    //{{AFX_MSG(CVUBar)
+    afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
+    afx_msg void OnPaint();
+    afx_msg BOOL OnEraseBkgnd(CDC * pDC);
+    //}}AFX_MSG
+    DECLARE_MESSAGE_MAP()
 };
 
 //###########################################################################
@@ -201,32 +209,34 @@ protected:
 
 #define PROGRESS_BAR_DIVISIONS  10 // number of divisions
 
-class CProgressBar : public CWnd
-{   DECLARE_DYNCREATE(CProgressBar)
+class CProgressBar : public CWnd {
+    DECLARE_DYNCREATE(CProgressBar)
 
 // Construction/destruction/creation
 public:
-  CProgressBar();
-  virtual ~CProgressBar();
+    CProgressBar();
+    virtual ~CProgressBar();
 
-  // Attributes
+    // Attributes
 private:
-  char m_chProgress;         // progress display memory
-  int  m_nProgress;
+    char m_chProgress;         // progress display memory
+    int  m_nProgress;
 
-  // Operations
+    // Operations
 public:
-  void Init(UINT nID, CWnd* pParent);
-  void SetProgress(int nVal);
-  int  GetProgress() {return m_nProgress;};
+    void Init(UINT nID, CWnd * pParent);
+    void SetProgress(int nVal);
+    int  GetProgress() {
+        return m_nProgress;
+    };
 
-  // Generated message map functions
+    // Generated message map functions
 protected:
-  //{{AFX_MSG(CProgressBar)
-  afx_msg void OnPaint();
-  afx_msg BOOL OnEraseBkgnd(CDC* pDC);
-  //}}AFX_MSG
-  DECLARE_MESSAGE_MAP()
+    //{{AFX_MSG(CProgressBar)
+    afx_msg void OnPaint();
+    afx_msg BOOL OnEraseBkgnd(CDC * pDC);
+    //}}AFX_MSG
+    DECLARE_MESSAGE_MAP()
 };
 
 //###########################################################################
@@ -237,232 +247,239 @@ protected:
 
 #define COLOR_ITEM_HEIGHT   16 // height of each item in list
 
-class CComboGridlines : public CComboBox
-{
-  // Construction/destruction/creation
+class CComboGridlines : public CComboBox {
+    // Construction/destruction/creation
 public:
 
-  // Attributes
+    // Attributes
 private:
 
-  // Operations
+    // Operations
 private:
-  virtual void MeasureItem(LPMEASUREITEMSTRUCT lpMIS);
-  virtual void DrawItem(LPDRAWITEMSTRUCT lpDIS);
+    virtual void MeasureItem(LPMEASUREITEMSTRUCT lpMIS);
+    virtual void DrawItem(LPDRAWITEMSTRUCT lpDIS);
 public:
-  void AddLineItem(int nPenStyle);
+    void AddLineItem(int nPenStyle);
 };
 
 //###########################################################################
 // CSpinControl micro scroll buttons
 
-class CSpinControl : public CWnd
-{   DECLARE_DYNCREATE(CSpinControl)
+class CSpinControl : public CWnd {
+    DECLARE_DYNCREATE(CSpinControl)
 
 // Construction/destruction/creation
 public:
-  CSpinControl();
-  ~CSpinControl();
+    CSpinControl();
+    ~CSpinControl();
 
-  // Attributes
+    // Attributes
 private:
-  BOOL m_bUpButtonDown;  // button status
-  BOOL m_bLowButtonDown;
-  int  m_nID;            // ID
-  BOOL m_bTimerStart;    // TRUE indicates a new mouse repeat timer start
+    BOOL m_bUpButtonDown;  // button status
+    BOOL m_bLowButtonDown;
+    int  m_nID;            // ID
+    BOOL m_bTimerStart;    // TRUE indicates a new mouse repeat timer start
 
-  // Operations
+    // Operations
 private:
-  void DrawArrowUp(CDC* pDC, CRect rect);
-  void DrawArrowDown(CDC* pDC, CRect rect);
-  void DrawButtonUp(CDC* pDC, CRect rect);
-  void DrawButtonDown(CDC* pDC, CRect rect);
-  void MouseClick(UINT nFlags, CPoint point);
+    void DrawArrowUp(CDC * pDC, CRect rect);
+    void DrawArrowDown(CDC * pDC, CRect rect);
+    void DrawButtonUp(CDC * pDC, CRect rect);
+    void DrawButtonDown(CDC * pDC, CRect rect);
+    void MouseClick(UINT nFlags, CPoint point);
 public:
-  void Init(UINT nID, CWnd* pParent);
-  int GetID() {return m_nID;}        // get spin control ID
-  BOOL UpperButtonClicked() {return m_bUpButtonDown;} // return TRUE if upper button hit
+    void Init(UINT nID, CWnd * pParent);
+    int GetID() {
+        return m_nID;   // get spin control ID
+    }
+    BOOL UpperButtonClicked() {
+        return m_bUpButtonDown;   // return TRUE if upper button hit
+    }
 
-  // Generated message map functions
+    // Generated message map functions
 protected:
-  //{{AFX_MSG(CSpinControl)
-  afx_msg void OnPaint();
-  afx_msg BOOL OnEraseBkgnd(CDC* pDC);
-  afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
-  afx_msg void OnLButtonDblClk(UINT nFlags, CPoint point);
-  afx_msg void OnLButtonUp(UINT nFlags, CPoint point);
-  afx_msg void OnTimer(UINT nIDEvent);
-  afx_msg void OnEnable(BOOL bEnable);
-  //}}AFX_MSG
-  DECLARE_MESSAGE_MAP()
+    //{{AFX_MSG(CSpinControl)
+    afx_msg void OnPaint();
+    afx_msg BOOL OnEraseBkgnd(CDC * pDC);
+    afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
+    afx_msg void OnLButtonDblClk(UINT nFlags, CPoint point);
+    afx_msg void OnLButtonUp(UINT nFlags, CPoint point);
+    afx_msg void OnTimer(UINT nIDEvent);
+    afx_msg void OnEnable(BOOL bEnable);
+    //}}AFX_MSG
+    DECLARE_MESSAGE_MAP()
 };
 
 //###########################################################################
 // CToggleButton
 
-class CToggleButton : public CWnd
-{   DECLARE_DYNCREATE(CToggleButton)
+class CToggleButton : public CWnd {
+    DECLARE_DYNCREATE(CToggleButton)
 
 // Construction/destruction/creation
 public:
-  CToggleButton();
-  ~CToggleButton();
+    CToggleButton();
+    ~CToggleButton();
 
-  // Attributes
+    // Attributes
 private:
-  CRect m_rSymbol;       // symbol rectangle
-  int   m_nID;           // ID
-  BOOL  m_bButtonDown;   // button status
-  BOOL  m_bSymbolFlash;  // button flash status
-  BOOL  m_bSymbolOff;    // button symbol draw status
-  CString m_szText;      // button text
+    CRect m_rSymbol;       // symbol rectangle
+    int   m_nID;           // ID
+    BOOL  m_bButtonDown;   // button status
+    BOOL  m_bSymbolFlash;  // button flash status
+    BOOL  m_bSymbolOff;    // button symbol draw status
+    CString m_szText;      // button text
 
-  // Operations
+    // Operations
 private:
-  void DrawButtonUp(CDC* pDC, CRect rWnd);
-  void DrawButtonDown(CDC* pDC, CRect rWnd);
-  void DrawText(CDC* pDC, CRect rWnd);
-  void DrawSymbol(CDC* pDC);
+    void DrawButtonUp(CDC * pDC, CRect rWnd);
+    void DrawButtonDown(CDC * pDC, CRect rWnd);
+    void DrawText(CDC * pDC, CRect rWnd);
+    void DrawSymbol(CDC * pDC);
 public:
-  void Init(UINT nID, CString szText, CWnd* pParent);
-  int GetID() {return m_nID;}        // get control ID
-  void Flash(BOOL bFlash);           // starts/stops symbol flashing
-  void Push();                       // push released button
-  void Release();                    // release pressed button
+    void Init(UINT nID, CString szText, CWnd * pParent);
+    int GetID() {
+        return m_nID;   // get control ID
+    }
+    void Flash(BOOL bFlash);           // starts/stops symbol flashing
+    void Push();                       // push released button
+    void Release();                    // release pressed button
 
-  // Generated message map functions
+    // Generated message map functions
 protected:
-  //{{AFX_MSG(CToggleButton)
-  afx_msg void OnPaint();
-  afx_msg BOOL OnEraseBkgnd(CDC* pDC);
-  afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
-  afx_msg void OnLButtonDblClk(UINT nFlags, CPoint point);
-  afx_msg void OnLButtonUp(UINT nFlags, CPoint point);
-  afx_msg void OnTimer(UINT nIDEvent);
-  afx_msg void OnEnable(BOOL bEnable);
-  //}}AFX_MSG
-  DECLARE_MESSAGE_MAP()
+    //{{AFX_MSG(CToggleButton)
+    afx_msg void OnPaint();
+    afx_msg BOOL OnEraseBkgnd(CDC * pDC);
+    afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
+    afx_msg void OnLButtonDblClk(UINT nFlags, CPoint point);
+    afx_msg void OnLButtonUp(UINT nFlags, CPoint point);
+    afx_msg void OnTimer(UINT nIDEvent);
+    afx_msg void OnEnable(BOOL bEnable);
+    //}}AFX_MSG
+    DECLARE_MESSAGE_MAP()
 };
 
 //###########################################################################
 // CTranscriptionDisp dialog child window
 
-class CTranscriptionDisp : public CWnd
-{
-  // SDM 1.06.6r1 uses underlying static text control
-  // Operations
+class CTranscriptionDisp : public CWnd {
+    // SDM 1.06.6r1 uses underlying static text control
+    // Operations
 public:
-  void Init(UINT nID, CWnd* pParent);
+    void Init(UINT nID, CWnd * pParent);
 
 };
 
 //###########################################################################
 // CAboutTitle dialog child window
 
-class CAboutTitle : public CWnd
-{   DECLARE_DYNCREATE(CAboutTitle)
+class CAboutTitle : public CWnd {
+    DECLARE_DYNCREATE(CAboutTitle)
 
 // Construction/destruction/creation
 public:
-  CAboutTitle();
-  ~CAboutTitle();
+    CAboutTitle();
+    ~CAboutTitle();
 
-  // Attributes
+    // Attributes
 private:
 
-  // Operations
+    // Operations
 public:
-  void Init(UINT nID, CWnd* pParent);
+    void Init(UINT nID, CWnd * pParent);
 
-  // Generated message map functions
+    // Generated message map functions
 protected:
-  //{{AFX_MSG(CAboutTitle)
-  afx_msg void OnPaint();
-  afx_msg BOOL OnEraseBkgnd(CDC* pDC);
-  //}}AFX_MSG
-  DECLARE_MESSAGE_MAP()
+    //{{AFX_MSG(CAboutTitle)
+    afx_msg void OnPaint();
+    afx_msg BOOL OnEraseBkgnd(CDC * pDC);
+    //}}AFX_MSG
+    DECLARE_MESSAGE_MAP()
 };
 
 //###########################################################################
 // CStaticText dialog child window
 
-class CStaticText : public CWnd
-{   DECLARE_DYNCREATE(CStaticText)
+class CStaticText : public CWnd {
+    DECLARE_DYNCREATE(CStaticText)
 
 // Construction/destruction/creation
 public:
-  CStaticText();
-  ~CStaticText();
+    CStaticText();
+    ~CStaticText();
 
-  // Attributes
+    // Attributes
 private:
-  UINT m_nID;
+    UINT m_nID;
 
-  // Operations
+    // Operations
 public:
-  void Init(UINT nID, CWnd* pParent);
+    void Init(UINT nID, CWnd * pParent);
 
-  // Generated message map functions
+    // Generated message map functions
 protected:
-  //{{AFX_MSG(CStaticText)
-  afx_msg void OnPaint();
-  afx_msg BOOL OnEraseBkgnd(CDC* pDC);
-  //}}AFX_MSG
-  DECLARE_MESSAGE_MAP()
+    //{{AFX_MSG(CStaticText)
+    afx_msg void OnPaint();
+    afx_msg BOOL OnEraseBkgnd(CDC * pDC);
+    //}}AFX_MSG
+    DECLARE_MESSAGE_MAP()
 };
 
 //###########################################################################
 // CFancyArrow dialog child window
 
-class CFancyArrow : public CWnd
-{   DECLARE_DYNCREATE(CFancyArrow)
+class CFancyArrow : public CWnd {
+    DECLARE_DYNCREATE(CFancyArrow)
 
 // Construction/destruction/creation
 public:
-  CFancyArrow();
-  ~CFancyArrow();
+    CFancyArrow();
+    ~CFancyArrow();
 
-  // Attributes
+    // Attributes
 private:
 
-  // Operations
+    // Operations
 public:
-  void Init(UINT nID, CWnd* pParent);
+    void Init(UINT nID, CWnd * pParent);
 
-  // Generated message map functions
+    // Generated message map functions
 protected:
-  //{{AFX_MSG(CFancyArrow)
-  afx_msg void OnPaint();
-  afx_msg BOOL OnEraseBkgnd(CDC* pDC);
-  //}}AFX_MSG
-  DECLARE_MESSAGE_MAP()
+    //{{AFX_MSG(CFancyArrow)
+    afx_msg void OnPaint();
+    afx_msg BOOL OnEraseBkgnd(CDC * pDC);
+    //}}AFX_MSG
+    DECLARE_MESSAGE_MAP()
 };
 
 
 //###########################################################################
 // CLayoutListBox custom menu
 
-class CLayoutListBox : public CListBox
-{
+class CLayoutListBox : public CListBox {
 
-  // Construction/destruction/creation
+    // Construction/destruction/creation
 public:
-  CLayoutListBox() {m_number = -1;};
-  virtual ~CLayoutListBox();
-  int GetLayoutFromSelection(int nIndex);
-  int GetPreferredLayout() const { return GetPreferredLayout(m_number);}
-  static int GetPreferredLayout(int number);
+    CLayoutListBox() {
+        m_number = -1;
+    };
+    virtual ~CLayoutListBox();
+    int GetLayoutFromSelection(int nIndex);
+    int GetPreferredLayout() const {
+        return GetPreferredLayout(m_number);
+    }
+    static int GetPreferredLayout(int number);
 
-  // Attributes
+    // Attributes
 private:
-  int m_number;
+    int m_number;
 
-  // Operations
+    // Operations
 public:
-  void AppendLayoutItem(int nNumber);
-  void SelectLayoutWithCount(int nNumber = -1);
-  virtual void MeasureItem(LPMEASUREITEMSTRUCT lpMIS);
-  virtual void DrawItem(LPDRAWITEMSTRUCT lpDIS);
+    void AppendLayoutItem(int nNumber);
+    void SelectLayoutWithCount(int nNumber = -1);
+    virtual void MeasureItem(LPMEASUREITEMSTRUCT lpMIS);
+    virtual void DrawItem(LPDRAWITEMSTRUCT lpDIS);
 };
 
 #endif //_SA_DLWND_H

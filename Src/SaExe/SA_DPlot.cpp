@@ -28,162 +28,152 @@ static char BASED_CODE THIS_FILE[] = __FILE__;
 /////////////////////////////////////////////////////////////////////////////
 // CDisplayPlot
 
-CDisplayPlot::CDisplayPlot(CString& szPlot)
-{
-	m_pModal = NULL;
-	m_pMainFrame = (CMainFrame*) AfxGetMainWnd();
+CDisplayPlot::CDisplayPlot(CString & szPlot) {
+    m_pModal = NULL;
+    m_pMainFrame = (CMainFrame *) AfxGetMainWnd();
 
-	// adjust app
-	// disable status
-	m_bStatusBar = m_pMainFrame->m_bStatusBar;
-	if (FALSE != m_bStatusBar)
-	{
-		m_pMainFrame->SendMessage(WM_COMMAND, ID_VIEW_STATUS_BAR, 0); // change statusbar status
-		m_pMainFrame->m_bStatusBar = !m_pMainFrame->m_bStatusBar;
-	}
-	// disable toolbar
-	m_bToolBar = m_pMainFrame->bToolBar();
-	m_pMainFrame->ShowControlBar(m_pMainFrame->GetControlBar(IDR_BAR_BASIC), FALSE, TRUE); // change toolbar status
-	m_pMainFrame->ShowControlBar(m_pMainFrame->GetControlBar(IDR_BAR_ADVANCED), FALSE, TRUE); // change toolbar status
+    // adjust app
+    // disable status
+    m_bStatusBar = m_pMainFrame->m_bStatusBar;
+    if (FALSE != m_bStatusBar) {
+        m_pMainFrame->SendMessage(WM_COMMAND, ID_VIEW_STATUS_BAR, 0); // change statusbar status
+        m_pMainFrame->m_bStatusBar = !m_pMainFrame->m_bStatusBar;
+    }
+    // disable toolbar
+    m_bToolBar = m_pMainFrame->bToolBar();
+    m_pMainFrame->ShowControlBar(m_pMainFrame->GetControlBar(IDR_BAR_BASIC), FALSE, TRUE); // change toolbar status
+    m_pMainFrame->ShowControlBar(m_pMainFrame->GetControlBar(IDR_BAR_ADVANCED), FALSE, TRUE); // change toolbar status
 
-	// disable toolbar
-	m_bTaskBar = m_pMainFrame->bTaskBar();
-	m_pMainFrame->ShowControlBar(m_pMainFrame->GetControlBar(ID_VIEW_TASKBAR), FALSE, TRUE); // change toolbar status
+    // disable toolbar
+    m_bTaskBar = m_pMainFrame->bTaskBar();
+    m_pMainFrame->ShowControlBar(m_pMainFrame->GetControlBar(ID_VIEW_TASKBAR), FALSE, TRUE); // change toolbar status
 
-	// disable scrolling zoom
-	m_bScrollZoom = m_pMainFrame->m_bScrollZoom;
-	if (FALSE != m_bScrollZoom)
-	{
-		m_pMainFrame->m_bScrollZoom = !m_pMainFrame->m_bScrollZoom;
-		// tell about the change to all views
-		m_pMainFrame->SendMessageToMDIDescendants(WM_USER_VIEW_SCROLLZOOMCHANGED, m_bScrollZoom, 0L);
-	}
-	// set graph caption style
-	m_nCaptionStyle = m_pMainFrame->m_nCaptionStyle;
-	if (0 != m_nCaptionStyle)
-	{
-		m_pMainFrame->m_nCaptionStyle = 0;
-		// tell about the change to all views
-		m_pMainFrame->SendMessageToMDIDescendants(WM_USER_GRAPH_STYLECHANGED, 0, 0L);
-	}
-	// set menu
-	m_hNewMenu = m_pMainFrame->GetNewMenu();
+    // disable scrolling zoom
+    m_bScrollZoom = m_pMainFrame->m_bScrollZoom;
+    if (FALSE != m_bScrollZoom) {
+        m_pMainFrame->m_bScrollZoom = !m_pMainFrame->m_bScrollZoom;
+        // tell about the change to all views
+        m_pMainFrame->SendMessageToMDIDescendants(WM_USER_VIEW_SCROLLZOOMCHANGED, m_bScrollZoom, 0L);
+    }
+    // set graph caption style
+    m_nCaptionStyle = m_pMainFrame->m_nCaptionStyle;
+    if (0 != m_nCaptionStyle) {
+        m_pMainFrame->m_nCaptionStyle = 0;
+        // tell about the change to all views
+        m_pMainFrame->SendMessageToMDIDescendants(WM_USER_GRAPH_STYLECHANGED, 0, 0L);
+    }
+    // set menu
+    m_hNewMenu = m_pMainFrame->GetNewMenu();
 
-	CMenu Menu;
-	Menu.LoadMenu(IDR_SA_DISPLAYPLOT);
-	m_pMainFrame->SetNewMenu(Menu.Detach());
-	m_pMainFrame->OnUpdateFrameMenu(NULL);
-	m_pMainFrame->DrawMenuBar();
+    CMenu Menu;
+    Menu.LoadMenu(IDR_SA_DISPLAYPLOT);
+    m_pMainFrame->SetNewMenu(Menu.Detach());
+    m_pMainFrame->OnUpdateFrameMenu(NULL);
+    m_pMainFrame->DrawMenuBar();
 
-	// disable accelerators
-	m_hNewAccel = m_pMainFrame->GetNewAccel();
+    // disable accelerators
+    m_hNewAccel = m_pMainFrame->GetNewAccel();
 
-	m_pMainFrame->SetNewAccel(::LoadAccelerators(AfxFindResourceHandle(MAKEINTRESOURCE(IDR_SA_DISPLAYPLOT),RT_ACCELERATOR), MAKEINTRESOURCE(IDR_SA_DISPLAYPLOT)));
+    m_pMainFrame->SetNewAccel(::LoadAccelerators(AfxFindResourceHandle(MAKEINTRESOURCE(IDR_SA_DISPLAYPLOT),RT_ACCELERATOR), MAKEINTRESOURCE(IDR_SA_DISPLAYPLOT)));
 
-	// set popup
-	m_nPopup = m_pMainFrame->GetPopup();
-	m_pMainFrame->SetPopup(IDR_SA_DP_POPUP);
+    // set popup
+    m_nPopup = m_pMainFrame->GetPopup();
+    m_pMainFrame->SetPopup(IDR_SA_DP_POPUP);
 
-	// Tile or maximize
-	CDocList List;
-	if (!List.pdocFirst())
-	{
-		m_pMainFrame->PostMessage(WM_COMMAND, ID_PROCESS_BATCH_COMMANDS, 0L);
-		return;
-	}
-	if (List.pdocNext())
-	{
-		m_pMainFrame->SendMessage(WM_COMMAND, ID_WINDOW_TILE_HORZ, 0); // tile documents
-	}
-	else
-	{
-		// Maximize
-		WINDOWPLACEMENT WP;
-		WP.length = sizeof(WINDOWPLACEMENT);
-		m_pMainFrame->MDIGetActive()->GetWindowPlacement(&WP);
-		WP.showCmd = SW_SHOWMAXIMIZED;
-		m_pMainFrame->MDIGetActive()->SetWindowPlacement(&WP);
-	}
+    // Tile or maximize
+    CDocList List;
+    if (!List.pdocFirst()) {
+        m_pMainFrame->PostMessage(WM_COMMAND, ID_PROCESS_BATCH_COMMANDS, 0L);
+        return;
+    }
+    if (List.pdocNext()) {
+        m_pMainFrame->SendMessage(WM_COMMAND, ID_WINDOW_TILE_HORZ, 0); // tile documents
+    } else {
+        // Maximize
+        WINDOWPLACEMENT WP;
+        WP.length = sizeof(WINDOWPLACEMENT);
+        m_pMainFrame->MDIGetActive()->GetWindowPlacement(&WP);
+        WP.showCmd = SW_SHOWMAXIMIZED;
+        m_pMainFrame->MDIGetActive()->SetWindowPlacement(&WP);
+    }
 
-	// adjust docs
-	// layout 1
-	m_pMainFrame->SendMessageToMDIDescendants(WM_COMMAND, ID_LAYOUT_1, 0L);
-	// plot type
-	szPlot.MakeUpper();
-	if (szPlot.Find(_T("PITCH"))!=-1)
-		m_pMainFrame->SendMessageToMDIDescendants(WM_COMMAND, IDD_GRAPITCH, 0L);
-	else if (szPlot.Find(_T("WAVE"))!=-1)
-		m_pMainFrame->SendMessageToMDIDescendants(WM_COMMAND, IDD_RAWDATA, 0L);
-	else if (szPlot.Find(_T("SPECTRO"))!=-1)
-	{
-		m_pMainFrame->SendMessageToMDIDescendants(WM_COMMAND, IDD_SPECTROGRAM, 0L);
-		m_pMainFrame->SendMessageToMDIDescendants(WM_COMMAND, ID_RESTART_PROCESS, 0L);
-	}
-	m_pMainFrame->SendMessageToMDIDescendants(WM_COMMAND, ID_REFERENCE_NONE, 0L);
-	m_pMainFrame->SendMessageToMDIDescendants(WM_COMMAND, ID_PHONETIC_NONE, 0L);//SDM 1.5Test10.0
-	m_pMainFrame->SendMessageToMDIDescendants(WM_COMMAND, ID_PHONEMIC_NONE, 0L);
-	m_pMainFrame->SendMessageToMDIDescendants(WM_COMMAND, ID_TONE_NONE, 0L);
-	m_pMainFrame->SendMessageToMDIDescendants(WM_COMMAND, ID_ORTHO_NONE, 0L);
-	m_pMainFrame->SendMessageToMDIDescendants(WM_COMMAND, ID_GLOSS_NONE, 0L);
-	m_pMainFrame->SendMessageToMDIDescendants(WM_COMMAND, ID_LEGEND_NONE, 0L);//SDM 1.5Test10.0
-	m_pMainFrame->SendMessageToMDIDescendants(WM_COMMAND, ID_XSCALE_NONE, 0L);//SDM 1.5Test10.0
+    // adjust docs
+    // layout 1
+    m_pMainFrame->SendMessageToMDIDescendants(WM_COMMAND, ID_LAYOUT_1, 0L);
+    // plot type
+    szPlot.MakeUpper();
+    if (szPlot.Find(_T("PITCH"))!=-1) {
+        m_pMainFrame->SendMessageToMDIDescendants(WM_COMMAND, IDD_GRAPITCH, 0L);
+    } else if (szPlot.Find(_T("WAVE"))!=-1) {
+        m_pMainFrame->SendMessageToMDIDescendants(WM_COMMAND, IDD_RAWDATA, 0L);
+    } else if (szPlot.Find(_T("SPECTRO"))!=-1) {
+        m_pMainFrame->SendMessageToMDIDescendants(WM_COMMAND, IDD_SPECTROGRAM, 0L);
+        m_pMainFrame->SendMessageToMDIDescendants(WM_COMMAND, ID_RESTART_PROCESS, 0L);
+    }
+    m_pMainFrame->SendMessageToMDIDescendants(WM_COMMAND, ID_REFERENCE_NONE, 0L);
+    m_pMainFrame->SendMessageToMDIDescendants(WM_COMMAND, ID_PHONETIC_NONE, 0L);//SDM 1.5Test10.0
+    m_pMainFrame->SendMessageToMDIDescendants(WM_COMMAND, ID_PHONEMIC_NONE, 0L);
+    m_pMainFrame->SendMessageToMDIDescendants(WM_COMMAND, ID_TONE_NONE, 0L);
+    m_pMainFrame->SendMessageToMDIDescendants(WM_COMMAND, ID_ORTHO_NONE, 0L);
+    m_pMainFrame->SendMessageToMDIDescendants(WM_COMMAND, ID_GLOSS_NONE, 0L);
+    m_pMainFrame->SendMessageToMDIDescendants(WM_COMMAND, ID_LEGEND_NONE, 0L);//SDM 1.5Test10.0
+    m_pMainFrame->SendMessageToMDIDescendants(WM_COMMAND, ID_XSCALE_NONE, 0L);//SDM 1.5Test10.0
 }
 
-CDisplayPlot::~CDisplayPlot()
-{
-	if (m_pModal)
-	{
-		m_pModal->SendMessage(WM_CLOSE, 0, 0);
-		m_pModal = NULL;
-	}
-	// restore app
-	// status
-	if (FALSE != m_bStatusBar)
-	{
-		m_pMainFrame->SendMessage(WM_COMMAND, ID_VIEW_STATUS_BAR, 0); // change statusbar status
-		m_pMainFrame->m_bStatusBar = !m_pMainFrame->m_bStatusBar;
-	}
-	// restore toolbar
-	BOOL bAdvanced = m_bToolBar;
-	m_pMainFrame->ShowControlBar(m_pMainFrame->GetControlBar(IDR_BAR_BASIC),!bAdvanced, TRUE); // change toolbar status
-	m_pMainFrame->ShowControlBar(m_pMainFrame->GetControlBar(IDR_BAR_ADVANCED), bAdvanced, TRUE); // change toolbar status
+CDisplayPlot::~CDisplayPlot() {
+    if (m_pModal) {
+        m_pModal->SendMessage(WM_CLOSE, 0, 0);
+        m_pModal = NULL;
+    }
+    // restore app
+    // status
+    if (FALSE != m_bStatusBar) {
+        m_pMainFrame->SendMessage(WM_COMMAND, ID_VIEW_STATUS_BAR, 0); // change statusbar status
+        m_pMainFrame->m_bStatusBar = !m_pMainFrame->m_bStatusBar;
+    }
+    // restore toolbar
+    BOOL bAdvanced = m_bToolBar;
+    m_pMainFrame->ShowControlBar(m_pMainFrame->GetControlBar(IDR_BAR_BASIC),!bAdvanced, TRUE); // change toolbar status
+    m_pMainFrame->ShowControlBar(m_pMainFrame->GetControlBar(IDR_BAR_ADVANCED), bAdvanced, TRUE); // change toolbar status
 
-	// restore taskbar
-	m_pMainFrame->ShowControlBar(m_pMainFrame->GetControlBar(ID_VIEW_TASKBAR),!m_bTaskBar, TRUE); // change toolbar status
+    // restore taskbar
+    m_pMainFrame->ShowControlBar(m_pMainFrame->GetControlBar(ID_VIEW_TASKBAR),!m_bTaskBar, TRUE); // change toolbar status
 
-	// restore scrolling zoom
-	if (FALSE != m_bScrollZoom)
-	{
-		m_pMainFrame->m_bScrollZoom = !m_pMainFrame->m_bScrollZoom;
-		// tell about the change to all views
-		m_pMainFrame->SendMessageToMDIDescendants(WM_USER_VIEW_SCROLLZOOMCHANGED, m_bScrollZoom, 0L);
-	}
-	// set graph caption style
-	if (0 != m_nCaptionStyle)
-	{
-		m_pMainFrame->m_nCaptionStyle = m_nCaptionStyle;
-		// tell about the change to all views
-		m_pMainFrame->SendMessageToMDIDescendants(WM_USER_GRAPH_STYLECHANGED, 0, 0L);
-	}
-	// restore menu
-	HMENU hMenu = m_pMainFrame->GetNewMenu();
-	m_pMainFrame->SetNewMenu(m_hNewMenu);
-	m_pMainFrame->OnUpdateFrameMenu(NULL);
-	m_pMainFrame->DrawMenuBar();
+    // restore scrolling zoom
+    if (FALSE != m_bScrollZoom) {
+        m_pMainFrame->m_bScrollZoom = !m_pMainFrame->m_bScrollZoom;
+        // tell about the change to all views
+        m_pMainFrame->SendMessageToMDIDescendants(WM_USER_VIEW_SCROLLZOOMCHANGED, m_bScrollZoom, 0L);
+    }
+    // set graph caption style
+    if (0 != m_nCaptionStyle) {
+        m_pMainFrame->m_nCaptionStyle = m_nCaptionStyle;
+        // tell about the change to all views
+        m_pMainFrame->SendMessageToMDIDescendants(WM_USER_GRAPH_STYLECHANGED, 0, 0L);
+    }
+    // restore menu
+    HMENU hMenu = m_pMainFrame->GetNewMenu();
+    m_pMainFrame->SetNewMenu(m_hNewMenu);
+    m_pMainFrame->OnUpdateFrameMenu(NULL);
+    m_pMainFrame->DrawMenuBar();
 
-	if (hMenu) ::DestroyMenu(hMenu);
+    if (hMenu) {
+        ::DestroyMenu(hMenu);
+    }
 
-	// restore Accel
-	HACCEL hAccel = m_pMainFrame->GetNewAccel();
-	m_pMainFrame->SetNewAccel(m_hNewAccel);
+    // restore Accel
+    HACCEL hAccel = m_pMainFrame->GetNewAccel();
+    m_pMainFrame->SetNewAccel(m_hNewAccel);
 
-	if (hAccel) ::FreeResource((HGLOBAL)hAccel);
+    if (hAccel) {
+        ::FreeResource((HGLOBAL)hAccel);
+    }
 
-	// restore popup
-	m_pMainFrame->SetPopup(m_nPopup);
+    // restore popup
+    m_pMainFrame->SetPopup(m_nPopup);
 
-	// Continue Batch Processing
-	m_pMainFrame->PostMessage(WM_COMMAND, ID_PROCESS_BATCH_COMMANDS, 0L);
+    // Continue Batch Processing
+    m_pMainFrame->PostMessage(WM_COMMAND, ID_PROCESS_BATCH_COMMANDS, 0L);
 }
 
 
