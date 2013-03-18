@@ -10,28 +10,28 @@
 //###########################################################################
 // CPlotGlottis plot window
 
-class CPlotGlottis : public CPlotWnd
-{   DECLARE_DYNCREATE(CPlotGlottis)
+class CPlotGlottis : public CPlotWnd {
+    DECLARE_DYNCREATE(CPlotGlottis)
 
 // Construction/destruction/creation
 public:
-  CPlotGlottis();
-  virtual ~CPlotGlottis();
-  virtual CPlotWnd * NewCopy(void);
-  virtual void CopyTo(CPlotWnd * pTarg);
+    CPlotGlottis();
+    virtual ~CPlotGlottis();
+    virtual CPlotWnd * NewCopy(void);
+    virtual void CopyTo(CPlotWnd * pTarg);
 
 
-  // Attributes
+    // Attributes
 
-  // Operations
+    // Operations
 public:
-  virtual void OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView);
+    virtual void OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView);
 
-  // Generated message map functions
+    // Generated message map functions
 protected:
-  //{{AFX_MSG(CPlotGlottis)
-  //}}AFX_MSG
-  DECLARE_MESSAGE_MAP()
+    //{{AFX_MSG(CPlotGlottis)
+    //}}AFX_MSG
+    DECLARE_MESSAGE_MAP()
 };
 
 #endif //_SA_G_GLO_H

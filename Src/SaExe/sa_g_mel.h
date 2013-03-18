@@ -8,32 +8,36 @@
 //###########################################################################
 // CPlotMelogram plot window
 
-class CPlotMelogram : public CPlotWnd
-{   DECLARE_DYNCREATE(CPlotMelogram)
+class CPlotMelogram : public CPlotWnd {
+    DECLARE_DYNCREATE(CPlotMelogram)
 
 // Construction/destruction/creation
 public:
-  CPlotMelogram();
-  virtual ~CPlotMelogram();
-  virtual CPlotWnd * NewCopy(void);
+    CPlotMelogram();
+    virtual ~CPlotMelogram();
+    virtual CPlotWnd * NewCopy(void);
 
-  // Attributes
+    // Attributes
 private:
-  BOOL m_bTWC; // TWC is present
+    BOOL m_bTWC; // TWC is present
 
-  // Operations
+    // Operations
 public:
-  virtual Grid GetGrid() const;
-  virtual void OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView);
-  void SetTWC(BOOL bValue) { m_bTWC = bValue;}
-  BOOL GetTWC() const { return m_bTWC;}
-  virtual int GetPenThickness() const;
+    virtual Grid GetGrid() const;
+    virtual void OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView);
+    void SetTWC(BOOL bValue) {
+        m_bTWC = bValue;
+    }
+    BOOL GetTWC() const {
+        return m_bTWC;
+    }
+    virtual int GetPenThickness() const;
 
-  static bool GetScaleValues(CSaDoc *pDoc, double *dMaxSemitone,double *dMinSemitone);
+    static bool GetScaleValues(CSaDoc * pDoc, double * dMaxSemitone,double * dMinSemitone);
 
-  // Generated message map functions
+    // Generated message map functions
 protected:
-  //{{AFX_MSG(CPlotMelogram)
-  //}}AFX_MSG
-  DECLARE_MESSAGE_MAP()
+    //{{AFX_MSG(CPlotMelogram)
+    //}}AFX_MSG
+    DECLARE_MESSAGE_MAP()
 };

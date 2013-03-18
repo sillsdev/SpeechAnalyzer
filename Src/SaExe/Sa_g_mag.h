@@ -10,27 +10,27 @@
 //###########################################################################
 // CPlotMagnitude plot window
 
-class CPlotMagnitude : public CPlotWnd
-{   DECLARE_DYNCREATE(CPlotMagnitude)
+class CPlotMagnitude : public CPlotWnd {
+    DECLARE_DYNCREATE(CPlotMagnitude)
 
 // Construction/destruction/creation
 public:
-  CPlotMagnitude();
-  virtual ~CPlotMagnitude();
-  virtual CPlotWnd * NewCopy(void);
-  virtual void CopyTo(CPlotWnd * pTarg);
+    CPlotMagnitude();
+    virtual ~CPlotMagnitude();
+    virtual CPlotWnd * NewCopy(void);
+    virtual void CopyTo(CPlotWnd * pTarg);
 
-  // Attributes
+    // Attributes
 private:
 
-  // Operations
+    // Operations
 public:
-  virtual void OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView);
+    virtual void OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView);
 
 protected:
-  //{{AFX_MSG(CPlotMagnitude)
-  //}}AFX_MSG
-  DECLARE_MESSAGE_MAP()
+    //{{AFX_MSG(CPlotMagnitude)
+    //}}AFX_MSG
+    DECLARE_MESSAGE_MAP()
 };
 
 #endif //_sa_g_mag_H

@@ -12,35 +12,35 @@
 
 class CProcessDurations;
 
-class CPlotDurations : public CPlotWnd
-{   DECLARE_DYNCREATE(CPlotDurations)
+class CPlotDurations : public CPlotWnd {
+    DECLARE_DYNCREATE(CPlotDurations)
 
 // Construction/destruction/creation
 public:
-  CPlotDurations();
-  virtual ~CPlotDurations();
-  virtual CPlotWnd * NewCopy(void);
-  virtual void CopyTo(CPlotWnd * pTarg);
+    CPlotDurations();
+    virtual ~CPlotDurations();
+    virtual CPlotWnd * NewCopy(void);
+    virtual void CopyTo(CPlotWnd * pTarg);
 
-  //Attributes
+    //Attributes
 private:
 
 
-  // Operations
+    // Operations
 public:
-  virtual void OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView);
+    virtual void OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView);
 
 protected:
-  virtual void DurationsPaint(DWORD dwMinData, DWORD dwMaxData, CDC* pDC,
-    CRect rWnd, CRect rClip,
-    CDataProcess* pDurations, int nFlags = 0);  // standard plot painting
+    virtual void DurationsPaint(DWORD dwMinData, DWORD dwMaxData, CDC * pDC,
+                                CRect rWnd, CRect rClip,
+                                CProcess * pDurations, int nFlags = 0); // standard plot painting
 
 
-  // Generated message map functions
+    // Generated message map functions
 protected:
-  //{{AFX_MSG(CPlotDurations)
-  //}}AFX_MSG
-  DECLARE_MESSAGE_MAP()
+    //{{AFX_MSG(CPlotDurations)
+    //}}AFX_MSG
+    DECLARE_MESSAGE_MAP()
 };
 
 #endif //_SA_G_DUR_H

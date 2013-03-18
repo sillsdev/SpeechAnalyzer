@@ -66,32 +66,28 @@ END_MESSAGE_MAP()
 /***************************************************************************/
 // CPlotRecording::CPlotRecording Constructor
 /***************************************************************************/
-CPlotRecording::CPlotRecording()
-{
-  m_dwRecDataFrame = 0L;
+CPlotRecording::CPlotRecording() {
+    m_dwRecDataFrame = 0L;
 }
 
 /***************************************************************************/
 /***************************************************************************/
-void  CPlotRecording::CopyTo(CPlotRecording * pT)
-{
-  CPlotWnd::CopyTo((CPlotWnd *)pT);
+void  CPlotRecording::CopyTo(CPlotRecording * pT) {
+    CPlotWnd::CopyTo((CPlotWnd *)pT);
 }
 
 /***************************************************************************/
 /***************************************************************************/
-CPlotWnd * CPlotRecording::NewCopy(void)
-{
-  CPlotRecording * pRet = new CPlotRecording();
-  CopyTo((CPlotRecording *)pRet);
-  return (CPlotWnd *)pRet;
+CPlotWnd * CPlotRecording::NewCopy(void) {
+    CPlotRecording * pRet = new CPlotRecording();
+    CopyTo((CPlotRecording *)pRet);
+    return (CPlotWnd *)pRet;
 }
 
 /***************************************************************************/
 // CPlotRecording::~CPlotRecording Destructor
 /***************************************************************************/
-CPlotRecording::~CPlotRecording()
-{
+CPlotRecording::~CPlotRecording() {
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -103,59 +99,58 @@ CPlotRecording::~CPlotRecording()
 //**************************************************************************/
 // 08/30/2000 - DDO Added this overriding function.
 //**************************************************************************/
-DWORD CPlotRecording::GetAreaPosition()
-{
-  return 0L;
+DWORD CPlotRecording::GetAreaPosition() {
+    return 0L;
 }
 
 //**************************************************************************/
 // 08/30/2000 - DDO Added this overriding function.
 //**************************************************************************/
-DWORD CPlotRecording::GetAreaLength(CRect * /*pRwnd*/)
-{
-  return m_dwRecDataFrame;
+DWORD CPlotRecording::GetAreaLength(CRect * /*pRwnd*/) {
+    return m_dwRecDataFrame;
 }
 
 /***************************************************************************/
 // CPlotRecording::SetMagnify Set the magnify factor
 /***************************************************************************/
-void CPlotRecording::SetMagnify(double fMagnify, BOOL bRedraw)
-{
-  UNUSED_ALWAYS(fMagnify);  //  The recording plot does not zoom
-  m_fMagnify = 1.0;
-  if (bRedraw) RedrawPlot(); // repaint whole plot window
+void CPlotRecording::SetMagnify(double fMagnify, BOOL bRedraw) {
+    UNUSED_ALWAYS(fMagnify);  //  The recording plot does not zoom
+    m_fMagnify = 1.0;
+    if (bRedraw) {
+        RedrawPlot();    // repaint whole plot window
+    }
 }
 
 /***************************************************************************/
 // 08/29/2000 - DDO Added this overriding function.
 /***************************************************************************/
-DWORD CPlotRecording::AdjustDataFrame(int nWidth)
-{
-  if (!m_dwRecDataFrame)
-  {
-    CSaDoc* pDoc = ((CMainFrame *)AfxGetMainWnd())->GetCurrDoc();
+DWORD CPlotRecording::AdjustDataFrame(int nWidth) {
+    if (!m_dwRecDataFrame) {
+        CSaDoc * pDoc = ((CMainFrame *)AfxGetMainWnd())->GetCurrDoc();
 
-    if (!pDoc) return 0L;
-    FmtParm *pFmtParm = pDoc->GetFmtParm();                          // get sa parameters format member data
-    DWORD dwDataSize = pDoc->GetDataSize();
-    UINT nSampleSize = pFmtParm->wBlockAlign / pFmtParm->wChannels;
+        if (!pDoc) {
+            return 0L;
+        }
+        FmtParm * pFmtParm = pDoc->GetFmtParm();                         // get sa parameters format member data
+        DWORD dwDataSize = pDoc->GetDataSize();
+        UINT nSampleSize = pFmtParm->wBlockAlign / pFmtParm->wChannels;
 
-    if ((DWORD)nWidth > (dwDataSize / (DWORD)nSampleSize))    // more pixels than data
-      m_dwRecDataFrame = (DWORD)nWidth * (DWORD)nSampleSize; // extend data frame to number of pixels
-    else
-      m_dwRecDataFrame = dwDataSize;
-  }
+        if ((DWORD)nWidth > (dwDataSize / (DWORD)nSampleSize)) {  // more pixels than data
+            m_dwRecDataFrame = (DWORD)nWidth * (DWORD)nSampleSize;    // extend data frame to number of pixels
+        } else {
+            m_dwRecDataFrame = dwDataSize;
+        }
+    }
 
-  return m_dwRecDataFrame;
+    return m_dwRecDataFrame;
 }
 
 /***************************************************************************/
 // 08/29/2000 - DDO Added this overriding function.
 /***************************************************************************/
-BOOL CPlotRecording::SetLegendScale()
-{
-  CGraphWnd *pGraph = (CGraphWnd *)GetParent();
-  return pGraph->SetLegendScale(SCALE | NUMBERS, -100, 100, _T("Position View")); // set legend scale
+BOOL CPlotRecording::SetLegendScale() {
+    CGraphWnd * pGraph = (CGraphWnd *)GetParent();
+    return pGraph->SetLegendScale(SCALE | NUMBERS, -100, 100, _T("Position View")); // set legend scale
 }
 
 /***************************************************************************/
@@ -164,16 +159,15 @@ BOOL CPlotRecording::SetLegendScale()
 // function PlotPaintFinish at the end of the drawing to let the plot base
 // class do common jobs like drawing the cursors.
 /***************************************************************************/
-void CPlotRecording::OnPaint()
-{
-  CGraphWnd* pGraph = (CGraphWnd*)GetParent();
-  CSaView* pView = (CSaView*)pGraph->GetParent();
+void CPlotRecording::OnPaint() {
+    CGraphWnd * pGraph = (CGraphWnd *)GetParent();
+    CSaView * pView = (CSaView *)pGraph->GetParent();
 
-  ShowCursors(FALSE,TRUE); // The highlight area is disabled if cursors are not showing
-  // This is the priary place the highlight area is updated
-  CPlotRawData::SetHighLightArea((DWORD)pView->GetDataPosition(0), (DWORD)pView->GetDataPosition(0) + pView->GetDataFrame(), TRUE);
+    ShowCursors(FALSE,TRUE); // The highlight area is disabled if cursors are not showing
+    // This is the priary place the highlight area is updated
+    CPlotRawData::SetHighLightArea((DWORD)pView->GetDataPosition(0), (DWORD)pView->GetDataPosition(0) + pView->GetDataFrame(), TRUE);
 
-  CPlotRawData::OnPaint();
+    CPlotRawData::OnPaint();
 }
 
 

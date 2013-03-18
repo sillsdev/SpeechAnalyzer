@@ -8,7 +8,7 @@
 #include "stdafx.h"
 #include "sa_plot.h"
 #include "sa_g_mag.h"
-#include "Process\sa_proc.h"
+#include "Process\Process.h"
 #include "Process\sa_p_lou.h"
 #include "sa_minic.h"
 #include "sa_graph.h"
@@ -46,26 +46,23 @@ END_MESSAGE_MAP()
 /***************************************************************************/
 // CPlotMagnitude::CPlotMagnitude Constructor
 /***************************************************************************/
-CPlotMagnitude::CPlotMagnitude()
-{
+CPlotMagnitude::CPlotMagnitude() {
 }
 
 
 
-void  CPlotMagnitude::CopyTo(CPlotWnd * pT)
-{
-  CPlotWnd::CopyTo(pT);
+void  CPlotMagnitude::CopyTo(CPlotWnd * pT) {
+    CPlotWnd::CopyTo(pT);
 }
 
 
 
-CPlotWnd * CPlotMagnitude::NewCopy(void)
-{
-  CPlotWnd * pRet = new CPlotMagnitude();
+CPlotWnd * CPlotMagnitude::NewCopy(void) {
+    CPlotWnd * pRet = new CPlotMagnitude();
 
-  CopyTo(pRet);
+    CopyTo(pRet);
 
-  return pRet;
+    return pRet;
 }
 
 
@@ -73,8 +70,7 @@ CPlotWnd * CPlotMagnitude::NewCopy(void)
 /***************************************************************************/
 // CPlotMagnitude::~CPlotMagnitude Destructor
 /***************************************************************************/
-CPlotMagnitude::~CPlotMagnitude()
-{
+CPlotMagnitude::~CPlotMagnitude() {
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -88,26 +84,26 @@ CPlotMagnitude::~CPlotMagnitude()
 // drawing to let the plot base class do common jobs like drawing the
 // cursors.
 /***************************************************************************/
-void CPlotMagnitude::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView)
-{
-  // get pointer to main frame, graph, and document
-  CGraphWnd* pGraph = (CGraphWnd*)GetParent();
-  CSaDoc * pDoc = pView->GetDocument();
-  // create loudness data
-  CProcessLoudness* pLoudness = (CProcessLoudness*)pDoc->GetLoudness(); // get pointer to loudness object
-  short int nResult = LOWORD(pLoudness->Process(this, pDoc)); // process data
-  nResult = CheckResult(nResult, pLoudness); // check the process result
-  if (nResult == PROCESS_ERROR) return;
-  if (nResult != PROCESS_CANCELED)
-  {
-    pGraph->SetLegendScale(SCALE | NUMBERS, 0, pLoudness->GetMaxValue(), _T("Magnitude")); // set legend scale
+void CPlotMagnitude::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView) {
+    // get pointer to main frame, graph, and document
+    CGraphWnd * pGraph = (CGraphWnd *)GetParent();
+    CSaDoc * pDoc = pView->GetDocument();
+    // create loudness data
+    CProcessLoudness * pLoudness = (CProcessLoudness *)pDoc->GetLoudness(); // get pointer to loudness object
+    short int nResult = LOWORD(pLoudness->Process(this, pDoc)); // process data
+    nResult = CheckResult(nResult, pLoudness); // check the process result
+    if (nResult == PROCESS_ERROR) {
+        return;
+    }
+    if (nResult != PROCESS_CANCELED) {
+        pGraph->SetLegendScale(SCALE | NUMBERS, 0, pLoudness->GetMaxValue(), _T("Magnitude")); // set legend scale
+        // do common plot paint jobs
+        PlotPrePaint(pDC, rWnd, rClip);
+        SetBold(FALSE);
+        PlotStandardPaint(pDC, rWnd, rClip, pLoudness, pDoc); // do standard data paint
+    }
     // do common plot paint jobs
-    PlotPrePaint(pDC, rWnd, rClip);
-    SetBold(FALSE);
-    PlotStandardPaint(pDC, rWnd, rClip, pLoudness, pDoc); // do standard data paint
-  }
-  // do common plot paint jobs
-  PlotPaintFinish(pDC, rWnd, rClip);
+    PlotPaintFinish(pDC, rWnd, rClip);
 }
 
 

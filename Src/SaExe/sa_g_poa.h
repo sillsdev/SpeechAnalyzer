@@ -10,32 +10,32 @@
 //###########################################################################
 // CPlotPOA plot window
 
-class CPlotPOA : public CPlotWnd
-{   DECLARE_DYNCREATE(CPlotPOA)
+class CPlotPOA : public CPlotWnd {
+    DECLARE_DYNCREATE(CPlotPOA)
 
 // Construction/destruction/creation
 public:
-  CPlotPOA();
-  virtual ~CPlotPOA();
+    CPlotPOA();
+    virtual ~CPlotPOA();
 
-  // Attributes
+    // Attributes
 private:
-  DWORD   m_dwFrameStart;
-  BOOL    m_bShowModelData;
+    DWORD   m_dwFrameStart;
+    BOOL    m_bShowModelData;
 
-  // Operations
+    // Operations
 public:
-  virtual void OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView);
-  void GraphHasFocus(BOOL bFocus);
-  void AnimateFrame(DWORD dwFrameIndex);          // animate a single frame (fragment)
-  void EndAnimation();                            // terminate animation
+    virtual void OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView);
+    void GraphHasFocus(BOOL bFocus);
+    void AnimateFrame(DWORD dwFrameIndex);          // animate a single frame (fragment)
+    void EndAnimation();                            // terminate animation
 
 
-  // Generated message map functions
+    // Generated message map functions
 protected:
-  //{{AFX_MSG(CPlotPOA)
-  //}}AFX_MSG
-  DECLARE_MESSAGE_MAP()
+    //{{AFX_MSG(CPlotPOA)
+    //}}AFX_MSG
+    DECLARE_MESSAGE_MAP()
 };
 
 #endif //_SA_G_POA_H

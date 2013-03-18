@@ -8,7 +8,7 @@
 #include "stdafx.h"
 #include "sa_plot.h"
 #include "sa_g_mel.h"
-#include "Process\sa_proc.h"
+#include "Process\Process.h"
 #include "Process\sa_p_mel.h"
 #include "sa_minic.h"
 #include "sa_graph.h"
@@ -45,79 +45,71 @@ END_MESSAGE_MAP()
 /***************************************************************************/
 // CPlotMelogram::CPlotMelogram Constructor
 /***************************************************************************/
-CPlotMelogram::CPlotMelogram()
-{
-  m_bLineDraw = FALSE;
-  m_bDotDraw = TRUE;
+CPlotMelogram::CPlotMelogram() {
+    m_bLineDraw = FALSE;
+    m_bDotDraw = TRUE;
 }
 
 
-CPlotWnd * CPlotMelogram::NewCopy()
-{
-  CPlotWnd * pRet = new CPlotMelogram;
+CPlotWnd * CPlotMelogram::NewCopy() {
+    CPlotWnd * pRet = new CPlotMelogram;
 
-  CopyTo(pRet);
+    CopyTo(pRet);
 
-  return pRet;
+    return pRet;
 }
 
 
 /***************************************************************************/
 // CPlotMelogram::~CPlotMelogram Destructor
 /***************************************************************************/
-CPlotMelogram::~CPlotMelogram()
-{
+CPlotMelogram::~CPlotMelogram() {
 }
 
 /////////////////////////////////////////////////////////////////////////////
 // CPlotMelogram message handlers
 
-int CPlotMelogram::GetPenThickness() const
-{
-  int nLineThickness = (short)(m_fVScale  * 2.0 * (double)MEL_ACCURACY + 0.5);
-  nLineThickness = nLineThickness - (nLineThickness % 2) + 1;
-  
-  return nLineThickness;
+int CPlotMelogram::GetPenThickness() const {
+    int nLineThickness = (short)(m_fVScale  * 2.0 * (double)MEL_ACCURACY + 0.5);
+    nLineThickness = nLineThickness - (nLineThickness % 2) + 1;
+
+    return nLineThickness;
 }
 
-Grid CPlotMelogram::GetGrid() const 
-{
-  Grid modifiedGrid(*static_cast<CMainFrame*>(AfxGetMainWnd())->GetGrid());
+Grid CPlotMelogram::GetGrid() const {
+    Grid modifiedGrid(*static_cast<CMainFrame *>(AfxGetMainWnd())->GetGrid());
 
-  if (GetTWC())
-  {
-    // nPenStyle = PS_DASHDOT;
-    modifiedGrid.nYStyle = 4; // Dashdot
-  }
-  else
-  {
-    // nPenStyle = PS_SOLID;
-    modifiedGrid.nYStyle = 1;
-  }
+    if (GetTWC()) {
+        // nPenStyle = PS_DASHDOT;
+        modifiedGrid.nYStyle = 4; // Dashdot
+    } else {
+        // nPenStyle = PS_SOLID;
+        modifiedGrid.nYStyle = 1;
+    }
 
-  return modifiedGrid;
+    return modifiedGrid;
 }
 
-bool CPlotMelogram::GetScaleValues(CSaDoc *pDoc, double *dMaxSemitone,double *dMinSemitone)
-{
-  const MusicParm* pParm = pDoc->GetMusicParm();
-  
-  int nUpperBound = pParm->nUpperBound;
-  int nLowerBound = pParm->nLowerBound;
-  
-  if (pParm->nRangeMode == 0)
-  {
-    MusicParm::GetAutoRange(pDoc, nUpperBound, nLowerBound);
-  }
+bool CPlotMelogram::GetScaleValues(CSaDoc * pDoc, double * dMaxSemitone,double * dMinSemitone) {
+    const MusicParm * pParm = pDoc->GetMusicParm();
 
-  if (dMaxSemitone)
-    *dMaxSemitone = nUpperBound;
+    int nUpperBound = pParm->nUpperBound;
+    int nLowerBound = pParm->nLowerBound;
 
-  if (dMinSemitone)
-    *dMinSemitone = nLowerBound;
+    if (pParm->nRangeMode == 0) {
+        MusicParm::GetAutoRange(pDoc, nUpperBound, nLowerBound);
+    }
 
-  CProcessMelogram* pMelogram = (CProcessMelogram*)pDoc->GetMelogram(); // get pointer to melogram object
-  return (pMelogram->IsDataReady() == TRUE);
+    if (dMaxSemitone) {
+        *dMaxSemitone = nUpperBound;
+    }
+
+    if (dMinSemitone) {
+        *dMinSemitone = nLowerBound;
+    }
+
+    CProcessMelogram * pMelogram = (CProcessMelogram *)pDoc->GetMelogram(); // get pointer to melogram object
+    return (pMelogram->IsDataReady() == TRUE);
 }
 
 /***************************************************************************/
@@ -128,83 +120,79 @@ bool CPlotMelogram::GetScaleValues(CSaDoc *pDoc, double *dMaxSemitone,double *dM
 // drawing to let the plot base class do common jobs like drawing the
 // cursors.
 /***************************************************************************/
-void CPlotMelogram::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView)
-{
-  TRACE(_T("Draw Mel\n"));
-  // get pointer to graph, view and document
-  CGraphWnd* pGraph = (CGraphWnd*)GetParent();
-  CSaDoc   * pDoc   = pView->GetDocument();
-  // create melogram data
-  CProcessMelogram* pMelogram = (CProcessMelogram*)pDoc->GetMelogram(); // get pointer to melogram object
-  short int nResult = LOWORD(pMelogram->Process(this, pDoc)); // process data
-  nResult = CheckResult(nResult, pMelogram); // check the process result
-  if (nResult == PROCESS_ERROR) return;
-  else if (pMelogram->IsStatusFlag(PROCESS_NO_PITCH))
-    m_HelperWnd.SetMode(MODE_TEXT | FRAME_POPOUT | POS_HCENTER | POS_VCENTER, IDS_HELPERWND_NOPITCH, &rWnd);
-  else if (pMelogram->IsDataReady())
-  {
-    m_HelperWnd.SetMode(MODE_HIDDEN);
+void CPlotMelogram::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView) {
+    TRACE(_T("Draw Mel\n"));
+    // get pointer to graph, view and document
+    CGraphWnd * pGraph = (CGraphWnd *)GetParent();
+    CSaDoc  *  pDoc   = pView->GetDocument();
+    // create melogram data
+    CProcessMelogram * pMelogram = (CProcessMelogram *)pDoc->GetMelogram(); // get pointer to melogram object
+    short int nResult = LOWORD(pMelogram->Process(this, pDoc)); // process data
+    nResult = CheckResult(nResult, pMelogram); // check the process result
+    if (nResult == PROCESS_ERROR) {
+        return;
+    } else if (pMelogram->IsStatusFlag(PROCESS_NO_PITCH)) {
+        m_HelperWnd.SetMode(MODE_TEXT | FRAME_POPOUT | POS_HCENTER | POS_VCENTER, IDS_HELPERWND_NOPITCH, &rWnd);
+    } else if (pMelogram->IsDataReady()) {
+        m_HelperWnd.SetMode(MODE_HIDDEN);
 
-    double dMaxSemitone;
-    double dMinSemitone;
+        double dMaxSemitone;
+        double dMinSemitone;
 
-    GetScaleValues(pDoc, &dMaxSemitone,&dMinSemitone);
+        GetScaleValues(pDoc, &dMaxSemitone,&dMinSemitone);
 
-    // always use linear display
-    pGraph->SetLegendScale(SCALE | NUMBERS, dMinSemitone, dMaxSemitone, _T("Semitones")); // set legend scale
+        // always use linear display
+        pGraph->SetLegendScale(SCALE | NUMBERS, dMinSemitone, dMaxSemitone, _T("Semitones")); // set legend scale
 
-    const MusicParm* pParm = pDoc->GetMusicParm();
+        const MusicParm * pParm = pDoc->GetMusicParm();
 
-    if (pParm->nCalcRangeMode != 0)
-    {
-      // Load a font for tagging formants.
-      CFont Font;
-      const TCHAR* pszName = _T("MS Sans Serif");
-      Font.CreateFont(-12, 0, 0, 0, FW_NORMAL, 0, 0, 0, ANSI_CHARSET, OUT_DEFAULT_PRECIS,
-        CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, (VARIABLE_PITCH | FF_ROMAN), pszName);  // create font
-      
-      CFont* pOldFont = pDC->SelectObject(&Font); // select reference font for tags
-      
-      CString szTag;
-      
-      szTag.Format(_T("U: %dst L: %dst"), pParm->nCalcUpperBound, pParm->nCalcLowerBound);
-      CSize sizeTag = pDC->GetTextExtent(szTag);
-			CRect rInvalid(0, 4, 4 + sizeTag.cx + rClip.Width(), 4 + sizeTag.cy);
-      if (rClip.bottom > rInvalid.bottom)     // if the redraw was caused by a pan/zoom action
-        InvalidateRect(&rInvalid);            // force new text to be redrawn and wipe out old text
-      pDC->TextOut(4,4,szTag);
-      pDC->SelectObject(pOldFont); // restore old font
+        if (pParm->nCalcRangeMode != 0) {
+            // Load a font for tagging formants.
+            CFont Font;
+            const TCHAR * pszName = _T("MS Sans Serif");
+            Font.CreateFont(-12, 0, 0, 0, FW_NORMAL, 0, 0, 0, ANSI_CHARSET, OUT_DEFAULT_PRECIS,
+                            CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, (VARIABLE_PITCH | FF_ROMAN), pszName);  // create font
+
+            CFont * pOldFont = pDC->SelectObject(&Font); // select reference font for tags
+
+            CString szTag;
+
+            szTag.Format(_T("U: %dst L: %dst"), pParm->nCalcUpperBound, pParm->nCalcLowerBound);
+            CSize sizeTag = pDC->GetTextExtent(szTag);
+            CRect rInvalid(0, 4, 4 + sizeTag.cx + rClip.Width(), 4 + sizeTag.cy);
+            if (rClip.bottom > rInvalid.bottom) {   // if the redraw was caused by a pan/zoom action
+                InvalidateRect(&rInvalid);    // force new text to be redrawn and wipe out old text
+            }
+            pDC->TextOut(4,4,szTag);
+            pDC->SelectObject(pOldFont); // restore old font
+        }
+
+        // do common plot paint jobs
+        SetTWC(pView->GetGraphIndexForIDD(IDD_TWC) != -1);
+        if (GetTWC()) {
+            // We want to use TWC legend as the basis for Melograms gridlines
+            {
+                // Hide our grid lines and do standard processing
+                // This calculates the correct scaling for the standard paint
+                BOOL bGrid = ShowGrid(FALSE);
+                PlotPrePaint(pDC, rWnd, rClip);
+                ShowGrid(bGrid);
+            }
+            // Show TWC grid lines
+            short nTwcGraphIndex = (short)pView->GetGraphIndexForIDD(IDD_TWC);
+            CGraphWnd * pTwcGraph = pView->GetGraph(nTwcGraphIndex);
+            pTwcGraph->GetPlot()->UpdateWindow(); // make sure TWC is processed and up to date
+            PlotPrePaint(pDC, rWnd, rClip, pTwcGraph->GetLegendWnd());
+        } else {
+            PlotPrePaint(pDC, rWnd, rClip);
+        }
+
+
+        SetProcessMultiplier(MEL_MULT);
+
+        PlotStandardPaint(pDC, rWnd, rClip, pMelogram, pDoc, (m_bDotDraw ? PAINT_DOTS : 0) | SKIP_UNSET); // do standard data paint
     }
-
     // do common plot paint jobs
-    SetTWC(pView->GetGraphIndexForIDD(IDD_TWC) != -1);
-    if (GetTWC())
-    {
-      // We want to use TWC legend as the basis for Melograms gridlines
-      {
-        // Hide our gridlines and do standard processing
-        // This calculates the correct scaling for the standard paint
-        BOOL bGrid = ShowGrid(FALSE);
-        PlotPrePaint(pDC, rWnd, rClip);
-        ShowGrid(bGrid);
-      }
-      // Show TWC grid lines
-      short nTwcGraphIndex = (short)pView->GetGraphIndexForIDD(IDD_TWC);
-      CGraphWnd* pTwcGraph = pView->GetGraph(nTwcGraphIndex);
-      pTwcGraph->GetPlot()->UpdateWindow(); // make sure TWC is processed and up to date
-      PlotPrePaint(pDC, rWnd, rClip, pTwcGraph->GetLegendWnd());
-    }
-    else
-    {
-      PlotPrePaint(pDC, rWnd, rClip);
-    }
-
-
-    SetProcessMultiplier(MEL_MULT);
-    
-    PlotStandardPaint(pDC, rWnd, rClip, pMelogram, pDoc, (m_bDotDraw ? PAINT_DOTS : 0) | SKIP_UNSET); // do standard data paint
-  }
-  // do common plot paint jobs
-  PlotPaintFinish(pDC, rWnd, rClip);
+    PlotPaintFinish(pDC, rWnd, rClip);
 
 }

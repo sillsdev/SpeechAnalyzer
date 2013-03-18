@@ -17,26 +17,26 @@
 //###########################################################################
 // CPlotBlank plot window
 
-class CPlotBlank : public CPlotWnd
-{   DECLARE_DYNCREATE(CPlotBlank)
+class CPlotBlank : public CPlotWnd {
+    DECLARE_DYNCREATE(CPlotBlank)
 
 // Construction/destruction/creation
 public:
-  CPlotBlank();
-  virtual ~CPlotBlank();
+    CPlotBlank();
+    virtual ~CPlotBlank();
 
-  // Attributes
+    // Attributes
 private:
 
-  // Operations
+    // Operations
 public:
-  virtual void OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView);
+    virtual void OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView);
 
-  // Generated message map functions
+    // Generated message map functions
 protected:
-  //{{AFX_MSG(CPlotBlank)
-  //}}AFX_MSG
-  DECLARE_MESSAGE_MAP()
+    //{{AFX_MSG(CPlotBlank)
+    //}}AFX_MSG
+    DECLARE_MESSAGE_MAP()
 };
 
 #endif //_SA_G_SPE_H

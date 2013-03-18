@@ -8,7 +8,7 @@
 #include "stdafx.h"
 #include "sa_plot.h"
 #include "sa_g_cha.h"
-#include "Process\sa_proc.h"
+#include "Process\Process.h"
 #include "Process\sa_p_cha.h"
 #include "sa_minic.h"
 #include "sa_graph.h"
@@ -42,32 +42,28 @@ END_MESSAGE_MAP()
 /***************************************************************************/
 // CPlotChange::CPlotChange Constructor
 /***************************************************************************/
-CPlotChange::CPlotChange()
-{
+CPlotChange::CPlotChange() {
 }
 
 /***************************************************************************/
 // CPlotChange::~CPlotChange Destructor
 /***************************************************************************/
-CPlotChange::~CPlotChange()
-{
+CPlotChange::~CPlotChange() {
 }
 
 
-void  CPlotChange::CopyTo(CPlotWnd * pT)
-{
-  CPlotWnd::CopyTo(pT);
+void  CPlotChange::CopyTo(CPlotWnd * pT) {
+    CPlotWnd::CopyTo(pT);
 }
 
 
 
-CPlotWnd * CPlotChange::NewCopy(void)
-{
-  CPlotWnd * pRet = new CPlotChange();
+CPlotWnd * CPlotChange::NewCopy(void) {
+    CPlotWnd * pRet = new CPlotChange();
 
-  CopyTo(pRet);
+    CopyTo(pRet);
 
-  return pRet;
+    return pRet;
 }
 
 
@@ -82,24 +78,24 @@ CPlotWnd * CPlotChange::NewCopy(void)
 // drawing to let the plot base class do common jobs like drawing the
 // cursors.
 /***************************************************************************/
-void CPlotChange::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView)
-{
-  // get pointer to graph, view and document
-  CGraphWnd* pGraph = (CGraphWnd*)GetParent();
-  CSaDoc   * pDoc   = pView->GetDocument();
-  // create change data
-  CProcessChange* pChange = (CProcessChange*)pDoc->GetChange(); // get pointer to change object
-  short int nResult = LOWORD(pChange->Process(this, pDoc)); // process data
-  nResult = CheckResult(nResult, pChange); // check the process result
-  if (nResult == PROCESS_ERROR) return;
-  if (nResult != PROCESS_CANCELED)
-  {
-    pGraph->SetLegendScale(SCALE | NUMBERS, 0, pChange->GetMaxValue() / PRECISION_MULTIPLIER, _T("Change")); // set legend scale
+void CPlotChange::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView) {
+    // get pointer to graph, view and document
+    CGraphWnd * pGraph = (CGraphWnd *)GetParent();
+    CSaDoc  *  pDoc   = pView->GetDocument();
+    // create change data
+    CProcessChange * pChange = (CProcessChange *)pDoc->GetChange(); // get pointer to change object
+    short int nResult = LOWORD(pChange->Process(this, pDoc)); // process data
+    nResult = CheckResult(nResult, pChange); // check the process result
+    if (nResult == PROCESS_ERROR) {
+        return;
+    }
+    if (nResult != PROCESS_CANCELED) {
+        pGraph->SetLegendScale(SCALE | NUMBERS, 0, pChange->GetMaxValue() / PRECISION_MULTIPLIER, _T("Change")); // set legend scale
+        // do common plot paint jobs
+        PlotPrePaint(pDC, rWnd, rClip);
+        SetProcessMultiplier(PRECISION_MULTIPLIER);
+        PlotStandardPaint(pDC, rWnd, rClip, pChange, pDoc); // do standard data paint
+    }
     // do common plot paint jobs
-    PlotPrePaint(pDC, rWnd, rClip);
-    SetProcessMultiplier(PRECISION_MULTIPLIER);
-    PlotStandardPaint(pDC, rWnd, rClip, pChange, pDoc); // do standard data paint
-  }
-  // do common plot paint jobs
-  PlotPaintFinish(pDC, rWnd, rClip);
+    PlotPaintFinish(pDC, rWnd, rClip);
 }

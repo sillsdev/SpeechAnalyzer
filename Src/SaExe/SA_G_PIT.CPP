@@ -8,7 +8,7 @@
 #include "stdafx.h"
 #include "sa_plot.h"
 #include "sa_g_pit.h"
-#include "Process\sa_proc.h"
+#include "Process\Process.h"
 #include "Process\sa_p_pit.h"
 #include "sa_minic.h"
 #include "sa_graph.h"
@@ -35,8 +35,8 @@ IMPLEMENT_DYNCREATE(CPlotPitch, CPlotWnd)
 // CPlotPitch message map
 
 BEGIN_MESSAGE_MAP(CPlotPitch, CPlotWnd)
-	//{{AFX_MSG_MAP(CPlotPitch)
-	//}}AFX_MSG_MAP
+    //{{AFX_MSG_MAP(CPlotPitch)
+    //}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
@@ -45,26 +45,23 @@ END_MESSAGE_MAP()
 /***************************************************************************/
 // CPlotPitch::CPlotPitch Constructor
 /***************************************************************************/
-CPlotPitch::CPlotPitch()
-{
+CPlotPitch::CPlotPitch() {
 }
 
 
-CPlotWnd * CPlotPitch::NewCopy(void)
-{
-	CPlotWnd * pRet = new CPlotPitch();
+CPlotWnd * CPlotPitch::NewCopy(void) {
+    CPlotWnd * pRet = new CPlotPitch();
 
-	CopyTo(pRet);
+    CopyTo(pRet);
 
-	return pRet;
+    return pRet;
 }
 
 
 /***************************************************************************/
 // CPlotPitch::~CPlotPitch Destructor
 /***************************************************************************/
-CPlotPitch::~CPlotPitch()
-{
+CPlotPitch::~CPlotPitch() {
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -78,74 +75,63 @@ CPlotPitch::~CPlotPitch()
 // drawing to let the plot base class do common jobs like drawing the
 // cursors.
 /***************************************************************************/
-void CPlotPitch::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView)
-{
-	// get pointer to graph, view and document
-	CGraphWnd* pGraph = (CGraphWnd*)GetParent();
-	CSaDoc   * pDoc   = pView->GetDocument();
-	// create pitch data
-	CProcessPitch* pPitch = (CProcessPitch*)pDoc->GetPitch(); // get pointer to pitch object
-	short int nResult = LOWORD(pPitch->Process(this, pDoc)); // process data
-	nResult = CheckResult(nResult, pPitch); // check the process result
-	if (nResult == PROCESS_ERROR) return;
-	if (pPitch->IsStatusFlag(PROCESS_NO_PITCH))
-	{
-		//temporarily disable till we think of something better.
-		TRACE(_T("No data on %lp\n"),this);
-		CGraphWnd * pGraph = GetParent();
-		if (!pGraph->GetPlot()->IsKindOf(RUNTIME_CLASS(CMultiPlotWnd)))
-		{
-			m_HelperWnd.SetMode(MODE_TEXT | FRAME_POPOUT | POS_HCENTER | POS_VCENTER, IDS_HELPERWND_NOVOICING, &rWnd);
-		}
-	}
-	else if (pPitch->IsDataReady())
-	{
-		m_HelperWnd.SetMode(MODE_HIDDEN); // hide helper window
-		// get pointer to pitch parameters
-		const PitchParm* pPitchParm = pDoc->GetPitchParm();
-		// set data range
-		int nMinData, nMaxData;
-		if (pPitchParm->nRangeMode)
-		{
-			// manual range mode
-			nMinData = pPitchParm->nLowerBound;
-			nMaxData = pPitchParm->nUpperBound;
-		}
-		else
-		{
-			// auto range mode
-			PitchParm::GetAutoRange(pDoc, nMaxData, nMinData);
-		}
-		SetProcessMultiplier(PRECISION_MULTIPLIER);
-		if (pPitchParm->nScaleMode == 1)
-		{
-			// linear display
-			pGraph->SetLegendScale(SCALE | NUMBERS, nMinData, nMaxData, _T("f(Hz)")); // set legend scale
-			// do common plot paint jobs
-			PlotPrePaint(pDC, rWnd, rClip);
-			PlotStandardPaint(pDC, rWnd, rClip, pPitch, pDoc, SKIP_UNSET | PAINT_CROSSES); // do standard data paint
-		}
-		else  if (pPitchParm->nScaleMode == 2)
-		{
-			// semitone display
-			static const double dSemitoneScale = 12.0 / log(2.0);
-			static const double dSemitoneReference =  + (69. - log(440.0)* 12.0 / log(2.0)) / dSemitoneScale;
-			double dMin = nMinData > 0 ? (dSemitoneReference + log((double)nMinData)) * dSemitoneScale : 0;
-			double dMax = nMaxData > 0 ? (dSemitoneReference + log((double)nMaxData)) * dSemitoneScale : 0;
-			pGraph->SetLegendScale(SCALE | NUMBERS, dMin, dMax, _T("Semitones")); // set legend scale
-			// do common plot paint jobs
-			PlotPrePaint(pDC, rWnd, rClip);
-			PlotStandardPaint(pDC, rWnd, rClip, pPitch, pDoc, SKIP_UNSET | PAINT_CROSSES |PAINT_SEMITONES); // do standard data paint
-		}
-		else
-		{
-			// logarithmic display
-			pGraph->SetLegendScale(SCALE | NUMBERS | LOG10, nMinData, nMaxData, _T("f(Hz)")); // set legend scale
-			// do common plot paint jobs
-			PlotPrePaint(pDC, rWnd, rClip);
-			PlotStandardPaint(pDC, rWnd, rClip, pPitch, pDoc, SKIP_UNSET | PAINT_CROSSES | PAINT_LOG10); // do standard data paint
-		}
-	}
-	// do common plot paint jobs
-	PlotPaintFinish(pDC,rWnd, rClip);
+void CPlotPitch::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView) {
+    // get pointer to graph, view and document
+    CGraphWnd * pGraph = (CGraphWnd *)GetParent();
+    CSaDoc  *  pDoc   = pView->GetDocument();
+    // create pitch data
+    CProcessPitch * pPitch = (CProcessPitch *)pDoc->GetPitch(); // get pointer to pitch object
+    short int nResult = LOWORD(pPitch->Process(this, pDoc)); // process data
+    nResult = CheckResult(nResult, pPitch); // check the process result
+    if (nResult == PROCESS_ERROR) {
+        return;
+    }
+    if (pPitch->IsStatusFlag(PROCESS_NO_PITCH)) {
+        //temporarily disable till we think of something better.
+        TRACE(_T("No data on %lp\n"),this);
+        CGraphWnd * pGraph = GetParent();
+        if (!pGraph->GetPlot()->IsKindOf(RUNTIME_CLASS(CMultiPlotWnd))) {
+            m_HelperWnd.SetMode(MODE_TEXT | FRAME_POPOUT | POS_HCENTER | POS_VCENTER, IDS_HELPERWND_NOVOICING, &rWnd);
+        }
+    } else if (pPitch->IsDataReady()) {
+        m_HelperWnd.SetMode(MODE_HIDDEN); // hide helper window
+        // get pointer to pitch parameters
+        const PitchParm * pPitchParm = pDoc->GetPitchParm();
+        // set data range
+        int nMinData, nMaxData;
+        if (pPitchParm->nRangeMode) {
+            // manual range mode
+            nMinData = pPitchParm->nLowerBound;
+            nMaxData = pPitchParm->nUpperBound;
+        } else {
+            // auto range mode
+            PitchParm::GetAutoRange(pDoc, nMaxData, nMinData);
+        }
+        SetProcessMultiplier(PRECISION_MULTIPLIER);
+        if (pPitchParm->nScaleMode == 1) {
+            // linear display
+            pGraph->SetLegendScale(SCALE | NUMBERS, nMinData, nMaxData, _T("f(Hz)")); // set legend scale
+            // do common plot paint jobs
+            PlotPrePaint(pDC, rWnd, rClip);
+            PlotStandardPaint(pDC, rWnd, rClip, pPitch, pDoc, SKIP_UNSET | PAINT_CROSSES); // do standard data paint
+        } else  if (pPitchParm->nScaleMode == 2) {
+            // semitone display
+            static const double dSemitoneScale = 12.0 / log(2.0);
+            static const double dSemitoneReference =  + (69. - log(440.0)* 12.0 / log(2.0)) / dSemitoneScale;
+            double dMin = nMinData > 0 ? (dSemitoneReference + log((double)nMinData)) * dSemitoneScale : 0;
+            double dMax = nMaxData > 0 ? (dSemitoneReference + log((double)nMaxData)) * dSemitoneScale : 0;
+            pGraph->SetLegendScale(SCALE | NUMBERS, dMin, dMax, _T("Semitones")); // set legend scale
+            // do common plot paint jobs
+            PlotPrePaint(pDC, rWnd, rClip);
+            PlotStandardPaint(pDC, rWnd, rClip, pPitch, pDoc, SKIP_UNSET | PAINT_CROSSES |PAINT_SEMITONES); // do standard data paint
+        } else {
+            // logarithmic display
+            pGraph->SetLegendScale(SCALE | NUMBERS | LOG10, nMinData, nMaxData, _T("f(Hz)")); // set legend scale
+            // do common plot paint jobs
+            PlotPrePaint(pDC, rWnd, rClip);
+            PlotStandardPaint(pDC, rWnd, rClip, pPitch, pDoc, SKIP_UNSET | PAINT_CROSSES | PAINT_LOG10); // do standard data paint
+        }
+    }
+    // do common plot paint jobs
+    PlotPaintFinish(pDC,rWnd, rClip);
 }

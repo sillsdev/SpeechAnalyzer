@@ -10,27 +10,26 @@
 //###########################################################################
 // CPlotRatio plot window
 
-class CPlotRatio : public CPlotWnd
-{
-  DECLARE_DYNCREATE(CPlotRatio)
+class CPlotRatio : public CPlotWnd {
+    DECLARE_DYNCREATE(CPlotRatio)
 
 // Construction/destruction/creation
 public:
-  CPlotRatio();
-  virtual ~CPlotRatio();
+    CPlotRatio();
+    virtual ~CPlotRatio();
 
-  // Attributes
+    // Attributes
 private:
 
-  // Operations
+    // Operations
 public:
-  virtual void OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView);
+    virtual void OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView);
 
-  // Generated message map functions
+    // Generated message map functions
 protected:
-  //{{AFX_MSG(CPlotRatio)
-  //}}AFX_MSG
-  DECLARE_MESSAGE_MAP()
+    //{{AFX_MSG(CPlotRatio)
+    //}}AFX_MSG
+    DECLARE_MESSAGE_MAP()
 };
 
 #endif //_SA_G_RAT_H

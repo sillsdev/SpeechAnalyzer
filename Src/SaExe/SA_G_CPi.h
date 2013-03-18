@@ -11,27 +11,27 @@
 //###########################################################################
 // CPlotCustomPitch plot window
 
-class CPlotCustomPitch : public CPlotWnd
-{   DECLARE_DYNCREATE(CPlotCustomPitch)
+class CPlotCustomPitch : public CPlotWnd {
+    DECLARE_DYNCREATE(CPlotCustomPitch)
 
 // Construction/destruction/creation
 public:
-  CPlotCustomPitch();
-  virtual ~CPlotCustomPitch();
+    CPlotCustomPitch();
+    virtual ~CPlotCustomPitch();
 
-  // Attributes
+    // Attributes
 private:
 
-  // Operations
+    // Operations
 public:
-  virtual void OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView);
-  virtual CPlotWnd * NewCopy(void);
+    virtual void OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView);
+    virtual CPlotWnd * NewCopy(void);
 
-  // Generated message map functions
+    // Generated message map functions
 protected:
-  //{{AFX_MSG(CPlotCustomPitch)
-  //}}AFX_MSG
-  DECLARE_MESSAGE_MAP()
+    //{{AFX_MSG(CPlotCustomPitch)
+    //}}AFX_MSG
+    DECLARE_MESSAGE_MAP()
 };
 
 #endif //_SA_G_CPI_H

@@ -10,27 +10,27 @@
 //###########################################################################
 // CPlotLoudness plot window
 
-class CPlotLoudness : public CPlotWnd
-{   DECLARE_DYNCREATE(CPlotLoudness)
+class CPlotLoudness : public CPlotWnd {
+    DECLARE_DYNCREATE(CPlotLoudness)
 
 // Construction/destruction/creation
 public:
-  CPlotLoudness();
-  virtual ~CPlotLoudness();
-  virtual CPlotWnd * NewCopy(void);
-  virtual void CopyTo(CPlotWnd * pTarg);
+    CPlotLoudness();
+    virtual ~CPlotLoudness();
+    virtual CPlotWnd * NewCopy(void);
+    virtual void CopyTo(CPlotWnd * pTarg);
 
-  // Attributes
+    // Attributes
 private:
 
-  // Operations
+    // Operations
 public:
-  virtual void OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView);
+    virtual void OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView);
 
 protected:
-  //{{AFX_MSG(CPlotLoudness)
-  //}}AFX_MSG
-  DECLARE_MESSAGE_MAP()
+    //{{AFX_MSG(CPlotLoudness)
+    //}}AFX_MSG
+    DECLARE_MESSAGE_MAP()
 };
 
 #endif //_SA_G_LOU_H

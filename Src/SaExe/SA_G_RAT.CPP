@@ -8,7 +8,7 @@
 #include "stdafx.h"
 #include "sa_plot.h"
 #include "sa_g_rat.h"
-#include "Process\sa_proc.h"
+#include "Process\Process.h"
 #include "Process\sa_p_rat.h"
 #include "sa_minic.h"
 #include "sa_graph.h"
@@ -43,15 +43,13 @@ END_MESSAGE_MAP()
 /***************************************************************************/
 // CPlotRatio::CPlotRatio Constructor
 /***************************************************************************/
-CPlotRatio::CPlotRatio()
-{
+CPlotRatio::CPlotRatio() {
 }
 
 /***************************************************************************/
 // CPlotRatio::~CPlotRatio Destructor
 /***************************************************************************/
-CPlotRatio::~CPlotRatio()
-{
+CPlotRatio::~CPlotRatio() {
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -65,24 +63,24 @@ CPlotRatio::~CPlotRatio()
 // drawing to let the plot base class do common jobs like drawing the
 // cursors.
 /***************************************************************************/
-void CPlotRatio::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView)
-{
-  // get pointer to graph, view and document
-  CGraphWnd* pGraph = (CGraphWnd*)GetParent();
-  CSaDoc   * pDoc   = pView->GetDocument();
-  // create ratio data
-  CProcessRatio* pRatio = (CProcessRatio*)pDoc->GetRatio(); // get pointer to ratio object
-  short int nResult = LOWORD(pRatio->Process(this, pDoc)); // process data
-  nResult = CheckResult(nResult, pRatio); // check the process result
-  if (nResult == PROCESS_ERROR) return;
-  if (nResult != PROCESS_CANCELED)
-  {
-    pGraph->SetLegendScale(SCALE | NUMBERS, 0, pRatio->GetMaxValue() / PRECISION_MULTIPLIER, _T("Ratio")); // set legend scale
+void CPlotRatio::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView) {
+    // get pointer to graph, view and document
+    CGraphWnd * pGraph = (CGraphWnd *)GetParent();
+    CSaDoc  *  pDoc   = pView->GetDocument();
+    // create ratio data
+    CProcessRatio * pRatio = (CProcessRatio *)pDoc->GetRatio(); // get pointer to ratio object
+    short int nResult = LOWORD(pRatio->Process(this, pDoc)); // process data
+    nResult = CheckResult(nResult, pRatio); // check the process result
+    if (nResult == PROCESS_ERROR) {
+        return;
+    }
+    if (nResult != PROCESS_CANCELED) {
+        pGraph->SetLegendScale(SCALE | NUMBERS, 0, pRatio->GetMaxValue() / PRECISION_MULTIPLIER, _T("Ratio")); // set legend scale
+        // do common plot paint jobs
+        PlotPrePaint(pDC, rWnd, rClip);
+        SetProcessMultiplier(PRECISION_MULTIPLIER);
+        PlotStandardPaint(pDC, rWnd, rClip, pRatio, pDoc); // do standard data paint
+    }
     // do common plot paint jobs
-    PlotPrePaint(pDC, rWnd, rClip);
-    SetProcessMultiplier(PRECISION_MULTIPLIER);
-    PlotStandardPaint(pDC, rWnd, rClip, pRatio, pDoc); // do standard data paint
-  }
-  // do common plot paint jobs
-  PlotPaintFinish(pDC, rWnd, rClip);
+    PlotPaintFinish(pDC, rWnd, rClip);
 }
