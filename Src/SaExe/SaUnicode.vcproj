@@ -266,7 +266,7 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="Chrchart\Ch_dlg.cpp"
+				RelativePath="Ch_dlg.cpp"
 				>
 				<FileConfiguration
 					Name="Debug|Win32"
@@ -288,7 +288,7 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="Chrchart\Ch_dlwnd.cpp"
+				RelativePath="Ch_dlwnd.cpp"
 				>
 				<FileConfiguration
 					Name="Debug|Win32"
@@ -310,7 +310,7 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="Chrchart\Ch_table.cpp"
+				RelativePath="Ch_table.cpp"
 				>
 				<FileConfiguration
 					Name="Debug|Win32"
@@ -598,6 +598,10 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\DlgToolsOptions.cpp"
+				>
+			</File>
+			<File
 				RelativePath="Synthesis\DlgVocalTract.cpp"
 				>
 				<FileConfiguration
@@ -698,7 +702,7 @@
 				>
 			</File>
 			<File
-				RelativePath="ActiveX\FlexEditGrid.cpp"
+				RelativePath="FlexEditGrid.cpp"
 				>
 				<FileConfiguration
 					Name="Debug|Win32"
@@ -742,7 +746,7 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="ActiveX\font.cpp"
+				RelativePath="font.cpp"
 				>
 				<FileConfiguration
 					Name="Debug|Win32"
@@ -952,7 +956,7 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="ActiveX\mshflexgrid.cpp"
+				RelativePath="mshflexgrid.cpp"
 				>
 				<FileConfiguration
 					Name="Debug|Win32"
@@ -1056,7 +1060,7 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="ActiveX\picture.cpp"
+				RelativePath="picture.cpp"
 				>
 				<FileConfiguration
 					Name="Debug|Win32"
@@ -1126,7 +1130,11 @@
 				>
 			</File>
 			<File
-				RelativePath="ActiveX\recordset.cpp"
+				RelativePath=".\Process\Process.cpp"
+				>
+			</File>
+			<File
+				RelativePath="recordset.cpp"
 				>
 				<FileConfiguration
 					Name="Debug|Win32"
@@ -2650,28 +2658,6 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="Process\Sa_proc.cpp"
-				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-			</File>
-			<File
 				RelativePath="Sa_sbar.cpp"
 				>
 				<FileConfiguration
@@ -2966,6 +2952,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\SpectroParm.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\SplitFileUtils.cpp"
 				>
 			</File>
@@ -3078,26 +3068,12 @@
 				>
 			</File>
 			<File
-				RelativePath="toolsOptions.cpp"
+				RelativePath=".\ToolSettings.cpp"
 				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\Process\TrackState.cpp"
+				>
 			</File>
 			<File
 				RelativePath=".\TranscriptionData.cpp"
@@ -3156,7 +3132,7 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath=".\WaveformGeneratorProcess.cpp"
+				RelativePath=".\WaveformGenerator.cpp"
 				>
 			</File>
 			<File
@@ -3467,6 +3443,18 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Ch_Dlg.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Ch_DlWnd.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Ch_Table.h"
+				>
+			</File>
+			<File
 				RelativePath=".\ChildFrame.h"
 				>
 			</File>
@@ -3579,6 +3567,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\DlgToolsOptions.h"
+				>
+			</File>
+			<File
 				RelativePath=".\DlgVowelFormants.h"
 				>
 			</File>
@@ -3612,6 +3604,14 @@
 			</File>
 			<File
 				RelativePath=".\FnKeys.h"
+				>
+			</File>
+			<File
+				RelativePath=".\font.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Process\FormantTracker.h"
 				>
 			</File>
 			<File
@@ -3663,6 +3663,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\mshflexgrid.h"
+				>
+			</File>
+			<File
 				RelativePath=".\MusicPhraseSegment.h"
 				>
 			</File>
@@ -3708,6 +3712,14 @@
 			</File>
 			<File
 				RelativePath=".\PrivateCursorWnd.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Process\Process.h"
+				>
+			</File>
+			<File
+				RelativePath=".\recordset.h"
 				>
 			</File>
 			<File
@@ -3776,10 +3788,6 @@
 			</File>
 			<File
 				RelativePath=".\sa_g_3dPitch.h"
-				>
-			</File>
-			<File
-				RelativePath=".\SA_G_Cep.h"
 				>
 			</File>
 			<File
@@ -3895,6 +3903,98 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Process\sa_p_3dPitch.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Process\SA_P_CHA.H"
+				>
+			</File>
+			<File
+				RelativePath=".\Process\SA_P_CPI.H"
+				>
+			</File>
+			<File
+				RelativePath=".\Process\SA_P_DOC.H"
+				>
+			</File>
+			<File
+				RelativePath=".\Process\Sa_p_dur.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Process\Sa_p_fmt.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Process\sa_p_fra.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Process\Sa_p_glo.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Process\SA_P_GRA.H"
+				>
+			</File>
+			<File
+				RelativePath=".\Process\sa_p_InstantaneousPower.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Process\SA_P_LOU.H"
+				>
+			</File>
+			<File
+				RelativePath=".\Process\sa_p_mel.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Process\SA_P_PIT.H"
+				>
+			</File>
+			<File
+				RelativePath=".\Process\Sa_p_poa.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Process\SA_P_RAT.H"
+				>
+			</File>
+			<File
+				RelativePath=".\Process\Sa_p_raw.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Process\sa_p_sfmt.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Process\Sa_p_spg.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Process\SA_P_SPI.H"
+				>
+			</File>
+			<File
+				RelativePath=".\Process\Sa_p_spu.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Process\Sa_p_twc.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Process\sa_p_wavelet.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Process\SA_P_ZCR.H"
+				>
+			</File>
+			<File
 				RelativePath=".\Sa_plot.h"
 				>
 			</File>
@@ -3911,11 +4011,27 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Process\SA_W_ADJ.H"
+				>
+			</File>
+			<File
 				RelativePath=".\SA_W_DLG.H"
 				>
 			</File>
 			<File
 				RelativePath=".\SA_W_DOC.H"
+				>
+			</File>
+			<File
+				RelativePath=".\Process\SA_W_EQU.H"
+				>
+			</File>
+			<File
+				RelativePath=".\Process\SA_W_PAS.H"
+				>
+			</File>
+			<File
+				RelativePath=".\Process\SA_W_REV.H"
 				>
 			</File>
 			<File
@@ -3944,6 +4060,10 @@
 			</File>
 			<File
 				RelativePath=".\sourceParm.h"
+				>
+			</File>
+			<File
+				RelativePath=".\SpectroParm.h"
 				>
 			</File>
 			<File
@@ -3983,7 +4103,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\toolsOptions.h"
+				RelativePath=".\ToolSettings.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Process\TrackState.h"
 				>
 			</File>
 			<File
@@ -4011,7 +4135,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\WaveformGeneratorProcess.h"
+				RelativePath=".\WaveformGenerator.h"
 				>
 			</File>
 			<File

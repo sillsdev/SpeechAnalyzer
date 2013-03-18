@@ -32,9 +32,9 @@ public:
 class CTaskButton : public CButton {
 public:
     CTaskButton(LPCTSTR szCaption, CWnd * pParent, UINT nID);
-	virtual ~CTaskButton();
+    virtual ~CTaskButton();
 
-	virtual void DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct);
+    virtual void DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct);
 
     BOOL m_bSelected;
 
@@ -68,19 +68,19 @@ protected:
     afx_msg void OnSelectPageUpdate(CCmdUI * pCmdUI);
     afx_msg LRESULT HandleInitDialog(WPARAM, LPARAM);
     afx_msg LRESULT OnSizeParent(WPARAM wParam, LPARAM lParam);
-	virtual void OnUpdateCmdUI(CFrameWnd * pTarget, BOOL bDisableIfNoHndler);
-	virtual BOOL SetStatusText(int nHit);
-	virtual void DoDataExchange(CDataExchange * pDX);   // DDX/DDV support
+    virtual void OnUpdateCmdUI(CFrameWnd * pTarget, BOOL bDisableIfNoHndler);
+    virtual BOOL SetStatusText(int nHit);
+    virtual void DoDataExchange(CDataExchange * pDX);   // DDX/DDV support
 
-	std::vector<CTaskPage *> m_pPages;
-	int m_nSelectedPage;
-	int m_nHotItem;
-	CSize m_cAvailableSize;
-	std::vector<CButton *> m_pPageButtons;
-	enum { IDD = IDD_TASKBAR };
-	CListCtrl   m_cList;
+    std::vector<CTaskPage *> m_pPages;
+    int m_nSelectedPage;
+    int m_nHotItem;
+    CSize m_cAvailableSize;
+    std::vector<CButton *> m_pPageButtons;
+    enum { IDD = IDD_TASKBAR };
+    CListCtrl   m_cList;
 
-	DECLARE_MESSAGE_MAP()
+    DECLARE_MESSAGE_MAP()
 };
 
 void SetupTaskBar(CTaskBar & m_wndTaskBar);

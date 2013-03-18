@@ -42,7 +42,7 @@
 *
 * @return returns an empty string if an error has occurred
 */
-wstring GenerateWordSplitName( CGlossSegment * g, CSaView * pView, EWordFilenameConvention convention, int index) {
+wstring GenerateWordSplitName(CGlossSegment * g, CSaView * pView, EWordFilenameConvention convention, int index) {
 
     wstring gloss(L"");
     wstring ref(L"");
@@ -53,7 +53,7 @@ wstring GenerateWordSplitName( CGlossSegment * g, CSaView * pView, EWordFilename
     CReferenceSegment * r = (CReferenceSegment *)pView->GetAnnotation(REFERENCE);
 
     // generate the filename based on the dialog selection
-    switch(convention) {
+    switch (convention) {
 
     case WFC_GLOSS:   //gloss
         gloss = g->GetSegmentString(index);
@@ -140,7 +140,7 @@ wstring GenerateWordSplitName( CGlossSegment * g, CSaView * pView, EWordFilename
 *
 * @return returns an empty string if an error has occurred
 */
-bool GeneratePhraseSplitName( Annotations type, CMusicPhraseSegment * seg, CSaView * pView, EPhraseFilenameConvention convention, int index, wstring & result) {
+bool GeneratePhraseSplitName(Annotations type, CMusicPhraseSegment * seg, CSaView * pView, EPhraseFilenameConvention convention, int index, wstring & result) {
 
     wstring gloss(L"");
     wstring ref(L"");
@@ -165,7 +165,7 @@ bool GeneratePhraseSplitName( Annotations type, CMusicPhraseSegment * seg, CSaVi
     szTag = ((type==MUSIC_PL1)?L"PL1":L"PL2");
 
     // generate the filename based on the dialog selection
-    switch(convention) {
+    switch (convention) {
 
     case PFC_REF:   //ref
         // find the ref based on the gloss position, since GLOSS is the iterator
@@ -250,10 +250,10 @@ bool GeneratePhraseSplitName( Annotations type, CMusicPhraseSegment * seg, CSaVi
 *
 * returns -1 on error
 */
-int FindNearestReferenceIndex( CReferenceSegment * seg, DWORD dwStart, DWORD dwStop) {
+int FindNearestReferenceIndex(CReferenceSegment * seg, DWORD dwStart, DWORD dwStop) {
 
     TRACE("trying to find ref segment for %d %d\n",dwStart,dwStop);
-    for(int j=0; j<seg->GetOffsetSize(); j++) {
+    for (int j=0; j<seg->GetOffsetSize(); j++) {
         DWORD dwRStart = seg->GetOffset(j);
         DWORD dwRStop = dwRStart+seg->GetDuration(j);
         TRACE("comparing start=%d end=%d\n",dwRStart,dwRStop);
@@ -280,10 +280,10 @@ int FindNearestReferenceIndex( CReferenceSegment * seg, DWORD dwStart, DWORD dwS
 *
 * returns -1 on error
 */
-int FindNearestGlossIndex( CGlossSegment * seg, DWORD dwStart, DWORD dwStop) {
+int FindNearestGlossIndex(CGlossSegment * seg, DWORD dwStart, DWORD dwStop) {
 
     TRACE("trying to find gloss segment for %d %d\n",dwStart,dwStop);
-    for(int j=0; j<seg->GetOffsetSize(); j++) {
+    for (int j=0; j<seg->GetOffsetSize(); j++) {
         DWORD dwGStart = seg->GetOffset(j);
         DWORD dwGStop = dwGStart+seg->GetDuration(j);
         TRACE("comparing start=%d end=%d\n",dwGStart,dwGStop);
@@ -312,55 +312,55 @@ int FindNearestGlossIndex( CGlossSegment * seg, DWORD dwStart, DWORD dwStop) {
 *
 * returns -1 on error
 */
-int FindNearestPhraseIndex( CMusicPhraseSegment * seg, DWORD dwStart, DWORD dwStop) {
+int FindNearestPhraseIndex(CMusicPhraseSegment * seg, DWORD dwStart, DWORD dwStop) {
 
-	TRACE("trying to find phrase segment for %d %d\n",dwStart,dwStop);
-	for(int j=0; j<seg->GetOffsetSize(); j++) {
-		DWORD dwGStart = seg->GetOffset(j);
-		DWORD dwGStop = dwGStart+seg->GetDuration(j);
-		TRACE("comparing start=%d end=%d\n",dwGStart,dwGStop);
-		if ((dwStart<=dwGStart)&&(dwGStart<=dwStop)) {
-			TRACE("phrase starts in segment\n");
-			return j;
-		}
-	}
-	for(int j=0; j<seg->GetOffsetSize(); j++) {
-		DWORD dwGStart = seg->GetOffset(j);
-		DWORD dwGStop = dwGStart+seg->GetDuration(j);
-		TRACE("comparing start=%d end=%d\n",dwGStart,dwGStop);
-		if ((dwStart<=dwGStart)&&(dwGStop<=dwStop)) {
-			TRACE("phrase within segment\n");
-			return j;
-		}
-	}
-	for(int j=0; j<seg->GetOffsetSize(); j++) {
-		DWORD dwGStart = seg->GetOffset(j);
-		DWORD dwGStop = dwGStart+seg->GetDuration(j);
-		TRACE("comparing start=%d end=%d\n",dwGStart,dwGStop);
-		if ((dwGStart<dwStart)&&(dwStop<dwGStop)) {
-			TRACE("phrase overlaps segment\n");
-			return j;
-		}
-	}
-	for(int j=0; j<seg->GetOffsetSize(); j++) {
-		DWORD dwGStart = seg->GetOffset(j);
-		DWORD dwGStop = dwGStart+seg->GetDuration(j);
-		TRACE("comparing start=%d end=%d\n",dwGStart,dwGStop);
-		if ((dwStart<dwGStop)&&(dwGStop<=dwStop)) {
-			TRACE("phrase ends in segment\n");
-			return j;
-		}
-	}
-	return -1;
+    TRACE("trying to find phrase segment for %d %d\n",dwStart,dwStop);
+    for (int j=0; j<seg->GetOffsetSize(); j++) {
+        DWORD dwGStart = seg->GetOffset(j);
+        DWORD dwGStop = dwGStart+seg->GetDuration(j);
+        TRACE("comparing start=%d end=%d\n",dwGStart,dwGStop);
+        if ((dwStart<=dwGStart)&&(dwGStart<=dwStop)) {
+            TRACE("phrase starts in segment\n");
+            return j;
+        }
+    }
+    for (int j=0; j<seg->GetOffsetSize(); j++) {
+        DWORD dwGStart = seg->GetOffset(j);
+        DWORD dwGStop = dwGStart+seg->GetDuration(j);
+        TRACE("comparing start=%d end=%d\n",dwGStart,dwGStop);
+        if ((dwStart<=dwGStart)&&(dwGStop<=dwStop)) {
+            TRACE("phrase within segment\n");
+            return j;
+        }
+    }
+    for (int j=0; j<seg->GetOffsetSize(); j++) {
+        DWORD dwGStart = seg->GetOffset(j);
+        DWORD dwGStop = dwGStart+seg->GetDuration(j);
+        TRACE("comparing start=%d end=%d\n",dwGStart,dwGStop);
+        if ((dwGStart<dwStart)&&(dwStop<dwGStop)) {
+            TRACE("phrase overlaps segment\n");
+            return j;
+        }
+    }
+    for (int j=0; j<seg->GetOffsetSize(); j++) {
+        DWORD dwGStart = seg->GetOffset(j);
+        DWORD dwGStop = dwGStart+seg->GetDuration(j);
+        TRACE("comparing start=%d end=%d\n",dwGStart,dwGStop);
+        if ((dwStart<dwGStop)&&(dwGStop<=dwStop)) {
+            TRACE("phrase ends in segment\n");
+            return j;
+        }
+    }
+    return -1;
 }
 
 /**
 * walk through the gloss and reference transcriptions to see if everything
 * is in order
 */
-bool ValidateWordFilenames( EWordFilenameConvention convention, BOOL skipEmptyGloss) {
-    
-	CSaApp * pApp = (CSaApp *)AfxGetApp();
+bool ValidateWordFilenames(EWordFilenameConvention convention, BOOL skipEmptyGloss) {
+
+    CSaApp * pApp = (CSaApp *)AfxGetApp();
     CSaDoc * pDoc = (CSaDoc *)((CMainFrame *) AfxGetMainWnd())->GetCurrSaView()->GetDocument();
     POSITION pos = pDoc->GetFirstViewPosition();
     CSaView * pView = (CSaView *)pDoc->GetNextView(pos);
@@ -372,7 +372,7 @@ bool ValidateWordFilenames( EWordFilenameConvention convention, BOOL skipEmptyGl
 
     // loop through the gloss segments
     int nLoop = g->GetOffsetSize();
-    for(int i=0; i<nLoop; i++) {
+    for (int i=0; i<nLoop; i++) {
         CString szNumber;
         szNumber.Format(_T("%d"), i);
 
@@ -409,7 +409,7 @@ bool ValidateWordFilenames( EWordFilenameConvention convention, BOOL skipEmptyGl
 * is in order
 */
 bool ValidatePhraseFilenames(Annotations type, EPhraseFilenameConvention convention) {
-    
+
     CSaDoc * pDoc = (CSaDoc *)((CMainFrame *) AfxGetMainWnd())->GetCurrSaView()->GetDocument();
     POSITION pos = pDoc->GetFirstViewPosition();
     CSaView * pView = (CSaView *)pDoc->GetNextView(pos);
@@ -442,8 +442,8 @@ bool ValidatePhraseFilenames(Annotations type, EPhraseFilenameConvention convent
 /**
 * export words for the given file
 */
-bool ExportWordSegments( EWordFilenameConvention convention, LPCTSTR path, BOOL skipEmptyGloss, int & dataCount, int & wavCount) {
-    
+bool ExportWordSegments(EWordFilenameConvention convention, LPCTSTR path, BOOL skipEmptyGloss, int & dataCount, int & wavCount) {
+
     CSaDoc * pDoc = (CSaDoc *)((CMainFrame *) AfxGetMainWnd())->GetCurrSaView()->GetDocument();
     POSITION pos = pDoc->GetFirstViewPosition();
     CSaView * pView = (CSaView *)pDoc->GetNextView(pos);
@@ -451,13 +451,13 @@ bool ExportWordSegments( EWordFilenameConvention convention, LPCTSTR path, BOOL 
     // loop through the gloss segments
     CGlossSegment * g = (CGlossSegment *)pView->GetAnnotation(GLOSS);
     int nLoop = g->GetOffsetSize();
-    for(int i=0; i<nLoop; i++) {
-		wstring dest;
-		int result = ComposeWordSegmentFilename( g, i, convention, path, dest);
-		if (result==1) {
-			break;
-		}
-        result = ExportWordSegment( g, i, dest.c_str(), skipEmptyGloss, dataCount, wavCount);
+    for (int i=0; i<nLoop; i++) {
+        wstring dest;
+        int result = ComposeWordSegmentFilename(g, i, convention, path, dest);
+        if (result==1) {
+            break;
+        }
+        result = ExportWordSegment(g, i, dest.c_str(), skipEmptyGloss, dataCount, wavCount);
         if (result<0) {
             return false;
         }
@@ -470,25 +470,25 @@ bool ExportWordSegments( EWordFilenameConvention convention, LPCTSTR path, BOOL 
 * return 0 on no errors
 * return 1 on no more data
 */
-int ComposeWordSegmentFilename( CGlossSegment * seg, int index, EWordFilenameConvention convention, LPCTSTR path, wstring & out) {
+int ComposeWordSegmentFilename(CGlossSegment * seg, int index, EWordFilenameConvention convention, LPCTSTR path, wstring & out) {
 
-	CSaDoc * pDoc = (CSaDoc *)((CMainFrame *) AfxGetMainWnd())->GetCurrSaView()->GetDocument();
-	POSITION pos = pDoc->GetFirstViewPosition();
-	CSaView * pView = (CSaView *)pDoc->GetNextView(pos);
+    CSaDoc * pDoc = (CSaDoc *)((CMainFrame *) AfxGetMainWnd())->GetCurrSaView()->GetDocument();
+    POSITION pos = pDoc->GetFirstViewPosition();
+    CSaView * pView = (CSaView *)pDoc->GetNextView(pos);
 
-	// can we piece the name together?
-	wstring name = GenerateWordSplitName( seg, pView, convention, index);
-	if (name.length()==0) {
-		return 1;
-	}
+    // can we piece the name together?
+    wstring name = GenerateWordSplitName(seg, pView, convention, index);
+    if (name.length()==0) {
+        return 1;
+    }
 
-	out = L"";
-	out.append(path);
-	AppendDirSep(out);
-	out.append(name);
-	out.append(L".wav");
+    out = L"";
+    out.append(path);
+    AppendDirSep(out);
+    out.append(name);
+    out.append(L".wav");
 
-	return 0;
+    return 0;
 }
 
 /**
@@ -496,11 +496,11 @@ int ComposeWordSegmentFilename( CGlossSegment * seg, int index, EWordFilenameCon
 * returns -1 on error
 * return 0 on continue
 */
-int ExportWordSegment( CGlossSegment * seg, int index, LPCTSTR filename, BOOL skipEmptyGloss, int & dataCount, int & wavCount) {
+int ExportWordSegment(CGlossSegment * seg, int index, LPCTSTR filename, BOOL skipEmptyGloss, int & dataCount, int & wavCount) {
 
-	TRACE("exporting gloss segment\n");
+    TRACE("exporting gloss segment\n");
 
-	CSaDoc * pDoc = (CSaDoc *)((CMainFrame *) AfxGetMainWnd())->GetCurrSaView()->GetDocument();
+    CSaDoc * pDoc = (CSaDoc *)((CMainFrame *) AfxGetMainWnd())->GetCurrSaView()->GetDocument();
 
     BOOL bSuccess = FALSE;
     DWORD dwStart = seg->GetOffset(index);
@@ -523,20 +523,20 @@ int ExportWordSegment( CGlossSegment * seg, int index, LPCTSTR filename, BOOL sk
     if (!bSuccess) {
         // be sure to delete the file
         RemoveFile(filename);
-		CSaApp * pApp = (CSaApp *)AfxGetApp();
+        CSaApp * pApp = (CSaApp *)AfxGetApp();
         pApp->ErrorMessage(IDS_SPLIT_NO_WRITE,filename);
         return -1;
     }
 
-	dataCount++;
-	wavCount++;
-	return 0;
+    dataCount++;
+    wavCount++;
+    return 0;
 }
 
 /**
 * export words for the given file
 */
-bool ExportPhraseSegments( Annotations type, EPhraseFilenameConvention convention, wstring & path, int & dataCount, int & wavCount) {
+bool ExportPhraseSegments(Annotations type, EPhraseFilenameConvention convention, wstring & path, int & dataCount, int & wavCount) {
 
     CSaDoc * pDoc = (CSaDoc *)((CMainFrame *) AfxGetMainWnd())->GetCurrSaView()->GetDocument();
     POSITION pos = pDoc->GetFirstViewPosition();
@@ -549,16 +549,16 @@ bool ExportPhraseSegments( Annotations type, EPhraseFilenameConvention conventio
     // loop through the PL1 segments
     CMusicPhraseSegment * seg = (CMusicPhraseSegment *)pView->GetAnnotation(type);
     int nLoop = seg->GetOffsetSize();
-    for(int i=0; i<nLoop; i++) {
-		wstring filename;
-		int result = ComposePhraseSegmentFilename( type, seg, i, convention, path.c_str(), filename);
-		if (result==1) {
-			break;
-		}
-		result = ExportPhraseSegment( seg, i, filename, dataCount, wavCount);
-		if (result<0) {
-			return false;
-		}
+    for (int i=0; i<nLoop; i++) {
+        wstring filename;
+        int result = ComposePhraseSegmentFilename(type, seg, i, convention, path.c_str(), filename);
+        if (result==1) {
+            break;
+        }
+        result = ExportPhraseSegment(seg, i, filename, dataCount, wavCount);
+        if (result<0) {
+            return false;
+        }
     }
     return true;
 }
@@ -568,53 +568,53 @@ bool ExportPhraseSegments( Annotations type, EPhraseFilenameConvention conventio
 * return 0 on no errors
 * return 1 on no more data
 */
-int ComposePhraseSegmentFilename( Annotations type, CMusicPhraseSegment * seg, int index, EPhraseFilenameConvention convention, LPCTSTR path, wstring & out) {
+int ComposePhraseSegmentFilename(Annotations type, CMusicPhraseSegment * seg, int index, EPhraseFilenameConvention convention, LPCTSTR path, wstring & out) {
 
-	CSaDoc * pDoc = (CSaDoc *)((CMainFrame *) AfxGetMainWnd())->GetCurrSaView()->GetDocument();
-	POSITION pos = pDoc->GetFirstViewPosition();
-	CSaView * pView = (CSaView *)pDoc->GetNextView(pos);
+    CSaDoc * pDoc = (CSaDoc *)((CMainFrame *) AfxGetMainWnd())->GetCurrSaView()->GetDocument();
+    POSITION pos = pDoc->GetFirstViewPosition();
+    CSaView * pView = (CSaView *)pDoc->GetNextView(pos);
 
-	// can we piece the name together?
-	wstring name;
-	if (!GeneratePhraseSplitName( type, seg, pView, convention, index, name)) {
-		return 1;
-	}
+    // can we piece the name together?
+    wstring name;
+    if (!GeneratePhraseSplitName(type, seg, pView, convention, index, name)) {
+        return 1;
+    }
 
-	// copy the audio portion
-	out = L"";
-	out.append(path);
-	AppendDirSep(out);
-	out.append(name);
-	out.append(L".wav");
+    // copy the audio portion
+    out = L"";
+    out.append(path);
+    AppendDirSep(out);
+    out.append(name);
+    out.append(L".wav");
 
-	return 0;
+    return 0;
 }
 
 /**
 * export words for the given file
 */
-int ExportPhraseSegment( CMusicPhraseSegment * seg, int index, wstring & filename, int & dataCount, int & wavCount) {
+int ExportPhraseSegment(CMusicPhraseSegment * seg, int index, wstring & filename, int & dataCount, int & wavCount) {
 
-	TRACE("exporting phrase segment\n");
+    TRACE("exporting phrase segment\n");
 
-	CSaDoc * pDoc = (CSaDoc *)((CMainFrame *) AfxGetMainWnd())->GetCurrSaView()->GetDocument();
+    CSaDoc * pDoc = (CSaDoc *)((CMainFrame *) AfxGetMainWnd())->GetCurrSaView()->GetDocument();
 
-	DWORD dwStart = seg->GetOffset(index);
-	DWORD dwStop = dwStart + seg->GetDuration(index);
-	TRACE("dwStart=%d dwStop=%d\n",dwStart,dwStop);
+    DWORD dwStart = seg->GetOffset(index);
+    DWORD dwStop = dwStart + seg->GetDuration(index);
+    TRACE("dwStart=%d dwStop=%d\n",dwStart,dwStop);
 
-	BOOL bSuccess = pDoc->CopySectionToNewWavFile(dwStart,dwStop-dwStart,filename.c_str(),FALSE);
-	if (!bSuccess) {
-		// be sure to delete the file
-		RemoveFile(filename.c_str());
-		CSaApp * pApp = (CSaApp *)AfxGetApp();
-		pApp->ErrorMessage(IDS_SPLIT_NO_WRITE,filename.c_str());
-		return -1;
-	}
+    BOOL bSuccess = pDoc->CopySectionToNewWavFile(dwStart,dwStop-dwStart,filename.c_str(),FALSE);
+    if (!bSuccess) {
+        // be sure to delete the file
+        RemoveFile(filename.c_str());
+        CSaApp * pApp = (CSaApp *)AfxGetApp();
+        pApp->ErrorMessage(IDS_SPLIT_NO_WRITE,filename.c_str());
+        return -1;
+    }
 
-	dataCount++;
-	wavCount++;
-	return 0;
+    dataCount++;
+    wavCount++;
+    return 0;
 }
 
 /**
@@ -628,7 +628,7 @@ wstring FilterName(wstring text) {
         if (c==0) {
             break;
         }
-        switch(c) {
+        switch (c) {
         case '\\':
         case '/':
         case ':':

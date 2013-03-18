@@ -7,16 +7,15 @@
 #include <list>
 #include <map>
 
-class CSFMHelper
-{
+class CSFMHelper {
 public:
-	static bool IsSFM( CSaString & filename);
-	static bool IsMultiRecordSFM( CSaString & filename, CSaString & marker);
-	static TranscriptionDataMap ImportMultiRecordSFM( CSaString & filename, CSaString & syncMarker, MarkerList & markers, bool addTag);
-	static TranscriptionDataMap ImportSFM( CSaString & filename);
+    static bool IsSFM(CSaString & filename);
+    static bool IsMultiRecordSFM(CSaString & filename, CSaString & marker);
+    static TranscriptionDataMap ImportMultiRecordSFM(CSaString & filename, CSaString & syncMarker, MarkerList & markers, bool addTag);
+    static TranscriptionDataMap ImportSFM(CSaString & filename);
 
 private:
-	static void BalanceDataMap( TranscriptionDataMap & map, CSaString & marker);
+    static void BalanceDataMap(TranscriptionDataMap & map, CSaString & marker);
 };
 
 #endif

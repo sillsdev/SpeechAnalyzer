@@ -27,7 +27,7 @@ static char BASED_CODE THIS_FILE[] = __FILE__;
 // Workbench document class. Handles the data to setup the workbench, stores
 // and restores it from a special workbench file.
 
-IMPLEMENT_SERIAL(CWorkbenchDoc, CDocument, 0 /* schema number*/ )
+IMPLEMENT_SERIAL(CWorkbenchDoc, CDocument, 0 /* schema number*/)
 
 /////////////////////////////////////////////////////////////////////////////
 // CWorkbenchDoc message map
@@ -45,30 +45,24 @@ END_MESSAGE_MAP()
 /***************************************************************************/
 // CWorkbenchDoc::CWorkbenchDoc Constructor
 /***************************************************************************/
-CWorkbenchDoc::CWorkbenchDoc()
-{
-  m_bDifferentFile = TRUE;
+CWorkbenchDoc::CWorkbenchDoc() {
+    m_bDifferentFile = TRUE;
 }
 
 /***************************************************************************/
 // CWorkbenchDoc::~CWorkbenchDoc Destructor
 /***************************************************************************/
-CWorkbenchDoc::~CWorkbenchDoc()
-{
+CWorkbenchDoc::~CWorkbenchDoc() {
 }
 
 /////////////////////////////////////////////////////////////////////////////
 // CWorkbenchDoc serialization
-void CWorkbenchDoc::Serialize(CArchive& ar)
-{
-  if (ar.IsStoring())
-  {
-    // TODO: add storing code here
-  }
-  else
-  {
-    // TODO: add loading code here
-  }
+void CWorkbenchDoc::Serialize(CArchive & ar) {
+    if (ar.IsStoring()) {
+        // TODO: add storing code here
+    } else {
+        // TODO: add loading code here
+    }
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -79,28 +73,28 @@ void CWorkbenchDoc::Serialize(CArchive& ar)
 // Reads all available information from the workbench file and sets up the
 // workbench processes and all there properties.
 /***************************************************************************/
-BOOL CWorkbenchDoc::OnOpenDocument(const TCHAR* pszPathName)
-{
-  if (!((CSaApp*)AfxGetApp())->CloseWorkbench(this)) return FALSE; // close already opened workbench
-  if (!CDocument::OnOpenDocument(pszPathName)) return FALSE;
-  CString szPath = *((CSaApp*)AfxGetApp())->GetWorkbenchPath();
-  CString szNewPath = pszPathName;
-  m_bDifferentFile = (szNewPath != szPath);
-  BeginWaitCursor(); // wait cursor
-  BOOL bRet = FALSE;
+BOOL CWorkbenchDoc::OnOpenDocument(const TCHAR * pszPathName) {
+    if (!((CSaApp *)AfxGetApp())->CloseWorkbench(this)) {
+        return FALSE;    // close already opened workbench
+    }
+    if (!CDocument::OnOpenDocument(pszPathName)) {
+        return FALSE;
+    }
+    CString szPath = *((CSaApp *)AfxGetApp())->GetWorkbenchPath();
+    CString szNewPath = pszPathName;
+    m_bDifferentFile = (szNewPath != szPath);
+    BeginWaitCursor(); // wait cursor
+    BOOL bRet = FALSE;
 
-  try
-  {
-    CSaString path(pszPathName);
-    Object_istream obs(path);
-    POSITION pos = GetFirstViewPosition();
-    bRet = ((CSaWorkbenchView*)GetNextView(pos))->ReadProperties(obs);
-  }
-  catch(...)
-  {
-  }
-  EndWaitCursor();
-  return bRet;
+    try {
+        CSaString path(pszPathName);
+        Object_istream obs(path);
+        POSITION pos = GetFirstViewPosition();
+        bRet = ((CSaWorkbenchView *)GetNextView(pos))->ReadProperties(obs);
+    } catch (...) {
+    }
+    EndWaitCursor();
+    return bRet;
 }
 
 /***************************************************************************/
@@ -108,25 +102,21 @@ BOOL CWorkbenchDoc::OnOpenDocument(const TCHAR* pszPathName)
 // Stores all available information from workbench into the workbench
 // settings file.
 /***************************************************************************/
-BOOL CWorkbenchDoc::OnSaveDocument(const TCHAR* pszPathName)
-{
-  BeginWaitCursor(); // wait cursor
-  BOOL bRet = FALSE;
+BOOL CWorkbenchDoc::OnSaveDocument(const TCHAR * pszPathName) {
+    BeginWaitCursor(); // wait cursor
+    BOOL bRet = FALSE;
 
-  try
-  {
-    CSaString path(pszPathName);
-    Object_ostream obs(path);
-    POSITION pos = GetFirstViewPosition();
-    ((CSaWorkbenchView*)GetNextView(pos))->WriteProperties(obs);
-    bRet = TRUE;
-  }
-  catch(...)
-  {
-  }
-  EndWaitCursor();
-  SetModifiedFlag(FALSE);
-  return bRet;
+    try {
+        CSaString path(pszPathName);
+        Object_ostream obs(path);
+        POSITION pos = GetFirstViewPosition();
+        ((CSaWorkbenchView *)GetNextView(pos))->WriteProperties(obs);
+        bRet = TRUE;
+    } catch (...) {
+    }
+    EndWaitCursor();
+    SetModifiedFlag(FALSE);
+    return bRet;
 }
 
 /***************************************************************************/
@@ -135,33 +125,31 @@ BOOL CWorkbenchDoc::OnSaveDocument(const TCHAR* pszPathName)
 // documents title. We have to clean up the title and after the closing reset
 // it with the workbench title (because the user may cancel the closing).
 /***************************************************************************/
-BOOL CWorkbenchDoc::SaveModified()
-{
-  CString szCaption, szGraphTitle;
-  if (!IsModified()) return TRUE; // ok to continue
-  const TCHAR* pszPathName = GetPathName();
-  if (_tcslen(pszPathName) == 0)
-  {
-    // the pathname is empty, reset title string
-    szCaption = GetTitle(); // get the current caption string
-    int nFind = szCaption.Find(':');
-    if (nFind != -1)
-    {
-      szGraphTitle = szCaption.Right(szCaption.GetLength() - nFind); // extract part right of and with :
-      szCaption = szCaption.Left(nFind); // extract part left of :
+BOOL CWorkbenchDoc::SaveModified() {
+    CString szCaption, szGraphTitle;
+    if (!IsModified()) {
+        return TRUE;    // ok to continue
     }
-    SetTitle(szCaption); // write the new caption string
-  }
-  // call the base class saving
-  BOOL bResult = CDocument::SaveModified();
-  if (!szCaption.IsEmpty())
-  {
-    // set back the title string
-    szCaption = GetTitle(); // get the current view caption string
-    szCaption += szGraphTitle; // add the graph title
-    SetTitle(szCaption); // write the new caption string
-  }
-  return bResult;
+    const TCHAR * pszPathName = GetPathName();
+    if (_tcslen(pszPathName) == 0) {
+        // the pathname is empty, reset title string
+        szCaption = GetTitle(); // get the current caption string
+        int nFind = szCaption.Find(':');
+        if (nFind != -1) {
+            szGraphTitle = szCaption.Right(szCaption.GetLength() - nFind); // extract part right of and with :
+            szCaption = szCaption.Left(nFind); // extract part left of :
+        }
+        SetTitle(szCaption); // write the new caption string
+    }
+    // call the base class saving
+    BOOL bResult = CDocument::SaveModified();
+    if (!szCaption.IsEmpty()) {
+        // set back the title string
+        szCaption = GetTitle(); // get the current view caption string
+        szCaption += szGraphTitle; // add the graph title
+        SetTitle(szCaption); // write the new caption string
+    }
+    return bResult;
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -176,38 +164,33 @@ BOOL CWorkbenchDoc::SaveModified()
 // generate the new default filename. After that, the title has again to be
 // modified with the workbench title.
 /***************************************************************************/
-void CWorkbenchDoc::OnFileSave()
-{
-  CString szCaption, szGraphTitle;
-  const TCHAR* pszPathName = GetPathName();
-  if (_tcslen(pszPathName) == 0)
-  {
-    // the pathname is empty, reset view title string
-    szCaption = GetTitle(); // get the current view caption string
-    int nFind = szCaption.Find(':');
-    if (nFind != -1)
-    {
-      szGraphTitle = szCaption.Right(szCaption.GetLength() - nFind); // extract part right of and with :
-      szCaption = szCaption.Left(nFind); // extract part left of :
+void CWorkbenchDoc::OnFileSave() {
+    CString szCaption, szGraphTitle;
+    const TCHAR * pszPathName = GetPathName();
+    if (_tcslen(pszPathName) == 0) {
+        // the pathname is empty, reset view title string
+        szCaption = GetTitle(); // get the current view caption string
+        int nFind = szCaption.Find(':');
+        if (nFind != -1) {
+            szGraphTitle = szCaption.Right(szCaption.GetLength() - nFind); // extract part right of and with :
+            szCaption = szCaption.Left(nFind); // extract part left of :
+        }
+        SetTitle(szCaption); // write the new caption string
     }
-    SetTitle(szCaption); // write the new caption string
-  }
-  // call the base class saving
-  CDocument::OnFileSave();
-  if (!szCaption.IsEmpty())
-  {
-    // set back the title string
-    szCaption = GetTitle(); // get the current view caption string
-    szCaption += szGraphTitle; // add the graph title
-    SetTitle(szCaption); // write the new caption string
-  }
+    // call the base class saving
+    CDocument::OnFileSave();
+    if (!szCaption.IsEmpty()) {
+        // set back the title string
+        szCaption = GetTitle(); // get the current view caption string
+        szCaption += szGraphTitle; // add the graph title
+        SetTitle(szCaption); // write the new caption string
+    }
 }
 
 /***************************************************************************/
 // CWorkbenchDoc::OnUpdateFileSave Menu Update
 /***************************************************************************/
-void CWorkbenchDoc::OnUpdateFileSave(CCmdUI* pCmdUI)
-{
-  pCmdUI->Enable(TRUE); // enable always to be able to save window placement
+void CWorkbenchDoc::OnUpdateFileSave(CCmdUI * pCmdUI) {
+    pCmdUI->Enable(TRUE); // enable always to be able to save window placement
 }
 
