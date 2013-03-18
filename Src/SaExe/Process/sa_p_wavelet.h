@@ -13,7 +13,7 @@
 #ifndef _SA_P_WAVELET_H
 #define _SA_P_WAVELET_H
 
-#include "sa_proc.h"
+#include "Process/Process.h"
 
 #define DEBAUCHES4      4
 
@@ -21,7 +21,7 @@
 // CPlotWavelet Class
 //**************************************************************************
 
-class CProcessWavelet : public CDataProcess {
+class CProcessWavelet : public CProcess {
 private:
     BOOL data_status;                           // Is the data ready for display?
 

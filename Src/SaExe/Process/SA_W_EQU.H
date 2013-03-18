@@ -13,24 +13,23 @@
 //###########################################################################
 // CProcessWbEquation data processing
 
-class CProcessWbEquation : public CDataProcess
-{
+class CProcessWbEquation : public CProcess {
 // Construction/destruction/creation
 public:
-  CProcessWbEquation();
-  virtual ~CProcessWbEquation();
+    CProcessWbEquation();
+    virtual ~CProcessWbEquation();
 
-  // Attributes
+    // Attributes
 private:
-  CSaString m_szEquation; // equation string
+    CSaString m_szEquation; // equation string
 
-  // Operations
+    // Operations
 public:
-  BOOL CheckFunction(CSaString*); // check the function string
-  long Process(void* pCaller, ISaDoc* pDoc, int nProgress = 0, int nLevel = 1);
-  virtual int PropertiesDialog(); // calls the properties dialog for this process
-  virtual void WriteProperties(Object_ostream& obs);
-  virtual BOOL ReadProperties(Object_istream& obs);
+    BOOL CheckFunction(CSaString *); // check the function string
+    long Process(void * pCaller, ISaDoc * pDoc, int nProgress = 0, int nLevel = 1);
+    virtual int PropertiesDialog(); // calls the properties dialog for this process
+    virtual void WriteProperties(Object_ostream & obs);
+    virtual BOOL ReadProperties(Object_istream & obs);
 };
 
 #endif //_SA_W_EQU_H

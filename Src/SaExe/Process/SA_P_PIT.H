@@ -12,17 +12,16 @@
 //###########################################################################
 // CProcessPitch data processing
 
-class CProcessPitch : public CDataProcess
-{
+class CProcessPitch : public CProcess {
 // Construction/destruction/creation
 public:
-  CProcessPitch();
-  virtual ~CProcessPitch();
+    CProcessPitch();
+    virtual ~CProcessPitch();
 
 // Attributes
 private:
     Grappl_parms m_CalcParm;
-    DWORD m_dwDataPos;  // byte offset into waveform data	
+    DWORD m_dwDataPos;  // byte offset into waveform data
 
 // Operations
 protected:
@@ -30,8 +29,8 @@ protected:
 private:
 
 public:
-  long Process(void* pCaller, ISaDoc* pDoc, int nProgress = 0, int nLevel = 1);
-  double GetUncertainty(double fPitchData);
+    long Process(void * pCaller, ISaDoc * pDoc, int nProgress = 0, int nLevel = 1);
+    double GetUncertainty(double fPitchData);
 };
 
 #endif //_SA_P_PIT_H

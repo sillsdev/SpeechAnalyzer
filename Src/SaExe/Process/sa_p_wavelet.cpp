@@ -11,7 +11,7 @@
 //*                                  v2.0 project                           *
 //***************************************************************************
 #include "stdafx.h"
-#include "sa_proc.h"
+#include "Process.h"
 #include "isa_doc.h"
 
 #include "sa_p_wavelet.h"
@@ -232,7 +232,7 @@ BOOL CWaveletNode::DoMRAAnalysisTree() {        // this is a (candy) Wrapper fun
 }
 
 BOOL CWaveletNode::_DoMRAAnalysisTree(long stride) {
-    
+
     // Compute the new frequencies
     double mid = lower_freq + ((upper_freq - lower_freq) / 2);
 

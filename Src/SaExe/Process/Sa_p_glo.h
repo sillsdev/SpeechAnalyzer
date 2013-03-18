@@ -10,19 +10,18 @@
 //###########################################################################
 // CProcessGlottis data processing
 
-class CProcessGlottis : public CDataProcess
-{
+class CProcessGlottis : public CProcess {
 // Construction/destruction/creation
 public:
-  CProcessGlottis();
-  virtual ~CProcessGlottis();
+    CProcessGlottis();
+    virtual ~CProcessGlottis();
 
 // Attributes
 private:
 
 // Operations
 public:
-  long Process(void* pCaller, ISaDoc* pDoc, int nProgress = 0, int nLevel = 1);
+    long Process(void * pCaller, ISaDoc * pDoc, int nProgress = 0, int nLevel = 1);
 };
 
 #endif //_SA_P_GLO_H

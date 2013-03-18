@@ -6,30 +6,25 @@
 /////////////////////////////////////////////////////////////////////////////
 #ifndef _SA_P_MEL_H
 #define _SA_P_MEL_H
+
+#include "Process\Process.h"
 #include "dsp\grappl.h"
 
-//###########################################################################
-// CProcessMelogram data processing
-
-class CProcessMelogram : public CDataProcess
-{
-// Construction/destruction/creation
+class CProcessMelogram : public CProcess {
 public:
-  CProcessMelogram();
-  virtual ~CProcessMelogram();
+    CProcessMelogram();
+    virtual ~CProcessMelogram();
 
-// Attributes
+    long Process(void * pCaller, ISaDoc * pDoc, int nProgress = 0, int nLevel = 1);
+    BOOL IsVoiced(ISaDoc * pDoc, DWORD dwWaveOffset);
+    double GetUncertainty(double fPitch);
+
 private:
     DWORD m_dwDataPos;  // byte offset into waveform data
     int m_nMinValidSemitone100;
     int m_nMaxValidSemitone100;
     Grappl_parms m_CalcParm;
 
-// Operations
-public:
-  long Process(void* pCaller, ISaDoc* pDoc, int nProgress = 0, int nLevel = 1);
-  BOOL IsVoiced(ISaDoc *pDoc, DWORD dwWaveOffset);
-  double GetUncertainty(double fPitch);
 };
 
-#endif //_SA_P_MEL_H
+#endif

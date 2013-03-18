@@ -20,25 +20,22 @@
 #define FRICTION_THRESHOLD        3000.F  // threshold in Hz above which zero crossing rate implies friction in the signal
 #define RELATIVE_POWER_THRESHOLD    40.F  // power threshold in dB, relative to that of F1, above which formant tracks are displayed
 
-class CProcessSpectroFormants : public CDataProcess
-{   
+class CProcessSpectroFormants : public CProcess {
 
-	// Construction/destruction/creation
 public:
-	CProcessSpectroFormants();
-	virtual ~CProcessSpectroFormants();
+    CProcessSpectroFormants();
+    virtual ~CProcessSpectroFormants();
 
-	// Attributes
-
-	// Operations
-protected:
-public:
-	virtual DWORD GetDataSize() {return GetDataSize(sizeof(FORMANT_FREQ));} // return processed data size in words (16 bit)
-	virtual DWORD GetDataSize(size_t nElements) {return (DWORD)CDataProcess::GetDataSize(nElements);} // return processed data size in LPC data structures
-	long Process(void* pCaller, CView* pView, int nWidth, int nHeight, int nProgress = 0, int nLevel = 1);
-	FORMANT_FREQ* GetFormant(DWORD dwIndex); // return spectrogram slice data
-	long ExtractFormants(ISaDoc *pDoc, DWORD dwWaveDataStart, DWORD dwWaveDataLength, BOOL bSmooth = TRUE, int nProgress = 0, int nLevel = 1);
-	BOOL AreFormantTracksReady(); // return TRUE if processed formants data is ready
+    virtual DWORD GetDataSize() {
+        return GetDataSize(sizeof(FORMANT_FREQ));   // return processed data size in words (16 bit)
+    }
+    virtual DWORD GetDataSize(size_t nElements) {
+        return (DWORD)CProcess::GetDataSize(nElements);   // return processed data size in LPC data structures
+    }
+    long Process(void * pCaller, CView * pView, int nWidth, int nHeight, int nProgress = 0, int nLevel = 1);
+    FORMANT_FREQ * GetFormant(DWORD dwIndex); // return spectrogram slice data
+    long ExtractFormants(ISaDoc * pDoc, DWORD dwWaveDataStart, DWORD dwWaveDataLength, BOOL bSmooth = TRUE, int nProgress = 0, int nLevel = 1);
+    BOOL AreFormantTracksReady(); // return TRUE if processed formants data is ready
 };
 
 #endif //_SA_P_SFMT_H

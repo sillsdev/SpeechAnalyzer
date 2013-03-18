@@ -17,12 +17,11 @@
 #define POINT_MISSING   -2    // point is missing but can be interpolated
 #define POINT_UNSET     -1    // there is no data for this point
 
-class CProcessCustomPitch : public CDataProcess
-{
+class CProcessCustomPitch : public CProcess {
 // Construction/destruction/creation
 public:
-  CProcessCustomPitch();
-  virtual ~CProcessCustomPitch();
+    CProcessCustomPitch();
+    virtual ~CProcessCustomPitch();
 
 // Attributes
 private:
@@ -31,8 +30,8 @@ private:
 
 // Operations
 public:
-  long Process(void* pCaller, ISaDoc* pDoc, int nProgress = 0, int nLevel = 1);
-  double GetUncertainty(double fPitchData);
+    long Process(void * pCaller, ISaDoc * pDoc, int nProgress = 0, int nLevel = 1);
+    double GetUncertainty(double fPitchData);
 };
 
 #endif //_SA_P_CPI_H

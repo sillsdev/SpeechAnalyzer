@@ -7,23 +7,23 @@
 #ifndef _SA_P_ZCR_H
 #define _SA_P_ZCR_H
 
+#include "Process/Process.h"
 
 //###########################################################################
 // CProcessZCross data processing
 
-class CProcessZCross : public CDataProcess
-{
+class CProcessZCross : public CProcess {
 // Construction/destruction/creation
 public:
-  CProcessZCross();
-  virtual ~CProcessZCross();
+    CProcessZCross();
+    virtual ~CProcessZCross();
 
 // Attributes
 private:
 
 // Operations
 public:
-  long Process(void* pCaller, ISaDoc* pDoc, int nProgress = 0, int nLevel = 1);
+    long Process(void * pCaller, ISaDoc * pDoc, int nProgress = 0, int nLevel = 1);
 };
 
 #endif //_SA_P_ZCR_H

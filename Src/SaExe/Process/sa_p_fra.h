@@ -5,16 +5,16 @@
 // copyright 1998 JAARS Inc. SIL
 /////////////////////////////////////////////////////////////////////////////
 #ifndef _SA_P_FRA_H
-#define _SA_P_FRA_H 
+#define _SA_P_FRA_H
 
 #include "appdefs.h"
+#include "Process\Process.h"
 #include "dsp\fragment.h"
 
-//###########################################################################             
+//###########################################################################
 // CProcessFragments data processing
 
-class CProcessFragments : public CDataProcess
-{
+class CProcessFragments : public CProcess {
 // Construction/destruction/creation
 public:
     CProcessFragments();
@@ -22,7 +22,7 @@ public:
 
 // Attributes
 private:
-    CFragment *m_pFragmenter;
+    CFragment * m_pFragmenter;
     ULONG m_dwFragmentCount;
     ULONG m_dwWaveIndex;
     ULONG m_dwPitchIndex;
@@ -30,11 +30,13 @@ private:
 
 // Operations
 public:
-    long Process(void* pCaller, ISaDoc* pDoc, int nProgress = 0, int nLevel = 1);
+    long Process(void * pCaller, ISaDoc * pDoc, int nProgress = 0, int nLevel = 1);
     ULONG GetBufferLength();
-    FRAG_PARMS* GetFragmentBlock(ULONG dwFragmentIndex);
-    const FRAG_PARMS& GetFragmentParms(ULONG dwFragmentIndex);
-    ULONG GetFragmentCount() {return m_dwFragmentCount;}
+    FRAG_PARMS * GetFragmentBlock(ULONG dwFragmentIndex);
+    const FRAG_PARMS & GetFragmentParms(ULONG dwFragmentIndex);
+    ULONG GetFragmentCount() {
+        return m_dwFragmentCount;
+    }
     ULONG GetFragmentIndex(ULONG dwWaveIndex);
 };
 

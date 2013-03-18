@@ -8,50 +8,38 @@
 #ifndef _SA_W_REV_H
 #define _SA_W_REV_H
 
-//###########################################################################
-// CProcessWbEcho data processing
-
-class CProcessWbEcho : public CDataProcess
-{
-// Construction/destruction/creation
+class CProcessWbEcho : public CProcess {
 public:
-  CProcessWbEcho();
-  virtual ~CProcessWbEcho();
+    CProcessWbEcho();
+    virtual ~CProcessWbEcho();
 
-  // Attributes
+	long Process(void * pCaller, ISaDoc * pDoc, int nProgress = 0, int nLevel = 1);
+	virtual int PropertiesDialog(); // calls the properties dialog for this process
+	virtual void WriteProperties(Object_ostream & obs);
+	virtual BOOL ReadProperties(Object_istream & obs);
+
 private:
-  UINT m_nDelay; // delay in ms
-  int  m_nGain;  // gain in dB
+    UINT m_nDelay; // delay in ms
+    int  m_nGain;  // gain in dB
 
-  // Operations
-public:
-  long Process(void* pCaller, ISaDoc* pDoc, int nProgress = 0, int nLevel = 1);
-  virtual int PropertiesDialog(); // calls the properties dialog for this process
-  virtual void WriteProperties(Object_ostream& obs);
-  virtual BOOL ReadProperties(Object_istream& obs);
 };
 
 //###########################################################################
 // CProcessWbReverb data processing
 
-class CProcessWbReverb : public CDataProcess
-{
-// Construction/destruction/creation
+class CProcessWbReverb : public CProcess {
 public:
-  CProcessWbReverb();
-  virtual ~CProcessWbReverb();
+    CProcessWbReverb();
+    virtual ~CProcessWbReverb();
 
-  // Attributes
+	long Process(void * pCaller, ISaDoc * pDoc, int nProgress = 0, int nLevel = 1);
+	virtual int PropertiesDialog(); // calls the properties dialog for this process
+	virtual void WriteProperties(Object_ostream & obs);
+	virtual BOOL ReadProperties(Object_istream & obs);
+
 private:
-  UINT m_nDelay; // delay in ms
-  int  m_nGain;  // gain in dB
-
-  // Operations
-public:
-  long Process(void* pCaller, ISaDoc* pDoc, int nProgress = 0, int nLevel = 1);
-  virtual int PropertiesDialog(); // calls the properties dialog for this process
-  virtual void WriteProperties(Object_ostream& obs);
-  virtual BOOL ReadProperties(Object_istream& obs);
+    UINT m_nDelay; // delay in ms
+    int  m_nGain;  // gain in dB
 };
 
-#endif //_SA_W_REV_H
+#endif

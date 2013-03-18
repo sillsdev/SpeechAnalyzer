@@ -10,19 +10,18 @@
 //###########################################################################
 // CProcessRaw data processing
 
-class CProcessRaw : public CDataProcess
-{
+class CProcessRaw : public CProcess {
 // Construction/destruction/creation
 public:
-  CProcessRaw();
-  virtual ~CProcessRaw();
+    CProcessRaw();
+    virtual ~CProcessRaw();
 
 // Attributes
 private:
 
 // Operations
 public:
-  long Process(void* pCaller, ISaDoc* pDoc, int nProgress = 0, int nLevel = 1);
+    long Process(void * pCaller, ISaDoc * pDoc, int nProgress = 0, int nLevel = 1);
 };
 
 #endif //_SA_P_RAW_H

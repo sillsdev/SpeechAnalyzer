@@ -10,19 +10,18 @@
 //###########################################################################
 // CProcessInstantaneousPower data processing
 
-class CProcessInstantaneousPower : public CDataProcess
-{
+class CProcessInstantaneousPower : public CProcess {
 // Construction/destruction/creation
 public:
-  CProcessInstantaneousPower();
-  virtual ~CProcessInstantaneousPower();
+    CProcessInstantaneousPower();
+    virtual ~CProcessInstantaneousPower();
 
 // Attributes
 private:
 
 // Operations
 public:
-  long Process(void* pCaller, ISaDoc* pDoc, int nProgress = 0, int nLevel = 1);
+    long Process(void * pCaller, ISaDoc * pDoc, int nProgress = 0, int nLevel = 1);
 };
 
 #endif //_SA_P_InstantaneousPower_H

@@ -14,74 +14,71 @@
 //###########################################################################
 // CProcessWbHighpass data processing
 
-class CProcessWbHighpass : public CButterworth
-{
+class CProcessWbHighpass : public CButterworth {
 // Construction/destruction/creation
 public:
-  CProcessWbHighpass();
-  virtual ~CProcessWbHighpass();
+    CProcessWbHighpass();
+    virtual ~CProcessWbHighpass();
 
-  // Attributes
+    // Attributes
 private:
-  UINT m_nCutoff; // cutoff frequency
-  UINT m_nOrder;
-  BOOL m_bFilterFilter;
+    UINT m_nCutoff; // cutoff frequency
+    UINT m_nOrder;
+    BOOL m_bFilterFilter;
 
-  // Operations
+    // Operations
 public:
-  long Process(void* pCaller, ISaDoc* pDoc, int nProgress = 0, int nLevel = 1);
-  virtual int PropertiesDialog(); // calls the properties dialog for this process
-  virtual void WriteProperties(Object_ostream& obs);
-  virtual BOOL ReadProperties(Object_istream& obs);
+    long Process(void * pCaller, ISaDoc * pDoc, int nProgress = 0, int nLevel = 1);
+    virtual int PropertiesDialog(); // calls the properties dialog for this process
+    virtual void WriteProperties(Object_ostream & obs);
+    virtual BOOL ReadProperties(Object_istream & obs);
 };
 
 //###########################################################################
 // CProcessWbLowpass data processing
 
-class CProcessWbLowpass : public CButterworth
-{
+class CProcessWbLowpass : public CButterworth {
 // Construction/destruction/creation
 public:
-  CProcessWbLowpass();
-  virtual ~CProcessWbLowpass();
+    CProcessWbLowpass();
+    virtual ~CProcessWbLowpass();
 
-  // Attributes
+    // Attributes
 private:
-  UINT m_nCutoff; // cutoff frequency
-  UINT m_nOrder;
-  BOOL m_bFilterFilter;
+    UINT m_nCutoff; // cutoff frequency
+    UINT m_nOrder;
+    BOOL m_bFilterFilter;
 
-  // Operations
+    // Operations
 public:
-  long Process(void* pCaller, ISaDoc* pDoc, int nProgress = 0, int nLevel = 1);
-  virtual int PropertiesDialog(); // calls the properties dialog for this process
-  virtual void WriteProperties(Object_ostream& obs);
-  virtual BOOL ReadProperties(Object_istream& obs);
+    long Process(void * pCaller, ISaDoc * pDoc, int nProgress = 0, int nLevel = 1);
+    virtual int PropertiesDialog(); // calls the properties dialog for this process
+    virtual void WriteProperties(Object_ostream & obs);
+    virtual BOOL ReadProperties(Object_istream & obs);
 };
 
 //###########################################################################
 // CProcessWbBandpass data processing
 
-class CProcessWbBandpass : public CButterworth
-{
+class CProcessWbBandpass : public CButterworth {
 // Construction/destruction/creation
 public:
-  CProcessWbBandpass();
-  virtual ~CProcessWbBandpass();
+    CProcessWbBandpass();
+    virtual ~CProcessWbBandpass();
 
-  // Attributes
+    // Attributes
 private:
-  UINT m_nUpperCutoff; // upper cutoff frequency
-  UINT m_nLowerCutoff; // lower cutoff frequency
-  UINT m_nOrder;
-  BOOL m_bFilterFilter;
+    UINT m_nUpperCutoff; // upper cutoff frequency
+    UINT m_nLowerCutoff; // lower cutoff frequency
+    UINT m_nOrder;
+    BOOL m_bFilterFilter;
 
-  // Operations
+    // Operations
 public:
-  long Process(void* pCaller, ISaDoc* pDoc, int nProgress = 0, int nLevel = 1);
-  virtual int PropertiesDialog(); // calls the properties dialog for this process
-  virtual void WriteProperties(Object_ostream& obs);
-  virtual BOOL ReadProperties(Object_istream& obs);
+    long Process(void * pCaller, ISaDoc * pDoc, int nProgress = 0, int nLevel = 1);
+    virtual int PropertiesDialog(); // calls the properties dialog for this process
+    virtual void WriteProperties(Object_ostream & obs);
+    virtual BOOL ReadProperties(Object_istream & obs);
 };
 
 #endif //_SA_W_PAS_H
