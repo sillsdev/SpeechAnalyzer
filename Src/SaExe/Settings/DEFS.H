@@ -23,13 +23,16 @@ typedef int ItemIndex;  // Hungarian: itm
 // Index of a combo or list box item.
 
 
-inline BOOL bEqual(const char* pszA, const char* pszB)
-{ return (strcmp(pszA, pszB) == 0); }
-inline BOOL bEqualDisregardingCase(const char* pszA, const char* pszB)
-{ return (_stricmp(pszA, pszB) == 0); }
+inline BOOL bEqual(const char * pszA, const char * pszB) {
+    return (strcmp(pszA, pszB) == 0);
+}
+inline BOOL bEqualDisregardingCase(const char * pszA, const char * pszB) {
+    return (_stricmp(pszA, pszB) == 0);
+}
 
-inline BOOL bMemberOfCharSet(char ch, const char* pszCharSet)
-{ return (strchr(pszCharSet, ch) != NULL); }
+inline BOOL bMemberOfCharSet(char ch, const char * pszCharSet) {
+    return (strchr(pszCharSet, ch) != NULL);
+}
 
 
 #endif  // _defs_h

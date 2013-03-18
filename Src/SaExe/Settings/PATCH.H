@@ -9,9 +9,9 @@
 #ifndef PATCH_H
 #define PATCH_H
 
-extern const char* Shw_pszWhiteSpace;  // white space: space, tab, newline
-extern const char* Shw_pszOtherWhiteSpace;  // above, other than space itself
+extern const char * Shw_pszWhiteSpace; // white space: space, tab, newline
+extern const char * Shw_pszOtherWhiteSpace; // above, other than space itself
 
-bool Shw_bAtWhiteSpace(const char* psz);
+bool Shw_bAtWhiteSpace(const char * psz);
 
 #endif  // PATCH_H
