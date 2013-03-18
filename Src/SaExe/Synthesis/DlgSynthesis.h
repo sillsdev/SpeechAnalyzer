@@ -19,33 +19,32 @@
 
 class CDlgMbrola;
 
-class CDlgSynthesis : public CPropertySheet
-{   
-DECLARE_DYNAMIC(CDlgSynthesis)
+class CDlgSynthesis : public CPropertySheet {
+    DECLARE_DYNAMIC(CDlgSynthesis)
 
 // Construction/destruction/creation
 public:
-  CDlgSynthesis(LPCTSTR pszCaption, CWnd* pParent = NULL, UINT iSelectPage = 0);
-  ~CDlgSynthesis();
+    CDlgSynthesis(LPCTSTR pszCaption, CWnd * pParent = NULL, UINT iSelectPage = 0);
+    ~CDlgSynthesis();
 
 public:
-	void OnHelpSynthesis();
-	void OnHelp();
-  CDlgMbrola *m_pDlgMbrolaPage;
+    void OnHelpSynthesis();
+    void OnHelp();
+    CDlgMbrola * m_pDlgMbrolaPage;
 
-  CButton m_cOK;
-  // CButton m_cHelp;
+    CButton m_cOK;
+    // CButton m_cHelp;
 
-  // Operations
+    // Operations
 protected:
-  virtual void DoDataExchange(CDataExchange* pDX); // DDX/DDV support
+    virtual void DoDataExchange(CDataExchange * pDX); // DDX/DDV support
 
-  // Generated message map functions
+    // Generated message map functions
 protected:
-  //{{AFX_MSG(CDlgSynthesis)
-	virtual BOOL OnInitDialog();
-	//}}AFX_MSG
-  DECLARE_MESSAGE_MAP()
+    //{{AFX_MSG(CDlgSynthesis)
+    virtual BOOL OnInitDialog();
+    //}}AFX_MSG
+    DECLARE_MESSAGE_MAP()
 };
 
 #endif //_DLG_SYNTHESIS_H

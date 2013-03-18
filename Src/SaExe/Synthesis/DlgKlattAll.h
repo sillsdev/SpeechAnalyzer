@@ -7,7 +7,7 @@
 #pragma warning(disable:4786)
 
 #include "synthesis\sa_klatt\synth.h"
-#include "activex\flexeditgrid.h"
+#include "flexeditgrid.h"
 
 /////////////////////////////////////////////////////////////////////////////
 // CDlgKlattAll dialog

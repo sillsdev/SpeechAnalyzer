@@ -1,7 +1,7 @@
 /*****************************************************************************************************\
- 
+
                                    MULTIPLE-BYTE IPA TO SAMPA LOOKUP TABLE
- 
+
 ---------------------------------------------------------------------------------------------------------
    ASAP     SAMPA                  IPA                 SAMPA         Articulatory Description
 IPA Codes*  Codes                 Glyph                String
@@ -32,9 +32,9 @@ IPA Codes*  Codes                 Glyph                String
 "\xAB\xA8\x38 \x72\x3D", // schwa upside dn backwd r o   r=
 "\xAB\xA8\xA5 \x72\x3D", // schwa upside dn backwd r box r= Error: should be o
 "\xCE\xD5 \x72\x3D"      // reversed epsilon-rt hk.      r=
- 
- 
- 
- 
- 
+
+
+
+
+
 // * first hex code must not be \x20

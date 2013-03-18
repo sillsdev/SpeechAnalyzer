@@ -6,7 +6,7 @@
 // When symbols are longer than 255 characters, the warning is disabled.
 #pragma warning(disable:4786)
 
-#include "activex\flexeditgrid.h"
+#include "flexeditgrid.h"
 
 class CIpaVTChar {
 public:

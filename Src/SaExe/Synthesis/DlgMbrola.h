@@ -1,7 +1,7 @@
 #ifndef DLGMBROLA_H
 #define DLGMBROLA_H
 
-#include "activex\flexEditGrid.h"
+#include "flexEditGrid.h"
 
 class CDlgMbrola : public CPropertyPage {
     DECLARE_DYNCREATE(CDlgMbrola)

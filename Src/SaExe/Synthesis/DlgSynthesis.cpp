@@ -34,7 +34,7 @@ IMPLEMENT_DYNAMIC(CDlgSynthesis, CPropertySheet)
 
 BEGIN_MESSAGE_MAP(CDlgSynthesis, CPropertySheet)
     //{{AFX_MSG_MAP(CDlgSynthesis)
-	//}}AFX_MSG_MAP
+    //}}AFX_MSG_MAP
     ON_COMMAND(IDHELP, OnHelpSynthesis)
     ON_COMMAND(IDOK, OnClose)
 END_MESSAGE_MAP()
@@ -45,24 +45,24 @@ END_MESSAGE_MAP()
 /***************************************************************************/
 // CDlgSynthesis::CDlgSynthesis Constructor
 /***************************************************************************/
-CDlgSynthesis::CDlgSynthesis(LPCTSTR pszCaption, CWnd* pParent, UINT iSelectPage)
-: CPropertySheet(pszCaption, pParent, iSelectPage)
-{
-  //{{AFX_DATA_INIT(CDlgSynthesis)
-  // NOTE: the ClassWizard will add member initialization here
-  //}}AFX_DATA_INIT
-  m_pDlgMbrolaPage = new CDlgMbrola;
+CDlgSynthesis::CDlgSynthesis(LPCTSTR pszCaption, CWnd * pParent, UINT iSelectPage)
+    : CPropertySheet(pszCaption, pParent, iSelectPage) {
+    //{{AFX_DATA_INIT(CDlgSynthesis)
+    // NOTE: the ClassWizard will add member initialization here
+    //}}AFX_DATA_INIT
+    m_pDlgMbrolaPage = new CDlgMbrola;
 
-  AddPage(m_pDlgMbrolaPage);
+    AddPage(m_pDlgMbrolaPage);
 }
 
 
 /***************************************************************************/
 // CDlgSynthesis::~CDlgSynthesis Destructor
 /***************************************************************************/
-CDlgSynthesis::~CDlgSynthesis()
-{
-  if (m_pDlgMbrolaPage) delete m_pDlgMbrolaPage;
+CDlgSynthesis::~CDlgSynthesis() {
+    if (m_pDlgMbrolaPage) {
+        delete m_pDlgMbrolaPage;
+    }
 }
 
 
@@ -72,12 +72,11 @@ CDlgSynthesis::~CDlgSynthesis()
 /***************************************************************************/
 // CDlgSynthesis::DoDataExchange Data exchange
 /***************************************************************************/
-void CDlgSynthesis::DoDataExchange(CDataExchange* pDX)
-{
-  CPropertySheet::DoDataExchange(pDX);
-  //{{AFX_DATA_MAP(CDlgSynthesis)
-  // NOTE: the ClassWizard will add DDX and DDV calls here
-  //}}AFX_DATA_MAP
+void CDlgSynthesis::DoDataExchange(CDataExchange * pDX) {
+    CPropertySheet::DoDataExchange(pDX);
+    //{{AFX_DATA_MAP(CDlgSynthesis)
+    // NOTE: the ClassWizard will add DDX and DDV calls here
+    //}}AFX_DATA_MAP
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -87,26 +86,22 @@ void CDlgSynthesis::DoDataExchange(CDataExchange* pDX)
 /***************************************************************************/
 // CDlgSynthesis::OnInitDialog
 /***************************************************************************/
-BOOL CDlgSynthesis::OnInitDialog() 
-{
-	CPropertySheet::OnInitDialog();
-	
+BOOL CDlgSynthesis::OnInitDialog() {
+    CPropertySheet::OnInitDialog();
+
     CRect rect;
     GetWindowRect(rect);
 
     CRect newRect(0,0,75,23);
-    CWnd *pWnd = GetDlgItem(IDOK);
-    if (pWnd)
-    {
-      pWnd->GetWindowRect(newRect);
-      // this button is already on the form, but MFC has hidden and disabled it
-      pWnd->ShowWindow(SW_SHOW);
-      pWnd->EnableWindow(TRUE);
-    }
-    else
-    {
-      m_cOK.Create(_T("OK"), WS_CHILD|WS_VISIBLE|BS_PUSHBUTTON, newRect, this, IDOK);
-      pWnd = & m_cOK;
+    CWnd * pWnd = GetDlgItem(IDOK);
+    if (pWnd) {
+        pWnd->GetWindowRect(newRect);
+        // this button is already on the form, but MFC has hidden and disabled it
+        pWnd->ShowWindow(SW_SHOW);
+        pWnd->EnableWindow(TRUE);
+    } else {
+        m_cOK.Create(_T("OK"), WS_CHILD|WS_VISIBLE|BS_PUSHBUTTON, newRect, this, IDOK);
+        pWnd = & m_cOK;
     }
 
     rect.InflateRect(0,0,0,int(newRect.Height()/4)*2 + newRect.Height());
@@ -116,7 +111,7 @@ BOOL CDlgSynthesis::OnInitDialog()
 
     newRect -= newRect.TopLeft();
     newRect.OffsetRect(CPoint(rect.right - newRect.Width() - newRect.Height()/4,
-                              rect.bottom - newRect.Height() - newRect.Height()/4)); 
+                              rect.bottom - newRect.Height() - newRect.Height()/4));
 
     pWnd->MoveWindow(newRect);
 
@@ -125,18 +120,17 @@ BOOL CDlgSynthesis::OnInitDialog()
 
     // m_cHelp.SetFont(pWnd->GetFont());
 
-	return TRUE;  // return TRUE unless you set the focus to a control
-	              // EXCEPTION: OCX Property Pages should return FALSE
+    return TRUE;  // return TRUE unless you set the focus to a control
+    // EXCEPTION: OCX Property Pages should return FALSE
 }
 
 /***************************************************************************/
 // CDlgSynthesis::OnHelpSynthesis Call Synthesis help
 /***************************************************************************/
-void CDlgSynthesis::OnHelpSynthesis()
-{
-  // create the pathname
-  CString szPath = AfxGetApp()->m_pszHelpFilePath;
-  szPath = szPath.Left(szPath.ReverseFind('\\'));
-  szPath = szPath.Left(szPath.ReverseFind('\\')) + "\\HELP\\SYNTHESIS2.HLP";
-  ::WinHelp(AfxGetMainWnd()->GetSafeHwnd(), szPath, HELP_INDEX, 0);
+void CDlgSynthesis::OnHelpSynthesis() {
+    // create the pathname
+    CString szPath = AfxGetApp()->m_pszHelpFilePath;
+    szPath = szPath.Left(szPath.ReverseFind('\\'));
+    szPath = szPath.Left(szPath.ReverseFind('\\')) + "\\HELP\\SYNTHESIS2.HLP";
+    ::WinHelp(AfxGetMainWnd()->GetSafeHwnd(), szPath, HELP_INDEX, 0);
 }

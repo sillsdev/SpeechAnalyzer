@@ -18,13 +18,13 @@
 #ifndef _PARSER_H
 #define _PARSER_H
 
-typedef void* LPPHONE;
+typedef void * LPPHONE;
 
 /* Return values of the nextphone function */
 typedef enum EStatePhone {
-	PHO_OK,
-	PHO_EOF,
-	PHO_FLUSH 
+    PHO_OK,
+    PHO_EOF,
+    PHO_FLUSH
 } StatePhone;
 
 
@@ -32,13 +32,13 @@ typedef enum EStatePhone {
 
 typedef struct Parser Parser;
 
-typedef void (*reset_ParserFunction)(Parser* ps);
-typedef void (*close_ParserFunction)(Parser* ps);
-typedef StatePhone (*nextphone_ParserFunction)(Parser* ps,LPPHONE* ph);
+typedef void (*reset_ParserFunction)(Parser * ps);
+typedef void (*close_ParserFunction)(Parser * ps);
+typedef StatePhone(*nextphone_ParserFunction)(Parser * ps,LPPHONE * ph);
 
-/* 
+/*
 * Generic parser :
-*   reset: forget remaining data in the buffer (when the user STOP synthesis for example 
+*   reset: forget remaining data in the buffer (when the user STOP synthesis for example
 *
 *   close: release the memory
 *
@@ -50,12 +50,11 @@ typedef StatePhone (*nextphone_ParserFunction)(Parser* ps,LPPHONE* ph);
 *     WITH nextphone
 */
 
-struct Parser
-{
-	void* self;                /* Polymorphic on the real type */
-	reset_ParserFunction reset_Parser;         /* virtual func */
-	close_ParserFunction close_Parser;         /* virtual func */
-	nextphone_ParserFunction nextphone_Parser; /* virtual func */
+struct Parser {
+    void * self;               /* Polymorphic on the real type */
+    reset_ParserFunction reset_Parser;         /* virtual func */
+    close_ParserFunction close_Parser;         /* virtual func */
+    nextphone_ParserFunction nextphone_Parser; /* virtual func */
 };
 
 #endif
