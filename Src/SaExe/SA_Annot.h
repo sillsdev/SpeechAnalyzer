@@ -339,30 +339,20 @@ public:
 // CGlossWnd window
 
 class CGlossWnd : public CAnnotationWnd {
-
-    // Construction/destruction/creation
 public:
     CGlossWnd(int nIndex) : CAnnotationWnd(nIndex) {};
-
-    // Operations
-public:
     virtual void OnDraw(CDC * pDC, const CRect & printRect);
 };
 
 class CReferenceWnd : public CAnnotationWnd {
-    // Construction/destruction/creation
 public:
     CReferenceWnd(int nIndex) : CAnnotationWnd(nIndex) {};
-
-    // Operations
-public:
     virtual void OnDraw(CDC * pDC, const CRect & printRect);
 };
 
 class CMusicPhraseWnd : public CAnnotationWnd {
-    // Construction/destruction/creation
 public:
-    CMusicPhraseWnd(int nIndex) : CAnnotationWnd(nIndex) {};
+	CMusicPhraseWnd(int nIndex) : CAnnotationWnd(nIndex) {};
 };
 
 #endif //_SA_ANNOT_H

@@ -262,9 +262,6 @@ void CSaView::CreateOneGraphStepOne(UINT nID, CGraphWnd ** pGraph, CREATE_HOW ho
     }
 }
 
-/////////////////////////////////////////////////////////////////////////////
-// CSaView message handlers, Part I
-
 /***************************************************************************/
 // CSaView::SendPlayMessage Send specified IDC_PLAY message to player.
 /***************************************************************************/

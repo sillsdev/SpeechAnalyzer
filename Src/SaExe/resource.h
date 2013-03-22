@@ -1652,6 +1652,7 @@
 #define IDS_ERROR_NO_FILE               61265
 #define IDS_ERROR_NO_FW_FILE            61265
 #define IDS_ERROR_NO_REFERENCE          61266
+#define IDS_ERROR_GONE_MISSING          61267
 #define IDS_AUTO_REF_MAIN               61300
 #define IDS_AUTO_REF_MAIN_1             61300
 #define IDS_AUTO_REF_MAIN_2             61301

@@ -56,7 +56,7 @@ CCharTable::~CCharTable() {
 void CCharTable::CleanUp() {
 
     // delete all the objects in the array and empty the array
-    int nArraySize = m_CharOb.GetUpperBound() + 1;
+    int nArraySize = m_CharOb.GetCount();
     for (int nLoop = 0; nLoop < nArraySize; nLoop++) {
         if (m_CharOb.GetAt(nLoop)) {
             delete m_CharOb.GetAt(nLoop);
@@ -92,7 +92,7 @@ void CCharTable::SelectChars(CString * pszChars, int nMode, int nType) {
     if (pszChars) {
         nSearchLoopLimit = pszChars->GetLength();
     }
-    int nArraySize = m_CharOb.GetUpperBound() + 1;
+    int nArraySize = m_CharOb.GetCount();
     for (int nLoop = 0; nLoop < nArraySize; nLoop++) {
         CChartChar * pChar = (CChartChar *)m_CharOb.GetAt(nLoop);
         if (pChar) {
@@ -123,7 +123,7 @@ void CCharTable::SelectChars(CString * pszChars, int nMode, int nType) {
 /***************************************************************************/
 void CCharTable::InitPage(int nType) {
 
-    int nArraySize = m_CharOb.GetUpperBound() + 1;
+    int nArraySize = m_CharOb.GetCount();
     for (int nLoop = 0; nLoop < nArraySize; nLoop++) {
         CChartChar * pChar = (CChartChar *)m_CharOb.GetAt(nLoop);
         if (pChar->GetType() == nType) {

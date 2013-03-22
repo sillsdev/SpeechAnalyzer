@@ -29,11 +29,11 @@ static char BASED_CODE THIS_FILE[] = __FILE__;
 /////////////////////////////////////////////////////////////////////////////
 // CTextSegment construction/destruction/creation
 CSaString CTextSegment::GetText(int nIndex) {
-    return m_pTexts->GetAt(nIndex);
+    return m_Texts.GetAt(nIndex);
 }
 
-const CStringArray * CTextSegment::GetTexts() {
-    return m_pTexts;
+const CStringArray & CTextSegment::GetTexts() {
+    return m_Texts;
 }
 
 int CTextSegment::GetSegmentLength(int /*nIndex*/) const {
@@ -41,24 +41,19 @@ int CTextSegment::GetSegmentLength(int /*nIndex*/) const {
 }
 
 CSaString CTextSegment::GetSegmentString(int nIndex) const {
-    return m_pTexts->GetAt(nIndex);
+    return m_Texts.GetAt(nIndex);
 }
 
 /***************************************************************************/
 // CTextSegment::CTextSegment Constructor
 /***************************************************************************/
 CTextSegment::CTextSegment(int index, int master) : CDependentSegment(index,master) {
-    m_pTexts = new CStringArray; // create string array object
 }
 
 /***************************************************************************/
 // CTextSegment::~CTextSegment Destructor
 /***************************************************************************/
 CTextSegment::~CTextSegment() {
-    if (m_pTexts) {
-        delete m_pTexts;
-        m_pTexts = NULL;
-    }
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -80,9 +75,9 @@ BOOL CTextSegment::SetAt(const CSaString * pszString, bool delimiter, DWORD dwSt
         int nIndex = FindOffset(dwStart);
         ASSERT(nIndex>=0);
         if (pszString!=NULL) {
-            m_pTexts->SetAtGrow(nIndex, szDelimiter + *pszString);
+            m_Texts.SetAtGrow(nIndex, szDelimiter + *pszString);
         } else {
-            m_pTexts->SetAtGrow(nIndex, szDelimiter);
+            m_Texts.SetAtGrow(nIndex, szDelimiter);
         }
         CSegment::SetAt(nIndex, dwStart, dwDuration);
     } catch (CMemoryException e) {
@@ -108,9 +103,9 @@ BOOL CTextSegment::Insert(int nIndex, LPCTSTR pszString, bool delimiter, DWORD d
 
     try {
         if (pszString!=NULL) {
-            m_pTexts->InsertAt(nIndex, szDelimiter + pszString, 1);
+            m_Texts.InsertAt(nIndex, szDelimiter + pszString, 1);
         } else {
-            m_pTexts->InsertAt(nIndex, szDelimiter, 1);
+            m_Texts.InsertAt(nIndex, szDelimiter, 1);
         }
         InsertAt(nIndex, dwStart, dwDuration);
     } catch (CMemoryException e) {
@@ -146,7 +141,7 @@ DWORD CTextSegment::CalculateDuration(CSaDoc * pDoc, const int nIndex) const {
 // CTextSegment::DeleteContents Delete all contents of the segment arrays
 /***************************************************************************/
 void CTextSegment::DeleteContents() {
-    m_pTexts->RemoveAll();
+    m_Texts.RemoveAll();
     CSegment::DeleteContents(); // call the base class to delete positions
 }
 
@@ -378,7 +373,7 @@ DWORD CTextSegment::RemoveNoRefresh(CDocument *) {
     DWORD dwOffset = GetOffset(m_nSelection);
 
     // change the segment arrays
-    m_pTexts->RemoveAt(m_nSelection, 1);
+    m_Texts.RemoveAt(m_nSelection, 1);
     RemoveAt(m_nSelection,1);
 
     return dwOffset;
@@ -393,7 +388,7 @@ void CTextSegment::ReplaceSelectedSegment(CDocument * pSaDoc, const CSaString & 
     CSaView * pView = (CSaView *)pDoc->GetNextView(pos);
 
     if (m_nSelection != -1) {
-        m_pTexts->SetAt(m_nSelection, str1);
+        m_Texts.SetAt(m_nSelection, str1);
     }
 
     pDoc->SetModifiedFlag(TRUE); // document has been modified
@@ -408,20 +403,17 @@ void CTextSegment::ReplaceSelectedSegment(CDocument * pSaDoc, const CSaString & 
 /***************************************************************************/
 // CSegment::FindNext find next segment matching strToFind and hilite it.
 //***************************************************************************/
-int CTextSegment::FindNext(int fromIndex, const CSaString & strToFind, CSaDoc &) {
+int CTextSegment::FindNext( int fromIndex, LPCTSTR strToFind) {
 
     ASSERT(fromIndex >= -1);
     ASSERT(!IsEmpty());
-
-    int index    = fromIndex + 1;
-
-    for (; index<=m_pTexts->GetUpperBound(); index++) {
-        if (m_pTexts->GetAt(index) == strToFind) {
-            break;
+    int index = fromIndex + 1;
+    for ( ; index<m_Texts.GetCount(); index++) {
+        if (m_Texts.GetAt(index).Find(strToFind)!=-1) {
+            return index;
         }
     }
-
-    return ((index<=m_pTexts->GetUpperBound()) ? index : -1);
+	return -1;
 }
 
 /***************************************************************************/
@@ -433,8 +425,8 @@ BOOL CTextSegment::Match(int index, const CSaString & strToFind) {
     ASSERT(!IsEmpty());
     BOOL ret = FALSE;
 
-    if (index >= 0 && index <= m_pTexts->GetUpperBound()) {
-        ret = (m_pTexts->GetAt(index) == strToFind);
+    if ((index >= 0) && (index < m_Texts.GetCount())) {
+        ret = (m_Texts.GetAt(index) == strToFind);
     }
 
     return ret;
@@ -443,23 +435,22 @@ BOOL CTextSegment::Match(int index, const CSaString & strToFind) {
 /***************************************************************************/
 // CTextSegment::FindPrev find next segment matching strToFind and hilite it.
 /***************************************************************************/
-int CTextSegment::FindPrev(int fromIndex, const CSaString & strToFind, CSaDoc &) {
+int CTextSegment::FindPrev(int fromIndex, LPCTSTR strToFind) {
 
     ASSERT(fromIndex >= -1);
     ASSERT(!IsEmpty());
-    int index = -1;
-
+    
+	int index = -1;
     if (fromIndex > 0 || fromIndex == -1) {
-        index    = (fromIndex == -1) ? m_pTexts->GetUpperBound() : fromIndex - 1;
-
+        index = (fromIndex == -1) ? m_Texts.GetUpperBound() : fromIndex - 1;
         for (; index>=0; index--) {
-            if (m_pTexts->GetAt(index) == strToFind) {
-                break;
+            if (m_Texts.GetAt(index).Find(strToFind)!=-1) {
+                return index;
             }
         }
     }
 
-    return index;
+    return -1;
 }
 
 
@@ -495,7 +486,7 @@ void CTextSegment::Serialize(CArchive & ar) {
         ar >> detailTagCheck;
         SA_ASSERT(detailTagCheck == "CTextSegmentDetail tag");
     }
-    m_pTexts->Serialize(ar);
+    m_Texts.Serialize(ar);
 }
 
 CSaString CTextSegment::GetContainedText(DWORD dwStart, DWORD dwStop) {
@@ -504,7 +495,7 @@ CSaString CTextSegment::GetContainedText(DWORD dwStart, DWORD dwStop) {
     for (int i=0; i<GetOffsetSize(); i++) {
         DWORD offset = GetOffset(i);
         if ((offset>=dwStart)&&(offset<=dwStop)) {
-            szText.Append(m_pTexts->GetAt(i));
+            szText.Append(m_Texts.GetAt(i));
         }
     }
     return szText;

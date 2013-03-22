@@ -201,7 +201,8 @@ BOOL CDlgMbrola::OnInitDialog() {
 
 
 void CDlgMbrola::OnLeaveCellMbrolaGrid() {
-    // validate cell contents
+    
+	// validate cell contents
     switch (m_cGrid.GetRow()) {
     case 2:
     case 3:

@@ -61,7 +61,7 @@ protected:
     afx_msg void OnSetFocusInputString();
     afx_msg void OnSetFocusReplaceString();
     afx_msg void OnReplace();
-    afx_msg void OnReplaceall();
+    afx_msg void OnReplaceAll();
     afx_msg void OnSelchangeCbofield2();
     DECLARE_MESSAGE_MAP()
 

@@ -26,7 +26,7 @@ LANGUAGE LANG_NEUTRAL, SUBLANG_NEUTRAL
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 3,1,0,41
+ FILEVERSION 3,1,0,42
  PRODUCTVERSION 1,0,0,1
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
@@ -44,7 +44,7 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "SIL International"
             VALUE "FileDescription", "SA"
-            VALUE "FileVersion", "v3.1.0.41"
+            VALUE "FileVersion", "v3.1.0.42"
             VALUE "InternalName", "SA"
             VALUE "LegalCopyright", "© 1996-2013 SIL International (MSEA)"
             VALUE "ProductName", "SA"
@@ -604,11 +604,11 @@ BEGIN
     PUSHBUTTON      "Find &Previous",IDC_PREVIOUS,193,23,51,14
     LTEXT           "Replace With:",IDC_STATIC2,6,37,48,18,NOT WS_GROUP
     EDITTEXT        IDC_REPLACESTRING,58,35,128,22,ES_MULTILINE
-    COMBOBOX        IDC_CBOFIELD2,58,35,128,58,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    COMBOBOX        IDC_CBOFIELD2,58,35,128,85,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
     PUSHBUTTON      "&Replace",IDC_REPLACE,193,40,51,14
     PUSHBUTTON      "Replace &All",IDC_REPLACEALL,193,57,51,14
     LTEXT           "Search In:",IDC_STATIC3,6,64,37,8,NOT WS_GROUP
-    COMBOBOX        IDC_CBOFIELD,58,62,128,58,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    COMBOBOX        IDC_CBOFIELD,58,62,128,85,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
     PUSHBUTTON      "&IPA Chart",IDC_CHARACTERCHART,193,83,51,14
     CONTROL         "Word &Break",IDC_INPUTBREAK,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,66,92,54,10
     CONTROL         "Book&mark",IDC_INPUTGLOSS,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,121,93,48,10
@@ -4227,7 +4227,7 @@ STRINGTABLE
 BEGIN
     IDR_MAINFRAME           "Speech Analyzer"
     IDR_SA_ANNTYPE          "\nSA\nSA Document\nWAV Files (*.wav)\n.wav\nannFileType\nANN File Type"
-    VS_VERSION              "Version 3.1.0.41"
+    VS_VERSION              "Version 3.1.0.42"
     VS_COPYRIGHT            "© 1996-2013 SIL International (MSEA).\nAll Rights Reserved."
     IDR_SA_WBTYPE           "\nWB\nSA Workbench\nWB Files (*.wb)\n.wb\nwbFileType\nWB File Type"
 END

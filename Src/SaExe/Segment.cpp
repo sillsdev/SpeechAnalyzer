@@ -638,6 +638,7 @@ int CSegment::FirstVisibleIndex(CSaDoc & SaDoc) const {
 }
 
 int CSegment::LastVisibleIndex(CSaDoc & SaDoc) const {
+
     POSITION pos = SaDoc.GetFirstViewPosition();
     CSaView  * pView = (CSaView *)SaDoc.GetNextView(pos);
 
@@ -653,7 +654,8 @@ int CSegment::LastVisibleIndex(CSaDoc & SaDoc) const {
 /***************************************************************************/
 // CSegment::FindPrev find next segment matching strToFind and hilite it.
 //***************************************************************************/
-int CSegment::FindPrev(int fromIndex, const CSaString & strToFind, CSaDoc &) {
+int CSegment::FindPrev(int fromIndex, LPCTSTR strToFind) {
+
     ASSERT(fromIndex >= -1);
 
     int ret = -1;
@@ -664,19 +666,19 @@ int CSegment::FindPrev(int fromIndex, const CSaString & strToFind, CSaDoc &) {
             sSegment = sSegment.Left(fromIndex);
         }
 
-        int idxFirstChar = sSegment.ReverseFind(strToFind.GetAt(0));
+        int idxFirstChar = sSegment.ReverseFind(strToFind[0]);
 
         while (idxFirstChar >= 0) {
-            CSaString str(sSegment.Mid(idxFirstChar,strToFind.GetLength()));
+            CSaString str(sSegment.Mid(idxFirstChar,wcslen(strToFind)));
             if (str == strToFind) {
                 break;
             }
             sSegment = sSegment.Left(idxFirstChar);
-            idxFirstChar = sSegment.ReverseFind(strToFind.GetAt(0));
+            idxFirstChar = sSegment.ReverseFind(strToFind[0]);
         }
 
         if (idxFirstChar >= 0) {
-            int idxLastChar = idxFirstChar + strToFind.GetLength();
+            int idxLastChar = idxFirstChar + wcslen(strToFind);
 
             if (idxLastChar >= sSegment.GetLength()) {
                 idxLastChar = sSegment.GetLength() - 1;
@@ -693,12 +695,11 @@ int CSegment::FindPrev(int fromIndex, const CSaString & strToFind, CSaDoc &) {
     return ret;
 }
 
-
-
 /***************************************************************************/
 // CSegment::FindNext find next segment matching strToFind and hilite it.
 //***************************************************************************/
-int CSegment::FindNext(int fromIndex, const CSaString & strToFind, CSaDoc &) {
+int CSegment::FindNext( int fromIndex, LPCTSTR strToFind) {
+
     ASSERT(fromIndex >= -1);
     ASSERT(!IsEmpty());
 
@@ -710,25 +711,24 @@ int CSegment::FindNext(int fromIndex, const CSaString & strToFind, CSaDoc &) {
         offset = fromIndex + GetSegmentLength(fromIndex);
         sSegment = sSegment.Right(sSegment.GetLength() - offset);
     }
-    int idxFirstChar = sSegment.Find(strToFind);
 
+    int idxFirstChar = sSegment.Find(strToFind);
     if (idxFirstChar >= 0) {
         idxFirstChar += offset;
 
-        int idxLastChar = idxFirstChar + strToFind.GetLength();
+        int idxLastChar = idxFirstChar + wcslen(strToFind);
 
         if (idxLastChar >= sSegment.GetLength()) {
             idxLastChar = sSegment.GetLength() - 1 + offset;
         }
         DWORD dwStart = GetOffset(idxFirstChar);
-        DWORD dwEnd   = GetOffset(idxLastChar);
+        DWORD dwEnd = GetOffset(idxLastChar);
 
         if (dwEnd == dwStart) {
             dwEnd += GetDuration(idxLastChar);
         }
         ret = FindFromPosition(dwStart);
     }
-
     return ret;
 }
 
@@ -826,11 +826,6 @@ DWORD CSegment::GetStop(const int nIndex) const {
 /** returns true if there are no offsets */
 BOOL CSegment::IsEmpty() const {
     return (m_Offset.GetSize() == 0);
-}
-
-// return pointer to text string array object
-const CStringArray * CSegment::GetTexts() {
-    return NULL;
 }
 
 DWORD CSegment::GetDurationAt(int index) const {

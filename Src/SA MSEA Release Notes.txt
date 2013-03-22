@@ -1,3 +1,9 @@
+SA - 3.1.0.42 - 3/22/2013
+1) Fixed bugs in 'Find' feature where a single character could not be found in any CTextSegment derived segment.  Class was doing whole word search only.  Modified function to search for substrings within annotation strings.
+2) Fixed bug with 'Alt-Z' feature that prevents the repeat execution of the feature if the cursors have not been moved, or if either cursor is located within another phonetic segment.
+3) Modified 'Save' function so that if the original file doesn't exist (ex: user retrieved file from removable drive, drive has been removed before 'Save' menu item was executed).
+4) Fixed bug where VK_MENU key (ALT) was being used to enable 'edit boundaries' feature.
+
 SA - 3.1.0.41 - 3/18/2013
 1) Added Ctrl+Q accelerator for 'Add Phonetic Segment' command.  Left in 'Alt+='
 2) Remapped Ctrl+Q (segment size) to Ctrl+E

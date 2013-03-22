@@ -100,8 +100,8 @@ public:
     int FindStop(DWORD dwOffset) const;             // return segment with matching stop
     int FindFromPosition(DWORD dwPosition, BOOL bWithin = FALSE) const; // get segment index from position
     virtual BOOL Match(int index, const CSaString & strToFind);
-    virtual int FindNext(int fromIndex, const CSaString & strToFind, CSaDoc & SaDoc);
-    virtual int FindPrev(int fromIndex, const CSaString & strToFind, CSaDoc & SaDoc);
+    virtual int FindNext(int fromIndex, LPCTSTR strToFind);
+    virtual int FindPrev(int fromIndex, LPCTSTR strToFind);
     int CheckCursors(CSaDoc *, BOOL bOverlap) const;        // checks the position of the cursors for new segment
 
     DWORD GetDurationAt(int index) const;
@@ -132,9 +132,6 @@ public:
     int LastVisibleIndex(CSaDoc & saDoc) const;
     /** returns true if there are no offsets */
     BOOL IsEmpty() const;
-
-    // give pointers to internal data, allowing caller to modify data.
-    virtual const CStringArray * GetTexts(); // return pointer to text string array object
 
     // modify internal data
     void SelectSegment(CSaDoc & pSaDoc, int segIdx);

@@ -38,7 +38,7 @@ BOOL CDependentTextSegment::SetAt(const CSaString * pszString, bool, DWORD dwSta
         if ((pszString) && (pszString->GetLength())) {
             int nIndex = FindOffset(dwStart);
             ASSERT(nIndex>=0);
-            m_pTexts->SetAtGrow(nIndex, *pszString);
+            m_Texts.SetAtGrow(nIndex, *pszString);
             CSegment::SetAt(nIndex,dwStart,dwDuration);
         }
     } catch (CMemoryException e) {
@@ -66,7 +66,7 @@ BOOL CDependentTextSegment::Insert(int nIndex, LPCTSTR pszString, bool, DWORD dw
 
     try {
         if (wcslen(pszString)>0) {
-            m_pTexts->InsertAt(nIndex, pszString, 1);
+            m_Texts.InsertAt(nIndex, pszString, 1);
             InsertAt(nIndex,dwStart,dwDuration);
         }
     } catch (CMemoryException e) {
@@ -94,7 +94,7 @@ BOOL CDependentTextSegment::SetText(int nIndex, LPCTSTR pszString, int, DWORD, D
 
     try {
         if (wcslen(pszString)>0) {
-            m_pTexts->SetAt(nIndex, pszString);
+            m_Texts.SetAt(nIndex, pszString);
         }
     } catch (CMemoryException e) {
         // memory allocation error

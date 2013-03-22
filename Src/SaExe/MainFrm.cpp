@@ -994,39 +994,6 @@ void CMainFrame::OnUpdateEditReplace(CCmdUI * pCmdUI) {
     }
 }
 
-
-#if 0
-/***************************************************************************/
-// CMainFrame::OnFindNextCmd Message from the find/replace dialog
-/***************************************************************************/
-void CMainFrame::OnFindNextCmd() {
-    ASSERT(m_pDlgFind != NULL);
-
-    int annotationSetID = m_pDlgFind->AnnotationSetID();
-    // Look for the string in the appropriate view.
-    CSaView * pView = (CSaView *)GetCurrSaView();
-    if ((pView != NULL) && pView->IsKindOf(RUNTIME_CLASS(CSaView))) {
-        pView->FindNextAnnotation(annotationSetID, m_pDlgFind->GetFindString());
-    }
-}
-
-
-/***************************************************************************/
-// CMainFrame::OnFindPrevCmd Message from the find/replace dialog
-/***************************************************************************/
-void CMainFrame::OnFindPrevCmd() {
-    ASSERT(m_pDlgFind != NULL);
-
-    int annotationSetID = m_pDlgFind->AnnotationSetID();
-    // Look for the string in the appropriate view.
-    CSaView * pView = (CSaView *)GetCurrSaView();
-    if ((pView != NULL) && pView->IsKindOf(RUNTIME_CLASS(CSaView))) {
-        pView->FindPrevAnnotation(annotationSetID, m_pDlgFind->GetFindString());
-    }
-}
-#endif
-
-
 /***************************************************************************/
 // CMainFrame::OnChangeView Message from a view
 // A view is loosing focus. If the player is actually launched, it has to be

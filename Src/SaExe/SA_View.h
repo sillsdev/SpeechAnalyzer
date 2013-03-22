@@ -77,7 +77,6 @@ class CSaDoc;
 class CDlgAutoRecorder;
 
 class CSaView : public CView {
-    //  friend class CMiniFrame;
 
     DECLARE_DYNCREATE(CSaView)
 
@@ -85,182 +84,34 @@ public:
     CSaView(const CSaView * pToBeCopied = NULL);  // copy constructor
     CSaView & operator=(const CSaView &); // assignment operator
 
-    // Construction/destruction/creation
-protected:
-    BOOL PreCreateWindow(CREATESTRUCT & cs);
-    void Copy(const CSaView & toBeCopied);
-    void PartialCopy(const CSaView & fromThis);
-    void Clear(void);
-
-
-    // Attributes
-public:
-    CGraphWnd * m_apGraphs[MAX_GRAPHS_NUMBER]; // array of pointers to the graph objects
-
-private:
-    UINT  m_anGraphID[MAX_GRAPHS_NUMBER]; // array of graph IDs
-    UINT  m_nLayout;                     // actual Layout number
-
-private:
-    CASegmentSelection m_advancedSelection;
-    CGraphWnd * m_pFocusedGraph;         // pointer to focused graph
-    CPrintOptionsDlg * m_pPageLayout;
-    CPrintOptionsDlg * m_pPgLayoutBackup;
-    CPickOverlayDlg * m_pPickOverlay;
-
-    UINT  m_nFocusedID;                  // ID of focused graph
-    BOOL  m_bLegendAll;                  // legend window show/hide all
-    BOOL  m_bLegendNone;                 // legend window hide all
-    BOOL  m_bXScaleAll;                  // x-scale window show/hide all
-    BOOL  m_bXScaleNone;                 // x-scale window hide all
-    BOOL  m_abAnnAll[ANNOT_WND_NUMBER];  // array of boolean, annotation window show/hide all
-    BOOL  m_abAnnNone[ANNOT_WND_NUMBER]; // array of boolean, annotation window hide all
-    CURSOR_ALIGNMENT m_nCursorAlignment;            // cursor snap mode: align to sample, zero crossing, or fragment
-    BOOL  m_bBoundariesAll;              // boundaries show/hide all
-    BOOL  m_bBoundariesNone;             // boundaries hide all
-    BOOL  m_bUpdateBoundaries;           // boundaries updated or not in transcription editor
-    bool  m_bEditBoundaries;             // TRUE = INS pressed
-    bool  m_bEditSegmentSize;            // TRUE = CTRL_SHIFT pressed
-    BOOL  m_bDrawStyleLine;              // graph drawing style line or solid
-    DWORD m_dwDataPosition;              // current start position of displayed data
-    double m_fMagnify;                   // magnify factor
-    double m_fZoom;                      // current zoom factor
-    double m_fMaxZoom;                   // max. zoom factor
-    DWORD m_dwHScrollFactor;             // factor to represent scroll position on horizontal scroll bar
-    double m_fVScrollSteps;              // number of vertical scroll steps
-    DWORD m_dwScrollLine;                // number of samples to scroll one line
-    DWORD m_dwStartCursor;               // start cursor position
-    DWORD m_dwStopCursor;                // stop cursor position
-    double m_dPlaybackPosition;          // playback cursor position
-    DWORD m_dwPlaybackTime;              // TickCount of last playback update
-    double m_dPlaybackPositionLimit;     // playback cursor position
-    int   m_nPlaybackSpeed;
-    BOOL  m_bViewIsActive;               // TRUE = view is activated
-    BOOL  m_bAnimating;                  // TRUE = animation in progress
-    BOOL  m_bStaticTWC;                  // TRUE if the 'Dynamic' TWC check box control is NOT checked
-    BOOL  m_bNormalMelogram;             // TRUE if the 'Weighted' Melogram check box control is NOT checked
-    CStopwatch * m_pStopwatch;           // pointer to stopwatch for timing events
-
-
-    // internal data for printing
-    POINT     m_printArea;               // the size of the part of the printed page that we will use.
-    CPoint    m_printerDPI;              // the actual dpi of the printer
-    int       m_newPrinterDPI;           // the dpi we set up for printing
-    double    m_printScaleX;             // scaling factor for scaling along x axis
-    double    m_printScaleY;             // scaling factor for scaling along y axis
-    Colors    m_saveColors;              // save the colors before optimizing them for print, restore later.
-    BOOL      m_bPrintPreviewInProgress; // true if a print preview is in progress.
-
-    // internal data for screen shot printing
-    CRect     m_memRect;                 // the frame rectangle
-    CDib   *  m_pCDibForPrint;           // we convert from a bitmap to a CDib.
-    CPoint    m_printOrigin;             // upper left corner where printing starts
-    //     - only needed for screen shot
-    BOOL      m_restartPageOptions;
-
-    // internal data for saving the window state
-    int m_z; // The z-order of the MDI child frame corresponding to this view.
-    int m_eInitialShowCmd; // The state of the window when SA was closed.
-    static Object_istream * s_pobsAutoload;
-    BOOL m_WeJustReadTheProperties;
-    BOOL m_bViewCreated;
-
-    CSaApp * pSaApp;
-    CMainFrame * pViewMainFrame;
-
-    // Operations
-private:
-    static int  GetNumberOfGraphs(UINT * pGraphIDs);       // return number of graphs from layout ID                // change graph type
-    WINDOWPLACEMENT DeleteGraphs(int nPosition = -1, BOOL bClearID = TRUE); // delete existing graph objects
-    void CreateGraph(int nPosition, int nNewID,
-                     CREATE_HOW ch = CREATE_STANDARD,
-                     Object_istream * pFromStream = NULL,
-                     CGraphWnd * pFromGraph= NULL);
-
-private:
-    void ChangeLayout(UINT nNewLayout);               // change graph layout
-    void ChangeGraph(int nID);                // change graph type
-    void ChangeGraph(int idx, int nID);                // change graph type
-
-    BOOL IsFocusGraph(UINT id);
-    BOOL GraphIDincluded(UINT id);
-    void EditAddGloss(bool bDelimiter);
-    //    void SendPlayMessage(UINT Int1, UINT Int2);
-    void SendPlayMessage(WORD Int1, WORD Int2);
-    BOOL StartAnimation(DWORD dwStartWaveIndex, DWORD dwStopWaveIndex);
-    void EndAnimation();
-    void ShowAnnotation(int nAnnot);
-    UINT GraphPtrtoID(CGraphWnd * pGraph);
-    int  GraphPtrToOffset(CGraphWnd * pGraph);
-
-    //********************************************
-    // 09/2000 - DDO
-    //********************************************
-    void ToggleAnnotation(int nAnnot, BOOL bShow, BOOL bRawDataOnly = FALSE);
-    void ToggleDpGraph(UINT nID);                      // 09/27/2000 - DDO
-    void UpdateDpGraphsMenu(CCmdUI * pCmdUI, int nID); // 09/27/2000 - DDO
-    void MakeGraphArraysContiguous();                  // 09/24/2000 - DDO
-    BOOL GetGraphSubRect(const CRect * pWndRect, CRect * pSubRect, int nPos, const UINT * anGraphID = NULL) const {
-        return GetGraphSubRect(m_nLayout, pWndRect, pSubRect, nPos, anGraphID);
-    }
-    void ArrangeMelogramGraphs(const CRect * pMeloRect, UINT * pGraphIDs);
-    BOOL GraphTypeEnabled(int nID, BOOL bIncludeCtrlKeyCheck = FALSE);
-    void CreateOneGraph(UINT * pID, CGraphWnd ** pGraph);
-    void CreateOneGraphStepOne(UINT nID, CGraphWnd ** pGraph, CREATE_HOW how, CGraphWnd * pFromGraph, Object_istream * pObs);
-    UINT PreCreateOverlayGraph(int nIndex);
-    //********************************************
-public:
     static UINT SetLayout(UINT *);                           // return the corresponding layout to selected graphs
     static CSaString GetGraphTitle(UINT nID);
     static int GetNumberOfGraphsInLayout(UINT nID);         // return number of graphs from layout ID
     static BOOL GetGraphSubRect(int nLayout, const CRect * pWndRect, CRect * pSubRect, int nPos, const UINT * anGraphID = NULL);
     static BOOL IDDSelected(const UINT *, UINT);
-
-public:
-    UINT GetLayout(void) {
-        return m_nLayout;   // DDO - 08/07/00
-    }
-    //********************************************
-
+    UINT GetLayout(void);
     CGraphWnd * GraphIDtoPtr(UINT id);
     int GetGraphIndexForIDD(UINT);   // get index for a given IDD resource
     void RefreshGraphs(BOOL bEntire = TRUE, BOOL bLegend = FALSE, BOOL bLayout = FALSE); // refresh (redraw) the graphs (entire or partial)
     void BroadcastMessage(UINT Message , WPARAM wParam = 0, LPARAM lParam = 0);
     CSaDoc * GetDocument();              // get a pointer to the document
-    UINT * GetGraphIDs()            {
-        return &m_anGraphID[0];   // get the graph IDs
-    }
+    UINT * GetGraphIDs();
     CSaString GetGraphsDescription() const;
     static CSaString GetGraphsDescription(const UINT *);
-    CGraphWnd * GetGraph(int nIndex)  {
-        if (nIndex < 0 || nIndex > MAX_GRAPHS_NUMBER) {
-            return NULL;    // get the pointers to a graph
-        } else {
-            return m_apGraphs[nIndex];
-        }
-    }
+    CGraphWnd * GetGraph(int nIndex);
     int GetGraphUpdateMode();
     UINT GetDynamicGraphCount();
     UINT GetAnimationGraphCount();
     BOOL IsAnimationRequested();
-    BOOL IsAnimating() {
-        return m_bAnimating;
-    }
+    BOOL IsAnimating();
     int GetAnimationFrameRate();
-    CURSOR_ALIGNMENT GetCursorAlignment();   // get cursor snap mode
-    void ChangeCursorAlignment(CURSOR_ALIGNMENT nCursorSetting) {
-        m_nCursorAlignment = nCursorSetting;
-        OnCursorAlignmentChanged();
-    }
-    double GetDataPosition(int nWndWidth); // get the actual data position
-    DWORD GetDataFrame();              // return current data frame (width) of displayed data
-    DWORD AdjustDataFrame(int nWndWidth); // return adjusted data frame width for particular window
-    DWORD GetStartCursorPosition() {
-        return m_dwStartCursor;   // get the start cursor position
-    }
-    DWORD GetStopCursorPosition()  {
-        return m_dwStopCursor;   // get the stop cursor position
-    }
+    CURSOR_ALIGNMENT GetCursorAlignment();				// get cursor snap mode
+    void ChangeCursorAlignment(CURSOR_ALIGNMENT nCursorSetting);
+    double GetDataPosition(int nWndWidth);				// get the actual data position
+    DWORD GetDataFrame();								// return current data frame (width) of displayed data
+    DWORD AdjustDataFrame(int nWndWidth);				// return adjusted data frame width for particular window
+    DWORD GetStartCursorPosition();
+    DWORD GetStopCursorPosition();
     void SetCursorPosition(int nCursorSelect, DWORD dwNewPos, SNAP_DIRECTION nSnapDirection = SNAP_BOTH,
                               CURSOR_ALIGNMENT nCursorAlignment = ALIGN_USER_SETTING);
     void SetStartCursorPosition(DWORD dwNewPos, SNAP_DIRECTION nSnapDirection = SNAP_BOTH,
@@ -280,23 +131,13 @@ public:
     void ChangeAnnotationSelection(CSegment *, int nIndex, DWORD dwStart, DWORD dwStop); // change the annotation selection
     void ChangeAnnotationSelection(CSegment *, int nIndex); // change the annotation selection
     void DeselectAnnotations(void);
-    void SetFocusedGraph(CGraphWnd *); // sets the focused graph pointer
-    CGraphWnd * GetFocusedGraphWnd() {
-        return m_pFocusedGraph;   // gets the focused graph window pointer
-    }
-    UINT GetFocusedGraphID() {
-        return m_nFocusedID;   // gets the focused graph ID
-    }
-    void ResetFocusedGraph();         // resets the focused graph pointer
-    BOOL ViewIsActive() {
-        return m_bViewIsActive;
-    }; // returns TRUE, if view is active
-    BOOL    IsUpdateBoundaries() {
-        return m_bUpdateBoundaries;   // return TRUE, if boundaries updated
-    }
-    void SetUpdateBoundaries(BOOL bUpdate) {
-        m_bUpdateBoundaries = bUpdate;
-    }
+    void SetFocusedGraph(CGraphWnd *);	// sets the focused graph pointer
+    CGraphWnd * GetFocusedGraphWnd();
+    UINT GetFocusedGraphID();
+    void ResetFocusedGraph();			// resets the focused graph pointer
+    BOOL ViewIsActive();				// returns TRUE, if view is active
+    BOOL IsUpdateBoundaries();
+    void SetUpdateBoundaries(BOOL bUpdate);
     void ZoomIn(double fZoomAmount, BOOL bZoom = TRUE); // zoom in
     void ZoomOut(double fZoomAmount);     // zoom out
     void SetScrolling();                 // set scrolling parameters
@@ -317,42 +158,24 @@ public:
     DWORD OnPlaybackPhraseL1();
 
     //SDM 1.06.5
-    CASegmentSelection & ASelection() {
-        return m_advancedSelection;
-    };
+    CASegmentSelection & ASelection();
     void RemoveSelectedAnnotation();
     void OnEditPaste();
     void OnEditPasteNew();
     void OnEditCut();
     void OnEditCopyMeasurements();
 
-    void Scroll(DWORD desiredPosition) {
-        UINT nPos = (UINT)(desiredPosition / m_dwHScrollFactor);
-        SendMessage(WM_HSCROLL, SB_THUMBPOSITION, nPos);
-    };
-
-    void Scroll(UINT nSBCode, UINT nPos = 0) {
-        SendMessage(WM_HSCROLL, nSBCode, nPos);
-    }
-    BOOL PrintPreviewInProgress() {
-        return m_bPrintPreviewInProgress;
-    };
-    int PrinterDPI() {
-        return m_newPrinterDPI;
-    };
-    CPoint RealPrinterDPI() {
-        return m_printerDPI;
-    };
+    void Scroll(DWORD desiredPosition);
+    void Scroll(UINT nSBCode, UINT nPos = 0);
+    BOOL PrintPreviewInProgress();
+    int PrinterDPI();
+    CPoint RealPrinterDPI();
 
     void NotifyFragmentDone(void * pCaller);
     // methods for saving the windows settings
     static CSaView * GetViewActiveChild(CMDIChildWnd * pwnd);
-    int z() const {
-        return m_z;    // The bottom window's z is zero.
-    }
-    void SetZ(int z) {
-        m_z = z;    // Greater z means above; lesser z means below.
-    }
+    int z() const;
+    void SetZ(int z);
     CMDIChildWnd * pwndChildFrame() const;
     void ShowInitialStateAndZ();
     void ShowInitialTopState();
@@ -364,88 +187,35 @@ public:
     BOOL ReadGraphListProperties(const CSaView & fromThis);
     void InitialUpdate(BOOL bTemp=FALSE); // called first time after construct and when applying new wave
     void CreateOpenAsGraphs(UINT OpenAsID);
-    BOOL GetStaticTWC()                   {
-        return m_bStaticTWC;   // TCJ 6/23/00
-    }
-    void SetStaticTWC(BOOL bChecked)      {
-        m_bStaticTWC = bChecked;   // TCJ 6/23/00
-    }
-    BOOL GetNormalMelogram()              {
-        return m_bNormalMelogram;   // TCJ 6/23/00
-    }
-    void SetNormalMelogram(BOOL bChecked) {
-        m_bNormalMelogram = bChecked;   // TCJ 6/23/00
-    }
-
+    BOOL GetStaticTWC();
+    void SetStaticTWC(BOOL bChecked);
+    BOOL GetNormalMelogram();
+    void SetNormalMelogram(BOOL bChecked);
     void MoveStartCursorRight();                                              // TCJ 7/6/00
     void MoveStartCursorLeft();                                               // TCJ 7/6/00
-
     EBoundaries GetEditBoundaries(int nFlags, BOOL checkKeys = TRUE);
     BOOL AssignOverlay(CGraphWnd * pTarget, CSaView * pSourceView);      // change graph type
-
-protected:
-    virtual void OnInitialUpdate(); // called first time after construct
-
-public:
     void RemoveRtPlots();
     virtual ~CSaView();
-    CMainFrame * MainFrame() {
-        return pViewMainFrame;
-    }
+    CMainFrame * MainFrame();
     LRESULT OnFrameAnimationDone(WPARAM wParam = 0, LPARAM lParam = 0L);
-
-    // Overrides
-    // ClassWizard generated virtual function overrides
-    //{{AFX_VIRTUAL(CSaView)
-public:
     virtual void OnDraw(CDC * pDC); // overridden to draw this view
-protected:
-    virtual BOOL OnPreparePrinting(CPrintInfo * pInfo);
-    virtual void OnBeginPrinting(CDC * pDC, CPrintInfo * pInfo);
-    virtual void OnEndPrinting(CDC * pDC, CPrintInfo * pInfo);
-    //}}AFX_VIRTUAL
-
-public:
-
+    void OnGraphsTypesPostProcess(const UINT * GraphIDs, int nLayout = -1);
 #ifdef _DEBUG
     virtual void AssertValid() const;
     virtual void Dump(CDumpContext & dc) const;
 #endif
 
-private:
-    void SetScrollRange(int nBar, int nMinPos, int nMaxPos, BOOL bRedraw = TRUE);
-
-    // printing methods
-    void CalcPrintScaling(const CRect * srcRect);
-    void CalcPrintRect(CRect * pPrintRect, const CRect * srcRect);
-    void CalcPrintPoint(CPoint * pPrintPoint, const CPoint * srcPoint);
-    void OnPrint(CDC * pDC, CPrintInfo * pInfo);
-    void OnPrepareDC(CDC * pDC, CPrintInfo * pInfo);
-    BOOL SaDoPreparePrinting(CPrintInfo * pInfo, BOOL bIsPortrait);
-    void OnPrintPageSetup(void);
-    int  CalcGraphIndexForCurrentPage(int currPage);
-    void PrintPageTitle(CDC * pDC, int titleAreaHeight);
-    void PrintGraph(CDC * pDC, const CRect * viewRect, int graphNum,
-                    const CRect * graphRect, int originX, int originY);
-    void CalcCustomPage(CRect * customPage, const CRect * viewRect, int row, int col);
-    void DoHiResPrint(CDC * pDC, CPrintInfo * pInfo);
-    void PrepareDCforHiResPrint(CDC * pDC, CPrintInfo * pInfo);
-    void DoScreenShot(CDC * pDC, CPrintInfo * pInfo);
-    void CalculatePrintArea(CDC * pDC, CPrintInfo * pInfo);
-    void CalculatePrintOrigin(CDC * pDC);
-    int  CalculateHiResPrintPages(void);
-    void PreparePrintingForScreenShot(void);
+    CGraphWnd * m_apGraphs[MAX_GRAPHS_NUMBER]; // array of pointers to the graph objects
 
 protected:
+    BOOL PreCreateWindow(CREATESTRUCT & cs);
+    void Copy(const CSaView & toBeCopied);
+    void PartialCopy(const CSaView & fromThis);
+    void Clear(void);
+    virtual void OnInitialUpdate(); // called first time after construct
     BOOL DestroyGraph(CGraphWnd ** pGraph, BOOL bResetFocus = TRUE);
-
     CRecGraphWnd * CreateRecGraph(CRecGraphWnd * pFromGraph = NULL, Object_istream * pObs = NULL);
-public:
-    void OnGraphsTypesPostProcess(const UINT * GraphIDs, int nLayout = -1);
-
-    // Generated message map functions
-protected:
-
     void OnUpdateEditPaste(CCmdUI * pCmdUI);
     void OnUpdateEditPasteNew(CCmdUI * pCmdUI);
     void OnEditUndo();
@@ -454,9 +224,10 @@ protected:
     void OnUpdateEditRedo(CCmdUI * pCmdUI);
     void OnEditAddPhrase(CMusicPhraseSegment * pSeg);
     void OnUpdateEditAddPhrase(CCmdUI * pCmdUI, CMusicPhraseSegment * pSeg);
+    virtual BOOL OnPreparePrinting(CPrintInfo * pInfo);
+    virtual void OnBeginPrinting(CDC * pDC, CPrintInfo * pInfo);
+    virtual void OnEndPrinting(CDC * pDC, CPrintInfo * pInfo);
 
-
-    //{{AFX_MSG(CSaView)
     afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
     afx_msg void OnUpdatePrintPreview(CCmdUI * pCmdUI);
     afx_msg void OnUpdateFilenew(CCmdUI * pCmdUI);
@@ -613,7 +384,6 @@ protected:
     afx_msg void OnChar(UINT nChar, UINT nRepCnt, UINT nFlags);
     afx_msg void OnSpectroFormants();
     afx_msg void OnUpdateSpectroFormants(CCmdUI * pCmdUI);
-    //}}AFX_MSG
     afx_msg LRESULT OnUniChar(WPARAM wParam, LPARAM lParam);
     afx_msg LRESULT OnImeComposition(WPARAM wParam, LPARAM lParam);
     afx_msg void OnLayout(UINT nID);
@@ -656,6 +426,124 @@ protected:
     afx_msg void OnUpdateEditCopyPhoneticToPhonemic(CCmdUI * pCmdUI);
     DECLARE_MESSAGE_MAP()
 
+private:
+    static int  GetNumberOfGraphs(UINT * pGraphIDs);       // return number of graphs from layout ID                // change graph type
+    WINDOWPLACEMENT DeleteGraphs(int nPosition = -1, BOOL bClearID = TRUE); // delete existing graph objects
+    void CreateGraph(int nPosition, int nNewID,
+                     CREATE_HOW ch = CREATE_STANDARD,
+                     Object_istream * pFromStream = NULL,
+                     CGraphWnd * pFromGraph= NULL);
+    void ChangeLayout(UINT nNewLayout);						// change graph layout
+    void ChangeGraph(int nID);								// change graph type
+    void ChangeGraph(int idx, int nID);						// change graph type
+    BOOL IsFocusGraph(UINT id);
+    BOOL GraphIDincluded(UINT id);
+    void EditAddGloss(bool bDelimiter);
+    void SendPlayMessage(WORD Int1, WORD Int2);
+    BOOL StartAnimation(DWORD dwStartWaveIndex, DWORD dwStopWaveIndex);
+    void EndAnimation();
+    void ShowAnnotation(int nAnnot);
+    UINT GraphPtrtoID(CGraphWnd * pGraph);
+    int  GraphPtrToOffset(CGraphWnd * pGraph);
+    void ToggleAnnotation(int nAnnot, BOOL bShow, BOOL bRawDataOnly = FALSE);
+    void ToggleDpGraph(UINT nID);                      // 09/27/2000 - DDO
+    void UpdateDpGraphsMenu(CCmdUI * pCmdUI, int nID); // 09/27/2000 - DDO
+    void MakeGraphArraysContiguous();                  // 09/24/2000 - DDO
+    BOOL GetGraphSubRect(const CRect * pWndRect, CRect * pSubRect, int nPos, const UINT * anGraphID = NULL) const;
+    void ArrangeMelogramGraphs(const CRect * pMeloRect, UINT * pGraphIDs);
+    BOOL GraphTypeEnabled(int nID, BOOL bIncludeCtrlKeyCheck = FALSE);
+    void CreateOneGraph(UINT * pID, CGraphWnd ** pGraph);
+    void CreateOneGraphStepOne(UINT nID, CGraphWnd ** pGraph, CREATE_HOW how, CGraphWnd * pFromGraph, Object_istream * pObs);
+    UINT PreCreateOverlayGraph(int nIndex);
+    void SetScrollRange(int nBar, int nMinPos, int nMaxPos, BOOL bRedraw = TRUE);
+    // printing methods
+    void CalcPrintScaling(const CRect * srcRect);
+    void CalcPrintRect(CRect * pPrintRect, const CRect * srcRect);
+    void CalcPrintPoint(CPoint * pPrintPoint, const CPoint * srcPoint);
+    void OnPrint(CDC * pDC, CPrintInfo * pInfo);
+    void OnPrepareDC(CDC * pDC, CPrintInfo * pInfo);
+    BOOL SaDoPreparePrinting(CPrintInfo * pInfo, BOOL bIsPortrait);
+    void OnPrintPageSetup(void);
+    int  CalcGraphIndexForCurrentPage(int currPage);
+    void PrintPageTitle(CDC * pDC, int titleAreaHeight);
+    void PrintGraph(CDC * pDC, const CRect * viewRect, int graphNum,
+                    const CRect * graphRect, int originX, int originY);
+    void CalcCustomPage(CRect * customPage, const CRect * viewRect, int row, int col);
+    void DoHiResPrint(CDC * pDC, CPrintInfo * pInfo);
+    void PrepareDCforHiResPrint(CDC * pDC, CPrintInfo * pInfo);
+    void DoScreenShot(CDC * pDC, CPrintInfo * pInfo);
+    void CalculatePrintArea(CDC * pDC, CPrintInfo * pInfo);
+    void CalculatePrintOrigin(CDC * pDC);
+    int  CalculateHiResPrintPages(void);
+    void PreparePrintingForScreenShot(void);
+
+    UINT  m_anGraphID[MAX_GRAPHS_NUMBER]; // array of graph IDs
+    UINT  m_nLayout;                     // actual Layout number
+    CASegmentSelection m_advancedSelection;
+    CGraphWnd * m_pFocusedGraph;         // pointer to focused graph
+    CPrintOptionsDlg * m_pPageLayout;
+    CPrintOptionsDlg * m_pPgLayoutBackup;
+    CPickOverlayDlg * m_pPickOverlay;
+    UINT m_nFocusedID;						// ID of focused graph
+    BOOL m_bLegendAll;						// legend window show/hide all
+    BOOL m_bLegendNone;						// legend window hide all
+    BOOL m_bXScaleAll;						// x-scale window show/hide all
+    BOOL m_bXScaleNone;						// x-scale window hide all
+    BOOL m_abAnnAll[ANNOT_WND_NUMBER];		// array of boolean, annotation window show/hide all
+    BOOL m_abAnnNone[ANNOT_WND_NUMBER];		// array of boolean, annotation window hide all
+    CURSOR_ALIGNMENT m_nCursorAlignment;    // cursor snap mode: align to sample, zero crossing, or fragment
+    BOOL m_bBoundariesAll;					// boundaries show/hide all
+    BOOL m_bBoundariesNone;					// boundaries hide all
+    BOOL m_bUpdateBoundaries;				// boundaries updated or not in transcription editor
+    bool m_bEditBoundaries;					// TRUE = INS pressed
+    bool m_bEditSegmentSize;				// TRUE = CTRL_SHIFT pressed
+    BOOL m_bDrawStyleLine;					// graph drawing style line or solid
+    DWORD m_dwDataPosition;					// current start position of displayed data
+    double m_fMagnify;						// magnify factor
+    double m_fZoom;							// current zoom factor
+    double m_fMaxZoom;						// max. zoom factor
+    DWORD m_dwHScrollFactor;				// factor to represent scroll position on horizontal scroll bar
+    double m_fVScrollSteps;					// number of vertical scroll steps
+    DWORD m_dwScrollLine;					// number of samples to scroll one line
+    DWORD m_dwStartCursor;					// start cursor position
+    DWORD m_dwStopCursor;					// stop cursor position
+    double m_dPlaybackPosition;				// playback cursor position
+    DWORD m_dwPlaybackTime;					// TickCount of last playback update
+    double m_dPlaybackPositionLimit;		// playback cursor position
+    int m_nPlaybackSpeed;
+    BOOL m_bViewIsActive;					// TRUE = view is activated
+    BOOL m_bAnimating;						// TRUE = animation in progress
+    BOOL m_bStaticTWC;						// TRUE if the 'Dynamic' TWC check box control is NOT checked
+    BOOL m_bNormalMelogram;					// TRUE if the 'Weighted' Melogram check box control is NOT checked
+    CStopwatch * m_pStopwatch;				// pointer to stopwatch for timing events
+
+    // internal data for printing
+    POINT m_printArea;						// the size of the part of the printed page that we will use.
+    CPoint m_printerDPI;					// the actual dpi of the printer
+    int m_newPrinterDPI;					// the dpi we set up for printing
+    double m_printScaleX;					// scaling factor for scaling along x axis
+    double m_printScaleY;					// scaling factor for scaling along y axis
+    Colors m_saveColors;					// save the colors before optimizing them for print, restore later.
+    BOOL m_bPrintPreviewInProgress;			// true if a print preview is in progress.
+
+    // internal data for screen shot printing
+    CRect m_memRect;						// the frame rectangle
+    CDib * m_pCDibForPrint;					// we convert from a bitmap to a CDib.
+    CPoint m_printOrigin;					// upper left corner where printing starts
+    // - only needed for screen shot
+    BOOL m_restartPageOptions;
+
+    // internal data for saving the window state
+    int m_z;								// The z-order of the MDI child frame corresponding to this view.
+    int m_eInitialShowCmd;					// The state of the window when SA was closed.
+    static Object_istream * s_pobsAutoload;
+    BOOL m_WeJustReadTheProperties;
+    BOOL m_bViewCreated;
+    CSaApp * pSaApp;
+    CMainFrame * pViewMainFrame;
+
+	DWORD lastZStartCursor;
+	DWORD lastZStopCursor;
 };
 
 
@@ -665,10 +553,5 @@ inline CSaDoc * CSaView::GetDocument() {
 }
 #endif
 
-/////////////////////////////////////////////////////////////////////////////
-
-//{{AFX_INSERT_LOCATION}}
-// Microsoft Visual C++ will insert additional declarations immediately before the previous line.
-
-#endif //_SA_VIEW_H
+#endif
 

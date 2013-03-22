@@ -43,7 +43,7 @@ BEGIN_MESSAGE_MAP(CSaFindDlg, CDialog)
     ON_EN_SETFOCUS(IDC_INPUTSTRING, OnSetFocusInputString)
     ON_EN_SETFOCUS(IDC_REPLACESTRING, OnSetFocusReplaceString)
     ON_BN_CLICKED(IDC_REPLACE, OnReplace)
-    ON_BN_CLICKED(IDC_REPLACEALL, OnReplaceall)
+    ON_BN_CLICKED(IDC_REPLACEALL, OnReplaceAll)
     ON_COMMAND(IDHELP, OnHelpFind)
     ON_CBN_SELCHANGE(IDC_CBOFIELD2, OnSelchangeCbofield2)
     //}}AFX_MSG_MAP
@@ -115,8 +115,6 @@ BOOL CSaFindDlg::Completed(BOOL isForward, int newPos) {
     return ret;
 }
 
-
-
 /***************************************************************************/
 // CSaFindDlg::ResetCompletionCheck - start a new search.
 /***************************************************************************/
@@ -125,41 +123,35 @@ void CSaFindDlg::ResetCompletionCheck() {
     m_wraped = FALSE;
 }
 
-
-
 /***************************************************************************/
 // CSaFindDlg::GetFindString - get the string to search for.
 /***************************************************************************/
 CString CSaFindDlg::GetFindString() {
+
     UpdateData();
     CString strToFind(m_strToFind);
 
     if (AnnotationSetID() == GLOSS) {
         CString delimiter(WORD_DELIMITER);
-
         if (m_breakOrBookMark) {
             delimiter.SetAt(0,TEXT_DELIMITER);
         }
         strToFind = delimiter + strToFind;
     }
-
     return strToFind;
-};
-
-
+}
 
 /***************************************************************************/
 // CSaFindDlg::EnableDisable
 /***************************************************************************/
 void CSaFindDlg::EnableDisable() {
-    BOOL glossMode = (AnnotationSetID() == GLOSS);
+
+	BOOL glossMode = (AnnotationSetID() == GLOSS);
 
     GetDlgItem(IDC_CHARACTERCHART)->EnableWindow(!glossMode); // disable char. chart button
     GetDlgItem(IDC_INPUTGLOSS)->EnableWindow(glossMode); // disable selection
     GetDlgItem(IDC_INPUTBREAK)->EnableWindow(glossMode); // disable selection
 }
-
-
 
 /***************************************************************************/
 // CSaFindDlg::SetEditFont
@@ -175,29 +167,24 @@ void CSaFindDlg::SetEditFont() {
     }
 }
 
-
-
 /***************************************************************************/
 // CSaFindDlg::DoDataExchange Data exchange
 /***************************************************************************/
 void CSaFindDlg::DoDataExchange(CDataExchange * pDX) {
-    CDialog::DoDataExchange(pDX);
-    //{{AFX_DATA_MAP(CSaFindDlg)
-    DDX_Text(pDX, IDC_INPUTSTRING, m_strToFind);  // m_szFindWhat
+
+	CDialog::DoDataExchange(pDX);
+    DDX_Text(pDX, IDC_INPUTSTRING, m_strToFind);			// m_szFindWhat
     DDX_Control(pDX, IDC_CBOFIELD,  m_annotSetId);
-    DDX_Radio(pDX, IDC_INPUTBREAK, m_breakOrBookMark);   // m_nSelect
+    DDX_Radio(pDX, IDC_INPUTBREAK, m_breakOrBookMark);		// m_nSelect
     DDX_Text(pDX, IDC_REPLACESTRING, m_replaceStr);
     DDX_Control(pDX, IDC_CBOFIELD2, m_annotSetID2);
-    //}}AFX_DATA_MAP
-
 }
-
-
 
 /***************************************************************************/
 // CSaFindDlg::ScrollIfNeeded - scroll the annotation window if neccessary.
 /***************************************************************************/
 void CSaFindDlg::ScrollIfNeeded() {
+
     CSegment * pAnnot = m_pMainFrame->GetAnnotation(AnnotationSetID());
 
     CSaView * pView = (CSaView *)m_pMainFrame->GetCurrSaView();
@@ -209,9 +196,8 @@ void CSaFindDlg::ScrollIfNeeded() {
     }
 }
 
-
-
 void CSaFindDlg::SetupDialogForFindOnly() {
+
     // change the replace button title
     GetDlgItem(IDC_REPLACE)->SetWindowText(_T("Replace..."));
 
@@ -280,6 +266,7 @@ void CSaFindDlg::SetupDialogForFindOnly() {
 
 
 void CSaFindDlg::SetupDialogForFindAndReplace() {
+
     CRect r,r2;
 
     UpdateData();
@@ -315,9 +302,8 @@ void CSaFindDlg::SetupDialogForFindAndReplace() {
     UpdateData(FALSE);
 }
 
-
-
 void CSaFindDlg::SaveDialogLayout() {
+
     // save locations of controls
     GetDlgItem(IDC_STATIC3)->GetWindowRect(m_rctSearchInText);
     ScreenToClient(m_rctSearchInText);
@@ -344,6 +330,7 @@ void CSaFindDlg::SaveDialogLayout() {
 
 
 int CSaFindDlg::AnnotationSetID() {
+
     if (m_bFindOnly) {
         return m_annotSetID2.GetCurSel();
     }
@@ -351,18 +338,12 @@ int CSaFindDlg::AnnotationSetID() {
     return m_annotSetId.GetCurSel();
 }
 
-
-
-
-
-/////////////////////////////////////////////////////////////////////////////
-// CSaFindDlg message handlers
-
 /***************************************************************************/
 // CSaFindDlg::OnInitDialog Dialog initialisation
 // The dialog is centered over the main frame window.
 /***************************************************************************/
 BOOL CSaFindDlg::OnInitDialog() {
+
     CDialog::OnInitDialog();
 
     CenterWindow();
@@ -410,12 +391,11 @@ BOOL CSaFindDlg::OnInitDialog() {
     return FALSE;  // return TRUE  unless you set the focus to a control
 }
 
-
-
 /***************************************************************************/
 // CSaFindDlg::OnCharacterChart Input from character chart wanted
 /***************************************************************************/
 void CSaFindDlg::OnCharacterChart() {
+
     // save the edit box selection, just to be sure
     int nStartChar, nEndChar;
     DWORD dwSel = ((CEdit *)GetDlgItem(m_nTextBoxInFocus))->GetSel();
@@ -441,10 +421,6 @@ void CSaFindDlg::OnCharacterChart() {
     GotoDlgCtrl(GetDlgItem(m_nTextBoxInFocus)); // set focus to edit control
 }
 
-
-
-
-
 /***************************************************************************/
 // CSaFindDlg::OnSelchangeCbofield - adjust dialog and start a new search if
 // the annotation window to search in changes.
@@ -455,14 +431,9 @@ void CSaFindDlg::OnSelchangeCbofield() {
     ResetCompletionCheck();
 }
 
-
-
 void CSaFindDlg::OnSelchangeCbofield2() {
     OnSelchangeCbofield();
 }
-
-
-
 
 /***************************************************************************/
 // CSaFindDlg::OnChangeInputString - start a new search if find string changes
@@ -490,112 +461,110 @@ void CSaFindDlg::OnSetFocusReplaceString() {
 // CSaFindDlg::OnNext - find the next match of the find string
 /***************************************************************************/
 void CSaFindDlg::OnNext() {
-    ASSERT(m_pMainFrame);
-    CSegment * pAnnot = NULL;
-    CSaDoc  *  pDoc   = NULL;
-    if (m_pMainFrame && !GetFindString().IsEmpty()) {
-        pAnnot = m_pMainFrame->GetAnnotation(AnnotationSetID());
-        pDoc   = m_pMainFrame->GetCurrDoc();
-        if (pAnnot->IsEmpty() || (pAnnot->FindNext(-1,GetFindString(),*pDoc)==-1)) {
-            AfxMessageBox(IDS_FIND_NONE,MB_ICONINFORMATION,0);
-            pAnnot = NULL;
-        }
-    }
-    if (pAnnot && pDoc) {
-        int curSel = pAnnot->GetSelection();
-        if ((m_beginFind == -1) || ((m_curPos != -1) && (curSel != m_curPos))) {
-            m_beginFind = pAnnot->GetSelection();
-            if (m_beginFind == -1) {
-                m_beginFind = pAnnot->FirstVisibleIndex(*pDoc);
-            }
-            m_curPos = m_beginFind;
-        }
-        int newPos = pAnnot->FindNext(m_curPos,GetFindString(),*pDoc);
 
-        if (newPos >= 0) {
-            if (Completed(TRUE, newPos)) {
-                AfxMessageBox(IDS_FIND_FINISHED,MB_ICONINFORMATION,0);
-                m_curPos = m_beginFind;
-                ScrollIfNeeded();
-                pAnnot->SelectSegment(*pDoc,m_curPos);
-                ResetCompletionCheck();
-            } else {
-                m_curPos = newPos;
-                ScrollIfNeeded();
-                pAnnot->SelectSegment(*pDoc,m_curPos);
-            }
+	if (m_pMainFrame==NULL) return;
+    CSaDoc * pDoc = m_pMainFrame->GetCurrDoc();
+	if (pDoc==NULL) return;
+
+	CString findme = GetFindString();
+	if (findme.IsEmpty()) return;
+
+    CSegment * pAnnot = m_pMainFrame->GetAnnotation(AnnotationSetID());
+    if ((pAnnot->IsEmpty()) || (pAnnot->FindNext(-1,findme)==-1)) {
+        AfxMessageBox(IDS_FIND_NONE,MB_ICONINFORMATION,0);
+		return;
+    }
+
+    int curSel = pAnnot->GetSelection();
+    if ((m_beginFind == -1) || ((m_curPos != -1) && (curSel != m_curPos))) {
+        m_beginFind = pAnnot->GetSelection();
+        if (m_beginFind == -1) {
+            m_beginFind = pAnnot->FirstVisibleIndex(*pDoc);
+        }
+        m_curPos = m_beginFind;
+    }
+
+	// find the next string
+    int newPos = pAnnot->FindNext(m_curPos,findme);
+    if (newPos >= 0) {
+        if (Completed(TRUE, newPos)) {
+            AfxMessageBox(IDS_FIND_FINISHED,MB_ICONINFORMATION,0);
+            m_curPos = m_beginFind;
+            ScrollIfNeeded();
+            pAnnot->SelectSegment(*pDoc,m_curPos);
+            ResetCompletionCheck();
         } else {
-            if (AfxMessageBox(IDS_FIND_WRAP_PAST_END, MB_YESNO|MB_ICONQUESTION,0)==IDYES) {
-                m_curPos = -1;
-                m_wraped = TRUE;
-                OnNext();
-            } else {
-                //pAnnot->SelectSegment(*pDoc,m_curPos);
-                ResetCompletionCheck();
-            }
+            m_curPos = newPos;
+            ScrollIfNeeded();
+            pAnnot->SelectSegment(*pDoc,m_curPos);
+        }
+    } else {
+        if (AfxMessageBox(IDS_FIND_WRAP_PAST_END, MB_YESNO|MB_ICONQUESTION,0)==IDYES) {
+            m_curPos = -1;
+            m_wraped = TRUE;
+            OnNext();
+        } else {
+            ResetCompletionCheck();
         }
     }
 }
-
-
 
 /***************************************************************************/
 // CSaFindDlg::OnPrevious - find the next match of the find string, searching
 // backwards.
 /***************************************************************************/
 void CSaFindDlg::OnPrevious() {
-    ASSERT(m_pMainFrame);
-    CSegment * pAnnot = NULL;
-    CSaDoc  *  pDoc   = NULL;
-    if (m_pMainFrame && !GetFindString().IsEmpty()) {
-        pAnnot = m_pMainFrame->GetAnnotation(AnnotationSetID());
-        pDoc   = m_pMainFrame->GetCurrDoc();
-        if (pAnnot->IsEmpty() || (pAnnot->FindPrev(-1,GetFindString(),*pDoc)==-1)) {
-            AfxMessageBox(IDS_FIND_NONE,MB_ICONINFORMATION,0);
-            pAnnot = NULL;
-        }
-    }
-    if (pAnnot && pDoc) {
-        int curSel = pAnnot->GetSelection();
-        if ((m_beginFind == -1) || ((m_curPos != -1) && (curSel != m_curPos))) {
-            m_beginFind = pAnnot->GetSelection();
-            if (m_beginFind == -1) {
-                m_beginFind = pAnnot->LastVisibleIndex(*pDoc);
-            }
-            m_curPos = m_beginFind;
-        }
-        int newPos = pAnnot->FindPrev(m_curPos,GetFindString(),*pDoc);
 
-        if (newPos >= 0) {
-            if (Completed(FALSE, newPos)) {
-                AfxMessageBox(IDS_FIND_FINISHED,MB_ICONINFORMATION,0);
-                m_curPos = m_beginFind;
-                ScrollIfNeeded();
-                pAnnot->SelectSegment(*pDoc,m_curPos);
-                ResetCompletionCheck();
-            } else {
-                m_curPos = newPos;
-                ScrollIfNeeded();
-                pAnnot->SelectSegment(*pDoc,m_curPos);
-            }
+	if (m_pMainFrame==NULL) return;
+    CSaDoc * pDoc = m_pMainFrame->GetCurrDoc();
+	if (pDoc==NULL) return;
+
+	CString findme = GetFindString();
+	if (findme.IsEmpty()) return;
+
+    CSegment * pAnnot = m_pMainFrame->GetAnnotation(AnnotationSetID());
+    if ((pAnnot->IsEmpty()) || (pAnnot->FindPrev(-1,findme)==-1)) {
+        AfxMessageBox(IDS_FIND_NONE,MB_ICONINFORMATION,0);
+		return;
+    }
+
+    int curSel = pAnnot->GetSelection();
+    if ((m_beginFind == -1) || ((m_curPos != -1) && (curSel != m_curPos))) {
+        m_beginFind = pAnnot->GetSelection();
+        if (m_beginFind == -1) {
+            m_beginFind = pAnnot->LastVisibleIndex(*pDoc);
+        }
+        m_curPos = m_beginFind;
+    }
+
+    int newPos = pAnnot->FindPrev(m_curPos,findme);
+    if (newPos >= 0) {
+        if (Completed(FALSE, newPos)) {
+            AfxMessageBox(IDS_FIND_FINISHED,MB_ICONINFORMATION,0);
+            m_curPos = m_beginFind;
+            ScrollIfNeeded();
+            pAnnot->SelectSegment(*pDoc,m_curPos);
+            ResetCompletionCheck();
         } else {
-            if (AfxMessageBox(IDS_FIND_WRAP_PAST_START, MB_YESNO|MB_ICONQUESTION,0)==IDYES) {
-                m_curPos = -1;
-                m_wraped = TRUE;
-                OnPrevious();
-            } else {
-                pAnnot->SelectSegment(*pDoc,m_curPos);
-                ResetCompletionCheck();
-            }
+            m_curPos = newPos;
+            ScrollIfNeeded();
+            pAnnot->SelectSegment(*pDoc,m_curPos);
+        }
+    } else {
+        if (AfxMessageBox(IDS_FIND_WRAP_PAST_START, MB_YESNO|MB_ICONQUESTION,0)==IDYES) {
+            m_curPos = -1;
+            m_wraped = TRUE;
+            OnPrevious();
+        } else {
+            pAnnot->SelectSegment(*pDoc,m_curPos);
+            ResetCompletionCheck();
         }
     }
 }
 
-
-
-
 void CSaFindDlg::OnReplace() {
-    if (m_bFindOnly) {
+
+	if (m_bFindOnly) {
         m_bFindOnly = FALSE;
         SetupDialogForFindAndReplace();
     } else {
@@ -604,36 +573,34 @@ void CSaFindDlg::OnReplace() {
 }
 
 void CSaFindDlg::Replace() {
-    ASSERT(m_pMainFrame);
-    CSegment * pAnnot = NULL;
-    CSaDoc  *  pDoc   = NULL;
 
+	if (m_pMainFrame==NULL) return;
+    CSaDoc * pDoc = m_pMainFrame->GetCurrDoc();
+	if (pDoc==NULL) return;
+	
+	CString findme = GetFindString();
+	if (findme.IsEmpty()) return;
 
-    if (GetFindString().IsEmpty()) {
-        return;
-    }
-    if (GetReplaceString().IsEmpty()) {
+	CString replaceme = GetReplaceString();
+	if (replaceme.IsEmpty()) {
         AfxMessageBox(IDS_EMPTY_REPLACE,MB_ICONINFORMATION,0);
         return;
     }
-    if (m_pMainFrame) {
-        pAnnot = m_pMainFrame->GetAnnotation(AnnotationSetID());
-        pDoc   = m_pMainFrame->GetCurrDoc();
-        if (pAnnot->IsEmpty()) {
-            AfxMessageBox(IDS_FIND_NONE,MB_ICONINFORMATION,0);
-            pAnnot = NULL;
-        }
+
+    CSegment * pAnnot = m_pMainFrame->GetAnnotation(AnnotationSetID());
+    if (pAnnot->IsEmpty()) {
+        AfxMessageBox(IDS_FIND_NONE,MB_ICONINFORMATION,0);
+		return;
     }
-    if (pAnnot && pDoc) {
-        int curSel = pAnnot->GetSelection();
-        if ((curSel >= 0) &&
-                pAnnot->Match(curSel,GetFindString())) {
-            pDoc->CheckPoint();
-            pAnnot->ReplaceSelectedSegment(pDoc,GetReplaceString());
-        }
-        ResetCompletionCheck();
-        OnNext();
+
+    int curSel = pAnnot->GetSelection();
+    if ((curSel >= 0) &&
+            pAnnot->Match(curSel,GetFindString())) {
+        pDoc->CheckPoint();
+        pAnnot->ReplaceSelectedSegment(pDoc,GetReplaceString());
     }
+    ResetCompletionCheck();
+    OnNext();
 }
 
 
@@ -642,6 +609,7 @@ void CSaFindDlg::Replace() {
 // CSaFindDlg::GetReplaceString - get the string to use for replacment
 /***************************************************************************/
 CString CSaFindDlg::GetReplaceString() {
+
     UpdateData();
     CString replaceStr(m_replaceStr);
 
@@ -657,38 +625,37 @@ CString CSaFindDlg::GetReplaceString() {
     return replaceStr;
 };
 
+void CSaFindDlg::OnReplaceAll() {
 
+	if (m_pMainFrame==NULL) return;
+	CSaDoc * pDoc = m_pMainFrame->GetCurrDoc();
+	if (pDoc==NULL) return;
 
+	CString findme = GetFindString();
+	if (findme.IsEmpty()) {
+		return;
+	}
 
-
-void CSaFindDlg::OnReplaceall() {
-    ASSERT(m_pMainFrame);
-    CSegment * pAnnot = NULL;
-    CSaDoc  *  pDoc   = NULL;
-
-    if (GetReplaceString().IsEmpty()) {
+	CString replaceme = GetReplaceString();
+    if (replaceme.IsEmpty()) {
         AfxMessageBox(IDS_EMPTY_REPLACE,MB_ICONINFORMATION,0);
         return;
     }
-    if (m_pMainFrame) {
-        pAnnot = m_pMainFrame->GetAnnotation(AnnotationSetID());
-        pDoc   = m_pMainFrame->GetCurrDoc();
-        if (pAnnot->IsEmpty() || (pAnnot->FindNext(-1,GetFindString(),*pDoc)==-1)) {
-            AfxMessageBox(IDS_FIND_NONE,MB_ICONINFORMATION,0);
-            pAnnot = NULL;
-        }
-    }
-    if (pAnnot && pDoc) {
-        int newPos = pAnnot->FindNext(-1,GetFindString(),*pDoc);
 
-        pDoc->CheckPoint();
-        while (newPos >= 0) {
-            if (newPos != pAnnot->GetSelection()) {
-                pAnnot->SelectSegment(*pDoc,newPos);
-            }
-            pAnnot->ReplaceSelectedSegment(pDoc,GetReplaceString());
-            newPos = pAnnot->FindNext(newPos,GetFindString(),*pDoc);
+    CSegment * pAnnot = m_pMainFrame->GetAnnotation(AnnotationSetID());
+    if (pAnnot->IsEmpty() || (pAnnot->FindNext(-1,findme)==-1)) {
+        AfxMessageBox(IDS_FIND_NONE,MB_ICONINFORMATION,0);
+		return;
+    }
+
+    int newPos = pAnnot->FindNext(-1,findme);
+    pDoc->CheckPoint();
+    while (newPos >= 0) {
+        if (newPos != pAnnot->GetSelection()) {
+            pAnnot->SelectSegment(*pDoc,newPos);
         }
+        pAnnot->ReplaceSelectedSegment(pDoc,replaceme);
+        newPos = pAnnot->FindNext(newPos,findme);
     }
 }
 
@@ -697,6 +664,7 @@ void CSaFindDlg::OnReplaceall() {
 // CSaFindDlg::EnableSearch
 /***************************************************************************/
 void CSaFindDlg::EnableSearch(BOOL enable) {
+
     GetDlgItem(IDC_NEXT)->EnableWindow(enable);
     GetDlgItem(IDC_PREVIOUS)->EnableWindow(enable);
     GetDlgItem(IDC_REPLACE)->EnableWindow(enable);
@@ -706,6 +674,7 @@ void CSaFindDlg::EnableSearch(BOOL enable) {
 // CSaFindDlg::OnHelpFind Call Find help
 /***************************************************************************/
 void CSaFindDlg::OnHelpFind() {
+
     // create the pathname
     CString szPath = AfxGetApp()->m_pszHelpFilePath;
     szPath = szPath + "::/User_Interface/Menus/Edit/Find.htm";

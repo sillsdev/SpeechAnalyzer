@@ -59,9 +59,6 @@ static char BASED_CODE THIS_FILE[] = __FILE__;
 
 IMPLEMENT_DYNCREATE(CSaView, CView)
 
-/////////////////////////////////////////////////////////////////////////////
-// CSaView message map
-
 BEGIN_MESSAGE_MAP(CSaView, CView)
     ON_WM_CREATE()
     ON_UPDATE_COMMAND_UI(ID_FILE_PRINT_PREVIEW, OnUpdatePrintPreview)
@@ -345,12 +342,107 @@ BEGIN_MESSAGE_MAP(CSaView, CView)
     ON_UPDATE_COMMAND_UI(ID_EDIT_COPY_PHONETIC_TO_PHONEMIC, OnUpdateEditCopyPhoneticToPhonemic)
 END_MESSAGE_MAP()
 
-/////////////////////////////////////////////////////////////////////////////
-// CSaView message handlers, Part II
+CSaView::CSaView(const CSaView * pToBeCopied) {
+    // RLJ 06/01/2000
+    pSaApp = (CSaApp *)AfxGetApp();
+    pViewMainFrame = (CMainFrame *)AfxGetMainWnd();
 
-/***************************************************************************/
-// CSaView::OnUpdateFilenew Menu Update
-/***************************************************************************/
+    m_pStopwatch = NULL;
+    m_restartPageOptions = FALSE;
+    m_pPageLayout = new CPrintOptionsDlg;
+
+    //********************************************************
+    // 09/25/2000 - DDO
+    //********************************************************
+    m_bStaticTWC = TRUE;
+    m_bNormalMelogram = TRUE;
+
+    for (int nLoop = 0; nLoop < MAX_GRAPHS_NUMBER; nLoop++) {
+        m_apGraphs[nLoop] = NULL;
+        m_anGraphID[nLoop] = 0;
+    }
+
+    m_anGraphID[0] = IDD_RAWDATA; // default graph
+    m_pFocusedGraph = NULL; // no graph focused
+    m_nFocusedID = 0;
+    m_nLayout = ID_LAYOUT_1; // default layout
+    m_bLegendAll = TRUE;
+    m_bLegendNone = FALSE;
+    m_bXScaleAll = TRUE;
+    m_bXScaleNone = FALSE;
+
+    for (int nLoop = 0; nLoop < ANNOT_WND_NUMBER; nLoop++) {
+        if (nLoop == PHONETIC) {
+            m_abAnnAll[nLoop] = FALSE;
+            m_abAnnNone[nLoop] = FALSE;
+        } else {
+            m_abAnnAll[nLoop] = FALSE;
+            m_abAnnNone[nLoop] = TRUE;
+        }
+    }
+    m_nCursorAlignment = MainFrame()->GetCursorAlignment();
+    m_bBoundariesAll = FALSE;
+    m_bBoundariesNone = TRUE;
+    m_bUpdateBoundaries = TRUE;
+    m_bDrawStyleLine = TRUE;
+    m_dwDataPosition = 0; // start with first sample data
+    m_fMagnify = 1.0; // no magnify
+    m_fZoom = 1.0; // no zoom
+    m_fMaxZoom = 0;
+    m_bAnimating = FALSE;
+    m_bPrintPreviewInProgress = FALSE;
+    m_pCDibForPrint = NULL;
+    m_pPgLayoutBackup = NULL;
+    m_pPickOverlay = new CPickOverlayDlg;
+    m_eInitialShowCmd = SW_SHOWNORMAL;
+    m_z = 0;
+    m_WeJustReadTheProperties = FALSE;
+    m_bViewCreated = FALSE;
+    VERIFY(CStopwatch::CreateObject(&m_pStopwatch));
+
+    m_bEditBoundaries = false;
+    m_bEditSegmentSize = false;
+
+    m_dwStopCursor = 0;
+    m_dwStartCursor = 0;
+    m_dwHScrollFactor = 0;
+    m_fVScrollSteps = 0;
+    m_dwScrollLine = 0;
+    m_dPlaybackPosition = 0;
+    m_dwPlaybackTime = 0;
+    m_dPlaybackPositionLimit = 0;
+    m_nPlaybackSpeed = 0;
+    m_bViewIsActive = FALSE;
+    m_printArea.x = 0;
+    m_printArea.y = 0;
+    m_newPrinterDPI = 0;
+    m_printScaleX = 0;
+    m_printScaleY = 0;
+
+    if (pToBeCopied) {
+        *this = *pToBeCopied;
+    }
+
+	lastZStartCursor = UNDEFINED_OFFSET;
+	lastZStopCursor = UNDEFINED_OFFSET;
+}
+
+CSaView::~CSaView() {
+    Clear();
+    if (m_pStopwatch) {
+        delete m_pStopwatch;
+    }
+}
+
+CSaView & CSaView::operator=(const CSaView & fromThis) {
+    if (&fromThis != this) {
+        Clear();
+        Copy(fromThis);
+    }
+
+    return *this;
+}
+
 void CSaView::OnUpdateFilenew(CCmdUI * pCmdUI) {
     pCmdUI->Enable(FALSE);
 }
@@ -631,14 +723,14 @@ void CSaView::OnUpdateEditBoundaries(CCmdUI * pCmdUI) {
 // CSaView::GetEditBoundaries
 /***************************************************************************/
 EBoundaries CSaView::GetEditBoundaries(int /*nFlags*/, BOOL checkKeys) {
+
     if ((m_bEditSegmentSize) && (checkKeys)) {
         return BOUNDARIES_EDIT_OVERLAP;
-    }
-    if ((m_bEditBoundaries) || ((GetAsyncKeyState(VK_MENU) < 0) && (checkKeys))) {
+	}
+    if ((m_bEditBoundaries) && (checkKeys)) {
         return BOUNDARIES_EDIT_NO_OVERLAP;
-    } else {
-        return BOUNDARIES_EDIT_NULL;
-    }
+	}
+    return BOUNDARIES_EDIT_NULL;
 }
 
 /***************************************************************************/
@@ -730,104 +822,6 @@ CSaDoc * CSaView::GetDocument() { // non-debug version is inline
 
 #endif //_DEBUG
 
-
-/////////////////////////////////////////////////////////////////////////////
-// CSaView construction/destruction/creation
-
-/***************************************************************************/
-// CSaView::CSaView Constructor
-/***************************************************************************/
-CSaView::CSaView(const CSaView * pToBeCopied) {
-    // RLJ 06/01/2000
-    pSaApp = (CSaApp *)AfxGetApp();
-    pViewMainFrame = (CMainFrame *)AfxGetMainWnd();
-
-    m_pStopwatch = NULL;
-    m_restartPageOptions = FALSE;
-    m_pPageLayout = new CPrintOptionsDlg;
-
-    //********************************************************
-    // 09/25/2000 - DDO
-    //********************************************************
-    m_bStaticTWC = TRUE;
-    m_bNormalMelogram = TRUE;
-
-    for (int nLoop = 0; nLoop < MAX_GRAPHS_NUMBER; nLoop++) {
-        m_apGraphs[nLoop] = NULL;
-        m_anGraphID[nLoop] = 0;
-    }
-
-    m_anGraphID[0] = IDD_RAWDATA; // default graph
-    m_pFocusedGraph = NULL; // no graph focused
-    m_nFocusedID = 0;
-    m_nLayout = ID_LAYOUT_1; // default layout
-    m_bLegendAll = TRUE;
-    m_bLegendNone = FALSE;
-    m_bXScaleAll = TRUE;
-    m_bXScaleNone = FALSE;
-
-    for (int nLoop = 0; nLoop < ANNOT_WND_NUMBER; nLoop++) {
-        if (nLoop == PHONETIC) {
-            m_abAnnAll[nLoop] = FALSE;
-            m_abAnnNone[nLoop] = FALSE;
-        } else {
-            m_abAnnAll[nLoop] = FALSE;
-            m_abAnnNone[nLoop] = TRUE;
-        }
-    }
-    m_nCursorAlignment = MainFrame()->GetCursorAlignment();
-    m_bBoundariesAll = FALSE;
-    m_bBoundariesNone = TRUE;
-    m_bUpdateBoundaries = TRUE;
-    m_bDrawStyleLine = TRUE;
-    m_dwDataPosition = 0; // start with first sample data
-    m_fMagnify = 1.0; // no magnify
-    m_fZoom = 1.0; // no zoom
-    m_fMaxZoom = 0;
-    m_bAnimating = FALSE;
-    m_bPrintPreviewInProgress = FALSE;
-    m_pCDibForPrint = NULL;
-    m_pPgLayoutBackup = NULL;
-    m_pPickOverlay = new CPickOverlayDlg;
-    m_eInitialShowCmd = SW_SHOWNORMAL;
-    m_z = 0;
-    m_WeJustReadTheProperties = FALSE;
-    m_bViewCreated = FALSE;
-    VERIFY(CStopwatch::CreateObject(&m_pStopwatch));
-
-    m_bEditBoundaries = false;
-    m_bEditSegmentSize = false;
-
-    m_dwStopCursor = 0;
-    m_dwStartCursor = 0;
-    m_dwHScrollFactor = 0;
-    m_fVScrollSteps = 0;
-    m_dwScrollLine = 0;
-    m_dPlaybackPosition = 0;
-    m_dwPlaybackTime = 0;
-    m_dPlaybackPositionLimit = 0;
-    m_nPlaybackSpeed = 0;
-    m_bViewIsActive = FALSE;
-    m_printArea.x = 0;
-    m_printArea.y = 0;
-    m_newPrinterDPI = 0;
-    m_printScaleX = 0;
-    m_printScaleY = 0;
-
-    if (pToBeCopied) {
-        *this = *pToBeCopied;
-    }
-}
-
-CSaView & CSaView::operator=(const CSaView & fromThis) {
-    if (&fromThis != this) {
-        Clear();
-        Copy(fromThis);
-    }
-
-    return *this;
-}
-
 void CSaView::Clear(void) {
     DeleteGraphs(); // delete existing graph objects
     if (m_pPageLayout) {
@@ -906,17 +900,6 @@ void  CSaView::Copy(const CSaView & fromThis) {
     }
 
     m_bViewCreated = FALSE;
-}
-
-
-/***************************************************************************/
-// CSaView::~CSaView Destructor
-/***************************************************************************/
-CSaView::~CSaView() {
-    Clear();
-    if (m_pStopwatch) {
-        delete m_pStopwatch;
-    }
 }
 
 /***************************************************************************/
@@ -3735,6 +3718,7 @@ void CSaView::OnEditAddSyllable() {
 // CSaView::OnUpdateEditAddSyllable
 /***************************************************************************/
 void CSaView::OnUpdateEditAddSyllable(CCmdUI * pCmdUI) {
+
     CSaDoc * pDoc = GetDocument(); // get pointer to document
     BOOL bEnable = FALSE;
 
@@ -3776,11 +3760,46 @@ void CSaView::OnUpdateEditAddSyllable(CCmdUI * pCmdUI) {
 /***************************************************************************/
 void CSaView::OnEditAutoAdd() {
 
+	DWORD start = GetStartCursorPosition();
+	DWORD stop = GetStopCursorPosition();
+
+	bool execute = true;
+	// check if this is not the first time
+	if ((lastZStartCursor!=UNDEFINED_OFFSET) || (lastZStopCursor!=UNDEFINED_OFFSET)) {
+		// If the numbers match, then do nothing, since they have not moved the cursors. 
+		if ((lastZStartCursor==start)&&(lastZStopCursor==stop)) {
+			// no need to go any farther
+			return;
+		}
+		// Check if either the Begin cursor or the End cursor are inside of any existing segment. 
+		// If either of them are, then that would result in an invalid new segment, so again do nothing.
+		CPhoneticSegment * pSeg = (CPhoneticSegment *) GetAnnotation(PHONETIC);
+		for (int i = 0;i< pSeg->GetOffsetSize(); i++) {
+			DWORD begin = pSeg->GetOffset(i);
+			DWORD end = pSeg->GetStop(i);
+			if (((begin<=start)&&(start<=end)) || ((begin<=stop)&&(stop<=end))) {
+				execute = false;
+				break;
+			}
+		}
+	}
+
+	lastZStartCursor = start;
+	lastZStopCursor = stop;
+
+	if (!execute) return;
+
 	TRACE("Running WAT macro\n");
 	OnEditAdd();
 	OnEditAddWord();
 	OnEditAddPhraseL1();
 	OnEditAddAutoPhraseL2();
+
+	start = GetStartCursorPosition();
+	stop = GetStopCursorPosition();
+	if (stop<start) {
+		SetStopCursorPosition(start+1);
+	}
 }
 
 //SDM 1.5Test11.3
@@ -3788,6 +3807,7 @@ void CSaView::OnEditAutoAdd() {
 // CSaView::OnEditAdd Add Phonetic Segment
 /***************************************************************************/
 void CSaView::OnEditAdd() {
+
     CSaDoc * pDoc = (CSaDoc *) GetDocument();
     CPhoneticSegment * pSeg = (CPhoneticSegment *) GetAnnotation(PHONETIC);
     CGlossSegment * pGloss = (CGlossSegment *) GetAnnotation(GLOSS);
@@ -3799,7 +3819,7 @@ void CSaView::OnEditAdd() {
     if (nInsertAt != -1) {
         int nPrevious = pSeg->GetPrevious(nInsertAt);
         if ((nPrevious != -1) &&
-                (pSeg->GetStop(nPrevious) + pDoc->GetBytesFromTime(MAX_ADD_JOIN_TIME)> GetStartCursorPosition())) {
+            (pSeg->GetStop(nPrevious) + pDoc->GetBytesFromTime(MAX_ADD_JOIN_TIME)> GetStartCursorPosition())) {
             pSeg->Adjust(pDoc, nPrevious,pSeg->GetOffset(nPrevious),GetStartCursorPosition() - pSeg->GetOffset(nPrevious));
         }
 
@@ -3810,7 +3830,7 @@ void CSaView::OnEditAdd() {
             nNext = nInsertAt;
         }
         if ((nNext != -1) &&
-                (pSeg->GetOffset(nNext) < GetStopCursorPosition()+pDoc->GetBytesFromTime(MAX_ADD_JOIN_TIME))) {
+            (pSeg->GetOffset(nNext) < GetStopCursorPosition()+pDoc->GetBytesFromTime(MAX_ADD_JOIN_TIME))) {
             pSeg->Adjust(pDoc, nNext,GetStopCursorPosition(),pSeg->GetStop(nNext)-GetStopCursorPosition());
         }
 
@@ -4262,6 +4282,7 @@ void CSaView::OnEditAddBookmark() {
 // CSaView::EditAddGloss Add Gloss Segment
 /***************************************************************************/
 void CSaView::EditAddGloss(bool bDelimiter) {
+
     CSaDoc * pDoc = (CSaDoc *)GetDocument(); // get pointer to document
     CSaString szString = ""; //Fill new segment with default character
 
@@ -4283,7 +4304,7 @@ void CSaView::EditAddGloss(bool bDelimiter) {
         }
 
         DWORD dwStop;
-        if ((nPos == -1) || (nPos >= pSeg->GetTexts()->GetSize())) {
+        if ((nPos == -1) || (nPos >= pSeg->GetTexts().GetSize())) {
             dwStop = pDoc->GetUnprocessedDataSize();
         } else {
             dwStop = pSeg->GetOffset(nPos);
@@ -5329,4 +5350,114 @@ void CSaView::OnEditCopyPhoneticToPhonemic(void) {
 /***************************************************************************/
 void CSaView::OnUpdateEditCopyPhoneticToPhonemic(CCmdUI * pCmdUI) {
     pCmdUI->Enable(TRUE);
+}
+
+BOOL CSaView::GetGraphSubRect(const CRect * pWndRect, CRect * pSubRect, int nPos, const UINT * anGraphID) const {
+    return GetGraphSubRect(m_nLayout, pWndRect, pSubRect, nPos, anGraphID);
+}
+
+UINT CSaView::GetLayout(void) {
+    return m_nLayout;   // DDO - 08/07/00
+}
+
+UINT * CSaView::GetGraphIDs()            {
+    return &m_anGraphID[0];   // get the graph IDs
+}
+
+CGraphWnd * CSaView::GetGraph(int nIndex)  {
+    if (nIndex < 0 || nIndex > MAX_GRAPHS_NUMBER) {
+        return NULL;    // get the pointers to a graph
+    } else {
+        return m_apGraphs[nIndex];
+    }
+}
+
+BOOL CSaView::IsAnimating() {
+    return m_bAnimating;
+}
+
+void CSaView::ChangeCursorAlignment(CURSOR_ALIGNMENT nCursorSetting) {
+    m_nCursorAlignment = nCursorSetting;
+    OnCursorAlignmentChanged();
+}
+
+DWORD CSaView::GetStartCursorPosition() {
+    return m_dwStartCursor;   // get the start cursor position
+}
+
+DWORD CSaView::GetStopCursorPosition()  {
+    return m_dwStopCursor;   // get the stop cursor position
+}
+
+CGraphWnd * CSaView::GetFocusedGraphWnd() {
+    return m_pFocusedGraph;   // gets the focused graph window pointer
+}
+
+UINT CSaView::GetFocusedGraphID() {
+    return m_nFocusedID;   // gets the focused graph ID
+}
+
+BOOL CSaView::ViewIsActive() {
+    return m_bViewIsActive;
+}; // returns TRUE, if view is active
+
+BOOL CSaView::IsUpdateBoundaries() {
+    return m_bUpdateBoundaries;   // return TRUE, if boundaries updated
+}
+
+void CSaView::SetUpdateBoundaries(BOOL bUpdate) {
+    m_bUpdateBoundaries = bUpdate;
+}
+
+CASegmentSelection & CSaView::ASelection() {
+    return m_advancedSelection;
+};
+
+void CSaView::Scroll(DWORD desiredPosition) {
+    UINT nPos = (UINT)(desiredPosition / m_dwHScrollFactor);
+    SendMessage(WM_HSCROLL, SB_THUMBPOSITION, nPos);
+};
+
+void CSaView::Scroll(UINT nSBCode, UINT nPos) {
+    SendMessage(WM_HSCROLL, nSBCode, nPos);
+}
+
+BOOL CSaView::PrintPreviewInProgress() {
+    return m_bPrintPreviewInProgress;
+};
+
+int CSaView::PrinterDPI() {
+    return m_newPrinterDPI;
+};
+
+CPoint CSaView::RealPrinterDPI() {
+    return m_printerDPI;
+};
+
+int CSaView::z() const {
+    return m_z;    // The bottom window's z is zero.
+}
+
+void CSaView::SetZ(int z) {
+    m_z = z;    // Greater z means above; lesser z means below.
+}
+
+BOOL CSaView::GetStaticTWC()                   {
+    return m_bStaticTWC;   // TCJ 6/23/00
+}
+
+void CSaView::SetStaticTWC(BOOL bChecked)      {
+    m_bStaticTWC = bChecked;   // TCJ 6/23/00
+}
+
+BOOL CSaView::GetNormalMelogram()              {
+    return m_bNormalMelogram;   // TCJ 6/23/00
+}
+
+void CSaView::SetNormalMelogram(BOOL bChecked) {
+    m_bNormalMelogram = bChecked;   // TCJ 6/23/00
+}
+
+CMainFrame * CSaView::MainFrame() {
+    return pViewMainFrame;
 }

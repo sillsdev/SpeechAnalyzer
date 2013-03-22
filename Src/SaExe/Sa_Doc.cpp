@@ -1808,6 +1808,7 @@ DWORD CSaDoc::CheckWaveFormatForPaste(const TCHAR * pszPathName) {
 // CSaDoc::CheckWaveFormatForOpen Checks format of a WAV file for opening
 /***************************************************************************/
 DWORD CSaDoc::CheckWaveFormatForOpen(const TCHAR * pszPathName) {
+
     FmtParm fmtParm;
     DWORD dwDataSize = 0;
     if (!GetWaveFormatParams(pszPathName, fmtParm, dwDataSize)) {
@@ -1833,6 +1834,7 @@ DWORD CSaDoc::CheckWaveFormatForOpen(const TCHAR * pszPathName) {
 // CSaDoc::ConvertToWave Converts file to 22kHz, 16bit, Mono WAV format
 /***************************************************************************/
 bool CSaDoc::ConvertToWave(const TCHAR * pszPathName) {
+
     bool result = true;
     CSaApp * pApp = (CSaApp *)AfxGetApp();
 
@@ -1903,6 +1905,7 @@ bool CSaDoc::ConvertToWave(const TCHAR * pszPathName) {
 // Override for CDocument::OnSaveDocument()
 /***************************************************************************/
 BOOL CSaDoc::OnSaveDocument(const TCHAR * pszPathName) {
+
     return OnSaveDocument(pszPathName, TRUE);
 }
 
@@ -1916,29 +1919,34 @@ BOOL CSaDoc::OnSaveDocument(const TCHAR * pszPathName) {
 // file from the recorder contains the RIFF structure with the fmt and the
 // data chunks. After the copying, the file has to be saved in the normal way.
 /***************************************************************************/
-BOOL CSaDoc::OnSaveDocument(const TCHAR * pszPathName, BOOL bSaveAudio) {
-    CSaApp * pApp = (CSaApp *)AfxGetApp(); // get pointer to application
-    BeginWaitCursor(); // wait cursor
+BOOL CSaDoc::OnSaveDocument(const TCHAR * pszPathName2, BOOL bSaveAudio) {
+
+	std::wstring target = pszPathName2;
+
+    CSaApp * pApp = (CSaApp *)AfxGetApp();	// get pointer to application
+    // wait cursor
+	BeginWaitCursor(); 
     if (!m_szTempWave.IsEmpty()) {
         // check if the file already opened
-        if (pApp->IsFileOpened(pszPathName)) {
+		if (pApp->IsFileOpened(target.c_str())) {
             // error file already opened by SA
-            pApp->ErrorMessage(IDS_ERROR_FILEOPENED, pszPathName);
+            pApp->ErrorMessage(IDS_ERROR_FILEOPENED, target.c_str());
             EndWaitCursor();
             return FALSE;
         }
         // temporary wave file to rename
         CFileStatus rStatus;
-        if (CFile::GetStatus(pszPathName, rStatus) != 0) { // check if file exists already
+		// check if file exists already
+        if (CFile::GetStatus(target.c_str(), rStatus) != 0) { 
             // file does exist already, be sure to allow writing and delete it
-            RemoveFile(pszPathName);
+			RemoveFile(target.c_str());
         }
         // check if a copy is needed
-        if (m_szTempWave[0] != pszPathName[0]) {
+		if (m_szTempWave[0] != target.c_str()[0]) {
             // different drives, copy the file
-            if (!CopyWave(m_szTempWave, pszPathName)) {
+			if (!CopyWave(m_szTempWave, target.c_str())) {
                 // error copying file
-                pApp->ErrorMessage(IDS_ERROR_FILEWRITE, pszPathName);
+                pApp->ErrorMessage(IDS_ERROR_FILEWRITE, target.c_str());
                 EndWaitCursor();
                 return FALSE;
             }
@@ -1946,31 +1954,82 @@ BOOL CSaDoc::OnSaveDocument(const TCHAR * pszPathName, BOOL bSaveAudio) {
             RemoveFile(m_szTempWave);
         } else { // rename the file
             try {
-                CFile::Rename(m_szTempWave, pszPathName);
+                CFile::Rename(m_szTempWave, target.c_str());
             } catch (CFileException e) {
                 // error renaming file
-                pApp->ErrorMessage(IDS_ERROR_FILEWRITE, pszPathName);
+                pApp->ErrorMessage(IDS_ERROR_FILEWRITE, target.c_str());
                 EndWaitCursor();
                 return FALSE;
             }
         }
         m_szTempWave.Empty(); // empty the new file name string
-    }
+    } else {
+		// we are dealing with a normal file.
+		// does the file still exist?
+		if (!::FileExists(target.c_str())) {
+
+			CSaString fileName=GetPathName();
+			if (fileName.IsEmpty()) {
+				fileName = GetTitle(); // get the current view caption string
+				int nFind = fileName.Find(':');
+				if (nFind != -1) {
+					fileName = fileName.Left(nFind); // extract part left of :
+				}
+			}
+
+			CSaString fileExt = _T(".wav");
+			fileName = SetFileExtension(fileName, fileExt);
+
+			CDlgSaveAsOptions dlg(_T("wav"), fileName, OFN_PATHMUSTEXIST | OFN_OVERWRITEPROMPT, _T("WAV Files (*.wav)|*.wav||"));
+
+			CSaString szDefault = static_cast<CSaApp *>(AfxGetApp())->DefaultDir(); // need to save copy (return value is destroyed)
+			dlg.m_ofn.lpstrInitialDir = szDefault;
+
+			if (dlg.DoModal()!=IDOK) {
+				return FALSE;
+			}
+
+			fileName = dlg.GetPathName();
+
+			BOOL bSameFileName = FALSE;
+			if (fileName == GetPathName()) {
+				bSameFileName = TRUE;
+				dlg.m_nShowFiles = CDlgSaveAsOptions::showNew; // There is only one file.
+			} else if (static_cast<CSaApp *>(AfxGetApp())->IsFileOpened(fileName)) {
+				// error file already opened by SA
+				static_cast<CSaApp *>(AfxGetApp())->ErrorMessage(IDS_ERROR_FILEOPENED, fileName);
+				return FALSE;
+			}
+
+			CFileStatus newFileStatus;
+			if (CFile::GetStatus(fileName, newFileStatus)) {
+				// File exists overwrite existing file
+				try {
+					CFile::SetStatus(fileName, newFileStatus);
+				} catch (...) {
+					((CSaApp *) AfxGetApp())->ErrorMessage(IDS_ERROR_FILEWRITE, fileName);
+					return FALSE;
+				}
+			}
+
+			target = fileName;
+		}
+	}
 
     DeleteWaveFromUndo(); // delete wave undo entry
-    if (!WriteDataFiles(pszPathName, bSaveAudio)) {
+	if (!WriteDataFiles(target.c_str(), bSaveAudio)) {
         return FALSE;
     }
 
     // get file information
-    CFile::GetStatus(pszPathName, m_fileStat);
+	CFile::GetStatus(target.c_str(), m_fileStat);
     EndWaitCursor();
     SetModifiedFlag(FALSE);
     SetTransModifiedFlag(FALSE);
     SetAudioModifiedFlag(FALSE);
     // if batch mode, set file in changed state
     if (pApp->GetBatchMode() != 0) {
-        pApp->SetBatchFileChanged(pszPathName, m_ID, this); // set changed state
+        pApp->SetBatchFileChanged(target.c_str(), m_ID, this); // set changed state
     }
     return TRUE;
 }
@@ -1984,6 +2043,7 @@ BOOL CSaDoc::OnSaveDocument(const TCHAR * pszPathName, BOOL bSaveAudio) {
 BOOL CSaDoc::WriteDataFiles(const TCHAR * pszPathName,
                             BOOL bSaveAudio/*=TRUE*/,
                             BOOL bIsClipboardFile/*=FALSE*/) {
+
     CSaApp * pApp = (CSaApp *)AfxGetApp();
 
     BeginWaitCursor(); // wait cursor
@@ -2264,6 +2324,7 @@ void CSaDoc::WriteTranscription(int transType, ISaAudioDocumentWriterPtr saAudio
 // reference information to the database.
 /***************************************************************************/
 void CSaDoc::WriteGlossPosAndRefSegments(ISaAudioDocumentWriterPtr saAudioDocWriter) {
+
     CGlossSegment * pGloss = (CGlossSegment *)m_apSegments[GLOSS];
     CSaString szPos;
     CSaString szRef;
@@ -2273,16 +2334,18 @@ void CSaDoc::WriteGlossPosAndRefSegments(ISaAudioDocumentWriterPtr saAudioDocWri
     DWORD length;
     int nRef = 0;
 
-    for (int i = 0; i < pGloss->GetTexts()->GetSize(); i++) {
+    for (int i = 0; i < pGloss->GetTexts().GetSize(); i++) {
+
         offset = pGloss->GetOffset(i);
         length = pGloss->GetDuration(i);
 
-        szGloss = pGloss->GetTexts()->GetAt(i);
+        szGloss = pGloss->GetTexts().GetAt(i);
         szPos = pGloss->GetPOSs()->GetAt(i);
 
-        if (nRef < m_apSegments[REFERENCE]->GetTexts()->GetSize() &&
-                m_apSegments[REFERENCE]->GetOffset(nRef) == offset) {
-            szRef = m_apSegments[REFERENCE]->GetTexts()->GetAt(nRef++);
+		CReferenceSegment * pRef = (CReferenceSegment*)m_apSegments[REFERENCE];
+        if ((nRef < pRef->GetTexts().GetSize()) &&
+            (pRef->GetOffset(nRef) == offset)) {
+            szRef = pRef->GetTexts().GetAt(nRef++);
         }
 
         VARIANT_BOOL isBookmark = FALSE;
@@ -5027,7 +5090,6 @@ void CSaDoc::OnFileSaveAs() {
         return;
     }
 
-
     CFileStatus newFileStatus;
     if (CFile::GetStatus(fileName, newFileStatus)) {
         // File exists overwrite existing file
@@ -6852,10 +6914,10 @@ void CSaDoc::AlignTranscriptionDataByRef(CTranscriptionData & td) {
         return;
     }
 
-    const CStringArray * pReferences = pReference->GetTexts();
+    const CStringArray & references = pReference->GetTexts();
 
     for (int i=0; i<pReference->GetOffsetSize(); i++) {
-        CSaString thisRef = pReferences->GetAt(i);
+        CSaString thisRef = references.GetAt(i);
         DWORD start = pReference->GetOffset(i);
         DWORD duration = pReference->GetDuration(i);
         MarkerList::iterator git = td.m_TranscriptionData[td.m_MarkerDefs[GLOSS]].begin();
