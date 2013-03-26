@@ -325,10 +325,14 @@ namespace SIL.SpeechTools.Utils
 			{
 				// Check to see if the folder and transcription file are writable
 				File.WriteAllText(tmpFile, string.Empty);
-				string transFilePath = Path.ChangeExtension(audioFile, ".saxml");
-				if (File.Exists(transFilePath))
-					if ((File.GetAttributes(transFilePath) & FileAttributes.ReadOnly) == FileAttributes.ReadOnly)
-						throw new Exception();
+				string transFilePath = Path.ChangeExtension( audioFile, ".saxml");
+                if (File.Exists(transFilePath)) 
+                {
+                    if ((File.GetAttributes(transFilePath) & FileAttributes.ReadOnly) == FileAttributes.ReadOnly)
+                    {
+                        throw new Exception();
+                    }
+                }
 			}
 			catch
 			{
@@ -360,7 +364,9 @@ namespace SIL.SpeechTools.Utils
 			{
 				File.Delete(tmpFile);
 			}
-			catch { }
+			catch 
+            { 
+            }
 
 			// If the specified audio file doesn't exist, it means it's original
 			// location is read-only. Therefore, copy it to the newly specified
@@ -372,7 +378,7 @@ namespace SIL.SpeechTools.Utils
 				AudioFile = audioFile;
 			}
 
-			return SilUtils.Utils.SerializeData(TranscriptionFile, this);
+			return SilUtils.Utils.SerializeData( TranscriptionFile, this);
 		}
 
 		/// ------------------------------------------------------------------------------------

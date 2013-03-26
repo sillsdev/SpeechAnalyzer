@@ -81,7 +81,7 @@ bool CreateFolder(LPCTSTR path) {
     return true;
 }
 
-void AppendDirSep(LPTSTR path, size_t size) {
+void AppendDirSep( LPTSTR path, size_t size) {
 
     size_t len = wcslen(path);
     if (len == 0) {
@@ -95,7 +95,7 @@ void AppendDirSep(LPTSTR path, size_t size) {
     wcscat_s(path,size,L"\\");
 }
 
-void AppendDirSep(wstring & path) {
+void AppendDirSep( wstring & path) {
 
     size_t len = path.length();
     if (len == 0) {
@@ -147,3 +147,12 @@ int GetSaveAsFilename(LPCTSTR title, LPCTSTR filter, LPCTSTR extension, LPTSTR p
     }
     return result;
 }
+
+bool EndsWith( LPCTSTR path, LPCTSTR extension) {
+	if (wcslen(path)<wcslen(extension)) return false;
+	wstring sub(path);
+	sub = sub.substr( wcslen(path) - wcslen(extension), wcslen(extension));
+	return (_wcsicmp(sub.c_str(),extension)==0);
+}
+
+

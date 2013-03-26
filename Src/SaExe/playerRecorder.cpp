@@ -656,19 +656,15 @@ void CDlgPlayer::ChangeView(CSaView * pView) {
         return;
     }
     // set file name in players caption
-    m_pView = pView; // set the new pointer to the active view
-    m_pDoc = pView->GetDocument(); // get the pointer to the attached document
+    m_pView = pView;								// set the new pointer to the active view
+    m_pDoc = pView->GetDocument();					// get the pointer to the attached document
     CSaDoc * pDoc = (CSaDoc *)m_pDoc;
-    CString szTitle = pDoc->GetTitle(); // load the document title
-    int nFind = szTitle.Find(':');
-    if (nFind != -1) {
-        szTitle = szTitle.Left(nFind);    // extract part left of :
-    }
+	CString szTitle = pDoc->GetFilename().c_str();	// load the document title
     CString szCaption;
-    GetWindowText(szCaption); // get the current caption string
-    nFind = szCaption.Find(' ');
+    GetWindowText(szCaption);						// get the current caption string
+    int nFind = szCaption.Find(' ');
     if (nFind != -1) {
-        szCaption = szCaption.Left(nFind);    // extract part left of first space
+        szCaption = szCaption.Left(nFind);			// extract part left of first space
     }
     szCaption += " - " + szTitle; // add new document title
     SetWindowText(szCaption); // write the new caption string
@@ -1854,17 +1850,14 @@ BOOL CDlgRecorder::OnInitDialog() {
     LOGFONT logFont;
     pFont->GetObject(sizeof(LOGFONT), (void *)&logFont); // fill up logFont
     // modify the logFont
-    logFont.lfWeight = FW_NORMAL; // not bold
-    m_Font.CreateFontIndirect(&logFont); // create the modified font
-    pWnd->SetFont(&m_Font); // set the modified font
+    logFont.lfWeight = FW_NORMAL;						// not bold
+    m_Font.CreateFontIndirect(&logFont);				// create the modified font
+    pWnd->SetFont(&m_Font);								// set the modified font
     GetDlgItem(IDC_SETTINGSTEXT)->SetFont(&m_Font);
     // set file name in recorders caption
-    CString szTitle = m_pDoc->GetTitle(); // load file name
-    int nFind = szTitle.Find(':');
-    if (nFind != -1) {
-        szTitle = szTitle.Left(nFind);    // extract part left of :
-    }
-    CString szCaption;
+    CString szTitle = m_pDoc->GetFilename().c_str();	// load file name
+
+	CString szCaption;
     GetWindowText(szCaption);
     szCaption += " - " + szTitle;
     SetWindowText(szCaption);

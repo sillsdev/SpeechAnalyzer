@@ -168,6 +168,7 @@ BEGIN_MESSAGE_MAP(CMainFrame, CMDIFrameWnd)
     ON_UPDATE_COMMAND_UI(ID_PROGRESSPANE_3, OnUpdateProgressPane)
     ON_COMMAND(ID_POPUP_RECORD_OVERLAY, OnRecordOverlay)
     ON_UPDATE_COMMAND_UI(ID_POPUP_RECORD_OVERLAY, OnUpdateRecordOverlay)
+    ON_WM_TIMER()
 END_MESSAGE_MAP()
 
 static UINT BASED_CODE dataIndicators[] = {
@@ -284,7 +285,6 @@ CMainFrame::CMainFrame() {
         pApp->ErrorMessage(IDS_ERROR_MEMALLOC);
         return;
     }
-
 
     m_bPrintPreviewInProgress = FALSE;
     m_wplDlgEditor.length = 0; // SDM 1.5Test8.2
@@ -583,6 +583,9 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct) {
     m_colors.SetupDefault();
     // setup function keys default
     m_fnKeys.SetupDefault();
+
+    SetTimer( ID_TIMER_AUTOSAVE, AUTOSAVE_TIMER, NULL); // start the timer
+
     return 0;
 }
 
@@ -1683,6 +1686,7 @@ void CMainFrame::OnUpdateEqualizeLength(CCmdUI * pCmdUI) {
 // The user wants to see the modeless find dialog.
 /***************************************************************************/
 void CMainFrame::CreateFindOrReplaceDlg() {
+
     // Get the string segment represented;
     CSaString sToFind;
     int  annotWndIndex = 0;
@@ -2097,6 +2101,7 @@ static const char * pszTmpDfltSettingsFile = "~!SA!~.tmp";
 // WARNING ....read destroys temp file
 //********************************************************************
 void CMainFrame::WriteReadDefaultViewToTempFile(BOOL bWrite) {
+
     CSaString szPath;
 
     GetTempPath(_MAX_PATH, szPath.GetBuffer(_MAX_PATH));
@@ -2598,4 +2603,27 @@ int CMainFrame::GetPopup() const {
 
 void CMainFrame::SetToolSettings( CToolSettings settings) {
 	toolSettings = settings;
+}
+
+/**
+* callback for EnumChildWindows in OnTimer function
+*/
+BOOL CALLBACK AutosaveTimerChildProc( HWND hwnd,  LPARAM lParam) {
+
+	if (DYNAMIC_DOWNCAST(CSaView,CWnd::FromHandle(hwnd)) != NULL)
+	{
+		TRACE(L"Posting autosave message\n");
+		::PostMessage(hwnd,WM_USER_AUTOSAVE,0,0);
+	}
+	return(TRUE);
+}
+
+void CMainFrame::OnTimer( UINT nIDEvent) {
+	
+	TRACE(L"OnTimer %d\n",nIDEvent);
+	if (nIDEvent = ID_TIMER_AUTOSAVE) {
+		::EnumChildWindows( m_hWnd, AutosaveTimerChildProc, NULL); 
+	} else {
+		CWnd::OnTimer( nIDEvent);
+	}
 }

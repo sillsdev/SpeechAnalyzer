@@ -143,19 +143,15 @@ void CDlgExportFW::DoDataExchange(CDataExchange * pDX) {
         path.Append(L"*");
 
         CFileFind finder;
-        BOOL bWorking = finder.FindFile(path);
-        while (bWorking) {
-            bWorking = finder.FindNextFile();
-
-            if (finder.IsDots()) {
-                continue;
-            }
-            if (!finder.IsDirectory()) {
-                continue;
-            }
+        if (finder.FindFile(path));
+		bool more = true;
+		do {
+            more = finder.FindNextFile();
+            if (finder.IsDots()) continue;
+            if (!finder.IsDirectory()) continue;
             TRACE(L"Found %s\n", finder.GetFileName());
             ctlComboFieldWorksProject.AddString((LPCTSTR) finder.GetFileName());
-        }
+        } while (more);
     } else {
         TCHAR szBuffer[MAX_PATH];
         GetCurrentPath(szBuffer,MAX_PATH);

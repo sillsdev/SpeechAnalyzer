@@ -34,7 +34,6 @@ static char BASED_CODE THIS_FILE[] = __FILE__;
 // CSaFindDlg message map
 
 BEGIN_MESSAGE_MAP(CSaFindDlg, CDialog)
-    //{{AFX_MSG_MAP(CSaFindDlg)
     ON_BN_CLICKED(IDC_NEXT, OnNext)
     ON_BN_CLICKED(IDC_PREVIOUS, OnPrevious)
     ON_BN_CLICKED(IDC_CHARACTERCHART, OnCharacterChart)
@@ -46,9 +45,7 @@ BEGIN_MESSAGE_MAP(CSaFindDlg, CDialog)
     ON_BN_CLICKED(IDC_REPLACEALL, OnReplaceAll)
     ON_COMMAND(IDHELP, OnHelpFind)
     ON_CBN_SELCHANGE(IDC_CBOFIELD2, OnSelchangeCbofield2)
-    //}}AFX_MSG_MAP
 END_MESSAGE_MAP()
-
 
 /////////////////////////////////////////////////////////////////////////////
 // CSaFindDlg construction/destruction/creation
@@ -56,15 +53,13 @@ END_MESSAGE_MAP()
 /***************************************************************************/
 // CSaFindDlg::CSaFindDlg Constructor
 /***************************************************************************/
-CSaFindDlg::CSaFindDlg(
-    CWnd * pParent,
-    const TCHAR * pszFieldsToSearch,
-    const CString & strToFind,
-    BOOL bFindOnly,
-    const CString & strToReplace,
-    int idxDefaultField,
-    CMainFrame * pMainFrame)
-    :
+CSaFindDlg::CSaFindDlg( CWnd * pParent,
+						const TCHAR * pszFieldsToSearch,
+						const CString & strToFind,
+						BOOL bFindOnly,
+						const CString & strToReplace,
+						int idxDefaultField,
+						CMainFrame * pMainFrame) :
     m_sFieldsToSearch(pszFieldsToSearch),
     m_annotWndIndex(idxDefaultField),
     m_replaceStr(strToReplace),
@@ -72,10 +67,8 @@ CSaFindDlg::CSaFindDlg(
     m_pMainFrame(pMainFrame),
     CDialog(CSaFindDlg::IDD, pParent) {
 
-    //{{AFX_DATA_INIT(CSaFindDlg)
     m_strToFind = strToFind;
     m_breakOrBookMark = 0;
-    //}}AFX_DATA_INIT
 
     if ((m_annotWndIndex < 0) || (m_annotWndIndex >= ANNOT_WND_NUMBER)) {
         m_annotWndIndex = 0;
@@ -96,8 +89,6 @@ CSaFindDlg::CSaFindDlg(
         ShowWindow(SW_SHOW);
     }
 }
-
-
 
 /***************************************************************************/
 // CSaFindDlg::Completed - returns TRUE if the entire annotation window has

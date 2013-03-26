@@ -48,12 +48,16 @@
 //        DDO - Added another parameter to DeleteGraphs()
 /////////////////////////////////////////////////////////////////////////////
 #ifndef _SA_VIEW_H
+#define _SA_VIEW_H
 
 #include "colors.h"
 #include "sa_ansel.h"
 #include "CSaString.h"
+#include <string>
+#include <vector>
 
-#define _SA_VIEW_H
+using std::wstring;
+using std::vector;
 
 typedef enum ECREATE_HOW { CREATE_STANDARD=0, CREATE_FROMSTREAM=1, CREATE_FROMGRAPH=2, CREATE_FROMSCRATCH=3 } CREATE_HOW;
 
@@ -94,7 +98,6 @@ public:
     int GetGraphIndexForIDD(UINT);   // get index for a given IDD resource
     void RefreshGraphs(BOOL bEntire = TRUE, BOOL bLegend = FALSE, BOOL bLayout = FALSE); // refresh (redraw) the graphs (entire or partial)
     void BroadcastMessage(UINT Message , WPARAM wParam = 0, LPARAM lParam = 0);
-    CSaDoc * GetDocument();              // get a pointer to the document
     UINT * GetGraphIDs();
     CSaString GetGraphsDescription() const;
     static CSaString GetGraphsDescription(const UINT *);
@@ -205,6 +208,7 @@ public:
     virtual void AssertValid() const;
     virtual void Dump(CDumpContext & dc) const;
 #endif
+	CSaDoc * GetDocument();
 
     CGraphWnd * m_apGraphs[MAX_GRAPHS_NUMBER]; // array of pointers to the graph objects
 
@@ -414,6 +418,7 @@ protected:
     afx_msg LRESULT OnAnimationChanged(WPARAM = 0, LPARAM = 0L);
     afx_msg LRESULT OnRecorder(WPARAM, LPARAM);
     afx_msg LRESULT OnAppMessage(WPARAM hint, LPARAM hintObject);
+	afx_msg LRESULT OnAutoSave(WPARAM wParam, LPARAM lParam);
     afx_msg void OnFilePrint();
     afx_msg void OnUpdateFilePrint(CCmdUI * pCmdUI);
     afx_msg void OnFilePrintPreview();
@@ -545,13 +550,6 @@ private:
 	DWORD lastZStartCursor;
 	DWORD lastZStopCursor;
 };
-
-
-#ifndef _DEBUG  // debug version in saView.cpp
-inline CSaDoc * CSaView::GetDocument() {
-    return (CSaDoc *)m_pDocument;
-}
-#endif
 
 #endif
 

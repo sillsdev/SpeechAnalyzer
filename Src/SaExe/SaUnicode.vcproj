@@ -54,7 +54,7 @@
 				PreprocessorDefinitions="_WINDOWS;WINDOWS_PLATFORM;_DEBUG;WIN32;WINVER=0x0501"
 				MinimalRebuild="true"
 				RuntimeLibrary="3"
-				ProgramDataBaseFileName="$(IntDir)\SA.pdb"
+				ProgramDataBaseFileName="..\..\output\release\SA.pdb"
 				BrowseInformation="1"
 				WarningLevel="4"
 				SuppressStartupBanner="true"
@@ -150,7 +150,7 @@
 				PreprocessorDefinitions="_WINDOWS;WINDOWS_PLATFORM;WIN32;NDEBUG;WINVER=0x501"
 				MinimalRebuild="true"
 				RuntimeLibrary="2"
-				ProgramDataBaseFileName="$(IntDir)\SA.pdb"
+				ProgramDataBaseFileName="..\..output\release\SA.pdb"
 				BrowseInformation="0"
 				WarningLevel="4"
 				SuppressStartupBanner="true"
@@ -438,10 +438,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\DlgAlignTranscriptionDataImportRefPage.h"
-				>
-			</File>
-			<File
 				RelativePath=".\DlgAlignTranscriptionDataInitPage.cpp"
 				>
 			</File>
@@ -455,10 +451,6 @@
 			</File>
 			<File
 				RelativePath=".\DlgAlignTranscriptionDataTextPage.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\DlgAlignTranscriptionDataTextPage.h"
 				>
 			</File>
 			<File
@@ -3503,6 +3495,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\DlgAlignTranscriptionDataImportRefPage.h"
+				>
+			</File>
+			<File
 				RelativePath=".\DlgAlignTranscriptionDataInitPage.h"
 				>
 			</File>
@@ -3512,6 +3508,10 @@
 			</File>
 			<File
 				RelativePath=".\DlgAlignTranscriptionDataSheet.h"
+				>
+			</File>
+			<File
+				RelativePath=".\DlgAlignTranscriptionDataTextPage.h"
 				>
 			</File>
 			<File

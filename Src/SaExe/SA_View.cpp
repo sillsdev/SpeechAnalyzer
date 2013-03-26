@@ -666,12 +666,8 @@ void CSaView::OnExportMIDI() {
 void CSaView::OnImportSFM() {
     // Get Export File Type and Name
     CSaString szTitle;
-    szTitle = ((CSaDoc *)GetDocument())->GetTitle();                                 // load file name
-    int nFind = szTitle.Find(':');
-    if (nFind != -1) {
-        szTitle = szTitle.Left(nFind);    // extract part left of :
-    }
-    nFind = szTitle.ReverseFind('.');
+    szTitle = ((CSaDoc *)GetDocument())->GetFilename().c_str();	// load file name
+    int nFind = szTitle.ReverseFind('.');
     if (nFind >= ((szTitle.GetLength() > 3) ? (szTitle.GetLength()-4) : 0)) {
         szTitle = szTitle.Left(nFind);    // remove extension
     }
@@ -692,12 +688,8 @@ void CSaView::OnImportSFM() {
 void CSaView::OnImportSFT() {
     // Get Export File Type and Name
     CSaString szTitle;
-    szTitle = ((CSaDoc *)GetDocument())->GetTitle();                                 // load file name
-    int nFind = szTitle.Find(':');
-    if (nFind != -1) {
-        szTitle = szTitle.Left(nFind);    // extract part left of :
-    }
-    nFind = szTitle.ReverseFind('.');
+    szTitle = ((CSaDoc *)GetDocument())->GetFilename().c_str();		// load file name
+    int nFind = szTitle.ReverseFind('.');
     if (nFind >= ((szTitle.GetLength() > 3) ? (szTitle.GetLength()-4) : 0)) {
         szTitle = szTitle.Left(nFind);    // remove extension
     }
@@ -806,13 +798,8 @@ void CSaView::OnFileInformation() {
     SourceParm * pSourceParm = pDoc->GetSourceParm();
     CSaString szCaption, szTitle;
     szCaption.LoadString(IDS_DLGTITLE_FILEINFO);                // load caption string
-    szTitle = pDoc->GetTitle();                                 // load file name
-    int nFind = szTitle.Find(':');
-    if (nFind != -1) {
-        szTitle = szTitle.Left(nFind);                          // extract part left of :
-    }
+    szTitle = pDoc->GetFilename().c_str();                      // load file name
     szCaption += " - " + szTitle;                               // build new caption string
-
     CDlgFileInformation dlg(szCaption, NULL, 0);                // file information dialog
     // set file description string
     dlg.m_dlgUserPage.m_szFileDesc = pDoc->GetSaParm()->szDescription;
@@ -3723,4 +3710,3 @@ void CSaView::SetScrollRange(int nBar, int nMinPos, int nMaxPos, BOOL bRedraw) {
         CView::SetScrollRange(nBar, nMinPos, nMaxPos, bRedraw);
     }
 }
-

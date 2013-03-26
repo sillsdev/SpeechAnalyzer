@@ -248,13 +248,6 @@ protected:
 #define COLOR_ITEM_HEIGHT   16 // height of each item in list
 
 class CComboGridlines : public CComboBox {
-    // Construction/destruction/creation
-public:
-
-    // Attributes
-private:
-
-    // Operations
 private:
     virtual void MeasureItem(LPMEASUREITEMSTRUCT lpMIS);
     virtual void DrawItem(LPDRAWITEMSTRUCT lpDIS);
@@ -268,19 +261,16 @@ public:
 class CSpinControl : public CWnd {
     DECLARE_DYNCREATE(CSpinControl)
 
-// Construction/destruction/creation
 public:
     CSpinControl();
     ~CSpinControl();
 
-    // Attributes
 private:
     BOOL m_bUpButtonDown;  // button status
     BOOL m_bLowButtonDown;
     int  m_nID;            // ID
     BOOL m_bTimerStart;    // TRUE indicates a new mouse repeat timer start
 
-    // Operations
 private:
     void DrawArrowUp(CDC * pDC, CRect rect);
     void DrawArrowDown(CDC * pDC, CRect rect);
@@ -298,7 +288,6 @@ public:
 
     // Generated message map functions
 protected:
-    //{{AFX_MSG(CSpinControl)
     afx_msg void OnPaint();
     afx_msg BOOL OnEraseBkgnd(CDC * pDC);
     afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
@@ -306,7 +295,6 @@ protected:
     afx_msg void OnLButtonUp(UINT nFlags, CPoint point);
     afx_msg void OnTimer(UINT nIDEvent);
     afx_msg void OnEnable(BOOL bEnable);
-    //}}AFX_MSG
     DECLARE_MESSAGE_MAP()
 };
 
@@ -316,12 +304,10 @@ protected:
 class CToggleButton : public CWnd {
     DECLARE_DYNCREATE(CToggleButton)
 
-// Construction/destruction/creation
 public:
     CToggleButton();
     ~CToggleButton();
 
-    // Attributes
 private:
     CRect m_rSymbol;       // symbol rectangle
     int   m_nID;           // ID
@@ -330,12 +316,12 @@ private:
     BOOL  m_bSymbolOff;    // button symbol draw status
     CString m_szText;      // button text
 
-    // Operations
 private:
     void DrawButtonUp(CDC * pDC, CRect rWnd);
     void DrawButtonDown(CDC * pDC, CRect rWnd);
     void DrawText(CDC * pDC, CRect rWnd);
     void DrawSymbol(CDC * pDC);
+
 public:
     void Init(UINT nID, CString szText, CWnd * pParent);
     int GetID() {

@@ -84,7 +84,6 @@
 #include "sa_view.h"
 #include "sa_wbch.h"
 #include "mainfrm.h"
-#include "settings\obstream.h"
 #include "doclist.h"
 #include "DlgExportFW.h"
 #include "sa_dplot.h"
@@ -97,9 +96,11 @@
 #include "playerRecorder.h"
 #include "ClipboardHelper.h"
 #include "FileUtils.h"
+#include "resource.h"
 #include "Process\Process.h"
 #include "Process\sa_p_gra.h"
 #include "Process\sa_p_fra.h"
+#include "settings\obstream.h"
 
 using std::ifstream;
 using std::ofstream;
@@ -316,6 +317,7 @@ HMODULE LoadCompatibleLibrary(LPCTSTR szCName) {
 // Called by framework to initially create the application.
 /***************************************************************************/
 BOOL CSaApp::InitInstance() {
+
     // handle single instance
     if (CreateAsSingleton(_T("418486C0-7EEE-448d-AD39-2522F5D553A7"))==FALSE) {
         return FALSE;
@@ -462,7 +464,7 @@ BOOL CSaApp::InitInstance() {
 
         // Dispatch commands specified on the command line
         if ((cmdInfo.m_nShellCommand != CCommandLineInfo::FileNew) &&
-                (!ProcessShellCommand(cmdInfo))) {
+            (!ProcessShellCommand(cmdInfo))) {
             return FALSE;
         }
 
@@ -488,6 +490,46 @@ BOOL CSaApp::InitInstance() {
             AfxMessageBox(msg);
         }
 
+		wstring autosavedir = GetAutoSaveDirectory();
+		CFileFind finder;
+		wstring search(autosavedir);
+		search.append(L"*.*");
+
+		int count = 0;
+		if (finder.FindFile(search.c_str(),0)==TRUE) {
+			bool more = true;
+			do {
+				more = finder.FindNextFile();
+				if (finder.IsDirectory()) continue;
+				if (finder.IsDots()) continue;
+				wstring path = finder.GetFilePath();
+				if ((::EndsWith(path.c_str(),L".TMP")) ||
+					(::EndsWith(path.c_str(),L".WAV"))) {
+					count++;
+				}
+			} while (more);
+
+			if (count>0) {
+				int result = AfxMessageBox( IDS_AUTOSAVE_MSG, MB_YESNO | MB_ICONQUESTION);
+				if (result==IDYES) {
+					if (finder.FindFile(search.c_str(),0)==TRUE) {
+						bool more = true;
+						do {
+							more = finder.FindNextFile();
+							if (finder.IsDirectory()) continue;
+							if (finder.IsDots()) continue;
+							wstring path = finder.GetFilePath();
+							if ((::EndsWith(path.c_str(),L".TMP")) ||
+								(::EndsWith(path.c_str(),L".WAV"))) {
+								CSaDoc *doc= (CSaDoc *)OpenDocumentFile(path.c_str());
+								OpenDocumentFile( path.c_str());
+							}
+						} while (more);
+					}
+				}
+			}
+		}
+
         // Show startup dialog
         CMainFrame * pMainWnd = (CMainFrame *)AfxGetMainWnd();
         if ((pMainWnd->GetShowStartupDlg()) && (!pMainWnd->GetCurrSaView())) {
@@ -512,6 +554,7 @@ BOOL CSaApp::InitInstance() {
 // Called by framework to exit the application.
 /***************************************************************************/
 int CSaApp::ExitInstance() {
+
     // delete the temp transcription DB
     CoInitialize(NULL);
     ISaAudioDocumentWriterPtr saAudioDocWriter;
@@ -547,6 +590,8 @@ int CSaApp::ExitInstance() {
         SaveStdProfileSettings();
     } catch (...) {
     }
+
+	CleanAutoSave();
 
     // standard implementation: save initialisation
     if (bOK) {
@@ -2688,3 +2733,39 @@ void CSaApp::SetLastClipboardPath(LPCTSTR szPath) {
 LPCTSTR CSaApp::GetLastClipboardPath() {
     return m_szLastClipboardPath;
 }
+
+wstring CSaApp::GetAutoSaveDirectory() {
+
+	// find or create the autosave directory
+	TCHAR buffer[_MAX_PATH];
+	::GetEnvironmentVariable(L"TEMP",buffer,_countof(buffer));
+	wstring autosavedir(buffer);
+	AppendDirSep(autosavedir);
+	autosavedir.append(L"SpeechAnalyzerAutoSave");
+	AppendDirSep(autosavedir);
+	return autosavedir;
+}
+
+void CSaApp::CleanAutoSave() {
+
+	wstring autosavedir = GetAutoSaveDirectory();
+	wstring search(autosavedir);
+	search.append(L"*.*");
+
+	CFileFind finder;
+	if (finder.FindFile(search.c_str(),0)) {
+		bool more = true;
+		do {
+			more = finder.FindNextFileW();
+			if (finder.IsDirectory()) continue;
+			if (finder.IsDots()) continue;
+			wstring path = finder.GetFilePath();
+			if ((::EndsWith(path.c_str(),L".TMP")) ||
+				(::EndsWith(path.c_str(),L".WAV")) ||
+				(::EndsWith(path.c_str(),L".SAXML"))) {
+				::RemoveFile(path.c_str());
+			}
+		} while (more);
+	}
+}
+

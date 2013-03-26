@@ -35,18 +35,20 @@
 #include "sa_cdib.h"
 #include "sa_mplot.h"
 #include "pickover.h"
-#include "settings\obstream.h"
 #include "DlgExportFW.h"
 #include "sa_g_stf.h"
 #include "GlossSegment.h"
 #include "MusicPhraseSegment.h"
 #include "PhoneticSegment.h"
+#include "FileUtils.h"
+#include "resource.h"
 #include "dsp\dspTypes.h"
 #include "dsp\scale.h"
 #include "Process\Process.h"
 #include "Process\sa_p_fra.h"
 #include "Process\sa_p_spg.h"
 #include "Process\sa_p_sfmt.h"
+#include "settings\obstream.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE
@@ -325,7 +327,8 @@ BEGIN_MESSAGE_MAP(CSaView, CView)
     ON_MESSAGE(WM_USER_VIEW_ANIMATIONCHANGED, OnAnimationChanged)
     ON_MESSAGE(WM_USER_RECORDER, OnRecorder)
     ON_MESSAGE(WM_USER_APP_MESSAGE, OnAppMessage)
-    ON_COMMAND(ID_EDIT_COPY, OnEditCopy)
+	ON_MESSAGE(WM_USER_AUTOSAVE,OnAutoSave)	    
+	ON_COMMAND(ID_EDIT_COPY, OnEditCopy)
     ON_UPDATE_COMMAND_UI(ID_EDIT_COPY, OnUpdateEditCopy)
     ON_COMMAND(ID_EDIT_COPY_MEASUREMENTS, OnEditCopyMeasurements)
     ON_COMMAND(ID_EDIT_PASTE, OnEditPaste)
@@ -343,6 +346,7 @@ BEGIN_MESSAGE_MAP(CSaView, CView)
 END_MESSAGE_MAP()
 
 CSaView::CSaView(const CSaView * pToBeCopied) {
+
     // RLJ 06/01/2000
     pSaApp = (CSaApp *)AfxGetApp();
     pViewMainFrame = (CMainFrame *)AfxGetMainWnd();
@@ -812,12 +816,6 @@ void CSaView::AssertValid() const {
 
 void CSaView::Dump(CDumpContext & dc) const {
     CView::Dump(dc);
-}
-
-
-CSaDoc * CSaView::GetDocument() { // non-debug version is inline
-    ASSERT(m_pDocument->IsKindOf(RUNTIME_CLASS(CSaDoc)));
-    return (CSaDoc *)m_pDocument;
 }
 
 #endif //_DEBUG
@@ -1531,11 +1529,7 @@ void CSaView::SetFocusedGraph(CGraphWnd * pWnd) {
         pWnd->GetWindowText(szGraph.GetBuffer(64), 64);     // load the graph caption
         szGraph.ReleaseBuffer(-1);
         CSaDoc * pDoc = GetDocument();
-        szCaption = pDoc->GetTitle();                       // get current view's caption string
-        int nFind = szCaption.Find(':');
-        if (nFind != -1) {
-            szCaption = szCaption.Left(nFind);              // extract part left of :
-        }
+        szCaption = pDoc->GetFilename().c_str();            // get current view's caption string
 
         if ((pDoc->IsTempFile())&&(pDoc->CanEdit())) {
             CString szCopy;
@@ -1566,13 +1560,9 @@ void CSaView::ResetFocusedGraph() {
     // delete name of graph in caption of view
     CSaString szCaption;
     if (m_pDocument && GetSafeHwnd()) {
-        CSaDoc * pDoc = GetDocument(); // get pointer to document
-        szCaption = pDoc->GetTitle(); // get the current view caption string
-        int nFind = szCaption.Find(':');
-        if (nFind != -1) {
-            szCaption = szCaption.Left(nFind);    // extract part left of first space
-        }
-        pDoc->SetTitle(szCaption); // write the new caption string
+        CSaDoc * pDoc = GetDocument();	// get pointer to document
+        szCaption = pDoc->GetFilename().c_str();	// get the current view caption string
+        pDoc->SetTitle(szCaption);		// write the new caption string
     }
 }
 
@@ -2176,8 +2166,6 @@ void CSaView::SetStartStopCursorPosition(DWORD dwNewStartPos,
 /***************************************************************************/
 void CSaView::SetPlaybackPosition(double dNewPos, int nSpeed, BOOL bEstimate) {
 
-    //if (!bEstimate)
-    //TRACE(_T("PlaybackPosition %8.1f Position %8.1f nSpeed %d Estimate %d\n"),m_dPlaybackPosition, dNewPos, nSpeed, bEstimate);
     if (bEstimate) {
         SetTimer(ID_PLAYER, /*PLAYBACK_CURSOR_UPDATE_INTERVAL * 1000 */ 1 , NULL);
     } else {
@@ -2209,14 +2197,14 @@ void CSaView::SetPlaybackPosition(double dNewPos, int nSpeed, BOOL bEstimate) {
 /***************************************************************************/
 // CSaView::OnTimer Set the playbackPosition
 /***************************************************************************/
-void CSaView::OnTimer(UINT nIDEvent) {
+void CSaView::OnTimer( UINT nIDEvent) {
 
     if (nIDEvent == ID_PLAYER) {
         if (m_nPlaybackSpeed>0) {
             double dNewPos = m_dPlaybackPosition + (GetTickCount()-m_dwPlaybackTime)/GetDocument()->GetTimeFromBytes(1000) * m_nPlaybackSpeed / 100;
             SetPlaybackPosition( dNewPos, m_nPlaybackSpeed, TRUE);
         }
-    } else {
+	} else {
         CView::OnTimer(nIDEvent);
     }
 }
@@ -2828,6 +2816,7 @@ void CSaView::CalcCustomPage(CRect * customPage, const CRect * viewRect, int row
 // Print a title on the page.
 /***************************************************************************/
 void CSaView::PrintPageTitle(CDC * pDC, int titleAreaHeight) {
+
     CSaString szDocTitle(GetDocument()->GetTitle()); // load file name
     CSaString szTitle("Speech Analyzer - ");
 
@@ -2983,7 +2972,8 @@ int CSaView::CalculateHiResPrintPages(void) {
 //
 /***************************************************************************/
 void CSaView::PreparePrintingForScreenShot(void) {
-    CWindowDC    scrn(pViewMainFrame);
+
+	CWindowDC    scrn(pViewMainFrame);
 
     scrn.SelectClipRgn(NULL); // select entire window client area
     scrn.GetClipBox(&m_memRect);
@@ -3362,8 +3352,8 @@ CSegment * CSaView::FindSelectedAnnotation() {
 // CSaView::FindSelectedAnnotation
 /***************************************************************************/
 int CSaView::FindSelectedAnnotationIndex() {
-    int ret = -1;
 
+    int ret = -1;
     for (int nLoop = 0; nLoop < ANNOT_WND_NUMBER; nLoop++) {
         CSegment * pSegments = GetAnnotation(nLoop);
         if (pSegments && (pSegments->GetSelection() != -1)) {
@@ -3371,7 +3361,6 @@ int CSaView::FindSelectedAnnotationIndex() {
             break;
         }
     }
-
     return ret;
 }
 
@@ -5307,6 +5296,7 @@ void CSaView::OnMoveStopCursorHere() {
 // CSaDoc::OnAutoSnapUpdate Adjust all independent segments to snap boundaries
 /***************************************************************************/
 void CSaView::OnEditCopyPhoneticToPhonemic(void) {
+
     // doesn't user want to keep existing gloss?
     if (AfxMessageBox(IDS_CONFIRM_PHONEMIC_COPY, MB_YESNO | MB_ICONQUESTION, 0) != IDYES) {
         return;
@@ -5360,13 +5350,15 @@ UINT CSaView::GetLayout(void) {
     return m_nLayout;   // DDO - 08/07/00
 }
 
-UINT * CSaView::GetGraphIDs()            {
-    return &m_anGraphID[0];   // get the graph IDs
+UINT * CSaView::GetGraphIDs() {
+	// get the graph IDs
+    return &m_anGraphID[0];   
 }
 
 CGraphWnd * CSaView::GetGraph(int nIndex)  {
+	// get the pointers to a graph
     if (nIndex < 0 || nIndex > MAX_GRAPHS_NUMBER) {
-        return NULL;    // get the pointers to a graph
+        return NULL;    
     } else {
         return m_apGraphs[nIndex];
     }
@@ -5382,27 +5374,33 @@ void CSaView::ChangeCursorAlignment(CURSOR_ALIGNMENT nCursorSetting) {
 }
 
 DWORD CSaView::GetStartCursorPosition() {
-    return m_dwStartCursor;   // get the start cursor position
+	// get the start cursor position
+    return m_dwStartCursor;   
 }
 
 DWORD CSaView::GetStopCursorPosition()  {
-    return m_dwStopCursor;   // get the stop cursor position
+	// get the stop cursor position
+    return m_dwStopCursor;   
 }
 
 CGraphWnd * CSaView::GetFocusedGraphWnd() {
-    return m_pFocusedGraph;   // gets the focused graph window pointer
+	// gets the focused graph window pointer
+    return m_pFocusedGraph;   
 }
 
 UINT CSaView::GetFocusedGraphID() {
-    return m_nFocusedID;   // gets the focused graph ID
+	// gets the focused graph ID
+    return m_nFocusedID;   
 }
 
 BOOL CSaView::ViewIsActive() {
+	// returns TRUE, if view is active
     return m_bViewIsActive;
-}; // returns TRUE, if view is active
+}; 
 
 BOOL CSaView::IsUpdateBoundaries() {
-    return m_bUpdateBoundaries;   // return TRUE, if boundaries updated
+	// return TRUE, if boundaries updated
+    return m_bUpdateBoundaries;   
 }
 
 void CSaView::SetUpdateBoundaries(BOOL bUpdate) {
@@ -5460,4 +5458,15 @@ void CSaView::SetNormalMelogram(BOOL bChecked) {
 
 CMainFrame * CSaView::MainFrame() {
     return pViewMainFrame;
+}
+
+CSaDoc * CSaView::GetDocument() {
+    return (CSaDoc *)m_pDocument;
+}
+
+LRESULT CSaView::OnAutoSave(WPARAM, LPARAM lParam) {
+
+	TRACE(L"OnAutoSave\n");
+	GetDocument()->StoreAutoRecoveryInformation();
+    return 0;
 }

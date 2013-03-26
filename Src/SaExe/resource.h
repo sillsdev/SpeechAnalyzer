@@ -7,6 +7,7 @@
 #define IDC_CUSTOM                      3
 #define IDS_COPY                        3
 #define ID_START_MODE_RECORD            4
+#define IDS_STRING5                     5
 #define ID_PRINT                        90
 #define ID_PREVIEW                      91
 #define IDR_MAINFRAME                   91
@@ -1653,6 +1654,7 @@
 #define IDS_ERROR_NO_FW_FILE            61265
 #define IDS_ERROR_NO_REFERENCE          61266
 #define IDS_ERROR_GONE_MISSING          61267
+#define IDS_ERROR_AUTOSAVE_FAIL         61267
 #define IDS_AUTO_REF_MAIN               61300
 #define IDS_AUTO_REF_MAIN_1             61300
 #define IDS_AUTO_REF_MAIN_2             61301
@@ -1660,6 +1662,7 @@
 #define IDS_AUTO_REF_MAIN_3             61303
 #define IDS_AUTO_REF_TAG                61304
 #define IDS_SFM_TAGS                    61306
+#define IDS_AUTOSAVE_MSG                61307
 
 // Next default values for new objects
 // 

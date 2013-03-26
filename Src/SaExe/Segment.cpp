@@ -201,6 +201,7 @@ void CSegment::Remove(CDocument * pSaDoc, BOOL bCheck) {
 // CSegment::ReplaceSelectedSegment
 /***************************************************************************/
 void CSegment::ReplaceSelectedSegment(CDocument * pSaDoc, const CSaString & str) {
+
     CSaDoc * pDoc = (CSaDoc *)pSaDoc; // cast pointer
     POSITION pos = pDoc->GetFirstViewPosition();
     CSaView * pView = (CSaView *)pDoc->GetNextView(pos);
@@ -218,11 +219,11 @@ void CSegment::ReplaceSelectedSegment(CDocument * pSaDoc, const CSaString & str)
 
         int nSaveSelection = m_nSelection;
         //SDM 1.06.5
-        pDoc->SetModifiedFlag(TRUE); // document has been modified
-        pDoc->SetTransModifiedFlag(TRUE); // transcription data has been modified
+        pDoc->SetModifiedFlag(TRUE);		// document has been modified
+        pDoc->SetTransModifiedFlag(TRUE);	// transcription data has been modified
         pView->ChangeAnnotationSelection(this, m_nSelection, dwOffset, dwOffset + dwDuration); // deselect
         pView->ChangeAnnotationSelection(this, nSaveSelection, dwOffset, dwOffset + dwDuration); // select again
-        pView->RefreshGraphs(FALSE); // refresh the graphs between cursors
+        pView->RefreshGraphs(FALSE);		// refresh the graphs between cursors
     }
 }
 
@@ -230,9 +231,9 @@ void CSegment::ReplaceSelectedSegment(CDocument * pSaDoc, const CSaString & str)
 // CSegment::RemoveNoRefresh Remove dependent annotation segment
 /***************************************************************************/
 DWORD CSegment::RemoveNoRefresh(CDocument *) {
+
     // find length of string to delete
     int nLength = GetSegmentLength(m_nSelection);
-
     // change the dependent arrays
     *m_pAnnotation = m_pAnnotation->Left(m_nSelection) + m_pAnnotation->Right(m_pAnnotation->GetLength() - nLength - m_nSelection);
     RemoveAt(m_nSelection,nLength);

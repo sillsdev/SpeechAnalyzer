@@ -194,8 +194,8 @@ enum CURSOR_ALIGNMENT {
 #define WM_USER_APP_MESSAGE             WM_USER + 24
 
 #define WM_USER_AUTO_RESTART            WM_USER + 27
+#define WM_USER_AUTOSAVE			    WM_USER + 28
 #define WM_USER_CURSOR_CLICKED          WM_USER + 29
-
 
 #define HINT_APP_DOC_LIST_CHANGED       0x123
 
@@ -214,6 +214,9 @@ enum CURSOR_ALIGNMENT {
 #define MAX_FILTER_NUMBER               3           // number of filters in workbench processes
 // global structure defines
 typedef UINT MMRESULT;                  // MMIO function call results
+
+// timer IDs
+#define ID_TIMER_AUTOSAVE				0x1000
 
 typedef struct FmtParm {
     WORD        wTag;               // format tag

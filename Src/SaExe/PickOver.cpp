@@ -84,6 +84,7 @@ void CPickOverlayDlg::OnHelpPickOverlay() {
 // CPickOverlayDlg::SetupItemsList
 /***************************************************************************/
 void CPickOverlayDlg::SetupItemsList() {
+
     if (m_Mode_AddTrueRemoveFalse) {
         for (int i=0; i < m_numItems; i++) {
             ASSERT(m_apGraphs[i] && CGraphWnd::IsMergeableGraph(m_apGraphs[i]));
@@ -95,12 +96,7 @@ void CPickOverlayDlg::SetupItemsList() {
 
             CSaView * pView = (CSaView *)m_apGraphs[i]->GetParent();
             CSaDoc  * pDoc  = pView->GetDocument();
-
-            CString szDocTitle(pDoc->GetTitle()); // load file name
-            int nFind = szDocTitle.Find(':');
-            if (nFind != -1) {
-                szDocTitle = szDocTitle.Left(nFind);    // extract part left of :
-            }
+			CString szDocTitle(pDoc->GetFilename().c_str());	// load file name
             szText += " - " + szDocTitle;
 
             int index = m_SelectItems.AddString(szText);
@@ -116,12 +112,9 @@ void CPickOverlayDlg::SetupItemsList() {
 
                 CSaApp * pApp = (CSaApp *)AfxGetApp();
                 CDocument  * pDoc  = pApp->IsFileOpened(m_szDoc[i]);
+				CSaDoc * pSaDoc = (CSaDoc *)pDoc;
 
-                CString szDocTitle(pDoc->GetTitle()); // load file name
-                int nFind = szDocTitle.Find(':');
-                if (nFind != -1) {
-                    szDocTitle = szDocTitle.Left(nFind);    // extract part left of :
-                }
+                CString szDocTitle(pSaDoc->GetFilename().c_str()); // load file name
                 szText += " - " + szDocTitle;
 
                 int index = m_SelectItems.AddString(szText);

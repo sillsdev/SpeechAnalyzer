@@ -45,10 +45,8 @@ IMPLEMENT_DYNCREATE(CLEDDisplay, CWnd)
 // CLEDDisplay message map
 
 BEGIN_MESSAGE_MAP(CLEDDisplay, CWnd)
-    //{{AFX_MSG_MAP(CLEDDisplay)
     ON_WM_PAINT()
     ON_WM_ERASEBKGND()
-    //}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
@@ -248,13 +246,11 @@ IMPLEMENT_DYNCREATE(CSliderVertical, CWnd)
 // CSliderVertical message map
 
 BEGIN_MESSAGE_MAP(CSliderVertical, CWnd)
-    //{{AFX_MSG_MAP(CSliderVertical)
     ON_WM_PAINT()
     ON_WM_ERASEBKGND()
     ON_WM_LBUTTONDOWN()
     ON_WM_LBUTTONUP()
     ON_WM_MOUSEMOVE()
-    //}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
@@ -480,13 +476,11 @@ IMPLEMENT_DYNCREATE(CSliderHorizontal, CWnd)
 // CSliderHorizontal message map
 
 BEGIN_MESSAGE_MAP(CSliderHorizontal, CWnd)
-    //{{AFX_MSG_MAP(CSliderHorizontal)
     ON_WM_PAINT()
     ON_WM_ERASEBKGND()
     ON_WM_LBUTTONDOWN()
     ON_WM_LBUTTONUP()
     ON_WM_MOUSEMOVE()
-    //}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
@@ -1238,10 +1232,8 @@ IMPLEMENT_DYNCREATE(CProgressBar, CWnd)
 // CProgressBar message map
 
 BEGIN_MESSAGE_MAP(CProgressBar, CWnd)
-    //{{AFX_MSG_MAP(CProgressBar)
     ON_WM_PAINT()
     ON_WM_ERASEBKGND()
-    //}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
@@ -1469,7 +1461,6 @@ IMPLEMENT_DYNCREATE(CSpinControl, CWnd)
 // CSpinControl message map
 
 BEGIN_MESSAGE_MAP(CSpinControl, CWnd)
-    //{{AFX_MSG_MAP(CSpinControl)
     ON_WM_PAINT()
     ON_WM_ERASEBKGND()
     ON_WM_LBUTTONDOWN()
@@ -1477,7 +1468,6 @@ BEGIN_MESSAGE_MAP(CSpinControl, CWnd)
     ON_WM_LBUTTONDBLCLK()
     ON_WM_TIMER()
     ON_WM_ENABLE()
-    //}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////

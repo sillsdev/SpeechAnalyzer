@@ -53,6 +53,7 @@
 #include "resource.h"       // main symbols
 #include "sa_dlwnd.h"
 #include <afxmt.h>
+#include <string>
 
 #import "speechtoolsutils.tlb" no_namespace named_guids
 
@@ -60,6 +61,8 @@ class CSaDoc;
 class CSaView;
 class Object_istream;
 class Object_ostream;
+
+using std::wstring;
 
 //###########################################################################
 // FindMemoryLeaks class
@@ -184,16 +187,13 @@ public:
 protected:
     void ShowStartupDialog(BOOL bAppIsStartingUp);
 
-private:
-    CSaString GetBatchString(LPCTSTR lpSection, LPCTSTR lpKey, LPCTSTR lpDefault = NULL);
-    BOOL WriteBatchString(LPCTSTR lpSection, LPCTSTR lpKey, LPCTSTR lpValue);
-
     // Overrides
     // ClassWizard generated virtual function overrides
 public:
     virtual BOOL InitInstance();
     virtual int ExitInstance();
     virtual CDocument * OpenDocumentFile(LPCTSTR lpszFileName);
+	wstring GetAutoSaveDirectory();
 
 protected:
     afx_msg void OnAppAbout();
@@ -249,6 +249,12 @@ protected:
     CEvent * mEvent;
     CEvent * mSignal;
     class CSingleInstanceData * mData;
+
+private:
+    CSaString GetBatchString(LPCTSTR lpSection, LPCTSTR lpKey, LPCTSTR lpDefault = NULL);
+    BOOL WriteBatchString(LPCTSTR lpSection, LPCTSTR lpKey, LPCTSTR lpValue);
+	void CleanAutoSave();
+
 };
 
 #endif // __SA_H__

@@ -173,7 +173,6 @@ IMPLEMENT_DYNCREATE(CSaDoc, CUndoRedoDoc)
 // CSaDoc message map
 // SDM 1.06.5 removed unused messages
 BEGIN_MESSAGE_MAP(CSaDoc, CDocument)
-    //{{AFX_MSG_MAP(CSaDoc)
     ON_UPDATE_COMMAND_UI(ID_FILE_SAVE, OnUpdateFileSave)
     ON_COMMAND(ID_FILE_SAVE_AS, OnFileSaveAs)
     ON_UPDATE_COMMAND_UI(ID_FILE_SAVE_AS, OnUpdateFileSaveAs)
@@ -199,7 +198,6 @@ BEGIN_MESSAGE_MAP(CSaDoc, CDocument)
     ON_UPDATE_COMMAND_UI(ID_TOOLS_ADJUST_ZERO, OnUpdateToolsAdjustZero)
     ON_COMMAND(ID_AUTOMATICMARKUP_REFERENCEDATA, OnAutoReferenceData)
     ON_UPDATE_COMMAND_UI(ID_AUTOMATICMARKUP_REFERENCEDATA, OnUpdateAutoReferenceData)
-    //}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
 static const char * IMPORT_END = "import";
@@ -286,12 +284,16 @@ CSaDoc::CSaDoc() {
     m_pDlgAdvancedSegment = NULL;
     m_pDlgAdvancedParseWords = NULL;
     m_pDlgAdvancedParsePhrases = NULL;
+
+	autoSaveError = false;
+	autoSaving = false;
 }
 
 /***************************************************************************/
 // CSaDoc::~CSaDoc Destructor
 /***************************************************************************/
 CSaDoc::~CSaDoc() {
+
     for (int nLoop = 0; nLoop < ANNOT_WND_NUMBER; nLoop++) {
         if (m_apSegments[nLoop]) {
             delete m_apSegments[nLoop];
@@ -1970,11 +1972,7 @@ BOOL CSaDoc::OnSaveDocument(const TCHAR * pszPathName2, BOOL bSaveAudio) {
 
 			CSaString fileName=GetPathName();
 			if (fileName.IsEmpty()) {
-				fileName = GetTitle(); // get the current view caption string
-				int nFind = fileName.Find(':');
-				if (nFind != -1) {
-					fileName = fileName.Left(nFind); // extract part left of :
-				}
+				fileName = GetFilename().c_str(); // get the current view caption string
 			}
 
 			CSaString fileExt = _T(".wav");
@@ -2027,6 +2025,8 @@ BOOL CSaDoc::OnSaveDocument(const TCHAR * pszPathName2, BOOL bSaveAudio) {
     SetModifiedFlag(FALSE);
     SetTransModifiedFlag(FALSE);
     SetAudioModifiedFlag(FALSE);
+	CleanAutoSave();
+
     // if batch mode, set file in changed state
     if (pApp->GetBatchMode() != 0) {
         pApp->SetBatchFileChanged(target.c_str(), m_ID, this); // set changed state
@@ -2040,9 +2040,7 @@ BOOL CSaDoc::OnSaveDocument(const TCHAR * pszPathName2, BOOL bSaveAudio) {
 // the document (wave file). The fmt and data chunks have to be there al-
 // ready! The temporary wave file data will be copied into the wave chunk.
 /***************************************************************************/
-BOOL CSaDoc::WriteDataFiles(const TCHAR * pszPathName,
-                            BOOL bSaveAudio/*=TRUE*/,
-                            BOOL bIsClipboardFile/*=FALSE*/) {
+BOOL CSaDoc::WriteDataFiles(const TCHAR * pszPathName, BOOL bSaveAudio/*=TRUE*/, BOOL bIsClipboardFile/*=FALSE*/) {
 
     CSaApp * pApp = (CSaApp *)AfxGetApp();
 
@@ -2371,6 +2369,7 @@ void CSaDoc::WriteGlossPosAndRefSegments(ISaAudioDocumentWriterPtr saAudioDocWri
 // to the database.
 /***************************************************************************/
 void CSaDoc::WriteScoreData(ISaAudioDocumentWriterPtr saAudioDocWriter) {
+
     POSITION pos = GetFirstViewPosition();
     CSaView * pView = (CSaView *)GetNextView(pos);
     int nMusicScoreSize = 0;
@@ -2396,6 +2395,9 @@ void CSaDoc::WriteScoreData(ISaAudioDocumentWriterPtr saAudioDocWriter) {
     }
     delete [] pMusicScore;
     SetTransModifiedFlag(FALSE); // transcription data has been modified
+	if (!autoSaving) {
+		CleanAutoSave();
+	}
 }
 
 // SDM 1.06.6U2 added ability to insert wave dat from a file
@@ -2852,6 +2854,7 @@ BOOL CSaDoc::CopyWaveToTemp(LPCTSTR pszSourcePathName,
 // the graph title (because the user may cancel the closing).
 /***************************************************************************/
 BOOL CSaDoc::SaveModified() {
+
     CSaString szCaption, szGraphTitle;
     if (!IsModified()) {
         return TRUE;    // ok to continue
@@ -2901,6 +2904,7 @@ BOOL CSaDoc::SaveModified() {
     if (bResult == TRUE) { // file has been saved or changes should be abandoned
         SetModifiedFlag(FALSE);
         SetTransModifiedFlag(FALSE);
+		CleanAutoSave();
     }
     // change the file attribute to read only
     szPathName = GetPathName();
@@ -3011,6 +3015,7 @@ BOOL CSaDoc::CopyWave(const TCHAR * pszSourceName, const TCHAR * pszTargetName, 
 /***************************************************************************/
 // SDM 1.06.6U2
 void CSaDoc::ApplyWaveFile(const TCHAR * pszFileName, DWORD dwDataSize, BOOL bInitialUpdate) {
+
     // save the temporary file
     m_szTempWave = pszFileName;
     // set the data size
@@ -3048,6 +3053,7 @@ void CSaDoc::ApplyWaveFile(const TCHAR * pszFileName, DWORD dwDataSize, BOOL bIn
 /***************************************************************************/
 // SDM 1.06.6U2
 void CSaDoc::ApplyWaveFile(const TCHAR * pszFileName, DWORD dwDataSize, CAlignInfo info) {
+
     // save the temporary file
     if (!m_szTempWave.IsEmpty()) {
         RemoveFile(m_szTempWave);
@@ -4690,12 +4696,8 @@ CSaString CSaDoc::GetMeasurementsString(DWORD dwOffset, DWORD dwLength, BOOL * p
     }
 
     // get filename
-    szFilename = GetTitle(); // get the current view caption string
-    int nFind = szFilename.Find(':');
-    if (nFind != -1) {
-        szFilename = szFilename.Left(nFind);    // extract part left of first space
-    }
-    nFind = szFilename.Find(_T(" (Read-Only)"));
+    szFilename = GetFilename().c_str();			// get the current view caption string
+    int nFind = szFilename.Find(_T(" (Read-Only)"));
     if (nFind != -1) {
         szFilename = szFilename.Left(nFind);    // extract part left of first space
     }
@@ -4944,11 +4946,11 @@ void CSaDoc::Dump(CDumpContext & dc) const {
 // has again to be modified with the graph title.
 /***************************************************************************/
 BOOL CSaDoc::DoFileSave() {
+
     if ((m_fileStat.m_szFullName[0] == 0) || !(IsModified() || m_nWbProcess)) { // SDM 1.5Test10.2
-        // OnFileSaveDisabled
-        // SDM 1.5Test10.2
         return FALSE;
     }
+
     BOOL bResult = FALSE;
     // SDM moved process WAV save to Save As 1.5Test8.2
     CSaString szCaption, szGraphTitle;
@@ -4990,11 +4992,11 @@ BOOL CSaDoc::DoFileSave() {
     }
     if (szPathName.IsEmpty()) {
         // the pathname is empty, reset view title string
-        CSaString fileName = GetTitle(); // get the current view caption string
+        CSaString fileName = GetTitle();		// get the current view caption string
         int nFind = fileName.Find(':');
         if (nFind != -1) {
             szGraphTitle = fileName.Mid(nFind);
-            fileName = fileName.Left(nFind); // extract part left of :
+            fileName = fileName.Left(nFind);	// extract part left of :
         }
 
         CFileDialog dlg(FALSE, _T("wav"), fileName, OFN_PATHMUSTEXIST | OFN_OVERWRITEPROMPT, _T("WAV Files (*.wav)|*.wav||"));
@@ -5059,11 +5061,7 @@ void CSaDoc::OnFileSaveAs() {
 
     CSaString fileName=GetPathName();
     if (fileName.IsEmpty()) {
-        fileName = GetTitle(); // get the current view caption string
-        int nFind = fileName.Find(':');
-        if (nFind != -1) {
-            fileName = fileName.Left(nFind); // extract part left of :
-        }
+        fileName = GetFilename().c_str(); // get the current view caption string
     }
 
     CSaString fileExt = _T(".wav");
@@ -5128,7 +5126,7 @@ void CSaDoc::OnFileSaveAs() {
         bSuccess = CopySectionToNewWavFile(0,GetUnprocessedDataSize(),fileName, TRUE);
     } else {
         if (bSameFileName) {
-            SetModifiedFlag(); // Force SA to update file format
+            SetModifiedFlag();			// Force SA to update file format
             SetAudioModifiedFlag();
             SetTransModifiedFlag();
             OnFileSave();
@@ -5136,7 +5134,7 @@ void CSaDoc::OnFileSaveAs() {
         }
         CSaString szGraphTitle;
         // get graph title string
-        szGraphTitle = GetTitle(); // get the current view caption string
+        szGraphTitle = GetTitle();		// get the current view caption string
         int nFind = szGraphTitle.Find(':');
         if (nFind != -1) {
             szGraphTitle = szGraphTitle.Right(szGraphTitle.GetLength() - nFind); // extract part right of and with :
@@ -5179,11 +5177,11 @@ void CSaDoc::OnFileSaveAs() {
     }
 
     if (dlg.m_nShowFiles == CDlgSaveAsOptions::showBoth) {
-        AfxGetApp()->OpenDocumentFile(fileName); // Open new document
+        AfxGetApp()->OpenDocumentFile(fileName);	// Open new document
     }
     if (dlg.m_nShowFiles == CDlgSaveAsOptions::showNew && fileName != GetPathName()) {
-        AfxGetApp()->OpenDocumentFile(fileName); // Open new document
-        OnCloseDocument();  // Close Original
+        AfxGetApp()->OpenDocumentFile(fileName);	// Open new document
+        OnCloseDocument();							// Close Original
     }
 
     EndWaitCursor();
@@ -5516,6 +5514,7 @@ void CSaDoc::DeleteSegmentContents(Annotations type) {
 // CSaDoc::AdvancedParse Parse wave data
 /***************************************************************************/
 BOOL CSaDoc::AdvancedParseAuto() {
+
     // get pointer to view
     POSITION pos = GetFirstViewPosition();
     CSaView * pView = (CSaView *)GetNextView(pos);
@@ -7241,6 +7240,7 @@ bool CSaDoc::IsAudioModified() const {
 }
 
 void CSaDoc::SetTransModifiedFlag(bool bMod) {
+	if (autoSaving) return;
     m_bTransModified = bMod;
 }
 
@@ -7766,4 +7766,120 @@ const CSaString & CSaDoc::GetRawDataWrk(int nIndex) const {
 
 void CSaDoc::SetMultiChannelFlag(bool bMultiChannel) {
     m_bMultiChannel = bMultiChannel;
+}
+
+void CSaDoc::StoreAutoRecoveryInformation() {
+
+	TRACE(L"auto saving...\n");
+
+	if (!IsModified()) {
+		TRACE("No changes pending. nothing to save\n");
+		return;
+	}
+
+	CSaApp * pSaApp = (CSaApp*)AfxGetApp();
+
+	// find or create the autosave directory
+	TCHAR buffer[_MAX_PATH];
+	::GetEnvironmentVariable(L"TEMP",buffer,_countof(buffer));
+	wstring temp(buffer);
+	AppendDirSep(temp);
+
+	wstring autosavedir = pSaApp->GetAutoSaveDirectory();
+
+	if (!::FolderExists(autosavedir.c_str())) {
+		//create directory ?
+		if (CreateDirectory( autosavedir.c_str(), NULL) ==0) {
+            //an error has occured, process the error here
+			TRACE("Unable to create autosave directory!\n");
+			if (!autoSaveError) {
+				pSaApp->ErrorMessage(IDS_ERROR_AUTOSAVE_FAIL,autosavedir.c_str());
+				autoSaveError = true;
+			}
+			return;
+        }
+    }
+
+	wstring original(L"");
+	wstring filename;
+	// what is our scenario?
+	if (!m_szTempWave.IsEmpty()) {
+		// a recorded file
+		original = m_szTempWave;
+		// extract the filename
+		filename.append(m_szTempWave);
+		filename = filename.substr(temp.length(),filename.length()-temp.length());
+	} else {
+		// a prerecorded file
+		original = GetPathName();
+		filename = original;
+		int pos = filename.rfind('\\');
+		if (pos!=wstring::npos) {
+			filename = filename.substr(pos+1,filename.length()-pos-1);
+		}
+	}
+	filename.insert(0,L"~");
+
+	TRACE(L"saving audio for %s\n",original.c_str());
+
+	// copy this wave to the autosave directory
+	wstring dest;
+	dest.append(autosavedir);
+	dest.append(filename);
+
+	if (::FileExists( autoSaveWave.c_str())) {
+		::RemoveFile( autoSaveWave.c_str());
+	}
+
+	if (!::CopyFile( original.c_str(), dest.c_str(), TRUE)) {
+		TRACE(L"Unable to save wave file\n");
+	}
+
+	autoSaveWave = dest;
+
+	if (m_bTransModified) {
+		TRACE(L"saving transcription for %s\n",(LPCTSTR)original.c_str());
+
+		if (::FileExists( autoSaveTrans.c_str())) {
+			::RemoveFile( autoSaveTrans.c_str());
+		}
+
+		// copy any transcription to the autosave directory
+		autoSaving = true;
+		WriteDataFiles(autoSaveWave.c_str());
+		autoSaving = false;
+
+		wstring dest(autoSaveWave.c_str());
+		dest = dest.substr(0,dest.length()-5);
+		dest.append(L"saxml");
+		autoSaveTrans = dest;
+	}
+	TRACE(L"saved\n");
+}
+
+/**
+* on a save or saveas, delete the existing autosave files
+*/
+void CSaDoc::CleanAutoSave() {
+
+	if (::FileExists( autoSaveWave.c_str())) {
+		::RemoveFile( autoSaveWave.c_str());
+	}
+	if (::FileExists( autoSaveTrans.c_str())) {
+		::RemoveFile( autoSaveTrans.c_str());
+	}
+	autoSaveWave = L"";
+	autoSaveTrans = L"";
+	autoSaveError = false;
+}
+
+wstring CSaDoc::GetFilename() {
+
+	wstring result;
+	result = GetTitle(); // load file name
+    int nFind = result.find(':');
+    if (nFind != wstring::npos) {
+        result = result.substr(0,nFind-1);    // extract part left of :
+    }
+	return result;
 }

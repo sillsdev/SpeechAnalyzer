@@ -26,7 +26,7 @@ LANGUAGE LANG_NEUTRAL, SUBLANG_NEUTRAL
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 3,1,0,42
+ FILEVERSION 3,1,0,43
  PRODUCTVERSION 1,0,0,1
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
@@ -44,7 +44,7 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "SIL International"
             VALUE "FileDescription", "SA"
-            VALUE "FileVersion", "v3.1.0.42"
+            VALUE "FileVersion", "v3.1.0.43"
             VALUE "InternalName", "SA"
             VALUE "LegalCopyright", "© 1996-2013 SIL International (MSEA)"
             VALUE "ProductName", "SA"
@@ -4227,7 +4227,7 @@ STRINGTABLE
 BEGIN
     IDR_MAINFRAME           "Speech Analyzer"
     IDR_SA_ANNTYPE          "\nSA\nSA Document\nWAV Files (*.wav)\n.wav\nannFileType\nANN File Type"
-    VS_VERSION              "Version 3.1.0.42"
+    VS_VERSION              "Version 3.1.0.43"
     VS_COPYRIGHT            "© 1996-2013 SIL International (MSEA).\nAll Rights Reserved."
     IDR_SA_WBTYPE           "\nWB\nSA Workbench\nWB Files (*.wb)\n.wb\nwbFileType\nWB File Type"
 END
@@ -5245,6 +5245,7 @@ BEGIN
     IDS_AUTO_REF_MAIN_3     "2) If the file is suppose to be delimited, make sure there are an equal number of tabs or spaces in each row and that there are no missing fields within a row.\n"
     IDS_AUTO_REF_TAG        "Tag"
     IDS_SFM_TAGS            "\n\tStandard Format Marker Map\n\n\tSpeech\t\tFieldWorks\n\tAnalyzer\n\t\\ph\t  >\t\\lx-ph\n\t\\pm\t  >\t\\lx-pm\n\t\\or\t  >\t\\lx-or\n\t\\gl\t  >\t\\ge\n\t\\pos\t  >\t\\ps\n\t\\ref\t  >\t\\rf\n\t\\wav\t  >\t\\pf\n\t\\phr1\t  >\t\\pf\n\t\\phr2\t  >\t\\pf\n"
+    IDS_AUTOSAVE_MSG        """Autosaved files found.  Would you like to recover them?\n WARNING: IF YOU PRESS NO, YOU WILL NOT BE ABLE TO RECOVER THE FILES IN THE FUTURE!"""
 END
 
 STRINGTABLE
@@ -5252,6 +5253,7 @@ BEGIN
     IDS_ERROR_REGISTRY      "Unable to update registry!"
     IDS_ERROR_NO_FW_FILE    "Please select a destination filename for the FieldWorks .SFM output file."
     IDS_ERROR_NO_REFERENCE  "There are no Reference annotations.\nPlease added Reference numbers before exporting data to FieldWorks."
+    IDS_ERROR_AUTOSAVE_FAIL "Unable to create the AutoSave directory '%1'\nThe AutoSave feature is disabled."
 END
 
 #endif    // English (United States) resources

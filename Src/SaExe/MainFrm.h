@@ -157,7 +157,6 @@ protected:
     int                 m_aWbFilterID[MAX_PROCESS_NUMBER][MAX_FILTER_NUMBER];
 
     // dialogs
-
     CDlgPlayer * m_pDlgPlayer;          // pointer to player dialog object
     CSaFindDlg * m_pDlgFind;            // pointer to find/replace dialog object
     CDlgEditor * m_pDlgEditor;
@@ -170,7 +169,6 @@ protected:
     int m_nPopup;
 	CToolSettings toolSettings;
 
-    // Operations
 public:
     BOOL bToolBar();               // toolbar on/off
     BOOL bTaskBar();               // taskbar on/off
@@ -329,15 +327,17 @@ protected:
     afx_msg LRESULT OnPlayer(WPARAM, LPARAM);
     afx_msg LRESULT OnChangeView(WPARAM, LPARAM);
     afx_msg LRESULT OnSpeechAppCall(WPARAM, LPARAM);
-    // status bar update
     afx_msg void OnUpdateDataPane(CCmdUI * pCmdUI);
     afx_msg void OnUpdateProgressPane(CCmdUI * pCmdUI);
     afx_msg void OnEqualizeLength();
     afx_msg void OnUpdateEqualizeLength(CCmdUI * pCmdUI);
     afx_msg BOOL OnCopyData(CWnd * pWnd, COPYDATASTRUCT * pCopyDataStruct);
+	afx_msg void OnTimer( UINT nIDEvent);
 
     DECLARE_MESSAGE_MAP()
 
 };
+
+#define AUTOSAVE_TIMER      60000	// fires once a minutes
 
 #endif

@@ -384,6 +384,8 @@ public:
     void RevertTranscriptionChanges();
     bool IsTempFile();
     bool CanEdit();
+	void StoreAutoRecoveryInformation();
+	wstring GetFilename();
 
 protected:
     void AlignTranscriptionData(CTranscriptionDataSettings & settings);
@@ -397,6 +399,14 @@ protected:
     void WriteFileUtf8(CFile * pFile, const CSaString szString);
 
     int m_nTranscriptionApplicationCount;
+
+private:
+	void CleanAutoSave();
+
+	bool autoSaveError;
+	bool autoSaving;
+	wstring autoSaveWave;
+	wstring autoSaveTrans;
 };
 
 #endif
