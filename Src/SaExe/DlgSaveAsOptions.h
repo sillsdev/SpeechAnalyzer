@@ -3,7 +3,8 @@
 
 #include "mixer.h"
 
-class CDlgSaveAsOptions : public CFileDialog {
+class CDlgSaveAsOptions : public CFileDialog
+{
 // Construction
 public:
     CDlgSaveAsOptions(LPCTSTR lpszDefExt = NULL,

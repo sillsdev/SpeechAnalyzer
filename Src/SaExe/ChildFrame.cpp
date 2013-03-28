@@ -12,25 +12,34 @@ IMPLEMENT_DYNCREATE(CChildFrame, CMDIChildWnd)
 BEGIN_MESSAGE_MAP(CChildFrame, CMDIChildWnd)
 END_MESSAGE_MAP()
 
-CChildFrame::CChildFrame() {
+CChildFrame::CChildFrame()
+{
 }
 
-CChildFrame::~CChildFrame() {
+CChildFrame::~CChildFrame()
+{
 }
 
-void CChildFrame::ActivateFrame(int nCmdShow) {
+void CChildFrame::ActivateFrame(int nCmdShow)
+{
 
     CMainFrame * pFrameWnd = (CMainFrame *) GetMDIFrame();
 
-    if (!pFrameWnd) {
+    if (!pFrameWnd)
+    {
         return;
     }
 
-    if (pFrameWnd->MDIGetActive()) {
+    if (pFrameWnd->MDIGetActive())
+    {
         CMDIChildWnd::ActivateFrame(nCmdShow);  // maintain current state
-    } else if (pFrameWnd->IsDefaultViewMaximized()) {
+    }
+    else if (pFrameWnd->IsDefaultViewMaximized())
+    {
         CMDIChildWnd::ActivateFrame(SW_SHOWMAXIMIZED);
-    } else {
+    }
+    else
+    {
         CMDIChildWnd::ActivateFrame(nCmdShow);  // default behavior
     }
 
@@ -43,15 +52,21 @@ void CChildFrame::ActivateFrame(int nCmdShow) {
     pFrameWnd->GetClientRect(&rParent);
 
     GetWindowPlacement(&WP);
-    if ((Size.x < rParent.Width())&&(Size.x > (rParent.Width()/10))) {
+    if ((Size.x < rParent.Width())&&(Size.x > (rParent.Width()/10)))
+    {
         WP.rcNormalPosition.right = WP.rcNormalPosition.left+Size.x;
-    } else if (Size.x >= rParent.Width()) {
+    }
+    else if (Size.x >= rParent.Width())
+    {
         WP.rcNormalPosition.right = rParent.Width();
     }
 
-    if ((Size.y < rParent.Height())&&(Size.y > (rParent.Height()/10))) {
+    if ((Size.y < rParent.Height())&&(Size.y > (rParent.Height()/10)))
+    {
         WP.rcNormalPosition.bottom = WP.rcNormalPosition.top+Size.y;
-    } else if (Size.y >= rParent.Height()) {
+    }
+    else if (Size.y >= rParent.Height())
+    {
         WP.rcNormalPosition.bottom = rParent.Height();
     }
 
@@ -59,11 +74,13 @@ void CChildFrame::ActivateFrame(int nCmdShow) {
 };
 
 #ifdef _DEBUG
-void CChildFrame::AssertValid() const {
+void CChildFrame::AssertValid() const
+{
     CMDIChildWnd::AssertValid();
 }
 
-void CChildFrame::Dump(CDumpContext & dc) const {
+void CChildFrame::Dump(CDumpContext & dc) const
+{
     CMDIChildWnd::Dump(dc);
 }
 

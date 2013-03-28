@@ -48,7 +48,8 @@ END_MESSAGE_MAP()
 /***************************************************************************/
 // CPlotTonalWeightChart::CPlotTonalWeightChart Constructor
 /***************************************************************************/
-CPlotTonalWeightChart::CPlotTonalWeightChart() {
+CPlotTonalWeightChart::CPlotTonalWeightChart()
+{
     m_bSemitoneOffsetAdjusted = FALSE; // m_SemitoneOffset has not yet been adjusted
     m_dSemitoneOffset = 0.0f;
     SetHorizontalCursors();
@@ -57,13 +58,15 @@ CPlotTonalWeightChart::CPlotTonalWeightChart() {
 /***************************************************************************/
 // CPlotTonalWeightChart::~CPlotTonalWeightChart Destructor
 /***************************************************************************/
-CPlotTonalWeightChart::~CPlotTonalWeightChart() {
+CPlotTonalWeightChart::~CPlotTonalWeightChart()
+{
 }
 
 /////////////////////////////////////////////////////////////////////////////
 // CPlotTonalWeightChart message handlers
 
-Grid CPlotTonalWeightChart::GetGrid() const {
+Grid CPlotTonalWeightChart::GetGrid() const
+{
     Grid modifiedGrid(*reinterpret_cast<CMainFrame *>(AfxGetMainWnd())->GetGrid());
 
     // nPenStyle = PS_DASHDOT;
@@ -80,10 +83,12 @@ Grid CPlotTonalWeightChart::GetGrid() const {
 // painting to let the plot base class do common jobs like painting the
 // cursors.
 /***************************************************************************/
-void CPlotTonalWeightChart::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView) {
+void CPlotTonalWeightChart::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView)
+{
     TRACE(_T("Draw TWC\n"));
     // if nothing to draw just return
-    if (!rClip.bottom && !rClip.right) {
+    if (!rClip.bottom && !rClip.right)
+    {
         return;
     }
     rClip.top = 0; // drawing the entire vertical plot gets the correct maximum x value
@@ -96,7 +101,8 @@ void CPlotTonalWeightChart::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView *
     double dMaxSemitone;
     double dMinSemitone;
 
-    if (!CPlotMelogram::GetScaleValues(pDoc, &dMaxSemitone,&dMinSemitone)) {
+    if (!CPlotMelogram::GetScaleValues(pDoc, &dMaxSemitone,&dMinSemitone))
+    {
         short nMelGraphIndex = (short)pView->GetGraphIndexForIDD(IDD_MELOGRAM);
         CGraphWnd * pMelGraph = pView->GetGraph(nMelGraphIndex);
         pMelGraph->UpdateWindow();
@@ -116,7 +122,8 @@ void CPlotTonalWeightChart::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView *
     double fInvScaleFactor = (double)dwMelDataSize / (double)dwRawDataSize;
     DWORD dwFrameStart = (DWORD)((double)pView->GetStartCursorPosition() * fInvScaleFactor) & ~1; // must be multiple of two
     DWORD dwFrameSize  = ((DWORD)((double)pView->GetStopCursorPosition() * fInvScaleFactor) & ~1) - dwFrameStart + wSmpSize;
-    if (pView->GetStaticTWC()) {
+    if (pView->GetStaticTWC())
+    {
         dwFrameStart = 0;
         dwFrameSize  = dwMelDataSize;
     }
@@ -124,17 +131,21 @@ void CPlotTonalWeightChart::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView *
     short nResult = LOWORD(pTonalWeightChart->Process(this, pDoc, dwFrameStart, dwFrameSize, (short) dMinSemitone, (short) dMaxSemitone)); // process data
     nResult = CheckResult(nResult, pTonalWeightChart); // check the process result
 
-    if (nResult == PROCESS_ERROR) {
+    if (nResult == PROCESS_ERROR)
+    {
         return;
     }
 
-    else if (nResult == PROCESS_NO_DATA) {
+    else if (nResult == PROCESS_NO_DATA)
+    {
         m_HelperWnd.SetMode(MODE_TEXT | FRAME_POPOUT | POS_HCENTER | POS_VCENTER, IDS_HELPERWND_NOPITCH, &rWnd);
     }
 
-    else if (nResult != PROCESS_CANCELED) {
+    else if (nResult != PROCESS_CANCELED)
+    {
         m_HelperWnd.SetMode(MODE_HIDDEN);
-        if (nResult && !pDC->IsPrinting()) {
+        if (nResult && !pDC->IsPrinting())
+        {
             // new data processed, all has to be displayed
             Invalidate();
             UpdateWindow();
@@ -145,12 +156,15 @@ void CPlotTonalWeightChart::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView *
         double dMinSemitone = pTonalWeightChart->GetMinSemitone();
         double dMaxSemitone = pTonalWeightChart->GetMaxSemitone();
 
-        if (!m_bSemitoneOffsetAdjusted) {
+        if (!m_bSemitoneOffsetAdjusted)
+        {
             short int * pTWCData = (short int *)pTonalWeightChart->GetProcessedData(0, TRUE);
             DWORD dwMaxBin = 0;
             short nMaxBinValue = 0;
-            for (DWORD i=0; i<dwDataSize; i++) {
-                if (pTWCData[i] > nMaxBinValue) {
+            for (DWORD i=0; i<dwDataSize; i++)
+            {
+                if (pTWCData[i] > nMaxBinValue)
+                {
                     nMaxBinValue = pTWCData[i];
                     dwMaxBin = i;
                 }
@@ -158,7 +172,8 @@ void CPlotTonalWeightChart::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView *
             // calibrate semitones
             double dSemitoneOffset = dMinSemitone + double(dwMaxBin /*+ 0.5*/) / int(dwDataSize / (dMaxSemitone - dMinSemitone) + 0.5);
 
-            if (dSemitoneOffset > dMaxSemitone || dSemitoneOffset < dMinSemitone) {
+            if (dSemitoneOffset > dMaxSemitone || dSemitoneOffset < dMinSemitone)
+            {
                 dSemitoneOffset = floor((dMaxSemitone + dMinSemitone)/2); // Just in case ???
             }
 
@@ -186,20 +201,28 @@ void CPlotTonalWeightChart::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView *
 // CPlotTonalWeightChart::double CPlotTonalWeightChart::AdjustSemitoneOffset(WORD UpDown, BOOL bKeyShifted)
 // Increment Offset
 /***************************************************************************/
-void CPlotTonalWeightChart::AdjustSemitoneOffset(WORD UpDown, BOOL bKeyShifted) {
-    switch (UpDown) {
+void CPlotTonalWeightChart::AdjustSemitoneOffset(WORD UpDown, BOOL bKeyShifted)
+{
+    switch (UpDown)
+    {
     case IDM_UP:
-        if (bKeyShifted) { // If SHIFT key was pressed along with UP button
+        if (bKeyShifted)   // If SHIFT key was pressed along with UP button
+        {
             SetSemitoneOffset(GetSemitoneOffset() - 0.1);
-        } else {
+        }
+        else
+        {
             //  Decrement to next lower integer
             SetSemitoneOffset(ceil(GetSemitoneOffset()) - 1.0);
         }
         break; // switch
     case IDM_DOWN:
-        if (bKeyShifted) { // If SHIFT key was pressed along with DOWN button
+        if (bKeyShifted)   // If SHIFT key was pressed along with DOWN button
+        {
             SetSemitoneOffset(GetSemitoneOffset() + 0.1);
-        } else {
+        }
+        else
+        {
             //  Increment to next higher integer
             SetSemitoneOffset(floor(GetSemitoneOffset()) + 1.0);
         }
@@ -211,9 +234,11 @@ void CPlotTonalWeightChart::AdjustSemitoneOffset(WORD UpDown, BOOL bKeyShifted) 
 // double CPlotTonalWeightChart::SetSemitoneOffset(double dSemitoneOffset)
 // Set Offset and make other adjustments as necessary
 /***************************************************************************/
-double CPlotTonalWeightChart::SetSemitoneOffset(double dSemitoneOffset) {
+double CPlotTonalWeightChart::SetSemitoneOffset(double dSemitoneOffset)
+{
     double dResult = m_dSemitoneOffset;
-    if (dSemitoneOffset != m_dSemitoneOffset) {
+    if (dSemitoneOffset != m_dSemitoneOffset)
+    {
         m_dSemitoneOffset = dSemitoneOffset;
 
         CGraphWnd * pGraph = (CGraphWnd *)GetParent();
@@ -230,7 +255,8 @@ double CPlotTonalWeightChart::SetSemitoneOffset(double dSemitoneOffset) {
     return dResult;
 }
 
-void DrawHistogram(CRect & rClip, CDataSource & cData, const CXScale & cXScale, const CYScale & cYScale, CDrawSegment & cDrawSegment) {
+void DrawHistogram(CRect & rClip, CDataSource & cData, const CXScale & cXScale, const CYScale & cYScale, CDrawSegment & cDrawSegment)
+{
     int nFirst = (int) floor(cYScale.GetValue(rClip.bottom)) - 1;
     int nLast = (int) ceil(cYScale.GetValue(rClip.top)) + 1;
 
@@ -241,7 +267,8 @@ void DrawHistogram(CRect & rClip, CDataSource & cData, const CXScale & cXScale, 
 
     int nSample = nFirst > 0 ? nFirst : 0;
 
-    while (nSample <= nLast) {
+    while (nSample <= nLast)
+    {
         int y = cYScale.GetY(nSample);
         int nSampleGet = nSample;
         int nNext = (int) floor(cYScale.GetValue(y-1));
@@ -249,14 +276,17 @@ void DrawHistogram(CRect & rClip, CDataSource & cData, const CXScale & cXScale, 
         // nSample is updated by GetValues
         cData.GetValues(nSample, nNext, cValues, bValid);
 
-        if (cValues.nMax==cValues.nMax) {
+        if (cValues.nMax==cValues.nMax)
+        {
             int yBegin = y;
             int yEnd = cYScale.GetY(nSampleGet+1);
             cDrawSegment.DrawTo(cValues.nMax,cXScale, yBegin, bValid);
             cDrawSegment.DrawTo(cValues.nMax,cXScale, yEnd, bValid);
             // Uncomment to draw full histogram bars
             cDrawSegment.DrawTo(0           ,cXScale, yEnd, bValid);
-        } else {
+        }
+        else
+        {
             cDrawSegment.DrawTo(cValues,cXScale, y, bValid);
         }
 
@@ -267,8 +297,10 @@ void DrawHistogram(CRect & rClip, CDataSource & cData, const CXScale & cXScale, 
 }
 
 void CPlotTonalWeightChart::PaintHelper(CDC * pDC, CRect rWnd, CRect rClip,
-                                        CProcessTonalWeightChart * pProcess, CSaDoc * /*pProcessDoc*/, int /*nFlags*/) {
-    if (rClip.IsRectEmpty()) {
+                                        CProcessTonalWeightChart * pProcess, CSaDoc * /*pProcessDoc*/, int /*nFlags*/)
+{
+    if (rClip.IsRectEmpty())
+    {
         return;
     }
 
@@ -312,12 +344,15 @@ void CPlotTonalWeightChart::PaintHelper(CDC * pDC, CRect rWnd, CRect rClip,
     CPen penData(PS_SOLID, nLineThickness, pColor->cPlotData[0]);
     CPen * pOldPen = pDC->SelectObject(&penData);
 
-    try {
+    try
+    {
         pDC->SelectObject(&penData);
         pSegment->SetColor(pColor->cPlotData[0]);
 
         DrawHistogram(rClip, *pSource, *pXScale, *pYScale, *pSegment);
-    } catch (...) {
+    }
+    catch (...)
+    {
     }
 
     pDC->SelectObject(pOldPen);

@@ -24,12 +24,14 @@ class CWaveNotifyObj;
 class CRecMixer;
 class CPlayMixer;
 
-struct SWaveHdrInfo {
+struct SWaveHdrInfo
+{
     WAVEHDR * pHdr;
     int iBuffer;
 };
 
-class CWaveInDevice : public CWnd {
+class CWaveInDevice : public CWnd
+{
 
     // Construction/destruction/creation
 public:
@@ -53,14 +55,17 @@ public:
     void WaveInDone(CWave * pWave, WAVEHDR * pHdr);
     void Reset();
     BOOL Record(int nBuffer, CWave * pWave, BOOL bStart=FALSE);
-    BOOL IsOpen() {
+    BOOL IsOpen()
+    {
         return m_hInDev ? TRUE : FALSE;
     }
     BOOL AttachHighPassFilter(USHORT wSmpRate);
-    CHighPassFilter70 * GetHighPassFilter() {
+    CHighPassFilter70 * GetHighPassFilter()
+    {
         return m_pHighPassFilter;
     }
-    void DetachHighPassFilter() {
+    void DetachHighPassFilter()
+    {
         delete m_pHighPassFilter;
         m_pHighPassFilter = NULL;
     }
@@ -68,7 +73,8 @@ public:
     void SetVolume(UINT nVolume, BOOL * bResult = NULL);
     BOOL ShowMixer(BOOL bShow = TRUE);
     BOOL ConnectMixer(CWnd * pCallback);
-    int GetPreparedBuffers() const {
+    int GetPreparedBuffers() const
+    {
         return m_nBuffers;
     }
 
@@ -83,7 +89,8 @@ protected:
 //###########################################################################
 // CWaveOutDevice
 
-class CWaveOutDevice : public CWnd {
+class CWaveOutDevice : public CWnd
+{
 
     // Construction/destruction/creation
 public:
@@ -109,7 +116,8 @@ public:
     void SetVolume(UINT nVolume, BOOL * bResult = NULL);
     void WaveOutDone(CWave * pWave, WAVEHDR * pHdr);
     void Reset();
-    BOOL IsOpen() {
+    BOOL IsOpen()
+    {
         return m_hOutDev ? TRUE : FALSE;
     }
     BOOL ShowMixer(BOOL bShow = TRUE);
@@ -129,7 +137,8 @@ extern CWaveOutDevice theDefaultWaveOutDevice;
 //###########################################################################
 // CWaveNotifyObj this class provides a notification object used by CWave objects
 
-class CWaveNotifyObj : public CObject {
+class CWaveNotifyObj : public CObject
+{
 public:
     virtual void BlockFinished(UINT nLevel, DWORD dwPosition, UINT nSpeed = 100) = 0;
     virtual void BlockStored(UINT nLevel, DWORD dwPosition, BOOL * bSaveOverride = NULL) = 0;
@@ -143,7 +152,8 @@ public:
 
 struct FmtParm;
 
-class CWave : public CObject {
+class CWave : public CObject
+{
 
     // Construction/destruction/creation
 public:
@@ -193,13 +203,16 @@ public:
     BOOL Monitor(CView * pView, CWaveNotifyObj * pNotify = NULL);
     BOOL Record(HMMIO hmmioFile, CView * pView, DWORD dwOffset, CWaveNotifyObj * pNotify, bool bRecord = true);
     void Stop();
-    WAVEFORMATEX * GetFormat() {
+    WAVEFORMATEX * GetFormat()
+    {
         return (WAVEFORMATEX *)m_pFmtParm;
     }
-    int GetActiveBlock() {
+    int GetActiveBlock()
+    {
         return m_nActiveBlock;   // returns the last block ID
     }
-    int GetNextBlock() {
+    int GetNextBlock()
+    {
         return m_nNextBlock;   // returns the last block ID
     }
     DWORD AdjustToParameters(); // adjust buffer size to parameters
@@ -211,22 +224,28 @@ public:
     void SetBufferSize(int nBuffer, DWORD dwProcessedSize, DWORD dwBufferSize); // sets the size of the current wave data buffer
     void NextBlock(); // prepare next wave data block
     void StoreBlock(); // store a recorded wave data block
-    UINT GetVolume(BOOL * bResult = NULL) {
+    UINT GetVolume(BOOL * bResult = NULL)
+    {
         return m_pOutDev->GetVolume(bResult);   // get playback volume
     }
-    void SetVolume(UINT nVolume) {
+    void SetVolume(UINT nVolume)
+    {
         m_pOutDev->SetVolume(nVolume);   // set playback volume
     }
-    void SetSpeed(UINT nSpeed) {
+    void SetSpeed(UINT nSpeed)
+    {
         m_nSpeed = nSpeed;   // set playback speed
     }
-    void SetMaxLevel(UINT nMaxLevel) {
+    void SetMaxLevel(UINT nMaxLevel)
+    {
         m_nMaxLevel = nMaxLevel;   // set peak magnitude
     }
-    CWaveOutDevice * GetOutDevice() {
+    CWaveOutDevice * GetOutDevice()
+    {
         return m_pOutDev;
     }
-    CWaveInDevice * GetInDevice() {
+    CWaveInDevice * GetInDevice()
+    {
         return m_pInDev;
     }
 };

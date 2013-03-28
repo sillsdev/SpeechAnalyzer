@@ -34,7 +34,8 @@ class CSaDoc;
 class CSaView;
 
 
-class CDlgEditor : public CDialog {
+class CDlgEditor : public CDialog
+{
 
     // Construction/destruction/creation
 public:
@@ -75,7 +76,8 @@ public:
 
     // Operations
 public:
-    CMainFrame * MainFrame() const {
+    CMainFrame * MainFrame() const
+    {
         return (CMainFrame *)AfxGetMainWnd();
     };
     CSaView * SaView() const ;
@@ -112,11 +114,13 @@ protected:
 /////////////////////////////////////////////////////////////////////////////
 // CAnnotationEdit dialog
 
-class CAnnotationEdit : public CDialog {
+class CAnnotationEdit : public CDialog
+{
     // Construction
 public:
     CAnnotationEdit(CWnd * pParent = NULL); // standard constructor
-    BOOL Create(UINT nIDTemplate, CWnd * pParentWnd=NULL) {
+    BOOL Create(UINT nIDTemplate, CWnd * pParentWnd=NULL)
+    {
         return CDialog::Create(nIDTemplate, pParentWnd);
     };
     // Dialog Data
@@ -136,7 +140,8 @@ private:
 public:
     virtual BOOL PreTranslateMessage(MSG * pMsg);
 private:
-    CMainFrame * MainFrame() const {
+    CMainFrame * MainFrame() const
+    {
         return (CMainFrame *)AfxGetMainWnd();
     };
     CSaView * SaView() const ;

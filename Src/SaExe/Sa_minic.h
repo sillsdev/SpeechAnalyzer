@@ -15,7 +15,8 @@
 
 #define MINICAPTION_HEIGHT  10           // height of the window small caption
 
-class CMiniCaptionWnd : public CWnd {
+class CMiniCaptionWnd : public CWnd
+{
     DECLARE_DYNCREATE(CMiniCaptionWnd)
 
     // Construction/destruction/creation

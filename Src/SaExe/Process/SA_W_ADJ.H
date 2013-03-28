@@ -13,7 +13,8 @@
 //###########################################################################
 // CProcessAdjust data processing
 
-class CProcessAdjust : public CButterworth {
+class CProcessAdjust : public CButterworth
+{
 // Construction/destruction/creation
 public:
     CProcessAdjust(ISaDoc * pDoc);
@@ -28,15 +29,18 @@ private:
 
     // Operations
 public:
-    BOOL GetInvert() const {
+    BOOL GetInvert() const
+    {
         return m_bInvert;
     }
     void SetInvert(BOOL bNew);
-    BOOL GetZero() const {
+    BOOL GetZero() const
+    {
         return m_bZero;
     }
     void SetZero(BOOL bNew);
-    BOOL GetNormalize() const {
+    BOOL GetNormalize() const
+    {
         return m_bNormalize;
     }
     void SetNormalize(BOOL bNew);
@@ -45,7 +49,8 @@ public:
     virtual void * GetProcessedDataBlock(DWORD dwOffset, size_t sObjectSize, BOOL bReverse=FALSE); // return processed data pointer to object staring at dwOffset
     virtual HPSTR GetProcessedWaveData(DWORD dwOffset, BOOL bBlockBegin = FALSE); // return pointer to block of processed wave source
 
-    virtual DWORD GetProcessBufferIndex(size_t nSize = 1) {
+    virtual DWORD GetProcessBufferIndex(size_t nSize = 1)
+    {
         // return index to process buffer
         return ProcessImpersonate() ? ProcessImpersonate()->GetProcessBufferIndex(nSize) : CButterworth::GetProcessBufferIndex(nSize);
     }

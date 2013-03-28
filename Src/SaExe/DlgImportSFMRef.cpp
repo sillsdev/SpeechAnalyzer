@@ -73,8 +73,8 @@ static const char * psz_Orthographic = "or";
 static const char * psz_Reference = "ref";
 
 CDlgImportSFMRef::CDlgImportSFMRef(BOOL bPhonetic, BOOL bPhonemic, BOOL bOrtho, BOOL bGloss, CWnd * pParent /*=NULL*/)
-    : CDialog(CDlgImportSFMRef::IDD, pParent) {
-    //{{AFX_DATA_INIT(CDlgImportSFMRef)
+    : CDialog(CDlgImportSFMRef::IDD, pParent)
+{
     m_bGloss = bGloss;
     m_bPhonemic = bPhonemic;
     m_bPhonetic = bPhonetic;
@@ -84,12 +84,11 @@ CDlgImportSFMRef::CDlgImportSFMRef(BOOL bPhonetic, BOOL bPhonemic, BOOL bOrtho, 
     m_szPhonetic = psz_Phonetic;
     m_szOrthographic = psz_Orthographic;
     m_szReference = psz_Reference;
-    //}}AFX_DATA_INIT
 }
 
-void CDlgImportSFMRef::DoDataExchange(CDataExchange * pDX) {
+void CDlgImportSFMRef::DoDataExchange(CDataExchange * pDX)
+{
     CDialog::DoDataExchange(pDX);
-    //{{AFX_DATA_MAP(CDlgImportSFMRef)
     DDX_Check(pDX, IDC_GLOSS_ENABLED, m_bGloss);
     DDX_Check(pDX, IDC_PHONEMIC_ENABLED, m_bPhonemic);
     DDX_Check(pDX, IDC_PHONETIC_ENABLED, m_bPhonetic);
@@ -99,41 +98,38 @@ void CDlgImportSFMRef::DoDataExchange(CDataExchange * pDX) {
     DDX_Text(pDX, IDC_PHONETIC, m_szPhonetic);
     DDX_Text(pDX, IDC_ORTHOGRAPHIC, m_szOrthographic);
     DDX_Text(pDX, IDC_REFERENCE, m_szReference);
-    //}}AFX_DATA_MAP
 }
 
 BEGIN_MESSAGE_MAP(CDlgImportSFMRef, CDialog)
-    //{{AFX_MSG_MAP(CDlgImportSFMRef)
     ON_BN_CLICKED(IDC_IMPORT_PLAIN_TEXT, OnImportPlainText)
-    //}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
 
 /***************************************************************************/
 // CDlgAnnotation::SetEnable Enables/Disables controls
 /***************************************************************************/
-void CDlgImportSFMRef::SetEnable(int nItem, BOOL bEnable) {
+void CDlgImportSFMRef::SetEnable(int nItem, BOOL bEnable)
+{
     CWnd * pWnd = GetDlgItem(nItem);
-    if (pWnd) {
+    if (pWnd)
+    {
         pWnd->EnableWindow(bEnable);
     }
 }
 
-/////////////////////////////////////////////////////////////////////////////
-// CDlgImportSFMRef message handlers
-
 /***************************************************************************/
 // CDlgAnnotation::OnImportPlainText Plain Text Button hit
 /***************************************************************************/
-void CDlgImportSFMRef::OnImportPlainText() {
+void CDlgImportSFMRef::OnImportPlainText()
+{
     EndDialog(IDC_IMPORT_PLAIN_TEXT);
 }
-
 
 /***************************************************************************/
 // CDlgAnnotation::OnInitDialog
 /***************************************************************************/
-BOOL CDlgImportSFMRef::OnInitDialog() {
+BOOL CDlgImportSFMRef::OnInitDialog()
+{
     CDialog::OnInitDialog();
 
     SetEnable(IDC_GLOSS, m_bGloss);

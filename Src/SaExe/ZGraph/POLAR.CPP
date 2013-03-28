@@ -38,7 +38,8 @@
 //                          zPolarGraph Class
 ////////////////////////////////////////////////////////////////////////////
 
-class zPolarGraph : public zGraph {
+class zPolarGraph : public zGraph
+{
 protected:
     INT    radius;
     double AspectRatio;           // Aspect Ratio of the Device
@@ -60,7 +61,8 @@ public:
 };
 
 
-BOOL zPolarGraph::zInitGraph() {
+BOOL zPolarGraph::zInitGraph()
+{
     //
     // This Function Is Used to Set Up for Making the Polar Graph.
     // Converts Rectangular Input Data to Polar Form, if Necessary,
@@ -79,15 +81,21 @@ BOOL zPolarGraph::zInitGraph() {
     // If Input Data is in Rect. Format, Replace It With the Polar
     //    Equivalent
     //
-    if (x_axis_style == zRECTANGULAR ||  y_axis_style == zRECTANGULAR) {
-        for (INT i = 0; i < n; i++) {
+    if (x_axis_style == zRECTANGULAR ||  y_axis_style == zRECTANGULAR)
+    {
+        for (INT i = 0; i < n; i++)
+        {
             rad =  sqrt(Xdata[i] * Xdata[i] + Ydata[i] * Ydata[i]) ;
-            if (rad > rad_max) {
+            if (rad > rad_max)
+            {
                 rad_max = rad;
             }
-            if (Xdata[i] != 0.0) {
+            if (Xdata[i] != 0.0)
+            {
                 theta = atan2(Ydata[i], Xdata[i]);
-            } else {
+            }
+            else
+            {
                 theta = 0.0;
             }
 
@@ -97,12 +105,15 @@ BOOL zPolarGraph::zInitGraph() {
             Xdata[i] = rad;
             Ydata[i] = theta;
         }
-    } else {
+    }
+    else
+    {
         //
         // If Input Data is Already In Polar Format...
         //
         for (INT i = 0; i < n; i++)
-            if (Xdata[i] > rad_max) {
+            if (Xdata[i] > rad_max)
+            {
                 rad_max = Xdata[i];
             }
     }
@@ -125,7 +136,8 @@ BOOL zPolarGraph::zInitGraph() {
     return (status);
 }
 
-void zPolarGraph::zTerminateGraph() {
+void zPolarGraph::zTerminateGraph()
+{
     //
     // Restores Original Data Format, if Necessary
     //
@@ -135,8 +147,10 @@ void zPolarGraph::zTerminateGraph() {
     // If Input Data Was in Rect. Format, We Now Replace Polar
     //    Data with its Rectangular Equivalent
     //
-    if (x_axis_style == zRECTANGULAR  ||  y_axis_style == zRECTANGULAR) {
-        for (INT i = 0; i < n; i++) {
+    if (x_axis_style == zRECTANGULAR  ||  y_axis_style == zRECTANGULAR)
+    {
+        for (INT i = 0; i < n; i++)
+        {
             xtmp =  Xdata[i] * cos(Ydata[i]) ;
             ytmp =  Xdata[i] * sin(Ydata[i]) ;
 
@@ -149,7 +163,8 @@ void zPolarGraph::zTerminateGraph() {
     zGraph::zTerminateGraph();
 }
 
-BOOL zPolarGraph::zCheckForLegalData() {
+BOOL zPolarGraph::zCheckForLegalData()
+{
     //
     // Returns TRUE if User Entered Valid Data for a Given Graph,
     //  Else Returns FALSE
@@ -158,14 +173,16 @@ BOOL zPolarGraph::zCheckForLegalData() {
     // Call Base Class
     zGraph::zCheckForLegalData();
 
-    if (num_sets > zMAX_DATA_SETS) {
+    if (num_sets > zMAX_DATA_SETS)
+    {
         zDisplayError(zTOO_MANY_DATA_SETS);
         return FALSE;
     }
     return TRUE;
 }
 
-void zPolarGraph::zShowYAxisNumbers() {
+void zPolarGraph::zShowYAxisNumbers()
+{
     //
     // Displays the Y-Axis Number Labels on the Polar Graph
     //
@@ -188,7 +205,8 @@ void zPolarGraph::zShowYAxisNumbers() {
     // Display the Divisions...
     //
     k = 0;
-    do {
+    do
+    {
         y_value = -rad_max + (double)k * y_inc;
         zConvertValue(y_value, buf1, 100);
 
@@ -199,7 +217,8 @@ void zPolarGraph::zShowYAxisNumbers() {
         //
         AxisLabelFont.zDrawTextString(X_LEFT - charsize, j - charsize, buf1);
 
-    } while (++k <= (2 * y_axis_divisions)) ;
+    }
+    while (++k <= (2 * y_axis_divisions)) ;
 
     //
     // Kill Dynamic Array
@@ -213,7 +232,8 @@ void zPolarGraph::zShowYAxisNumbers() {
 
 }
 
-void zPolarGraph::zDrawGrid() {
+void zPolarGraph::zDrawGrid()
+{
     //
     // Draws in the Grid On the Polar Graph In If We're Supposed to...
     //
@@ -227,11 +247,13 @@ void zPolarGraph::zDrawGrid() {
     //
     // See If We Should Draw the Grid In.  If So, Do It...
     //
-    if (zIsGridVisible()) {
+    if (zIsGridVisible())
+    {
         //
         // Draw in Circular Segments
         //
-        for (INT i = 0; i < y_axis_divisions; i++) {
+        for (INT i = 0; i < y_axis_divisions; i++)
+        {
             zDrawCircle(ptCenter.x, ptCenter.y,
                         zRound((double)(i + 1) / y_axis_divisions * radius),
                         AspectRatio);
@@ -245,7 +267,8 @@ void zPolarGraph::zDrawGrid() {
     }
 }
 
-BOOL zPolarGraph::zScaleData() {
+BOOL zPolarGraph::zScaleData()
+{
     //
     // Scale Data as Required to fit In Grid and to Maintain
     //  Appropriate Aspect Ratio
@@ -255,18 +278,21 @@ BOOL zPolarGraph::zScaleData() {
     // Dynamically Allocate Some Arrays to Hold the Transformed Data
     //
     xnew = new INT[ n + 1 ];
-    if (!xnew) {
+    if (!xnew)
+    {
         zDisplayError(zLOW_MEMORY_POLAR_GRAPH);
         return FALSE;
     }
 
     ynew = new INT[ n + 1 ];
-    if (!ynew) {
+    if (!ynew)
+    {
         zDisplayError(zLOW_MEMORY_POLAR_GRAPH);
         return FALSE;
     }
 
-    for (INT j = 0; j < n ; j++) {
+    for (INT j = 0; j < n ; j++)
+    {
         double rprime = Xdata[j] * radius / rad_max ;
         xnew[j] = ptCenter.x + zRound(rprime * cos(Ydata[j])) ;
         ynew[j] = ptCenter.y - zRound(rprime * sin(Ydata[j]) * AspectRatio) ;
@@ -275,13 +301,15 @@ BOOL zPolarGraph::zScaleData() {
     return TRUE;
 }
 
-void zPolarGraph::zDraw() {
+void zPolarGraph::zDraw()
+{
     //
     // Draws the Polar Graph
     //
 
     // See If User Specified Improper Input...
-    if (! zCheckForLegalData()) {
+    if (! zCheckForLegalData())
+    {
         return;
     }
 
@@ -315,7 +343,8 @@ void zPolarGraph::zDraw() {
 //  for 0 <= i < n.  Data is Plotted on a Polar Graph Grid
 ////////////////////////////////////////////////////////////////////////////
 
-void zGRAPH_TYPE  PolarGraph(zGraphStruct * zG) {
+void zGRAPH_TYPE  PolarGraph(zGraphStruct * zG)
+{
     // Declare an Instance of the zPolarGraph Class...
     zPolarGraph zPolar(zG);
 

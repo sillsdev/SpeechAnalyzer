@@ -19,7 +19,8 @@
 
 class CDlgMbrola;
 
-class CDlgSynthesis : public CPropertySheet {
+class CDlgSynthesis : public CPropertySheet
+{
     DECLARE_DYNAMIC(CDlgSynthesis)
 
 // Construction/destruction/creation

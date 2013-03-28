@@ -28,14 +28,16 @@ static char BASED_CODE THIS_FILE[] = __FILE__;
 /////////////////////////////////////////////////////////////////////////////
 // CDisplayPlot
 
-CDisplayPlot::CDisplayPlot(CString & szPlot) {
+CDisplayPlot::CDisplayPlot(CString & szPlot)
+{
     m_pModal = NULL;
     m_pMainFrame = (CMainFrame *) AfxGetMainWnd();
 
     // adjust app
     // disable status
     m_bStatusBar = m_pMainFrame->m_bStatusBar;
-    if (FALSE != m_bStatusBar) {
+    if (FALSE != m_bStatusBar)
+    {
         m_pMainFrame->SendMessage(WM_COMMAND, ID_VIEW_STATUS_BAR, 0); // change statusbar status
         m_pMainFrame->m_bStatusBar = !m_pMainFrame->m_bStatusBar;
     }
@@ -50,14 +52,16 @@ CDisplayPlot::CDisplayPlot(CString & szPlot) {
 
     // disable scrolling zoom
     m_bScrollZoom = m_pMainFrame->m_bScrollZoom;
-    if (FALSE != m_bScrollZoom) {
+    if (FALSE != m_bScrollZoom)
+    {
         m_pMainFrame->m_bScrollZoom = !m_pMainFrame->m_bScrollZoom;
         // tell about the change to all views
         m_pMainFrame->SendMessageToMDIDescendants(WM_USER_VIEW_SCROLLZOOMCHANGED, m_bScrollZoom, 0L);
     }
     // set graph caption style
     m_nCaptionStyle = m_pMainFrame->m_nCaptionStyle;
-    if (0 != m_nCaptionStyle) {
+    if (0 != m_nCaptionStyle)
+    {
         m_pMainFrame->m_nCaptionStyle = 0;
         // tell about the change to all views
         m_pMainFrame->SendMessageToMDIDescendants(WM_USER_GRAPH_STYLECHANGED, 0, 0L);
@@ -82,13 +86,17 @@ CDisplayPlot::CDisplayPlot(CString & szPlot) {
 
     // Tile or maximize
     CDocList List;
-    if (!List.pdocFirst()) {
+    if (!List.pdocFirst())
+    {
         m_pMainFrame->PostMessage(WM_COMMAND, ID_PROCESS_BATCH_COMMANDS, 0L);
         return;
     }
-    if (List.pdocNext()) {
+    if (List.pdocNext())
+    {
         m_pMainFrame->SendMessage(WM_COMMAND, ID_WINDOW_TILE_HORZ, 0); // tile documents
-    } else {
+    }
+    else
+    {
         // Maximize
         WINDOWPLACEMENT WP;
         WP.length = sizeof(WINDOWPLACEMENT);
@@ -102,11 +110,16 @@ CDisplayPlot::CDisplayPlot(CString & szPlot) {
     m_pMainFrame->SendMessageToMDIDescendants(WM_COMMAND, ID_LAYOUT_1, 0L);
     // plot type
     szPlot.MakeUpper();
-    if (szPlot.Find(_T("PITCH"))!=-1) {
+    if (szPlot.Find(_T("PITCH"))!=-1)
+    {
         m_pMainFrame->SendMessageToMDIDescendants(WM_COMMAND, IDD_GRAPITCH, 0L);
-    } else if (szPlot.Find(_T("WAVE"))!=-1) {
+    }
+    else if (szPlot.Find(_T("WAVE"))!=-1)
+    {
         m_pMainFrame->SendMessageToMDIDescendants(WM_COMMAND, IDD_RAWDATA, 0L);
-    } else if (szPlot.Find(_T("SPECTRO"))!=-1) {
+    }
+    else if (szPlot.Find(_T("SPECTRO"))!=-1)
+    {
         m_pMainFrame->SendMessageToMDIDescendants(WM_COMMAND, IDD_SPECTROGRAM, 0L);
         m_pMainFrame->SendMessageToMDIDescendants(WM_COMMAND, ID_RESTART_PROCESS, 0L);
     }
@@ -120,14 +133,17 @@ CDisplayPlot::CDisplayPlot(CString & szPlot) {
     m_pMainFrame->SendMessageToMDIDescendants(WM_COMMAND, ID_XSCALE_NONE, 0L);//SDM 1.5Test10.0
 }
 
-CDisplayPlot::~CDisplayPlot() {
-    if (m_pModal) {
+CDisplayPlot::~CDisplayPlot()
+{
+    if (m_pModal)
+    {
         m_pModal->SendMessage(WM_CLOSE, 0, 0);
         m_pModal = NULL;
     }
     // restore app
     // status
-    if (FALSE != m_bStatusBar) {
+    if (FALSE != m_bStatusBar)
+    {
         m_pMainFrame->SendMessage(WM_COMMAND, ID_VIEW_STATUS_BAR, 0); // change statusbar status
         m_pMainFrame->m_bStatusBar = !m_pMainFrame->m_bStatusBar;
     }
@@ -140,13 +156,15 @@ CDisplayPlot::~CDisplayPlot() {
     m_pMainFrame->ShowControlBar(m_pMainFrame->GetControlBar(ID_VIEW_TASKBAR),!m_bTaskBar, TRUE); // change toolbar status
 
     // restore scrolling zoom
-    if (FALSE != m_bScrollZoom) {
+    if (FALSE != m_bScrollZoom)
+    {
         m_pMainFrame->m_bScrollZoom = !m_pMainFrame->m_bScrollZoom;
         // tell about the change to all views
         m_pMainFrame->SendMessageToMDIDescendants(WM_USER_VIEW_SCROLLZOOMCHANGED, m_bScrollZoom, 0L);
     }
     // set graph caption style
-    if (0 != m_nCaptionStyle) {
+    if (0 != m_nCaptionStyle)
+    {
         m_pMainFrame->m_nCaptionStyle = m_nCaptionStyle;
         // tell about the change to all views
         m_pMainFrame->SendMessageToMDIDescendants(WM_USER_GRAPH_STYLECHANGED, 0, 0L);
@@ -157,7 +175,8 @@ CDisplayPlot::~CDisplayPlot() {
     m_pMainFrame->OnUpdateFrameMenu(NULL);
     m_pMainFrame->DrawMenuBar();
 
-    if (hMenu) {
+    if (hMenu)
+    {
         ::DestroyMenu(hMenu);
     }
 
@@ -165,7 +184,8 @@ CDisplayPlot::~CDisplayPlot() {
     HACCEL hAccel = m_pMainFrame->GetNewAccel();
     m_pMainFrame->SetNewAccel(m_hNewAccel);
 
-    if (hAccel) {
+    if (hAccel)
+    {
         ::FreeResource((HGLOBAL)hAccel);
     }
 

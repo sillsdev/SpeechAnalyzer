@@ -40,12 +40,14 @@ class CAnnotationWnd;
 class Object_ostream;
 class Object_istream;
 
-class CGraphWnd : public CMiniCaptionWnd {
+class CGraphWnd : public CMiniCaptionWnd
+{
     DECLARE_DYNCREATE(CGraphWnd)
 
     // Construction/destruction/creation
 public:
-    CGraphWnd() {
+    CGraphWnd()
+    {
         ;   // default constructor
     }
     CGraphWnd(UINT nID);
@@ -89,86 +91,109 @@ public:
     static CSaString Semitone2Name(double fSemitone);
     void UpdateStatusBar(DWORD dwStartCursor, DWORD dwStopCursor, BOOL bForceUpdate = FALSE); // update the status bar
     // interface to plot window
-    UINT GetPlotID() const {
+    UINT GetPlotID() const
+    {
         return m_nPlotID;   // return plot ID
     }
-    UINT IsPlotID(UINT test) const {
+    UINT IsPlotID(UINT test) const
+    {
         return test == m_nPlotID;   // return plot ID
     }
-    void ShowBoundaries(BOOL bShow, BOOL bRedraw = FALSE) {
+    void ShowBoundaries(BOOL bShow, BOOL bRedraw = FALSE)
+    {
         m_pPlot->ShowBoundaries(bShow, bRedraw);
     }
     void SetMagnify(double bFactor, BOOL bRedraw = FALSE); // set magnify factor
-    double GetMagnify() {
+    double GetMagnify()
+    {
         return m_pPlot->GetMagnify();   // return magnify factor
     }
-    BOOL HaveBoundaries() {
+    BOOL HaveBoundaries()
+    {
         return m_pPlot->HaveBoundaries();   // boundaries visible?
     }
-    BOOL HaveDrawingStyleLine() {
+    BOOL HaveDrawingStyleLine()
+    {
         return m_pPlot->HaveDrawingStyleLine();   // return drawing style
     }
-    BOOL HaveCursors() {
+    BOOL HaveCursors()
+    {
         return m_pPlot->HaveCursors();   // cursors visible?
     }
-    BOOL HavePrivateCursor() {
+    BOOL HavePrivateCursor()
+    {
         return m_pPlot->HavePrivateCursor();   // private cursor visible?
     }
-    BOOL HaveGrid() {
+    BOOL HaveGrid()
+    {
         return m_pPlot->HaveGrid();   // gridlines visible?
     }
-    void SetLineDraw(BOOL bLine) {
-        if (m_pPlot) {
+    void SetLineDraw(BOOL bLine)
+    {
+        if (m_pPlot)
+        {
             m_pPlot->SetLineDraw(bLine);
         }
     }
-    void ShowGrid(BOOL bShow, BOOL bRedraw = FALSE) {
+    void ShowGrid(BOOL bShow, BOOL bRedraw = FALSE)
+    {
         m_pPlot->ShowGrid(bShow, bRedraw);
     }
     void SetStartCursor(CSaView * pView); // set start cursor position
     void SetStopCursor(CSaView * pView); // set stop cursor position
     void SetPlaybackPosition(CSaView * pView, DWORD dwPos); // set start cursor position
-    void MoveStartCursor(CSaView * pView, DWORD dwNewPositon) {
+    void MoveStartCursor(CSaView * pView, DWORD dwNewPositon)
+    {
         m_pPlot->MoveStartCursor(pView, dwNewPositon);
     }
-    void MoveStopCursor(CSaView * pView, DWORD dwNewPositon) {
+    void MoveStopCursor(CSaView * pView, DWORD dwNewPositon)
+    {
         m_pPlot->MoveStopCursor(pView, dwNewPositon);
     }
-    void RestartProcess() {
+    void RestartProcess()
+    {
         m_pPlot->RestartProcess();
     }
     // interface to annotation and legend/scale windows
     void CreateAnnotationWindows(); // creates the annotation windows
     BOOL SetLegendScale(int nMode, double dMinValue, double dMaxValue, TCHAR * pszDimension = NULL, int nDivisions = -1, double d3dOffset = 0.); // set legend scale
     void SetXScale(int nMode, int nMinValue, int nMaxValue, TCHAR * pszDimension = NULL, int nDivisions = -1, double d3dOffset = 0.); // set x-scale
-    CAnnotationWnd * GetAnnotationWnd(int nIndex) {
+    CAnnotationWnd * GetAnnotationWnd(int nIndex)
+    {
         return m_apAnnWnd[nIndex];   // return pointer to indexed annotation window
     }
-    CLegendWnd * GetLegendWnd() {
+    CLegendWnd * GetLegendWnd()
+    {
         return m_pLegend;   // return pointer to legend window
     }
-    CXScaleWnd * GetXScaleWnd() {
+    CXScaleWnd * GetXScaleWnd()
+    {
         return m_pXScale;   // return pointer to x-scale window
     }
     void ShowLegend(BOOL bShow, BOOL bRedraw = FALSE);   // show or hide legend window
     void ShowXScale(BOOL bShow, BOOL bRedraw = FALSE);   // show or hide x-scale window
     void ShowAnnotation(int nIndex, BOOL bShow, BOOL bRedraw = FALSE); // show or hide indexed annotation window
-    void ShowCursors(BOOL bPrivate, BOOL bShow) {
+    void ShowCursors(BOOL bPrivate, BOOL bShow)
+    {
         m_pPlot->ShowCursors(bPrivate, bShow);   // set cursors visible/hidden
     }
-    BOOL HaveLegend() {
+    BOOL HaveLegend()
+    {
         return m_bLegend;   // legend window visible?
     }
-    BOOL HaveXScale() {
+    BOOL HaveXScale()
+    {
         return m_bXScale;   // x-scale window visible?
     }
-    BOOL HaveAnnotation(int nIndex) {
+    BOOL HaveAnnotation(int nIndex)
+    {
         return m_abAnnWnd[nIndex];   // indexed annotation window visible?
     }
     BOOL DisableLegend();
     BOOL DisableXScale();
     BOOL DisableAnnotation(int nIndex);
-    void SetAreaGraph(BOOL bArea) {
+    void SetAreaGraph(BOOL bArea)
+    {
         m_bAreaGraph = bArea;   // set graph to area processed graph type
     }
     void ChangeAnnotationSelection(int nIndex);      // change the selection in indexed annotation window
@@ -176,19 +201,24 @@ public:
     void PrintHiResGraph(CDC * pDC, const CRect * printRect, int originX, int originY);
     void MergeInGraph(CGraphWnd * pGraphToMerge, CSaView * pView, bool bRtOverlay);
     BOOL static IsMergeableGraph(CGraphWnd * pGraphToMerge, BOOL bBaseGraph=FALSE);
-    CPlotWnd * GetPlot() const             {
+    CPlotWnd * GetPlot() const
+    {
         return m_pPlot;
     }
-    BOOL IsAnnotationVisible(int nAnnot)  {
+    BOOL IsAnnotationVisible(int nAnnot)
+    {
         return m_abAnnWnd[nAnnot];
     }
-    BOOL IsAreaGraph()                    {
+    BOOL IsAreaGraph()
+    {
         return m_bAreaGraph;   // is this an area processed graph?
     }
-    BOOL IsAnimationGraph()               {
+    BOOL IsAnimationGraph()
+    {
         return (m_pPlot->IsAnimationPlot());
     }
-    BOOL IsCanceled()                     {
+    BOOL IsCanceled()
+    {
         return  m_pPlot->IsCanceled();
     }
     void AnimateFrame(DWORD dwFrameIndex);
@@ -199,8 +229,10 @@ protected:
     //{{AFX_MSG(CGraphWnd)
     afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
     afx_msg void OnSize(UINT nType, int cx, int cy);
-    afx_msg void OnSetFocus(CWnd * /*cwp*/) {
-        if (IsPlotID(IDD_STAFF)) {
+    afx_msg void OnSetFocus(CWnd * /*cwp*/)
+    {
+        if (IsPlotID(IDD_STAFF))
+        {
             ::SetFocus(m_pPlot->m_hWnd);
         }
     }
@@ -218,12 +250,14 @@ protected:
 
 //###########################################################################
 // CGraphWnd
-class CRecGraphWnd : public CGraphWnd {
+class CRecGraphWnd : public CGraphWnd
+{
     DECLARE_DYNCREATE(CRecGraphWnd)
 
 public:
     CRecGraphWnd();
-    virtual ~CRecGraphWnd() {
+    virtual ~CRecGraphWnd()
+    {
     };
 
 protected:

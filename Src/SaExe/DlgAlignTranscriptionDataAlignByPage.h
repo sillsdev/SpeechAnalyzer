@@ -3,7 +3,8 @@
 
 #include "resource.h"
 
-class CDlgAlignTranscriptionDataAlignByPage : public CPropertyPage {
+class CDlgAlignTranscriptionDataAlignByPage : public CPropertyPage
+{
 public:
     CDlgAlignTranscriptionDataAlignByPage();
     virtual ~CDlgAlignTranscriptionDataAlignByPage();

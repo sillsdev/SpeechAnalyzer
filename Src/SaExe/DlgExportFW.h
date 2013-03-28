@@ -23,7 +23,8 @@ class CSaDoc;
 
 /////////////////////////////////////////////////////////////////////////////
 // CDlgExportFW dialog
-class CDlgExportFW : public CDialog {
+class CDlgExportFW : public CDialog
+{
 public:
     CDlgExportFW(LPCTSTR szDocTitle,
                  BOOL gloss,

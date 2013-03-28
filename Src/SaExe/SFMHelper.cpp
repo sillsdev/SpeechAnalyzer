@@ -9,16 +9,20 @@ static const wchar_t * EMPTY = L"";
 using std::list;
 using std::map;
 
-bool CSFMHelper::IsSFM(CSaString & filename) {
+bool CSFMHelper::IsSFM(CSaString & filename)
+{
 
     Object_istream stream(filename);
-    if (stream.getIos().fail()) {
+    if (stream.getIos().fail())
+    {
         return false;
     }
-    if (!stream.bAtBackslash()) {
+    if (!stream.bAtBackslash())
+    {
         stream.SkipBOM();
     }
-    if (!stream.bAtBackslash()) {
+    if (!stream.bAtBackslash())
+    {
         return false;
     }
     return true;
@@ -29,26 +33,34 @@ bool CSFMHelper::IsSFM(CSaString & filename) {
 * then it's a multirecord file
 *
 */
-bool CSFMHelper::IsMultiRecordSFM(CSaString & filename, CSaString & marker) {
+bool CSFMHelper::IsMultiRecordSFM(CSaString & filename, CSaString & marker)
+{
 
     int count = 0;
     CSaString buffer;
 
     Object_istream stream(filename);
-    if (stream.getIos().fail()) {
+    if (stream.getIos().fail())
+    {
         return false;
     }
-    if (!stream.bAtBackslash()) {
+    if (!stream.bAtBackslash())
+    {
         stream.SkipBOM();
     }
-    if (!stream.bAtBackslash()) {
+    if (!stream.bAtBackslash())
+    {
         return false;
     }
 
-    while (!stream.bAtEnd()) {
-        if (stream.bReadString(marker, &buffer)) {
+    while (!stream.bAtEnd())
+    {
+        if (stream.bReadString(marker, &buffer))
+        {
             count++;
-        } else {
+        }
+        else
+        {
             stream.bEnd(IMPORT_END);
         }
     }
@@ -61,18 +73,22 @@ bool CSFMHelper::IsMultiRecordSFM(CSaString & filename, CSaString & marker) {
 * Whenever syncMarker is encountered, the list will be balanced for consistency
 * Return a map using key marker as a key and the list of value for that marker
 */
-TranscriptionDataMap CSFMHelper::ImportMultiRecordSFM(CSaString & filename, CSaString & syncMarker, MarkerList & markers, bool /*addTag*/) {
+TranscriptionDataMap CSFMHelper::ImportMultiRecordSFM(CSaString & filename, CSaString & syncMarker, MarkerList & markers, bool /*addTag*/)
+{
 
     TranscriptionDataMap result;
 
     Object_istream stream(filename);
-    if (stream.getIos().fail()) {
+    if (stream.getIos().fail())
+    {
         return result;
     }
-    if (!stream.bAtBackslash()) {
+    if (!stream.bAtBackslash())
+    {
         stream.SkipBOM();
     }
-    if (!stream.bAtBackslash()) {
+    if (!stream.bAtBackslash())
+    {
         return result;
     }
 
@@ -81,23 +97,28 @@ TranscriptionDataMap CSFMHelper::ImportMultiRecordSFM(CSaString & filename, CSaS
     * then we will build the output after the data
     * has been completely read
     */
-    while (!stream.bAtEnd()) {
+    while (!stream.bAtEnd())
+    {
         MarkerList::const_iterator it = markers.begin();
         bool found = false;
-        for (MarkerList::iterator it = markers.begin(); it != markers.end(); it++) {
+        for (MarkerList::iterator it = markers.begin(); it != markers.end(); it++)
+        {
             CSaString buffer;
             CSaString marker = *it;
-            if (stream.bReadString(marker, &buffer)) {
+            if (stream.bReadString(marker, &buffer))
+            {
                 result[marker].push_back(buffer);
                 // when see the sync marker, balance the other entries.
-                if (marker.Compare(syncMarker)==0) {
+                if (marker.Compare(syncMarker)==0)
+                {
                     BalanceDataMap(result, syncMarker);
                 }
                 found=true;
                 break;
             }
         }
-        if (!found) {
+        if (!found)
+        {
             //we are at string that doesn't match - skip over it
             stream.bEnd(IMPORT_END);
         }
@@ -108,13 +129,18 @@ TranscriptionDataMap CSFMHelper::ImportMultiRecordSFM(CSaString & filename, CSaS
     return result;
 }
 
-void CSFMHelper::BalanceDataMap(TranscriptionDataMap & map, CSaString & marker) {
+void CSFMHelper::BalanceDataMap(TranscriptionDataMap & map, CSaString & marker)
+{
 
-    if (map[marker].size()>0) {
+    if (map[marker].size()>0)
+    {
         TranscriptionDataMap::size_type length = map[marker].size()-1;
-        for (TranscriptionDataMap::iterator pos=map.begin(); pos!=map.end(); pos++) {
-            if (marker.Compare(pos->first)!=0) {
-                while (pos->second.size()<length) {
+        for (TranscriptionDataMap::iterator pos=map.begin(); pos!=map.end(); pos++)
+        {
+            if (marker.Compare(pos->first)!=0)
+            {
+                while (pos->second.size()<length)
+                {
                     pos->second.push_back(EMPTY);
                 }
             }
@@ -122,7 +148,64 @@ void CSFMHelper::BalanceDataMap(TranscriptionDataMap & map, CSaString & marker) 
     }
 }
 
-TranscriptionDataMap CSFMHelper::ImportSFM(CSaString & /*filename*/) {
+TranscriptionDataMap CSFMHelper::ImportSFM(CSaString & /*filename*/)
+{
     TranscriptionDataMap map;
     return map;
 }
+
+bool CSFMHelper::IsTag( LPCTSTR text) {
+	if (wcslen(text)==0) return false;
+	if (text[0] != '\\') return false;
+	return true;
+}
+
+vector<wstring> CSFMHelper::FilterBlankLines( vector<wstring> & input)
+{
+	vector<wstring> result;
+	for (int i=0;i<input.size();i++)
+	{
+		if (input[i].length()>0)
+		{
+			result.push_back(input[i].c_str());
+		}
+	}
+	return result;
+}
+
+bool CSFMHelper::IsPhonemic( LPCTSTR text, size_t length)
+{
+	if (length<3) return false;
+	if (::tolower(text[0])!='\\') return false;
+	if (::tolower(text[1])!='p') return false;
+	if (::tolower(text[2])!='m') return false;
+	return true;
+}
+
+bool CSFMHelper::IsPhonetic( LPCTSTR text, size_t length)
+{
+	if (length<3) return false;
+	if (::tolower(text[0])!='\\') return false;
+	if (::tolower(text[1])!='p') return false;
+	if (::tolower(text[2])!='h') return false;
+	return true;
+}
+
+bool CSFMHelper::IsOrthographic( LPCTSTR text, size_t length)
+{
+	if (length<3) return false;
+	if (::tolower(text[0])!='\\') return false;
+	if (::tolower(text[1])!='o') return false;
+	if (::tolower(text[2])!='r') return false;
+	return true;
+}
+
+bool CSFMHelper::IsGloss( LPCTSTR text, size_t length)
+{
+	if (length<3) return false;
+	if (::tolower(text[0])!='\\') return false;
+	if (::tolower(text[1])!='g') return false;
+	if (::tolower(text[2])!='l') return false;
+	return true;
+}
+

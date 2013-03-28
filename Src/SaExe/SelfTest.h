@@ -13,7 +13,8 @@
 #include "sa.h"
 #include "mainfrm.h"
 
-class CSASelfTest {
+class CSASelfTest
+{
     CSaApp * m_pApp;
     CMainFrame * m_pMain;
     CString m_szTempPath;
@@ -30,7 +31,8 @@ class CSASelfTest {
     void LogEntry(const CString szMessage);
     BOOL LogHexDataCompare(CFile & FileOne,CFile & FileTwo,UINT HighlightPosition);
     int FileCompare(const CString szFileOne, long nTolerableDifferences=0, CString szFileTwo="");
-    BOOL FileExists(const CString szFile) {
+    BOOL FileExists(const CString szFile)
+    {
         return !_taccess(szFile,0);
     }
     void MessageLoop(DWORD dwMilliSeconds=0);

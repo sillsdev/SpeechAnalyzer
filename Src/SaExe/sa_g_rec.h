@@ -10,7 +10,8 @@
 //###########################################################################
 // CPlotRecording plot window
 
-class CPlotRecording : public CPlotRawData {
+class CPlotRecording : public CPlotRawData
+{
     DECLARE_DYNCREATE(CPlotRecording)
 
 // Construction/destruction/creation
@@ -31,12 +32,14 @@ private:
 public:
     virtual void SetMagnify(double, BOOL bRedraw = FALSE);      // set magnify factor
     // don't want to allow clients to change selection if this is the recording plot
-    virtual void  SetHighLightArea(DWORD /*dwStart*/, DWORD /*dwStop*/, BOOL /*bRedraw*/ = TRUE, BOOL /*bSecondSelection*/ = FALSE) {
+    virtual void  SetHighLightArea(DWORD /*dwStart*/, DWORD /*dwStop*/, BOOL /*bRedraw*/ = TRUE, BOOL /*bSecondSelection*/ = FALSE)
+    {
         ;
     }
 
 protected:
-    virtual double GetDataPosition(int)  {
+    virtual double GetDataPosition(int)
+    {
         return 0L;   // 08/29/2000 - DDO
     }
     virtual DWORD AdjustDataFrame(int iWidth);                     // 08/29/2000 - DDO

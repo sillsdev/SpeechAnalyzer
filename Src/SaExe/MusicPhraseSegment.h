@@ -3,7 +3,8 @@
 
 #include "IndependentSegment.h"
 
-class CMusicPhraseSegment : public CIndependentSegment {
+class CMusicPhraseSegment : public CIndependentSegment
+{
 public:
     CMusicPhraseSegment(int index, int master = -1);
     virtual int CheckPosition(CSaDoc *,DWORD dwStart,DWORD dwStop, EMode nMode=MODE_AUTOMATIC,BOOL bOverlap=TRUE) const;

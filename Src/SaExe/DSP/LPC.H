@@ -12,18 +12,21 @@
 #define LPC_16BIT_DB_PWR_REF  126.190F
 
 
-enum E_ANALYSIS_PARAMETERS_SETS {
+enum E_ANALYSIS_PARAMETERS_SETS
+{
     REFL_COEFF = 0x0001, PRED_COEFF = 0x0002, CORR_VALUES = 0x0004,
     LOG_AREA_RATIOS = 0x0008, NORM_CROSS_SECT = 0x0010, ENERGY = 0x0020, GAIN = 0x0040,
     FORMANTS = 0x0080, WINDOW_SIGNAL = 0x100, PRE_EMPHASIS = 0x0200, NO_DC_BIAS = 0x0400, PRED_SIGNAL = 0x0800,
     MEAN_SQ_ERR = 0x1000, RESIDUAL = 0x2000, POWER_SPECTRUM = 0x4000
 };   // list of LPC analysis parameter sets
-enum FORMANT_METHOD {
+enum FORMANT_METHOD
+{
     FROM_POLES,
     FROM_SPECTRUM
 };
 
-typedef struct SLPC_PARM_SETS {
+typedef struct SLPC_PARM_SETS
+{
     uint16 bReflCoeff          : 1;
     uint16 bPredCoeff          : 1;
     uint16 bCorrValues         : 1;
@@ -42,15 +45,18 @@ typedef struct SLPC_PARM_SETS {
     uint16 bSpare32k           : 1;
 } LPC_PARM_SETS;
 
-typedef union ULPC_PROC_REQ {
+typedef union ULPC_PROC_REQ
+{
     LPC_PARM_SETS  ParmSet;
     uint16 Flags;
 } LPC_PROC_REQ;
 
 
 enum EANALYSIS_METHODS {LPC_COVAR_LATTICE = 0, LPC_AUTOCOR = 1, LPC_CEPSTRAL = 2};     //LPC analysis methods
-typedef struct LPC_SETTINGS {
-    LPC_SETTINGS() {
+typedef struct LPC_SETTINGS
+{
+    LPC_SETTINGS()
+    {
         nMethod = 0;
         nOrder = 0;
         nFrameLen = 0;
@@ -68,7 +74,8 @@ typedef struct LPC_SETTINGS {
     LPC_PROC_REQ Process;                        // LPC parameter sets to process
 } LPC_SETTINGS;
 
-typedef struct SLPC_MODEL {
+typedef struct SLPC_MODEL
+{
     uint32  nFrameLen;                           //frame length in samples
     short  * pFrameBfr;                          //pointer to frame buffer
     short  * pWinFrameBfr;                       //pointer to windowed frame buffer
@@ -116,14 +123,16 @@ typedef struct SLPC_MODEL {
 // #define LPC_MODEL_INIT  {0, NULL, 0, 0, 0.F, 0.F, 0, NULL, 0, NULL, 0.F, 0.F, 0, NULL, 0, NULL, 0, NULL, 0, NULL, 0, NULL}
 
 #pragma pack(1)
-typedef struct SVOCAL_TRACT_MODEL {
+typedef struct SVOCAL_TRACT_MODEL
+{
     double      dErrorRatio;                    // ratio of prediction error to signal frame energy
     uint16      nNormCrossSectAreas;            //number of normalized cross sectional areas
     double      dNormCrossSectArea[1];          //normalized cross sectional area array
 } VOCAL_TRACT_MODEL;
 #pragma pack()
 
-typedef struct SLPC_PARMS {
+typedef struct SLPC_PARMS
+{
     LPC_PROC_REQ    Process;                    //LPC parameter sets to process
     double     **     ppCovarMatrix;            //pointer to array of row pointers into
     //covariance matrix
@@ -137,7 +146,8 @@ typedef struct SLPC_PARMS {
 
 // #define LPC_PARMS_INIT  {0, NULL, NULL, LPC_MODEL_INIT}
 
-class CLinPredCoding {
+class CLinPredCoding
+{
 public:
     static char * Copyright(void);
     static float Version(void);

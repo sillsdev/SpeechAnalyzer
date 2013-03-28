@@ -8,7 +8,8 @@
 /////////////////////////////////////////////////////////////////////////////
 // CDlgExportSFM dialog
 
-class CDlgExportSFM : public CDialog {
+class CDlgExportSFM : public CDialog
+{
     // Construction
 public:
     CDlgExportSFM(const CSaString & szDocTitle, CWnd * pParent = NULL);

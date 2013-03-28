@@ -21,9 +21,11 @@ class CUtf16String;
 class CUtf8String;
 class CFont;
 
-class CUnicodeString {
+class CUnicodeString
+{
 public:
-    virtual ~CUnicodeString() {
+    virtual ~CUnicodeString()
+    {
         ;
     }
 
@@ -41,54 +43,67 @@ public:
     virtual BOOL IsEmpty() const = 0;
 };
 
-class CUtf32String : public CUnicodeString {
+class CUtf32String : public CUnicodeString
+{
 public:
-    CUtf32String() {
+    CUtf32String()
+    {
         ;
     }
-    explicit CUtf32String(unsigned long lChar) {
+    explicit CUtf32String(unsigned long lChar)
+    {
         *this += lChar;
     }
-    virtual ~CUtf32String() {
+    virtual ~CUtf32String()
+    {
         ;
     }
 
     virtual operator CUtf8String() const;
     virtual operator CUtf16String() const;
-    virtual operator CUtf32String() const {
+    virtual operator CUtf32String() const
+    {
         return *this;
     }
 
-    virtual CUnicodeString & operator=(const CUtf32String & szNew) {
+    virtual CUnicodeString & operator=(const CUtf32String & szNew)
+    {
         m_szContents = szNew.m_szContents;
         return *this;
     }
-    virtual CUnicodeString & operator=(const CUnicodeString & szNew) {
+    virtual CUnicodeString & operator=(const CUnicodeString & szNew)
+    {
         m_szContents = CUtf32String(szNew).m_szContents;
         return *this;
     }
-    CUtf32String & operator+=(const unsigned long lChar) {
-        if (IsValidUnicode(lChar)) {
+    CUtf32String & operator+=(const unsigned long lChar)
+    {
+        if (IsValidUnicode(lChar))
+        {
             m_szContents+=lChar;
         }
         return *this;
     }
-    static BOOL IsValidUnicode(unsigned long lChar) {
+    static BOOL IsValidUnicode(unsigned long lChar)
+    {
         return (lChar < 0x110000);
     }
 
     CUtf32String Left(int nChars) const;
     CUtf32String Mid(int nStart) const;
     CUtf32String Mid(int nStart, int nChars) const;
-    CUtf32String & operator+=(const CUnicodeString & szString) {
+    CUtf32String & operator+=(const CUnicodeString & szString)
+    {
         m_szContents += CUtf32String(szString).m_szContents;
         return *this;
     }
 
-    virtual BOOL IsEmpty() const {
+    virtual BOOL IsEmpty() const
+    {
         return size() == 0;
     }
-    int size() const {
+    int size() const
+    {
         return m_szContents.size();
     }
 
@@ -96,46 +111,57 @@ private:
     std::basic_string<unsigned long> m_szContents;
 };
 
-class CUtf16String : public CUnicodeString {
+class CUtf16String : public CUnicodeString
+{
 public:
-    CUtf16String() {
+    CUtf16String()
+    {
         ;
     }
-    explicit CUtf16String(LPCWSTR szValue) : m_szContents(szValue) {
+    explicit CUtf16String(LPCWSTR szValue) : m_szContents(szValue)
+    {
         ;
     }
-    virtual ~CUtf16String() {
+    virtual ~CUtf16String()
+    {
         ;
     }
 
     virtual operator CUtf8String() const;
-    virtual operator CUtf16String() const {
+    virtual operator CUtf16String() const
+    {
         return *this;
     }
     virtual operator CUtf32String() const;
 
-    std::wstring getUtf16() const {
+    std::wstring getUtf16() const
+    {
         return m_szContents;
     }
     virtual std::string Encode(CFont * pFont) const;
 
-    virtual CUnicodeString & operator=(const CUtf16String & szNew) {
+    virtual CUnicodeString & operator=(const CUtf16String & szNew)
+    {
         m_szContents = szNew.m_szContents;
         return *this;
     }
-    virtual CUnicodeString & operator=(const CUnicodeString & szNew) {
+    virtual CUnicodeString & operator=(const CUnicodeString & szNew)
+    {
         m_szContents = CUtf16String(szNew).m_szContents;
         return *this;
     }
-    CUtf16String & operator+=(const CUnicodeString & szString) {
+    CUtf16String & operator+=(const CUnicodeString & szString)
+    {
         m_szContents += CUtf16String(szString).m_szContents;
         return *this;
     }
 
-    virtual BOOL IsEmpty() const {
+    virtual BOOL IsEmpty() const
+    {
         return size() == 0;
     }
-    int size() const {
+    int size() const
+    {
         return m_szContents.size();
     }
 private:
@@ -149,47 +175,56 @@ private:
     std::wstring m_szContents;
 };
 
-class CUtf8String : public CUnicodeString {
+class CUtf8String : public CUnicodeString
+{
 public:
-    CUtf8String() {
-        ;
+    CUtf8String()
+    {
     }
-    explicit CUtf8String(LPCSTR szValue) : m_szContents(szValue) {
-        ;
+    explicit CUtf8String(LPCSTR szValue) : m_szContents(szValue)
+    {
     }
-    virtual ~CUtf8String() {
-        ;
+    virtual ~CUtf8String()
+    {
     }
 
-    virtual operator CUtf8String() const {
+    virtual operator CUtf8String() const
+    {
         return *this;
     }
     virtual operator CUtf16String() const;
     virtual operator CUtf32String() const;
 
-    std::string getUtf8() const {
+    std::string getUtf8() const
+    {
         return m_szContents;
     }
 
-    virtual CUnicodeString & operator=(const CUtf8String & szNew) {
+    virtual CUnicodeString & operator=(const CUtf8String & szNew)
+    {
         m_szContents = szNew.m_szContents;
         return *this;
     }
-    virtual CUnicodeString & operator=(const CUnicodeString & szNew) {
+    virtual CUnicodeString & operator=(const CUnicodeString & szNew)
+    {
         m_szContents = CUtf8String(szNew).m_szContents;
         return *this;
     }
-    CUtf8String & operator+=(const CUnicodeString & szString) {
+    CUtf8String & operator+=(const CUnicodeString & szString)
+    {
         m_szContents += CUtf8String(szString).m_szContents;
         return *this;
     }
 
-    virtual BOOL IsEmpty() const {
+    virtual BOOL IsEmpty() const
+    {
         return size() == 0;
     }
-    int size() const {
+    int size() const
+    {
         return m_szContents.size();
     }
+
 private:
     enum Kef8 { kef8Lead1,kef8Lead2,kef8Lead3,kef8Lead4,kef8Trail,kef8FF,kef8FE,kef8Other};
     Kef8 classifyChar(unsigned char ucValue) const;

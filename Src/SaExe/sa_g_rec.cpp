@@ -66,19 +66,22 @@ END_MESSAGE_MAP()
 /***************************************************************************/
 // CPlotRecording::CPlotRecording Constructor
 /***************************************************************************/
-CPlotRecording::CPlotRecording() {
+CPlotRecording::CPlotRecording()
+{
     m_dwRecDataFrame = 0L;
 }
 
 /***************************************************************************/
 /***************************************************************************/
-void  CPlotRecording::CopyTo(CPlotRecording * pT) {
+void  CPlotRecording::CopyTo(CPlotRecording * pT)
+{
     CPlotWnd::CopyTo((CPlotWnd *)pT);
 }
 
 /***************************************************************************/
 /***************************************************************************/
-CPlotWnd * CPlotRecording::NewCopy(void) {
+CPlotWnd * CPlotRecording::NewCopy(void)
+{
     CPlotRecording * pRet = new CPlotRecording();
     CopyTo((CPlotRecording *)pRet);
     return (CPlotWnd *)pRet;
@@ -87,7 +90,8 @@ CPlotWnd * CPlotRecording::NewCopy(void) {
 /***************************************************************************/
 // CPlotRecording::~CPlotRecording Destructor
 /***************************************************************************/
-CPlotRecording::~CPlotRecording() {
+CPlotRecording::~CPlotRecording()
+{
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -99,24 +103,28 @@ CPlotRecording::~CPlotRecording() {
 //**************************************************************************/
 // 08/30/2000 - DDO Added this overriding function.
 //**************************************************************************/
-DWORD CPlotRecording::GetAreaPosition() {
+DWORD CPlotRecording::GetAreaPosition()
+{
     return 0L;
 }
 
 //**************************************************************************/
 // 08/30/2000 - DDO Added this overriding function.
 //**************************************************************************/
-DWORD CPlotRecording::GetAreaLength(CRect * /*pRwnd*/) {
+DWORD CPlotRecording::GetAreaLength(CRect * /*pRwnd*/)
+{
     return m_dwRecDataFrame;
 }
 
 /***************************************************************************/
 // CPlotRecording::SetMagnify Set the magnify factor
 /***************************************************************************/
-void CPlotRecording::SetMagnify(double fMagnify, BOOL bRedraw) {
+void CPlotRecording::SetMagnify(double fMagnify, BOOL bRedraw)
+{
     UNUSED_ALWAYS(fMagnify);  //  The recording plot does not zoom
     m_fMagnify = 1.0;
-    if (bRedraw) {
+    if (bRedraw)
+    {
         RedrawPlot();    // repaint whole plot window
     }
 }
@@ -124,20 +132,26 @@ void CPlotRecording::SetMagnify(double fMagnify, BOOL bRedraw) {
 /***************************************************************************/
 // 08/29/2000 - DDO Added this overriding function.
 /***************************************************************************/
-DWORD CPlotRecording::AdjustDataFrame(int nWidth) {
-    if (!m_dwRecDataFrame) {
+DWORD CPlotRecording::AdjustDataFrame(int nWidth)
+{
+    if (!m_dwRecDataFrame)
+    {
         CSaDoc * pDoc = ((CMainFrame *)AfxGetMainWnd())->GetCurrDoc();
 
-        if (!pDoc) {
+        if (!pDoc)
+        {
             return 0L;
         }
         FmtParm * pFmtParm = pDoc->GetFmtParm();                         // get sa parameters format member data
         DWORD dwDataSize = pDoc->GetDataSize();
         UINT nSampleSize = pFmtParm->wBlockAlign / pFmtParm->wChannels;
 
-        if ((DWORD)nWidth > (dwDataSize / (DWORD)nSampleSize)) {  // more pixels than data
+        if ((DWORD)nWidth > (dwDataSize / (DWORD)nSampleSize))    // more pixels than data
+        {
             m_dwRecDataFrame = (DWORD)nWidth * (DWORD)nSampleSize;    // extend data frame to number of pixels
-        } else {
+        }
+        else
+        {
             m_dwRecDataFrame = dwDataSize;
         }
     }
@@ -148,7 +162,8 @@ DWORD CPlotRecording::AdjustDataFrame(int nWidth) {
 /***************************************************************************/
 // 08/29/2000 - DDO Added this overriding function.
 /***************************************************************************/
-BOOL CPlotRecording::SetLegendScale() {
+BOOL CPlotRecording::SetLegendScale()
+{
     CGraphWnd * pGraph = (CGraphWnd *)GetParent();
     return pGraph->SetLegendScale(SCALE | NUMBERS, -100, 100, _T("Position View")); // set legend scale
 }
@@ -159,7 +174,8 @@ BOOL CPlotRecording::SetLegendScale() {
 // function PlotPaintFinish at the end of the drawing to let the plot base
 // class do common jobs like drawing the cursors.
 /***************************************************************************/
-void CPlotRecording::OnPaint() {
+void CPlotRecording::OnPaint()
+{
     CGraphWnd * pGraph = (CGraphWnd *)GetParent();
     CSaView * pView = (CSaView *)pGraph->GetParent();
 

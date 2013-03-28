@@ -56,10 +56,12 @@ static char BASED_CODE THIS_FILE[] = __FILE__;
 
 using namespace std;
 
-CProcessWavelet::CProcessWavelet() {
+CProcessWavelet::CProcessWavelet()
+{
 }
 
-CProcessWavelet::~CProcessWavelet() {
+CProcessWavelet::~CProcessWavelet()
+{
 }
 
 // Process
@@ -70,7 +72,8 @@ CProcessWavelet::~CProcessWavelet() {
 //*  Returns       :
 //**************************************************************************
 long CProcessWavelet::Process(void * pCaller, ISaDoc * , int nWidth, int /*nHeight*/,
-                              int nProgress, int nLevel) {
+                              int nProgress, int nLevel)
+{
     UNUSED_ALWAYS(nWidth);
 
     TRACE(_T("Process: CProcessWavelet\n"));
@@ -81,12 +84,14 @@ long CProcessWavelet::Process(void * pCaller, ISaDoc * , int nWidth, int /*nHeig
     //**************************************************************************
 
     // check canceled
-    if (data_status & PROCESS_CANCEL) {
+    if (data_status & PROCESS_CANCEL)
+    {
         return MAKELONG(PROCESS_CANCELED, nProgress);    // process canceled
     }
 
     // check if data ready
-    if (data_status & DATA_READY) {
+    if (data_status & DATA_READY)
+    {
         return MAKELONG(--nLevel, nProgress);
     }
 
@@ -97,7 +102,8 @@ long CProcessWavelet::Process(void * pCaller, ISaDoc * , int nWidth, int /*nHeig
     // wait cursor
     BeginWaitCursor();
 
-    if (!StartProcess(pCaller, IDS_STATTXT_PROCESSWVL)) { // memory allocation failed
+    if (!StartProcess(pCaller, IDS_STATTXT_PROCESSWVL))   // memory allocation failed
+    {
         EndProcess(); // end data processing
         EndWaitCursor();
         return MAKELONG(PROCESS_ERROR, nProgress);
@@ -116,7 +122,8 @@ long CProcessWavelet::Process(void * pCaller, ISaDoc * , int nWidth, int /*nHeig
 //**************************************************************************
 // W A V E L E T  N O D E  C L A S S
 //**************************************************************************
-CWaveletNode::CWaveletNode() {
+CWaveletNode::CWaveletNode()
+{
 
     parent_node = NULL;
     left_node = NULL;
@@ -137,11 +144,14 @@ CWaveletNode::CWaveletNode() {
 //*  Postcondtions : None
 //*  Returns       : None
 //**************************************************************************
-CWaveletNode::~CWaveletNode() {
-    if (left_node != NULL) {
+CWaveletNode::~CWaveletNode()
+{
+    if (left_node != NULL)
+    {
         delete left_node;
     }
-    if (right_node != NULL) {
+    if (right_node != NULL)
+    {
         delete right_node;
     }
 }
@@ -157,7 +167,8 @@ CWaveletNode::~CWaveletNode() {
 //*  Returns       : TRUE - if the tree was built successfully
 //*                                  FALSE - bad tree definition, out of memory
 //**************************************************************************
-BOOL CreateTree(char * tree_definition, CWaveletNode ** root_node) {
+BOOL CreateTree(char * tree_definition, CWaveletNode ** root_node)
+{
 
     stack<CWaveletNode *> tempStack;
     unsigned long str_index;
@@ -165,8 +176,10 @@ BOOL CreateTree(char * tree_definition, CWaveletNode ** root_node) {
     CWaveletNode * tempNode;
 
     // Parse the string
-    for (str_index = 0; str_index < strlen(tree_definition); str_index++) {
-        switch (tree_definition[str_index]) {
+    for (str_index = 0; str_index < strlen(tree_definition); str_index++)
+    {
+        switch (tree_definition[str_index])
+        {
         case 'l': // Create a leaf
         case 'L':
             tempNode = new CWaveletNode();
@@ -188,7 +201,8 @@ BOOL CreateTree(char * tree_definition, CWaveletNode ** root_node) {
 
         default:
             // delete any memory allocated on the stack
-            while (!tempStack.empty()) {
+            while (!tempStack.empty())
+            {
                 tempNode = tempStack.top();
                 delete tempNode;
                 tempStack.pop();
@@ -203,10 +217,14 @@ BOOL CreateTree(char * tree_definition, CWaveletNode ** root_node) {
     tempStack.pop();
 
     // The stack should be empty at the end
-    if (tempStack.empty()) {
+    if (tempStack.empty())
+    {
         return TRUE;
-    } else {
-        while (!tempStack.empty()) {
+    }
+    else
+    {
+        while (!tempStack.empty())
+        {
             tempNode = tempStack.top();
             delete tempNode;
             tempStack.pop();
@@ -227,22 +245,27 @@ BOOL CreateTree(char * tree_definition, CWaveletNode ** root_node) {
 //*  Returns       : TRUE on sucess
 //*                  FALSE on error
 //**************************************************************************
-BOOL CWaveletNode::DoMRAAnalysisTree() {        // this is a (candy) Wrapper function
+BOOL CWaveletNode::DoMRAAnalysisTree()          // this is a (candy) Wrapper function
+{
     return _DoMRAAnalysisTree(1);
 }
 
-BOOL CWaveletNode::_DoMRAAnalysisTree(long stride) {
+BOOL CWaveletNode::_DoMRAAnalysisTree(long stride)
+{
 
     // Compute the new frequencies
     double mid = lower_freq + ((upper_freq - lower_freq) / 2);
 
-    if ((left_node != NULL) && (right_node != NULL)) {      // both leaves need to be split futher
+    if ((left_node != NULL) && (right_node != NULL))        // both leaves need to be split futher
+    {
         // Allocate the memory of the leaves
 
-        if (!left_node->SetDataNode(NULL, dwDataSize, lower_freq, mid)) {
+        if (!left_node->SetDataNode(NULL, dwDataSize, lower_freq, mid))
+        {
             return FALSE;
         }
-        if (!right_node->SetDataNode(NULL, dwDataSize, mid, upper_freq)) {
+        if (!right_node->SetDataNode(NULL, dwDataSize, mid, upper_freq))
+        {
             return FALSE;
         }
 
@@ -256,17 +279,20 @@ BOOL CWaveletNode::_DoMRAAnalysisTree(long stride) {
         if (!WaveletTransformNode(left_node->GetDataPtr(),
                                   right_node->GetDataPtr(),
                                   DEBAUCHES4,
-                                  stride)) {
+                                  stride))
+        {
             return FALSE;
         }
 
 
         // Next time we will have two more signals per band (because we don't downsample, 2X extra info is generated)
         stride *= 2;
-        if (!left_node->_DoMRAAnalysisTree(stride)) {
+        if (!left_node->_DoMRAAnalysisTree(stride))
+        {
             return FALSE;
         }
-        if (!right_node->_DoMRAAnalysisTree(stride)) {
+        if (!right_node->_DoMRAAnalysisTree(stride))
+        {
             return FALSE;
         }
 
@@ -279,9 +305,11 @@ BOOL CWaveletNode::_DoMRAAnalysisTree(long stride) {
 
 
     // the left leaf needs splitting
-    if ((left_node != NULL) && (right_node == NULL)) {
+    if ((left_node != NULL) && (right_node == NULL))
+    {
         // Allocated the memory of the leaf
-        if (!left_node->SetDataNode(NULL, dwDataSize, lower_freq, mid)) {
+        if (!left_node->SetDataNode(NULL, dwDataSize, lower_freq, mid))
+        {
             return FALSE;
         }
 
@@ -292,12 +320,14 @@ BOOL CWaveletNode::_DoMRAAnalysisTree(long stride) {
         if (!WaveletTransformNode(left_node->GetDataPtr(),
                                   NULL,
                                   DEBAUCHES4,
-                                  stride)) {
+                                  stride))
+        {
             return FALSE;
         }
 
         stride *= 2;
-        if (!left_node->_DoMRAAnalysisTree(stride)) {
+        if (!left_node->_DoMRAAnalysisTree(stride))
+        {
             return FALSE;
         }
     }
@@ -306,9 +336,11 @@ BOOL CWaveletNode::_DoMRAAnalysisTree(long stride) {
 
 
     // the right leaf needs splitting
-    if ((left_node == NULL) && (right_node != NULL)) {
+    if ((left_node == NULL) && (right_node != NULL))
+    {
         // Allocated the memory of the leaf
-        if (!right_node->SetDataNode(NULL, dwDataSize, mid, upper_freq)) {
+        if (!right_node->SetDataNode(NULL, dwDataSize, mid, upper_freq))
+        {
             return FALSE;
         }
 
@@ -320,13 +352,15 @@ BOOL CWaveletNode::_DoMRAAnalysisTree(long stride) {
         if (!WaveletTransformNode(NULL,
                                   right_node->GetDataPtr(),
                                   DEBAUCHES4,
-                                  stride)) {
+                                  stride))
+        {
             return FALSE;
         }
 
 
         stride *= 2;
-        if (!right_node->_DoMRAAnalysisTree(stride)) {
+        if (!right_node->_DoMRAAnalysisTree(stride))
+        {
             return FALSE;
         }
     }
@@ -334,7 +368,8 @@ BOOL CWaveletNode::_DoMRAAnalysisTree(long stride) {
 
 
     // We are done
-    if ((left_node == NULL) && (right_node == NULL)) {
+    if ((left_node == NULL) && (right_node == NULL))
+    {
         return TRUE;
     }
 
@@ -360,7 +395,8 @@ BOOL CWaveletNode::_DoMRAAnalysisTree(long stride) {
 BOOL CWaveletNode::WaveletTransformNode(long * pFinalLow,
                                         long * pFinalHigh,
                                         long wavelet_type,
-                                        long stride) {
+                                        long stride)
+{
     long data_index;
     long coefficient_index;
     long filter_index;
@@ -371,39 +407,47 @@ BOOL CWaveletNode::WaveletTransformNode(long * pFinalLow,
     ASSERT(pFinalLow != NULL);
     ASSERT(pFinalHigh != NULL);
 
-    switch (wavelet_type) {
+    switch (wavelet_type)
+    {
     case DEBAUCHES4:
         // zero the arrays
-        for (data_index = 0; data_index < dwDataSize; data_index++) {
+        for (data_index = 0; data_index < dwDataSize; data_index++)
+        {
             pFinalLow[data_index] = 0;
             pFinalHigh[data_index] = 0;
         }
 
 
         // Do the high pass
-        if (pFinalHigh != NULL) {
+        if (pFinalHigh != NULL)
+        {
 
             // Transform each datapoint
             filter_index = 0;
-            for (data_index = 0; data_index < dwDataSize; data_index++) {
+            for (data_index = 0; data_index < dwDataSize; data_index++)
+            {
 
                 // Do the convolution
                 coefficient_index = 0;
-                for (filter_index = (-4 * stride); filter_index < (4 * stride); filter_index+=stride) {
+                for (filter_index = (-4 * stride); filter_index < (4 * stride); filter_index+=stride)
+                {
                     coefficient_index++;
 
                     // Check for wrap around to the left
-                    if ((data_index + filter_index) < 0) {
+                    if ((data_index + filter_index) < 0)
+                    {
                         datapoint = data[dwDataSize + data_index + filter_index];
                     }
 
                     // Check for wrap around to the right
-                    else if ((data_index + filter_index) > dwDataSize) {
+                    else if ((data_index + filter_index) > dwDataSize)
+                    {
                         datapoint = data[dwDataSize - data_index + filter_index];
                     }
 
                     // Normal case
-                    else {
+                    else
+                    {
                         datapoint = data[data_index + filter_index];
                     }
 
@@ -416,29 +460,35 @@ BOOL CWaveletNode::WaveletTransformNode(long * pFinalLow,
 
 
         // Do the low pass
-        if (pFinalLow != NULL) {
+        if (pFinalLow != NULL)
+        {
 
             // Transform each datapoint
             filter_index = 0;
-            for (data_index = 0; data_index < dwDataSize; data_index++) {
+            for (data_index = 0; data_index < dwDataSize; data_index++)
+            {
 
                 // Do the convolution
                 coefficient_index = 0;
-                for (filter_index = (-4 * stride); filter_index < (4 * stride); filter_index+=stride) {
+                for (filter_index = (-4 * stride); filter_index < (4 * stride); filter_index+=stride)
+                {
                     coefficient_index++;
 
                     // Check for wrap around to the left
-                    if ((data_index + filter_index) < 0) {
+                    if ((data_index + filter_index) < 0)
+                    {
                         datapoint = data[dwDataSize + data_index + filter_index];
                     }
 
                     // Check for wrap around to the right
-                    else if ((data_index + filter_index) > dwDataSize) {
+                    else if ((data_index + filter_index) > dwDataSize)
+                    {
                         datapoint = data[dwDataSize - data_index + filter_index];
                     }
 
                     // Normal case
-                    else {
+                    else
+                    {
                         datapoint = data[data_index + filter_index];
                     }
 
@@ -465,7 +515,8 @@ BOOL CWaveletNode::WaveletTransformNode(long * pFinalLow,
 //*  Postcondtions : Calls TransformEnergy for each node in the tree
 //*  Returns       : TRUE
 //**************************************************************************
-BOOL CWaveletNode::TransformEnergyTree() {
+BOOL CWaveletNode::TransformEnergyTree()
+{
     CWaveletNode * left_node;
     CWaveletNode * right_node;
 
@@ -475,10 +526,12 @@ BOOL CWaveletNode::TransformEnergyTree() {
     // do transform
     TransformEnergyNode();
 
-    if (left_node != NULL) {
+    if (left_node != NULL)
+    {
         left_node->TransformEnergyTree();
     }
-    if (right_node != NULL) {
+    if (right_node != NULL)
+    {
         right_node->TransformEnergyTree();
     }
 
@@ -492,11 +545,13 @@ BOOL CWaveletNode::TransformEnergyTree() {
 //*  Postcondtions : each datapoint is squared
 //*  Returns       : TRUE
 //**************************************************************************
-BOOL CWaveletNode::TransformEnergyNode() {
+BOOL CWaveletNode::TransformEnergyNode()
+{
     long data_index;
 
     // do transform
-    for (data_index = 0; data_index < dwDataSize; data_index++) {
+    for (data_index = 0; data_index < dwDataSize; data_index++)
+    {
         data[data_index] *= data[data_index];
     }
     return TRUE;
@@ -509,7 +564,8 @@ BOOL CWaveletNode::TransformEnergyNode() {
 //*  Postcondtions : Calls TransformLogScaling for each node in the tree
 //*  Returns       : TRUE
 //**************************************************************************
-BOOL CWaveletNode::TransformLogScalingTree(double high) {
+BOOL CWaveletNode::TransformLogScalingTree(double high)
+{
     CWaveletNode * left_node;
     CWaveletNode * right_node;
 
@@ -519,10 +575,12 @@ BOOL CWaveletNode::TransformLogScalingTree(double high) {
     // do transform
     TransformLogScalingNode(high);
 
-    if (left_node != NULL) {
+    if (left_node != NULL)
+    {
         left_node->TransformLogScalingTree(high);
     }
-    if (right_node != NULL) {
+    if (right_node != NULL)
+    {
         right_node->TransformLogScalingTree(high);
     }
 
@@ -536,13 +594,16 @@ BOOL CWaveletNode::TransformLogScalingTree(double high) {
 //*  Postcondtions : Data is scaled logarithmically
 //*  Returns       : TRUE
 //**************************************************************************
-BOOL CWaveletNode::TransformLogScalingNode(double high) {
+BOOL CWaveletNode::TransformLogScalingNode(double high)
+{
     long data_index;
 
 
     // do log scaling
-    for (data_index = 0; data_index < dwDataSize; data_index++) {
-        if (data[data_index] < (.0001 * (double)high)) {
+    for (data_index = 0; data_index < dwDataSize; data_index++)
+    {
+        if (data[data_index] < (.0001 * (double)high))
+        {
             data[data_index] = long(.0001 * (double)high);
         }
         data[data_index] = long(-log(data[data_index] / high));
@@ -557,7 +618,8 @@ BOOL CWaveletNode::TransformLogScalingNode(double high) {
 //*  Postcondtions : Calls TransformSmoothingTree for each node in the tree
 //*  Returns       : TRUE
 //**************************************************************************
-BOOL CWaveletNode::TransformSmoothingTree() {
+BOOL CWaveletNode::TransformSmoothingTree()
+{
     CWaveletNode * left_node;
     CWaveletNode * right_node;
 
@@ -567,10 +629,12 @@ BOOL CWaveletNode::TransformSmoothingTree() {
     // do transform
     TransformSmoothingNode();
 
-    if (left_node != NULL) {
+    if (left_node != NULL)
+    {
         left_node->TransformSmoothingTree();
     }
-    if (right_node != NULL) {
+    if (right_node != NULL)
+    {
         right_node->TransformSmoothingTree();
     }
 
@@ -584,7 +648,8 @@ BOOL CWaveletNode::TransformSmoothingTree() {
 //*  Postcondtions : Data is smoothed
 //*  Returns       : TRUE
 //**************************************************************************
-BOOL CWaveletNode::TransformSmoothingNode() {
+BOOL CWaveletNode::TransformSmoothingNode()
+{
 
     long num_coeff = 26;
     double smooth[26];
@@ -595,31 +660,37 @@ BOOL CWaveletNode::TransformSmoothingNode() {
 
     double datapoint;
 
-    for (long x = 0; x < num_coeff; x++) {
+    for (long x = 0; x < num_coeff; x++)
+    {
         smooth[x] = 1.0/double(num_coeff);
     }
 
     // Transform each datapoint
     filter_index = 0;
-    for (data_index = 0; data_index < dwDataSize; data_index++) {
+    for (data_index = 0; data_index < dwDataSize; data_index++)
+    {
 
         // Do the convolution
         coefficient_index = 0;
-        for (filter_index = (-num_coeff / 2); filter_index < (num_coeff / 2); filter_index++) {
+        for (filter_index = (-num_coeff / 2); filter_index < (num_coeff / 2); filter_index++)
+        {
             coefficient_index++;
 
             // Check for wrap around to the left
-            if ((data_index + filter_index) < 0) {
+            if ((data_index + filter_index) < 0)
+            {
                 datapoint = 0;
             }
 
             // Check for wrap around to the right
-            else if ((data_index + filter_index) > dwDataSize) {
+            else if ((data_index + filter_index) > dwDataSize)
+            {
                 datapoint = 0;
             }
 
             // Normal case
-            else {
+            else
+            {
                 datapoint = data[data_index + filter_index];
             }
 
@@ -640,7 +711,8 @@ BOOL CWaveletNode::TransformSmoothingNode() {
 //*                                  FALSE - on error
 //**************************************************************************
 
-BOOL CWaveletNode::TransformFitWindowNode(CRect * rWnd) {
+BOOL CWaveletNode::TransformFitWindowNode(CRect * rWnd)
+{
     long data_index;
     double max;
     double fVScale;
@@ -652,7 +724,8 @@ BOOL CWaveletNode::TransformFitWindowNode(CRect * rWnd) {
 
 
     // do transform
-    for (data_index = 0; data_index < dwDataSize; data_index++) {
+    for (data_index = 0; data_index < dwDataSize; data_index++)
+    {
         data[data_index] *= long(fVScale);                              // step through the data
         data[data_index] += (rWnd->Height() / 2);       // Center in the window
     }
@@ -677,7 +750,8 @@ BOOL CWaveletNode::DrawColorBandTree(unsigned char * pBits,     // this is a (ca
                                      CRect * rWnd,
                                      double high,
                                      double start,
-                                     double end) {
+                                     double end)
+{
     long num_leaves;
     long thickness;
 
@@ -696,20 +770,27 @@ long CWaveletNode::_DrawColorBandTree(unsigned char * pBits,
                                       long y,
                                       double high,
                                       double start,
-                                      double end) {
+                                      double end)
+{
     // if the left node is a leaf, draw it!
-    if (left_node->IsLeaf()) {
+    if (left_node->IsLeaf())
+    {
         left_node->DrawColorBandNode(pBits, rWnd, thickness, y, high, start, end);
         y += thickness;
-    } else { // Otherwise, beautiful, beautiful recursion
+    }
+    else     // Otherwise, beautiful, beautiful recursion
+    {
         y = left_node->_DrawColorBandTree(pBits, rWnd, thickness, y, high, start, end);
     }
 
     // if the right node is a leaf, draw it!
-    if (right_node->IsLeaf()) {
+    if (right_node->IsLeaf())
+    {
         right_node->DrawColorBandNode(pBits, rWnd, thickness, y, high, start, end);
         y += thickness;
-    } else { // Otherwise, beautiful, beautiful recursion
+    }
+    else     // Otherwise, beautiful, beautiful recursion
+    {
         y = right_node->_DrawColorBandTree(pBits, rWnd, thickness, y, high, start, end);
     }
 
@@ -729,7 +810,8 @@ long CWaveletNode::_DrawColorBandTree(unsigned char * pBits,
 //*  Returns       : true on sucess
 //*                                  false otherwise
 //**************************************************************************
-BOOL CWaveletNode::DrawColorBandNode(unsigned char * pBits, CRect * rWnd, long thickness, long y_start, double high, double start, double end) {
+BOOL CWaveletNode::DrawColorBandNode(unsigned char * pBits, CRect * rWnd, long thickness, long y_start, double high, double start, double end)
+{
     double ColorScale, datapoint;
     double fHScale;
 
@@ -747,13 +829,16 @@ BOOL CWaveletNode::DrawColorBandNode(unsigned char * pBits, CRect * rWnd, long t
 
 
     // Draw
-    for (long y = y_start; y < (y_start + thickness); y++) {    // Draw "thickness" num of lines
+    for (long y = y_start; y < (y_start + thickness); y++)      // Draw "thickness" num of lines
+    {
         data_index = start;
 
-        for (long x = 0; x < rWnd->Width(); x++) {
+        for (long x = 0; x < rWnd->Width(); x++)
+        {
             datapoint = data[(long)floor(data_index)];
             data_index += fHScale;
-            if (data_index > dwDataSize) {
+            if (data_index > dwDataSize)
+            {
                 break;
             }
 
@@ -783,10 +868,12 @@ BOOL CWaveletNode::ScatterPlotDataTree(CDC * pDC,
                                        CRect * rWnd,
                                        COLORREF crColor,
                                        long which_leaf,
-                                       double start, double end) {
+                                       double start, double end)
+{
     CWaveletNode * node_ptr;
     node_ptr = GetNode(which_leaf);
-    if (node_ptr == NULL) {
+    if (node_ptr == NULL)
+    {
         return FALSE;
     }
     return node_ptr->ScatterPlotDataNode(pDC, rWnd, crColor, start, end);
@@ -803,7 +890,8 @@ BOOL CWaveletNode::ScatterPlotDataTree(CDC * pDC,
 //*  Postcondtions : Data is plotted to the DC
 //*  Returns       : TRUE
 //**************************************************************************
-BOOL CWaveletNode::ScatterPlotDataNode(CDC * pDC, CRect * rWnd, COLORREF crColor, double start, double end) {
+BOOL CWaveletNode::ScatterPlotDataNode(CDC * pDC, CRect * rWnd, COLORREF crColor, double start, double end)
+{
 
     // Scaling variables
     double fHScale;
@@ -826,7 +914,8 @@ BOOL CWaveletNode::ScatterPlotDataNode(CDC * pDC, CRect * rWnd, COLORREF crColor
     pDC->MoveTo(0, data[0]);
 
     // Do the drawing
-    for (double x = 0; x < rWnd->Width(); x++) {
+    for (double x = 0; x < rWnd->Width(); x++)
+    {
 
         datapoint = data[(long)floor(data_index)];                                          // Get the data
         data_index += fHScale;                                                                                  // Advance the data_index
@@ -854,39 +943,48 @@ BOOL CWaveletNode::ScatterPlotDataNode(CDC * pDC, CRect * rWnd, COLORREF crColor
 //*  Returns       : NULL - if the leaf was not found, otherwise
 //*                                  pointer to the Node
 //**************************************************************************
-CWaveletNode * CWaveletNode::GetNode(long level) {
+CWaveletNode * CWaveletNode::GetNode(long level)
+{
     return _GetNode(level, true);
 }       // Wrapper
 
-CWaveletNode * CWaveletNode::_GetNode(long level, bool reset) {
+CWaveletNode * CWaveletNode::_GetNode(long level, bool reset)
+{
     CWaveletNode * finalNode = NULL;
     // Use a static variable to keep track of our count between static function calls
     static long count;
 
 
-    if (reset == true) {
+    if (reset == true)
+    {
         count = 0;      // Reset the count only on the first call
         finalNode = NULL;
     }
 
     // We found a leaf
-    if (IsLeaf()) {
+    if (IsLeaf())
+    {
         count++;
-        if (count == level) {
+        if (count == level)
+        {
             return this;
         }
     }
 
-    if (left_node != NULL) {
+    if (left_node != NULL)
+    {
         finalNode = left_node->_GetNode(level, false);
-        if (count == level) {
+        if (count == level)
+        {
             return finalNode;
         }
     }
 
-    if (right_node != NULL) {
+    if (right_node != NULL)
+    {
         finalNode = right_node->_GetNode(level, false);
-        if (count == level) {
+        if (count == level)
+        {
             return finalNode;
         }
 
@@ -901,13 +999,15 @@ CWaveletNode * CWaveletNode::_GetNode(long level, bool reset) {
 //*  Postcondtions : none
 //*  Returns       : the max of the data
 //**************************************************************************
-double CWaveletNode::GetMaxNode() {
+double CWaveletNode::GetMaxNode()
+{
     ASSERT(data != NULL);
 
     double max = 0;
 
     for (long index = 0; index < dwDataSize; index++)
-        if (data[index] > max) {
+        if (data[index] > max)
+        {
             max = data[index];
         }
 
@@ -921,13 +1021,15 @@ double CWaveletNode::GetMaxNode() {
 //*  Postcondtions : none
 //*  Returns       : the max of the data
 //**************************************************************************
-double CWaveletNode::GetMaxNodeBounds(long start, long end) {
+double CWaveletNode::GetMaxNodeBounds(long start, long end)
+{
     ASSERT(data != NULL);
 
     double max = 0;
 
     for (long index = start; index < end; index++)
-        if (data[index] > max) {
+        if (data[index] > max)
+        {
             max = data[index];
         }
 
@@ -941,13 +1043,15 @@ double CWaveletNode::GetMaxNodeBounds(long start, long end) {
 //*  Postcondtions : none
 //*  Returns       : the min of the data
 //**************************************************************************
-double CWaveletNode::GetMinNode() {
+double CWaveletNode::GetMinNode()
+{
     ASSERT(data != NULL);
 
     double min = 0xFFFFFFFF;
 
     for (long index = 0; index < dwDataSize; index++)
-        if (data[index] < min) {
+        if (data[index] < min)
+        {
             min = data[index];
         }
 
@@ -961,13 +1065,15 @@ double CWaveletNode::GetMinNode() {
 //*  Postcondtions : none
 //*  Returns       : the min of the data
 //**************************************************************************
-double CWaveletNode::GetMinNodeBounds(long start, long end) {
+double CWaveletNode::GetMinNodeBounds(long start, long end)
+{
     ASSERT(data != NULL);
 
     double min = 0xFFFFFFFF;
 
     for (long index = start; index < end; index++)
-        if (data[index] < min) {
+        if (data[index] < min)
+        {
             min = data[index];
         }
 
@@ -985,18 +1091,21 @@ double CWaveletNode::GetMinNodeBounds(long start, long end) {
 //*  Returns       : TRUE - on success
 //*                                  FALSE - cannot allocate memory
 //**************************************************************************
-BOOL CWaveletNode::SetDataNode(long * _data, DWORD _dwDataSize, double _lower_freq, double _upper_freq) {
+BOOL CWaveletNode::SetDataNode(long * _data, DWORD _dwDataSize, double _lower_freq, double _upper_freq)
+{
     dwDataSize = _dwDataSize;
     lower_freq = _lower_freq;
     upper_freq = _upper_freq;
 
     data = (long *)malloc(dwDataSize * sizeof(long));
-    if (data == NULL) {
+    if (data == NULL)
+    {
         return FALSE;
     }
 
 
-    if (_data != NULL) {
+    if (_data != NULL)
+    {
         memcpy(data, _data, dwDataSize * sizeof(long));
     }
 
@@ -1012,18 +1121,25 @@ BOOL CWaveletNode::SetDataNode(long * _data, DWORD _dwDataSize, double _lower_fr
 //*  Postcondtions : None
 //*  Returns       : number of leaves in the tree
 //**************************************************************************
-long CWaveletNode::GetNumLeaves() {
+long CWaveletNode::GetNumLeaves()
+{
     long count = 0;
 
-    if (left_node->IsLeaf()) {
+    if (left_node->IsLeaf())
+    {
         count++;
-    } else {
+    }
+    else
+    {
         count += left_node->GetNumLeaves();
     }
 
-    if (right_node->IsLeaf()) {
+    if (right_node->IsLeaf())
+    {
         count++;
-    } else {
+    }
+    else
+    {
         count += right_node->GetNumLeaves();
     }
 
@@ -1038,26 +1154,36 @@ long CWaveletNode::GetNumLeaves() {
 //*  Postcondtions : None
 //*  Returns       : the maximum datapoint of all nodes in the tree
 //**************************************************************************
-double CWaveletNode::GetMaxTree() {         // Wrapper function for the recursive routine
+double CWaveletNode::GetMaxTree()           // Wrapper function for the recursive routine
+{
     return _GetMaxTree(0);
 }
 
-double CWaveletNode::_GetMaxTree(double max) {
+double CWaveletNode::_GetMaxTree(double max)
+{
 
-    if (left_node->IsLeaf()) {
-        if (left_node->GetMaxNode() > max) {
+    if (left_node->IsLeaf())
+    {
+        if (left_node->GetMaxNode() > max)
+        {
             max = left_node->GetMaxNode();
         }
-    } else {
+    }
+    else
+    {
         max = left_node->_GetMaxTree(max);
     }
 
 
-    if (right_node->IsLeaf()) {
-        if (right_node->GetMaxNode() > max) {
+    if (right_node->IsLeaf())
+    {
+        if (right_node->GetMaxNode() > max)
+        {
             max = right_node->GetMaxNode();
         }
-    } else {
+    }
+    else
+    {
         max = right_node->_GetMaxTree(max);
     }
 
@@ -1071,25 +1197,35 @@ double CWaveletNode::_GetMaxTree(double max) {
 //*  Postcondtions : None
 //*  Returns       : the maximum between the bounds of all nodes
 //**************************************************************************
-double CWaveletNode::GetMaxTreeBounds(long start, long end) {       // Wrapper function for the recursive routine
+double CWaveletNode::GetMaxTreeBounds(long start, long end)         // Wrapper function for the recursive routine
+{
     return _GetMaxTreeBounds(0, start, end);
 }
-double CWaveletNode::_GetMaxTreeBounds(double max, long start, long end) {
+double CWaveletNode::_GetMaxTreeBounds(double max, long start, long end)
+{
 
-    if (left_node->IsLeaf()) {
-        if (left_node->GetMaxNodeBounds(start, end) > max) {
+    if (left_node->IsLeaf())
+    {
+        if (left_node->GetMaxNodeBounds(start, end) > max)
+        {
             max = left_node->GetMaxNodeBounds(start, end);
         }
-    } else {
+    }
+    else
+    {
         max = left_node->_GetMaxTreeBounds(max, start, end);
     }
 
 
-    if (right_node->IsLeaf()) {
-        if (right_node->GetMaxNodeBounds(start, end) > max) {
+    if (right_node->IsLeaf())
+    {
+        if (right_node->GetMaxNodeBounds(start, end) > max)
+        {
             max = right_node->GetMaxNodeBounds(start, end);
         }
-    } else {
+    }
+    else
+    {
         max = right_node->_GetMaxTreeBounds(max, start, end);
     }
 
@@ -1112,7 +1248,8 @@ double CWaveletNode::_GetMaxTreeBounds(double max, long start, long end) {
 //*  Returns       : TRUE on sucess
 //*                                  FALSE otherwise
 //**************************************************************************
-BOOL CProcessWavelet::Get_Raw_Data(long ** pDataOut, DWORD * dwDataSizeOut, ISaDoc * pDoc) {
+BOOL CProcessWavelet::Get_Raw_Data(long ** pDataOut, DWORD * dwDataSizeOut, ISaDoc * pDoc)
+{
     HPSTR pData;                                // actual data pointer
 
 
@@ -1134,7 +1271,8 @@ BOOL CProcessWavelet::Get_Raw_Data(long ** pDataOut, DWORD * dwDataSizeOut, ISaD
 
     *pDataOut = (long *)malloc(dwDataSizeBytes * 2);
 
-    if (*pDataOut == NULL) {
+    if (*pDataOut == NULL)
+    {
         return FALSE;
     }
 
@@ -1143,16 +1281,20 @@ BOOL CProcessWavelet::Get_Raw_Data(long ** pDataOut, DWORD * dwDataSizeOut, ISaD
     dwDataPosBytes = 0;
 
     // check if we can read this thing in one pass, or if we need to start with one chunk
-    if (dwDataSizeBytes < dwBufferSizeBytes) {
+    if (dwDataSizeBytes < dwBufferSizeBytes)
+    {
         dwChunkSizeBytes = dwDataSizeBytes;
-    } else {
+    }
+    else
+    {
         dwChunkSizeBytes = dwBufferSizeBytes;
     }
 
 
 
     // Get the data
-    while (1) {
+    while (1)
+    {
         pData = pDoc->GetWaveData(dwDataPosBytes, TRUE);
 
 
@@ -1163,7 +1305,8 @@ BOOL CProcessWavelet::Get_Raw_Data(long ** pDataOut, DWORD * dwDataSizeOut, ISaD
 
 
         // copy the data into our buffer
-        for (DWORD index = 0; index < dwChunkSizeBytes; index+=2) {
+        for (DWORD index = 0; index < dwChunkSizeBytes; index+=2)
+        {
             data = MAKEWORD(pData[index], pData[index + 1]);
 
             (*pDataOut)[dwDataPos] = data;
@@ -1177,14 +1320,18 @@ BOOL CProcessWavelet::Get_Raw_Data(long ** pDataOut, DWORD * dwDataSizeOut, ISaD
         //pDataOut += dwBufferSize;
 
         // see if we are done
-        if (dwDataPosBytes == dwDataSizeBytes) {
+        if (dwDataPosBytes == dwDataSizeBytes)
+        {
             break;
         }
 
         // compute the next chunk size
-        if ((dwDataSizeBytes - dwDataPosBytes) < dwBufferSizeBytes) {
+        if ((dwDataSizeBytes - dwDataPosBytes) < dwBufferSizeBytes)
+        {
             dwChunkSizeBytes = (dwDataSizeBytes - dwDataPosBytes);
-        } else {
+        }
+        else
+        {
             dwChunkSizeBytes = dwBufferSizeBytes;
         }
     }

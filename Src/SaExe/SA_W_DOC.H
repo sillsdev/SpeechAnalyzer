@@ -10,7 +10,8 @@
 //###########################################################################
 // CWorkbenchDoc document
 
-class CWorkbenchDoc : public CDocument {
+class CWorkbenchDoc : public CDocument
+{
     DECLARE_SERIAL(CWorkbenchDoc)
 
 // Construction/destruction/creation
@@ -23,7 +24,8 @@ protected:
 
     // Operations
 public:
-    BOOL IsDifferentFile() {
+    BOOL IsDifferentFile()
+    {
         return m_bDifferentFile;   // returns TRUE, if file has different path
     }
 protected:

@@ -40,7 +40,8 @@
 
 /* ---------------------------------------------------------------------- */
 
-Float CKSynth::next_sample() {
+Float CKSynth::next_sample()
+{
     Float noise, first_diff, output, special;
     register Float casc;
 
@@ -52,7 +53,8 @@ Float CKSynth::next_sample() {
     /* aspiration/frication noise source */
     noise = (int)(short)(synth.random = ((synth.random * 20077L + 12345L)
                                          % 65536L)) / 65536.;
-    if (pars.F0 && !synth.glottis_open && synth.AV) {
+    if (pars.F0 && !synth.glottis_open && synth.AV)
+    {
         noise /= 2;
     }
     out[O_ASPIRATION] = coefs.asp_amp * noise - synth.asp_state;
@@ -64,12 +66,14 @@ Float CKSynth::next_sample() {
     /* ---------------------------------------------------------------------- */
     /* cascade synthesis */
 
-    if (!synth.parallel_only_flag) {
+    if (!synth.parallel_only_flag)
+    {
         casc = out[O_NASAL_POLE_CASC] = nasal_pole_cascade.AdvanceResonator(
                                             out[O_NASAL_ZERO_CASC] = nasal_zero_cascade.AdvanceAntiResonator(
                                                     out[O_TRACHEAL_CASC] = trach_pole_cascade.AdvanceResonator(
                                                             trach_zero_cascade.AdvanceAntiResonator(out[O_GLOTTAL] / 4.))));
-        switch (spkrdef.NF) {
+        switch (spkrdef.NF)
+        {
         case 8:
             casc = formant_8_cascade.AdvanceResonator(casc);
         case 7:
@@ -102,7 +106,8 @@ Float CKSynth::next_sample() {
     /* ---------------------------------------------------------------------- */
     /* special parallel branch */
 
-    else {
+    else
+    {
 
         first_diff = out[O_GLOTTAL] - synth.glottal_state;
         synth.glottal_state = out[O_GLOTTAL];
@@ -144,7 +149,8 @@ Float CKSynth::next_sample() {
                     out[O_FORMANT_4_PARA] - out[O_FORMANT_5_PARA] +
                     out[O_FORMANT_6_PARA] - out[O_BYPASS_PARA] + special;
 
-    switch (spkrdef.OS) {
+    switch (spkrdef.OS)
+    {
     case 1:
     case 2:
     case 3:

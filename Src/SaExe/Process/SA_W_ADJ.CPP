@@ -27,7 +27,8 @@ static char BASED_CODE THIS_FILE[] = __FILE__;
 /***************************************************************************/
 // CProcessAdjust::CProcessAdjust Constructor
 /***************************************************************************/
-CProcessAdjust::CProcessAdjust(ISaDoc * pDoc) {
+CProcessAdjust::CProcessAdjust(ISaDoc * pDoc)
+{
     m_pDoc = pDoc;
     m_bInvert = FALSE;
     m_bZero = FALSE;
@@ -37,7 +38,8 @@ CProcessAdjust::CProcessAdjust(ISaDoc * pDoc) {
 /***************************************************************************/
 // CProcessAdjust::~CProcessAdjust Destructor
 /***************************************************************************/
-CProcessAdjust::~CProcessAdjust() {
+CProcessAdjust::~CProcessAdjust()
+{
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -46,8 +48,10 @@ CProcessAdjust::~CProcessAdjust() {
 /***************************************************************************/
 // CProcessAdjust::SetInvert
 /***************************************************************************/
-void CProcessAdjust::SetInvert(BOOL bNew) {
-    if (bNew != m_bInvert) {
+void CProcessAdjust::SetInvert(BOOL bNew)
+{
+    if (bNew != m_bInvert)
+    {
         m_bInvert = bNew;
         SetDataInvalid();
     }
@@ -56,8 +60,10 @@ void CProcessAdjust::SetInvert(BOOL bNew) {
 /***************************************************************************/
 // CProcessAdjust::SetZero
 /***************************************************************************/
-void CProcessAdjust::SetZero(BOOL bNew) {
-    if (bNew != m_bZero) {
+void CProcessAdjust::SetZero(BOOL bNew)
+{
+    if (bNew != m_bZero)
+    {
         m_bZero = bNew;
         SetDataInvalid();
     }
@@ -66,8 +72,10 @@ void CProcessAdjust::SetZero(BOOL bNew) {
 /***************************************************************************/
 // CProcessAdjust::SetNormalize
 /***************************************************************************/
-void CProcessAdjust::SetNormalize(BOOL bNew) {
-    if (bNew != m_bNormalize) {
+void CProcessAdjust::SetNormalize(BOOL bNew)
+{
+    if (bNew != m_bNormalize)
+    {
         m_bNormalize = bNew;
         SetDataInvalid();
     }
@@ -86,13 +94,16 @@ void CProcessAdjust::SetNormalize(BOOL bNew) {
 // calling queue, or -1 in case of an error in the lower word of the long
 // value and the end process progress percentage in the higher word.
 /***************************************************************************/
-long CProcessAdjust::Process(void * pCaller, ISaDoc * pDoc, int nProgress, int nLevel) {
-    if (m_bInvert || m_bZero || m_bNormalize) {
+long CProcessAdjust::Process(void * pCaller, ISaDoc * pDoc, int nProgress, int nLevel)
+{
+    if (m_bInvert || m_bZero || m_bNormalize)
+    {
         CProcess * pLowerProcess = pDoc->GetUnprocessed();
 
         double dScale = m_bInvert ? -1 : 1;
 
-        if (m_bNormalize) {
+        if (m_bNormalize)
+        {
             CButterworth cNormalize;
 
             cNormalize.SetSourceProcess(pLowerProcess);
@@ -101,7 +112,8 @@ long CProcessAdjust::Process(void * pCaller, ISaDoc * pDoc, int nProgress, int n
             cNormalize.Process(pCaller, pDoc, nProgress, nLevel);
 
             int nMax = cNormalize.GetMinValue();
-            if (cNormalize.GetMaxValue() > nMax) {
+            if (cNormalize.GetMaxValue() > nMax)
+            {
                 nMax = cNormalize.GetMaxValue();
             }
 
@@ -112,33 +124,47 @@ long CProcessAdjust::Process(void * pCaller, ISaDoc * pDoc, int nProgress, int n
         SetFilterFilter(TRUE);
         HighPass(m_bZero ? 3 : 0, 40., dScale);
         return CButterworth::Process(pCaller, pDoc, nProgress, nLevel);
-    } else {
+    }
+    else
+    {
         SetDataReady();
         return MAKELONG(nLevel, nProgress);
     }
 }
 
-HPSTR CProcessAdjust::GetProcessedWaveData(DWORD dwOffset, BOOL bBlockBegin) {
-    if (ProcessImpersonate() == NULL) {
+HPSTR CProcessAdjust::GetProcessedWaveData(DWORD dwOffset, BOOL bBlockBegin)
+{
+    if (ProcessImpersonate() == NULL)
+    {
         return CProcess::GetProcessedWaveData(dwOffset, bBlockBegin);
-    } else {
+    }
+    else
+    {
         return ProcessImpersonate()->GetProcessedWaveData(dwOffset, bBlockBegin);
     }
 }
 
-void * CProcessAdjust::GetProcessedDataBlock(DWORD dwOffset, size_t sObjectSize, BOOL bReverse) {
-    if (ProcessImpersonate() == NULL) {
+void * CProcessAdjust::GetProcessedDataBlock(DWORD dwOffset, size_t sObjectSize, BOOL bReverse)
+{
+    if (ProcessImpersonate() == NULL)
+    {
         return CProcess::GetProcessedDataBlock(dwOffset, sObjectSize, bReverse);
-    } else {
+    }
+    else
+    {
         return ProcessImpersonate()->GetProcessedDataBlock(dwOffset, sObjectSize, bReverse);
     }
 }
 
 
-CProcess * CProcessAdjust::ProcessImpersonate() const {
-    if (m_bInvert || m_bZero || m_bNormalize) {
+CProcess * CProcessAdjust::ProcessImpersonate() const
+{
+    if (m_bInvert || m_bZero || m_bNormalize)
+    {
         return NULL;
-    } else {
+    }
+    else
+    {
         return m_pDoc->GetUnprocessed();
     }
 }

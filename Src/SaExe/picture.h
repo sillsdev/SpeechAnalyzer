@@ -1,7 +1,8 @@
 #ifndef PICTURE_H
 #define PICTURE_H
 
-class CPicture : public COleDispatchDriver {
+class CPicture : public COleDispatchDriver
+{
 public:
     CPicture() {}       // Calls COleDispatchDriver default constructor
     CPicture(LPDISPATCH pDispatch) : COleDispatchDriver(pDispatch) {}

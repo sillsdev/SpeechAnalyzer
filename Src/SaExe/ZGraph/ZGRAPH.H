@@ -11,7 +11,8 @@
 
 #include "lowlevel.h"              // Low-Level Graphics Class
 
-class zGraph : public zLowLevelGraphics {
+class zGraph : public zLowLevelGraphics
+{
     // protected:
 public: // ## sa needs to have access
     //
@@ -168,70 +169,90 @@ public:
     //
     // Inline Functions
     //
-    inline RECT zGetRGraphAxis() {
+    inline RECT zGetRGraphAxis()
+    {
         return (RECT)RGraphAxis;      // Returns Axis Rectangle
     }
-    inline BOOL zIsGridVisible() {            // Returns TRUE if Graph Grid ON
+    inline BOOL zIsGridVisible()              // Returns TRUE if Graph Grid ON
+    {
         return (GridVisible);
     }
-    inline void zSet3DFlag(BOOL _3D) {        // Sets 3-D Flag ON/OFF
+    inline void zSet3DFlag(BOOL _3D)          // Sets 3-D Flag ON/OFF
+    {
         _3D_flag = _3D;
     }
-    inline void zSetAutoScaling(BOOL auto_sc) { // Turns Auto-Scaling On/Off
+    inline void zSetAutoScaling(BOOL auto_sc)   // Turns Auto-Scaling On/Off
+    {
         auto_scaling = auto_sc;
     }
-    inline void zSetAxisStyle(INT x1, INT y1) { // Sets the Graph Axes Style
+    inline void zSetAxisStyle(INT x1, INT y1)   // Sets the Graph Axes Style
+    {
         x_axis_style = x1;                   //   set to zLOG or zLINEAR
         y_axis_style = y1;
     }         //   set to zLOG or zLINEAR
-    inline void zSetFunction(PWCHAR f) {       // Assigns function [F(X,Y)]
+    inline void zSetFunction(PWCHAR f)         // Assigns function [F(X,Y)]
+    {
         function = f;
     }
-    inline void zSetBkgGradient(int b1) {     // Sets Color Bkg. Gradient Type
+    inline void zSetBkgGradient(int b1)       // Sets Color Bkg. Gradient Type
+    {
         bkg_gradient_mode = b1;
     }
-    inline void zSetBkgGradientColorScheme(int b1) {
+    inline void zSetBkgGradientColorScheme(int b1)
+    {
         bkg_gradient_color_scheme = b1;    // Set Bkg. Gradient Color Scheme
     }
-    inline void zSetGraphQuality(INT q) {
+    inline void zSetGraphQuality(INT q)
+    {
         quality = q;                  // Sets Graph Quality
     }
-    inline void zSetGridFlag(INT gf) {        // Sets Graph Grid Display
+    inline void zSetGridFlag(INT gf)          // Sets Graph Grid Display
+    {
         GridVisible = gf;             //   to ON / OFF
     }
-    inline void zSetGridStyle(INT gs) {       // Sets Graph Grid Type
+    inline void zSetGridStyle(INT gs)         // Sets Graph Grid Type
+    {
         GridStyle = gs;               //   to NONE / 2D / 3D
     }
-    inline void zSetLegendPosition(INT lp) {  // Sets Legend Pos (at Left or
+    inline void zSetLegendPosition(INT lp)    // Sets Legend Pos (at Left or
+    {
         LegendPosition = lp;    //   at Bottom of Window)
     }
-    inline void zSetItemTitleFormat(INT itf) { // Sets Item Title Format
+    inline void zSetItemTitleFormat(INT itf)   // Sets Item Title Format
+    {
         item_title_format = itf;    //   (zTEXT_STRINGS, etc.)
     }
-    inline void zSetLineConnect(BOOL lflag) { // If TRUE, We Draw Lines
+    inline void zSetLineConnect(BOOL lflag)   // If TRUE, We Draw Lines
+    {
         line_connect = lflag;         //    Between the Data Pts.
     }
-    inline void zSetShadingStyle(INT s) {
+    inline void zSetShadingStyle(INT s)
+    {
         shading_style = s;            // Sets Shading Style
     }
-    inline void zSetStackingDirection(BOOL s) { // Sets Drawing (Stacking)
+    inline void zSetStackingDirection(BOOL s)   // Sets Drawing (Stacking)
+    {
         draw_forward = s;             //   Direction
     }
-    inline void zSetSymFlag(BOOL sym_flag) {  // If TRUE We Display the
+    inline void zSetSymFlag(BOOL sym_flag)    // If TRUE We Display the
+    {
         symbols_flag = sym_flag;      //    Symbols, Else We Don't
     }
     inline void zSetXDataRange(               // Sets X-Data Range for
-        double xs1, double xe1) {              //   Manual Graph Scaling
+        double xs1, double xe1)                //   Manual Graph Scaling
+    {
         xstart = xs1;
         xend = xe1;
     }
     inline void zSetYDataRange(               // Sets Y-Data Range for
-        double ys1, double ye1) {              //   Manual Graph Scaling
+        double ys1, double ye1)                //   Manual Graph Scaling
+    {
         ystart = ys1;
         yend = ye1;
     }
     inline void zSetZDataRange(               // Sets Z-Data Range for
-        double zs1, double ze1) {              //   Manual Graph Scaling
+        double zs1, double ze1)                //   Manual Graph Scaling
+    {
         zstart = zs1;
         zend = ze1;
     }

@@ -13,15 +13,18 @@ static char THIS_FILE[] = __FILE__;
 static AFX_EXTENSION_MODULE SA_ENUDLL = { NULL, NULL };
 
 extern "C" int APIENTRY
-DllMain(HINSTANCE hInstance, DWORD dwReason, LPVOID lpReserved) {
+DllMain(HINSTANCE hInstance, DWORD dwReason, LPVOID lpReserved)
+{
     // Remove this if you use lpReserved
     UNREFERENCED_PARAMETER(lpReserved);
 
-    if (dwReason == DLL_PROCESS_ATTACH) {
+    if (dwReason == DLL_PROCESS_ATTACH)
+    {
         TRACE0("SA_ENU.DLL Initializing!\n");
 
         // Extension DLL one-time initialization
-        if (!AfxInitExtensionModule(SA_ENUDLL, hInstance)) {
+        if (!AfxInitExtensionModule(SA_ENUDLL, hInstance))
+        {
             return 0;
         }
 
@@ -38,7 +41,9 @@ DllMain(HINSTANCE hInstance, DWORD dwReason, LPVOID lpReserved) {
         //  result.
 
         new CDynLinkLibrary(SA_ENUDLL);
-    } else if (dwReason == DLL_PROCESS_DETACH) {
+    }
+    else if (dwReason == DLL_PROCESS_DETACH)
+    {
         TRACE0("SA_ENU.DLL Terminating!\n");
         // Terminate the library before destructors are called
         AfxTermExtensionModule(SA_ENUDLL);

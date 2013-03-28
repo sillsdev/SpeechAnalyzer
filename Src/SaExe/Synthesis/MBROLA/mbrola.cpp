@@ -41,8 +41,10 @@ PROCVPPHO   reset_Phone;
 PROCVPPHO   close_Phone;
 PROCVPPHOFF appendf0_Phone;
 
-BOOL load_MBR() {
-    if ((hinstDllMBR=LoadLibrary("mbrola.dll"))==NULL) {
+BOOL load_MBR()
+{
+    if ((hinstDllMBR=LoadLibrary("mbrola.dll"))==NULL)
+    {
         return FALSE;
     }
     init_MBR            =(PROCIC) GetProcAddress(hinstDllMBR,"init_MBR");
@@ -91,7 +93,8 @@ BOOL load_MBR() {
             || (!init_Phone)
             || (!reset_Phone)
             || (!close_Phone)
-            || (!appendf0_Phone)) {
+            || (!appendf0_Phone))
+    {
         FreeLibrary(hinstDllMBR);
         hinstDllMBR=NULL;
         return FALSE;
@@ -99,8 +102,10 @@ BOOL load_MBR() {
     return TRUE;
 }
 
-void unload_MBR() {
-    if (hinstDllMBR) {
+void unload_MBR()
+{
+    if (hinstDllMBR)
+    {
         FreeLibrary(hinstDllMBR);
         hinstDllMBR=NULL;
     }

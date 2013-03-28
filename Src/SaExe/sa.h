@@ -91,7 +91,8 @@ using std::wstring;
 //###########################################################################
 // CSaApp window
 
-class CSaApp : public CWinApp {
+class CSaApp : public CWinApp
+{
 
     // Construction/destruction/creation
 public:
@@ -193,7 +194,8 @@ public:
     virtual BOOL InitInstance();
     virtual int ExitInstance();
     virtual CDocument * OpenDocumentFile(LPCTSTR lpszFileName);
-	wstring GetAutoSaveDirectory();
+    wstring GetAutoSaveDirectory();
+    void CleanAutoSave();
 
 protected:
     afx_msg void OnAppAbout();
@@ -227,13 +229,10 @@ protected:
     afx_msg void OnUpdateWorkbenchOpen(CCmdUI * pCmdUI);
     afx_msg void OnProcessBatchCommands();
 
-    DECLARE_MESSAGE_MAP()
-
     // more methods for saving the settings and window state.
     CSaView * GetViewEnd(UINT uNextOrPrev);
     CSaView * GetViewNeighbor(CSaView * pviewCur, UINT uNextOrPrev);
 
-protected:
     // methods for handling single instance
     void InitSingleton();
     void DestroySingleton();
@@ -245,6 +244,8 @@ protected:
     static UINT Sleeper(CSaApp * aObject);
     bool IsSAS();
 
+    DECLARE_MESSAGE_MAP()
+
     // Events to signal new instance, and kill thread
     CEvent * mEvent;
     CEvent * mSignal;
@@ -253,8 +254,7 @@ protected:
 private:
     CSaString GetBatchString(LPCTSTR lpSection, LPCTSTR lpKey, LPCTSTR lpDefault = NULL);
     BOOL WriteBatchString(LPCTSTR lpSection, LPCTSTR lpKey, LPCTSTR lpValue);
-	void CleanAutoSave();
-
+	void CheckAutoSave();
 };
 
 #endif // __SA_H__

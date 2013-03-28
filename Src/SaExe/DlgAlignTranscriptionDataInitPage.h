@@ -4,7 +4,8 @@
 // CDlgAlignTranscriptionDataInitPage
 #include "resource.h"
 
-class CDlgAlignTranscriptionDataInitPage : public CPropertyPage {
+class CDlgAlignTranscriptionDataInitPage : public CPropertyPage
+{
 public:
     CDlgAlignTranscriptionDataInitPage();
     virtual ~CDlgAlignTranscriptionDataInitPage();

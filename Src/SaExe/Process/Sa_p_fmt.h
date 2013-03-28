@@ -14,31 +14,32 @@
 
 #define MAX_FILTERS 5
 
-class CProcessFormants : public CProcess {
+class CProcessFormants : public CProcess
+{
 
 public:
     CProcessFormants();
     virtual ~CProcessFormants();
     void SmoothMedian(ISaDoc * pDoc);
-	FORMANT_FRAME * LoadBuffer(DWORD dwFormantBlockStart);
-	BOOL StoreFormantFrame(DWORD dwFormantFrame, FORMANT_FRAME * pFormant, BOOL bWriteThru);
-	BOOL WriteData(HPSTR pData, UINT nDataSize, BOOL bAppend);
-	BOOL SaveBuffer(UINT nDataSize);
-	virtual long Exit(int nError); // exit processing on error
-	void SetFormantParms(FormantParm * pFormantParms);
-	virtual void SetDataInvalid();
-	FormantParm * GetFormantParms();
-	DWORD GetFormantFrameCount();
-	unsigned short GetFormantFrameSize();
-	FORMANT_FRAME * GetFormantFrame(DWORD dwFrame);
-	STATISTIC GetFormantStats(int nFormant);
-	void ResetTracking();
-	long Process(void * pCaller, ISaDoc * pDoc, BOOL bTrack, DWORD dwFrameStart, DWORD dwFrameSize, SPECT_PROC_SELECT SpectraSelected, int nProgress = 0, int nLevel = 1);
-	int GetVowelCount(int nGender) const;
-	FORMANT_FREQ GetVowelFreq(int nIndex, int nGender, BOOL bMelScale = FALSE) const; // get vowel frequencies
-	CSaString GetVowel(int nIndex, int nGender) const; // returns the vowel for the graph
-	CSaString FindNearestVowel(FORMANT_FREQ FormantFreq, ISaDoc * pDoc) const; // returns nearest vowel for specified set of F1, F2, and F3 frequencies
-	CSaString FindNearestVowel(ISaDoc * pDoc) const;  // returns nearest vowel from F1, F2, and F3 mean frequencies, as tracked internally by object
+    FORMANT_FRAME * LoadBuffer(DWORD dwFormantBlockStart);
+    BOOL StoreFormantFrame(DWORD dwFormantFrame, FORMANT_FRAME * pFormant, BOOL bWriteThru);
+    BOOL WriteData(HPSTR pData, UINT nDataSize, BOOL bAppend);
+    BOOL SaveBuffer(UINT nDataSize);
+    virtual long Exit(int nError); // exit processing on error
+    void SetFormantParms(FormantParm * pFormantParms);
+    virtual void SetDataInvalid();
+    FormantParm * GetFormantParms();
+    DWORD GetFormantFrameCount();
+    unsigned short GetFormantFrameSize();
+    FORMANT_FRAME * GetFormantFrame(DWORD dwFrame);
+    STATISTIC GetFormantStats(int nFormant);
+    void ResetTracking();
+    long Process(void * pCaller, ISaDoc * pDoc, BOOL bTrack, DWORD dwFrameStart, DWORD dwFrameSize, SPECT_PROC_SELECT SpectraSelected, int nProgress = 0, int nLevel = 1);
+    int GetVowelCount(int nGender) const;
+    FORMANT_FREQ GetVowelFreq(int nIndex, int nGender, BOOL bMelScale = FALSE) const; // get vowel frequencies
+    CSaString GetVowel(int nIndex, int nGender) const; // returns the vowel for the graph
+    CSaString FindNearestVowel(FORMANT_FREQ FormantFreq, ISaDoc * pDoc) const; // returns nearest vowel for specified set of F1, F2, and F3 frequencies
+    CSaString FindNearestVowel(ISaDoc * pDoc) const;  // returns nearest vowel from F1, F2, and F3 mean frequencies, as tracked internally by object
 
 protected:
 

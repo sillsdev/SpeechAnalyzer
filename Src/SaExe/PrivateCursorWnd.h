@@ -6,7 +6,8 @@
 //###########################################################################
 // CPrivateCursorWnd window
 
-class CPrivateCursorWnd : public CCursorWnd {
+class CPrivateCursorWnd : public CCursorWnd
+{
     // Construction/destruction/creation
 public:
     CPrivateCursorWnd();

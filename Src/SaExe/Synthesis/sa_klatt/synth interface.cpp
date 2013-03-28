@@ -10,21 +10,26 @@
 #include "reson.h"
 #include "KSynth.h"
 
-CKSynth * CreateKSynth(SPKRDEF * spkrdef) {
+CKSynth * CreateKSynth(SPKRDEF * spkrdef)
+{
     return new CKSynth(spkrdef);
 }
 
-void DestroyKSynth(CKSynth * synth) {
-    if (synth) {
+void DestroyKSynth(CKSynth * synth)
+{
+    if (synth)
+    {
         delete synth;
     }
 }
 
-void SynthesizeFrame(CKSynth * synth, TEMPORAL * par, INT16 * wave) {
+void SynthesizeFrame(CKSynth * synth, TEMPORAL * par, INT16 * wave)
+{
     synth->senswave(par,wave);
 }
 
-Float WaveformMaximum(CKSynth * synth) {
+Float WaveformMaximum(CKSynth * synth)
+{
     return synth->synthesizedWaveformMaximum();
 }
 

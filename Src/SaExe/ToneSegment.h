@@ -6,7 +6,8 @@
 //###########################################################################
 // CToneSegment data processing
 
-class CToneSegment : public CDependentSegment {
+class CToneSegment : public CDependentSegment
+{
     // Operations
 public:
     CToneSegment(int index, int master = -1);

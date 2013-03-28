@@ -18,7 +18,8 @@ enum {NARROWBAND=-2, WIDEBAND=-1};
 
 enum {PENDING=0, END_OF_SPGM=1, END_FMNT_CALC=1};
 
-typedef struct {
+typedef struct
+{
     uint16 WinLen;
     uint16 FFTLen;
     uint16 FFTIntv;
@@ -34,8 +35,10 @@ typedef struct {
 
 enum {SPGM_NOT_READY=0, SPGM_PENDING=1, SPGM_CALC=2, FORMANTS_CALC=3}; //dspError_t definitions
 
-typedef struct SPGM_SETTINGS {
-    SPGM_SETTINGS() {
+typedef struct SPGM_SETTINGS
+{
+    SPGM_SETTINGS()
+    {
         windowType = CWindowSettings::kGaussian;
     }
     float    LwrFreq;           //lowest frequency to calculate in Hz
@@ -55,7 +58,8 @@ typedef struct SPGM_SETTINGS {
 } SPGM_SETTINGS;
 
 
-class Spectrogram {
+class Spectrogram
+{
 public:
     static char * Spectrogram::Copyright(void);
     static float Spectrogram::Version(void);
@@ -70,16 +74,19 @@ public:
     static dspError_t CalcPower(float * PowerInDb, float Frequency, int32 nBandwidthSelect, CWindowSettings::Type, SIG_PARMS Signal, bool bPreEmphasis);
     uint8 * ReadPowerSlice(dspError_t * dspError_t, uint16 SpgmX);
     dspError_t ReadFormants(FORMANT_FREQ * Freq, uint16 SpgmX);
-    DspWin & GetWidebandWindow() {
+    DspWin & GetWidebandWindow()
+    {
         return m_Window;
     }
-    DspWin & GetNarrowbandWindow() {
+    DspWin & GetNarrowbandWindow()
+    {
         return m_NBWindow;
     }
     //dspError_t CalcFormants(FORMANT_FREQ *Formants, uint16 SpectIndex);
     dspError_t CalcFormants(void);
     ~Spectrogram();
-    bool IsAliased() {
+    bool IsAliased()
+    {
         return m_Aliased;
     }
 public:

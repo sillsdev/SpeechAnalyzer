@@ -12,7 +12,8 @@
 
 class CProcessDurations;
 
-class CPlotDurations : public CPlotWnd {
+class CPlotDurations : public CPlotWnd
+{
     DECLARE_DYNCREATE(CPlotDurations)
 
 // Construction/destruction/creation

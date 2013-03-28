@@ -16,7 +16,8 @@
 #define MAX_FRAME_DUR    2.0F       //maximum frame duration (in sec) allowed
 
 
-typedef struct {
+typedef struct
+{
     short    nScaleSelect;         //scale, either LINEAR or DB
     uint16   wLength;              //number of spectral values to calculate
     float    fSmoothFreq;          //max frequency allowed for smoothing
@@ -24,7 +25,8 @@ typedef struct {
     int32      nWindowType;            //DSP window switch:  ON = apply window
 } SPECT_SETTINGS;
 
-typedef struct {
+typedef struct
+{
     uint16          wSpectLength;
     float           fFreqScale;
     float           fdBRef;
@@ -34,7 +36,8 @@ typedef struct {
     FORMANT_VALUES * pstFormant;
 } SPECT_PARMS;
 
-class CSpectrum {
+class CSpectrum
+{
 public:
     static char * Copyright(void);
     static float Version(void);

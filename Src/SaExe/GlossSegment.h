@@ -6,7 +6,8 @@
 //###########################################################################
 // CGlossSegment data processing
 
-class CGlossSegment : public CTextSegment {
+class CGlossSegment : public CTextSegment
+{
 
 public:
     CGlossSegment(int index, int master = -1);

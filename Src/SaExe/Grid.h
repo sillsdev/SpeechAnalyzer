@@ -6,7 +6,8 @@
 class Object_ostream;
 class Object_istream;
 
-class Grid {
+class Grid
+{
 public:
     BOOL         bXGrid;            // TRUE, if x-grid enabled
     BOOL         bYGrid;            // TRUE, if y-grid enabled

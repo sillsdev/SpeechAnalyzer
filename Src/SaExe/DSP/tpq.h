@@ -1,4 +1,5 @@
-class tpqueue {
+class tpqueue
+{
 public:
     tpqueue();
     ~tpqueue();

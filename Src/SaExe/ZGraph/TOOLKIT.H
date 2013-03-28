@@ -172,13 +172,15 @@
 //  Enums
 /////////////////////////////////////////////////////////////////////////////
 
-enum _Output_Devices_ {                 // Output Devices to Which GDI Calls
+enum _Output_Devices_                   // Output Devices to Which GDI Calls
+{
     //   Are to Be Directed
     _zSCREEN_  = 0,                     //   (Screen = Default)
     _zPRINTER_ = 1
 };
 
-enum _The_Basic_Colors_ {
+enum _The_Basic_Colors_
+{
     zDARK_BLACK  ,  //  0               // The Basic 16 VGA Colors
     zDARK_BLUE  ,   //  1
     zDARK_GREEN ,   //  2
@@ -197,18 +199,21 @@ enum _The_Basic_Colors_ {
     zBRT_WHITE      //  15
 };
 
-enum _zText_Alignment_Options_ {       // Used to Justify Position of Text
+enum _zText_Alignment_Options_         // Used to Justify Position of Text
+{
     zALIGN_RIGHT_TOP = 0,
     zALIGN_LEFT_TOP  = 1,
     zALIGN_CENTER    = 2
 };
 
-enum _zSmith_Graph_Data_Options_ {
+enum _zSmith_Graph_Data_Options_
+{
     zIMPEDANCE        = -1,              // Plot Point as an Impedance
     zREFLECTION_COEFF = 0                // Plot Point as a Reflect. Coeff.
 };
 
-enum _zGraph_Axis_Styles_ {
+enum _zGraph_Axis_Styles_
+{
     // Graph Axis Types
     zLINEAR = 0,
     zLOG    = 1,
@@ -217,31 +222,36 @@ enum _zGraph_Axis_Styles_ {
     zRECTANGULAR  = 4
 };
 
-enum _zGrid_Style_Options_ {            // Graph Grid Styles
+enum _zGrid_Style_Options_              // Graph Grid Styles
+{
     z2D_GRID = 0,
     z3D_GRID = 1,
     zNO_GRID = 2
 };
 
-enum zAxisLabelDirections {
+enum zAxisLabelDirections
+{
     zHORIZONTAL,
     zVERTICAL
 };
 
-enum _Numeric_Digit_Formats_ {  // Formats for Numbers Along Graph Axes
+enum _Numeric_Digit_Formats_    // Formats for Numbers Along Graph Axes
+{
     zROUND_INTEGER   = -1,       // Show/Round Numbers to Nearest Whole Int.
     zFLOAT_PT        =  0,       // Show Numbers Using Floating Pt (Default)
     zSCI_NOTATION    =  1,       // Show Numbers in Sci. Notation
     zFIXED           =  2        // User Specifies Number of Sig. Digits
 };
 
-enum _Fill_Pattern_Options_ {    // Hatch and Solid Fill Patterns
+enum _Fill_Pattern_Options_      // Hatch and Solid Fill Patterns
+{
     zSOLID_FILL       = 0,
     zCOLOR_HATCH_FILL = 1,
     zMONO_HATCH_FILL  = 2
 };
 
-enum _Grid_Pen_Style_Options_ { // Pen Styles Used for Drawing Grid
+enum _Grid_Pen_Style_Options_   // Pen Styles Used for Drawing Grid
+{
     zSOLID     = 0,              // Solid Lines
     zDASHED       ,              // Dashed Lines
     zDOTTED       ,              // etc.
@@ -249,7 +259,8 @@ enum _Grid_Pen_Style_Options_ { // Pen Styles Used for Drawing Grid
     zDASH_DOT_DOT
 };
 
-enum _G3D_Graph_Qual_Options_ { // 3-D Surface Graph Quality Settings
+enum _G3D_Graph_Qual_Options_   // 3-D Surface Graph Quality Settings
+{
     zG3D_QUALITY_MED  = 0 ,
     zG3D_QUALITY_LOW  = 1 ,
     zG3D_QUALITY_HI   = 2 ,
@@ -258,7 +269,8 @@ enum _G3D_Graph_Qual_Options_ { // 3-D Surface Graph Quality Settings
 };
 
 
-enum _Data_Marker_Options_ {    // Symbols/Markers Used to Identify Data
+enum _Data_Marker_Options_      // Symbols/Markers Used to Identify Data
+{
     //   Points On Graphs (e.g., on X-Y Graphs)
     zCROSS             = 1    ,
     zCIRCLE            = 2    ,
@@ -271,24 +283,28 @@ enum _Data_Marker_Options_ {    // Symbols/Markers Used to Identify Data
     zBOX               = 0xFE
 };
 
-enum _Graph_Legend_Options_ {   // Graph Legend and Positioning Options
+enum _Graph_Legend_Options_     // Graph Legend and Positioning Options
+{
     zLEFT      = 0,              // Put Legend to the Left of the Graph
     zBOTTOM    = 1,              // Put Legend at Bottom of the Graph
     zNO_LEGEND = 2               // Don't Draw a Graph Legend
 } ;
 
-enum _Graph_Item_Title_Options_ { // Graph Item Title Display Options
+enum _Graph_Item_Title_Options_   // Graph Item Title Display Options
+{
     zTEXT_STRINGS   = 0,         // Put Strings (in the ItemTitles[] Array)
     zNUMBERS        = 1,         // Put Numbers Along the Axes
     zNO_ITEM_TITLES = 2
 };
 
-enum _Pie_Graph_Sector_Styles_ {
+enum _Pie_Graph_Sector_Styles_
+{
     zNORMAL        = 0,     // Normal Pie Sector
     zEXPLODED      = 1      // Exploded Pie Sector
 };
 
-enum _Bkg_Color_Gradient_Options_ {
+enum _Bkg_Color_Gradient_Options_
+{
     zNO_GRADIENT   = 0,
     zTOP_DOWN      = 1,
     zBOTTOM_UP     = 2,
@@ -296,7 +312,8 @@ enum _Bkg_Color_Gradient_Options_ {
     zINTO_CENTER   = 8
 };
 
-enum _Bkg_Gradient_Color_Schemes_ {
+enum _Bkg_Gradient_Color_Schemes_
+{
     zWHITE_GRADIENT           = 0 ,
     zBLUE_GRADIENT            = 1 ,
     zGREEN_GRADIENT           = 2 ,
@@ -315,14 +332,16 @@ enum _Bkg_Gradient_Color_Schemes_ {
     zGREEN_TO_RED_GRADIENT    = 15
 };
 
-enum _3D_Shading_Options_ {    // Shading Options for 3-D Graphs
+enum _3D_Shading_Options_      // Shading Options for 3-D Graphs
+{
     zNO_SHADING         = 0,    // Don't Do Any Shading
     zLIGHT_SHADING      = 1,    // Use Light Shading
     zMEDIUM_SHADING     = 2,    // Use Medium Shading
     zHEAVY_SHADING      = 3     // Use Heavy Shading
 };
 
-enum _Print_Result_Codes_ {
+enum _Print_Result_Codes_
+{
     zCANNOT_PRINT =  -1,
     zUSER_ABORTED =  -2,
     zSUCCESS      =   0
@@ -357,7 +376,8 @@ typedef  HPAL       zPALETTE;   // For a Color Palette
 #define _fstrchr   strchr
 #endif
 
-typedef struct tagRECT {        //
+typedef struct tagRECT          //
+{
     // Define a RECT (Like OS/2's "RECTL")
     int left   ;                 //
     int top    ;
@@ -366,7 +386,8 @@ typedef struct tagRECT {        //
 
 } RECT ;
 
-typedef struct tagPOINT {       // Define a Point (like OS/2's "POINTL")
+typedef struct tagPOINT         // Define a Point (like OS/2's "POINTL")
+{
     int x;
     int y;
 
@@ -392,7 +413,8 @@ typedef  long       zPALETTE;   // For a Color Palette
 
 #define  zDEFAULT_FONT 5        // The Default Font (Helvetica Font Set)
 
-typedef struct tagRECT {        //
+typedef struct tagRECT          //
+{
     // Define a RECT
     int left   ;                 //
     int top    ;
@@ -401,7 +423,8 @@ typedef struct tagRECT {        //
 
 } RECT ;
 
-typedef struct tagPOINT {       // Define a Point
+typedef struct tagPOINT         // Define a Point
+{
     int x;
     int y;
 
@@ -426,7 +449,8 @@ typedef  long       zPALETTE;   // For a Color Palette
 #define             far
 #define  zDEFAULT_FONT  2       // The Default Font Size (Small Font)
 
-typedef struct tagRECT {        //
+typedef struct tagRECT          //
+{
     // Define a RECT
     int left   ;                 //
     int top    ;
@@ -435,7 +459,8 @@ typedef struct tagRECT {        //
 
 } RECT ;
 
-typedef struct tagPOINT {       // Define a Point
+typedef struct tagPOINT         // Define a Point
+{
     int x;
     int y;
 
@@ -450,7 +475,8 @@ typedef struct tagPOINT {       // Define a Point
 //
 // Following is The "zGraphStruct" Definition...
 //
-typedef struct zGraphStruct {
+typedef struct zGraphStruct
+{
 
 #ifdef WINDOWS_PLATFORM
     HDC    hdc              ; // Standard Windows HDC

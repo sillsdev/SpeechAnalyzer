@@ -46,7 +46,8 @@ END_MESSAGE_MAP()
 /***************************************************************************/
 // CZPlotPolar::CZPlotPolar Constructor
 /***************************************************************************/
-CZPlotPolar::CZPlotPolar(int nIndexSDP)  : m_nIndexSDP(nIndexSDP) {
+CZPlotPolar::CZPlotPolar(int nIndexSDP)  : m_nIndexSDP(nIndexSDP)
+{
     m_hDataX = NULL;
     m_hDataY = NULL;
     m_hDataSym = NULL;
@@ -55,17 +56,21 @@ CZPlotPolar::CZPlotPolar(int nIndexSDP)  : m_nIndexSDP(nIndexSDP) {
 /***************************************************************************/
 // CZPlotPolar::~CZPlotPolar Destructor
 /***************************************************************************/
-CZPlotPolar::~CZPlotPolar() {
+CZPlotPolar::~CZPlotPolar()
+{
     // free the buffer memory
-    if (m_hDataX) {
+    if (m_hDataX)
+    {
         ::GlobalUnlock(m_hDataX);
         ::GlobalFree(m_hDataX);
     }
-    if (m_hDataY) {
+    if (m_hDataY)
+    {
         ::GlobalUnlock(m_hDataY);
         ::GlobalFree(m_hDataY);
     }
-    if (m_hDataSym) {
+    if (m_hDataSym)
+    {
         ::GlobalUnlock(m_hDataSym);
         ::GlobalFree(m_hDataSym);
     }
@@ -79,8 +84,10 @@ CZPlotPolar::~CZPlotPolar() {
 // The plot has to get the area process index, because it is a area process
 // plot.
 /***************************************************************************/
-int CZPlotPolar::OnCreate(LPCREATESTRUCT lpCreateStruct) {
-    if (CPlotWnd::OnCreate(lpCreateStruct) == -1) {
+int CZPlotPolar::OnCreate(LPCREATESTRUCT lpCreateStruct)
+{
+    if (CPlotWnd::OnCreate(lpCreateStruct) == -1)
+    {
         return -1;
     }
     // get pointer to document
@@ -93,7 +100,8 @@ int CZPlotPolar::OnCreate(LPCREATESTRUCT lpCreateStruct) {
     return 0;
 }
 
-CProcessSDP * CZPlotPolar::GetSDP(CSaDoc * pDoc) {
+CProcessSDP * CZPlotPolar::GetSDP(CSaDoc * pDoc)
+{
     return pDoc->GetSDP(m_nIndexSDP);
 }
 
@@ -106,7 +114,8 @@ CProcessSDP * CZPlotPolar::GetSDP(CSaDoc * pDoc) {
 // does not support to draw just a dot, and we need that, the zgraph drawing
 // function has been changed to be able to draw just a dot.
 /***************************************************************************/
-void CZPlotPolar::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView) {
+void CZPlotPolar::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView)
+{
 #define zTWOPI         6.28318530718
 #define zNUM_SAMPLES   512
 #define zMAX_NUMPANES  8
@@ -114,7 +123,8 @@ void CZPlotPolar::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView) {
 
     CSaDoc * pDoc = pView->GetDocument();
 
-    if (IsIconic()) {
+    if (IsIconic())
+    {
         return;    // nothing to draw
     }
     // get pointer to view and document
@@ -130,16 +140,19 @@ void CZPlotPolar::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView) {
     double dfNormRadFactor = zTWOPI / 360.0 * (double)pSDPParm->nUpperBound;
     // allocate the three data buffers
     CSaApp * pApp = (CSaApp *)AfxGetApp();
-    if (!m_hDataX) { // not yet allocated
+    if (!m_hDataX)   // not yet allocated
+    {
         m_hDataX = ::GlobalAlloc(GMEM_MOVEABLE | GMEM_SHARE, (DWORD)zMAX_NUMPOINTS * sizeof(double)); // allocate memory
-        if (!m_hDataX) {
+        if (!m_hDataX)
+        {
             // memory allocation error
             pApp->ErrorMessage(IDS_ERROR_MEMALLOC);
             GetParent()->PostMessage(WM_SYSCOMMAND, SC_CLOSE, 0L); // close the graph
             return;
         }
         m_lpDataX = (HPSTR)::GlobalLock(m_hDataX); // lock memory
-        if (!m_lpDataX) {
+        if (!m_lpDataX)
+        {
             // memory lock error
             pApp->ErrorMessage(IDS_ERROR_MEMLOCK);
             ::GlobalFree(m_hDataX);
@@ -148,16 +161,19 @@ void CZPlotPolar::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView) {
             return;
         }
     }
-    if (!m_hDataY) { // not yet allocated
+    if (!m_hDataY)   // not yet allocated
+    {
         m_hDataY = ::GlobalAlloc(GMEM_MOVEABLE | GMEM_SHARE, (DWORD)zMAX_NUMPOINTS * sizeof(double)); // allocate memory
-        if (!m_hDataY) {
+        if (!m_hDataY)
+        {
             // memory allocation error
             pApp->ErrorMessage(IDS_ERROR_MEMALLOC);
             GetParent()->PostMessage(WM_SYSCOMMAND, SC_CLOSE, 0L); // close the graph
             return;
         }
         m_lpDataY = (HPSTR)::GlobalLock(m_hDataY); // lock memory
-        if (!m_lpDataY) {
+        if (!m_lpDataY)
+        {
             // memory lock error
             pApp->ErrorMessage(IDS_ERROR_MEMLOCK);
             ::GlobalFree(m_hDataY);
@@ -166,16 +182,19 @@ void CZPlotPolar::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView) {
             return;
         }
     }
-    if (!m_hDataSym) { // not yet allocated
+    if (!m_hDataSym)   // not yet allocated
+    {
         m_hDataSym = ::GlobalAlloc(GMEM_MOVEABLE | GMEM_SHARE, (DWORD)zMAX_NUMPOINTS * sizeof(int)); // allocate memory
-        if (!m_hDataSym) {
+        if (!m_hDataSym)
+        {
             // memory allocation error
             pApp->ErrorMessage(IDS_ERROR_MEMALLOC);
             GetParent()->PostMessage(WM_SYSCOMMAND, SC_CLOSE, 0L); // close the graph
             return;
         }
         m_lpDataSym = (HPSTR)::GlobalLock(m_hDataSym); // lock memory
-        if (!m_lpDataSym) {
+        if (!m_lpDataSym)
+        {
             // memory lock error
             pApp->ErrorMessage(IDS_ERROR_MEMLOCK);
             ::GlobalFree(m_hDataSym);
@@ -188,16 +207,20 @@ void CZPlotPolar::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView) {
     // get pointer to process class
     CProcessSDP * pSDP = GetSDP(pDoc); // get pointer to SDP object
     // check if process is idle
-    if (pSDP->IsIdle()) {
+    if (pSDP->IsIdle())
+    {
         m_HelperWnd.SetMode(MODE_TEXT | FRAME_POPOUT | POS_HCENTER | POS_VCENTER, IDS_HELPERWND_POSCUR, &rWnd);
-    } else {
+    }
+    else
+    {
         m_HelperWnd.SetMode(MODE_HIDDEN); // hide helper window
         int nMaxValue = 1;
         int nMinValue = 0x7fff;
         BOOL bRadiusValid = TRUE;
         DWORD dwStart = pSDP->GetAreaPosition();
         DWORD dwNumber = pSDP->GetAreaLength();
-        if ((dwNumber - 1) > zNUM_SAMPLES) {
+        if ((dwNumber - 1) > zNUM_SAMPLES)
+        {
             dwNumber = zNUM_SAMPLES + 1;    // limit number to buffer sizes
         }
         // get a handle to windows for Z-graph
@@ -207,7 +230,8 @@ void CZPlotPolar::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView) {
         // get pointer to color structure from main frame
         CMainFrame * pMainWnd = (CMainFrame *)AfxGetMainWnd();
         Colors * pColor = pMainWnd->GetColors();
-        for (int nLoop = 0; nLoop <= zMAX_DATA_SETS; nLoop++) {
+        for (int nLoop = 0; nLoop <= zMAX_DATA_SETS; nLoop++)
+        {
             PlotColorArray[nLoop] = pColor->cPlotData[0];
         }
         // cast the pointers to the data buffers
@@ -216,30 +240,36 @@ void CZPlotPolar::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView) {
         int * pDataSym = (int *)m_lpDataSym; // pointer to symbol data
 
         pSDP->SetArea(pView);
-        if (TRUE) {
+        if (TRUE)
+        {
             // new data has to be processed
             dwStart = pSDP->GetAreaPosition();
             FmtParm * pFmtParm = pDoc->GetFmtParm(); // get sa parameters format member data
             UINT nBlockAlign = pFmtParm->wBlockAlign;
-            if (bAuto) {
+            if (bAuto)
+            {
                 // auto step mode, determine steps
                 lSteps = (long)(pSDP->GetAreaLength() / (zNUM_SAMPLES * (DWORD)nBlockAlign));
-                if (!lSteps) {
+                if (!lSteps)
+                {
                     lSteps = 1;
                 }
             }
             dwNumber = (pSDP->GetAreaLength() - 1) / (DWORD)lSteps + 1;
-            if ((dwNumber - 1) > zNUM_SAMPLES) {
+            if ((dwNumber - 1) > zNUM_SAMPLES)
+            {
                 dwNumber = zNUM_SAMPLES + 1;    // limit number to buffer sizes
             }
-            if (dwNumber <= 2) {
+            if (dwNumber <= 2)
+            {
                 return;
             }
             DWORD dwSmplSteps = (DWORD)lSteps * (DWORD)nBlockAlign;
             DWORD dwRawBufferSize = GetBufferSize();
             // fill up data buffers
             HPSTR pData = pDoc->GetWaveData(dwStart, TRUE); // get pointer to wave data block
-            if (pData == NULL) {
+            if (pData == NULL)
+            {
                 return;    // error occured while reading data block
             }
             DWORD dwDataPos = dwStart;
@@ -249,24 +279,32 @@ void CZPlotPolar::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView) {
             nMinValue = 0x7FFF;
             bRadiusValid = FALSE;
             // first find min and max values
-            for (DWORD dwLoop = 0; dwLoop < dwNumber; dwLoop++) {
+            for (DWORD dwLoop = 0; dwLoop < dwNumber; dwLoop++)
+            {
                 // read data
-                if (bAverage) {
+                if (bAverage)
+                {
                     // build average inside step
                     long lAverageData = 0;
-                    for (DWORD dwLoop = 0; dwLoop < (DWORD)lSteps; dwLoop++) {
-                        if (dwDataPos >= dwStart) {
+                    for (DWORD dwLoop = 0; dwLoop < (DWORD)lSteps; dwLoop++)
+                    {
+                        if (dwDataPos >= dwStart)
+                        {
                             // reload data
                             pData = pDoc->GetWaveData(dwDataPos, TRUE); // get new data block
-                            if (pData == NULL) {
+                            if (pData == NULL)
+                            {
                                 return;    // error occured while reading data block
                             }
                             dwStart = dwDataPos + dwRawBufferSize;
                         }
-                        if (nBlockAlign == 1) { // 8 bit data
+                        if (nBlockAlign == 1)   // 8 bit data
+                        {
                             BYTE bData = *pData++; // data range is 0...255 (128 is center)
                             nData = bData - 128;
-                        } else {              // 16 bit data
+                        }
+                        else                  // 16 bit data
+                        {
                             nData = *((short int *)pData++);
                             pData++;
                             dwDataPos++;
@@ -275,69 +313,89 @@ void CZPlotPolar::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView) {
                         lAverageData += (long)nData; // build data sum
                     }
                     nData = (int)(lAverageData / lSteps);
-                } else {
+                }
+                else
+                {
                     // take just one sample
-                    if (dwDataPos >= dwStart) {
+                    if (dwDataPos >= dwStart)
+                    {
                         // reload data
                         pData = pDoc->GetWaveData(dwDataPos, TRUE); // get new data block
-                        if (pData == NULL) {
+                        if (pData == NULL)
+                        {
                             return;    // error occured while reading data block
                         }
                         dwStart = dwDataPos + dwRawBufferSize;
                     }
-                    if (nBlockAlign == 1) { // 8 bit data
+                    if (nBlockAlign == 1)   // 8 bit data
+                    {
                         BYTE bData = *pData; // data range is 0...255 (128 is center)
                         nData = bData - 128;
-                    } else {
+                    }
+                    else
+                    {
                         nData = *((short int *)pData);    // 16 bit data
                     }
                     pData += dwSmplSteps;
                     dwDataPos += dwSmplSteps;
                 }
-                if (!dwLoop) {
+                if (!dwLoop)
+                {
                     nLastData = nData;    // save first data
                 }
                 // find min and max values
-                if (nData > nMaxValue) {
+                if (nData > nMaxValue)
+                {
                     nMaxValue = nData;    // store higher value
                 }
-                if (nData < nMinValue) {
+                if (nData < nMinValue)
+                {
                     nMinValue = nData;    // store lower value
                 }
             }
             // reset data pointers
             dwStart = pSDP->GetAreaPosition();
             pData = pDoc->GetWaveData(dwStart, TRUE); // get first wave data block
-            if (pData == NULL) {
+            if (pData == NULL)
+            {
                 return;    // error occured while reading data block
             }
             dwDataPos = dwStart;
             dwStart += dwRawBufferSize;
             // now process the data and fill up the buffers
             double dfHminL = 0.0001;
-            if (nMaxValue != nMinValue) {
+            if (nMaxValue != nMinValue)
+            {
                 dfHminL = (double)nMaxValue - (double)nMinValue;
             }
             pData += dwSmplSteps;
             dwDataPos += dwSmplSteps;
-            for (DWORD dwLoop = 1; dwLoop < dwNumber; dwLoop++) {
+            for (DWORD dwLoop = 1; dwLoop < dwNumber; dwLoop++)
+            {
                 // read data
-                if (bAverage) {
+                if (bAverage)
+                {
                     // build average inside step
                     long lAverageData = 0;
-                    for (DWORD dwLoop = 0; dwLoop < (DWORD)lSteps; dwLoop++) {
-                        if (dwDataPos >= dwStart) {
+                    for (DWORD dwLoop = 0; dwLoop < (DWORD)lSteps; dwLoop++)
+                    {
+                        if (dwDataPos >= dwStart)
+                        {
                             // reload data
                             pData = pDoc->GetWaveData(dwDataPos, TRUE); // get new data block
-                            if (pData == NULL) {
+                            if (pData == NULL)
+                            {
                                 return;    // error occured while reading data block
                             }
                             dwStart = dwDataPos + dwRawBufferSize;
                         }
-                        if (nBlockAlign == 1) { // 8 bit data
+                        if (nBlockAlign == 1)   // 8 bit data
+                        {
                             BYTE bData = *pData++; // data range is 0...255 (128 is center)
                             nData = bData - 128;
-                        } else {              // 16 bit data
+                        }
+                        else                  // 16 bit data
+                        {
                             nData = *((short int *)pData++);
                             pData++;
                             dwDataPos++;
@@ -346,20 +404,27 @@ void CZPlotPolar::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView) {
                         lAverageData += (long)nData; // build data sum
                     }
                     nData = (int)(lAverageData / lSteps);
-                } else {
+                }
+                else
+                {
                     // take just one sample
-                    if (dwDataPos >= dwStart) {
+                    if (dwDataPos >= dwStart)
+                    {
                         // reload data
                         pData = pDoc->GetWaveData(dwDataPos, TRUE); // get new data block
-                        if (pData == NULL) {
+                        if (pData == NULL)
+                        {
                             return;    // error occured while reading data block
                         }
                         dwStart = dwDataPos + dwRawBufferSize;
                     }
-                    if (nBlockAlign == 1) { // 8 bit data
+                    if (nBlockAlign == 1)   // 8 bit data
+                    {
                         BYTE bData = *pData; // data range is 0...255 (128 is center)
                         nData = bData - 128;
-                    } else {
+                    }
+                    else
+                    {
                         nData = *((short int *)pData);    // 16 bit data
                     }
                     pData += dwSmplSteps;
@@ -367,12 +432,14 @@ void CZPlotPolar::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView) {
                 }
                 // calculate radius
                 double dfRadius = ((double)nLastData - (double)nMinValue) / dfHminL * (double)pSDPParm->nUpperBound; // radius
-                if (dfRadius) {
+                if (dfRadius)
+                {
                     bRadiusValid = TRUE;
                 }
                 // calculate angle
                 double dfTheta = ((double)nData - (double)nMinValue) / dfHminL * dfNormRadFactor; // radius
-                for (int nLoop = 1; nLoop <= nPanes; nLoop++) {
+                for (int nLoop = 1; nLoop <= nPanes; nLoop++)
+                {
                     double dfBase = (double)(nLoop * zTWOPI / nPanes);
                     *pDataY++ = dfBase + dfTheta; // angle in radian
                     *pDataX++ = dfRadius; // radius
@@ -393,9 +460,12 @@ void CZPlotPolar::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView) {
         zG.ydata          = (double *)m_lpDataY; // y-data array, angle (radian)
         zG.zdata          = NULL           ; // z-data array
         zG.symbols        = (int *)m_lpDataSym; // symbols array
-        if (((nMinValue == 0) && (nMaxValue == 0)) || !bRadiusValid) {
+        if (((nMinValue == 0) && (nMaxValue == 0)) || !bRadiusValid)
+        {
             zG.n = 0;    // nothing to display
-        } else {
+        }
+        else
+        {
             zG.n = (int)((dwNumber - 1) * 2 * nPanes);    // total number of data points
         }
         zG.axis_color     = pColor->cPlotGrid; // graph axis color

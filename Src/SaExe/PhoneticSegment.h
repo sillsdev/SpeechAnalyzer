@@ -4,7 +4,8 @@
 #include "IndependentSegment.h"
 #include "sa_ipa.h"
 
-class CPhoneticSegment : public CIndependentSegment {
+class CPhoneticSegment : public CIndependentSegment
+{
 public:
     CPhoneticSegment(int index, int master = -1);
 

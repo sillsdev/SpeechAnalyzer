@@ -44,7 +44,8 @@
 #pragma warning(pop)
 
 /* Spectral Tilt Bandwidth table */
-static const int tilt[42] = {
+static const int tilt[42] =
+{
     5000, 4350, 3790, 3330, 2930, 2700, 2580, 2468, 2364, 2260,
     2157, 2045, 1925, 1806, 1687, 1568, 1449, 1350, 1272, 1199,
     1133, 1071, 1009,  947,  885,  833,  781,  729,  677,  625,
@@ -53,7 +54,8 @@ static const int tilt[42] = {
 };
 
 /* LF Voicing Model tables */
-static const Float bw_lf[41] = {
+static const Float bw_lf[41] =
+{
     0.0,  -0.6,  -2.0,  -4.0,  -6.0,  -8.0, -10.4, -12.7, -15.3, -17.8,
     -20.1, -22.4, -24.7, -27.0, -29.2, -31.4, -33.6, -35.8, -37.9, -40.0,
     -42.1, -44.1, -46.2, -48.3, -50.4, -52.4, -54.5, -56.6, -57.8, -60.8,
@@ -61,7 +63,8 @@ static const Float bw_lf[41] = {
     -79.6
 };
 
-static const Float e0_lf[41] = {
+static const Float e0_lf[41] =
+{
     27.4, 26.3, 25.3, 24.3, 23.2, 22.1, 21.0, 20.0, 18.8, 17.6,
     16.1, 14.9, 13.8, 12.8, 11.7, 10.6, 9.81, 9.00, 8.12, 7.36,
     6.60, 6.05, 5.46, 4.92, 4.41, 3.94, 3.58, 3.14, 2.83, 2.49,
@@ -73,20 +76,23 @@ static const Float e0_lf[41] = {
 /* ---------------------------------------------------------------------- */
 static double whiteHarmonics(int nHarmonics, double time, double frequency, double phase, double dispersion);
 
-Float CKSynth::next_voice_sample(void) {
+Float CKSynth::next_voice_sample(void)
+{
     register Float output = 0.0;
     register Float freq, bw, temp, time, open;
     register BOOL pulse;
 
 
-    if (spkrdef.SS > 3) {
+    if (spkrdef.SS > 3)
+    {
         return next_sil_voice_sample();
     }
 
     synth.global_time++;    /* flutter time runs continuously */
 
     /* check for F0 = zero */
-    if (!pars.F0) {
+    if (!pars.F0)
+    {
         synth.period_ctr = 0;   /* make sure we open glottis when F0 != 0 */
         synth.glottis_open = FALSE;
         synth.voicing_state = FALSE;
@@ -94,9 +100,11 @@ Float CKSynth::next_voice_sample(void) {
     }
 
     /* glottal opening/closing transition */
-    if ((--synth.period_ctr) <= 0) {
+    if ((--synth.period_ctr) <= 0)
+    {
         /* check for glottal transition */
-        if (!synth.glottis_open) {
+        if (!synth.glottis_open)
+        {
             /* glottis opening */
             synth.glottis_open = TRUE;
             synth.pulse = TRUE;
@@ -109,52 +117,63 @@ Float CKSynth::next_voice_sample(void) {
             synth.AV = round(pars.AV);
             synth.TL = pars.TL;
             synth.voicing_amp = synth.AV ? dB2amp(spkrdef.GV+synth.AV+A_AV) : 0;
-            if (synth.FL) {
+            if (synth.FL)
+            {
                 Float seconds = (Float) synth.global_time / spkrdef.SR;
                 freq = synth.F0 / 10. + (synth.FL / 50. * synth.F0 / 600. *
                                          (cos(TWO_PI * 12.7 * seconds) +
                                           cos(TWO_PI * 7.1 * seconds) +
                                           cos(TWO_PI * 4.7 * seconds)));
-            } else {
+            }
+            else
+            {
                 freq = synth.F0 / 10.;
             }
             synth.pulse_freq = round(spkrdef.SR / freq);
             synth.period_ctr = round(synth.pulse_freq * synth.OQ / 100.);
             synth.close_time = synth.pulse_freq - synth.period_ctr;
             if (synth.DI)
-                if (!synth.close_shortened) {
+                if (!synth.close_shortened)
+                {
                     synth.close_shortened = TRUE;
                     synth.close_time -= round(synth.close_time * synth.DI / 100.);
                     synth.voicing_amp *= 1. - synth.DI / 100.;
                     synth.TL += round(synth.DI / 4.25); /** not quite right **/
-                } else {
+                }
+                else
+                {
                     /* previous close shortened */
                     synth.close_shortened = FALSE;
                     synth.close_time += round(synth.close_time * synth.DI / 100.);
                 }
-            else { /* no diplophonia */
+            else   /* no diplophonia */
+            {
                 synth.close_shortened = FALSE;
             }
 
             /* setup spectral tilt */
-            if (spkrdef.SS == 3) {  /* LF source corner rounding */
+            if (spkrdef.SS == 3)    /* LF source corner rounding */
+            {
                 synth.TL += 2;
             }
             spectral_tilt.InterPolePair(round(0.375 * tilt[synth.TL]),
                                         tilt[synth.TL], spkrdef.SR);
-            if (synth.TL > 10) {
+            if (synth.TL > 10)
+            {
                 spectral_tilt.InterAdjustGain(1.0 + (synth.TL-10)*(synth.TL-10) / 1000.);
             }
 
             /* setup pitch-synchronous formant_1_cascade and formant_1_special */
-            if (pars.DF1 || pars.DB1) {
+            if (pars.DF1 || pars.DB1)
+            {
                 formant_1_cascade.InterPolePair(pars.F1 + pars.DF1,
                                                 pars.B1 + pars.DB1, spkrdef.SR);
                 formant_1_special.InterPolePair(pars.F1 + pars.DF1,
                                                 pars.B1 + pars.DB1, spkrdef.SR);
             }
 
-            switch (spkrdef.SS) {
+            switch (spkrdef.SS)
+            {
             case 1:  /* impulsive source */
                 synth.voicing_state = FALSE;
                 temp = (Float) synth.pulse_freq * synth.OQ / 100.;
@@ -181,18 +200,23 @@ Float CKSynth::next_voice_sample(void) {
                                               (synth.pulse_freq * synth.OQ / 100.) / 200.);
                 break;
             }
-        } else {
+        }
+        else
+        {
             /* glottis closing */
             synth.glottis_open = FALSE;
             synth.voicing_time++;
             synth.pulse = FALSE;
             synth.period_ctr = synth.close_time;
-            if (pars.DF1 || pars.DB1) {
+            if (pars.DF1 || pars.DB1)
+            {
                 formant_1_cascade.InterPolePair(pars.F1, pars.B1, spkrdef.SR);
                 formant_1_special.InterPolePair(pars.F1, pars.B1, spkrdef.SR);
             }
         }
-    } else {
+    }
+    else
+    {
         /* during open or closed phase */
         synth.voicing_time++;
         synth.pulse = FALSE;
@@ -202,7 +226,8 @@ Float CKSynth::next_voice_sample(void) {
     /* ---------------------------------------------------------------------- */
     /* voicing source */
 
-    switch (spkrdef.SS) {
+    switch (spkrdef.SS)
+    {
     case 1: /* impulse source */
         pulse = (BOOL)(synth.pulse - synth.voicing_state);
         synth.voicing_state = synth.pulse;
@@ -211,7 +236,8 @@ Float CKSynth::next_voice_sample(void) {
         break;
 
     case 2: /* natural KLGLOT88 source */
-        if (synth.glottis_open) {
+        if (synth.glottis_open)
+        {
             time = (Float) synth.voicing_time;
             open = (Float) synth.pulse_freq * synth.OQ / 100.;
             temp = synth.voicing_amp * .00055 *
@@ -219,7 +245,9 @@ Float CKSynth::next_voice_sample(void) {
                    (50. / synth.OQ) *
                    (2 * time - 3 * time * time / open);
             output = spectral_tilt.AdvanceResonator(temp);
-        } else {
+        }
+        else
+        {
             output = spectral_tilt.AdvanceResonator(0.);
         }
         break;
@@ -228,7 +256,8 @@ Float CKSynth::next_voice_sample(void) {
         if (synth.glottis_open)
             output = spectral_tilt.AdvanceResonator(
                          glottal_pulse.AdvanceResonator(synth.pulse ? (synth.voicing_amp * 0.0795) : 0.));
-        else {
+        else
+        {
             glottal_pulse.ClearResonator();
             output = spectral_tilt.AdvanceResonator(0.); // sdm bug fix this makes sense, used to no braces
         }
@@ -241,21 +270,25 @@ Float CKSynth::next_voice_sample(void) {
 
 /* ---------------------------------------------------------------------- */
 
-Float CKSynth::next_sil_voice_sample(void) {
+Float CKSynth::next_sil_voice_sample(void)
+{
     Float output = 0.0;
 
     m_silVoicing.global_time++; /* flutter time runs continuously */
 
     /* check for F0 = zero */
-    if (!pars.F0 && !m_silVoicing.F0) {
+    if (!pars.F0 && !m_silVoicing.F0)
+    {
         m_silVoicing.period_ctr = 0;    /* make sure we open glottis when F0 != 0 */
         return spectral_tilt.AdvanceResonator(0.);
     }
 
-    if ((--m_silVoicing.period_ctr) <= 0.5) {
+    if ((--m_silVoicing.period_ctr) <= 0.5)
+    {
         // pitch synchronus parameter changes
         m_silVoicing.F0 = pars.F0;
-        if (!m_silVoicing.F0) {
+        if (!m_silVoicing.F0)
+        {
             m_silVoicing.period_ctr = 0;    /* make sure we open glottis when F0 != 0 */
             return spectral_tilt.AdvanceResonator(0.);
         }
@@ -266,13 +299,16 @@ Float CKSynth::next_sil_voice_sample(void) {
         m_silVoicing.voicing_time = m_silVoicing.period_ctr + 1;
 
         double freq;
-        if (m_silVoicing.FL) {
+        if (m_silVoicing.FL)
+        {
             Float seconds = (Float) m_silVoicing.global_time / spkrdef.SR;
             freq = m_silVoicing.F0 + (m_silVoicing.FL / 50. * m_silVoicing.F0 / 600. *
                                       (cos(TWO_PI * 12.7 * seconds) +
                                        cos(TWO_PI * 7.1 * seconds) +
                                        cos(TWO_PI * 4.7 * seconds)));
-        } else {
+        }
+        else
+        {
             freq = m_silVoicing.F0;
         }
 
@@ -282,7 +318,8 @@ Float CKSynth::next_sil_voice_sample(void) {
         /* setup spectral tilt */
         spectral_tilt.InterPolePair(0.375 * tilt[m_silVoicing.TL],
                                     tilt[m_silVoicing.TL], spkrdef.SR);
-        if (m_silVoicing.TL > 10) {
+        if (m_silVoicing.TL > 10)
+        {
             spectral_tilt.InterAdjustGain(1.0 + (m_silVoicing.TL-10)*(m_silVoicing.TL-10) / 1000.);
         }
 
@@ -290,7 +327,8 @@ Float CKSynth::next_sil_voice_sample(void) {
         formant_1_cascade.InterPolePair(pars.F1, pars.B1, spkrdef.SR);
         formant_1_special.InterPolePair(pars.F1, pars.B1, spkrdef.SR);
 
-        switch (spkrdef.SS) {
+        switch (spkrdef.SS)
+        {
         case 7:   // 20dB decaying
         default:
             m_silVoicing.dHarmonics = int(0.25/m_silVoicing.pulse_freq)*2; // always even
@@ -305,7 +343,8 @@ Float CKSynth::next_sil_voice_sample(void) {
 
     double whiteRadiated = 0;
 
-    switch (spkrdef.SS) {
+    switch (spkrdef.SS)
+    {
     case 4: // Heartbeat rising, falling discontinuity, rising
         whiteRadiated = whiteHarmonics((int)m_silVoicing.dHarmonics, m_silVoicing.voicing_time, m_silVoicing.pulse_freq, -90, 180);
         break;
@@ -327,11 +366,13 @@ Float CKSynth::next_sil_voice_sample(void) {
 }
 
 
-SilVoicing::SilVoicing() {
+SilVoicing::SilVoicing()
+{
     clear();
 }
 
-void SilVoicing::clear() {
+void SilVoicing::clear()
+{
     SilVoicing & synth = *this;
 
     synth.pulse_freq = 0;
@@ -359,19 +400,23 @@ void SilVoicing::clear() {
 //
 // using eulers relation eITheta = cos(Theta) + i*sin(Theta)
 // this becomes the real part of a geometric series
-static double whiteHarmonics(int nHarmonics, double time, double freq, double phase, double dispersion) {
+static double whiteHarmonics(int nHarmonics, double time, double freq, double phase, double dispersion)
+{
     // sum of the first n terms of a geometric series
     // sn = a1 * (1 - r^n)/(1 - r)  r!=1
     double radiansR = TWO_PI*(time*freq+dispersion/360);
     std::complex<double> whiteHarmonics = 0.;
 
     // assume a1 = 1
-    if (cos(radiansR) != 1.) {
+    if (cos(radiansR) != 1.)
+    {
         std::complex<double> r(cos(radiansR),sin(radiansR));
         std::complex<double> rN(cos(nHarmonics * radiansR),sin(nHarmonics * radiansR));
 
         whiteHarmonics = (1.- rN)/(1. - r);
-    } else {
+    }
+    else
+    {
         // For this case the geometric series formulas do not work
         // but n*1 == n....
         whiteHarmonics = nHarmonics;

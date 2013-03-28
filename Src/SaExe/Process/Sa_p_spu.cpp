@@ -36,7 +36,8 @@ static char BASED_CODE THIS_FILE[] = __FILE__;
 /***************************************************************************/
 // CProcessSpectrum::CProcessSpectrum Constructor
 /***************************************************************************/
-CProcessSpectrum::CProcessSpectrum() {
+CProcessSpectrum::CProcessSpectrum()
+{
     m_nSpectralBands = 0;
     m_stBandPower.Max.Raw = m_stBandPower.Min.Raw = (float)UNDEFINED_DATA;
     m_stBandPower.Max.Smooth = m_stBandPower.Min.Smooth = (float)UNDEFINED_DATA;
@@ -46,7 +47,8 @@ CProcessSpectrum::CProcessSpectrum() {
 /***************************************************************************/
 // CProcessSpectrum::~CProcessSpectrum Destructor
 /***************************************************************************/
-CProcessSpectrum::~CProcessSpectrum() {
+CProcessSpectrum::~CProcessSpectrum()
+{
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -56,9 +58,11 @@ CProcessSpectrum::~CProcessSpectrum() {
 // CProcessSpectrum::Exit Exit on Error
 // Standard exit function if an error occured.
 /***************************************************************************/
-long CProcessSpectrum::Exit(int nError, void * mem) {
+long CProcessSpectrum::Exit(int nError, void * mem)
+{
     // free the raw data buffer
-    if (mem) {
+    if (mem)
+    {
         delete [] mem;
     }
     SetDataInvalid();
@@ -71,9 +75,10 @@ long CProcessSpectrum::Exit(int nError, void * mem) {
 // Gives back just the pointer to the data buffer for the processed spectrum
 // data.
 /***************************************************************************/
-void * CProcessSpectrum::GetProcessedData(DWORD, BOOL) {
-	// return pointer to data
-    return m_lpBuffer; 
+void * CProcessSpectrum::GetProcessedData(DWORD, BOOL)
+{
+    // return pointer to data
+    return m_lpBuffer;
 }
 
 /***************************************************************************/
@@ -84,7 +89,8 @@ void * CProcessSpectrum::GetProcessedData(DWORD, BOOL) {
 // compatibility with the base class. Processed data is always 16bit data!
 // pCaller is for further use.
 /***************************************************************************/
-int CProcessSpectrum::GetProcessedData(DWORD dwOffset, BOOL *) {
+int CProcessSpectrum::GetProcessedData(DWORD dwOffset, BOOL *)
+{
     short int * lpData = (short int *)m_lpBuffer; // cast buffer pointer
     return *(lpData + dwOffset); // return data
 }
@@ -95,7 +101,8 @@ int CProcessSpectrum::GetProcessedData(DWORD dwOffset, BOOL *) {
 // gives the index (data number) to tell what data he needs.  Spectral values
 // are returned in a structure containing raw, cepstrally-smoothed, and LPC data.
 /***************************************************************************/
-SPECT_VALUE & CProcessSpectrum::GetSpectralData(unsigned short wIndex) {
+SPECT_VALUE & CProcessSpectrum::GetSpectralData(unsigned short wIndex)
+{
     SPECT_VALUE * lpData = (SPECT_VALUE *)m_lpBuffer; // cast buffer pointer
     return (lpData[wIndex]); // return data
 }
@@ -105,7 +112,8 @@ SPECT_VALUE & CProcessSpectrum::GetSpectralData(unsigned short wIndex) {
 // and their log magnitudes, along with Lpc error.
 /***************************************************************************/
 
-FORMANT_FRAME * CProcessSpectrum::GetFormants() {
+FORMANT_FRAME * CProcessSpectrum::GetFormants()
+{
     return (FORMANT_FRAME *)(((SPECT_VALUE *)m_lpBuffer) + m_nSpectralBands);
 }
 
@@ -116,7 +124,8 @@ FORMANT_FRAME * CProcessSpectrum::GetFormants() {
 // are returned in a structure containing cepstrally-smoothed and LPC derived
 // formant frequency values.
 /***************************************************************************/
-FORMANT & CProcessSpectrum::GetFormant(unsigned short wIndex) {
+FORMANT & CProcessSpectrum::GetFormant(unsigned short wIndex)
+{
     FORMANT_FRAME * lpData = GetFormants();
     return(lpData->Formant[wIndex]);
 }
@@ -125,9 +134,11 @@ FORMANT & CProcessSpectrum::GetFormant(unsigned short wIndex) {
 // CProcessSpectrum::GetSpectralRegionPower  Computes average power in
 // specified region of spectrum, between wFreqLo and wFreqHi.
 /***************************************************************************/
-float CProcessSpectrum::GetSpectralRegionPower(ISaDoc * pDoc, unsigned short wFreqLo, unsigned short wFreqHi) {
-    
-	if (m_lpBuffer==NULL) {
+float CProcessSpectrum::GetSpectralRegionPower(ISaDoc * pDoc, unsigned short wFreqLo, unsigned short wFreqHi)
+{
+
+    if (m_lpBuffer==NULL)
+    {
         return 0;
     }
 
@@ -139,7 +150,8 @@ float CProcessSpectrum::GetSpectralRegionPower(ISaDoc * pDoc, unsigned short wFr
     SPECT_VALUE * pSpectralPower = (SPECT_VALUE *)m_lpBuffer;
 
     // loop over specified region
-    for (unsigned short i = nIndexLo; i <= nIndexHi; i++) {
+    for (unsigned short i = nIndexLo; i <= nIndexHi; i++)
+    {
         // get spectral value & add to sum
         dfSumOfSpectra += pSpectralPower[i].Lpc;
     }
@@ -169,9 +181,11 @@ float CProcessSpectrum::GetSpectralRegionPower(ISaDoc * pDoc, unsigned short wFr
 #include "dsp\Spectrum.h"
 #include "dsp\Lpc.h"
 long CProcessSpectrum::Process(void * pCaller, ISaDoc * pDoc, DWORD dwFrameStart, DWORD dwFrameSize,
-                               SPECT_PROC_SELECT SpectraSelected, int nProgress, int nLevel) {
+                               SPECT_PROC_SELECT SpectraSelected, int nProgress, int nLevel)
+{
     TRACE(_T("Process: CProcessSpectrum\n"));
-    if (IsCanceled()) {
+    if (IsCanceled())
+    {
         return Exit(PROCESS_CANCELED, NULL);    // process canceled
     }
 
@@ -182,7 +196,8 @@ long CProcessSpectrum::Process(void * pCaller, ISaDoc * pDoc, DWORD dwFrameStart
             m_stParmSpec.nPeakSharpFac != m_stParmProc.nPeakSharpFac ||
             ResearchSettings.m_cWindow != m_stParmProc.cWindow ||
             SpectraSelected.bCepstralSpectrum != m_stSpectraProc.bCepstralSpectrum  ||
-            SpectraSelected.bLpcSpectrum != m_stSpectraProc.bLpcSpectrum) {
+            SpectraSelected.bLpcSpectrum != m_stSpectraProc.bLpcSpectrum)
+    {
         // must reprocess
         SetDataInvalid();
         m_dwFrameStart = dwFrameStart;
@@ -203,7 +218,8 @@ long CProcessSpectrum::Process(void * pCaller, ISaDoc * pDoc, DWORD dwFrameStart
     } */
 
     //if (IsDataReady()) return MAKELONG(--nLevel, nProgress); // data is already ready
-    if (IsDataReady()) {
+    if (IsDataReady())
+    {
         return MAKELONG(PROCESS_UNNECESSARY, 100);    // data is already ready
     }
 
@@ -213,7 +229,8 @@ long CProcessSpectrum::Process(void * pCaller, ISaDoc * pDoc, DWORD dwFrameStart
     //!!frame size must be less than FFT length (2 x nSpectralBands)
     m_nFormants = MAX_NUM_FORMANTS + 1;  // includes F[0], the fundamental frequency
     SetDataSize((DWORD)m_nSpectralBands * sizeof(SPECT_VALUE) + sizeof(FORMANT_FRAME));
-    if (!StartProcess(pCaller, IDS_STATTXT_PROCESSSPU, (DWORD)GetDataSize(sizeof(char)))) {
+    if (!StartProcess(pCaller, IDS_STATTXT_PROCESSSPU, (DWORD)GetDataSize(sizeof(char))))
+    {
         EndProcess(); // end data processing
         EndWaitCursor();
         return MAKELONG(PROCESS_ERROR, nProgress);
@@ -231,7 +248,8 @@ long CProcessSpectrum::Process(void * pCaller, ISaDoc * pDoc, DWORD dwFrameStart
 
     CWindowSettings & cWindow = m_stParmProc.cWindow;
 
-    switch (cWindow.m_nLengthMode) {
+    switch (cWindow.m_nLengthMode)
+    {
     case CWindowSettings::kBandwidth:
         nWindowSize = DspWin::CalcLength(cWindow.m_dBandwidth,pFmtParm->dwSamplesPerSec, cWindow.m_nType);
         break;
@@ -239,21 +257,25 @@ long CProcessSpectrum::Process(void * pCaller, ISaDoc * pDoc, DWORD dwFrameStart
         nWindowSize = (int)(0.001*cWindow.m_dTime*pFmtParm->dwSamplesPerSec + 0.5);
     case CWindowSettings::kBetweenCursors:
     default:
-        if (cWindow.m_bEquivalentLength) {
+        if (cWindow.m_bEquivalentLength)
+        {
             nWindowSize = DspWin::CalcEquivalentLength(nWindowSize, cWindow.m_nType);
         }
         break;
     }
 
     nWindowStart -= nWindowSize/2;
-    if (cWindow.m_bCenter) {
+    if (cWindow.m_bCenter)
+    {
         nWindowStart += dwFrameSize / wSmpSize;
     }
 
-    if (nWindowStart < 0) { // shift start of window
+    if (nWindowStart < 0)   // shift start of window
+    {
         nWindowStart = 0;
     }
-    if ((nWindowStart+nWindowSize + 1) > int(pDoc->GetDataSize()/wSmpSize)) {
+    if ((nWindowStart+nWindowSize + 1) > int(pDoc->GetDataSize()/wSmpSize))
+    {
         nWindowSize = (pDoc->GetDataSize()/wSmpSize) - 1 - nWindowStart;
     }
 
@@ -261,9 +283,12 @@ long CProcessSpectrum::Process(void * pCaller, ISaDoc * pDoc, DWORD dwFrameStart
     SIG_PARMS stFrameParm;
     stFrameParm.Length = nWindowSize;
     stFrameParm.SmpRate = (unsigned short)pFmtParm->dwSamplesPerSec;
-    if (wSmpSize == 1) {
+    if (wSmpSize == 1)
+    {
         stFrameParm.SmpDataFmt = PCM_UBYTE;
-    } else {
+    }
+    else
+    {
         stFrameParm.SmpDataFmt = PCM_2SSHORT;
     }
     stFrameParm.Source = (SIG_SOURCE)pDoc->GetGender();
@@ -282,7 +307,8 @@ long CProcessSpectrum::Process(void * pCaller, ISaDoc * pDoc, DWORD dwFrameStart
     // however, since the spectrum of a large frame of data for a nonstationary signal such as speech is not very
     // useful anyway.
     stFrameParm.Start = (void *) new char[nWindowSize*wSmpSize];
-    if (!stFrameParm.Start) {
+    if (!stFrameParm.Start)
+    {
         // memory lock error
         ErrorMessage(IDS_ERROR_MEMLOCK);
         EndProcess();
@@ -295,9 +321,11 @@ long CProcessSpectrum::Process(void * pCaller, ISaDoc * pDoc, DWORD dwFrameStart
     DWORD dwDataPos = nWindowStart*wSmpSize;
     DWORD dwFrameEnd = (nWindowStart + nWindowSize)*wSmpSize;
     HPSTR pFrameData = (HPSTR)stFrameParm.Start; // pointer to special raw data buffer
-    while (dwDataPos < dwFrameEnd) { // processing loop
+    while (dwDataPos < dwFrameEnd)   // processing loop
+    {
         HPSTR pBlockData = pDoc->GetWaveData(dwDataPos, TRUE); // get pointer to data block
-        if (!pBlockData) {
+        if (!pBlockData)
+        {
             pDoc->GetWaveData(dwOldWaveBufferIndex, TRUE);
             EndProcess();
             EndWaitCursor();
@@ -305,10 +333,12 @@ long CProcessSpectrum::Process(void * pCaller, ISaDoc * pDoc, DWORD dwFrameStart
         }
         // copy this block
         DWORD dwBlockEnd = dwDataPos + GetProcessBufferSize();
-        if (dwBlockEnd > dwFrameEnd) {
+        if (dwBlockEnd > dwFrameEnd)
+        {
             dwBlockEnd = dwFrameEnd;
         }
-        while (dwDataPos < dwBlockEnd) {
+        while (dwDataPos < dwBlockEnd)
+        {
             *pFrameData++ = *pBlockData++;
             dwDataPos++;
         }
@@ -323,13 +353,18 @@ long CProcessSpectrum::Process(void * pCaller, ISaDoc * pDoc, DWORD dwFrameStart
     CSpectrum * poSpectrum = NULL;
     SPECT_PARMS stSpectParm;
     memset(&stSpectParm,0,sizeof(stSpectParm));
-    if (SpectraSelected.bCepstralSpectrum) {
+    if (SpectraSelected.bCepstralSpectrum)
+    {
         Err = CSpectrum::CreateObject(&poSpectrum, stSpectSetting, stFrameParm, nFFTLength);
-        if (Err) {
-            if (poSpectrum) {
+        if (Err)
+        {
+            if (poSpectrum)
+            {
                 delete poSpectrum;
             }
-        } else {
+        }
+        else
+        {
             stSpectParm = poSpectrum->GetSpectParms();
             m_stBandPower.fdBRef = stSpectParm.fdBRef;
         }
@@ -349,7 +384,8 @@ long CProcessSpectrum::Process(void * pCaller, ISaDoc * pDoc, DWORD dwFrameStart
     double LpcError = (double)UNDEFINED_DATA;
 
     if ((SpectraSelected.bLpcSpectrum) /*!! temporarily removed to study LPC results on various start positions
-                                       && dwFrameStartIndex == stFragment.dwOffset && stFrameParm.Length == stFragment.wLength */) {
+                                       && dwFrameStartIndex == stFragment.dwOffset && stFrameParm.Length == stFragment.wLength */)
+    {
         // Lpc analysis done only on a single fragment
 
         //!!Should I take first few samples in frame to permit shifting by order?
@@ -370,12 +406,15 @@ long CProcessSpectrum::Process(void * pCaller, ISaDoc * pDoc, DWORD dwFrameStart
         //    stLpcSetting.Process.Flags |= NO_DC_BIAS;
 
         SaParm * pSaParm = pDoc->GetSaParm(); // get sa parameters
-        if (bVoiced) {
+        if (bVoiced)
+        {
             stLpcSetting.Process.Flags |= PRE_EMPHASIS;  // turn pre-emphasis on to remove effects of glottis and lip radiation
             DWORD dwBandwidth = (!pSaParm->dwSignalBandWidth)?pFmtParm->dwSamplesPerSec/2:pSaParm->dwSignalBandWidth;
             // allow 2 poles per kHz of signal bandwidth and reserve 4 for zero approximation
             stLpcSetting.nOrder = (unsigned char)(dwBandwidth * 2/1000 * ResearchSettings.m_nSpectrumLpcOrderFsMult + ResearchSettings.m_nSpectrumLpcOrderExtra);
-        } else {
+        }
+        else
+        {
             DWORD dwBandwidth = (!pSaParm->dwSignalBandWidth)?pFmtParm->dwSamplesPerSec/2:pSaParm->dwSignalBandWidth;
             // allow 2 poles per kHz of signal bandwidth and reserve 4 for zero approximation
             stLpcSetting.nOrder = (unsigned char)(dwBandwidth * 2/1000 * ResearchSettings.m_nSpectrumLpcOrderFsMult + ResearchSettings.m_nSpectrumLpcOrderExtra);
@@ -386,7 +425,8 @@ long CProcessSpectrum::Process(void * pCaller, ISaDoc * pDoc, DWORD dwFrameStart
 
         // The order of the LPC model must be less than the frame length
         // Should be less than half the frame length
-        if (stLpcSetting.nFrameLen < (USHORT)(stLpcSetting.nOrder*2)) {
+        if (stLpcSetting.nFrameLen < (USHORT)(stLpcSetting.nOrder*2))
+        {
             stLpcSetting.nOrder = UCHAR(stLpcSetting.nFrameLen >> 1);
         }
 
@@ -394,38 +434,46 @@ long CProcessSpectrum::Process(void * pCaller, ISaDoc * pDoc, DWORD dwFrameStart
         Err = CLinPredCoding::CreateObject(&poLpcObject, stLpcSetting, stFrameParm, nFFTLength);
 
         // Perform LPC analysis.
-        if (!Err) {
+        if (!Err)
+        {
             Err = poLpcObject->GetLpcModel(&pstLpcModel, stFrameParm.Start);
         }
         if (bVoiced)
-            for (int i = 0; i < ResearchSettings.m_nSpectrumLpcOrderAuxMax; i+=2) {
+            for (int i = 0; i < ResearchSettings.m_nSpectrumLpcOrderAuxMax; i+=2)
+            {
                 // try a few times until error drops below threshold
-                if (Err) {
+                if (Err)
+                {
                     break;
                 }
                 LpcError = 100. * pstLpcModel->dMeanSqPredError / pstLpcModel->dMeanEnergy;
-                if (LpcError < LPC_ERROR_THRESHOLD) {
+                if (LpcError < LPC_ERROR_THRESHOLD)
+                {
                     break;
                 }
                 delete poLpcObject;
                 stLpcSetting.nOrder += 2;  // increase the order by a pole pair
                 Err = CLinPredCoding::CreateObject(&poLpcObject, stLpcSetting, stFrameParm, nFFTLength);
-                if (Err) {
+                if (Err)
+                {
                     break;
                 }
                 Err = poLpcObject->GetLpcModel(&pstLpcModel, stFrameParm.Start);
             }
-        if (!Err) {
+        if (!Err)
+        {
             Err = poLpcObject->GetPowerSpectrum(stSpectSetting.wLength, stSpectSetting.nScaleSelect);
         }
-        if (!Err && !poSpectrum) {
+        if (!Err && !poSpectrum)
+        {
             m_stBandPower.fdBRef = poLpcObject->GetDecibelPowerRef();
         }
     }
 
 
     // If neither object could be constructed, quit.
-    if (!poSpectrum && !poLpcObject) {
+    if (!poSpectrum && !poLpcObject)
+    {
         pDoc->GetWaveData(dwOldWaveBufferIndex, TRUE);       // restore waveform buffer
         EndProcess();
         return Exit(PROCESS_ERROR, stFrameParm.Start); // exit
@@ -440,8 +488,10 @@ long CProcessSpectrum::Process(void * pCaller, ISaDoc * pDoc, DWORD dwFrameStart
 #endif
     m_stBandPower.Max.Raw = m_stBandPower.Max.Smooth = m_stBandPower.Max.Lpc = FLT_MIN_NEG;
     m_stBandPower.Min.Raw = m_stBandPower.Min.Smooth = m_stBandPower.Min.Lpc = FLT_MAX;
-    for (unsigned short i = 0; i < m_nSpectralBands; i++) {
-        if (poSpectrum) {
+    for (unsigned short i = 0; i < m_nSpectralBands; i++)
+    {
+        if (poSpectrum)
+        {
             pSpectralPower[i].Raw = stSpectParm.pfRawSpectrum[i];
             m_stBandPower.Max.Raw = max(m_stBandPower.Max.Raw, pSpectralPower[i].Raw);
             m_stBandPower.Min.Raw = min(m_stBandPower.Min.Raw, pSpectralPower[i].Raw);
@@ -451,61 +501,80 @@ long CProcessSpectrum::Process(void * pCaller, ISaDoc * pDoc, DWORD dwFrameStart
             pSpectralPower[i].Smooth = stSpectParm.pfSmoothSpectrum[i];
             m_stBandPower.Max.Smooth = max(m_stBandPower.Max.Smooth, pSpectralPower[i].Smooth);
             m_stBandPower.Min.Smooth = min(m_stBandPower.Min.Smooth, pSpectralPower[i].Smooth);
-        } else {
+        }
+        else
+        {
             pSpectralPower[i].Raw = (float)UNDEFINED_DATA;
             pSpectralPower[i].Smooth = (float)UNDEFINED_DATA;
         }
-        if (pstLpcModel) {
+        if (pstLpcModel)
+        {
             pSpectralPower[i].Lpc = pstLpcModel->pPwrSpectrum[i];
             m_stBandPower.Max.Lpc = max(m_stBandPower.Max.Lpc, pSpectralPower[i].Lpc);
             m_stBandPower.Min.Lpc = min(m_stBandPower.Min.Lpc, pSpectralPower[i].Lpc);
-        } else {
+        }
+        else
+        {
             pSpectralPower[i].Lpc = (float)UNDEFINED_DATA;
         }
     }
 
-    if (m_stBandPower.Max.Raw == FLT_MIN_NEG) {
+    if (m_stBandPower.Max.Raw == FLT_MIN_NEG)
+    {
         m_stBandPower.Max.Raw = (float)UNDEFINED_DATA;
     }
-    if (m_stBandPower.Min.Raw == FLT_MAX) {
+    if (m_stBandPower.Min.Raw == FLT_MAX)
+    {
         m_stBandPower.Min.Raw = (float)UNDEFINED_DATA;
     }
-    if (m_stBandPower.Max.Smooth == FLT_MIN_NEG) {
+    if (m_stBandPower.Max.Smooth == FLT_MIN_NEG)
+    {
         m_stBandPower.Max.Smooth = (float)UNDEFINED_DATA;
     }
-    if (m_stBandPower.Min.Smooth == FLT_MAX) {
+    if (m_stBandPower.Min.Smooth == FLT_MAX)
+    {
         m_stBandPower.Min.Smooth = (float)UNDEFINED_DATA;
     }
-    if (m_stBandPower.Max.Lpc == FLT_MIN_NEG) {
+    if (m_stBandPower.Max.Lpc == FLT_MIN_NEG)
+    {
         m_stBandPower.Max.Lpc = (float)UNDEFINED_DATA;
     }
-    if (m_stBandPower.Min.Lpc == FLT_MAX) {
+    if (m_stBandPower.Min.Lpc == FLT_MAX)
+    {
         m_stBandPower.Min.Lpc = (float)UNDEFINED_DATA;
     }
 
     const double MaxFormantBandwidth = 1000.F;   // determined empirically
     const int MinFormantFrequency = int(70.F);         // based on highpass cut-in frequency
     unsigned short j = 0;
-    for (unsigned short i = 0; i <= MAX_NUM_FORMANTS; i++) {
-        if (poSpectrum) {
+    for (unsigned short i = 0; i <= MAX_NUM_FORMANTS; i++)
+    {
+        if (poSpectrum)
+        {
             pFormantFrame->Formant[i].Cepstral.FrequencyInHertz = poSpectrum->GetSpectParms().pstFormant[i].FrequencyInHertz;
             pFormantFrame->Formant[i].Cepstral.BandwidthInHertz = (float)UNDEFINED_DATA;
             pFormantFrame->Formant[i].Cepstral.PowerInDecibels = poSpectrum->GetSpectParms().pstFormant[i].PowerInDecibels;
-        } else {
+        }
+        else
+        {
             pFormantFrame->Formant[i].Cepstral.FrequencyInHertz = (float)UNDEFINED_DATA;
             pFormantFrame->Formant[i].Cepstral.BandwidthInHertz = (float)UNDEFINED_DATA;
             pFormantFrame->Formant[i].Cepstral.PowerInDecibels = FLT_MAX_NEG;
         }
 
-        if (pstLpcModel) {
+        if (pstLpcModel)
+        {
             pFormantFrame->Formant[j].Lpc.FrequencyInHertz = pstLpcModel->Formant[i].FrequencyInHertz;
             pFormantFrame->Formant[j].Lpc.BandwidthInHertz = pstLpcModel->Formant[i].BandwidthInHertz;
             pFormantFrame->Formant[j].Lpc.PowerInDecibels = pstLpcModel->Formant[i].PowerInDecibels;
             if (j > 0 && /*bVoiced &&*/ (pstLpcModel->Formant[i].BandwidthInHertz > MaxFormantBandwidth ||
-                                         pFormantFrame->Formant[j].Lpc.FrequencyInHertz < MinFormantFrequency)) {
+                                         pFormantFrame->Formant[j].Lpc.FrequencyInHertz < MinFormantFrequency))
+            {
                 continue;
             }
-        } else {
+        }
+        else
+        {
             pFormantFrame->Formant[j].Lpc.FrequencyInHertz = (float)UNDEFINED_DATA;
             pFormantFrame->Formant[j].Lpc.BandwidthInHertz = (float)UNDEFINED_DATA;
             pFormantFrame->Formant[j].Lpc.PowerInDecibels = FLT_MAX_NEG;
@@ -513,15 +582,19 @@ long CProcessSpectrum::Process(void * pCaller, ISaDoc * pDoc, DWORD dwFrameStart
         j++;
     }
 
-    for (; j <= MAX_NUM_FORMANTS; j++) {
+    for (; j <= MAX_NUM_FORMANTS; j++)
+    {
         pFormantFrame->Formant[j].Lpc.FrequencyInHertz = (float)UNDEFINED_DATA;
         pFormantFrame->Formant[j].Lpc.BandwidthInHertz = (float)UNDEFINED_DATA;
         pFormantFrame->Formant[j].Lpc.PowerInDecibels = FLT_MAX_NEG;
     }
 
-    if (pstLpcModel) {
+    if (pstLpcModel)
+    {
         pFormantFrame->LpcErrorInPercent = LpcError;
-    } else {
+    }
+    else
+    {
         pFormantFrame->LpcErrorInPercent = (double)UNDEFINED_DATA;
     }
 
@@ -529,10 +602,12 @@ long CProcessSpectrum::Process(void * pCaller, ISaDoc * pDoc, DWORD dwFrameStart
 #ifdef SPECTRUM_DUMP
     fclose(SpectDump);
 #endif
-    if (poSpectrum) {
+    if (poSpectrum)
+    {
         delete poSpectrum;    // delete the spectrum object
     }
-    if (poLpcObject) {
+    if (poLpcObject)
+    {
         delete poLpcObject;    // delete the Lpc object
     }
 
@@ -545,7 +620,8 @@ long CProcessSpectrum::Process(void * pCaller, ISaDoc * pDoc, DWORD dwFrameStart
     SetDataReady();
     EndWaitCursor();
 
-    if (IsCanceled()) {
+    if (IsCanceled())
+    {
         return MAKELONG(PROCESS_CANCELED, nProgress);
     }
 

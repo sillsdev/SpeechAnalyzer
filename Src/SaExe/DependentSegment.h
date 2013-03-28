@@ -6,7 +6,8 @@
 //###########################################################################
 // CDependentSegment data processing
 
-class CDependentSegment : public CSegment {
+class CDependentSegment : public CSegment
+{
 public:
     CDependentSegment(int index, int master = -1): CSegment(index,master) {};
 

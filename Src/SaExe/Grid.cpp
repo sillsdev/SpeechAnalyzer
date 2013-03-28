@@ -11,7 +11,8 @@ static const char * psz_ystyle = "ystyle";
 
 
 
-void Grid::WriteProperties(Object_ostream & obs) {
+void Grid::WriteProperties(Object_ostream & obs)
+{
     obs.WriteBeginMarker(psz_grid);
     obs.WriteNewline();
 
@@ -27,17 +28,21 @@ void Grid::WriteProperties(Object_ostream & obs) {
 
 
 
-BOOL Grid::ReadProperties(Object_istream & obs) {
-    if (!obs.bAtBackslash() || !obs.bReadBeginMarker(psz_grid)) {
+BOOL Grid::ReadProperties(Object_istream & obs)
+{
+    if (!obs.bAtBackslash() || !obs.bReadBeginMarker(psz_grid))
+    {
         return FALSE;
     }
 
-    while (!obs.bAtEnd()) {
+    while (!obs.bAtEnd())
+    {
         if (obs.bReadBool(psz_xgrid, bXGrid));
         else if (obs.bReadBool(psz_ygrid, bYGrid));
         else if (obs.bReadInteger(psz_xstyle, nXStyle));
         else if (obs.bReadInteger(psz_ystyle, nYStyle));
-        else if (obs.bEnd(psz_grid)) {
+        else if (obs.bEnd(psz_grid))
+        {
             break;
         }
     }
@@ -46,7 +51,8 @@ BOOL Grid::ReadProperties(Object_istream & obs) {
 }
 
 
-void Grid::Init() {
+void Grid::Init()
+{
     // init the gridlines
     bXGrid  = TRUE; // x-grid enabled
     bYGrid  = TRUE; // y-grid enabled

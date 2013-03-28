@@ -3,7 +3,8 @@
 
 #include "DependentTextSegment.h"
 
-class CReferenceSegment : public CDependentTextSegment {
+class CReferenceSegment : public CDependentTextSegment
+{
 public:
     CReferenceSegment(int index, int master = -1);
 

@@ -16,7 +16,8 @@ class CMainFrame;
 /////////////////////////////////////////////////////////////////////////////
 // CSaFindDlg dialog
 
-class CSaFindDlg : public CDialog {
+class CSaFindDlg : public CDialog
+{
     // Construction
 public:
     CSaFindDlg(CWnd * pParent,
@@ -27,11 +28,13 @@ public:
                int idxDefaultField,
                CMainFrame * pMainFrame);
 
-    BOOL Created() const {
+    BOOL Created() const
+    {
         return m_bCreated;
     }
     int AnnotationSetID();
-    void ChangeView() {
+    void ChangeView()
+    {
         OnSelchangeCbofield();
     };
 

@@ -28,7 +28,8 @@ static const char * psz_phraseBreakWidth = "phrase_break_ms";
 static const char * psz_minThreshold     = "minThreshold";
 static const char * psz_maxThreshold     = "maxThreshold";
 
-void ParseParm::WriteProperties(Object_ostream & obs) {
+void ParseParm::WriteProperties(Object_ostream & obs)
+{
     obs.WriteBeginMarker(psz_parse);
 
     // write out properties
@@ -40,28 +41,41 @@ void ParseParm::WriteProperties(Object_ostream & obs) {
     obs.WriteEndMarker(psz_parse);
 }
 
-BOOL ParseParm::ReadProperties(Object_istream & obs) {
+BOOL ParseParm::ReadProperties(Object_istream & obs)
+{
     if ((!obs.bAtBackslash()) ||
-            (!obs.bReadBeginMarker(psz_parse))) {
+            (!obs.bReadBeginMarker(psz_parse)))
+    {
         return FALSE;
     }
 
     int nTemp;
-    while (!obs.bAtEnd()) {
-        if (obs.bReadInteger(psz_breakWidth, nTemp)) {
+    while (!obs.bAtEnd())
+    {
+        if (obs.bReadInteger(psz_breakWidth, nTemp))
+        {
             fBreakWidth = (float) nTemp/1000.0f;
-        } else if (obs.bReadInteger(psz_phraseBreakWidth, nTemp)) {
+        }
+        else if (obs.bReadInteger(psz_phraseBreakWidth, nTemp))
+        {
             fPhraseBreakWidth = (float) nTemp/1000.0f;
-        } else if (obs.bReadInteger(psz_maxThreshold, nMaxThreshold)) {
-        } else if (obs.bReadInteger(psz_minThreshold, nMinThreshold)) {
-        } else if (obs.bEnd(psz_parse)) {
+        }
+        else if (obs.bReadInteger(psz_maxThreshold, nMaxThreshold))
+        {
+        }
+        else if (obs.bReadInteger(psz_minThreshold, nMinThreshold))
+        {
+        }
+        else if (obs.bEnd(psz_parse))
+        {
             break;
         }
     }
     return TRUE;
 }
 
-void ParseParm::Init() {
+void ParseParm::Init()
+{
     fBreakWidth = (float) 0.025;        // CLW 1.07a
     fPhraseBreakWidth = (float) 0.5;
     nMaxThreshold = 10;
@@ -74,7 +88,8 @@ static const char * psz_segmentWidth   = "segment_ms";
 static const char * psz_minChange   = "minChange";
 static const char * psz_minZeroCrossing   = "minZeroCrossing";
 
-void SegmentParm::WriteProperties(Object_ostream & obs) {
+void SegmentParm::WriteProperties(Object_ostream & obs)
+{
     obs.WriteBeginMarker(psz_segment);
 
     // write out properties
@@ -85,18 +100,24 @@ void SegmentParm::WriteProperties(Object_ostream & obs) {
     obs.WriteEndMarker(psz_segment);
 }
 
-BOOL SegmentParm::ReadProperties(Object_istream & obs) {
-    if (!obs.bAtBackslash() || !obs.bReadBeginMarker(psz_segment)) {
+BOOL SegmentParm::ReadProperties(Object_istream & obs)
+{
+    if (!obs.bAtBackslash() || !obs.bReadBeginMarker(psz_segment))
+    {
         return FALSE;
     }
 
     int nTemp;
-    while (!obs.bAtEnd()) {
-        if (obs.bReadInteger(psz_segmentWidth, nTemp)) {
+    while (!obs.bAtEnd())
+    {
+        if (obs.bReadInteger(psz_segmentWidth, nTemp))
+        {
             fSegmentWidth = (float)nTemp/1000.0f;
-        } else if (obs.bReadInteger(psz_minChange, nChThreshold));
+        }
+        else if (obs.bReadInteger(psz_minChange, nChThreshold));
         else if (obs.bReadInteger(psz_minZeroCrossing, nZCThreshold));
-        else if (obs.bEnd(psz_segment)) {
+        else if (obs.bEnd(psz_segment))
+        {
             break;
         }
     }
@@ -104,7 +125,8 @@ BOOL SegmentParm::ReadProperties(Object_istream & obs) {
     return TRUE;
 }
 
-void SegmentParm::Init() {
+void SegmentParm::Init()
+{
     fSegmentWidth = (float) 0.020;
     nChThreshold = 17;
     nZCThreshold = 50;
@@ -125,7 +147,8 @@ static const char * psz_pitchCepMedianFilterSize = "CepMedianFilterSize";
 static const char * psz_pitchManualUpper   = "ManualUpper";
 static const char * psz_pitchManualLower   = "ManualLower";
 
-void PitchParm::WriteProperties(Object_ostream & obs) {
+void PitchParm::WriteProperties(Object_ostream & obs)
+{
     obs.WriteBeginMarker(psz_pitch);
 
     // write out properties
@@ -143,19 +166,23 @@ void PitchParm::WriteProperties(Object_ostream & obs) {
     obs.WriteEndMarker(psz_pitch);
 }
 
-BOOL PitchParm::ReadProperties(Object_istream & obs) {
-    if (!obs.bAtBackslash() || !obs.bReadBeginMarker(psz_pitch)) {
+BOOL PitchParm::ReadProperties(Object_istream & obs)
+{
+    if (!obs.bAtBackslash() || !obs.bReadBeginMarker(psz_pitch))
+    {
         return FALSE;
     }
 
     int nTemp;
-    while (!obs.bAtEnd()) {
+    while (!obs.bAtEnd())
+    {
         if (obs.bReadInteger(psz_pitchRangeMode, nRangeMode));
         else if (obs.bReadInteger(psz_pitchScaleMode, nScaleMode));
         else if (obs.bReadInteger(psz_pitchUpperBound, nUpperBound));
         else if (obs.bReadInteger(psz_pitchLowerBound, nLowerBound));
         else if (obs.bReadBool(psz_pitchUseCepMedianFilter, bUseCepMedianFilter));
-        else if (obs.bReadInteger(psz_pitchCepMedianFilterSize, nTemp)) {
+        else if (obs.bReadInteger(psz_pitchCepMedianFilterSize, nTemp))
+        {
             nCepMedianFilterSize = (BYTE)nTemp;
         }
 
@@ -163,7 +190,8 @@ BOOL PitchParm::ReadProperties(Object_istream & obs) {
         else if (obs.bReadInteger(psz_pitchManualUpper, nManualPitchUpper));
         else if (obs.bReadInteger(psz_pitchManualLower, nManualPitchLower));
 
-        else if (obs.bEnd(psz_pitch)) {
+        else if (obs.bEnd(psz_pitch))
+        {
             break;
         }
     }
@@ -171,7 +199,8 @@ BOOL PitchParm::ReadProperties(Object_istream & obs) {
     return TRUE;
 }
 
-void PitchParm::Init() {
+void PitchParm::Init()
+{
     nRangeMode = 0;
     // RLJ, 09/21/2000: Bug GPI-01
     //    nScaleMode = 1; // Default scaling = LINEAR
@@ -186,22 +215,27 @@ void PitchParm::Init() {
     nManualPitchLower = nLowerBound;
 }
 
-void PitchParm::GetAutoRange(CSaDoc * pDoc, int & nUpperBound, int & nLowerBound) {
+void PitchParm::GetAutoRange(CSaDoc * pDoc, int & nUpperBound, int & nLowerBound)
+{
     PitchParm temp;
     temp.Init();
 
     CProcess * pGrappl = (CProcessGrappl *)pDoc->GetGrappl(); // get pointer to grappl object
     // If auto pitch is not done look for alternates
-    if (!pGrappl->IsDataReady()) {
+    if (!pGrappl->IsDataReady())
+    {
         pGrappl = pDoc->GetSmoothedPitch();
     }
-    if (!pGrappl->IsDataReady()) {
+    if (!pGrappl->IsDataReady())
+    {
         pGrappl = pDoc->GetPitch();
     }
-    if (!pGrappl->IsDataReady()) {
+    if (!pGrappl->IsDataReady())
+    {
         pGrappl = pDoc->GetCustomPitch();
     }
-    if (pGrappl->IsDataReady() && !pGrappl->IsStatusFlag(PROCESS_NO_PITCH)) {
+    if (pGrappl->IsDataReady() && !pGrappl->IsStatusFlag(PROCESS_NO_PITCH))
+    {
         // auto range mode
         int nMinData = pGrappl->GetMinValue();
         int nMaxData = pGrappl->GetMaxValue();
@@ -211,7 +245,8 @@ void PitchParm::GetAutoRange(CSaDoc * pDoc, int & nUpperBound, int & nLowerBound
 
         // make sure the legend scale spans at least an octave
         double fSpan = (double)nMaxData / nMinData;
-        if (fSpan < 2.0) {
+        if (fSpan < 2.0)
+        {
             nMinData = (short)((double)(nMinData + nMaxData) / 3.0);
             nMaxData = (short)(2 * nMinData);
         }
@@ -219,7 +254,8 @@ void PitchParm::GetAutoRange(CSaDoc * pDoc, int & nUpperBound, int & nLowerBound
         // Add a little space to the top/bottom
         nMaxData = int(nMaxData * 1.05);
         nMinData = int(nMinData / 1.05);
-        if (nMinData < 0) {
+        if (nMinData < 0)
+        {
             nMinData = 0;
         }
 
@@ -231,7 +267,8 @@ void PitchParm::GetAutoRange(CSaDoc * pDoc, int & nUpperBound, int & nLowerBound
     nLowerBound = temp.nLowerBound;
 }
 
-void UttParm::Init(int nBitsPerSample) {
+void UttParm::Init(int nBitsPerSample)
+{
     nMinFreq = CECIL_PITCH_MINFREQ;
     nMaxFreq = CECIL_PITCH_MAXFREQ;
     nCritLoud = CECIL_PITCH_VOICING << (nBitsPerSample - 8);
@@ -240,23 +277,29 @@ void UttParm::Init(int nBitsPerSample) {
     nMaxInterp = CECIL_PITCH_INTERPOL;
 }
 
-int UttParm::TruncatedCritLoud(int nBitsPerSample) const {
-    if (nCritLoud<128) {
+int UttParm::TruncatedCritLoud(int nBitsPerSample) const
+{
+    if (nCritLoud<128)
+    {
         return nCritLoud;
     }
 
     int nResult=nCritLoud;
 
-    if (nBitsPerSample > 8) {
-        if (nResult >= 256) {
+    if (nBitsPerSample > 8)
+    {
+        if (nResult >= 256)
+        {
             nResult >>= nBitsPerSample-8;
         }
     }
     // 99.9% of max counts is the largest legal value internally
-    if (nResult > (int)(0.999 * 128 * 16)) {
+    if (nResult > (int)(0.999 * 128 * 16))
+    {
         nResult = (int)(0.999 * 128 * 16);
     }
-    if (nResult < 0) {
+    if (nResult < 0)
+    {
         nResult = 0;
     }
 
@@ -271,7 +314,8 @@ static const char * psz_calcLowerBound   = "CalcLowerBound";
 static const char * psz_calcManualUpper   = "ManualCalcUpper";
 static const char * psz_calcManualLower   = "ManualCalcLower";
 
-void MusicParm::WriteProperties(Object_ostream & obs) {
+void MusicParm::WriteProperties(Object_ostream & obs)
+{
     obs.WriteBeginMarker(psz_music);
 
     // write out properties
@@ -292,12 +336,15 @@ void MusicParm::WriteProperties(Object_ostream & obs) {
     obs.WriteEndMarker(psz_music);
 }
 
-BOOL MusicParm::ReadProperties(Object_istream & obs) {
-    if (!obs.bAtBackslash() || !obs.bReadBeginMarker(psz_music)) {
+BOOL MusicParm::ReadProperties(Object_istream & obs)
+{
+    if (!obs.bAtBackslash() || !obs.bReadBeginMarker(psz_music))
+    {
         return FALSE;
     }
 
-    while (!obs.bAtEnd()) {
+    while (!obs.bAtEnd())
+    {
         //    if ( obs.bReadInteger(psz_pitchRangeMode, nRangeMode) );
         //    else
         if (obs.bReadInteger(psz_pitchUpperBound, nUpperBound));
@@ -311,7 +358,8 @@ BOOL MusicParm::ReadProperties(Object_istream & obs) {
         else if (obs.bReadInteger(psz_calcManualUpper, nManualCalcUpper));
         else if (obs.bReadInteger(psz_calcManualLower, nManualCalcLower));
 
-        else if (obs.bEnd(psz_music)) {
+        else if (obs.bEnd(psz_music))
+        {
             break;
         }
     }
@@ -319,7 +367,8 @@ BOOL MusicParm::ReadProperties(Object_istream & obs) {
     return TRUE;
 }
 
-void MusicParm::Init() {
+void MusicParm::Init()
+{
     nRangeMode = 0;
     nUpperBound = 70;
     nLowerBound = 44;
@@ -335,19 +384,22 @@ void MusicParm::Init() {
     nManualCalcLower = nCalcLowerBound;
 }
 
-void MusicParm::GetAutoRange(CSaDoc * pDoc, int & nUpperBound, int & nLowerBound) {
+void MusicParm::GetAutoRange(CSaDoc * pDoc, int & nUpperBound, int & nLowerBound)
+{
     MusicParm temp;
     temp.Init();
 
     CProcessMelogram * pMelogram = (CProcessMelogram *)pDoc->GetMelogram(); // get pointer to melogram object
 
-    if (pMelogram->IsDataReady() && !pMelogram->IsStatusFlag(PROCESS_NO_PITCH)) {
+    if (pMelogram->IsDataReady() && !pMelogram->IsStatusFlag(PROCESS_NO_PITCH))
+    {
         int nLowerBound = (int)floor((double)pMelogram->GetMinValue() / 100.0);
         int nUpperBound = (int)ceil((double)pMelogram->GetMaxValue() / 100.0);
 
         // make sure the legend scale spans at least an octave
         int nRange = (nUpperBound - nLowerBound);
-        if (nRange < 12) {
+        if (nRange < 12)
+        {
             nLowerBound = (int)(((double)(nLowerBound + nUpperBound) / 2.0) - 6.);
             nUpperBound = (int)(nLowerBound + 12);
         }
@@ -362,7 +414,8 @@ void MusicParm::GetAutoRange(CSaDoc * pDoc, int & nUpperBound, int & nLowerBound
 static const char * psz_intensity = "intensity";
 static const char * psz_intensityScaleMode = "ScaleMode";
 
-void IntensityParm::WriteProperties(Object_ostream & obs) {
+void IntensityParm::WriteProperties(Object_ostream & obs)
+{
     obs.WriteBeginMarker(psz_intensity);
 
     // write out properties
@@ -371,14 +424,18 @@ void IntensityParm::WriteProperties(Object_ostream & obs) {
     obs.WriteEndMarker(psz_intensity);
 }
 
-BOOL IntensityParm::ReadProperties(Object_istream & obs) {
-    if (!obs.bAtBackslash() || !obs.bReadBeginMarker(psz_intensity)) {
+BOOL IntensityParm::ReadProperties(Object_istream & obs)
+{
+    if (!obs.bAtBackslash() || !obs.bReadBeginMarker(psz_intensity))
+    {
         return FALSE;
     }
 
-    while (!obs.bAtEnd()) {
+    while (!obs.bAtEnd())
+    {
         if (obs.bReadInteger(psz_intensityScaleMode, nScaleMode));
-        else if (obs.bEnd(psz_intensity)) {
+        else if (obs.bEnd(psz_intensity))
+        {
             break;
         }
     }
@@ -386,16 +443,17 @@ BOOL IntensityParm::ReadProperties(Object_istream & obs) {
     return TRUE;
 }
 
-void IntensityParm::Init() {
+void IntensityParm::Init()
+{
     nScaleMode = 1;
 }
 
-static const char* psz_wavelet              = "Wavelet";				// ARH 8/1/01 Added for Wavelet scalogram graph
-static const char* psz_MaxThreshold         = "nMaxThreshold";
-static const char* psz_MinThreshold         = "nMinThreshold";
-static const char* psz_Resolution           = "nResolution3";
-static const char* psz_Color                = "nColor";
-static const char* psz_Frequency            = "nFrequency";
+static const char * psz_wavelet              = "Wavelet";               // ARH 8/1/01 Added for Wavelet scalogram graph
+static const char * psz_MaxThreshold         = "nMaxThreshold";
+static const char * psz_MinThreshold         = "nMinThreshold";
+static const char * psz_Resolution           = "nResolution3";
+static const char * psz_Color                = "nColor";
+static const char * psz_Frequency            = "nFrequency";
 
 
 // ARH 8/1/01 Added for wavelet scalogram graph
@@ -419,17 +477,20 @@ void WaveletParm::WriteProperties(Object_ostream & obs)
 BOOL WaveletParm::ReadProperties(Object_istream & obs)
 // Read waveletParm properties from *.psa file.
 {
-    if (!obs.bAtBackslash() || !obs.bReadBeginMarker(psz_wavelet)) {
+    if (!obs.bAtBackslash() || !obs.bReadBeginMarker(psz_wavelet))
+    {
         return FALSE;
     }
 
-    while (!obs.bAtEnd()) {
+    while (!obs.bAtEnd())
+    {
         if (obs.bReadInteger(psz_Resolution, nResolution));
         else if (obs.bReadInteger(psz_Color, nColor));
         else if (obs.bReadInteger(psz_Frequency, nFrequency));
         else if (obs.bReadInteger(psz_MaxThreshold, nMaxThreshold));
         else if (obs.bReadInteger(psz_MinThreshold, nMinThreshold));
-        else if (obs.bEnd(psz_wavelet)) {
+        else if (obs.bEnd(psz_wavelet))
+        {
             break;
         }
     }
@@ -437,7 +498,8 @@ BOOL WaveletParm::ReadProperties(Object_istream & obs)
 }
 
 // ARH 8/1/01 Added for wavelet scalogram graph
-void WaveletParm::Init() {
+void WaveletParm::Init()
+{
     nResolution = 1;
     nColor = 0;
     nFrequency = 3000;
@@ -489,19 +551,23 @@ void SpectrumParm::WriteProperties(Object_ostream & obs)
 BOOL SpectrumParm::ReadProperties(Object_istream & obs)
 // Read spectrumParm properties from *.psa file.
 {
-    if (!obs.bAtBackslash() || !obs.bReadBeginMarker(psz_spectrum)) {
+    if (!obs.bAtBackslash() || !obs.bReadBeginMarker(psz_spectrum))
+    {
         return FALSE;
     }
 
-    while (!obs.bAtEnd()) {
+    while (!obs.bAtEnd())
+    {
         if (obs.bReadInteger(psz_ScaleMode, nScaleMode));
         else if (obs.bReadInteger(psz_PwrUpperBound, nPwrUpperBound));
         else if (obs.bReadInteger(psz_PwrLowerBound, nPwrLowerBound));
         else if (obs.bReadInteger(psz_FreqUpperBound, nFreqUpperBound));
         else if (obs.bReadInteger(psz_FreqLowerBound, nFreqLowerBound));
-        else if (obs.bReadInteger(psz_FreqRange, nFreqScaleRange)) {
+        else if (obs.bReadInteger(psz_FreqRange, nFreqScaleRange))
+        {
             nFreqScaleRange = nFreqScaleRange ? 0 : 1;    // translate old settings to new setting
-        } else if (obs.bReadInteger(psz_FreqScaleRange, nFreqScaleRange));
+        }
+        else if (obs.bReadInteger(psz_FreqScaleRange, nFreqScaleRange));
         else if (obs.bReadInteger(psz_MinThreshold, nSmoothLevel));
         else if (obs.bReadInteger(psz_SmoothLevel, nSmoothLevel));
         else if (obs.bReadInteger(psz_PeakSharpFac, nPeakSharpFac));
@@ -510,14 +576,16 @@ BOOL SpectrumParm::ReadProperties(Object_istream & obs)
         else if (obs.bReadInteger(psz_ShowFormantFreq, bShowFormantFreq));
         else if (obs.bReadInteger(psz_ShowFormantBandwidth, bShowFormantBandwidth));
         else if (obs.bReadInteger(psz_ShowFormantPower, bShowFormantPower));
-        else if (obs.bEnd(psz_spectrum)) {
+        else if (obs.bEnd(psz_spectrum))
+        {
             break;
         }
     }
     return TRUE;
 }
 
-void SpectrumParm::Init() {
+void SpectrumParm::Init()
+{
     const int SamplesPerSec = 22050;
     nScaleMode = 0;
     nPwrUpperBound = 10;
@@ -561,24 +629,28 @@ void FormantParm::WriteProperties(Object_ostream & obs)
 BOOL FormantParm::ReadProperties(Object_istream & obs)
 // Read FormantParm properties from *.psa file.
 {
-    if (!obs.bAtBackslash() || !obs.bReadBeginMarker(psz_spectrum)) {
+    if (!obs.bAtBackslash() || !obs.bReadBeginMarker(psz_spectrum))
+    {
         return FALSE;
     }
 
-    while (!obs.bAtEnd()) {
+    while (!obs.bAtEnd())
+    {
         if (obs.bReadInteger(psz_FromLpcSpectrum, bFromLpcSpectrum));
         else if (obs.bReadInteger(psz_FromCepstralSpectrum, bFromCepstralSpectrum));
         else if (obs.bReadInteger(psz_TrackFormants, bTrackFormants));
         else if (obs.bReadInteger(psz_SmoothFormants, bSmoothFormants));
         else if (obs.bReadInteger(psz_MelScale, bMelScale));
-        else if (obs.bEnd(psz_formantcharts)) {
+        else if (obs.bEnd(psz_formantcharts))
+        {
             break;
         }
     }
     return TRUE;
 }
 
-void FormantParm::Init() {
+void FormantParm::Init()
+{
     /*
     bFromLpcSpectrum = FALSE;
     bFromCepstralSpectrum = TRUE;
@@ -613,23 +685,27 @@ void RecordingParm::WriteProperties(Object_ostream & obs)
 BOOL RecordingParm::ReadProperties(Object_istream & obs)
 // Read spectrumParm properties from *.psa file.
 {
-    if (!obs.bAtBackslash() || !obs.bReadBeginMarker(psz_Recording)) {
+    if (!obs.bAtBackslash() || !obs.bReadBeginMarker(psz_Recording))
+    {
         return FALSE;
     }
 
-    while (!obs.bAtEnd()) {
+    while (!obs.bAtEnd())
+    {
         if (obs.bReadInteger(psz_Rate, nRate));
         else if (obs.bReadInteger(psz_Bits, nBits));
         else if (obs.bReadInteger(psz_Highpass, bHighpass));
         else if (obs.bReadInteger(psz_Mode, nMode));
-        else if (obs.bEnd(psz_Recording)) {
+        else if (obs.bEnd(psz_Recording))
+        {
             break;
         }
     }
     return TRUE;
 }
 
-void RecordingParm::Init() {
+void RecordingParm::Init()
+{
     nRate = -1;
     nBits = -1;
     bHighpass = TRUE;

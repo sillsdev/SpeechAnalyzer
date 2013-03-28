@@ -17,7 +17,8 @@
 class CProcessSpectrogram;
 class CProcessSpectroFormants;
 
-class CPlotSpectrogram : public CPlotWnd {
+class CPlotSpectrogram : public CPlotWnd
+{
 
     DECLARE_DYNCREATE(CPlotSpectrogram)
 
@@ -27,18 +28,18 @@ public:
 
     virtual CPlotWnd * NewCopy(void);
     virtual void CopyTo(CPlotWnd * pTarg);
-	virtual void OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView);
-	void SetSpectroAB(char MySpectroAB);
-	char GetSpectroAB() const ;
-	bool IsRealTime() const;
-	virtual BOOL IsAreaGraph() const;
+    virtual void OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView);
+    void SetSpectroAB(char MySpectroAB);
+    char GetSpectroAB() const ;
+    bool IsRealTime() const;
+    virtual BOOL IsAreaGraph() const;
 
 protected:
-	virtual BOOL  EraseBkgnd(CDC * pDC);
+    virtual BOOL  EraseBkgnd(CDC * pDC);
 
-	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
-	afx_msg BOOL OnSetCursor(CWnd * pWnd, UINT nHitTest, UINT message);
-	DECLARE_MESSAGE_MAP()
+    afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
+    afx_msg BOOL OnSetCursor(CWnd * pWnd, UINT nHitTest, UINT message);
+    DECLARE_MESSAGE_MAP()
 
 private:
     BOOL CreateSpectroPalette(CDC * pDC, CDocument * pDoc); // creates the palette
@@ -51,15 +52,16 @@ private:
     CProcessSpectrogram * GetSpectrogram(CSaDoc * pDoc);
     CProcessSpectroFormants * GetFormantProcess(CSaDoc * pDoc);
 
-	enum PaletteMode {                        // mode of palette
-		SYSTEMCOLOR,
-		HALFCOLOR,
-		FULLCOLOR,
-	};
-	static BOOL bPaletteInit;              // TRUE, if palette initialized
-	static int nPaletteMode;        // mode of created palette
-	static CPalette SpectroPalette;     // color palette
-	char SpectroAB;                       // indicates whether the plotted spectrogram is SpectrogramA or SpectrogramB
+    enum PaletteMode                          // mode of palette
+    {
+        SYSTEMCOLOR,
+        HALFCOLOR,
+        FULLCOLOR,
+    };
+    static BOOL bPaletteInit;              // TRUE, if palette initialized
+    static int nPaletteMode;        // mode of created palette
+    static CPalette SpectroPalette;     // color palette
+    char SpectroAB;                       // indicates whether the plotted spectrogram is SpectrogramA or SpectrogramB
 
 };
 

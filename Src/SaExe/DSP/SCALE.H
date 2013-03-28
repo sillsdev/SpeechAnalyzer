@@ -12,30 +12,36 @@ enum {DB = 0 , LINEAR = 1};         //scale options
 /* Power in dB is defined as 20*log(magnitude).  Therefore, divide by 20 to get log magnitude.    */
 #define MIN_LOG_MAG   (MIN_LOG_PWR / 20.F)
 
-class Scale {
+class Scale
+{
 public:
     //static char *Copyright(void);
     //static float Version(void);
     //static dspError_t CreateObject()
-    Scale() {
+    Scale()
+    {
         ;
     }
     // From Parsons, Voice_and_Speech_Processing, McGraw-Hill, c 1987, ISBN 0-07-048541-0, p 73
     // static double ToMels(double dFrequency) {return (1000.*log10(1 + dFrequency/1000.)/log10(2.));}
     // The following formula seems to be more common in the auditory literature
-    static double ToMels(double dFrequency) {
+    static double ToMels(double dFrequency)
+    {
         return 2595.*log10(1 + dFrequency/700.);
     }
     // From Traunmueller (1990)
-    static double ToBarks(double dFrequency) {
+    static double ToBarks(double dFrequency)
+    {
         return 26.81/(1 + 1960./dFrequency) - 0.53;
     }
     // From B.C.J. More and B.R. Glasberg (1983) "Suggested formulae for calculating auditory-filter
     // bandwidths and excitation patterns" J. Acoust. Soc. Am. 74: 750-753.
-    static double ToErbs(double dFrequency) {
+    static double ToErbs(double dFrequency)
+    {
         return 11.17*log((dFrequency + 312.)/(dFrequency + 14675.)) + 43.;
     }
-    ~Scale() {
+    ~Scale()
+    {
         ;
     };
 private:

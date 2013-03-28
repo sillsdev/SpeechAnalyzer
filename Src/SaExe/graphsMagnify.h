@@ -20,7 +20,8 @@
 //###########################################################################
 // CDlgMagnify dialog
 
-class CDlgMagnify : public CDialog {
+class CDlgMagnify : public CDialog
+{
 
     // Construction/destruction/creation
 public:

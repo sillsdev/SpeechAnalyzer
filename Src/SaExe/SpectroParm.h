@@ -4,7 +4,8 @@
 #include "dsp\dspWins.h"
 #include "settings\obstream.h"
 
-class CSpectroParm {                 // spectrogram parameters
+class CSpectroParm                   // spectrogram parameters
+{
 public:
     int  nResolution;       // resolution of display
     int  nColor;            // color of display
@@ -30,10 +31,12 @@ public:
 
     void Init();
     static const float DspWinBandwidth[3];
-    static float Bandwidth(int nDspMode) {
+    static float Bandwidth(int nDspMode)
+    {
         return nDspMode > 2 ? 0 : DspWinBandwidth[nDspMode];
     }
-    float Bandwidth() const {
+    float Bandwidth() const
+    {
         return Bandwidth(nResolution);
     }
 

@@ -25,13 +25,15 @@ IMPLEMENT_DYNCREATE(CUndoRedoDoc, CDocument)
 /***************************************************************************/
 CUndoRedoDoc::CUndoRedoDoc(long undolevels, UINT growsize)
     :m_growsize(growsize),
-     m_undoLevels(undolevels) {
+     m_undoLevels(undolevels)
+{
 }
 
 /***************************************************************************/
 // CUndoRedoDoc::~CUndoRedoDoc destructor
 /***************************************************************************/
-CUndoRedoDoc::~CUndoRedoDoc() {
+CUndoRedoDoc::~CUndoRedoDoc()
+{
     ClearList(&m_undolist);
     ClearList(&m_redolist);
 }
@@ -39,7 +41,8 @@ CUndoRedoDoc::~CUndoRedoDoc() {
 /***************************************************************************/
 // CUndoRedoDoc::AddRedo - add a redo entry.
 /***************************************************************************/
-void CUndoRedoDoc::AddRedo() {
+void CUndoRedoDoc::AddRedo()
+{
     CMemFile * file = new CMemFile(m_growsize);
     ASSERT(file);
     Store(file);
@@ -52,14 +55,18 @@ void CUndoRedoDoc::AddRedo() {
 // list. If the flag bUndo is TRUE (default), the file is really loaded,
 // otherwise, just the entry gets removed from the undo list.
 /***************************************************************************/
-void CUndoRedoDoc::Undo(BOOL bAddRedo, BOOL bUndo) {
-    if (CanUndo()) {
-        if (bAddRedo) {
+void CUndoRedoDoc::Undo(BOOL bAddRedo, BOOL bUndo)
+{
+    if (CanUndo())
+    {
+        if (bAddRedo)
+        {
             AddRedo();
         }
         CMemFile * file = (CMemFile *)m_undolist.GetHead();
         ASSERT(file);
-        if (bUndo) {
+        if (bUndo)
+        {
             Load(file);
         }
         // SDM delete removed CMemFiles Here this is our last opportunity
@@ -73,8 +80,10 @@ void CUndoRedoDoc::Undo(BOOL bAddRedo, BOOL bUndo) {
 /***************************************************************************/
 // CUndoRedoDoc::Redo - undo an undo
 /***************************************************************************/
-void CUndoRedoDoc::Redo() {
-    if (CanRedo()) {
+void CUndoRedoDoc::Redo()
+{
+    if (CanRedo())
+    {
         CMemFile * file = new CMemFile(m_growsize);
         ASSERT(file);
         Store(file);
@@ -96,15 +105,20 @@ void CUndoRedoDoc::Redo() {
 // state of the document at that point.  It is best to call CheckPoint just
 // before an operation that changes the document.
 /***************************************************************************/
-void CUndoRedoDoc::CheckPoint() {
+void CUndoRedoDoc::CheckPoint()
+{
     CMemFile * file = NULL;
     // SDM 1.06.8 (exceptions thrown below may still cause memory leaks)
-    try {
+    try
+    {
         file = new CMemFile(m_growsize);
         ASSERT(file);
         Store(file);
-    } catch (...) {
-        if (file) {
+    }
+    catch (...)
+    {
+        if (file)
+        {
             delete file;
         }
         return;
@@ -117,14 +131,17 @@ void CUndoRedoDoc::CheckPoint() {
 /***************************************************************************/
 /*********************   INTERNAL METHODS **********************************/
 /***************************************************************************/
-void CUndoRedoDoc::ClearList(CObList * pList) {
+void CUndoRedoDoc::ClearList(CObList * pList)
+{
     POSITION pos = pList->GetHeadPosition();
     CMemFile * nextFile = NULL;
 
-    while (pos) {
+    while (pos)
+    {
         nextFile = (CMemFile *)pList->GetNext(pos);
         ASSERT(nextFile);
-        if (nextFile) {
+        if (nextFile)
+        {
             delete nextFile;
         }
     }
@@ -138,8 +155,10 @@ void CUndoRedoDoc::ClearList(CObList * pList) {
 // CUndoRedoDoc::AddUndo - takes the file which should contain a saved
 // document state, and adds it to the undo stream.
 /***************************************************************************/
-void CUndoRedoDoc::AddUndo(CMemFile * file) {
-    if (m_undolist.GetCount() > m_undoLevels) {
+void CUndoRedoDoc::AddUndo(CMemFile * file)
+{
+    if (m_undolist.GetCount() > m_undoLevels)
+    {
         CMemFile * pFile = (CMemFile *)m_undolist.RemoveTail();
         ASSERT(pFile);
         delete  pFile;
@@ -153,10 +172,12 @@ void CUndoRedoDoc::AddUndo(CMemFile * file) {
 // CUndoRedoDoc::AddRedo - takes the file, which should contain a saved
 // document state, and adds it to the redo stream.
 /***************************************************************************/
-void CUndoRedoDoc::AddRedo(CMemFile * file) {
+void CUndoRedoDoc::AddRedo(CMemFile * file)
+{
     ASSERT(file);
 
-    if (file) {
+    if (file)
+    {
         m_redolist.AddHead(file);
     }
 };
@@ -166,10 +187,12 @@ void CUndoRedoDoc::AddRedo(CMemFile * file) {
 /***************************************************************************/
 // CUndoRedoDoc::Store - stores the current state of the document in the file.
 /***************************************************************************/
-void CUndoRedoDoc::Store(CMemFile * file) {
+void CUndoRedoDoc::Store(CMemFile * file)
+{
     ASSERT(file);
 
-    if (file) {
+    if (file)
+    {
         file->SeekToBegin();
         CArchive ar(file, CArchive::store);
         SerializeForUndoRedo(ar);
@@ -181,10 +204,12 @@ void CUndoRedoDoc::Store(CMemFile * file) {
 /***************************************************************************/
 // CUndoRedoDoc::Load - restores the document to the state stored in the file
 /***************************************************************************/
-void CUndoRedoDoc::Load(CMemFile * file) {
+void CUndoRedoDoc::Load(CMemFile * file)
+{
     ASSERT(file);
 
-    if (file) {
+    if (file)
+    {
         file->SeekToBegin();
         CArchive ar(file, CArchive::load);
         SerializeForUndoRedo(ar);
@@ -192,5 +217,6 @@ void CUndoRedoDoc::Load(CMemFile * file) {
     }
 }
 
-void CUndoRedoDoc::Serialize(CArchive & /*ar*/) {
+void CUndoRedoDoc::Serialize(CArchive & /*ar*/)
+{
 }

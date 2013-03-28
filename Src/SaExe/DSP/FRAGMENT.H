@@ -14,7 +14,8 @@
 
 
 #pragma pack(1)
-typedef struct {
+typedef struct
+{
     uint32 dwOffset;                    // sample offset into waveform
     uint16 wLength;                     // length of fragment in samples
     short  nPitch;                      // pitch value for fragment
@@ -22,7 +23,8 @@ typedef struct {
 } FRAG_PARMS;
 #pragma pack()
 
-typedef struct {
+typedef struct
+{
     uint16      wSmpIntvl;              // calculation interval in waveform samples
     uint16      wScaleFac;              // scale factor
     uint16      wCalcRangeMin;          // min pitch allowed
@@ -31,7 +33,8 @@ typedef struct {
     short    *   psContour;             // pointer to pitch data
 } PITCH_PARMS;
 
-class CFragment {
+class CFragment
+{
 public:
     static char * Copyright(void);
     static float Version(void);
@@ -40,16 +43,20 @@ public:
                                    PITCH_PARMS & stPitchParm, short * pPitchBfr, uint32 dwPitchBfrLength);
     dspError_t Fragment(void);
     ~CFragment();
-    uint32 GetWaveBlockIndex() {
+    uint32 GetWaveBlockIndex()
+    {
         return m_dwWaveBlock;
     }
-    uint32 GetPitchBlockIndex() {
+    uint32 GetPitchBlockIndex()
+    {
         return m_dwPitchBlock;
     }
-    uint32 GetFragmentBlockLength() {
+    uint32 GetFragmentBlockLength()
+    {
         return m_dwFragBlockLength;
     }
-    uint32 GetFragmentCount() {
+    uint32 GetFragmentCount()
+    {
         return m_dwFragCount;
     }
 

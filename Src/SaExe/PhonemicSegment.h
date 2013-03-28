@@ -3,7 +3,8 @@
 
 #include "DependentSegment.h"
 
-class CPhonemicSegment : public CDependentSegment {
+class CPhonemicSegment : public CDependentSegment
+{
 public:
     CPhonemicSegment(int index, int master = -1);
     virtual CSegment::TpInputFilterProc GetInputFilter() const; // filter function for input

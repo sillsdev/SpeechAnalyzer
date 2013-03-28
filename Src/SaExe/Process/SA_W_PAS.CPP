@@ -32,7 +32,8 @@ static char BASED_CODE THIS_FILE[] = __FILE__;
 /***************************************************************************/
 // CProcessWbHighpass::CProcessWbHighpass Constructor
 /***************************************************************************/
-CProcessWbHighpass::CProcessWbHighpass() {
+CProcessWbHighpass::CProcessWbHighpass()
+{
     m_nCutoff = 150;
     m_nOrder = 3;
     m_bFilterFilter = TRUE;
@@ -41,7 +42,8 @@ CProcessWbHighpass::CProcessWbHighpass() {
 /***************************************************************************/
 // CProcessWbHighpass::~CProcessWbHighpass Destructor
 /***************************************************************************/
-CProcessWbHighpass::~CProcessWbHighpass() {
+CProcessWbHighpass::~CProcessWbHighpass()
+{
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -59,10 +61,12 @@ CProcessWbHighpass::~CProcessWbHighpass() {
 // calling queue, or -1 in case of an error in the lower word of the long
 // value and the end process progress percentage in the higher word.
 /***************************************************************************/
-long CProcessWbHighpass::Process(void * pCaller, ISaDoc * pDoc, int nProgress, int nLevel) {
+long CProcessWbHighpass::Process(void * pCaller, ISaDoc * pDoc, int nProgress, int nLevel)
+{
     // check if nested workbench processes
     CProcess * pLowerProcess = NULL;
-    if (nLevel < MAX_FILTER_NUMBER) {
+    if (nLevel < MAX_FILTER_NUMBER)
+    {
         CMainFrame * pMain = (CMainFrame *)AfxGetMainWnd();
         pLowerProcess = ((CProcess *)pMain->GetWbProcess(pDoc->GetWbProcess() - 1, nLevel));
     }
@@ -75,14 +79,16 @@ long CProcessWbHighpass::Process(void * pCaller, ISaDoc * pDoc, int nProgress, i
 /***************************************************************************/
 // CProcessWbHighpass::PropertiesDialog Calls the properties dialog for this process
 /***************************************************************************/
-int CProcessWbHighpass::PropertiesDialog() {
+int CProcessWbHighpass::PropertiesDialog()
+{
     CWbDlgFilterPass dlgPass;
     dlgPass.m_bBandPass = FALSE;
     dlgPass.m_bLoPass = FALSE;
     dlgPass.m_nLowerFreq = m_nCutoff;
     dlgPass.m_nOrder = m_nOrder;
     dlgPass.m_bFilterFilter = m_bFilterFilter;
-    if (dlgPass.DoModal() == IDOK) {
+    if (dlgPass.DoModal() == IDOK)
+    {
         m_nCutoff = dlgPass.m_nLowerFreq;
         m_nOrder = dlgPass.m_nOrder;
         m_bFilterFilter = dlgPass.m_bFilterFilter;
@@ -103,7 +109,8 @@ static const char * psz_filter = "filterfilter";
 /***************************************************************************/
 // CProcessWbHighpass::WriteProperties Write highpass properties
 /***************************************************************************/
-void CProcessWbHighpass::WriteProperties(Object_ostream & obs) {
+void CProcessWbHighpass::WriteProperties(Object_ostream & obs)
+{
     obs.WriteBeginMarker(psz_highpass);
     obs.WriteUInt(psz_lower, m_nCutoff);
     obs.WriteUInt(psz_order, m_nOrder);
@@ -114,23 +121,28 @@ void CProcessWbHighpass::WriteProperties(Object_ostream & obs) {
 /***************************************************************************/
 // CProcessWbHighpass::ReadProperties Read highpass properties
 /***************************************************************************/
-BOOL CProcessWbHighpass::ReadProperties(Object_istream & obs) {
+BOOL CProcessWbHighpass::ReadProperties(Object_istream & obs)
+{
     UINT nCutoff = m_nCutoff;
     UINT nOrder = m_nOrder;
     BOOL bFilter = m_bFilterFilter;
-    if (!obs.bAtBackslash() || !obs.bReadBeginMarker(psz_highpass)) {
+    if (!obs.bAtBackslash() || !obs.bReadBeginMarker(psz_highpass))
+    {
         return FALSE;
     }
-    while (!obs.bAtEnd()) {
+    while (!obs.bAtEnd())
+    {
         if (obs.bReadUInt(psz_lower, m_nCutoff));
         else if (obs.bReadUInt(psz_order, m_nOrder));
         else if (obs.bReadBool(psz_filter, m_bFilterFilter));
-        else if (obs.bEnd(psz_highpass)) {
+        else if (obs.bEnd(psz_highpass))
+        {
             break;
         }
     }
     // check if properties changed
-    if (bFilter != m_bFilterFilter || nCutoff != m_nCutoff || nOrder != m_nOrder) {
+    if (bFilter != m_bFilterFilter || nCutoff != m_nCutoff || nOrder != m_nOrder)
+    {
         SetDataInvalid();
     }
     return TRUE;
@@ -146,7 +158,8 @@ BOOL CProcessWbHighpass::ReadProperties(Object_istream & obs) {
 /***************************************************************************/
 // CProcessWbLowpass::CProcessWbLowpass Constructor
 /***************************************************************************/
-CProcessWbLowpass::CProcessWbLowpass() {
+CProcessWbLowpass::CProcessWbLowpass()
+{
     m_nCutoff = 3000;
     m_nOrder = 3;
     m_bFilterFilter = TRUE;
@@ -155,7 +168,8 @@ CProcessWbLowpass::CProcessWbLowpass() {
 /***************************************************************************/
 // CProcessWbLowpass::~CProcessWbLowpass Destructor
 /***************************************************************************/
-CProcessWbLowpass::~CProcessWbLowpass() {
+CProcessWbLowpass::~CProcessWbLowpass()
+{
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -174,10 +188,12 @@ CProcessWbLowpass::~CProcessWbLowpass() {
 // value and the end process progress percentage in the higher word.
 /***************************************************************************/
 long CProcessWbLowpass::Process(void * pCaller, ISaDoc * pDoc, int nProgress,
-                                int nLevel) {
+                                int nLevel)
+{
     // check if nested workbench processes
     CProcess * pLowerProcess = NULL;
-    if (nLevel < MAX_FILTER_NUMBER) {
+    if (nLevel < MAX_FILTER_NUMBER)
+    {
         CMainFrame * pMain = (CMainFrame *)AfxGetMainWnd();
         pLowerProcess = ((CProcess *)pMain->GetWbProcess(pDoc->GetWbProcess() - 1, nLevel));
     }
@@ -190,13 +206,15 @@ long CProcessWbLowpass::Process(void * pCaller, ISaDoc * pDoc, int nProgress,
 /***************************************************************************/
 // CProcessWbLowpass::PropertiesDialog Calls the properties dialog for this process
 /***************************************************************************/
-int CProcessWbLowpass::PropertiesDialog() {
+int CProcessWbLowpass::PropertiesDialog()
+{
     CWbDlgFilterPass dlgPass;
     dlgPass.m_bBandPass = FALSE;
     dlgPass.m_nUpperFreq = m_nCutoff;
     dlgPass.m_nOrder = m_nOrder;
     dlgPass.m_bFilterFilter = m_bFilterFilter;
-    if (dlgPass.DoModal() == IDOK) {
+    if (dlgPass.DoModal() == IDOK)
+    {
         m_nCutoff = dlgPass.m_nUpperFreq;
         m_nOrder = dlgPass.m_nOrder;
         m_bFilterFilter = dlgPass.m_bFilterFilter;
@@ -209,7 +227,8 @@ int CProcessWbLowpass::PropertiesDialog() {
 /***************************************************************************/
 // CProcessWbLowpass::WriteProperties Write lowpass properties
 /***************************************************************************/
-void CProcessWbLowpass::WriteProperties(Object_ostream & obs) {
+void CProcessWbLowpass::WriteProperties(Object_ostream & obs)
+{
     obs.WriteBeginMarker(psz_lowpass);
     obs.WriteUInt(psz_upper, m_nCutoff);
     obs.WriteUInt(psz_order, m_nOrder);
@@ -220,23 +239,28 @@ void CProcessWbLowpass::WriteProperties(Object_ostream & obs) {
 /***************************************************************************/
 // CProcessWbLowpass::ReadProperties Read lowpass properties
 /***************************************************************************/
-BOOL CProcessWbLowpass::ReadProperties(Object_istream & obs) {
+BOOL CProcessWbLowpass::ReadProperties(Object_istream & obs)
+{
     UINT nCutoff = m_nCutoff;
     UINT nOrder = m_nOrder;
     BOOL bFilter = m_bFilterFilter;
-    if (!obs.bAtBackslash() || !obs.bReadBeginMarker(psz_lowpass)) {
+    if (!obs.bAtBackslash() || !obs.bReadBeginMarker(psz_lowpass))
+    {
         return FALSE;
     }
-    while (!obs.bAtEnd()) {
+    while (!obs.bAtEnd())
+    {
         if (obs.bReadUInt(psz_upper, m_nCutoff));
         else if (obs.bReadUInt(psz_order, m_nOrder));
         else if (obs.bReadBool(psz_filter, m_bFilterFilter));
-        else if (obs.bEnd(psz_lowpass)) {
+        else if (obs.bEnd(psz_lowpass))
+        {
             break;
         }
     }
     // check if properties changed
-    if (bFilter != m_bFilterFilter || nCutoff != m_nCutoff || nOrder != m_nOrder) {
+    if (bFilter != m_bFilterFilter || nCutoff != m_nCutoff || nOrder != m_nOrder)
+    {
         SetDataInvalid();
     }
     return TRUE;
@@ -252,7 +276,8 @@ BOOL CProcessWbLowpass::ReadProperties(Object_istream & obs) {
 /***************************************************************************/
 // CProcessWbBandpass::CProcessWbBandpass Constructor
 /***************************************************************************/
-CProcessWbBandpass::CProcessWbBandpass() {
+CProcessWbBandpass::CProcessWbBandpass()
+{
     m_nUpperCutoff = 3000;
     m_nLowerCutoff = 150;
     m_nOrder = 3;
@@ -262,7 +287,8 @@ CProcessWbBandpass::CProcessWbBandpass() {
 /***************************************************************************/
 // CProcessWbBandpass::~CProcessWbBandpass Destructor
 /***************************************************************************/
-CProcessWbBandpass::~CProcessWbBandpass() {
+CProcessWbBandpass::~CProcessWbBandpass()
+{
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -281,10 +307,12 @@ CProcessWbBandpass::~CProcessWbBandpass() {
 // value and the end process progress percentage in the higher word.
 /***************************************************************************/
 long CProcessWbBandpass::Process(void * pCaller, ISaDoc * pDoc, int nProgress,
-                                 int nLevel) {
+                                 int nLevel)
+{
     // check if nested workbench processes
     CProcess * pLowerProcess = NULL;
-    if (nLevel < MAX_FILTER_NUMBER) {
+    if (nLevel < MAX_FILTER_NUMBER)
+    {
         CMainFrame * pMain = (CMainFrame *)AfxGetMainWnd();
         pLowerProcess = ((CProcess *)pMain->GetWbProcess(pDoc->GetWbProcess() - 1, nLevel));
     }
@@ -297,13 +325,15 @@ long CProcessWbBandpass::Process(void * pCaller, ISaDoc * pDoc, int nProgress,
 /***************************************************************************/
 // CProcessWbBandpass::PropertiesDialog Calls the properties dialog for this process
 /***************************************************************************/
-int CProcessWbBandpass::PropertiesDialog() {
+int CProcessWbBandpass::PropertiesDialog()
+{
     CWbDlgFilterPass dlgPass;
     dlgPass.m_nUpperFreq = m_nUpperCutoff;
     dlgPass.m_nLowerFreq = m_nLowerCutoff;
     dlgPass.m_nOrder = m_nOrder;
     dlgPass.m_bFilterFilter = m_bFilterFilter;
-    if (dlgPass.DoModal() == IDOK) {
+    if (dlgPass.DoModal() == IDOK)
+    {
         m_nUpperCutoff = dlgPass.m_nUpperFreq;
         m_nLowerCutoff = dlgPass.m_nLowerFreq;
         m_nOrder = dlgPass.m_nOrder;
@@ -317,7 +347,8 @@ int CProcessWbBandpass::PropertiesDialog() {
 /***************************************************************************/
 // CProcessWbBandpass::WriteProperties Write bandpass properties
 /***************************************************************************/
-void CProcessWbBandpass::WriteProperties(Object_ostream & obs) {
+void CProcessWbBandpass::WriteProperties(Object_ostream & obs)
+{
     obs.WriteBeginMarker(psz_bandpass);
     obs.WriteUInt(psz_upper, m_nUpperCutoff);
     obs.WriteUInt(psz_lower, m_nLowerCutoff);
@@ -329,25 +360,30 @@ void CProcessWbBandpass::WriteProperties(Object_ostream & obs) {
 /***************************************************************************/
 // CProcessWbBandpass::ReadProperties Read bandpass properties
 /***************************************************************************/
-BOOL CProcessWbBandpass::ReadProperties(Object_istream & obs) {
+BOOL CProcessWbBandpass::ReadProperties(Object_istream & obs)
+{
     UINT nUpperCutoff = m_nUpperCutoff;
     UINT nLowerCutoff = m_nLowerCutoff;
     UINT nOrder = m_nOrder;
     BOOL bFilter = m_bFilterFilter;
-    if (!obs.bAtBackslash() || !obs.bReadBeginMarker(psz_bandpass)) {
+    if (!obs.bAtBackslash() || !obs.bReadBeginMarker(psz_bandpass))
+    {
         return FALSE;
     }
-    while (!obs.bAtEnd()) {
+    while (!obs.bAtEnd())
+    {
         if (obs.bReadUInt(psz_upper, m_nUpperCutoff));
         else if (obs.bReadUInt(psz_lower, m_nLowerCutoff));
         else if (obs.bReadUInt(psz_order, m_nOrder));
         else if (obs.bReadBool(psz_filter, m_bFilterFilter));
-        else if (obs.bEnd(psz_bandpass)) {
+        else if (obs.bEnd(psz_bandpass))
+        {
             break;
         }
     }
     // check if properties changed
-    if (bFilter != m_bFilterFilter || nUpperCutoff != m_nUpperCutoff || nLowerCutoff != m_nLowerCutoff || nOrder != m_nOrder) {
+    if (bFilter != m_bFilterFilter || nUpperCutoff != m_nUpperCutoff || nLowerCutoff != m_nLowerCutoff || nOrder != m_nOrder)
+    {
         SetDataInvalid();
     }
     return TRUE;

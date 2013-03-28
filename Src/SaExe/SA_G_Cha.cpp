@@ -42,23 +42,27 @@ END_MESSAGE_MAP()
 /***************************************************************************/
 // CPlotChange::CPlotChange Constructor
 /***************************************************************************/
-CPlotChange::CPlotChange() {
+CPlotChange::CPlotChange()
+{
 }
 
 /***************************************************************************/
 // CPlotChange::~CPlotChange Destructor
 /***************************************************************************/
-CPlotChange::~CPlotChange() {
+CPlotChange::~CPlotChange()
+{
 }
 
 
-void  CPlotChange::CopyTo(CPlotWnd * pT) {
+void  CPlotChange::CopyTo(CPlotWnd * pT)
+{
     CPlotWnd::CopyTo(pT);
 }
 
 
 
-CPlotWnd * CPlotChange::NewCopy(void) {
+CPlotWnd * CPlotChange::NewCopy(void)
+{
     CPlotWnd * pRet = new CPlotChange();
 
     CopyTo(pRet);
@@ -78,7 +82,8 @@ CPlotWnd * CPlotChange::NewCopy(void) {
 // drawing to let the plot base class do common jobs like drawing the
 // cursors.
 /***************************************************************************/
-void CPlotChange::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView) {
+void CPlotChange::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView)
+{
     // get pointer to graph, view and document
     CGraphWnd * pGraph = (CGraphWnd *)GetParent();
     CSaDoc  *  pDoc   = pView->GetDocument();
@@ -86,10 +91,12 @@ void CPlotChange::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView) {
     CProcessChange * pChange = (CProcessChange *)pDoc->GetChange(); // get pointer to change object
     short int nResult = LOWORD(pChange->Process(this, pDoc)); // process data
     nResult = CheckResult(nResult, pChange); // check the process result
-    if (nResult == PROCESS_ERROR) {
+    if (nResult == PROCESS_ERROR)
+    {
         return;
     }
-    if (nResult != PROCESS_CANCELED) {
+    if (nResult != PROCESS_CANCELED)
+    {
         pGraph->SetLegendScale(SCALE | NUMBERS, 0, pChange->GetMaxValue() / PRECISION_MULTIPLIER, _T("Change")); // set legend scale
         // do common plot paint jobs
         PlotPrePaint(pDC, rWnd, rClip);

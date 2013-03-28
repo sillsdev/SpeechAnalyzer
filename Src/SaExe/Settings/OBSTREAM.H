@@ -28,12 +28,14 @@ bReadProperties routine to read its member variables.
 See bottom of file for samples.
 */
 // **************************************************************************
-class Object_ostream { // Hungarian: obs
+class Object_ostream   // Hungarian: obs
+{
 public:
     Object_ostream(const IUtf8String & filename);
     ~Object_ostream() {} // Destructor
 
-    ofstream & getIos() {
+    ofstream & getIos()
+    {
         return m_ios;
     };
 
@@ -74,12 +76,14 @@ private:
 
 // ==========================================================================
 
-class Object_istream { // Hungarian: obs
+class Object_istream   // Hungarian: obs
+{
 public:
     Object_istream(const IUtf8String & filename);
     ~Object_istream();      // Destructor
 
-    ifstream & getIos() {
+    ifstream & getIos()
+    {
         return m_ios;
     };
     void Rewind();              // skip back to the beginning and reset
@@ -94,10 +98,12 @@ public:
     BOOL bAtEndMarker(const char * pszMarker); // True if at the desired end marker
 
     BOOL bReadBeginMarker(const char * pszMarker, IUtf8String * pszName); // Read the desired begin marker (pszMarker with a plus sign)
-    BOOL bReadBeginMarker(const char * pszMarker) { // Read the desired begin marker (pszMarker with a plus sign)
+    BOOL bReadBeginMarker(const char * pszMarker)   // Read the desired begin marker (pszMarker with a plus sign)
+    {
         return bReadMarker('+', pszMarker);
     }
-    BOOL bReadEndMarker(const char * pszMarker) { // Read the desired end marker (pszMarker with a minus sign)
+    BOOL bReadEndMarker(const char * pszMarker)   // Read the desired end marker (pszMarker with a minus sign)
+    {
         return bReadMarker('-', pszMarker);
     }
     void SkipToEndMarker(const char * pszMarker);
@@ -113,7 +119,8 @@ public:
     BOOL bReadDouble(const char * pszMarker, double & i);
     BOOL bReadUInt(const char * pszMarker, UINT & ui); // Read an unsigned integer (unsigned short)
     BOOL bReadNumberOf(const char * pszMarker, NumberOf & num); // Read a long unsigned integer
-    BOOL bReadDWord(const char * pszMarker, DWORD & dw) { // Read a DWORD (long unsigned integer)
+    BOOL bReadDWord(const char * pszMarker, DWORD & dw)   // Read a DWORD (long unsigned integer)
+    {
         return bReadNumberOf(pszMarker, dw);
     }
 
@@ -131,7 +138,8 @@ public:
 protected:
     void ReadMarkedString(const char ** ppszMarker, const char ** ppszString,
                           BOOL bTrimWhiteSpace = TRUE); // Read any marked string
-    void peekMarkedString(const char ** ppszMarker, const char ** ppszString,BOOL bTrimWhiteSpace = TRUE) {
+    void peekMarkedString(const char ** ppszMarker, const char ** ppszString,BOOL bTrimWhiteSpace = TRUE)
+    {
         // Read any marked string
         ReadMarkedString(ppszMarker, ppszString,bTrimWhiteSpace);
         // Store most recently read marked string for next read

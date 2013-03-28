@@ -17,13 +17,15 @@
 static char BASED_CODE THIS_FILE[] = __FILE__;
 #endif
 
-CProcessDoc::CProcessDoc(ISaDoc * pDoc) : m_pDoc(pDoc) {
+CProcessDoc::CProcessDoc(ISaDoc * pDoc) : m_pDoc(pDoc)
+{
     m_lpBuffer = new char[GetProcessBufferSize()];
     SetDataSize(pDoc->GetUnprocessedDataSize());
     SetDataReady();
 }
 
-long CProcessDoc::Process(void * pCaller, ISaDoc * pDoc, int nProgress, int nLevel) {
+long CProcessDoc::Process(void * pCaller, ISaDoc * pDoc, int nProgress, int nLevel)
+{
     UNUSED_ALWAYS(nProgress);
     UNUSED_ALWAYS(pCaller);
     UNUSED_ALWAYS(pDoc);

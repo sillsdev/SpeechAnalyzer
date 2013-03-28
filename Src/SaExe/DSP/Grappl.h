@@ -36,7 +36,8 @@ typedef  void * pGrappl;   /* generic 32-bit pointer */
 typedef  int16 Boolean;      /* 16-bit signed function return */
 
 /* user input parameters */
-typedef  struct {
+typedef  struct
+{
     int32    sampfreq;  /* acoustic data sampling frequency */
     int16    eightbit;  /* true for 8-bit data */
     int16    mode;    /* calculation mode */
@@ -54,7 +55,8 @@ typedef  struct {
 typedef Grappl_parms * pGrappl_parms;
 
 /* output result structure */
-typedef  struct {
+typedef  struct
+{
     int16  mag16;      /* short-term abs magnitude (8-bit x16, 16-bit /16) */
     int16  fcalc16;    /* best guess at point pitch frequency (x16) */
     int16  fselect16;    /* corrected guess at point pitch frequency within contour (x16) */

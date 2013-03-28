@@ -10,7 +10,8 @@
 //###########################################################################
 // CPlotPOA plot window
 
-class CPlotPOA : public CPlotWnd {
+class CPlotPOA : public CPlotWnd
+{
     DECLARE_DYNCREATE(CPlotPOA)
 
 // Construction/destruction/creation

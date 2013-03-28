@@ -9,7 +9,8 @@
 
 #define HIGHPASS_CUTIN_FREQ   70
 // Highpass filter class definition.
-class CHighPassFilter70 {
+class CHighPassFilter70
+{
 public:
     static char * Copyright(void);
     static float Version(void);
@@ -26,10 +27,12 @@ public:
     dspError_t DoBackwardPass(short * pProcessBuffer, uint32 dwProcessLength /* in samples */);
     void GenTestSuite(void * pProcessBuffer, uint32 dwProcessLength, uint16 wSmpSize);
 #endif
-    short GetBlockMin() {
+    short GetBlockMin()
+    {
         return m_nBlockMin;
     }
-    short GetBlockMax() {
+    short GetBlockMax()
+    {
         return m_nBlockMax;
     }
     ~CHighPassFilter70();
@@ -56,7 +59,8 @@ private:
 };
 
 // Filter parameter workspace structure.
-typedef struct {
+typedef struct
+{
     int32 f11;
     int32 b11;
     int32 b12;

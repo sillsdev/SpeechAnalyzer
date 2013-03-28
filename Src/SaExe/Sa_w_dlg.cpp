@@ -46,7 +46,8 @@ END_MESSAGE_MAP()
 /***************************************************************************/
 // CWbDlgProcesses::CWbDlgProcesses Constructor
 /***************************************************************************/
-CWbDlgProcesses::CWbDlgProcesses(CWnd * pParent) : CDialog(CWbDlgProcesses::IDD, pParent) {
+CWbDlgProcesses::CWbDlgProcesses(CWnd * pParent) : CDialog(CWbDlgProcesses::IDD, pParent)
+{
     //{{AFX_DATA_INIT(CWbDlgProcesses)
     m_nFilter1 = 0;
     m_nFilter2 = 0;
@@ -67,7 +68,8 @@ CWbDlgProcesses::CWbDlgProcesses(CWnd * pParent) : CDialog(CWbDlgProcesses::IDD,
 /***************************************************************************/
 // CWbDlgProcesses::DoDataExchange Data exchange
 /***************************************************************************/
-void CWbDlgProcesses::DoDataExchange(CDataExchange * pDX) {
+void CWbDlgProcesses::DoDataExchange(CDataExchange * pDX)
+{
     CDialog::DoDataExchange(pDX);
     //{{AFX_DATA_MAP(CWbDlgProcesses)
     DDX_CBIndex(pDX, IDC_FILTERTYPE1, m_nFilter1);
@@ -83,7 +85,8 @@ void CWbDlgProcesses::DoDataExchange(CDataExchange * pDX) {
 // CWbDlgProcesses::OnInitDialog Dialog initialisation
 // All the necessary informations are put into the dialog controls.
 /***************************************************************************/
-BOOL CWbDlgProcesses::OnInitDialog() {
+BOOL CWbDlgProcesses::OnInitDialog()
+{
     CDialog::OnInitDialog();
     // set the process number in the dialogs caption
     CString szCaption;
@@ -95,15 +98,18 @@ BOOL CWbDlgProcesses::OnInitDialog() {
     // initialize member data
     ((CSaWorkbenchView *)GetParent())->LoadAndSortFilter(m_nProcess, &m_nFilter1, &m_nFilter2, &m_nFilter3);
     // disable properties buttons for plain filters
-    if (!m_nFilter1) {
+    if (!m_nFilter1)
+    {
         GetDlgItem(IDC_PROPERTIES1)->EnableWindow(FALSE);
     }
 
-    if (!m_nFilter2) {
+    if (!m_nFilter2)
+    {
         GetDlgItem(IDC_PROPERTIES2)->EnableWindow(FALSE);
     }
 
-    if (!m_nFilter3) {
+    if (!m_nFilter3)
+    {
         GetDlgItem(IDC_PROPERTIES3)->EnableWindow(FALSE);
     }
 
@@ -118,25 +124,34 @@ BOOL CWbDlgProcesses::OnInitDialog() {
 // its dialog gets called (via the process class). If there was already a
 // process created for this filter, it will be deleted first.
 /***************************************************************************/
-void CWbDlgProcesses::OnProperties1() {
+void CWbDlgProcesses::OnProperties1()
+{
     UpdateData(TRUE);
     // check if filter already exists
     CMainFrame * pMain = (CMainFrame *)AfxGetMainWnd();
     int nLoop;
-    for (nLoop = 0; nLoop < MAX_FILTER_NUMBER; nLoop++) {
-        if (m_nFilter1 == pMain->GetWbFilterID(m_nProcess, nLoop)) {
+    for (nLoop = 0; nLoop < MAX_FILTER_NUMBER; nLoop++)
+    {
+        if (m_nFilter1 == pMain->GetWbFilterID(m_nProcess, nLoop))
+        {
             break;
         }
     }
-    if (nLoop < MAX_FILTER_NUMBER) {
+    if (nLoop < MAX_FILTER_NUMBER)
+    {
         // filter exists
-        if (pMain->GetWbProcess(m_nProcess, nLoop)) {
+        if (pMain->GetWbProcess(m_nProcess, nLoop))
+        {
             pMain->GetWbProcess(m_nProcess, nLoop)->PropertiesDialog();
         }
-    } else {
-        if (m_nLocalFilter1 != m_nFilter1) {
+    }
+    else
+    {
+        if (m_nLocalFilter1 != m_nFilter1)
+        {
             // delete existing process
-            if (m_pWbProcessFilter1) {
+            if (m_pWbProcessFilter1)
+            {
                 delete m_pWbProcessFilter1;
             }
             // create new process
@@ -144,9 +159,12 @@ void CWbDlgProcesses::OnProperties1() {
             m_nLocalFilter1 = m_nFilter1;
         }
         // if process created call process properties dialog
-        if (m_pWbProcessFilter1) {
+        if (m_pWbProcessFilter1)
+        {
             m_pWbProcessFilter1->PropertiesDialog();
-        } else {
+        }
+        else
+        {
             // error creating filter process
             m_nFilter1 = 0; // switch back to plain
             UpdateData(FALSE);
@@ -160,25 +178,34 @@ void CWbDlgProcesses::OnProperties1() {
 // its dialog gets called (via the process class). If there was already a
 // process created for this filter, it will be deleted first.
 /***************************************************************************/
-void CWbDlgProcesses::OnProperties2() {
+void CWbDlgProcesses::OnProperties2()
+{
     UpdateData(TRUE);
     // check if filter already exists
     CMainFrame * pMain = (CMainFrame *)AfxGetMainWnd();
     int nLoop;
-    for (nLoop = 0; nLoop < MAX_FILTER_NUMBER; nLoop++) {
-        if (m_nFilter2 == pMain->GetWbFilterID(m_nProcess, nLoop)) {
+    for (nLoop = 0; nLoop < MAX_FILTER_NUMBER; nLoop++)
+    {
+        if (m_nFilter2 == pMain->GetWbFilterID(m_nProcess, nLoop))
+        {
             break;
         }
     }
-    if (nLoop < MAX_FILTER_NUMBER) {
+    if (nLoop < MAX_FILTER_NUMBER)
+    {
         // filter exists
-        if (pMain->GetWbProcess(m_nProcess, nLoop)) {
+        if (pMain->GetWbProcess(m_nProcess, nLoop))
+        {
             pMain->GetWbProcess(m_nProcess, nLoop)->PropertiesDialog();
         }
-    } else {
-        if (m_nLocalFilter2 != m_nFilter2) {
+    }
+    else
+    {
+        if (m_nLocalFilter2 != m_nFilter2)
+        {
             // delete existing process
-            if (m_pWbProcessFilter2) {
+            if (m_pWbProcessFilter2)
+            {
                 delete m_pWbProcessFilter2;
             }
             // create new process
@@ -186,9 +213,12 @@ void CWbDlgProcesses::OnProperties2() {
             m_nLocalFilter2 = m_nFilter2;
         }
         // if process created call process properties dialog
-        if (m_pWbProcessFilter2) {
+        if (m_pWbProcessFilter2)
+        {
             m_pWbProcessFilter2->PropertiesDialog();
-        } else {
+        }
+        else
+        {
             // error creating filter process
             m_nFilter2 = 0; // switch back to plain
             UpdateData(FALSE);
@@ -202,25 +232,34 @@ void CWbDlgProcesses::OnProperties2() {
 // its dialog gets called (via the process class). If there was already a
 // process created for this filter, it will be deleted first.
 /***************************************************************************/
-void CWbDlgProcesses::OnProperties3() {
+void CWbDlgProcesses::OnProperties3()
+{
     UpdateData(TRUE);
     // check if filter already exists
     CMainFrame * pMain = (CMainFrame *)AfxGetMainWnd();
     int nLoop;
-    for (nLoop = 0; nLoop < MAX_FILTER_NUMBER; nLoop++) {
-        if (m_nFilter3 == pMain->GetWbFilterID(m_nProcess, nLoop)) {
+    for (nLoop = 0; nLoop < MAX_FILTER_NUMBER; nLoop++)
+    {
+        if (m_nFilter3 == pMain->GetWbFilterID(m_nProcess, nLoop))
+        {
             break;
         }
     }
-    if (nLoop < MAX_FILTER_NUMBER) {
+    if (nLoop < MAX_FILTER_NUMBER)
+    {
         // filter exists
-        if (pMain->GetWbProcess(m_nProcess, nLoop)) {
+        if (pMain->GetWbProcess(m_nProcess, nLoop))
+        {
             pMain->GetWbProcess(m_nProcess, nLoop)->PropertiesDialog();
         }
-    } else {
-        if (m_nLocalFilter3 != m_nFilter3) {
+    }
+    else
+    {
+        if (m_nLocalFilter3 != m_nFilter3)
+        {
             // delete existing process
-            if (m_pWbProcessFilter3) {
+            if (m_pWbProcessFilter3)
+            {
                 delete m_pWbProcessFilter3;
             }
             // create new process
@@ -228,9 +267,12 @@ void CWbDlgProcesses::OnProperties3() {
             m_nLocalFilter3 = m_nFilter3;
         }
         // if process created call process properties dialog
-        if (m_pWbProcessFilter3) {
+        if (m_pWbProcessFilter3)
+        {
             m_pWbProcessFilter3->PropertiesDialog();
-        } else {
+        }
+        else
+        {
             // error creating filter process
             m_nFilter3 = 0; // switch back to plain
             UpdateData(FALSE);
@@ -245,19 +287,24 @@ void CWbDlgProcesses::OnProperties3() {
 // plain is selected, it desables the properties button for this filter,
 // otherwise enables it.
 /***************************************************************************/
-void CWbDlgProcesses::OnSelchangeFilter1() {
+void CWbDlgProcesses::OnSelchangeFilter1()
+{
     UpdateData(TRUE);
     // check if this filtertype already used
-    if ((m_nFilter1) && ((m_nFilter1 == m_nFilter2) || (m_nFilter1 == m_nFilter3))) {
+    if ((m_nFilter1) && ((m_nFilter1 == m_nFilter2) || (m_nFilter1 == m_nFilter3)))
+    {
         // already used, switch back to plain
         m_nFilter1 = 0;
         AfxMessageBox(IDS_ERROR_MULTIPLEFILTER,MB_OK,0);
         UpdateData(FALSE);
     }
     // enable/disable properties button
-    if (!m_nFilter1) {
+    if (!m_nFilter1)
+    {
         GetDlgItem(IDC_PROPERTIES1)->EnableWindow(FALSE);
-    } else {
+    }
+    else
+    {
         GetDlgItem(IDC_PROPERTIES1)->EnableWindow(TRUE);
         UpdateData(FALSE);
     }
@@ -270,19 +317,24 @@ void CWbDlgProcesses::OnSelchangeFilter1() {
 // plain is selected, it desables the properties button for this filter,
 // otherwise enables it.
 /***************************************************************************/
-void CWbDlgProcesses::OnSelchangeFilter2() {
+void CWbDlgProcesses::OnSelchangeFilter2()
+{
     UpdateData(TRUE);
     // check if this filtertype already used
-    if ((m_nFilter2) && ((m_nFilter2 == m_nFilter1) || (m_nFilter2 == m_nFilter3))) {
+    if ((m_nFilter2) && ((m_nFilter2 == m_nFilter1) || (m_nFilter2 == m_nFilter3)))
+    {
         // already used, switch back to plain
         m_nFilter2 = 0;
         AfxMessageBox(IDS_ERROR_MULTIPLEFILTER,MB_OK,0);
         UpdateData(FALSE);
     }
     // enable/disable properties button
-    if (!m_nFilter2) {
+    if (!m_nFilter2)
+    {
         GetDlgItem(IDC_PROPERTIES2)->EnableWindow(FALSE);
-    } else {
+    }
+    else
+    {
         GetDlgItem(IDC_PROPERTIES2)->EnableWindow(TRUE);
         UpdateData(FALSE);
     }
@@ -295,19 +347,24 @@ void CWbDlgProcesses::OnSelchangeFilter2() {
 // plain is selected, it desables the properties button for this filter,
 // otherwise enables it.
 /***************************************************************************/
-void CWbDlgProcesses::OnSelchangeFilter3() {
+void CWbDlgProcesses::OnSelchangeFilter3()
+{
     UpdateData(TRUE);
     // check if this filtertype already used
-    if ((m_nFilter3) && ((m_nFilter3 == m_nFilter1) || (m_nFilter3 == m_nFilter2))) {
+    if ((m_nFilter3) && ((m_nFilter3 == m_nFilter1) || (m_nFilter3 == m_nFilter2)))
+    {
         // already used, switch back to plain
         m_nFilter3 = 0;
         AfxMessageBox(IDS_ERROR_MULTIPLEFILTER,MB_OK,0);
         UpdateData(FALSE);
     }
     // enable/disable properties button
-    if (!m_nFilter3) {
+    if (!m_nFilter3)
+    {
         GetDlgItem(IDC_PROPERTIES3)->EnableWindow(FALSE);
-    } else {
+    }
+    else
+    {
         GetDlgItem(IDC_PROPERTIES3)->EnableWindow(TRUE);
         UpdateData(FALSE);
     }
@@ -316,7 +373,8 @@ void CWbDlgProcesses::OnSelchangeFilter3() {
 /***************************************************************************/
 // CWbDlgProcesses::OnCancel Button cancel hit
 /***************************************************************************/
-void CWbDlgProcesses::OnCancel() {
+void CWbDlgProcesses::OnCancel()
+{
     CDialog::OnCancel();
     SendMessage(WM_CLOSE);
 }
@@ -324,18 +382,22 @@ void CWbDlgProcesses::OnCancel() {
 /***************************************************************************/
 // CWbDlgProcesses::OnClose Close the dialog
 /***************************************************************************/
-void CWbDlgProcesses::OnClose() {
+void CWbDlgProcesses::OnClose()
+{
     CDialog::OnClose();
     // delete the created processes
-    if (m_pWbProcessFilter1) {
+    if (m_pWbProcessFilter1)
+    {
         delete m_pWbProcessFilter1;
         m_pWbProcessFilter1 = NULL;
     }
-    if (m_pWbProcessFilter2) {
+    if (m_pWbProcessFilter2)
+    {
         delete m_pWbProcessFilter2;
         m_pWbProcessFilter2 = NULL;
     }
-    if (m_pWbProcessFilter3) {
+    if (m_pWbProcessFilter3)
+    {
         delete m_pWbProcessFilter3;
         m_pWbProcessFilter3 = NULL;
     }
@@ -344,7 +406,8 @@ void CWbDlgProcesses::OnClose() {
 /***************************************************************************/
 // CWbDlgProcesses::OnHelpWorkbench Call Workbench help
 /***************************************************************************/
-void CWbDlgProcesses::OnHelpWorkbench() {
+void CWbDlgProcesses::OnHelpWorkbench()
+{
     // create the pathname
     CString szPath = AfxGetApp()->m_pszHelpFilePath;
     szPath += "::/User_Interface/Menus/Tools/Workbench.htm";
@@ -376,7 +439,8 @@ END_MESSAGE_MAP()
 /***************************************************************************/
 // CWbDlgFilterPass::CWbDlgFilterPass Constructor
 /***************************************************************************/
-CWbDlgFilterPass::CWbDlgFilterPass(CWnd * pParent) : CDialog(CWbDlgFilterPass::IDD, pParent) {
+CWbDlgFilterPass::CWbDlgFilterPass(CWnd * pParent) : CDialog(CWbDlgFilterPass::IDD, pParent)
+{
     //{{AFX_DATA_INIT(CWbDlgFilterPass)
     m_nLowerFreq = 0;
     m_nUpperFreq = 0;
@@ -393,7 +457,8 @@ CWbDlgFilterPass::CWbDlgFilterPass(CWnd * pParent) : CDialog(CWbDlgFilterPass::I
 /***************************************************************************/
 // CWbDlgFilterPass::DoDataExchange Data exchange
 /***************************************************************************/
-void CWbDlgFilterPass::DoDataExchange(CDataExchange * pDX) {
+void CWbDlgFilterPass::DoDataExchange(CDataExchange * pDX)
+{
     CDialog::DoDataExchange(pDX);
     //{{AFX_DATA_MAP(CWbDlgFilterPass)
     DDX_Text(pDX, IDC_PASS_LOWEREDIT, m_nLowerFreq);
@@ -411,22 +476,27 @@ void CWbDlgFilterPass::DoDataExchange(CDataExchange * pDX) {
 // CWbDlgFilterPass::OnInitDialog Dialog initialisation
 // All the necessary informations are put into the dialog controls.
 /***************************************************************************/
-BOOL CWbDlgFilterPass::OnInitDialog() {
+BOOL CWbDlgFilterPass::OnInitDialog()
+{
     CDialog::OnInitDialog();
     // build and place the upper frequency spin control
     m_SpinUpperFreq.Init(IDC_PASS_UPPERSCROLL, this);
     // build and place the lower frequency spin control
     m_SpinLowerFreq.Init(IDC_PASS_LOWERSCROLL, this);
     m_SpinOrder.Init(IDC_PASS_ORDERSCROLL, this);
-    if (!m_bBandPass) {
+    if (!m_bBandPass)
+    {
         // no bandpass
-        if (m_bLoPass) {
+        if (m_bLoPass)
+        {
             // lowpass, disable lower frequency controls
             GetDlgItem(IDC_PASS_LOWERTEXT)->EnableWindow(FALSE);
             GetDlgItem(IDC_PASS_LOWEREDIT)->EnableWindow(FALSE);
             GetDlgItem(IDC_PASS_LOWERSCROLL)->EnableWindow(FALSE);
             GetDlgItem(IDC_PASS_LOWERDIM)->EnableWindow(FALSE);
-        } else {
+        }
+        else
+        {
             // hipass, disable upper frequency controls
             GetDlgItem(IDC_PASS_UPPERTEXT)->EnableWindow(FALSE);
             GetDlgItem(IDC_PASS_UPPEREDIT)->EnableWindow(FALSE);
@@ -437,12 +507,18 @@ BOOL CWbDlgFilterPass::OnInitDialog() {
     // set up right caption for dialog
     CString szCaption;
     GetWindowText(szCaption);
-    if (m_bBandPass) {
+    if (m_bBandPass)
+    {
         szCaption = szCaption.Mid(szCaption.Find('$') + 1, szCaption.Find(' ') - szCaption.Find('$') - 1) + szCaption.Right(szCaption.GetLength() - szCaption.Find(' ') - 1);
-    } else {
-        if (m_bLoPass) {
+    }
+    else
+    {
+        if (m_bLoPass)
+        {
             szCaption = szCaption.Mid(szCaption.Find('/') + 1, szCaption.Find('$') - szCaption.Find('/') - 1) + szCaption.Right(szCaption.GetLength() - szCaption.Find(' ') - 1);
-        } else {
+        }
+        else
+        {
             szCaption = szCaption.Left(szCaption.Find('/')) + szCaption.Right(szCaption.GetLength() - szCaption.Find(' ') - 1);
         }
     }
@@ -453,21 +529,28 @@ BOOL CWbDlgFilterPass::OnInitDialog() {
 /***************************************************************************/
 // CWbDlgFilterPass::OnUpperFreqScroll Upper frequency spin control hit
 /***************************************************************************/
-void CWbDlgFilterPass::OnUpperFreqScroll() {
+void CWbDlgFilterPass::OnUpperFreqScroll()
+{
     m_nUpperFreq = GetDlgItemInt(IDC_PASS_UPPEREDIT, NULL, TRUE);
-    if (m_SpinUpperFreq.UpperButtonClicked()) {
+    if (m_SpinUpperFreq.UpperButtonClicked())
+    {
         m_nUpperFreq++;
-    } else {
+    }
+    else
+    {
         m_nUpperFreq--;
     }
-    if (m_nUpperFreq > 22049) {
+    if (m_nUpperFreq > 22049)
+    {
         m_nUpperFreq = 22049;
     }
-    if (m_nUpperFreq < 2) {
+    if (m_nUpperFreq < 2)
+    {
         m_nUpperFreq = 2;
     }
     SetDlgItemInt(IDC_PASS_UPPEREDIT, m_nUpperFreq, TRUE);
-    if (m_nLowerFreq >= m_nUpperFreq) {
+    if (m_nLowerFreq >= m_nUpperFreq)
+    {
         m_nLowerFreq = m_nUpperFreq - 1;
         SetDlgItemInt(IDC_PASS_LOWEREDIT, m_nLowerFreq, TRUE);
     }
@@ -476,16 +559,20 @@ void CWbDlgFilterPass::OnUpperFreqScroll() {
 /***************************************************************************/
 // CWbDlgFilterPass::OnKillfocusUpperfreq Upper frequency changed
 /***************************************************************************/
-void CWbDlgFilterPass::OnKillfocusUpperfreq() {
+void CWbDlgFilterPass::OnKillfocusUpperfreq()
+{
     m_nUpperFreq = GetDlgItemInt(IDC_PASS_UPPEREDIT, NULL, TRUE);
-    if (m_nUpperFreq > 22049) {
+    if (m_nUpperFreq > 22049)
+    {
         m_nUpperFreq = 22049;
     }
-    if (m_nUpperFreq < 2) {
+    if (m_nUpperFreq < 2)
+    {
         m_nUpperFreq = 2;
     }
     SetDlgItemInt(IDC_PASS_UPPEREDIT, m_nUpperFreq, TRUE);
-    if (m_nLowerFreq >= m_nUpperFreq) {
+    if (m_nLowerFreq >= m_nUpperFreq)
+    {
         m_nLowerFreq = m_nUpperFreq - 1;
         SetDlgItemInt(IDC_PASS_LOWEREDIT, m_nLowerFreq, TRUE);
     }
@@ -494,21 +581,28 @@ void CWbDlgFilterPass::OnKillfocusUpperfreq() {
 /***************************************************************************/
 // CWbDlgFilterPass::OnLowerFreqScroll Lower frequency spin control hit
 /***************************************************************************/
-void CWbDlgFilterPass::OnLowerFreqScroll() {
+void CWbDlgFilterPass::OnLowerFreqScroll()
+{
     m_nLowerFreq = GetDlgItemInt(IDC_PASS_LOWEREDIT, NULL, TRUE);
-    if (m_SpinLowerFreq.UpperButtonClicked()) {
+    if (m_SpinLowerFreq.UpperButtonClicked())
+    {
         m_nLowerFreq++;
-    } else {
+    }
+    else
+    {
         m_nLowerFreq--;
     }
-    if (m_nLowerFreq > 22048) {
+    if (m_nLowerFreq > 22048)
+    {
         m_nLowerFreq = 22048;
     }
-    if (m_nLowerFreq < 1) {
+    if (m_nLowerFreq < 1)
+    {
         m_nLowerFreq = 1;
     }
     SetDlgItemInt(IDC_PASS_LOWEREDIT, m_nLowerFreq, TRUE);
-    if (m_nLowerFreq >= m_nUpperFreq) {
+    if (m_nLowerFreq >= m_nUpperFreq)
+    {
         m_nUpperFreq = m_nLowerFreq + 1;
         SetDlgItemInt(IDC_PASS_UPPEREDIT, m_nUpperFreq, TRUE);
     }
@@ -517,16 +611,20 @@ void CWbDlgFilterPass::OnLowerFreqScroll() {
 /***************************************************************************/
 // CWbDlgFilterPass::OnKillfocusLowerfreq Lower frequency changed
 /***************************************************************************/
-void CWbDlgFilterPass::OnKillfocusLowerfreq() {
+void CWbDlgFilterPass::OnKillfocusLowerfreq()
+{
     m_nLowerFreq = GetDlgItemInt(IDC_PASS_LOWEREDIT, NULL, TRUE);
-    if (m_nLowerFreq > 22048) {
+    if (m_nLowerFreq > 22048)
+    {
         m_nLowerFreq = 22048;
     }
-    if (m_nLowerFreq < 1) {
+    if (m_nLowerFreq < 1)
+    {
         m_nLowerFreq = 1;
     }
     SetDlgItemInt(IDC_PASS_LOWEREDIT, m_nLowerFreq, TRUE);
-    if (m_nLowerFreq >= m_nUpperFreq) {
+    if (m_nLowerFreq >= m_nUpperFreq)
+    {
         m_nUpperFreq = m_nLowerFreq + 1;
         SetDlgItemInt(IDC_PASS_UPPEREDIT, m_nUpperFreq, TRUE);
     }
@@ -535,17 +633,23 @@ void CWbDlgFilterPass::OnKillfocusLowerfreq() {
 /***************************************************************************/
 // CWbDlgFilterPass::OnOrderScroll Order spin control hit
 /***************************************************************************/
-void CWbDlgFilterPass::OnOrderScroll() {
+void CWbDlgFilterPass::OnOrderScroll()
+{
     m_nOrder = GetDlgItemInt(IDC_PASS_FILTER_ORDER, NULL, TRUE);
-    if (m_SpinOrder.UpperButtonClicked()) {
+    if (m_SpinOrder.UpperButtonClicked())
+    {
         m_nOrder++;
-    } else {
+    }
+    else
+    {
         m_nOrder--;
     }
-    if (m_nOrder > 20) {
+    if (m_nOrder > 20)
+    {
         m_nOrder = 20;
     }
-    if (m_nOrder < 1) {
+    if (m_nOrder < 1)
+    {
         m_nOrder = 1;
     }
     SetDlgItemInt(IDC_PASS_FILTER_ORDER, m_nOrder, TRUE);
@@ -554,12 +658,15 @@ void CWbDlgFilterPass::OnOrderScroll() {
 /***************************************************************************/
 // CWbDlgFilterPass::OnKillfocusOrder Lower frequency changed
 /***************************************************************************/
-void CWbDlgFilterPass::OnKillfocusOrder() {
+void CWbDlgFilterPass::OnKillfocusOrder()
+{
     m_nOrder = GetDlgItemInt(IDC_PASS_FILTER_ORDER, NULL, TRUE);
-    if (m_nOrder > 20) {
+    if (m_nOrder > 20)
+    {
         m_nOrder = 20;
     }
-    if (m_nOrder < 1) {
+    if (m_nOrder < 1)
+    {
         m_nOrder = 1;
     }
     SetDlgItemInt(IDC_PASS_FILTER_ORDER, m_nOrder, TRUE);
@@ -568,7 +675,8 @@ void CWbDlgFilterPass::OnKillfocusOrder() {
 /***************************************************************************/
 // CWbDlgFilterPass::OnHelpWorkbench Call Workbench help
 /***************************************************************************/
-void CWbDlgFilterPass::OnHelpWorkbench() {
+void CWbDlgFilterPass::OnHelpWorkbench()
+{
     // create the pathname
     CString szPath = AfxGetApp()->m_pszHelpFilePath;
     szPath += "::/User_Interface/Menus/Tools/Workbench.htm";
@@ -598,7 +706,8 @@ END_MESSAGE_MAP()
 /***************************************************************************/
 // CWbDlgFilterReverb::CWbDlgFilterReverb Constructor
 /***************************************************************************/
-CWbDlgFilterReverb::CWbDlgFilterReverb(CWnd * pParent) : CDialog(CWbDlgFilterReverb::IDD, pParent) {
+CWbDlgFilterReverb::CWbDlgFilterReverb(CWnd * pParent) : CDialog(CWbDlgFilterReverb::IDD, pParent)
+{
     //{{AFX_DATA_INIT(CWbDlgFilterReverb)
     m_nDelay = 100;
     m_nGain = -20;
@@ -612,7 +721,8 @@ CWbDlgFilterReverb::CWbDlgFilterReverb(CWnd * pParent) : CDialog(CWbDlgFilterRev
 /***************************************************************************/
 // CWbDlgFilterReverb::DoDataExchange Data exchange
 /***************************************************************************/
-void CWbDlgFilterReverb::DoDataExchange(CDataExchange * pDX) {
+void CWbDlgFilterReverb::DoDataExchange(CDataExchange * pDX)
+{
     CDialog::DoDataExchange(pDX);
     //{{AFX_DATA_MAP(CWbDlgFilterReverb)
     DDX_Text(pDX, IDC_ECHO_DELAYEDIT, m_nDelay);
@@ -627,7 +737,8 @@ void CWbDlgFilterReverb::DoDataExchange(CDataExchange * pDX) {
 // CWbDlgFilterReverb::OnInitDialog Dialog initialisation
 // All the necessary informations are put into the dialog controls.
 /***************************************************************************/
-BOOL CWbDlgFilterReverb::OnInitDialog() {
+BOOL CWbDlgFilterReverb::OnInitDialog()
+{
     CDialog::OnInitDialog();
     // build and place the delay spin control
     m_SpinDelay.Init(IDC_ECHO_DELAYSCROLL, this);
@@ -636,9 +747,12 @@ BOOL CWbDlgFilterReverb::OnInitDialog() {
     // set up right caption for dialog
     CString szCaption;
     GetWindowText(szCaption);
-    if (m_bEcho) {
+    if (m_bEcho)
+    {
         szCaption = szCaption.Left(szCaption.Find('/')) + szCaption.Right(szCaption.GetLength() - szCaption.Find(' '));
-    } else {
+    }
+    else
+    {
         szCaption = szCaption.Right(szCaption.GetLength() - szCaption.Find('/') - 1);
     }
     SetWindowText(szCaption);
@@ -648,17 +762,23 @@ BOOL CWbDlgFilterReverb::OnInitDialog() {
 /***************************************************************************/
 // CWbDlgFilterReverb::OnDelayScroll Delay spin control hit
 /***************************************************************************/
-void CWbDlgFilterReverb::OnDelayScroll() {
+void CWbDlgFilterReverb::OnDelayScroll()
+{
     m_nDelay = GetDlgItemInt(IDC_ECHO_DELAYEDIT, NULL, TRUE);
-    if (m_SpinDelay.UpperButtonClicked()) {
+    if (m_SpinDelay.UpperButtonClicked())
+    {
         m_nDelay++;
-    } else {
+    }
+    else
+    {
         m_nDelay--;
     }
-    if (m_nDelay > MAX_ECHO_DELAY) {
+    if (m_nDelay > MAX_ECHO_DELAY)
+    {
         m_nDelay = MAX_ECHO_DELAY;
     }
-    if (m_nDelay < 1) {
+    if (m_nDelay < 1)
+    {
         m_nDelay = 1;
     }
     SetDlgItemInt(IDC_ECHO_DELAYEDIT, m_nDelay, TRUE);
@@ -667,12 +787,15 @@ void CWbDlgFilterReverb::OnDelayScroll() {
 /***************************************************************************/
 // CWbDlgFilterReverb::OnKillfocusDelay Delay changed
 /***************************************************************************/
-void CWbDlgFilterReverb::OnKillfocusDelay() {
+void CWbDlgFilterReverb::OnKillfocusDelay()
+{
     m_nDelay = GetDlgItemInt(IDC_ECHO_DELAYEDIT, NULL, TRUE);
-    if (m_nDelay > MAX_ECHO_DELAY) {
+    if (m_nDelay > MAX_ECHO_DELAY)
+    {
         m_nDelay = MAX_ECHO_DELAY;
     }
-    if (m_nDelay < 1) {
+    if (m_nDelay < 1)
+    {
         m_nDelay = 1;
     }
     SetDlgItemInt(IDC_ECHO_DELAYEDIT, m_nDelay, TRUE);
@@ -681,17 +804,23 @@ void CWbDlgFilterReverb::OnKillfocusDelay() {
 /***************************************************************************/
 // CWbDlgFilterReverb::OnGainScroll Gain spin control hit
 /***************************************************************************/
-void CWbDlgFilterReverb::OnGainScroll() {
+void CWbDlgFilterReverb::OnGainScroll()
+{
     m_nGain = GetDlgItemInt(IDC_ECHO_GAINEDIT, NULL, TRUE);
-    if (m_SpinGain.UpperButtonClicked()) {
+    if (m_SpinGain.UpperButtonClicked())
+    {
         m_nGain++;
-    } else {
+    }
+    else
+    {
         m_nGain--;
     }
-    if (m_nGain > -1) {
+    if (m_nGain > -1)
+    {
         m_nGain = -1;
     }
-    if (m_nGain < -60) {
+    if (m_nGain < -60)
+    {
         m_nGain = -60;
     }
     SetDlgItemInt(IDC_ECHO_GAINEDIT, m_nGain, TRUE);
@@ -700,12 +829,15 @@ void CWbDlgFilterReverb::OnGainScroll() {
 /***************************************************************************/
 // CWbDlgFilterReverb::OnKillfocusGain Gain changed
 /***************************************************************************/
-void CWbDlgFilterReverb::OnKillfocusGain() {
+void CWbDlgFilterReverb::OnKillfocusGain()
+{
     m_nGain = GetDlgItemInt(IDC_ECHO_GAINEDIT, NULL, TRUE);
-    if (m_nGain > -1) {
+    if (m_nGain > -1)
+    {
         m_nGain = -1;
     }
-    if (m_nGain < -60) {
+    if (m_nGain < -60)
+    {
         m_nGain = -60;
     }
     SetDlgItemInt(IDC_ECHO_GAINEDIT, m_nGain, TRUE);
@@ -714,7 +846,8 @@ void CWbDlgFilterReverb::OnKillfocusGain() {
 /***************************************************************************/
 // CWbDlgFilterReverb::OnHelpWorkbench Call Workbench help
 /***************************************************************************/
-void CWbDlgFilterReverb::OnHelpWorkbench() {
+void CWbDlgFilterReverb::OnHelpWorkbench()
+{
     // create the pathname
     CString szPath = AfxGetApp()->m_pszHelpFilePath;
     szPath += "::/User_Interface/Menus/Tools/Workbench.htm";
@@ -740,7 +873,8 @@ END_MESSAGE_MAP()
 /***************************************************************************/
 // CWbDlgFilterEquation::CWbDlgFilterEquation Constructor
 /***************************************************************************/
-CWbDlgFilterEquation::CWbDlgFilterEquation(CWnd * pParent) : CDialog(CWbDlgFilterEquation::IDD, pParent) {
+CWbDlgFilterEquation::CWbDlgFilterEquation(CWnd * pParent) : CDialog(CWbDlgFilterEquation::IDD, pParent)
+{
     //{{AFX_DATA_INIT(CWbDlgFilterEquation)
     m_szEquation = "";
     //}}AFX_DATA_INIT
@@ -752,7 +886,8 @@ CWbDlgFilterEquation::CWbDlgFilterEquation(CWnd * pParent) : CDialog(CWbDlgFilte
 /***************************************************************************/
 // CWbDlgFilterEquation::DoDataExchange Data exchange
 /***************************************************************************/
-void CWbDlgFilterEquation::DoDataExchange(CDataExchange * pDX) {
+void CWbDlgFilterEquation::DoDataExchange(CDataExchange * pDX)
+{
     CDialog::DoDataExchange(pDX);
     //{{AFX_DATA_MAP(CWbDlgFilterEquation)
     DDX_Text(pDX, IDC_EQUATION, m_szEquation);
@@ -767,7 +902,8 @@ void CWbDlgFilterEquation::DoDataExchange(CDataExchange * pDX) {
 // CWbDlgFilterEquation::OnInitDialog Dialog initialisation
 // All the necessary informations are put into the dialog controls.
 /***************************************************************************/
-BOOL CWbDlgFilterEquation::OnInitDialog() {
+BOOL CWbDlgFilterEquation::OnInitDialog()
+{
     CDialog::OnInitDialog();
     // change the font for the text control
     CWnd * pWnd = GetDlgItem(IDC_EQUATION_TEXT0);
@@ -787,11 +923,15 @@ BOOL CWbDlgFilterEquation::OnInitDialog() {
 // CWbDlgFilterEquation::OnOK OK button pressed
 // Check first, if the equation is ok. If not, dont close the dialog.
 /***************************************************************************/
-void CWbDlgFilterEquation::OnOK() {
+void CWbDlgFilterEquation::OnOK()
+{
     UpdateData(TRUE);
-    if (((CProcessWbEquation *)GetParent())->CheckFunction(&m_szEquation)) {
+    if (((CProcessWbEquation *)GetParent())->CheckFunction(&m_szEquation))
+    {
         EndDialog(IDOK);
-    } else {
+    }
+    else
+    {
         AfxMessageBox(IDS_ERROR_EQUATION,MB_OK,0);
     }
 }
@@ -799,7 +939,8 @@ void CWbDlgFilterEquation::OnOK() {
 /***************************************************************************/
 // CWbDlgFilterEquation::OnHelpWorkbench Call Workbench help
 /***************************************************************************/
-void CWbDlgFilterEquation::OnHelpWorkbench() {
+void CWbDlgFilterEquation::OnHelpWorkbench()
+{
     // create the pathname
     CString szPath = AfxGetApp()->m_pszHelpFilePath;
     szPath += "::/User_Interface/Menus/Tools/Workbench.htm";

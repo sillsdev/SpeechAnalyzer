@@ -152,8 +152,10 @@ END_MESSAGE_MAP()
 /***************************************************************************/
 // CGraphWnd::CGraphWnd Constructor
 /***************************************************************************/
-CGraphWnd::CGraphWnd(UINT nID) {
-    for (int nLoop = 0; nLoop < ANNOT_WND_NUMBER; nLoop++) {
+CGraphWnd::CGraphWnd(UINT nID)
+{
+    for (int nLoop = 0; nLoop < ANNOT_WND_NUMBER; nLoop++)
+    {
         m_apAnnWnd[nLoop] = NULL;
         m_abAnnWnd[nLoop] = FALSE;
     }
@@ -165,7 +167,8 @@ CGraphWnd::CGraphWnd(UINT nID) {
     m_bAreaGraph = FALSE;
     m_pPlot = NewPlotFromID(nID);
     m_nPlotID = nID;
-    if (!m_pPlot) {
+    if (!m_pPlot)
+    {
         m_pPlot = new CPlotBlank();
         m_pPlot->SetParent(this);
         m_nPlotID = IDD_BLANK;
@@ -175,12 +178,15 @@ CGraphWnd::CGraphWnd(UINT nID) {
 int CGraphWnd::m_anAnnWndOrder[] =
 {REFERENCE, PHONETIC, TONE, PHONEMIC, ORTHO, GLOSS, MUSIC_PL1,MUSIC_PL2,MUSIC_PL3,MUSIC_PL4};
 
-CGraphWnd::CGraphWnd(const  CGraphWnd & toBeCopied) {
+CGraphWnd::CGraphWnd(const  CGraphWnd & toBeCopied)
+{
     Copy(toBeCopied);
 }
 
-CGraphWnd & CGraphWnd::operator=(const CGraphWnd & fromThis) {
-    if (&fromThis != this) {
+CGraphWnd & CGraphWnd::operator=(const CGraphWnd & fromThis)
+{
+    if (&fromThis != this)
+    {
         Clear();
         Copy(fromThis);
     }
@@ -190,19 +196,25 @@ CGraphWnd & CGraphWnd::operator=(const CGraphWnd & fromThis) {
 
 /***************************************************************************/
 /***************************************************************************/
-void CGraphWnd::Clear(void) {
-    if (m_pPlot) {
+void CGraphWnd::Clear(void)
+{
+    if (m_pPlot)
+    {
         delete m_pPlot;
     }
-    if (m_pLegend) {
+    if (m_pLegend)
+    {
         delete m_pLegend;
     }
-    if (m_pXScale) {
+    if (m_pXScale)
+    {
         delete m_pXScale;
     }
 
-    for (int nLoop = 0; nLoop < ANNOT_WND_NUMBER; nLoop++) {
-        if (m_apAnnWnd[nLoop]) {
+    for (int nLoop = 0; nLoop < ANNOT_WND_NUMBER; nLoop++)
+    {
+        if (m_apAnnWnd[nLoop])
+        {
             delete m_apAnnWnd[nLoop];
         }
     }
@@ -210,22 +222,26 @@ void CGraphWnd::Clear(void) {
 
 /***************************************************************************/
 /***************************************************************************/
-void CGraphWnd::Copy(const CGraphWnd & fromThis) {
+void CGraphWnd::Copy(const CGraphWnd & fromThis)
+{
     this->m_pPlot   = NULL;
     m_pPlot         = NULL;
     m_pLegend       = NULL;
     m_pXScale       = NULL;
     m_nPlotID       = fromThis.m_nPlotID;
     m_bAreaGraph    = fromThis.m_bAreaGraph;
-    if (m_nPlotID == ID_GRAPHS_OVERLAY) {
+    if (m_nPlotID == ID_GRAPHS_OVERLAY)
+    {
         m_nPlotID = IDD_BLANK;
 
         CMultiPlotWnd * pPlot = (CMultiPlotWnd *)fromThis.GetPlot();
-        if (pPlot && pPlot->IsKindOf(RUNTIME_CLASS(CMultiPlotWnd))) {
+        if (pPlot && pPlot->IsKindOf(RUNTIME_CLASS(CMultiPlotWnd)))
+        {
             m_nPlotID = pPlot->GetBasePlotID();  // save base plot
         }
     }
-    for (int nLoop = 0; nLoop < ANNOT_WND_NUMBER; nLoop++) {
+    for (int nLoop = 0; nLoop < ANNOT_WND_NUMBER; nLoop++)
+    {
         m_apAnnWnd[nLoop] = NULL;
     }
 
@@ -234,8 +250,10 @@ void CGraphWnd::Copy(const CGraphWnd & fromThis) {
 
 /***************************************************************************/
 /***************************************************************************/
-void  CGraphWnd::PartialCopy(const CGraphWnd & fromThis) {
-    for (int nLoop = 0; nLoop < ANNOT_WND_NUMBER; nLoop++) {
+void  CGraphWnd::PartialCopy(const CGraphWnd & fromThis)
+{
+    for (int nLoop = 0; nLoop < ANNOT_WND_NUMBER; nLoop++)
+    {
         m_abAnnWnd[nLoop] = fromThis.m_abAnnWnd[nLoop];
     }
 
@@ -246,7 +264,8 @@ void  CGraphWnd::PartialCopy(const CGraphWnd & fromThis) {
 /***************************************************************************/
 // CGraphWnd::~CGraphWnd Destructor
 /***************************************************************************/
-CGraphWnd::~CGraphWnd() {
+CGraphWnd::~CGraphWnd()
+{
     Clear();
 }
 
@@ -256,11 +275,13 @@ CGraphWnd::~CGraphWnd() {
 /***************************************************************************/
 // CGraphWnd::DisableLegend Is legend window disabled for this graph type
 /***************************************************************************/
-BOOL CGraphWnd::DisableLegend() {
+BOOL CGraphWnd::DisableLegend()
+{
     BOOL result = FALSE;
 
 #ifdef originalSizeZGraph
-    switch (m_nPlotID) {
+    switch (m_nPlotID)
+    {
     case IDD_F1F2:
     case IDD_F2F1:
     case IDD_F2F1F1:
@@ -277,7 +298,8 @@ BOOL CGraphWnd::DisableLegend() {
 /***************************************************************************/
 // CGraphWnd::ShowLegend Show or hide the legend window
 /***************************************************************************/
-void CGraphWnd::ShowLegend(BOOL bShow, BOOL bRedraw) {
+void CGraphWnd::ShowLegend(BOOL bShow, BOOL bRedraw)
+{
     m_bLegend = bShow && !DisableLegend();
 
     //***********************************************
@@ -288,27 +310,34 @@ void CGraphWnd::ShowLegend(BOOL bShow, BOOL bRedraw) {
     //***********************************************
     static BOOL bRecursion;
 
-    if (!bRecursion) {
-        if (IsPlotID(IDD_MELOGRAM)) {
+    if (!bRecursion)
+    {
+        if (IsPlotID(IDD_MELOGRAM))
+        {
             CSaView * pView = (CSaView *)GetParent();
             CGraphWnd * pGraph = pView->GraphIDtoPtr(IDD_MAGNITUDE);
             bRecursion = TRUE;
-            if (pGraph) {
+            if (pGraph)
+            {
                 pGraph->ShowLegend(m_bLegend, bRedraw);
             }
             bRecursion = FALSE;
-        } else if (IsPlotID(IDD_MAGNITUDE)) {
+        }
+        else if (IsPlotID(IDD_MAGNITUDE))
+        {
             CSaView * pView = (CSaView *)GetParent();
             CGraphWnd * pGraph = pView->GraphIDtoPtr(IDD_MELOGRAM);
             bRecursion = TRUE;
-            if (pGraph) {
+            if (pGraph)
+            {
                 pGraph->ShowLegend(m_bLegend, bRedraw);
             }
             bRecursion = FALSE;
         }
     }
 
-    if (bRedraw) {
+    if (bRedraw)
+    {
         ResizeGraph(TRUE, TRUE);    // repaint whole graph window
     }
 }
@@ -316,10 +345,12 @@ void CGraphWnd::ShowLegend(BOOL bShow, BOOL bRedraw) {
 /***************************************************************************/
 // CGraphWnd::DisableXScale Is x-scale window disabled for this graph type
 /***************************************************************************/
-BOOL CGraphWnd::DisableXScale() {
+BOOL CGraphWnd::DisableXScale()
+{
     BOOL result = FALSE;
 
-    switch (m_nPlotID) {
+    switch (m_nPlotID)
+    {
     case IDD_STAFF:
     case IDD_MAGNITUDE:
 #ifdef originalSizeZGraph
@@ -339,10 +370,12 @@ BOOL CGraphWnd::DisableXScale() {
 /***************************************************************************/
 // CGraphWnd::ShowXScale Show or hide the x-scale window
 /***************************************************************************/
-void CGraphWnd::ShowXScale(BOOL bShow, BOOL bRedraw) {
+void CGraphWnd::ShowXScale(BOOL bShow, BOOL bRedraw)
+{
     m_bXScale = bShow && !DisableXScale();
 
-    if (bRedraw) {
+    if (bRedraw)
+    {
         ResizeGraph(TRUE, TRUE);    // repaint whole graph window
     }
 }
@@ -350,10 +383,12 @@ void CGraphWnd::ShowXScale(BOOL bShow, BOOL bRedraw) {
 /***************************************************************************/
 // CGraphWnd::DisableAnnotation Is annotation window disabled for this graph type
 /***************************************************************************/
-BOOL CGraphWnd::DisableAnnotation(int /*nIndex*/) {
+BOOL CGraphWnd::DisableAnnotation(int /*nIndex*/)
+{
     BOOL result = FALSE;
 
-    switch (m_nPlotID) {
+    switch (m_nPlotID)
+    {
     case IDD_STAFF:
     case IDD_MAGNITUDE:
     case IDD_F1F2:
@@ -371,10 +406,12 @@ BOOL CGraphWnd::DisableAnnotation(int /*nIndex*/) {
 /***************************************************************************/
 // CGraphWnd::ShowAnnotation Show or hide annotation window
 /***************************************************************************/
-void CGraphWnd::ShowAnnotation(int nIndex, BOOL bShow, BOOL bRedraw) {
+void CGraphWnd::ShowAnnotation(int nIndex, BOOL bShow, BOOL bRedraw)
+{
     m_abAnnWnd[nIndex] = bShow && !DisableAnnotation(nIndex);
 
-    if (bRedraw) {
+    if (bRedraw)
+    {
         ResizeGraph(TRUE, TRUE);    // repaint whole graph window
     }
 }
@@ -386,10 +423,12 @@ void CGraphWnd::ShowAnnotation(int nIndex, BOOL bShow, BOOL bRedraw) {
 // (because this area is defined as non client, it cannot be invalidated
 // directly). This will cause a draw message.
 /***************************************************************************/
-void CGraphWnd::SetCaptionStyle(int nStyle, BOOL bRedraw) {
+void CGraphWnd::SetCaptionStyle(int nStyle, BOOL bRedraw)
+{
     m_nCaption = nStyle;
     // set caption height
-    switch (m_nCaption) {
+    switch (m_nCaption)
+    {
     case Normal:
         m_iNCHeight = GetSystemMetrics(SM_CYCAPTION) - GetSystemMetrics(SM_CYBORDER);
         break;
@@ -401,7 +440,8 @@ void CGraphWnd::SetCaptionStyle(int nStyle, BOOL bRedraw) {
         m_iNCHeight = 1; // because of 3D border
         break;
     }
-    if (bRedraw) {
+    if (bRedraw)
+    {
         // force a repaint of the whole window with NC area
         CSaView * pView = (CSaView *)GetParent(); // get pointer to parent view
         // invalidate whole window
@@ -419,16 +459,22 @@ void CGraphWnd::SetCaptionStyle(int nStyle, BOOL bRedraw) {
 // are not visible, but just redraw to show the new annotations.
 // For area graphs it does not do anything.
 //***************************************************************************/
-void CGraphWnd::ScrollGraph(CSaView * pView, DWORD dwNewPos, DWORD dwOldPos) {
+void CGraphWnd::ScrollGraph(CSaView * pView, DWORD dwNewPos, DWORD dwOldPos)
+{
     //TRACE("ScrollGraph %lp %d %d\n",pView,dwNewPos,dwOldPos);
-    if (m_bAreaGraph) {
+    if (m_bAreaGraph)
+    {
         return;    // don't do anything
     }
-    if (!HaveCursors()) {
+    if (!HaveCursors())
+    {
         // no cursors visible
-        if (HavePrivateCursor()) {
+        if (HavePrivateCursor())
+        {
             return;    // don't do anything
-        } else {
+        }
+        else
+        {
             RedrawGraph();    // redraw graph, without legend
         }
         return;
@@ -436,11 +482,13 @@ void CGraphWnd::ScrollGraph(CSaView * pView, DWORD dwNewPos, DWORD dwOldPos) {
 
     CRect rWnd;
     GetClientRect(rWnd);
-    if (m_bLegend) {
+    if (m_bLegend)
+    {
         rWnd.left = m_pLegend->GetWindowWidth();
     }
 
-    if (m_pPlot) {
+    if (m_pPlot)
+    {
         m_pPlot->GetClientRect(rWnd);
     }
 
@@ -451,28 +499,35 @@ void CGraphWnd::ScrollGraph(CSaView * pView, DWORD dwNewPos, DWORD dwOldPos) {
     bLessThanPage = FALSE;
 
     // check if there is less than a page to scroll
-    if (bLessThanPage) {
+    if (bLessThanPage)
+    {
         // prepare scrolling
         double fBytesPerPix = dwDataFrame / (double)rWnd.Width(); // calculate data samples per pixel
         int nRealScroll = round((double)dwOldPos/fBytesPerPix)-round((double)dwNewPos/fBytesPerPix);
 
-        if (nRealScroll) {
+        if (nRealScroll)
+        {
             // scroll the plot window
             m_pPlot->ScrollPlot(pView, nRealScroll, dwOldPos, dwDataFrame);
             // scroll the annotation windows
-            for (int nLoop = 0; nLoop < ANNOT_WND_NUMBER; nLoop++) {
-                if (m_abAnnWnd[nLoop]) {
+            for (int nLoop = 0; nLoop < ANNOT_WND_NUMBER; nLoop++)
+            {
+                if (m_abAnnWnd[nLoop])
+                {
                     m_apAnnWnd[nLoop]->ScrollWindow(nRealScroll, 0, 0, 0);
                     m_apAnnWnd[nLoop]->UpdateWindow();
                 }
             }
-            if (m_bXScale) {
+            if (m_bXScale)
+            {
                 m_pXScale->InvalidateRect(NULL);
                 m_pXScale->UpdateWindow();
 
             }
         }
-    } else { // page scroll
+    }
+    else     // page scroll
+    {
         RedrawGraph(TRUE, FALSE);
     }
 }
@@ -486,19 +541,24 @@ void CGraphWnd::ScrollGraph(CSaView * pView, DWORD dwNewPos, DWORD dwOldPos) {
 // if the two other flags are set, otherwise the graph will not be invalida-
 // ted (only all its windows).
 /***************************************************************************/
-void CGraphWnd::ResizeGraph(BOOL bEntire, BOOL bLegend, BOOL bGraph) {
-    if (bEntire) {
+void CGraphWnd::ResizeGraph(BOOL bEntire, BOOL bLegend, BOOL bGraph)
+{
+    if (bEntire)
+    {
         // save bottom
         CRect rWnd;
         GetClientRect(rWnd);
         int nBottom = rWnd.bottom;
         // move legend window
-        if (m_bLegend) {
+        if (m_bLegend)
+        {
             // invalidate graph without legend
-            if (!bLegend) {
+            if (!bLegend)
+            {
                 rWnd.left = m_pLegend->GetWindowWidth();
             }
-            if (bGraph) {
+            if (bGraph)
+            {
                 InvalidateRect(rWnd);
             }
             // move legend window
@@ -509,25 +569,32 @@ void CGraphWnd::ResizeGraph(BOOL bEntire, BOOL bLegend, BOOL bGraph) {
             m_pLegend->MoveWindow(rWnd, TRUE);
             GetClientRect(rWnd);
             rWnd.left = m_pLegend->GetWindowWidth();
-        } else {
+        }
+        else
+        {
             // invalidate entire graph window
             InvalidateRect(NULL);
             m_pLegend->MoveWindow(0, 0, 0, 0, FALSE); // hide window
         }
         // move annotation windows
-        for (int nLoop = 0; nLoop < ANNOT_WND_NUMBER; nLoop++) {
+        for (int nLoop = 0; nLoop < ANNOT_WND_NUMBER; nLoop++)
+        {
             // SDM 1.5Test8.1
-            if (m_abAnnWnd[m_anAnnWndOrder[nLoop]]) {
+            if (m_abAnnWnd[m_anAnnWndOrder[nLoop]])
+            {
                 // move annotation window
                 rWnd.bottom = rWnd.top + m_apAnnWnd[m_anAnnWndOrder[nLoop]]->GetWindowHeight();
                 m_apAnnWnd[m_anAnnWndOrder[nLoop]]->MoveWindow(rWnd, TRUE);
                 rWnd.top = rWnd.bottom;
-            } else {
+            }
+            else
+            {
                 m_apAnnWnd[m_anAnnWndOrder[nLoop]]->MoveWindow(0, 0, 0, 0, FALSE);    // hide window
             }
         }
         // move x-scale window
-        if (m_bXScale) {
+        if (m_bXScale)
+        {
             // move x-scale window
             rWnd.bottom = nBottom;
             nBottom = rWnd.top;
@@ -536,17 +603,21 @@ void CGraphWnd::ResizeGraph(BOOL bEntire, BOOL bLegend, BOOL bGraph) {
             rWnd.bottom = rWnd.top;
             rWnd.top = nBottom;
             nBottom = rWnd.bottom;
-        } else {
+        }
+        else
+        {
             m_pXScale->MoveWindow(0, 0, 0, 0, FALSE);    // hide window
         }
         // move plot window
         rWnd.bottom = nBottom;
         m_pPlot->MoveWindow(rWnd, TRUE);
-        if (HavePrivateCursor()) {
+        if (HavePrivateCursor())
+        {
             m_pPlot->SetInitialPrivateCursor();    // initialize private cursor
         }
         // SDM 1.06.6U5
-        if (HaveCursors()) {
+        if (HaveCursors())
+        {
             m_pPlot->SetStartCursor((CSaView *)GetParent());
             m_pPlot->SetStopCursor((CSaView *)GetParent());
         }
@@ -556,16 +627,19 @@ void CGraphWnd::ResizeGraph(BOOL bEntire, BOOL bLegend, BOOL bGraph) {
         // melogram graph then also Resize the TWC graph if it
         // exists.
         //***********************************************************
-        if (IsPlotID(IDD_MELOGRAM)) {
+        if (IsPlotID(IDD_MELOGRAM))
+        {
             CSaView * pView = (CSaView *)GetParent();
             CGraphWnd * pGraph = pView->GraphIDtoPtr(IDD_TWC);
-            if (pGraph) {
+            if (pGraph)
+            {
                 pGraph->ResizeGraph(TRUE, pGraph->HaveLegend());
             }
         }
     }
 
-    else {
+    else
+    {
         m_pPlot->RedrawPlot(bEntire);
     }
 }
@@ -579,31 +653,39 @@ void CGraphWnd::ResizeGraph(BOOL bEntire, BOOL bLegend, BOOL bGraph) {
 // if the two other flags are set, otherwise the graph will not be invalida-
 // ted (only all its windows).
 /***************************************************************************/
-void CGraphWnd::RedrawGraph(BOOL bEntire, BOOL bLegend, BOOL bGraph) {
+void CGraphWnd::RedrawGraph(BOOL bEntire, BOOL bLegend, BOOL bGraph)
+{
     // redraw the plot window
     m_pPlot->RedrawPlot(bEntire);
 
-    if (bGraph) {
+    if (bGraph)
+    {
         InvalidateRect(NULL, FALSE);
     }
 
-    if (bEntire) {
+    if (bEntire)
+    {
         // redraw the annotation windows
-        for (int nLoop = 0; nLoop < ANNOT_WND_NUMBER; nLoop++) {
-            if (m_abAnnWnd[nLoop]) {
+        for (int nLoop = 0; nLoop < ANNOT_WND_NUMBER; nLoop++)
+        {
+            if (m_abAnnWnd[nLoop])
+            {
                 m_apAnnWnd[nLoop]->InvalidateRect(NULL);
             }
         }
 
-        if (m_bXScale) {
+        if (m_bXScale)
+        {
             m_pXScale->InvalidateRect(NULL);
         }
 
-        if (m_bLegend && bLegend) {
+        if (m_bLegend && bLegend)
+        {
             m_pLegend->InvalidateRect(NULL);
         }
 
-        if (HaveCursors()) {
+        if (HaveCursors())
+        {
             m_pPlot->SetStartCursor((CSaView *)GetParent());
             m_pPlot->SetStopCursor((CSaView *)GetParent());
         }
@@ -613,10 +695,12 @@ void CGraphWnd::RedrawGraph(BOOL bEntire, BOOL bLegend, BOOL bGraph) {
         // melogram graph then also redraw the TWC graph if it
         // exists.
         //***********************************************************
-        if (IsPlotID(IDD_MELOGRAM)) {
+        if (IsPlotID(IDD_MELOGRAM))
+        {
             CSaView * pView = (CSaView *)GetParent();
             CGraphWnd * pGraph = pView->GraphIDtoPtr(IDD_TWC);
-            if (pGraph) {
+            if (pGraph)
+            {
                 pGraph->RedrawGraph(TRUE, pGraph->HaveLegend());
             }
         }
@@ -626,7 +710,8 @@ void CGraphWnd::RedrawGraph(BOOL bEntire, BOOL bLegend, BOOL bGraph) {
 /***************************************************************************/
 // CGraphWnd::GetSemitone Calculates semitones from a given frequency
 /***************************************************************************/
-double CGraphWnd::GetSemitone(double fFreq) {
+double CGraphWnd::GetSemitone(double fFreq)
+{
     // CLW 4/7/00
     // more accurate and compact way of calculating semitone
     // semi-tone 0 aligns with MIDI# 0 at 8.176Hz
@@ -637,14 +722,16 @@ double CGraphWnd::GetSemitone(double fFreq) {
 /***************************************************************************/
 // CGraphWnd::SemitoneToFrequency Calculates frequency from a given semitone
 /***************************************************************************/
-double CGraphWnd::SemitoneToFrequency(double fSemitone) {
+double CGraphWnd::SemitoneToFrequency(double fSemitone)
+{
     return 440.0 * pow(2.0, (fSemitone - 69.0) / 12.0);
 }
 
 /***************************************************************************/
 // CGraphWnd::NoteNum2Name Calculates frequency from a given semitone
 /***************************************************************************/
-CSaString CGraphWnd::Semitone2Name(double fSemitone) {
+CSaString CGraphWnd::Semitone2Name(double fSemitone)
+{
     CSaString szNoteName;
     short nOctave;
     short nInterval;
@@ -656,7 +743,8 @@ CSaString CGraphWnd::Semitone2Name(double fSemitone) {
     wchar_t pASCII[2] = {_T('\0'),_T('\0')};
 
     // limit range of input MIDI numbers
-    if (fSemitone < 21.) {
+    if (fSemitone < 21.)
+    {
         szNoteName = _T("   ");
         return szNoteName.GetBuffer(5);
     }
@@ -674,18 +762,21 @@ CSaString CGraphWnd::Semitone2Name(double fSemitone) {
 }
 
 
-static void UpdatePitchStatusBarNote(double fPitchData, double fUncertainty, BOOL bShowNoteName) {
+static void UpdatePitchStatusBarNote(double fPitchData, double fUncertainty, BOOL bShowNoteName)
+{
     // get pointer to status bar
     CMainFrame * pMainWnd = (CMainFrame *)AfxGetMainWnd();
     CDataStatusBar * pStat = (CDataStatusBar *)pMainWnd->GetDataStatusBar();
     CSaString szText;
 
-    if (fPitchData > 0.F) {
+    if (fPitchData > 0.F)
+    {
         // calculate frequency value
         double fFreqDecPlaces = (short)floor(-log10(fUncertainty) + .7);
         double fMultiplier = pow(10.0, -fFreqDecPlaces);
         fPitchData = round(fPitchData / fMultiplier) * fMultiplier;
-        if (fFreqDecPlaces < 0.) {
+        if (fFreqDecPlaces < 0.)
+        {
             fFreqDecPlaces = 0.;
         }
         // calculate semitone value
@@ -694,7 +785,8 @@ static void UpdatePitchStatusBarNote(double fPitchData, double fUncertainty, BOO
         // update semitone pane
         double fSemitone = CGraphWnd::GetSemitone(fPitchData);
         szText.Format(_T("      %.*f st"), (int)fSemitoneDecPlaces, fSemitone);
-        if (bShowNoteName) {
+        if (bShowNoteName)
+        {
             szText += _T(" (") + CSaString(CGraphWnd::Semitone2Name(fSemitone)) + _T(")");
         }
         CSaString test = CSaString(CGraphWnd::Semitone2Name(fSemitone));
@@ -704,7 +796,9 @@ static void UpdatePitchStatusBarNote(double fPitchData, double fUncertainty, BOO
         szText.Format(_T("      %.*f Hz"), (int)fFreqDecPlaces, fPitchData);
         pStat->SetPaneSymbol(ID_STATUSPANE_PITCH); // switch symbol on
         pStat->SetPaneText(ID_STATUSPANE_PITCH, szText);
-    } else {
+    }
+    else
+    {
         szText = _T(" ");
         pStat->SetPaneSymbol(ID_STATUSPANE_NOTE); // amplitude symbol
         pStat->SetPaneText(ID_STATUSPANE_NOTE, szText);  // amplitude indicator
@@ -714,7 +808,8 @@ static void UpdatePitchStatusBarNote(double fPitchData, double fUncertainty, BOO
     }
 }
 
-static void UpdatePitchStatusBar(double fPitchData, double fUncertainty) {
+static void UpdatePitchStatusBar(double fPitchData, double fUncertainty)
+{
     UpdatePitchStatusBarNote(fPitchData, fUncertainty, FALSE);
 }
 
@@ -726,14 +821,16 @@ static void UpdatePitchStatusBar(double fPitchData, double fUncertainty) {
 // start- and stopcursor both contain 0, the update call comes from a graph
 // with a private cursor.
 //**************************************************************************/
-void CGraphWnd::UpdateStatusBar(DWORD dwStartCursor, DWORD dwStopCursor, BOOL bForceUpdate) {
+void CGraphWnd::UpdateStatusBar(DWORD dwStartCursor, DWORD dwStopCursor, BOOL bForceUpdate)
+{
     // get pointer to parent view and to document
     CSaView * pView = (CSaView *)GetParent();
     CSaDoc * pDoc = (CSaDoc *)pView->GetDocument();
     FmtParm * pFmtParm = pDoc->GetFmtParm(); // get sa parameters format member data
     UINT nSmpSize = pFmtParm->wBlockAlign / pFmtParm->wChannels;  // number of bytes per sample
     // check if this graph has focus
-    if ((m_bFocus) && (pView->ViewIsActive())) {
+    if ((m_bFocus) && (pView->ViewIsActive()))
+    {
         // get pointer to status bar
         CMainFrame * pMainWnd = (CMainFrame *)AfxGetMainWnd();
         CDataStatusBar * pStat = (CDataStatusBar *)pMainWnd->GetDataStatusBar();
@@ -747,18 +844,21 @@ void CGraphWnd::UpdateStatusBar(DWORD dwStartCursor, DWORD dwStopCursor, BOOL bF
         BOOL bRes=FALSE;
         CRect rWnd;
         //if ((dwStartCursor == 0) && (dwStopCursor == 0))
-        if (HavePrivateCursor()) {
+        if (HavePrivateCursor())
+        {
             // this is a private cursor graph
             CProcessSpectrum * pSpectrum = NULL;
             SpectrumParm * pSpectrumParm = NULL;
             CProcessTonalWeightChart * pTWC;
-            switch (m_nPlotID) {
+            switch (m_nPlotID)
+            {
             case IDD_SPECTRUM:
                 m_pPlot->GetClientRect(rWnd); // get plot window size
                 nProcessIndex = m_pPlot->GetPrivateCursorPosition();
                 pSpectrum = (CProcessSpectrum *)pDoc->GetSpectrum(); // get pointer to spectrum object
 
-                if (pSpectrum->IsDataReady()) {
+                if (pSpectrum->IsDataReady())
+                {
                     pSpectrumParm = pSpectrum->GetSpectrumParms();
                     double SigBandwidth = (double)pFmtParm->dwSamplesPerSec / 2.;
                     double ScaleFactor = 1. + pSpectrumParm->nFreqScaleRange;
@@ -768,9 +868,12 @@ void CGraphWnd::UpdateStatusBar(DWORD dwStartCursor, DWORD dwStopCursor, BOOL bF
                     // write to frequency pane
                     //fData = (double)pSpectrumParm->nFreqLowerBound + (double)(pSpectrumParm->nFreqUpperBound - pSpectrumParm->nFreqLowerBound) * (double)nProcessIndex / (double)(rWnd.Width() - 1);
                     fData = (double)nFreqLowerBound + (double)(nFreqUpperBound - nFreqLowerBound) * (double)nProcessIndex / (double)(rWnd.Width() - 1);
-                    if (nPitchMode == HERTZ) {
+                    if (nPitchMode == HERTZ)
+                    {
                         swprintf_s(szText, _countof(szText),_T("    %.1f Hz"), fData);
-                    } else {
+                    }
+                    else
+                    {
                         swprintf_s(szText, _countof(szText),_T("    %.1f st"), GetSemitone(fData));
                     }
                     pStat->SetPaneSymbol(ID_STATUSPANE_FREQUENCY); // switch symbol on
@@ -787,26 +890,36 @@ void CGraphWnd::UpdateStatusBar(DWORD dwStartCursor, DWORD dwStopCursor, BOOL bF
                     short UBandEdge = (short)min(nSpectBands-1,(short)Round((double)(nProcessIndex+0.5) * PlotXScale / SpectFreqScale));
 
                     bRes = FALSE;
-                    if (pSpectrum->GetSpectralData(0).Smooth != (float)UNDEFINED_DATA) {
+                    if (pSpectrum->GetSpectralData(0).Smooth != (float)UNDEFINED_DATA)
+                    {
                         fData = 0.;
-                        for (short i = LBandEdge; i < UBandEdge; i++) {
+                        for (short i = LBandEdge; i < UBandEdge; i++)
+                        {
                             fData += (double)pSpectrum->GetSpectralData((unsigned short)i).Smooth;
                         }
-                        if (UBandEdge != LBandEdge) {
+                        if (UBandEdge != LBandEdge)
+                        {
                             fData /= (double)(UBandEdge - LBandEdge);    // average the power within the band
                         }
-                        if (pSpectrumParm->nScaleMode == DB) {
+                        if (pSpectrumParm->nScaleMode == DB)
+                        {
                             fData = (fData == 0.)?MIN_LOG_PWR:10.*log10((double)fData) - pSpectrum->GetSpectralPowerRange().fdBRef;
                         }
                         bRes = TRUE;
-                    } else {
+                    }
+                    else
+                    {
                         bRes = FALSE;
                     }
                     swprintf_s(szText, _countof(szText),_T("Cep:"));
-                    if (bRes && pSpectrumParm->bShowCepSpectrum) {
-                        if (pSpectrumParm->nScaleMode) {
+                    if (bRes && pSpectrumParm->bShowCepSpectrum)
+                    {
+                        if (pSpectrumParm->nScaleMode)
+                        {
                             swprintf_s(szText, _countof(szText),_T("Cep: %5.1f"), fData);
-                        } else {
+                        }
+                        else
+                        {
                             swprintf_s(szText, _countof(szText),_T("Cep: %5.1f dB"), fData);
                         }
                     }
@@ -815,27 +928,37 @@ void CGraphWnd::UpdateStatusBar(DWORD dwStartCursor, DWORD dwStopCursor, BOOL bF
                     pStat->SetPaneText(ID_STATUSPANE_CEPSTRALSPECTRUM, szText);
 
                     bRes = FALSE;
-                    if (pSpectrum->GetSpectralData(0).Raw != (float)UNDEFINED_DATA) {
+                    if (pSpectrum->GetSpectralData(0).Raw != (float)UNDEFINED_DATA)
+                    {
 
                         fData = 0.;
-                        for (short i = LBandEdge; i < UBandEdge; i++) {
+                        for (short i = LBandEdge; i < UBandEdge; i++)
+                        {
                             fData += (double)pSpectrum->GetSpectralData((unsigned short)i).Raw;
                         }
-                        if (UBandEdge != LBandEdge) {
+                        if (UBandEdge != LBandEdge)
+                        {
                             fData /= (double)(UBandEdge - LBandEdge);    // average the power within the band
                         }
-                        if (pSpectrumParm->nScaleMode == DB) {
+                        if (pSpectrumParm->nScaleMode == DB)
+                        {
                             fData = (fData == 0.)?MIN_LOG_PWR:10.*log10((double)fData) - pSpectrum->GetSpectralPowerRange().fdBRef;
                         }
                         bRes = TRUE;
-                    } else {
+                    }
+                    else
+                    {
                         bRes = FALSE;
                     }
                     swprintf_s(szText, _countof(szText),_T("Raw:"));
-                    if (bRes) {
-                        if (pSpectrumParm->nScaleMode) {
+                    if (bRes)
+                    {
+                        if (pSpectrumParm->nScaleMode)
+                        {
                             swprintf_s(szText, _countof(szText),_T("Raw: %5.1f"), fData);
-                        } else {
+                        }
+                        else
+                        {
                             swprintf_s(szText, _countof(szText),_T("Raw: %5.1f dB"), fData);
                         }
                     }
@@ -844,43 +967,61 @@ void CGraphWnd::UpdateStatusBar(DWORD dwStartCursor, DWORD dwStopCursor, BOOL bF
                     pStat->SetPaneText(ID_STATUSPANE_RAWSPECTRUM, szText);
 
                     bRes = FALSE;
-                    if (pSpectrum->GetSpectralData(0).Lpc != (float)UNDEFINED_DATA) {
+                    if (pSpectrum->GetSpectralData(0).Lpc != (float)UNDEFINED_DATA)
+                    {
                         fData = 0.;
-                        for (short i = LBandEdge; i < UBandEdge; i++) {
+                        for (short i = LBandEdge; i < UBandEdge; i++)
+                        {
                             fData += (double)pSpectrum->GetSpectralData((unsigned short)i).Lpc;
                         }
-                        if (UBandEdge != LBandEdge) {
+                        if (UBandEdge != LBandEdge)
+                        {
                             fData /= (double)(UBandEdge - LBandEdge);    // average the power within the band
                         }
                         double LpcRef;
                         double MaxLpcBandPwr = pSpectrum->GetSpectralPowerRange().Max.Lpc;
                         double MaxRawBandPwr = pSpectrum->GetSpectralPowerRange().Max.Raw;
-                        if (pSpectrumParm->nScaleMode == DB) {
-                            if (MaxRawBandPwr != (float)UNDEFINED_DATA) {
+                        if (pSpectrumParm->nScaleMode == DB)
+                        {
+                            if (MaxRawBandPwr != (float)UNDEFINED_DATA)
+                            {
                                 MaxRawBandPwr = (MaxRawBandPwr == 0.)?MIN_LOG_PWR:10.*log10((double)MaxRawBandPwr) - pSpectrum->GetSpectralPowerRange().fdBRef;
                                 MaxLpcBandPwr = (MaxLpcBandPwr == 0.)?MIN_LOG_PWR:10.*log10((double)MaxLpcBandPwr);
                                 LpcRef = MaxLpcBandPwr - MaxRawBandPwr;
-                            } else {
+                            }
+                            else
+                            {
                                 LpcRef = pSpectrum->GetSpectralPowerRange().fdBRef;
                             }
                             fData = (fData == 0.)?MIN_LOG_PWR:(10.*log10(fData) - LpcRef);
-                        } else {
-                            if (MaxRawBandPwr != (float)UNDEFINED_DATA && MaxRawBandPwr != 0.F) {
+                        }
+                        else
+                        {
+                            if (MaxRawBandPwr != (float)UNDEFINED_DATA && MaxRawBandPwr != 0.F)
+                            {
                                 LpcRef = MaxLpcBandPwr / MaxRawBandPwr;
-                            } else {
+                            }
+                            else
+                            {
                                 LpcRef = pow(10.F, pSpectrum->GetSpectralPowerRange().fdBRef / 10.F);
                             }
                             fData /= LpcRef;
                         }
                         bRes = TRUE;
-                    } else {
+                    }
+                    else
+                    {
                         bRes = FALSE;
                     }
                     swprintf_s(szText, _countof(szText),_T("LPC:"));
-                    if (bRes) {
-                        if (pSpectrumParm->nScaleMode) {
+                    if (bRes)
+                    {
+                        if (pSpectrumParm->nScaleMode)
+                        {
                             swprintf_s(szText, _countof(szText),_T("LPC: %5.1f"), fData);
-                        } else {
+                        }
+                        else
+                        {
                             swprintf_s(szText, _countof(szText),_T("LPC: %5.1f dB"), fData);
                         }
                     }
@@ -893,7 +1034,8 @@ void CGraphWnd::UpdateStatusBar(DWORD dwStartCursor, DWORD dwStopCursor, BOOL bF
             case IDD_TWC:
                 pTWC = (CProcessTonalWeightChart *)pDoc->GetTonalWeightChart(); // get pointer to TWC chart
                 bRes = TRUE;
-                if (pTWC->IsDataReady()) {
+                if (pTWC->IsDataReady())
+                {
                     m_pPlot->UpdateWindow(); // force correct legend settings
                     m_pPlot->GetClientRect(rWnd); // get plot window size
                     int nCursorHeight = (short)(rWnd.Height() - (m_pPlot->GetPrivateCursorPosition()));
@@ -901,13 +1043,16 @@ void CGraphWnd::UpdateStatusBar(DWORD dwStartCursor, DWORD dwStopCursor, BOOL bF
                     double fSemitoneOffset = -static_cast<CPlotTonalWeightChart *>(m_pPlot)->GetSemitoneOffset();
                     double fSemitone;
                     double fMinScale  = pLegend->GetScaleMinValue() + fSemitoneOffset;
-                    if (nCursorHeight) {
+                    if (nCursorHeight)
+                    {
                         double fSemitoneAbs = double(nCursorHeight)/(pLegend->GetGridDistance() / pLegend->GetScaleBase()) + fMinScale;
                         double fBinsPerSemitone = pTWC->GetBinsPerSemitone();
                         dwDataPos = DWORD((fSemitoneAbs - pTWC->GetMinSemitone())*fBinsPerSemitone) + 1;
                         fSemitone = double(dwDataPos)/fBinsPerSemitone + pTWC->GetMinSemitone();
                         nData = pTWC->GetProcessedData(dwDataPos, &bRes);
-                    } else {
+                    }
+                    else
+                    {
                         fSemitone  = fMinScale - 0.1;
                         nData        = 0;
                     }
@@ -955,7 +1100,9 @@ void CGraphWnd::UpdateStatusBar(DWORD dwStartCursor, DWORD dwStopCursor, BOOL bF
                     // write to scale pane
                     pStat->SetPaneSymbol(ID_STATUSPANE_REL_PITCH); // switch symbol on
                     pStat->SetPaneText(ID_STATUSPANE_REL_PITCH, szText);
-                } else {
+                }
+                else
+                {
                     bRes = FALSE;
                 }
                 break;
@@ -965,7 +1112,8 @@ void CGraphWnd::UpdateStatusBar(DWORD dwStartCursor, DWORD dwStopCursor, BOOL bF
             return;
         }
         // this graph and the parent view have focus
-        if ((!bForceUpdate) && (dwStartCursor == m_dwLastStartCursor) && (dwStopCursor == m_dwLastStopCursor)) {
+        if ((!bForceUpdate) && (dwStartCursor == m_dwLastStartCursor) && (dwStopCursor == m_dwLastStopCursor))
+        {
             return;    // no update
         }
 
@@ -989,34 +1137,46 @@ void CGraphWnd::UpdateStatusBar(DWORD dwStartCursor, DWORD dwStopCursor, BOOL bF
 
         swprintf_s(szText, _countof(szText),_T("         "));          // default indicator
 
-        switch (m_nPlotID) {
+        switch (m_nPlotID)
+        {
         case IDD_SPECTROGRAM:
-        case IDD_SNAPSHOT: {
+        case IDD_SNAPSHOT:
+        {
             CProcessFormantTracker * pSpectroFormants = pDoc->GetFormantTracker();
             // prepare spectrograms formant data, if ready
             CProcessSpectrogram * pSpectrogram = pDoc->GetSpectrogram(m_nPlotID==IDD_SPECTROGRAM); // get pointer to spectrogram object
             const CSpectroParm * pSpectroParm = &pSpectrogram->GetSpectroParm();
             BOOL bShowFormants = pSpectroParm->bShowF1 || pSpectroParm->bShowF2 || pSpectroParm->bShowF3 || pSpectroParm->bShowF4 || pSpectroParm->bShowF5andUp;
-            if (bShowFormants && pSpectroFormants->IsDataReady()) {
+            if (bShowFormants && pSpectroFormants->IsDataReady())
+            {
                 double fSizeFactor = (double)pDoc->GetDataSize() / (double)(pSpectroFormants->GetDataSize() - 1);
                 dwDataPos = (DWORD)((DWORD)(dwStartCursor / fSizeFactor * 2 / sizeof(FORMANT_FREQ))) * sizeof(FORMANT_FREQ) / 2;
                 FORMANT_FREQ * pFormFreqCurr = (FORMANT_FREQ *)pSpectroFormants->GetProcessedData(dwDataPos, sizeof(FORMANT_FREQ));
 
-                for (int n = 1; n < 5; n++) {
-                    if (pFormFreqCurr->F[n] > 0) {
-                        if (nPitchMode == HERTZ) {
+                for (int n = 1; n < 5; n++)
+                {
+                    if (pFormFreqCurr->F[n] > 0)
+                    {
+                        if (nPitchMode == HERTZ)
+                        {
                             swprintf_s(szText,_countof(szText), _T("F%d: %.1f Hz"), n, pFormFreqCurr->F[n]);
-                        } else {
+                        }
+                        else
+                        {
                             swprintf_s(szText,_countof(szText), _T("F%d: %.1f st"), GetSemitone(pFormFreqCurr->F[n]));
                         }
-                    } else {
+                    }
+                    else
+                    {
                         swprintf_s(szText,_countof(szText), _T("F%d:"), n);
                     }
                     // write to position pane
                     pStat->SetPaneSymbol(ID_STATUSPANE_POSITION + n - 1, FALSE); // switch symbol off
                     pStat->SetPaneText(ID_STATUSPANE_POSITION + n - 1, szText);
                 }
-            } else {
+            }
+            else
+            {
                 // show frequency and power at mouse pointer
                 const BOOL bPreEmphasis = TRUE;
                 SIG_PARMS Signal;
@@ -1028,7 +1188,8 @@ void CGraphWnd::UpdateStatusBar(DWORD dwStartCursor, DWORD dwStopCursor, BOOL bF
                 DWORD dwWaveOffset = m_pPlot->CalcWaveOffsetAtPixel(MousePosn);
                 if (MousePosn.x != UNDEFINED_OFFSET &&
                         (!m_bAreaGraph || (m_bAreaGraph && pSpectrogram->IsDataReady())) &&
-                        ((dwWaveOffset >= dwHalfFrameSize)*nSmpSize && (dwWaveOffset < pDoc->GetDataSize() - dwHalfFrameSize))) {
+                        ((dwWaveOffset >= dwHalfFrameSize)*nSmpSize && (dwWaveOffset < pDoc->GetDataSize() - dwHalfFrameSize)))
+                {
                     CRect rPlotWnd;
                     m_pPlot->GetClientRect(rPlotWnd);
                     float fFreq = (float)(rPlotWnd.bottom - MousePosn.y) * (float)pSpectroParm->nFrequency / (float)rPlotWnd.bottom;
@@ -1045,7 +1206,9 @@ void CGraphWnd::UpdateStatusBar(DWORD dwStartCursor, DWORD dwStopCursor, BOOL bF
                     swprintf_s(szText,_countof(szText), _T("%6.1f dB"), fPowerInDb);
                     pStat->SetPaneSymbol(ID_STATUSPANE_4, FALSE);
                     pStat->SetPaneText(ID_STATUSPANE_4, szText);
-                } else {
+                }
+                else
+                {
                     //blank out
                     swprintf_s(szText, _countof(szText),_T("         "));
                     pStat->SetPaneSymbol(ID_STATUSPANE_3, FALSE);
@@ -1061,23 +1224,34 @@ void CGraphWnd::UpdateStatusBar(DWORD dwStartCursor, DWORD dwStopCursor, BOOL bF
             nFormants++;
         case IDD_F1F2:
         case IDD_F2F1:
-        case IDD_F2F1F1: {
+        case IDD_F2F1F1:
+        {
             CProcessFormantTracker * pSpectroFormants = pDoc->GetFormantTracker();
-            if (pSpectroFormants->IsDataReady()) {
+            if (pSpectroFormants->IsDataReady())
+            {
                 double fSizeFactor = (double)pDoc->GetDataSize() / (double)(pSpectroFormants->GetDataSize() - 1);
                 dwDataPos = (DWORD)((DWORD)(dwStartCursor / fSizeFactor * 2 / sizeof(FORMANT_FREQ))) * sizeof(FORMANT_FREQ) / 2;
                 FORMANT_FREQ * pFormFreqCurr = (FORMANT_FREQ *)pSpectroFormants->GetProcessedData(dwDataPos, sizeof(FORMANT_FREQ));
 
-                for (int n = 1; n < 5; n++) {
-                    if (n > nFormants) {
+                for (int n = 1; n < 5; n++)
+                {
+                    if (n > nFormants)
+                    {
                         swprintf_s(szText,_countof(szText), _T("         "));    // default indicator
-                    } else if (pFormFreqCurr->F[n] > 0) {
-                        if (nPitchMode == HERTZ) {
+                    }
+                    else if (pFormFreqCurr->F[n] > 0)
+                    {
+                        if (nPitchMode == HERTZ)
+                        {
                             swprintf_s(szText,_countof(szText), _T("F%d: %.1f Hz"), n, pFormFreqCurr->F[n]);
-                        } else {
+                        }
+                        else
+                        {
                             swprintf_s(szText,_countof(szText), _T("F%d: %.1f st"), GetSemitone(pFormFreqCurr->F[n]));
                         }
-                    } else {
+                    }
+                    else
+                    {
                         swprintf_s(szText, _countof(szText),_T("F%d:"), n);
                     }
                     // write to position pane
@@ -1094,16 +1268,24 @@ void CGraphWnd::UpdateStatusBar(DWORD dwStartCursor, DWORD dwStopCursor, BOOL bF
             bRes = TRUE;
             nData = pDoc->GetWaveData(dwStartCursor, &bRes);
             fData = 100.0 * (double)nData / pow(2.0, 8.0 * (double)nSmpSize - 1);
-            if (bRes) { // no error reading data?
+            if (bRes)   // no error reading data?
+            {
                 // display percentage and raw value CLW 1/5/01
-                if (fData >= 99.95) {
+                if (fData >= 99.95)
+                {
                     swprintf_s(szText,_countof(szText), _T("L:  %3.0f%%  (%d)"), 100.0, nData);
-                } else if (fData <= -99.95) {
+                }
+                else if (fData <= -99.95)
+                {
                     swprintf_s(szText,_countof(szText), _T("L:  %3.0f%%  (%d)"), -100.0, nData);
-                } else {
+                }
+                else
+                {
                     swprintf_s(szText,_countof(szText), _T("L:  %3.1f%%  (%d)"), fData, nData);
                 }
-            } else {
+            }
+            else
+            {
                 swprintf_s(szText,_countof(szText), _T("L:"));
             }
             // write to amplitude pane
@@ -1113,16 +1295,24 @@ void CGraphWnd::UpdateStatusBar(DWORD dwStartCursor, DWORD dwStopCursor, BOOL bF
             bRes = TRUE;
             nData = pDoc->GetWaveData(dwStopCursor, &bRes);
             fData = 100.0 * (double)nData / pow(2.0, 8.0 * (double)nSmpSize - 1);
-            if (bRes) { // no error reading data?
+            if (bRes)   // no error reading data?
+            {
                 // display percentage and raw value CLW 1/5/01
-                if (fData >= 99.95) {
+                if (fData >= 99.95)
+                {
                     swprintf_s(szText,_countof(szText), _T("R:  %3.0f%%  (%d)"), 100.0, nData);
-                } else if (fData <= -99.95) {
+                }
+                else if (fData <= -99.95)
+                {
                     swprintf_s(szText,_countof(szText), _T("R:  %3.0f%%  (%d)"), -100.0, nData);
-                } else {
+                }
+                else
+                {
                     swprintf_s(szText,_countof(szText), _T("R:  %3.1f%%  (%d)"), fData, nData);
                 }
-            } else {
+            }
+            else
+            {
                 swprintf_s(szText, _countof(szText),_T("R:"));
             }
             // write to pitch pane
@@ -1134,7 +1324,8 @@ void CGraphWnd::UpdateStatusBar(DWORD dwStartCursor, DWORD dwStopCursor, BOOL bF
 
             bShowPosition = bShowDuration = TRUE;
             pZCross = (CProcessZCross *)pDoc->GetZCross(); // get pointer to zero crossings object
-            if (pZCross->IsDataReady()) {
+            if (pZCross->IsDataReady())
+            {
                 //!! Likely, some of the (float) casts for the other cases should be changed to (double) as well.
                 //             fSizeFactor = (float)pDoc->GetDataSize() / (float)pZCross->GetDataSize(m_pPlot);
                 //             dwDataPos = (DWORD)((float)dwStartCursor / fSizeFactor);
@@ -1146,9 +1337,12 @@ void CGraphWnd::UpdateStatusBar(DWORD dwStartCursor, DWORD dwStopCursor, BOOL bF
                 dwDataPos = (DWORD)((double)dwStartCursor / fSizeFactor); // Minimize round-off error
                 // read the data
                 nData = pZCross->GetProcessedData(dwDataPos, &bRes);
-                if (bRes) { // no error reading data?
+                if (bRes)   // no error reading data?
+                {
                     swprintf_s(szText,_countof(szText), _T("L:  %6d"), nData);
-                } else {
+                }
+                else
+                {
                     swprintf_s(szText,_countof(szText), _T("L:"));
                 }
                 // write to amplitude pane
@@ -1160,9 +1354,12 @@ void CGraphWnd::UpdateStatusBar(DWORD dwStartCursor, DWORD dwStopCursor, BOOL bF
                 dwDataPos = (DWORD)((double)dwStopCursor / fSizeFactor);  // Minimize round-off error
                 // read the data
                 nData = pZCross->GetProcessedData(dwDataPos, &bRes);
-                if (bRes) { // no error reading data?
+                if (bRes)   // no error reading data?
+                {
                     swprintf_s(szText,_countof(szText), _T("R:  %6d"), nData);
-                } else {
+                }
+                else
+                {
                     swprintf_s(szText,_countof(szText), _T("R:"));
                 }
                 // write to pitch pane
@@ -1177,12 +1374,14 @@ void CGraphWnd::UpdateStatusBar(DWORD dwStartCursor, DWORD dwStopCursor, BOOL bF
             fData = -1.;
             // prepare pitch pane data, display pitch if ready
             pPitch = (CProcessPitch *)pDoc->GetPitch(); // get pointer to smoothed pitch object
-            if (pPitch->IsDataReady() && pPitch->GetMaxValue() > 0) {
+            if (pPitch->IsDataReady() && pPitch->GetMaxValue() > 0)
+            {
                 // calculate pitch data position corresponding to start cursor position
                 dwDataPos = (dwStartCursor / nSmpSize) / Grappl_calc_intvl;
                 // read the data
                 fData = (float)pPitch->GetProcessedData(dwDataPos, &bRes) / (float)PRECISION_MULTIPLIER;
-                if (!bRes) {
+                if (!bRes)
+                {
                     fData = -1.;
                 }
             }
@@ -1195,12 +1394,14 @@ void CGraphWnd::UpdateStatusBar(DWORD dwStartCursor, DWORD dwStopCursor, BOOL bF
             fData = -1.;
             // prepare pitch pane data, display pitch if ready
             pSmPitch = (CProcessSmoothedPitch *)pDoc->GetSmoothedPitch(); // get pointer to smoothed pitch object
-            if (pSmPitch->IsDataReady() && pSmPitch->GetMaxValue() > 0) {
+            if (pSmPitch->IsDataReady() && pSmPitch->GetMaxValue() > 0)
+            {
                 // calculate pitch data position corresponding to start cursor position
                 dwDataPos = (dwStartCursor / nSmpSize) / Grappl_calc_intvl;
                 // read the data
                 fData = (float)pSmPitch->GetProcessedData(dwDataPos, &bRes) / (float)PRECISION_MULTIPLIER;
-                if (!bRes) {
+                if (!bRes)
+                {
                     fData = -1.;
                 }
             }
@@ -1212,12 +1413,14 @@ void CGraphWnd::UpdateStatusBar(DWORD dwStartCursor, DWORD dwStopCursor, BOOL bF
             fData = -1.;
             // prepare pitch pane data, display pitch if ready
             pChPitch = (CProcessCustomPitch *)pDoc->GetCustomPitch(); // get pointer to custom pitch object
-            if (pChPitch->IsDataReady() && pChPitch->GetMaxValue() > 0) {
+            if (pChPitch->IsDataReady() && pChPitch->GetMaxValue() > 0)
+            {
                 // calculate pitch data position corresponding to start cursor position
                 dwDataPos = (dwStartCursor / nSmpSize) / Grappl_calc_intvl;
                 // read the data
                 fData = (float)pChPitch->GetProcessedData(dwDataPos, &bRes) / (float)PRECISION_MULTIPLIER;
-                if (!bRes) {
+                if (!bRes)
+                {
                     fData = -1.;
                 }
             }
@@ -1266,18 +1469,22 @@ void CGraphWnd::UpdateStatusBar(DWORD dwStartCursor, DWORD dwStopCursor, BOOL bF
         case IDD_GRAPITCH:
             pGrappl = (CProcessGrappl *)pDoc->GetGrappl();      // get pointer to auto pitch object
 
-            if (pGrappl->IsDataReady() && pGrappl->GetMaxValue() > 0) {
+            if (pGrappl->IsDataReady() && pGrappl->GetMaxValue() > 0)
+            {
                 bShowPosition = bShowDuration = TRUE;
                 // calculate pitch data position corresponding to start cursor position
                 dwDataPos = (dwStartCursor / nSmpSize) / Grappl_calc_intvl;
                 // read the data
                 fData = (float)pGrappl->GetProcessedData(dwDataPos, &bRes) / (float)PRECISION_MULTIPLIER;
-                if (!bRes) {
+                if (!bRes)
+                {
                     fData = -1.;
                 }
                 fUncertainty = pGrappl->GetUncertainty(fData);
                 UpdatePitchStatusBar(fData, fUncertainty);
-            } else {
+            }
+            else
+            {
                 UpdatePitchStatusBar(-1., 0.);
             }
 
@@ -1287,16 +1494,20 @@ void CGraphWnd::UpdateStatusBar(DWORD dwStartCursor, DWORD dwStopCursor, BOOL bF
             // moved to separate section CLW 8/24/00
             pMelogram = (CProcessMelogram *)pDoc->GetMelogram();  // get pointer to melogram pitch object
 
-            if (pMelogram->IsDataReady() && pMelogram->GetMaxValue() > 0) {
+            if (pMelogram->IsDataReady() && pMelogram->GetMaxValue() > 0)
+            {
                 bShowPosition = bShowDuration = TRUE;
                 dwDataPos = (dwStartCursor / nSmpSize) / Grappl_calc_intvl;
                 fData = (float)pMelogram->GetProcessedData(dwDataPos, &bRes) / 100.0;
-                if (bRes && fData > 0.F) {
+                if (bRes && fData > 0.F)
+                {
                     // read the data
                     double fPitchInHz = 220. * pow(2., ((double)fData - 57.) / 12.); // convert from semitones to Hz
                     fUncertainty = pMelogram->GetUncertainty(fPitchInHz);
                     UpdatePitchStatusBarNote(fPitchInHz, fUncertainty, TRUE);
-                } else {
+                }
+                else
+                {
                     UpdatePitchStatusBar(-1., 0.);
                 }
             }
@@ -1307,7 +1518,8 @@ void CGraphWnd::UpdateStatusBar(DWORD dwStartCursor, DWORD dwStopCursor, BOOL bF
         case IDD_MAGNITUDE:        //pja 5/7/00 - added the IDD_MAGNITUDE to display db in 3rd pane for Melogram Magnitude
             // prepare amplitude data, if ready
             pLoudness = (CProcessLoudness *)pDoc->GetLoudness(); // get pointer to loudness object
-            if (pLoudness->IsDataReady() && (pLoudness->GetMaxValue() > 0)) {
+            if (pLoudness->IsDataReady() && (pLoudness->GetMaxValue() > 0))
+            {
                 bShowPosition = bShowDuration = TRUE;
                 // calculate size factor between raw data and loudness
                 //fSizeFactor = (float)pDoc->GetDataSize() / (float)pLoudness->GetDataSize(m_pPlot);
@@ -1316,7 +1528,8 @@ void CGraphWnd::UpdateStatusBar(DWORD dwStartCursor, DWORD dwStopCursor, BOOL bF
                 dwDataPos = (DWORD)((float)dwStartCursor / fSizeFactor);
                 // read the data
                 nData = pLoudness->GetProcessedData(dwDataPos, &bRes);
-                if (bRes && nData > 0) {
+                if (bRes && nData > 0)
+                {
                     swprintf_s(szText,_countof(szText), _T("      %.1f dB"), 20. * log10(double(nData)/32767.) + 6.);
                 }
                 // write to amplitude pane
@@ -1324,7 +1537,8 @@ void CGraphWnd::UpdateStatusBar(DWORD dwStartCursor, DWORD dwStopCursor, BOOL bF
                 pStat->SetPaneText(ID_STATUSPANE_AMPLITUDE, szText);
 
                 // put percentage magnitude in pitch pane
-                if (bRes && nData > 0) {
+                if (bRes && nData > 0)
+                {
                     swprintf_s(szText,_countof(szText), _T("      %2d%% fullscale"), (short)(double(nData) / (32767./(2)) * 100.0 + 0.5));
                 }
                 pStat->SetPaneSymbol(ID_STATUSPANE_PITCH, FALSE); // pitch symbol
@@ -1335,11 +1549,13 @@ void CGraphWnd::UpdateStatusBar(DWORD dwStartCursor, DWORD dwStopCursor, BOOL bF
 
         case IDD_DURATION:
             pDuration = (CProcessDurations *)pDoc->GetDurations(); // get pointer to loudness object
-            if (pDuration->IsDataReady() && (pDuration->GetMaxDuration() > 0)) {
+            if (pDuration->IsDataReady() && (pDuration->GetMaxDuration() > 0))
+            {
                 bShowPosition = TRUE;
                 CSegment * pSegment = pDoc->GetSegment(PHONETIC);
                 int nSegmentIndex = pSegment->FindFromPosition(dwStartCursor, TRUE);
-                if (nSegmentIndex > 0) {
+                if (nSegmentIndex > 0)
+                {
                     fData = (float)pDuration->GetProcessedData(nSegmentIndex);
                     swprintf_s(szText,_countof(szText), _T("     %.2f ms"), fData * 1000.F / (float)(pFmtParm->wBlockAlign *
                                pFmtParm->dwSamplesPerSec));
@@ -1357,10 +1573,12 @@ void CGraphWnd::UpdateStatusBar(DWORD dwStartCursor, DWORD dwStopCursor, BOOL bF
             pStat->SetPaneText(ID_STATUSPANE_PITCH, _T("        "));  // pitch indicator
             break;
 
-        case IDD_CHANGE: {
+        case IDD_CHANGE:
+        {
             bShowPosition = bShowDuration = TRUE;
             CProcessChange * pChange = (CProcessChange *)pDoc->GetChange(); // get pointer to change object
-            if (pChange->IsDataReady()) {
+            if (pChange->IsDataReady())
+            {
                 // calculate size factor between waveform data
                 //fSizeFactor = (double)pDoc->GetDataSize() / (double)pChange->GetDataSize(); // Minimize round-off error
                 fSizeFactor = (double)nSmpSize * ceil((double)(pDoc->GetDataSize()/nSmpSize)/ (double)(pChange->GetDataSize()));
@@ -1369,9 +1587,12 @@ void CGraphWnd::UpdateStatusBar(DWORD dwStartCursor, DWORD dwStopCursor, BOOL bF
                 dwDataPos = (DWORD)((double)dwStartCursor / fSizeFactor); // Minimize round-off error
                 // read the data
                 int nData = pChange->GetProcessedData(dwDataPos, &bRes) / PRECISION_MULTIPLIER;
-                if (bRes) { // no error reading data?
+                if (bRes)   // no error reading data?
+                {
                     swprintf_s(szText,_countof(szText), _T("L:  %6d"), nData);
-                } else {
+                }
+                else
+                {
                     swprintf_s(szText,_countof(szText), _T("L:"));
                 }
                 // write to amplitude pane
@@ -1382,9 +1603,12 @@ void CGraphWnd::UpdateStatusBar(DWORD dwStartCursor, DWORD dwStopCursor, BOOL bF
                 dwDataPos = (DWORD)((double)dwStopCursor / fSizeFactor);  // Minimize round-off error
                 // read the data
                 nData = pChange->GetProcessedData(dwDataPos, &bRes) / PRECISION_MULTIPLIER;
-                if (bRes) { // no error reading data?
+                if (bRes)   // no error reading data?
+                {
                     swprintf_s(szText,_countof(szText), _T("R:  %6d"), nData);
-                } else {
+                }
+                else
+                {
                     swprintf_s(szText,_countof(szText), _T("R:"));
                 }
                 // write to pitch pane
@@ -1406,22 +1630,32 @@ void CGraphWnd::UpdateStatusBar(DWORD dwStartCursor, DWORD dwStopCursor, BOOL bF
             break;
         }
 
-        if (bShowPosition) {
-            if (nPositionMode == TIME) {
+        if (bShowPosition)
+        {
+            if (nPositionMode == TIME)
+            {
                 // calculate position time
                 fDataSec = pDoc->GetTimeFromBytes(dwStartCursor);
 
                 nMinutes = (int)fDataSec / 60;
                 fDataSec = fDataSec - (nMinutes * 60.);
-                if (nMinutes > 9) {
+                if (nMinutes > 9)
+                {
                     swprintf_s(szText,_countof(szText), _T("       %02i:%5.3f"), nMinutes, fDataSec);
-                } else {
+                }
+                else
+                {
                     swprintf_s(szText,_countof(szText), _T("       %01i:%6.4f"), nMinutes, fDataSec);
                 }
-            } else {
-                if (nPositionMode == SAMPLES) {
+            }
+            else
+            {
+                if (nPositionMode == SAMPLES)
+                {
                     swprintf_s(szText, _countof(szText),_T("       %.0f"), (double)(dwStartCursor / nSmpSize));
-                } else {
+                }
+                else
+                {
                     swprintf_s(szText, _countof(szText),_T("       %.0f"), (double)dwStartCursor);
                 }
             }
@@ -1430,23 +1664,35 @@ void CGraphWnd::UpdateStatusBar(DWORD dwStartCursor, DWORD dwStopCursor, BOOL bF
             pStat->SetPaneText(ID_STATUSPANE_POSITION, szText);
         }
 
-        if (bShowDuration) {
-            if (nPositionMode == TIME) {
+        if (bShowDuration)
+        {
+            if (nPositionMode == TIME)
+            {
                 // calculate length time
                 fDataSec = pDoc->GetTimeFromBytes(dwStopCursor - dwStartCursor);
                 nMinutes = (int)fDataSec / 60;
                 fDataSec = fDataSec - (nMinutes * 60.);
-                if (nMinutes > 9) {
+                if (nMinutes > 9)
+                {
                     swprintf_s(szText,_countof(szText), _T("       %02i:%5.3f"), nMinutes, fDataSec);
-                } else if (nMinutes || fDataSec >= .01) {
+                }
+                else if (nMinutes || fDataSec >= .01)
+                {
                     swprintf_s(szText,_countof(szText), _T("       %01i:%6.4f"), nMinutes, fDataSec);
-                } else {
+                }
+                else
+                {
                     swprintf_s(szText,_countof(szText), _T("       %01i:%7.5f"), nMinutes, fDataSec);
                 }
-            } else {
-                if (nPositionMode == SAMPLES) {
+            }
+            else
+            {
+                if (nPositionMode == SAMPLES)
+                {
                     swprintf_s(szText,_countof(szText), _T("       %.0f"), (double)((dwStopCursor - dwStartCursor) / nSmpSize));
-                } else {
+                }
+                else
+                {
                     swprintf_s(szText,_countof(szText), _T("       %.0f"), (double)(dwStopCursor - dwStartCursor));
                 }
             }
@@ -1456,7 +1702,9 @@ void CGraphWnd::UpdateStatusBar(DWORD dwStartCursor, DWORD dwStopCursor, BOOL bF
         }
 
         pStat->UpdateWindow();
-    } else {
+    }
+    else
+    {
         return;    // this graph has not focus
     }
 }
@@ -1464,7 +1712,8 @@ void CGraphWnd::UpdateStatusBar(DWORD dwStartCursor, DWORD dwStopCursor, BOOL bF
 /***************************************************************************/
 // CGraphWnd::OnGenderInfoChanged  Gender info has been updated
 /***************************************************************************/
-LRESULT CGraphWnd::OnGenderInfoChanged(WPARAM nGender, LPARAM) {
+LRESULT CGraphWnd::OnGenderInfoChanged(WPARAM nGender, LPARAM)
+{
     m_pPlot->GenderInfoChanged(nGender);  // notify plot
     return 0L;
 }
@@ -1472,13 +1721,15 @@ LRESULT CGraphWnd::OnGenderInfoChanged(WPARAM nGender, LPARAM) {
 /***************************************************************************/
 // CGraphWnd::OnCursorClicked  Cursor clicked
 /***************************************************************************/
-LRESULT CGraphWnd::OnCursorClicked(WPARAM /* Cursor */, LPARAM /* ButtonState */) {
+LRESULT CGraphWnd::OnCursorClicked(WPARAM /* Cursor */, LPARAM /* ButtonState */)
+{
     //!!reserved for future use
     return 0L;
 }
 
 
-void CGraphWnd::OnDestroy() {
+void CGraphWnd::OnDestroy()
+{
     CMiniCaptionWnd::OnDestroy();
 
     // TODO: Add your message handler code here
@@ -1490,17 +1741,21 @@ void CGraphWnd::OnDestroy() {
 
 }
 
-void CGraphWnd::RemoveRtPlots() {
-    if (m_pPlot) {
+void CGraphWnd::RemoveRtPlots()
+{
+    if (m_pPlot)
+    {
         m_pPlot->RemoveRtPlots();
     }
 }
 
-void CGraphWnd::OnChar(UINT nChar, UINT nRepCnt, UINT nFlags) {
+void CGraphWnd::OnChar(UINT nChar, UINT nRepCnt, UINT nFlags)
+{
     GetParent()->SendMessage(WM_CHAR, nChar, MAKELONG(nRepCnt, nFlags));
 }
 
-void CGraphWnd::OnNcMouseMove(UINT nHitTest, CPoint point) {
+void CGraphWnd::OnNcMouseMove(UINT nHitTest, CPoint point)
+{
     m_pPlot->SetMousePointerPosition(CPoint(UNDEFINED_OFFSET, UNDEFINED_OFFSET)); // clear mouse position
     m_pPlot->SetMouseButtonState(0);  // reset state
     const BOOL bForceUpdate = TRUE;

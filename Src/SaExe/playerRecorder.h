@@ -29,7 +29,8 @@
 //###########################################################################
 // CDlgWaveNotifyObj notify object
 
-class CDlgWaveNotifyObj : public CWaveNotifyObj {
+class CDlgWaveNotifyObj : public CWaveNotifyObj
+{
 
     // Construction/destruction/creation
 public:
@@ -42,7 +43,8 @@ private:
 
     // Operations
 public:
-    void Attach(CDlgAudio * pDlg) {
+    void Attach(CDlgAudio * pDlg)
+    {
         m_pDlg = pDlg;
     }
     virtual void BlockFinished(UINT nLevel, DWORD dwPosition, UINT = 100);
@@ -55,12 +57,14 @@ public:
 //###########################################################################
 // CDlgPlayer dialog
 
-struct SSpecific {
+struct SSpecific
+{
     double begin;
     double end;
 };
 
-class CDlgPlayer : public CDlgAudio {
+class CDlgPlayer : public CDlgAudio
+{
 
     // Construction/destruction/creation
 public:
@@ -123,27 +127,33 @@ public:
     void SetPositionTime();  // set position time display
     void EnableSpeedSlider(BOOL bState = TRUE);  // activate speed slider
 
-    virtual void BlockStored(UINT /*nLevel*/, DWORD /*dwPosition*/, BOOL * /* bSaveOverride*/ = NULL) {
+    virtual void BlockStored(UINT /*nLevel*/, DWORD /*dwPosition*/, BOOL * /* bSaveOverride*/ = NULL)
+    {
         ASSERT(FALSE);
     };    // not supported on player
     virtual void BlockFinished(UINT nLevel, DWORD dwPosition, UINT nSpeed = 100);
-    virtual void StoreFailed() {
+    virtual void StoreFailed()
+    {
         ASSERT(FALSE);
     };
     virtual void EndPlayback();
-    virtual HPSTR GetWaveData(DWORD /*dwPlayPosition*/, DWORD /*dwDataSize*/) {
+    virtual HPSTR GetWaveData(DWORD /*dwPlayPosition*/, DWORD /*dwDataSize*/)
+    {
         return NULL;
     }; // The player does not have any data (recorder does)
     BOOL SetPlayerMode(UINT nMode, UINT nSubMode, BOOL bFullSize, BOOL bFnKey = FALSE, SSpecific * pSpecific = NULL);
 
     void ChangeView(CSaView * pView); // set new view
-    BOOL IsPlaying() {
+    BOOL IsPlaying()
+    {
         return ((m_nMode == IDC_PLAY)||m_bFnKeySetting);   // return TRUE if player is playing
     }
-    BOOL IsFullSize() {
+    BOOL IsFullSize()
+    {
         return m_bFullSize;   // return TRUE if player has full size
     }
-    BOOL IsTestRun() {
+    BOOL IsTestRun()
+    {
         return m_bTestRunning;   // return TRUE if function key dialog open
     }
     void OnHelpPlayer();
@@ -181,13 +191,16 @@ protected:
 //###########################################################################
 // CDlgRecorder dialog
 
-class CDlgRecorder : public CDlgAudio {
+class CDlgRecorder : public CDlgAudio
+{
 
     // Construction/destruction/creation
 public:
     CDlgRecorder(CWnd * pParent = NULL); // standard constructor
-    virtual ~CDlgRecorder() {
-        if (m_pWave) {
+    virtual ~CDlgRecorder()
+    {
+        if (m_pWave)
+        {
             delete m_pWave;
         }
     }
@@ -232,11 +245,13 @@ private:
     //}}AFX_DATA
 
 public:
-    struct sourceInfo {
+    struct sourceInfo
+    {
         BOOL bEnable;
         SourceParm source;
 
-        sourceInfo() {
+        sourceInfo()
+        {
             source.nGender = -1;
         };
 
@@ -269,11 +284,13 @@ public:
     virtual HPSTR GetWaveData(DWORD dwPlayPosition, DWORD dwDataSize);
 
     void SetRecorderMode(UINT nMode); // set recorder mode (record, play, stop...)
-    HMMIO GetFileHandle() {
+    HMMIO GetFileHandle()
+    {
         return m_hmmioFile;   // return handle to wave file
     }
     BOOL Apply(CDocument *); // apply wave file to document
-    void ClearFileName() {
+    void ClearFileName()
+    {
         m_szFileName[0] = 0;
     };
     CSaDoc * GetDocument();
@@ -306,7 +323,8 @@ protected:
 //###########################################################################
 // CDlgRecorderOptions dialog
 
-class CDlgRecorderOptions : public CDialog {
+class CDlgRecorderOptions : public CDialog
+{
 
     // Construction/destruction/creation
 public:
@@ -355,7 +373,8 @@ protected:
 //###########################################################################
 // CDlgFnKeys dialog
 
-class CDlgFnKeys : public CDlgAudio {
+class CDlgFnKeys : public CDlgAudio
+{
 
     // Construction/destruction/creation
 public:
@@ -364,17 +383,21 @@ public:
     // Attributes
 public:
     // not supported
-    virtual void BlockFinished(UINT /*nLevel*/, DWORD /*dwPosition*/, UINT = 100) {
+    virtual void BlockFinished(UINT /*nLevel*/, DWORD /*dwPosition*/, UINT = 100)
+    {
         ASSERT(FALSE);
     };
-    virtual void BlockStored(UINT /*nLevel*/, DWORD /*dwPosition*/, BOOL * /*bSaveOverride*/ = NULL) {
+    virtual void BlockStored(UINT /*nLevel*/, DWORD /*dwPosition*/, BOOL * /*bSaveOverride*/ = NULL)
+    {
         ASSERT(FALSE);
     };
-    virtual void StoreFailed() {
+    virtual void StoreFailed()
+    {
         ASSERT(FALSE);
     };
     virtual void EndPlayback();
-    virtual HPSTR GetWaveData(DWORD /*dwPlayPosition*/, DWORD /*dwDataSize*/) {
+    virtual HPSTR GetWaveData(DWORD /*dwPlayPosition*/, DWORD /*dwDataSize*/)
+    {
         ASSERT(FALSE);
         return NULL;
     };
@@ -408,7 +431,8 @@ protected:
     virtual void DoDataExchange(CDataExchange * pDX); // DDX/DDV support
 
 public:
-    void NoTest() {
+    void NoTest()
+    {
         m_bNoTest = TRUE;   // don't allow test run
     }
     void OnHelpFnKeys();

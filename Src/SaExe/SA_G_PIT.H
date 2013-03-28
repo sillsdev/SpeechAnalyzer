@@ -10,7 +10,8 @@
 //###########################################################################
 // CPlotPitch plot window
 
-class CPlotPitch : public CPlotWnd {
+class CPlotPitch : public CPlotWnd
+{
     DECLARE_DYNCREATE(CPlotPitch)
 
 // Construction/destruction/creation

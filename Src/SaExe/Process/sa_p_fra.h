@@ -14,7 +14,8 @@
 //###########################################################################
 // CProcessFragments data processing
 
-class CProcessFragments : public CProcess {
+class CProcessFragments : public CProcess
+{
 // Construction/destruction/creation
 public:
     CProcessFragments();
@@ -34,7 +35,8 @@ public:
     ULONG GetBufferLength();
     FRAG_PARMS * GetFragmentBlock(ULONG dwFragmentIndex);
     const FRAG_PARMS & GetFragmentParms(ULONG dwFragmentIndex);
-    ULONG GetFragmentCount() {
+    ULONG GetFragmentCount()
+    {
         return m_dwFragmentCount;
     }
     ULONG GetFragmentIndex(ULONG dwWaveIndex);

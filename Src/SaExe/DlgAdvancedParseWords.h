@@ -20,7 +20,8 @@
 
 class CSaDoc;
 
-class CDlgAdvancedParseWords : public CDialog {
+class CDlgAdvancedParseWords : public CDialog
+{
     DECLARE_DYNAMIC(CDlgAdvancedParseWords)
 
     // Construction/destruction/creation

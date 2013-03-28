@@ -14,7 +14,8 @@
 const char * Shw_pszWhiteSpace = " \t\n"; // white space: space, tab, newline
 const char * Shw_pszOtherWhiteSpace = "\t\n"; // above, other than space itself
 
-bool Shw_bAtWhiteSpace(const char * psz) {
+bool Shw_bAtWhiteSpace(const char * psz)
+{
     return (strchr(Shw_pszWhiteSpace, *psz) != NULL);
 }
 

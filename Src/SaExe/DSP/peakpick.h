@@ -21,11 +21,13 @@ enum {UNKNOWN_TREND=-1, RISING_TREND=0, LEVEL_TREND=1, FALLING_TREND=2};
 /***********************************************************************************/
 #define CURVATURE_THD  0.F
 
-typedef struct {
+typedef struct
+{
     float Distance;
     float Amplitude;
 } BUMP_TABLE_ENTRY;
-class CPeakPicker {
+class CPeakPicker
+{
 public:
     static char * Copyright(void);
     static float Version(void);

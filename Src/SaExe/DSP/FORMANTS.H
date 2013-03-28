@@ -13,17 +13,20 @@
 
 #define NUM_EXTRA_PEAKS_ALLOWED  MAX_NUM_FORMANTS
 
-typedef struct {
+typedef struct
+{
     float F[MAX_NUM_FORMANTS+1];  //F[0] = pitch, F[1]... = formant frequencies
 } FORMANT_FREQ;
 
-typedef struct {
+typedef struct
+{
     float FrequencyInHertz;
     float BandwidthInHertz;
     float PowerInDecibels;
 } FORMANT_VALUES;
 
-typedef struct {
+typedef struct
+{
     float Low;
     float High;
 } RANGE;
@@ -33,7 +36,8 @@ typedef struct {
 #include "Error.h"
 #include "PeakPick.h"
 
-class CFormantPicker: public CPeakPicker {
+class CFormantPicker: public CPeakPicker
+{
 public:
     static char * Copyright(void);
     static float Version(void);

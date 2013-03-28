@@ -24,7 +24,8 @@
 //###########################################################################
 // CDlgAutoRecorder dialog
 
-class CDlgAutoRecorder : public CDlgAudio {
+class CDlgAutoRecorder : public CDlgAudio
+{
 
     enum eRecordState { WaitForSilence, WaitingForVoice, Recording, Stopping, Playing, Idle};
     enum eRecordMode { Disabled, Record, Stop, Monitor, Play};
@@ -102,7 +103,8 @@ public:
     virtual void StoreFailed();
     virtual void EndPlayback();
     virtual HPSTR GetWaveData(DWORD dwPlayPosition, DWORD dwDataSize);
-    HMMIO GetFileHandle() {
+    HMMIO GetFileHandle()
+    {
         return m_hmmioFile;   // return handle to wave file
     }
     void OnHelpAutoRecorder();

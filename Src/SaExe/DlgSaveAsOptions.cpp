@@ -15,13 +15,15 @@ int CDlgSaveAsOptions::m_nSaveArea = saveEntire;
 int CDlgSaveAsOptions::m_nShowFiles = showNew;
 
 CDlgSaveAsOptions::CDlgSaveAsOptions(LPCTSTR lpszDefExt, LPCTSTR lpszFileName, DWORD dwFlags, LPCTSTR lpszFilter, CWnd * pParentWnd)
-    : CFileDialog(FALSE, lpszDefExt, lpszFileName, dwFlags, lpszFilter, pParentWnd, 0, FALSE) {
+    : CFileDialog(FALSE, lpszDefExt, lpszFileName, dwFlags, lpszFilter, pParentWnd, 0, FALSE)
+{
     SetTemplate(IDD, IDD);
     m_ofn.hInstance = AfxFindResourceHandle(MAKEINTRESOURCE(IDD),RT_DIALOG);
 }
 
 
-void CDlgSaveAsOptions::DoDataExchange(CDataExchange * pDX) {
+void CDlgSaveAsOptions::DoDataExchange(CDataExchange * pDX)
+{
     CFileDialog::DoDataExchange(pDX);
     DDX_Radio(pDX, IDC_SAVEAS_ENTIRE, m_nSaveArea);
     DDX_Radio(pDX, IDC_SAVEAS_OPEN, m_nShowFiles);
@@ -37,11 +39,13 @@ BEGIN_MESSAGE_MAP(CDlgSaveAsOptions, CFileDialog)
     ON_BN_CLICKED(IDC_SAVEAS_ORIGINAL, OnClicked)
 END_MESSAGE_MAP()
 
-void CDlgSaveAsOptions::OnClicked() {
+void CDlgSaveAsOptions::OnClicked()
+{
     UpdateData(); // retrieve modified data
 }
 
-BOOL CDlgSaveAsOptions::OnInitDialog() {
+BOOL CDlgSaveAsOptions::OnInitDialog()
+{
     CFileDialog::OnInitDialog();
 
     return TRUE;

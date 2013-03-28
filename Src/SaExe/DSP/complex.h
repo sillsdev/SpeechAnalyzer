@@ -1,15 +1,18 @@
 #ifndef COMPLEX_H
 #define COMPLEX_H
 
-typedef struct {
+typedef struct
+{
     float real;
     float imag;
 } COMPLEX_RECT_FLOAT;
-typedef struct {
+typedef struct
+{
     float mag;
     float phase;
 } COMPLEX_POLAR_FLOAT;
-typedef union {
+typedef union
+{
     COMPLEX_RECT_FLOAT rect;
     COMPLEX_POLAR_FLOAT polar;
 } COMPLEX_FLOAT;

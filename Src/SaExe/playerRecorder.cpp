@@ -45,14 +45,16 @@
 /***************************************************************************/
 // CDlgWaveNotifyObj::CDlgWaveNotifyObj Constructor
 /***************************************************************************/
-CDlgWaveNotifyObj::CDlgWaveNotifyObj() {
+CDlgWaveNotifyObj::CDlgWaveNotifyObj()
+{
     m_pDlg = NULL;
 }
 
 /***************************************************************************/
 // CDlgWaveNotifyObj::~CDlgWaveNotifyObj Destructor
 /***************************************************************************/
-CDlgWaveNotifyObj::~CDlgWaveNotifyObj() {
+CDlgWaveNotifyObj::~CDlgWaveNotifyObj()
+{
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -63,16 +65,19 @@ CDlgWaveNotifyObj::~CDlgWaveNotifyObj() {
 // The actually playing data block has been finished. Notify the player or
 // the recorder dialog.
 /***************************************************************************/
-void CDlgWaveNotifyObj::BlockFinished(UINT nLevel, DWORD dwPosition, UINT nSpeed) {
+void CDlgWaveNotifyObj::BlockFinished(UINT nLevel, DWORD dwPosition, UINT nSpeed)
+{
     ASSERT(m_pDlg);
     CMainFrame * pMainWnd = (CMainFrame *)AfxGetMainWnd();
     // check if player is playing
-    if (pMainWnd->IsPlayerPlaying()) {
+    if (pMainWnd->IsPlayerPlaying())
+    {
         // call player
         m_pDlg->BlockFinished(nLevel, dwPosition, nSpeed);
         return;
     }
-    if (pMainWnd->IsPlayerTestRun()) {
+    if (pMainWnd->IsPlayerTestRun())
+    {
         return;    // no call
     }
     // call recorder
@@ -84,7 +89,8 @@ void CDlgWaveNotifyObj::BlockFinished(UINT nLevel, DWORD dwPosition, UINT nSpeed
 // The actually recorded data block has been stored. Notify the recorder
 // dialog.
 /***************************************************************************/
-void CDlgWaveNotifyObj::BlockStored(UINT nLevel, DWORD dwPosition, BOOL * bSaveOverride) {
+void CDlgWaveNotifyObj::BlockStored(UINT nLevel, DWORD dwPosition, BOOL * bSaveOverride)
+{
     ASSERT(m_pDlg);
     m_pDlg->BlockStored(nLevel, dwPosition, bSaveOverride);
 }
@@ -94,7 +100,8 @@ void CDlgWaveNotifyObj::BlockStored(UINT nLevel, DWORD dwPosition, BOOL * bSaveO
 // The actually recorded data block has been failed storing. Notify the
 // recorder dialog.
 /***************************************************************************/
-void CDlgWaveNotifyObj::StoreFailed() {
+void CDlgWaveNotifyObj::StoreFailed()
+{
     ASSERT(m_pDlg);
     m_pDlg->StoreFailed();
 }
@@ -103,17 +110,20 @@ void CDlgWaveNotifyObj::StoreFailed() {
 // CDlgWaveNotifyObj::EndPlayback Playback finished
 // The playback has been finished. Notify the player or the recorder dialog.
 /***************************************************************************/
-void CDlgWaveNotifyObj::EndPlayback() {
+void CDlgWaveNotifyObj::EndPlayback()
+{
     ASSERT(m_pDlg);
     CMainFrame * pMainWnd = (CMainFrame *)AfxGetMainWnd();
     // check if player is playing
-    if (pMainWnd->IsPlayerPlaying()) {
+    if (pMainWnd->IsPlayerPlaying())
+    {
         // call player
         CDlgPlayer * pDlg = (CDlgPlayer *)m_pDlg; // cast to player dialog
         pDlg->EndPlayback();
         return;
     }
-    if (pMainWnd->IsPlayerTestRun()) {
+    if (pMainWnd->IsPlayerTestRun())
+    {
         // call function key dialog (test run)
         CDlgFnKeys * pFnDlg = (CDlgFnKeys *)m_pDlg; // cast to function key dialog
         pFnDlg->EndPlayback();
@@ -130,26 +140,34 @@ void CDlgWaveNotifyObj::EndPlayback() {
 // the document. If the request is coming from the recorder, the recorder will
 // deliver the data.
 /***************************************************************************/
-HPSTR CDlgWaveNotifyObj::GetWaveData(CView * pView, DWORD dwPlayPosition, DWORD dwDataSize) {
+HPSTR CDlgWaveNotifyObj::GetWaveData(CView * pView, DWORD dwPlayPosition, DWORD dwDataSize)
+{
     ASSERT(m_pDlg);
     CMainFrame * pMainWnd = (CMainFrame *)AfxGetMainWnd();
     // check if player is playing
-    if (pMainWnd->IsPlayerPlaying() || pMainWnd->IsPlayerTestRun()) {
+    if (pMainWnd->IsPlayerPlaying() || pMainWnd->IsPlayerTestRun())
+    {
         // request for data comes from player
         CSaDoc * pDoc = (CSaDoc *)pView->GetDocument();
         DWORD dwWaveBufferSize = GetBufferSize();
         if (((dwPlayPosition + dwDataSize) > (pDoc->GetWaveBufferIndex() + dwWaveBufferSize))
-                || ((dwPlayPosition + dwDataSize) > (dwPlayPosition - (dwPlayPosition % dwWaveBufferSize) + dwWaveBufferSize))) {
+                || ((dwPlayPosition + dwDataSize) > (dwPlayPosition - (dwPlayPosition % dwWaveBufferSize) + dwWaveBufferSize)))
+        {
             return pDoc->GetWaveData(dwPlayPosition, TRUE); // get pointer to data block
-        } else {
+        }
+        else
+        {
             HPSTR pData = pDoc->GetWaveData(dwPlayPosition); // get pointer to data block
-            if (pData == NULL) {
+            if (pData == NULL)
+            {
                 return NULL;    // error while reading data
             }
             pData += dwPlayPosition - pDoc->GetWaveBufferIndex();
             return pData;
         }
-    } else {
+    }
+    else
+    {
         // request for data comes from recorder
         return m_pDlg->GetWaveData(dwPlayPosition, dwDataSize);
     }
@@ -196,7 +214,8 @@ END_MESSAGE_MAP()
 /***************************************************************************/
 // CDlgPlayer::CDlgPlayer Constructor
 /***************************************************************************/
-CDlgPlayer::CDlgPlayer(CWnd * pParent) : CDlgAudio(CDlgPlayer::IDD, pParent) {
+CDlgPlayer::CDlgPlayer(CWnd * pParent) : CDlgAudio(CDlgPlayer::IDD, pParent)
+{
     //{{AFX_DATA_INIT(CDlgPlayer)
     m_nComboPlayMode = 2;
     m_nSpeed = 100;
@@ -220,9 +239,11 @@ CDlgPlayer::CDlgPlayer(CWnd * pParent) : CDlgAudio(CDlgPlayer::IDD, pParent) {
 // because the MFC code was giving ASSERTS without it. Possible memory
 // leaks. 09/30/2000 - DDO
 /***************************************************************************/
-CDlgPlayer::~CDlgPlayer() {
+CDlgPlayer::~CDlgPlayer()
+{
     bPlayer = FALSE;
-    if (m_pWave) {
+    if (m_pWave)
+    {
         delete m_pWave;
     }
     DestroyWindow();
@@ -231,7 +252,8 @@ CDlgPlayer::~CDlgPlayer() {
 /***************************************************************************/
 // CDlgPlayer::Create Creation
 /***************************************************************************/
-BOOL CDlgPlayer::Create() {
+BOOL CDlgPlayer::Create()
+{
     bPlayer = TRUE; // player launched
     return CDialog::Create(CDlgPlayer::IDD);
 }
@@ -242,7 +264,8 @@ BOOL CDlgPlayer::Create() {
 /***************************************************************************/
 // CDlgPlayer::DoDataExchange Data exchange
 /***************************************************************************/
-void CDlgPlayer::DoDataExchange(CDataExchange * pDX) {
+void CDlgPlayer::DoDataExchange(CDataExchange * pDX)
+{
     CDialog::DoDataExchange(pDX);
     //{{AFX_DATA_MAP(CDlgPlayer)
     DDX_CBIndex(pDX, IDC_PLAYMODE, m_nComboPlayMode);
@@ -259,13 +282,16 @@ void CDlgPlayer::DoDataExchange(CDataExchange * pDX) {
 /***************************************************************************/
 // CDlgPlayer::SetTotalTime Set total time display
 /***************************************************************************/
-void CDlgPlayer::SetTotalTime() {
+void CDlgPlayer::SetTotalTime()
+{
     CSaView * pView = (CSaView *)m_pView; // cast pointer to view
     CSaDoc * pDoc = (CSaDoc *)m_pDoc; // cast pointer to document
     DWORD dwEnd = pDoc->GetDataSize(); // data end
-    if (dwEnd > 0) {
+    if (dwEnd > 0)
+    {
         // display depends on the submode
-        switch (m_nSubMode) {
+        switch (m_nSubMode)
+        {
         case ID_PLAYBACK_FILE:
             break;
         case ID_PLAYBACK_WINDOW:
@@ -291,14 +317,18 @@ void CDlgPlayer::SetTotalTime() {
 /***************************************************************************/
 // CDlgPlayer::SetPositionTime Set position time display
 /***************************************************************************/
-void CDlgPlayer::SetPositionTime() {
+void CDlgPlayer::SetPositionTime()
+{
     CSaView * pView = (CSaView *)m_pView; // cast pointer to view
     CSaDoc * pDoc = (CSaDoc *)m_pDoc; // cast pointer to document
-    if (pDoc->GetDataSize() > 0) {
+    if (pDoc->GetDataSize() > 0)
+    {
         DWORD dwPosition = m_dwPlayPosition; // data position
-        if (m_dwPlayPosition == 0) {
+        if (m_dwPlayPosition == 0)
+        {
             // display depends on the submode
-            switch (m_nSubMode) {
+            switch (m_nSubMode)
+            {
             case ID_PLAYBACK_FILE:
                 break;
             case ID_PLAYBACK_WINDOW:
@@ -326,7 +356,8 @@ void CDlgPlayer::SetPositionTime() {
 /***************************************************************************/
 // CDlgPlayer::SetPlayerFullSize Set the player size to full size
 /***************************************************************************/
-void CDlgPlayer::SetPlayerFullSize() {
+void CDlgPlayer::SetPlayerFullSize()
+{
     m_bFullSize = TRUE; // player will become full size, is now small
     CenterWindow(); // move it in place (the zero window)
     CRect rWnd;
@@ -345,12 +376,14 @@ const UINT CDlgPlayer::SubModeUndefined = 0x0ffff;
 /***************************************************************************/
 // CDlgPlayer::SetPlayerMode Set the player mode
 /***************************************************************************/
-BOOL CDlgPlayer::SetPlayerMode(UINT nMode, UINT nSubMode, BOOL bFullSize, BOOL bFnKey, SSpecific * pSpecific) {
+BOOL CDlgPlayer::SetPlayerMode(UINT nMode, UINT nSubMode, BOOL bFullSize, BOOL bFnKey, SSpecific * pSpecific)
+{
 
     TRACE(_T("SetPlayerMode %d %d %d %d\n"),(int)nMode,(int)nSubMode,(int)bFullSize,(int)bFnKey);
     nSubMode = nSubMode & 0x0ffff;
     // SDM 1.06.6U6
-    if (m_bFnKeySetting && (!bFnKey ||(nSubMode != SubModeUndefined)|| !m_bRepeat)) {
+    if (m_bFnKeySetting && (!bFnKey ||(nSubMode != SubModeUndefined)|| !m_bRepeat))
+    {
         // restore original player setting
         m_bFnKeySetting = FALSE;
         m_nVolume = m_nOldVolume;
@@ -362,12 +395,14 @@ BOOL CDlgPlayer::SetPlayerMode(UINT nMode, UINT nSubMode, BOOL bFullSize, BOOL b
         OnKillfocusSpeedEdit();
         OnKillfocusDelayEdit();
         OnRepeat();
-        if (m_nFnKey == 24) { // SDM 1.5Test10.4
+        if (m_nFnKey == 24)   // SDM 1.5Test10.4
+        {
             AfxGetMainWnd()->PostMessage(WM_COMMAND, ID_PROCESS_BATCH_COMMANDS, 0L);    // SDM 1.5Test8.5 resume batch command
         }
     }
     // SDM 1.06.6U6 bFnKey not valid for nSubMode = SubModeUndefined (this is a repeat command or stop command)
-    if (bFnKey && (nSubMode != SubModeUndefined)) {
+    if (bFnKey && (nSubMode != SubModeUndefined))
+    {
         // save the current player setting
         m_nOldVolume = m_nVolume;
         m_nOldSpeed = m_nSpeed;
@@ -383,7 +418,8 @@ BOOL CDlgPlayer::SetPlayerMode(UINT nMode, UINT nSubMode, BOOL bFullSize, BOOL b
         m_nDelay = pFnKeys->nDelay[nSubMode];
         m_bRepeat = pFnKeys->bRepeat[nSubMode];
         nSubMode = pFnKeys->nMode[nSubMode];
-        switch (nSubMode) {
+        switch (nSubMode)
+        {
         case ID_PLAYBACK_CURSORS:
             m_nComboPlayMode = 0;
             break;
@@ -412,12 +448,15 @@ BOOL CDlgPlayer::SetPlayerMode(UINT nMode, UINT nSubMode, BOOL bFullSize, BOOL b
         OnKillfocusDelayEdit();
         OnRepeat();
     }
-    if (nSubMode != SubModeUndefined) {
+    if (nSubMode != SubModeUndefined)
+    {
         m_nSubMode = nSubMode;    // save submode
     }
     // set mode combobox, but only if not called for full size
-    if (!bFullSize) {
-        switch (m_nSubMode) {
+    if (!bFullSize)
+    {
+        switch (m_nSubMode)
+        {
         case ID_PLAYBACK_CURSORS:
             m_nComboPlayMode = 0;
             break;
@@ -442,15 +481,18 @@ BOOL CDlgPlayer::SetPlayerMode(UINT nMode, UINT nSubMode, BOOL bFullSize, BOOL b
         }
         UpdateData(FALSE);
     }
-    if ((!m_bFullSize) && (bFullSize)) {
+    if ((!m_bFullSize) && (bFullSize))
+    {
         SetPlayerFullSize();    // change the size
     }
     // No errors
-    if (m_nMode == nMode) {
+    if (m_nMode == nMode)
+    {
         return TRUE;    // no change
     }
     // stop, whatever the player is doing
-    if (m_pWave) {
+    if (m_pWave)
+    {
         m_pWave->Stop();
     }
     SetTotalTime();
@@ -459,9 +501,11 @@ BOOL CDlgPlayer::SetPlayerMode(UINT nMode, UINT nSubMode, BOOL bFullSize, BOOL b
     CSaApp * pApp = (CSaApp *)AfxGetApp(); // get pointer to application
     CSaView * pView = (CSaView *)m_pView; // cast pointer to view
     CSaDoc * pDoc = (CSaDoc *)m_pDoc; // cast pointer to document
-    switch (nMode) {
+    switch (nMode)
+    {
     case IDC_PLAY:
-        if (m_nMode != IDC_PAUSE) {
+        if (m_nMode != IDC_PAUSE)
+        {
             m_dwPlayPosition = 0;
         }
         m_nMode = IDC_PLAY;
@@ -471,9 +515,11 @@ BOOL CDlgPlayer::SetPlayerMode(UINT nMode, UINT nSubMode, BOOL bFullSize, BOOL b
         m_pause.EnableWindow(TRUE); // enable Pause button
         GetDlgItem(IDC_PLAYMODE)->EnableWindow(FALSE); // disable mode window
         // get pointer to document
-        if (m_pWave) {
+        if (m_pWave)
+        {
             BOOL bError = FALSE;
-            switch (m_nSubMode) {
+            switch (m_nSubMode)
+            {
             case ID_PLAYBACK_FILE:
                 dwSize = pDoc->GetDataSize();
                 break;
@@ -488,54 +534,72 @@ BOOL CDlgPlayer::SetPlayerMode(UINT nMode, UINT nSubMode, BOOL bFullSize, BOOL b
             case ID_PLAYBACK_LTOSTART:
                 dwStart = DWORD(pView->GetDataPosition(0));
                 dwSize = pView->GetStartCursorPosition();
-                if (dwSize > dwStart) {
+                if (dwSize > dwStart)
+                {
                     dwSize -= dwStart;
-                } else {
+                }
+                else
+                {
                     bError = TRUE;
                 }
                 break;
             case ID_PLAYBACK_STARTTOR:
                 dwStart = pView->GetStartCursorPosition();
                 dwSize = DWORD(pView->GetDataPosition(0) + pView->GetDataFrame());
-                if (dwSize > dwStart) {
+                if (dwSize > dwStart)
+                {
                     dwSize -= dwStart;
-                } else {
+                }
+                else
+                {
                     bError = TRUE;
                 }
                 break;
             case ID_PLAYBACK_LTOSTOP:
                 dwStart = DWORD(pView->GetDataPosition(0));
                 dwSize = pView->GetStopCursorPosition();
-                if (dwSize > dwStart) {
+                if (dwSize > dwStart)
+                {
                     dwSize -= dwStart;
-                } else {
+                }
+                else
+                {
                     bError = TRUE;
                 }
                 break;
             case ID_PLAYBACK_STOPTOR:
                 dwStart = pView->GetStopCursorPosition();
                 dwSize = DWORD(pView->GetDataPosition(0)) + pView->GetDataFrame();
-                if (dwSize > dwStart) {
+                if (dwSize > dwStart)
+                {
                     dwSize -= dwStart;
-                } else {
+                }
+                else
+                {
                     bError = TRUE;
                 }
                 break;
             case ID_PLAYBACK_SPECIFIC:
                 dwSize = pDoc->GetDataSize();
-                if (pSpecific) {
+                if (pSpecific)
+                {
                     DWORD dwSpecificSize = pDoc->GetBytesFromTime(pSpecific->end);
                     DWORD dwSpecificStart = pDoc->GetBytesFromTime(pSpecific->begin);
 
-                    if (dwSpecificStart < dwSize) {
+                    if (dwSpecificStart < dwSize)
+                    {
                         dwStart = dwSpecificStart;
                     }
 
-                    if (dwSpecificSize < dwSize) {
+                    if (dwSpecificSize < dwSize)
+                    {
                         dwSize = dwSpecificSize;
-                        if (dwSize > dwStart) {
+                        if (dwSize > dwStart)
+                        {
                             dwSize -= dwStart;
-                        } else {
+                        }
+                        else
+                        {
                             dwSize = 0;
                         }
                     }
@@ -545,18 +609,23 @@ BOOL CDlgPlayer::SetPlayerMode(UINT nMode, UINT nSubMode, BOOL bFullSize, BOOL b
                 dwStart = dwSize = 0;
                 break;
             }
-            if (m_dwPlayPosition == 0) {
+            if (m_dwPlayPosition == 0)
+            {
                 m_dwPlayPosition = dwStart;
             }
-            if (bError) {
+            if (bError)
+            {
                 pApp->ErrorMessage(IDS_ERROR_PLAYMODE);    // play mode not playable
-            } else {
+            }
+            else
+            {
                 SetDlgItemText(IDC_TIMERTEXT, _T("Current Time"));
                 m_pView->SetPlaybackPosition(dwStart); // SDM 1.5Test10.5
                 bError = !m_pWave->Play(m_dwPlayPosition, dwStart + dwSize - m_dwPlayPosition, m_nVolume, m_nSpeed, m_pView, &m_NotifyObj);
             }
 
-            if (bError) {
+            if (bError)
+            {
                 m_nMode = IDC_STOP;  // play not successfull
                 m_play.Release(); // release Play button
                 m_pause.EnableWindow(FALSE); // disable Pause button
@@ -568,34 +637,37 @@ BOOL CDlgPlayer::SetPlayerMode(UINT nMode, UINT nSubMode, BOOL bFullSize, BOOL b
         }
         break;
     case IDC_PAUSE:
-        if (m_pWave) {
+        if (m_pWave)
+        {
             m_pWave->Stop();
         }
         m_nOldMode = m_nMode;
         m_nMode = IDC_PAUSE;
-        m_pView->SetPlaybackPosition();		// SDM 1.06.6U6 hide playback indicators
+        m_pView->SetPlaybackPosition();     // SDM 1.06.6U6 hide playback indicators
         // start flashing paused button
         m_play.Flash(TRUE);
         m_VUBar.SetVU(0);
         break;
     case IDC_STOP:
         m_nMode = IDC_STOP;
-        if (m_pWave) {
+        if (m_pWave)
+        {
             m_pWave->Stop();
         }
         m_dwPlayPosition = 0;
         SetPositionTime();
-        m_pView->SetPlaybackPosition();		// SDM 1.06.6U6 hide playback indicators
-        m_play.Release();					// release Play button
-        m_stop.Release();					// release Stop button
-        m_pause.Release();					// release Pause button
-        m_pause.EnableWindow(FALSE);		// disable Pause button
+        m_pView->SetPlaybackPosition();     // SDM 1.06.6U6 hide playback indicators
+        m_play.Release();                   // release Play button
+        m_stop.Release();                   // release Stop button
+        m_pause.Release();                  // release Pause button
+        m_pause.EnableWindow(FALSE);        // disable Pause button
         GetDlgItem(IDC_PLAYMODE)->EnableWindow(TRUE); // disable mode window
         m_VUBar.Reset();
         break;
     default:
         m_nMode = 0;
-        if (m_pWave) {
+        if (m_pWave)
+        {
             m_pWave->Stop();
         }
         m_play.Release(); // release Play button
@@ -617,8 +689,9 @@ BOOL CDlgPlayer::SetPlayerMode(UINT nMode, UINT nSubMode, BOOL bFullSize, BOOL b
 // The actually playing data block has been finished playing. Update the
 // dialog display controls.
 /***************************************************************************/
-void CDlgPlayer::BlockFinished(UINT nLevel, DWORD dwPosition, UINT nSpeed) {
-	
+void CDlgPlayer::BlockFinished(UINT nLevel, DWORD dwPosition, UINT nSpeed)
+{
+
     m_pView->SetPlaybackPosition(dwPosition, nSpeed);
     // update the VU bar
     m_VUBar.SetVU((int)nLevel);
@@ -635,11 +708,14 @@ void CDlgPlayer::BlockFinished(UINT nLevel, DWORD dwPosition, UINT nSpeed) {
 // CDlgPlayer::EndPlayback Playback finished
 // The playback has been finished. Set player mode to stop.
 /***************************************************************************/
-void CDlgPlayer::EndPlayback() {
+void CDlgPlayer::EndPlayback()
+{
 
-    if (m_nMode != 0) {
+    if (m_nMode != 0)
+    {
         SetPlayerMode(IDC_STOP, SubModeUndefined, m_bFullSize, m_bFnKeySetting);  // SDM 1.06.6U6
-        if (m_bRepeat) {
+        if (m_bRepeat)
+        {
             SetTimer(1, m_nDelay, NULL);    // start repeating
         }
     }
@@ -650,27 +726,33 @@ void CDlgPlayer::EndPlayback() {
 // The parent view has changed. The dialogs caption text must be adapted and
 // the playing time changes.
 /***************************************************************************/
-void CDlgPlayer::ChangeView(CSaView * pView) {
+void CDlgPlayer::ChangeView(CSaView * pView)
+{
 
-    if (m_pView == pView) {
+    if (m_pView == pView)
+    {
         return;
     }
     // set file name in players caption
-    m_pView = pView;								// set the new pointer to the active view
-    m_pDoc = pView->GetDocument();					// get the pointer to the attached document
+    m_pView = pView;                                // set the new pointer to the active view
+    m_pDoc = pView->GetDocument();                  // get the pointer to the attached document
     CSaDoc * pDoc = (CSaDoc *)m_pDoc;
-	CString szTitle = pDoc->GetFilename().c_str();	// load the document title
+    CString szTitle = pDoc->GetFilename().c_str();  // load the document title
     CString szCaption;
-    GetWindowText(szCaption);						// get the current caption string
+    GetWindowText(szCaption);                       // get the current caption string
     int nFind = szCaption.Find(' ');
-    if (nFind != -1) {
-        szCaption = szCaption.Left(nFind);			// extract part left of first space
+    if (nFind != -1)
+    {
+        szCaption = szCaption.Left(nFind);          // extract part left of first space
     }
     szCaption += " - " + szTitle; // add new document title
     SetWindowText(szCaption); // write the new caption string
-    if (pDoc->GetDataSize() == 0) { // no data to play
+    if (pDoc->GetDataSize() == 0)   // no data to play
+    {
         SetPlayerMode(0, m_nSubMode, m_bFullSize);
-    } else {
+    }
+    else
+    {
         // update the time displays
         SetPlayerMode(IDC_STOP, m_nSubMode, m_bFullSize);
         SetTotalTime();
@@ -687,7 +769,8 @@ void CDlgPlayer::ChangeView(CSaView * pView) {
 // over their placeholders in the dialog. The dialog is centered over the
 // mainframe window.
 /***************************************************************************/
-BOOL CDlgPlayer::OnInitDialog() {
+BOOL CDlgPlayer::OnInitDialog()
+{
     CDialog::OnInitDialog();
     m_pWave->GetOutDevice()->ConnectMixer(this);
     // preset the player modes
@@ -718,7 +801,8 @@ BOOL CDlgPlayer::OnInitDialog() {
     CMainFrame * pMainWnd = (CMainFrame *)AfxGetMainWnd();
     CSaDoc * pSaDoc = pMainWnd->GetCurrDoc();
     CProcessFragments * pFragmenter = pSaDoc->GetFragments();
-    if (pFragmenter) {
+    if (pFragmenter)
+    {
         BOOL bState = pFragmenter->IsDataReady();
         GetDlgItem(IDC_SPEEDFRAME)->EnableWindow(bState);
         GetDlgItem(IDC_SPEEDEDIT)->EnableWindow(bState);
@@ -752,7 +836,8 @@ BOOL CDlgPlayer::OnInitDialog() {
     m_rSize.left = 0;
     m_rSize.top = 0;
     CWnd * pWnd = GetDlgItem(IDC_MIXER);
-    if (pWnd) {
+    if (pWnd)
+    {
         pWnd->EnableWindow(m_pWave->GetOutDevice()->ShowMixer(FALSE));
     }
 
@@ -764,9 +849,11 @@ BOOL CDlgPlayer::OnInitDialog() {
 /***************************************************************************/
 // CDlgPlayer::OnPlay Button play hit
 /***************************************************************************/
-void CDlgPlayer::OnPlay() {
+void CDlgPlayer::OnPlay()
+{
     UpdateData(TRUE);
-    if (m_nMode != IDC_PLAY) {
+    if (m_nMode != IDC_PLAY)
+    {
         SetPlayerMode(IDC_PLAY, m_nSubMode, m_bFullSize);
     }
 }
@@ -774,19 +861,24 @@ void CDlgPlayer::OnPlay() {
 /***************************************************************************/
 // CDlgPlayer::OnStop Button stop hit
 /***************************************************************************/
-void CDlgPlayer::OnStop() {
+void CDlgPlayer::OnStop()
+{
     // RLJ, 1 Oct 1999
     // Added the following 'if' statement so that when the Stop button is hit,
     // the next Repeat is canceled. Since it leaves the 'Repeat' checkbox
     // unchanged, however, future repeats can still be scheduled simply by
     // depressing the Play button.
-    if (m_bRepeat) {
+    if (m_bRepeat)
+    {
         m_bRepeat = FALSE;
     }
 
-    if (m_nMode != IDC_STOP) {
+    if (m_nMode != IDC_STOP)
+    {
         SetPlayerMode(IDC_STOP, m_nSubMode, m_bFullSize);
-    } else {
+    }
+    else
+    {
         m_stop.Release();
     }
 }
@@ -794,10 +886,14 @@ void CDlgPlayer::OnStop() {
 /***************************************************************************/
 // CDlgPlayer::OnPause Button pause hit
 /***************************************************************************/
-void CDlgPlayer::OnPause() {
-    if (m_nMode != IDC_PAUSE) {
+void CDlgPlayer::OnPause()
+{
+    if (m_nMode != IDC_PAUSE)
+    {
         SetPlayerMode(IDC_PAUSE, m_nSubMode, m_bFullSize);
-    } else {
+    }
+    else
+    {
         SetPlayerMode(m_nOldMode, m_nSubMode, m_bFullSize);
     }
 }
@@ -805,12 +901,14 @@ void CDlgPlayer::OnPause() {
 /***************************************************************************/
 // CDlgPlayer::OnMixerControlChange Mixer has changed volume settings
 /***************************************************************************/
-LRESULT CDlgPlayer::OnMixerControlChange(WPARAM, LPARAM) {
+LRESULT CDlgPlayer::OnMixerControlChange(WPARAM, LPARAM)
+{
     BOOL bResult = FALSE;
 
     m_nVolume = m_pWave->GetVolume(&bResult);
 
-    if (bResult) {
+    if (bResult)
+    {
         SetDlgItemInt(IDC_VOLUMEEDIT, m_nVolume, TRUE);
         m_SliderVolume.SetPosition(m_nVolume);
     }
@@ -821,7 +919,8 @@ LRESULT CDlgPlayer::OnMixerControlChange(WPARAM, LPARAM) {
 /***************************************************************************/
 // CDlgPlayer::OnVolumeSlide Volume slider position changed
 /***************************************************************************/
-void CDlgPlayer::OnVolumeSlide() {
+void CDlgPlayer::OnVolumeSlide()
+{
     m_nVolume = m_SliderVolume.GetPosition();
     SetDlgItemInt(IDC_VOLUMEEDIT, m_SliderVolume.GetPosition(), TRUE);
     m_pWave->SetVolume(m_nVolume);
@@ -830,17 +929,23 @@ void CDlgPlayer::OnVolumeSlide() {
 /***************************************************************************/
 // CDlgPlayer::OnVolumeScroll Volume spin control hit
 /***************************************************************************/
-void CDlgPlayer::OnVolumeScroll() {
+void CDlgPlayer::OnVolumeScroll()
+{
     m_nVolume = GetDlgItemInt(IDC_VOLUMEEDIT, NULL, TRUE);
-    if (m_SpinVolume.UpperButtonClicked()) {
+    if (m_SpinVolume.UpperButtonClicked())
+    {
         m_nVolume++;
-    } else {
+    }
+    else
+    {
         m_nVolume--;
     }
-    if ((int)m_nVolume < 0) {
+    if ((int)m_nVolume < 0)
+    {
         m_nVolume = 0;
     }
-    if (m_nVolume > 100) {
+    if (m_nVolume > 100)
+    {
         m_nVolume = 100;
     }
     SetDlgItemInt(IDC_VOLUMEEDIT, m_nVolume, TRUE);
@@ -851,12 +956,15 @@ void CDlgPlayer::OnVolumeScroll() {
 /***************************************************************************/
 // CDlgPlayer::OnKillfocusVolumeEdit Volume edited
 /***************************************************************************/
-void CDlgPlayer::OnKillfocusVolumeEdit() {
+void CDlgPlayer::OnKillfocusVolumeEdit()
+{
     m_nVolume = GetDlgItemInt(IDC_VOLUMEEDIT, NULL, TRUE);
-    if ((int)m_nVolume < 0) {
+    if ((int)m_nVolume < 0)
+    {
         m_nVolume = 0;
     }
-    if (m_nVolume > 100) {
+    if (m_nVolume > 100)
+    {
         m_nVolume = 100;
     }
     SetDlgItemInt(IDC_VOLUMEEDIT, m_nVolume, TRUE);
@@ -867,7 +975,8 @@ void CDlgPlayer::OnKillfocusVolumeEdit() {
 /***************************************************************************/
 // CDlgPlayer::EnableSpeedSlider Enable/Disable speed slider
 /***************************************************************************/
-void CDlgPlayer::EnableSpeedSlider(BOOL bState) {
+void CDlgPlayer::EnableSpeedSlider(BOOL bState)
+{
     GetDlgItem(IDC_SPEEDFRAME)->EnableWindow(bState);
     GetDlgItem(IDC_SPEEDEDIT)->EnableWindow(bState);
     GetDlgItem(IDC_SPEEDTEXT)->EnableWindow(bState);
@@ -880,11 +989,15 @@ void CDlgPlayer::EnableSpeedSlider(BOOL bState) {
 /***************************************************************************/
 // CDlgPlayer::OnSpeedSlide Speed slider position changed
 /***************************************************************************/
-void CDlgPlayer::OnSpeedSlide() {
+void CDlgPlayer::OnSpeedSlide()
+{
     UINT nSpeed = m_SliderSpeed.GetPosition();
-    if (nSpeed > 50) {
+    if (nSpeed > 50)
+    {
         m_nSpeed = 100 + (nSpeed - 50) * 233 / 50;
-    } else {
+    }
+    else
+    {
         m_nSpeed = 10 + nSpeed * 90 / 50;
     }
     SetDlgItemInt(IDC_SPEEDEDIT, m_nSpeed, TRUE);
@@ -894,23 +1007,32 @@ void CDlgPlayer::OnSpeedSlide() {
 /***************************************************************************/
 // CDlgPlayer::OnSpeedScroll Speed spin control hit
 /***************************************************************************/
-void CDlgPlayer::OnSpeedScroll() {
+void CDlgPlayer::OnSpeedScroll()
+{
     m_nSpeed = GetDlgItemInt(IDC_SPEEDEDIT, NULL, TRUE);
-    if (m_SpinSpeed.UpperButtonClicked()) {
+    if (m_SpinSpeed.UpperButtonClicked())
+    {
         m_nSpeed++;
-    } else {
+    }
+    else
+    {
         m_nSpeed--;
     }
-    if ((int)m_nSpeed < 10) {
+    if ((int)m_nSpeed < 10)
+    {
         m_nSpeed = 10;
     }
-    if (m_nSpeed > 333) {
+    if (m_nSpeed > 333)
+    {
         m_nSpeed = 333;
     }
     SetDlgItemInt(IDC_SPEEDEDIT, m_nSpeed, TRUE);
-    if (m_nSpeed > 100) {
+    if (m_nSpeed > 100)
+    {
         m_SliderSpeed.SetPosition(50 + 50 * (m_nSpeed - 100) / 233);
-    } else {
+    }
+    else
+    {
         m_SliderSpeed.SetPosition(50 * (m_nSpeed - 10) / 90);
     }
     m_pWave->SetSpeed(m_nSpeed);
@@ -919,18 +1041,24 @@ void CDlgPlayer::OnSpeedScroll() {
 /***************************************************************************/
 // CDlgPlayer::OnKillfocusSpeedEdit Speed edited
 /***************************************************************************/
-void CDlgPlayer::OnKillfocusSpeedEdit() {
+void CDlgPlayer::OnKillfocusSpeedEdit()
+{
     m_nSpeed = GetDlgItemInt(IDC_SPEEDEDIT, NULL, TRUE);
-    if ((int)m_nSpeed < 10) {
+    if ((int)m_nSpeed < 10)
+    {
         m_nSpeed = 10;
     }
-    if (m_nSpeed > 333) {
+    if (m_nSpeed > 333)
+    {
         m_nSpeed = 333;
     }
     SetDlgItemInt(IDC_SPEEDEDIT, m_nSpeed, TRUE);
-    if (m_nSpeed > 100) {
+    if (m_nSpeed > 100)
+    {
         m_SliderSpeed.SetPosition(50 + 50 * (m_nSpeed - 100) / 233);
-    } else {
+    }
+    else
+    {
         m_SliderSpeed.SetPosition(50 * (m_nSpeed - 10) / 90);
     }
     m_pWave->SetSpeed(m_nSpeed);
@@ -939,9 +1067,11 @@ void CDlgPlayer::OnKillfocusSpeedEdit() {
 /***************************************************************************/
 // CDlgPlayer::OnDelaySlide Delay slider position changed
 /***************************************************************************/
-void CDlgPlayer::OnDelaySlide() {
+void CDlgPlayer::OnDelaySlide()
+{
     m_nDelay = m_SliderDelay.GetPosition() * 100;
-    if (m_nDelay > 9999) {
+    if (m_nDelay > 9999)
+    {
         m_nDelay = 9999;
     }
     SetDlgItemInt(IDC_DELAYEDIT, m_nDelay, TRUE);
@@ -950,28 +1080,42 @@ void CDlgPlayer::OnDelaySlide() {
 /***************************************************************************/
 // CDlgPlayer::OnDelayScroll Delay spin control hit
 /***************************************************************************/
-void CDlgPlayer::OnDelayScroll() {
+void CDlgPlayer::OnDelayScroll()
+{
     m_nDelay = GetDlgItemInt(IDC_DELAYEDIT, NULL, TRUE);
-    if (m_SpinDelay.UpperButtonClicked()) {
+    if (m_SpinDelay.UpperButtonClicked())
+    {
         m_nDelay += 100;
-    } else {
-        if (m_nDelay == 9999) {
+    }
+    else
+    {
+        if (m_nDelay == 9999)
+        {
             m_nDelay -= 99;
-        } else {
-            if (m_nDelay > 100) {
+        }
+        else
+        {
+            if (m_nDelay > 100)
+            {
                 m_nDelay -= 100;
-            } else {
+            }
+            else
+            {
                 m_nDelay = 0;
             }
         }
     }
-    if (m_nDelay > 9999) {
+    if (m_nDelay > 9999)
+    {
         m_nDelay = 9999;
     }
     SetDlgItemInt(IDC_DELAYEDIT, m_nDelay, TRUE);
-    if (m_nDelay == 9999) {
+    if (m_nDelay == 9999)
+    {
         m_SliderDelay.SetPosition(100);
-    } else {
+    }
+    else
+    {
         m_SliderDelay.SetPosition(m_nDelay / 100);
     }
 }
@@ -979,18 +1123,24 @@ void CDlgPlayer::OnDelayScroll() {
 /***************************************************************************/
 // CDlgPlayer::OnKillfocusDelayEdit Delay edited
 /***************************************************************************/
-void CDlgPlayer::OnKillfocusDelayEdit() {
+void CDlgPlayer::OnKillfocusDelayEdit()
+{
     m_nDelay = GetDlgItemInt(IDC_DELAYEDIT, NULL, TRUE);
-    if ((int)m_nDelay < 0) {
+    if ((int)m_nDelay < 0)
+    {
         m_nDelay = 0;
     }
-    if (m_nDelay > 9999) {
+    if (m_nDelay > 9999)
+    {
         m_nDelay = 9999;
     }
     SetDlgItemInt(IDC_DELAYEDIT, m_nDelay, TRUE);
-    if (m_nDelay == 9999) {
+    if (m_nDelay == 9999)
+    {
         m_SliderDelay.SetPosition(100);
-    } else {
+    }
+    else
+    {
         m_SliderDelay.SetPosition(m_nDelay / 100);
     }
 }
@@ -998,15 +1148,19 @@ void CDlgPlayer::OnKillfocusDelayEdit() {
 /***************************************************************************/
 // CDlgPlayer::OnRepeat Replay repeat clicked
 /***************************************************************************/
-void CDlgPlayer::OnRepeat() {
+void CDlgPlayer::OnRepeat()
+{
     UpdateData(TRUE);
-    if (m_bRepeat) {
+    if (m_bRepeat)
+    {
         // enable delay editing
         m_SliderDelay.EnableWindow(TRUE); // enable delay slider
         m_SpinDelay.EnableWindow(TRUE); // enable delay spin control
         GetDlgItem(IDC_DELAYEDIT)->EnableWindow(TRUE); // enable delay edit control
         GetDlgItem(IDC_DELAYTEXT)->EnableWindow(TRUE); // enable delay dimension text
-    } else {
+    }
+    else
+    {
         // disable delay editing
         m_SliderDelay.EnableWindow(FALSE); // disable delay slider
         m_SpinDelay.EnableWindow(FALSE); // disable delay spin control
@@ -1018,10 +1172,12 @@ void CDlgPlayer::OnRepeat() {
 /***************************************************************************/
 // CDlgPlayer::OnSelchangePlaymode Player mode selection changed
 /***************************************************************************/
-void CDlgPlayer::OnSelchangePlaymode() {
+void CDlgPlayer::OnSelchangePlaymode()
+{
     UpdateData(TRUE);
     UINT nSubMode = ID_PLAYBACK_FILE;
-    switch (m_nComboPlayMode) {
+    switch (m_nComboPlayMode)
+    {
     case 0:
         nSubMode = ID_PLAYBACK_CURSORS;
         break;
@@ -1056,11 +1212,15 @@ void CDlgPlayer::OnSelchangePlaymode() {
 // If the focus is on the editable controls, just change the focus to the
 // next control, otherwise close the dialog with ok.
 /***************************************************************************/
-void CDlgPlayer::OnOK() {
+void CDlgPlayer::OnOK()
+{
     CWnd * pWnd = GetFocus(); // who has the focus?
-    if ((pWnd->GetDlgCtrlID() == IDC_VOLUMEEDIT) || (pWnd->GetDlgCtrlID() == IDC_SPEEDEDIT)) {
+    if ((pWnd->GetDlgCtrlID() == IDC_VOLUMEEDIT) || (pWnd->GetDlgCtrlID() == IDC_SPEEDEDIT))
+    {
         NextDlgCtrl();    // focus is on edit control, so move to the next control on enter
-    } else {
+    }
+    else
+    {
         OnClose();
     }
 }
@@ -1068,10 +1228,14 @@ void CDlgPlayer::OnOK() {
 /***************************************************************************/
 // CDlgPlayer::OnCancel Button cancel hit
 /***************************************************************************/
-void CDlgPlayer::OnCancel() {
-    if (IsPlaying()) {
+void CDlgPlayer::OnCancel()
+{
+    if (IsPlaying())
+    {
         OnStop();
-    } else {
+    }
+    else
+    {
         OnClose();
     }
 }
@@ -1079,11 +1243,13 @@ void CDlgPlayer::OnCancel() {
 /***************************************************************************/
 // CDlgPlayer::OnClose Close the dialog
 /***************************************************************************/
-void CDlgPlayer::OnClose() {
+void CDlgPlayer::OnClose()
+{
     OnStop(); // stop the player
     CDialog::OnClose();
     bPlayer = FALSE;
-    if (m_pWave) {
+    if (m_pWave)
+    {
         delete m_pWave;
     }
     m_pWave = NULL;
@@ -1093,9 +1259,11 @@ void CDlgPlayer::OnClose() {
 /***************************************************************************/
 // CDlgPlayer::OnTimer Timer event, repeat playback
 /***************************************************************************/
-void CDlgPlayer::OnTimer(UINT nIDEvent) {
+void CDlgPlayer::OnTimer(UINT nIDEvent)
+{
     KillTimer(1);
-    if ((m_nMode == IDC_STOP) && m_bRepeat) {
+    if ((m_nMode == IDC_STOP) && m_bRepeat)
+    {
         SetPlayerMode(IDC_PLAY, SubModeUndefined, m_bFullSize, m_bFnKeySetting);    // SDM 1.06.6U6
     }
     CWnd::OnTimer(nIDEvent);
@@ -1104,7 +1272,8 @@ void CDlgPlayer::OnTimer(UINT nIDEvent) {
 /***************************************************************************/
 // CDlgPlayer::OnSetupFnKeys Setup function keys
 /***************************************************************************/
-LRESULT CDlgPlayer::OnSetupFnKeys(WPARAM /*wParam*/, LPARAM) {
+LRESULT CDlgPlayer::OnSetupFnKeys(WPARAM /*wParam*/, LPARAM)
+{
     OnSetup();
     return 0;
 }
@@ -1112,8 +1281,10 @@ LRESULT CDlgPlayer::OnSetupFnKeys(WPARAM /*wParam*/, LPARAM) {
 /***************************************************************************/
 // CDlgPlayer::OnSetup Button setup hit
 /***************************************************************************/
-void CDlgPlayer::OnSetup() {
-    if (m_pWave) {
+void CDlgPlayer::OnSetup()
+{
+    if (m_pWave)
+    {
         m_pWave->Stop();    // stop recording
     }
     SetPlayerMode(IDC_STOP, m_nSubMode, m_bFullSize);
@@ -1131,7 +1302,8 @@ void CDlgPlayer::OnSetup() {
 /***************************************************************************/
 // CDlgPlayer::OnPlayControls Show Volume Controls mixer
 /***************************************************************************/
-void CDlgPlayer::OnPlayControls() {
+void CDlgPlayer::OnPlayControls()
+{
     m_pWave->GetOutDevice()->ConnectMixer(this);
 
     m_pWave->GetOutDevice()->ShowMixer();
@@ -1140,7 +1312,8 @@ void CDlgPlayer::OnPlayControls() {
 /***************************************************************************/
 // CDlgPlayer::OnHelpPlayer Call Player help
 /***************************************************************************/
-void CDlgPlayer::OnHelpPlayer() {
+void CDlgPlayer::OnHelpPlayer()
+{
     // create the pathname
     CString szPath = AfxGetApp()->m_pszHelpFilePath;
     szPath += "::/User_Interface/Menus/Playback/Player.htm";
@@ -1183,7 +1356,8 @@ END_MESSAGE_MAP()
 /***************************************************************************/
 // CDlgRecorder::CDlgRecorder Constructor
 /***************************************************************************/
-CDlgRecorder::CDlgRecorder(CWnd * pParent) : CDlgAudio(CDlgRecorder::IDD, pParent) {
+CDlgRecorder::CDlgRecorder(CWnd * pParent) : CDlgAudio(CDlgRecorder::IDD, pParent)
+{
     //{{AFX_DATA_INIT(CDlgRecorder)
     //}}AFX_DATA_INIT
     m_hmmioFile = NULL;
@@ -1201,13 +1375,15 @@ CDlgRecorder::CDlgRecorder(CWnd * pParent) : CDlgAudio(CDlgRecorder::IDD, pParen
     // allocate wave data buffer
     CSaApp * pApp = (CSaApp *)AfxGetApp(); // get pointer to application
     m_hData = ::GlobalAlloc(GMEM_MOVEABLE | GMEM_SHARE, MMIO_BUFFER_SIZE); // allocate memory
-    if (!m_hData) {
+    if (!m_hData)
+    {
         // memory allocation error
         pApp->ErrorMessage(IDS_ERROR_MEMALLOC);
         return;
     }
     m_lpData = (HPSTR)::GlobalLock(m_hData); // lock memory
-    if (!m_lpData) {
+    if (!m_lpData)
+    {
         // memory lock error
         pApp->ErrorMessage(IDS_ERROR_MEMLOCK);
         ::GlobalFree(m_hData);
@@ -1221,7 +1397,8 @@ CDlgRecorder::CDlgRecorder(CWnd * pParent) : CDlgAudio(CDlgRecorder::IDD, pParen
 /***************************************************************************/
 // CDlgRecorder::DoDataExchange Data exchange
 /***************************************************************************/
-void CDlgRecorder::DoDataExchange(CDataExchange * pDX) {
+void CDlgRecorder::DoDataExchange(CDataExchange * pDX)
+{
     CDialog::DoDataExchange(pDX);
     //{{AFX_DATA_MAP(CDlgRecorder)
     DDX_Text(pDX, IDC_VOLUMEEDIT, m_nVolume);
@@ -1232,7 +1409,8 @@ void CDlgRecorder::DoDataExchange(CDataExchange * pDX) {
 /***************************************************************************/
 // CDlgRecorder::SetTotalTime Set total time display
 /***************************************************************************/
-void CDlgRecorder::SetTotalTime() {
+void CDlgRecorder::SetTotalTime()
+{
     CSaDoc * pDoc = (CSaDoc *)m_pDoc; // cast pointer to document
     double fDataSec = pDoc->GetTimeFromBytes(m_dwRecordSize); // calculate time
     m_LEDTotalTime.SetTime((int)fDataSec / 60, (int)(fDataSec * 10) % 600);
@@ -1241,12 +1419,16 @@ void CDlgRecorder::SetTotalTime() {
 /***************************************************************************/
 // CDlgRecorder::SetPositionTime Set position time display
 /***************************************************************************/
-void CDlgRecorder::SetPositionTime() {
+void CDlgRecorder::SetPositionTime()
+{
     CSaDoc * pDoc = (CSaDoc *)m_pDoc; // cast pointer to document
-    if ((m_nMode == IDC_RECORD) || ((m_nMode == IDC_PAUSE) && (m_nOldMode == IDC_RECORD))) {
+    if ((m_nMode == IDC_RECORD) || ((m_nMode == IDC_PAUSE) && (m_nOldMode == IDC_RECORD)))
+    {
         double fDataSec = pDoc->GetTimeFromBytes(m_dwRecordSize); // calculate time
         m_LEDPosTime.SetTime((int)fDataSec / 60, (int)(fDataSec * 10) % 600);
-    } else {
+    }
+    else
+    {
         double fDataSec = pDoc->GetTimeFromBytes(m_dwPlayPosition); // calculate time
         m_LEDPosTime.SetTime((int)fDataSec / 60, (int)(fDataSec * 10) % 600);
     }
@@ -1255,7 +1437,8 @@ void CDlgRecorder::SetPositionTime() {
 /***************************************************************************/
 // CDlgRecorder::SetSettingsText Set settings text
 /***************************************************************************/
-void CDlgRecorder::SetSettingsText() {
+void CDlgRecorder::SetSettingsText()
+{
     CSaDoc * pDoc = (CSaDoc *)m_pDoc; // cast pointer to document
     // get data format parameters
     FmtParm * pFmtParm = pDoc->GetFmtParm();
@@ -1265,15 +1448,20 @@ void CDlgRecorder::SetSettingsText() {
 
     TCHAR szBuffer[60];
     swprintf_s(szBuffer, _T("%u Hz"), pFmtParm->dwSamplesPerSec);
-    if (pFmtParm->wChannels > 1) {
+    if (pFmtParm->wChannels > 1)
+    {
         swprintf_s(szBuffer, _T("%s, %u-bit\nStereo"), szBuffer, pFmtParm->wBitsPerSample);
-    } else {
+    }
+    else
+    {
         swprintf_s(szBuffer, _T("%s, %u-bit\nMono"), szBuffer, pFmtParm->wBitsPerSample);
     }
-    if (saParm.wFlags & SA_FLAG_HIGHPASS) {
+    if (saParm.wFlags & SA_FLAG_HIGHPASS)
+    {
         swprintf_s(szBuffer, _T("%s, Highpass"), szBuffer);
     }
-    if (GetStaticSourceInfo().bEnable) {
+    if (GetStaticSourceInfo().bEnable)
+    {
         swprintf_s(szBuffer, _T("%s\nAdd file information"), szBuffer);
     }
     SetDlgItemText(IDC_SETTINGSTEXT, szBuffer);
@@ -1284,11 +1472,13 @@ void CDlgRecorder::SetSettingsText() {
 // The actually recording data block has been finished. Update the dialog
 // display controls.
 /***************************************************************************/
-void CDlgRecorder::BlockStored(UINT nLevel, DWORD dwPosition, BOOL *) {
+void CDlgRecorder::BlockStored(UINT nLevel, DWORD dwPosition, BOOL *)
+{
     // update the VU bar
     m_VUBar.SetVU((int)nLevel);
     // save the position
-    if (m_nMode == IDC_RECORD) {
+    if (m_nMode == IDC_RECORD)
+    {
         m_dwRecordSize = dwPosition;
         // update the time
         CSaDoc * pDoc = (CSaDoc *)m_pDoc;
@@ -1300,7 +1490,8 @@ void CDlgRecorder::BlockStored(UINT nLevel, DWORD dwPosition, BOOL *) {
 /***************************************************************************/
 // CDlgRecorder::StoreFailed Recorded block has been failed storing
 /***************************************************************************/
-void CDlgRecorder::StoreFailed() {
+void CDlgRecorder::StoreFailed()
+{
     // stop the recorder
     SetRecorderMode(IDC_STOP);
     // inform the user
@@ -1313,7 +1504,8 @@ void CDlgRecorder::StoreFailed() {
 // The actually playing data block has been finished playing. Update the
 // dialog display controls.
 /***************************************************************************/
-void CDlgRecorder::BlockFinished(UINT nLevel, DWORD dwPosition, UINT) {
+void CDlgRecorder::BlockFinished(UINT nLevel, DWORD dwPosition, UINT)
+{
     m_dwPlayPosition = dwPosition;
     // update the VU bar
     m_VUBar.SetVU((int)nLevel);
@@ -1327,8 +1519,10 @@ void CDlgRecorder::BlockFinished(UINT nLevel, DWORD dwPosition, UINT) {
 // CDlgRecorder::EndPlayback Playback finished
 // The playback has been finished. Set recorder mode to stop.
 /***************************************************************************/
-void CDlgRecorder::EndPlayback() {
-    if (m_nMode != 0) {
+void CDlgRecorder::EndPlayback()
+{
+    if (m_nMode != 0)
+    {
         SetRecorderMode(IDC_STOP);
     }
 }
@@ -1340,13 +1534,16 @@ void CDlgRecorder::EndPlayback() {
 // always open, the file pointer is already in the data subchunk and the
 // function just delivers the block requested.
 /***************************************************************************/
-HPSTR CDlgRecorder::GetWaveData(DWORD dwPlayPosition, DWORD dwDataSize) {
+HPSTR CDlgRecorder::GetWaveData(DWORD dwPlayPosition, DWORD dwDataSize)
+{
     // find the right position in the data
-    if (mmioSeek(m_hmmioFile, dwPlayPosition + 40, SEEK_SET) == -1) {
+    if (mmioSeek(m_hmmioFile, dwPlayPosition + 40, SEEK_SET) == -1)
+    {
         return NULL;
     }
     // read the waveform data block
-    if (mmioRead(m_hmmioFile, (HPSTR)m_lpData, dwDataSize) == -1) {
+    if (mmioRead(m_hmmioFile, (HPSTR)m_lpData, dwDataSize) == -1)
+    {
         return NULL;
     }
     return m_lpData;
@@ -1358,11 +1555,13 @@ HPSTR CDlgRecorder::GetWaveData(DWORD dwPlayPosition, DWORD dwDataSize) {
 // filtered, eliminating frequency components below 70 Hz.  Assumes file
 // is already open and positioned at the end of the data chunk.
 /***************************************************************************/
-void CDlgRecorder::HighPassFilter() {
+void CDlgRecorder::HighPassFilter()
+{
     CSaApp * pApp = (CSaApp *)AfxGetApp(); // get pointer to application
 
     // get out of 'data' chunk
-    if (mmioAscend(m_hmmioFile, &m_mmckinfoSubchunk, 0)) {
+    if (mmioAscend(m_hmmioFile, &m_mmckinfoSubchunk, 0))
+    {
         // error writing data chunk
         pApp->ErrorMessage(IDS_ERROR_WRITEDATACHUNK, m_szFileName);
         m_bFileReady = FALSE;
@@ -1375,7 +1574,8 @@ void CDlgRecorder::HighPassFilter() {
     DWORD dwRecordingSize = m_mmckinfoSubchunk.cksize;             // recording size in bytes
 
     // get out of 'RIFF' chunk, to write RIFF size
-    if (mmioAscend(m_hmmioFile, &m_mmckinfoParent, 0)) {
+    if (mmioAscend(m_hmmioFile, &m_mmckinfoParent, 0))
+    {
         // error writing RIFF chunk
         pApp->ErrorMessage(IDS_ERROR_WRITERIFFCHUNK, m_szFileName);
         m_bFileReady = FALSE;
@@ -1386,7 +1586,8 @@ void CDlgRecorder::HighPassFilter() {
     mmioSeek(m_hmmioFile, 0, SEEK_SET);
 
     // descend into 'RIFF' chunk again
-    if (mmioDescend(m_hmmioFile, &m_mmckinfoParent, NULL, MMIO_FINDRIFF)) {
+    if (mmioDescend(m_hmmioFile, &m_mmckinfoParent, NULL, MMIO_FINDRIFF))
+    {
         // error descending into RIFF chunk
         pApp->ErrorMessage(IDS_ERROR_WAVECHUNK, m_szFileName);
         m_bFileReady = FALSE;
@@ -1394,7 +1595,8 @@ void CDlgRecorder::HighPassFilter() {
     }
 
     // descend into 'data' chunk
-    if (mmioDescend(m_hmmioFile, &m_mmckinfoSubchunk, &m_mmckinfoParent, MMIO_FINDCHUNK)) {
+    if (mmioDescend(m_hmmioFile, &m_mmckinfoSubchunk, &m_mmckinfoParent, MMIO_FINDCHUNK))
+    {
         // error descending into data chunk
         pApp->ErrorMessage(IDS_ERROR_READDATACHUNK, m_szFileName);
         m_bFileReady = FALSE;
@@ -1409,26 +1611,32 @@ void CDlgRecorder::HighPassFilter() {
     mmioSeek(m_hmmioFile, (long)dwDataOffset, SEEK_CUR);   // go to end of data chunk
     long lDataSize = MMIO_BUFFER_SIZE;   //!!buffer size assumed to be even
 
-    do {
-        if (dwDataOffset < MMIO_BUFFER_SIZE) {
+    do
+    {
+        if (dwDataOffset < MMIO_BUFFER_SIZE)
+        {
             lDataSize = dwDataOffset;    // last block less than buffer size
         }
         dwDataOffset -= (DWORD)lDataSize;
         mmioSeek(m_hmmioFile, -lDataSize, SEEK_CUR);                    // move to start of block
-        if (mmioRead(m_hmmioFile, m_lpData, lDataSize) == -1) {         // load it
+        if (mmioRead(m_hmmioFile, m_lpData, lDataSize) == -1)           // load it
+        {
             // error
             pApp->ErrorMessage(IDS_ERROR_READDATACHUNK);
             m_bFileReady = FALSE;
             return;
         }
 
-        if (wSmpSize == 1) {
+        if (wSmpSize == 1)
+        {
             // 8-bit unsigned
             pHighPassFilter->BackwardPass((unsigned char *)m_lpData, (unsigned long)lDataSize);    // filter backwards
             //!!ck. return code?
             //UINT nMaxLevel = max(abs(pHighPassFilter->GetMax()-128), abs(pHighPassFilter->GetMin()-128));  // get max level for block
             //m_pWave->SetMaxLevel(100*(long)nMaxLevel/128);                                            // set max level
-        } else {
+        }
+        else
+        {
             // 16-bit signed
             pHighPassFilter->BackwardPass((short *)m_lpData, (unsigned long)lDataSize/wSmpSize);   // filter backwards
             //!!ck. return code?
@@ -1437,18 +1645,21 @@ void CDlgRecorder::HighPassFilter() {
         }
 
         mmioSeek(m_hmmioFile, -lDataSize, SEEK_CUR);                    // return to start of block
-        if (mmioWrite(m_hmmioFile, m_lpData, lDataSize) == -1) {        // write filtered data
+        if (mmioWrite(m_hmmioFile, m_lpData, lDataSize) == -1)          // write filtered data
+        {
             // error
             pApp->ErrorMessage(IDS_ERROR_RECHPFILTER);
             m_bFileReady = FALSE;
         }
         mmioSeek(m_hmmioFile, -lDataSize, SEEK_CUR);                    // return to start of block
-    } while (dwDataOffset > 0);
+    }
+    while (dwDataOffset > 0);
 
     pRecorder->DetachHighPassFilter();                                 // done, remove filter
 
     // ascend out of data chunk
-    if (mmioAscend(m_hmmioFile, &m_mmckinfoSubchunk, 0)) {
+    if (mmioAscend(m_hmmioFile, &m_mmckinfoSubchunk, 0))
+    {
         // error writing data chunk
         pApp->ErrorMessage(IDS_ERROR_WRITEDATACHUNK, m_szFileName);
         m_bFileReady = FALSE;
@@ -1459,34 +1670,42 @@ void CDlgRecorder::HighPassFilter() {
 /***************************************************************************/
 // CDlgRecorder::SetRecorderMode Set the recorder mode
 /***************************************************************************/
-void CDlgRecorder::SetRecorderMode(UINT nMode) {
-    if ((m_nMode == nMode) && (m_nMode != IDC_STOP)) {
+void CDlgRecorder::SetRecorderMode(UINT nMode)
+{
+    if ((m_nMode == nMode) && (m_nMode != IDC_STOP))
+    {
         return;    // no change
     }
-	TRACE("SetRecorderMode %d\n",nMode);
+    TRACE("SetRecorderMode %d\n",nMode);
 
     // stop, whatever the recorder is doing
-    if (m_pWave) {
+    if (m_pWave)
+    {
         m_pWave->Stop();
     }
     SetTotalTime();
     SetPositionTime();
     CSaDoc * pDoc = (CSaDoc *)m_pDoc; // cast pointer to document
-    switch (nMode) {
+    switch (nMode)
+    {
     case IDC_RECORD:
         GetDlgItem(IDC_APPLY)->EnableWindow(FALSE); // disable apply button
         // reset the file pointer
-        if (m_nMode == IDC_STOP) {
+        if (m_nMode == IDC_STOP)
+        {
             DeleteTempFile(); // delete old temporary mmio file
             m_bFileReady = CreateTempFile(); // create new temporary mmio file
             m_dwRecordSize = 0;
-            if (!m_bFileReady) {
+            if (!m_bFileReady)
+            {
                 break;
             }
         }
         // stop monitoring
-        if ((m_nMode == IDC_STOP) || (m_nMode == IDC_PAUSE)) {
-            if (m_pWave) {
+        if ((m_nMode == IDC_STOP) || (m_nMode == IDC_PAUSE))
+        {
+            if (m_pWave)
+            {
                 m_pWave->Stop();
             }
         }
@@ -1499,8 +1718,10 @@ void CDlgRecorder::SetRecorderMode(UINT nMode) {
         m_pause.EnableWindow(TRUE); // enable Pause button
         GetDlgItem(IDC_SETTINGS)->EnableWindow(FALSE); // disable settings button
         // start or continue recording
-        if (m_pWave) {
-            if (!m_pWave->Record(m_hmmioFile, m_pView, m_dwRecordSize, &m_NotifyObj)) { // record
+        if (m_pWave)
+        {
+            if (!m_pWave->Record(m_hmmioFile, m_pView, m_dwRecordSize, &m_NotifyObj))   // record
+            {
                 m_nMode = IDC_STOP;  // record not successfull
                 m_record.Release(); // release Record button
                 m_pause.EnableWindow(FALSE); // disable Pause button
@@ -1519,7 +1740,8 @@ void CDlgRecorder::SetRecorderMode(UINT nMode) {
         GetDlgItem(IDC_SETTINGS)->EnableWindow(FALSE); // disable settings button
         GetDlgItem(IDC_APPLY)->EnableWindow(FALSE); // disable apply button
         // play back the recorded file
-        if (!m_pWave->Play(m_dwPlayPosition, m_dwRecordSize - m_dwPlayPosition, m_nVolume, 100, m_pView, &m_NotifyObj)) {
+        if (!m_pWave->Play(m_dwPlayPosition, m_dwRecordSize - m_dwPlayPosition, m_nVolume, 100, m_pView, &m_NotifyObj))
+        {
             m_nMode = IDC_STOP;  // play not successfull
             m_play.Release(); // release Play button
             m_pause.EnableWindow(FALSE); // disable Pause button
@@ -1527,19 +1749,24 @@ void CDlgRecorder::SetRecorderMode(UINT nMode) {
         }
         break;
     case IDC_PAUSE:
-        if (m_pWave) {
+        if (m_pWave)
+        {
             m_pWave->Stop();
         }
         m_nOldMode = m_nMode;
         m_nMode = IDC_PAUSE;
         // start flashing paused buttons
-        if (m_nOldMode == IDC_RECORD) {
+        if (m_nOldMode == IDC_RECORD)
+        {
             m_record.Flash(TRUE);
-        } else {
+        }
+        else
+        {
             m_play.Flash(TRUE);
         }
         // start monitoring again
-        if (!m_pWave->Monitor(m_pView, &m_NotifyObj)) { // monitor
+        if (!m_pWave->Monitor(m_pView, &m_NotifyObj))   // monitor
+        {
             m_nMode = IDC_STOP;  // monitor not successfull
             m_record.Release(); // release Record button
             m_play.Release(); // release Play button
@@ -1549,12 +1776,15 @@ void CDlgRecorder::SetRecorderMode(UINT nMode) {
         m_VUBar.SetVU(0);
         break;
     case IDC_STOP:
-        if ((m_nMode == IDC_RECORD) || (m_nMode == IDC_PLAY) || (m_nMode == IDC_PAUSE)) {
-            if (m_pWave) {
+        if ((m_nMode == IDC_RECORD) || (m_nMode == IDC_PLAY) || (m_nMode == IDC_PAUSE))
+        {
+            if (m_pWave)
+            {
                 m_pWave->Stop();
             }
             if ((m_nMode == IDC_RECORD) || ((m_nMode == IDC_PAUSE) && (m_nOldMode == IDC_RECORD)))
-                if (pDoc->GetSaParm()->wFlags & SA_FLAG_HIGHPASS) {
+                if (pDoc->GetSaParm()->wFlags & SA_FLAG_HIGHPASS)
+                {
                     HighPassFilter();
                 }
         }
@@ -1569,14 +1799,18 @@ void CDlgRecorder::SetRecorderMode(UINT nMode) {
         m_play.EnableWindow(TRUE); // enable Play button
         m_pause.EnableWindow(FALSE); // disable Pause button
         GetDlgItem(IDC_SETTINGS)->EnableWindow(TRUE); // enable settings button
-        if (m_dwRecordSize > 0) {
+        if (m_dwRecordSize > 0)
+        {
             m_play.EnableWindow(TRUE); // enable Play button
             GetDlgItem(IDC_APPLY)->EnableWindow(TRUE); // enable apply button
-        } else {
+        }
+        else
+        {
             m_play.EnableWindow(FALSE); // disable Play button
             GetDlgItem(IDC_APPLY)->EnableWindow(FALSE); // disable apply button
         }
-        if (!m_pWave->Monitor(m_pView, &m_NotifyObj)) { // monitor
+        if (!m_pWave->Monitor(m_pView, &m_NotifyObj))   // monitor
+        {
             m_nMode = IDC_STOP;  // monitor not successfull
         }
         m_VUBar.SetVU(0);
@@ -1592,7 +1826,8 @@ void CDlgRecorder::SetRecorderMode(UINT nMode) {
         m_pause.EnableWindow(FALSE); // disable Pause button
         GetDlgItem(IDC_SETTINGS)->EnableWindow(TRUE); // enable settings button
         GetDlgItem(IDC_APPLY)->EnableWindow(FALSE); // disable apply button
-        if (m_pWave) {
+        if (m_pWave)
+        {
             m_pWave->Stop();
         }
         m_LEDTotalTime.SetTime(100, 1000);
@@ -1611,13 +1846,15 @@ void CDlgRecorder::SetRecorderMode(UINT nMode) {
 // the Data subchunk. The file stays open with the file pointer ready
 // to write.
 /***************************************************************************/
-BOOL CDlgRecorder::CreateTempFile() {
+BOOL CDlgRecorder::CreateTempFile()
+{
     // create the temporary file
     GetTempFileName(_T("WAV"), m_szFileName, _countof(m_szFileName));
     // create and open the file
     CSaApp * pApp = (CSaApp *)AfxGetApp();
     m_hmmioFile = mmioOpen(m_szFileName, NULL, MMIO_CREATE | MMIO_READWRITE | MMIO_EXCLUSIVE);
-    if (!(m_hmmioFile)) {
+    if (!(m_hmmioFile))
+    {
         // error opening file
         pApp->ErrorMessage(IDS_ERROR_FILEOPEN, m_szFileName);
         return FALSE;
@@ -1626,7 +1863,8 @@ BOOL CDlgRecorder::CreateTempFile() {
     m_mmckinfoParent.fccType = mmioFOURCC('W', 'A', 'V', 'E'); // prepare search code
     // set chunk size
     m_mmckinfoParent.cksize = 0;
-    if (mmioCreateChunk(m_hmmioFile, &m_mmckinfoParent, MMIO_CREATERIFF)) { // create the 'RIFF' chunk
+    if (mmioCreateChunk(m_hmmioFile, &m_mmckinfoParent, MMIO_CREATERIFF))   // create the 'RIFF' chunk
+    {
         // error creating RIFF chunk
         pApp->ErrorMessage(IDS_ERROR_WRITERIFFCHUNK, m_szFileName);
         return FALSE;
@@ -1635,19 +1873,22 @@ BOOL CDlgRecorder::CreateTempFile() {
     m_mmckinfoSubchunk.ckid = mmioFOURCC('f', 'm', 't', ' ');
     // set chunk size
     m_mmckinfoSubchunk.cksize = 16;
-    if (mmioCreateChunk(m_hmmioFile, &m_mmckinfoSubchunk, 0)) { // create the 'data' chunk
+    if (mmioCreateChunk(m_hmmioFile, &m_mmckinfoSubchunk, 0))   // create the 'data' chunk
+    {
         // error creating format chunk
         pApp->ErrorMessage(IDS_ERROR_WRITEFORMATCHUNK, m_szFileName);
         return FALSE;
     }
     // write data into 'fmt ' chunk
-    if (mmioWrite(m_hmmioFile, (HPSTR)m_szFileName, 16) == -1) { // fill up fmt chunk
+    if (mmioWrite(m_hmmioFile, (HPSTR)m_szFileName, 16) == -1)   // fill up fmt chunk
+    {
         // error writing format chunk
         pApp->ErrorMessage(IDS_ERROR_WRITEFORMATCHUNK, m_szFileName);
         return FALSE;
     }
     // get out of 'fmt ' chunk
-    if (mmioAscend(m_hmmioFile, &m_mmckinfoSubchunk, 0)) {
+    if (mmioAscend(m_hmmioFile, &m_mmckinfoSubchunk, 0))
+    {
         // error writing format chunk
         pApp->ErrorMessage(IDS_ERROR_WRITEFORMATCHUNK, m_szFileName);
         return FALSE;
@@ -1656,7 +1897,8 @@ BOOL CDlgRecorder::CreateTempFile() {
     m_mmckinfoSubchunk.ckid = mmioFOURCC('d', 'a', 't', 'a');
     // set chunk size
     m_mmckinfoSubchunk.cksize = 0;
-    if (mmioCreateChunk(m_hmmioFile, &m_mmckinfoSubchunk, 0)) { // create the 'data' chunk
+    if (mmioCreateChunk(m_hmmioFile, &m_mmckinfoSubchunk, 0))   // create the 'data' chunk
+    {
         // error creating data chunk
         pApp->ErrorMessage(IDS_ERROR_WRITEDATACHUNK, m_szFileName);
         return FALSE;
@@ -1667,16 +1909,22 @@ BOOL CDlgRecorder::CreateTempFile() {
 /***************************************************************************/
 // CDlgRecorder::DeleteTempFile Close and delete the temporary wave file
 /***************************************************************************/
-void CDlgRecorder::DeleteTempFile() {
-    if (m_szFileName[0] != 0) {
+void CDlgRecorder::DeleteTempFile()
+{
+    if (m_szFileName[0] != 0)
+    {
         // close and delete the temporary wave file
-        if (m_hmmioFile) {
+        if (m_hmmioFile)
+        {
             mmioClose(m_hmmioFile, 0);
         }
-        try {
+        try
+        {
             RemoveFile(m_szFileName);
             m_szFileName[0] = 0;
-        } catch (CFileException e) {
+        }
+        catch (CFileException e)
+        {
             // error deleting file
             CSaApp * pApp = (CSaApp *)AfxGetApp();
             pApp->ErrorMessage(IDS_ERROR_DELTEMPFILE, m_szFileName);
@@ -1688,14 +1936,17 @@ void CDlgRecorder::DeleteTempFile() {
 // CDlgRecorder::CleanUp Clean up memory and delete the temporary file
 // If the user allows closing, the function returns TRUE, else FALSE.
 /***************************************************************************/
-void CDlgRecorder::CleanUp() {
-    if (m_pWave) {
+void CDlgRecorder::CleanUp()
+{
+    if (m_pWave)
+    {
         m_pWave->Stop();
         delete m_pWave; // delete the CWave object
         m_pWave = NULL;
     }
     DeleteTempFile();
-    if (m_hData) {
+    if (m_hData)
+    {
         ::GlobalUnlock(m_hData);
         ::GlobalFree(m_hData);
     }
@@ -1705,29 +1956,37 @@ void CDlgRecorder::CleanUp() {
 // CDlgRecorder::CloseRecorder Close the recorder
 // If the user allows closing, the function returns TRUE, else FALSE.
 /***************************************************************************/
-BOOL CDlgRecorder::CloseRecorder() {
-    if (m_nMode != IDC_STOP) {
+BOOL CDlgRecorder::CloseRecorder()
+{
+    if (m_nMode != IDC_STOP)
+    {
         SetRecorderMode(IDC_STOP);    // stop recording
     }
     m_VUBar.SetVU(0); // reset the VU bar
-    if ((m_bFileReady && !m_bFileApplied) && (m_dwRecordSize > 0)) {
+    if ((m_bFileReady && !m_bFileApplied) && (m_dwRecordSize > 0))
+    {
         // temporary data not applied, ask user
         int nResponse = AfxMessageBox(IDS_QUESTION_APPLYRECORD, MB_YESNOCANCEL | MB_ICONQUESTION, 0);
-        if (nResponse == IDYES) {
+        if (nResponse == IDYES)
+        {
             // apply the data
             OnApply();
             return FALSE;
         }
-        if (nResponse == IDCANCEL) {
+        if (nResponse == IDCANCEL)
+        {
             // continue with recorder
             SetRecorderMode(IDC_STOP);
             return FALSE;
         }
     }
     CleanUp();
-    if (m_bFileApplied) {
+    if (m_bFileApplied)
+    {
         EndDialog(IDOK);
-    } else {
+    }
+    else
+    {
         EndDialog(IDCANCEL);
     }
     return TRUE;
@@ -1741,20 +2000,23 @@ BOOL CDlgRecorder::CloseRecorder() {
 // the document will prompt the user to save it. After that the recorder will
 // be closed.
 /***************************************************************************/
-BOOL CDlgRecorder::Apply(CDocument * pDocument) {
+BOOL CDlgRecorder::Apply(CDocument * pDocument)
+{
     CSaDoc * pDoc = (CSaDoc *)pDocument; // cast document pointer
     CSaApp * pApp = (CSaApp *)AfxGetApp(); // get pointer to application
     // set file pointer to end of file (also end of 'data' chunk)
     mmioSeek(m_hmmioFile, 0, SEEK_END);
     // get out of 'data' chunk
-    if (mmioAscend(m_hmmioFile, &m_mmckinfoSubchunk, 0)) {
+    if (mmioAscend(m_hmmioFile, &m_mmckinfoSubchunk, 0))
+    {
         // error writing data chunk
         pApp->ErrorMessage(IDS_ERROR_WRITEDATACHUNK, m_szFileName);
         return FALSE;
     }
     m_dwRecordSize = m_mmckinfoSubchunk.cksize; // get recorded data size
     // get out of 'RIFF' chunk, to write RIFF size
-    if (mmioAscend(m_hmmioFile, &m_mmckinfoParent, 0)) {
+    if (mmioAscend(m_hmmioFile, &m_mmckinfoParent, 0))
+    {
         // error writing RIFF chunk
         pApp->ErrorMessage(IDS_ERROR_WRITERIFFCHUNK, m_szFileName);
         return FALSE;
@@ -1762,7 +2024,8 @@ BOOL CDlgRecorder::Apply(CDocument * pDocument) {
     // now rewrite the correct format parameters
     mmioSeek(m_hmmioFile, 0, SEEK_SET); // set file pointer to begin of file
     // descend into 'RIFF' chunk again
-    if (mmioDescend(m_hmmioFile, &m_mmckinfoParent, NULL, MMIO_FINDRIFF)) {
+    if (mmioDescend(m_hmmioFile, &m_mmckinfoParent, NULL, MMIO_FINDRIFF))
+    {
         // error descending into RIFF chunk
         pApp->ErrorMessage(IDS_ERROR_WRITERIFFCHUNK, m_szFileName);
         return FALSE;
@@ -1770,7 +2033,8 @@ BOOL CDlgRecorder::Apply(CDocument * pDocument) {
     // descend into 'fmt ' chunk
     MMCKINFO mmckinfoSubchunk;
     mmckinfoSubchunk.ckid = mmioFOURCC('f', 'm', 't', ' ');
-    if (mmioDescend(m_hmmioFile, &mmckinfoSubchunk, &m_mmckinfoParent, MMIO_FINDCHUNK)) {
+    if (mmioDescend(m_hmmioFile, &mmckinfoSubchunk, &m_mmckinfoParent, MMIO_FINDCHUNK))
+    {
         // error descending into format chunk
         pApp->ErrorMessage(IDS_ERROR_WRITEFORMATCHUNK, m_szFileName);
         return FALSE;
@@ -1778,22 +2042,28 @@ BOOL CDlgRecorder::Apply(CDocument * pDocument) {
     // write the format parameters into 'fmt ' chunk
     FmtParm * pFmtParm = pDoc->GetFmtParm(); // get pointer to format parameters
     long lError = mmioWrite(m_hmmioFile, (HPSTR)&pFmtParm->wTag, sizeof(WORD));
-    if (lError != -1) {
+    if (lError != -1)
+    {
         lError = mmioWrite(m_hmmioFile, (HPSTR)&pFmtParm->wChannels, sizeof(WORD));
     }
-    if (lError != -1) {
+    if (lError != -1)
+    {
         lError = mmioWrite(m_hmmioFile, (HPSTR)&pFmtParm->dwSamplesPerSec, sizeof(DWORD));
     }
-    if (lError != -1) {
+    if (lError != -1)
+    {
         lError = mmioWrite(m_hmmioFile, (HPSTR)&pFmtParm->dwAvgBytesPerSec, sizeof(DWORD));
     }
-    if (lError != -1) {
+    if (lError != -1)
+    {
         lError = mmioWrite(m_hmmioFile, (HPSTR)&pFmtParm->wBlockAlign, sizeof(WORD));
     }
-    if (lError != -1) {
+    if (lError != -1)
+    {
         lError = mmioWrite(m_hmmioFile, (HPSTR)&pFmtParm->wBitsPerSample, sizeof(WORD));
     }
-    if (lError == -1) {
+    if (lError == -1)
+    {
         // error writing format chunk
         pApp->ErrorMessage(IDS_ERROR_WRITEFORMATCHUNK, m_szFileName);
         return FALSE;
@@ -1805,7 +2075,8 @@ BOOL CDlgRecorder::Apply(CDocument * pDocument) {
     // set the sa parameters
     saParm.RecordTimeStamp = CTime::GetCurrentTime();
     saParm.dwRecordBandWidth = pFmtParm->dwSamplesPerSec / 2;
-    if (saParm.wFlags & SA_FLAG_HIGHPASS) {
+    if (saParm.wFlags & SA_FLAG_HIGHPASS)
+    {
         saParm.dwRecordBandWidth -= 70;
     }
     saParm.byRecordSmpSize = (BYTE)pFmtParm->wBitsPerSample;
@@ -1818,7 +2089,8 @@ BOOL CDlgRecorder::Apply(CDocument * pDocument) {
     // if player is visible, disable the speed slider until required processing is completed
     CMainFrame * pMain = (CMainFrame *)AfxGetMainWnd();
     CDlgPlayer * pPlayer = pMain->GetPlayer();
-    if (pPlayer && pPlayer->IsWindowVisible()) {
+    if (pPlayer && pPlayer->IsWindowVisible())
+    {
         pPlayer->EnableSpeedSlider(FALSE);
     }
 
@@ -1834,7 +2106,8 @@ BOOL CDlgRecorder::Apply(CDocument * pDocument) {
 // over their placeholders in the dialog. The dialog is centered over the
 // mainframe window.
 /***************************************************************************/
-BOOL CDlgRecorder::OnInitDialog() {
+BOOL CDlgRecorder::OnInitDialog()
+{
     CDialog::OnInitDialog();
     m_pWave->GetOutDevice()->ConnectMixer(this);
     m_pWave->GetInDevice()->ConnectMixer(this);
@@ -1850,14 +2123,14 @@ BOOL CDlgRecorder::OnInitDialog() {
     LOGFONT logFont;
     pFont->GetObject(sizeof(LOGFONT), (void *)&logFont); // fill up logFont
     // modify the logFont
-    logFont.lfWeight = FW_NORMAL;						// not bold
-    m_Font.CreateFontIndirect(&logFont);				// create the modified font
-    pWnd->SetFont(&m_Font);								// set the modified font
+    logFont.lfWeight = FW_NORMAL;                       // not bold
+    m_Font.CreateFontIndirect(&logFont);                // create the modified font
+    pWnd->SetFont(&m_Font);                             // set the modified font
     GetDlgItem(IDC_SETTINGSTEXT)->SetFont(&m_Font);
     // set file name in recorders caption
-    CString szTitle = m_pDoc->GetFilename().c_str();	// load file name
+    CString szTitle = m_pDoc->GetFilename().c_str();    // load file name
 
-	CString szCaption;
+    CString szCaption;
     GetWindowText(szCaption);
     szCaption += " - " + szTitle;
     SetWindowText(szCaption);
@@ -1888,7 +2161,8 @@ BOOL CDlgRecorder::OnInitDialog() {
     m_SpinRecVolume.Init(IDC_RECVOLUMESCROLL, this);
 
     pWnd = GetDlgItem(IDC_MIXER);
-    if (pWnd) {
+    if (pWnd)
+    {
         pWnd->EnableWindow(m_pWave->GetInDevice()->ShowMixer(FALSE));
     }
 
@@ -1905,8 +2179,10 @@ BOOL CDlgRecorder::OnInitDialog() {
 /***************************************************************************/
 // CDlgRecorder::OnRecord Button record hit
 /***************************************************************************/
-void CDlgRecorder::OnRecord() {
-    if ((m_nMode != IDC_RECORD) && (m_nMode != IDC_PAUSE)) {
+void CDlgRecorder::OnRecord()
+{
+    if ((m_nMode != IDC_RECORD) && (m_nMode != IDC_PAUSE))
+    {
         SetRecorderMode(IDC_RECORD);
     }
 }
@@ -1914,8 +2190,10 @@ void CDlgRecorder::OnRecord() {
 /***************************************************************************/
 // CDlgRecorder::OnPlay Button play hit
 /***************************************************************************/
-void CDlgRecorder::OnPlay() {
-    if ((m_nMode != IDC_PLAY) && (m_nMode != IDC_PAUSE)) {
+void CDlgRecorder::OnPlay()
+{
+    if ((m_nMode != IDC_PLAY) && (m_nMode != IDC_PAUSE))
+    {
         SetRecorderMode(IDC_PLAY);
     }
 }
@@ -1923,10 +2201,14 @@ void CDlgRecorder::OnPlay() {
 /***************************************************************************/
 // CDlgRecorder::OnStop Button stop hit
 /***************************************************************************/
-void CDlgRecorder::OnStop() {
-    if (m_nMode != IDC_STOP) {
+void CDlgRecorder::OnStop()
+{
+    if (m_nMode != IDC_STOP)
+    {
         SetRecorderMode(IDC_STOP);
-    } else {
+    }
+    else
+    {
         m_stop.Release();
     }
 }
@@ -1934,10 +2216,14 @@ void CDlgRecorder::OnStop() {
 /***************************************************************************/
 // CDlgRecorder::OnPause Button pause hit
 /***************************************************************************/
-void CDlgRecorder::OnPause() {
-    if (m_nMode != IDC_PAUSE) {
+void CDlgRecorder::OnPause()
+{
+    if (m_nMode != IDC_PAUSE)
+    {
         SetRecorderMode(IDC_PAUSE);
-    } else {
+    }
+    else
+    {
         SetRecorderMode(m_nOldMode);
     }
 }
@@ -1945,12 +2231,14 @@ void CDlgRecorder::OnPause() {
 /***************************************************************************/
 // CDlgRecorder::OnMixerControlChange Mixer has changed volume settings
 /***************************************************************************/
-LRESULT CDlgRecorder::OnMixerControlChange(WPARAM, LPARAM) {
+LRESULT CDlgRecorder::OnMixerControlChange(WPARAM, LPARAM)
+{
     BOOL bResult = FALSE;
 
     m_nVolume = m_pWave->GetVolume(&bResult);
 
-    if (bResult) {
+    if (bResult)
+    {
         SetDlgItemInt(IDC_VOLUMEEDIT, m_nVolume, TRUE);
         m_SliderVolume.SetPosition(m_nVolume);
     }
@@ -1965,7 +2253,8 @@ LRESULT CDlgRecorder::OnMixerControlChange(WPARAM, LPARAM) {
 /***************************************************************************/
 // CDlgRecorder::OnVolumeSlide Volume slider position changed
 /***************************************************************************/
-void CDlgRecorder::OnVolumeSlide() {
+void CDlgRecorder::OnVolumeSlide()
+{
     m_nVolume = m_SliderVolume.GetPosition();
     SetDlgItemInt(IDC_VOLUMEEDIT, m_SliderVolume.GetPosition(), TRUE);
     m_pWave->SetVolume(m_nVolume);
@@ -1974,17 +2263,23 @@ void CDlgRecorder::OnVolumeSlide() {
 /***************************************************************************/
 // CDlgRecorder::OnVolumeScroll Volume spin control hit
 /***************************************************************************/
-void CDlgRecorder::OnVolumeScroll() {
+void CDlgRecorder::OnVolumeScroll()
+{
     m_nVolume = GetDlgItemInt(IDC_VOLUMEEDIT, NULL, TRUE);
-    if (m_SpinVolume.UpperButtonClicked()) {
+    if (m_SpinVolume.UpperButtonClicked())
+    {
         m_nVolume++;
-    } else {
+    }
+    else
+    {
         m_nVolume--;
     }
-    if ((int)m_nVolume < 0) {
+    if ((int)m_nVolume < 0)
+    {
         m_nVolume = 0;
     }
-    if (m_nVolume > 100) {
+    if (m_nVolume > 100)
+    {
         m_nVolume = 100;
     }
     SetDlgItemInt(IDC_VOLUMEEDIT, m_nVolume, TRUE);
@@ -1996,12 +2291,15 @@ void CDlgRecorder::OnVolumeScroll() {
 /***************************************************************************/
 // CDlgRecorder::OnKillfocusVolumeEdit Volume edited
 /***************************************************************************/
-void CDlgRecorder::OnKillfocusVolumeEdit() {
+void CDlgRecorder::OnKillfocusVolumeEdit()
+{
     m_nVolume = GetDlgItemInt(IDC_VOLUMEEDIT, NULL, TRUE);
-    if ((int)m_nVolume < 0) {
+    if ((int)m_nVolume < 0)
+    {
         m_nVolume = 0;
     }
-    if (m_nVolume > 100) {
+    if (m_nVolume > 100)
+    {
         m_nVolume = 100;
     }
     SetDlgItemInt(IDC_VOLUMEEDIT, m_nVolume, TRUE);
@@ -2012,7 +2310,8 @@ void CDlgRecorder::OnKillfocusVolumeEdit() {
 /***************************************************************************/
 // CDlgRecorder::OnRecVolumeSlide Volume slider position changed
 /***************************************************************************/
-void CDlgRecorder::OnRecVolumeSlide() {
+void CDlgRecorder::OnRecVolumeSlide()
+{
     m_nRecVolume = m_SliderRecVolume.GetPosition();
     SetRecVolume(m_nRecVolume);
 }
@@ -2020,17 +2319,23 @@ void CDlgRecorder::OnRecVolumeSlide() {
 /***************************************************************************/
 // CDlgRecorder::OnRecVolumeScroll Volume spin control hit
 /***************************************************************************/
-void CDlgRecorder::OnRecVolumeScroll() {
+void CDlgRecorder::OnRecVolumeScroll()
+{
     m_nRecVolume = GetDlgItemInt(IDC_RECVOLUMEEDIT, NULL, TRUE);
-    if (m_SpinRecVolume.UpperButtonClicked()) {
+    if (m_SpinRecVolume.UpperButtonClicked())
+    {
         m_nRecVolume++;
-    } else {
+    }
+    else
+    {
         m_nRecVolume--;
     }
-    if ((int)m_nRecVolume < 0) {
+    if ((int)m_nRecVolume < 0)
+    {
         m_nRecVolume = 0;
     }
-    if (m_nRecVolume > 100) {
+    if (m_nRecVolume > 100)
+    {
         m_nRecVolume = 100;
     }
     SetRecVolume(m_nRecVolume);
@@ -2040,25 +2345,31 @@ void CDlgRecorder::OnRecVolumeScroll() {
 /***************************************************************************/
 // CDlgRecorder::OnKillfocusVolumeEdit Volume edited
 /***************************************************************************/
-void CDlgRecorder::OnKillfocusRecVolumeEdit() {
+void CDlgRecorder::OnKillfocusRecVolumeEdit()
+{
     m_nRecVolume = GetDlgItemInt(IDC_RECVOLUMEEDIT, NULL, TRUE);
-    if ((int)m_nRecVolume < 0) {
+    if ((int)m_nRecVolume < 0)
+    {
         m_nRecVolume = 0;
     }
-    if (m_nRecVolume > 100) {
+    if (m_nRecVolume > 100)
+    {
         m_nRecVolume = 100;
     }
     SetRecVolume(m_nRecVolume);
 }
 
-void CDlgRecorder::OnMixer() {
+void CDlgRecorder::OnMixer()
+{
     m_pWave->GetInDevice()->ShowMixer();
 }
 
-void CDlgRecorder::SetRecVolume(int nVolume) {
+void CDlgRecorder::SetRecVolume(int nVolume)
+{
     BOOL bResult;
     m_pWave->GetInDevice()->SetVolume(nVolume, &bResult);
-    if (!bResult) {
+    if (!bResult)
+    {
         EnableRecVolume(FALSE);
         nVolume = 0;
     }
@@ -2066,16 +2377,19 @@ void CDlgRecorder::SetRecVolume(int nVolume) {
     m_SliderRecVolume.SetPosition(nVolume);
 }
 
-void CDlgRecorder::EnableRecVolume(BOOL bEnable) {
+void CDlgRecorder::EnableRecVolume(BOOL bEnable)
+{
     CWnd * pWnd = GetDlgItem(IDC_RECVOLUMEEDIT);
-    if (pWnd) {
+    if (pWnd)
+    {
         pWnd->EnableWindow(bEnable);
     }
 
     m_SliderRecVolume.EnableWindow(bEnable);
 }
 
-UINT CDlgRecorder::GetRecVolume() {
+UINT CDlgRecorder::GetRecVolume()
+{
     BOOL bResult;
     UINT nVolume = m_pWave->GetInDevice()->GetVolume(&bResult);
     EnableRecVolume(bResult);
@@ -2085,14 +2399,16 @@ UINT CDlgRecorder::GetRecVolume() {
 /***************************************************************************/
 // CDlgRecorder::OnClose Close the dialog
 /***************************************************************************/
-void CDlgRecorder::OnClose() {
+void CDlgRecorder::OnClose()
+{
     CloseRecorder();
 }
 
 /***************************************************************************/
 // CDlgRecorder::OnButtonClose Button close hit
 /***************************************************************************/
-void CDlgRecorder::OnButtonClose() {
+void CDlgRecorder::OnButtonClose()
+{
     SendMessage(WM_CLOSE);
 }
 
@@ -2101,7 +2417,8 @@ void CDlgRecorder::OnButtonClose() {
 // When the ESC key is hit, this does the same as if the CLOSE button was hit.
 // (If OnButtonClose is not called here, a General Protection Fault results.)
 /***************************************************************************/
-void CDlgRecorder::OnCancel() {
+void CDlgRecorder::OnCancel()
+{
     CDialog::OnCancel();
     OnButtonClose();
 }
@@ -2109,7 +2426,8 @@ void CDlgRecorder::OnCancel() {
 /***************************************************************************/
 // CDlgRecorder::OnSettings Button settings hit
 /***************************************************************************/
-void CDlgRecorder::OnSettings() {
+void CDlgRecorder::OnSettings()
+{
     SetRecorderMode(IDC_STOP);
     CSaDoc * pDoc = (CSaDoc *)m_pDoc; // cast document pointer
     // get format parameters
@@ -2127,7 +2445,8 @@ void CDlgRecorder::OnSettings() {
     dlgRecorderOptions.SetChannels(fmtParm.wChannels);
     dlgRecorderOptions.SetHighpass((saParm.wFlags & SA_FLAG_HIGHPASS) ? TRUE : FALSE);
 
-    if (dlgRecorderOptions.DoModal() == IDOK) {
+    if (dlgRecorderOptions.DoModal() == IDOK)
+    {
         if ((m_bFileReady && m_dwRecordSize) &&
                 (
                     (dlgRecorderOptions.GetSamplingRate() != (fmtParm.dwSamplesPerSec)) ||
@@ -2140,13 +2459,16 @@ void CDlgRecorder::OnSettings() {
         {
             // ask user to delete recorded file before changing the settings
             int nResponse = AfxMessageBox(IDS_QUESTION_DELRECORD, MB_YESNO | MB_ICONQUESTION, 0);
-            if (nResponse == IDYES) {
+            if (nResponse == IDYES)
+            {
                 m_play.EnableWindow(FALSE); // disable Play button
                 GetDlgItem(IDC_APPLY)->EnableWindow(FALSE); // disable apply button
                 DeleteTempFile(); // delete the temporary mmio file
                 m_bFileReady = CreateTempFile(); // create new temporary mmio file
                 m_dwRecordSize = 0;
-            } else {
+            }
+            else
+            {
                 // continue with recorder
                 return;
             }
@@ -2156,11 +2478,15 @@ void CDlgRecorder::OnSettings() {
         fmtParm.wChannels = dlgRecorderOptions.GetChannels();
         fmtParm.wBlockAlign = WORD(fmtParm.wBitsPerSample / 8);
         fmtParm.dwAvgBytesPerSec = fmtParm.dwSamplesPerSec * fmtParm.wBlockAlign;
-        if (dlgRecorderOptions.GetHighpass()) {
+        if (dlgRecorderOptions.GetHighpass())
+        {
             saParm.wFlags |= SA_FLAG_HIGHPASS;
-        } else {
+        }
+        else
+        {
             CWaveInDevice * pRecorder = m_pWave->GetInDevice();
-            if (pRecorder->GetHighPassFilter()) {
+            if (pRecorder->GetHighPassFilter())
+            {
                 pRecorder->DetachHighPassFilter();
             }
             saParm.wFlags &= ~SA_FLAG_HIGHPASS;
@@ -2170,7 +2496,8 @@ void CDlgRecorder::OnSettings() {
         // set sa parameters
         pDoc->SetSaParm(&saParm);
 
-        if (!GetStaticSourceInfo().bEnable) {
+        if (!GetStaticSourceInfo().bEnable)
+        {
             CSaDoc * pDoc = (CSaDoc *)m_pDoc; // cast document pointer
             SourceParm * pSourceParm = pDoc->GetSourceParm();
 
@@ -2197,13 +2524,17 @@ void CDlgRecorder::OnSettings() {
 // This function calls the function to apply the wave file to a document.
 // After that, the recorder will be closed.
 /***************************************************************************/
-void CDlgRecorder::OnApply() {
-    if (m_pWave) {
+void CDlgRecorder::OnApply()
+{
+    if (m_pWave)
+    {
         m_pWave->Stop();    // stop recording
     }
     m_VUBar.SetVU(0); // reset the VU bar
-    if (m_bFileReady && !m_bFileApplied) { // file is ready but not yet applied
-        if (!Apply(m_pDoc)) {
+    if (m_bFileReady && !m_bFileApplied)   // file is ready but not yet applied
+    {
+        if (!Apply(m_pDoc))
+        {
             m_bFileReady = FALSE;
             CloseRecorder();
             return;
@@ -2213,7 +2544,8 @@ void CDlgRecorder::OnApply() {
     ClearFileName(); // file has been overtaken from document
     CloseRecorder(); // close the recorder
     sourceInfo & m_source = GetStaticSourceInfo();
-    if (m_source.bEnable) {
+    if (m_source.bEnable)
+    {
         CSaDoc * pDoc = (CSaDoc *)m_pDoc; // cast document pointer
         SourceParm * pSourceParm = pDoc->GetSourceParm();
 
@@ -2236,7 +2568,8 @@ void CDlgRecorder::OnApply() {
 /***************************************************************************/
 // CDlgRecorder::OnHelpRecorder Call Export Table help
 /***************************************************************************/
-void CDlgRecorder::OnHelpRecorder() {
+void CDlgRecorder::OnHelpRecorder()
+{
     // create the pathname
     CString szPath = AfxGetApp()->m_pszHelpFilePath;
     szPath += "::/User_Interface/Menus/File/Record_New.htm";
@@ -2246,14 +2579,16 @@ void CDlgRecorder::OnHelpRecorder() {
 /***************************************************************************/
 // CDlgRecorder::GetDocument()
 /***************************************************************************/
-CSaDoc * CDlgRecorder::GetDocument() {
+CSaDoc * CDlgRecorder::GetDocument()
+{
     return m_pDoc;
 }
 
 /***************************************************************************/
 // CDlgRecorder::GetStaticSourceInfo()
 /***************************************************************************/
-CDlgRecorder::sourceInfo & CDlgRecorder::GetStaticSourceInfo() {
+CDlgRecorder::sourceInfo & CDlgRecorder::GetStaticSourceInfo()
+{
     static sourceInfo m_source;
 
     return m_source;
@@ -2274,7 +2609,8 @@ static const char * psz_transcriber = "transcriber";
 static const char * psz_freeTranslation = "freeTranslation";
 static const char * psz_fileDescription = "fileDescription";
 
-void CDlgRecorder::sourceInfo::WriteProperties(Object_ostream & obs) {
+void CDlgRecorder::sourceInfo::WriteProperties(Object_ostream & obs)
+{
     obs.WriteBeginMarker(psz_sourceInfo);
 
     sourceInfo & m_source = GetStaticSourceInfo();
@@ -2299,14 +2635,17 @@ void CDlgRecorder::sourceInfo::WriteProperties(Object_ostream & obs) {
     obs.WriteEndMarker(psz_sourceInfo);
 }
 
-BOOL CDlgRecorder::sourceInfo::ReadProperties(Object_istream & obs) {
-    if (!obs.bAtBackslash() || !obs.bReadBeginMarker(psz_sourceInfo)) {
+BOOL CDlgRecorder::sourceInfo::ReadProperties(Object_istream & obs)
+{
+    if (!obs.bAtBackslash() || !obs.bReadBeginMarker(psz_sourceInfo))
+    {
         return FALSE;
     }
 
     sourceInfo & m_source = GetStaticSourceInfo();
 
-    while (!obs.bAtEnd()) {
+    while (!obs.bAtEnd())
+    {
         CSaString szGender;
         szGender.Format(_T("%d"), m_source.source.nGender);
         if (obs.bReadInteger(psz_enable, m_source.bEnable));
@@ -2315,15 +2654,18 @@ BOOL CDlgRecorder::sourceInfo::ReadProperties(Object_istream & obs) {
         else if (obs.bReadString(psz_ethnoID, &m_source.source.szEthnoID));
         else if (obs.bReadString(psz_family, &m_source.source.szFamily));
         else if (obs.bReadString(psz_language, &m_source.source.szLanguage));
-        else if (obs.bReadString(psz_gender, &szGender)) {
+        else if (obs.bReadString(psz_gender, &szGender))
+        {
             m_source.source.nGender = _ttoi(szGender.GetBuffer(2));
-        } else if (obs.bReadString(psz_region, &m_source.source.szRegion));
+        }
+        else if (obs.bReadString(psz_region, &m_source.source.szRegion));
         else if (obs.bReadString(psz_speaker, &m_source.source.szSpeaker));
         else if (obs.bReadString(psz_reference, &m_source.source.szReference));
         else if (obs.bReadString(psz_transcriber, &m_source.source.szTranscriber));
         else if (obs.bReadString(psz_fileDescription, &m_source.source.szDescription));
         else if (obs.bReadString(psz_freeTranslation, &m_source.source.szFreeTranslation));
-        else if (obs.bEnd(psz_sourceInfo)) {
+        else if (obs.bEnd(psz_sourceInfo))
+        {
             break;
         }
     }
@@ -2352,7 +2694,8 @@ END_MESSAGE_MAP()
 /***************************************************************************/
 // CDlgRecorderOptions::CDlgRecorderOptions Constructor
 /***************************************************************************/
-CDlgRecorderOptions::CDlgRecorderOptions(CDlgRecorder * pParent) : CDialog(CDlgRecorderOptions::IDD, pParent), m_pRecorder(pParent) {
+CDlgRecorderOptions::CDlgRecorderOptions(CDlgRecorder * pParent) : CDialog(CDlgRecorderOptions::IDD, pParent), m_pRecorder(pParent)
+{
     m_bSourceAuto = CDlgRecorder::GetStaticSourceInfo().bEnable;
     m_nMode = 0;
     //{{AFX_DATA_INIT(CDlgRecorderOptions)
@@ -2368,7 +2711,8 @@ CDlgRecorderOptions::CDlgRecorderOptions(CDlgRecorder * pParent) : CDialog(CDlgR
 /***************************************************************************/
 // CDlgRecorderOptions::DoDataExchange Data exchange
 /***************************************************************************/
-void CDlgRecorderOptions::DoDataExchange(CDataExchange * pDX) {
+void CDlgRecorderOptions::DoDataExchange(CDataExchange * pDX)
+{
     CDialog::DoDataExchange(pDX);
     //{{AFX_DATA_MAP(CDlgRecorderOptions)
     DDX_Radio(pDX, IDC_11KHZ, m_nRate);
@@ -2386,7 +2730,8 @@ void CDlgRecorderOptions::DoDataExchange(CDataExchange * pDX) {
 // CDlgRecorderOptions::OnInitDialog Dialog initialization
 // The dialog is centered over the main frame window.
 /***************************************************************************/
-BOOL CDlgRecorderOptions::OnInitDialog() {
+BOOL CDlgRecorderOptions::OnInitDialog()
+{
     CDialog::OnInitDialog();
     CenterWindow(); // center dialog on recorder window
     return TRUE;
@@ -2395,7 +2740,8 @@ BOOL CDlgRecorderOptions::OnInitDialog() {
 /***************************************************************************/
 // CDlgRecorderOptions::OnDefault Default button hit
 /***************************************************************************/
-void CDlgRecorderOptions::OnDefault() {
+void CDlgRecorderOptions::OnDefault()
+{
     // set defaults
     m_nRate = 1;
     m_nBits = 1;
@@ -2407,8 +2753,10 @@ void CDlgRecorderOptions::OnDefault() {
 /***************************************************************************/
 // CDlgRecorderOptions::SetSamplingRate(int nRate)
 /***************************************************************************/
-void CDlgRecorderOptions::SetSamplingRate(int nRate) {
-    switch (nRate) {
+void CDlgRecorderOptions::SetSamplingRate(int nRate)
+{
+    switch (nRate)
+    {
     case 11025:
         m_nRate = 0;
         break;
@@ -2427,10 +2775,12 @@ void CDlgRecorderOptions::SetSamplingRate(int nRate) {
 /***************************************************************************/
 // CDlgRecorderOptions::GetSamplingRate()
 /***************************************************************************/
-unsigned int CDlgRecorderOptions::GetSamplingRate() {
+unsigned int CDlgRecorderOptions::GetSamplingRate()
+{
     int nRate = 22050;
 
-    switch (m_nRate) {
+    switch (m_nRate)
+    {
     case 0:
         nRate = 11025;
         break;
@@ -2447,8 +2797,10 @@ unsigned int CDlgRecorderOptions::GetSamplingRate() {
 /***************************************************************************/
 // CDlgRecorderOptions::SetBitDepth(int nBits)
 /***************************************************************************/
-void CDlgRecorderOptions::SetBitDepth(int nBits) {
-    switch (nBits) {
+void CDlgRecorderOptions::SetBitDepth(int nBits)
+{
+    switch (nBits)
+    {
     case 8:
         m_nBits = 0;
         break;
@@ -2464,9 +2816,11 @@ void CDlgRecorderOptions::SetBitDepth(int nBits) {
 /***************************************************************************/
 // CDlgRecorderOptions::GetBitDepth()
 /***************************************************************************/
-short int CDlgRecorderOptions::GetBitDepth() {
+short int CDlgRecorderOptions::GetBitDepth()
+{
     short int nBits = 16;
-    switch (m_nBits) {
+    switch (m_nBits)
+    {
     case 0:
         nBits = 8;
         break;
@@ -2479,39 +2833,45 @@ short int CDlgRecorderOptions::GetBitDepth() {
 /***************************************************************************/
 // CDlgRecorderOptions::SetHighpass(BOOL bHighpass)
 /***************************************************************************/
-void CDlgRecorderOptions::SetHighpass(BOOL bHighpass) {
+void CDlgRecorderOptions::SetHighpass(BOOL bHighpass)
+{
     m_bHighpass = bHighpass;
 }
 
 /***************************************************************************/
 // CDlgRecorderOptions::GetHighpass()
 /***************************************************************************/
-BOOL CDlgRecorderOptions::GetHighpass() {
+BOOL CDlgRecorderOptions::GetHighpass()
+{
     return m_bHighpass;
 }
 
 /***************************************************************************/
 // CDlgRecorderOptions::SetChannels(int nChannels)
 /***************************************************************************/
-void CDlgRecorderOptions::SetChannels(int nChannels) {
+void CDlgRecorderOptions::SetChannels(int nChannels)
+{
     UNUSED(nChannels);
     ASSERT(nChannels == 1);
 }
 /***************************************************************************/
 // CDlgRecorderOptions::GetChannels()
 /***************************************************************************/
-short CDlgRecorderOptions::GetChannels() {
+short CDlgRecorderOptions::GetChannels()
+{
     return 1;
 }
 
 /***************************************************************************/
 // CDlgRecorderOptions::GetRecorder()
 /***************************************************************************/
-CDlgRecorder & CDlgRecorderOptions::GetRecorder() {
+CDlgRecorder & CDlgRecorderOptions::GetRecorder()
+{
     return *m_pRecorder;
 }
 
-void CDlgRecorderOptions::OnSourceAuto() {
+void CDlgRecorderOptions::OnSourceAuto()
+{
     UpdateData(TRUE);
     CDlgRecorder::GetStaticSourceInfo().bEnable = m_bSourceAuto;
 }
@@ -2519,12 +2879,14 @@ void CDlgRecorderOptions::OnSourceAuto() {
 /***************************************************************************/
 // CDlgRecorderOptions::OnSource
 /***************************************************************************/
-void CDlgRecorderOptions::OnSource() {
+void CDlgRecorderOptions::OnSource()
+{
     UpdateData(TRUE);
     CSaDoc * pDoc = GetRecorder().GetDocument(); // cast document pointer
     SourceParm * pSourceParm = pDoc->GetSourceParm();
     CDlgRecorder::sourceInfo & m_source = CDlgRecorder::GetStaticSourceInfo();
-    if (m_source.bEnable) {
+    if (m_source.bEnable)
+    {
         pSourceParm->szCountry = m_source.source.szCountry;
         pSourceParm->szDialect = m_source.source.szDialect;
         pSourceParm->szEthnoID = m_source.source.szEthnoID.Left(3);
@@ -2547,14 +2909,16 @@ void CDlgRecorderOptions::OnSource() {
         pSourceParm->szDescription;
     dlgFileInformation->m_dlgUserPage.m_szFreeTranslation =
         pSourceParm->szFreeTranslation;
-    if (dlgFileInformation->DoModal() == IDOK) {
+    if (dlgFileInformation->DoModal() == IDOK)
+    {
         // get new file description string
         pDoc->GetSaParm()->szDescription = dlgFileInformation->m_dlgUserPage.m_szFileDesc;
         pSourceParm->szDescription = dlgFileInformation->m_dlgUserPage.m_szFileDesc;
         pSourceParm->szFreeTranslation = dlgFileInformation->m_dlgUserPage.m_szFreeTranslation;
         pSourceParm->szCountry = dlgFileInformation->m_dlgSourcePage.m_szCountry;
         pSourceParm->szDialect = dlgFileInformation->m_dlgSourcePage.m_szDialect;
-        if (dlgFileInformation->m_dlgSourcePage.m_szEthnoID.GetLength() < 3) {
+        if (dlgFileInformation->m_dlgSourcePage.m_szEthnoID.GetLength() < 3)
+        {
             dlgFileInformation->m_dlgSourcePage.m_szEthnoID += "   ";
         }
         pSourceParm->szEthnoID = dlgFileInformation->m_dlgSourcePage.m_szEthnoID.Left(3);
@@ -2585,7 +2949,8 @@ void CDlgRecorderOptions::OnSource() {
 /***************************************************************************/
 // CDlgRecorderOptions::OnHelpRecorderOptions Call Recorder Settings help
 /***************************************************************************/
-void CDlgRecorderOptions::OnHelpRecorderOptions() {
+void CDlgRecorderOptions::OnHelpRecorderOptions()
+{
     // create the pathname
     CString szPath = AfxGetApp()->m_pszHelpFilePath;
     szPath += "::/User_Interface/Menus/File/Recorder_Settings.htm";
@@ -2621,9 +2986,10 @@ END_MESSAGE_MAP()
 /***************************************************************************/
 // CDlgFnKeys::CDlgFnKeys Constructor
 /***************************************************************************/
-CDlgFnKeys::CDlgFnKeys(CWnd * pParent) : CDlgAudio(CDlgFnKeys::IDD, pParent) {
+CDlgFnKeys::CDlgFnKeys(CWnd * pParent) : CDlgAudio(CDlgFnKeys::IDD, pParent)
+{
 
-	m_nDelay = 1000;
+    m_nDelay = 1000;
     m_nSpeed = 50;
     m_bRepeat = FALSE;
     m_nPlayMode = 4;
@@ -2643,7 +3009,8 @@ CDlgFnKeys::CDlgFnKeys(CWnd * pParent) : CDlgAudio(CDlgFnKeys::IDD, pParent) {
 /***************************************************************************/
 // CDlgFnKeys::DoDataExchange Data exchange
 /***************************************************************************/
-void CDlgFnKeys::DoDataExchange(CDataExchange * pDX) {
+void CDlgFnKeys::DoDataExchange(CDataExchange * pDX)
+{
     CDialog::DoDataExchange(pDX);
     DDX_Text(pDX, IDC_DELAYEDIT, m_nDelay);
     DDV_MinMaxUInt(pDX, m_nDelay, 0, 9999);
@@ -2658,14 +3025,19 @@ void CDlgFnKeys::DoDataExchange(CDataExchange * pDX) {
 /***************************************************************************/
 // CDlgFnKeys::EndPlayback Playback finished
 /***************************************************************************/
-void CDlgFnKeys::EndPlayback() {
+void CDlgFnKeys::EndPlayback()
+{
 
-    if (m_pWave) {
+    if (m_pWave)
+    {
         m_pWave->Stop();
     }
-    if (m_bRepeat) {
+    if (m_bRepeat)
+    {
         SetTimer(1, m_nDelay, NULL);    // start repeating
-    } else {
+    }
+    else
+    {
         OnTest();
     }
 }
@@ -2677,7 +3049,8 @@ void CDlgFnKeys::EndPlayback() {
 // CDlgFnKeys::OnInitDialog Dialog initialization
 // The dialog is centered over the main frame window.
 /***************************************************************************/
-BOOL CDlgFnKeys::OnInitDialog() {
+BOOL CDlgFnKeys::OnInitDialog()
+{
     CDialog::OnInitDialog();
     m_pWave->GetOutDevice()->ConnectMixer(this);
     // save the caption of the test button
@@ -2704,7 +3077,8 @@ BOOL CDlgFnKeys::OnInitDialog() {
     // fill up the list box
     CListBox * pLB = (CListBox *)GetDlgItem(IDC_FNLIST);
     TCHAR szText[4];
-    for (int nLoop = 1; nLoop <= 12; nLoop++) {
+    for (int nLoop = 1; nLoop <= 12; nLoop++)
+    {
         swprintf_s(szText, _countof(szText), _T("F%u"), nLoop);
         pLB->AddString(szText);
     }
@@ -2715,7 +3089,8 @@ BOOL CDlgFnKeys::OnInitDialog() {
     GetDlgItem(IDC_DELAYEDIT)->EnableWindow(FALSE); // disable delay edit control
     GetDlgItem(IDC_DELAYTEXT)->EnableWindow(FALSE); // disable delay dimension text
     OnSelchangeFnlist();
-    if (m_bNoTest) {
+    if (m_bNoTest)
+    {
         GetDlgItem(IDC_FNTEST)->EnableWindow(FALSE);    // disable test run
     }
     CenterWindow(); // center dialog on recorder window
@@ -2726,12 +3101,14 @@ BOOL CDlgFnKeys::OnInitDialog() {
 /***************************************************************************/
 // CDlgFnKeys::OnMixerControlChange Mixer has changed volume settings
 /***************************************************************************/
-LRESULT CDlgFnKeys::OnMixerControlChange(WPARAM, LPARAM) {
+LRESULT CDlgFnKeys::OnMixerControlChange(WPARAM, LPARAM)
+{
     BOOL bResult = FALSE;
 
     m_nVolume = m_pWave->GetVolume(&bResult);
 
-    if (bResult) {
+    if (bResult)
+    {
         SetDlgItemInt(IDC_VOLUMEEDIT, m_nVolume, TRUE);
         m_SliderVolume.SetPosition(m_nVolume);
     }
@@ -2742,7 +3119,8 @@ LRESULT CDlgFnKeys::OnMixerControlChange(WPARAM, LPARAM) {
 /***************************************************************************/
 // CDlgFnKeys::OnVolumeSlide Volume slider position changed
 /***************************************************************************/
-void CDlgFnKeys::OnVolumeSlide() {
+void CDlgFnKeys::OnVolumeSlide()
+{
     m_nVolume = m_SliderVolume.GetPosition();
     SetDlgItemInt(IDC_VOLUMEEDIT, m_SliderVolume.GetPosition(), TRUE);
     m_pWave->SetVolume(m_nVolume);
@@ -2751,17 +3129,23 @@ void CDlgFnKeys::OnVolumeSlide() {
 /***************************************************************************/
 // CDlgFnKeys::OnVolumeScroll Volume spin control hit
 /***************************************************************************/
-void CDlgFnKeys::OnVolumeScroll() {
+void CDlgFnKeys::OnVolumeScroll()
+{
     m_nVolume = GetDlgItemInt(IDC_VOLUMEEDIT, NULL, TRUE);
-    if (m_SpinVolume.UpperButtonClicked()) {
+    if (m_SpinVolume.UpperButtonClicked())
+    {
         m_nVolume++;
-    } else {
+    }
+    else
+    {
         m_nVolume--;
     }
-    if ((int)m_nVolume < 0) {
+    if ((int)m_nVolume < 0)
+    {
         m_nVolume = 0;
     }
-    if (m_nVolume > 100) {
+    if (m_nVolume > 100)
+    {
         m_nVolume = 100;
     }
     SetDlgItemInt(IDC_VOLUMEEDIT, m_nVolume, TRUE);
@@ -2772,12 +3156,15 @@ void CDlgFnKeys::OnVolumeScroll() {
 /***************************************************************************/
 // CDlgFnKeys::OnKillfocusVolumeEdit Volume edited
 /***************************************************************************/
-void CDlgFnKeys::OnKillfocusVolumeEdit() {
+void CDlgFnKeys::OnKillfocusVolumeEdit()
+{
     m_nVolume = GetDlgItemInt(IDC_VOLUMEEDIT, NULL, TRUE);
-    if ((int)m_nVolume < 0) {
+    if ((int)m_nVolume < 0)
+    {
         m_nVolume = 0;
     }
-    if (m_nVolume > 100) {
+    if (m_nVolume > 100)
+    {
         m_nVolume = 100;
     }
     SetDlgItemInt(IDC_VOLUMEEDIT, m_nVolume, TRUE);
@@ -2788,11 +3175,15 @@ void CDlgFnKeys::OnKillfocusVolumeEdit() {
 /***************************************************************************/
 // CDlgFnKeys::OnSpeedSlide Speed slider position changed
 /***************************************************************************/
-void CDlgFnKeys::OnSpeedSlide() {
+void CDlgFnKeys::OnSpeedSlide()
+{
     UINT nSpeed = m_SliderSpeed.GetPosition();
-    if (nSpeed > 50) {
+    if (nSpeed > 50)
+    {
         m_nSpeed = 100 + (nSpeed - 50) * 233 / 50;
-    } else {
+    }
+    else
+    {
         m_nSpeed = 10 + nSpeed * 90 / 50;
     }
     SetDlgItemInt(IDC_SPEEDEDIT, m_nSpeed, TRUE);
@@ -2802,23 +3193,32 @@ void CDlgFnKeys::OnSpeedSlide() {
 /***************************************************************************/
 // CDlgFnKeys::OnSpeedScroll Speed spin control hit
 /***************************************************************************/
-void CDlgFnKeys::OnSpeedScroll() {
+void CDlgFnKeys::OnSpeedScroll()
+{
     m_nSpeed = GetDlgItemInt(IDC_SPEEDEDIT, NULL, TRUE);
-    if (m_SpinSpeed.UpperButtonClicked()) {
+    if (m_SpinSpeed.UpperButtonClicked())
+    {
         m_nSpeed++;
-    } else {
+    }
+    else
+    {
         m_nSpeed--;
     }
-    if (m_nSpeed > 333) {
+    if (m_nSpeed > 333)
+    {
         m_nSpeed = 333;
     }
-    if (m_nSpeed < 10) {
+    if (m_nSpeed < 10)
+    {
         m_nSpeed = 10;
     }
     SetDlgItemInt(IDC_SPEEDEDIT, m_nSpeed, TRUE);
-    if (m_nSpeed > 100) {
+    if (m_nSpeed > 100)
+    {
         m_SliderSpeed.SetPosition(50 + 50 * (m_nSpeed - 100) / 233);
-    } else {
+    }
+    else
+    {
         m_SliderSpeed.SetPosition(50 * (m_nSpeed - 10) / 90);
     }
     m_pWave->SetSpeed(m_nSpeed);
@@ -2827,18 +3227,24 @@ void CDlgFnKeys::OnSpeedScroll() {
 /***************************************************************************/
 // CDlgFnKeys::OnKillfocusSpeedEdit Speed edited
 /***************************************************************************/
-void CDlgFnKeys::OnKillfocusSpeedEdit() {
+void CDlgFnKeys::OnKillfocusSpeedEdit()
+{
     m_nSpeed = GetDlgItemInt(IDC_SPEEDEDIT, NULL, TRUE);
-    if ((int)m_nSpeed < 10) {
+    if ((int)m_nSpeed < 10)
+    {
         m_nSpeed = 10;
     }
-    if (m_nSpeed > 333) {
+    if (m_nSpeed > 333)
+    {
         m_nSpeed = 333;
     }
     SetDlgItemInt(IDC_SPEEDEDIT, m_nSpeed, TRUE);
-    if (m_nSpeed > 100) {
+    if (m_nSpeed > 100)
+    {
         m_SliderSpeed.SetPosition(50 + 50 * (m_nSpeed - 100) / 233);
-    } else {
+    }
+    else
+    {
         m_SliderSpeed.SetPosition(50 * (m_nSpeed - 10) / 90);
     }
     m_pWave->SetSpeed(m_nSpeed);
@@ -2847,9 +3253,11 @@ void CDlgFnKeys::OnKillfocusSpeedEdit() {
 /***************************************************************************/
 // CDlgFnKeys::OnDelaySlide Delay slider position changed
 /***************************************************************************/
-void CDlgFnKeys::OnDelaySlide() {
+void CDlgFnKeys::OnDelaySlide()
+{
     m_nDelay = m_SliderDelay.GetPosition() * 100;
-    if (m_nDelay > 9999) {
+    if (m_nDelay > 9999)
+    {
         m_nDelay = 9999;
     }
     SetDlgItemInt(IDC_DELAYEDIT, m_nDelay, TRUE);
@@ -2858,28 +3266,42 @@ void CDlgFnKeys::OnDelaySlide() {
 /***************************************************************************/
 // CDlgFnKeys::OnDelayScroll Delay spin control hit
 /***************************************************************************/
-void CDlgFnKeys::OnDelayScroll() {
+void CDlgFnKeys::OnDelayScroll()
+{
     m_nDelay = GetDlgItemInt(IDC_DELAYEDIT, NULL, TRUE);
-    if (m_SpinDelay.UpperButtonClicked()) {
+    if (m_SpinDelay.UpperButtonClicked())
+    {
         m_nDelay += 100;
-    } else {
-        if (m_nDelay == 9999) {
+    }
+    else
+    {
+        if (m_nDelay == 9999)
+        {
             m_nDelay -= 99;
-        } else {
-            if (m_nDelay > 100) {
+        }
+        else
+        {
+            if (m_nDelay > 100)
+            {
                 m_nDelay -= 100;
-            } else {
+            }
+            else
+            {
                 m_nDelay = 0;
             }
         }
     }
-    if (m_nDelay > 9999) {
+    if (m_nDelay > 9999)
+    {
         m_nDelay = 9999;
     }
     SetDlgItemInt(IDC_DELAYEDIT, m_nDelay, TRUE);
-    if (m_nDelay == 9999) {
+    if (m_nDelay == 9999)
+    {
         m_SliderDelay.SetPosition(100);
-    } else {
+    }
+    else
+    {
         m_SliderDelay.SetPosition(m_nDelay / 100);
     }
 }
@@ -2887,18 +3309,24 @@ void CDlgFnKeys::OnDelayScroll() {
 /***************************************************************************/
 // CDlgFnKeys::OnKillfocusDelayEdit Delay edited
 /***************************************************************************/
-void CDlgFnKeys::OnKillfocusDelayEdit() {
+void CDlgFnKeys::OnKillfocusDelayEdit()
+{
     m_nDelay = GetDlgItemInt(IDC_DELAYEDIT, NULL, TRUE);
-    if ((int)m_nDelay < 0) {
+    if ((int)m_nDelay < 0)
+    {
         m_nDelay = 0;
     }
-    if (m_nDelay > 9999) {
+    if (m_nDelay > 9999)
+    {
         m_nDelay = 9999;
     }
     SetDlgItemInt(IDC_DELAYEDIT, m_nDelay, TRUE);
-    if (m_nDelay == 9999) {
+    if (m_nDelay == 9999)
+    {
         m_SliderDelay.SetPosition(100);
-    } else {
+    }
+    else
+    {
         m_SliderDelay.SetPosition(m_nDelay / 100);
     }
 }
@@ -2906,15 +3334,19 @@ void CDlgFnKeys::OnKillfocusDelayEdit() {
 /***************************************************************************/
 // CDlgFnKeys::OnRepeat Replay repeat clicked
 /***************************************************************************/
-void CDlgFnKeys::OnRepeat() {
+void CDlgFnKeys::OnRepeat()
+{
     UpdateData(TRUE);
-    if (m_bRepeat) {
+    if (m_bRepeat)
+    {
         // enable delay editing
         m_SliderDelay.EnableWindow(TRUE); // enable delay slider
         m_SpinDelay.EnableWindow(TRUE); // enable delay spin control
         GetDlgItem(IDC_DELAYEDIT)->EnableWindow(TRUE); // enable delay edit control
         GetDlgItem(IDC_DELAYTEXT)->EnableWindow(TRUE); // enable delay dimension text
-    } else {
+    }
+    else
+    {
         // disable delay editing
         m_SliderDelay.EnableWindow(FALSE); // disable delay slider
         m_SpinDelay.EnableWindow(FALSE); // disable delay spin control
@@ -2926,15 +3358,18 @@ void CDlgFnKeys::OnRepeat() {
 /***************************************************************************/
 // CDlgFnKeys::OnSelchangeFnlist Keylist selection changed
 /***************************************************************************/
-void CDlgFnKeys::OnSelchangeFnlist() {
-    if (m_nSelection != -1) {
+void CDlgFnKeys::OnSelchangeFnlist()
+{
+    if (m_nSelection != -1)
+    {
         UpdateData(TRUE);
         // save changes
         m_fnKeys.nDelay[m_nSelection] = m_nDelay;
         m_fnKeys.nSpeed[m_nSelection] = m_nSpeed;
         m_fnKeys.nVolume[m_nSelection] = m_nVolume;
         m_fnKeys.bRepeat[m_nSelection] = m_bRepeat;
-        switch (m_nPlayMode) {
+        switch (m_nPlayMode)
+        {
         case 0:
             m_fnKeys.nMode[m_nSelection] = ID_PLAYBACK_CURSORS;
             break;
@@ -2964,7 +3399,8 @@ void CDlgFnKeys::OnSelchangeFnlist() {
     m_nSpeed = m_fnKeys.nSpeed[m_nSelection];
     m_nVolume = m_fnKeys.nVolume[m_nSelection];
     m_bRepeat = m_fnKeys.bRepeat[m_nSelection];
-    switch (m_fnKeys.nMode[m_nSelection]) {
+    switch (m_fnKeys.nMode[m_nSelection])
+    {
     case ID_PLAYBACK_CURSORS:
         m_nPlayMode = 0;
         break;
@@ -2997,8 +3433,10 @@ void CDlgFnKeys::OnSelchangeFnlist() {
 /***************************************************************************/
 // CDlgFnKeys::OnOK Button OK hit
 /***************************************************************************/
-void CDlgFnKeys::OnOK() {
-    if (m_pWave) {
+void CDlgFnKeys::OnOK()
+{
+    if (m_pWave)
+    {
         m_pWave->Stop();
     }
     UpdateData(TRUE);
@@ -3006,7 +3444,8 @@ void CDlgFnKeys::OnOK() {
     // save the function key setup
     CMainFrame * pMainWnd = (CMainFrame *)AfxGetMainWnd();
     pMainWnd->SetFnKeys(&m_fnKeys);
-    if (m_pWave) {
+    if (m_pWave)
+    {
         delete m_pWave; // delete the CWave object
         m_pWave = NULL;
     }
@@ -3016,18 +3455,22 @@ void CDlgFnKeys::OnOK() {
 /***************************************************************************/
 // CDlgFnKeys::OnCancel Button cancel hit
 /***************************************************************************/
-void CDlgFnKeys::OnCancel() {
+void CDlgFnKeys::OnCancel()
+{
     OnClose();
 }
 
 /***************************************************************************/
 // CDlgFnKeys::OnClose Close the dialog
 /***************************************************************************/
-void CDlgFnKeys::OnClose() {
-    if (m_pWave) {
+void CDlgFnKeys::OnClose()
+{
+    if (m_pWave)
+    {
         m_pWave->Stop();
     }
-    if (m_pWave) {
+    if (m_pWave)
+    {
         delete m_pWave; // delete the CWave object
         m_pWave = NULL;
     }
@@ -3037,9 +3480,11 @@ void CDlgFnKeys::OnClose() {
 /***************************************************************************/
 // CDlgFnKeys::OnTimer Timer event, repeat playback
 /***************************************************************************/
-void CDlgFnKeys::OnTimer(UINT nIDEvent) {
+void CDlgFnKeys::OnTimer(UINT nIDEvent)
+{
     KillTimer(1);
-    if (m_bTestRunning) {
+    if (m_bTestRunning)
+    {
         m_bTestRunning = FALSE;
         OnTest();
     }
@@ -3049,17 +3494,22 @@ void CDlgFnKeys::OnTimer(UINT nIDEvent) {
 /***************************************************************************/
 // CDlgFnKeys::OnTest Test run
 /***************************************************************************/
-void CDlgFnKeys::OnTest() {
+void CDlgFnKeys::OnTest()
+{
     CWnd * pWnd = GetDlgItem(IDC_FNTEST);
     CSaApp * pApp = (CSaApp *)AfxGetApp(); // get pointer to application
-    if (m_bTestRunning) {
-        if (m_pWave) {
+    if (m_bTestRunning)
+    {
+        if (m_pWave)
+        {
             m_pWave->Stop();
         }
         KillTimer(1);
         m_bTestRunning = FALSE;
         pWnd->SetWindowText(m_szTest); // set back the original Test button caption
-    } else {
+    }
+    else
+    {
         m_bTestRunning = TRUE;
         UpdateData(TRUE);
         CString szText;
@@ -3071,7 +3521,8 @@ void CDlgFnKeys::OnTest() {
         FmtParm * pFmtParm = pDoc->GetFmtParm(); // get sa parameters format member data
         WORD wSmpSize = WORD(pFmtParm->wBlockAlign / pFmtParm->wChannels);
         BOOL bError = FALSE;
-        switch (m_nPlayMode) {
+        switch (m_nPlayMode)
+        {
         case 0:
             dwStart = pView->GetStartCursorPosition();
             dwSize = pView->GetStopCursorPosition() - dwStart + wSmpSize;
@@ -3079,36 +3530,48 @@ void CDlgFnKeys::OnTest() {
         case 1:
             dwStart = DWORD(pView->GetDataPosition(0));
             dwSize = pView->GetStartCursorPosition();
-            if (dwSize > dwStart) {
+            if (dwSize > dwStart)
+            {
                 dwSize -= dwStart;
-            } else {
+            }
+            else
+            {
                 bError = TRUE;
             }
             break;
         case 2:
             dwStart = pView->GetStartCursorPosition();
             dwSize = DWORD(pView->GetDataPosition(0) + pView->GetDataFrame());
-            if (dwSize > dwStart) {
+            if (dwSize > dwStart)
+            {
                 dwSize -= dwStart;
-            } else {
+            }
+            else
+            {
                 bError = TRUE;
             }
             break;
         case 3:
             dwStart = DWORD(pView->GetDataPosition(0));
             dwSize = pView->GetStopCursorPosition();
-            if (dwSize > dwStart) {
+            if (dwSize > dwStart)
+            {
                 dwSize -= dwStart;
-            } else {
+            }
+            else
+            {
                 bError = TRUE;
             }
             break;
         case 4:
             dwStart = pView->GetStopCursorPosition();
             dwSize = DWORD(pView->GetDataPosition(0) + pView->GetDataFrame());
-            if (dwSize > dwStart) {
+            if (dwSize > dwStart)
+            {
                 dwSize -= dwStart;
-            } else {
+            }
+            else
+            {
                 bError = TRUE;
             }
             break;
@@ -3123,12 +3586,16 @@ void CDlgFnKeys::OnTest() {
             dwStart = dwSize = 0;
             break;
         }
-        if (bError) {
+        if (bError)
+        {
             pApp->ErrorMessage(IDS_ERROR_PLAYMODE);    // play mode not playable
-        } else {
+        }
+        else
+        {
             bError = !m_pWave->Play(dwStart, dwSize, m_nVolume, m_nSpeed, m_pView, &m_NotifyObj);
         }
-        if (bError) {
+        if (bError)
+        {
             m_bTestRunning = FALSE;
             pWnd->SetWindowText(m_szTest); // set back the original Test button caption
         }
@@ -3140,7 +3607,8 @@ void CDlgFnKeys::OnTest() {
 /***************************************************************************/
 // CDlgFnKeys::OnHelpFnKeys Call Function Keys help
 /***************************************************************************/
-void CDlgFnKeys::OnHelpFnKeys() {
+void CDlgFnKeys::OnHelpFnKeys()
+{
     // create the pathname
     CString szPath = AfxGetApp()->m_pszHelpFilePath;
     szPath += "::/User_Interface/Menus/Playback/Playback_Function_Keys_Setup.htm";

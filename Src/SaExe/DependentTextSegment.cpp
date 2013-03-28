@@ -14,10 +14,12 @@ static char BASED_CODE THIS_FILE[] = __FILE__;
 // CDependentTextSegment helper functions
 
 CDependentTextSegment::CDependentTextSegment(int index, int master) :
-    CTextSegment(index,master) {
+    CTextSegment(index,master)
+{
 }
 
-void CDependentTextSegment::LimitPosition(CSaDoc *, DWORD & dwStart, DWORD & dwStop, int /*nMode*/) const {
+void CDependentTextSegment::LimitPosition(CSaDoc *, DWORD & dwStart, DWORD & dwStop, int /*nMode*/) const
+{
 
     dwStart=GetOffset(GetSelection());
     dwStop=GetStop(GetSelection());
@@ -32,16 +34,21 @@ void CDependentTextSegment::LimitPosition(CSaDoc *, DWORD & dwStart, DWORD & dwS
 // available index.  For example if we are inserting at the 4 gloss segment
 // but only reference segments 0 and 1 exist, then the next index is 2, not 3.
 /***************************************************************************/
-BOOL CDependentTextSegment::SetAt(const CSaString * pszString, bool, DWORD dwStart, DWORD dwDuration) {
+BOOL CDependentTextSegment::SetAt(const CSaString * pszString, bool, DWORD dwStart, DWORD dwDuration)
+{
 
-    try {
-        if ((pszString) && (pszString->GetLength())) {
+    try
+    {
+        if ((pszString) && (pszString->GetLength()))
+        {
             int nIndex = FindOffset(dwStart);
             ASSERT(nIndex>=0);
             m_Texts.SetAtGrow(nIndex, *pszString);
             CSegment::SetAt(nIndex,dwStart,dwDuration);
         }
-    } catch (CMemoryException e) {
+    }
+    catch (CMemoryException e)
+    {
         // memory allocation error
         ErrorMessage(IDS_ERROR_MEMALLOC);
         return FALSE;
@@ -58,18 +65,24 @@ BOOL CDependentTextSegment::SetAt(const CSaString * pszString, bool, DWORD dwSta
 // available index.  For example if we are inserting at the 4 gloss segment
 // but only reference segments 0 and 1 exist, then the next index is 2, not 3.
 /***************************************************************************/
-BOOL CDependentTextSegment::Insert(int nIndex, LPCTSTR pszString, bool, DWORD dwStart, DWORD dwDuration) {
+BOOL CDependentTextSegment::Insert(int nIndex, LPCTSTR pszString, bool, DWORD dwStart, DWORD dwDuration)
+{
 
-    if (pszString==NULL) {
+    if (pszString==NULL)
+    {
         return TRUE;
     }
 
-    try {
-        if (wcslen(pszString)>0) {
+    try
+    {
+        if (wcslen(pszString)>0)
+        {
             m_Texts.InsertAt(nIndex, pszString, 1);
             InsertAt(nIndex,dwStart,dwDuration);
         }
-    } catch (CMemoryException e) {
+    }
+    catch (CMemoryException e)
+    {
         // memory allocation error
         ErrorMessage(IDS_ERROR_MEMALLOC);
         return FALSE;
@@ -86,17 +99,23 @@ BOOL CDependentTextSegment::Insert(int nIndex, LPCTSTR pszString, bool, DWORD dw
 // Returns FALSE if an error occurred. If the pointer to the string is NULL
 // there will be no string added.
 /***************************************************************************/
-BOOL CDependentTextSegment::SetText(int nIndex, LPCTSTR pszString, int, DWORD, DWORD) {
+BOOL CDependentTextSegment::SetText(int nIndex, LPCTSTR pszString, int, DWORD, DWORD)
+{
 
-    if (pszString==NULL) {
+    if (pszString==NULL)
+    {
         return TRUE;
     }
 
-    try {
-        if (wcslen(pszString)>0) {
+    try
+    {
+        if (wcslen(pszString)>0)
+        {
             m_Texts.SetAt(nIndex, pszString);
         }
-    } catch (CMemoryException e) {
+    }
+    catch (CMemoryException e)
+    {
         // memory allocation error
         ErrorMessage(IDS_ERROR_MEMALLOC);
         return FALSE;
@@ -113,12 +132,16 @@ BOOL CDependentTextSegment::SetText(int nIndex, LPCTSTR pszString, int, DWORD, D
 // start must not be placed in the range of a segment, where already
 // another segment is aligned to, but there must be a segment to align to.
 /***************************************************************************/
-int CDependentTextSegment::CheckPositionToMaster(CSaDoc * pSaDoc, DWORD dwAlignedStart, DWORD dwStop, EMode nMode) const {
+int CDependentTextSegment::CheckPositionToMaster(CSaDoc * pSaDoc, DWORD dwAlignedStart, DWORD dwStop, EMode nMode) const
+{
 
     int nTextIndex = GetSelection();
-    if (((nMode==MODE_EDIT)||(nMode==MODE_AUTOMATIC))&&(nTextIndex != -1)) { // segment selected (edit)
+    if (((nMode==MODE_EDIT)||(nMode==MODE_AUTOMATIC))&&(nTextIndex != -1))   // segment selected (edit)
+    {
         return -1;
-    } else { // Add
+    }
+    else     // Add
+    {
         return CDependentSegment::CheckPositionToMaster(pSaDoc, dwAlignedStart, dwStop, nMode);
     }
 }
@@ -126,7 +149,8 @@ int CDependentTextSegment::CheckPositionToMaster(CSaDoc * pSaDoc, DWORD dwAligne
 /***************************************************************************/
 // CDependentTextSegment::Add Add dependent annotation segment
 /***************************************************************************/
-void CDependentTextSegment::Add(CSaDoc * pDoc, DWORD dwStart, CSaString & szString, BOOL, BOOL bCheck) {
+void CDependentTextSegment::Add(CSaDoc * pDoc, DWORD dwStart, CSaString & szString, BOOL, BOOL bCheck)
+{
 
     // get pointer to view
     POSITION pos = pDoc->GetFirstViewPosition();
@@ -134,24 +158,28 @@ void CDependentTextSegment::Add(CSaDoc * pDoc, DWORD dwStart, CSaString & szStri
 
     // get the offset and duration from master
     int nSegment = pDoc->GetSegment(GLOSS)->FindOffset(dwStart);
-    if (nSegment == -1) {
+    if (nSegment == -1)
+    {
         return; // return on error
     }
 
     DWORD dwDuration = pDoc->GetSegment(GLOSS)->GetDuration(nSegment);
 
     int nPos = CheckPosition(pDoc, dwStart, dwStart + dwDuration, MODE_ADD); // get the insert position
-    if (nPos == -1) {
+    if (nPos == -1)
+    {
         return; // return on error
     }
 
     // save state for undo ability
-    if (bCheck) {
+    if (bCheck)
+    {
         pDoc->CheckPoint();
     }
 
     // insert or append the new dependent segment
-    if (!Insert(nPos, szString, 0, dwStart, dwDuration)) {
+    if (!Insert(nPos, szString, 0, dwStart, dwDuration))
+    {
         return; // return on error
     }
 

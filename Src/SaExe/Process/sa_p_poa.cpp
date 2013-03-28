@@ -32,13 +32,15 @@ static char BASED_CODE THIS_FILE[] = __FILE__;
 /***************************************************************************/
 // CProcessPOA::CProcessPOA Constructor
 /***************************************************************************/
-CProcessPOA::CProcessPOA() {
+CProcessPOA::CProcessPOA()
+{
 }
 
 /***************************************************************************/
 // CProcessPOA::~CProcessPOA Destructor
 /***************************************************************************/
-CProcessPOA::~CProcessPOA() {
+CProcessPOA::~CProcessPOA()
+{
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -48,7 +50,8 @@ CProcessPOA::~CProcessPOA() {
 // CProcessPOA::Exit Exit on Error
 // Standard exit function if an error occured.
 /***************************************************************************/
-long CProcessPOA::Exit(int nError, HANDLE) {
+long CProcessPOA::Exit(int nError, HANDLE)
+{
     // free the raw data buffer
     SetDataInvalid();
     EndWaitCursor();
@@ -60,7 +63,8 @@ long CProcessPOA::Exit(int nError, HANDLE) {
 // Gives back just the pointer to the data buffer for the processed POA
 // data.
 /***************************************************************************/
-void * CProcessPOA::GetProcessedData(DWORD, BOOL) {
+void * CProcessPOA::GetProcessedData(DWORD, BOOL)
+{
     return m_lpBuffer; // return pointer to data
 }
 
@@ -72,7 +76,8 @@ void * CProcessPOA::GetProcessedData(DWORD, BOOL) {
 // compatibility with the base class. Processed data is always 16bit data!
 // pCaller is for further use.
 /***************************************************************************/
-int CProcessPOA::GetProcessedData(DWORD dwOffset, BOOL *) {
+int CProcessPOA::GetProcessedData(DWORD dwOffset, BOOL *)
+{
     short int * lpData = (short int *)m_lpBuffer; // cast buffer pointer
     return *(lpData + dwOffset); // return data
 }
@@ -90,24 +95,30 @@ int CProcessPOA::GetProcessedData(DWORD dwOffset, BOOL *) {
 // pointer to the view instead the pointer to the document like other process
 // calls. It calculates POA data.
 /***************************************************************************/
-long CProcessPOA::Process(void * pCaller, ISaDoc * pDoc, DWORD dwStart, DWORD dwStop, int nProgress, int nLevel) {
+long CProcessPOA::Process(void * pCaller, ISaDoc * pDoc, DWORD dwStart, DWORD dwStop, int nProgress, int nLevel)
+{
     TRACE(_T("Process: CProcessPOA\n"));
-    if (IsCanceled()) {
+    if (IsCanceled())
+    {
         return MAKELONG(PROCESS_CANCELED, nProgress);    // process canceled
     }
-    if (IsDataReady()) {
+    if (IsDataReady())
+    {
         return MAKELONG(--nLevel, nProgress);    // data is already ready
     }
 
-    if (nLevel < 0) { // previous processing error
-        if ((nLevel == PROCESS_CANCELED)) {
+    if (nLevel < 0)   // previous processing error
+    {
+        if ((nLevel == PROCESS_CANCELED))
+        {
             CancelProcess();    // set your own cancel flag
         }
         return MAKELONG(nLevel, nProgress);
     }
 
     BeginWaitCursor();
-    if (!StartProcess(pCaller, IDS_STATTXT_PROCESSPOA, FALSE)) { // memory allocation failed
+    if (!StartProcess(pCaller, IDS_STATTXT_PROCESSPOA, FALSE))   // memory allocation failed
+    {
         EndProcess(); // end data processing
         EndWaitCursor();
         return MAKELONG(PROCESS_ERROR, nProgress);
@@ -125,16 +136,22 @@ long CProcessPOA::Process(void * pCaller, ISaDoc * pDoc, DWORD dwStart, DWORD dw
     Signal.Start = (void *)pDoc->GetWaveData(dwStart, TRUE); //load sample
     //buffer starting
     //at begin cursor
-    if (wSmpSize == 1) {
+    if (wSmpSize == 1)
+    {
         Signal.SmpDataFmt = PCM_UBYTE;    //samples are unsigned 8 bit
-    } else {
+    }
+    else
+    {
         Signal.SmpDataFmt = PCM_2SSHORT;    //samples are 2's complement 16 bit
     }
 
     DWORD   dwWaveSize = pDoc->GetDataSize();
-    if (dwStart + dwWaveBufferSize <= dwWaveSize) {
+    if (dwStart + dwWaveBufferSize <= dwWaveSize)
+    {
         Signal.Length = dwWaveBufferSize/wSmpSize;    //signal fills buffer
-    } else {
+    }
+    else
+    {
         Signal.Length = (dwWaveSize - dwStart)/wSmpSize;    //partly fills
     }
 
@@ -153,7 +170,8 @@ long CProcessPOA::Process(void * pCaller, ISaDoc * pDoc, DWORD dwStart, DWORD dw
     dspError_t Err;
 
     Err = CLinPredCoding::CreateObject(&pLpcObject, LpcSetting, Signal);
-    if (Err) {
+    if (Err)
+    {
         pDoc->GetWaveData(dwOldWaveBufferIndex, TRUE);
         return Exit(PROCESS_ERROR, NULL);
     }
@@ -162,7 +180,8 @@ long CProcessPOA::Process(void * pCaller, ISaDoc * pDoc, DWORD dwStart, DWORD dw
     LPC_MODEL * pLpcModel;
     Err = pLpcObject->GetLpcModel(&pLpcModel, Signal.Start);
 
-    if (Err) {
+    if (Err)
+    {
         pDoc->GetWaveData(dwOldWaveBufferIndex, TRUE);
         return Exit(PROCESS_ERROR, NULL);
     }
@@ -170,9 +189,11 @@ long CProcessPOA::Process(void * pCaller, ISaDoc * pDoc, DWORD dwStart, DWORD dw
     // Allocate global buffer for the processed data
     SetDataSize(sizeof(VOCAL_TRACT_MODEL) + (pLpcModel->nNormCrossSectAreas-1) *
                 sizeof(*pLpcModel->pNormCrossSectArea));
-    if (!m_lpBuffer) { // not yet allocated
+    if (!m_lpBuffer)   // not yet allocated
+    {
         m_lpBuffer = new char[GetDataSize(sizeof(char))];
-        if (!m_lpBuffer) {
+        if (!m_lpBuffer)
+        {
             ErrorMessage(IDS_ERROR_MEMALLOC);
             SetDataSize(0);
             delete pLpcObject; // delete the Lpc object
@@ -184,13 +205,17 @@ long CProcessPOA::Process(void * pCaller, ISaDoc * pDoc, DWORD dwStart, DWORD dw
 
     // Copy vocal tract model to data buffer;
     VOCAL_TRACT_MODEL * pVocalTractModel = (VOCAL_TRACT_MODEL *)m_lpBuffer;
-    if (pLpcModel->dMeanEnergy) {
+    if (pLpcModel->dMeanEnergy)
+    {
         pVocalTractModel->dErrorRatio = pLpcModel->dMeanSqPredError / pLpcModel->dMeanEnergy;
-    } else {
+    }
+    else
+    {
         pVocalTractModel->dErrorRatio = (double)UNDEFINED_DATA;
     }
     pVocalTractModel->nNormCrossSectAreas = pLpcModel->nNormCrossSectAreas;
-    for (USHORT i = 0; i < pVocalTractModel->nNormCrossSectAreas; i++) {
+    for (USHORT i = 0; i < pVocalTractModel->nNormCrossSectAreas; i++)
+    {
         pVocalTractModel->dNormCrossSectArea[i] = pLpcModel->pNormCrossSectArea[i];
     }
 
@@ -202,7 +227,8 @@ long CProcessPOA::Process(void * pCaller, ISaDoc * pDoc, DWORD dwStart, DWORD dw
     SetDataReady();
     EndWaitCursor();
 
-    if (IsCanceled()) {
+    if (IsCanceled())
+    {
         return MAKELONG(PROCESS_CANCELED, nProgress);
     }
 

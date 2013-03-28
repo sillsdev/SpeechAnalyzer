@@ -46,18 +46,21 @@ END_MESSAGE_MAP()
 /***************************************************************************/
 // CPlotMagnitude::CPlotMagnitude Constructor
 /***************************************************************************/
-CPlotMagnitude::CPlotMagnitude() {
+CPlotMagnitude::CPlotMagnitude()
+{
 }
 
 
 
-void  CPlotMagnitude::CopyTo(CPlotWnd * pT) {
+void  CPlotMagnitude::CopyTo(CPlotWnd * pT)
+{
     CPlotWnd::CopyTo(pT);
 }
 
 
 
-CPlotWnd * CPlotMagnitude::NewCopy(void) {
+CPlotWnd * CPlotMagnitude::NewCopy(void)
+{
     CPlotWnd * pRet = new CPlotMagnitude();
 
     CopyTo(pRet);
@@ -70,7 +73,8 @@ CPlotWnd * CPlotMagnitude::NewCopy(void) {
 /***************************************************************************/
 // CPlotMagnitude::~CPlotMagnitude Destructor
 /***************************************************************************/
-CPlotMagnitude::~CPlotMagnitude() {
+CPlotMagnitude::~CPlotMagnitude()
+{
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -84,7 +88,8 @@ CPlotMagnitude::~CPlotMagnitude() {
 // drawing to let the plot base class do common jobs like drawing the
 // cursors.
 /***************************************************************************/
-void CPlotMagnitude::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView) {
+void CPlotMagnitude::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView)
+{
     // get pointer to main frame, graph, and document
     CGraphWnd * pGraph = (CGraphWnd *)GetParent();
     CSaDoc * pDoc = pView->GetDocument();
@@ -92,10 +97,12 @@ void CPlotMagnitude::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView)
     CProcessLoudness * pLoudness = (CProcessLoudness *)pDoc->GetLoudness(); // get pointer to loudness object
     short int nResult = LOWORD(pLoudness->Process(this, pDoc)); // process data
     nResult = CheckResult(nResult, pLoudness); // check the process result
-    if (nResult == PROCESS_ERROR) {
+    if (nResult == PROCESS_ERROR)
+    {
         return;
     }
-    if (nResult != PROCESS_CANCELED) {
+    if (nResult != PROCESS_CANCELED)
+    {
         pGraph->SetLegendScale(SCALE | NUMBERS, 0, pLoudness->GetMaxValue(), _T("Magnitude")); // set legend scale
         // do common plot paint jobs
         PlotPrePaint(pDC, rWnd, rClip);

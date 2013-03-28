@@ -19,7 +19,8 @@ class Object_ostream;
 class Object_istream;
 class CProcess;
 
-class CSaWorkbenchView : public CFormView {
+class CSaWorkbenchView : public CFormView
+{
     DECLARE_DYNCREATE(CSaWorkbenchView)
 
 // Construction/destruction/creation
@@ -42,7 +43,8 @@ public:
 
     // Operations
 private:
-    HBRUSH GetBkgBrush() {
+    HBRUSH GetBkgBrush()
+    {
         return (HBRUSH)m_brBkg.GetSafeHandle();   // return background brush
     }
 protected:

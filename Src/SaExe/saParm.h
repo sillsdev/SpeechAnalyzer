@@ -3,7 +3,8 @@
 
 #include "CSaString.h"
 
-typedef struct SaParm {
+typedef struct SaParm
+{
     float       fVersion;           // version of sa/utt/ipa chunks (eg 2.1)
     CSaString     szDescription;      // file description
     WORD        wFlags;             // 16 bits of flags for chunks

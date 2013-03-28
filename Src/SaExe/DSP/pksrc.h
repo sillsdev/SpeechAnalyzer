@@ -15,7 +15,8 @@
 // This is an instance of the Strategy design pattern, implemented as
 // an Iterator.
 
-class PeakSource {
+class PeakSource
+{
 public:
     virtual ~PeakSource() {};
 

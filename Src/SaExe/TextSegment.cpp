@@ -28,32 +28,38 @@ static char BASED_CODE THIS_FILE[] = __FILE__;
 
 /////////////////////////////////////////////////////////////////////////////
 // CTextSegment construction/destruction/creation
-CSaString CTextSegment::GetText(int nIndex) {
+CSaString CTextSegment::GetText(int nIndex)
+{
     return m_Texts.GetAt(nIndex);
 }
 
-const CStringArray & CTextSegment::GetTexts() {
+const CStringArray & CTextSegment::GetTexts()
+{
     return m_Texts;
 }
 
-int CTextSegment::GetSegmentLength(int /*nIndex*/) const {
+int CTextSegment::GetSegmentLength(int /*nIndex*/) const
+{
     return 1;
 }
 
-CSaString CTextSegment::GetSegmentString(int nIndex) const {
+CSaString CTextSegment::GetSegmentString(int nIndex) const
+{
     return m_Texts.GetAt(nIndex);
 }
 
 /***************************************************************************/
 // CTextSegment::CTextSegment Constructor
 /***************************************************************************/
-CTextSegment::CTextSegment(int index, int master) : CDependentSegment(index,master) {
+CTextSegment::CTextSegment(int index, int master) : CDependentSegment(index,master)
+{
 }
 
 /***************************************************************************/
 // CTextSegment::~CTextSegment Destructor
 /***************************************************************************/
-CTextSegment::~CTextSegment() {
+CTextSegment::~CTextSegment()
+{
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -64,23 +70,31 @@ CTextSegment::~CTextSegment() {
 // Returns FALSE if an error occured. If the pointer to the string is NULL
 // there will be no string added.
 /***************************************************************************/
-BOOL CTextSegment::SetAt(const CSaString * pszString, bool delimiter, DWORD dwStart, DWORD dwDuration) {
+BOOL CTextSegment::SetAt(const CSaString * pszString, bool delimiter, DWORD dwStart, DWORD dwDuration)
+{
     // prepare delimiter
     CSaString szDelimiter = WORD_DELIMITER;
-    if (delimiter) {
+    if (delimiter)
+    {
         szDelimiter.SetAt(0, TEXT_DELIMITER);
     }
 
-    try {
+    try
+    {
         int nIndex = FindOffset(dwStart);
         ASSERT(nIndex>=0);
-        if (pszString!=NULL) {
+        if (pszString!=NULL)
+        {
             m_Texts.SetAtGrow(nIndex, szDelimiter + *pszString);
-        } else {
+        }
+        else
+        {
             m_Texts.SetAtGrow(nIndex, szDelimiter);
         }
         CSegment::SetAt(nIndex, dwStart, dwDuration);
-    } catch (CMemoryException e) {
+    }
+    catch (CMemoryException e)
+    {
         // memory allocation error
         ErrorMessage(IDS_ERROR_MEMALLOC);
         return FALSE;
@@ -93,22 +107,30 @@ BOOL CTextSegment::SetAt(const CSaString * pszString, bool delimiter, DWORD dwSt
 // Returns FALSE if an error occured. If the pointer to the string is NULL
 // there will be no string added.
 /***************************************************************************/
-BOOL CTextSegment::Insert(int nIndex, LPCTSTR pszString, bool delimiter, DWORD dwStart, DWORD dwDuration) {
+BOOL CTextSegment::Insert(int nIndex, LPCTSTR pszString, bool delimiter, DWORD dwStart, DWORD dwDuration)
+{
 
     // prepare delimiter
     CSaString szDelimiter = WORD_DELIMITER;
-    if (delimiter) {
+    if (delimiter)
+    {
         szDelimiter.SetAt(0, TEXT_DELIMITER);
     }
 
-    try {
-        if (pszString!=NULL) {
+    try
+    {
+        if (pszString!=NULL)
+        {
             m_Texts.InsertAt(nIndex, szDelimiter + pszString, 1);
-        } else {
+        }
+        else
+        {
             m_Texts.InsertAt(nIndex, szDelimiter, 1);
         }
         InsertAt(nIndex, dwStart, dwDuration);
-    } catch (CMemoryException e) {
+    }
+    catch (CMemoryException e)
+    {
         // memory allocation error
         ErrorMessage(IDS_ERROR_MEMALLOC);
         return FALSE;
@@ -119,18 +141,24 @@ BOOL CTextSegment::Insert(int nIndex, LPCTSTR pszString, bool delimiter, DWORD d
 /***************************************************************************/
 // CTextSegment::CaluculateDuration calculate segment duration from master data
 /***************************************************************************/
-DWORD CTextSegment::CalculateDuration(CSaDoc * pDoc, const int nIndex) const {
+DWORD CTextSegment::CalculateDuration(CSaDoc * pDoc, const int nIndex) const
+{
 
     CSegment * pMaster = (CSegment *) pDoc->GetSegment(m_nMasterIndex);
 
-    if ((nIndex < 0) || (nIndex >= (GetOffsetSize()))) {
+    if ((nIndex < 0) || (nIndex >= (GetOffsetSize())))
+    {
         return DWORD(-1);
     }
-    if ((nIndex + 1) == GetOffsetSize()) {
+    if ((nIndex + 1) == GetOffsetSize())
+    {
         return pMaster->GetStop(pMaster->GetOffsetSize()-1) - GetOffset(nIndex);
-    } else {
+    }
+    else
+    {
         DWORD dwStop = pMaster->GetStop(pMaster->FindOffset(GetOffset(GetNext(nIndex)))-1);
-        if (dwStop == -1) {
+        if (dwStop == -1)
+        {
             return DWORD(-1);
         }
         return  dwStop - GetOffset(nIndex);
@@ -140,7 +168,8 @@ DWORD CTextSegment::CalculateDuration(CSaDoc * pDoc, const int nIndex) const {
 /***************************************************************************/
 // CTextSegment::DeleteContents Delete all contents of the segment arrays
 /***************************************************************************/
-void CTextSegment::DeleteContents() {
+void CTextSegment::DeleteContents()
+{
     m_Texts.RemoveAll();
     CSegment::DeleteContents(); // call the base class to delete positions
 }
@@ -154,7 +183,8 @@ void CTextSegment::DeleteContents() {
 // start cursor must not be placed in the range of a segment, where already
 // another segment is aligned to, but there must be a segment to align to.
 /***************************************************************************/
-void CTextSegment::LimitPosition(CSaDoc * pSaDoc, DWORD & dwStart, DWORD & dwStop, int) const {
+void CTextSegment::LimitPosition(CSaDoc * pSaDoc, DWORD & dwStart, DWORD & dwStop, int) const
+{
 
     // get pointer to view
     CSaDoc * pDoc = (CSaDoc *)pSaDoc; // cast pointer
@@ -162,47 +192,62 @@ void CTextSegment::LimitPosition(CSaDoc * pSaDoc, DWORD & dwStart, DWORD & dwSto
 
     int nTextIndex = GetSelection();
 
-    if (nTextIndex != -1) {
+    if (nTextIndex != -1)
+    {
         int nIndex;
 
         // Check for obscuring previous segment
         nIndex = GetPrevious(nTextIndex);
-        if (nIndex != -1) {
+        if (nIndex != -1)
+        {
             nIndex = pMaster->FindOffset(GetOffset(nIndex));
-            if (nIndex !=-1) { // Properly Aligned to master
+            if (nIndex !=-1)   // Properly Aligned to master
+            {
                 nIndex = pMaster->GetNext(nIndex);
-                if ((nIndex !=-1) && (dwStart < pMaster->GetOffset(nIndex))) {
+                if ((nIndex !=-1) && (dwStart < pMaster->GetOffset(nIndex)))
+                {
                     dwStart = pMaster->GetOffset(nIndex);
                 }
-                if ((nIndex !=-1) && (dwStop < pMaster->GetStop(nIndex))) {
+                if ((nIndex !=-1) && (dwStop < pMaster->GetStop(nIndex)))
+                {
                     dwStop = pMaster->GetStop(nIndex);
                 }
             }
         }
         // Check for obscuring next segment
         nIndex = GetNext(nTextIndex);
-        if (nIndex != -1) {
+        if (nIndex != -1)
+        {
             nIndex = pMaster->FindStop(GetStop(nIndex));
-            if (nIndex !=-1) {
+            if (nIndex !=-1)
+            {
                 nIndex = pMaster->GetPrevious(nIndex);
-                if ((nIndex !=-1) && (dwStop > pMaster->GetStop(nIndex))) {
+                if ((nIndex !=-1) && (dwStop > pMaster->GetStop(nIndex)))
+                {
                     dwStop = pMaster->GetStop(nIndex);
                 }
-                if ((nIndex !=-1) && (dwStart > pMaster->GetOffset(nIndex))) {
-                    dwStart = pMaster->GetOffset(nIndex);
-                }
-            } else { // no master segment at stop boundary
-                nIndex = GetNext(nTextIndex); // 1.5Test8.1
-                DWORD dwOffset = GetStop(nIndex);
-                nIndex = AlignStopToMaster(pSaDoc, &dwOffset); // find the nearest master segment to the end of next text segment
-                if ((nIndex !=-1) && (dwStop > pMaster->GetStop(nIndex))) {
-                    dwStop = pMaster->GetStop(nIndex);
-                }
-                if ((nIndex !=-1) && (dwStart > pMaster->GetOffset(nIndex))) {
+                if ((nIndex !=-1) && (dwStart > pMaster->GetOffset(nIndex)))
+                {
                     dwStart = pMaster->GetOffset(nIndex);
                 }
             }
-        } else { // last gloss
+            else     // no master segment at stop boundary
+            {
+                nIndex = GetNext(nTextIndex); // 1.5Test8.1
+                DWORD dwOffset = GetStop(nIndex);
+                nIndex = AlignStopToMaster(pSaDoc, &dwOffset); // find the nearest master segment to the end of next text segment
+                if ((nIndex !=-1) && (dwStop > pMaster->GetStop(nIndex)))
+                {
+                    dwStop = pMaster->GetStop(nIndex);
+                }
+                if ((nIndex !=-1) && (dwStart > pMaster->GetOffset(nIndex)))
+                {
+                    dwStart = pMaster->GetOffset(nIndex);
+                }
+            }
+        }
+        else     // last gloss
+        {
             dwStop = pMaster->GetStop(pMaster->GetOffsetSize() - 1);
         }
 
@@ -219,7 +264,8 @@ void CTextSegment::LimitPosition(CSaDoc * pSaDoc, DWORD & dwStart, DWORD & dwSto
 // start cursor must not be placed in the range of a segment, where already
 // another segment is aligned to, but there must be a segment to align to.
 /***************************************************************************/
-int CTextSegment::CheckPosition(CSaDoc * pSaDoc, DWORD dwStart, DWORD dwStop, EMode nMode, BOOL) const {
+int CTextSegment::CheckPosition(CSaDoc * pSaDoc, DWORD dwStart, DWORD dwStop, EMode nMode, BOOL) const
+{
 
     // get pointer to view
     CSaDoc * pDoc = (CSaDoc *)pSaDoc; // cast pointer
@@ -232,48 +278,62 @@ int CTextSegment::CheckPosition(CSaDoc * pSaDoc, DWORD dwStart, DWORD dwStop, EM
 
     int nTextIndex = GetSelection();
 
-    if (((nMode==MODE_EDIT)||(nMode==MODE_AUTOMATIC))&&(nTextIndex != -1)) { // segment selected (edit)
+    if (((nMode==MODE_EDIT)||(nMode==MODE_AUTOMATIC))&&(nTextIndex != -1))   // segment selected (edit)
+    {
         int nIndex;
 
-        if (dwAlignedStart >= dwAlignedStop) {
+        if (dwAlignedStart >= dwAlignedStop)
+        {
             return -1;    // zero duration (or negative)
         }
-        if (dwAlignedStart == GetOffset(nTextIndex) && (dwAlignedStop == GetStop(nTextIndex))) {
+        if (dwAlignedStart == GetOffset(nTextIndex) && (dwAlignedStop == GetStop(nTextIndex)))
+        {
             return -1;    // no change
         }
 
         // Check for obscuring previous segment
         nIndex = GetPrevious(nTextIndex);
-        if (nIndex != -1) {
-            if (GetOffset(nIndex) >= dwAlignedStart) {
+        if (nIndex != -1)
+        {
+            if (GetOffset(nIndex) >= dwAlignedStart)
+            {
                 return -1;
             }
         }
         // Check for obscuring present segment
         nIndex = GetNext(nTextIndex);
-        if (nIndex != -1) {
-            if (GetStop(nIndex) <= dwAlignedStop) {
+        if (nIndex != -1)
+        {
+            if (GetStop(nIndex) <= dwAlignedStop)
+            {
                 return -1;
             }
         }
         return nTextIndex;
-    } else { // Add
-        if (pDoc->GetSegment(m_nMasterIndex)->IsEmpty()) {
+    }
+    else     // Add
+    {
+        if (pDoc->GetSegment(m_nMasterIndex)->IsEmpty())
+        {
             return -1;
         }
-        if (IsEmpty()) {
+        if (IsEmpty())
+        {
             return 0;    // No Text in Segment insert at 0 (Start)
         }
         nTextIndex = 0; // GetNext does not work for -1
-        while ((nTextIndex != -1) && (GetOffset(nTextIndex) < dwAlignedStart)) {
+        while ((nTextIndex != -1) && (GetOffset(nTextIndex) < dwAlignedStart))
+        {
             nTextIndex = GetNext(nTextIndex);
         }
 
-        if (nTextIndex == -1) {
+        if (nTextIndex == -1)
+        {
             return GetOffsetSize();    // Insert at End
         }
 
-        if (GetOffset(nTextIndex) == dwAlignedStart) {
+        if (GetOffset(nTextIndex) == dwAlignedStart)
+        {
             return -1;
         }
 
@@ -286,7 +346,8 @@ int CTextSegment::CheckPosition(CSaDoc * pSaDoc, DWORD dwStart, DWORD dwStop, EM
 /***************************************************************************/
 // CTextSegment::Add Add text segment
 /***************************************************************************/
-void CTextSegment::Add(CSaDoc * pDoc, DWORD dwStart, CSaString & szString, bool bDelimiter, bool bCheck) {
+void CTextSegment::Add(CSaDoc * pDoc, DWORD dwStart, CSaString & szString, bool bDelimiter, bool bCheck)
+{
 
     // add a segment
     // get pointer to view
@@ -294,18 +355,24 @@ void CTextSegment::Add(CSaDoc * pDoc, DWORD dwStart, CSaString & szString, bool 
     CSaView * pView = (CSaView *)pDoc->GetNextView(pos);
 
     int nPos = FindFromPosition(dwStart,TRUE);
-    if (nPos==-1) {
+    if (nPos==-1)
+    {
         nPos = FindFromPosition(dwStart,FALSE);
-    } else {
+    }
+    else
+    {
         nPos++;
     }
 
     CSegment * pMaster = pDoc->GetSegment(m_nMasterIndex);
     int nMaster;
 
-    if ((nPos == -1) || (nPos >= GetOffsetSize()) || dwStart > GetStop(nPos)) {
+    if ((nPos == -1) || (nPos >= GetOffsetSize()) || dwStart > GetStop(nPos))
+    {
         nMaster = pMaster->GetOffsetSize();
-    } else {
+    }
+    else
+    {
         nMaster = pMaster->FindOffset(GetOffset(nPos));
     }
 
@@ -316,24 +383,28 @@ void CTextSegment::Add(CSaDoc * pDoc, DWORD dwStart, CSaString & szString, bool 
     ASSERT(dwStop > dwStart);
 
     nPos = CheckPosition(pDoc, dwStart, dwStop, CSegment::MODE_ADD);  // get the insert position
-    if (nPos == -1) {
+    if (nPos == -1)
+    {
         return;    // return on error
     }
 
     ASSERT(dwStop > dwStart);
 
     // save state for undo ability
-    if (bCheck) {
+    if (bCheck)
+    {
         pDoc->CheckPoint();
     }
 
     // insert or append the new segment
-    if (!Insert(nPos, szString, bDelimiter, dwStart, dwStop - dwStart)) {
+    if (!Insert(nPos, szString, bDelimiter, dwStart, dwStop - dwStart))
+    {
         return;    // return on error
     }
 
     // move the end of the previous text segment
-    if (nPos > 0) {
+    if (nPos > 0)
+    {
         Adjust(pDoc, nPos - 1, GetOffset(nPos - 1), CalculateDuration(pDoc, nPos -1));
     }
     pDoc->SetModifiedFlag(TRUE); // document has been modified
@@ -347,18 +418,21 @@ void CTextSegment::Add(CSaDoc * pDoc, DWORD dwStart, CSaString & szString, bool 
 /***************************************************************************/
 // CTextSegment::Remove Remove text segment
 /***************************************************************************/
-void CTextSegment::Remove(CDocument * pSaDoc, BOOL bCheck) {
+void CTextSegment::Remove(CDocument * pSaDoc, BOOL bCheck)
+{
 
     // get pointer to view
     CSaDoc * pDoc = (CSaDoc *)pSaDoc; // cast pointer
 
     // save state for undo ability
-    if (bCheck) {
+    if (bCheck)
+    {
         pDoc->CheckPoint();
     }
 
     // move the end of the previous text segment
-    if (m_nSelection > 0) {
+    if (m_nSelection > 0)
+    {
         SetDurationAt(m_nSelection - 1, GetStop(m_nSelection) - GetOffset(m_nSelection - 1));
     }
     CDependentSegment::Remove(pSaDoc, FALSE);
@@ -367,7 +441,8 @@ void CTextSegment::Remove(CDocument * pSaDoc, BOOL bCheck) {
 /***************************************************************************/
 // CTextSegment::RemoveNoRefresh Remove text segment
 /***************************************************************************/
-DWORD CTextSegment::RemoveNoRefresh(CDocument *) {
+DWORD CTextSegment::RemoveNoRefresh(CDocument *)
+{
 
     //SDM 1.5Test8.1 return oldOffset
     DWORD dwOffset = GetOffset(m_nSelection);
@@ -380,14 +455,16 @@ DWORD CTextSegment::RemoveNoRefresh(CDocument *) {
 }
 
 // SDM 1.5Test8.3
-void CTextSegment::ReplaceSelectedSegment(CDocument * pSaDoc, const CSaString & str1) {
+void CTextSegment::ReplaceSelectedSegment(CDocument * pSaDoc, const CSaString & str1)
+{
 
     // get pointer to view
     CSaDoc * pDoc = (CSaDoc *)pSaDoc; // cast pointer
     POSITION pos = pDoc->GetFirstViewPosition();
     CSaView * pView = (CSaView *)pDoc->GetNextView(pos);
 
-    if (m_nSelection != -1) {
+    if (m_nSelection != -1)
+    {
         m_Texts.SetAt(m_nSelection, str1);
     }
 
@@ -403,29 +480,34 @@ void CTextSegment::ReplaceSelectedSegment(CDocument * pSaDoc, const CSaString & 
 /***************************************************************************/
 // CSegment::FindNext find next segment matching strToFind and hilite it.
 //***************************************************************************/
-int CTextSegment::FindNext( int fromIndex, LPCTSTR strToFind) {
+int CTextSegment::FindNext(int fromIndex, LPCTSTR strToFind)
+{
 
     ASSERT(fromIndex >= -1);
     ASSERT(!IsEmpty());
     int index = fromIndex + 1;
-    for ( ; index<m_Texts.GetCount(); index++) {
-        if (m_Texts.GetAt(index).Find(strToFind)!=-1) {
+    for (; index<m_Texts.GetCount(); index++)
+    {
+        if (m_Texts.GetAt(index).Find(strToFind)!=-1)
+        {
             return index;
         }
     }
-	return -1;
+    return -1;
 }
 
 /***************************************************************************/
 // CSegment::Match find next segment matching strToFind and hilite it.
 //***************************************************************************/
-BOOL CTextSegment::Match(int index, const CSaString & strToFind) {
+BOOL CTextSegment::Match(int index, const CSaString & strToFind)
+{
 
     ASSERT(index >= -1);
     ASSERT(!IsEmpty());
     BOOL ret = FALSE;
 
-    if ((index >= 0) && (index < m_Texts.GetCount())) {
+    if ((index >= 0) && (index < m_Texts.GetCount()))
+    {
         ret = (m_Texts.GetAt(index) == strToFind);
     }
 
@@ -435,16 +517,20 @@ BOOL CTextSegment::Match(int index, const CSaString & strToFind) {
 /***************************************************************************/
 // CTextSegment::FindPrev find next segment matching strToFind and hilite it.
 /***************************************************************************/
-int CTextSegment::FindPrev(int fromIndex, LPCTSTR strToFind) {
+int CTextSegment::FindPrev(int fromIndex, LPCTSTR strToFind)
+{
 
     ASSERT(fromIndex >= -1);
     ASSERT(!IsEmpty());
-    
-	int index = -1;
-    if (fromIndex > 0 || fromIndex == -1) {
+
+    int index = -1;
+    if (fromIndex > 0 || fromIndex == -1)
+    {
         index = (fromIndex == -1) ? m_Texts.GetUpperBound() : fromIndex - 1;
-        for (; index>=0; index--) {
-            if (m_Texts.GetAt(index).Find(strToFind)!=-1) {
+        for (; index>=0; index--)
+        {
+            if (m_Texts.GetAt(index).Find(strToFind)!=-1)
+            {
                 return index;
             }
         }
@@ -457,15 +543,19 @@ int CTextSegment::FindPrev(int fromIndex, LPCTSTR strToFind) {
 /***************************************************************************/
 // CTextSegment::CountWords
 //***************************************************************************/i
-int CTextSegment::CountWords() {
+int CTextSegment::CountWords()
+{
 
     int nIndex = 0;
     int nWords = 0;
-    if (IsEmpty()) {
+    if (IsEmpty())
+    {
         return nWords;
     }
-    while (nIndex!=-1) {
-        if (GetText(nIndex)[0]==WORD_DELIMITER) {
+    while (nIndex!=-1)
+    {
+        if (GetText(nIndex)[0]==WORD_DELIMITER)
+        {
             nWords++;
         }
         nIndex=GetNext(nIndex);
@@ -477,11 +567,15 @@ int CTextSegment::CountWords() {
 /***************************************************************************/
 // CTextSegment::Serialize
 //***************************************************************************/i
-void CTextSegment::Serialize(CArchive & ar) {
+void CTextSegment::Serialize(CArchive & ar)
+{
     CSegment::Serialize(ar);
-    if (ar.IsStoring()) {
+    if (ar.IsStoring())
+    {
         ar << CSaString("CTextSegmentDetail tag");
-    } else {
+    }
+    else
+    {
         CSaString detailTagCheck;
         ar >> detailTagCheck;
         SA_ASSERT(detailTagCheck == "CTextSegmentDetail tag");
@@ -489,12 +583,15 @@ void CTextSegment::Serialize(CArchive & ar) {
     m_Texts.Serialize(ar);
 }
 
-CSaString CTextSegment::GetContainedText(DWORD dwStart, DWORD dwStop) {
+CSaString CTextSegment::GetContainedText(DWORD dwStart, DWORD dwStop)
+{
 
     CSaString szText;
-    for (int i=0; i<GetOffsetSize(); i++) {
+    for (int i=0; i<GetOffsetSize(); i++)
+    {
         DWORD offset = GetOffset(i);
-        if ((offset>=dwStart)&&(offset<=dwStop)) {
+        if ((offset>=dwStart)&&(offset<=dwStop))
+        {
             szText.Append(m_Texts.GetAt(i));
         }
     }

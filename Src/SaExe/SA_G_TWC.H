@@ -16,7 +16,8 @@
 
 class CProcessTonalWeightChart;
 
-class CPlotTonalWeightChart : public CPlotWnd {
+class CPlotTonalWeightChart : public CPlotWnd
+{
     DECLARE_DYNCREATE(CPlotTonalWeightChart)
 
 // Construction/destruction/creation
@@ -34,7 +35,8 @@ public:
     virtual void OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView);
     void AdjustSemitoneOffset(WORD UpDown, BOOL bKeyShifted);
     double SetSemitoneOffset(double dSemitoneOffset);
-    double GetSemitoneOffset() const {
+    double GetSemitoneOffset() const
+    {
         return m_dSemitoneOffset;
     }
     virtual Grid GetGrid() const;

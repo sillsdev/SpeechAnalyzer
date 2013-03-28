@@ -21,7 +21,8 @@
 IMPLEMENT_DYNAMIC(CDlgAdvancedParseWords, CDialog)
 
 CDlgAdvancedParseWords::CDlgAdvancedParseWords(CSaDoc * pDoc) :
-    CDialog(CDlgAdvancedParseWords::IDD, NULL) {
+    CDialog(CDlgAdvancedParseWords::IDD, NULL)
+{
     // Set parsing parameters to default values.
     CMainFrame * pMainWnd = (CMainFrame *)AfxGetMainWnd();
     ParseParm * pParseParm = pMainWnd->GetParseParm();
@@ -31,22 +32,26 @@ CDlgAdvancedParseWords::CDlgAdvancedParseWords(CSaDoc * pDoc) :
     m_pDoc = pDoc;
 }
 
-BOOL CDlgAdvancedParseWords::Create() {
+BOOL CDlgAdvancedParseWords::Create()
+{
     return CDialog::Create(CDlgAdvancedParseWords::IDD);
 }
 
-CDlgAdvancedParseWords::~CDlgAdvancedParseWords() {
+CDlgAdvancedParseWords::~CDlgAdvancedParseWords()
+{
     DestroyWindow();
 }
 
-void CDlgAdvancedParseWords::Show(LPCTSTR title) {
+void CDlgAdvancedParseWords::Show(LPCTSTR title)
+{
     CString text;
     GetWindowTextW(text);
     text.Append(L" - ");
 
     CString a(title);
     int mark = a.Find(L":");
-    if (mark!=-1) {
+    if (mark!=-1)
+    {
         a.Truncate(mark);
     }
     text.Append(a);
@@ -54,7 +59,8 @@ void CDlgAdvancedParseWords::Show(LPCTSTR title) {
     ShowWindow(SW_SHOW);
 }
 
-void CDlgAdvancedParseWords::DoDataExchange(CDataExchange * pDX) {
+void CDlgAdvancedParseWords::DoDataExchange(CDataExchange * pDX)
+{
     CDialog::DoDataExchange(pDX);
     //{{AFX_DATA_MAP(CDlgAdvancedParseWord)
     DDX_Text(pDX, IDC_BREAKWIDTHEDIT, m_nBreakWidth);
@@ -68,7 +74,8 @@ void CDlgAdvancedParseWords::DoDataExchange(CDataExchange * pDX) {
     DDX_Control(pDX, IDC_APPLY, m_ApplyButton);
 }
 
-BOOL CDlgAdvancedParseWords::OnInitDialog() {
+BOOL CDlgAdvancedParseWords::OnInitDialog()
+{
     CDialog::OnInitDialog();
 
     // build and place the break width spin control
@@ -95,7 +102,8 @@ BOOL CDlgAdvancedParseWords::OnInitDialog() {
 /**
 * the user has selected 'OK' we will now apply the changes..
 */
-void CDlgAdvancedParseWords::Apply() {
+void CDlgAdvancedParseWords::Apply()
+{
     UpdateData(TRUE);
 
     // get parse parameters document member data
@@ -107,12 +115,14 @@ void CDlgAdvancedParseWords::Apply() {
     pParseParm->nMaxThreshold = m_nMaxThreshold;
     pParseParm->nMinThreshold = m_nMinThreshold;
 
-    if (!m_pDoc->AdvancedParseWord()) {
+    if (!m_pDoc->AdvancedParseWord())
+    {
         Undo();
     }
 }
 
-void CDlgAdvancedParseWords::Undo() {
+void CDlgAdvancedParseWords::Undo()
+{
     POSITION pos = m_pDoc->GetFirstViewPosition();
     CSaView * pView = (CSaView *)m_pDoc->GetNextView(pos);
     pView->SendMessage(WM_COMMAND,ID_EDIT_UNDO,0);
@@ -122,20 +132,27 @@ void CDlgAdvancedParseWords::Undo() {
 /***************************************************************************/
 // CDlgAdvancedParse::OnBreakWidthScroll Break width spin control hit
 /***************************************************************************/
-void CDlgAdvancedParseWords::OnBreakWidthScroll() {
+void CDlgAdvancedParseWords::OnBreakWidthScroll()
+{
     int nData = GetDlgItemInt(IDC_BREAKWIDTHEDIT, NULL, TRUE);
-    if (m_SpinBreak.UpperButtonClicked()) {
+    if (m_SpinBreak.UpperButtonClicked())
+    {
         nData++;
-    } else {
+    }
+    else
+    {
         nData--;
     }
-    if (nData > 999) {
+    if (nData > 999)
+    {
         nData = 999;
     }
-    if (nData < 1) {
+    if (nData < 1)
+    {
         nData = 1;
     }
-    if (nData != m_nBreakWidth) {
+    if (nData != m_nBreakWidth)
+    {
         m_nBreakWidth = nData;
     }
     SetDlgItemInt(IDC_BREAKWIDTHEDIT, m_nBreakWidth, TRUE);
@@ -144,22 +161,30 @@ void CDlgAdvancedParseWords::OnBreakWidthScroll() {
 /***************************************************************************/
 // CDlgAdvancedParseWord::OnMaxThresholdScroll Max threshold spin cntrl hit
 /***************************************************************************/
-void CDlgAdvancedParseWords::OnMaxThresholdScroll() {
+void CDlgAdvancedParseWords::OnMaxThresholdScroll()
+{
     int nData = GetDlgItemInt(IDC_PARSEMAXTHRESHOLDEDIT, NULL, TRUE);
-    if (m_SpinMaxThreshold.UpperButtonClicked()) {
+    if (m_SpinMaxThreshold.UpperButtonClicked())
+    {
         nData++;
-    } else {
+    }
+    else
+    {
         nData--;
     }
-    if (nData > 100) {
+    if (nData > 100)
+    {
         nData = 100;
     }
-    if (nData < 1) {
+    if (nData < 1)
+    {
         nData = 1;
     }
-    if (nData != m_nMaxThreshold) {
+    if (nData != m_nMaxThreshold)
+    {
         m_nMaxThreshold = nData;
-        if ((m_nMaxThreshold - 1) < m_nMinThreshold) {
+        if ((m_nMaxThreshold - 1) < m_nMinThreshold)
+        {
             m_nMinThreshold = m_nMaxThreshold - 1;
             SetDlgItemInt(IDC_PARSEMINTHRESHOLDEDIT, m_nMinThreshold, TRUE);
         }
@@ -170,22 +195,30 @@ void CDlgAdvancedParseWords::OnMaxThresholdScroll() {
 /***************************************************************************/
 // CDlgAdvancedParseWord::OnMinThresholdScroll Min threshold spin cntrl hit
 /***************************************************************************/
-void CDlgAdvancedParseWords::OnMinThresholdScroll() {
+void CDlgAdvancedParseWords::OnMinThresholdScroll()
+{
     int nData = GetDlgItemInt(IDC_PARSEMINTHRESHOLDEDIT, NULL, TRUE);
-    if (m_SpinMinThreshold.UpperButtonClicked()) {
+    if (m_SpinMinThreshold.UpperButtonClicked())
+    {
         nData++;
-    } else {
+    }
+    else
+    {
         nData--;
     }
-    if (nData > 99) {
+    if (nData > 99)
+    {
         nData = 99;
     }
-    if (nData < 0) {
+    if (nData < 0)
+    {
         nData = 0;
     }
-    if (nData != m_nMinThreshold) {
+    if (nData != m_nMinThreshold)
+    {
         m_nMinThreshold = nData;
-        if (m_nMaxThreshold < (m_nMinThreshold + 1)) {
+        if (m_nMaxThreshold < (m_nMinThreshold + 1))
+        {
             m_nMaxThreshold = m_nMinThreshold + 1;
             SetDlgItemInt(IDC_PARSEMAXTHRESHOLDEDIT, m_nMaxThreshold, TRUE);
         }
@@ -202,16 +235,19 @@ BEGIN_MESSAGE_MAP(CDlgAdvancedParseWords, CDialog)
     ON_BN_CLICKED(IDC_APPLY, &CDlgAdvancedParseWords::OnBnClickedApply)
 END_MESSAGE_MAP()
 
-void CDlgAdvancedParseWords::OnOK() {
+void CDlgAdvancedParseWords::OnOK()
+{
     Apply();
     CDialog::OnOK();
 }
 
-void CDlgAdvancedParseWords::OnCancel() {
+void CDlgAdvancedParseWords::OnCancel()
+{
     Undo();
     CDialog::OnCancel();
 }
 
-void CDlgAdvancedParseWords::OnBnClickedApply() {
+void CDlgAdvancedParseWords::OnBnClickedApply()
+{
     Apply();
 }

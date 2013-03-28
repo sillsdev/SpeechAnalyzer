@@ -15,7 +15,8 @@
 #include "TranscriptionData.h"
 #include "sa_doc.h"
 
-class CDlgAutoReferenceData : public CDialog {
+class CDlgAutoReferenceData : public CDialog
+{
     DECLARE_DYNAMIC(CDlgAutoReferenceData)
 
 public:

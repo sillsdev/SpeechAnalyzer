@@ -27,13 +27,15 @@ static char BASED_CODE THIS_FILE[] = __FILE__;
 /***************************************************************************/
 // CProcessSmoothedPitch::CProcessSmoothedPitch Constructor
 /***************************************************************************/
-CProcessSmoothedPitch::CProcessSmoothedPitch() {
+CProcessSmoothedPitch::CProcessSmoothedPitch()
+{
 }
 
 /***************************************************************************/
 // CProcessSmoothedPitch::~CProcessSmoothedPitch Destructor
 /***************************************************************************/
-CProcessSmoothedPitch::~CProcessSmoothedPitch() {
+CProcessSmoothedPitch::~CProcessSmoothedPitch()
+{
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -52,25 +54,31 @@ CProcessSmoothedPitch::~CProcessSmoothedPitch() {
 // value and the end process progress percentage in the higher word.
 /***************************************************************************/
 long CProcessSmoothedPitch::Process(void * pCaller, ISaDoc * pDoc, int nProgress,
-                                    int nLevel) {
+                                    int nLevel)
+{
     TRACE(_T("Process: CProcessSmoothedPitch\n"));
-    if (IsCanceled()) {
+    if (IsCanceled())
+    {
         return MAKELONG(PROCESS_CANCELED, nProgress);    // process canceled
     }
-    if (IsDataReady()) {
+    if (IsDataReady())
+    {
         return MAKELONG(--nLevel, nProgress);    // data is already ready
     }
     DWORD dwDataSize = pDoc->GetDataSize(); // smooth data size
-    if (!dwDataSize) {
+    if (!dwDataSize)
+    {
         return Exit(PROCESS_NO_DATA);    // error, no valid data
     }
     FmtParm * pFmtParm = pDoc->GetFmtParm(); // get sa parameters format member data
     const UttParm * pUttParm = pDoc->GetUttParm(); // get sa parameters utterance member data
 
-    if (nLevel < 0) { // previous processing error
+    if (nLevel < 0)   // previous processing error
+    {
         EndProcess(); // end data processing
         EndWaitCursor();
-        if ((nLevel == PROCESS_CANCELED)) {
+        if ((nLevel == PROCESS_CANCELED))
+        {
             CancelProcess();    // set your own cancel flag
         }
         return MAKELONG(nLevel, nProgress);
@@ -78,16 +86,19 @@ long CProcessSmoothedPitch::Process(void * pCaller, ISaDoc * pDoc, int nProgress
 
     // start pitch process
     BeginWaitCursor(); // wait cursor
-    if (!StartProcess(pCaller, IDS_STATTXT_PROCESSSPI)) { // memory allocation failed
+    if (!StartProcess(pCaller, IDS_STATTXT_PROCESSSPI))   // memory allocation failed
+    {
         EndProcess(); // end data processing
         EndWaitCursor();
         return MAKELONG(PROCESS_ERROR, nProgress);
     }
     // if file has not been created
     Boolean ok = TRUE;
-    if (!GetProcessFileName()[0]) {
+    if (!GetProcessFileName()[0])
+    {
         // create the temporary grappl pitch file
-        if (!CreateTempFile(_T("SPI"))) { // creating error
+        if (!CreateTempFile(_T("SPI")))   // creating error
+        {
             EndProcess(); // end data processing
             SetDataInvalid();
             return MAKELONG(PROCESS_ERROR, nProgress);
@@ -112,7 +123,8 @@ long CProcessSmoothedPitch::Process(void * pCaller, ISaDoc * pDoc, int nProgress
 
         // check if enough workspace for grappl
         UINT nWorkSpace = grapplWorkspace();
-        if (GetBufferSize() < (DWORD)nWorkSpace) {
+        if (GetBufferSize() < (DWORD)nWorkSpace)
+        {
             // buffer too small
             TCHAR szText[6];
             swprintf_s(szText, _T("%u"), nWorkSpace);
@@ -121,9 +133,12 @@ long CProcessSmoothedPitch::Process(void * pCaller, ISaDoc * pDoc, int nProgress
         }
         // init grappl
         ok = grapplInit(m_lpBuffer, &m_CalcParm);
-    } else {
+    }
+    else
+    {
         // open file to append data
-        if (!OpenFileToAppend()) {
+        if (!OpenFileToAppend())
+        {
             EndProcess(); // end data processing
             SetDataInvalid();
             return MAKELONG(PROCESS_ERROR, nProgress);
@@ -133,50 +148,65 @@ long CProcessSmoothedPitch::Process(void * pCaller, ISaDoc * pDoc, int nProgress
     int16 nomore = FALSE;
     // get block size
     DWORD dwBlockSize = 0x10000 - pFmtParm->wBlockAlign; // 64k - 1
-    if (GetBufferSize() < dwBlockSize) {
+    if (GetBufferSize() < dwBlockSize)
+    {
         dwBlockSize = GetBufferSize();
     }
     HPSTR pBlockStart;
     // start processing
-    while (ok && (m_dwDataPos < dwDataSize)) {
+    while (ok && (m_dwDataPos < dwDataSize))
+    {
         // get smooth data block
         pBlockStart = pDoc->GetWaveData(m_dwDataPos, TRUE); // get pointer to data block
-        if (!pBlockStart) {
+        if (!pBlockStart)
+        {
             return Exit(PROCESS_ERROR);    // error, reading failed
         }
         m_dwDataPos += dwBlockSize;
-        if (m_dwDataPos >= dwDataSize) {
+        if (m_dwDataPos >= dwDataSize)
+        {
             dwBlockSize -= (m_dwDataPos - dwDataSize);
             nomore = TRUE;
         }
         // set grappl input buffer
         ok = grapplSetInbuff((pGrappl)m_lpBuffer, (pGrappl)pBlockStart, (WORD)(dwBlockSize / pFmtParm->wBlockAlign), nomore);
-        if (!ok) {
+        if (!ok)
+        {
             break;
         }
         // process
         pGrappl_res pResults;
         int16 nresults;
-        while (grapplGetResults((pGrappl)m_lpBuffer, &pResults, &nresults, &alldone)) {
+        while (grapplGetResults((pGrappl)m_lpBuffer, &pResults, &nresults, &alldone))
+        {
             // get max and min values and save the results
-            for (int16 nLoop = 0; nLoop < nresults; nLoop++) {
+            for (int16 nLoop = 0; nLoop < nresults; nLoop++)
+            {
                 // find min and max values
-                if (pResults->fsmooth16 >= 0) {
+                if (pResults->fsmooth16 >= 0)
+                {
                     // adjust result to precision multiplier format
                     pResults->fsmooth16 = (int16)(((long)pResults->fsmooth16 * (long)PRECISION_MULTIPLIER + 8L)/ 16L);
-                    if (pResults->fsmooth16 > m_nMaxValue) {
+                    if (pResults->fsmooth16 > m_nMaxValue)
+                    {
                         m_nMaxValue = pResults->fsmooth16;    // save maximum value
                     }
-                    if (pResults->fsmooth16 < m_nMinValue) {
+                    if (pResults->fsmooth16 < m_nMinValue)
+                    {
                         m_nMinValue = pResults->fsmooth16;    // save minimum value
                     }
-                } else {
+                }
+                else
+                {
                     pResults->fsmooth16 = -1;    // set this point as unset
                 }
                 // write one result of the processed grappl pitch data
-                try {
+                try
+                {
                     Write((HPSTR)&pResults->fsmooth16, sizeof(int16));
-                } catch (CFileException e) {
+                }
+                catch (CFileException e)
+                {
                     // error writing file
                     ErrorMessage(IDS_ERROR_WRITETEMPFILE, GetProcessFileName());
                     return Exit(PROCESS_ERROR); // error, writing failed
@@ -187,14 +217,17 @@ long CProcessSmoothedPitch::Process(void * pCaller, ISaDoc * pDoc, int nProgress
         }
         // set progress bar
         SetProgress(nProgress + (int)(100 * m_dwDataPos / dwDataSize / (DWORD)nLevel));
-        if (IsCanceled()) {
+        if (IsCanceled())
+        {
             return Exit(PROCESS_CANCELED);    // process canceled
         }
-        if (alldone) {
+        if (alldone)
+        {
             break;
         }
     }
-    if (!ok) {
+    if (!ok)
+    {
         return Exit(PROCESS_ERROR);    // error, processing failed
     }
     // calculate the actual progress
@@ -202,14 +235,17 @@ long CProcessSmoothedPitch::Process(void * pCaller, ISaDoc * pDoc, int nProgress
     // close the temporary file and read the status
     CloseTempFile(); // close the file
 
-    if (alldone) {
-        if (GetDataSize() < 2) {
+    if (alldone)
+    {
+        if (GetDataSize() < 2)
+        {
             return Exit(PROCESS_ERROR);    // error, not enough data        //!!should be TRUE = close file?
         }
         SetStatusFlag(PROCESS_NO_PITCH, m_nMinValue == SHRT_MAX);
     }
     EndProcess((nProgress >= 95)); // end data processing
-    if (nomore || alldone) {
+    if (nomore || alldone)
+    {
         SetDataReady();
     }
     return MAKELONG(nLevel, nProgress);
@@ -218,10 +254,12 @@ long CProcessSmoothedPitch::Process(void * pCaller, ISaDoc * pDoc, int nProgress
 /********************************************************************************/
 // CProcessSmoothedPitch::GetUncertainty  Returns uncertainty at a specific pitch
 /********************************************************************************/
-double CProcessSmoothedPitch::GetUncertainty(double fPitch) {
+double CProcessSmoothedPitch::GetUncertainty(double fPitch)
+{
     double fFs = m_CalcParm.sampfreq; // sampling frequency
     double fUncertainty = fPitch * fPitch / (2 * fFs - fPitch);
-    if (fUncertainty < 0.1) {
+    if (fUncertainty < 0.1)
+    {
         fUncertainty = 0.1;
     }
 

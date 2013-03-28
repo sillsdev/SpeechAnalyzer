@@ -29,13 +29,15 @@ static char BASED_CODE THIS_FILE[] = __FILE__;
 /***************************************************************************/
 // CProcessRaw::CProcessRaw Constructor
 /***************************************************************************/
-CProcessRaw::CProcessRaw() {
+CProcessRaw::CProcessRaw()
+{
 }
 
 /***************************************************************************/
 // CProcessRaw::~CProcessRaw Destructor
 /***************************************************************************/
-CProcessRaw::~CProcessRaw() {
+CProcessRaw::~CProcessRaw()
+{
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -45,22 +47,27 @@ CProcessRaw::~CProcessRaw() {
 // CProcessRaw::Process Processing raw data (convert raw data to 16-bit)
 /***************************************************************************/
 long CProcessRaw::Process(void * pCaller, ISaDoc * pDoc, int nProgress,
-                          int nLevel) {
-    if (IsCanceled()) {
+                          int nLevel)
+{
+    if (IsCanceled())
+    {
         return MAKELONG(PROCESS_CANCELED, nProgress);    // process canceled
     }
-    if (IsDataReady()) {
+    if (IsDataReady())
+    {
         return MAKELONG(--nLevel, nProgress);    // data is already ready
     }
     TRACE(_T("Process: CProcessRaw\n"));
     BeginWaitCursor(); // wait cursor
-    if (!StartProcess(pCaller, IDS_STATTXT_PROCESSRAW)) { // memory allocation failed
+    if (!StartProcess(pCaller, IDS_STATTXT_PROCESSRAW))   // memory allocation failed
+    {
         EndProcess(); // end data processing
         EndWaitCursor();
         return MAKELONG(PROCESS_ERROR, nProgress);
     }
     // create the temporary file
-    if (!CreateTempFile(_T("RAW"))) { // creating error
+    if (!CreateTempFile(_T("RAW")))   // creating error
+    {
         EndProcess(); // end data processing
         EndWaitCursor();
         SetDataInvalid();
@@ -86,18 +93,23 @@ long CProcessRaw::Process(void * pCaller, ISaDoc * pDoc, int nProgress,
 
     int nScale = pFmtParm->wBitsPerSample == 8 ? 256 : 1;
 
-    while (dwDataPos < dwDataSize) { // processing loop
-        if (dwDataPos >= dwDocWavBufferPosition + dwDocWaveBufferSize) {
+    while (dwDataPos < dwDataSize)   // processing loop
+    {
+        if (dwDataPos >= dwDocWavBufferPosition + dwDocWaveBufferSize)
+        {
             pDocData = pDoc->GetWaveData(dwDataPos,TRUE); // get pointer to data block
             dwDocWavBufferPosition = pDoc->GetWaveBufferIndex();
         }
 
         int nRes;
-        if (nSmpSize == 1) {
+        if (nSmpSize == 1)
+        {
             BYTE * pData = reinterpret_cast<BYTE *>(pDocData + dwDataPos - dwDocWavBufferPosition);
             BYTE bData = *pData; // data range is 0...255 (128 is center)
             nRes = bData - 128;
-        } else {
+        }
+        else
+        {
             short int * pData = reinterpret_cast<short int *>(pDocData + dwDataPos - dwDocWavBufferPosition);
             nRes = *pData; // 16 bit data
         }
@@ -106,17 +118,22 @@ long CProcessRaw::Process(void * pCaller, ISaDoc * pDoc, int nProgress,
 
         dwDataPos += nSmpSize;
 
-        if ((++dwProcessCount == GetProcessBufferSize() / 2) || (dwDataPos >= dwDataSize)) { // process buffer is full or processing finished
+        if ((++dwProcessCount == GetProcessBufferSize() / 2) || (dwDataPos >= dwDataSize))   // process buffer is full or processing finished
+        {
             // set progress bar
             SetProgress(nProgress + (int)(100 * dwDataPos / dwDataSize / (DWORD)nLevel));
-            if (IsCanceled()) {
+            if (IsCanceled())
+            {
                 return Exit(PROCESS_CANCELED);    // process canceled
             }
 
             // write the processed data block
-            try {
+            try
+            {
                 Write(m_lpBuffer, dwProcessCount * sizeof(short));
-            } catch (CFileException) {
+            }
+            catch (CFileException)
+            {
                 // error writing file
                 ErrorMessage(IDS_ERROR_WRITETEMPFILE, GetProcessFileName());
                 return Exit(PROCESS_ERROR); // error, writing failed

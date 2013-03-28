@@ -7,7 +7,8 @@
 class Object_ostream;
 class Object_istream;
 
-class Colors {
+class Colors
+{
 public:
 
     void WriteProperties(Object_ostream & obs);

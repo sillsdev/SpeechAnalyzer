@@ -3,18 +3,21 @@
 
 #include "..\DSP\ZTransform.h"
 
-class CAnalyticLpcAnalysis {
+class CAnalyticLpcAnalysis
+{
 public:
     typedef std::complex<double> CDBL;
     typedef std::vector<CDBL> VECTOR_CDBL;
 
     CAnalyticLpcAnalysis(const VECTOR_CDBL & signal, int nOrder, const CAnalyticLpcAnalysis * base = NULL);
-    virtual ~CAnalyticLpcAnalysis() {
+    virtual ~CAnalyticLpcAnalysis()
+    {
         ;
     }
 
     const VECTOR_CDBL & GetAutoCorrelation() const;
-    const VECTOR_CDBL & GetPredictor() const {
+    const VECTOR_CDBL & GetPredictor() const
+    {
         return m_prediction;
     }
     const VECTOR_CDBL & GetReflection() const;
@@ -41,7 +44,8 @@ typedef CZTransformGeneric<CDBL> CZTransformCDBL;
 typedef double DBL;
 typedef std::vector<DBL> VECTOR_DBL;
 
-class CProcessFormantTracker : public CProcess {
+class CProcessFormantTracker : public CProcess
+{
 public:
     CProcessFormantTracker(CProcess & Real, CProcess & Imag, CProcess & Pitch);
     virtual ~CProcessFormantTracker();
@@ -50,9 +54,11 @@ public:
 
     FORMANT_FREQ * GetFormant(DWORD dwIndex);
 
-    class CTrackState {
+    class CTrackState
+    {
     public:
-        virtual ~CTrackState() {
+        virtual ~CTrackState()
+        {
             ;
         }
 

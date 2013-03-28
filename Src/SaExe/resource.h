@@ -141,7 +141,7 @@
 #define IDI_UP                          351
 #define IDI_DOWN                        352
 #define IDD_GRAPHTYPES_ORDER            353
-#define IDR_SYNTHESIS_VOCAL_TRACT       353
+#define IDR_SYNTHESIS_VOCAL_TRACT       354
 #define IDC_MFINGERN                    355
 #define IDC_MFINGERNW                   356
 #define IDC_MHANDN                      357
@@ -304,14 +304,14 @@
 #define IDC_COLORSGRAPHSETUP            1080
 #define IDC_COLORSANNOTSETUP            1081
 #define IDC_COLORSOVERLAY               1082
-#define IDS_ERROR_READ_ONLY             1082
 #define IDS_AUTO_WAITING_SILENCE        1083
 #define IDS_ERROR_FORMAT_CHANNELS       1084
 #define IDC_VIEWCAPTION                 1085
-#define IDS_ERROR_CREATE_INSTANCE       1085
 #define IDC_COLORSSCALESETUP            1086
 #define IDD_EXPORT_FW                   1087
-#define IDC_PLAY                        1094
+#define IDS_ERROR_CREATE_INSTANCE       1088
+#define IDC_PLAY                        1089
+#define IDS_ERROR_READ_ONLY             1090
 #define IDC_STOP                        1096
 #define IDC_PAUSE                       1097
 #define IDS_ERROR_MMIO_INVALIDPARAM     1098
@@ -1531,6 +1531,10 @@
 #define IDS_SPLIT_NO_PHRASE             33228
 #define IDS_SPLIT_FOLDER_EXISTS         33229
 #define IDS_SPLIT_FILE_EXISTS           33230
+#define ID_AUTOSAVE                     33232
+#define ID_FILE_AUTOSAVE                33234
+#define ID_AUTOSAVE_ON			        33235
+#define ID_AUTOSAVE_OFF		            33236
 #define ID_GRAPHTYPES_SELECT_FIRST      40000
 #define ID_GRAPHTYPES_SELECT_LAST       40011
 #define ID_PHONETIC_ALL                 40100
@@ -1665,12 +1669,12 @@
 #define IDS_AUTOSAVE_MSG                61307
 
 // Next default values for new objects
-// 
+//
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_3D_CONTROLS                     1
 #define _APS_NEXT_RESOURCE_VALUE        365
-#define _APS_NEXT_COMMAND_VALUE         33225
+#define _APS_NEXT_COMMAND_VALUE         33234
 #define _APS_NEXT_CONTROL_VALUE         2080
 #define _APS_NEXT_SYMED_VALUE           105
 #endif

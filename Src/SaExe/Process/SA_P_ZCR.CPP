@@ -32,13 +32,15 @@ static char BASED_CODE THIS_FILE[] = __FILE__;
 /***************************************************************************/
 // CProcessZCross::CProcessZCross Constructor
 /***************************************************************************/
-CProcessZCross::CProcessZCross() {
+CProcessZCross::CProcessZCross()
+{
 }
 
 /***************************************************************************/
 // CProcessZCross::~CProcessZCross Destructor
 /***************************************************************************/
-CProcessZCross::~CProcessZCross() {
+CProcessZCross::~CProcessZCross()
+{
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -57,12 +59,15 @@ CProcessZCross::~CProcessZCross() {
 // value and the end process progress percentage in the higher word.
 /***************************************************************************/
 long CProcessZCross::Process(void * pCaller, ISaDoc * pDoc, int nProgress,
-                             int nLevel) {
+                             int nLevel)
+{
     TRACE(_T("Process: CProcessZCross\n"));
-    if (IsCanceled()) {
+    if (IsCanceled())
+    {
         return MAKELONG(PROCESS_CANCELED, nProgress);    // process canceled
     }
-    if (IsDataReady()) {
+    if (IsDataReady())
+    {
         return MAKELONG(--nLevel, nProgress);    // data is already ready
     }
     // create loudness data, it is needed to calculate zero crossing
@@ -72,10 +77,12 @@ long CProcessZCross::Process(void * pCaller, ISaDoc * pDoc, int nProgress,
     nProgress = HIWORD(lResult);
     int nMaxLoud = pLoudness->GetMaxValue(); // get maximum value of loudness data
 
-    if (nLevel < 0) { // previous processing error
+    if (nLevel < 0)   // previous processing error
+    {
         EndProcess(); // end data processing
         EndWaitCursor();
-        if ((nLevel == PROCESS_CANCELED)) {
+        if ((nLevel == PROCESS_CANCELED))
+        {
             CancelProcess();    // set your own cancel flag
         }
         return MAKELONG(nLevel, nProgress);
@@ -83,13 +90,15 @@ long CProcessZCross::Process(void * pCaller, ISaDoc * pDoc, int nProgress,
 
     // start zero crossing process
     BeginWaitCursor(); // wait cursor
-    if (!StartProcess(pCaller, IDS_STATTXT_PROCESSZCR)) { // memory allocation failed
+    if (!StartProcess(pCaller, IDS_STATTXT_PROCESSZCR))   // memory allocation failed
+    {
         EndProcess(); // end data processing
         EndWaitCursor();
         return MAKELONG(PROCESS_ERROR, nProgress);
     }
     // create the temporary file
-    if (!CreateTempFile(_T("ZCR"))) { // creating error
+    if (!CreateTempFile(_T("ZCR")))   // creating error
+    {
         EndProcess(); // end data processing
         EndWaitCursor();
         SetDataInvalid();
@@ -119,23 +128,29 @@ long CProcessZCross::Process(void * pCaller, ISaDoc * pDoc, int nProgress,
     dwZCrossCount++;
     /*********************************************************************/
     // start processing loop
-    while (dwDataPos < dwDataEnd) {
+    while (dwDataPos < dwDataEnd)
+    {
         DWORD dwWindowEnd = dwDataPos + nCalcDataLength * nSmpSize; // window loop end
         int nZeroCount = 0; // counter for zero crossings
         int nOldData, nData; // data holder
         // prepare old data
         pBlockStart = pDoc->GetWaveData(dwDataPos); // get pointer to data block
-        if (!pBlockStart) {
+        if (!pBlockStart)
+        {
             return Exit(PROCESS_ERROR);    // error, reading failed
         }
-        if ((dwDataPos / GetProcessBufferSize()) != nBlockNumber) {
+        if ((dwDataPos / GetProcessBufferSize()) != nBlockNumber)
+        {
             nBlockNumber = (UINT)(dwDataPos / GetProcessBufferSize()); // new block loaded
             pRawData = pBlockStart + dwDataPos % GetProcessBufferSize(); // CLW 9/28/98 (Mod)
         }
-        if (nSmpSize == 1) { // 8 bit data
+        if (nSmpSize == 1)   // 8 bit data
+        {
             // read a byte
             nOldData = (unsigned char)*pRawData - 128;
-        } else { // 16 bit data
+        }
+        else     // 16 bit data
+        {
             // read a word
             short * pTemp = (short *)pRawData++;
             nOldData = (unsigned char)((*pTemp / 256) + 128) - 128;
@@ -144,7 +159,8 @@ long CProcessZCross::Process(void * pCaller, ISaDoc * pDoc, int nProgress,
         pRawData++; // increment position in raw data
         dwDataPos++;
         // start window loop
-        while (dwDataPos < dwWindowEnd) {
+        while (dwDataPos < dwWindowEnd)
+        {
             /*********************************************************************/
             // Modified by CLW 9/28/98
             // New blocks loaded from beginning of first frame that extends past
@@ -164,18 +180,23 @@ long CProcessZCross::Process(void * pCaller, ISaDoc * pDoc, int nProgress,
             ********************************************************************
             */
             pBlockStart = pDoc->GetWaveData(dwDataPos); // get pointer to data block
-            if (!pBlockStart) {
+            if (!pBlockStart)
+            {
                 return Exit(PROCESS_ERROR);    // error, reading failed
             }
-            if ((dwDataPos / GetProcessBufferSize()) != nBlockNumber) {
+            if ((dwDataPos / GetProcessBufferSize()) != nBlockNumber)
+            {
                 nBlockNumber = (UINT)(dwDataPos / GetProcessBufferSize()); // new block loaded
                 pRawData = pBlockStart + dwDataPos % GetProcessBufferSize(); // CLW 9/28/98 (Mod)
             }
             // read data
-            if (nSmpSize == 1) { // 8 bit data
+            if (nSmpSize == 1)   // 8 bit data
+            {
                 // read a byte
                 nData = ((unsigned char)*pRawData - 128)*256; // Loudness is scaled assuming 16 bit samples
-            } else { // 16 bit data
+            }
+            else     // 16 bit data
+            {
                 // read a word
                 short * pTemp = (short *)pRawData++;
                 nData = *pTemp;
@@ -184,18 +205,21 @@ long CProcessZCross::Process(void * pCaller, ISaDoc * pDoc, int nProgress,
             pRawData++; // increment position in raw data
             dwDataPos++;
             // ignore background noise
-            if ((nData < nMaxCriticalLoud) && (nData > nMinCriticalLoud)) {
+            if ((nData < nMaxCriticalLoud) && (nData > nMinCriticalLoud))
+            {
                 continue;
             }
             // if product < 0, the x-axis was crossed
-            if ((nData * nOldData) < 0) {
+            if ((nData * nOldData) < 0)
+            {
                 nZeroCount++;
             }
             nOldData = nData;
         }
         // zero crossings result is ready, store it
         *pZCrossData++ = short(nZeroCount); // save result
-        if (nZeroCount > m_nMaxValue) {
+        if (nZeroCount > m_nMaxValue)
+        {
             m_nMaxValue = nZeroCount;    // save maximum value
         }
         // set new calculation window start
@@ -205,7 +229,8 @@ long CProcessZCross::Process(void * pCaller, ISaDoc * pDoc, int nProgress,
         // Added by CLW 9/21-25/98
         // fill zeroes at end of data
         /*********************************************************************/
-        while ((dwDataPos > dwDataEnd) && (dwDataPos < dwDataSize - nCalcInterval)) {
+        while ((dwDataPos > dwDataEnd) && (dwDataPos < dwDataSize - nCalcInterval))
+        {
             *pZCrossData++ = 0;
             dwZCrossCount++;
             dwDataPos += nCalcInterval * nSmpSize;
@@ -213,14 +238,19 @@ long CProcessZCross::Process(void * pCaller, ISaDoc * pDoc, int nProgress,
         /*********************************************************************/
         // set progress bar
         SetProgress(nProgress + (int)(100 * dwDataPos / dwDataSize / (DWORD)nLevel));
-        if (IsCanceled()) {
+        if (IsCanceled())
+        {
             return Exit(PROCESS_CANCELED);    // process canceled
         }
-        if ((++dwZCrossCount == GetProcessBufferSize() / 2) || (dwDataPos >= dwDataEnd)) { // zero crossing buffer is full or processing finished
+        if ((++dwZCrossCount == GetProcessBufferSize() / 2) || (dwDataPos >= dwDataEnd))   // zero crossing buffer is full or processing finished
+        {
             // write the processed data block
-            try {
+            try
+            {
                 Write(m_lpBuffer, dwZCrossCount * 2);
-            } catch (CFileException e) {
+            }
+            catch (CFileException e)
+            {
                 // error writing file
                 ErrorMessage(IDS_ERROR_WRITETEMPFILE, GetProcessFileName());
                 return Exit(PROCESS_ERROR); // error, writing failed

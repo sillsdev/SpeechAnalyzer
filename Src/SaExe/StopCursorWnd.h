@@ -6,7 +6,8 @@
 //###########################################################################
 // CStopCursorWnd window
 
-class CStopCursorWnd : public CCursorWnd {
+class CStopCursorWnd : public CCursorWnd
+{
 
     // Construction/destruction/creation
 public:

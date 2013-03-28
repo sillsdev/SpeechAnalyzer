@@ -10,7 +10,8 @@
 //###########################################################################
 // CPlotCepstralPitch plot window
 
-class CPlotCepstralPitch : public CPlotWnd {
+class CPlotCepstralPitch : public CPlotWnd
+{
     DECLARE_DYNCREATE(CPlotCepstralPitch)
 
 // Construction/destruction/creation

@@ -21,7 +21,8 @@
 /***************************************************************************/
 // CMixer::
 /***************************************************************************/
-CMixer::CMixer(DWORD dwComponentType) : m_dwComponentType(dwComponentType) {
+CMixer::CMixer(DWORD dwComponentType) : m_dwComponentType(dwComponentType)
+{
     //
     //  WARNING DANGER WARNING DANGER WARNING DANGER WARNING DANGER WARNING
     //
@@ -39,16 +40,19 @@ CMixer::CMixer(DWORD dwComponentType) : m_dwComponentType(dwComponentType) {
 /***************************************************************************/
 // CMixer::
 /***************************************************************************/
-CMixer::~CMixer() {
+CMixer::~CMixer()
+{
     Disconnect();
 }
 
 /***************************************************************************/
 // CMixer::
 /***************************************************************************/
-MMRESULT CMixer::Disconnect() {
+MMRESULT CMixer::Disconnect()
+{
     MMRESULT result = MMSYSERR_NOERROR;
-    if (m_hMixerCallback) {
+    if (m_hMixerCallback)
+    {
         result = mixerClose(m_hMixerCallback);
         m_hMixerCallback = 0;
     }
@@ -58,10 +62,12 @@ MMRESULT CMixer::Disconnect() {
 /***************************************************************************/
 // CMixer::
 /***************************************************************************/
-MMRESULT CMixer::Connect(UINT uMixId, DWORD dwMixIdFlags, HWND hCallback) {
+MMRESULT CMixer::Connect(UINT uMixId, DWORD dwMixIdFlags, HWND hCallback)
+{
     Disconnect();
 
-    if (hCallback) {
+    if (hCallback)
+    {
         dwMixIdFlags |= CALLBACK_WINDOW;
     }
 
@@ -71,55 +77,67 @@ MMRESULT CMixer::Connect(UINT uMixId, DWORD dwMixIdFlags, HWND hCallback) {
 /***************************************************************************/
 // CMixer::
 /***************************************************************************/
-MMRESULT CMixer::GetMixerControlID(HMIXER & hmx, DWORD * dwControl, MIXERCONTROL * control, DWORD dwControlType) {
+MMRESULT CMixer::GetMixerControlID(HMIXER & hmx, DWORD * dwControl, MIXERCONTROL * control, DWORD dwControlType)
+{
     MIXERLINE mixerLine;
 
     mixerLine.cbStruct = sizeof(MIXERLINE);
-    if (m_dwComponentType == MIXERLINE_COMPONENTTYPE_SRC_WAVEOUT) {
+    if (m_dwComponentType == MIXERLINE_COMPONENTTYPE_SRC_WAVEOUT)
+    {
         mixerLine.dwComponentType = MIXERLINE_COMPONENTTYPE_DST_SPEAKERS;
-    } else {
+    }
+    else
+    {
         mixerLine.dwComponentType = m_dwComponentType;
     }
 
     MMRESULT result = mixerGetLineInfo((HMIXEROBJ) hmx, &mixerLine, MIXER_GETLINEINFOF_COMPONENTTYPE);
 
-    if (result != MMSYSERR_NOERROR) { // Can't Find Destination Line
+    if (result != MMSYSERR_NOERROR)   // Can't Find Destination Line
+    {
         return result;
     }
 
-    if (m_dwComponentType == MIXERLINE_COMPONENTTYPE_SRC_WAVEOUT) {
+    if (m_dwComponentType == MIXERLINE_COMPONENTTYPE_SRC_WAVEOUT)
+    {
         DWORD maxSource = mixerLine.cConnections;
         DWORD dst = mixerLine.dwDestination;
 
-        for (DWORD source=0; source < maxSource; source++) {
+        for (DWORD source=0; source < maxSource; source++)
+        {
             mixerLine.cbStruct = sizeof(MIXERLINE);
             mixerLine.dwDestination = dst;
             mixerLine.dwSource = source;
 
             MMRESULT result = mixerGetLineInfo((HMIXEROBJ)hmx, &mixerLine,  MIXER_GETLINEINFOF_SOURCE);
 
-            if (result != MMSYSERR_NOERROR) { // Can't Find Destination Line
+            if (result != MMSYSERR_NOERROR)   // Can't Find Destination Line
+            {
                 mixerClose(hmx);
                 return result;
             }
 
-            if (mixerLine.dwComponentType == m_dwComponentType) {
+            if (mixerLine.dwComponentType == m_dwComponentType)
+            {
                 break;
             }
         }
-        if (mixerLine.dwComponentType != m_dwComponentType) {
+        if (mixerLine.dwComponentType != m_dwComponentType)
+        {
             return MMSYSERR_ERROR;
         }
     }
 
-    if (!mixerLine.cControls && (dwControlType != MIXERCONTROL_CONTROLTYPE_VOLUME)) {
+    if (!mixerLine.cControls && (dwControlType != MIXERCONTROL_CONTROLTYPE_VOLUME))
+    {
         return MMSYSERR_ERROR;
     }
 
     MIXERLINECONTROLS mixerLineControls;
     MIXERCONTROL mixerControl;
 
-    if (mixerLine.cControls > 0) {
+    if (mixerLine.cControls > 0)
+    {
         mixerLineControls.cbStruct = sizeof(MIXERLINECONTROLS);
         mixerLineControls.dwLineID = mixerLine.dwLineID;
         mixerLineControls.dwControlType = dwControlType;
@@ -129,10 +147,12 @@ MMRESULT CMixer::GetMixerControlID(HMIXER & hmx, DWORD * dwControl, MIXERCONTROL
 
         result = mixerGetLineControls((HMIXEROBJ) hmx, &mixerLineControls, MIXER_GETLINECONTROLSF_ONEBYTYPE);
 
-        if (result == MMSYSERR_NOERROR) {
+        if (result == MMSYSERR_NOERROR)
+        {
             *dwControl = mixerControl.dwControlID;
 
-            if (control) {
+            if (control)
+            {
                 *control = mixerControl;
             }
 
@@ -140,7 +160,8 @@ MMRESULT CMixer::GetMixerControlID(HMIXER & hmx, DWORD * dwControl, MIXERCONTROL
         }
 
         // couldn't find the dwControlType Here
-        if ((dwControlType != MIXERCONTROL_CONTROLTYPE_VOLUME) || (mixerLine.cConnections == 0)) {
+        if ((dwControlType != MIXERCONTROL_CONTROLTYPE_VOLUME) || (mixerLine.cConnections == 0))
+        {
             return result;
         }
 
@@ -153,7 +174,8 @@ MMRESULT CMixer::GetMixerControlID(HMIXER & hmx, DWORD * dwControl, MIXERCONTROL
 
         result = mixerGetLineControls((HMIXEROBJ) hmx, &mixerLineControls, MIXER_GETLINECONTROLSF_ONEBYTYPE);
 
-        if (result == MMSYSERR_NOERROR) {
+        if (result == MMSYSERR_NOERROR)
+        {
             MIXERCONTROLDETAILS mixerControlDetails;
             MIXERCONTROLDETAILS_BOOLEAN * listBool = new MIXERCONTROLDETAILS_BOOLEAN[mixerControl.cMultipleItems];
             MIXERCONTROLDETAILS_LISTTEXT * listText = new MIXERCONTROLDETAILS_LISTTEXT[mixerControl.cMultipleItems];
@@ -168,7 +190,8 @@ MMRESULT CMixer::GetMixerControlID(HMIXER & hmx, DWORD * dwControl, MIXERCONTROL
             result =
                 mixerGetControlDetails((HMIXEROBJ) hmx, &mixerControlDetails, MIXER_GETCONTROLDETAILSF_VALUE);
 
-            if (result == MMSYSERR_NOERROR) {
+            if (result == MMSYSERR_NOERROR)
+            {
                 mixerControlDetails.cbStruct = sizeof(MIXERCONTROLDETAILS);
                 mixerControlDetails.dwControlID = mixerControl.dwControlID;
                 mixerControlDetails.cChannels = 1;
@@ -180,9 +203,12 @@ MMRESULT CMixer::GetMixerControlID(HMIXER & hmx, DWORD * dwControl, MIXERCONTROL
                     mixerGetControlDetails((HMIXEROBJ) hmx, &mixerControlDetails, MIXER_GETCONTROLDETAILSF_LISTTEXT);
             }
 
-            if (result == MMSYSERR_NOERROR) {
-                for (unsigned int i=0; i<mixerControl.cMultipleItems; i++) {
-                    if (listBool[i].fValue) {
+            if (result == MMSYSERR_NOERROR)
+            {
+                for (unsigned int i=0; i<mixerControl.cMultipleItems; i++)
+                {
+                    if (listBool[i].fValue)
+                    {
                         mixerLineControls.cbStruct = sizeof(MIXERLINECONTROLS);
                         mixerLineControls.dwLineID = listText[i].dwParam1;
                         mixerLineControls.dwControlType = dwControlType;
@@ -192,10 +218,12 @@ MMRESULT CMixer::GetMixerControlID(HMIXER & hmx, DWORD * dwControl, MIXERCONTROL
 
                         result = mixerGetLineControls((HMIXEROBJ) hmx, &mixerLineControls, MIXER_GETLINECONTROLSF_ONEBYTYPE);
 
-                        if (result == MMSYSERR_NOERROR) {
+                        if (result == MMSYSERR_NOERROR)
+                        {
                             *dwControl = mixerControl.dwControlID;
 
-                            if (control) {
+                            if (control)
+                            {
                                 *control = mixerControl;
                             }
 
@@ -218,21 +246,24 @@ MMRESULT CMixer::GetMixerControlID(HMIXER & hmx, DWORD * dwControl, MIXERCONTROL
 /***************************************************************************/
 // CMixer::GetVolume()
 /***************************************************************************/
-MMRESULT CMixer::GetVolume(UINT uMixID, DWORD dwMixIdFlags, DWORD * dwVolume) {
+MMRESULT CMixer::GetVolume(UINT uMixID, DWORD dwMixIdFlags, DWORD * dwVolume)
+{
     MIXERCONTROLDETAILS mixerControlDetails;
     MIXERCONTROLDETAILS_UNSIGNED volume;
 
     HMIXER hmx;
 
     MMRESULT result = mixerOpen(&hmx, uMixID, NULL, NULL, dwMixIdFlags);
-    if (result != MMSYSERR_NOERROR) {
+    if (result != MMSYSERR_NOERROR)
+    {
         return result;
     }
 
     result = GetMixerControlID(hmx, &mixerControlDetails.dwControlID);
 
     mixerClose(hmx);
-    if (result != MMSYSERR_NOERROR) {
+    if (result != MMSYSERR_NOERROR)
+    {
         return result;
     }
 
@@ -245,11 +276,13 @@ MMRESULT CMixer::GetVolume(UINT uMixID, DWORD dwMixIdFlags, DWORD * dwVolume) {
     result =
         mixerGetControlDetails((HMIXEROBJ) uMixID, &mixerControlDetails, dwMixIdFlags | MIXER_GETCONTROLDETAILSF_VALUE);
 
-    if (result != MMSYSERR_NOERROR) {
+    if (result != MMSYSERR_NOERROR)
+    {
         return result;
     }
 
-    if (dwVolume) {
+    if (dwVolume)
+    {
         *dwVolume = volume.dwValue;
     }
 
@@ -259,21 +292,24 @@ MMRESULT CMixer::GetVolume(UINT uMixID, DWORD dwMixIdFlags, DWORD * dwVolume) {
 /***************************************************************************/
 // CMixer::SetVolume()
 /***************************************************************************/
-MMRESULT CMixer::SetVolume(UINT uMixID, DWORD dwMixIdFlags, DWORD dwSetting) {
+MMRESULT CMixer::SetVolume(UINT uMixID, DWORD dwMixIdFlags, DWORD dwSetting)
+{
     MIXERCONTROLDETAILS mixerControlDetails;
     MIXERCONTROLDETAILS_UNSIGNED volume;
 
     HMIXER hmx;
 
     MMRESULT result = mixerOpen(&hmx, uMixID, NULL, NULL, dwMixIdFlags);
-    if (result != MMSYSERR_NOERROR) {
+    if (result != MMSYSERR_NOERROR)
+    {
         return result;
     }
 
     result = GetMixerControlID(hmx, &mixerControlDetails.dwControlID);
 
     mixerClose(hmx);
-    if (result != MMSYSERR_NOERROR) {
+    if (result != MMSYSERR_NOERROR)
+    {
         return result;
     }
 
@@ -291,21 +327,27 @@ MMRESULT CMixer::SetVolume(UINT uMixID, DWORD dwMixIdFlags, DWORD dwSetting) {
 /***************************************************************************/
 // CMixer::IsSndVolInstalled()
 /***************************************************************************/
-BOOL CMixer::IsSndVolInstalled() {
+BOOL CMixer::IsSndVolInstalled()
+{
     BOOL bReturn = false;
     m_szPlayMixerCmd = "";
     m_szRecMixerCmd = "";
 
-    if (GetWindowsVersion()<6) {
+    if (GetWindowsVersion()<6)
+    {
         bReturn = SearchPath(NULL, _T("SNDVOL32.EXE"), NULL, 0, NULL, NULL);
-        if (bReturn) {
+        if (bReturn)
+        {
             m_szPlayMixerCmd = _T("SNDVOL32.EXE -D ");
             m_szRecMixerCmd = _T("SNDVOL32.EXE -R -D ");
         }
-    } else {
+    }
+    else
+    {
         bReturn = SearchPath(NULL, _T("SNDVOL.EXE"), NULL, 0, NULL, NULL);
         bReturn = (bReturn && SearchPath(NULL, _T("CONTROL.EXE"), NULL, 0, NULL, NULL));
-        if (bReturn) {
+        if (bReturn)
+        {
             m_szPlayMixerCmd = _T("SNDVOL.EXE");
             m_szRecMixerCmd = _T("CONTROL.EXE mmsys.cpl,,1");
         }
@@ -317,29 +359,34 @@ BOOL CMixer::IsSndVolInstalled() {
 /***************************************************************************/
 // CPlayMixer::CPlayMixer()
 /***************************************************************************/
-CPlayMixer::CPlayMixer() : CMixer(MIXERLINE_COMPONENTTYPE_SRC_WAVEOUT) {
+CPlayMixer::CPlayMixer() : CMixer(MIXERLINE_COMPONENTTYPE_SRC_WAVEOUT)
+{
 }
 
 /***************************************************************************/
 // CPlayMixer::~CPlayMixer()
 /***************************************************************************/
-CPlayMixer::~CPlayMixer() {
+CPlayMixer::~CPlayMixer()
+{
 }
 
 /***************************************************************************/
 // CMixer::
 /***************************************************************************/
-BOOL CPlayMixer::Connect(HWAVEOUT hPlayer, HWND hCallback) {
+BOOL CPlayMixer::Connect(HWAVEOUT hPlayer, HWND hCallback)
+{
     return CMixer::Connect((UINT) hPlayer, MIXER_OBJECTF_HWAVEOUT, hCallback) == MMSYSERR_NOERROR;
 }
 
 /***************************************************************************/
 // CPlayMixer::SetVolume()
 /***************************************************************************/
-MMRESULT CPlayMixer::SetVolume(HWAVEOUT hPlayer, DWORD dwVolume) {
+MMRESULT CPlayMixer::SetVolume(HWAVEOUT hPlayer, DWORD dwVolume)
+{
     MMRESULT result = CMixer::SetVolume((UINT) hPlayer, MIXER_OBJECTF_HWAVEOUT, dwVolume);
 
-    if (result != MMSYSERR_NOERROR) {
+    if (result != MMSYSERR_NOERROR)
+    {
         result = waveOutSetVolume(hPlayer, dwVolume);
     }
 
@@ -349,10 +396,12 @@ MMRESULT CPlayMixer::SetVolume(HWAVEOUT hPlayer, DWORD dwVolume) {
 /***************************************************************************/
 // CPlayMixer::GetVolume()
 /***************************************************************************/
-MMRESULT CPlayMixer::GetVolume(HWAVEOUT hPlayer, DWORD * dwVolume) {
+MMRESULT CPlayMixer::GetVolume(HWAVEOUT hPlayer, DWORD * dwVolume)
+{
     MMRESULT result = CMixer::GetVolume((UINT) hPlayer, MIXER_OBJECTF_HWAVEOUT, dwVolume);
 
-    if (result != MMSYSERR_NOERROR) {
+    if (result != MMSYSERR_NOERROR)
+    {
         result = waveOutGetVolume(hPlayer, dwVolume);
     }
 
@@ -362,10 +411,12 @@ MMRESULT CPlayMixer::GetVolume(HWAVEOUT hPlayer, DWORD * dwVolume) {
 /***************************************************************************/
 // CPlayMixer::CanShowMixerControls()
 /***************************************************************************/
-BOOL CPlayMixer::CanShowMixerControls(HWAVEOUT hPlayer) {
+BOOL CPlayMixer::CanShowMixerControls(HWAVEOUT hPlayer)
+{
     BOOL result = TRUE;
 
-    if (!m_hMixerCallback) {
+    if (!m_hMixerCallback)
+    {
         // try to open mixer
         result = Connect(hPlayer, NULL);
         Disconnect();
@@ -377,11 +428,14 @@ BOOL CPlayMixer::CanShowMixerControls(HWAVEOUT hPlayer) {
 /***************************************************************************/
 // CPlayMixer::ShowMixerControls()
 /***************************************************************************/
-BOOL CPlayMixer::ShowMixerControls(HWAVEOUT hPlayer) {
-    if (CanShowMixerControls(hPlayer)) {
+BOOL CPlayMixer::ShowMixerControls(HWAVEOUT hPlayer)
+{
+    if (CanShowMixerControls(hPlayer))
+    {
         UINT uDevID;
         MMRESULT result = mixerGetID((HMIXEROBJ)hPlayer, &uDevID, MIXER_OBJECTF_HWAVEOUT);
-        if (result == MMSYSERR_NOERROR) {
+        if (result == MMSYSERR_NOERROR)
+        {
             STARTUPINFO si;
             PROCESS_INFORMATION pi;
 
@@ -391,7 +445,8 @@ BOOL CPlayMixer::ShowMixerControls(HWAVEOUT hPlayer) {
 
             CSaString command;
             CSaString args;
-            if (GetWindowsVersion()<6) {
+            if (GetWindowsVersion()<6)
+            {
                 args.Format(_T("%d"), uDevID);
             }
             command = m_szPlayMixerCmd + args;
@@ -416,20 +471,23 @@ BOOL CPlayMixer::ShowMixerControls(HWAVEOUT hPlayer) {
 /***************************************************************************/
 // CRecMixer::CRecMixer()
 /***************************************************************************/
-CRecMixer::CRecMixer() : CMixer(MIXERLINE_COMPONENTTYPE_DST_WAVEIN) {
+CRecMixer::CRecMixer() : CMixer(MIXERLINE_COMPONENTTYPE_DST_WAVEIN)
+{
 }
 
 
 /***************************************************************************/
 // CRecMixer::~CRecMixer()
 /***************************************************************************/
-CRecMixer::~CRecMixer() {
+CRecMixer::~CRecMixer()
+{
 }
 
 /***************************************************************************/
 // CRecMixer::Open()
 /***************************************************************************/
-BOOL CRecMixer::Connect(HWAVEIN hRecorder, HWND hCallback) {
+BOOL CRecMixer::Connect(HWAVEIN hRecorder, HWND hCallback)
+{
     return CMixer::Connect((UINT) hRecorder, MIXER_OBJECTF_HWAVEIN, hCallback) == MMSYSERR_NOERROR;
 }
 
@@ -437,24 +495,28 @@ BOOL CRecMixer::Connect(HWAVEIN hRecorder, HWND hCallback) {
 /***************************************************************************/
 // CRecMixer::SetVolume()
 /***************************************************************************/
-MMRESULT CRecMixer::SetVolume(HWAVEIN hRecorder, DWORD dwVolume) {
+MMRESULT CRecMixer::SetVolume(HWAVEIN hRecorder, DWORD dwVolume)
+{
     return CMixer::SetVolume((UINT) hRecorder, MIXER_OBJECTF_HWAVEIN, dwVolume);
 }
 
 /***************************************************************************/
 // CRecMixer::GetVolume()
 /***************************************************************************/
-MMRESULT CRecMixer::GetVolume(HWAVEIN hRecorder, DWORD * dwVolume) {
+MMRESULT CRecMixer::GetVolume(HWAVEIN hRecorder, DWORD * dwVolume)
+{
     return CMixer::GetVolume((UINT) hRecorder, MIXER_OBJECTF_HWAVEIN, dwVolume);
 }
 
 /***************************************************************************/
 // CRecMixer::CanShowMixerControls()
 /***************************************************************************/
-BOOL CRecMixer::CanShowMixerControls(HWAVEIN hRecorder) {
+BOOL CRecMixer::CanShowMixerControls(HWAVEIN hRecorder)
+{
     BOOL result = TRUE;
 
-    if (!m_hMixerCallback) {
+    if (!m_hMixerCallback)
+    {
         // try to open mixer
         result = Connect(hRecorder, NULL);
         Disconnect();
@@ -466,11 +528,14 @@ BOOL CRecMixer::CanShowMixerControls(HWAVEIN hRecorder) {
 /***************************************************************************/
 // CRecMixer::ShowMixerControls()
 /***************************************************************************/
-BOOL CRecMixer::ShowMixerControls(HWAVEIN hRecorder) {
-    if (CanShowMixerControls(hRecorder)) {
+BOOL CRecMixer::ShowMixerControls(HWAVEIN hRecorder)
+{
+    if (CanShowMixerControls(hRecorder))
+    {
         UINT uDevID;
         MMRESULT result = mixerGetID((HMIXEROBJ)hRecorder, &uDevID, MIXER_OBJECTF_HWAVEIN);
-        if (result == MMSYSERR_NOERROR) {
+        if (result == MMSYSERR_NOERROR)
+        {
             STARTUPINFO si;
             PROCESS_INFORMATION pi;
 
@@ -480,7 +545,8 @@ BOOL CRecMixer::ShowMixerControls(HWAVEIN hRecorder) {
 
             CSaString command;
             CSaString args;
-            if (GetWindowsVersion() < 6) {
+            if (GetWindowsVersion() < 6)
+            {
                 args.Format(_T("%d"), uDevID);
             }
             command = m_szRecMixerCmd + args;
@@ -507,7 +573,8 @@ BOOL CRecMixer::ShowMixerControls(HWAVEIN hRecorder) {
 * returns major revision for operation system.
 * see GetVersionEx for details
 */
-int GetWindowsVersion() {
+int GetWindowsVersion()
+{
     OSVERSIONINFO versionInfo;
     memset(&versionInfo,0,sizeof(OSVERSIONINFO));
     versionInfo.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);

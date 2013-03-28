@@ -24,7 +24,8 @@
 #define zBLACK    RGB(0  ,   0,   0)
 #define zWHITE    RGB(255, 255, 255)
 
-class zFONT {
+class zFONT
+{
 protected:
     WCHAR   szTypeFaceName[80];// Name of Typeface to Use
     HDC      hDC;               // Pointer to a DC
@@ -41,27 +42,33 @@ protected:
     COLORREF BkgColor;          // Color of Background
 
 public:
-    zFONT(void) {
+    zFONT(void)
+    {
         zInitDefaults();
     }
 
-    zFONT(HDC hDC1) {
+    zFONT(HDC hDC1)
+    {
         zInitDefaults();
 
         // Set the HDC
         zSetDC(hDC1);
     }
 
-    ~zFONT() {
+    ~zFONT()
+    {
         // Kill Old Font, If Necessary
         zKillFont();
     }
 
-    void zKillFont(void) {
+    void zKillFont(void)
+    {
         // Kills the Font and Restores the Original Font
 
-        if (zIsValidDC()) {
-            if (FontAllocated) {
+        if (zIsValidDC())
+        {
+            if (FontAllocated)
+            {
                 // Re-Select Old Font
                 SelectObject(hDC, pOldFont);
 
@@ -77,7 +84,8 @@ public:
         }
     }
 
-    void zInitDefaults(void) {
+    void zInitDefaults(void)
+    {
         // Initializes Some Defaults
         pNewFont = 0;                         // NULL The New Font
         pOldFont = 0;                         // NULL The Old Font
@@ -96,43 +104,54 @@ public:
 
 
     // Set the Maximum Point Size to Set an Upper Limit on the Font's Height
-    void zSetMaxPointSize(INT mps)               {
+    void zSetMaxPointSize(INT mps)
+    {
         MaxPointSize = mps;
     }
 
-    INT      zGetFontWidth(void)                 {
+    INT      zGetFontWidth(void)
+    {
         return zGetStringWidth(_T("A"));
     }
-    INT      zGetFontHeight(void)                {
+    INT      zGetFontHeight(void)
+    {
         return zGetStringHeight(_T("A"));
     }
 
-    COLORREF zGetTextColor(void)                 {
+    COLORREF zGetTextColor(void)
+    {
         return TextColor;
     }
-    COLORREF zGetBkgColor(void)                  {
+    COLORREF zGetBkgColor(void)
+    {
         return BkgColor;
     }
-    LPCTSTR   zGetTypeFaceName(void)              {
+    LPCTSTR   zGetTypeFaceName(void)
+    {
         return (LPCTSTR) szTypeFaceName;
     }
-    HDC      zGetDC(void)                        {
+    HDC      zGetDC(void)
+    {
         return hDC;
     }
 
 
     // "Set" Member Functions
 
-    void zSetTextColor(COLORREF TextColor1) {
+    void zSetTextColor(COLORREF TextColor1)
+    {
         // Sets the Color Of Text
-        if (zIsValidDC()) {
+        if (zIsValidDC())
+        {
             SetTextColor(hDC, (TextColor = TextColor1));
         }
     }
 
-    void zSetBkgColor(COLORREF BkgColor1) {
+    void zSetBkgColor(COLORREF BkgColor1)
+    {
         // Sets the Color Of Text
-        if (zIsValidDC()) {
+        if (zIsValidDC())
+        {
             // Select Opaque Mode to Show Bkg. Color Behind Text
             SetBkMode(hDC, OPAQUE);
 
@@ -141,26 +160,31 @@ public:
         }
     }
 
-    void zSetDC(HDC hDC1) {
+    void zSetDC(HDC hDC1)
+    {
         // Sets the HDC
         hDC = hDC1;
     }
 
-    void SwitchFont(BOOL ApplyNow) {
+    void SwitchFont(BOOL ApplyNow)
+    {
         // Switches In a New Font
-        if (ApplyNow) {
+        if (ApplyNow)
+        {
             zCreateNewFont();
         }
     }
 
-    void zSetTypeFaceName(PWCHAR sz1, BOOL ApplyNow = TRUE) {
+    void zSetTypeFaceName(PWCHAR sz1, BOOL ApplyNow = TRUE)
+    {
         // Set Type Face
         wcscpy_s(szTypeFaceName, _countof(szTypeFaceName), sz1);
 
         SwitchFont(ApplyNow);
     }
 
-    void zSetBold(BOOL state, BOOL ApplyNow = TRUE) {
+    void zSetBold(BOOL state, BOOL ApplyNow = TRUE)
+    {
         // Sets Bold Type On or Off
         UseBoldType = state;
 
@@ -168,12 +192,16 @@ public:
         SwitchFont(ApplyNow);
     }
 
-    BOOL zIsValidDC() {
+    BOOL zIsValidDC()
+    {
         // Checks If the DC Is Valid
 
-        if (hDC) {
+        if (hDC)
+        {
             return TRUE;
-        } else {
+        }
+        else
+        {
             zDisplayError(_T("zFONT--DC Not Set!"));
         }
 
@@ -181,17 +209,20 @@ public:
     }
 
 
-    void zSelectColors(void) {
+    void zSelectColors(void)
+    {
         // Selects the Text Color and the Background Color
 
-        if (zIsValidDC()) {
+        if (zIsValidDC())
+        {
             SetTextColor(hDC, TextColor);
             SetBkColor(hDC, BkgColor);
             SetBkMode(hDC, TRANSPARENT);
         }
     }
 
-    void zBorderTextArea(zRECT * pzRECT) {
+    void zBorderTextArea(zRECT * pzRECT)
+    {
         // Draws a Border Around the Text Font Area
 
         // Select Pen
@@ -210,7 +241,8 @@ public:
         SelectObject(hDC, pOldPen);
     }
 
-    void zCreateNewFont(void) {
+    void zCreateNewFont(void)
+    {
         // Creates a Font Of Appropriate Size Using the Class Variables for
         //   [FontHeight] and [FontWidth]
 
@@ -239,7 +271,8 @@ public:
         pNewFont = CreateFontIndirect((LPLOGFONT) &logfont);
 
         // Select the New Font and Save the Old Font
-        if (zIsValidDC()) {
+        if (zIsValidDC())
+        {
             pOldFont = (HFONT) SelectObject(hDC, pNewFont);
         }
 
@@ -248,7 +281,8 @@ public:
 
     }
 
-    INT zGetFontHtFromPtSize(int PtSize) {
+    INT zGetFontHtFromPtSize(int PtSize)
+    {
         // Gets a Font Height from a Font Point Size
 
         // Create a Font for Drawing the Defect Numbers and Select It Into DC
@@ -260,7 +294,8 @@ public:
         return TheFontHeight;
     }
 
-    INT zGetStringWidth(PWCHAR string) {
+    INT zGetStringWidth(PWCHAR string)
+    {
         // Returns a String's Width
         INT width;
 
@@ -271,7 +306,8 @@ public:
         return (width);
     }
 
-    INT zGetStringHeight(PWCHAR string) {
+    INT zGetStringHeight(PWCHAR string)
+    {
         // Returns a String's Height
         INT ht;
 
@@ -282,18 +318,21 @@ public:
         return (ht);
     }
 
-    void zPickFontAndCenterText(PWCHAR string, zRECT RString) {
+    void zPickFontAndCenterText(PWCHAR string, zRECT RString)
+    {
         // Picks a Font of Appropriate Size to
         //   Center a String [string] in Rectangle [RString]
         zBestFitText(string, RString, TRUE);
     }
 
-    void zPickFont(PWCHAR string, zRECT RString) {
+    void zPickFont(PWCHAR string, zRECT RString)
+    {
         // Picks a Font That Will Fit [string] Inside of [RString]
         zBestFitText(string, RString, FALSE);
     }
 
-    void zPickFontForPtSize(int PointSize) {
+    void zPickFontForPtSize(int PointSize)
+    {
         // Picks a Font Based Upon Point Size
         FontHeight = zGetFontHtFromPtSize(PointSize);
 
@@ -301,7 +340,8 @@ public:
 
     }
 
-    void zBestFitText(PWCHAR string, zRECT RString, BOOL ShowText = TRUE) {
+    void zBestFitText(PWCHAR string, zRECT RString, BOOL ShowText = TRUE)
+    {
         // Calculates a Text Font to Best Fit String Within Rectangle [RString].
         //    Displays Text If [ShowText] Flag Is Set to TRUE
 
@@ -315,12 +355,14 @@ public:
 
         // Jump Past Any Font Point Sizes In the Array That Are Larger Than
         //   The Maximum Allowable Point Size
-        while ((LegalPtSizes[index] > 0)  && (LegalPtSizes[index] >= MaxPointSize)) {
+        while ((LegalPtSizes[index] > 0)  && (LegalPtSizes[index] >= MaxPointSize))
+        {
             index++ ;
         }
 
         BOOL done = FALSE;
-        while (! done  &&  LegalPtSizes[index] > 0) {
+        while (! done  &&  LegalPtSizes[index] > 0)
+        {
             // Pick the Next Point Size
             FontHeight = zGetFontHtFromPtSize(LegalPtSizes[index]);
 
@@ -336,7 +378,8 @@ public:
             INT height = s.cy;
 
             // Does the String Fit?
-            if (width <= RString.Width()  &&  height <= RString.Height()) {
+            if (width <= RString.Width()  &&  height <= RString.Height())
+            {
                 done = TRUE;
             }
 
@@ -363,7 +406,8 @@ public:
         RBounds = RString;
 
         // Display the String
-        if (ShowText) {
+        if (ShowText)
+        {
             zDrawTextString(pt.x, pt.y, string);
         }
 
@@ -371,10 +415,12 @@ public:
         SetTextAlign(hDC, TA_LEFT | TA_TOP);
     }
 
-    void zDrawTextString(INT x, INT y, PWCHAR  string) {
+    void zDrawTextString(INT x, INT y, PWCHAR  string)
+    {
         // Displays a String [string] at [x, y]
 
-        if (zIsValidDC()) {
+        if (zIsValidDC())
+        {
             zSelectColors();
 
             // Draw the Text
@@ -382,11 +428,13 @@ public:
         }
     }
 
-    void zCenterText(PWCHAR string, zRECT RString) {
+    void zCenterText(PWCHAR string, zRECT RString)
+    {
         // Centers a String [string] in Rectangle.  Does Not
         //  Pick a New Font--Uses the Current Font
 
-        if (zIsValidDC()) {
+        if (zIsValidDC())
+        {
             zSelectColors();
 
             // Find Position to Start Text
@@ -398,10 +446,12 @@ public:
         }
     }
 
-    void zRightAlignText(INT x, INT y, PWCHAR  string) {
+    void zRightAlignText(INT x, INT y, PWCHAR  string)
+    {
         // Displays a Right-Aligned String [string] at [x, y]
 
-        if (zIsValidDC()) {
+        if (zIsValidDC())
+        {
             // Set Text Alignment
             SetTextAlign(hDC, TA_RIGHT | TA_BASELINE);
 
@@ -416,11 +466,13 @@ public:
         }
     }
 
-    void zDrawTextString(zRECT RInput, double xPercent, double yPercent, PWCHAR  string) {
+    void zDrawTextString(zRECT RInput, double xPercent, double yPercent, PWCHAR  string)
+    {
         // Displays a String [string] Within [RInput] Using X- and Y- Percentage
         //   Component Offsets
 
-        if (zIsValidDC()) {
+        if (zIsValidDC())
+        {
             long XPos = RInput.left + Round(RInput.Width()  * xPercent);
             long YPos = RInput.top  + Round(RInput.Height() * yPercent);
 
@@ -438,7 +490,8 @@ public:
                    double yTopPercent,
                    double xRightPercent,
                    double yBottomPercent,
-                   PWCHAR  string) {
+                   PWCHAR  string)
+    {
         // Picks a Font That Will Fit [string] Inside of The Rectangle
         //   [RString], With Rectangle Percentage Component Offsets
 
@@ -454,15 +507,19 @@ public:
         zBestFitText(string, &ROutput, FALSE);
     }
 
-    INT Round(double d) {
+    INT Round(double d)
+    {
         // This Function Is Used For Rounding Purposes.  It Returns the closest
         // integer to [d], a double variable
 
         double LowerLimit = floor(d);
 
-        if ((d - LowerLimit) >= 0.5) {
+        if ((d - LowerLimit) >= 0.5)
+        {
             return ((INT)LowerLimit + 1);
-        } else {
+        }
+        else
+        {
             return ((INT)LowerLimit);
         }
     }
@@ -485,7 +542,8 @@ public:
 
 #define LCID_FONT  1
 
-typedef struct {
+typedef struct
+{
     int  iNumFaces ;
     char szFacename [1] [FACESIZE] ;
 }
@@ -493,7 +551,8 @@ FACELIST ;
 
 typedef FACELIST * PFACELIST ;
 
-class zFONT {
+class zFONT
+{
 private:
     HPS    hps;                   // Handle to Presentation Space
     char   szTypefaceName[80];    // Typeface Name
@@ -507,15 +566,18 @@ private:
     BOOL   UseDefaultFont;        // TRUE if Just Using Default Font
 
 public:
-    zFONT() {
+    zFONT()
+    {
         UseDefaultFont = TRUE;
     }
 
-    zFONT(HPS hps1) {
+    zFONT(HPS hps1)
+    {
         zInitFont(hps1);
     }
 
-    void zInitFont(HPS hps1, BOOL UseDefaultFont1 = FALSE) {
+    void zInitFont(HPS hps1, BOOL UseDefaultFont1 = FALSE)
+    {
         // Initialize
 
         // Set the HPS
@@ -536,28 +598,33 @@ public:
         UseDefaultFont = UseDefaultFont1;
     }
 
-    void zSetHPS(HPS hps1) {
+    void zSetHPS(HPS hps1)
+    {
         // Save HPS
         hps = hps1;
     }
 
-    ~zFONT() {
+    ~zFONT()
+    {
     }
 
-    void Create() {
+    void Create()
+    {
         // Create, Selects the Logical Font
         CreateOutlineFont(LCID_FONT, szTypefaceName, 0, 0);
         GpiSetCharSet(hps, LCID_FONT);
         ScaleOutlineFont(120, 120);
     }
 
-    void Destroy() {
+    void Destroy()
+    {
         // Deletes the Logical Font and Selects the Old Font
         GpiSetCharSet(hps, LCID_DEFAULT);
         GpiDeleteSetId(hps, LCID_FONT);
     }
 
-    int ComputePointSize(WCHAR * String, zRECT * R) {
+    int ComputePointSize(WCHAR * String, zRECT * R)
+    {
         // Computes the Point Size Necessary for Fitting
         //   String [String] in Rectangle [R]
 
@@ -581,17 +648,20 @@ public:
         return (iPtSize);
     }
 
-    void DisplayTextInRect(WCHAR * String, zRECT R, BOOL ShowText = TRUE) {
+    void DisplayTextInRect(WCHAR * String, zRECT R, BOOL ShowText = TRUE)
+    {
         // Determines a Font to Fit String [String]
         //   Inside of Rectangle [R]
 
         // If Just Using the Default Font, Just Center Text In Rectangle!
-        if (UseDefaultFont) {
+        if (UseDefaultFont)
+        {
             POINT ptCenter = R.Center();
             INT xPos = ptCenter.x - _tcslen(String) * CharWidth / 2;
 
             // Draw the String
-            if (ShowText) {
+            if (ShowText)
+            {
                 zDrawTextString(xPos, ptCenter.y, String);
             }
             return;
@@ -618,7 +688,8 @@ public:
                           aptl[TXTBOX_BOTTOMLEFT].y) / 2;
 
         // Draw the String
-        if (ShowText) {
+        if (ShowText)
+        {
             GpiCharStringAt(hps, &ptl, _tcslen(String), String);
         }
 
@@ -631,7 +702,8 @@ public:
     }
 
     LONG CreateOutlineFont(LONG lcid, char * szFacename,
-                           SHORT fsAttributes, SHORT usCodePage) {
+                           SHORT fsAttributes, SHORT usCodePage)
+    {
         FATTRS fat ;
         LONG   lReturn ;
 
@@ -658,7 +730,8 @@ public:
 
         // If no match, try a symbol code page
 
-        if (lReturn == FONT_DEFAULT && usCodePage == 0) {
+        if (lReturn == FONT_DEFAULT && usCodePage == 0)
+        {
             fat.usCodePage = 65400 ;
 
             lReturn = GpiCreateLogFont(hps, NULL, lcid, &fat);
@@ -667,7 +740,8 @@ public:
         return lReturn ;
     }
 
-    BOOL ScaleOutlineFont(int iPointSize, int iPointWidth) {
+    BOOL ScaleOutlineFont(int iPointSize, int iPointWidth)
+    {
         HDC    hdc ;
         LONG   xRes, yRes ;
         POINTL aptl[2] ;
@@ -682,7 +756,8 @@ public:
 
         // Find desired font size in pixels
 
-        if (iPointWidth == 0) {
+        if (iPointWidth == 0)
+        {
             iPointWidth = iPointSize ;
         }
 
@@ -705,27 +780,32 @@ public:
 
     // "Get" Member Functions
 
-    INT zGetFontWidth() {
+    INT zGetFontWidth()
+    {
         // Gets the Average Font Width
         return CharWidth;
     }
 
-    INT zGetFontHeight() {
+    INT zGetFontHeight()
+    {
         // Gets the Average Font Height
         return CharHeight;
     }
 
-    void zSelectColors(void) {
+    void zSelectColors(void)
+    {
         // Selects the Text Color [and the Background Color?]
         zSetTextColor(TextColor);
     }
 
-    void zSetTextColor(zRGB TextColor1) {
+    void zSetTextColor(zRGB TextColor1)
+    {
         // Sets the Color Of Text
         GpiSetColor(hps, (TextColor = TextColor1));
     }
 
-    void zDrawTextString(INT x, INT y, PWCHAR string) {
+    void zDrawTextString(INT x, INT y, PWCHAR string)
+    {
         // Displays a String [string] at [x, y]
 
         zSelectColors();
@@ -737,29 +817,34 @@ public:
         GpiCharStringAt(hps, &ptl, _tcslen(string), string);
     }
 
-    INT zGetStringWidth(PWCHAR string) {
+    INT zGetStringWidth(PWCHAR string)
+    {
         // Returns the Approximate String Width for string [string]
 
         return (CharWidth * _tcslen(string));
     }
 
-    void zRightAlignText(INT x, INT y, PWCHAR string) {
+    void zRightAlignText(INT x, INT y, PWCHAR string)
+    {
         // Displays a Right-Aligned String [string] at [x, y]
 
         zDrawTextString(x - CharWidth * _tcslen(string), y, string);
     }
 
-    void zPickFont(PWCHAR string, zRECT RString) {
+    void zPickFont(PWCHAR string, zRECT RString)
+    {
         // Picks a Font That Will Fit [string] Inside of [RString]
         //   But Doesn't Display Text
         DisplayTextInRect(string, RString, FALSE);
     }
 
-    void zBestFitText(PWCHAR string, zRECT RString, BOOL ShowText = TRUE) {
+    void zBestFitText(PWCHAR string, zRECT RString, BOOL ShowText = TRUE)
+    {
         DisplayTextInRect(string, RString, ShowText);
     }
 
-    void zCenterText(PWCHAR string, zRECT RString) {
+    void zCenterText(PWCHAR string, zRECT RString)
+    {
         // Centers a String [string] in Rectangle [RString].
 
         zSelectColors();
@@ -767,15 +852,19 @@ public:
         DisplayTextInRect(string, RString, TRUE);
     }
 
-    INT Round(double d) {
+    INT Round(double d)
+    {
         // This Function Is Used For Rounding Purposes.  It Returns the closest
         // integer to [d], a double variable
 
         double LowerLimit = floor(d);
 
-        if ((d - LowerLimit) >= 0.5) {
+        if ((d - LowerLimit) >= 0.5)
+        {
             return ((INT)LowerLimit + 1);
-        } else {
+        }
+        else
+        {
             return ((INT)LowerLimit);
         }
     }
@@ -798,7 +887,8 @@ public:
 #include <graphics.h>
 #endif
 
-class zFONT {
+class zFONT
+{
 protected:
     zRECT    RBounds;           // zRECT. Boundary for String
     BOOL     UseBoldType;       // TRUE If Using Bold Type
@@ -809,27 +899,32 @@ protected:
     zRGB     BkgColor;          // Color of Background
 
 public:
-    zFONT(void) {
+    zFONT(void)
+    {
         zInitDefaults();
     }
 
-    ~zFONT() {
+    ~zFONT()
+    {
         // Kill Old Font, If Necessary
         zKillFont();
     }
 
-    inline void zSelectDefaultFont() {
+    inline void zSelectDefaultFont()
+    {
         // Selects the Default Font
         extern void zDOSSelectDefaultFont();
 
         zDOSSelectDefaultFont();
     }
 
-    void zKillFont(void) {
+    void zKillFont(void)
+    {
         // Kills the Font and Restores the Original Font
 
 
-        if (FontAllocated) {
+        if (FontAllocated)
+        {
             // New Font No Longer Allocated
             FontAllocated = FALSE;
 
@@ -837,7 +932,8 @@ public:
         }
     }
 
-    void zInitDefaults(void) {
+    void zInitDefaults(void)
+    {
         // Initializes Some Defaults
         UseBoldType   = FALSE;                // TRUE If Using Bold Type
         FontAllocated = FALSE;                // Haven't Allocated a New Font Yet
@@ -852,7 +948,8 @@ public:
     // "Get" Member Functions
 
 #ifdef MS_DOS_PLATFORM
-    _fontinfo zGetAvgFontSize(void) {
+    _fontinfo zGetAvgFontSize(void)
+    {
         // Returns the Average Font Height and Width Information
         _fontinfo fi;
         _getfontinfo(&fi);
@@ -860,41 +957,50 @@ public:
         return (fi);
     }
 
-    INT zGetStringWidth(PWCHAR string) {
+    INT zGetStringWidth(PWCHAR string)
+    {
         // Returns Length of a Graphics String Using Default Font
         return (_getgtextextent(string));
     }
 
-    INT zGetFontWidth(void)     {
+    INT zGetFontWidth(void)
+    {
         return zGetAvgFontSize().avgwidth;
     }
-    INT zGetFontHeight(void)    {
+    INT zGetFontHeight(void)
+    {
         return zGetAvgFontSize().pixheight;
     }
 #endif
 
 #ifdef BGI_DOS_PLATFORM
-    INT zGetStringWidth(PWCHAR string) {
+    INT zGetStringWidth(PWCHAR string)
+    {
         // Returns Length of a Graphics String Using Default Font
         return (textwidth(string));
     }
 
-    INT zGetFontWidth(void)   {
+    INT zGetFontWidth(void)
+    {
         return textwidth("A");
     }
-    INT zGetFontHeight(void)  {
+    INT zGetFontHeight(void)
+    {
         return (textheight("A") + 3);
     }
 #endif
 
-    zRGB zGetTextColor(void)     {
+    zRGB zGetTextColor(void)
+    {
         return TextColor;
     }
-    zRGB zGetBkgColor(void)      {
+    zRGB zGetBkgColor(void)
+    {
         return BkgColor;
     }
 
-    void zSetTextColor(zRGB TextColor1) {
+    void zSetTextColor(zRGB TextColor1)
+    {
         // Sets the Color Of Text
 #ifdef MS_DOS_PLATFORM
         _setcolor((TextColor = TextColor1));
@@ -905,24 +1011,28 @@ public:
 #endif
     }
 
-    void zSetBkgColor(zRGB BkgColor1) {
+    void zSetBkgColor(zRGB BkgColor1)
+    {
         // Set the Bkg. Color
         BkgColor = BkgColor1;
     }
 
-    void zSelectColors(void) {
+    void zSelectColors(void)
+    {
         // Selects the Text Color and the Background Color
 
         zSetTextColor(TextColor);
         zSetBkgColor(BkgColor);
     }
 
-    void zPickFont(PWCHAR string, zRECT RString) {
+    void zPickFont(PWCHAR string, zRECT RString)
+    {
         // Picks a Font That Will Fit [string] Inside of [RString]
         zBestFitText(string, RString, FALSE);
     }
 
-    void zBestFitText(PWCHAR string, zRECT RString, BOOL ShowText = TRUE) {
+    void zBestFitText(PWCHAR string, zRECT RString, BOOL ShowText = TRUE)
+    {
         // Calculates a Text Font to Best Fit String Within Rectangle [RString].
         //    Displays Text If [ShowText] Flag Is Set to TRUE
 
@@ -937,7 +1047,8 @@ public:
 
     }
 
-    void zDrawTextString(INT x, INT y, PWCHAR string) {
+    void zDrawTextString(INT x, INT y, PWCHAR string)
+    {
         // Displays a String [string] at [x, y]
 
         // Select Colors
@@ -955,7 +1066,8 @@ public:
 
     }
 
-    void zCenterText(PWCHAR string, zRECT RString) {
+    void zCenterText(PWCHAR string, zRECT RString)
+    {
         // Centers a String [string] in Rectangle.  Does Not
         //  Pick a New Font--Uses the Current Font
 
@@ -976,7 +1088,8 @@ public:
 #endif
     }
 
-    void zRightAlignText(INT x, INT y, PWCHAR  string) {
+    void zRightAlignText(INT x, INT y, PWCHAR  string)
+    {
         // Displays a Right-Aligned String [string] at [x, y]
 
         // Switch In Colors
@@ -993,7 +1106,8 @@ public:
 #endif
     }
 
-    void zDrawTextString(zRECT RInput, double xPercent, double yPercent, PWCHAR  string) {
+    void zDrawTextString(zRECT RInput, double xPercent, double yPercent, PWCHAR  string)
+    {
         // Displays a String [string] Within [RInput] Using X- and Y- Percentage
         //   Component Offsets
 
@@ -1013,7 +1127,8 @@ public:
                    double yTopPercent,
                    double xRightPercent,
                    double yBottomPercent,
-                   PWCHAR  string) {
+                   PWCHAR  string)
+    {
         // Picks a Font That Will Fit [string] Inside of The Rectangle
         //   [RString], With Rectangle Percentage Component Offsets
 
@@ -1029,15 +1144,19 @@ public:
         zBestFitText(string, &ROutput, FALSE);
     }
 
-    INT Round(double d) {
+    INT Round(double d)
+    {
         // This Function Is Used For Rounding Purposes.  It Returns the closest
         // integer to [d], a double variable
 
         double LowerLimit = floor(d);
 
-        if ((d - LowerLimit) >= 0.5) {
+        if ((d - LowerLimit) >= 0.5)
+        {
             return ((INT)LowerLimit + 1);
-        } else {
+        }
+        else
+        {
             return ((INT)LowerLimit);
         }
     }

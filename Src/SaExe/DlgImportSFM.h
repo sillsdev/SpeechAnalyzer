@@ -31,13 +31,13 @@
 /////////////////////////////////////////////////////////////////////////////
 // CDlgImportSFM private dialog
 
-class CDlgImportSFM : public CDialog {
+class CDlgImportSFM : public CDialog
+{
     // Construction
 public:
     CDlgImportSFM(BOOL bPhonetic, BOOL bPhonemic, BOOL bOrtho, CWnd * pParent = NULL);  // standard constructor
 
     // Dialog Data
-    //{{AFX_DATA(CDlgImportSFM)
     enum { IDD = IDD_ANNOTATION_IMPORT_SFM };
     BOOL    m_bGloss;
     BOOL    m_bPhonemic;
@@ -47,7 +47,6 @@ public:
     CSaString m_szGloss;
     CSaString m_szPhonetic;
     CSaString m_szOrthographic;
-    //}}AFX_DATA
 
     // Implementation
 protected:
@@ -55,10 +54,8 @@ protected:
     void SetEnable(int nItem, BOOL bEnable);
 
     // Generated message map functions
-    //{{AFX_MSG(CDlgImportSFM)
     afx_msg void OnImportPlainText();
     virtual BOOL OnInitDialog();
-    //}}AFX_MSG
     DECLARE_MESSAGE_MAP()
 };
 #endif

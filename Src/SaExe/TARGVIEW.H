@@ -11,7 +11,8 @@ class CSaView;
 
 #define MAX_TARGETS 256
 
-class CTargViewDlg : public CDialog {
+class CTargViewDlg : public CDialog
+{
     // Construction
 public:
     CTargViewDlg(CMainFrame * pMainFrame);  // standard constructor
@@ -23,10 +24,12 @@ public:
     CString   m_SrcView;
     //}}AFX_DATA
 
-    CString OnlyTarg()  {
+    CString OnlyTarg()
+    {
         return m_onlyTarg;
     };
-    int    NumTargs()  {
+    int    NumTargs()
+    {
         return m_numTargs;
     };
     CSaView  * Targ();

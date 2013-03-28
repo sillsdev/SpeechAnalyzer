@@ -54,7 +54,8 @@
 
 
 /* Coefficients structure */
-typedef struct SCoefficients {
+typedef struct SCoefficients
+{
     Float asp_amp;
     Float fric_amp;
     Float f1p_amp;
@@ -77,7 +78,8 @@ typedef struct SCoefficients {
 } Coefficients;
 
 /* Synthesizer structure */
-typedef struct {
+typedef struct
+{
     /* static data */
     BOOL parallel_only_flag;
     int num_casc_formants;
@@ -111,7 +113,8 @@ typedef struct {
 
 } Synthesizer;
 
-class SilVoicing {
+class SilVoicing
+{
 public:
     SilVoicing();
     void clear();
@@ -135,7 +138,8 @@ public:
 
 };
 
-enum {
+enum
+{
     O_NORMAL = 0,
     O_VOICING = 1,
     O_ASPIRATION = 2,
@@ -160,15 +164,18 @@ enum {
     NUM_OUTPUTS = 21
 };
 
-class CKSynth {
+class CKSynth
+{
 public:
-    CKSynth(SPKRDEF * init) : spkrdef(*init) {
+    CKSynth(SPKRDEF * init) : spkrdef(*init)
+    {
         init_synthesizer();
     }
 
 
     void senswave(TEMPORAL * parameters, INT16 * wave);
-    Float synthesizedWaveformMaximum() {
+    Float synthesizedWaveformMaximum()
+    {
         return sigmx;
     }
 

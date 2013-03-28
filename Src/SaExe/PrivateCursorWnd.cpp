@@ -35,7 +35,8 @@ END_MESSAGE_MAP()
 /***************************************************************************/
 // CPrivateCursorWnd::CPrivateCursorWnd Constructor
 /***************************************************************************/
-CPrivateCursorWnd::CPrivateCursorWnd() {
+CPrivateCursorWnd::CPrivateCursorWnd()
+{
     m_bCursorDrag = FALSE;
     m_rWnd.SetRect(0, 0, 0, 0);
 }
@@ -43,7 +44,8 @@ CPrivateCursorWnd::CPrivateCursorWnd() {
 /***************************************************************************/
 // CPrivateCursorWnd::~CPrivateCursorWnd Destructor
 /***************************************************************************/
-CPrivateCursorWnd::~CPrivateCursorWnd() {
+CPrivateCursorWnd::~CPrivateCursorWnd()
+{
 }
 
 /***************************************************************************/
@@ -51,7 +53,8 @@ CPrivateCursorWnd::~CPrivateCursorWnd() {
 // Creates a child window with the given parameters.
 /***************************************************************************/
 BOOL CPrivateCursorWnd::Create(LPCTSTR lpszClassName, LPCTSTR lpszWindowName, DWORD dwStyle,
-                               const RECT & rect, CWnd * pParentWnd, UINT /*nID*/, CCreateContext * /*pContext*/) {
+                               const RECT & rect, CWnd * pParentWnd, UINT /*nID*/, CCreateContext * /*pContext*/)
+{
     return CWnd::CreateEx(WS_EX_TRANSPARENT, lpszClassName, lpszWindowName, dwStyle, rect.left,
                           rect.top, rect.right - rect.left, rect.bottom - rect.top,
                           pParentWnd->GetSafeHwnd(), 0);
@@ -62,7 +65,8 @@ BOOL CPrivateCursorWnd::Create(LPCTSTR lpszClassName, LPCTSTR lpszWindowName, DW
 // Called from the framework before the creation of the window. Registers
 // the new window class.
 /***************************************************************************/
-BOOL CPrivateCursorWnd::PreCreateWindow(CREATESTRUCT & cs) {
+BOOL CPrivateCursorWnd::PreCreateWindow(CREATESTRUCT & cs)
+{
     cs.lpszClass = AfxRegisterWndClass(CS_VREDRAW | CS_HREDRAW | CS_DBLCLKS,
                                        AfxGetApp()->LoadCursor(IDC_MFINGERNW),
                                        (HBRUSH)GetStockObject(NULL_BRUSH)/*(HBRUSH)(COLOR_WINDOW+1)*/, 0);
@@ -76,7 +80,8 @@ BOOL CPrivateCursorWnd::PreCreateWindow(CREATESTRUCT & cs) {
 /***************************************************************************/
 // CPrivateCursorWnd::OnPaint Painting
 /***************************************************************************/
-void CPrivateCursorWnd::OnPaint() {
+void CPrivateCursorWnd::OnPaint()
+{
     CPaintDC dc(this); // device context for painting
     CRect dummyRect(0,0,0,0); // needed for second OnDraw parameter which
     // is only used for printing
@@ -92,10 +97,12 @@ void CPrivateCursorWnd::OnPaint() {
 // cause a wrong cursor color) unless the clipping rectangle is different
 // from the line rectangle inside the cursor window.
 /***************************************************************************/
-void CPrivateCursorWnd::OnDraw(CDC * pDC, const CRect & printRect) {
+void CPrivateCursorWnd::OnDraw(CDC * pDC, const CRect & printRect)
+{
     CPlotWnd * pWnd = (CPlotWnd *)GetParent();
     CGraphWnd * pGraph = (CGraphWnd *)pWnd->GetParent();
-    if (pGraph->IsPlotID(IDD_TWC)) {
+    if (pGraph->IsPlotID(IDD_TWC))
+    {
         OnDrawHorizontalCursor(pDC,printRect);
         return;
     }
@@ -105,24 +112,31 @@ void CPrivateCursorWnd::OnDraw(CDC * pDC, const CRect & printRect) {
     // get window coordinates and invalid region
     CRect rWnd,rClip, rParent, rSect;
 
-    if (pDC->IsPrinting()) {
+    if (pDC->IsPrinting())
+    {
         rWnd    = printRect;
         rClip = printRect;
-    } else {
+    }
+    else
+    {
         GetClientRect(rWnd);
         pDC->GetClipBox(&rClip);
         pDC->LPtoDP(&rClip);
-        if (rWnd.Width() == 0) {
+        if (rWnd.Width() == 0)
+        {
             m_rWnd.SetRect(0, 0, 0, 0);
         }
     }
-    if (rClip.Height() > 0) {
-        if (rWnd.Width() > 1) {
+    if (rClip.Height() > 0)
+    {
+        if (rWnd.Width() > 1)
+        {
             // cursor window is larger than one pixel
             rWnd.left = CURSOR_WINDOW_HALFWIDTH;
             rWnd.right = rWnd.left + 1;
         }
-        if (!pDC->IsPrinting()) {
+        if (!pDC->IsPrinting())
+        {
             // get the coordinates in the parent window
             rParent = rWnd;
             ClientToScreen(rParent);
@@ -154,7 +168,8 @@ void CPrivateCursorWnd::OnDraw(CDC * pDC, const CRect & printRect) {
 #endif
         {
             // last time we did not paint here - store new locatation and draw cursor
-            if (!pDC->IsPrinting()) {
+            if (!pDC->IsPrinting())
+            {
                 m_rWnd = rParent;
             }
             // get color from main frame
@@ -162,23 +177,29 @@ void CPrivateCursorWnd::OnDraw(CDC * pDC, const CRect & printRect) {
             // check if plot background is dark to set appropriate raster operation mode
             COLORREF cColor = pMainWnd->GetColors()->cPlotBkg;
             BOOL bDarkBkg = FALSE;
-            if ((GetRValue(cColor) + GetGValue(cColor) + GetBValue(cColor)) < 381) {
+            if ((GetRValue(cColor) + GetGValue(cColor) + GetBValue(cColor)) < 381)
+            {
                 bDarkBkg = TRUE;
             }
             cColor = pMainWnd->GetColors()->cPlotPrivateCursor;
             CPen pen(PS_SOLID, 1, cColor);
             CPen * pOldPen = pDC->SelectObject(&pen);
             int oldRop = 0;
-            if (FALSE && !pDC->IsPrinting()) {
-                if (bDarkBkg) {
+            if (FALSE && !pDC->IsPrinting())
+            {
+                if (bDarkBkg)
+                {
                     oldRop = pDC->SetROP2(R2_MASKPENNOT);    // set drawing mode for dark bkg
-                } else {
+                }
+                else
+                {
                     oldRop = pDC->SetROP2(R2_MERGEPENNOT);    // set drawing mode for light bkg
                 }
             }
             pDC->MoveTo(rWnd.left, rClip.top);
             pDC->LineTo(rWnd.left, rClip.bottom);
-            if (FALSE && !pDC->IsPrinting()) {
+            if (FALSE && !pDC->IsPrinting())
+            {
                 pDC->SetROP2(oldRop); // set back old drawing mode
             }
             pDC->SelectObject(pOldPen);
@@ -192,33 +213,41 @@ void CPrivateCursorWnd::OnDraw(CDC * pDC, const CRect & printRect) {
 // *** Modify this function plus ::OnDrawHorizontalCursor(), ::OnLButtonDown() & code
 //      in CPlotWnd::OnLButtonDown() to add HORIZONTAL cursor support for new windows.
 /***************************************************************************/
-void CPrivateCursorWnd::OnDrawHorizontalCursor(CDC * pDC, const CRect & printRect) {
+void CPrivateCursorWnd::OnDrawHorizontalCursor(CDC * pDC, const CRect & printRect)
+{
 
     bDrawn = TRUE;
     // get window coordinates and invalid region
     CRect rWnd,rClip, rParent, rSect;
 
-    if (pDC->IsPrinting()) {
+    if (pDC->IsPrinting())
+    {
         rWnd    = printRect;
         rClip = printRect;
-    } else {
+    }
+    else
+    {
         GetClientRect(rWnd);
         pDC->GetClipBox(&rClip);
         pDC->LPtoDP(&rClip);
 
-        if (rWnd.Height() == 0) {
+        if (rWnd.Height() == 0)
+        {
             m_rWnd.SetRect(0, 0, 0, 0);
         }
     }
 
-    if (rClip.Width() > 0) {
-        if (rWnd.Height() > 1) {
+    if (rClip.Width() > 0)
+    {
+        if (rWnd.Height() > 1)
+        {
             // cursor window is larger than one pixel
             rWnd.top = CURSOR_WINDOW_HALFWIDTH;
             rWnd.bottom = rWnd.top + 1;
         }
 
-        if (!pDC->IsPrinting()) {
+        if (!pDC->IsPrinting())
+        {
             // get the coordinates in the parent window
             rParent = rWnd;
             ClientToScreen(rParent);
@@ -236,7 +265,8 @@ void CPrivateCursorWnd::OnDrawHorizontalCursor(CDC * pDC, const CRect & printRec
 #endif
         {
             // last time we did not paint here - store new locatation and draw cursor
-            if (!pDC->IsPrinting()) {
+            if (!pDC->IsPrinting())
+            {
                 m_rWnd = rParent;
             }
             // get color from main frame
@@ -244,17 +274,22 @@ void CPrivateCursorWnd::OnDrawHorizontalCursor(CDC * pDC, const CRect & printRec
             // check if plot background is dark to set appropriate raster operation mode
             COLORREF cColor = pMainWnd->GetColors()->cPlotBkg;
             BOOL bDarkBkg = FALSE;
-            if ((GetRValue(cColor) + GetGValue(cColor) + GetBValue(cColor)) < 381) {
+            if ((GetRValue(cColor) + GetGValue(cColor) + GetBValue(cColor)) < 381)
+            {
                 bDarkBkg = TRUE;
             }
             cColor = pMainWnd->GetColors()->cPlotPrivateCursor;
             CPen pen(PS_SOLID, 1, cColor);
             CPen * pOldPen = pDC->SelectObject(&pen);
             int oldRop = 0;
-            if (FALSE && !pDC->IsPrinting()) {
-                if (bDarkBkg) {
+            if (FALSE && !pDC->IsPrinting())
+            {
+                if (bDarkBkg)
+                {
                     oldRop = pDC->SetROP2(R2_MASKPENNOT);    // set drawing mode for dark bkg
-                } else {
+                }
+                else
+                {
                     oldRop = pDC->SetROP2(R2_MERGEPENNOT);    // set drawing mode for light bkg
                 }
             }
@@ -262,7 +297,8 @@ void CPrivateCursorWnd::OnDrawHorizontalCursor(CDC * pDC, const CRect & printRec
             pDC->MoveTo(rClip.left, rWnd.top);
             pDC->LineTo(rClip.right, rWnd.top);
 
-            if (FALSE && !pDC->IsPrinting()) {
+            if (FALSE && !pDC->IsPrinting())
+            {
                 pDC->SetROP2(oldRop); // set back old drawing mode
             }
             pDC->SelectObject(pOldPen);
@@ -276,8 +312,10 @@ void CPrivateCursorWnd::OnDrawHorizontalCursor(CDC * pDC, const CRect & printRec
 // dragged, and the cursor moves exactly over the center of the cursor window
 // the cursor changes to a size symbol.
 /***************************************************************************/
-void CPrivateCursorWnd::OnMouseMove(UINT nFlags, CPoint mousePoint) {
-    if (m_bCursorDrag) {
+void CPrivateCursorWnd::OnMouseMove(UINT nFlags, CPoint mousePoint)
+{
+    if (m_bCursorDrag)
+    {
         // get pointer to parent plot, parent graph and to view
         CPlotWnd * pWnd = (CPlotWnd *)GetParent();
         // move cursor
@@ -286,18 +324,25 @@ void CPrivateCursorWnd::OnMouseMove(UINT nFlags, CPoint mousePoint) {
         pWnd->ScreenToClient(&point);
         // SDM 1.06.6U4
         ChangeCursorPosition(point);
-    } else {
+    }
+    else
+    {
         // TCJ 5/25/00 - Added support for horizontal cursor
         // get pointer to parent plot
         CPlotWnd * pWnd = (CPlotWnd *)GetParent();
         CGraphWnd * pGraph = (CGraphWnd *)pWnd->GetParent();
-        if (pGraph->IsPlotID(IDD_TWC)) {
-            if (mousePoint.y == CURSOR_WINDOW_HALFWIDTH) { // cursor is over the line
+        if (pGraph->IsPlotID(IDD_TWC))
+        {
+            if (mousePoint.y == CURSOR_WINDOW_HALFWIDTH)   // cursor is over the line
+            {
                 // create Vertical two-headed arrow pointer, for horizontal cursor bar
                 SetCursor(AfxGetApp()->LoadStandardCursor(IDC_SIZENS));
             }
-        } else {
-            if (mousePoint.x == CURSOR_WINDOW_HALFWIDTH) { // cursor is over the line
+        }
+        else
+        {
+            if (mousePoint.x == CURSOR_WINDOW_HALFWIDTH)   // cursor is over the line
+            {
                 // create Horizontal two-headed arrow pointer, for vertical cursor bar
                 SetCursor(AfxGetApp()->LoadStandardCursor(IDC_SIZEWE));
             }
@@ -317,7 +362,8 @@ void CPrivateCursorWnd::OnMouseMove(UINT nFlags, CPoint mousePoint) {
 // *** Modify this function plus ::OnDrawHorizontalCursor(), ::OnLButtonDown() & code
 //      in CPlotWnd::OnLButtonDown() to add HORIZONTAL cursor support for new windows.
 /***************************************************************************/
-void CPrivateCursorWnd::OnLButtonDown(UINT nFlags, CPoint mousePoint) {
+void CPrivateCursorWnd::OnLButtonDown(UINT nFlags, CPoint mousePoint)
+{
     // get pointer to parent plot, parent graph and to view
     CPlotWnd * pWnd = (CPlotWnd *)GetParent();
     CGraphWnd * pGraph = (CGraphWnd *)pWnd->GetParent();
@@ -327,10 +373,13 @@ void CPrivateCursorWnd::OnLButtonDown(UINT nFlags, CPoint mousePoint) {
     m_bCursorDrag = TRUE;
     SetCapture(); // receive all mouse input
 
-    if (pGraph->IsPlotID(IDD_TWC)) {
+    if (pGraph->IsPlotID(IDD_TWC))
+    {
         // create Vertical two-headed arrow pointer, for horizontal cursor bar - TCJ 5/2000
         SetCursor(AfxGetApp()->LoadStandardCursor(IDC_SIZENS));
-    } else {
+    }
+    else
+    {
         // create Horizontal two-headed arrow pointer, for vertical cursor bar
         SetCursor(AfxGetApp()->LoadStandardCursor(IDC_SIZEWE));
     }
@@ -359,7 +408,8 @@ void CPrivateCursorWnd::OnLButtonDown(UINT nFlags, CPoint mousePoint) {
 // is cancelled. Then the private cursor window will be set back to the big
 // width.
 /***************************************************************************/
-void CPrivateCursorWnd::OnLButtonUp(UINT nFlags, CPoint mousePoint) {
+void CPrivateCursorWnd::OnLButtonUp(UINT nFlags, CPoint mousePoint)
+{
     m_bCursorDrag = FALSE;
     ReleaseCapture(); // mouse input also to other windows
     ClipCursor(NULL); // free mouse to move everywhere
@@ -378,11 +428,13 @@ void CPrivateCursorWnd::OnLButtonUp(UINT nFlags, CPoint mousePoint) {
 // CPrivateCursorWnd::ChangeCursorPosition
 // common function to move cursor to current point in parent coordinates
 /***************************************************************************/
-void CPrivateCursorWnd::ChangeCursorPosition(CPoint point) {
+void CPrivateCursorWnd::ChangeCursorPosition(CPoint point)
+{
     // get pointer to parent plot
     CPlotWnd * pWnd = (CPlotWnd *)GetParent();
     CGraphWnd * pGraph = (CGraphWnd *)pWnd->GetParent();
-    if (pGraph->IsPlotID(IDD_TWC)) {
+    if (pGraph->IsPlotID(IDD_TWC))
+    {
         ChangeHorizontalCursorPosition(point);
         return;
     }
@@ -392,14 +444,16 @@ void CPrivateCursorWnd::ChangeCursorPosition(CPoint point) {
     GetWindowRect(rOldLine);
     pWnd->ScreenToClient(rOldLine);
     // get the line position in the middle
-    if (rOldLine.Width() > 1) { // cursor window has large width
+    if (rOldLine.Width() > 1)   // cursor window has large width
+    {
         rOldLine.left += CURSOR_WINDOW_HALFWIDTH;
         rOldLine.right -= (CURSOR_WINDOW_HALFWIDTH - 1);
     }
     rNewLine.SetRect(point.x, rOldLine.top, point.x + 1, rOldLine.bottom);
     rNewWnd.SetRect(point.x - CURSOR_WINDOW_HALFWIDTH, rOldLine.top, point.x + CURSOR_WINDOW_HALFWIDTH, rOldLine.bottom);
     // check if new cursor line position
-    if (rOldLine != rNewLine) {
+    if (rOldLine != rNewLine)
+    {
         // invalidate and update old position
         pWnd->InvalidateRect(rOldLine, TRUE); // redraw old cursor position
         MoveWindow(rNewWnd, FALSE); // move the cursor window to the new position
@@ -416,7 +470,8 @@ void CPrivateCursorWnd::ChangeCursorPosition(CPoint point) {
 // *** Modify this function plus ::OnDrawHorizontalCursor(), ::OnLButtonDown() & code
 //      in CPlotWnd::OnLButtonDown() to add HORIZONTAL cursor support for new windows.
 /***************************************************************************/
-void CPrivateCursorWnd::ChangeHorizontalCursorPosition(CPoint point) {
+void CPrivateCursorWnd::ChangeHorizontalCursorPosition(CPoint point)
+{
     // get pointer to parent plot, parent graph and to view
     CPlotWnd * pWnd = (CPlotWnd *)GetParent();
     CGraphWnd * pGraph = (CGraphWnd *)pWnd->GetParent();
@@ -427,7 +482,8 @@ void CPrivateCursorWnd::ChangeHorizontalCursorPosition(CPoint point) {
     pWnd->ScreenToClient(rOldLine);
 
     // get the line position in the middle
-    if (rOldLine.Height() > 1) { // cursor window has large width
+    if (rOldLine.Height() > 1)   // cursor window has large width
+    {
         rOldLine.top += CURSOR_WINDOW_HALFWIDTH;
         rOldLine.bottom -= (CURSOR_WINDOW_HALFWIDTH - 1);
     }
@@ -436,7 +492,8 @@ void CPrivateCursorWnd::ChangeHorizontalCursorPosition(CPoint point) {
     rNewWnd.SetRect(rOldLine.left, point.y - CURSOR_WINDOW_HALFWIDTH, rOldLine.right, point.y + CURSOR_WINDOW_HALFWIDTH);
 
     // check if new cursor line position
-    if (rOldLine != rNewLine) {
+    if (rOldLine != rNewLine)
+    {
         // invalidate and update old position
         pWnd->InvalidateRect(rOldLine, TRUE); // redraw old cursor position
         MoveWindow(rNewWnd, FALSE); // move the cursor window to the new position
@@ -457,7 +514,8 @@ void CPrivateCursorWnd::ChangeHorizontalCursorPosition(CPoint point) {
 // This event should initiate a popup menu, so the window sends the message
 // further to the parent.
 /***************************************************************************/
-void CPrivateCursorWnd::OnRButtonDown(UINT nFlags, CPoint point) {
+void CPrivateCursorWnd::OnRButtonDown(UINT nFlags, CPoint point)
+{
     CPlotWnd * pWnd = (CPlotWnd *)GetParent();
     ClientToScreen(&point);
     pWnd->ScreenToClient(&point);
@@ -465,11 +523,13 @@ void CPrivateCursorWnd::OnRButtonDown(UINT nFlags, CPoint point) {
     CWnd::OnRButtonDown(nFlags, point);
 }
 
-void CPrivateCursorWnd::ResetPosition() {
+void CPrivateCursorWnd::ResetPosition()
+{
     // reset old cursor position
     m_rWnd.SetRect(0, 0, 0, 0);
 }
 
-BOOL CPrivateCursorWnd::IsDragging() {
+BOOL CPrivateCursorWnd::IsDragging()
+{
     return m_bCursorDrag;
 }

@@ -27,7 +27,8 @@
 *    14 Nov 1991    changed type Float double
 */
 
-class CResonator {
+class CResonator
+{
 public:
     CResonator();
     CResonator(CResonator * original);
@@ -43,14 +44,17 @@ public:
 private:
     void SetPolePair(Float CF, Float BW, Float SF);
     void SetZeroPair(Float CF, Float BW, Float SF);
-    void AdjustGain(Float gain) {
+    void AdjustGain(Float gain)
+    {
         Coef.A *= gain;
     }
 
-    struct {
+    struct
+    {
         Float A, B, C;
     } Coef;
-    struct {
+    struct
+    {
         Float Z1, Z2;
     } State;
     CResonator * m_pAdjusted;

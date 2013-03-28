@@ -7,7 +7,8 @@
 // The peaks are returned in order of increasing location.
 // See class PeakSource for more documentation.
 
-class QuadraticPeakSource : public PeakSource {
+class QuadraticPeakSource : public PeakSource
+{
 public:
 
     // Construct a Quadratic peak source with the given concavity

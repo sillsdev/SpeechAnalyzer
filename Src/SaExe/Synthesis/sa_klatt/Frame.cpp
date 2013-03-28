@@ -41,7 +41,8 @@
 
 /* ---------------------------------------------------------------------- */
 
-void CKSynth::senswave(TEMPORAL * parameters, INT16 * wave) {
+void CKSynth::senswave(TEMPORAL * parameters, INT16 * wave)
+{
     int index;
     Float sample;
 
@@ -107,24 +108,33 @@ void CKSynth::senswave(TEMPORAL * parameters, INT16 * wave) {
     trach_pole_special.InterPolePair(pars.FTP, pars.BTP, spkrdef.SR);
 
     /* setup noise source */
-    if (spkrdef.SB && !pars.AF && !pars.AH) {
+    if (spkrdef.SB && !pars.AF && !pars.AH)
+    {
         synth.random = spkrdef.RS;
     }
 
     /* synthesize some samples */
-    for (index = 0; index < spkrdef.UI; index++) {
+    for (index = 0; index < spkrdef.UI; index++)
+    {
         sample = next_sample();
-        if (sample <= 32767) {
-            if (sample >= -32768) {
+        if (sample <= 32767)
+        {
+            if (sample >= -32768)
+            {
                 wave[index] = (INT16) round(sample);    /* round, not truncate */
-            } else {
+            }
+            else
+            {
                 wave[index] = -32768;
             }
-        } else {
+        }
+        else
+        {
             wave[index] = 32767;
         }
 
-        if (fabs(sample) > sigmx) {
+        if (fabs(sample) > sigmx)
+        {
             sigmx = fabs(sample);
         }
     }

@@ -40,7 +40,8 @@ END_MESSAGE_MAP()
 /***************************************************************************/
 // CDlgChartVowelsPage::CDlgChartVowelsPage Constructor
 /***************************************************************************/
-CDlgChartVowelsPage::CDlgChartVowelsPage() : CPropertyPage(CDlgChartVowelsPage::IDD) {
+CDlgChartVowelsPage::CDlgChartVowelsPage() : CPropertyPage(CDlgChartVowelsPage::IDD)
+{
     //{{AFX_DATA_INIT(CDlgChartVowelsPage)
     // NOTE: the ClassWizard will add member initialization here
     //}}AFX_DATA_INIT
@@ -52,7 +53,8 @@ CDlgChartVowelsPage::CDlgChartVowelsPage() : CPropertyPage(CDlgChartVowelsPage::
 /***************************************************************************/
 // CDlgChartVowelsPage::DoDataExchange Data exchange
 /***************************************************************************/
-void CDlgChartVowelsPage::DoDataExchange(CDataExchange * pDX) {
+void CDlgChartVowelsPage::DoDataExchange(CDataExchange * pDX)
+{
     CPropertyPage::DoDataExchange(pDX);
     //{{AFX_DATA_MAP(CDlgChartVowelsPage)
     // NOTE: the ClassWizard will add DDX and DDV calls here
@@ -66,7 +68,8 @@ void CDlgChartVowelsPage::DoDataExchange(CDataExchange * pDX) {
 // CDlgChartVowelsPage::OnInitDialog Dialog initialisation
 // All the necessary informations are put into the dialog controls.
 /***************************************************************************/
-BOOL CDlgChartVowelsPage::OnInitDialog() {
+BOOL CDlgChartVowelsPage::OnInitDialog()
+{
     CPropertyPage::OnInitDialog();
     // get the font for the text controls
     CFont * pFont = ((CDlgCharChart *)GetParent())->GetTextFont();
@@ -119,7 +122,8 @@ END_MESSAGE_MAP()
 /***************************************************************************/
 // CDlgChartConsonantsPage::CDlgChartConsonantsPage Constructor
 /***************************************************************************/
-CDlgChartConsonantsPage::CDlgChartConsonantsPage() : CPropertyPage(CDlgChartConsonantsPage::IDD) {
+CDlgChartConsonantsPage::CDlgChartConsonantsPage() : CPropertyPage(CDlgChartConsonantsPage::IDD)
+{
     //{{AFX_DATA_INIT(CDlgChartConsonantsPage)
     // NOTE: the ClassWizard will add member initialization here
     //}}AFX_DATA_INIT
@@ -131,7 +135,8 @@ CDlgChartConsonantsPage::CDlgChartConsonantsPage() : CPropertyPage(CDlgChartCons
 /***************************************************************************/
 // CDlgChartConsonantsPage::DoDataExchange Data exchange
 /***************************************************************************/
-void CDlgChartConsonantsPage::DoDataExchange(CDataExchange * pDX) {
+void CDlgChartConsonantsPage::DoDataExchange(CDataExchange * pDX)
+{
     CPropertyPage::DoDataExchange(pDX);
     //{{AFX_DATA_MAP(CDlgChartConsonantsPage)
     // NOTE: the ClassWizard will add DDX and DDV calls here
@@ -145,7 +150,8 @@ void CDlgChartConsonantsPage::DoDataExchange(CDataExchange * pDX) {
 // CDlgChartConsonantsPage::OnInitDialog Dialog initialisation
 // All the necessary informations are put into the dialog controls.
 /***************************************************************************/
-BOOL CDlgChartConsonantsPage::OnInitDialog() {
+BOOL CDlgChartConsonantsPage::OnInitDialog()
+{
     CPropertyPage::OnInitDialog();
     // get the font for the text controls
     CFont * pFont = ((CDlgCharChart *)GetParent())->GetTextFont();
@@ -261,7 +267,8 @@ END_MESSAGE_MAP()
 /***************************************************************************/
 // CDlgChartDiacriticsPage::CDlgChartDiacriticsPage Constructor
 /***************************************************************************/
-CDlgChartDiacriticsPage::CDlgChartDiacriticsPage() : CPropertyPage(CDlgChartDiacriticsPage::IDD) {
+CDlgChartDiacriticsPage::CDlgChartDiacriticsPage() : CPropertyPage(CDlgChartDiacriticsPage::IDD)
+{
     //{{AFX_DATA_INIT(CDlgChartDiacriticsPage)
     //}}AFX_DATA_INIT
 }
@@ -272,7 +279,8 @@ CDlgChartDiacriticsPage::CDlgChartDiacriticsPage() : CPropertyPage(CDlgChartDiac
 /***************************************************************************/
 // CDlgChartDiacriticsPage::DoDataExchange Data exchange
 /***************************************************************************/
-void CDlgChartDiacriticsPage::DoDataExchange(CDataExchange * pDX) {
+void CDlgChartDiacriticsPage::DoDataExchange(CDataExchange * pDX)
+{
     CPropertyPage::DoDataExchange(pDX);
     //{{AFX_DATA_MAP(CDlgChartDiacriticsPage)
     //}}AFX_DATA_MAP
@@ -284,7 +292,8 @@ void CDlgChartDiacriticsPage::DoDataExchange(CDataExchange * pDX) {
 /***************************************************************************/
 // CDlgChartDiacriticsPage::OnInitDialog Dialog initialisation
 /***************************************************************************/
-BOOL CDlgChartDiacriticsPage::OnInitDialog() {
+BOOL CDlgChartDiacriticsPage::OnInitDialog()
+{
     CPropertyPage::OnInitDialog();
     // get the font for the text controls
     CFont * pFont = ((CDlgCharChart *)GetParent())->GetTextFont();
@@ -361,7 +370,8 @@ END_MESSAGE_MAP()
 /***************************************************************************/
 // CDlgChartSuprasegsPage::CDlgChartSuprasegsPage Constructor
 /***************************************************************************/
-CDlgChartSuprasegsPage::CDlgChartSuprasegsPage() : CPropertyPage(CDlgChartSuprasegsPage::IDD) {
+CDlgChartSuprasegsPage::CDlgChartSuprasegsPage() : CPropertyPage(CDlgChartSuprasegsPage::IDD)
+{
     //{{AFX_DATA_INIT(CDlgChartSuprasegsPage)
     //}}AFX_DATA_INIT
 }
@@ -372,7 +382,8 @@ CDlgChartSuprasegsPage::CDlgChartSuprasegsPage() : CPropertyPage(CDlgChartSupras
 /***************************************************************************/
 // CDlgChartSuprasegsPage::DoDataExchange Data exchange
 /***************************************************************************/
-void CDlgChartSuprasegsPage::DoDataExchange(CDataExchange * pDX) {
+void CDlgChartSuprasegsPage::DoDataExchange(CDataExchange * pDX)
+{
     CPropertyPage::DoDataExchange(pDX);
     //{{AFX_DATA_MAP(CDlgChartSuprasegsPage)
     //}}AFX_DATA_MAP
@@ -384,7 +395,8 @@ void CDlgChartSuprasegsPage::DoDataExchange(CDataExchange * pDX) {
 /***************************************************************************/
 // CDlgChartSuprasegsPage::OnInitDialog Dialog initialisation
 /***************************************************************************/
-BOOL CDlgChartSuprasegsPage::OnInitDialog() {
+BOOL CDlgChartSuprasegsPage::OnInitDialog()
+{
     CPropertyPage::OnInitDialog();
     // get the font for the text controls
     CFont * pFont = ((CDlgCharChart *)GetParent())->GetTextFont();
@@ -473,7 +485,8 @@ END_MESSAGE_MAP()
 // CDlgCharChart::CDlgCharChart Constructor
 /***************************************************************************/
 CDlgCharChart::CDlgCharChart(LPCTSTR pszCaption, CWnd * pParent, UINT iSelectPage)
-    : CPropertySheet(pszCaption, pParent, iSelectPage) {
+    : CPropertySheet(pszCaption, pParent, iSelectPage)
+{
     //{{AFX_DATA_INIT(CDlgCharChart)
     // NOTE: the ClassWizard will add member initialization here
     //}}AFX_DATA_INIT
@@ -492,7 +505,8 @@ CDlgCharChart::CDlgCharChart(LPCTSTR pszCaption, CWnd * pParent, UINT iSelectPag
     m_apCharTables[IPA] = new CIPATable();
 }
 
-CDlgCharChart::~CDlgCharChart() {
+CDlgCharChart::~CDlgCharChart()
+{
     CleanUp();
 }
 
@@ -502,7 +516,8 @@ CDlgCharChart::~CDlgCharChart() {
 /***************************************************************************/
 // CDlgCharChart::DoDataExchange Data exchange
 /***************************************************************************/
-void CDlgCharChart::DoDataExchange(CDataExchange * pDX) {
+void CDlgCharChart::DoDataExchange(CDataExchange * pDX)
+{
     CPropertySheet::DoDataExchange(pDX);
     //{{AFX_DATA_MAP(CDlgCharChart)
     // NOTE: the ClassWizard will add DDX and DDV calls here
@@ -512,9 +527,12 @@ void CDlgCharChart::DoDataExchange(CDataExchange * pDX) {
 /***************************************************************************/
 // CDlgCharChart::CleanUp
 /***************************************************************************/
-void CDlgCharChart::CleanUp() {
-    for (int nLoop = 0; nLoop < MAX_NUMBER_TABLES; nLoop++) {
-        if (m_apCharTables[nLoop]) {
+void CDlgCharChart::CleanUp()
+{
+    for (int nLoop = 0; nLoop < MAX_NUMBER_TABLES; nLoop++)
+    {
+        if (m_apCharTables[nLoop])
+        {
             delete m_apCharTables[nLoop];
             m_apCharTables[nLoop] = NULL;
         }
@@ -526,7 +544,8 @@ void CDlgCharChart::CleanUp() {
 // This property sheet never uses an Apply button. The Apply button
 // is deleted and a Help button put in its place.
 /***************************************************************************/
-void CDlgCharChart::ChangeButtons() {
+void CDlgCharChart::ChangeButtons()
+{
     CWnd * pWndApply = GetDlgItem(ID_APPLY_NOW); // get pointers to the button objects
     CWnd * pWndCancel = GetDlgItem(IDCANCEL);
     CWnd * pWndOK = GetDlgItem(IDOK);
@@ -561,20 +580,26 @@ void CDlgCharChart::ChangeButtons() {
 // object, which contains a string to put into the edit control. If this
 // pointer is NULL (default), no string will be put.
 /***************************************************************************/
-void CDlgCharChart::SetInitialState(CFont * pFont, int nCharTable, CString * pszText) {
+void CDlgCharChart::SetInitialState(CFont * pFont, int nCharTable, CString * pszText)
+{
     m_pFont = pFont;
     m_nCharTable = nCharTable;
-    if (pszText) {
+    if (pszText)
+    {
         m_szString = *pszText;
     }
     // prepare the font for the characters
     LOGFONT logFont;
-    if (!m_pFont) {
+    if (!m_pFont)
+    {
         CFont * pFont = CFont::FromHandle((HFONT)::GetStockObject(SYSTEM_FONT));
-        if (pFont) {
+        if (pFont)
+        {
             pFont->GetObject(sizeof(LOGFONT), (void *)&logFont);    // fill up logFont
         }
-    } else {
+    }
+    else
+    {
         m_pFont->GetObject(sizeof(LOGFONT), (void *)&logFont);    // fill up logFont
     }
     logFont.lfHeight = FONT_SIZE; // set constant character size
@@ -590,8 +615,10 @@ void CDlgCharChart::SetInitialState(CFont * pFont, int nCharTable, CString * psz
 /***************************************************************************/
 // CDlgCharChart::OnCreate Dialog creation
 /***************************************************************************/
-int CDlgCharChart::OnCreate(LPCREATESTRUCT lpCreateStruct) {
-    if (CPropertySheet::OnCreate(lpCreateStruct) == -1) {
+int CDlgCharChart::OnCreate(LPCREATESTRUCT lpCreateStruct)
+{
+    if (CPropertySheet::OnCreate(lpCreateStruct) == -1)
+    {
         return -1;
     }
     return 0;
@@ -600,7 +627,8 @@ int CDlgCharChart::OnCreate(LPCREATESTRUCT lpCreateStruct) {
 /***************************************************************************/
 // CDlgCharChart::OnInitDialog Dialog initialization
 /***************************************************************************/
-BOOL CDlgCharChart::OnInitDialog() {
+BOOL CDlgCharChart::OnInitDialog()
+{
     CPropertySheet::OnInitDialog();
     // RLJ 08/10/2000
     // delete apply button and move cancel and ok buttons
@@ -614,7 +642,8 @@ BOOL CDlgCharChart::OnInitDialog() {
 // lParam contains a pointer to the CString, which contains the selected
 // character.
 //***************************************************************************/
-LRESULT CDlgCharChart::OnCharSelect(WPARAM /*wParam*/, LPARAM lParam) {
+LRESULT CDlgCharChart::OnCharSelect(WPARAM /*wParam*/, LPARAM lParam)
+{
     wndEdit.GetWindowText(m_szString);
     m_szString += *((CString *)lParam);
     wndEdit.SetWindowText(m_szString);
@@ -625,7 +654,8 @@ LRESULT CDlgCharChart::OnCharSelect(WPARAM /*wParam*/, LPARAM lParam) {
 /***************************************************************************/
 // CDlgCharChart::OnOK OK button hit
 /***************************************************************************/
-void CDlgCharChart::OnOK() {
+void CDlgCharChart::OnOK()
+{
     // get the character string
     TCHAR szBuffer[128];
     wndEdit.GetWindowText(szBuffer, 127);
@@ -636,18 +666,21 @@ void CDlgCharChart::OnOK() {
 /***************************************************************************/
 // CDlgCharChart::OnCancel Button cancel hit
 /***************************************************************************/
-void CDlgCharChart::OnCancel() {
+void CDlgCharChart::OnCancel()
+{
     EndDialog(IDCANCEL);
 }
 
 /***************************************************************************/
 // CDlgCharChart::OnClose Close the dialog
 /***************************************************************************/
-void CDlgCharChart::OnClose() {
+void CDlgCharChart::OnClose()
+{
     EndDialog(ID_CLOSE);
 }
 
-void CDlgCharChart::SetupControls() {
+void CDlgCharChart::SetupControls()
+{
     // add the edit control, the combobox and the text
     CRect rOkButton, rCancelButton;
 
@@ -668,7 +701,8 @@ void CDlgCharChart::SetupControls() {
 
     m_bIPAHelpInstalled = checkIPAHelp();
 
-    if (!m_bIPAHelpInstalled) {
+    if (!m_bIPAHelpInstalled)
+    {
         AfxMessageBox(IDS_ERROR_NO_IPAHELP, MB_OK|MB_ICONEXCLAMATION, 0);
         m_bPlay[kPlaySound] = FALSE;
     }
@@ -681,7 +715,8 @@ void CDlgCharChart::SetupControls() {
     ScreenToClient(rDlg);
     int nLeft = rOkButton.left + (rOkButton.Width() - nTextWidth) * 3 / 2;
     int nTop = rOkButton.top - nBorder - rOkButton.Height();
-    for (int i = 0; i < kPlayButtons; i++) {
+    for (int i = 0; i < kPlayButtons; i++)
+    {
         LPCTSTR szText[kPlayButtons] = { _T("IPA Sounds"), _T("Word"), _T("Segment") };
         rCntrl.SetRect(nLeft, nTop, nLeft + nTextWidth, nTop + rOkButton.Height());
         wndPlayButton[i].Create(szText[i], BS_AUTOCHECKBOX | WS_CHILD | WS_VISIBLE | WS_TABSTOP, rCntrl, this, kPlayButtonIdFirst + i);
@@ -702,12 +737,15 @@ void CDlgCharChart::SetupControls() {
     CFont * oldFont = (CFont *) pDC->SelectObject(&m_TextFont);
     int nLineBreak = szText.Find('\n');
     CSize size;
-    if (nLineBreak != -1) {
+    if (nLineBreak != -1)
+    {
         CSize sizeLeft = pDC->GetTextExtent(szText.Left(nLineBreak));
         CSize sizeRight = pDC->GetTextExtent(szText.Mid(nLineBreak + 1));
 
         size = sizeRight.cx > sizeLeft.cx ? sizeRight : sizeLeft;
-    } else {
+    }
+    else
+    {
         size = pDC->GetTextExtent(szText);
     }
     pDC->SelectObject(oldFont);  // set back old font
@@ -738,9 +776,12 @@ void CDlgCharChart::SetupControls() {
 
     // adjust dialog or edit box size, if needed
     int nBottom = nTop + nTextHeight;
-    if (nBottom > rOkButton.bottom) {
+    if (nBottom > rOkButton.bottom)
+    {
         MoveWindow(rDlg + CRect(0, 0, 0, nBottom - rOkButton.bottom));
-    } else {
+    }
+    else
+    {
         nTextHeight += rOkButton.bottom - nBottom;    // line up bottom of edit box with buttons
     }
 
@@ -749,7 +790,8 @@ void CDlgCharChart::SetupControls() {
 
     // fill the edit control and set the font
     wndEdit.SetWindowText(m_szString);
-    if (m_pFont) {
+    if (m_pFont)
+    {
         wndEdit.SetFont(m_pFont);
     }
 
@@ -757,12 +799,14 @@ void CDlgCharChart::SetupControls() {
     CenterWindow();
 }
 
-void CDlgCharChart::OnChecked(UINT nID) {
+void CDlgCharChart::OnChecked(UINT nID)
+{
     int i = nID - kPlayButtonIdFirst;
 
     m_bPlay[i] = wndPlayButton[i].GetCheck();
 
-    if (i == kPlaySound) {
+    if (i == kPlaySound)
+    {
         wndPlayButton[kPlayWord].EnableWindow(m_bPlay[kPlaySound]);
         wndPlayButton[kPlaySegment].EnableWindow(m_bPlay[kPlaySound]);
     }
@@ -771,7 +815,8 @@ void CDlgCharChart::OnChecked(UINT nID) {
 /***************************************************************************/
 // CDlgCharChart::OnHelpChart Call Character Chart help
 /***************************************************************************/
-void CDlgCharChart::OnHelpChart() {
+void CDlgCharChart::OnHelpChart()
+{
     // create the pathname
     CString szPath = AfxGetApp()->m_pszHelpFilePath;
     szPath = szPath + "::/User_Interface/Menus/Edit/Character_Chart.htm";

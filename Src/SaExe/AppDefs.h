@@ -48,12 +48,14 @@
 #define MAX_SCREEN_WIDTH                2048        // maximum width of screen in pixels
 
 // data processing defines
-enum SEARCH_OPTIONS {
+enum SEARCH_OPTIONS
+{
     // search options
     LINEAR_SEARCH,
     BINARY_SEARCH
 };
-enum UPDATE_MODE {
+enum UPDATE_MODE
+{
     // graph update mode
     STATIC_UPDATE =  0,
     DYNAMIC_UPDATE = 1
@@ -136,18 +138,21 @@ enum UPDATE_MODE {
 #define ID_LAYOUT_LAST                  ID_LAYOUT_FIRST + 12
 
 // cursor definitions
-enum CURSOR_SELECT {
+enum CURSOR_SELECT
+{
     // selection
     START_CURSOR,
     STOP_CURSOR
 };
-enum SNAP_DIRECTION {
+enum SNAP_DIRECTION
+{
     // direction:
     SNAP_BOTH  = 0x0000,  //  snaps in both directions (must be 0)
     SNAP_RIGHT = 0x0001,  //  snaps only to the right
     SNAP_LEFT  = 0x0002,  //  snaps only to the left
 };
-enum CURSOR_ALIGNMENT {
+enum CURSOR_ALIGNMENT
+{
     // alignment
     ALIGN_AT_SAMPLE         =  0,
     ALIGN_AT_ZERO_CROSSING  =  1,
@@ -194,7 +199,7 @@ enum CURSOR_ALIGNMENT {
 #define WM_USER_APP_MESSAGE             WM_USER + 24
 
 #define WM_USER_AUTO_RESTART            WM_USER + 27
-#define WM_USER_AUTOSAVE			    WM_USER + 28
+#define WM_USER_AUTOSAVE                WM_USER + 28
 #define WM_USER_CURSOR_CLICKED          WM_USER + 29
 
 #define HINT_APP_DOC_LIST_CHANGED       0x123
@@ -216,9 +221,10 @@ enum CURSOR_ALIGNMENT {
 typedef UINT MMRESULT;                  // MMIO function call results
 
 // timer IDs
-#define ID_TIMER_AUTOSAVE				0x1000
+#define ID_TIMER_AUTOSAVE               0x1000
 
-typedef struct FmtParm {
+typedef struct FmtParm
+{
     WORD        wTag;               // format tag
     WORD        wChannels;          // number of record channels
     DWORD       dwSamplesPerSec;    // sampling rate
@@ -227,7 +233,8 @@ typedef struct FmtParm {
     WORD        wBitsPerSample;     // data width
 } FmtParm;                        // RIFF file header fmt parameters
 
-typedef struct SDPParm {
+typedef struct SDPParm
+{
     UINT         nPanes;            // number of mirror panes
     UINT         nUpperBound;       // upper display boundary
     int          nStepMode;         // steps mode
@@ -235,7 +242,8 @@ typedef struct SDPParm {
     BOOL         bAverage;          // TRUE, if average used
 } SDPParm;                        // SDP parameters
 
-enum Annotations {                       // annotation windows
+enum Annotations                         // annotation windows
+{
     PHONETIC=0,
     TONE,
     PHONEMIC,
@@ -249,18 +257,21 @@ enum Annotations {                       // annotation windows
     ANNOT_WND_NUMBER                    // number of annotation windows
 };
 
-enum PositionReadout {                  // status bar position readout mode
+enum PositionReadout                    // status bar position readout mode
+{
     TIME,
     SAMPLES,
     BYTES,
 };
 
-enum PitchReadout {                      // status bar pitch readout mode
+enum PitchReadout                        // status bar pitch readout mode
+{
     HERTZ,
     HALFTONES,
 };
 
-enum GraphCaption {                      // graph caption style
+enum GraphCaption                        // graph caption style
+{
     NoneThin,
     None,
     Mini,
@@ -268,25 +279,29 @@ enum GraphCaption {                      // graph caption style
     Normal,
 };
 
-enum OpenModeType {
+enum OpenModeType
+{
     DEFAULT,
     PHONANALYSIS,
     MUSIANALYSIS,
 };
 
-enum EBoundaries {
+enum EBoundaries
+{
     BOUNDARIES_EDIT_NULL = 0,
     BOUNDARIES_EDIT_OVERLAP = 1,
     BOUNDARIES_EDIT_NO_OVERLAP = 2
 };
 
-enum EWordFilenameConvention {
+enum EWordFilenameConvention
+{
     WFC_REF,
     WFC_GLOSS,
     WFC_REF_GLOSS
 };
 
-enum EPhraseFilenameConvention {
+enum EPhraseFilenameConvention
+{
     PFC_REF,
     PFC_GLOSS,
     PFC_REF_GLOSS,

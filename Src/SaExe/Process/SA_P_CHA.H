@@ -12,7 +12,8 @@
 //###########################################################################
 // CProcessChange data processing
 
-class CProcessChange : public CProcess {
+class CProcessChange : public CProcess
+{
 // Construction/destruction/creation
 public:
     CProcessChange();
@@ -35,10 +36,12 @@ public:
     long Process(void * pCaller, ISaDoc * pDoc, int nProgress = 0, int nLevel = 1);
     void * GetQualityData(DWORD dwOffset, BOOL bBlockBegin = FALSE); // return quality data pointer on given position (offset)
     int GetQualityData(DWORD dwOffset, BOOL *); // return quality data from given position (offset)
-    DWORD GetQualityDataSize() {
+    DWORD GetQualityDataSize()
+    {
         return (DWORD)(m_qualityFileStatus.m_size / 2);   // return processed data size in words (16 bit)
     }
-    int GetQualityMaxValue() {
+    int GetQualityMaxValue()
+    {
         return m_nQualityMaxValue;   // return maximum value
     }
 private:

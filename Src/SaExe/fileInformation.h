@@ -27,7 +27,8 @@
 //###########################################################################
 // CDlgInformationFilePage property page
 
-class CDlgInformationFilePage : public CPropertyPage {
+class CDlgInformationFilePage : public CPropertyPage
+{
 
     // Construction/destruction/creation
 public:
@@ -57,7 +58,8 @@ protected:
 //###########################################################################
 // CDlgInformationWavePage property page
 
-class CDlgInformationWavePage : public CPropertyPage {
+class CDlgInformationWavePage : public CPropertyPage
+{
 
     // Construction/destruction/creation
 public:
@@ -87,7 +89,8 @@ protected:
 //###########################################################################
 // CDlgInformationSourcePage property page
 
-class CDlgInformationSourcePage : public CPropertyPage {
+class CDlgInformationSourcePage : public CPropertyPage
+{
 
     // Construction/destruction/creation
 public:
@@ -129,7 +132,8 @@ protected:
 //###########################################################################
 // CDlgInformationUserPage property page
 
-class CDlgInformationUserPage : public CPropertyPage {
+class CDlgInformationUserPage : public CPropertyPage
+{
 
     // Construction/destruction/creation
 public:
@@ -161,7 +165,8 @@ protected:
 //###########################################################################
 // CDlgFileInformation property sheet
 
-class CDlgFileInformation : public CPropertySheet {
+class CDlgFileInformation : public CPropertySheet
+{
     DECLARE_DYNAMIC(CDlgFileInformation)
 
 // Construction/destruction/creation

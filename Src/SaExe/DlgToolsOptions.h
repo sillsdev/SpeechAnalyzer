@@ -24,7 +24,8 @@
 #include "resource.h"
 #include "ToolSettings.h"
 
-typedef struct SColorComboInfo {
+typedef struct SColorComboInfo
+{
     TCHAR   *  pszColorItem;
     COLORREF  cColor;
 } ColorComboInfo;
@@ -35,7 +36,8 @@ typedef struct SColorComboInfo {
 /////////////////////////////////////////////////////////////////////////
 // CComboColor defines
 
-class CComboColor : public CComboBox {
+class CComboColor : public CComboBox
+{
 
 private:
     virtual void MeasureItem(LPMEASUREITEMSTRUCT lpMIS);
@@ -46,34 +48,35 @@ private:
 //###########################################################################
 // CDlgOptionsViewPage property page
 
-class CDlgOptionsViewPage : public CPropertyPage {
+class CDlgOptionsViewPage : public CPropertyPage
+{
 
 public:
     CDlgOptionsViewPage(); // standard constructor
 
-	void EnableDynamicUpdate(BOOL bState = TRUE);
-	void SetGridStyle(int XStyle, int YStyle);
-	void GetGridStyle(int * XStyle, int * YStyle);
+    void EnableDynamicUpdate(BOOL bState = TRUE);
+    void SetGridStyle(int XStyle, int YStyle);
+    void GetGridStyle(int * XStyle, int * YStyle);
 
-	enum { IDD = IDD_OPTIONSVIEWPAGE };
-	BOOL m_bStatusbar;
-	BOOL m_bToolbar;
-	BOOL m_bScrollZoom;
-	int m_nCaptionStyle;
-	BOOL m_bXGrid;
-	BOOL m_bYGrid;
-	int m_nXStyleIndex;
-	int m_nYStyleIndex;
-	int m_nCursorAlignment;
-	int m_nPitchMode;
-	int m_nPosMode;
-	BOOL m_bToneAbove;
-	int m_nGraphUpdateMode;
-	BOOL m_bAnimate;
-	int m_nAnimationRate;
-	BOOL m_bTaskbar;
+    enum { IDD = IDD_OPTIONSVIEWPAGE };
+    BOOL m_bStatusbar;
+    BOOL m_bToolbar;
+    BOOL m_bScrollZoom;
+    int m_nCaptionStyle;
+    BOOL m_bXGrid;
+    BOOL m_bYGrid;
+    int m_nXStyleIndex;
+    int m_nYStyleIndex;
+    int m_nCursorAlignment;
+    int m_nPitchMode;
+    int m_nPosMode;
+    BOOL m_bToneAbove;
+    int m_nGraphUpdateMode;
+    BOOL m_bAnimate;
+    int m_nAnimationRate;
+    BOOL m_bTaskbar;
 
-	static const int IndexToStyle[];
+    static const int IndexToStyle[];
 
 protected:
     virtual void DoDataExchange(CDataExchange * pDX); // DDX/DDV support
@@ -85,25 +88,26 @@ protected:
     afx_msg void OnAnimationRateScroll();
     afx_msg void OnChange();
 
-	DECLARE_MESSAGE_MAP()
+    DECLARE_MESSAGE_MAP()
 
 private:
-	CComboGridlines  m_xGridlines;
-	CComboGridlines  m_yGridlines;
-	CSpinControl     m_SpinAnimationRate;
-	BOOL m_bModified; // TRUE if page member data modified
+    CComboGridlines  m_xGridlines;
+    CComboGridlines  m_yGridlines;
+    CSpinControl     m_SpinAnimationRate;
+    BOOL m_bModified; // TRUE if page member data modified
 
 };
 
 //###########################################################################
 // CDlgOptionsColorPage property page
 
-class CDlgOptionsColorPage : public CPropertyPage {
+class CDlgOptionsColorPage : public CPropertyPage
+{
 
 public:
     CDlgOptionsColorPage(); // standard constructor
 
-    BOOL m_bColorsChanged;	// TRUE, if colors changed by user
+    BOOL m_bColorsChanged;  // TRUE, if colors changed by user
     Colors m_cColors;       // internal color structure
 
     enum { IDD = IDD_OPTIONSCOLORSPAGE };
@@ -114,16 +118,16 @@ public:
 
 protected:
     virtual void DoDataExchange(CDataExchange * pDX); // DDX/DDV support
-	void FillColorComboBoxInfo(BOOL bAddStrings);
-	BOOL ChangeColor(COLORREF * pColor);
-	virtual BOOL OnInitDialog();
-	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
-	afx_msg void OnDefault();
-	afx_msg void OnSystem();
-	afx_msg void OnChgColorAnnot();
-	afx_msg void OnChgColorGraph();
-	afx_msg void OnChgColorOvrly();
-	afx_msg void OnChgColorScale();
+    void FillColorComboBoxInfo(BOOL bAddStrings);
+    BOOL ChangeColor(COLORREF * pColor);
+    virtual BOOL OnInitDialog();
+    afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
+    afx_msg void OnDefault();
+    afx_msg void OnSystem();
+    afx_msg void OnChgColorAnnot();
+    afx_msg void OnChgColorGraph();
+    afx_msg void OnChgColorOvrly();
+    afx_msg void OnChgColorScale();
 
     CComboColor m_GraphItemColors;
     CComboColor m_AnnotItemColors;
@@ -137,24 +141,25 @@ protected:
 //###########################################################################
 // CDlgOptionsFontPage property page
 
-class CDlgOptionsFontPage : public CPropertyPage {
+class CDlgOptionsFontPage : public CPropertyPage
+{
 
 public:
     CDlgOptionsFontPage();  // standard constructor
     ~CDlgOptionsFontPage(); // standard destructor
 
-    BOOL m_bFontChanged;			// TRUE, if fonts changed by user
-    CStringArray m_GraphFonts;		// array of graph font face strings
-    CUIntArray m_GraphFontSizes;	// array of graph font sizes
-    BOOL m_bUseUnicodeEncoding;		// Experimental....
+    BOOL m_bFontChanged;            // TRUE, if fonts changed by user
+    CStringArray m_GraphFonts;      // array of graph font face strings
+    CUIntArray m_GraphFontSizes;    // array of graph font sizes
+    BOOL m_bUseUnicodeEncoding;     // Experimental....
 
 protected:
-	virtual void DoDataExchange(CDataExchange * pDX); // DDX/DDV support
-	virtual BOOL OnInitDialog();
-	afx_msg void OnFont();
-	afx_msg void OnSelChangeAnnotList();
+    virtual void DoDataExchange(CDataExchange * pDX); // DDX/DDV support
+    virtual BOOL OnInitDialog();
+    afx_msg void OnFont();
+    afx_msg void OnSelChangeAnnotList();
 
-	DECLARE_MESSAGE_MAP()
+    DECLARE_MESSAGE_MAP()
 
 private:
     enum { IDD = IDD_OPTIONSFONTPAGE };
@@ -169,7 +174,8 @@ private:
 //###########################################################################
 // CDlgOptionsSavePage property page
 
-class CDlgOptionsSavePage : public CPropertyPage {
+class CDlgOptionsSavePage : public CPropertyPage
+{
 
 public:
     CDlgOptionsSavePage(); // standard constructor
@@ -185,22 +191,23 @@ public:
     CString m_szTempCurrLabel;
 
 protected:
-	virtual void DoDataExchange(CDataExchange * pDX);       // DDX/DDV support
-	void ShowCurrentDefaultViews(BOOL bPermanent);  // DDO - 08/07/00
-	void SetStartDlgCheckHelp(void);                // DDO - 08/09/00
-	virtual BOOL OnInitDialog();
-	afx_msg void OnSaveTempDefaultTemplate();
-	afx_msg void OnSavePermDefaultTemplate();
-	afx_msg void OnReopenFiles();
-	afx_msg void OnShowsStartupDlg();
+    virtual void DoDataExchange(CDataExchange * pDX);       // DDX/DDV support
+    void ShowCurrentDefaultViews(BOOL bPermanent);  // DDO - 08/07/00
+    void SetStartDlgCheckHelp(void);                // DDO - 08/09/00
+    virtual BOOL OnInitDialog();
+    afx_msg void OnSaveTempDefaultTemplate();
+    afx_msg void OnSavePermDefaultTemplate();
+    afx_msg void OnReopenFiles();
+    afx_msg void OnShowsStartupDlg();
 
-	DECLARE_MESSAGE_MAP()
+    DECLARE_MESSAGE_MAP()
 
 private:
     CFont m_Font;
 };
 
-class CDlgOptionsAudioPage : public CPropertyPage {
+class CDlgOptionsAudioPage : public CPropertyPage
+{
 
 public:
     CDlgOptionsAudioPage(); // standard constructor
@@ -212,19 +219,21 @@ protected:
     virtual void DoDataExchange(CDataExchange * pDX);
     virtual BOOL OnInitDialog();
 
-	DECLARE_MESSAGE_MAP()
+    DECLARE_MESSAGE_MAP()
 };
 
-class CDlgToolsOptions : public CPropertySheet {
+class CDlgToolsOptions : public CPropertySheet
+{
 
-	DECLARE_DYNAMIC(CDlgToolsOptions)
+    DECLARE_DYNAMIC(CDlgToolsOptions)
 
 public:
     CDlgToolsOptions(LPCTSTR pszCaption, CWnd * pParent);
-	void ApplyNow() {
-		OnApplyNow();
-	};
-	void OnHelpToolsOptions();
+    void ApplyNow()
+    {
+        OnApplyNow();
+    };
+    void OnHelpToolsOptions();
 
     CDlgOptionsViewPage m_dlgViewPage;
     CDlgOptionsColorPage m_dlgColorPage;
@@ -232,16 +241,16 @@ public:
     CDlgOptionsSavePage m_dlgSavePage;
     CDlgOptionsAudioPage m_dlgAudioPage;
 
-	CToolSettings GetSettings();
+    CToolSettings GetSettings();
 
 protected:
-    virtual void DoDataExchange(CDataExchange * pDX);	// DDX/DDV support
-	virtual BOOL OnInitDialog();
-	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
-	afx_msg void OnApplyNow();
-    void ChangeButtons();								// delete Apply button, move other buttons
-    
-	CButton m_cHelp;
+    virtual void DoDataExchange(CDataExchange * pDX);   // DDX/DDV support
+    virtual BOOL OnInitDialog();
+    afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
+    afx_msg void OnApplyNow();
+    void ChangeButtons();                               // delete Apply button, move other buttons
+
+    CButton m_cHelp;
 
     DECLARE_MESSAGE_MAP()
 };

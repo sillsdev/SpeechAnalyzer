@@ -16,10 +16,12 @@ static char THIS_FILE[]=__FILE__;
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
 
-CSuperPitch::CSuperPitch() {
+CSuperPitch::CSuperPitch()
+{
 
 }
 
-CSuperPitch::~CSuperPitch() {
+CSuperPitch::~CSuperPitch()
+{
 
 }

@@ -9,13 +9,15 @@
 
 enum {COUNTS = 0, PDF = 1, CDF = 2};
 
-typedef struct {
+typedef struct
+{
     uint16  nBins;        // Number of bins in histogram
     short * pBinDivs; // Pointer to an array containing the bin divisions
 } HIST_PARMS;
 
 
-class CHistogram {
+class CHistogram
+{
 public:
     static char * Copyright(void);
     static float Version(void);
@@ -27,16 +29,20 @@ public:
     dspError_t GetBinNum(int32 & nBinNum, int16 nData);
     dspError_t GetHistogram(short * pBins, double fCoeff, uint16 wGraphForm);
     ~CHistogram();
-    virtual const HIST_PARMS & GetHistogramParms() const {
+    virtual const HIST_PARMS & GetHistogramParms() const
+    {
         return m_stHistParms;   // return histogram parms as const
     }
-    virtual short GetMaxValue(void * /*pCaller*/) {
+    virtual short GetMaxValue(void * /*pCaller*/)
+    {
         return m_nMaxValue;   // return maximum value
     }
-    virtual short GetMinValue(void * /*pCaller*/) {
+    virtual short GetMinValue(void * /*pCaller*/)
+    {
         return m_nMinValue;   // return minimum value
     }
-    virtual uint32 GetTotalCounts(void * /*pCaller*/) {
+    virtual uint32 GetTotalCounts(void * /*pCaller*/)
+    {
         return m_dwTotalCounts;   // return total counts
     }
 private:

@@ -12,7 +12,8 @@ static const char * psz_scalecolors = "scalecolors";
 static const char * psz_overlay = "overlay";
 
 
-void Colors::WriteProperties(Object_ostream & obs) {
+void Colors::WriteProperties(Object_ostream & obs)
+{
     obs.WriteBeginMarker(psz_colors);
 
     obs.WriteBeginMarker(psz_plotcolors);
@@ -43,13 +44,15 @@ void Colors::WriteProperties(Object_ostream & obs) {
     int i=0;
 
     obs.WriteBeginMarker(psz_annotationbkg);
-    for (; i<ANNOT_WND_NUMBER; i++) {
+    for (; i<ANNOT_WND_NUMBER; i++)
+    {
         obs.WriteCOLORREF(psz_rgb, cAnnotationBkg[i]);
     }
     obs.WriteEndMarker(psz_annotationbkg);
 
     obs.WriteBeginMarker(psz_annotationfont);
-    for (i=0; i<ANNOT_WND_NUMBER; i++) {
+    for (i=0; i<ANNOT_WND_NUMBER; i++)
+    {
         obs.WriteCOLORREF(psz_rgb, cAnnotationFont[i]);
     }
     obs.WriteEndMarker(psz_annotationfont);
@@ -60,15 +63,19 @@ void Colors::WriteProperties(Object_ostream & obs) {
 
 
 
-BOOL Colors::ReadProperties(Object_istream & obs) {
+BOOL Colors::ReadProperties(Object_istream & obs)
+{
     int i = 0;
 
-    if (!obs.bAtBackslash() || !obs.bReadBeginMarker(psz_colors)) {
+    if (!obs.bAtBackslash() || !obs.bReadBeginMarker(psz_colors))
+    {
         return FALSE;
     }
 
-    while (!obs.bAtEnd()) {
-        if (obs.bReadBeginMarker(psz_plotcolors)) {
+    while (!obs.bAtEnd())
+    {
+        if (obs.bReadBeginMarker(psz_plotcolors))
+        {
             obs.bReadCOLORREF(psz_rgb, cPlotBkg);
 #define RC(rgb) obs.bReadCOLORREF(psz_rgb, rgb)
             RC(cPlotHiBkg);
@@ -86,22 +93,32 @@ BOOL Colors::ReadProperties(Object_istream & obs) {
             RC(cPlotStopCursor);
             RC(cPlotPrivateCursor);
             obs.SkipToEndMarker(psz_plotcolors);
-        } else if (obs.bReadBeginMarker(psz_scalecolors)) {
+        }
+        else if (obs.bReadBeginMarker(psz_scalecolors))
+        {
             RC(cScaleBkg);
             RC(cScaleLines);
             RC(cScaleFont);
             obs.SkipToEndMarker(psz_scalecolors);
-        } else if (obs.bReadBeginMarker(psz_annotationbkg)) {
-            for (; i<ANNOT_WND_NUMBER; i++) {
+        }
+        else if (obs.bReadBeginMarker(psz_annotationbkg))
+        {
+            for (; i<ANNOT_WND_NUMBER; i++)
+            {
                 obs.bReadCOLORREF(psz_rgb, cAnnotationBkg[i]);
             }
             obs.SkipToEndMarker(psz_annotationbkg);
-        } else if (obs.bReadBeginMarker(psz_annotationfont)) {
-            for (i=0; i<ANNOT_WND_NUMBER; i++) {
+        }
+        else if (obs.bReadBeginMarker(psz_annotationfont))
+        {
+            for (i=0; i<ANNOT_WND_NUMBER; i++)
+            {
                 obs.bReadCOLORREF(psz_rgb, cAnnotationFont[i]);
             }
             obs.SkipToEndMarker(psz_annotationfont);
-        } else if (obs.bEnd(psz_colors)) {
+        }
+        else if (obs.bEnd(psz_colors))
+        {
             break;
         }
     }
@@ -111,7 +128,8 @@ BOOL Colors::ReadProperties(Object_istream & obs) {
 
 
 
-void Colors::GreyScale(COLORREF & rgb) {
+void Colors::GreyScale(COLORREF & rgb)
+{
     BYTE r = GetRValue(rgb);
     BYTE g = GetGValue(rgb);
     BYTE b = GetBValue(rgb);
@@ -127,8 +145,10 @@ void Colors::GreyScale(COLORREF & rgb) {
 // If the flag bSystem is TRUE, it sets up the colors with system defaults,
 // otherwise with a custom setup.
 /***************************************************************************/
-void Colors::SetupDefault(BOOL bSystem, BOOL bPrinting) {
-    if (bPrinting) {
+void Colors::SetupDefault(BOOL bSystem, BOOL bPrinting)
+{
+    if (bPrinting)
+    {
         // setup colors for b/w printing.
 
         GreyScale(cPlotBkg);
@@ -147,7 +167,8 @@ void Colors::SetupDefault(BOOL bSystem, BOOL bPrinting) {
         GreyScale(cPlotStopCursor);
         GreyScale(cPlotPrivateCursor);
 
-        for (int nLoop = 0; nLoop < ANNOT_WND_NUMBER; nLoop++) {
+        for (int nLoop = 0; nLoop < ANNOT_WND_NUMBER; nLoop++)
+        {
             GreyScale(cAnnotationBkg[nLoop]);
             GreyScale(cAnnotationFont[nLoop]);
         }
@@ -166,7 +187,9 @@ void Colors::SetupDefault(BOOL bSystem, BOOL bPrinting) {
         GreyScale(cSysInActiveCap);
         GreyScale(cSysInActiveCapText);
 
-    } else if (bSystem) {
+    }
+    else if (bSystem)
+    {
         // use system colors
         cPlotBkg = GetSysColor(COLOR_WINDOW);
         cPlotHiBkg = GetSysColor(COLOR_HIGHLIGHT);
@@ -183,7 +206,8 @@ void Colors::SetupDefault(BOOL bSystem, BOOL bPrinting) {
         cPlotStartCursor = RGB(0, 128, 0); // dark green
         cPlotStopCursor = RGB(255, 0, 0); // red
         cPlotPrivateCursor = RGB(0, 0, 255); // blue
-        for (int nLoop = 0; nLoop < ANNOT_WND_NUMBER; nLoop++) {
+        for (int nLoop = 0; nLoop < ANNOT_WND_NUMBER; nLoop++)
+        {
             cAnnotationBkg[nLoop] = GetSysColor(COLOR_BTNFACE);
             cAnnotationFont[nLoop] = GetSysColor(COLOR_BTNTEXT);
         }
@@ -191,7 +215,9 @@ void Colors::SetupDefault(BOOL bSystem, BOOL bPrinting) {
         cScaleLines         = GetSysColor(COLOR_HIGHLIGHT);
         cScaleFont         = GetSysColor(COLOR_HIGHLIGHT);
         SetupSystemColors();
-    } else {
+    }
+    else
+    {
         // custom set
 
         cPlotBkg         = RGB(0, 0, 0); // black
@@ -210,7 +236,8 @@ void Colors::SetupDefault(BOOL bSystem, BOOL bPrinting) {
         cPlotStopCursor   = RGB(255, 0, 0); // red
         cPlotPrivateCursor = RGB(255, 255, 0); // yellow
 
-        for (int nLoop = 0; nLoop < ANNOT_WND_NUMBER; nLoop++) {
+        for (int nLoop = 0; nLoop < ANNOT_WND_NUMBER; nLoop++)
+        {
             cAnnotationBkg[nLoop]  = RGB(192, 192, 192); // light gray
             cAnnotationFont[nLoop] = RGB(0, 0, 160); // dark blue
         }
@@ -224,7 +251,8 @@ void Colors::SetupDefault(BOOL bSystem, BOOL bPrinting) {
 /***************************************************************************/
 // Colors::SetupSystemColors Set the system colors
 /***************************************************************************/
-void Colors::SetupSystemColors() {
+void Colors::SetupSystemColors()
+{
     cSysBtnHilite     = GetSysColor(COLOR_BTNHIGHLIGHT);
     cSysBtnShadow     = GetSysColor(COLOR_BTNSHADOW);
     cSysBtnFace         = GetSysColor(COLOR_BTNFACE);

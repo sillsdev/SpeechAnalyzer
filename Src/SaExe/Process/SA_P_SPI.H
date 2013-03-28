@@ -17,7 +17,8 @@
 #define POINT_MISSING   -2    // point is missing but can be interpolated
 #define POINT_UNSET     -1    // there is no data for this point
 
-class CProcessSmoothedPitch : public CProcess {
+class CProcessSmoothedPitch : public CProcess
+{
 // Construction/destruction/creation
 public:
     CProcessSmoothedPitch();

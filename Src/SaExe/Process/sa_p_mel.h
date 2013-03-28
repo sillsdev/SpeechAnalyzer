@@ -10,7 +10,8 @@
 #include "Process\Process.h"
 #include "dsp\grappl.h"
 
-class CProcessMelogram : public CProcess {
+class CProcessMelogram : public CProcess
+{
 public:
     CProcessMelogram();
     virtual ~CProcessMelogram();

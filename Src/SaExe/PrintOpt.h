@@ -9,7 +9,8 @@
 #ifndef _PRINTOPT_
 #define _PRINTOPT_
 
-class CPrintOptionsDlg : public CDialog {
+class CPrintOptionsDlg : public CDialog
+{
 public:
     // Construction & initialization
     CPrintOptionsDlg(CWnd * pParent = NULL); // standard constructor
@@ -19,49 +20,64 @@ public:
     void CopyFrom(const CPrintOptionsDlg & from);
 
     // getters
-    BOOL IsGraphSelected(int nGraph) {
+    BOOL IsGraphSelected(int nGraph)
+    {
         return m_bIsGraphSelected[nGraph];
     };
-    BOOL IsRecGraphSelected()        {
+    BOOL IsRecGraphSelected()
+    {
         return m_bIsRecGraphSelected;
     };
-    int NumGraphsSelected(void)  {
+    int NumGraphsSelected(void)
+    {
         return m_NumGraphsSelected;
     };
-    int NumRows(void) {
+    int NumRows(void)
+    {
         return m_NumRows;
     };
-    int NumCols(void) {
+    int NumCols(void)
+    {
         return m_NumCols;
     };
-    int LayoutType(void) {
+    int LayoutType(void)
+    {
         return m_LayoutType;
     };
-    BOOL bUseSmallFonts(void) {
+    BOOL bUseSmallFonts(void)
+    {
         return m_bUseSmallFonts;
     };
-    BOOL bFixedAspectR(void) {
+    BOOL bFixedAspectR(void)
+    {
         return m_bFixedAspectR;
     };
-    BOOL bIsLandscape(void) {
+    BOOL bIsLandscape(void)
+    {
         return (m_IsLandscape != 0);
     };
-    BOOL bIsHiRes(void)   {
+    BOOL bIsHiRes(void)
+    {
         return (m_IsHiRes != 0);
     };
-    BOOL UserClickedPrint(void) {
+    BOOL UserClickedPrint(void)
+    {
         return m_bUserClickedPrint;
     };
-    BOOL UserClickedPreview(void) {
+    BOOL UserClickedPreview(void)
+    {
         return m_bUserClickedPreview;
     };
-    static const int LAYOUT_AS_SCREEN()     {
+    static const int LAYOUT_AS_SCREEN()
+    {
         return 0;
     };
-    static const int LAYOUT_1GRAPH_PER_PAGE()   {
+    static const int LAYOUT_1GRAPH_PER_PAGE()
+    {
         return 1;
     };
-    static const int LAYOUT_CUSTOM()      {
+    static const int LAYOUT_CUSTOM()
+    {
         return 2;
     };
 
@@ -86,13 +102,16 @@ protected:
     // Generated message map functions
     //{{AFX_MSG(CPrintOptionsDlg)
     afx_msg void OnMore();
-    afx_msg void OnUseScreenLayout()  {
+    afx_msg void OnUseScreenLayout()
+    {
         EnableCustomLayout(FALSE);
     };
-    afx_msg void OnPrintOnePerPage()  {
+    afx_msg void OnPrintOnePerPage()
+    {
         EnableCustomLayout(FALSE);
     }
-    afx_msg void OnPrintManyPerPage() {
+    afx_msg void OnPrintManyPerPage()
+    {
         EnableCustomLayout(TRUE);
     }
     afx_msg void OnSelectallgraphs();

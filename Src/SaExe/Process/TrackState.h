@@ -7,7 +7,8 @@
 #include "Process.h"
 #include "Process/FormantTracker.h"
 
-class CProcessTrackState : public CProcessFormantTracker::CTrackState {
+class CProcessTrackState : public CProcessFormantTracker::CTrackState
+{
 
 public:
     CProcessTrackState();

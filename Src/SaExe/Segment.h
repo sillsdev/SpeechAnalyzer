@@ -74,7 +74,8 @@ class CSaView;
 //###########################################################################
 // CSegment data processing
 
-class CSegment : public CProcess {
+class CSegment : public CProcess
+{
 
 public:
     CSegment(int index, int master = -1);
@@ -91,7 +92,8 @@ public:
     DWORD GetDuration(const int nIndex) const;      // return duration
     DWORD GetStop(const int nIndex) const;          // return stop
     TCHAR GetChar(int nIndex) const;                // return annotation character
-    int GetSelection() const {
+    int GetSelection() const
+    {
         return m_nSelection;   // return the index of the selected character
     }
     int GetPrevious(int nIndex = -1) const;         // return the index of the previous segment
@@ -111,7 +113,8 @@ public:
     // remove offset and duration
     void RemoveAt(int index, int length);
 
-    enum EMode {
+    enum EMode
+    {
         MODE_AUTOMATIC,
         MODE_EDIT,
         MODE_ADD
@@ -119,7 +122,8 @@ public:
 
     virtual int CheckPosition(CSaDoc *,DWORD dwStart,DWORD dwStop, EMode nMode=MODE_AUTOMATIC, BOOL bOverlap=TRUE) const = 0;
 
-    enum {
+    enum
+    {
         LIMIT_MOVING_START=1,
         LIMIT_MOVING_STOP=2,
         LIMIT_MOVING_BOTH=3,
@@ -144,7 +148,8 @@ public:
     virtual void Adjust(CSaDoc * saDoc, int nIndex, DWORD dwOffset, DWORD dwDuration = 0); // adjust position of segment
     virtual BOOL SetAt(const CSaString *, bool delimiter, DWORD dwStart, DWORD dwDuration);  // sets a new segment
     virtual BOOL Insert(int nIndex, LPCTSTR szText, bool delimiter, DWORD dwStart, DWORD dwDuration); // insert a new segment
-    virtual long Process(void * /*pCaller*/, CSaDoc * /*pDoc*/, int /*nProgress*/ = 0, int /*Level*/ = 1) {
+    virtual long Process(void * /*pCaller*/, CSaDoc * /*pDoc*/, int /*nProgress*/ = 0, int /*Level*/ = 1)
+    {
         return PROCESS_ERROR;
     };
     virtual CSaString GetContainedText(DWORD dwStart, DWORD dwStop);
@@ -167,8 +172,8 @@ protected:
     int m_nMasterIndex;
 
 private:
-    CDWordArray m_Offset;				// array of offsets
-    CDWordArray m_Duration;				// array of durations
+    CDWordArray m_Offset;               // array of offsets
+    CDWordArray m_Duration;             // array of durations
 
 public:
     virtual TpInputFilterProc GetInputFilter(void) const; // filter function for input

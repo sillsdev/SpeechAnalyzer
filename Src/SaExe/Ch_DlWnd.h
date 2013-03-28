@@ -33,7 +33,8 @@
 #define TEXT_LEFT     0x4000  // displays text left aligned
 #define TEXT_RIGHT      0x8000  // displays text right aligned
 
-class CChartText : public CWnd {
+class CChartText : public CWnd
+{
     DECLARE_DYNCREATE(CChartText)
 
 // Construction/destruction/creation
@@ -76,7 +77,8 @@ protected:
 #define END_DOTS     0x0010  // displays dots on ends of line
 #define START_DOT    0x0020  // displays a dot at the beginning of the line
 
-class CChartLine : public CWnd {
+class CChartLine : public CWnd
+{
     DECLARE_DYNCREATE(CChartLine)
 
 // Construction/destruction/creation
@@ -109,7 +111,8 @@ protected:
 #define SOUND_DELAY      250       // sound delay in milliseconds
 #define WM_USER_CHARSELECT  WM_USER + 31 // wide range message sent
 
-enum CharType {         // character types
+enum CharType           // character types
+{
     VOWEL=0,
     CONSONANT,
     DIACRITIC,
@@ -125,7 +128,8 @@ enum CharType {         // character types
 #define ICH_BUBBLE       0x8000  // this window is a bubble window (zoom)
 
 class CDlgCharChart;
-class CChartChar : public CWnd {
+class CChartChar : public CWnd
+{
     DECLARE_DYNCREATE(CChartChar)
 
 // Construction/destruction/creation
@@ -155,16 +159,20 @@ public:
     void Setup(CString * pszChar, CString * pszSoundFile, UINT nID, int nType, int nMode, CFont * pFont, CWnd * pParent, CDlgCharChart * pCaller, CChartChar * pCreator = NULL);
     void Init();
     void ChangeMode(int nMode);
-    CString * GetChar() {
+    CString * GetChar()
+    {
         return &m_szChar;   // return pointer to character string
     }
-    UINT GetID()   {
+    UINT GetID()
+    {
         return m_nID;   // return character ID
     }
-    int  GetType() {
+    int  GetType()
+    {
         return m_nType;   // return character type
     }
-    int  GetMode() {
+    int  GetMode()
+    {
         return m_nMode;   // return character mode
     }
 

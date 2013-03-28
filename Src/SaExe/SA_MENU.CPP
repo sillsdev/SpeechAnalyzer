@@ -33,10 +33,12 @@ static int GetNumberOfGraphsInLayout(UINT nLayoutID);
 /***************************************************************************/
 // CLayoutMenu::CLayoutMenu Constructor
 /***************************************************************************/
-CLayoutMenu::CLayoutMenu() {
+CLayoutMenu::CLayoutMenu()
+{
     VERIFY(CreateMenu());
     // append the items
-    for (int nLoop = 0; nLoop <= (ID_LAYOUT_LAST - ID_LAYOUT_FIRST); nLoop++) {
+    for (int nLoop = 0; nLoop <= (ID_LAYOUT_LAST - ID_LAYOUT_FIRST); nLoop++)
+    {
         AppendLayoutMenuItem(ID_LAYOUT_FIRST + nLoop, nLoop);
     }
 }
@@ -44,7 +46,8 @@ CLayoutMenu::CLayoutMenu() {
 /***************************************************************************/
 // CLayoutMenu::CLayoutMenu Destructor
 /***************************************************************************/
-CLayoutMenu::~CLayoutMenu() {
+CLayoutMenu::~CLayoutMenu()
+{
     DestroyMenu();
     ASSERT(m_hMenu == NULL);
 }
@@ -55,19 +58,24 @@ CLayoutMenu::~CLayoutMenu() {
 /***************************************************************************/
 // CLayoutMenu::AppendLayoutMenuItem Appends a layout item
 /***************************************************************************/
-void CLayoutMenu::AppendLayoutMenuItem(UINT nID, int nNumber) {
+void CLayoutMenu::AppendLayoutMenuItem(UINT nID, int nNumber)
+{
     VERIFY(AppendMenu(MF_ENABLED | MF_OWNERDRAW, nID, (LPCTSTR)nNumber));
 }
 
 /***************************************************************************/
 // CLayoutMenu::MeasureItem Define the item size
 /***************************************************************************/
-void CLayoutMenu::MeasureItem(LPMEASUREITEMSTRUCT lpMIS) {
+void CLayoutMenu::MeasureItem(LPMEASUREITEMSTRUCT lpMIS)
+{
     // all items are of fixed size
     lpMIS->itemWidth = LAYOUT_BOX_WIDTH;
-    if (lpMIS->itemID == ID_LAYOUT_4A) {
+    if (lpMIS->itemID == ID_LAYOUT_4A)
+    {
         lpMIS->itemHeight = LAYOUT_BOX_HEIGHT - 2;
-    } else {
+    }
+    else
+    {
         lpMIS->itemHeight = LAYOUT_BOX_HEIGHT;
     }
 }
@@ -75,7 +83,8 @@ void CLayoutMenu::MeasureItem(LPMEASUREITEMSTRUCT lpMIS) {
 /***************************************************************************/
 // CLayoutMenu::DrawItem Draw the items
 /***************************************************************************/
-void CLayoutMenu::DrawItem(LPDRAWITEMSTRUCT lpDIS) {
+void CLayoutMenu::DrawItem(LPDRAWITEMSTRUCT lpDIS)
+{
     DrawLayoutItem(lpDIS, TRUE);
 }
 
@@ -88,14 +97,18 @@ void CLayoutMenu::DrawItem(LPDRAWITEMSTRUCT lpDIS) {
 /***************************************************************************/
 // CLayoutListBox::CLayoutListBox Constructor
 /***************************************************************************/
-void CLayoutListBox::SelectLayoutWithCount(int number) {
+void CLayoutListBox::SelectLayoutWithCount(int number)
+{
     ResetContent();
 
-    if (number != -1) {
-        if (number < 1) {
+    if (number != -1)
+    {
+        if (number < 1)
+        {
             number = 1;
         }
-        if (number > 6) {
+        if (number > 6)
+        {
             number = 6;
         }
     }
@@ -104,9 +117,11 @@ void CLayoutListBox::SelectLayoutWithCount(int number) {
 
     int nSelect = -1;
 
-    for (int nLoop=0; GetLayoutFromSelection(nLoop); nLoop++) {
+    for (int nLoop=0; GetLayoutFromSelection(nLoop); nLoop++)
+    {
         AppendLayoutItem(GetLayoutFromSelection(nLoop) - ID_LAYOUT_FIRST);
-        if (GetLayoutFromSelection(nLoop) == GetPreferredLayout()) {
+        if (GetLayoutFromSelection(nLoop) == GetPreferredLayout())
+        {
             nSelect = GetCount() - 1;
         }
     }
@@ -118,7 +133,8 @@ void CLayoutListBox::SelectLayoutWithCount(int number) {
 /***************************************************************************/
 // CLayoutListBox::GetLayoutFromSelection get layout ID from selection index
 /***************************************************************************/
-int CLayoutListBox::GetLayoutFromSelection(int nIndex) {
+int CLayoutListBox::GetLayoutFromSelection(int nIndex)
+{
     const int one[] = { ID_LAYOUT_1,0 };
     const int two[] = { ID_LAYOUT_2A,ID_LAYOUT_2B,ID_LAYOUT_2C,0 };
     const int three[] = { ID_LAYOUT_3A,ID_LAYOUT_3B,ID_LAYOUT_3C,0 };
@@ -127,13 +143,16 @@ int CLayoutListBox::GetLayoutFromSelection(int nIndex) {
     const int six[] = { ID_LAYOUT_6A,ID_LAYOUT_6B,0 };
     const int * any[] = { one,two,three,four,five,six };
 
-    if (nIndex == -1) {
+    if (nIndex == -1)
+    {
         return GetPreferredLayout();
     }
 
-    if (m_number <= 6 && m_number >= 1) {
+    if (m_number <= 6 && m_number >= 1)
+    {
         for (int nLoop = 0; nLoop < nIndex; nLoop++)
-            if (any[m_number-1][nIndex] == 0) {
+            if (any[m_number-1][nIndex] == 0)
+            {
                 return 0;
             }
         return any[m_number-1][nIndex];
@@ -145,14 +164,19 @@ int CLayoutListBox::GetLayoutFromSelection(int nIndex) {
 /***************************************************************************/
 // CLayoutListBox::GetLayoutFromSelection get layout ID from selection index
 /***************************************************************************/
-int CLayoutListBox::GetPreferredLayout(int number) {
-    const int preferred[] = {
+int CLayoutListBox::GetPreferredLayout(int number)
+{
+    const int preferred[] =
+    {
         ID_LAYOUT_1,ID_LAYOUT_2A,ID_LAYOUT_3A,ID_LAYOUT_4B,ID_LAYOUT_5,ID_LAYOUT_6B,0
     };
 
-    if (number <= 6 && number >= 1) {
+    if (number <= 6 && number >= 1)
+    {
         return preferred[number-1];
-    } else {
+    }
+    else
+    {
         return -1;
     }
 }
@@ -161,7 +185,8 @@ int CLayoutListBox::GetPreferredLayout(int number) {
 /***************************************************************************/
 // CLayoutListBox::CLayoutListBox Destructor
 /***************************************************************************/
-CLayoutListBox::~CLayoutListBox() {
+CLayoutListBox::~CLayoutListBox()
+{
     //DestroyMenu();
     //ASSERT(m_hMenu == NULL);
 }
@@ -172,14 +197,16 @@ CLayoutListBox::~CLayoutListBox() {
 /***************************************************************************/
 // CLayoutListBox::AppendLayoutMenuItem Appends a layout item
 /***************************************************************************/
-void CLayoutListBox::AppendLayoutItem(int nNumber) {
+void CLayoutListBox::AppendLayoutItem(int nNumber)
+{
     AddString((LPCTSTR)nNumber);
 }
 
 /***************************************************************************/
 // CLayoutListBox::MeasureItem Define the item size
 /***************************************************************************/
-void CLayoutListBox::MeasureItem(LPMEASUREITEMSTRUCT lpMIS) {
+void CLayoutListBox::MeasureItem(LPMEASUREITEMSTRUCT lpMIS)
+{
     // all items are of fixed size
     lpMIS->itemWidth = LAYOUT_BOX_WIDTH;
     lpMIS->itemHeight = LAYOUT_BOX_HEIGHT + 12;
@@ -188,21 +215,26 @@ void CLayoutListBox::MeasureItem(LPMEASUREITEMSTRUCT lpMIS) {
 /***************************************************************************/
 // CLayoutListBox::DrawItem Draw the items
 /***************************************************************************/
-void CLayoutListBox::DrawItem(LPDRAWITEMSTRUCT lpDIS) {
+void CLayoutListBox::DrawItem(LPDRAWITEMSTRUCT lpDIS)
+{
     DrawLayoutItem(lpDIS, FALSE);
 }
 
 /***************************************************************************/
 // Draw the items for CLayoutMenu & CLayoutListBox
 /***************************************************************************/
-static void DrawLayoutItem(LPDRAWITEMSTRUCT lpDIS, BOOL bMenu) {
+static void DrawLayoutItem(LPDRAWITEMSTRUCT lpDIS, BOOL bMenu)
+{
     CDC * pDC = CDC::FromHandle(lpDIS->hDC);
     // prepare text
     CString szText;
-    if (lpDIS->itemData >= 0 && lpDIS->itemData <= ID_LAYOUT_LAST - ID_LAYOUT_FIRST) {
+    if (lpDIS->itemData >= 0 && lpDIS->itemData <= ID_LAYOUT_LAST - ID_LAYOUT_FIRST)
+    {
         const char * szLabels[] = {"1","2a","2b","2c","3a","3b","3c","4a","4b","4c","5","6a","6b"};
         szText = szLabels[lpDIS->itemData];
-    } else {
+    }
+    else
+    {
         szText = "?";
     }
 
@@ -211,20 +243,27 @@ static void DrawLayoutItem(LPDRAWITEMSTRUCT lpDIS, BOOL bMenu) {
     CPen penLightGray, penDarkGray, penLightText, penDarkText;
     CBrush br;
     int nOldBkMode = pDC->SetBkMode(TRANSPARENT); // text should not change background
-    if (lpDIS->itemState & ODS_GRAYED) {
+    if (lpDIS->itemState & ODS_GRAYED)
+    {
         // grayed item
         penLightGray.CreatePen(PS_SOLID, 1, GetSysColor(COLOR_BTNHIGHLIGHT));
         penDarkGray.CreatePen(PS_SOLID, 1, GetSysColor(COLOR_BTNSHADOW));
         penLightText.CreatePen(PS_SOLID, 1, GetSysColor(COLOR_BTNHIGHLIGHT));
         penDarkText.CreatePen(PS_SOLID, 1, GetSysColor(COLOR_BTNSHADOW));
-        if (bMenu) {
+        if (bMenu)
+        {
             br.CreateSolidBrush(GetSysColor(COLOR_MENU));
-        } else {
+        }
+        else
+        {
             br.CreateSolidBrush(GetSysColor(COLOR_WINDOW));
         }
         oldTextColor = pDC->SetTextColor(GetSysColor(COLOR_GRAYTEXT));
-    } else {
-        if (lpDIS->itemState & ODS_SELECTED) {
+    }
+    else
+    {
+        if (lpDIS->itemState & ODS_SELECTED)
+        {
             // selected item
             penLightGray.CreatePen(PS_SOLID, 1, GetSysColor(COLOR_BTNHIGHLIGHT));
             penDarkGray.CreatePen(PS_SOLID, 1, GetSysColor(COLOR_BTNSHADOW));
@@ -232,15 +271,20 @@ static void DrawLayoutItem(LPDRAWITEMSTRUCT lpDIS, BOOL bMenu) {
             penDarkText.CreatePen(PS_SOLID, 1, GetSysColor(COLOR_HIGHLIGHTTEXT));
             br.CreateSolidBrush(GetSysColor(COLOR_HIGHLIGHT));
             oldTextColor = pDC->SetTextColor(GetSysColor(COLOR_HIGHLIGHTTEXT));
-        } else {
+        }
+        else
+        {
             // unselected (normal) item
             penLightGray.CreatePen(PS_SOLID, 1, GetSysColor(COLOR_BTNHIGHLIGHT));
             penDarkGray.CreatePen(PS_SOLID, 1, GetSysColor(COLOR_BTNSHADOW));
-            if (bMenu) {
+            if (bMenu)
+            {
                 penLightText.CreatePen(PS_SOLID, 1, GetSysColor(COLOR_MENUTEXT));
                 penDarkText.CreatePen(PS_SOLID, 1, GetSysColor(COLOR_MENUTEXT));
                 br.CreateSolidBrush(GetSysColor(COLOR_MENU));
-            } else {
+            }
+            else
+            {
                 penLightText.CreatePen(PS_SOLID, 1, GetSysColor(COLOR_WINDOWTEXT));
                 penDarkText.CreatePen(PS_SOLID, 1, GetSysColor(COLOR_WINDOWTEXT));
                 br.CreateSolidBrush(GetSysColor(COLOR_WINDOW));
@@ -257,7 +301,8 @@ static void DrawLayoutItem(LPDRAWITEMSTRUCT lpDIS, BOOL bMenu) {
     rText.right = rDraw.left - 3;
     CPen * pOldPen = pDC->SelectObject(&penDarkGray);
     if ((lpDIS->itemAction & ODA_DRAWENTIRE)
-            || (lpDIS->itemAction & ODA_SELECT)) {
+            || (lpDIS->itemAction & ODA_SELECT))
+    {
         // item is to draw normal, selected or grayed out
         pDC->FillRect(&lpDIS->rcItem, &br); // fill the background
         // draw the number
@@ -284,7 +329,8 @@ static void DrawLayoutItem(LPDRAWITEMSTRUCT lpDIS, BOOL bMenu) {
         pDC->LineTo(rDraw.right, rDraw.top);
         // draw the GraphSubRect border lines
         pDC->SelectObject(&penDarkText);
-        for (int nGraph = 0; nGraph < CSaView::GetNumberOfGraphsInLayout(ID_LAYOUT_FIRST + (int)lpDIS->itemData); nGraph++) {
+        for (int nGraph = 0; nGraph < CSaView::GetNumberOfGraphsInLayout(ID_LAYOUT_FIRST + (int)lpDIS->itemData); nGraph++)
+        {
             CRect rGraph;
 
             CSaView::GetGraphSubRect(ID_LAYOUT_FIRST + (int)lpDIS->itemData, &rDraw, &rGraph, nGraph);
@@ -297,7 +343,8 @@ static void DrawLayoutItem(LPDRAWITEMSTRUCT lpDIS, BOOL bMenu) {
         }
 
         // put the checkmark (a kind of transparent bitmap), not if grayed
-        if (((lpDIS->itemState & ODS_CHECKED) || ((lpDIS->itemState & ODS_SELECTED) && !bMenu)) && !(lpDIS->itemState & ODS_GRAYED)) {
+        if (((lpDIS->itemState & ODS_CHECKED) || ((lpDIS->itemState & ODS_SELECTED) && !bMenu)) && !(lpDIS->itemState & ODS_GRAYED))
+        {
             DWORD dwCheckSize = GetMenuCheckMarkDimensions(); // checkmark dimensions
             CDC * pDisplayMemDC;
             CBitmap * pbmp, *pbmpOld;

@@ -77,7 +77,8 @@ CDlgExportFW::CDlgExportFW(LPCTSTR docTitle,
                            BOOL reference,
                            BOOL phrase,
                            CWnd * pParent) :
-    CDialog(CDlgExportFW::IDD, pParent) {
+    CDialog(CDlgExportFW::IDD, pParent)
+{
 
     settings.bGloss = bGlossDflt = gloss;
     settings.bOrtho = bOrthoDflt = ortho;
@@ -89,7 +90,8 @@ CDlgExportFW::CDlgExportFW(LPCTSTR docTitle,
     settings.szDocTitle = docTitle;
 }
 
-BOOL CDlgExportFW::OnInitDialog() {
+BOOL CDlgExportFW::OnInitDialog()
+{
 
     CDialog::OnInitDialog();
 
@@ -110,7 +112,8 @@ BOOL CDlgExportFW::OnInitDialog() {
     return TRUE;  // return TRUE  unless you set the focus to a control
 }
 
-void CDlgExportFW::DoDataExchange(CDataExchange * pDX) {
+void CDlgExportFW::DoDataExchange(CDataExchange * pDX)
+{
 
     CDialog::DoDataExchange(pDX);
     DDX_Check(pDX, IDC_EXTAB_GLOSS, settings.bGloss);
@@ -130,7 +133,8 @@ void CDlgExportFW::DoDataExchange(CDataExchange * pDX) {
     DDX_Control(pDX, IDOK, ctlButtonOK);
     DDX_Control(pDX, IDC_STATIC_TAGS, ctlStaticTags);
 
-    if (!pDX->m_bSaveAndValidate) {
+    if (!pDX->m_bSaveAndValidate)
+    {
 
         ctlComboFieldWorksProject.ResetContent();
 
@@ -143,23 +147,30 @@ void CDlgExportFW::DoDataExchange(CDataExchange * pDX) {
         path.Append(L"*");
 
         CFileFind finder;
-        if (finder.FindFile(path));
-		bool more = true;
-		do {
-            more = finder.FindNextFile();
-            if (finder.IsDots()) continue;
-            if (!finder.IsDirectory()) continue;
-            TRACE(L"Found %s\n", finder.GetFileName());
-            ctlComboFieldWorksProject.AddString((LPCTSTR) finder.GetFileName());
-        } while (more);
-    } else {
+        if (finder.FindFile(path))
+		{
+			BOOL more = TRUE;
+			do
+			{
+				more = finder.FindNextFile();
+				if (finder.IsDots()) continue;
+				if (!finder.IsDirectory()) continue;
+				TRACE(L"Found %s\n", finder.GetFileName());
+				ctlComboFieldWorksProject.AddString((LPCTSTR) finder.GetFileName());
+			}
+			while (more);
+		}
+    }
+    else
+    {
         TCHAR szBuffer[MAX_PATH];
         GetCurrentPath(szBuffer,MAX_PATH);
         settings.szPath = szBuffer;
     }
 }
 
-void CDlgExportFW::OnAllAnnotations() {
+void CDlgExportFW::OnAllAnnotations()
+{
 
     UpdateData(TRUE);
     bool checked = ::IsDlgButtonChecked(m_hWnd,IDC_EXTAB_ANNOTATIONS)?true:false;
@@ -171,7 +182,8 @@ void CDlgExportFW::OnAllAnnotations() {
     SetEnable(IDC_EXTAB_REFERENCE, bEnable);
     SetEnable(IDC_EXTAB_POS, bEnable);
     SetEnable(IDC_EXTAB_PHRASE, bEnable);
-    if (checked) {
+    if (checked)
+    {
         settings.bGloss = bGlossDflt;
         settings.bOrtho = bOrthoDflt;
         settings.bPhonemic = bPhonemicDflt;
@@ -179,29 +191,36 @@ void CDlgExportFW::OnAllAnnotations() {
         settings.bPOS = bPOSDflt;
         settings.bReference = bReferenceDflt;
         settings.bPhrase = bPhraseDflt;
-    } else {
+    }
+    else
+    {
         settings.bReference = settings.bPhonetic = settings.bPhonemic = settings.bOrtho = settings.bGloss = settings.bPOS = settings.bPhrase = FALSE;
     }
     UpdateData(FALSE);
 }
 
-void CDlgExportFW::SetEnable(int nItem, BOOL bEnable) {
+void CDlgExportFW::SetEnable(int nItem, BOOL bEnable)
+{
 
     CWnd * pWnd = GetDlgItem(nItem);
-    if (pWnd) {
+    if (pWnd)
+    {
         pWnd->EnableWindow(bEnable);
     }
 }
 
-void CDlgExportFW::SetCheck(int nItem, BOOL bChecked) {
+void CDlgExportFW::SetCheck(int nItem, BOOL bChecked)
+{
 
     CButton * pWnd = (CButton *) GetDlgItem(nItem);
-    if (pWnd) {
+    if (pWnd)
+    {
         pWnd->SetCheck(bChecked);
     }
 }
 
-void CDlgExportFW::OnHelpExportBasic() {
+void CDlgExportFW::OnHelpExportBasic()
+{
 
     // create the pathname
     CString szPath = AfxGetApp()->m_pszHelpFilePath;
@@ -209,29 +228,37 @@ void CDlgExportFW::OnHelpExportBasic() {
     ::HtmlHelp(NULL, szPath, HH_DISPLAY_TOPIC, NULL);
 }
 
-void CDlgExportFW::OnClickedExSfmInterlinear() {
+void CDlgExportFW::OnClickedExSfmInterlinear()
+{
 
     CButton * pWnd = (CButton *) GetDlgItem(IDC_EX_SFM_MULTIRECORD);
-    if (pWnd) {
+    if (pWnd)
+    {
         pWnd->SetCheck(FALSE);
     }
 }
 
-void CDlgExportFW::OnClickedExSfmMultirecord() {
+void CDlgExportFW::OnClickedExSfmMultirecord()
+{
 
     CButton * pWnd = (CButton *) GetDlgItem(IDC_EX_SFM_INTERLINEAR);
-    if (pWnd) {
+    if (pWnd)
+    {
         pWnd->SetCheck(FALSE);
     }
 }
 
-static int CALLBACK BrowseCallbackProc(HWND hwnd, UINT uMsg, LPARAM /*lParam*/, LPARAM lpData) {
+static int CALLBACK BrowseCallbackProc(HWND hwnd, UINT uMsg, LPARAM /*lParam*/, LPARAM lpData)
+{
 
     // If the BFFM_INITIALIZED message is received
     // set the path to the start path.
-    switch (uMsg) {
-    case BFFM_INITIALIZED: {
-        if (NULL != lpData) {
+    switch (uMsg)
+    {
+    case BFFM_INITIALIZED:
+    {
+        if (NULL != lpData)
+        {
             SendMessage(hwnd, BFFM_SETSELECTION, TRUE, lpData);
         }
     }
@@ -239,7 +266,8 @@ static int CALLBACK BrowseCallbackProc(HWND hwnd, UINT uMsg, LPARAM /*lParam*/, 
     return 0;
 }
 
-void CDlgExportFW::OnClickedBrowseOther() {
+void CDlgExportFW::OnClickedBrowseOther()
+{
 
     // szCurrent is an optional start folder. Can be NULL.
     // szPath receives the selected path on success. Must be MAX_PATH characters in length.
@@ -262,7 +290,8 @@ void CDlgExportFW::OnClickedBrowseOther() {
     bi.lpfn = BrowseCallbackProc;
     bi.lParam = (LPARAM)(LPCTSTR) szFolderLocation;
     LPITEMIDLIST pidl = SHBrowseForFolder(&bi);
-    if (pidl == NULL) {
+    if (pidl == NULL)
+    {
         // they canceled...
         CoUninitialize();
         return;
@@ -273,11 +302,15 @@ void CDlgExportFW::OnClickedBrowseOther() {
 
     BOOL retval = SHGetPathFromIDList(pidl, szPath);
     CoTaskMemFree(pidl);
-    if (!retval) {
+    if (!retval)
+    {
         szPath[0] = TEXT('\0');
-    } else {
+    }
+    else
+    {
         wstring temp(szPath);
-        if (temp[temp.length() - 1] != '\\') {
+        if (temp[temp.length() - 1] != '\\')
+        {
             temp.append(L"\\");
         }
         ctlEditOtherFolder.SetWindowText(temp.c_str());
@@ -287,7 +320,8 @@ void CDlgExportFW::OnClickedBrowseOther() {
     UpdateButtonState();
 }
 
-void CDlgExportFW::OnRadioFieldworks() {
+void CDlgExportFW::OnRadioFieldworks()
+{
 
     ctlEditFieldWorksFolder.EnableWindow(FALSE);
     ctlComboFieldWorksProject.EnableWindow(TRUE);
@@ -298,7 +332,8 @@ void CDlgExportFW::OnRadioFieldworks() {
 }
 
 
-void CDlgExportFW::OnRadioOther() {
+void CDlgExportFW::OnRadioOther()
+{
 
     ctlEditFieldWorksFolder.EnableWindow(FALSE);
     ctlComboFieldWorksProject.EnableWindow(FALSE);
@@ -308,11 +343,13 @@ void CDlgExportFW::OnRadioOther() {
     UpdateButtonState();
 }
 
-void CDlgExportFW::GetCurrentPath(LPTSTR szBuffer, size_t size) {
+void CDlgExportFW::GetCurrentPath(LPTSTR szBuffer, size_t size)
+{
 
     wmemset(szBuffer,0,MAX_PATH);
 
-    if (ctlRadioFieldWorks.GetCheck() == BST_CHECKED) {
+    if (ctlRadioFieldWorks.GetCheck() == BST_CHECKED)
+    {
         TCHAR szTemp[MAX_PATH];
         wmemset(szTemp,0,MAX_PATH);
         ctlEditFieldWorksFolder.GetWindowTextW(szTemp, MAX_PATH);
@@ -331,16 +368,19 @@ void CDlgExportFW::GetCurrentPath(LPTSTR szBuffer, size_t size) {
 }
 
 
-void CDlgExportFW::OnSelchangeComboFieldworksProject() {
+void CDlgExportFW::OnSelchangeComboFieldworksProject()
+{
     UpdateButtonState();
 }
 
 
-void CDlgExportFW::OnKillfocusComboFieldworksProject() {
+void CDlgExportFW::OnKillfocusComboFieldworksProject()
+{
     UpdateButtonState();
 }
 
-void CDlgExportFW::UpdateButtonState() {
+void CDlgExportFW::UpdateButtonState()
+{
 
     TCHAR szBuffer[MAX_PATH];
     GetCurrentPath(szBuffer,MAX_PATH);
@@ -351,7 +391,8 @@ void CDlgExportFW::UpdateButtonState() {
     ctlButtonOK.EnableWindow(((valid)&&(selected))?TRUE:FALSE);
 }
 
-void CDlgExportFW::WriteFileUtf8(CFile * pFile, const CSaString szString) {
+void CDlgExportFW::WriteFileUtf8(CFile * pFile, const CSaString szString)
+{
 
     std::string szUtf8 = szString.utf8();
     pFile->Write(szUtf8.c_str(), szUtf8.size());
@@ -360,19 +401,22 @@ void CDlgExportFW::WriteFileUtf8(CFile * pFile, const CSaString szString) {
 /**
 * return the registered fieldworks project directory
 */
-CSaString CDlgExportFW::GetFieldWorksProjectDirectory() {
+CSaString CDlgExportFW::GetFieldWorksProjectDirectory()
+{
 
     // retrieve IPA Help location from registry
     TCHAR szPathBuf[_MAX_PATH + 1];
     HKEY hKey = NULL;
     DWORD dwBufLen = MAX_PATH + 1;
 
-    if (RegOpenKeyEx(HKEY_LOCAL_MACHINE, _T("Software\\SIL\\FieldWorks\\7.0"), 0, KEY_QUERY_VALUE, &hKey)) {
+    if (RegOpenKeyEx(HKEY_LOCAL_MACHINE, _T("Software\\SIL\\FieldWorks\\7.0"), 0, KEY_QUERY_VALUE, &hKey))
+    {
         return L"";
     }
     long nError = RegQueryValueEx(hKey, _T("ProjectsDir"), NULL, NULL, (LPBYTE) szPathBuf, &dwBufLen);
     RegCloseKey(hKey);
-    if ((nError) || (!wcslen(szPathBuf))) {
+    if ((nError) || (!wcslen(szPathBuf)))
+    {
         return L"";
     }
 

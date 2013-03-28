@@ -24,14 +24,16 @@ class CSaString;
 // special class to allow selection of empty dependent segments.  Should also
 // provide a interface independent of data storage representation
 /***************************************************************************/
-class CASegmentSelection {
+class CASegmentSelection
+{
     //Constructor/Destructor
 public:
     CASegmentSelection();
 
     //Types
 public:
-    class CASelection {
+    class CASelection
+    {
     public:
         DWORD dwStart;
         DWORD dwStop;
@@ -42,7 +44,8 @@ public:
         //      int nInsertAtIndex;
         //      int nPhoneticRelativeIndex;
     };
-    enum {
+    enum
+    {
         FIND_EXACT = 1
     };
 
@@ -56,7 +59,8 @@ protected:
 public:
     BOOL CASegmentSelection::SelectFromPosition(CSaView * pView, int nSegmentIndex, DWORD dwPosition, int nMode = NULL);
     BOOL CASegmentSelection::SelectFromStopPosition(CSaView * pView, int nSegmentIndex, DWORD dwPosition, int nMode = NULL);
-    const CASelection & GetSelection() const {
+    const CASelection & GetSelection() const
+    {
         return m_Selection;
     }; //Access Selection Record
     void Update(CSaView * pView, BOOL bClearVirtual = FALSE); //Update Selection Record

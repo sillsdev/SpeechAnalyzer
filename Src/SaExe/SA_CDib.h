@@ -17,7 +17,8 @@
 #define _SA_CDIB_
 
 // cdib.h
-class CDib : public CObject {
+class CDib : public CObject
+{
     DECLARE_SERIAL(CDib)
 private:
     char * m_lpBuf;    // DIB data buffer

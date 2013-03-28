@@ -4,7 +4,8 @@
 #include "CSaString.h"
 #include "resource.h"
 
-class CDlgExportTable : public CDialog {
+class CDlgExportTable : public CDialog
+{
 public:
     CDlgExportTable(const CSaString & szDocTitle, CWnd * pParent = NULL); // standard constructor
 

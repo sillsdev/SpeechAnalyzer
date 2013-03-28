@@ -17,7 +17,8 @@
 //                           Data and Methods
 ////////////////////////////////////////////////////////////////////////
 
-class zLowLevelGraphics {
+class zLowLevelGraphics
+{
 protected:
     //
     // Rectangular Graph Window Area
@@ -215,19 +216,24 @@ public:
     //
     // Inline Functions
     //
-    inline void zSetGridPenStyle(INT gps) {      // Sets Grid Pen Style to
+    inline void zSetGridPenStyle(INT gps)        // Sets Grid Pen Style to
+    {
         GridPenStyle = gps;    //    zNORMAL, etc.
     }
-    inline void zSetBrushFillStyle(INT fs) {     // Sets Brush Fill Style
+    inline void zSetBrushFillStyle(INT fs)       // Sets Brush Fill Style
+    {
         fill_style = fs;
     }
-    inline zRGB zGetCurrentColor() {             // Gets the Current Graph
+    inline zRGB zGetCurrentColor()               // Gets the Current Graph
+    {
         return CurrentColor;    //   Color
     }
-    inline void zSetCurrentColor(zRGB color1) {  // Sets the Current Graph
+    inline void zSetCurrentColor(zRGB color1)    // Sets the Current Graph
+    {
         CurrentColor = color1;    //   Color
     }
-    inline void zSetGraphWindow(RECT * R1) {     // Sets the Graph Window Area
+    inline void zSetGraphWindow(RECT * R1)       // Sets the Graph Window Area
+    {
         RWindow = *R1;
         RWindow.Normalize();
     }
@@ -236,16 +242,20 @@ public:
     //
     // Static Member Functions
     //
-    static INT  GetScreenHeight() {
+    static INT  GetScreenHeight()
+    {
         return ScreenHeight;
     }
-    static INT  GetScreenWidth()  {
+    static INT  GetScreenWidth()
+    {
         return ScreenWidth;
     }
-    static RECT GetRScreen()      {
+    static RECT GetRScreen()
+    {
         return RScreen;
     }
-    static INT  GetNumFonts()     {
+    static INT  GetNumFonts()
+    {
         return NumFonts;
     }
 
@@ -266,7 +276,8 @@ public:
     // For Windows
     //
 #ifdef WINDOWS_PLATFORM
-    inline void zSetGraphDC(HDC hdc1) {       // Sets the Graph DC
+    inline void zSetGraphDC(HDC hdc1)         // Sets the Graph DC
+    {
         hDC = hdc1;
     }
 
@@ -277,10 +288,12 @@ public:
 #endif
 
 #ifdef OS2_PLATFORM
-    inline void zSetGraphHPS(HPS hps1) {
+    inline void zSetGraphHPS(HPS hps1)
+    {
         hPS = hps1;      // Sets the Graph HPS
     }
-    inline void zSetGraphHWND(HWND hwnd1) {
+    inline void zSetGraphHWND(HWND hwnd1)
+    {
         hWnd = hwnd1;    // Sets the Graph HWND
     }
 #endif

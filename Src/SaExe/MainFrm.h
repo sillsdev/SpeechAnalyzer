@@ -65,7 +65,8 @@ class CFontTable;
 
 typedef UINT(CALLBACK * DLGHOOKPROC)(HWND, UINT, WPARAM, LPARAM);
 
-typedef struct SDefaultViewInfo {
+typedef struct SDefaultViewInfo
+{
     CSaView    *   pView;
     BOOL           bMaximize;
     int            nHeight;
@@ -82,9 +83,10 @@ typedef struct SDefaultViewInfo {
 //###########################################################################
 // CMainFrame window
 
-class CMainFrame : public CMDIFrameWnd {
+class CMainFrame : public CMDIFrameWnd
+{
 
-	DECLARE_DYNCREATE(CMainFrame)
+    DECLARE_DYNCREATE(CMainFrame)
 
 public:
     CMainFrame();
@@ -167,7 +169,7 @@ protected:
     HMENU m_hNewMenu;
     HACCEL m_hNewAccel;
     int m_nPopup;
-	CToolSettings toolSettings;
+    CToolSettings toolSettings;
 
 public:
     BOOL bToolBar();               // toolbar on/off
@@ -216,14 +218,14 @@ public:
 
     void WriteProperties(Object_ostream & obs);
     BOOL ReadProperties(Object_istream & obs);
-    BOOL bReadDefaultView(Object_istream & obs);
+    BOOL ReadDefaultView(Object_istream & obs);
     void WriteDefaultView(Object_ostream & obs);
     void DisplayPlot(CDisplayPlot * pPlot);
     void NotifyFragmentDone(void * pCaller);
 
     // transcription fonts
-    CSaStringArray m_GraphFontFaces;		// array of graph font face strings
-    CUIntArray m_GraphFontSizes;			// array of graph font sizes
+    CSaStringArray m_GraphFontFaces;        // array of graph font face strings
+    CUIntArray m_GraphFontSizes;            // array of graph font sizes
 
     CSaString GetFontFace(int nIndex);
     int GetFontSize(int nIndex);
@@ -285,7 +287,7 @@ public:
     void SetPopup(int nPopup);
     int GetPopup() const;
     BOOL IsEditAllowed();
-	void SetToolSettings( CToolSettings settings);
+    void SetToolSettings(CToolSettings settings);
 
     friend CDisplayPlot;
 
@@ -332,12 +334,20 @@ protected:
     afx_msg void OnEqualizeLength();
     afx_msg void OnUpdateEqualizeLength(CCmdUI * pCmdUI);
     afx_msg BOOL OnCopyData(CWnd * pWnd, COPYDATASTRUCT * pCopyDataStruct);
-	afx_msg void OnTimer( UINT nIDEvent);
+    afx_msg void OnTimer(UINT nIDEvent);
 
     DECLARE_MESSAGE_MAP()
 
+public:
+    afx_msg void OnAutoSaveOn();
+    afx_msg void OnAutoSaveOff();
+
+private:
+	BOOL m_bAutoSave;
+
 };
 
-#define AUTOSAVE_TIMER      60000	// fires once a minutes
+#define AUTOSAVE_TIMER      60000   // fires once a minute
+//#define AUTOSAVE_TIMER      5000   // fires once a minute
 
 #endif

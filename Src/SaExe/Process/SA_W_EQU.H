@@ -13,7 +13,8 @@
 //###########################################################################
 // CProcessWbEquation data processing
 
-class CProcessWbEquation : public CProcess {
+class CProcessWbEquation : public CProcess
+{
 // Construction/destruction/creation
 public:
     CProcessWbEquation();

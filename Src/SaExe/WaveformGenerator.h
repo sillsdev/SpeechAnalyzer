@@ -4,7 +4,8 @@
 #include "WaveformGeneratorSettings.h"
 #include "process\Process.h"
 
-class CProcessWaveformGenerator : public CProcess {
+class CProcessWaveformGenerator : public CProcess
+{
 public:
     CProcessWaveformGenerator();
     virtual ~CProcessWaveformGenerator();

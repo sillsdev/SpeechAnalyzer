@@ -12,7 +12,8 @@
 //
 // This is an instance of the Decorator design pattern.
 
-class EnergyPeakSource : public PeakSource {
+class EnergyPeakSource : public PeakSource
+{
 public:
     // Construct this peak source as a wrapper around the given peak
     // source.

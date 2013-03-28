@@ -20,16 +20,19 @@ static const char * psz_MinThreshold         = "nMinThreshold";
 static const char * psz_Overlay              = "nOverlay";
 static const char * psz_ShowPitch            = "bShowPitch";
 
-void CSpectroParm::WritePropertiesA(Object_ostream & obs) {
+void CSpectroParm::WritePropertiesA(Object_ostream & obs)
+{
     WriteProperties(psz_spectroA, obs);
 }
 
-void CSpectroParm::WritePropertiesB(Object_ostream & obs) {
+void CSpectroParm::WritePropertiesB(Object_ostream & obs)
+{
     WriteProperties(psz_spectroB, obs);
 }
 
 // Write spectroParm properties to *.psa file.
-void CSpectroParm::WriteProperties(const char * pszMarker, Object_ostream & obs) {
+void CSpectroParm::WriteProperties(const char * pszMarker, Object_ostream & obs)
+{
     obs.WriteBeginMarker(pszMarker);
 
     // write out properties
@@ -50,26 +53,33 @@ void CSpectroParm::WriteProperties(const char * pszMarker, Object_ostream & obs)
     obs.WriteEndMarker(pszMarker);
 }
 
-BOOL CSpectroParm::ReadPropertiesA(Object_istream & obs) {
+BOOL CSpectroParm::ReadPropertiesA(Object_istream & obs)
+{
     return ReadProperties(psz_spectroA, obs);
 }
 
-BOOL CSpectroParm::ReadPropertiesB(Object_istream & obs) {
+BOOL CSpectroParm::ReadPropertiesB(Object_istream & obs)
+{
     return ReadProperties(psz_spectroB, obs);
 }
 
 // Read spectroParm properties from *.psa file.
-BOOL CSpectroParm::ReadProperties(const char * pszMarker, Object_istream & obs) {
-    if (!obs.bAtBackslash() || !obs.bReadBeginMarker(pszMarker)) {
+BOOL CSpectroParm::ReadProperties(const char * pszMarker, Object_istream & obs)
+{
+    if (!obs.bAtBackslash() || !obs.bReadBeginMarker(pszMarker))
+    {
         return FALSE;
     }
 
-    while (!obs.bAtEnd()) {
+    while (!obs.bAtEnd())
+    {
         if (obs.bReadInteger(psz_Resolution, nResolution));
         // This is temporary until *.psa files are built with this version
-        else if (obs.bReadInteger(psz_ResolutionOld, nResolution)) {
+        else if (obs.bReadInteger(psz_ResolutionOld, nResolution))
+        {
             nResolution *= 2;    // map 0->0 & 1->2
-        } else if (obs.bReadInteger(psz_Color, nColor));
+        }
+        else if (obs.bReadInteger(psz_Color, nColor));
         else if (obs.bReadBool(psz_ShowF1, bShowF1));
         else if (obs.bReadBool(psz_ShowF2, bShowF2));
         else if (obs.bReadBool(psz_ShowF3, bShowF3));
@@ -81,7 +91,8 @@ BOOL CSpectroParm::ReadProperties(const char * pszMarker, Object_istream & obs) 
         else if (obs.bReadInteger(psz_MinThreshold, nMinThreshold));
         else if (obs.bReadInteger(psz_Overlay, nOverlay));
         else if (obs.bReadBool(psz_ShowPitch, bShowPitch));
-        else if (obs.bEnd(pszMarker)) {
+        else if (obs.bEnd(pszMarker))
+        {
             break;
         }
     }
@@ -90,7 +101,8 @@ BOOL CSpectroParm::ReadProperties(const char * pszMarker, Object_istream & obs) 
 
 const float CSpectroParm::DspWinBandwidth[] = {(float)NARROW_BW, (float)MEDIUM_BW, (float)WIDE_BW};
 
-void CSpectroParm::Init() {
+void CSpectroParm::Init()
+{
     nResolution = 2;
     nColor = 1; // Monochrome
     nOverlay = 0;

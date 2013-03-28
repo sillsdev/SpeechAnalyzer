@@ -12,7 +12,8 @@
 //###########################################################################
 // CProcessZCross data processing
 
-class CProcessZCross : public CProcess {
+class CProcessZCross : public CProcess
+{
 // Construction/destruction/creation
 public:
     CProcessZCross();

@@ -5,18 +5,22 @@
 
 /////////////////////////////////////////////////////////////////////////////
 // CTaskBar dialog
-class CSaTaskItem : public LVITEM {
+class CSaTaskItem : public LVITEM
+{
 public:
-    CSaTaskItem(const LVITEM item) : LVITEM(item) {
+    CSaTaskItem(const LVITEM item) : LVITEM(item)
+    {
         ;
     }
     CString szLabel;
     CString szTip;
 };
 
-class CTaskPage {
+class CTaskPage
+{
 public:
-    CTaskPage() {
+    CTaskPage()
+    {
         m_pImageList[0] = m_pImageList[1] = m_pImageList[2] = NULL;
     }
     virtual ~CTaskPage();
@@ -29,7 +33,8 @@ public:
 
 /////////////////////////////////////////////////////////////////////////////
 // CTaskButton window
-class CTaskButton : public CButton {
+class CTaskButton : public CButton
+{
 public:
     CTaskButton(LPCTSTR szCaption, CWnd * pParent, UINT nID);
     virtual ~CTaskButton();
@@ -42,7 +47,8 @@ protected:
     DECLARE_MESSAGE_MAP()
 };
 
-class CTaskBar : public CDialogBar {
+class CTaskBar : public CDialogBar
+{
     DECLARE_DYNAMIC(CTaskBar)
 
 public:

@@ -1,4 +1,5 @@
-struct tpair {
+struct tpair
+{
     typedef First first_type;
     typedef Second second_type;
 

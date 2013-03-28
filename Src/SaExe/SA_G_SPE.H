@@ -17,7 +17,8 @@
 //###########################################################################
 // CPlotBlank plot window
 
-class CPlotBlank : public CPlotWnd {
+class CPlotBlank : public CPlotWnd
+{
     DECLARE_DYNCREATE(CPlotBlank)
 
 // Construction/destruction/creation

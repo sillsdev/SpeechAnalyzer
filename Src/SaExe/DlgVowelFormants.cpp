@@ -14,11 +14,13 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-CVowelFormants::CVowelFormants(const CSaString & szVowel, double inF1, double inF2, double inF3, double inF4) {
+CVowelFormants::CVowelFormants(const CSaString & szVowel, double inF1, double inF2, double inF3, double inF4)
+{
     Init(szVowel, inF1, inF2, inF3, inF4);
 }
 
-void CVowelFormants::Init(const CSaString & szVowel, double inF1, double inF2, double inF3, double inF4) {
+void CVowelFormants::Init(const CSaString & szVowel, double inF1, double inF2, double inF3, double inF4)
+{
     m_szVowel = szVowel;
     F1 = inF1;
     F2 = inF2;
@@ -33,7 +35,8 @@ static const char * psz_F3      = "F3";
 static const char * psz_F4      = "F4";
 
 // Write spectrumParm properties to stream
-void CVowelFormants::WriteProperties(Object_ostream & obs) const {
+void CVowelFormants::WriteProperties(Object_ostream & obs) const
+{
     obs.WriteBeginMarker(psz_Vowel, m_szVowel);
 
     // write out properties
@@ -46,19 +49,23 @@ void CVowelFormants::WriteProperties(Object_ostream & obs) const {
 }
 
 // Read spectrumParm properties from *.psa file.
-BOOL CVowelFormants::ReadProperties(Object_istream & obs) {
-    if (!obs.bAtBackslash() || !obs.bReadBeginMarker(psz_Vowel, &m_szVowel)) {
+BOOL CVowelFormants::ReadProperties(Object_istream & obs)
+{
+    if (!obs.bAtBackslash() || !obs.bReadBeginMarker(psz_Vowel, &m_szVowel))
+    {
         return FALSE;
     }
 
     Init(m_szVowel, -1, -1, -1);
 
-    while (!obs.bAtEnd()) {
+    while (!obs.bAtEnd())
+    {
         if (obs.bReadDouble(psz_F1, F1));
         else if (obs.bReadDouble(psz_F2, F2));
         else if (obs.bReadDouble(psz_F3, F3));
         else if (obs.bReadDouble(psz_F4, F4));
-        else if (obs.bEnd(psz_Vowel)) {
+        else if (obs.bEnd(psz_Vowel))
+        {
             break;
         }
     }
@@ -67,18 +74,23 @@ BOOL CVowelFormants::ReadProperties(Object_istream & obs) {
 
 static const char * psz_Version = "Version";
 
-void CVowelSetVersion::WriteProperties(Object_ostream & obs) const {
+void CVowelSetVersion::WriteProperties(Object_ostream & obs) const
+{
     obs.WriteBeginMarker(psz_Version, m_szVersion);
     obs.WriteEndMarker(psz_Version);
 }
 
-BOOL CVowelSetVersion::ReadProperties(Object_istream & obs) {
-    if (!obs.bAtBackslash() || !obs.bReadBeginMarker(psz_Version, &m_szVersion)) {
+BOOL CVowelSetVersion::ReadProperties(Object_istream & obs)
+{
+    if (!obs.bAtBackslash() || !obs.bReadBeginMarker(psz_Version, &m_szVersion))
+    {
         return FALSE;
     }
 
-    while (!obs.bAtEnd()) {
-        if (obs.bEnd(psz_Version)) {
+    while (!obs.bAtEnd())
+    {
+        if (obs.bEnd(psz_Version))
+        {
             break;
         }
     }
@@ -87,7 +99,8 @@ BOOL CVowelSetVersion::ReadProperties(Object_istream & obs) {
 }
 
 CVowelFormantSet::CVowelFormantSet(const CSaString & szSetName, const CVowelFormantsVector vowels[3], BOOL bUser)
-    : m_szSetName(szSetName) {
+    : m_szSetName(szSetName)
+{
     m_bUser = bUser;
     m_vowels[0] = vowels[0];
     m_vowels[1] = vowels[1];
@@ -101,14 +114,17 @@ static const char * psz_DefaultSet = "DefaultSet";
 
 
 // Write spectrumParm properties to stream
-void CVowelFormantSet::WriteProperties(Object_ostream & obs) const {
+void CVowelFormantSet::WriteProperties(Object_ostream & obs) const
+{
     obs.WriteBeginMarker(psz_VowelSet, m_szSetName);
     obs.WriteBool(psz_User, m_bUser);
-    for (int i = 0; i < 3; i++) {
+    for (int i = 0; i < 3; i++)
+    {
         CSaString szGenderID;
         szGenderID.Format(_T("%d"),i);
         obs.WriteBeginMarker(psz_Gender, szGenderID);
-        for (CVowelFormantsVector::const_iterator index=m_vowels[i].begin(); index != m_vowels[i].end(); index++) {
+        for (CVowelFormantsVector::const_iterator index=m_vowels[i].begin(); index != m_vowels[i].end(); index++)
+        {
             index->WriteProperties(obs);
         }
         obs.WriteEndMarker(psz_Gender);
@@ -119,7 +135,8 @@ void CVowelFormantSet::WriteProperties(Object_ostream & obs) const {
 BOOL CVowelFormantSet::ReadProperties(Object_istream & obs)
 // Read spectrumParm properties from *.psa file.
 {
-    if (!obs.bAtBackslash() || !obs.bReadBeginMarker(psz_VowelSet, &m_szSetName)) {
+    if (!obs.bAtBackslash() || !obs.bReadBeginMarker(psz_VowelSet, &m_szSetName))
+    {
         return FALSE;
     }
 
@@ -134,31 +151,41 @@ BOOL CVowelFormantSet::ReadProperties(Object_istream & obs)
     m_vowels[female].reserve(16);
     m_vowels[child].reserve(16);
 
-    while (!obs.bAtEnd()) {
+    while (!obs.bAtEnd())
+    {
         CSaString szGenderID;
-        if (obs.bReadBeginMarker(psz_Gender, &szGenderID)) {
+        if (obs.bReadBeginMarker(psz_Gender, &szGenderID))
+        {
             int gender = szGenderID[0] - _T('0');
 
-            if (gender >= 3 || gender < 0) {
+            if (gender >= 3 || gender < 0)
+            {
                 gender = 0;
             }
 
-            while (!obs.bAtEnd()) {
-                if (cVowel.ReadProperties(obs)) {
+            while (!obs.bAtEnd())
+            {
+                if (cVowel.ReadProperties(obs))
+                {
                     m_vowels[gender].push_back(cVowel);
-                } else if (obs.bEnd(psz_Gender)) {
+                }
+                else if (obs.bEnd(psz_Gender))
+                {
                     break;
                 }
             }
-        } else if (obs.bReadBool(psz_User, m_bUser));
-        else if (obs.bEnd(psz_VowelSet)) {
+        }
+        else if (obs.bReadBool(psz_User, m_bUser));
+        else if (obs.bEnd(psz_VowelSet))
+        {
             break;
         }
     }
     return TRUE;
 }
 
-BOOL CVowelFormantSets::Load(const CSaString & szFilename) {
+BOOL CVowelFormantSets::Load(const CSaString & szFilename)
+{
     m_nDefaultSet = 0;
 
     reserve(17); // reserve room for 16 sets to minimize copying
@@ -172,41 +199,54 @@ BOOL CVowelFormantSets::Load(const CSaString & szFilename) {
 
     const size_type nPredefined = size();
 
-    if (szFilename.IsEmpty()) {
+    if (szFilename.IsEmpty())
+    {
         return TRUE;
     }
 
-    try {
+    try
+    {
         Object_istream obs(szFilename);
 
         CVowelSetVersion version;
-        if (!version.ReadProperties(obs)) {
+        if (!version.ReadProperties(obs))
+        {
             version.SetVersion(_T("2.9"));
         }
 
-        while (!obs.bAtEnd()) {
+        while (!obs.bAtEnd())
+        {
             CVowelFormantSet newSet;
-            if (newSet.ReadProperties(obs)) {
-                if (newSet.IsUser()) { // Do not load predefined sets, saved as templates
+            if (newSet.ReadProperties(obs))
+            {
+                if (newSet.IsUser())   // Do not load predefined sets, saved as templates
+                {
                     push_back(newSet);
                 }
-            } else if (obs.bReadInteger(psz_DefaultSet, m_nDefaultSet)) {
-                if (m_nDefaultSet < 0 || m_nDefaultSet >= (int) size()) {
+            }
+            else if (obs.bReadInteger(psz_DefaultSet, m_nDefaultSet))
+            {
+                if (m_nDefaultSet < 0 || m_nDefaultSet >= (int) size())
+                {
                     m_nDefaultSet = 0;
                 }
             }
         }
 
         // reset the default set to zero from pre-3.0 versions
-        if (version.GetVersion() == _T("2.9")) {
+        if (version.GetVersion() == _T("2.9"))
+        {
             m_nDefaultSet = 0;
             Save();
         }
-    } catch (...) {
+    }
+    catch (...)
+    {
         Save();
     }
 
-    while (size() - nPredefined < 10) {
+    while (size() - nPredefined < 10)
+    {
         CSaString szCustom;
         szCustom.Format(_T("Custom %d"), size() - nPredefined + 1);
         CVowelFormantSet cCustom(szCustom);
@@ -216,33 +256,42 @@ BOOL CVowelFormantSets::Load(const CSaString & szFilename) {
     return TRUE;
 }
 
-int CVowelFormantSets::Save(const CSaString & szFilename) const {
-    if (szFilename.IsEmpty()) {
+int CVowelFormantSets::Save(const CSaString & szFilename) const
+{
+    if (szFilename.IsEmpty())
+    {
         return FALSE;
     }
 
-    try {
+    try
+    {
         Object_ostream obs(szFilename);
 
         CVowelSetVersion version;
         version.WriteProperties(obs);
 
-        for (const_iterator index=begin(); index != end(); index++) {
+        for (const_iterator index=begin(); index != end(); index++)
+        {
             index->WriteProperties(obs);
         }
         obs.WriteInteger(psz_DefaultSet, m_nDefaultSet);
-    } catch (...) {
+    }
+    catch (...)
+    {
         return FALSE;
     }
 
     return TRUE;
 }
 
-int CVowelFormantSets::SetDefaultSet(int nSet) {
+int CVowelFormantSets::SetDefaultSet(int nSet)
+{
     int nOldSet = m_nDefaultSet;
 
-    if (nSet != m_nDefaultSet) {
-        if (nSet >=0 && nSet < (int)size()) {
+    if (nSet != m_nDefaultSet)
+    {
+        if (nSet >=0 && nSet < (int)size())
+        {
             m_nDefaultSet = nSet;
         }
 
@@ -254,27 +303,33 @@ int CVowelFormantSets::SetDefaultSet(int nSet) {
 
 #define _AC(a,b) b
 
-static inline CSaString getVowel(const char * pszVowel) {
+static inline CSaString getVowel(const char * pszVowel)
+{
     CSaString result;
     result.setUtf8(pszVowel);
     return result;
 }
 
 // None - now the default set
-CVowelFormantSet CVowelFormantSets::None() {
+CVowelFormantSet CVowelFormantSets::None()
+{
     const int nVowels = 1;
-    const char * szVowels[nVowels] = {
+    const char * szVowels[nVowels] =
+    {
         _AC("",""),
     };
 
 
-    const short Men[][1]= {
+    const short Men[][1]=
+    {
         0
     };
-    const short Women[][1]= {
+    const short Women[][1]=
+    {
         0
     };
-    const short Children[][1]= {
+    const short Children[][1]=
+    {
         0
     };
 
@@ -285,7 +340,8 @@ CVowelFormantSet CVowelFormantSets::None() {
     vowels[CVowelFormantSet::female].reserve(nVowels);
     vowels[CVowelFormantSet::child].reserve(nVowels);
 
-    for (int nIndex = 0; nIndex < nVowels; nIndex++) {
+    for (int nIndex = 0; nIndex < nVowels; nIndex++)
+    {
         CSaString szVowel = getVowel(szVowels[nIndex]);
 
         vowels[CVowelFormantSet::male].push_back(CVowelFormants(szVowel,
@@ -310,9 +366,11 @@ CVowelFormantSet CVowelFormantSets::None() {
 }
 
 // Hillenbrand, Getty, Clark, Wheeler (1995)
-CVowelFormantSet CVowelFormantSets::HillenbrandEtAl95() {
+CVowelFormantSet CVowelFormantSets::HillenbrandEtAl95()
+{
     const int nVowels = 12;
-    const char * szVowels[nVowels] = {
+    const char * szVowels[nVowels] =
+    {
         _AC("i","i"),
         _AC("I","ɪ"),
         _AC("e","e"),
@@ -327,7 +385,8 @@ CVowelFormantSet CVowelFormantSets::HillenbrandEtAl95() {
         _AC("��","ɜ˞"),
     };
 
-    const short Men[][4]= {
+    const short Men[][4]=
+    {
         342, 2322, 3000, 3657,
         427, 2034, 2684, 3618,
         476, 2089, 2691, 3649,
@@ -343,7 +402,8 @@ CVowelFormantSet CVowelFormantSets::HillenbrandEtAl95() {
     };
 
     // Here are F1, F2, and F3 for Women. Based on Hillenbrand et al 1995
-    const short Women[][4]= {
+    const short Women[][4]=
+    {
         437, 2761, 3372, 4352,
         483, 2365, 3053, 4334,
         536, 2530, 3047, 4319,
@@ -359,7 +419,8 @@ CVowelFormantSet CVowelFormantSets::HillenbrandEtAl95() {
     };
 
     // Here are F1, F2, and F3 for Children. Based on Hillenbrand et al 1995
-    const short Children[][4]= {
+    const short Children[][4]=
+    {
         452, 3081, 3702, 4572,
         511, 2552, 3403, 4575,
         564, 2656, 3323, 4422,
@@ -382,7 +443,8 @@ CVowelFormantSet CVowelFormantSets::HillenbrandEtAl95() {
     vowels[CVowelFormantSet::female].reserve(nVowels);
     vowels[CVowelFormantSet::child].reserve(nVowels);
 
-    for (int nIndex = 0; nIndex < nVowels; nIndex++) {
+    for (int nIndex = 0; nIndex < nVowels; nIndex++)
+    {
         CSaString szVowel = getVowel(szVowels[nIndex]);
 
         vowels[CVowelFormantSet::male].push_back(CVowelFormants(szVowel,
@@ -406,9 +468,11 @@ CVowelFormantSet CVowelFormantSets::HillenbrandEtAl95() {
 }
 
 // Peterson and Barney(1952)
-CVowelFormantSet CVowelFormantSets::PetersonBarney52() {
+CVowelFormantSet CVowelFormantSets::PetersonBarney52()
+{
     const int nVowels = 10;
-    const char * szVowels[nVowels] = {
+    const char * szVowels[nVowels] =
+    {
         _AC("i","i"),
         _AC("I","ɪ"),
         _AC("E","ɛ"),
@@ -421,7 +485,8 @@ CVowelFormantSet CVowelFormantSets::PetersonBarney52() {
         _AC("��","ɜ˞")
     };
 
-    const short Men[][3]= {
+    const short Men[][3]=
+    {
         270, 2300, 3000,
         400, 2000, 2550,
         530, 1850, 2500,
@@ -434,7 +499,8 @@ CVowelFormantSet CVowelFormantSets::PetersonBarney52() {
         490, 1350, 1700
     };
 
-    const short Women[][3]= {
+    const short Women[][3]=
+    {
         300, 2800, 3300,
         430, 2500, 3100,
         600, 2350, 3000,
@@ -447,7 +513,8 @@ CVowelFormantSet CVowelFormantSets::PetersonBarney52() {
         500, 1650, 1950
     };
 
-    const short Children[][3]= {
+    const short Children[][3]=
+    {
         370, 3200, 3700,
         530, 2750, 3600,
         700, 2600, 3550,
@@ -466,7 +533,8 @@ CVowelFormantSet CVowelFormantSets::PetersonBarney52() {
     vowels[CVowelFormantSet::male].reserve(nVowels);
     vowels[CVowelFormantSet::female].reserve(nVowels);
 
-    for (int nIndex = 0; nIndex < nVowels; nIndex++) {
+    for (int nIndex = 0; nIndex < nVowels; nIndex++)
+    {
         CSaString szVowel = getVowel(szVowels[nIndex]);
 
         vowels[CVowelFormantSet::male].push_back(CVowelFormants(szVowel,
@@ -490,9 +558,11 @@ CVowelFormantSet CVowelFormantSets::PetersonBarney52() {
 }
 
 // Ladefoged(1993)
-CVowelFormantSet CVowelFormantSets::Ladefoged93() {
+CVowelFormantSet CVowelFormantSets::Ladefoged93()
+{
     const int nVowels = 8;
-    const char * szVowels[nVowels] = {
+    const char * szVowels[nVowels] =
+    {
         _AC("i","i"),
         _AC("I","ɪ"),
         _AC("E","ɛ"),
@@ -503,7 +573,8 @@ CVowelFormantSet CVowelFormantSets::Ladefoged93() {
         _AC("u","u"),
     };
 
-    const short Men[][3]= {
+    const short Men[][3]=
+    {
         280, 2250, 2890,
         400, 1920, 2560,
         550, 1770, 2490,
@@ -519,7 +590,8 @@ CVowelFormantSet CVowelFormantSets::Ladefoged93() {
     // pre-reserve space to speed operation
     vowels[CVowelFormantSet::male].reserve(nVowels);
 
-    for (int nIndex = 0; nIndex < nVowels; nIndex++) {
+    for (int nIndex = 0; nIndex < nVowels; nIndex++)
+    {
         CSaString szVowel = getVowel(szVowels[nIndex]);
 
         vowels[CVowelFormantSet::male].push_back(CVowelFormants(szVowel,
@@ -533,9 +605,11 @@ CVowelFormantSet CVowelFormantSets::Ladefoged93() {
     return CVowelFormantSet(_T("Am. English - Ladefoged (1993)"), vowels, FALSE);
 }
 
-CVowelFormantSet CVowelFormantSets::DanielJones() {
+CVowelFormantSet CVowelFormantSets::DanielJones()
+{
     const int nVowels = 8;
-    const char * szVowels[nVowels] = {
+    const char * szVowels[nVowels] =
+    {
         _AC("i","i"),
         _AC("e","e"),
         _AC("E","ɛ"),
@@ -547,7 +621,8 @@ CVowelFormantSet CVowelFormantSets::DanielJones() {
     };
 
 
-    const short Men[][4]= {
+    const short Men[][4]=
+    {
         311, 2536, 3627, 3954,
         373, 2165, 2469, 3584,
         553, 1880, 2270, 3470,
@@ -563,7 +638,8 @@ CVowelFormantSet CVowelFormantSets::DanielJones() {
     // pre-reserve space to speed operation
     vowels[CVowelFormantSet::male].reserve(nVowels);
 
-    for (int nIndex = 0; nIndex < nVowels; nIndex++) {
+    for (int nIndex = 0; nIndex < nVowels; nIndex++)
+    {
         CSaString szVowel = getVowel(szVowels[nIndex]);
 
         vowels[CVowelFormantSet::male].push_back(CVowelFormants(szVowel,
@@ -577,9 +653,11 @@ CVowelFormantSet CVowelFormantSets::DanielJones() {
     return CVowelFormantSet(_T("IPA - Daniel Jones (1956)"), vowels, FALSE);
 }
 
-CVowelFormantSet CVowelFormantSets::Whitley() {
+CVowelFormantSet CVowelFormantSets::Whitley()
+{
     const int nVowels = 8;
-    const char * szVowels[nVowels] = {
+    const char * szVowels[nVowels] =
+    {
         _AC("i","i"),
         _AC("e","e"),
         _AC("E","ɛ"),
@@ -591,7 +669,8 @@ CVowelFormantSet CVowelFormantSets::Whitley() {
     };
 
 
-    const short Men[][4]= {
+    const short Men[][4]=
+    {
         352, 2496, 3298, 4052,
         420, 2320, 2667, 4064,
         522, 1875, 2639, 3627,
@@ -607,7 +686,8 @@ CVowelFormantSet CVowelFormantSets::Whitley() {
     // pre-reserve space to speed operation
     vowels[CVowelFormantSet::male].reserve(nVowels);
 
-    for (int nIndex = 0; nIndex < nVowels; nIndex++) {
+    for (int nIndex = 0; nIndex < nVowels; nIndex++)
+    {
         CSaString szVowel = getVowel(szVowels[nIndex]);
 
         vowels[CVowelFormantSet::male].push_back(CVowelFormants(szVowel,
@@ -621,9 +701,11 @@ CVowelFormantSet CVowelFormantSets::Whitley() {
     return CVowelFormantSet(_T("IPA - Whitley (2001)"), vowels, FALSE);
 }
 
-CVowelFormantSet CVowelFormantSets::SynthesisLadefoged() {
+CVowelFormantSet CVowelFormantSets::SynthesisLadefoged()
+{
     const int nVowels = 8;
-    const char * szVowels[nVowels] = {
+    const char * szVowels[nVowels] =
+    {
         _AC("i","i"),
         _AC("e","e"),
         _AC("E","ɛ"),
@@ -634,7 +716,8 @@ CVowelFormantSet CVowelFormantSets::SynthesisLadefoged() {
         _AC("u","u"),
     };
 
-    const short Men[][4]= {
+    const short Men[][4]=
+    {
         404, 2310, 2808, 3337,
         484, 1967, 2748, 3278,
         605, 1673, 2764, 3236,
@@ -650,7 +733,8 @@ CVowelFormantSet CVowelFormantSets::SynthesisLadefoged() {
     // pre-reserve space to speed operation
     vowels[CVowelFormantSet::male].reserve(nVowels);
 
-    for (int nIndex = 0; nIndex < nVowels; nIndex++) {
+    for (int nIndex = 0; nIndex < nVowels; nIndex++)
+    {
         CSaString szVowel = getVowel(szVowels[nIndex]);
 
         vowels[CVowelFormantSet::male].push_back(CVowelFormants(szVowel,
@@ -664,9 +748,11 @@ CVowelFormantSet CVowelFormantSets::SynthesisLadefoged() {
     return CVowelFormantSet(_T("Synthesis - Ladefoged (2001)"), vowels, FALSE);
 }
 
-CVowelFormantSets & GetVowelSets() {
+CVowelFormantSets & GetVowelSets()
+{
     CSaString szPath(AfxGetApp()->GetProfileString(_T(""), _T("DataLocation")));
-    if (szPath.Right(1) != _T("\\")) {
+    if (szPath.Right(1) != _T("\\"))
+    {
         szPath += _T("\\");
     }
 
@@ -676,12 +762,14 @@ CVowelFormantSets & GetVowelSets() {
     return theVowelSets;
 }
 
-const CVowelFormantSet & GetDefaultVowelSet() {
+const CVowelFormantSet & GetDefaultVowelSet()
+{
     CVowelFormantSets & cSets = GetVowelSets();
     return cSets[cSets.GetDefaultSet()];
 }
 
-const CVowelFormantsVector & GetVowelVector(int nGender) {
+const CVowelFormantsVector & GetVowelVector(int nGender)
+{
     return GetDefaultVowelSet().GetVowelFormants(nGender);
 }
 
@@ -695,14 +783,16 @@ static CVowelFormantsVector ParseVowelGrid(CFlexEditGrid & cGrid, BOOL & bSucces
 CDlgVowelFormants::CDlgVowelFormants(CVowelFormantSet & cVowelSet, CWnd * pParent) :
     CDialog(CDlgVowelFormants::IDD, pParent),
     m_cVowelSetOK(cVowelSet),
-    m_cSet(cVowelSet) {
+    m_cSet(cVowelSet)
+{
 
     m_szSetName = m_cSet.GetName();
     m_nGender = 0;
 }
 
 
-void CDlgVowelFormants::DoDataExchange(CDataExchange * pDX) {
+void CDlgVowelFormants::DoDataExchange(CDataExchange * pDX)
+{
 
     CDialog::DoDataExchange(pDX);
     DDX_Radio(pDX, IDC_MALE, m_nGender);
@@ -717,22 +807,27 @@ BEGIN_MESSAGE_MAP(CDlgVowelFormants, CDialog)
     ON_BN_CLICKED(IDC_MALE, OnGenderChange)
 END_MESSAGE_MAP()
 
-void CDlgVowelFormants::OnGenderChange() {
+void CDlgVowelFormants::OnGenderChange()
+{
 
     OnValidateGenderChange();
 }
 
-BOOL CDlgVowelFormants::OnValidateGenderChange() {
+BOOL CDlgVowelFormants::OnValidateGenderChange()
+{
 
     BOOL bSuccess = FALSE;
 
     CVowelFormantsVector cVowelVector = ParseVowelGrid(m_cGrid, bSuccess);
 
-    if (bSuccess) {
+    if (bSuccess)
+    {
         m_cSet.SetVowelFormants(m_nGender, cVowelVector);
         UpdateData();
         PopulateGrid(m_cGrid, m_cSet.GetVowelFormants(m_nGender));
-    } else {
+    }
+    else
+    {
         AfxMessageBox(IDS_VOWEL_FORMANTS_INVALID);
         UpdateData(FALSE); // Don't accept gender change
     }
@@ -740,7 +835,8 @@ BOOL CDlgVowelFormants::OnValidateGenderChange() {
     return bSuccess;
 }
 
-BOOL CDlgVowelFormants::OnInitDialog() {
+BOOL CDlgVowelFormants::OnInitDialog()
+{
 
     CDialog::OnInitDialog();
 
@@ -749,10 +845,12 @@ BOOL CDlgVowelFormants::OnInitDialog() {
     // EXCEPTION: OCX Property Pages should return FALSE
 }
 
-void CDlgVowelFormants::OnOK() {
+void CDlgVowelFormants::OnOK()
+{
 
     UpdateData();
-    if (OnValidateGenderChange()) {
+    if (OnValidateGenderChange())
+    {
         m_cSet.SetName(m_szSetName);
         m_cVowelSetOK = m_cSet;
 
@@ -761,14 +859,16 @@ void CDlgVowelFormants::OnOK() {
     }
 }
 
-void CDlgVowelFormants::OnCancel() {
+void CDlgVowelFormants::OnCancel()
+{
     // TODO: Add extra cleanup here
 
     CDialog::OnCancel();
 }
 
 
-static void PopulateGrid(CFlexEditGrid & cGrid, const CVowelFormantsVector & cVowels) {
+static void PopulateGrid(CFlexEditGrid & cGrid, const CVowelFormantsVector & cVowels)
+{
 
     enum { columnIpa = 0, columnF1, columnF2, columnF3, columnF4};
 
@@ -781,7 +881,8 @@ static void PopulateGrid(CFlexEditGrid & cGrid, const CVowelFormantsVector & cVo
     cGrid.SetTextMatrix(nRow, columnF3, _T("F3"));
     cGrid.SetTextMatrix(nRow, columnF4, _T("F4"));
 
-    for (CVowelFormantsVector::const_iterator pVowel=cVowels.begin(); pVowel!=cVowels.end(); pVowel++) {
+    for (CVowelFormantsVector::const_iterator pVowel=cVowels.begin(); pVowel!=cVowels.end(); pVowel++)
+    {
         const CVowelFormants & rVowel = *pVowel;
 
         nRow++;
@@ -799,7 +900,8 @@ static void PopulateGrid(CFlexEditGrid & cGrid, const CVowelFormantsVector & cVo
         szFormant.Format(_T("%g"), rVowel.F3);
         cGrid.SetTextMatrix(nRow, columnF3, szFormant);
 
-        if (rVowel.F4 > 0) {
+        if (rVowel.F4 > 0)
+        {
             szFormant.Format(_T("%g"), rVowel.F4);
             cGrid.SetTextMatrix(nRow, columnF4, szFormant);
         }
@@ -814,7 +916,8 @@ static void PopulateGrid(CFlexEditGrid & cGrid, const CVowelFormantsVector & cVo
     cGrid.SetFont(szFont,(float)nFontSize,1,columnIpa,-1, 1);
 }
 
-static CVowelFormantsVector ParseVowelGrid(CFlexEditGrid & cGrid, BOOL & bSuccess) {
+static CVowelFormantsVector ParseVowelGrid(CFlexEditGrid & cGrid, BOOL & bSuccess)
+{
 
     bSuccess = TRUE;
 
@@ -824,15 +927,18 @@ static CVowelFormantsVector ParseVowelGrid(CFlexEditGrid & cGrid, BOOL & bSucces
     CVowelFormants cVowel(_T(""),-1,-1,-1,-1);
 
     cVowels.reserve(cGrid.GetRows());
-    for (int row = 1; row < cGrid.GetRows(); row++) {
+    for (int row = 1; row < cGrid.GetRows(); row++)
+    {
         cVowel.Init(_T(""),-1,-1,-1,-1);
         BOOL bRowValid = TRUE;
         cVowel.m_szVowel = cGrid.GetTextMatrix(row,columnIpa);
-        if (cVowel.m_szVowel.IsEmpty()) {
+        if (cVowel.m_szVowel.IsEmpty())
+        {
             if (!(cGrid.GetTextMatrix(row,columnF1).IsEmpty()
                     && cGrid.GetTextMatrix(row,columnF2).IsEmpty()
                     && cGrid.GetTextMatrix(row,columnF3).IsEmpty()
-                    && cGrid.GetTextMatrix(row,columnF4).IsEmpty())) {
+                    && cGrid.GetTextMatrix(row,columnF4).IsEmpty()))
+            {
                 bSuccess = FALSE;
             }
             continue;
@@ -842,34 +948,39 @@ static CVowelFormantsVector ParseVowelGrid(CFlexEditGrid & cGrid, BOOL & bSucces
 
         value = cGrid.GetTextMatrix(row,columnF1);
         int scanned = swscanf_s(value, _T("%lf"), &cVowel.F1);
-        if (scanned != 1 || cVowel.F1 < 200. || cVowel.F1 > 5000.) {
+        if (scanned != 1 || cVowel.F1 < 200. || cVowel.F1 > 5000.)
+        {
             bSuccess = FALSE;
             bRowValid = FALSE;
             continue;
         }
         value = cGrid.GetTextMatrix(row,columnF2);
         scanned = swscanf_s(value, _T("%lf"), &cVowel.F2);
-        if (scanned != 1 || cVowel.F2 < 200. || cVowel.F2 > 5000.) {
+        if (scanned != 1 || cVowel.F2 < 200. || cVowel.F2 > 5000.)
+        {
             bSuccess = FALSE;
             bRowValid = FALSE;
             continue;
         }
         value = cGrid.GetTextMatrix(row,columnF3);
         scanned = swscanf_s(value, _T("%lf"), &cVowel.F3);
-        if (scanned != 1 || cVowel.F3 < 200. || cVowel.F3 > 5000.) {
+        if (scanned != 1 || cVowel.F3 < 200. || cVowel.F3 > 5000.)
+        {
             bSuccess = FALSE;
             bRowValid = FALSE;
             continue;
         }
         value = cGrid.GetTextMatrix(row,columnF4);
         scanned = swscanf_s(value, _T("%lf"), &cVowel.F4);
-        if ((cVowel.F4 != -1)&&(cVowel.F4 < 200. || cVowel.F4 > 5000.)) {
+        if ((cVowel.F4 != -1)&&(cVowel.F4 < 200. || cVowel.F4 > 5000.))
+        {
             bSuccess = FALSE;
             bRowValid = FALSE;
             continue;
         }
 
-        if (bRowValid) {
+        if (bRowValid)
+        {
             cVowels.push_back(cVowel); // add to end of list
         }
     }

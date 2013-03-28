@@ -48,7 +48,8 @@ static char BASED_CODE THIS_FILE[] = __FILE__;
 /***************************************************************************/
 // CWave::CWave Constructor
 /***************************************************************************/
-CWave::CWave() {
+CWave::CWave()
+{
     m_bRecording = false;
     m_bBackgroundEnabled = FALSE;
     m_pNotifyObj = NULL;
@@ -59,7 +60,8 @@ CWave::CWave() {
     m_nNextBlock = 0;
     m_nMaxLevel = 0;
     m_hmmioFile = NULL;
-    for (int i=0; i<m_kBuffers; i++) {
+    for (int i=0; i<m_kBuffers; i++)
+    {
         m_lpData[i] = NULL;
         m_dwBufferSize[i] = 0;
         m_dwProcessedSize[i] = 0;
@@ -72,17 +74,22 @@ CWave::CWave() {
 /***************************************************************************/
 // CWave::~CWave Destructor
 /***************************************************************************/
-CWave::~CWave() {
-    for (int i = 0; i < m_kBuffers; i++) {
-        if (m_lpData[i]) {
+CWave::~CWave()
+{
+    for (int i = 0; i < m_kBuffers; i++)
+    {
+        if (m_lpData[i])
+        {
             delete [] m_lpData[i];
         }
     }
     // delete device objects
-    if (m_pOutDev) {
+    if (m_pOutDev)
+    {
         delete m_pOutDev;
     }
-    if (m_pInDev) {
+    if (m_pInDev)
+    {
         delete m_pInDev;
     }
 }
@@ -95,14 +102,18 @@ CWave::~CWave() {
 // Allocates the wave buffers for playback and recording. In case of an
 // error the function returns FALSE, otherwise TRUE.
 /***************************************************************************/
-BOOL CWave::AllocateBuffers() {
+BOOL CWave::AllocateBuffers()
+{
     CSaApp * pApp = (CSaApp *)AfxGetApp(); // get pointer to application
-    for (int i = 0; i < m_kBuffers; i++) {
-        if (!m_lpData[i]) {
+    for (int i = 0; i < m_kBuffers; i++)
+    {
+        if (!m_lpData[i])
+        {
             m_lpData[i] = new char[MMIO_BUFFER_SIZE * (DWORD)10];
         }
 
-        if (!m_lpData[i]) {
+        if (!m_lpData[i])
+        {
             // memory lock error
             pApp->ErrorMessage(IDS_ERROR_MEMALLOC);
             return FALSE;
@@ -116,15 +127,19 @@ BOOL CWave::AllocateBuffers() {
 // Adjusts the wave buffer size to a size according to the current sampling
 // rate and the sample size.
 /***************************************************************************/
-DWORD CWave::AdjustToParameters() {
+DWORD CWave::AdjustToParameters()
+{
     DWORD dwFactor = 44100 / m_pFmtParm->dwSamplesPerSec;
-    if (m_pFmtParm->wBlockAlign == 1) {
+    if (m_pFmtParm->wBlockAlign == 1)
+    {
         dwFactor *= 2;
     }
-    if (dwFactor > 4) {
+    if (dwFactor > 4)
+    {
         dwFactor = 4;
     }
-    if (dwFactor < 1) {
+    if (dwFactor < 1)
+    {
         dwFactor = 1;
     }
     return MMIO_BUFFER_SIZE / dwFactor;
@@ -135,7 +150,8 @@ DWORD CWave::AdjustToParameters() {
 // Here the wave data ready to play will be processed before playing, for
 // instance to play it reverse or faster or slower.
 /***************************************************************************/
-BOOL CWave::ProcessData(int nBuffer) {
+BOOL CWave::ProcessData(int nBuffer)
+{
 
     // Set playback buffer pointer and buffer size.
     HPSTR pTarget = GetBufferPointer(nBuffer); // pointer to target buffer
@@ -144,16 +160,20 @@ BOOL CWave::ProcessData(int nBuffer) {
     int nMaxValue = 0, nMinValue = 0;
 
     // If wavewarp object not constructed, simply copy the sample data to the play buffer
-    if (!m_pWaveWarp) {
+    if (!m_pWaveWarp)
+    {
         DWORD dwDataSize = min(m_dwEnd - m_dwPlayPosition, dwBufferSize);
-        if (dwDataSize) {
+        if (dwDataSize)
+        {
             HPSTR pData = m_pNotifyObj->GetWaveData(m_pView, m_dwPlayPosition, dwDataSize);
-            if (!pData) {
+            if (!pData)
+            {
                 return FALSE;
             }
             CopyBuffer(pData, pTarget, dwDataSize, (wSmpSize == 1), &nMaxValue, &nMinValue);
             m_dwPlayPosition += dwDataSize;
-            if (m_dwPlayPosition >= m_dwEnd) {
+            if (m_dwPlayPosition >= m_dwEnd)
+            {
                 m_bProcessDone = TRUE;
             }
         }
@@ -162,8 +182,10 @@ BOOL CWave::ProcessData(int nBuffer) {
     }
 
     //  Otherwise, pass sample data to warping object
-    else {
-        if (m_pWaveWarp->SetPlayBuffer((void *)pTarget, dwBufferSize/wSmpSize) != DONE) {
+    else
+    {
+        if (m_pWaveWarp->SetPlayBuffer((void *)pTarget, dwBufferSize/wSmpSize) != DONE)
+        {
             return FALSE;
         }
 
@@ -171,8 +193,10 @@ BOOL CWave::ProcessData(int nBuffer) {
         DWORD dwDataSize=0, dwPlayLength = 0;
         DWORD dwProcess=0;
         dspError_t Status;
-        do {
-            if (m_stCallData.dwOffset * wSmpSize >= m_dwEnd) {
+        do
+        {
+            if (m_stCallData.dwOffset * wSmpSize >= m_dwEnd)
+            {
                 Status = DONE;
                 break;
             }
@@ -181,18 +205,23 @@ BOOL CWave::ProcessData(int nBuffer) {
             dwDataSize = min(dwProcessEnd - dwProcess, dwBufferSize);  // resize block to buffer size or to end of last fragment
 //      dwDataSize = min(dwDataSize, dwBufferSize/wSmpSize*m_nSpeed/100*wSmpSize);  // resize block to buffer size or to end of last fragment
             HPSTR pData = m_pNotifyObj->GetWaveData(m_pView, dwProcess, dwDataSize);   // retrieve sample data
-            if (m_pWaveWarp->SetWaveBuffer((void *)pData) != DONE) {
+            if (m_pWaveWarp->SetWaveBuffer((void *)pData) != DONE)
+            {
                 return FALSE;    // pass waveform buffer pointer
             }
             Status = m_pWaveWarp->FillPlayBuffer(m_stCallData.dwOffset, dwDataSize/wSmpSize,
                                                  &m_stCallData, &dwPlayLength);
-        } while (Status == OUTSIDE_WAVE_BUFFER);
+        }
+        while (Status == OUTSIDE_WAVE_BUFFER);
 
-        if (Status < DONE) {
+        if (Status < DONE)
+        {
             CSaApp * pApp = (CSaApp *)AfxGetApp(); // get pointer to application
             pApp->ErrorMessage(IDS_ERROR_WAVEWARP, _T("playback")); // send error message
             return FALSE;
-        } else if (Status == DONE) {
+        }
+        else if (Status == DONE)
+        {
             m_stCallData.dwOffset = dwProcess  / wSmpSize;
             m_stCallData.wLength = (WORD)(dwDataSize / wSmpSize);
             m_bProcessDone = TRUE;
@@ -203,14 +232,18 @@ BOOL CWave::ProcessData(int nBuffer) {
         m_dwPlayPosition += (dwPlayLength*m_nSpeed+50)/100*wSmpSize;
 
         // Use requested fragment to limit position (avoid runout errors)
-        if (m_dwPlayPosition < m_stCallData.dwOffset * wSmpSize) {
+        if (m_dwPlayPosition < m_stCallData.dwOffset * wSmpSize)
+        {
             m_dwPlayPosition = m_stCallData.dwOffset * wSmpSize;
-        } else if (m_dwPlayPosition > (m_stCallData.dwOffset + m_stCallData.wLength) * wSmpSize) {
+        }
+        else if (m_dwPlayPosition > (m_stCallData.dwOffset + m_stCallData.wLength) * wSmpSize)
+        {
             m_dwPlayPosition = (m_stCallData.dwOffset + m_stCallData.wLength) * wSmpSize;
         }
 
         // Don't go beyond end
-        if (m_dwPlayPosition >= m_dwEnd) {
+        if (m_dwPlayPosition >= m_dwEnd)
+        {
             m_dwPlayPosition = m_dwEnd;
         }
 
@@ -227,9 +260,12 @@ BOOL CWave::ProcessData(int nBuffer) {
 
     // Set peak level for VU meter.
     m_nMaxLevel = max((UINT)abs(nMaxValue), (UINT)abs(nMinValue));
-    if (wSmpSize == 1) {
+    if (wSmpSize == 1)
+    {
         m_nMaxLevel = 100 * m_nMaxLevel / 128;
-    } else {
+    }
+    else
+    {
         m_nMaxLevel = (UINT)(100 * (long)m_nMaxLevel / 32768);
     }
 
@@ -240,16 +276,21 @@ BOOL CWave::ProcessData(int nBuffer) {
 /***************************************************************************/
 // CWave::CopyBuffer Copy source into target buffer and find min/max values
 /***************************************************************************/
-void CWave::CopyBuffer(HPSTR pSource, HPSTR pTarget, DWORD dwLength, BOOL bIs8Bit, int * piMax, int * piMin) {
+void CWave::CopyBuffer(HPSTR pSource, HPSTR pTarget, DWORD dwLength, BOOL bIs8Bit, int * piMax, int * piMin)
+{
     int nData;
     BYTE bData;
-    do {
+    do
+    {
         // read data
-        if (bIs8Bit) { // 8 bit per sample
+        if (bIs8Bit)   // 8 bit per sample
+        {
             *pTarget++ = *pSource; // copy data
             bData = *pSource++; // data range is 0...255 (128 is center)
             nData = bData - 128;
-        } else { // 16 bit data
+        }
+        else     // 16 bit data
+        {
             *pTarget++ = *pSource; // copy data
             nData = *((short int *)pSource++);
             *pTarget++ = *pSource; // copy data
@@ -257,52 +298,72 @@ void CWave::CopyBuffer(HPSTR pSource, HPSTR pTarget, DWORD dwLength, BOOL bIs8Bi
             dwLength--;
         }
         // process data
-        if (nData > *piMax) {
+        if (nData > *piMax)
+        {
             *piMax = nData;    // store higher value
-        } else {
-            if (nData < *piMin) {
+        }
+        else
+        {
+            if (nData < *piMin)
+            {
                 *piMin = nData;    // store lower value
             }
         }
-    } while (--dwLength > 0);
+    }
+    while (--dwLength > 0);
 }
 
 /***************************************************************************/
 // CWave::FindMinMax Find min/max values
 /***************************************************************************/
-void CWave::FindMinMax(HPSTR pSource, DWORD dwLength, BOOL bIs8Bit, int * piMax, int * piMin) {
+void CWave::FindMinMax(HPSTR pSource, DWORD dwLength, BOOL bIs8Bit, int * piMax, int * piMin)
+{
     int nData=0;
     BYTE bData=0;
-    if (dwLength == 0) {
+    if (dwLength == 0)
+    {
         return;
     }
-    do {
-        if (bIs8Bit) { // 8 bit per sample
+    do
+    {
+        if (bIs8Bit)   // 8 bit per sample
+        {
             bData = *pSource++; // data range is 0...255 (128 is center)
             nData = bData - 128;
-        } else {              // 16 bit data
+        }
+        else                  // 16 bit data
+        {
             nData = *((short int *)pSource++);
             pSource++;
             dwLength--;
         }
         // process data
-        if (nData > *piMax) {
+        if (nData > *piMax)
+        {
             *piMax = nData;    // store higher value
-        } else {
-            if (nData < *piMin) {
+        }
+        else
+        {
+            if (nData < *piMin)
+            {
                 *piMin = nData;    // store lower value
             }
         }
-    } while (--dwLength > 0);
+    }
+    while (--dwLength > 0);
 }
 
 /***************************************************************************/
 // CWave::GetBufferPointer Get the pointer to the actual buffer
 /***************************************************************************/
-char * CWave::GetBufferPointer(int nBuffer) {
-    if (nBuffer < 0 || nBuffer >= m_kBuffers) {
+char * CWave::GetBufferPointer(int nBuffer)
+{
+    if (nBuffer < 0 || nBuffer >= m_kBuffers)
+    {
         return NULL;
-    } else {
+    }
+    else
+    {
         return m_lpData[nBuffer];
     }
 }
@@ -310,12 +371,15 @@ char * CWave::GetBufferPointer(int nBuffer) {
 /***************************************************************************/
 // CWave::GetPlaybackPointer Get pointer to the first sample to play
 /***************************************************************************/
-char * CWave::GetPlaybackPointer(int nBuffer) {
+char * CWave::GetPlaybackPointer(int nBuffer)
+{
     char * pPlayback = GetBufferPointer(nBuffer);
-    if (m_pWaveWarp) {
+    if (m_pWaveWarp)
+    {
         DWORD dwProcess = m_stCallData.dwOffset *
                           (m_pFmtParm->wBlockAlign / m_pFmtParm->wChannels);
-        if (dwProcess < m_dwStart) {
+        if (dwProcess < m_dwStart)
+        {
             return (pPlayback + m_dwStart - dwProcess);    // playback to start in middle of fragment
         }
     }
@@ -325,10 +389,14 @@ char * CWave::GetPlaybackPointer(int nBuffer) {
 /***************************************************************************/
 // CWave::GetBufferSize Get the size of the actual buffer
 /***************************************************************************/
-DWORD CWave::GetBufferSize(int nBuffer) {
-    if (nBuffer < 0 || nBuffer >= m_kBuffers) {
+DWORD CWave::GetBufferSize(int nBuffer)
+{
+    if (nBuffer < 0 || nBuffer >= m_kBuffers)
+    {
         return 0;
-    } else {
+    }
+    else
+    {
         return m_dwBufferSize[nBuffer];
     }
 }
@@ -336,16 +404,21 @@ DWORD CWave::GetBufferSize(int nBuffer) {
 /***************************************************************************/
 // CWave::GetPlaybackSize Get the size to play back
 /***************************************************************************/
-DWORD CWave::GetPlaybackSize(int nBuffer) {
+DWORD CWave::GetPlaybackSize(int nBuffer)
+{
     DWORD dwBufferSize = GetBufferSize(nBuffer);
-    if (m_pWaveWarp) {
+    if (m_pWaveWarp)
+    {
         WORD wSmpSize = (WORD)(m_pFmtParm->wBlockAlign / m_pFmtParm->wChannels);
         DWORD dwFragment = m_stCallData.dwOffset * wSmpSize;
         WORD wFragmentSize = (WORD)(m_stCallData.wLength * wSmpSize);
 
-        if (dwFragment < m_dwStart) {
+        if (dwFragment < m_dwStart)
+        {
             dwBufferSize -= (m_dwStart - dwFragment);    // reduce if playback starts in middle of fragment
-        } else if (dwFragment + wFragmentSize > m_dwEnd) {
+        }
+        else if (dwFragment + wFragmentSize > m_dwEnd)
+        {
             dwBufferSize -= (dwFragment + wFragmentSize - m_dwEnd);    // trim last fragment to end
         }
     }
@@ -355,10 +428,14 @@ DWORD CWave::GetPlaybackSize(int nBuffer) {
 /***************************************************************************/
 // CWave::GetProcessedSize Get the size of the proc. data for the act. buffer
 /***************************************************************************/
-DWORD CWave::GetProcessedSize(int nBuffer) {
-    if (nBuffer < 0 || nBuffer >= m_kBuffers) {
+DWORD CWave::GetProcessedSize(int nBuffer)
+{
+    if (nBuffer < 0 || nBuffer >= m_kBuffers)
+    {
         return 0;
-    } else {
+    }
+    else
+    {
         return m_dwProcessedSize[nBuffer];
     }
 }
@@ -370,8 +447,10 @@ DWORD CWave::GetProcessedSize(int nBuffer) {
 // parameter dwBufferSize. They are both the same for normal speed recording
 // and playback.
 /***************************************************************************/
-void CWave::SetBufferSize(int nBuffer, DWORD dwProcessedSize, DWORD dwBufferSize) {
-    if (nBuffer < 0 || nBuffer >= m_kBuffers) {
+void CWave::SetBufferSize(int nBuffer, DWORD dwProcessedSize, DWORD dwBufferSize)
+{
+    if (nBuffer < 0 || nBuffer >= m_kBuffers)
+    {
         return;
     }
 
@@ -388,7 +467,8 @@ void CWave::SetBufferSize(int nBuffer, DWORD dwProcessedSize, DWORD dwBufferSize
 // the data to play. Returns FALSE in case of error, else TRUE.
 /***************************************************************************/
 BOOL CWave::Play(DWORD dwStart, DWORD dwSize, UINT nVolume, UINT nSpeed,
-                 CView * pView, CWaveNotifyObj * pNotify) {
+                 CView * pView, CWaveNotifyObj * pNotify)
+{
     m_pNotifyObj = pNotify; // set pointer to notify object
     m_pView = pView; // set pointer to view
     CSaDoc * pDoc = (CSaDoc *)pView->GetDocument();
@@ -399,7 +479,8 @@ BOOL CWave::Play(DWORD dwStart, DWORD dwSize, UINT nVolume, UINT nSpeed,
     m_dwEnd = dwStart + dwSize; // set index of last sample to play
     m_nActiveBlock = 0; // use block 0 first
     m_nNextBlock = 0; // use block 0 first
-    if (!AllocateBuffers()) {
+    if (!AllocateBuffers())
+    {
         return FALSE;    // allocate data buffers
     }
 
@@ -410,14 +491,17 @@ BOOL CWave::Play(DWORD dwStart, DWORD dwSize, UINT nVolume, UINT nSpeed,
     m_bProcessDone = FALSE;
 
     m_bBackgroundEnabled = pDoc->IsBackgroundProcessing();
-    if (m_bBackgroundEnabled) {
+    if (m_bBackgroundEnabled)
+    {
         pDoc->EnableBackgroundProcessing(FALSE);    // disable background processing during playback
     }
 
-    if ((nSpeed != 100) && !pFragmenter->IsDataReady()) {
+    if ((nSpeed != 100) && !pFragmenter->IsDataReady())
+    {
         // finish fragmenting
         short int nResult = LOWORD(pFragmenter->Process(this, (CSaDoc *)pDoc)); // process data
-        if (nResult == PROCESS_ERROR || nResult == PROCESS_NO_DATA || nResult == PROCESS_CANCELED) {
+        if (nResult == PROCESS_ERROR || nResult == PROCESS_NO_DATA || nResult == PROCESS_CANCELED)
+        {
             pFragmenter->SetDataInvalid();
             m_bBackgroundEnabled = FALSE;
             pFragmenter->RestartProcess();
@@ -427,15 +511,19 @@ BOOL CWave::Play(DWORD dwStart, DWORD dwSize, UINT nVolume, UINT nSpeed,
 
     CMainFrame * pMainWnd = (CMainFrame *)AfxGetMainWnd();
     // check if player is playing
-    if ((pMainWnd->IsPlayerPlaying() || pMainWnd->IsPlayerTestRun()) && pFragmenter->IsDataReady()) {
+    if ((pMainWnd->IsPlayerPlaying() || pMainWnd->IsPlayerTestRun()) && pFragmenter->IsDataReady())
+    {
         // create WaveWarp object
         dspError_t Err = CWaveWarp::CreateObject(&m_pWaveWarp, pDoc, dwStart/m_pFmtParm->wBlockAlign, (USHORT)nSpeed, &m_stCallData);
-        if (Err) {
+        if (Err)
+        {
             CSaApp * pApp = (CSaApp *)AfxGetApp(); // get pointer to application
             pApp->ErrorMessage(IDS_ERROR_WAVEWARP, _T("initialization")); // send error message
             return FALSE;
         }
-    } else {
+    }
+    else
+    {
         TRACE(_T("CWaveWarp object not created: PlayerPlaying %u, PlayerTest %u, FragmentReady %u\n"),pMainWnd->IsPlayerPlaying(), pMainWnd->IsPlayerTestRun(),  pFragmenter->IsDataReady());
     }
 
@@ -446,26 +534,31 @@ BOOL CWave::Play(DWORD dwStart, DWORD dwSize, UINT nVolume, UINT nSpeed,
     //m_bBackgroundEnabled = pDoc->IsBackgroundProcessing();
     //if (m_bBackgroundEnabled) pDoc->EnableBackgroundProcessing(FALSE);    // disable background processing during playback
 
-    for (int i = 0; i < m_kPlayBuffers; i++) {
+    for (int i = 0; i < m_kPlayBuffers; i++)
+    {
         m_dwPosition[m_nNextBlock] = m_dwPlayPosition;
         // fill up buffer with data
-        if (!ProcessData(m_nNextBlock)) {
+        if (!ProcessData(m_nNextBlock))
+        {
             return FALSE;
         }
         m_nProcessedSpeed[m_nNextBlock] = m_nSpeed;
         m_nProcessedMax[m_nNextBlock] = m_nMaxLevel;
         // play buffer 0
-        if (!m_pOutDev->Play(m_nNextBlock, nVolume, this, !m_bProcessDone && (i + 1) < m_kPlayBuffers)) {
+        if (!m_pOutDev->Play(m_nNextBlock, nVolume, this, !m_bProcessDone && (i + 1) < m_kPlayBuffers))
+        {
             return FALSE;
         }
 
         m_nNextBlock = ++m_nNextBlock % m_kPlayBuffers;
 
-        if (m_bProcessDone) {
+        if (m_bProcessDone)
+        {
             break;
         }
     }
-    if (m_pNotifyObj && !m_bPlayDone) {
+    if (m_pNotifyObj && !m_bPlayDone)
+    {
         m_pNotifyObj->BlockFinished(m_nProcessedMax[m_nActiveBlock], m_dwPosition[m_nActiveBlock], m_nProcessedSpeed[m_nActiveBlock]);    // update player dialog
     }
     return TRUE;
@@ -475,7 +568,8 @@ BOOL CWave::Play(DWORD dwStart, DWORD dwSize, UINT nVolume, UINT nSpeed,
 // CWave::Monitor Monitor wave data
 // The caller delivers pointers to the actual view and to the notify object.
 /***************************************************************************/
-BOOL CWave::Monitor(CView * pView, CWaveNotifyObj * pNotify) {
+BOOL CWave::Monitor(CView * pView, CWaveNotifyObj * pNotify)
+{
     return Record(NULL, pView, 0, pNotify, false); // start monitoring
 }
 
@@ -491,7 +585,8 @@ BOOL CWave::Monitor(CView * pView, CWaveNotifyObj * pNotify) {
 /***************************************************************************/
 BOOL CWave::Record(HMMIO hmmioFile, CView * pView, DWORD dwOffset,
                    CWaveNotifyObj * pNotify,
-                   bool bRecord /*=true*/) {
+                   bool bRecord /*=true*/)
+{
     m_hmmioFile = hmmioFile; // save handle to file object
     m_bRecording = bRecord;
     m_pNotifyObj = pNotify; // set pointer to notify object
@@ -505,7 +600,8 @@ BOOL CWave::Record(HMMIO hmmioFile, CView * pView, DWORD dwOffset,
     SaParm * pSaParm = pDoc->GetSaParm();
     if (pSaParm->wFlags & SA_FLAG_HIGHPASS)
         if (!m_pInDev->GetHighPassFilter())
-            if (!m_pInDev->AttachHighPassFilter((USHORT)m_pFmtParm->dwSamplesPerSec)) {
+            if (!m_pInDev->AttachHighPassFilter((USHORT)m_pFmtParm->dwSamplesPerSec))
+            {
                 // if can't construct highpass filter, reset the flag
                 pSaParm->wFlags &= ~SA_FLAG_HIGHPASS;
                 pDoc->SetSaParm(pSaParm);
@@ -514,19 +610,24 @@ BOOL CWave::Record(HMMIO hmmioFile, CView * pView, DWORD dwOffset,
                 return FALSE;
             }
 
-    if (!m_pInDev->GetPreparedBuffers()) {
+    if (!m_pInDev->GetPreparedBuffers())
+    {
         m_nActiveBlock = 0; // use block 0 first
         // We are not already recording/monitoring
-        if (!AllocateBuffers()) {
+        if (!AllocateBuffers())
+        {
             return FALSE;    // allocate data buffers
         }
 
-        for (int i = 1; i < m_kRecordBuffers; i++) {
-            if (!m_pInDev->Record(i - 1, this)) {
+        for (int i = 1; i < m_kRecordBuffers; i++)
+        {
+            if (!m_pInDev->Record(i - 1, this))
+            {
                 return FALSE;    // record into buffer i
             }
         }
-        if (!m_pInDev->Record(m_kRecordBuffers - 1, this, TRUE)) {
+        if (!m_pInDev->Record(m_kRecordBuffers - 1, this, TRUE))
+        {
             return FALSE;    // record into buffer 1
         }
     }
@@ -537,25 +638,30 @@ BOOL CWave::Record(HMMIO hmmioFile, CView * pView, DWORD dwOffset,
 /***************************************************************************/
 // CWave::Stop Stop playing or recording wave data
 /***************************************************************************/
-void CWave::Stop() {
+void CWave::Stop()
+{
 
-    if (m_pOutDev) {
+    if (m_pOutDev)
+    {
         m_pOutDev->Reset();
     }
-    if (m_pInDev) {
+    if (m_pInDev)
+    {
         m_pInDev->Reset();
     }
     m_pOutDev->Close(); // close sound device
     m_pInDev->Close(); // close sound device
     m_dwPlayPosition = m_dwEnd;
     m_pNotifyObj = NULL; // don't notify
-    if (m_pWaveWarp) {
+    if (m_pWaveWarp)
+    {
         delete m_pWaveWarp;
         m_pWaveWarp = NULL;
     }
     CMainFrame * pMain = (CMainFrame *)AfxGetMainWnd();
     CSaDoc * pDoc = (CSaDoc *)pMain->GetCurrDoc();
-    if (pDoc && m_bBackgroundEnabled) {
+    if (pDoc && m_bBackgroundEnabled)
+    {
         pDoc->EnableBackgroundProcessing(TRUE);
     }
 }
@@ -567,29 +673,38 @@ void CWave::Stop() {
 // fill up the finished one with new data and send it to the playing device
 // before it finishes playing the actual playing block.
 /***************************************************************************/
-void CWave::NextBlock() {
-    if (!m_bPlayDone) {
+void CWave::NextBlock()
+{
+    if (!m_bPlayDone)
+    {
         m_nActiveBlock = ++m_nActiveBlock % m_kPlayBuffers;   // switch buffers
         m_bPlayDone = (m_nActiveBlock == m_nNextBlock);
 
-        if (m_pNotifyObj && !m_bPlayDone) {
+        if (m_pNotifyObj && !m_bPlayDone)
+        {
             m_pNotifyObj->BlockFinished(m_nProcessedMax[m_nActiveBlock], m_dwPosition[m_nActiveBlock], m_nProcessedSpeed[m_nActiveBlock]);    // update player dialog
         }
 
         // fill buffer with data and play
-        if (!m_bProcessDone) {
+        if (!m_bProcessDone)
+        {
             m_dwPosition[m_nNextBlock] = m_dwPlayPosition;
-            if (ProcessData(m_nNextBlock)) {
+            if (ProcessData(m_nNextBlock))
+            {
                 m_nProcessedSpeed[m_nNextBlock] = m_nSpeed;
                 m_nProcessedMax[m_nNextBlock] = m_nMaxLevel;
                 m_pOutDev->Play(m_nNextBlock, GetVolume(), this);   // play it
-            } else {
+            }
+            else
+            {
                 // error in processing
                 m_pOutDev->Close(); // close sound device
-                if (m_pNotifyObj) {
+                if (m_pNotifyObj)
+                {
                     m_pNotifyObj->EndPlayback();    // inform notify object
                 }
-                if (m_pWaveWarp) {
+                if (m_pWaveWarp)
+                {
                     delete m_pWaveWarp;
                     m_pWaveWarp = NULL;
                 }
@@ -598,19 +713,23 @@ void CWave::NextBlock() {
         }
     }
 
-    if (m_bPlayDone) {
+    if (m_bPlayDone)
+    {
         // shutdown playback device if processing complete
         m_pOutDev->Close(); // close sound device
-        if (m_pNotifyObj) {
+        if (m_pNotifyObj)
+        {
             m_pNotifyObj->EndPlayback();    // inform notify object
         }
-        if (m_pWaveWarp) {
+        if (m_pWaveWarp)
+        {
             delete m_pWaveWarp;
             m_pWaveWarp = NULL;
         }
         CMainFrame * pMain = (CMainFrame *)AfxGetMainWnd();
         CSaDoc * pDoc = (CSaDoc *)pMain->GetCurrDoc();
-        if (m_bBackgroundEnabled) {
+        if (m_bBackgroundEnabled)
+        {
             pDoc->EnableBackgroundProcessing(TRUE);
         }
 
@@ -628,7 +747,8 @@ void CWave::NextBlock() {
 // buffer must then be returned to the input device, before it finishes recor-
 // ding into the actual block.
 /***************************************************************************/
-void CWave::StoreBlock() {
+void CWave::StoreBlock()
+{
     // find the maximum level in the recorded data
     HPSTR pSource = GetBufferPointer(m_nActiveBlock); // pointer to source buffer
     int nMaxValue = 0;
@@ -636,66 +756,90 @@ void CWave::StoreBlock() {
     BYTE bData;
     UINT wSmpSize = m_pFmtParm->wBlockAlign/m_pFmtParm->wChannels;
     DWORD dwDataSize = GetBufferSize(m_nActiveBlock); // get buffer size
-    if (dwDataSize > 0) {
+    if (dwDataSize > 0)
+    {
         CHighPassFilter70 * pHighPassFilter = m_pInDev->GetHighPassFilter();
-        if (pHighPassFilter) {
+        if (pHighPassFilter)
+        {
             DWORD dwDataLength = dwDataSize / wSmpSize;
-            if (wSmpSize == 1) { // 8 bits per sample, 0 to 255 range
+            if (wSmpSize == 1)   // 8 bits per sample, 0 to 255 range
+            {
                 pHighPassFilter->ForwardPass((unsigned char *)pSource, dwDataLength);
                 nMinValue = pHighPassFilter->GetBlockMin() - 128;
                 nMaxValue = pHighPassFilter->GetBlockMax() - 128;
-            } else { // 16 bits per sample, -32768 to 32767 range
+            }
+            else     // 16 bits per sample, -32768 to 32767 range
+            {
                 pHighPassFilter->ForwardPass((short *)pSource, dwDataLength);
                 nMinValue = pHighPassFilter->GetBlockMin();
                 nMaxValue = pHighPassFilter->GetBlockMax();
             }
         }
 
-        else do {
+        else do
+            {
                 // read data
-                if (wSmpSize == 1) { // 8 bit per sample
+                if (wSmpSize == 1)   // 8 bit per sample
+                {
                     bData = *pSource++; // data range is 0...255 (128 is center)
                     nData = bData - 128;
-                } else {              // 16 bit data
+                }
+                else                  // 16 bit data
+                {
                     nData = *((short int *)pSource++);
                     pSource++;
                     dwDataSize--;
                 }
                 // process data
-                if (nData > nMaxValue) {
+                if (nData > nMaxValue)
+                {
                     nMaxValue = nData;    // store higher value
-                } else {
-                    if (nData < nMinValue) {
+                }
+                else
+                {
+                    if (nData < nMinValue)
+                    {
                         nMinValue = nData;    // store lower value
                     }
                 }
-            } while (--dwDataSize > 0);
+            }
+            while (--dwDataSize > 0);
     }
     // set peak level
-    if (nMinValue * -1 > nMaxValue) {
+    if (nMinValue * -1 > nMaxValue)
+    {
         m_nMaxLevel = (UINT)(nMinValue * -1);
-    } else {
+    }
+    else
+    {
         m_nMaxLevel = (UINT)nMaxValue;
     }
     // norm the level to %
-    if (wSmpSize == 1) { // 8 bit per sample
+    if (wSmpSize == 1)   // 8 bit per sample
+    {
         m_nMaxLevel = 100 * m_nMaxLevel / 128;
-    } else {
+    }
+    else
+    {
         m_nMaxLevel = (UINT)((LONG)100 * (LONG)m_nMaxLevel / 32768);
     }
 
     // inform notify object
     BOOL bRecord = m_bRecording;
-    if (m_pNotifyObj) {
+    if (m_pNotifyObj)
+    {
         BOOL * pOverride = bRecord ? &bRecord : NULL;
         m_pNotifyObj->BlockStored(m_nMaxLevel, m_dwRecordPointer+GetBufferSize(m_nActiveBlock), pOverride);
     }
 
-    if (bRecord) {
+    if (bRecord)
+    {
         // store recorded data block in temporary file
-        if (mmioWrite(m_hmmioFile, GetBufferPointer(m_nActiveBlock), (long)GetBufferSize(m_nActiveBlock)) == -1) {
+        if (mmioWrite(m_hmmioFile, GetBufferPointer(m_nActiveBlock), (long)GetBufferSize(m_nActiveBlock)) == -1)
+        {
             // error
-            if (m_pNotifyObj) {
+            if (m_pNotifyObj)
+            {
                 m_pNotifyObj->StoreFailed();
             }
         }
@@ -704,7 +848,8 @@ void CWave::StoreBlock() {
     }
 
     // inform notify object
-    if (m_pNotifyObj) {
+    if (m_pNotifyObj)
+    {
         m_pInDev->Record(m_nActiveBlock, this); // record again into this buffer
         m_nActiveBlock = ++m_nActiveBlock % m_kRecordBuffers; // next buffer
     }
@@ -730,7 +875,8 @@ END_MESSAGE_MAP()
 /***************************************************************************/
 // CWaveInDevice::CWaveInDevice Constructor
 /***************************************************************************/
-CWaveInDevice::CWaveInDevice() {
+CWaveInDevice::CWaveInDevice()
+{
     m_hInDev = NULL;
     m_hWnd = NULL;
     m_pHighPassFilter = NULL;
@@ -741,11 +887,14 @@ CWaveInDevice::CWaveInDevice() {
 /***************************************************************************/
 // CWaveInDevice::~CWaveInDevice Destructor
 /***************************************************************************/
-CWaveInDevice::~CWaveInDevice() {
-    if (m_pMixer) {
+CWaveInDevice::~CWaveInDevice()
+{
+    if (m_pMixer)
+    {
         delete m_pMixer;
     }
-    if (m_pHighPassFilter) {
+    if (m_pHighPassFilter)
+    {
         delete m_pHighPassFilter;
     }
 }
@@ -754,9 +903,11 @@ CWaveInDevice::~CWaveInDevice() {
 // CWaveInDevice::Create Creation
 // Creates a child window with the given parameters as notification window.
 /***************************************************************************/
-BOOL CWaveInDevice::Create() {
+BOOL CWaveInDevice::Create()
+{
     // create notification window with size 0
-    if (!CreateEx(0, AfxRegisterWndClass(0), _T("Wave Wnd"), WS_POPUP, 0, 0, 0, 0, NULL, NULL)) {
+    if (!CreateEx(0, AfxRegisterWndClass(0), _T("Wave Wnd"), WS_POPUP, 0, 0, 0, 0, NULL, NULL))
+    {
         TRACE(_T("Failed to create wave notification window"));
         return FALSE;
     }
@@ -770,9 +921,11 @@ BOOL CWaveInDevice::Create() {
 // MMERR Error processing
 // Public function to process device error results.
 /***************************************************************************/
-void MMERR(MMRESULT mmr) {
+void MMERR(MMRESULT mmr)
+{
     CSaApp * pApp = (CSaApp *)AfxGetApp(); // get pointer to application
-    switch (mmr) {
+    switch (mmr)
+    {
     case WAVERR_BADFORMAT:
         pApp->ErrorMessage(IDS_ERROR_MMIO_BADFORMAT);
         break;
@@ -783,9 +936,12 @@ void MMERR(MMRESULT mmr) {
         pApp->ErrorMessage(IDS_ERROR_MMIO_ALRALLOC);
         break;
     case MMSYSERR_BADDEVICEID:
-        if (::GetWindowsVersion()<6) {
+        if (::GetWindowsVersion()<6)
+        {
             pApp->ErrorMessage(IDS_ERROR_MMIO_BADID);
-        } else {
+        }
+        else
+        {
             pApp->ErrorMessage(IDS_ERROR_MMIO_BADID_VISTA);
         }
         break;
@@ -809,20 +965,26 @@ void MMERR(MMRESULT mmr) {
 // CWaveInDevice::Open Open the input device
 // The device receives a handle to the notification window.
 /***************************************************************************/
-BOOL CWaveInDevice::Open(WAVEFORMATEX * pFormat) {
+BOOL CWaveInDevice::Open(WAVEFORMATEX * pFormat)
+{
     MMRESULT mmr;
     // make sure we have a callback window
-    if (!m_hWnd) {
+    if (!m_hWnd)
+    {
         Create(); // create the callback window
         ASSERT(m_hWnd);
     }
     // see if input device already open for this format
-    if (IsOpen()) {
+    if (IsOpen())
+    {
 #ifdef _DEBUG
         // see if it can handle this format
-        if (CanDoFormat(pFormat)) {
+        if (CanDoFormat(pFormat))
+        {
             return TRUE;    // OK
-        } else { // already open, but for a different format
+        }
+        else     // already open, but for a different format
+        {
             // error opening device
             CSaApp * pApp = (CSaApp *)AfxGetApp();
             pApp->ErrorMessage(IDS_ERROR_MMIO_OPENFORMAT);
@@ -834,7 +996,8 @@ BOOL CWaveInDevice::Open(WAVEFORMATEX * pFormat) {
 #endif
     }
     mmr = waveInOpen(&m_hInDev, WAVE_MAPPER, pFormat, (UINT)GetSafeHwnd(), 0, CALLBACK_WINDOW);
-    if (mmr != 0) {
+    if (mmr != 0)
+    {
         MMERR(mmr); // display error message
         return FALSE;
     }
@@ -844,15 +1007,18 @@ BOOL CWaveInDevice::Open(WAVEFORMATEX * pFormat) {
 /***************************************************************************/
 // CWaveInDevice::CanDoFormat Check if the device could open for this format
 /***************************************************************************/
-BOOL CWaveInDevice::CanDoFormat(WAVEFORMATEX * pFormat) {
+BOOL CWaveInDevice::CanDoFormat(WAVEFORMATEX * pFormat)
+{
     MMRESULT mmr;
     // device already opened?
-    if (!IsOpen()) {
+    if (!IsOpen())
+    {
         TRACE(_T("Not open"));
         return FALSE;
     }
     mmr = waveInOpen(NULL, WAVE_MAPPER, pFormat, NULL, 0, WAVE_FORMAT_QUERY);
-    if (mmr != 0) {
+    if (mmr != 0)
+    {
         MMERR(mmr); // display error message
         return FALSE;
     }
@@ -862,12 +1028,15 @@ BOOL CWaveInDevice::CanDoFormat(WAVEFORMATEX * pFormat) {
 /***************************************************************************/
 // CWaveInDevice::Close Close the input device
 /***************************************************************************/
-BOOL CWaveInDevice::Close() {
-    if (m_hInDev) {
+BOOL CWaveInDevice::Close()
+{
+    if (m_hInDev)
+    {
         // close the device
         waveInReset(m_hInDev);
         MSG msg;
-        while (::PeekMessage(&msg, NULL, MM_WIM_DATA, MM_WIM_DATA, PM_REMOVE)) {
+        while (::PeekMessage(&msg, NULL, MM_WIM_DATA, MM_WIM_DATA, PM_REMOVE))
+        {
             // There are two headers in the queue which are released by waveInReset
             // They must be freed before we destroy the object
             // Since the OnWimData starts new block we need to only call WaveInDone
@@ -877,13 +1046,15 @@ BOOL CWaveInDevice::Close() {
             waveInReset(m_hInDev);
         }
         MMRESULT mmr = waveInClose(m_hInDev);
-        if (mmr != 0) {
+        if (mmr != 0)
+        {
             MMERR(mmr);    // display error message
         }
         m_hInDev = NULL;
     }
     // destroy the window
-    if (m_hWnd) {
+    if (m_hWnd)
+    {
         DestroyWindow();
     }
     ASSERT(m_hWnd == NULL);
@@ -893,7 +1064,8 @@ BOOL CWaveInDevice::Close() {
 /***************************************************************************/
 // CWaveInDevice::AttachHighPassFilter  Construct a highpass filter
 /***************************************************************************/
-BOOL CWaveInDevice::AttachHighPassFilter(USHORT wSmpRate) {
+BOOL CWaveInDevice::AttachHighPassFilter(USHORT wSmpRate)
+{
     ASSERT(m_pHighPassFilter == NULL);
     return(CHighPassFilter70::CreateObject(&m_pHighPassFilter, wSmpRate) == DONE);
 }
@@ -901,9 +1073,11 @@ BOOL CWaveInDevice::AttachHighPassFilter(USHORT wSmpRate) {
 /***************************************************************************/
 // CWaveInDevice::Record Start recording
 /***************************************************************************/
-BOOL CWaveInDevice::Record(int nBuffer, CWave * pWave, BOOL bStart) {
+BOOL CWaveInDevice::Record(int nBuffer, CWave * pWave, BOOL bStart)
+{
     // device has to be opened
-    if (!Open(pWave->GetFormat())) {
+    if (!Open(pWave->GetFormat()))
+    {
         return FALSE;
     }
     // allocate a header
@@ -919,7 +1093,8 @@ BOOL CWaveInDevice::Record(int nBuffer, CWave * pWave, BOOL bStart) {
 
     // prepare the header
     MMRESULT mmr = waveInPrepareHeader(m_hInDev, pHdr, sizeof(WAVEHDR));
-    if (mmr) {
+    if (mmr)
+    {
         MMERR(mmr); // display error message
         return FALSE;
     }
@@ -927,15 +1102,18 @@ BOOL CWaveInDevice::Record(int nBuffer, CWave * pWave, BOOL bStart) {
 
     // send it to the driver
     mmr = waveInAddBuffer(m_hInDev, pHdr, sizeof(WAVEHDR));
-    if (mmr) {
+    if (mmr)
+    {
         MMERR(mmr); // display error message
         return FALSE;
     }
 
-    if (bStart) {
+    if (bStart)
+    {
         // start the recording
         mmr = waveInStart(m_hInDev);
-        if (mmr) {
+        if (mmr)
+        {
             MMERR(mmr);
             return FALSE;
         }
@@ -947,11 +1125,13 @@ BOOL CWaveInDevice::Record(int nBuffer, CWave * pWave, BOOL bStart) {
 /***************************************************************************/
 // CWaveInDevice::GetVolume Get the playback volume
 /***************************************************************************/
-UINT CWaveInDevice::GetVolume(BOOL * pResult) {
+UINT CWaveInDevice::GetVolume(BOOL * pResult)
+{
     DWORD dwVolume = 0xbfff; // Value in case of error
     BOOL bWasOpen = IsOpen();
     MMRESULT mmr = 0;
-    if (!bWasOpen) {
+    if (!bWasOpen)
+    {
         // device has to be opened first
         CMainFrame * pMDIFrameWnd = (CMainFrame *)AfxGetMainWnd();
         CView * pView = pMDIFrameWnd->GetCurrSaView();
@@ -959,19 +1139,23 @@ UINT CWaveInDevice::GetVolume(BOOL * pResult) {
         FmtParm * pFmtParm = pDoc->GetFmtParm(); // get pointer to wave format parameters
         mmr = waveInOpen(&m_hInDev , WAVE_MAPPER, (WAVEFORMATEX *)pFmtParm, NULL, 0, CALLBACK_NULL);
     }
-    if (!mmr) {
+    if (!mmr)
+    {
         mmr = m_pMixer->GetVolume(m_hInDev, &dwVolume);
     }
 
-    if (!bWasOpen) {
+    if (!bWasOpen)
+    {
         // close it again
-        if (m_hInDev) {
+        if (m_hInDev)
+        {
             waveInReset(m_hInDev);
             mmr = waveInClose(m_hInDev);
             m_hInDev = NULL;
         }
     }
-    if (pResult) {
+    if (pResult)
+    {
         *pResult = (mmr == MMSYSERR_NOERROR);
     }
 
@@ -981,11 +1165,13 @@ UINT CWaveInDevice::GetVolume(BOOL * pResult) {
 /***************************************************************************/
 // CWaveInDevice::SetVolume Set the playback volume
 /***************************************************************************/
-void CWaveInDevice::SetVolume(UINT nVolume, BOOL * pResult) {
+void CWaveInDevice::SetVolume(UINT nVolume, BOOL * pResult)
+{
     DWORD dwVolume= DWORD(((float)0x0FFFF * (float)nVolume / (float)100) + 0.5);
     BOOL bWasOpen = IsOpen();
     MMRESULT mmr = 0;
-    if (!bWasOpen) {
+    if (!bWasOpen)
+    {
         // device has to be opened first
 
         CMainFrame * pMDIFrameWnd = (CMainFrame *)AfxGetMainWnd();
@@ -996,19 +1182,23 @@ void CWaveInDevice::SetVolume(UINT nVolume, BOOL * pResult) {
         mmr = waveInOpen(&m_hInDev , WAVE_MAPPER, (WAVEFORMATEX *)pFmtParm, NULL, 0, CALLBACK_NULL);
     }
 
-    if (!mmr) {
+    if (!mmr)
+    {
         mmr = m_pMixer->SetVolume(m_hInDev, dwVolume);
     }
 
-    if (!bWasOpen) {
+    if (!bWasOpen)
+    {
         // close it again
-        if (m_hInDev) {
+        if (m_hInDev)
+        {
             waveInReset(m_hInDev);
             mmr = waveInClose(m_hInDev);
             m_hInDev = NULL;
         }
     }
-    if (pResult) {
+    if (pResult)
+    {
         *pResult = (mmr == MMSYSERR_NOERROR);
     }
 }
@@ -1017,11 +1207,13 @@ void CWaveInDevice::SetVolume(UINT nVolume, BOOL * pResult) {
 /***************************************************************************/
 // CWaveOutDevice::ShowMixer
 /***************************************************************************/
-BOOL CWaveInDevice::ShowMixer(BOOL bShow) {
+BOOL CWaveInDevice::ShowMixer(BOOL bShow)
+{
     BOOL bResult = FALSE;
     BOOL bWasOpen = IsOpen();
     MMRESULT mmr = 0;
-    if (!bWasOpen) {
+    if (!bWasOpen)
+    {
         // device has to be opened first
         CMainFrame * pMDIFrameWnd = (CMainFrame *)AfxGetMainWnd();
         ASSERT(pMDIFrameWnd->IsKindOf(RUNTIME_CLASS(CMainFrame)));
@@ -1031,16 +1223,20 @@ BOOL CWaveInDevice::ShowMixer(BOOL bShow) {
         mmr = waveInOpen(&m_hInDev , WAVE_MAPPER, (WAVEFORMATEX *)pFmtParm, NULL, 0, CALLBACK_NULL);
     }
 
-    if (bShow && !mmr) {
+    if (bShow && !mmr)
+    {
         bResult = m_pMixer->ShowMixerControls(m_hInDev);
     }
-    if (!bShow && !mmr) {
+    if (!bShow && !mmr)
+    {
         bResult = m_pMixer->CanShowMixerControls(m_hInDev);
     }
 
-    if (!bWasOpen) {
+    if (!bWasOpen)
+    {
         // close it again
-        if (m_hInDev) {
+        if (m_hInDev)
+        {
             waveInReset(m_hInDev);
             mmr = waveInClose(m_hInDev);
             m_hInDev = NULL;
@@ -1053,11 +1249,13 @@ BOOL CWaveInDevice::ShowMixer(BOOL bShow) {
 /***************************************************************************/
 // CWaveInDevice::ConnectMixer Connect window to receive mixer callback msg's
 /***************************************************************************/
-BOOL CWaveInDevice::ConnectMixer(CWnd * pCallback) {
+BOOL CWaveInDevice::ConnectMixer(CWnd * pCallback)
+{
     BOOL bWasOpen = IsOpen();
     BOOL bConnected = FALSE;
     MMRESULT mmr = 0;
-    if (!bWasOpen) {
+    if (!bWasOpen)
+    {
         // device has to be opened first
         CMainFrame * pMDIFrameWnd = (CMainFrame *)AfxGetMainWnd();
         CView * pView = pMDIFrameWnd->GetCurrSaView();
@@ -1066,19 +1264,23 @@ BOOL CWaveInDevice::ConnectMixer(CWnd * pCallback) {
         mmr = waveInOpen(&m_hInDev, WAVE_MAPPER, (WAVEFORMATEX *)pFmtParm, NULL, 0, CALLBACK_NULL);
     }
 
-    if (!mmr) {
+    if (!mmr)
+    {
         bConnected = m_pMixer->Connect(m_hInDev, pCallback->GetSafeHwnd());
     }
 
-    if (!bWasOpen) {
+    if (!bWasOpen)
+    {
         // close it again
-        if (m_hInDev) {
+        if (m_hInDev)
+        {
             waveInReset(m_hInDev);
             mmr = waveInClose(m_hInDev);
             m_hInDev = NULL;
         }
     }
-    if (mmr) {
+    if (mmr)
+    {
         MMERR(mmr); // display error message
         return FALSE;
     }
@@ -1088,12 +1290,15 @@ BOOL CWaveInDevice::ConnectMixer(CWnd * pCallback) {
 /***************************************************************************/
 // CWaveInDevice::Reset Reset the device
 /***************************************************************************/
-void CWaveInDevice::Reset() {
-    if (!m_hInDev) {
+void CWaveInDevice::Reset()
+{
+    if (!m_hInDev)
+    {
         return;
     }
     MMRESULT mmr = waveInReset(m_hInDev);
-    if (mmr) {
+    if (mmr)
+    {
         MMERR(mmr);
     }
 }
@@ -1101,11 +1306,13 @@ void CWaveInDevice::Reset() {
 /***************************************************************************/
 // CWaveInDevice::WaveInDone Block finished recording
 /***************************************************************************/
-void CWaveInDevice::WaveInDone(CWave * /*pWave*/, WAVEHDR * pHdr) {
+void CWaveInDevice::WaveInDone(CWave * /*pWave*/, WAVEHDR * pHdr)
+{
     // unprepare the header
     MMRESULT mmr = waveInUnprepareHeader(m_hInDev, pHdr, sizeof(WAVEHDR));
     m_nBuffers--;
-    if (mmr) {
+    if (mmr)
+    {
         MMERR(mmr);    // display error message
     }
     // free the header
@@ -1118,7 +1325,8 @@ void CWaveInDevice::WaveInDone(CWave * /*pWave*/, WAVEHDR * pHdr) {
 /***************************************************************************/
 // CWaveInDevice::OnWimData
 /***************************************************************************/
-LRESULT CWaveInDevice::OnWimData(WPARAM /*wParam*/, LPARAM lParam) {
+LRESULT CWaveInDevice::OnWimData(WPARAM /*wParam*/, LPARAM lParam)
+{
     WAVEHDR * pHdr = (WAVEHDR *)lParam; // get pointer to wave header
     CWave * pWave = (CWave *)(pHdr->dwUser); // get pointer to CWave object
     CWaveInDevice * pInDev = pWave->GetInDevice(); // get pointer to input device
@@ -1150,7 +1358,8 @@ END_MESSAGE_MAP()
 /***************************************************************************/
 // CWaveOutDevice::CWaveOutDevice Constructor
 /***************************************************************************/
-CWaveOutDevice::CWaveOutDevice() {
+CWaveOutDevice::CWaveOutDevice()
+{
     m_hOutDev = NULL;
     m_hWnd = NULL;
     m_pMixer = new CPlayMixer;
@@ -1159,9 +1368,11 @@ CWaveOutDevice::CWaveOutDevice() {
 /***************************************************************************/
 // CWaveOutDevice::~CWaveOutDevice Destructor
 /***************************************************************************/
-CWaveOutDevice::~CWaveOutDevice() {
+CWaveOutDevice::~CWaveOutDevice()
+{
     ASSERT(m_hOutDev == NULL);
-    if (m_pMixer) {
+    if (m_pMixer)
+    {
         delete m_pMixer;
     }
 }
@@ -1170,9 +1381,11 @@ CWaveOutDevice::~CWaveOutDevice() {
 // CWaveOutDevice::Create Creation
 // Creates a child window with the given parameters as notification window.
 /***************************************************************************/
-BOOL CWaveOutDevice::Create() {
+BOOL CWaveOutDevice::Create()
+{
     // create notification window with size 0
-    if (!CreateEx(0, AfxRegisterWndClass(0), _T("Wave Wnd"), WS_POPUP, 0, 0, 0, 0, NULL, NULL)) {
+    if (!CreateEx(0, AfxRegisterWndClass(0), _T("Wave Wnd"), WS_POPUP, 0, 0, 0, 0, NULL, NULL))
+    {
         TRACE(_T("Failed to create wave notification window"));
         return FALSE;
     }
@@ -1186,19 +1399,25 @@ BOOL CWaveOutDevice::Create() {
 // CWaveOutDevice::Open Open the output device
 // The device receives a handle to the notification window.
 /***************************************************************************/
-BOOL CWaveOutDevice::Open(WAVEFORMATEX * pFormat) {
+BOOL CWaveOutDevice::Open(WAVEFORMATEX * pFormat)
+{
     MMRESULT mmr;
     // make sure we have a callback window
-    if (!m_hWnd) {
+    if (!m_hWnd)
+    {
         Create(); // create the callback window
         ASSERT(m_hWnd);
     }
     // see if output device already open for this format
-    if (IsOpen()) {
+    if (IsOpen())
+    {
         // see if it can handle this format
-        if (CanDoFormat(pFormat)) {
+        if (CanDoFormat(pFormat))
+        {
             return TRUE;    // OK
-        } else { // already open, but for a different format
+        }
+        else     // already open, but for a different format
+        {
             // error opening device
             CSaApp * pApp = (CSaApp *)AfxGetApp();
             pApp->ErrorMessage(IDS_ERROR_MMIO_OPENFORMAT);
@@ -1206,7 +1425,8 @@ BOOL CWaveOutDevice::Open(WAVEFORMATEX * pFormat) {
         }
     }
     mmr = waveOutOpen(&m_hOutDev, WAVE_MAPPER, pFormat, (UINT)GetSafeHwnd(), 0, CALLBACK_WINDOW);
-    if (mmr != 0) {
+    if (mmr != 0)
+    {
         MMERR(mmr); // display error message
         return FALSE;
     }
@@ -1216,16 +1436,19 @@ BOOL CWaveOutDevice::Open(WAVEFORMATEX * pFormat) {
 /***************************************************************************/
 // CWaveOutDevice::CanDoFormat Check if the device could open for this format
 /***************************************************************************/
-BOOL CWaveOutDevice::CanDoFormat(WAVEFORMATEX * pFormat) {
+BOOL CWaveOutDevice::CanDoFormat(WAVEFORMATEX * pFormat)
+{
     MMRESULT mmr;
     // device already opened?
-    if (!IsOpen()) {
+    if (!IsOpen())
+    {
         TRACE(_T("Not open"));
         return FALSE;
     }
     HWAVEOUT hDev = NULL;
     mmr = waveOutOpen(&hDev, WAVE_MAPPER, pFormat, NULL, 0, WAVE_FORMAT_QUERY);
-    if (mmr != 0) {
+    if (mmr != 0)
+    {
         MMERR(mmr); // display error message
         return FALSE;
     }
@@ -1235,12 +1458,15 @@ BOOL CWaveOutDevice::CanDoFormat(WAVEFORMATEX * pFormat) {
 /***************************************************************************/
 // CWaveOutDevice::Close Close the output device
 /***************************************************************************/
-BOOL CWaveOutDevice::Close() {
-    if (m_hOutDev) {
+BOOL CWaveOutDevice::Close()
+{
+    if (m_hOutDev)
+    {
         // close the device
         waveOutReset(m_hOutDev);
         MSG msg;
-        while (::PeekMessage(&msg, NULL, MM_WOM_DONE, MM_WOM_DONE, PM_REMOVE)) {
+        while (::PeekMessage(&msg, NULL, MM_WOM_DONE, MM_WOM_DONE, PM_REMOVE))
+        {
             // There are two headers in the queue which are released by waveOutReset
             // They must be freed before we destroy the object
             // Since the OnWomDone starts new block we need to only call WaveOutDone
@@ -1249,13 +1475,15 @@ BOOL CWaveOutDevice::Close() {
             WaveOutDone(pWave, pHdr); // wave block done
         }
         MMRESULT mmr = waveOutClose(m_hOutDev);
-        if (mmr != 0) {
+        if (mmr != 0)
+        {
             MMERR(mmr);    // display error message
         }
         m_hOutDev = NULL;
     }
     // destroy the window
-    if (m_hWnd) {
+    if (m_hWnd)
+    {
         DestroyWindow();
     }
     ASSERT(m_hWnd == NULL);
@@ -1265,10 +1493,13 @@ BOOL CWaveOutDevice::Close() {
 /***************************************************************************/
 // CWaveOutDevice::Play Start playing
 /***************************************************************************/
-BOOL CWaveOutDevice::Play(int nBuffer, UINT nVolume, CWave * pWave, BOOL bPause) {
-    if (pWave->GetPlaybackSize(nBuffer)) {
+BOOL CWaveOutDevice::Play(int nBuffer, UINT nVolume, CWave * pWave, BOOL bPause)
+{
+    if (pWave->GetPlaybackSize(nBuffer))
+    {
         // device has to be opened
-        if (!Open(pWave->GetFormat())) {
+        if (!Open(pWave->GetFormat()))
+        {
             return FALSE;
         }
         // allocate a header
@@ -1281,29 +1512,35 @@ BOOL CWaveOutDevice::Play(int nBuffer, UINT nVolume, CWave * pWave, BOOL bPause)
         pHdr->dwUser = (DWORD)(void *)pWave;   // so we can find the object
         // prepare the header
         MMRESULT mmr = waveOutPrepareHeader(m_hOutDev, pHdr, sizeof(WAVEHDR));
-        if (mmr) {
+        if (mmr)
+        {
             MMERR(mmr); // display error message
             return FALSE;
         }
         // set the volume
         SetVolume(nVolume);
-        if (bPause) {
+        if (bPause)
+        {
             mmr = waveOutPause(m_hOutDev);
-            if (mmr) {
+            if (mmr)
+            {
                 MMERR(mmr); // display error message
                 return FALSE;
             }
         }
         // start it playing
         mmr = waveOutWrite(m_hOutDev, pHdr, sizeof(WAVEHDR));
-        if (mmr) {
+        if (mmr)
+        {
             MMERR(mmr); // display error message
             return FALSE;
         }
 
-        if (!bPause) {
+        if (!bPause)
+        {
             mmr = waveOutRestart(m_hOutDev);
-            if (mmr) {
+            if (mmr)
+            {
                 MMERR(mmr); // display error message
                 return FALSE;
             }
@@ -1316,11 +1553,13 @@ BOOL CWaveOutDevice::Play(int nBuffer, UINT nVolume, CWave * pWave, BOOL bPause)
 /***************************************************************************/
 // CWaveOutDevice::GetVolume Get the playback volume
 /***************************************************************************/
-UINT CWaveOutDevice::GetVolume(BOOL * pResult) {
+UINT CWaveOutDevice::GetVolume(BOOL * pResult)
+{
     DWORD dwVolume = 0xbfff; // Value in case of error
     BOOL bWasOpen = IsOpen();
     MMRESULT mmr = 0;
-    if (!bWasOpen) {
+    if (!bWasOpen)
+    {
         // device has to be opened first
         CMainFrame * pMDIFrameWnd = (CMainFrame *)AfxGetMainWnd();
         CView * pView = pMDIFrameWnd->GetCurrSaView();
@@ -1329,19 +1568,23 @@ UINT CWaveOutDevice::GetVolume(BOOL * pResult) {
         FmtParm * pFmtParm = pDoc->GetFmtParm(); // get pointer to wave format parameters
         mmr = waveOutOpen(&m_hOutDev, WAVE_MAPPER, (WAVEFORMATEX *)pFmtParm, NULL, 0, CALLBACK_NULL);
     }
-    if (!mmr) {
+    if (!mmr)
+    {
         mmr = m_pMixer->GetVolume(m_hOutDev, &dwVolume);
     }
 
-    if (!bWasOpen) {
+    if (!bWasOpen)
+    {
         // close it again
-        if (m_hOutDev) {
+        if (m_hOutDev)
+        {
             waveOutReset(m_hOutDev);
             mmr = waveOutClose(m_hOutDev);
             m_hOutDev = NULL;
         }
     }
-    if (pResult) {
+    if (pResult)
+    {
         *pResult = (mmr == MMSYSERR_NOERROR);
     }
     return (UINT)(((float)(LOWORD(dwVolume)) * (float)100 / (float)0x0FFFF) + 0.5);
@@ -1350,11 +1593,13 @@ UINT CWaveOutDevice::GetVolume(BOOL * pResult) {
 /***************************************************************************/
 // CWaveOutDevice::SetVolume Set the playback volume
 /***************************************************************************/
-void CWaveOutDevice::SetVolume(UINT nVolume, BOOL * pResult) {
+void CWaveOutDevice::SetVolume(UINT nVolume, BOOL * pResult)
+{
     DWORD dwVolume= DWORD(((float)0x0FFFF * (float)nVolume / (float)100) + 0.5);
     BOOL bWasOpen = IsOpen();
     MMRESULT mmr = 0;
-    if (!bWasOpen) {
+    if (!bWasOpen)
+    {
         // device has to be opened first
         CMainFrame * pMDIFrameWnd = (CMainFrame *)AfxGetMainWnd();
         CView * pView = pMDIFrameWnd->GetCurrSaView();
@@ -1364,19 +1609,23 @@ void CWaveOutDevice::SetVolume(UINT nVolume, BOOL * pResult) {
         mmr = waveOutOpen(&m_hOutDev, WAVE_MAPPER, (WAVEFORMATEX *)pFmtParm, NULL, 0, CALLBACK_NULL);
     }
 
-    if (!mmr) {
+    if (!mmr)
+    {
         mmr = m_pMixer->SetVolume(m_hOutDev, dwVolume);
     }
 
-    if (!bWasOpen) {
+    if (!bWasOpen)
+    {
         // close it again
-        if (m_hOutDev) {
+        if (m_hOutDev)
+        {
             waveOutReset(m_hOutDev);
             mmr = waveOutClose(m_hOutDev);
             m_hOutDev = NULL;
         }
     }
-    if (pResult) {
+    if (pResult)
+    {
         *pResult = (mmr == MMSYSERR_NOERROR);
     }
 }
@@ -1385,11 +1634,13 @@ void CWaveOutDevice::SetVolume(UINT nVolume, BOOL * pResult) {
 /***************************************************************************/
 // CWaveOutDevice::ShowMixer
 /***************************************************************************/
-BOOL CWaveOutDevice::ShowMixer(BOOL bShow) {
+BOOL CWaveOutDevice::ShowMixer(BOOL bShow)
+{
     BOOL bWasOpen = IsOpen();
     BOOL bResult = FALSE;
     MMRESULT mmr = 0;
-    if (!bWasOpen) {
+    if (!bWasOpen)
+    {
         // device has to be opened first
         CMainFrame * pMDIFrameWnd = (CMainFrame *)AfxGetMainWnd();
         CView * pView = pMDIFrameWnd->GetCurrSaView();
@@ -1399,16 +1650,20 @@ BOOL CWaveOutDevice::ShowMixer(BOOL bShow) {
         mmr = waveOutOpen(&m_hOutDev, WAVE_MAPPER, (WAVEFORMATEX *)pFmtParm, NULL, 0, CALLBACK_NULL);
     }
 
-    if (bShow && !mmr) {
+    if (bShow && !mmr)
+    {
         bResult = m_pMixer->ShowMixerControls(m_hOutDev);
     }
-    if (!bShow && !mmr) {
+    if (!bShow && !mmr)
+    {
         bResult = m_pMixer->CanShowMixerControls(m_hOutDev);
     }
 
-    if (!bWasOpen) {
+    if (!bWasOpen)
+    {
         // close it again
-        if (m_hOutDev) {
+        if (m_hOutDev)
+        {
             waveOutReset(m_hOutDev);
             mmr = waveOutClose(m_hOutDev);
             m_hOutDev = NULL;
@@ -1421,11 +1676,13 @@ BOOL CWaveOutDevice::ShowMixer(BOOL bShow) {
 /***************************************************************************/
 // CWaveOutDevice::ConnectMixer Connect window to receive mixer callback msg's
 /***************************************************************************/
-BOOL CWaveOutDevice::ConnectMixer(CWnd * pCallback) {
+BOOL CWaveOutDevice::ConnectMixer(CWnd * pCallback)
+{
     BOOL bWasOpen = IsOpen();
     BOOL bConnected = FALSE;
     MMRESULT mmr = 0;
-    if (!bWasOpen) {
+    if (!bWasOpen)
+    {
         // device has to be opened first
         CMainFrame * pMDIFrameWnd = (CMainFrame *)AfxGetMainWnd();
         CView * pView = pMDIFrameWnd->GetCurrSaView();
@@ -1435,19 +1692,23 @@ BOOL CWaveOutDevice::ConnectMixer(CWnd * pCallback) {
         mmr = waveOutOpen(&m_hOutDev, WAVE_MAPPER, (WAVEFORMATEX *)pFmtParm, NULL, 0, CALLBACK_NULL);
     }
 
-    if (!mmr) {
+    if (!mmr)
+    {
         bConnected = m_pMixer->Connect(m_hOutDev, pCallback->GetSafeHwnd());
     }
 
-    if (!bWasOpen) {
+    if (!bWasOpen)
+    {
         // close it again
-        if (m_hOutDev) {
+        if (m_hOutDev)
+        {
             waveOutReset(m_hOutDev);
             mmr = waveOutClose(m_hOutDev);
             m_hOutDev = NULL;
         }
     }
-    if (mmr) {
+    if (mmr)
+    {
         MMERR(mmr); // display error message
         return FALSE;
     }
@@ -1459,12 +1720,15 @@ BOOL CWaveOutDevice::ConnectMixer(CWnd * pCallback) {
 /***************************************************************************/
 // CWaveOutDevice::Reset Reset the device
 /***************************************************************************/
-void CWaveOutDevice::Reset() {
-    if (!m_hOutDev) {
+void CWaveOutDevice::Reset()
+{
+    if (!m_hOutDev)
+    {
         return;
     }
     MMRESULT mmr = waveOutReset(m_hOutDev);
-    if (mmr) {
+    if (mmr)
+    {
         MMERR(mmr);
     }
 }
@@ -1472,14 +1736,17 @@ void CWaveOutDevice::Reset() {
 /***************************************************************************/
 // CWaveOutDevice::WaveOutDone Playing finished
 /***************************************************************************/
-void CWaveOutDevice::WaveOutDone(CWave * /*pWave*/, WAVEHDR * pHdr) {
+void CWaveOutDevice::WaveOutDone(CWave * /*pWave*/, WAVEHDR * pHdr)
+{
     // unprepare the header
     MMRESULT mmr = waveOutUnprepareHeader(m_hOutDev, pHdr, sizeof(WAVEHDR));
-    if (mmr) {
+    if (mmr)
+    {
         MMERR(mmr);    // display error message
     }
     // free the header
-    if (pHdr) {
+    if (pHdr)
+    {
         delete pHdr;
     }
 }
@@ -1490,7 +1757,8 @@ void CWaveOutDevice::WaveOutDone(CWave * /*pWave*/, WAVEHDR * pHdr) {
 /***************************************************************************/
 // CWaveOutDevice::OnWomDone
 /***************************************************************************/
-LRESULT CWaveOutDevice::OnWomDone(WPARAM /*wParam*/, LPARAM lParam) {
+LRESULT CWaveOutDevice::OnWomDone(WPARAM /*wParam*/, LPARAM lParam)
+{
     WAVEHDR * pHdr = (WAVEHDR *)lParam; // get pointer to wave header
     CWave * pWave = (CWave *)(pHdr->dwUser); // get pointer to CWave object
     CWaveOutDevice * pOutDev = pWave->GetOutDevice(); // get pointer to output device

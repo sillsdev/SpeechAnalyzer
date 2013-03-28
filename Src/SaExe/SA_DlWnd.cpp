@@ -55,7 +55,8 @@ END_MESSAGE_MAP()
 /***************************************************************************/
 // CLEDDisplay::CLEDDisplay Constructor
 /***************************************************************************/
-CLEDDisplay::CLEDDisplay() {
+CLEDDisplay::CLEDDisplay()
+{
     // construct and load LED bitmap
     m_pBmLED = new CBitmap;
     m_pBmLED->LoadBitmap(IDB_LED);
@@ -66,9 +67,11 @@ CLEDDisplay::CLEDDisplay() {
 /***************************************************************************/
 // CLEDDisplay::CLEDDisplay Destructor
 /***************************************************************************/
-CLEDDisplay::~CLEDDisplay() {
+CLEDDisplay::~CLEDDisplay()
+{
     // destruct LED bitmap
-    if (m_pBmLED) {
+    if (m_pBmLED)
+    {
         delete m_pBmLED;
     }
 }
@@ -80,8 +83,10 @@ CLEDDisplay::~CLEDDisplay() {
 // CLEDDisplay::Init Initialisation
 // Creates the window and places it over the dialog control.
 /***************************************************************************/
-void CLEDDisplay::Init(UINT nID, CWnd * pParent) {
-    if (nID && pParent) {
+void CLEDDisplay::Init(UINT nID, CWnd * pParent)
+{
+    if (nID && pParent)
+    {
         CWnd * pWnd = pParent->GetDlgItem(nID);
         CRect rWnd(0, 0, 0, 0);
         Create(NULL, NULL, WS_CHILD|WS_VISIBLE, rWnd, pParent, 1);
@@ -98,25 +103,32 @@ void CLEDDisplay::Init(UINT nID, CWnd * pParent) {
 // than 99, minutes will display "--". If nSec is larger than 599, seconds
 // will display "--.-".
 /***************************************************************************/
-void CLEDDisplay::SetTime(int nMin, int nSec) {
+void CLEDDisplay::SetTime(int nMin, int nSec)
+{
     char chOldMinMSD, chOldMinLSD, chOldSecMSD, chOldSecLSD, chOldSecDec;
     chOldMinMSD = m_chMinMSD; // save old values
     chOldMinLSD = m_chMinLSD;
     chOldSecMSD = m_chSecMSD;
     chOldSecLSD = m_chSecLSD;
     chOldSecDec = m_chSecDec;
-    if (nMin > 99) { // dashs to display
+    if (nMin > 99)   // dashs to display
+    {
         m_chMinMSD = 10;
         m_chMinLSD = 10;
-    } else {
+    }
+    else
+    {
         m_chMinMSD = char(nMin / 10);
         m_chMinLSD = char(nMin % 10);
     }
-    if ((int)nSec > 599) { // dashs to display
+    if ((int)nSec > 599)   // dashs to display
+    {
         m_chSecMSD = 10;
         m_chSecLSD = 10;
         m_chSecDec = 10;
-    } else {
+    }
+    else
+    {
         m_chSecMSD = char((int)nSec / 100);
         m_chSecLSD = char(((int)nSec % 100) / 10);
         m_chSecDec = char((int)nSec % 10);
@@ -127,25 +139,40 @@ void CLEDDisplay::SetTime(int nMin, int nSec) {
     rWnd.bottom = rWnd.top + LED_DIGIT_HEIGHT;
     rWnd.left = (rWnd.right - 5 * LED_DIGIT_WIDTH - 2 * LED_POINT_WIDTH - (7 * LED_DIGIT_SPACE - 1)) / 2;
     rWnd.right = rWnd.left + 5 * LED_DIGIT_WIDTH + 2 * LED_POINT_WIDTH + (7 * LED_DIGIT_SPACE - 1);
-    if (chOldMinMSD != m_chMinMSD) {
+    if (chOldMinMSD != m_chMinMSD)
+    {
         InvalidateRect(rWnd, FALSE);    // value changed
-    } else {
+    }
+    else
+    {
         rWnd.left += LED_DIGIT_WIDTH + LED_DIGIT_SPACE;
-        if (chOldMinLSD != m_chMinLSD) {
+        if (chOldMinLSD != m_chMinLSD)
+        {
             InvalidateRect(rWnd, FALSE);    // value changed
-        } else {
+        }
+        else
+        {
             rWnd.left += LED_DIGIT_WIDTH + LED_POINT_WIDTH + 2 * LED_DIGIT_SPACE;
-            if (chOldSecMSD != m_chSecMSD) {
+            if (chOldSecMSD != m_chSecMSD)
+            {
                 InvalidateRect(rWnd, FALSE);    // value changed
-            } else {
+            }
+            else
+            {
                 rWnd.left += LED_DIGIT_WIDTH + LED_DIGIT_SPACE;
-                if (chOldSecLSD != m_chSecLSD) {
+                if (chOldSecLSD != m_chSecLSD)
+                {
                     InvalidateRect(rWnd, FALSE);    // value changed
-                } else {
+                }
+                else
+                {
                     rWnd.left += LED_DIGIT_WIDTH + LED_POINT_WIDTH + 2 * LED_DIGIT_SPACE;
-                    if (chOldSecDec != m_chSecDec) {
+                    if (chOldSecDec != m_chSecDec)
+                    {
                         InvalidateRect(rWnd, FALSE);    // value changed
-                    } else {
+                    }
+                    else
+                    {
                         return;
                     }
                 }
@@ -160,7 +187,8 @@ void CLEDDisplay::SetTime(int nMin, int nSec) {
 /***************************************************************************/
 // CLEDDisplay::OnPaint Painting
 /***************************************************************************/
-void CLEDDisplay::OnPaint() {
+void CLEDDisplay::OnPaint()
+{
     CPaintDC dc(this); // device context for painting
     CBitmap * pBmOld = NULL;
     CDC dcMem;
@@ -209,7 +237,8 @@ void CLEDDisplay::OnPaint() {
 /***************************************************************************/
 // CLEDDisplay::OnEraseBkgnd Erasing background
 /***************************************************************************/
-BOOL CLEDDisplay::OnEraseBkgnd(CDC * pDC) {
+BOOL CLEDDisplay::OnEraseBkgnd(CDC * pDC)
+{
     CRect rWnd;
     GetClientRect(rWnd);
     // get invalid region
@@ -259,7 +288,8 @@ END_MESSAGE_MAP()
 /***************************************************************************/
 // CSliderVertical::CSliderVertical Constructor
 /***************************************************************************/
-CSliderVertical::CSliderVertical() {
+CSliderVertical::CSliderVertical()
+{
     // construct and load knob bitmap
     m_pBmKnob = new CBitmap;
     m_pBmKnob->LoadBitmap(IDB_KNOBHORIZ); // load bitmap
@@ -274,9 +304,11 @@ CSliderVertical::CSliderVertical() {
 /***************************************************************************/
 // CSliderVertical::~CSliderVertical Destructor
 /***************************************************************************/
-CSliderVertical::~CSliderVertical() {
+CSliderVertical::~CSliderVertical()
+{
     // destruct knob bitmap
-    if (m_pBmKnob) {
+    if (m_pBmKnob)
+    {
         delete m_pBmKnob;
     }
 }
@@ -288,9 +320,11 @@ CSliderVertical::~CSliderVertical() {
 // CSliderVertical::Init Initialisation
 // Creates the window and places it over the dialog control.
 /***************************************************************************/
-void CSliderVertical::Init(UINT nID, CWnd * pParent) {
+void CSliderVertical::Init(UINT nID, CWnd * pParent)
+{
     m_nID = nID;
-    if (m_nID && pParent) {
+    if (m_nID && pParent)
+    {
         CWnd * pWnd = pParent->GetDlgItem(m_nID);
         CRect rWnd(0, 0, 0, 0);
         Create(NULL, NULL, WS_CHILD|WS_VISIBLE, rWnd, pParent, 1);
@@ -305,12 +339,14 @@ void CSliderVertical::Init(UINT nID, CWnd * pParent) {
 // The slider position range goes from 0 to 100. This function sets the
 // slider to a position given by parameter (limitet to 100).
 /***************************************************************************/
-void CSliderVertical::SetPosition(int nVal) {
+void CSliderVertical::SetPosition(int nVal)
+{
     CRect rWnd;
     GetClientRect(rWnd);
     int nOldPos = m_chPos;
     m_chPos = char(nVal);
-    if (m_chPos > 100) {
+    if (m_chPos > 100)
+    {
         m_chPos = 100;
     }
     {
@@ -319,13 +355,19 @@ void CSliderVertical::SetPosition(int nVal) {
         m_rPos.SetRect((rWnd.right - m_rPos.Width()) / 2, nPos,
                        ((rWnd.right - m_rPos.Width()) / 2) + m_rPos.Width(),
                        nPos + m_rPos.Height());
-        if (rOld.left == 0) {
+        if (rOld.left == 0)
+        {
             InvalidateRect(NULL, TRUE);    // first paint, paint all new
-        } else {
-            if (nOldPos != m_chPos) { // change
+        }
+        else
+        {
+            if (nOldPos != m_chPos)   // change
+            {
                 rOld.UnionRect(rOld, m_rPos); // create invalid rectangle
                 InvalidateRect(rOld, TRUE); // paint
-            } else {
+            }
+            else
+            {
                 return;    // no change
             }
         }
@@ -338,14 +380,17 @@ void CSliderVertical::SetPosition(int nVal) {
 // Calculates the slider position from the mouse pointer position draging
 // the slider knob.
 /***************************************************************************/
-int CSliderVertical::GetPosFromMouse(CPoint point) {
+int CSliderVertical::GetPosFromMouse(CPoint point)
+{
     CRect rWnd;
     GetClientRect(rWnd);
     rWnd.top = 100 - (100 * (point.y - m_rPos.Height() / 2) / (rWnd.bottom - m_rPos.Height()));
-    if (rWnd.top > 100) {
+    if (rWnd.top > 100)
+    {
         rWnd.top = 100;
     }
-    if (rWnd.top < 0) {
+    if (rWnd.top < 0)
+    {
         rWnd.top = 0;
     }
     return rWnd.top;
@@ -357,7 +402,8 @@ int CSliderVertical::GetPosFromMouse(CPoint point) {
 /***************************************************************************/
 // CSliderVertical::OnPaint Painting
 /***************************************************************************/
-void CSliderVertical::OnPaint() {
+void CSliderVertical::OnPaint()
+{
     CPaintDC dc(this); // device context for painting
     CBitmap * pBmOld = NULL;
     CDC dcMem;
@@ -372,7 +418,8 @@ void CSliderVertical::OnPaint() {
 /***************************************************************************/
 // CSliderVertical::OnEraseBkgnd Erasing background
 /***************************************************************************/
-BOOL CSliderVertical::OnEraseBkgnd(CDC * pDC) {
+BOOL CSliderVertical::OnEraseBkgnd(CDC * pDC)
+{
     // use same background as dialog
     CRect rWnd;
     GetClientRect(rWnd);
@@ -405,13 +452,17 @@ BOOL CSliderVertical::OnEraseBkgnd(CDC * pDC) {
     rTrack.SetRect(m_rPos.left - 5, m_rPos.Height() / 2,
                    m_rPos.right + 4, rWnd.bottom - m_rPos.Height() / 2);
     float fPos = (float)rTrack.top;
-    for (int i = 0; i < 11; i++) {
-        if ((i == 0) || (i == 5) || (i == 10)) { // big markers
+    for (int i = 0; i < 11; i++)
+    {
+        if ((i == 0) || (i == 5) || (i == 10))   // big markers
+        {
             pDC->MoveTo(rTrack.left, (int)fPos);
             pDC->LineTo(rTrack.left + 4, (int)fPos);
             pDC->MoveTo(rTrack.right, (int)fPos);
             pDC->LineTo(rTrack.right - 4, (int)fPos);
-        } else { // small markers
+        }
+        else     // small markers
+        {
             pDC->MoveTo(rTrack.left + 2, (int)fPos);
             pDC->LineTo(rTrack.left + 4, (int)fPos);
             pDC->MoveTo(rTrack.right - 2, (int)fPos);
@@ -429,7 +480,8 @@ BOOL CSliderVertical::OnEraseBkgnd(CDC * pDC) {
 // window captures all mouse input, until the user releases the left mouse
 // button, and drags the slider knob.
 /***************************************************************************/
-void CSliderVertical::OnLButtonDown(UINT nFlags, CPoint point) {
+void CSliderVertical::OnLButtonDown(UINT nFlags, CPoint point)
+{
     // SDM 1.06.6U6 if (m_rPos.PtInRect(point)) // mouseclick on knob
     {
         m_bKnobDrag = TRUE;
@@ -445,7 +497,8 @@ void CSliderVertical::OnLButtonDown(UINT nFlags, CPoint point) {
 // knob, then the parent (dialog) is notified to synchronize other controls
 // with the new slider position. The mouse input is freed to all windows.
 /***************************************************************************/
-void CSliderVertical::OnLButtonUp(UINT nFlags, CPoint point) {
+void CSliderVertical::OnLButtonUp(UINT nFlags, CPoint point)
+{
     m_bKnobDrag = FALSE;
     ReleaseCapture(); // mouse input also to other windows
     GetParent()->SendMessage(WM_COMMAND, m_nID, 0); // notify parent
@@ -455,8 +508,10 @@ void CSliderVertical::OnLButtonUp(UINT nFlags, CPoint point) {
 /***************************************************************************/
 // CSliderVertical::OnMouseMove Mouse moved
 /***************************************************************************/
-void CSliderVertical::OnMouseMove(UINT nFlags, CPoint point) {
-    if (m_bKnobDrag) {
+void CSliderVertical::OnMouseMove(UINT nFlags, CPoint point)
+{
+    if (m_bKnobDrag)
+    {
         SetPosition(GetPosFromMouse(point)); // calculate and paint new position
         GetParent()->SendMessage(WM_COMMAND, m_nID, 0); // notify parent
     }
@@ -489,7 +544,8 @@ END_MESSAGE_MAP()
 /***************************************************************************/
 // CSliderHorizontal::CSliderHorizontal Constructor
 /***************************************************************************/
-CSliderHorizontal::CSliderHorizontal() {
+CSliderHorizontal::CSliderHorizontal()
+{
     // construct and load knob bitmap
     m_pBmKnob = new CBitmap;
     m_pBmKnob->LoadBitmap(IDB_KNOBVERT); // load bitmap
@@ -504,9 +560,11 @@ CSliderHorizontal::CSliderHorizontal() {
 /***************************************************************************/
 // CSliderHorizontal::~CSliderHorizontal Destructor
 /***************************************************************************/
-CSliderHorizontal::~CSliderHorizontal() {
+CSliderHorizontal::~CSliderHorizontal()
+{
     // destruct knob bitmap
-    if (m_pBmKnob) {
+    if (m_pBmKnob)
+    {
         delete m_pBmKnob;
     }
 }
@@ -518,9 +576,11 @@ CSliderHorizontal::~CSliderHorizontal() {
 // CSliderHorizontal::Init Initialisation
 // Creates the window and places it over the dialog control.
 /***************************************************************************/
-void CSliderHorizontal::Init(UINT nID, CWnd * pParent) {
+void CSliderHorizontal::Init(UINT nID, CWnd * pParent)
+{
     m_nID = nID;
-    if (m_nID && pParent) {
+    if (m_nID && pParent)
+    {
         CWnd * pWnd = pParent->GetDlgItem(m_nID);
         CRect rWnd(0, 0, 0, 0);
         Create(NULL, NULL, WS_CHILD|WS_VISIBLE, rWnd, pParent, 1);
@@ -535,12 +595,14 @@ void CSliderHorizontal::Init(UINT nID, CWnd * pParent) {
 // The slider position range goes from 0 to 100. This function sets the
 // slider to a position given by parameter (limitet to 100).
 /***************************************************************************/
-void CSliderHorizontal::SetPosition(int nVal) {
+void CSliderHorizontal::SetPosition(int nVal)
+{
     CRect rWnd;
     GetClientRect(rWnd);
     int nOldPos = m_chPos;
     m_chPos = char(nVal);
-    if (m_chPos > 100) {
+    if (m_chPos > 100)
+    {
         m_chPos = 100;
     }
     {
@@ -549,13 +611,19 @@ void CSliderHorizontal::SetPosition(int nVal) {
         m_rPos.SetRect(nPos, (rWnd.bottom - m_rPos.Height()) / 2,
                        nPos + m_rPos.Width(),
                        ((rWnd.bottom - m_rPos.Height()) / 2) + m_rPos.Height());
-        if (rOld.left == 0) {
+        if (rOld.left == 0)
+        {
             InvalidateRect(NULL, TRUE);    // first paint, paint all new
-        } else {
-            if (nOldPos != m_chPos) { // change
+        }
+        else
+        {
+            if (nOldPos != m_chPos)   // change
+            {
                 rOld.UnionRect(rOld, m_rPos); // create invalid rectangle
                 InvalidateRect(rOld, TRUE); // paint
-            } else {
+            }
+            else
+            {
                 return;    // no change
             }
         }
@@ -568,14 +636,17 @@ void CSliderHorizontal::SetPosition(int nVal) {
 // Calculates the slider position from the mouse pointer position draging
 // the slider knob.
 /***************************************************************************/
-int CSliderHorizontal::GetPosFromMouse(CPoint point) {
+int CSliderHorizontal::GetPosFromMouse(CPoint point)
+{
     CRect rWnd;
     GetClientRect(rWnd);
     rWnd.left = (100 * (point.x - m_rPos.Width() / 2) / (rWnd.right - m_rPos.Width()));
-    if (rWnd.left > 100) {
+    if (rWnd.left > 100)
+    {
         rWnd.left = 100;
     }
-    if (rWnd.left < 0) {
+    if (rWnd.left < 0)
+    {
         rWnd.left = 0;
     }
     return rWnd.left;
@@ -587,7 +658,8 @@ int CSliderHorizontal::GetPosFromMouse(CPoint point) {
 /***************************************************************************/
 // CSliderHorizontal::OnPaint Painting
 /***************************************************************************/
-void CSliderHorizontal::OnPaint() {
+void CSliderHorizontal::OnPaint()
+{
     CPaintDC dc(this); // device context for painting
     CBitmap * pBmOld = NULL;
     CDC dcMem;
@@ -602,7 +674,8 @@ void CSliderHorizontal::OnPaint() {
 /***************************************************************************/
 // CSliderHorizontal::OnEraseBkgnd Erasing background
 /***************************************************************************/
-BOOL CSliderHorizontal::OnEraseBkgnd(CDC * pDC) {
+BOOL CSliderHorizontal::OnEraseBkgnd(CDC * pDC)
+{
     // use same background as dialog
     CRect rWnd;
     GetClientRect(rWnd);
@@ -635,13 +708,17 @@ BOOL CSliderHorizontal::OnEraseBkgnd(CDC * pDC) {
     rTrack.SetRect(m_rPos.Width() / 2, m_rPos.top - 5,
                    rWnd.right - m_rPos.Width() / 2, m_rPos.bottom + 4);
     float fPos = (float)rTrack.left;
-    for (int i = 0; i < 11; i++) {
-        if ((i == 0) || (i == 5) || (i == 10)) { // big markers
+    for (int i = 0; i < 11; i++)
+    {
+        if ((i == 0) || (i == 5) || (i == 10))   // big markers
+        {
             pDC->MoveTo((int)fPos, rTrack.top);
             pDC->LineTo((int)fPos, rTrack.top + 4);
             pDC->MoveTo((int)fPos, rTrack.bottom);
             pDC->LineTo((int)fPos, rTrack.bottom - 4);
-        } else { // small markers
+        }
+        else     // small markers
+        {
             pDC->MoveTo((int)fPos, rTrack.top + 2);
             pDC->LineTo((int)fPos, rTrack.top + 4);
             pDC->MoveTo((int)fPos, rTrack.bottom - 2);
@@ -659,8 +736,10 @@ BOOL CSliderHorizontal::OnEraseBkgnd(CDC * pDC) {
 // window captures all mouse input, until the user releases the left mouse
 // button, and drags the slider knob.
 /***************************************************************************/
-void CSliderHorizontal::OnLButtonDown(UINT nFlags, CPoint point) {
-    if (m_rPos.PtInRect(point)) { // mouseclick on knob
+void CSliderHorizontal::OnLButtonDown(UINT nFlags, CPoint point)
+{
+    if (m_rPos.PtInRect(point))   // mouseclick on knob
+    {
         m_bKnobDrag = TRUE;
         SetCapture(); // receive all mouse input
         SetPosition(GetPosFromMouse(point)); // calculate and paint new position
@@ -674,7 +753,8 @@ void CSliderHorizontal::OnLButtonDown(UINT nFlags, CPoint point) {
 // knob, then the parent (dialog) is notified to synchronize other controls
 // with the new slider position. The mouse input is freed to all windows.
 /***************************************************************************/
-void CSliderHorizontal::OnLButtonUp(UINT nFlags, CPoint point) {
+void CSliderHorizontal::OnLButtonUp(UINT nFlags, CPoint point)
+{
     m_bKnobDrag = FALSE;
     ReleaseCapture(); // mouse input also to other windows
     GetParent()->SendMessage(WM_COMMAND, m_nID, 0); // notify parent
@@ -684,8 +764,10 @@ void CSliderHorizontal::OnLButtonUp(UINT nFlags, CPoint point) {
 /***************************************************************************/
 // CSliderHorizontal::OnMouseMove Mouse moved
 /***************************************************************************/
-void CSliderHorizontal::OnMouseMove(UINT nFlags, CPoint point) {
-    if (m_bKnobDrag) {
+void CSliderHorizontal::OnMouseMove(UINT nFlags, CPoint point)
+{
+    if (m_bKnobDrag)
+    {
         SetPosition(GetPosFromMouse(point)); // calculate and paint new position
         GetParent()->SendMessage(WM_COMMAND, m_nID, 0); // notify parent
     }
@@ -718,7 +800,8 @@ END_MESSAGE_MAP()
 /***************************************************************************/
 // CVUBar::CVUBar Constructor
 /***************************************************************************/
-CVUBar::CVUBar() {
+CVUBar::CVUBar()
+{
     m_chLVU = m_chRVU = 0;
     m_chLText = 'L'; // left channel text
     m_chRText = 'R'; // right channel text
@@ -731,7 +814,8 @@ CVUBar::CVUBar() {
 /***************************************************************************/
 // CVUBar::~CVUBar Destructor
 /***************************************************************************/
-CVUBar::~CVUBar() {
+CVUBar::~CVUBar()
+{
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -741,8 +825,10 @@ CVUBar::~CVUBar() {
 // CVUBar::Init Initialisation
 // Creates the window and places it over the dialog control.
 /***************************************************************************/
-void CVUBar::Init(UINT nID, CWnd * pParent) {
-    if (nID && pParent) {
+void CVUBar::Init(UINT nID, CWnd * pParent)
+{
+    if (nID && pParent)
+    {
         CWnd * pWnd = pParent->GetDlgItem(nID);
         CRect rWnd(0, 0, 0, 0);
         Create(NULL, NULL, WS_CHILD|WS_VISIBLE, rWnd, pParent, 1);
@@ -755,7 +841,8 @@ void CVUBar::Init(UINT nID, CWnd * pParent) {
 /***************************************************************************/
 // CVUBar::InitVU Initialize VU bar
 /***************************************************************************/
-void CVUBar::InitVU(char chLText, char chRText, BOOL bPeak, int nPeakHold) {
+void CVUBar::InitVU(char chLText, char chRText, BOOL bPeak, int nPeakHold)
+{
     m_chLText = chLText;
     m_chRText = chRText;
     m_nPeakHold = nPeakHold;
@@ -765,7 +852,8 @@ void CVUBar::InitVU(char chLText, char chRText, BOOL bPeak, int nPeakHold) {
 /***************************************************************************/
 // CVUBar::Reset Resets the peak settings
 /***************************************************************************/
-void CVUBar::Reset() {
+void CVUBar::Reset()
+{
     m_nLPeakHoldCount = m_nPeakHold;
     m_nRPeakHoldCount = m_nPeakHold;
     SetVU(0);
@@ -776,18 +864,24 @@ void CVUBar::Reset() {
 // The bar range goes from 0 to 100. This function sets the VU bar to a
 // display given by parameter (limitet to 100).
 /***************************************************************************/
-void CVUBar::SetVU(int nLVal, int nRVal) {
+void CVUBar::SetVU(int nLVal, int nRVal)
+{
     m_chLOldVU = m_chLVU; // save old left value
     m_chROldVU = m_chRVU; // save old right value
-    if (nLVal > 100) {
+    if (nLVal > 100)
+    {
         nLVal = 100;    // limit new left value
     }
     // change new left value to number of displayed divisions
     m_chLVU = char((nLVal + (50 / VU_BAR_DIVISIONS)) / (100 / VU_BAR_DIVISIONS));
-    if (nRVal == -1) {
+    if (nRVal == -1)
+    {
         m_chRVU = m_chLVU;    // get new right value from left for mono
-    } else {
-        if (nRVal > 100) {
+    }
+    else
+    {
+        if (nRVal > 100)
+        {
             nRVal = 100;
         }
         // change new right value to number of displayed divisions
@@ -796,14 +890,19 @@ void CVUBar::SetVU(int nLVal, int nRVal) {
     BOOL bLPeakReset = FALSE;
     BOOL bRPeakReset = FALSE;
     char chLOldPeak=0, chROldPeak=0;
-    if (m_bPeak) {
+    if (m_bPeak)
+    {
         // check left peak
-        if (m_chLVU > m_chLPeak) {
+        if (m_chLVU > m_chLPeak)
+        {
             m_chLPeak = m_chLVU; // save left peak value
             m_nLPeakHoldCount = 0; // reset left peak count
-        } else {
+        }
+        else
+        {
             m_nLPeakHoldCount++;
-            if (m_nLPeakHoldCount > m_nPeakHold) {
+            if (m_nLPeakHoldCount > m_nPeakHold)
+            {
                 // reset left peak
                 chLOldPeak = m_chLPeak; // save old left peak for invalidation
                 bLPeakReset = TRUE;
@@ -812,12 +911,16 @@ void CVUBar::SetVU(int nLVal, int nRVal) {
             }
         }
         // check right peak
-        if (m_chRVU > m_chRPeak) {
+        if (m_chRVU > m_chRPeak)
+        {
             m_chRPeak = m_chRVU; // save right peak value
             m_nRPeakHoldCount = 0; // reset right peak count
-        } else {
+        }
+        else
+        {
             m_nRPeakHoldCount++;
-            if (m_nRPeakHoldCount > m_nPeakHold) {
+            if (m_nRPeakHoldCount > m_nPeakHold)
+            {
                 // reset left peak
                 chROldPeak = m_chRPeak; // save old right peak for invalidation
                 bRPeakReset = TRUE;
@@ -828,14 +931,16 @@ void CVUBar::SetVU(int nLVal, int nRVal) {
     }
     CRect rWnd, rUpdate;
     GetClientRect(rWnd);
-    if (rWnd.right < rWnd.bottom) { // vertical bar
+    if (rWnd.right < rWnd.bottom)   // vertical bar
+    {
         int nPixelPerDivision = (rWnd.Height() - 4 - m_nTextSpace) / VU_BAR_DIVISIONS;
         // set invalid left rectangle
         int nXLPos = (rWnd.Width() - VU_CHANNEL_DISTANCE - 2 * VU_BAR_WIDTH) / 2;
         // set invalid right rectangle
         int nXRPos = nXLPos + VU_CHANNEL_DISTANCE + VU_BAR_WIDTH;
         int nYPos = rWnd.bottom - 2 - m_nTextSpace;
-        if (bLPeakReset) {
+        if (bLPeakReset)
+        {
             // reset left peak bar
             rUpdate.left   = nXLPos;
             rUpdate.top    = nYPos - nPixelPerDivision * chLOldPeak;
@@ -843,7 +948,8 @@ void CVUBar::SetVU(int nLVal, int nRVal) {
             rUpdate.bottom = rUpdate.top + 3;
             InvalidateRect(rUpdate, TRUE);
         }
-        if (bRPeakReset) {
+        if (bRPeakReset)
+        {
             // reset right peak bar
             rUpdate.left   = nXRPos;
             rUpdate.top    = nYPos - nPixelPerDivision * chROldPeak;
@@ -851,31 +957,41 @@ void CVUBar::SetVU(int nLVal, int nRVal) {
             rUpdate.bottom = rUpdate.top + 3;
             InvalidateRect(rUpdate, TRUE);
         }
-        if ((m_chLOldVU == m_chLVU) && (m_chROldVU == m_chRVU)) {
+        if ((m_chLOldVU == m_chLVU) && (m_chROldVU == m_chRVU))
+        {
             return;    // no change
         }
         // invalidate left channel
-        if (m_chLOldVU > m_chLVU) { // old left value was higher
+        if (m_chLOldVU > m_chLVU)   // old left value was higher
+        {
             rUpdate.SetRect(nXLPos, nYPos - nPixelPerDivision * m_chLOldVU, nXLPos + VU_BAR_WIDTH, nYPos - nPixelPerDivision * m_chLVU);
-        } else { // old left value was lower
+        }
+        else     // old left value was lower
+        {
             rUpdate.SetRect(nXLPos, nYPos - nPixelPerDivision * m_chLVU, nXLPos + VU_BAR_WIDTH, nYPos - nPixelPerDivision * m_chLOldVU);
         }
         InvalidateRect(rUpdate, TRUE);
         // invalidate right channel
-        if (m_chROldVU > m_chRVU) { // old right value was higher
+        if (m_chROldVU > m_chRVU)   // old right value was higher
+        {
             rUpdate.SetRect(nXRPos, nYPos - nPixelPerDivision * m_chROldVU, nXRPos + VU_BAR_WIDTH, nYPos - nPixelPerDivision * m_chRVU);
-        } else { // old right value was lower
+        }
+        else     // old right value was lower
+        {
             rUpdate.SetRect(nXRPos, nYPos - nPixelPerDivision * m_chRVU, nXRPos + VU_BAR_WIDTH, nYPos - nPixelPerDivision * m_chROldVU);
         }
         InvalidateRect(rUpdate, TRUE);
-    } else { // horizontal bar
+    }
+    else     // horizontal bar
+    {
         int nPixelPerDivision = (rWnd.Width() - 4 - m_nTextSpace) / VU_BAR_DIVISIONS;
         // set invalid left rectangle
         int nYLPos = (rWnd.Height() - VU_CHANNEL_DISTANCE - 2 * VU_BAR_WIDTH) / 2;
         // set invalid right rectangle
         int nYRPos = nYLPos + VU_CHANNEL_DISTANCE + VU_BAR_WIDTH;
         int nXPos = 2 + m_nTextSpace;
-        if (bLPeakReset) {
+        if (bLPeakReset)
+        {
             // reset left peak bar
             rUpdate.right  = nXPos + nPixelPerDivision * chLOldPeak;
             rUpdate.left   = rUpdate.right - 3;
@@ -883,7 +999,8 @@ void CVUBar::SetVU(int nLVal, int nRVal) {
             rUpdate.bottom = nYLPos + VU_BAR_WIDTH;
             InvalidateRect(rUpdate, TRUE);
         }
-        if (bRPeakReset) {
+        if (bRPeakReset)
+        {
             // reset right peak bar
             rUpdate.right  = nXPos + nPixelPerDivision * chROldPeak;
             rUpdate.left   = rUpdate.right - 3;
@@ -891,20 +1008,27 @@ void CVUBar::SetVU(int nLVal, int nRVal) {
             rUpdate.bottom = nYRPos + VU_BAR_WIDTH;
             InvalidateRect(rUpdate, TRUE);
         }
-        if ((m_chLOldVU == m_chLVU) && (m_chROldVU == m_chRVU)) {
+        if ((m_chLOldVU == m_chLVU) && (m_chROldVU == m_chRVU))
+        {
             return;    // no change
         }
         // invalidate left channel
-        if (m_chLOldVU > m_chLVU) { // old left value was higher
+        if (m_chLOldVU > m_chLVU)   // old left value was higher
+        {
             rUpdate.SetRect(nXPos + nPixelPerDivision * m_chLVU, nYLPos, nXPos + nPixelPerDivision * m_chLOldVU, nYLPos + VU_BAR_WIDTH);
-        } else { // old left value was lower
+        }
+        else     // old left value was lower
+        {
             rUpdate.SetRect(nXPos + nPixelPerDivision * m_chLOldVU, nYLPos, nXPos + nPixelPerDivision * m_chLVU, nYLPos + VU_BAR_WIDTH);
         }
         InvalidateRect(rUpdate, TRUE);
         // invalidate right channel
-        if (m_chROldVU > m_chRVU) { // old right value was higher
+        if (m_chROldVU > m_chRVU)   // old right value was higher
+        {
             rUpdate.SetRect(nXPos + nPixelPerDivision * m_chRVU, nYRPos, nXPos + nPixelPerDivision * m_chROldVU, nYRPos + VU_BAR_WIDTH);
-        } else { // old right value was lower
+        }
+        else     // old right value was lower
+        {
             rUpdate.SetRect(nXPos + nPixelPerDivision * m_chROldVU, nYRPos, nXPos + nPixelPerDivision * m_chRVU, nYRPos + VU_BAR_WIDTH);
         }
         InvalidateRect(rUpdate, TRUE);
@@ -918,8 +1042,10 @@ void CVUBar::SetVU(int nLVal, int nRVal) {
 // CVUBar::OnCreate Window creation
 // Creation of the font, used in the window.
 /***************************************************************************/
-int CVUBar::OnCreate(LPCREATESTRUCT lpCreateStruct) {
-    if (CWnd::OnCreate(lpCreateStruct) == -1) {
+int CVUBar::OnCreate(LPCREATESTRUCT lpCreateStruct)
+{
+    if (CWnd::OnCreate(lpCreateStruct) == -1)
+    {
         return -1;
     }
     const TCHAR * pszName = _T("MS Sans Serif");
@@ -940,7 +1066,8 @@ int CVUBar::OnCreate(LPCREATESTRUCT lpCreateStruct) {
 /***************************************************************************/
 // CVUBar::OnPaint Painting
 /***************************************************************************/
-void CVUBar::OnPaint() {
+void CVUBar::OnPaint()
+{
     // create brushes and pens
     LOGBRUSH logBrushDarkGreen, logBrushGreen, logBrushRed, logBrushYellow;
     logBrushDarkGreen.lbStyle = BS_SOLID;
@@ -966,7 +1093,8 @@ void CVUBar::OnPaint() {
     dc.GetClipBox(&rClip);
     dc.LPtoDP(&rClip);
     CBrush * pOldBrush = dc.SelectObject(&brushDarkGreen);
-    if (rWnd.right < rWnd.bottom) {
+    if (rWnd.right < rWnd.bottom)
+    {
         // vertical bar
         int nPixelPerDivision = (rWnd.Height() - 4 - m_nTextSpace) / VU_BAR_DIVISIONS;
         // set invalid left rectangle
@@ -974,7 +1102,8 @@ void CVUBar::OnPaint() {
         // set invalid right rectangle
         int nXRPos = nXLPos + VU_CHANNEL_DISTANCE + VU_BAR_WIDTH;
         int nYPos = rWnd.bottom - 2 - m_nTextSpace;
-        if (rClip.bottom > nYPos) {
+        if (rClip.bottom > nYPos)
+        {
             // draw the text
             dc.SetTextColor(GetSysColor(COLOR_BTNFACE)); // set font color
             dc.SetBkMode(TRANSPARENT);
@@ -985,7 +1114,8 @@ void CVUBar::OnPaint() {
             dc.DrawText(&m_chRText, 1, rDraw, DT_SINGLELINE | DT_BOTTOM | DT_CENTER | DT_NOCLIP);
             dc.SelectObject(pOldFont);
         }
-        if ((rClip.left < nXLPos) || (rClip.right > (nXRPos + VU_BAR_WIDTH))) {
+        if ((rClip.left < nXLPos) || (rClip.right > (nXRPos + VU_BAR_WIDTH)))
+        {
             // draw the 0 dB lines for power, 3 dB for peak
             CPen * pOldPen = dc.SelectObject(&penLtgray);
             rDraw.SetRect(nXLPos, nYPos - VU_BAR_YELLOW * nPixelPerDivision, nXRPos + VU_BAR_WIDTH, 0);
@@ -997,87 +1127,110 @@ void CVUBar::OnPaint() {
         }
         // draw the divisions
         int nLoop = VU_BAR_DIVISIONS - (rClip.bottom - 4 + m_nTextSpace + nPixelPerDivision - 1) / nPixelPerDivision;
-        if (nLoop < 0) {
+        if (nLoop < 0)
+        {
             nLoop = 0;
         }
         rDraw.SetRect(nXLPos, nYPos - (nLoop + 1) * nPixelPerDivision,
                       nXLPos + VU_BAR_WIDTH, nYPos - nLoop * nPixelPerDivision);
-        if (nLoop >= VU_BAR_GREEN) {
+        if (nLoop >= VU_BAR_GREEN)
+        {
             dc.SelectObject(&brushGreen);    // select green brush
         }
-        if (nLoop >= VU_BAR_YELLOW) {
+        if (nLoop >= VU_BAR_YELLOW)
+        {
             dc.SelectObject(&brushYellow);    // select yellow brush
         }
-        if (nLoop >= VU_BAR_RED) {
+        if (nLoop >= VU_BAR_RED)
+        {
             dc.SelectObject(&brushRed);    // select red brush
         }
         int nLimit = m_chLVU;
-        if (nLimit < m_chRVU) {
+        if (nLimit < m_chRVU)
+        {
             nLimit = m_chRVU;
         }
-        for (nLoop; nLoop < nLimit; nLoop++) {
+        for (nLoop; nLoop < nLimit; nLoop++)
+        {
             // draw bar
-            if (nLoop == VU_BAR_GREEN) {
+            if (nLoop == VU_BAR_GREEN)
+            {
                 dc.SelectObject(&brushGreen);    // select green brush
             }
-            if (nLoop == VU_BAR_YELLOW) {
+            if (nLoop == VU_BAR_YELLOW)
+            {
                 dc.SelectObject(&brushYellow);    // select yellow brush
             }
-            if (nLoop == VU_BAR_RED) {
+            if (nLoop == VU_BAR_RED)
+            {
                 dc.SelectObject(&brushRed);    // select red brush
             }
-            if (nLoop < m_chLVU) {
+            if (nLoop < m_chLVU)
+            {
                 dc.Rectangle(rDraw);    // draw one of the left divisions
             }
             rDraw.OffsetRect(VU_CHANNEL_DISTANCE + VU_BAR_WIDTH, 0); // move draw rectangle to right channel
-            if (nLoop < m_chRVU) {
+            if (nLoop < m_chRVU)
+            {
                 dc.Rectangle(rDraw);    // draw one of the right divisions
             }
             rDraw.OffsetRect(-VU_CHANNEL_DISTANCE - VU_BAR_WIDTH, -nPixelPerDivision); // move draw rectangle
         }
-        if (m_bPeak) {
-            if (m_chLPeak > (m_chLVU + 1)) {
+        if (m_bPeak)
+        {
+            if (m_chLPeak > (m_chLVU + 1))
+            {
                 // draw the left peak
                 dc.SelectObject(&brushDarkGreen);
                 rDraw.top = nYPos - (int)m_chLPeak * nPixelPerDivision;
                 rDraw.bottom = rDraw.top + 3;
-                if (m_chLPeak >= VU_BAR_GREEN) {
+                if (m_chLPeak >= VU_BAR_GREEN)
+                {
                     dc.SelectObject(&brushGreen);    // select green brush
                 }
-                if (m_chLPeak > VU_BAR_YELLOW) {
+                if (m_chLPeak > VU_BAR_YELLOW)
+                {
                     dc.SelectObject(&brushYellow);    // select yellow brush
                 }
-                if (m_chLPeak > VU_BAR_RED) {
+                if (m_chLPeak > VU_BAR_RED)
+                {
                     dc.SelectObject(&brushRed);    // select red brush
                 }
                 dc.Rectangle(rDraw);
             }
-            if (m_chRPeak > (m_chRVU + 1)) {
+            if (m_chRPeak > (m_chRVU + 1))
+            {
                 // draw the right peak
                 dc.SelectObject(&brushDarkGreen);
                 rDraw.OffsetRect(VU_CHANNEL_DISTANCE + VU_BAR_WIDTH, 0); // move draw rectangle to right channel
                 rDraw.top = nYPos - (int)m_chRPeak * nPixelPerDivision;
                 rDraw.bottom = rDraw.top + 3;
-                if (m_chRPeak > VU_BAR_GREEN) {
+                if (m_chRPeak > VU_BAR_GREEN)
+                {
                     dc.SelectObject(&brushGreen);    // select green brush
                 }
-                if (m_chRPeak > VU_BAR_YELLOW) {
+                if (m_chRPeak > VU_BAR_YELLOW)
+                {
                     dc.SelectObject(&brushYellow);    // select yellow brush
                 }
-                if (m_chRPeak > VU_BAR_RED) {
+                if (m_chRPeak > VU_BAR_RED)
+                {
                     dc.SelectObject(&brushRed);    // select red brush
                 }
                 dc.Rectangle(rDraw);
             }
         }
-    } else { // horizontal bar
+    }
+    else     // horizontal bar
+    {
         int nPixelPerDivision = (rWnd.Width() - 4 - m_nTextSpace) / VU_BAR_DIVISIONS;
         // set invalid left rectangle
         int nYLPos = (rWnd.Height() - VU_CHANNEL_DISTANCE - 2 * VU_BAR_WIDTH) / 2;
         // set invalid right rectangle
         int nYRPos = nYLPos + VU_CHANNEL_DISTANCE + VU_BAR_WIDTH;
         int nXPos = 2 + m_nTextSpace;
-        if (rClip.left < (rWnd.left + nXPos)) {
+        if (rClip.left < (rWnd.left + nXPos))
+        {
             // draw the text
             dc.SetTextColor(GetSysColor(COLOR_BTNFACE)); // set font color
             dc.SetBkMode(TRANSPARENT);
@@ -1088,7 +1241,8 @@ void CVUBar::OnPaint() {
             dc.DrawText(&m_chRText, 1, rDraw, DT_SINGLELINE | DT_CENTER | DT_VCENTER | DT_NOCLIP);
             dc.SelectObject(pOldFont);
         }
-        if ((rClip.left < nYLPos) || (rClip.right > (nYRPos + VU_BAR_WIDTH))) {
+        if ((rClip.left < nYLPos) || (rClip.right > (nYRPos + VU_BAR_WIDTH)))
+        {
             // draw the 0 dB lines for power, 3 dB for peak
             CPen * pOldPen = dc.SelectObject(&penLtgray);
             rDraw.SetRect(nXPos + VU_BAR_YELLOW * nPixelPerDivision, nYLPos, 0, nYRPos + VU_BAR_WIDTH);
@@ -1099,73 +1253,93 @@ void CVUBar::OnPaint() {
             dc.SelectObject(pOldPen);
         }
         int nLoop = (rClip.left - 2 - m_nTextSpace - nPixelPerDivision + 1) / nPixelPerDivision;
-        if (nLoop < 0) {
+        if (nLoop < 0)
+        {
             nLoop = 0;
         }
         rDraw.SetRect(nXPos + nLoop * nPixelPerDivision, nYLPos, nXPos + (nLoop + 1) * nPixelPerDivision, nYLPos + VU_BAR_WIDTH);
-        if (nLoop >= VU_BAR_GREEN) {
+        if (nLoop >= VU_BAR_GREEN)
+        {
             dc.SelectObject(&brushGreen);    // select green brush
         }
-        if (nLoop >= VU_BAR_YELLOW) {
+        if (nLoop >= VU_BAR_YELLOW)
+        {
             dc.SelectObject(&brushYellow);    // select yellow brush
         }
-        if (nLoop >= VU_BAR_RED) {
+        if (nLoop >= VU_BAR_RED)
+        {
             dc.SelectObject(&brushRed);    // select red brush
         }
         int nLimit = m_chLVU;
-        if (nLimit < m_chRVU) {
+        if (nLimit < m_chRVU)
+        {
             nLimit = m_chRVU;
         }
-        for (nLoop; nLoop < nLimit; nLoop++) {
+        for (nLoop; nLoop < nLimit; nLoop++)
+        {
             // draw bar
-            if (nLoop == VU_BAR_GREEN) {
+            if (nLoop == VU_BAR_GREEN)
+            {
                 dc.SelectObject(&brushGreen);    // select green brush
             }
-            if (nLoop == VU_BAR_YELLOW) {
+            if (nLoop == VU_BAR_YELLOW)
+            {
                 dc.SelectObject(&brushYellow);    // select yellow brush
             }
-            if (nLoop == VU_BAR_RED) {
+            if (nLoop == VU_BAR_RED)
+            {
                 dc.SelectObject(&brushRed);    // select red brush
             }
-            if (nLoop < m_chLVU) {
+            if (nLoop < m_chLVU)
+            {
                 dc.Rectangle(rDraw);    // draw one of the left divisions
             }
             rDraw.OffsetRect(0, VU_CHANNEL_DISTANCE + VU_BAR_WIDTH); // move draw rectangle to right channel
-            if (nLoop < m_chRVU) {
+            if (nLoop < m_chRVU)
+            {
                 dc.Rectangle(rDraw);    // draw one of the right divisions
             }
             rDraw.OffsetRect(nPixelPerDivision, -VU_CHANNEL_DISTANCE - VU_BAR_WIDTH); // move draw rectangle
         }
-        if (m_bPeak) {
-            if (m_chLPeak > (m_chLVU + 1)) {
+        if (m_bPeak)
+        {
+            if (m_chLPeak > (m_chLVU + 1))
+            {
                 // draw the left peak
                 dc.SelectObject(&brushDarkGreen);
                 rDraw.right = nXPos + (int)m_chLPeak * nPixelPerDivision;
                 rDraw.left = rDraw.right - 3;
-                if (m_chLPeak >= VU_BAR_GREEN) {
+                if (m_chLPeak >= VU_BAR_GREEN)
+                {
                     dc.SelectObject(&brushGreen);    // select green brush
                 }
-                if (m_chLPeak > VU_BAR_YELLOW) {
+                if (m_chLPeak > VU_BAR_YELLOW)
+                {
                     dc.SelectObject(&brushYellow);    // select yellow brush
                 }
-                if (m_chLPeak > VU_BAR_RED) {
+                if (m_chLPeak > VU_BAR_RED)
+                {
                     dc.SelectObject(&brushRed);    // select red brush
                 }
                 dc.Rectangle(rDraw);
             }
-            if (m_chRPeak > (m_chRVU + 1)) {
+            if (m_chRPeak > (m_chRVU + 1))
+            {
                 // draw the right peak
                 dc.SelectObject(&brushDarkGreen);
                 rDraw.OffsetRect(0, VU_CHANNEL_DISTANCE + VU_BAR_WIDTH); // move draw rectangle to right channel
                 rDraw.right = nXPos + (int)m_chRPeak * nPixelPerDivision;
                 rDraw.left = rDraw.right - 3;
-                if (m_chRPeak > VU_BAR_GREEN) {
+                if (m_chRPeak > VU_BAR_GREEN)
+                {
                     dc.SelectObject(&brushGreen);    // select green brush
                 }
-                if (m_chRPeak > VU_BAR_YELLOW) {
+                if (m_chRPeak > VU_BAR_YELLOW)
+                {
                     dc.SelectObject(&brushYellow);    // select yellow brush
                 }
-                if (m_chRPeak > VU_BAR_RED) {
+                if (m_chRPeak > VU_BAR_RED)
+                {
                     dc.SelectObject(&brushRed);    // select red brush
                 }
                 dc.Rectangle(rDraw);
@@ -1178,7 +1352,8 @@ void CVUBar::OnPaint() {
 /***************************************************************************/
 // CVUBar::OnEraseBkgnd Erasing background
 /***************************************************************************/
-BOOL CVUBar::OnEraseBkgnd(CDC * pDC) {
+BOOL CVUBar::OnEraseBkgnd(CDC * pDC)
+{
     CRect rWnd;
     GetClientRect(rWnd);
     // get invalid region
@@ -1193,19 +1368,25 @@ BOOL CVUBar::OnEraseBkgnd(CDC * pDC) {
 
     BOOL bRedraw = FALSE;
     // check invalid region to redraw 3D-frame
-    if (rWnd.right < rWnd.bottom) {
+    if (rWnd.right < rWnd.bottom)
+    {
         // vertical bar
         if ((rClip.left < (rWnd.left + (rWnd.right - VU_BAR_WIDTH) / 2))
-                || (rClip.right > (rWnd.left + VU_BAR_WIDTH + (rWnd.right - VU_BAR_WIDTH) / 2))) {
-            bRedraw = TRUE;
-        }
-    } else { // horizontal bar
-        if ((rClip.top < (rWnd.top + (rWnd.bottom - VU_BAR_WIDTH) / 2))
-                || (rClip.bottom > (rWnd.top + VU_BAR_WIDTH + (rWnd.bottom - VU_BAR_WIDTH) / 2))) {
+                || (rClip.right > (rWnd.left + VU_BAR_WIDTH + (rWnd.right - VU_BAR_WIDTH) / 2)))
+        {
             bRedraw = TRUE;
         }
     }
-    if (bRedraw) {
+    else     // horizontal bar
+    {
+        if ((rClip.top < (rWnd.top + (rWnd.bottom - VU_BAR_WIDTH) / 2))
+                || (rClip.bottom > (rWnd.top + VU_BAR_WIDTH + (rWnd.bottom - VU_BAR_WIDTH) / 2)))
+        {
+            bRedraw = TRUE;
+        }
+    }
+    if (bRedraw)
+    {
         // paint 3D-frame
         CPen penDkgray(PS_SOLID, 1, GetSysColor(COLOR_BTNSHADOW));
         CPen penLtgray(PS_SOLID, 1, GetSysColor(COLOR_BTNHIGHLIGHT));
@@ -1242,7 +1423,8 @@ END_MESSAGE_MAP()
 /***************************************************************************/
 // CProgressBar::CProgressBar Constructor
 /***************************************************************************/
-CProgressBar::CProgressBar() {
+CProgressBar::CProgressBar()
+{
     m_chProgress = -1;
     m_nProgress = 0;
 }
@@ -1250,7 +1432,8 @@ CProgressBar::CProgressBar() {
 /***************************************************************************/
 // CProgressBar::~CProgressBar Destructor
 /***************************************************************************/
-CProgressBar::~CProgressBar() {
+CProgressBar::~CProgressBar()
+{
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -1260,8 +1443,10 @@ CProgressBar::~CProgressBar() {
 // CProgressBar::Init Initialisation
 // Creates the window and places it over the dialog control.
 /***************************************************************************/
-void CProgressBar::Init(UINT nID, CWnd * pParent) {
-    if (nID && pParent) {
+void CProgressBar::Init(UINT nID, CWnd * pParent)
+{
+    if (nID && pParent)
+    {
         CWnd * pWnd = pParent->GetDlgItem(nID);
         CRect rWnd(0, 0, 0, 0);
         Create(NULL, NULL, WS_CHILD|WS_VISIBLE, rWnd, pParent, 1);
@@ -1276,15 +1461,18 @@ void CProgressBar::Init(UINT nID, CWnd * pParent) {
 // The bar range goes from 0 to 100. This function sets the progress bar to a
 // display given by parameter (limitet to 100).
 /***************************************************************************/
-void CProgressBar::SetProgress(int nVal) {
+void CProgressBar::SetProgress(int nVal)
+{
     char chOldProgress = m_chProgress; // save old value
-    if (nVal > 100) {
+    if (nVal > 100)
+    {
         nVal = 100;    // limit new value
     }
     m_nProgress = nVal; // save new progress
     // change new value to number of displayed divisions
     m_chProgress = char((nVal + (50 / PROGRESS_BAR_DIVISIONS)) / (100 / PROGRESS_BAR_DIVISIONS));
-    if (chOldProgress == m_chProgress) {
+    if (chOldProgress == m_chProgress)
+    {
         return;    // no change
     }
     CRect rWnd, rUpdate;
@@ -1304,7 +1492,8 @@ void CProgressBar::SetProgress(int nVal) {
 /***************************************************************************/
 // CProgressBar::OnPaint Painting
 /***************************************************************************/
-void CProgressBar::OnPaint() {
+void CProgressBar::OnPaint()
+{
     // create brush
     LOGBRUSH logBrushBlue;
     logBrushBlue.lbStyle = BS_SOLID;
@@ -1326,12 +1515,14 @@ void CProgressBar::OnPaint() {
     // calculate pixels per bar division and first division to draw
     int nPixelPerDivision = (rWnd.Width() - 2) / PROGRESS_BAR_DIVISIONS;
     int nLoop = (rClip.left - 1 - nPixelPerDivision + 1) / nPixelPerDivision;
-    if (nLoop < 0) {
+    if (nLoop < 0)
+    {
         nLoop = 0;
     }
     rDraw.SetRect(1 + nLoop * nPixelPerDivision, 1,
                   2 + (nLoop + 1) * nPixelPerDivision, rWnd.bottom - 1);
-    for (nLoop; nLoop < m_chProgress; nLoop++) {
+    for (nLoop; nLoop < m_chProgress; nLoop++)
+    {
         // draw bar
         dc.Rectangle(rDraw); // draw one division
         rDraw.OffsetRect(nPixelPerDivision, 0); // move draw rectangle
@@ -1343,7 +1534,8 @@ void CProgressBar::OnPaint() {
 /***************************************************************************/
 // CProgressBar::OnEraseBkgnd Erasing background
 /***************************************************************************/
-BOOL CProgressBar::OnEraseBkgnd(CDC * pDC) {
+BOOL CProgressBar::OnEraseBkgnd(CDC * pDC)
+{
     CRect rWnd;
     GetClientRect(rWnd);
 
@@ -1376,7 +1568,8 @@ BOOL CProgressBar::OnEraseBkgnd(CDC * pDC) {
 /***************************************************************************/
 // CComboGridlines::AddLineItem Add item to list
 /***************************************************************************/
-void CComboGridlines::AddLineItem(int nPenStyle) {
+void CComboGridlines::AddLineItem(int nPenStyle)
+{
     // add a combobox item
     AddString((LPCTSTR)nPenStyle); // the normal combobox string is used to store an pen style
 }
@@ -1384,7 +1577,8 @@ void CComboGridlines::AddLineItem(int nPenStyle) {
 /***************************************************************************/
 // CComboGridlines::MeasureItem Item measuring
 /***************************************************************************/
-void CComboGridlines::MeasureItem(LPMEASUREITEMSTRUCT lpMIS) {
+void CComboGridlines::MeasureItem(LPMEASUREITEMSTRUCT lpMIS)
+{
     // all items are of fixed size must use CBS_OWNERDRAWVARIABLE for this to work
     lpMIS->itemHeight = COLOR_ITEM_HEIGHT;
 }
@@ -1392,23 +1586,29 @@ void CComboGridlines::MeasureItem(LPMEASUREITEMSTRUCT lpMIS) {
 /***************************************************************************/
 // CComboGridlines::DrawItem Item drawing
 /***************************************************************************/
-void CComboGridlines::DrawItem(LPDRAWITEMSTRUCT lpDIS) {
+void CComboGridlines::DrawItem(LPDRAWITEMSTRUCT lpDIS)
+{
     CDC * pDC = CDC::FromHandle(lpDIS->hDC);
     int nPenStyle = (int)lpDIS->itemData; // pen style in item data
-    if (nPenStyle >= 0) { // if no valid pen style, don't draw
+    if (nPenStyle >= 0)   // if no valid pen style, don't draw
+    {
         BOOL bDraw = FALSE;
         BOOL bHighlight = FALSE;
-        if (lpDIS->itemAction & ODA_DRAWENTIRE) {
+        if (lpDIS->itemAction & ODA_DRAWENTIRE)
+        {
             bDraw = TRUE;
         }
-        if ((lpDIS->itemState & ODS_SELECTED) && (lpDIS->itemAction & (ODA_SELECT | ODA_DRAWENTIRE))) {
+        if ((lpDIS->itemState & ODS_SELECTED) && (lpDIS->itemAction & (ODA_SELECT | ODA_DRAWENTIRE)))
+        {
             bDraw = TRUE;
             bHighlight = TRUE;
         }
-        if (!(lpDIS->itemState & ODS_SELECTED) && (lpDIS->itemAction & ODA_SELECT)) {
+        if (!(lpDIS->itemState & ODS_SELECTED) && (lpDIS->itemAction & ODA_SELECT))
+        {
             bDraw = TRUE;
         }
-        if (bDraw) {
+        if (bDraw)
+        {
             COLORREF colorText = bHighlight ? GetSysColor(COLOR_HIGHLIGHTTEXT) : GetSysColor(COLOR_WINDOWTEXT);
             COLORREF colorBack = bHighlight ? GetSysColor(COLOR_HIGHLIGHT) : GetSysColor(COLOR_WINDOW);
             CPen pen(nPenStyle, 1, colorText); // black line
@@ -1424,21 +1624,28 @@ void CComboGridlines::DrawItem(LPDRAWITEMSTRUCT lpDIS) {
             // Item has been de-selected
             pDC->FillRect(&lpDIS->rcItem, &brush);
             const int nRepeat = 32;
-            if (nPenStyle > 4) {
+            if (nPenStyle > 4)
+            {
                 // special dot style
-                for (int nLoop = 10 + ((lpDIS->rcItem.right - 2*10) % nRepeat)/2; nLoop < lpDIS->rcItem.right - 10; nLoop += nRepeat) {
+                for (int nLoop = 10 + ((lpDIS->rcItem.right - 2*10) % nRepeat)/2; nLoop < lpDIS->rcItem.right - 10; nLoop += nRepeat)
+                {
                     pDC->SetPixel(nLoop, nPos, colorText);
                 }
-            } else if (nPenStyle == 2) {
+            }
+            else if (nPenStyle == 2)
+            {
                 // special plus style
-                for (int nLoop = 10 + ((lpDIS->rcItem.right - 2*10) % nRepeat)/2; nLoop < lpDIS->rcItem.right - 10; nLoop += nRepeat) {
+                for (int nLoop = 10 + ((lpDIS->rcItem.right - 2*10) % nRepeat)/2; nLoop < lpDIS->rcItem.right - 10; nLoop += nRepeat)
+                {
                     pDC->SetPixel(nLoop, nPos, colorText);
                     pDC->SetPixel(nLoop - 1, nPos, colorText);
                     pDC->SetPixel(nLoop + 1, nPos, colorText);
                     pDC->SetPixel(nLoop, nPos + 1, colorText);
                     pDC->SetPixel(nLoop, nPos - 1, colorText);
                 }
-            } else {
+            }
+            else
+            {
                 pDC->MoveTo(10, nPos);
                 pDC->LineTo(lpDIS->rcItem.right - 10, nPos);
             }
@@ -1476,7 +1683,8 @@ END_MESSAGE_MAP()
 /***************************************************************************/
 // CSpinControl::CSpinControl Constructor
 /***************************************************************************/
-CSpinControl::CSpinControl() {
+CSpinControl::CSpinControl()
+{
     m_nID = NULL;
     m_bUpButtonDown = FALSE;
     m_bLowButtonDown = FALSE;
@@ -1486,7 +1694,8 @@ CSpinControl::CSpinControl() {
 /***************************************************************************/
 // CSpinControl::~CSpinControl Destructor
 /***************************************************************************/
-CSpinControl::~CSpinControl() {
+CSpinControl::~CSpinControl()
+{
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -1496,9 +1705,11 @@ CSpinControl::~CSpinControl() {
 // CSpinControl::Init Initialisation
 // Creates the window and places it over the dialog control.
 /***************************************************************************/
-void CSpinControl::Init(UINT nID, CWnd * pParent) {
+void CSpinControl::Init(UINT nID, CWnd * pParent)
+{
     m_nID = nID;
-    if (m_nID && pParent) {
+    if (m_nID && pParent)
+    {
         CWnd * pWnd = pParent->GetDlgItem(m_nID);
         CRect rWnd(0, 0, 0, 0);
         Create(NULL, NULL, WS_CHILD|WS_VISIBLE, rWnd, pParent, 1);
@@ -1511,10 +1722,12 @@ void CSpinControl::Init(UINT nID, CWnd * pParent) {
 /***************************************************************************/
 // CSpinControl::DrawArrowUp Drawing up arrow
 /***************************************************************************/
-void CSpinControl::DrawArrowUp(CDC * pDC, CRect rWnd) {
+void CSpinControl::DrawArrowUp(CDC * pDC, CRect rWnd)
+{
     CPen penDkgray;
     CPen * pOldPen=NULL;
-    if (!IsWindowEnabled()) {
+    if (!IsWindowEnabled())
+    {
         // window is disabled
         penDkgray.CreatePen(PS_SOLID, 1, GetSysColor(COLOR_BTNSHADOW));
         pOldPen = pDC->SelectObject(&penDkgray);
@@ -1523,7 +1736,8 @@ void CSpinControl::DrawArrowUp(CDC * pDC, CRect rWnd) {
     int nRight = nLeft + 2;
     pDC->MoveTo(nLeft + 1, rWnd.top + 3); // draw vertical center line
     pDC->LineTo(nLeft + 1, rWnd.bottom - 4);
-    for (int nLoop = rWnd.top + 4; nLoop < rWnd.bottom - 3; nLoop++) {
+    for (int nLoop = rWnd.top + 4; nLoop < rWnd.bottom - 3; nLoop++)
+    {
         pDC->MoveTo(nLeft, nLoop); // draw vertical line left from center
         pDC->LineTo(nLeft, rWnd.bottom - 4);
         pDC->MoveTo(nRight, nLoop); // draw vertical line right from center
@@ -1531,7 +1745,8 @@ void CSpinControl::DrawArrowUp(CDC * pDC, CRect rWnd) {
         nLeft--;
         nRight++;
     }
-    if (!IsWindowEnabled()) {
+    if (!IsWindowEnabled())
+    {
         pDC->SelectObject(pOldPen);
     }
 }
@@ -1539,10 +1754,12 @@ void CSpinControl::DrawArrowUp(CDC * pDC, CRect rWnd) {
 /***************************************************************************/
 // CSpinControl::DrawArrowDown Drawing down arrow
 /***************************************************************************/
-void CSpinControl::DrawArrowDown(CDC * pDC, CRect rWnd) {
+void CSpinControl::DrawArrowDown(CDC * pDC, CRect rWnd)
+{
     CPen penDkgray;
     CPen * pOldPen=NULL;
-    if (!IsWindowEnabled()) {
+    if (!IsWindowEnabled())
+    {
         // window is disabled
         penDkgray.CreatePen(PS_SOLID, 1, GetSysColor(COLOR_BTNSHADOW));
         pOldPen = pDC->SelectObject(&penDkgray);
@@ -1551,7 +1768,8 @@ void CSpinControl::DrawArrowDown(CDC * pDC, CRect rWnd) {
     int nRight = nLeft + 2;
     pDC->MoveTo(nLeft + 1, rWnd.top + 3); // draw vertical center line
     pDC->LineTo(nLeft + 1, rWnd.bottom - 4);
-    for (int nLoop = rWnd.bottom - 6; nLoop > rWnd.top + 2; nLoop--) {
+    for (int nLoop = rWnd.bottom - 6; nLoop > rWnd.top + 2; nLoop--)
+    {
         pDC->MoveTo(nLeft, nLoop); // draw vertical line left from center
         pDC->LineTo(nLeft, rWnd.top + 2);
         pDC->MoveTo(nRight, nLoop); // draw vertical line right from center
@@ -1559,7 +1777,8 @@ void CSpinControl::DrawArrowDown(CDC * pDC, CRect rWnd) {
         nLeft--;
         nRight++;
     }
-    if (!IsWindowEnabled()) {
+    if (!IsWindowEnabled())
+    {
         pDC->SelectObject(pOldPen);
     }
 }
@@ -1567,7 +1786,8 @@ void CSpinControl::DrawArrowDown(CDC * pDC, CRect rWnd) {
 /***************************************************************************/
 // CSpinControl::DrawButtonUp Drawing button up state
 /***************************************************************************/
-void CSpinControl::DrawButtonUp(CDC * pDC, CRect rWnd) {
+void CSpinControl::DrawButtonUp(CDC * pDC, CRect rWnd)
+{
     CPen penDkgray(PS_SOLID, 1, GetSysColor(COLOR_BTNSHADOW));
     CPen penLtgray(PS_SOLID, 1, GetSysColor(COLOR_BTNHIGHLIGHT));
     CPen * pOldPen = pDC->SelectObject(&penLtgray);
@@ -1587,7 +1807,8 @@ void CSpinControl::DrawButtonUp(CDC * pDC, CRect rWnd) {
 /***************************************************************************/
 // CSpinControl::DrawButtonDown Drawing button down state
 /***************************************************************************/
-void CSpinControl::DrawButtonDown(CDC * pDC, CRect rWnd) {
+void CSpinControl::DrawButtonDown(CDC * pDC, CRect rWnd)
+{
     CPen penDkgray(PS_SOLID, 1, GetSysColor(COLOR_BTNSHADOW));
     CPen penLtgray(PS_SOLID, 1, GetSysColor(COLOR_BTNHIGHLIGHT));
     pDC->SelectStockObject(BLACK_PEN);
@@ -1609,16 +1830,20 @@ void CSpinControl::DrawButtonDown(CDC * pDC, CRect rWnd) {
 // This function evaluates which of the two button of the spin control has
 // been hit by the mouse pointer and notifies the parent to set actions.
 /***************************************************************************/
-void CSpinControl::MouseClick(UINT , CPoint point) {
+void CSpinControl::MouseClick(UINT , CPoint point)
+{
     CWnd * pWnd = GetParent();
     CRect rWnd, rUpper;
     GetClientRect(rWnd);
     rUpper.SetRect(rWnd.left, rWnd.top, rWnd.right, rWnd.bottom / 2);
-    if (rUpper.PtInRect(point)) { // mouseclick on upper button
+    if (rUpper.PtInRect(point))   // mouseclick on upper button
+    {
         m_bUpButtonDown = TRUE;
         m_bLowButtonDown = FALSE;
         pWnd->SendMessage(WM_COMMAND, m_nID, 0); // notify parent
-    } else {
+    }
+    else
+    {
         m_bUpButtonDown = FALSE;
         m_bLowButtonDown = TRUE;
         pWnd->SendMessage(WM_COMMAND, m_nID, 0); // notify parent
@@ -1633,23 +1858,30 @@ void CSpinControl::MouseClick(UINT , CPoint point) {
 /***************************************************************************/
 // CSpinControl::OnPaint Painting
 /***************************************************************************/
-void CSpinControl::OnPaint() {
+void CSpinControl::OnPaint()
+{
     CPaintDC dc(this); // device context for painting
     CRect rWnd, rButton;
     GetClientRect(rWnd);
     // paint upper button
     rButton.SetRect(rWnd.left, rWnd.top, rWnd.right, rWnd.bottom / 2);
-    if (m_bUpButtonDown) {
+    if (m_bUpButtonDown)
+    {
         DrawButtonDown(&dc, rButton);
-    } else {
+    }
+    else
+    {
         DrawButtonUp(&dc, rButton);
     }
     DrawArrowUp(&dc, rButton);
     // paint lower button up
     rButton.SetRect(rWnd.left, rWnd.bottom / 2, rWnd.right, rWnd.bottom);
-    if (m_bLowButtonDown) {
+    if (m_bLowButtonDown)
+    {
         DrawButtonDown(&dc, rButton);
-    } else {
+    }
+    else
+    {
         DrawButtonUp(&dc, rButton);
     }
     DrawArrowDown(&dc, rButton);
@@ -1658,7 +1890,8 @@ void CSpinControl::OnPaint() {
 /***************************************************************************/
 // CSpinControl::OnEraseBkgnd Erasing background
 /***************************************************************************/
-BOOL CSpinControl::OnEraseBkgnd(CDC * pDC) {
+BOOL CSpinControl::OnEraseBkgnd(CDC * pDC)
+{
     CRect rWnd;
     GetClientRect(rWnd);
 
@@ -1674,7 +1907,8 @@ BOOL CSpinControl::OnEraseBkgnd(CDC * pDC) {
 // CSpinControl::OnLButtonDown Mouse left button down
 // Starts a timer to start repeating until the left mouse button is up.
 /***************************************************************************/
-void CSpinControl::OnLButtonDown(UINT nFlags, CPoint point) {
+void CSpinControl::OnLButtonDown(UINT nFlags, CPoint point)
+{
     MouseClick(nFlags, point);
     WORD nTime;
     SystemParametersInfo(SPI_GETKEYBOARDDELAY, 0, &nTime, 0);
@@ -1691,7 +1925,8 @@ void CSpinControl::OnLButtonDown(UINT nFlags, CPoint point) {
 // message. Instead this message will arrive and allow the user to click
 // fast. Starts a timer to start repeating until the left mouse button is up.
 /***************************************************************************/
-void CSpinControl::OnLButtonDblClk(UINT nFlags, CPoint point) {
+void CSpinControl::OnLButtonDblClk(UINT nFlags, CPoint point)
+{
     MouseClick(nFlags, point);
     int nTime;
     SystemParametersInfo(SPI_GETKEYBOARDDELAY, 0, &nTime, 0);
@@ -1704,7 +1939,8 @@ void CSpinControl::OnLButtonDblClk(UINT nFlags, CPoint point) {
 /***************************************************************************/
 // CSpinControl::OnLButtonUp Mouse left button up
 /***************************************************************************/
-void CSpinControl::OnLButtonUp(UINT nFlags, CPoint point) {
+void CSpinControl::OnLButtonUp(UINT nFlags, CPoint point)
+{
     KillTimer(1); // kill the mouse repeat timer
     m_bUpButtonDown = FALSE;
     m_bLowButtonDown = FALSE;
@@ -1719,8 +1955,10 @@ void CSpinControl::OnLButtonUp(UINT nFlags, CPoint point) {
 // occurs the first time, the time has to be changed from keyboard delay to
 // keyboard repeat speed.
 /***************************************************************************/
-void CSpinControl::OnTimer(UINT nIDEvent) {
-    if (m_bTimerStart) {
+void CSpinControl::OnTimer(UINT nIDEvent)
+{
+    if (m_bTimerStart)
+    {
         KillTimer(1);
         m_bTimerStart = FALSE;
         WORD nTime;
@@ -1737,7 +1975,8 @@ void CSpinControl::OnTimer(UINT nIDEvent) {
 /***************************************************************************/
 // CSpinControl::OnEnable Enable/disable window
 /***************************************************************************/
-void CSpinControl::OnEnable(BOOL bEnable) {
+void CSpinControl::OnEnable(BOOL bEnable)
+{
     Invalidate(); // redraw whole window
     CWnd::OnEnable(bEnable);
 }
@@ -1773,7 +2012,8 @@ END_MESSAGE_MAP()
 /***************************************************************************/
 // CToggleButton::CToggleButton Constructor
 /***************************************************************************/
-CToggleButton::CToggleButton() {
+CToggleButton::CToggleButton()
+{
     m_nID = NULL;
     m_bButtonDown = FALSE;
     m_bSymbolFlash = FALSE;
@@ -1784,7 +2024,8 @@ CToggleButton::CToggleButton() {
 /***************************************************************************/
 // CToggleButton::~CToggleButton Destructor
 /***************************************************************************/
-CToggleButton::~CToggleButton() {
+CToggleButton::~CToggleButton()
+{
     // The window is already destroyed it is too late to kill a timer
     //KillTimer(1);
 }
@@ -1796,9 +2037,11 @@ CToggleButton::~CToggleButton() {
 // CToggleButton::Init Initialisation
 // Creates the window and places it over the dialog control.
 /***************************************************************************/
-void CToggleButton::Init(UINT nID, CString szText, CWnd * pParent) {
+void CToggleButton::Init(UINT nID, CString szText, CWnd * pParent)
+{
     m_nID = nID;
-    if (m_nID && pParent) {
+    if (m_nID && pParent)
+    {
         CWnd * pWnd = pParent->GetDlgItem(m_nID);
         CRect rWnd(0, 0, 0, 0);
         Create(NULL, NULL, WS_CHILD|WS_VISIBLE, rWnd, pParent, 1);
@@ -1818,7 +2061,8 @@ void CToggleButton::Init(UINT nID, CString szText, CWnd * pParent) {
 /***************************************************************************/
 // CToggleButton::DrawButtonUp Drawing button up state
 /***************************************************************************/
-void CToggleButton::DrawButtonUp(CDC * pDC, CRect rWnd) {
+void CToggleButton::DrawButtonUp(CDC * pDC, CRect rWnd)
+{
     CPen penDkgray(PS_SOLID, 1, GetSysColor(COLOR_BTNSHADOW));
     CPen penLtgray(PS_SOLID, 1, GetSysColor(COLOR_BTNHIGHLIGHT));
     CPen * pOldPen = pDC->SelectObject(&penLtgray);
@@ -1843,7 +2087,8 @@ void CToggleButton::DrawButtonUp(CDC * pDC, CRect rWnd) {
 /***************************************************************************/
 // CToggleButton::DrawButtonDown Drawing button down state
 /***************************************************************************/
-void CToggleButton::DrawButtonDown(CDC * pDC, CRect rWnd) {
+void CToggleButton::DrawButtonDown(CDC * pDC, CRect rWnd)
+{
     CPen penDkgray(PS_SOLID, 1, GetSysColor(COLOR_BTNSHADOW));
     CPen penLtgray(PS_SOLID, 1, GetSysColor(COLOR_BTNHIGHLIGHT));
     pDC->SelectStockObject(BLACK_PEN);
@@ -1869,7 +2114,8 @@ void CToggleButton::DrawButtonDown(CDC * pDC, CRect rWnd) {
 /***************************************************************************/
 // CToggleButton::DrawText Drawing button text
 /***************************************************************************/
-void CToggleButton::DrawText(CDC * pDC, CRect rWnd) {
+void CToggleButton::DrawText(CDC * pDC, CRect rWnd)
+{
     // create the font
     CFont font;
     const TCHAR * pszName = _T("MS Sans Serif");
@@ -1878,9 +2124,12 @@ void CToggleButton::DrawText(CDC * pDC, CRect rWnd) {
                     DEFAULT_QUALITY, (VARIABLE_PITCH | FF_ROMAN), pszName);
     CFont * pOldFont = pDC->SelectObject(&font);
     // set font color
-    if (IsWindowEnabled()) {
+    if (IsWindowEnabled())
+    {
         pDC->SetTextColor(GetSysColor(COLOR_BTNTEXT));
-    } else {
+    }
+    else
+    {
         pDC->SetTextColor(GetSysColor(COLOR_GRAYTEXT));
     }
     pDC->SetBkMode(TRANSPARENT);
@@ -1893,22 +2142,28 @@ void CToggleButton::DrawText(CDC * pDC, CRect rWnd) {
 /***************************************************************************/
 // CToggleButton::DrawSymbol Drawing button symbol
 /***************************************************************************/
-void CToggleButton::DrawSymbol(CDC * pDC) {
+void CToggleButton::DrawSymbol(CDC * pDC)
+{
     CBrush brush;
     CRect rWnd;
-    if (IsWindowEnabled()) {
+    if (IsWindowEnabled())
+    {
         // button is enabled
         CPen * pOldPen;
         CBrush * pOldBrush;
         CPen penDkRed(PS_SOLID, 1, RGB(128, 0, 0));
         CPen penDkGreen(PS_SOLID, 1, RGB(0, 128, 0));
         POINT ptPoly[3];
-        switch (m_nID) {
+        switch (m_nID)
+        {
         case IDC_RECORD:
-            if (m_bSymbolOff || !m_bButtonDown) {
+            if (m_bSymbolOff || !m_bButtonDown)
+            {
                 brush.CreateSolidBrush(RGB(128, 0, 0)); // dark red
                 pOldBrush = pDC->SelectObject(&brush);
-            } else {
+            }
+            else
+            {
                 brush.CreateSolidBrush(RGB(255, 0, 0)); // light red
                 pOldBrush = pDC->SelectObject(&brush);
             }
@@ -1924,10 +2179,13 @@ void CToggleButton::DrawSymbol(CDC * pDC) {
             pDC->SelectObject(pOldBrush);
             break;
         case IDC_PLAY:
-            if (m_bSymbolOff || !m_bButtonDown) {
+            if (m_bSymbolOff || !m_bButtonDown)
+            {
                 brush.CreateSolidBrush(RGB(0, 128, 0)); // dark green
                 pOldBrush = pDC->SelectObject(&brush);
-            } else {
+            }
+            else
+            {
                 brush.CreateSolidBrush(RGB(0, 255, 0)); // light green
                 pOldBrush = pDC->SelectObject(&brush);
             }
@@ -1957,13 +2215,16 @@ void CToggleButton::DrawSymbol(CDC * pDC) {
         default:
             break;
         }
-    } else {
+    }
+    else
+    {
         // button is disabled
         CPen * pOldPen;
         POINT ptPoly[2];
         CPen penDkgray(PS_SOLID, 1, GetSysColor(COLOR_BTNSHADOW));
         CPen penLtgray(PS_SOLID, 1, GetSysColor(COLOR_BTNHIGHLIGHT));
-        switch (m_nID) {
+        switch (m_nID)
+        {
         case IDC_RECORD:
             ptPoly[0].x = m_rSymbol.left;
             ptPoly[0].y = m_rSymbol.bottom;
@@ -2024,19 +2285,25 @@ void CToggleButton::DrawSymbol(CDC * pDC) {
 /***************************************************************************/
 // CToggleButton::Flash Starts/stops symbol flashing
 /***************************************************************************/
-void CToggleButton::Flash(BOOL bFlash) {
+void CToggleButton::Flash(BOOL bFlash)
+{
 
-    if (!m_bSymbolFlash) {
-        if (bFlash) {
+    if (!m_bSymbolFlash)
+    {
+        if (bFlash)
+        {
             m_bSymbolFlash = TRUE;
-            SetTimer(1, 500, NULL);				// start the mouse repeat timer with the keyboard delay
+            SetTimer(1, 500, NULL);             // start the mouse repeat timer with the keyboard delay
         }
-    } else {
-        if (!bFlash) {
+    }
+    else
+    {
+        if (!bFlash)
+        {
             m_bSymbolFlash = FALSE;
             m_bSymbolOff = FALSE;
             KillTimer(1);
-            InvalidateRect(m_rSymbol, FALSE);	// redraw the symbol, don't erase the background
+            InvalidateRect(m_rSymbol, FALSE);   // redraw the symbol, don't erase the background
         }
     }
 }
@@ -2044,8 +2311,10 @@ void CToggleButton::Flash(BOOL bFlash) {
 /***************************************************************************/
 // CToggleButton::Push Release pressed button
 /***************************************************************************/
-void CToggleButton::Push() {
-    if (!m_bButtonDown) {
+void CToggleButton::Push()
+{
+    if (!m_bButtonDown)
+    {
         m_bButtonDown = TRUE;
         Flash(FALSE);
         InvalidateRect(NULL, TRUE); // draw button, erase background
@@ -2055,8 +2324,10 @@ void CToggleButton::Push() {
 /***************************************************************************/
 // CToggleButton::Release Release pressed button
 /***************************************************************************/
-void CToggleButton::Release() {
-    if (m_bButtonDown) {
+void CToggleButton::Release()
+{
+    if (m_bButtonDown)
+    {
         m_bButtonDown = FALSE;
         Flash(FALSE);
         InvalidateRect(NULL, TRUE); // draw button, erase background
@@ -2069,14 +2340,18 @@ void CToggleButton::Release() {
 /***************************************************************************/
 // CToggleButton::OnPaint Painting
 /***************************************************************************/
-void CToggleButton::OnPaint() {
+void CToggleButton::OnPaint()
+{
     CPaintDC dc(this); // device context for painting
     CRect rWnd, rButton;
     GetClientRect(rWnd);
     // paint button
-    if (m_bButtonDown) {
+    if (m_bButtonDown)
+    {
         DrawButtonDown(&dc, rWnd);
-    } else {
+    }
+    else
+    {
         DrawButtonUp(&dc, rWnd);
     }
 }
@@ -2084,7 +2359,8 @@ void CToggleButton::OnPaint() {
 /***************************************************************************/
 // CToggleButton::OnEraseBkgnd Erasing background
 /***************************************************************************/
-BOOL CToggleButton::OnEraseBkgnd(CDC * pDC) {
+BOOL CToggleButton::OnEraseBkgnd(CDC * pDC)
+{
     CRect rWnd;
     GetClientRect(rWnd);
     // use same background as dialog
@@ -2098,9 +2374,12 @@ BOOL CToggleButton::OnEraseBkgnd(CDC * pDC) {
 /***************************************************************************/
 // CToggleButton::OnLButtonDown Mouse left button down
 /***************************************************************************/
-void CToggleButton::OnLButtonDown(UINT nFlags, CPoint point) {
-    if (IsWindowEnabled()) {
-        if (!m_bButtonDown) {
+void CToggleButton::OnLButtonDown(UINT nFlags, CPoint point)
+{
+    if (IsWindowEnabled())
+    {
+        if (!m_bButtonDown)
+        {
             m_bButtonDown = TRUE;
             InvalidateRect(NULL, TRUE); // draw button, erase background
             SetCapture(); // receive all mouse input
@@ -2116,9 +2395,12 @@ void CToggleButton::OnLButtonDown(UINT nFlags, CPoint point) {
 // message. Instead this message will arrive and allow the user to click
 // fast.
 /***************************************************************************/
-void CToggleButton::OnLButtonDblClk(UINT nFlags, CPoint point) {
-    if (IsWindowEnabled()) {
-        if (!m_bButtonDown) {
+void CToggleButton::OnLButtonDblClk(UINT nFlags, CPoint point)
+{
+    if (IsWindowEnabled())
+    {
+        if (!m_bButtonDown)
+        {
             m_bButtonDown = TRUE;
             InvalidateRect(NULL, TRUE); // draw button, erase background
             SetCapture(); // receive all mouse input
@@ -2130,8 +2412,10 @@ void CToggleButton::OnLButtonDblClk(UINT nFlags, CPoint point) {
 /***************************************************************************/
 // CToggleButton::OnLButtonUp Mouse left button up
 /***************************************************************************/
-void CToggleButton::OnLButtonUp(UINT nFlags, CPoint point) {
-    if (IsWindowEnabled()) {
+void CToggleButton::OnLButtonUp(UINT nFlags, CPoint point)
+{
+    if (IsWindowEnabled())
+    {
         // inform parent
         CWnd * pWnd = GetParent();
         pWnd->SendMessage(WM_COMMAND, m_nID, 0); // notify parent
@@ -2143,7 +2427,8 @@ void CToggleButton::OnLButtonUp(UINT nFlags, CPoint point) {
 /***************************************************************************/
 // CToggleButton::OnTimer Timer event, redraw the button symbol
 /***************************************************************************/
-void CToggleButton::OnTimer(UINT nIDEvent) {
+void CToggleButton::OnTimer(UINT nIDEvent)
+{
     m_bSymbolOff = !m_bSymbolOff;
     InvalidateRect(m_rSymbol, FALSE); // redraw the symbol, don't erase the background
     CWnd::OnTimer(nIDEvent);
@@ -2152,7 +2437,8 @@ void CToggleButton::OnTimer(UINT nIDEvent) {
 /***************************************************************************/
 // CToggleButton::OnEnable Enable/disable window
 /***************************************************************************/
-void CToggleButton::OnEnable(BOOL bEnable) {
+void CToggleButton::OnEnable(BOOL bEnable)
+{
     Invalidate(); // redraw whole window
     CWnd::OnEnable(bEnable);
 }
@@ -2169,8 +2455,10 @@ void CToggleButton::OnEnable(BOOL bEnable) {
 // CTranscriptionDisp::Init Initialisation
 // Creates the window and places it over the dialog control.
 /***************************************************************************/
-void CTranscriptionDisp::Init(UINT nID, CWnd * pParent) {
-    if (nID && pParent) {
+void CTranscriptionDisp::Init(UINT nID, CWnd * pParent)
+{
+    if (nID && pParent)
+    {
         //SDM 1.06.6r1
         CWnd * pWnd = pParent->GetDlgItem(nID);
 
@@ -2208,13 +2496,15 @@ END_MESSAGE_MAP()
 /***************************************************************************/
 // CAboutTitle::CAboutTitle Constructor
 /***************************************************************************/
-CAboutTitle::CAboutTitle() {
+CAboutTitle::CAboutTitle()
+{
 }
 
 /***************************************************************************/
 // CAboutTitle::~CAboutTitle Destructor
 /***************************************************************************/
-CAboutTitle::~CAboutTitle() {
+CAboutTitle::~CAboutTitle()
+{
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -2224,8 +2514,10 @@ CAboutTitle::~CAboutTitle() {
 // CAboutTitle::Init Initialisation
 // Creates the window and places it over the dialog control.
 /***************************************************************************/
-void CAboutTitle::Init(UINT nID, CWnd * pParent) {
-    if (nID && pParent) {
+void CAboutTitle::Init(UINT nID, CWnd * pParent)
+{
+    if (nID && pParent)
+    {
         CWnd * pWnd = pParent->GetDlgItem(nID);
         CRect rWnd(0, 0, 0, 0);
         Create(NULL, NULL, WS_CHILD|WS_VISIBLE, rWnd, pParent, 1);
@@ -2241,7 +2533,8 @@ void CAboutTitle::Init(UINT nID, CWnd * pParent) {
 /***************************************************************************/
 // CAboutTitle::OnPaint Painting
 /***************************************************************************/
-void CAboutTitle::OnPaint() {
+void CAboutTitle::OnPaint()
+{
     CPaintDC dc(this); // device context for painting
     // create and select title font
     CFont font;
@@ -2274,7 +2567,8 @@ void CAboutTitle::OnPaint() {
 /***************************************************************************/
 // CAboutTitle::OnEraseBkgnd Erasing background
 /***************************************************************************/
-BOOL CAboutTitle::OnEraseBkgnd(CDC * pDC) {
+BOOL CAboutTitle::OnEraseBkgnd(CDC * pDC)
+{
     CRect rWnd;
     GetClientRect(rWnd);
 
@@ -2308,14 +2602,16 @@ END_MESSAGE_MAP()
 /***************************************************************************/
 // CStaticText::CStaticText Constructor
 /***************************************************************************/
-CStaticText::CStaticText() {
+CStaticText::CStaticText()
+{
     m_nID = 0;
 }
 
 /***************************************************************************/
 // CStaticText::~CStaticText Destructor
 /***************************************************************************/
-CStaticText::~CStaticText() {
+CStaticText::~CStaticText()
+{
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -2325,9 +2621,11 @@ CStaticText::~CStaticText() {
 // CStaticText::Init Initialisation
 // Creates the window and places it over the dialog control.
 /***************************************************************************/
-void CStaticText::Init(UINT nID, CWnd * pParent) {
+void CStaticText::Init(UINT nID, CWnd * pParent)
+{
     m_nID = nID;
-    if (m_nID && pParent) {
+    if (m_nID && pParent)
+    {
         CWnd * pWnd = pParent->GetDlgItem(m_nID);
         CRect rWnd(0, 0, 0, 0);
         Create(NULL, NULL, WS_CHILD|WS_VISIBLE, rWnd, pParent, 1);
@@ -2343,10 +2641,12 @@ void CStaticText::Init(UINT nID, CWnd * pParent) {
 /***************************************************************************/
 // CStaticText::OnPaint Painting
 /***************************************************************************/
-void CStaticText::OnPaint() {
+void CStaticText::OnPaint()
+{
     CPaintDC dc(this); // device context for painting
     // create and select title font
-    if (m_nID) {
+    if (m_nID)
+    {
         CWnd * pWnd = GetParent()->GetDlgItem(m_nID);
         CFont * pOldFont = dc.SelectObject(pWnd->GetFont()); // select actual font
         dc.SetBkMode(TRANSPARENT);
@@ -2365,7 +2665,8 @@ void CStaticText::OnPaint() {
 /***************************************************************************/
 // CStaticText::OnEraseBkgnd Erasing background
 /***************************************************************************/
-BOOL CStaticText::OnEraseBkgnd(CDC * pDC) {
+BOOL CStaticText::OnEraseBkgnd(CDC * pDC)
+{
     // use same background as dialog
     CRect rWnd;
     GetClientRect(rWnd);
@@ -2399,13 +2700,15 @@ END_MESSAGE_MAP()
 /***************************************************************************/
 // CFancyArrow::CFancyArrow Constructor
 /***************************************************************************/
-CFancyArrow::CFancyArrow() {
+CFancyArrow::CFancyArrow()
+{
 }
 
 /***************************************************************************/
 // CFancyArrow::~CFancyArrow Destructor
 /***************************************************************************/
-CFancyArrow::~CFancyArrow() {
+CFancyArrow::~CFancyArrow()
+{
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -2415,8 +2718,10 @@ CFancyArrow::~CFancyArrow() {
 // CFancyArrow::Init Initialisation
 // Creates the window and places it over the dialog control.
 /***************************************************************************/
-void CFancyArrow::Init(UINT nID, CWnd * pParent) {
-    if (nID && pParent) {
+void CFancyArrow::Init(UINT nID, CWnd * pParent)
+{
+    if (nID && pParent)
+    {
         CWnd * pWnd = pParent->GetDlgItem(nID);
         CRect rWnd(0, 0, 0, 0);
         Create(NULL, NULL, WS_CHILD|WS_VISIBLE, rWnd, pParent, 1);
@@ -2432,7 +2737,8 @@ void CFancyArrow::Init(UINT nID, CWnd * pParent) {
 /***************************************************************************/
 // CFancyArrow::OnPaint Painting
 /***************************************************************************/
-void CFancyArrow::OnPaint() {
+void CFancyArrow::OnPaint()
+{
     CPaintDC dc(this); // device context for painting
     // get window coordinates
     CRect rWnd;
@@ -2456,7 +2762,8 @@ void CFancyArrow::OnPaint() {
 /***************************************************************************/
 // CFancyArrow::OnEraseBkgnd Erasing background
 /***************************************************************************/
-BOOL CFancyArrow::OnEraseBkgnd(CDC * pDC) {
+BOOL CFancyArrow::OnEraseBkgnd(CDC * pDC)
+{
     // use same background as dialog
     CRect rWnd;
     GetClientRect(rWnd);

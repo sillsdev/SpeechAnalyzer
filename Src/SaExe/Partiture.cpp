@@ -51,7 +51,8 @@ using std::streampos;
 
 static HINSTANCE hInstance = NULL;
 
-const int ClefRange[5][2] = {
+const int ClefRange[5][2] =
+{
     {
         ((NAME_G*NUMBER_OF_ACCIDENTALS)+DOUBLE_FLAT+OCTAVE_4),
         ((NAME_D*NUMBER_OF_ACCIDENTALS)+DOUBLE_SHARP+OCTAVE_7)
@@ -83,13 +84,16 @@ static char * NoteNum2Name(UBYTE byMIDINumber, char * sMusique, size_t len);
 Note::Note(int Clef) : Name('C'), Accidental('='),
     Onset('*'), Duration('q'), Duration2('n'), Conclusion(' '),
     Value(0), DisplayOnset('\0'), DisplayAccidental('\0'),
-    DisplayModDur('\0'), DisplayNote('\0'), DisplayConclusion('\0') {
+    DisplayModDur('\0'), DisplayNote('\0'), DisplayConclusion('\0')
+{
     Octave = (BYTE)((Clef>2) ? '6' - Clef : '5' - Clef);
     CalcValue(Clef);
 }
 
-Note::Note(const unsigned char * Definition,int Clef) {
-    if (!Definition) {
+Note::Note(const unsigned char * Definition,int Clef)
+{
+    if (!Definition)
+    {
         Name='C';
         Accidental='=';
         Octave='4';
@@ -100,7 +104,9 @@ Note::Note(const unsigned char * Definition,int Clef) {
         Value=0;
         DisplayOnset=DisplayAccidental=DisplayModDur=DisplayNote=DisplayConclusion='\0';
         CalcValue(Clef);
-    } else if (!Set(Definition,Clef)) { // error in definition
+    }
+    else if (!Set(Definition,Clef))     // error in definition
+    {
         Name = ANNOT_UNDEFINED;
         Accidental=Octave=Onset=Duration=Duration2=Conclusion='\0';;
         Value=0;
@@ -109,11 +115,13 @@ Note::Note(const unsigned char * Definition,int Clef) {
     }
 }
 
-Note::~Note() {
+Note::~Note()
+{
     Onset=Name=Accidental=Octave=Duration=Duration2=Conclusion='\0';
 }
 
-Note & Note::operator=(Note & n) {
+Note & Note::operator=(Note & n)
+{
     Name = n.Name;
     Accidental = n.Accidental;
     Octave = n.Octave;
@@ -130,11 +138,16 @@ Note & Note::operator=(Note & n) {
     return *this;
 }
 
-void Note::CalcValue(int Clef) {
-    if (Name=='R') {
+void Note::CalcValue(int Clef)
+{
+    if (Name=='R')
+    {
         Value = -1;
-    } else if (Name>='A'&&Name<='G') {
-        switch (Accidental) {
+    }
+    else if (Name>='A'&&Name<='G')
+    {
+        switch (Accidental)
+        {
         case '$':
             Value = DOTTED_SHARP;
             break;
@@ -163,8 +176,11 @@ void Note::CalcValue(int Clef) {
         unsigned int valueName = (Name < 'C' ? Name + 7 : Name); // adjust
         Value += (valueName - 'C')*NUMBER_OF_ACCIDENTALS;
         Value += (Octave - '0')*OCTAVE;
-    } else {
-        switch (Name) {
+    }
+    else
+    {
+        switch (Name)
+        {
         case ANNOT_SPACE:
             DisplayNote=DISPLAY_SMALL_SPACE;
             break;
@@ -190,70 +206,113 @@ void Note::CalcValue(int Clef) {
     }
 
     // DISPLAY
-    switch (Duration) {
+    switch (Duration)
+    {
     case 'w': // whole note
-        if (Value==-1) {
+        if (Value==-1)
+        {
             DisplayNote=DISPLAY_WHOLE_REST;
-        } else if (Value<ClefRange[Clef][0]) {
+        }
+        else if (Value<ClefRange[Clef][0])
+        {
             DisplayNote=DISPLAY_WHOLE_TOO_LOW;
-        } else if (Value>ClefRange[Clef][1]) {
+        }
+        else if (Value>ClefRange[Clef][1])
+        {
             DisplayNote=DISPLAY_WHOLE_TOO_HIGH;
-        } else {
+        }
+        else
+        {
             DisplayNote=(unsigned short)(DISPLAY_WHOLE+((Value-ClefRange[Clef][0])/NUMBER_OF_ACCIDENTALS));
         }
         break;
     case 'h': // half note
-        if (Value==-1) {
+        if (Value==-1)
+        {
             DisplayNote=DISPLAY_HALF_REST;
-        } else if (Value<ClefRange[Clef][0]) {
+        }
+        else if (Value<ClefRange[Clef][0])
+        {
             DisplayNote=DISPLAY_HALF_TOO_LOW;
-        } else if (Value>ClefRange[Clef][1]) {
+        }
+        else if (Value>ClefRange[Clef][1])
+        {
             DisplayNote=DISPLAY_HALF_TOO_HIGH;
-        } else {
+        }
+        else
+        {
             DisplayNote=(unsigned short)(DISPLAY_HALF+((Value-ClefRange[Clef][0])/NUMBER_OF_ACCIDENTALS));
         }
         break;
     case 'q': // quarter note
-        if (Value==-1) {
+        if (Value==-1)
+        {
             DisplayNote=DISPLAY_QUARTER_REST;
-        } else if (Value<ClefRange[Clef][0]) {
+        }
+        else if (Value<ClefRange[Clef][0])
+        {
             DisplayNote=DISPLAY_QUARTER_TOO_LOW;
-        } else if (Value>ClefRange[Clef][1]) {
+        }
+        else if (Value>ClefRange[Clef][1])
+        {
             DisplayNote=DISPLAY_QUARTER_TOO_HIGH;
-        } else {
+        }
+        else
+        {
             DisplayNote=(unsigned short)(DISPLAY_QUARTER+((Value-ClefRange[Clef][0])/NUMBER_OF_ACCIDENTALS));
         }
         break;
     case 'i': // eighth note
-        if (Value==-1) {
+        if (Value==-1)
+        {
             DisplayNote=DISPLAY_EIGHTH_REST;
-        } else if (Value<ClefRange[Clef][0]) {
+        }
+        else if (Value<ClefRange[Clef][0])
+        {
             DisplayNote=DISPLAY_EIGHTH_TOO_LOW;
-        } else if (Value>ClefRange[Clef][1]) {
+        }
+        else if (Value>ClefRange[Clef][1])
+        {
             DisplayNote=DISPLAY_EIGHTH_TOO_HIGH;
-        } else {
+        }
+        else
+        {
             DisplayNote=(unsigned short)(DISPLAY_EIGHTH+((Value-ClefRange[Clef][0])/NUMBER_OF_ACCIDENTALS));
         }
         break;
     case 's': // sixteenth note
-        if (Value==-1) {
+        if (Value==-1)
+        {
             DisplayNote=DISPLAY_SIXTEENTH_REST;
-        } else if (Value<ClefRange[Clef][0]) {
+        }
+        else if (Value<ClefRange[Clef][0])
+        {
             DisplayNote=DISPLAY_SIXTEENTH_TOO_LOW;
-        } else if (Value>ClefRange[Clef][1]) {
+        }
+        else if (Value>ClefRange[Clef][1])
+        {
             DisplayNote=DISPLAY_SIXTEENTH_TOO_HIGH;
-        } else {
+        }
+        else
+        {
             DisplayNote=(unsigned short)(DISPLAY_SIXTEENTH+((Value-ClefRange[Clef][0])/NUMBER_OF_ACCIDENTALS));
         }
         break;
     case 'z': // grace note
-        if (Value==-1) {
+        if (Value==-1)
+        {
             DisplayNote=DISPLAY_GRACE_REST;
-        } else if (Value<ClefRange[Clef][0]) {
+        }
+        else if (Value<ClefRange[Clef][0])
+        {
             DisplayNote=DISPLAY_GRACE_TOO_LOW;
-        } else if (Value>ClefRange[Clef][1]) {
+        }
+        else if (Value>ClefRange[Clef][1])
+        {
             DisplayNote=DISPLAY_GRACE_TOO_HIGH;
-        } else {
+        }
+        else
+        {
             DisplayNote=(unsigned short)(DISPLAY_GRACE+((Value-ClefRange[Clef][0])/NUMBER_OF_ACCIDENTALS));
         }
         break;
@@ -265,135 +324,191 @@ void Note::CalcValue(int Clef) {
     CalcConclusion(Clef);
 }//Note::CalcValue
 
-void Note::CalcOnset(int Clef) {
-    if (Value<0) { // rest or notation
+void Note::CalcOnset(int Clef)
+{
+    if (Value<0)   // rest or notation
+    {
         DisplayOnset='\0';
         return;
     }
-    switch (Onset) {
+    switch (Onset)
+    {
     case '*': // none
         DisplayOnset='\0';
         break;
     case '|': // long fall
-        if (Value<ClefRange[Clef][0]||Value>ClefRange[Clef][1]) {
+        if (Value<ClefRange[Clef][0]||Value>ClefRange[Clef][1])
+        {
             DisplayOnset=DISPLAY_LONG_FALL+1;    // OUT OF RANGE
-        } else if (Value<ClefRange[Clef][0]+(NUMBER_OF_ACCIDENTALS*6)) {
+        }
+        else if (Value<ClefRange[Clef][0]+(NUMBER_OF_ACCIDENTALS*6))
+        {
             DisplayOnset=DISPLAY_LONG_FALL;    // LOW
-        } else if (Value<ClefRange[Clef][0]+(NUMBER_OF_ACCIDENTALS*10)) {
+        }
+        else if (Value<ClefRange[Clef][0]+(NUMBER_OF_ACCIDENTALS*10))
+        {
             DisplayOnset=DISPLAY_LONG_FALL+1;    // MID
-        } else {
+        }
+        else
+        {
             DisplayOnset=DISPLAY_LONG_FALL+2;    // HIGH
         }
         break;
     case '~': // short fall
-        if (Value<ClefRange[Clef][0]||Value>ClefRange[Clef][1]) {
+        if (Value<ClefRange[Clef][0]||Value>ClefRange[Clef][1])
+        {
             DisplayOnset=DISPLAY_SHORT_FALL+1;    // OUT OF RANGE
-        } else if (Value<ClefRange[Clef][0]+(NUMBER_OF_ACCIDENTALS*6)) {
+        }
+        else if (Value<ClefRange[Clef][0]+(NUMBER_OF_ACCIDENTALS*6))
+        {
             DisplayOnset=DISPLAY_SHORT_FALL;    // LOW
-        } else if (Value<ClefRange[Clef][0]+(NUMBER_OF_ACCIDENTALS*10)) {
+        }
+        else if (Value<ClefRange[Clef][0]+(NUMBER_OF_ACCIDENTALS*10))
+        {
             DisplayOnset=DISPLAY_SHORT_FALL+1;    // MID
-        } else {
+        }
+        else
+        {
             DisplayOnset=DISPLAY_SHORT_FALL+2;    // HIGH
         }
         break;
     case '?': // long rise
-        if (Value<ClefRange[Clef][0]||Value>ClefRange[Clef][1]) {
+        if (Value<ClefRange[Clef][0]||Value>ClefRange[Clef][1])
+        {
             DisplayOnset=DISPLAY_LONG_RISE+1;    // OUT OF RANGE
-        } else if (Value<ClefRange[Clef][0]+(NUMBER_OF_ACCIDENTALS*9)) {
+        }
+        else if (Value<ClefRange[Clef][0]+(NUMBER_OF_ACCIDENTALS*9))
+        {
             DisplayOnset=DISPLAY_LONG_RISE;    // LOW
-        } else if (Value<ClefRange[Clef][0]+(NUMBER_OF_ACCIDENTALS*13)) {
+        }
+        else if (Value<ClefRange[Clef][0]+(NUMBER_OF_ACCIDENTALS*13))
+        {
             DisplayOnset=DISPLAY_LONG_RISE+1;    // MID
-        } else {
+        }
+        else
+        {
             DisplayOnset=DISPLAY_LONG_RISE+2;    // HIGH
         }
         break;
     case '\"': // short rise
-        if (Value<ClefRange[Clef][0]||Value>ClefRange[Clef][1]) {
+        if (Value<ClefRange[Clef][0]||Value>ClefRange[Clef][1])
+        {
             DisplayOnset=DISPLAY_SHORT_RISE+1;    // OUT OF RANGE
-        } else if (Value<ClefRange[Clef][0]+(NUMBER_OF_ACCIDENTALS*9)) {
+        }
+        else if (Value<ClefRange[Clef][0]+(NUMBER_OF_ACCIDENTALS*9))
+        {
             DisplayOnset=DISPLAY_SHORT_RISE;    // LOW
-        } else if (Value<ClefRange[Clef][0]+(NUMBER_OF_ACCIDENTALS*13)) {
+        }
+        else if (Value<ClefRange[Clef][0]+(NUMBER_OF_ACCIDENTALS*13))
+        {
             DisplayOnset=DISPLAY_SHORT_RISE+1;    // MID
-        } else {
+        }
+        else
+        {
             DisplayOnset=DISPLAY_SHORT_RISE+2;    // HIGH
         }
         break;
     }
 }//Note::CalcOnset
 
-void Note::CalcAccidental(int Clef) {
-    if (Value<0) { // rest or notation
+void Note::CalcAccidental(int Clef)
+{
+    if (Value<0)   // rest or notation
+    {
         DisplayAccidental='\0';
         return;
     }
-    switch (Accidental) {
+    switch (Accidental)
+    {
     case '=': // natural (none)
         DisplayAccidental='\0';
         break;
     case '#': // sharp
-        if (Value<ClefRange[Clef][0]||Value>ClefRange[Clef][1]) {
+        if (Value<ClefRange[Clef][0]||Value>ClefRange[Clef][1])
+        {
             DisplayAccidental=DISPLAY_SHARP+5;    // OUT OF RANGE
-        } else
+        }
+        else
             DisplayAccidental=(unsigned short)(DISPLAY_SHARP+((Value-ClefRange[Clef][0])
                                                /NUMBER_OF_ACCIDENTALS));
         break;
     case '@': // flat
-        if (Value<ClefRange[Clef][0]||Value>ClefRange[Clef][1]) {
+        if (Value<ClefRange[Clef][0]||Value>ClefRange[Clef][1])
+        {
             DisplayAccidental=DISPLAY_FLAT+5;    // OUT OF RANGE
-        } else
+        }
+        else
             DisplayAccidental=(unsigned short)(DISPLAY_FLAT+((Value-ClefRange[Clef][0])
                                                /NUMBER_OF_ACCIDENTALS));
         break;
     case '+': // half-sharp
-        if (Value<ClefRange[Clef][0]||Value>ClefRange[Clef][1]) {
+        if (Value<ClefRange[Clef][0]||Value>ClefRange[Clef][1])
+        {
             DisplayAccidental=DISPLAY_HALF_SHARP+5;    // OUT OF RANGE
-        } else
+        }
+        else
             DisplayAccidental=(unsigned short)(DISPLAY_HALF_SHARP+((Value-ClefRange[Clef][0])
                                                /NUMBER_OF_ACCIDENTALS));
         break;
     case '-': // half-flat
-        if (Value<ClefRange[Clef][0]||Value>ClefRange[Clef][1]) {
+        if (Value<ClefRange[Clef][0]||Value>ClefRange[Clef][1])
+        {
             DisplayAccidental=DISPLAY_HALF_FLAT+5;    // OUT OF RANGE
-        } else
+        }
+        else
             DisplayAccidental=(unsigned short)(DISPLAY_HALF_FLAT+((Value-ClefRange[Clef][0])
                                                /NUMBER_OF_ACCIDENTALS));
         break;
     case '$': // 11/2 sharp
-        if (Value<ClefRange[Clef][0]||Value>ClefRange[Clef][1]) {
+        if (Value<ClefRange[Clef][0]||Value>ClefRange[Clef][1])
+        {
             DisplayAccidental=DISPLAY_DOTTED_SHARP+5;    // OUT OF RANGE
-        } else
+        }
+        else
             DisplayAccidental=(unsigned short)(DISPLAY_DOTTED_SHARP+((Value-ClefRange[Clef][0])
                                                /NUMBER_OF_ACCIDENTALS));
         break;
     case '!': // 11/2 flat
-        if (Value<ClefRange[Clef][0]||Value>ClefRange[Clef][1]) {
+        if (Value<ClefRange[Clef][0]||Value>ClefRange[Clef][1])
+        {
             DisplayAccidental=DISPLAY_DOTTED_FLAT+5;    // OUT OF RANGE
-        } else
+        }
+        else
             DisplayAccidental=(unsigned short)(DISPLAY_DOTTED_FLAT+((Value-ClefRange[Clef][0])
                                                /NUMBER_OF_ACCIDENTALS));
         break;
     }
 }//Note::CalcAccidental
 
-void Note::CalcModDuration(int Clef) {
-    if (Value == -2) { // notation
+void Note::CalcModDuration(int Clef)
+{
+    if (Value == -2)   // notation
+    {
         DisplayModDur='\0';
         return;
     }
-    switch (Duration2) {
+    switch (Duration2)
+    {
     case 'n': // normal
         DisplayModDur='\0';
         break;
     case '.': // dotted
-        if (Value==-1) { // rest
-            if (Duration=='w' || Duration=='h') {
+        if (Value==-1)   // rest
+        {
+            if (Duration=='w' || Duration=='h')
+            {
                 DisplayModDur=DISPLAY_DOT+5;
-            } else {
+            }
+            else
+            {
                 DisplayModDur=DISPLAY_DOT+4;
             }
-        } else if (Value<ClefRange[Clef][0]||Value>ClefRange[Clef][1]) {
+        }
+        else if (Value<ClefRange[Clef][0]||Value>ClefRange[Clef][1])
+        {
             DisplayModDur=DISPLAY_DOT+2;    // OUT OF RANGE
-        } else if (Value<ClefRange[Clef][0]+(NUMBER_OF_ACCIDENTALS*9))
+        }
+        else if (Value<ClefRange[Clef][0]+(NUMBER_OF_ACCIDENTALS*9))
             DisplayModDur=(unsigned short)(DISPLAY_DOT+((Value-ClefRange[Clef][0])
                                            /(2*NUMBER_OF_ACCIDENTALS))); // LOW
         else
@@ -401,209 +516,316 @@ void Note::CalcModDuration(int Clef) {
                                            /(2*NUMBER_OF_ACCIDENTALS))); // HIGH
         break;
     case 't': // triplet
-        if (Value<ClefRange[Clef][0]||Value>ClefRange[Clef][1]) {
+        if (Value<ClefRange[Clef][0]||Value>ClefRange[Clef][1])
+        {
             DisplayModDur=DISPLAY_TRIPLET_ABOVE;    // OUT OF RANGE
-        } else if (Value<ClefRange[Clef][0]+(NUMBER_OF_ACCIDENTALS*6)) {
+        }
+        else if (Value<ClefRange[Clef][0]+(NUMBER_OF_ACCIDENTALS*6))
+        {
             DisplayModDur=DISPLAY_TRIPLET_ABOVE;    // ABOVE
-        } else if (Value<ClefRange[Clef][0]+(NUMBER_OF_ACCIDENTALS*9)) {
+        }
+        else if (Value<ClefRange[Clef][0]+(NUMBER_OF_ACCIDENTALS*9))
+        {
             DisplayModDur=DISPLAY_TRIPLET;    // BELOW
-        } else if (Value<ClefRange[Clef][0]+(NUMBER_OF_ACCIDENTALS*13)) {
+        }
+        else if (Value<ClefRange[Clef][0]+(NUMBER_OF_ACCIDENTALS*13))
+        {
             DisplayModDur=DISPLAY_TRIPLET_ABOVE;    // ABOVE
-        } else {
+        }
+        else
+        {
             DisplayModDur=DISPLAY_TRIPLET;    // BELOW
         }
         break;
     case 'v': // quintuplet
-        if (Value<ClefRange[Clef][0]||Value>ClefRange[Clef][1]) {
+        if (Value<ClefRange[Clef][0]||Value>ClefRange[Clef][1])
+        {
             DisplayModDur=DISPLAY_QUINTUPLET_ABOVE;    // OUT OF RANGE
-        } else if (Value<ClefRange[Clef][0]+(NUMBER_OF_ACCIDENTALS*6)) {
+        }
+        else if (Value<ClefRange[Clef][0]+(NUMBER_OF_ACCIDENTALS*6))
+        {
             DisplayModDur=DISPLAY_QUINTUPLET_ABOVE;    // ABOVE
-        } else if (Value<ClefRange[Clef][0]+(NUMBER_OF_ACCIDENTALS*9)) {
+        }
+        else if (Value<ClefRange[Clef][0]+(NUMBER_OF_ACCIDENTALS*9))
+        {
             DisplayModDur=DISPLAY_QUINTUPLET;    // BELOW
-        } else if (Value<ClefRange[Clef][0]+(NUMBER_OF_ACCIDENTALS*13)) {
+        }
+        else if (Value<ClefRange[Clef][0]+(NUMBER_OF_ACCIDENTALS*13))
+        {
             DisplayModDur=DISPLAY_QUINTUPLET_ABOVE;    // ABOVE
-        } else {
+        }
+        else
+        {
             DisplayModDur=DISPLAY_QUINTUPLET;    // BELOW
         }
         break;
     }
 }//Note::CalcModDuration
 
-void Note::CalcConclusion(int Clef) {
-    if (Value<0) { // rest or notation
+void Note::CalcConclusion(int Clef)
+{
+    if (Value<0)   // rest or notation
+    {
         DisplayConclusion='\0';
         return;
     }
-    switch (Conclusion) {
+    switch (Conclusion)
+    {
     case ' ': // none
         DisplayConclusion = '\0';
         break;
     case '/': // long rise
-        if (Value<ClefRange[Clef][0]||Value>ClefRange[Clef][1]) {
+        if (Value<ClefRange[Clef][0]||Value>ClefRange[Clef][1])
+        {
             DisplayConclusion = DISPLAY_LONG_RISE+1;    // out of range
-        } else if (Value<ClefRange[Clef][0]+(NUMBER_OF_ACCIDENTALS*6)) {
+        }
+        else if (Value<ClefRange[Clef][0]+(NUMBER_OF_ACCIDENTALS*6))
+        {
             DisplayConclusion = DISPLAY_LONG_RISE;    // low
-        } else if (Value<ClefRange[Clef][0]+(NUMBER_OF_ACCIDENTALS*10)) {
+        }
+        else if (Value<ClefRange[Clef][0]+(NUMBER_OF_ACCIDENTALS*10))
+        {
             DisplayConclusion = DISPLAY_LONG_RISE+1;    // mid
-        } else {
+        }
+        else
+        {
             DisplayConclusion = DISPLAY_LONG_RISE+2;    // high
         }
         break;
     case '\'': // short rise
-        if (Value<ClefRange[Clef][0]||Value>ClefRange[Clef][1]) {
+        if (Value<ClefRange[Clef][0]||Value>ClefRange[Clef][1])
+        {
             DisplayConclusion = DISPLAY_SHORT_RISE+1;    // out of range
-        } else if (Value<ClefRange[Clef][0]+(NUMBER_OF_ACCIDENTALS*6)) {
+        }
+        else if (Value<ClefRange[Clef][0]+(NUMBER_OF_ACCIDENTALS*6))
+        {
             DisplayConclusion = DISPLAY_SHORT_RISE;    // low
-        } else if (Value<ClefRange[Clef][0]+(NUMBER_OF_ACCIDENTALS*10)) {
+        }
+        else if (Value<ClefRange[Clef][0]+(NUMBER_OF_ACCIDENTALS*10))
+        {
             DisplayConclusion = DISPLAY_SHORT_RISE+1;    // mid
-        } else {
+        }
+        else
+        {
             DisplayConclusion = DISPLAY_SHORT_RISE+2;    // high
         }
         break;
     case '\\': // long fall
-        if (Value<ClefRange[Clef][0]||Value>ClefRange[Clef][1]) {
+        if (Value<ClefRange[Clef][0]||Value>ClefRange[Clef][1])
+        {
             DisplayConclusion = DISPLAY_LONG_FALL+1;    // out of range
-        } else if (Value<ClefRange[Clef][0]+(NUMBER_OF_ACCIDENTALS*9)) {
+        }
+        else if (Value<ClefRange[Clef][0]+(NUMBER_OF_ACCIDENTALS*9))
+        {
             DisplayConclusion = DISPLAY_LONG_FALL;    // low
-        } else if (Value<ClefRange[Clef][0]+(NUMBER_OF_ACCIDENTALS*13)) {
+        }
+        else if (Value<ClefRange[Clef][0]+(NUMBER_OF_ACCIDENTALS*13))
+        {
             DisplayConclusion = DISPLAY_LONG_FALL+1;    // mid
-        } else {
+        }
+        else
+        {
             DisplayConclusion = DISPLAY_LONG_FALL+2;    // high
         }
         break;
     case '`': // short fall
-        if (Value<ClefRange[Clef][0]||Value>ClefRange[Clef][1]) {
+        if (Value<ClefRange[Clef][0]||Value>ClefRange[Clef][1])
+        {
             DisplayConclusion = DISPLAY_SHORT_FALL+1;    // out of range
-        } else if (Value<ClefRange[Clef][0]+(NUMBER_OF_ACCIDENTALS*9)) {
+        }
+        else if (Value<ClefRange[Clef][0]+(NUMBER_OF_ACCIDENTALS*9))
+        {
             DisplayConclusion = DISPLAY_SHORT_FALL;    // low
-        } else if (Value<ClefRange[Clef][0]+(NUMBER_OF_ACCIDENTALS*13)) {
+        }
+        else if (Value<ClefRange[Clef][0]+(NUMBER_OF_ACCIDENTALS*13))
+        {
             DisplayConclusion = DISPLAY_SHORT_FALL+1;    // mid
-        } else {
+        }
+        else
+        {
             DisplayConclusion = DISPLAY_SHORT_FALL+2;    // high
         }
         break;
     case '_': // tie
-        if (Value < ClefRange[Clef][0] || Value > ClefRange[Clef][1]) {
+        if (Value < ClefRange[Clef][0] || Value > ClefRange[Clef][1])
+        {
             DisplayConclusion = DISPLAY_TIE + 2;    // out of range (below)
-        } else if (Value < ClefRange[Clef][0] + (NUMBER_OF_ACCIDENTALS * 4)) {
+        }
+        else if (Value < ClefRange[Clef][0] + (NUMBER_OF_ACCIDENTALS * 4))
+        {
             DisplayConclusion = DISPLAY_TIE + 3;    // far below
-        } else if (Value < ClefRange[Clef][0] + (NUMBER_OF_ACCIDENTALS * 9)) {
+        }
+        else if (Value < ClefRange[Clef][0] + (NUMBER_OF_ACCIDENTALS * 9))
+        {
             DisplayConclusion = DISPLAY_TIE + 2;    // below
-        } else if (Value < ClefRange[Clef][0] + (NUMBER_OF_ACCIDENTALS * 15)) {
+        }
+        else if (Value < ClefRange[Clef][0] + (NUMBER_OF_ACCIDENTALS * 15))
+        {
             DisplayConclusion = DISPLAY_TIE + 1;    // above
-        } else if (Value < ClefRange[Clef][0] + (NUMBER_OF_ACCIDENTALS * 19)) {
+        }
+        else if (Value < ClefRange[Clef][0] + (NUMBER_OF_ACCIDENTALS * 19))
+        {
             DisplayConclusion = DISPLAY_TIE + 0;    // far above
-        } else {
+        }
+        else
+        {
             DisplayConclusion = DISPLAY_TIE+1;    // below
         }
         break;
     }
 }//Note::CalcConclusion
 
-BOOL Note::SetClef(int Clef) {
+BOOL Note::SetClef(int Clef)
+{
     CalcValue(Clef);
     return InClef(Clef);
 }//Note::SetClef
 
-BOOL Note::Set(unsigned char c,int Clef) {
-    if ((c>='a' && c<= 'g')||c=='r') {
+BOOL Note::Set(unsigned char c,int Clef)
+{
+    if ((c>='a' && c<= 'g')||c=='r')
+    {
         c -= 'a' - 'A';
-    } else if (c>='H' && c<='Z' && c!='R') {
+    }
+    else if (c>='H' && c<='Z' && c!='R')
+    {
         c += 'a' - 'A';
     }
 
-    if (c=='R') {
-        if (Name != c && Duration != 'z') {
-            if (!Accidental) {
+    if (c=='R')
+    {
+        if (Name != c && Duration != 'z')
+        {
+            if (!Accidental)
+            {
                 Set((unsigned char *)"C=4*qn ",Clef);
             }
             Name = c;
             CalcValue(Clef);
             return TRUE;
         }
-    } else if (c>='A' && c<='G') {
-        if (Name != c) {
-            if (!Accidental) {
+    }
+    else if (c>='A' && c<='G')
+    {
+        if (Name != c)
+        {
+            if (!Accidental)
+            {
                 Set((unsigned char *)"C=4*qn ",Clef);
             }
             Name = c;
             CalcValue(Clef);
             return TRUE;
         }
-    } else if (c>='0' && c<='7') {
-        if (Octave != c) {
-            if (!Accidental) {
+    }
+    else if (c>='0' && c<='7')
+    {
+        if (Octave != c)
+        {
+            if (!Accidental)
+            {
                 Set((unsigned char *)"C=4*qn ",Clef);
             }
             Octave = c;
             CalcValue(Clef);
             return TRUE;
         }
-    } else if (strchr("$#+=-@!",c)) {
-        if (Accidental != c) {
-            if (!Accidental) {
+    }
+    else if (strchr("$#+=-@!",c))
+    {
+        if (Accidental != c)
+        {
+            if (!Accidental)
+            {
                 Set((unsigned char *)"C=4*qn ",Clef);
             }
             Accidental = c;
             CalcValue(Clef);
             return TRUE;
         }
-    } else if (strchr("whqisz",c)) {
-        if (Duration != c) {
-            if (!Accidental) {
+    }
+    else if (strchr("whqisz",c))
+    {
+        if (Duration != c)
+        {
+            if (!Accidental)
+            {
                 Set((unsigned char *)"C=4*qn ",Clef);
             }
-            if (c=='z') {
+            if (c=='z')
+            {
                 Duration2='n';
             }
             Duration = c;
             CalcValue(Clef);
             return TRUE;
         }
-    } else if (strchr("n.tv",c)) {
-        if (Duration2 != c && Duration != 'z') {
-            if (!Accidental) {
+    }
+    else if (strchr("n.tv",c))
+    {
+        if (Duration2 != c && Duration != 'z')
+        {
+            if (!Accidental)
+            {
                 Set((unsigned char *)"C=4*qn ",Clef);
             }
             Duration2 = c;
             CalcModDuration(Clef);
             return TRUE;
         }
-    } else if (strchr(" \\`/\'_",c)) {
-        if (Conclusion != c) {
-            if (!Accidental) {
+    }
+    else if (strchr(" \\`/\'_",c))
+    {
+        if (Conclusion != c)
+        {
+            if (!Accidental)
+            {
                 Set((unsigned char *)"C=4*qn ",Clef);
             }
             Conclusion = c;
             CalcConclusion(Clef);
             return TRUE;
         }
-    } else if (strchr("*|~?\"",c)) {
-        if (Onset != c) {
-            if (!Accidental) {
+    }
+    else if (strchr("*|~?\"",c))
+    {
+        if (Onset != c)
+        {
+            if (!Accidental)
+            {
                 Set((unsigned char *)"C=4*qn ",Clef);
             }
             Onset = c;
             CalcOnset(Clef);
             return TRUE;
         }
-    } else if (c==ANNOT_SPACE) {
+    }
+    else if (c==ANNOT_SPACE)
+    {
         BOOL Result = Set((unsigned char *)"(SPACE)",Clef);
         CalcValue(Clef);
         return Result;
-    } else if (c==ANNOT_BAR) {
+    }
+    else if (c==ANNOT_BAR)
+    {
         BOOL Result = Set((unsigned char *)"(-BAR-)",Clef);
         CalcValue(Clef);
         return Result;
-    } else if (c==ANNOT_THICK_BAR) {
+    }
+    else if (c==ANNOT_THICK_BAR)
+    {
         BOOL Result = Set((unsigned char *)"(=BAR=)",Clef);
         CalcValue(Clef);
         return Result;
-    } else if (c==ANNOT_PHRASE) {
+    }
+    else if (c==ANNOT_PHRASE)
+    {
         BOOL Result = Set((unsigned char *)"(\'PHR\')",Clef);
         CalcValue(Clef);
         return Result;
-    } else if (c==ANNOT_PHRASE2) {
+    }
+    else if (c==ANNOT_PHRASE2)
+    {
         BOOL Result = Set((unsigned char *)"(\"PHR\")",Clef);
         CalcValue(Clef);
         return Result;
@@ -611,36 +833,55 @@ BOOL Note::Set(unsigned char c,int Clef) {
     return FALSE;
 }//Note::Set
 
-BOOL Note::Set(const unsigned char * Definition,int Clef) {
+BOOL Note::Set(const unsigned char * Definition,int Clef)
+{
     // (validify data)
-    if (!Definition) {
+    if (!Definition)
+    {
         return FALSE;
     }
-    if (*Definition=='(') {
-        if (Definition[6]!=')') {
+    if (*Definition=='(')
+    {
+        if (Definition[6]!=')')
+        {
             return FALSE;
         }
 
-        if (!strncmp("FIELD",(char *)Definition+1,5)) {
+        if (!strncmp("FIELD",(char *)Definition+1,5))
+        {
             Name = 0;
-        } else if (!strncmp("-BAR-",(char *)Definition+1,5)) {
+        }
+        else if (!strncmp("-BAR-",(char *)Definition+1,5))
+        {
             Name = ANNOT_BAR;
-        } else if (!strncmp("=BAR=",(char *)Definition+1,5)) {
+        }
+        else if (!strncmp("=BAR=",(char *)Definition+1,5))
+        {
             Name = ANNOT_THICK_BAR;
-        } else if (!strncmp("\'PHR\'",(char *)Definition+1,5)) {
+        }
+        else if (!strncmp("\'PHR\'",(char *)Definition+1,5))
+        {
             Name = ANNOT_PHRASE;
-        } else if (!strncmp("\"PHR\"",(char *)Definition+1,5)) {
+        }
+        else if (!strncmp("\"PHR\"",(char *)Definition+1,5))
+        {
             Name = ANNOT_PHRASE2;
-        } else if (!strncmp("SPACE",(char *)Definition+1,5)) {
+        }
+        else if (!strncmp("SPACE",(char *)Definition+1,5))
+        {
             Name = ANNOT_SPACE;
-        } else {
+        }
+        else
+        {
             Name = ANNOT_UNDEFINED;
         }
 
         Accidental=Octave=Onset=Duration=Duration2=Conclusion='\0';;
         CalcValue(Clef);
         return (Name != ANNOT_UNDEFINED);
-    } else {
+    }
+    else
+    {
         if
         (
             (!strchr("ABCDEFGR",*Definition)) ||
@@ -650,7 +891,8 @@ BOOL Note::Set(const unsigned char * Definition,int Clef) {
             (!strchr("qihwsz",Definition[4])) ||
             (!strchr("n.tv",Definition[5])) ||
             (!strchr(" \\`/\'_",Definition[6]))
-        ) {
+        )
+        {
             return FALSE;
         }
 
@@ -666,79 +908,106 @@ BOOL Note::Set(const unsigned char * Definition,int Clef) {
     }
 }//Note::Set
 
-BOOL Note::UpOctave(void) {
-    if (Octave>='7') {
+BOOL Note::UpOctave(void)
+{
+    if (Octave>='7')
+    {
         return FALSE;
     }
     ++Octave;
     return TRUE;
 }
 
-BOOL Note::DownOctave(void) {
-    if (Octave<='0') {
+BOOL Note::DownOctave(void)
+{
+    if (Octave<='0')
+    {
         return FALSE;
     }
     --Octave;
     return TRUE;
 }
 
-BOOL Note::UpStep(void) {
-    if (Name == 'B') {
-        if (Octave>='7') {
+BOOL Note::UpStep(void)
+{
+    if (Name == 'B')
+    {
+        if (Octave>='7')
+        {
             return FALSE;
         }
         ++Octave;
     }
 
-    if (Name=='G') {
+    if (Name=='G')
+    {
         Name='A';
-    } else if (Name>='A' && Name<='F') {
+    }
+    else if (Name>='A' && Name<='F')
+    {
         ++Name;
-    } else {
+    }
+    else
+    {
         return FALSE;
     }
 
     return TRUE;
 }//Note::UpStep
 
-BOOL Note::DownStep(void) {
-    if (Name == 'C') {
-        if (Octave<='0') {
+BOOL Note::DownStep(void)
+{
+    if (Name == 'C')
+    {
+        if (Octave<='0')
+        {
             return FALSE;
         }
         --Octave;
     }
 
-    if (Name=='A') {
+    if (Name=='A')
+    {
         Name='G';
-    } else if (Name>='B' && Name<='G') {
+    }
+    else if (Name>='B' && Name<='G')
+    {
         --Name;
-    } else {
+    }
+    else
+    {
         return FALSE;
     }
 
     return TRUE;
 }//Note::DownStep
 
-BOOL Note::InClef(int Clef) {
-    if (Clef<0||Clef>5) {
+BOOL Note::InClef(int Clef)
+{
+    if (Clef<0||Clef>5)
+    {
         return FALSE;
     }
-    if (Value<0) {
+    if (Value<0)
+    {
         return TRUE;    // rest
     }
-    if (Value<ClefRange[Clef][0]) {
+    if (Value<ClefRange[Clef][0])
+    {
         return FALSE;
     }
-    if (Value>ClefRange[Clef][1]) {
+    if (Value>ClefRange[Clef][1])
+    {
         return FALSE;
     }
     return TRUE;
 }//Note::InClef
 
-unsigned Note::MIDINote() {
+unsigned Note::MIDINote()
+{
     unsigned cNote = 12;
-    switch (Name) {
+    switch (Name)
+    {
     case 'A':
         cNote += 9;
         break;
@@ -765,7 +1034,8 @@ unsigned Note::MIDINote() {
         return 0;
     }
     cNote += (unsigned)((Octave - '0')*12);
-    switch (Accidental) {
+    switch (Accidental)
+    {
     case '=':
         break;
     case '$':
@@ -782,9 +1052,11 @@ unsigned Note::MIDINote() {
     return cNote;
 }//Note::MIDINote
 
-unsigned long Note::MIDIDuration() {
+unsigned long Note::MIDIDuration()
+{
     unsigned long l = 0;
-    switch (Duration) { // note duration
+    switch (Duration)   // note duration
+    {
     case 'w':
         l = 4 * TICKS_PER_Q;
         break;
@@ -807,7 +1079,8 @@ unsigned long Note::MIDIDuration() {
     default:
         return 0;
     }
-    switch (Duration2) { // modify duration
+    switch (Duration2)   // modify duration
+    {
     case 'n':
         break;
     case '.':
@@ -827,7 +1100,8 @@ unsigned long Note::MIDIDuration() {
 // InstrumentMenu
 // ***************
 
-class InstrumentMenu {
+class InstrumentMenu
+{
     HMENU hInstrumentMnu;
     HMENU hPercussionMnu;
     HMENU hStringMnu;
@@ -839,12 +1113,14 @@ public:
     InstrumentMenu(int Instrument=0);
     ~InstrumentMenu();
     void Check(int Instrument);
-    HMENU Menu() {
+    HMENU Menu()
+    {
         return hInstrumentMnu;
     }
 };
 
-InstrumentMenu::InstrumentMenu(int /*Instrument*/) {
+InstrumentMenu::InstrumentMenu(int /*Instrument*/)
+{
     hInstrumentMnu = CreatePopupMenu();
     hPercussionMnu = CreatePopupMenu();
     hStringMnu = CreatePopupMenu();
@@ -993,7 +1269,8 @@ InstrumentMenu::InstrumentMenu(int /*Instrument*/) {
     AppendMenu(hInstrumentMnu,MF_ENABLED|MF_POPUP,(UINT)hMiscMnu,_T("&Miscellaneous"));
 }
 
-InstrumentMenu::~InstrumentMenu() {
+InstrumentMenu::~InstrumentMenu()
+{
     DestroyMenu(hMiscMnu);
     DestroyMenu(hWoodMnu);
     DestroyMenu(hBrassMnu);
@@ -1003,17 +1280,27 @@ InstrumentMenu::~InstrumentMenu() {
     hMiscMnu=hWoodMnu=hBrassMnu=hStringMnu=hPercussionMnu=hInstrumentMnu=NULL;
 }
 
-void InstrumentMenu::Check(int Instrument) {
+void InstrumentMenu::Check(int Instrument)
+{
     CheckMenuItem(hInstrumentMnu,WM_USER+128+Instrument,MF_CHECKED);
-    if (Instrument<16||Instrument==47||Instrument==108||(Instrument>=112&&Instrument<=119)) {
+    if (Instrument<16||Instrument==47||Instrument==108||(Instrument>=112&&Instrument<=119))
+    {
         CheckMenuItem(hInstrumentMnu,0,MF_BYPOSITION|MF_CHECKED);    // Percussion
-    } else if (Instrument>=56&&Instrument<=63) {
+    }
+    else if (Instrument>=56&&Instrument<=63)
+    {
         CheckMenuItem(hInstrumentMnu,2,MF_BYPOSITION|MF_CHECKED);    // Brass
-    } else if ((Instrument>=16&&Instrument<=23)||(Instrument>=64&&Instrument<=79)||Instrument==109||Instrument==111) {
+    }
+    else if ((Instrument>=16&&Instrument<=23)||(Instrument>=64&&Instrument<=79)||Instrument==109||Instrument==111)
+    {
         CheckMenuItem(hInstrumentMnu,3,MF_BYPOSITION|MF_CHECKED);    // Woodwind
-    } else if ((Instrument>=52&&Instrument<=54)||(Instrument>=80&&Instrument<=103)||(Instrument>=121&&Instrument<=127)) {
+    }
+    else if ((Instrument>=52&&Instrument<=54)||(Instrument>=80&&Instrument<=103)||(Instrument>=121&&Instrument<=127))
+    {
         CheckMenuItem(hInstrumentMnu,4,MF_BYPOSITION|MF_CHECKED);    // Miscellaneous
-    } else {
+    }
+    else
+    {
         CheckMenuItem(hInstrumentMnu,1,MF_BYPOSITION|MF_CHECKED);    // String
     }
 }
@@ -1025,7 +1312,8 @@ void InstrumentMenu::Check(int Instrument) {
 
 #define WM_TEMPO (WM_MOUSEFIRST-200)
 
-class TempoMenu {
+class TempoMenu
+{
     HMENU hTempoMnu;
     HMENU hAdagioMnu;
     HMENU hAndanteMnu;
@@ -1038,12 +1326,14 @@ public:
     TempoMenu(int iTempo=0);
     ~TempoMenu();
     void Check(int iTempo);
-    HMENU Menu() {
+    HMENU Menu()
+    {
         return hTempoMnu;
     }
 };
 
-TempoMenu::TempoMenu(int /*iTempo*/) {
+TempoMenu::TempoMenu(int /*iTempo*/)
+{
     hTempoMnu = CreatePopupMenu();
     hAdagioMnu = CreatePopupMenu();
     hAndanteMnu = CreatePopupMenu();
@@ -1103,7 +1393,8 @@ TempoMenu::TempoMenu(int /*iTempo*/) {
     AppendMenu(hTempoMnu,MF_ENABLED|MF_POPUP,(UINT)hPrestoMnu,_T("176-200\t(Presto)"));
 }
 
-TempoMenu::~TempoMenu() {
+TempoMenu::~TempoMenu()
+{
     DestroyMenu(hAdagioMnu);
     DestroyMenu(hAndanteMnu);
     DestroyMenu(hModeratoMnu);
@@ -1115,20 +1406,32 @@ TempoMenu::~TempoMenu() {
     hAdagioMnu=hAndanteMnu=hModeratoMnu=hAllegroMnu=hAllegrettoMnu=hPrestoMnu=hTempoMnu=NULL;
 }
 
-void TempoMenu::Check(int iTempo) {
+void TempoMenu::Check(int iTempo)
+{
     CheckMenuItem(hTempoMnu,WM_TEMPO+iTempo,MF_CHECKED);
 
-    if (iTempo<76) {
+    if (iTempo<76)
+    {
         CheckMenuItem(hTempoMnu,0,MF_BYPOSITION|MF_CHECKED);    // Adagio
-    } else if (iTempo<100) {
+    }
+    else if (iTempo<100)
+    {
         CheckMenuItem(hTempoMnu,1,MF_BYPOSITION|MF_CHECKED);    // Andante
-    } else if (iTempo<124) {
+    }
+    else if (iTempo<124)
+    {
         CheckMenuItem(hTempoMnu,2,MF_BYPOSITION|MF_CHECKED);    // Moderato
-    } else if (iTempo<152) {
+    }
+    else if (iTempo<152)
+    {
         CheckMenuItem(hTempoMnu,3,MF_BYPOSITION|MF_CHECKED);    // Alegro
-    } else if (iTempo<176) {
+    }
+    else if (iTempo<176)
+    {
         CheckMenuItem(hTempoMnu,4,MF_BYPOSITION|MF_CHECKED);    // Allegretto
-    } else {
+    }
+    else
+    {
         CheckMenuItem(hTempoMnu,5,MF_BYPOSITION|MF_CHECKED);    // Presto
     }
 }
@@ -1138,7 +1441,8 @@ void TempoMenu::Check(int iTempo) {
 // PartWindowData
 // **************
 
-PartWindowData::PartWindowData(HWND hWnd,int Size) : m_stMThdChunk(NULL) {
+PartWindowData::PartWindowData(HWND hWnd,int Size) : m_stMThdChunk(NULL)
+{
     Active = (TRUE);
     Selecting = (FALSE);
     Control = (FALSE);
@@ -1163,19 +1467,23 @@ PartWindowData::PartWindowData(HWND hWnd,int Size) : m_stMThdChunk(NULL) {
 
     Melody = new pNote[Size];
     register int i;
-    for (i=0; i<Size; ++i) {
+    for (i=0; i<Size; ++i)
+    {
         Melody[i]=NULL;
     }
-    for (i=0; i<MUSIQUE_FONT_SIZE; ++i) {
+    for (i=0; i<MUSIQUE_FONT_SIZE; ++i)
+    {
         FontCharWidth[i]=0;
     }
 
     m_stMThdChunk = new MTHDCHNK;
-    if (!m_stMThdChunk) {
+    if (!m_stMThdChunk)
+    {
         return;
     }
     m_stMTrkHeader = new CHNK_HDR;
-    if (!m_stMTrkHeader) {
+    if (!m_stMTrkHeader)
+    {
         delete m_stMThdChunk;
         m_stMThdChunk=NULL;
         return;
@@ -1183,33 +1491,42 @@ PartWindowData::PartWindowData(HWND hWnd,int Size) : m_stMThdChunk(NULL) {
 
 }//PartWindowData constructor
 
-PartWindowData::~PartWindowData() {
+PartWindowData::~PartWindowData()
+{
     Active=Enabled=Selecting=FALSE;
     SelectBegin=SelectEnd=ViewBegin=ViewWidthPixels=Clef=Modified=0;
-    if (hFont) {
+    if (hFont)
+    {
         DeleteObject(hFont);
         hFont = NULL;
     }
     hMyself=NULL;
-    if (hPlayButton) {
+    if (hPlayButton)
+    {
         DestroyWindow(hPlayButton);
         hPlayButton = NULL;
     }
-    if (hPauseButton) {
+    if (hPauseButton)
+    {
         DestroyWindow(hPauseButton);
         hPauseButton = NULL;
     }
-    if (hStopButton) {
+    if (hStopButton)
+    {
         DestroyWindow(hStopButton);
         hStopButton = NULL;
     }
-    if (hLoopButton) {
+    if (hLoopButton)
+    {
         DestroyWindow(hLoopButton);
         hLoopButton = NULL;
     }
-    if (Melody) {
-        for (unsigned int i=0; i<MelodyBufferSize; i++) {
-            if (Melody[i]) {
+    if (Melody)
+    {
+        for (unsigned int i=0; i<MelodyBufferSize; i++)
+        {
+            if (Melody[i])
+            {
                 delete Melody[i];
                 Melody[i]=NULL;
             }
@@ -1218,23 +1535,27 @@ PartWindowData::~PartWindowData() {
         Melody = NULL;
         MelodySize=MelodyBufferSize=0;
     }
-    if (m_stMThdChunk) {
+    if (m_stMThdChunk)
+    {
         delete m_stMThdChunk;
         m_stMThdChunk = NULL;
     }
-    if (m_stMTrkHeader) {
+    if (m_stMTrkHeader)
+    {
         delete m_stMTrkHeader;
         m_stMTrkHeader = NULL;
     }
 
 }//PartWindowData destructor
 
-void PartWindowData::Grow(int Size) {
+void PartWindowData::Grow(int Size)
+{
     register unsigned i=0;
     MelodyBufferSize += Size;
 
     pNote * NewMelody = new pNote[MelodyBufferSize];
-    for (; i<MelodySize; ++i) {
+    for (; i<MelodySize; ++i)
+    {
         NewMelody[i] = new Note(*Melody[i]);  // copy old notes to new array
         delete Melody[i];
         Melody[i] = NULL;
@@ -1242,25 +1563,31 @@ void PartWindowData::Grow(int Size) {
     delete Melody;
     Melody = NewMelody;
 
-    for (; i<MelodyBufferSize; ++i) { // initialize newly grown area
+    for (; i<MelodyBufferSize; ++i)   // initialize newly grown area
+    {
         Melody[i]=NULL;
     }
 }//PartWindowData::Grow
 
-int PartWindowData::WhichClef() {
-    if (!MelodySize) {
+int PartWindowData::WhichClef()
+{
+    if (!MelodySize)
+    {
         return (Clef=1);    // NOTHING TO DISPLAY (DEFAULT:TREBLE)
     }
 
     int ClefHit[5] = {0,0,0,0,0};
 
-    for (unsigned register i=0; i<MelodySize; ++i) {
-        if (!Melody[i] || Melody[i]->Value < 0) {
+    for (unsigned register i=0; i<MelodySize; ++i)
+    {
+        if (!Melody[i] || Melody[i]->Value < 0)
+        {
             continue;    // not a note
         }
 
         for (register int j=0; j<5; ++j)
-            if (Melody[i]->Value >= ClefRange[j][0] && Melody[i]->Value <= ClefRange[j][1]) {
+            if (Melody[i]->Value >= ClefRange[j][0] && Melody[i]->Value <= ClefRange[j][1])
+            {
                 ++ClefHit[j];
             }
     }
@@ -1271,11 +1598,14 @@ int PartWindowData::WhichClef() {
     ClefHit[4] = 3 * ClefHit[4] / 4;
 
     int NewClef = 0;
-    for (register int k=1; k<5; ++k) {
-        if (ClefHit[k]<ClefHit[NewClef]) {
+    for (register int k=1; k<5; ++k)
+    {
+        if (ClefHit[k]<ClefHit[NewClef])
+        {
             continue;
         }
-        if (ClefHit[k]==ClefHit[NewClef] && Clef!=k) {
+        if (ClefHit[k]==ClefHit[NewClef] && Clef!=k)
+        {
             continue;
         }
         NewClef=k;
@@ -1284,54 +1614,66 @@ int PartWindowData::WhichClef() {
     return (Clef=NewClef);
 }//WhichClef
 
-void PartWindowData::SetClef(int NewClef) {
+void PartWindowData::SetClef(int NewClef)
+{
     Clef = NewClef;
-    for (register unsigned i=0; i<MelodySize; ++i) {
+    for (register unsigned i=0; i<MelodySize; ++i)
+    {
         Melody[i]->SetClef(NewClef);
     }
     InvalidateRgn(hMyself,NULL,0);
 }//SetClef
 
-WCHAR * PartWindowData::PartEncode(unsigned Begin,unsigned End) {
+WCHAR * PartWindowData::PartEncode(unsigned Begin,unsigned End)
+{
     unsigned X = 0;
 
-    if (End>MelodySize) {
+    if (End>MelodySize)
+    {
         End = MelodySize-1;
     }
 
-    if (!MelodySize || Begin>MelodySize || Begin>End) {
+    if (!MelodySize || Begin>MelodySize || Begin>End)
+    {
         return (WCHAR *)(NULL);
     }
 
     WCHAR * aString = new WCHAR [((End-Begin)*5) + 1];
 
     unsigned register j=0;
-    for (unsigned register i=Begin; i<End; ++i) {
-        if (!Melody[i]) {
+    for (unsigned register i=Begin; i<End; ++i)
+    {
+        if (!Melody[i])
+        {
             continue;
         }
         // ONSET
-        if (Melody[i]->DisplayOnset) {
+        if (Melody[i]->DisplayOnset)
+        {
             aString[j++]=Melody[i]->DisplayOnset;
             X += FontCharWidth[Melody[i]->DisplayOnset];
         }
         // ACCIDENTAL
-        if (Melody[i]->DisplayAccidental) {
+        if (Melody[i]->DisplayAccidental)
+        {
             aString[j++]=Melody[i]->DisplayAccidental;
             X += FontCharWidth[Melody[i]->DisplayAccidental];
         }
         // MOD-DURATION
-        if (Melody[i]->DisplayModDur) {
+        if (Melody[i]->DisplayModDur)
+        {
             aString[j++]=Melody[i]->DisplayModDur;
             X += FontCharWidth[Melody[i]->DisplayModDur];
         }
         // NOTE (NAME/OCTAVE/DURATION)
-        if (Melody[i]->DisplayNote) {
+        if (Melody[i]->DisplayNote)
+        {
             aString[j++]=Melody[i]->DisplayNote;
             X += FontCharWidth[Melody[i]->DisplayNote];
         }
         // CONCLUSION
-        if (Melody[i]->DisplayConclusion) {
+        if (Melody[i]->DisplayConclusion)
+        {
             aString[j++]=Melody[i]->DisplayConclusion;
             X += FontCharWidth[Melody[i]->DisplayConclusion];
         }
@@ -1340,13 +1682,16 @@ WCHAR * PartWindowData::PartEncode(unsigned Begin,unsigned End) {
     return aString;
 }//PartEncode
 
-int PartWindowData::wcslenLimited(WCHAR * pWchar, int nPixels) {
+int PartWindowData::wcslenLimited(WCHAR * pWchar, int nPixels)
+{
     int nChar = 0;
 
-    for (int nPixelsUsed = 0; pWchar[nChar]; nChar++) {
+    for (int nPixelsUsed = 0; pWchar[nChar]; nChar++)
+    {
         int nUsed = FontCharWidth[pWchar[nChar]];
 
-        if (nPixelsUsed > nPixels && nUsed) {
+        if (nPixelsUsed > nPixels && nUsed)
+        {
             break;
         }
 
@@ -1356,19 +1701,23 @@ int PartWindowData::wcslenLimited(WCHAR * pWchar, int nPixels) {
     return nChar;
 }
 
-char * PartWindowData::GetString(unsigned Begin, unsigned End) {
-    if (End>MelodySize) {
+char * PartWindowData::GetString(unsigned Begin, unsigned End)
+{
+    if (End>MelodySize)
+    {
         End = MelodySize;
     }
 
-    if (!MelodySize || Begin>MelodySize || Begin>End) {
+    if (!MelodySize || Begin>MelodySize || Begin>End)
+    {
         return (char *)(NULL);
     }
 
     char * aString = NULL;
     UINT aStringSize = ((End-Begin)*7) + 1; // ((1+(End-Begin))*7) + 1;
     UINT aStringExtra = 0;
-    if (!Begin && End==MelodySize) {
+    if (!Begin && End==MelodySize)
+    {
         // copying whole string; add clef and instrument info to output
         aStringExtra = 21;
         aString = new char[aStringSize+aStringExtra];
@@ -1381,13 +1730,17 @@ char * PartWindowData::GetString(unsigned Begin, unsigned End) {
         aString[17] = (char)((Tempo/100)+'0');
         aString[18] = (char)(((Tempo%100)/10) + '0');
         aString[19] = (char)((Tempo%10) + '0');
-    } else {
+    }
+    else
+    {
         aString = new char[aStringSize];
     }
 
     register unsigned i;
-    for (i=0; i<(End-Begin); ++i) {
-        if (strchr("ABCDEFGR",Melody[Begin+i]->Name)) {
+    for (i=0; i<(End-Begin); ++i)
+    {
+        if (strchr("ABCDEFGR",Melody[Begin+i]->Name))
+        {
             aString[i*7+aStringExtra]=Melody[Begin+i]->Name;
             aString[i*7+1+aStringExtra]=Melody[Begin+i]->Accidental;
             aString[i*7+2+aStringExtra]=Melody[Begin+i]->Octave;
@@ -1395,7 +1748,9 @@ char * PartWindowData::GetString(unsigned Begin, unsigned End) {
             aString[i*7+4+aStringExtra]=Melody[Begin+i]->Duration;
             aString[i*7+5+aStringExtra]=Melody[Begin+i]->Duration2;
             aString[i*7+6+aStringExtra]=Melody[Begin+i]->Conclusion;
-        } else switch (Melody[Begin+i]->Name) {
+        }
+        else switch (Melody[Begin+i]->Name)
+            {
             case 0:
                 strcpy_s(&aString[i*7+aStringExtra],aStringSize+aStringExtra-(i*7+aStringExtra),"(FIELD)");
                 break;
@@ -1423,29 +1778,39 @@ char * PartWindowData::GetString(unsigned Begin, unsigned End) {
     return aString;
 }//PartWindowData::GetString
 
-int PartWindowData::ReplaceString(char * String,unsigned Begin,unsigned End) {
+int PartWindowData::ReplaceString(char * String,unsigned Begin,unsigned End)
+{
     int InsertionLength=0;
 
-    if (String) {
-        while (*String == '(') {
-            if (!strncmp(String+1,"CLEF",4)) { // display clef
+    if (String)
+    {
+        while (*String == '(')
+        {
+            if (!strncmp(String+1,"CLEF",4))   // display clef
+            {
                 Clef = String[5]-'0';
                 String += 7;
-            } else if (!strncmp(String+1,"VX",2)) { // playback voice (instrument)
+            }
+            else if (!strncmp(String+1,"VX",2))     // playback voice (instrument)
+            {
                 Instrument  = (char)(String[3]-'0');
                 Instrument *= 10;
                 Instrument = (char)(Instrument + (String[4]-'0'));
                 Instrument *= 10;
                 Instrument = (char)(Instrument + (String[5]-'0'));
                 String += 7;
-            } else if (!strncmp(String+1,"Q=",2)) { // playback tempo
+            }
+            else if (!strncmp(String+1,"Q=",2))     // playback tempo
+            {
                 Tempo = String[3]-'0';
                 Tempo *= 10;
                 Tempo += String[4]-'0';
                 Tempo *= 10;
                 Tempo += String[5]-'0';
                 String += 7;
-            } else {
+            }
+            else
+            {
                 break;
             }
         }
@@ -1457,34 +1822,45 @@ int PartWindowData::ReplaceString(char * String,unsigned Begin,unsigned End) {
 
     // add space to Melody buffer if necessary
     if (ReplacedLength<InsertionLength &&
-            MelodySize+(InsertionLength-ReplacedLength)>MelodyBufferSize) {
+            MelodySize+(InsertionLength-ReplacedLength)>MelodyBufferSize)
+    {
         Grow(DELTA+InsertionLength-ReplacedLength);
     }
 
     // copy what you can
-    for (register int i=0; i<InsertionLength&&i<ReplacedLength; ++i) {
+    for (register int i=0; i<InsertionLength&&i<ReplacedLength; ++i)
+    {
         Melody[Begin+i]->Set((unsigned char *)&String[i*7],Clef);
     }
 
     int NetLengthChange = InsertionLength - (End - Begin);
 
     // move over to add remaining notes if any
-    if (NetLengthChange>0) {
+    if (NetLengthChange>0)
+    {
         register int i;
-        if (MelodySize) {
+        if (MelodySize)
+        {
             // move over
             for (i=MelodySize-1; i>=(int)End; --i)
-                if (Melody[i+NetLengthChange]) {
+                if (Melody[i+NetLengthChange])
+                {
                     *Melody[i+NetLengthChange]=*Melody[i];
-                } else {
+                }
+                else
+                {
                     Melody[i+NetLengthChange]= new Note(*Melody[i]);
                 }
         }
         // add notes
-        for (i=InsertionLength-1; i>=ReplacedLength; --i) {
-            if (Melody[Begin+i]) {
+        for (i=InsertionLength-1; i>=ReplacedLength; --i)
+        {
+            if (Melody[Begin+i])
+            {
                 Melody[Begin+i]->Set((unsigned char *)&String[i*7],Clef);
-            } else {
+            }
+            else
+            {
                 Note * np = new Note((unsigned char *)&String[i*7],Clef);
                 Melody[Begin+i] = np;
             }
@@ -1493,28 +1869,36 @@ int PartWindowData::ReplaceString(char * String,unsigned Begin,unsigned End) {
     }
 
     // else move over to delete additional notes if any
-    else if (NetLengthChange<0) {
+    else if (NetLengthChange<0)
+    {
         MelodySize += NetLengthChange;
-        for (register int i=End+NetLengthChange; i<=(int)MelodySize; ++i) {
-            if (Melody[i]) {
+        for (register int i=End+NetLengthChange; i<=(int)MelodySize; ++i)
+        {
+            if (Melody[i])
+            {
                 delete Melody[i];
             }
-            if (Melody[i-NetLengthChange]) {
+            if (Melody[i-NetLengthChange])
+            {
                 Melody[i] = new Note(*Melody[i-NetLengthChange]);
-            } else {
+            }
+            else
+            {
                 Melody[i] = NULL;
             }
         }
     }
 
-    if (Clef < 0 || Clef > 4) {
+    if (Clef < 0 || Clef > 4)
+    {
         WhichClef();
     }
     InvalidateRgn(hMyself,NULL,0);
     return InsertionLength;
 }//PartWindowData::ReplaceString
 
-int PartWindowData::Paint() {
+int PartWindowData::Paint()
+{
     SetScrollRange(hMyself,SB_HORZ,0,MelodySize-1,1);
     SetScrollPos(hMyself,SB_HORZ,ViewBegin,1);
 
@@ -1525,15 +1909,19 @@ int PartWindowData::Paint() {
     PAINTSTRUCT ps;
     BeginPaint(hMyself,&ps);
     // create font handle, if needed
-    if (!hFont) {
+    if (!hFont)
+    {
         hFont = CreateFont(r.bottom<25?25:r.bottom,0,0,0,FW_DONTCARE,FALSE,FALSE,FALSE,
                            ANSI_CHARSET,OUT_DEFAULT_PRECIS,CLIP_DEFAULT_PRECIS|0x0400,DEFAULT_QUALITY,DEFAULT_PITCH|FF_DONTCARE,"Musique");
         SelectObject(ps.hdc,hFont);
         BOOL bResult = GetCharWidth32W(ps.hdc,0,MUSIQUE_FONT_SIZE-1,FontCharWidth);
-        if (!bResult) {
+        if (!bResult)
+        {
             GetCharWidthW(ps.hdc,0,MUSIQUE_FONT_SIZE-1,FontCharWidth);
         }
-    } else {
+    }
+    else
+    {
         SelectObject(ps.hdc,hFont);
     }
 
@@ -1549,10 +1937,12 @@ int PartWindowData::Paint() {
     SetBkColor(ps.hdc,DISPLAY_BKG);
     WCHAR * Sequence = PartEncode(ViewBegin,MelodySize);
 
-    if (Sequence) {
+    if (Sequence)
+    {
         int SequenceLength = wcslen(Sequence);
         WCHAR * FullSequence = new WCHAR [SequenceLength+5];
-        switch (Clef) {
+        switch (Clef)
+        {
         case 1:
             *FullSequence = DISPLAY_TREBLE;
             break;
@@ -1580,29 +1970,37 @@ int PartWindowData::Paint() {
 
         delete Sequence;
 
-        if (ViewBegin<SelectMin()) {
+        if (ViewBegin<SelectMin())
+        {
             Sequence = PartEncode(ViewBegin,SelectMin());
-            for (register int i=0; Sequence[i]; ++i) {
+            for (register int i=0; Sequence[i]; ++i)
+            {
                 r.left += FontCharWidth[Sequence[i]];
             }
             delete Sequence;
         }
 
-        if (ViewBegin) {
-            if (Enabled) {
+        if (ViewBegin)
+        {
+            if (Enabled)
+            {
                 SetTextColor(ps.hdc,DISPLAY_INACTIVE_TEXT);
             }
             FullSequence[1] = DISPLAY_CONTINUED;
             TextOutW(ps.hdc,2,2,FullSequence,2);
-            if (Enabled) {
+            if (Enabled)
+            {
                 SetTextColor(ps.hdc,DISPLAY_ACTIVE_TEXT);
             }
         }
         delete FullSequence;
-    } else { // quick draw empty staff
+    }
+    else     // quick draw empty staff
+    {
         WCHAR EmptyStaff[5]
             = { DISPLAY_TREBLE,DISPLAY_BAR,DISPLAY_SMALL_SPACE,DISPLAY_THICK_BAR,'\0'};
-        switch (Clef) {
+        switch (Clef)
+        {
         case 3: // BASS
             *EmptyStaff = DISPLAY_BASS;
             break;
@@ -1621,8 +2019,10 @@ int PartWindowData::Paint() {
     }
 
     // if nothing is selected, draw cursor
-    if (SelectBegin==SelectEnd) {
-        if (SelectBegin>=ViewBegin) {
+    if (SelectBegin==SelectEnd)
+    {
+        if (SelectBegin>=ViewBegin)
+        {
             // Draw cursor
             HPEN CursorPen = ::CreatePen(PS_SOLID,0,DISPLAY_CURSOR);
             HPEN OldPen = (HPEN)SelectObject(ps.hdc,CursorPen);
@@ -1632,18 +2032,24 @@ int PartWindowData::Paint() {
         }
     }
     // otherwise, draw selection
-    else {
+    else
+    {
         // Draw selection
-        if (ViewBegin<SelectMax()) {
+        if (ViewBegin<SelectMax())
+        {
             SetTextColor(ps.hdc,Enabled?DISPLAY_SELECT_TEXT:DISPLAY_INACTIVE_TEXT);
             SetBkColor(ps.hdc,DISPLAY_SELECT_BKG);
             WCHAR * Sequence = NULL;
-            if (ViewBegin>SelectMin()) {
+            if (ViewBegin>SelectMin())
+            {
                 Sequence = PartEncode(ViewBegin,SelectMax());
-            } else {
+            }
+            else
+            {
                 Sequence = PartEncode(SelectMin(),SelectMax());
             }
-            if (Sequence) {
+            if (Sequence)
+            {
                 TextOutW(ps.hdc,r.left,r.top,Sequence,wcslenLimited(Sequence, r.right-r.left));
                 delete Sequence;
             }
@@ -1651,7 +2057,8 @@ int PartWindowData::Paint() {
 
     }
 
-    if (r.bottom>=50) {
+    if (r.bottom>=50)
+    {
         SetTextColor(ps.hdc, DISPLAY_ACTIVE_TEXT);
         SetBkColor(ps.hdc,DISPLAY_BKG);
 
@@ -1669,46 +2076,60 @@ int PartWindowData::Paint() {
 
     // finish up
     ValidateRect(hMyself,&ps.rcPaint);
-    if (hPlayButton) {
+    if (hPlayButton)
+    {
         InvalidateRgn(hPlayButton,NULL,FALSE);
     }
-    if (hPauseButton) {
+    if (hPauseButton)
+    {
         InvalidateRgn(hPauseButton,NULL,FALSE);
     }
-    if (hStopButton) {
+    if (hStopButton)
+    {
         InvalidateRgn(hStopButton,NULL,FALSE);
     }
-    if (hLoopButton) {
+    if (hLoopButton)
+    {
         InvalidateRgn(hLoopButton,NULL,FALSE);
     }
     EndPaint(hMyself,&ps);
     return 0;
 }//PartWindowData::Paint
 
-unsigned PartWindowData::Width(unsigned From, unsigned Through) {
-    if (From>=MelodySize) {
+unsigned PartWindowData::Width(unsigned From, unsigned Through)
+{
+    if (From>=MelodySize)
+    {
         return 0;
     }
-    if (Through<MelodySize) {
+    if (Through<MelodySize)
+    {
         Through=MelodySize;
     }
 
     unsigned SectionWidth = 0;
-    for (register int i=From; i<=(int)Through; ++i) {
-        if (Melody[i]) {
-            if (Melody[i]->DisplayOnset) {
+    for (register int i=From; i<=(int)Through; ++i)
+    {
+        if (Melody[i])
+        {
+            if (Melody[i]->DisplayOnset)
+            {
                 SectionWidth += FontCharWidth[Melody[i]->DisplayOnset];
             }
-            if (Melody[i]->DisplayAccidental) {
+            if (Melody[i]->DisplayAccidental)
+            {
                 SectionWidth += FontCharWidth[Melody[i]->DisplayAccidental];
             }
-            if (Melody[i]->DisplayModDur) {
+            if (Melody[i]->DisplayModDur)
+            {
                 SectionWidth += FontCharWidth[Melody[i]->DisplayModDur];
             }
-            if (Melody[i]->DisplayNote) {
+            if (Melody[i]->DisplayNote)
+            {
                 SectionWidth += FontCharWidth[Melody[i]->DisplayNote];
             }
-            if (Melody[i]->DisplayConclusion) {
+            if (Melody[i]->DisplayConclusion)
+            {
                 SectionWidth += FontCharWidth[Melody[i]->DisplayConclusion];
             }
         }
@@ -1716,15 +2137,19 @@ unsigned PartWindowData::Width(unsigned From, unsigned Through) {
     return SectionWidth;
 }//PartWindowData::Width
 
-unsigned PartWindowData::Position(unsigned Pixels) {
-    if (!Pixels) {
+unsigned PartWindowData::Position(unsigned Pixels)
+{
+    if (!Pixels)
+    {
         return 0;
     }
-    if (ViewBegin>=MelodySize) {
+    if (ViewBegin>=MelodySize)
+    {
         return MelodySize;
     }
     unsigned Left=0,Right=0;
-    switch (Clef) {
+    switch (Clef)
+    {
     case 0:
         Left=Right=FontCharWidth[DISPLAY_TREBLE_8VA];
         break;
@@ -1742,25 +2167,33 @@ unsigned PartWindowData::Position(unsigned Pixels) {
         break;
     }
     register int i;
-    for (i=ViewBegin; i<(int)MelodySize; ++i) {
-        if (Melody[i]) {
-            if (Melody[i]->DisplayOnset) {
+    for (i=ViewBegin; i<(int)MelodySize; ++i)
+    {
+        if (Melody[i])
+        {
+            if (Melody[i]->DisplayOnset)
+            {
                 Right += FontCharWidth[Melody[i]->DisplayOnset];
             }
-            if (Melody[i]->DisplayAccidental) {
+            if (Melody[i]->DisplayAccidental)
+            {
                 Right += FontCharWidth[Melody[i]->DisplayAccidental];
             }
-            if (Melody[i]->DisplayModDur) {
+            if (Melody[i]->DisplayModDur)
+            {
                 Right += FontCharWidth[Melody[i]->DisplayModDur];
             }
-            if (Melody[i]->DisplayNote) {
+            if (Melody[i]->DisplayNote)
+            {
                 Right += FontCharWidth[Melody[i]->DisplayNote];
             }
-            if (Melody[i]->DisplayConclusion) {
+            if (Melody[i]->DisplayConclusion)
+            {
                 Right += FontCharWidth[Melody[i]->DisplayConclusion];
             }
 
-            if (Pixels<(Left/2)+(Right/2)) {
+            if (Pixels<(Left/2)+(Right/2))
+            {
                 return i;
             }
         }
@@ -1769,9 +2202,11 @@ unsigned PartWindowData::Position(unsigned Pixels) {
     return i;
 }//PartWindowData::Position
 
-void PartWindowData::AutoScrollRight(void) {
+void PartWindowData::AutoScrollRight(void)
+{
     unsigned ClefWidth = 0;
-    switch (Clef) {
+    switch (Clef)
+    {
     case 0:
         ClefWidth = FontCharWidth[DISPLAY_TREBLE_8VA];
         break;
@@ -1790,44 +2225,54 @@ void PartWindowData::AutoScrollRight(void) {
     }
     unsigned Width = 0;
     unsigned BeginHere = SelectEnd;
-    if (SelectEnd==MelodySize) {
+    if (SelectEnd==MelodySize)
+    {
         Width += FontCharWidth[DISPLAY_BAR];
         Width += FontCharWidth[DISPLAY_SMALL_SPACE];
         Width += FontCharWidth[DISPLAY_THICK_BAR];
     }
 
-    while (BeginHere) {
+    while (BeginHere)
+    {
         --BeginHere;
 
-        if (Melody[BeginHere]->DisplayOnset) {
+        if (Melody[BeginHere]->DisplayOnset)
+        {
             Width += FontCharWidth[Melody[BeginHere]->DisplayOnset];
         }
-        if (Melody[BeginHere]->DisplayAccidental) {
+        if (Melody[BeginHere]->DisplayAccidental)
+        {
             Width += FontCharWidth[Melody[BeginHere]->DisplayAccidental];
         }
-        if (Melody[BeginHere]->DisplayModDur) {
+        if (Melody[BeginHere]->DisplayModDur)
+        {
             Width += FontCharWidth[Melody[BeginHere]->DisplayModDur];
         }
-        if (Melody[BeginHere]->DisplayNote) {
+        if (Melody[BeginHere]->DisplayNote)
+        {
             Width += FontCharWidth[Melody[BeginHere]->DisplayNote];
         }
-        if (Melody[BeginHere]->DisplayConclusion) {
+        if (Melody[BeginHere]->DisplayConclusion)
+        {
             Width += FontCharWidth[Melody[BeginHere]->DisplayConclusion];
         }
 
-        if (Width+ClefWidth>ViewWidthPixels) {
+        if (Width+ClefWidth>ViewWidthPixels)
+        {
             ++BeginHere;
             break;
         }
     }
 
-    if (ViewBegin<BeginHere) {
+    if (ViewBegin<BeginHere)
+    {
         ViewBegin = BeginHere;
     }
     InvalidateRgn(hMyself,NULL,0);
 }//PartWindowData::AutoScrollRight
 
-static char * NoteNum2Name(UBYTE byMIDINumber, char * sMusique, size_t len) {
+static char * NoteNum2Name(UBYTE byMIDINumber, char * sMusique, size_t len)
+{
     UBYTE bySamaNumber;
     short nOctave;
     short nInterval;
@@ -1849,8 +2294,10 @@ static char * NoteNum2Name(UBYTE byMIDINumber, char * sMusique, size_t len) {
     return sMusique;
 }
 
-static void OutputVarLenNum(ofstream & os, const unsigned long value) {
-    if (value<=0x7F) { // simple, one byte representation
+static void OutputVarLenNum(ofstream & os, const unsigned long value)
+{
+    if (value<=0x7F)   // simple, one byte representation
+    {
         os.put((unsigned char)value);
         return;
     }
@@ -1863,17 +2310,20 @@ static void OutputVarLenNum(ofstream & os, const unsigned long value) {
 
     register int i;
     for (i=0; i<3; ++i)
-        if (OutVals[i]) {
+        if (OutVals[i])
+        {
             break;
         }
-    while (i<3) {
+    while (i<3)
+    {
         os.put((unsigned char)(OutVals[i++] | 0x80));
     }
 
     os.put(OutVals[3]);
 }//OutputVarLenNum
 
-unsigned long InputVarLenNum(ifstream & is) {
+unsigned long InputVarLenNum(ifstream & is)
+{
     register unsigned long value;
     register unsigned char c;
 
@@ -1886,7 +2336,8 @@ unsigned long InputVarLenNum(ifstream & is) {
     nTest = is.tellg();
 #endif
     value = c & 0x7F;
-    while (c & 0x80) {
+    while (c & 0x80)
+    {
         value <<= 7;
         is >> c;
         value += (c & 0x7F);
@@ -1896,13 +2347,15 @@ unsigned long InputVarLenNum(ifstream & is) {
 }//InputVarLenNum
 
 
-static DWORD RevByteOrder(const DWORD dwOriginal) {
+static DWORD RevByteOrder(const DWORD dwOriginal)
+{
     UINT nLength = sizeof(dwOriginal);
     UINT nMaskShift;
     DWORD dwCurrByte;
     DWORD dwReversed = 0;
     DWORD dwMask = 0xFF;
-    for (UINT i = 0; i < nLength; i++) {
+    for (UINT i = 0; i < nLength; i++)
+    {
         nMaskShift = i * sizeof(BYTE) * 8; // calculate shift for mask
         dwCurrByte = (dwOriginal & (dwMask << nMaskShift)) >> nMaskShift; // get current byte
         dwCurrByte <<= (nLength - i - 1) * 8; // shift to reversed position
@@ -1912,13 +2365,15 @@ static DWORD RevByteOrder(const DWORD dwOriginal) {
     return dwReversed;
 }
 
-static WORD RevByteOrder(const WORD wOriginal) {
+static WORD RevByteOrder(const WORD wOriginal)
+{
     UINT nLength = sizeof(wOriginal);
     UINT nMaskShift;
     WORD wCurrByte;
     WORD wReversed = 0;
     WORD wMask = 0xFF;
-    for (UINT i = 0; i < nLength; i++) {
+    for (UINT i = 0; i < nLength; i++)
+    {
         nMaskShift = i * sizeof(BYTE) * 8; // calculate shift for mask
         wCurrByte = (unsigned short)((wOriginal & (wMask << nMaskShift)) >> nMaskShift); // get current byte
         wCurrByte <<= (nLength - i - 1) * 8; // shift to reversed position
@@ -1928,7 +2383,8 @@ static WORD RevByteOrder(const WORD wOriginal) {
     return wReversed;
 }
 
-DWORD PartWindowData::Ticks2Dur(DWORD dwNoteTicks, DWORD dwTolerance, char * sMusique, size_t len) {
+DWORD PartWindowData::Ticks2Dur(DWORD dwNoteTicks, DWORD dwTolerance, char * sMusique, size_t len)
+{
     double fNoteStdDur[16] = {1/8.0, 1/6.0, 0.25, 1/3.0, 3/8.0, 0.5, 2/3.0, 0.75, 1.0, 4/3.0, 1.5,  2.0, 8/3.0, 3.0,  4.0,  6.0};
     char  sNoteDur[16][3] = {"zn",  "st",  "sn", "it",  "s.",  "in", "qt", "i.", "qn", "ht", "q.", "hn", "wt", "h.", "wn", "w."};
     DWORD dwResult;
@@ -1944,21 +2400,30 @@ DWORD PartWindowData::Ticks2Dur(DWORD dwNoteTicks, DWORD dwTolerance, char * sMu
     // binary search for note duration
     nMinIndex = 0;
     nMaxIndex = 15;
-    if (fNoteQtrNotes > fNoteStdDur[15]) {
+    if (fNoteQtrNotes > fNoteStdDur[15])
+    {
         nNoteIndex = 14;
-    } else {
-        while (nMinIndex != nMaxIndex) {
+    }
+    else
+    {
+        while (nMinIndex != nMaxIndex)
+        {
             nMidIndex = (unsigned short)((nMaxIndex + nMinIndex) / 2);
-            if (fNoteQtrNotes <= fNoteStdDur[nMidIndex]) {
+            if (fNoteQtrNotes <= fNoteStdDur[nMidIndex])
+            {
                 nMaxIndex = nMidIndex;
-            } else {
+            }
+            else
+            {
                 nMinIndex = (unsigned short)(nMidIndex + 1);
             }
         }
         nNoteIndex = nMinIndex;
         // if rest, may need to shift index by one
-        if (bRest) {
-            if (fNoteQtrNotes < fNoteStdDur[nNoteIndex]) {
+        if (bRest)
+        {
+            if (fNoteQtrNotes < fNoteStdDur[nNoteIndex])
+            {
                 nNoteIndex--;
             }
         }
@@ -1966,32 +2431,43 @@ DWORD PartWindowData::Ticks2Dur(DWORD dwNoteTicks, DWORD dwTolerance, char * sMu
     // calc residue for return value
     DWORD dwNoteTicksNominal = (DWORD)(fNoteStdDur[nNoteIndex] * (float)m_stMThdChunk->Division),
           dwNoteTicksMax;
-    if (!bRest) {
+    if (!bRest)
+    {
         dwNoteTicksMax = dwNoteTicksNominal;
-    } else {
+    }
+    else
+    {
         dwNoteTicksMax = (DWORD)(fNoteStdDur[nNoteIndex] * (float)m_stMThdChunk->Division) + dwTolerance - 1;
     }
-    if (dwNoteTicks <= dwNoteTicksMax) {
+    if (dwNoteTicks <= dwNoteTicksMax)
+    {
         dwResult = 0;
-    } else {
+    }
+    else
+    {
         dwResult = dwNoteTicks - dwNoteTicksNominal;
     }
     // compose duration string
     strcat_s(sMusique, len, sNoteDur[nNoteIndex]);
-    if ((dwResult) && (!bRest)) {
+    if ((dwResult) && (!bRest))
+    {
         strcat_s(sMusique, len, "_");
-    } else {
+    }
+    else
+    {
         strcat_s(sMusique, len, " ");
     }
 
     return dwResult;
 }
 
-BOOL PartWindowData::MusicXMLIn(const char * filename) {
+BOOL PartWindowData::MusicXMLIn(const char * filename)
+{
     CoInitialize(NULL);
     ISaAudioDocumentReaderPtr saAudioDocRdr;
     HRESULT createResult = saAudioDocRdr.CreateInstance(__uuidof(SaAudioDocumentReader));
-    if (createResult) {
+    if (createResult)
+    {
         return FALSE;
     }
 
@@ -2006,11 +2482,13 @@ BOOL PartWindowData::MusicXMLIn(const char * filename) {
     return true;
 }
 
-BOOL PartWindowData::MusicXMLOut(const char * filename) {
+BOOL PartWindowData::MusicXMLOut(const char * filename)
+{
     CoInitialize(NULL);
     ISaAudioDocumentWriterPtr saAudioDocWriter;
     HRESULT createResult = saAudioDocWriter.CreateInstance(__uuidof(SaAudioDocumentWriter));
-    if (createResult) {
+    if (createResult)
+    {
         return FALSE;
     }
 
@@ -2027,18 +2505,22 @@ BOOL PartWindowData::MusicXMLOut(const char * filename) {
     return true;
 }
 
-BOOL PartWindowData::MIDIIn(const char * filename) {
-    if (!filename || !*filename) {
+BOOL PartWindowData::MIDIIn(const char * filename)
+{
+    if (!filename || !*filename)
+    {
         return FALSE;
     }
 
     ifstream infile(filename,ios::binary);
-    if (!infile) {
+    if (!infile)
+    {
         return FALSE;
     }
 
     // delete contents of staff control
-    if (MelodySize) {
+    if (MelodySize)
+    {
         ReplaceString("", 0, MelodySize);
     }
 
@@ -2050,11 +2532,13 @@ BOOL PartWindowData::MIDIIn(const char * filename) {
 
     // check file status and chunk ID
     LPSTR lpstrChunkName = new char[5];
-    for (short i = 0; i < 4; i++) {
+    for (short i = 0; i < 4; i++)
+    {
         lpstrChunkName[i] = m_stMThdChunk->Header.Id.Name[i];
     }
     lpstrChunkName[4] = 0;
-    if (!infile.good() || strcmp(lpstrChunkName, "MThd")) {
+    if (!infile.good() || strcmp(lpstrChunkName, "MThd"))
+    {
         delete infile;
         return FALSE;
     }
@@ -2105,7 +2589,8 @@ BOOL PartWindowData::MIDIIn(const char * filename) {
     long nTest = infile.tellg();
 #endif
     // translate MIDI messages
-    while (infile.good()) {
+    while (infile.good())
+    {
         // get delta time
 #ifdef _DEBUG
         nTest = infile.tellg();
@@ -2122,49 +2607,63 @@ BOOL PartWindowData::MIDIIn(const char * filename) {
 #ifdef _DEBUG
         nTest = infile.tellg();
 #endif
-        if (byEventCommand < 0x80) { // running status
+        if (byEventCommand < 0x80)   // running status
+        {
             byEventCommand = byEventCommandOld;
             infile.seekg(-1L, ios::cur);
         }
         // get data
-        switch (byEventCommand >> 4) {
+        switch (byEventCommand >> 4)
+        {
             // MIDI events
         case 0x8: // Note Off
         case 0x9: // Note On
             byEventTrack = (BYTE)((byEventCommand & 0x0F));
-            if (!bFirstNote) {
+            if (!bFirstNote)
+            {
                 byEventTrackFirst = byEventTrack;
             }
             infile.read((char *)&byNoteNum, sizeof(byNoteNum));
             infile.read((char *)&byNoteVel, sizeof(byNoteVel));
-            if ((byEventTrack == byEventTrackFirst) /*&& !bySamaFlag*/) {
-                if ((byEventCommand == 0x90) && (byNoteVel)) { // Note On message
-                    if (dwNoteDeltaTime > dwNoteTolerance) { // there is a rest here
-                        do {
+            if ((byEventTrack == byEventTrackFirst) /*&& !bySamaFlag*/)
+            {
+                if ((byEventCommand == 0x90) && (byNoteVel))   // Note On message
+                {
+                    if (dwNoteDeltaTime > dwNoteTolerance)   // there is a rest here
+                    {
+                        do
+                        {
                             strcpy_s(sMusique, _countof(sMusique), "R=3*");
                             dwNoteResidue = Ticks2Dur(dwNoteDeltaTime, dwNoteTolerance, sMusique, _countof(sMusique));
                             dwNoteDeltaTime = dwNoteResidue;
-                            if (sMusique[Duration] == 'z') {
+                            if (sMusique[Duration] == 'z')
+                            {
                                 sMusique[Duration] = 's';
                             }
                             ReplaceString(sMusique,MelodySize,MelodySize);
-                        }  while (dwNoteResidue);
+                        }
+                        while (dwNoteResidue);
                     }
                     dwNoteDeltaTime = 0;
                     bNoteOn = TRUE;
                 } // if
-                else { // Note Off message
-                    if (bNoteOn && dwNoteDeltaTime) {
+                else   // Note Off message
+                {
+                    if (bNoteOn && dwNoteDeltaTime)
+                    {
                         if (!bySamaFlag)
-                            do {
+                            do
+                            {
                                 *sMusique = '\0';
                                 NoteNum2Name(byNoteNum, sMusique, _countof(sMusique)); // name, accidental, octave
                                 strcat_s(sMusique, _countof(sMusique), "*"); // no onset glide
                                 dwNoteResidue = Ticks2Dur(dwNoteDeltaTime, dwNoteTolerance, sMusique, _countof(sMusique));
                                 dwNoteDeltaTime = dwNoteResidue;
                                 ReplaceString(sMusique,MelodySize,MelodySize);
-                            } while (dwNoteResidue);
-                        else {
+                            }
+                            while (dwNoteResidue);
+                        else
+                        {
                             dwNoteDeltaTime = 0;
                         }
                     }
@@ -2189,7 +2688,8 @@ BOOL PartWindowData::MIDIIn(const char * filename) {
             break;
 
         case 0xF: // sysex/meta events
-            switch (byEventCommand) {
+            switch (byEventCommand)
+            {
             case 0xF0: // sysex event
             case 0xF7: // sysex event
                 dwEventLen = InputVarLenNum(infile);
@@ -2207,15 +2707,20 @@ BOOL PartWindowData::MIDIIn(const char * filename) {
 #ifdef _DEBUG
                 nTest = infile.tellg();
 #endif
-                switch (byEventType) {
+                switch (byEventType)
+                {
                 case 0x2F: // end of track
-                    if (MelodySize) { //!!
-                        if (!bMusiqueFile) {
+                    if (MelodySize)   //!!
+                    {
+                        if (!bMusiqueFile)
+                        {
                             SetClef(WhichClef());
                         }
                         InvalidateRgn(hMyself,NULL,0);
                         return 0;
-                    } else { // empty track. try next one
+                    }
+                    else     // empty track. try next one
+                    {
                         infile.ignore(1);
                         infile.read((char *)m_stMTrkHeader, sizeof(CHNK_HDR));
                         m_stMTrkHeader->Size = RevByteOrder(m_stMTrkHeader->Size);
@@ -2236,17 +2741,22 @@ BOOL PartWindowData::MIDIIn(const char * filename) {
                     nTest = infile.tellg();
 #endif
                     pASCII[4] = NULL;
-                    if (strcmp(pASCII, "SAMA") == 0) {
-                        if (dwNoteDeltaTime > dwNoteTolerance && !bNoteOn) { // there is a rest here
-                            do {
+                    if (strcmp(pASCII, "SAMA") == 0)
+                    {
+                        if (dwNoteDeltaTime > dwNoteTolerance && !bNoteOn)   // there is a rest here
+                        {
+                            do
+                            {
                                 strcpy_s(sMusique, _countof(sMusique), "R=3*");
                                 dwNoteResidue = Ticks2Dur(dwNoteDeltaTime, dwNoteTolerance, sMusique, _countof(sMusique));
                                 dwNoteDeltaTime = dwNoteResidue;
-                                if (sMusique[Duration] == 'z') {
+                                if (sMusique[Duration] == 'z')
+                                {
                                     sMusique[Duration] = 's';
                                 }
                                 ReplaceString(sMusique,MelodySize,MelodySize);
-                            } while (dwNoteResidue);
+                            }
+                            while (dwNoteResidue);
                             dwNoteDeltaTime = 0;
                         }
 
@@ -2254,10 +2764,13 @@ BOOL PartWindowData::MIDIIn(const char * filename) {
                         infile.read(sMusique, 7);
                         sMusique[7] = NULL;
                         ReplaceString(sMusique,MelodySize,MelodySize);
-                        if (sMusique[0] != '(') {
+                        if (sMusique[0] != '(')
+                        {
                             bySamaFlag = TRUE;    // set the SAMA flag
                         }
-                    } else {
+                    }
+                    else
+                    {
                         infile.ignore((int)dwEventLen - 4);
                     }
                     break;
@@ -2279,7 +2792,8 @@ BOOL PartWindowData::MIDIIn(const char * filename) {
         } // switch (byEventCommand >> 4)
     } // while
 
-    if (!bMusiqueFile) {
+    if (!bMusiqueFile)
+    {
         SetClef(WhichClef());
     }
     InvalidateRgn(hMyself,NULL,0);
@@ -2287,15 +2801,19 @@ BOOL PartWindowData::MIDIIn(const char * filename) {
 
 }//PartWindowData::MIDIIn
 
-BOOL PartWindowData::MIDIOut(const char * filename) {
-    if (!filename || !*filename) {
+BOOL PartWindowData::MIDIOut(const char * filename)
+{
+    if (!filename || !*filename)
+    {
         return FALSE;
     }
 
     ofstream outfile(filename,ios::out|ios::binary);
-    if (outfile) {
+    if (outfile)
+    {
         int Start=SelectMin(), End=SelectMax();
-        if (SelectBegin==SelectEnd) {
+        if (SelectBegin==SelectEnd)
+        {
             Start=0,End=MelodySize;
         }
 
@@ -2360,12 +2878,14 @@ BOOL PartWindowData::MIDIOut(const char * filename) {
 
 
         BOOL bTiedNote = FALSE;
-        for (register int i=Start; i<End; ++i) {
+        for (register int i=Start; i<End; ++i)
+        {
             // in some cases we output a SAMA chunk to help re-input parser
             if (!strchr("=#@",Melody[i]->Accidental)
                     || Melody[i]->Onset != '*'
                     || Melody[i]->Conclusion != ' '
-                    || bTiedNote) {
+                    || bTiedNote)
+            {
                 // "SAMA" chunk (proprietary meta-event)
                 outfile.write("\xFF\x7F\x0B" "SAMA",7);
                 char * aString = GetString(i, i+1); // translate to (xxxxx) format
@@ -2375,20 +2895,25 @@ BOOL PartWindowData::MIDIOut(const char * filename) {
 
             }
             // NOTE itself
-            if ((Melody[i]->Name>='A'&&Melody[i]->Name<='G')||Melody[i]->Name=='R') {
+            if ((Melody[i]->Name>='A'&&Melody[i]->Name<='G')||Melody[i]->Name=='R')
+            {
                 // NOTE
                 unsigned char cNote = (BYTE)(Melody[i]->MIDINote());
 
-                if (!cNote || bTiedNote) { // rest or tied note -- no "note on" needed
+                if (!cNote || bTiedNote)   // rest or tied note -- no "note on" needed
+                {
                     // here, instead of "Note On", I'm just outputting a text event
                     // that consists of a single space character.  I need to have some
                     // type of event here so we can make time pass.
                     outfile.write("\xFF\x01\x01 ",4);
 
                     bTiedNote=FALSE;
-                } else {
+                }
+                else
+                {
                     //Pitch bend for halftones
-                    switch (Melody[i]->Accidental) {
+                    switch (Melody[i]->Accidental)
+                    {
                     case '=':
                         break;
                     case '+': // need to make it a little less sharp
@@ -2412,7 +2937,8 @@ BOOL PartWindowData::MIDIOut(const char * filename) {
 
                 unsigned long l = Melody[i]->MIDIDuration();
 
-                if (Melody[i]->Conclusion == ' ' && Melody[i]->Name != 'R') {
+                if (Melody[i]->Conclusion == ' ' && Melody[i]->Name != 'R')
+                {
                     // normal, legato note
                     OutputVarLenNum(outfile,l - 5); // duration - 5 = legato
 
@@ -2420,24 +2946,35 @@ BOOL PartWindowData::MIDIOut(const char * filename) {
                     outfile.put(cNote);
                     outfile.put('\0');
                     outfile.put('\x05'); // silence of duration 5
-                } else { // rest or slurred/tied note
+                }
+                else     // rest or slurred/tied note
+                {
                     OutputVarLenNum(outfile,l);
-                    if (Melody[i]->Name != 'R') {
+                    if (Melody[i]->Name != 'R')
+                    {
                         BOOL bTieIt = FALSE;
-                        if (Melody[i]->Conclusion == '_') {
+                        if (Melody[i]->Conclusion == '_')
+                        {
                             // look to see if next note is same tone
-                            for (register int j=1; i+j<End; ++j) {
-                                if (Melody[i]->Value == Melody[i+j]->Value) {
+                            for (register int j=1; i+j<End; ++j)
+                            {
+                                if (Melody[i]->Value == Melody[i+j]->Value)
+                                {
                                     bTieIt = TRUE;
                                     break;
-                                } else if (Melody[i+j]->Value!=-2) {
+                                }
+                                else if (Melody[i+j]->Value!=-2)
+                                {
                                     break;    // anything else (except annotations), don't tie!
                                 }
                             }
                         }
-                        if (bTieIt) {
+                        if (bTieIt)
+                        {
                             bTiedNote = TRUE;
-                        } else {
+                        }
+                        else
+                        {
                             outfile.put('\x80'); // note off, channel 1
                             outfile.put(cNote);
                             outfile.put('\0');
@@ -2446,7 +2983,8 @@ BOOL PartWindowData::MIDIOut(const char * filename) {
                     }
                 }
 
-                if (Melody[i]->Accidental!='=' && !bTiedNote) { // reset pitch bend
+                if (Melody[i]->Accidental!='=' && !bTiedNote)   // reset pitch bend
+                {
                     outfile.write("\xE0\0\x40",3);
                     outfile.put('\0'); // timing for next event
                 }
@@ -2467,23 +3005,29 @@ BOOL PartWindowData::MIDIOut(const char * filename) {
 
         outfile.close();
         return TRUE;
-    } else {
+    }
+    else
+    {
         return FALSE;
     }
 }//PartWindowData::MIDIOut
 
-BOOL PartWindowData::RTFOut(const char * filename) {
-    if (!filename || !*filename) {
+BOOL PartWindowData::RTFOut(const char * filename)
+{
+    if (!filename || !*filename)
+    {
         return FALSE;
     }
 
     ofstream outfile(filename);
-    if (outfile) {
+    if (outfile)
+    {
 
         outfile.write(RTFprolog,strlen(RTFprolog));
 
         char aString[34] = "0";
-        switch (Clef) {
+        switch (Clef)
+        {
         case 1:
             _ltoa_s(DISPLAY_TREBLE,aString,_countof(aString),10);
             break;
@@ -2505,8 +3049,10 @@ BOOL PartWindowData::RTFOut(const char * filename) {
         outfile.put('u');
         outfile.write(aString,strlen(aString));
         WCHAR * wString = PartEncode(0,MelodySize);
-        if (wString) {
-            for (register int i=0; wString[i]; ++i) {
+        if (wString)
+        {
+            for (register int i=0; wString[i]; ++i)
+            {
                 _ltoa_s(wString[i],aString,_countof(aString),10);
                 outfile.put('\\');
                 outfile.put('u');
@@ -2535,31 +3081,39 @@ BOOL PartWindowData::RTFOut(const char * filename) {
     return FALSE;
 }//PartWindowData::RTFOut
 
-BOOL PartWindowData::TXTIn(const char * filename) {
-    if (!filename || !*filename) {
+BOOL PartWindowData::TXTIn(const char * filename)
+{
+    if (!filename || !*filename)
+    {
         return FALSE;
     }
 
     ifstream infile(filename);
-    if (!infile) {
+    if (!infile)
+    {
         return FALSE;
     }
 
-    if (infile.good()) {
+    if (infile.good())
+    {
         infile.seekg(0,ios::end);
         streampos FileSize = infile.tellg();
         infile.seekg(0,ios::beg);
 
         char * Buffer = new char[FileSize]+1;
-        if (!Buffer) {
+        if (!Buffer)
+        {
             *Buffer = '\0';
-        } else {
+        }
+        else
+        {
             infile.get(Buffer,(int)FileSize+1,'\0');
         }
         infile.close();
 
         ReplaceString(Buffer,0,MelodySize);
-        if (strncmp(Buffer,"(CLEF",5)) {
+        if (strncmp(Buffer,"(CLEF",5))
+        {
             SetClef(WhichClef());
         }
     }
@@ -2569,17 +3123,23 @@ BOOL PartWindowData::TXTIn(const char * filename) {
 
 }//PartWindowData::TXTOut
 
-BOOL PartWindowData::TXTOut(const char * filename) {
-    if (!filename || !*filename) {
+BOOL PartWindowData::TXTOut(const char * filename)
+{
+    if (!filename || !*filename)
+    {
         return FALSE;
     }
 
     ofstream outfile(filename);
-    if (outfile) {
+    if (outfile)
+    {
         char * pe = GetString(0,MelodySize);
-        if (!pe) {
+        if (!pe)
+        {
             outfile.write("", 0);
-        } else {
+        }
+        else
+        {
             outfile.write(pe,strlen(pe));
         }
         delete pe;
@@ -2591,24 +3151,33 @@ BOOL PartWindowData::TXTOut(const char * filename) {
 }//PartWindowData::TXTOut
 
 
-BOOL PartWindowData::NotesUp(HWND hWnd) {
-    if (SelectBegin!=SelectEnd) { // something is selected
+BOOL PartWindowData::NotesUp(HWND hWnd)
+{
+    if (SelectBegin!=SelectEnd)   // something is selected
+    {
         BOOL ClefChangeNeeded = FALSE;
-        for (register unsigned i= SelectMin(); i < SelectMax(); ++i) {
-            if (Control) {
+        for (register unsigned i= SelectMin(); i < SelectMax(); ++i)
+        {
+            if (Control)
+            {
                 (Melody[i])->UpOctave();
-            } else {
+            }
+            else
+            {
                 (Melody[i])->UpStep();
             }
             (Melody[i])->CalcValue(Clef);
-            if (!(Melody[i])->InClef(Clef)) {
+            if (!(Melody[i])->InClef(Clef))
+            {
                 ClefChangeNeeded = TRUE;
             }
         }
-        if (ClefChangeNeeded) {
+        if (ClefChangeNeeded)
+        {
             int OldClef = Clef;
             int NewClef = WhichClef();
-            if (NewClef != OldClef) {
+            if (NewClef != OldClef)
+            {
                 SetClef(NewClef);
             }
         }
@@ -2616,29 +3185,40 @@ BOOL PartWindowData::NotesUp(HWND hWnd) {
         Modified = TRUE;
         SendMessage(hMyParent,WM_PARENTNOTIFY,EM_SETMODIFY,1);
         return TRUE;
-    } else {
+    }
+    else
+    {
         return FALSE;
     }
 }//PartWindowData::NotesUp
 
-BOOL PartWindowData::NotesDown(HWND hWnd) {
-    if (SelectBegin!=SelectEnd) { // something is selected
+BOOL PartWindowData::NotesDown(HWND hWnd)
+{
+    if (SelectBegin!=SelectEnd)   // something is selected
+    {
         BOOL ClefChangeNeeded = FALSE;
-        for (register unsigned i= SelectMin(); i < SelectMax(); ++i) {
-            if (Control) {
+        for (register unsigned i= SelectMin(); i < SelectMax(); ++i)
+        {
+            if (Control)
+            {
                 (Melody[i])->DownOctave();
-            } else {
+            }
+            else
+            {
                 (Melody[i])->DownStep();
             }
             (Melody[i])->CalcValue(Clef);
-            if (!(Melody[i])->InClef(Clef)) {
+            if (!(Melody[i])->InClef(Clef))
+            {
                 ClefChangeNeeded = TRUE;
             }
         }
-        if (ClefChangeNeeded) {
+        if (ClefChangeNeeded)
+        {
             int OldClef = Clef;
             int NewClef = WhichClef();
-            if (NewClef != OldClef) {
+            if (NewClef != OldClef)
+            {
                 SetClef(NewClef);
             }
         }
@@ -2646,29 +3226,36 @@ BOOL PartWindowData::NotesDown(HWND hWnd) {
         Modified = TRUE;
         SendMessage(hMyParent,WM_PARENTNOTIFY,EM_SETMODIFY,1);
         return TRUE;
-    } else {
+    }
+    else
+    {
         return FALSE;
     }
 }//PartWindowData::NotesDown
 
-BOOL PartWindowData::GoHome(HWND hWnd) {
+BOOL PartWindowData::GoHome(HWND hWnd)
+{
     ViewBegin = SelectEnd = 0;
-    if (!Selecting) {
+    if (!Selecting)
+    {
         SelectBegin = 0;
     }
     InvalidateRgn(hWnd,NULL,FALSE);
     return TRUE;
 }//PartWindowData::GoHome
 
-struct PartClassData {
+struct PartClassData
+{
     BOOL InsertMode;
     HFONT hButtonFont;
-    PartClassData() : InsertMode(TRUE) {
+    PartClassData() : InsertMode(TRUE)
+    {
         hButtonFont = CreateFont(-24,0,0,0,0,0,0,0,
                                  ANSI_CHARSET,OUT_DEFAULT_PRECIS,CLIP_DEFAULT_PRECIS,
                                  DEFAULT_QUALITY,FF_DONTCARE|DEFAULT_PITCH,"Musique");
     };
-    ~PartClassData() {
+    ~PartClassData()
+    {
         DeleteObject(hButtonFont);
         InsertMode = 0;
         hButtonFont = 0;
@@ -2684,17 +3271,22 @@ static DWORD LoopMidiFile(char * lpszMIDIFileName, HWND hWndNotify);
 //      M A I N   P R O C E D U R E
 // ========================================
 
-LRESULT CALLBACK PartitureProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam) {
+LRESULT CALLBACK PartitureProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam)
+{
 #ifdef SetFocusPrecaution
-    if (uMsg != WM_KILLFOCUS) {
+    if (uMsg != WM_KILLFOCUS)
+    {
         SetFocus(hWnd);
     }
 #endif
-    switch (uMsg) {
-    case WM_PAINT: {
+    switch (uMsg)
+    {
+    case WM_PAINT:
+    {
         struct PartWindowData * pwd
             = (struct PartWindowData *)GetWindowLong(hWnd,GWL_USERDATA);
-        if (pwd) {
+        if (pwd)
+        {
             pwd->Paint();
 
             double dHere = 0;
@@ -2702,15 +3294,18 @@ LRESULT CALLBACK PartitureProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam) 
             unsigned begin = pwd->SelectBegin < pwd->SelectEnd ? pwd->SelectBegin : pwd->SelectEnd;
             unsigned end   = pwd->SelectBegin > pwd->SelectEnd ? pwd->SelectBegin : pwd->SelectEnd;
 
-            for (i=0; i < begin; i++) {
+            for (i=0; i < begin; i++)
+            {
                 dHere +=  pwd->Melody[i]->MIDIDuration();
             }
             pwd->m_sSelectionMS.begin = (dHere - TICKS_PER_Q / 64.) * 60. / (pwd->Tempo * TICKS_PER_Q);
-            if (pwd->m_sSelectionMS.begin < 0) {
+            if (pwd->m_sSelectionMS.begin < 0)
+            {
                 pwd->m_sSelectionMS.begin = 0;
             }
 
-            for (; i < end; i++) {
+            for (; i < end; i++)
+            {
                 dHere +=  pwd->Melody[i]->MIDIDuration();
             }
             pwd->m_sSelectionMS.end = (dHere + TICKS_PER_Q / 64.) * 60. / (pwd->Tempo * TICKS_PER_Q);
@@ -2719,13 +3314,15 @@ LRESULT CALLBACK PartitureProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam) 
         }
         break;
     }
-    case WM_KEYDOWN: {
+    case WM_KEYDOWN:
+    {
         struct PartWindowData * pwd;
         pwd = (struct PartWindowData *) GetWindowLong(hWnd,GWL_USERDATA);
         struct PartClassData * pcd;
         pcd = (struct PartClassData *) GetClassLong(hWnd,0);
 
-        switch (wParam) {
+        switch (wParam)
+        {
         case VK_SHIFT:
             pwd->Selecting = TRUE;
             break;
@@ -2734,19 +3331,27 @@ LRESULT CALLBACK PartitureProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam) 
             break;
         }
 
-        if (pwd && pwd->m_sPlay.Tempo) {
+        if (pwd && pwd->m_sPlay.Tempo)
+        {
             MessageBeep(MB_OK);
             return 0;         // Do not allow editing if playing
         }
 
-        switch (wParam) {
+        switch (wParam)
+        {
         case VK_BACK:
-            if (pwd->SelectBegin!=pwd->SelectEnd) {
+            if (pwd->SelectBegin!=pwd->SelectEnd)
+            {
                 SendMessage(hWnd,WM_CLEAR,0,0);
-            } else if (pwd->SelectBegin) {
-                if (pwd->SelectBegin<=pwd->ViewBegin) {
+            }
+            else if (pwd->SelectBegin)
+            {
+                if (pwd->SelectBegin<=pwd->ViewBegin)
+                {
                     pwd->ViewBegin = --pwd->SelectBegin;
-                } else {
+                }
+                else
+                {
                     --pwd->SelectBegin;
                 }
                 SendMessage(hWnd,WM_CLEAR,0,0);
@@ -2754,9 +3359,12 @@ LRESULT CALLBACK PartitureProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam) 
             break;
 
         case VK_DELETE:
-            if (pwd->Selecting) {
+            if (pwd->Selecting)
+            {
                 SendMessage(hWnd,WM_CUT,0,0);
-            } else {
+            }
+            else
+            {
                 SendMessage(hWnd,WM_CLEAR,0,0);
             }
             break;
@@ -2766,50 +3374,65 @@ LRESULT CALLBACK PartitureProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam) 
             break;
         case VK_END:
             pwd->SelectEnd = pwd->MelodySize;
-            if (!pwd->Selecting) {
+            if (!pwd->Selecting)
+            {
                 pwd->SelectBegin = pwd->MelodySize;
             }
             pwd->AutoScrollRight();
             InvalidateRgn(hWnd,NULL,FALSE);
             break;
         case VK_INSERT:
-            if (!pwd->Control) {
+            if (!pwd->Control)
+            {
                 pcd->InsertMode = !pcd->InsertMode;
             }
             break;
         case VK_LEFT:
-            if (pwd->Control) {
-                if (pwd->ViewBegin>0) {
+            if (pwd->Control)
+            {
+                if (pwd->ViewBegin>0)
+                {
                     pwd->ViewBegin--;
                     InvalidateRgn(hWnd,NULL,FALSE);
                 }
-            } else {
+            }
+            else
+            {
                 if (pwd->SelectEnd &&
-                        (pwd->Selecting || pwd->SelectBegin==pwd->SelectEnd)) {
+                        (pwd->Selecting || pwd->SelectBegin==pwd->SelectEnd))
+                {
                     --pwd->SelectEnd;
                 }
-                if (!pwd->Selecting) {
+                if (!pwd->Selecting)
+                {
                     pwd->SelectBegin = pwd->SelectEnd;
                 }
 
-                if (pwd->ViewBegin > pwd->SelectEnd) {
+                if (pwd->ViewBegin > pwd->SelectEnd)
+                {
                     pwd->ViewBegin = pwd->SelectEnd;
                 }
                 InvalidateRgn(hWnd,NULL,FALSE);
             }
             break;
         case VK_RIGHT:
-            if (pwd->Control) {
-                if ((pwd->ViewBegin+1)<pwd->MelodySize) {
+            if (pwd->Control)
+            {
+                if ((pwd->ViewBegin+1)<pwd->MelodySize)
+                {
                     pwd->ViewBegin++;
                     InvalidateRgn(hWnd,NULL,FALSE);
                 }
-            } else {
+            }
+            else
+            {
                 if (pwd->SelectEnd < pwd->MelodySize
-                        && (pwd->Selecting || pwd->SelectBegin==pwd->SelectEnd)) {
+                        && (pwd->Selecting || pwd->SelectBegin==pwd->SelectEnd))
+                {
                     ++pwd->SelectEnd;
                 }
-                if (!pwd->Selecting) {
+                if (!pwd->Selecting)
+                {
                     pwd->SelectBegin=pwd->SelectEnd;
                 }
                 pwd->AutoScrollRight();
@@ -2830,9 +3453,12 @@ LRESULT CALLBACK PartitureProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam) 
         case 'L':
         case 'V':
         case 'X':
-            if (pwd->Control) {
+            if (pwd->Control)
+            {
                 SendMessage(hWnd,WM_CHAR,wParam-'@',lParam);
-            } else {
+            }
+            else
+            {
                 SendMessage(hWnd,WM_CHAR,wParam,lParam);
             }
             break;
@@ -2842,12 +3468,14 @@ LRESULT CALLBACK PartitureProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam) 
         case '4':
         case '5':
         case '6':
-            if (pwd->Control) {
+            if (pwd->Control)
+            {
                 pwd->SetClef(wParam-'1');
             }
             break;
         case '0':
-            if (pwd->Control) {
+            if (pwd->Control)
+            {
                 pwd->SetClef(pwd->WhichClef());
             }
             break;
@@ -2855,11 +3483,13 @@ LRESULT CALLBACK PartitureProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam) 
         break;
     }
 
-    case WM_KEYUP: {
+    case WM_KEYUP:
+    {
         struct PartWindowData * pwd;
         pwd = (struct PartWindowData *) GetWindowLong(hWnd, GWL_USERDATA);
 
-        switch (wParam) {
+        switch (wParam)
+        {
         case VK_SHIFT:
             pwd->Selecting = FALSE;
             break;
@@ -2870,16 +3500,19 @@ LRESULT CALLBACK PartitureProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam) 
         break;
     }
 
-    case WM_CHAR: {
+    case WM_CHAR:
+    {
         struct PartWindowData * pwd;
         pwd = (struct PartWindowData *) GetWindowLong(hWnd,GWL_USERDATA);
 
-        if (pwd && pwd->m_sPlay.Tempo) {
+        if (pwd && pwd->m_sPlay.Tempo)
+        {
             MessageBeep(MB_OK);
             return 0;         // Do not allow editing if playing
         }
 
-        switch (wParam) {
+        switch (wParam)
+        {
         case 1: // Ctrl-A = select all
             pwd->SelectBegin=0;
             pwd->SelectEnd=pwd->MelodySize;
@@ -2888,11 +3521,15 @@ LRESULT CALLBACK PartitureProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam) 
         case 3: // Ctrl-C = copy              MOVED TO WM_KEYUP
             SendMessage(hWnd,WM_COPY,0,0);
             return 0;
-        case 4: { // Ctrl-D = view
+        case 4:   // Ctrl-D = view
+        {
             char * String;
-            if (pwd->SelectBegin==pwd->SelectEnd) {
+            if (pwd->SelectBegin==pwd->SelectEnd)
+            {
                 String = pwd->GetString(0,pwd->MelodySize);
-            } else {
+            }
+            else
+            {
                 String = pwd->GetString(pwd->SelectMin(),pwd->SelectMax());
             }
             MessageBox(hWnd,String,"Musique",MB_OK);
@@ -2900,17 +3537,20 @@ LRESULT CALLBACK PartitureProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam) 
             pwd->Control = FALSE;
             return 0;
         }
-        case 23: { // Ctrl-W = Write to MIDI file    MOVED TO WM_KEYUP
+        case 23:   // Ctrl-W = Write to MIDI file    MOVED TO WM_KEYUP
+        {
             SendMessage(hWnd,WM_APP+1,0,0);
             pwd->Control = FALSE;
             return 0;
         }
-        case 5: { // Ctrl-E = Read from MIDI file
+        case 5:   // Ctrl-E = Read from MIDI file
+        {
             SendMessage(hWnd,WM_APP+3,0,0);
             pwd->Control = FALSE;
             return 0;
         }
-        case 13: { // Ctrl-M = MIDI instrument           MOVED TO WM_KEYUP
+        case 13:   // Ctrl-M = MIDI instrument           MOVED TO WM_KEYUP
+        {
             InstrumentMenu im;
             im.Check(pwd->Instrument);
             HMENU hInstrumentMnu = im.Menu();
@@ -2941,19 +3581,22 @@ LRESULT CALLBACK PartitureProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam) 
             wParam = 32; // pass on a space (= no conclusion)
             break;
         default:
-            if (wParam<' ') {
+            if (wParam<' ')
+            {
                 return DefWindowProc(hWnd,uMsg,wParam,lParam);
             }
             break;
         }
 
         // check validity of keystroke
-        if (!strchr("ABCDEFGRabcdefgr0123456whqiszn.tv#@$+=-!*|~?\" \\`/\'_WHQISZNTV",wParam)) {
+        if (!strchr("ABCDEFGRabcdefgr0123456whqiszn.tv#@$+=-!*|~?\" \\`/\'_WHQISZNTV",wParam))
+        {
             if (wParam != ANNOT_SPACE &&
                     wParam != ANNOT_PHRASE &&
                     wParam != ANNOT_PHRASE2 &&
                     wParam != ANNOT_BAR &&
-                    wParam != ANNOT_THICK_BAR) {
+                    wParam != ANNOT_THICK_BAR)
+            {
                 MessageBeep(MB_OK);
                 break;
             }
@@ -2961,14 +3604,19 @@ LRESULT CALLBACK PartitureProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam) 
 
         BOOL ClefChangeNeeded = FALSE;
 
-        if (pwd->SelectBegin==pwd->SelectEnd) { // no selection
-            if (!pwd->Melody[pwd->SelectBegin]) { // add a note to the end
+        if (pwd->SelectBegin==pwd->SelectEnd)   // no selection
+        {
+            if (!pwd->Melody[pwd->SelectBegin])   // add a note to the end
+            {
                 pwd->Melody[pwd->SelectBegin] = new Note(pwd->Clef);
                 ++pwd->MelodySize;
                 ++pwd->SelectEnd;
-            } else { // insert a note into staff
+            }
+            else     // insert a note into staff
+            {
                 char NewNote[8] =  "C=4*qn ";
-                switch (pwd->Clef) {
+                switch (pwd->Clef)
+                {
                 case 0: // TREBLE 8VA
                     NewNote[2]='5';
                     break;
@@ -2983,21 +3631,27 @@ LRESULT CALLBACK PartitureProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam) 
                 ++pwd->SelectEnd;
             }
             (pwd->Melody[pwd->SelectBegin])->Set((BYTE)wParam,pwd->Clef);
-            if (!(pwd->Melody[pwd->SelectBegin])->InClef(pwd->Clef)) {
+            if (!(pwd->Melody[pwd->SelectBegin])->InClef(pwd->Clef))
+            {
                 ClefChangeNeeded = TRUE;
             }
-        } else
-            for (register unsigned i=pwd->SelectMin(); i<pwd->SelectMax(); ++i) {
+        }
+        else
+            for (register unsigned i=pwd->SelectMin(); i<pwd->SelectMax(); ++i)
+            {
                 (pwd->Melody[i])->Set((BYTE)wParam,pwd->Clef);
-                if (!(pwd->Melody[i])->InClef(pwd->Clef)) {
+                if (!(pwd->Melody[i])->InClef(pwd->Clef))
+                {
                     ClefChangeNeeded = TRUE;
                 }
             }
 
-        if (ClefChangeNeeded) {
+        if (ClefChangeNeeded)
+        {
             int OldClef = pwd->Clef;
             int NewClef = pwd->WhichClef();
-            if (NewClef != OldClef) {
+            if (NewClef != OldClef)
+            {
                 pwd->SetClef(NewClef);
             }
         }
@@ -3010,13 +3664,16 @@ LRESULT CALLBACK PartitureProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam) 
         SendMessage(pwd->hMyParent,WM_PARENTNOTIFY,EM_SETMODIFY,1);
         return 0;
     }
-    case WM_LBUTTONDOWN: {
+    case WM_LBUTTONDOWN:
+    {
         struct PartWindowData * pwd;
         pwd = (struct PartWindowData *) GetWindowLong(hWnd,GWL_USERDATA);
 
-        if (pwd) {
+        if (pwd)
+        {
             pwd->SelectEnd = pwd->Position(LOWORD(lParam));
-            if (!pwd->Selecting) {
+            if (!pwd->Selecting)
+            {
                 pwd->SelectBegin = pwd->SelectEnd;
             }
             InvalidateRgn(hWnd,NULL,FALSE);
@@ -3026,19 +3683,23 @@ LRESULT CALLBACK PartitureProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam) 
         return 0;
     }
     case WM_CONTEXTMENU:
-    case WM_RBUTTONUP: {
+    case WM_RBUTTONUP:
+    {
         struct PartWindowData * pwd;
         pwd = (struct PartWindowData *) GetWindowLong(hWnd,GWL_USERDATA);
         SendMessage(pwd->hMyParent,WM_PARENTNOTIFY,WM_SETFOCUS,lParam);
 
-        if (pwd && pwd->m_sPlay.Tempo) {
+        if (pwd && pwd->m_sPlay.Tempo)
+        {
             MessageBeep(MB_OK);
             return 0;         // Do not allow editing if playing
         }
 
-        if (pwd) {
+        if (pwd)
+        {
             Note * note = NULL;
-            if (pwd->SelectMax() == pwd->SelectMin() + 1) { // a single note is selected
+            if (pwd->SelectMax() == pwd->SelectMin() + 1)   // a single note is selected
+            {
                 note = pwd->Melody[pwd->SelectMin()];
             }
 
@@ -3092,7 +3753,8 @@ LRESULT CALLBACK PartitureProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam) 
             AppendMenu(hNameMnu,MF_ENABLED|MF_STRING,WM_USER+'G',"&G / Sol\tG");
             AppendMenu(hNameMnu,MF_SEPARATOR,NULL,NULL);
             AppendMenu(hNameMnu,MF_ENABLED|MF_STRING,WM_USER+'r',"&Rest\tR");
-            if (note) {
+            if (note)
+            {
                 CheckMenuItem(hNameMnu,WM_USER+(note->Name=='R'?'r':note->Name),MF_BYCOMMAND|MF_CHECKED);
             }
             AppendMenu(hMnu,MF_ENABLED|MF_POPUP,(UINT)hNameMnu,"&Name");
@@ -3104,7 +3766,8 @@ LRESULT CALLBACK PartitureProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam) 
             AppendMenu(hAccidentMnu,MF_ENABLED|MF_STRING,WM_USER+'-',"Half flat\t-");
             AppendMenu(hAccidentMnu,MF_ENABLED|MF_STRING,WM_USER+'@',"Flat\t@");
             AppendMenu(hAccidentMnu,MF_ENABLED|MF_STRING,WM_USER+'!',"11/2 flat\t!");
-            if (note) {
+            if (note)
+            {
                 CheckMenuItem(hAccidentMnu,WM_USER+note->Accidental,MF_BYCOMMAND|MF_CHECKED);
             }
             AppendMenu(hMnu,MF_ENABLED|MF_POPUP,(UINT)hAccidentMnu,"Accidental");
@@ -3115,7 +3778,8 @@ LRESULT CALLBACK PartitureProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam) 
             AppendMenu(hDurationMnu,MF_ENABLED|MF_STRING,WM_USER+'i',"Eighth note\tI");
             AppendMenu(hDurationMnu,MF_ENABLED|MF_STRING,WM_USER+'s',"Sixteenth note\tS");
             AppendMenu(hDurationMnu,MF_ENABLED|MF_STRING,WM_USER+'z',"Grace note\tZ");
-            if (note) {
+            if (note)
+            {
                 CheckMenuItem(hDurationMnu,WM_USER+note->Duration,MF_BYCOMMAND|MF_CHECKED);
             }
             AppendMenu(hDurationMnu,MF_SEPARATOR,NULL,NULL);
@@ -3123,7 +3787,8 @@ LRESULT CALLBACK PartitureProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam) 
             AppendMenu(hDurationMnu,MF_ENABLED|MF_STRING,WM_USER+'t',"Triplet\tT");
             AppendMenu(hDurationMnu,MF_ENABLED|MF_STRING,WM_USER+'v',"Quintuplet\tV");
             AppendMenu(hDurationMnu,MF_ENABLED|MF_STRING,WM_USER+'n',"(normal)\tN");
-            if (note) {
+            if (note)
+            {
                 CheckMenuItem(hDurationMnu,WM_USER+note->Duration2,MF_BYCOMMAND|MF_CHECKED);
             }
             AppendMenu(hMnu,MF_ENABLED|MF_POPUP,(UINT)hDurationMnu,"D&uration");
@@ -3136,7 +3801,8 @@ LRESULT CALLBACK PartitureProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam) 
             AppendMenu(hOctaveMnu,MF_ENABLED|MF_STRING,WM_USER+'2',"Octave &2 (Bass)\t2");
             AppendMenu(hOctaveMnu,MF_ENABLED|MF_STRING,WM_USER+'1',"Octave &1 (Contrabass)\t1");
             AppendMenu(hOctaveMnu,MF_ENABLED|MF_STRING,WM_USER+'0',"Octave &0\t0");
-            if (note) {
+            if (note)
+            {
                 CheckMenuItem(hOctaveMnu,WM_USER+note->Octave,MF_BYCOMMAND|MF_CHECKED);
             }
             AppendMenu(hMnu,MF_ENABLED|MF_POPUP,(UINT)hOctaveMnu,"&Octave");
@@ -3147,7 +3813,8 @@ LRESULT CALLBACK PartitureProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam) 
             AppendMenu(hGlideMnu,MF_ENABLED|MF_STRING,WM_USER+'/',"Long rise after\t/");
             AppendMenu(hGlideMnu,MF_ENABLED|MF_STRING,WM_USER+'_',"Tied to next note\t_");
             AppendMenu(hGlideMnu,MF_ENABLED|MF_STRING,WM_USER+'x',"None of the above\tX");
-            if (note) {
+            if (note)
+            {
                 CheckMenuItem(hGlideMnu,WM_USER+(note->Conclusion==' '?'x':note->Conclusion),MF_BYCOMMAND|MF_CHECKED);
             }
             AppendMenu(hGlideMnu,MF_SEPARATOR,NULL,NULL);
@@ -3156,7 +3823,8 @@ LRESULT CALLBACK PartitureProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam) 
             AppendMenu(hGlideMnu,MF_ENABLED|MF_STRING,WM_USER+'\"',"Short rise before\t\"");
             AppendMenu(hGlideMnu,MF_ENABLED|MF_STRING,WM_USER+'?',"Long rise before\t?");
             AppendMenu(hGlideMnu,MF_ENABLED|MF_STRING,WM_USER+'*',"None of the above\t*");
-            if (note) {
+            if (note)
+            {
                 CheckMenuItem(hGlideMnu,WM_USER+note->Onset,MF_BYCOMMAND|MF_CHECKED);
             }
             AppendMenu(hMnu,MF_ENABLED|MF_POPUP,(UINT)hGlideMnu,"&Glide");
@@ -3181,22 +3849,27 @@ LRESULT CALLBACK PartitureProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam) 
         }
         return 0;
     }
-    case WM_MOUSEMOVE: {
+    case WM_MOUSEMOVE:
+    {
         // is the user draggin the mouse?
-        if (!(wParam&MK_LBUTTON)) {
+        if (!(wParam&MK_LBUTTON))
+        {
             return 0;
         }
 
         struct PartWindowData * pwd;
         pwd = (struct PartWindowData *) GetWindowLong(hWnd,GWL_USERDATA);
 
-        if (pwd) {
-            if (!pwd->Active) {
+        if (pwd)
+        {
+            if (!pwd->Active)
+            {
                 break;
             }
 
             unsigned NewSelect = pwd->Position(LOWORD(lParam));
-            if (pwd->SelectEnd != NewSelect) {
+            if (pwd->SelectEnd != NewSelect)
+            {
                 pwd->SelectEnd = NewSelect;
                 InvalidateRgn(hWnd,NULL,FALSE);
             }
@@ -3204,22 +3877,28 @@ LRESULT CALLBACK PartitureProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam) 
 
         return 0;
     }
-    case WM_SETFOCUS: {
-        if (lParam) {
+    case WM_SETFOCUS:
+    {
+        if (lParam)
+        {
             struct PartWindowData * pwd;
             pwd = (struct PartWindowData *) GetWindowLong(hWnd,GWL_USERDATA);
-            if (pwd) {
+            if (pwd)
+            {
                 pwd->Active = TRUE;
                 SendMessage(pwd->hMyParent,WM_PARENTNOTIFY,WM_SETFOCUS,lParam);
             }
         }
         return 0;
     }
-    case WM_KILLFOCUS: {
-        if (lParam) {
+    case WM_KILLFOCUS:
+    {
+        if (lParam)
+        {
             struct PartWindowData * pwd;
             pwd = (struct PartWindowData *) GetWindowLong(hWnd,GWL_USERDATA);
-            if (pwd) {
+            if (pwd)
+            {
                 pwd->Active = FALSE;
                 SendMessage(pwd->hMyParent,WM_PARENTNOTIFY,WM_KILLFOCUS,lParam);
             }
@@ -3227,41 +3906,52 @@ LRESULT CALLBACK PartitureProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam) 
         return 0;
     }
     case WM_ACTIVATE:
-    case WM_ACTIVATEAPP: {
+    case WM_ACTIVATEAPP:
+    {
         struct PartWindowData * pwd;
         pwd = (struct PartWindowData *) GetWindowLong(hWnd,GWL_USERDATA);
-        if (pwd) {
-            if (wParam==WA_INACTIVE) {
+        if (pwd)
+        {
+            if (wParam==WA_INACTIVE)
+            {
                 pwd->Active = FALSE;
-            } else {
+            }
+            else
+            {
                 pwd->Active = TRUE;
             }
         }
         return 0;
     }
-    case WM_ENABLE: {
+    case WM_ENABLE:
+    {
         struct PartWindowData * pwd  = (struct PartWindowData *)GetWindowLong(hWnd,GWL_USERDATA);
-        if (pwd) {
+        if (pwd)
+        {
             pwd->Enabled = (BOOL) wParam;
             InvalidateRgn(hWnd,NULL,FALSE);
             return 0;
         }
         break;
     }
-    case WM_SETTEXT: {
+    case WM_SETTEXT:
+    {
         struct PartWindowData * pwd = (struct PartWindowData *)GetWindowLong(hWnd,GWL_USERDATA);
 
-        if (pwd && pwd->m_sPlay.Tempo) {
+        if (pwd && pwd->m_sPlay.Tempo)
+        {
             MessageBeep(MB_OK);
             return 0;         // Do not allow editing if playing
         }
 
-        if (pwd) {
+        if (pwd)
+        {
             pwd->ReplaceString((char *)lParam,0,pwd->MelodySize);
 
             int OldClef = pwd->Clef;
             int NewClef = pwd->WhichClef();
-            if (NewClef!=OldClef) {
+            if (NewClef!=OldClef)
+            {
                 pwd->SetClef(NewClef);
             }
             pwd->GoHome(hWnd);
@@ -3269,17 +3959,22 @@ LRESULT CALLBACK PartitureProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam) 
         }
         return FALSE;
     }
-    case WM_GETTEXT: {
-        if (!wParam) {
+    case WM_GETTEXT:
+    {
+        if (!wParam)
+        {
             return 0;
         }
 
         struct PartWindowData * pwd = (struct PartWindowData *)GetWindowLong(hWnd,GWL_USERDATA);
-        if (pwd) {
+        if (pwd)
+        {
             char * Text = pwd->GetString(0,pwd->MelodySize);
-            if (Text!=NULL) {
+            if (Text!=NULL)
+            {
                 unsigned TextLen = strlen(Text);
-                if (TextLen>wParam) {
+                if (TextLen>wParam)
+                {
                     Text[wParam-1]='\0';
                     TextLen=wParam;
                 }
@@ -3291,35 +3986,44 @@ LRESULT CALLBACK PartitureProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam) 
         *((char *)lParam)='\0';
         return 0;
     }
-    case WM_GETTEXTLENGTH: {
+    case WM_GETTEXTLENGTH:
+    {
         struct PartWindowData * pwd
             = (struct PartWindowData *)GetWindowLong(hWnd,GWL_USERDATA);
         return (pwd)? ((pwd->MelodySize + 3) * 7) + 1 : 0; // add 3 SAMAs for (CLEFx) & (VXxxx) & (Q=xxx)
     }
-    case WM_CUT: {
+    case WM_CUT:
+    {
         struct PartWindowData * pwd = (struct PartWindowData *)GetWindowLong(hWnd,GWL_USERDATA);
-        if (pwd && pwd->m_sPlay.Tempo) {
+        if (pwd && pwd->m_sPlay.Tempo)
+        {
             MessageBeep(MB_OK);
             return 0;         // Do not allow editing if playing
         }
 
-        if (pwd && pwd->SelectBegin!=pwd->SelectEnd) {
+        if (pwd && pwd->SelectBegin!=pwd->SelectEnd)
+        {
             SendMessage(hWnd,WM_COPY,0,0);
             SendMessage(hWnd,WM_CLEAR,0,0);
-        } else {
+        }
+        else
+        {
             MessageBeep(MB_OK);
         }
         return 0;
     }
-    case WM_COPY: {
+    case WM_COPY:
+    {
         Clipboard Clip(hWnd);
         struct PartWindowData * pwd = (struct PartWindowData *)GetWindowLong(hWnd,GWL_USERDATA);
-        if (pwd) {
+        if (pwd)
+        {
             char * RTFText = NULL;
             char * Text = NULL;
 
             if (pwd->SelectMin()==pwd->SelectMax() ||
-                    (!pwd->SelectMin() && pwd->SelectMax()==pwd->MelodySize)) {
+                    (!pwd->SelectMin() && pwd->SelectMax()==pwd->MelodySize))
+            {
                 Text = pwd->GetString(0,pwd->MelodySize);
                 WCHAR * RTFTextW = pwd->PartEncode(0,pwd->MelodySize);
                 unsigned RTFTextWLen = wcslen(RTFTextW);
@@ -3334,7 +4038,8 @@ LRESULT CALLBACK PartitureProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam) 
                 RTFText[i++]='0';
                 RTFText[i++]='\\';
                 RTFText[i++]='u';
-                switch (pwd->Clef) {
+                switch (pwd->Clef)
+                {
                 case 1:
                     _ltoa_s(DISPLAY_TREBLE,&RTFText[i],len-i,10);
                     break;
@@ -3351,37 +4056,45 @@ LRESULT CALLBACK PartitureProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam) 
                     _ltoa_s(DISPLAY_BASS_8VB,&RTFText[i],len-i,10);
                     break;
                 }
-                while (RTFText[i]) {
+                while (RTFText[i])
+                {
                     ++i;
                 }
-                for (register unsigned j=0; j<RTFTextWLen; ++j) {
+                for (register unsigned j=0; j<RTFTextWLen; ++j)
+                {
                     RTFText[i++]='\\';
                     RTFText[i++]='u';
                     _ltoa_s(RTFTextW[j],&RTFText[i],len-i,10);
-                    while (RTFText[i]) {
+                    while (RTFText[i])
+                    {
                         ++i;
                     }
                 }
                 RTFText[i++]='\\';
                 RTFText[i++]='u';
                 _ltoa_s(DISPLAY_BAR,&RTFText[i],len-i,10);
-                while (RTFText[i]) {
+                while (RTFText[i])
+                {
                     ++i;
                 }
                 RTFText[i++]='\\';
                 RTFText[i++]='u';
                 _ltoa_s(DISPLAY_SMALL_SPACE,&RTFText[i],len-i,10);
-                while (RTFText[i]) {
+                while (RTFText[i])
+                {
                     ++i;
                 }
                 RTFText[i++]='\\';
                 RTFText[i++]='u';
                 _ltoa_s(DISPLAY_THICK_BAR,&RTFText[i],len-i,10);
-                while (RTFText[i]) {
+                while (RTFText[i])
+                {
                     ++i;
                 }
                 delete RTFTextW;
-            } else {
+            }
+            else
+            {
                 WCHAR * RTFTextW = pwd->PartEncode(pwd->SelectMin(),pwd->SelectMax());
                 unsigned RTFTextWLen = wcslen(RTFTextW);
                 unsigned UniCharLen = 3 + (unsigned) log10((double)MUSIQUE_FONT_SIZE);
@@ -3392,19 +4105,23 @@ LRESULT CALLBACK PartitureProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam) 
                 RTFText[i++]='u';
                 RTFText[i++]='c';
                 RTFText[i++]='0';
-                for (register unsigned j=0; j<RTFTextWLen; ++j) {
+                for (register unsigned j=0; j<RTFTextWLen; ++j)
+                {
                     RTFText[i++]='\\';
                     RTFText[i++]='u';
                     _ltoa_s(RTFTextW[j],&RTFText[i],len-i,10);
-                    while (RTFText[i]) {
+                    while (RTFText[i])
+                    {
                         ++i;
                     }
                 }
                 Text = pwd->GetString(pwd->SelectMin(),pwd->SelectMax());
                 delete RTFTextW;
             }
-            if (Text) {
-                if (*RTFText && *Text) {
+            if (Text)
+            {
+                if (*RTFText && *Text)
+                {
                     Clip.SetTextRTF(RTFText,Text);
                 }
                 delete [] RTFText;
@@ -3413,16 +4130,20 @@ LRESULT CALLBACK PartitureProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam) 
         }
         return 0;
     }
-    case WM_CLEAR: {
+    case WM_CLEAR:
+    {
         struct PartWindowData * pwd = (struct PartWindowData *)GetWindowLong(hWnd,GWL_USERDATA);
-        if (pwd && pwd->m_sPlay.Tempo) {
+        if (pwd && pwd->m_sPlay.Tempo)
+        {
             MessageBeep(MB_OK);
             return 0;         // Do not allow editing if playing
         }
 
-        if (pwd) {
+        if (pwd)
+        {
             unsigned ClearEnd = pwd->SelectMax();
-            if (pwd->SelectMin()==ClearEnd && ClearEnd<pwd->MelodySize) {
+            if (pwd->SelectMin()==ClearEnd && ClearEnd<pwd->MelodySize)
+            {
                 ++ClearEnd;
             }
 
@@ -3434,21 +4155,27 @@ LRESULT CALLBACK PartitureProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam) 
         }
         return 0;
     }
-    case WM_PASTE: {
+    case WM_PASTE:
+    {
         Clipboard Clip(hWnd);
-        if (Clip.hasText()) {
+        if (Clip.hasText())
+        {
             struct PartWindowData * pwd = (struct PartWindowData *)GetWindowLong(hWnd,GWL_USERDATA);
-            if (pwd && pwd->m_sPlay.Tempo) {
+            if (pwd && pwd->m_sPlay.Tempo)
+            {
                 MessageBeep(MB_OK);
                 return 0;         // Do not allow editing if playing
             }
 
-            if (pwd) {
+            if (pwd)
+            {
                 char * String;
                 Clip >> String;
-                if (String) {
+                if (String)
+                {
                     // minimal validity checking
-                    if (strchr("ABCDEFGR(abcdefgr",*String)) {
+                    if (strchr("ABCDEFGR(abcdefgr",*String))
+                    {
                         int PasteLen = pwd->ReplaceString(String,pwd->SelectMin(),pwd->SelectMax());
                         pwd->SelectBegin = pwd->SelectMin();
                         pwd->SelectEnd = pwd->SelectBegin + PasteLen;
@@ -3464,21 +4191,27 @@ LRESULT CALLBACK PartitureProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam) 
 
         return 0;
     }
-    case WM_DESTROY: {
+    case WM_DESTROY:
+    {
         struct PartWindowData * pwd = (struct PartWindowData *) GetWindowLong(hWnd,GWL_USERDATA);
-        if (pwd) {
+        if (pwd)
+        {
             delete pwd;
         }
         return 0;
     }
-    case WM_CLOSE: {
+    case WM_CLOSE:
+    {
         DestroyWindow(hWnd);
         return 0;
     }
-    case WM_SIZE: {
+    case WM_SIZE:
+    {
         struct PartWindowData * pwd = (struct PartWindowData *) GetWindowLong(hWnd,GWL_USERDATA);
-        if (pwd) {
-            if (pwd->hFont) {
+        if (pwd)
+        {
+            if (pwd->hFont)
+            {
                 DeleteObject(pwd->hFont);
                 pwd->hFont = NULL;
             }
@@ -3489,12 +4222,15 @@ LRESULT CALLBACK PartitureProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam) 
         }
         break;
     }
-    case WM_SYSCOMMAND: {
-        if (wParam==SC_CLOSE) {
+    case WM_SYSCOMMAND:
+    {
+        if (wParam==SC_CLOSE)
+        {
             DestroyWindow(hWnd);
             return 0;
         }
-        if (wParam==SC_KEYMENU) {
+        if (wParam==SC_KEYMENU)
+        {
             struct PartWindowData * pwd = (struct PartWindowData *) GetWindowLong(hWnd,GWL_USERDATA);
             SendMessage(pwd->hMyParent,WM_SYSCOMMAND,SC_KEYMENU,lParam);
             return 0;
@@ -3503,34 +4239,44 @@ LRESULT CALLBACK PartitureProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam) 
     }
     case EM_GETLIMITTEXT:
         return 32000;
-    case EM_GETMODIFY: {
+    case EM_GETMODIFY:
+    {
         struct PartWindowData * pwd = (struct PartWindowData *) GetWindowLong(hWnd,GWL_USERDATA);
-        if (pwd) {
+        if (pwd)
+        {
             return pwd->Modified;
-        } else {
+        }
+        else
+        {
             return 0;
         }
     }
-    case EM_SETMODIFY: {
+    case EM_SETMODIFY:
+    {
         struct PartWindowData * pwd
             = (struct PartWindowData *) GetWindowLong(hWnd,GWL_USERDATA);
-        if (pwd) {
+        if (pwd)
+        {
             pwd->Modified = wParam;
         }
         return 0;
     }
-    case WM_GETDLGCODE: {
+    case WM_GETDLGCODE:
+    {
         return DLGC_WANTARROWS|DLGC_WANTCHARS;
     }
-    case WM_CREATE: {
+    case WM_CREATE:
+    {
         static PartClassData * pcd = NULL;
-        if (!pcd) {
+        if (!pcd)
+        {
             static PartClassData autocleanup;
             pcd = &autocleanup;
             SetClassLong(hWnd,0,(LONG)pcd);
         }
         PartWindowData * pwd = NULL;
-        if (!pwd) {
+        if (!pwd)
+        {
             pwd = new PartWindowData(hWnd,DELTA);
             SetWindowLong(hWnd,GWL_USERDATA,(LONG)pwd);
             LPCREATESTRUCT lpcs = (LPCREATESTRUCT) lParam;
@@ -3556,16 +4302,20 @@ LRESULT CALLBACK PartitureProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam) 
 
         break;
     }
-    case WM_APP + 1: { // write file (filename = (char*)lParam)
+    case WM_APP + 1:   // write file (filename = (char*)lParam)
+    {
         struct PartWindowData * pwd = (struct PartWindowData *) GetWindowLong(hWnd,GWL_USERDATA);
-        if (pwd) {
+        if (pwd)
+        {
             char * fn = (char *)malloc(256); // filename
             char * pn = ""; // pathname
 
-            if (lParam) {
+            if (lParam)
+            {
                 strcpy_s(fn,256,(char *)lParam);
 
-                if (wParam!=0) {
+                if (wParam!=0)
+                {
                     pn = (char *)malloc(256);
                     strcpy_s(pn,256,(char *)lParam);
                     register int i=strlen(pn);
@@ -3573,11 +4323,14 @@ LRESULT CALLBACK PartitureProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam) 
                     pn[i+1]='\0';
                     strcpy_s(fn,256,fn+i+1);
                 }
-            } else {
+            }
+            else
+            {
                 *fn = '\0';
             }
 
-            if (!lParam || wParam!=0) { // choose filename from dialog box
+            if (!lParam || wParam!=0)   // choose filename from dialog box
+            {
                 OPENFILENAME ofn;
                 /* Set all structure members to zero. */
                 memset(&ofn, 0, sizeof(OPENFILENAME));
@@ -3594,45 +4347,64 @@ LRESULT CALLBACK PartitureProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam) 
                 ofn.Flags = OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT;
 
                 //ofn.lpstrTitle = "Music staff : export data to file";
-                if (!GetSaveFileName(&ofn)) {
+                if (!GetSaveFileName(&ofn))
+                {
                     free(fn);
                     return 0;
                 }
             }
             int fnlen = strlen(fn);
-            if (!fnlen) {
+            if (!fnlen)
+            {
                 free(fn);
                 return 0;
             }
             BOOL Ret = FALSE;
-            if (fnlen>4) {
-                if (!_stricmp(&fn[fnlen-4],".xml")) {
+            if (fnlen>4)
+            {
+                if (!_stricmp(&fn[fnlen-4],".xml"))
+                {
                     Ret = pwd->MusicXMLOut(fn);
-                } else if (!_stricmp(&fn[fnlen-4],".mid")) {
+                }
+                else if (!_stricmp(&fn[fnlen-4],".mid"))
+                {
                     Ret = pwd->MIDIOut(fn);
-                } else if (!_stricmp(&fn[fnlen-4],".rtf")) {
+                }
+                else if (!_stricmp(&fn[fnlen-4],".rtf"))
+                {
                     Ret =  pwd->RTFOut(fn);
-                } else {
+                }
+                else
+                {
                     Ret = pwd->TXTOut(fn);
                 }
-            } else {
+            }
+            else
+            {
                 Ret = pwd->TXTOut(fn);
             }
-            if (!Ret) {
+            if (!Ret)
+            {
                 free(fn);
                 return Ret;
-            } else if (lParam) {
+            }
+            else if (lParam)
+            {
                 free(fn);
                 return lParam;
             }
             return (LRESULT) fn;
-        } else {
+        }
+        else
+        {
             return 0;
         }
     }
-    case WM_APP + 2: { // play selection
+    case WM_APP + 2:   // play selection
+    {
         struct PartWindowData * pwd = (struct PartWindowData *) GetWindowLong(hWnd,GWL_USERDATA);
-        if (pwd) {
+        if (pwd)
+        {
             char lpszTempFileName[144];
             OFSTRUCT ofTmp;
 
@@ -3647,11 +4419,15 @@ LRESULT CALLBACK PartitureProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam) 
                          "mid");
 
             // save to MIDI file
-            if (SendMessage(hWnd,WM_APP + 1,0,(LPARAM) lpszTempFileName)) {
-                if (pwd->SelectBegin != pwd->SelectEnd) {
+            if (SendMessage(hWnd,WM_APP + 1,0,(LPARAM) lpszTempFileName))
+            {
+                if (pwd->SelectBegin != pwd->SelectEnd)
+                {
                     pwd->m_sPlay.nMin = pwd->SelectMin();
                     pwd->m_sPlay.nMax = pwd->SelectMax();
-                } else {
+                }
+                else
+                {
                     pwd->m_sPlay.nMin = 0;
                     pwd->m_sPlay.nMax = pwd->MelodySize;
                 }
@@ -3661,11 +4437,14 @@ LRESULT CALLBACK PartitureProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam) 
                 pwd->m_sPlay.SelectEnd = pwd->SelectEnd;
 
                 int nResult = 0;
-                if (wParam) {
+                if (wParam)
+                {
                     nResult = PlayMidiFile(lpszTempFileName,hWnd);
                 }
-                if (!nResult) {
-                    if (pwd->SelectBegin < pwd->ViewBegin) {
+                if (!nResult)
+                {
+                    if (pwd->SelectBegin < pwd->ViewBegin)
+                    {
                         pwd->ViewBegin = pwd->SelectBegin;
                     }
 
@@ -3675,22 +4454,26 @@ LRESULT CALLBACK PartitureProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam) 
 
                     SetTimer(hWnd,0,PLAY_TIMER_INTERVAL,NULL);
                     SendMessage(hWnd,WM_TIMER, 0, 0);
-                    if (lParam) {
+                    if (lParam)
+                    {
                         PartSelectionMS & selectionTime = pwd->m_sPlay.selectionTime;
                         double dHere = 0;
                         unsigned i;
                         unsigned begin = pwd->m_sPlay.nMin;
                         unsigned end   = pwd->m_sPlay.nMax;
 
-                        for (i=0; i < begin; i++) {
+                        for (i=0; i < begin; i++)
+                        {
                             dHere +=  pwd->Melody[i]->MIDIDuration();
                         }
                         selectionTime.begin = (dHere) * 60. / (pwd->Tempo * TICKS_PER_Q);
-                        if (selectionTime.begin < 0) {
+                        if (selectionTime.begin < 0)
+                        {
                             selectionTime.begin = 0;
                         }
 
-                        for (; i < end; i++) {
+                        for (; i < end; i++)
+                        {
                             dHere +=  pwd->Melody[i]->MIDIDuration();
                         }
                         selectionTime.end = (dHere) * 60. / (pwd->Tempo * TICKS_PER_Q);
@@ -3704,10 +4487,13 @@ LRESULT CALLBACK PartitureProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam) 
         }
         return 0;
     }
-    case WM_TIMER: { // Play feedback timer
+    case WM_TIMER:   // Play feedback timer
+    {
         struct PartWindowData * pwd = (struct PartWindowData *) GetWindowLong(hWnd,GWL_USERDATA);
-        if (pwd) {
-            if (!pwd->m_sPlay.Tempo) {
+        if (pwd)
+        {
+            if (!pwd->m_sPlay.Tempo)
+            {
                 KillTimer(hWnd, 0);
                 return 0;
             }
@@ -3716,25 +4502,31 @@ LRESULT CALLBACK PartitureProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam) 
             double dElapsedTicks = dwElapsed * (pwd->m_sPlay.Tempo * TICKS_PER_Q/60000.);
             double dPlayError = 100 * (pwd->m_sPlay.Tempo * TICKS_PER_Q/60000.);
 
-            if (pwd->MelodySize < pwd->m_sPlay.nMax) {
+            if (pwd->MelodySize < pwd->m_sPlay.nMax)
+            {
                 pwd->m_sPlay.nMax = pwd->MelodySize;
             }
 
             double dHere = 0;
             unsigned i=pwd->m_sPlay.nMin;
-            for (; i < pwd->m_sPlay.nMax; i++) {
+            for (; i < pwd->m_sPlay.nMax; i++)
+            {
                 dHere +=  pwd->Melody[i]->MIDIDuration();
 
-                if (dHere > dElapsedTicks - dPlayError) {
+                if (dHere > dElapsedTicks - dPlayError)
+                {
                     break;
                 }
             }
-            if (i < pwd->m_sPlay.nMax) {
+            if (i < pwd->m_sPlay.nMax)
+            {
                 pwd->SelectBegin = i > pwd->m_sPlay.nMin ? i : pwd->m_sPlay.nMin;
-                for (; i < pwd->m_sPlay.nMax; i++) {
+                for (; i < pwd->m_sPlay.nMax; i++)
+                {
                     dHere +=  pwd->Melody[i]->MIDIDuration();
 
-                    if (dHere > dElapsedTicks + dPlayError) {
+                    if (dHere > dElapsedTicks + dPlayError)
+                    {
                         break;
                     }
                 }
@@ -3743,32 +4535,41 @@ LRESULT CALLBACK PartitureProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam) 
                 unsigned oldViewBegin = pwd->ViewBegin;
                 pwd->AutoScrollRight(); // Scoll playing notes into view
 
-                if (pwd->ViewBegin != oldViewBegin) { // Scrolled
+                if (pwd->ViewBegin != oldViewBegin)   // Scrolled
+                {
                     pwd->ViewBegin = pwd->SelectBegin;    // Scroll a whole page to minimize scrolling
                 }
 
                 RedrawWindow(hWnd,NULL,NULL,RDW_INVALIDATE | RDW_UPDATENOW);
-            } else {
+            }
+            else
+            {
                 StopMidiFile(hWnd);
             }
         }
 
         return 0;
     }
-    case WM_APP + 3: { // read file
+    case WM_APP + 3:   // read file
+    {
         struct PartWindowData * pwd = (struct PartWindowData *) GetWindowLong(hWnd,GWL_USERDATA);
-        if (pwd && pwd->m_sPlay.Tempo) {
+        if (pwd && pwd->m_sPlay.Tempo)
+        {
             MessageBeep(MB_OK);
             return 0;         // Do not allow editing if playing
         }
 
-        if (pwd) {
+        if (pwd)
+        {
             OPENFILENAME ofn;
 
             char * szFile = (char *)malloc(256);
-            if (lParam && *((char *)lParam)) {
+            if (lParam && *((char *)lParam))
+            {
                 strcpy_s(szFile,256,(char *)lParam);
-            } else {
+            }
+            else
+            {
                 szFile[0] = '\0';
             }
 
@@ -3790,38 +4591,51 @@ LRESULT CALLBACK PartitureProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam) 
 
             //ofn.lpstrTitle = "Music staff : import data from file";
 
-            if (!GetOpenFileName(&ofn)) {
+            if (!GetOpenFileName(&ofn))
+            {
                 free(szFile);
                 return 0;
             }
 
             int fnlen = strlen(szFile);
-            if (!fnlen) {
+            if (!fnlen)
+            {
                 return 0;
             }
 
             BOOL Ret = FALSE;
-            if (fnlen>4 && !_stricmp(&szFile[fnlen-4],".xml")) {
+            if (fnlen>4 && !_stricmp(&szFile[fnlen-4],".xml"))
+            {
                 Ret = pwd->MusicXMLIn(szFile);
-            } else if (fnlen>4 && !_stricmp(&szFile[fnlen-4],".mid")) {
+            }
+            else if (fnlen>4 && !_stricmp(&szFile[fnlen-4],".mid"))
+            {
                 Ret = pwd->MIDIIn(szFile);
-            } else {
+            }
+            else
+            {
                 Ret = pwd->TXTIn(szFile);
             }
             return Ret;
-        } else {
+        }
+        else
+        {
             return 0;
         }
     }
-    case WM_APP + 4: { // pause MIDI
+    case WM_APP + 4:   // pause MIDI
+    {
         return PauseMidiFile(hWnd);
     }
-    case WM_APP + 5: { // stop MIDI
+    case WM_APP + 5:   // stop MIDI
+    {
         return StopMidiFile(hWnd);
     }
-    case WM_APP + 6: { // loop play selection
+    case WM_APP + 6:   // loop play selection
+    {
         struct PartWindowData * pwd = (struct PartWindowData *) GetWindowLong(hWnd,GWL_USERDATA);
-        if (pwd) {
+        if (pwd)
+        {
             char lpszTempFileName[144];
             OFSTRUCT ofTmp;
 
@@ -3837,7 +4651,8 @@ LRESULT CALLBACK PartitureProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam) 
                          "mid");
 
             // save to MIDI file
-            if (SendMessage(hWnd,WM_APP + 1,0,(LPARAM) lpszTempFileName)) {
+            if (SendMessage(hWnd,WM_APP + 1,0,(LPARAM) lpszTempFileName))
+            {
                 LoopMidiFile(lpszTempFileName,hWnd);
 
                 OpenFile(lpszTempFileName,&ofTmp,OF_DELETE);
@@ -3846,36 +4661,45 @@ LRESULT CALLBACK PartitureProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam) 
         }
         return 0;
     }
-    case WM_APP + 7: { // hide play buttons
+    case WM_APP + 7:   // hide play buttons
+    {
         struct PartWindowData * pwd = (struct PartWindowData *) GetWindowLong(hWnd,GWL_USERDATA);
-        if (pwd) {
-            if (pwd->hPlayButton) {
+        if (pwd)
+        {
+            if (pwd->hPlayButton)
+            {
                 DestroyWindow(pwd->hPlayButton);
                 pwd->hPlayButton = NULL;
             }
-            if (pwd->hPauseButton) {
+            if (pwd->hPauseButton)
+            {
                 DestroyWindow(pwd->hPauseButton);
                 pwd->hPauseButton = NULL;
             }
-            if (pwd->hStopButton) {
+            if (pwd->hStopButton)
+            {
                 DestroyWindow(pwd->hStopButton);
                 pwd->hStopButton = NULL;
             }
-            if (pwd->hLoopButton) {
+            if (pwd->hLoopButton)
+            {
                 DestroyWindow(pwd->hLoopButton);
                 pwd->hLoopButton = NULL;
             }
         }
         return 0;
     }
-    case WM_APP + 8: { // choose MIDI voice
+    case WM_APP + 8:   // choose MIDI voice
+    {
         struct PartWindowData * pwd = (struct PartWindowData *) GetWindowLong(hWnd,GWL_USERDATA);
-        if (pwd && pwd->m_sPlay.Tempo) {
+        if (pwd && pwd->m_sPlay.Tempo)
+        {
             MessageBeep(MB_OK);
             return 0;         // Do not allow editing if playing
         }
 
-        if (pwd) {
+        if (pwd)
+        {
             InstrumentMenu im;
             im.Check(pwd->Instrument);
             POINT p;
@@ -3884,15 +4708,19 @@ LRESULT CALLBACK PartitureProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam) 
         }
         return 0;
     }
-    case WM_APP + 9: { // set tempo
+    case WM_APP + 9:   // set tempo
+    {
         struct PartWindowData * pwd = (struct PartWindowData *) GetWindowLong(hWnd,GWL_USERDATA);
-        if (pwd && pwd->m_sPlay.Tempo) {
+        if (pwd && pwd->m_sPlay.Tempo)
+        {
             MessageBeep(MB_OK);
             return 0;         // Do not allow editing if playing
         }
 
-        if (pwd) {
-            if (!wParam) { // choose tempo?
+        if (pwd)
+        {
+            if (!wParam)   // choose tempo?
+            {
                 TempoMenu tm;
                 tm.Check(pwd->Tempo);
                 POINT p;
@@ -3905,45 +4733,58 @@ LRESULT CALLBACK PartitureProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam) 
         }
         return 0;
     }
-    case WM_APP + 10: { // convert
+    case WM_APP + 10:   // convert
+    {
         struct PartWindowData * pwd =
             (struct PartWindowData *) GetWindowLong(hWnd,GWL_USERDATA);
-        if (pwd && pwd->m_sPlay.Tempo) {
+        if (pwd && pwd->m_sPlay.Tempo)
+        {
             MessageBeep(MB_OK);
             return 0;         // Do not allow editing if playing
         }
 
-        if (pwd) {
+        if (pwd)
+        {
             SendMessage(pwd->hMyParent,WM_PARENTNOTIFY,IDC_CONVERT,0);
         }
     }
-    case WM_APP + 11: { // get tempo
+    case WM_APP + 11:   // get tempo
+    {
         struct PartWindowData * pwd =
             (struct PartWindowData *) GetWindowLong(hWnd,GWL_USERDATA);
-        if (pwd) {
+        if (pwd)
+        {
             return pwd->Tempo;
-        } else {
+        }
+        else
+        {
             return 0;
         }
 
     }
 
-    case WM_HSCROLL: {
+    case WM_HSCROLL:
+    {
         struct PartWindowData * pwd =
             (struct PartWindowData *) GetWindowLong(hWnd,GWL_USERDATA);
-        if (pwd) {
-            switch (LOWORD(wParam)) {
+        if (pwd)
+        {
+            switch (LOWORD(wParam))
+            {
             case SB_LEFT:
             case SB_LINELEFT:
-                if (pwd->ViewBegin>0) {
+                if (pwd->ViewBegin>0)
+                {
                     pwd->ViewBegin--;
                     InvalidateRgn(hWnd,NULL,FALSE);
                 }
                 break;
-            case SB_PAGELEFT: {
+            case SB_PAGELEFT:
+            {
                 unsigned j = pwd->SelectEnd;
                 pwd->SelectEnd = pwd->ViewBegin;
-                if (pwd->SelectEnd) {
+                if (pwd->SelectEnd)
+                {
                     --pwd->SelectEnd;
                 }
                 pwd->ViewBegin = 0;
@@ -3954,14 +4795,16 @@ LRESULT CALLBACK PartitureProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam) 
             }
             case SB_RIGHT:
             case SB_LINERIGHT:
-                if ((pwd->ViewBegin+1)<pwd->MelodySize) {
+                if ((pwd->ViewBegin+1)<pwd->MelodySize)
+                {
                     pwd->ViewBegin++;
                     InvalidateRgn(hWnd,NULL,FALSE);
                 }
                 break;
             case SB_PAGERIGHT:
                 pwd->ViewBegin = pwd->Position(pwd->ViewWidthPixels);
-                if (pwd->ViewBegin && pwd->ViewBegin>=pwd->MelodySize) {
+                if (pwd->ViewBegin && pwd->ViewBegin>=pwd->MelodySize)
+                {
                     pwd->ViewBegin=pwd->MelodySize-1;
                 }
                 InvalidateRgn(hWnd,NULL,FALSE);
@@ -3975,47 +4818,68 @@ LRESULT CALLBACK PartitureProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam) 
         }
         return 0;
     }
-    case WM_GETMINMAXINFO: {
+    case WM_GETMINMAXINFO:
+    {
         MINMAXINFO * lpmmi = (MINMAXINFO *) lParam;
         lpmmi->ptMinTrackSize.y=45;
         break;
     }
-    case WM_COMMAND: {
+    case WM_COMMAND:
+    {
         SetFocus(hWnd);
-        if (LOWORD(wParam)==IDM_PLAY) { // Play button pushed
+        if (LOWORD(wParam)==IDM_PLAY)   // Play button pushed
+        {
             return SendMessage(hWnd,WM_APP+2,1,0);
         }
-        if (LOWORD(wParam)==IDM_PAUSE) { // Pause button pushed
+        if (LOWORD(wParam)==IDM_PAUSE)   // Pause button pushed
+        {
             return SendMessage(hWnd,WM_APP+4,0,0);
         }
-        if (LOWORD(wParam)==IDM_STOP) { // Stop button pushed
+        if (LOWORD(wParam)==IDM_STOP)   // Stop button pushed
+        {
             return SendMessage(hWnd,WM_APP+5,0,0);
         }
-        if (LOWORD(wParam)==IDM_LOOP) { // Loop button pushed
+        if (LOWORD(wParam)==IDM_LOOP)   // Loop button pushed
+        {
             return SendMessage(hWnd,WM_APP+6,0,0);
-        } else if (LOWORD(wParam)<=(WM_TEMPO+200) && LOWORD(wParam)>=WM_TEMPO) {
+        }
+        else if (LOWORD(wParam)<=(WM_TEMPO+200) && LOWORD(wParam)>=WM_TEMPO)
+        {
             return SendMessage(hWnd,WM_APP+9,LOWORD(wParam)-WM_TEMPO,0);
-        } else if (!LOWORD(wParam)) { // re-determine clef
+        }
+        else if (!LOWORD(wParam))     // re-determine clef
+        {
             struct PartWindowData * pwd = (struct PartWindowData *) GetWindowLong(hWnd,GWL_USERDATA);
-            if (pwd) {
+            if (pwd)
+            {
                 pwd->SetClef(pwd->WhichClef());
                 return 0;
             }
-        } else if (LOWORD(wParam) >= 27 && LOWORD(wParam) <= 31) { // set clef
+        }
+        else if (LOWORD(wParam) >= 27 && LOWORD(wParam) <= 31)     // set clef
+        {
             struct PartWindowData * pwd = (struct PartWindowData *) GetWindowLong(hWnd,GWL_USERDATA);
-            if (pwd) {
+            if (pwd)
+            {
                 pwd->SetClef(LOWORD(wParam)-27);
                 return 0;
             }
-        } else if (LOWORD(wParam)==WM_APP+10) {
+        }
+        else if (LOWORD(wParam)==WM_APP+10)
+        {
             PostMessage(hWnd,WM_APP+10,0,0);
             return 0;
-        } else if (LOWORD(wParam)>WM_USER) {
-            if (LOWORD(wParam)<WM_USER+128) { // KEYSTROKE
+        }
+        else if (LOWORD(wParam)>WM_USER)
+        {
+            if (LOWORD(wParam)<WM_USER+128)   // KEYSTROKE
+            {
                 LRESULT ret = SendMessage(hWnd,WM_CHAR,LOWORD(wParam)-WM_USER,0L);
-                if (LOWORD(wParam)<WM_USER+26) { // some keystrokes are handled by keyup instead
+                if (LOWORD(wParam)<WM_USER+26)   // some keystrokes are handled by keyup instead
+                {
                     struct PartWindowData * pwd = (struct PartWindowData *) GetWindowLong(hWnd,GWL_USERDATA);
-                    if (pwd) {
+                    if (pwd)
+                    {
                         BOOL OldControl = pwd->Control;
                         pwd->Control = TRUE;
                         ret = SendMessage(hWnd,WM_KEYUP,'A'-1+LOWORD(wParam)-WM_USER,0L);
@@ -4023,14 +4887,19 @@ LRESULT CALLBACK PartitureProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam) 
                     }
                 }
                 return ret;
-            } else if (LOWORD(wParam)<WM_USER+256) { // INSTRUMENT
+            }
+            else if (LOWORD(wParam)<WM_USER+256)     // INSTRUMENT
+            {
                 struct PartWindowData * pwd
                     = (struct PartWindowData *) GetWindowLong(hWnd,GWL_USERDATA);
-                if (pwd) {
+                if (pwd)
+                {
                     pwd->Instrument = (char)(LOWORD(wParam) - (WM_USER + 128));
                 }
             }
-        } else {
+        }
+        else
+        {
             return SendMessage(hWnd,(UINT)wParam,0,0L);
         }
     }
@@ -4038,7 +4907,8 @@ LRESULT CALLBACK PartitureProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam) 
     return DefWindowProc(hWnd,uMsg,wParam,lParam);
 }//PartitureProc
 
-int INIT(HINSTANCE hInst) {
+int INIT(HINSTANCE hInst)
+{
     hInstance = hInst;
     WNDCLASS wc;
     wc.style = CS_OWNDC/*|CS_GLOBALCLASS*/;
@@ -4055,7 +4925,8 @@ int INIT(HINSTANCE hInst) {
     return (int) RegisterClass(&wc);
 }//Init
 
-extern "C" void cdecl Splash(HWND hWnd,HINSTANCE hInst,char * BitmapName) {
+extern "C" void cdecl Splash(HWND hWnd,HINSTANCE hInst,char * BitmapName)
+{
     HBITMAP hbmpMyBitmap, hbmpOld;
     BITMAP bm;
 
@@ -4065,17 +4936,20 @@ extern "C" void cdecl Splash(HWND hWnd,HINSTANCE hInst,char * BitmapName) {
     RECT r;
     GetClientRect(hWnd,&r);
     int xx = (r.right/2) - (bm.bmWidth/2);
-    if (xx<0) {
+    if (xx<0)
+    {
         xx=0;
     }
     int yy = (r.bottom/2) - (bm.bmHeight/2);
-    if (yy<0) {
+    if (yy<0)
+    {
         yy=0;
     }
 
     HWND hSplashWindow = CreateWindow("STATIC",BitmapName,WS_BORDER|WS_CHILD|WS_VISIBLE,
                                       xx,yy,bm.bmWidth,bm.bmHeight,hWnd,NULL,hInst,NULL);
-    if (!hSplashWindow) {
+    if (!hSplashWindow)
+    {
         return;
     }
 
@@ -4106,8 +4980,10 @@ static MCI_PLAY_PARMS mciPlayParms;
 static MCI_STATUS_PARMS mciStatusParms;
 static MCI_SEQ_SET_PARMS mciSeqSetParms;
 
-static DWORD PlayMidiFile(char * lpszMIDIFileName, HWND hWndNotify) {
-    if (wDeviceID) {
+static DWORD PlayMidiFile(char * lpszMIDIFileName, HWND hWndNotify)
+{
+    if (wDeviceID)
+    {
         mciSendCommand(wDeviceID, MCI_CLOSE, 0, NULL);
     }
 
@@ -4115,13 +4991,16 @@ static DWORD PlayMidiFile(char * lpszMIDIFileName, HWND hWndNotify) {
     mciOpenParms.lpstrElementName = lpszMIDIFileName;
 
     dwReturn = mciSendCommand(NULL, MCI_OPEN, MCI_OPEN_ELEMENT, (DWORD)(LPVOID) &mciOpenParms);
-    if (dwReturn) {
+    if (dwReturn)
+    {
         // Failed to open device; don't close it, just return error
         LPSTR lpszErrorDescr = new char[512];
         mciGetErrorString(dwReturn, lpszErrorDescr, 512);
         MessageBox(hWndNotify,lpszErrorDescr,lpszMIDIFileName,MB_OK);
         return(DWORD(-1));
-    } else {
+    }
+    else
+    {
         wDeviceID = (unsigned short)(mciOpenParms.wDeviceID);
     }
 
@@ -4133,7 +5012,8 @@ static DWORD PlayMidiFile(char * lpszMIDIFileName, HWND hWndNotify) {
     mciOpenParms.lpstrElementName = lpszMIDIFileName;
 
     dwReturn = mciSendCommand(NULL, MCI_OPEN, MCI_OPEN_TYPE | MCI_OPEN_ELEMENT, (DWORD)(LPVOID) &mciOpenParms);
-    if (dwReturn != 0) {
+    if (dwReturn != 0)
+    {
         // Failed to open device; don't close it, just return error
         LPSTR lpszErrorDescr = new char[512];
         mciGetErrorString(dwReturn, lpszErrorDescr, 512);
@@ -4149,21 +5029,26 @@ static DWORD PlayMidiFile(char * lpszMIDIFileName, HWND hWndNotify) {
 
     mciPlayParms.dwCallback = (DWORD)(HWND *) hWndNotify;
     dwReturn = mciSendCommand(wDeviceID, MCI_PLAY, MCI_NOTIFY, (DWORD)(LPVOID) &mciPlayParms);
-    if (dwReturn) {
+    if (dwReturn)
+    {
         mciSendCommand(wDeviceID, MCI_CLOSE, 0, NULL);
         return(dwReturn);
     }
     return(0);
 }//PlayMidiFile
 
-static DWORD PauseMidiFile(HWND /*hWndNotify*/) {
+static DWORD PauseMidiFile(HWND /*hWndNotify*/)
+{
     return 0;
 }//PauseMidiFile
 
-static DWORD StopMidiFile(HWND hWnd) {
+static DWORD StopMidiFile(HWND hWnd)
+{
     struct PartWindowData * pwd = (struct PartWindowData *) GetWindowLong(hWnd,GWL_USERDATA);
-    if (pwd) {
-        if (pwd->m_sPlay.Tempo) {
+    if (pwd)
+    {
+        if (pwd->m_sPlay.Tempo)
+        {
             KillTimer(hWnd, 0);
 
             pwd->m_sPlay.Tempo = 0;
@@ -4179,7 +5064,8 @@ static DWORD StopMidiFile(HWND hWnd) {
     return (mciSendCommand(wDeviceID, MCI_CLOSE, 0, NULL));
 }//StopMidiFile
 
-static DWORD LoopMidiFile(char * /*lpszMIDIFileName*/, HWND /*hWndNotify*/) {
+static DWORD LoopMidiFile(char * /*lpszMIDIFileName*/, HWND /*hWndNotify*/)
+{
     return 0;
 }//LoopMidiFile
 

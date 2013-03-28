@@ -1,3 +1,7 @@
+SA - 3.1.0.44 - 3/27/2013
+1) Fixed AutoSave feature so retrieved files are renamed so that they are deleted when the application is closed.
+2) Added SFM tabular support to File/Import/SFM menu item.
+
 SA - 3.1.0.43 - 3/25/2013
 1) Implemented AutoSave feature.
 

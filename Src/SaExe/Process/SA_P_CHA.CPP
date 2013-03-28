@@ -31,7 +31,8 @@ static char BASED_CODE THIS_FILE[] = __FILE__;
 /***************************************************************************/
 // CProcessChange::CProcessChange Constructor
 /***************************************************************************/
-CProcessChange::CProcessChange() {
+CProcessChange::CProcessChange()
+{
     m_pQualityFile = new CFile;
     m_qualityFileStatus.m_szFullName[0] = 0; // no file name
     m_hQualityData = NULL;
@@ -43,14 +44,17 @@ CProcessChange::CProcessChange() {
 /***************************************************************************/
 // CProcessChange::~CProcessChange Destructor
 /***************************************************************************/
-CProcessChange::~CProcessChange() {
+CProcessChange::~CProcessChange()
+{
     // delete the temporary quality file
     RemoveFile(m_qualityFileStatus.m_szFullName);
-    if (m_pQualityFile) {
+    if (m_pQualityFile)
+    {
         delete m_pQualityFile;
     }
     // free the quality buffer memory
-    if (m_hQualityData) {
+    if (m_hQualityData)
+    {
         ::GlobalUnlock(m_hQualityData);
         ::GlobalFree(m_hQualityData);
     }
@@ -63,8 +67,10 @@ CProcessChange::~CProcessChange() {
 // CProcessChange::Exit Exit on Error
 // Standard exit function if an error occured.
 /***************************************************************************/
-long CProcessChange::Exit(int nError) {
-    if (m_pQualityFile) {
+long CProcessChange::Exit(int nError)
+{
+    if (m_pQualityFile)
+    {
         m_pQualityFile->Abort();
     }
     RemoveFile(m_qualityFileStatus.m_szFullName);
@@ -79,43 +85,57 @@ long CProcessChange::Exit(int nError) {
 /***************************************************************************/
 UINT CProcessChange::CalculateACF8(CProcess * pProc, unsigned char * pSRDdata,
                                    BOOL * pbRes, UINT nACFinterval, UINT nLagData, UINT nMaxLag,
-                                   DWORD * pdwBlockPos, DWORD dwDataPos, int nLoopCount) {
+                                   DWORD * pdwBlockPos, DWORD dwDataPos, int nLoopCount)
+{
     CProcessSmoothLoudness * pProcess = (CProcessSmoothLoudness *)pProc; // cast pointer
     DWORD dwPos = dwDataPos - (nLagData >> 1);
     UINT nResult = 0;
-    if (dwPos < *pdwBlockPos) {
+    if (dwPos < *pdwBlockPos)
+    {
         // reload new block
         DWORD dwNewBlock = 0;
-        if (dwDataPos > nMaxLag) {
+        if (dwDataPos > nMaxLag)
+        {
             dwNewBlock = dwDataPos - nMaxLag;    // lowest needed data
         }
-        if ((dwNewBlock + GetProcessBufferSize()) >= (dwPos + nLagData)) {
+        if ((dwNewBlock + GetProcessBufferSize()) >= (dwPos + nLagData))
+        {
             *pdwBlockPos = dwNewBlock;
-        } else {
+        }
+        else
+        {
             *pdwBlockPos = dwPos;
         }
         pSRDdata = (unsigned char *)pProcess->GetSmoothRawData(*pdwBlockPos, TRUE);
-        if (!pSRDdata) {
+        if (!pSRDdata)
+        {
             *pbRes = FALSE; // reading failed
             return 0;
         }
     }
     DWORD dwBlockEnd = *pdwBlockPos + GetProcessBufferSize() - nLagData;
     pSRDdata += (dwPos - *pdwBlockPos); // set the source pointer
-    do {
-        if (dwPos >= dwBlockEnd) { // end of data block
+    do
+    {
+        if (dwPos >= dwBlockEnd)   // end of data block
+        {
             // reload new block
             DWORD dwNewBlock = 0;
-            if (dwDataPos > nMaxLag) {
+            if (dwDataPos > nMaxLag)
+            {
                 dwNewBlock = dwDataPos - nMaxLag;    // lowest needed data
             }
-            if ((dwNewBlock + GetProcessBufferSize()) >= (dwPos + nLagData)) {
+            if ((dwNewBlock + GetProcessBufferSize()) >= (dwPos + nLagData))
+            {
                 *pdwBlockPos = dwNewBlock;
-            } else {
+            }
+            else
+            {
                 *pdwBlockPos = dwPos;
             }
             pSRDdata = (unsigned char *)pProcess->GetSmoothRawData(*pdwBlockPos, TRUE);
-            if (!pSRDdata) {
+            if (!pSRDdata)
+            {
                 *pbRes = FALSE; // reading failed
                 return 0;
             }
@@ -126,7 +146,8 @@ UINT CProcessChange::CalculateACF8(CProcess * pProc, unsigned char * pSRDdata,
         nResult += (UINT)(nData >= 0 ? nData : -nData);
         dwPos += nACFinterval;
         pSRDdata += nACFinterval;
-    } while (--nLoopCount);
+    }
+    while (--nLoopCount);
     return nResult;
 }
 
@@ -137,23 +158,30 @@ UINT CProcessChange::CalculateACF8(CProcess * pProc, unsigned char * pSRDdata,
 /***************************************************************************/
 DWORD CProcessChange::CalculateACF16(CProcess * pProc, unsigned char * pSRDdata,
                                      BOOL * pbRes, UINT nACFinterval, UINT nLagData, UINT nMaxLag,
-                                     DWORD * pdwBlockPos, DWORD dwDataPos, int nLoopCount) {
+                                     DWORD * pdwBlockPos, DWORD dwDataPos, int nLoopCount)
+{
     CProcessSmoothLoudness * pProcess = (CProcessSmoothLoudness *)pProc; // cast pointer
     DWORD dwPos = (dwDataPos - nLagData) & ~1L; // must be even
     DWORD dwResult = 0;
-    if (dwPos < *pdwBlockPos) {
+    if (dwPos < *pdwBlockPos)
+    {
         // reload new block
         DWORD dwNewBlock = 0;
-        if (dwDataPos > nMaxLag * 2) {
+        if (dwDataPos > nMaxLag * 2)
+        {
             dwNewBlock = dwDataPos - nMaxLag * 2;    // lowest needed data
         }
-        if ((dwNewBlock + GetProcessBufferSize()) >= (dwPos + nLagData * 2)) {
+        if ((dwNewBlock + GetProcessBufferSize()) >= (dwPos + nLagData * 2))
+        {
             *pdwBlockPos = dwNewBlock;
-        } else {
+        }
+        else
+        {
             *pdwBlockPos = dwPos;
         }
         pSRDdata = (unsigned char *)pProcess->GetSmoothRawData(*pdwBlockPos, TRUE);
-        if (!pSRDdata) {
+        if (!pSRDdata)
+        {
             *pbRes = FALSE; // reading failed
             return 0;
         }
@@ -161,20 +189,27 @@ DWORD CProcessChange::CalculateACF16(CProcess * pProc, unsigned char * pSRDdata,
     pSRDdata += (dwPos - *pdwBlockPos); // set the source pointer
     short int * lpSRDdata = (short int *)pSRDdata; // cast pointer
     DWORD dwBlockEnd = *pdwBlockPos + GetProcessBufferSize() - nLagData * 2;
-    do {
-        if (dwPos >= dwBlockEnd) { // end of data block
+    do
+    {
+        if (dwPos >= dwBlockEnd)   // end of data block
+        {
             // reload new block
             DWORD dwNewBlock = 0;
-            if (dwDataPos > nMaxLag * 2) {
+            if (dwDataPos > nMaxLag * 2)
+            {
                 dwNewBlock = dwDataPos - nMaxLag * 2;    // lowest needed data
             }
-            if ((dwNewBlock + GetProcessBufferSize()) >= (dwPos + nLagData * 2)) {
+            if ((dwNewBlock + GetProcessBufferSize()) >= (dwPos + nLagData * 2))
+            {
                 *pdwBlockPos = dwNewBlock;
-            } else {
+            }
+            else
+            {
                 *pdwBlockPos = dwPos;
             }
             pSRDdata = (unsigned char *)pProcess->GetSmoothRawData(*pdwBlockPos, TRUE);
-            if (!pSRDdata) {
+            if (!pSRDdata)
+            {
                 *pbRes = FALSE; // reading failed
                 return 0;
             }
@@ -186,14 +221,16 @@ DWORD CProcessChange::CalculateACF16(CProcess * pProc, unsigned char * pSRDdata,
         dwResult += (DWORD)(nData >= 0 ? nData : -nData);
         dwPos += nACFinterval * 2;
         lpSRDdata += nACFinterval;
-    } while (--nLoopCount);
+    }
+    while (--nLoopCount);
     return dwResult;
 }
 
 /***************************************************************************/
 // CProcessChange::SetDataInvalid Delete processed data
 /***************************************************************************/
-void CProcessChange::SetDataInvalid() {
+void CProcessChange::SetDataInvalid()
+{
     CProcess::SetDataInvalid();
     RemoveFile(m_qualityFileStatus.m_szFullName);
     m_qualityFileStatus.m_szFullName[0] = 0;
@@ -219,12 +256,15 @@ void CProcessChange::SetDataInvalid() {
 // on fragments.
 /***************************************************************************/
 long CProcessChange::Process(void * pCaller, ISaDoc * pDoc, int nProgress,
-                             int nLevel) {
+                             int nLevel)
+{
     TRACE(_T("Process: CProcessChange\n"));
-    if (IsCanceled()) {
+    if (IsCanceled())
+    {
         return MAKELONG(PROCESS_CANCELED, nProgress);    // process canceled
     }
-    if (IsDataReady()) {
+    if (IsDataReady())
+    {
         return MAKELONG(--nLevel, nProgress);    // data is already ready
     }
     // create raw pitch data, its quality and smoothed loudness output is needed to calculate change
@@ -233,8 +273,10 @@ long CProcessChange::Process(void * pCaller, ISaDoc * pDoc, int nProgress,
     nLevel = (short int)LOWORD(lResult);
     nProgress = HIWORD(lResult);
 
-    if (nLevel < 0) { // previous processing error
-        if ((nLevel == PROCESS_CANCELED)) {
+    if (nLevel < 0)   // previous processing error
+    {
+        if ((nLevel == PROCESS_CANCELED))
+        {
             CancelProcess();    // set your own cancel flag
         }
         return MAKELONG(nLevel, nProgress);
@@ -243,15 +285,18 @@ long CProcessChange::Process(void * pCaller, ISaDoc * pDoc, int nProgress,
     // allocate global buffer for the processed quality data
     // start pitch process
     BeginWaitCursor(); // wait cursor
-    if (!StartProcess(pCaller, IDS_STATTXT_PROCESSPIT, FALSE)) { // start data processing
+    if (!StartProcess(pCaller, IDS_STATTXT_PROCESSPIT, FALSE))   // start data processing
+    {
         EndProcess(); // end data processing
         EndWaitCursor();
         return MAKELONG(PROCESS_ERROR, nProgress);
     }
     // allocate global buffer for the processed quality data
-    if (!m_hQualityData) { // not yet allocated
+    if (!m_hQualityData)   // not yet allocated
+    {
         m_hQualityData = ::GlobalAlloc(GMEM_MOVEABLE | GMEM_SHARE, GetProcessBufferSize()); // allocate memory
-        if (!m_hQualityData) {
+        if (!m_hQualityData)
+        {
             // memory allocation error
             ErrorMessage(IDS_ERROR_MEMALLOC);
             EndProcess(); // end data processing
@@ -259,7 +304,8 @@ long CProcessChange::Process(void * pCaller, ISaDoc * pDoc, int nProgress,
             return MAKELONG(PROCESS_ERROR, nProgress);
         }
         m_lpQualityData = (HPSTR)::GlobalLock(m_hQualityData); // lock memory
-        if (!m_lpQualityData) {
+        if (!m_lpQualityData)
+        {
             // memory lock error
             ErrorMessage(IDS_ERROR_MEMLOCK);
             ::GlobalFree(m_hQualityData);
@@ -276,10 +322,12 @@ long CProcessChange::Process(void * pCaller, ISaDoc * pDoc, int nProgress,
     UINT nBlockAlign = pFmtParm->wBlockAlign;
     // calculate current processing position (copied but not understood from WINCECIL)
     DWORD dwLoopPos, dwLoopStart;
-    if (pUttParm->nMinFreq == 0) {
+    if (pUttParm->nMinFreq == 0)
+    {
         pUttParm->nMinFreq = 50;    // to prevent 0 divisions
     }
-    if (pUttParm->nMaxFreq == 0) {
+    if (pUttParm->nMaxFreq == 0)
+    {
         pUttParm->nMaxFreq = 500;    // to prevent 0 divisions
     }
     dwLoopStart = ((pFmtParm->dwSamplesPerSec / (2 * MAX_CALCULATION_FREQUENCY)
@@ -287,12 +335,14 @@ long CProcessChange::Process(void * pCaller, ISaDoc * pDoc, int nProgress,
                    + CALCULATION_DATALENGTH(pFmtParm->dwSamplesPerSec) / 2 + 5) / CALCULATION_INTERVAL(pFmtParm->dwSamplesPerSec) + 1;
     dwLoopPos = 0;
     DWORD dwDataPos = dwLoopStart * CALCULATION_INTERVAL(pFmtParm->dwSamplesPerSec) - CALCULATION_DATALENGTH(pFmtParm->dwSamplesPerSec) / 2;
-    if (nBlockAlign > 1) {
+    if (nBlockAlign > 1)
+    {
         dwDataPos *= 2;    // 16 bit data
     }
 
     // create the temporary file for quality data
-    if (!CreateAuxTempFile(_T("QUA"), m_pQualityFile, &m_qualityFileStatus)) {
+    if (!CreateAuxTempFile(_T("QUA"), m_pQualityFile, &m_qualityFileStatus))
+    {
         return Exit(PROCESS_ERROR);
     }
 
@@ -305,17 +355,21 @@ long CProcessChange::Process(void * pCaller, ISaDoc * pDoc, int nProgress,
     naACFlags[1] = nMinLag;
     long lVal = (long)nMinLag * 256;
     int nVal, nNumLags = 1; // number of lags in naACFlags to scan over
-    while (TRUE) {
+    while (TRUE)
+    {
         lVal = (lVal * 105L) / 100L;
         nVal = (int)(lVal / 256);
-        if (nVal == naACFlags[nNumLags]) {
+        if (nVal == naACFlags[nNumLags])
+        {
             continue;
         }
-        if (nVal > nMaxLag) {
+        if (nVal > nMaxLag)
+        {
             nVal = nMaxLag;
         }
         naACFlags[++nNumLags] = nVal;
-        if (nVal == nMaxLag) {
+        if (nVal == nMaxLag)
+        {
             break;
         }
     }
@@ -329,28 +383,37 @@ long CProcessChange::Process(void * pCaller, ISaDoc * pDoc, int nProgress,
     // calculate lowest needed first data index in smooth raw data block and load data block
     BOOL bRes = TRUE; // calculation result
     DWORD dwBlockPos = 0;
-    if (nBlockAlign > 1) { // 16 bit data (value must be even)
-        if (dwDataPos > (DWORD)nMaxLag) {
+    if (nBlockAlign > 1)   // 16 bit data (value must be even)
+    {
+        if (dwDataPos > (DWORD)nMaxLag)
+        {
             dwBlockPos = (dwDataPos - nMaxLag) & ~1L;
         }
-    } else { // 8 bit data
-        if (dwDataPos > (DWORD)(nMaxLag >> 1)) {
+    }
+    else     // 8 bit data
+    {
+        if (dwDataPos > (DWORD)(nMaxLag >> 1))
+        {
             dwBlockPos = dwDataPos - (nMaxLag >> 1);    // 8 bit data
         }
     }
     HPSTR pSRDdata = pLoudness->GetSmoothRawData(dwBlockPos, TRUE);
-    if (!pSRDdata) {
+    if (!pSRDdata)
+    {
         return Exit(PROCESS_ERROR);    // error, reading failed
     }
     m_nMinValue = 0x7FFF;
     m_nQualityMaxValue = 0;
-    while (dwLoopPos < dwDataSize) {
-        if ((dwLoopPos >= dwLoopStart) && (dwLoopPos < dwLoopEnd)) {
+    while (dwLoopPos < dwDataSize)
+    {
+        if ((dwLoopPos >= dwLoopStart) && (dwLoopPos < dwLoopEnd))
+        {
             // now do rough search for best autocorrelation coefficient fit
             DWORD dwResult, dwMinCoeff = ULONG_MAX;
             UINT nLagData, nACFinterval = 30;
             int nFoundLag = 0;
-            for (int nLoop = 0; nLoop < nNumLags; nLoop++) {
+            for (int nLoop = 0; nLoop < nNumLags; nLoop++)
+            {
                 // try each lag
                 nLagData = (unsigned int)naACFlags[nLoop + 1]; // first entry is dummy
                 int nInnerLoop = CALCULATION_DATALENGTH(pFmtParm->dwSamplesPerSec) / nACFinterval + 1;
@@ -360,16 +423,19 @@ long CProcessChange::Process(void * pCaller, ISaDoc * pDoc, int nProgress,
                 else // 8 bit data
                     dwResult = CalculateACF8(pLoudness, (unsigned char *)pSRDdata, &bRes, nACFinterval, nLagData,
                                              nMaxLag, &dwBlockPos, dwDataPos, nInnerLoop);
-                if (!bRes) {
+                if (!bRes)
+                {
                     break;
                 }
-                if (dwResult < dwMinCoeff) {
+                if (dwResult < dwMinCoeff)
+                {
                     // best fit so far
                     dwMinCoeff = dwResult;
                     nFoundLag = nLoop + 1;
                 }
             }
-            if (!bRes) {
+            if (!bRes)
+            {
                 return Exit(PROCESS_ERROR);    // error, reading failed
             }
             // now home in on range between lags on either side of found lag
@@ -377,7 +443,8 @@ long CProcessChange::Process(void * pCaller, ISaDoc * pDoc, int nProgress,
             dwMinCoeff = ULONG_MAX;
             int nLagLow = naACFlags[nFoundLag - 1] + 1;
             int nLagHigh = naACFlags[nFoundLag + 1] - 1;
-            for (nLagData = (unsigned int)nLagLow; nLagData <= (unsigned int)nLagHigh; nLagData++) {
+            for (nLagData = (unsigned int)nLagLow; nLagData <= (unsigned int)nLagHigh; nLagData++)
+            {
                 // scan around best fit
                 int nInnerLoop = CALCULATION_DATALENGTH(pFmtParm->dwSamplesPerSec) / nACFinterval;
                 if (nBlockAlign > 1) // 16 bit data
@@ -386,33 +453,42 @@ long CProcessChange::Process(void * pCaller, ISaDoc * pDoc, int nProgress,
                 else // 8 bit data
                     dwResult = CalculateACF8(pLoudness, (unsigned char *)pSRDdata, &bRes, nACFinterval, nLagData,
                                              nLagHigh, &dwBlockPos, dwDataPos, nInnerLoop);
-                if (!bRes) {
+                if (!bRes)
+                {
                     break;
                 }
-                if (dwResult < dwMinCoeff) {
+                if (dwResult < dwMinCoeff)
+                {
                     dwMinCoeff = dwResult;
                     nFoundLag = nLagData;
                 }
             }
-            if (!bRes) {
+            if (!bRes)
+            {
                 return Exit(PROCESS_ERROR);    // error, reading failed
             }
             // here we have the quality result ready! Store it!
-            if (nBlockAlign > 1) { // 16 bit data
+            if (nBlockAlign > 1)   // 16 bit data
+            {
                 // quality has to be stored divided by PRECISION_MULTIPLIER to fit into the 16bit result
                 UINT nQuality = (UINT)(dwMinCoeff / PRECISION_MULTIPLIER);
                 *pQualityData++ = (short int)nQuality; // save result
-                if (nQuality > (UINT)m_nQualityMaxValue) {
+                if (nQuality > (UINT)m_nQualityMaxValue)
+                {
                     m_nQualityMaxValue = nQuality;    // save maximum quality value
                 }
-            } else { // 8 bit data
+            }
+            else     // 8 bit data
+            {
                 *pQualityData++ = (short int)dwMinCoeff; // save result
-                if (dwMinCoeff > (UINT)m_nQualityMaxValue) {
+                if (dwMinCoeff > (UINT)m_nQualityMaxValue)
+                {
                     m_nQualityMaxValue = (UINT)dwMinCoeff;    // save maximum quality value
                 }
             }
             // check this isn't twice fundamental
-            if (nFoundLag >= (nMinLag * 2)) {
+            if (nFoundLag >= (nMinLag * 2))
+            {
                 // check frequency / 2
                 nLagData = nFoundLag / 2;
                 int nInnerLoop = CALCULATION_DATALENGTH(pFmtParm->dwSamplesPerSec) / nACFinterval;
@@ -423,11 +499,15 @@ long CProcessChange::Process(void * pCaller, ISaDoc * pDoc, int nProgress,
                     dwResult = CalculateACF8(pLoudness, (unsigned char *)pSRDdata, &bRes, nACFinterval, nLagData,
                                              nLagData, &dwBlockPos, dwDataPos, nInnerLoop);
                 // if it fits reasonably well...
-                if ((2 * dwResult) < (3 * dwMinCoeff)) {
+                if ((2 * dwResult) < (3 * dwMinCoeff))
+                {
                     nFoundLag = nLagData;
-                } else {
+                }
+                else
+                {
                     // ...else check for 3x fundamental
-                    if ((nFoundLag >= (nMinLag * 3)) && bRes) {
+                    if ((nFoundLag >= (nMinLag * 3)) && bRes)
+                    {
                         nLagData = nFoundLag / 3;
                         int nInnerLoop = CALCULATION_DATALENGTH(pFmtParm->dwSamplesPerSec) / nACFinterval;
                         if (nBlockAlign > 1) // 16 bit data
@@ -436,50 +516,65 @@ long CProcessChange::Process(void * pCaller, ISaDoc * pDoc, int nProgress,
                         else // 8 bit data
                             dwResult = CalculateACF8(pLoudness, (unsigned char *)pSRDdata, &bRes, nACFinterval, nLagData,
                                                      nLagData, &dwBlockPos, dwDataPos, nInnerLoop);
-                        if ((2 * dwResult) < (3 * dwMinCoeff)) {
+                        if ((2 * dwResult) < (3 * dwMinCoeff))
+                        {
                             nFoundLag = nLagData;
                         }
                     }
                 }
             }
-            if (!bRes) {
+            if (!bRes)
+            {
                 return Exit(PROCESS_ERROR);    // error, reading failed
             }
             // calc frequency from found lag and store width multiplier
             // discard points which haven't converged and lie on upper frequency bound
             int nPitchResult = -1;
-            if ((nFoundLag != nMinLag) && (nFoundLag != nMaxLag)) {
+            if ((nFoundLag != nMinLag) && (nFoundLag != nMaxLag))
+            {
                 nPitchResult = (short)((PRECISION_MULTIPLIER * (unsigned long)(pFmtParm->dwSamplesPerSec)) / (unsigned long)nFoundLag);
             }
             // pitch result is ready, store it
-            if (nPitchResult >= 0) {
-                if (nPitchResult > m_nMaxValue) {
+            if (nPitchResult >= 0)
+            {
+                if (nPitchResult > m_nMaxValue)
+                {
                     m_nMaxValue = nPitchResult;    // save maximum value
                 }
-                if (nPitchResult < m_nMinValue) {
+                if (nPitchResult < m_nMinValue)
+                {
                     m_nMinValue = nPitchResult;    // save minimum value
                 }
             }
             // set new calculation window start
-            if (nBlockAlign > 1) {
+            if (nBlockAlign > 1)
+            {
                 dwDataPos += CALCULATION_INTERVAL(pFmtParm->dwSamplesPerSec) * 2;    // 16 bit data
-            } else {
+            }
+            else
+            {
                 dwDataPos += CALCULATION_INTERVAL(pFmtParm->dwSamplesPerSec);    // 8 bit data
             }
-        } else { // proplogue and epilogue
+        }
+        else     // proplogue and epilogue
+        {
             *pQualityData++ = 0;    // reset quality
         }
         dwLoopPos++;
         // set progress bar
         SetProgress(nProgress + (int)(100 * dwLoopPos / dwDataSize / (DWORD)nLevel));
-        if (IsCanceled()) {
+        if (IsCanceled())
+        {
             return Exit(PROCESS_CANCELED);    // process canceled
         }
-        if ((++dwPitchCount == GetProcessBufferSize() / 2) || (dwLoopPos >= dwDataSize)) { // pitch buffer is full or processing finished
+        if ((++dwPitchCount == GetProcessBufferSize() / 2) || (dwLoopPos >= dwDataSize))   // pitch buffer is full or processing finished
+        {
             // write the processed quality data block
-            try {
+            try
+            {
                 m_pQualityFile->Write((HPSTR)m_lpQualityData, dwPitchCount * 2);
-            } catch (CFileException e)
+            }
+            catch (CFileException e)
 
             {
                 // error writing file
@@ -493,32 +588,38 @@ long CProcessChange::Process(void * pCaller, ISaDoc * pDoc, int nProgress,
     // calculate the actual progress
     nProgress = nProgress + (int)(100 / nLevel);
     // close the quality data temp file and read the status
-    if (m_pQualityFile) {
+    if (m_pQualityFile)
+    {
         m_pQualityFile->Abort();
     }
 
     CString szFullName = m_qualityFileStatus.m_szFullName;
     CFile::GetStatus(szFullName, m_qualityFileStatus); // read the status
-    if (m_qualityFileStatus.m_size < 2 * sizeof(int)) {
+    if (m_qualityFileStatus.m_size < 2 * sizeof(int))
+    {
         return Exit(PROCESS_ERROR);    // error, not enough data
     }
 
-    if (nLevel < 0) { // memory allocation failed or previous processing error
+    if (nLevel < 0)   // memory allocation failed or previous processing error
+    {
         EndProcess(); // end data processing
         EndWaitCursor();
-        if ((nLevel == PROCESS_CANCELED)) {
+        if ((nLevel == PROCESS_CANCELED))
+        {
             CancelProcess();    // set your own cancel flag
         }
         return MAKELONG(nLevel, nProgress);
     }
 
     // start change process
-    if (!StartProcess(pCaller, IDS_STATTXT_PROCESSCHA)) { // start data processing
+    if (!StartProcess(pCaller, IDS_STATTXT_PROCESSCHA))   // start data processing
+    {
         EndProcess(); // end data processing
         EndWaitCursor();
         return MAKELONG(PROCESS_ERROR, nProgress);
     }
-    if (!pLoudness->SmoothData(2)) { // smooth smoothed loudness two times
+    if (!pLoudness->SmoothData(2))   // smooth smoothed loudness two times
+    {
         EndProcess(); // end data processing
         EndWaitCursor();
         return MAKELONG(PROCESS_ERROR, nProgress);
@@ -531,7 +632,8 @@ long CProcessChange::Process(void * pCaller, ISaDoc * pDoc, int nProgress,
     dwDataSize = pLoudness->GetDataSize();
     dwLoopEnd = dwDataSize - dwLoopStart; // end of loop
     // create the temporary change file
-    if (!CreateTempFile(_T("CHA"))) { // creating error
+    if (!CreateTempFile(_T("CHA")))   // creating error
+    {
         EndProcess(); // end data processing
         EndWaitCursor();
         SetDataInvalid();
@@ -545,34 +647,44 @@ long CProcessChange::Process(void * pCaller, ISaDoc * pDoc, int nProgress,
     // prepare source data
     short int * pQuality = (short int *)GetQualityData(dwChangeBlock, TRUE); // read quality data block
     short int * pLoudData = (short int *)pLoudness->GetProcessedData(dwChangeBlock, TRUE); // read smoothed loudness data block
-    if ((!pQuality) || (!pLoudData)) {
+    if ((!pQuality) || (!pLoudData))
+    {
         return Exit(PROCESS_ERROR);    // error, reading failed
     }
     long lMultiplier = 1;
-    if (nBlockAlign > 1) {
+    if (nBlockAlign > 1)
+    {
         lMultiplier = PRECISION_MULTIPLIER;    // 16 bit data, quality comes divided by PRECISION_MULTIPLIER
     }
     // start processing
-    while (dwLoopPos < dwDataSize) {
+    while (dwLoopPos < dwDataSize)
+    {
         *pChange = (short)(((long)*pQuality++ * 200 * lMultiplier) / ((long)*pLoudData++ + 70) / lMultiplier);
-        if ((dwLoopPos < dwLoopStart) || (dwLoopPos >= dwLoopEnd)) {
+        if ((dwLoopPos < dwLoopStart) || (dwLoopPos >= dwLoopEnd))
+        {
             *pChange = 0;
         }
-        if (*pChange > m_nMaxValue) {
+        if (*pChange > m_nMaxValue)
+        {
             m_nMaxValue = *pChange;    // save maximum value
         }
         pChange++;
         dwLoopPos++;
         // set progress bar
         SetProgress(nProgress + (int)(100 * dwLoopPos / dwDataSize / (DWORD)nLevel));
-        if (IsCanceled()) {
+        if (IsCanceled())
+        {
             return Exit(PROCESS_CANCELED);    // process canceled
         }
-        if ((++dwChangeCount == GetProcessBufferSize() / 2) || (dwLoopPos >= dwDataSize)) { // change buffer is full or processing finished
+        if ((++dwChangeCount == GetProcessBufferSize() / 2) || (dwLoopPos >= dwDataSize))   // change buffer is full or processing finished
+        {
             // write the processed change data block
-            try {
+            try
+            {
                 Write(m_lpBuffer, dwChangeCount * 2);
-            } catch (CFileException e) {
+            }
+            catch (CFileException e)
+            {
                 // error writing file
                 ErrorMessage(IDS_ERROR_WRITETEMPFILE, GetProcessFileName());
                 return Exit(PROCESS_ERROR); // error, writing failed
@@ -580,11 +692,13 @@ long CProcessChange::Process(void * pCaller, ISaDoc * pDoc, int nProgress,
             pChange = (short int *)m_lpBuffer; // reset pointer to begin of pitch data buffer
             dwChangeBlock += dwChangeCount;
             dwChangeCount = 0; // reset processed data counter
-            if (dwChangeCount < dwDataSize) {
+            if (dwChangeCount < dwDataSize)
+            {
                 // read next source data blocks
                 pQuality = (short int *)GetQualityData(dwChangeBlock, TRUE); // read quality data block
                 pLoudData = (short int *)pLoudness->GetProcessedData(dwChangeBlock, TRUE); // read smoothed loudness data block
-                if ((!pQuality) || (!pLoudData)) {
+                if ((!pQuality) || (!pLoudData))
+                {
                     return Exit(PROCESS_ERROR);    // error, reading failed
                 }
             }
@@ -594,16 +708,22 @@ long CProcessChange::Process(void * pCaller, ISaDoc * pDoc, int nProgress,
     // close the temporary change file and read the status
     CloseTempFile(); // close the file
     bRes = SmoothData(2); // smooth data two times
-    if (bRes) {
+    if (bRes)
+    {
         EndProcess((nProgress >= 95));    // end data processing
-    } else {
+    }
+    else
+    {
         EndProcess();
     }
     EndWaitCursor();
     SetDataReady(bRes);
-    if (bRes) {
+    if (bRes)
+    {
         return MAKELONG(nLevel, nProgress);
-    } else {
+    }
+    else
+    {
         return MAKELONG(PROCESS_ERROR, nProgress);
     }
 }
@@ -619,30 +739,42 @@ long CProcessChange::Process(void * pCaller, ISaDoc * pDoc, int nProgress,
 // data is already somewhere in the buffer, and only the actual pointer to
 // the data block will be returned. Processed data is always 16bit data!
 /***************************************************************************/
-void * CProcessChange::GetQualityData(DWORD dwOffset, BOOL bBlockBegin) {
+void * CProcessChange::GetQualityData(DWORD dwOffset, BOOL bBlockBegin)
+{
     if (((!bBlockBegin && !m_bQualityBlockBegin) && ((dwOffset >= m_dwQualityBufferOffset) && (dwOffset < m_dwQualityBufferOffset + GetProcessBufferSize() / 2)))
-            || ((bBlockBegin) && (m_dwQualityBufferOffset == dwOffset))) {
+            || ((bBlockBegin) && (m_dwQualityBufferOffset == dwOffset)))
+    {
         // this data is actually in buffer
         return m_lpQualityData; // return pointer to data
-    } else { // new data block has to be read
+    }
+    else     // new data block has to be read
+    {
         m_bQualityBlockBegin = bBlockBegin;
-        if (bBlockBegin) {
+        if (bBlockBegin)
+        {
             m_dwQualityBufferOffset = dwOffset;    // given offset ist first sample in data block
-        } else {
+        }
+        else
+        {
             m_dwQualityBufferOffset = dwOffset - (dwOffset % (GetProcessBufferSize() / 2));    // new block offset
         }
         // open the temporary file
-        if (!m_pQualityFile->Open(m_qualityFileStatus.m_szFullName, CFile::modeRead | CFile::shareExclusive)) {
+        if (!m_pQualityFile->Open(m_qualityFileStatus.m_szFullName, CFile::modeRead | CFile::shareExclusive))
+        {
             // error opening file
             ErrorMessage(IDS_ERROR_OPENTEMPFILE, m_qualityFileStatus.m_szFullName);
             m_pQualityFile->Abort();
             return NULL;
         }
         // find the right position in the data
-        if (m_dwQualityBufferOffset != 0L) {
-            try {
+        if (m_dwQualityBufferOffset != 0L)
+        {
+            try
+            {
                 m_pQualityFile->Seek(m_dwQualityBufferOffset * 2, CFile::begin);
-            } catch (CFileException e) {
+            }
+            catch (CFileException e)
+            {
                 // error seeking file
                 ErrorMessage(IDS_ERROR_READTEMPFILE, m_qualityFileStatus.m_szFullName);
                 m_pQualityFile->Abort();
@@ -650,9 +782,12 @@ void * CProcessChange::GetQualityData(DWORD dwOffset, BOOL bBlockBegin) {
             }
         }
         // read the processed quality data block
-        try {
+        try
+        {
             m_pQualityFile->Read((HPSTR)m_lpQualityData, GetProcessBufferSize());
-        } catch (CFileException e) {
+        }
+        catch (CFileException e)
+        {
             // error reading file
             ErrorMessage(IDS_ERROR_READTEMPFILE, m_qualityFileStatus.m_szFullName);
             m_pQualityFile->Abort();
@@ -660,7 +795,8 @@ void * CProcessChange::GetQualityData(DWORD dwOffset, BOOL bBlockBegin) {
         }
         // close the quality data temp file
 
-        if (m_pQualityFile) {
+        if (m_pQualityFile)
+        {
             m_pQualityFile->Abort();
         }
 
@@ -679,15 +815,20 @@ void * CProcessChange::GetQualityData(DWORD dwOffset, BOOL bBlockBegin) {
 // somewhere in the buffer, and only the actual pointer to the data block
 // will be returned. Processed data is always 16bit data!
 /***************************************************************************/
-int CProcessChange::GetQualityData(DWORD dwOffset, BOOL * bRes) {
-    if ((dwOffset >= m_dwQualityBufferOffset) && (dwOffset < m_dwQualityBufferOffset + GetProcessBufferSize() / 2)) {
+int CProcessChange::GetQualityData(DWORD dwOffset, BOOL * bRes)
+{
+    if ((dwOffset >= m_dwQualityBufferOffset) && (dwOffset < m_dwQualityBufferOffset + GetProcessBufferSize() / 2))
+    {
         // this data is actually in buffer
         short int * lpData = (short int *)m_lpQualityData; // cast buffer pointer
         return *(lpData + (dwOffset - m_dwQualityBufferOffset)); // return data
-    } else { // new data block has to be read
+    }
+    else     // new data block has to be read
+    {
         m_dwQualityBufferOffset = dwOffset - (dwOffset % (GetProcessBufferSize() / 2)); // new block offset
         // open the temporary file
-        if (!m_pQualityFile->Open(m_qualityFileStatus.m_szFullName, CFile::modeRead | CFile::shareExclusive)) {
+        if (!m_pQualityFile->Open(m_qualityFileStatus.m_szFullName, CFile::modeRead | CFile::shareExclusive))
+        {
             // error opening file
             ErrorMessage(IDS_ERROR_OPENTEMPFILE, m_qualityFileStatus.m_szFullName);
             m_pQualityFile->Abort();
@@ -695,10 +836,14 @@ int CProcessChange::GetQualityData(DWORD dwOffset, BOOL * bRes) {
             return 0;
         }
         // find the right position in the data
-        if (m_dwQualityBufferOffset != 0L) {
-            try {
+        if (m_dwQualityBufferOffset != 0L)
+        {
+            try
+            {
                 m_pQualityFile->Seek(m_dwQualityBufferOffset * 2, CFile::begin);
-            } catch (CFileException e) {
+            }
+            catch (CFileException e)
+            {
                 // error seeking file
                 ErrorMessage(IDS_ERROR_READTEMPFILE, m_qualityFileStatus.m_szFullName);
                 m_pQualityFile->Abort();
@@ -707,9 +852,12 @@ int CProcessChange::GetQualityData(DWORD dwOffset, BOOL * bRes) {
             }
         }
         // read the processed quality data block
-        try {
+        try
+        {
             m_pQualityFile->Read((HPSTR)m_lpQualityData, GetProcessBufferSize());
-        } catch (CFileException e) {
+        }
+        catch (CFileException e)
+        {
             // error reading file
             ErrorMessage(IDS_ERROR_READTEMPFILE, m_qualityFileStatus.m_szFullName);
             m_pQualityFile->Abort();
@@ -717,7 +865,8 @@ int CProcessChange::GetQualityData(DWORD dwOffset, BOOL * bRes) {
             return 0;
         }
         // close the quality data temp file
-        if (m_pQualityFile) {
+        if (m_pQualityFile)
+        {
             m_pQualityFile->Abort();
         }
 

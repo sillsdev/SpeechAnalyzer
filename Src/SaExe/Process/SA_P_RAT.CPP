@@ -30,13 +30,15 @@ static char BASED_CODE THIS_FILE[] = __FILE__;
 /***************************************************************************/
 // CProcessRatio::CProcessRatio Constructor
 /***************************************************************************/
-CProcessRatio::CProcessRatio() {
+CProcessRatio::CProcessRatio()
+{
 }
 
 /***************************************************************************/
 // CProcessRatio::~CProcessRatio Destructor
 /***************************************************************************/
-CProcessRatio::~CProcessRatio() {
+CProcessRatio::~CProcessRatio()
+{
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -55,12 +57,15 @@ CProcessRatio::~CProcessRatio() {
 // value and the end process progress percentage in the higher word.
 /***************************************************************************/
 long CProcessRatio::Process(void * pCaller, ISaDoc * pDoc, int nProgress,
-                            int nLevel) {
+                            int nLevel)
+{
     TRACE(_T("Process: CProcessRatio\n"));
-    if (IsCanceled()) {
+    if (IsCanceled())
+    {
         return MAKELONG(PROCESS_CANCELED, nProgress);    // process canceled
     }
-    if (IsDataReady()) {
+    if (IsDataReady())
+    {
         return MAKELONG(--nLevel, nProgress);    // data is already ready
     }
     // create raw change data, its quality and smoothed loudness output is needed to calculate change
@@ -70,8 +75,10 @@ long CProcessRatio::Process(void * pCaller, ISaDoc * pDoc, int nProgress,
     nLevel = (short int)LOWORD(lResult);
     nProgress = HIWORD(lResult);
 
-    if (nLevel < 0) { // previous processing error
-        if ((nLevel == PROCESS_CANCELED)) {
+    if (nLevel < 0)   // previous processing error
+    {
+        if ((nLevel == PROCESS_CANCELED))
+        {
             CancelProcess();    // set your own cancel flag
         }
         return MAKELONG(nLevel, nProgress);
@@ -79,12 +86,14 @@ long CProcessRatio::Process(void * pCaller, ISaDoc * pDoc, int nProgress,
 
     // start change process
     BeginWaitCursor(); // wait cursor
-    if (!StartProcess(pCaller, IDS_STATTXT_PROCESSRAT)) { // memory allocation failed
+    if (!StartProcess(pCaller, IDS_STATTXT_PROCESSRAT))   // memory allocation failed
+    {
         EndProcess(); // end data processing
         EndWaitCursor();
         return MAKELONG(PROCESS_ERROR, nProgress);
     }
-    if (!pLoudness->SmoothData(2)) { // smooth smoothed loudness two times
+    if (!pLoudness->SmoothData(2))   // smooth smoothed loudness two times
+    {
         EndProcess(); // end data processing
         EndWaitCursor();
         return MAKELONG(PROCESS_ERROR, nProgress);
@@ -99,7 +108,8 @@ long CProcessRatio::Process(void * pCaller, ISaDoc * pDoc, int nProgress,
     DWORD dwDataSize = pLoudness->GetDataSize();
     DWORD dwLoopEnd = dwDataSize - dwLoopStart; // end of loop
     // create the temporary change file
-    if (!CreateTempFile(_T("RAT"))) { // creating error
+    if (!CreateTempFile(_T("RAT")))   // creating error
+    {
         EndProcess(); // end data processing
         EndWaitCursor();
         SetDataInvalid();
@@ -113,34 +123,44 @@ long CProcessRatio::Process(void * pCaller, ISaDoc * pDoc, int nProgress,
     // prepare source data
     short int * pQuality = (short int *)pChange->GetQualityData(dwChangeBlock, TRUE); // read quality data block
     short int * pLoudData = (short int *)pLoudness->GetProcessedData(dwChangeBlock, TRUE); // read smoothed loudness data block
-    if ((!pQuality) || (!pLoudData)) {
+    if ((!pQuality) || (!pLoudData))
+    {
         return Exit(PROCESS_ERROR);    // error, reading failed
     }
     long lMultiplier = 1;
-    if (nBlockAlign > 1) {
+    if (nBlockAlign > 1)
+    {
         lMultiplier = PRECISION_MULTIPLIER;    // 16 bit data, quality comes divided by PRECISION_MULTIPLIER
     }
     // start processing
-    while (dwLoopPos < dwDataSize) {
+    while (dwLoopPos < dwDataSize)
+    {
         *pChangeData = (short)(((long)*pQuality++ * 200 * lMultiplier) / ((long)*pLoudData++ + 70) / lMultiplier);
-        if ((dwLoopPos < dwLoopStart) || (dwLoopPos >= dwLoopEnd)) {
+        if ((dwLoopPos < dwLoopStart) || (dwLoopPos >= dwLoopEnd))
+        {
             *pChangeData = 0;
         }
-        if (*pChangeData > m_nMaxValue) {
+        if (*pChangeData > m_nMaxValue)
+        {
             m_nMaxValue = *pChangeData;    // save maximum value
         }
         pChange++;
         dwLoopPos++;
         // set progress bar
         SetProgress(nProgress + (int)(100 * dwLoopPos / dwDataSize / (DWORD)nLevel));
-        if (IsCanceled()) {
+        if (IsCanceled())
+        {
             return Exit(PROCESS_CANCELED);    // process canceled
         }
-        if ((++dwChangeCount == GetProcessBufferSize() / 2) || (dwLoopPos >= dwDataSize)) { // change buffer is full or processing finished
+        if ((++dwChangeCount == GetProcessBufferSize() / 2) || (dwLoopPos >= dwDataSize))   // change buffer is full or processing finished
+        {
             // write the processed change data block
-            try {
+            try
+            {
                 Write((HPSTR)m_lpBuffer, dwChangeCount * 2);
-            } catch (CFileException e) {
+            }
+            catch (CFileException e)
+            {
                 // error writing file
                 ErrorMessage(IDS_ERROR_WRITETEMPFILE, GetProcessFileName());
                 return Exit(PROCESS_ERROR); // error, writing failed
@@ -148,11 +168,13 @@ long CProcessRatio::Process(void * pCaller, ISaDoc * pDoc, int nProgress,
             pChangeData = (short int *)m_lpBuffer; // reset pointer to begin of change data buffer
             dwChangeBlock += dwChangeCount;
             dwChangeCount = 0; // reset processed data counter
-            if (dwChangeCount < dwDataSize) {
+            if (dwChangeCount < dwDataSize)
+            {
                 // read next source data blocks
                 pQuality = (short int *)pChange->GetQualityData(dwChangeBlock, TRUE); // read quality data block
                 pLoudData = (short int *)pLoudness->GetProcessedData(dwChangeBlock, TRUE); // read smoothed loudness data block
-                if ((!pQuality) || (!pLoudData)) {
+                if ((!pQuality) || (!pLoudData))
+                {
                     return Exit(PROCESS_ERROR);    // error, reading failed
                 }
             }
@@ -162,16 +184,22 @@ long CProcessRatio::Process(void * pCaller, ISaDoc * pDoc, int nProgress,
     // close the temporary change file and read the status
     CloseTempFile(); // close the file
     BOOL bRes = SmoothData(2); // smooth data two times
-    if (bRes) {
+    if (bRes)
+    {
         EndProcess((nProgress >= 95));    // end data processing
-    } else {
+    }
+    else
+    {
         EndProcess();
     }
     EndWaitCursor();
     SetDataReady(bRes);
-    if (bRes) {
+    if (bRes)
+    {
         return MAKELONG(nLevel, nProgress);
-    } else {
+    }
+    else
+    {
         return MAKELONG(PROCESS_ERROR, nProgress);
     }
 }

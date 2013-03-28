@@ -5,27 +5,35 @@
 #define _CSaString_H_
 
 
-class CSaString : public CString, public IUtf8String {
+class CSaString : public CString, public IUtf8String
+{
 public:
-    CSaString() : CString() {
+    CSaString() : CString()
+    {
         ;
     }
-    CSaString(TCHAR ch, int nRepeat = 1) : CString(ch, nRepeat) {
+    CSaString(TCHAR ch, int nRepeat = 1) : CString(ch, nRepeat)
+    {
         ;
     }
-    CSaString(const CSaString & stringSrc) : CString(stringSrc) {
+    CSaString(const CSaString & stringSrc) : CString(stringSrc)
+    {
         ;
     }
-    CSaString(const CString & stringSrc) : CString(stringSrc) {
+    CSaString(const CString & stringSrc) : CString(stringSrc)
+    {
         ;
     }
-    CSaString(LPCSTR psz) : CString(psz) {
+    CSaString(LPCSTR psz) : CString(psz)
+    {
         ;
     }
-    CSaString(LPCWSTR psz) : CString(psz) {
+    CSaString(LPCWSTR psz) : CString(psz)
+    {
         ;
     }
-    CSaString(const unsigned char * psz) : CString(psz) {
+    CSaString(const unsigned char * psz) : CString(psz)
+    {
         ;
     }
 
@@ -33,7 +41,8 @@ public:
     virtual void setUtf8(const char * pUtf8); // set contents of string from utf8 source
 };
 
-class CSaStringArray : public CStringArray {
+class CSaStringArray : public CStringArray
+{
 public:
 };
 

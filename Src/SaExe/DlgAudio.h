@@ -4,12 +4,15 @@
 #ifndef DLGAUDIO_H
 #define DLGAUDIO_H
 
-class CDlgAudio : public CDialog {
+class CDlgAudio : public CDialog
+{
 public:
     CDlgAudio();
-    CDlgAudio(LPCTSTR lpszTemplateName, CWnd * pParentWnd = NULL) : CDialog(lpszTemplateName,pParentWnd) {
+    CDlgAudio(LPCTSTR lpszTemplateName, CWnd * pParentWnd = NULL) : CDialog(lpszTemplateName,pParentWnd)
+    {
     };
-    CDlgAudio(UINT nIDTemplate, CWnd * pParentWnd = NULL) : CDialog(nIDTemplate,pParentWnd) {
+    CDlgAudio(UINT nIDTemplate, CWnd * pParentWnd = NULL) : CDialog(nIDTemplate,pParentWnd)
+    {
     };
     virtual ~CDlgAudio();
     virtual void BlockFinished(UINT nLevel, DWORD dwPosition, UINT nSpeed=100) = 0;

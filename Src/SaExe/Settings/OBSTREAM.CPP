@@ -22,30 +22,36 @@ using std::ios;
 
 // **************************************************************************
 
-Object_ostream::Object_ostream(const IUtf8String & filename) : m_ios() {
+Object_ostream::Object_ostream(const IUtf8String & filename) : m_ios()
+{
     std::string szUtf8 = filename.utf8();
 
     m_ios.open(szUtf8.c_str());
 }
 
-void Object_ostream::WriteBeginMarker(const char * pszMarker, const IUtf8String & szName) {
+void Object_ostream::WriteBeginMarker(const char * pszMarker, const IUtf8String & szName)
+{
     std::string sName = szName.utf8();
     WriteBeginMarker(pszMarker, sName.c_str());
 }
 
-void Object_ostream::WriteBeginMarker(const char * pszMarker, const char * pszName) {
+void Object_ostream::WriteBeginMarker(const char * pszMarker, const char * pszName)
+{
     ASSERT(pszName);
     //  ASSERT( *pszName );
     m_ios << "\\+" << pszMarker << ' ' << pszName << '\n';
 }
 
-void Object_ostream::WriteEndMarker(const char * pszMarker) {
+void Object_ostream::WriteEndMarker(const char * pszMarker)
+{
     m_ios << "\\-" << pszMarker << '\n';
 }
 
 void Object_ostream::WriteBeginMarkerWithQualifier(const char * pszMarker, const char * pszQualifier,
-        const char * pszName) {
-    if (!pszQualifier) {
+        const char * pszName)
+{
+    if (!pszQualifier)
+    {
         WriteBeginMarker(pszMarker, pszName);
         return;
     }
@@ -54,8 +60,10 @@ void Object_ostream::WriteBeginMarkerWithQualifier(const char * pszMarker, const
     m_ios << "\\+" << pszMarker << pszQualifier << ' ' << pszName << '\n';
 }
 
-void Object_ostream::WriteEndMarkerWithQualifier(const char * pszMarker, const char * pszQualifier) {
-    if (!pszQualifier) {
+void Object_ostream::WriteEndMarkerWithQualifier(const char * pszMarker, const char * pszQualifier)
+{
+    if (!pszQualifier)
+    {
         WriteEndMarker(pszMarker);
         return;
     }
@@ -65,9 +73,11 @@ void Object_ostream::WriteEndMarkerWithQualifier(const char * pszMarker, const c
 
 
 void Object_ostream::WriteString(const char * pszMarker, const char * pszQualifier,
-                                 const char * psz) {
+                                 const char * psz)
+{
     ASSERT(psz);
-    if (!*psz) {
+    if (!*psz)
+    {
         return;
     }
 
@@ -76,15 +86,18 @@ void Object_ostream::WriteString(const char * pszMarker, const char * pszQualifi
     m_ios << '\n';
 }
 
-void Object_ostream::WriteString(const char * pszMarker, const IUtf8String & sz) {
+void Object_ostream::WriteString(const char * pszMarker, const IUtf8String & sz)
+{
     std::string theString = sz.utf8();
     const char * psz = theString.c_str();
     WriteString(pszMarker, psz);
 }
 
-void Object_ostream::WriteString(const char * pszMarker, const char * psz) {
+void Object_ostream::WriteString(const char * pszMarker, const char * psz)
+{
     ASSERT(psz);
-    if (!*psz) {
+    if (!*psz)
+    {
         return;
     }
 
@@ -93,11 +106,13 @@ void Object_ostream::WriteString(const char * pszMarker, const char * psz) {
     m_ios << '\n';
 }
 
-void Object_ostream::WriteContents(const char * pszContents) {
+void Object_ostream::WriteContents(const char * pszContents)
+{
     const char * psz = pszContents;
     ASSERT(psz);
     const char * pszBackslashAtBOL = NULL;
-    while ((pszBackslashAtBOL = strstr(psz, "\n\\")) != NULL) {
+    while ((pszBackslashAtBOL = strstr(psz, "\n\\")) != NULL)
+    {
         pszBackslashAtBOL += 1;  // Point to the backslash;
         // Write the substring up to and including the newline
         m_ios.write(psz, pszBackslashAtBOL - psz);
@@ -108,25 +123,30 @@ void Object_ostream::WriteContents(const char * pszContents) {
     m_ios << psz;  // Write the rest of the field
 }
 
-void Object_ostream::WriteBool(const char * pszMarker, BOOL b) {
+void Object_ostream::WriteBool(const char * pszMarker, BOOL b)
+{
     m_ios << '\\' << pszMarker << ' ' << ((b) ? 1 : 0) << '\n';
 }
 
-void Object_ostream::WriteCOLORREF(const char * pszMarker, COLORREF rgb) {
+void Object_ostream::WriteCOLORREF(const char * pszMarker, COLORREF rgb)
+{
     m_ios << '\\' << pszMarker << ' ' <<
           (int)GetRValue(rgb) << ',' << (int)GetGValue(rgb) << ',' << (int)GetBValue(rgb) << '\n';
 }
 
-void Object_ostream::WriteInteger(const char * pszMarker, int i, const char * pszComment) {
+void Object_ostream::WriteInteger(const char * pszMarker, int i, const char * pszComment)
+{
     m_ios << '\\' << pszMarker << ' ' << i;
-    if (pszComment) {
+    if (pszComment)
+    {
         m_ios << " // " << pszComment;
     }
     m_ios << '\n';
 }
 
 
-void Object_ostream::WriteDouble(const char * pszMarker, double i) {
+void Object_ostream::WriteDouble(const char * pszMarker, double i)
+{
     int oldPrecision = m_ios.precision(20); // Use as many digits as necessary, 20 is the most we should see
     long oldFlags = m_ios.flags();
     m_ios.unsetf(ios::showpoint);
@@ -137,27 +157,33 @@ void Object_ostream::WriteDouble(const char * pszMarker, double i) {
 }
 
 
-void Object_ostream::WriteUInt(const char * pszMarker, UINT u, const IUtf8String & szComment) {
+void Object_ostream::WriteUInt(const char * pszMarker, UINT u, const IUtf8String & szComment)
+{
     std::string sComment = szComment.utf8();
     WriteUInt(pszMarker, u, sComment.c_str());
 }
 
-void Object_ostream::WriteUInt(const char * pszMarker, UINT u, const char * pszComment) {
+void Object_ostream::WriteUInt(const char * pszMarker, UINT u, const char * pszComment)
+{
     m_ios << '\\' << pszMarker << ' ' << u;
-    if (pszComment) {
+    if (pszComment)
+    {
         m_ios << " //" << pszComment;
     }
     m_ios << '\n';
 }
 
 
-void Object_ostream::WriteNewline() {
+void Object_ostream::WriteNewline()
+{
     m_ios << '\n';
 }
 
-void Object_ostream::WriteWindowPlacement(const char * pszMarker, WINDOWPLACEMENT & wpl) {
+void Object_ostream::WriteWindowPlacement(const char * pszMarker, WINDOWPLACEMENT & wpl)
+{
     char * pszState = "max";
-    switch (wpl.showCmd) {
+    switch (wpl.showCmd)
+    {
     case SW_SHOWNORMAL:
         pszState = "normal";
         break;
@@ -186,7 +212,8 @@ void Object_ostream::WriteWindowPlacement(const char * pszMarker, WINDOWPLACEMEN
 
 static const Length maxsizMString = 32767;
 
-Object_istream::Object_istream(const IUtf8String & filename) : m_ios() {
+Object_istream::Object_istream(const IUtf8String & filename) : m_ios()
+{
     std::string szUtf8 = filename.utf8();
 
     m_ios.open(szUtf8.c_str());
@@ -199,24 +226,31 @@ Object_istream::Object_istream(const IUtf8String & filename) : m_ios() {
     m_chEndOfLine = '\n';  // Default for Mac and Windows
 }
 
-Object_istream::~Object_istream() {
+Object_istream::~Object_istream()
+{
     delete [] m_pszMStringBuf;
 }
 
 
-void Object_istream::SkipBOM() {
+void Object_istream::SkipBOM()
+{
     char nextChar;
 
-    for (int i = 0; i < 3; i++) {
-        if (bAtBackslash()) {
+    for (int i = 0; i < 3; i++)
+    {
+        if (bAtBackslash())
+        {
             return;
-        } else {
+        }
+        else
+        {
             m_ios.get(nextChar);
         }
     }
 }
 
-BOOL Object_istream::bAtEnd() {
+BOOL Object_istream::bAtEnd()
+{
     // MRP: TO DO!!! Check whether the following (and bReadField) is right...
     // 1. If marker or contents at EOF with no newline;
     // 2. If explicit Ctrl-Z (code 26) in file.
@@ -227,13 +261,15 @@ BOOL Object_istream::bAtEnd() {
     return (!m_bUnRead && m_ios.peek() == EOF);
 }
 
-BOOL Object_istream::bAtBackslash() {
+BOOL Object_istream::bAtBackslash()
+{
     // Stream represents Standard Format if a field has already been read
     // successfully, or if the first char of the stream is a backslash.
     return (m_bUnRead || m_ios.peek() == '\\');
 }
 
-BOOL Object_istream::bAtBeginMarker() {
+BOOL Object_istream::bAtBeginMarker()
+{
     const char * pszMarkerRead = NULL;
     const char * pszStringRead = NULL;
     ReadMarkedString(&pszMarkerRead, &pszStringRead);
@@ -244,7 +280,8 @@ BOOL Object_istream::bAtBeginMarker() {
     return bBeginMarker;
 }
 
-BOOL Object_istream::bAtBeginOrEndMarker() {
+BOOL Object_istream::bAtBeginOrEndMarker()
+{
     const char * pszMarkerRead = NULL;
     const char * pszStringRead = NULL;
     ReadMarkedString(&pszMarkerRead, &pszStringRead);
@@ -255,10 +292,12 @@ BOOL Object_istream::bAtBeginOrEndMarker() {
     return bBeginOrEndMarker;
 }
 
-BOOL Object_istream::bAtBeginMarker(const char * pszMarker, const char * pszName) {
+BOOL Object_istream::bAtBeginMarker(const char * pszMarker, const char * pszName)
+{
     const char * pszMarkerRead = NULL;
     const char * pszStringRead = NULL;
-    if (!bReadBeginMarker(pszMarker)) {
+    if (!bReadBeginMarker(pszMarker))
+    {
         return FALSE;
     }
 
@@ -270,8 +309,10 @@ BOOL Object_istream::bAtBeginMarker(const char * pszMarker, const char * pszName
     return b;
 }
 
-BOOL Object_istream::bAtEndMarker(const char * pszMarker) {
-    if (!bReadEndMarker(pszMarker)) {
+BOOL Object_istream::bAtEndMarker(const char * pszMarker)
+{
+    if (!bReadEndMarker(pszMarker))
+    {
         return FALSE;
     }
 
@@ -280,13 +321,15 @@ BOOL Object_istream::bAtEndMarker(const char * pszMarker) {
 }
 
 
-BOOL Object_istream::bReadBeginMarker(const char * pszMarker, IUtf8String * psName) {
+BOOL Object_istream::bReadBeginMarker(const char * pszMarker, IUtf8String * psName)
+{
     const char * pszMarkerRead = NULL;
     const char * pszStringRead = NULL;
     ReadMarkedString(&pszMarkerRead, &pszStringRead);
 
     BOOL bBeginMarker = (*pszMarkerRead == '+') && bEqual(pszMarker, pszMarkerRead+1);
-    if (!bBeginMarker) {
+    if (!bBeginMarker)
+    {
         UnReadMarkedString();
         return FALSE;
     }
@@ -295,13 +338,15 @@ BOOL Object_istream::bReadBeginMarker(const char * pszMarker, IUtf8String * psNa
     return TRUE;
 }
 
-BOOL Object_istream::bReadMarker(char cFirstChar, const char * pszMarker) {
+BOOL Object_istream::bReadMarker(char cFirstChar, const char * pszMarker)
+{
     const char * pszMarkerRead = NULL;
     const char * pszStringRead = NULL;
     ReadMarkedString(&pszMarkerRead, &pszStringRead);
 
     BOOL bMarkerFound = (*pszMarkerRead == cFirstChar) && bEqual(pszMarker, pszMarkerRead+1);
-    if (!bMarkerFound) {
+    if (!bMarkerFound)
+    {
         UnReadMarkedString();
         return FALSE;
     }
@@ -309,22 +354,12 @@ BOOL Object_istream::bReadMarker(char cFirstChar, const char * pszMarker) {
     return TRUE;
 }
 
-#ifdef MOVED_TO_HFILE_FOR_INLINING__BJY_1_25_96
-
-BOOL Object_istream::bReadBeginMarker(const char * pszMarker) {
-    return bReadMarker('+', pszMarker);
-}
-
-BOOL Object_istream::bReadEndMarker(const char * pszMarker) {
-    return bReadMarker('-', pszMarker);
-}
-
-#endif
-
 #define MAXMKRSIZE 50
 
-BOOL Object_istream::bReadBeginMarkerWithQualifier(const char * pszMarker, const char * pszQualifier) {
-    if (!pszQualifier) {
+BOOL Object_istream::bReadBeginMarkerWithQualifier(const char * pszMarker, const char * pszQualifier)
+{
+    if (!pszQualifier)
+    {
         return bReadBeginMarker(pszMarker);
     }
 
@@ -335,8 +370,10 @@ BOOL Object_istream::bReadBeginMarkerWithQualifier(const char * pszMarker, const
     return bReadMarker('+', buf);
 }
 
-BOOL Object_istream::bReadEndMarkerWithQualifier(const char * pszMarker, const char * pszQualifier) {
-    if (!pszQualifier) {
+BOOL Object_istream::bReadEndMarkerWithQualifier(const char * pszMarker, const char * pszQualifier)
+{
+    if (!pszQualifier)
+    {
         return bReadEndMarker(pszMarker);
     }
 
@@ -347,26 +384,31 @@ BOOL Object_istream::bReadEndMarkerWithQualifier(const char * pszMarker, const c
     return bReadMarker('-', buf);
 }
 
-BOOL Object_istream::bReadString(const IUtf8String & szMarker, IUtf8String * s) {
+BOOL Object_istream::bReadString(const IUtf8String & szMarker, IUtf8String * s)
+{
     std::string szUtf8 = szMarker.utf8();
     return bReadString(szUtf8.c_str(), s);
 }
 
-BOOL Object_istream::bReadString(const char * pszMarker, IUtf8String * s) {
+BOOL Object_istream::bReadString(const char * pszMarker, IUtf8String * s)
+{
     const char * read = NULL;
     BOOL result = bReadString(pszMarker, &read);
-    if (result) {
+    if (result)
+    {
         s->setUtf8(read);
     }
     return result;
 }
 
-BOOL Object_istream::bReadString(const char * pszMarker, const char ** s) {
+BOOL Object_istream::bReadString(const char * pszMarker, const char ** s)
+{
     const char * pszMarkerRead = NULL;
     const char * pszStringRead = NULL;
     ReadMarkedString(&pszMarkerRead, &pszStringRead);
 
-    if (!bEqual(pszMarker, pszMarkerRead)) {
+    if (!bEqual(pszMarker, pszMarkerRead))
+    {
         UnReadMarkedString();
         return FALSE;
     }
@@ -375,9 +417,11 @@ BOOL Object_istream::bReadString(const char * pszMarker, const char ** s) {
     return TRUE;
 }
 
-BOOL Object_istream::bReadBool(const char * pszMarker, BOOL & b) {
+BOOL Object_istream::bReadBool(const char * pszMarker, BOOL & b)
+{
     const char * s = NULL;
-    if (!bReadString(pszMarker, &s)) {
+    if (!bReadString(pszMarker, &s))
+    {
         return FALSE;
     }
 
@@ -385,9 +429,11 @@ BOOL Object_istream::bReadBool(const char * pszMarker, BOOL & b) {
     return TRUE;
 }
 
-BOOL Object_istream::bReadCOLORREF(const char * pszMarker, COLORREF & rgb) {
+BOOL Object_istream::bReadCOLORREF(const char * pszMarker, COLORREF & rgb)
+{
     const char * s = NULL;
-    if (!bReadString(pszMarker, &s)) {
+    if (!bReadString(pszMarker, &s))
+    {
         return FALSE;
     }
 
@@ -395,7 +441,8 @@ BOOL Object_istream::bReadCOLORREF(const char * pszMarker, COLORREF & rgb) {
     short int g = 0;
     short int b = 0;
     // 1997-05-17 MRP: sscanf not defined in DLLs -- reimplement
-    if (sscanf_s(s, "%hd,%hd,%hd", &r, &g, &b) == 0) {
+    if (sscanf_s(s, "%hd,%hd,%hd", &r, &g, &b) == 0)
+    {
         return FALSE;
     }
 
@@ -403,9 +450,11 @@ BOOL Object_istream::bReadCOLORREF(const char * pszMarker, COLORREF & rgb) {
     return TRUE;
 }
 
-BOOL Object_istream::bReadInteger(const char * pszMarker, int & i) {
+BOOL Object_istream::bReadInteger(const char * pszMarker, int & i)
+{
     const char * s = NULL;
-    if (!bReadString(pszMarker, &s)) {
+    if (!bReadString(pszMarker, &s))
+    {
         return FALSE;
     }
 
@@ -415,9 +464,11 @@ BOOL Object_istream::bReadInteger(const char * pszMarker, int & i) {
 
 
 
-BOOL Object_istream::bReadDouble(const char * pszMarker, double & i) {
+BOOL Object_istream::bReadDouble(const char * pszMarker, double & i)
+{
     const char * s = NULL;
-    if (!bReadString(pszMarker, &s)) {
+    if (!bReadString(pszMarker, &s))
+    {
         return FALSE;
     }
 
@@ -427,14 +478,17 @@ BOOL Object_istream::bReadDouble(const char * pszMarker, double & i) {
 
 
 
-BOOL Object_istream::bReadNumberOf(const char * pszMarker, NumberOf & num) {
+BOOL Object_istream::bReadNumberOf(const char * pszMarker, NumberOf & num)
+{
     const char * s = NULL;
-    if (!bReadString(pszMarker, &s)) {
+    if (!bReadString(pszMarker, &s))
+    {
         return FALSE;
     }
 
     ASSERT(sizeof(unsigned long) == sizeof(NumberOf));
-    if (sscanf_s(s, "%lu", &num) == 0) {
+    if (sscanf_s(s, "%lu", &num) == 0)
+    {
         return FALSE;
     }
 
@@ -443,26 +497,34 @@ BOOL Object_istream::bReadNumberOf(const char * pszMarker, NumberOf & num) {
 
 
 
-void Object_istream::peekMarkedString(const char ** ppszMarker, IUtf8String * ppszString,BOOL bTrimWhiteSpace) {
+void Object_istream::peekMarkedString(const char ** ppszMarker, IUtf8String * ppszString,BOOL bTrimWhiteSpace)
+{
     const char * read = 0;
     peekMarkedString(ppszMarker, &read,bTrimWhiteSpace);
 
     ppszString->setUtf8(read);
 }
 
-void Object_istream::ReadMarkedString() { // Generic eat of one marker and its string
+void Object_istream::ReadMarkedString()   // Generic eat of one marker and its string
+{
     const char * pszMarkerRead = NULL;
     const char * pszStringRead = NULL;
     ReadMarkedString(&pszMarkerRead, &pszStringRead);
 }
 
 // Read given end marker, stop any begin marker, for error recovery on objects with unrecognized names AB 1-18-95
-BOOL Object_istream::bEnd(const char * pszMarker) {
-    if (bReadEndMarker(pszMarker)) {   // If desired end marker, return true for successfully found end
+BOOL Object_istream::bEnd(const char * pszMarker)
+{
+    if (bReadEndMarker(pszMarker))     // If desired end marker, return true for successfully found end
+    {
         return TRUE;
-    } else if (bAtBeginMarker()) { // If somebody else's begin marker, return true for found end
+    }
+    else if (bAtBeginMarker())     // If somebody else's begin marker, return true for found end
+    {
         return TRUE;
-    } else { // Else, unrecognized marker, eat marker and return false for not at end yet
+    }
+    else     // Else, unrecognized marker, eat marker and return false for not at end yet
+    {
         const char * pszMarkerRead = NULL;
         const char * pszStringRead = NULL;
         ReadMarkedString(&pszMarkerRead, &pszStringRead);
@@ -470,8 +532,10 @@ BOOL Object_istream::bEnd(const char * pszMarker) {
     }
 }
 
-BOOL Object_istream::bEndWithQualifier(const char * pszMarker, const char * pszQualifier) {
-    if (!pszQualifier) {
+BOOL Object_istream::bEndWithQualifier(const char * pszMarker, const char * pszQualifier)
+{
+    if (!pszQualifier)
+    {
         return bEnd(pszMarker);
     }
 
@@ -483,9 +547,11 @@ BOOL Object_istream::bEndWithQualifier(const char * pszMarker, const char * pszQ
 }
 
 #ifndef NO_INTERFACE
-BOOL Object_istream::bReadWindowPlacement(const char * pszMarker, WINDOWPLACEMENT & wpl) {
+BOOL Object_istream::bReadWindowPlacement(const char * pszMarker, WINDOWPLACEMENT & wpl)
+{
     const char * sPlacement = NULL;
-    if (!bReadString(pszMarker, &sPlacement)) {
+    if (!bReadString(pszMarker, &sPlacement))
+    {
         return FALSE;
     }
 
@@ -504,17 +570,25 @@ BOOL Object_istream::bReadWindowPlacement(const char * pszMarker, WINDOWPLACEMEN
                           &wpl.rcNormalPosition.right,
                           &wpl.rcNormalPosition.bottom);
 
-    if (nItems != 9) {
+    if (nItems != 9)
+    {
         return FALSE;
     }
 
-    if (bEqual(pszShowState, "normal")) {
+    if (bEqual(pszShowState, "normal"))
+    {
         wpl.showCmd = SW_SHOWNORMAL;
-    } else if (bEqual(pszShowState, "min")) {
+    }
+    else if (bEqual(pszShowState, "min"))
+    {
         wpl.showCmd = SW_SHOWMINIMIZED;
-    } else if (bEqual(pszShowState, "max")) {
+    }
+    else if (bEqual(pszShowState, "max"))
+    {
         wpl.showCmd = SW_SHOWMAXIMIZED;
-    } else {
+    }
+    else
+    {
         wpl.showCmd = SW_SHOWNORMAL;
     };
 
@@ -524,8 +598,10 @@ BOOL Object_istream::bReadWindowPlacement(const char * pszMarker, WINDOWPLACEMEN
 
 
 void Object_istream::ReadMarkedString(const char ** ppszMarker,
-                                      const char ** ppszString, BOOL bTrimWhiteSpace) {
-    if (m_bUnRead) {
+                                      const char ** ppszString, BOOL bTrimWhiteSpace)
+{
+    if (m_bUnRead)
+    {
         *ppszMarker = m_pszMarker;
         *ppszString = m_pszString;
         m_bUnRead = FALSE;
@@ -536,23 +612,29 @@ void Object_istream::ReadMarkedString(const char ** ppszMarker,
 
     // Read any additional lines of the marked string
     int ich;
-    while (((ich = m_ios.peek()) != EOF) && (ich != '\\')) {
+    while (((ich = m_ios.peek()) != EOF) && (ich != '\\'))
+    {
         *m_pszEnd++ = '\n';
         ReadLine();
     }
 
-    if (bTrimWhiteSpace) {
+    if (bTrimWhiteSpace)
+    {
         // 1995-10-02 MRP: Clean this up and separate out for use of
         // settings properties but *not* Standard Format data fields.
         // Trim white space from the beginning and end of the string
-        for (; Shw_bAtWhiteSpace(m_pszString); m_pszString += 1) {
-            if (*m_pszString == 0) {
+        for (; Shw_bAtWhiteSpace(m_pszString); m_pszString += 1)
+        {
+            if (*m_pszString == 0)
+            {
                 break;
             }
         }
-        if (*m_pszString) {  // string contains non-ws
+        if (*m_pszString)    // string contains non-ws
+        {
             char * psz = m_pszString + strlen(m_pszString) - 1; // last char
-            for (; Shw_bAtWhiteSpace(psz); psz -= 1) {
+            for (; Shw_bAtWhiteSpace(psz); psz -= 1)
+            {
                 ASSERT(psz != m_pszString);    // have not moved past beginning
                 *psz = '\0';  // remove last char
             }
@@ -562,13 +644,15 @@ void Object_istream::ReadMarkedString(const char ** ppszMarker,
     *ppszString = m_pszString;
 }
 
-void Object_istream::UnReadMarkedString() {
+void Object_istream::UnReadMarkedString()
+{
     ASSERT(!m_bUnRead);
     m_bUnRead = TRUE;
 }
 
 
-void Object_istream::ReadMarkedLine(const char ** ppszMarker, const char ** ppszString) {
+void Object_istream::ReadMarkedLine(const char ** ppszMarker, const char ** ppszString)
+{
     ASSERT(!m_bUnRead);
     char * psz = m_pszEnd = m_pszMStringBuf;
     *psz = '\0';
@@ -587,11 +671,14 @@ void Object_istream::ReadMarkedLine(const char ** ppszMarker, const char ** ppsz
     // ASSERT( lenMarker != 0 ); // RECOVERY
     psz += lenMarker;
 
-    if (*psz == ' ') {
+    if (*psz == ' ')
+    {
         // A space delimiting the marker is not considered part of the string
         *psz = '\0'; // so the marker's null termination can take its place
         psz += 1;
-    } else {
+    }
+    else
+    {
         // 1995-10-04 MRP: At first I thought this shifting was redundant
         // if no white space followed the marker. If the field consisted
         // of just that one line that would be true. If, however, the
@@ -608,7 +695,8 @@ void Object_istream::ReadMarkedLine(const char ** ppszMarker, const char ** ppsz
     *ppszString = m_pszString = psz; // beginning of string
 }
 
-void Object_istream::ReadLine() {
+void Object_istream::ReadLine()
+{
     ASSERT(!m_bUnRead);
     // 1995-04-12 MRP: use get in order to detect line longer than buffer
     Length sizRemaining = maxsizMString - (m_pszEnd - m_pszMStringBuf);
@@ -617,36 +705,44 @@ void Object_istream::ReadLine() {
     size_t lenLine = strlen(m_pszEnd);
     m_pszEnd += lenLine;
     int ichNext = m_ios.get();
-    if ((ichNext != m_chEndOfLine) && (ichNext != EOF)) {
+    if ((ichNext != m_chEndOfLine) && (ichNext != EOF))
+    {
         ASSERT(FALSE);    // at end of input buffer-- RECOVERY
     }
 }
 
 // **************************************************************************
 
-BOOL Object_istream::bReadUInt(const char * pszMarker, UINT & ui) { // Read an unsigned integer (unsigned short)
+BOOL Object_istream::bReadUInt(const char * pszMarker, UINT & ui)   // Read an unsigned integer (unsigned short)
+{
     const char * s;
-    if (!bReadString(pszMarker, &s)) {
+    if (!bReadString(pszMarker, &s))
+    {
         return FALSE;
     }
 
-    if (sscanf_s(s, "%hu", &ui) == 0) {
+    if (sscanf_s(s, "%hu", &ui) == 0)
+    {
         return FALSE;
     }
 
     return TRUE;
 }
 
-void Object_istream::SkipToEndMarker(const char * pszMarker) {
-    while (!bAtEnd()) {
-        if (bReadEndMarker(pszMarker)) {
+void Object_istream::SkipToEndMarker(const char * pszMarker)
+{
+    while (!bAtEnd())
+    {
+        if (bReadEndMarker(pszMarker))
+        {
             break;
         }
         ReadMarkedString();  // Skip unexpected field
     }
 }
 
-void Object_istream::Rewind() {
+void Object_istream::Rewind()
+{
     m_ios.seekg(0);
     // reset all internal data
     m_pszMStringBuf = new char[maxsizMString];

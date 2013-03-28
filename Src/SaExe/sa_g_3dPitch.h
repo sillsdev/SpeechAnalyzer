@@ -6,13 +6,15 @@
 
 class CProcess3dPitch;
 
-class CPlot3dPitch : public CPlotWnd {
+class CPlot3dPitch : public CPlotWnd
+{
     DECLARE_DYNCREATE(CPlot3dPitch)
 public:
     CPlot3dPitch();
 
 private:
-    enum PaletteMode {                        // mode of palette
+    enum PaletteMode                          // mode of palette
+    {
         SYSTEMCOLOR,
         HALFCOLOR,
         FULLCOLOR,
@@ -34,7 +36,8 @@ public:
 
 public:
     virtual ~CPlot3dPitch();
-    virtual BOOL  EraseBkgnd(CDC * /*pDC*/) {
+    virtual BOOL  EraseBkgnd(CDC * /*pDC*/)
+    {
         return TRUE;   // we dont need to erase this plot
     }
 

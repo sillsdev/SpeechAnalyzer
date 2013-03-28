@@ -18,10 +18,12 @@ CDlgAlignTranscriptionDataTextPage::CDlgAlignTranscriptionDataTextPage(CSaDoc * 
     m_Type(type),
     m_bModified(false),
     m_szText(""),
-    IDD(aIDD) {
+    IDD(aIDD)
+{
 }
 
-CDlgAlignTranscriptionDataTextPage::~CDlgAlignTranscriptionDataTextPage() {
+CDlgAlignTranscriptionDataTextPage::~CDlgAlignTranscriptionDataTextPage()
+{
 }
 
 
@@ -33,7 +35,8 @@ END_MESSAGE_MAP()
 
 // CDlgAlignTranscriptionDataTextPage message handlers
 
-BOOL CDlgAlignTranscriptionDataTextPage::OnSetActive() {
+BOOL CDlgAlignTranscriptionDataTextPage::OnSetActive()
+{
     m_szText = m_pSaDoc->BuildString(m_Type);
     SetAnnotation();
     SetEnable(IDC_REVERT,m_bModified);
@@ -43,16 +46,19 @@ BOOL CDlgAlignTranscriptionDataTextPage::OnSetActive() {
 }
 
 
-void CDlgAlignTranscriptionDataTextPage::OnClickedImport() {
+void CDlgAlignTranscriptionDataTextPage::OnClickedImport()
+{
 
     CFileDialog dlg(TRUE, NULL, NULL, OFN_HIDEREADONLY, _T("Standard Format (*.sfm) |*.sfm| Text Files (*.txt) |*.txt| All Files (*.*) |*.*||"), this);
-    if (dlg.DoModal() != IDOK) {
+    if (dlg.DoModal() != IDOK)
+    {
         return;
     }
 
     CSaString path = dlg.GetPathName();
     Object_istream obs(path);
-    if (obs.getIos().fail()) {
+    if (obs.getIos().fail())
+    {
         return;
     }
 
@@ -60,33 +66,39 @@ void CDlgAlignTranscriptionDataTextPage::OnClickedImport() {
 
     SaveAnnotation();
 
-    if (obs.bAtBackslash()) {
+    if (obs.bAtBackslash())
+    {
         // assume SFM
         CDlgAlignTranscriptionDataSheet * pSheet = reinterpret_cast<CDlgAlignTranscriptionDataSheet *>(GetParent());
 
         CDlgImportSFM dlg2(pSheet->init.m_bPhonetic,pSheet->init.m_bPhonemic,pSheet->init.m_bOrthographic);
-        if (dlg2.DoModal()==IDCANCEL) {
+        if (dlg2.DoModal()==IDCANCEL)
+        {
             return;
         }
 
         SFM = TRUE;
 
-        while (SFM && !obs.bAtEnd()) {
+        while (SFM && !obs.bAtEnd())
+        {
             if (dlg2.m_bPhonetic && obs.bReadString(dlg2.m_szPhonetic, & pSheet->phonetic.m_szText));
             else if (dlg2.m_bPhonemic && obs.bReadString(dlg2.m_szPhonemic, & pSheet->phonemic.m_szText));
             else if (dlg2.m_bOrthographic && obs.bReadString(dlg2.m_szOrthographic, & pSheet->ortho.m_szText));
             else if (dlg2.m_bGloss  && obs.bReadString(dlg2.m_szGloss, & pSheet->gloss.m_szText));
-            else if (obs.bEnd(psz_ImportEnd)) {
+            else if (obs.bEnd(psz_ImportEnd))
+            {
                 break;
             }
         }
 
-        if (SFM) {
+        if (SFM)
+        {
             SetAnnotation();
         }
     }
 
-    if (!SFM) {
+    if (!SFM)
+    {
         const int MAXLINE = 32000;
         char * pBuf = new char[MAXLINE];
         obs.getIos().seekg(0);  // start to file start
@@ -98,56 +110,68 @@ void CDlgAlignTranscriptionDataTextPage::OnClickedImport() {
 }
 
 
-void CDlgAlignTranscriptionDataTextPage::OnClickedRevert() {
+void CDlgAlignTranscriptionDataTextPage::OnClickedRevert()
+{
 
     m_bModified = false;
     m_szText = m_pSaDoc->BuildString(m_Type);
     CWnd * pWnd = GetDlgItem(IDC_REVERT);
-    if (pWnd!=NULL) {
+    if (pWnd!=NULL)
+    {
         pWnd->EnableWindow(m_bModified);
     }
     pWnd = GetDlgItem(IDC_ANNOTATION);
-    if (pWnd!=NULL) {
+    if (pWnd!=NULL)
+    {
         pWnd->SetWindowText(m_szText);
         CFont * pFont = (CFont *)m_pSaDoc->GetFont(m_Type);
-        if (pFont!=NULL) {
+        if (pFont!=NULL)
+        {
             pWnd->SetFont(pFont);
         }
     }
 }
 
-void CDlgAlignTranscriptionDataTextPage::SaveAnnotation(void) {
+void CDlgAlignTranscriptionDataTextPage::SaveAnnotation(void)
+{
     CWnd * pWnd = GetDlgItem(IDC_ANNOTATION);
-    if (pWnd == NULL) {
+    if (pWnd == NULL)
+    {
         return;
     }
     pWnd->GetWindowText(m_szText);
 }
 
-void CDlgAlignTranscriptionDataTextPage::OnUpdateAnnotation() {
+void CDlgAlignTranscriptionDataTextPage::OnUpdateAnnotation()
+{
     m_bModified = true;
     SetEnable(IDC_REVERT,m_bModified);
 }
 
-void CDlgAlignTranscriptionDataTextPage::SetEnable(int nItem, BOOL bEnable) {
+void CDlgAlignTranscriptionDataTextPage::SetEnable(int nItem, BOOL bEnable)
+{
     CWnd * pWnd = GetDlgItem(nItem);
-    if (pWnd==NULL) {
+    if (pWnd==NULL)
+    {
         return;
     }
 
     pWnd->EnableWindow(bEnable);
 }
 
-void CDlgAlignTranscriptionDataTextPage::SetAnnotation() {
+void CDlgAlignTranscriptionDataTextPage::SetAnnotation()
+{
 
     SetText(IDC_ANNOTATION, m_szText);
     CFont * pFont = (CFont *)m_pSaDoc->GetFont(m_Type);
-    if (pFont==NULL) {
+    if (pFont==NULL)
+    {
         return;
     }
 
     CEdit * pEdit = (CEdit *)GetDlgItem(IDC_ANNOTATION);
-    if (pEdit==NULL) {
+    if (pEdit==NULL)
+    {
         return;
     }
 
@@ -157,9 +181,11 @@ void CDlgAlignTranscriptionDataTextPage::SetAnnotation() {
     pEdit->PostMessageW(EM_SETSEL,-1,0);
 }
 
-void CDlgAlignTranscriptionDataTextPage::SetText(int nItem, CSaString szText) {
+void CDlgAlignTranscriptionDataTextPage::SetText(int nItem, CSaString szText)
+{
     CWnd * pWnd = GetDlgItem(nItem);
-    if (pWnd==NULL) {
+    if (pWnd==NULL)
+    {
         return;
     }
 
@@ -167,13 +193,15 @@ void CDlgAlignTranscriptionDataTextPage::SetText(int nItem, CSaString szText) {
 }
 
 
-LRESULT CDlgAlignTranscriptionDataTextPage::OnWizardNext() {
+LRESULT CDlgAlignTranscriptionDataTextPage::OnWizardNext()
+{
     CDlgAlignTranscriptionDataSheet * pSheet = reinterpret_cast<CDlgAlignTranscriptionDataSheet *>(GetParent());
     return pSheet->CalculateNext(IDD);
 }
 
 
-LRESULT CDlgAlignTranscriptionDataTextPage::OnWizardBack() {
+LRESULT CDlgAlignTranscriptionDataTextPage::OnWizardBack()
+{
     CDlgAlignTranscriptionDataSheet * pSheet = reinterpret_cast<CDlgAlignTranscriptionDataSheet *>(GetParent());
     return pSheet->CalculateBack(IDD);
 }

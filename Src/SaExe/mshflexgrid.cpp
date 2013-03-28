@@ -23,20 +23,23 @@ IMPLEMENT_DYNCREATE(CMSHFlexGrid, CWnd)
 /////////////////////////////////////////////////////////////////////////////
 // CMSHFlexGrid operations
 
-long CMSHFlexGrid::GetRows() {
+long CMSHFlexGrid::GetRows()
+{
     long result;
     InvokeHelper(0x4, DISPATCH_PROPERTYGET, VT_I4, (void *)&result, NULL);
     return result;
 }
 
-void CMSHFlexGrid::SetRows(long nNewValue) {
+void CMSHFlexGrid::SetRows(long nNewValue)
+{
     static BYTE parms[] =
         VTS_I4;
     InvokeHelper(0x4, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, parms,
                  nNewValue);
 }
 
-long CMSHFlexGrid::GetCols(long BandNumber) {
+long CMSHFlexGrid::GetCols(long BandNumber)
+{
     long result;
     static BYTE parms[] =
         VTS_I4;
@@ -45,176 +48,203 @@ long CMSHFlexGrid::GetCols(long BandNumber) {
     return result;
 }
 
-void CMSHFlexGrid::SetCols(long BandNumber, long nNewValue) {
+void CMSHFlexGrid::SetCols(long BandNumber, long nNewValue)
+{
     static BYTE parms[] =
         VTS_I4 VTS_I4;
     InvokeHelper(0x5, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, parms,
                  BandNumber, nNewValue);
 }
 
-long CMSHFlexGrid::GetFixedRows() {
+long CMSHFlexGrid::GetFixedRows()
+{
     long result;
     InvokeHelper(0x6, DISPATCH_PROPERTYGET, VT_I4, (void *)&result, NULL);
     return result;
 }
 
-void CMSHFlexGrid::SetFixedRows(long nNewValue) {
+void CMSHFlexGrid::SetFixedRows(long nNewValue)
+{
     static BYTE parms[] =
         VTS_I4;
     InvokeHelper(0x6, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, parms,
                  nNewValue);
 }
 
-long CMSHFlexGrid::GetFixedCols() {
+long CMSHFlexGrid::GetFixedCols()
+{
     long result;
     InvokeHelper(0x7, DISPATCH_PROPERTYGET, VT_I4, (void *)&result, NULL);
     return result;
 }
 
-void CMSHFlexGrid::SetFixedCols(long nNewValue) {
+void CMSHFlexGrid::SetFixedCols(long nNewValue)
+{
     static BYTE parms[] =
         VTS_I4;
     InvokeHelper(0x7, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, parms,
                  nNewValue);
 }
 
-short CMSHFlexGrid::GetVersion() {
+short CMSHFlexGrid::GetVersion()
+{
     short result;
     InvokeHelper(0x1, DISPATCH_PROPERTYGET, VT_I2, (void *)&result, NULL);
     return result;
 }
 
-CString CMSHFlexGrid::GetFormatString() {
+CString CMSHFlexGrid::GetFormatString()
+{
     CString result;
     InvokeHelper(0x2, DISPATCH_PROPERTYGET, VT_BSTR, (void *)&result, NULL);
     return result;
 }
 
-void CMSHFlexGrid::SetFormatString(LPCTSTR lpszNewValue) {
+void CMSHFlexGrid::SetFormatString(LPCTSTR lpszNewValue)
+{
     static BYTE parms[] =
         VTS_BSTR;
     InvokeHelper(0x2, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, parms,
                  lpszNewValue);
 }
 
-long CMSHFlexGrid::GetTopRow() {
+long CMSHFlexGrid::GetTopRow()
+{
     long result;
     InvokeHelper(0x8, DISPATCH_PROPERTYGET, VT_I4, (void *)&result, NULL);
     return result;
 }
 
-void CMSHFlexGrid::SetTopRow(long nNewValue) {
+void CMSHFlexGrid::SetTopRow(long nNewValue)
+{
     static BYTE parms[] =
         VTS_I4;
     InvokeHelper(0x8, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, parms,
                  nNewValue);
 }
 
-long CMSHFlexGrid::GetLeftCol() {
+long CMSHFlexGrid::GetLeftCol()
+{
     long result;
     InvokeHelper(0x9, DISPATCH_PROPERTYGET, VT_I4, (void *)&result, NULL);
     return result;
 }
 
-void CMSHFlexGrid::SetLeftCol(long nNewValue) {
+void CMSHFlexGrid::SetLeftCol(long nNewValue)
+{
     static BYTE parms[] =
         VTS_I4;
     InvokeHelper(0x9, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, parms,
                  nNewValue);
 }
 
-long CMSHFlexGrid::GetRow() {
+long CMSHFlexGrid::GetRow()
+{
     long result;
     InvokeHelper(0xa, DISPATCH_PROPERTYGET, VT_I4, (void *)&result, NULL);
     return result;
 }
 
-void CMSHFlexGrid::SetRow(long nNewValue) {
+void CMSHFlexGrid::SetRow(long nNewValue)
+{
     static BYTE parms[] =
         VTS_I4;
     InvokeHelper(0xa, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, parms,
                  nNewValue);
 }
 
-long CMSHFlexGrid::GetCol() {
+long CMSHFlexGrid::GetCol()
+{
     long result;
     InvokeHelper(0xb, DISPATCH_PROPERTYGET, VT_I4, (void *)&result, NULL);
     return result;
 }
 
-void CMSHFlexGrid::SetCol(long nNewValue) {
+void CMSHFlexGrid::SetCol(long nNewValue)
+{
     static BYTE parms[] =
         VTS_I4;
     InvokeHelper(0xb, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, parms,
                  nNewValue);
 }
 
-long CMSHFlexGrid::GetRowSel() {
+long CMSHFlexGrid::GetRowSel()
+{
     long result;
     InvokeHelper(0xc, DISPATCH_PROPERTYGET, VT_I4, (void *)&result, NULL);
     return result;
 }
 
-void CMSHFlexGrid::SetRowSel(long nNewValue) {
+void CMSHFlexGrid::SetRowSel(long nNewValue)
+{
     static BYTE parms[] =
         VTS_I4;
     InvokeHelper(0xc, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, parms,
                  nNewValue);
 }
 
-long CMSHFlexGrid::GetColSel() {
+long CMSHFlexGrid::GetColSel()
+{
     long result;
     InvokeHelper(0xd, DISPATCH_PROPERTYGET, VT_I4, (void *)&result, NULL);
     return result;
 }
 
-void CMSHFlexGrid::SetColSel(long nNewValue) {
+void CMSHFlexGrid::SetColSel(long nNewValue)
+{
     static BYTE parms[] =
         VTS_I4;
     InvokeHelper(0xd, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, parms,
                  nNewValue);
 }
 
-CString CMSHFlexGrid::GetText() {
+CString CMSHFlexGrid::GetText()
+{
     CString result;
     InvokeHelper(0x0, DISPATCH_PROPERTYGET, VT_BSTR, (void *)&result, NULL);
     return result;
 }
 
-void CMSHFlexGrid::SetText(LPCTSTR lpszNewValue) {
+void CMSHFlexGrid::SetText(LPCTSTR lpszNewValue)
+{
     static BYTE parms[] =
         VTS_BSTR;
     InvokeHelper(0x0, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, parms,
                  lpszNewValue);
 }
 
-unsigned long CMSHFlexGrid::GetBackColor() {
+unsigned long CMSHFlexGrid::GetBackColor()
+{
     unsigned long result;
     InvokeHelper(DISPID_BACKCOLOR, DISPATCH_PROPERTYGET, VT_I4, (void *)&result, NULL);
     return result;
 }
 
-void CMSHFlexGrid::SetBackColor(unsigned long newValue) {
+void CMSHFlexGrid::SetBackColor(unsigned long newValue)
+{
     static BYTE parms[] =
         VTS_I4;
     InvokeHelper(DISPID_BACKCOLOR, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, parms,
                  newValue);
 }
 
-unsigned long CMSHFlexGrid::GetForeColor() {
+unsigned long CMSHFlexGrid::GetForeColor()
+{
     unsigned long result;
     InvokeHelper(DISPID_FORECOLOR, DISPATCH_PROPERTYGET, VT_I4, (void *)&result, NULL);
     return result;
 }
 
-void CMSHFlexGrid::SetForeColor(unsigned long newValue) {
+void CMSHFlexGrid::SetForeColor(unsigned long newValue)
+{
     static BYTE parms[] =
         VTS_I4;
     InvokeHelper(DISPID_FORECOLOR, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, parms,
                  newValue);
 }
 
-unsigned long CMSHFlexGrid::GetBackColorBand(long BandNumber) {
+unsigned long CMSHFlexGrid::GetBackColorBand(long BandNumber)
+{
     unsigned long result;
     static BYTE parms[] =
         VTS_I4;
@@ -223,14 +253,16 @@ unsigned long CMSHFlexGrid::GetBackColorBand(long BandNumber) {
     return result;
 }
 
-void CMSHFlexGrid::SetBackColorBand(long BandNumber, unsigned long newValue) {
+void CMSHFlexGrid::SetBackColorBand(long BandNumber, unsigned long newValue)
+{
     static BYTE parms[] =
         VTS_I4 VTS_I4;
     InvokeHelper(0x8e, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, parms,
                  BandNumber, newValue);
 }
 
-unsigned long CMSHFlexGrid::GetForeColorBand(long BandNumber) {
+unsigned long CMSHFlexGrid::GetForeColorBand(long BandNumber)
+{
     unsigned long result;
     static BYTE parms[] =
         VTS_I4;
@@ -239,14 +271,16 @@ unsigned long CMSHFlexGrid::GetForeColorBand(long BandNumber) {
     return result;
 }
 
-void CMSHFlexGrid::SetForeColorBand(long BandNumber, unsigned long newValue) {
+void CMSHFlexGrid::SetForeColorBand(long BandNumber, unsigned long newValue)
+{
     static BYTE parms[] =
         VTS_I4 VTS_I4;
     InvokeHelper(0x8f, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, parms,
                  BandNumber, newValue);
 }
 
-unsigned long CMSHFlexGrid::GetBackColorHeader(long BandNumber) {
+unsigned long CMSHFlexGrid::GetBackColorHeader(long BandNumber)
+{
     unsigned long result;
     static BYTE parms[] =
         VTS_I4;
@@ -255,14 +289,16 @@ unsigned long CMSHFlexGrid::GetBackColorHeader(long BandNumber) {
     return result;
 }
 
-void CMSHFlexGrid::SetBackColorHeader(long BandNumber, unsigned long newValue) {
+void CMSHFlexGrid::SetBackColorHeader(long BandNumber, unsigned long newValue)
+{
     static BYTE parms[] =
         VTS_I4 VTS_I4;
     InvokeHelper(0x90, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, parms,
                  BandNumber, newValue);
 }
 
-unsigned long CMSHFlexGrid::GetForeColorHeader(long BandNumber) {
+unsigned long CMSHFlexGrid::GetForeColorHeader(long BandNumber)
+{
     unsigned long result;
     static BYTE parms[] =
         VTS_I4;
@@ -271,14 +307,16 @@ unsigned long CMSHFlexGrid::GetForeColorHeader(long BandNumber) {
     return result;
 }
 
-void CMSHFlexGrid::SetForeColorHeader(long BandNumber, unsigned long newValue) {
+void CMSHFlexGrid::SetForeColorHeader(long BandNumber, unsigned long newValue)
+{
     static BYTE parms[] =
         VTS_I4 VTS_I4;
     InvokeHelper(0x91, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, parms,
                  BandNumber, newValue);
 }
 
-unsigned long CMSHFlexGrid::GetBackColorIndent(long BandNumber) {
+unsigned long CMSHFlexGrid::GetBackColorIndent(long BandNumber)
+{
     unsigned long result;
     static BYTE parms[] =
         VTS_I4;
@@ -287,157 +325,181 @@ unsigned long CMSHFlexGrid::GetBackColorIndent(long BandNumber) {
     return result;
 }
 
-void CMSHFlexGrid::SetBackColorIndent(long BandNumber, unsigned long newValue) {
+void CMSHFlexGrid::SetBackColorIndent(long BandNumber, unsigned long newValue)
+{
     static BYTE parms[] =
         VTS_I4 VTS_I4;
     InvokeHelper(0xa1, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, parms,
                  BandNumber, newValue);
 }
 
-unsigned long CMSHFlexGrid::GetBackColorFixed() {
+unsigned long CMSHFlexGrid::GetBackColorFixed()
+{
     unsigned long result;
     InvokeHelper(0xe, DISPATCH_PROPERTYGET, VT_I4, (void *)&result, NULL);
     return result;
 }
 
-void CMSHFlexGrid::SetBackColorFixed(unsigned long newValue) {
+void CMSHFlexGrid::SetBackColorFixed(unsigned long newValue)
+{
     static BYTE parms[] =
         VTS_I4;
     InvokeHelper(0xe, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, parms,
                  newValue);
 }
 
-unsigned long CMSHFlexGrid::GetForeColorFixed() {
+unsigned long CMSHFlexGrid::GetForeColorFixed()
+{
     unsigned long result;
     InvokeHelper(0xf, DISPATCH_PROPERTYGET, VT_I4, (void *)&result, NULL);
     return result;
 }
 
-void CMSHFlexGrid::SetForeColorFixed(unsigned long newValue) {
+void CMSHFlexGrid::SetForeColorFixed(unsigned long newValue)
+{
     static BYTE parms[] =
         VTS_I4;
     InvokeHelper(0xf, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, parms,
                  newValue);
 }
 
-unsigned long CMSHFlexGrid::GetBackColorSel() {
+unsigned long CMSHFlexGrid::GetBackColorSel()
+{
     unsigned long result;
     InvokeHelper(0x10, DISPATCH_PROPERTYGET, VT_I4, (void *)&result, NULL);
     return result;
 }
 
-void CMSHFlexGrid::SetBackColorSel(unsigned long newValue) {
+void CMSHFlexGrid::SetBackColorSel(unsigned long newValue)
+{
     static BYTE parms[] =
         VTS_I4;
     InvokeHelper(0x10, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, parms,
                  newValue);
 }
 
-unsigned long CMSHFlexGrid::GetForeColorSel() {
+unsigned long CMSHFlexGrid::GetForeColorSel()
+{
     unsigned long result;
     InvokeHelper(0x11, DISPATCH_PROPERTYGET, VT_I4, (void *)&result, NULL);
     return result;
 }
 
-void CMSHFlexGrid::SetForeColorSel(unsigned long newValue) {
+void CMSHFlexGrid::SetForeColorSel(unsigned long newValue)
+{
     static BYTE parms[] =
         VTS_I4;
     InvokeHelper(0x11, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, parms,
                  newValue);
 }
 
-unsigned long CMSHFlexGrid::GetBackColorBkg() {
+unsigned long CMSHFlexGrid::GetBackColorBkg()
+{
     unsigned long result;
     InvokeHelper(0x12, DISPATCH_PROPERTYGET, VT_I4, (void *)&result, NULL);
     return result;
 }
 
-void CMSHFlexGrid::SetBackColorBkg(unsigned long newValue) {
+void CMSHFlexGrid::SetBackColorBkg(unsigned long newValue)
+{
     static BYTE parms[] =
         VTS_I4;
     InvokeHelper(0x12, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, parms,
                  newValue);
 }
 
-unsigned long CMSHFlexGrid::GetBackColorUnpopulated() {
+unsigned long CMSHFlexGrid::GetBackColorUnpopulated()
+{
     unsigned long result;
     InvokeHelper(0xa5, DISPATCH_PROPERTYGET, VT_I4, (void *)&result, NULL);
     return result;
 }
 
-void CMSHFlexGrid::SetBackColorUnpopulated(unsigned long newValue) {
+void CMSHFlexGrid::SetBackColorUnpopulated(unsigned long newValue)
+{
     static BYTE parms[] =
         VTS_I4;
     InvokeHelper(0xa5, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, parms,
                  newValue);
 }
 
-BOOL CMSHFlexGrid::GetWordWrap() {
+BOOL CMSHFlexGrid::GetWordWrap()
+{
     BOOL result;
     InvokeHelper(0x13, DISPATCH_PROPERTYGET, VT_BOOL, (void *)&result, NULL);
     return result;
 }
 
-void CMSHFlexGrid::SetWordWrap(BOOL bNewValue) {
+void CMSHFlexGrid::SetWordWrap(BOOL bNewValue)
+{
     static BYTE parms[] =
         VTS_BOOL;
     InvokeHelper(0x13, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, parms,
                  bNewValue);
 }
 
-COleFont CMSHFlexGrid::GetFont() {
+COleFont CMSHFlexGrid::GetFont()
+{
     LPDISPATCH pDispatch;
     InvokeHelper(DISPID_FONT, DISPATCH_PROPERTYGET, VT_DISPATCH, (void *)&pDispatch, NULL);
     return COleFont(pDispatch);
 }
 
-void CMSHFlexGrid::SetRefFont(LPDISPATCH newValue) {
+void CMSHFlexGrid::SetRefFont(LPDISPATCH newValue)
+{
     static BYTE parms[] =
         VTS_DISPATCH;
     InvokeHelper(DISPID_FONT, DISPATCH_PROPERTYPUTREF, VT_EMPTY, NULL, parms,
                  newValue);
 }
 
-float CMSHFlexGrid::GetFontWidth() {
+float CMSHFlexGrid::GetFontWidth()
+{
     float result;
     InvokeHelper(0x54, DISPATCH_PROPERTYGET, VT_R4, (void *)&result, NULL);
     return result;
 }
 
-void CMSHFlexGrid::SetFontWidth(float newValue) {
+void CMSHFlexGrid::SetFontWidth(float newValue)
+{
     static BYTE parms[] =
         VTS_R4;
     InvokeHelper(0x54, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, parms,
                  newValue);
 }
 
-COleFont CMSHFlexGrid::GetFontFixed() {
+COleFont CMSHFlexGrid::GetFontFixed()
+{
     LPDISPATCH pDispatch;
     InvokeHelper(0x83, DISPATCH_PROPERTYGET, VT_DISPATCH, (void *)&pDispatch, NULL);
     return COleFont(pDispatch);
 }
 
-void CMSHFlexGrid::SetRefFontFixed(LPDISPATCH newValue) {
+void CMSHFlexGrid::SetRefFontFixed(LPDISPATCH newValue)
+{
     static BYTE parms[] =
         VTS_DISPATCH;
     InvokeHelper(0x83, DISPATCH_PROPERTYPUTREF, VT_EMPTY, NULL, parms,
                  newValue);
 }
 
-float CMSHFlexGrid::GetFontWidthFixed() {
+float CMSHFlexGrid::GetFontWidthFixed()
+{
     float result;
     InvokeHelper(0x99, DISPATCH_PROPERTYGET, VT_R4, (void *)&result, NULL);
     return result;
 }
 
-void CMSHFlexGrid::SetFontWidthFixed(float newValue) {
+void CMSHFlexGrid::SetFontWidthFixed(float newValue)
+{
     static BYTE parms[] =
         VTS_R4;
     InvokeHelper(0x99, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, parms,
                  newValue);
 }
 
-COleFont CMSHFlexGrid::GetFontBand(long BandNumber) {
+COleFont CMSHFlexGrid::GetFontBand(long BandNumber)
+{
     LPDISPATCH pDispatch;
     static BYTE parms[] =
         VTS_I4;
@@ -446,14 +508,16 @@ COleFont CMSHFlexGrid::GetFontBand(long BandNumber) {
     return COleFont(pDispatch);
 }
 
-void CMSHFlexGrid::SetRefFontBand(long BandNumber, LPDISPATCH newValue) {
+void CMSHFlexGrid::SetRefFontBand(long BandNumber, LPDISPATCH newValue)
+{
     static BYTE parms[] =
         VTS_I4 VTS_DISPATCH;
     InvokeHelper(0x92, DISPATCH_PROPERTYPUTREF, VT_EMPTY, NULL, parms,
                  BandNumber, newValue);
 }
 
-float CMSHFlexGrid::GetFontWidthBand(long BandNumber) {
+float CMSHFlexGrid::GetFontWidthBand(long BandNumber)
+{
     float result;
     static BYTE parms[] =
         VTS_I4;
@@ -462,14 +526,16 @@ float CMSHFlexGrid::GetFontWidthBand(long BandNumber) {
     return result;
 }
 
-void CMSHFlexGrid::SetFontWidthBand(long BandNumber, float newValue) {
+void CMSHFlexGrid::SetFontWidthBand(long BandNumber, float newValue)
+{
     static BYTE parms[] =
         VTS_I4 VTS_R4;
     InvokeHelper(0x93, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, parms,
                  BandNumber, newValue);
 }
 
-COleFont CMSHFlexGrid::GetFontHeader(long BandNumber) {
+COleFont CMSHFlexGrid::GetFontHeader(long BandNumber)
+{
     LPDISPATCH pDispatch;
     static BYTE parms[] =
         VTS_I4;
@@ -478,14 +544,16 @@ COleFont CMSHFlexGrid::GetFontHeader(long BandNumber) {
     return COleFont(pDispatch);
 }
 
-void CMSHFlexGrid::SetRefFontHeader(long BandNumber, LPDISPATCH newValue) {
+void CMSHFlexGrid::SetRefFontHeader(long BandNumber, LPDISPATCH newValue)
+{
     static BYTE parms[] =
         VTS_I4 VTS_DISPATCH;
     InvokeHelper(0x85, DISPATCH_PROPERTYPUTREF, VT_EMPTY, NULL, parms,
                  BandNumber, newValue);
 }
 
-float CMSHFlexGrid::GetFontWidthHeader(long BandNumber) {
+float CMSHFlexGrid::GetFontWidthHeader(long BandNumber)
+{
     float result;
     static BYTE parms[] =
         VTS_I4;
@@ -494,131 +562,151 @@ float CMSHFlexGrid::GetFontWidthHeader(long BandNumber) {
     return result;
 }
 
-void CMSHFlexGrid::SetFontWidthHeader(long BandNumber, float newValue) {
+void CMSHFlexGrid::SetFontWidthHeader(long BandNumber, float newValue)
+{
     static BYTE parms[] =
         VTS_I4 VTS_R4;
     InvokeHelper(0x9b, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, parms,
                  BandNumber, newValue);
 }
 
-CString CMSHFlexGrid::GetCellFontName() {
+CString CMSHFlexGrid::GetCellFontName()
+{
     CString result;
     InvokeHelper(0x4d, DISPATCH_PROPERTYGET, VT_BSTR, (void *)&result, NULL);
     return result;
 }
 
-void CMSHFlexGrid::SetCellFontName(LPCTSTR lpszNewValue) {
+void CMSHFlexGrid::SetCellFontName(LPCTSTR lpszNewValue)
+{
     static BYTE parms[] =
         VTS_BSTR;
     InvokeHelper(0x4d, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, parms,
                  lpszNewValue);
 }
 
-float CMSHFlexGrid::GetCellFontSize() {
+float CMSHFlexGrid::GetCellFontSize()
+{
     float result;
     InvokeHelper(0x4e, DISPATCH_PROPERTYGET, VT_R4, (void *)&result, NULL);
     return result;
 }
 
-void CMSHFlexGrid::SetCellFontSize(float newValue) {
+void CMSHFlexGrid::SetCellFontSize(float newValue)
+{
     static BYTE parms[] =
         VTS_R4;
     InvokeHelper(0x4e, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, parms,
                  newValue);
 }
 
-BOOL CMSHFlexGrid::GetCellFontBold() {
+BOOL CMSHFlexGrid::GetCellFontBold()
+{
     BOOL result;
     InvokeHelper(0x4f, DISPATCH_PROPERTYGET, VT_BOOL, (void *)&result, NULL);
     return result;
 }
 
-void CMSHFlexGrid::SetCellFontBold(BOOL bNewValue) {
+void CMSHFlexGrid::SetCellFontBold(BOOL bNewValue)
+{
     static BYTE parms[] =
         VTS_BOOL;
     InvokeHelper(0x4f, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, parms,
                  bNewValue);
 }
 
-BOOL CMSHFlexGrid::GetCellFontItalic() {
+BOOL CMSHFlexGrid::GetCellFontItalic()
+{
     BOOL result;
     InvokeHelper(0x50, DISPATCH_PROPERTYGET, VT_BOOL, (void *)&result, NULL);
     return result;
 }
 
-void CMSHFlexGrid::SetCellFontItalic(BOOL bNewValue) {
+void CMSHFlexGrid::SetCellFontItalic(BOOL bNewValue)
+{
     static BYTE parms[] =
         VTS_BOOL;
     InvokeHelper(0x50, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, parms,
                  bNewValue);
 }
 
-BOOL CMSHFlexGrid::GetCellFontUnderline() {
+BOOL CMSHFlexGrid::GetCellFontUnderline()
+{
     BOOL result;
     InvokeHelper(0x51, DISPATCH_PROPERTYGET, VT_BOOL, (void *)&result, NULL);
     return result;
 }
 
-void CMSHFlexGrid::SetCellFontUnderline(BOOL bNewValue) {
+void CMSHFlexGrid::SetCellFontUnderline(BOOL bNewValue)
+{
     static BYTE parms[] =
         VTS_BOOL;
     InvokeHelper(0x51, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, parms,
                  bNewValue);
 }
 
-BOOL CMSHFlexGrid::GetCellFontStrikeThrough() {
+BOOL CMSHFlexGrid::GetCellFontStrikeThrough()
+{
     BOOL result;
     InvokeHelper(0x52, DISPATCH_PROPERTYGET, VT_BOOL, (void *)&result, NULL);
     return result;
 }
 
-void CMSHFlexGrid::SetCellFontStrikeThrough(BOOL bNewValue) {
+void CMSHFlexGrid::SetCellFontStrikeThrough(BOOL bNewValue)
+{
     static BYTE parms[] =
         VTS_BOOL;
     InvokeHelper(0x52, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, parms,
                  bNewValue);
 }
 
-float CMSHFlexGrid::GetCellFontWidth() {
+float CMSHFlexGrid::GetCellFontWidth()
+{
     float result;
     InvokeHelper(0x53, DISPATCH_PROPERTYGET, VT_R4, (void *)&result, NULL);
     return result;
 }
 
-void CMSHFlexGrid::SetCellFontWidth(float newValue) {
+void CMSHFlexGrid::SetCellFontWidth(float newValue)
+{
     static BYTE parms[] =
         VTS_R4;
     InvokeHelper(0x53, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, parms,
                  newValue);
 }
 
-long CMSHFlexGrid::GetTextStyle() {
+long CMSHFlexGrid::GetTextStyle()
+{
     long result;
     InvokeHelper(0x14, DISPATCH_PROPERTYGET, VT_I4, (void *)&result, NULL);
     return result;
 }
 
-void CMSHFlexGrid::SetTextStyle(long nNewValue) {
+void CMSHFlexGrid::SetTextStyle(long nNewValue)
+{
     static BYTE parms[] =
         VTS_I4;
     InvokeHelper(0x14, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, parms,
                  nNewValue);
 }
 
-long CMSHFlexGrid::GetTextStyleFixed() {
+long CMSHFlexGrid::GetTextStyleFixed()
+{
     long result;
     InvokeHelper(0x15, DISPATCH_PROPERTYGET, VT_I4, (void *)&result, NULL);
     return result;
 }
 
-void CMSHFlexGrid::SetTextStyleFixed(long nNewValue) {
+void CMSHFlexGrid::SetTextStyleFixed(long nNewValue)
+{
     static BYTE parms[] =
         VTS_I4;
     InvokeHelper(0x15, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, parms,
                  nNewValue);
 }
 
-long CMSHFlexGrid::GetTextStyleBand(long BandNumber) {
+long CMSHFlexGrid::GetTextStyleBand(long BandNumber)
+{
     long result;
     static BYTE parms[] =
         VTS_I4;
@@ -627,14 +715,16 @@ long CMSHFlexGrid::GetTextStyleBand(long BandNumber) {
     return result;
 }
 
-void CMSHFlexGrid::SetTextStyleBand(long BandNumber, long nNewValue) {
+void CMSHFlexGrid::SetTextStyleBand(long BandNumber, long nNewValue)
+{
     static BYTE parms[] =
         VTS_I4 VTS_I4;
     InvokeHelper(0x97, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, parms,
                  BandNumber, nNewValue);
 }
 
-long CMSHFlexGrid::GetTextStyleHeader(long BandNumber) {
+long CMSHFlexGrid::GetTextStyleHeader(long BandNumber)
+{
     long result;
     static BYTE parms[] =
         VTS_I4;
@@ -643,206 +733,238 @@ long CMSHFlexGrid::GetTextStyleHeader(long BandNumber) {
     return result;
 }
 
-void CMSHFlexGrid::SetTextStyleHeader(long BandNumber, long nNewValue) {
+void CMSHFlexGrid::SetTextStyleHeader(long BandNumber, long nNewValue)
+{
     static BYTE parms[] =
         VTS_I4 VTS_I4;
     InvokeHelper(0x9f, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, parms,
                  BandNumber, nNewValue);
 }
 
-BOOL CMSHFlexGrid::GetScrollTrack() {
+BOOL CMSHFlexGrid::GetScrollTrack()
+{
     BOOL result;
     InvokeHelper(0x16, DISPATCH_PROPERTYGET, VT_BOOL, (void *)&result, NULL);
     return result;
 }
 
-void CMSHFlexGrid::SetScrollTrack(BOOL bNewValue) {
+void CMSHFlexGrid::SetScrollTrack(BOOL bNewValue)
+{
     static BYTE parms[] =
         VTS_BOOL;
     InvokeHelper(0x16, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, parms,
                  bNewValue);
 }
 
-long CMSHFlexGrid::GetFocusRect() {
+long CMSHFlexGrid::GetFocusRect()
+{
     long result;
     InvokeHelper(0x17, DISPATCH_PROPERTYGET, VT_I4, (void *)&result, NULL);
     return result;
 }
 
-void CMSHFlexGrid::SetFocusRect(long nNewValue) {
+void CMSHFlexGrid::SetFocusRect(long nNewValue)
+{
     static BYTE parms[] =
         VTS_I4;
     InvokeHelper(0x17, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, parms,
                  nNewValue);
 }
 
-long CMSHFlexGrid::GetHighLight() {
+long CMSHFlexGrid::GetHighLight()
+{
     long result;
     InvokeHelper(0x18, DISPATCH_PROPERTYGET, VT_I4, (void *)&result, NULL);
     return result;
 }
 
-void CMSHFlexGrid::SetHighLight(long nNewValue) {
+void CMSHFlexGrid::SetHighLight(long nNewValue)
+{
     static BYTE parms[] =
         VTS_I4;
     InvokeHelper(0x18, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, parms,
                  nNewValue);
 }
 
-BOOL CMSHFlexGrid::GetRedraw() {
+BOOL CMSHFlexGrid::GetRedraw()
+{
     BOOL result;
     InvokeHelper(0x19, DISPATCH_PROPERTYGET, VT_BOOL, (void *)&result, NULL);
     return result;
 }
 
-void CMSHFlexGrid::SetRedraw(BOOL bNewValue) {
+void CMSHFlexGrid::SetRedraw(BOOL bNewValue)
+{
     static BYTE parms[] =
         VTS_BOOL;
     InvokeHelper(0x19, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, parms,
                  bNewValue);
 }
 
-long CMSHFlexGrid::GetScrollBars() {
+long CMSHFlexGrid::GetScrollBars()
+{
     long result;
     InvokeHelper(0x1a, DISPATCH_PROPERTYGET, VT_I4, (void *)&result, NULL);
     return result;
 }
 
-void CMSHFlexGrid::SetScrollBars(long nNewValue) {
+void CMSHFlexGrid::SetScrollBars(long nNewValue)
+{
     static BYTE parms[] =
         VTS_I4;
     InvokeHelper(0x1a, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, parms,
                  nNewValue);
 }
 
-long CMSHFlexGrid::GetMouseRow() {
+long CMSHFlexGrid::GetMouseRow()
+{
     long result;
     InvokeHelper(0x1b, DISPATCH_PROPERTYGET, VT_I4, (void *)&result, NULL);
     return result;
 }
 
-long CMSHFlexGrid::GetMouseCol() {
+long CMSHFlexGrid::GetMouseCol()
+{
     long result;
     InvokeHelper(0x1c, DISPATCH_PROPERTYGET, VT_I4, (void *)&result, NULL);
     return result;
 }
 
-long CMSHFlexGrid::GetCellLeft() {
+long CMSHFlexGrid::GetCellLeft()
+{
     long result;
     InvokeHelper(0x1d, DISPATCH_PROPERTYGET, VT_I4, (void *)&result, NULL);
     return result;
 }
 
-long CMSHFlexGrid::GetCellTop() {
+long CMSHFlexGrid::GetCellTop()
+{
     long result;
     InvokeHelper(0x1e, DISPATCH_PROPERTYGET, VT_I4, (void *)&result, NULL);
     return result;
 }
 
-long CMSHFlexGrid::GetCellWidth() {
+long CMSHFlexGrid::GetCellWidth()
+{
     long result;
     InvokeHelper(0x1f, DISPATCH_PROPERTYGET, VT_I4, (void *)&result, NULL);
     return result;
 }
 
-long CMSHFlexGrid::GetCellHeight() {
+long CMSHFlexGrid::GetCellHeight()
+{
     long result;
     InvokeHelper(0x20, DISPATCH_PROPERTYGET, VT_I4, (void *)&result, NULL);
     return result;
 }
 
-long CMSHFlexGrid::GetRowHeightMin() {
+long CMSHFlexGrid::GetRowHeightMin()
+{
     long result;
     InvokeHelper(0x21, DISPATCH_PROPERTYGET, VT_I4, (void *)&result, NULL);
     return result;
 }
 
-void CMSHFlexGrid::SetRowHeightMin(long nNewValue) {
+void CMSHFlexGrid::SetRowHeightMin(long nNewValue)
+{
     static BYTE parms[] =
         VTS_I4;
     InvokeHelper(0x21, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, parms,
                  nNewValue);
 }
 
-long CMSHFlexGrid::GetFillStyle() {
+long CMSHFlexGrid::GetFillStyle()
+{
     long result;
     InvokeHelper(0xfffffe01, DISPATCH_PROPERTYGET, VT_I4, (void *)&result, NULL);
     return result;
 }
 
-void CMSHFlexGrid::SetFillStyle(long nNewValue) {
+void CMSHFlexGrid::SetFillStyle(long nNewValue)
+{
     static BYTE parms[] =
         VTS_I4;
     InvokeHelper(0xfffffe01, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, parms,
                  nNewValue);
 }
 
-long CMSHFlexGrid::GetGridLines() {
+long CMSHFlexGrid::GetGridLines()
+{
     long result;
     InvokeHelper(0x22, DISPATCH_PROPERTYGET, VT_I4, (void *)&result, NULL);
     return result;
 }
 
-void CMSHFlexGrid::SetGridLines(long nNewValue) {
+void CMSHFlexGrid::SetGridLines(long nNewValue)
+{
     static BYTE parms[] =
         VTS_I4;
     InvokeHelper(0x22, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, parms,
                  nNewValue);
 }
 
-long CMSHFlexGrid::GetGridLinesFixed() {
+long CMSHFlexGrid::GetGridLinesFixed()
+{
     long result;
     InvokeHelper(0x23, DISPATCH_PROPERTYGET, VT_I4, (void *)&result, NULL);
     return result;
 }
 
-void CMSHFlexGrid::SetGridLinesFixed(long nNewValue) {
+void CMSHFlexGrid::SetGridLinesFixed(long nNewValue)
+{
     static BYTE parms[] =
         VTS_I4;
     InvokeHelper(0x23, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, parms,
                  nNewValue);
 }
 
-unsigned long CMSHFlexGrid::GetGridColor() {
+unsigned long CMSHFlexGrid::GetGridColor()
+{
     unsigned long result;
     InvokeHelper(0x24, DISPATCH_PROPERTYGET, VT_I4, (void *)&result, NULL);
     return result;
 }
 
-void CMSHFlexGrid::SetGridColor(unsigned long newValue) {
+void CMSHFlexGrid::SetGridColor(unsigned long newValue)
+{
     static BYTE parms[] =
         VTS_I4;
     InvokeHelper(0x24, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, parms,
                  newValue);
 }
 
-unsigned long CMSHFlexGrid::GetGridColorFixed() {
+unsigned long CMSHFlexGrid::GetGridColorFixed()
+{
     unsigned long result;
     InvokeHelper(0x25, DISPATCH_PROPERTYGET, VT_I4, (void *)&result, NULL);
     return result;
 }
 
-void CMSHFlexGrid::SetGridColorFixed(unsigned long newValue) {
+void CMSHFlexGrid::SetGridColorFixed(unsigned long newValue)
+{
     static BYTE parms[] =
         VTS_I4;
     InvokeHelper(0x25, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, parms,
                  newValue);
 }
 
-unsigned long CMSHFlexGrid::GetGridColorUnpopulated() {
+unsigned long CMSHFlexGrid::GetGridColorUnpopulated()
+{
     unsigned long result;
     InvokeHelper(0xa7, DISPATCH_PROPERTYGET, VT_I4, (void *)&result, NULL);
     return result;
 }
 
-void CMSHFlexGrid::SetGridColorUnpopulated(unsigned long newValue) {
+void CMSHFlexGrid::SetGridColorUnpopulated(unsigned long newValue)
+{
     static BYTE parms[] =
         VTS_I4;
     InvokeHelper(0xa7, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, parms,
                  newValue);
 }
 
-unsigned long CMSHFlexGrid::GetGridColorBand(long BandNumber) {
+unsigned long CMSHFlexGrid::GetGridColorBand(long BandNumber)
+{
     unsigned long result;
     static BYTE parms[] =
         VTS_I4;
@@ -851,14 +973,16 @@ unsigned long CMSHFlexGrid::GetGridColorBand(long BandNumber) {
     return result;
 }
 
-void CMSHFlexGrid::SetGridColorBand(long BandNumber, unsigned long newValue) {
+void CMSHFlexGrid::SetGridColorBand(long BandNumber, unsigned long newValue)
+{
     static BYTE parms[] =
         VTS_I4 VTS_I4;
     InvokeHelper(0x95, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, parms,
                  BandNumber, newValue);
 }
 
-unsigned long CMSHFlexGrid::GetGridColorHeader(long BandNumber) {
+unsigned long CMSHFlexGrid::GetGridColorHeader(long BandNumber)
+{
     unsigned long result;
     static BYTE parms[] =
         VTS_I4;
@@ -867,14 +991,16 @@ unsigned long CMSHFlexGrid::GetGridColorHeader(long BandNumber) {
     return result;
 }
 
-void CMSHFlexGrid::SetGridColorHeader(long BandNumber, unsigned long newValue) {
+void CMSHFlexGrid::SetGridColorHeader(long BandNumber, unsigned long newValue)
+{
     static BYTE parms[] =
         VTS_I4 VTS_I4;
     InvokeHelper(0x9d, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, parms,
                  BandNumber, newValue);
 }
 
-unsigned long CMSHFlexGrid::GetGridColorIndent(long BandNumber) {
+unsigned long CMSHFlexGrid::GetGridColorIndent(long BandNumber)
+{
     unsigned long result;
     static BYTE parms[] =
         VTS_I4;
@@ -883,254 +1009,293 @@ unsigned long CMSHFlexGrid::GetGridColorIndent(long BandNumber) {
     return result;
 }
 
-void CMSHFlexGrid::SetGridColorIndent(long BandNumber, unsigned long newValue) {
+void CMSHFlexGrid::SetGridColorIndent(long BandNumber, unsigned long newValue)
+{
     static BYTE parms[] =
         VTS_I4 VTS_I4;
     InvokeHelper(0xa3, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, parms,
                  BandNumber, newValue);
 }
 
-unsigned long CMSHFlexGrid::GetCellBackColor() {
+unsigned long CMSHFlexGrid::GetCellBackColor()
+{
     unsigned long result;
     InvokeHelper(0x26, DISPATCH_PROPERTYGET, VT_I4, (void *)&result, NULL);
     return result;
 }
 
-void CMSHFlexGrid::SetCellBackColor(unsigned long newValue) {
+void CMSHFlexGrid::SetCellBackColor(unsigned long newValue)
+{
     static BYTE parms[] =
         VTS_I4;
     InvokeHelper(0x26, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, parms,
                  newValue);
 }
 
-unsigned long CMSHFlexGrid::GetCellForeColor() {
+unsigned long CMSHFlexGrid::GetCellForeColor()
+{
     unsigned long result;
     InvokeHelper(0x27, DISPATCH_PROPERTYGET, VT_I4, (void *)&result, NULL);
     return result;
 }
 
-void CMSHFlexGrid::SetCellForeColor(unsigned long newValue) {
+void CMSHFlexGrid::SetCellForeColor(unsigned long newValue)
+{
     static BYTE parms[] =
         VTS_I4;
     InvokeHelper(0x27, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, parms,
                  newValue);
 }
 
-short CMSHFlexGrid::GetCellAlignment() {
+short CMSHFlexGrid::GetCellAlignment()
+{
     short result;
     InvokeHelper(0x28, DISPATCH_PROPERTYGET, VT_I2, (void *)&result, NULL);
     return result;
 }
 
-void CMSHFlexGrid::SetCellAlignment(short nNewValue) {
+void CMSHFlexGrid::SetCellAlignment(short nNewValue)
+{
     static BYTE parms[] =
         VTS_I2;
     InvokeHelper(0x28, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, parms,
                  nNewValue);
 }
 
-long CMSHFlexGrid::GetCellTextStyle() {
+long CMSHFlexGrid::GetCellTextStyle()
+{
     long result;
     InvokeHelper(0x29, DISPATCH_PROPERTYGET, VT_I4, (void *)&result, NULL);
     return result;
 }
 
-void CMSHFlexGrid::SetCellTextStyle(long nNewValue) {
+void CMSHFlexGrid::SetCellTextStyle(long nNewValue)
+{
     static BYTE parms[] =
         VTS_I4;
     InvokeHelper(0x29, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, parms,
                  nNewValue);
 }
 
-short CMSHFlexGrid::GetCellPictureAlignment() {
+short CMSHFlexGrid::GetCellPictureAlignment()
+{
     short result;
     InvokeHelper(0x2b, DISPATCH_PROPERTYGET, VT_I2, (void *)&result, NULL);
     return result;
 }
 
-void CMSHFlexGrid::SetCellPictureAlignment(short nNewValue) {
+void CMSHFlexGrid::SetCellPictureAlignment(short nNewValue)
+{
     static BYTE parms[] =
         VTS_I2;
     InvokeHelper(0x2b, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, parms,
                  nNewValue);
 }
 
-CString CMSHFlexGrid::GetClip() {
+CString CMSHFlexGrid::GetClip()
+{
     CString result;
     InvokeHelper(0x2d, DISPATCH_PROPERTYGET, VT_BSTR, (void *)&result, NULL);
     return result;
 }
 
-void CMSHFlexGrid::SetClip(LPCTSTR lpszNewValue) {
+void CMSHFlexGrid::SetClip(LPCTSTR lpszNewValue)
+{
     static BYTE parms[] =
         VTS_BSTR;
     InvokeHelper(0x2d, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, parms,
                  lpszNewValue);
 }
 
-void CMSHFlexGrid::SetSort(short nNewValue) {
+void CMSHFlexGrid::SetSort(short nNewValue)
+{
     static BYTE parms[] =
         VTS_I2;
     InvokeHelper(0x2e, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, parms,
                  nNewValue);
 }
 
-long CMSHFlexGrid::GetSelectionMode() {
+long CMSHFlexGrid::GetSelectionMode()
+{
     long result;
     InvokeHelper(0x2f, DISPATCH_PROPERTYGET, VT_I4, (void *)&result, NULL);
     return result;
 }
 
-void CMSHFlexGrid::SetSelectionMode(long nNewValue) {
+void CMSHFlexGrid::SetSelectionMode(long nNewValue)
+{
     static BYTE parms[] =
         VTS_I4;
     InvokeHelper(0x2f, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, parms,
                  nNewValue);
 }
 
-long CMSHFlexGrid::GetMergeCells() {
+long CMSHFlexGrid::GetMergeCells()
+{
     long result;
     InvokeHelper(0x30, DISPATCH_PROPERTYGET, VT_I4, (void *)&result, NULL);
     return result;
 }
 
-void CMSHFlexGrid::SetMergeCells(long nNewValue) {
+void CMSHFlexGrid::SetMergeCells(long nNewValue)
+{
     static BYTE parms[] =
         VTS_I4;
     InvokeHelper(0x30, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, parms,
                  nNewValue);
 }
 
-BOOL CMSHFlexGrid::GetAllowBigSelection() {
+BOOL CMSHFlexGrid::GetAllowBigSelection()
+{
     BOOL result;
     InvokeHelper(0x33, DISPATCH_PROPERTYGET, VT_BOOL, (void *)&result, NULL);
     return result;
 }
 
-void CMSHFlexGrid::SetAllowBigSelection(BOOL bNewValue) {
+void CMSHFlexGrid::SetAllowBigSelection(BOOL bNewValue)
+{
     static BYTE parms[] =
         VTS_BOOL;
     InvokeHelper(0x33, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, parms,
                  bNewValue);
 }
 
-long CMSHFlexGrid::GetAllowUserResizing() {
+long CMSHFlexGrid::GetAllowUserResizing()
+{
     long result;
     InvokeHelper(0x34, DISPATCH_PROPERTYGET, VT_I4, (void *)&result, NULL);
     return result;
 }
 
-void CMSHFlexGrid::SetAllowUserResizing(long nNewValue) {
+void CMSHFlexGrid::SetAllowUserResizing(long nNewValue)
+{
     static BYTE parms[] =
         VTS_I4;
     InvokeHelper(0x34, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, parms,
                  nNewValue);
 }
 
-long CMSHFlexGrid::GetBorderStyle() {
+long CMSHFlexGrid::GetBorderStyle()
+{
     long result;
     InvokeHelper(DISPID_BORDERSTYLE, DISPATCH_PROPERTYGET, VT_I4, (void *)&result, NULL);
     return result;
 }
 
-void CMSHFlexGrid::SetBorderStyle(long nNewValue) {
+void CMSHFlexGrid::SetBorderStyle(long nNewValue)
+{
     static BYTE parms[] =
         VTS_I4;
     InvokeHelper(DISPID_BORDERSTYLE, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, parms,
                  nNewValue);
 }
 
-long CMSHFlexGrid::GetHWnd() {
+long CMSHFlexGrid::GetHWnd()
+{
     long result;
     InvokeHelper(DISPID_HWND, DISPATCH_PROPERTYGET, VT_I4, (void *)&result, NULL);
     return result;
 }
 
-BOOL CMSHFlexGrid::GetEnabled() {
+BOOL CMSHFlexGrid::GetEnabled()
+{
     BOOL result;
     InvokeHelper(DISPID_ENABLED, DISPATCH_PROPERTYGET, VT_BOOL, (void *)&result, NULL);
     return result;
 }
 
-void CMSHFlexGrid::SetEnabled(BOOL bNewValue) {
+void CMSHFlexGrid::SetEnabled(BOOL bNewValue)
+{
     static BYTE parms[] =
         VTS_BOOL;
     InvokeHelper(DISPID_ENABLED, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, parms,
                  bNewValue);
 }
 
-long CMSHFlexGrid::GetAppearance() {
+long CMSHFlexGrid::GetAppearance()
+{
     long result;
     InvokeHelper(DISPID_APPEARANCE, DISPATCH_PROPERTYGET, VT_I4, (void *)&result, NULL);
     return result;
 }
 
-void CMSHFlexGrid::SetAppearance(long nNewValue) {
+void CMSHFlexGrid::SetAppearance(long nNewValue)
+{
     static BYTE parms[] =
         VTS_I4;
     InvokeHelper(DISPID_APPEARANCE, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, parms,
                  nNewValue);
 }
 
-long CMSHFlexGrid::GetMousePointer() {
+long CMSHFlexGrid::GetMousePointer()
+{
     long result;
     InvokeHelper(0xfffffdf7, DISPATCH_PROPERTYGET, VT_I4, (void *)&result, NULL);
     return result;
 }
 
-void CMSHFlexGrid::SetMousePointer(long nNewValue) {
+void CMSHFlexGrid::SetMousePointer(long nNewValue)
+{
     static BYTE parms[] =
         VTS_I4;
     InvokeHelper(0xfffffdf7, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, parms,
                  nNewValue);
 }
 
-CPicture CMSHFlexGrid::GetMouseIcon() {
+CPicture CMSHFlexGrid::GetMouseIcon()
+{
     LPDISPATCH pDispatch;
     InvokeHelper(0xfffffdf6, DISPATCH_PROPERTYGET, VT_DISPATCH, (void *)&pDispatch, NULL);
     return CPicture(pDispatch);
 }
 
-void CMSHFlexGrid::SetRefMouseIcon(LPDISPATCH newValue) {
+void CMSHFlexGrid::SetRefMouseIcon(LPDISPATCH newValue)
+{
     static BYTE parms[] =
         VTS_DISPATCH;
     InvokeHelper(0xfffffdf6, DISPATCH_PROPERTYPUTREF, VT_EMPTY, NULL, parms,
                  newValue);
 }
 
-long CMSHFlexGrid::GetPictureType() {
+long CMSHFlexGrid::GetPictureType()
+{
     long result;
     InvokeHelper(0x32, DISPATCH_PROPERTYGET, VT_I4, (void *)&result, NULL);
     return result;
 }
 
-void CMSHFlexGrid::SetPictureType(long nNewValue) {
+void CMSHFlexGrid::SetPictureType(long nNewValue)
+{
     static BYTE parms[] =
         VTS_I4;
     InvokeHelper(0x32, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, parms,
                  nNewValue);
 }
 
-CPicture CMSHFlexGrid::GetPicture() {
+CPicture CMSHFlexGrid::GetPicture()
+{
     LPDISPATCH pDispatch;
     InvokeHelper(0xfffffdf5, DISPATCH_PROPERTYGET, VT_DISPATCH, (void *)&pDispatch, NULL);
     return CPicture(pDispatch);
 }
 
-CPicture CMSHFlexGrid::GetCellPicture() {
+CPicture CMSHFlexGrid::GetCellPicture()
+{
     LPDISPATCH pDispatch;
     InvokeHelper(0x2a, DISPATCH_PROPERTYGET, VT_DISPATCH, (void *)&pDispatch, NULL);
     return CPicture(pDispatch);
 }
 
-void CMSHFlexGrid::SetRefCellPicture(LPDISPATCH newValue) {
+void CMSHFlexGrid::SetRefCellPicture(LPDISPATCH newValue)
+{
     static BYTE parms[] =
         VTS_DISPATCH;
     InvokeHelper(0x2a, DISPATCH_PROPERTYPUTREF, VT_EMPTY, NULL, parms,
                  newValue);
 }
 
-CString CMSHFlexGrid::GetTextArray(long Index) {
+CString CMSHFlexGrid::GetTextArray(long Index)
+{
     CString result;
     static BYTE parms[] =
         VTS_I4;
@@ -1139,14 +1304,16 @@ CString CMSHFlexGrid::GetTextArray(long Index) {
     return result;
 }
 
-void CMSHFlexGrid::SetTextArray(long Index, LPCTSTR lpszNewValue) {
+void CMSHFlexGrid::SetTextArray(long Index, LPCTSTR lpszNewValue)
+{
     static BYTE parms[] =
         VTS_I4 VTS_BSTR;
     InvokeHelper(0x37, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, parms,
                  Index, lpszNewValue);
 }
 
-short CMSHFlexGrid::GetColAlignment(long Index) {
+short CMSHFlexGrid::GetColAlignment(long Index)
+{
     short result;
     static BYTE parms[] =
         VTS_I4;
@@ -1155,14 +1322,16 @@ short CMSHFlexGrid::GetColAlignment(long Index) {
     return result;
 }
 
-void CMSHFlexGrid::SetColAlignment(long Index, short nNewValue) {
+void CMSHFlexGrid::SetColAlignment(long Index, short nNewValue)
+{
     static BYTE parms[] =
         VTS_I4 VTS_I2;
     InvokeHelper(0x38, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, parms,
                  Index, nNewValue);
 }
 
-short CMSHFlexGrid::GetColAlignmentFixed(long Index) {
+short CMSHFlexGrid::GetColAlignmentFixed(long Index)
+{
     short result;
     static BYTE parms[] =
         VTS_I4;
@@ -1171,14 +1340,16 @@ short CMSHFlexGrid::GetColAlignmentFixed(long Index) {
     return result;
 }
 
-void CMSHFlexGrid::SetColAlignmentFixed(long Index, short nNewValue) {
+void CMSHFlexGrid::SetColAlignmentFixed(long Index, short nNewValue)
+{
     static BYTE parms[] =
         VTS_I4 VTS_I2;
     InvokeHelper(0x31, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, parms,
                  Index, nNewValue);
 }
 
-short CMSHFlexGrid::GetColAlignmentBand(long BandNumber, long BandColIndex) {
+short CMSHFlexGrid::GetColAlignmentBand(long BandNumber, long BandColIndex)
+{
     short result;
     static BYTE parms[] =
         VTS_I4 VTS_I4;
@@ -1187,14 +1358,16 @@ short CMSHFlexGrid::GetColAlignmentBand(long BandNumber, long BandColIndex) {
     return result;
 }
 
-void CMSHFlexGrid::SetColAlignmentBand(long BandNumber, long BandColIndex, short nNewValue) {
+void CMSHFlexGrid::SetColAlignmentBand(long BandNumber, long BandColIndex, short nNewValue)
+{
     static BYTE parms[] =
         VTS_I4 VTS_I4 VTS_I2;
     InvokeHelper(0x98, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, parms,
                  BandNumber, BandColIndex, nNewValue);
 }
 
-short CMSHFlexGrid::GetColAlignmentHeader(long BandNumber, long BandColIndex) {
+short CMSHFlexGrid::GetColAlignmentHeader(long BandNumber, long BandColIndex)
+{
     short result;
     static BYTE parms[] =
         VTS_I4 VTS_I4;
@@ -1203,14 +1376,16 @@ short CMSHFlexGrid::GetColAlignmentHeader(long BandNumber, long BandColIndex) {
     return result;
 }
 
-void CMSHFlexGrid::SetColAlignmentHeader(long BandNumber, long BandColIndex, short nNewValue) {
+void CMSHFlexGrid::SetColAlignmentHeader(long BandNumber, long BandColIndex, short nNewValue)
+{
     static BYTE parms[] =
         VTS_I4 VTS_I4 VTS_I2;
     InvokeHelper(0xa0, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, parms,
                  BandNumber, BandColIndex, nNewValue);
 }
 
-long CMSHFlexGrid::GetColWidth(long Index, long BandNumber) {
+long CMSHFlexGrid::GetColWidth(long Index, long BandNumber)
+{
     long result;
     static BYTE parms[] =
         VTS_I4 VTS_I4;
@@ -1219,14 +1394,16 @@ long CMSHFlexGrid::GetColWidth(long Index, long BandNumber) {
     return result;
 }
 
-void CMSHFlexGrid::SetColWidth(long Index, long BandNumber, long nNewValue) {
+void CMSHFlexGrid::SetColWidth(long Index, long BandNumber, long nNewValue)
+{
     static BYTE parms[] =
         VTS_I4 VTS_I4 VTS_I4;
     InvokeHelper(0x39, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, parms,
                  Index, BandNumber, nNewValue);
 }
 
-long CMSHFlexGrid::GetRowHeight(long Index) {
+long CMSHFlexGrid::GetRowHeight(long Index)
+{
     long result;
     static BYTE parms[] =
         VTS_I4;
@@ -1235,14 +1412,16 @@ long CMSHFlexGrid::GetRowHeight(long Index) {
     return result;
 }
 
-void CMSHFlexGrid::SetRowHeight(long Index, long nNewValue) {
+void CMSHFlexGrid::SetRowHeight(long Index, long nNewValue)
+{
     static BYTE parms[] =
         VTS_I4 VTS_I4;
     InvokeHelper(0x3a, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, parms,
                  Index, nNewValue);
 }
 
-BOOL CMSHFlexGrid::GetMergeRow(long Index) {
+BOOL CMSHFlexGrid::GetMergeRow(long Index)
+{
     BOOL result;
     static BYTE parms[] =
         VTS_I4;
@@ -1251,14 +1430,16 @@ BOOL CMSHFlexGrid::GetMergeRow(long Index) {
     return result;
 }
 
-void CMSHFlexGrid::SetMergeRow(long Index, BOOL bNewValue) {
+void CMSHFlexGrid::SetMergeRow(long Index, BOOL bNewValue)
+{
     static BYTE parms[] =
         VTS_I4 VTS_BOOL;
     InvokeHelper(0x3b, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, parms,
                  Index, bNewValue);
 }
 
-BOOL CMSHFlexGrid::GetMergeCol(long Index) {
+BOOL CMSHFlexGrid::GetMergeCol(long Index)
+{
     BOOL result;
     static BYTE parms[] =
         VTS_I4;
@@ -1267,28 +1448,32 @@ BOOL CMSHFlexGrid::GetMergeCol(long Index) {
     return result;
 }
 
-void CMSHFlexGrid::SetMergeCol(long Index, BOOL bNewValue) {
+void CMSHFlexGrid::SetMergeCol(long Index, BOOL bNewValue)
+{
     static BYTE parms[] =
         VTS_I4 VTS_BOOL;
     InvokeHelper(0x3c, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, parms,
                  Index, bNewValue);
 }
 
-void CMSHFlexGrid::SetRowPosition(long Index, long nNewValue) {
+void CMSHFlexGrid::SetRowPosition(long Index, long nNewValue)
+{
     static BYTE parms[] =
         VTS_I4 VTS_I4;
     InvokeHelper(0x3d, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, parms,
                  Index, nNewValue);
 }
 
-void CMSHFlexGrid::SetColPosition(long Index, long BandNumber, long nNewValue) {
+void CMSHFlexGrid::SetColPosition(long Index, long BandNumber, long nNewValue)
+{
     static BYTE parms[] =
         VTS_I4 VTS_I4 VTS_I4;
     InvokeHelper(0x3e, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, parms,
                  Index, BandNumber, nNewValue);
 }
 
-long CMSHFlexGrid::GetRowData(long Index) {
+long CMSHFlexGrid::GetRowData(long Index)
+{
     long result;
     static BYTE parms[] =
         VTS_I4;
@@ -1297,14 +1482,16 @@ long CMSHFlexGrid::GetRowData(long Index) {
     return result;
 }
 
-void CMSHFlexGrid::SetRowData(long Index, long nNewValue) {
+void CMSHFlexGrid::SetRowData(long Index, long nNewValue)
+{
     static BYTE parms[] =
         VTS_I4 VTS_I4;
     InvokeHelper(0x3f, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, parms,
                  Index, nNewValue);
 }
 
-long CMSHFlexGrid::GetColData(long Index) {
+long CMSHFlexGrid::GetColData(long Index)
+{
     long result;
     static BYTE parms[] =
         VTS_I4;
@@ -1313,14 +1500,16 @@ long CMSHFlexGrid::GetColData(long Index) {
     return result;
 }
 
-void CMSHFlexGrid::SetColData(long Index, long nNewValue) {
+void CMSHFlexGrid::SetColData(long Index, long nNewValue)
+{
     static BYTE parms[] =
         VTS_I4 VTS_I4;
     InvokeHelper(0x40, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, parms,
                  Index, nNewValue);
 }
 
-CString CMSHFlexGrid::GetTextMatrix(long Row, long Col) {
+CString CMSHFlexGrid::GetTextMatrix(long Row, long Col)
+{
     CString result;
     static BYTE parms[] =
         VTS_I4 VTS_I4;
@@ -1329,66 +1518,77 @@ CString CMSHFlexGrid::GetTextMatrix(long Row, long Col) {
     return result;
 }
 
-void CMSHFlexGrid::SetTextMatrix(long Row, long Col, LPCTSTR lpszNewValue) {
+void CMSHFlexGrid::SetTextMatrix(long Row, long Col, LPCTSTR lpszNewValue)
+{
     static BYTE parms[] =
         VTS_I4 VTS_I4 VTS_BSTR;
     InvokeHelper(0x41, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, parms,
                  Row, Col, lpszNewValue);
 }
 
-void CMSHFlexGrid::AddItem(LPCTSTR Item, const VARIANT & Index) {
+void CMSHFlexGrid::AddItem(LPCTSTR Item, const VARIANT & Index)
+{
     static BYTE parms[] =
         VTS_BSTR VTS_VARIANT;
     InvokeHelper(0x42, DISPATCH_METHOD, VT_EMPTY, NULL, parms,
                  Item, &Index);
 }
 
-void CMSHFlexGrid::RemoveItem(long Index) {
+void CMSHFlexGrid::RemoveItem(long Index)
+{
     static BYTE parms[] =
         VTS_I4;
     InvokeHelper(0x43, DISPATCH_METHOD, VT_EMPTY, NULL, parms,
                  Index);
 }
 
-void CMSHFlexGrid::Clear() {
+void CMSHFlexGrid::Clear()
+{
     InvokeHelper(0x44, DISPATCH_METHOD, VT_EMPTY, NULL, NULL);
 }
 
-void CMSHFlexGrid::Refresh() {
+void CMSHFlexGrid::Refresh()
+{
     InvokeHelper(DISPID_REFRESH, DISPATCH_METHOD, VT_EMPTY, NULL, NULL);
 }
 
-void CMSHFlexGrid::ClearStructure() {
+void CMSHFlexGrid::ClearStructure()
+{
     InvokeHelper(0x2c, DISPATCH_METHOD, VT_EMPTY, NULL, NULL);
 }
 
-LPUNKNOWN CMSHFlexGrid::GetDataSource() {
+LPUNKNOWN CMSHFlexGrid::GetDataSource()
+{
     LPUNKNOWN result;
     InvokeHelper(0x4c, DISPATCH_PROPERTYGET, VT_UNKNOWN, (void *)&result, NULL);
     return result;
 }
 
-void CMSHFlexGrid::SetRefDataSource(LPUNKNOWN newValue) {
+void CMSHFlexGrid::SetRefDataSource(LPUNKNOWN newValue)
+{
     static BYTE parms[] =
         VTS_UNKNOWN;
     InvokeHelper(0x4c, DISPATCH_PROPERTYPUTREF, VT_EMPTY, NULL, parms,
                  newValue);
 }
 
-CString CMSHFlexGrid::GetDataMember() {
+CString CMSHFlexGrid::GetDataMember()
+{
     CString result;
     InvokeHelper(0x86, DISPATCH_PROPERTYGET, VT_BSTR, (void *)&result, NULL);
     return result;
 }
 
-void CMSHFlexGrid::SetDataMember(LPCTSTR lpszNewValue) {
+void CMSHFlexGrid::SetDataMember(LPCTSTR lpszNewValue)
+{
     static BYTE parms[] =
         VTS_BSTR;
     InvokeHelper(0x86, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, parms,
                  lpszNewValue);
 }
 
-BOOL CMSHFlexGrid::GetRowIsVisible(long Index) {
+BOOL CMSHFlexGrid::GetRowIsVisible(long Index)
+{
     BOOL result;
     static BYTE parms[] =
         VTS_I4;
@@ -1397,7 +1597,8 @@ BOOL CMSHFlexGrid::GetRowIsVisible(long Index) {
     return result;
 }
 
-BOOL CMSHFlexGrid::GetColIsVisible(long Index) {
+BOOL CMSHFlexGrid::GetColIsVisible(long Index)
+{
     BOOL result;
     static BYTE parms[] =
         VTS_I4;
@@ -1406,7 +1607,8 @@ BOOL CMSHFlexGrid::GetColIsVisible(long Index) {
     return result;
 }
 
-long CMSHFlexGrid::GetRowPos(long Index) {
+long CMSHFlexGrid::GetRowPos(long Index)
+{
     long result;
     static BYTE parms[] =
         VTS_I4;
@@ -1415,7 +1617,8 @@ long CMSHFlexGrid::GetRowPos(long Index) {
     return result;
 }
 
-long CMSHFlexGrid::GetColPos(long Index) {
+long CMSHFlexGrid::GetColPos(long Index)
+{
     long result;
     static BYTE parms[] =
         VTS_I4;
@@ -1424,46 +1627,53 @@ long CMSHFlexGrid::GetColPos(long Index) {
     return result;
 }
 
-short CMSHFlexGrid::GetGridLineWidth() {
+short CMSHFlexGrid::GetGridLineWidth()
+{
     short result;
     InvokeHelper(0x59, DISPATCH_PROPERTYGET, VT_I2, (void *)&result, NULL);
     return result;
 }
 
-void CMSHFlexGrid::SetGridLineWidth(short nNewValue) {
+void CMSHFlexGrid::SetGridLineWidth(short nNewValue)
+{
     static BYTE parms[] =
         VTS_I2;
     InvokeHelper(0x59, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, parms,
                  nNewValue);
 }
 
-short CMSHFlexGrid::GetGridLineWidthFixed() {
+short CMSHFlexGrid::GetGridLineWidthFixed()
+{
     short result;
     InvokeHelper(0x9a, DISPATCH_PROPERTYGET, VT_I2, (void *)&result, NULL);
     return result;
 }
 
-void CMSHFlexGrid::SetGridLineWidthFixed(short nNewValue) {
+void CMSHFlexGrid::SetGridLineWidthFixed(short nNewValue)
+{
     static BYTE parms[] =
         VTS_I2;
     InvokeHelper(0x9a, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, parms,
                  nNewValue);
 }
 
-short CMSHFlexGrid::GetGridLineWidthUnpopulated() {
+short CMSHFlexGrid::GetGridLineWidthUnpopulated()
+{
     short result;
     InvokeHelper(0xa8, DISPATCH_PROPERTYGET, VT_I2, (void *)&result, NULL);
     return result;
 }
 
-void CMSHFlexGrid::SetGridLineWidthUnpopulated(short nNewValue) {
+void CMSHFlexGrid::SetGridLineWidthUnpopulated(short nNewValue)
+{
     static BYTE parms[] =
         VTS_I2;
     InvokeHelper(0xa8, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, parms,
                  nNewValue);
 }
 
-short CMSHFlexGrid::GetGridLineWidthBand(long BandNumber) {
+short CMSHFlexGrid::GetGridLineWidthBand(long BandNumber)
+{
     short result;
     static BYTE parms[] =
         VTS_I4;
@@ -1472,14 +1682,16 @@ short CMSHFlexGrid::GetGridLineWidthBand(long BandNumber) {
     return result;
 }
 
-void CMSHFlexGrid::SetGridLineWidthBand(long BandNumber, short nNewValue) {
+void CMSHFlexGrid::SetGridLineWidthBand(long BandNumber, short nNewValue)
+{
     static BYTE parms[] =
         VTS_I4 VTS_I2;
     InvokeHelper(0x96, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, parms,
                  BandNumber, nNewValue);
 }
 
-short CMSHFlexGrid::GetGridLineWidthHeader(long BandNumber) {
+short CMSHFlexGrid::GetGridLineWidthHeader(long BandNumber)
+{
     short result;
     static BYTE parms[] =
         VTS_I4;
@@ -1488,14 +1700,16 @@ short CMSHFlexGrid::GetGridLineWidthHeader(long BandNumber) {
     return result;
 }
 
-void CMSHFlexGrid::SetGridLineWidthHeader(long BandNumber, short nNewValue) {
+void CMSHFlexGrid::SetGridLineWidthHeader(long BandNumber, short nNewValue)
+{
     static BYTE parms[] =
         VTS_I4 VTS_I2;
     InvokeHelper(0x9e, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, parms,
                  BandNumber, nNewValue);
 }
 
-short CMSHFlexGrid::GetGridLineWidthIndent(long BandNumber) {
+short CMSHFlexGrid::GetGridLineWidthIndent(long BandNumber)
+{
     short result;
     static BYTE parms[] =
         VTS_I4;
@@ -1504,53 +1718,61 @@ short CMSHFlexGrid::GetGridLineWidthIndent(long BandNumber) {
     return result;
 }
 
-void CMSHFlexGrid::SetGridLineWidthIndent(long BandNumber, short nNewValue) {
+void CMSHFlexGrid::SetGridLineWidthIndent(long BandNumber, short nNewValue)
+{
     static BYTE parms[] =
         VTS_I4 VTS_I2;
     InvokeHelper(0xa4, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, parms,
                  BandNumber, nNewValue);
 }
 
-BOOL CMSHFlexGrid::GetRightToLeft() {
+BOOL CMSHFlexGrid::GetRightToLeft()
+{
     BOOL result;
     InvokeHelper(0xfffffd9d, DISPATCH_PROPERTYGET, VT_BOOL, (void *)&result, NULL);
     return result;
 }
 
-void CMSHFlexGrid::SetRightToLeft(BOOL bNewValue) {
+void CMSHFlexGrid::SetRightToLeft(BOOL bNewValue)
+{
     static BYTE parms[] =
         VTS_BOOL;
     InvokeHelper(0xfffffd9d, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, parms,
                  bNewValue);
 }
 
-CRecordset1 CMSHFlexGrid::GetRecordset() {
+CRecordset1 CMSHFlexGrid::GetRecordset()
+{
     LPDISPATCH pDispatch;
     InvokeHelper(0x69, DISPATCH_PROPERTYGET, VT_DISPATCH, (void *)&pDispatch, NULL);
     return CRecordset1(pDispatch);
 }
 
-void CMSHFlexGrid::SetRefRecordset(LPDISPATCH newValue) {
+void CMSHFlexGrid::SetRefRecordset(LPDISPATCH newValue)
+{
     static BYTE parms[] =
         VTS_DISPATCH;
     InvokeHelper(0x69, DISPATCH_PROPERTYPUTREF, VT_EMPTY, NULL, parms,
                  newValue);
 }
 
-VARIANT CMSHFlexGrid::GetRowset() {
+VARIANT CMSHFlexGrid::GetRowset()
+{
     VARIANT result;
     InvokeHelper(0x6d, DISPATCH_PROPERTYGET, VT_VARIANT, (void *)&result, NULL);
     return result;
 }
 
-void CMSHFlexGrid::SetRefRowset(const VARIANT & newValue) {
+void CMSHFlexGrid::SetRefRowset(const VARIANT & newValue)
+{
     static BYTE parms[] =
         VTS_VARIANT;
     InvokeHelper(0x6d, DISPATCH_PROPERTYPUTREF, VT_EMPTY, NULL, parms,
                  &newValue);
 }
 
-long CMSHFlexGrid::GetColHeader(long BandNumber) {
+long CMSHFlexGrid::GetColHeader(long BandNumber)
+{
     long result;
     static BYTE parms[] =
         VTS_I4;
@@ -1559,14 +1781,16 @@ long CMSHFlexGrid::GetColHeader(long BandNumber) {
     return result;
 }
 
-void CMSHFlexGrid::SetColHeader(long BandNumber, long nNewValue) {
+void CMSHFlexGrid::SetColHeader(long BandNumber, long nNewValue)
+{
     static BYTE parms[] =
         VTS_I4 VTS_I4;
     InvokeHelper(0x71, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, parms,
                  BandNumber, nNewValue);
 }
 
-CString CMSHFlexGrid::GetColHeaderCaption(long BandNumber, long BandColIndex) {
+CString CMSHFlexGrid::GetColHeaderCaption(long BandNumber, long BandColIndex)
+{
     CString result;
     static BYTE parms[] =
         VTS_I4 VTS_I4;
@@ -1575,20 +1799,23 @@ CString CMSHFlexGrid::GetColHeaderCaption(long BandNumber, long BandColIndex) {
     return result;
 }
 
-void CMSHFlexGrid::SetColHeaderCaption(long BandNumber, long BandColIndex, LPCTSTR lpszNewValue) {
+void CMSHFlexGrid::SetColHeaderCaption(long BandNumber, long BandColIndex, LPCTSTR lpszNewValue)
+{
     static BYTE parms[] =
         VTS_I4 VTS_I4 VTS_BSTR;
     InvokeHelper(0x72, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, parms,
                  BandNumber, BandColIndex, lpszNewValue);
 }
 
-long CMSHFlexGrid::BandColIndex() {
+long CMSHFlexGrid::BandColIndex()
+{
     long result;
     InvokeHelper(0x73, DISPATCH_METHOD, VT_I4, (void *)&result, NULL);
     return result;
 }
 
-long CMSHFlexGrid::GetBandData(long BandData) {
+long CMSHFlexGrid::GetBandData(long BandData)
+{
     long result;
     static BYTE parms[] =
         VTS_I4;
@@ -1597,27 +1824,31 @@ long CMSHFlexGrid::GetBandData(long BandData) {
     return result;
 }
 
-void CMSHFlexGrid::SetBandData(long BandData, long nNewValue) {
+void CMSHFlexGrid::SetBandData(long BandData, long nNewValue)
+{
     static BYTE parms[] =
         VTS_I4 VTS_I4;
     InvokeHelper(0x76, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, parms,
                  BandData, nNewValue);
 }
 
-long CMSHFlexGrid::GetBandDisplay() {
+long CMSHFlexGrid::GetBandDisplay()
+{
     long result;
     InvokeHelper(0x77, DISPATCH_PROPERTYGET, VT_I4, (void *)&result, NULL);
     return result;
 }
 
-void CMSHFlexGrid::SetBandDisplay(long nNewValue) {
+void CMSHFlexGrid::SetBandDisplay(long nNewValue)
+{
     static BYTE parms[] =
         VTS_I4;
     InvokeHelper(0x77, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, parms,
                  nNewValue);
 }
 
-BOOL CMSHFlexGrid::GetBandExpandable(long BandNumber) {
+BOOL CMSHFlexGrid::GetBandExpandable(long BandNumber)
+{
     BOOL result;
     static BYTE parms[] =
         VTS_I4;
@@ -1626,14 +1857,16 @@ BOOL CMSHFlexGrid::GetBandExpandable(long BandNumber) {
     return result;
 }
 
-void CMSHFlexGrid::SetBandExpandable(long BandNumber, BOOL bNewValue) {
+void CMSHFlexGrid::SetBandExpandable(long BandNumber, BOOL bNewValue)
+{
     static BYTE parms[] =
         VTS_I4 VTS_BOOL;
     InvokeHelper(0x78, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, parms,
                  BandNumber, bNewValue);
 }
 
-long CMSHFlexGrid::GetGridLinesBand(long BandNumber) {
+long CMSHFlexGrid::GetGridLinesBand(long BandNumber)
+{
     long result;
     static BYTE parms[] =
         VTS_I4;
@@ -1642,14 +1875,16 @@ long CMSHFlexGrid::GetGridLinesBand(long BandNumber) {
     return result;
 }
 
-void CMSHFlexGrid::SetGridLinesBand(long BandNumber, long nNewValue) {
+void CMSHFlexGrid::SetGridLinesBand(long BandNumber, long nNewValue)
+{
     static BYTE parms[] =
         VTS_I4 VTS_I4;
     InvokeHelper(0x7c, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, parms,
                  BandNumber, nNewValue);
 }
 
-long CMSHFlexGrid::GetGridLinesHeader(long BandNumber) {
+long CMSHFlexGrid::GetGridLinesHeader(long BandNumber)
+{
     long result;
     static BYTE parms[] =
         VTS_I4;
@@ -1658,14 +1893,16 @@ long CMSHFlexGrid::GetGridLinesHeader(long BandNumber) {
     return result;
 }
 
-void CMSHFlexGrid::SetGridLinesHeader(long BandNumber, long nNewValue) {
+void CMSHFlexGrid::SetGridLinesHeader(long BandNumber, long nNewValue)
+{
     static BYTE parms[] =
         VTS_I4 VTS_I4;
     InvokeHelper(0x9c, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, parms,
                  BandNumber, nNewValue);
 }
 
-long CMSHFlexGrid::GetGridLinesIndent(long BandNumber) {
+long CMSHFlexGrid::GetGridLinesIndent(long BandNumber)
+{
     long result;
     static BYTE parms[] =
         VTS_I4;
@@ -1674,27 +1911,31 @@ long CMSHFlexGrid::GetGridLinesIndent(long BandNumber) {
     return result;
 }
 
-void CMSHFlexGrid::SetGridLinesIndent(long BandNumber, long nNewValue) {
+void CMSHFlexGrid::SetGridLinesIndent(long BandNumber, long nNewValue)
+{
     static BYTE parms[] =
         VTS_I4 VTS_I4;
     InvokeHelper(0xa2, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, parms,
                  BandNumber, nNewValue);
 }
 
-long CMSHFlexGrid::GetGridLinesUnpopulated() {
+long CMSHFlexGrid::GetGridLinesUnpopulated()
+{
     long result;
     InvokeHelper(0xa6, DISPATCH_PROPERTYGET, VT_I4, (void *)&result, NULL);
     return result;
 }
 
-void CMSHFlexGrid::SetGridLinesUnpopulated(long nNewValue) {
+void CMSHFlexGrid::SetGridLinesUnpopulated(long nNewValue)
+{
     static BYTE parms[] =
         VTS_I4;
     InvokeHelper(0xa6, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, parms,
                  nNewValue);
 }
 
-long CMSHFlexGrid::GetBandIndent(long BandNumber) {
+long CMSHFlexGrid::GetBandIndent(long BandNumber)
+{
     long result;
     static BYTE parms[] =
         VTS_I4;
@@ -1703,45 +1944,52 @@ long CMSHFlexGrid::GetBandIndent(long BandNumber) {
     return result;
 }
 
-void CMSHFlexGrid::SetBandIndent(long BandNumber, long nNewValue) {
+void CMSHFlexGrid::SetBandIndent(long BandNumber, long nNewValue)
+{
     static BYTE parms[] =
         VTS_I4 VTS_I4;
     InvokeHelper(0x7d, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, parms,
                  BandNumber, nNewValue);
 }
 
-long CMSHFlexGrid::GetBandLevel() {
+long CMSHFlexGrid::GetBandLevel()
+{
     long result;
     InvokeHelper(0x7e, DISPATCH_PROPERTYGET, VT_I4, (void *)&result, NULL);
     return result;
 }
 
-long CMSHFlexGrid::GetBands() {
+long CMSHFlexGrid::GetBands()
+{
     long result;
     InvokeHelper(0x7f, DISPATCH_PROPERTYGET, VT_I4, (void *)&result, NULL);
     return result;
 }
 
-long CMSHFlexGrid::GetCellType() {
+long CMSHFlexGrid::GetCellType()
+{
     long result;
     InvokeHelper(0x80, DISPATCH_PROPERTYGET, VT_I4, (void *)&result, NULL);
     return result;
 }
 
-long CMSHFlexGrid::GetRowSizingMode() {
+long CMSHFlexGrid::GetRowSizingMode()
+{
     long result;
     InvokeHelper(0x82, DISPATCH_PROPERTYGET, VT_I4, (void *)&result, NULL);
     return result;
 }
 
-void CMSHFlexGrid::SetRowSizingMode(long nNewValue) {
+void CMSHFlexGrid::SetRowSizingMode(long nNewValue)
+{
     static BYTE parms[] =
         VTS_I4;
     InvokeHelper(0x82, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, parms,
                  nNewValue);
 }
 
-CString CMSHFlexGrid::GetDataField(long BandNumber, long BandColIndex) {
+CString CMSHFlexGrid::GetDataField(long BandNumber, long BandColIndex)
+{
     CString result;
     static BYTE parms[] =
         VTS_I4 VTS_I4;
@@ -1750,40 +1998,46 @@ CString CMSHFlexGrid::GetDataField(long BandNumber, long BandColIndex) {
     return result;
 }
 
-BOOL CMSHFlexGrid::GetRowExpandable() {
+BOOL CMSHFlexGrid::GetRowExpandable()
+{
     BOOL result;
     InvokeHelper(0x88, DISPATCH_PROPERTYGET, VT_BOOL, (void *)&result, NULL);
     return result;
 }
 
-BOOL CMSHFlexGrid::GetRowExpanded() {
+BOOL CMSHFlexGrid::GetRowExpanded()
+{
     BOOL result;
     InvokeHelper(0x89, DISPATCH_PROPERTYGET, VT_BOOL, (void *)&result, NULL);
     return result;
 }
 
-void CMSHFlexGrid::SetRowExpanded(BOOL bNewValue) {
+void CMSHFlexGrid::SetRowExpanded(BOOL bNewValue)
+{
     static BYTE parms[] =
         VTS_BOOL;
     InvokeHelper(0x89, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, parms,
                  bNewValue);
 }
 
-void CMSHFlexGrid::CollapseAll(long BandNumber) {
+void CMSHFlexGrid::CollapseAll(long BandNumber)
+{
     static BYTE parms[] =
         VTS_I4;
     InvokeHelper(0x8a, DISPATCH_METHOD, VT_EMPTY, NULL, parms,
                  BandNumber);
 }
 
-void CMSHFlexGrid::ExpandAll(long BandNumber) {
+void CMSHFlexGrid::ExpandAll(long BandNumber)
+{
     static BYTE parms[] =
         VTS_I4;
     InvokeHelper(0x8b, DISPATCH_METHOD, VT_EMPTY, NULL, parms,
                  BandNumber);
 }
 
-short CMSHFlexGrid::GetColWordWrapOption(long Index) {
+short CMSHFlexGrid::GetColWordWrapOption(long Index)
+{
     short result;
     static BYTE parms[] =
         VTS_I4;
@@ -1792,14 +2046,16 @@ short CMSHFlexGrid::GetColWordWrapOption(long Index) {
     return result;
 }
 
-void CMSHFlexGrid::SetColWordWrapOption(long Index, short nNewValue) {
+void CMSHFlexGrid::SetColWordWrapOption(long Index, short nNewValue)
+{
     static BYTE parms[] =
         VTS_I4 VTS_I2;
     InvokeHelper(0x4b, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, parms,
                  Index, nNewValue);
 }
 
-short CMSHFlexGrid::GetColWordWrapOptionBand(long BandNumber, long BandColIndex) {
+short CMSHFlexGrid::GetColWordWrapOptionBand(long BandNumber, long BandColIndex)
+{
     short result;
     static BYTE parms[] =
         VTS_I4 VTS_I4;
@@ -1808,14 +2064,16 @@ short CMSHFlexGrid::GetColWordWrapOptionBand(long BandNumber, long BandColIndex)
     return result;
 }
 
-void CMSHFlexGrid::SetColWordWrapOptionBand(long BandNumber, long BandColIndex, short nNewValue) {
+void CMSHFlexGrid::SetColWordWrapOptionBand(long BandNumber, long BandColIndex, short nNewValue)
+{
     static BYTE parms[] =
         VTS_I4 VTS_I4 VTS_I2;
     InvokeHelper(0xa9, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, parms,
                  BandNumber, BandColIndex, nNewValue);
 }
 
-short CMSHFlexGrid::GetColWordWrapOptionHeader(long BandNumber, long BandColIndex) {
+short CMSHFlexGrid::GetColWordWrapOptionHeader(long BandNumber, long BandColIndex)
+{
     short result;
     static BYTE parms[] =
         VTS_I4 VTS_I4;
@@ -1824,14 +2082,16 @@ short CMSHFlexGrid::GetColWordWrapOptionHeader(long BandNumber, long BandColInde
     return result;
 }
 
-void CMSHFlexGrid::SetColWordWrapOptionHeader(long BandNumber, long BandColIndex, short nNewValue) {
+void CMSHFlexGrid::SetColWordWrapOptionHeader(long BandNumber, long BandColIndex, short nNewValue)
+{
     static BYTE parms[] =
         VTS_I4 VTS_I4 VTS_I2;
     InvokeHelper(0xaa, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, parms,
                  BandNumber, BandColIndex, nNewValue);
 }
 
-short CMSHFlexGrid::GetColWordWrapOptionFixed(long Index) {
+short CMSHFlexGrid::GetColWordWrapOptionFixed(long Index)
+{
     short result;
     static BYTE parms[] =
         VTS_I4;
@@ -1840,26 +2100,30 @@ short CMSHFlexGrid::GetColWordWrapOptionFixed(long Index) {
     return result;
 }
 
-void CMSHFlexGrid::SetColWordWrapOptionFixed(long Index, short nNewValue) {
+void CMSHFlexGrid::SetColWordWrapOptionFixed(long Index, short nNewValue)
+{
     static BYTE parms[] =
         VTS_I4 VTS_I2;
     InvokeHelper(0xab, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, parms,
                  Index, nNewValue);
 }
 
-long CMSHFlexGrid::GetOLEDropMode() {
+long CMSHFlexGrid::GetOLEDropMode()
+{
     long result;
     InvokeHelper(0x60f, DISPATCH_PROPERTYGET, VT_I4, (void *)&result, NULL);
     return result;
 }
 
-void CMSHFlexGrid::SetOLEDropMode(long nNewValue) {
+void CMSHFlexGrid::SetOLEDropMode(long nNewValue)
+{
     static BYTE parms[] =
         VTS_I4;
     InvokeHelper(0x60f, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, parms,
                  nNewValue);
 }
 
-void CMSHFlexGrid::OLEDrag() {
+void CMSHFlexGrid::OLEDrag()
+{
     InvokeHelper(0x610, DISPATCH_METHOD, VT_EMPTY, NULL, NULL);
 }

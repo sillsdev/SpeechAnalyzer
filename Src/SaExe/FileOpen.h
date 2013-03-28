@@ -6,7 +6,8 @@
 /////////////////////////////////////////////////////////////////////////////
 // CDlgFileOpen dialog
 
-class CDlgFileOpen : public CFileDialog {
+class CDlgFileOpen : public CFileDialog
+{
     DECLARE_DYNAMIC(CDlgFileOpen)
 
 public:

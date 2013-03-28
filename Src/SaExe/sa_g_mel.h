@@ -8,7 +8,8 @@
 //###########################################################################
 // CPlotMelogram plot window
 
-class CPlotMelogram : public CPlotWnd {
+class CPlotMelogram : public CPlotWnd
+{
     DECLARE_DYNCREATE(CPlotMelogram)
 
 // Construction/destruction/creation
@@ -25,10 +26,12 @@ private:
 public:
     virtual Grid GetGrid() const;
     virtual void OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView);
-    void SetTWC(BOOL bValue) {
+    void SetTWC(BOOL bValue)
+    {
         m_bTWC = bValue;
     }
-    BOOL GetTWC() const {
+    BOOL GetTWC() const
+    {
         return m_bTWC;
     }
     virtual int GetPenThickness() const;

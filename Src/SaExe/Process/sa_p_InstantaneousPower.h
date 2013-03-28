@@ -10,7 +10,8 @@
 //###########################################################################
 // CProcessInstantaneousPower data processing
 
-class CProcessInstantaneousPower : public CProcess {
+class CProcessInstantaneousPower : public CProcess
+{
 // Construction/destruction/creation
 public:
     CProcessInstantaneousPower();

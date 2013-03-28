@@ -8,12 +8,15 @@
 
 #include "flexeditgrid.h"
 
-class CIpaVTChar {
+class CIpaVTChar
+{
 public:
     typedef std::vector<double> VocalTract;
 
-    struct CStimulus {
-        CStimulus() {
+    struct CStimulus
+    {
+        CStimulus()
+        {
             Pitch=AV=AF=AH=VHX=0;
         }
         double Pitch;
@@ -23,10 +26,12 @@ public:
         double VHX;
     };
 
-    CIpaVTChar() {
+    CIpaVTChar()
+    {
         m_duration=m_dVTGain=m_dFrameEnergy=0;
     }
-    CIpaVTChar(const CString & ipa, double duration, double FEnergy, double VTGain, const CStimulus & stimulus, VocalTract & areas, VocalTract & reflection, VocalTract & pred) {
+    CIpaVTChar(const CString & ipa, double duration, double FEnergy, double VTGain, const CStimulus & stimulus, VocalTract & areas, VocalTract & reflection, VocalTract & pred)
+    {
         m_ipa = ipa;
         m_duration = duration;
         m_dFrameEnergy = FEnergy;
@@ -50,19 +55,22 @@ public:
     VocalTract m_pred;
 };
 
-class CIpaVTCharVector : public std::vector<CIpaVTChar> {
+class CIpaVTCharVector : public std::vector<CIpaVTChar>
+{
 public:
     void Load(CString szPath);
     void Save(CString szPath);
 };
 
-class  CIpaVTCharMap : public std::map<CString, CIpaVTChar> {
+class  CIpaVTCharMap : public std::map<CString, CIpaVTChar>
+{
 public:
     CIpaVTCharMap(CIpaVTCharVector & vector);
 };
 
 
-class CDlgVocalTract : public CFrameWnd {
+class CDlgVocalTract : public CFrameWnd
+{
 private:
     CDlgVocalTract(CWnd * pParent = NULL);          // protected constructor used by dynamic creation
     virtual ~CDlgVocalTract();           // protected constructor used by dynamic creation
@@ -83,7 +91,8 @@ protected:
 private:
     static CDlgVocalTract * m_pDlgSynthesis;
 
-    enum {
+    enum
+    {
         rowHeading = 0,
         rowFirst = 1,
         rowIpa = 1,
@@ -96,7 +105,8 @@ private:
         rowVHX = 9,
         rowVTGain =11,
     };
-    enum {
+    enum
+    {
         rAreaFirst,
         rAreaLast,
         rReflectionFirst,
@@ -105,9 +115,11 @@ private:
         rPredLast,
         rLast,
     };
-    int getRow(int rRow) {
+    int getRow(int rRow)
+    {
         int nSections = m_nCurrentOrder;
-        switch (rRow) {
+        switch (rRow)
+        {
         case rAreaFirst:
             return 14;
         case rAreaLast:
@@ -132,10 +144,12 @@ protected:
     void NumberGrid(int nGrid);
     void PopulateParameterGrid(CFlexEditGrid & cGrid, const CIpaVTCharVector & cChars);
     void PopulateParameterGrid(CFlexEditGrid & cGrid, const CIpaVTChar & cChar, int nColumn);
-    void PopulateParameterGrid(int nGrid, const CIpaVTCharVector & cChars) {
+    void PopulateParameterGrid(int nGrid, const CIpaVTCharVector & cChars)
+    {
         PopulateParameterGrid(m_cGrid[nGrid], cChars);
     }
-    void PopulateParameterGrid(int nGrid, const CIpaVTChar & cChar, int nColumn) {
+    void PopulateParameterGrid(int nGrid, const CIpaVTChar & cChar, int nColumn)
+    {
         PopulateParameterGrid(m_cGrid[nGrid], cChar, nColumn);
     }
     void ParseParameterGrid(CFlexEditGrid & cGrid, int column, CIpaVTChar & columnChar);
@@ -262,7 +276,8 @@ protected:
 /////////////////////////////////////////////////////////////////////////////
 // CDlgVTOrder dialog
 
-class CDlgVTOrder : public CDialog {
+class CDlgVTOrder : public CDialog
+{
 public:
     CDlgVTOrder(CWnd * pParent = NULL);  // standard constructor
 

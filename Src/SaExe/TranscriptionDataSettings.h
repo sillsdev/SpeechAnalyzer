@@ -5,7 +5,8 @@
 #include "TranscriptionHelper.h"
 #include "TranscriptionData.h"
 
-class CTranscriptionDataSettings {
+class CTranscriptionDataSettings
+{
 public:
     bool m_bPhoneticModified;
     bool m_bPhonemicModified;

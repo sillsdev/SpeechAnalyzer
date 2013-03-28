@@ -10,7 +10,8 @@
 //###########################################################################
 // CProcessGlottis data processing
 
-class CProcessGlottis : public CProcess {
+class CProcessGlottis : public CProcess
+{
 // Construction/destruction/creation
 public:
     CProcessGlottis();

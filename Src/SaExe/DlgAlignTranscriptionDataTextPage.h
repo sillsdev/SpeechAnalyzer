@@ -7,7 +7,8 @@
 
 class CSaDoc;
 
-class CDlgAlignTranscriptionDataTextPage : public CPropertyPage {
+class CDlgAlignTranscriptionDataTextPage : public CPropertyPage
+{
 
 public:
     CDlgAlignTranscriptionDataTextPage(CSaDoc * pSaDoc, Annotations type, int IDD);

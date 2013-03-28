@@ -14,7 +14,8 @@
 //###########################################################################
 // CProcessPOA data processing
 
-class CProcessPOA : public CProcess {
+class CProcessPOA : public CProcess
+{
 
 // Construction/destruction/creation
 public:
@@ -29,11 +30,13 @@ protected:
     virtual long Exit(int nError, HANDLE hDataFrame); // exit processing on error
 public:
     virtual long Process(void * pCaller, ISaDoc * pDoc, DWORD dwStart, DWORD dwStop, int nProgress = 0, int nLevel = 1);
-    virtual DWORD GetDataSize() {
+    virtual DWORD GetDataSize()
+    {
         // return processed data size in LPC data structures
         return GetDataSize(sizeof(LPC_MODEL));
     }
-    virtual DWORD GetDataSize(size_t nElements) {
+    virtual DWORD GetDataSize(size_t nElements)
+    {
         // return processed data size in LPC data structures
         return CProcess::GetDataSize(nElements);
     }

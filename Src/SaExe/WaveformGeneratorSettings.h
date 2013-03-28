@@ -4,7 +4,8 @@
 #include "resource.h"
 #include "Settings/OBSTREAM.H"
 
-class CWaveformGeneratorSettings {
+class CWaveformGeneratorSettings
+{
 
 public:
     CWaveformGeneratorSettings();

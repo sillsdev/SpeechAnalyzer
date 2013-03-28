@@ -19,26 +19,27 @@
 class CSpectroParm;
 class CProcessSpectroFormants;
 
-class CProcessSpectrogram : public CProcessAreaData {
+class CProcessSpectrogram : public CProcessAreaData
+{
 public:
     CProcessSpectrogram(const CSpectroParm & cParm, ISaDoc * pDoc, BOOL bRealTime = TRUE);
     virtual ~CProcessSpectrogram();
 
-	long Process(void * pCaller, ISaDoc * pDoc, CSaView * pView, int nWidth, int nHeight, int nProgress = 0, int nLevel = 1);
-	void * GetSpectroSlice(DWORD dwIndex);				// return spectrogram slice data
-	const CSpectroParm & GetSpectroParm() const;
-	void SetSpectroParm(const CSpectroParm & cValue);	// set spectrogram parameters
-	int GetWindowWidth() const;
-	int GetWindowHeight() const;
-	CProcessSpectroFormants * GetFormantProcess();
+    long Process(void * pCaller, ISaDoc * pDoc, CSaView * pView, int nWidth, int nHeight, int nProgress = 0, int nLevel = 1);
+    void * GetSpectroSlice(DWORD dwIndex);              // return spectrogram slice data
+    const CSpectroParm & GetSpectroParm() const;
+    void SetSpectroParm(const CSpectroParm & cValue);   // set spectrogram parameters
+    int GetWindowWidth() const;
+    int GetWindowHeight() const;
+    CProcessSpectroFormants * GetFormantProcess();
 
 protected:
-	virtual long Exit(int nError);						// exit processing on error
+    virtual long Exit(int nError);                      // exit processing on error
 
 private:
-	int SpectraBandwidth();
-	int NyquistSpectraInterval(double dSourceSamplingRate);
-	virtual ISaDoc * GetDocument() const;
+    int SpectraBandwidth();
+    int NyquistSpectraInterval(double dSourceSamplingRate);
+    virtual ISaDoc * GetDocument() const;
 
     int m_nWindowWidth;
     int m_nWindowHeight;

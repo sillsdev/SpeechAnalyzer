@@ -38,7 +38,8 @@
 /* ---------------------------------------------------------------------- */
 /* initialize synthesizer */
 
-void CKSynth::init_synthesizer() {
+void CKSynth::init_synthesizer()
+{
     synth.parallel_only_flag = spkrdef.CP;
     synth.num_casc_formants = spkrdef.NF;
     synth.num_samples = spkrdef.UI;

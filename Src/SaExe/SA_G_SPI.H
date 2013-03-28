@@ -10,7 +10,8 @@
 //###########################################################################
 // CPlotSmoothedPitch plot window
 
-class CPlotSmoothedPitch : public CPlotWnd {
+class CPlotSmoothedPitch : public CPlotWnd
+{
     DECLARE_DYNCREATE(CPlotSmoothedPitch)
 
 // Construction/destruction/creation

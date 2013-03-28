@@ -53,7 +53,8 @@ static WCHAR zbuf[ 175 ] ;                        // Working Buffer
 
 ////////////////////////////// zGraph() ////////////////////////////////
 
-zGraph::zGraph(zGraphStruct * zGS1 /* = NULL */) {
+zGraph::zGraph(zGraphStruct * zGS1 /* = NULL */)
+{
     //
     // Constructor for ZGRAPH Class.  Initializes as Necessary
     //   for Making Graph
@@ -65,7 +66,8 @@ zGraph::zGraph(zGraphStruct * zGS1 /* = NULL */) {
 
 ////////////////////////////// ~zGraph() ////////////////////////////////
 
-zGraph::~zGraph() {
+zGraph::~zGraph()
+{
     //
     // Destructor for ZGRAPH Class
     //
@@ -74,7 +76,8 @@ zGraph::~zGraph() {
 
 ///////////////////////////// zInitGraph() //////////////////////////////
 
-void zGraph::zInitGraphData(zGraphStruct * zGS1 /* = NULL */) {
+void zGraph::zInitGraphData(zGraphStruct * zGS1 /* = NULL */)
+{
     //
     // Initializes and Sets a Bunch of Defaults for the Graph
     //
@@ -85,12 +88,14 @@ void zGraph::zInitGraphData(zGraphStruct * zGS1 /* = NULL */) {
     // If User Didn't Pass a zGraphStruct, Create a Default One,
     //   and Zero It Out...
     //
-    if (! zGS1) {
+    if (! zGS1)
+    {
         bUserPassedStructure = FALSE;
 
         zG = new zGraphStruct();
         memset(zG, zDEFAULT, sizeof(zGraphStruct));
-    } else
+    }
+    else
         // Otherwise We Just Grab the Structure the User Passed Us...
     {
         zG = zGS1;
@@ -162,7 +167,8 @@ void zGraph::zInitGraphData(zGraphStruct * zGS1 /* = NULL */) {
 
 
     // Destroy Dynamically-Created [zGraphStruct], if Necessary...
-    if (! bUserPassedStructure) {
+    if (! bUserPassedStructure)
+    {
         delete zG;
     }
 
@@ -172,7 +178,8 @@ void zGraph::zInitGraphData(zGraphStruct * zGS1 /* = NULL */) {
 
 ////////////////////////// zSetUpGraphLayout() ////////////////////////////
 
-void zGraph::zSetUpGraphLayout() {
+void zGraph::zSetUpGraphLayout()
+{
     //
     // Sets Up Rectangular Areas Within the Window Where the Graph
     //   Legend and the Graph Itself Will Be Displayed
@@ -191,11 +198,13 @@ void zGraph::zSetUpGraphLayout() {
 
 ////////////////////////// zTerminateGraph() //////////////////////////////
 
-void zGraph::zTerminateGraph() {
+void zGraph::zTerminateGraph()
+{
     //
     // This Function Gets Called When We're Done Drawing a Graph
     //
-    if (GraphOpen) {
+    if (GraphOpen)
+    {
         zDeleteArrays();                        // Kill Dynamically-Created Arrays
         zRestoreGraphics();                     // Restore Old Graphics Objects
         zDeletePens();                          // Delete Pen Objects
@@ -208,19 +217,23 @@ void zGraph::zTerminateGraph() {
 
 //////////////////////////// zDeleteArrays() //////////////////////////////
 
-void zGraph::zDeleteArrays() {
+void zGraph::zDeleteArrays()
+{
     //
     // Deletes any Dynamically-Created Working Arrays
     //
-    if (xnew != NULL) {
+    if (xnew != NULL)
+    {
         delete [] xnew;
     }
 
-    if (ynew != NULL) {
+    if (ynew != NULL)
+    {
         delete [] ynew;
     }
 
-    if (YWorkData != NULL) {
+    if (YWorkData != NULL)
+    {
         delete [] YWorkData ;
     }
 }
@@ -228,7 +241,8 @@ void zGraph::zDeleteArrays() {
 ////////////////////////// zSetGraphTitles() //////////////////////////////
 
 void zGraph::zSetGraphTitles(PWCHAR MainTitle1, PWCHAR HorizTitle1,
-                             PWCHAR VertTitle1) {
+                             PWCHAR VertTitle1)
+{
     //
     // Sets the Graph Titles (Main, Horizontal, Vertical)
     //
@@ -241,12 +255,15 @@ void zGraph::zSetGraphTitles(PWCHAR MainTitle1, PWCHAR HorizTitle1,
 
 ////////////////////////// zSetLegendTitles() /////////////////////////////
 
-void zGraph::zSetLegendTitles(WCHAR LegendTitle1[]) {
+void zGraph::zSetLegendTitles(WCHAR LegendTitle1[])
+{
     //
     // Sets the Graph Legend Titles
     //
-    if (LegendPosition != zNO_LEGEND) {
-        for (INT i = 0; i < zMAX_DATA_SETS; i++) {
+    if (LegendPosition != zNO_LEGEND)
+    {
+        for (INT i = 0; i < zMAX_DATA_SETS; i++)
+        {
             LegendTitle[ i ] = LegendTitle1[ i ] ;
         }
     }
@@ -254,14 +271,17 @@ void zGraph::zSetLegendTitles(WCHAR LegendTitle1[]) {
 
 ////////////////////////// zSetItemTitles() ////////////////////////////
 
-void zGraph::zSetItemTitles(WCHAR ItemTitle1[]) {
+void zGraph::zSetItemTitles(WCHAR ItemTitle1[])
+{
     //
     // Sets the Graph Item Titles
     //
-    if (item_title_format != zNO_ITEM_TITLES) {
+    if (item_title_format != zNO_ITEM_TITLES)
+    {
         // We Will Show the Item Titles
 
-        for (INT i = 0; i < zMAX_ITEM_TITLES; i++) {
+        for (INT i = 0; i < zMAX_ITEM_TITLES; i++)
+        {
             ItemTitle[ i ] = ItemTitle1[ i ] ;
         }
     }
@@ -270,7 +290,8 @@ void zGraph::zSetItemTitles(WCHAR ItemTitle1[]) {
 ////////////////////////// zSetGraphColors() ////////////////////////////
 
 void zGraph::zSetGraphColors(zRGB axis_color,
-                             zRGB bkg_color, zRGB * graph_color) {
+                             zRGB bkg_color, zRGB * graph_color)
+{
     //
     // Sets the Colors to Be Used for the Graph Axis [axis_color] and
     //   the Brushes/Pens in the Graph ([graph_color] array).  NOTE:
@@ -278,10 +299,14 @@ void zGraph::zSetGraphColors(zRGB axis_color,
     //   We Just Use Our Default Colors.
     //
 
-    if (graph_color == NULL) {
+    if (graph_color == NULL)
+    {
         zSelectDefaultGraphColors();    // Use Default Graph Colors
-    } else {
-        for (INT i = 0; i < zMAX_GRAPH_COLORS; i++) {
+    }
+    else
+    {
+        for (INT i = 0; i < zMAX_GRAPH_COLORS; i++)
+        {
             GraphColor[ i ] = graph_color[ i ];
         }
     }
@@ -292,11 +317,13 @@ void zGraph::zSetGraphColors(zRGB axis_color,
 
 /////////////////////// zSelectDefaultGraphColors() ////////////////////////
 
-void zGraph::zSelectDefaultGraphColors() {
+void zGraph::zSelectDefaultGraphColors()
+{
     //
     // Sets the Default Colors to Be Used by Brushes/Pens in the Graph
     //
-    for (INT i = 0; i < zMAX_GRAPH_COLORS; i++) {
+    for (INT i = 0; i < zMAX_GRAPH_COLORS; i++)
+    {
         GraphColor[ i ] = RGB_color(i + 1) ;    // Start with DARK BLUE
     }
 
@@ -306,7 +333,8 @@ void zGraph::zSelectDefaultGraphColors() {
 ///////////////////////////// zSetData() /////////////////////////////////
 
 void zGraph::zSetData(INT n_1,
-                      double * Xdata_1, double * Ydata_1, double * Zdata_1) {
+                      double * Xdata_1, double * Ydata_1, double * Zdata_1)
+{
     //
     // Sets the Number of Data Points in the Graph, and also
     //    Sets the X, Y, Z Data Pointers to Point to the Graph Data
@@ -321,7 +349,8 @@ void zGraph::zSetData(INT n_1,
 
 ////////////////////////// zSetSymbols() //////////////////////////////////
 
-void zGraph::zSetSymbols(INT * symbols_1) {
+void zGraph::zSetSymbols(INT * symbols_1)
+{
     //
     // Sets the Array of Symbols to Be Used in Drawing the Graph
     //
@@ -330,7 +359,8 @@ void zGraph::zSetSymbols(INT * symbols_1) {
 
 /////////////////////////////// zSizeData() //////////////////////////////
 
-void zGraph::zSizeData() {
+void zGraph::zSizeData()
+{
     //
     // Determines the Max/Min Within the Range of Data Points.
     //   Specifically, the Minimum and Maximum Values of the X-Data Array
@@ -342,21 +372,28 @@ void zGraph::zSizeData() {
     // If We are Automatically Scaling X,Y points (i.e., if User
     //   Specified Auto-Scaling...
     //
-    if (auto_scaling) {
-        if (Xdata != NULL) {
+    if (auto_scaling)
+    {
+        if (Xdata != NULL)
+        {
             // If User Supplied an X- Data Array, We'll  Find the Max. and
             //   Min. X- Values
             xmax = xmin = Xdata[0] ;
-        } else {
+        }
+        else
+        {
             // If User Didn't Supply An X- Data Array, Don't Waste Our Time.
             xmax  = xmin = 0.0;
         }
 
-        if (Zdata != NULL) {
+        if (Zdata != NULL)
+        {
             // If User Supplied an Z- Data Array, We'll  Find the Max. and
             //   Min. Z- Values
             zmax = zmin = Zdata[0] ;
-        } else {
+        }
+        else
+        {
             // If User Didn't Supply An Z- Data Array, Don't Waste Our Time.
             zmax  = zmin = 0.0;
         }
@@ -365,38 +402,49 @@ void zGraph::zSizeData() {
         // Assume that the User ALWAYS Supplies a Y- Data Array
         ymax = ymin = Ydata[0] ;
 
-        for (INT i = 1; i < n; i++) {
+        for (INT i = 1; i < n; i++)
+        {
             // Scan for Max/Min X- Values
-            if (Xdata != NULL) {
-                if (Xdata[i] > xmax) {
+            if (Xdata != NULL)
+            {
+                if (Xdata[i] > xmax)
+                {
                     xmax = Xdata[i];
                 }
 
-                if (Xdata[i] < xmin) {
+                if (Xdata[i] < xmin)
+                {
                     xmin = Xdata[i];
                 }
             }
 
             // Scan for Max/Min Z- Values
-            if (Zdata != NULL) {
-                if (Zdata[i] > zmax) {
+            if (Zdata != NULL)
+            {
+                if (Zdata[i] > zmax)
+                {
                     zmax = Zdata[i];
                 }
-                if (Zdata[i] < zmin) {
+                if (Zdata[i] < zmin)
+                {
                     zmin = Zdata[i];
                 }
             }
 
             // Scan for Max/Min Y-Values
-            if (Ydata[i] > ymax) {
+            if (Ydata[i] > ymax)
+            {
                 ymax = Ydata[i];
             }
 
-            if (Ydata[i] < ymin) {
+            if (Ydata[i] < ymin)
+            {
                 ymin = Ydata[i];
             }
         }
-    } else {
+    }
+    else
+    {
         //
         // Otherwise, If User Specified Manual Scaling, the Minima and Maxima
         //   are User-Defined Values!
@@ -412,7 +460,8 @@ void zGraph::zSizeData() {
 
 ////////////////////////// zSetAxisDivisions() ////////////////////////////
 
-void zGraph::zSetAxisDivisions(INT x_divisions, INT y_divisions) {
+void zGraph::zSetAxisDivisions(INT x_divisions, INT y_divisions)
+{
     //
     // Sets the Number of Axis Divisions along the
     //   X- and Y- Axes.  If Either Argument is Set to [zDEFAULT],
@@ -435,7 +484,8 @@ void zGraph::zSetAxisDivisions(INT x_divisions, INT y_divisions) {
 
 ////////////////////////// zSetDigitFormat() ////////////////////////////
 
-void zGraph::zSetDigitFormat(INT digit_format_1) {
+void zGraph::zSetDigitFormat(INT digit_format_1)
+{
     //
     // Sets the Style for Which the User Wants to Display Numbers
     //   along the Graph Axes.
@@ -445,7 +495,8 @@ void zGraph::zSetDigitFormat(INT digit_format_1) {
 
 ////////////////////////// zSetDigitPrecision() ////////////////////////////
 
-void zGraph::zSetDigitPrecision(INT precision_1) {
+void zGraph::zSetDigitPrecision(INT precision_1)
+{
     //
     // Sets the Precision [Number of Significant Digits] for Numbers
     //   Put Along the X- and Y- Axes.  If Argument is Set to [zDEFAULT],
@@ -456,7 +507,8 @@ void zGraph::zSetDigitPrecision(INT precision_1) {
 
 ////////////////////////// zGetSetsAndSamples() //////////////////////////
 
-void zGraph::zGetSetsAndSamples() {
+void zGraph::zGetSetsAndSamples()
+{
     //
     // Determines the Number of Sets and Samples Appearing In the Data.
     //   NOTE:  Each Data Set Has a Common Symbol Value.
@@ -483,11 +535,14 @@ void zGraph::zGetSetsAndSamples() {
     num_samples = 0;
     num_sets    = 1;
 
-    for (INT i = 0; i < n; i++) {
-        if (i > 0) {
+    for (INT i = 0; i < n; i++)
+    {
+        if (i > 0)
+        {
             // If the Symbol Value Changes We Have a New Data Set
 
-            if (sym[ i ] != sym[i - 1]) {
+            if (sym[ i ] != sym[i - 1])
+            {
                 num_sets++ ;
             }
         }
@@ -495,7 +550,8 @@ void zGraph::zGetSetsAndSamples() {
         // Tally the Number of Samples for the First Set Only.
         //   (All the Other Sets Must Have the Same Number of Samples)
 
-        if (num_sets == 1) {
+        if (num_sets == 1)
+        {
             num_samples++ ;
         }
     }
@@ -503,7 +559,8 @@ void zGraph::zGetSetsAndSamples() {
 
 ////////////////////// zGetLongestLegendString() ///////////////////////////
 
-void zGraph::zGetLongestLegendString(PWCHAR TemplateBuf) {
+void zGraph::zGetLongestLegendString(PWCHAR TemplateBuf)
+{
     //
     // Finds the Longest Legend String and Returns a Template
     //   for it in [TemplateBuf].  The Template is Just Composed
@@ -514,8 +571,10 @@ void zGraph::zGetLongestLegendString(PWCHAR TemplateBuf) {
     // Find the Longest Legend String
     //
     INT j, Len, MaxLen = 0;
-    for (j = 0; j < zMAX_DATA_SETS  &&  j < num_sets; j++) {
-        if ((Len = _tcslen(&(LegendTitle[ j ]))) > MaxLen) {
+    for (j = 0; j < zMAX_DATA_SETS  &&  j < num_sets; j++)
+    {
+        if ((Len = _tcslen(&(LegendTitle[ j ]))) > MaxLen)
+        {
             MaxLen = Len;
         }
     }
@@ -523,7 +582,8 @@ void zGraph::zGetLongestLegendString(PWCHAR TemplateBuf) {
     //
     // Make a String of A's as Long as the Longest String...
     //
-    for (j = 0; j < MaxLen  &&  j < 80; j++) {
+    for (j = 0; j < MaxLen  &&  j < 80; j++)
+    {
         TemplateBuf[ j ] = 'A';
     }
     TemplateBuf[ j ] = '\0';
@@ -532,7 +592,8 @@ void zGraph::zGetLongestLegendString(PWCHAR TemplateBuf) {
 
 ////////////////////////// zConvertValue() ////////////////////////////////
 
-void zGraph::zConvertValue(double d, PWCHAR buf, size_t len) {
+void zGraph::zConvertValue(double d, PWCHAR buf, size_t len)
+{
     //
     // Converts a double value [d] to a string [Buf], Based Upon the Desired
     //   Numeric Format that the User Selects.  This Function is Used to
@@ -542,13 +603,16 @@ void zGraph::zConvertValue(double d, PWCHAR buf, size_t len) {
 #define BUF_SIZE 32
     static WCHAR TempBuf[BUF_SIZE];
 
-    switch (digit_format) {
-    case zSCI_NOTATION: {         // If Using Scientific Notation
+    switch (digit_format)
+    {
+    case zSCI_NOTATION:           // If Using Scientific Notation
+    {
         char buffer[BUF_SIZE];
         memset(buffer,0,BUF_SIZE);
         _gcvt_s(buffer, BUF_SIZE, d, digit_precision);
         // perform wide char conversion
-        for (unsigned int i=0; i<BUF_SIZE; i++) {
+        for (unsigned int i=0; i<BUF_SIZE; i++)
+        {
             TempBuf[i] = buffer[i];
         }
     }
@@ -580,13 +644,16 @@ void zGraph::zConvertValue(double d, PWCHAR buf, size_t len) {
             //
 
             PWCHAR pStart = _tcschr(buf, '.');
-            if (pStart!= NULL) {
+            if (pStart!= NULL)
+            {
                 PWCHAR p = &buf[ _tcslen(buf) - 1 ];
                 INT count = 0;
                 while ((*p == '0' || *p == '.' ||  *p == ' ')
-                        &&  p >= pStart) {
+                        &&  p >= pStart)
+                {
                     *p-- = '\0';
-                    if (++count > 20) {
+                    if (++count > 20)
+                    {
                         break;
                     }
                 }
@@ -599,14 +666,16 @@ void zGraph::zConvertValue(double d, PWCHAR buf, size_t len) {
     // Trim Off Any Spaces at End Of String
     //
     INT pos = _tcslen(buf) - 1;
-    while (pos > 0  &&  buf[ pos ] == ' ') {
+    while (pos > 0  &&  buf[ pos ] == ' ')
+    {
         buf[ pos-- ] = 0;
     }
 }
 
 ////////////////////////// zShowXAxisNumbers() ////////////////////////////
 
-void zGraph::zShowXAxisNumbers() {
+void zGraph::zShowXAxisNumbers()
+{
     //
     // This Function Puts Number Values (or Item Title Strings)
     //   in Place Along the Graph's Horizontal X-Axis
@@ -616,18 +685,22 @@ void zGraph::zShowXAxisNumbers() {
     //   Both 2-D and 3-D Style Graphs Are Supported
     //
 
-    if (_3D_flag) {      // If Drawing a 3-D Style Graph
+    if (_3D_flag)        // If Drawing a 3-D Style Graph
+    {
         zzShowXAxisNumbers(
             X_LEFT,
             X_RIGHT - zRound(z3D_GRID_X_SLANT_OFFSET));
-    } else {             // If Drawing a 2-D Style Graph
+    }
+    else                 // If Drawing a 2-D Style Graph
+    {
         zzShowXAxisNumbers(X_LEFT, X_RIGHT);
     }
 }
 
 ////////////////////////// zzShowXAxisNumbers() ////////////////////////////
 
-void zGraph::zzShowXAxisNumbers(INT x_left, INT x_right) {
+void zGraph::zzShowXAxisNumbers(INT x_left, INT x_right)
+{
     //
     // Puts Number Values [or Item Title Strings] in Place along the
     //   Horizontal X-Axis of a Graph.  The Labels Extend
@@ -641,7 +714,8 @@ void zGraph::zzShowXAxisNumbers(INT x_left, INT x_right) {
     //
 
     // Return Now If Not Displaying any Item Titles...
-    if (item_title_format == zNO_ITEM_TITLES) {
+    if (item_title_format == zNO_ITEM_TITLES)
+    {
         return;
     }
 
@@ -651,24 +725,31 @@ void zGraph::zzShowXAxisNumbers(INT x_left, INT x_right) {
 
     // For Each X-Axis Graph Division...
 
-    for (INT i = 0; i <= x_axis_divisions; i++) {
+    for (INT i = 0; i <= x_axis_divisions; i++)
+    {
         double x_value = xmin + (double)i * x_inc;
 
         //
         // Should We Display a Number or an Item Title?
         //
-        if (item_title_format == zTEXT_STRINGS) {
+        if (item_title_format == zTEXT_STRINGS)
+        {
             //
             // Show a Text String
             //
-            if (i < zMAX_ITEM_TITLES  &&  ItemTitle[i] != NULL) {
+            if (i < zMAX_ITEM_TITLES  &&  ItemTitle[i] != NULL)
+            {
                 swprintf_s(zbuf, _countof(zbuf), _T("%s"), ItemTitle[i]);
-            } else {
+            }
+            else
+            {
                 // Alert User that Not Enough Item Titles Were Given
                 //  Or Perhaps There Are Too Many Axis Divisions!
                 swprintf_s(zbuf, _countof(zbuf), _T("%s"), _T("?"));
             }
-        } else {
+        }
+        else
+        {
             //
             // Show a Number.  Set Last Value to [xmax]
             //
@@ -690,7 +771,8 @@ void zGraph::zzShowXAxisNumbers(INT x_left, INT x_right) {
 
 ////////////////////////// zShowYAxisNumbers() ////////////////////////////
 
-void zGraph::zShowYAxisNumbers() {
+void zGraph::zShowYAxisNumbers()
+{
     //
     // This Function Puts Number Values in Place Along the Y-Axis.
     //   [This Function Can Be Overriden in Derived Classes]
@@ -699,18 +781,22 @@ void zGraph::zShowYAxisNumbers() {
     //   Both 2-D and 3-D Style Graphs Are Supported
     //
 
-    if (_3D_flag) {      // If Drawing a 3-D Style Graph
+    if (_3D_flag)        // If Drawing a 3-D Style Graph
+    {
         zzShowYAxisNumbers(
             Y_BOTTOM,
             Y_TOP + zRound(z3D_GRID_Y_SLANT_OFFSET));
-    } else {             // If Drawing a 2-D Style Graph
+    }
+    else                 // If Drawing a 2-D Style Graph
+    {
         zzShowYAxisNumbers(Y_BOTTOM, Y_TOP);
     }
 }
 
 ////////////////////////// zzShowYAxisNumbers() ////////////////////////////
 
-void zGraph::zzShowYAxisNumbers(INT y_bottom, INT y_top) {
+void zGraph::zzShowYAxisNumbers(INT y_bottom, INT y_top)
+{
     //
     // Puts Number Values in Place along the Y-Axis.  The Labels Extend
     //   from the client window y-coordinates [y_bottom] to [y_top].
@@ -720,7 +806,8 @@ void zGraph::zzShowYAxisNumbers(INT y_bottom, INT y_top) {
     INT ystep = zRound((double)(y_bottom - y_top) / y_axis_divisions) ;
 
     // Make a Correction for Very Small Window Heights!
-    if (ystep <= 0) {
+    if (ystep <= 0)
+    {
         ystep = 1;
     }
 
@@ -730,7 +817,8 @@ void zGraph::zzShowYAxisNumbers(INT y_bottom, INT y_top) {
     // We Need to Consider the Special Case Where Y-data is
     //   Single-Valued.  In this Case Only One Axis Value Label is Needed!
     //
-    if (ymin == ymax) {
+    if (ymin == ymax)
+    {
         zConvertValue(ymin, zbuf, _countof(zbuf));
 
         // Use Right Justification For Y-Axis Numbers--It Looks Cleaner
@@ -746,7 +834,8 @@ void zGraph::zzShowYAxisNumbers(INT y_bottom, INT y_top) {
     // Otherwise, For the Regular Case, Where Y-Data is Multi-Valued...
     //
 
-    for (j = y_bottom; j >= (y_top - ystep/2);  k++, j -= ystep) {
+    for (j = y_bottom; j >= (y_top - ystep/2);  k++, j -= ystep)
+    {
         y_value = ymin + (double)k * y_inc;
 
         // Set Last Value to [ymax]
@@ -763,7 +852,8 @@ void zGraph::zzShowYAxisNumbers(INT y_bottom, INT y_top) {
 
 ////////////////////////// zSetGraphAxesRect() ////////////////////////////
 
-void zGraph::zSetGraphAxesRect() {
+void zGraph::zSetGraphAxesRect()
+{
     //
     // Sets the Rectangle Bounds for the Graph Axes.  Note that the
     //   Graph Axes Rectangle Bounds are Dependent Upon Whether the
@@ -773,7 +863,8 @@ void zGraph::zSetGraphAxesRect() {
     RWindow.Normalize();
 
 
-    switch (LegendPosition) {
+    switch (LegendPosition)
+    {
     case zBOTTOM:
         //
         // If Legend Is to Appear at Bottom of Window
@@ -830,11 +921,13 @@ void zGraph::zSetGraphAxesRect() {
 
 ////////////////////////// zSetLegendRect() ////////////////////////////
 
-void zGraph::zSetLegendRect() {
+void zGraph::zSetLegendRect()
+{
     //
     // Sets the Rectangular Region to Be Used for the Graph Legend
     //
-    switch (LegendPosition) {
+    switch (LegendPosition)
+    {
     case zBOTTOM:
         //
         // If Legend Area Should Appear at Bottom of Graph
@@ -872,7 +965,8 @@ void zGraph::zSetLegendRect() {
 
 ////////////////////////// zDrawGraphAxes() ////////////////////////////
 
-void zGraph::zDrawGraphAxes() {
+void zGraph::zDrawGraphAxes()
+{
     //
     // Draws in X- and Y- Axes for a Graph.  The Default
     //  Implementation Just Handles the Basic 2-D or 3-D Style Graph,
@@ -884,7 +978,8 @@ void zGraph::zDrawGraphAxes() {
 
 ////////////////////////// zzDrawGraphAxes() ////////////////////////////
 
-void zGraph::zzDrawGraphAxes(BOOL show_x_values, BOOL show_y_values) {
+void zGraph::zzDrawGraphAxes(BOOL show_x_values, BOOL show_y_values)
+{
     //
     // Draws in X- and Y- Axes for a Graph.  [show_x_values] and
     // [show_y_values] are DEFAULT arguments [default value = TRUE], which
@@ -896,14 +991,16 @@ void zGraph::zzDrawGraphAxes(BOOL show_x_values, BOOL show_y_values) {
     //
     // Draw In Numbers Along the Vertical (Y) Axis
     //
-    if (show_y_values) {
+    if (show_y_values)
+    {
         zShowYAxisNumbers();
     }
 
     //
     // Draw In Numbers Along the Horizontal (X) Axis
     //
-    if (show_x_values) {
+    if (show_x_values)
+    {
         zShowXAxisNumbers();
     }
 
@@ -913,8 +1010,10 @@ void zGraph::zzDrawGraphAxes(BOOL show_x_values, BOOL show_y_values) {
     // NOTE:  No Special Axes Need to Be Drawn for the 3-D Graph, Since
     //        the "zDrawGrid()" Function Puts In the Axes Also...
 
-    if (! _3D_flag) {
-        RECT RTemp = {
+    if (! _3D_flag)
+    {
+        RECT RTemp =
+        {
             X_LEFT, Y_TOP, X_RIGHT, Y_BOTTOM
         };
         zDrawRect(&RTemp);
@@ -923,7 +1022,8 @@ void zGraph::zzDrawGraphAxes(BOOL show_x_values, BOOL show_y_values) {
 
 ////////////////////////// zCheckForLegalData() ////////////////////////////
 
-BOOL zGraph::zCheckForLegalData() {
+BOOL zGraph::zCheckForLegalData()
+{
     //
     // Returns TRUE if User Entered Valid Data for a Given Graph,
     //   Else FALSE.  NOTE:  This Is a VIRTUAL Function, and
@@ -947,7 +1047,8 @@ BOOL zGraph::zCheckForLegalData() {
 
 /////////////////////////////// zDrawGrid()  /////////////////////////////
 
-void zGraph::zDrawGrid() {
+void zGraph::zDrawGrid()
+{
     //
     // This Function is Used to Create the Grid for the Graph.
     //   The Default Implementation of This Function Handles
@@ -957,9 +1058,12 @@ void zGraph::zDrawGrid() {
     //
     // See If We're to Make a 2-D or 3-D Style Grid
     //
-    if (_3D_flag) {
+    if (_3D_flag)
+    {
         zDraw3DGrid();    // 3-Dimensional Grid
-    } else {
+    }
+    else
+    {
         zDraw2DGrid();    // 2-Dimensional Grid
     }
 
@@ -967,7 +1071,8 @@ void zGraph::zDrawGrid() {
 
 /////////////////////////////// zDraw2DGrid()  /////////////////////////////
 
-void zGraph::zDraw2DGrid() {
+void zGraph::zDraw2DGrid()
+{
     //
     // Puts a 2-D Flat Graph Grid in Place.  Note:  The Logic Here
     //   Assumes that [x_axis_style] and [y_axis_style] are set to
@@ -981,7 +1086,8 @@ void zGraph::zDraw2DGrid() {
     //
     // Return Now If We're Not Supposed to Draw the Grid
     //
-    if (! zIsGridVisible()) {
+    if (! zIsGridVisible())
+    {
         return;
     }
 
@@ -1011,7 +1117,8 @@ void zGraph::zDraw2DGrid() {
     //
     double tmp1 = (double) GridWidth / x_axis_divisions;
 
-    for (j = 0; j < x_axis_divisions; j++) {
+    for (j = 0; j < x_axis_divisions; j++)
+    {
         INT xPos = X_LEFT + zRound(tmp1 * j) ;
 
         zDrawLine(xPos, Y_TOP, xPos, Y_BOTTOM);
@@ -1022,7 +1129,8 @@ void zGraph::zDraw2DGrid() {
     //
     tmp1 = (double) GridHeight / y_axis_divisions;
 
-    for (j = 0; j < y_axis_divisions; j++) {
+    for (j = 0; j < y_axis_divisions; j++)
+    {
         INT yPos = Y_BOTTOM - zY_ADJUST * zRound(tmp1 * j) ;
 
         zDrawLine(X_LEFT, yPos, X_RIGHT, yPos);
@@ -1054,7 +1162,8 @@ void zGraph::zDraw2DGrid() {
 
 /////////////////////////////// zDraw3DGrid()  /////////////////////////////
 
-void zGraph::zDraw3DGrid() {
+void zGraph::zDraw3DGrid()
+{
     //
     // Draws a 3-Dimensional Grid for the Graph
     //
@@ -1094,7 +1203,8 @@ void zGraph::zDraw3DGrid() {
     //
     // Return Now If We're Not Supposed to Draw in the Grid Lines
     //
-    if (! zIsGridVisible()) {
+    if (! zIsGridVisible())
+    {
         return;
     }
 
@@ -1120,7 +1230,8 @@ void zGraph::zDraw3DGrid() {
     //
     // Draw In the Individual Vertical Grid Segments
     //
-    for (INT i = 0; i < y_axis_divisions; i++) {
+    for (INT i = 0; i < y_axis_divisions; i++)
+    {
         INT x_offset_1 = X_LEFT + zRound(grid_width * i / y_axis_divisions);
         INT x_offset_2 = x_offset_1 + zRound(z3D_GRID_X_SLANT_OFFSET);
 
@@ -1131,7 +1242,8 @@ void zGraph::zDraw3DGrid() {
     //
     // Draw In the Individual Horizontal Grid Segments
     //
-    for (INT i = 0; i < x_axis_divisions; i++) {
+    for (INT i = 0; i < x_axis_divisions; i++)
+    {
         INT x_offset_1 = X_LEFT + zRound(z3D_GRID_X_SLANT_OFFSET * i / x_axis_divisions);
         INT x_offset_2 = x_offset_1 + GridWidth;
 
@@ -1177,7 +1289,8 @@ void zGraph::zDraw3DGrid() {
 
 ////////////////////////////// zScaleData()  /////////////////////////////
 
-BOOL zGraph::zScaleData() {
+BOOL zGraph::zScaleData()
+{
     //
     // Scales Values of X and Y coordinates to Fit a 2-D X/Y Style Graph.
     //      This is The Default Implementation, Used to Handle the Basic
@@ -1208,13 +1321,15 @@ BOOL zGraph::zScaleData() {
     // Dynamically Allocate Some Arrays to Hold the Transformed Data
     //
     xnew = new INT[ n + 1 ];
-    if (!xnew) {
+    if (!xnew)
+    {
         zDisplayError(zLOW_MEMORY_SCALE_XY);
         return FALSE;
     }
 
     ynew = new INT[ n + 1 ];
-    if (!ynew) {
+    if (!ynew)
+    {
         zDisplayError(zLOW_MEMORY_SCALE_XY);
         return FALSE;
     }
@@ -1224,13 +1339,17 @@ BOOL zGraph::zScaleData() {
     // Note:  We Skip the Data Scaling/Translation for the Single-Valued
     //        Y-Data Case [where ymax = ymin]
     //
-    if (ymax == ymin) {
-        for (j = 0; j < n; j++) {
+    if (ymax == ymin)
+    {
+        for (j = 0; j < n; j++)
+        {
             xnew[ j ] = X_LEFT;
             ynew[ j ] = (Y_TOP + Y_BOTTOM) / 2 ;
         }
         xnew[ n - 1 ] = X_RIGHT;
-    } else {
+    }
+    else
+    {
         //
         // Determine The Optimum Number of Axis Divisions to Use
         //   if User Didn't Specify Them.  Note:  [x_axis_divisions]
@@ -1248,7 +1367,8 @@ BOOL zGraph::zScaleData() {
         //
         // If Single-Valued X-Coordinate Data, Tell the User...
         //
-        if (xmax == xmin) {
+        if (xmax == xmin)
+        {
             zDisplayError(zCANNOT_SCALE_X);
             return (FALSE);
         }
@@ -1259,7 +1379,8 @@ BOOL zGraph::zScaleData() {
                    (double) grid_height / (ymin - ymax);
         double d = (double) Y_TOP - c * ymax ;
 
-        for (j = 0; j < n; j++) {
+        for (j = 0; j < n; j++)
+        {
             //
             // Scale X-Coordinate
             //
@@ -1278,7 +1399,8 @@ BOOL zGraph::zScaleData() {
 
 //////////////////////////// zScale3DGraphData() ///////////////////////////
 
-BOOL zGraph::zScale3DGraphData() {
+BOOL zGraph::zScale3DGraphData()
+{
     //
     // Scales Data in the Ydata[] Array As Appropriate for a 3-D Graph.
     //
@@ -1287,7 +1409,8 @@ BOOL zGraph::zScale3DGraphData() {
 
 ////////////////////////////// zScaleYData() /////////////////////////////
 
-BOOL zGraph::zScaleYData(INT slant_offset /* = 0 */) {
+BOOL zGraph::zScaleYData(INT slant_offset /* = 0 */)
+{
     //
     // Scales Data in the Ydata[] Array As Appropriate to Fit in a
     // Graph, By Scaling the Data Down From the Range: (ymin, ymax)
@@ -1317,14 +1440,17 @@ BOOL zGraph::zScaleYData(INT slant_offset /* = 0 */) {
     //
     // We'll Compute Slope and Intercept for Scaling Equation
     //
-    if (ymax == ymin) {
+    if (ymax == ymin)
+    {
         //
         // This Will Guard Against a Division By Zero Error In the
         //  Slope Equation Below
         //
         YCoordMultiplier = 0.0;
         YCoordOffset     = 0.5 * Y_HEIGHT;
-    } else {
+    }
+    else
+    {
         //
         // The Normal Case, When [ymax] and [ymin] are Different...
         //
@@ -1350,7 +1476,8 @@ BOOL zGraph::zScaleYData(INT slant_offset /* = 0 */) {
     // Dynamically Allocate a Working Array to Hold the Scaled Data
     //
     YWorkData = new double[ n + 2 ];         // Create Temp. Work Array
-    if (! YWorkData) {
+    if (! YWorkData)
+    {
         zDisplayError(zLOW_MEMORY_SCALE_Y);
         return (FALSE);
     }
@@ -1358,7 +1485,8 @@ BOOL zGraph::zScaleYData(INT slant_offset /* = 0 */) {
     //
     // Now Scale the Data to Fit the Range
     //
-    for (INT i = 0; i < n; i++) {
+    for (INT i = 0; i < n; i++)
+    {
         YWorkData[ i ] = YCoordMultiplier * Ydata[ i ] + YCoordOffset;
     }
 
@@ -1368,7 +1496,8 @@ BOOL zGraph::zScaleYData(INT slant_offset /* = 0 */) {
 
 //////////////////////////// zShowGraphTitles() ///////////////////////////
 
-void zGraph::zShowGraphTitles() {
+void zGraph::zShowGraphTitles()
+{
     //
     // Displays the Graph Main Title, and Horizontal/Vertical Axis Titles.
     //
@@ -1378,7 +1507,8 @@ void zGraph::zShowGraphTitles() {
     //
     // Show Main Title
     //
-    RECT RMainTitle  = {
+    RECT RMainTitle  =
+    {
         X_LEFT        + zRound(0.15 * RGraphAxis.Width()),
         RWindow.top   + zRound(0.25 * TopMarginHt),
         X_RIGHT       - zRound(0.15 * RGraphAxis.Width()),
@@ -1391,7 +1521,8 @@ void zGraph::zShowGraphTitles() {
     //
     // Quit Now if We're Not Displaying the X- and Y-Axis Titles
     //
-    if (! show_axis_titles) {
+    if (! show_axis_titles)
+    {
         return;
     }
 
@@ -1412,12 +1543,15 @@ void zGraph::zShowGraphTitles() {
     //
     INT YAxisTitleHorizPos = X_LEFT - charsize * _tcslen(VertTitle)/2;
     INT YAxisTitleVertPos;
-    if (_3D_flag) {
+    if (_3D_flag)
+    {
         double slope = z3D_GRID_Y_SLANT_OFFSET / z3D_GRID_X_SLANT_OFFSET;
         YAxisTitleVertPos = (Y_TOP + zRound(z3D_GRID_Y_SLANT_OFFSET)) -
                             zRound(slope * (YAxisTitleHorizPos + (_tcslen(VertTitle) + 4)*charsize - X_LEFT)) -
                             charheight;
-    } else {
+    }
+    else
+    {
         YAxisTitleVertPos = Y_TOP - zY_ADJUST * 2 * AxisTitleFont.zGetFontHeight();
     }
 
@@ -1427,7 +1561,8 @@ void zGraph::zShowGraphTitles() {
 
 ////////////////////////// zGetBestFitAxisDivisions() //////////////////////
 
-void zGraph::zGetBestFitAxisDivisions() {
+void zGraph::zGetBestFitAxisDivisions()
+{
     //
     // This Function Determines an Optimum "Best-Fit" Number of Axis
     //   Divisions For a Graph's X- and/or Y-Axis.  The Number of
@@ -1447,18 +1582,21 @@ void zGraph::zGetBestFitAxisDivisions() {
     //  [y_axis_divisions], [ymin], [ymax] as Appropriate.
     //
 
-    if (x_axis_divisions < 0  &&  Xdata != NULL) {
+    if (x_axis_divisions < 0  &&  Xdata != NULL)
+    {
         zCalcTicks(xmin, xmax, x_axis_divisions);
     }
 
-    if (y_axis_divisions < 0  &&  Ydata != NULL) {
+    if (y_axis_divisions < 0  &&  Ydata != NULL)
+    {
         zCalcTicks(ymin, ymax, y_axis_divisions);
     }
 
 }
 
 void zGraph::zCalcTicks(double & MinValue, double & MaxValue,
-                        INT & AxisDivisions) {
+                        INT & AxisDivisions)
+{
     //
     // This Function Is Used In the Best-Fit Axis Algorithm
     //   [See "zGetBestFitAxisDivisions()" function].
@@ -1476,7 +1614,8 @@ void zGraph::zCalcTicks(double & MinValue, double & MaxValue,
     //   for the Number of Axis Divisions--Don't Attempt
     //   to Use the Algorithm...
     //
-    if (fabs(MaxValue - MinValue) < zDELTA) {
+    if (fabs(MaxValue - MinValue) < zDELTA)
+    {
         AxisDivisions = zDEFAULT_AXIS_DIVISIONS;
         return ;
     }
@@ -1503,13 +1642,15 @@ void zGraph::zCalcTicks(double & MinValue, double & MaxValue,
     //   But We'd Prefer a Smaller Number of Axis-Divisions
     //   to a Larger Number, If Possible!)
     //
-    if (AxisDivisions == 8  ||  AxisDivisions == 10) {
+    if (AxisDivisions == 8  ||  AxisDivisions == 10)
+    {
         AxisDivisions /= 2;
     }
 }
 
 void zGraph::zFindBestFit(double MinValue, double MaxValue,
-                          INT & NumTicks, double & DistBetweenTicks) {
+                          INT & NumTicks, double & DistBetweenTicks)
+{
     //
     // This Function Is Used In the Best-Fit Axis Algorithm
     //   [See "zGetBestFitAxisDivisions()" function].
@@ -1518,7 +1659,8 @@ void zGraph::zFindBestFit(double MinValue, double MaxValue,
     //   Between Ticks [DistBetweenTicks]
     //
 
-    static INT iTickBase[ ] = {
+    static INT iTickBase[ ] =
+    {
         1, 2, 5
     };
     static INT NumTickBases = sizeof(iTickBase) / sizeof(iTickBase[ 0 ]);
@@ -1537,15 +1679,18 @@ void zGraph::zFindBestFit(double MinValue, double MaxValue,
     double fFF = (double)pow(10.0, floor(fF));
 
     BOOL bFound = FALSE ;
-    for (INT i = 0; i < NumTickBases; i++) {
-        if (DistBetweenTicks <= iTickBase[ i ] * fFF) {
+    for (INT i = 0; i < NumTickBases; i++)
+    {
+        if (DistBetweenTicks <= iTickBase[ i ] * fFF)
+        {
             DistBetweenTicks = iTickBase[ i ] * fFF ;
             bFound = TRUE ;
             break ;
         }
     }
 
-    if (! bFound) {
+    if (! bFound)
+    {
         fF++;
         DistBetweenTicks = pow(10.0, floor(fF));
     }
@@ -1565,7 +1710,8 @@ void zGraph::zFindBestFit(double MinValue, double MaxValue,
 
 ////////////////////////// zInitGraph() ////////////////////////////
 
-BOOL zGraph::zInitGraph() {
+BOOL zGraph::zInitGraph()
+{
     // This Function Initializes as Necessary for Making a Graph.
     //   This Function MUST Be Called Before Doing any Graph Drawing.
     //   Here We Validate a Number of Entities, and Establish Some
@@ -1579,14 +1725,16 @@ BOOL zGraph::zInitGraph() {
     // Validate the HDC or HPS
 
 #ifdef WINDOWS_PLATFORM
-    if (! hDC) {
+    if (! hDC)
+    {
         zDisplayError(zHDC_INVALID);
         return FALSE;
     }
 #endif
 
 #ifdef OS2_PLATFORM
-    if (! hPS) {
+    if (! hPS)
+    {
         zDisplayError(zHPS_INVALID);
         return FALSE;
     }
@@ -1594,7 +1742,8 @@ BOOL zGraph::zInitGraph() {
 
 
     // Validate the Window Rectangle
-    if (! RWindow.IsValid()) {
+    if (! RWindow.IsValid())
+    {
         zDisplayError(zWINDOW_RECT_INVALID);
         return FALSE;
     }
@@ -1621,7 +1770,8 @@ BOOL zGraph::zInitGraph() {
 
 ////////////////////////////// zFillBackground() /////////////////////////////
 
-void zGraph::zFillBackground() {
+void zGraph::zFillBackground()
+{
     //
     //  Colors in the Graph Area of the Window [RWindow] with the Specified
     //     Background color [bkg_color]
@@ -1641,9 +1791,12 @@ void zGraph::zFillBackground() {
     //
     RECT RWindow1 = RWindow;
 
-    if (bkg_gradient_mode) {
+    if (bkg_gradient_mode)
+    {
         zFillBkgWithGradedColor();
-    } else {
+    }
+    else
+    {
         FillRect(hDC, &RWindow1, hBrush_bkg);
     }
 
@@ -1673,16 +1826,21 @@ void zGraph::zFillBackground() {
     //
     // Define the Region to Be Colored In as the Whole Window Area
     //
-    POINTL pt1 = {
+    POINTL pt1 =
+    {
         RWindow.left  ,  RWindow.top
     };
-    POINTL pt2 = {
+    POINTL pt2 =
+    {
         RWindow.right ,  RWindow.bottom
     };
 
-    if (bkg_gradient_mode) {
+    if (bkg_gradient_mode)
+    {
         zFillBkgWithGradedColor();
-    } else {
+    }
+    else
+    {
         //
         // Use GpiBox() to Color In Interior, But Don't Show Border Outline
         //
@@ -1729,7 +1887,8 @@ void zGraph::zFillBackground() {
 
 //////////////////////////// zDrawLegend() //////////////////////////////
 
-void zGraph::zDrawLegend(BOOL UseColorFills /* = TRUE */) {
+void zGraph::zDrawLegend(BOOL UseColorFills /* = TRUE */)
+{
     //
     // Draws A Graph Legend Within the Rectangle [RLegend], showing
     //    [num_sets] separate items in the Legend.
@@ -1748,7 +1907,8 @@ void zGraph::zDrawLegend(BOOL UseColorFills /* = TRUE */) {
     //
     // Return Now if No Legend Is to Be Drawn
     //
-    if (LegendPosition == zNO_LEGEND) {
+    if (LegendPosition == zNO_LEGEND)
+    {
         return;
     }
 
@@ -1767,10 +1927,13 @@ void zGraph::zDrawLegend(BOOL UseColorFills /* = TRUE */) {
     INT LegWidth  = zRound(num_sets * zID_BOX_WIDTH +
                            (num_sets - 1) * HorizIDBoxSpacing);
 
-    if (LegendPosition == zLEFT) {
+    if (LegendPosition == zLEFT)
+    {
         RLegend.top    = (PtWindowCenter.y - LegHeight / 2);
         RLegend.bottom = (PtWindowCenter.y + LegHeight / 2);
-    } else {
+    }
+    else
+    {
         INT legend_half_width = 3 * charsize + LegWidth / 2;
 
         RLegend.left  = (PtWindowCenter.x - legend_half_width);
@@ -1816,28 +1979,33 @@ void zGraph::zDrawLegend(BOOL UseColorFills /* = TRUE */) {
     // Draw In the Legend ID Box/Line for Each Element...
     //
     for (INT index = 0; (index < zMAX_DATA_SETS)
-            && (index < num_sets);  index++) {
+            && (index < num_sets);  index++)
+    {
         //
         // Calc. this ID box's y-coord.
         //
 
         INT y_IDBox;
 
-        if (LegendPosition == zLEFT) {
+        if (LegendPosition == zLEFT)
+        {
             //
             // Legend at Left
             //
             y_IDBox = RLegend.top
                       + zY_ADJUST * zRound(VertIDBoxSpacing) * (index + 1)
                       + zY_ADJUST * IDBoxHeight * (index);
-        } else {
+        }
+        else
+        {
             //
             // Legend at Bottom
             //
             y_IDBox = ptCenter.y -
                       zY_ADJUST * zRound(0.10 * RLegend.Height());
 
-            if (index > 0) {
+            if (index > 0)
+            {
                 x_IDBox += zRound(HorizIDBoxSpacing + IDBoxWidth);
             }
         }
@@ -1847,7 +2015,8 @@ void zGraph::zDrawLegend(BOOL UseColorFills /* = TRUE */) {
         //   Fill Areas (e.g., Pie, Bar, Area), Otherwise Use Pens to Draw
         //   Lines for the Legend
         //
-        if (UseColorFills) {
+        if (UseColorFills)
+        {
             zDraw3DBar(                             // Draw Border of Rect.
                 x_IDBox, y_IDBox,
                 x_IDBox + IDBoxWidth, y_IDBox + IDBoxHeight, 0,
@@ -1874,7 +2043,9 @@ void zGraph::zDrawLegend(BOOL UseColorFills /* = TRUE */) {
 #endif
 
             );
-        } else {
+        }
+        else
+        {
             // Select Appropriate Line Color
             zSelectGraphColor(index);
 
@@ -1894,9 +2065,11 @@ void zGraph::zDrawLegend(BOOL UseColorFills /* = TRUE */) {
             //
             // Find Index of Next Symbol to Display
             //
-            if (index > 0) {
+            if (index > 0)
+            {
                 while (symbol_index < zMAX_DATA_POINTS  &&
-                        sym[ symbol_index ] == sym[ symbol_index + 1]) {
+                        sym[ symbol_index ] == sym[ symbol_index + 1])
+                {
                     symbol_index++ ;
                 }
                 symbol_index++ ;
@@ -1906,7 +2079,8 @@ void zGraph::zDrawLegend(BOOL UseColorFills /* = TRUE */) {
             // Draw In The Symbol that We Use at the Beginning and End
             //  of this Line, if We're Displaying Symbols
             //
-            if (symbols_flag) {
+            if (symbols_flag)
+            {
                 zDraw_Symbol(x_IDBox, yline - charsize/2,
                              sym[ symbol_index ], index);
 
@@ -1919,7 +2093,8 @@ void zGraph::zDrawLegend(BOOL UseColorFills /* = TRUE */) {
         // Compute the Rectangle to Be Used for Displaying the ID Box Title
         //
 
-        if (LegendPosition == zLEFT) {
+        if (LegendPosition == zLEFT)
+        {
             //
             // Legend at Left
             //
@@ -1931,7 +2106,9 @@ void zGraph::zDrawLegend(BOOL UseColorFills /* = TRUE */) {
                 RLegend.right - zRound(0.05 * RLegend.Width());
             RLegendString[ index ].bottom =
                 y_IDBox + zY_ADJUST * zRound(0.85 * IDBoxHeight);
-        } else {
+        }
+        else
+        {
             //
             // Legend at Bottom
             //
@@ -1946,7 +2123,8 @@ void zGraph::zDrawLegend(BOOL UseColorFills /* = TRUE */) {
 
     // Now Draw In the Text For Each Legend String
     for (INT index = 0; (index < zMAX_DATA_SETS)
-            && (index < num_sets);  index++) {
+            && (index < num_sets);  index++)
+    {
         // Get This Legend Title
         wcscpy_s(zbuf, _countof(zbuf), &(LegendTitle[ index ]));
 
@@ -1956,7 +2134,8 @@ void zGraph::zDrawLegend(BOOL UseColorFills /* = TRUE */) {
 #else   // For Windows, etc.
 
         // Pick an Appropriate Font On the First Pass
-        if (index == 0) {
+        if (index == 0)
+        {
             LegendTitleFont.zPickFont(zbuf, RLegendString[ index ]);
         }
 
@@ -1976,7 +2155,8 @@ void zGraph::zDrawLegend(BOOL UseColorFills /* = TRUE */) {
 
 ///////////////////////////// zDrawDataPoints() ////////////////////////////
 
-void zGraph::zDrawDataPoints() {
+void zGraph::zDrawDataPoints()
+{
     //
     //  Plots Data Points and/or the Lines Connecting the Data Points.
     //    This is THE GUTS of a Basic X/Y-Style Graph.  You'll Want to
@@ -1994,7 +2174,8 @@ void zGraph::zDrawDataPoints() {
     //
     // Set the Clipping Region to Interior of the Rectangular Grid Area
     //
-    if (! auto_scaling) {
+    if (! auto_scaling)
+    {
         //
         // Save the Old Clipping Region
         //
@@ -2029,13 +2210,15 @@ void zGraph::zDrawDataPoints() {
     // Now Draw in the Data Points
     //
     INT color_index = 0;
-    for (INT j = 0; j < n; j++) {        // For Each Data Point. . .
+    for (INT j = 0; j < n; j++)          // For Each Data Point. . .
+    {
         INT symbol = abs(sym[j]);         // This is the symbol to display
 
         //
         // Choose New Pen and Text Color For Each New Symbol Set
         //
-        if (j > 0  && (symbol != abs(sym[j - 1]))) {
+        if (j > 0  && (symbol != abs(sym[j - 1])))
+        {
             ++color_index ;
 
             //
@@ -2047,27 +2230,34 @@ void zGraph::zDrawDataPoints() {
         //
         // Display symbol if we're supposed to...
         //
-        if (symbols_flag) {
+        if (symbols_flag)
+        {
             zDraw_Symbol(xnew[ j ], ynew[ j ], symbol, color_index);
         }
 
         //
         // Try to Draw Lines if We Can Between the Points!
         //
-        if (line_connect) {
+        if (line_connect)
+        {
             //
             // The First Point Doesn't Need a Connecting Line Drawn
             //
-            if (j == 0  &&  sym[ j ] < 0) {
+            if (j == 0  &&  sym[ j ] < 0)
+            {
                 zDraw_Symbol(xnew[j], ynew[j], symbol, color_index);
-            } else if (j > 0) {
+            }
+            else if (j > 0)
+            {
                 //
                 // Don't Draw Connecting Lines Between Points
                 //   if the symbol is negative!
                 //
-                if (sym[ j ] < 0) {
+                if (sym[ j ] < 0)
+                {
                     zDraw_Symbol(xnew[ j ], ynew[ j ], symbol, color_index);
-                } else if (symbol == abs(sym[ j-1 ]))
+                }
+                else if (symbol == abs(sym[ j-1 ]))
                     zDrawLine(xnew[ j ], ynew[ j ], xnew[ j - 1 ],
                               ynew[ j - 1 ]);
             }
@@ -2075,7 +2265,8 @@ void zGraph::zDrawDataPoints() {
     }
 
 #ifdef WINDOWS_PLATFORM
-    if (! auto_scaling) {
+    if (! auto_scaling)
+    {
         //
         // Set Clipping Region Back to the Original Clipping Region Now
         //
@@ -2100,7 +2291,8 @@ void zGraph::zDrawDataPoints() {
 }
 
 
-zPALETTE zGraph::zCreateGradedColorPalette() {
+zPALETTE zGraph::zCreateGradedColorPalette()
+{
     // Creates a Color Palette With a Smooth Gradient in Color Transitions.
     //    64 Distinct Color Shades are Used.  This Function Is Used to
     //    Fill in the Background With a "Dithered" Color Look.
@@ -2118,7 +2310,8 @@ zPALETTE zGraph::zCreateGradedColorPalette() {
                                   (zNUM_GRADED_PALETTE_ENTRIES - 1) * sizeof(PALETTEENTRY) ];
     // (Extra entry in LOGPAL struct)
     pPal = (LOGPALETTE *)ByteArray;
-    if (! pPal) {
+    if (! pPal)
+    {
         return (NULL);
     }
 
@@ -2131,7 +2324,8 @@ zPALETTE zGraph::zCreateGradedColorPalette() {
     BYTE color;
     INT  i;
     for (color = 255, i = 0;
-            i < zNUM_GRADED_PALETTE_ENTRIES; color -= 4, i++) {
+            i < zNUM_GRADED_PALETTE_ENTRIES; color -= 4, i++)
+    {
         // Set R,G,B, values for this Palette Entry
         zCalculateRGBValues(color,
                             pPal->palPalEntry[i].peRed,
@@ -2172,7 +2366,8 @@ zPALETTE zGraph::zCreateGradedColorPalette() {
     //  Create entry with shades of color if animation is supported,
     //    solid color otherwise.
 
-    for (INT i = 0; i < zNUM_GRADED_PALETTE_ENTRIES; i++) {
+    for (INT i = 0; i < zNUM_GRADED_PALETTE_ENTRIES; i++)
+    {
         BYTE index = 222;     //  Use This Value if No Animation Support
 
         // INDEX = [zNUM_GRADED_PALETTE_ENTRIES] Points Evenly
@@ -2199,19 +2394,22 @@ zPALETTE zGraph::zCreateGradedColorPalette() {
                                  zNUM_GRADED_PALETTE_ENTRIES,
                                  (unsigned long *)&lColorTable[0]);
 
-    if (hPal == NULLHANDLE  ||  hPal == GPI_ERROR) {
+    if (hPal == NULLHANDLE  ||  hPal == GPI_ERROR)
+    {
         // Error
         zDisplayError(_T("GpiCreatePalette Error"));
         // Use WinGetLastError(hab) to Get Error Details!
     }
 
-    else if (GpiSelectPalette(hPS, hPal) == PAL_ERROR) {
+    else if (GpiSelectPalette(hPS, hPal) == PAL_ERROR)
+    {
         // Error
         zDisplayError(_T("GpiSelectPalette Error"));
         // Use WinGetLastError(hab) to Get Error Details!
     }
 
-    else if (WinRealizePalette(hWnd, hPS, &cclr) == PAL_ERROR) {
+    else if (WinRealizePalette(hWnd, hPS, &cclr) == PAL_ERROR)
+    {
         // Error
         zDisplayError(_T("WinRealizePalette Error"));
         // Use WinGetLastError(hab) to Get Error Details!
@@ -2240,7 +2438,8 @@ zPALETTE zGraph::zCreateGradedColorPalette() {
 }
 
 void zGraph:: zCalculateRGBValues(BYTE Intensity,
-                                  BYTE & Red, BYTE & Green, BYTE & Blue) {
+                                  BYTE & Red, BYTE & Green, BYTE & Blue)
+{
     // Sets Red, Green, and Blue Component Values For a Particular Background
     //   Color Scheme.  [Intensity] Is the Average Relative Intensity Desired
     //   NOTE:  Users May Wish to Extend this List, Adding Other Possible
@@ -2250,7 +2449,8 @@ void zGraph:: zCalculateRGBValues(BYTE Intensity,
     // Start With All Components Turned Off
     Red = Blue = Green = 0;
 
-    switch (bkg_gradient_color_scheme) {
+    switch (bkg_gradient_color_scheme)
+    {
         //
         // First, the Straight Hues (Variations of 1 Component Only)
         //
@@ -2342,7 +2542,8 @@ void zGraph:: zCalculateRGBValues(BYTE Intensity,
 }
 
 
-void zGraph::zFillBkgWithGradedColor() {
+void zGraph::zFillBkgWithGradedColor()
+{
     //
     //  Colors in the Background Area of the Window [RWindow] with a Smoothly-
     //    Graded Color Spectrum, Based Upon the Bkg Gradient Color Scheme
@@ -2357,7 +2558,8 @@ void zGraph::zFillBkgWithGradedColor() {
 
     zPALETTE hNewPal = zCreateGradedColorPalette();
 
-    if (! hNewPal) {
+    if (! hNewPal)
+    {
         zDisplayError(zCANNOT_CREATE_PALETTE);
         return;
     }
@@ -2373,16 +2575,20 @@ void zGraph::zFillBkgWithGradedColor() {
     // Select Starting Color
 
     BYTE color;
-    if (bkg_gradient_mode == zINTO_CENTER) {
+    if (bkg_gradient_mode == zINTO_CENTER)
+    {
         color = 0;
-    } else {
+    }
+    else
+    {
         color = 255;
     }
 
 
     // For Each Color...
 
-    for (INT i = 0; i < zNUM_GRADED_PALETTE_ENTRIES; i++) {
+    for (INT i = 0; i < zNUM_GRADED_PALETTE_ENTRIES; i++)
+    {
         // Get the Red, Green, Blue Percentages for This Color...
 
         BYTE Red, Green, Blue;
@@ -2408,9 +2614,11 @@ void zGraph::zFillBkgWithGradedColor() {
 
         // Draw One Color Band...
 
-        switch (bkg_gradient_mode) {
+        switch (bkg_gradient_mode)
+        {
         case zINTO_CENTER:       // Draw Gradient From Outside of Screen Into Center
-        case zCENTER_OUT: {      // Draw Gradient From Center of Screen Outward
+        case zCENTER_OUT:        // Draw Gradient From Center of Screen Outward
+        {
             INT xCenter = RWindow.left + RWindow.Width()  / 2;
             INT yCenter = RWindow.top  + RWindow.Height() / 2;
 
@@ -2422,28 +2630,32 @@ void zGraph::zFillBkgWithGradedColor() {
             // Set Up Four Rectangles for Each Stretch of the Narrow
             //   Rectangular Band
 
-            RECT RLeft = {
+            RECT RLeft =
+            {
                 xCenter - x2 - 1,
                 yCenter - y2 - 1,
                 xCenter - x1 + 1,
                 yCenter + y2 + 1
             };
 
-            RECT RTop = {
+            RECT RTop =
+            {
                 xCenter - x2 - 1,
                 yCenter - y2 - 1,
                 xCenter + x2 + 1,
                 yCenter - y1 + 1
             };
 
-            RECT RRight = {
+            RECT RRight =
+            {
                 xCenter + x1 - 1,
                 yCenter - y2 - 1,
                 xCenter + x2 + 1,
                 yCenter + y2 + 1
             };
 
-            RECT RBottom = {
+            RECT RBottom =
+            {
                 xCenter - x2 - 1,
                 yCenter + y1 - 1,
                 xCenter + x2 + 1,
@@ -2466,7 +2678,8 @@ void zGraph::zFillBkgWithGradedColor() {
         break;
 
 
-        case zBOTTOM_UP: {      // Draw Gradient From Bottom of Screen Up
+        case zBOTTOM_UP:        // Draw Gradient From Bottom of Screen Up
+        {
             INT yTop    = RWindow.bottom - zRound(yStep * (i + 1)) - 1;
             INT yBottom = RWindow.bottom - zRound(yStep * i)       + 1;
 
@@ -2487,7 +2700,8 @@ void zGraph::zFillBkgWithGradedColor() {
         break;
 
         case zTOP_DOWN:         // Draw Gradient From Top of Screen Downwards
-        default: {
+        default:
+        {
             INT yTop    = RWindow.top + zRound(yStep * i)     - 1;
             INT yBottom = RWindow.top + zRound(yStep * (i+1)) + 1;
 

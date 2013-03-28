@@ -16,14 +16,16 @@ static char THIS_FILE[] = __FILE__;
 /////////////////////////////////////////////////////////////////////////////
 // CProcess3dPitch
 
-CProcess3dPitch::CProcess3dPitch() {
+CProcess3dPitch::CProcess3dPitch()
+{
     m_pSourceProcess = NULL;
     m_dFilterUpperFrequency = 1000.;
     m_dFilterLowerFrequency = 70.;
     m_nFilterOrder = 5;
 }
 
-CProcess3dPitch::~CProcess3dPitch() {
+CProcess3dPitch::~CProcess3dPitch()
+{
 }
 
 
@@ -41,8 +43,10 @@ static int ReadDataBlock(CProcess * pSource, DWORD dwStart, DWORD dwStop, DWORD 
 /***************************************************************************/
 // CProcess3dPitch::Process
 /***************************************************************************/
-long CProcess3dPitch::Process(void * pCaller, ISaDoc * pSaDoc, int nProgress, int nLevel) {
-    if (IsCanceled()) {
+long CProcess3dPitch::Process(void * pCaller, ISaDoc * pSaDoc, int nProgress, int nLevel)
+{
+    if (IsCanceled())
+    {
         return MAKELONG(PROCESS_CANCELED, nProgress);    // process canceled
     }
     ISaDoc * pDoc = (ISaDoc *)pSaDoc; // cast pointer
@@ -51,20 +55,26 @@ long CProcess3dPitch::Process(void * pCaller, ISaDoc * pSaDoc, int nProgress, in
 
     CProcess * pLowerProcess = NULL;
     pLowerProcess = m_pSourceProcess;
-    if (pLowerProcess) {
+    if (pLowerProcess)
+    {
         // there is at least one source processes to process first
         long lResult = pLowerProcess->Process(pCaller, pSaDoc, nProgress, ++nLevel);
         nLevel = (short int)LOWORD(lResult);
         nProgress = HIWORD(lResult);
     }
-    if ((nLevel == nOldLevel) && (IsDataReady())) {
+    if ((nLevel == nOldLevel) && (IsDataReady()))
+    {
         return MAKELONG(--nLevel, nProgress);    // data is already ready
-    } else {
+    }
+    else
+    {
         SetDataInvalid();
     }
 
-    if (nLevel < 0) { // previous processing error
-        if ((nLevel == PROCESS_CANCELED)) {
+    if (nLevel < 0)   // previous processing error
+    {
+        if ((nLevel == PROCESS_CANCELED))
+        {
             CancelProcess();    // set your own cancel flag
         }
         return MAKELONG(nLevel, nProgress);
@@ -72,13 +82,15 @@ long CProcess3dPitch::Process(void * pCaller, ISaDoc * pSaDoc, int nProgress, in
 
     // start process
     BeginWaitCursor(); // wait cursor
-    if (!StartProcess(pCaller, IDS_STATTXT_PROCESSWBLP)) { // memory allocation failed or previous processing error
+    if (!StartProcess(pCaller, IDS_STATTXT_PROCESSWBLP))   // memory allocation failed or previous processing error
+    {
         EndProcess(); // end data processing
         EndWaitCursor();
         return MAKELONG(PROCESS_ERROR, nProgress);
     }
     // create the temporary file
-    if (!CreateTempFile(_T("PCC"))) { // creating error
+    if (!CreateTempFile(_T("PCC")))   // creating error
+    {
         EndProcess(); // end data processing
         EndWaitCursor();
         SetDataInvalid();
@@ -86,9 +98,12 @@ long CProcess3dPitch::Process(void * pCaller, ISaDoc * pSaDoc, int nProgress, in
     }
     // get source data size
     DWORD dwDataSize;
-    if (pLowerProcess) {
+    if (pLowerProcess)
+    {
         dwDataSize = pLowerProcess->GetProcessedWaveDataSize();
-    } else {
+    }
+    else
+    {
         dwDataSize = pDoc->GetUnprocessedDataSize();    // size of raw data
     }
     FmtParm * pFmtParm = pDoc->GetFmtParm(); // get sa parameters format member data
@@ -104,7 +119,8 @@ long CProcess3dPitch::Process(void * pCaller, ISaDoc * pSaDoc, int nProgress, in
     // first do forward pass
     long lResult = pButterworth->Process(pCaller, pSaDoc, nProgress, ++nLevel);
     nLevel = (short int)LOWORD(lResult);
-    if ((nLevel == PROCESS_CANCELED)) {
+    if ((nLevel == PROCESS_CANCELED))
+    {
         nProgress = HIWORD(lResult);
         CancelProcess(); // set your own cancel flag
         delete pButterworth;
@@ -112,7 +128,8 @@ long CProcess3dPitch::Process(void * pCaller, ISaDoc * pSaDoc, int nProgress, in
     }
 
     // start processing loop
-    for (DWORD dwIntegerPitchPeriod = 22; dwIntegerPitchPeriod < 480; dwIntegerPitchPeriod+= 5 /*dwIntegerPitchPeriod/16*/) {
+    for (DWORD dwIntegerPitchPeriod = 22; dwIntegerPitchPeriod < 480; dwIntegerPitchPeriod+= 5 /*dwIntegerPitchPeriod/16*/)
+    {
         double sumXnXnt = 0.;
         // initialize to ~ -30dB noise to mask low amplitude signals (& kill divide by 0)
         double sumXnXn = 1024*1024*10;
@@ -121,10 +138,12 @@ long CProcess3dPitch::Process(void * pCaller, ISaDoc * pSaDoc, int nProgress, in
         DWORD dwCorrelationLength = dwIntegerPitchPeriod > 40 ? dwIntegerPitchPeriod : 70;
         DWORD dwDataSamples = dwDataSize/wSmpSize;
 
-        for (DWORD dwDataPos = 0; dwDataPos < dwDataSamples; dwDataPos+= 4) {
+        for (DWORD dwDataPos = 0; dwDataPos < dwDataSamples; dwDataPos+= 4)
+        {
             // set progress bar
             //SetProgress(nProgress + (int)(100 * dwDataPos / dwDataSize / (DWORD)nLevel));
-            if (IsCanceled()) {
+            if (IsCanceled())
+            {
                 delete pButterworth;
                 return Exit(PROCESS_CANCELED); // process canceled
             }
@@ -132,7 +151,8 @@ long CProcess3dPitch::Process(void * pCaller, ISaDoc * pSaDoc, int nProgress, in
             DWORD dwBlockEnd = dwDataPos + dwIntegerPitchPeriod + dwCorrelationLength - 1;
             DWORD dwBlockStart = dwDataPos;
 
-            if (dwBlockEnd < dwDataSamples) {
+            if (dwBlockEnd < dwDataSamples)
+            {
                 double Xn = ReadDataBlock(pButterworth, dwBlockStart, dwBlockEnd, dwDataPos + dwCorrelationLength - 1, wSmpSize);
                 double Xnt = ReadDataBlock(pButterworth, dwBlockStart, dwBlockEnd, dwDataPos + dwIntegerPitchPeriod + dwCorrelationLength - 1, wSmpSize);
 
@@ -143,7 +163,8 @@ long CProcess3dPitch::Process(void * pCaller, ISaDoc * pSaDoc, int nProgress, in
 
             short sResult = 0;
 
-            if (dwDataPos > dwCorrelationLength) {
+            if (dwDataPos > dwCorrelationLength)
+            {
                 double crossCorrelation = sumXnXnt/sqrt(sumXnXn*sumXntXnt);
 
                 sResult = crossCorrelation > 0 ? short(crossCorrelation*1000. + 0.5) : short(0);
@@ -171,14 +192,17 @@ long CProcess3dPitch::Process(void * pCaller, ISaDoc * pSaDoc, int nProgress, in
     return MAKELONG(nLevel, nProgress);
 }
 
-static int ReadDataBlock(CProcess * pSource, DWORD dwStart, DWORD dwStop, DWORD dwPos, int wSmpSize) {
+static int ReadDataBlock(CProcess * pSource, DWORD dwStart, DWORD dwStop, DWORD dwPos, int wSmpSize)
+{
     BYTE * pSourceData = (BYTE *) pSource->GetProcessedDataBlock(dwStart*wSmpSize, (dwStop - dwStart + 1)*wSmpSize);
 
     pSourceData += (dwPos - dwStart)*wSmpSize;
 
     int nData;
-    if (wSmpSize == 1) { // 8 bit data
-        if (!pSourceData) {
+    if (wSmpSize == 1)   // 8 bit data
+    {
+        if (!pSourceData)
+        {
             ASSERT(FALSE);
             TRACE(_T("Failed reading source data\n"));
             return 0;
@@ -187,8 +211,11 @@ static int ReadDataBlock(CProcess * pSource, DWORD dwStart, DWORD dwStop, DWORD 
         bData = *((BYTE *)pSourceData); // data range is 0...255 (128 is center)
         nData = bData - 128;
         nData *= 256;
-    } else {              // 16 bit data
-        if (!pSourceData) {
+    }
+    else                  // 16 bit data
+    {
+        if (!pSourceData)
+        {
             ASSERT(FALSE);
             TRACE(_T("Failed reading source data\n"));
             return 0;

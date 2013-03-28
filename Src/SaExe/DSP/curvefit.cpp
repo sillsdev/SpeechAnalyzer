@@ -217,7 +217,8 @@
 ////////////////////////////////////////////////////////////////////////////////////////
 // Class function to return copyright notice.                                         //
 ////////////////////////////////////////////////////////////////////////////////////////
-char * CCurveFitting::Copyright(void) {
+char * CCurveFitting::Copyright(void)
+{
     static char Notice[] = {"Curve Fitting, Version " VERSION_NUMBER "\n"
                             "Copyright (c) " COPYRIGHT_DATE " by Summer Institute of Linguistics. "
                             "All rights reserved.\n"
@@ -228,7 +229,8 @@ char * CCurveFitting::Copyright(void) {
 ////////////////////////////////////////////////////////////////////////////////////////
 // Class function to return version of class.                                         //
 ////////////////////////////////////////////////////////////////////////////////////////
-float CCurveFitting::Version(void) {
+float CCurveFitting::Version(void)
+{
     return((float)atof(VERSION_NUMBER));
 }
 
@@ -236,16 +238,20 @@ float CCurveFitting::Version(void) {
 ////////////////////////////////////////////////////////////////////////////////////////
 // Class function to validate curve fitter parameters and construct object.           //
 ////////////////////////////////////////////////////////////////////////////////////////
-dspError_t CCurveFitting::CreateObject(CCurveFitting ** ppCurveFitter, CURVE_TYPE CurveType) {
-    if (!ppCurveFitter) {
+dspError_t CCurveFitting::CreateObject(CCurveFitting ** ppCurveFitter, CURVE_TYPE CurveType)
+{
+    if (!ppCurveFitter)
+    {
         return(Code(INVALID_PARM_PTR));
     }
     float * pCoeff = (float *)new float[CurveType];
-    if (!pCoeff) {
+    if (!pCoeff)
+    {
         return(Code(OUT_OF_MEMORY));
     }
     *ppCurveFitter = new CCurveFitting(CurveType, pCoeff);
-    if (!*ppCurveFitter) {
+    if (!*ppCurveFitter)
+    {
         delete pCoeff;
         return(Code(OUT_OF_MEMORY));
     }
@@ -255,7 +261,8 @@ dspError_t CCurveFitting::CreateObject(CCurveFitting ** ppCurveFitter, CURVE_TYP
 ////////////////////////////////////////////////////////////////////////////////////////
 // Peak picker object constructor.                                                    //
 ////////////////////////////////////////////////////////////////////////////////////////
-CCurveFitting::CCurveFitting(CURVE_TYPE CurveType, float * pCoeff) {
+CCurveFitting::CCurveFitting(CURVE_TYPE CurveType, float * pCoeff)
+{
     m_nCurveType = (short)CurveType;
     m_coeff = pCoeff;
     m_pData = NULL;
@@ -264,7 +271,8 @@ CCurveFitting::CCurveFitting(CURVE_TYPE CurveType, float * pCoeff) {
 ////////////////////////////////////////////////////////////////////////////////////////
 // Peak picker object destructor.                                                     //
 ////////////////////////////////////////////////////////////////////////////////////////
-CCurveFitting::~CCurveFitting() {
+CCurveFitting::~CCurveFitting()
+{
     delete m_coeff;
 }
 
@@ -273,19 +281,25 @@ CCurveFitting::~CCurveFitting() {
 ////////////////////////////////////////////////////////////////////////////////////////
 // Object function to fit data points to a specified curve.                           //
 ////////////////////////////////////////////////////////////////////////////////////////
-dspError_t CCurveFitting::FitCurve(const float * Data, uint16 nDataPoints) {
-    if (!Data) {
+dspError_t CCurveFitting::FitCurve(const float * Data, uint16 nDataPoints)
+{
+    if (!Data)
+    {
         return(Code(INVALID_PARM_PTR));
     }
-    if (!nDataPoints) {
+    if (!nDataPoints)
+    {
         return(Code(INVALID_DATA_LEN));
     }
-    switch (m_nCurveType) {
+    switch (m_nCurveType)
+    {
     case PARABOLIC:
-        if (nDataPoints < 3) {
+        if (nDataPoints < 3)
+        {
             return(Code(INVALID_DATA_LEN));
         }
-        if (nDataPoints == 3) {
+        if (nDataPoints == 3)
+        {
             // exact fit
             ////////////////////////////////////////////////////////////////////////
             // From Garrett Mitchener                                             //
@@ -319,7 +333,9 @@ dspError_t CCurveFitting::FitCurve(const float * Data, uint16 nDataPoints) {
             m_coeff[0] = Data[1];
             m_coeff[1] = (Data[2] - Data[0])/2.F;
             m_coeff[2] = (Data[2] + Data[0])/2.F - Data[1];
-        } else {
+        }
+        else
+        {
             // least squared fit
             //!!code goes here
         }
@@ -334,11 +350,14 @@ dspError_t CCurveFitting::FitCurve(const float * Data, uint16 nDataPoints) {
 ////////////////////////////////////////////////////////////////////////////////////////
 // Object function to calculate first derivative of specified curve at given location.//
 ////////////////////////////////////////////////////////////////////////////////////////
-dspError_t CCurveFitting::CalcFirstDerivative(float * pFirstDeriv, float x) {
-    if (!m_pData) {
+dspError_t CCurveFitting::CalcFirstDerivative(float * pFirstDeriv, float x)
+{
+    if (!m_pData)
+    {
         return(Code(INVALID_PARM_PTR));
     }
-    switch (m_nCurveType) {
+    switch (m_nCurveType)
+    {
     case PARABOLIC:
         x -= 1.F;  // subtract 1 since parabolic formulae assume x starts at -1 instead of 0
         *pFirstDeriv = m_coeff[1] + 2.F * m_coeff[2] * x;
@@ -347,14 +366,18 @@ dspError_t CCurveFitting::CalcFirstDerivative(float * pFirstDeriv, float x) {
     return(DONE);
 }
 
-dspError_t CCurveFitting::CalcFirstDerivative(float * pFirstDeriv, const float * x) {
-    if (!m_pData) {
+dspError_t CCurveFitting::CalcFirstDerivative(float * pFirstDeriv, const float * x)
+{
+    if (!m_pData)
+    {
         return(Code(INVALID_PARM_PTR));
     }
-    if (!x) {
+    if (!x)
+    {
         return(Code(INVALID_PARM_PTR));
     }
-    switch (m_nCurveType) {
+    switch (m_nCurveType)
+    {
     case PARABOLIC:
         // Calculate first derivative, subtracting 1 from the x index, since parabolic formulae
         // assume x starts at -1 instead of 0.
@@ -364,16 +387,21 @@ dspError_t CCurveFitting::CalcFirstDerivative(float * pFirstDeriv, const float *
     return(DONE);
 }
 
-dspError_t CCurveFitting::FindFirstDerivRoot(float * pFirstDerivRoot, uint16 /* nRootIndex */) {
-    if (!m_pData) {
+dspError_t CCurveFitting::FindFirstDerivRoot(float * pFirstDerivRoot, uint16 /* nRootIndex */)
+{
+    if (!m_pData)
+    {
         return(Code(INVALID_PARM_PTR));
     }
-    if (!pFirstDerivRoot) {
+    if (!pFirstDerivRoot)
+    {
         return(Code(INVALID_PARM_PTR));
     }
-    switch (m_nCurveType) {
+    switch (m_nCurveType)
+    {
     case PARABOLIC:
-        if (m_coeff[2] == 0.F) {
+        if (m_coeff[2] == 0.F)
+        {
             return(NO_ROOT_FOUND);
         }
         *pFirstDerivRoot = -m_coeff[1] / (2.F * m_coeff[2]);
@@ -383,11 +411,14 @@ dspError_t CCurveFitting::FindFirstDerivRoot(float * pFirstDerivRoot, uint16 /* 
     return(DONE);
 }
 
-dspError_t CCurveFitting::CalcSecondDerivative(float * pSecondDeriv, float /* x */) {
-    if (!m_pData) {
+dspError_t CCurveFitting::CalcSecondDerivative(float * pSecondDeriv, float /* x */)
+{
+    if (!m_pData)
+    {
         return(Code(INVALID_PARM_PTR));
     }
-    switch (m_nCurveType) {
+    switch (m_nCurveType)
+    {
     case PARABOLIC:
         *pSecondDeriv = 2.F * m_coeff[2];
         break;
@@ -395,14 +426,18 @@ dspError_t CCurveFitting::CalcSecondDerivative(float * pSecondDeriv, float /* x 
     return(DONE);
 }
 
-dspError_t CCurveFitting::CalcSecondDerivative(float * pSecondDeriv, const float * x) {
-    if (!m_pData) {
+dspError_t CCurveFitting::CalcSecondDerivative(float * pSecondDeriv, const float * x)
+{
+    if (!m_pData)
+    {
         return(Code(INVALID_PARM_PTR));
     }
-    if (!x) {
+    if (!x)
+    {
         return(Code(INVALID_PARM_PTR));
     }
-    switch (m_nCurveType) {
+    switch (m_nCurveType)
+    {
     case PARABOLIC:
         *pSecondDeriv = 2.F * m_coeff[2];
         break;
@@ -410,11 +445,14 @@ dspError_t CCurveFitting::CalcSecondDerivative(float * pSecondDeriv, const float
     return(DONE);
 }
 
-dspError_t CCurveFitting::GetValue(float * pValue, float x) {
-    if (!m_pData) {
+dspError_t CCurveFitting::GetValue(float * pValue, float x)
+{
+    if (!m_pData)
+    {
         return(Code(INVALID_PARM_PTR));
     }
-    switch (m_nCurveType) {
+    switch (m_nCurveType)
+    {
     case PARABOLIC:
         x = x - 1.F;   // adjust by 1 since formulae based on x starting at -1
         *pValue = m_coeff[0] + m_coeff[1]*x + m_coeff[2]*x*x;

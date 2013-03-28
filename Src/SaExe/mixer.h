@@ -18,7 +18,8 @@
 
 int GetWindowsVersion();
 
-class CMixer {
+class CMixer
+{
 public:
     CMixer(DWORD dwComponentType);
     virtual ~CMixer();
@@ -40,7 +41,8 @@ private:
     MMRESULT GetMixerControlID(HMIXER & hmx, DWORD * dwControl, MIXERCONTROL * control = NULL , DWORD dwControlType = MIXERCONTROL_CONTROLTYPE_VOLUME);
 };
 
-class CPlayMixer : public CMixer {
+class CPlayMixer : public CMixer
+{
 public:
     CPlayMixer();;
     ~CPlayMixer();
@@ -53,7 +55,8 @@ public:
     BOOL CanShowMixerControls(HWAVEOUT hPlayer);
 };
 
-class CRecMixer : public CMixer {
+class CRecMixer : public CMixer
+{
 public:
     CRecMixer();
     ~CRecMixer();

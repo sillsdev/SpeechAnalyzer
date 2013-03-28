@@ -11,7 +11,8 @@
 //###########################################################################
 // CProcessGrappl data processing
 
-class CProcessGrappl : public CProcess {
+class CProcessGrappl : public CProcess
+{
 // Construction/destruction/creation
 public:
     CProcessGrappl();
@@ -25,16 +26,19 @@ private:
 
 // Operations
 public:
-    Grappl_parms & GetCalcParms() {
+    Grappl_parms & GetCalcParms()
+    {
         return m_CalcParm;
     }
     long Process(void * pCaller, ISaDoc * pDoc, int nProgress = 0, int nLevel = 1);
     BOOL IsVoiced(ISaDoc * pDoc, DWORD dwWaveOffset);
-    double GetAveragePitch() {
+    double GetAveragePitch()
+    {
         return m_dAvgPitch;
     }
     double GetUncertainty(double fPitch);
-    virtual void SetDataInvalid() {
+    virtual void SetDataInvalid()
+    {
         CProcess::SetDataInvalid();
     }
 };

@@ -36,7 +36,8 @@ class CProcessPOA;
 class CProcessGlottis;
 class CProcessTonalWeightChart;
 
-class ISaDoc {
+class ISaDoc
+{
     friend CProcessDoc;
 
 public:

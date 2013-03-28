@@ -38,7 +38,8 @@
 #include "zgraph.h"                              // Basic Graph Class
 
 
-class zScatterGraph : public zGraph {
+class zScatterGraph : public zGraph
+{
 protected:
     double Multiplier1;                  // Used In Mapping 3-D to 2-D
     double Multiplier2;                  //   Coordinates

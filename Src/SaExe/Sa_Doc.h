@@ -88,7 +88,8 @@ class CDlgAdvancedParsePhrases;
 class CTranscriptionDataSettings;
 class CMusicPhraseSegment;
 
-class CSaDoc : public CUndoRedoDoc, public ISaDoc {
+class CSaDoc : public CUndoRedoDoc, public ISaDoc
+{
 
     DECLARE_DYNCREATE(CSaDoc)
 
@@ -181,7 +182,8 @@ public:
     SourceParm     *    GetSourceParm();                            // pointer to source parameters structure
     int                 GetGender();                                // returns gender: 0 = male, 1 = female, 2 = child
     // guesses if undefined in source parameters
-    const UttParm   *   GetUttParm()      {
+    const UttParm   *   GetUttParm()
+    {
         return &m_uttParm;   // pointer to utterance parameters structure
     }
     void                GetFmtParm(FmtParm *);                      // get a copy of the format parameters structure
@@ -242,7 +244,8 @@ public:
     void                DestroyAdvancedSegment();
     void                DestroyAdvancedParse();
     void                CreateFonts(); // set and create fonts
-    CDocTemplate    *   GetTemplate() {
+    CDocTemplate    *   GetTemplate()
+    {
         return m_pDocTemplate;
     }
     void                AutoSnapUpdate(void);
@@ -323,7 +326,8 @@ public:
     BOOL                PasteClipboardToWave(HGLOBAL hGlobal, DWORD dwPastePos);  // pastes wave data into the wave file
     void                DeleteWaveFromUndo(); // deletes a wave undo entry from the undo list
     void                UndoWaveFile(); // undo a wave file change
-    BOOL                IsWaveToUndo() {
+    BOOL                IsWaveToUndo()
+    {
         return m_bWaveUndoNow;   // return TRUE, if wave file change is to undo
     }
     void                CopyProcessTempFile();
@@ -384,8 +388,8 @@ public:
     void RevertTranscriptionChanges();
     bool IsTempFile();
     bool CanEdit();
-	void StoreAutoRecoveryInformation();
-	wstring GetFilename();
+    void StoreAutoRecoveryInformation();
+    wstring GetFilename();
 
 protected:
     void AlignTranscriptionData(CTranscriptionDataSettings & settings);
@@ -401,12 +405,12 @@ protected:
     int m_nTranscriptionApplicationCount;
 
 private:
-	void CleanAutoSave();
+    void CleanAutoSave();
 
-	bool autoSaveError;
-	bool autoSaving;
-	wstring autoSaveWave;
-	wstring autoSaveTrans;
+    bool autoSaveError;
+    bool autoSaving;
+    wstring autoSaveWave;
+    wstring autoSaveTrans;
 };
 
 #endif

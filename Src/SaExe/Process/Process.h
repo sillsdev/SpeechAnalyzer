@@ -43,7 +43,8 @@ class Object_ostream;
 class Object_istream;
 class CProgressStatusBar;
 
-class CProcess : public CCmdTarget {
+class CProcess : public CCmdTarget
+{
     // Construction/destruction/creation
 public:
     CProcess();
@@ -63,20 +64,25 @@ protected:
 
     // Operations
 public:
-    virtual void CancelProcess() {
+    virtual void CancelProcess()
+    {
         SetStatusFlag(PROCESS_CANCEL);   // cancel current process
     }
-    virtual void RestartProcess() {
+    virtual void RestartProcess()
+    {
         SetStatusFlag(PROCESS_CANCEL, FALSE);   // restart current process
     }
 
-    virtual BOOL IsCanceled() const {
+    virtual BOOL IsCanceled() const
+    {
         return IsStatusFlag(PROCESS_CANCEL);   // return the process canceled flag
     }
-    virtual BOOL IsDataReady() const {
+    virtual BOOL IsDataReady() const
+    {
         return IsStatusFlag(DATA_READY);
     }
-    virtual void SetDataInvalid() {
+    virtual void SetDataInvalid()
+    {
         SetStatusFlag(DATA_READY, FALSE);
         DeleteTempFile();
         m_dwBufferOffset = UNDEFINED_OFFSET;
@@ -84,36 +90,44 @@ public:
 
     virtual void * GetProcessedData(DWORD dwOffset, BOOL bBlockBegin = FALSE); // return processed data pointer on given position (offset)
     virtual int GetProcessedData(DWORD dwOffset, BOOL *); // return processed data from given position (offset)
-    virtual DWORD GetProcessedData(int /*nSegmentIndex*/) {
+    virtual DWORD GetProcessedData(int /*nSegmentIndex*/)
+    {
         // return processed data for a given segment
         return 0;
     }
 
-    virtual DWORD GetDataSize() const {
+    virtual DWORD GetDataSize() const
+    {
         // return processed data size in words (16 bit)
         return GetDataSize(2);
     }
-    virtual DWORD GetDataSize(size_t nElementSize) const {
+    virtual DWORD GetDataSize(size_t nElementSize) const
+    {
         // return processed data size in words (16 bit)
         return (DWORD)(m_fileStatus.m_size / nElementSize);
     }
     virtual void * GetProcessedDataBlock(DWORD dwOffset, size_t sObjectSize, BOOL bReverse=FALSE); // return processed data pointer to object staring at dwOffset
     virtual void * GetProcessedObject(DWORD dwIndex, size_t sObjectSize, BOOL bReverse=FALSE); // return processed data pointer to object staring at dwOffset
 
-    virtual int GetMaxValue() const {
+    virtual int GetMaxValue() const
+    {
         return m_nMaxValue;   // return maximum value
     }
-    virtual int GetMinValue() const {
+    virtual int GetMinValue() const
+    {
         return m_nMinValue;   // return minimum value
     }
 
-    long IsStatusFlag(long nStatus) const {
+    long IsStatusFlag(long nStatus) const
+    {
         return (GetStatus() & nStatus) == nStatus;
     }
-    virtual BOOL IsIdle() const {
+    virtual BOOL IsIdle() const
+    {
         return (IsStatusFlag(PROCESS_IDLE) != 0);   // return TRUE if process is idle
     }
-    virtual BOOL IsAliased() const {
+    virtual BOOL IsAliased() const
+    {
         return (IsStatusFlag(DATA_ALIASED) != 0);
     }; // return TRUE if processed data is aliased
 
@@ -121,26 +135,32 @@ public:
 
     // special workbench helper functions
     virtual HPSTR GetProcessedWaveData(DWORD dwOffset, BOOL bBlockBegin = FALSE); // return pointer to block of processed wave source
-    virtual DWORD GetProcessedWaveDataSize() {
+    virtual DWORD GetProcessedWaveDataSize()
+    {
         // return processed wave source data size
         return GetDataSize(1);
     }
-    virtual DWORD GetProcessBufferIndex(size_t nSize = 1) {
+    virtual DWORD GetProcessBufferIndex(size_t nSize = 1)
+    {
         // return index to process buffer
         return m_dwBufferOffset >= 0x40000000 ? UNDEFINED_OFFSET : m_dwBufferOffset/nSize;
     }
 
-    DWORD GetProcessBufferSize() {
+    DWORD GetProcessBufferSize()
+    {
         return m_dwBufferSize;   // return process buffer size
     }
-    void SetProcessBufferSize(DWORD dwSize) {
+    void SetProcessBufferSize(DWORD dwSize)
+    {
         m_dwBufferSize = dwSize;
     }
 
-    virtual const TCHAR * GetProcessFileName() {
+    virtual const TCHAR * GetProcessFileName()
+    {
         return m_fileStatus.m_szFullName;   // return process temporary file path and name
     }
-    void DeleteProcessFileName() {
+    void DeleteProcessFileName()
+    {
         m_fileStatus.m_szFullName[0] = 0;   // delete the temporary file name
     }
     BOOL SmoothData(int nTimes); // smooth data in the temporary file nTimes times
@@ -156,7 +176,8 @@ public:
 protected:
     virtual long GetStatus() const;
     void SetStatus(long nStatus);
-    void SetStatusFlag(long nStatus, BOOL bValue = TRUE) {
+    void SetStatusFlag(long nStatus, BOOL bValue = TRUE)
+    {
         SetStatus(bValue ? GetStatus() | nStatus : GetStatus() & ~nStatus);
     }
     virtual bool StartProcess(void * pCaller, int nProcessID, DWORD dwBufferSize);     // start processing data
@@ -171,15 +192,18 @@ protected:
     void CloseTempFile(BOOL bUpdateStatus = TRUE);       // close the temporary file
     virtual long Exit(int nError); // exit processing on error
     virtual BOOL WriteDataBlock(DWORD dwPosition, HPSTR lpData, DWORD dwDataLength, size_t nElementSize = 2); // write a block into the temporary file
-    virtual void SetDataReady(BOOL bReady = TRUE) {
+    virtual void SetDataReady(BOOL bReady = TRUE)
+    {
         SetStatusFlag(DATA_READY, bReady);
     }
-    virtual void Write(const void * lpBuf, UINT nCount) {
+    virtual void Write(const void * lpBuf, UINT nCount)
+    {
         m_pFile->Write(lpBuf, nCount);
     }
 
     // Special case used to bypass file
-    virtual void SetDataSize(int nElements, size_t nElementSize = 1) {
+    virtual void SetDataSize(int nElements, size_t nElementSize = 1)
+    {
         m_fileStatus.m_size = nElements * nElementSize;
     }
 
@@ -193,7 +217,8 @@ private:
 //###########################################################################
 // CAreaDataProcess
 
-class CProcessAreaData : public CProcess {
+class CProcessAreaData : public CProcess
+{
     // Construction/destruction/creation
 public:
     CProcessAreaData();
@@ -207,16 +232,19 @@ private:
 
     // Operations
 public:
-    virtual void UpdateArea() {
+    virtual void UpdateArea()
+    {
         SetStatusFlag(PROCESS_IDLE | KEEP_AREA,FALSE);
         SetDataInvalid();
     }
     BOOL SetArea(CSaView * pView);
 
-    DWORD GetAreaPosition() {
+    DWORD GetAreaPosition()
+    {
         return m_dwAreaPos;   // return area position
     }
-    DWORD GetAreaLength() {
+    DWORD GetAreaLength()
+    {
         return m_dwAreaLength;   // return area length
     }
 
@@ -225,26 +253,32 @@ protected:
 };
 
 
-class CProcessSDP : public CProcessAreaData {
+class CProcessSDP : public CProcessAreaData
+{
 };
 
 template<class _Ty>
-class CProcessIterator {
+class CProcessIterator
+{
 public:
     typedef CProcessIterator<_Ty> CIter;
 
     CProcessIterator(CProcess & process, unsigned int index = 0, BOOL bReverse=FALSE)
-        :  m_process(process), m_pData(0), m_bReverse(bReverse) {
+        :  m_process(process), m_pData(0), m_bReverse(bReverse)
+    {
         m_nCurrentIndex = index;
         m_nBeginIndex = m_nEndIndex = 0;
         m_nLength = process.GetProcessBufferSize()/sizeof(_Ty);
     }
 
-    _Ty & operator*() {
-        if ((m_nCurrentIndex < m_nBeginIndex) || (m_nCurrentIndex >= m_nEndIndex)) {
+    _Ty & operator*()
+    {
+        if ((m_nCurrentIndex < m_nBeginIndex) || (m_nCurrentIndex >= m_nEndIndex))
+        {
             loadData();
         }
-        if (m_pData == NULL) {
+        if (m_pData == NULL)
+        {
             throw 0;
         }
         return
@@ -252,11 +286,13 @@ public:
     }
 
     // prefix operators
-    CIter & operator++() {
+    CIter & operator++()
+    {
         m_nCurrentIndex++;
         return *this;
     }
-    CIter & operator--() {
+    CIter & operator--()
+    {
         m_nCurrentIndex--;
         return *this;
     }
@@ -274,10 +310,14 @@ private:
     unsigned int m_nEndIndex;
     unsigned int m_nLength;
 
-    void loadData() {
-        if (m_bReverse) {
+    void loadData()
+    {
+        if (m_bReverse)
+        {
             m_nBeginIndex = m_nCurrentIndex > m_nLength ? m_nCurrentIndex + 1 - m_nLength : 0;
-        } else {
+        }
+        else
+        {
             m_nBeginIndex = m_nCurrentIndex;
         }
         m_nEndIndex = m_nBeginIndex + m_nLength;

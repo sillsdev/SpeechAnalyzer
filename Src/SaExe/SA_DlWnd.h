@@ -29,7 +29,8 @@
 #define LED_POINT_WIDTH     4  // width of a point or double point
 #define LED_DIGIT_SPACE     2  // space between digits
 
-class CLEDDisplay : public CWnd {
+class CLEDDisplay : public CWnd
+{
     DECLARE_DYNCREATE(CLEDDisplay)
 
 // Construction/destruction/creation
@@ -47,10 +48,12 @@ private:
 public:
     void Init(UINT nID, CWnd * pParent);
     void SetTime(int nMin, int nSec); // min > 99 displays "--", sec > 599 displays "--.-"
-    int GetMinutes() {
+    int GetMinutes()
+    {
         return (m_chMinMSD * 10 + m_chMinLSD);   // return actually displayed minutes
     }
-    int GetSeconds() {
+    int GetSeconds()
+    {
         return (m_chSecMSD * 100 + m_chSecLSD * 10 + m_chSecDec);   // return actually displayed seconds
     }
 
@@ -66,7 +69,8 @@ protected:
 //###########################################################################
 // CSliderVertical dialog child window
 
-class CSliderVertical : public CWnd {
+class CSliderVertical : public CWnd
+{
     DECLARE_DYNCREATE(CSliderVertical)
 
 // Construction/destruction/creation
@@ -88,7 +92,8 @@ private:
 public:
     void Init(UINT nID, CWnd * pParent);
     void SetPosition(int nVal);
-    int GetPosition() {
+    int GetPosition()
+    {
         return m_chPos;   // get actual slider position
     }
 
@@ -107,7 +112,8 @@ protected:
 //###########################################################################
 // CSliderHorizontal dialog child window
 
-class CSliderHorizontal : public CWnd {
+class CSliderHorizontal : public CWnd
+{
     DECLARE_DYNCREATE(CSliderHorizontal)
 
 // Construction/destruction/creation
@@ -129,7 +135,8 @@ private:
 public:
     void Init(UINT nID, CWnd * pParent);
     void SetPosition(int nVal);
-    int GetPosition() {
+    int GetPosition()
+    {
         return m_chPos;   // get actual slider position
     }
 
@@ -159,7 +166,8 @@ protected:
 #define VU_BAR_RED          17 // first red point
 #define VU_BAR_HOLDCOUNT    10 // peak hold time
 
-class CVUBar : public CWnd {
+class CVUBar : public CWnd
+{
     DECLARE_DYNCREATE(CVUBar)
 
 // Construction/destruction/creation
@@ -209,7 +217,8 @@ protected:
 
 #define PROGRESS_BAR_DIVISIONS  10 // number of divisions
 
-class CProgressBar : public CWnd {
+class CProgressBar : public CWnd
+{
     DECLARE_DYNCREATE(CProgressBar)
 
 // Construction/destruction/creation
@@ -226,7 +235,8 @@ private:
 public:
     void Init(UINT nID, CWnd * pParent);
     void SetProgress(int nVal);
-    int  GetProgress() {
+    int  GetProgress()
+    {
         return m_nProgress;
     };
 
@@ -247,7 +257,8 @@ protected:
 
 #define COLOR_ITEM_HEIGHT   16 // height of each item in list
 
-class CComboGridlines : public CComboBox {
+class CComboGridlines : public CComboBox
+{
 private:
     virtual void MeasureItem(LPMEASUREITEMSTRUCT lpMIS);
     virtual void DrawItem(LPDRAWITEMSTRUCT lpDIS);
@@ -258,7 +269,8 @@ public:
 //###########################################################################
 // CSpinControl micro scroll buttons
 
-class CSpinControl : public CWnd {
+class CSpinControl : public CWnd
+{
     DECLARE_DYNCREATE(CSpinControl)
 
 public:
@@ -279,10 +291,12 @@ private:
     void MouseClick(UINT nFlags, CPoint point);
 public:
     void Init(UINT nID, CWnd * pParent);
-    int GetID() {
+    int GetID()
+    {
         return m_nID;   // get spin control ID
     }
-    BOOL UpperButtonClicked() {
+    BOOL UpperButtonClicked()
+    {
         return m_bUpButtonDown;   // return TRUE if upper button hit
     }
 
@@ -301,7 +315,8 @@ protected:
 //###########################################################################
 // CToggleButton
 
-class CToggleButton : public CWnd {
+class CToggleButton : public CWnd
+{
     DECLARE_DYNCREATE(CToggleButton)
 
 public:
@@ -324,7 +339,8 @@ private:
 
 public:
     void Init(UINT nID, CString szText, CWnd * pParent);
-    int GetID() {
+    int GetID()
+    {
         return m_nID;   // get control ID
     }
     void Flash(BOOL bFlash);           // starts/stops symbol flashing
@@ -348,7 +364,8 @@ protected:
 //###########################################################################
 // CTranscriptionDisp dialog child window
 
-class CTranscriptionDisp : public CWnd {
+class CTranscriptionDisp : public CWnd
+{
     // SDM 1.06.6r1 uses underlying static text control
     // Operations
 public:
@@ -359,7 +376,8 @@ public:
 //###########################################################################
 // CAboutTitle dialog child window
 
-class CAboutTitle : public CWnd {
+class CAboutTitle : public CWnd
+{
     DECLARE_DYNCREATE(CAboutTitle)
 
 // Construction/destruction/creation
@@ -386,7 +404,8 @@ protected:
 //###########################################################################
 // CStaticText dialog child window
 
-class CStaticText : public CWnd {
+class CStaticText : public CWnd
+{
     DECLARE_DYNCREATE(CStaticText)
 
 // Construction/destruction/creation
@@ -414,7 +433,8 @@ protected:
 //###########################################################################
 // CFancyArrow dialog child window
 
-class CFancyArrow : public CWnd {
+class CFancyArrow : public CWnd
+{
     DECLARE_DYNCREATE(CFancyArrow)
 
 // Construction/destruction/creation
@@ -442,16 +462,19 @@ protected:
 //###########################################################################
 // CLayoutListBox custom menu
 
-class CLayoutListBox : public CListBox {
+class CLayoutListBox : public CListBox
+{
 
     // Construction/destruction/creation
 public:
-    CLayoutListBox() {
+    CLayoutListBox()
+    {
         m_number = -1;
     };
     virtual ~CLayoutListBox();
     int GetLayoutFromSelection(int nIndex);
-    int GetPreferredLayout() const {
+    int GetPreferredLayout() const
+    {
         return GetPreferredLayout(m_number);
     }
     static int GetPreferredLayout(int number);

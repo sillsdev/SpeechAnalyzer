@@ -19,7 +19,8 @@
 #ifndef SA_CURSR_DEF
 #define SA_CURSR_DEF
 
-class CCursorWnd : public CWnd {
+class CCursorWnd : public CWnd
+{
     // Construction/destruction/creation
 public:
     CCursorWnd();
@@ -34,7 +35,8 @@ public:
 //###########################################################################
 // CStartCursorWnd window
 
-class CStartCursorWnd : public CCursorWnd {
+class CStartCursorWnd : public CCursorWnd
+{
 
     // Construction/destruction/creation
 public:

@@ -28,7 +28,8 @@ static char BASED_CODE THIS_FILE[] = __FILE__;
 /***************************************************************************/
 // CProcessGrappl::CProcessGrappl Constructor
 /***************************************************************************/
-CProcessGrappl::CProcessGrappl() {
+CProcessGrappl::CProcessGrappl()
+{
     // initialize algorithm parameters
     m_dAvgPitch = 0.;
 }
@@ -36,7 +37,8 @@ CProcessGrappl::CProcessGrappl() {
 /***************************************************************************/
 // CProcessGrappl::~CProcessGrappl Destructor
 /***************************************************************************/
-CProcessGrappl::~CProcessGrappl() {
+CProcessGrappl::~CProcessGrappl()
+{
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -54,48 +56,60 @@ CProcessGrappl::~CProcessGrappl() {
 // calling queue, or -1 in case of an error in the lower word of the long
 // value and the end process progress percentage in the higher word.
 /***************************************************************************/
-long CProcessGrappl::Process(void * pCaller, ISaDoc * pDoc, int nProgress, int nLevel) {
-    if (IsCanceled()) {
+long CProcessGrappl::Process(void * pCaller, ISaDoc * pDoc, int nProgress, int nLevel)
+{
+    if (IsCanceled())
+    {
         return MAKELONG(PROCESS_CANCELED, nProgress);    // process canceled
     }
-    if (IsDataReady()) {
+    if (IsDataReady())
+    {
         return MAKELONG(--nLevel, nProgress);    // data is already ready
     }
     TRACE(_T("Process: CProcessGrappl\n"));
     DWORD dwDataSize = pDoc->GetDataSize(); // raw data size
-    if (!dwDataSize) {
+    if (!dwDataSize)
+    {
         return Exit(PROCESS_NO_DATA);    // error, no valid data
     }
     FmtParm * pFmtParm = pDoc->GetFmtParm(); // get sa parameters format member data
     // determine if process to be run in background
     BOOL bBackground = FALSE; //pDoc->IsBackgroundProcessing();
 
-    if (nLevel < 0) { // previous processing error
-        if ((nLevel == PROCESS_CANCELED)) {
+    if (nLevel < 0)   // previous processing error
+    {
+        if ((nLevel == PROCESS_CANCELED))
+        {
             CancelProcess();    // set your own cancel flag
         }
         return MAKELONG(nLevel, nProgress);
     }
 
     // start grappl process
-    if (!bBackground) {
+    if (!bBackground)
+    {
         BeginWaitCursor();    // wait cursor
     }
     if (!(bBackground?StartProcess(pCaller, IDS_STATTXT_BACKGNDGRA):
-            StartProcess(pCaller, IDS_STATTXT_PROCESSGRA))) { // memory allocation failed
+            StartProcess(pCaller, IDS_STATTXT_PROCESSGRA)))   // memory allocation failed
+    {
         EndProcess(); // end data processing
-        if (!bBackground) {
+        if (!bBackground)
+        {
             EndWaitCursor();
         }
         return MAKELONG(PROCESS_ERROR, nProgress);
     }
     // if file has not been created
     Boolean ok = TRUE;
-    if (!GetProcessFileName()[0]) {
+    if (!GetProcessFileName()[0])
+    {
         // create the temporary grappl pitch file
-        if (!CreateTempFile(_T("GRA"))) { // creating error
+        if (!CreateTempFile(_T("GRA")))   // creating error
+        {
             EndProcess(); // end data processing
-            if (!bBackground) {
+            if (!bBackground)
+            {
                 EndWaitCursor();
             }
             SetDataInvalid();
@@ -119,7 +133,8 @@ long CProcessGrappl::Process(void * pCaller, ISaDoc * pDoc, int nProgress, int n
         m_CalcParm.reslag = 0;
         // check if enough workspace for grappl
         UINT nWorkSpace = grapplWorkspace();
-        if (GetBufferSize() < (DWORD)nWorkSpace) {
+        if (GetBufferSize() < (DWORD)nWorkSpace)
+        {
             // buffer too small
             TCHAR szText[6];
             swprintf_s(szText, _countof(szText), _T("%u"), nWorkSpace);
@@ -128,11 +143,15 @@ long CProcessGrappl::Process(void * pCaller, ISaDoc * pDoc, int nProgress, int n
         }
         // init grappl
         ok = grapplInit(m_lpBuffer, &m_CalcParm);
-    } else {
+    }
+    else
+    {
         // open file to append data
-        if (!OpenFileToAppend()) {
+        if (!OpenFileToAppend())
+        {
             EndProcess(); // end data processing
-            if (!bBackground) {
+            if (!bBackground)
+            {
                 EndWaitCursor();
             }
             SetDataInvalid();
@@ -143,25 +162,30 @@ long CProcessGrappl::Process(void * pCaller, ISaDoc * pDoc, int nProgress, int n
     int16 nomore = FALSE;
     // get block size
     DWORD dwBlockSize = 0x10000 - pFmtParm->wBlockAlign; // 64k - 1
-    if (GetBufferSize() < dwBlockSize) {
+    if (GetBufferSize() < dwBlockSize)
+    {
         dwBlockSize = GetBufferSize();
     }
     HPSTR pBlockStart;
     // start processing
-    while (ok && (m_dwDataPos < dwDataSize)) {
+    while (ok && (m_dwDataPos < dwDataSize))
+    {
         // get raw data block
         pBlockStart = pDoc->GetWaveData(m_dwDataPos, TRUE); // get pointer to data block
-        if (!pBlockStart) {
+        if (!pBlockStart)
+        {
             return Exit(PROCESS_ERROR);    // error, reading failed
         }
         m_dwDataPos += dwBlockSize;
-        if (m_dwDataPos >= dwDataSize) {
+        if (m_dwDataPos >= dwDataSize)
+        {
             dwBlockSize -= (m_dwDataPos - dwDataSize);
             nomore = TRUE;
         }
         // set grappl input buffer
         ok = grapplSetInbuff((pGrappl)m_lpBuffer, (pGrappl)pBlockStart, (WORD)(dwBlockSize / pFmtParm->wBlockAlign), nomore);
-        if (!ok) {
+        if (!ok)
+        {
             break;
         }
         // process
@@ -173,20 +197,27 @@ long CProcessGrappl::Process(void * pCaller, ISaDoc * pDoc, int nProgress, int n
 #endif
         /******************************************************************************/
         DWORD dwPitchCount = 0;
-        while (grapplGetResults((pGrappl)m_lpBuffer, &pResults, &nresults, &alldone)) {
+        while (grapplGetResults((pGrappl)m_lpBuffer, &pResults, &nresults, &alldone))
+        {
             // get max and min values and save the results
-            for (int16 nLoop = 0; nLoop < nresults; nLoop++) {
+            for (int16 nLoop = 0; nLoop < nresults; nLoop++)
+            {
                 // find min and max values
-                if (pResults->fsmooth16 >= 0) {
+                if (pResults->fsmooth16 >= 0)
+                {
                     // adjust result to precision multiplier format
                     pResults->fsmooth16 = (int16)(((long)pResults->fsmooth16 * (long)PRECISION_MULTIPLIER + 8L)/ 16L);
-                    if (pResults->fsmooth16 > m_nMaxValue) {
+                    if (pResults->fsmooth16 > m_nMaxValue)
+                    {
                         m_nMaxValue = pResults->fsmooth16;    // save maximum value
                     }
-                    if (pResults->fsmooth16 < m_nMinValue) {
+                    if (pResults->fsmooth16 < m_nMinValue)
+                    {
                         m_nMinValue = pResults->fsmooth16;    // save minimum value
                     }
-                } else {
+                }
+                else
+                {
                     pResults->fsmooth16 = -1;    // set this point as unset
                 }
                 /***************************** DEBUG ONLY *************************************/
@@ -195,16 +226,20 @@ long CProcessGrappl::Process(void * pCaller, ISaDoc * pDoc, int nProgress, int n
 #endif
                 /******************************************************************************/
                 // keep a running average of the pitch
-                if (pResults->fsmooth16 > 0) {
+                if (pResults->fsmooth16 > 0)
+                {
                     // average in voiced regions only
                     dwPitchCount++;
                     m_dAvgPitch = ((double)(dwPitchCount-1)*m_dAvgPitch + (double)pResults->fsmooth16/PRECISION_MULTIPLIER) /
                                   (double)dwPitchCount;
                 }
                 // write one result of the processed grappl pitch data
-                try {
+                try
+                {
                     Write((HPSTR)&pResults->fsmooth16, sizeof(int16));
-                } catch (CFileException e) {
+                }
+                catch (CFileException e)
+                {
                     // error writing file
                     ErrorMessage(IDS_ERROR_WRITETEMPFILE, GetProcessFileName());
                     return Exit(PROCESS_ERROR); // error, writing failed
@@ -219,31 +254,38 @@ long CProcessGrappl::Process(void * pCaller, ISaDoc * pDoc, int nProgress, int n
         /******************************************************************************/
         // set progress bar
         SetProgress(nProgress + (int)(100 * m_dwDataPos / dwDataSize / (DWORD)nLevel));
-        if (IsCanceled()) {
+        if (IsCanceled())
+        {
             return Exit(PROCESS_CANCELED);    // process canceled
         }
-        if (bBackground || alldone) {
+        if (bBackground || alldone)
+        {
             break;
         }
     }
-    if (!ok) {
+    if (!ok)
+    {
         return Exit(PROCESS_ERROR);    // error, processing failed
     }
     // calculate the actual progress
     nProgress = nProgress + (int)(100 / nLevel);
     // close the temporary file and read the status
     CloseTempFile(); // close the file
-    if (alldone) {
-        if (GetDataSize() < 2) {
+    if (alldone)
+    {
+        if (GetDataSize() < 2)
+        {
             return Exit(PROCESS_ERROR);    // error, not enough data
         }
         SetStatusFlag(PROCESS_NO_PITCH, m_nMinValue == SHRT_MAX);
     }
     EndProcess((nProgress >= 95)); // end data processing
-    if (!bBackground) {
+    if (!bBackground)
+    {
         EndWaitCursor();
     }
-    if (nomore || alldone) {
+    if (nomore || alldone)
+    {
         SetDataReady();
     }
     return MAKELONG(nLevel, nProgress);
@@ -252,7 +294,8 @@ long CProcessGrappl::Process(void * pCaller, ISaDoc * pDoc, int nProgress, int n
 /***************************************************************************/
 // CProcessGrappl::IsVoiced  Checks if waveform section at offset is voiced.
 /***************************************************************************/
-BOOL CProcessGrappl::IsVoiced(ISaDoc * pDoc, DWORD dwWaveOffset) {
+BOOL CProcessGrappl::IsVoiced(ISaDoc * pDoc, DWORD dwWaveOffset)
+{
     FmtParm * pFmtParm = pDoc->GetFmtParm(); // get sa parameters format member data
     UINT nSmpSize = pFmtParm->wBlockAlign / pFmtParm->wChannels;
     DWORD dwSmpOffset = dwWaveOffset / nSmpSize;
@@ -260,10 +303,12 @@ BOOL CProcessGrappl::IsVoiced(ISaDoc * pDoc, DWORD dwWaveOffset) {
     BOOL bDone;
     Process(this, (ISaDoc *)pDoc);
     BOOL bVoiced = (GetProcessedData(dwSmpOffset / Grappl_calc_intvl, &bDone) > 0);
-    if (!bDone) {
+    if (!bDone)
+    {
         return FALSE;
     }
-    if (dwPitchBlock != UNDEFINED_OFFSET && m_dwBufferOffset != dwPitchBlock) {
+    if (dwPitchBlock != UNDEFINED_OFFSET && m_dwBufferOffset != dwPitchBlock)
+    {
         GetProcessedData(dwPitchBlock/sizeof(short), TRUE);    // restore pitch buffer
     }
     return(bVoiced);
@@ -272,10 +317,12 @@ BOOL CProcessGrappl::IsVoiced(ISaDoc * pDoc, DWORD dwWaveOffset) {
 /***************************************************************************/
 // CProcessGrappl::GetUncertainty  Returns uncertainty at a specific pitch
 /***************************************************************************/
-double CProcessGrappl::GetUncertainty(double fPitch) {
+double CProcessGrappl::GetUncertainty(double fPitch)
+{
     double fFs = m_CalcParm.sampfreq; // sampling frequency
     double fUncertainty = fPitch * fPitch / (2 * fFs - fPitch);
-    if (fUncertainty < 0.1) {
+    if (fUncertainty < 0.1)
+    {
         fUncertainty = 0.1;
     }
 

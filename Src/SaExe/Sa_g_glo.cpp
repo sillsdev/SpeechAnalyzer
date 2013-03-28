@@ -54,11 +54,13 @@ END_MESSAGE_MAP()
 /***************************************************************************/
 // CPlotGlottis::CPlotGlottis Constructor
 /***************************************************************************/
-CPlotGlottis::CPlotGlottis() {
+CPlotGlottis::CPlotGlottis()
+{
 }
 
 
-void  CPlotGlottis::CopyTo(CPlotWnd * pT) {
+void  CPlotGlottis::CopyTo(CPlotWnd * pT)
+{
     CPlotGlottis * pTarg = (CPlotGlottis *)pT;
 
     CPlotWnd::CopyTo(pT);
@@ -68,7 +70,8 @@ void  CPlotGlottis::CopyTo(CPlotWnd * pT) {
 
 
 
-CPlotWnd * CPlotGlottis::NewCopy(void) {
+CPlotWnd * CPlotGlottis::NewCopy(void)
+{
     CPlotWnd * pRet = new CPlotGlottis();
 
     CopyTo(pRet);
@@ -80,7 +83,8 @@ CPlotWnd * CPlotGlottis::NewCopy(void) {
 /***************************************************************************/
 // CPlotGlottis::~CPlotGlottis Destructor
 /***************************************************************************/
-CPlotGlottis::~CPlotGlottis() {
+CPlotGlottis::~CPlotGlottis()
+{
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -95,7 +99,8 @@ CPlotGlottis::~CPlotGlottis() {
 // function PlotPaintFinish at the end of the drawing to let the plot base
 // class do common jobs like drawing the cursors.
 /***************************************************************************/
-void CPlotGlottis::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView) {
+void CPlotGlottis::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView)
+{
     // SDM 7/19/2001 Copied code from Raw to update to allow full zooming unable to test
     //               underlying process GPFs.
 
@@ -106,10 +111,12 @@ void CPlotGlottis::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView) {
     CProcessGlottis * pGlottalWave = (CProcessGlottis *)pDoc->GetGlottalWave(); // get pointer to glottal waveform
     short int nResult = LOWORD(pGlottalWave->Process(this, pDoc)); // process data
     nResult = CheckResult(nResult, pGlottalWave); // check the process result
-    if (nResult == PROCESS_ERROR) {
+    if (nResult == PROCESS_ERROR)
+    {
         return;
     }
-    if (nResult != PROCESS_CANCELED) {
+    if (nResult != PROCESS_CANCELED)
+    {
         pGraph->SetLegendScale(SCALE | NUMBERS, -50, 50, _T("Waveform")); // set legend scale
         SetProcessMultiplier(32768./100.);
         // do common plot paint jobs

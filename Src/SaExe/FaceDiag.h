@@ -1,7 +1,8 @@
 #ifndef FACEDIAG_H
 #define FACEDIAG_H
 
-typedef struct SVOCAL_TRACT_COORD {
+typedef struct SVOCAL_TRACT_COORD
+{
     int32 X;
     int32 Y;
     double RadAng;

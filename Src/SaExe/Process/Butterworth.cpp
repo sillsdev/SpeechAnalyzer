@@ -18,7 +18,8 @@ static char THIS_FILE[]=__FILE__;
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
 
-CProcessIIRFilter::CProcessIIRFilter(BOOL bDstWBench) {
+CProcessIIRFilter::CProcessIIRFilter(BOOL bDstWBench)
+{
     m_pSourceProcess = NULL;
     m_bSrcWBenchProcess = TRUE;
     m_bDstWBenchProcess = bDstWBench;
@@ -26,35 +27,46 @@ CProcessIIRFilter::CProcessIIRFilter(BOOL bDstWBench) {
     m_nFilterFilterSilence = DEFAULT_FILTER_FILTER_SILENCE_SAMPLES;
 }
 
-CProcessIIRFilter::~CProcessIIRFilter() {
+CProcessIIRFilter::~CProcessIIRFilter()
+{
 }
 
-static void StoreWaveData(int nData, int wSmpSize, void * pTargetData) {
+static void StoreWaveData(int nData, int wSmpSize, void * pTargetData)
+{
     // save data
-    if (wSmpSize == 1) { // 8 bit data
-        if (nData > 127) {
+    if (wSmpSize == 1)   // 8 bit data
+    {
+        if (nData > 127)
+        {
             nData = 127;
         }
-        if (nData < -128) {
+        if (nData < -128)
+        {
             nData = -128;
         }
         BYTE bData = (BYTE)(nData + 128);
         *((BYTE *)pTargetData) = bData;
-    } else {              // 16 bit data
-        if (nData > 32767) {
+    }
+    else                  // 16 bit data
+    {
+        if (nData > 32767)
+        {
             nData = 32767;
         }
-        if (nData < -32768) {
+        if (nData < -32768)
+        {
             nData = -32768;
         }
         *((unsigned short *)pTargetData) = (unsigned short)nData;
     }
 }
 
-long CProcessIIRFilter::Process(void * pCaller, ISaDoc * pDoc, int nProgress, int nLevel) {
+long CProcessIIRFilter::Process(void * pCaller, ISaDoc * pDoc, int nProgress, int nLevel)
+{
     TRACE("IIRFilter::Process %d %d\n",nProgress,nLevel);
 
-    if (IsCanceled()) {
+    if (IsCanceled())
+    {
         return MAKELONG(PROCESS_CANCELED, nProgress);    // process canceled
     }
 
@@ -62,7 +74,8 @@ long CProcessIIRFilter::Process(void * pCaller, ISaDoc * pDoc, int nProgress, in
     int nOldLevel = nLevel; // save original level
     CProcess * pLowerProcess = NULL;
     pLowerProcess = m_pSourceProcess;
-    if (pLowerProcess) {
+    if (pLowerProcess)
+    {
         TRACE("process lower\n");
         // there is at least one source processes to process first
         long lResult = pLowerProcess->Process(pCaller, pDoc, nProgress, ++nLevel);
@@ -70,14 +83,19 @@ long CProcessIIRFilter::Process(void * pCaller, ISaDoc * pDoc, int nProgress, in
         nProgress = HIWORD(lResult);
     }
 
-    if ((nLevel == nOldLevel) && (IsDataReady())) {
+    if ((nLevel == nOldLevel) && (IsDataReady()))
+    {
         return MAKELONG(--nLevel, nProgress);    // data is already ready
-    } else {
+    }
+    else
+    {
         SetDataInvalid();
     }
 
-    if (nLevel < 0) { // memory allocation failed or previous processing error
-        if ((nLevel == PROCESS_CANCELED)) {
+    if (nLevel < 0)   // memory allocation failed or previous processing error
+    {
+        if ((nLevel == PROCESS_CANCELED))
+        {
             CancelProcess();    // set your own cancel flag
         }
         return MAKELONG(nLevel, nProgress);
@@ -86,14 +104,16 @@ long CProcessIIRFilter::Process(void * pCaller, ISaDoc * pDoc, int nProgress, in
     TRACE("start process\n");
     // start process
     BeginWaitCursor(); // wait cursor
-    if (!StartProcess(pCaller, IDS_STATTXT_PROCESSWBLP)) { // start data processing
+    if (!StartProcess(pCaller, IDS_STATTXT_PROCESSWBLP))   // start data processing
+    {
         EndProcess(); // end data processing
         EndWaitCursor();
         return MAKELONG(PROCESS_ERROR, nProgress);
     }
 
     // create the temporary file
-    if (!CreateTempFile(_T("IIR"))) { // creating error
+    if (!CreateTempFile(_T("IIR")))   // creating error
+    {
         EndProcess(); // end data processing
         EndWaitCursor();
         SetDataReady(FALSE);
@@ -111,51 +131,62 @@ long CProcessIIRFilter::Process(void * pCaller, ISaDoc * pDoc, int nProgress, in
     m_bReverse = (!m_zReverseTransform.IsIdentity());
 
     // start processing loop
-    if (!m_bReverse) {
+    if (!m_bReverse)
+    {
         TRACE("forward\n");
         m_bReverse = FALSE;
         // get source data size
         DWORD dwDataSize;
-        if (pLowerProcess) {
+        if (pLowerProcess)
+        {
             dwDataSize = pLowerProcess->GetProcessedWaveDataSize();
-        } else {
+        }
+        else
+        {
             dwDataSize = pDoc->GetUnprocessedDataSize(); // size of raw data
         }
         TRACE("dwDataSize=%d\n",dwDataSize);
 
         WORD wSrcSmpSize = WORD(m_bSrcWBenchProcess ? pFmtParm->wBlockAlign / pFmtParm->wChannels : sizeof(short));
 
-        if (wDstSmpSize > wSrcSmpSize) {
+        if (wDstSmpSize > wSrcSmpSize)
+        {
             dwBufferSize /= wDstSmpSize/wSrcSmpSize;
         }
 
         m_nMinValue = INT_MAX;
         m_nMaxValue = INT_MIN;
-        while (dwDataPos < dwDataSize) {
+        while (dwDataPos < dwDataSize)
+        {
             // set progress bar
             //SetProgress(nProgress + (int)(100 * dwDataPos / dwDataSize / (DWORD)nLevel));
-            if (IsCanceled()) {
+            if (IsCanceled())
+            {
                 return Exit(PROCESS_CANCELED);    // process canceled
             }
 
             pTargetData = m_lpBuffer;
             DWORD dwBlockEnd = dwDataPos + dwBufferSize;
-            if (dwBlockEnd > dwDataSize) {
+            if (dwBlockEnd > dwDataSize)
+            {
                 dwBlockEnd = dwDataSize;
             }
             DWORD dwBlockStart = dwDataPos;
 
-            while (dwDataPos < dwBlockEnd) {
+            while (dwDataPos < dwBlockEnd)
+            {
                 int nData = ReadSourceData(dwDataPos, wSrcSmpSize, pDoc);
                 dwDataPos+= wSrcSmpSize;
 
                 // process data
                 nData = round(m_zForwardTransform.Tick(double(nData)));
 
-                if (nData > m_nMaxValue) {
+                if (nData > m_nMaxValue)
+                {
                     m_nMaxValue = nData;
                 }
-                if (nData < m_nMinValue) {
+                if (nData < m_nMinValue)
+                {
                     m_nMinValue = nData;
                 }
 
@@ -165,18 +196,22 @@ long CProcessIIRFilter::Process(void * pCaller, ISaDoc * pDoc, int nProgress, in
             WriteWaveDataBlock(dwBlockStart, m_lpBuffer, (dwBlockEnd-dwBlockStart)*wDstSmpSize/wSrcSmpSize);
             dwDataPos = dwBlockEnd;
         }
-        if (m_bFilterFilter) {
+        if (m_bFilterFilter)
+        {
             // Append some silence to handle phase lag
             DWORD dwSettlingSize = FilterFilterSilenceSamples()*wSrcSmpSize;
-            while (dwDataPos < dwDataSize + dwSettlingSize) {
+            while (dwDataPos < dwDataSize + dwSettlingSize)
+            {
                 pTargetData = m_lpBuffer;
                 DWORD dwBlockEnd = dwDataPos + dwBufferSize;
-                if (dwBlockEnd > dwDataSize + dwSettlingSize) {
+                if (dwBlockEnd > dwDataSize + dwSettlingSize)
+                {
                     dwBlockEnd = dwDataSize + dwSettlingSize;
                 }
                 DWORD dwBlockStart = dwDataPos;
 
-                while (dwDataPos < dwBlockEnd) {
+                while (dwDataPos < dwBlockEnd)
+                {
                     // process data
                     dwDataPos+= wSrcSmpSize;
 
@@ -190,7 +225,9 @@ long CProcessIIRFilter::Process(void * pCaller, ISaDoc * pDoc, int nProgress, in
             }
         }
         Dump("butterworth end forward");
-    } else {
+    }
+    else
+    {
         TRACE("reverse\n");
         // process in reverse
         // first do forward pass
@@ -205,7 +242,8 @@ long CProcessIIRFilter::Process(void * pCaller, ISaDoc * pDoc, int nProgress, in
         long lResult = forwardPass.Process(pCaller, pDoc, nProgress, ++nLevel);
         nLevel = (short int)LOWORD(lResult);
         nProgress = HIWORD(lResult);
-        if ((nLevel == PROCESS_CANCELED)) {
+        if ((nLevel == PROCESS_CANCELED))
+        {
             CancelProcess(); // set your own cancel flag
             return MAKELONG(nLevel, nProgress);
         }
@@ -216,15 +254,19 @@ long CProcessIIRFilter::Process(void * pCaller, ISaDoc * pDoc, int nProgress, in
 
         WORD wSmpSize = wDstSmpSize;
         DWORD dwDataSize;
-        if (forwardPass.m_pSourceProcess) {
+        if (forwardPass.m_pSourceProcess)
+        {
             dwDataSize = forwardPass.m_pSourceProcess->GetDataSize()*wSmpSize;
-        } else {
+        }
+        else
+        {
             dwDataSize = (forwardPass.GetDataSize() - FilterFilterSilenceSamples())*wSmpSize;
         }
 
         dwDataPos = forwardPass.GetDataSize()*wSmpSize;
 
-        while (dwDataPos > dwDataSize) {
+        while (dwDataPos > dwDataSize)
+        {
             // process silence
             dwDataPos-= wSmpSize;
             int nData = ReadSourceData(dwDataPos, wSmpSize, pDoc);
@@ -235,16 +277,19 @@ long CProcessIIRFilter::Process(void * pCaller, ISaDoc * pDoc, int nProgress, in
         m_nMaxValue = INT_MIN;
 
         // start processing loop
-        while (dwDataPos > 0) {
+        while (dwDataPos > 0)
+        {
             // set progress bar
             //      SetProgress(nProgress + (int)(100 * (dwDataSize - dwDataPos) / dwDataSize / (DWORD)nLevel));
-            if (IsCanceled()) {
+            if (IsCanceled())
+            {
                 m_pSourceProcess = forwardPass.m_pSourceProcess;
                 return Exit(PROCESS_CANCELED); // process canceled
             }
 
             DWORD dwBlockEnd = dwDataPos - dwBufferSize;
-            if (dwDataPos < dwBufferSize) {
+            if (dwDataPos < dwBufferSize)
+            {
                 dwBlockEnd = 0;
                 dwBufferSize = dwDataPos;
             }
@@ -252,17 +297,20 @@ long CProcessIIRFilter::Process(void * pCaller, ISaDoc * pDoc, int nProgress, in
 
             pTargetData = m_lpBuffer + dwBufferSize;
             TRACE("dwDataPos=%d\n",dwDataPos);
-            while (dwDataPos > dwBlockEnd) {
+            while (dwDataPos > dwBlockEnd)
+            {
                 dwDataPos-= wSmpSize;
                 int nData = ReadSourceData(dwDataPos, wSmpSize, pDoc);
 
                 // process data
                 nData = round(m_zReverseTransform.Tick(double(nData)));
 
-                if (nData > m_nMaxValue) {
+                if (nData > m_nMaxValue)
+                {
                     m_nMaxValue = nData;
                 }
-                if (nData < m_nMinValue) {
+                if (nData < m_nMinValue)
+                {
                     m_nMinValue = nData;
                 }
 
@@ -290,28 +338,34 @@ long CProcessIIRFilter::Process(void * pCaller, ISaDoc * pDoc, int nProgress, in
     return MAKELONG(nLevel, nProgress);
 }
 
-void CProcessIIRFilter::SetSourceProcess(CProcess * pSourceProcess, BOOL bWBenchProcess) {
+void CProcessIIRFilter::SetSourceProcess(CProcess * pSourceProcess, BOOL bWBenchProcess)
+{
     m_bSrcWBenchProcess = bWBenchProcess;
 
-    if (m_pSourceProcess != pSourceProcess) {
+    if (m_pSourceProcess != pSourceProcess)
+    {
         SetDataInvalid();
     }
 
     m_pSourceProcess = pSourceProcess;
 }
 
-int CProcessIIRFilter::ReadSourceData(DWORD dwDataPos, int wSmpSize, ISaDoc * pDoc) {
+int CProcessIIRFilter::ReadSourceData(DWORD dwDataPos, int wSmpSize, ISaDoc * pDoc)
+{
     CProcess * pLowerProcess = m_pSourceProcess;
 
-    if (!pLowerProcess) {
+    if (!pLowerProcess)
+    {
         pLowerProcess = pDoc->GetAdjust();  // This is the default node
     }
 
     // read data
     int nData;
-    if (wSmpSize == 1) { // 8 bit data
+    if (wSmpSize == 1)   // 8 bit data
+    {
         void * pSourceData = pLowerProcess->GetProcessedObject(dwDataPos, 1, m_bReverse);
-        if (!pSourceData) {
+        if (!pSourceData)
+        {
             ASSERT(FALSE);
             TRACE(_T("Failed reading source data\n"));
             return 0;
@@ -319,9 +373,12 @@ int CProcessIIRFilter::ReadSourceData(DWORD dwDataPos, int wSmpSize, ISaDoc * pD
         BYTE bData;
         bData = *((BYTE *)pSourceData); // data range is 0...255 (128 is center)
         nData = bData - 128;
-    } else {              // 16 bit data
+    }
+    else                  // 16 bit data
+    {
         void * pSourceData = pLowerProcess->GetProcessedObject(dwDataPos>>1, 2, m_bReverse);
-        if (!pSourceData) {
+        if (!pSourceData)
+        {
             ASSERT(FALSE);
             TRACE(_T("Failed reading source data\n"));
             return 0;
@@ -332,11 +389,13 @@ int CProcessIIRFilter::ReadSourceData(DWORD dwDataPos, int wSmpSize, ISaDoc * pD
     return nData;
 }
 
-BOOL CProcessIIRFilter::WriteWaveDataBlock(DWORD dwPosition, HPSTR lpData, DWORD dwDataLength) {
+BOOL CProcessIIRFilter::WriteWaveDataBlock(DWORD dwPosition, HPSTR lpData, DWORD dwDataLength)
+{
     return WriteDataBlock(dwPosition, lpData, dwDataLength, sizeof(char));
 }
 
-CButterworth::CButterworth(BOOL bWorkbenchOutput) : CProcessIIRFilter(bWorkbenchOutput) {
+CButterworth::CButterworth(BOOL bWorkbenchOutput) : CProcessIIRFilter(bWorkbenchOutput)
+{
     m_bFilterFilter = FALSE;
     m_bReverse = FALSE;
     m_nOrder = 0;
@@ -347,7 +406,8 @@ CButterworth::CButterworth(BOOL bWorkbenchOutput) : CProcessIIRFilter(bWorkbench
     m_dScale = 1;
 }
 
-CButterworth::~CButterworth() {
+CButterworth::~CButterworth()
+{
 }
 
 static const double pi = 3.14159265358979323846264338327950288419716939937511;
@@ -358,14 +418,16 @@ static const double pi = 3.14159265358979323846264338327950288419716939937511;
 // left plane.  The poles are symmetric about the Real axis, and
 // are not placed on the imaginary axis.  Function returns a pole.
 // The poles are numbered counter clockwise (90-270 degrees)
-inline static std::complex<double> ButterworthPole(int nOrder, int nPole) {
+inline static std::complex<double> ButterworthPole(int nOrder, int nPole)
+{
 
     double dSpacing = pi/ nOrder;
     double dAngle = (pi + dSpacing)/2. + dSpacing*nPole;
     return std::complex<double>(cos(dAngle), sin(dAngle));
 }
 
-void CButterworth::CascadeLowPass(CZTransform & zTransform, int nOrder, double dFilterCutoffFreq, double dSamplingFreq, double & tau) {
+void CButterworth::CascadeLowPass(CZTransform & zTransform, int nOrder, double dFilterCutoffFreq, double dSamplingFreq, double & tau)
+{
     double numerator[3];
     double denominator[3];
 
@@ -374,7 +436,8 @@ void CButterworth::CascadeLowPass(CZTransform & zTransform, int nOrder, double d
 
     double tauSq = tau*tau;
 
-    for (int i = 0; i < (nOrder+1)/2; i++) {
+    for (int i = 0; i < (nOrder+1)/2; i++)
+    {
         std::complex<double> pole = ButterworthPole(nOrder, i);
 
         // Since the Butterworth pole is normalized to 1
@@ -382,7 +445,8 @@ void CButterworth::CascadeLowPass(CZTransform & zTransform, int nOrder, double d
         pole *= dAnalogCutoffFreq;
 
         // Generate digital filter
-        if ((i * 2 + 1) == nOrder) { // last one is single real pole
+        if ((i * 2 + 1) == nOrder)   // last one is single real pole
+        {
             // each first order analog filter takes the general form
             //
             //               -pole/(s - pole)
@@ -401,7 +465,9 @@ void CButterworth::CascadeLowPass(CZTransform & zTransform, int nOrder, double d
             double lp = fabs(denominator[1]) > 1e-6 ? log(fabs(denominator[1])) : log(1e-6);
             tauSq += 1/(lp*lp) + 1;
             break;
-        } else { // conjugate pole pairs
+        }
+        else     // conjugate pole pairs
+        {
             // each second order analog filter takes the general form
             //
             //               -pole      -pole*
@@ -438,7 +504,8 @@ void CButterworth::CascadeLowPass(CZTransform & zTransform, int nOrder, double d
 }
 
 // Cascades a highpass nOrder butterworth filter to current working filter
-void CButterworth::CascadeHighPass(CZTransform & zTransform, int nOrder, double dFilterCutoffFreq, double dSamplingFreq, double & tau) {
+void CButterworth::CascadeHighPass(CZTransform & zTransform, int nOrder, double dFilterCutoffFreq, double dSamplingFreq, double & tau)
+{
     double numerator[3];
     double denominator[3];
 
@@ -447,7 +514,8 @@ void CButterworth::CascadeHighPass(CZTransform & zTransform, int nOrder, double 
 
     double tauSq = tau*tau;
 
-    for (int i = 0; i < (nOrder+1)/2; i++) {
+    for (int i = 0; i < (nOrder+1)/2; i++)
+    {
         std::complex<double> pole = ButterworthPole(nOrder, i);
 
         // Since the Butterworth pole is normalized to 1
@@ -463,7 +531,8 @@ void CButterworth::CascadeHighPass(CZTransform & zTransform, int nOrder, double 
         //              s = 0.5 (1 + z  ) / (1 - z  )
         //
         // and substitute into the low pass equations, yielding the following coefficients
-        if ((i * 2 + 1) == nOrder) { // last one is single real pole
+        if ((i * 2 + 1) == nOrder)   // last one is single real pole
+        {
             // first order section
             denominator[0] = 1.;
             denominator[1] = (1. + 2.*pole.real()) / (1. - 2.*pole.real());
@@ -474,7 +543,9 @@ void CButterworth::CascadeHighPass(CZTransform & zTransform, int nOrder, double 
             double lp = fabs(denominator[1]) > 1e-6 ? log(fabs(denominator[1])) : log(1e-6);
             tauSq += 1/(lp*lp) + 1;
             break;
-        } else {
+        }
+        else
+        {
             // second order section, taking complex conjugate pole pairs
             double dPoleMagSquared = (pole.real()*pole.real() + pole.imag()*pole.imag());
             double dNormFactor = 1. - 4.* pole.real() + 4.* dPoleMagSquared;
@@ -495,21 +566,27 @@ void CButterworth::CascadeHighPass(CZTransform & zTransform, int nOrder, double 
 
 
 // Cascades a scale term to scale output
-void CButterworth::CascadeScale(CZTransform & zTransform, double dScale) {
+void CButterworth::CascadeScale(CZTransform & zTransform, double dScale)
+{
     zTransform *= CZTransform(0, &dScale, NULL);
 }
 
 
-void CButterworth::ClearFilter() {
+void CButterworth::ClearFilter()
+{
     m_zForwardTransform = CZTransform(0, NULL, NULL);
     m_zReverseTransform = CZTransform(0, NULL, NULL);
 }
 
 
-double CButterworth::FilterFilterNorm(int nOrder) const {
-    if (m_bFilterFilter) {
+double CButterworth::FilterFilterNorm(int nOrder) const
+{
+    if (m_bFilterFilter)
+    {
         return exp(log(sqrt(2.) - 1.)/(2*nOrder));
-    } else {
+    }
+    else
+    {
         return 1.;
     }
 }
@@ -530,13 +607,16 @@ double CButterworth::FilterFilterNorm(int nOrder) const {
 // calling queue, or -1 in case of an error in the lower word of the long
 // value and the end process progress percentage in the higher word.
 /***************************************************************************/
-long CButterworth::Process(void * pCaller, ISaDoc * pDoc, int nProgress, int nLevel) {
-    if (IsCanceled()) {
+long CButterworth::Process(void * pCaller, ISaDoc * pDoc, int nProgress, int nLevel)
+{
+    if (IsCanceled())
+    {
         return MAKELONG(PROCESS_CANCELED, nProgress);    // process canceled
     }
     // check if nested workbench processes
 
-    if (IsDataReady()) {
+    if (IsDataReady())
+    {
         return MAKELONG(--nLevel, nProgress);    // data is already ready
     }
 
@@ -548,8 +628,10 @@ long CButterworth::Process(void * pCaller, ISaDoc * pDoc, int nProgress, int nLe
 }
 
 
-void CButterworth::HighPass(int nOrder, double dFrequency, double dScale) {
-    if (m_nOrder != nOrder || m_dFrequency != dFrequency || m_dScale != dScale || m_ftFilterType != kftHighPass) {
+void CButterworth::HighPass(int nOrder, double dFrequency, double dScale)
+{
+    if (m_nOrder != nOrder || m_dFrequency != dFrequency || m_dScale != dScale || m_ftFilterType != kftHighPass)
+    {
         SetDataInvalid();
     }
 
@@ -559,8 +641,10 @@ void CButterworth::HighPass(int nOrder, double dFrequency, double dScale) {
     m_dScale = dScale;
 }
 
-void CButterworth::LowPass(int nOrder, double dFrequency, double dScale) {
-    if (m_nOrder != nOrder || m_dFrequency != dFrequency || m_dScale != dScale || m_ftFilterType != kftLowPass) {
+void CButterworth::LowPass(int nOrder, double dFrequency, double dScale)
+{
+    if (m_nOrder != nOrder || m_dFrequency != dFrequency || m_dScale != dScale || m_ftFilterType != kftLowPass)
+    {
         SetDataInvalid();
     }
 
@@ -570,8 +654,10 @@ void CButterworth::LowPass(int nOrder, double dFrequency, double dScale) {
     m_dScale = dScale;
 }
 
-void CButterworth::BandPass(int nOrder, double dFrequency, double dBandwidth, double dScale) {
-    if (m_nOrder != nOrder || m_dFrequency != dFrequency || m_dBandwidth != dBandwidth || m_dScale != dScale || m_ftFilterType != kftBandPass) {
+void CButterworth::BandPass(int nOrder, double dFrequency, double dBandwidth, double dScale)
+{
+    if (m_nOrder != nOrder || m_dFrequency != dFrequency || m_dBandwidth != dBandwidth || m_dScale != dScale || m_ftFilterType != kftBandPass)
+    {
         SetDataInvalid();
     }
 
@@ -582,12 +668,15 @@ void CButterworth::BandPass(int nOrder, double dFrequency, double dBandwidth, do
     m_dScale = dScale;
 }
 
-void CButterworth::ConfigureProcess(double dSampling) {
+void CButterworth::ConfigureProcess(double dSampling)
+{
     double tau = 0;
     ClearFilter();
-    if (m_bReverse) {
+    if (m_bReverse)
+    {
         double rTau = 0;
-        switch (m_ftFilterType) {
+        switch (m_ftFilterType)
+        {
         case kftHighPass:
             CascadeHighPass(m_zReverseTransform, m_nOrder, m_dFrequency*FilterFilterNorm(m_nOrder), dSampling, rTau);
             break;
@@ -606,7 +695,8 @@ void CButterworth::ConfigureProcess(double dSampling) {
             TRACE(_T("Filter not configured\n"));
         }
     }
-    switch (m_ftFilterType) {
+    switch (m_ftFilterType)
+    {
     case kftHighPass:
         CascadeHighPass(m_zForwardTransform, m_nOrder, m_dFrequency*FilterFilterNorm(m_nOrder), dSampling, tau);
         CascadeScale(m_zForwardTransform, m_dScale);
@@ -631,7 +721,8 @@ void CButterworth::ConfigureProcess(double dSampling) {
 }
 
 
-const double CHilbert::Pole1000x96dB[] = {
+const double CHilbert::Pole1000x96dB[] =
+{
     9.9935401489275E-001,
     9.9795415607235E-001,
     9.9621092946349E-001,
@@ -652,7 +743,8 @@ const double CHilbert::Pole1000x96dB[] = {
     0 // Real Pole
 };
 
-CHilbert::CHilbert(CProcess * pSourceProcess, BOOL bWBenchProcess) {
+CHilbert::CHilbert(CProcess * pSourceProcess, BOOL bWBenchProcess)
+{
     pSourceProcess->Dump("hilbert");
 
     const double * poles = Pole1000x96dB;
@@ -660,11 +752,13 @@ CHilbert::CHilbert(CProcess * pSourceProcess, BOOL bWBenchProcess) {
     double rTauSq=0;
     int poleLast = 0;
 
-    while (poles[poleLast] != 0.) {
+    while (poles[poleLast] != 0.)
+    {
         poleLast++;
     }
 
-    for (int i=poleLast & 0x1; i < poleLast; i+=2) {
+    for (int i=poleLast & 0x1; i < poleLast; i+=2)
+    {
         double flp;
         m_zForwardTransform *= AllPass(poles[i]);
         flp = log(poles[i]);
@@ -672,7 +766,8 @@ CHilbert::CHilbert(CProcess * pSourceProcess, BOOL bWBenchProcess) {
     }
     m_zForwardTransform *= DelayHalf(); // Introduce a single clock delay
 
-    for (int i=(poleLast+1)&0x1; i < poleLast; i+=2) {
+    for (int i=(poleLast+1)&0x1; i < poleLast; i+=2)
+    {
         double rlp;
         m_zReverseTransform *= AllPass(poles[i]);
         rlp = log(poles[i]);
@@ -687,7 +782,8 @@ CHilbert::CHilbert(CProcess * pSourceProcess, BOOL bWBenchProcess) {
     SetSourceProcess(pSourceProcess, bWBenchProcess);
 }
 
-CZTransform CHilbert::AllPass(double pole) {
+CZTransform CHilbert::AllPass(double pole)
+{
     double numerator[3];
     double denominator[3];
     double beta = pole*pole;
@@ -703,7 +799,8 @@ CZTransform CHilbert::AllPass(double pole) {
     return result;
 }
 
-CZTransform CHilbert::DelayHalf() {
+CZTransform CHilbert::DelayHalf()
+{
     double numerator[2];
 
     numerator[0] = 0;

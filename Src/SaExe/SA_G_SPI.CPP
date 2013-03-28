@@ -42,11 +42,13 @@ END_MESSAGE_MAP()
 /***************************************************************************/
 // CPlotSmoothedPitch::CPlotSmoothedPitch Constructor
 /***************************************************************************/
-CPlotSmoothedPitch::CPlotSmoothedPitch() {
+CPlotSmoothedPitch::CPlotSmoothedPitch()
+{
 }
 
 
-CPlotWnd * CPlotSmoothedPitch::NewCopy() {
+CPlotWnd * CPlotSmoothedPitch::NewCopy()
+{
     CPlotWnd * pRet = new CPlotSmoothedPitch();
 
     CopyTo(pRet);
@@ -57,7 +59,8 @@ CPlotWnd * CPlotSmoothedPitch::NewCopy() {
 /***************************************************************************/
 // CPlotSmoothedPitch::~CPlotSmoothedPitch Destructor
 /***************************************************************************/
-CPlotSmoothedPitch::~CPlotSmoothedPitch() {
+CPlotSmoothedPitch::~CPlotSmoothedPitch()
+{
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -71,7 +74,8 @@ CPlotSmoothedPitch::~CPlotSmoothedPitch() {
 // drawing to let the plot base class do common jobs like drawing the
 // cursors.
 /***************************************************************************/
-void CPlotSmoothedPitch::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView) {
+void CPlotSmoothedPitch::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView)
+{
     // get pointer to graph, view and document
     CGraphWnd * pGraph = (CGraphWnd *)GetParent();
     CSaDoc  *  pDoc   = pView->GetDocument();
@@ -79,33 +83,43 @@ void CPlotSmoothedPitch::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pV
     CProcessSmoothedPitch * pPitch = (CProcessSmoothedPitch *)pDoc->GetSmoothedPitch(); // get pointer to smoothed pitch object
     short int nResult = LOWORD(pPitch->Process(this, pDoc)); // process data
     nResult = CheckResult(nResult, pPitch); // check the process result
-    if (nResult == PROCESS_ERROR) {
+    if (nResult == PROCESS_ERROR)
+    {
         return;
     }
-    if (pPitch->IsStatusFlag(PROCESS_NO_PITCH)) {
+    if (pPitch->IsStatusFlag(PROCESS_NO_PITCH))
+    {
         m_HelperWnd.SetMode(MODE_TEXT | FRAME_POPOUT | POS_HCENTER | POS_VCENTER, IDS_HELPERWND_ADJUSTPARMS, &rWnd);
-    } else if (pPitch->IsDataReady()) {
+    }
+    else if (pPitch->IsDataReady())
+    {
         m_HelperWnd.SetMode(MODE_HIDDEN);
         // get pointer to pitch parameters
         const PitchParm * pPitchParm = pDoc->GetPitchParm();
         // set data range
         int nMinData, nMaxData;
-        if (pPitchParm->nRangeMode) {
+        if (pPitchParm->nRangeMode)
+        {
             // manual range mode
             nMinData = pPitchParm->nLowerBound;
             nMaxData = pPitchParm->nUpperBound;
-        } else {
+        }
+        else
+        {
             // auto range mode
             PitchParm::GetAutoRange(pDoc, nMaxData, nMinData);
         }
         SetProcessMultiplier(PRECISION_MULTIPLIER);
-        if (pPitchParm->nScaleMode == 1) {
+        if (pPitchParm->nScaleMode == 1)
+        {
             // linear display
             pGraph->SetLegendScale(SCALE | NUMBERS, nMinData, nMaxData, _T("f(Hz)")); // set legend scale
             // do common plot paint jobs
             PlotPrePaint(pDC, rWnd, rClip);
             PlotStandardPaint(pDC, rWnd, rClip, pPitch, pDoc, SKIP_UNSET); // do standard data paint
-        } else  if (pPitchParm->nScaleMode == 2) {
+        }
+        else  if (pPitchParm->nScaleMode == 2)
+        {
             // semitone display
             static const double dSemitoneScale = 12.0 / log(2.0);
             static const double dSemitoneReference =  + (69. - log(440.0)* 12.0 / log(2.0)) / dSemitoneScale;
@@ -115,7 +129,9 @@ void CPlotSmoothedPitch::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pV
             // do common plot paint jobs
             PlotPrePaint(pDC, rWnd, rClip);
             PlotStandardPaint(pDC, rWnd, rClip, pPitch, pDoc, SKIP_UNSET | PAINT_SEMITONES); // do standard data paint
-        } else {
+        }
+        else
+        {
             // logarithmic display
             pGraph->SetLegendScale(SCALE | NUMBERS | LOG10, nMinData, nMaxData, _T("f(Hz)")); // set legend scale
             // do common plot paint jobs

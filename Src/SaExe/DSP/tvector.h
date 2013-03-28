@@ -1,4 +1,5 @@
-class tvector {
+class tvector
+{
 public:
 
     tvector();

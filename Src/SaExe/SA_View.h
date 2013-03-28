@@ -80,7 +80,8 @@ class CSegment;
 class CSaDoc;
 class CDlgAutoRecorder;
 
-class CSaView : public CView {
+class CSaView : public CView
+{
 
     DECLARE_DYNCREATE(CSaView)
 
@@ -108,21 +109,21 @@ public:
     BOOL IsAnimationRequested();
     BOOL IsAnimating();
     int GetAnimationFrameRate();
-    CURSOR_ALIGNMENT GetCursorAlignment();				// get cursor snap mode
+    CURSOR_ALIGNMENT GetCursorAlignment();              // get cursor snap mode
     void ChangeCursorAlignment(CURSOR_ALIGNMENT nCursorSetting);
-    double GetDataPosition(int nWndWidth);				// get the actual data position
-    DWORD GetDataFrame();								// return current data frame (width) of displayed data
-    DWORD AdjustDataFrame(int nWndWidth);				// return adjusted data frame width for particular window
+    double GetDataPosition(int nWndWidth);              // get the actual data position
+    DWORD GetDataFrame();                               // return current data frame (width) of displayed data
+    DWORD AdjustDataFrame(int nWndWidth);               // return adjusted data frame width for particular window
     DWORD GetStartCursorPosition();
     DWORD GetStopCursorPosition();
     void SetCursorPosition(int nCursorSelect, DWORD dwNewPos, SNAP_DIRECTION nSnapDirection = SNAP_BOTH,
-                              CURSOR_ALIGNMENT nCursorAlignment = ALIGN_USER_SETTING);
+                           CURSOR_ALIGNMENT nCursorAlignment = ALIGN_USER_SETTING);
     void SetStartCursorPosition(DWORD dwNewPos, SNAP_DIRECTION nSnapDirection = SNAP_BOTH,
-                                   CURSOR_ALIGNMENT nCursorAlignment = ALIGN_USER_SETTING); // set new start cursor position
+                                CURSOR_ALIGNMENT nCursorAlignment = ALIGN_USER_SETTING); // set new start cursor position
     void SetStopCursorPosition(DWORD dwNewPos, SNAP_DIRECTION nSnapDirection = SNAP_BOTH,
-                                  CURSOR_ALIGNMENT nCursorAlignment = ALIGN_USER_SETTING);  // set new stop cursor
+                               CURSOR_ALIGNMENT nCursorAlignment = ALIGN_USER_SETTING);  // set new stop cursor
     void SetStartStopCursorPosition(DWORD dwNewStartPos, DWORD dwNewStopPos, SNAP_DIRECTION nSnapDirection = SNAP_BOTH,
-                                       CURSOR_ALIGNMENT nCursorAlignment = ALIGN_USER_SETTING); // set new start/stop cursor position
+                                    CURSOR_ALIGNMENT nCursorAlignment = ALIGN_USER_SETTING); // set new start/stop cursor position
     void SetPlaybackPosition(double dwPos = ~0,int nSpeed = 0, BOOL bEstimate = FALSE);  // default hide playback position indicators
     int iGetStartCursorSegment(int iSegment);
     int iGetStopCursorSegment(int iSegment);
@@ -134,11 +135,11 @@ public:
     void ChangeAnnotationSelection(CSegment *, int nIndex, DWORD dwStart, DWORD dwStop); // change the annotation selection
     void ChangeAnnotationSelection(CSegment *, int nIndex); // change the annotation selection
     void DeselectAnnotations(void);
-    void SetFocusedGraph(CGraphWnd *);	// sets the focused graph pointer
+    void SetFocusedGraph(CGraphWnd *);  // sets the focused graph pointer
     CGraphWnd * GetFocusedGraphWnd();
     UINT GetFocusedGraphID();
-    void ResetFocusedGraph();			// resets the focused graph pointer
-    BOOL ViewIsActive();				// returns TRUE, if view is active
+    void ResetFocusedGraph();           // resets the focused graph pointer
+    BOOL ViewIsActive();                // returns TRUE, if view is active
     BOOL IsUpdateBoundaries();
     void SetUpdateBoundaries(BOOL bUpdate);
     void ZoomIn(double fZoomAmount, BOOL bZoom = TRUE); // zoom in
@@ -208,7 +209,7 @@ public:
     virtual void AssertValid() const;
     virtual void Dump(CDumpContext & dc) const;
 #endif
-	CSaDoc * GetDocument();
+    CSaDoc * GetDocument();
 
     CGraphWnd * m_apGraphs[MAX_GRAPHS_NUMBER]; // array of pointers to the graph objects
 
@@ -418,7 +419,7 @@ protected:
     afx_msg LRESULT OnAnimationChanged(WPARAM = 0, LPARAM = 0L);
     afx_msg LRESULT OnRecorder(WPARAM, LPARAM);
     afx_msg LRESULT OnAppMessage(WPARAM hint, LPARAM hintObject);
-	afx_msg LRESULT OnAutoSave(WPARAM wParam, LPARAM lParam);
+    afx_msg LRESULT OnAutoSave(WPARAM wParam, LPARAM lParam);
     afx_msg void OnFilePrint();
     afx_msg void OnUpdateFilePrint(CCmdUI * pCmdUI);
     afx_msg void OnFilePrintPreview();
@@ -438,9 +439,9 @@ private:
                      CREATE_HOW ch = CREATE_STANDARD,
                      Object_istream * pFromStream = NULL,
                      CGraphWnd * pFromGraph= NULL);
-    void ChangeLayout(UINT nNewLayout);						// change graph layout
-    void ChangeGraph(int nID);								// change graph type
-    void ChangeGraph(int idx, int nID);						// change graph type
+    void ChangeLayout(UINT nNewLayout);                     // change graph layout
+    void ChangeGraph(int nID);                              // change graph type
+    void ChangeGraph(int idx, int nID);                     // change graph type
     BOOL IsFocusGraph(UINT id);
     BOOL GraphIDincluded(UINT id);
     void EditAddGloss(bool bDelimiter);
@@ -489,66 +490,66 @@ private:
     CPrintOptionsDlg * m_pPageLayout;
     CPrintOptionsDlg * m_pPgLayoutBackup;
     CPickOverlayDlg * m_pPickOverlay;
-    UINT m_nFocusedID;						// ID of focused graph
-    BOOL m_bLegendAll;						// legend window show/hide all
-    BOOL m_bLegendNone;						// legend window hide all
-    BOOL m_bXScaleAll;						// x-scale window show/hide all
-    BOOL m_bXScaleNone;						// x-scale window hide all
-    BOOL m_abAnnAll[ANNOT_WND_NUMBER];		// array of boolean, annotation window show/hide all
-    BOOL m_abAnnNone[ANNOT_WND_NUMBER];		// array of boolean, annotation window hide all
+    UINT m_nFocusedID;                      // ID of focused graph
+    BOOL m_bLegendAll;                      // legend window show/hide all
+    BOOL m_bLegendNone;                     // legend window hide all
+    BOOL m_bXScaleAll;                      // x-scale window show/hide all
+    BOOL m_bXScaleNone;                     // x-scale window hide all
+    BOOL m_abAnnAll[ANNOT_WND_NUMBER];      // array of boolean, annotation window show/hide all
+    BOOL m_abAnnNone[ANNOT_WND_NUMBER];     // array of boolean, annotation window hide all
     CURSOR_ALIGNMENT m_nCursorAlignment;    // cursor snap mode: align to sample, zero crossing, or fragment
-    BOOL m_bBoundariesAll;					// boundaries show/hide all
-    BOOL m_bBoundariesNone;					// boundaries hide all
-    BOOL m_bUpdateBoundaries;				// boundaries updated or not in transcription editor
-    bool m_bEditBoundaries;					// TRUE = INS pressed
-    bool m_bEditSegmentSize;				// TRUE = CTRL_SHIFT pressed
-    BOOL m_bDrawStyleLine;					// graph drawing style line or solid
-    DWORD m_dwDataPosition;					// current start position of displayed data
-    double m_fMagnify;						// magnify factor
-    double m_fZoom;							// current zoom factor
-    double m_fMaxZoom;						// max. zoom factor
-    DWORD m_dwHScrollFactor;				// factor to represent scroll position on horizontal scroll bar
-    double m_fVScrollSteps;					// number of vertical scroll steps
-    DWORD m_dwScrollLine;					// number of samples to scroll one line
-    DWORD m_dwStartCursor;					// start cursor position
-    DWORD m_dwStopCursor;					// stop cursor position
-    double m_dPlaybackPosition;				// playback cursor position
-    DWORD m_dwPlaybackTime;					// TickCount of last playback update
-    double m_dPlaybackPositionLimit;		// playback cursor position
+    BOOL m_bBoundariesAll;                  // boundaries show/hide all
+    BOOL m_bBoundariesNone;                 // boundaries hide all
+    BOOL m_bUpdateBoundaries;               // boundaries updated or not in transcription editor
+    bool m_bEditBoundaries;                 // TRUE = INS pressed
+    bool m_bEditSegmentSize;                // TRUE = CTRL_SHIFT pressed
+    BOOL m_bDrawStyleLine;                  // graph drawing style line or solid
+    DWORD m_dwDataPosition;                 // current start position of displayed data
+    double m_fMagnify;                      // magnify factor
+    double m_fZoom;                         // current zoom factor
+    double m_fMaxZoom;                      // max. zoom factor
+    DWORD m_dwHScrollFactor;                // factor to represent scroll position on horizontal scroll bar
+    double m_fVScrollSteps;                 // number of vertical scroll steps
+    DWORD m_dwScrollLine;                   // number of samples to scroll one line
+    DWORD m_dwStartCursor;                  // start cursor position
+    DWORD m_dwStopCursor;                   // stop cursor position
+    double m_dPlaybackPosition;             // playback cursor position
+    DWORD m_dwPlaybackTime;                 // TickCount of last playback update
+    double m_dPlaybackPositionLimit;        // playback cursor position
     int m_nPlaybackSpeed;
-    BOOL m_bViewIsActive;					// TRUE = view is activated
-    BOOL m_bAnimating;						// TRUE = animation in progress
-    BOOL m_bStaticTWC;						// TRUE if the 'Dynamic' TWC check box control is NOT checked
-    BOOL m_bNormalMelogram;					// TRUE if the 'Weighted' Melogram check box control is NOT checked
-    CStopwatch * m_pStopwatch;				// pointer to stopwatch for timing events
+    BOOL m_bViewIsActive;                   // TRUE = view is activated
+    BOOL m_bAnimating;                      // TRUE = animation in progress
+    BOOL m_bStaticTWC;                      // TRUE if the 'Dynamic' TWC check box control is NOT checked
+    BOOL m_bNormalMelogram;                 // TRUE if the 'Weighted' Melogram check box control is NOT checked
+    CStopwatch * m_pStopwatch;              // pointer to stopwatch for timing events
 
     // internal data for printing
-    POINT m_printArea;						// the size of the part of the printed page that we will use.
-    CPoint m_printerDPI;					// the actual dpi of the printer
-    int m_newPrinterDPI;					// the dpi we set up for printing
-    double m_printScaleX;					// scaling factor for scaling along x axis
-    double m_printScaleY;					// scaling factor for scaling along y axis
-    Colors m_saveColors;					// save the colors before optimizing them for print, restore later.
-    BOOL m_bPrintPreviewInProgress;			// true if a print preview is in progress.
+    POINT m_printArea;                      // the size of the part of the printed page that we will use.
+    CPoint m_printerDPI;                    // the actual dpi of the printer
+    int m_newPrinterDPI;                    // the dpi we set up for printing
+    double m_printScaleX;                   // scaling factor for scaling along x axis
+    double m_printScaleY;                   // scaling factor for scaling along y axis
+    Colors m_saveColors;                    // save the colors before optimizing them for print, restore later.
+    BOOL m_bPrintPreviewInProgress;         // true if a print preview is in progress.
 
     // internal data for screen shot printing
-    CRect m_memRect;						// the frame rectangle
-    CDib * m_pCDibForPrint;					// we convert from a bitmap to a CDib.
-    CPoint m_printOrigin;					// upper left corner where printing starts
+    CRect m_memRect;                        // the frame rectangle
+    CDib * m_pCDibForPrint;                 // we convert from a bitmap to a CDib.
+    CPoint m_printOrigin;                   // upper left corner where printing starts
     // - only needed for screen shot
     BOOL m_restartPageOptions;
 
     // internal data for saving the window state
-    int m_z;								// The z-order of the MDI child frame corresponding to this view.
-    int m_eInitialShowCmd;					// The state of the window when SA was closed.
+    int m_z;                                // The z-order of the MDI child frame corresponding to this view.
+    int m_eInitialShowCmd;                  // The state of the window when SA was closed.
     static Object_istream * s_pobsAutoload;
     BOOL m_WeJustReadTheProperties;
     BOOL m_bViewCreated;
     CSaApp * pSaApp;
     CMainFrame * pViewMainFrame;
 
-	DWORD lastZStartCursor;
-	DWORD lastZStopCursor;
+    DWORD lastZStartCursor;
+    DWORD lastZStopCursor;
 };
 
 #endif

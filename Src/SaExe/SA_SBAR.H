@@ -19,7 +19,8 @@
 
 #define SB_FONT_SIZE  -10 // status bar font size
 
-class CDataStatusBar : public CStatusBar {
+class CDataStatusBar : public CStatusBar
+{
 
     // Construction/destruction/creation
 public:
@@ -64,7 +65,8 @@ protected:
 
 #define SB_FONT_SIZE  -10 // status bar font size
 
-class CProgressStatusBar : public CStatusBar {
+class CProgressStatusBar : public CStatusBar
+{
     // Construction/destruction/creation
 public:
     CProgressStatusBar();
@@ -86,24 +88,29 @@ protected:
 public:
     void Init(); // initialisation
     void SetProcessOwner(void * pProcess, void * pCaller, int nProcessID = -1); // save the process owner
-    void * GetProcessOwner() {
+    void * GetProcessOwner()
+    {
         return m_pProcessOwner;   // return the process owner
     }
-    void * GetProcessCaller() {
+    void * GetProcessCaller()
+    {
         return m_pProcessCaller;   // return the process caller
     }
     void InitProgress(); // initialisation of progress bar
     void SetProgress(int nVal); // set progress bar
-    int  GetProgress() {
+    int  GetProgress()
+    {
         return m_ProgressBar.GetProgress();   // get progress
     }
     BOOL SetPaneText(int nPaneID, LPCTSTR lpszText, BOOL bUpdate = TRUE);
     void GetItemRect(int nPaneID, LPRECT lpRect);
-    void SetIsPrintingFlag(BOOL isPrinting) {
+    void SetIsPrintingFlag(BOOL isPrinting)
+    {
         m_bIsPrinting = isPrinting;
     };
     virtual void DelayShow();
-    BOOL InProcessMessageLoop() const {
+    BOOL InProcessMessageLoop() const
+    {
         return m_nInMessageLoop != 0;
     }
 

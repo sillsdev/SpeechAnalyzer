@@ -7,7 +7,8 @@
 //###########################################################################
 // CIndependentSegment data processing
 
-class CIndependentSegment : public CSegment {
+class CIndependentSegment : public CSegment
+{
     // Operations
 public:
     CIndependentSegment(int index, int master = -1);

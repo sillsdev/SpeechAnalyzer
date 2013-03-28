@@ -7,30 +7,39 @@
 static char BASED_CODE THIS_FILE[] = __FILE__;
 #endif
 
-CProcessWaveformGenerator::CProcessWaveformGenerator() {
+CProcessWaveformGenerator::CProcessWaveformGenerator()
+{
 }
 
-CProcessWaveformGenerator::~CProcessWaveformGenerator() {
+CProcessWaveformGenerator::~CProcessWaveformGenerator()
+{
 }
 
 /***************************************************************************/
 // CDlgWaveformGenerator::process::Process Generate wav file
 /***************************************************************************/
-long CProcessWaveformGenerator::Process(CWaveformGeneratorSettings & parms, void * pCaller, int nProgress, int nLevel) {
+long CProcessWaveformGenerator::Process(CWaveformGeneratorSettings & parms, void * pCaller, int nProgress, int nLevel)
+{
 
     TRACE(_T("Process: CProcessWbGenerator\n"));
-    if (IsCanceled()) {
+    if (IsCanceled())
+    {
         return MAKELONG(PROCESS_CANCELED, nProgress);    // process canceled
     }
     // check if nested workbench processes
-    if (IsDataReady()) {
+    if (IsDataReady())
+    {
         return MAKELONG(--nLevel, nProgress);    // data is already ready
-    } else {
+    }
+    else
+    {
         SetDataInvalid();
     }
 
-    if (nLevel < 0) { // previous processing error
-        if ((nLevel == PROCESS_CANCELED)) {
+    if (nLevel < 0)   // previous processing error
+    {
+        if ((nLevel == PROCESS_CANCELED))
+        {
             CancelProcess();    // set your own cancel flag
         }
         return MAKELONG(nLevel, nProgress);
@@ -38,13 +47,15 @@ long CProcessWaveformGenerator::Process(CWaveformGeneratorSettings & parms, void
 
     // start process
     BeginWaitCursor(); // wait cursor
-    if (!StartProcess(pCaller, IDS_STATTXT_PROCESSWBGENERATOR)) { // memory allocation failed or previous processing error
+    if (!StartProcess(pCaller, IDS_STATTXT_PROCESSWBGENERATOR))   // memory allocation failed or previous processing error
+    {
         EndProcess(); // end data processing
         EndWaitCursor();
         return MAKELONG(PROCESS_ERROR, nProgress);
     }
     // create the temporary file
-    if (!CreateTempFile(_T("GEN"))) { // creating error
+    if (!CreateTempFile(_T("GEN")))   // creating error
+    {
         EndProcess(); // end data processing
         EndWaitCursor();
         SetDataInvalid();
@@ -56,9 +67,11 @@ long CProcessWaveformGenerator::Process(CWaveformGeneratorSettings & parms, void
     DWORD dwDataPos = 0; // data position pointer
     // allocate the temporary global buffer for the fifo
     // start processing loop
-    while (dwDataPos < dwDataSize) {
+    while (dwDataPos < dwDataSize)
+    {
         DWORD dwBlockEnd = dwDataPos + dwBufferSize;
-        if (dwBlockEnd > dwDataSize) {
+        if (dwBlockEnd > dwDataSize)
+        {
             dwBlockEnd = dwDataSize;
             dwBufferSize = dwDataSize - dwDataPos;
         }
@@ -69,11 +82,15 @@ long CProcessWaveformGenerator::Process(CWaveformGeneratorSettings & parms, void
         dwDataPos += dwBufferSize;
 
         // result block is ready, store it
-        if (dwDataPos >= dwBlockEnd) {
+        if (dwDataPos >= dwBlockEnd)
+        {
             // write the processed data block
-            try {
+            try
+            {
                 Write((HPSTR)m_lpBuffer, dwBufferSize);
-            } catch (CFileException e) {
+            }
+            catch (CFileException e)
+            {
                 // error writing file
                 ErrorMessage(IDS_ERROR_WRITETEMPFILE, GetProcessFileName());
                 return Exit(PROCESS_ERROR); // error, writing failed
@@ -81,7 +98,8 @@ long CProcessWaveformGenerator::Process(CWaveformGeneratorSettings & parms, void
         }
         // set progress bar
         SetProgress(nProgress + (int)(100 * dwDataPos / dwDataSize / (DWORD)nLevel));
-        if (IsCanceled()) {
+        if (IsCanceled())
+        {
             return Exit(PROCESS_CANCELED); // process canceled
         }
     }

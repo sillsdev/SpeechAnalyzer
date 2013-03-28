@@ -22,12 +22,14 @@ typedef unsigned char UBYTE;
 /////////////////////////////////////////////////////////////////////////////
 // CPlot3dPitch
 
-CPlot3dPitch::CPlot3dPitch() {
+CPlot3dPitch::CPlot3dPitch()
+{
     m_p3dPitch = new CProcess3dPitch;
     m_pLastProcess = m_p3dPitch;
 }
 
-CPlot3dPitch::~CPlot3dPitch() {
+CPlot3dPitch::~CPlot3dPitch()
+{
     delete m_p3dPitch;
 }
 
@@ -53,14 +55,16 @@ END_MESSAGE_MAP()
 #define sparsePaletteSize 30l
 
 // SDM 1.5Test10.3
-struct RGB {
+struct RGB
+{
     long r;
     long g;
     long b;
 };
 
 // SDM 1.5Test10.3
-static struct RGB sparsePalette[sparsePaletteSize+1] = {
+static struct RGB sparsePalette[sparsePaletteSize+1] =
+{
     {    0,    0,    0},// Black
     {   70,    0,   90},// Dark Purple
     {   87,    0,  114},// Purple
@@ -94,7 +98,8 @@ static struct RGB sparsePalette[sparsePaletteSize+1] = {
     {  255,    0,  255} // Magenta
 };
 
-static unsigned char sparseBlack[] = {
+static unsigned char sparseBlack[] =
+{
     255, // Black
     250,
     245, // Dark Purple
@@ -142,50 +147,64 @@ static unsigned char sparseBlack[] = {
 // function creates the full 233 grayscale and above the 233 color palette.
 // The function returns FALSE in case on error, else TRUE.
 /***************************************************************************/
-BOOL CPlot3dPitch::CreateSpectroPalette(CDC * pDC, CDocument * /*pSaDoc*/) {
+BOOL CPlot3dPitch::CreateSpectroPalette(CDC * pDC, CDocument * /*pSaDoc*/)
+{
 #define SET_RGB(r,g,b) ((PC_NOCOLLAPSE << 24) | RGB(r,g,b)) // PC_NOCOLLAPSE make new entry if possible
 
     // get device capabilities
     int nRasterCaps = pDC->GetDeviceCaps(RASTERCAPS);
     // SDM 1.5Test10.7 rebuild palette on DeviceCaps() change
-    if ((nRasterCaps & RC_BITBLT) == 0) {
+    if ((nRasterCaps & RC_BITBLT) == 0)
+    {
         nPaletteMode = SYSTEMCOLOR; // use system colors only
         return FALSE; // device is not able to handle raster operations
     }
 
-    if (nRasterCaps & RC_PALETTE) {
+    if (nRasterCaps & RC_PALETTE)
+    {
         nRasterCaps = TRUE;
-    } else {
+    }
+    else
+    {
         nRasterCaps = FALSE;
     }
     int nNumColors;
-    if (nRasterCaps) {
+    if (nRasterCaps)
+    {
         nNumColors = pDC->GetDeviceCaps(SIZEPALETTE);
-    } else {
+    }
+    else
+    {
         nNumColors = pDC->GetDeviceCaps(NUMCOLORS);
     }
 
-    if (nNumColors == -1) {
+    if (nNumColors == -1)
+    {
         int nBits = pDC->GetDeviceCaps(BITSPIXEL);
         nNumColors = 1 << nBits;
     }
 
     int nDesiredPaletteMode = HALFCOLOR;
-    if (nNumColors < 256) {
+    if (nNumColors < 256)
+    {
         nDesiredPaletteMode = SYSTEMCOLOR; // use system colors only
     }
-    if (nNumColors > 256) {
+    if (nNumColors > 256)
+    {
         nDesiredPaletteMode = FULLCOLOR;
     }
 
-    if (nDesiredPaletteMode != nPaletteMode) { // not yet compatible with this context
-        if (nNumColors < 256) {
+    if (nDesiredPaletteMode != nPaletteMode)   // not yet compatible with this context
+    {
+        if (nNumColors < 256)
+        {
             nPaletteMode = SYSTEMCOLOR; // use system colors only
             return TRUE; // less than 256 colors supported, just use system colors
         }
         int nPaletteSize = 117;
         nPaletteMode = HALFCOLOR;
-        if (nNumColors > 256) {
+        if (nNumColors > 256)
+        {
             // more than 256 colors supported
             nPaletteSize = 233;
             nPaletteMode = FULLCOLOR;
@@ -195,29 +214,37 @@ BOOL CPlot3dPitch::CreateSpectroPalette(CDC * pDC, CDocument * /*pSaDoc*/) {
         // create palette
         LPLOGPALETTE lpLogPalette = (LPLOGPALETTE)new char[sizeof(LOGPALETTE)
                                     + (2 * nPaletteSize - 1) * sizeof(PALETTEENTRY)];
-        if (!lpLogPalette) {
+        if (!lpLogPalette)
+        {
             return FALSE;
         }
         lpLogPalette->palVersion = 0x300;
         lpLogPalette->palNumEntries = WORD(2 * nPaletteSize);
-        if (!bPaletteInit) {
-            if (!SpectroPalette.CreatePalette(lpLogPalette)) {
+        if (!bPaletteInit)
+        {
+            if (!SpectroPalette.CreatePalette(lpLogPalette))
+            {
                 return FALSE;
             }
-        } else {
-            if (!SpectroPalette.ResizePalette(2*nPaletteSize)) {
+        }
+        else
+        {
+            if (!SpectroPalette.ResizePalette(2*nPaletteSize))
+            {
                 return FALSE;
             }
         }
         WORD wColorIndex;
         long lRed, lGreen, lBlue, lGrayLevel;
         // create grayscale palette
-        for (wColorIndex = 0; (int)wColorIndex < nPaletteSize; wColorIndex++) {
+        for (wColorIndex = 0; (int)wColorIndex < nPaletteSize; wColorIndex++)
+        {
             lGrayLevel = 255 - (long)(((double)wColorIndex * 255.) / (double)nPaletteSize + 0.5);
             *(unsigned long *)&lpLogPalette->palPalEntry[wColorIndex] = SET_RGB(lGrayLevel, lGrayLevel, lGrayLevel);
         }
         // create color palette // SDM 1.5Test10.3
-        for (wColorIndex = 0; (int)wColorIndex < nPaletteSize; wColorIndex++) {
+        for (wColorIndex = 0; (int)wColorIndex < nPaletteSize; wColorIndex++)
+        {
             long lowSparseIndex = wColorIndex * sparsePaletteSize / nPaletteSize;
             long remainderSparseIndex = (wColorIndex * sparsePaletteSize) % nPaletteSize;
 
@@ -240,7 +267,8 @@ BOOL CPlot3dPitch::CreateSpectroPalette(CDC * pDC, CDocument * /*pSaDoc*/) {
     // select the new palette
     CPalette * pOldSysPalette;
     pOldSysPalette = pDC->SelectPalette(&SpectroPalette, FALSE);
-    if (pOldSysPalette) { // SDM 1.5Test11.32
+    if (pOldSysPalette)   // SDM 1.5Test11.32
+    {
         pOldSysPalette->UnrealizeObject();
     }
     pDC->RealizePalette();
@@ -250,7 +278,8 @@ BOOL CPlot3dPitch::CreateSpectroPalette(CDC * pDC, CDocument * /*pSaDoc*/) {
 /////////////////////////////////////////////////////////////////////////////
 // CPlot3dPitch message handlers
 
-void CPlot3dPitch::populateBmiColors(RGBQUAD * QuadColors, CSaView * /*pView*/) {
+void CPlot3dPitch::populateBmiColors(RGBQUAD * QuadColors, CSaView * /*pView*/)
+{
     CMainFrame * pMain = (CMainFrame *)AfxGetMainWnd();
     // prepare to draw
     COLORREF Color[256];
@@ -262,18 +291,25 @@ void CPlot3dPitch::populateBmiColors(RGBQUAD * QuadColors, CSaView * /*pView*/) 
     int bGrayScale = FALSE;
     int nMinThreshold = 0;
     int nMaxThreshold = 234;
-    if (bGrayScale) {
+    if (bGrayScale)
+    {
         // create grayscale palette
         Color[0] = RGB(255, 255, 255);   // white
         Color[234] = RGB(0, 0, 0);     // black
         unsigned int nPaletteSize = 234;
         // use closest system gray
-        for (WORD wColorIndex = 1; wColorIndex < 234; wColorIndex++) {
-            if (wColorIndex <= (WORD)nMinThreshold) {
+        for (WORD wColorIndex = 1; wColorIndex < 234; wColorIndex++)
+        {
+            if (wColorIndex <= (WORD)nMinThreshold)
+            {
                 Color[wColorIndex] = RGB(255, 255, 255);
-            } else if (wColorIndex >= (WORD)nMaxThreshold) {
+            }
+            else if (wColorIndex >= (WORD)nMaxThreshold)
+            {
                 Color[wColorIndex] = RGB(0, 0, 0);
-            } else {
+            }
+            else
+            {
                 long intermediate = (wColorIndex - nMinThreshold) * (sizeof(sparseBlack)-1) * 234
                                     / (nMaxThreshold - nMinThreshold);
                 long lowSparseIndex = intermediate  / nPaletteSize ;
@@ -286,7 +322,9 @@ void CPlot3dPitch::populateBmiColors(RGBQUAD * QuadColors, CSaView * /*pView*/) 
                 Color[wColorIndex] = RGB(lGray, lGray, lGray);
             }
         }
-    } else {
+    }
+    else
+    {
         // create color map
         // SDM 1.5Test10.3
         Color[0] = RGB(0, 0, 0);       // black
@@ -295,12 +333,18 @@ void CPlot3dPitch::populateBmiColors(RGBQUAD * QuadColors, CSaView * /*pView*/) 
         unsigned int nPaletteSize = 234;
 
         // use closest system color
-        for (WORD wColorIndex = 0; wColorIndex < nPaletteSize; wColorIndex++) {
-            if (wColorIndex <= (WORD)nMinThreshold) {
+        for (WORD wColorIndex = 0; wColorIndex < nPaletteSize; wColorIndex++)
+        {
+            if (wColorIndex <= (WORD)nMinThreshold)
+            {
                 Color[wColorIndex] = RGB(0, 0, 0);
-            } else if (wColorIndex >= (WORD)nMaxThreshold) {
+            }
+            else if (wColorIndex >= (WORD)nMaxThreshold)
+            {
                 Color[wColorIndex] = RGB(255, 0, 255);
-            } else {
+            }
+            else
+            {
                 long intermediate = (wColorIndex - nMinThreshold) * sparsePaletteSize * 234
                                     / (nMaxThreshold - nMinThreshold);
                 long lowSparseIndex = intermediate  / nPaletteSize ;
@@ -322,7 +366,8 @@ void CPlot3dPitch::populateBmiColors(RGBQUAD * QuadColors, CSaView * /*pView*/) 
         }
     }
 
-    for (int i = 0; i < 256; i++) {
+    for (int i = 0; i < 256; i++)
+    {
         QuadColors[i].rgbBlue = GetBValue(Color[i]);
         QuadColors[i].rgbGreen = GetGValue(Color[i]);
         QuadColors[i].rgbRed = GetRValue(Color[i]);
@@ -338,7 +383,8 @@ void CPlot3dPitch::populateBmiColors(RGBQUAD * QuadColors, CSaView * /*pView*/) 
 // the drawing to let the plot base class do common jobs like drawing the
 // cursors.
 /***************************************************************************/
-BOOL CPlot3dPitch::OnDrawCorrelations(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView) {
+BOOL CPlot3dPitch::OnDrawCorrelations(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView)
+{
     // get pointer to graph, view, document, application and mainframe
     CSaDoc  *  pDoc   = pView->GetDocument();
 
@@ -349,7 +395,8 @@ BOOL CPlot3dPitch::OnDrawCorrelations(CDC * pDC, CRect rWnd, CRect rClip, CSaVie
 
     // get spectrogram dimensions
     int nHeight = 0;
-    for (DWORD dwIntegerPitchPeriod = 22; dwIntegerPitchPeriod < 480; dwIntegerPitchPeriod+= 5 /*dwIntegerPitchPeriod/16*/) {
+    for (DWORD dwIntegerPitchPeriod = 22; dwIntegerPitchPeriod < 480; dwIntegerPitchPeriod+= 5 /*dwIntegerPitchPeriod/16*/)
+    {
         nHeight++;
     }
 
@@ -369,28 +416,34 @@ BOOL CPlot3dPitch::OnDrawCorrelations(CDC * pDC, CRect rWnd, CRect rClip, CSaVie
     // points. If he is smaller, data points will be skipped.
     double fYPix = 0.;
     int nNextYPix = 0;
-    for (int y = 0; y < nHeight; y++) {
+    for (int y = 0; y < nHeight; y++)
+    {
         // spectrogram print needed
         int nYPix = nNextYPix;
         fYPix += fHeightFactor;
         nNextYPix = (int)(fYPix);
-        while (nYPix < nNextYPix) {
+        while (nYPix < nNextYPix)
+        {
             double fXPix = (double)-fDataStart*fWidthFactor;;
             int nNextXPix = (int)fXPix;
             UBYTE * pRow = ((UBYTE *) pBitmap->bmBits)  + pBitmap->bmWidthBytes*nYPix;
-            for (int x = 0; x < nWidth; x++) {
+            for (int x = 0; x < nWidth; x++)
+            {
                 int nXPix = nNextXPix;
                 fXPix += fWidthFactor;
                 nNextXPix = (int)(fXPix);
-                if (nXPix < rClip.left) {
+                if (nXPix < rClip.left)
+                {
                     continue;
                 }
 
                 BOOL bResult;
                 short correlationK = (short) m_p3dPitch->GetProcessedData(x + y*nWidth, &bResult);
                 UBYTE ubColor = BYTE(correlationK > 0 ? correlationK*234/1024 : 0);
-                while (nXPix < nNextXPix) {
-                    if (nXPix > rClip.right) {
+                while (nXPix < nNextXPix)
+                {
+                    if (nXPix > rClip.right)
+                    {
                         break;
                     }
 
@@ -403,7 +456,8 @@ BOOL CPlot3dPitch::OnDrawCorrelations(CDC * pDC, CRect rWnd, CRect rClip, CSaVie
         }
     }
 
-    if (pBitmap) {
+    if (pBitmap)
+    {
         delete pBitmap;
     }
 
@@ -413,15 +467,18 @@ BOOL CPlot3dPitch::OnDrawCorrelations(CDC * pDC, CRect rWnd, CRect rClip, CSaVie
     return TRUE;
 }
 
-BOOL CPlot3dPitch::OnDraw2(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView) {
-    if (IsIconic()) {
+BOOL CPlot3dPitch::OnDraw2(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView)
+{
+    if (IsIconic())
+    {
         return FALSE;    // nothing to draw
     }
     // get pointer to graph, view, document, application and mainframe
     CGraphWnd * pGraph = (CGraphWnd *)GetParent();
     CSaDoc  *  pDoc   = pView->GetDocument();
 
-    if (rWnd.Height() <= 0) {
+    if (rWnd.Height() <= 0)
+    {
         return FALSE;    // nothing to draw
     }
 
@@ -430,11 +487,14 @@ BOOL CPlot3dPitch::OnDraw2(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView) 
         // create spectrogram data
         short int nResult = LOWORD(m_p3dPitch->Process(this, pDoc)); // process data
         nResult = CheckResult(nResult, m_p3dPitch); // check the process result
-        if (nResult == PROCESS_ERROR) {
+        if (nResult == PROCESS_ERROR)
+        {
             return FALSE;
         }
-        if (nResult != PROCESS_CANCELED) {
-            if (nResult) {
+        if (nResult != PROCESS_CANCELED)
+        {
+            if (nResult)
+            {
                 // new data processed, all has to be displayed
                 Invalidate();
                 return FALSE;
@@ -454,12 +514,14 @@ BOOL CPlot3dPitch::OnDraw2(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView) 
 }
 
 
-void CPlot3dPitch::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView) {
+void CPlot3dPitch::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView)
+{
     CSaApp * pApp = (CSaApp *)AfxGetApp();
     CGraphWnd * pGraph = (CGraphWnd *)GetParent();
     CSaDoc * pDoc = pView->GetDocument();
 
-    if (!CreateSpectroPalette(pDC, pDoc)) {
+    if (!CreateSpectroPalette(pDC, pDoc))
+    {
         // error creating color palette
         pApp->ErrorMessage(IDS_ERROR_SPECTROPALETTE);
         pGraph->PostMessage(WM_SYSCOMMAND, SC_CLOSE, 0L); // close the graph
@@ -472,7 +534,8 @@ void CPlot3dPitch::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView) {
     // create a bitmap to read the screen into and select it into the temporary DC
     BITMAPINFO * pInfo = (BITMAPINFO *) malloc(sizeof(BITMAPINFO) + 256*sizeof(RGBQUAD));
 
-    if (pMemDC && pInfo && pMemDC->CreateCompatibleDC(NULL)) {
+    if (pMemDC && pInfo && pMemDC->CreateCompatibleDC(NULL))
+    {
         pInfo->bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
         pInfo->bmiHeader.biWidth = rWnd.Width();
         pInfo->bmiHeader.biHeight = rWnd.Height(); // Bit map is top down (hence negative sign)
@@ -488,7 +551,8 @@ void CPlot3dPitch::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView) {
         void * pBits;
         HBITMAP hBitmap = CreateDIBSection(pMemDC->m_hDC,pInfo,DIB_RGB_COLORS, &pBits,NULL,0);
 
-        if (hBitmap) {
+        if (hBitmap)
+        {
             HBITMAP hOldBitmap = (HBITMAP) ::SelectObject(pMemDC->m_hDC,hBitmap);
 
             //erase background
@@ -501,7 +565,8 @@ void CPlot3dPitch::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView) {
             GdiFlush();  // finish all drawing to pMemDC
 
             // copy to destination
-            if (!pDC->BitBlt(rWnd.left,rWnd.top,rWnd.Width(),rWnd.Height(),pMemDC,0,0, SRCCOPY)) {
+            if (!pDC->BitBlt(rWnd.left,rWnd.top,rWnd.Width(),rWnd.Height(),pMemDC,0,0, SRCCOPY))
+            {
                 CSaString szError;
                 szError.Format(_T("BitBLT Failed in ")_T(__FILE__)_T(" line %d"),__LINE__);
                 ((CSaApp *)AfxGetApp())->ErrorMessage(szError);
@@ -511,28 +576,38 @@ void CPlot3dPitch::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView) {
 
             pMemDC->SelectObject(hOldBitmap);
             DeleteObject(hBitmap);
-        } else {
-            if (pInfo->bmiHeader.biWidth && pInfo->bmiHeader.biHeight) {
+        }
+        else
+        {
+            if (pInfo->bmiHeader.biWidth && pInfo->bmiHeader.biHeight)
+            {
                 CSaString szError;
                 szError.Format(_T("CreateDIBSection Failed in ")_T(__FILE__)_T(" line %d"),__LINE__);
                 ((CSaApp *)AfxGetApp())->ErrorMessage(szError);
             }
         }
-    } else {
-        if (!pMemDC || !pInfo) {
+    }
+    else
+    {
+        if (!pMemDC || !pInfo)
+        {
             CSaString szError;
             szError.Format(_T("memory allocation error in ")_T(__FILE__)_T(" line %d"),__LINE__);
             ((CSaApp *)AfxGetApp())->ErrorMessage(szError);
-        } else {
+        }
+        else
+        {
             CSaString szError;
             szError.Format(_T("CreateCompatibleDC Failed in ")_T(__FILE__)_T(" line %d"),__LINE__);
             ((CSaApp *)AfxGetApp())->ErrorMessage(szError);
         }
     }
-    if (pMemDC) {
+    if (pMemDC)
+    {
         delete pMemDC;
     }
-    if (pInfo) {
+    if (pInfo)
+    {
         delete pInfo;
     }
 

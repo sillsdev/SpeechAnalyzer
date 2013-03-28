@@ -51,7 +51,8 @@
 // Each test should begin with a call to StartTest() and end with a call to EndTest()
 // The test should be executed only if StartTest() returns TRUE.
 //
-void CSASelfTest::SelfTest() {
+void CSASelfTest::SelfTest()
+{
 
     BOOL bFileOpened = FALSE;
     BOOL bTestSuccess = FALSE;
@@ -98,9 +99,11 @@ void CSASelfTest::SelfTest() {
     }
     */
 
-    if (StartTest("CHFrench open","Open file CHFRENCH.WAV")) {
+    if (StartTest("CHFrench open","Open file CHFRENCH.WAV"))
+    {
         CString szTestFileName = m_szTestFolderPath + "chfrench.wav";
-        if (FileExists(szTestFileName)) {
+        if (FileExists(szTestFileName))
+        {
             pDoc = (CSaDoc *) m_pApp->OpenDocumentFile(szTestFileName);
             pDoc->EnableBackgroundProcessing(FALSE);
             pView = (CSaView *) m_pMain->MDIGetActive()->GetActiveView();
@@ -109,7 +112,8 @@ void CSASelfTest::SelfTest() {
         EndTest(bFileOpened);
     }
 
-    if (bFileOpened && StartTest("CHFrench Set Cursor Alignment","Set cursor alignment to sample.")) {
+    if (bFileOpened && StartTest("CHFrench Set Cursor Alignment","Set cursor alignment to sample."))
+    {
         // manually set the cursor alignment to sample alignment
         pView->ChangeCursorAlignment(ALIGN_AT_SAMPLE);
         EndTest(pView->GetCursorAlignment() == ALIGN_AT_SAMPLE);
@@ -118,31 +122,38 @@ void CSASelfTest::SelfTest() {
     //
     // Test Utterance Parameters of CHFRENCH.WAV file
     //
-    if (bFileOpened && StartTest("CHFrench UttParm","Test utterance parameters")) {
+    if (bFileOpened && StartTest("CHFrench UttParm","Test utterance parameters"))
+    {
         bTestSuccess = TRUE;
 
         pUP = pDoc->GetUttParm();
-        if (pUP->nCritLoud != 6912) {
+        if (pUP->nCritLoud != 6912)
+        {
             bTestSuccess = FALSE;
             LogEntry("Critical loudness incorrectly set.");
         }
-        if (pUP->nMaxChange != 11) {
+        if (pUP->nMaxChange != 11)
+        {
             bTestSuccess = FALSE;
             LogEntry("Maximum change incorrectly set.");
         }
-        if (pUP->nMaxFreq != 260) {
+        if (pUP->nMaxFreq != 260)
+        {
             bTestSuccess = FALSE;
             LogEntry("Maximum frequency incorrectly set.");
         }
-        if (pUP->nMaxInterp != 7) {
+        if (pUP->nMaxInterp != 7)
+        {
             bTestSuccess = FALSE;
             LogEntry("Maximum interpolation incorrectly set.");
         }
-        if (pUP->nMinFreq != 70) {
+        if (pUP->nMinFreq != 70)
+        {
             bTestSuccess = FALSE;
             LogEntry("Minimum frequency incorrectly set.");
         }
-        if (pUP->nMinGroup != 6) {
+        if (pUP->nMinGroup != 6)
+        {
             bTestSuccess = FALSE;
             LogEntry("Minimum group incorrectly set.");
         }
@@ -153,31 +164,38 @@ void CSASelfTest::SelfTest() {
     //
     // Test Format Parameters of CHFRENCH.WAV file
     //
-    if (bFileOpened && StartTest("CHFrench FmtParm","Test format parameters")) {
+    if (bFileOpened && StartTest("CHFrench FmtParm","Test format parameters"))
+    {
         bTestSuccess = TRUE;
 
         pFP = pDoc->GetFmtParm();
-        if (pFP->dwAvgBytesPerSec != 44100) {
+        if (pFP->dwAvgBytesPerSec != 44100)
+        {
             bTestSuccess = FALSE;
             LogEntry("Average bytes per second incorrectly set.");
         }
-        if (pFP->dwSamplesPerSec != 22050) {
+        if (pFP->dwSamplesPerSec != 22050)
+        {
             bTestSuccess = FALSE;
             LogEntry("Samples per second incorrectly set.");
         }
-        if (pFP->wBitsPerSample != 16) {
+        if (pFP->wBitsPerSample != 16)
+        {
             bTestSuccess = FALSE;
             LogEntry("Bits per sample incorrectly set.");
         }
-        if (pFP->wBlockAlign != 2) {
+        if (pFP->wBlockAlign != 2)
+        {
             bTestSuccess = FALSE;
             LogEntry("BlockAlign incorrectly set.");
         }
-        if (pFP->wChannels != 1) {
+        if (pFP->wChannels != 1)
+        {
             bTestSuccess = FALSE;
             LogEntry("Channels incorrectly set.");
         }
-        if (pFP->wTag != 1) {
+        if (pFP->wTag != 1)
+        {
             bTestSuccess = FALSE;
             LogEntry("Tag incorrectly set.");
         }
@@ -189,129 +207,173 @@ void CSASelfTest::SelfTest() {
     //
     // Process integrity checks using CHFRENCH.WAV file
     //
-    if (bFileOpened && StartTest("CHFrench CursorPositioning","Position the cursors in voiced region")) {
+    if (bFileOpened && StartTest("CHFrench CursorPositioning","Position the cursors in voiced region"))
+    {
         pView->SetStartCursorPosition(30714,SNAP_LEFT);
         pView->SetStopCursorPosition(35046,SNAP_RIGHT);
 
         DWORD dwStart = pView->GetStartCursorPosition();
         DWORD dwStop  = pView->GetStopCursorPosition();
-        if (dwStart==30714 && dwStop==35046) {
+        if (dwStart==30714 && dwStop==35046)
+        {
             EndTest();
-        } else {
+        }
+        else
+        {
             EndTest(FALSE);
         }
     }
 
-    if (bFileOpened && StartTest("CHFrench ZCrossing","Test zero crossing process.")) {
+    if (bFileOpened && StartTest("CHFrench ZCrossing","Test zero crossing process."))
+    {
         CProcessZCross * pZCross = pDoc->GetZCross();
         short int nResult = LOWORD(pZCross->Process(this, pDoc)); // process data
-        if (nResult != PROCESS_ERROR && nResult != PROCESS_CANCELED) {
+        if (nResult != PROCESS_ERROR && nResult != PROCESS_CANCELED)
+        {
             EndTest(!FileCompare(pZCross->GetProcessFileName()));
-        } else {
+        }
+        else
+        {
             EndTest(FALSE);
         }
     }
 
-    if (bFileOpened && StartTest("CHFrench RawPitch","Test raw pitch process.")) {
+    if (bFileOpened && StartTest("CHFrench RawPitch","Test raw pitch process."))
+    {
         CProcessPitch * pPitch = pDoc->GetPitch();
         short int nResult = LOWORD(pPitch->Process(this, pDoc)); // process data
-        if (nResult != PROCESS_ERROR && nResult != PROCESS_CANCELED) {
+        if (nResult != PROCESS_ERROR && nResult != PROCESS_CANCELED)
+        {
             EndTest(!FileCompare(pPitch->GetProcessFileName()));
-        } else {
+        }
+        else
+        {
             EndTest(FALSE);
         }
     }
 
-    if (bFileOpened && StartTest("CHFrench CustomPitch","Test custom pitch process.")) {
+    if (bFileOpened && StartTest("CHFrench CustomPitch","Test custom pitch process."))
+    {
         CProcessCustomPitch * pCustomPitch = pDoc->GetCustomPitch();
         short int nResult = LOWORD(pCustomPitch->Process(this, pDoc)); // process data
-        if (nResult != PROCESS_ERROR && nResult != PROCESS_CANCELED) {
+        if (nResult != PROCESS_ERROR && nResult != PROCESS_CANCELED)
+        {
             EndTest(!FileCompare(pCustomPitch->GetProcessFileName()));
-        } else {
+        }
+        else
+        {
             EndTest(FALSE);
         }
     }
 
-    if (bFileOpened && StartTest("CHFrench SmoothedPitch","Test smoothed pitch process.")) {
+    if (bFileOpened && StartTest("CHFrench SmoothedPitch","Test smoothed pitch process."))
+    {
         CProcessSmoothedPitch * pSmoothedPitch = pDoc->GetSmoothedPitch();
         short int nResult = LOWORD(pSmoothedPitch->Process(this, pDoc)); // process data
-        if (nResult != PROCESS_ERROR && nResult != PROCESS_CANCELED) {
+        if (nResult != PROCESS_ERROR && nResult != PROCESS_CANCELED)
+        {
             EndTest(!FileCompare(pSmoothedPitch->GetProcessFileName()));
-        } else {
+        }
+        else
+        {
             EndTest(FALSE);
         }
     }
 
-    if (bFileOpened && StartTest("CHFrench AutoPitch","Test auto pitch process.")) {
+    if (bFileOpened && StartTest("CHFrench AutoPitch","Test auto pitch process."))
+    {
         CProcessGrappl * pAutoPitch = pDoc->GetGrappl();
         short int nResult = LOWORD(pAutoPitch->Process(this, pDoc)); // process data
-        if (nResult != PROCESS_ERROR && nResult != PROCESS_CANCELED) {
+        if (nResult != PROCESS_ERROR && nResult != PROCESS_CANCELED)
+        {
             EndTest(!FileCompare(pAutoPitch->GetProcessFileName()));
-        } else {
+        }
+        else
+        {
             EndTest(FALSE);
         }
     }
 
-    if (bFileOpened) {
+    if (bFileOpened)
+    {
         UINT GrphIDs[MAX_GRAPHS_NUMBER] = {IDD_RAWDATA,IDD_GRAPITCH,0,0,0,0,0,0,0,0};
         pView->OnGraphsTypesPostProcess(GrphIDs,-1);
         MessageLoop(3000);
     }
 
-    if (bFileOpened && StartTest("CHFrench Fragment","Test fragment process.")) {
+    if (bFileOpened && StartTest("CHFrench Fragment","Test fragment process."))
+    {
         CProcessFragments * pFragment = pDoc->GetFragments();
         pFragment->SetDataInvalid();
         pDoc->EnableBackgroundProcessing(FALSE);
         pFragment->RestartProcess();
         pFragment->Process(this, (CSaDoc *)pDoc); // process data
         // wait for idle loop to finish
-        while (!pFragment->IsDataReady()) {
+        while (!pFragment->IsDataReady())
+        {
             MessageLoop(10);
         }
         EndTest(!FileCompare(pFragment->GetProcessFileName()));
     }
 
-    if (bFileOpened && StartTest("CHFrench Loudness","Test loudness process.")) {
+    if (bFileOpened && StartTest("CHFrench Loudness","Test loudness process."))
+    {
         CProcessLoudness * pLoudness = pDoc->GetLoudness();
         short int nResult = LOWORD(pLoudness->Process(this, pDoc)); // process data
-        if (nResult != PROCESS_ERROR && nResult != PROCESS_CANCELED) {
+        if (nResult != PROCESS_ERROR && nResult != PROCESS_CANCELED)
+        {
             EndTest(!FileCompare(pLoudness->GetProcessFileName()));
-        } else {
+        }
+        else
+        {
             EndTest(FALSE);
         }
     }
 
-    if (bFileOpened && StartTest("CHFrench Melogram","Test melogram process.")) {
+    if (bFileOpened && StartTest("CHFrench Melogram","Test melogram process."))
+    {
         CProcessMelogram * pMelogram = pDoc->GetMelogram();
         short int nResult = LOWORD(pMelogram->Process(this, pDoc)); // process data
-        if (nResult != PROCESS_ERROR && nResult != PROCESS_CANCELED) {
+        if (nResult != PROCESS_ERROR && nResult != PROCESS_CANCELED)
+        {
             EndTest(!FileCompare(pMelogram->GetProcessFileName()));
-        } else {
+        }
+        else
+        {
             EndTest(FALSE);
         }
     }
 
-    if (bFileOpened && StartTest("CHFrench Change","Test change process.")) {
+    if (bFileOpened && StartTest("CHFrench Change","Test change process."))
+    {
         CProcessChange * pChange = pDoc->GetChange();
         short int nResult = LOWORD(pChange->Process(this, pDoc)); // process data
-        if (nResult != PROCESS_ERROR && nResult != PROCESS_CANCELED) {
+        if (nResult != PROCESS_ERROR && nResult != PROCESS_CANCELED)
+        {
             EndTest(!FileCompare(pChange->GetProcessFileName()));
-        } else {
+        }
+        else
+        {
             EndTest(FALSE);
         }
     }
 
-    if (bFileOpened && StartTest("CHFrench Raw","Test raw data process.")) {
+    if (bFileOpened && StartTest("CHFrench Raw","Test raw data process."))
+    {
         CProcessRaw * pRaw = pDoc->GetRaw();
         short int nResult = LOWORD(pRaw->Process(this, pDoc)); // process data
-        if (nResult != PROCESS_ERROR && nResult != PROCESS_CANCELED) {
+        if (nResult != PROCESS_ERROR && nResult != PROCESS_CANCELED)
+        {
             EndTest(!FileCompare(pRaw->GetProcessFileName()));
-        } else {
+        }
+        else
+        {
             EndTest(FALSE);
         }
     }
 
-    if (bFileOpened && StartTest("CHFrench Spectrogram","Test spectrogram process.")) {
+    if (bFileOpened && StartTest("CHFrench Spectrogram","Test spectrogram process."))
+    {
         CProcessSpectrogram * pSpectrogram =
             (CProcessSpectrogram *)pDoc->GetSpectrogram(TRUE); // get pointer to spectrogram object
 
@@ -340,9 +402,12 @@ void CSASelfTest::SelfTest() {
                                             pDoc, pView, 752, // some arbitrary plot width
                                             500, // some arbitrary plot height (ignored)
                                             0, 1);
-        if (nResult != PROCESS_ERROR && nResult != PROCESS_CANCELED) {
+        if (nResult != PROCESS_ERROR && nResult != PROCESS_CANCELED)
+        {
             EndTest(!FileCompare(pSpectrogram->GetProcessFileName()/*,7*/));
-        } else {
+        }
+        else
+        {
             EndTest(FALSE);
         }
 
@@ -351,7 +416,8 @@ void CSASelfTest::SelfTest() {
     //
     // this process does not create a temp file, so we have to create one
     //
-    if (bFileOpened && StartTest("CHFrench Spectrum","Test spectrum process.")) {
+    if (bFileOpened && StartTest("CHFrench Spectrum","Test spectrum process."))
+    {
         CProcessSpectrum * pSpectrum = pDoc->GetSpectrum();
 
         SpectrumParm * stParmSpec = pSpectrum->GetSpectrumParms();
@@ -374,9 +440,12 @@ void CSASelfTest::SelfTest() {
         OutputFile.Flush();
         OutputFile.Close();
 
-        if (nResult != PROCESS_ERROR && nResult != PROCESS_CANCELED) {
+        if (nResult != PROCESS_ERROR && nResult != PROCESS_CANCELED)
+        {
             EndTest(!FileCompare(szFileName/*,1037*/));
-        } else {
+        }
+        else
+        {
             EndTest(FALSE);
         }
 
@@ -384,7 +453,8 @@ void CSASelfTest::SelfTest() {
         _tunlink(szFileName); // delete the file now
     }
 
-    if (bFileOpened && StartTest("CHFrench Formants","Test formants process.")) {
+    if (bFileOpened && StartTest("CHFrench Formants","Test formants process."))
+    {
         CProcessFormants * pFormants = pDoc->GetFormants();
 
         SPECT_PROC_SELECT SpectraSelected;
@@ -392,9 +462,12 @@ void CSASelfTest::SelfTest() {
         SpectraSelected.bLpcSpectrum = TRUE;          // use Lpc method for estimating formants
 
         short int nResult = LOWORD(pFormants->Process(this, pDoc,TRUE,30870,4410,SpectraSelected)); // process data
-        if (nResult != PROCESS_ERROR && nResult != PROCESS_CANCELED) {
+        if (nResult != PROCESS_ERROR && nResult != PROCESS_CANCELED)
+        {
             EndTest(!FileCompare(pFormants->GetProcessFileName()/*,20*/));
-        } else {
+        }
+        else
+        {
             EndTest(FALSE);
         }
     }
@@ -402,7 +475,8 @@ void CSASelfTest::SelfTest() {
     //
     // this process does not create a temp file, so we have to create one
     //
-    if (bFileOpened && StartTest("CHFrench PointOfArticulation","Test point of articulation process.")) {
+    if (bFileOpened && StartTest("CHFrench PointOfArticulation","Test point of articulation process."))
+    {
         CProcessPOA * pPOA = pDoc->GetPOA();
         short int nResult = LOWORD(pPOA->Process(this, pDoc,(DWORD)30870,(DWORD)35280)); // process data
 
@@ -412,31 +486,39 @@ void CSASelfTest::SelfTest() {
         CFile OutputFile(szFileName,CFile::modeCreate|CFile::modeWrite);
         OutputFile.Write(&pData->dErrorRatio,sizeof(pData->dErrorRatio));
         OutputFile.Write(&pData->nNormCrossSectAreas,sizeof(pData->nNormCrossSectAreas));
-        for (register int i=0; i<pData->nNormCrossSectAreas; ++i) {
+        for (register int i=0; i<pData->nNormCrossSectAreas; ++i)
+        {
             OutputFile.Write(&pData->dNormCrossSectArea[i],sizeof(double));
         }
         OutputFile.Flush();
         OutputFile.Close();
 
-        if (nResult != PROCESS_ERROR && nResult != PROCESS_CANCELED) {
+        if (nResult != PROCESS_ERROR && nResult != PROCESS_CANCELED)
+        {
             EndTest(!FileCompare(szFileName/*,33*/));
-        } else {
+        }
+        else
+        {
             EndTest(FALSE);
         }
 
         _tunlink(szFileName);
     }
 
-    if (bFileOpened && StartTest("CHFrench TWC","Test tonal weighting chart process.")) {
+    if (bFileOpened && StartTest("CHFrench TWC","Test tonal weighting chart process."))
+    {
         CProcessTonalWeightChart * pTWC = pDoc->GetTonalWeightChart();
         CProcessMelogram * pMelogram = (CProcessMelogram *)pDoc->GetMelogram(); // get pointer to melogram object
         int nLevel = 0, nProgress = 0;
         long lResult = pMelogram->Process(this, pDoc, nProgress, ++nLevel); // process data
         DWORD dwMelDataSize = pMelogram->GetDataSize() * 2; // size of melogram data
         nLevel = (short int)LOWORD(lResult);
-        if ((nLevel == PROCESS_CANCELED) || !dwMelDataSize) {
+        if ((nLevel == PROCESS_CANCELED) || !dwMelDataSize)
+        {
             EndTest(FALSE);
-        } else {
+        }
+        else
+        {
             FmtParm * pFmtParm = pDoc->GetFmtParm(); // get sa parameters format member data
             UINT nBlockAlign = pFmtParm->wBlockAlign;
             WORD wSmpSize = WORD(nBlockAlign / pFmtParm->wChannels);
@@ -445,15 +527,19 @@ void CSASelfTest::SelfTest() {
             double fScaleFactor = (double)dwRawDataSize / (double)dwMelDataSize;
             DWORD dwFrameStart = (DWORD)((double)pView->GetStartCursorPosition() / fScaleFactor) & ~1; // must be multiple of two
             DWORD dwFrameSize  = ((DWORD)((double)pView->GetStopCursorPosition() / fScaleFactor) & ~1) - dwFrameStart + wSmpSize;
-            if (pView->GetStaticTWC()) {
+            if (pView->GetStaticTWC())
+            {
                 dwFrameStart = 0;
                 dwFrameSize  = dwMelDataSize;
             }
 
             short int nResult = LOWORD(pTWC->Process(this, pDoc,dwFrameStart,dwFrameSize, 37,59));  // process data
-            if (nResult != PROCESS_ERROR && nResult != PROCESS_CANCELED) {
+            if (nResult != PROCESS_ERROR && nResult != PROCESS_CANCELED)
+            {
                 EndTest(!FileCompare(pTWC->GetProcessFileName()));
-            } else {
+            }
+            else
+            {
                 EndTest(FALSE);
             }
         }
@@ -480,109 +566,155 @@ void CSASelfTest::SelfTest() {
     }*/
 
 
-    if (bFileOpened && m_pMain->MessageBox(_T("Include visual tests?"),_T("SA Self Test"),MB_YESNO)==IDYES) {
-        if (StartTest(_T("CHFrench visual ZCrossing"),_T("Visual check of zero crossing graph"))) {
+    if (bFileOpened && m_pMain->MessageBox(_T("Include visual tests?"),_T("SA Self Test"),MB_YESNO)==IDYES)
+    {
+        if (StartTest(_T("CHFrench visual ZCrossing"),_T("Visual check of zero crossing graph")))
+        {
             UINT GrphIDs[MAX_GRAPHS_NUMBER] = {IDD_RAWDATA,IDD_ZCROSS,0,0,0,0,0,0,0,0};
             pView->OnGraphsTypesPostProcess(GrphIDs,-1);
-            if (m_pMain->MessageBox(_T("Does this graph seem correct?"),m_szTestNumber,MB_YESNO)==IDYES) {
+            if (m_pMain->MessageBox(_T("Does this graph seem correct?"),m_szTestNumber,MB_YESNO)==IDYES)
+            {
                 EndTest();
-            } else {
+            }
+            else
+            {
                 EndTest(FALSE);
             }
         }
-        if (StartTest(_T("CHFrench visual RawPitch"),_T("Visual check of raw pitch graph"))) {
+        if (StartTest(_T("CHFrench visual RawPitch"),_T("Visual check of raw pitch graph")))
+        {
             UINT GrphIDs[MAX_GRAPHS_NUMBER] = {IDD_RAWDATA,IDD_PITCH,0,0,0,0,0,0,0,0};
             pView->OnGraphsTypesPostProcess(GrphIDs,-1);
-            if (m_pMain->MessageBox(_T("Does this graph seem correct?"),m_szTestNumber,MB_YESNO)==IDYES) {
+            if (m_pMain->MessageBox(_T("Does this graph seem correct?"),m_szTestNumber,MB_YESNO)==IDYES)
+            {
                 EndTest();
-            } else {
+            }
+            else
+            {
                 EndTest(FALSE);
             }
         }
-        if (StartTest("CHFrench visual CustomPitch","Visual check of custom pitch graph")) {
+        if (StartTest("CHFrench visual CustomPitch","Visual check of custom pitch graph"))
+        {
             UINT GrphIDs[MAX_GRAPHS_NUMBER] = {IDD_RAWDATA,IDD_CHPITCH,0,0,0,0,0,0,0,0};
             pView->OnGraphsTypesPostProcess(GrphIDs,-1);
-            if (m_pMain->MessageBox(_T("Does this graph seem correct?"),m_szTestNumber,MB_YESNO)==IDYES) {
+            if (m_pMain->MessageBox(_T("Does this graph seem correct?"),m_szTestNumber,MB_YESNO)==IDYES)
+            {
                 EndTest();
-            } else {
+            }
+            else
+            {
                 EndTest(FALSE);
             }
         }
-        if (StartTest("CHFrench visual SmoothedPitch","Visual check of smoothed pitch graph")) {
+        if (StartTest("CHFrench visual SmoothedPitch","Visual check of smoothed pitch graph"))
+        {
             UINT GrphIDs[MAX_GRAPHS_NUMBER] = {IDD_RAWDATA,IDD_SMPITCH,0,0,0,0,0,0,0,0};
             pView->OnGraphsTypesPostProcess(GrphIDs,-1);
-            if (m_pMain->MessageBox(_T("Does this graph seem correct?"),m_szTestNumber,MB_YESNO)==IDYES) {
+            if (m_pMain->MessageBox(_T("Does this graph seem correct?"),m_szTestNumber,MB_YESNO)==IDYES)
+            {
                 EndTest();
-            } else {
+            }
+            else
+            {
                 EndTest(FALSE);
             }
         }
-        if (StartTest("CHFrench visual AutoPitch","Visual check of autopitch graph")) {
+        if (StartTest("CHFrench visual AutoPitch","Visual check of autopitch graph"))
+        {
             UINT GrphIDs[MAX_GRAPHS_NUMBER] = {IDD_RAWDATA,IDD_GRAPITCH,0,0,0,0,0,0,0,0};
             pView->OnGraphsTypesPostProcess(GrphIDs,-1);
-            if (m_pMain->MessageBox(_T("Does this graph seem correct?"),m_szTestNumber,MB_YESNO)==IDYES) {
+            if (m_pMain->MessageBox(_T("Does this graph seem correct?"),m_szTestNumber,MB_YESNO)==IDYES)
+            {
                 EndTest();
-            } else {
+            }
+            else
+            {
                 EndTest(FALSE);
             }
         }
-        if (StartTest("CHFrench visual Loudness","Visual check of loudness graph.")) {
+        if (StartTest("CHFrench visual Loudness","Visual check of loudness graph."))
+        {
             UINT GrphIDs[MAX_GRAPHS_NUMBER] = {IDD_RAWDATA,IDD_LOUDNESS,0,0,0,0,0,0,0,0};
             pView->OnGraphsTypesPostProcess(GrphIDs,-1);
-            if (m_pMain->MessageBox(_T("Does this graph seem correct?"),m_szTestNumber,MB_YESNO)==IDYES) {
+            if (m_pMain->MessageBox(_T("Does this graph seem correct?"),m_szTestNumber,MB_YESNO)==IDYES)
+            {
                 EndTest();
-            } else {
+            }
+            else
+            {
                 EndTest(FALSE);
             }
         }
-        if (StartTest("CHFrench visual Melogram","Visual check of melogram graph.")) {
+        if (StartTest("CHFrench visual Melogram","Visual check of melogram graph."))
+        {
             UINT GrphIDs[MAX_GRAPHS_NUMBER] = {IDD_RAWDATA,IDD_MELOGRAM,0,0,0,0,0,0,0,0};
             pView->OnGraphsTypesPostProcess(GrphIDs,-1);
-            if (m_pMain->MessageBox(_T("Does this graph seem correct?"),m_szTestNumber,MB_YESNO)==IDYES) {
+            if (m_pMain->MessageBox(_T("Does this graph seem correct?"),m_szTestNumber,MB_YESNO)==IDYES)
+            {
                 EndTest();
-            } else {
+            }
+            else
+            {
                 EndTest(FALSE);
             }
         }
-        if (StartTest("CHFrench visual Change","Visual check of change graph.")) {
+        if (StartTest("CHFrench visual Change","Visual check of change graph."))
+        {
             UINT GrphIDs[MAX_GRAPHS_NUMBER] = {IDD_RAWDATA,IDD_CHANGE,0,0,0,0,0,0,0,0};
             pView->OnGraphsTypesPostProcess(GrphIDs,-1);
-            if (m_pMain->MessageBox(_T("Does this graph seem correct?"),m_szTestNumber,MB_YESNO)==IDYES) {
+            if (m_pMain->MessageBox(_T("Does this graph seem correct?"),m_szTestNumber,MB_YESNO)==IDYES)
+            {
                 EndTest();
-            } else {
+            }
+            else
+            {
                 EndTest(FALSE);
             }
         }
-        if (StartTest("CHFrench visual Spectrogram","Visual check of spectrogram graph.")) {
+        if (StartTest("CHFrench visual Spectrogram","Visual check of spectrogram graph."))
+        {
             UINT GrphIDs[MAX_GRAPHS_NUMBER] = {IDD_RAWDATA,IDD_SPECTROGRAM,0,0,0,0,0,0,0,0};
             pView->OnGraphsTypesPostProcess(GrphIDs,-1);
-            if (m_pMain->MessageBox(_T("Does this graph seem correct?"),m_szTestNumber,MB_YESNO)==IDYES) {
+            if (m_pMain->MessageBox(_T("Does this graph seem correct?"),m_szTestNumber,MB_YESNO)==IDYES)
+            {
                 EndTest();
-            } else {
+            }
+            else
+            {
                 EndTest(FALSE);
             }
         }
-        if (StartTest("CHFrench visual Spectrum","Visual check of spectrum graph.")) {
+        if (StartTest("CHFrench visual Spectrum","Visual check of spectrum graph."))
+        {
             UINT GrphIDs[MAX_GRAPHS_NUMBER] = {IDD_RAWDATA,IDD_SPECTRUM,0,0,0,0,0,0,0,0};
             pView->OnGraphsTypesPostProcess(GrphIDs,-1);
-            if (m_pMain->MessageBox(_T("Does this graph seem correct?"),m_szTestNumber,MB_YESNO)==IDYES) {
+            if (m_pMain->MessageBox(_T("Does this graph seem correct?"),m_szTestNumber,MB_YESNO)==IDYES)
+            {
                 EndTest();
-            } else {
+            }
+            else
+            {
                 EndTest(FALSE);
             }
         }
-        if (StartTest("CHFrench visual POA","Visual check of point of articulation graph.")) {
+        if (StartTest("CHFrench visual POA","Visual check of point of articulation graph."))
+        {
             UINT GrphIDs[MAX_GRAPHS_NUMBER] = {IDD_RAWDATA,IDD_POA,0,0,0,0,0,0,0,0};
             pView->OnGraphsTypesPostProcess(GrphIDs,-1);
-            if (m_pMain->MessageBox(_T("Does this graph seem correct?"),m_szTestNumber,MB_YESNO)==IDYES) {
+            if (m_pMain->MessageBox(_T("Does this graph seem correct?"),m_szTestNumber,MB_YESNO)==IDYES)
+            {
                 EndTest();
-            } else {
+            }
+            else
+            {
                 EndTest(FALSE);
             }
         }
     }
 
-    if (bFileOpened && StartTest("CHFrench Screen Capture","Test File|Screen Capture|Copy Screen with CHFRENCH.WAV")) {
+    if (bFileOpened && StartTest("CHFrench Screen Capture","Test File|Screen Capture|Copy Screen with CHFRENCH.WAV"))
+    {
         // It would be nice if we could send the keys to the menu (Alt+F to pull down file menu, etc.)
         // bTestSuccess = m_pMain->SendMessage(WM_CHAR, 'F', 0x20000000);
 
@@ -591,12 +723,14 @@ void CSASelfTest::SelfTest() {
         m_pMain->SendMessage(WM_COMMAND,ID_GRAPHS_SCREENCOPY,0);
         EndTest(CheckClipboard(CF_BITMAP));
     }
-    if (bFileOpened && StartTest("CHFrench Graphs Capture","Test File|Screen Capture|Copy Graphs with CHFRENCH.WAV")) {
+    if (bFileOpened && StartTest("CHFrench Graphs Capture","Test File|Screen Capture|Copy Graphs with CHFRENCH.WAV"))
+    {
         EmptyClipboard();
         m_pMain->SendMessage(WM_COMMAND,ID_GRAPHS_GRAPHSCOPY,0);
         EndTest(CheckClipboard(CF_BITMAP));
     }
-    if (bFileOpened && StartTest("CHFrench Window Capture","Test File|Screen Capture|Copy Window with CHFRENCH.WAV")) {
+    if (bFileOpened && StartTest("CHFrench Window Capture","Test File|Screen Capture|Copy Window with CHFRENCH.WAV"))
+    {
         EmptyClipboard();
         m_pMain->SendMessage(WM_COMMAND,ID_GRAPHS_WINDOWCOPY,0);
         EndTest(CheckClipboard(CF_BITMAP));
@@ -604,7 +738,8 @@ void CSASelfTest::SelfTest() {
         EmptyClipboard(); // why keep it on the clipboard?
     }
 
-    if (bFileOpened && StartTest("CHFrench CutPaste","Cut and paste portions of the file")) {
+    if (bFileOpened && StartTest("CHFrench CutPaste","Cut and paste portions of the file"))
+    {
         MessageLoop(1);
         m_pMain->SendMessage(WM_COMMAND,ID_EDIT_SELECTWAVEFORM,0);
         MessageLoop(1);
@@ -617,21 +752,26 @@ void CSASelfTest::SelfTest() {
         EndTest();
     }
 
-    if (bFileOpened && StartTest("CHFrench CursorPositioning","Position the cursors at ends of file")) {
+    if (bFileOpened && StartTest("CHFrench CursorPositioning","Position the cursors at ends of file"))
+    {
         pView->SetStartCursorPosition(0,SNAP_LEFT);
         pView->SetStopCursorPosition(pDoc->GetDataSize(),SNAP_RIGHT);
 
         DWORD dwStart = pView->GetStartCursorPosition();
         DWORD dwStop  = pView->GetStopCursorPosition();
         DWORD dwSize  = pDoc->GetDataSize();
-        if (!dwStart    && dwStop==dwSize - (pFP->wBitsPerSample/8)) {
+        if (!dwStart    && dwStop==dwSize - (pFP->wBitsPerSample/8))
+        {
             EndTest();
-        } else {
+        }
+        else
+        {
             EndTest(FALSE);
         }
     }
 
-    if (bFileOpened && StartTest("CHFrench close","Close active document")) {
+    if (bFileOpened && StartTest("CHFrench close","Close active document"))
+    {
         bTestSuccess = m_pMain->SendMessage(WM_COMMAND,ID_FILE_CLOSE,0);
         pDoc = NULL;
         bFileOpened = FALSE;
@@ -643,7 +783,8 @@ void CSASelfTest::SelfTest() {
 //
 // CSASelfTest constructor
 //
-CSASelfTest::CSASelfTest() {
+CSASelfTest::CSASelfTest()
+{
     TCHAR szString[_MAX_PATH] = _T("");
 
     m_pApp = (CSaApp *) AfxGetApp();
@@ -706,38 +847,48 @@ CSASelfTest::CSASelfTest() {
     CString szVersion;
     vi.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
     ::GetVersionEx(&vi);
-    switch (vi.dwPlatformId) {
+    switch (vi.dwPlatformId)
+    {
     case VER_PLATFORM_WIN32s:
         szVersion.Format(_T("Windows %lu.%lu (build %u) with Win32s"),vi.dwMajorVersion,vi.dwMinorVersion,(UINT)LOWORD(vi.dwBuildNumber));
         break;
     case VER_PLATFORM_WIN32_WINDOWS:
-        if (vi.dwMinorVersion==0) {
+        if (vi.dwMinorVersion==0)
+        {
             szVersion.Format(_T("Windows 95 (%lu.%lu, build %u)"),vi.dwMajorVersion,vi.dwMinorVersion,(UINT)LOWORD(vi.dwBuildNumber));
-        } else
+        }
+        else
             szVersion.Format(_T("Windows %s (%lu.%lu, build %lu)"),
                              vi.dwMinorVersion>50?_T("ME"):_T("98"),vi.dwMajorVersion,vi.dwMinorVersion,vi.dwBuildNumber);
         break;
-    case VER_PLATFORM_WIN32_NT: {
+    case VER_PLATFORM_WIN32_NT:
+    {
         char * szType = "NT";
-        if (vi.dwMajorVersion==5 && vi.dwMinorVersion < 50) {
+        if (vi.dwMajorVersion==5 && vi.dwMinorVersion < 50)
+        {
             szType = "2000";
-        } else if (vi.dwMajorVersion>=5) {
+        }
+        else if (vi.dwMajorVersion>=5)
+        {
             szType = "XP";
         }
         szVersion.Format(_T("Windows %s (%lu.%lu, build %lu)"),szType,vi.dwMajorVersion,vi.dwMinorVersion,vi.dwBuildNumber);
     }
     }
     LogFile.Write(szVersion,szVersion.GetLength());
-    if (vi.szCSDVersion && *vi.szCSDVersion) {
+    if (vi.szCSDVersion && *vi.szCSDVersion)
+    {
         LogFile.Write(" - ",3);
         LogFile.Write(vi.szCSDVersion,_tcslen(vi.szCSDVersion));
     }
     LogFile.Write("</OS>\r\n",7);
 
     LogFile.Write("\t\t<Processor>",13);
-    switch (si.wProcessorArchitecture) {
+    switch (si.wProcessorArchitecture)
+    {
     case PROCESSOR_ARCHITECTURE_INTEL:
-        switch (si.dwProcessorType) {
+        switch (si.dwProcessorType)
+        {
         case PROCESSOR_INTEL_386:
             LogFile.Write("386",3);
             break;
@@ -783,39 +934,51 @@ CSASelfTest::CSASelfTest() {
 //
 // CSASelfTest destructor
 //
-CSASelfTest::~CSASelfTest() {
+CSASelfTest::~CSASelfTest()
+{
     CString szMessage = "";
     szMessage.Format(_T("%u tests passed of %u."),m_nTestsPassed,m_nTestsPassed+m_nTestsFailed);
     m_pMain->MessageBox(szMessage,_T("SA self test complete"));
 
     // open selftest.xml if some tests failed
-    if (m_nTestsFailed) {
+    if (m_nTestsFailed)
+    {
         HKEY hXML = NULL;
-        if (RegCreateKey(HKEY_CLASSES_ROOT,_T(".xml"),&hXML)==ERROR_SUCCESS) {
+        if (RegCreateKey(HKEY_CLASSES_ROOT,_T(".xml"),&hXML)==ERROR_SUCCESS)
+        {
             TCHAR szXMLClassName[256] = _T("");
             long Length = 256;
-            if (RegQueryValue(hXML,NULL,szXMLClassName,&Length)==ERROR_SUCCESS) {
+            if (RegQueryValue(hXML,NULL,szXMLClassName,&Length)==ERROR_SUCCESS)
+            {
                 HKEY hXMLClass = NULL;
-                if (RegCreateKey(HKEY_CLASSES_ROOT,szXMLClassName,&hXMLClass)==ERROR_SUCCESS) {
+                if (RegCreateKey(HKEY_CLASSES_ROOT,szXMLClassName,&hXMLClass)==ERROR_SUCCESS)
+                {
                     HKEY hXMLShellOpenCommand = NULL;
-                    if (RegCreateKey(hXMLClass,_T("shell\\Open\\command"),&hXMLShellOpenCommand)==ERROR_SUCCESS) {
+                    if (RegCreateKey(hXMLClass,_T("shell\\Open\\command"),&hXMLShellOpenCommand)==ERROR_SUCCESS)
+                    {
                         TCHAR szXMLCommand[_MAX_PATH];
                         Length = _MAX_PATH;
-                        if (RegQueryValue(hXMLShellOpenCommand,NULL,szXMLCommand,&Length)==ERROR_SUCCESS) {
+                        if (RegQueryValue(hXMLShellOpenCommand,NULL,szXMLCommand,&Length)==ERROR_SUCCESS)
+                        {
                             CSaString szCommand = szXMLCommand;
                             CSaString szRestOfCommand = " ";
-                            if (*szXMLCommand=='\"') {
+                            if (*szXMLCommand=='\"')
+                            {
                                 szCommand = szCommand.Right(szCommand.GetLength()-1);
                                 int nEnd = szCommand.FindOneOf(_T("\""));
-                                if (nEnd) {
+                                if (nEnd)
+                                {
                                     szRestOfCommand = szCommand.Right(szCommand.GetLength()-nEnd-1);
                                     szRestOfCommand.TrimLeft();
                                     szCommand = szCommand.Left(nEnd);
                                 }
 
-                            } else {
+                            }
+                            else
+                            {
                                 int nEnd = szCommand.FindOneOf(_T(" /"));
-                                if (nEnd) {
+                                if (nEnd)
+                                {
                                     szRestOfCommand = szCommand.Right(szCommand.GetLength()-nEnd-1);
                                     szCommand = szCommand.Left(nEnd);
                                 }
@@ -838,7 +1001,8 @@ CSASelfTest::~CSASelfTest() {
 //
 // Otherwise, logs the beginning of the test and returns TRUE
 //
-BOOL CSASelfTest::StartTest(const CString szTestNumber, const CString szDescription) {
+BOOL CSASelfTest::StartTest(const CString szTestNumber, const CString szDescription)
+{
     m_szTestNumber = szTestNumber;
 
     CFile LogFile(m_szLogFileName,CFile::modeWrite);
@@ -852,7 +1016,8 @@ BOOL CSASelfTest::StartTest(const CString szTestNumber, const CString szDescript
     LogFile.Write("\t<Test ID=\"",11);
     LogFile.Write(m_szTestNumber,m_szTestNumber.GetLength());
     LogFile.Write("\">\r\n",4);
-    if (szDescription.GetLength()) {
+    if (szDescription.GetLength())
+    {
         LogFile.Write("\t\t<Description>",15);
         LogFile.Write(szDescription,szDescription.GetLength());
         LogFile.Write("</Description>\r\n",16);
@@ -869,15 +1034,19 @@ BOOL CSASelfTest::StartTest(const CString szTestNumber, const CString szDescript
 //
 // Logs the end of the current test
 //
-void CSASelfTest::EndTest(BOOL bSuccess) {
+void CSASelfTest::EndTest(BOOL bSuccess)
+{
     CFile LogFile(m_szLogFileName,CFile::modeWrite);
     LogFile.Seek(-23,CFile::end);
 
     LogFile.Write("\t\t<Success>",11);
-    if (bSuccess) {
+    if (bSuccess)
+    {
         ++m_nTestsPassed;
         LogFile.Write("true",4);
-    } else {
+    }
+    else
+    {
         ++m_nTestsFailed;
         LogFile.Write("false",5);
     }
@@ -893,12 +1062,15 @@ void CSASelfTest::EndTest(BOOL bSuccess) {
     szStatusMessage.Format(_T("Completed %3.3d tests."),m_nTestsPassed+m_nTestsFailed);
     LogFile.Write(szStatusMessage,szStatusMessage.GetLength());
 
-    if (bSuccess) {
+    if (bSuccess)
+    {
         LogFile.Seek(N_TESTS_PASSED,CFile::begin);
         _itow_s(m_nTestsPassed,nNumber,_countof(nNumber),10);
         LogFile.Write(nNumber,_tcslen(nNumber));
         LogFile.Write("</TestsPassed>",14);
-    } else {
+    }
+    else
+    {
         LogFile.Seek(N_TESTS_FAILED,CFile::begin);
         _itow_s(m_nTestsFailed,nNumber,_countof(nNumber),10);
         LogFile.Write(nNumber,_tcslen(nNumber));
@@ -914,18 +1086,21 @@ void CSASelfTest::EndTest(BOOL bSuccess) {
 //
 // Writes the message into the log file in the current test's area
 //
-void CSASelfTest::LogEntry(const CString szMessage) {
+void CSASelfTest::LogEntry(const CString szMessage)
+{
     BOOL bInTest = m_szTestNumber.GetLength();
 
     CFile LogFile(m_szLogFileName,CFile::modeWrite);
     LogFile.Seek(bInTest?-23:-13,CFile::end);
-    if (bInTest) {
+    if (bInTest)
+    {
         LogFile.Write("\t",1);
     }
     LogFile.Write("\t<Entry>",8);
     LogFile.Write(szMessage,szMessage.GetLength());
     LogFile.Write("</Entry>\r\n",10);
-    if (bInTest) {
+    if (bInTest)
+    {
         LogFile.Write("\t</Test>\r\n",10);
     }
     LogFile.Write("</SelfTest>\r\n",13);
@@ -944,29 +1119,36 @@ void CSASelfTest::LogEntry(const CString szMessage) {
 // If FileTwo is NULL, uses the "SelfTest\*.tmp" file, where * corresponds to the test name
 //
 #define BUFFERSIZE 1024
-int CSASelfTest::FileCompare(const CString szFileOne, long nTolerableDifferences, CString szFileTwo) {
+int CSASelfTest::FileCompare(const CString szFileOne, long nTolerableDifferences, CString szFileTwo)
+{
     long nFileDifferences = 0;
     long nFirstDifference = -1;
 
-    if (!szFileTwo.GetLength()) {
+    if (!szFileTwo.GetLength())
+    {
         szFileTwo = m_szTestFolderPath + m_szTestNumber + ".tmp";
     }
 
-    if (!FileExists(szFileOne)) {
+    if (!FileExists(szFileOne))
+    {
         CString szMessage = "Unable to open file " + szFileOne;
         LogEntry(szMessage);
     }
-    if (!FileExists(szFileTwo)) {
+    if (!FileExists(szFileTwo))
+    {
         CString szMessage = "Unable to open file " + szFileTwo;
         CString szBenchMessage = szFileTwo + " does not exist.\r\n\nAre you intending to create the benchmark at this time?";
-        if (m_pMain->MessageBox(szBenchMessage,m_szTestNumber,MB_YESNO)==IDYES) {
+        if (m_pMain->MessageBox(szBenchMessage,m_szTestNumber,MB_YESNO)==IDYES)
+        {
             CFile File1(szFileOne,CFile::modeRead|CFile::typeBinary);
             CFile File2(szFileTwo,CFile::modeWrite|CFile::modeCreate|CFile::typeBinary);
             char Buffer[BUFFERSIZE];
 
-            for (;;) {
+            for (;;)
+            {
                 UINT nBytesRead = File1.Read(Buffer,BUFFERSIZE);
-                if (!nBytesRead) {
+                if (!nBytesRead)
+                {
                     File1.Close();
                     File2.Flush();
                     File2.Close();
@@ -974,11 +1156,14 @@ int CSASelfTest::FileCompare(const CString szFileOne, long nTolerableDifferences
                 }
                 File2.Write(Buffer,nBytesRead);
             }
-        } else {
+        }
+        else
+        {
             LogEntry(szMessage);
         }
     }
-    if (!FileExists(szFileOne)||!FileExists(szFileTwo)) {
+    if (!FileExists(szFileOne)||!FileExists(szFileTwo))
+    {
         LogEntry("Neither file exists.");
         return -1;
     }
@@ -990,7 +1175,8 @@ int CSASelfTest::FileCompare(const CString szFileOne, long nTolerableDifferences
 
     DWORD dwFile1Len=File1.GetLength();
     DWORD dwFile2Len=File2.GetLength();
-    if (dwFile1Len!=dwFile2Len) { // Files are different length
+    if (dwFile1Len!=dwFile2Len)   // Files are different length
+    {
         CString szLen;
         szLen.Format(_T("%lu"),dwFile1Len);
         LogEntry(szFileOne + " has length of " + szLen);
@@ -1003,24 +1189,30 @@ int CSASelfTest::FileCompare(const CString szFileOne, long nTolerableDifferences
     }
 
 
-    for (UINT nChunkNumber = 0;; ++nChunkNumber) {
+    for (UINT nChunkNumber = 0;; ++nChunkNumber)
+    {
         UINT nRead = File1.Read((void *)Buffer1,BUFFERSIZE);
         nRead = File2.Read((void *)Buffer2,BUFFERSIZE);
 
-        for (register unsigned i=1; i<nRead; ++i) {
-            if (Buffer1[i-1]!=Buffer2[i-1]) { // Files have different content
-                if (nFirstDifference == -1) {
+        for (register unsigned i=1; i<nRead; ++i)
+        {
+            if (Buffer1[i-1]!=Buffer2[i-1])   // Files have different content
+            {
+                if (nFirstDifference == -1)
+                {
                     nFirstDifference = (((DWORD)nChunkNumber)*BUFFERSIZE)+i;
                 }
                 ++nFileDifferences;
             }
         }
 
-        if (nRead!=BUFFERSIZE) {
+        if (nRead!=BUFFERSIZE)
+        {
             break;
         }
     }
-    if (nFirstDifference != -1 && nFileDifferences > nTolerableDifferences) {
+    if (nFirstDifference != -1 && nFileDifferences > nTolerableDifferences)
+    {
         CString szDifferences;
         szDifferences.Format(_T("Files differ in %ld of %lu bytes"),nFileDifferences,File1.GetLength());
         LogEntry(szDifferences);
@@ -1040,14 +1232,18 @@ int CSASelfTest::FileCompare(const CString szFileOne, long nTolerableDifferences
 // This function enables key down message to come through while
 // processing.
 /***************************************************************************/
-void CSASelfTest::MessageLoop(DWORD dwMilliSeconds) {
+void CSASelfTest::MessageLoop(DWORD dwMilliSeconds)
+{
     DWORD dwStartTime=::GetTickCount();
     BOOL bDoingBackgroundProcessing = TRUE;
 
-    while (bDoingBackgroundProcessing && (dwStartTime+dwMilliSeconds > ::GetTickCount())) {
+    while (bDoingBackgroundProcessing && (dwStartTime+dwMilliSeconds > ::GetTickCount()))
+    {
         MSG msg;
-        while (::PeekMessage(&msg, NULL, 0, 0, PM_NOREMOVE)) {
-            if (!AfxGetApp()->PumpMessage()) {
+        while (::PeekMessage(&msg, NULL, 0, 0, PM_NOREMOVE))
+        {
+            if (!AfxGetApp()->PumpMessage())
+            {
                 bDoingBackgroundProcessing = FALSE;
                 //::PostQuitMessage( );
                 break;
@@ -1062,7 +1258,8 @@ void CSASelfTest::MessageLoop(DWORD dwMilliSeconds) {
     }
 }
 
-BOOL CSASelfTest::LogHexDataCompare(CFile & FileOne,CFile & FileTwo,UINT HighlightPosition) {
+BOOL CSASelfTest::LogHexDataCompare(CFile & FileOne,CFile & FileTwo,UINT HighlightPosition)
+{
     BOOL bInTest = m_szTestNumber.GetLength();
     CString szOutString;
     UINT BeginPosition=(HighlightPosition>7)?HighlightPosition-8:0;
@@ -1072,7 +1269,8 @@ BOOL CSASelfTest::LogHexDataCompare(CFile & FileOne,CFile & FileTwo,UINT Highlig
     CFile LogFile(m_szLogFileName,CFile::modeWrite);
     LogFile.Seek(bInTest?-23:-13,CFile::end);
 
-    if (bInTest) {
+    if (bInTest)
+    {
         LogFile.Write("\t",1);
     }
     LogFile.Write("\t<FileDifference ID1=\"",22);
@@ -1083,85 +1281,110 @@ BOOL CSASelfTest::LogHexDataCompare(CFile & FileOne,CFile & FileTwo,UINT Highlig
 
     CString szNotice;
     szNotice.Format(_T("\t\t<Notice>Files diverge at byte %lu.</Notice>\r\n"),HighlightPosition);
-    if (bInTest) {
+    if (bInTest)
+    {
         LogFile.Write("\t",1);
     }
     LogFile.Write(szNotice,szNotice.GetLength());
 
-    if (bInTest) {
+    if (bInTest)
+    {
         LogFile.Write("\t",1);
     }
     LogFile.Write("\t\t<Data1>",9);
     FileOne.Seek(BeginPosition,CFile::begin);
     UINT nRead = FileOne.Read(Buffer,16);
-    for (i=0; i<nRead; ++i) {
+    for (i=0; i<nRead; ++i)
+    {
         char szHexValue[2] = "";
         szHexValue[0] = (char)(Buffer[i]/16);
-        if (szHexValue[0]<=9) {
+        if (szHexValue[0]<=9)
+        {
             szHexValue[0] += '0';
-        } else {
+        }
+        else
+        {
             szHexValue[0]+=('A'-10);
         }
         szHexValue[1] = (char)(Buffer[i]%16);
-        if (szHexValue[1]<=9) {
+        if (szHexValue[1]<=9)
+        {
             szHexValue[1] += '0';
-        } else {
+        }
+        else
+        {
             szHexValue[1]+=('A'-10);
         }
 
-        if (i+BeginPosition==HighlightPosition-1) {
+        if (i+BeginPosition==HighlightPosition-1)
+        {
             LogFile.Write("*",1);
         }
         LogFile.Write(szHexValue,2);
-        if (i+BeginPosition==HighlightPosition-1) {
+        if (i+BeginPosition==HighlightPosition-1)
+        {
             LogFile.Write("*",1);
         }
-        if (i<nRead-1) {
+        if (i<nRead-1)
+        {
             LogFile.Write(" ",1);
         }
     }
     LogFile.Write("</Data1>\r\n",10);
 
-    if (bInTest) {
+    if (bInTest)
+    {
         LogFile.Write("\t",1);
     }
     LogFile.Write("\t\t<Data2>",9);
     FileTwo.Seek(BeginPosition,CFile::begin);
     nRead = FileTwo.Read(Buffer,16);
-    for (i=0; i<nRead; ++i) {
+    for (i=0; i<nRead; ++i)
+    {
         char szHexValue[2] = "";
         szHexValue[0] = (char)(Buffer[i]/16);
-        if (szHexValue[0]<=9) {
+        if (szHexValue[0]<=9)
+        {
             szHexValue[0] += '0';
-        } else {
+        }
+        else
+        {
             szHexValue[0]+=('A'-10);
         }
         szHexValue[1] = (char)(Buffer[i]%16);
-        if (szHexValue[1]<=9) {
+        if (szHexValue[1]<=9)
+        {
             szHexValue[1] += '0';
-        } else {
+        }
+        else
+        {
             szHexValue[1]+=('A'-10);
         }
 
-        if (i+BeginPosition==HighlightPosition-1) {
+        if (i+BeginPosition==HighlightPosition-1)
+        {
             LogFile.Write("*",1);
         }
         LogFile.Write(szHexValue,2);
-        if (i+BeginPosition==HighlightPosition-1) {
+        if (i+BeginPosition==HighlightPosition-1)
+        {
             LogFile.Write("*",1);
         }
-        if (i<nRead-1) {
+        if (i<nRead-1)
+        {
             LogFile.Write(" ",1);
         }
     }
     LogFile.Write("</Data2>\r\n",10);
 
-    if (bInTest) {
+    if (bInTest)
+    {
         LogFile.Write("\t",1);
     }
     LogFile.Write("\t</FileDifference>\r\n",20);
 
-    if (bInTest) {
+    if (bInTest)
+    {
         LogFile.Write("\t</Test>\r\n",10);
     }
     LogFile.Write("</SelfTest>\r\n",13);
@@ -1170,16 +1393,20 @@ BOOL CSASelfTest::LogHexDataCompare(CFile & FileOne,CFile & FileTwo,UINT Highlig
     return TRUE;
 }//LogHexData
 
-void CSASelfTest::EmptyClipboard() {
-    if (::OpenClipboard(*m_pMain)) {
+void CSASelfTest::EmptyClipboard()
+{
+    if (::OpenClipboard(*m_pMain))
+    {
         ::EmptyClipboard();
         ::CloseClipboard();
     }
 }
 
-BOOL CSASelfTest::CheckClipboard(UINT nFormat) { //CF_BITMAP
+BOOL CSASelfTest::CheckClipboard(UINT nFormat)   //CF_BITMAP
+{
     BOOL bReturn = FALSE;
-    if (::OpenClipboard(*m_pMain)) {
+    if (::OpenClipboard(*m_pMain))
+    {
         bReturn = ::IsClipboardFormatAvailable(nFormat);
         ::CloseClipboard();
     }

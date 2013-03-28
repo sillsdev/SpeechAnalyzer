@@ -1,7 +1,8 @@
 #ifndef CHILDFRAME_H
 #define CHILDFRAME_H
 
-class CChildFrame : public CMDIChildWnd {
+class CChildFrame : public CMDIChildWnd
+{
     DECLARE_DYNCREATE(CChildFrame)
 public:
     CChildFrame();

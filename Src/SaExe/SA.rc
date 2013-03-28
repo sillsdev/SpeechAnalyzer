@@ -26,7 +26,7 @@ LANGUAGE LANG_NEUTRAL, SUBLANG_NEUTRAL
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 3,1,0,43
+ FILEVERSION 3,1,0,44
  PRODUCTVERSION 1,0,0,1
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
@@ -44,7 +44,7 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "SIL International"
             VALUE "FileDescription", "SA"
-            VALUE "FileVersion", "v3.1.0.43"
+            VALUE "FileVersion", "v3.1.0.44"
             VALUE "InternalName", "SA"
             VALUE "LegalCopyright", "© 1996-2013 SIL International (MSEA)"
             VALUE "ProductName", "SA"
@@ -2796,6 +2796,12 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "Phonology Assistant...",      ID_FILE_PHONOLOGYASSISTANT
         MENUITEM SEPARATOR
+        POPUP "AutoSave"
+        BEGIN
+            MENUITEM "On",                          ID_AUTOSAVE_ON
+            MENUITEM "Off",                         ID_AUTOSAVE_OFF
+        END
+        MENUITEM SEPARATOR
         MENUITEM "Recent File",                 ID_FILE_MRU_FILE1, GRAYED
         MENUITEM SEPARATOR
         MENUITEM "E&xit",                       ID_APP_EXIT
@@ -4227,7 +4233,7 @@ STRINGTABLE
 BEGIN
     IDR_MAINFRAME           "Speech Analyzer"
     IDR_SA_ANNTYPE          "\nSA\nSA Document\nWAV Files (*.wav)\n.wav\nannFileType\nANN File Type"
-    VS_VERSION              "Version 3.1.0.43"
+    VS_VERSION              "Version 3.1.0.44"
     VS_COPYRIGHT            "© 1996-2013 SIL International (MSEA).\nAll Rights Reserved."
     IDR_SA_WBTYPE           "\nWB\nSA Workbench\nWB Files (*.wb)\n.wb\nwbFileType\nWB File Type"
 END
@@ -4242,6 +4248,9 @@ END
 
 STRINGTABLE
 BEGIN
+    IDS_ERROR_CREATE_INSTANCE 
+                            "A serious error has occurred. If this error persists, try reinstalling the application.\n\nModule: %1\nError Code: 0x%2"
+    IDS_ERROR_READ_ONLY     "Unable to save to read-only file '%1'"
     IDS_ERROR_MMIO_INVALIDPARAM "Sound device error: invalid parameter."
     IDS_ERROR_EQUATION      "The function you entered contains errors. Please revise it."
     IDS_AUTO_STOPPING       "Stopping..."
@@ -4260,11 +4269,8 @@ BEGIN
                             "Wav file '%1' is sampled at an invalid sampling rate.  Currently 11.025kHz, 16kHz, 22.050kHz, 44.100kHz, and 48kHz are supported.  Please use AudioCon to convert."
     IDS_AUTO_WAITING        "Waiting for input..."
     IDS_AUTO_RECORD         "Recording..."
-    IDS_ERROR_READ_ONLY     "Unable to save to read-only file '%1'"
     IDS_AUTO_WAITING_SILENCE "Waiting for 2 Seconds of Silence..."
     IDS_ERROR_FORMAT_CHANNELS "Data in file '%1' has too many channels"
-    IDS_ERROR_CREATE_INSTANCE 
-                            "A serious error has occurred. If this error persists, try reinstalling the application.\n\nModule: %1\nError Code: 0x%2"
 END
 
 STRINGTABLE
@@ -5202,6 +5208,12 @@ BEGIN
     IDS_SPLIT_NO_PHRASE     "An empty Phrase transcription field was found at %1 segment %2.\nPlease correct the transcription or rerun the Split File feature with a different filenaming convention."
     IDS_SPLIT_FOLDER_EXISTS "The '%1' directory already exists.\n\nClick ABORT to cancel split file processing.\nClick RETRY to return the Split File dialog box.\nClick IGNORE to overwrite the existing data."
     IDS_SPLIT_FILE_EXISTS   "A file with the name '%1' already exists.\n\nPlease remove the file or choose another split file directory path."
+END
+
+STRINGTABLE
+BEGIN
+    ID_AUTOSAVE_ON          "Enables auto-saving of all documents every minute."
+    ID_AUTOSAVE_OFF         "Disables the AutoSave feature."
 END
 
 STRINGTABLE

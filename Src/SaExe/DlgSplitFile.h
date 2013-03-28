@@ -5,7 +5,8 @@
 #include "appdefs.h"
 
 // CDlgSplitFile dialog
-class CDlgSplitFile : public CDialog {
+class CDlgSplitFile : public CDialog
+{
 
     DECLARE_DYNAMIC(CDlgSplitFile)
 public:

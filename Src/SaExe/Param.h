@@ -19,7 +19,8 @@
 class Object_ostream;
 class Object_istream;
 
-class ParseParm {               // parsing parameters
+class ParseParm                 // parsing parameters
+{
 public:
     float   fBreakWidth;        // minimum width of break (ms) for words
     float   fPhraseBreakWidth;  // minimum width of break (ms) for phrases
@@ -33,7 +34,8 @@ public:
     void Init();
 };
 
-class SegmentParm {               // segmenting parameters
+class SegmentParm                 // segmenting parameters
+{
 public:
     float        fSegmentWidth;     // minimum width of peak (ms)
     int          nChThreshold;      // minimum Change threshold (%)
@@ -49,7 +51,8 @@ public:
 
 
 class CSaDoc;
-class PitchParm {                      // pitch parameters
+class PitchParm                        // pitch parameters
+{
 public:
     int          nRangeMode;           // frequency range display mode
     int          nScaleMode;           // scale display mode
@@ -71,7 +74,8 @@ public:
     static void GetAutoRange(CSaDoc * pDoc, int & nUpperBound, int & nLowerBound);
 };
 
-class UttParm {
+class UttParm
+{
 public:
     unsigned int nMinFreq;          // min freq for calculation
     unsigned int nMaxFreq;          // max freq for calculation
@@ -84,7 +88,8 @@ public:
     int TruncatedCritLoud(int nBitsPerSample) const;
 };                        // RIFF file header utterance parameters
 
-class MusicParm {                      // pitch parameters
+class MusicParm                        // pitch parameters
+{
 public:
     int          nRangeMode;           // frequency range display mode
     int          nUpperBound;          // upper frequency display boundary
@@ -107,9 +112,11 @@ public:
     static void GetAutoRange(CSaDoc * pDoc, int & nUpperBound, int & nLowerBound);
 };
 
-class IntensityParm {                      // pitch parameters
+class IntensityParm                        // pitch parameters
+{
 public:
-    IntensityParm() {
+    IntensityParm()
+    {
         Init();
     }
 
@@ -122,7 +129,8 @@ public:
 };
 
 // ARH 8/1/01 - Added for wavelet scalogram graph
-class WaveletParm {                 // Wavelet parameters
+class WaveletParm                   // Wavelet parameters
+{
 public:
     int  nResolution;       // resolution of display
     int  nColor;            // color of display
@@ -139,7 +147,8 @@ public:
 
 
 
-class SpectrumParm { // spectrum parameters
+class SpectrumParm   // spectrum parameters
+{
 public:
     int          nScaleMode;        // scale display mode
     int          nPwrUpperBound;    // upper power display boundary
@@ -162,9 +171,11 @@ public:
     void Init();
 };
 
-class FormantParm { // formant chart parameters
+class FormantParm   // formant chart parameters
+{
 public:
-    FormantParm() {
+    FormantParm()
+    {
         Init();
     }
     BOOL         bFromLpcSpectrum;       // TRUE = formants extracted from LPC spectrum
@@ -179,7 +190,8 @@ public:
     void Init();
 };
 
-class RecordingParm { // Recording parameters
+class RecordingParm   // Recording parameters
+{
 public:
     int     nRate;      // Sampling Rate code (0=11KHz, 1=22KHz, 2=44KHz)
     int     nBits;      // Sample data width in bits
@@ -194,9 +206,11 @@ public:
 
 
 // Graph Parameter.cpp for implementation
-class CResearchSettings {
+class CResearchSettings
+{
 public:
-    CResearchSettings() {
+    CResearchSettings()
+    {
         Init();
     }
 
@@ -219,9 +233,11 @@ extern CResearchSettings ResearchSettings;
 
 
 // Graph Parameter.cpp for implementation
-class CFormantTrackerOptions {
+class CFormantTrackerOptions
+{
 public:
-    CFormantTrackerOptions() {
+    CFormantTrackerOptions()
+    {
         Init();
     }
 

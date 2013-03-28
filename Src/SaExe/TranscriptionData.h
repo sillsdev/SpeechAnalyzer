@@ -3,7 +3,8 @@
 
 #include "TranscriptionHelper.h"
 
-class CTranscriptionData {
+class CTranscriptionData
+{
 public:
     CTranscriptionData();
 

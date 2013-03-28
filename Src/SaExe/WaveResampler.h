@@ -16,10 +16,12 @@
 /**
 * the DSP logic for this class was borrowed from AudioCon.dll
 */
-class CWaveResampler {
+class CWaveResampler
+{
 
 public:
-    enum ECONVERT {
+    enum ECONVERT
+    {
         EC_SUCCESS      = 0,
         EC_NOWAVE       =-1,
         EC_NOFMT        =-2,

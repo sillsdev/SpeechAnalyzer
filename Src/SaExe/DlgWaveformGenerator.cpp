@@ -44,7 +44,8 @@ END_MESSAGE_MAP()
 // CDlgWaveformGenerator::CDlgWaveformGenerator Constructor
 /***************************************************************************/
 CDlgWaveformGenerator::CDlgWaveformGenerator(CWnd * pParent) :
-    CDialog(CDlgWaveformGenerator::IDD, pParent) {
+    CDialog(CDlgWaveformGenerator::IDD, pParent)
+{
 
     m_szSamplingRate = _T("");
     m_szBits = _T("");
@@ -56,7 +57,8 @@ CDlgWaveformGenerator::CDlgWaveformGenerator(CWnd * pParent) :
 /***************************************************************************/
 // CDlgWaveformGenerator::DoDataExchange Data exchange
 /***************************************************************************/
-void CDlgWaveformGenerator::DoDataExchange(CDataExchange * pDX) {
+void CDlgWaveformGenerator::DoDataExchange(CDataExchange * pDX)
+{
 
     CDialog::DoDataExchange(pDX);
 
@@ -126,7 +128,8 @@ void CDlgWaveformGenerator::DoDataExchange(CDataExchange * pDX) {
     DDV_MinMaxDouble(pDX, working.m_fFileLength, 0.001, 3600.);
 }
 
-BOOL CDlgWaveformGenerator::OnInitDialog() {
+BOOL CDlgWaveformGenerator::OnInitDialog()
+{
 
     CDialog::OnInitDialog();
 
@@ -146,7 +149,8 @@ BOOL CDlgWaveformGenerator::OnInitDialog() {
     return TRUE;
 }
 
-void CDlgWaveformGenerator::OnGeneratorBandwith() {
+void CDlgWaveformGenerator::OnGeneratorBandwith()
+{
 
     UpdateData(TRUE);
 
@@ -156,7 +160,8 @@ void CDlgWaveformGenerator::OnGeneratorBandwith() {
 
     pWnd = GetDlgItem(IDC_GENERATOR_NUMBER_OF_HARMONICS);
 
-    if (pWnd) {
+    if (pWnd)
+    {
         pWnd->EnableWindow(bEnable);
     }
 }
@@ -165,7 +170,8 @@ void CDlgWaveformGenerator::OnGeneratorBandwith() {
 // CDlgWaveformGenerator::OnHelpWaveformGenerator
 // Call Waveform Generator help
 /***************************************************************************/
-void CDlgWaveformGenerator::OnHelpWaveformGenerator() {
+void CDlgWaveformGenerator::OnHelpWaveformGenerator()
+{
 
     // create the pathname
     CString szPath = AfxGetApp()->m_pszHelpFilePath;

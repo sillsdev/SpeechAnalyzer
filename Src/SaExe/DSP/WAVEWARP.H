@@ -11,7 +11,8 @@ class ISaDoc;
 #define OUTSIDE_WAVE_BUFFER         1
 #define PLAY_BUFFER_FULL            2
 
-class CWaveWarp {
+class CWaveWarp
+{
 public:
     static char * Copyright(void);
     static float Version(void);

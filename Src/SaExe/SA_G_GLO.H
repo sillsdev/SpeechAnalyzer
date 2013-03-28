@@ -10,7 +10,8 @@
 //###########################################################################
 // CPlotGlottis plot window
 
-class CPlotGlottis : public CPlotWnd {
+class CPlotGlottis : public CPlotWnd
+{
     DECLARE_DYNCREATE(CPlotGlottis)
 
 // Construction/destruction/creation

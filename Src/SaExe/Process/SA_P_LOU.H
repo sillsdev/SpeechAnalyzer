@@ -13,7 +13,8 @@
 //###########################################################################
 // CProcessLoudness data processing
 
-class CProcessLoudness : public CProcess {
+class CProcessLoudness : public CProcess
+{
 // Construction/destruction/creation
 public:
     CProcessLoudness();
@@ -25,7 +26,8 @@ private:
 // Operations
 public:
     long Process(void * pCaller, ISaDoc * pDoc, int nProgress = 0, int nLevel = 1);
-    virtual void SetDataInvalid() {
+    virtual void SetDataInvalid()
+    {
         CProcess::SetDataInvalid();
     }
 };
@@ -33,7 +35,8 @@ public:
 //###########################################################################
 // CProcessSmoothLoudness data processing
 
-class CProcessSmoothLoudness : public CProcess {
+class CProcessSmoothLoudness : public CProcess
+{
 // Construction/destruction/creation
 public:
     CProcessSmoothLoudness();

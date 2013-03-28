@@ -20,7 +20,8 @@
 class Object_ostream;
 class Object_istream;
 
-class FnKeys {
+class FnKeys
+{
 public:
     // SDM increased array size by one to allow use of
     //      [24] by batch command processing 1.5Test8.3

@@ -66,7 +66,8 @@
 #define IDM_PLAY_BOTH 112
 #define IDM_PLAY_WAVE 113
 
-class CLegendWnd : public CWnd {
+class CLegendWnd : public CWnd
+{
 
     // Construction/destruction/creation
 public:
@@ -114,28 +115,36 @@ public:
     int GetWindowWidth(); // return width of legend window
     BOOL SetScale(int nMode, double dMinValue, double dMaxValue, TCHAR * pszDimension = NULL, int nDivisions = -1, double d3dOffset = 0.); // set legend scale
     void CalculateScale(CDC *, CRect *); // calculate new scale
-    CFont * GetFont() {
+    CFont * GetFont()
+    {
         return &m_font;   // return selected font
     }
-    int GetScaleMode() {
+    int GetScaleMode()
+    {
         return m_nScaleMode;   // return scale mode
     }
-    double GetFirstGridPosition() {
+    double GetFirstGridPosition()
+    {
         return m_dFirstGridPos;   // return position of first gridline
     }
-    double GetGridDistance() {
+    double GetGridDistance()
+    {
         return m_fGridDistance;   // return distance between gridlines
     }
-    CString * GetDimensionText() {
+    CString * GetDimensionText()
+    {
         return &m_szScaleDimension;   // return pointer to dimension text
     }
-    double GetScaleBase() {
+    double GetScaleBase()
+    {
         return m_fBase;   // return base of scale
     }
-    double GetScaleMaxValue() {
+    double GetScaleMaxValue()
+    {
         return m_dScaleMaxValue;   // return max scale value
     }
-    double GetScaleMinValue() {
+    double GetScaleMinValue()
+    {
         return m_dScaleMinValue;   // return min scale value
     }
     void OnDraw(CDC * pDC,
@@ -175,7 +184,8 @@ protected:
 #define NUMBERS         0x0002  // numbers near vertical lines
 #define TIME_FROM_VIEW  0x0004  // take the time scale from view
 
-class CXScaleWnd : public CWnd {
+class CXScaleWnd : public CWnd
+{
 
     // Construction/destruction/creation
 public:
@@ -209,19 +219,24 @@ public:
     int GetWindowHeight(); // return height of x-scale window
     BOOL SetScale(int nMode, double dMinValue, double nMaxValue, TCHAR * pszDimension = NULL, int nDivisions = -1, double d3dOffset = 0.);
     void CalculateScale(CDC *, int nWidth); // calculate new scale
-    CFont * GetFont() {
+    CFont * GetFont()
+    {
         return &m_font;   // return selected font
     }
-    int GetScaleMode() {
+    int GetScaleMode()
+    {
         return m_nScaleMode;   // return scale mode
     }
-    double GetFirstGridPosition() {
+    double GetFirstGridPosition()
+    {
         return m_fFirstGridPos;   // return position of first gridline
     }
-    double GetGridDistance() {
+    double GetGridDistance()
+    {
         return m_fGridDistance;   // return distance between gridlines
     }
-    CString * GetDimensionText() {
+    CString * GetDimensionText()
+    {
         return &m_szScaleDimension;   // return pointer to dimension text
     }
     void OnDraw(CDC * pDC, const CRect & printRect, const CRect & printPlotWnd);
@@ -248,7 +263,8 @@ protected:
 
 class CAnnotationEdit;
 
-class CAnnotationWnd : public CWnd {
+class CAnnotationWnd : public CWnd
+{
 
     // Construction/destruction/creation
 public:
@@ -272,7 +288,8 @@ public:
     CFont * GetFont();
     // SDM 1.06.2
     void SetHintUpdateBoundaries(BOOL bHint, DWORD dwStart, DWORD dwStop, BOOL bOverlap) ;
-    void SetHintUpdateBoundaries(BOOL bHint, BOOL bOverlap) {
+    void SetHintUpdateBoundaries(BOOL bHint, BOOL bOverlap)
+    {
         SetHintUpdateBoundaries(bHint,m_dwHintStart,m_dwHintStop, bOverlap);
     };
     void OnCreateEdit(const CString * szString = NULL);
@@ -298,7 +315,8 @@ protected:
 //###########################################################################
 // CPhoneticWnd window
 
-class CPhoneticWnd : public CAnnotationWnd {
+class CPhoneticWnd : public CAnnotationWnd
+{
 
     // Construction/destruction/creation
 public:
@@ -308,7 +326,8 @@ public:
 //###########################################################################
 // CToneWnd window
 
-class CToneWnd : public CAnnotationWnd {
+class CToneWnd : public CAnnotationWnd
+{
 
     // Construction/destruction/creation
 public:
@@ -318,7 +337,8 @@ public:
 //###########################################################################
 // CPhonemicWnd window
 
-class CPhonemicWnd : public CAnnotationWnd {
+class CPhonemicWnd : public CAnnotationWnd
+{
 
     // Construction/destruction/creation
 public:
@@ -328,7 +348,8 @@ public:
 //###########################################################################
 // COrthographicWnd window
 
-class COrthographicWnd : public CAnnotationWnd {
+class COrthographicWnd : public CAnnotationWnd
+{
 
     // Construction/destruction/creation
 public:
@@ -338,21 +359,24 @@ public:
 //###########################################################################
 // CGlossWnd window
 
-class CGlossWnd : public CAnnotationWnd {
+class CGlossWnd : public CAnnotationWnd
+{
 public:
     CGlossWnd(int nIndex) : CAnnotationWnd(nIndex) {};
     virtual void OnDraw(CDC * pDC, const CRect & printRect);
 };
 
-class CReferenceWnd : public CAnnotationWnd {
+class CReferenceWnd : public CAnnotationWnd
+{
 public:
     CReferenceWnd(int nIndex) : CAnnotationWnd(nIndex) {};
     virtual void OnDraw(CDC * pDC, const CRect & printRect);
 };
 
-class CMusicPhraseWnd : public CAnnotationWnd {
+class CMusicPhraseWnd : public CAnnotationWnd
+{
 public:
-	CMusicPhraseWnd(int nIndex) : CAnnotationWnd(nIndex) {};
+    CMusicPhraseWnd(int nIndex) : CAnnotationWnd(nIndex) {};
 };
 
 #endif //_SA_ANNOT_H

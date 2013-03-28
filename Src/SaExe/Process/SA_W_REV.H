@@ -8,15 +8,16 @@
 #ifndef _SA_W_REV_H
 #define _SA_W_REV_H
 
-class CProcessWbEcho : public CProcess {
+class CProcessWbEcho : public CProcess
+{
 public:
     CProcessWbEcho();
     virtual ~CProcessWbEcho();
 
-	long Process(void * pCaller, ISaDoc * pDoc, int nProgress = 0, int nLevel = 1);
-	virtual int PropertiesDialog(); // calls the properties dialog for this process
-	virtual void WriteProperties(Object_ostream & obs);
-	virtual BOOL ReadProperties(Object_istream & obs);
+    long Process(void * pCaller, ISaDoc * pDoc, int nProgress = 0, int nLevel = 1);
+    virtual int PropertiesDialog(); // calls the properties dialog for this process
+    virtual void WriteProperties(Object_ostream & obs);
+    virtual BOOL ReadProperties(Object_istream & obs);
 
 private:
     UINT m_nDelay; // delay in ms
@@ -27,15 +28,16 @@ private:
 //###########################################################################
 // CProcessWbReverb data processing
 
-class CProcessWbReverb : public CProcess {
+class CProcessWbReverb : public CProcess
+{
 public:
     CProcessWbReverb();
     virtual ~CProcessWbReverb();
 
-	long Process(void * pCaller, ISaDoc * pDoc, int nProgress = 0, int nLevel = 1);
-	virtual int PropertiesDialog(); // calls the properties dialog for this process
-	virtual void WriteProperties(Object_ostream & obs);
-	virtual BOOL ReadProperties(Object_istream & obs);
+    long Process(void * pCaller, ISaDoc * pDoc, int nProgress = 0, int nLevel = 1);
+    virtual int PropertiesDialog(); // calls the properties dialog for this process
+    virtual void WriteProperties(Object_ostream & obs);
+    virtual BOOL ReadProperties(Object_istream & obs);
 
 private:
     UINT m_nDelay; // delay in ms

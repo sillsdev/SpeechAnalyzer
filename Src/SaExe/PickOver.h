@@ -12,7 +12,8 @@ class CSaView;
 /////////////////////////////////////////////////////////////////////////////
 // CPickOverlayDlg dialog
 
-class CPickOverlayDlg : public CDialog {
+class CPickOverlayDlg : public CDialog
+{
     // Construction
 public:
     const CPlotWnd * GetPlot(int idx);
@@ -23,7 +24,8 @@ public:
 
     // getters
     CGraphWnd * GetNextSelectedGraph(int & pos);
-    BOOL IsItemSelected(int i) {
+    BOOL IsItemSelected(int i)
+    {
         return m_bIsItemSelected[i];
     };
 

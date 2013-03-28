@@ -39,13 +39,15 @@ END_MESSAGE_MAP()
 /***************************************************************************/
 // CPlotBlank::CPlotBlank Constructor
 /***************************************************************************/
-CPlotBlank::CPlotBlank() {
+CPlotBlank::CPlotBlank()
+{
 }
 
 /***************************************************************************/
 // CPlotBlank::~CPlotBlank Destructor
 /***************************************************************************/
-CPlotBlank::~CPlotBlank() {
+CPlotBlank::~CPlotBlank()
+{
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -55,7 +57,8 @@ CPlotBlank::~CPlotBlank() {
 // CPlotBlank::OnDraw Painting
 // It's a blank plot, so nothing except the helper window is drawn.
 /***************************************************************************/
-void CPlotBlank::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * /*pView*/) {
+void CPlotBlank::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * /*pView*/)
+{
     // display helper window
     m_HelperWnd.SetMode(MODE_TEXT | FRAME_POPOUT | POS_HCENTER | POS_VCENTER, IDS_HELPERWND_BLANKGRAPH, &rWnd);
     // do common plot paint jobs

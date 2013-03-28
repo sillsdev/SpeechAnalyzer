@@ -10,7 +10,8 @@
 //###########################################################################
 // CProcessRaw data processing
 
-class CProcessRaw : public CProcess {
+class CProcessRaw : public CProcess
+{
 // Construction/destruction/creation
 public:
     CProcessRaw();

@@ -87,7 +87,8 @@ extern CSaApp NEAR theApp;
 /***************************************************************************/
 // CPlotHelperWnd::CPlotHelperWnd Constructor
 /***************************************************************************/
-CPlotHelperWnd::CPlotHelperWnd() {
+CPlotHelperWnd::CPlotHelperWnd()
+{
     m_nMode = 0; // default mode = hidden window
     m_szText = "";
     m_rParent.SetRect(0, 0, 0, 0);
@@ -98,14 +99,17 @@ CPlotHelperWnd::CPlotHelperWnd() {
 /***************************************************************************/
 // CPlotHelperWnd::CPlotHelperWnd Destructor
 /***************************************************************************/
-CPlotHelperWnd::~CPlotHelperWnd() {
+CPlotHelperWnd::~CPlotHelperWnd()
+{
 }
 
 /***************************************************************************/
 // CPlotHelperWnd::OnCreate Window creation
 /***************************************************************************/
-int CPlotHelperWnd::OnCreate(LPCREATESTRUCT lpCreateStruct) {
-    if (CWnd::OnCreate(lpCreateStruct) == -1) {
+int CPlotHelperWnd::OnCreate(LPCREATESTRUCT lpCreateStruct)
+{
+    if (CWnd::OnCreate(lpCreateStruct) == -1)
+    {
         return -1;
     }
     // create the helper window font (same font as status bar)
@@ -137,26 +141,31 @@ int CPlotHelperWnd::OnCreate(LPCREATESTRUCT lpCreateStruct) {
 // width and height parameters must contain the correct (total) width and
 // height of the helper window.
 /***************************************************************************/
-CRect CPlotHelperWnd::SetPosition(int nWidth, int nHeight, CRect * prParent) {
+CRect CPlotHelperWnd::SetPosition(int nWidth, int nHeight, CRect * prParent)
+{
     // set default (left top)
     CRect rHelper(prParent->left, prParent->top,
                   prParent->left + nWidth, prParent->top + nHeight);
-    if (m_nMode & POS_HCENTER) {
+    if (m_nMode & POS_HCENTER)
+    {
         // center horizontally
         rHelper.left += (prParent->Width() - nWidth) / 2;
         rHelper.right = rHelper.left + nWidth;
     }
-    if (m_nMode & POS_HRIGHT) {
+    if (m_nMode & POS_HRIGHT)
+    {
         // align right
         rHelper.left = prParent->right - nWidth;
         rHelper.right = prParent->right;
     }
-    if (m_nMode & POS_VCENTER) {
+    if (m_nMode & POS_VCENTER)
+    {
         // center vertically
         rHelper.top += (prParent->Height() - nHeight) / 2;
         rHelper.bottom = rHelper.top + nHeight;
     }
-    if (m_nMode & POS_VBOTTOM) {
+    if (m_nMode & POS_VBOTTOM)
+    {
         // align bottom
         rHelper.top = prParent->bottom - nHeight;
         rHelper.bottom = prParent->bottom;
@@ -170,21 +179,27 @@ CRect CPlotHelperWnd::SetPosition(int nWidth, int nHeight, CRect * prParent) {
 // change the helper windows coordinates, if the pointer to the parents
 // client area contains NULL (default).
 /***************************************************************************/
-int CPlotHelperWnd::SetMode(int nMode, int nID, CRect * prParent) {
+int CPlotHelperWnd::SetMode(int nMode, int nID, CRect * prParent)
+{
     int nOldMode = m_nMode; // save actual mode
     static int nOldID = 0; // save last mode
-    if (prParent == NULL) {
+    if (prParent == NULL)
+    {
         prParent = &m_rParent;    // don't change the coordinates
     }
     CRect rWnd(0, 0, 0, 0);
-    if ((nMode != m_nMode) || (nID != nOldID) || (*prParent != m_rParent)) {
+    if ((nMode != m_nMode) || (nID != nOldID) || (*prParent != m_rParent))
+    {
         m_nMode = nMode;
         nOldID = nID;
         m_rParent = *prParent;
-        switch (m_nMode & MODE_MASK) {
-        case MODE_TEXT: {
+        switch (m_nMode & MODE_MASK)
+        {
+        case MODE_TEXT:
+        {
             // load new text to display
-            if (nID != -1) {
+            if (nID != -1)
+            {
                 m_szText.LoadString(nID);
             }
 
@@ -203,7 +218,8 @@ int CPlotHelperWnd::SetMode(int nMode, int nID, CRect * prParent) {
         default: // default mode is hidden window
             break;
         }
-        if (GetSafeHwnd()) {
+        if (GetSafeHwnd())
+        {
             MoveWindow(rWnd);
         }
     }
@@ -216,9 +232,11 @@ int CPlotHelperWnd::SetMode(int nMode, int nID, CRect * prParent) {
 /***************************************************************************/
 // CPlotHelperWnd::OnPaint Painting
 /***************************************************************************/
-void CPlotHelperWnd::OnPaint() {
+void CPlotHelperWnd::OnPaint()
+{
     CPaintDC dc(this); // device context for painting
-    if (m_nMode != MODE_HIDDEN) {
+    if (m_nMode != MODE_HIDDEN)
+    {
         // select the helper window font
         CFont * oldFont = dc.SelectObject(&m_font);
         // get client coordinates
@@ -233,8 +251,10 @@ void CPlotHelperWnd::OnPaint() {
 /***************************************************************************/
 // CPlotHelperWnd::OnEraseBkgnd Erasing background
 /***************************************************************************/
-BOOL CPlotHelperWnd::OnEraseBkgnd(CDC * pDC) {
-    if ((m_nMode & MODE_MASK) != MODE_HIDDEN) {
+BOOL CPlotHelperWnd::OnEraseBkgnd(CDC * pDC)
+{
+    if ((m_nMode & MODE_MASK) != MODE_HIDDEN)
+    {
         CMainFrame * pMainWnd = (CMainFrame *)AfxGetMainWnd(); // get pointer to colors from main frame
         Colors * pColors = pMainWnd->GetColors();
         CRect rWnd;
@@ -247,7 +267,8 @@ BOOL CPlotHelperWnd::OnEraseBkgnd(CDC * pDC) {
         CPen penDkgray(PS_SOLID, 1, pColors->cSysBtnShadow);
         CPen penLtgray(PS_SOLID, 1, pColors->cSysBtnHilite);
         CPen * pOldPen = pDC->SelectObject(&penDkgray);
-        if (m_nMode & FRAME_POPIN) {
+        if (m_nMode & FRAME_POPIN)
+        {
             // draw popping in frame
             pDC->MoveTo(0, rWnd.bottom);
             pDC->LineTo(0, 0);
@@ -256,7 +277,8 @@ BOOL CPlotHelperWnd::OnEraseBkgnd(CDC * pDC) {
             pDC->LineTo(rWnd.right - 1, rWnd.bottom - 1);
             pDC->LineTo(0, rWnd.bottom - 1);
         }
-        if (m_nMode & FRAME_POPOUT) {
+        if (m_nMode & FRAME_POPOUT)
+        {
             // draw popping out frame
             pDC->MoveTo(rWnd.right - 1, 0);
             pDC->LineTo(rWnd.right - 1, rWnd.bottom - 1);
@@ -273,7 +295,8 @@ BOOL CPlotHelperWnd::OnEraseBkgnd(CDC * pDC) {
 /***************************************************************************/
 // CPlotHelperWnd::OnLButtonDown Mouse left button down
 /***************************************************************************/
-void CPlotHelperWnd::OnLButtonDown(UINT nFlags, CPoint point) {
+void CPlotHelperWnd::OnLButtonDown(UINT nFlags, CPoint point)
+{
     CWnd * pWnd = GetParent();
     ClientToScreen(&point);
     pWnd->ScreenToClient(&point);
@@ -283,7 +306,8 @@ void CPlotHelperWnd::OnLButtonDown(UINT nFlags, CPoint point) {
 /***************************************************************************/
 // CPlotHelperWnd::OnRButtonDown Mouse right button down
 /***************************************************************************/
-void CPlotHelperWnd::OnRButtonDown(UINT nFlags, CPoint point) {
+void CPlotHelperWnd::OnRButtonDown(UINT nFlags, CPoint point)
+{
     CWnd * pWnd = GetParent();
     ClientToScreen(&point);
     pWnd->ScreenToClient(&point);
@@ -321,7 +345,8 @@ END_MESSAGE_MAP()
 /***************************************************************************/
 // CPlotWnd::CPlotWnd Constructor
 /***************************************************************************/
-CPlotWnd::CPlotWnd() {
+CPlotWnd::CPlotWnd()
+{
     m_bRtPlot = false;
     m_bInitialPlot = TRUE;
     m_pStartCursor = NULL;
@@ -358,7 +383,8 @@ CPlotWnd::CPlotWnd() {
 }
 
 
-void CPlotWnd::CopyTo(CPlotWnd * pTarg) {
+void CPlotWnd::CopyTo(CPlotWnd * pTarg)
+{
     // copies don't have any cursors.
     pTarg->m_pStartCursor = NULL;
     pTarg->m_pStopCursor = NULL;
@@ -384,21 +410,26 @@ void CPlotWnd::CopyTo(CPlotWnd * pTarg) {
 /***************************************************************************/
 // CPlotWnd::~CPlotWnd Destructor
 /***************************************************************************/
-CPlotWnd::~CPlotWnd() {
+CPlotWnd::~CPlotWnd()
+{
 
-    if (m_pStartCursor) {
+    if (m_pStartCursor)
+    {
         delete m_pStartCursor;
         m_pStartCursor=NULL;
     }
-    if (m_pStopCursor) {
+    if (m_pStopCursor)
+    {
         delete m_pStopCursor;
         m_pStopCursor=NULL;
     }
-    if (m_pPrivateCursor) {
+    if (m_pPrivateCursor)
+    {
         delete m_pPrivateCursor;
         m_pPrivateCursor=NULL;
     }
-    if (m_pPlaybackCursor) {
+    if (m_pPlaybackCursor)
+    {
         delete m_pPlaybackCursor;
         m_pPlaybackCursor=NULL;
     }
@@ -406,19 +437,23 @@ CPlotWnd::~CPlotWnd() {
     // turn off any highlighting in raw waveform due to dynamic update mode
     CMainFrame * pMainWnd = (CMainFrame *)AfxGetMainWnd();
     CSaView * pView = (pMainWnd)?(CSaView *)pMainWnd->GetCurrSaView():NULL;
-    if (!pView) {
+    if (!pView)
+    {
         return;
     }
     BOOL bDynamicUpdate = (pView->GetGraphUpdateMode() == DYNAMIC_UPDATE);
     BOOL bAnimationPlot = this->IsAnimationPlot();
 
-    if (bDynamicUpdate && bAnimationPlot) {
+    if (bDynamicUpdate && bAnimationPlot)
+    {
         int nWaveGraphIndex = pView->GetGraphIndexForIDD(IDD_RAWDATA);
         CGraphWnd * pWaveGraph = pView->GetGraph(nWaveGraphIndex);
-        if (pWaveGraph) {
+        if (pWaveGraph)
+        {
             // there is a raw waveform graph
             CPlotWnd * pWavePlot = pWaveGraph->GetPlot();
-            if (pWavePlot) {
+            if (pWavePlot)
+            {
                 pWavePlot->SetHighLightArea(0, 0);
                 pWavePlot->UpdateWindow();
             }
@@ -431,7 +466,8 @@ CPlotWnd::~CPlotWnd() {
 // Called from the framework before the creation of the window. Registers
 // the new window class.
 /***************************************************************************/
-BOOL CPlotWnd::PreCreateWindow(CREATESTRUCT & cs) {
+BOOL CPlotWnd::PreCreateWindow(CREATESTRUCT & cs)
+{
     // register the window class
     cs.lpszClass = AfxRegisterWndClass(CS_HREDRAW | CS_VREDRAW | CS_DBLCLKS,
                                        AfxGetApp()->LoadStandardCursor(IDC_ARROW), 0, 0);
@@ -445,9 +481,11 @@ BOOL CPlotWnd::PreCreateWindow(CREATESTRUCT & cs) {
 /***************************************************************************/
 // CPlotWnd::ShowBoundaries Show or hide the boundaries
 /***************************************************************************/
-void CPlotWnd::ShowBoundaries(BOOL bShow, BOOL bRedraw) {
+void CPlotWnd::ShowBoundaries(BOOL bShow, BOOL bRedraw)
+{
     m_bBoundaries = bShow;
-    if (bRedraw) {
+    if (bRedraw)
+    {
         RedrawPlot();    // repaint whole plot window
     }
 }
@@ -455,10 +493,13 @@ void CPlotWnd::ShowBoundaries(BOOL bShow, BOOL bRedraw) {
 /***************************************************************************/
 // CPlotWnd::SetMagnify Set the magnify factor
 /***************************************************************************/
-void CPlotWnd::SetMagnify(double fMagnify, BOOL bRedraw) {
-    if (m_fMagnify != fMagnify) {
+void CPlotWnd::SetMagnify(double fMagnify, BOOL bRedraw)
+{
+    if (m_fMagnify != fMagnify)
+    {
         m_fMagnify = fMagnify;
-        if (bRedraw) {
+        if (bRedraw)
+        {
             RedrawPlot();    // repaint whole plot window
         }
     }
@@ -467,8 +508,10 @@ void CPlotWnd::SetMagnify(double fMagnify, BOOL bRedraw) {
 /***************************************************************************/
 // CPlotWnd::SetLineDraw Set line drawing style
 /***************************************************************************/
-void CPlotWnd::SetLineDraw(BOOL bLine) {
-    if (m_bLineDraw != bLine) {
+void CPlotWnd::SetLineDraw(BOOL bLine)
+{
+    if (m_bLineDraw != bLine)
+    {
         // style changes
         m_bLineDraw = bLine;
         RedrawPlot(); // repaint whole plot window
@@ -478,8 +521,10 @@ void CPlotWnd::SetLineDraw(BOOL bLine) {
 /***************************************************************************/
 // CPlotWnd::SetDotsDraw Set dots drawing style
 /***************************************************************************/
-void CPlotWnd::SetDotsDraw(BOOL bDots) {
-    if (m_bDotDraw != bDots) { // style changes
+void CPlotWnd::SetDotsDraw(BOOL bDots)
+{
+    if (m_bDotDraw != bDots)   // style changes
+    {
         m_bDotDraw = bDots;
         RedrawPlot(); // repaint whole plot window
     }
@@ -488,15 +533,21 @@ void CPlotWnd::SetDotsDraw(BOOL bDots) {
 /***************************************************************************/
 // CPlotWnd::ShowCursors Set cursors visible/hidden
 /***************************************************************************/
-void CPlotWnd::ShowCursors(BOOL bPrivate, BOOL bShow) {
-    if (bPrivate) {
+void CPlotWnd::ShowCursors(BOOL bPrivate, BOOL bShow)
+{
+    if (bPrivate)
+    {
         m_bPrivateCursor = bShow;
-        if (m_bPrivateCursor) {
+        if (m_bPrivateCursor)
+        {
             m_bCursors = FALSE;
         }
-    } else {
+    }
+    else
+    {
         m_bCursors = bShow;
-        if (m_bCursors) {
+        if (m_bCursors)
+        {
             m_bPrivateCursor = FALSE;
         }
     }
@@ -505,10 +556,12 @@ void CPlotWnd::ShowCursors(BOOL bPrivate, BOOL bShow) {
 /***************************************************************************/
 // CPlotWnd::ShowGrid Show or hide gridlines
 /***************************************************************************/
-BOOL CPlotWnd::ShowGrid(BOOL bShow, BOOL bRedraw) {
+BOOL CPlotWnd::ShowGrid(BOOL bShow, BOOL bRedraw)
+{
     BOOL bResult = m_bGrid;
     m_bGrid = bShow;
-    if (bRedraw) {
+    if (bRedraw)
+    {
         RedrawPlot();    // repaint whole plot window
     }
 
@@ -518,7 +571,8 @@ BOOL CPlotWnd::ShowGrid(BOOL bShow, BOOL bRedraw) {
 //**************************************************************************
 // 08/30/2000 - DDO Added so this could be overridden.
 //**************************************************************************
-double CPlotWnd::GetDataPosition(int iWidth) {
+double CPlotWnd::GetDataPosition(int iWidth)
+{
     CSaView * pView = (CSaView *)GetParent()->GetParent();
     return pView->GetDataPosition(iWidth);
 }
@@ -526,7 +580,8 @@ double CPlotWnd::GetDataPosition(int iWidth) {
 //**************************************************************************
 // 08/30/2000 - DDO Added so this could be overridden.
 //**************************************************************************
-DWORD CPlotWnd::AdjustDataFrame(int iWidth) {
+DWORD CPlotWnd::AdjustDataFrame(int iWidth)
+{
     CSaView * pView = (CSaView *)GetParent()->GetParent();
     return pView->AdjustDataFrame(iWidth);
 }
@@ -545,14 +600,16 @@ DWORD CPlotWnd::AdjustDataFrame(int iWidth) {
 // redrawn. If the cursor is not visible on the new position (out of the
 // plot), its window size ill be 0.
 /***************************************************************************/
-void CPlotWnd::ChangeCursorPosition(CSaView * pView, DWORD dwNewPosition, CCursorWnd * pWnd, BOOL /*bMove*/) {
+void CPlotWnd::ChangeCursorPosition(CSaView * pView, DWORD dwNewPosition, CCursorWnd * pWnd, BOOL /*bMove*/)
+{
     UNUSED_ALWAYS(pView);
 
     CGraphWnd * pGraph = (CGraphWnd *)GetParent(); // get pointer to parent graph
     // get window coordinates
     CRect rWnd, rNewWnd, rNewLine, rOldLine;
     GetClientRect(rWnd);
-    if (rWnd.Width() == 0) {
+    if (rWnd.Width() == 0)
+    {
         return;    // cursor not visible SDM 1.5Test8.5
     }
     rNewWnd = rWnd;
@@ -560,17 +617,21 @@ void CPlotWnd::ChangeCursorPosition(CSaView * pView, DWORD dwNewPosition, CCurso
     double fDataPos;
     DWORD dwDataFrame;
     // check if area graph type
-    if (pGraph->IsAreaGraph()) {
+    if (pGraph->IsAreaGraph())
+    {
         // get necessary data from area plot
         fDataPos = GetAreaPosition();
         dwDataFrame = GetAreaLength(&rWnd);
-    } else {
+    }
+    else
+    {
         // get necessary data from view
         fDataPos = GetDataPosition(rNewWnd.Width()); // data index of first sample to display
         dwDataFrame = AdjustDataFrame(rNewWnd.Width()); // number of data points to display
     }
     if ((m_bCursors &&   // added by AKE to hide cursors in graph edit mode
-            (dwNewPosition >= (DWORD)fDataPos) && (dwNewPosition < ((DWORD)fDataPos + dwDataFrame)))) {
+            (dwNewPosition >= (DWORD)fDataPos) && (dwNewPosition < ((DWORD)fDataPos + dwDataFrame))))
+    {
         // cursor is visible
         ASSERT(rNewWnd.Width());
         double fBytesPerPix = (double)dwDataFrame / (double)rNewWnd.Width(); // calculate data samples per pixel
@@ -586,7 +647,9 @@ void CPlotWnd::ChangeCursorPosition(CSaView * pView, DWORD dwNewPosition, CCurso
         //if (bMove) rNewWnd = rNewLine;
         //else
         rNewWnd.SetRect(nPixelPos - CURSOR_WINDOW_HALFWIDTH, 0, nPixelPos + CURSOR_WINDOW_HALFWIDTH, rNewWnd.bottom);
-    } else { // cursor is not visible
+    }
+    else     // cursor is not visible
+    {
         rNewLine.SetRect(0, 0, 0, 0); // shrink it to 0 size
         rNewWnd = rNewLine;
     }
@@ -594,14 +657,17 @@ void CPlotWnd::ChangeCursorPosition(CSaView * pView, DWORD dwNewPosition, CCurso
     pWnd->GetWindowRect(rOldLine);
     ScreenToClient(rOldLine);
     // get the line position in the middle
-    if (rOldLine.Width() > 1) { // cursor window has large width
+    if (rOldLine.Width() > 1)   // cursor window has large width
+    {
         rOldLine.left += CURSOR_WINDOW_HALFWIDTH;
         rOldLine.right -= (CURSOR_WINDOW_HALFWIDTH - 1);
     }
     // check if new cursor line position
-    if (rOldLine != rNewLine) {
+    if (rOldLine != rNewLine)
+    {
         // invalidate and update old position
-        if (pWnd->IsDrawn()) { // SDM 1.5Test10.5
+        if (pWnd->IsDrawn())   // SDM 1.5Test10.5
+        {
             InvalidateRect(rOldLine, TRUE);    // redraw old cursor position
         }
         pWnd->MoveWindow(rNewWnd, FALSE); // move the cursor window to the new position
@@ -622,20 +688,25 @@ void CPlotWnd::ChangeCursorPosition(CSaView * pView, DWORD dwNewPosition, CCurso
 /***************************************************************************/
 // CPlotWnd::SetStartCursor Position the start cursor
 /***************************************************************************/
-void CPlotWnd::SetStartCursor(CSaView * pView) {
+void CPlotWnd::SetStartCursor(CSaView * pView)
+{
     DWORD dwStartCursor = pView->GetStartCursorPosition();
-    if (m_pStartCursor) {
+    if (m_pStartCursor)
+    {
         ChangeCursorPosition(pView, dwStartCursor, m_pStartCursor);
     }
     BOOL bDynamicUpdate = (pView->GetGraphUpdateMode() == DYNAMIC_UPDATE);
-    if (bDynamicUpdate && m_bAnimationPlot) {
+    if (bDynamicUpdate && m_bAnimationPlot)
+    {
         // Finish pitch processing if necessary.
         CSaDoc * pDoc = (CSaDoc *)pView->GetDocument();
         CProcessGrappl * pAutoPitch = (CProcessGrappl *)pDoc->GetGrappl();
-        if (pAutoPitch->IsDataReady()) {
+        if (pAutoPitch->IsDataReady())
+        {
             // Finish fragmenting if necessary.
             CProcessFragments * pFragments = (CProcessFragments *)pDoc->GetFragments();
-            if (pFragments->IsDataReady()) {
+            if (pFragments->IsDataReady())
+            {
                 FmtParm * pFmtParm = pDoc->GetFmtParm();
                 int nSmpSize = pFmtParm->wBlockAlign / pFmtParm->wChannels;
                 m_dwAnimationFrame = pFragments->GetFragmentIndex(dwStartCursor/nSmpSize);  // set the animation frame
@@ -647,8 +718,10 @@ void CPlotWnd::SetStartCursor(CSaView * pView) {
 /***************************************************************************/
 // CPlotWnd::SetStopCursor Position the stop cursor
 /***************************************************************************/
-void CPlotWnd::SetStopCursor(CSaView * pView) {
-    if (m_pStopCursor) {
+void CPlotWnd::SetStopCursor(CSaView * pView)
+{
+    if (m_pStopCursor)
+    {
         ChangeCursorPosition(pView, pView->GetStopCursorPosition(), m_pStopCursor);
     }
 }
@@ -656,8 +729,10 @@ void CPlotWnd::SetStopCursor(CSaView * pView) {
 /***************************************************************************/
 // CPlotWnd::SetPlaybackPosition
 /***************************************************************************/
-void CPlotWnd::SetPlaybackCursor(CSaView * pSaView, DWORD dwPos) {
-    if (m_pPlaybackCursor) {
+void CPlotWnd::SetPlaybackCursor(CSaView * pSaView, DWORD dwPos)
+{
+    if (m_pPlaybackCursor)
+    {
         ChangeCursorPosition(pSaView, dwPos, m_pPlaybackCursor);
     }
 }
@@ -665,8 +740,10 @@ void CPlotWnd::SetPlaybackCursor(CSaView * pSaView, DWORD dwPos) {
 /***************************************************************************/
 // CPlotWnd::MoveStartCursor Move the start cursor
 /***************************************************************************/
-void CPlotWnd::MoveStartCursor(CSaView * pView, DWORD dwNewPosition) {
-    if (!m_bCursors) {
+void CPlotWnd::MoveStartCursor(CSaView * pView, DWORD dwNewPosition)
+{
+    if (!m_bCursors)
+    {
         return;    // no cursors visible
     }
     ChangeCursorPosition(pView, dwNewPosition, m_pStartCursor, TRUE);
@@ -675,8 +752,10 @@ void CPlotWnd::MoveStartCursor(CSaView * pView, DWORD dwNewPosition) {
 /***************************************************************************/
 // CPlotWnd::MoveStopCursor Move the stop cursor
 /***************************************************************************/
-void CPlotWnd::MoveStopCursor(CSaView * pView, DWORD dwNewPosition) {
-    if (!m_bCursors) {
+void CPlotWnd::MoveStopCursor(CSaView * pView, DWORD dwNewPosition)
+{
+    if (!m_bCursors)
+    {
         return;    // no cursors visible
     }
     ChangeCursorPosition(pView, dwNewPosition, m_pStopCursor, TRUE);
@@ -685,22 +764,27 @@ void CPlotWnd::MoveStopCursor(CSaView * pView, DWORD dwNewPosition) {
 /***************************************************************************/
 // CPlotWnd::SetInitialPrivateCursor Initialize the private cursor window
 /***************************************************************************/
-void CPlotWnd::SetInitialPrivateCursor() {
+void CPlotWnd::SetInitialPrivateCursor()
+{
 
     CRect rWnd;
     // get the coordinates of the private cursor
     m_pPrivateCursor->GetClientRect(rWnd);
-    if (rWnd.Height() == 0) {
+    if (rWnd.Height() == 0)
+    {
         // private cursor has not been initialized yet
         GetClientRect(rWnd);
         // set the cursor window size
         // CLW 10/23/00 if TWC graph, set cursor to middle of window
-        if (m_szPlotName == "TWC") {
+        if (m_szPlotName == "TWC")
+        {
             CRect rPlotWindow;
             GetWindowRect(rPlotWindow);
             rWnd.top = rPlotWindow.Height() / 2 - 1;
             rWnd.bottom = rWnd.top + 1;
-        } else {
+        }
+        else
+        {
             rWnd.left = -CURSOR_WINDOW_HALFWIDTH / 2;
             rWnd.right = rWnd.left + 2 * CURSOR_WINDOW_HALFWIDTH;
         }
@@ -715,17 +799,22 @@ void CPlotWnd::SetInitialPrivateCursor() {
 // of the plot window. The pixel number returned is the center pixel of the
 // cursor window. If the cursor is not visible, the function returns -1.
 /***************************************************************************/
-int CPlotWnd::GetStartCursorPosition() {
+int CPlotWnd::GetStartCursorPosition()
+{
     CRect rWnd;
     // get the coordinates of the private cursor
     m_pStartCursor->GetWindowRect(rWnd);
     ScreenToClient(rWnd);
-    if (rWnd.Width() <= 0) {
+    if (rWnd.Width() <= 0)
+    {
         return -1;
     }
-    if (rWnd.Width() == 1) {
+    if (rWnd.Width() == 1)
+    {
         return rWnd.left;
-    } else {
+    }
+    else
+    {
         return rWnd.left + CURSOR_WINDOW_HALFWIDTH;
     }
 }
@@ -736,17 +825,22 @@ int CPlotWnd::GetStartCursorPosition() {
 // of the plot window. The pixel number returned is the center pixel of the
 // cursor window. If the cursor is not visible, the function returns -1.
 /***************************************************************************/
-int CPlotWnd::GetStopCursorPosition() {
+int CPlotWnd::GetStopCursorPosition()
+{
     CRect rWnd;
     // get the coordinates of the private cursor
     m_pStopCursor->GetWindowRect(rWnd);
     ScreenToClient(rWnd);
-    if (rWnd.Width() <= 0) {
+    if (rWnd.Width() <= 0)
+    {
         return -1;
     }
-    if (rWnd.Width() == 1) {
+    if (rWnd.Width() == 1)
+    {
         return rWnd.left;
-    } else {
+    }
+    else
+    {
         return rWnd.left + CURSOR_WINDOW_HALFWIDTH;
     }
 }
@@ -757,27 +851,35 @@ int CPlotWnd::GetStopCursorPosition() {
 // of the plot window. The pixel number returned is the center pixel of the
 // cursor window. If the cursor is not visible, the function returns -1.
 /***************************************************************************/
-int CPlotWnd::GetPrivateCursorPosition() {
+int CPlotWnd::GetPrivateCursorPosition()
+{
     CRect rWnd;
     // get the coordinates of the private cursor
     m_pPrivateCursor->GetWindowRect(rWnd);
     ScreenToClient(rWnd);
 
-    if (rWnd.Width() <= 0) {
+    if (rWnd.Width() <= 0)
+    {
         return -1;
     }
-    if (rWnd.Width() == 1) {
+    if (rWnd.Width() == 1)
+    {
         return rWnd.left;
     }
-    if (rWnd.Height() <= 0) {
+    if (rWnd.Height() <= 0)
+    {
         return -1;
     }
-    if (rWnd.Height() == 1) {
+    if (rWnd.Height() == 1)
+    {
         return rWnd.top;
     }
-    if (rWnd.Width() < rWnd.Height()) {
+    if (rWnd.Width() < rWnd.Height())
+    {
         return rWnd.left + CURSOR_WINDOW_HALFWIDTH;
-    } else {
+    }
+    else
+    {
         return rWnd.top  + CURSOR_WINDOW_HALFWIDTH;
     }
 }
@@ -789,7 +891,8 @@ int CPlotWnd::GetPrivateCursorPosition() {
 // dwOldFrame contains the plot position and width (in bytes of raw data) of
 // the plot before scrolling.
 /***************************************************************************/
-void CPlotWnd::ScrollPlot(CSaView * pView, int nScrollAmount, DWORD dwOldPos, DWORD dwFrame) {
+void CPlotWnd::ScrollPlot(CSaView * pView, int nScrollAmount, DWORD dwOldPos, DWORD dwFrame)
+{
     //TRACE("ScrollPlot %d\n",nScrollAmount);
     // hide the helper windows (do not scroll them)
     int nOldMode = m_HelperWnd.SetMode(MODE_HIDDEN);
@@ -803,10 +906,12 @@ void CPlotWnd::ScrollPlot(CSaView * pView, int nScrollAmount, DWORD dwOldPos, DW
     DWORD dwStopCursorPos = pView->GetStopCursorPosition(); // position of stop cursor
     // move cursor windows
     CRect rCursor;
-    if ((dwStartCursorPos < dwOldPos) || (dwStartCursorPos >= (dwOldPos + dwFrame))) {
+    if ((dwStartCursorPos < dwOldPos) || (dwStartCursorPos >= (dwOldPos + dwFrame)))
+    {
         SetStartCursor(pView);    // start cursor was not visible, move it if it's now visible
     }
-    if ((dwStopCursorPos < dwOldPos) || (dwStopCursorPos >= (dwOldPos + dwFrame))) {
+    if ((dwStopCursorPos < dwOldPos) || (dwStopCursorPos >= (dwOldPos + dwFrame)))
+    {
         SetStopCursor(pView);    // stop cursor was not visible, move it if it's now visible
     }
 }
@@ -817,18 +922,24 @@ void CPlotWnd::ScrollPlot(CSaView * pView, int nScrollAmount, DWORD dwOldPos, DW
 // else only the part between (and with) the cursor windows are repainted,
 // but only if boundaries are displayed.
 /***************************************************************************/
-void CPlotWnd::RedrawPlot(BOOL bEntire) {
+void CPlotWnd::RedrawPlot(BOOL bEntire)
+{
     // kg - in case we don't have a window yet..
-    if (IsWindow(m_hWnd) == FALSE) {
+    if (IsWindow(m_hWnd) == FALSE)
+    {
         return;
     }
     CRect rWnd;
     GetClientRect(rWnd);
-    if (bEntire) {
+    if (bEntire)
+    {
         // invalidate entire plot window
         InvalidateRect(NULL);
-    } else {
-        if (HaveBoundaries() && HaveCursors()) {
+    }
+    else
+    {
+        if (HaveBoundaries() && HaveCursors())
+        {
             // boundaries displayed?
             // invalidate region between (and with) cursor windows
             CRect rStart, rStop;
@@ -847,9 +958,11 @@ void CPlotWnd::RedrawPlot(BOOL bEntire) {
 // second case, the helper window will be activated with the message about
 // the canceled state. In case of processing error, the graph will be closed.
 //**************************************************************************/
-short int CPlotWnd::CheckResult(short int nResult, CProcess * pProcess) {
+short int CPlotWnd::CheckResult(short int nResult, CProcess * pProcess)
+{
     m_pLastProcess = pProcess; // save pointer to process object for further use
-    if (!this->GetSafeHwnd()) {
+    if (!this->GetSafeHwnd())
+    {
         return nResult;
     }
 
@@ -860,7 +973,8 @@ short int CPlotWnd::CheckResult(short int nResult, CProcess * pProcess) {
     CMainFrame * pMainWnd = (CMainFrame *)AfxGetMainWnd();
     Colors * pColor = pMainWnd->GetColors(); // get application colors
     CBrush Eraser(pColor->cPlotBkg);
-    switch (nResult) {
+    switch (nResult)
+    {
     case PROCESS_CANCELED:
         // process has been canceled, display helper window
         pDC->FillRect(&rClient, &Eraser);  // clear the plot area
@@ -884,14 +998,18 @@ short int CPlotWnd::CheckResult(short int nResult, CProcess * pProcess) {
         CGraphWnd * pGraph = (CGraphWnd *)GetParent();
         CSaView * pView = (CSaView *)pGraph->GetParent();
         BOOL bDynamicUpdate = (pView->GetGraphUpdateMode() == DYNAMIC_UPDATE);
-        if (!bDynamicUpdate) {
+        if (!bDynamicUpdate)
+        {
             m_HelperWnd.SetMode(MODE_TEXT | FRAME_POPOUT | POS_HCENTER | POS_VCENTER, IDS_HELPERWND_SELECTVOICED, &rClient);
-        } else {
+        }
+        else
+        {
             m_HelperWnd.SetMode(MODE_TEXT | FRAME_POPOUT | POS_HCENTER | POS_VCENTER, IDS_HELPERWND_UNVOICED, &rClient);
         }
         break;
     }
-    case PROCESS_ERROR: {
+    case PROCESS_ERROR:
+    {
         // processing error
         CSaApp * pApp = (CSaApp *)AfxGetApp();
         pApp->ErrorMessage(IDS_ERROR_PROCESS);
@@ -908,42 +1026,50 @@ short int CPlotWnd::CheckResult(short int nResult, CProcess * pProcess) {
 //**************************************************************************/
 BOOL CPlotWnd::PlotPrePaintDots(CDC * pDC, int nTop, CRect rClip,
                                 CLegendWnd * pLegend, CXScaleWnd * pXScale,
-                                COLORREF cColor, int nStyle) {
+                                COLORREF cColor, int nStyle)
+{
     double dXFirstGridPos = pXScale->GetFirstGridPosition();
     double dYFirstGridPos = pLegend->GetFirstGridPosition();
     double fXDistance = pXScale->GetGridDistance();
     double fYDistance = pLegend->GetGridDistance();
 
-    if (fXDistance == 0. || fXDistance == std::numeric_limits<double>::infinity()) {
+    if (fXDistance == 0. || fXDistance == std::numeric_limits<double>::infinity())
+    {
         return TRUE;
     }
 
-    if (fYDistance == 0. || fYDistance == std::numeric_limits<double>::infinity()) {
+    if (fYDistance == 0. || fYDistance == std::numeric_limits<double>::infinity())
+    {
         return TRUE;
     }
 
     int nXCount = (int) ceil((rClip.left - 2 - dXFirstGridPos)/fXDistance);
     double dXPos = dXFirstGridPos + nXCount * fXDistance;
-    if (pLegend->GetScaleMode() & LOG10) {
+    if (pLegend->GetScaleMode() & LOG10)
+    {
         // logarithmic scale
         double dScaleMinValue = pLegend->GetScaleMinValue();
         double fBase = pLegend->GetScaleBase();
-        while (dXPos <= rClip.right + 2) {
+        while (dXPos <= rClip.right + 2)
+        {
             int nXPos = round(dXPos);
 
             int nLogDisp = (int)ceil(dScaleMinValue / pow(10, floor(fBase)));
             double fBasePos = (double)nTop + dYFirstGridPos + (fBase - floor(fBase)) * fYDistance;
             int nYPos = round(fBasePos - log10((double)nLogDisp) * fYDistance);
-            while (nYPos > rClip.top) {
+            while (nYPos > rClip.top)
+            {
                 // set pixel
                 pDC->SetPixel(nXPos, nYPos, cColor);
-                if (nStyle == 3) {
+                if (nStyle == 3)
+                {
                     pDC->SetPixel(nXPos, (nYPos + 1), cColor);
                     pDC->SetPixel((nXPos + 1), nYPos, cColor);
                     pDC->SetPixel(nXPos, (nYPos - 1), cColor);
                     pDC->SetPixel((nXPos - 1), nYPos, cColor);
                 }
-                if (nLogDisp > 9) {
+                if (nLogDisp > 9)
+                {
                     nLogDisp = 0;
                     fBasePos -= fYDistance;
                 }
@@ -952,16 +1078,21 @@ BOOL CPlotWnd::PlotPrePaintDots(CDC * pDC, int nTop, CRect rClip,
             }
             dXPos = dXFirstGridPos + ++nXCount * fXDistance;
         }
-    } else {
+    }
+    else
+    {
         // linear scale
-        while (dXPos <= rClip.right + 2) {
+        while (dXPos <= rClip.right + 2)
+        {
             int nXPos = round(dXPos);
             double dYPos = dYFirstGridPos;
-            while (dYPos < rClip.bottom) {
+            while (dYPos < rClip.bottom)
+            {
                 int nYPos = round(dYPos);
                 // set pixel
                 pDC->SetPixel(nXPos, nYPos, cColor);
-                if (nStyle == 3) {
+                if (nStyle == 3)
+                {
                     pDC->SetPixel(nXPos, (nYPos + 1), cColor);
                     pDC->SetPixel((nXPos + 1), nYPos, cColor);
                     pDC->SetPixel(nXPos, (nYPos - 1), cColor);
@@ -981,13 +1112,15 @@ BOOL CPlotWnd::PlotPrePaintDots(CDC * pDC, int nTop, CRect rClip,
 // OnPaint function before having drawn its own painting job. It paints the
 // gridlines.
 //**************************************************************************/
-void CPlotWnd::PlotPrePaint(CDC * pDC, CRect rWnd, CRect rClip, CLegendWnd * pLegend, BOOL bShowCursors, BOOL bPrivateCursor) {
+void CPlotWnd::PlotPrePaint(CDC * pDC, CRect rWnd, CRect rClip, CLegendWnd * pLegend, BOOL bShowCursors, BOOL bPrivateCursor)
+{
     // get pointer to graph, grid structure, legend- and x-scale window
     CGraphWnd * pGraph = (CGraphWnd *)GetParent();
     CMainFrame * pMainWnd = (CMainFrame *)AfxGetMainWnd();
     const Grid cGrid = GetGrid();
     const Grid * pGrid = &cGrid;
-    if (!pLegend) {
+    if (!pLegend)
+    {
         pLegend = pGraph->GetLegendWnd();
     }
     CXScaleWnd * pXScale = pGraph->GetXScaleWnd();
@@ -995,7 +1128,8 @@ void CPlotWnd::PlotPrePaint(CDC * pDC, CRect rWnd, CRect rClip, CLegendWnd * pLe
     pLegend->CalculateScale(NULL, &rWnd);
     pXScale->CalculateScale(NULL, rWnd.Width());
 
-    if (!HaveGrid()) {
+    if (!HaveGrid())
+    {
         return;    // no grid to draw
     }
 
@@ -1007,13 +1141,16 @@ void CPlotWnd::PlotPrePaint(CDC * pDC, CRect rWnd, CRect rClip, CLegendWnd * pLe
     pDC->SetBkColor(pColors->cPlotBkg);
     static const unsigned char bit[8] =
     {0x01,0x02,0x04,0x08,0x10,0x20,0x40,0x80};
-    if (pGrid->bXGrid) {
+    if (pGrid->bXGrid)
+    {
         // draw x -grid
-        if (pGrid->nXStyle) {
+        if (pGrid->nXStyle)
+        {
             // line style
             int nPenStyle = PS_SOLID;
             unsigned char nPenPattern=0xff;
-            switch (pGrid->nXStyle) {
+            switch (pGrid->nXStyle)
+            {
             case 2:
                 // nPenStyle = PS_DASH;
                 nPenPattern = 0xBB;/* 10111011 */
@@ -1034,7 +1171,8 @@ void CPlotWnd::PlotPrePaint(CDC * pDC, CRect rWnd, CRect rClip, CLegendWnd * pLe
                 ;
             } // switch (pGrid->nXStyle)
 
-            if ((pGrid->nXStyle != 3)) {
+            if ((pGrid->nXStyle != 3))
+            {
                 // create and select pen
                 CPen pen(nPenStyle, 1, pColors->cPlotGrid);
                 CPen * pOldPen = pDC->SelectObject(&pen);
@@ -1042,16 +1180,20 @@ void CPlotWnd::PlotPrePaint(CDC * pDC, CRect rWnd, CRect rClip, CLegendWnd * pLe
                 double fDistance = pXScale->GetGridDistance();
                 double fGridPos = (double)pLegend->GetFirstGridPosition();
                 double fGridDistance = pLegend->GetGridDistance()/8.;
-                if (fDistance > 0.) {
+                if (fDistance > 0.)
+                {
                     int nCount = (int) ceil((rClip.left - 2 - fStartPos)/fDistance);
                     double dPos = fStartPos + nCount * fDistance;
 
-                    while (dPos <= rClip.right + 2) {
+                    while (dPos <= rClip.right + 2)
+                    {
                         // draw a line
                         int Index = 0;
                         int nPos = round(dPos);
-                        for (double y=fGridPos-fGridDistance*8.5; y < rWnd.bottom;) {
-                            if (bit[Index]&nPenPattern) {
+                        for (double y=fGridPos-fGridDistance*8.5; y < rWnd.bottom;)
+                        {
+                            if (bit[Index]&nPenPattern)
+                            {
                                 pDC->MoveTo(nPos, (int)y);
                                 pDC->LineTo(nPos, (int)(y + fGridDistance));
                             }
@@ -1064,23 +1206,27 @@ void CPlotWnd::PlotPrePaint(CDC * pDC, CRect rWnd, CRect rClip, CLegendWnd * pLe
                 pDC->SelectObject(pOldPen);
             }
         }
-        if ((!pGrid->nXStyle) || (pGrid->nXStyle == 3)) {
+        if ((!pGrid->nXStyle) || (pGrid->nXStyle == 3))
+        {
             // dot style (1 pixel) or "- - - - - - - - - - -" style (2x2 pixels)
             PlotPrePaintDots(pDC, rWnd.top, rClip, pLegend, pXScale,
                              pColors->cPlotGrid, pGrid->nXStyle);
         }
     }
 
-    if (pGrid->bYGrid) {
+    if (pGrid->bYGrid)
+    {
         // line style
         int nPenStyle = PS_SOLID;
         unsigned char nPenPattern=0xff;
         // draw y -grid
-        if (pGrid->nYStyle) {
+        if (pGrid->nYStyle)
+        {
             // line style
             nPenStyle = PS_SOLID;
             nPenPattern = 0xff;;
-            switch (pGrid->nYStyle) {
+            switch (pGrid->nYStyle)
+            {
             case 2:
                 // nPenStyle = PS_DASH;
                 nPenPattern = 0xBB;/* 10111011 */
@@ -1102,13 +1248,15 @@ void CPlotWnd::PlotPrePaint(CDC * pDC, CRect rWnd, CRect rClip, CLegendWnd * pLe
             }
         }
 
-        if (((pGrid->nYStyle) && (pGrid->nYStyle != 3))) {
+        if (((pGrid->nYStyle) && (pGrid->nYStyle != 3)))
+        {
             // create and select pen
             CPen pen(nPenStyle, 1, pColors->cPlotGrid);
             CPen * pOldPen = pDC->SelectObject(&pen);
             double fGridPos = pXScale->GetFirstGridPosition();
             double fGridDistance = pXScale->GetGridDistance()/8.;
-            if (pLegend->GetScaleMode() & LOG10) {
+            if (pLegend->GetScaleMode() & LOG10)
+            {
                 // logarithmic scale
                 double fYStartPos = (double)pLegend->GetFirstGridPosition();
                 double fDistance = pLegend->GetGridDistance();
@@ -1117,36 +1265,45 @@ void CPlotWnd::PlotPrePaint(CDC * pDC, CRect rWnd, CRect rClip, CLegendWnd * pLe
                 int nLogDisp = (int)ceil(dScaleMinValue / pow(10, floor(fBase)));
                 double fBasePos = (double)rWnd.top + fYStartPos + (fBase - floor(fBase)) * fDistance;
                 int nPos = (int)round(fBasePos - log10((double)nLogDisp) * fDistance);
-                while (nPos > rClip.top) {
+                while (nPos > rClip.top)
+                {
                     // draw a grid line
                     int Index = 0;
-                    for (double x = fGridPos-fGridDistance*8.5; x<rWnd.right;) {
-                        if (bit[Index]&nPenPattern) {
+                    for (double x = fGridPos-fGridDistance*8.5; x<rWnd.right;)
+                    {
+                        if (bit[Index]&nPenPattern)
+                        {
                             pDC->MoveTo((int)x, nPos);
                             pDC->LineTo((int)(x + fGridDistance), nPos);
                         }
                         Index = (Index+1)%8;
                         x += fGridDistance;
                     }
-                    if (nLogDisp > 9) {
+                    if (nLogDisp > 9)
+                    {
                         nLogDisp = 0;
                         fBasePos -= fDistance;
                     }
                     nLogDisp++;
                     nPos = (int)round(fBasePos - log10((double)nLogDisp) * fDistance);
                 }
-            } else {
+            }
+            else
+            {
                 // linear scale
                 double dStartPos = pLegend->GetFirstGridPosition();
                 int nCount = 0;
                 double fDistance = pLegend->GetGridDistance();
                 double dPos = dStartPos;
-                while (dPos < rClip.bottom) {
+                while (dPos < rClip.bottom)
+                {
                     // draw a grid line
                     int Index = 0;
                     int nPos = round(dPos);
-                    for (double x = fGridPos-fGridDistance*8.5; x<rWnd.right;) {
-                        if (bit[Index]&nPenPattern) {
+                    for (double x = fGridPos-fGridDistance*8.5; x<rWnd.right;)
+                    {
+                        if (bit[Index]&nPenPattern)
+                        {
                             pDC->MoveTo((int)round(x), nPos);
                             pDC->LineTo((int)round(x + fGridDistance), nPos);
                         }
@@ -1157,7 +1314,9 @@ void CPlotWnd::PlotPrePaint(CDC * pDC, CRect rWnd, CRect rClip, CLegendWnd * pLe
                 }
             }
             pDC->SelectObject(pOldPen);
-        } else if ((!pGrid->nYStyle) || (pGrid->nYStyle == 3)) {
+        }
+        else if ((!pGrid->nYStyle) || (pGrid->nYStyle == 3))
+        {
             // dot style (1 pixel) or "- - - - - - - - - - -" style (2x2 pixels)
             PlotPrePaintDots(pDC, rWnd.top, rClip, pLegend, pXScale,
                              pColors->cPlotGrid, pGrid->nYStyle);
@@ -1167,7 +1326,8 @@ void CPlotWnd::PlotPrePaint(CDC * pDC, CRect rWnd, CRect rClip, CLegendWnd * pLe
 
 
 
-void DrawData(CRect & rClip, CDataSource & cData, const CXScale & cXScale, const CYScale & cYScale, CDrawSegment & cDrawSegment) {
+void DrawData(CRect & rClip, CDataSource & cData, const CXScale & cXScale, const CYScale & cYScale, CDrawSegment & cDrawSegment)
+{
     int nFirst = (int) floor(cXScale.GetSample(rClip.left)) - 1;
     int nLast = (int) ceil(cXScale.GetSample(rClip.right)) + 1;
     int x = 0;
@@ -1179,7 +1339,8 @@ void DrawData(CRect & rClip, CDataSource & cData, const CXScale & cXScale, const
     int nSample = nFirst > 0 ? nFirst : 0;
 
     int nPasses = 0;
-    while (nSample <= nLast) {
+    while (nSample <= nLast)
+    {
         x = cXScale.GetX(nSample);
         int nNext = (int) floor(cXScale.GetSample(x+1));
 
@@ -1206,8 +1367,10 @@ void DrawData(CRect & rClip, CDataSource & cData, const CXScale & cXScale, const
 // done here.
 //**************************************************************************/
 void CPlotWnd::PlotStandardPaint(CDC * pDC, CRect rWnd, CRect rClip,
-                                 CProcess * pProcess, CSaDoc * pProcessDoc, int nFlags) {
-    if (rClip.IsRectEmpty()) {
+                                 CProcess * pProcess, CSaDoc * pProcessDoc, int nFlags)
+{
+    if (rClip.IsRectEmpty())
+    {
         return;
     }
 
@@ -1236,7 +1399,8 @@ void CPlotWnd::PlotStandardPaint(CDC * pDC, CRect rWnd, CRect rClip,
         // get necessary data from document and from view
         double fDataPos = GetDataPosition(rWnd.Width()); // data index of first sample to display
         DWORD dwDataFrame = AdjustDataFrame(rWnd.Width()); // number of data points to display
-        if (dwDataFrame == 0) {
+        if (dwDataFrame == 0)
+        {
             return;    // nothing to draw
         }
 
@@ -1254,20 +1418,25 @@ void CPlotWnd::PlotStandardPaint(CDC * pDC, CRect rWnd, CRect rClip,
 
     double dCenterPos;
     double fBase = pLegend->GetScaleBase();
-    if (bLog10) {
+    if (bLog10)
+    {
         // logarithmic scale
         dCenterPos = pLegend->GetFirstGridPosition();
         fBase = pLegend->GetScaleBase() + log10(fMultiplier);
         m_fVScale = pLegend->GetGridDistance();
 
         pYScale = new CYScaleLog(-m_fVScale, dCenterPos + fBase*m_fVScale);
-    } else { // linear scale
+    }
+    else     // linear scale
+    {
         double dScaleMin = pLegend->GetScaleMinValue();
-        if (dScaleMin < 0.) {
+        if (dScaleMin < 0.)
+        {
             dScaleMin /= GetMagnify();    // this is dumb... legend should report the actual
         }
 
-        if (nFlags & PAINT_DB) {
+        if (nFlags & PAINT_DB)
+        {
             // calculate vertical scaling factor
             fBase = pLegend->GetScaleBase();
             m_fVScale = pLegend->GetGridDistance() / fBase;
@@ -1276,14 +1445,18 @@ void CPlotWnd::PlotStandardPaint(CDC * pDC, CRect rWnd, CRect rClip,
             double dblDbReference = -20*log10(double(0x7fff)) + 6; // loudness represents rms value so peak is +3dB and we want another 3db headroom
 
             pYScale = new CYScaleDB(-m_fVScale, dCenterPos, dblDbReference, 20.);
-        } else if (nFlags & PAINT_SEMITONES) {
+        }
+        else if (nFlags & PAINT_SEMITONES)
+        {
             // calculate vertical scaling factor
             fBase = pLegend->GetScaleBase();
             m_fVScale = pLegend->GetGridDistance() / fBase;
             dCenterPos = rWnd.bottom +  dScaleMin*m_fVScale; // x-axis vertical position
 
             pYScale = new CYScaleSemitones(-m_fVScale, dCenterPos, 10);
-        } else {
+        }
+        else
+        {
             // calculate vertical scaling factor
             fBase = pLegend->GetScaleBase() * fMultiplier;
             m_fVScale = pLegend->GetGridDistance() / fBase;
@@ -1301,7 +1474,8 @@ void CPlotWnd::PlotStandardPaint(CDC * pDC, CRect rWnd, CRect rClip,
     }
 
     CDataSource * pSource = NULL;
-    switch (nFlags & (SKIP_UNSET | SKIP_MISSING)) {
+    switch (nFlags & (SKIP_UNSET | SKIP_MISSING))
+    {
     case 0:
         pSource = new CDataSourceSimple(*pProcess);
         break;
@@ -1312,16 +1486,23 @@ void CPlotWnd::PlotStandardPaint(CDC * pDC, CRect rWnd, CRect rClip,
 
     CDrawSegment * pSegment = NULL;
     // Create pSegment
-    if (nFlags & PAINT_CROSSES) {
+    if (nFlags & PAINT_CROSSES)
+    {
         // paint small crosses for each data point
         pSegment = new CDrawSegmentSample(*pDC);
-    } else if (nFlags & PAINT_DOTS) {
+    }
+    else if (nFlags & PAINT_DOTS)
+    {
         // paint dots (only) for each data point
         pSegment = new CDrawSegmentDotOnly(*pDC);
-    } else if (m_bLineDraw) {
+    }
+    else if (m_bLineDraw)
+    {
         // Smooth line drawing
         pSegment = new CDrawSegmentLine(*pDC);
-    } else {
+    }
+    else
+    {
         // Paint Solid
         pSegment = new CDrawSegmentSolid(*pDC, nFlags & (PAINT_DB|PAINT_SEMITONES) ? rWnd.bottom : round(dCenterPos));
     }
@@ -1334,7 +1515,8 @@ void CPlotWnd::PlotStandardPaint(CDC * pDC, CRect rWnd, CRect rClip,
 
     CRect rClipPortion(rClip);
 
-    try {
+    try
+    {
         int nXStart = m_dwHighLightLength ? pXScaleRaw->GetX(m_dwHighLightPosition) : 0;
         int nXEnd = m_dwHighLightLength ? pXScaleRaw->GetX(m_dwHighLightPosition + m_dwHighLightLength) : 0;
 
@@ -1344,7 +1526,8 @@ void CPlotWnd::PlotStandardPaint(CDC * pDC, CRect rWnd, CRect rClip,
         GetClipRgn(pDC->m_hDC, cClipRgn);
 
 
-        if (nXStart > rClip.left) {
+        if (nXStart > rClip.left)
+        {
             rClipPortion.left=rClip.left;
             rClipPortion.right=nXStart;
 
@@ -1360,7 +1543,8 @@ void CPlotWnd::PlotStandardPaint(CDC * pDC, CRect rWnd, CRect rClip,
 
             ExtSelectClipRgn(pDC->m_hDC, cClipRgn, RGN_COPY);
         }
-        if (nXStart < rClip.right && nXEnd >= rClip.left) {
+        if (nXStart < rClip.right && nXEnd >= rClip.left)
+        {
             pDC->SelectObject(&penData);
             rClipPortion.left = nXStart;
             rClipPortion.right = nXEnd;
@@ -1377,7 +1561,8 @@ void CPlotWnd::PlotStandardPaint(CDC * pDC, CRect rWnd, CRect rClip,
 
             ExtSelectClipRgn(pDC->m_hDC, cClipRgn, RGN_COPY);
         }
-        if (nXEnd < rClip.right) {
+        if (nXEnd < rClip.right)
+        {
             rClipPortion.left = nXEnd;
             rClipPortion.right = rClip.right;
 
@@ -1402,7 +1587,9 @@ void CPlotWnd::PlotStandardPaint(CDC * pDC, CRect rWnd, CRect rClip,
             ExtSelectClipRgn(pDC->m_hDC, cClipRgn, RGN_COPY);
         }
 
-    } catch (...) {
+    }
+    catch (...)
+    {
     }
 
     pDC->SelectObject(pOldPen);
@@ -1421,50 +1608,62 @@ void CPlotWnd::PlotStandardPaint(CDC * pDC, CRect rWnd, CRect rClip,
 // function after having finished its own painting job. It paints the
 // cursors and the segment boundaries.
 //**************************************************************************/
-void CPlotWnd::PlotPaintFinish(CDC * pDC, CRect rWnd, CRect rClip) {
+void CPlotWnd::PlotPaintFinish(CDC * pDC, CRect rWnd, CRect rClip)
+{
     // get pointer to graph, view and document
     CGraphWnd * pGraph = (CGraphWnd *)GetParent();
     CSaView * pView = (CSaView *)pGraph->GetParent();
     CSaDoc * pDoc = (CSaDoc *)pView->GetDocument();
 
-    if (m_bBoundaries) {
+    if (m_bBoundaries)
+    {
         // paint boundaries
         double fDataStart;
         DWORD dwDataFrame;
         // check if area graph type
-        if (pGraph->IsAreaGraph()) {
+        if (pGraph->IsAreaGraph())
+        {
             // get necessary data from area plot
             fDataStart = GetAreaPosition();
             dwDataFrame = GetAreaLength(&rWnd);
-        } else {
+        }
+        else
+        {
             // get necessary data from document and from view
             fDataStart = GetDataPosition(rWnd.Width()); // data index of first sample to display
             dwDataFrame = AdjustDataFrame(rWnd.Width()); // number of data points to display
         }
-        if (dwDataFrame && rWnd.Width()) {
+        if (dwDataFrame && rWnd.Width())
+        {
             // calculate the number of data samples per pixel
             double fBytesPerPix = (double)dwDataFrame / (double)rWnd.Width();
             // get pointer to phonetic string
             CString * pPhonetic = pDoc->GetSegment(PHONETIC)->GetString();
-            if (!pPhonetic->IsEmpty()) { // string is not empty
+            if (!pPhonetic->IsEmpty())   // string is not empty
+            {
                 // get pointer to phonetic offset and duration arrays
                 CSegment * pOffsets = pDoc->GetSegment(PHONETIC);
                 // position prepare loop. Find first boundary to display in clipping rect
                 double fStart = fDataStart + ((double)rClip.left) * fBytesPerPix;
                 int nLoop = 0;
-                if (fStart > 0) {
-                    for (nLoop = 1; nLoop < pPhonetic->GetLength(); nLoop++) {
-                        if (pOffsets->GetStop(nLoop)> fStart) {
+                if (fStart > 0)
+                {
+                    for (nLoop = 1; nLoop < pPhonetic->GetLength(); nLoop++)
+                    {
+                        if (pOffsets->GetStop(nLoop)> fStart)
+                        {
                             break;    // this is it
                         }
                     }
                 }
                 // first char must be at lower position
-                if (nLoop > 0) {
+                if (nLoop > 0)
+                {
                     nLoop = pDoc->GetSegment(PHONETIC)->GetPrevious(nLoop);
                 }
                 // check for overlap and make correction (draw previous character boundaries too)
-                if ((nLoop > 0) && (pOffsets->GetOffset(nLoop) < (pOffsets->GetStop(nLoop - 1)))) {
+                if ((nLoop > 0) && (pOffsets->GetOffset(nLoop) < (pOffsets->GetStop(nLoop - 1))))
+                {
                     nLoop--;
                 }
                 // display loop, create pen and brush
@@ -1478,7 +1677,8 @@ void CPlotWnd::PlotPaintFinish(CDC * pDC, CRect rWnd, CRect rClip) {
                 points[0].y = points[1].y = 0;
                 points[2].y = 4;
                 int nDisplayPos; // position in pixels to display boundary
-                do {
+                do
+                {
                     // calculate start boundary
                     nDisplayPos = round((pOffsets->GetOffset(nLoop) - fDataStart)/fBytesPerPix);
                     // calculate stop boundary
@@ -1496,7 +1696,8 @@ void CPlotWnd::PlotPaintFinish(CDC * pDC, CRect rWnd, CRect rClip) {
                     points[0].x = nDurationPos - 4; // draw stop arrow
                     points[1].x = points[2].x = nDurationPos;
                     pDC->Polygon(points, 3);
-                } while ((nDisplayPos < rClip.right) && (nLoop >= 0));
+                }
+                while ((nDisplayPos < rClip.right) && (nLoop >= 0));
                 pDC->SelectObject(pOldPen); // select back old pen
                 pDC->SelectObject(pOldBrush);
             }
@@ -1504,15 +1705,18 @@ void CPlotWnd::PlotPaintFinish(CDC * pDC, CRect rWnd, CRect rClip) {
     }
 
     // paint cursors
-    if (rClip.Width() >= rWnd.Width()) { // whole graph drawn
-        if (m_bCursors) {
+    if (rClip.Width() >= rWnd.Width())   // whole graph drawn
+    {
+        if (m_bCursors)
+        {
             SetStopCursor(pView);
             SetStartCursor(pView);
         }
     }
 
     // if this graph has focus, update the status bar.   AKE 10/21/2000
-    if (m_bInitialPlot && pView->GetFocusedGraphWnd()) {
+    if (m_bInitialPlot && pView->GetFocusedGraphWnd())
+    {
         pGraph->UpdateStatusBar(pView->GetStartCursorPosition(), pView->GetStopCursorPosition(), TRUE); // update the status bar
         m_bInitialPlot = FALSE;
     }
@@ -1521,8 +1725,10 @@ void CPlotWnd::PlotPaintFinish(CDC * pDC, CRect rWnd, CRect rClip) {
 /***************************************************************************/
 // CPlotWnd::IsCanceled Return cancel state
 //**************************************************************************/
-BOOL CPlotWnd::IsCanceled() {
-    if (m_pLastProcess) {
+BOOL CPlotWnd::IsCanceled()
+{
+    if (m_pLastProcess)
+    {
         return m_pLastProcess->IsCanceled();
     }
     return FALSE;
@@ -1531,15 +1737,18 @@ BOOL CPlotWnd::IsCanceled() {
 /***************************************************************************/
 // CPlotWnd::RestartProcess Restart a canceled process or recalc an area graph
 //**************************************************************************/
-void CPlotWnd::RestartProcess() {
+void CPlotWnd::RestartProcess()
+{
     m_HelperWnd.SetMode(MODE_HIDDEN); // hide helper window
-    if (IsAreaGraph()) {
+    if (IsAreaGraph())
+    {
         m_pAreaProcess->UpdateArea();
         CGraphWnd * pGraph = (CGraphWnd *)GetParent();
         pGraph->RedrawGraph(TRUE, TRUE); // repaint whole graph
     }
 
-    if (m_pLastProcess && IsCanceled()) {
+    if (m_pLastProcess && IsCanceled())
+    {
         m_pLastProcess->RestartProcess();
         RedrawPlot(); // repaint whole plot
     }
@@ -1550,13 +1759,17 @@ void CPlotWnd::RestartProcess() {
 // If the current area length is 0, the function returns the data position
 // of the view. In case of an error 0 is returned.
 //**************************************************************************/
-DWORD CPlotWnd::GetAreaPosition() {
-    if (m_pAreaProcess) {
+DWORD CPlotWnd::GetAreaPosition()
+{
+    if (m_pAreaProcess)
+    {
         CProcessAreaData * pProcess = (CProcessAreaData *)m_pAreaProcess; // cast pointer
-        if (pProcess->GetAreaLength() == 0) {
+        if (pProcess->GetAreaLength() == 0)
+        {
             // area length is zero, so return the views position
             CRect rWnd(0,0,0,0);
-            if (GetSafeHwnd()) {
+            if (GetSafeHwnd())
+            {
                 GetClientRect(rWnd);
             }
             return (DWORD)GetDataPosition(rWnd.Width());
@@ -1571,16 +1784,22 @@ DWORD CPlotWnd::GetAreaPosition() {
 // If the current area length is 0, the function returns the frame length of
 // the view. In case of an error 0 is returned.
 //**************************************************************************/
-DWORD CPlotWnd::GetAreaLength(CRect * pRwnd) {
-    if (m_pAreaProcess) {
+DWORD CPlotWnd::GetAreaLength(CRect * pRwnd)
+{
+    if (m_pAreaProcess)
+    {
         CProcessAreaData * pProcess = (CProcessAreaData *)m_pAreaProcess; // cast pointer
         DWORD dwFrame = pProcess->GetAreaLength();
-        if (dwFrame == 0) {
+        if (dwFrame == 0)
+        {
             // area length is zero, so return the views length
             CRect rWnd;
-            if (pRwnd) {
+            if (pRwnd)
+            {
                 rWnd = *pRwnd;
-            } else {
+            }
+            else
+            {
                 GetClientRect(rWnd);
             }
             return AdjustDataFrame(rWnd.Width());
@@ -1600,29 +1819,36 @@ DWORD CPlotWnd::GetAreaLength(CRect * pRwnd) {
 // Start and Stop are not range checked. Selected segments will be
 // deselected.
 //**************************************************************************/
-void CPlotWnd::SetHighLightArea(DWORD dwStart, DWORD dwStop, BOOL bRedraw, BOOL bSecondSelection) {
-    if (m_bCursors) {
+void CPlotWnd::SetHighLightArea(DWORD dwStart, DWORD dwStop, BOOL bRedraw, BOOL bSecondSelection)
+{
+    if (m_bCursors)
+    {
         CSaView * pView = (CSaView *)GetParent()->GetParent();
         CSaDoc * pDoc = (CSaDoc *)pView->GetDocument();
         FmtParm * pFmtParm = pDoc->GetFmtParm();
         UINT nSampleSize = pFmtParm->wBlockAlign / pFmtParm->wChannels;
-        if (nSampleSize == 2) {
+        if (nSampleSize == 2)
+        {
             // positions have to be even for 16 bit
             dwStart &= ~1;
             dwStop &= ~1;
         }
-        if (dwStart > 0) {
+        if (dwStart > 0)
+        {
             dwStart = pDoc->SnapCursor(START_CURSOR, dwStart, 0, pDoc->GetDataSize() - nSampleSize);
         }
-        if ((dwStop > 0) && (dwStop < (pDoc->GetDataSize() - nSampleSize))) {
+        if ((dwStop > 0) && (dwStop < (pDoc->GetDataSize() - nSampleSize)))
+        {
             dwStop = pDoc->SnapCursor(STOP_CURSOR, dwStop, 0, pDoc->GetDataSize() - nSampleSize);
         }
 
-        if (m_dwHighLightPosition == dwStart && m_dwHighLightLength == dwStop - dwStart) {
+        if (m_dwHighLightPosition == dwStart && m_dwHighLightLength == dwStop - dwStart)
+        {
             return;
         }
 
-        if (bRedraw) {
+        if (bRedraw)
+        {
             // calculate the actual and the new highlighted rectangles
             CRect rWnd;
             GetClientRect(rWnd);
@@ -1633,10 +1859,13 @@ void CPlotWnd::SetHighLightArea(DWORD dwStart, DWORD dwStop, BOOL bRedraw, BOOL 
 
             int nHighLightPixLeft = 0;
             int nHighLightPixRight = 0;
-            if ((dwDataFrame != 0) && (m_dwHighLightLength != 0)) {
+            if ((dwDataFrame != 0) && (m_dwHighLightLength != 0))
+            {
                 // there is actually something to highlight
-                if ((m_dwHighLightPosition + m_dwHighLightLength) > fDataPos) {
-                    if (m_dwHighLightPosition < fDataPos) {
+                if ((m_dwHighLightPosition + m_dwHighLightLength) > fDataPos)
+                {
+                    if (m_dwHighLightPosition < fDataPos)
+                    {
                         m_dwHighLightLength -= ((DWORD)fDataPos - m_dwHighLightPosition);
                         m_dwHighLightPosition = (DWORD)fDataPos;
                     }
@@ -1660,14 +1889,18 @@ void CPlotWnd::SetHighLightArea(DWORD dwStart, DWORD dwStop, BOOL bRedraw, BOOL 
 
             rWnd.InflateRect(2,0);
             InvalidateRect(rWnd,TRUE);
-        } else {
+        }
+        else
+        {
             m_dwHighLightPosition = dwStart;
             m_dwHighLightLength = dwStop - dwStart;
         }
-        if (m_dwHighLightLength && !bSecondSelection) {
+        if (m_dwHighLightLength && !bSecondSelection)
+        {
             // deselect segment, if one selected
             CSegment * pSegment = pView->FindSelectedAnnotation();
-            if (pSegment) {
+            if (pSegment)
+            {
                 pView->ChangeAnnotationSelection(pSegment, pSegment->GetSelection(), 0, 0);
             }
         }
@@ -1680,8 +1913,10 @@ void CPlotWnd::SetHighLightArea(DWORD dwStart, DWORD dwStop, BOOL bRedraw, BOOL 
 /***************************************************************************/
 // CPlotWnd::OnCreate Window creation
 /***************************************************************************/
-int CPlotWnd::OnCreate(LPCREATESTRUCT lpCreateStruct) {
-    if (CWnd::OnCreate(lpCreateStruct) == -1) {
+int CPlotWnd::OnCreate(LPCREATESTRUCT lpCreateStruct)
+{
+    if (CWnd::OnCreate(lpCreateStruct) == -1)
+    {
         return -1;
     }
 
@@ -1691,22 +1926,26 @@ int CPlotWnd::OnCreate(LPCREATESTRUCT lpCreateStruct) {
     m_pPlaybackCursor = new CPrivateCursorWnd();
     CRect rWnd(0, 0, 0, 0);
     // create the start cursor
-    if (!m_pStartCursor->Create(NULL, _T("Cursor"), WS_CHILD | WS_VISIBLE, rWnd, this, 0)) {
+    if (!m_pStartCursor->Create(NULL, _T("Cursor"), WS_CHILD | WS_VISIBLE, rWnd, this, 0))
+    {
         delete m_pStartCursor;
         m_pStartCursor = NULL;
     }
     // create the stop cursor
-    if (!m_pStopCursor->Create(NULL, _T("Cursor"), WS_CHILD | WS_VISIBLE, rWnd, this, 0)) {
+    if (!m_pStopCursor->Create(NULL, _T("Cursor"), WS_CHILD | WS_VISIBLE, rWnd, this, 0))
+    {
         delete m_pStopCursor;
         m_pStopCursor = NULL;
     }
     // create the private cursor
-    if (!m_pPrivateCursor->Create(NULL, _T("Cursor"), WS_CHILD | WS_VISIBLE, rWnd, this, 0)) {
+    if (!m_pPrivateCursor->Create(NULL, _T("Cursor"), WS_CHILD | WS_VISIBLE, rWnd, this, 0))
+    {
         delete m_pPrivateCursor;
         m_pPrivateCursor = NULL;
     }
     // create the playback cursor
-    if (!m_pPlaybackCursor->Create(NULL, _T("Cursor"), WS_CHILD | WS_VISIBLE, rWnd, this, 0)) {
+    if (!m_pPlaybackCursor->Create(NULL, _T("Cursor"), WS_CHILD | WS_VISIBLE, rWnd, this, 0))
+    {
         delete m_pPlaybackCursor;
         m_pPlaybackCursor = NULL;
     }
@@ -1722,7 +1961,8 @@ int CPlotWnd::OnCreate(LPCREATESTRUCT lpCreateStruct) {
 // Before the resizing of a plot window, the cursor windows are set to size
 // 0, so that after the redraw of the plot they will be redrawn too.
 /***************************************************************************/
-void CPlotWnd::OnSize(UINT nType, int cx, int cy) {
+void CPlotWnd::OnSize(UINT nType, int cx, int cy)
+{
     m_pStartCursor->MoveWindow(0, 0, 0, 0);
     m_pStartCursor->ResetPosition();
     m_pStopCursor->MoveWindow(0, 0, 0, 0);
@@ -1735,17 +1975,20 @@ void CPlotWnd::OnSize(UINT nType, int cx, int cy) {
 /***************************************************************************/
 // CPlotWnd::EraseBkgnd Erasing background        10/24/2000 - DDO
 /***************************************************************************/
-BOOL CPlotWnd::OnEraseBkgnd(CDC * pDC) {
+BOOL CPlotWnd::OnEraseBkgnd(CDC * pDC)
+{
     return EraseBkgnd(pDC);
 }
 /***************************************************************************/
 // CPlotWnd::OnEraseBkgnd Erasing background
 // Allows highlighting of selected areas.
 /***************************************************************************/
-BOOL CPlotWnd::EraseBkgnd(CDC * pDC) {
+BOOL CPlotWnd::EraseBkgnd(CDC * pDC)
+{
     CRect rWnd;
     GetClientRect(rWnd);
-    if (rWnd.Width()==0) {
+    if (rWnd.Width()==0)
+    {
         return TRUE;    // nothing to erase
     }
     double fDataPos = GetDataPosition(rWnd.Width()); // data index of first sample to display
@@ -1755,12 +1998,15 @@ BOOL CPlotWnd::EraseBkgnd(CDC * pDC) {
 
     int nHighLightPixLeft = 0;
     int nHighLightPixRight = 0;
-    if ((dwDataFrame != 0) && (m_dwHighLightLength != 0)) {
+    if ((dwDataFrame != 0) && (m_dwHighLightLength != 0))
+    {
         // there is something to highlight
-        if ((m_dwHighLightPosition + m_dwHighLightLength) > fDataPos) {
+        if ((m_dwHighLightPosition + m_dwHighLightLength) > fDataPos)
+        {
             DWORD dwHighLightPosition = m_dwHighLightPosition;
             DWORD dwHighLightLength = m_dwHighLightLength;
-            if (m_dwHighLightPosition < fDataPos) {
+            if (m_dwHighLightPosition < fDataPos)
+            {
                 dwHighLightPosition = (DWORD)fDataPos;
                 dwHighLightLength -= ((DWORD)fDataPos - m_dwHighLightPosition);
             }
@@ -1777,20 +2023,24 @@ BOOL CPlotWnd::EraseBkgnd(CDC * pDC) {
     CRect rClip;
     pDC->GetClipBox(rClip); // get the area needed to redraw
     pDC->LPtoDP(rClip);
-    if (rClip.left < nHighLightPixLeft) {
+    if (rClip.left < nHighLightPixLeft)
+    {
         // draw left of highlighted area
         int nWidth = nHighLightPixLeft - rClip.left;
-        if (nWidth > rClip.Width()) {
+        if (nWidth > rClip.Width())
+        {
             nWidth = rClip.Width();
         }
         pDC->PatBlt(rClip.left, rClip.top, nWidth, rClip.Height(), PATCOPY);
         rClip.left += nWidth;
     }
     if ((rClip.left < rClip.right) && (rClip.left < nHighLightPixRight)
-            && (nHighLightPixRight - nHighLightPixLeft)) {
+            && (nHighLightPixRight - nHighLightPixLeft))
+    {
         // draw highlighted area
         int nWidth = nHighLightPixRight - rClip.left;
-        if (nWidth > rClip.Width()) {
+        if (nWidth > rClip.Width())
+        {
             nWidth = rClip.Width();
         }
         COLORREF cHighlight = pMainWnd->GetColors()->cPlotHiBkg;
@@ -1812,7 +2062,8 @@ BOOL CPlotWnd::EraseBkgnd(CDC * pDC) {
         pDC->SelectObject(&backBrush);
         rClip.left += nWidth;
     }
-    if (rClip.left < rClip.right) {
+    if (rClip.left < rClip.right)
+    {
         // draw right of highlighted area
         pDC->PatBlt(rClip.left, rClip.top, rClip.Width(), rClip.Height(), PATCOPY);
     }
@@ -1825,28 +2076,33 @@ BOOL CPlotWnd::EraseBkgnd(CDC * pDC) {
 // This event initiates a popup menu. The graph also has to get focus, so
 // the parent graph is called to do this.
 /***************************************************************************/
-void CPlotWnd::OnRButtonDown(UINT nFlags, CPoint point) {
+void CPlotWnd::OnRButtonDown(UINT nFlags, CPoint point)
+{
     // inform parent graph
     CGraphWnd * pWnd = (CGraphWnd *)GetParent();
     pWnd->SendMessage(WM_RBUTTONDOWN, nFlags, MAKELONG(point.x, point.y)); // send message to parent
     // handle the floating popup menu
     CMenu mPopup;
-    if (mPopup.LoadMenu(((CMainFrame *)AfxGetMainWnd())->GetPopup())) { // SDM 1.5Test8.5
+    if (mPopup.LoadMenu(((CMainFrame *)AfxGetMainWnd())->GetPopup()))   // SDM 1.5Test8.5
+    {
         // Show restricted submenu according to EXPERIMENTAL_ACCESS
         CMenu & pFloatingPopup = EXPERIMENTAL_ACCESS ? *mPopup.GetSubMenu(3) : *mPopup.GetSubMenu(0);
         ASSERT(pFloatingPopup.m_hMenu != NULL);
         // attach the layout menu
         CMenu * mLayout = new CLayoutMenu;
         TCHAR szString[256]; // don't change the string
-        if (pFloatingPopup.GetMenuString(ID_GRAPHS_LAYOUT, szString, sizeof(szString)/sizeof(TCHAR), MF_BYCOMMAND)) { // SDM 1.5Test8.5
-            if (mLayout) {
+        if (pFloatingPopup.GetMenuString(ID_GRAPHS_LAYOUT, szString, sizeof(szString)/sizeof(TCHAR), MF_BYCOMMAND))   // SDM 1.5Test8.5
+        {
+            if (mLayout)
+            {
                 VERIFY(pFloatingPopup.ModifyMenu(ID_GRAPHS_LAYOUT, MF_BYCOMMAND | MF_POPUP, (UINT)mLayout->m_hMenu, szString));
             }
         }
         // pop the menu up
         ClientToScreen(&point);
         pFloatingPopup.TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point.x, point.y,  AfxGetMainWnd());
-        if (mLayout) {
+        if (mLayout)
+        {
             delete mLayout;
         }
     }
@@ -1859,7 +2115,8 @@ void CPlotWnd::OnRButtonDown(UINT nFlags, CPoint point) {
 // position (if possible) in the plot. The graph also has to gain focus, so
 // the parent graph has to be informed.
 /***************************************************************************/
-void CPlotWnd::OnLButtonDown(UINT nFlags, CPoint point) {
+void CPlotWnd::OnLButtonDown(UINT nFlags, CPoint point)
+{
     //  m_MousePointerPosn = point;
     //  m_MouseButtonState = nFlags;
     // inform parent graph
@@ -1870,23 +2127,30 @@ void CPlotWnd::OnLButtonDown(UINT nFlags, CPoint point) {
     GetClientRect(rWnd);
     // get pointer to view
     CSaView * pView = (CSaView *)pWnd->GetParent();
-    if (pView->GetDocument()->GetDataSize() > 0) {
-        if (m_bCursors) {
+    if (pView->GetDocument()->GetDataSize() > 0)
+    {
+        if (m_bCursors)
+        {
             // if shift key not pressed -> start cursor is to move
-            if (!(nFlags & MK_SHIFT)) {
+            if (!(nFlags & MK_SHIFT))
+            {
                 // position and drag the start cursor
                 ClientToScreen(&point);
                 m_pStartCursor->ScreenToClient(&point);
                 m_pStartCursor->SendMessage(WM_LBUTTONDOWN, nFlags, MAKELONG(point.x, point.y));
-            } else { // stop cursor is to move
+            }
+            else     // stop cursor is to move
+            {
                 // position and drag the stop cursor
                 ClientToScreen(&point);
                 m_pStopCursor->ScreenToClient(&point);
                 m_pStopCursor->SendMessage(WM_LBUTTONDOWN, nFlags, MAKELONG(point.x, point.y));
             }
         }
-        if (m_bPrivateCursor) {
-            if (m_bHorizontalCursors) {
+        if (m_bPrivateCursor)
+        {
+            if (m_bHorizontalCursors)
+            {
                 // THIS CODE IS FOR HORIZONTAL CURSORS - TCJ 5/9/00
                 //  see also CPrivateCursorWnd for 2 additional horizontal cursor functions
 
@@ -1910,7 +2174,9 @@ void CPlotWnd::OnLButtonDown(UINT nFlags, CPoint point) {
                 m_pPrivateCursor->UpdateWindow(); // update the cursor
                 // and drag the cursor
                 m_pPrivateCursor->SendMessage(WM_LBUTTONDOWN, nFlags, MAKELONG(0, CURSOR_WINDOW_HALFWIDTH));
-            } else {
+            }
+            else
+            {
                 // THIS CODE IS FOR VERTICAL CURSORS
 
                 // get the actual (old) position of cursor window
@@ -1939,7 +2205,8 @@ void CPlotWnd::OnLButtonDown(UINT nFlags, CPoint point) {
 /***************************************************************************/
 // CPlotWnd::OnMouseMove
 /***************************************************************************/
-void CPlotWnd::OnMouseMove(UINT nFlags, CPoint point) {
+void CPlotWnd::OnMouseMove(UINT nFlags, CPoint point)
+{
     m_MousePointerPosn = point;
     m_MouseButtonState = nFlags;
     //TRACE("x/y %d %d\n",point.x,point.y);
@@ -1960,7 +2227,8 @@ void CPlotWnd::OnMouseMove(UINT nFlags, CPoint point) {
 // OnDraw is virtual and implemented in each subclass.
 // OnDraw is reused by both OnPaint and OnPrint.
 /***************************************************************************/
-void CPlotWnd::OnPaint() {
+void CPlotWnd::OnPaint()
+{
     //TRACE("OnPaint %lp\n",this);
     CPaintDC dc(this);              // device context for painting
     CRect rWnd, rClip;
@@ -1976,26 +2244,30 @@ void CPlotWnd::OnPaint() {
     OnDraw(&dc,rWnd,rClip, pView);  // virtual
 }
 
-CPlotWnd * CPlotWnd::NewCopy(void) {
+CPlotWnd * CPlotWnd::NewCopy(void)
+{
     return NULL;
 }
 
 
 
-CString CPlotWnd::GetPlotName() const {
+CString CPlotWnd::GetPlotName() const
+{
     return m_szPlotName;
 }
 
 
 
-void CPlotWnd::SetPlotName(const CString & plotName) {
+void CPlotWnd::SetPlotName(const CString & plotName)
+{
     m_szPlotName = plotName;
 }
 
 /***************************************************************************/
 // CPlotWnd::StandardAnimateFrame  Animate plot for a single frame
 /***************************************************************************/
-void CPlotWnd::StandardAnimateFrame(DWORD dwFrameIndex) {
+void CPlotWnd::StandardAnimateFrame(DWORD dwFrameIndex)
+{
     m_dwAnimationFrame = dwFrameIndex;
     // Get pointer to raw waveform graph
     CGraphWnd * pGraph = (CGraphWnd *)GetParent();
@@ -2003,7 +2275,8 @@ void CPlotWnd::StandardAnimateFrame(DWORD dwFrameIndex) {
     int nWaveGraphIndex = pView->GetGraphIndexForIDD(IDD_RAWDATA);
     CGraphWnd * pWaveGraph = pView->GetGraph(nWaveGraphIndex);
     // Highlight raw data frame for which process data is calculated
-    if (pWaveGraph) {
+    if (pWaveGraph)
+    {
         // raw waveform graph present
         CSaDoc * pDoc = pView->GetDocument();
         FmtParm * pFmtParm = pDoc->GetFmtParm();
@@ -2025,7 +2298,8 @@ void CPlotWnd::StandardAnimateFrame(DWORD dwFrameIndex) {
 // CPlotWnd::StandardEndAnimation  Terminate animation and turn off frame
 // highlighting in the raw waveform plot.
 /***************************************************************************/
-void CPlotWnd::StandardEndAnimation() {
+void CPlotWnd::StandardEndAnimation()
+{
     CGraphWnd * pGraph = (CGraphWnd *)GetParent();
     CSaView * pView = (CSaView *)pGraph->GetParent();
     DWORD dwStartCursor = pView->GetStartCursorPosition();
@@ -2036,7 +2310,8 @@ void CPlotWnd::StandardEndAnimation() {
     m_dwAnimationFrame = pFragments->GetFragmentIndex(dwStartCursor/wSmpSize);  // reset to start cursor fragment
     int nWaveGraphIndex = pView->GetGraphIndexForIDD(IDD_RAWDATA);
     CGraphWnd * pWaveGraph = pView->GetGraph(nWaveGraphIndex);
-    if (pWaveGraph) {
+    if (pWaveGraph)
+    {
         CPlotWnd * pWavePlot = pWaveGraph->GetPlot();
         pWavePlot->SetHighLightArea(0, 0);
     }
@@ -2047,27 +2322,34 @@ void CPlotWnd::StandardEndAnimation() {
 /***************************************************************************/
 // CPlotWnd::GraphHasFocus  Handles plot when its graph gains or loses focus
 /***************************************************************************/
-void CPlotWnd::GraphHasFocus(BOOL bFocus) {
+void CPlotWnd::GraphHasFocus(BOOL bFocus)
+{
     CMainFrame * pMainWnd = (CMainFrame *)AfxGetMainWnd();
     CSaView * pView = (CSaView *)pMainWnd->GetCurrSaView();
-    if (!pView) {
+    if (!pView)
+    {
         return;
     }
-    if (m_bAnimationPlot) {
+    if (m_bAnimationPlot)
+    {
         int nWaveGraphIndex = pView->GetGraphIndexForIDD(IDD_RAWDATA);
         CGraphWnd * pWaveGraph = pView->GetGraph(nWaveGraphIndex);
-        if (pWaveGraph) {
+        if (pWaveGraph)
+        {
             BOOL bDynamicUpdate = (pView->GetGraphUpdateMode() == DYNAMIC_UPDATE);
-            if (bDynamicUpdate) {
+            if (bDynamicUpdate)
+            {
                 CPlotWnd * pWavePlot = pWaveGraph->GetPlot();
-                if (bFocus) {
+                if (bFocus)
+                {
                     // Highlight raw data frame for which formants are calculated
                     CSaDoc * pDoc   = pView->GetDocument();
                     FmtParm * pFmtParm = pDoc->GetFmtParm(); // get sa parameters format member data
                     WORD wSmpSize = (WORD)(pFmtParm->wBlockAlign / pFmtParm->wChannels);  // calculate sample size in bytes
                     CProcessFragments * pFragments = (CProcessFragments *)pDoc->GetFragments(); // data should be ready -- dynamic mode enabled
                     DWORD dwFrame = m_dwAnimationFrame;
-                    if (dwFrame == UNDEFINED_OFFSET) {
+                    if (dwFrame == UNDEFINED_OFFSET)
+                    {
                         dwFrame = pFragments->GetFragmentIndex(pView->GetStartCursorPosition()/wSmpSize);
                     }
                     FRAG_PARMS FragParms = pFragments->GetFragmentParms(dwFrame);
@@ -2075,7 +2357,9 @@ void CPlotWnd::GraphHasFocus(BOOL bFocus) {
                     DWORD dwFrameSize = (DWORD)FragParms.wLength * (DWORD)wSmpSize;
                     pWavePlot->SetHighLightArea(dwFrameStart, dwFrameStart + dwFrameSize, TRUE, TRUE);
                     pWavePlot->UpdateWindow();
-                } else if (!pView->IsAnimating()) {
+                }
+                else if (!pView->IsAnimating())
+                {
                     // turn off highlighted area in raw data
                     pWavePlot->SetHighLightArea(0, 0);
                     pWavePlot->UpdateWindow();
@@ -2089,8 +2373,10 @@ void CPlotWnd::GraphHasFocus(BOOL bFocus) {
 /***************************************************************************/
 // CPlotWnd::OnSysCommand System menu command
 /***************************************************************************/
-void CPlotWnd::OnSysCommand(UINT nID, LPARAM lParam) {
-    switch (nID) {
+void CPlotWnd::OnSysCommand(UINT nID, LPARAM lParam)
+{
+    switch (nID)
+    {
     case SC_KEYMENU:
         GetParent()->SendMessage(WM_SYSCOMMAND,nID,lParam);
         return;
@@ -2107,22 +2393,26 @@ void CPlotWnd::OnSysCommand(UINT nID, LPARAM lParam) {
 }
 
 
-void CPlotWnd::RemoveRtPlots() {
+void CPlotWnd::RemoveRtPlots()
+{
     // do nothing.
 }
 
-bool CPlotWnd::bIsRtOverlay() {
+bool CPlotWnd::bIsRtOverlay()
+{
     return m_bRtPlot;
 }
 
-void CPlotWnd::SetRtOverlay() {
+void CPlotWnd::SetRtOverlay()
+{
     m_bRtPlot = true;
 }
 
 /***************************************************************************/
 // CPlotWnd::CalcWaveOffsetAtPixel  Calculate wave offset from pixel position
 /***************************************************************************/
-DWORD CPlotWnd::CalcWaveOffsetAtPixel(CPoint pixel) {
+DWORD CPlotWnd::CalcWaveOffsetAtPixel(CPoint pixel)
+{
     // get actual data position, frame and data size and alignment
     double fDataPos;
     DWORD dwDataFrame;
@@ -2133,11 +2423,14 @@ DWORD CPlotWnd::CalcWaveOffsetAtPixel(CPoint pixel) {
     CRect rWnd;
     GetClientRect(rWnd);
     int nWidth = rWnd.Width();
-    if (pGraph->IsAreaGraph()) {
+    if (pGraph->IsAreaGraph())
+    {
         // get necessary data from area plot
         fDataPos = GetAreaPosition();
         dwDataFrame = GetAreaLength();
-    } else {
+    }
+    else
+    {
         // get necessary data from document and from view
         fDataPos = pView->GetDataPosition(nWidth); // data index of first sample to display
         dwDataFrame = pView->AdjustDataFrame(nWidth); // number of data points to display
@@ -2152,23 +2445,28 @@ DWORD CPlotWnd::CalcWaveOffsetAtPixel(CPoint pixel) {
     return dwWaveOffset;
 }
 
-Grid CPlotWnd::GetGrid() const {
+Grid CPlotWnd::GetGrid() const
+{
     return *static_cast<CMainFrame *>(AfxGetMainWnd())->GetGrid();
 }
 
 
 
-CDataSourceSimple::CDataSourceSimple(CProcess & cProcess) : m_cProcess(cProcess) {
+CDataSourceSimple::CDataSourceSimple(CProcess & cProcess) : m_cProcess(cProcess)
+{
     m_nSamples = m_cProcess.GetDataSize();
 }
 
-void CDataSourceSimple::GetValues(int & nFirstSample, int nLastSample, CValues & values, BOOL & bValid) {
+void CDataSourceSimple::GetValues(int & nFirstSample, int nLastSample, CValues & values, BOOL & bValid)
+{
     bValid = TRUE;
 
-    if (nFirstSample < 0) {
+    if (nFirstSample < 0)
+    {
         nFirstSample = 0;
     }
-    if ((nLastSample - nFirstSample)*sizeof(short int) >= m_cProcess.GetProcessBufferSize()) {
+    if ((nLastSample - nFirstSample)*sizeof(short int) >= m_cProcess.GetProcessBufferSize())
+    {
         nLastSample = nFirstSample + m_cProcess.GetProcessBufferSize()/(4*sizeof(short int));
     }
 
@@ -2180,12 +2478,15 @@ void CDataSourceSimple::GetValues(int & nFirstSample, int nLastSample, CValues &
 
     short int * pData = reinterpret_cast<short *>(m_cProcess.GetProcessedDataBlock(nFirstIndexOffset*sizeof(short int), (nLastIndex+1)*sizeof(short int)));
 
-    for (int nSampleIndex = 0; nSampleIndex <= nLastIndex; nSampleIndex++) {
+    for (int nSampleIndex = 0; nSampleIndex <= nLastIndex; nSampleIndex++)
+    {
         int nLast = pData[nSampleIndex];
-        if (nLast > nMax) {
+        if (nLast > nMax)
+        {
             nMax = nLast;
         }
-        if (nLast < nMin) {
+        if (nLast < nMin)
+        {
             nMin = nLast;
         }
     }
@@ -2198,17 +2499,21 @@ void CDataSourceSimple::GetValues(int & nFirstSample, int nLastSample, CValues &
 }
 
 CDataSourceValidate::CDataSourceValidate(CProcess & cProcess, BOOL bUnset, BOOL bMissing) :
-    m_cProcess(cProcess), m_bSkipUnset(bUnset), m_bSkipMissing(bMissing) {
+    m_cProcess(cProcess), m_bSkipUnset(bUnset), m_bSkipMissing(bMissing)
+{
     m_nSamples = m_cProcess.GetDataSize();
 }
 
-void CDataSourceValidate::GetValues(int & nFirstSample, int nLastSample, CValues & values, BOOL & bValid) {
+void CDataSourceValidate::GetValues(int & nFirstSample, int nLastSample, CValues & values, BOOL & bValid)
+{
     bValid = TRUE;
 
-    if (nFirstSample < 0) {
+    if (nFirstSample < 0)
+    {
         nFirstSample = 0;
     }
-    if ((nLastSample - nFirstSample)*sizeof(short int) >= m_cProcess.GetProcessBufferSize()) {
+    if ((nLastSample - nFirstSample)*sizeof(short int) >= m_cProcess.GetProcessBufferSize())
+    {
         nLastSample = nFirstSample + m_cProcess.GetProcessBufferSize()/(4*sizeof(short int));
     }
 
@@ -2220,16 +2525,22 @@ void CDataSourceValidate::GetValues(int & nFirstSample, int nLastSample, CValues
 
     short int * pData = reinterpret_cast<short *>(m_cProcess.GetProcessedDataBlock(nFirstIndexOffset*sizeof(short int), (nLastIndex+1)*sizeof(short int)));
 
-    for (int nSampleIndex = 0; nSampleIndex <= nLastIndex; nSampleIndex++) {
+    for (int nSampleIndex = 0; nSampleIndex <= nLastIndex; nSampleIndex++)
+    {
         int nTemp = pData[nSampleIndex];
-        if ((m_bSkipUnset && nTemp == -1) || (m_bSkipMissing && nTemp == -2)) {
-            if (nSampleIndex) {
+        if ((m_bSkipUnset && nTemp == -1) || (m_bSkipMissing && nTemp == -2))
+        {
+            if (nSampleIndex)
+            {
                 // Everything up to this point is valid
                 nLastSample = nFirstSample + nSampleIndex - 1;
-            } else {
+            }
+            else
+            {
                 bValid = FALSE;
 
-                while ((nSampleIndex <= nLastIndex) && ((m_bSkipUnset && nTemp == -1) || (m_bSkipMissing && nTemp == -2))) {
+                while ((nSampleIndex <= nLastIndex) && ((m_bSkipUnset && nTemp == -1) || (m_bSkipMissing && nTemp == -2)))
+                {
                     nTemp = pData[++nSampleIndex];
                 }
 
@@ -2240,10 +2551,12 @@ void CDataSourceValidate::GetValues(int & nFirstSample, int nLastSample, CValues
             break;
         }
 
-        if (nTemp > nMax) {
+        if (nTemp > nMax)
+        {
             nMax = nTemp;
         }
-        if (nTemp < nMin) {
+        if (nTemp < nMin)
+        {
             nMin = nTemp;
         }
     }
@@ -2258,41 +2571,57 @@ void CDataSourceValidate::GetValues(int & nFirstSample, int nLastSample, CValues
 const double CYScaleSemitones::dSemitoneScale = 12.0 / log10(2.0);
 const double CYScaleSemitones::dSemitoneReference =  + (69. - log10(440.0)* 12.0 / log10(2.0));
 
-void CDrawSegment::DrawTo(int x, CDataSource::CValues & values, const CYScale & cYScale, BOOL bValid) {
-    if (bValid && values.nMax != values.nMin) {
+void CDrawSegment::DrawTo(int x, CDataSource::CValues & values, const CYScale & cYScale, BOOL bValid)
+{
+    if (bValid && values.nMax != values.nMin)
+    {
         DrawTo(x, values.nFirst, cYScale, bValid);
         DrawTo(x, values.nMax, cYScale, bValid);
         DrawTo(x, values.nMin, cYScale, bValid);
         DrawTo(x, values.nLast, cYScale, bValid);
-    } else {
+    }
+    else
+    {
         DrawTo(x, values.nMax, cYScale, bValid);
     }
 }
 
-void CDrawSegment::DrawTo(CDataSource::CValues & values, const CXScale & cXScale, int y, BOOL bValid) {
-    if (bValid && values.nMax != values.nMin) {
+void CDrawSegment::DrawTo(CDataSource::CValues & values, const CXScale & cXScale, int y, BOOL bValid)
+{
+    if (bValid && values.nMax != values.nMin)
+    {
         DrawTo(values.nFirst, cXScale, y, bValid);
         DrawTo(values.nMax, cXScale, y, bValid);
         DrawTo(values.nMin, cXScale, y, bValid);
         DrawTo(values.nLast, cXScale, y, bValid);
-    } else {
+    }
+    else
+    {
         DrawTo(values.nMax, cXScale, y, bValid);
     }
 }
 
-void CDrawSegmentSolid::DrawTo(int x, int value, const CYScale & cYScale, BOOL bValid) {
-    if (x==m_nCurrentX) {
-        if (bValid) {
-            if (value > m_nMaxValue) {
+void CDrawSegmentSolid::DrawTo(int x, int value, const CYScale & cYScale, BOOL bValid)
+{
+    if (x==m_nCurrentX)
+    {
+        if (bValid)
+        {
+            if (value > m_nMaxValue)
+            {
                 m_nMaxValue = value;
             }
-            if (value < m_nMinValue) {
+            if (value < m_nMinValue)
+            {
                 m_nMinValue = value;
             }
         }
-    } else {
+    }
+    else
+    {
         // new x value draw old
-        if (m_nOldX != m_nCurrentX && m_nMinValue <= m_nMaxValue) {
+        if (m_nOldX != m_nCurrentX && m_nMinValue <= m_nMaxValue)
+        {
             CRect cRect;
             cRect.left = (m_nOldX + m_nCurrentX + 1)/2;
             cRect.right = (m_nCurrentX + x + 1)/2;
@@ -2302,19 +2631,24 @@ void CDrawSegmentSolid::DrawTo(int x, int value, const CYScale & cYScale, BOOL b
 
             cRect.NormalizeRect();
 
-            if (cRect.top > m_nReferenceY) {
+            if (cRect.top > m_nReferenceY)
+            {
                 cRect.top = m_nReferenceY;
             }
 
-            if (cRect.bottom < m_nReferenceY) {
+            if (cRect.bottom < m_nReferenceY)
+            {
                 cRect.bottom = m_nReferenceY;
             }
 
             m_cDC.FillSolidRect(cRect, m_clr);
         }
-        if (bValid) {
+        if (bValid)
+        {
             m_nMinValue = m_nMaxValue = value;
-        } else {
+        }
+        else
+        {
             m_nMinValue = INT_MAX;
             m_nMaxValue = INT_MIN;
         }
@@ -2323,53 +2657,71 @@ void CDrawSegmentSolid::DrawTo(int x, int value, const CYScale & cYScale, BOOL b
     }
 }
 
-void CDrawSegmentLine::DrawTo(int x, int value, const CYScale & cYScale, BOOL bValid) {
-    if (bValid) {
+void CDrawSegmentLine::DrawTo(int x, int value, const CYScale & cYScale, BOOL bValid)
+{
+    if (bValid)
+    {
         CPoint point(x,cYScale.GetY(value));
         m_pPoints[m_nSize++] = point;
 
-        if (m_nSize >= 100) {
+        if (m_nSize >= 100)
+        {
             Flush();
             m_pPoints[m_nSize++] = point;
         }
-    } else {
+    }
+    else
+    {
         Flush();
     }
 }
 
-void CDrawSegmentLine::DrawTo(int x, const CXScale & cXScale, int y, BOOL bValid) {
-    if (bValid) {
+void CDrawSegmentLine::DrawTo(int x, const CXScale & cXScale, int y, BOOL bValid)
+{
+    if (bValid)
+    {
         CPoint point(cXScale.GetX(x),y);
         m_pPoints[m_nSize++] = point;
 
-        if (m_nSize >= 100) {
+        if (m_nSize >= 100)
+        {
             Flush();
             m_pPoints[m_nSize++] = point;
         }
-    } else {
+    }
+    else
+    {
         Flush();
     }
 }
 
-void CDrawSegmentLine::Flush() {
-    if (m_nSize >= 2) {
+void CDrawSegmentLine::Flush()
+{
+    if (m_nSize >= 2)
+    {
         Polyline(m_cDC.m_hDC, m_pPoints, m_nSize);
     }
 
     m_nSize = 0;
 }
 
-void CDrawSegmentSample::DrawTo(int x, CDataSource::CValues & values, const CYScale & cYScale, BOOL bValid) {
-    if (bValid && values.nMax != values.nMin) {
+void CDrawSegmentSample::DrawTo(int x, CDataSource::CValues & values, const CYScale & cYScale, BOOL bValid)
+{
+    if (bValid && values.nMax != values.nMin)
+    {
         DrawTo(x, values.nMax, cYScale, bValid);
         DrawTo(x, values.nMin, cYScale, bValid);
-    } else {
+    }
+    else
+    {
         DrawTo(x, values.nMax, cYScale, bValid);
     }
 }
 
-void CDrawSegmentSample::DrawTo(int x, int value, const CYScale & cYScale, BOOL bValid) {
-    if (bValid) {
+void CDrawSegmentSample::DrawTo(int x, int value, const CYScale & cYScale, BOOL bValid)
+{
+    if (bValid)
+    {
         int y = cYScale.GetY(value);
         CYScaleLinear cIdentity(1,0);
         CDrawSegmentLine::DrawTo(x-1,y, cIdentity , bValid);
@@ -2381,17 +2733,23 @@ void CDrawSegmentSample::DrawTo(int x, int value, const CYScale & cYScale, BOOL 
     }
 }
 
-void CDrawSegmentDotOnly::DrawTo(int x, CDataSource::CValues & values, const CYScale & cYScale, BOOL bValid) {
-    if (bValid && values.nMax != values.nMin) {
+void CDrawSegmentDotOnly::DrawTo(int x, CDataSource::CValues & values, const CYScale & cYScale, BOOL bValid)
+{
+    if (bValid && values.nMax != values.nMin)
+    {
         DrawTo(x, values.nMax, cYScale, bValid);
         DrawTo(x, values.nMin, cYScale, bValid);
-    } else {
+    }
+    else
+    {
         DrawTo(x, values.nMax, cYScale, bValid);
     }
 }
 
-void CDrawSegmentDotOnly::DrawTo(int x, int value, const CYScale & cYScale, BOOL bValid) {
-    if (bValid) {
+void CDrawSegmentDotOnly::DrawTo(int x, int value, const CYScale & cYScale, BOOL bValid)
+{
+    if (bValid)
+    {
         int y = cYScale.GetY(value);
         CYScaleLinear cIdentity(1,0);
         CDrawSegmentLine::DrawTo(x,y, cIdentity , bValid);

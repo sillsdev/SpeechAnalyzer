@@ -71,7 +71,8 @@ static const char * psz_Phonetic = "ph";
 static const char * psz_Orthographic = "or";
 
 CDlgImportSFM::CDlgImportSFM(BOOL bPhonetic, BOOL bPhonemic, BOOL bOrtho, CWnd * pParent /*=NULL*/)
-    : CDialog(CDlgImportSFM::IDD, pParent) {
+    : CDialog(CDlgImportSFM::IDD, pParent)
+{
     //{{AFX_DATA_INIT(CDlgImportSFM)
     m_bGloss = FALSE;
     m_bPhonemic = bPhonemic;
@@ -84,7 +85,8 @@ CDlgImportSFM::CDlgImportSFM(BOOL bPhonetic, BOOL bPhonemic, BOOL bOrtho, CWnd *
     //}}AFX_DATA_INIT
 }
 
-void CDlgImportSFM::DoDataExchange(CDataExchange * pDX) {
+void CDlgImportSFM::DoDataExchange(CDataExchange * pDX)
+{
     CDialog::DoDataExchange(pDX);
     //{{AFX_DATA_MAP(CDlgImportSFM)
     DDX_Check(pDX, IDC_GLOSS_ENABLED, m_bGloss);
@@ -108,9 +110,11 @@ END_MESSAGE_MAP()
 /***************************************************************************/
 // CDlgAnnotation::SetEnable Enables/Disables controls
 /***************************************************************************/
-void CDlgImportSFM::SetEnable(int nItem, BOOL bEnable) {
+void CDlgImportSFM::SetEnable(int nItem, BOOL bEnable)
+{
     CWnd * pWnd = GetDlgItem(nItem);
-    if (pWnd) {
+    if (pWnd)
+    {
         pWnd->EnableWindow(bEnable);
     }
 }
@@ -121,7 +125,8 @@ void CDlgImportSFM::SetEnable(int nItem, BOOL bEnable) {
 /***************************************************************************/
 // CDlgAnnotation::OnImportPlainText Plain Text Button hit
 /***************************************************************************/
-void CDlgImportSFM::OnImportPlainText() {
+void CDlgImportSFM::OnImportPlainText()
+{
     EndDialog(IDC_IMPORT_PLAIN_TEXT);
 }
 
@@ -129,7 +134,8 @@ void CDlgImportSFM::OnImportPlainText() {
 /***************************************************************************/
 // CDlgAnnotation::OnInitDialog
 /***************************************************************************/
-BOOL CDlgImportSFM::OnInitDialog() {
+BOOL CDlgImportSFM::OnInitDialog()
+{
     CDialog::OnInitDialog();
 
     SetEnable(IDC_GLOSS, m_bGloss);

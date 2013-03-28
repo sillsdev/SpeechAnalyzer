@@ -21,7 +21,8 @@
 // CPlotWavelet Class
 //**************************************************************************
 
-class CProcessWavelet : public CProcess {
+class CProcessWavelet : public CProcess
+{
 private:
     BOOL data_status;                           // Is the data ready for display?
 
@@ -49,7 +50,8 @@ public:
 // CWaveletNode Class
 //**************************************************************************
 
-class CWaveletNode {
+class CWaveletNode
+{
 
 private:
     // Typical tree links
@@ -137,32 +139,39 @@ public:
 
     // Accessor methods
     BOOL                    SetDataNode(long * data, DWORD dwDataSize, double _lower_freq, double _upper_freq);
-    BOOL                    SetLeftNode(CWaveletNode * node) {
+    BOOL                    SetLeftNode(CWaveletNode * node)
+    {
         right_node = node;
         return TRUE;
     }
-    BOOL                    SetRightNode(CWaveletNode * node) {
+    BOOL                    SetRightNode(CWaveletNode * node)
+    {
         left_node = node;
         return TRUE;
     }
-    BOOL                    SetParentNode(CWaveletNode * node) {
+    BOOL                    SetParentNode(CWaveletNode * node)
+    {
         parent_node = node;
         return TRUE;
     }
 
-    BOOL                    SetUpperFrequencyBound(double freq) {
+    BOOL                    SetUpperFrequencyBound(double freq)
+    {
         upper_freq = freq;
         return TRUE;
     }
-    BOOL                    SetLowerFrequencyBound(double freq) {
+    BOOL                    SetLowerFrequencyBound(double freq)
+    {
         lower_freq = freq;
         return TRUE;
     }
 
-    double              GetUpperFrequencyBound() {
+    double              GetUpperFrequencyBound()
+    {
         return upper_freq;
     }
-    double              GetLowerFrequencyBound() {
+    double              GetLowerFrequencyBound()
+    {
         return lower_freq;
     }
 
@@ -178,19 +187,26 @@ public:
 
     CWaveletNode * GetNode(long which_leaf);                                        // wraps _GetNode
 
-    long         *        GetDataPtr()      {
+    long         *        GetDataPtr()
+    {
         return data;
     }
-    CWaveletNode * GetLeftNode()     {
+    CWaveletNode * GetLeftNode()
+    {
         return left_node;
     }
-    CWaveletNode * GetRightNode()    {
+    CWaveletNode * GetRightNode()
+    {
         return right_node;
     }
-    BOOL                 IsLeaf() {
-        if ((left_node == NULL) && (right_node == NULL)) {
+    BOOL                 IsLeaf()
+    {
+        if ((left_node == NULL) && (right_node == NULL))
+        {
             return TRUE;
-        } else {
+        }
+        else
+        {
             return FALSE;
         }
     }

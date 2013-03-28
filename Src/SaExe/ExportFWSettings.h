@@ -3,7 +3,8 @@
 
 #include "CSaString.h"
 
-class CExportFWSettings {
+class CExportFWSettings
+{
 
 public:
     BOOL bGloss;

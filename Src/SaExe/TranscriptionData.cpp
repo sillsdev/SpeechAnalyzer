@@ -1,14 +1,16 @@
 #include "Stdafx.h"
 #include "TranscriptionData.h"
 
-CTranscriptionData::CTranscriptionData() {
+CTranscriptionData::CTranscriptionData()
+{
     m_bPhonetic = false;
     m_bPhonemic = false;
     m_bOrthographic = false;
     m_bGloss = false;
 }
 
-void CTranscriptionData::ResetContent() {
+void CTranscriptionData::ResetContent()
+{
     m_szPrimary = L"";
     m_MarkerDefs.clear();
     m_Markers.clear();

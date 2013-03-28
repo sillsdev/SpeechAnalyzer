@@ -3,21 +3,25 @@
 #include "epksrc.h"
 
 EnergyPeakSource::EnergyPeakSource(PeakSource & ps)
-    : myPS(ps), myQ(0) {
+    : myPS(ps), myQ(0)
+{
 }
 
-EnergyPeakSource::~EnergyPeakSource() {
+EnergyPeakSource::~EnergyPeakSource()
+{
     delete myQ;
     myQ = 0;
 }
 
 void
-EnergyPeakSource::Search(const float * start, const float * end) {
+EnergyPeakSource::Search(const float * start, const float * end)
+{
     delete myQ;
     myQ = new pq_pair_float_float;
     pair_float_float point;
 
-    for (myPS.Search(start, end); !myPS.IsDone(); myPS.Next()) {
+    for (myPS.Search(start, end); !myPS.IsDone(); myPS.Next())
+    {
         // Note that the points from the source
         // are (location, energy) but the points in the power queue
         // must be (energy, location),
@@ -29,13 +33,15 @@ EnergyPeakSource::Search(const float * start, const float * end) {
 }
 
 void
-EnergyPeakSource::Next() {
+EnergyPeakSource::Next()
+{
     assert(!IsDone());
     myQ->pop();
 }
 
 void
-EnergyPeakSource::Get(float & location, float & value) const {
+EnergyPeakSource::Get(float & location, float & value) const
+{
     assert(!IsDone());
     // Remember, .first is y and .second is x.
     location = myQ->top().second;
@@ -43,6 +49,7 @@ EnergyPeakSource::Get(float & location, float & value) const {
 }
 
 int32
-EnergyPeakSource::IsDone() const {
+EnergyPeakSource::IsDone() const
+{
     return myQ->empty();
 }

@@ -47,7 +47,8 @@ END_MESSAGE_MAP()
 /***************************************************************************/
 // CDlgInformationFilePage::CDlgInformationFilePage Constructor
 /***************************************************************************/
-CDlgInformationFilePage::CDlgInformationFilePage() : CPropertyPage(CDlgInformationFilePage::IDD) {
+CDlgInformationFilePage::CDlgInformationFilePage() : CPropertyPage(CDlgInformationFilePage::IDD)
+{
     //{{AFX_DATA_INIT(CDlgInformationFilePage)
     // NOTE: the ClassWizard will add member initialization here
     //}}AFX_DATA_INIT
@@ -59,7 +60,8 @@ CDlgInformationFilePage::CDlgInformationFilePage() : CPropertyPage(CDlgInformati
 /***************************************************************************/
 // CDlgInformationFilePage::DoDataExchange Data exchange
 /***************************************************************************/
-void CDlgInformationFilePage::DoDataExchange(CDataExchange * pDX) {
+void CDlgInformationFilePage::DoDataExchange(CDataExchange * pDX)
+{
     CPropertyPage::DoDataExchange(pDX);
     //{{AFX_DATA_MAP(CDlgInformationFilePage)
     // NOTE: the ClassWizard will add DDX and DDV calls here
@@ -73,7 +75,8 @@ void CDlgInformationFilePage::DoDataExchange(CDataExchange * pDX) {
 // CDlgInformationFilePage::OnInitDialog Dialog initialization
 // All the necessary informations are put into the dialog controls.
 /***************************************************************************/
-BOOL CDlgInformationFilePage::OnInitDialog() {
+BOOL CDlgInformationFilePage::OnInitDialog()
+{
     CPropertyPage::OnInitDialog();
     // get pointer to document
     CMainFrame * pMDIFrameWnd = (CMainFrame *)AfxGetMainWnd();
@@ -81,7 +84,8 @@ BOOL CDlgInformationFilePage::OnInitDialog() {
     CSaDoc * pDoc = (CSaDoc *)pView->GetDocument();
     // get file status document member data
     CFileStatus * pFileStatus = pDoc->GetFileStatus();
-    if (pFileStatus->m_szFullName[0] != 0) { // file name is defined
+    if (pFileStatus->m_szFullName[0] != 0)   // file name is defined
+    {
         // copy full path name
         CString szFilePath = pFileStatus->m_szFullName;
         // get dc and textmetrics of static text control
@@ -97,17 +101,20 @@ BOOL CDlgInformationFilePage::OnInitDialog() {
         pWnd->GetClientRect(rWnd);
         // calculate number of characters possible to display and limit the string
         int nChars = (rWnd.right / tm.tmAveCharWidth * 8 / 10); // experience values
-        if (szFilePath.GetLength() > nChars) { // file path is too long
+        if (szFilePath.GetLength() > nChars)   // file path is too long
+        {
             CSaString szRightPath = szFilePath.Right(nChars - 6);
             szRightPath = szRightPath.Right(szRightPath.GetLength() - szRightPath.Find(_T("\\")));
             szFilePath = szFilePath.Left(3) + "..." + szRightPath; // drive...rest
         }
         // draw the file path
         SetDlgItemText(IDC_FILENAME, szFilePath); // write file name
-        if (pFileStatus->m_ctime != 0) { // if time defined write creation time
+        if (pFileStatus->m_ctime != 0)   // if time defined write creation time
+        {
             SetDlgItemText(IDC_FILEDATE, pFileStatus->m_ctime.Format("%A, %B %d, %Y, %X"));
         }
-        if (pFileStatus->m_mtime != 0) { // if time defined write last edit time
+        if (pFileStatus->m_mtime != 0)   // if time defined write last edit time
+        {
             SetDlgItemText(IDC_EDITDATE, pFileStatus->m_mtime.Format("%A, %B %d, %Y, %X"));
         }
         TCHAR szBuffer[32]; // create and write size text
@@ -115,7 +122,8 @@ BOOL CDlgInformationFilePage::OnInitDialog() {
         SetDlgItemText(IDC_FILESIZE, szBuffer);
         // get sa parameters document member data
         SaParm * pSaParm = pDoc->GetSaParm();
-        if (pSaParm->byRecordFileFormat <= FILE_FORMAT_TIMIT) {
+        if (pSaParm->byRecordFileFormat <= FILE_FORMAT_TIMIT)
+        {
             CString szTemp; // load and write file type string
             szTemp.LoadString((UINT)pSaParm->byRecordFileFormat + IDS_FILETYPE_UTT);
             SetDlgItemText(IDC_FILEFORMAT, szTemp);
@@ -143,7 +151,8 @@ END_MESSAGE_MAP()
 /***************************************************************************/
 // CDlgInformationWavePage::CDlgInformationWavePage Constructor
 /***************************************************************************/
-CDlgInformationWavePage::CDlgInformationWavePage() : CPropertyPage(CDlgInformationWavePage::IDD) {
+CDlgInformationWavePage::CDlgInformationWavePage() : CPropertyPage(CDlgInformationWavePage::IDD)
+{
     //{{AFX_DATA_INIT(CDlgInformationWavePage)
     // NOTE: the ClassWizard will add member initialization here
     //}}AFX_DATA_INIT
@@ -155,7 +164,8 @@ CDlgInformationWavePage::CDlgInformationWavePage() : CPropertyPage(CDlgInformati
 /***************************************************************************/
 // CDlgInformationWavePage::DoDataExchange Data exchange
 /***************************************************************************/
-void CDlgInformationWavePage::DoDataExchange(CDataExchange * pDX) {
+void CDlgInformationWavePage::DoDataExchange(CDataExchange * pDX)
+{
     CPropertyPage::DoDataExchange(pDX);
     //{{AFX_DATA_MAP(CDlgInformationWavePage)
     // NOTE: the ClassWizard will add DDX and DDV calls here
@@ -169,7 +179,8 @@ void CDlgInformationWavePage::DoDataExchange(CDataExchange * pDX) {
 // CDlgInformationWavePage::OnInitDialog Dialog initialization
 // All the necessary informations are put into the dialog controls.
 /***************************************************************************/
-BOOL CDlgInformationWavePage::OnInitDialog() {
+BOOL CDlgInformationWavePage::OnInitDialog()
+{
     CPropertyPage::OnInitDialog();
     // get pointer to document
     CMainFrame * pMDIFrameWnd = (CMainFrame *)AfxGetMainWnd();
@@ -178,8 +189,10 @@ BOOL CDlgInformationWavePage::OnInitDialog() {
     // get sa parameters document member data
     SaParm * pSaParm = pDoc->GetSaParm();
     TCHAR szBuffer[32];
-    if (pSaParm->dwNumberOfSamples > 0L) { // there is an sa chunk
-        if (pSaParm->dwSignalBandWidth) {
+    if (pSaParm->dwNumberOfSamples > 0L)   // there is an sa chunk
+    {
+        if (pSaParm->dwSignalBandWidth)
+        {
             // create and write bandwith text
             swprintf_s(szBuffer, _T("%ld Hz"), pSaParm->dwSignalBandWidth);
             SetDlgItemText(IDC_BANDWIDTH, szBuffer);
@@ -187,7 +200,8 @@ BOOL CDlgInformationWavePage::OnInitDialog() {
             swprintf_s(szBuffer, _T("%s"), pSaParm->wFlags & SA_FLAG_HIGHPASS ? _T("Yes"):_T("No"));
             SetDlgItemText(IDC_HPFSTATUS, szBuffer);
         }
-        if (pSaParm->byQuantization) {
+        if (pSaParm->byQuantization)
+        {
             // create and write quantization size text
             swprintf_s(szBuffer, _T("%u Bits"), pSaParm->byQuantization);
             SetDlgItemText(IDC_SAMPLESIZE, szBuffer);
@@ -196,9 +210,12 @@ BOOL CDlgInformationWavePage::OnInitDialog() {
     // create and write length text
     double fDataSec = pDoc->GetTimeFromBytes(pDoc->GetUnprocessedDataSize()); // get sampled data size in seconds
     int nMinutes = (int)fDataSec / 60;
-    if (nMinutes == 0) { // length is less than one minute
+    if (nMinutes == 0)   // length is less than one minute
+    {
         swprintf_s(szBuffer, _T("%5.3f Seconds"), fDataSec);
-    } else { // length is equal ore more than one minute
+    }
+    else     // length is equal ore more than one minute
+    {
         fDataSec = fDataSec - (float)(nMinutes * 60);
         swprintf_s(szBuffer, _T("%i:%5.3f (Min:Sec)"), nMinutes, fDataSec);
     }
@@ -219,12 +236,15 @@ BOOL CDlgInformationWavePage::OnInitDialog() {
     // create and write number of phones text
     int nNumber = 0;
     int nLoop = 0;
-    if (pDoc->GetSegment(PHONETIC)->GetString()->GetLength() > 0) {
+    if (pDoc->GetSegment(PHONETIC)->GetString()->GetLength() > 0)
+    {
         // find number of phones
-        while (TRUE) {
+        while (TRUE)
+        {
             nLoop++;
             nNumber = pDoc->GetSegment(PHONETIC)->GetNext(nNumber);
-            if (nNumber < 0) {
+            if (nNumber < 0)
+            {
                 break;
             }
         }
@@ -257,7 +277,8 @@ END_MESSAGE_MAP()
 /***************************************************************************/
 // CDlgInformationSourcePage::CDlgInformationSourcePage Constructor
 /***************************************************************************/
-CDlgInformationSourcePage::CDlgInformationSourcePage() : CPropertyPage(CDlgInformationSourcePage::IDD) {
+CDlgInformationSourcePage::CDlgInformationSourcePage() : CPropertyPage(CDlgInformationSourcePage::IDD)
+{
     //{{AFX_DATA_INIT(CDlgInformationSourcePage)
     m_szTranscriber = "";
     //}}AFX_DATA_INIT
@@ -286,7 +307,8 @@ CDlgInformationSourcePage::CDlgInformationSourcePage() : CPropertyPage(CDlgInfor
 /***************************************************************************/
 // CDlgInformationSourcePage::DoDataExchange Data exchange
 /***************************************************************************/
-void CDlgInformationSourcePage::DoDataExchange(CDataExchange * pDX) {
+void CDlgInformationSourcePage::DoDataExchange(CDataExchange * pDX)
+{
     CPropertyPage::DoDataExchange(pDX);
     //{{AFX_DATA_MAP(CDlgInformationSourcePage)
     DDX_Text(pDX, IDC_COUNTRY, (CString &)m_szCountry);
@@ -315,12 +337,14 @@ void CDlgInformationSourcePage::DoDataExchange(CDataExchange * pDX) {
 /***************************************************************************/
 // CDlgInformationSourcePage::OnInitDialog Dialog initialization
 /***************************************************************************/
-BOOL CDlgInformationSourcePage::OnInitDialog() {
+BOOL CDlgInformationSourcePage::OnInitDialog()
+{
     CPropertyPage::OnInitDialog();
     UpdateData(FALSE);
     // SDM 1.5Test10.4
     CEdit * pWnd = (CEdit *) GetDlgItem(IDC_LANGUAGE);
-    if (pWnd!=NULL) {
+    if (pWnd!=NULL)
+    {
         pWnd->SetFocus();
         pWnd->SetSel(0,0);
     }
@@ -330,22 +354,27 @@ BOOL CDlgInformationSourcePage::OnInitDialog() {
 /***************************************************************************/
 // CDlgInformationSourcePage::OnOK  File info update
 /***************************************************************************/
-void CDlgInformationSourcePage::OnOK() {
+void CDlgInformationSourcePage::OnOK()
+{
     CDialog::OnOK();
 }
 
-void CDlgInformationSourcePage::OnChangeEthnoid() {
+void CDlgInformationSourcePage::OnChangeEthnoid()
+{
     UpdateData(TRUE);
     int nLeft;
     int nRight;
     ((CEdit *)GetDlgItem(IDC_ETHNOID))->GetSel(nLeft,nRight);
-    if (m_szEthnoID.GetLength()>3) {
+    if (m_szEthnoID.GetLength()>3)
+    {
         m_szEthnoID = m_szEthnoID.Left(3);
         UpdateData(FALSE);
-        if (nLeft > 3) {
+        if (nLeft > 3)
+        {
             nLeft = 3;
         }
-        if (nRight > 3) {
+        if (nRight > 3)
+        {
             nRight = 3;
         }
         ((CEdit *)GetDlgItem(IDC_ETHNOID))->SetSel(nLeft,nRight);
@@ -370,7 +399,8 @@ END_MESSAGE_MAP()
 /***************************************************************************/
 // CDlgInformationUserPage::CDlgInformationUserPage Constructor
 /***************************************************************************/
-CDlgInformationUserPage::CDlgInformationUserPage() : CPropertyPage(CDlgInformationUserPage::IDD) {
+CDlgInformationUserPage::CDlgInformationUserPage() : CPropertyPage(CDlgInformationUserPage::IDD)
+{
     //{{AFX_DATA_INIT(CDlgInformationUserPage)
     m_szFreeTranslation = "";
     //}}AFX_DATA_INIT
@@ -382,7 +412,8 @@ CDlgInformationUserPage::CDlgInformationUserPage() : CPropertyPage(CDlgInformati
 /***************************************************************************/
 // CDlgInformationUserPage::DoDataExchange Data exchange
 /***************************************************************************/
-void CDlgInformationUserPage::DoDataExchange(CDataExchange * pDX) {
+void CDlgInformationUserPage::DoDataExchange(CDataExchange * pDX)
+{
     CPropertyPage::DoDataExchange(pDX);
     //{{AFX_DATA_MAP(CDlgInformationUserPage)
     DDX_Text(pDX, IDC_FILEDESC, m_szFileDesc);
@@ -400,13 +431,15 @@ void CDlgInformationUserPage::DoDataExchange(CDataExchange * pDX) {
 // This window is created and placed over the corresponding place holder in
 // the dialog.
 /***************************************************************************/
-BOOL CDlgInformationUserPage::OnInitDialog() {
+BOOL CDlgInformationUserPage::OnInitDialog()
+{
     CPropertyPage::OnInitDialog();
     // build and place the transcription display window
     m_TranscriptionDisp.Init(IDC_PHONETIC, this);
     // SDM 1.5Test10.4
     CEdit * pWnd = (CEdit *) GetDlgItem(IDC_FREE_TRANSLATION);
-    if (pWnd!=NULL) {
+    if (pWnd!=NULL)
+    {
         pWnd->SetFocus();
         pWnd->SetSel(0,0);
     }
@@ -437,12 +470,14 @@ END_MESSAGE_MAP()
 // CDlgFileInformation::CDlgFileInformation Constructor
 /***************************************************************************/
 CDlgFileInformation::CDlgFileInformation(LPCTSTR pszCaption, CWnd * pParent, UINT iSelectPage, BOOL bRecorder)
-    : CPropertySheet(pszCaption, pParent, iSelectPage) {
+    : CPropertySheet(pszCaption, pParent, iSelectPage)
+{
     //{{AFX_DATA_INIT(CDlgFileInformation)
     // NOTE: the ClassWizard will add member initialization here
     //}}AFX_DATA_INIT
     // add the property sheet pages
-    if (!bRecorder) {
+    if (!bRecorder)
+    {
         AddPage(&m_dlgFilePage);
         AddPage(&m_dlgWavePage);
     }
@@ -456,7 +491,8 @@ CDlgFileInformation::CDlgFileInformation(LPCTSTR pszCaption, CWnd * pParent, UIN
 /***************************************************************************/
 // CDlgFileInformation::DoDataExchange Data exchange
 /***************************************************************************/
-void CDlgFileInformation::DoDataExchange(CDataExchange * pDX) {
+void CDlgFileInformation::DoDataExchange(CDataExchange * pDX)
+{
     CPropertySheet::DoDataExchange(pDX);
     //{{AFX_DATA_MAP(CDlgFileInformation)
     // NOTE: the ClassWizard will add DDX and DDV calls here
@@ -468,7 +504,8 @@ void CDlgFileInformation::DoDataExchange(CDataExchange * pDX) {
 // This property sheet never uses an Apply button.
 // The Apply button is deleted and a Help button inserted in its place.
 /***************************************************************************/
-void CDlgFileInformation::ChangeButtons() {
+void CDlgFileInformation::ChangeButtons()
+{
     CWnd * pWndApply = GetDlgItem(ID_APPLY_NOW); // get pointers to the button objects
     CWnd * pWndOK = GetDlgItem(IDOK);
     CRect rButton;
@@ -485,8 +522,10 @@ void CDlgFileInformation::ChangeButtons() {
 /***************************************************************************/
 // CDlgFileInformation::OnCreate Dialog creation
 /***************************************************************************/
-int CDlgFileInformation::OnCreate(LPCREATESTRUCT lpCreateStruct) {
-    if (CPropertySheet::OnCreate(lpCreateStruct) == -1) {
+int CDlgFileInformation::OnCreate(LPCREATESTRUCT lpCreateStruct)
+{
+    if (CPropertySheet::OnCreate(lpCreateStruct) == -1)
+    {
         return -1;
     }
 
@@ -496,7 +535,8 @@ int CDlgFileInformation::OnCreate(LPCREATESTRUCT lpCreateStruct) {
 /***************************************************************************/
 // CDlgFileInformation::OnInitDialog Dialog initialization
 /***************************************************************************/
-BOOL CDlgFileInformation::OnInitDialog() {
+BOOL CDlgFileInformation::OnInitDialog()
+{
     CPropertySheet::OnInitDialog();
     // delete apply button and move cancel and ok buttons
     ChangeButtons();
@@ -507,12 +547,14 @@ BOOL CDlgFileInformation::OnInitDialog() {
 /***************************************************************************/
 // CDlgFileInformation::OnHelpInformation Call Information help
 /***************************************************************************/
-void CDlgFileInformation::OnHelpInformation() {
+void CDlgFileInformation::OnHelpInformation()
+{
     // create the pathname
     long nActiveIndex = GetActiveIndex();
     CString szPath = AfxGetApp()->m_pszHelpFilePath;
     szPath = szPath + "::/User_Interface/Menus/File/Information/";
-    switch (nActiveIndex) {
+    switch (nActiveIndex)
+    {
     case 0:
         szPath += "Information_overview.htm";
         break;

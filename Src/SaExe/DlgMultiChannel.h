@@ -16,7 +16,8 @@
 
 class CSaDoc;
 
-class CDlgMultiChannel : public CDialog {
+class CDlgMultiChannel : public CDialog
+{
 
     DECLARE_DYNAMIC(CDlgMultiChannel)
 public:

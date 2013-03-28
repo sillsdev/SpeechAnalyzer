@@ -38,13 +38,15 @@
 #include <complex>
 #include <afxdlgs.h>
 
-inline static int round(double value) {
+inline static int round(double value)
+{
     return (int)floor(value + 0.5);
 }
 
 #pragma warning(pop)
 
-static inline DWORD GetBufferSize() {
+static inline DWORD GetBufferSize()
+{
     return 0x10000;
 }
 
