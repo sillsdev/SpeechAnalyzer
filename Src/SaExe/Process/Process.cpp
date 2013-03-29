@@ -91,11 +91,8 @@ CProgressStatusBar * CProcess::pGetStatusBar()
 // ID is -1, a default text is displayed. A buffer of dwBufferSize bytes is
 // allocated.
 /***************************************************************************/
-bool CProcess::StartProcess(void * pCaller, int nProcessID,
-                            DWORD dwBufferSize)
+bool CProcess::StartProcess(void * pCaller, int nProcessID, DWORD dwBufferSize)
 {
-    TRACE(_T("CProcess::StartProcess ID:%d\n"), nProcessID);
-
     // get pointer to status bar
     CProgressStatusBar * pStatusBar = pGetStatusBar();
     CMainFrame * pMain = (CMainFrame *)AfxGetMainWnd();
@@ -166,7 +163,6 @@ void CProcess::ErrorMessage(UINT nTextID, LPCTSTR pszText1, LPCTSTR pszText2)
 /***************************************************************************/
 void CProcess::EndProcess(BOOL bProcessBar)
 {
-    TRACE(_T("CProcess::EndProcess\n"));
     if (bProcessBar)
     {
         CMainFrame * pMainFrame = (CMainFrame *)AfxGetMainWnd();

@@ -4,13 +4,9 @@
 #include "resource.h"
 #include "AppDefs.h"
 #include <iostream>
-#include <fstream>
-#include <string>
 
 using std::vector;
-using std::string;
 using std::ifstream;
-using std::wstring;
 using std::streampos;
 
 bool ReadFileIntoBuffer( LPCTSTR filename, char ** buffer, streampos & length)

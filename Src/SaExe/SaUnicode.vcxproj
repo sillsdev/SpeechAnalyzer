@@ -137,6 +137,7 @@
   <ItemGroup>
     <ClCompile Include="AlignInfo.cpp" />
     <ClCompile Include="ArchiveTransfer.cpp" />
+    <ClCompile Include="AutoSave.cpp" />
     <ClCompile Include="ChildFrame.cpp" />
     <ClCompile Include="ClipboardHelper.cpp" />
     <ClCompile Include="DependentSegment.cpp" />
@@ -271,7 +272,7 @@
     <ClCompile Include="graphsTypes.cpp" />
     <ClCompile Include="playerRecorder.cpp" />
     <ClCompile Include="PrintOpt.cpp" />
-    <ClCompile Include="Result.cpp" />
+    <ClCompile Include="DlgResult.cpp" />
     <ClCompile Include="SA_DlWnd.cpp" />
     <ClCompile Include="SA_Edit.cpp" />
     <ClCompile Include="SA_Find.cpp" />
@@ -396,6 +397,7 @@
     <ClInclude Include="AppDefs.h" />
     <ClInclude Include="ArchiveTransfer.h" />
     <ClInclude Include="autoRecorder.h" />
+    <ClInclude Include="AutoSave.h" />
     <ClInclude Include="ChildFrame.h" />
     <ClInclude Include="ch_dlg.h" />
     <ClInclude Include="ch_dlwnd.h" />
@@ -538,7 +540,7 @@
     <ClInclude Include="PickOver.h" />
     <ClInclude Include="playerRecorder.h" />
     <ClInclude Include="PrintOpt.h" />
-    <ClInclude Include="RESULT.H" />
+    <ClInclude Include="DlgResult.h" />
     <ClInclude Include="SA_Edit.h" />
     <ClInclude Include="Sa_start.h" />
     <ClInclude Include="SA_W_DLG.H" />

@@ -4,6 +4,7 @@
 #include "stdafx.h"
 #include "sa.h"
 #include "DlgSplitFile.h"
+#include "resource.h"
 
 using std::wstring;
 
@@ -92,7 +93,9 @@ void CDlgSplitFile::OnBnClickedBrowseFolder()
     BROWSEINFO bi = { 0 };
     bi.hwndOwner = this->m_hWnd;
     bi.pszDisplayName = szDisplay;
-    bi.lpszTitle = TEXT("Please choose a folder.");
+	CString msg;
+	msg.LoadStringW(IDS_CHOOSE_FOLDER);
+	bi.lpszTitle = msg.GetBuffer(msg.GetLength());
     bi.ulFlags = BIF_RETURNONLYFSDIRS | BIF_NEWDIALOGSTYLE;
     bi.lpfn = BrowseCallbackProc;
     bi.lParam = (LPARAM)(LPCTSTR)m_szFolderLocation;
@@ -100,9 +103,11 @@ void CDlgSplitFile::OnBnClickedBrowseFolder()
     if (pidl==NULL)
     {
         // they cancelled...
+		msg.ReleaseBuffer();
         CoUninitialize();
         return;
     }
+	msg.ReleaseBuffer();
 
     BOOL retval = SHGetPathFromIDList(pidl, szPath);
     CoTaskMemFree(pidl);

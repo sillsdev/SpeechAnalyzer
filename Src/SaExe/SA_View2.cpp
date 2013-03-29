@@ -12,7 +12,6 @@
 //  10/25/2000 - DDO Added some code to redraw the position view plot when
 //                   scrolling takes place.
 /////////////////////////////////////////////////////////////////////////////
-
 #include "stdafx.h"
 #include "sa_view.h"
 #include "sa_plot.h"
@@ -42,6 +41,7 @@
 #include "PhoneticSegment.h"
 #include "FileUtils.h"
 #include "resource.h"
+#include "AutoSave.h"
 #include "dsp\dspTypes.h"
 #include "dsp\scale.h"
 #include "Process\Process.h"
@@ -6461,10 +6461,9 @@ CSaDoc * CSaView::GetDocument()
     return (CSaDoc *)m_pDocument;
 }
 
-LRESULT CSaView::OnAutoSave(WPARAM, LPARAM lParam)
+LRESULT CSaView::OnAutoSave( WPARAM, LPARAM)
 {
-
     TRACE(L"OnAutoSave\n");
-    GetDocument()->StoreAutoRecoveryInformation();
+	GetDocument()->StoreAutoRecoveryInformation();
     return 0;
 }

@@ -12,7 +12,7 @@
 #include "sa.h"
 #include "sa_graph.h"
 #include "doclist.h"
-#include "result.h"
+#include "DlgResult.h"
 #include <math.h>
 #include "Process\Process.h"
 #include "Process\sa_p_lou.h"

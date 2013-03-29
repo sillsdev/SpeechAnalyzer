@@ -347,7 +347,4 @@ private:
 
 };
 
-#define AUTOSAVE_TIMER      60000   // fires once a minute
-//#define AUTOSAVE_TIMER      5000   // fires once a minute
-
 #endif

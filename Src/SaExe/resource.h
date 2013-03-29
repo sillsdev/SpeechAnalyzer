@@ -7,16 +7,16 @@
 #define IDC_CUSTOM                      3
 #define IDS_COPY                        3
 #define ID_START_MODE_RECORD            4
+#define IDS_STRING4                     4
 #define IDS_STRING5                     5
+#define VS_VERSION                      80
+#define VS_COPYRIGHT                    81
 #define ID_PRINT                        90
 #define ID_PREVIEW                      91
 #define IDR_MAINFRAME                   91
 #define IDR_SA_ANNTYPE                  92
-#define VS_VERSION                      93
-#define VS_COPYRIGHT                    94
 #define IDR_SA_WBTYPE                   95
 #define IDR_WORKBENCH                   96
-#define IDS_QUESTION_APPNOTFOUND        98
 #define IDR_SA_MIDTYPE                  99
 #define IDD_GRAPHSTYPES                 101
 #define IDD_PARAMETERSPITCHPAGE         103
@@ -98,6 +98,7 @@
 #define IDD_WORKBENCH                   274
 #define IDD_WB_PROCESSES                276
 #define IDD_WB_FILTERREVERB             277
+#define IDS_QUESTION_APPNOTFOUND        277
 #define ID_GRAPHS_OVERLAY               278
 #define IDS_CHART_COMBOTEXT             279
 #define IDS_CHART_EDITTEXT              280
@@ -1533,8 +1534,8 @@
 #define IDS_SPLIT_FILE_EXISTS           33230
 #define ID_AUTOSAVE                     33232
 #define ID_FILE_AUTOSAVE                33234
-#define ID_AUTOSAVE_ON			        33235
-#define ID_AUTOSAVE_OFF		            33236
+#define ID_AUTOSAVE_ON                  33235
+#define ID_AUTOSAVE_OFF                 33236
 #define ID_GRAPHTYPES_SELECT_FIRST      40000
 #define ID_GRAPHTYPES_SELECT_LAST       40011
 #define ID_PHONETIC_ALL                 40100
@@ -1667,9 +1668,12 @@
 #define IDS_AUTO_REF_TAG                61304
 #define IDS_SFM_TAGS                    61306
 #define IDS_AUTOSAVE_MSG                61307
+#define IDS_AUTOSAVE_RESTORE            61308
+#define IDS_AUTOSAVE_RESTORE_TEMP       61309
+#define IDS_CHOOSE_FOLDER               61310
 
 // Next default values for new objects
-//
+// 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_3D_CONTROLS                     1

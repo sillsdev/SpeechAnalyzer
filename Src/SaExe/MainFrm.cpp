@@ -2404,7 +2404,6 @@ static const char * pszTmpDfltSettingsFile = "~!SA!~.tmp";
 //********************************************************************
 void CMainFrame::WriteReadDefaultViewToTempFile(BOOL bWrite)
 {
-
     CSaString szPath;
 
     GetTempPath(_MAX_PATH, szPath.GetBuffer(_MAX_PATH));
@@ -3050,9 +3049,8 @@ void CMainFrame::SetToolSettings(CToolSettings settings)
 /**
 * callback for EnumChildWindows in OnTimer function
 */
-BOOL CALLBACK AutosaveTimerChildProc(HWND hwnd,  LPARAM lParam)
+BOOL CALLBACK AutosaveTimerChildProc( HWND hwnd,  LPARAM)
 {
-
     if (DYNAMIC_DOWNCAST(CSaView,CWnd::FromHandle(hwnd)) != NULL)
     {
         TRACE(L"Posting autosave message\n");
@@ -3063,7 +3061,6 @@ BOOL CALLBACK AutosaveTimerChildProc(HWND hwnd,  LPARAM lParam)
 
 void CMainFrame::OnTimer(UINT nIDEvent)
 {
-
     TRACE(L"OnTimer %d\n",nIDEvent);
     if (nIDEvent == ID_TIMER_AUTOSAVE)
     {
@@ -3096,7 +3093,6 @@ void CMainFrame::OnAutoSaveOff()
 	pMenu->CheckMenuItem(ID_AUTOSAVE_ON, MF_UNCHECKED);
 	pMenu->CheckMenuItem(ID_AUTOSAVE_OFF, MF_CHECKED);
 	KillTimer(ID_TIMER_AUTOSAVE);
-	CSaApp * pApp = (CSaApp *)AfxGetApp();
-	pApp->CleanAutoSave();
+	CAutoSave::CleanAll();
 	m_bAutoSave = FALSE;
 }

@@ -4,23 +4,14 @@
 #include "MainFrm.h"
 #include "SA_View.h"
 #include "TranscriptionDataSettings.h"
-#include "RESULT.H"
+#include "DlgResult.h"
 #include "Segment.h"
 #include "Sa_graph.h"
 #include "DlgImport.h"
 #include "GlossSegment.h"
 #include "PhoneticSegment.h"
-#include <fstream>
 #include "TextHelper.h"
 #include "SFMHelper.h"
-#include <string>
-
-using std::ifstream;
-using std::ios;
-using std::streampos;
-using std::ios_base;
-using std::string;
-using std::wstring;
 
 #ifdef _DEBUG
 #undef THIS_FILE
@@ -657,8 +648,6 @@ void CImport::AutoAlign(CSaDoc * pSaDoc, LPCTSTR pPhonetic, LPCTSTR pPhonemic, L
             nStringIndex = 0;
             pSegment = pSaDoc->GetSegment(GLOSS);
             pTable = pSaDoc->GetFont(GLOSS);
-
-            bool poundDelimited = (settings.m_szGloss.FindOneOf(CSaString(WORD_DELIMITER))!=-1);
 
             // align gloss by word SDM 1.5Test8.2
             nAlignMode = CFontTable::DELIMITEDWORD;

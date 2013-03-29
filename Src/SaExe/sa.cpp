@@ -97,14 +97,11 @@
 #include "ClipboardHelper.h"
 #include "FileUtils.h"
 #include "resource.h"
+#include "AutoSave.h"
 #include "Process\Process.h"
 #include "Process\sa_p_gra.h"
 #include "Process\sa_p_fra.h"
 #include "settings\obstream.h"
-
-using std::ifstream;
-using std::ofstream;
-using std::ios;
 
 #pragma comment(linker, "/SECTION:.shr,RWS")
 #pragma data_seg(".shr")
@@ -521,7 +518,7 @@ BOOL CSaApp::InitInstance()
             AfxMessageBox(msg);
         }
 
-		CheckAutoSave();
+		CAutoSave::Check(this);
 
         // Show startup dialog
         CMainFrame * pMainWnd = (CMainFrame *)AfxGetMainWnd();
@@ -597,7 +594,7 @@ int CSaApp::ExitInstance()
     {
     }
 
-    CleanAutoSave();
+    CAutoSave::CleanAll();
 
     // standard implementation: save initialisation
     if (bOK)
@@ -2266,7 +2263,6 @@ CSaView * CSaApp::GetViewTop()
 /***************************************************************************/
 CSaView * CSaApp::GetViewBottom()
 {
-
     return GetViewEnd(GW_HWNDNEXT);
 }
 
@@ -2306,7 +2302,7 @@ CSaView * CSaApp::GetViewEnd(UINT uNextOrPrev)
 
     CSaView * pview = GetViewActive();
     CSaView * pviewN = (pview ? GetViewNeighbor(pview, uNextOrPrev) : NULL);
-    for (; pviewN; pviewN = GetViewNeighbor(pviewN, uNextOrPrev))
+    for ( ; pviewN; pviewN = GetViewNeighbor(pviewN, uNextOrPrev))
     {
         pview = pviewN;
     }
@@ -2333,10 +2329,7 @@ CSaView * CSaApp::GetViewNeighbor(CSaView * pviewCur, UINT uNextOrPrev)
             break;
         }
 
-    CSaView * pview = (pwndNext ?
-                       CSaView::GetViewActiveChild((CMDIChildWnd *)pwndNext) :
-                       NULL);
-
+    CSaView * pview = (pwndNext ? CSaView::GetViewActiveChild((CMDIChildWnd *)pwndNext) : NULL);
     return pview;
 }
 
@@ -3067,111 +3060,3 @@ LPCTSTR CSaApp::GetLastClipboardPath()
     return m_szLastClipboardPath;
 }
 
-wstring CSaApp::GetAutoSaveDirectory()
-{
-    // find or create the autosave directory
-    TCHAR buffer[_MAX_PATH];
-    ::GetEnvironmentVariable(L"TEMP",buffer,_countof(buffer));
-    wstring autosavedir(buffer);
-    AppendDirSep(autosavedir);
-    autosavedir.append(L"SpeechAnalyzerAutoSave");
-    AppendDirSep(autosavedir);
-    return autosavedir;
-}
-
-void CSaApp::CleanAutoSave()
-{
-
-    wstring autosavedir = GetAutoSaveDirectory();
-    wstring search(autosavedir);
-    search.append(L"*.*");
-
-    CFileFind finder;
-    if (finder.FindFile(search.c_str(),0))
-    {
-        BOOL more = TRUE;
-        do
-        {
-            more = finder.FindNextFileW();
-            if (finder.IsDirectory())
-            {
-                continue;
-            }
-            if (finder.IsDots())
-            {
-                continue;
-            }
-            wstring path = finder.GetFilePath();
-            if (::EndsWith(path.c_str(),L".autosave"))
-            {
-                ::RemoveFile(path.c_str());
-            }
-        }
-        while (more);
-    }
-}
-
-void CSaApp::CheckAutoSave()
-{
-    wstring autosavedir = GetAutoSaveDirectory();
-    CFileFind finder;
-    wstring search(autosavedir);
-    search.append(L"*.*");
-
-    int count = 0;
-    if (finder.FindFile(search.c_str(),0)==TRUE)
-    {
-        BOOL more = TRUE;
-        do
-        {
-            more = finder.FindNextFile();
-            if (finder.IsDirectory()) continue;
-            if (finder.IsDots()) continue;
-            wstring path = finder.GetFilePath();
-            if ((::EndsWith(path.c_str(),L".tmp.autosave")) || 
-				(::EndsWith(path.c_str(),L".wav.autosave")))
-            {
-                count++;
-            }
-        }
-        while (more);
-
-        if (count>0)
-        {
-            int result = AfxMessageBox(IDS_AUTOSAVE_MSG, MB_YESNO | MB_ICONQUESTION);
-            if (result==IDYES)
-            {
-                if (finder.FindFile(search.c_str(),0)==TRUE)
-                {
-                    BOOL more = TRUE;
-                    do
-                    {
-                        more = finder.FindNextFile();
-                        if (finder.IsDirectory()) continue;
-                        if (finder.IsDots()) continue;
-                        wstring path = finder.GetFilePath();
-                        if ((::EndsWith(path.c_str(),L".tmp.autosave")) ||
-                            (::EndsWith(path.c_str(),L".wav.autosave")))
-                        {
-							// rename wave file
-							wstring newname = path;
-							newname = newname.substr(0,newname.length()-9);
-							CFile::Rename(path.c_str(),newname.c_str());
-							wstring docname = newname;
-							// rename transcription file
-							newname = path;
-							newname = newname.substr(0,newname.length()-13);
-							newname.append(L".saxml");
-							wstring oldname = path;
-							oldname = oldname.substr(0,oldname.length()-13);
-							oldname.append(L".saxml.autosave");
-							CFile::Rename(oldname.c_str(),newname.c_str());
-                            OpenDocumentFile(docname.c_str());
-						}
-                    }
-                    while (more);
-                }
-            }
-        }
-    }
-}

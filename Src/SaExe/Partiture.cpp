@@ -28,12 +28,12 @@
 #undef UNICODE
 
 #pragma warning(push, 3)  // these files generate a lot of warnings at level 4
-#include <fstream>
 #pragma warning(pop)
 
 #include <stdlib.h>
 #include <windows.h>
 #include <tchar.h>
+#include <fstream>
 
 using std::ofstream;
 using std::ifstream;

@@ -41,9 +41,9 @@
 #include "ISa_Doc.h"
 #include "TranscriptionData.h"
 #include "DlgAutoReferenceData.h"
-#include <string>
 #include "AlignInfo.h"
 #include "ExportFWSettings.h"
+#include "AutoSave.h"
 
 #import "speechtoolsutils.tlb" no_namespace named_guids
 #import "st_audio.tlb" no_namespace named_guids
@@ -169,7 +169,7 @@ private:
 public:
     void                SetAudioModifiedFlag(bool bMod = true);
     bool                IsAudioModified() const;
-    void                SetTransModifiedFlag(bool bMod = true);
+    void                SetTransModifiedFlag(bool bMod);
     bool                IsTransModified() const;
     bool                IsMultiChannel() const;
     void                SetID(int nID);                             // set document ID
@@ -351,6 +351,20 @@ public:
     virtual void Dump(CDumpContext & dc) const;
 #endif
 
+public:
+    void DoExportFieldWorks(CExportFWSettings & settings);
+    const CSaString BuildString(int nSegment);
+    const CSaString BuildImportString(BOOL gloss, BOOL phonetic, BOOL phonemic, BOOL orthographic);
+    const bool ImportTranscription(CSaString & filename, bool gloss, bool phonetic, bool phonemic, bool orthographic, CTranscriptionData & td, bool addTag, bool showDlg);
+    void ApplyTranscriptionChanges(CTranscriptionDataSettings & settings);
+    void RevertTranscriptionChanges();
+    bool IsTempFile();
+    bool CanEdit();
+    wstring GetFilename();
+	CSaString GetTempFilename();
+	bool IsUsingTempFile();
+	void StoreAutoRecoveryInformation();
+
 protected:
     afx_msg void OnUpdateFileSave(CCmdUI * pCmdUI);
     afx_msg void OnFileSaveAs();
@@ -377,21 +391,7 @@ protected:
     afx_msg void OnUpdateToolsAdjustNormalize(CCmdUI * pCmdUI);
     afx_msg void OnToolsAdjustZero();
     afx_msg void OnUpdateToolsAdjustZero(CCmdUI * pCmdUI);
-    DECLARE_MESSAGE_MAP()
 
-public:
-    void DoExportFieldWorks(CExportFWSettings & settings);
-    const CSaString BuildString(int nSegment);
-    const CSaString BuildImportString(BOOL gloss, BOOL phonetic, BOOL phonemic, BOOL orthographic);
-    const bool ImportTranscription(CSaString & filename, bool gloss, bool phonetic, bool phonemic, bool orthographic, CTranscriptionData & td, bool addTag, bool showDlg);
-    void ApplyTranscriptionChanges(CTranscriptionDataSettings & settings);
-    void RevertTranscriptionChanges();
-    bool IsTempFile();
-    bool CanEdit();
-    void StoreAutoRecoveryInformation();
-    wstring GetFilename();
-
-protected:
     void AlignTranscriptionData(CTranscriptionDataSettings & settings);
     void AlignTranscriptionDataByRef(CTranscriptionData & td);
     bool TryExportSegmentsBy(CExportFWSettings & settings, Annotations master, CFile & file, bool skipEmptyGloss, LPCTSTR szPath, int & dataCount, int & wavCount);
@@ -404,13 +404,10 @@ protected:
 
     int m_nTranscriptionApplicationCount;
 
-private:
-    void CleanAutoSave();
+    DECLARE_MESSAGE_MAP()
 
-    bool autoSaveError;
-    bool autoSaving;
-    wstring autoSaveWave;
-    wstring autoSaveTrans;
+private:
+	CAutoSave autoSave;
 };
 
 #endif

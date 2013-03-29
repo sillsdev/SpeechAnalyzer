@@ -185,19 +185,12 @@ public:
     CSaString GetStartupMessage(CSaString szLastVersion);
     void SetupNewUser();
 
-protected:
-    void ShowStartupDialog(BOOL bAppIsStartingUp);
-
-    // Overrides
-    // ClassWizard generated virtual function overrides
-public:
     virtual BOOL InitInstance();
     virtual int ExitInstance();
     virtual CDocument * OpenDocumentFile(LPCTSTR lpszFileName);
-    wstring GetAutoSaveDirectory();
-    void CleanAutoSave();
 
 protected:
+    void ShowStartupDialog(BOOL bAppIsStartingUp);
     afx_msg void OnAppAbout();
     afx_msg void OnFileCreate();
     afx_msg void OnUpdateFileCreate(CCmdUI * pCmdUI);
@@ -254,7 +247,6 @@ protected:
 private:
     CSaString GetBatchString(LPCTSTR lpSection, LPCTSTR lpKey, LPCTSTR lpDefault = NULL);
     BOOL WriteBatchString(LPCTSTR lpSection, LPCTSTR lpKey, LPCTSTR lpValue);
-	void CheckAutoSave();
 };
 
 #endif // __SA_H__

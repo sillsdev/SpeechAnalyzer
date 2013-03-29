@@ -150,11 +150,6 @@
 #include "settings\tools.h"
 #include "dsp\fragment.h"
 
-#include <string>
-using std::wstring;
-using std::find;
-using std::distance;
-
 #ifdef _DEBUG
 #undef THIS_FILE
 static char BASED_CODE THIS_FILE[] = __FILE__;
@@ -222,7 +217,6 @@ static const char * psz_saview = "saview";
 /***************************************************************************/
 CSaDoc::CSaDoc()
 {
-
     m_bAudioModified = false;
     m_bTransModified = false;
     m_bTempOverlay = false;
@@ -270,7 +264,6 @@ CSaDoc::CSaDoc()
 
     //SDM 1.06.6U2
     m_dwDataSize = 0;
-    //kg for WIN32
     m_nWbProcess = 0;
     m_lpData = NULL;
     m_dwRdBufferOffset = 0;
@@ -285,9 +278,6 @@ CSaDoc::CSaDoc()
     m_pDlgAdvancedSegment = NULL;
     m_pDlgAdvancedParseWords = NULL;
     m_pDlgAdvancedParsePhrases = NULL;
-
-    autoSaveError = false;
-    autoSaving = false;
 }
 
 /***************************************************************************/
@@ -2137,7 +2127,6 @@ bool CSaDoc::ConvertToWave(const TCHAR * pszPathName)
 /***************************************************************************/
 BOOL CSaDoc::OnSaveDocument(const TCHAR * pszPathName)
 {
-
     return OnSaveDocument(pszPathName, TRUE);
 }
 
@@ -2279,7 +2268,6 @@ BOOL CSaDoc::OnSaveDocument(const TCHAR * pszPathName2, BOOL bSaveAudio)
     SetModifiedFlag(FALSE);
     SetTransModifiedFlag(FALSE);
     SetAudioModifiedFlag(FALSE);
-    CleanAutoSave();
 
     // if batch mode, set file in changed state
     if (pApp->GetBatchMode() != 0)
@@ -2342,18 +2330,22 @@ BOOL CSaDoc::WriteDataFiles(const TCHAR * pszPathName, BOOL bSaveAudio/*=TRUE*/,
         return FALSE;
     }
 
+	DWORD a = GetTickCount();
     WriteNonSegmentData(dwDataSize, saAudioDocWriter);
     saAudioDocWriter->DeleteSegments();
     WriteTranscription(PHONETIC, saAudioDocWriter);
     WriteTranscription(PHONEMIC, saAudioDocWriter);
     WriteTranscription(TONE, saAudioDocWriter);
     WriteTranscription(ORTHO, saAudioDocWriter);
+	DWORD b = GetTickCount();
     WriteGlossPosAndRefSegments(saAudioDocWriter);
     WriteScoreData(saAudioDocWriter);
     WriteTranscription(MUSIC_PL1, saAudioDocWriter);
     WriteTranscription(MUSIC_PL2, saAudioDocWriter);
     WriteTranscription(MUSIC_PL3, saAudioDocWriter);
     WriteTranscription(MUSIC_PL4, saAudioDocWriter);
+	DWORD c = GetTickCount();
+	TRACE("Write Time %lu %lu\n",(c-b),(b-a));
 
     saAudioDocWriter->Commit();
     saAudioDocWriter->Close();
@@ -2686,10 +2678,6 @@ void CSaDoc::WriteScoreData(ISaAudioDocumentWriterPtr saAudioDocWriter)
     }
     delete [] pMusicScore;
     SetTransModifiedFlag(FALSE); // transcription data has been modified
-    if (!autoSaving)
-    {
-        CleanAutoSave();
-    }
 }
 
 // SDM 1.06.6U2 added ability to insert wave dat from a file
@@ -3277,7 +3265,6 @@ BOOL CSaDoc::SaveModified()
     {
         SetModifiedFlag(FALSE);
         SetTransModifiedFlag(FALSE);
-        CleanAutoSave();
     }
     // change the file attribute to read only
     szPathName = GetPathName();
@@ -5945,7 +5932,7 @@ void CSaDoc::OnFileSaveAs()
         {
             SetModifiedFlag();          // Force SA to update file format
             SetAudioModifiedFlag();
-            SetTransModifiedFlag();
+            SetTransModifiedFlag(TRUE);
             OnFileSave();
             return;
         }
@@ -8480,7 +8467,7 @@ bool CSaDoc::IsAudioModified() const
 
 void CSaDoc::SetTransModifiedFlag(bool bMod)
 {
-    if (autoSaving)
+	if (autoSave.IsSaving())
     {
         return;
     }
@@ -9100,143 +9087,6 @@ void CSaDoc::SetMultiChannelFlag(bool bMultiChannel)
     m_bMultiChannel = bMultiChannel;
 }
 
-void CSaDoc::StoreAutoRecoveryInformation()
-{
-
-    TRACE(L"auto saving...\n");
-
-    if (!IsModified())
-    {
-        TRACE("No changes pending. nothing to save\n");
-        return;
-    }
-
-    CSaApp * pSaApp = (CSaApp *)AfxGetApp();
-
-    // find or create the autosave directory
-    TCHAR buffer[_MAX_PATH];
-    ::GetEnvironmentVariable(L"TEMP",buffer,_countof(buffer));
-    wstring temp(buffer);
-    AppendDirSep(temp);
-
-    wstring autosavedir = pSaApp->GetAutoSaveDirectory();
-
-    if (!::FolderExists(autosavedir.c_str()))
-    {
-        //create directory ?
-        if (CreateDirectory(autosavedir.c_str(), NULL) ==0)
-        {
-            //an error has occured, process the error here
-            TRACE("Unable to create autosave directory!\n");
-            if (!autoSaveError)
-            {
-                pSaApp->ErrorMessage(IDS_ERROR_AUTOSAVE_FAIL,autosavedir.c_str());
-                autoSaveError = true;
-            }
-            return;
-        }
-    }
-
-    wstring original(L"");
-    wstring filename;
-    // what is our scenario?
-    if (!m_szTempWave.IsEmpty())
-    {
-        // a recorded file
-        original = m_szTempWave;
-        // extract the filename
-        filename.append(m_szTempWave);
-        filename = filename.substr(temp.length(),filename.length()-temp.length());
-    }
-    else
-    {
-        // a prerecorded file
-        original = GetPathName();
-        filename = original;
-        int pos = filename.rfind('\\');
-        if (pos!=wstring::npos)
-        {
-            filename = filename.substr(pos+1,filename.length()-pos-1);
-        }
-    }
-
-    TRACE(L"saving audio for %s\n",original.c_str());
-
-    // copy this wave to the autosave directory
-    wstring dest;
-    dest.append(autosavedir);
-    dest.append(filename);
-
-    if (::FileExists(autoSaveWave.c_str()))
-    {
-        ::RemoveFile(autoSaveWave.c_str());
-		autoSaveWave = L"";
-    }
-
-    if (!::CopyFile(original.c_str(), dest.c_str(), TRUE))
-    {
-        TRACE(L"Unable to save wave file\n");
-    }
-
-    autoSaveWave = dest;
-
-    if (m_bTransModified)
-    {
-        TRACE(L"saving transcription for %s\n",(LPCTSTR)original.c_str());
-
-        if (::FileExists(autoSaveTrans.c_str()))
-        {
-            ::RemoveFile(autoSaveTrans.c_str());
-			autoSaveTrans = L"";
-        }
-
-        // copy any transcription to the autosave directory
-        autoSaving = true;
-        WriteDataFiles(autoSaveWave.c_str());
-        autoSaving = false;
-
-        wstring dest(autoSaveWave.c_str());
-        dest = dest.substr(0,dest.length()-3);
-        dest.append(L"saxml");
-        autoSaveTrans = dest;
-    }
-
-	// now add the autosave extension
-	if (autoSaveWave.length()>0) {
-		wstring newname = autoSaveWave;
-		newname.append(L".autosave");
-		CFile::Rename( autoSaveWave.c_str(),newname.c_str());
-		autoSaveWave = newname;
-	}
-	if (autoSaveTrans.length()>0) {
-		wstring newname = autoSaveTrans;
-		newname.append(L".autosave");
-		CFile::Rename( autoSaveTrans.c_str(),newname.c_str());
-		autoSaveTrans = newname;
-	}
-
-    TRACE(L"saved\n");
-}
-
-/**
-* on a save or saveas, delete the existing autosave files
-*/
-void CSaDoc::CleanAutoSave()
-{
-
-    if (::FileExists(autoSaveWave.c_str()))
-    {
-        ::RemoveFile(autoSaveWave.c_str());
-    }
-    if (::FileExists(autoSaveTrans.c_str()))
-    {
-        ::RemoveFile(autoSaveTrans.c_str());
-    }
-    autoSaveWave = L"";
-    autoSaveTrans = L"";
-    autoSaveError = false;
-}
-
 wstring CSaDoc::GetFilename()
 {
 
@@ -9248,4 +9098,19 @@ wstring CSaDoc::GetFilename()
         result = result.substr(0,nFind-1);    // extract part left of :
     }
     return result;
+}
+
+CSaString CSaDoc::GetTempFilename()
+{
+	return m_szTempWave;
+}
+
+bool CSaDoc::IsUsingTempFile()
+{
+	return (!m_szTempWave.IsEmpty());
+}
+
+void CSaDoc::StoreAutoRecoveryInformation()
+{
+	autoSave.StoreAutoRecoveryInformation(this);
 }

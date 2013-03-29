@@ -27,13 +27,9 @@ CDlgFileOpen::CDlgFileOpen(LPCTSTR lpszDefExt,
     m_ofn.hInstance = AfxFindResourceHandle(MAKEINTRESOURCE(IDD),RT_DIALOG);
 }
 
-
 BEGIN_MESSAGE_MAP(CDlgFileOpen, CFileDialog)
-    //{{AFX_MSG_MAP(CDlgFileOpen)
     ON_BN_CLICKED(IDC_PLAY, OnPlay)
-    //}}AFX_MSG_MAP
 END_MESSAGE_MAP()
-
 
 void CDlgFileOpen::OnPlay()
 {

@@ -1,3 +1,9 @@
+SA - 3.1.0.46 - 3/29/2013
+1) Modified autosave to save a .info file which provides the original source directory to be used for file restoration.
+2) Modified autosave so that the user is prompted on startup concerning autosave files.  They will be queried for each autosave file as to whether or not to recover the file, and in the case of recordings, they will be asked to supply a directory to save the file into.
+3) Modified autosave to avoid saving .wav files if the file size hasn't changed.
+4) Modified autosave to stop deleting autosave files when the user performs a 'save' or 'saveas' operation in SA.
+
 SA - 3.1.0.45 - 3/28/2013
 1) Fixed GPF in SFM import feature that occurs if any of the transcription fields (or/pm/ph/gl) are missing.
 2) Merged SFM tabular support into the AutoRef/TAT code.

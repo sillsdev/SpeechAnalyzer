@@ -37,6 +37,23 @@
 #include <limits>
 #include <complex>
 #include <afxdlgs.h>
+#include <string>
+
+using std::string;
+using std::wstring;
+
+using std::ifstream;
+using std::wifstream;
+using std::ofstream;
+using std::wofstream;
+
+using std::ios;
+using std::ios_base;
+using std::streampos;
+
+using std::getline;
+using std::find;
+using std::distance;
 
 inline static int round(double value)
 {
@@ -67,11 +84,9 @@ static inline DWORD GetBufferSize()
 // FALSE                              Completely disables access
 // (GetKeyState(VK_CONTROL) < 0)      Enables access via control key only
 //#define EXPERIMENTAL_ACCESS (GetKeyState(VK_CONTROL) < 0)
+
 #define EXPERIMENTAL_ACCESS true
 
 #define PROGRAMMER_ACCESS ((GetKeyState(VK_CONTROL) & GetKeyState(VK_SHIFT)) < 0)
 
-//{{AFX_INSERT_LOCATION}}
-// Microsoft Visual C++ will insert additional declarations immediately before the previous line.
-
-#endif //_STDAFX_H
+#endif

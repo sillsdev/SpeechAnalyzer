@@ -15,7 +15,7 @@
 #include "sa_graph.h"
 #include "mainfrm.h"
 #include "doclist.h"
-#include "result.h"
+#include "DlgResult.h"
 #include <math.h>
 #include "TranscriptionDataSettings.h"
 #include "DlgImport.h"

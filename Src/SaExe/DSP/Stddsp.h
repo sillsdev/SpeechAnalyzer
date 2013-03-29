@@ -3,26 +3,27 @@
 //      are changed infrequently
 //
 #ifndef _STDDSP_H
-
-#include "dspTypes.h"
-//#include "dspError.h"
-
 #define _STDDSP_H
 
-#define ASSERT(a)
+#include "dspTypes.h"
 
+#define ASSERT(a)
 
 #pragma warning(push, 3)  // these files generate a lot of warnings at level 4
 #pragma warning(disable : 4786) // identifier was truncated to 255 chars in browser
 #pragma warning(disable : 4275) // unmarked exported classes generate warning 4275
 #include <algorithm>
-#include <fstream>
 #include <list>
 #include <vector>
 #include <deque>
 #include <map>
 #include <limits>
 #include <complex>
+
+using std::ifstream;
+using std::ios;
+using std::streampos;
+using std::ios_base;
 
 #define UNDEFINED_DATA                  -1          // data not yet defined
 

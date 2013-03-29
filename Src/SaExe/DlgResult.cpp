@@ -3,7 +3,7 @@
 
 #include "stdafx.h"
 #include "sa.h"
-#include "result.h"
+#include "DlgResult.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE

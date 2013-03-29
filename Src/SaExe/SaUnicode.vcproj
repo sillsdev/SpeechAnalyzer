@@ -244,6 +244,10 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\AutoSave.cpp"
+				>
+			</File>
+			<File
 				RelativePath="Process\Butterworth.cpp"
 				>
 				<FileConfiguration
@@ -557,6 +561,10 @@
 			</File>
 			<File
 				RelativePath=".\DlgMultiChannel.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\DlgResult.cpp"
 				>
 			</File>
 			<File
@@ -1150,28 +1158,6 @@
 			<File
 				RelativePath=".\ReferenceSegment.cpp"
 				>
-			</File>
-			<File
-				RelativePath="Result.cpp"
-				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="Riff.cpp"
@@ -3431,6 +3417,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\AutoSave.h"
+				>
+			</File>
+			<File
 				RelativePath=".\Process\Butterworth.H"
 				>
 			</File>
@@ -3556,6 +3546,10 @@
 			</File>
 			<File
 				RelativePath=".\DlgMultiChannel.h"
+				>
+			</File>
+			<File
+				RelativePath=".\DlgResult.h"
 				>
 			</File>
 			<File
@@ -3728,10 +3722,6 @@
 			</File>
 			<File
 				RelativePath=".\resource.h"
-				>
-			</File>
-			<File
-				RelativePath=".\RESULT.H"
 				>
 			</File>
 			<File

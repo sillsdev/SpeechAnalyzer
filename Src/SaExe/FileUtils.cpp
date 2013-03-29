@@ -43,7 +43,6 @@ void RemoveFile(LPCTSTR path)
 */
 bool FileExists(LPCTSTR path)
 {
-
     CFileStatus status;
     if (CFile::GetStatus(path,status))
     {
@@ -116,7 +115,7 @@ void AppendDirSep(LPTSTR path, size_t size)
     wcscat_s(path,size,L"\\");
 }
 
-void AppendDirSep(wstring & path)
+void AppendDirSep( wstring & path)
 {
 
     size_t len = path.length();
@@ -186,6 +185,11 @@ bool EndsWith(LPCTSTR path, LPCTSTR extension)
     wstring sub(path);
     sub = sub.substr(wcslen(path) - wcslen(extension), wcslen(extension));
     return (_wcsicmp(sub.c_str(),extension)==0);
+}
+
+void RenameFile(LPCTSTR oldname, LPCTSTR newname)
+{
+	CFile::Rename( oldname, newname);
 }
 
 
