@@ -2,6 +2,8 @@
 #include "SFMHelper.h"
 #include <iterator>
 #include "IUtf8String.h"
+#include "TextHelper.h"
+#include "AppDefs.h"
 
 static const char * IMPORT_END = "import";
 static const wchar_t * EMPTY = L"";
@@ -148,6 +150,240 @@ void CSFMHelper::BalanceDataMap(TranscriptionDataMap & map, CSaString & marker)
     }
 }
 
+bool CSFMHelper::IsColumnarSFM( LPCTSTR filename)
+{
+	size_t length2 = 0;
+	wchar_t * obuffer = NULL;
+	{
+		streampos length = 0;
+		char * buffer = NULL;
+		if (!ReadFileIntoBuffer( filename, &buffer, length)) return FALSE;
+
+		if (!ConvertBufferToUTF16( buffer, length, &obuffer, length2))
+		{
+			delete [] buffer;
+			return FALSE;
+		}
+
+		delete [] buffer;
+	}
+	
+	int i = 0;
+    if ((obuffer[0]==0xfeff)||(obuffer[0]==0xfffe))
+	{
+		i++;
+	}
+
+	vector<wstring> lines = TokenizeBufferToLines( obuffer, i, length2);
+
+	delete [] obuffer;
+	obuffer = NULL;
+	length2 = 0;
+
+	lines = CSFMHelper::FilterBlankLines(lines);
+
+	if (lines.size()==0)
+	{
+		TRACE("file is empty\n");
+		return false;
+	}
+
+	int start = 0;
+	while (true) 
+	{
+		if (start>=lines.size()) return false;
+		if (lines[start].length()>0) break;
+		start++;
+	}
+
+	// we are now sitting at the first non-blank line
+	wstring line = lines[start];
+	vector<wstring> tokens = TokenizeLineToTokens( line, 0x09);
+	// the first line must be all tags.
+	for (int i=0;i<tokens.size();i++) {
+		if (!CSFMHelper::IsTag(tokens[i].c_str())) return false;
+	}
+
+	// the second line should not have any tags
+	start++;
+	line = lines[start];
+	tokens = TokenizeLineToTokens( line, 0x09);
+	for (int i=0;i<tokens.size();i++) {
+		if (CSFMHelper::IsTag(tokens[i].c_str())) return false;
+	}
+
+	// rewind
+	start = 0;
+	while (true) 
+	{
+		if (start>=lines.size()) return false;
+		if (lines[start].length()>0) break;
+		start++;
+	}
+
+	// we are now sitting at the first non-blank line
+	wstring tagline = lines[start];
+	vector<wstring> tags = TokenizeLineToTokens( tagline, 0x09);
+	// the first line must be all tags.
+	for (int i=0;i<tags.size();i++) {
+		if (!CSFMHelper::IsTag(tags[i].c_str())) {
+			TRACE("the first line contains an element that is not a tag '%s'\n",tagline.c_str());
+			return false;
+		}
+	}
+	size_t tagCount = tags.size();
+	start++;
+	
+	// run through all the lines and verify that the counts are no greater
+	// than the number of tags
+	for (int i=start;i<lines.size();i++) {
+		vector<wstring> tokens = TokenizeLineToTokens( lines[i], 0x09);
+		if (tokens.size()>tagCount) {
+			TRACE("line %d has too many elements '%s'.  The tag count id %d\n",i,lines[i].c_str(),tagCount);
+			return false;
+		}
+	}
+
+	// run through all the lines and verify that there are no more tags
+	// than the number of tags
+	for (int i=start;i<lines.size();i++) {
+		vector<wstring> tokens = TokenizeLineToTokens( lines[i], 0x09);
+		for (int j=0;j<tokens.size();j++) {
+			if (CSFMHelper::IsTag(tokens[j].c_str())) {
+				TRACE("line %d contains a tag '%s'.\n",i,lines[i].c_str());
+				return false;
+			}
+		}
+	}
+
+	return true;
+}
+
+TranscriptionDataMap CSFMHelper::ImportColumnarSFM( LPCTSTR filename)
+{
+	TranscriptionDataMap td;
+
+	size_t length2 = 0;
+	wchar_t * obuffer = NULL;
+	{
+		streampos length = 0;
+		char * buffer = NULL;
+		if (!ReadFileIntoBuffer( filename, &buffer, length)) return td;
+
+		if (!ConvertBufferToUTF16( buffer, length, &obuffer, length2))
+		{
+			delete [] buffer;
+			return td;
+		}
+
+		delete [] buffer;
+	}
+	
+	int i = 0;
+    if ((obuffer[0]==0xfeff)||(obuffer[0]==0xfffe))
+	{
+		i++;
+	}
+
+	vector<wstring> lines = TokenizeBufferToLines( obuffer, i, length2);
+
+	delete [] obuffer;
+	obuffer = NULL;
+	length2 = 0;
+
+	lines = CSFMHelper::FilterBlankLines(lines);
+
+	if (lines.size()==0) return td;
+
+	int start = 0;
+	while (true) 
+	{
+		if (start>=lines.size()) return td;
+		if (lines[start].length()>0) break;
+		start++;
+	}
+
+	// we are now sitting at the first non-blank line
+	wstring tagline = lines[start];
+	vector<wstring> tags = TokenizeLineToTokens( tagline, 0x09);
+	// the first line must be all tags.
+	for (int i=0;i<tags.size();i++) {
+		if (!CSFMHelper::IsTag(tags[i].c_str())) {
+			TRACE("the first line contains an element that is not a tag '%s'\n",tagline.c_str());
+			return td;
+		}
+	}
+	size_t tagCount = tags.size();
+	start++;
+	
+	// run through all the lines and verify that the counts are no greater
+	// than the number of tags
+	for (int i=start;i<lines.size();i++) {
+		vector<wstring> tokens = TokenizeLineToTokens( lines[i], 0x09);
+		if (tokens.size()>tagCount) {
+			TRACE("line %d has too many elements '%s'.  The tag count id %d\n",i,lines[i].c_str(),tagCount);
+			return td;
+		}
+	}
+
+	// run through all the lines and verify that there are no more tags
+	// than the number of tags
+	for (int i=start;i<lines.size();i++) {
+		vector<wstring> tokens = TokenizeLineToTokens( lines[i], 0x09);
+		for (int j=0;j<tokens.size();j++) {
+			if (CSFMHelper::IsTag(tokens[j].c_str())) {
+				TRACE("line %d contains a tag '%s'.\n",i,lines[i].c_str());
+				return td;
+			}
+		}
+	}
+
+	// now append the data to the rows
+	for (int i=start;i<lines.size();i++)
+	{
+		vector<wstring> tokens = TokenizeLineToTokens( lines[i], 0x09);
+		for (int j=0;j<tags.size();j++)
+		{
+			wstring tag = tags[j];
+			tag = (tag[0]=='\\')?tag.substr(1):tag;
+			bool gloss = false;
+			if (CSFMHelper::IsGloss(tag.c_str(),tags[j].length())) {
+				gloss = true;
+			}
+			wstring data = L"";
+			if (gloss)
+			{
+				if (j<tokens.size())
+				{
+					if (tokens[j][0]!=WORD_DELIMITER)
+					{
+						data.push_back(WORD_DELIMITER);
+					}
+					data.append(tokens[j]);
+				}
+				else
+				{
+					data.push_back(WORD_DELIMITER);
+				}
+				td[tag.c_str()].push_back(data.c_str());
+			}
+			else
+			{
+				if (j<tokens.size())
+				{
+					data.append(tokens[j]);
+				}
+				else
+				{
+					data = L"";
+				}
+				td[tag.c_str()].push_back(data.c_str());
+			}
+		}
+	}
+	return td;
+}
+
 TranscriptionDataMap CSFMHelper::ImportSFM(CSaString & /*filename*/)
 {
     TranscriptionDataMap map;
@@ -207,5 +443,34 @@ bool CSFMHelper::IsGloss( LPCTSTR text, size_t length)
 	if (::tolower(text[1])!='g') return false;
 	if (::tolower(text[2])!='l') return false;
 	return true;
+}
+
+/***************************************************************************/
+// extractTabField local helper function to get field from tab delimited string
+/***************************************************************************/
+const CSaString CSFMHelper::ExtractTabField(const CSaString & szLine, const int nField)
+{
+    int nCount = 0;
+    int nLoop = 0;
+
+    if (nField < 0)
+    {
+        return "";    // SDM 1.5Test10.1
+    }
+
+    while ((nLoop < szLine.GetLength()) && (nCount < nField))
+    {
+        if (szLine[nLoop] == '\t')
+        {
+            nCount++;
+        }
+        nLoop++;
+    }
+    int nBegin = nLoop;
+    while ((nLoop < szLine.GetLength()) && (szLine[nLoop] != '\t'))
+    {
+        nLoop++;
+    }
+    return szLine.Mid(nBegin, nLoop-nBegin);
 }
 

@@ -13,6 +13,7 @@
 #include "mainfrm.h"
 #include "MusicPhraseSegment.h"
 #include "PhoneticSegment.h"
+#include "SFMHelper.h"
 #include "Process\sa_p_gra.h"
 #include "Process\sa_p_spi.h"
 #include "Process\sa_p_poa.h"
@@ -65,35 +66,6 @@ void CDlgVTOrder::OnOK()
     CDialog::OnOK();
 }
 
-/***************************************************************************/
-// extractTabField local helper function to get field from tab delimited string
-/***************************************************************************/
-static const CString extractTabField(const CString & szLine, const int nField)
-{
-    int nCount = 0;
-    int nLoop = 0;
-
-    if (nField < 0)
-    {
-        return "";    // SDM 1.5Test10.1
-    }
-
-    while ((nLoop < szLine.GetLength()) && (nCount < nField))
-    {
-        if (szLine[nLoop] == '\t')
-        {
-            nCount++;
-        }
-        nLoop++;
-    }
-    int nBegin = nLoop;
-    while ((nLoop < szLine.GetLength()) && (szLine[nLoop] != '\t'))
-    {
-        nLoop++;
-    }
-    return szLine.Mid(nBegin, nLoop-nBegin);
-}
-
 void CIpaVTCharVector::Load(CString szPath)
 {
     // is there a saved map???
@@ -123,7 +95,7 @@ void CIpaVTCharVector::Load(CString szPath)
         CString value;
         CIpaVTChar columnChar;
 
-        value = extractTabField(line, field++);
+        value = CSFMHelper::ExtractTabField(line, field++);
         columnChar.m_ipa = value;
         if (columnChar.m_ipa.IsEmpty())
         {
@@ -132,38 +104,38 @@ void CIpaVTCharVector::Load(CString szPath)
 
 
         columnChar.m_duration = 0;
-        value = extractTabField(line, field++);
+        value = CSFMHelper::ExtractTabField(line, field++);
         int nScanned = swscanf_s(value, _T("%lf"), &columnChar.m_duration);
 
         columnChar.m_dFrameEnergy = 0;
-        value = extractTabField(line, field++);
+        value = CSFMHelper::ExtractTabField(line, field++);
         nScanned = swscanf_s(value, _T("%lf"), &columnChar.m_dFrameEnergy);
 
         columnChar.m_stimulus.Pitch = 0;
-        value = extractTabField(line, field++);
+        value = CSFMHelper::ExtractTabField(line, field++);
         nScanned = swscanf_s(value, _T("%lf"), &columnChar.m_stimulus.Pitch);
 
         columnChar.m_stimulus.AV = 0;
-        value = extractTabField(line, field++);
+        value = CSFMHelper::ExtractTabField(line, field++);
         nScanned = swscanf_s(value, _T("%lf"), &columnChar.m_stimulus.AV);
 
         columnChar.m_stimulus.AF = 0;
-        value = extractTabField(line, field++);
+        value = CSFMHelper::ExtractTabField(line, field++);
         nScanned = swscanf_s(value, _T("%lf"), &columnChar.m_stimulus.AF);
 
         columnChar.m_stimulus.AH = 0;
-        value = extractTabField(line, field++);
+        value = CSFMHelper::ExtractTabField(line, field++);
         nScanned = swscanf_s(value, _T("%lf"), &columnChar.m_stimulus.AH);
 
         columnChar.m_stimulus.VHX = 0;
-        value = extractTabField(line, field++);
+        value = CSFMHelper::ExtractTabField(line, field++);
         nScanned = swscanf_s(value, _T("%lf"), &columnChar.m_stimulus.VHX);
 
         columnChar.m_dVTGain = 0;
-        value = extractTabField(line, field++);
+        value = CSFMHelper::ExtractTabField(line, field++);
         nScanned = swscanf_s(value, _T("%lf"), &columnChar.m_dVTGain);
 
-        value = extractTabField(line, field++);
+        value = CSFMHelper::ExtractTabField(line, field++);
         int i = 0;
         swscanf_s(value,_T("%d"),&i);
         const int VTAreas = i;
@@ -173,12 +145,12 @@ void CIpaVTCharVector::Load(CString szPath)
             CString szValue;
             double dValue = 1.;
 
-            szValue = extractTabField(line, field++);
+            szValue = CSFMHelper::ExtractTabField(line, field++);
             swscanf_s(szValue, _T("%lf"), &dValue);
             columnChar.m_areas.push_back(dValue);
         }
 
-        value = extractTabField(line, field++);
+        value = CSFMHelper::ExtractTabField(line, field++);
         i = 0;
         swscanf_s(value,_T("%d"),&i);
         const int VTReflections = i;
@@ -188,12 +160,12 @@ void CIpaVTCharVector::Load(CString szPath)
             CString szValue;
             double dValue = 0.;
 
-            szValue = extractTabField(line, field++);
+            szValue = CSFMHelper::ExtractTabField(line, field++);
             swscanf_s(szValue, _T("%lf"), &dValue);
             columnChar.m_reflection.push_back(dValue);
         }
 
-        value = extractTabField(line, field++);
+        value = CSFMHelper::ExtractTabField(line, field++);
         i = 0;
         swscanf_s(value,_T("%d"),&i);
         const int VTPreds = i;
@@ -203,7 +175,7 @@ void CIpaVTCharVector::Load(CString szPath)
             CString szValue;
             double dValue = 0.;
 
-            szValue = extractTabField(line, field++);
+            szValue = CSFMHelper::ExtractTabField(line, field++);
             swscanf_s(szValue, _T("%lf"), &dValue);
             columnChar.m_pred.push_back(dValue);
         }

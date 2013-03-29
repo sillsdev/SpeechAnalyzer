@@ -1137,36 +1137,6 @@ static const char * psz_Comments = "cmnt"; // Comments
 static const char * psz_Description = "desc"; // Description
 static const char * psz_Table = "table";
 
-/***************************************************************************/
-// extractTabField local helper function to get field from tab delimited string
-/***************************************************************************/
-static const CSaString extractTabField(const CSaString & szLine, const int nField)
-{
-
-    int nCount = 0;
-    int nLoop = 0;
-
-    if (nField < 0)
-    {
-        return "";    // SDM 1.5Test10.1
-    }
-
-    while ((nLoop < szLine.GetLength()) && (nCount < nField))
-    {
-        if (szLine[nLoop] == '\t')
-        {
-            nCount++;
-        }
-        nLoop++;
-    }
-    int nBegin = nLoop;
-    while ((nLoop < szLine.GetLength()) && (szLine[nLoop] != '\t'))
-    {
-        nLoop++;
-    }
-    return szLine.Mid(nBegin, nLoop-nBegin);
-}
-
 static void CreateWordSegments(const int nWord, int & nSegments)
 {
 

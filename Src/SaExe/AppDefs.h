@@ -14,7 +14,7 @@
 //        SDM removed nWordCount from SaParm
 //        SDM added MIN_EDIT_TIME
 //   1.06.8
-//        SDM added EDIT_WORD_DELIMITER & EDIT_DELIMITER_REPLACEMENT
+//        SDM added SPACE_DELIMITER & EDIT_DELIMITER_REPLACEMENT
 //   1.5Test8
 //        SDM added changes by CLW in 1.07a
 //   1.5Test8.1
@@ -92,7 +92,7 @@ enum UPDATE_MODE
 
 #define WORD_DELIMITER                  _T('#')         // '#' delimits words in text annotation windows
 #define TEXT_DELIMITER                  _T('!')         // '!' delimits text in text annotation windows
-#define EDIT_WORD_DELIMITER             0x20            // ' ' space
+#define SPACE_DELIMITER             0x20            // ' ' space
 #define EDIT_DELIMITER_REPLACEMENT      _T('.')         // Replace Delimiters with this character
 
 #define SEGMENT_DEFAULT_CHAR            _T('\xFFFD')    // default 0xFFFD

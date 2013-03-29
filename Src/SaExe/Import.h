@@ -21,9 +21,8 @@ public:
 
 private:
     BOOL ReadTable(Object_istream & ios, int nMode = QUERY);
-	BOOL IsTabular();
-	BOOL ProcessTable( wstring & result);
 	BOOL ProcessNormal( EImportMode nMode, wstring & result);
+	BOOL ProcessTable( wstring & result);
 };
 
 #endif

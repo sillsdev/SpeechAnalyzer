@@ -12,6 +12,7 @@
 #include "mainfrm.h"
 #include "MusicPhraseSegment.h"
 #include "PhoneticSegment.h"
+#include "SFMHelper.h"
 #include "Process\Process.h"
 #include "Process\sa_p_gra.h"
 #include "Process\sa_p_spi.h"
@@ -2791,35 +2792,6 @@ void CDlgKlattAll::OnKlattHelp()
     ::WinHelp(AfxGetMainWnd()->GetSafeHwnd(), szPath, HELP_INDEX, 0);
 }
 
-/***************************************************************************/
-// extractTabField local helper function to get field from tab delimited string
-/***************************************************************************/
-static const CString extractTabField(const CString & szLine, const int nField)
-{
-    int nCount = 0;
-    int nLoop = 0;
-
-    if (nField < 0)
-    {
-        return "";    // SDM 1.5Test10.1
-    }
-
-    while ((nLoop < szLine.GetLength()) && (nCount < nField))
-    {
-        if (szLine[nLoop] == '\t')
-        {
-            nCount++;
-        }
-        nLoop++;
-    }
-    int nBegin = nLoop;
-    while ((nLoop < szLine.GetLength()) && (szLine[nLoop] != '\t'))
-    {
-        nLoop++;
-    }
-    return szLine.Mid(nBegin, nLoop-nBegin);
-}
-
 void CIpaCharVector::Load(CString szPath)
 {
     // is there a saved map???
@@ -2854,11 +2826,11 @@ void CIpaCharVector::Load(CString szPath)
 
             CString value;
 
-            value = extractTabField(line, i+1);
+            value = CSFMHelper::ExtractTabField(line, i+1);
             swscanf(value, parameterInfo[i].typeScanf, ((char *)pTemporal)+parameterInfo[i].parameterOffset);
         }
 
-        this->push_back(CIpaChar(extractTabField(line, 0), cTemporal));
+        this->push_back(CIpaChar(CSFMHelper::ExtractTabField(line, 0), cTemporal));
     }
 
     CIpaCharVector(*this).swap(*this); // shrink size using swap trick from Effective STL #18

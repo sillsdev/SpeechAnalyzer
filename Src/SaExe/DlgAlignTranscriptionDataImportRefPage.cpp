@@ -48,7 +48,8 @@ BOOL CDlgAlignTranscriptionDataImportRefPage::OnSetActive()
                                           pParent->init.m_bPhonemic,
                                           pParent->init.m_bOrthographic,
                                           m_TranscriptionData,
-                                          false))
+                                          false,
+										  true))
         {
             m_szText = CTranscriptionHelper::Render(m_TranscriptionData);
         }
@@ -95,7 +96,8 @@ void CDlgAlignTranscriptionDataImportRefPage::OnClickedImport()
                                       pParent->init.m_bPhonemic,
                                       pParent->init.m_bOrthographic,
                                       m_TranscriptionData,
-                                      false))
+                                      false,
+									  true))
     {
         m_szText = CTranscriptionHelper::Render(m_TranscriptionData);
 

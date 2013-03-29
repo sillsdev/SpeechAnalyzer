@@ -13,11 +13,14 @@
 #include <fstream>
 #include "TextHelper.h"
 #include "SFMHelper.h"
+#include <string>
 
 using std::ifstream;
 using std::ios;
 using std::streampos;
 using std::ios_base;
+using std::string;
+using std::wstring;
 
 #ifdef _DEBUG
 #undef THIS_FILE
@@ -65,8 +68,8 @@ BOOL CImport::Import( EImportMode nMode)
 
 	wstring result;
 
-	if (IsTabular()) {
-		ProcessTable(result);
+	if (CSFMHelper::IsColumnarSFM(m_szPath)) {
+		ProcessTable( result);
 	} else {
 		if (!ProcessNormal(nMode,result)) return FALSE;
 	}
@@ -129,13 +132,6 @@ void CImport::AutoAlign(CSaDoc * pSaDoc, LPCTSTR pPhonetic, LPCTSTR pPhonemic, L
 	CDWordArray charDurations;
 	CDWordArray charOffsets;
 
-    // clean gloss string
-    // remove leading word delimiter.
-	if (settings.m_szGloss[0]==WORD_DELIMITER)
-	{
-		settings.m_szGloss.Delete(0,1);
-	}
-
     if (pSaDoc->GetSegment(GLOSS)->IsEmpty())
     {
         // auto parse
@@ -180,10 +176,10 @@ void CImport::AutoAlign(CSaDoc * pSaDoc, LPCTSTR pPhonetic, LPCTSTR pPhonemic, L
             CSaString szEmpty = "";
             pSaDoc->GetSegment(GLOSS)->Insert(0, szEmpty, FALSE, charOffsets[0], wordOffsets[0]-charOffsets[0]);
             wordOffsets.InsertAt(0,charOffsets[0]);
-            settings.m_szGloss = CSaString(EDIT_WORD_DELIMITER) + settings.m_szGloss;
-            settings.m_szPhonetic = CSaString(EDIT_WORD_DELIMITER) + settings.m_szPhonetic;
-            settings.m_szPhonemic = CSaString(EDIT_WORD_DELIMITER) + settings.m_szPhonemic;
-            settings.m_szOrthographic = CSaString(EDIT_WORD_DELIMITER) + settings.m_szOrthographic;
+            settings.m_szGloss = CSaString(SPACE_DELIMITER) + settings.m_szGloss;
+            settings.m_szPhonetic = CSaString(SPACE_DELIMITER) + settings.m_szPhonetic;
+            settings.m_szPhonemic = CSaString(SPACE_DELIMITER) + settings.m_szPhonemic;
+            settings.m_szOrthographic = CSaString(SPACE_DELIMITER) + settings.m_szOrthographic;
         }
         break;
     }
@@ -385,7 +381,7 @@ void CImport::AutoAlign(CSaDoc * pSaDoc, LPCTSTR pPhonetic, LPCTSTR pPhonemic, L
                             break;
                         }
                         else if ((szTemp.GetLength()==1)&&
-								 (szTemp[0]==EDIT_WORD_DELIMITER))
+								 (szTemp[0]==SPACE_DELIMITER))
                         {
                             // time to stop!
                             break;
@@ -394,7 +390,7 @@ void CImport::AutoAlign(CSaDoc * pSaDoc, LPCTSTR pPhonetic, LPCTSTR pPhonemic, L
                         {
                             // in some situations if the trailing character is not a break
                             // it will be combined with the space.  we will break it here.
-                            if (szTemp[0]==EDIT_WORD_DELIMITER)
+                            if (szTemp[0]==SPACE_DELIMITER)
                             {
                                 if (szNext.GetLength()==0)
                                 {
@@ -488,7 +484,7 @@ void CImport::AutoAlign(CSaDoc * pSaDoc, LPCTSTR pPhonetic, LPCTSTR pPhonemic, L
                         {
                             break;
                         }
-                        else if ((szTemp.GetLength()==1)&&(szTemp[0]==EDIT_WORD_DELIMITER))
+                        else if ((szTemp.GetLength()==1)&&(szTemp[0]==SPACE_DELIMITER))
                         {
                             // time to stop!
                             break;
@@ -497,7 +493,7 @@ void CImport::AutoAlign(CSaDoc * pSaDoc, LPCTSTR pPhonetic, LPCTSTR pPhonemic, L
                         {
                             // in some situations if the trailing character is not a break
                             // it will be combined with the space.  we will break it here.
-                            if (szTemp[0]==EDIT_WORD_DELIMITER)
+                            if (szTemp[0]==SPACE_DELIMITER)
                             {
                                 if (szNext.GetLength()==0)
                                 {
@@ -605,7 +601,7 @@ void CImport::AutoAlign(CSaDoc * pSaDoc, LPCTSTR pPhonetic, LPCTSTR pPhonemic, L
                         {
                             break;
                         }
-                        else if ((szTemp.GetLength()==1)&&(szTemp[0]==EDIT_WORD_DELIMITER))
+                        else if ((szTemp.GetLength()==1)&&(szTemp[0]==SPACE_DELIMITER))
                         {
                             // time to stop!
                             break;
@@ -614,7 +610,7 @@ void CImport::AutoAlign(CSaDoc * pSaDoc, LPCTSTR pPhonetic, LPCTSTR pPhonemic, L
                         {
                             // in some situations if the trailing character is not a break
                             // it will be combined with the space.  we will break it here.
-                            if (szTemp[0]==EDIT_WORD_DELIMITER)
+                            if (szTemp[0]==SPACE_DELIMITER)
                             {
                                 if (szNext.GetLength()==0)
                                 {
@@ -655,6 +651,7 @@ void CImport::AutoAlign(CSaDoc * pSaDoc, LPCTSTR pPhonetic, LPCTSTR pPhonemic, L
 
         // Process gloss
         // SDM 1.5Test8.2 only change if text changed
+		// we are assuming the the string has the format of ' #string1 #string2 #string3a string3b #string4'
         if (settings.m_bGlossModified)
         {
             nStringIndex = 0;
@@ -663,38 +660,64 @@ void CImport::AutoAlign(CSaDoc * pSaDoc, LPCTSTR pPhonetic, LPCTSTR pPhonemic, L
 
             bool poundDelimited = (settings.m_szGloss.FindOneOf(CSaString(WORD_DELIMITER))!=-1);
 
-			if (poundDelimited)
-			{
-				pTable->m_wordDelimiter = WORD_DELIMITER;
-			}
-
             // align gloss by word SDM 1.5Test8.2
             nAlignMode = CFontTable::DELIMITEDWORD;
             nOffsetSize = wordOffsets.GetSize();
             // Don't Select this segment SDM 1.5Test8.2
             pSegment->SelectSegment(*pSaDoc,-1);
+
             // the gloss table uses a space as a delimiter,
             // the normally the text is delimited with a #.
             // if we see a # in the first position, we will continue
-            // to scan the segments util we
+            // to scan the segments util we find the next #
+			bool first = true;
             for (nIndex = 0; nIndex < (nOffsetSize-1); nIndex++)
             {
-                szNext = pTable->GetNext(nAlignMode, nStringIndex, settings.m_szGloss);
-                if (szNext.GetLength()==0)
-                {
-                    szNext.AppendChar(WORD_DELIMITER);
-                }
-                else
-                {
-                    if (szNext[0]==WORD_DELIMITER)
-                    {
-                        // do nothing
-                    }
-                    else
-                    {
-						szNext.Insert(0,WORD_DELIMITER);
-                    }
-                }
+				szNext = "";
+				while (true)
+				{
+					int lastIndex = nStringIndex;
+					CString szTemp = pTable->GetNext(nAlignMode, nStringIndex, settings.m_szGloss);
+					if (szTemp.GetLength()==0)
+					{
+						if (first)
+						{
+							// this is just a leading space in the string - ignore it
+							first = false;
+						}
+						else
+						{
+							// a space only - we are done.
+							szNext.AppendChar(WORD_DELIMITER);
+							break;
+						}
+					}
+					else
+					{
+						first = false;
+						if (szTemp[0]==WORD_DELIMITER)
+						{
+							// do nothing this is the beginning of the line
+							if (szNext.GetLength()==0)
+							{
+								// this is the beginning of the line and carry on
+								szNext.Append(szTemp);
+							}
+							else
+							{
+								// this is the next line.  back up and stop
+								nStringIndex = lastIndex;
+								break;
+							}
+						}
+						else
+						{
+							// an embedded space - append
+							szNext.AppendChar(SPACE_DELIMITER);
+							szNext.Append(szTemp);
+						}
+					}
+				}
 
                 szNext.Remove(0x0d);
                 szNext.Remove(0x0a);
@@ -751,35 +774,6 @@ void CImport::AutoAlign(CSaDoc * pSaDoc, LPCTSTR pPhonetic, LPCTSTR pPhonemic, L
     pView->RefreshGraphs(); // redraw all graphs without legend window
 }
 
-
-/***************************************************************************/
-// extractTabField local helper function to get field from tab delimited string
-/***************************************************************************/
-static const CSaString extractTabField(const CSaString & szLine, const int nField)
-{
-    int nCount = 0;
-    int nLoop = 0;
-
-    if (nField < 0)
-    {
-        return "";    // SDM 1.5Test10.1
-    }
-
-    while ((nLoop < szLine.GetLength()) && (nCount < nField))
-    {
-        if (szLine[nLoop] == '\t')
-        {
-            nCount++;
-        }
-        nLoop++;
-    }
-    int nBegin = nLoop;
-    while ((nLoop < szLine.GetLength()) && (szLine[nLoop] != '\t'))
-    {
-        nLoop++;
-    }
-    return szLine.Mid(nBegin, nLoop-nBegin);
-}
 
 static void CreateWordSegments(const int nWord, int & nSegments)
 {
@@ -941,7 +935,7 @@ BOOL CImport::ReadTable(Object_istream & ostream, int nMode)
 
     for (int nLoop = 0; nLoop < 20; nLoop++)
     {
-        szField = extractTabField(szLine, nLoop);
+        szField = CSFMHelper::ExtractTabField(szLine, nLoop);
 
         if (szField.Find(_T("Time")) != -1)
         {
@@ -1006,7 +1000,7 @@ BOOL CImport::ReadTable(Object_istream & ostream, int nMode)
             {
                 return FALSE;
             }
-            if (extractTabField(szLine, nAnnotField[GLOSS]).GetLength())   // gloss found
+            if (CSFMHelper::ExtractTabField(szLine, nAnnotField[GLOSS]).GetLength())   // gloss found
             {
                 nSegmentToBeginWord[nWords] = nSegmentCount;
                 nWords++;
@@ -1084,7 +1078,7 @@ BOOL CImport::ReadTable(Object_istream & ostream, int nMode)
             {
                 return FALSE;
             }
-            if (extractTabField(szLine, nAnnotField[GLOSS]).GetLength())   // gloss found
+            if (CSFMHelper::ExtractTabField(szLine, nAnnotField[GLOSS]).GetLength())   // gloss found
             {
                 CreateWordSegments(nWordCount, nSegmentCount);
                 nWordCount++;
@@ -1163,7 +1157,7 @@ BOOL CImport::ReadTable(Object_istream & ostream, int nMode)
             return FALSE;
         }
 
-        szString = extractTabField(szLine, nAnnotField[GLOSS]);
+        szString = CSFMHelper::ExtractTabField(szLine, nAnnotField[GLOSS]);
         if (szString.GetLength())   // gloss found
         {
             nIndexGloss++;
@@ -1197,12 +1191,12 @@ BOOL CImport::ReadTable(Object_istream & ostream, int nMode)
             }
             if ((szString[0] != WORD_DELIMITER) || (szString[0] != TEXT_DELIMITER))
             {
-                szString = WORD_DELIMITER + szString;
+                szString = CSaString(SPACE_DELIMITER) + CSaString(WORD_DELIMITER) + szString;
             }
             pGloss->ReplaceSelectedSegment(pDoc, szString);
 
             // POS
-            szString = extractTabField(szLine, nAnnotField[ANNOT_WND_NUMBER/*POS*/]);
+            szString = CSFMHelper::ExtractTabField(szLine, nAnnotField[ANNOT_WND_NUMBER/*POS*/]);
             if (szString.GetLength())
             {
                 if (bAppendGloss)
@@ -1212,7 +1206,7 @@ BOOL CImport::ReadTable(Object_istream & ostream, int nMode)
                 pGloss->GetPOSs()->SetAt(nIndexGloss, szString);
             }
             // Reference
-            szString = extractTabField(szLine, nAnnotField[REFERENCE]);
+            szString = CSFMHelper::ExtractTabField(szLine, nAnnotField[REFERENCE]);
             if (szString.GetLength())
             {
                 pView->ASelection().SelectFromPosition(pView, REFERENCE, pGloss->GetOffset(nIndexGloss), CASegmentSelection::FIND_EXACT);
@@ -1225,7 +1219,7 @@ BOOL CImport::ReadTable(Object_istream & ostream, int nMode)
         }
         for (int nIndex = PHONETIC; nIndex < GLOSS; nIndex++)
         {
-            szString = extractTabField(szLine, nAnnotField[nIndex]);
+            szString = CSFMHelper::ExtractTabField(szLine, nAnnotField[nIndex]);
             if (szString.GetLength())
             {
                 pView->ASelection().SelectFromPosition(pView, nIndex, pPhonetic->GetOffset(nIndexPhonetic), CASegmentSelection::FIND_EXACT);
@@ -1259,71 +1253,6 @@ BOOL CImport::ReadTable(Object_istream & ostream, int nMode)
         pDoc->GetSegment(nLoop)->SetSelection(-1);
     }
     return TRUE;
-}
-
-BOOL CImport::IsTabular()
-{
-	size_t length2 = 0;
-	wchar_t * obuffer = NULL;
-	{
-		streampos length = 0;
-		char * buffer = NULL;
-		if (!ReadFileIntoBuffer( m_szPath, &buffer, length)) return FALSE;
-
-		if (!ConvertBufferToUTF16( buffer, length, &obuffer, length2))
-		{
-			delete [] buffer;
-			return FALSE;
-		}
-
-		delete [] buffer;
-	}
-	
-	int i = 0;
-    if ((obuffer[0]==0xfeff)||(obuffer[0]==0xfffe))
-	{
-		i++;
-	}
-
-	vector<wstring> lines = TokenizeBufferToLines( obuffer, i, length2);
-
-	delete [] obuffer;
-	obuffer = NULL;
-	length2 = 0;
-
-	lines = CSFMHelper::FilterBlankLines(lines);
-
-	if (lines.size()==0)
-	{
-		TRACE("file is empty\n");
-		return false;
-	}
-
-	int index = 0;
-	while (true) 
-	{
-		if (index>=lines.size()) return false;
-		if (lines[index].length()>0) break;
-		index++;
-	}
-
-	// we are now sitting at the first non-blank line
-	wstring line = lines[index];
-	vector<wstring> tokens = TokenizeLineToTokens( line, 0x09);
-	// the first line must be all tags.
-	for (int i=0;i<tokens.size();i++) {
-		if (!CSFMHelper::IsTag(tokens[i].c_str())) return false;
-	}
-
-	// the second line should not have any tags
-	index++;
-	line = lines[index];
-	tokens = TokenizeLineToTokens( line, 0x09);
-	for (int i=0;i<tokens.size();i++) {
-		if (CSFMHelper::IsTag(tokens[i].c_str())) return false;
-	}
-
-	return true;
 }
 
 /**
@@ -1365,7 +1294,7 @@ BOOL CImport::ProcessTable( wstring & result)
 
 	if (lines.size()==0) return false;
 
-	int start = 0;
+	size_t start = 0;
 	while (true) 
 	{
 		if (start>=lines.size()) return false;
@@ -1377,7 +1306,7 @@ BOOL CImport::ProcessTable( wstring & result)
 	wstring tagline = lines[start];
 	vector<wstring> tags = TokenizeLineToTokens( tagline, 0x09);
 	// the first line must be all tags.
-	for (int i=0;i<tags.size();i++) {
+	for (size_t i=0;i<tags.size();i++) {
 		if (!CSFMHelper::IsTag(tags[i].c_str())) {
 			TRACE("the first line contains an element that is not a tag '%s'\n",tagline.c_str());
 			return false;
@@ -1388,7 +1317,7 @@ BOOL CImport::ProcessTable( wstring & result)
 	
 	// run through all the lines and verify that the counts are no greater
 	// than the number of tags
-	for (int i=start;i<lines.size();i++) {
+	for (size_t i=start;i<lines.size();i++) {
 		vector<wstring> tokens = TokenizeLineToTokens( lines[i], 0x09);
 		if (tokens.size()>tagCount) {
 			TRACE("line %d has too many elements '%s'.  The tag count id %d\n",i,lines[i].c_str(),tagCount);
@@ -1398,9 +1327,9 @@ BOOL CImport::ProcessTable( wstring & result)
 
 	// run through all the lines and verify that there are no more tags
 	// than the number of tags
-	for (int i=start;i<lines.size();i++) {
+	for (size_t i=start;i<lines.size();i++) {
 		vector<wstring> tokens = TokenizeLineToTokens( lines[i], 0x09);
-		for (int j=0;j<tokens.size();j++) {
+		for (size_t j=0;j<tokens.size();j++) {
 			if (CSFMHelper::IsTag(tokens[j].c_str())) {
 				TRACE("line %d contains a tag '%s'.\n",i,lines[i].c_str());
 				return false;
@@ -1410,16 +1339,16 @@ BOOL CImport::ProcessTable( wstring & result)
 
 	// create as many rows as there are tags
 	vector<wstring> rows;
-	for (int i=0;i<tags.size();i++)
+	for (size_t i=0;i<tags.size();i++)
 	{
 		rows.push_back(tags[i]);
 	}
 
 	// now append the data to the rows
-	for (int i=start;i<lines.size();i++)
+	for (size_t i=start;i<lines.size();i++)
 	{
 		vector<wstring> tokens = TokenizeLineToTokens( lines[i], 0x09);
-		for (int j=0;j<tags.size();j++)
+		for (size_t j=0;j<tags.size();j++)
 		{
 			bool gloss = false;
 			if (CSFMHelper::IsGloss(tags[j].c_str(),tags[j].length())) {
@@ -1428,17 +1357,51 @@ BOOL CImport::ProcessTable( wstring & result)
 			wstring data = L"";
 			if (gloss)
 			{
+				// we want to assure the sequence is SPACE_DELIMITER,WORD_DELIMITER,text
 				if (j<tokens.size())
 				{
-					if (tokens[j][0]!=WORD_DELIMITER)
+					if (tokens[j].length()>0)
 					{
-						data.push_back(WORD_DELIMITER);
+						if (tokens[j][0]==SPACE_DELIMITER)
+						{
+							if (tokens[j].length()>1)
+							{
+								if (tokens[j][1]==WORD_DELIMITER)
+								{
+									// do nothing
+								}
+								else
+								{
+									data.push_back(WORD_DELIMITER);
+								}
+							}
+							else
+							{
+								data.push_back(WORD_DELIMITER);
+							}
+						}
+						else if (tokens[j][0]==WORD_DELIMITER)
+						{
+							data.push_back(SPACE_DELIMITER);
+						}
+						else
+						{
+							data.push_back(SPACE_DELIMITER);
+							data.push_back(WORD_DELIMITER);
+						}
+						data.append(tokens[j]);
 					}
-					data.append(tokens[j]);
+					else
+					{
+						data.push_back(SPACE_DELIMITER);
+						data.push_back(WORD_DELIMITER);
+						data.append(tokens[j]);
+					}
 				}
 				else
 				{
-					data = WORD_DELIMITER;
+					data.push_back(SPACE_DELIMITER);
+					data.push_back(WORD_DELIMITER);
 				}
 				rows[j].append(data);
 			}
@@ -1463,7 +1426,7 @@ BOOL CImport::ProcessTable( wstring & result)
 	wstring ortho;
 	wstring gloss;
 
-	for (int i=0;i<rows.size();i++)
+	for (size_t i=0;i<rows.size();i++)
 	{
 		if (CSFMHelper::IsPhonetic(rows[i].c_str(),rows[i].length()))
 		{
@@ -1484,10 +1447,15 @@ BOOL CImport::ProcessTable( wstring & result)
 	}
 
 	CSaDoc * pDoc = (CSaDoc *)((CMainFrame *)AfxGetMainWnd())->GetCurrSaView()->GetDocument();
-	AutoAlign( pDoc, phonetic.substr(4).c_str(), phonemic.substr(4).c_str(), ortho.substr(4).c_str(), gloss.substr(4).c_str());
+	phonetic = (phonetic.length()>4)?phonetic.substr(4):phonetic;
+	phonemic = (phonemic.length()>4)?phonemic.substr(4):phonemic;
+	ortho = (ortho.length()>4)?ortho.substr(4):ortho;
+	gloss = (gloss.length()>4)?gloss.substr(4):gloss;
+	
+	AutoAlign( pDoc, phonetic.c_str(), phonemic.c_str(), ortho.c_str(), gloss.c_str());
 
 	// now build the result string
-	for (int i=0;i<rows.size();i++)
+	for (size_t i=0;i<rows.size();i++)
 	{
 		result.append(rows[i].c_str());
 		result.append(L"\r\n");
@@ -1637,22 +1605,78 @@ BOOL CImport::ProcessNormal( EImportMode nMode, wstring & result)
             }
             else if (ostream.bReadString(psz_Gloss, &text))
             {
-				bool hasPounds = (gloss.Find(WORD_DELIMITER)!=-1);
+				bool first = true;
+				bool hasSpaces = (text.Find(SPACE_DELIMITER)!=-1);
+				bool hasPounds = (text.Find(WORD_DELIMITER)!=-1);
 				if (hasPounds)
 				{
-					// if it has pounds, then leave it alone!
-					// spaces are treated as embedded
+					// if it has pounds, then make sure that a space preceeds each pound.
+					// spaces without pounds are treated as embedded spaces
+					for (int i=0;i<text.GetLength();)
+					{
+						if (text[i]==SPACE_DELIMITER)
+						{
+							if ((i+1)<text.GetLength())
+							{
+								if (text[i+1]==WORD_DELIMITER)
+								{
+									gloss += text[i++];
+									gloss += text[i++];
+								}
+								else
+								{
+									// space followed by something else - treat as embedded space
+									gloss += text[i++];
+								}
+							}
+							else
+							{
+								// we are done.
+								gloss += text[i++];
+							}
+						}
+						else if (text[i]==WORD_DELIMITER)
+						{
+							// if we are here, we didn't see a preceeding space - add one
+							gloss += CSaString(SPACE_DELIMITER);
+							gloss += text[i++];
+						}
+						else
+						{
+							gloss += text[i++];
+						}
+					}
+				}
+				else if (hasSpaces)
+				{
+					// if it doesn't have pounds then convert spaces to space/pounds sequences
+					for (int i=0;i<text.GetLength();)
+					{
+						if (text[i]==SPACE_DELIMITER)
+						{
+							gloss += text[i++];
+							gloss += CSaString(WORD_DELIMITER);
+						}
+						else
+						{
+							if (first)
+							{
+								gloss += CSaString(SPACE_DELIMITER);
+								gloss += CSaString(WORD_DELIMITER);
+								first=false;
+							}
+							gloss += text[i++];
+						}
+						first=false;
+					}
 				}
 				else
 				{
-					// if it doesn't have pounds then
-  					// convert spaces to pounds
-					gloss = " " + text;
-					int nSpace;
-					while ((nSpace = gloss.Find(' ')) != -1)
-					{
-						gloss.SetAt(nSpace,WORD_DELIMITER);
-					}
+					// neither? add something in front
+					gloss += CSaString(SPACE_DELIMITER);
+					gloss += CSaString(WORD_DELIMITER);
+					gloss += text;
+
 				}
                 continue;
             }
@@ -1709,7 +1733,7 @@ BOOL CImport::ProcessNormal( EImportMode nMode, wstring & result)
         }
         if (gloss.GetLength()!=0)
         {
-            Report += "\\" + CSaString(psz_Gloss) + " " + gloss + CrLf;
+            Report += "\\" + CSaString(psz_Gloss) + gloss + CrLf;
 			gloss = "";
         }
 
@@ -1722,7 +1746,6 @@ BOOL CImport::ProcessNormal( EImportMode nMode, wstring & result)
             imported += Report;
         }
 	}
-
 	result.append(imported);
 	result.append(L"\r\n");
 	result.append(skipped);

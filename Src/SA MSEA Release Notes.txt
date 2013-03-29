@@ -1,3 +1,7 @@
+SA - 3.1.0.45 - 3/28/2013
+1) Fixed GPF in SFM import feature that occurs if any of the transcription fields (or/pm/ph/gl) are missing.
+2) Merged SFM tabular support into the AutoRef/TAT code.
+
 SA - 3.1.0.44 - 3/27/2013
 1) Fixed AutoSave feature so retrieved files are renamed so that they are deleted when the application is closed.
 2) Added SFM tabular support to File/Import/SFM menu item.

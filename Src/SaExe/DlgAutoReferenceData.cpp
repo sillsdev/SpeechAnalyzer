@@ -154,7 +154,7 @@ void CDlgAutoReferenceData::DoDataExchange(CDataExchange * pDX)
             {
                 CTranscriptionData td;
                 CSaString temp = mLastImport;
-                if (mSaDoc->ImportTranscription(temp,false,false,false,false,td,true))
+                if (mSaDoc->ImportTranscription(temp,false,false,false,false,td,true,false))
                 {
                     CString ref = td.m_szPrimary;
                     mComboBegin.ResetContent();
@@ -228,7 +228,7 @@ void CDlgAutoReferenceData::DoDataExchange(CDataExchange * pDX)
 
             CTranscriptionData td;
             CSaString temp = mLastImport;
-            if (!mSaDoc->ImportTranscription(temp,false,false,false,false,td,true))
+            if (!mSaDoc->ImportTranscription(temp,false,false,false,false,td,true,false))
             {
                 pDX->PrepareEditCtrl(IDC_FILENAME);
                 CString msg;
@@ -412,7 +412,7 @@ void CDlgAutoReferenceData::OnDeltaposEndSpin(NMHDR * pNMHDR, LRESULT * pResult)
 
 void CDlgAutoReferenceData::OnClickedBrowseButton()
 {
-    CFileDialog dlg(TRUE, NULL, NULL, OFN_HIDEREADONLY, _T("Text Files (*.txt) |*.txt| All Files (*.*) |*.*||"), this);
+    CFileDialog dlg(TRUE, NULL, NULL, OFN_HIDEREADONLY, _T("Standard Format (*.sfm) |*.sfm| Text Files (*.txt) |*.txt| All Files (*.*) |*.*||"), this);
     if (dlg.DoModal() != IDOK)
     {
         return;

@@ -7319,7 +7319,7 @@ void CSaDoc::OnAutoReferenceData()
         // data should be fully validated by dialog!
         CTranscriptionData td;
         CSaString temp = dlg.mLastImport;
-        if (!ImportTranscription(temp,false,false,false,false,td,true))
+        if (!ImportTranscription(temp,false,false,false,false,td,true,false))
         {
             CString msg;
             msg.LoadStringW(IDS_AUTO_REF_MAIN_1);
@@ -7400,7 +7400,7 @@ void CSaDoc::AlignTranscriptionData(CTranscriptionDataSettings & settings)
 
     // clean gloss string
     // remove trailing and leading spaces
-    settings.m_szGloss.Trim(EDIT_WORD_DELIMITER);
+    settings.m_szGloss.Trim(SPACE_DELIMITER);
 
     if (GetSegment(GLOSS)->IsEmpty())
     {
@@ -7446,10 +7446,10 @@ void CSaDoc::AlignTranscriptionData(CTranscriptionDataSettings & settings)
             CSaString szEmpty = "";
             GetSegment(GLOSS)->Insert(0, szEmpty, FALSE, pArray[CHARACTER_OFFSETS][0], pArray[WORD_OFFSETS][0]-pArray[CHARACTER_OFFSETS][0]);
             pArray[WORD_OFFSETS].InsertAt(0,pArray[CHARACTER_OFFSETS][0]);
-            settings.m_szGloss = CSaString(EDIT_WORD_DELIMITER) + settings.m_szGloss;
-            settings.m_szPhonetic = CSaString(EDIT_WORD_DELIMITER) + settings.m_szPhonetic;
-            settings.m_szPhonemic = CSaString(EDIT_WORD_DELIMITER) + settings.m_szPhonemic;
-            settings.m_szOrthographic = CSaString(EDIT_WORD_DELIMITER) + settings.m_szOrthographic;
+            settings.m_szGloss = CSaString(SPACE_DELIMITER) + settings.m_szGloss;
+            settings.m_szPhonetic = CSaString(SPACE_DELIMITER) + settings.m_szPhonetic;
+            settings.m_szPhonemic = CSaString(SPACE_DELIMITER) + settings.m_szPhonemic;
+            settings.m_szOrthographic = CSaString(SPACE_DELIMITER) + settings.m_szOrthographic;
         }
         break;
     }
@@ -7649,7 +7649,7 @@ void CSaDoc::AlignTranscriptionData(CTranscriptionDataSettings & settings)
                             szTemp=SEGMENT_DEFAULT_CHAR;
                             break;
                         }
-                        else if ((szTemp.GetLength()==1)&&(szTemp[0]==EDIT_WORD_DELIMITER))
+                        else if ((szTemp.GetLength()==1)&&(szTemp[0]==SPACE_DELIMITER))
                         {
                             // time to stop!
                             break;
@@ -7658,7 +7658,7 @@ void CSaDoc::AlignTranscriptionData(CTranscriptionDataSettings & settings)
                         {
                             // in some situations if the trailing character is not a break
                             // it will be combined with the space.  we will break it here.
-                            if (szTemp[0]==EDIT_WORD_DELIMITER)
+                            if (szTemp[0]==SPACE_DELIMITER)
                             {
                                 if (szNext.GetLength()==0)
                                 {
@@ -7753,7 +7753,7 @@ void CSaDoc::AlignTranscriptionData(CTranscriptionDataSettings & settings)
                         {
                             break;
                         }
-                        else if ((szTemp.GetLength()==1)&&(szTemp[0]==EDIT_WORD_DELIMITER))
+                        else if ((szTemp.GetLength()==1)&&(szTemp[0]==SPACE_DELIMITER))
                         {
                             // time to stop!
                             break;
@@ -7762,7 +7762,7 @@ void CSaDoc::AlignTranscriptionData(CTranscriptionDataSettings & settings)
                         {
                             // in some situations if the trailing character is not a break
                             // it will be combined with the space.  we will break it here.
-                            if (szTemp[0]==EDIT_WORD_DELIMITER)
+                            if (szTemp[0]==SPACE_DELIMITER)
                             {
                                 if (szNext.GetLength()==0)
                                 {
@@ -7870,7 +7870,7 @@ void CSaDoc::AlignTranscriptionData(CTranscriptionDataSettings & settings)
                         {
                             break;
                         }
-                        else if ((szTemp.GetLength()==1)&&(szTemp[0]==EDIT_WORD_DELIMITER))
+                        else if ((szTemp.GetLength()==1)&&(szTemp[0]==SPACE_DELIMITER))
                         {
                             // time to stop!
                             break;
@@ -7879,7 +7879,7 @@ void CSaDoc::AlignTranscriptionData(CTranscriptionDataSettings & settings)
                         {
                             // in some situations if the trailing character is not a break
                             // it will be combined with the space.  we will break it here.
-                            if (szTemp[0]==EDIT_WORD_DELIMITER)
+                            if (szTemp[0]==SPACE_DELIMITER)
                             {
                                 if (szNext.GetLength()==0)
                                 {
@@ -7976,7 +7976,7 @@ void CSaDoc::AlignTranscriptionData(CTranscriptionDataSettings & settings)
                             }
                             else
                             {
-                                szNext += CSaString(EDIT_WORD_DELIMITER);
+                                szNext += CSaString(SPACE_DELIMITER);
                             }
                         }
                         else
@@ -7989,7 +7989,7 @@ void CSaDoc::AlignTranscriptionData(CTranscriptionDataSettings & settings)
                             }
                             else
                             {
-                                szNext += CSaString(EDIT_WORD_DELIMITER) + szTemp;
+                                szNext += CSaString(SPACE_DELIMITER) + szTemp;
                             }
                         }
                     }
@@ -8237,7 +8237,7 @@ const CSaString CSaDoc::BuildImportString(BOOL /*gloss*/, BOOL /*phonetic*/, BOO
 * This is used by the automatic transcription feature
 * returns false on failure
 */
-const bool CSaDoc::ImportTranscription(CSaString & filename, bool gloss, bool phonetic, bool phonemic, bool orthographic, CTranscriptionData & td, bool addTag)
+const bool CSaDoc::ImportTranscription(CSaString & filename, bool gloss, bool phonetic, bool phonemic, bool orthographic, CTranscriptionData & td, bool addTag, bool showDlg)
 {
 
     td.m_MarkerDefs[REFERENCE] = psz_Reference;
@@ -8272,56 +8272,62 @@ const bool CSaDoc::ImportTranscription(CSaString & filename, bool gloss, bool ph
 
     if (CSFMHelper::IsSFM(filename))
     {
-        CDlgImportSFMRef dlg(phonetic, phonemic, orthographic, gloss);
-        int result = dlg.DoModal();
-        if (result==IDCANCEL)
+		if (showDlg)
+		{
+			CDlgImportSFMRef dlg(phonetic, phonemic, orthographic, gloss);
+			int result = dlg.DoModal();
+			if (result==IDCANCEL)
+			{
+				return true;
+			}
+
+			if (result==IDC_IMPORT_PLAIN_TEXT)
+			{
+				return CTextHelper::ImportText(filename,td.m_szPrimary,td.m_Markers,td.m_TranscriptionData, addTag);
+			}
+
+			// proceeding as SFM
+			// order is important here!
+			td.m_Markers.clear();
+			td.m_MarkerDefs[REFERENCE] = dlg.m_szReference;
+			td.m_Markers.push_back(dlg.m_szReference);
+
+			if (dlg.m_bPhonetic)
+			{
+				td.m_MarkerDefs[PHONETIC] = dlg.m_szPhonetic;
+				td.m_Markers.push_back(dlg.m_szPhonetic);
+				td.m_bPhonetic = true;
+			}
+			if (dlg.m_bPhonemic)
+			{
+				td.m_MarkerDefs[PHONEMIC] = dlg.m_szPhonemic;
+				td.m_Markers.push_back(dlg.m_szPhonemic);
+				td.m_bPhonemic = true;
+			}
+			if (dlg.m_bOrthographic)
+			{
+				td.m_MarkerDefs[ORTHO] = dlg.m_szOrthographic;
+				td.m_Markers.push_back(dlg.m_szOrthographic);
+				td.m_bOrthographic = true;
+			}
+			if (dlg.m_bGloss)
+			{
+				td.m_MarkerDefs[GLOSS] = dlg.m_szGloss;
+				td.m_Markers.push_back(dlg.m_szGloss);
+				td.m_bGloss = true;
+			}
+		}
+
+        if (CSFMHelper::IsMultiRecordSFM(filename, td.m_MarkerDefs[REFERENCE]))
         {
+            td.m_TranscriptionData = CSFMHelper::ImportMultiRecordSFM(filename, td.m_MarkerDefs[REFERENCE], td.m_Markers, addTag);
             return true;
         }
-
-        if (result==IDC_IMPORT_PLAIN_TEXT)
-        {
-            return CTextHelper::ImportText(filename,td.m_szPrimary,td.m_Markers,td.m_TranscriptionData, addTag);
-        }
-
-        // proceeding as SFM
-        // order is important here!
-        td.m_Markers.clear();
-        td.m_MarkerDefs[REFERENCE] = dlg.m_szReference;
-        td.m_Markers.push_back(dlg.m_szReference);
-
-        if (dlg.m_bPhonetic)
-        {
-            td.m_MarkerDefs[PHONETIC] = dlg.m_szPhonetic;
-            td.m_Markers.push_back(dlg.m_szPhonetic);
-            td.m_bPhonetic = true;
-        }
-        if (dlg.m_bPhonemic)
-        {
-            td.m_MarkerDefs[PHONEMIC] = dlg.m_szPhonemic;
-            td.m_Markers.push_back(dlg.m_szPhonemic);
-            td.m_bPhonemic = true;
-        }
-        if (dlg.m_bOrthographic)
-        {
-            td.m_MarkerDefs[ORTHO] = dlg.m_szOrthographic;
-            td.m_Markers.push_back(dlg.m_szOrthographic);
-            td.m_bOrthographic = true;
-        }
-        if (dlg.m_bGloss)
-        {
-            td.m_MarkerDefs[GLOSS] = dlg.m_szGloss;
-            td.m_Markers.push_back(dlg.m_szGloss);
-            td.m_bGloss = true;
-        }
-
-        CSaString sync = dlg.m_szReference;
-
-        if (CSFMHelper::IsMultiRecordSFM(filename, dlg.m_szReference))
-        {
-            td.m_TranscriptionData = CSFMHelper::ImportMultiRecordSFM(filename, sync, td.m_Markers, addTag);
+		if (CSFMHelper::IsColumnarSFM(filename))
+		{
+            td.m_TranscriptionData = CSFMHelper::ImportColumnarSFM(filename);
             return true;
-        }
+		}
 
         //map = CSFMHelper::ImportSFM( stream);
         return false;
