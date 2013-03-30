@@ -1,3 +1,7 @@
+SA - 3.1.0.47 - 3/29/2013
+1) Doubled performance of transcription writes.
+2) Added code to disable autosaves during playback.
+
 SA - 3.1.0.46 - 3/29/2013
 1) Modified autosave to save a .info file which provides the original source directory to be used for file restoration.
 2) Modified autosave so that the user is prompted on startup concerning autosave files.  They will be queried for each autosave file as to whether or not to recover the file, and in the case of recordings, they will be asked to supply a directory to save the file into.

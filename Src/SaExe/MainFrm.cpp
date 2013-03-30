@@ -3064,6 +3064,11 @@ void CMainFrame::OnTimer(UINT nIDEvent)
     TRACE(L"OnTimer %d\n",nIDEvent);
     if (nIDEvent == ID_TIMER_AUTOSAVE)
     {
+		if (this->IsPlayerPlaying())
+		{
+			TRACE("audio playing. defering auto save\n");
+			return;
+		}
         ::EnumChildWindows(m_hWnd, AutosaveTimerChildProc, NULL);
     }
     else

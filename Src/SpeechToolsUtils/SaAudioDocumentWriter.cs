@@ -185,71 +185,22 @@ namespace SIL.SpeechTools.Utils
 		#endregion
 
 		#region Methods for adding segment information
-		/// ------------------------------------------------------------------------------------
-		/// <summary>
-		/// Makes sure a segment for the specified offset exists in the segment collection.
-		/// If a segment for the specified offset doesn't exist, one is created.
-		/// </summary>
-		/// ------------------------------------------------------------------------------------
-		private void ValidateSegmentForOffset(uint offset, int annotationType)
-		{
-			if (annotationType < (int)AnnotationType.MusicPhraseLevel1)
-			{
-				int segIndex = GetSegmentIndexFromOffset(offset);
-				if (segIndex > -1)
-					return;
 
-				uint segCount = (uint)m_doc.m_segments.Count;
-				m_doc.m_segments[segCount] = new SegmentData(m_doc);
-				m_doc.m_segments[segCount].OffsetInSeconds = m_doc.BytesToSeconds(offset);
-			}
-			else
-			{
-				MusicSegmentKey key = new MusicSegmentKey();
-				key.PhraseLevel = (uint)(annotationType - AnnotationType.MusicPhraseLevel1 + 1);
-				key.Offset = offset;
-				if (!m_doc.m_musicSegments.ContainsKey(key))
-				{
-					m_doc.m_musicSegments[key] = new MusicSegmentData(m_doc);
-					m_doc.m_musicSegments[key].OffsetInSeconds = m_doc.BytesToSeconds(offset);
-				}
-			}
-		}
-
-		/// ------------------------------------------------------------------------------------
-		/// <summary>
-		/// Updates the duration of the segment with the specified offset and annotation type.
-		/// </summary>
-		/// ------------------------------------------------------------------------------------
-		private void UpdateDuration(uint offset, uint length, int annotationType)
-		{
-			if (annotationType < (int)AnnotationType.MusicPhraseLevel1)
-				m_doc.m_segments[(uint)GetSegmentIndexFromOffset(offset)].DurationInSeconds = m_doc.BytesToSeconds(length);
-			else
-			{
-				MusicSegmentKey key = new MusicSegmentKey();
-				key.PhraseLevel = (uint)(annotationType - AnnotationType.MusicPhraseLevel1 + 1);
-				key.Offset = offset;
-				m_doc.m_musicSegments[key].DurationInSeconds = m_doc.BytesToSeconds(length);
-			}
-		}
-
-		/// ------------------------------------------------------------------------------------
+        /// ------------------------------------------------------------------------------------
 		/// <summary>
 		/// Gets the index of a segment from its offset.
-		/// Return Value: segment index, if found; -1, otherwise.
+		/// Return Value: segment index if found; UInt32.MaxValue, otherwise.
 		/// </summary>
 		/// ------------------------------------------------------------------------------------
-		public int GetSegmentIndexFromOffset(uint offset)
+		public uint GetSegmentIndexFromOffset( uint offset)
 		{
 			int segCount = m_doc.m_segments.Count;
-			for (int i = 0; i < segCount; i++)
+			for (uint i = 0; i < segCount; i++)
 			{
 				if (m_doc.m_segments[(uint)i].Offset == offset)
 					return i;
 			}
-
-			return -1;
+			return System.UInt32.MaxValue;
 		}
 
 		/// ------------------------------------------------------------------------------------
@@ -257,46 +208,61 @@ namespace SIL.SpeechTools.Utils
 		/// Adds a segment string at the specified offset, with the specified length.
 		/// </summary>
 		/// ------------------------------------------------------------------------------------
-		public void AddSegment(int annotationType, uint offset, uint length,
-			string annotation)
+		public void AddSegment( int annotationType, uint offset, uint length, string annotation)
 		{
-			ValidateSegmentForOffset(offset, annotationType);
-			UpdateDuration(offset, length, annotationType);
+            AnnotationType at = (AnnotationType)annotationType;
 
-			uint segIndex = (uint)GetSegmentIndexFromOffset(offset);
+            if (at < AnnotationType.MusicPhraseLevel1)
+            {
+                uint segIndex = GetSegmentIndexFromOffset(offset);
+                if (segIndex == System.UInt32.MaxValue)
+                {
+                    segIndex = (uint)m_doc.m_segments.Count;
+                    m_doc.m_segments[segIndex] = new SegmentData(m_doc);
+                }
 
-			switch ((AnnotationType)annotationType)
-			{
-				case AnnotationType.Phonetic:
-					m_doc.m_segments[segIndex].Phonetic = annotation;
-					break;
+                m_doc.m_segments[segIndex].OffsetInSeconds = m_doc.BytesToSeconds(offset);
+                m_doc.m_segments[segIndex].DurationInSeconds = m_doc.BytesToSeconds(length);
 
-				case AnnotationType.Phonemic:
-					m_doc.m_segments[segIndex].Phonemic = annotation;
-					break;
+                switch (at)
+                {
+                    case AnnotationType.Phonetic:
+                        m_doc.m_segments[segIndex].Phonetic = annotation;
+                        break;
 
-				case AnnotationType.Tone:
-					m_doc.m_segments[segIndex].Tone = annotation;
-					break;
+                    case AnnotationType.Phonemic:
+                        m_doc.m_segments[segIndex].Phonemic = annotation;
+                        break;
 
-				case AnnotationType.Orthographic:
-					m_doc.m_segments[segIndex].Orthographic = annotation;
-					break;
+                    case AnnotationType.Tone:
+                        m_doc.m_segments[segIndex].Tone = annotation;
+                        break;
 
-				case AnnotationType.MusicPhraseLevel1:
-				case AnnotationType.MusicPhraseLevel2:
-				case AnnotationType.MusicPhraseLevel3:
-				case AnnotationType.MusicPhraseLevel4:
-					MusicSegmentKey key = new MusicSegmentKey();
-					key.PhraseLevel = (uint)(annotationType - AnnotationType.MusicPhraseLevel1 + 1);
-					key.Offset = offset;
-					m_doc.m_musicSegments[key].PhraseLevel = key.PhraseLevel;
-					m_doc.m_musicSegments[key].Annotation = annotation;
-					break;
+                    case AnnotationType.Orthographic:
+                        m_doc.m_segments[segIndex].Orthographic = annotation;
+                        break;
 
-				default:
-					return;
-			}
+                    default:
+                        return;
+                }
+            }
+            else if ((at >= AnnotationType.MusicPhraseLevel1) &&
+                     (at <= AnnotationType.MusicPhraseLevel4))
+            {
+                // we are looking at a phrase segment
+                MusicSegmentKey key = new MusicSegmentKey();
+                key.PhraseLevel = (uint)(annotationType - AnnotationType.MusicPhraseLevel1 + 1);
+                key.Offset = offset;
+                if (!m_doc.m_musicSegments.ContainsKey(key))
+                {
+                    m_doc.m_musicSegments[key] = new MusicSegmentData(m_doc);
+                }
+
+                m_doc.m_musicSegments[key].OffsetInSeconds = m_doc.BytesToSeconds(offset);
+                m_doc.m_musicSegments[key].DurationInSeconds = m_doc.BytesToSeconds(length);
+                m_doc.m_musicSegments[key].PhraseLevel = key.PhraseLevel;
+                m_doc.m_musicSegments[key].Annotation = annotation;
+            }
 		}
 
 		/// ------------------------------------------------------------------------------------
@@ -304,11 +270,16 @@ namespace SIL.SpeechTools.Utils
 		/// Adds information that spans one or more segment boundaries.
 		/// </summary>
 		/// ------------------------------------------------------------------------------------
-		public void AddMarkSegment(uint offset, uint length, string gloss, string partOfSpeech,
-			string reference, bool isBookmark)
+		public void AddMarkSegment( uint offset, uint length, string gloss, string partOfSpeech, string reference, bool isBookmark)
 		{
-			ValidateSegmentForOffset(offset, (int)AnnotationType.Gloss);
-			uint segIndex = (uint)GetSegmentIndexFromOffset(offset);
+            uint segIndex = GetSegmentIndexFromOffset(offset);
+            if (segIndex == System.UInt32.MaxValue)
+            {
+                segIndex = (uint)m_doc.m_segments.Count;
+                m_doc.m_segments[segIndex] = new SegmentData(m_doc);
+                m_doc.m_segments[segIndex].OffsetInSeconds = m_doc.BytesToSeconds(offset);
+            }
+
 			m_doc.m_segments[segIndex].Gloss = gloss;
 			m_doc.m_segments[segIndex].Reference = reference;
 			m_doc.m_segments[segIndex].PartOfSpeech = partOfSpeech;

@@ -2330,22 +2330,32 @@ BOOL CSaDoc::WriteDataFiles(const TCHAR * pszPathName, BOOL bSaveAudio/*=TRUE*/,
         return FALSE;
     }
 
-	DWORD a = GetTickCount();
+	DWORD a1 = GetTickCount();
     WriteNonSegmentData(dwDataSize, saAudioDocWriter);
+	DWORD a2 = GetTickCount();
     saAudioDocWriter->DeleteSegments();
+	DWORD a3 = GetTickCount();
     WriteTranscription(PHONETIC, saAudioDocWriter);
+	DWORD a4 = GetTickCount();
     WriteTranscription(PHONEMIC, saAudioDocWriter);
+	DWORD a5 = GetTickCount();
     WriteTranscription(TONE, saAudioDocWriter);
+	DWORD a6 = GetTickCount();
     WriteTranscription(ORTHO, saAudioDocWriter);
-	DWORD b = GetTickCount();
+	DWORD a7 = GetTickCount();
     WriteGlossPosAndRefSegments(saAudioDocWriter);
+	DWORD a8 = GetTickCount();
     WriteScoreData(saAudioDocWriter);
+	DWORD a9 = GetTickCount();
     WriteTranscription(MUSIC_PL1, saAudioDocWriter);
+	DWORD a10 = GetTickCount();
     WriteTranscription(MUSIC_PL2, saAudioDocWriter);
+	DWORD a11 = GetTickCount();
     WriteTranscription(MUSIC_PL3, saAudioDocWriter);
+	DWORD a12 = GetTickCount();
     WriteTranscription(MUSIC_PL4, saAudioDocWriter);
-	DWORD c = GetTickCount();
-	TRACE("Write Time %lu %lu\n",(c-b),(b-a));
+	DWORD a13 = GetTickCount();
+	TRACE("Write Time %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu\n",(a2-a1),(a3-a3),(a4-a3),(a5-a4),(a6-a5),(a7-a6),(a8-a7),(a9-a8),(a10-a9),(a11-a10),(a12-a11),(a13-a12));
 
     saAudioDocWriter->Commit();
     saAudioDocWriter->Close();
@@ -2561,7 +2571,7 @@ void CSaDoc::WriteNonSegmentData(DWORD dwDataSize, ISaAudioDocumentWriterPtr saA
 // CSaDoc::WriteTranscription  Write the transcription from the document
 // to the transcription database.
 /***************************************************************************/
-void CSaDoc::WriteTranscription(int transType, ISaAudioDocumentWriterPtr saAudioDocWriter)
+void CSaDoc::WriteTranscription( int transType, ISaAudioDocumentWriterPtr saAudioDocWriter)
 {
     CSaString szFullTrans = *m_apSegments[transType]->GetString();
     WORD wTransLength = (WORD)szFullTrans.GetLength();
@@ -2569,6 +2579,8 @@ void CSaDoc::WriteTranscription(int transType, ISaAudioDocumentWriterPtr saAudio
     {
         return;
     }
+
+	TRACE("trans length = %d\n",wTransLength);
 
     CSaString szAnnotation = _T("");
     DWORD dwOffset = m_apSegments[transType]->GetOffset(0);
