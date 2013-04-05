@@ -62,12 +62,9 @@ CPlotTonalWeightChart::~CPlotTonalWeightChart()
 {
 }
 
-/////////////////////////////////////////////////////////////////////////////
-// CPlotTonalWeightChart message handlers
-
-Grid CPlotTonalWeightChart::GetGrid() const
+CGrid CPlotTonalWeightChart::GetGrid() const
 {
-    Grid modifiedGrid(*reinterpret_cast<CMainFrame *>(AfxGetMainWnd())->GetGrid());
+    CGrid modifiedGrid(*reinterpret_cast<CMainFrame *>(AfxGetMainWnd())->GetGrid());
 
     // nPenStyle = PS_DASHDOT;
     modifiedGrid.nYStyle = 4; // Dashdot
@@ -112,10 +109,7 @@ void CPlotTonalWeightChart::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView *
         dMaxSemitone = pMelLegend->GetScaleMaxValue();
     }
 
-    FmtParm * pFmtParm = pDoc->GetFmtParm(); // get sa parameters format member data
-    UINT nBlockAlign = pFmtParm->wBlockAlign;
-    WORD wSmpSize = WORD(nBlockAlign / pFmtParm->wChannels);
-
+    DWORD wSmpSize = pDoc->GetSampleSize();
     CProcessMelogram * pMelogram = (CProcessMelogram *)pDoc->GetMelogram(); // get pointer to melogram object
     DWORD dwMelDataSize = pMelogram->GetDataSize() * 2; // size of melogram data
     DWORD dwRawDataSize = pDoc->GetDataSize(); // size of raw data
@@ -255,15 +249,15 @@ double CPlotTonalWeightChart::SetSemitoneOffset(double dSemitoneOffset)
     return dResult;
 }
 
-void DrawHistogram(CRect & rClip, CDataSource & cData, const CXScale & cXScale, const CYScale & cYScale, CDrawSegment & cDrawSegment)
+void DrawHistogram(CRect & rClip, CDataSource & dataSource, const CXScale & cXScale, const CYScale & cYScale, CDrawSegment & cDrawSegment)
 {
+
     int nFirst = (int) floor(cYScale.GetValue(rClip.bottom)) - 1;
     int nLast = (int) ceil(cYScale.GetValue(rClip.top)) + 1;
 
-
     BOOL bValid = TRUE;
 
-    CDataSource::CValues cValues;
+    CDataSource::SValues values;
 
     int nSample = nFirst > 0 ? nFirst : 0;
 
@@ -274,20 +268,20 @@ void DrawHistogram(CRect & rClip, CDataSource & cData, const CXScale & cXScale, 
         int nNext = (int) floor(cYScale.GetValue(y-1));
 
         // nSample is updated by GetValues
-        cData.GetValues(nSample, nNext, cValues, bValid);
+        dataSource.GetValues(nSample, nNext, values, bValid);
 
-        if (cValues.nMax==cValues.nMax)
+        if (values.nMax==values.nMax)
         {
             int yBegin = y;
             int yEnd = cYScale.GetY(nSampleGet+1);
-            cDrawSegment.DrawTo(cValues.nMax,cXScale, yBegin, bValid);
-            cDrawSegment.DrawTo(cValues.nMax,cXScale, yEnd, bValid);
+            cDrawSegment.DrawTo(values.nMax,cXScale, yBegin, bValid);
+            cDrawSegment.DrawTo(values.nMax,cXScale, yEnd, bValid);
             // Uncomment to draw full histogram bars
             cDrawSegment.DrawTo(0           ,cXScale, yEnd, bValid);
         }
         else
         {
-            cDrawSegment.DrawTo(cValues,cXScale, y, bValid);
+            cDrawSegment.DrawTo(values,cXScale, y, bValid);
         }
 
     }

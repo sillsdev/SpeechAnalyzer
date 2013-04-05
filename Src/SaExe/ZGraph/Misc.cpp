@@ -23,11 +23,6 @@
 #include <windows.h>
 #endif
 
-#ifdef OS2_PLATFORM
-#define INCL_GPI
-#include <os2.h>
-#endif
-
 #include "toolkit.h"                 // Toolkit Header File
 #include "lowlevel.h"                // Low-Level Graphics Functions
 
@@ -89,7 +84,7 @@ void   reduce(INT reduction);
 void   shift(INT state);
 
 
-#if defined(WINDOWS_PLATFORM) || defined(OS2_PLATFORM)
+#if defined(WINDOWS_PLATFORM)
 
 ////////////////////////////////////////////////////////////////////////////
 // zColorTable[] is a Table of 64 Arbitrarily-Chosen Colors
@@ -133,15 +128,7 @@ zRGB zMakeColor(BYTE red, BYTE green, BYTE blue)
 
 #endif
 
-#ifdef OS2_PLATFORM
-    // For OS/2, We Do It Ourselves!
-
-    ULONG Color = ((ULONG)(red   << 16)) |
-                  ((ULONG)(green << 8))  |
-                  ((ULONG)(blue));
-#endif
-
-#if defined(MS_DOS_PLATFORM)  ||  defined(BGI_DOS_PLATFORM)
+#if defined(MS_DOS_PLATFORM)
     UNUSED_PARAMETERS(&red, &green, &blue);
 
     // Operation Not Yet Defined!
@@ -173,23 +160,7 @@ zRGB RGB_color(INT color)
     return (rgb);
 #endif
 
-#ifdef OS2_PLATFORM
-    // For OS/2, The Red and the Blue Components as They Are Given
-    //   In the Table Above are Backwards--So We Must Switch Them Now.
-
-    zRGB rgb = zColorTable[ color ];
-
-    // Get Individual Components
-    BYTE blue  = (BYTE)((rgb & 0x00FF0000) >> 16);
-    BYTE green = (BYTE)((rgb & 0x0000FF00) >> 8) ;
-    BYTE red   = (BYTE)(rgb & 0x000000FF)        ;
-
-    // Reformat So Red and Blue Get Exchanged
-
-    return ((zRGB) zMakeColor(red, green, blue));
-#endif
-
-#if defined(MS_DOS_PLATFORM)  ||  defined(BGI_DOS_PLATFORM)
+#if defined(MS_DOS_PLATFORM)
     // Operation Not Yet Defined!
     return (zRGB)(color);
 #endif
@@ -218,7 +189,7 @@ void HOURGLASS(INT mode)
     }
 #endif
 
-#if defined(OS2_PLATFORM) || defined(MS_DOS_PLATFORM) || defined(BGI_DOS_PLATFORM)
+#if defined(MS_DOS_PLATFORM)
     // Kill Unused Parameter Warning.
     UNUSED_PARAMETERS(&mode);
 
@@ -242,12 +213,7 @@ void zDisplayMessage(PWCHAR title, PWCHAR message)
     // Note:  MB_SYSTEMMODAL forces User to Press OK before continuing...
 #endif
 
-#ifdef OS2_PLATFORM
-    WinMessageBox(HWND_DESKTOP, HWND_DESKTOP, message, title,
-                  0, MB_OK | MB_INFORMATION | MB_SYSTEMMODAL);
-#endif
-
-#if defined(MS_DOS_PLATFORM) || defined(BGI_DOS_PLATFORM)
+#if defined(MS_DOS_PLATFORM)
     UNUSED_PARAMETERS(&title);                    // Kill Compiler Warning
     zLowLevelGraphics::zDOSShowMessage(message);  // Show a Message Box
 #endif
@@ -267,13 +233,7 @@ void zDisplayError(PWCHAR message)
                 MB_OK | MB_ICONEXCLAMATION);
 #endif
 
-#ifdef OS2_PLATFORM
-    WinMessageBox(HWND_DESKTOP, HWND_DESKTOP,
-                  message, zGENERAL_ERROR_MSG,
-                  0, MB_OK | MB_INFORMATION | MB_SYSTEMMODAL);
-#endif
-
-#if defined(MS_DOS_PLATFORM) || defined(BGI_DOS_PLATFORM)
+#if defined(MS_DOS_PLATFORM)
     zLowLevelGraphics::zDOSShowMessage(message);    // Show a Message Box
 #endif
 
@@ -768,11 +728,7 @@ double parse(LPCSTR s, INT * att, double X, double Y)
     _strupr_s(copy, sizeof(copy));
 #endif
 
-#ifdef OS2_PLATFORM
-    strupr(strcpy(copy,s));
-#endif
-
-#if defined(MS_DOS_PLATFORM) || defined(BGI_DOS_PLATFORM)
+#if defined(MS_DOS_PLATFORM)
     strupr(strcpy(copy,s));
 #endif
 

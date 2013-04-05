@@ -119,7 +119,7 @@ DWORD CStopCursorWnd::CalculateCursorPosition(CView * pSaView,
         fDataPos = pView->GetDataPosition(nWidth); // data index of first sample to display
         dwDataFrame = pView->AdjustDataFrame(nWidth); // number of data points to display
     }
-    int nSmpSize = pDoc->GetFmtParm()->wBlockAlign / pDoc->GetFmtParm()->wChannels;
+    DWORD nSmpSize = pDoc->GetSampleSize();
     // calculate data samples per pixel
     ASSERT(nWidth);
     double fSamplesPerPix = (double)dwDataFrame / (double)(nWidth*nSmpSize);
@@ -365,8 +365,7 @@ void CStopCursorWnd::OnMouseMove(UINT nFlags, CPoint point)
         CProcessFragments * pFragments = pDoc->GetFragments();
         if (pFragments && pFragments->IsDataReady())
         {
-            FmtParm * pFmtParm = pView->GetDocument()->GetFmtParm();
-            WORD wSmpSize = WORD(pFmtParm->wBlockAlign / pFmtParm->wChannels);
+            DWORD wSmpSize = pDoc->GetSampleSize();
             DWORD OldFragmentIndex = pFragments->GetFragmentIndex(m_dwDragPos/wSmpSize);
             DWORD dwFragmentIndex = pFragments->GetFragmentIndex(dwCursor/wSmpSize);
             if (dwFragmentIndex != OldFragmentIndex)
@@ -486,8 +485,7 @@ void CStopCursorWnd::OnLButtonDown(UINT nFlags, CPoint point)
     CProcessFragments * pFragments = pDoc->GetFragments();
     if (pFragments && pFragments->IsDataReady())
     {
-        FmtParm * pFmtParm = pView->GetDocument()->GetFmtParm();
-        WORD wSmpSize = WORD(pFmtParm->wBlockAlign / pFmtParm->wChannels);
+        DWORD wSmpSize = pDoc->GetSampleSize();
         DWORD dwFragmentIndex = pFragments->GetFragmentIndex(dwCursor/wSmpSize);
         m_dwDragPos = dwCursor;
         pView->SendMessage(WM_USER_CURSOR_IN_FRAGMENT, STOP_CURSOR, dwFragmentIndex);

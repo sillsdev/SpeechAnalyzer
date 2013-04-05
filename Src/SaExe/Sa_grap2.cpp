@@ -805,16 +805,16 @@ BOOL CGraphWnd::IsMergeableGraph(CGraphWnd * pGraphToMerge, BOOL bBaseGraph)
     return ret;
 }
 
-static const char * psz_sagraph      = "sagraph";
+static LPCSTR psz_sagraph      = "sagraph";
 //static const char* psz_placement  = "placement";
 //static const char* psz_z          = "z";
-static const char * psz_plotid       = "plotid";
-static const char * psz_showlegend   = "showlegend";
-static const char * psz_showxscale   = "showxscale";
-static const char * psz_annotwnd     = "annotwnd";
-static const char * psz_showwnd      = "showwnd";
+static LPCSTR psz_plotid       = "plotid";
+static LPCSTR psz_showlegend   = "showlegend";
+static LPCSTR psz_showxscale   = "showxscale";
+static LPCSTR psz_annotwnd     = "annotwnd";
+static LPCSTR psz_showwnd      = "showwnd";
 
-void CGraphWnd::WriteProperties(Object_ostream & obs)
+void CGraphWnd::WriteProperties(CObjectOStream & obs)
 {
     obs.WriteBeginMarker(psz_sagraph);
 
@@ -834,7 +834,7 @@ void CGraphWnd::WriteProperties(Object_ostream & obs)
     obs.WriteEndMarker(psz_sagraph);
 }
 
-BOOL CGraphWnd::ReadProperties(Object_istream & obs)
+BOOL CGraphWnd::ReadProperties(CObjectIStream & obs)
 {
     if (!obs.bReadBeginMarker(psz_sagraph))
     {
@@ -877,17 +877,8 @@ BOOL CGraphWnd::ReadProperties(Object_istream & obs)
 /***************************************************************************/
 BOOL CGraphWnd::bSetProperties(int nID)
 {
-#ifdef originalSizeZGraph
-    m_bXScale = !(nID == IDD_MAGNITUDE || nID == IDD_STAFF || nID == IDD_POA    ||
-                  nID == IDD_F1F2      || nID == IDD_F2F1  || nID == IDD_F2F1F1 || nID == IDD_3D);
-
-    m_bLegend = !(nID == IDD_POA    ||
-                  nID == IDD_F1F2      || nID == IDD_F2F1     || nID == IDD_F2F1F1 || nID == IDD_3D);
-#else
     m_bXScale = !(nID == IDD_MAGNITUDE || nID == IDD_STAFF || nID == IDD_POA);
-
     m_bLegend = !(nID == IDD_POA);
-#endif
 
     //**********************************************************************
     // 10/23/2000 - DDO  This considers the case when the melogram is
@@ -924,15 +915,6 @@ BOOL CGraphWnd::bSetProperties(int nID)
 
     return TRUE;
 }
-
-/***************************************************************************/
-// CGraphWnd::OnGenderInfoChanged  Notify plot gender info has been updated.
-/***************************************************************************/
-//LRESULT CGraphWnd::OnGenderInfoChanged(WPARAM nGender, LPARAM)
-//{
-//  m_pPlot->GenderInfoChanged(nGender);
-//  return 0L;
-//}
 
 /***************************************************************************/
 // CGraphWnd::SetGraphFocus Set/reset focus for the graph and propagate
@@ -994,5 +976,3 @@ BOOL CRecGraphWnd::PreCreateWindow(CREATESTRUCT & cs)
     cs.style = WS_VISIBLE | WS_CHILD | WS_CLIPSIBLINGS | WS_BORDER;
     return bRet;
 }
-
-

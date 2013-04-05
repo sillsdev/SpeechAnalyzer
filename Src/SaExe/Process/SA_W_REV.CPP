@@ -5,11 +5,9 @@
 // Author: Urs Ruchti
 // copyright 1997 JAARS Inc. SIL
 /////////////////////////////////////////////////////////////////////////////
-
 #include "stdafx.h"
 #include "Process.h"
 #include "sa_w_rev.h"
-
 #include "math.h"
 #include "resource.h"
 #include "mainfrm.h"
@@ -102,10 +100,13 @@ long CProcessWbEcho::Process(void * pCaller, ISaDoc * pDoc, int nProgress,
     }
 
     // start process
-    BeginWaitCursor(); // wait cursor
-    if (!StartProcess(pCaller, IDS_STATTXT_PROCESSWBECHO))   // memory allocation failed
+    // wait cursor
+    BeginWaitCursor();
+    if (!StartProcess(pCaller, IDS_STATTXT_PROCESSWBECHO))
     {
-        EndProcess(); // end data processing
+        // memory allocation failed
+        // end data processing
+        EndProcess();
         EndWaitCursor();
         return MAKELONG(PROCESS_ERROR, nProgress);
     }
@@ -128,8 +129,7 @@ long CProcessWbEcho::Process(void * pCaller, ISaDoc * pDoc, int nProgress,
         dwDataSize = pDoc->GetUnprocessedDataSize();    // size of raw data
     }
     DWORD dwBufferSize = GetBufferSize();
-    FmtParm * pFmtParm = pDoc->GetFmtParm(); // get sa parameters format member data
-    WORD wSmpSize = (WORD)(pFmtParm->wBlockAlign / pFmtParm->wChannels);
+    DWORD wSmpSize = pDoc->GetSampleSize();
     HPSTR pSourceData, pBlockStart; // pointers to source data
     HPSTR pTargetData; // pointers to target data
     DWORD dwDataPos = 0; // data position pointer
@@ -137,7 +137,7 @@ long CProcessWbEcho::Process(void * pCaller, ISaDoc * pDoc, int nProgress,
     DWORD dwRangeEnd = dwDataSize - wSmpSize;
 
     float fGain = (float)1.0 / (float)pow(10.0, (double)m_nGain / -20.0);
-    DWORD dwFifoSize = pFmtParm->dwSamplesPerSec * m_nDelay / 1000;
+    DWORD dwFifoSize = pDoc->GetSamplesPerSec() * m_nDelay / 1000;
     // alocate the temporary global buffer for the fifo
     HANDLE hFifo = ::GlobalAlloc(GMEM_MOVEABLE | GMEM_SHARE, dwFifoSize * 2); // fifo is 16 bit
     if (!hFifo)
@@ -171,7 +171,7 @@ long CProcessWbEcho::Process(void * pCaller, ISaDoc * pDoc, int nProgress,
         }
         else
         {
-            pBlockStart = pDoc->GetUnprocessedWaveData(dwDataPos);    // get pointer to raw data block
+            pBlockStart = pDoc->GetAdjustedUnprocessedWaveData(dwDataPos);    // get pointer to raw data block
         }
         if (!pBlockStart)
         {
@@ -266,7 +266,7 @@ long CProcessWbEcho::Process(void * pCaller, ISaDoc * pDoc, int nProgress,
             // write the processed data block
             try
             {
-                Write((HPSTR)m_lpBuffer, dwBufferSize);
+                Write(m_lpBuffer, dwBufferSize);
             }
             catch (CFileException e)
             {
@@ -308,15 +308,15 @@ int CProcessWbEcho::PropertiesDialog()
     return IDCANCEL;
 }
 
-static const char * psz_echo = "echo";
-static const char * psz_reverb = "reverb";
-static const char * psz_delay = "delay";
-static const char * psz_gain = "gain";
+static LPCSTR psz_echo = "echo";
+static LPCSTR psz_reverb = "reverb";
+static LPCSTR psz_delay = "delay";
+static LPCSTR psz_gain = "gain";
 
 /***************************************************************************/
 // CProcessWbEcho::WriteProperties Write echo properties
 /***************************************************************************/
-void CProcessWbEcho::WriteProperties(Object_ostream & obs)
+void CProcessWbEcho::WriteProperties(CObjectOStream & obs)
 {
     obs.WriteBeginMarker(psz_echo);
     obs.WriteUInt(psz_delay, m_nDelay);
@@ -327,7 +327,7 @@ void CProcessWbEcho::WriteProperties(Object_ostream & obs)
 /***************************************************************************/
 // CProcessWbEcho::ReadProperties Read echo properties
 /***************************************************************************/
-BOOL CProcessWbEcho::ReadProperties(Object_istream & obs)
+BOOL CProcessWbEcho::ReadProperties(CObjectIStream & obs)
 {
     UINT nDelay = m_nDelay;
     int nGain = m_nGain;
@@ -462,8 +462,7 @@ long CProcessWbReverb::Process(void * pCaller, ISaDoc * pDoc, int nProgress,
         dwDataSize = pDoc->GetUnprocessedDataSize();    // size of raw data
     }
     DWORD dwBufferSize = GetBufferSize();
-    FmtParm * pFmtParm = pDoc->GetFmtParm(); // get sa parameters format member data
-    WORD wSmpSize = (WORD)(pFmtParm->wBlockAlign / pFmtParm->wChannels);
+    DWORD wSmpSize = pDoc->GetSampleSize();
     HPSTR pSourceData, pBlockStart; // pointers to source data
     HPSTR pTargetData; // pointers to target data
     DWORD dwDataPos = 0; // data position pointer
@@ -471,8 +470,8 @@ long CProcessWbReverb::Process(void * pCaller, ISaDoc * pDoc, int nProgress,
     DWORD dwRangeEnd = dwDataSize - wSmpSize;
 
     float fGain = (float)1.0 / (float)pow(10.0, (double)m_nGain / -20.0);
-    DWORD dwFifoSize = pFmtParm->dwSamplesPerSec * m_nDelay / 1000;
-    // alocate the temporary global buffer for the fifo
+    DWORD dwFifoSize = pDoc->GetSamplesPerSec() * m_nDelay / 1000;
+    // allocate the temporary global buffer for the fifo
     HANDLE hFifo = ::GlobalAlloc(GMEM_MOVEABLE | GMEM_SHARE, dwFifoSize * 2); // fifo is 16 bit
     if (!hFifo)
     {
@@ -506,7 +505,8 @@ long CProcessWbReverb::Process(void * pCaller, ISaDoc * pDoc, int nProgress,
         }
         else
         {
-            pBlockStart = pDoc->GetUnprocessedWaveData(dwDataPos);    // get pointer to raw data block
+            // get pointer to raw data block
+            pBlockStart = pDoc->GetAdjustedUnprocessedWaveData(dwDataPos);
         }
         if (!pBlockStart)
         {
@@ -647,7 +647,7 @@ int CProcessWbReverb::PropertiesDialog()
 /***************************************************************************/
 // CProcessWbReverb::WriteProperties Write reverb properties
 /***************************************************************************/
-void CProcessWbReverb::WriteProperties(Object_ostream & obs)
+void CProcessWbReverb::WriteProperties(CObjectOStream & obs)
 {
     obs.WriteBeginMarker(psz_reverb);
     obs.WriteUInt(psz_delay, m_nDelay);
@@ -658,7 +658,7 @@ void CProcessWbReverb::WriteProperties(Object_ostream & obs)
 /***************************************************************************/
 // CProcessWbReverb::ReadProperties Read reverb properties
 /***************************************************************************/
-BOOL CProcessWbReverb::ReadProperties(Object_istream & obs)
+BOOL CProcessWbReverb::ReadProperties(CObjectIStream & obs)
 {
     UINT nDelay = m_nDelay;
     int nGain = m_nGain;

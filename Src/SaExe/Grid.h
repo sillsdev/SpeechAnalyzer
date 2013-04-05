@@ -3,21 +3,20 @@
 
 // grid settings
 
-class Object_ostream;
-class Object_istream;
+class CObjectOStream;
+class CObjectIStream;
 
-class Grid
+class CGrid
 {
 public:
-    BOOL         bXGrid;            // TRUE, if x-grid enabled
-    BOOL         bYGrid;            // TRUE, if y-grid enabled
-    int          nXStyle;           // x-grid style
-    int          nYStyle;           // y-grid style
-
-    void WriteProperties(Object_ostream & obs);
-    BOOL ReadProperties(Object_istream & obs);
-
+    void WriteProperties(CObjectOStream & obs);
+    BOOL ReadProperties(CObjectIStream & obs);
     void Init();
+
+    BOOL bXGrid;            // TRUE, if x-grid enabled
+    BOOL bYGrid;            // TRUE, if y-grid enabled
+    int nXStyle;            // x-grid style
+    int nYStyle;            // y-grid style
 };
 
-#endif //_GRID_H
+#endif

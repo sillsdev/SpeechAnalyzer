@@ -98,18 +98,18 @@ int CProcessWbHighpass::PropertiesDialog()
     return IDCANCEL;
 }
 
-static const char * psz_highpass = "highpass";
-static const char * psz_lowpass = "lowpass";
-static const char * psz_bandpass = "bandpass";
-static const char * psz_upper = "uppercutoff";
-static const char * psz_lower = "lowercutoff";
-static const char * psz_order = "filterorder";
-static const char * psz_filter = "filterfilter";
+static LPCSTR psz_highpass = "highpass";
+static LPCSTR psz_lowpass = "lowpass";
+static LPCSTR psz_bandpass = "bandpass";
+static LPCSTR psz_upper = "uppercutoff";
+static LPCSTR psz_lower = "lowercutoff";
+static LPCSTR psz_order = "filterorder";
+static LPCSTR psz_filter = "filterfilter";
 
 /***************************************************************************/
 // CProcessWbHighpass::WriteProperties Write highpass properties
 /***************************************************************************/
-void CProcessWbHighpass::WriteProperties(Object_ostream & obs)
+void CProcessWbHighpass::WriteProperties(CObjectOStream & obs)
 {
     obs.WriteBeginMarker(psz_highpass);
     obs.WriteUInt(psz_lower, m_nCutoff);
@@ -121,7 +121,7 @@ void CProcessWbHighpass::WriteProperties(Object_ostream & obs)
 /***************************************************************************/
 // CProcessWbHighpass::ReadProperties Read highpass properties
 /***************************************************************************/
-BOOL CProcessWbHighpass::ReadProperties(Object_istream & obs)
+BOOL CProcessWbHighpass::ReadProperties(CObjectIStream & obs)
 {
     UINT nCutoff = m_nCutoff;
     UINT nOrder = m_nOrder;
@@ -227,7 +227,7 @@ int CProcessWbLowpass::PropertiesDialog()
 /***************************************************************************/
 // CProcessWbLowpass::WriteProperties Write lowpass properties
 /***************************************************************************/
-void CProcessWbLowpass::WriteProperties(Object_ostream & obs)
+void CProcessWbLowpass::WriteProperties(CObjectOStream & obs)
 {
     obs.WriteBeginMarker(psz_lowpass);
     obs.WriteUInt(psz_upper, m_nCutoff);
@@ -239,7 +239,7 @@ void CProcessWbLowpass::WriteProperties(Object_ostream & obs)
 /***************************************************************************/
 // CProcessWbLowpass::ReadProperties Read lowpass properties
 /***************************************************************************/
-BOOL CProcessWbLowpass::ReadProperties(Object_istream & obs)
+BOOL CProcessWbLowpass::ReadProperties(CObjectIStream & obs)
 {
     UINT nCutoff = m_nCutoff;
     UINT nOrder = m_nOrder;
@@ -347,7 +347,7 @@ int CProcessWbBandpass::PropertiesDialog()
 /***************************************************************************/
 // CProcessWbBandpass::WriteProperties Write bandpass properties
 /***************************************************************************/
-void CProcessWbBandpass::WriteProperties(Object_ostream & obs)
+void CProcessWbBandpass::WriteProperties(CObjectOStream & obs)
 {
     obs.WriteBeginMarker(psz_bandpass);
     obs.WriteUInt(psz_upper, m_nUpperCutoff);
@@ -360,7 +360,7 @@ void CProcessWbBandpass::WriteProperties(Object_ostream & obs)
 /***************************************************************************/
 // CProcessWbBandpass::ReadProperties Read bandpass properties
 /***************************************************************************/
-BOOL CProcessWbBandpass::ReadProperties(Object_istream & obs)
+BOOL CProcessWbBandpass::ReadProperties(CObjectIStream & obs)
 {
     UINT nUpperCutoff = m_nUpperCutoff;
     UINT nLowerCutoff = m_nLowerCutoff;

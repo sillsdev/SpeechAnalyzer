@@ -11,31 +11,20 @@ class CSaView;
 
 #define MAX_TARGETS 256
 
-class CTargViewDlg : public CDialog
+class CDlgTargView : public CDialog
 {
-    // Construction
-public:
-    CTargViewDlg(CMainFrame * pMainFrame);  // standard constructor
 
-    // Dialog Data
-    //{{AFX_DATA(CTargViewDlg)
+public:
+    CDlgTargView(CMainFrame * pMainFrame);  // standard constructor
+
     enum { IDD = IDD_EQUALIZE };
     CListBox m_TargView;
     CString   m_SrcView;
-    //}}AFX_DATA
 
-    CString OnlyTarg()
-    {
-        return m_onlyTarg;
-    };
-    int    NumTargs()
-    {
-        return m_numTargs;
-    };
-    CSaView  * Targ();
+    CString OnlyTarg();
+    int NumTargs();
+    CSaView * Targ();
 
-    // Implementation
-public:
     void OnHelpEqualize();
 
 protected:
@@ -46,18 +35,14 @@ protected:
     CFont m_Font;
     int m_selectionIndex;
 
-    virtual void DoDataExchange(CDataExchange * pDX); // DDX/DDV support
+    virtual void DoDataExchange(CDataExchange * pDX);
     void SetupTargViewList();
     virtual BOOL OnInitDialog();
     void TrimPath(CString * pCStr);
 
-    // Generated message map functions
-    //{{AFX_MSG(CTargViewDlg)
-    // NOTE: the ClassWizard will add member functions here
-    //}}AFX_MSG
     DECLARE_MESSAGE_MAP()
 
     virtual void OnOK();
 };
 
-#endif //_TARGVIEW_H
+#endif

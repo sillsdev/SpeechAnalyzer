@@ -85,8 +85,7 @@ void CPlotPOA::OnDraw(CDC * pDC, CRect rWnd, CRect /*rClip*/, CSaView * pView)
     // Get waveform and buffer parameters.
     CMainFrame * pMainWnd = (CMainFrame *)AfxGetMainWnd();
     CSaDoc * pDoc = (CSaDoc *)pView->GetDocument();
-    FmtParm * pFmtParm = pDoc->GetFmtParm();     //get sample data format
-    WORD     wSmpSize = (WORD)(pFmtParm->wBlockAlign / pFmtParm->wChannels);   //compute sample size in bytes
+    WORD wSmpSize = (WORD)(pDoc->GetSampleSize());      //compute sample size in bytes
 
     // Get pointer to raw waveform plot.
     int nWaveGraphIndex = pView->GetGraphIndexForIDD(IDD_RAWDATA);
@@ -232,7 +231,7 @@ void CPlotPOA::OnDraw(CDC * pDC, CRect rWnd, CRect /*rClip*/, CSaView * pView)
         CPen Pen(PS_SOLID, 1, pColor->cPlotData[0]);     //get pen
         CPen * pOldPen = dcFace.SelectObject(&Pen);      //select pen for plotting
 
-        static VOCAL_TRACT_COORD VocalTractPlotSect[] =
+        static SVocalTractCoord VocalTractPlotSect[] =
         {
 #include "voctract.h"    //locate the vocal tract sections in the plot
         };
@@ -394,10 +393,9 @@ void CPlotPOA::GraphHasFocus(BOOL bFocus)
         if (bFocus)
         {
             CSaDoc * pDoc = pView->GetDocument();
-            FmtParm * pFmtParm = pDoc->GetFmtParm();     //get sample data format
-            WORD wSmpSize = (WORD)(pFmtParm->wBlockAlign / pFmtParm->wChannels);   //compute sample size in bytes
-            CProcessFragments * pFragments = pDoc->GetFragments(); // get fragmenter object
-            pFragments->Process(this, pDoc); // process data
+            WORD wSmpSize = (WORD)(pDoc->GetSampleSize());          //compute sample size in bytes
+            CProcessFragments * pFragments = pDoc->GetFragments();  // get fragmenter object
+            pFragments->Process(this, pDoc);                        // process data
             if (pFragments->IsDataReady())
             {
                 DWORD dwFrameIndex;

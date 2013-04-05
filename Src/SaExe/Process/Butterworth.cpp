@@ -72,8 +72,7 @@ long CProcessIIRFilter::Process(void * pCaller, ISaDoc * pDoc, int nProgress, in
 
     // check if nested workbench processes
     int nOldLevel = nLevel; // save original level
-    CProcess * pLowerProcess = NULL;
-    pLowerProcess = m_pSourceProcess;
+    IProcess * pLowerProcess = m_pSourceProcess;
     if (pLowerProcess)
     {
         TRACE("process lower\n");
@@ -123,8 +122,7 @@ long CProcessIIRFilter::Process(void * pCaller, ISaDoc * pDoc, int nProgress, in
     HPSTR pTargetData; // pointers to target data
     DWORD dwDataPos = 0; // data position pointer
 
-    FmtParm * pFmtParm = pDoc->GetFmtParm(); // get sa parameters format member data
-    WORD wDstSmpSize = WORD(m_bDstWBenchProcess ? pFmtParm->wBlockAlign / pFmtParm->wChannels : sizeof(short));
+    WORD wDstSmpSize = WORD(m_bDstWBenchProcess ? pDoc->GetSampleSize() : sizeof(short));
 
     DWORD dwBufferSize = GetBufferSize();
 
@@ -135,11 +133,12 @@ long CProcessIIRFilter::Process(void * pCaller, ISaDoc * pDoc, int nProgress, in
     {
         TRACE("forward\n");
         m_bReverse = FALSE;
+
         // get source data size
         DWORD dwDataSize;
-        if (pLowerProcess)
+        if (pLowerProcess!=NULL)
         {
-            dwDataSize = pLowerProcess->GetProcessedWaveDataSize();
+            dwDataSize = pLowerProcess->GetProcessedWaveDataSize(pDoc);
         }
         else
         {
@@ -147,7 +146,7 @@ long CProcessIIRFilter::Process(void * pCaller, ISaDoc * pDoc, int nProgress, in
         }
         TRACE("dwDataSize=%d\n",dwDataSize);
 
-        WORD wSrcSmpSize = WORD(m_bSrcWBenchProcess ? pFmtParm->wBlockAlign / pFmtParm->wChannels : sizeof(short));
+        WORD wSrcSmpSize = WORD(m_bSrcWBenchProcess ? pDoc->GetSampleSize() : sizeof(short));
 
         if (wDstSmpSize > wSrcSmpSize)
         {
@@ -159,7 +158,6 @@ long CProcessIIRFilter::Process(void * pCaller, ISaDoc * pDoc, int nProgress, in
         while (dwDataPos < dwDataSize)
         {
             // set progress bar
-            //SetProgress(nProgress + (int)(100 * dwDataPos / dwDataSize / (DWORD)nLevel));
             if (IsCanceled())
             {
                 return Exit(PROCESS_CANCELED);    // process canceled
@@ -232,9 +230,7 @@ long CProcessIIRFilter::Process(void * pCaller, ISaDoc * pDoc, int nProgress, in
         // process in reverse
         // first do forward pass
         CProcessIIRFilter forwardPass(m_bDstWBenchProcess);
-
         forwardPass.SetSourceProcess(m_pSourceProcess, m_bSrcWBenchProcess);
-
         forwardPass.m_zForwardTransform *= m_zForwardTransform;
         forwardPass.SetFilterFilter(TRUE);
         forwardPass.SetFilterFilterSilenceSamples(FilterFilterSilenceSamples());
@@ -253,17 +249,17 @@ long CProcessIIRFilter::Process(void * pCaller, ISaDoc * pDoc, int nProgress, in
         forwardPass.Dump("forwardPass");
 
         WORD wSmpSize = wDstSmpSize;
-        DWORD dwDataSize;
-        if (forwardPass.m_pSourceProcess)
+        DWORD dwDataSize = 0;
+        if (forwardPass.m_pSourceProcess!=NULL)
         {
-            dwDataSize = forwardPass.m_pSourceProcess->GetDataSize()*wSmpSize;
+            dwDataSize = forwardPass.m_pSourceProcess->GetNumSamples(pDoc) * wSmpSize;
         }
         else
         {
             dwDataSize = (forwardPass.GetDataSize() - FilterFilterSilenceSamples())*wSmpSize;
         }
 
-        dwDataPos = forwardPass.GetDataSize()*wSmpSize;
+        dwDataPos = forwardPass.GetDataSize() * wSmpSize;
 
         while (dwDataPos > dwDataSize)
         {
@@ -279,8 +275,6 @@ long CProcessIIRFilter::Process(void * pCaller, ISaDoc * pDoc, int nProgress, in
         // start processing loop
         while (dwDataPos > 0)
         {
-            // set progress bar
-            //      SetProgress(nProgress + (int)(100 * (dwDataSize - dwDataPos) / dwDataSize / (DWORD)nLevel));
             if (IsCanceled())
             {
                 m_pSourceProcess = forwardPass.m_pSourceProcess;
@@ -338,33 +332,38 @@ long CProcessIIRFilter::Process(void * pCaller, ISaDoc * pDoc, int nProgress, in
     return MAKELONG(nLevel, nProgress);
 }
 
-void CProcessIIRFilter::SetSourceProcess(CProcess * pSourceProcess, BOOL bWBenchProcess)
+void CProcessIIRFilter::SetSourceProcess(IProcess * pSourceProcess, BOOL bWBenchProcess)
 {
-    m_bSrcWBenchProcess = bWBenchProcess;
 
+    m_bSrcWBenchProcess = bWBenchProcess;
     if (m_pSourceProcess != pSourceProcess)
     {
         SetDataInvalid();
     }
-
     m_pSourceProcess = pSourceProcess;
 }
 
 int CProcessIIRFilter::ReadSourceData(DWORD dwDataPos, int wSmpSize, ISaDoc * pDoc)
 {
-    CProcess * pLowerProcess = m_pSourceProcess;
-
-    if (!pLowerProcess)
+    IProcess * pLowerProcess = m_pSourceProcess;
+    if (pLowerProcess==NULL)
     {
-        pLowerProcess = pDoc->GetAdjust();  // This is the default node
+        pLowerProcess = pDoc->GetAdjust();          // This is the default node
     }
 
     // read data
     int nData;
-    if (wSmpSize == 1)   // 8 bit data
+    if (wSmpSize == 1)
     {
-        void * pSourceData = pLowerProcess->GetProcessedObject(dwDataPos, 1, m_bReverse);
-        if (!pSourceData)
+        // 8 bit data
+        void * pSourceData = pLowerProcess->GetProcessedObject(  pDoc->GetProcessFilename(),
+																 pDoc->GetSelectedChannel(),
+																 pDoc->GetNumChannels(),
+																 pDoc->GetSampleSize(),
+																 dwDataPos,
+																 1,
+																 m_bReverse);
+        if (pSourceData==NULL)
         {
             ASSERT(FALSE);
             TRACE(_T("Failed reading source data\n"));
@@ -374,10 +373,17 @@ int CProcessIIRFilter::ReadSourceData(DWORD dwDataPos, int wSmpSize, ISaDoc * pD
         bData = *((BYTE *)pSourceData); // data range is 0...255 (128 is center)
         nData = bData - 128;
     }
-    else                  // 16 bit data
+    else
     {
-        void * pSourceData = pLowerProcess->GetProcessedObject(dwDataPos>>1, 2, m_bReverse);
-        if (!pSourceData)
+        // 16 bit data
+        void * pSourceData = pLowerProcess->GetProcessedObject(pDoc->GetProcessFilename(),
+                             pDoc->GetSelectedChannel(),
+                             pDoc->GetNumChannels(),
+                             pDoc->GetSampleSize(),
+                             dwDataPos>>1,
+                             2,
+                             m_bReverse);
+        if (pSourceData==NULL)
         {
             ASSERT(FALSE);
             TRACE(_T("Failed reading source data\n"));
@@ -620,10 +626,7 @@ long CButterworth::Process(void * pCaller, ISaDoc * pDoc, int nProgress, int nLe
         return MAKELONG(--nLevel, nProgress);    // data is already ready
     }
 
-    FmtParm * pFmtParm = pDoc->GetFmtParm(); // get sa parameters format member data
-
-    ConfigureProcess(pFmtParm->dwSamplesPerSec);
-
+    ConfigureProcess(pDoc->GetSamplesPerSec());
     return CProcessIIRFilter::Process(pCaller, pDoc, nProgress, nLevel);
 }
 
@@ -807,4 +810,49 @@ CZTransform CHilbert::DelayHalf()
     numerator[1] = 0.5;
 
     return CZTransform(1, numerator, NULL);
+}
+
+void CButterworth::SetFilterFilter(BOOL bSet)
+{
+    m_bFilterFilter = bSet;
+    SetReverse(bSet);
+}
+
+double CButterworth::ForwardTick(double data)
+{
+    return m_zForwardTransform.Tick(data);
+}
+
+void CButterworth::SetReverse(BOOL bSet)
+{
+    m_bReverse = bSet;
+}
+
+int CButterworth::round(double value)
+{
+    return (value >= 0.) ? int(value + 0.5) : int(value - 0.5);
+}
+
+void CProcessIIRFilter::SetFilterFilterSilenceSamples(int forwardSamples)
+{
+    m_nFilterFilterSilence = forwardSamples > 0 ? forwardSamples : 1;
+}
+int CProcessIIRFilter::FilterFilterSilenceSamples()
+{
+    return m_nFilterFilterSilence;
+}
+
+CZTransform CProcessIIRFilter::GetForward()
+{
+    return m_zForwardTransform;
+}
+
+void CProcessIIRFilter::SetFilterFilter(BOOL bSet)
+{
+    m_bFilterFilter = bSet;
+}
+
+int CProcessIIRFilter::round(double value)
+{
+    return (value >= 0.) ? int(value + 0.5) : int(value - 0.5);
 }

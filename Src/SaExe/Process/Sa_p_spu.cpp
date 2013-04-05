@@ -4,14 +4,12 @@
 // Author: Urs Ruchti
 // copyright 1996 JAARS Inc. SIL
 /////////////////////////////////////////////////////////////////////////////
-
 #include "stdafx.h"
 #include <math.h>
 #include "Process.h"
 #include "sa_p_spu.h"
 #include "sa_p_fra.h"
 #include "sa_p_gra.h"
-
 #include "resource.h"
 #include "isa_doc.h"
 #include "saParm.h"
@@ -23,15 +21,10 @@
 static char BASED_CODE THIS_FILE[] = __FILE__;
 #endif
 
-
-
 //###########################################################################
 // CProcessSpectrum
 // class to calculate spectrum for wave data. The class creates an object
 // of the class Spectrum that does the calculation.
-
-/////////////////////////////////////////////////////////////////////////////
-// CProcessSpectrum construction/destruction/creation
 
 /***************************************************************************/
 // CProcessSpectrum::CProcessSpectrum Constructor
@@ -101,9 +94,10 @@ int CProcessSpectrum::GetProcessedData(DWORD dwOffset, BOOL *)
 // gives the index (data number) to tell what data he needs.  Spectral values
 // are returned in a structure containing raw, cepstrally-smoothed, and LPC data.
 /***************************************************************************/
-SPECT_VALUE & CProcessSpectrum::GetSpectralData(unsigned short wIndex)
+SSpectValue & CProcessSpectrum::GetSpectralData(unsigned short wIndex)
 {
-    SPECT_VALUE * lpData = (SPECT_VALUE *)m_lpBuffer; // cast buffer pointer
+
+    SSpectValue * lpData = (SSpectValue *)m_lpBuffer; // cast buffer pointer
     return (lpData[wIndex]); // return data
 }
 
@@ -111,10 +105,10 @@ SPECT_VALUE & CProcessSpectrum::GetSpectralData(unsigned short wIndex)
 // CProcessSpectrum::GetFormants Returns pointer to formant frequencies
 // and their log magnitudes, along with Lpc error.
 /***************************************************************************/
-
-FORMANT_FRAME * CProcessSpectrum::GetFormants()
+SFormantFrame * CProcessSpectrum::GetFormants()
 {
-    return (FORMANT_FRAME *)(((SPECT_VALUE *)m_lpBuffer) + m_nSpectralBands);
+
+    return (SFormantFrame *)(((SSpectValue *)m_lpBuffer) + m_nSpectralBands);
 }
 
 /***************************************************************************/
@@ -124,9 +118,9 @@ FORMANT_FRAME * CProcessSpectrum::GetFormants()
 // are returned in a structure containing cepstrally-smoothed and LPC derived
 // formant frequency values.
 /***************************************************************************/
-FORMANT & CProcessSpectrum::GetFormant(unsigned short wIndex)
+SFormant & CProcessSpectrum::GetFormant(unsigned short wIndex)
 {
-    FORMANT_FRAME * lpData = GetFormants();
+    SFormantFrame * lpData = GetFormants();
     return(lpData->Formant[wIndex]);
 }
 
@@ -143,11 +137,11 @@ float CProcessSpectrum::GetSpectralRegionPower(ISaDoc * pDoc, unsigned short wFr
     }
 
     // get indexes to start and end frequencies
-    DWORD dwSamplesPerSec = pDoc->GetFmtParm()->dwSamplesPerSec;
+    DWORD dwSamplesPerSec = pDoc->GetSamplesPerSec();
     unsigned short nIndexLo = unsigned short((wFreqLo * MAX_FFT_LENGTH + (dwSamplesPerSec/2)) / dwSamplesPerSec);
     unsigned short nIndexHi = unsigned short((wFreqHi * MAX_FFT_LENGTH + (dwSamplesPerSec/2)) / dwSamplesPerSec);
     double dfSumOfSpectra = 0;
-    SPECT_VALUE * pSpectralPower = (SPECT_VALUE *)m_lpBuffer;
+    SSpectValue * pSpectralPower = (SSpectValue *)m_lpBuffer;
 
     // loop over specified region
     for (unsigned short i = nIndexLo; i <= nIndexHi; i++)
@@ -181,7 +175,7 @@ float CProcessSpectrum::GetSpectralRegionPower(ISaDoc * pDoc, unsigned short wFr
 #include "dsp\Spectrum.h"
 #include "dsp\Lpc.h"
 long CProcessSpectrum::Process(void * pCaller, ISaDoc * pDoc, DWORD dwFrameStart, DWORD dwFrameSize,
-                               SPECT_PROC_SELECT SpectraSelected, int nProgress, int nLevel)
+                               SSpectProcSelect SpectraSelected, int nProgress, int nLevel)
 {
     TRACE(_T("Process: CProcessSpectrum\n"));
     if (IsCanceled())
@@ -210,14 +204,7 @@ long CProcessSpectrum::Process(void * pCaller, ISaDoc * pDoc, DWORD dwFrameStart
         m_stSpectraProc.bCepstralSpectrum = SpectraSelected.bCepstralSpectrum;
         m_stSpectraProc.bLpcSpectrum = SpectraSelected.bLpcSpectrum;
     }
-    /*
-    else
-    {
-    m_bDataReady = TRUE;
-    return MAKELONG(PROCESS_UNNECESSARY, 100);
-    } */
 
-    //if (IsDataReady()) return MAKELONG(--nLevel, nProgress); // data is already ready
     if (IsDataReady())
     {
         return MAKELONG(PROCESS_UNNECESSARY, 100);    // data is already ready
@@ -228,7 +215,7 @@ long CProcessSpectrum::Process(void * pCaller, ISaDoc * pDoc, DWORD dwFrameStart
     m_nSpectralBands = MAX_FFT_LENGTH / 2;   // should be high enough to ensure FFT resolution is greater than screen resolution
     //!!frame size must be less than FFT length (2 x nSpectralBands)
     m_nFormants = MAX_NUM_FORMANTS + 1;  // includes F[0], the fundamental frequency
-    SetDataSize((DWORD)m_nSpectralBands * sizeof(SPECT_VALUE) + sizeof(FORMANT_FRAME));
+    SetDataSize((DWORD)m_nSpectralBands * sizeof(SSpectValue) + sizeof(SFormantFrame));
     if (!StartProcess(pCaller, IDS_STATTXT_PROCESSSPU, (DWORD)GetDataSize(sizeof(char))))
     {
         EndProcess(); // end data processing
@@ -237,8 +224,7 @@ long CProcessSpectrum::Process(void * pCaller, ISaDoc * pDoc, DWORD dwFrameStart
     }
 
     // Get signal and frame parameters.
-    FmtParm * pFmtParm = pDoc->GetFmtParm(); // get sa parameters format member data
-    WORD wSmpSize = WORD(pFmtParm->wBlockAlign / pFmtParm->wChannels);
+    DWORD wSmpSize = pDoc->GetSampleSize();
 
     // Get fragments.  Processing should have been completed in the spectrum plot class at the very latest.
     CProcessFragments * pFragments = (CProcessFragments *)pDoc->GetFragments();
@@ -251,10 +237,10 @@ long CProcessSpectrum::Process(void * pCaller, ISaDoc * pDoc, DWORD dwFrameStart
     switch (cWindow.m_nLengthMode)
     {
     case CWindowSettings::kBandwidth:
-        nWindowSize = DspWin::CalcLength(cWindow.m_dBandwidth,pFmtParm->dwSamplesPerSec, cWindow.m_nType);
+        nWindowSize = DspWin::CalcLength(cWindow.m_dBandwidth,pDoc->GetSamplesPerSec(), cWindow.m_nType);
         break;
     case CWindowSettings::kTime:
-        nWindowSize = (int)(0.001*cWindow.m_dTime*pFmtParm->dwSamplesPerSec + 0.5);
+        nWindowSize = (int)(0.001*cWindow.m_dTime*pDoc->GetSamplesPerSec() + 0.5);
     case CWindowSettings::kBetweenCursors:
     default:
         if (cWindow.m_bEquivalentLength)
@@ -282,7 +268,7 @@ long CProcessSpectrum::Process(void * pCaller, ISaDoc * pDoc, DWORD dwFrameStart
     // Initialize frame structure.
     SIG_PARMS stFrameParm;
     stFrameParm.Length = nWindowSize;
-    stFrameParm.SmpRate = (unsigned short)pFmtParm->dwSamplesPerSec;
+    stFrameParm.SmpRate = pDoc->GetSamplesPerSec();
     if (wSmpSize == 1)
     {
         stFrameParm.SmpDataFmt = PCM_UBYTE;
@@ -409,13 +395,13 @@ long CProcessSpectrum::Process(void * pCaller, ISaDoc * pDoc, DWORD dwFrameStart
         if (bVoiced)
         {
             stLpcSetting.Process.Flags |= PRE_EMPHASIS;  // turn pre-emphasis on to remove effects of glottis and lip radiation
-            DWORD dwBandwidth = (!pSaParm->dwSignalBandWidth)?pFmtParm->dwSamplesPerSec/2:pSaParm->dwSignalBandWidth;
+            DWORD dwBandwidth = (!pSaParm->dwSignalBandWidth)?pDoc->GetSamplesPerSec()/2:pSaParm->dwSignalBandWidth;
             // allow 2 poles per kHz of signal bandwidth and reserve 4 for zero approximation
             stLpcSetting.nOrder = (unsigned char)(dwBandwidth * 2/1000 * ResearchSettings.m_nSpectrumLpcOrderFsMult + ResearchSettings.m_nSpectrumLpcOrderExtra);
         }
         else
         {
-            DWORD dwBandwidth = (!pSaParm->dwSignalBandWidth)?pFmtParm->dwSamplesPerSec/2:pSaParm->dwSignalBandWidth;
+            DWORD dwBandwidth = (!pSaParm->dwSignalBandWidth)?pDoc->GetSamplesPerSec()/2:pSaParm->dwSignalBandWidth;
             // allow 2 poles per kHz of signal bandwidth and reserve 4 for zero approximation
             stLpcSetting.nOrder = (unsigned char)(dwBandwidth * 2/1000 * ResearchSettings.m_nSpectrumLpcOrderFsMult + ResearchSettings.m_nSpectrumLpcOrderExtra);
         }
@@ -480,8 +466,8 @@ long CProcessSpectrum::Process(void * pCaller, ISaDoc * pDoc, DWORD dwFrameStart
     }
 
     // Consolidate spectral values in the process buffer.
-    SPECT_VALUE * pSpectralPower = (SPECT_VALUE *)m_lpBuffer;
-    FORMANT_FRAME * pFormantFrame = (FORMANT_FRAME *)(pSpectralPower + m_nSpectralBands);
+    SSpectValue * pSpectralPower = (SSpectValue *)m_lpBuffer;
+    SFormantFrame * pFormantFrame = (SFormantFrame *)(pSpectralPower + m_nSpectralBands);
 
 #ifdef SPECTRUM_DUMP
     FILE * SpectDump = fopen("specdump.txt", "w");
@@ -628,3 +614,42 @@ long CProcessSpectrum::Process(void * pCaller, ISaDoc * pDoc, DWORD dwFrameStart
     return MAKELONG(nLevel, nProgress);
 }
 
+void CProcessSpectrum::SetSpectrumParms(CSpectrumParm * pParmSpec)
+{
+    m_stParmSpec = *pParmSpec;
+}
+
+CSpectrumParm * CProcessSpectrum::GetSpectrumParms(void)
+{
+    return &m_stParmSpec;
+}
+
+// return processed data size in spectrum data structures
+DWORD CProcessSpectrum::GetDataSize()
+{
+    return GetDataSize(sizeof(SSpectValue));
+}
+
+// return processed data size in LPC data structures
+DWORD CProcessSpectrum::GetDataSize(size_t nElements)
+{
+    return (DWORD)CProcess::GetDataSize(nElements);
+}
+
+unsigned short CProcessSpectrum::GetSpectralCount()
+{
+    return m_nSpectralBands;
+}
+
+// return max and min of spectral power bands
+SSpectPowerRange & CProcessSpectrum::GetSpectralPowerRange()
+{
+
+    return m_stBandPower;
+}
+
+// returns number of formants calculated, including fundamental (F0)
+unsigned short CProcessSpectrum::GetFormantCount()
+{
+    return m_nFormants;
+}

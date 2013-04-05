@@ -180,12 +180,15 @@ class CUtf8String : public CUnicodeString
 public:
     CUtf8String()
     {
+        ;
     }
     explicit CUtf8String(LPCSTR szValue) : m_szContents(szValue)
     {
+        ;
     }
     virtual ~CUtf8String()
     {
+        ;
     }
 
     virtual operator CUtf8String() const

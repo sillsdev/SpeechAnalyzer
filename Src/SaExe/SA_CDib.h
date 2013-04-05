@@ -11,31 +11,20 @@
 //   1.06.6U5
 //        SDM Added bClient parameter to Capture Window
 /////////////////////////////////////////////////////////////////////////////
-
-
 #ifndef _SA_CDIB_
 #define _SA_CDIB_
 
-// cdib.h
 class CDib : public CObject
 {
     DECLARE_SERIAL(CDib)
-private:
-    char * m_lpBuf;    // DIB data buffer
-    DWORD      m_dwLength; // total buffer length, including file header
-    int        m_nBits;    // number of color bits per pixel
-    //pointers for internal use
-    LPBITMAPFILEHEADER m_lpBMFH;
-    LPBITMAPINFOHEADER m_lpBMIH;
-    LPBITMAPINFO       m_lpBMI;
-    LPSTR              m_lpData;
-    CPalette     *     m_pPal;
+
 public:
     CDib();
     CDib(CDC * pDC, int nBt = 0, BOOL bCompr = FALSE);
+    ~CDib();
+
     void Construct(CDC * pDC, int nBt = 0, BOOL bCompr = FALSE);
     // nBt = 0 means use default bits/pixel
-    ~CDib();
     // These methods work great but are disabled because
     // currently they are not needed.
 
@@ -61,8 +50,19 @@ public:
     BOOL HasPalette(void);
     BYTE static MakeGrey(COLORREF & rgb);
     void GoGreyScale(void);
+
 private:
     BOOL AllocateMemory(BOOL bRealloc = FALSE);
+
+    char * m_lpBuf;     // DIB data buffer
+    DWORD m_dwLength;   // total buffer length, including file header
+    int m_nBits;        // number of color bits per pixel
+    //pointers for internal use
+    LPBITMAPFILEHEADER m_lpBMFH;
+    LPBITMAPINFOHEADER m_lpBMIH;
+    LPBITMAPINFO m_lpBMI;
+    LPSTR m_lpDibData;
+    CPalette * m_pPal;
 };
 
 

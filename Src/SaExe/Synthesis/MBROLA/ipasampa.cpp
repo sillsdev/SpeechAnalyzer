@@ -2,9 +2,6 @@
 #include <search.h>
 #include "ipasampa.h"
 
-/*------------------------------------------------------------------------*\
-|                        Translation Tables                              |
-\*------------------------------------------------------------------------*/
 static char * BaseIpa[] =
 {
 #include "ussampa1.h"   //lookup table for single-byte
@@ -16,24 +13,16 @@ static char * xIpa[] =
     //strings (base plus diacritics)
 };
 
-
-/*------------------------------------------------------------------------*\
-|                             IpaToSampa                                 |
-\*------------------------------------------------------------------------*/
-/*                               Lookup                                   */
-//int CCharConverter::Lookup(const void *Key, const void *TblEntry)
-
 extern "C" int Lookup(const void * Key, const void * TblEntry)
 {
     return(strncmp((char *)Key, *(char **)TblEntry, strcspn(*(char **)TblEntry, " ")));
 }
 
-//char * CCharConverter::IpaToSampa(const char *IpaString)  //translate from IPA to Sampa
-
-extern "C" char * IpaToSampa(const char * IpaString)   //translate from IPA to Sampa
+//translate from IPA to Sampa
+extern "C" char * IpaToSampa(const TCHAR * IpaString)
 {
-    char * Found;
 
+    char * Found = NULL;
 
     // Validate pointer to IPA string.
     if (!IpaString)
@@ -75,21 +64,14 @@ extern "C" char * IpaToSampa(const char * IpaString)   //translate from IPA to S
     }
 }
 
-
-
-/*------------------------------------------------------------------------*\
-|                            QuerySymbol                                 |
-\*------------------------------------------------------------------------*/
-//bool CCharConverter::QuerySymbol(const char IpaChar)
-
-extern "C" bool QuerySymbol(const char IpaChar)   //check if symbol in translation table
+//check if symbol in translation table
+extern "C" bool QuerySymbol(const TCHAR IpaChar)
 {
     // Attempt to look up in single-byte table.
     if (*BaseIpa[(unsigned char)IpaChar])
     {
         return(true);
     }
-
     // Attempt to find somewhere in multi-byte table.
     for (unsigned short i = 0; i < sizeof(xIpa)/sizeof(xIpa[0]); i++)
         for (unsigned short j = 0; xIpa[i][j] != (char)' '; j++)

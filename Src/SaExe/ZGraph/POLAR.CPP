@@ -20,11 +20,6 @@
 #include <windows.h>
 #endif
 
-#ifdef OS2_PLATFORM
-#define INCL_GPI
-#include <os2.h>
-#endif
-
 #ifdef MS_DOS_PLATFORM
 #include <graph.h>
 #endif
@@ -47,7 +42,7 @@ protected:
     double rad_max;               // The Maximum Radius Value in the Data
 
 public:
-    zPolarGraph(zGraphStruct * zG) : zGraph(zG)
+    zPolarGraph(SGraph * zG) : zGraph(zG)
     { }
     ~zPolarGraph()
     { }
@@ -342,15 +337,11 @@ void zPolarGraph::zDraw()
 //  Plots [n] data points, (x[i], y[i]) or (rad[i], theta[i])
 //  for 0 <= i < n.  Data is Plotted on a Polar Graph Grid
 ////////////////////////////////////////////////////////////////////////////
-
-void zGRAPH_TYPE  PolarGraph(zGraphStruct * zG)
+void PolarGraph(SGraph * zG)
 {
     // Declare an Instance of the zPolarGraph Class...
     zPolarGraph zPolar(zG);
-
     // Draw In the Polar Graph
     zPolar.zDraw();
 }
-
-// EOF -- POLAR.CPP
 

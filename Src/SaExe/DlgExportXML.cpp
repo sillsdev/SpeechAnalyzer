@@ -472,7 +472,7 @@ void CDlgExportXML::OnOK()
     pFile->Write("<DataInfo>\r\n",12);
     if (m_bNumberSamples)
     {
-        swprintf_s(szString.GetBuffer(25),25,_T("%ld"), pDoc->GetDataSize() / pDoc->GetFmtParm()->wBlockAlign);
+        swprintf_s(szString.GetBuffer(25),25,_T("%ld"), pDoc->GetDataSize() / pDoc->GetBlockAlign());
         szString.ReleaseBuffer();
         OutputXMLField(pFile,_T("NumSamples"),szString);
     }
@@ -498,7 +498,7 @@ void CDlgExportXML::OnOK()
     }
     if (m_bSampleRate)
     {
-        swprintf_s(szString.GetBuffer(25),25,_T("%lu Hz"),pDoc->GetFmtParm()->dwSamplesPerSec);
+        swprintf_s(szString.GetBuffer(25),25,_T("%lu Hz"),pDoc->GetSamplesPerSec());
         szString.ReleaseBuffer();
         OutputXMLField(pFile,_T("SamplingFreq"),szString);
     }
@@ -515,7 +515,7 @@ void CDlgExportXML::OnOK()
     }
     if (m_bBits)
     {
-        swprintf_s(szString.GetBuffer(25),25,_T("%d Bits"),pDoc->GetFmtParm()->wBitsPerSample);
+        swprintf_s(szString.GetBuffer(25),25,_T("%d Bits"),pDoc->GetBitsPerSample());
         szString.ReleaseBuffer();
         OutputXMLField(pFile,_T("StorageFormat"),szString);
     }
@@ -712,7 +712,6 @@ void CDlgExportXML::OnAllParameters()
         m_bNumberSamples = m_bLength = m_bSampleRate = m_bBandwidth = m_bHighPass = m_bBits = m_bQuantization = FALSE;
         UpdateData(FALSE);
     }
-
 }
 
 void CDlgExportXML::OnAllSource()
@@ -786,7 +785,6 @@ void CDlgExportXML::OnClickedExSfmInterlinear()
 
 void CDlgExportXML::OnClickedExSfmMultirecord()
 {
-
     CButton * pWnd = (CButton *)GetDlgItem(IDC_EX_SFM_INTERLINEAR);
     if (pWnd)
     {
@@ -800,4 +798,3 @@ void CDlgExportXML::WriteFileUtf8(CFile * pFile, const CSaString szString)
     std::string szUtf8 = szString.utf8();
     pFile->Write(szUtf8.c_str(), szUtf8.size());
 }
-

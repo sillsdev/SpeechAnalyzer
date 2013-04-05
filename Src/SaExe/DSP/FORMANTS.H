@@ -5,8 +5,8 @@
 
 #define AUTO_SET            0.F
 #define UNVOICED            0.F
-#define MIN_PITCH          50
-#define MAX_PITCH         500
+#define MIN_PITCH           50
+#define MAX_PITCH           500
 #define MIN_PITCHPEAK_THD   0.015F
 #define MAX_NUM_FORMANTS    30
 #define LOG_MAG_NA          -1.F

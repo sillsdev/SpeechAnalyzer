@@ -895,17 +895,17 @@ void CSaWorkbenchView::OnFilter33()
     CallPropertiesDialog(3, 2);
 }
 
-static const char * psz_wbview       = "wbview";
-static const char * psz_placement    = "placement";
-static const char * psz_processlist  = "processlist";
-static const char * psz_filterlist   = "filterlist";
-static const char * psz_filterID     = "filterID";
+static LPCSTR psz_wbview       = "wbview";
+static LPCSTR psz_placement    = "placement";
+static LPCSTR psz_processlist  = "processlist";
+static LPCSTR psz_filterlist   = "filterlist";
+static LPCSTR psz_filterID     = "filterID";
 
 
 /***************************************************************************/
 // CSaWorkbenchView::WriteProperties Write workbench properties
 /***************************************************************************/
-void CSaWorkbenchView::WriteProperties(Object_ostream & obs)
+void CSaWorkbenchView::WriteProperties(CObjectOStream & obs)
 {
     CMainFrame * pMain = (CMainFrame *)AfxGetMainWnd();
     obs.WriteBeginMarker(psz_wbview);
@@ -935,7 +935,7 @@ void CSaWorkbenchView::WriteProperties(Object_ostream & obs)
 /***************************************************************************/
 // CSaWorkbenchView::ReadProperties Read workbench properties
 /***************************************************************************/
-BOOL CSaWorkbenchView::ReadProperties(Object_istream & obs)
+BOOL CSaWorkbenchView::ReadProperties(CObjectIStream & obs)
 {
     CMainFrame * pMain = (CMainFrame *)AfxGetMainWnd();
     // clear all old processes first if you are loading a new file

@@ -2,7 +2,7 @@
 #define DLGALIGNTRANSCRIPTIONSEGMENTSBYPAGE_H
 
 #include "resource.h"
-#include "CSaString.h"
+#include "SaString.h"
 
 class CDlgAlignTranscriptionDataSegmentByPage : public CPropertyPage
 {

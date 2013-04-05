@@ -5,10 +5,9 @@
 // copyright 1997 JAARS Inc. SIL
 /////////////////////////////////////////////////////////////////////////////
 #ifndef _SA_W_EQU_H
-
-#include "CSAString.h"
-
 #define _SA_W_EQU_H
+
+#include "SaString.h"
 
 //###########################################################################
 // CProcessWbEquation data processing
@@ -29,8 +28,8 @@ public:
     BOOL CheckFunction(CSaString *); // check the function string
     long Process(void * pCaller, ISaDoc * pDoc, int nProgress = 0, int nLevel = 1);
     virtual int PropertiesDialog(); // calls the properties dialog for this process
-    virtual void WriteProperties(Object_ostream & obs);
-    virtual BOOL ReadProperties(Object_istream & obs);
+    virtual void WriteProperties(CObjectOStream & obs);
+    virtual BOOL ReadProperties(CObjectIStream & obs);
 };
 
 #endif //_SA_W_EQU_H

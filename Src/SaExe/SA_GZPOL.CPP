@@ -244,8 +244,7 @@ void CZPlotPolar::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView)
         {
             // new data has to be processed
             dwStart = pSDP->GetAreaPosition();
-            FmtParm * pFmtParm = pDoc->GetFmtParm(); // get sa parameters format member data
-            UINT nBlockAlign = pFmtParm->wBlockAlign;
+            UINT nBlockAlign = pDoc->GetBlockAlign();
             if (bAuto)
             {
                 // auto step mode, determine steps
@@ -265,7 +264,7 @@ void CZPlotPolar::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView)
                 return;
             }
             DWORD dwSmplSteps = (DWORD)lSteps * (DWORD)nBlockAlign;
-            DWORD dwRawBufferSize = GetBufferSize();
+            DWORD dwRawBufferSize = pDoc->GetWaveDataBufferSize();
             // fill up data buffers
             HPSTR pData = pDoc->GetWaveData(dwStart, TRUE); // get pointer to wave data block
             if (pData == NULL)
@@ -452,8 +451,8 @@ void CZPlotPolar::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView)
             }
         }
         // set up Z-graph structure
-        zGraphStruct zG;
-        // fill In the [zGraphStruct] structure elements
+        SGraph zG;
+        // fill In the [SGraph] structure elements
         zG.hdc            = hdc            ; // windows HDC
         zG.RWindow        = &rWnd          ; // RECT with window dimensions
         zG.xdata          = (double *)m_lpDataX; // x-data array, radius

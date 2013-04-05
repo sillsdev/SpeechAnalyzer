@@ -93,22 +93,9 @@ protected:
 #endif
 
 
-#ifdef OS2_PLATFORM                // For OS/2 PM Platforms
-    HWND     hWnd               ;   // OS/2 HWND (Needed for "WinRealizePalette()" Only)
-    HPS      hPS                ;   // The PS Used for the Graph
-    MATRIXLF mat                ;   // Coordinate-Transform Matrix
-    INT      OS2_GridLineType   ;   // Type of Lines for Grid
-#endif
-
-
 #ifdef MS_DOS_PLATFORM             // For Microsoft MS-DOS Graphics Platform
     INT      zAlignFormat       ;   // Alignment Pattern
     unsigned GridMask           ;   // Mask Used to Draw Grid
-#endif
-
-
-#ifdef BGI_DOS_PLATFORM            // For Borland BGI DOS Graphics Platform
-    INT bgiGridType             ;   // Type of Lines for Grid
 #endif
 
 
@@ -287,18 +274,7 @@ public:
                          BOOL LimitHeight);
 #endif
 
-#ifdef OS2_PLATFORM
-    inline void zSetGraphHPS(HPS hps1)
-    {
-        hPS = hps1;      // Sets the Graph HPS
-    }
-    inline void zSetGraphHWND(HWND hwnd1)
-    {
-        hWnd = hwnd1;    // Sets the Graph HWND
-    }
-#endif
-
-#if defined(MS_DOS_PLATFORM) || defined(BGI_DOS_PLATFORM)
+#if defined(MS_DOS_PLATFORM)
 
     //
     // Member Functions, Methods
@@ -339,8 +315,6 @@ public:
 };
 
 #endif
-
-// EOF -- LOWLEVEL.H
 
 
 

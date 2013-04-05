@@ -65,10 +65,10 @@ static char BASED_CODE THIS_FILE[] = __FILE__;
 
 /////////////////////////////////////////////////////////////////////////////
 // CDlgImportSFM dialog
-static const char * psz_Phonemic = "pm";
-static const char * psz_Gloss = "gl";
-static const char * psz_Phonetic = "ph";
-static const char * psz_Orthographic = "or";
+static LPCSTR psz_Phonemic = "pm";
+static LPCSTR psz_Gloss = "gl";
+static LPCSTR psz_Phonetic = "ph";
+static LPCSTR psz_Orthographic = "or";
 
 CDlgImportSFM::CDlgImportSFM(BOOL bPhonetic, BOOL bPhonemic, BOOL bOrtho, CWnd * pParent /*=NULL*/)
     : CDialog(CDlgImportSFM::IDD, pParent)

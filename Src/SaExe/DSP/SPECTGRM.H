@@ -41,19 +41,18 @@ typedef struct SPGM_SETTINGS
     {
         windowType = CWindowSettings::kGaussian;
     }
-    float    LwrFreq;           //lowest frequency to calculate in Hz
-    float    UprFreq;           //highest frequency to calculate in Hz
-    float    Bandwidth;         //spectral resolution in Hz
-    uint16   FreqCnt;           //number of frequency samples from low to high
-    uint16   FFTLength;         //desired length of FFT
-    uint32    SpectCnt;          //number of spectra to calculate
-    bool PreEmphSw;         //pre-emphasis switch
-    bool FmntTrackSw;       //formant tracking switch
-    uint16   NumFmnt;           //number of formants to track
-    uint32    SigBlkOffset;      //number of samples offset into speech data
-    uint32    SigBlkLength;      //number of speech samples over which spectra
-    //  will be calculated
-    uint16   SpectBatchLength;  //number of spectra to be calculated at one time
+    float LwrFreq;				//lowest frequency to calculate in Hz
+    float UprFreq;				//highest frequency to calculate in Hz
+    float Bandwidth;			//spectral resolution in Hz
+    uint16 FreqCnt;				//number of frequency samples from low to high
+    uint16 FFTLength;			//desired length of FFT
+    uint32 SpectCnt;			//number of spectra to calculate
+    bool preEmphSw;				//pre-emphasis switch
+    bool fmntTrackSw;			//formant tracking switch
+    uint16 NumFmnt;				//number of formants to track
+    uint32 SigBlkOffset;		//number of samples offset into speech data
+    uint32 SigBlkLength;		//number of speech samples over which spectra will be calculated
+    uint16 SpectBatchLength;	//number of spectra to be calculated at one time
     CWindowSettings::Type windowType;
 } SPGM_SETTINGS;
 
@@ -109,52 +108,52 @@ private:
     dspError_t SeekFormants(uint8 * BlockStart, uint32 NumFmntSets);
     dspError_t SeekFormants(short * BlockStart, uint32 NumFmntSets);
     dspError_t GetFormants(FORMANT_FREQ * F);
-    bool       m_Aliased;
+    bool m_Aliased;
     FORMANT_FREQ * m_FmntData;
-    bool       m_PreEmphSw;
-    bool       m_FmntTrackSw;
-    uint16         m_NumFmnt;
-    void   *  m_SigStart;
-    uint32          m_SigLength;
-    int8          m_SmpDataFmt;
-    uint16         m_SmpRate;
-    uint32          m_SigBlkOffset;
-    uint32          m_SigBlkLength;
-    uint8  *  m_SpgmData;
-    uint16         m_SpgmHgt;
-    float          m_SpectIntv;
-    uint32          m_SpectCnt;
-    uint16         m_SpectLen;
-    float          m_SpectRes;
-    float          m_SpectScale;
-    uint16         m_FFTLen;
-    float          m_FreqScale;
-    float          m_LwrFreq;
-    float          m_UprFreq;
-    uint32          m_SpectToProc;
-    uint32          m_FmntSetToProc;
-    uint16         m_SpectBatchLength;
-    DspWin         m_Window;
-    DspWin         m_NBWindow;
-    float     *    m_WinFrame;
-    uint16         m_MinPitchPeriod;
-    uint16         m_MaxPitchPeriod;
-    uint8          m_MaxPwr;
-    uint8          m_Status;
+    bool m_PreEmphSw;
+    bool m_FmntTrackSw;
+    uint16 m_NumFmnt;
+    void * m_SigStart;
+    uint32 m_SigLength;
+    int8 m_SmpDataFmt;
+    uint16 m_SmpRate;
+    uint32 m_SigBlkOffset;
+    uint32 m_SigBlkLength;
+    uint8 * m_SpgmData;
+    uint16 m_SpgmHgt;
+    float m_SpectIntv;
+    uint32 m_SpectCnt;
+    uint16 m_SpectLen;
+    float m_SpectRes;
+    float m_SpectScale;
+    uint16 m_FFTLen;
+    float m_FreqScale;
+    float m_LwrFreq;
+    float m_UprFreq;
+    uint32 m_SpectToProc;
+    uint32 m_FmntSetToProc;
+    uint16 m_SpectBatchLength;
+    DspWin m_Window;
+    DspWin m_NBWindow;
+    float * m_WinFrame;
+    uint16 m_MinPitchPeriod;
+    uint16 m_MaxPitchPeriod;
+    uint8 m_MaxPwr;
+    uint8 m_Status;
 };
 
 
 int32 CalcSpectgram(
-    float ** Spectgram,      //pointer to spectrogram base addr
-    float    *    SpectMax,       //maximum spectral value
-    uint16    *   SpectrumLen,    //number of samples in spectrum
-    uint16    *   NumSpectra,     //number of spectra
-    uint16    *   SpectraIntv,    //spectra calculation interval
-    uint8         BandType,       //type of spectrogram
+    float ** Spectgram,		//pointer to spectrogram base addr
+    float * SpectMax,		//maximum spectral value
+    uint16 * SpectrumLen,	//number of samples in spectrum
+    uint16 * NumSpectra,    //number of spectra
+    uint16 * SpectraIntv,   //spectra calculation interval
+    uint8 BandType,			//type of spectrogram
     int8  * Signal,         //pointer to signal data
-    uint16        SigLength,         //number of signal samples
-    int8         SmpType,        //sample word type
-    uint16        SmpRate         //sampling rate
+    uint16 SigLength,       //number of signal samples
+    int8 SmpType,			//sample word type
+    uint16 SmpRate			//sampling rate
 );
 
 #endif

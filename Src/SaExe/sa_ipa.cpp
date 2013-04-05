@@ -20,7 +20,7 @@
 
 CFontTable::CFontTable()
 {
-    m_wordDelimiter = SPACE_DELIMITER;					//SDM 1.06.8
+    m_wordDelimiter = SPACE_DELIMITER; //SDM 1.06.8
 };
 
 void CFontTable::RemoveWordDelimiters(CString & szString) const

@@ -94,7 +94,6 @@ void CPickOverlayDlg::OnHelpPickOverlay()
 /***************************************************************************/
 void CPickOverlayDlg::SetupItemsList()
 {
-
     if (m_Mode_AddTrueRemoveFalse)
     {
         for (int i=0; i < m_numItems; i++)

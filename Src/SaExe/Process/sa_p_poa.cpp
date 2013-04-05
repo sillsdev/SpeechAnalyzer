@@ -65,7 +65,8 @@ long CProcessPOA::Exit(int nError, HANDLE)
 /***************************************************************************/
 void * CProcessPOA::GetProcessedData(DWORD, BOOL)
 {
-    return m_lpBuffer; // return pointer to data
+    // return pointer to data
+    return m_lpBuffer;
 }
 
 /***************************************************************************/
@@ -117,38 +118,39 @@ long CProcessPOA::Process(void * pCaller, ISaDoc * pDoc, DWORD dwStart, DWORD dw
     }
 
     BeginWaitCursor();
-    if (!StartProcess(pCaller, IDS_STATTXT_PROCESSPOA, FALSE))   // memory allocation failed
+    // memory allocation failed
+    if (!StartProcess(pCaller, IDS_STATTXT_PROCESSPOA, FALSE))
     {
-        EndProcess(); // end data processing
+        // end data processing
+        EndProcess();
         EndWaitCursor();
         return MAKELONG(PROCESS_ERROR, nProgress);
     }
 
     // Get waveform and buffer parameters.
-    DWORD    dwWaveBufferSize = GetBufferSize();
-    FmtParm * pFmtParm = pDoc->GetFmtParm();     //get sample data format
-    WORD     wSmpSize = WORD(pFmtParm->wBlockAlign / pFmtParm->wChannels);   //compute sample size in bytes
-    DWORD    dwFrameSize = dwStop - dwStart + wSmpSize;
+    DWORD dwWaveBufferSize = GetBufferSize();
+    DWORD wSmpSize = pDoc->GetSampleSize();         //compute sample size in bytes
+    DWORD dwFrameSize = dwStop - dwStart + wSmpSize;
 
     // Set signal parameters.
-    DWORD dwOldWaveBufferIndex = pDoc->GetWaveBufferIndex();  // save current buffer offset into waveform
+    DWORD dwOldWaveBufferIndex = pDoc->GetWaveBufferIndex();    // save current buffer offset into waveform
     SIG_PARMS Signal;
-    Signal.Start = (void *)pDoc->GetWaveData(dwStart, TRUE); //load sample
+    Signal.Start = (void *)pDoc->GetWaveData(dwStart, TRUE);    //load sample
     //buffer starting
     //at begin cursor
     if (wSmpSize == 1)
     {
-        Signal.SmpDataFmt = PCM_UBYTE;    //samples are unsigned 8 bit
+        Signal.SmpDataFmt = PCM_UBYTE;          //samples are unsigned 8 bit
     }
     else
     {
-        Signal.SmpDataFmt = PCM_2SSHORT;    //samples are 2's complement 16 bit
+        Signal.SmpDataFmt = PCM_2SSHORT;        //samples are 2's complement 16 bit
     }
 
     DWORD   dwWaveSize = pDoc->GetDataSize();
     if (dwStart + dwWaveBufferSize <= dwWaveSize)
     {
-        Signal.Length = dwWaveBufferSize/wSmpSize;    //signal fills buffer
+        Signal.Length = dwWaveBufferSize/wSmpSize;          //signal fills buffer
     }
     else
     {
@@ -158,11 +160,10 @@ long CProcessPOA::Process(void * pCaller, ISaDoc * pDoc, DWORD dwStart, DWORD dw
     // Specify LPC settings.
     LPC_SETTINGS LpcSetting;
 
-    Signal.SmpRate = (unsigned short)pFmtParm->dwSamplesPerSec;  //set sample rate
+    Signal.SmpRate = pDoc->GetSamplesPerSec();				//set sample rate
     LpcSetting.Process.Flags = PRE_EMPHASIS | NORM_CROSS_SECT | MEAN_SQ_ERR | ENERGY;
     LpcSetting.nMethod = LPC_COVAR_LATTICE;                         //use covariance LPC analysis  //!!autocorrelation for vc modeling?
-    LpcSetting.nOrder = MODEL_SECTION_COUNT;                    //!!19 sections
-    //LpcSetting.nFrameLen = (unsigned short)((double)Signal.SmpRate*.005 + .5);  //20 msec
+    LpcSetting.nOrder = MODEL_SECTION_COUNT;                        //!!19 sections
     LpcSetting.nFrameLen = (unsigned short)(dwFrameSize/wSmpSize);
 
     // Construct an LPC object for vocal tract modeling.
@@ -187,8 +188,7 @@ long CProcessPOA::Process(void * pCaller, ISaDoc * pDoc, DWORD dwStart, DWORD dw
     }
 
     // Allocate global buffer for the processed data
-    SetDataSize(sizeof(VOCAL_TRACT_MODEL) + (pLpcModel->nNormCrossSectAreas-1) *
-                sizeof(*pLpcModel->pNormCrossSectArea));
+    SetDataSize(sizeof(VOCAL_TRACT_MODEL) + (pLpcModel->nNormCrossSectAreas-1) * sizeof(*pLpcModel->pNormCrossSectArea));
     if (!m_lpBuffer)   // not yet allocated
     {
         m_lpBuffer = new char[GetDataSize(sizeof(char))];

@@ -1,7 +1,7 @@
 #ifndef EXPORTFWSETTINGS_H
 #define EXPORTFWSETTINGS_H
 
-#include "CSaString.h"
+#include "SaString.h"
 
 class CExportFWSettings
 {

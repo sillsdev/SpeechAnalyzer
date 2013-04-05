@@ -23,27 +23,11 @@
 #define MoveTo(a,b,c) MoveToEx(a,b,c,NULL);
 #endif
 
-#ifdef OS2_PLATFORM
-#define INCL_WIN
-#define INCL_GPI
-#include <os2.h>
-#endif
-
 #include "toolkit.h"                             // Toolkit Header File
 #include "lowlevel.h"                            // Basic Graph Class
 
-
-#ifdef OS2_PLATFORM
-#include "zfont.h"
-#endif
-
 #ifdef MS_DOS_PLATFORM
 #include "graph.h"
-#include "scrnsave.h"
-#endif
-
-#ifdef BGI_DOS_PLATFORM
-#include "graphics.h"
 #include "scrnsave.h"
 #endif
 
@@ -141,29 +125,7 @@ zFILL zLowLevelGraphics::zCreateShadingBrush(zRGB color)
 
 #endif
 
-
-#ifdef OS2_PLATFORM
-
-    // Get Individual Color Components
-    BYTE red   = (BYTE)((color & 0x00FF0000) >> 16);
-    BYTE green = (BYTE)((color & 0x0000FF00) >> 8) ;
-    BYTE blue  = (BYTE)(color & 0x000000FF)       ;
-
-    // Now Create a New Color That's Shaded
-    red   >>= shading_style;
-    green >>= shading_style;
-    blue  >>= shading_style;
-
-    // Generate a New 32-Bit Color using the Shaded R,G,B Values
-    zFILL zNewBrush =
-        (zFILL) zMakeColor(red, green, blue);
-
-    // Return New Color
-    return (zNewBrush);
-
-#endif
-
-#if defined(MS_DOS_PLATFORM)  ||  defined(BGI_DOS_PLATFORM)
+#if defined(MS_DOS_PLATFORM)
     UNUSED_PARAMETERS(&color);
 
     // Operation Not Defined for this Platform
@@ -258,22 +220,7 @@ void zLowLevelGraphics::zDrawWedge(POINT P1, POINT P2, POINT P3, POINT P4,
     }
 #endif
 
-#ifdef OS2_PLATFORM
-    //
-    // If We're Doing Shading, We Switch In a New Color to
-    //    Handle the Shading.
-    //
-    zFILL zNewBrush;
-
-    if (shading_style > 0)
-    {
-        // Create a New Interior Color That's Shaded
-
-        zNewBrush = (zFILL) zCreateShadingBrush(InteriorColor);
-    }
-#endif
-
-#if defined(MS_DOS_PLATFORM) ||  defined(BGI_DOS_PLATFORM)
+#if defined(MS_DOS_PLATFORM)
     zFILL zNewBrush = InteriorColor;
 #endif
 
@@ -365,26 +312,7 @@ void zLowLevelGraphics::zDraw3DBar(INT left, INT top,
         }
 #endif
 
-#ifdef OS2_PLATFORM
-        //
-        // If We're Doing Shading, We Switch In a New Color to
-        //    Handle the Shading.
-        //
-        zFILL zNewBrush;
-
-        if (shading_style > 0)
-        {
-            // Create a New Interior Color That's Shaded
-
-            zNewBrush = (zFILL) zCreateShadingBrush(InteriorColor);
-        }
-#endif
-
 #ifdef MS_DOS_PLATFORM
-        zFILL zNewBrush = InteriorColor;
-#endif
-
-#ifdef BGI_DOS_PLATFORM
         zFILL zNewBrush = InteriorColor;
 #endif
 
@@ -448,27 +376,10 @@ void zLowLevelGraphics::zDrawRect(RECT * R)
     LineTo(hDC, R->left,  R->top);
 #endif
 
-
-#ifdef OS2_PLATFORM
-    zActivatePens();
-
-    POINTL pt[] =
-    { R->left, R->top, R->right, R->bottom };
-    GpiMove(hPS, &pt[ 0 ]);
-    GpiBox(hPS, DRO_OUTLINE, &pt[ 1 ], 0, 0);
-#endif
-
-
 #ifdef MS_DOS_PLATFORM
     _setcolor((short)AxisColor);
     _settextcolor((short)AxisColor);
     _rectangle(_GBORDER, R->left, R->top, R->right, R->bottom);
-#endif
-
-
-#ifdef BGI_DOS_PLATFORM
-    setcolor((short)AxisColor);
-    rectangle(R->left, R->top, R->right, R->bottom);
 #endif
 
 }
@@ -488,18 +399,8 @@ void zLowLevelGraphics::zMoveTo(INT xpos, INT ypos)
     MoveToEx(hDC, xpos, ypos, &pDummy);
 #endif
 
-#ifdef OS2_PLATFORM
-    POINTL pt1[] =
-    { xpos, ypos };
-    GpiMove(hPS, &pt1[ 0 ]);
-#endif
-
 #ifdef MS_DOS_PLATFORM
     _moveto(xpos, ypos);
-#endif
-
-#ifdef BGI_DOS_PLATFORM
-    moveto(xpos, ypos);
 #endif
 
 }
@@ -517,18 +418,8 @@ void zLowLevelGraphics::zLineTo(INT xpos, INT ypos)
     LineTo(hDC, xpos, ypos);
 #endif
 
-#ifdef OS2_PLATFORM
-    POINTL pt1[] =
-    { xpos, ypos };
-    GpiLine(hPS, &pt1[ 0 ]);
-#endif
-
 #ifdef MS_DOS_PLATFORM
     _lineto(xpos, ypos);
-#endif
-
-#ifdef BGI_DOS_PLATFORM
-    lineto(xpos, ypos);
 #endif
 
 }
@@ -549,25 +440,9 @@ void zLowLevelGraphics::zDrawLine(INT x1, INT y1, INT x2, INT y2)
     LineTo(hDC, x2, y2);
 #endif
 
-
-#ifdef OS2_PLATFORM
-    POINTL pt[] =
-    { x1, y1, x2, y2 };
-
-    GpiMove(hPS, &pt[ 0 ]);
-    GpiLine(hPS, &pt[ 1 ]);
-#endif
-
-
 #ifdef MS_DOS_PLATFORM
     _moveto(x1, y1);
     _lineto(x2, y2);
-#endif
-
-
-#ifdef BGI_DOS_PLATFORM
-    moveto(x1, y1);
-    lineto(x2, y2);
 #endif
 
 }
@@ -597,26 +472,6 @@ void zLowLevelGraphics::zDrawCircle(INT x1, INT y1, INT r1, double AspectRatio)
         x1, zRound(y1 - AspectRatio * r1));
 #endif
 
-#ifdef OS2_PLATFORM
-    // Code to Draw a Circle in OS/2 PM...
-
-    UNUSED_PARAMETERS(&AspectRatio);
-
-    // Set Up Arc Parameters for a Circle...
-    ARCPARAMS arcp =
-    { 1, 1, 0, 0 };
-    GpiSetArcParams(hPS, &arcp);
-
-    // Set Center Point of the Circle
-    POINTL ptCenter =
-    { x1, y1 };
-    GpiSetCurrentPosition(hPS , &ptCenter);
-
-    // Draw the Circle
-    GpiFullArc(hPS, DRO_OUTLINE, MAKEFIXED((int)r1, 0));
-#endif
-
-
 #ifdef MS_DOS_PLATFORM
     // Code to Draw a Circle with Microsoft DOS Graphics..
 
@@ -634,12 +489,6 @@ void zLowLevelGraphics::zDrawCircle(INT x1, INT y1, INT r1, double AspectRatio)
     _ellipse(_GBORDER, RBounds.left, RBounds.top, RBounds.right, RBounds.bottom);
 #endif
 
-#ifdef BGI_DOS_PLATFORM
-    // Code to Draw a Circle with BGI DOS Graphics..
-
-    UNUSED_PARAMETERS(&AspectRatio);
-    circle(x1, y1, r1);
-#endif
 }
 
 
@@ -682,31 +531,6 @@ void zLowLevelGraphics::zDrawPolygon(POINT * PtArray,
     SelectObject(hDC, hbrOld);
 #endif
 
-
-#ifdef OS2_PLATFORM
-    // Draw Polygon In OS/2 PM...
-    GpiSetColor(hPS, InteriorColor);        // Switch In the Interior Color
-    GpiBeginPath(hPS, 1L);                  // Start the Path bracket
-    GpiSetCurrentPosition(hPS, (POINTL *)PtArray) ;
-    // Draw sides
-    GpiPolyLine(hPS, NumPoints, (POINTL *)&(PtArray[ 0 ]));
-    GpiCloseFigure(hPS);                    // Close the figure
-    GpiEndPath(hPS);                        // End the path bracket
-    GpiSetPattern(hPS, Pattern);            // Set the Pattern
-    GpiFillPath(hPS, 1L, FPATH_ALTERNATE);  // Draw and fill the path
-    GpiSetPattern(hPS, PATSYM_DEFAULT);     // Switch Back to Default Pattern
-    //
-    // Switch In the Boundary Color, and Draw the Peripheral Boundary
-    //
-    GpiSetColor(hPS, BoundaryColor);        // Color of Numbers, Letters
-    GpiMove(hPS,
-            (POINTL *)&(PtArray[ NumPoints-1 ]));// Move to Last Point
-    GpiPolyLine(hPS, (long)NumPoints,
-                (POINTL *)PtArray);                  // Do Polygon
-    GpiSetColor(hPS, InteriorColor);        // Back to Interior Color
-#endif
-
-
 #ifdef MS_DOS_PLATFORM
     // Set Color of Fill
     short OldColor = _setcolor((short)InteriorColor);
@@ -741,49 +565,6 @@ void zLowLevelGraphics::zDrawPolygon(POINT * PtArray,
     _setcolor((short)OldColor);
 #endif
 
-#ifdef BGI_DOS_PLATFORM
-    // Set Color of Fill
-    INT OldColor = getcolor();
-    setcolor((int)InteriorColor);
-
-    // Select Type of Fill
-    INT TheFillStyle =
-        (fill_style == zSOLID_FILL) ? SOLID_FILL :
-        (SOLID_FILL + 1 + ((int)Pattern) % 10);
-
-    setfillstyle(TheFillStyle, (int)InteriorColor);
-
-    // Create a Dynamic Array to Hold the Points
-    POINT * pPoly = new POINT [NumPoints + 3];
-
-    // Set Up the Polygon Points Array
-    for (INT i = 0; i < NumPoints; i++)
-    {
-        pPoly[i].x = PtArray[i].x;
-        pPoly[i].y = PtArray[i].y;
-    }
-    // Last Point = First
-    pPoly[i].x = pPoly[0].x;
-    pPoly[i].y = pPoly[0].y;
-
-    // Draw In the Polygon Interior Fill
-    fillpoly(NumPoints, (INT *)pPoly);
-
-    // Go Back to Solid Fill
-    setfillstyle(SOLID_FILL, (int)InteriorColor);
-
-    // Draw the Border to the Polygon
-    setcolor((int)BoundaryColor);
-    drawpoly(NumPoints + 1, (INT *)pPoly);
-
-
-    // Clean Up
-    delete [] pPoly;
-
-    // Reselect Old Color
-    setcolor((int) OldColor);
-#endif
-
 }
 
 /////////////////////////// zDrawTextString() ///////////////////////////////
@@ -799,13 +580,7 @@ void zLowLevelGraphics::zDrawTextString(INT x1, INT y1, PWCHAR Text)
     TextOutW(hDC, x1, y1, Text, _tcslen(Text));
 #endif
 
-#ifdef OS2_PLATFORM               // OS/2
-    POINTL pt =
-    { x1, y1 };
-    GpiCharStringAt(hPS, &pt, _tcslen(Text), (PCH)Text);
-#endif
-
-    // Microsoft DOS
+// Microsoft DOS
 #ifdef MS_DOS_PLATFORM
     // Microsoft Graphics Does Not Support Text Alignment,
     //   So We Have to Account for the Alignment Manually Here
@@ -834,9 +609,6 @@ void zLowLevelGraphics::zDrawTextString(INT x1, INT y1, PWCHAR Text)
 #endif
 
 
-#ifdef BGI_DOS_PLATFORM      // DOS BGI Platform
-    outtextxy(x1, y1, Text);
-#endif
 }
 
 ///////////////////////// zDrawFilledRect() ///////////////////////////
@@ -866,27 +638,7 @@ void zLowLevelGraphics::zDrawFilledRect(INT left, INT top,
 
 #endif
 
-
-#ifdef OS2_PLATFORM
-    // For OS/2
-
-    zActivatePens();
-
-    // Generate The New Color and Set It
-
-    zRGB NewFillColor = zMakeColor(Red, Green, Blue);
-    GpiSetColor(hPS, NewFillColor);
-
-    // Draw a Rectangle
-
-    POINTL pt[] =
-    { left, top, right, bottom };
-    GpiMove(hPS, &pt[ 0 ]);
-    GpiBox(hPS, DRO_FILL, &pt[ 1 ], 0, 0);
-#endif
-
-
-#if defined(MS_DOS_PLATFORM) || defined(BGI_DOS_PLATFORM)
+#if defined(MS_DOS_PLATFORM)
 
     // Function Is Not Defined Yet!
     UNUSED_PARAMETERS(&left, &top, &right, &bottom,
@@ -912,16 +664,6 @@ void zLowLevelGraphics::zGetDefaultTextSize()
     charheight = tm.tmHeight;
 #endif
 
-
-#ifdef OS2_PLATFORM       // OS/2
-    FONTMETRICS fm;
-
-    GpiQueryFontMetrics(hPS, sizeof(fm), &fm);
-    charsize   = fm.lAveCharWidth;
-    charheight = fm.lMaxBaselineExt;
-#endif
-
-
 #ifdef MS_DOS_PLATFORM    // Microsoft DOS
     _fontinfo fi;
     _getfontinfo(&fi);
@@ -930,10 +672,6 @@ void zLowLevelGraphics::zGetDefaultTextSize()
     charheight = fi.pixheight;
 #endif
 
-#ifdef BGI_DOS_PLATFORM   // Borland DOS BGI
-    charsize   = textwidth("A");
-    charheight = textheight("A");
-#endif
 }
 
 ///////////////////////////// zActivatePens() /////////////////////////////
@@ -1001,40 +739,6 @@ void zLowLevelGraphics::zActivatePens()
 
 #endif
 
-
-#ifdef OS2_PLATFORM
-    // Set Up Line Type to Be Used for Grid
-
-    switch (GridPenStyle)
-    {
-    case zDASHED:
-        OS2_GridLineType = LINETYPE_SHORTDASH;
-        break;
-
-    case zDOTTED:
-        OS2_GridLineType = LINETYPE_DOT;
-        break;
-
-    case zDASH_DOT:
-        OS2_GridLineType = LINETYPE_DASHDOT;
-        break;
-
-    case zDASH_DOT_DOT:
-        OS2_GridLineType = LINETYPE_DASHDOUBLEDOT;
-        break;
-
-    case zSOLID:
-    default:
-        OS2_GridLineType = LINETYPE_DEFAULT;  // (Solid Lines)
-        break;
-    }
-    //
-    // Switch In the Axis Color
-    //
-    GpiSetColor(hPS, AxisColor);       // Color of Numbers, Letters
-#endif
-
-
 #ifdef MS_DOS_PLATFORM
     //
     //     Set Up A Mask to Be Used with "_setlinestyle()"
@@ -1077,37 +781,6 @@ void zLowLevelGraphics::zActivatePens()
     _setcolor((short)AxisColor);       // Color of Numbers, Letters
 #endif
 
-
-#ifdef BGI_DOS_PLATFORM
-    // Set Up Line Style to Be Used In Drawing Grid
-
-    switch (GridPenStyle)
-    {
-    case zDASHED:
-        bgiGridType = DASHED_LINE;
-        break;
-
-    case zDOTTED:
-        bgiGridType = DOTTED_LINE;
-        break;
-
-    case zDASH_DOT:
-    case zDASH_DOT_DOT:       // This One Not Really Available for BGI!
-        bgiGridType = CENTER_LINE;
-        break;
-
-    case zSOLID:
-    default:
-        bgiGridType = SOLID_LINE;
-        break;
-    }
-    //
-    // Switch In the Axis Color
-    //
-    setcolor((int)AxisColor);         // Color of Numbers, Letters
-#endif
-
-
     pens_created = TRUE;
 }
 
@@ -1140,17 +813,10 @@ void zLowLevelGraphics::zDeletePens()
 #endif
 
 
-#ifdef OS2_PLATFORM
-    // OS/2 PM Doesn't Require Anything Special Here!
-#endif
-
 #ifdef MS_DOS_PLATFORM
     //  MS DOS Graphics Doesn't Require Anything Special Here!
 #endif
 
-#ifdef BGI_DOS_PLATFORM
-    // Nothing Special Needed Here...
-#endif
 }
 
 ////////////////////////// zActivateBrushes() ////////////////////////////
@@ -1225,65 +891,7 @@ void zLowLevelGraphics::zActivateBrushes()
     }
 #endif
 
-
-#ifdef OS2_PLATFORM
-
-    // OS/2
-
-    //
-    // Array of Fill Patterns Available
-    //
-    static long lColorPattern[] =
-    {
-        PATSYM_HORIZ     ,        // The First Six Patterns In This Array
-        PATSYM_VERT      ,        //   Emulate the Windows GDI Brush Styles
-        PATSYM_DIAG1     ,
-        PATSYM_DIAG3     ,
-        PATSYM_HATCH     ,
-        PATSYM_DIAGHATCH ,
-
-        PATSYM_DENSE1    ,        // These are Varying Color Densities
-        PATSYM_DENSE2    ,
-        PATSYM_DENSE3    ,
-        PATSYM_DENSE4    ,
-        PATSYM_DENSE5    ,
-        PATSYM_DENSE6    ,
-        PATSYM_DENSE7    ,
-        PATSYM_DENSE8    ,
-
-        PATSYM_DIAG2     ,        // Others
-        PATSYM_DIAG4     ,
-        PATSYM_HALFTONE
-    };
-
-
-    for (INT i = 0; i < zMAX_GRAPH_COLORS; i++)   // Use 1 Pattern for each Item
-    {
-        switch (fill_style)
-        {
-        case zCOLOR_HATCH_FILL:  // Set to Emulate "Windows"-Like Patterns
-            ColorPattern[ i ] = lColorPattern[ i ];
-            break;
-
-        case zMONO_HATCH_FILL :  // Set to Emulate "Windows"-Like Patterns
-            ColorPattern[ i ] = lColorPattern[ i ];
-
-            // We Want Mono Fills--Ensure All Colors are the Same
-            //   By Making Them all the Same as the Axis Color.
-            //   This Emulates The Windows Behaviour
-            GraphColor[ i ] = AxisColor;
-            break;
-
-        case zSOLID_FILL :
-        default          :
-            ColorPattern[ i ] = PATSYM_SOLID;
-            break;
-        }
-    }
-
-#endif
-
-#if defined(MS_DOS_PLATFORM) || defined(BGI_DOS_PLATFORM)
+#if defined(MS_DOS_PLATFORM)
 
     for (INT i = 0; i < zMAX_GRAPH_COLORS; i++)   // Use 1 Pattern for each Item
     {
@@ -1335,17 +943,10 @@ void zLowLevelGraphics::zDeleteBrushes()
     }
 #endif
 
-#ifdef OS2_PLATFORM
-    // OS/2 PM Doesn't Require Anything Special Here...
-#endif
-
 #ifdef MS_DOS_PLATFORM
     // Nothing Special Needed Here...
 #endif
 
-#ifdef BGI_DOS_PLATFORM
-    // Nothing Special Needed Here...
-#endif
 }
 
 //////////////////////////// zSaveGraphics() //////////////////////////////
@@ -1372,39 +973,10 @@ void zLowLevelGraphics::zSaveGraphics()
     hOldFont     = (HFONT) SelectObject(hDC, hOldFont);  //  TO USE ORIG FONT!
 #endif
 
-
-#ifdef OS2_PLATFORM
-    // Set Some Defaults for OS/2 GPI
-
-    // We Want to Use 32-Bit RGB Color Index Values
-    GpiCreateLogColorTable(hPS, LCOL_RESET, LCOLF_RGB, 0L, 0L, NULL);
-
-    // Set Text Mix
-    GpiSetBackMix(hPS, BM_OVERPAINT);
-
-    //
-    // Set OS/2 Coordinate Transform Matrix to Emulate the
-    //   MS-Windows Model--i.e., Make the Point (0,0) at the Top
-    //   of the Window [Quadrant IV], with Positive y-values
-    //   going down the screen
-    //
-    GpiSavePS(hPS);
-    GpiQueryModelTransformMatrix(hPS, 9, &mat);
-    mat.fxM21 = mat.fxM12 = 0;
-    mat.fxM11 = 65536;
-    mat.fxM22 = -65536;
-    mat.lM31 = 0;
-    mat.lM32 = RWindow.Height();
-    GpiSetModelTransformMatrix(hPS, 9, &mat, TRANSFORM_REPLACE);
-#endif
-
 #ifdef MS_DOS_PLATFORM
     // Nothing Special Needed Here...
 #endif
 
-#ifdef BGI_DOS_PLATFORM
-    // Nothing Special Needed Here...
-#endif
 }
 
 ////////////////////////// zRestoreGraphics() ////////////////////////////
@@ -1423,19 +995,10 @@ void zLowLevelGraphics::zRestoreGraphics()
 #endif
 
 
-#ifdef OS2_PLATFORM
-    // Restore OS/2 PS
-    GpiRestorePS(hPS, -1);
-#endif
-
-
 #ifdef MS_DOS_PLATFORM
     // Nothing Special Needed Here...
 #endif
 
-#ifdef BGI_DOS_PLATFORM
-    // Nothing Special Needed Here...
-#endif
 }
 
 /////////////////////////// zSetUpFonts() ////////////////////////////
@@ -1457,14 +1020,6 @@ void zLowLevelGraphics::zSetUpFonts()
     AxisTitleFont  .zSetMaxPointSize(14);
     LegendTitleFont.zSetMaxPointSize(14);
 #endif
-
-#ifdef OS2_PLATFORM
-    // Set the HPS
-    AxisLabelFont.zInitFont(hPS, TRUE);
-    AxisTitleFont.zInitFont(hPS, TRUE);
-    LegendTitleFont.zInitFont(hPS, FALSE);
-#endif
-
 
     // Set the Text Color for these Fonts
     AxisLabelFont  .zSetTextColor(AxisColor);
@@ -1496,16 +1051,8 @@ void zLowLevelGraphics::zSelectAxisColor()
     SetTextColor(hDC, AxisColor);       // Set the Text Color
 #endif
 
-#ifdef OS2_PLATFORM
-    GpiSetColor(hPS, AxisColor);
-#endif
-
 #ifdef MS_DOS_PLATFORM
     _setcolor((short)AxisColor);
-#endif
-
-#ifdef BGI_DOS_PLATFORM
-    setcolor((int)AxisColor);
 #endif
 
     //
@@ -1556,16 +1103,8 @@ void zLowLevelGraphics::zSelectGraphColor(INT index)
     SetTextColor(hDC, GraphColor[index]);
 #endif
 
-#ifdef OS2_PLATFORM
-    GpiSetColor(hPS, GraphColor[index]);
-#endif
-
 #ifdef MS_DOS_PLATFORM
     _setcolor((short)GraphColor[index]);
-#endif
-
-#ifdef BGI_DOS_PLATFORM
-    setcolor((int)GraphColor[index]);
 #endif
 
     //
@@ -1587,19 +1126,10 @@ void zLowLevelGraphics::zSetPixel(INT xPos, INT yPos, zRGB color)
     SetPixel(hDC, xPos, yPos, color);
 #endif
 
-#ifdef OS2_PLATFORM
-    POINTL ptl =
-    { xPos, yPos };
-    GpiSetPel(hPS, &ptl);
-#endif
-
 #ifdef MS_DOS_PLATFORM
     _setpixel(xPos, yPos);
 #endif
 
-#ifdef BGI_DOS_PLATFORM
-    putpixel(xPos, yPos, (int)color);
-#endif
 }
 
 ////////////////////////// zShowStringInRect() ////////////////////////////
@@ -1626,17 +1156,6 @@ void zLowLevelGraphics::zShowStringInRect(
 #endif
 
 
-#ifdef OS2_PLATFORM
-
-    // Set Color of the Text
-    zSelectAxisColor();
-
-    // Create a Font of the Proper Size
-    zFONT zf(hPS);
-    zf.DisplayTextInRect(string, RString);
-
-#endif
-
 #ifdef MS_DOS_PLATFORM
     // Set Color of the Text
     zSelectAxisColor();
@@ -1645,14 +1164,6 @@ void zLowLevelGraphics::zShowStringInRect(
     zDOSShowTextInRect(string, *RString);
 #endif
 
-
-#ifdef BGI_DOS_PLATFORM
-    // Set Color of the Text
-    zSelectAxisColor();
-
-    // Draw Text In Rectangle
-    zDOSShowTextInRect(string, *RString);
-#endif
 }
 
 ////////////////////////////// zAlignText() ///////////////////////////////
@@ -1670,14 +1181,6 @@ void zLowLevelGraphics::zAlignText(INT AlignValue)
         SetTextAlign(hDC, TA_RIGHT | TA_TOP);
 #endif
 
-#ifdef OS2_PLATFORM                                    // OS/2
-        GpiSetTextAlignment(hPS, TA_RIGHT, TA_TOP);
-#endif
-
-#ifdef BGI_DOS_PLATFORM
-        settextjustify(RIGHT_TEXT, CENTER_TEXT);            // BGI
-#endif
-
         break;
 
 
@@ -1685,14 +1188,6 @@ void zLowLevelGraphics::zAlignText(INT AlignValue)
 
 #ifdef WINDOWS_PLATFORM                                // Windows
         SetTextAlign(hDC, TA_LEFT | TA_TOP);
-#endif
-
-#ifdef OS2_PLATFORM                                    // OS/2
-        GpiSetTextAlignment(hPS, TA_LEFT, TA_TOP);
-#endif
-
-#ifdef BGI_DOS_PLATFORM
-        settextjustify(LEFT_TEXT, TOP_TEXT);                // BGI
 #endif
 
         // [See MS_DOS_PLATFORM Code Below...]
@@ -1703,14 +1198,6 @@ void zLowLevelGraphics::zAlignText(INT AlignValue)
 
 #ifdef WINDOWS_PLATFORM
         SetTextAlign(hDC, TA_CENTER | TA_BASELINE);
-#endif
-
-#ifdef OS2_PLATFORM
-        // ???
-#endif
-
-#ifdef BGI_DOS_PLATFORM
-        settextjustify(CENTER_TEXT, CENTER_TEXT);
 #endif
 
         // [See MS_DOS_PLATFORM Code Below...]
@@ -1739,25 +1226,11 @@ INT zLowLevelGraphics::zTextWidth(PWCHAR string)
     return (dSize.cx);
 #endif
 
-#ifdef OS2_PLATFORM
-    POINTL aptl[TXTBOX_COUNT];
-
-    // Get Size of Text Box
-    GpiQueryTextBox(hPS, _tcslen(string),
-                    string, TXTBOX_COUNT, aptl);
-
-    // Return Its Width
-    return (aptl[TXTBOX_CONCAT].x);
-#endif
-
 #ifdef MS_DOS_PLATFORM
     // Returns Length of a Graphics String Using Default Font
     return (_getgtextextent(string));
 #endif
 
-#ifdef BGI_DOS_PLATFORM
-    return (textwidth(string));
-#endif
 }
 
 //////////////////////////// zTextHeight() /////////////////////////////
@@ -1772,18 +1245,6 @@ int zLowLevelGraphics::zTextHeight(PWCHAR string)
     return (dSize.cy);
 #endif
 
-#ifdef OS2_PLATFORM
-    POINTL aptl[TXTBOX_COUNT];
-
-    // Get Size of Text Box
-    GpiQueryTextBox(hPS, strlen(string),
-                    string, TXTBOX_COUNT, aptl);
-
-    // Return Its Height
-    return (aptl[TXTBOX_CONCAT].y);
-#endif
-
-
 #ifdef MS_DOS_PLATFORM
     _fontinfo fi;
     _getfontinfo(&fi);
@@ -1791,9 +1252,6 @@ int zLowLevelGraphics::zTextHeight(PWCHAR string)
     return (fi.pixheight);
 #endif
 
-#ifdef BGI_DOS_PLATFORM
-    return (textheight(string) + 3);
-#endif
 }
 
 //////////////////////////// zDraw_Symbol() /////////////////////////////
@@ -2068,11 +1526,6 @@ void zLowLevelGraphics::zDraw_Symbol(unsigned _x_, unsigned _y_, INT symbol,
 
         INT yOffset = - charsize;
 
-#ifdef OS2_PLATFORM
-        // Adjust y-Offset for OS/2
-        yOffset += 7 * charsize / 4;
-#endif
-
         zDrawTextString(_x_ - charsize/2, _y_ + yOffset, buf);
 
 #ifdef WINDOWS_PLATFORM
@@ -2082,13 +1535,6 @@ void zLowLevelGraphics::zDraw_Symbol(unsigned _x_, unsigned _y_, INT symbol,
     }
     break ;
     }
-
-
-#ifdef OS2_PLATFORM
-    // Switch Back to Old Color
-    GpiSetColor(hPS, GraphColor[ ColorIndex ]);
-#endif
-
 }
 
 
@@ -2134,8 +1580,7 @@ INT zLowLevelGraphics::zRound(double d)
 /////////////////////////////////////////////////////////////////////////
 //                  MEMBER-FUNCTIONS FOR MS-DOS ONLY
 /////////////////////////////////////////////////////////////////////////
-
-#if defined(MS_DOS_PLATFORM) || defined(BGI_DOS_PLATFORM)
+#if defined(MS_DOS_PLATFORM)
 
 //////////////////////////// zDOSOpenGraphics() ////////////////////////////
 
@@ -2180,38 +1625,6 @@ void zLowLevelGraphics::zDOSOpenGraphics()
     zDOSClearScreen();
 #endif
 
-
-#ifdef BGI_DOS_PLATFORM
-    int gdriver = DETECT, gmode, errorcode;
-
-    // Auto-Detect the Graphics Driver and Mode,
-
-    initgraph(&gdriver, &gmode, "");
-
-    // Check for Any Errors
-    errorcode = graphresult();
-
-    if (errorcode != grOk)
-    {
-        printf("Graphics error: %s\n", grapherrormsg(errorcode));
-        printf("Press any key to halt:");
-        getch();
-        exit(1);
-    }
-
-    // Select Default Font
-    NumFonts = 6;
-    zDOSSelectFont(zDEFAULT_FONT);
-
-    // Set X- and Y- Values for Screen Rectangle
-    RScreen.left   = RScreen.top = 0;
-    RScreen.right  = (ScreenWidth  = getmaxx());
-    RScreen.bottom = (ScreenHeight = getmaxy());
-
-    // Clear Screen
-    zDOSClearScreen();
-
-#endif
 }
 
 //////////////////////////// zDOSCloseGraphics() /////////////////////////////
@@ -2224,9 +1637,6 @@ void zLowLevelGraphics::zDOSCloseGraphics()
     _setvideomode(_DEFAULTMODE);
 #endif
 
-#ifdef BGI_DOS_PLATFORM
-    closegraph();
-#endif
 }
 
 //////////////////////////// zDOSClearScreen() ///////////////////////////////
@@ -2239,9 +1649,6 @@ void zLowLevelGraphics::zDOSClearScreen()
     _clearscreen(_GCLEARSCREEN);
 #endif
 
-#ifdef BGI_DOS_PLATFORM
-    cleardevice();
-#endif
 }
 
 //////////////////////////// zDOSRectangle() ///////////////////////////////
@@ -2257,11 +1664,6 @@ void zLowLevelGraphics::zDOSRectangle(RECT * R, INT FgColor, INT BgColor)
     _rectangle(_GFILLINTERIOR, R->left, R->top, R->right, R->bottom);
 #endif
 
-#ifdef BGI_DOS_PLATFORM
-    setcolor(FgColor);
-    setfillstyle(SOLID_FILL, BgColor);
-    bar3d(R->left, R->top, R->right, R->bottom, 0, 0);
-#endif
 }
 
 //////////////////////////// zDOSSelectFont() ///////////////////////////////
@@ -2279,16 +1681,6 @@ void zLowLevelGraphics::zDOSSelectFont(int FontNum)
         _outtext("Error: Can't Set font");
         exit(1);
     }
-#endif
-
-#ifdef BGI_DOS_PLATFORM
-    // Select a Font of a Certain Size
-    FontNum = (FontNum % NumFonts);
-    if (FontNum == 0)
-    {
-        FontNum++;
-    }
-    settextstyle(SMALL_FONT, HORIZ_DIR, FontNum + 3);
 #endif
 
 }
@@ -2340,13 +1732,6 @@ void zLowLevelGraphics::zDOSShowTextInRect(PWCHAR string, RECT R1,
     }
 #endif
 
-#ifdef BGI_DOS_PLATFORM
-    if (ShowText)
-    {
-        outtextxy(xPos, yPos, string);
-    }
-#endif
-
     // Select Default Font Again
     zDOSSelectFont(zDEFAULT_FONT);
 }
@@ -2383,10 +1768,6 @@ void zLowLevelGraphics::zDOSShowMessage(PWCHAR Message)
     _setcolor(zBRT_WHITE);
 #endif
 
-#ifdef BGI_DOS_PLATFORM
-    setcolor(zBRT_WHITE);
-#endif
-
     int xPos = XCenter - Width/2 ;
     int yPos = YCenter - MARGIN/4;
 
@@ -2395,10 +1776,6 @@ void zLowLevelGraphics::zDOSShowMessage(PWCHAR Message)
 #ifdef MS_DOS_PLATFORM
     _moveto(xPos, yPos);
     _outgtext(Message);
-#endif
-
-#ifdef BGI_DOS_PLATFORM
-    outtextxy(xPos, yPos, Message);
 #endif
 
     // Wait for a Key
@@ -2439,10 +1816,6 @@ void zLowLevelGraphics::zDOSSelectFill(int fill_style, int FillIndex)
     _setfillmask(mask[ FillIndex ]);
 #endif
 
-#ifdef BGI_DOS_PLATFORM
-    // Function Is Not Really Needed for Borland...
-    UNUSED_PARAMETERS(&fill_style, FillIndex);
-#endif
 }
 
 /////////////////////////////// zDOSBevel() ///////////////////////////////
@@ -2513,10 +1886,6 @@ void zLowLevelGraphics::zDOSDrawChar(INT xPos, INT yPos,
     _outgtext(string);
 #endif
 
-#ifdef BGI_DOS_PLATFORM
-    setcolor(TextColor);
-    outtextxy(xPos, yPos, string);
-#endif
 }
 
 //////////////////////////// zDOSTextHeight() /////////////////////////////
@@ -2533,9 +1902,6 @@ int zLowLevelGraphics::zDOSTextHeight(PWCHAR string)
     return (fi.pixheight);
 #endif
 
-#ifdef BGI_DOS_PLATFORM
-    return (textheight(string) + 3);
-#endif
 }
 
 ////////////////////////////// zDOSTextWidth() /////////////////////////////
@@ -2551,9 +1917,6 @@ INT zLowLevelGraphics::zDOSTextWidth(PWCHAR string)
     return (_getgtextextent(string));
 #endif
 
-#ifdef BGI_DOS_PLATFORM
-    return (textwidth(string));
-#endif
 }
 
 // Short Helper Functions
@@ -2571,10 +1934,4 @@ void zDOSSelectDefaultFont()
     zLowLevelGraphics::zDOSSelectFont(zDEFAULT_FONT);
 }
 
-#endif  // End Of "#if defined(MS_DOS_PLATFORM) || defined(BGI_DOS_PLATFORM)"
-
-
-
-// EOF -- LOWLEVEL.CPP
-
-
+#endif

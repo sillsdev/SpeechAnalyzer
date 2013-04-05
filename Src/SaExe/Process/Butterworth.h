@@ -4,6 +4,7 @@
 #ifndef BUTTERWORTH_H
 #define BUTTERWORTH_H
 
+#include "IProcess.h"
 #include "Process.h"
 #include "dsp\ZTransform.h"
 
@@ -13,22 +14,12 @@ public:
     CProcessIIRFilter(BOOL bDstWBench = TRUE);
     virtual ~CProcessIIRFilter();
 
-    void SetSourceProcess(CProcess * pSourceProcess, BOOL bWBenchProcess = TRUE);
+    void SetSourceProcess(IProcess * pSourceProcess, BOOL bWBenchProcess = TRUE);
     void SetOutputType(BOOL bWBenchProcess = TRUE);
     virtual long Process(void * pCaller, ISaDoc *, int nProgress = 0, int nLevel = 1);
-    void SetFilterFilterSilenceSamples(int forwardSamples)
-    {
-        m_nFilterFilterSilence = forwardSamples > 0 ? forwardSamples : 1;
-    }
-    int FilterFilterSilenceSamples()
-    {
-        return m_nFilterFilterSilence;
-    }
-
-    CZTransform GetForward()
-    {
-        return m_zForwardTransform;
-    };
+    void SetFilterFilterSilenceSamples(int forwardSamples);
+    int FilterFilterSilenceSamples();
+    CZTransform GetForward();
 
 protected:
     CZTransform m_zForwardTransform;
@@ -40,22 +31,17 @@ private:
         DEFAULT_FILTER_FILTER_SILENCE_SAMPLES = 4096
     };
 
+    void SetFilterFilter(BOOL bSet);
+    static int round(double value);
+    int ReadSourceData(DWORD dwDataPos, int wSmpSize, ISaDoc * pDoc);
+    // write a block into the temporary file
+    BOOL WriteWaveDataBlock(DWORD dwPosition, HPSTR lpData, DWORD dwDataLength);
     BOOL m_bReverse;
-    void SetFilterFilter(BOOL bSet)
-    {
-        m_bFilterFilter = bSet;
-    }
     BOOL m_bFilterFilter;
     int m_nFilterFilterSilence;
-    static int round(double value)
-    {
-        return (value >= 0.) ? int(value + 0.5) : int(value - 0.5);
-    }
     BOOL m_bSrcWBenchProcess;
     BOOL m_bDstWBenchProcess;
-    CProcess * m_pSourceProcess;
-    int ReadSourceData(DWORD dwDataPos, int wSmpSize, ISaDoc * pDoc);
-    BOOL WriteWaveDataBlock(DWORD dwPosition, HPSTR lpData, DWORD dwDataLength); // write a block into the temporary file
+    IProcess * m_pSourceProcess;
 };
 
 class CButterworth : public CProcessIIRFilter
@@ -67,20 +53,17 @@ public:
     void LowPass(int nOrder, double dFrequency, double dScale=1.);
     void HighPass(int nOrder, double dFrequency, double dScale=1.);
     void BandPass(int nOrder, double dFrequency, double dBandwidth, double dScale=1.);
-
-    void SetFilterFilter(BOOL bSet)
-    {
-        m_bFilterFilter = bSet;
-        SetReverse(bSet);
-    }
-
+    void SetFilterFilter(BOOL bSet);
     virtual long Process(void * pCaller, ISaDoc *, int nProgress = 0, int nLevel = 1);
     void ConfigureProcess(double dSampling);
-
-    double ForwardTick(double data)
-    {
-        return m_zForwardTransform.Tick(data);
-    };
+    double ForwardTick(double data);
+    void CascadeLowPass(CZTransform & zTransform, int nOrder, double dFrequency, double dSampling, double & tau);
+    void CascadeHighPass(CZTransform & zTransform, int nOrder, double dFrequency, double dSampling, double & tau);
+    void CascadeScale(CZTransform & zTransform, double dScale);
+    void ClearFilter();
+    void SetReverse(BOOL bSet);
+    double FilterFilterNorm(int nOrder) const;
+    static int round(double value);
 
 private:
     enum FilterType
@@ -98,21 +81,6 @@ private:
     double m_dFrequency;
     double m_dBandwidth;
     double m_dScale;
-
-    void CascadeLowPass(CZTransform & zTransform, int nOrder, double dFrequency, double dSampling, double & tau);
-    void CascadeHighPass(CZTransform & zTransform, int nOrder, double dFrequency, double dSampling, double & tau);
-    void CascadeScale(CZTransform & zTransform, double dScale);
-    void ClearFilter();
-
-    void SetReverse(BOOL bSet)
-    {
-        m_bReverse = bSet;
-    }
-    double FilterFilterNorm(int nOrder) const;
-    static int round(double value)
-    {
-        return (value >= 0.) ? int(value + 0.5) : int(value - 0.5);
-    }
 };
 
 class CHilbert : public CProcessIIRFilter

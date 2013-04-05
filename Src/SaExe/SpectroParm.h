@@ -24,10 +24,10 @@ public:
     BOOL bFormantColor;
     BOOL bShowPitch;
 
-    void WritePropertiesA(Object_ostream & obs);
-    void WritePropertiesB(Object_ostream & obs);
-    BOOL ReadPropertiesA(Object_istream & obs);
-    BOOL ReadPropertiesB(Object_istream & obs);
+    void WritePropertiesA(CObjectOStream & obs);
+    void WritePropertiesB(CObjectOStream & obs);
+    BOOL ReadPropertiesA(CObjectIStream & obs);
+    BOOL ReadPropertiesB(CObjectIStream & obs);
 
     void Init();
     static const float DspWinBandwidth[3];
@@ -41,7 +41,7 @@ public:
     }
 
 private:
-    void WriteProperties(const char * pszMarker, Object_ostream & obs);
-    BOOL ReadProperties(const char * pszMarker, Object_istream & obs);
+    void WriteProperties(LPCSTR pszMarker, CObjectOStream & obs);
+    BOOL ReadProperties(LPCSTR pszMarker, CObjectIStream & obs);
 };
 #endif

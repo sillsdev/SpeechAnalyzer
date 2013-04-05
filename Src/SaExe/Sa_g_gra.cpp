@@ -83,16 +83,14 @@ CPlotGrappl::~CPlotGrappl()
 /***************************************************************************/
 void CPlotGrappl::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView)
 {
-
     // get pointer to main frame, graph, and document
-
     CGraphWnd * pGraph = (CGraphWnd *)GetParent();
     CSaDoc  *  pDoc   = pView->GetDocument();
 
-    // create grappl data
+	// create grappl data
     CProcessGrappl * pGrappl = (CProcessGrappl *)pDoc->GetGrappl(); // get pointer to grappl object
-    short int nResult = LOWORD(pGrappl->Process(this, pDoc)); // process data
-    nResult = CheckResult(nResult, pGrappl); // check the process result
+    short int nResult = LOWORD(pGrappl->Process(this, pDoc));		// process data
+    nResult = CheckResult(nResult, pGrappl);						// check the process result
     if (nResult == PROCESS_ERROR)
     {
         return;
@@ -110,9 +108,10 @@ void CPlotGrappl::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView)
     else if (pGrappl->IsDataReady())
     {
         // get pointer to pitch parameters
-        const PitchParm * pPitchParm = pDoc->GetPitchParm();
+        const CPitchParm * pPitchParm = pDoc->GetPitchParm();
         // set data range
-        int nMinData, nMaxData;
+        int nMinData = 0;
+		int nMaxData = 0;
         if (pPitchParm->nRangeMode)
         {
             // manual range mode
@@ -122,7 +121,7 @@ void CPlotGrappl::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView)
         else
         {
             // auto range mode
-            PitchParm::GetAutoRange(pDoc, nMaxData, nMinData);
+            CPitchParm::GetAutoRange(pDoc, nMaxData, nMinData);
         }
         SetProcessMultiplier(PRECISION_MULTIPLIER);
         SetBold(FALSE);

@@ -300,7 +300,6 @@ protected:  // implementation
 
     // Generated message map functions
 protected:
-    //{{AFX_MSG(CAnnotationWnd)
     afx_msg BOOL OnEraseBkgnd(CDC * pDC);
     afx_msg void OnRButtonDown(UINT nFlags, CPoint point);
     afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
@@ -308,7 +307,6 @@ protected:
     afx_msg void OnLButtonDblClk(UINT nFlags, CPoint point);
     afx_msg void OnMouseMove(UINT nFlags, CPoint point);
     afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
-    //}}AFX_MSG
     DECLARE_MESSAGE_MAP()
 };
 
@@ -361,6 +359,8 @@ public:
 
 class CGlossWnd : public CAnnotationWnd
 {
+
+    // Construction/destruction/creation
 public:
     CGlossWnd(int nIndex) : CAnnotationWnd(nIndex) {};
     virtual void OnDraw(CDC * pDC, const CRect & printRect);
@@ -368,6 +368,7 @@ public:
 
 class CReferenceWnd : public CAnnotationWnd
 {
+    // Construction/destruction/creation
 public:
     CReferenceWnd(int nIndex) : CAnnotationWnd(nIndex) {};
     virtual void OnDraw(CDC * pDC, const CRect & printRect);
@@ -375,6 +376,7 @@ public:
 
 class CMusicPhraseWnd : public CAnnotationWnd
 {
+    // Construction/destruction/creation
 public:
     CMusicPhraseWnd(int nIndex) : CAnnotationWnd(nIndex) {};
 };

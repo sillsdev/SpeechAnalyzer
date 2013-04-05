@@ -83,18 +83,22 @@ DWORD CProcessDurations::GetProcessedData(int nSegmentIndex)
 {
     return m_Durations.GetAt(nSegmentIndex);
 }
+
 DWORD CProcessDurations::GetDataSize()
 {
     return (DWORD)m_Durations.GetSize();   //return number of durations
 }
+
 void CProcessDurations::SetDataInvalid()
 {
     CProcess::SetDataInvalid();
 }
+
 DWORD CProcessDurations::GetMaxDuration()
 {
     return m_dwMaxValue;   // return maximum value
 }
+
 DWORD CProcessDurations::GetMinDuration()
 {
     return m_dwMinValue;   // return minimum value

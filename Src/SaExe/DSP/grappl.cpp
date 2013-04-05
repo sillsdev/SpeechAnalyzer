@@ -42,42 +42,42 @@ enum {  Idle,WantIn,WantOut };
 /* hardcoded parameter values */
 enum
 {
-    Badcoeff=-20000,    /* invalid acf coeff */
-    Baseweighting=20,   /* base for freq reliability weights for contouring algorithm */
-    NsampAcf=15,        /* no. of samples for acf calcs */
-    NsampMag=21,        /* no. of samples for magnitude calcs */
-    Maxlag=10,          /* max. zero-crossing lags to consider */
-    Optimrange_pc100=500,  /* optimise best zero-crossing acfs +/- 5% */
-    Nsmoothpass=2       /* no. of smoothing passes to generate smooth16 */
+    Badcoeff=-20000,		/* invalid acf coeff */
+    Baseweighting=20,		/* base for freq reliability weights for contouring algorithm */
+    NsampAcf=15,			/* no. of samples for acf calcs */
+    NsampMag=21,			/* no. of samples for magnitude calcs */
+    Maxlag=10,				/* max. zero-crossing lags to consider */
+    Optimrange_pc100=500,	/* optimise best zero-crossing acfs +/- 5% */
+    Nsmoothpass=2			/* no. of smoothing passes to generate smooth16 */
 };
 
 /* private data structures */
 /* acf data for particular zero-crossing interval */
 typedef struct SLagelem
 {
-    int16  nxing;    /* no of zero-crossings this dist represents */
-    int16  coeff;    /* acf coeff for this dist */
-    uint16 dist16;  /* dist in data samples (x16) */
+    int16  nxing;			/* no of zero-crossings this dist represents */
+    int16  coeff;			/* acf coeff for this dist */
+    uint16 dist16;			/* dist in data samples (x16) */
 } Lagelem;
 typedef Lagelem * pLagelem;
 
 /* raw pitch estimate */
 typedef struct SFraw
 {
-    int16  pitch16;  /* pitch estimate in Hz (x16) */
-    int16  coeff;    /* associated acf coeff */
-    int16  weight;    /* associated weight */
+    int16  pitch16;			/* pitch estimate in Hz (x16) */
+    int16  coeff;			/* associated acf coeff */
+    int16  weight;			/* associated weight */
 } Fraw;
 typedef Fraw * pFraw;
 
 /* private intermediate results data */
 typedef struct SSysres
 {
-    uint8 voiced;    /* data is voiced */
-    uint8 selected;    /* used in locating tone contours */
-    int16  magnitude;  /* smoothed magnitude in range 0-100 */
-    int16  weight;    /* final point weight */
-    Fraw  fraw[2];  /* raw pitch estimates */
+    uint8 voiced;			/* data is voiced */
+    uint8 selected;			/* used in locating tone contours */
+    int16  magnitude;		/* smoothed magnitude in range 0-100 */
+    int16  weight;			/* final point weight */
+    Fraw  fraw[2];			/* raw pitch estimates */
 } Sysres;
 typedef Sysres * pSres;
 
@@ -97,121 +97,121 @@ typedef struct SRoute
 typedef struct
 {
     /* overall flow control */
-    int16  state;      /* Idle, Wantin or Wantout */
-    int16  error;      /* error state */
+    int16 state;		/* Idle, Wantin or Wantout */
+    int16 error;		/* error state */
 
     /* user parameters */
-    int16  reslag;
-    int16  maxinterp_pc10;
-    int16  minmeanweight;
-    int16  minsigpoints;
-    int16  maxchange_pc10;
-    int16  minvoiced16;
-    int16  calcint;
-    int16  maxpitch;
-    int16  minpitch;
-    int16  mode;
-    int16  eightbit;
-    int32  smoothfreq;
-    int32  sampfreq;
+    int16 reslag;
+    int16 maxinterp_pc10;
+    int16 minmeanweight;
+    int16 minsigpoints;
+    int16 maxchange_pc10;
+    int16 minvoiced16;
+    int16 calcint;
+    int16 maxpitch;
+    int16 minpitch;
+    int16 mode;
+    int16 eightbit;
+    int32 smoothfreq;
+    int32 sampfreq;
 
     /* derived parameters */
-    uint16 minlen16;    /* min pitch period (x16) (from maxpitch) */
-    uint16 maxlen16;    /* max pitch period (x16) (from minpitch) */
-    uint16 acfrange;    /* span of acf calculations */
-    uint16 magrange;    /* span of magnitude calcs */
-    uint16 smagrange;    /* span of mangitude calcs on smoothed wavesform */
+    uint16 minlen16;			/* min pitch period (x16) (from maxpitch) */
+    uint16 maxlen16;			/* max pitch period (x16) (from minpitch) */
+    uint16 acfrange;			/* span of acf calculations */
+    uint16 magrange;			/* span of magnitude calcs */
+    uint16 smagrange;			/* span of mangitude calcs on smoothed wavesform */
 
     /* public input buffer tracking */
-    int16  inalldone;    /* all input data supplied */
-    pGrappl  inptr;      /* pointer to next input data value */
-    uint16 incount;    /* input data values pending */
-    uint32  dataindx;    /* indx of data sample corresponding to next calc pos */
+    int16 inalldone;			/* all input data supplied */
+    pGrappl inptr;				/* pointer to next input data value */
+    uint16 incount;				/* input data values pending */
+    uint32 dataindx;			/* indx of data sample corresponding to next calc pos */
 
     /* private input buffer management */
     uint16 loc_bytesreqd;
     uint16 loc_isubtract,loc_iadd;
-    uint32  loc_lcentre,loc_lpos;
+    uint32 loc_lcentre,loc_lpos;
     uint16 loc_filterlen;
-    int32  loc_filtersum;
-    int16  loc_positive;
+    int32 loc_filtersum;
+    int16 loc_positive;
 
     /* zero crossing data */
-    int16  xindx;      /* next indx for zero-crossing data */
-    int16  xcount;      /* number of valid zero-crossings in array */
+    int16 xindx;				/* next indx for zero-crossing data */
+    int16 xcount;				/* number of valid zero-crossings in array */
 
     /* pitch calculation */
-    int16  nlag;
-    Lagelem  prev,prevprev,prev2;
+    int16 nlag;
+    Lagelem prev,prevprev,prev2;
     Lagelem bestlag,bestlag2;
 
     /* private calculation vars */
     uint16 loc_mstep,loc_mstartpos;
     uint16 loc_smstep,loc_smstartpos;
-    int16  loc_maxlow,loc_maxhigh;
+    int16 loc_maxlow,loc_maxhigh;
 
     /* results data */
-    int16  ncalc;      /* number of valid results in output buffer */
-    int16  nres;      /* number of results returned to user */
-    int16  calcpending;    /* number of results pending compared with data in */
-    int16  calcfrac;    /* data samples over */
-    int16  outalldone;    /* true if all results returned */
+    int16 ncalc;				/* number of valid results in output buffer */
+    int16 nres;					/* number of results returned to user */
+    int16 calcpending;			/* number of results pending compared with data in */
+    int16 calcfrac;				/* data samples over */
+    int16 outalldone;			/* true if all results returned */
 
     /* results smoothing */
-    int16  lastfsmooth;    /* used for joining smooth16 across unvoiced sections */
-    int16  prevwt[2];    /* weights of select16 values before start of res block */
-    int16  prevfch[2];    /* select16 values preceding this results block */
+    int16 lastfsmooth;			/* used for joining smooth16 across unvoiced sections */
+    int16 prevwt[2];			/* weights of select16 values before start of res block */
+    int16 prevfch[2];			/* select16 values preceding this results block */
 } Sysparms;
 typedef  Sysparms * Sysparmsptr;
 
 typedef struct
 {
-    int32    check;      /* check double word */
-    int8    wave[Maxdata];    /* private (wrapping) buffer of waveform data */
-    int8    swave[Maxdata];    /* ditto, smoothed waveform */
-    uint32    cross[Maxcross];  /* (wrapping) buffer of zero-crossing posns */
-    Grappl_res  userres[Maxres];  /* buffer for results returned to user */
-    Sysres    sysres[Maxres];    /* buffer for related intermediate results */
-    Lagelem    lagelem[Maxlag+5];  /* potential raw pitch estimates */
-    Sysparms  sysparms;    /* all other 'static' variables */
+    int32 check;				/* check double word */
+    int8 wave[Maxdata];			/* private (wrapping) buffer of waveform data */
+    int8 swave[Maxdata];		/* ditto, smoothed waveform */
+    uint32 cross[Maxcross];		/* (wrapping) buffer of zero-crossing posns */
+    Grappl_res userres[Maxres]; /* buffer for results returned to user */
+    Sysres sysres[Maxres];		/* buffer for related intermediate results */
+    Lagelem lagelem[Maxlag+5];  /* potential raw pitch estimates */
+    Sysparms sysparms;			/* all other 'static' variables */
 } Workspace;
 typedef Workspace * pWorkspace;
 
 /* function prototypes */
-static  Boolean  update_data(pGrappl,int16);
-static  Boolean update_results(pGrappl,int16);
+static bool update_data(pGrappl,int16);
+static bool update_results(pGrappl,int16);
 
-static  void  calculate(pGrappl,int16);
-static  int16  calculate_acf16(pGrappl,uint16);
-static  void  calculate_addprev(pGrappl);
-static  void  calculate_choosebest2(pGrappl);
-static  void  calculate_lagacfs(pGrappl);
-static  int16  calculate_magnitude(pGrappl,int16);
-static  void  calculate_nextgap(pGrappl,int16 *,int16 *,int16);
-static  void  calculate_optimise(pGrappl,pLagelem,int16,int16);
-static  void  calculate_pitch(pGrappl);
-static  void  calculate_selectbest(pGrappl);
-static  void  calculate_voiced(pGrappl);
-static  void  calculate_weights(pGrappl);
+static void calculate(pGrappl,int16);
+static int16 calculate_acf16(pGrappl,uint16);
+static void calculate_addprev(pGrappl);
+static void calculate_choosebest2(pGrappl);
+static void calculate_lagacfs(pGrappl);
+static int16 calculate_magnitude(pGrappl,int16);
+static void calculate_nextgap(pGrappl,int16 *,int16 *,int16);
+static void calculate_optimise(pGrappl,pLagelem,int16,int16);
+static void calculate_pitch(pGrappl);
+static void calculate_selectbest(pGrappl);
+static void calculate_voiced(pGrappl);
+static void calculate_weights(pGrappl);
 
-static  void  magnitude(pGrappl,int16);
+static void magnitude(pGrappl,int16);
 
-static  void  select(pGrappl);
-static  int16  select_continuous(pGrappl,int16,int16,int16);
-static  void  select_section(pGrappl,int16,int16);
-static  int16  select_route(pGrappl,int16,int16,int16 *,int16 *,int16 *,int16 *);
-static  int16  select_routenext(pGrappl,Route *);
+static void select(pGrappl);
+static int16 select_continuous(pGrappl,int16,int16,int16);
+static void select_section(pGrappl,int16,int16);
+static int16 select_route(pGrappl,int16,int16,int16 *,int16 *,int16 *,int16 *);
+static int16 select_routenext(pGrappl,Route *);
 
-static  void  smooth(pGrappl);
-static  void  smooth_section(pGrappl,int16,int16,int16,int16);
+static void smooth(pGrappl);
+static void smooth_section(pGrappl,int16,int16,int16,int16);
 
-static  void  parse(pGrappl);
+static void parse(pGrappl);
 
 
 /**** PUBLIC ROUTINES ********************************************************/
 
 /* generate 'Divide by Zero' on bad work pointer */
-#define    CHECKVAL  123456789L
+#define CHECKVAL 123456789L
 static void Check(pGrappl work)
 {
     if (((pWorkspace)(work))->check != CHECKVAL)
@@ -222,7 +222,7 @@ static void Check(pGrappl work)
 }
 
 
-int16  grapplGetError(pGrappl work)
+int16 grapplGetError(pGrappl work)
 {
     /* return current error state */
     Sysparms * SysParams = &(((pWorkspace)(work))->sysparms);
@@ -232,8 +232,7 @@ int16  grapplGetError(pGrappl work)
     return(SysParams->error);
 }
 
-Boolean  grapplGetResults(pGrappl work,pGrappl_res * res,int16 * nres,
-                          int16 * alldone)
+bool grapplGetResults( pGrappl work,pGrappl_res * res,int16 * nres, bool * alldone)
 {
     /* return next block of results */
     Sysparms * SysParams = &(((pWorkspace)(work))->sysparms);
@@ -247,7 +246,7 @@ Boolean  grapplGetResults(pGrappl work,pGrappl_res * res,int16 * nres,
         {
             SysParams->error=E_idle;
         }
-        return(false);
+        return false;
     }
     else
     {
@@ -263,19 +262,18 @@ Boolean  grapplGetResults(pGrappl work,pGrappl_res * res,int16 * nres,
                 *alldone=true;
                 SysParams->state=Idle;
             }
-            return(true);
+            return true;
         }
         else
         {
             /* need more input data */
             SysParams->state=WantIn;
-            return(false);
+            return false;
         }
     }
 }
 
-
-Boolean grapplInit(pGrappl work,pGrappl_parms parms)
+bool grapplInit(pGrappl work,pGrappl_parms parms)
 {
     /* initialise GRAPPL invocation */
     Sysparms * SysParams = &(((pWorkspace)(work))->sysparms);
@@ -302,8 +300,10 @@ Boolean grapplInit(pGrappl work,pGrappl_parms parms)
     SysParams->calcint=(parms->calcint < 1?1:parms->calcint);
     SysParams->maxpitch=parms->maxpitch;
     SysParams->minpitch=parms->minpitch;
-    if (SysParams->maxpitch < 20 || SysParams->minpitch < 20 || SysParams->maxpitch > 4000 ||
-            SysParams->minpitch > 1000)
+    if ((SysParams->maxpitch < 20) || 
+		(SysParams->minpitch < 20) || 
+		(SysParams->maxpitch > 4000) ||
+        (SysParams->minpitch > 1000))
     {
         SysParams->error=E_badfrange;    // CLW 4/5/00
     }
@@ -315,20 +315,20 @@ Boolean grapplInit(pGrappl work,pGrappl_parms parms)
         }
     }
     SysParams->mode=parms->mode;
-    if (SysParams->mode == 0 || (SysParams->mode & ~(Grappl_magnitude|Grappl_rawpitch|
-                                 Grappl_fullpitch)) != 0)
+    if ((SysParams->mode == 0) || 
+		(SysParams->mode & ~(Grappl_magnitude|Grappl_rawpitch|Grappl_fullpitch)) != 0)
     {
         SysParams->error=E_badmode;
     }
     SysParams->eightbit=parms->eightbit;
     SysParams->smoothfreq=parms->smoothfreq;
-    if (SysParams->smoothfreq != 0L && (SysParams->smoothfreq < 500L ||
-                                        SysParams->smoothfreq > 22000L))
+    if ((SysParams->smoothfreq != 0L) && 
+		((SysParams->smoothfreq < 500L) || (SysParams->smoothfreq > 22000L)))
     {
         SysParams->error=E_badsmooth;    // CLW 4/5/00
     }
     SysParams->sampfreq=parms->sampfreq;
-    if (SysParams->sampfreq < 5000L || SysParams->sampfreq > 50000L)
+    if ((SysParams->sampfreq < 5000L) || (SysParams->sampfreq > 96000L))
     {
         SysParams->error=E_badsfreq;
     }
@@ -336,10 +336,8 @@ Boolean grapplInit(pGrappl work,pGrappl_parms parms)
     if (! SysParams->error)
     {
         /* calculate derived variables */
-        SysParams->minlen16=(uint16)((SysParams->sampfreq*16L+SysParams->maxpitch/2)/
-                                     SysParams->maxpitch);
-        SysParams->maxlen16=(uint16)((SysParams->sampfreq*16L+SysParams->minpitch/2)/
-                                     SysParams->minpitch);
+        SysParams->minlen16=(uint16)((SysParams->sampfreq*16L+SysParams->maxpitch/2)/ SysParams->maxpitch);
+        SysParams->maxlen16=(uint16)((SysParams->sampfreq*16L+SysParams->minpitch/2)/ SysParams->minpitch);
         SysParams->acfrange=(SysParams->maxlen16+8)/16;
         SysParams->magrange=SysParams->acfrange;
         SysParams->smagrange=SysParams->magrange/2;
@@ -357,15 +355,21 @@ Boolean grapplInit(pGrappl work,pGrappl_parms parms)
         SysParams->prevfch[0]=SysParams->prevfch[1]=UNSET;
 
         /* initialise system */
-        if (! update_results(work,true))
+        if (!update_results(work,true))
         {
             SysParams->error=E_internal;
         }
     }
-    return(! SysParams->error);
+    return (!SysParams->error);
 }
 
-Boolean grapplSetInbuff(pGrappl work,pGrappl data,uint16 length,int16 alldone)
+/**
+* work pointer to output buffer
+* data pointer to input data
+* length length of input data
+* alldone true if this is the last sample
+*/
+bool grapplSetInbuff( pGrappl work, pGrappl data, uint16 length, bool alldone)
 {
     /* declare more input data */
     Sysparms * SysParams = &(((pWorkspace)(work))->sysparms);
@@ -377,7 +381,7 @@ Boolean grapplSetInbuff(pGrappl work,pGrappl data,uint16 length,int16 alldone)
     if (SysParams->state != WantIn)
     {
         SysParams->error=(SysParams->state == Idle?E_idle:E_badin);
-        return(false);
+        return false;
     }
     /* reset input data variables */
     SysParams->inptr=data;
@@ -390,7 +394,7 @@ Boolean grapplSetInbuff(pGrappl work,pGrappl data,uint16 length,int16 alldone)
         SysParams->inalldone=true;
     }
     SysParams->state=WantOut;
-    return(true);
+    return true;
 }
 
 uint32 grapplWorkspace(void)
@@ -428,8 +432,7 @@ uint32 grapplWorkspace(void)
 }
 
 /**** UPDATE ************************************************************/
-
-static  Boolean  update_data(pGrappl work,int16 init)
+static bool update_data(pGrappl work,int16 init)
 {
     /* get enough data in to calculate results for next point */
     Sysparms * SysParams = &(((pWorkspace)(work))->sysparms);
@@ -559,7 +562,7 @@ static  Boolean  update_data(pGrappl work,int16 init)
     }
 }
 
-static  Boolean  update_results(pGrappl work,int16 init)
+static bool update_results(pGrappl work,int16 init)
 {
     /* attempt to fill result buffer with fresh results */
     Sysparms * SysParams = &(((pWorkspace)(work))->sysparms);
@@ -629,11 +632,11 @@ static  Boolean  update_results(pGrappl work,int16 init)
             {
                 SysParams->outalldone=true;
             }
-            return(true);
+            return true;
         }
         else
         {
-            return(false);
+            return false;
         }
     }
 }

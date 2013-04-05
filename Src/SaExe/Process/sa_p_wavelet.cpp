@@ -1297,12 +1297,9 @@ BOOL CProcessWavelet::Get_Raw_Data(long ** pDataOut, DWORD * dwDataSizeOut, ISaD
     {
         pData = pDoc->GetWaveData(dwDataPosBytes, TRUE);
 
-
         // Get the bitrate (8 or 16bit data)
-        //blockAlign = m_fmtParm.wBlockAlign;
 
         // FIX: pad the data with 0's if we have 8 bit data
-
 
         // copy the data into our buffer
         for (DWORD index = 0; index < dwChunkSizeBytes; index+=2)

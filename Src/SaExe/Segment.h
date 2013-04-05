@@ -63,7 +63,7 @@
 #define SEGMENT_H
 
 #include "sa_ipa.h"  // Support for CFontTable
-#include "CSaString.h"
+#include "SaString.h"
 #include "process\Process.h"
 
 BOOL CALLBACK EXPORT gIPAInputFilter(CSaString &);

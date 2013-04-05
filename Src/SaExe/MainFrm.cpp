@@ -57,7 +57,6 @@
 #include "stdafx.h"
 #include "mainfrm.h"
 #include "sa_graph.h"
-#include "playerRecorder.h"
 #include "DlgToolsOptions.h"
 #include "sa_wbch.h"
 #include "sa_edit.h"
@@ -69,12 +68,13 @@
 #include "sa_cdib.h"
 #include "targview.h"
 #include "sa_dplot.h"
-#include "autorecorder.h"
+#include "DlgAutoRecorder.h"
 #include "DlgWaveformGenerator.h"
 #include "SelfTest.h"
 #include "AlignInfo.h"
 #include "FileUtils.h"
 #include "resource.h"
+#include "DlgPlayer.h"
 #include "Process\Process.h"
 #include "Process\sa_p_spu.h"
 #include "Process\sa_p_fmt.h"
@@ -469,7 +469,7 @@ void CMainFrame::ShowDataStatusBar(BOOL bShow)
 // parameter contains a valid pointer, it will also copy the function key
 // setting to this pointer.
 /***************************************************************************/
-FnKeys * CMainFrame::GetFnKeys(FnKeys * pfnKeys)
+CFnKeys * CMainFrame::GetFnKeys(CFnKeys * pfnKeys)
 {
     if (pfnKeys)
     {
@@ -481,7 +481,7 @@ FnKeys * CMainFrame::GetFnKeys(FnKeys * pfnKeys)
 /***************************************************************************/
 // CMainFrame::SetFnKeys Sets the function keys structure
 /***************************************************************************/
-void CMainFrame::SetFnKeys(FnKeys * pfnKeys)
+void CMainFrame::SetFnKeys(CFnKeys * pfnKeys)
 {
     m_fnKeys = *pfnKeys;
 }
@@ -536,7 +536,7 @@ void CMainFrame::SetPlayerTimes()
 }
 
 /***************************************************************************/
-// CMainFrame::GetBufferSize Start setup Fn-keys dialog in player
+// CMainFrame::SetupFunctionKeys Start setup Fn-keys dialog in player
 /***************************************************************************/
 void CMainFrame::SetupFunctionKeys()
 {
@@ -545,9 +545,6 @@ void CMainFrame::SetupFunctionKeys()
         GetPlayer(false)->SendMessage(WM_USER_SETUP_FNKEYS, 0, 0L);
     }
 }
-
-/////////////////////////////////////////////////////////////////////////////
-// CMainFrame diagnostics
 
 #ifdef _DEBUG
 void CMainFrame::AssertValid() const
@@ -835,7 +832,7 @@ LRESULT CMainFrame::OnApplyToolsOptions(WPARAM, LPARAM)
     }
 
     // update cursor alignment for the active view
-    CURSOR_ALIGNMENT nCursorAlignmentSetting = (CURSOR_ALIGNMENT) toolSettings.m_nCursorAlignment;
+    ECursorAlignment nCursorAlignmentSetting = (ECursorAlignment) toolSettings.m_nCursorAlignment;
     CSaView * pView = (CSaView *)GetCurrSaView();
     if ((pView!=NULL) && (nCursorAlignmentSetting != pView->GetCursorAlignment()))
     {
@@ -1404,7 +1401,6 @@ void  CMainFrame::ClearPrintingFlag()
     m_progressStatusBar.SetIsPrintingFlag(m_bIsPrinting);
 };
 
-
 //SDM 1.06.6U4
 /***************************************************************************/
 // CMainFrame::OnSaveScreenAsBMP
@@ -1700,7 +1696,7 @@ void CMainFrame::OnSetDefaultParameters()
     // RLJ 1.5Test11.1A - Copy current pitch parameter values
     // to defaults.
     //**********************************************************
-    const PitchParm * pPitchParm                    = pDoc->GetPitchParm();  // Get pitch parameter values.
+    const CPitchParm * pPitchParm                    = pDoc->GetPitchParm();  // Get pitch parameter values.
     m_pitchParmDefaults.nRangeMode           = pPitchParm->nRangeMode;
     m_pitchParmDefaults.nScaleMode           = pPitchParm->nScaleMode;
     m_pitchParmDefaults.nUpperBound          = pPitchParm->nUpperBound;
@@ -1712,12 +1708,12 @@ void CMainFrame::OnSetDefaultParameters()
     // Copy current music parameter values
     // to defaults.
     //**********************************************************
-    const MusicParm * pMusicParm                    = pDoc->GetMusicParm();  // Get pitch parameter values.
+    const CMusicParm * pMusicParm                    = pDoc->GetMusicParm();  // Get pitch parameter values.
     m_musicParmDefaults.nRangeMode           = pMusicParm->nRangeMode;
     m_musicParmDefaults.nUpperBound          = pMusicParm->nUpperBound;
     m_musicParmDefaults.nLowerBound          = pMusicParm->nLowerBound;
 
-    m_intensityParmDefaults = pDoc->GetIntensityParm();
+    m_intensityParmDefaults = pDoc->GetCIntensityParm();
 
     //**********************************************************
     // RLJ 1.5Test11.1A - Get pointer to view.
@@ -1766,7 +1762,7 @@ void CMainFrame::OnSetDefaultParameters()
     if (bFormantGraphUsed)
     {
         CProcessFormants * pFormants                 = (CProcessFormants *)pDoc->GetFormants();
-        FormantParm * pFormantParm                   = pFormants->GetFormantParms();  // Get formant chart parameter values.
+        CFormantParm * pFormantParm                   = pFormants->GetFormantParms();  // Get formant chart parameter values.
         m_formantParmDefaults.bFromLpcSpectrum      = pFormantParm->bFromLpcSpectrum;
         m_formantParmDefaults.bFromCepstralSpectrum = pFormantParm->bFromCepstralSpectrum;
         m_formantParmDefaults.bTrackFormants        = pFormantParm->bTrackFormants;
@@ -1781,7 +1777,7 @@ void CMainFrame::OnSetDefaultParameters()
     if (bSpectrumGraphUsed)
     {
         CProcessSpectrum * pSpectrum            = (CProcessSpectrum *)pDoc->GetSpectrum();
-        SpectrumParm * pSpectrumParm            = pSpectrum->GetSpectrumParms();  // Get spectrum parameter values.
+        CSpectrumParm * pSpectrumParm            = pSpectrum->GetSpectrumParms();  // Get spectrum parameter values.
         m_spectrumParmDefaults.nScaleMode      = pSpectrumParm->nScaleMode;
         m_spectrumParmDefaults.nPwrUpperBound  = pSpectrumParm->nPwrUpperBound;
         m_spectrumParmDefaults.nPwrLowerBound  = pSpectrumParm->nPwrLowerBound;
@@ -1823,7 +1819,7 @@ void CMainFrame::OnSetDefaultParameters()
         CProcessSpectrogram * pSpectro               = (CProcessSpectrogram *)pDoc->GetSpectrogram(TRUE);
         m_spectrogramParmDefaults = pSpectro->GetSpectroParm();
 
-        if (m_spectrogramParmDefaults.nFrequency >= int(pDoc->GetFmtParm()->dwSamplesPerSec*45/100))
+        if (m_spectrogramParmDefaults.nFrequency >= int(pDoc->GetSamplesPerSec()*45/100))
             // This spectrogram is set to near nyquist
             // Assume the user wants all spectrograms to be display at nyquist
             // Set frequency above any reasonable sampling nyquist to force clipping to nyquist
@@ -1853,7 +1849,7 @@ void CMainFrame::OnSetDefaultParameters()
         CProcessSpectrogram * pSpectro               = (CProcessSpectrogram *)pDoc->GetSpectrogram(FALSE);
         m_snapshotParmDefaults = pSpectro->GetSpectroParm();
 
-        if (m_snapshotParmDefaults.nFrequency >= int(pDoc->GetFmtParm()->dwSamplesPerSec*45/100))
+        if (m_snapshotParmDefaults.nFrequency >= int(pDoc->GetSamplesPerSec()*45/100))
             // This spectrogram is set to near nyquist
             // Assume the user wants all spectrograms to be display at nyquist
             // Set frequency above any reasonable sampling nyquist to force clipping to nyquist
@@ -1869,27 +1865,21 @@ void CMainFrame::OnSetDefaultParameters()
 /***************************************************************************/
 void CMainFrame::OnEqualizeLength()
 {
-    CTargViewDlg tView(this);
-
-    if (tView.DoModal()==IDOK)
+    CDlgTargView dlg(this);
+    if (dlg.DoModal()==IDOK)
     {
         CSaView * pSrcView = (CSaView *)GetCurrSaView();
-        CSaView * pTarg = tView.Targ();
+        CSaView * pTarg = dlg.Targ();
         if (pTarg)
         {
             CSaDoc  * pTargDoc = pTarg->GetDocument();
             if (pTargDoc)
             {
                 CSaDoc * pSrcDoc = pSrcView->GetDocument();
-                FmtParm * pSrcFmtParm = pSrcDoc->GetFmtParm();
-                WORD wSrcSmpSize = (WORD)(pSrcFmtParm->wBlockAlign / pSrcFmtParm->wChannels);
-                DWORD SrcLen = (pSrcView->GetStopCursorPosition() -
-                                pSrcView->GetStartCursorPosition() + wSrcSmpSize) / wSrcSmpSize;
-                FmtParm * pTargFmtParm = pTargDoc->GetFmtParm();
-                WORD wTargSmpSize = (WORD)(pTargFmtParm->wBlockAlign / pTargFmtParm->wChannels);
-                DWORD TargStop = pTarg->GetStartCursorPosition() +
-                                 (DWORD)((double)SrcLen * (double)pTargFmtParm->dwSamplesPerSec /
-                                         (double)pSrcFmtParm->dwSamplesPerSec + 0.5) * wTargSmpSize;
+                DWORD wSrcSmpSize = pSrcDoc->GetSampleSize();
+                DWORD SrcLen = (pSrcView->GetStopCursorPosition() - pSrcView->GetStartCursorPosition() + wSrcSmpSize) / wSrcSmpSize;
+                DWORD wTargSmpSize = pTargDoc->GetSampleSize();
+                DWORD TargStop = pTarg->GetStartCursorPosition() + (DWORD)((double)SrcLen * (double)pTargDoc->GetSamplesPerSec() / (double)pSrcDoc->GetSamplesPerSec() + 0.5) * wTargSmpSize;
                 if (TargStop > pTargDoc->GetUnprocessedDataSize())
                 {
                     AfxMessageBox(IDS_EQUALIZE_TOO_FAR_RIGHT);
@@ -1908,9 +1898,9 @@ void CMainFrame::OnEqualizeLength()
 /***************************************************************************/
 void CMainFrame::OnUpdateEqualizeLength(CCmdUI * pCmdUI)
 {
+
     int count = 0;
     CDocList doclst; // list of currently open docs
-
     for (CSaDoc * pdoc = doclst.pdocFirst(); pdoc; pdoc = doclst.pdocNext())
     {
         if (pdoc != NULL)
@@ -1929,7 +1919,6 @@ void CMainFrame::OnUpdateEqualizeLength(CCmdUI * pCmdUI)
 /***************************************************************************/
 void CMainFrame::CreateFindOrReplaceDlg()
 {
-
     // Get the string segment represented;
     CSaString sToFind;
     int  annotWndIndex = 0;
@@ -2042,42 +2031,42 @@ void CMainFrame::DeleteWbProcesses(BOOL bSwitchBack)
 //********************************************************************
 //
 //********************************************************************
-static const char * psz_mainframe          = "mainframe";
-static const char * psz_placementMain      = "placementMain";
-static const char * psz_placementEditor    = "placementEditor";
-static const char * psz_showstartupdlg     = "showstartupdlg";
-static const char * psz_showadvancedaudio  = "showadvancedaudio";
-static const char * psz_saveopenfiles      = "saveopenfiles";  //tdg 09/03/97
-static const char * psz_statusbar          = "statusbar";
-static const char * psz_statusposreadout   = "statusposreadout";
-static const char * psz_statuspitchreadout = "statuspitchreadout";
-static const char * psz_toolbar            = "toolbar";
-static const char * psz_taskbar            = "taskbar";
-static const char * psz_toneAbove          = "toneAbove";
-static const char * psz_scrollzoom         = "scrollzoom";
-static const char * psz_captionstyle       = "captionstyle";
-static const char * psz_buffersize         = "buffersize";
-static const char * psz_cursoralignment    = "cursoralignment";
-static const char * psz_graphfontarray     = "graphfontarray";
-static const char * psz_graphfont          = "graphfont";
-static const char * psz_graphfontsize      = "graphfontsize";
-static const char * psz_defaultgraphlist   = "DefaultGraphList";
-static const char * psz_startmode          = "StartMode";
-static const char * psz_bAnimate           = "Animate";
-static const char * psz_animationRate      = "AnimationRate";
-static const char * psz_graphUpdateMode    = "GraphUpdateMode";
-static const char * psz_cursorMode         = "CursorMode";
+static LPCSTR psz_mainframe          = "mainframe";
+static LPCSTR psz_placementMain      = "placementMain";
+static LPCSTR psz_placementEditor    = "placementEditor";
+static LPCSTR psz_showstartupdlg     = "showstartupdlg";
+static LPCSTR psz_showadvancedaudio  = "showadvancedaudio";
+static LPCSTR psz_saveopenfiles      = "saveopenfiles";  //tdg 09/03/97
+static LPCSTR psz_statusbar          = "statusbar";
+static LPCSTR psz_statusposreadout   = "statusposreadout";
+static LPCSTR psz_statuspitchreadout = "statuspitchreadout";
+static LPCSTR psz_toolbar            = "toolbar";
+static LPCSTR psz_taskbar            = "taskbar";
+static LPCSTR psz_toneAbove          = "toneAbove";
+static LPCSTR psz_scrollzoom         = "scrollzoom";
+static LPCSTR psz_captionstyle       = "captionstyle";
+static LPCSTR psz_buffersize         = "buffersize";
+static LPCSTR psz_cursoralignment    = "cursoralignment";
+static LPCSTR psz_graphfontarray     = "graphfontarray";
+static LPCSTR psz_graphfont          = "graphfont";
+static LPCSTR psz_graphfontsize      = "graphfontsize";
+static LPCSTR psz_defaultgraphlist   = "DefaultGraphList";
+static LPCSTR psz_startmode          = "StartMode";
+static LPCSTR psz_bAnimate           = "Animate";
+static LPCSTR psz_animationRate      = "AnimationRate";
+static LPCSTR psz_graphUpdateMode    = "GraphUpdateMode";
+static LPCSTR psz_cursorMode         = "CursorMode";
 
 // SDM 1.06.6U5 save maximized state of MDIChild (SaView)
-static const char * psz_bMaxView			= "DefaultMaximizeView";
-static const char * psz_WidthView			= "DefaultWidthView";
-static const char * psz_HeightView			= "DefaultHeightView";
-static const char * psz_autosave			= "AutoSave";
+static LPCSTR psz_bMaxView           = "DefaultMaximizeView";
+static LPCSTR psz_WidthView          = "DefaultWidthView";
+static LPCSTR psz_HeightView         = "DefaultHeightView";
+static const char * psz_autosave     = "AutoSave";
 
 //********************************************************************
 //
 //********************************************************************
-void CMainFrame::WriteProperties(Object_ostream & obs)
+void CMainFrame::WriteProperties(CObjectOStream & obs)
 {
     //*****************************************************
     // Before beginning to write the properties, make sure
@@ -2155,7 +2144,7 @@ void CMainFrame::WriteProperties(Object_ostream & obs)
     for (int nLoop = 0; nLoop < ANNOT_WND_NUMBER; nLoop++)
     {
         CSaString szFont = m_GraphFontFaces.GetAt(nLoop);
-        obs.WriteString(psz_graphfont, szFont);
+        obs.WriteString(psz_graphfont, szFont.utf8().c_str());
         obs.WriteUInt(psz_graphfontsize, m_GraphFontSizes.GetAt(nLoop));
     }
     obs.WriteEndMarker(psz_graphfontarray);
@@ -2187,7 +2176,7 @@ void CMainFrame::WriteProperties(Object_ostream & obs)
 //********************************************************************
 // Read the open databases and windows
 //********************************************************************
-BOOL CMainFrame::ReadProperties(Object_istream & obs)
+BOOL CMainFrame::ReadProperties(CObjectIStream & obs)
 {
     if (!obs.bAtBackslash() || !obs.bReadBeginMarker(psz_mainframe))
     {
@@ -2278,7 +2267,7 @@ BOOL CMainFrame::ReadProperties(Object_istream & obs)
         else if (obs.bReadInteger(psz_animationRate, m_nAnimationRate));
         else if (obs.bReadInteger(psz_cursorMode, nValue))
         {
-            m_nCursorAlignment = (CURSOR_ALIGNMENT) nValue;
+            m_nCursorAlignment = (ECursorAlignment) nValue;
         }
         else if (m_colors.ReadProperties(obs));
         else if (m_fnKeys.ReadProperties(obs));
@@ -2299,7 +2288,7 @@ BOOL CMainFrame::ReadProperties(Object_istream & obs)
             {
                 UINT u = 0;
                 CSaString str;
-                if (obs.bReadString(psz_graphfont, &str))
+                if (ReadStreamString(obs,psz_graphfont,str))
                 {
                     m_GraphFontFaces.SetAtGrow(nLoop, str);
                 }
@@ -2324,12 +2313,12 @@ BOOL CMainFrame::ReadProperties(Object_istream & obs)
     return TRUE;
 }
 
-static const char * psz_defaultviewconfig = "defaultviewconfig";
+static LPCSTR psz_defaultviewconfig = "defaultviewconfig";
 
 //********************************************************************
 //
 //********************************************************************
-BOOL CMainFrame::ReadDefaultView(Object_istream & obs)
+BOOL CMainFrame::ReadDefaultView(CObjectIStream & obs)
 {
     if (!obs.bAtBackslash() || !obs.bReadBeginMarker(psz_defaultviewconfig))
     {
@@ -2384,7 +2373,7 @@ BOOL CMainFrame::ReadDefaultView(Object_istream & obs)
 //********************************************************************
 //
 //********************************************************************
-void CMainFrame::WriteDefaultView(Object_ostream & obs)
+void CMainFrame::WriteDefaultView(CObjectOStream & obs)
 {
     if (m_bDefaultViewExists && m_pDefaultViewConfig)
     {
@@ -2395,7 +2384,7 @@ void CMainFrame::WriteDefaultView(Object_ostream & obs)
     }
 }
 
-static const char * pszTmpDfltSettingsFile = "~!SA!~.tmp";
+static LPCSTR pszTmpDfltSettingsFile = "~!SA!~.tmp";
 
 //********************************************************************
 // WriteReadDefaultViewToTempFile()
@@ -2422,7 +2411,7 @@ void CMainFrame::WriteReadDefaultViewToTempFile(BOOL bWrite)
             {
                 return;
             }
-            Object_ostream obs(szPath);
+            CObjectOStream obs(szPath.utf8().c_str());
 
             obs.WriteBool(psz_bMaxView,  m_bDefaultMaximizeView);
             obs.WriteInteger(psz_HeightView, m_nDefaultHeightView);
@@ -2433,7 +2422,7 @@ void CMainFrame::WriteReadDefaultViewToTempFile(BOOL bWrite)
         }
         else
         {
-            Object_istream obs(szPath);
+            CObjectIStream obs(szPath.utf8().c_str());
 
             obs.bReadBool(psz_bMaxView, m_bDefaultMaximizeView);
             obs.bReadInteger(psz_HeightView, m_nDefaultHeightView);
@@ -2804,43 +2793,43 @@ void CMainFrame::SetStartDataMode(int nMode)
     m_nStartDataMode = nMode;
 }
 
-ParseParm * CMainFrame::GetParseParm()
+CParseParm * CMainFrame::GetCParseParm()
 {
     return &m_parseParmDefaults;
 }
-SegmentParm * CMainFrame::GetSegmentParm()
+CSegmentParm * CMainFrame::GetSegmentParm()
 {
     return &m_segmentParmDefaults;
 }
-const PitchParm * CMainFrame::GetPitchParmDefaults() const
+const CPitchParm * CMainFrame::GetPitchParmDefaults() const
 {
     return &m_pitchParmDefaults;
 }
-void CMainFrame::SetPitchParmDefaults(const PitchParm & cParm)
+void CMainFrame::SetPitchParmDefaults(const CPitchParm & cParm)
 {
     m_pitchParmDefaults = cParm;
 }
-const MusicParm * CMainFrame::GetMusicParmDefaults() const
+const CMusicParm * CMainFrame::GetMusicParmDefaults() const
 {
     return &m_musicParmDefaults;
 }
-void CMainFrame::SetMusicParmDefaults(const MusicParm & cParm)
+void CMainFrame::SetMusicParmDefaults(const CMusicParm & cParm)
 {
     m_musicParmDefaults = cParm;
 }
-const IntensityParm & CMainFrame::GetIntensityParmDefaults() const
+const CIntensityParm & CMainFrame::GetCIntensityParmDefaults() const
 {
     return m_intensityParmDefaults;
 }
-void CMainFrame::SetIntensityParmDefaults(const IntensityParm & cParm)
+void CMainFrame::SetCIntensityParmDefaults(const CIntensityParm & cParm)
 {
     m_intensityParmDefaults = cParm;
 }
-FormantParm * CMainFrame::GetFormantParmDefaults()
+CFormantParm * CMainFrame::GetFormantParmDefaults()
 {
     return &m_formantParmDefaults;
 }
-SpectrumParm * CMainFrame::GetSpectrumParmDefaults()
+CSpectrumParm * CMainFrame::GetSpectrumParmDefaults()
 {
     return &m_spectrumParmDefaults;
 }
@@ -2934,7 +2923,7 @@ Colors * CMainFrame::GetColors()
     return &m_colors;
 }
 
-Grid * CMainFrame::GetGrid()
+CGrid * CMainFrame::GetGrid()
 {
     return &m_grid;
 }
@@ -2979,7 +2968,7 @@ int CMainFrame::GetAnimationFrameRate()
     return m_nAnimationRate;
 }
 
-CURSOR_ALIGNMENT CMainFrame::GetCursorAlignment()
+ECursorAlignment CMainFrame::GetCursorAlignment()
 {
     // get cursor snap mode
     return m_nCursorAlignment;

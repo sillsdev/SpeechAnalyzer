@@ -306,7 +306,6 @@
 #define IDC_COLORSANNOTSETUP            1081
 #define IDC_COLORSOVERLAY               1082
 #define IDS_AUTO_WAITING_SILENCE        1083
-#define IDS_ERROR_FORMAT_CHANNELS       1084
 #define IDC_VIEWCAPTION                 1085
 #define IDC_COLORSSCALESETUP            1086
 #define IDD_EXPORT_FW                   1087
@@ -1283,10 +1282,8 @@
 #define IDS_HELPERWND_NO_DURATIONS      11019
 #define IDS_HELPERWND_OUT_OF_RANGE      11020
 #define IDS_MC_CHANNEL                  11023
-#define IDS_MC_COMBINE                  11024
 #define IDS_MC_CHANNEL_LEFT             11025
 #define IDS_MC_CHANNEL_RIGHT            11026
-#define IDS_SUPPORT_WAVE                11027
 #define IDS_SUPPORT_WAVE_COPY           11028
 #define ID_FILE_RECORD                  32776
 #define ID_EDIT_SCREENCAPTURE           32778
@@ -1660,6 +1657,7 @@
 #define IDS_ERROR_NO_REFERENCE          61266
 #define IDS_ERROR_GONE_MISSING          61267
 #define IDS_ERROR_AUTOSAVE_FAIL         61267
+#define IDS_ERROR_FORMAT_CHANNELS		61268
 #define IDS_AUTO_REF_MAIN               61300
 #define IDS_AUTO_REF_MAIN_1             61300
 #define IDS_AUTO_REF_MAIN_2             61301
@@ -1673,7 +1671,7 @@
 #define IDS_CHOOSE_FOLDER               61310
 
 // Next default values for new objects
-// 
+//
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_3D_CONTROLS                     1

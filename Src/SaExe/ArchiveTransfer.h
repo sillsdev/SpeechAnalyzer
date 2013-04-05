@@ -1,7 +1,7 @@
 #ifndef ARCHIVE_TRANSFER_H
 #define ARCHIVE_TRANSFER_H
 
-class ArchiveTransfer
+class CArchiveTransfer
 {
 public:
     static int tInt(CArchive & ar, int x=0);

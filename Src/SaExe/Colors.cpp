@@ -3,16 +3,16 @@
 #include "colors.h"
 
 
-static const char * psz_colors = "colors";
-static const char * psz_rgb = "rgb";
-static const char * psz_annotationbkg = "annotationbkg";
-static const char * psz_annotationfont = "annotationfont";
-static const char * psz_plotcolors = "plotcolors";
-static const char * psz_scalecolors = "scalecolors";
-static const char * psz_overlay = "overlay";
+static LPCSTR psz_colors = "colors";
+static LPCSTR psz_rgb = "rgb";
+static LPCSTR psz_annotationbkg = "annotationbkg";
+static LPCSTR psz_annotationfont = "annotationfont";
+static LPCSTR psz_plotcolors = "plotcolors";
+static LPCSTR psz_scalecolors = "scalecolors";
+static LPCSTR psz_overlay = "overlay";
 
 
-void Colors::WriteProperties(Object_ostream & obs)
+void Colors::WriteProperties(CObjectOStream & obs)
 {
     obs.WriteBeginMarker(psz_colors);
 
@@ -63,7 +63,7 @@ void Colors::WriteProperties(Object_ostream & obs)
 
 
 
-BOOL Colors::ReadProperties(Object_istream & obs)
+BOOL Colors::ReadProperties(CObjectIStream & obs)
 {
     int i = 0;
 

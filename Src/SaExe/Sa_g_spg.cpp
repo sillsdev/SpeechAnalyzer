@@ -34,6 +34,7 @@
 #include "Process\FormantTracker.h"
 #include "dsp\mathx.h"
 #include "dsp\ZTransform.h"
+#include "AppDefs.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE
@@ -55,27 +56,15 @@ BOOL CPlotSpectrogram::bPaletteInit = FALSE;  // palette not initialized yet
 int CPlotSpectrogram::nPaletteMode = SYSTEMCOLOR; // use system colors only
 CPalette CPlotSpectrogram::SpectroPalette; // color palette
 
-/////////////////////////////////////////////////////////////////////////////
-// CPlotSpectrogram message map
-
 BEGIN_MESSAGE_MAP(CPlotSpectrogram, CPlotWnd)
     ON_WM_CREATE()
     ON_WM_SETCURSOR()
 END_MESSAGE_MAP()
 
-/////////////////////////////////////////////////////////////////////////////
-// CPlotSpectrogram construction/destruction/creation
-
-/***************************************************************************/
-// CPlotSpectrogram::CPlotSpectrogram Constructor
-/***************************************************************************/
 CPlotSpectrogram::CPlotSpectrogram()
 {
 }
 
-/***************************************************************************/
-// CPlotSpectrogram::~CPlotSpectrogram Destructor
-/***************************************************************************/
 CPlotSpectrogram::~CPlotSpectrogram()
 {
 }
@@ -93,8 +82,6 @@ void  CPlotSpectrogram::CopyTo(CPlotWnd * pT)
     m_pAreaProcess = NULL;
 }
 
-
-
 CPlotWnd * CPlotSpectrogram::NewCopy(void)
 {
     CPlotWnd * pRet = new CPlotSpectrogram();
@@ -107,15 +94,6 @@ CPlotWnd * CPlotSpectrogram::NewCopy(void)
 // SDM 1.5Test10.3
 #define sparsePaletteSize 30l
 
-// SDM 1.5Test10.3
-struct RGB
-{
-    long r;
-    long g;
-    long b;
-};
-
-// SDM 1.5Test10.3
 static struct RGB sparsePalette[sparsePaletteSize+1] =
 {
     {    0,    0,    0},// Black
@@ -477,9 +455,8 @@ BOOL CPlotSpectrogram::OnDrawSpectrogram(CDC * pDC, CRect rWnd, CRect rClip, CSa
 {
 
     // get pointer to graph, view, document, application and mainframe
-    CSaDoc  *  pDoc   = pView->GetDocument();
-    FmtParm * pSmpFmt = pDoc->GetFmtParm();
-    int nSmpSize = pSmpFmt->wBlockAlign / pSmpFmt->wChannels;
+    CSaDoc * pDoc = pView->GetDocument();
+    DWORD nSmpSize = pDoc->GetSampleSize();
     BOOL bEnhanceFormants = ResearchSettings.m_bSpectrogramContrastEnhance;
 
     // get pointer to process class
@@ -509,7 +486,7 @@ BOOL CPlotSpectrogram::OnDrawSpectrogram(CDC * pDC, CRect rWnd, CRect rClip, CSa
     // This is the distance between these points therefore we need to subtract one.
     // We only have 0.5 a point at DC and nyquist
     double dSpectrumPoints = pSpectrogram->GetWindowHeight() - 1;
-    double dVisibleSpectrumPoints = dSpectrumPoints * pSpectroParm->nFrequency * 2. / pSmpFmt->dwSamplesPerSec;
+    double dVisibleSpectrumPoints = dSpectrumPoints * pSpectroParm->nFrequency * 2. / pDoc->GetSamplesPerSec();
     double fSpectrumPointsPerPix = dVisibleSpectrumPoints / (double)rWnd.Height();
 
     // get sample data frame parameters
@@ -823,8 +800,7 @@ BOOL CPlotSpectrogram::OnDrawFormantTracksFragment(CDC * pDC, CRect rWnd, CRect 
 
     // get pointer to graph, view, document, application and mainframe
     CSaDoc * pDoc = pView->GetDocument();
-    FmtParm * pSmpFmt = pDoc->GetFmtParm();
-    int nSmpSize = pSmpFmt->wBlockAlign / pSmpFmt->wChannels;
+    DWORD nSmpSize = pDoc->GetSampleSize();
     CMainFrame * pMain = (CMainFrame *)AfxGetMainWnd();
 
     CProcessFragments * pFragments = (CProcessFragments *)pDoc->GetFragments();
@@ -1002,8 +978,7 @@ BOOL CPlotSpectrogram::OnDrawFormantTracksTime(CDC * pDC, CRect rWnd, CRect rCli
 
     // get pointer to graph, view, document, application and mainframe
     CSaDoc  *  pDoc   = pView->GetDocument();
-    FmtParm * pSmpFmt = pDoc->GetFmtParm();
-    int nSmpSize = pSmpFmt->wBlockAlign / pSmpFmt->wChannels;
+    DWORD nSmpSize = pDoc->GetSampleSize();
     CMainFrame * pMain = (CMainFrame *)AfxGetMainWnd();
 
     // get pointer to process class and spectrogram parameters

@@ -56,9 +56,9 @@ CProcessGlottis::~CProcessGlottis()
 /***************************************************************************/
 #include "dsp\Signal.h"
 #include "dsp\lpc.h"
-long CProcessGlottis::Process(void * pCaller, ISaDoc * pDoc,
-                              int nProgress, int nLevel)
+long CProcessGlottis::Process(void * pCaller, ISaDoc * pDoc, int nProgress, int nLevel)
 {
+
     TRACE(_T("Process: CProcessGlottis\n"));
     if (IsCanceled())
     {
@@ -87,15 +87,13 @@ long CProcessGlottis::Process(void * pCaller, ISaDoc * pDoc,
         return MAKELONG(PROCESS_ERROR, nProgress);
     }
 
-
-    FmtParm * pFmtParm = pDoc->GetFmtParm();     //get sample data format
-    WORD     wSmpSize = WORD(pFmtParm->wBlockAlign / pFmtParm->wChannels);   //compute sample size in bytes
-    DWORD    dwWaveSize = pDoc->GetDataSize();
-    HPSTR    pBlockStart;
-    DWORD    dwBlockStart = 0;
-    HPSTR    pFrame = NULL;
+    DWORD wSmpSize = pDoc->GetSampleSize();   //compute sample size in bytes
+    DWORD dwWaveSize = pDoc->GetDataSize();
+    HPSTR pBlockStart;
+    DWORD dwBlockStart = 0;
+    HPSTR pFrame = NULL;
     short * pProcData = (short *)m_lpBuffer;
-    DWORD    dwProcDataCount = 0;
+    DWORD dwProcDataCount = 0;
 
     // Construct an LPC object for vocal tract modeling.
     SIG_PARMS Signal;
@@ -106,65 +104,29 @@ long CProcessGlottis::Process(void * pCaller, ISaDoc * pDoc,
 
     if (wSmpSize == 1)
     {
-        Signal.SmpDataFmt = PCM_UBYTE;    //unsigned 8-bit
+        Signal.SmpDataFmt = PCM_UBYTE;			//unsigned 8-bit
     }
     else if (wSmpSize == 2)
     {
-        Signal.SmpDataFmt = PCM_2SSHORT;    //2's complement 16 bit
+        Signal.SmpDataFmt = PCM_2SSHORT;		//2's complement 16 bit
     }
-    /*
-    else
-    {
-    MessageBox(_T("Invalid sample data size"), "Speech Analyzer - POA",
-    MB_OK | MB_ICONEXCLAMATION);
-    OnSysCommand(SC_CLOSE, 0L); // close the graph
-    return;
-    }
-    */
-    Signal.SmpRate = (unsigned short)pFmtParm->dwSamplesPerSec;  //set sample rate
-    DWORD dwBufferSize = GetBufferSize(); // data buffer size
+    Signal.SmpRate = pDoc->GetSamplesPerSec();  //set sample rate
+    DWORD dwBufferSize = GetBufferSize();		// data buffer size
     Signal.Length = dwBufferSize / wSmpSize;
     LpcSetting.Process.Flags = PRE_EMPHASIS | REFL_COEFF | PRED_COEFF | MEAN_SQ_ERR | RESIDUAL ;
-    //LpcSetting.Process.Flags = REFL_COEFF | PRED_COEFF | MEAN_SQ_ERR | RESIDUAL |
-    //                           PRED_SIGNAL;
-    //LpcSetting.Process.Flags = REFL_COEFF | PRED_COEFF | MEAN_SQ_ERR | RESIDUAL;
-    LpcSetting.nMethod = LPC_COVAR_LATTICE;                         //use covariance LPC analysis
-    LpcSetting.nMethod = LPC_AUTOCOR;        //use autocorrelation LPC analysis
+    LpcSetting.nMethod = LPC_COVAR_LATTICE;     //use covariance LPC analysis
+    LpcSetting.nMethod = LPC_AUTOCOR;			//use autocorrelation LPC analysis
     LpcSetting.nOrder = (uint8)(Signal.SmpRate/1000 + 4);  //rule-of-thumb from Markel and Gray
     //!!order for unvoiced speech?
     LpcSetting.nOrder = 44;  // sufficient for modeling unvoiced speech
 
     LpcSetting.nFrameLen = (unsigned short)((double)Signal.SmpRate*.020 + 0.5); //20 ms
-    /*
-    if (dwWaveLen < (DWORD)LpcSetting.nFrameLen)
-    {
-    MessageBox(_T("Speech waveform too short for LPC analysis"), "Speech Analyzer - Inverse Filter",
-    MB_OK | MB_ICONEXCLAMATION);
-    OnSysCommand(SC_CLOSE, 0L); // close the graph
-    return;
-    }
-    */
     DWORD dwFrameSize = (DWORD)(LpcSetting.nFrameLen*wSmpSize);
-    /*
-    if (dwFrameSize + wSmpSize > PCM_READ_BUFFER_SIZE)
-    {
-    MessageBox(_T("Speech frame buffer overflow"), "Speech Analyzer - Inverse Filter",
-    MB_OK | MB_ICONEXCLAMATION);
-    OnSysCommand(SC_CLOSE, 0L); // close the graph
-    return;
-    }
-    */
-    //wFFTLen = (WORD)pow(2.,ceil(Log2((double)Signal.SmpRate)));
-    //float *pfFFTBuffer = new float[wFFTLen];
-    //if (!pfFFTBuffer) return MAKELONG(PROCESS_ERROR, nProgress);
 
     m_nMaxValue = 0;
     int nFrameIntervalSamples = LpcSetting.nFrameLen - 2*LpcSetting.nOrder;
     DWORD dwFrameInterval = (DWORD)((nFrameIntervalSamples)*wSmpSize);
-    DWORD dwLastOffset = ((dwWaveSize-(dwFrameSize-dwFrameInterval))/dwFrameInterval-1)*
-                         dwFrameInterval;
-    //DWORD dwLastOffset = ((dwWaveSize-dwFrameSize)/dwFrameInterval)*dwFrameInterval;
-    //DWORD dwSum= 0;
+    DWORD dwLastOffset = ((dwWaveSize-(dwFrameSize-dwFrameInterval))/dwFrameInterval-1)*dwFrameInterval;
 
     //!!assumes PCM_READ_BUFFER greater than predictor delay
     int nLeadPadding = LpcSetting.nOrder;

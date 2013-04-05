@@ -111,7 +111,7 @@ protected:
 #define SOUND_DELAY      250       // sound delay in milliseconds
 #define WM_USER_CHARSELECT  WM_USER + 31 // wide range message sent
 
-enum CharType           // character types
+enum ECharType           // character types
 {
     VOWEL=0,
     CONSONANT,

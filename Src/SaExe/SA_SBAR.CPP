@@ -551,6 +551,7 @@ void CProgressStatusBar::Init()
 /***************************************************************************/
 void CProgressStatusBar::SetProcessOwner(void * pProcess, void * pCaller, int nProcessID)
 {
+
     m_pProcessOwner = pProcess;
     m_pProcessCaller = pCaller;
 
@@ -679,4 +680,29 @@ void CProgressStatusBar::GetItemRect(int nPaneID, LPRECT lpRect)
 void CProgressStatusBar::DelayShow()
 {
     // do nothing.
+}
+
+void * CProgressStatusBar::GetProcessOwner()
+{
+    return m_pProcessOwner;   // return the process owner
+}
+
+void * CProgressStatusBar::GetProcessCaller()
+{
+    return m_pProcessCaller;   // return the process caller
+}
+
+int  CProgressStatusBar::GetProgress()
+{
+    return m_ProgressBar.GetProgress();   // get progress
+}
+
+void CProgressStatusBar::SetIsPrintingFlag(BOOL isPrinting)
+{
+    m_bIsPrinting = isPrinting;
+}
+
+BOOL CProgressStatusBar::InProcessMessageLoop() const
+{
+    return m_nInMessageLoop != 0;
 }

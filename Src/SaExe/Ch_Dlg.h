@@ -135,9 +135,7 @@ protected:
 
     // Generated message map functions
 protected:
-    //{{AFX_MSG(CDlgChartSuprasegsPage)
     virtual BOOL OnInitDialog();
-    //}}AFX_MSG
     DECLARE_MESSAGE_MAP()
 };
 
@@ -150,16 +148,16 @@ protected:
 #define MAX_NUMBER_TABLES   1 // number of character tables
 
 // character tables
-enum Table { IPA=0,};
+enum ETable { IPA=0,};
+
 // display modes
-enum DisplayModes { ALL=0,};
+enum EDisplayModes { ALL=0,};
 
 //SDM 1.06.6U2 remove unused combobox move buttons
 class CDlgCharChart : public CPropertySheet
 {
     DECLARE_DYNAMIC(CDlgCharChart)
 
-// Construction/destruction/creation
 public:
     CDlgCharChart(LPCTSTR pszCaption, CWnd * pParent, UINT iSelectPage);
     virtual ~CDlgCharChart();

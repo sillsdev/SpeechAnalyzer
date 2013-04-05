@@ -15,7 +15,7 @@
 
 #include "Settings\OBSTREAM.H"
 #include "AppDefs.h"
-#include "CSaString.h"
+#include "SaString.h"
 #include "resource.h"
 #include "ExportFWSettings.h"
 

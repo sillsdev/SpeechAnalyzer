@@ -103,7 +103,7 @@ void CPlotLoudness::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView)
     }
     if (nResult != PROCESS_CANCELED)
     {
-        BOOL bPercent = pDoc->GetIntensityParm().nScaleMode == 1;
+        BOOL bPercent = pDoc->GetCIntensityParm().nScaleMode == 1;
         if (bPercent)
         {
             double dLoudToPercent = 32767/2/100.0;
@@ -138,7 +138,7 @@ void CPlotLoudness::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView)
         }
         if (nResult != PROCESS_CANCELED)
         {
-            BOOL bPercent = pDoc->GetIntensityParm().nScaleMode == 1;
+            BOOL bPercent = pDoc->GetCIntensityParm().nScaleMode == 1;
             if (bPercent)
             {
                 double dLoudToPercent = 32767/4/100.0;

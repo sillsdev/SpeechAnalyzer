@@ -4,11 +4,9 @@
 // Author: Urs Ruchti
 // copyright 1997 JAARS Inc. SIL
 /////////////////////////////////////////////////////////////////////////////
-
 #include "stdafx.h"
 #include "Process.h"
 #include "sa_w_equ.h"
-
 #include "resource.h"
 #include "mainfrm.h"
 #include "isa_doc.h"
@@ -145,14 +143,13 @@ long CProcessWbEquation::Process(void * pCaller, ISaDoc * pDoc, int nProgress,
     }
     else
     {
-        dwDataSize = pDoc->GetUnprocessedDataSize();    // size of raw data
+        dwDataSize = pDoc->GetUnprocessedDataSize();// size of raw data
     }
     DWORD dwBufferSize = GetBufferSize();
-    FmtParm * pFmtParm = pDoc->GetFmtParm(); // get sa parameters format member data
-    WORD wSmpSize = WORD(pFmtParm->wBlockAlign / pFmtParm->wChannels);
-    HPSTR pSourceData, pBlockStart; // pointers to source data
-    HPSTR pTargetData; // pointers to target data
-    DWORD dwDataPos = 0; // data position pointer
+    DWORD wSmpSize = pDoc->GetSampleSize();
+    HPSTR pSourceData, pBlockStart;                 // pointers to source data
+    HPSTR pTargetData;                              // pointers to target data
+    DWORD dwDataPos = 0;                            // data position pointer
     DWORD dwRangeStart = 0;
     DWORD dwRangeEnd = dwDataSize - wSmpSize;
 
@@ -166,7 +163,7 @@ long CProcessWbEquation::Process(void * pCaller, ISaDoc * pDoc, int nProgress,
         }
         else
         {
-            pBlockStart = pDoc->GetUnprocessedWaveData(dwDataPos);    // get pointer to raw data block
+            pBlockStart = pDoc->GetAdjustedUnprocessedWaveData(dwDataPos);    // get pointer to raw data block
         }
         if (!pBlockStart)
         {
@@ -295,23 +292,23 @@ int CProcessWbEquation::PropertiesDialog()
     return IDCANCEL;
 }
 
-static const char * psz_equation = "equation";
-static const char * psz_text = "text";
+static LPCSTR psz_equation = "equation";
+static LPCSTR psz_text = "text";
 
 /***************************************************************************/
 // CProcessWbEquation::WriteProperties Write equation properties
 /***************************************************************************/
-void CProcessWbEquation::WriteProperties(Object_ostream & obs)
+void CProcessWbEquation::WriteProperties(CObjectOStream & obs)
 {
     obs.WriteBeginMarker(psz_equation);
-    obs.WriteString(psz_text, m_szEquation);
+    obs.WriteString(psz_text, m_szEquation.utf8().c_str());
     obs.WriteEndMarker(psz_equation);
 }
 
 /***************************************************************************/
 // CProcessWbEquation::ReadProperties Read equation properties
 /***************************************************************************/
-BOOL CProcessWbEquation::ReadProperties(Object_istream & obs)
+BOOL CProcessWbEquation::ReadProperties(CObjectIStream & obs)
 {
     CString szSafe = m_szEquation;
     if (!obs.bAtBackslash() || !obs.bReadBeginMarker(psz_equation))
@@ -320,7 +317,7 @@ BOOL CProcessWbEquation::ReadProperties(Object_istream & obs)
     }
     while (!obs.bAtEnd())
     {
-        if (obs.bReadString(psz_text, &m_szEquation));
+        if (ReadStreamString(obs,psz_text,m_szEquation));
         else if (obs.bEnd(psz_equation))
         {
             break;

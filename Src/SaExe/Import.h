@@ -1,7 +1,7 @@
 #ifndef IMPORT_H
 #define IMPORT_H
 
-#include "CSaString.h"
+#include "SaString.h"
 #include "Sa_Doc.h"
 #include <string>
 
@@ -20,7 +20,7 @@ public:
     BOOL m_bBatch;
 
 private:
-    BOOL ReadTable(Object_istream & ios, int nMode = QUERY);
+    BOOL ReadTable(CObjectIStream & ios, int nMode = QUERY);
 	BOOL ProcessNormal( EImportMode nMode, wstring & result);
 	BOOL ProcessTable( wstring & result);
 };

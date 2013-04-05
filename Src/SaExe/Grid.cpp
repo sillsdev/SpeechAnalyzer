@@ -3,15 +3,15 @@
 #include "grid.h"
 
 
-static const char * psz_grid   = "grid";
-static const char * psz_xgrid   = "xgrid";
-static const char * psz_ygrid   = "ygrid";
-static const char * psz_xstyle = "xstyle";
-static const char * psz_ystyle = "ystyle";
+static LPCSTR psz_grid   = "grid";
+static LPCSTR psz_xgrid   = "xgrid";
+static LPCSTR psz_ygrid   = "ygrid";
+static LPCSTR psz_xstyle = "xstyle";
+static LPCSTR psz_ystyle = "ystyle";
 
 
 
-void Grid::WriteProperties(Object_ostream & obs)
+void CGrid::WriteProperties(CObjectOStream & obs)
 {
     obs.WriteBeginMarker(psz_grid);
     obs.WriteNewline();
@@ -28,7 +28,7 @@ void Grid::WriteProperties(Object_ostream & obs)
 
 
 
-BOOL Grid::ReadProperties(Object_istream & obs)
+BOOL CGrid::ReadProperties(CObjectIStream & obs)
 {
     if (!obs.bAtBackslash() || !obs.bReadBeginMarker(psz_grid))
     {
@@ -51,7 +51,7 @@ BOOL Grid::ReadProperties(Object_istream & obs)
 }
 
 
-void Grid::Init()
+void CGrid::Init()
 {
     // init the gridlines
     bXGrid  = TRUE; // x-grid enabled

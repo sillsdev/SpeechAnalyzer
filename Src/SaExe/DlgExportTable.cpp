@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "DlgExportTable.h"
-#include "CSaString.h"
+#include "SaString.h"
 #include "Sa_Doc.h"
 #include "SA_View.h"
 #include "Segment.h"
@@ -267,7 +267,7 @@ void CDlgExportTable::OnOK()
     if (m_nRegion != 0)   // entire file
     {
         dwOffset = 0;
-        dwStopPosition = pDoc->GetDataSize() - pDoc->GetFmtParm()->wBlockAlign;
+        dwStopPosition = pDoc->GetDataSize() - pDoc->GetBlockAlign();
     }
 
     int nIndex = 0;
@@ -316,7 +316,7 @@ void CDlgExportTable::OnOK()
         {
             dwIncrement++;
         }
-        if (pDoc->GetFmtParm()->wBlockAlign == 2)
+        if (pDoc->Is16Bit())
         {
             dwIncrement++;
             dwIncrement &= ~1;
@@ -1116,26 +1116,26 @@ void CDlgExportTable::OnPhonetic()
     UpdateData(FALSE);
 }
 
-static const char * psz_Phonemic = "pm";
-static const char * psz_Gloss = "gl";
-static const char * psz_Phonetic = "ph";
-static const char * psz_Orthographic = "or";
-static const char * psz_ImportEnd = "import";
+static LPCSTR psz_Phonemic = "pm";
+static LPCSTR psz_Gloss = "gl";
+static LPCSTR psz_Phonetic = "ph";
+static LPCSTR psz_Orthographic = "or";
+static LPCSTR psz_ImportEnd = "import";
 
-static const char * psz_FreeTranslation = "ft"; // Free Translation
-static const char * psz_Language ="ln"; // Language Name
-static const char * psz_Dialect = "dlct"; // Dialect
-static const char * psz_Family = "fam"; // Family
-static const char * psz_Ethno = "id"; // Ethnologue ID number
-static const char * psz_Country = "cnt"; // Country
-static const char * psz_Region = "reg"; // Region
-static const char * psz_Speaker = "spkr"; // Speaker Name
-static const char * psz_Gender = "gen"; // Gender
-static const char * psz_NotebookReference = "nbr"; // Notebook Reference
-static const char * psz_Transcriber = "tr"; // Transcriber
-static const char * psz_Comments = "cmnt"; // Comments
-static const char * psz_Description = "desc"; // Description
-static const char * psz_Table = "table";
+static LPCSTR psz_FreeTranslation = "ft"; // Free Translation
+static LPCSTR psz_Language ="ln"; // Language Name
+static LPCSTR psz_Dialect = "dlct"; // Dialect
+static LPCSTR psz_Family = "fam"; // Family
+static LPCSTR psz_Ethno = "id"; // Ethnologue ID number
+static LPCSTR psz_Country = "cnt"; // Country
+static LPCSTR psz_Region = "reg"; // Region
+static LPCSTR psz_Speaker = "spkr"; // Speaker Name
+static LPCSTR psz_Gender = "gen"; // Gender
+static LPCSTR psz_NotebookReference = "nbr"; // Notebook Reference
+static LPCSTR psz_Transcriber = "tr"; // Transcriber
+static LPCSTR psz_Comments = "cmnt"; // Comments
+static LPCSTR psz_Description = "desc"; // Description
+static LPCSTR psz_Table = "table";
 
 static void CreateWordSegments(const int nWord, int & nSegments)
 {
@@ -1227,11 +1227,11 @@ static void CreateWordSegments(const int nWord, int & nSegments)
         }
         // adjust segment spacing
         DWORD dwSize = (dwStop - dwStart)/nSegments;
-        if (pDoc->GetFmtParm()->wBlockAlign==2)
+        if (pDoc->Is16Bit())
         {
             dwSize &= ~1;
-        };
-        dwSize += pDoc->GetFmtParm()->wBlockAlign;
+        }
+        dwSize += pDoc->GetBlockAlign();
         if (nIndex == -1)
         {
             nIndex = pPhonetic->GetOffsetSize();

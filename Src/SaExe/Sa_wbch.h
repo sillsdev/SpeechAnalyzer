@@ -15,8 +15,8 @@
 //###########################################################################
 // CSaWorkbenchView frame
 
-class Object_ostream;
-class Object_istream;
+class CObjectOStream;
+class CObjectIStream;
 class CProcess;
 
 class CSaWorkbenchView : public CFormView
@@ -56,8 +56,8 @@ public:
     void SetupFilterProcesses(CObject * pDialog); // sets up workbench filter processes
     void CallPropertiesDialog(int nProcess, int nFilter); // calls the properties dialog of a workbench process
     void LoadAndSortFilter(int nProcess, int * pnFilter1, int * pnFilter2, int * pnFilter3, BOOL bLoad = TRUE); // loads and sorts (left align) filters
-    virtual void WriteProperties(Object_ostream & obs);
-    virtual BOOL ReadProperties(Object_istream & obs);
+    virtual void WriteProperties(CObjectOStream & obs);
+    virtual BOOL ReadProperties(CObjectIStream & obs);
 
     // Generated message map functions
 protected:

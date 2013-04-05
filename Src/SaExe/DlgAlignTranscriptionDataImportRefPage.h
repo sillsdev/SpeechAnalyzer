@@ -3,7 +3,7 @@
 
 #include "resource.h"
 #include "AppDefs.h"
-#include "CSaString.h"
+#include "SaString.h"
 #include "TranscriptionHelper.h"
 #include "TranscriptionData.h"
 

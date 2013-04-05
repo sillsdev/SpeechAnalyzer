@@ -43,7 +43,7 @@
 #include "appdefs.h"
 #include "saParm.h"
 #include "sourceParm.h"
-#include "CSaString.h"
+#include "SaString.h"
 #include "WaveformGeneratorSettings.h"
 #include "ToolSettings.h"
 #include "SpectroParm.h"
@@ -71,11 +71,11 @@ typedef struct SDefaultViewInfo
     BOOL           bMaximize;
     int            nHeight;
     int            nWidth;
-    ParseParm      ParsePrm;
-    SegmentParm    SegmentPrm;
-    PitchParm      PitchPrm;
-    FormantParm    FormantPrm;
-    SpectrumParm   SpectrumPrm;
+    CParseParm      ParsePrm;
+    CSegmentParm    SegmentPrm;
+    CPitchParm      PitchPrm;
+    CFormantParm    FormantPrm;
+    CSpectrumParm   SpectrumPrm;
     CSpectroParm    SpectrogramPrm;
     CSpectroParm    SnapshotPrm;
 } DefaultViewInfo;
@@ -117,12 +117,12 @@ protected:
     BOOL                m_bScrollZoom;            // scrollbar zoom on/off
     int                 m_nCaptionStyle;          // graph caption style
     Colors              m_colors;                 // color settings
-    FnKeys              m_fnKeys;                 // function keys setup
-    Grid                m_grid;                   // gridline settings
+    CFnKeys             m_fnKeys;                 // function keys setup
+    CGrid                m_grid;                   // gridline settings
     int                 m_nGraphUpdateMode;       // 0 = static (when cursor set), 1 = dynamic (while cursor is moving)
     BOOL                m_bAnimate;               // TRUE = animation requested
     int                 m_nAnimationRate;         // frame rate for animations (in frames/sec)
-    CURSOR_ALIGNMENT    m_nCursorAlignment;       // cursor snap mode: align to sample, zero crossing, or fragment
+    ECursorAlignment    m_nCursorAlignment;       // cursor snap mode: align to sample, zero crossing, or fragment
     BOOL                m_bDefaultViewExists;    // True if a default view configuration was read from the .psa file.
     CWaveformGeneratorSettings m_waveformGeneratorSettings;
     void WriteReadDefaultViewToTempFile(BOOL bWrite);
@@ -132,13 +132,13 @@ protected:
     BOOL                m_bDefaultMaximizeView;  // maximize view if no other view open
     int                 m_nDefaultHeightView;    // default view height
     int                 m_nDefaultWidthView;     // default view width
-    ParseParm           m_parseParmDefaults;    // parsing
-    SegmentParm         m_segmentParmDefaults;  // segmenting
-    PitchParm           m_pitchParmDefaults;    // pitch
-    MusicParm           m_musicParmDefaults;    // music
-    IntensityParm       m_intensityParmDefaults;// intensity
-    FormantParm         m_formantParmDefaults;  // formant
-    SpectrumParm        m_spectrumParmDefaults; // spectrum
+    CParseParm           m_parseParmDefaults;    // parsing
+    CSegmentParm         m_segmentParmDefaults;  // segmenting
+    CPitchParm           m_pitchParmDefaults;    // pitch
+    CMusicParm           m_musicParmDefaults;    // music
+    CIntensityParm       m_intensityParmDefaults;// intensity
+    CFormantParm         m_formantParmDefaults;  // formant
+    CSpectrumParm        m_spectrumParmDefaults; // spectrum
     CSpectroParm         m_spectrogramParmDefaults; // spectrogram
     CSpectroParm         m_snapshotParmDefaults; // snapshot
 
@@ -195,16 +195,16 @@ public:
     CSaView * GetCurrSaView(void);
 
     // Reference to objects containing parsing, segmenting, pitch, spectrum, and spectrogram parameter defaults // RLJ 11.1A
-    ParseParm * GetParseParm();
-    SegmentParm * GetSegmentParm();
-    const PitchParm * GetPitchParmDefaults() const;
-    void SetPitchParmDefaults(const PitchParm & cParm);
-    const MusicParm * GetMusicParmDefaults() const;
-    void SetMusicParmDefaults(const MusicParm & cParm);
-    const IntensityParm & GetIntensityParmDefaults() const;
-    void SetIntensityParmDefaults(const IntensityParm & cParm);
-    FormantParm * GetFormantParmDefaults();
-    SpectrumParm * GetSpectrumParmDefaults();
+    CParseParm * GetCParseParm();
+    CSegmentParm * GetSegmentParm();
+    const CPitchParm * GetPitchParmDefaults() const;
+    void SetPitchParmDefaults(const CPitchParm & cParm);
+    const CMusicParm * GetMusicParmDefaults() const;
+    void SetMusicParmDefaults(const CMusicParm & cParm);
+    const CIntensityParm & GetCIntensityParmDefaults() const;
+    void SetCIntensityParmDefaults(const CIntensityParm & cParm);
+    CFormantParm * GetFormantParmDefaults();
+    CSpectrumParm * GetSpectrumParmDefaults();
     const CSpectroParm * GetSpectrogramParmDefaults() const;
     void SetSpectrogramParmDefaults(const CSpectroParm & cParm);
     const CSpectroParm * GetSnapshotParmDefaults() const;
@@ -216,10 +216,10 @@ public:
     void OnSetDefaultGraphs(BOOL bToDisk);
     void OnSetDefaultParameters();
 
-    void WriteProperties(Object_ostream & obs);
-    BOOL ReadProperties(Object_istream & obs);
-    BOOL ReadDefaultView(Object_istream & obs);
-    void WriteDefaultView(Object_ostream & obs);
+    void WriteProperties(CObjectOStream & obs);
+    BOOL ReadProperties(CObjectIStream & obs);
+    BOOL ReadDefaultView(CObjectIStream & obs);
+    void WriteDefaultView(CObjectOStream & obs);
     void DisplayPlot(CDisplayPlot * pPlot);
     void NotifyFragmentDone(void * pCaller);
 
@@ -243,10 +243,10 @@ public:
     int ComputeNumberOfViews(int nNum);
     int GetCaptionStyle();
     Colors * GetColors();
-    FnKeys * GetFnKeys(FnKeys *); // return a copy of the function keys structure
-    void SetFnKeys(FnKeys *); // set the function keys structure
+    CFnKeys * GetFnKeys(CFnKeys *); // return a copy of the function keys structure
+    void SetFnKeys(CFnKeys *); // set the function keys structure
     LRESULT OnPlayer(WPARAM, LPARAM, SSpecific *);
-    Grid * GetGrid();
+    CGrid * GetGrid();
     BOOL IsStatusBar();
     BOOL IsPlayerPlaying(); // return TRUE if player is playing
     BOOL IsPlayerTestRun(); // return TRUE if player is running function key test run
@@ -258,7 +258,7 @@ public:
     void SetGraphUpdateMode(int nMode);
     BOOL IsAnimationRequested();
     int GetAnimationFrameRate();
-    CURSOR_ALIGNMENT GetCursorAlignment();
+    ECursorAlignment GetCursorAlignment();
     void SetupFunctionKeys();
     void SendMessageToMDIDescendants(UINT message, WPARAM wParam, LPARAM lParam); // send message to all mdi children
     void AppMessage(WPARAM wParam, LPARAM lParam);

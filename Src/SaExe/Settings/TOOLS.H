@@ -6,4 +6,4 @@
 
 bool bFileExists(const char * pszFile);
 
-#endif  // TOOLS_H
+#endif

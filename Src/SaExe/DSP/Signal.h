@@ -18,18 +18,18 @@ typedef struct SIG_PARMS
     void * Start;
     uint32 Length;
     int8 SmpDataFmt;
-    uint16 SmpRate;
+    uint32 SmpRate;
     SIG_SOURCE Source;
 } SIG_PARMS;
 
 // PROC_PARMS added by CLW 1/5/99
 typedef struct
 {
-    void    *    pBufferStart;  // pointer to buffer containing data to be processed
-    uint32    dwBufferSize;  // size of buffer in bytes
-    uint32    dwBlockOffset;  // sample number at which processing begins
-    uint32    dwBlockLength;  // number of samples in process data
-    SIG_PARMS  stSigParms;
+    void * pBufferStart;	// pointer to buffer containing data to be processed
+    uint32 dwBufferSize;	// size of buffer in bytes
+    uint32 dwBlockOffset;	// sample number at which processing begins
+    uint32 dwBlockLength;	// number of samples in process data
+    SIG_PARMS stSigParms;
 } PROC_PARMS;
 
 #endif

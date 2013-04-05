@@ -25,10 +25,10 @@ CDlgAdvancedParseWords::CDlgAdvancedParseWords(CSaDoc * pDoc) :
 {
     // Set parsing parameters to default values.
     CMainFrame * pMainWnd = (CMainFrame *)AfxGetMainWnd();
-    ParseParm * pParseParm = pMainWnd->GetParseParm();
-    m_nBreakWidth = (int)(1000.0 * pParseParm->fBreakWidth);
-    m_nMaxThreshold = pParseParm->nMaxThreshold;
-    m_nMinThreshold = pParseParm->nMinThreshold;
+    CParseParm * pCParseParm = pMainWnd->GetCParseParm();
+    m_nBreakWidth = (int)(1000.0 * pCParseParm->fBreakWidth);
+    m_nMaxThreshold = pCParseParm->nMaxThreshold;
+    m_nMinThreshold = pCParseParm->nMinThreshold;
     m_pDoc = pDoc;
 }
 
@@ -89,10 +89,10 @@ BOOL CDlgAdvancedParseWords::OnInitDialog()
     // initialize member data
     CMainFrame * pMainFrame = (CMainFrame *)AfxGetMainWnd();
     ASSERT(pMainFrame->IsKindOf(RUNTIME_CLASS(CMainFrame)));
-    ParseParm * pParseParm = pMainFrame->GetParseParm();
-    m_nBreakWidth = (int)(pParseParm->fBreakWidth * (float)1000 + 0.5);
-    m_nMaxThreshold = pParseParm->nMaxThreshold;
-    m_nMinThreshold = pParseParm->nMinThreshold;
+    CParseParm * pCParseParm = pMainFrame->GetCParseParm();
+    m_nBreakWidth = (int)(pCParseParm->fBreakWidth * (float)1000 + 0.5);
+    m_nMaxThreshold = pCParseParm->nMaxThreshold;
+    m_nMinThreshold = pCParseParm->nMinThreshold;
 
     UpdateData(FALSE);
 
@@ -110,10 +110,10 @@ void CDlgAdvancedParseWords::Apply()
     // store new data
     CMainFrame * pMainFrame = (CMainFrame *)AfxGetMainWnd();
     ASSERT(pMainFrame->IsKindOf(RUNTIME_CLASS(CMainFrame)));
-    ParseParm * pParseParm = pMainFrame->GetParseParm();
-    pParseParm->fBreakWidth = (float)m_nBreakWidth / (float)1000;
-    pParseParm->nMaxThreshold = m_nMaxThreshold;
-    pParseParm->nMinThreshold = m_nMinThreshold;
+    CParseParm * pCParseParm = pMainFrame->GetCParseParm();
+    pCParseParm->fBreakWidth = (float)m_nBreakWidth / (float)1000;
+    pCParseParm->nMaxThreshold = m_nMaxThreshold;
+    pCParseParm->nMinThreshold = m_nMinThreshold;
 
     if (!m_pDoc->AdvancedParseWord())
     {

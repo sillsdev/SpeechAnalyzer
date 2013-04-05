@@ -1,7 +1,7 @@
 #ifndef TRANSCRIPTIONDATASETTINGS_H
 #define TRANSCRIPTIONDATASETTINGS_H
 
-#include "csastring.h"
+#include "SaString.h"
 #include "TranscriptionHelper.h"
 #include "TranscriptionData.h"
 

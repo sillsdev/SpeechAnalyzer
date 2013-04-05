@@ -25,10 +25,10 @@ CDlgAdvancedParsePhrases::CDlgAdvancedParsePhrases(CSaDoc * pDoc) :
 {
     // Set parsing parameters to default values.
     CMainFrame * pMainWnd = (CMainFrame *)AfxGetMainWnd();
-    ParseParm * pParseParm = pMainWnd->GetParseParm();
-    m_nBreakWidth = (int)(1000.0 * pParseParm->fPhraseBreakWidth);
-    m_nMaxThreshold = pParseParm->nMaxThreshold;
-    m_nMinThreshold = pParseParm->nMinThreshold;
+    CParseParm * pCParseParm = pMainWnd->GetCParseParm();
+    m_nBreakWidth = (int)(1000.0 * pCParseParm->fPhraseBreakWidth);
+    m_nMaxThreshold = pCParseParm->nMaxThreshold;
+    m_nMinThreshold = pCParseParm->nMinThreshold;
     m_pDoc = pDoc;
 }
 
@@ -88,10 +88,10 @@ BOOL CDlgAdvancedParsePhrases::OnInitDialog()
     // initialize member data
     CMainFrame * pMainFrame = (CMainFrame *)AfxGetMainWnd();
     ASSERT(pMainFrame->IsKindOf(RUNTIME_CLASS(CMainFrame)));
-    ParseParm * pParseParm = pMainFrame->GetParseParm();
-    m_nBreakWidth = (int)(pParseParm->fPhraseBreakWidth * (float)1000 + 0.5);
-    m_nMaxThreshold = pParseParm->nMaxThreshold;
-    m_nMinThreshold = pParseParm->nMinThreshold;
+    CParseParm * pCParseParm = pMainFrame->GetCParseParm();
+    m_nBreakWidth = (int)(pCParseParm->fPhraseBreakWidth * (float)1000 + 0.5);
+    m_nMaxThreshold = pCParseParm->nMaxThreshold;
+    m_nMinThreshold = pCParseParm->nMinThreshold;
 
     UpdateData(FALSE);
 
@@ -106,10 +106,10 @@ void CDlgAdvancedParsePhrases::Apply()
     // store new data
     CMainFrame * pMainFrame = (CMainFrame *)AfxGetMainWnd();
     ASSERT(pMainFrame->IsKindOf(RUNTIME_CLASS(CMainFrame)));
-    ParseParm * pParseParm = pMainFrame->GetParseParm();
-    pParseParm->fPhraseBreakWidth = (float)m_nBreakWidth / (float)1000;
-    pParseParm->nMaxThreshold = m_nMaxThreshold;
-    pParseParm->nMinThreshold = m_nMinThreshold;
+    CParseParm * pCParseParm = pMainFrame->GetCParseParm();
+    pCParseParm->fPhraseBreakWidth = (float)m_nBreakWidth / (float)1000;
+    pCParseParm->nMaxThreshold = m_nMaxThreshold;
+    pCParseParm->nMinThreshold = m_nMinThreshold;
 
     if (!m_pDoc->AdvancedParsePhrase())
     {

@@ -23,8 +23,8 @@
 //###########################################################################
 // CDlgGraphsTypesCustom dialog
 
-class Object_ostream;
-class Object_istream;
+class CObjectOStream;
+class CObjectIStream;
 class CSaDoc;
 class CSaString;
 
@@ -131,8 +131,8 @@ public:
         return compare.m_nLayout == m_nLayout ? CGraphList::operator ==(compare) : FALSE;
     }
 
-    void WriteProperties(Object_ostream & obs, BOOL bPredefined) const;
-    BOOL ReadProperties(Object_istream & obs, BOOL & bPredefined);
+    void WriteProperties(CObjectOStream & obs, BOOL bPredefined) const;
+    BOOL ReadProperties(CObjectIStream & obs, BOOL & bPredefined);
 
     int     m_nLayout;
 };

@@ -17,7 +17,7 @@ Clipboard::Clipboard(HWND hwnd)
     RTFFormat = RegisterClipboardFormat(_T("Rich Text Format"));
 }
 
-Clipboard & Clipboard::operator<<(const char * string)
+Clipboard & Clipboard::operator<<(LPCSTR string)
 {
     // clear out old contents of clipboard
     EmptyClipboard();
@@ -81,7 +81,7 @@ Clipboard & Clipboard::operator>>(char *& string)
     return *this;
 }
 
-void Clipboard::SetTextRTF(const char * RTFstring, const char * TEXTstring)
+void Clipboard::SetTextRTF(LPCSTR RTFstring, LPCSTR TEXTstring)
 {
     // clear out old contents of clipboard
     EmptyClipboard();

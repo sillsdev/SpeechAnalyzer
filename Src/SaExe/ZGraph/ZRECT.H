@@ -290,38 +290,8 @@ private:
     }
 
 public:
-#ifdef OS2_PLATFORM
-
-    // Provide Rectangle Conversion Routines -- RECTL to RECT
-    //   and Vice-Versa
-
-    static RECT RECTL_TO_RECT(RECTL R)
-    {
-        RECT R1;
-        R1.left   = R.xLeft  ;
-        R1.top    = R.yTop   ;
-        R1.right  = R.xRight ;
-        R1.bottom = R.yBottom;
-
-        return R1;
-    }
-
-    static RECTL RECT_TO_RECTL(RECT R)
-    {
-        RECTL R1;
-
-        R1.xLeft   = R.left   ;
-        R1.yTop    = R.top    ;
-        R1.xRight  = R.right  ;
-        R1.yBottom = R.bottom ;
-
-        return R1;
-    }
-#endif
 
 };
 
 #endif
-
-// EOF -- ZRECT.H
 

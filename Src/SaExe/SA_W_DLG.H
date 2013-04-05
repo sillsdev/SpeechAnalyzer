@@ -10,7 +10,7 @@
 #ifndef _SA_W_DLG_H
 #define _SA_W_DLG_H
 
-#include "CSaString.h"
+#include "SaString.h"
 
 class CWbDlgProcesses : public CDialog
 {

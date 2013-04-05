@@ -261,20 +261,21 @@ long CGlossSegment::Process(void * pCaller, CSaDoc * pSaDoc, int nProgress, int 
     CMainFrame * pMainFrame = (CMainFrame *)AfxGetMainWnd();
     ASSERT(pMainFrame->IsKindOf(RUNTIME_CLASS(CMainFrame)));
 
-    ParseParm * pParseParm = pMainFrame->GetParseParm(); // get parsing parameters
+    CParseParm * pCParseParm = pMainFrame->GetCParseParm(); // get parsing parameters
     float fFactor = (float)pDoc->GetUnprocessedDataSize() / (float)dwLoopEnd; // size factor
-    DWORD dwBreakWidth = (DWORD)(pDoc->GetBytesFromTime(pParseParm->fBreakWidth) / fFactor); // break width in process words
+    DWORD dwBreakWidth = (DWORD)(pDoc->GetBytesFromTime(pCParseParm->fBreakWidth) / fFactor); // break width in process words
     if (!dwBreakWidth)
     {
         dwBreakWidth = 1;
     }
 
     // CLW 1.07a
-    int nMaxThreshold = (int)((long)pLoudness->GetMaxValue() * (long)pParseParm->nMaxThreshold / 100); // threshold
-    int nMinThreshold = (int)((long)pLoudness->GetMaxValue() * (long)pParseParm->nMinThreshold / 100); // threshold
+    int nMaxThreshold = (int)((long)pLoudness->GetMaxValue() * (long)pCParseParm->nMaxThreshold / 100); // threshold
+    int nMinThreshold = (int)((long)pLoudness->GetMaxValue() * (long)pCParseParm->nMinThreshold / 100); // threshold
     DWORD dwLoopPos = 0;
     BOOL bRes = TRUE;
-    int nBlockAlign = pDoc->GetFmtParm()->wBlockAlign;
+
+    int nBlockAlign = pDoc->GetBlockAlign();
 
     // prepare gloss data
     int nGlossIndex = 0;

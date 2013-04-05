@@ -1,6 +1,6 @@
 #ifndef _SA_PARM_H__
 
-#include "CSaString.h"
+#include "SaString.h"
 
 #define _SA_PARM_H__
 

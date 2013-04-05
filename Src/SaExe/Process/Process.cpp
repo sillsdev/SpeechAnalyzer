@@ -5,7 +5,6 @@
 // Author: Urs Ruchti
 // copyright 2000 JAARS Inc. SIL
 /////////////////////////////////////////////////////////////////////////////
-
 #include "stdafx.h"
 #include "Process.h"
 #include "mainfrm.h"
@@ -23,18 +22,11 @@ static char BASED_CODE THIS_FILE[] = __FILE__;
 // CProcess
 // Base class for all data processing classes. Does all jobs, common to all
 // data processing derived classes.
-
-/////////////////////////////////////////////////////////////////////////////
-// CProcess construction/destruction/creation
-
-/***************************************************************************/
-// CProcess::CProcess Constructor
-/***************************************************************************/
 CProcess::CProcess()
 {
-    memset(this, 0, sizeof(CProcess));
+    m_nStatus = PROCESS_IDLE;
     m_pFile = NULL;
-    DeleteProcessFileName(); // no file name
+    wmemset(m_fileStatus.m_szFullName,0,_countof(m_fileStatus.m_szFullName));
     m_lpBuffer = NULL;
     m_nMaxValue = 0;
     m_nMinValue = 0;
@@ -48,7 +40,6 @@ CProcess::CProcess()
     {
         m_dwBufferSize = 0;
     }
-    SetStatus(PROCESS_IDLE);
 }
 
 /***************************************************************************/
@@ -61,18 +52,17 @@ CProcess::~CProcess()
     if (m_pFile)
     {
         delete m_pFile;
+        m_pFile = NULL;
     }
     // free the buffer memory
     if (m_lpBuffer)
     {
         delete [] m_lpBuffer;
+        m_lpBuffer = NULL;
     }
 }
 
-/////////////////////////////////////////////////////////////////////////////
-// CProcess helper functions
-
-CProgressStatusBar * CProcess::pGetStatusBar()
+CProgressStatusBar * CProcess::GetStatusBar()
 {
     // get pointer to status bar
     CMainFrame * pMainFrame = (CMainFrame *)AfxGetMainWnd();
@@ -93,8 +83,9 @@ CProgressStatusBar * CProcess::pGetStatusBar()
 /***************************************************************************/
 bool CProcess::StartProcess(void * pCaller, int nProcessID, DWORD dwBufferSize)
 {
+    //TRACE(_T("StartProcess ID:%d\n"), nProcessID);
     // get pointer to status bar
-    CProgressStatusBar * pStatusBar = pGetStatusBar();
+    CProgressStatusBar * pStatusBar = GetStatusBar();
     CMainFrame * pMain = (CMainFrame *)AfxGetMainWnd();
 
     if (pMain)
@@ -141,8 +132,7 @@ bool CProcess::StartProcess(void * pCaller, int nProcessID, BOOL bBuffer)
 /***************************************************************************/
 void CProcess::SetProgress(int nPercent)
 {
-    CProgressStatusBar * pStatusBar = pGetStatusBar();
-
+    CProgressStatusBar * pStatusBar = GetStatusBar();
     pStatusBar->SetProgress(nPercent);
 }
 
@@ -152,7 +142,6 @@ void CProcess::SetProgress(int nPercent)
 void CProcess::ErrorMessage(UINT nTextID, LPCTSTR pszText1, LPCTSTR pszText2)
 {
     CSaApp * pApp = (CSaApp *) AfxGetApp();
-
     pApp->ErrorMessage(nTextID, pszText1, pszText2);
 }
 
@@ -167,7 +156,7 @@ void CProcess::EndProcess(BOOL bProcessBar)
     {
         CMainFrame * pMainFrame = (CMainFrame *)AfxGetMainWnd();
         pMainFrame->ShowDataStatusBar(TRUE); // show the data status bar
-        CProgressStatusBar * pStatusBar = pGetStatusBar();
+        CProgressStatusBar * pStatusBar = GetStatusBar();
         pStatusBar->SetProcessOwner(NULL, NULL); // reset the process owner
     }
 }
@@ -194,14 +183,16 @@ void * CProcess::GetProcessedData(DWORD dwOffset, BOOL bBlockBegin)
 
     DWORD dwByteOffset = dwOffset * 2;
 
-    if (((!bBlockBegin) && ((dwByteOffset >= m_dwBufferOffset) && (dwByteOffset < (m_dwBufferOffset + GetProcessBufferSize()))))
-            || ((bBlockBegin) && (m_dwBufferOffset == dwByteOffset)))
+    if (((!bBlockBegin) && ((dwByteOffset >= m_dwBufferOffset) && (dwByteOffset < (m_dwBufferOffset + GetProcessBufferSize())))) ||
+            ((bBlockBegin) && (m_dwBufferOffset == dwByteOffset)))
     {
         // this data is actually in buffer
-        return m_lpBuffer; // return pointer to data
+        // return pointer to data
+        return m_lpBuffer;
     }
-    else     // new data block has to be read
+    else
     {
+        // new data block has to be read
         if (bBlockBegin)
         {
             m_dwBufferOffset = dwByteOffset; // given offset is the first sample in data block
@@ -235,7 +226,7 @@ void * CProcess::GetProcessedData(DWORD dwOffset, BOOL bBlockBegin)
         // read the processed data block
         try
         {
-            m_pFile->Read((HPSTR)m_lpBuffer, GetProcessBufferSize());
+            m_pFile->Read(m_lpBuffer, GetProcessBufferSize());
         }
         catch (CFileException e)
         {
@@ -271,11 +262,13 @@ int CProcess::GetProcessedData(DWORD dwOffset, BOOL * pbRes)
     if ((dwByteOffset >= m_dwBufferOffset) && (dwByteOffset < (m_dwBufferOffset + GetProcessBufferSize())))
     {
         // this data is actually in buffer
-        *pbRes = TRUE;  // set operation result
+        // set operation result
+        *pbRes = TRUE;
         return *reinterpret_cast<short int *>(m_lpBuffer + (dwByteOffset - m_dwBufferOffset)); // return data
     }
-    else     // new data block has to be read
+    else
     {
+        // new data block has to be read
         m_dwBufferOffset = dwByteOffset - (dwByteOffset % GetProcessBufferSize()); // new block offset
         // open the temporary file
         if (!Open(GetProcessFileName(), CFile::modeRead | CFile::shareExclusive))
@@ -306,7 +299,7 @@ int CProcess::GetProcessedData(DWORD dwOffset, BOOL * pbRes)
         // read the processed data block
         try
         {
-            m_pFile->Read((HPSTR)m_lpBuffer, GetProcessBufferSize());
+            m_pFile->Read(m_lpBuffer, GetProcessBufferSize());
         }
         catch (CFileException e)
         {
@@ -349,14 +342,16 @@ HPSTR CProcess::GetProcessedWaveData(DWORD dwOffset, BOOL bBlockBegin)
         return NULL;
     }
 
-    if (((!bBlockBegin) && ((dwOffset >= m_dwBufferOffset) && (dwOffset < m_dwBufferOffset + GetProcessBufferSize())))
-            || ((bBlockBegin) && (m_dwBufferOffset == dwOffset)))
+    if (((!bBlockBegin) && ((dwOffset >= m_dwBufferOffset) && (dwOffset < m_dwBufferOffset + GetProcessBufferSize()))) ||
+        ((bBlockBegin) && (m_dwBufferOffset == dwOffset)))
     {
         // this data is actually in buffer
-        return m_lpBuffer; // return pointer to data
+        // return pointer to data
+        return m_lpBuffer;
     }
-    else     // new data block has to be read
+    else
     {
+        // new data block has to be read
         if (bBlockBegin)
         {
             m_dwBufferOffset = dwOffset;    // given offset ist first sample in data block
@@ -390,7 +385,7 @@ HPSTR CProcess::GetProcessedWaveData(DWORD dwOffset, BOOL bBlockBegin)
         // read the processed data block
         try
         {
-            m_pFile->Read((HPSTR)m_lpBuffer, GetProcessBufferSize());
+            m_pFile->Read(m_lpBuffer, GetProcessBufferSize());
         }
         catch (CFileException e)
         {
@@ -421,12 +416,26 @@ void * CProcess::GetProcessedObject(DWORD dwIndex, size_t sObjectSize, BOOL bRev
 }
 
 /***************************************************************************/
+// CProcess::GetProcessedObject returns a pointer to requested data object
+// uses data buffer to optimize requests
+/***************************************************************************/
+void * CProcess::GetProcessedObject( LPCTSTR /*szName*/, int /*selectedChannel*/, int /*numChannels*/, int /*sampleSize*/, DWORD dwIndex, size_t sObjectSize, BOOL bReverse)
+{
+    if (dwIndex == UNDEFINED_OFFSET)
+    {
+        m_dwBufferOffset = UNDEFINED_OFFSET;
+        return NULL;
+    }
+    DWORD dwByteOffset = dwIndex * sObjectSize;
+    return GetProcessedDataBlock(dwByteOffset, sObjectSize, bReverse);
+}
+
+/***************************************************************************/
 // CProcess::GetProcessedDataBlock returns a pointer to requested data object
 // uses data buffer to optimize requests
 /***************************************************************************/
 void * CProcess::GetProcessedDataBlock(DWORD dwByteOffset, size_t sObjectSize, BOOL bReverse)
 {
-    //TRACE("GetProcessedDataBlock %s[%d] %d %d %d\n",__FILE__,__LINE__,dwByteOffset, sObjectSize, bReverse);
 
     if (dwByteOffset == UNDEFINED_OFFSET)
     {
@@ -437,11 +446,12 @@ void * CProcess::GetProcessedDataBlock(DWORD dwByteOffset, size_t sObjectSize, B
     if ((dwByteOffset >= m_dwBufferOffset) && ((dwByteOffset+sObjectSize) < (m_dwBufferOffset + GetProcessBufferSize())))
     {
         // this data is actually in buffer
-        return m_lpBuffer + (dwByteOffset - m_dwBufferOffset); // return pointer to data
+        return m_lpBuffer + (dwByteOffset - m_dwBufferOffset);  // return pointer to data
     }
-    else     // new data block has to be read
+    else
     {
-        m_dwBufferOffset = dwByteOffset; // given offset is the first sample in data block
+        // new data block has to be read
+        m_dwBufferOffset = dwByteOffset;                        // given offset is the first sample in data block
         if (bReverse)
         {
             // since we are traversing the file in reverse
@@ -482,7 +492,7 @@ void * CProcess::GetProcessedDataBlock(DWORD dwByteOffset, size_t sObjectSize, B
         // read the processed data block
         try
         {
-            m_pFile->Read((HPSTR)m_lpBuffer, GetProcessBufferSize());
+            m_pFile->Read(m_lpBuffer, GetProcessBufferSize());
         }
         catch (...)
         {
@@ -556,10 +566,10 @@ BOOL CProcess::Open(LPCTSTR lpszFileName, UINT nOpenFlags, CFileException * pErr
     if (m_pFile)
     {
         delete m_pFile;    // We shouldn't really get here...
+        m_pFile = NULL;
     }
 
-    m_pFile = new CFile;
-
+    m_pFile = new CFile();
     return m_pFile->Open(lpszFileName, nOpenFlags, pError);
 
 }
@@ -569,21 +579,17 @@ BOOL CProcess::Open(LPCTSTR lpszFileName, UINT nOpenFlags, CFileException * pErr
 // This is used for temp files whose contents are not the primary
 // data for this process.
 /***************************************************************************/
-BOOL CProcess::CreateAuxTempFile(TCHAR * szName, CFile * pFile, CFileStatus * pFileStatus)
-{
-    if (!pFile)
+BOOL CProcess::CreateAuxTempFile( TCHAR * szName, CFile * pFile, CFileStatus & fileStatus) {
+
+	if (!pFile)
     {
         pFile = new CFile();
-    }
-    if (!pFileStatus)
-    {
-        pFileStatus = new CFileStatus;
     }
 
     CSaApp * pApp = (CSaApp *)AfxGetApp();
 
     TCHAR szTempPath[_MAX_PATH];
-    GetTempFileName(szName, szTempPath, _countof(szTempPath));
+    GetTempFileName( szName, szTempPath, _countof(szTempPath));
     // create and open the file
     if (!pFile->Open(szTempPath, CFile::modeCreate | CFile::modeReadWrite | CFile::shareExclusive))
     {
@@ -592,7 +598,7 @@ BOOL CProcess::CreateAuxTempFile(TCHAR * szName, CFile * pFile, CFileStatus * pF
         return Exit(PROCESS_ERROR);
     }
     // read file status
-    if (!CFile::GetStatus(szTempPath, *pFileStatus))
+    if (!CFile::GetStatus(szTempPath, fileStatus))
     {
         // error opening file
         pApp->ErrorMessage(IDS_ERROR_OPENTEMPFILE, (LPTSTR)szTempPath);
@@ -937,14 +943,14 @@ long CProcess::Process(void * pCaller, ISaDoc *, int nProgress, int nLevel)
 /***************************************************************************/
 // CProcess::WriteProperties Dummy properties writing
 /***************************************************************************/
-void CProcess::WriteProperties(Object_ostream &)
+void CProcess::WriteProperties(CObjectOStream &)
 {
 }
 
 /***************************************************************************/
 // CProcess::ReadProperties Dummy properties reading
 /***************************************************************************/
-BOOL CProcess::ReadProperties(Object_istream &)
+BOOL CProcess::ReadProperties(CObjectIStream &)
 {
     return FALSE;
 }
@@ -957,7 +963,7 @@ void CProcess::SetStatus(long nStatus)
     m_nStatus = nStatus;
 }
 
-void CProcess::Dump(const char * tag)
+void CProcess::Dump(LPCSTR tag)
 {
     TRACE("DataProcess %s size=%d max=%d min=%d status=%d offset=%d\n",tag,m_dwBufferSize, m_nMaxValue, m_nMinValue,m_nStatus,m_dwBufferOffset);
 }
@@ -970,12 +976,6 @@ void CProcess::Dump(const char * tag)
 // For each area, determined by an index number, there will be a temporary
 // file, where the processed data is stored in.
 
-/////////////////////////////////////////////////////////////////////////////
-// CAreaDataProcess construction/destruction/creation
-
-/***************************************************************************/
-// CAreaDataProcess::CAreaDataProcess Constructor
-/***************************************************************************/
 CProcessAreaData::CProcessAreaData()
 {
     // create the area arrays
@@ -983,19 +983,10 @@ CProcessAreaData::CProcessAreaData()
     m_dwAreaLength = 0;
 }
 
-/***************************************************************************/
-// CAreaDataProcess::~CAreaDataProcess Destructor
-/***************************************************************************/
 CProcessAreaData::~CProcessAreaData()
 {
 }
 
-/////////////////////////////////////////////////////////////////////////////
-// CAreaDataProcess helper functions
-
-/***************************************************************************/
-// CAreaDataProcess::SetArea
-/***************************************************************************/
 BOOL CProcessAreaData::SetArea(CSaView * pView)
 {
     if (IsStatusFlag(KEEP_AREA))
@@ -1007,8 +998,7 @@ BOOL CProcessAreaData::SetArea(CSaView * pView)
     m_dwAreaPos = pView->GetStartCursorPosition();
 
     ISaDoc * pDoc = pView->GetDocument();
-    FmtParm * pFmtParm = pDoc->GetFmtParm(); // get sa parameters format member data
-    WORD wSmpSize = (WORD)(pFmtParm->wBlockAlign / pFmtParm->wChannels);
+    DWORD wSmpSize = pDoc->GetSampleSize();
     m_dwAreaLength = pView->GetStopCursorPosition() - m_dwAreaPos + wSmpSize;
 
     SetStatusFlag(KEEP_AREA);
@@ -1030,5 +1020,151 @@ BOOL CProcessAreaData::SetArea(DWORD dwAreaPos, DWORD dwAreaLength)
 long CProcess::GetStatus() const
 {
     return m_nStatus;
+}
+
+void CProcess::CancelProcess()
+{
+    SetStatusFlag(PROCESS_CANCEL);   // cancel current process
+}
+
+void CProcess::RestartProcess()
+{
+    SetStatusFlag(PROCESS_CANCEL, FALSE);   // restart current process
+}
+
+BOOL CProcess::IsCanceled() const
+{
+    return IsStatusFlag(PROCESS_CANCEL);   // return the process canceled flag
+}
+
+BOOL CProcess::IsDataReady() const
+{
+    return IsStatusFlag(DATA_READY);
+}
+
+void CProcess::SetDataInvalid()
+{
+
+    SetStatusFlag(DATA_READY, FALSE);
+    DeleteTempFile();
+    m_dwBufferOffset = UNDEFINED_OFFSET;
+}
+
+DWORD CProcess::GetDataSize() const
+{
+    // return processed data size in words (16 bit)
+    return GetDataSize(2);
+}
+
+DWORD CProcess::GetNumSamples(ISaDoc * /*pDoc*/) const
+{
+    // return processed data size in words (16 bit)
+    return GetDataSize(2);
+}
+
+DWORD CProcess::GetDataSize(size_t nElementSize) const
+{
+    // return processed data size in words (16 bit)
+    return (DWORD)(m_fileStatus.m_size / nElementSize);
+}
+
+int CProcess::GetMaxValue() const
+{
+    return m_nMaxValue;   // return maximum value
+}
+
+int CProcess::GetMinValue() const
+{
+    return m_nMinValue;   // return minimum value
+}
+
+long CProcess::IsStatusFlag(long nStatus) const
+{
+    return (GetStatus() & nStatus) == nStatus;
+}
+
+BOOL CProcess::IsIdle() const
+{
+    return (IsStatusFlag(PROCESS_IDLE) != 0);   // return TRUE if process is idle
+}
+
+BOOL CProcess::IsAliased() const
+{
+    return (IsStatusFlag(DATA_ALIASED) != 0);
+}; // return TRUE if processed data is aliased
+
+// provides implementation for IProcess interface.
+DWORD CProcess::GetProcessedWaveDataSize(ISaDoc * /*pDoc*/)
+{
+    // return processed wave source data size
+    return GetDataSize(1);
+}
+
+DWORD CProcess::GetProcessedWaveDataSize()
+{
+    // return processed wave source data size
+    return GetDataSize(1);
+}
+
+DWORD CProcess::GetProcessBufferIndex(size_t nSize)
+{
+    // return index to process buffer
+    return m_dwBufferOffset >= 0x40000000 ? UNDEFINED_OFFSET : m_dwBufferOffset/nSize;
+}
+
+DWORD CProcess::GetProcessBufferSize()
+{
+    return m_dwBufferSize;   // return process buffer size
+}
+
+void CProcess::SetProcessBufferSize(DWORD dwSize)
+{
+    m_dwBufferSize = dwSize;
+}
+
+LPCTSTR CProcess::GetProcessFileName()
+{
+    return m_fileStatus.m_szFullName;   // return process temporary file path and name
+}
+
+void CProcess::DeleteProcessFileName()
+{
+    m_fileStatus.m_szFullName[0] = 0;   // delete the temporary file name
+}
+
+void CProcess::SetStatusFlag(long nStatus, BOOL bValue)
+{
+    SetStatus(bValue ? GetStatus() | nStatus : GetStatus() & ~nStatus);
+}
+
+void CProcess::SetDataReady(BOOL bReady)
+{
+    SetStatusFlag(DATA_READY, bReady);
+}
+
+void CProcess::Write(const void * lpBuf, UINT nCount)
+{
+    m_pFile->Write(lpBuf, nCount);
+}
+
+// Special case used to bypass file
+void CProcess::SetDataSize(int nElements, size_t nElementSize)
+{
+    m_fileStatus.m_size = nElements * nElementSize;
+}
+
+DWORD CProcess::GetProcessedWaveDataBufferSize()
+{
+    return GetBufferSize();
+}
+
+DWORD CProcess::GetBufferSize()
+{
+    return 0x10000;
+}
+
+DWORD CProcess::GetProcessedData(int /*index*/)
+{
+    return 0;
 }
 

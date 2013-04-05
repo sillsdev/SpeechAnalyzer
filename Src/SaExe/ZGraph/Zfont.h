@@ -529,363 +529,16 @@ public:
 
 #endif
 
-#ifdef OS2_PLATFORM
-
-///////////////////////////////////////////////////////////////////////////
-//
-//                       FONT HANDLING FOR OS/2 PM
-//
-// Much of this Material Was Adapted from Petzold's OS/2 PM Programming Book
-//   Ch. 7, Outline Fonts
-//
-//////////////////////////////////////////////////////////////////////////
-
-#define LCID_FONT  1
-
-typedef struct
-{
-    int  iNumFaces ;
-    char szFacename [1] [FACESIZE] ;
-}
-FACELIST ;
-
-typedef FACELIST * PFACELIST ;
-
-class zFONT
-{
-private:
-    HPS    hps;                   // Handle to Presentation Space
-    char   szTypefaceName[80];    // Typeface Name
-    POINTL aptl[TXTBOX_COUNT];
-    int    RHeight;               // Height of Rectangle Where Text'll Go
-    int    RWidth;                // Width of Rectangle Where Text'll Go
-    zRGB   TextColor;             // Color of Text
-    zRGB   BkgColor;              // Color of Bkg
-    INT    CharWidth;             // Character Width
-    INT    CharHeight;            // Character Height
-    BOOL   UseDefaultFont;        // TRUE if Just Using Default Font
-
-public:
-    zFONT()
-    {
-        UseDefaultFont = TRUE;
-    }
-
-    zFONT(HPS hps1)
-    {
-        zInitFont(hps1);
-    }
-
-    void zInitFont(HPS hps1, BOOL UseDefaultFont1 = FALSE)
-    {
-        // Initialize
-
-        // Set the HPS
-        zSetHPS(hps1);
-
-        // Set Default Typeface Name
-        _tcscpy(szTypefaceName, "Helvetica");
-
-        TextColor = zMakeColor(0, 0, 0);          // Default Color of Text [Black]
-        BkgColor  = zMakeColor(0xFF, 0xFF, 0xFF); // Default Color of Bkg [White]
-
-        // Set Default Character Height, Width
-        FONTMETRICS fm;
-        GpiQueryFontMetrics(hps, sizeof(fm), &fm);
-        CharWidth  = fm.lAveCharWidth;
-        CharHeight = fm.lMaxBaselineExt;
-
-        UseDefaultFont = UseDefaultFont1;
-    }
-
-    void zSetHPS(HPS hps1)
-    {
-        // Save HPS
-        hps = hps1;
-    }
-
-    ~zFONT()
-    {
-    }
-
-    void Create()
-    {
-        // Create, Selects the Logical Font
-        CreateOutlineFont(LCID_FONT, szTypefaceName, 0, 0);
-        GpiSetCharSet(hps, LCID_FONT);
-        ScaleOutlineFont(120, 120);
-    }
-
-    void Destroy()
-    {
-        // Deletes the Logical Font and Selects the Old Font
-        GpiSetCharSet(hps, LCID_DEFAULT);
-        GpiDeleteSetId(hps, LCID_FONT);
-    }
-
-    int ComputePointSize(WCHAR * String, zRECT * R)
-    {
-        // Computes the Point Size Necessary for Fitting
-        //   String [String] in Rectangle [R]
-
-        GpiQueryTextBox(hps, _tcslen(String),
-                        String, TXTBOX_COUNT, aptl);
-
-        // Get height, Width of Rectangle
-        RHeight = abs(R->top   - R->bottom);
-        RWidth  = abs(R->right - R->left);
-
-        // Find Point Size
-        int iPtHeight = (int)(120.0 * (double)RHeight /
-                              (double)(aptl[TXTBOX_TOPLEFT].y - aptl[TXTBOX_BOTTOMLEFT].y));
-
-        int iPtWidth = (int)(120.0 * (double)RWidth /
-                             (double)(aptl[TXTBOX_CONCAT].x));
-
-        // Select the Limiting Dimension...
-        int iPtSize = min(iPtHeight, iPtWidth);
-
-        return (iPtSize);
-    }
-
-    void DisplayTextInRect(WCHAR * String, zRECT R, BOOL ShowText = TRUE)
-    {
-        // Determines a Font to Fit String [String]
-        //   Inside of Rectangle [R]
-
-        // If Just Using the Default Font, Just Center Text In Rectangle!
-        if (UseDefaultFont)
-        {
-            POINT ptCenter = R.Center();
-            INT xPos = ptCenter.x - _tcslen(String) * CharWidth / 2;
-
-            // Draw the String
-            if (ShowText)
-            {
-                zDrawTextString(xPos, ptCenter.y, String);
-            }
-            return;
-        }
-
-        // Create a Font
-        Create();
-
-        // Compute Point Size
-        int PtSize = ComputePointSize(String, &R);
-
-        // Scale Font to Desired Point Size
-        //    We Use a Negative Point Size for the Y-Direction
-        //   (If We Didn't the Text Would Be Upside-Down)
-
-        ScaleOutlineFont(-PtSize, PtSize);
-        GpiQueryTextBox(hps, _tcslen(String), String, TXTBOX_COUNT, aptl);
-
-        // Compute Coordinates at Which to Draw String
-        POINTL ptl;
-
-        ptl.x = R.left + (RWidth  - aptl[TXTBOX_CONCAT].x) / 2;
-        ptl.y = R.top  + (RHeight - aptl[TXTBOX_TOPLEFT].y -
-                          aptl[TXTBOX_BOTTOMLEFT].y) / 2;
-
-        // Draw the String
-        if (ShowText)
-        {
-            GpiCharStringAt(hps, &ptl, _tcslen(String), String);
-        }
-
-        // Save Character Height, Width
-        CharHeight = R.Height();
-        CharWidth  = Round(R.Width() / _tcslen(String));
-
-        // Destroy Font
-        Destroy();
-    }
-
-    LONG CreateOutlineFont(LONG lcid, char * szFacename,
-                           SHORT fsAttributes, SHORT usCodePage)
-    {
-        FATTRS fat ;
-        LONG   lReturn ;
-
-        // Set up FATTRS structure
-
-        fat.usRecordLength  = sizeof(FATTRS);
-        fat.fsSelection     = fsAttributes ;
-        fat.lMatch          = 0 ;
-        fat.idRegistry      = 0 ;
-        fat.usCodePage      = usCodePage ;
-        fat.lMaxBaselineExt = 0 ;
-        fat.lAveCharWidth   = 0 ;
-        fat.fsType          = FATTR_FONTUSE_OUTLINE |
-                              FATTR_FONTUSE_TRANSFORMABLE ;
-        fat.fsFontUse       = 0 ;
-
-        _tcscpy(fat.szFacename, szFacename);
-
-
-        // Create the font
-
-        lReturn = GpiCreateLogFont(hps, NULL, lcid, &fat);
-
-
-        // If no match, try a symbol code page
-
-        if (lReturn == FONT_DEFAULT && usCodePage == 0)
-        {
-            fat.usCodePage = 65400 ;
-
-            lReturn = GpiCreateLogFont(hps, NULL, lcid, &fat);
-        }
-
-        return lReturn ;
-    }
-
-    BOOL ScaleOutlineFont(int iPointSize, int iPointWidth)
-    {
-        HDC    hdc ;
-        LONG   xRes, yRes ;
-        POINTL aptl[2] ;
-        SIZEF  sizef ;
-
-        // Get font resolution in pixels per inch
-
-        hdc = GpiQueryDevice(hps);
-
-        DevQueryCaps(hdc, CAPS_HORIZONTAL_FONT_RES, 1, &xRes);
-        DevQueryCaps(hdc, CAPS_VERTICAL_FONT_RES,   1, &yRes);
-
-        // Find desired font size in pixels
-
-        if (iPointWidth == 0)
-        {
-            iPointWidth = iPointSize ;
-        }
-
-        aptl[0].x = 0 ;
-        aptl[0].y = 0 ;
-        aptl[1].x = (16 * xRes * iPointWidth + 360) / 720 ;
-        aptl[1].y = (16 * yRes * iPointSize  + 360) / 720 ;
-
-        // Convert to page coordinates
-
-        GpiConvert(hps, CVTC_DEVICE, CVTC_PAGE, 2L, aptl);
-
-        // Set the character box
-
-        sizef.cx = (aptl[1].x - aptl[0].x) << 12 ;
-        sizef.cy = (aptl[1].y - aptl[0].y) << 12 ;
-
-        return GpiSetCharBox(hps, &sizef);
-    }
-
-    // "Get" Member Functions
-
-    INT zGetFontWidth()
-    {
-        // Gets the Average Font Width
-        return CharWidth;
-    }
-
-    INT zGetFontHeight()
-    {
-        // Gets the Average Font Height
-        return CharHeight;
-    }
-
-    void zSelectColors(void)
-    {
-        // Selects the Text Color [and the Background Color?]
-        zSetTextColor(TextColor);
-    }
-
-    void zSetTextColor(zRGB TextColor1)
-    {
-        // Sets the Color Of Text
-        GpiSetColor(hps, (TextColor = TextColor1));
-    }
-
-    void zDrawTextString(INT x, INT y, PWCHAR string)
-    {
-        // Displays a String [string] at [x, y]
-
-        zSelectColors();
-
-        // Draw the Text
-        POINTL ptl;
-        ptl.x = x;
-        ptl.y = y + 3 * CharHeight / 4;
-        GpiCharStringAt(hps, &ptl, _tcslen(string), string);
-    }
-
-    INT zGetStringWidth(PWCHAR string)
-    {
-        // Returns the Approximate String Width for string [string]
-
-        return (CharWidth * _tcslen(string));
-    }
-
-    void zRightAlignText(INT x, INT y, PWCHAR string)
-    {
-        // Displays a Right-Aligned String [string] at [x, y]
-
-        zDrawTextString(x - CharWidth * _tcslen(string), y, string);
-    }
-
-    void zPickFont(PWCHAR string, zRECT RString)
-    {
-        // Picks a Font That Will Fit [string] Inside of [RString]
-        //   But Doesn't Display Text
-        DisplayTextInRect(string, RString, FALSE);
-    }
-
-    void zBestFitText(PWCHAR string, zRECT RString, BOOL ShowText = TRUE)
-    {
-        DisplayTextInRect(string, RString, ShowText);
-    }
-
-    void zCenterText(PWCHAR string, zRECT RString)
-    {
-        // Centers a String [string] in Rectangle [RString].
-
-        zSelectColors();
-
-        DisplayTextInRect(string, RString, TRUE);
-    }
-
-    INT Round(double d)
-    {
-        // This Function Is Used For Rounding Purposes.  It Returns the closest
-        // integer to [d], a double variable
-
-        double LowerLimit = floor(d);
-
-        if ((d - LowerLimit) >= 0.5)
-        {
-            return ((INT)LowerLimit + 1);
-        }
-        else
-        {
-            return ((INT)LowerLimit);
-        }
-    }
-
-};
-
-#endif // OS2_PLATFORM
-
 ///////////////////////////////////////////////////////////////////////////
 //                       FONT HANDLING FOR MS-DOS
 //////////////////////////////////////////////////////////////////////////
 
-#if defined(MS_DOS_PLATFORM) || defined(BGI_DOS_PLATFORM)
+#if defined(MS_DOS_PLATFORM)
 
 #ifdef MS_DOS_PLATFORM
 #include <graph.h>
 #endif
 
-#ifdef BGI_DOS_PLATFORM
-#include <graphics.h>
-#endif
 
 class zFONT
 {
@@ -973,23 +626,6 @@ public:
     }
 #endif
 
-#ifdef BGI_DOS_PLATFORM
-    INT zGetStringWidth(PWCHAR string)
-    {
-        // Returns Length of a Graphics String Using Default Font
-        return (textwidth(string));
-    }
-
-    INT zGetFontWidth(void)
-    {
-        return textwidth("A");
-    }
-    INT zGetFontHeight(void)
-    {
-        return (textheight("A") + 3);
-    }
-#endif
-
     zRGB zGetTextColor(void)
     {
         return TextColor;
@@ -1006,9 +642,6 @@ public:
         _setcolor((TextColor = TextColor1));
 #endif
 
-#ifdef BGI_DOS_PLATFORM
-        setcolor((TextColor = TextColor1));
-#endif
     }
 
     void zSetBkgColor(zRGB BkgColor1)
@@ -1060,10 +693,6 @@ public:
         _outgtext(string);
 #endif
 
-#ifdef BGI_DOS_PLATFORM
-        outtextxy(x, y, string);
-#endif
-
     }
 
     void zCenterText(PWCHAR string, zRECT RString)
@@ -1083,9 +712,6 @@ public:
         _outgtext(string);
 #endif
 
-#ifdef BGI_DOS_PLATFORM
-        outtextxy(ptCenter.x, RString.top, string);
-#endif
     }
 
     void zRightAlignText(INT x, INT y, PWCHAR  string)
@@ -1164,9 +790,8 @@ public:
 };
 
 
-#endif // #if defined(MS_DOS_PLATFORM) || defined(BGI_DOS_PLATFORM)
+#endif // #if defined(MS_DOS_PLATFORM)
 
 
 #endif
 
-// EOF -- FONT.H

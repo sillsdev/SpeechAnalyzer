@@ -49,7 +49,7 @@
 
 #define USE_PRINT_SYSTEM_V3    1
 
-#include "CSaString.h"
+#include "SaString.h"
 #include "resource.h"       // main symbols
 #include "sa_dlwnd.h"
 #include <afxmt.h>
@@ -59,8 +59,8 @@
 
 class CSaDoc;
 class CSaView;
-class Object_istream;
-class Object_ostream;
+class CObjectIStream;
+class CObjectOStream;
 
 using std::wstring;
 
@@ -180,8 +180,8 @@ public:
     // Operations on the MDI child view [window] list, ordered by z-order.
     void SetZ();
     // Set the current z-order of all MDI child views.
-    BOOL ReadProperties(Object_istream & obs);  // read the open databases and windows
-    void WriteProperties(Object_ostream & obs); // write the open databases and windows
+    BOOL ReadProperties(CObjectIStream & obs);  // read the open databases and windows
+    void WriteProperties(CObjectOStream & obs); // write the open databases and windows
     CSaString GetStartupMessage(CSaString szLastVersion);
     void SetupNewUser();
 

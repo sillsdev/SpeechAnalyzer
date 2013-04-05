@@ -1,7 +1,7 @@
 #ifndef TEXTHELPER_H
 #define TEXTHELPER_H
 
-#include "CSaString.h"
+#include "SaString.h"
 #include "TranscriptionHelper.h"
 #include <vector>
 

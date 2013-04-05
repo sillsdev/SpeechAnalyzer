@@ -52,12 +52,7 @@ static char BASED_CODE THIS_FILE[] = __FILE__;
 
 IMPLEMENT_DYNCREATE(CPlotRecording, CPlotRawData)
 
-/////////////////////////////////////////////////////////////////////////////
-// CPlotRecording message map
-
 BEGIN_MESSAGE_MAP(CPlotRecording, CPlotRawData)
-    //{{AFX_MSG_MAP(CPlotRecording)
-    //}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
@@ -137,14 +132,12 @@ DWORD CPlotRecording::AdjustDataFrame(int nWidth)
     if (!m_dwRecDataFrame)
     {
         CSaDoc * pDoc = ((CMainFrame *)AfxGetMainWnd())->GetCurrDoc();
-
         if (!pDoc)
         {
             return 0L;
         }
-        FmtParm * pFmtParm = pDoc->GetFmtParm();                         // get sa parameters format member data
         DWORD dwDataSize = pDoc->GetDataSize();
-        UINT nSampleSize = pFmtParm->wBlockAlign / pFmtParm->wChannels;
+        DWORD nSampleSize = pDoc->GetSampleSize();
 
         if ((DWORD)nWidth > (dwDataSize / (DWORD)nSampleSize))    // more pixels than data
         {

@@ -94,51 +94,29 @@ IMPLEMENT_DYNCREATE(CPlotWavelet, CPlotWnd)
 //**************************************************************************
 void CPlotWavelet::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView)
 {
-    // Handle declations
-    CSaApp * pApp;
-    CSaDoc * pDoc;                                                          // main SA doc, I suppose
-    FmtParm * pFmtParm;                                                     // format parameters of SA
-    CMainFrame * pMainWnd;                                                  // the main frame
-    CGraphWnd * pGraph;                                                     // our parent!
-    CProcessWavelet * pWavelet;
-
-    // raw data vars
-    long * pData;                                                           // data pointer
-    DWORD dwDataSize;                                                       // Size of data
-    int width, height;                                                      // Width and height of our image
-
-    // Drawing declarations
-    CDC pTempDC;                                                            // Temp area for drawing
-    HBITMAP pTempBitmap;
-    HBITMAP pOldBitmap;
-    BITMAPINFO * pInfo;
-    unsigned char * pBits;                                                  // Direct pointer to bitmap data
-
-    // Wavelet transformation data
-    CWaveletNode * root;
-    CWaveletNode * tempNode;
-
     if (IsIconic())
     {
         return;    // nothing to draw
     }
 
-    // Get a handle on the windows
-    pApp = (CSaApp *)AfxGetApp();
-    pDoc = pView->GetDocument();
-    pFmtParm = pDoc->GetFmtParm();                              // get sa parameters format member data
-    pMainWnd = (CMainFrame *)AfxGetMainWnd();
-    pGraph = (CGraphWnd *)GetParent();
+    // Wavelet transformation data
+    CWaveletNode * root = NULL;
 
-    pWavelet = (CProcessWavelet *)pDoc->GetWavelet(); // get pointer to wavelet process object
+    // Get a handle on the windows
+    CSaApp * pApp = (CSaApp *)AfxGetApp();
+    CSaDoc * pDoc = pView->GetDocument();
+    CMainFrame * pMainWnd = (CMainFrame *)AfxGetMainWnd();
+    CGraphWnd * pGraph = (CGraphWnd *)GetParent();
+
+    CProcessWavelet * pWavelet = (CProcessWavelet *)pDoc->GetWavelet(); // get pointer to wavelet process object
 
     // Set legend scale
     pGraph->SetLegendScale(SCALE | NUMBERS, 0, 100, _T("testing"));
 
-
     // Create the drawing area
+    CDC pTempDC;                                                            // Temp area for drawing
     pTempDC.CreateCompatibleDC(pDC);
-    pInfo = (BITMAPINFO *) malloc(sizeof(BITMAPINFO) + 256 * sizeof(RGBQUAD));
+    BITMAPINFO * pInfo = (BITMAPINFO *) malloc(sizeof(BITMAPINFO) + 256 * sizeof(RGBQUAD));
     if (pInfo == NULL)
     {
         pApp->ErrorMessage(IDS_ERROR_MEMALLOC);
@@ -146,8 +124,8 @@ void CPlotWavelet::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView)
         return;
     }
 
-    width = rWnd.Width() + (4 - (rWnd.Width() % 4));  // The width of a bitmap must be divisible by 4
-    height = rWnd.Height();
+    int width = rWnd.Width() + (4 - (rWnd.Width() % 4));  // The width of a bitmap must be divisible by 4
+    int height = rWnd.Height();
 
     // Set up the color Palette
     if (!CreateSpectroPalette(&pTempDC, pDoc))
@@ -172,7 +150,8 @@ void CPlotWavelet::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView)
     populateBmiColors(pInfo->bmiColors, pView);
 
     // Create the bitmap
-    pTempBitmap = CreateDIBSection(pTempDC.m_hDC,pInfo,DIB_RGB_COLORS, (void **)&pBits,NULL,0);
+    unsigned char * pBits = NULL;
+    HBITMAP pTempBitmap = CreateDIBSection(pTempDC.m_hDC,pInfo,DIB_RGB_COLORS, (void **)&pBits,NULL,0);
 
     if (!pTempBitmap)
     {
@@ -181,7 +160,7 @@ void CPlotWavelet::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView)
         return;
     }
 
-    pOldBitmap = (HBITMAP) ::SelectObject(pTempDC.m_hDC,pTempBitmap);
+    HBITMAP pOldBitmap = (HBITMAP) ::SelectObject(pTempDC.m_hDC,pTempBitmap);
 
     //erase background
     pTempDC.FillSolidRect(rClip, pMainWnd->GetColors()->cPlotBkg);
@@ -196,6 +175,8 @@ void CPlotWavelet::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView)
     //**************************************************************************
 
     // Get the raw data from SA
+    long * pData = NULL;
+    DWORD dwDataSize = 0;
     if (!pWavelet->Get_Raw_Data(&pData, &dwDataSize, pDoc))
     {
         pApp->ErrorMessage(IDS_ERROR_MEMALLOC);
@@ -204,33 +185,24 @@ void CPlotWavelet::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView)
     }
 
     // Build the tree
-    //CreateTree("llsllssllsllsssllsllssllsllssss", &root);
     CreateTree("lls", &root);
-    max_drawing_level = root->GetNumLeaves();                           // Keep track of how many leaves we have
+    max_drawing_level = root->GetNumLeaves();                       // Keep track of how many leaves we have
 
 
-    root->SetDataNode(pData, dwDataSize, 0, 22000);             // Load up the raw data
-    root->DoMRAAnalysisTree();                                                      // Generate all the wavelet data
-
-
-    root->TransformEnergyTree();                                                    // Square everything
-    root->TransformSmoothingTree();                                             // Apply the smoothing filter
-    root->TransformLogScalingTree(root->GetMaxTree());      // Apply the log filter
-
+    root->SetDataNode(pData, dwDataSize, 0, 22000);                 // Load up the raw data
+    root->DoMRAAnalysisTree();                                      // Generate all the wavelet data
+    root->TransformEnergyTree();                                    // Square everything
+    root->TransformSmoothingTree();                                 // Apply the smoothing filter
+    root->TransformLogScalingTree(root->GetMaxTree());              // Apply the log filter
 
     long x = (int) floor(GetDataPosition(rWnd.Width()) / 2);
     long y = pView->GetDataFrame() / 2;
 
-    // USE FOR PLOTTING THE RAW DATA
-    //root->TransformFitWindowNode(&rWnd);
-    //root->ScatterPlotDataNode(&pTempDC, &rWnd, RGB(255,0,0), x, x + y);
-
     // USE FOR DRAWING THE SCALOGRAM
     root->DrawColorBandTree(pBits, &rWnd, root->GetMaxTreeBounds(x, x+y), x, x + y);
 
-
     // USE FOR DRAWING THE RED LINE
-    tempNode = root->GetNode(drawing_level);
+    CWaveletNode * tempNode = root->GetNode(drawing_level);
 
     tempNode->TransformFitWindowNode(&rWnd);
     root->ScatterPlotDataTree(&pTempDC, &rWnd, RGB(255,0,0), drawing_level, x, x+y);
@@ -258,32 +230,6 @@ void CPlotWavelet::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView)
         delete pData;
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-//**************************************************************************
-// CPlotWavelet helper functions
-//**************************************************************************
-
-
-
-
-
-
-
-
-
-
-
-
 
 /***************************************************************************/
 // CPlotWavelet::CreateSpectroPalette Creates the palette for spectrogram

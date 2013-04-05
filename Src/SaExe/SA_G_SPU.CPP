@@ -4,7 +4,6 @@
 // Author: Urs Ruchti
 // copyright 1996 JAARS Inc. SIL
 /////////////////////////////////////////////////////////////////////////////
-
 #include "stdafx.h"
 #include "sa_plot.h"
 #include "sa_g_spu.h"
@@ -80,16 +79,15 @@ void CPlotSpectrum::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView)
     // Get pointer to graph, document, and main frame.
     CGraphWnd * pGraph = (CGraphWnd *)GetParent();
     CSaDoc  *  pDoc   = pView->GetDocument();
-    FmtParm * pFmtParm = pDoc->GetFmtParm(); // get sa parameters format member data
-    WORD wSmpSize = WORD(pFmtParm->wBlockAlign / pFmtParm->wChannels);  // calculate sample size in bytes
-    double SigBandwidth = (double)pFmtParm->dwSamplesPerSec / 2.;
+    WORD wSmpSize = WORD(pDoc->GetSampleSize());        // calculate sample size in bytes
+    double SigBandwidth = (double)pDoc->GetSamplesPerSec() / 2.;
     CMainFrame * pMainWnd = (CMainFrame *)AfxGetMainWnd();
-    Colors * pColor = pMainWnd->GetColors(); // get application colors
+    Colors * pColor = pMainWnd->GetColors();            // get application colors
     BOOL bDynamicUpdate = (pView->GetGraphUpdateMode() == DYNAMIC_UPDATE);
 
     // Finish fragmenting as needed.
     CProcessFragments * pFragments = (CProcessFragments *)pDoc->GetFragments();
-    pDoc->EnableBackgroundProcessing(FALSE); // Force fragmenter to finish
+    pDoc->EnableBackgroundProcessing(FALSE);            // Force fragmenter to finish
     short int nResult = LOWORD(pFragments->Process(this, pDoc)); // process data
     if (nResult == PROCESS_ERROR || nResult == PROCESS_NO_DATA || nResult == PROCESS_CANCELED)
     {
@@ -102,7 +100,7 @@ void CPlotSpectrum::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView)
 
     // Get spectrum object and spectrum plot parameters.
     CProcessSpectrum * pSpectrum = (CProcessSpectrum *)pDoc->GetSpectrum(); // get pointer to spectrum object
-    SpectrumParm * pSpectrumParms = pSpectrum->GetSpectrumParms();
+    CSpectrumParm * pSpectrumParms = pSpectrum->GetSpectrumParms();
 
     // Get pointer to raw waveform plot.
     int nWaveGraphIndex = pView->GetGraphIndexForIDD(IDD_RAWDATA);
@@ -115,7 +113,7 @@ void CPlotSpectrum::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView)
 
     // Set frame parameters.
     DWORD dwFrameStart, dwFrameSize;
-    SPECT_PROC_SELECT SpectraSelected;
+    SSpectProcSelect SpectraSelected;
     if (bDynamicUpdate)
     {
         // display LPC spectrum for current fragment as start cursor is dragged or plot is animating
@@ -423,7 +421,7 @@ void CPlotSpectrum::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView)
             {
                 for (unsigned short nFormant = 1; nFormant <= MAX_NUM_FORMANTS; nFormant++)
                 {
-                    FORMANT Formant = pSpectrum->GetFormant(nFormant);
+                    SFormant Formant = pSpectrum->GetFormant(nFormant);
 
                     if (Formant.Lpc.FrequencyInHertz == (float)UNDEFINED_DATA ||
                             Formant.Lpc.BandwidthInHertz == (float)UNDEFINED_DATA ||
@@ -480,7 +478,7 @@ void CPlotSpectrum::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView)
                 // Write formant info.
                 for (unsigned short nFormant = 1; nFormant <= MAX_NUM_FORMANTS; nFormant++)
                 {
-                    FORMANT Formant = pSpectrum->GetFormant(nFormant);
+                    SFormant Formant = pSpectrum->GetFormant(nFormant);
 
                     if (Formant.Lpc.FrequencyInHertz == (float)UNDEFINED_DATA ||
                             Formant.Lpc.BandwidthInHertz == (float)UNDEFINED_DATA ||

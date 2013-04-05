@@ -544,14 +544,14 @@ void CPrintOptionsDlg::OnLandscape()
 
 
 
-static const char * psz_printoptions = "printoptions";
-static const char * psz_fixedaspectr = "fixedaspectr";
-static const char * psz_usesmallfonts= "usesmallfonts";
-static const char * psz_islandscape  = "islandscape";
-static const char * psz_ishires      = "ishires";
+static LPCSTR psz_printoptions = "printoptions";
+static LPCSTR psz_fixedaspectr = "fixedaspectr";
+static LPCSTR psz_usesmallfonts= "usesmallfonts";
+static LPCSTR psz_islandscape  = "islandscape";
+static LPCSTR psz_ishires      = "ishires";
 
 
-void CPrintOptionsDlg::WriteProperties(Object_ostream & obs)
+void CPrintOptionsDlg::WriteProperties(CObjectOStream & obs)
 {
     obs.WriteBeginMarker(psz_printoptions);
     obs.WriteNewline();
@@ -571,7 +571,7 @@ void CPrintOptionsDlg::WriteProperties(Object_ostream & obs)
 }
 
 
-BOOL CPrintOptionsDlg::ReadProperties(Object_istream & obs)
+BOOL CPrintOptionsDlg::ReadProperties(CObjectIStream & obs)
 {
     if (!obs.bAtBackslash() || !obs.bReadBeginMarker(psz_printoptions))
     {

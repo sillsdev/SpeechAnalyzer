@@ -14,7 +14,6 @@
 #include "synthesis\mbrola\IpaSampa.h"
 #include "synthesis\mbrola\mbrola.h"
 
-
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #undef THIS_FILE
@@ -97,7 +96,6 @@ static void CurveFitPitch(CSaDoc * pDoc, double fSizeFactor, DWORD dwBeginWAV, D
     for (dwIndex = dwBegin; dwIndex < dwEnd; dwIndex++)
     {
         // get data for this pixel
-        //int nHere = pDoc->GetGrappl()->GetProcessedData(NULL, dwIndex, &bRes); // SDM 1.5Test11.0
         int nHere = pDoc->GetSmoothedPitch()->GetProcessedData(dwIndex, &bRes); // SDM 1.5Test11.0
         if (nHere > 0)
         {
@@ -223,7 +221,6 @@ BOOL CDlgMbrola::OnInitDialog()
 
 void CDlgMbrola::OnLeaveCellMbrolaGrid()
 {
-
     // validate cell contents
     switch (m_cGrid.GetRow())
     {
@@ -562,7 +559,7 @@ void CDlgMbrola::OnMbrolaConvert()
 }
 
 
-struct MBRolaVector
+struct SMBRolaVector
 {
     CString Sampa;
     double AvgPitch;
@@ -627,34 +624,34 @@ void CDlgMbrola::OnMbrolaSynthesize()
     }
 
     // write the format parameters into 'fmt ' chunk
-    FmtParm SynthesisFmtParm;
-    SynthesisFmtParm.wTag = 1;   // PCM
-    SynthesisFmtParm.wBitsPerSample = 16;
-    SynthesisFmtParm.wChannels = 1;
-    SynthesisFmtParm.wBlockAlign = 2;
-    SynthesisFmtParm.dwSamplesPerSec = 16000;
-    SynthesisFmtParm.dwAvgBytesPerSec = SynthesisFmtParm.wBlockAlign*SynthesisFmtParm.dwSamplesPerSec;
+    CFmtParm format;
+    format.wTag = 1;   // PCM
+    format.wBitsPerSample = 16;
+    format.wChannels = 1;
+    format.wBlockAlign = 2;
+    format.dwSamplesPerSec = 16000;
+    format.dwAvgBytesPerSec = format.wBlockAlign*format.dwSamplesPerSec;
 
-    long lError = mmioWrite(hmmioFile, (HPSTR)&SynthesisFmtParm.wTag, sizeof(WORD));
+    long lError = mmioWrite(hmmioFile, (HPSTR)&format.wTag, sizeof(WORD));
     if (lError != -1)
     {
-        lError = mmioWrite(hmmioFile, (HPSTR)&SynthesisFmtParm.wChannels, sizeof(WORD));
+        lError = mmioWrite(hmmioFile, (HPSTR)&format.wChannels, sizeof(WORD));
     }
     if (lError != -1)
     {
-        lError = mmioWrite(hmmioFile, (HPSTR)&SynthesisFmtParm.dwSamplesPerSec, sizeof(DWORD));
+        lError = mmioWrite(hmmioFile, (HPSTR)&format.dwSamplesPerSec, sizeof(DWORD));
     }
     if (lError != -1)
     {
-        lError = mmioWrite(hmmioFile, (HPSTR)&SynthesisFmtParm.dwAvgBytesPerSec, sizeof(DWORD));
+        lError = mmioWrite(hmmioFile, (HPSTR)&format.dwAvgBytesPerSec, sizeof(DWORD));
     }
     if (lError != -1)
     {
-        lError = mmioWrite(hmmioFile, (HPSTR)&SynthesisFmtParm.wBlockAlign, sizeof(WORD));
+        lError = mmioWrite(hmmioFile, (HPSTR)&format.wBlockAlign, sizeof(WORD));
     }
     if (lError != -1)
     {
-        lError = mmioWrite(hmmioFile, (HPSTR)&SynthesisFmtParm.wBitsPerSample, sizeof(WORD));
+        lError = mmioWrite(hmmioFile, (HPSTR)&format.wBitsPerSample, sizeof(WORD));
     }
     if (lError == -1)
     {
@@ -687,7 +684,7 @@ void CDlgMbrola::OnMbrolaSynthesize()
 
     for (int i=columnFirst; i<m_cGrid.GetCols(0); i++)
     {
-        MBRolaVector thisColumn;
+        SMBRolaVector thisColumn;
         TCHAR * ptr; // unused result from _tcstod()
 
         thisColumn.Sampa = m_cOutputGrid.GetTextMatrix(rowSampa,i);

@@ -1,12 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ClassDiagram MajorVersion="1" MinorVersion="1">
-  <Class Name="CExportBasicDialog" Collapsed="true">
-    <Position X="2.75" Y="2" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>aAAAKg0IAIIMAKAoBDasQUABCAAAAADA4kBIAAgEoMY=</HashCode>
-      <FileName>ExportBasicDialog.h</FileName>
-    </TypeIdentifier>
-  </Class>
   <Class Name="CDialog" Collapsed="true">
     <Position X="3.75" Y="0.5" Width="1.5" />
     <TypeIdentifier>
@@ -14,32 +7,32 @@
       <FileName>c:\program files (x86)\microsoft visual studio 10.0\vc\atlmfc\include\afxwin.h</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="CExportSFM" Collapsed="true">
-    <Position X="0.5" Y="3.5" Width="1.5" />
+  <Class Name="CDlgExportSFM" Collapsed="true">
+    <Position X="0.5" Y="2" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAACAAAAA=</HashCode>
-      <FileName>SA_Exprt.h</FileName>
+      <HashCode>4AAAKg0IAIIOAKA4FDasQUABGACCAADA4kBIACgE5MY=</HashCode>
+      <FileName>DlgExportSFM.h</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="CExportFW" Collapsed="true">
-    <Position X="2.75" Y="3.5" Width="1.5" />
+  <Class Name="CDlgExportFW" Collapsed="true">
+    <Position X="2.75" Y="2" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AIAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>SA_Exprt.h</FileName>
+      <HashCode>YAClCGEIAABAgAECcJCgAAAANACAAIQEgEAAAAAAAIA=</HashCode>
+      <FileName>DlgExportFW.h</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="CExportXML" Collapsed="true">
-    <Position X="5" Y="3.5" Width="1.5" />
+  <Class Name="CDlgExportXML" Collapsed="true">
+    <Position X="5" Y="2" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AgAAAAIAAAAAAACAAAAABAABAAAAAAAAAAAAgAAAAAA=</HashCode>
-      <FileName>SA_Exprt.h</FileName>
+      <HashCode>YgAAKw8IAIIMAKCoFDasRUABGACAAADA4kBIAAgEoMY=</HashCode>
+      <FileName>DlgExportXML.h</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="CExportTable" Collapsed="true">
+  <Class Name="CDlgExportTable" Collapsed="true">
     <Position X="7.25" Y="2" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>IAARKAEAAIAIBEAABDDFAIABAAQAAAgABADQAA0QoEI=</HashCode>
-      <FileName>SA_Exprt.h</FileName>
+      <HashCode>IAARKAEAAIQIBEAABDDFAIABEAQAAAAABADQAA0QoEI=</HashCode>
+      <FileName>DlgExportTable.h</FileName>
     </TypeIdentifier>
   </Class>
   <Font Name="Segoe UI" Size="9" />

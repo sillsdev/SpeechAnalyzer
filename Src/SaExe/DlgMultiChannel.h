@@ -21,23 +21,22 @@ class CDlgMultiChannel : public CDialog
 
     DECLARE_DYNAMIC(CDlgMultiChannel)
 public:
-    CDlgMultiChannel(int nChannels, bool allowCombine);
+    CDlgMultiChannel(int nChannels);
     ~CDlgMultiChannel();
+
+    int m_nChannel;
 
     enum { IDD = IDD_MULTICHANNEL };
 
 protected:
     virtual void DoDataExchange(CDataExchange * pDX);
     virtual BOOL OnInitDialog();
+
+	CComboBox m_MultiChannelCombo;
+    int m_nChannels;
+
     DECLARE_MESSAGE_MAP()
 
-protected:
-    CComboBox m_MultiChannelCombo;
-    int m_nChannels;
-    bool m_bAllowCombine;
-
-public:
-    int m_nChannel;
 };
 
 #endif

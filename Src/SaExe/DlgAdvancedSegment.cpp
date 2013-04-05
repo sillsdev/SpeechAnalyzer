@@ -97,7 +97,7 @@ BOOL CDlgAdvancedSegment::OnInitDialog()
     // get segment parameters data
     CMainFrame * pMainFrame = (CMainFrame *)AfxGetMainWnd();
     ASSERT(pMainFrame->IsKindOf(RUNTIME_CLASS(CMainFrame)));
-    SegmentParm * pSegmentParm = pMainFrame->GetSegmentParm();
+    CSegmentParm * pSegmentParm = pMainFrame->GetSegmentParm();
     m_nSegmentWidth = (int)(pSegmentParm->fSegmentWidth * (float)1000 + 0.5);
     m_nChMinThreshold = pSegmentParm->nChThreshold;
     m_nZCMinThreshold = pSegmentParm->nZCThreshold;
@@ -115,7 +115,7 @@ void CDlgAdvancedSegment::Apply()
     // save new data
     CMainFrame * pMainFrame = (CMainFrame *)AfxGetMainWnd();
     ASSERT(pMainFrame->IsKindOf(RUNTIME_CLASS(CMainFrame)));
-    SegmentParm * pSegmentParm = pMainFrame->GetSegmentParm();
+    CSegmentParm * pSegmentParm = pMainFrame->GetSegmentParm();
     pSegmentParm->fSegmentWidth = (float)m_nSegmentWidth / (float)1000;
     pSegmentParm->nChThreshold = m_nChMinThreshold;
     pSegmentParm->nZCThreshold = m_nZCMinThreshold;

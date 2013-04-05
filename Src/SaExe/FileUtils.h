@@ -15,6 +15,7 @@ extern bool CreateFolder(LPCTSTR path);
 extern void AppendDirSep(LPTSTR path, size_t size);
 extern void AppendDirSep(wstring & ref);
 extern int GetSaveAsFilename(LPCTSTR title, LPCTSTR filter, LPCTSTR extension, LPTSTR path, wstring & result);
+extern DWORD GetFileSize(LPCTSTR path);
 extern bool EndsWith(LPCTSTR path, LPCTSTR extension);
 
 #endif

@@ -26,7 +26,7 @@ class CProcessWavelet : public CProcess
 private:
     BOOL data_status;                           // Is the data ready for display?
 
-    WaveletParm   m_WaveletParm;  // wavelet parameters
+    CWaveletParm   m_WaveletParm;  // wavelet parameters
 
 
 

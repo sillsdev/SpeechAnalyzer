@@ -17,7 +17,7 @@
 /////////////////////////////////////////////////////////////////////////////
 #ifndef _FILE_INFORMATION_H
 
-#include "CSaString.h"
+#include "SaString.h"
 #include "sa_dlwnd.h"
 #include "resource.h"
 

@@ -150,7 +150,7 @@ wstring GenerateWordSplitName(CGlossSegment * g, CSaView * pView, EWordFilenameC
 *
 * @return returns an empty string if an error has occurred
 */
-bool GeneratePhraseSplitName(Annotations type, CMusicPhraseSegment * seg, CSaView * pView, EPhraseFilenameConvention convention, int index, wstring & result)
+bool GeneratePhraseSplitName(EAnnotation type, CMusicPhraseSegment * seg, CSaView * pView, EPhraseFilenameConvention convention, int index, wstring & result)
 {
 
     wstring gloss(L"");
@@ -465,7 +465,7 @@ bool ValidateWordFilenames(EWordFilenameConvention convention, BOOL skipEmptyGlo
 * walk through the gloss and reference transcriptions to see if everything
 * is in order
 */
-bool ValidatePhraseFilenames(Annotations type, EPhraseFilenameConvention convention)
+bool ValidatePhraseFilenames(EAnnotation type, EPhraseFilenameConvention convention)
 {
 
     CSaDoc * pDoc = (CSaDoc *)((CMainFrame *) AfxGetMainWnd())->GetCurrSaView()->GetDocument();
@@ -476,7 +476,7 @@ bool ValidatePhraseFilenames(Annotations type, EPhraseFilenameConvention convent
 
     // depending on the convention
     // loop through the annotation segments
-    DWORD lastOffset = -1;
+    int lastOffset = -1;
     int nLoop = s->GetOffsetSize();
     for (int i=0; i<nLoop; i++)
     {
@@ -610,7 +610,7 @@ int ExportWordSegment(CGlossSegment * seg, int index, LPCTSTR filename, BOOL ski
 /**
 * export words for the given file
 */
-bool ExportPhraseSegments(Annotations type, EPhraseFilenameConvention convention, wstring & path, int & dataCount, int & wavCount)
+bool ExportPhraseSegments(EAnnotation type, EPhraseFilenameConvention convention, wstring & path, int & dataCount, int & wavCount)
 {
 
     CSaDoc * pDoc = (CSaDoc *)((CMainFrame *) AfxGetMainWnd())->GetCurrSaView()->GetDocument();
@@ -647,7 +647,7 @@ bool ExportPhraseSegments(Annotations type, EPhraseFilenameConvention convention
 * return 0 on no errors
 * return 1 on no more data
 */
-int ComposePhraseSegmentFilename(Annotations type, CMusicPhraseSegment * seg, int index, EPhraseFilenameConvention convention, LPCTSTR path, wstring & out)
+int ComposePhraseSegmentFilename(EAnnotation type, CMusicPhraseSegment * seg, int index, EPhraseFilenameConvention convention, LPCTSTR path, wstring & out)
 {
 
     CSaDoc * pDoc = (CSaDoc *)((CMainFrame *) AfxGetMainWnd())->GetCurrSaView()->GetDocument();

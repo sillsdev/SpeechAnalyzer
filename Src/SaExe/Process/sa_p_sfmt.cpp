@@ -119,9 +119,8 @@ long CProcessSpectroFormants::ExtractFormants(ISaDoc * pDoc, DWORD dwWaveDataSta
     {
         return MAKELONG(--nLevel, nProgress);
     }
-    FmtParm * pFmtParm = pDoc->GetFmtParm(); // get sa parameters format member data
-    WORD nSmpSize = (WORD)(pFmtParm->wBlockAlign / pFmtParm->wChannels);
 
+    DWORD nSmpSize = pDoc->GetSampleSize();
     if (!StartProcess(this, IDS_STATTXT_PROCESSFMT))
     {
         EndProcess(); // end data processing
@@ -154,7 +153,7 @@ long CProcessSpectroFormants::ExtractFormants(ISaDoc * pDoc, DWORD dwWaveDataSta
                 DWORD dwLastFragment = pFragments->GetFragmentIndex((dwWaveDataStart+dwWaveDataLength-nSmpSize)/nSmpSize);
 
                 CProcessFormants * pFormants = (CProcessFormants *)pDoc->GetFormants();
-                SPECT_PROC_SELECT SpectraSelected;
+                SSpectProcSelect SpectraSelected;
                 SpectraSelected.bCepstralSpectrum = FALSE;    // turn off to reduce processing time
                 SpectraSelected.bLpcSpectrum = TRUE;          // use Lpc method for estimating formants
                 BOOL bFormantTracking = TRUE;
@@ -197,7 +196,7 @@ long CProcessSpectroFormants::ExtractFormants(ISaDoc * pDoc, DWORD dwWaveDataSta
                     FRAG_PARMS FragmentParmInfo = pFragments->GetFragmentParms(dwFragmentIndex);  // get fragment parameters
                     DWORD dwFrameStartIndex, dwFrameEndIndex;
 
-                    dwFrameStartIndex = DWORD(FragmentParmInfo.dwOffset+FragmentParmInfo.wLength/2.-0.005*pFmtParm->dwSamplesPerSec);
+                    dwFrameStartIndex = DWORD(FragmentParmInfo.dwOffset+FragmentParmInfo.wLength/2.-0.005*pDoc->GetSamplesPerSec());
                     if (dwFrameStartIndex == UNDEFINED_OFFSET || dwFrameStartIndex > FragmentParmInfo.dwOffset + FragmentParmInfo.wLength)
                     {
                         dwFrameStartIndex = 0;
@@ -207,7 +206,7 @@ long CProcessSpectroFormants::ExtractFormants(ISaDoc * pDoc, DWORD dwWaveDataSta
                         dwFrameStartIndex = FragmentParmInfo.dwOffset;
                     }
 
-                    dwFrameEndIndex = DWORD(FragmentParmInfo.dwOffset+FragmentParmInfo.wLength/2.+0.005*pFmtParm->dwSamplesPerSec);
+                    dwFrameEndIndex = DWORD(FragmentParmInfo.dwOffset+FragmentParmInfo.wLength/2.+0.005*pDoc->GetSamplesPerSec());
                     if (dwFrameEndIndex == UNDEFINED_OFFSET || dwFrameEndIndex < FragmentParmInfo.dwOffset)
                     {
                         dwFrameEndIndex = pDoc->GetDataSize()/nSmpSize;
@@ -218,13 +217,13 @@ long CProcessSpectroFormants::ExtractFormants(ISaDoc * pDoc, DWORD dwWaveDataSta
                     }
 
                     BOOL bValidCount;
-                    short nZeroCrossCount = (short)(pZeroCrossCount->GetProcessedData(dwFrameStartIndex/CALCULATION_INTERVAL(pFmtParm->dwSamplesPerSec), &bValidCount));
+                    short nZeroCrossCount = (short)(pZeroCrossCount->GetProcessedData(dwFrameStartIndex/CALCULATION_INTERVAL(pDoc->GetSamplesPerSec()), &bValidCount));
                     double fZeroCrossRate;
                     if (bValidCount)
                     {
                         // calculate zero crossing rate
-                        UINT nCalcDataLength = CALCULATION_DATALENGTH(pFmtParm->dwSamplesPerSec) * pFmtParm->dwSamplesPerSec/22050;  //!!based on min pitch?
-                        fZeroCrossRate = (double)nZeroCrossCount * (double)pFmtParm->dwSamplesPerSec / (double)nCalcDataLength;
+                        UINT nCalcDataLength = CALCULATION_DATALENGTH(pDoc->GetSamplesPerSec()) * pDoc->GetSamplesPerSec()/22050;  //!!based on min pitch?
+                        fZeroCrossRate = (double)nZeroCrossCount * (double)pDoc->GetSamplesPerSec() / (double)nCalcDataLength;
                         bFricative = (fZeroCrossRate >= FRICTION_THRESHOLD);  // is a fricative if at or above threshold
                         //    bFricative = FALSE;  //!! REMOVE THIS ONCE FRICATIVE THRESHOLD IS ACCURATELY DETERMINED
                     }
@@ -270,7 +269,7 @@ long CProcessSpectroFormants::ExtractFormants(ISaDoc * pDoc, DWORD dwWaveDataSta
                             {
                                 // update formant frequencies
                                 FORMANT_FREQ FormantPwr;
-                                FORMANT_FRAME * pFormantFrame = pFormants->GetFormantFrame(dwFormantFrame++);
+                                SFormantFrame * pFormantFrame = pFormants->GetFormantFrame(dwFormantFrame++);
                                 float MaxPowerInDecibels = FLT_MAX_NEG;
                                 for (USHORT nFormant = 1; nFormant <= MAX_NUM_FORMANTS; nFormant++)
                                 {
@@ -403,7 +402,7 @@ long CProcessSpectroFormants::ExtractFormants(ISaDoc * pDoc, DWORD dwWaveDataSta
                         for (DWORD dwFormantIndex = dwVoicedFragStart; dwFormantIndex < dwFragmentIndex; dwFormantIndex++)
                         {
                             FORMANT_FREQ FormantPwr;
-                            FORMANT_FRAME * pFormantFrame = pFormants->GetFormantFrame(dwFormantFrame++);
+                            SFormantFrame * pFormantFrame = pFormants->GetFormantFrame(dwFormantFrame++);
                             //                FILE *hDump = fopen("formants.txt", "w");
                             float MaxPowerInDecibels = FLT_MAX_NEG;
                             for (USHORT nFormant = 0; nFormant <= MAX_NUM_FORMANTS; nFormant++)

@@ -199,7 +199,7 @@
 *          :                                                               *
 *   SPGM_SETTINGS SpgmSetting;                                             *
 *   SIG_PARMS Signal;                                                      *
-*   dspError_t dspError_t;                                                               *
+*   dspError_t dspError_t;                                                 *
 *                                                                          *
 *   SpgmSetting.LwrFreq = (float)MinDisplayFrequency;                      *
 *   SpgmSetting.UprFreq = (float)MaxDisplayFrequency;                      *
@@ -207,9 +207,9 @@
 *   if (SpecResolution == FINE) SpgmSetting.Bandwidth = NARROW_BW;         *
 *   else SpgmSetting.Bandwidth = WIDE_BW;                                  *
 *   SpgmSetting.SpectCnt = nPlotXDivisions;                                *
-*   SpgmSetting.PreEmphSw = true;                                            *
-*   if (FormantTracking == YES) SpgmSetting.FmntTrackSw = true             *
-*   else SpgmSetting.FmntTrackSw = false;                                  *
+*   SpgmSetting.preEmphSw = true;                                          *
+*   if (FormantTracking == YES) SpgmSetting.fmntTrackSw                    *
+*   else SpgmSetting.fmntTrackSw = false;                                  *
 *   SpgmSetting.SigBlkOffset = SpeechBlockStart/SampleByteSize;            *
 *   SpgmSetting.SigBlkLength = SpeechBlockByteSize/SampleByteSize;         *
 *   SpgmSetting.SpectBatchLength = 50;                                     *
@@ -218,7 +218,7 @@
 *      {                                                                   *
 *       Signal.Start = pSpeechSamples;                                     *
 *       Signal.Length = SpeechByteSize/SampleByteSize;                     *
-*       Signal.SmpRate = (uint16)nSamplesPerSecond;                        *
+*       Signal.SmpRate = nSamplesPerSecond;                                *
 *       if (SampleByteSize == 1) Signal.SmpDataFmt = PCM_UBYTE;            *
 *       else Signal.SmpDataFmt = PCM_2SSHORT;                              *
 *                                                                          *
@@ -372,34 +372,34 @@ dspError_t Spectrogram::CreateObject(Spectrogram ** Spgm, SPGM_SETTINGS SpgmSett
     // Validate requested spectrogram settings and signal parameters.
     if (!Spgm)
     {
-        return(Code(INVALID_PARM_PTR));    //address of pointer to spectrogram object
+        return Code(INVALID_PARM_PTR);							//address of pointer to spectrogram object
     }
     //  must not be NULL
     *Spgm = NULL;
-    dspError_t dspError_t = ValidateSettings(SpgmSetting);    //check settings
+    dspError_t dspError_t = ValidateSettings(SpgmSetting);		//check settings
     if (dspError_t)
     {
-        return(dspError_t);
+        return dspError_t;
     }
-    dspError_t = ValidateSignalParms(Signal);          //check signal parameters
+    dspError_t = ValidateSignalParms(Signal);					//check signal parameters
     if (dspError_t)
     {
-        return(dspError_t);
+        return dspError_t;
     }
-    if (SpgmSetting.UprFreq > (float)Signal.SmpRate/2.F)   //upper frequency requested for
+    if (SpgmSetting.UprFreq > (float)Signal.SmpRate/2.F)		//upper frequency requested for
     {
-        return(Code(INVALID_FREQ));    //  spectrogram must not be
+        return Code(INVALID_FREQ);								//  spectrogram must not be
     }
+
     //  greater than signal bandwidth
-    if (SpgmSetting.SigBlkOffset + SpgmSetting.SigBlkLength > Signal.Length)
+    if ((SpgmSetting.SigBlkOffset + SpgmSetting.SigBlkLength) > Signal.Length)
     {
-        return(Code(INVALID_BLOCK_LEN));    //block to calculate must not go beyond end of signal data
+        return Code(INVALID_BLOCK_LEN);    //block to calculate must not go beyond end of signal data
     }
     if (SpgmSetting.SpectCnt > Signal.Length)
     {
-        return(Code(INVALID_NUM_SPECTRA));    //number of spectra must not exceed signal length
+        return Code(INVALID_NUM_SPECTRA);    //number of spectra must not exceed signal length
     }
-
 
     // Calculate window for frame data from specified bandwidth.
     DspWin Window = DspWin::FromBandwidth(SpgmSetting.Bandwidth,Signal.SmpRate, SpgmSetting.windowType);
@@ -412,32 +412,18 @@ dspError_t Spectrogram::CreateObject(Spectrogram ** Spgm, SPGM_SETTINGS SpgmSett
     uint8 * SpgmData = (uint8 *)malloc(Size * sizeof(uint8));
     if (!SpgmData)
     {
-        return(Code(OUT_OF_MEMORY));
+        return Code(OUT_OF_MEMORY);
     }
 
     // Allocate memory for formant data.
-    FORMANT_FREQ * FmntData = (FORMANT_FREQ *)malloc((uint16)SpgmSetting.SpectCnt *
-                              sizeof(FORMANT_FREQ));
+    FORMANT_FREQ * FmntData = (FORMANT_FREQ *)malloc((uint16)SpgmSetting.SpectCnt * sizeof(FORMANT_FREQ));
     if (!FmntData)
     {
         free(SpgmData);
-        return(Code(OUT_OF_MEMORY));
+        return Code(OUT_OF_MEMORY);
     }
 
-#ifdef SPECTGRM_SCREEN
-    // Allocate buffer for transferring batch of spectra to screen.
-    Size = (int32)(SpgmSetting.SpectBatchLength + (SpgmSetting.SpectBatchLength % 2)) *
-           (int32)SpgmSetting.FreqCnt;
-    uint8 * ScreenData = new uint8[Size];
-    if (!ScreenData)
-    {
-        free(FmntData);
-        free(SpgmData);
-        return(Code(OUT_OF_MEMORY));
-    }
-#else
     uint8 * ScreenData = NULL;
-#endif
 
     // Construct spectrogram object.
     *Spgm = new Spectrogram(SpgmSetting, SpgmData, FmntData, Window, NBWindow, Signal, ScreenData);
@@ -447,10 +433,10 @@ dspError_t Spectrogram::CreateObject(Spectrogram ** Spgm, SPGM_SETTINGS SpgmSett
         delete [] ScreenData;
         free(FmntData);
         free(SpgmData);
-        return(Code(OUT_OF_MEMORY));
+        return Code(OUT_OF_MEMORY);
     }
 
-    return(DONE);
+    return DONE;
 }
 
 
@@ -486,50 +472,50 @@ dspError_t Spectrogram::ValidateSignalParms(SIG_PARMS Signal)
 ////////////////////////////////////////////////////////////////////////////////////////
 dspError_t Spectrogram::ValidateSettings(SPGM_SETTINGS Setting)
 {
-    if (Setting.LwrFreq > Setting.UprFreq)   //lower frequency of spectra must be less than
+	//lower frequency of spectra must be less than upper
+    if (Setting.LwrFreq > Setting.UprFreq)   
     {
-        return(Code(INVALID_FREQ));    //  upper
-    }
-    if (!Setting.FreqCnt)
+        return Code(INVALID_FREQ);
+	}
+
+	//requested number of points in spectra must not be zero
+    if (Setting.FreqCnt==0)
     {
-        return(Code(INVALID_SPGM_HGT));    //requested number of points in
+        return Code(INVALID_SPGM_HGT);
     }
-    //  spectra must not be zero
-    if (!Setting.Bandwidth || Setting.Bandwidth > Setting.UprFreq)
+
+	//requested spectra resolution must not be zero or greater than signal bandwidth
+    if ((Setting.Bandwidth==0) || (Setting.Bandwidth > Setting.UprFreq))
     {
-        return(Code(INVALID_BANDWIDTH));    //requested spectra resolution
+        return Code(INVALID_BANDWIDTH);
     }
-    //  must not be zero or greater
-    //  than signal bandwidth
-    if (Setting.PreEmphSw != false && Setting.PreEmphSw != true)   //requested pre-emphasis can
+
+	//can't exceed limit
+    if ((Setting.fmntTrackSw) &&
+        ((Setting.NumFmnt > MAX_NUM_FORMANTS) || (Setting.NumFmnt < 0)))   
     {
-        return(Code(INVALID_PREEMPH_OPTION));    //  only be false or true
+        return Code(INVALID_FMNTTRACK_OPTION);
     }
-    if (Setting.FmntTrackSw != false && Setting.FmntTrackSw != true)   //requested formant tracking
+
+	//requested number of spectra to generate must not be zero
+    if (Setting.SpectCnt==0)
     {
-        return(Code(INVALID_FMNTTRACK_OPTION));    //  can only be false or true
+        return Code(INVALID_NUM_SPECTRA);    
     }
-    if (Setting.FmntTrackSw == true &&
-            (Setting.NumFmnt > MAX_NUM_FORMANTS || Setting.NumFmnt < 0))   //can't exceed limit
-    {
-        return(Code(INVALID_FMNTTRACK_OPTION));
-    }
-    if (!Setting.SpectCnt)
-    {
-        return(Code(INVALID_NUM_SPECTRA));    //requested number of spectra
-    }
-    //to generate must not be zero
+
+	// batch size to process must not be zero or greater than number of spectra
     if (!Setting.SpectBatchLength || Setting.SpectBatchLength > Setting.SpectCnt)
     {
-        return(Code(INVALID_BATCH_SIZE));    //batch size to process must not be zero or greater
+        return Code(INVALID_BATCH_SIZE);    
     }
-    //  than number of spectra
+
+	// block size of spectra to display must not be zero
     if (!Setting.SigBlkLength)
     {
-        return(Code(INVALID_BLOCK_LEN));    //block size of spectra to
+        return Code(INVALID_BLOCK_LEN);    
     }
-    //  display must not be zero
-    return(DONE);
+
+    return DONE;
 }
 
 
@@ -545,10 +531,9 @@ Spectrogram::Spectrogram(SPGM_SETTINGS SpgmSetting, uint8 * SpgmData, FORMANT_FR
     m_SpectRes = (float)Window.Bandwidth();
     m_LwrFreq = SpgmSetting.LwrFreq;
     m_UprFreq = SpgmSetting.UprFreq;
-    m_FreqScale = (SpgmSetting.UprFreq - SpgmSetting.LwrFreq)/
-                  (float)(SpgmSetting.FreqCnt - 1);
-    m_PreEmphSw = SpgmSetting.PreEmphSw;
-    m_FmntTrackSw = SpgmSetting.FmntTrackSw;
+    m_FreqScale = (SpgmSetting.UprFreq - SpgmSetting.LwrFreq)/ (float)(SpgmSetting.FreqCnt - 1);
+    m_PreEmphSw = SpgmSetting.preEmphSw;
+    m_FmntTrackSw = SpgmSetting.fmntTrackSw;
     m_NumFmnt = SpgmSetting.NumFmnt;
     m_SigStart = Signal.Start;
     m_SigLength = Signal.Length;
@@ -799,7 +784,7 @@ dspError_t Spectrogram::Generate(void)
 
     // Superimpose formant tracks if feature is enabled.
 
-    if (FmntTrackSw == true)
+    if (fmntTrackSw)
     {
     FORMANT_FREQ * Frame = (FORMANT_FREQ *)FmntData + SpectToProc;
     for (i = 0; i < NumSpect; i++)

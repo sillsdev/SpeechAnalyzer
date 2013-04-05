@@ -73,8 +73,7 @@ long CProcessCustomPitch::Process(void * pCaller, ISaDoc * pDoc, int nProgress,
     {
         return Exit(PROCESS_NO_DATA);    // error, no valid data
     }
-    FmtParm * pFmtParm = pDoc->GetFmtParm(); // get sa parameters format member data
-    const UttParm * pUttParm = pDoc->GetUttParm(); // get sa parameters utterance member data
+    const CUttParm * pUttParm = pDoc->GetUttParm(); // get sa parameters utterance member data
 
     if (nLevel < 0)   // previous processing error
     {
@@ -94,8 +93,7 @@ long CProcessCustomPitch::Process(void * pCaller, ISaDoc * pDoc, int nProgress,
         return MAKELONG(PROCESS_ERROR, nProgress);
     }
     // if file has not been created
-    Boolean ok = TRUE;
-    if (!GetProcessFileName()[0])
+    if (wcslen(GetProcessFileName())==0)
     {
         // create the temporary grappl pitch file
         if (!CreateTempFile(_T("CPI")))   // creating error
@@ -104,11 +102,11 @@ long CProcessCustomPitch::Process(void * pCaller, ISaDoc * pDoc, int nProgress,
             SetDataInvalid();
             return MAKELONG(PROCESS_ERROR, nProgress);
         }
-        // initialise parameters
+        // initialize parameters
         m_dwDataPos = 0;
         m_nMinValue = SHRT_MAX;
-        m_CalcParm.sampfreq = (int32)pFmtParm->dwSamplesPerSec;
-        WORD wSmpSize = WORD(pFmtParm->wBlockAlign/pFmtParm->wChannels);
+        m_CalcParm.sampfreq = (int32)pDoc->GetSamplesPerSec();
+        DWORD wSmpSize = pDoc->GetSampleSize();
         m_CalcParm.eightbit = (int16)(wSmpSize == 1);
         m_CalcParm.mode = Grappl_fullpitch;;
         m_CalcParm.smoothfreq = 1000L;
@@ -117,7 +115,7 @@ long CProcessCustomPitch::Process(void * pCaller, ISaDoc * pDoc, int nProgress,
         m_CalcParm.maxinterp_pc10 = 300;
         m_CalcParm.minpitch = int16(pUttParm->nMinFreq);
         m_CalcParm.maxpitch = int16(pUttParm->nMaxFreq);
-        m_CalcParm.minvoiced16 = int16((pUttParm->TruncatedCritLoud(pFmtParm->wBitsPerSample)*16+8)/PRECISION_MULTIPLIER);
+        m_CalcParm.minvoiced16 = int16((pUttParm->TruncatedCritLoud(pDoc->GetBitsPerSample())*16+8)/PRECISION_MULTIPLIER);
         m_CalcParm.maxchange_pc10 = int16(pUttParm->nMaxChange * 10);
         m_CalcParm.minsigpoints = int16(pUttParm->nMinGroup);
         m_CalcParm.reslag = 0;
@@ -133,7 +131,10 @@ long CProcessCustomPitch::Process(void * pCaller, ISaDoc * pDoc, int nProgress,
             return Exit(PROCESS_ERROR); // error, buffer too small
         }
         // init grappl
-        ok = grapplInit(m_lpBuffer, &m_CalcParm);
+        if (!grapplInit(m_lpBuffer, &m_CalcParm))
+		{
+			return Exit(PROCESS_ERROR);
+		}
     }
     else
     {
@@ -145,17 +146,18 @@ long CProcessCustomPitch::Process(void * pCaller, ISaDoc * pDoc, int nProgress,
             return MAKELONG(PROCESS_ERROR, nProgress);
         }
     }
-    int16 alldone = FALSE;
-    int16 nomore = FALSE;
+    bool alldone = false;
+    bool nomore = false;
     // get block size
-    DWORD dwBlockSize = 0x10000 - pFmtParm->wBlockAlign; // 64k - 1
+    DWORD dwBlockSize = 0x10000 - pDoc->GetBlockAlign(true); // 64k - 1
     if (GetBufferSize() < dwBlockSize)
     {
         dwBlockSize = GetBufferSize();
     }
+
     HPSTR pBlockStart;
     // start processing
-    while (ok && (m_dwDataPos < dwDataSize))
+    while (m_dwDataPos < dwDataSize)
     {
         // get custom data block
         pBlockStart = pDoc->GetWaveData(m_dwDataPos, TRUE); // get pointer to data block
@@ -170,10 +172,11 @@ long CProcessCustomPitch::Process(void * pCaller, ISaDoc * pDoc, int nProgress,
             nomore = TRUE;
         }
         // set grappl input buffer
-        ok = grapplSetInbuff((pGrappl)m_lpBuffer, (pGrappl)pBlockStart, (WORD)(dwBlockSize / pFmtParm->wBlockAlign), nomore);
-        if (!ok)
+		uint16 length = (WORD)(dwBlockSize / pDoc->GetBlockAlign(true));
+		TRACE("grappl length %d\n",length);
+        if (!grapplSetInbuff((pGrappl)m_lpBuffer, (pGrappl)pBlockStart, length, nomore))
         {
-            break;
+			return Exit(PROCESS_ERROR);
         }
         // process
         pGrappl_res pResults;
@@ -227,10 +230,7 @@ long CProcessCustomPitch::Process(void * pCaller, ISaDoc * pDoc, int nProgress,
             break;
         }
     }
-    if (!ok)
-    {
-        return Exit(PROCESS_ERROR);    // error, processing failed
-    }
+
     // calculate the actual progress
     nProgress = nProgress + (int)(100 / nLevel);
     // close the temporary file and read the status

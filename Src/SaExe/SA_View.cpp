@@ -143,12 +143,8 @@
 #include "sa_graph.h"
 #include "sa_g_raw.h"
 #include "sa_g_rec.h"
-#include "dsp\dspTypes.h"
-#include "Process\Process.h"
 #include "fileInformation.h"
-#include "playerRecorder.h"
 #include "graphsMagnify.h"
-
 #include "sa_doc.h"
 #include "sa.h"
 #include "sa_wbch.h"
@@ -169,14 +165,17 @@
 #include "Import.h"
 #include "DlgExportSFM.h"
 #include "DlgExportTable.h"
+#include "DlgRecorder.h"
+#include "dsp\dspTypes.h"
+#include "Process\Process.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE
 static char BASED_CODE THIS_FILE[] = __FILE__;
 #endif
 
-Object_istream * CSaView::s_pobsAutoload = NULL;
-static const char * psz_sagraph      = "sagraph";
+CObjectIStream * CSaView::s_pobsAutoload = NULL;
+static LPCSTR psz_sagraph      = "sagraph";
 
 
 /***************************************************************************/
@@ -186,7 +185,7 @@ static const char * psz_sagraph      = "sagraph";
 //                  which was too bloated.
 /***************************************************************************/
 void CSaView::CreateOneGraphStepOne(UINT nID, CGraphWnd ** pGraph, CREATE_HOW how,
-                                    CGraphWnd * pFromGraph, Object_istream * pObs)
+                                    CGraphWnd * pFromGraph, CObjectIStream * pObs)
 {
     if (nID != ID_GRAPHS_OVERLAY)
     {
@@ -489,7 +488,7 @@ void CSaView::OnPlaybackSlow()
         Player_Slow = 25
     };
 
-    FnKeys * pKeys = ((CMainFrame *)pViewMainFrame)->GetFnKeys(0);
+    CFnKeys * pKeys = ((CMainFrame *)pViewMainFrame)->GetFnKeys(0);
     pKeys->bRepeat[Player_Slow] = FALSE;     // TRUE, if playback repeat enabled
     pKeys->nDelay[Player_Slow] = 100;        // repeat delay time in ms
     pKeys->nMode[Player_Slow] = ID_PLAYBACK_CURSORS;       // replay mode
@@ -1954,8 +1953,7 @@ void CSaView::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar * pScrollBar)
             break;
         }
         // for 16 bit data value must be even
-        FmtParm * pFmtParm = pDoc->GetFmtParm();
-        if (pFmtParm->wBlockAlign > 1)
+        if (pDoc->Is16Bit())
         {
             m_dwDataPosition &= ~1;
         }
@@ -2312,13 +2310,11 @@ LRESULT CSaView::OnScrollZoomChanged(WPARAM wParam, LPARAM)
 /***************************************************************************/
 LRESULT CSaView::OnRecorder(WPARAM /*wParam*/, LPARAM /*lParam*/)
 {
-    CDlgRecorder * pDlgRecorder = new CDlgRecorder;
-
-    if (pDlgRecorder->DoModal() != IDOK)
+    CDlgRecorder dlg;
+    if (dlg.DoModal() != IDOK)
     {
         SendMessage(WM_COMMAND, ID_FILE_CLOSE, 0L);    // close the file
     }
-    delete pDlgRecorder;
     return 0;
 }
 
@@ -3410,7 +3406,6 @@ void CSaView::OnEditSelectWaveform()
 /***************************************************************************/
 void CSaView::OnUpdateEditSelectWaveform(CCmdUI * pCmdUI)
 {
-    //pCmdUI->Enable(!GetDocument()->IsMultiChannel());
     pCmdUI->Enable(true);
 }
 
@@ -3805,7 +3800,7 @@ CSaView * CSaView::GetViewActiveChild(CMDIChildWnd * pwnd)
 
 /***************************************************************************/
 /***************************************************************************/
-void CSaView::s_SetObjectStream(Object_istream & obs)
+void CSaView::s_SetObjectStream(CObjectIStream & obs)
 {
     ASSERT(!s_pobsAutoload);
     s_pobsAutoload = &obs;
@@ -3819,27 +3814,27 @@ void CSaView::s_ClearObjectStream()
 }
 
 /***************************************************************************/
-static const char * psz_saview             = "saview";
-static const char * psz_placement          = "placement";
-static const char * psz_z                  = "z";
-static const char * psz_legendall          = "legendall";
-static const char * psz_legendnone         = "legendnone";
-static const char * psz_xscaleall          = "xscaleall";
-static const char * psz_xscalenone         = "xscalenone";
-static const char * psz_boundariesall      = "boundariesall";
-static const char * psz_boundariesnone     = "boundariesnone";
-static const char * psz_drawstyleline      = "drawstyleline";
-static const char * psz_updateboundaries   = "updateboundaries";
-static const char * psz_graphlist          = "graphlist";
-static const char * psz_graphid            = "graphid";
-static const char * psz_layout             = "layout2";
-static const char * psz_annotallornonelist = "annotallornonelist";
-static const char * psz_annotall           = "annotall";
-static const char * psz_annotnone          = "annotnone";
+static LPCSTR psz_saview             = "saview";
+static LPCSTR psz_placement          = "placement";
+static LPCSTR psz_z                  = "z";
+static LPCSTR psz_legendall          = "legendall";
+static LPCSTR psz_legendnone         = "legendnone";
+static LPCSTR psz_xscaleall          = "xscaleall";
+static LPCSTR psz_xscalenone         = "xscalenone";
+static LPCSTR psz_boundariesall      = "boundariesall";
+static LPCSTR psz_boundariesnone     = "boundariesnone";
+static LPCSTR psz_drawstyleline      = "drawstyleline";
+static LPCSTR psz_updateboundaries   = "updateboundaries";
+static LPCSTR psz_graphlist          = "graphlist";
+static LPCSTR psz_graphid            = "graphid";
+static LPCSTR psz_layout             = "layout2";
+static LPCSTR psz_annotallornonelist = "annotallornonelist";
+static LPCSTR psz_annotall           = "annotall";
+static LPCSTR psz_annotnone          = "annotnone";
 
 /***************************************************************************/
 /***************************************************************************/
-void CSaView::WriteProperties(Object_ostream & obs)
+void CSaView::WriteProperties(CObjectOStream & obs)
 {
     int i = 0;
 
@@ -3947,7 +3942,7 @@ void CSaView::WriteProperties(Object_ostream & obs)
 
 /***************************************************************************/
 /***************************************************************************/
-BOOL CSaView::ReadProperties(Object_istream & obs, BOOL bCreateGraphs)
+BOOL CSaView::ReadProperties(CObjectIStream & obs, BOOL bCreateGraphs)
 {
     CWnd * pwndFrame = NULL;
     WINDOWPLACEMENT wpl;
@@ -4019,7 +4014,7 @@ BOOL CSaView::ReadProperties(Object_istream & obs, BOOL bCreateGraphs)
 // graphs being read are properties for graphs in the permanent template
 // view.
 /***************************************************************************/
-BOOL CSaView::ReadGraphListProperties(Object_istream & obs, BOOL bCreateGraphs)
+BOOL CSaView::ReadGraphListProperties(CObjectIStream & obs, BOOL bCreateGraphs)
 {
     if (!obs.bReadBeginMarker(psz_graphlist))
     {

@@ -1,3 +1,15 @@
+SA - 3.1.0.49 - 4/4/2013 (stereo branch)
+1) Fixed problem in autopitch graph where graph was double the length from what it should be.
+2) Fixed crash in spectrogram graph when 96khz file is opened -  Code was truncating data value.
+3) Fixed crash in autopitch graph when 96khz file was opened - same as #2.
+Known Problems:
+1) Doing a cut/paste as new/undo corrupts the original graph.
+2) The spectrogram graph is corrupted when processing 96khz files.
+3) The Formant graphs don't work.
+
+SA - 3.1.0.48 - 4/2/2013 (stereo branch)
+1) Merged trunk with stereo branch
+
 SA - 3.1.0.47 - 3/29/2013
 1) Doubled performance of transcription writes.
 2) Added code to disable autosaves during playback.

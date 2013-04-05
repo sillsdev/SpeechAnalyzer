@@ -19,8 +19,8 @@
 #include "sa_plot.h"
 #include "DSP/FORMANTS.H"
 
-struct zGraphStruct;
-class zScatterGraph;
+struct SGraph;
+class CScatterGraph;
 
 #define zNUM_POINTS  (65536 / sizeof(double))    // max number of points that can be contained in a memory segment
 
@@ -41,10 +41,10 @@ protected:
     short int ProcessFTFormants();
     short int ProcessFormants();
     void StandardPlot(CSaView * pView, CDC * pDC, CRect rClient, CRect rClip,
-                      zGraphStruct & GraphSettings, BOOL bFlipChart = FALSE, BOOL bShowAxes = FALSE, BOOL bValidData = TRUE);
+                      SGraph & GraphSettings, BOOL bFlipChart = FALSE, BOOL bShowAxes = FALSE, BOOL bValidData = TRUE);
     POINT GetXYCoordinates(void * pG, double x , double y, BOOL bFlip = FALSE);
-    virtual POINT MapVowelsToChart(CDC * /*pDC*/, FORMANT_FREQ & /*VowelFormant*/, int /*VowelSymbolHeight*/, zScatterGraph * /*pFormantChart*/,
-                                   zGraphStruct & /*FormantChartParms*/, BOOL /*bFlip*/ = FALSE)
+    virtual POINT MapVowelsToChart(CDC * /*pDC*/, FORMANT_FREQ & /*VowelFormant*/, int /*VowelSymbolHeight*/, CScatterGraph * /*pFormantChart*/,
+                                   SGraph & /*FormantChartParms*/, BOOL /*bFlip*/ = FALSE)
     {
         POINT p = {0,0};
         return p;
@@ -82,8 +82,8 @@ private:
 public:
     static RANGE GetChartRange(int nFormant, int nGender);
 protected:
-    virtual POINT MapVowelsToChart(CDC * pDC, FORMANT_FREQ & Formant, int SymbolHeight, zScatterGraph * pFormantChart,
-                                   zGraphStruct & ChartParms, BOOL /* bFlip */);
+    virtual POINT MapVowelsToChart(CDC * pDC, FORMANT_FREQ & Formant, int SymbolHeight, CScatterGraph * pFormantChart,
+                                   SGraph & ChartParms, BOOL /* bFlip */);
 
     // Generated message map functions
 protected:
@@ -113,8 +113,8 @@ private:
 public:
     static RANGE GetChartRange(int nFormant, int nGender);
 protected:
-    virtual POINT MapVowelsToChart(CDC * pDC, FORMANT_FREQ & Formant, int /* SymbolHeight */, zScatterGraph * pFormantChart,
-                                   zGraphStruct & /* ChartParms */, BOOL bFlip);
+    virtual POINT MapVowelsToChart(CDC * pDC, FORMANT_FREQ & Formant, int /* SymbolHeight */, CScatterGraph * pFormantChart,
+                                   SGraph & /* ChartParms */, BOOL bFlip);
 
     // Generated message map functions
 protected:
@@ -144,14 +144,12 @@ private:
 public:
     static RANGE GetChartRange(int nFormant, int nGender);
 protected:
-    virtual POINT MapVowelsToChart(CDC * pDC, FORMANT_FREQ & Formant, int /* SymbolHeight */, zScatterGraph * pFormantChart,
-                                   zGraphStruct & /* ChartParms */, BOOL bFlip = FALSE);
+    virtual POINT MapVowelsToChart(CDC * pDC, FORMANT_FREQ & Formant, int /* SymbolHeight */, CScatterGraph * pFormantChart,
+                                   SGraph & /* ChartParms */, BOOL bFlip = FALSE);
 
     // Generated message map functions
 protected:
-    //{{AFX_MSG(CPlotF2F1)
     afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
-    //}}AFX_MSG
     DECLARE_MESSAGE_MAP()
 };
 
@@ -168,19 +166,13 @@ public:
     virtual ~CPlotF2F1F1();
     virtual void OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView);
 
-    // Attributes
-private:
-
-    // Operations
 protected:
-    virtual POINT MapVowelsToChart(CDC * pDC, FORMANT_FREQ & Formant, int /* SymbolHeight */, zScatterGraph * pFormantChart,
-                                   zGraphStruct & /* ChartParms */, BOOL bFlip);
+    virtual POINT MapVowelsToChart(CDC * pDC, FORMANT_FREQ & Formant, int /* SymbolHeight */, CScatterGraph * pFormantChart,
+                                   SGraph & /* ChartParms */, BOOL bFlip);
 
     // Generated message map functions
 protected:
-    //{{AFX_MSG(CPlotF2F1F1)
     afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
-    //}}AFX_MSG
     DECLARE_MESSAGE_MAP()
 };
 
@@ -198,7 +190,6 @@ public:
     virtual ~CPlotInvSDP();
     virtual void OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView);
 
-    // Attributes
 private:
     HANDLE  m_hDataX;          // needed to get m_lpDataX
     HPSTR   m_lpDataX;         // pointer to Z-graph data
@@ -207,15 +198,10 @@ private:
     HANDLE  m_hDataSym;        // needed to get m_lpDataSym
     HPSTR   m_lpDataSym;       // pointer to Z-graph data
 
-    // Operations
-private:
     CProcessSDP * GetSDP(CSaDoc * pDoc);
 
-    // Generated message map functions
 protected:
-    //{{AFX_MSG(CPlotInvSDP)
     afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
-    //}}AFX_MSG
     DECLARE_MESSAGE_MAP()
 };
 

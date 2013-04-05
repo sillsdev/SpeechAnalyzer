@@ -22,23 +22,12 @@
 #include "zfont.h"
 #endif
 
-#ifdef OS2_PLATFORM
-#define INCL_WIN
-#define INCL_GPI
-#include <os2.h>
-#endif
-
-
 #include "toolkit.h"                             // Toolkit Header File
 #include "zgraph.h"                              // Basic Graph Class
 
 
 #ifdef MS_DOS_PLATFORM
 #include "graph.h"
-#endif
-
-#ifdef BGI_DOS_PLATFORM
-#include <graphics.h>
 #endif
 
 //
@@ -53,7 +42,7 @@ static WCHAR zbuf[ 175 ] ;                        // Working Buffer
 
 ////////////////////////////// zGraph() ////////////////////////////////
 
-zGraph::zGraph(zGraphStruct * zGS1 /* = NULL */)
+zGraph::zGraph(SGraph * zGS1 /* = NULL */)
 {
     //
     // Constructor for ZGRAPH Class.  Initializes as Necessary
@@ -76,24 +65,24 @@ zGraph::~zGraph()
 
 ///////////////////////////// zInitGraph() //////////////////////////////
 
-void zGraph::zInitGraphData(zGraphStruct * zGS1 /* = NULL */)
+void zGraph::zInitGraphData(SGraph * zGS1 /* = NULL */)
 {
     //
     // Initializes and Sets a Bunch of Defaults for the Graph
     //
-    zGraphStruct * zG;
+    SGraph * zG;
     BOOL bUserPassedStructure = TRUE;
 
     //
-    // If User Didn't Pass a zGraphStruct, Create a Default One,
+    // If User Didn't Pass a SGraph, Create a Default One,
     //   and Zero It Out...
     //
     if (! zGS1)
     {
         bUserPassedStructure = FALSE;
 
-        zG = new zGraphStruct();
-        memset(zG, zDEFAULT, sizeof(zGraphStruct));
+        zG = new SGraph();
+        memset(zG, zDEFAULT, sizeof(SGraph));
     }
     else
         // Otherwise We Just Grab the Structure the User Passed Us...
@@ -113,11 +102,6 @@ void zGraph::zInitGraphData(zGraphStruct * zGS1 /* = NULL */)
     //
 #ifdef WINDOWS_PLATFORM
     zSetGraphDC(zG->hdc);                    // Windows--Save Graph HDC
-#endif
-
-#ifdef OS2_PLATFORM
-    zSetGraphHPS(zG->hps);                   // OS2--Save HPS
-    zSetGraphHWND(zG->hwnd);                 // OS2--Save HWND
 #endif
 
     zSetGraphWindow(zG->RWindow);               // Save Graph Window Area
@@ -166,7 +150,7 @@ void zGraph::zInitGraphData(zGraphStruct * zGS1 /* = NULL */)
     zSetUpFonts();                              // Set Up Fonts for the Graph
 
 
-    // Destroy Dynamically-Created [zGraphStruct], if Necessary...
+    // Destroy Dynamically-Created [SGraph], if Necessary...
     if (! bUserPassedStructure)
     {
         delete zG;
@@ -1098,18 +1082,9 @@ void zGraph::zDraw2DGrid()
     SelectObject(hDC, hGridPen);
 #endif
 
-#ifdef OS2_PLATFORM
-    GpiSetLineType(hPS, OS2_GridLineType);
-#endif
-
 #ifdef MS_DOS_PLATFORM
     // Select the Grid Line Mask
     _setlinestyle(GridMask);
-#endif
-
-#ifdef BGI_DOS_PLATFORM
-    // Select the Type of Lines for the Grid
-    setlinestyle(bgiGridType, 0, NORM_WIDTH);
 #endif
 
     //
@@ -1143,19 +1118,9 @@ void zGraph::zDraw2DGrid()
     SelectObject(hDC, hAxisPen);
 #endif
 
-#ifdef OS2_PLATFORM
-    // Back to Solid Lines
-    GpiSetLineType(hPS, LINETYPE_SOLID);
-#endif
-
 #ifdef MS_DOS_PLATFORM
     // Select the Default Line Mask Again
     _setlinestyle(0xFFFF);
-#endif
-
-#ifdef BGI_DOS_PLATFORM
-    // Back to Solid Lines
-    setlinestyle(SOLID_LINE, 0, NORM_WIDTH);
 #endif
 
 }
@@ -1213,18 +1178,9 @@ void zGraph::zDraw3DGrid()
     SelectObject(hDC, hGridPen);
 #endif
 
-#ifdef OS2_PLATFORM
-    GpiSetLineType(hPS, OS2_GridLineType);
-#endif
-
 #ifdef MS_DOS_PLATFORM
     // Select the Grid Line Mask
     _setlinestyle(GridMask);
-#endif
-
-#ifdef BGI_DOS_PLATFORM
-    // Select the Type of Lines for the Grid
-    setlinestyle(bgiGridType, 0, NORM_WIDTH);
 #endif
 
     //
@@ -1270,19 +1226,9 @@ void zGraph::zDraw3DGrid()
     SelectObject(hDC, hAxisPen);
 #endif
 
-#ifdef OS2_PLATFORM
-    // Back to Solid Lines
-    GpiSetLineType(hPS, LINETYPE_SOLID);
-#endif
-
 #ifdef MS_DOS_PLATFORM
     // Select the Default Line Mask Again
     _setlinestyle(0xFFFF);
-#endif
-
-#ifdef BGI_DOS_PLATFORM
-    // Back to Solid Lines
-    setlinestyle(SOLID_LINE, 0, NORM_WIDTH);
 #endif
 
 }
@@ -1732,15 +1678,6 @@ BOOL zGraph::zInitGraph()
     }
 #endif
 
-#ifdef OS2_PLATFORM
-    if (! hPS)
-    {
-        zDisplayError(zHPS_INVALID);
-        return FALSE;
-    }
-#endif
-
-
     // Validate the Window Rectangle
     if (! RWindow.IsValid())
     {
@@ -1810,52 +1747,6 @@ void zGraph::zFillBackground()
     DeleteObject(hBrush_bkg);
 #endif
 
-
-#ifdef OS2_PLATFORM
-    //
-    // Set the Fg. and Bkg. Color
-    //
-    GpiSetBackColor(hPS, BkgColor);
-    GpiSetColor(hPS,     BkgColor);
-
-    //
-    // Force Overpaint Mode
-    //
-    GpiSetBackMix(hPS, BM_OVERPAINT);
-
-    //
-    // Define the Region to Be Colored In as the Whole Window Area
-    //
-    POINTL pt1 =
-    {
-        RWindow.left  ,  RWindow.top
-    };
-    POINTL pt2 =
-    {
-        RWindow.right ,  RWindow.bottom
-    };
-
-    if (bkg_gradient_mode)
-    {
-        zFillBkgWithGradedColor();
-    }
-    else
-    {
-        //
-        // Use GpiBox() to Color In Interior, But Don't Show Border Outline
-        //
-        GpiMove(hPS, &pt1);
-        GpiBox(hPS, DRO_OUTLINEFILL, &pt2, 0, 0);
-    }
-
-    //
-    // Set the Background Mix So that Text Written Over It
-    //   Won't Appear With the Wrong Bkg. Color...
-    //
-    GpiSetBackMix(hPS, BM_LEAVEALONE);
-#endif
-
-
 #ifdef MS_DOS_PLATFORM
     // Color In Background Area
 
@@ -1863,23 +1754,6 @@ void zGraph::zFillBackground()
 
     _rectangle(_GFILLINTERIOR, RWindow.left, RWindow.top,
                RWindow.right, RWindow.bottom);
-#endif
-
-
-#ifdef BGI_DOS_PLATFORM
-    // Color In Background Area
-
-    setcolor((int)BkgColor);
-    setfillstyle(SOLID_FILL, BkgColor);
-
-    // Don't Go Outside Screen Perimeter, Or We'll Die a Cruel Death!
-
-    INT left   = max(1, RWindow.left);
-    INT top    = max(1, RWindow.top);
-    INT right  = min(getmaxx() - 1, RWindow.right);
-    INT bottom = min(getmaxy() - 1, RWindow.bottom);
-
-    bar3d(left, top, right, bottom, 0, 0);
 #endif
 
 }
@@ -2027,17 +1901,7 @@ void zGraph::zDrawLegend(BOOL UseColorFills /* = TRUE */)
                 hAxisPen
 #endif
 
-#ifdef OS2_PLATFORM
-                GraphColor[ index ],
-                AxisColor
-#endif
-
 #ifdef MS_DOS_PLATFORM
-                GraphColor[ index ],
-                AxisColor
-#endif
-
-#ifdef BGI_DOS_PLATFORM
                 GraphColor[ index ],
                 AxisColor
 #endif
@@ -2199,12 +2063,6 @@ void zGraph::zDrawDataPoints()
     }
 #endif
 
-#ifdef OS2_PLATFORM
-    //
-    // [Put Code to Set OS/2 Clipping Region Here...]
-    //
-#endif
-
 
     //
     // Now Draw in the Data Points
@@ -2277,12 +2135,6 @@ void zGraph::zDrawDataPoints()
     }
 #endif
 
-#ifdef OS2_PLATFORM
-    //
-    // [Put Code to Reset OS/2 Clipping Region Here...]
-    //
-#endif
-
     //
     // Save the Number of Data Sets Found in the Data--It Will Be
     //  Used in Making the Graph Legend!
@@ -2352,85 +2204,7 @@ zPALETTE zGraph::zCreateGradedColorPalette()
 
 #endif
 
-
-#ifdef OS2_PLATFORM
-
-    //////////////////////////////////////////////////////////////////
-    // OS/2 Code to Set Up Palette
-    //////////////////////////////////////////////////////////////////
-
-    LONG  lColorTable[zNUM_GRADED_PALETTE_ENTRIES];
-    ULONG cclr;
-    BOOL  fPaletteCaps = TRUE;
-
-    //  Create entry with shades of color if animation is supported,
-    //    solid color otherwise.
-
-    for (INT i = 0; i < zNUM_GRADED_PALETTE_ENTRIES; i++)
-    {
-        BYTE index = 222;     //  Use This Value if No Animation Support
-
-        // INDEX = [zNUM_GRADED_PALETTE_ENTRIES] Points Evenly
-        //         Spaced Between 1 AND 255
-
-        if (fPaletteCaps)
-            index = ((float)(i + 1) * 255.0) /
-                    (float) zNUM_GRADED_PALETTE_ENTRIES;
-
-        // Get R,G,B, values for this Palette Entry
-        BYTE R, G, B;
-        zCalculateRGBValues(index, R, G, B);
-
-        lColorTable[i] = PC_RESERVED * 16777216 +
-                         (LONG)(((LONG)R << 16) + ((LONG)G << 8) + (LONG)B);
-    }
-
-    // Now Create the Palette...
-
-    HAB  hab; // Not Really Used!
-    HPAL hPal = GpiCreatePalette(hab,
-                                 0L, // Allows Dithering for Displays With <=16 Colors
-                                 (ULONG) LCOLF_CONSECRGB,
-                                 zNUM_GRADED_PALETTE_ENTRIES,
-                                 (unsigned long *)&lColorTable[0]);
-
-    if (hPal == NULLHANDLE  ||  hPal == GPI_ERROR)
-    {
-        // Error
-        zDisplayError(_T("GpiCreatePalette Error"));
-        // Use WinGetLastError(hab) to Get Error Details!
-    }
-
-    else if (GpiSelectPalette(hPS, hPal) == PAL_ERROR)
-    {
-        // Error
-        zDisplayError(_T("GpiSelectPalette Error"));
-        // Use WinGetLastError(hab) to Get Error Details!
-    }
-
-    else if (WinRealizePalette(hWnd, hPS, &cclr) == PAL_ERROR)
-    {
-        // Error
-        zDisplayError(_T("WinRealizePalette Error"));
-        // Use WinGetLastError(hab) to Get Error Details!
-    }
-
-    ////////////////////////////////////////////////////////////////////
-    // Noticed a Slight Problem:  It Seems Like Sometimes an Extra WM_PAINT
-    //    Message Gets Sent When Realizing a New Palette, Forcing
-    //    Graph to Redraw Too Many Times.  If You're a PM Expert and/or
-    //    Know What's Causing this Problem, Please Let Me Know!   --JJ
-    ////////////////////////////////////////////////////////////////////
-
-    return (zPALETTE)hPal;
-#endif
-
 #ifdef MS_DOS_PLATFORM
-    // Operation Not Defined for this Platform
-    return (zPALETTE)0;
-#endif
-
-#ifdef BGI_DOS_PLATFORM
     // Operation Not Defined for this Platform
     return (zPALETTE)0;
 #endif
@@ -2549,7 +2323,7 @@ void zGraph::zFillBkgWithGradedColor()
     //    Graded Color Spectrum, Based Upon the Bkg Gradient Color Scheme
     //
 
-#if defined(MS_DOS_PLATFORM) || defined(BGI_DOS_PLATFORM)
+#if defined(MS_DOS_PLATFORM)
     // Operation Not Yet Defined For These Platforms
     return;
 #else
@@ -2596,20 +2370,6 @@ void zGraph::zFillBkgWithGradedColor()
 #ifdef WINDOWS_PLATFORM
         // Calculate the R, G, B  Component Values for This Color
         zCalculateRGBValues(color, Red, Green, Blue);
-#endif
-
-#ifdef OS2_PLATFORM
-        // NOTE:  Because We Assign Colors Using Consecutive RGB
-        //        Values, Just the LSB [Least Significant Byte] of the
-        //        32-Bit LONG Color Word Is Used.  Here The Blue
-        //        Component Is the LSB, So It LOOKS Like We're Only
-        //        Changing Blue, With No Red or Green Components.  THIS
-        //        IS NOT THE CASE!  In Fact The Palette Has Already Been
-        //        Set Up and Realized At This Point, and We're Really
-        //        Only Varying an Index.
-        Red   = 0;
-        Green = 0;
-        Blue  = i;
 #endif
 
         // Draw One Color Band...
@@ -2730,17 +2490,5 @@ void zGraph::zFillBkgWithGradedColor()
     DeleteObject(hNewPal);
 #endif
 
-#ifdef OS2_PLATFORM
-    // Restore Old Palette
-    GpiSelectPalette(hPS, NULLHANDLE);
-    GpiDeletePalette(hNewPal);
-
-    // We Want to Use 32-Bit RGB Color Index Values Again
-    GpiCreateLogColorTable(hPS, LCOL_RESET, LCOLF_RGB, 0L, 0L, NULL);
-#endif
 #endif   // if defined(MS_DOS_PLATFORM ...
 }
-
-
-// EOF -- ZGRAPH.CPP
-

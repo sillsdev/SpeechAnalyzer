@@ -18,11 +18,11 @@ extern "C" {
 	public:
 		Clipboard(HWND);
 
-		Clipboard & operator <<(const char *);
+		Clipboard & operator <<(LPCSTR);
 		Clipboard & operator >>(char *&);
 		int hasText();
 
-		void SetTextRTF(const char * RTFstring, const char * TEXTstring);
+		void SetTextRTF(LPCSTR RTFstring, LPCSTR TEXTstring);
 
 		~Clipboard() {
 			close();

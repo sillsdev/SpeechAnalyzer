@@ -17,24 +17,23 @@
 
 #include "stdafx.h"
 #include "sa_plot.h"
-#include "dsp\dspTypes.h"
 #include "sa_view.h"
 #include "sa_minic.h"
 #include "sa_graph.h"
 #include "sa_g_stf.h"
-#include "Process\Process.h"
-#include "Process\sa_p_twc.h"
-#include "Process\sa_p_mel.h"
-#include "Process\sa_p_lou.h"
-#include "dsp\histgram.h"
 #include "mainfrm.h"
 #include "partiture.hpp"
-#include "playerRecorder.h"
-
 #include "sa_doc.h"
 #include "sa.h"
 #include <mmsystem.h>
 #include <math.h>
+#include "DlgPlayer.h"
+#include "dsp\histgram.h"
+#include "dsp\dspTypes.h"
+#include "Process\Process.h"
+#include "Process\sa_p_twc.h"
+#include "Process\sa_p_mel.h"
+#include "Process\sa_p_lou.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE
@@ -533,14 +532,14 @@ void CPlotStaff::Convert(void)
     }
 
     // get TWC data
-    const MusicParm * pParm = pDoc->GetMusicParm();
+    const CMusicParm * pParm = pDoc->GetMusicParm();
 
     int nUpperBound = pParm->nUpperBound;
     int nLowerBound = pParm->nLowerBound;
 
     if (pParm->nRangeMode == 0)
     {
-        MusicParm::GetAutoRange(pDoc, nUpperBound, nLowerBound);
+        CMusicParm::GetAutoRange(pDoc, nUpperBound, nLowerBound);
     }
     short nMinSemitone = (short)nLowerBound;
     short nMaxSemitone = (short)nUpperBound;
@@ -577,9 +576,7 @@ void CPlotStaff::Convert(void)
     double dSemitoneShift = nCalSemitone - dCalSemitone;
 
     // get sampling rate
-    FmtParm * pFmtParm = pDoc->GetFmtParm(); // get sa parameters format member data
-
-    double dQNotesPerFrame = GetTempo()*pDoc->GetDataSize()/pFmtParm->wBlockAlign/pMelogram->GetDataSize()/60.0/pFmtParm->dwSamplesPerSec;
+    double dQNotesPerFrame = GetTempo()*pDoc->GetDataSize()/pDoc->GetBlockAlign()/pMelogram->GetDataSize()/60.0/pDoc->GetSamplesPerSec();
     const int nMelogramAverageInterval = int(1./(8*dQNotesPerFrame) + 1.0);  // Average over grace note interval
 
     // parse into notes
@@ -863,7 +860,7 @@ void CPlotStaff::OnParentNotify(UINT msg,LPARAM lParam)
                 CPlotWnd * pMelPlot = pMelogram->GetPlot();
                 if (pMelPlot)
                 {
-                    PartSelectionMS * pSel = (PartSelectionMS *) lParam;
+                    SPartSelectionMS * pSel = (SPartSelectionMS *)lParam;
                     CSaDoc * pDoc = (CSaDoc *)m_pView->GetDocument(); // cast pointer
 
                     pMelPlot->SetHighLightArea(pDoc->GetBytesFromTime(pSel->begin), pDoc->GetBytesFromTime(pSel->end), TRUE, TRUE);
@@ -878,7 +875,7 @@ void CPlotStaff::OnParentNotify(UINT msg,LPARAM lParam)
         CMainFrame * pMain = (CMainFrame *) AfxGetMainWnd();
         if (m_pView && pMain->GetCurrSaView() == m_pView)
         {
-            PartSelectionMS & sel = *(PartSelectionMS *) lParam;
+            SPartSelectionMS & sel = *(SPartSelectionMS *)lParam;
             SSpecific specific;
 
             specific.begin = sel.begin;

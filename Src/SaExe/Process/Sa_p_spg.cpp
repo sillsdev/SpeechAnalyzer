@@ -12,7 +12,6 @@
 //            m_spectroBParmDefaults (for SpectrogramB), rather than from
 //            hard-coded values (as previously).
 /////////////////////////////////////////////////////////////////////////////
-
 #include "stdafx.h"
 #include "Process.h"
 #include "sa_p_spg.h"
@@ -38,10 +37,6 @@ static char BASED_CODE THIS_FILE[] = __FILE__;
 // raw data to calculate in memory, so the class CProcessSpectrogram creates
 // a temporary second buffer, into which it copies all the raw data needed
 // for the calculation.
-
-
-/////////////////////////////////////////////////////////////////////////////
-// CProcessSpectrogram construction/destruction/creation
 
 /***************************************************************************/
 // CProcessSpectrogram::CProcessSpectrogram Constructor
@@ -79,9 +74,9 @@ void CProcessSpectrogram::SetSpectroParm(const CSpectroParm & cSpectroParm)
     ISaDoc * pDoc = GetDocument();
 
     // Clip frequency limit to Nyquist limit
-    if (m_SpectroParm.nFrequency >= int(pDoc->GetFmtParm()->dwSamplesPerSec/2))
+    if (m_SpectroParm.nFrequency >= int(pDoc->GetSamplesPerSec()/2))
     {
-        m_SpectroParm.nFrequency = pDoc->GetFmtParm()->dwSamplesPerSec/2 - 1;
+        m_SpectroParm.nFrequency = pDoc->GetSamplesPerSec()/2 - 1;
     }
 }
 
@@ -111,8 +106,7 @@ long CProcessSpectrogram::Exit(int nError)
 long CProcessSpectrogram::Process(void * pCaller, ISaDoc * pDoc, CSaView * pView, int nWidth, int /*nHeight*/, int nProgress, int nLevel)
 {
 
-    FmtParm * pFmtParm = pDoc->GetFmtParm(); // get sa parameters format member data
-    WORD wSmpSize = (WORD)(pFmtParm->wBlockAlign / pFmtParm->wChannels);
+    WORD wSmpSize = (WORD)(pDoc->GetSampleSize());
     // check canceled
     if (IsCanceled())
     {
@@ -169,20 +163,20 @@ long CProcessSpectrogram::Process(void * pCaller, ISaDoc * pDoc, CSaView * pView
     }
     // set up spectrogram parameters
     const CSpectroParm * pSpectroParm = & GetSpectroParm(); // get pointer to spectrogram parameters
-    UINT nBlockAlign = pFmtParm->wBlockAlign;
+    
+	UINT nBlockAlign = pDoc->GetBlockAlign(true);
     SPGM_SETTINGS SpgmSetting;
     SIG_PARMS Signal;
     dspError_t Err;
     SpgmSetting.LwrFreq = (float)0;
-    SpgmSetting.UprFreq = (float)(pFmtParm->dwSamplesPerSec/2.0);
-    SpgmSetting.PreEmphSw = true;
+    SpgmSetting.UprFreq = (float)(pDoc->GetSamplesPerSec()/2.0);
+    SpgmSetting.preEmphSw = true;
     SpgmSetting.Bandwidth = pSpectroParm->Bandwidth();
-    Signal.SmpRate = (USHORT)pFmtParm->dwSamplesPerSec;
+    Signal.SmpRate = pDoc->GetSamplesPerSec();
     SpgmSetting.FFTLength = (USHORT)(2 << USHORT(ceil(log(float(DspWin::CalcLength(SpgmSetting.Bandwidth,Signal.SmpRate, ResearchSettings.m_cWindow.m_nType))/log(2.0) + 0.0))));
 
     {
-        int minSpectraInterval =
-            wSmpSize*(NyquistSpectraInterval(pFmtParm->dwSamplesPerSec)/2 + 1);
+        int minSpectraInterval = wSmpSize*(NyquistSpectraInterval(pDoc->GetSamplesPerSec())/2 + 1);
         BOOL bRealTime = m_bRealTime;
         if (!bRealTime)
         {
@@ -206,7 +200,7 @@ long CProcessSpectrogram::Process(void * pCaller, ISaDoc * pDoc, CSaView * pView
 
     SpgmSetting.FreqCnt = USHORT(SpgmSetting.FFTLength/2 + 1);
     int nHeight = SpgmSetting.FreqCnt;
-    SpgmSetting.FmntTrackSw = false;      // will use LPC formant tracking later
+    SpgmSetting.fmntTrackSw = false;      // will use LPC formant tracking later
     SpgmSetting.NumFmnt = (USHORT)pSpectroParm->nNumberFormants;
 
     // calculate start and end positions
@@ -221,7 +215,7 @@ long CProcessSpectrogram::Process(void * pCaller, ISaDoc * pDoc, CSaView * pView
     // wide band results, if there is enough data to calculate (spectrogram doesn't
     // do that).
 
-    WORD wHalfCalcWindow = (WORD)(nBlockAlign * ((WORD)DspWin::CalcLength(SpgmSetting.Bandwidth, (WORD)pFmtParm->dwSamplesPerSec, ResearchSettings.m_cWindow.m_nType) / 2));
+    WORD wHalfCalcWindow = (WORD)(nBlockAlign * ((WORD)DspWin::CalcLength(SpgmSetting.Bandwidth, (WORD)pDoc->GetSamplesPerSec(), ResearchSettings.m_cWindow.m_nType) / 2));
 
     double fSpectraInterval = (dwDataLength/wSmpSize)/double(nWidth);
 
@@ -238,7 +232,7 @@ long CProcessSpectrogram::Process(void * pCaller, ISaDoc * pDoc, CSaView * pView
     Spectrogram * pSpectrogram;
     BOOL bAliased = TRUE;
 
-    Signal.SmpDataFmt = char((nBlockAlign == 1) ? PCM_UBYTE: PCM_2SSHORT);
+    Signal.SmpDataFmt = char((!pDoc->Is16Bit()) ? PCM_UBYTE: PCM_2SSHORT);
     SetStatusFlag(~MAX_RESOLUTION, FALSE); // reset status
     UINT nSpectSize = sizeof(uint8) * (UINT)nHeight;
 
@@ -345,19 +339,18 @@ long CProcessSpectrogram::Process(void * pCaller, ISaDoc * pDoc, CSaView * pView
 // points to a slice of power data (top first). pCaller is a pointer to the
 // calling plot and enables this function to get the process index of the
 // plot. nIndex is the horizontal index in the spectrogram data (pixel
-// number) and formants is a FORMANT structure and it puts in there the
+// number) and formants is a SFormant structure and it puts in there the
 // formant data of this slice. The function returns NULL on error.
 /***************************************************************************/
 void * CProcessSpectrogram::GetSpectroSlice(DWORD dwIndex)
 {
-    int nHeight = GetWindowHeight(); // get window height
+    // get window height
+    int nHeight = GetWindowHeight();
     // read the data
     size_t sSize = nHeight * sizeof(uint8);
     uint8 * pData = (uint8 *) GetProcessedObject(dwIndex, sSize);
-
-    return pData; // return pointer to data
+    return pData;
 }
-
 
 /***************************************************************************/
 // CProcessSpectrogram::NyquistSpectraInterval  Returns number of samples

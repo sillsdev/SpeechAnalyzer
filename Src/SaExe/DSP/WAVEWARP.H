@@ -5,8 +5,7 @@
 #include "Error.h"
 #include "Fragment.h"
 
-class ISaDoc;
-
+__interface ISaDoc;
 
 #define OUTSIDE_WAVE_BUFFER         1
 #define PLAY_BUFFER_FULL            2
@@ -33,32 +32,27 @@ public:
 
 private:
     CWaveWarp(ISaDoc * pDoc, ULONG dwWaveStart, USHORT wSpeed, ULONG dwFragStart);
-    ISaDoc      *      m_pDoc;
-    int                m_nSegmentIndex;
-    void       *       m_pWaveBfr;
-    ULONG              m_dwWaveBlockStart;
-    ULONG              m_dwWarpStart;
-    ULONG              m_dwWarpIndex;
-    void       *       m_pPlayBfr;
-    ULONG              m_dwPlayBfrLength;
-    ULONG              m_dwPlayLength;
-    FRAG_PARMS    *    m_pstFragBfr;
-    ULONG              m_dwFragBfrLength;
-    ULONG              m_dwFragBfrIndex;
-    ULONG              m_dwFragBlock;
-    double                m_dFragStartTime;
-    double                m_dFragEndTime;
-    double                m_dSmpPeriod;
-    int8              m_sbSmpDataFmt;
-    double                m_dSmpTime;
-    double                m_dJitterFactor;
-    USHORT             m_wSpeed;
-    /***************************** DEBUG ONLY *************************************/
-#ifdef DUMP
-    FILE       *       m_hPlay;
-#endif
-    /******************************************************************************/
 
+    ISaDoc * m_pDoc;
+    int m_nSegmentIndex;
+    void * m_pWaveBfr;
+    ULONG m_dwWaveBlockStart;
+    ULONG m_dwWarpStart;
+    ULONG m_dwWarpIndex;
+    void * m_pPlayBfr;
+    ULONG m_dwPlayBfrLength;
+    ULONG m_dwPlayLength;
+    FRAG_PARMS * m_pstFragBfr;
+    ULONG m_dwFragBfrLength;
+    ULONG m_dwFragBfrIndex;
+    ULONG m_dwFragBlock;
+    double m_dFragStartTime;
+    double m_dFragEndTime;
+    double m_dSmpPeriod;
+    int8 m_sbSmpDataFmt;
+    double m_dSmpTime;
+    double m_dJitterFactor;
+    USHORT m_wSpeed;
 };
 
 #endif

@@ -46,24 +46,13 @@ CDlgSynthesisAdjustCells::CDlgSynthesisAdjustCells(CWnd * pParent /*=NULL*/, dou
 void CDlgSynthesisAdjustCells::DoDataExchange(CDataExchange * pDX)
 {
     CDialog::DoDataExchange(pDX);
-    //{{AFX_DATA_MAP(CDlgSynthesisAdjustCells)
     DDX_Text(pDX, IDC_SCALE, m_dScale);
     DDX_Text(pDX, IDC_OFFSET, m_dOffset);
-    //}}AFX_DATA_MAP
 }
 
 
 BEGIN_MESSAGE_MAP(CDlgSynthesisAdjustCells, CDialog)
-    //{{AFX_MSG_MAP(CDlgSynthesisAdjustCells)
-    // NOTE: the ClassWizard will add message map macros here
-    //}}AFX_MSG_MAP
 END_MESSAGE_MAP()
-
-/////////////////////////////////////////////////////////////////////////////
-// CDlgSynthesisAdjustCells message handlers
-
-/////////////////////////////////////////////////////////////////////////////
-// CDlgKlattAll dialog
 
 double dKlattFrameIntervalMs = 10;
 UINT nKlattFrameIntervalFragments = 0;
@@ -97,9 +86,6 @@ CDlgKlattAll::CDlgKlattAll(CWnd * pParent /*=NULL*/, int nSelectedView)
     m_szGrid[kSegment] = _T("IPA Segments.txt");
     m_szGrid[kIpaBlended] = _T("Blended IPA.txt");
     m_dTimeScale = 1.0;
-    //{{AFX_DATA_INIT(CDlgKlattAll)
-    // NOTE: the ClassWizard will add member initialization here
-    //}}AFX_DATA_INIT
 
     DWORD dwStyle = 0;
 
@@ -108,7 +94,6 @@ CDlgKlattAll::CDlgKlattAll(CWnd * pParent /*=NULL*/, int nSelectedView)
     dwStyle |= WS_MINIMIZEBOX;
     dwStyle |= WS_MAXIMIZEBOX;
     dwStyle |= WS_THICKFRAME;
-    //dwStyle |= WS_MAXIMIZE;
 
     BOOL bResult = LoadFrame(IDR_KLATT, dwStyle, pParent);
 
@@ -1417,12 +1402,12 @@ BOOL CDlgKlattAll::GetFormants(CFlexEditGrid & cGrid, int column, CSaView * pVie
     double pFormAV[7] = {0,0,0,0,0,0,0};
 
     CSaDoc * pDoc = pView->GetDocument();
-    WORD wSmpSize = WORD(pDoc->GetFmtParm()->wBlockAlign / pDoc->GetFmtParm()->wChannels);
-    DWORD dwSamplesPerSec = pDoc->GetFmtParm()->dwSamplesPerSec;
+    DWORD wSmpSize = pDoc->GetSampleSize();
+    DWORD dwSamplesPerSec = pDoc->GetSamplesPerSec();
     BOOL bRes = TRUE;
     CString szString;
 
-    SPECT_PROC_SELECT SpectraSelected;
+    SSpectProcSelect SpectraSelected;
     SpectraSelected.bCepstralSpectrum = FALSE;    // turn off to reduce processing time
     SpectraSelected.bLpcSpectrum = TRUE;          // use Lpc method for estimating formants
 
@@ -1532,7 +1517,7 @@ BOOL CDlgKlattAll::GetFormants(CFlexEditGrid & cGrid, int column, CSaView * pVie
     // get data for this column
     for (int n = 1; n <= 6; n++)
     {
-        FORMANT form = pSpectrum->GetFormant((unsigned short) n);
+        SFormant form = pSpectrum->GetFormant((unsigned short) n);
         if (form.Lpc.FrequencyInHertz == UNDEFINED_DATA || form.Lpc.PowerInDecibels == FLT_MAX_NEG)
         {
             continue;
@@ -1797,7 +1782,7 @@ BOOL CDlgKlattAll::GetFrame(CFlexEditGrid & cGrid, int & column, CSaView * pView
     CSaDoc * pDoc = pView->GetDocument();
     CSegment * pPhonetic = pDoc->GetSegment(PHONETIC);
     CProcessSmoothedPitch * pPitch = pDoc->GetSmoothedPitch();
-    WORD wSmpSize = WORD(pDoc->GetFmtParm()->wBlockAlign / pDoc->GetFmtParm()->wChannels);
+    DWORD wSmpSize = pDoc->GetSampleSize();
     BOOL bPitch = TRUE;
     BOOL bDuration = TRUE;
     BOOL bFormants = TRUE;
@@ -1912,11 +1897,11 @@ void CDlgKlattAll::OnKlattGetFrames(CFlexEditGrid & cGrid, int nFrameLengthInMs,
                           };
     CProcessZCross * pZCross = NULL;
     CProcessSpectrum * pSpectrum = NULL;
-    UttParm myUttParm;
-    UttParm * pUttParm = &myUttParm;
+    CUttParm myUttParm;
+    CUttParm * pUttParm = &myUttParm;
     pDoc->GetUttParm(pUttParm); // get sa parameters utterance member data
-    UttParm cSavedUttParm;
-    UttParm * pSavedUttParm = &cSavedUttParm;
+    CUttParm cSavedUttParm;
+    CUttParm * pSavedUttParm = &cSavedUttParm;
 
     CProcessSmoothedPitch * pPitch = NULL;
     CProcessGrappl * pAutoPitch = NULL;
@@ -1984,8 +1969,8 @@ void CDlgKlattAll::OnKlattGetFrames(CFlexEditGrid & cGrid, int nFrameLengthInMs,
     // process all flags
     CString szString;
 
-    WORD wSmpSize = WORD(pDoc->GetFmtParm()->wBlockAlign / pDoc->GetFmtParm()->wChannels);
-    DWORD dwSamplesPerSec = pDoc->GetFmtParm()->dwSamplesPerSec;
+    DWORD wSmpSize = pDoc->GetSampleSize();
+    DWORD dwSamplesPerSec = pDoc->GetSamplesPerSec();
 
     DWORD dwDataLength = pDoc->GetDataSize() / wSmpSize;
     DWORD dwSamplesPerFrame = (DWORD)(dwSamplesPerSec * nFrameIntervalInMs / 1000.0);
@@ -2380,11 +2365,11 @@ void CDlgKlattAll::OnKlattBlendSegments(int nSrc, CFlexEditGrid & cGrid)
 
         // CProcessGrappl* pAutoPitch = NULL;
         CProcessSmoothedPitch * pPitch = NULL;
-        UttParm myUttParm;
-        UttParm * pUttParm = &myUttParm;
+        CUttParm myUttParm;
+        CUttParm * pUttParm = &myUttParm;
         pDoc->GetUttParm(pUttParm); // get sa parameters utterance member data
-        UttParm cSavedUttParm;
-        UttParm * pSavedUttParm = &cSavedUttParm;
+        CUttParm cSavedUttParm;
+        CUttParm * pSavedUttParm = &cSavedUttParm;
 
         if (bPitch)
         {
@@ -2655,7 +2640,7 @@ void CDlgKlattAll::LabelDocument(CSaDoc * pDoc)
     CSaView * pView = (CSaView *) pDoc->GetNextView(pos);
 
     // change to cursor alignment to sample mode
-    CURSOR_ALIGNMENT nOldCursorAlignment = pView->GetCursorAlignment();
+    ECursorAlignment nOldCursorAlignment = pView->GetCursorAlignment();
     pView->ChangeCursorAlignment(ALIGN_AT_SAMPLE);
 
     // synthesize wavefile

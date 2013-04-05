@@ -222,28 +222,6 @@
 				>
 			</File>
 			<File
-				RelativePath="autoRecorder.cpp"
-				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-			</File>
-			<File
 				RelativePath=".\AutoSave.cpp"
 				>
 			</File>
@@ -388,28 +366,6 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="CSaString.cpp"
-				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-			</File>
-			<File
 				RelativePath=".\DependentSegment.cpp"
 				>
 			</File>
@@ -458,26 +414,8 @@
 				>
 			</File>
 			<File
-				RelativePath="DlgAudio.cpp"
+				RelativePath=".\DlgAutoRecorder.cpp"
 				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath=".\DlgAutoReferenceData.cpp"
@@ -501,6 +439,10 @@
 			</File>
 			<File
 				RelativePath=".\DlgExportXML.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\DlgFnKeys.cpp"
 				>
 			</File>
 			<File
@@ -561,6 +503,18 @@
 			</File>
 			<File
 				RelativePath=".\DlgMultiChannel.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\DlgPlayer.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\DlgRecorder.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\DlgRecorderOptions.cpp"
 				>
 			</File>
 			<File
@@ -650,6 +604,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\DlgWaveNotifyObj.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\ExportFWSettings.cpp"
 				>
 			</File>
@@ -722,6 +680,10 @@
 						PreprocessorDefinitions=""
 					/>
 				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\FmtParm.cpp"
+				>
 			</File>
 			<File
 				RelativePath="FnKeys.cpp"
@@ -1082,26 +1044,8 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="playerRecorder.cpp"
+				RelativePath=".\PlayMixer.cpp"
 				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="PrintOpt.cpp"
@@ -1131,6 +1075,18 @@
 			</File>
 			<File
 				RelativePath=".\Process\Process.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Process\ProcessDoc.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Process\ProcessDoc.h"
+				>
+			</File>
+			<File
+				RelativePath=".\RecMixer.cpp"
 				>
 			</File>
 			<File
@@ -2174,28 +2130,6 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="Process\sa_p_doc.cpp"
-				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-			</File>
-			<File
 				RelativePath="Process\SA_P_DUR.CPP"
 				>
 				<FileConfiguration
@@ -2900,6 +2834,10 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\SaString.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\Segment.cpp"
 				>
 			</File>
@@ -3115,6 +3053,18 @@
 			</File>
 			<File
 				RelativePath=".\WaveformGeneratorSettings.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\WaveInDevice.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\WaveIndex.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\WaveOutDevice.cpp"
 				>
 			</File>
 			<File
@@ -3413,10 +3363,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\autoRecorder.h"
-				>
-			</File>
-			<File
 				RelativePath=".\AutoSave.h"
 				>
 			</File>
@@ -3450,10 +3396,6 @@
 			</File>
 			<File
 				RelativePath=".\Colors.h"
-				>
-			</File>
-			<File
-				RelativePath=".\CSaString.h"
 				>
 			</File>
 			<File
@@ -3505,7 +3447,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\DlgAudio.h"
+				RelativePath=".\DlgAutoRecorder.h"
 				>
 			</File>
 			<File
@@ -3533,6 +3475,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\DlgFnKeys.h"
+				>
+			</File>
+			<File
 				RelativePath=".\DlgImport.h"
 				>
 			</File>
@@ -3546,6 +3492,18 @@
 			</File>
 			<File
 				RelativePath=".\DlgMultiChannel.h"
+				>
+			</File>
+			<File
+				RelativePath=".\DlgPlayer.h"
+				>
+			</File>
+			<File
+				RelativePath=".\DlgRecorder.h"
+				>
+			</File>
+			<File
+				RelativePath=".\DlgRecorderOptions.h"
 				>
 			</File>
 			<File
@@ -3573,6 +3531,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\DlgWaveNotifyObj.h"
+				>
+			</File>
+			<File
 				RelativePath=".\DocList.h"
 				>
 			</File>
@@ -3594,6 +3556,14 @@
 			</File>
 			<File
 				RelativePath=".\FileUtils.h"
+				>
+			</File>
+			<File
+				RelativePath=".\FlexEditGrid.h"
+				>
+			</File>
+			<File
+				RelativePath=".\FmtParm.h"
 				>
 			</File>
 			<File
@@ -3637,15 +3607,15 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Process\IProcess.h"
+				>
+			</File>
+			<File
 				RelativePath=".\ISa_Doc.h"
 				>
 			</File>
 			<File
-				RelativePath=".\ISaString.h"
-				>
-			</File>
-			<File
-				RelativePath=".\IUtf8String.h"
+				RelativePath=".\IWaveNotifiable.h"
 				>
 			</File>
 			<File
@@ -3689,7 +3659,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\playerRecorder.h"
+				RelativePath=".\picture.h"
+				>
+			</File>
+			<File
+				RelativePath=".\PlayMixer.h"
 				>
 			</File>
 			<File
@@ -3710,6 +3684,10 @@
 			</File>
 			<File
 				RelativePath=".\Process\Process.h"
+				>
+			</File>
+			<File
+				RelativePath=".\RecMixer.h"
 				>
 			</File>
 			<File
@@ -3905,10 +3883,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Process\SA_P_DOC.H"
-				>
-			</File>
-			<File
 				RelativePath=".\Process\Sa_p_dur.h"
 				>
 			</File>
@@ -3989,6 +3963,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Process\Sa_proc.h"
+				>
+			</File>
+			<File
 				RelativePath=".\SA_SBAR.H"
 				>
 			</File>
@@ -4034,6 +4012,10 @@
 			</File>
 			<File
 				RelativePath=".\saParm.h"
+				>
+			</File>
+			<File
+				RelativePath=".\SaString.h"
 				>
 			</File>
 			<File
@@ -4133,7 +4115,43 @@
 				>
 			</File>
 			<File
+				RelativePath=".\WaveInDevice.h"
+				>
+			</File>
+			<File
+				RelativePath=".\WaveIndex.h"
+				>
+			</File>
+			<File
+				RelativePath=".\WaveOutDevice.h"
+				>
+			</File>
+			<File
 				RelativePath=".\WaveResampler.h"
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="Diagrams"
+			>
+			<File
+				RelativePath=".\Export.cd"
+				>
+			</File>
+			<File
+				RelativePath=".\Graphs.cd"
+				>
+			</File>
+			<File
+				RelativePath=".\Process.cd"
+				>
+			</File>
+			<File
+				RelativePath=".\Segments.cd"
+				>
+			</File>
+			<File
+				RelativePath=".\Windows.cd"
 				>
 			</File>
 		</Filter>

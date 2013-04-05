@@ -58,46 +58,8 @@ void CSASelfTest::SelfTest()
     BOOL bTestSuccess = FALSE;
     CSaDoc * pDoc = NULL;
     CSaView * pView = NULL;
-    const UttParm * pUP = NULL;
-    FmtParm * pFP = NULL;
-
-    /*
-    // This test has problems because it involves a modal dialog box.
-    // The modal dialog box does not allow any processing to be done
-    // in the SA thread while it is waiting for OK or Cancel to be
-    // pressed. That means we can't send messages to the dialog while
-    // it's open.
-
-    if (StartTest("CHFrench UI open","Open CHFRENCH.WAV thru UI"))
-    {
-    CString szTestFileName = m_szTestFolderPath + "chfrench.wav";
-    if (FileExists(szTestFileName))
-    {
-    // THIS CODE USES DDOBATCH TO SEND KEYSTROKES
-    //char szProgramFileName[_MAX_PATH];
-    //char szScriptFileName[_MAX_PATH];
-    //GetShortPathName(m_szTestFolderPath + "UIOpen.ini",szScriptFileName,_MAX_PATH);
-    //GetShortPathName(m_szTestFolderPath + "DDOBatch.exe",szProgramFileName,_MAX_PATH);
-    //_spawnl(_P_NOWAIT ,szProgramFileName, szProgramFileName, szScriptFileName, NULL);
-    //MessageLoop(10000);
-
-    m_pMain->PostMessage(WM_COMMAND,ID_FILE_OPEN,0);
-    ::PostMessage(GetFocus(),WM_CHAR,50,0);
-    MessageLoop(3000);
-    CMDIChildWnd *Baby = m_pMain->MDIGetActive();
-    if (Baby)
-    {
-    pDoc = (CSaDoc*) Baby->GetActiveDocument();
-    pView = (CSaView*) Baby->GetActiveView();
-    }
-    }
-    bFileOpened = (pDoc !=NULL);
-    EndTest(bFileOpened);
-    bTestSuccess = m_pMain->SendMessage(WM_COMMAND,ID_FILE_CLOSE,0);
-    pDoc = NULL;
-    bFileOpened = FALSE;
-    }
-    */
+    const CUttParm * pUP = NULL;
+    CFmtParm fmtParm;
 
     if (StartTest("CHFrench open","Open file CHFRENCH.WAV"))
     {
@@ -167,34 +129,33 @@ void CSASelfTest::SelfTest()
     if (bFileOpened && StartTest("CHFrench FmtParm","Test format parameters"))
     {
         bTestSuccess = TRUE;
-
-        pFP = pDoc->GetFmtParm();
-        if (pFP->dwAvgBytesPerSec != 44100)
+        pDoc->GetFmtParm(fmtParm,false);
+        if (fmtParm.dwAvgBytesPerSec != 44100)
         {
             bTestSuccess = FALSE;
             LogEntry("Average bytes per second incorrectly set.");
         }
-        if (pFP->dwSamplesPerSec != 22050)
+        if (fmtParm.dwSamplesPerSec != 22050)
         {
             bTestSuccess = FALSE;
             LogEntry("Samples per second incorrectly set.");
         }
-        if (pFP->wBitsPerSample != 16)
+        if (fmtParm.wBitsPerSample != 16)
         {
             bTestSuccess = FALSE;
             LogEntry("Bits per sample incorrectly set.");
         }
-        if (pFP->wBlockAlign != 2)
+        if (fmtParm.wBlockAlign != 2)
         {
             bTestSuccess = FALSE;
             LogEntry("BlockAlign incorrectly set.");
         }
-        if (pFP->wChannels != 1)
+        if (fmtParm.wChannels != 1)
         {
             bTestSuccess = FALSE;
             LogEntry("Channels incorrectly set.");
         }
-        if (pFP->wTag != 1)
+        if (fmtParm.wTag != 1)
         {
             bTestSuccess = FALSE;
             LogEntry("Tag incorrectly set.");
@@ -420,12 +381,12 @@ void CSASelfTest::SelfTest()
     {
         CProcessSpectrum * pSpectrum = pDoc->GetSpectrum();
 
-        SpectrumParm * stParmSpec = pSpectrum->GetSpectrumParms();
+        CSpectrumParm * stParmSpec = pSpectrum->GetSpectrumParms();
         stParmSpec->nSmoothLevel = 3;
         stParmSpec->nPeakSharpFac = 3;
         pSpectrum->SetSpectrumParms(stParmSpec);
 
-        SPECT_PROC_SELECT SpectraSelected;
+        SSpectProcSelect SpectraSelected;
         SpectraSelected.bCepstralSpectrum = TRUE;    // turn off to reduce processing time
         SpectraSelected.bLpcSpectrum = TRUE;          // use Lpc method for estimating formants
 
@@ -457,7 +418,7 @@ void CSASelfTest::SelfTest()
     {
         CProcessFormants * pFormants = pDoc->GetFormants();
 
-        SPECT_PROC_SELECT SpectraSelected;
+        SSpectProcSelect SpectraSelected;
         SpectraSelected.bCepstralSpectrum = TRUE;    // turn off to reduce processing time
         SpectraSelected.bLpcSpectrum = TRUE;          // use Lpc method for estimating formants
 
@@ -519,10 +480,7 @@ void CSASelfTest::SelfTest()
         }
         else
         {
-            FmtParm * pFmtParm = pDoc->GetFmtParm(); // get sa parameters format member data
-            UINT nBlockAlign = pFmtParm->wBlockAlign;
-            WORD wSmpSize = WORD(nBlockAlign / pFmtParm->wChannels);
-
+            DWORD wSmpSize = pDoc->GetSampleSize();
             DWORD dwRawDataSize = pDoc->GetDataSize(); // size of raw data
             double fScaleFactor = (double)dwRawDataSize / (double)dwMelDataSize;
             DWORD dwFrameStart = (DWORD)((double)pView->GetStartCursorPosition() / fScaleFactor) & ~1; // must be multiple of two
@@ -544,27 +502,6 @@ void CSASelfTest::SelfTest()
             }
         }
     }
-
-    /* This one causes an exception
-    if (bFileOpened && StartTest("CHFrench GlottalWave","Test glottal wave process."))
-    {
-    CProcessGlottis * pGlottalWave = pDoc->GetGlottalWave();
-    short int nResult = LOWORD(pGlottalWave->Process(this, pDoc)); // process data
-    if (nResult != PROCESS_ERROR && nResult != PROCESS_CANCELED)
-    EndTest(!FileCompare(pGlottalWave->GetProcessFileName()));
-    else EndTest(FALSE);
-    }*/
-
-    /* This one causes an exception
-    if (bFileOpened && StartTest("CHFrench Ratio","Test ratio process."))
-    {
-    CProcessRatio * pRatio = pDoc->GetRatio();
-    short int nResult = LOWORD(pRatio->Process(this, pDoc)); // process data
-    if (nResult != PROCESS_ERROR && nResult != PROCESS_CANCELED)
-    EndTest(!FileCompare(pRatio->GetProcessFileName()));
-    else EndTest(FALSE);
-    }*/
-
 
     if (bFileOpened && m_pMain->MessageBox(_T("Include visual tests?"),_T("SA Self Test"),MB_YESNO)==IDYES)
     {
@@ -760,7 +697,7 @@ void CSASelfTest::SelfTest()
         DWORD dwStart = pView->GetStartCursorPosition();
         DWORD dwStop  = pView->GetStopCursorPosition();
         DWORD dwSize  = pDoc->GetDataSize();
-        if (!dwStart    && dwStop==dwSize - (pFP->wBitsPerSample/8))
+        if (!dwStart && dwStop==dwSize - (fmtParm.wBitsPerSample/8))
         {
             EndTest();
         }

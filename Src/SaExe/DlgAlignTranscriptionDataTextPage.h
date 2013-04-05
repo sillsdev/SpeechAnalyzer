@@ -3,7 +3,7 @@
 
 #include "resource.h"
 #include "AppDefs.h"
-#include "CSaString.h"
+#include "SaString.h"
 
 class CSaDoc;
 
@@ -11,7 +11,7 @@ class CDlgAlignTranscriptionDataTextPage : public CPropertyPage
 {
 
 public:
-    CDlgAlignTranscriptionDataTextPage(CSaDoc * pSaDoc, Annotations type, int IDD);
+    CDlgAlignTranscriptionDataTextPage(CSaDoc * pSaDoc, EAnnotation type, int IDD);
     virtual ~CDlgAlignTranscriptionDataTextPage();
 
 private:
@@ -28,7 +28,7 @@ public:
 public:
     bool m_bModified;
     CSaString m_szText;
-    Annotations m_Type;
+    EAnnotation m_Type;
     int IDD;
 
 private:

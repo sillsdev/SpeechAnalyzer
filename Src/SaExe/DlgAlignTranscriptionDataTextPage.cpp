@@ -6,13 +6,13 @@
 #include "DlgAlignTranscriptionDataSheet.h"
 #include "settings\obstream.h"
 #include "Sa_Doc.h"
-#include "CSaString.h"
+#include "SaString.h"
 #include "Segment.h"
 #include "DlgImportSFM.h"
 
-static const char * psz_ImportEnd = "import";
+static LPCSTR psz_ImportEnd = "import";
 
-CDlgAlignTranscriptionDataTextPage::CDlgAlignTranscriptionDataTextPage(CSaDoc * pSaDoc,  Annotations type, int aIDD) :
+CDlgAlignTranscriptionDataTextPage::CDlgAlignTranscriptionDataTextPage(CSaDoc * pSaDoc, EAnnotation type, int aIDD) :
     CPropertyPage(aIDD),
     m_pSaDoc(pSaDoc),
     m_Type(type),
@@ -56,7 +56,7 @@ void CDlgAlignTranscriptionDataTextPage::OnClickedImport()
     }
 
     CSaString path = dlg.GetPathName();
-    Object_istream obs(path);
+    CObjectIStream obs(path.utf8().c_str());
     if (obs.getIos().fail())
     {
         return;
@@ -81,10 +81,10 @@ void CDlgAlignTranscriptionDataTextPage::OnClickedImport()
 
         while (SFM && !obs.bAtEnd())
         {
-            if (dlg2.m_bPhonetic && obs.bReadString(dlg2.m_szPhonetic, & pSheet->phonetic.m_szText));
-            else if (dlg2.m_bPhonemic && obs.bReadString(dlg2.m_szPhonemic, & pSheet->phonemic.m_szText));
-            else if (dlg2.m_bOrthographic && obs.bReadString(dlg2.m_szOrthographic, & pSheet->ortho.m_szText));
-            else if (dlg2.m_bGloss  && obs.bReadString(dlg2.m_szGloss, & pSheet->gloss.m_szText));
+            if (dlg2.m_bPhonetic && ReadStreamString(obs,dlg2.m_szPhonetic,pSheet->phonetic.m_szText));
+            else if (dlg2.m_bPhonemic && ReadStreamString(obs,dlg2.m_szPhonemic,pSheet->phonemic.m_szText));
+            else if (dlg2.m_bOrthographic && ReadStreamString(obs,dlg2.m_szOrthographic,pSheet->ortho.m_szText));
+            else if (dlg2.m_bGloss  && ReadStreamString(obs,dlg2.m_szGloss,pSheet->gloss.m_szText));
             else if (obs.bEnd(psz_ImportEnd))
             {
                 break;
@@ -178,7 +178,7 @@ void CDlgAlignTranscriptionDataTextPage::SetAnnotation()
     pEdit->SetFont(pFont);
 
     // disable selection after the control is drawn...
-    pEdit->PostMessageW(EM_SETSEL,-1,0);
+    pEdit->PostMessageW( EM_SETSEL,-1,0);
 }
 
 void CDlgAlignTranscriptionDataTextPage::SetText(int nItem, CSaString szText)

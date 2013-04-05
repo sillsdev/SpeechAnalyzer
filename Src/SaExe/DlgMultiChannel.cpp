@@ -13,14 +13,11 @@
 
 IMPLEMENT_DYNAMIC(CDlgMultiChannel, CDialog)
 
-CDlgMultiChannel::CDlgMultiChannel(int nChannel, bool allowCombine) :
+CDlgMultiChannel::CDlgMultiChannel(int nChannel) :
     CDialog(CDlgMultiChannel::IDD,NULL),
     m_nChannels(nChannel),
-    m_bAllowCombine(allowCombine),
     m_nChannel(0)
 {
-    //{{AFX_DATA_INIT(CDlgMultiChannel)
-    //}}AFX_DATA_INIT
 }
 
 CDlgMultiChannel::~CDlgMultiChannel(void)
@@ -30,15 +27,11 @@ CDlgMultiChannel::~CDlgMultiChannel(void)
 void CDlgMultiChannel::DoDataExchange(CDataExchange * pDX)
 {
     CDialog::DoDataExchange(pDX);
-    //{{AFX_DATA_MAP(CDlgMultiChannel)
-    //}}AFX_DATA_MAP
     DDX_Control(pDX, IDC_MULTICHANNEL_COMBO, m_MultiChannelCombo);
     DDX_CBIndex(pDX, IDC_MULTICHANNEL_COMBO, m_nChannel);
 }
 
 BEGIN_MESSAGE_MAP(CDlgMultiChannel, CDialog)
-    //{{AFX_MSG_MAP(CDlgMultiChannel)
-    //}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
 BOOL CDlgMultiChannel::OnInitDialog()
@@ -68,15 +61,10 @@ BOOL CDlgMultiChannel::OnInitDialog()
             }
         }
     }
-    if (m_bAllowCombine)
-    {
-        szText.LoadString(IDS_MC_COMBINE);
-        m_MultiChannelCombo.AddString(szText);
-    }
 
     m_MultiChannelCombo.SetCurSel(0);
 
     UpdateData(FALSE);
 
-    return TRUE;  // return TRUE  unless you set the focus to a control
+    return TRUE; 
 }

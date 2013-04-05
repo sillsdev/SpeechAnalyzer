@@ -18,8 +18,8 @@ static char BASED_CODE THIS_FILE[] = __FILE__;
 /////////////////////////////////////////////////////////////////////////////
 // CTargViewDlg dialog
 
-CTargViewDlg::CTargViewDlg(CMainFrame * pMainFrame)
-    : CDialog(CTargViewDlg::IDD, (CWnd *)pMainFrame) ,
+CDlgTargView::CDlgTargView(CMainFrame * pMainFrame)
+    : CDialog(CDlgTargView::IDD, (CWnd *)pMainFrame) ,
       m_pMainFrame(pMainFrame),
       m_numTargs(0),
       m_selectionIndex(0)
@@ -39,29 +39,21 @@ CTargViewDlg::CTargViewDlg(CMainFrame * pMainFrame)
     }
 }
 
-void CTargViewDlg::DoDataExchange(CDataExchange * pDX)
+void CDlgTargView::DoDataExchange(CDataExchange * pDX)
 {
     CDialog::DoDataExchange(pDX);
-    //{{AFX_DATA_MAP(CTargViewDlg)
     DDX_Control(pDX, IDC_SELECT_TARGVIEW, m_TargView);
     DDX_Text(pDX, IDC_SRCVIEW, m_SrcView);
-    //}}AFX_DATA_MAP
 }
 
-BEGIN_MESSAGE_MAP(CTargViewDlg, CDialog)
-    //{{AFX_MSG_MAP(CTargViewDlg)
+BEGIN_MESSAGE_MAP(CDlgTargView, CDialog)
     ON_COMMAND(IDHELP, OnHelpEqualize)
-    //}}AFX_MSG_MAP
 END_MESSAGE_MAP()
-
-/////////////////////////////////////////////////////////////////////////////
-// CTargViewDlg message handlers
-
 
 /***************************************************************************/
 // CTargViewDlg::SetupTargViewList
 /***************************************************************************/
-void CTargViewDlg::SetupTargViewList()
+void CDlgTargView::SetupTargViewList()
 {
     CSaDoc * pSrcDoc = (CSaDoc *)m_pMainFrame->GetCurrSaView()->GetDocument();
     CDocList doclst; // list of currently open docs
@@ -88,8 +80,7 @@ void CTargViewDlg::SetupTargViewList()
     }
 }
 
-
-CSaView * CTargViewDlg::Targ()
+CSaView * CDlgTargView::Targ()
 {
     CSaView * target = NULL;
 
@@ -107,14 +98,14 @@ CSaView * CTargViewDlg::Targ()
 /***************************************************************************/
 // CTargViewDlg::OnOK() Button OK hit
 /***************************************************************************/
-void CTargViewDlg::OnOK()
+void CDlgTargView::OnOK()
 {
     UpdateData(TRUE);
     m_selectionIndex = (int)m_TargView.GetItemData(m_TargView.GetCurSel());
     CDialog::OnOK();
 }
 
-BOOL CTargViewDlg::OnInitDialog()
+BOOL CDlgTargView::OnInitDialog()
 {
     CDialog::OnInitDialog();
 
@@ -136,11 +127,7 @@ BOOL CTargViewDlg::OnInitDialog()
     return TRUE;
 }
 
-
-
-
-
-void CTargViewDlg::TrimPath(CString * pCStr)
+void CDlgTargView::TrimPath(CString * pCStr)
 {
     // calculate number of characters possible to display and limit the string
     const int nChars = 30;
@@ -153,10 +140,20 @@ void CTargViewDlg::TrimPath(CString * pCStr)
 /***************************************************************************/
 // CTargViewDlg::OnHelpEqualize Call Export Table help
 /***************************************************************************/
-void CTargViewDlg::OnHelpEqualize()
+void CDlgTargView::OnHelpEqualize()
 {
     // create the pathname
     CString szPath = AfxGetApp()->m_pszHelpFilePath;
     szPath += "::/User_Interface/Menus/Graphs/Equalize_Length.htm";
     ::HtmlHelp(NULL, szPath, HH_DISPLAY_TOPIC, NULL);
+}
+
+CString CDlgTargView::OnlyTarg()
+{
+    return m_onlyTarg;
+}
+
+int CDlgTargView::NumTargs()
+{
+    return m_numTargs;
 }

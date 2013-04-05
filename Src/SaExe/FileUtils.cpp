@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include <FileUtils.h>
 #include <sys/stat.h>
-#include "CSaString.h"
+#include "SaString.h"
 
 void GetTempFileName(LPCTSTR szPrefix, LPTSTR szFilename, size_t len)
 {
@@ -176,6 +176,16 @@ int GetSaveAsFilename(LPCTSTR title, LPCTSTR filter, LPCTSTR extension, LPTSTR p
     return result;
 }
 
+DWORD GetFileSize(LPCTSTR szFile)
+{
+    CFileStatus tempFileStat;
+    if (!CFile::GetStatus(szFile, tempFileStat))
+    {
+        return -1;
+    }
+    return tempFileStat.m_size;
+}
+
 bool EndsWith(LPCTSTR path, LPCTSTR extension)
 {
     if (wcslen(path)<wcslen(extension))
@@ -191,5 +201,3 @@ void RenameFile(LPCTSTR oldname, LPCTSTR newname)
 {
 	CFile::Rename( oldname, newname);
 }
-
-

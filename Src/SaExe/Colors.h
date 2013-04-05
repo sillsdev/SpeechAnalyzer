@@ -4,15 +4,15 @@
 
 #define _COLORS_H
 
-class Object_ostream;
-class Object_istream;
+class CObjectOStream;
+class CObjectIStream;
 
 class Colors
 {
 public:
 
-    void WriteProperties(Object_ostream & obs);
-    BOOL ReadProperties(Object_istream & obs);
+    void WriteProperties(CObjectOStream & obs);
+    BOOL ReadProperties(CObjectIStream & obs);
     void SetupDefault(BOOL bSystem= TRUE, BOOL bPrinting= FALSE);
     void SetupSystemColors();
 

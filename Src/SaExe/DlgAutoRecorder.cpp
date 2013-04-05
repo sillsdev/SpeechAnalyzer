@@ -13,18 +13,21 @@
 /////////////////////////////////////////////////////////////////////////////
 #include "stdafx.h"
 #include "sa_plot.h"
-#include "Process\Process.h"
 #include "sa_graph.h"
-#include "Process\sa_p_fra.h"
-#include "autoRecorder.h"
+#include "DlgAutoRecorder.h"
 #include "fileInformation.h"
 #include "sa_view.h"
 #include "mainfrm.h"
-#include "settings\obstream.h"
 #include "doclist.h"
 #include "sa_mplot.h"
 #include "sa.h"
 #include "FileUtils.h"
+#include "WaveOutDevice.h"
+#include "WaveInDevice.h"
+#include "FmtParm.h"
+#include "Process\Process.h"
+#include "Process\sa_p_fra.h"
+#include "settings\obstream.h"
 
 //###########################################################################
 // CDlgAutoRecorder dialog
@@ -34,8 +37,7 @@
 /////////////////////////////////////////////////////////////////////////////
 // CDlgAutoRecorder message map
 
-BEGIN_MESSAGE_MAP(CDlgAutoRecorder, CDlgAudio)
-    //{{AFX_MSG_MAP(CDlgAutoRecorder)
+BEGIN_MESSAGE_MAP(CDlgAutoRecorder, CDialog)
     ON_BN_CLICKED(IDC_STOP, OnStop)
     ON_WM_CLOSE()
     ON_COMMAND(IDC_VOLUMESLIDER, OnVolumeSlide)
@@ -50,20 +52,14 @@ BEGIN_MESSAGE_MAP(CDlgAutoRecorder, CDlgAudio)
     ON_MESSAGE(WM_USER_AUTO_RESTART, OnAutoRestart)
     ON_BN_CLICKED(IDC_PLAY, OnPlay)
     ON_COMMAND(IDHELP, OnHelpAutoRecorder)
-    //}}AFX_MSG_MAP
 END_MESSAGE_MAP()
-
-/////////////////////////////////////////////////////////////////////////////
-// CDlgAutoRecorder construction/destruction/creation
 
 /***************************************************************************/
 // CDlgAutoRecorder::CDlgAutoRecorder Constructor
 /***************************************************************************/
 CDlgAutoRecorder::CDlgAutoRecorder(CSaDoc * pDoc, CSaView * pView, CSaView * pTarget, CAlignInfo & alignInfo) :
-    CDlgAudio(IDD)
+    CDialog(IDD)
 {
-    //{{AFX_DATA_INIT(CDlgAutoRecorder)
-    //}}AFX_DATA_INIT
     m_hmmioFile = NULL;
     m_szFileName[0] = 0; // no file name
 
@@ -81,7 +77,8 @@ CDlgAutoRecorder::CDlgAutoRecorder(CSaDoc * pDoc, CSaView * pView, CSaView * pTa
 
     m_NotifyObj.Attach(this); // attach notify object
     m_pWave = new CWave;      // create CWave object
-    m_nVolume = m_pWave->GetVolume();
+    BOOL bResult = FALSE;
+    m_nVolume = m_pWave->GetVolume(bResult);
     m_dwRecordSize = 0;
     m_dwPlayPosition = 0;
     m_bFileReady = TRUE;
@@ -96,8 +93,8 @@ CDlgAutoRecorder::CDlgAutoRecorder(CSaDoc * pDoc, CSaView * pView, CSaView * pTa
         pApp->ErrorMessage(IDS_ERROR_MEMALLOC);
         return;
     }
-    m_lpData = (HPSTR)::GlobalLock(m_hData); // lock memory
-    if (!m_lpData)
+    m_lpRecData = (HPSTR)::GlobalLock(m_hData); // lock memory
+    if (m_lpRecData==NULL)
     {
         // memory lock error
         pApp->ErrorMessage(IDS_ERROR_MEMLOCK);
@@ -120,8 +117,6 @@ CDlgAutoRecorder::~CDlgAutoRecorder()
 void CDlgAutoRecorder::DoDataExchange(CDataExchange * pDX)
 {
     CDialog::DoDataExchange(pDX);
-    //{{AFX_DATA_MAP(CDlgAutoRecorder)
-    //}}AFX_DATA_MAP
 }
 
 /***************************************************************************/
@@ -363,11 +358,12 @@ void CDlgAutoRecorder::EndPlayback()
 /***************************************************************************/
 HPSTR CDlgAutoRecorder::GetWaveData(DWORD dwPlayPosition, DWORD dwDataSize)
 {
-    TRACE(_T("GetWaveData %g %g\n"), double(dwPlayPosition), double(dwDataSize));
+
+    //TRACE(_T("GetWaveData %g %g\n"), double(dwPlayPosition), double(dwDataSize));
     CSaDoc * pDoc = (CSaDoc *)m_pDoc;
-    DWORD dwWaveBufferSize = GetBufferSize();
-    if (((dwPlayPosition + dwDataSize) > (pDoc->GetWaveBufferIndex() + dwWaveBufferSize))
-            || ((dwPlayPosition + dwDataSize) > (dwPlayPosition - (dwPlayPosition % dwWaveBufferSize) + dwWaveBufferSize)))
+    DWORD dwWaveBufferSize = pDoc->GetWaveDataBufferSize();
+    if (((dwPlayPosition + dwDataSize) > (pDoc->GetWaveBufferIndex() + dwWaveBufferSize)) ||
+            ((dwPlayPosition + dwDataSize) > (dwPlayPosition - (dwPlayPosition % dwWaveBufferSize) + dwWaveBufferSize)))
     {
         return pDoc->GetWaveData(dwPlayPosition, TRUE); // get pointer to data block
     }
@@ -391,6 +387,7 @@ HPSTR CDlgAutoRecorder::GetWaveData(DWORD dwPlayPosition, DWORD dwDataSize)
 /***************************************************************************/
 void CDlgAutoRecorder::HighPassFilter()
 {
+
     CSaApp * pApp = (CSaApp *)AfxGetApp(); // get pointer to application
 
     // get out of 'data' chunk
@@ -403,9 +400,8 @@ void CDlgAutoRecorder::HighPassFilter()
     }
 
     // get data sizes
-    FmtParm * pFmtParm = m_pDoc->GetFmtParm();
-    UINT wSmpSize = pFmtParm->wBlockAlign / pFmtParm->wChannels;   // sample size in bytes
-    DWORD dwRecordingSize = m_mmckinfoSubchunk.cksize;             // recording size in bytes
+    DWORD wSmpSize = m_pDoc->GetSampleSize();                       // sample size in bytes
+    DWORD dwRecordingSize = m_mmckinfoSubchunk.cksize;              // recording size in bytes
 
     // get out of 'RIFF' chunk, to write RIFF size
     if (mmioAscend(m_hmmioFile, &m_mmckinfoParent, 0))
@@ -453,7 +449,7 @@ void CDlgAutoRecorder::HighPassFilter()
         }
         dwDataOffset -= (DWORD)lDataSize;
         mmioSeek(m_hmmioFile, -lDataSize, SEEK_CUR);                    // move to start of block
-        if (mmioRead(m_hmmioFile, m_lpData, lDataSize) == -1)           // load it
+        if (mmioRead(m_hmmioFile, m_lpRecData, lDataSize) == -1)           // load it
         {
             // error
             pApp->ErrorMessage(IDS_ERROR_READDATACHUNK);
@@ -464,22 +460,18 @@ void CDlgAutoRecorder::HighPassFilter()
         if (wSmpSize == 1)
         {
             // 8-bit unsigned
-            pHighPassFilter->BackwardPass((unsigned char *)m_lpData, (unsigned long)lDataSize);    // filter backwards
+            pHighPassFilter->BackwardPass((unsigned char *)m_lpRecData, (unsigned long)lDataSize);    // filter backwards
             //!!ck. return code?
-            //UINT nMaxLevel = max(abs(pHighPassFilter->GetMax()-128), abs(pHighPassFilter->GetMin()-128));  // get max level for block
-            //m_pWave->SetMaxLevel(100*(long)nMaxLevel/128);                                            // set max level
         }
         else
         {
             // 16-bit signed
-            pHighPassFilter->BackwardPass((short *)m_lpData, (unsigned long)lDataSize/wSmpSize);   // filter backwards
+            pHighPassFilter->BackwardPass((short *)m_lpRecData, (unsigned long)lDataSize/wSmpSize);   // filter backwards
             //!!ck. return code?
-            //UINT nMaxLevel = max(abs(pHighPassFilter->GetMax()), abs(pHighPassFilter->GetMin()));     // get max level for block
-            //m_pWave->SetMaxLevel(100*(long)nMaxLevel/32768);                                          // set max level
         }
 
         mmioSeek(m_hmmioFile, -lDataSize, SEEK_CUR);                    // return to start of block
-        if (mmioWrite(m_hmmioFile, m_lpData, lDataSize) == -1)          // write filtered data
+        if (mmioWrite(m_hmmioFile, m_lpRecData, lDataSize) == -1)          // write filtered data
         {
             // error
             pApp->ErrorMessage(IDS_ERROR_RECHPFILTER);
@@ -703,6 +695,7 @@ void CDlgAutoRecorder::CleanUp()
 /***************************************************************************/
 BOOL CDlgAutoRecorder::Apply()
 {
+
     ASSERT(m_hmmioFile);
 
     CSaApp * pApp = (CSaApp *)AfxGetApp(); // get pointer to application
@@ -744,27 +737,30 @@ BOOL CDlgAutoRecorder::Apply()
         return FALSE;
     }
     // write the format parameters into 'fmt ' chunk
-    FmtParm * pFmtParm = m_pDoc->GetFmtParm(); // get pointer to format parameters
-    long lError = mmioWrite(m_hmmioFile, (HPSTR)&pFmtParm->wTag, sizeof(WORD));
+    // get pointer to format parameters
+    CFmtParm fmtParm;
+    m_pDoc->GetFmtParm(fmtParm,false);
+
+    long lError = mmioWrite(m_hmmioFile, (HPSTR)&fmtParm.wTag, sizeof(WORD));
     if (lError != -1)
     {
-        lError = mmioWrite(m_hmmioFile, (HPSTR)&pFmtParm->wChannels, sizeof(WORD));
+        lError = mmioWrite(m_hmmioFile, (HPSTR)&fmtParm.wChannels, sizeof(WORD));
     }
     if (lError != -1)
     {
-        lError = mmioWrite(m_hmmioFile, (HPSTR)&pFmtParm->dwSamplesPerSec, sizeof(DWORD));
+        lError = mmioWrite(m_hmmioFile, (HPSTR)&fmtParm.dwSamplesPerSec, sizeof(DWORD));
     }
     if (lError != -1)
     {
-        lError = mmioWrite(m_hmmioFile, (HPSTR)&pFmtParm->dwAvgBytesPerSec, sizeof(DWORD));
+        lError = mmioWrite(m_hmmioFile, (HPSTR)&fmtParm.dwAvgBytesPerSec, sizeof(DWORD));
     }
     if (lError != -1)
     {
-        lError = mmioWrite(m_hmmioFile, (HPSTR)&pFmtParm->wBlockAlign, sizeof(WORD));
+        lError = mmioWrite(m_hmmioFile, (HPSTR)&fmtParm.wBlockAlign, sizeof(WORD));
     }
     if (lError != -1)
     {
-        lError = mmioWrite(m_hmmioFile, (HPSTR)&pFmtParm->wBitsPerSample, sizeof(WORD));
+        lError = mmioWrite(m_hmmioFile, (HPSTR)&fmtParm.wBitsPerSample, sizeof(WORD));
     }
     if (lError == -1)
     {
@@ -784,15 +780,15 @@ BOOL CDlgAutoRecorder::Apply()
         m_pDoc->GetSaParm(&saParm);
         // set the sa parameters
         saParm.RecordTimeStamp = CTime::GetCurrentTime();
-        saParm.dwRecordBandWidth = pFmtParm->dwSamplesPerSec / 2;
+        saParm.dwRecordBandWidth = fmtParm.dwSamplesPerSec / 2;
         if (saParm.wFlags & SA_FLAG_HIGHPASS)
         {
             saParm.dwRecordBandWidth -= 70;
         }
-        saParm.byRecordSmpSize = (BYTE)pFmtParm->wBitsPerSample;
-        saParm.dwNumberOfSamples = m_dwRecordSize / pFmtParm->wBlockAlign;
+        saParm.byRecordSmpSize = (BYTE)fmtParm.wBitsPerSample;
+        saParm.dwNumberOfSamples = m_dwRecordSize / fmtParm.wBlockAlign;
         saParm.dwSignalBandWidth = saParm.dwRecordBandWidth;
-        saParm.byQuantization = (BYTE)pFmtParm->wBitsPerSample;
+        saParm.byQuantization = (BYTE)fmtParm.wBitsPerSample;
         m_pDoc->SetSaParm(&saParm);
         m_pDoc->RestartAllProcesses();
         m_pDoc->InvalidateAllProcesses();
@@ -1041,7 +1037,7 @@ CSaView * CDlgAutoRecorder::GetTarget()
 }
 
 /***************************************************************************/
-// CDlgRecorder::OnVolumeSlide Volume slider position changed
+// CDlgAutoRecorder::OnVolumeSlide Volume slider position changed
 /***************************************************************************/
 void CDlgAutoRecorder::OnVolumeSlide()
 {
@@ -1169,16 +1165,15 @@ void CDlgAutoRecorder::EnableRecVolume(BOOL bEnable)
     {
         pWnd->EnableWindow(bEnable);
     }
-
     m_SliderRecVolume.EnableWindow(bEnable);
 }
 
 UINT CDlgAutoRecorder::GetRecVolume()
 {
-    BOOL bResult;
-    UINT nVolume = m_pWave->GetInDevice()->GetVolume(&bResult);
-    EnableRecVolume(bResult);
 
+    UINT nVolume;
+    BOOL result = (m_pWave->GetInDevice()->GetVolume(nVolume)==MMSYSERR_NOERROR);
+    EnableRecVolume(result);
     return nVolume;
 }
 
@@ -1187,10 +1182,9 @@ UINT CDlgAutoRecorder::GetRecVolume()
 /***************************************************************************/
 LRESULT CDlgAutoRecorder::OnMixerControlChange(WPARAM, LPARAM)
 {
+
     BOOL bResult = FALSE;
-
-    m_nVolume = m_pWave->GetVolume(&bResult);
-
+    m_nVolume = m_pWave->GetVolume(bResult);
     if (bResult)
     {
         SetDlgItemInt(IDC_VOLUMEEDIT, m_nVolume, TRUE);

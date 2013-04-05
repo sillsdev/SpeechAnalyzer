@@ -10,6 +10,7 @@
 #include "sa_graph.h"
 #include "SA_G_3dPitch.h"
 #include "Process\sa_p_3dPitch.h"
+#include "AppDefs.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -36,31 +37,15 @@ CPlot3dPitch::~CPlot3dPitch()
 
 IMPLEMENT_DYNCREATE(CPlot3dPitch, CPlotWnd)
 
-/////////////////////////////////////////////////////////////////////////////
-// CPlot3dPitch static member definition
-
-BOOL CPlot3dPitch::bPaletteInit = FALSE;  // palette not initialized yet
-int CPlot3dPitch::nPaletteMode = SYSTEMCOLOR; // use system colors only
-CPalette CPlot3dPitch::SpectroPalette; // color palette
-
-/////////////////////////////////////////////////////////////////////////////
-// CPlot3dPitch message map
+BOOL CPlot3dPitch::bPaletteInit = FALSE;        // palette not initialized yet
+int CPlot3dPitch::nPaletteMode = SYSTEMCOLOR;   // use system colors only
+CPalette CPlot3dPitch::SpectroPalette;          // color palette
 
 BEGIN_MESSAGE_MAP(CPlot3dPitch, CPlotWnd)
-    //{{AFX_MSG_MAP(CPlot3dPitch)
-    //}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
 // SDM 1.5Test10.3
 #define sparsePaletteSize 30l
-
-// SDM 1.5Test10.3
-struct RGB
-{
-    long r;
-    long g;
-    long b;
-};
 
 // SDM 1.5Test10.3
 static struct RGB sparsePalette[sparsePaletteSize+1] =

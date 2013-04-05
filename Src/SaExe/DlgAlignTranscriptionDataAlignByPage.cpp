@@ -4,7 +4,7 @@
 #include "stdafx.h"
 #include "DlgAlignTranscriptionDataAlignByPage.h"
 #include "DlgAlignTranscriptionDataSheet.h"
-#include "CSaString.h"
+#include "SaString.h"
 
 CDlgAlignTranscriptionDataAlignByPage::CDlgAlignTranscriptionDataAlignByPage() :
     CPropertyPage(CDlgAlignTranscriptionDataAlignByPage::IDD),

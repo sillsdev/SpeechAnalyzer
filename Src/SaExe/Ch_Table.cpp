@@ -10,7 +10,7 @@
 #include "ch_table.h"
 #include "ch_dlwnd.h"
 #include "resource.h"
-#include "CSaString.h"
+#include "SaString.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE
@@ -59,7 +59,7 @@ void CCharTable::CleanUp()
 {
 
     // delete all the objects in the array and empty the array
-    int nArraySize = m_CharOb.GetCount();
+    int nArraySize = m_CharOb.GetUpperBound() + 1;
     for (int nLoop = 0; nLoop < nArraySize; nLoop++)
     {
         if (m_CharOb.GetAt(nLoop))

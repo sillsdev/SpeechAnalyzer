@@ -129,7 +129,6 @@ void CSaFindDlg::ResetCompletionCheck()
 /***************************************************************************/
 CString CSaFindDlg::GetFindString()
 {
-
     UpdateData();
     CString strToFind(m_strToFind);
 
@@ -150,9 +149,7 @@ CString CSaFindDlg::GetFindString()
 /***************************************************************************/
 void CSaFindDlg::EnableDisable()
 {
-
     BOOL glossMode = (AnnotationSetID() == GLOSS);
-
     GetDlgItem(IDC_CHARACTERCHART)->EnableWindow(!glossMode); // disable char. chart button
     GetDlgItem(IDC_INPUTGLOSS)->EnableWindow(glossMode); // disable selection
     GetDlgItem(IDC_INPUTBREAK)->EnableWindow(glossMode); // disable selection
@@ -179,7 +176,6 @@ void CSaFindDlg::SetEditFont()
 /***************************************************************************/
 void CSaFindDlg::DoDataExchange(CDataExchange * pDX)
 {
-
     CDialog::DoDataExchange(pDX);
     DDX_Text(pDX, IDC_INPUTSTRING, m_strToFind);            // m_szFindWhat
     DDX_Control(pDX, IDC_CBOFIELD,  m_annotSetId);
@@ -193,7 +189,6 @@ void CSaFindDlg::DoDataExchange(CDataExchange * pDX)
 /***************************************************************************/
 void CSaFindDlg::ScrollIfNeeded()
 {
-
     CSegment * pAnnot = m_pMainFrame->GetAnnotation(AnnotationSetID());
 
     CSaView * pView = (CSaView *)m_pMainFrame->GetCurrSaView();
@@ -208,10 +203,8 @@ void CSaFindDlg::ScrollIfNeeded()
 
 void CSaFindDlg::SetupDialogForFindOnly()
 {
-
     // change the replace button title
     GetDlgItem(IDC_REPLACE)->SetWindowText(_T("Replace..."));
-
     // hide replace controls
     CRect r4(m_rctReplaceString);
     r4.bottom += r4.Height() * 2;
@@ -278,7 +271,6 @@ void CSaFindDlg::SetupDialogForFindOnly()
 
 void CSaFindDlg::SetupDialogForFindAndReplace()
 {
-
     CRect r,r2;
 
     UpdateData();
@@ -316,7 +308,6 @@ void CSaFindDlg::SetupDialogForFindAndReplace()
 
 void CSaFindDlg::SaveDialogLayout()
 {
-
     // save locations of controls
     GetDlgItem(IDC_STATIC3)->GetWindowRect(m_rctSearchInText);
     ScreenToClient(m_rctSearchInText);
@@ -344,12 +335,10 @@ void CSaFindDlg::SaveDialogLayout()
 
 int CSaFindDlg::AnnotationSetID()
 {
-
     if (m_bFindOnly)
     {
         return m_annotSetID2.GetCurSel();
     }
-
     return m_annotSetId.GetCurSel();
 }
 
@@ -359,7 +348,6 @@ int CSaFindDlg::AnnotationSetID()
 /***************************************************************************/
 BOOL CSaFindDlg::OnInitDialog()
 {
-
     CDialog::OnInitDialog();
 
     CenterWindow();
@@ -419,7 +407,6 @@ BOOL CSaFindDlg::OnInitDialog()
 /***************************************************************************/
 void CSaFindDlg::OnCharacterChart()
 {
-
     // save the edit box selection, just to be sure
     int nStartChar, nEndChar;
     DWORD dwSel = ((CEdit *)GetDlgItem(m_nTextBoxInFocus))->GetSel();
@@ -493,7 +480,6 @@ void CSaFindDlg::OnSetFocusReplaceString()
 /***************************************************************************/
 void CSaFindDlg::OnNext()
 {
-
     if (m_pMainFrame==NULL)
     {
         return;
@@ -568,7 +554,6 @@ void CSaFindDlg::OnNext()
 /***************************************************************************/
 void CSaFindDlg::OnPrevious()
 {
-
     if (m_pMainFrame==NULL)
     {
         return;
@@ -639,7 +624,6 @@ void CSaFindDlg::OnPrevious()
 
 void CSaFindDlg::OnReplace()
 {
-
     if (m_bFindOnly)
     {
         m_bFindOnly = FALSE;
@@ -653,7 +637,6 @@ void CSaFindDlg::OnReplace()
 
 void CSaFindDlg::Replace()
 {
-
     if (m_pMainFrame==NULL)
     {
         return;
@@ -702,7 +685,6 @@ void CSaFindDlg::Replace()
 /***************************************************************************/
 CString CSaFindDlg::GetReplaceString()
 {
-
     UpdateData();
     CString replaceStr(m_replaceStr);
 
@@ -772,7 +754,6 @@ void CSaFindDlg::OnReplaceAll()
 /***************************************************************************/
 void CSaFindDlg::EnableSearch(BOOL enable)
 {
-
     GetDlgItem(IDC_NEXT)->EnableWindow(enable);
     GetDlgItem(IDC_PREVIOUS)->EnableWindow(enable);
     GetDlgItem(IDC_REPLACE)->EnableWindow(enable);
@@ -783,7 +764,6 @@ void CSaFindDlg::EnableSearch(BOOL enable)
 /***************************************************************************/
 void CSaFindDlg::OnHelpFind()
 {
-
     // create the pathname
     CString szPath = AfxGetApp()->m_pszHelpFilePath;
     szPath = szPath + "::/User_Interface/Menus/Edit/Find.htm";

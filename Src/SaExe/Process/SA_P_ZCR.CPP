@@ -106,15 +106,14 @@ long CProcessZCross::Process(void * pCaller, ISaDoc * pDoc, int nProgress,
     }
     // process raw data into zero crossing data
     DWORD dwDataSize = pDoc->GetDataSize(); // size of raw data
-    FmtParm * pFmtParm = pDoc->GetFmtParm(); // get sa parameters format member data
-    UINT nSmpSize = pFmtParm->wBlockAlign / pFmtParm->wChannels;
+    DWORD nSmpSize = pDoc->GetSampleSize();
     HPSTR pRawData = NULL, pBlockStart; // pointers to raw data
     short int * pZCrossData = (short int *)m_lpBuffer; // pointer to zero crossing data
     // set critical loudness range (10% of max loudness)
     int nMaxCriticalLoud = nMaxLoud / (10);
     int nMinCriticalLoud = -nMaxLoud / (10);
     // prepare processing loop
-    UINT nCalcDataLength = CALCULATION_DATALENGTH(pFmtParm->dwSamplesPerSec) * pFmtParm->dwSamplesPerSec/22050;  //!!based on min pitch?
+    UINT nCalcDataLength = CALCULATION_DATALENGTH(pDoc->GetSamplesPerSec()) * pDoc->GetSamplesPerSec()/22050;  //!!based on min pitch?
     UINT nCalcInterval = nCalcDataLength / 3;   // more than 2 x bandwidth
     DWORD dwDataEnd = dwDataSize - nCalcDataLength * nSmpSize; // end of loop
     DWORD dwDataPos = 0; // raw data position pointer
@@ -223,8 +222,8 @@ long CProcessZCross::Process(void * pCaller, ISaDoc * pDoc, int nProgress,
             m_nMaxValue = nZeroCount;    // save maximum value
         }
         // set new calculation window start
-        pRawData -= (nCalcDataLength - ZCROSS_SAMPLEWINDOWWIDTH(pFmtParm->dwSamplesPerSec)) * nSmpSize;
-        dwDataPos -= (nCalcDataLength - ZCROSS_SAMPLEWINDOWWIDTH(pFmtParm->dwSamplesPerSec)) * nSmpSize;
+        pRawData -= (nCalcDataLength - ZCROSS_SAMPLEWINDOWWIDTH(pDoc->GetSamplesPerSec())) * nSmpSize;
+        dwDataPos -= (nCalcDataLength - ZCROSS_SAMPLEWINDOWWIDTH(pDoc->GetSamplesPerSec())) * nSmpSize;
         /*********************************************************************/
         // Added by CLW 9/21-25/98
         // fill zeroes at end of data

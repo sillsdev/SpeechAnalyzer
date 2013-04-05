@@ -41,7 +41,6 @@ private:
     BOOL m_bCepstralSpectrumSymbol;   // TRUE, if the graphic symbol for the cepstrally-smoothed spectrum pane is visible
     BOOL m_bLpcSpectrumSymbol;        // TRUE, if the graphic symbol for the LPC spectrum pane is visible
 
-    // Operations
 public:
     void Init(); // initialisation
     void DoPaint(CDC * pdc); // overridden for sa statusbar
@@ -51,9 +50,7 @@ public:
 
     // Generated message map functions
 protected:
-    //{{AFX_MSG(CDataStatusBar)
     afx_msg void OnPaint();
-    //}}AFX_MSG
     DECLARE_MESSAGE_MAP()
 };
 
@@ -67,62 +64,36 @@ protected:
 
 class CProgressStatusBar : public CStatusBar
 {
-    // Construction/destruction/creation
+
 public:
     CProgressStatusBar();
     virtual ~CProgressStatusBar();
 
-    // Attributes
-private:
-    CFont * m_pFont;            // status bar font
-    void * m_pProcessOwner;   // process owner
-    void * m_pProcessCaller;   // process caller
-    CProgressBar m_ProgressBar; // progress bar object
-    //CProgressCancelDlg* m_pdlgCancel;
-    BOOL m_bIsPrinting;
-    int m_nInMessageLoop;
-
-    // Operations
-protected:
-    void MessageLoop(); // do windows message loop
-public:
     void Init(); // initialisation
     void SetProcessOwner(void * pProcess, void * pCaller, int nProcessID = -1); // save the process owner
-    void * GetProcessOwner()
-    {
-        return m_pProcessOwner;   // return the process owner
-    }
-    void * GetProcessCaller()
-    {
-        return m_pProcessCaller;   // return the process caller
-    }
-    void InitProgress(); // initialisation of progress bar
-    void SetProgress(int nVal); // set progress bar
-    int  GetProgress()
-    {
-        return m_ProgressBar.GetProgress();   // get progress
-    }
+    void * GetProcessOwner();       // return the process owner
+    void * GetProcessCaller();      // return the process caller
+    void InitProgress();            // initialisation of progress bar
+    void SetProgress(int nVal);     // set progress bar
+    int  GetProgress();             // get progress
     BOOL SetPaneText(int nPaneID, LPCTSTR lpszText, BOOL bUpdate = TRUE);
     void GetItemRect(int nPaneID, LPRECT lpRect);
-    void SetIsPrintingFlag(BOOL isPrinting)
-    {
-        m_bIsPrinting = isPrinting;
-    };
+    void SetIsPrintingFlag(BOOL isPrinting);
     virtual void DelayShow();
-    BOOL InProcessMessageLoop() const
-    {
-        return m_nInMessageLoop != 0;
-    }
+    BOOL InProcessMessageLoop() const;
 
-
-    // Related to Cancel button.
-
-
-    // Generated message map functions
 protected:
-    //{{AFX_MSG(CProgressStatusBar)
-    //}}AFX_MSG
+    void MessageLoop(); // do windows message loop
+
     DECLARE_MESSAGE_MAP()
+
+private:
+    CFont * m_pFont;                // status bar font
+    void * m_pProcessOwner;         // process owner
+    void * m_pProcessCaller;        // process caller
+    CProgressBar m_ProgressBar;     // progress bar object
+    BOOL m_bIsPrinting;
+    int m_nInMessageLoop;
 };
 
-#endif //_SA_SBAR_H
+#endif

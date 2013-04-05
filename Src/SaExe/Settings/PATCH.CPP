@@ -9,8 +9,6 @@
 #include "stdSettings.h"
 #include "patch.h"
 
-
-
 const char * Shw_pszWhiteSpace = " \t\n"; // white space: space, tab, newline
 const char * Shw_pszOtherWhiteSpace = "\t\n"; // above, other than space itself
 

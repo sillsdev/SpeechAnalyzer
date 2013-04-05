@@ -813,19 +813,18 @@ void CDlgGraphTypesOrder::OnDrawItem(int nIDCtl, LPDRAWITEMSTRUCT lpDrawItemStru
     }
 }
 
-static const char * psz_Configuration = "GraphConfiguration";
-static const char * psz_Layout      = "Layout";
-static const char * psz_LayoutGraph = "LayoutGraph";
-static const char * psz_OtherGraph = "OtherGraph";
-static const char * psz_Predefined      = "Predefined";
+static LPCSTR psz_Configuration = "GraphConfiguration";
+static LPCSTR psz_Layout      = "Layout";
+static LPCSTR psz_LayoutGraph = "LayoutGraph";
+static LPCSTR psz_OtherGraph = "OtherGraph";
+static LPCSTR psz_Predefined      = "Predefined";
 
 // Write spectrumParm properties to stream
-void CGraphConfiguration::WriteProperties(Object_ostream & obs, BOOL bPredefined) const
+void CGraphConfiguration::WriteProperties(CObjectOStream & obs, BOOL bPredefined) const
 {
+
     UNUSED_ALWAYS(bPredefined);
-
-    obs.WriteBeginMarker(psz_Configuration, GetDescription());
-
+    obs.WriteBeginMarker(psz_Configuration, GetDescription().utf8().c_str());
     // write out properties
     obs.WriteInteger(psz_Layout, m_nLayout);
     // obs.WriteBool(psz_Predefined, bPredefined);
@@ -835,7 +834,7 @@ void CGraphConfiguration::WriteProperties(Object_ostream & obs, BOOL bPredefined
 
         if (nID)
         {
-            obs.WriteUInt(IsLayoutGraph(nID) ? psz_LayoutGraph : psz_OtherGraph, nID, CSaView::GetGraphTitle(nID));
+            obs.WriteUInt(IsLayoutGraph(nID) ? psz_LayoutGraph : psz_OtherGraph, nID, CSaView::GetGraphTitle(nID).utf8().c_str());
         }
     }
 
@@ -843,7 +842,7 @@ void CGraphConfiguration::WriteProperties(Object_ostream & obs, BOOL bPredefined
 }
 
 // Read spectrumParm properties from *.psa file.
-BOOL CGraphConfiguration::ReadProperties(Object_istream & obs, BOOL & bPredefined)
+BOOL CGraphConfiguration::ReadProperties(CObjectIStream & obs, BOOL & bPredefined)
 {
     if (!obs.bAtBackslash() || !obs.bReadBeginMarker(psz_Configuration))
     {
@@ -883,7 +882,7 @@ BOOL CGraphConfigurationVector::Load(LPCTSTR szFilename, int nTaskType)
         try
         {
             CSaString filename(szFilename);
-            Object_istream obs(filename);
+            CObjectIStream obs(filename.utf8().c_str());
             while (!obs.bAtEnd())
             {
                 CGraphConfiguration newSet;
@@ -945,7 +944,7 @@ BOOL CGraphConfigurationVector::Save(LPCTSTR szFilename) const
     try
     {
         CSaString filename(szFilename);
-        Object_ostream obs(filename);
+        CObjectOStream obs(filename.utf8().c_str());
         for (int i = 0; i < (int)size(); i++)
         {
             operator[](i).WriteProperties(obs, i < GetCountPredefinedSets());
@@ -1041,10 +1040,8 @@ CDlgGraphsTypes::CDlgGraphsTypes(CWnd * pParent, const UINT * pGraphIDs ,int nLa
 void CDlgGraphsTypes::DoDataExchange(CDataExchange * pDX)
 {
     CDialog::DoDataExchange(pDX);
-    //{{AFX_DATA_MAP(CDlgGraphsTypes)
     DDX_Control(pDX, IDC_LIST, m_cList);
     DDX_Control(pDX, IDC_TASKTYPE, m_cTaskType);
-    //}}AFX_DATA_MAP
 }
 
 BEGIN_MESSAGE_MAP(CDlgGraphsTypes, CDialog)
@@ -1394,4 +1391,3 @@ CGraphConfigurationVector & CDlgGraphsTypes::GetGraphConfigurationVector(int nTa
     }
     }
 }
-

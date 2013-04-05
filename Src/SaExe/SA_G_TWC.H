@@ -39,7 +39,7 @@ public:
     {
         return m_dSemitoneOffset;
     }
-    virtual Grid GetGrid() const;
+    virtual CGrid GetGrid() const;
 
 private:
     void PaintHelper(CDC * pDC, CRect rWnd, CRect rClip,

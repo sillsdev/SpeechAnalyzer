@@ -9,7 +9,6 @@
 //         Modified by A. Epting
 // copyright 2000 JAARS Inc. SIL
 /////////////////////////////////////////////////////////////////////////////
-
 #include "stdafx.h"
 #include "sa_plot.h"
 #include "dsp\signal.h"
@@ -87,7 +86,7 @@ void CFormantChart::SetStartCursor(CSaView * pView)
     CSaDoc * pDoc = (CSaDoc *)pView->GetDocument();
     CProcessFormants * pFormants = pDoc->GetFormants();
     pFormants->ResetTracking();  // start over
-    FormantParm * pFormantSource = pFormants->GetFormantParms();
+    CFormantParm * pFormantSource = pFormants->GetFormantParms();
     CPlotWnd::SetStartCursor(pView);
 
     // Finish pitch processing if necessary.
@@ -125,7 +124,7 @@ void CFormantChart::SetStopCursor(CSaView * pView)
     // Finish pitch processing if necessary.
     CSaDoc * pDoc   = pView->GetDocument();
     CProcessFormants * pFormants = (CProcessFormants *)pDoc->GetFormants(); // get pointer to formants object
-    FormantParm * pFormantSource = pFormants->GetFormantParms();
+    CFormantParm * pFormantSource = pFormants->GetFormantParms();
     CProcessGrappl * pAutoPitch = (CProcessGrappl *)pDoc->GetGrappl();
     short int nResult = LOWORD(pAutoPitch->Process(this, pDoc)); // process data
     if (nResult == PROCESS_ERROR || nResult == PROCESS_NO_DATA || nResult == PROCESS_CANCELED)
@@ -186,13 +185,12 @@ short int CFormantChart::ProcessFormants()
     CGraphWnd * pGraph = (CGraphWnd *)GetParent();
     CSaView * pView = (CSaView *)pGraph->GetParent();
     CSaDoc * pDoc   = pView->GetDocument();
-    FmtParm * pFmtParm = pDoc->GetFmtParm(); // get sa parameters format member data
-    WORD wSmpSize = (WORD)(pFmtParm->wBlockAlign / pFmtParm->wChannels);  // calculate sample size in bytes
+    DWORD wSmpSize = pDoc->GetSampleSize();  // calculate sample size in bytes
     BOOL bDynamicUpdate = (pView->GetGraphUpdateMode() == DYNAMIC_UPDATE);
 
     // Get formant object and formant plot parameters.
     CProcessFormants * pFormants = (CProcessFormants *)pDoc->GetFormants(); // get pointer to formants object
-    FormantParm * pFormantParms = pFormants->GetFormantParms();   //!!move to formant processing class
+    CFormantParm * pFormantParms = pFormants->GetFormantParms();   //!!move to formant processing class
 
     // Finish pitch processing if necessary.
     CProcessGrappl * pAutoPitch = (CProcessGrappl *)pDoc->GetGrappl();
@@ -220,7 +218,7 @@ short int CFormantChart::ProcessFormants()
 
     // Set frame parameters.
     DWORD dwFrameStart, dwFrameSize;
-    SPECT_PROC_SELECT SpectraSelected;
+    SSpectProcSelect SpectraSelected;
 
     if (bDynamicUpdate)
     {
@@ -275,7 +273,7 @@ short int CFormantChart::ProcessFormants()
 // CFormantChart::StandardPlot
 /***************************************************************************/
 void CFormantChart::StandardPlot(CSaView * pView, CDC * pDC, CRect rClient, CRect rClip,
-                                 zGraphStruct & zG, BOOL bFlipChart, BOOL bShowAxes, BOOL bValidData)
+                                 SGraph & zG, BOOL bFlipChart, BOOL bShowAxes, BOOL bValidData)
 {
     if (IsIconic())
     {
@@ -295,7 +293,7 @@ void CFormantChart::StandardPlot(CSaView * pView, CDC * pDC, CRect rClient, CRec
     Colors * pColor = pMainWnd->GetColors(); // get application colors
     CSaDoc * pDoc = (CSaDoc *)pView->GetDocument();
     CProcessFormants * pFormants = (CProcessFormants *)pDoc->GetFormants(); // get pointer to formants object
-    FormantParm * pFormantParms = pFormants->GetFormantParms();   //!!move to formant processing class
+    CFormantParm * pFormantParms = pFormants->GetFormantParms();   //!!move to formant processing class
     ProcessFTFormants(); // process FormantTracker formants
     BOOL bDynamicUpdate = (pView->GetGraphUpdateMode() == DYNAMIC_UPDATE);
     BOOL bTrackFormants = pFormantParms->bTrackFormants;
@@ -309,7 +307,7 @@ void CFormantChart::StandardPlot(CSaView * pView, CDC * pDC, CRect rClient, CRec
     else
     {
         //PlotColorArray[0] = (zG.n == 1 && !bDynamicUpdate) ? pColor->cPlotData[0]: pColor->cPlotData[2];
-        FormantParm * pFormantSource = pFormants->GetFormantParms();
+        CFormantParm * pFormantSource = pFormants->GetFormantParms();
         PlotColorArray[0] = (pFormantSource->bFromCepstralSpectrum && zG.n == 1 && !bDynamicUpdate) ?
                             pColor->cPlotData[0]: pColor->cPlotData[2];
         PlotColorArray[1] = pColor->cPlotData[0];
@@ -333,7 +331,7 @@ void CFormantChart::StandardPlot(CSaView * pView, CDC * pDC, CRect rClient, CRec
         }
     }
 
-    // fill In the [zGraphStruct] structure elements
+    // fill In the [SGraph] structure elements
     zG.hdc          = hdc            ; // windows HDC
     zG.RWindow      = &rClient       ; // RECT with plot dimensions
     zG.symbols      = (int far *)DataPointSymbol; // symbols array (no symbols used)
@@ -364,7 +362,7 @@ void CFormantChart::StandardPlot(CSaView * pView, CDC * pDC, CRect rClient, CRec
     // draw the graph -- this could be done by calling the ScatterGraph function,
     // but we need to draw vowels over the graph and therefore need to create
     // a ScatterGraph object and use its member functions
-    zScatterGraph * pFormantChart = new zScatterGraph(&zG); // construct new graph window
+    CScatterGraph * pFormantChart = new CScatterGraph(&zG); // construct new graph window
     pFormantChart->zInitGraph();                            // initialize it
 
     // scale data and reverse it as needed
@@ -468,15 +466,9 @@ void CFormantChart::StandardPlot(CSaView * pView, CDC * pDC, CRect rClient, CRec
     {
         CSaString VowelId = pFormants->FindNearestVowel(pDoc);
         CSize VowelIdSize = pDC->GetTextExtent(VowelId);
-#ifdef originalSizeZGraph
-        int nBottom = pFormantChart->Y_TOP;
-        int nTop = nBottom - VowelIdSize.cy;
-        int nRight = pFormantChart->X_RIGHT;
-#else
         int nTop = pFormantChart->Y_TOP;
         int nBottom = nTop + VowelIdSize.cy;
         int nRight = pFormantChart->X_RIGHT  - VowelIdSize.cx/3;
-#endif
         int nLeft = nRight - VowelIdSize.cx;
         CRect rVowel;
 
@@ -504,9 +496,6 @@ void CFormantChart::StandardPlot(CSaView * pView, CDC * pDC, CRect rClient, CRec
 
     // label the graph
     pFormantChart->zDrawLegend();
-#ifdef originalSizeZGraph
-    pFormantChart->zShowGraphTitles();
-#endif
 
     // check if data is outside graph boundaries
     if (zG.xdata && zG.ydata && bValidData)
@@ -576,7 +565,7 @@ void CFormantChart::StandardPlot(CSaView * pView, CDC * pDC, CRect rClient, CRec
 /***************************************************************************/
 POINT CFormantChart::GetXYCoordinates(void * pG, double x , double y, BOOL bFlip)
 {
-    zScatterGraph * pGraph2D = (zScatterGraph *)pG; // cast pointer
+    CScatterGraph * pGraph2D = (CScatterGraph *)pG; // cast pointer
     INT grid_width  = abs(pGraph2D->X_RIGHT - pGraph2D->X_LEFT);
     INT grid_height = abs(pGraph2D->Y_TOP - pGraph2D->Y_BOTTOM);
     double a = (double) grid_width / (pGraph2D->xmax - pGraph2D->xmin);
@@ -597,23 +586,6 @@ POINT CFormantChart::GetXYCoordinates(void * pG, double x , double y, BOOL bFlip
     }
 
     return p;
-
-    /*
-    // Original F2 F1 Graph as a Log/ Linear Graph                        // tdg
-
-    zLogGraph* G = (zLogGraph*)pG; // cast pointer
-    double x_inc = (double)(abs(pGraph2D->X_RIGHT - pGraph2D->X_LEFT)) / pGraph2D->x_axis_divisions;
-    double xlow = pow(10.0, floor(log10(pGraph2D->xstart)));
-    INT grid_height = abs(pGraph2D->Y_TOP - pGraph2D->Y_BOTTOM);
-    double c = zY_ADJUST * (double) grid_height / (pGraph2D->ymin - pGraph2D->ymax);
-    double d = (double) pGraph2D->Y_TOP - c * pGraph2D->ymax ;
-    POINT p;
-    // scale x-coordinate
-    p.x = (INT)(pGraph2D->X_LEFT + pGraph2D->zRound(x_inc * log10(x / xlow)));
-    // scale y-coordinate
-    p.y = (INT)(c * y + d);
-    return p;
-    */
 }
 
 /***************************************************************************/
@@ -640,7 +612,7 @@ void CFormantChart::EndAnimation(void)
     }
     CSaDoc * pDoc = (CSaDoc *)pView->GetDocument();
     CProcessFormants * pFormants = (CProcessFormants *)pDoc->GetFormants(); // get pointer to formants object
-    FormantParm * pFormantParms = pFormants->GetFormantParms();
+    CFormantParm * pFormantParms = pFormants->GetFormantParms();
     if (pFormantParms->bSmoothFormants)
     {
         pFormants->SmoothMedian(pDoc);
@@ -676,8 +648,7 @@ void CFormantChart::GraphHasFocus(BOOL bFocus)
                 if (bFocus && !bCluster)
                 {
                     // Highlight raw data frame for which formants are calculated
-                    FmtParm * pFmtParm = pDoc->GetFmtParm(); // get sa parameters format member data
-                    WORD wSmpSize = (WORD)(pFmtParm->wBlockAlign / pFmtParm->wChannels);  // calculate sample size in bytes
+                    WORD wSmpSize = (WORD)(pDoc->GetSampleSize());  // calculate sample size in bytes
                     CProcessFragments * pFragments = (CProcessFragments *)pDoc->GetFragments(); // data should be ready -- dynamic mode enabled
                     DWORD dwFrame = m_dwAnimationFrame;
                     if (dwFrame == UNDEFINED_OFFSET)
@@ -759,8 +730,8 @@ RANGE CPlot3D::GetChartRange(int nFormant, int nGender)
 /***************************************************************************/
 // CPlot3D::MapVowelsToChart  Map vowels to chart coordinates
 /***************************************************************************/
-POINT CPlot3D::MapVowelsToChart(CDC * pDC, FORMANT_FREQ & Formant, int SymbolHeight, zScatterGraph * pFormantChart,
-                                zGraphStruct & ChartParms, BOOL /* bFlip */)
+POINT CPlot3D::MapVowelsToChart(CDC * pDC, FORMANT_FREQ & Formant, int SymbolHeight, CScatterGraph * pFormantChart,
+                                SGraph & ChartParms, BOOL /* bFlip */)
 {
     POINT p = pFormantChart->zMapCoordinates(Formant.F[2], Formant.F[1], Formant.F[3]); // converts 3D point to 2D
     POINT pBase = pFormantChart->zMapCoordinates(Formant.F[2], Formant.F[1], ChartParms.zstart);
@@ -800,10 +771,9 @@ void CPlot3D::OnDraw(CDC * pDC, CRect rClient, CRect rClip, CSaView * pView)
     CSaDoc * pDoc = pView->GetDocument();
     CProcessFormants * pFormants = (CProcessFormants *)pDoc->GetFormants();
     CProcessFormantTracker * pFTFormants = pDoc->GetFormantTracker(); // get pointer to FormantTracker object
-    FormantParm * pFormantParms = pFormants->GetFormantParms();
+    CFormantParm * pFormantParms = pFormants->GetFormantParms();
     CProcessFragments * pFragments = (CProcessFragments *)pDoc->GetFragments();
-    FmtParm * pFmtParm = pDoc->GetFmtParm(); // get sa parameters format member data
-    WORD wSmpSize = (WORD)(pFmtParm->wBlockAlign / pFmtParm->wChannels);  // calculate sample size in bytes
+    WORD wSmpSize = (WORD)(pDoc->GetSampleSize());  // calculate sample size in bytes
     BOOL bDynamicUpdate = (pView->GetGraphUpdateMode() == DYNAMIC_UPDATE);
     BOOL bDataValid = TRUE;
 
@@ -843,7 +813,7 @@ void CPlot3D::OnDraw(CDC * pDC, CRect rClient, CRect rClip, CSaView * pView)
         break;
     }
 
-    zGraphStruct FormantChartParm;
+    SGraph FormantChartParm;
     memset(&FormantChartParm, zDEFAULT, sizeof(FormantChartParm));
 
     // Allocate buffers for x, y, and z coordinates.  For a 3D graph, the y-axis is horizontal, the
@@ -1059,8 +1029,8 @@ RANGE CPlotF1F2::GetChartRange(int nFormant, int nGender)
 /***************************************************************************/
 // CPlotF1F2::MapVowelsToChart  Map vowels to chart coordinates
 /***************************************************************************/
-POINT CPlotF1F2::MapVowelsToChart(CDC * /* pDC */, FORMANT_FREQ & Formant, int /* SymbolHeight */, zScatterGraph * pFormantChart,
-                                  zGraphStruct & /* ChartParms */, BOOL bFlip)
+POINT CPlotF1F2::MapVowelsToChart(CDC * /* pDC */, FORMANT_FREQ & Formant, int /* SymbolHeight */, CScatterGraph * pFormantChart,
+                                  SGraph & /* ChartParms */, BOOL bFlip)
 {
     return GetXYCoordinates(pFormantChart, Formant.F[1], Formant.F[2], bFlip); // converts 2D point to plot coordinates
 }
@@ -1097,10 +1067,9 @@ void CPlotF1F2::OnDraw(CDC * pDC, CRect rClient, CRect rClip, CSaView * pView)
     CSaDoc * pDoc = pView->GetDocument();
     CProcessFormants * pFormants = (CProcessFormants *)pDoc->GetFormants();
     CProcessFormantTracker * pFTFormants = pDoc->GetFormantTracker(); // get pointer to FormantTracker object
-    FormantParm * pFormantParms = pFormants->GetFormantParms();
+    CFormantParm * pFormantParms = pFormants->GetFormantParms();
     CProcessFragments * pFragments = (CProcessFragments *)pDoc->GetFragments();
-    FmtParm * pFmtParm = pDoc->GetFmtParm(); // get sa parameters format member data
-    WORD wSmpSize = (WORD)(pFmtParm->wBlockAlign / pFmtParm->wChannels);  // calculate sample size in bytes
+    WORD wSmpSize = (WORD)(pDoc->GetSampleSize());  // calculate sample size in bytes
     BOOL bDynamicUpdate = (pView->GetGraphUpdateMode() == DYNAMIC_UPDATE);
     BOOL bDataValid = TRUE;
 
@@ -1140,7 +1109,7 @@ void CPlotF1F2::OnDraw(CDC * pDC, CRect rClient, CRect rClip, CSaView * pView)
         break;
     }
 
-    zGraphStruct FormantChartParm;
+    SGraph FormantChartParm;
     memset(&FormantChartParm, zDEFAULT, sizeof(FormantChartParm));
 
     // Allocate buffers for x and y coordinates;
@@ -1272,18 +1241,8 @@ void CPlotF1F2::OnDraw(CDC * pDC, CRect rClient, CRect rClip, CSaView * pView)
     CSaString szHTitle;
     CSaString szVTitle;
 
-#ifdef originalSizeZGraph
-    szHTitle.Format("F1 (%d %s/div)", (int)(fabs(FormantChartParm.xend - FormantChartParm.xstart) /
-                                            FormantChartParm.x_axis_divisions + 0.5),
-                    pFormantParms->bMelScale ? "mels": "Hz");  // horizontal axis title
-
-    szVTitle.Format("F2 (%d %s/div)", (int)(fabs(FormantChartParm.yend - FormantChartParm.ystart) /
-                                            FormantChartParm.y_axis_divisions + 0.5),
-                    pFormantParms->bMelScale ? "mels": "Hz");          // vertical axis title
-#else
     szHTitle = pFormantParms->bMelScale ? "F1(mels)" : "F1 (Hz)";
     szVTitle = pFormantParms->bMelScale ? "F2 (mels)" : "F2 (Hz)";
-#endif
 
     FormantChartParm.H_Title = const_cast<LPTSTR>((LPCTSTR)szHTitle);
     FormantChartParm.V_Title = const_cast<LPTSTR>((LPCTSTR)szVTitle);
@@ -1318,9 +1277,7 @@ IMPLEMENT_DYNCREATE(CPlotF2F1, CPlotWnd)
 // CPlotF2F1 message map
 
 BEGIN_MESSAGE_MAP(CPlotF2F1, CPlotWnd)
-    //{{AFX_MSG_MAP(CPlotF2F1)
     ON_WM_CREATE()
-    //}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
@@ -1364,8 +1321,8 @@ RANGE CPlotF2F1::GetChartRange(int nFormant, int nGender)
 /***************************************************************************/
 // CPlotF2F1::MapVowelsToChart  Map vowels to chart coordinates
 /***************************************************************************/
-POINT CPlotF2F1::MapVowelsToChart(CDC * /* pDC */, FORMANT_FREQ & Formant, int /* SymbolHeight */, zScatterGraph * pFormantChart,
-                                  zGraphStruct & /* ChartParms */, BOOL bFlip)
+POINT CPlotF2F1::MapVowelsToChart(CDC * /* pDC */, FORMANT_FREQ & Formant, int /* SymbolHeight */, CScatterGraph * pFormantChart,
+                                  SGraph & /* ChartParms */, BOOL bFlip)
 {
     return GetXYCoordinates(pFormantChart, Formant.F[2], Formant.F[1], bFlip); // converts 2D point to plot coordinates
 }
@@ -1401,10 +1358,9 @@ void CPlotF2F1::OnDraw(CDC * pDC, CRect rClient, CRect rClip, CSaView * pView)
     CSaDoc * pDoc = pView->GetDocument();
     CProcessFormants * pFormants = (CProcessFormants *)pDoc->GetFormants();
     CProcessFormantTracker * pFTFormants = pDoc->GetFormantTracker(); // get pointer to FormantTracker object
-    FormantParm * pFormantParms = pFormants->GetFormantParms();
+    CFormantParm * pFormantParms = pFormants->GetFormantParms();
     CProcessFragments * pFragments = (CProcessFragments *)pDoc->GetFragments();
-    FmtParm * pFmtParm = pDoc->GetFmtParm(); // get sa parameters format member data
-    WORD wSmpSize = (WORD)(pFmtParm->wBlockAlign / pFmtParm->wChannels);  // calculate sample size in bytes
+    WORD wSmpSize = (WORD)(pDoc->GetSampleSize());  // calculate sample size in bytes
     BOOL bDynamicUpdate = (pView->GetGraphUpdateMode() == DYNAMIC_UPDATE);
     BOOL bDataValid = TRUE;
 
@@ -1444,7 +1400,7 @@ void CPlotF2F1::OnDraw(CDC * pDC, CRect rClient, CRect rClip, CSaView * pView)
         break;
     }
 
-    zGraphStruct FormantChartParm;
+    SGraph FormantChartParm;
     memset(&FormantChartParm, zDEFAULT, sizeof(FormantChartParm));
 
     // Allocate buffers for x and y coordinates;
@@ -1565,17 +1521,8 @@ void CPlotF2F1::OnDraw(CDC * pDC, CRect rClient, CRect rClip, CSaView * pView)
     CSaString szHTitle;
     CSaString szVTitle;
 
-#ifdef originalSizeZGraph
-    szHTitle.Format("F2 (%d %s/div)", (int)(fabs(FormantChartParm.xend - FormantChartParm.xstart) /
-                                            FormantChartParm.x_axis_divisions + 0.5),
-                    pFormantParms->bMelScale ? "mels": "Hz");          // horizontal axis title
-    szVTitle.Format("F1 (%d %s/div)", (int)(fabs(FormantChartParm.yend - FormantChartParm.ystart) /
-                                            FormantChartParm.y_axis_divisions + 0.5),
-                    pFormantParms->bMelScale ? "mels": "Hz");          // vertical axis title
-#else
     szHTitle = pFormantParms->bMelScale ? "F2(mels)" : "F2 (Hz)";
     szVTitle = pFormantParms->bMelScale ? "F1 (mels)" : "F1 (Hz)";
-#endif
 
     FormantChartParm.H_Title = const_cast<LPTSTR>((LPCTSTR)szHTitle);
     FormantChartParm.V_Title = const_cast<LPTSTR>((LPCTSTR)szVTitle);
@@ -1610,9 +1557,7 @@ IMPLEMENT_DYNCREATE(CPlotF2F1F1, CFormantChart)
 // CPlotF2F1F1 message map
 
 BEGIN_MESSAGE_MAP(CPlotF2F1F1, CPlotWnd)
-    //{{AFX_MSG_MAP(CPlotF2F1F1)
     ON_WM_CREATE()
-    //}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
@@ -1635,8 +1580,8 @@ CPlotF2F1F1::~CPlotF2F1F1()
 /***************************************************************************/
 // CPlotF2F1F1::MapVowelsToChart  Map vowels to chart coordinates
 /***************************************************************************/
-POINT CPlotF2F1F1::MapVowelsToChart(CDC * /* pDC */, FORMANT_FREQ & Formant, int /* SymbolHeight */, zScatterGraph * pFormantChart,
-                                    zGraphStruct & /* ChartParms */, BOOL bFlip)
+POINT CPlotF2F1F1::MapVowelsToChart(CDC * /* pDC */, FORMANT_FREQ & Formant, int /* SymbolHeight */, CScatterGraph * pFormantChart,
+                                    SGraph & /* ChartParms */, BOOL bFlip)
 {
     return GetXYCoordinates(pFormantChart, Formant.F[2] - Formant.F[1], Formant.F[1], bFlip); // converts 2D point to plot coordinates
 }
@@ -1672,10 +1617,9 @@ void CPlotF2F1F1::OnDraw(CDC * pDC, CRect rClient, CRect rClip, CSaView * pView)
     CSaDoc * pDoc = pView->GetDocument();
     CProcessFormants * pFormants = (CProcessFormants *)pDoc->GetFormants();
     CProcessFormantTracker * pFTFormants = pDoc->GetFormantTracker(); // get pointer to spectrogram object
-    FormantParm * pFormantParms = pFormants->GetFormantParms();
+    CFormantParm * pFormantParms = pFormants->GetFormantParms();
     CProcessFragments * pFragments = (CProcessFragments *)pDoc->GetFragments();
-    FmtParm * pFmtParm = pDoc->GetFmtParm(); // get sa parameters format member data
-    WORD wSmpSize = (WORD)(pFmtParm->wBlockAlign / pFmtParm->wChannels);  // calculate sample size in bytes
+    WORD wSmpSize = (WORD)(pDoc->GetSampleSize());  // calculate sample size in bytes
     BOOL bDynamicUpdate = (pView->GetGraphUpdateMode() == DYNAMIC_UPDATE);
     BOOL bDataValid = TRUE;
 
@@ -1715,7 +1659,7 @@ void CPlotF2F1F1::OnDraw(CDC * pDC, CRect rClient, CRect rClip, CSaView * pView)
         break;
     }
 
-    zGraphStruct FormantChartParm;
+    SGraph FormantChartParm;
     memset(&FormantChartParm, zDEFAULT, sizeof(FormantChartParm));
 
     // Allocate buffers for x and y coordinates;
@@ -1850,17 +1794,8 @@ void CPlotF2F1F1::OnDraw(CDC * pDC, CRect rClient, CRect rClip, CSaView * pView)
     CSaString szHTitle;
     CSaString szVTitle;
 
-#ifdef originalSizeZGraph
-    szHTitle.Format("[F2-F1] (%d %s/div)", (int)(fabs(FormantChartParm.xend - FormantChartParm.xstart) /
-                    FormantChartParm.x_axis_divisions + 0.5),
-                    pFormantParms->bMelScale ? "mels": "Hz");          // horizontal axis title
-    szVTitle.Format("F1 (%d %s/div)", (int)(fabs(FormantChartParm.yend - FormantChartParm.ystart) /
-                                            FormantChartParm.y_axis_divisions + 0.5),
-                    pFormantParms->bMelScale ? "mels": "Hz");               // vertical axis title
-#else
     szHTitle = "[F2-F1]";
     szVTitle = pFormantParms->bMelScale ? "F1 (mels)" : "F1 (Hz)";
-#endif
 
     FormantChartParm.H_Title = const_cast<LPTSTR>((LPCTSTR)szHTitle);
     FormantChartParm.V_Title = const_cast<LPTSTR>((LPCTSTR)szVTitle);
@@ -2096,8 +2031,7 @@ void CPlotInvSDP::OnDraw(CDC * pDC, CRect rClient, CRect rClip, CSaView * pView)
         {
             // new data has to be processed
             dwStart = pSDP->GetAreaPosition();
-            FmtParm * pFmtParm = pDoc->GetFmtParm(); // get sa parameters format member data
-            UINT nBlockAlign = pFmtParm->wBlockAlign;
+            UINT nBlockAlign = pDoc->GetBlockAlign();
             if (bAuto)
             {
                 // auto step mode, determine steps
@@ -2117,7 +2051,7 @@ void CPlotInvSDP::OnDraw(CDC * pDC, CRect rClient, CRect rClip, CSaView * pView)
                 return;
             }
             DWORD dwSmplSteps = (DWORD)lSteps * (DWORD)nBlockAlign;
-            DWORD dwRawBufferSize = GetBufferSize();
+            DWORD dwRawBufferSize = pDoc->GetWaveDataBufferSize();
             // fill up data buffers
             HPSTR pData = pDoc->GetWaveData(dwStart, TRUE); // get pointer to wave data block
             if (pData == NULL)
@@ -2297,8 +2231,8 @@ void CPlotInvSDP::OnDraw(CDC * pDC, CRect rClient, CRect rClip, CSaView * pView)
             }
         }
         // set up Z-graph structure
-        zGraphStruct zG;
-        // fill In the [zGraphStruct] structure elements
+        SGraph zG;
+        // fill In the [SGraph] structure elements
         zG.hdc = hdc;                   // windows HDC
         zG.RWindow = &rClient;          // RECT with window dimensions
         zG.xdata = (double *)m_lpDataX; // x-data array, radius

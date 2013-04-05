@@ -24,7 +24,7 @@ private:
 
     // Operations
 public:
-    virtual Grid GetGrid() const;
+    virtual CGrid GetGrid() const;
     virtual void OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView);
     void SetTWC(BOOL bValue)
     {

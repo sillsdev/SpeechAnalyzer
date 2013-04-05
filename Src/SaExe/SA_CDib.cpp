@@ -163,17 +163,16 @@ void CDib::Construct(CDC * pDC, int nBt, BOOL bCompr)
     {
         return;
     }
-    m_lpData = (LPSTR) m_lpBMIH + sizeof(BITMAPINFOHEADER) +
-               sizeof(RGBQUAD) * nPaletteSize;
+    m_lpDibData = (LPSTR) m_lpBMIH + sizeof(BITMAPINFOHEADER) + sizeof(RGBQUAD) * nPaletteSize;
     m_lpBMFH->bfType = 0x4d42; // 'BM'
     m_lpBMFH->bfSize = m_dwLength;
     m_lpBMFH->bfReserved1 = 0;
     m_lpBMFH->bfReserved2 = 0;
-    m_lpBMFH->bfOffBits = (char *) m_lpData - m_lpBuf;
+    m_lpBMFH->bfOffBits = (char *) m_lpDibData - m_lpBuf;
 
     // second GetDIBits call to make DIB
     if (!::GetDIBits(pDC->GetSafeHdc(), (HBITMAP)
-                     pBitmap->GetSafeHandle(), 0, (WORD) bm.bmHeight, m_lpData,
+                     pBitmap->GetSafeHandle(), 0, (WORD) bm.bmHeight, m_lpDibData,
                      m_lpBMI, DIB_RGB_COLORS))
     {
         m_dwLength = 0L;
@@ -321,7 +320,7 @@ void CDib::CaptureWindow(CWnd * pCaptureThis, CRect rectCrop, BOOL bClient)
 ///////////////////////////////////////////////////////////////////
 void CDib::CopyToClipboard(CWnd * pWnd) const
 {
-    if ((!pWnd) || (m_lpData == NULL))
+    if ((!pWnd) || (m_lpDibData == NULL))
     {
         return;
     }
@@ -359,7 +358,7 @@ void CDib::CopyToClipboard(CWnd * pWnd) const
         _fmemcpy(lpDIB, m_lpBMI, (size_t)m_lpBMIH->biSize);
         _fmemcpy(lpBitmapInfo->bmiColors, m_lpBMI->bmiColors, szColors);
         char * dest = lpDIB+m_lpBMIH->biSize+szColors;
-        char * src = m_lpData;
+        char * src = m_lpDibData;
         DWORD size = m_lpBMIH->biSizeImage;
         while (size > 0x4000)
         {
@@ -518,7 +517,7 @@ BOOL CDib::Read(CFile * pFile)
     }
     ASSERT((m_lpBMIH->biBitCount == 1) || (m_lpBMIH->biBitCount == 4) ||
            (m_lpBMIH->biBitCount == 8) || (m_lpBMIH->biBitCount == 24));
-    m_lpData = (LPSTR) m_lpBMFH + m_lpBMFH->bfOffBits;
+    m_lpDibData = (LPSTR) m_lpBMFH + m_lpBMFH->bfOffBits;
     m_nBits = m_lpBMIH->biBitCount;
     return TRUE;
 }
@@ -609,7 +608,7 @@ BOOL CDib::Display(CDC * pDC, CPoint origin)
     }
     if (!::SetDIBitsToDevice(pDC->GetSafeHdc(), origin.x, origin.y,
                              (WORD) m_lpBMIH->biWidth, (WORD) m_lpBMIH->biHeight, 0, 0, 0,
-                             (WORD) m_lpBMIH->biHeight, m_lpData, m_lpBMI,
+                             (WORD) m_lpBMIH->biHeight, m_lpDibData, m_lpBMI,
                              DIB_RGB_COLORS))
     {
         return FALSE;
@@ -627,7 +626,7 @@ BOOL CDib::Stretch(CDC * pDC, CPoint origin, CSize size)
     }
     if (!::StretchDIBits(pDC->GetSafeHdc(), origin.x, origin.y,
                          size.cx, size.cy, 0, 0, (WORD) m_lpBMIH->biWidth,
-                         (WORD) m_lpBMIH->biHeight, m_lpData, m_lpBMI,
+                         (WORD) m_lpBMIH->biHeight, m_lpDibData, m_lpBMI,
                          DIB_RGB_COLORS, SRCCOPY))
     {
         return FALSE;
@@ -692,19 +691,19 @@ BOOL CDib::Paint(CDC * pDC,
     int tw = targRect.Width();
     int th = targRect.Height();
 
-    bSuccess = ::StretchDIBits(pDC->GetSafeHdc(),             // hDC
-                               targRect.left,                 // DestX
-                               targRect.top,                  // DestY
-                               tw,            // nDestWidth
-                               th,           // nDestHeight
-                               0,                // SrcX
-                               0,                 // SrcY
-                               (WORD)m_lpBMIH->biWidth,           // wSrcWidth
-                               (WORD)m_lpBMIH->biHeight,          // wSrcHeight
-                               m_lpData,                      // lpBits
+    bSuccess = ::StretchDIBits(pDC->GetSafeHdc(),               // hDC
+                               targRect.left,                   // DestX
+                               targRect.top,                    // DestY
+                               tw,                              // nDestWidth
+                               th,                              // nDestHeight
+                               0,                               // SrcX
+                               0,                               // SrcY
+                               (WORD)m_lpBMIH->biWidth,         // wSrcWidth
+                               (WORD)m_lpBMIH->biHeight,        // wSrcHeight
+                               m_lpDibData,                     // lpBits
                                m_lpBMI,
-                               DIB_RGB_COLORS,                 // wUsage
-                               SRCCOPY);                       // dwROP
+                               DIB_RGB_COLORS,                  // wUsage
+                               SRCCOPY);                        // dwROP
 
     if (bSuccess == 0)   // SDM 1.5Test10.8
     {
@@ -935,10 +934,6 @@ BYTE CDib::MakeGrey(COLORREF & rgb)
     return grey;
 }
 
-
-
-
-
 /*************************************************************************
 * CDib::RGB16 - like RBG(), but takes 2 bytes which should be the hi and
 * lo bytes of a 16 bit color value.
@@ -1010,7 +1005,7 @@ void CDib::GoGreyScale(void)
 
         if (GetColorBits()==24)
         {
-            BYTE * p = (BYTE *)m_lpData;
+            BYTE * p = (BYTE *)m_lpDibData;
             BYTE * end = (p+m_lpBMIH->biSizeImage);
             for (; p < end; p+=3)
             {
@@ -1023,7 +1018,7 @@ void CDib::GoGreyScale(void)
         }
         else
         {
-            BYTE * p = (BYTE *)m_lpData;
+            BYTE * p = (BYTE *)m_lpDibData;
             BYTE * end = (p+m_lpBMIH->biSizeImage);
             for (; p < end; p+=2)
             {

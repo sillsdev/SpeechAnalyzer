@@ -442,7 +442,7 @@ void CDlgExportSFM::ExportMultiRec()
     file.Close();
 }
 
-bool CDlgExportSFM::TryExportSegmentsBy(Annotations master, CSaDoc * pDoc, CFile & file)
+bool CDlgExportSFM::TryExportSegmentsBy(EAnnotation master, CSaDoc * pDoc, CFile & file)
 {
 
     if (!GetFlag(master))
@@ -476,7 +476,7 @@ bool CDlgExportSFM::TryExportSegmentsBy(Annotations master, CSaDoc * pDoc, CFile
         last = dwStart;
         for (int j=master; j>=0; j--)
         {
-            Annotations target = GetAnnotation(j);
+            EAnnotation target = GetAnnotation(j);
             if (!GetFlag(target))
             {
                 continue;
@@ -539,7 +539,7 @@ bool CDlgExportSFM::TryExportSegmentsBy(Annotations master, CSaDoc * pDoc, CFile
     return true;
 }
 
-CSaString CDlgExportSFM::BuildRecord(Annotations target, DWORD dwStart, DWORD dwStop, CSaDoc * pDoc)
+CSaString CDlgExportSFM::BuildRecord(EAnnotation target, DWORD dwStart, DWORD dwStop, CSaDoc * pDoc)
 {
 
     CSaString szTag = GetTag(target);
@@ -560,7 +560,7 @@ CSaString CDlgExportSFM::BuildRecord(Annotations target, DWORD dwStart, DWORD dw
     return szTag + L" " + szText + szCrLf;
 }
 
-CSaString CDlgExportSFM::BuildPhrase(Annotations target, DWORD dwStart, DWORD dwStop, CSaDoc * pDoc)
+CSaString CDlgExportSFM::BuildPhrase(EAnnotation target, DWORD dwStart, DWORD dwStop, CSaDoc * pDoc)
 {
 
     CSaString szTag = GetTag(target);
@@ -574,7 +574,7 @@ CSaString CDlgExportSFM::BuildPhrase(Annotations target, DWORD dwStart, DWORD dw
     return szTag + L" " + szText + szCrLf;
 }
 
-BOOL CDlgExportSFM::GetFlag(Annotations val)
+BOOL CDlgExportSFM::GetFlag(EAnnotation val)
 {
 
     switch (val)
@@ -603,7 +603,7 @@ BOOL CDlgExportSFM::GetFlag(Annotations val)
     return false;
 }
 
-int CDlgExportSFM::GetIndex(Annotations val)
+int CDlgExportSFM::GetIndex(EAnnotation val)
 {
 
     switch (val)
@@ -632,7 +632,7 @@ int CDlgExportSFM::GetIndex(Annotations val)
     return false;
 }
 
-LPCTSTR CDlgExportSFM::GetTag(Annotations val)
+LPCTSTR CDlgExportSFM::GetTag(EAnnotation val)
 {
 
     switch (val)
@@ -661,7 +661,7 @@ LPCTSTR CDlgExportSFM::GetTag(Annotations val)
     return L"";
 }
 
-Annotations CDlgExportSFM::GetAnnotation(int val)
+EAnnotation CDlgExportSFM::GetAnnotation(int val)
 {
 
     switch (val)
@@ -803,7 +803,7 @@ void CDlgExportSFM::ExportAllParameters(CSaDoc * pDoc, CFile & file)
 
     if (m_bNumberSamples)   // \samp Number of Samples
     {
-        swprintf_s(szString.GetBuffer(25),25,_T("%ld"), pDoc->GetDataSize() / pDoc->GetFmtParm()->wBlockAlign);
+        swprintf_s(szString.GetBuffer(25),25,_T("%ld"), pDoc->GetDataSize() / pDoc->GetBlockAlign());
         szString.ReleaseBuffer();
         szString = "\\samp " +  szString + szCrLf;
         WriteFileUtf8(&file, szString);
@@ -829,7 +829,7 @@ void CDlgExportSFM::ExportAllParameters(CSaDoc * pDoc, CFile & file)
     }
     if (m_bSampleRate)   // \freq Sampling Frequency
     {
-        swprintf_s(szString.GetBuffer(25),25,_T("%lu Hz"),pDoc->GetFmtParm()->dwSamplesPerSec);
+        swprintf_s(szString.GetBuffer(25),25,_T("%lu Hz"),pDoc->GetSamplesPerSec());
         szString.ReleaseBuffer();
         szString = "\\freq " +  szString + szCrLf;
         WriteFileUtf8(&file, szString);
@@ -849,7 +849,7 @@ void CDlgExportSFM::ExportAllParameters(CSaDoc * pDoc, CFile & file)
     }
     if (m_bBits)   // \bits Storage Format
     {
-        swprintf_s(szString.GetBuffer(25),25,_T("%d Bits"),pDoc->GetFmtParm()->wBitsPerSample);
+        swprintf_s(szString.GetBuffer(25),25,_T("%d Bits"),pDoc->GetBitsPerSample());
         szString.ReleaseBuffer();
         szString = "\\bits " +  szString + szCrLf;
         WriteFileUtf8(&file, szString);

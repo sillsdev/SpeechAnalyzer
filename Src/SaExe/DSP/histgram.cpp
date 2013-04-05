@@ -115,7 +115,7 @@
 * PRACTICAL CONSIDERATIONS:                                                *
 *                                                                          *
 *   1. The purpose of fCoeff is to fit the processed data into the         *
-*      available range of a short int32. It the caller's responsibility      *
+*      available range of a short int32. It the caller's responsibility    *
 *      to estimate fCoeff.                                                 *
 *                                                                          *
 * TYPICAL CALLING SEQUENCE:                                                *
@@ -125,10 +125,10 @@
 *   PROC_PARMS stProcParms;                                                *
 *   HIST_PARMS stHistParms;                                                *
 *   CHistogram* ppoHist;                                                   *
-*   dspError_t Err;                                                               *
+*   dspError_t Err;                                                        *
 *                                                                          *
 *   stHistParms.nBins = 10;                                                *
-*   stHistParms.pBinDivs = (short *)new short[stHistParms.nBins + 1]    *
+*   stHistParms.pBinDivs = (short *)new short[stHistParms.nBins + 1]       *
 *   stProcParms.dwBufferSize = pMain->GetBufferSize();                     *
 *   stProcParms.dwBufferStart = (void *)pSpeech;                           *
 *   stProcParms.dwBlockOffset = 0;                                         *
@@ -142,7 +142,7 @@
 *   if (Err) return(Err);                                                  *
 *   Err = ppoHist->GenerateHistogram();                                    *
 *     if (Err)                                                             *
-*   Err = ppoHist->GetHistogram((short *)m_lpData, fCoeff, COUNTS);  *
+*   Err = ppoHist->GetHistogram((short *)m_lpHistData, fCoeff, COUNTS);    *
 *   m_nMaxValue = ppoHist->GetMaxValue(this);                              *
 *                :                                                         *
 *   delete ppoHist;                                                        *

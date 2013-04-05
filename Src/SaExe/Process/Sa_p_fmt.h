@@ -10,7 +10,7 @@
 #include "sa_p_spu.h"
 #include "dsp\mathx.h"
 #include "dsp\formants.h"
-#include "CSaString.h"
+#include "SaString.h"
 
 #define MAX_FILTERS 5
 
@@ -21,20 +21,20 @@ public:
     CProcessFormants();
     virtual ~CProcessFormants();
     void SmoothMedian(ISaDoc * pDoc);
-    FORMANT_FRAME * LoadBuffer(DWORD dwFormantBlockStart);
-    BOOL StoreFormantFrame(DWORD dwFormantFrame, FORMANT_FRAME * pFormant, BOOL bWriteThru);
+    SFormantFrame * LoadBuffer(DWORD dwFormantBlockStart);
+    BOOL StoreFormantFrame(DWORD dwFormantFrame, SFormantFrame * pFormant, BOOL bWriteThru);
     BOOL WriteData(HPSTR pData, UINT nDataSize, BOOL bAppend);
     BOOL SaveBuffer(UINT nDataSize);
     virtual long Exit(int nError); // exit processing on error
-    void SetFormantParms(FormantParm * pFormantParms);
+    void SetFormantParms(CFormantParm * pFormantParms);
     virtual void SetDataInvalid();
-    FormantParm * GetFormantParms();
+    CFormantParm * GetFormantParms();
     DWORD GetFormantFrameCount();
     unsigned short GetFormantFrameSize();
-    FORMANT_FRAME * GetFormantFrame(DWORD dwFrame);
+    SFormantFrame * GetFormantFrame(DWORD dwFrame);
     STATISTIC GetFormantStats(int nFormant);
     void ResetTracking();
-    long Process(void * pCaller, ISaDoc * pDoc, BOOL bTrack, DWORD dwFrameStart, DWORD dwFrameSize, SPECT_PROC_SELECT SpectraSelected, int nProgress = 0, int nLevel = 1);
+    long Process(void * pCaller, ISaDoc * pDoc, BOOL bTrack, DWORD dwFrameStart, DWORD dwFrameSize, SSpectProcSelect SpectraSelected, int nProgress = 0, int nLevel = 1);
     int GetVowelCount(int nGender) const;
     FORMANT_FREQ GetVowelFreq(int nIndex, int nGender, BOOL bMelScale = FALSE) const; // get vowel frequencies
     CSaString GetVowel(int nIndex, int nGender) const; // returns the vowel for the graph
@@ -48,13 +48,13 @@ private:
     DWORD m_dwProcEnd;
     DWORD m_dwFrameStart;
     DWORD m_dwFrameSize;
-    SPECT_PROC_SELECT m_stSpectraProc;
+    SSpectProcSelect m_stSpectraProc;
     BOOL  m_bTrack;
     DWORD m_dwFormantFrame;
     DWORD m_dwFormantFrameCount;
     DWORD m_dwValidFrameCount;
     unsigned short m_nFormantFrameSize;
-    FormantParm m_FormantParms;
+    CFormantParm m_FormantParms;
     STATISTIC m_F[MAX_NUM_FORMANTS+1];
 };
 

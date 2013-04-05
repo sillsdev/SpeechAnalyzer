@@ -98,7 +98,7 @@ BOOL CWorkbenchDoc::OnOpenDocument(const TCHAR * pszPathName)
     try
     {
         CSaString path(pszPathName);
-        Object_istream obs(path);
+        CObjectIStream obs(path.utf8().c_str());
         POSITION pos = GetFirstViewPosition();
         bRet = ((CSaWorkbenchView *)GetNextView(pos))->ReadProperties(obs);
     }
@@ -122,7 +122,7 @@ BOOL CWorkbenchDoc::OnSaveDocument(const TCHAR * pszPathName)
     try
     {
         CSaString path(pszPathName);
-        Object_ostream obs(path);
+        CObjectOStream obs(path.utf8().c_str());
         POSITION pos = GetFirstViewPosition();
         ((CSaWorkbenchView *)GetNextView(pos))->WriteProperties(obs);
         bRet = TRUE;

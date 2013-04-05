@@ -1,7 +1,7 @@
 // SCATTER.H
 
 /////////////////////////////////////////////////////////////////////////////
-//                   SCATTER.H -- Header File for zScatterGraph Class
+//                   SCATTER.H -- Header File for CScatterGraph Class
 //
 // ZGRAF C++ Multi-Platform Graph Toolkit v. 1.41, (c) 1996, ZGRAF Software
 /////////////////////////////////////////////////////////////////////////////
@@ -20,17 +20,8 @@
 #include <windows.h>
 #endif
 
-#ifdef OS2_PLATFORM
-#define INCL_GPI
-#include <os2.h>
-#endif
-
 #ifdef MS_DOS_PLATFORM
 #include <graph.h>
-#endif
-
-#ifdef BGI_DOS_PLATFORM
-#include <graphics.h>
 #endif
 
 
@@ -38,7 +29,7 @@
 #include "zgraph.h"                              // Basic Graph Class
 
 
-class zScatterGraph : public zGraph
+class CScatterGraph : public zGraph
 {
 protected:
     double Multiplier1;                  // Used In Mapping 3-D to 2-D
@@ -51,8 +42,8 @@ public:
 
     // Operations
 public:
-    zScatterGraph(zGraphStruct * zG) : zGraph(zG) { }
-    ~zScatterGraph() {}
+    CScatterGraph(SGraph * zG) : zGraph(zG) { }
+    ~CScatterGraph() {}
     BOOL zInitGraph();           // Stuff to Do When Initializing Graph
     void zDraw3DGrid();          // Base-Class Override--Draws 3D Grid
     void zDrawDataPoints();

@@ -9,14 +9,13 @@ public:
     CProcess3dPitch();           // protected constructor used by dynamic creation
     virtual ~CProcess3dPitch();
 
-    void SetSourceProcess(CProcess * pSourceProcess);
+    void SetSourceProcess(IProcess * pSourceProcess);
     virtual long Process(void * pCaller, ISaDoc *, int nProgress = 0, int nLevel = 1);
 
 private:
     double m_dFilterUpperFrequency;
     double m_dFilterLowerFrequency;
     int m_nFilterOrder;
-    CProcess * m_pSourceProcess;
 
 protected:
 

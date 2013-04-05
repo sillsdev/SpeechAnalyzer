@@ -22,7 +22,7 @@ CUtf16String CUnicodeString::Decode(CFont * pFont, const std::string * szStringE
 {
     ASSERT(pFont);
 
-    const char * szEncoded = szStringEncoded->c_str();
+    LPCSTR szEncoded = szStringEncoded->c_str();
 
     if (!pFont)
     {

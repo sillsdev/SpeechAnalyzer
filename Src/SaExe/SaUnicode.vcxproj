@@ -149,11 +149,16 @@
     <ClCompile Include="DlgExportSFM.cpp" />
     <ClCompile Include="DlgExportTable.cpp" />
     <ClCompile Include="DlgExportXML.cpp" />
+    <ClCompile Include="DlgFnKeys.cpp" />
     <ClCompile Include="DlgImport.cpp" />
     <ClCompile Include="DlgImportSFMRef.cpp" />
+    <ClCompile Include="DlgRecorder.cpp" />
+    <ClCompile Include="DlgRecorderOptions.cpp" />
     <ClCompile Include="DlgWaveformGenerator.cpp" />
+    <ClCompile Include="DlgWaveNotifyObj.cpp" />
     <ClCompile Include="ExportFWSettings.cpp" />
     <ClCompile Include="FileUtils.cpp" />
+    <ClCompile Include="FmtParm.cpp" />
     <ClCompile Include="GlossSegment.cpp" />
     <ClCompile Include="Import.cpp" />
     <ClCompile Include="IndependentSegment.cpp" />
@@ -161,6 +166,7 @@
     <ClCompile Include="OrthoSegment.cpp" />
     <ClCompile Include="PhonemicSegment.cpp" />
     <ClCompile Include="PhoneticSegment.cpp" />
+    <ClCompile Include="PlayMixer.cpp" />
     <ClCompile Include="PrivateCursorWnd.cpp" />
     <ClCompile Include="Process\Butterworth.cpp" />
     <ClCompile Include="Process\FormantTracker.cpp" />
@@ -170,7 +176,7 @@
     <ClCompile Include="Process\SA_P_CHA.CPP" />
     <ClCompile Include="Process\sa_p_cor.cpp" />
     <ClCompile Include="Process\SA_P_CPI.CPP" />
-    <ClCompile Include="Process\sa_p_doc.cpp" />
+    <ClCompile Include="Process\ProcessDoc.cpp" />
     <ClCompile Include="Process\SA_P_DUR.CPP" />
     <ClCompile Include="Process\SA_P_FMT.CPP" />
     <ClCompile Include="Process\SA_P_FRA.CPP" />
@@ -199,7 +205,9 @@
     <ClCompile Include="Clip.cpp" />
     <ClCompile Include="Partiture.cpp" />
     <ClCompile Include="PickOver.cpp" />
+    <ClCompile Include="RecMixer.cpp" />
     <ClCompile Include="ReferenceSegment.cpp" />
+    <ClCompile Include="SaString.cpp" />
     <ClCompile Include="SA_Annot.cpp" />
     <ClCompile Include="SA_Cursr.cpp" />
     <ClCompile Include="sa_g_3dPitch.cpp" />
@@ -241,7 +249,7 @@
       <ShowIncludes Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ShowIncludes>
     </ClCompile>
     <ClCompile Include="Ch_table.cpp" />
-    <ClCompile Include="autoRecorder.cpp" />
+    <ClCompile Include="DlgAutoRecorder.cpp" />
     <ClCompile Include="DlgAdvancedParsePhrases.cpp" />
     <ClCompile Include="DlgAdvancedParseWords.cpp" />
     <ClCompile Include="DlgAdvancedSegment.cpp" />
@@ -250,7 +258,6 @@
     <ClCompile Include="DlgAlignTranscriptionDataInitPage.cpp" />
     <ClCompile Include="DlgAlignTranscriptionDataSegmentByPage.cpp" />
     <ClCompile Include="DlgAlignTranscriptionDataSheet.cpp" />
-    <ClCompile Include="DlgAudio.cpp" />
     <ClCompile Include="DlgAutoReferenceData.cpp" />
     <ClCompile Include="DlgImportSFM.cpp" />
     <ClCompile Include="SFMHelper.cpp" />
@@ -270,7 +277,7 @@
     <ClCompile Include="graphsMagnify.cpp" />
     <ClCompile Include="graphsParameters.cpp" />
     <ClCompile Include="graphsTypes.cpp" />
-    <ClCompile Include="playerRecorder.cpp" />
+    <ClCompile Include="DlgPlayer.cpp" />
     <ClCompile Include="PrintOpt.cpp" />
     <ClCompile Include="DlgResult.cpp" />
     <ClCompile Include="SA_DlWnd.cpp" />
@@ -292,9 +299,8 @@
     <ClCompile Include="mshflexgrid.cpp" />
     <ClCompile Include="picture.cpp" />
     <ClCompile Include="recordset.cpp" />
-    <ClCompile Include="CSaString.cpp" />
     <ClCompile Include="MainFrm.cpp" />
-    <ClCompile Include="mixer.cpp" />
+    <ClCompile Include="Mixer.cpp" />
     <ClCompile Include="Riff.cpp" />
     <ClCompile Include="Sa.cpp" />
     <ClCompile Include="SA_AnSel.cpp" />
@@ -323,9 +329,15 @@
     <ClCompile Include="UnicodeString.cpp" />
     <ClCompile Include="WaveformGenerator.cpp" />
     <ClCompile Include="WaveformGeneratorSettings.cpp" />
+    <ClCompile Include="WaveInDevice.cpp" />
+    <ClCompile Include="WaveIndex.cpp" />
+    <ClCompile Include="WaveOutDevice.cpp" />
     <ClCompile Include="WaveResampler.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Export.cd" />
+    <None Include="Graphs.cd" />
+    <None Include="Process.cd" />
     <None Include="Segments.cd" />
     <None Include="RES\1.ICO" />
     <None Include="RES\2A.ICO" />
@@ -385,6 +397,7 @@
     <None Include="RES\TONGUE.BMP" />
     <None Include="RES\TOOLBAR.BMP" />
     <None Include="Res\up.ico" />
+    <None Include="Windows.cd" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="SA.rc">
@@ -396,7 +409,7 @@
     <ClInclude Include="AlignInfo.h" />
     <ClInclude Include="AppDefs.h" />
     <ClInclude Include="ArchiveTransfer.h" />
-    <ClInclude Include="autoRecorder.h" />
+    <ClInclude Include="DlgAutoRecorder.h" />
     <ClInclude Include="AutoSave.h" />
     <ClInclude Include="ChildFrame.h" />
     <ClInclude Include="ch_dlg.h" />
@@ -412,24 +425,36 @@
     <ClInclude Include="DlgExportSFM.h" />
     <ClInclude Include="DlgExportTable.h" />
     <ClInclude Include="DlgExportXML.h" />
+    <ClInclude Include="DlgFnKeys.h" />
     <ClInclude Include="DlgImport.h" />
     <ClInclude Include="DlgImportSFMRef.h" />
+    <ClInclude Include="DlgRecorder.h" />
+    <ClInclude Include="DlgRecorderOptions.h" />
     <ClInclude Include="DlgWaveformGenerator.h" />
+    <ClInclude Include="DlgWaveNotifyObj.h" />
     <ClInclude Include="dsp\WaveWarp.h" />
     <ClInclude Include="ExportFWSettings.h" />
     <ClInclude Include="FileUtils.h" />
+    <ClInclude Include="flexeditgrid.h" />
+    <ClInclude Include="FmtParm.h" />
+    <ClInclude Include="font.h" />
     <ClInclude Include="GlossSegment.h" />
     <ClInclude Include="Import.h" />
     <ClInclude Include="IndependentSegment.h" />
+    <ClInclude Include="IWaveNotifiable.h" />
+    <ClInclude Include="mshflexgrid.h" />
     <ClInclude Include="MusicPhraseSegment.h" />
     <ClInclude Include="OrthoSegment.h" />
     <ClInclude Include="PhonemicSegment.h" />
     <ClInclude Include="PhoneticSegment.h" />
+    <ClInclude Include="picture.h" />
+    <ClInclude Include="PlayMixer.h" />
     <ClInclude Include="PrivateCursorWnd.h" />
     <ClInclude Include="Process\Butterworth.H" />
     <ClInclude Include="Clip.hpp" />
     <ClInclude Include="Colors.h" />
-    <ClInclude Include="CSaString.h" />
+    <ClInclude Include="RecMixer.h" />
+    <ClInclude Include="SaString.h" />
     <ClInclude Include="DocList.h" />
     <ClInclude Include="FaceDiag.h" />
     <ClInclude Include="fileInformation.h" />
@@ -437,16 +462,44 @@
     <ClInclude Include="FnKeys.h" />
     <ClInclude Include="Grid.h" />
     <ClInclude Include="ISa_Doc.h" />
-    <ClInclude Include="ISaString.h" />
-    <ClInclude Include="IUtf8String.h" />
     <ClInclude Include="MainFrm.h" />
-    <ClInclude Include="mixer.h" />
+    <ClInclude Include="Mixer.h" />
     <ClInclude Include="Param.h" />
     <ClInclude Include="Partiture.hpp" />
     <ClInclude Include="plotwndInfo.h" />
     <ClInclude Include="PrintDim.h" />
     <ClInclude Include="process\FormantTracker.h" />
+    <ClInclude Include="process\IProcess.h" />
+    <ClInclude Include="process\Process.h" />
+    <ClInclude Include="process\sa_p_3dpitch.h" />
+    <ClInclude Include="process\sa_p_cha.h" />
+    <ClInclude Include="process\sa_p_cpi.h" />
+    <ClInclude Include="process\ProcessDoc.h" />
+    <ClInclude Include="process\sa_p_dur.h" />
+    <ClInclude Include="process\sa_p_fmt.h" />
+    <ClInclude Include="process\sa_p_fra.h" />
+    <ClInclude Include="process\sa_p_glo.h" />
+    <ClInclude Include="process\sa_p_gra.h" />
+    <ClInclude Include="process\sa_p_instantaneouspower.h" />
+    <ClInclude Include="process\sa_p_lou.h" />
+    <ClInclude Include="process\sa_p_mel.h" />
+    <ClInclude Include="process\sa_p_pit.h" />
+    <ClInclude Include="process\sa_p_poa.h" />
+    <ClInclude Include="process\sa_p_rat.h" />
+    <ClInclude Include="process\sa_p_raw.h" />
+    <ClInclude Include="process\sa_p_sfmt.h" />
+    <ClInclude Include="process\sa_p_spg.h" />
+    <ClInclude Include="process\sa_p_spi.h" />
+    <ClInclude Include="process\sa_p_spu.h" />
+    <ClInclude Include="process\sa_p_twc.h" />
+    <ClInclude Include="process\sa_p_wavelet.h" />
+    <ClInclude Include="process\sa_p_zcr.h" />
+    <ClInclude Include="process\sa_w_adj.h" />
+    <ClInclude Include="process\sa_w_equ.h" />
+    <ClInclude Include="process\sa_w_pas.h" />
+    <ClInclude Include="process\sa_w_rev.h" />
     <ClInclude Include="Process\TrackState.h" />
+    <ClInclude Include="recordset.h" />
     <ClInclude Include="ReferenceSegment.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="Riff.h" />
@@ -462,7 +515,6 @@
     <ClInclude Include="SA_DPlot.h" />
     <ClInclude Include="SA_Find.h" />
     <ClInclude Include="sa_g_3dPitch.h" />
-    <ClInclude Include="SA_G_Cep.h" />
     <ClInclude Include="SA_G_Cha.h" />
     <ClInclude Include="SA_G_CPi.h" />
     <ClInclude Include="SA_G_DUR.H" />
@@ -508,6 +560,10 @@
     <ClInclude Include="Stdafx.h" />
     <ClInclude Include="StopCursorWnd.h" />
     <ClInclude Include="stpwatch.h" />
+    <ClInclude Include="synthesis\dlgklattall.h" />
+    <ClInclude Include="synthesis\dlgmbrola.h" />
+    <ClInclude Include="synthesis\dlgsynthesis.h" />
+    <ClInclude Include="synthesis\dlgvocaltract.h" />
     <ClInclude Include="TaskBar.h" />
     <ClInclude Include="TextHelper.h" />
     <ClInclude Include="TextSegment.h" />
@@ -529,7 +585,6 @@
     <ClInclude Include="DlgAlignTranscriptionDataSegmentByPage.h" />
     <ClInclude Include="DlgAlignTranscriptionDataSheet.h" />
     <ClInclude Include="DlgImportSFM.h" />
-    <ClInclude Include="DlgAudio.h" />
     <ClInclude Include="DlgAutoReferenceData.h" />
     <ClInclude Include="DlgMultiChannel.h" />
     <ClInclude Include="DlgSplitFile.h" />
@@ -538,7 +593,7 @@
     <ClInclude Include="graphsParameters.h" />
     <ClInclude Include="graphsTypes.h" />
     <ClInclude Include="PickOver.h" />
-    <ClInclude Include="playerRecorder.h" />
+    <ClInclude Include="DlgPlayer.h" />
     <ClInclude Include="PrintOpt.h" />
     <ClInclude Include="DlgResult.h" />
     <ClInclude Include="SA_Edit.h" />
@@ -547,6 +602,9 @@
     <ClInclude Include="TARGVIEW.H" />
     <ClInclude Include="WaveformGenerator.h" />
     <ClInclude Include="WaveformGeneratorSettings.h" />
+    <ClInclude Include="WaveInDevice.h" />
+    <ClInclude Include="WaveIndex.h" />
+    <ClInclude Include="waveoutdevice.h" />
     <ClInclude Include="WaveResampler.h" />
   </ItemGroup>
   <ItemGroup>

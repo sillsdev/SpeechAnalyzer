@@ -139,159 +139,167 @@ typedef unsigned long  ULONG;
 // STRUCTURES
 // **********
 
-union CHNK_ID {
-  ULONG FOURCC;
-  char Name[4];
+union UChunkID {
+	ULONG FOURCC;
+	char Name[4];
 };
 
-struct CHNK_HDR {
-  CHNK_ID Id;
-  ULONG Size;
-  CHNK_HDR(){Id.FOURCC=0L;Size=0L;};
+struct SChunkHeader {
+	UChunkID Id;
+	ULONG Size;
+	SChunkHeader() {
+		Id.FOURCC=0L;Size=0L;
+	};
 };
 
 #pragma pack(1)
-struct MTHDCHNK {
-  CHNK_HDR Header;
-  WORD Format;
-  WORD NTrks;
-  WORD Division;
-  MTHDCHNK(){Format=NTrks=Division=0;};
+struct SMTHeaderChunk {
+	SChunkHeader Header;
+	WORD Format;
+	WORD NTrks;
+	WORD Division;
+	SMTHeaderChunk() {
+		Format=NTrks=Division=0;
+	};
 };
 #pragma pack()
 
-enum MusiqueBytes{
-  Name,
-    Accidental,
-    Octave,
-    Onset,
-    Duration,
-    ModDuration,
-    Conclusion
+enum EMusiqueBytes {
+	Name,
+	Accidental,
+	Octave,
+	Onset,
+	Duration,
+	ModDuration,
+	Conclusion
 };
 
-struct Note
-{
-  unsigned char Name; // 'A' to 'G' or 'R'
-  unsigned char Accidental; // "$#+=-@!"
-  unsigned char Octave; // '0' to '6'
-  unsigned char Onset; // "*|~?\""
-  // (up long, up short, down long, down short, normal)
-  unsigned char Duration; // "whqisz"
-  // (whole, half, quarter, eighth, 16th, grace)
-  unsigned char Duration2; // "n.tv"
-  // (normal, dotted, triplet,quintuplet)
-  unsigned char Conclusion; // "\\`/\' "
-  // (up long, up short, down long, down short, normal)
-  // or '_' (tied to next note)
+struct SNote {
+	unsigned char Name; // 'A' to 'G' or 'R'
+	unsigned char Accidental; // "$#+=-@!"
+	unsigned char Octave; // '0' to '6'
+	unsigned char Onset; // "*|~?\""
+	// (up long, up short, down long, down short, normal)
+	unsigned char Duration; // "whqisz"
+	// (whole, half, quarter, eighth, 16th, grace)
+	unsigned char Duration2; // "n.tv"
+	// (normal, dotted, triplet,quintuplet)
+	unsigned char Conclusion; // "\\`/\' "
+	// (up long, up short, down long, down short, normal)
+	// or '_' (tied to next note)
 
-  int Value; // 0-900 or -1 (rest)
-  WCHAR DisplayOnset, DisplayAccidental, DisplayModDur,
-    DisplayNote, DisplayConclusion;
-  unsigned DisplayLen(void)
-  { return (DisplayOnset!=0) + (DisplayAccidental!=0) +
-  (DisplayModDur!=0) + (DisplayNote!=0) + (DisplayConclusion!=0); }
+	int Value; // 0-900 or -1 (rest)
+	WCHAR DisplayOnset, DisplayAccidental, DisplayModDur,
+		DisplayNote, DisplayConclusion;
+	unsigned DisplayLen(void) { 
+		return (DisplayOnset!=0) + (DisplayAccidental!=0) + (DisplayModDur!=0) + (DisplayNote!=0) + (DisplayConclusion!=0); 
+	}
 
-
-  Note(int Clef=1);
-  Note(const unsigned char *Definition,int Clef);
-  ~Note();
-  Note &operator=(Note &n);
-  void CalcValue(int Clef);
-  void CalcOnset(int Clef);
-  void CalcAccidental(int Clef);
-  void CalcModDuration(int Clef);
-  void CalcConclusion(int Clef);
-  BOOL SetClef(int Clef);
-  BOOL Set(unsigned char c,int Clef);
-  BOOL Set(const unsigned char *Definition,int Clef);
-  BOOL UpStep(void);
-  BOOL DownStep(void);
-  BOOL UpOctave(void);
-  BOOL DownOctave(void);
-  BOOL InClef(int Clef);
-  unsigned MIDINote();
-  unsigned long MIDIDuration();
-};//Note
-
-typedef Note *pNote;
-
-struct PartSelectionMS
-{
-  double begin;
-  double end;
+	SNote(int Clef=1);
+	SNote(const unsigned char *Definition,int Clef);
+	~SNote();
+	SNote &operator=(SNote &n);
+	void CalcValue(int Clef);
+	void CalcOnset(int Clef);
+	void CalcAccidental(int Clef);
+	void CalcModDuration(int Clef);
+	void CalcConclusion(int Clef);
+	BOOL SetClef(int Clef);
+	BOOL Set(unsigned char c,int Clef);
+	BOOL Set(const unsigned char *Definition,int Clef);
+	BOOL UpStep(void);
+	BOOL DownStep(void);
+	BOOL UpOctave(void);
+	BOOL DownOctave(void);
+	BOOL InClef(int Clef);
+	unsigned MIDINote();
+	unsigned long MIDIDuration();
 };
 
-struct PartWindowData
-{
-  BOOL Active;
-  BOOL Selecting;
-  BOOL Control;
-  BOOL Enabled;
-  unsigned SelectBegin;
-  unsigned SelectEnd;
-  unsigned SelectMin() {return min(SelectBegin,SelectEnd);};
-  unsigned SelectMax() {return max(SelectBegin,SelectEnd);};
-  struct
-  {
-    int Tempo;
-    unsigned nMin;
-    unsigned nMax;
-    unsigned SelectBegin;
-    unsigned SelectEnd;
-    unsigned ViewBegin;
-    DWORD dwStartTime;
-    PartSelectionMS selectionTime;
-  } m_sPlay;
-  PartSelectionMS m_sSelectionMS;
-  unsigned ViewBegin;
-  unsigned ViewWidthPixels;
-  pNote *Melody;
-  unsigned MelodySize;
-  unsigned MelodyBufferSize;
-  HFONT hFont;
-  int FontCharWidth[MUSIQUE_FONT_SIZE];
-  int Clef;
-  int Tempo;
-  BOOL Modified;
-  HWND hMyself;
-  HWND hMyParent;
-  HWND hPlayButton;
-  HWND hPauseButton;
-  HWND hStopButton;
-  HWND hLoopButton;
-  HWND hVoiceButton;
-  char Instrument;
+typedef SNote * pNote;
 
-  MTHDCHNK* m_stMThdChunk;
-  CHNK_HDR* m_stMTrkHeader;
+struct SPartSelectionMS {
+	double begin;
+	double end;
+};
 
-  PartWindowData(HWND hWnd,int Size=DELTA);
-  ~PartWindowData();
-  void Grow(int Size=DELTA);
-  int WhichClef();
-  void SetClef(int NewClef);
-  WCHAR *PartEncode(unsigned From,unsigned Through);
-  int wcslenLimited(WCHAR* pWchar, int nPixels);
-  char *GetString(unsigned From, unsigned Through);
-  int ReplaceString(char *String,unsigned From,unsigned Through);
-  int Paint();
-  unsigned Width(unsigned From, unsigned Through);
-  unsigned Position(unsigned Pixels);
-  void AutoScrollRight(void);
-  DWORD Ticks2Dur(DWORD dwNoteTicks, DWORD dwTolerance, char* sMusique, size_t len);
-  BOOL MusicXMLIn(const char *filename);
-  BOOL MusicXMLOut(const char *filename);
-  BOOL MIDIIn(const char *filename);
-  BOOL MIDIOut(const char *filename);
-  BOOL RTFOut(const char *filename);
-  BOOL TXTIn(const char *filename);
-  BOOL TXTOut(const char *filename);
-  BOOL NotesUp(HWND hWnd);
-  BOOL NotesDown(HWND hWnd);
-  BOOL GoHome(HWND hWnd);
-  BOOL Valid(void){return m_stMThdChunk!=NULL;};
-};//PartWindowData
+struct SPartWindowData {
+	BOOL Active;
+	BOOL Selecting;
+	BOOL Control;
+	BOOL Enabled;
+	unsigned SelectBegin;
+	unsigned SelectEnd;
+
+	unsigned SelectMin() {
+		return min(SelectBegin,SelectEnd);
+	};
+
+	unsigned SelectMax() {
+		return max(SelectBegin,SelectEnd);
+	};
+
+	struct
+	{
+		int Tempo;
+		unsigned nMin;
+		unsigned nMax;
+		unsigned SelectBegin;
+		unsigned SelectEnd;
+		unsigned ViewBegin;
+		DWORD dwStartTime;
+		SPartSelectionMS selectionTime;
+	} m_sPlay;
+
+	SPartSelectionMS m_sSelectionMS;
+	unsigned ViewBegin;
+	unsigned ViewWidthPixels;
+	pNote *Melody;
+	unsigned MelodySize;
+	unsigned MelodyBufferSize;
+	HFONT hFont;
+	int FontCharWidth[MUSIQUE_FONT_SIZE];
+	int Clef;
+	int Tempo;
+	BOOL Modified;
+	HWND hMyself;
+	HWND hMyParent;
+	HWND hPlayButton;
+	HWND hPauseButton;
+	HWND hStopButton;
+	HWND hLoopButton;
+	HWND hVoiceButton;
+	char Instrument;
+
+	SMTHeaderChunk * m_stMThdChunk;
+	SChunkHeader * m_stMTrkHeader;
+
+	SPartWindowData(HWND hWnd,int Size=DELTA);
+	~SPartWindowData();
+	void Grow(int Size=DELTA);
+	int WhichClef();
+	void SetClef(int NewClef);
+	WCHAR *PartEncode(unsigned From,unsigned Through);
+	int wcslenLimited(WCHAR* pWchar, int nPixels);
+	char *GetString(unsigned From, unsigned Through);
+	int ReplaceString(char *String,unsigned From,unsigned Through);
+	int Paint();
+	unsigned Width(unsigned From, unsigned Through);
+	unsigned Position(unsigned Pixels);
+	void AutoScrollRight(void);
+	DWORD Ticks2Dur(DWORD dwNoteTicks, DWORD dwTolerance, char* sMusique, size_t len);
+	BOOL MusicXMLIn(LPCSTR filename);
+	BOOL MusicXMLOut(LPCSTR filename);
+	BOOL MIDIIn(LPCSTR filename);
+	BOOL MIDIOut(LPCSTR filename);
+	BOOL RTFOut(LPCSTR filename);
+	BOOL TXTIn(LPCSTR filename);
+	BOOL TXTOut(LPCSTR filename);
+	BOOL NotesUp(HWND hWnd);
+	BOOL NotesDown(HWND hWnd);
+	BOOL GoHome(HWND hWnd);
+	BOOL Valid(void){return m_stMThdChunk!=NULL;};
+};
 
 }
 #endif

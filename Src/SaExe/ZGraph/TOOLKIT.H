@@ -1,14 +1,11 @@
 // TOOLKIT.H
-
 /////////////////////////////////////////////////////////////////////////////
 //             Header File for ZGRAF Toolkit Graph Functions
 //
 // ZGRAF C++ Multi-Platform Graph Toolkit v. 1.41, (c) 1996, ZGRAF Software
 /////////////////////////////////////////////////////////////////////////////
-
 #ifndef _TOOLKIT_H
 #define _TOOLKIT_H
-
 
 /////////////////////////////////////////////////////////////////////////////
 //  Defines
@@ -17,17 +14,9 @@
 //
 // Application-Dependent Defines
 //
-#if ! defined(WINDOWS_PLATFORM)  &&  ! defined(OS2_PLATFORM)  && ! defined(MS_DOS_PLATFORM)  && ! defined(BGI_DOS_PLATFORM)
-#error Please define one of WINDOWS_PLATFORM, OS2_PLATFORM, MS_DOS_PLATFORM, or BGI_DOS_PLATFORM.
+#if ! defined(WINDOWS_PLATFORM)  &&  ! defined(MS_DOS_PLATFORM)
+#error Please define one of WINDOWS_PLATFORM, MS_DOS_PLATFORM.
 #endif
-
-#ifdef zDLL                         // If Building a Win 16 DLL
-#define zGRAPH_TYPE   _export
-#else
-#define zGRAPH_TYPE              // If Building Win 16, Win 32, OS/2 App.
-#endif
-
-//
 
 //
 // General Defines
@@ -57,7 +46,7 @@
 //
 // Misc. Other Defines for Toolkit
 //
-#define zDEFAULT                    0   // Value Used to Zero "zGraphStruct"
+#define zDEFAULT                    0   // Value Used to Zero "SGraph"
 
 #define zDEFAULT_AXIS_DIVISIONS     5
 #define zDEFAULT_X_AXIS_DIVISIONS   5   // Default Num. of Axis Divisions
@@ -88,25 +77,12 @@
 
 #define zMAIN_GRAPH_AREA_X_OFFSET       (0.30  * RWindow.Width())
 
-#ifdef originalSizeZGraph
-
-#define zX_AXIS_OFFSET_LEFT             (0.35  * RWindow.Width())
-#define zX_AXIS_OFFSET_LEFT2            (0.15  * RWindow.Width())
-#define zX_AXIS_OFFSET_RIGHT            (0.85  * RWindow.Width())
-#define zY_AXIS_OFFSET_TOP              (0.15  * RWindow.Height())
-#define zY_AXIS_OFFSET_BOTTOM           (0.85  * RWindow.Height())
-#define zY_AXIS_OFFSET_BOTTOM2          (0.70  * RWindow.Height())
-
-#else
-
 #define zX_AXIS_OFFSET_LEFT             (0.  * RWindow.Width())
 #define zX_AXIS_OFFSET_LEFT2            (0.  * RWindow.Width())
 #define zX_AXIS_OFFSET_RIGHT            (1.  * RWindow.Width())
 #define zY_AXIS_OFFSET_TOP              (0.  * RWindow.Height())
 #define zY_AXIS_OFFSET_BOTTOM           (1.  * RWindow.Height())
 #define zY_AXIS_OFFSET_BOTTOM2          (1.  * RWindow.Height())
-
-#endif
 
 #define z3D_GRID_X_SLANT_OFFSET         (0.20  * RWindow.Width())
 #define z3D_GRID_Y_SLANT_OFFSET         (0.25  * RWindow.Height())
@@ -361,39 +337,6 @@ typedef  INT        zPATTERN;   // Not Really Used In Windows
 typedef  HPALETTE   zPALETTE;   // For a Color Palette
 #endif
 
-#ifdef OS2_PLATFORM                // Adapt OS/2 PM to Windows Equivalences
-typedef  LONG       zRGB;       // RGB Color Definition
-typedef  zRGB       zFILL;      // OS/2 PM Fills Are Done With RGB Colors
-typedef  zRGB       zLINE;      // OS/2 PM Lines Are Done With RGB Colors
-typedef  LONG       zPATTERN;   // OS/2 PM Pattern Used to Fill Polygons
-typedef  HPAL       zPALETTE;   // For a Color Palette
-
-#define  LPTSTR     char *       // Adapt to Windows Memory Equiv.
-#define  lstrlen   strlen
-#define  lstrcpy   strcpy
-
-#ifndef IBM_COMPILER            // Already Defined for IBM CSet++
-#define _fstrchr   strchr
-#endif
-
-typedef struct tagRECT          //
-{
-    // Define a RECT (Like OS/2's "RECTL")
-    int left   ;                 //
-    int top    ;
-    int right  ;
-    int bottom ;
-
-} RECT ;
-
-typedef struct tagPOINT         // Define a Point (like OS/2's "POINTL")
-{
-    int x;
-    int y;
-
-} POINT;
-#endif
-
 #ifdef MS_DOS_PLATFORM             // Microsoft DOS Graphics Platform
 #define  TRUE       1
 #define  FALSE      0
@@ -431,124 +374,74 @@ typedef struct tagPOINT         // Define a Point
 } POINT;
 #endif
 
-#ifdef BGI_DOS_PLATFORM            // Borland BGI DOS Graphics Platform
-#define  TRUE       1
-#define  FALSE      0
-#define  BOOL       int
-#define  BYTE       unsigned char
-#define  INT        int
-typedef  int        zRGB;       // RGB Color Definition
-typedef  zRGB       zFILL;      // Fills Are Done With RGB Colors
-typedef  zRGB       zLINE;      // Lines Are Done With RGB Colors
-typedef  long       zPATTERN;   // Pattern Used to Fill Polygons
-typedef  long       zPALETTE;   // For a Color Palette
-
-#define  LPTSTR          char *  // Adapt to Windows Memory Equiv.
-#define  lstrlen        strlen
-#define  lstrcpy        strcpy
-#define             far
-#define  zDEFAULT_FONT  2       // The Default Font Size (Small Font)
-
-typedef struct tagRECT          //
-{
-    // Define a RECT
-    int left   ;                 //
-    int top    ;
-    int right  ;
-    int bottom ;
-
-} RECT ;
-
-typedef struct tagPOINT         // Define a Point
-{
-    int x;
-    int y;
-
-} POINT;
-
-#endif
-
 /////////////////////////////////////////////////////////////////////////////
 //  Structures
 /////////////////////////////////////////////////////////////////////////////
 
 //
-// Following is The "zGraphStruct" Definition...
+// Following is The "SGraph" Definition...
 //
-typedef struct zGraphStruct
+struct SGraph
 {
 
 #ifdef WINDOWS_PLATFORM
-    HDC    hdc              ; // Standard Windows HDC
+    HDC hdc; // Standard Windows HDC
 #endif
 
-#ifdef OS2_PLATFORM
-    HWND   hwnd             ; // Standard OS/2 HWND
-    HPS    hps              ; // Standard OS/2 PM HPS
-#endif
+    RECT * RWindow;             // RECT Containing Window Client-Area Dimensions
+    double * xdata;             // X-Data Array
+    double * ydata;             // Y-Data Array
+    double * zdata;             // Z-Data Array
+    INT * symbols;              // The Array of Symbols
+    INT n;                      // The Number of Data Pts.
 
-    RECT  * RWindow         ; // RECT Containing Window Client-Area Dimensions
-    double * xdata           ; // X-Data Array
-    double * ydata           ; // Y-Data Array
-    double * zdata           ; // Z-Data Array
-    INT  *  symbols         ; // The Array of Symbols
-    INT    n                ; // The Number of Data Pts.
+    zRGB axis_color;            // Color of Graph Axis
+    zRGB bkg_color;             // Graph Background Color
+    zRGB * plot_color;          // The Array of Plot Colors
 
-    zRGB   axis_color       ; // Color of Graph Axis
-    zRGB   bkg_color        ; // Graph Background Color
-    zRGB  * plot_color      ; // The Array of Plot Colors
+    INT fill_style;             // Graph Area Fill Style
 
-    INT    fill_style       ; // Graph Area Fill Style
-
-    PWCHAR  title            ; // Main Graph Title
-    PWCHAR  H_Title          ; // Horizontal Axis Title
-    PWCHAR  V_Title          ; // Vertical Axis Title
+    PWCHAR title;               // Main Graph Title
+    PWCHAR H_Title;             // Horizontal Axis Title
+    PWCHAR V_Title;             // Vertical Axis Title
 
     WCHAR LegendTitles[zMAX_DATA_SETS    + 1] ; // The Legend Titles (A Group of Strings)
-    WCHAR ItemTitles  [zMAX_ITEM_TITLES  + 1] ; // The Item Titles (A Group of Strings)
+    WCHAR ItemTitles[zMAX_ITEM_TITLES  + 1] ; // The Item Titles (A Group of Strings)
 
-    INT  legend_position    ; // Graph Legend Position
-    //    (zLEFT / zBOTTOM / zNO_LEGEND)
-    INT  item_title_format  ; // Graph Item Title Display Format
-    //    (zTEXT_STRINGS / zNUMBERS / zNO_ITEM_TITLES)
+    INT legend_position;        // Graph Legend Position
+    INT item_title_format;      // Graph Item Title Display Format
 
-    BOOL line_connect       ; // FALSE = Don't connect lines, TRUE = Do Connect
-    BOOL symbols_flag       ; // FALSE = Don't show symbols, TRUE = Do Show
-    BOOL grid_flag          ; // ON = Show Grid, OFF = Hide Grid
-    BOOL auto_scale         ; // ON = Automatic Scale, OFF = Manual Scale
-    BOOL draw_forward       ; // TRUE = Front-to-Back, FALSE = Back-to-Front
-    BOOL _3D_flag           ; // TRUE for 3-D flag, FALSE for 2-D
+    BOOL line_connect;          // FALSE = Don't connect lines, TRUE = Do Connect
+    BOOL symbols_flag;          // FALSE = Don't show symbols, TRUE = Do Show
+    BOOL grid_flag;             // ON = Show Grid, OFF = Hide Grid
+    BOOL auto_scale;            // ON = Automatic Scale, OFF = Manual Scale
+    BOOL draw_forward;          // TRUE = Front-to-Back, FALSE = Back-to-Front
+    BOOL _3D_flag;              // TRUE for 3-D flag, FALSE for 2-D
 
-    INT  bkg_gradient_mode  ; // Type of Graded Bkg. Color Spectrum
-    //  [zNO_GRADIENT, zTOP_DOWN, zCENTER, zBOTTOM_UP]
+    INT bkg_gradient_mode;      // Type of Graded Bkg. Color Spectrum
 
-    INT  bkg_gradient_color_scheme;  // = zWHITE_GRADIENT, zBLUE_GRADIENT, etc.
+    INT bkg_gradient_color_scheme;  // = zWHITE_GRADIENT, zBLUE_GRADIENT, etc.
 
-    INT  x_axis_style       ; // = zLINEAR (the Default) or zLOG
-    INT  y_axis_style       ; // = zLINEAR (the Default) or zLOG
-    INT  x_axis_divisions   ; // Number of X-Axis Divisions (-1 = Auto-Determine)
-    INT  y_axis_divisions   ; // Number of Y-Axis Divisions (-1 = Auto-Determine)
+    INT x_axis_style;           // = zLINEAR (the Default) or zLOG
+    INT y_axis_style;           // = zLINEAR (the Default) or zLOG
+    INT x_axis_divisions;       // Number of X-Axis Divisions (-1 = Auto-Determine)
+    INT y_axis_divisions;       // Number of Y-Axis Divisions (-1 = Auto-Determine)
 
-    INT  digit_format       ; // Style to Use for Displaying Numbers Along
-    //   Graph Axes [i.e., one of:  zROUND_INTEGER,
-    //   zFLOAT_PT, zSCI_NOTATION, zFIXED]
-    INT  digit_precision    ; // Number of Signif. Digits to Show in Numbers
+    INT digit_format;           // Style to Use for Displaying Numbers Along
+    INT digit_precision;        // Number of Signif. Digits to Show in Numbers
 
-    INT  grid_pen_style     ; // Pen Style Used for Drawing Grid (zSOLID, etc.)
-    INT  shading_style      ; // Shading Style (zNO_SHADING, zLIGHT_SHADING, etc.)
+    INT grid_pen_style;         // Pen Style Used for Drawing Grid (zSOLID, etc.)
+    INT shading_style;          // Shading Style (zNO_SHADING, zLIGHT_SHADING, etc.)
 
-    double xstart, xend     ; // X-Data Ranges for Manual Scaling
-    double ystart, yend     ; // Y-Data Ranges for Manual Scaling
-    double zstart, zend     ; // Z-Data Ranges for Manual Scaling
+    double xstart, xend;        // X-Data Ranges for Manual Scaling
+    double ystart, yend;        // Y-Data Ranges for Manual Scaling
+    double zstart, zend;        // Z-Data Ranges for Manual Scaling
 
-    INT   quality           ; // Precision of Z = F(X,Y) Graph
-    PWCHAR function          ; // This is a Function [F(X) or F(X,Y)]
+    INT quality;                // Precision of Z = F(X,Y) Graph
+    PWCHAR function;            // This is a Function [F(X) or F(X,Y)]
 
-    char Reserved[ 128 ]    ; // Unused Now, But Reserved for Future Use!
-
-} zGraphStruct ;
-
-
+    char Reserved[128];         // Unused Now, But Reserved for Future Use!
+};
 
 /////////////////////////////////////////////////////////////////////////////
 //  Function Prototypes
@@ -559,50 +452,34 @@ typedef struct zGraphStruct
 //
 #ifdef WINDOWS_PLATFORM
 BOOL ShowPrintSetupDialog(HWND hWnd);
-INT zPrintGraph(HWND hwnd,
-                HINSTANCE ghInstance,
-                void (FAR * GraphFunctionPtr)(zGraphStruct *),
-                zGraphStruct * zG);
-#endif
-
-#ifdef OS2_PLATFORM
-void  zPrintGraph(HWND hwnd,
-                  void (FAR * GraphFunctionPtr)(zGraphStruct *),
-                  zGraphStruct * zG);
+INT zPrintGraph(HWND hwnd, HINSTANCE ghInstance, void (FAR * GraphFunctionPtr)(SGraph *), SGraph * zG);
 #endif
 
 //
 // Functions in MISC.CPP
 //
-void    zDisplayMessage(PWCHAR title, PWCHAR message);
-void    zDisplayError(PWCHAR message);
-void    HOURGLASS(INT);
-double  parse(LPCSTR s, INT * att, double X, double Y = 0.0);
-zRGB    zGRAPH_TYPE RGB_color(INT color);
-zRGB    zMakeColor(BYTE red, BYTE green, BYTE blue);
-RECT    GetPercentOfRect(RECT  R,
-                         double LeftPercent,
-                         double TopPercent,
-                         double RightPercent,
-                         double BottomPercent);
-void    UNUSED_PARAMETERS(void *, ...);
+void zDisplayMessage(PWCHAR title, PWCHAR message);
+void zDisplayError(PWCHAR message);
+void HOURGLASS(INT);
+double parse(LPCSTR s, INT * att, double X, double Y = 0.0);
+zRGB RGB_color(INT color);
+zRGB zMakeColor(BYTE red, BYTE green, BYTE blue);
+RECT GetPercentOfRect(RECT R, double LeftPercent, double TopPercent, double RightPercent, double BottomPercent);
+void UNUSED_PARAMETERS(void *, ...);
 
 /////////////////////////////////////////////////////////////////////////////
 //  The Graph Function Prototypes
 /////////////////////////////////////////////////////////////////////////////
-
-void zGRAPH_TYPE  AreaGraph(zGraphStruct * zG);
-void zGRAPH_TYPE  LogGraph(zGraphStruct * zG);
-void zGRAPH_TYPE  BarGraph(zGraphStruct * zG);
-void zGRAPH_TYPE  XYGraph(zGraphStruct * zG);
-void zGRAPH_TYPE  PieGraph(zGraphStruct * zG);
-void zGRAPH_TYPE  XYZGraph(zGraphStruct * zG);
-void zGRAPH_TYPE  PolarGraph(zGraphStruct * zG);
-void zGRAPH_TYPE  ScatterGraph(zGraphStruct * zG);
-void zGRAPH_TYPE  SmithGraph(zGraphStruct * zG);
-void zGRAPH_TYPE  ContourGraph(zGraphStruct * zG);
+void AreaGraph(SGraph * zG);
+void LogGraph(SGraph * zG);
+void BarGraph(SGraph * zG);
+void XYGraph(SGraph * zG);
+void PieGraph(SGraph * zG);
+void XYZGraph(SGraph * zG);
+void PolarGraph(SGraph * zG);
+void ScatterGraph(SGraph * zG);
+void SmithGraph(SGraph * zG);
+void ContourGraph(SGraph * zG);
 
 #endif
-
-// EOF -- TOOLKIT.H
 

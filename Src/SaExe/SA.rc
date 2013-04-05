@@ -26,7 +26,7 @@ LANGUAGE LANG_NEUTRAL, SUBLANG_NEUTRAL
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 3,1,0,47
+ FILEVERSION 3,1,0,49
  PRODUCTVERSION 1,0,0,1
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
@@ -44,7 +44,7 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "SIL International"
             VALUE "FileDescription", "SA"
-            VALUE "FileVersion", "v3.1.0.47"
+            VALUE "FileVersion", "v3.1.0.49"
             VALUE "InternalName", "SA"
             VALUE "LegalCopyright", "© 1996-2013 SIL International (MSEA)"
             VALUE "ProductName", "SA"
@@ -2230,7 +2230,7 @@ BEGIN
     DEFPUSHBUTTON   "OK",IDOK,194,58,50,14
     PUSHBUTTON      "Cancel",IDCANCEL,252,58,50,14
     COMBOBOX        IDC_MULTICHANNEL_COMBO,7,36,294,180,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
-    LTEXT           "Please select a single channel to use, or select 'combine' to combine all the channels together into a single wave form.",IDC_STATIC,7,18,294,18
+    LTEXT           "Please select a single channel to display.",IDC_STATIC,7,18,294,18
     LTEXT           "The file you are loading contains multiple audio channels.",IDC_STATIC,7,7,294,12
 END
 
@@ -4231,7 +4231,7 @@ IDC_MHANDN              CURSOR                  "res\\MedHandN.cur"
 
 STRINGTABLE
 BEGIN
-    VS_VERSION              "Version 3.1.0.47"
+    VS_VERSION              "Version 3.1.0.49"
     VS_COPYRIGHT            "© 1996-2013 SIL International (MSEA).\nAll Rights Reserved."
     IDR_MAINFRAME           "Speech Analyzer"
     IDR_SA_ANNTYPE          "\nSA\nSA Document\nWAV Files (*.wav)\n.wav\nannFileType\nANN File Type"
@@ -4268,6 +4268,14 @@ BEGIN
     IDS_AUTO_WAITING        "Waiting for input..."
     IDS_AUTO_RECORD         "Recording..."
     IDS_AUTO_WAITING_SILENCE "Waiting for 2 Seconds of Silence..."
+END
+
+STRINGTABLE
+BEGIN
+    IDS_ERROR_REGISTRY      "Unable to update registry!"
+    IDS_ERROR_NO_FW_FILE    "Please select a destination filename for the FieldWorks .SFM output file."
+    IDS_ERROR_NO_REFERENCE  "There are no Reference annotations.\nPlease added Reference numbers before exporting data to FieldWorks."
+    IDS_ERROR_AUTOSAVE_FAIL "Unable to create the AutoSave directory '%1'\nThe AutoSave feature is disabled."
     IDS_ERROR_FORMAT_CHANNELS "Data in file '%1' has too many channels"
 END
 
@@ -5242,10 +5250,8 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_MC_COMBINE          "Combine All Channels"
     IDS_MC_CHANNEL_LEFT     "Channel %1 (Left)"
     IDS_MC_CHANNEL_RIGHT    "Channel %1 (Right)"
-    IDS_SUPPORT_WAVE        "This files format is not directly editable by Speech Analyzer.\nSelect 'Yes' to allow Speech Analyzer to make a copy and convert the file to a supported format.\nSelect 'No' to make this file 'read only'."
     IDS_SUPPORT_WAVE_COPY   "This files format is not directly editable by Speech Analyzer.\nSpeech Analyzer will now make a copy of the file and convert it to a supported format.\nYou can use 'Save As' to save this copy."
 END
 
@@ -5262,14 +5268,6 @@ BEGIN
     IDS_AUTOSAVE_RESTORE_TEMP 
                             "An unsaved recording was found.\nDo you wish to restore '%1'?\n\nThis file was last updated on %2.\nIf you select YES, Speech Analyzer will then ask you for a folder to restore the file to."
     IDS_CHOOSE_FOLDER       "Please choose a folder."
-END
-
-STRINGTABLE
-BEGIN
-    IDS_ERROR_REGISTRY      "Unable to update registry!"
-    IDS_ERROR_NO_FW_FILE    "Please select a destination filename for the FieldWorks .SFM output file."
-    IDS_ERROR_NO_REFERENCE  "There are no Reference annotations.\nPlease added Reference numbers before exporting data to FieldWorks."
-    IDS_ERROR_AUTOSAVE_FAIL "Unable to create the AutoSave directory '%1'\nThe AutoSave feature is disabled."
 END
 
 #endif    // English (United States) resources

@@ -120,8 +120,8 @@
     </Bscmake>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="OBSTREAM.CPP" />
-    <ClCompile Include="PATCH.CPP" />
+    <ClCompile Include="Obstream.cpp" />
+    <ClCompile Include="Patch.cpp" />
     <ClCompile Include="Tools.cpp" />
   </ItemGroup>
   <ItemGroup>

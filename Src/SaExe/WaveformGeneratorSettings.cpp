@@ -196,29 +196,29 @@ void CWaveformGeneratorSettings::SynthesizeSamples(HPSTR pTargetData, DWORD dwDa
     }
 }
 
-static const char * psz_generator = "generator";
-static const char * psz_amplitude = "amplitude";
-static const char * psz_frequency = "frequency";
-static const char * psz_phase = "phase";
-static const char * psz_sinusoid1 = "sinusoid1";
-static const char * psz_sinusoid2 = "sinusoid2";
-static const char * psz_sinusoid3 = "sinusoid3";
-static const char * psz_comb = "comb";
-static const char * psz_square = "square";
-static const char * psz_triangle = "triangle";
-static const char * psz_saw = "saw";
-static const char * psz_enable = "enable";
-static const char * psz_oscillators[] = {psz_sinusoid1,psz_sinusoid2,psz_sinusoid3,psz_comb,psz_square,psz_triangle,psz_saw};
-static const char * psz_discontinuities = "discontinuities";
-static const char * psz_harmonics = "harmonics";
-static const char * psz_samplingrate = "samplingrate";
-static const char * psz_filelength = "filelength";
-static const char * psz_bits = "bits";
+static LPCSTR psz_generator = "generator";
+static LPCSTR psz_amplitude = "amplitude";
+static LPCSTR psz_frequency = "frequency";
+static LPCSTR psz_phase = "phase";
+static LPCSTR psz_sinusoid1 = "sinusoid1";
+static LPCSTR psz_sinusoid2 = "sinusoid2";
+static LPCSTR psz_sinusoid3 = "sinusoid3";
+static LPCSTR psz_comb = "comb";
+static LPCSTR psz_square = "square";
+static LPCSTR psz_triangle = "triangle";
+static LPCSTR psz_saw = "saw";
+static LPCSTR psz_enable = "enable";
+static LPCSTR psz_oscillators[] = {psz_sinusoid1,psz_sinusoid2,psz_sinusoid3,psz_comb,psz_square,psz_triangle,psz_saw};
+static LPCSTR psz_discontinuities = "discontinuities";
+static LPCSTR psz_harmonics = "harmonics";
+static LPCSTR psz_samplingrate = "samplingrate";
+static LPCSTR psz_filelength = "filelength";
+static LPCSTR psz_bits = "bits";
 
 /***************************************************************************/
 // CDlgWaveformGeneratorSettings::WriteProperties Write echo properties
 /***************************************************************************/
-void CWaveformGeneratorSettings::WriteProperties(Object_ostream & obs)
+void CWaveformGeneratorSettings::WriteProperties(CObjectOStream & obs)
 {
 
     BOOL enables[] = {m_bSinusoid1,m_bSinusoid2,m_bSinusoid3,m_bComb,m_bSquareWave,m_bTriangle,m_bSawtooth};
@@ -243,7 +243,7 @@ void CWaveformGeneratorSettings::WriteProperties(Object_ostream & obs)
 /***************************************************************************/
 // CDlgWaveformGenerator::settings::ReadProperties Read echo properties
 /***************************************************************************/
-BOOL CWaveformGeneratorSettings::ReadProperties(Object_istream & obs)
+BOOL CWaveformGeneratorSettings::ReadProperties(CObjectIStream & obs)
 {
 
     BOOL * enables[] = { &m_bSinusoid1,&m_bSinusoid2,&m_bSinusoid3,&m_bComb,&m_bSquareWave,&m_bTriangle,&m_bSawtooth};

@@ -93,11 +93,11 @@
 #include <windows.h>
 #include "Import.h"
 #include "ChildFrame.h"
-#include "playerRecorder.h"
 #include "ClipboardHelper.h"
 #include "FileUtils.h"
 #include "resource.h"
 #include "AutoSave.h"
+#include "DlgRecorder.h"
 #include "Process\Process.h"
 #include "Process\sa_p_gra.h"
 #include "Process\sa_p_fra.h"
@@ -145,18 +145,6 @@ private :
 typedef HMODULE(__stdcall * SHGETFOLDERPATH)(HWND, int, HANDLE, DWORD, LPTSTR);
 #define CSIDL_PERSONAL                  0x0005        // My Documents
 #define CSIDL_FLAG_CREATE               0x8000        // combine with CSIDL_ value to force folder creation in SHGetFolderPath()
-
-struct VS_VERSIONINFO
-{
-    WORD                wLength;
-    WORD                wValueLength;
-    WORD                wType;
-    WCHAR               szKey[1];
-    WORD                wPadding1[1];
-    VS_FIXEDFILEINFO    Value;
-    WORD                wPadding2[1];
-    WORD                wChildren[1];
-};
 
 //###########################################################################
 // CSaApp
@@ -327,7 +315,6 @@ HMODULE LoadCompatibleLibrary(LPCTSTR szCName)
 /***************************************************************************/
 BOOL CSaApp::InitInstance()
 {
-
     // handle single instance
     if (CreateAsSingleton(_T("418486C0-7EEE-448d-AD39-2522F5D553A7"))==FALSE)
     {
@@ -549,7 +536,6 @@ BOOL CSaApp::InitInstance()
 /***************************************************************************/
 int CSaApp::ExitInstance()
 {
-
     // delete the temp transcription DB
     CoInitialize(NULL);
     ISaAudioDocumentWriterPtr saAudioDocWriter;
@@ -934,7 +920,7 @@ void CSaApp::OnProcessBatchCommands()
         if (szPath.GetLength() && CFile::GetStatus(szPath, status))   // SDM 1.5Test10.0
         {
             CImport helper(szPath, TRUE);
-            helper.Import( nMode);
+            helper.Import(nMode);
             try   // SDM 1.5Test10.0
             {
                 // delete the list file
@@ -1008,7 +994,7 @@ void CSaApp::OnProcessBatchCommands()
 
         ASSERT(pView && pDoc);
 
-        FnKeys * pKeys = ((CMainFrame *)m_pMainWnd)->GetFnKeys(0);
+        CFnKeys * pKeys = ((CMainFrame *)m_pMainWnd)->GetFnKeys(0);
         pKeys->bRepeat[Player_Batch_Settings] = FALSE;     // TRUE, if playback repeat enabled
         pKeys->nDelay[Player_Batch_Settings] = 100;        // repeat delay time in ms
         pKeys->nMode[Player_Batch_Settings] = ID_PLAYBACK_CURSORS;       // replay mode
@@ -1859,8 +1845,8 @@ BOOL CSaApp::OnIdle(LONG lCount)
 
     // perform pitch processing if not already done
     if ((pSaDoc) &&
-            (pSaDoc->IsBackgroundProcessing()) &&
-            (pSaDoc->GetDataSize()))
+        (pSaDoc->IsBackgroundProcessing()) &&
+        (pSaDoc->GetDataSize()))
     {
         CProcessGrappl * pAutoPitch = pSaDoc->GetGrappl();
         if (!pAutoPitch->IsDataReady())
@@ -2302,7 +2288,7 @@ CSaView * CSaApp::GetViewEnd(UINT uNextOrPrev)
 
     CSaView * pview = GetViewActive();
     CSaView * pviewN = (pview ? GetViewNeighbor(pview, uNextOrPrev) : NULL);
-    for ( ; pviewN; pviewN = GetViewNeighbor(pviewN, uNextOrPrev))
+    for (; pviewN; pviewN = GetViewNeighbor(pviewN, uNextOrPrev))
     {
         pview = pviewN;
     }
@@ -2335,15 +2321,15 @@ CSaView * CSaApp::GetViewNeighbor(CSaView * pviewCur, UINT uNextOrPrev)
 
 /***************************************************************************/
 /***************************************************************************/
-static const char * psz_SaApp        = "SaApp";
-static const char * psz_settingsfile = "sa3.psa";
-static const char * psz_batchsettingsfile = "sa batch.psa";
-static const char * psz_workbench    = "workbench";
-static const char * psz_wbonexit     = "wbonexit";
+static LPCSTR psz_SaApp        = "SaApp";
+static LPCSTR psz_settingsfile = "sa3.psa";
+static LPCSTR psz_batchsettingsfile = "sa batch.psa";
+static LPCSTR psz_workbench    = "workbench";
+static LPCSTR psz_wbonexit     = "wbonexit";
 
 /***************************************************************************/
 /***************************************************************************/
-void CSaApp::WriteProperties(Object_ostream & obs)
+void CSaApp::WriteProperties(CObjectOStream & obs)
 {
 
     // get the version
@@ -2359,7 +2345,7 @@ void CSaApp::WriteProperties(Object_ostream & obs)
 
     // The open databases and windows
     SetZ();  // Set the current z-order of all views
-    obs.WriteBeginMarker(psz_SaApp, szVersion);
+    obs.WriteBeginMarker(psz_SaApp, szVersion.utf8().c_str());
     obs.WriteNewline();
 
     ASSERT(m_pMainWnd);
@@ -2387,7 +2373,7 @@ void CSaApp::WriteProperties(Object_ostream & obs)
     }
 
     ((CMainFrame *)m_pMainWnd)->WriteDefaultView(obs);
-    obs.WriteString(psz_workbench, m_szWbPath);
+    obs.WriteString(psz_workbench, m_szWbPath.utf8().c_str());
     obs.WriteBool(psz_wbonexit, m_bWbOpenOnExit);
     CDlgRecorder::GetStaticSourceInfo().WriteProperties(obs);
     obs.WriteEndMarker(psz_SaApp);
@@ -2396,15 +2382,16 @@ void CSaApp::WriteProperties(Object_ostream & obs)
 /***************************************************************************/
 // read the open databases and windows
 /***************************************************************************/
-BOOL CSaApp::ReadProperties(Object_istream & obs)
+BOOL CSaApp::ReadProperties(CObjectIStream & obs)
 {
 
-    CSaString szLastVersion;
-
-    if (!obs.bAtBackslash() || !obs.bReadBeginMarker(psz_SaApp, &szLastVersion))
+    char buffer[1024];
+    if (!obs.bAtBackslash() || !obs.bReadBeginMarker(psz_SaApp, buffer, _countof(buffer)))
     {
         return FALSE;
     }
+    CSaString szLastVersion;
+    szLastVersion.setUtf8(buffer);
 
     ASSERT(m_pMainWnd);
 
@@ -2415,7 +2402,7 @@ BOOL CSaApp::ReadProperties(Object_istream & obs)
         if (((CMainFrame *)m_pMainWnd)->ReadProperties(obs));
         else if (!GetBatchMode() && CSaDoc::ReadProperties(obs));
         else if (((CMainFrame *)m_pMainWnd)->ReadDefaultView(obs));
-        else if (obs.bReadString(psz_workbench, &m_szWbPath));
+        else if (ReadStreamString( obs, psz_workbench, m_szWbPath));
 		else if (obs.bReadBool(psz_wbonexit, m_bWbOpenOnExit));
         else if (CDlgRecorder::GetStaticSourceInfo().ReadProperties(obs));
         else if (obs.bEnd(psz_SaApp))
@@ -2466,7 +2453,7 @@ BOOL CSaApp::WriteSettings()
         szPath += psz_settingsfile;
     }
 
-    Object_ostream obs(szPath);
+    CObjectOStream obs(szPath.utf8().c_str());
 
     if (!obs.getIos().fail())
     {
@@ -2547,7 +2534,7 @@ BOOL CSaApp::ReadSettings()
         szPath += psz_settingsfile;
     }
 
-    Object_istream obs(szPath);
+    CObjectIStream obs(szPath.utf8().c_str());
 
     if (!obs.getIos().fail())
     {

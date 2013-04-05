@@ -155,7 +155,7 @@ BOOL CASegmentSelection::SelectFromPosition(CSaView * pView, int nSegmentIndex, 
 
         dwStop = (dwStart + pDoc->GetBytesFromTime(MIN_ADD_SEGMENT_TIME));
 
-        if (pDoc->GetFmtParm()->wBlockAlign == 2)
+        if (pDoc->Is16Bit())
         {
             dwStop = (dwStop + 1) & ~1; // Round up
         }
@@ -202,7 +202,7 @@ BOOL CASegmentSelection::SelectFromPosition(CSaView * pView, int nSegmentIndex, 
                 }
             }
 
-            if (pDoc->GetFmtParm()->wBlockAlign == 2)
+            if (pDoc->Is16Bit())
             {
                 dwStop = (dwStop + 1) & ~1; // Round up
             }
@@ -356,7 +356,7 @@ BOOL CASegmentSelection::SelectFromStopPosition(CSaView * pView, int nSegmentInd
             dwStart = 0;
         }
 
-        if (pDoc->GetFmtParm()->wBlockAlign == 2)   // SDM 1.5Test8.2
+        if (pDoc->Is16Bit())   // SDM 1.5Test8.2
         {
             dwStart = (dwStart + 1) & ~1; // Round up
         }
@@ -401,7 +401,7 @@ BOOL CASegmentSelection::SelectFromStopPosition(CSaView * pView, int nSegmentInd
                 }
             }
 
-            if (pDoc->GetFmtParm()->wBlockAlign == 2)
+            if (pDoc->Is16Bit())
             {
                 dwStart = (dwStart + 1) & ~1; // Round up
             }

@@ -1,7 +1,7 @@
 #ifndef DLGEXPORTXML_H
 #define DLGEXPORTXML_H
 
-#include "CSaString.h"
+#include "SaString.h"
 #include "resource.h"
 
 /////////////////////////////////////////////////////////////////////////////

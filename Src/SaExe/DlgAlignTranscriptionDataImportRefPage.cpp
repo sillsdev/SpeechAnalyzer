@@ -6,7 +6,7 @@
 #include "DlgAlignTranscriptionDataSheet.h"
 #include "settings\obstream.h"
 #include "Sa_Doc.h"
-#include "CSaString.h"
+#include "SaString.h"
 #include "Segment.h"
 #include "TranscriptionData.h"
 #include "sa.h"
@@ -28,8 +28,6 @@ BEGIN_MESSAGE_MAP(CDlgAlignTranscriptionDataImportRefPage, CPropertyPage)
     ON_BN_CLICKED(IDC_REVERT, &CDlgAlignTranscriptionDataImportRefPage::OnClickedRevert)
     ON_EN_UPDATE(IDC_ANNOTATION, OnUpdateAnnotation)
 END_MESSAGE_MAP()
-
-// CDlgAlignTranscriptionDataImportRefPage message handlers
 
 BOOL CDlgAlignTranscriptionDataImportRefPage::OnSetActive()
 {

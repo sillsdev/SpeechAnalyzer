@@ -87,7 +87,7 @@ long CProcessWaveformGenerator::Process(CWaveformGeneratorSettings & parms, void
             // write the processed data block
             try
             {
-                Write((HPSTR)m_lpBuffer, dwBufferSize);
+                Write(m_lpBuffer, dwBufferSize);
             }
             catch (CFileException e)
             {

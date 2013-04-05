@@ -1,16 +1,15 @@
 /////////////////////////////////////////////////////////////////////////////
 // param.cpp:
-// Implementation of the ParseParm, SegmentParm, and PitchParm classes.
+// Implementation of the CParseParm, CSegmentParm, and CPitchParm classes.
 // Author: Steve MacLean
 // copyright 2000 JAARS Inc. SIL
 //
 // Revision History
 // 1.5Test11.1A
-//      RLJ Added PitchParm, SpectrumParm classes.
+//      RLJ Added CPitchParm, CSpectrumParm classes.
 // 06/07/2000
-//      RLJ Added RecordingParm class
+//      RLJ Added CRecordingParm class
 /////////////////////////////////////////////////////////////////////////////
-
 #include "stdafx.h"
 #include "settings\obstream.h"
 #include "dsp\spectgrm.h"
@@ -22,13 +21,13 @@
 #include "Process\sa_p_pit.h"
 #include "Process\sa_p_spi.h"
 
-static const char * psz_parse            = "parse";
-static const char * psz_breakWidth       = "break_ms";
-static const char * psz_phraseBreakWidth = "phrase_break_ms";
-static const char * psz_minThreshold     = "minThreshold";
-static const char * psz_maxThreshold     = "maxThreshold";
+static LPCSTR psz_parse            = "parse";
+static LPCSTR psz_breakWidth       = "break_ms";
+static LPCSTR psz_phraseBreakWidth = "phrase_break_ms";
+static LPCSTR psz_minThreshold     = "minThreshold";
+static LPCSTR psz_maxThreshold     = "maxThreshold";
 
-void ParseParm::WriteProperties(Object_ostream & obs)
+void CParseParm::WriteProperties(CObjectOStream & obs)
 {
     obs.WriteBeginMarker(psz_parse);
 
@@ -41,7 +40,7 @@ void ParseParm::WriteProperties(Object_ostream & obs)
     obs.WriteEndMarker(psz_parse);
 }
 
-BOOL ParseParm::ReadProperties(Object_istream & obs)
+BOOL CParseParm::ReadProperties(CObjectIStream & obs)
 {
     if ((!obs.bAtBackslash()) ||
             (!obs.bReadBeginMarker(psz_parse)))
@@ -74,7 +73,7 @@ BOOL ParseParm::ReadProperties(Object_istream & obs)
     return TRUE;
 }
 
-void ParseParm::Init()
+void CParseParm::Init()
 {
     fBreakWidth = (float) 0.025;        // CLW 1.07a
     fPhraseBreakWidth = (float) 0.5;
@@ -83,12 +82,12 @@ void ParseParm::Init()
     nParseMode = 2;
 }
 
-static const char * psz_segment   = "segment";
-static const char * psz_segmentWidth   = "segment_ms";
-static const char * psz_minChange   = "minChange";
-static const char * psz_minZeroCrossing   = "minZeroCrossing";
+static LPCSTR psz_segment   = "segment";
+static LPCSTR psz_segmentWidth   = "segment_ms";
+static LPCSTR psz_minChange   = "minChange";
+static LPCSTR psz_minZeroCrossing   = "minZeroCrossing";
 
-void SegmentParm::WriteProperties(Object_ostream & obs)
+void CSegmentParm::WriteProperties(CObjectOStream & obs)
 {
     obs.WriteBeginMarker(psz_segment);
 
@@ -100,7 +99,7 @@ void SegmentParm::WriteProperties(Object_ostream & obs)
     obs.WriteEndMarker(psz_segment);
 }
 
-BOOL SegmentParm::ReadProperties(Object_istream & obs)
+BOOL CSegmentParm::ReadProperties(CObjectIStream & obs)
 {
     if (!obs.bAtBackslash() || !obs.bReadBeginMarker(psz_segment))
     {
@@ -125,7 +124,7 @@ BOOL SegmentParm::ReadProperties(Object_istream & obs)
     return TRUE;
 }
 
-void SegmentParm::Init()
+void CSegmentParm::Init()
 {
     fSegmentWidth = (float) 0.020;
     nChThreshold = 17;
@@ -135,19 +134,19 @@ void SegmentParm::Init()
 }
 
 
-static const char * psz_pitch             = "pitch";
-static const char * psz_pitchRangeMode    = "RangeMode";
-static const char * psz_pitchScaleMode    = "ScaleMode";
-static const char * psz_pitchUpperBound   = "UpperBound";
-static const char * psz_pitchLowerBound   = "LowerBound";
-static const char * psz_pitchUseCepMedianFilter  = "UseCepMedianFilter";
-static const char * psz_pitchCepMedianFilterSize = "CepMedianFilterSize";
+static LPCSTR psz_pitch             = "pitch";
+static LPCSTR psz_pitchRangeMode    = "RangeMode";
+static LPCSTR psz_pitchScaleMode    = "ScaleMode";
+static LPCSTR psz_pitchUpperBound   = "UpperBound";
+static LPCSTR psz_pitchLowerBound   = "LowerBound";
+static LPCSTR psz_pitchUseCepMedianFilter  = "UseCepMedianFilter";
+static LPCSTR psz_pitchCepMedianFilterSize = "CepMedianFilterSize";
 
 // RLJ 09/26/2000: Bug GPI-01
-static const char * psz_pitchManualUpper   = "ManualUpper";
-static const char * psz_pitchManualLower   = "ManualLower";
+static LPCSTR psz_pitchManualUpper   = "ManualUpper";
+static LPCSTR psz_pitchManualLower   = "ManualLower";
 
-void PitchParm::WriteProperties(Object_ostream & obs)
+void CPitchParm::WriteProperties(CObjectOStream & obs)
 {
     obs.WriteBeginMarker(psz_pitch);
 
@@ -166,7 +165,7 @@ void PitchParm::WriteProperties(Object_ostream & obs)
     obs.WriteEndMarker(psz_pitch);
 }
 
-BOOL PitchParm::ReadProperties(Object_istream & obs)
+BOOL CPitchParm::ReadProperties(CObjectIStream & obs)
 {
     if (!obs.bAtBackslash() || !obs.bReadBeginMarker(psz_pitch))
     {
@@ -199,7 +198,7 @@ BOOL PitchParm::ReadProperties(Object_istream & obs)
     return TRUE;
 }
 
-void PitchParm::Init()
+void CPitchParm::Init()
 {
     nRangeMode = 0;
     // RLJ, 09/21/2000: Bug GPI-01
@@ -215,9 +214,9 @@ void PitchParm::Init()
     nManualPitchLower = nLowerBound;
 }
 
-void PitchParm::GetAutoRange(CSaDoc * pDoc, int & nUpperBound, int & nLowerBound)
+void CPitchParm::GetAutoRange(CSaDoc * pDoc, int & nUpperBound, int & nLowerBound)
 {
-    PitchParm temp;
+    CPitchParm temp;
     temp.Init();
 
     CProcess * pGrappl = (CProcessGrappl *)pDoc->GetGrappl(); // get pointer to grappl object
@@ -267,7 +266,7 @@ void PitchParm::GetAutoRange(CSaDoc * pDoc, int & nUpperBound, int & nLowerBound
     nLowerBound = temp.nLowerBound;
 }
 
-void UttParm::Init(int nBitsPerSample)
+void CUttParm::Init(int nBitsPerSample)
 {
     nMinFreq = CECIL_PITCH_MINFREQ;
     nMaxFreq = CECIL_PITCH_MAXFREQ;
@@ -277,7 +276,7 @@ void UttParm::Init(int nBitsPerSample)
     nMaxInterp = CECIL_PITCH_INTERPOL;
 }
 
-int UttParm::TruncatedCritLoud(int nBitsPerSample) const
+int CUttParm::TruncatedCritLoud(int nBitsPerSample) const
 {
     if (nCritLoud<128)
     {
@@ -307,14 +306,14 @@ int UttParm::TruncatedCritLoud(int nBitsPerSample) const
 }
 
 
-static const char * psz_music             = "music";
-static const char * psz_calcRangeMode    = "CalcRangeMode";
-static const char * psz_calcUpperBound   = "CalcUpperBound";
-static const char * psz_calcLowerBound   = "CalcLowerBound";
-static const char * psz_calcManualUpper   = "ManualCalcUpper";
-static const char * psz_calcManualLower   = "ManualCalcLower";
+static LPCSTR psz_music             = "music";
+static LPCSTR psz_calcRangeMode    = "CalcRangeMode";
+static LPCSTR psz_calcUpperBound   = "CalcUpperBound";
+static LPCSTR psz_calcLowerBound   = "CalcLowerBound";
+static LPCSTR psz_calcManualUpper   = "ManualCalcUpper";
+static LPCSTR psz_calcManualLower   = "ManualCalcLower";
 
-void MusicParm::WriteProperties(Object_ostream & obs)
+void CMusicParm::WriteProperties(CObjectOStream & obs)
 {
     obs.WriteBeginMarker(psz_music);
 
@@ -336,7 +335,7 @@ void MusicParm::WriteProperties(Object_ostream & obs)
     obs.WriteEndMarker(psz_music);
 }
 
-BOOL MusicParm::ReadProperties(Object_istream & obs)
+BOOL CMusicParm::ReadProperties(CObjectIStream & obs)
 {
     if (!obs.bAtBackslash() || !obs.bReadBeginMarker(psz_music))
     {
@@ -367,7 +366,7 @@ BOOL MusicParm::ReadProperties(Object_istream & obs)
     return TRUE;
 }
 
-void MusicParm::Init()
+void CMusicParm::Init()
 {
     nRangeMode = 0;
     nUpperBound = 70;
@@ -384,9 +383,9 @@ void MusicParm::Init()
     nManualCalcLower = nCalcLowerBound;
 }
 
-void MusicParm::GetAutoRange(CSaDoc * pDoc, int & nUpperBound, int & nLowerBound)
+void CMusicParm::GetAutoRange(CSaDoc * pDoc, int & nUpperBound, int & nLowerBound)
 {
-    MusicParm temp;
+    CMusicParm temp;
     temp.Init();
 
     CProcessMelogram * pMelogram = (CProcessMelogram *)pDoc->GetMelogram(); // get pointer to melogram object
@@ -411,20 +410,23 @@ void MusicParm::GetAutoRange(CSaDoc * pDoc, int & nUpperBound, int & nLowerBound
     nLowerBound = temp.nLowerBound;
 }
 
-static const char * psz_intensity = "intensity";
-static const char * psz_intensityScaleMode = "ScaleMode";
+static LPCSTR psz_intensity = "intensity";
+static LPCSTR psz_intensityScaleMode = "ScaleMode";
 
-void IntensityParm::WriteProperties(Object_ostream & obs)
+CIntensityParm::CIntensityParm()
+{
+    Init();
+}
+
+void CIntensityParm::WriteProperties(CObjectOStream & obs)
 {
     obs.WriteBeginMarker(psz_intensity);
-
     // write out properties
     obs.WriteInteger(psz_intensityScaleMode,  nScaleMode);
-
     obs.WriteEndMarker(psz_intensity);
 }
 
-BOOL IntensityParm::ReadProperties(Object_istream & obs)
+BOOL CIntensityParm::ReadProperties(CObjectIStream & obs)
 {
     if (!obs.bAtBackslash() || !obs.bReadBeginMarker(psz_intensity))
     {
@@ -443,7 +445,7 @@ BOOL IntensityParm::ReadProperties(Object_istream & obs)
     return TRUE;
 }
 
-void IntensityParm::Init()
+void CIntensityParm::Init()
 {
     nScaleMode = 1;
 }
@@ -457,7 +459,7 @@ static const char * psz_Frequency            = "nFrequency";
 
 
 // ARH 8/1/01 Added for wavelet scalogram graph
-void WaveletParm::WriteProperties(Object_ostream & obs)
+void CWaveletParm::WriteProperties(CObjectOStream & obs)
 // Write waveletParm(0) properties to *.psa file.
 {
     obs.WriteBeginMarker(psz_wavelet);
@@ -474,7 +476,7 @@ void WaveletParm::WriteProperties(Object_ostream & obs)
 
 
 // ARH 8/1/01 Added for wavelet scalogram graph
-BOOL WaveletParm::ReadProperties(Object_istream & obs)
+BOOL CWaveletParm::ReadProperties(CObjectIStream & obs)
 // Read waveletParm properties from *.psa file.
 {
     if (!obs.bAtBackslash() || !obs.bReadBeginMarker(psz_wavelet))
@@ -498,7 +500,7 @@ BOOL WaveletParm::ReadProperties(Object_istream & obs)
 }
 
 // ARH 8/1/01 Added for wavelet scalogram graph
-void WaveletParm::Init()
+void CWaveletParm::Init()
 {
     nResolution = 1;
     nColor = 0;
@@ -508,23 +510,23 @@ void WaveletParm::Init()
     bSmoothSpectra = TRUE;
 }
 
-static const char * psz_spectrum       = "spectrum";
-static const char * psz_ScaleMode      = "nScaleMode";
-static const char * psz_PwrUpperBound  = "nPwrUpperBound";
-static const char * psz_PwrLowerBound  = "nPwrLowerBound";
-static const char * psz_FreqUpperBound = "nFreqUpperBound";
-static const char * psz_FreqLowerBound = "nFreqLowerBound";
-static const char * psz_FreqRange      = "nFreqRange";
-static const char * psz_FreqScaleRange = "nFreqScaleRange";
-static const char * psz_SmoothLevel    = "nSmoothLevel";
-static const char * psz_PeakSharpFac   = "nPeakSharpFac";
-static const char * psz_ShowLpcSpectrum = "bShowLpcSpectrum";
-static const char * psz_ShowCepSpectrum = "bShowCepSpectrum";
-static const char * psz_ShowFormantFreq = "bShowFormantFreq";
-static const char * psz_ShowFormantBandwidth = "bShowFormantBandwidth";
-static const char * psz_ShowFormantPower = "bShowFormantPower";
+static LPCSTR psz_spectrum       = "spectrum";
+static LPCSTR psz_ScaleMode      = "nScaleMode";
+static LPCSTR psz_PwrUpperBound  = "nPwrUpperBound";
+static LPCSTR psz_PwrLowerBound  = "nPwrLowerBound";
+static LPCSTR psz_FreqUpperBound = "nFreqUpperBound";
+static LPCSTR psz_FreqLowerBound = "nFreqLowerBound";
+static LPCSTR psz_FreqRange      = "nFreqRange";
+static LPCSTR psz_FreqScaleRange = "nFreqScaleRange";
+static LPCSTR psz_SmoothLevel    = "nSmoothLevel";
+static LPCSTR psz_PeakSharpFac   = "nPeakSharpFac";
+static LPCSTR psz_ShowLpcSpectrum = "bShowLpcSpectrum";
+static LPCSTR psz_ShowCepSpectrum = "bShowCepSpectrum";
+static LPCSTR psz_ShowFormantFreq = "bShowFormantFreq";
+static LPCSTR psz_ShowFormantBandwidth = "bShowFormantBandwidth";
+static LPCSTR psz_ShowFormantPower = "bShowFormantPower";
 
-void SpectrumParm::WriteProperties(Object_ostream & obs)
+void CSpectrumParm::WriteProperties(CObjectOStream & obs)
 // Write spectrumParm properties to *.psa file.
 {
     obs.WriteBeginMarker(psz_spectrum);
@@ -548,7 +550,7 @@ void SpectrumParm::WriteProperties(Object_ostream & obs)
 }
 
 
-BOOL SpectrumParm::ReadProperties(Object_istream & obs)
+BOOL CSpectrumParm::ReadProperties(CObjectIStream & obs)
 // Read spectrumParm properties from *.psa file.
 {
     if (!obs.bAtBackslash() || !obs.bReadBeginMarker(psz_spectrum))
@@ -584,7 +586,7 @@ BOOL SpectrumParm::ReadProperties(Object_istream & obs)
     return TRUE;
 }
 
-void SpectrumParm::Init()
+void CSpectrumParm::Init()
 {
     const int SamplesPerSec = 22050;
     nScaleMode = 0;
@@ -604,15 +606,15 @@ void SpectrumParm::Init()
 }
 
 
-static const char * psz_formantcharts        = "formantcharts";
-static const char * psz_FromLpcSpectrum      = "bFromLpcSpectrum";
-static const char * psz_FromCepstralSpectrum = "bFromCepstralSpectrum";
-static const char * psz_TrackFormants        = "bTrackFormants";
-static const char * psz_SmoothFormants       = "bSmoothFormants";
-static const char * psz_MelScale             = "bMelScale";
+static LPCSTR psz_formantcharts        = "formantcharts";
+static LPCSTR psz_FromLpcSpectrum      = "bFromLpcSpectrum";
+static LPCSTR psz_FromCepstralSpectrum = "bFromCepstralSpectrum";
+static LPCSTR psz_TrackFormants        = "bTrackFormants";
+static LPCSTR psz_SmoothFormants       = "bSmoothFormants";
+static LPCSTR psz_MelScale             = "bMelScale";
 
-void FormantParm::WriteProperties(Object_ostream & obs)
-// Write FormantParm properties to *.psa file.
+void CFormantParm::WriteProperties(CObjectOStream & obs)
+// Write CFormantParm properties to *.psa file.
 {
     obs.WriteBeginMarker(psz_formantcharts);
 
@@ -626,8 +628,8 @@ void FormantParm::WriteProperties(Object_ostream & obs)
 }
 
 
-BOOL FormantParm::ReadProperties(Object_istream & obs)
-// Read FormantParm properties from *.psa file.
+BOOL CFormantParm::ReadProperties(CObjectIStream & obs)
+// Read CFormantParm properties from *.psa file.
 {
     if (!obs.bAtBackslash() || !obs.bReadBeginMarker(psz_spectrum))
     {
@@ -649,7 +651,7 @@ BOOL FormantParm::ReadProperties(Object_istream & obs)
     return TRUE;
 }
 
-void FormantParm::Init()
+void CFormantParm::Init()
 {
     /*
     bFromLpcSpectrum = FALSE;
@@ -662,13 +664,13 @@ void FormantParm::Init()
     bMelScale = FALSE;
 }
 
-static const char * psz_Recording = "Recording";
-static const char * psz_Rate      = "Rate";
-static const char * psz_Bits      = "Bits";
-static const char * psz_Highpass  = "Highpass";
-static const char * psz_Mode      = "Mode";
+static LPCSTR psz_Recording = "Recording";
+static LPCSTR psz_Rate      = "Rate";
+static LPCSTR psz_Bits      = "Bits";
+static LPCSTR psz_Highpass  = "Highpass";
+static LPCSTR psz_Mode      = "Mode";
 
-void RecordingParm::WriteProperties(Object_ostream & obs)
+void CRecordingParm::WriteProperties(CObjectOStream & obs)
 // Write spectrumParm properties to *.psa file.
 {
     obs.WriteBeginMarker(psz_Recording);
@@ -682,7 +684,7 @@ void RecordingParm::WriteProperties(Object_ostream & obs)
     obs.WriteEndMarker(psz_Recording);
 }
 
-BOOL RecordingParm::ReadProperties(Object_istream & obs)
+BOOL CRecordingParm::ReadProperties(CObjectIStream & obs)
 // Read spectrumParm properties from *.psa file.
 {
     if (!obs.bAtBackslash() || !obs.bReadBeginMarker(psz_Recording))
@@ -704,7 +706,7 @@ BOOL RecordingParm::ReadProperties(Object_istream & obs)
     return TRUE;
 }
 
-void RecordingParm::Init()
+void CRecordingParm::Init()
 {
     nRate = -1;
     nBits = -1;

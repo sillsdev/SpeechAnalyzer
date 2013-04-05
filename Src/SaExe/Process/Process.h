@@ -5,16 +5,11 @@
 // Author: Urs Ruchti
 // copyright 1996 JAARS Inc. SIL
 /////////////////////////////////////////////////////////////////////////////
-#ifndef _SA_PROC_H
+#ifndef CPROCESS_H
+#define CPROCESS_H
 
 #include "appdefs.h"
-
-#define _SA_PROC_H
-
-
-//###########################################################################
-// CProcess
-
+#include "IProcess.h"
 
 // CProcess completion codes
 #define PROCESS_DONE            1  // data processed successfully
@@ -37,181 +32,94 @@
 #define KEEP_AREA           0x4000  // keep the area boundaries
 
 
-class ISaDoc;
+__interface ISaDoc;
 class CSaView;
-class Object_ostream;
-class Object_istream;
+class CObjectOStream;
+class CObjectIStream;
 class CProgressStatusBar;
 
-class CProcess : public CCmdTarget
+class CProcess : public CCmdTarget, public IProcess
 {
-    // Construction/destruction/creation
+
 public:
     CProcess();
     virtual ~CProcess();
 
-    // Attributes
-private:
-    DWORD   m_dwBufferSize;   // data buffer size
-    long    m_nStatus;
-    CFileStatus m_fileStatus; // file status
-    CFile * m_pFile;          // file object
-protected:
-    HPSTR   m_lpBuffer;         // pointer to processed data
-    DWORD   m_dwBufferOffset; // actual buffer offset
-    int     m_nMaxValue;      // maximum value of processed data
-    int     m_nMinValue;      // minimum value of processed data
-
-    // Operations
-public:
-    virtual void CancelProcess()
-    {
-        SetStatusFlag(PROCESS_CANCEL);   // cancel current process
-    }
-    virtual void RestartProcess()
-    {
-        SetStatusFlag(PROCESS_CANCEL, FALSE);   // restart current process
-    }
-
-    virtual BOOL IsCanceled() const
-    {
-        return IsStatusFlag(PROCESS_CANCEL);   // return the process canceled flag
-    }
-    virtual BOOL IsDataReady() const
-    {
-        return IsStatusFlag(DATA_READY);
-    }
-    virtual void SetDataInvalid()
-    {
-        SetStatusFlag(DATA_READY, FALSE);
-        DeleteTempFile();
-        m_dwBufferOffset = UNDEFINED_OFFSET;
-    }
-
-    virtual void * GetProcessedData(DWORD dwOffset, BOOL bBlockBegin = FALSE); // return processed data pointer on given position (offset)
-    virtual int GetProcessedData(DWORD dwOffset, BOOL *); // return processed data from given position (offset)
-    virtual DWORD GetProcessedData(int /*nSegmentIndex*/)
-    {
-        // return processed data for a given segment
-        return 0;
-    }
-
-    virtual DWORD GetDataSize() const
-    {
-        // return processed data size in words (16 bit)
-        return GetDataSize(2);
-    }
-    virtual DWORD GetDataSize(size_t nElementSize) const
-    {
-        // return processed data size in words (16 bit)
-        return (DWORD)(m_fileStatus.m_size / nElementSize);
-    }
-    virtual void * GetProcessedDataBlock(DWORD dwOffset, size_t sObjectSize, BOOL bReverse=FALSE); // return processed data pointer to object staring at dwOffset
-    virtual void * GetProcessedObject(DWORD dwIndex, size_t sObjectSize, BOOL bReverse=FALSE); // return processed data pointer to object staring at dwOffset
-
-    virtual int GetMaxValue() const
-    {
-        return m_nMaxValue;   // return maximum value
-    }
-    virtual int GetMinValue() const
-    {
-        return m_nMinValue;   // return minimum value
-    }
-
-    long IsStatusFlag(long nStatus) const
-    {
-        return (GetStatus() & nStatus) == nStatus;
-    }
-    virtual BOOL IsIdle() const
-    {
-        return (IsStatusFlag(PROCESS_IDLE) != 0);   // return TRUE if process is idle
-    }
-    virtual BOOL IsAliased() const
-    {
-        return (IsStatusFlag(DATA_ALIASED) != 0);
-    }; // return TRUE if processed data is aliased
-
+    virtual void CancelProcess();
+    virtual void RestartProcess();
+    virtual BOOL IsCanceled() const;
+    virtual BOOL IsDataReady() const;
+    virtual void SetDataInvalid();
+    virtual void * GetProcessedData(DWORD dwOffset, BOOL bBlockBegin = FALSE);      // return processed data pointer on given position (offset)
+    virtual int GetProcessedData(DWORD dwOffset, BOOL *);                           // return processed data from given position (offset)
+    virtual DWORD GetDataSize() const;
+    virtual DWORD GetDataSize(size_t nElementSize) const;
+    virtual void * GetProcessedDataBlock(DWORD dwOffset, size_t sObjectSize, BOOL bReverse=FALSE);              // return processed data pointer to object staring at dwOffset
+    virtual void * GetProcessedObject(DWORD dwIndex, size_t sObjectSize, BOOL bReverse=FALSE);                   // return processed data pointer to object staring at dwOffset
+    virtual void * GetProcessedObject(LPCTSTR szName, int selectedChannel, int numChannels, int sampleSize, DWORD dwIndex, size_t sObjectSize, BOOL bReverse=FALSE);  // return processed data pointer to object staring at dwOffset
+    virtual int GetMaxValue() const;
+    virtual int GetMinValue() const;
+    virtual BOOL IsIdle() const;
+    virtual BOOL IsAliased() const;                                                 // return TRUE if processed data is aliased
     virtual long Process(void * pCaller, ISaDoc *, int nProgress = 0, int nLevel = 1);
-
-    // special workbench helper functions
-    virtual HPSTR GetProcessedWaveData(DWORD dwOffset, BOOL bBlockBegin = FALSE); // return pointer to block of processed wave source
-    virtual DWORD GetProcessedWaveDataSize()
-    {
-        // return processed wave source data size
-        return GetDataSize(1);
-    }
-    virtual DWORD GetProcessBufferIndex(size_t nSize = 1)
-    {
-        // return index to process buffer
-        return m_dwBufferOffset >= 0x40000000 ? UNDEFINED_OFFSET : m_dwBufferOffset/nSize;
-    }
-
-    DWORD GetProcessBufferSize()
-    {
-        return m_dwBufferSize;   // return process buffer size
-    }
-    void SetProcessBufferSize(DWORD dwSize)
-    {
-        m_dwBufferSize = dwSize;
-    }
-
-    virtual const TCHAR * GetProcessFileName()
-    {
-        return m_fileStatus.m_szFullName;   // return process temporary file path and name
-    }
-    void DeleteProcessFileName()
-    {
-        m_fileStatus.m_szFullName[0] = 0;   // delete the temporary file name
-    }
-    BOOL SmoothData(int nTimes); // smooth data in the temporary file nTimes times
-
+    virtual DWORD GetProcessedData(int index);
+    virtual DWORD GetProcessBufferIndex(size_t nSize = 1);
+    virtual LPCTSTR GetProcessFileName();
     // Workbench Operations
-    virtual int PropertiesDialog(); // calls the properties dialog for this process
+    virtual int PropertiesDialog();                                                 // calls the properties dialog for this process
+    virtual void WriteProperties(CObjectOStream & obs);
+    virtual BOOL ReadProperties(CObjectIStream & obs);
+    // special workbench helper functions
+    virtual HPSTR GetProcessedWaveData(DWORD dwOffset, BOOL bBlockBegin = FALSE);   // return pointer to block of processed wave source
+    virtual DWORD GetProcessedWaveDataSize();                                       // return the sample size in bytes for a single channel
+    virtual DWORD GetProcessedWaveDataSize(ISaDoc * pDoc);                           // return the sample size in bytes for a single channel
+    virtual DWORD GetNumSamples(ISaDoc * pDoc) const;                                // return number of samples for single channel
 
-    virtual void WriteProperties(Object_ostream & obs);
-    virtual BOOL ReadProperties(Object_istream & obs);
-
-    void Dump(const char * tag);
+    long IsStatusFlag(long nStatus) const;
+    DWORD GetProcessBufferSize();
+    void SetProcessBufferSize(DWORD dwSize);
+    void DeleteProcessFileName();
+    BOOL SmoothData(int nTimes); // smooth data in the temporary file nTimes times
+    void Dump(LPCSTR tag);
+    DWORD GetProcessedWaveDataBufferSize();
+    DWORD GetBufferSize();
 
 protected:
     virtual long GetStatus() const;
-    void SetStatus(long nStatus);
-    void SetStatusFlag(long nStatus, BOOL bValue = TRUE)
-    {
-        SetStatus(bValue ? GetStatus() | nStatus : GetStatus() & ~nStatus);
-    }
-    virtual bool StartProcess(void * pCaller, int nProcessID, DWORD dwBufferSize);     // start processing data
+    virtual bool StartProcess(void * pCaller, int nProcessID, DWORD dwBufferSize);          // start processing data
     virtual bool StartProcess(void * pCaller, int nProcessID = -1, BOOL bBuffer = TRUE);
     virtual void SetProgress(int nPercentProgress);
     virtual void ErrorMessage(UINT nTextID, LPCTSTR pszText1 = NULL, LPCTSTR pszText2 = NULL);
-    void EndProcess(BOOL bProcessBar = TRUE); // end processing data
-    BOOL CreateTempFile(TCHAR *); // create a temporary file
-    BOOL CreateTempFile(TCHAR *, CFileStatus *); // create a temporary file
-    BOOL CreateAuxTempFile(TCHAR * szName, CFile * pFile = NULL, CFileStatus * pFileStatus = NULL); // create auxilliary temp file
-    BOOL OpenFileToAppend();    // open temporary file to append data
-    void CloseTempFile(BOOL bUpdateStatus = TRUE);       // close the temporary file
-    virtual long Exit(int nError); // exit processing on error
+    virtual long Exit(int nError);                                                          // exit processing on error
     virtual BOOL WriteDataBlock(DWORD dwPosition, HPSTR lpData, DWORD dwDataLength, size_t nElementSize = 2); // write a block into the temporary file
-    virtual void SetDataReady(BOOL bReady = TRUE)
-    {
-        SetStatusFlag(DATA_READY, bReady);
-    }
-    virtual void Write(const void * lpBuf, UINT nCount)
-    {
-        m_pFile->Write(lpBuf, nCount);
-    }
-
+    virtual void SetDataReady(BOOL bReady = TRUE);
+    virtual void Write(const void * lpBuf, UINT nCount);
     // Special case used to bypass file
-    virtual void SetDataSize(int nElements, size_t nElementSize = 1)
-    {
-        m_fileStatus.m_size = nElements * nElementSize;
-    }
+    virtual void SetDataSize(int nElements, size_t nElementSize = 1);
 
-    //Implementation
+    void SetStatus(long nStatus);
+    void SetStatusFlag(long nStatus, BOOL bValue = TRUE);
+    void EndProcess(BOOL bProcessBar = TRUE);                                               // end processing data
+    BOOL CreateTempFile(TCHAR *);                                                           // create a temporary file
+    BOOL CreateTempFile(TCHAR *, CFileStatus *);                                            // create a temporary file
+    BOOL CreateAuxTempFile(TCHAR * szName, CFile * pFile, CFileStatus & fileStatus); // create auxilliary temp file
+    BOOL OpenFileToAppend();                                                                // open temporary file to append data
+    void CloseTempFile(BOOL bUpdateStatus = TRUE);                                          // close the temporary file
+
+    HPSTR m_lpBuffer;           // pointer to processed data
+    DWORD m_dwBufferSize;       // data buffer size
+    DWORD m_dwBufferOffset;     // actual buffer offset
+    int m_nMaxValue;            // maximum value of processed data
+    int m_nMinValue;            // minimum value of processed data
+
 private:
-    CProgressStatusBar * CProcess::pGetStatusBar();
+    CProgressStatusBar * GetStatusBar();
     virtual void DeleteTempFile();      // delete the temporary file (private use SetDataInvalid)
     BOOL Open(LPCTSTR lpszFileName, UINT nOpenFlags, CFileException * pError = NULL);
+
+    long m_nStatus;
+    CFileStatus m_fileStatus;   // file status
+    CFile * m_pFile;            // file object
 };
 
 //###########################################################################

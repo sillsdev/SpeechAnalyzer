@@ -1,14 +1,14 @@
 
 #include "stdafx.h"
 #include "ArchiveTransfer.h"
-#include "CSaString.h"
+#include "SaString.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE
 static char BASED_CODE THIS_FILE[] = __FILE__;
 #endif
 
-short int ArchiveTransfer::tShortInt(CArchive & ar, short int x)
+short int CArchiveTransfer::tShortInt(CArchive & ar, short int x)
 {
     short int ret = 0;
     CSaString shortInt;
@@ -29,7 +29,7 @@ short int ArchiveTransfer::tShortInt(CArchive & ar, short int x)
     return ret;
 }
 
-int ArchiveTransfer::tInt(CArchive & ar, int x)
+int CArchiveTransfer::tInt(CArchive & ar, int x)
 {
     int ret = 0;
     CSaString szInt;
@@ -50,7 +50,7 @@ int ArchiveTransfer::tInt(CArchive & ar, int x)
     return ret;
 }
 
-DWORD ArchiveTransfer::tDWORD(CArchive & ar, DWORD x)
+DWORD CArchiveTransfer::tDWORD(CArchive & ar, DWORD x)
 {
     DWORD ret = 0;
     CSaString dWord;

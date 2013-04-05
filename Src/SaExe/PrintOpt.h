@@ -83,8 +83,8 @@ public:
 
     // setters
     void SetGraphsPtr(CGraphWnd * pGraphs[]);
-    void WriteProperties(Object_ostream & obs);
-    BOOL ReadProperties(Object_istream & obs);
+    void WriteProperties(CObjectOStream & obs);
+    BOOL ReadProperties(CObjectIStream & obs);
 
 
 // Implementation

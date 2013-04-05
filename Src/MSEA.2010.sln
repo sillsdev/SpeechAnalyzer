@@ -9,7 +9,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SA_KLATT", "SaExe\Synthesis
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SaUnicode", "SaExe\SaUnicode.vcxproj", "{67914272-7CF2-4E5B-A0EC-54728888A13D}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mbrola", "SaExe\SYNTHESIS\MBROLA\mbrola.vcxproj", "{70E56708-42C2-4233-AF98-DC57F936C968}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SA_MBROLA", "SaExe\SYNTHESIS\MBROLA\mbrola.vcxproj", "{70E56708-42C2-4233-AF98-DC57F936C968}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "sfSettings", "SaExe\Settings\sfSettings.vcxproj", "{8042B26B-82A5-4B16-9A13-9A7F15A2639B}"
 EndProject
@@ -21,6 +21,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		MSEA.2010.vsmdi = MSEA.2010.vsmdi
 		TraceAndTestImpact.testsettings = TraceAndTestImpact.testsettings
 	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SA_Process", "SaExe\SA_Process\SA_Process.vcxproj", "{46F23AEC-7F8C-4D24-BCF7-67B2422980E8}"
 EndProject
 Global
 	GlobalSection(TestCaseManagementSettings) = postSolution
@@ -59,6 +61,10 @@ Global
 		{F8066672-47AB-44DA-8698-AD978581A138}.Debug|Win32.Build.0 = Debug|Win32
 		{F8066672-47AB-44DA-8698-AD978581A138}.Release|Win32.ActiveCfg = Release|Win32
 		{F8066672-47AB-44DA-8698-AD978581A138}.Release|Win32.Build.0 = Release|Win32
+		{46F23AEC-7F8C-4D24-BCF7-67B2422980E8}.Debug|Win32.ActiveCfg = Debug|Win32
+		{46F23AEC-7F8C-4D24-BCF7-67B2422980E8}.Debug|Win32.Build.0 = Debug|Win32
+		{46F23AEC-7F8C-4D24-BCF7-67B2422980E8}.Release|Win32.ActiveCfg = Release|Win32
+		{46F23AEC-7F8C-4D24-BCF7-67B2422980E8}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

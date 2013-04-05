@@ -19,7 +19,6 @@
 //       SDM moved formant tables to param.cpp as part of enabling user definable
 //           formant sets
 /////////////////////////////////////////////////////////////////////////////
-
 #include "stdafx.h"
 #include "Process.h"
 #include "sa_p_spu.h"
@@ -100,7 +99,7 @@ long CProcessFormants::Exit(int nError)
 /***************************************************************************/
 long CProcessFormants::Process(void * pCaller, ISaDoc * pDoc, BOOL bTrack,
                                DWORD dwFrameStart, DWORD dwFrameSize,
-                               SPECT_PROC_SELECT SpectraSelected,
+                               SSpectProcSelect SpectraSelected,
                                int nProgress, int nLevel)
 {
     TRACE(_T("Process: CProcessFormants\n"));
@@ -130,8 +129,7 @@ long CProcessFormants::Process(void * pCaller, ISaDoc * pDoc, BOOL bTrack,
         return MAKELONG(PROCESS_UNNECESSARY, 100);    // data is already ready
     }
 
-    FmtParm * pFmtParm = pDoc->GetFmtParm();
-    int nSmpSize = pFmtParm->wBlockAlign / pFmtParm->wChannels;
+    DWORD nSmpSize = pDoc->GetSampleSize();
 
     // Process spectrum to get formants.
     SetDataReady(TRUE);
@@ -162,7 +160,7 @@ long CProcessFormants::Process(void * pCaller, ISaDoc * pDoc, BOOL bTrack,
         return MAKELONG(PROCESS_ERROR, nProgress);
     }
 
-    FORMANT_FRAME * pFormantFrame = pSpectrum->GetFormants();
+    SFormantFrame * pFormantFrame = pSpectrum->GetFormants();
     BOOL bValidFrame = (pFormantFrame->Formant[1].Lpc.FrequencyInHertz != UNDEFINED_DATA &&
                         pFormantFrame->Formant[2].Lpc.FrequencyInHertz != UNDEFINED_DATA &&
                         pFormantFrame->Formant[3].Lpc.FrequencyInHertz != UNDEFINED_DATA);
@@ -199,8 +197,8 @@ long CProcessFormants::Process(void * pCaller, ISaDoc * pDoc, BOOL bTrack,
 
     // Get the formant frame data and calculate the frame size.  Resize the process buffer
     // to handle an integral number of frames.
-    //    m_nFormantFrameSize = (USHORT)(pSpectrum->GetFormantCount() * sizeof(FORMANT));
-    m_nFormantFrameSize = sizeof(FORMANT_FRAME);  //!! assumes fixed size structure
+    //    m_nFormantFrameSize = (USHORT)(pSpectrum->GetFormantCount() * sizeof(SFormant));
+    m_nFormantFrameSize = sizeof(SFormantFrame);  //!! assumes fixed size structure
     SetProcessBufferSize((GetProcessBufferSize() / m_nFormantFrameSize) * m_nFormantFrameSize);
 
     // Store the formant frame data.
@@ -284,8 +282,8 @@ void CProcessFormants::SmoothMedian(ISaDoc * pDoc)
     {
         int nGender = pDoc->GetGender();
 
-        FORMANT * FormantFrame[3];
-        FORMANT MedianFreq[MAX_NUM_FORMANTS+1];
+        SFormant * FormantFrame[3];
+        SFormant MedianFreq[MAX_NUM_FORMANTS+1];
         m_dwValidFrameCount = 0;
 
         DWORD dwFrame = 0;
@@ -458,7 +456,7 @@ void CProcessFormants::SmoothMedian(ISaDoc * pDoc)
 // order they are received.  Thus, formant frames should be passed to this function
 // sequentially, starting with 0 and proceeding to the highest frame index.
 /***************************************************************************/
-BOOL CProcessFormants::StoreFormantFrame(DWORD dwFormantFrame, FORMANT_FRAME * pFormant, BOOL bWriteThru)
+BOOL CProcessFormants::StoreFormantFrame(DWORD dwFormantFrame, SFormantFrame * pFormant, BOOL bWriteThru)
 {
     // Calculate beginning and end of the frame in bytes.
     DWORD dwFormantFrameStart = dwFormantFrame * m_nFormantFrameSize;
@@ -549,13 +547,13 @@ BOOL CProcessFormants::SaveBuffer(UINT nDataSize)
 // temporary file, into the buffer, returning a pointer to formant frame at the
 // specified index.
 /***************************************************************************/
-FORMANT_FRAME * CProcessFormants::GetFormantFrame(DWORD dwIndex)
+SFormantFrame * CProcessFormants::GetFormantFrame(DWORD dwIndex)
 {
     // Check to see if frame data is in process buffer.
     DWORD dwFormantFrameStart = dwIndex * m_nFormantFrameSize;    // calculate byte offset
     if (dwFormantFrameStart >= m_dwBufferOffset && dwFormantFrameStart + m_nFormantFrameSize <= m_dwBufferOffset + GetProcessBufferSize())
     {
-        return (FORMANT_FRAME *)(m_lpBuffer + dwFormantFrameStart - m_dwBufferOffset);    // return pointer to frame data
+        return (SFormantFrame *)(m_lpBuffer + dwFormantFrameStart - m_dwBufferOffset);    // return pointer to frame data
     }
 
     // Return pointer to the frame data.
@@ -566,9 +564,9 @@ FORMANT_FRAME * CProcessFormants::GetFormantFrame(DWORD dwIndex)
 /***************************************************************************/
 // CProcessFormants::LoadBuffer  Loads buffer with formant data
 /***************************************************************************/
-FORMANT_FRAME * CProcessFormants::LoadBuffer(DWORD dwFormantBlockStart)
+SFormantFrame * CProcessFormants::LoadBuffer(DWORD dwFormantBlockStart)
 {
-    return (FORMANT_FRAME *) GetProcessedWaveData(dwFormantBlockStart, TRUE);
+    return (SFormantFrame *)GetProcessedWaveData(dwFormantBlockStart, TRUE);
 }
 
 /***************************************************************************/
@@ -724,7 +722,7 @@ CSaString CProcessFormants::FindNearestVowel(ISaDoc * pDoc) const
     return FindNearestVowel(FormantFreq, pDoc);
 }
 
-void CProcessFormants::SetFormantParms(FormantParm * pFormantParms)
+void CProcessFormants::SetFormantParms(CFormantParm * pFormantParms)
 {
     m_FormantParms = *pFormantParms;
 }
@@ -732,7 +730,7 @@ void CProcessFormants::SetDataInvalid()
 {
     SetDataReady(FALSE);
 }
-FormantParm * CProcessFormants::GetFormantParms()
+CFormantParm * CProcessFormants::GetFormantParms()
 {
     return &m_FormantParms;
 }

@@ -230,7 +230,7 @@ static void DrawLayoutItem(LPDRAWITEMSTRUCT lpDIS, BOOL bMenu)
     CString szText;
     if (lpDIS->itemData >= 0 && lpDIS->itemData <= ID_LAYOUT_LAST - ID_LAYOUT_FIRST)
     {
-        const char * szLabels[] = {"1","2a","2b","2c","3a","3b","3c","4a","4b","4c","5","6a","6b"};
+        LPCSTR szLabels[] = {"1","2a","2b","2c","3a","3b","3c","4a","4b","4c","5","6a","6b"};
         szText = szLabels[lpDIS->itemData];
     }
     else

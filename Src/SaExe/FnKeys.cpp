@@ -4,19 +4,19 @@
 #include "resource.h"
 
 
-static const char * psz_fnkeys = "fnkeys";
+static LPCSTR psz_fnkeys = "fnkeys";
 
-static const char * psz_repeat = "repeat";
-static const char * psz_delay  = "delay";
-static const char * psz_volume = "volume";
-static const char * psz_speed  = "speed";
-static const char * psz_mode   = "mode";
+static LPCSTR psz_repeat = "repeat";
+static LPCSTR psz_delay  = "delay";
+static LPCSTR psz_volume = "volume";
+static LPCSTR psz_speed  = "speed";
+static LPCSTR psz_mode   = "mode";
 
 
-void FnKeys::WriteProperties(Object_ostream & obs)
+void CFnKeys::WriteProperties(CObjectOStream & obs)
 {
-    obs.WriteBeginMarker(psz_fnkeys);
 
+    obs.WriteBeginMarker(psz_fnkeys);
     for (int i=0; i<24; i++)
     {
         obs.WriteBool(psz_repeat, bRepeat[i]);
@@ -32,7 +32,7 @@ void FnKeys::WriteProperties(Object_ostream & obs)
 
 
 
-BOOL FnKeys::ReadProperties(Object_istream & obs)
+BOOL CFnKeys::ReadProperties(CObjectIStream & obs)
 {
     if (!obs.bAtBackslash() || !obs.bReadBeginMarker(psz_fnkeys))
     {
@@ -59,7 +59,7 @@ BOOL FnKeys::ReadProperties(Object_istream & obs)
 
 
 
-void FnKeys::SetupDefault()
+void CFnKeys::SetupDefault()
 {
     for (int nLoop = 0; nLoop < 24; nLoop++)
     {

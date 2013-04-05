@@ -278,20 +278,6 @@ CGraphWnd::~CGraphWnd()
 BOOL CGraphWnd::DisableLegend()
 {
     BOOL result = FALSE;
-
-#ifdef originalSizeZGraph
-    switch (m_nPlotID)
-    {
-    case IDD_F1F2:
-    case IDD_F2F1:
-    case IDD_F2F1F1:
-    case IDD_3D:
-        result = TRUE;
-        break;
-    default:
-        result = FALSE;
-    }
-#endif
     return result;
 }
 
@@ -353,12 +339,6 @@ BOOL CGraphWnd::DisableXScale()
     {
     case IDD_STAFF:
     case IDD_MAGNITUDE:
-#ifdef originalSizeZGraph
-    case IDD_F1F2:
-    case IDD_F2F1:
-    case IDD_F2F1F1:
-    case IDD_3D:
-#endif
         result = TRUE;
         break;
     default:
@@ -826,8 +806,7 @@ void CGraphWnd::UpdateStatusBar(DWORD dwStartCursor, DWORD dwStopCursor, BOOL bF
     // get pointer to parent view and to document
     CSaView * pView = (CSaView *)GetParent();
     CSaDoc * pDoc = (CSaDoc *)pView->GetDocument();
-    FmtParm * pFmtParm = pDoc->GetFmtParm(); // get sa parameters format member data
-    UINT nSmpSize = pFmtParm->wBlockAlign / pFmtParm->wChannels;  // number of bytes per sample
+    UINT nSmpSize = pDoc->GetSampleSize();  // number of bytes per sample
     // check if this graph has focus
     if ((m_bFocus) && (pView->ViewIsActive()))
     {
@@ -848,7 +827,7 @@ void CGraphWnd::UpdateStatusBar(DWORD dwStartCursor, DWORD dwStopCursor, BOOL bF
         {
             // this is a private cursor graph
             CProcessSpectrum * pSpectrum = NULL;
-            SpectrumParm * pSpectrumParm = NULL;
+            CSpectrumParm * pSpectrumParm = NULL;
             CProcessTonalWeightChart * pTWC;
             switch (m_nPlotID)
             {
@@ -860,7 +839,7 @@ void CGraphWnd::UpdateStatusBar(DWORD dwStartCursor, DWORD dwStopCursor, BOOL bF
                 if (pSpectrum->IsDataReady())
                 {
                     pSpectrumParm = pSpectrum->GetSpectrumParms();
-                    double SigBandwidth = (double)pFmtParm->dwSamplesPerSec / 2.;
+                    double SigBandwidth = (double)pDoc->GetSamplesPerSec() / 2.0;
                     double ScaleFactor = 1. + pSpectrumParm->nFreqScaleRange;
                     int nFreqLowerBound = 0;
                     int nFreqUpperBound = (int)(ceil(SigBandwidth / ScaleFactor));
@@ -1181,7 +1160,7 @@ void CGraphWnd::UpdateStatusBar(DWORD dwStartCursor, DWORD dwStopCursor, BOOL bF
                 const BOOL bPreEmphasis = TRUE;
                 SIG_PARMS Signal;
                 const BOOL bBlockBegin = TRUE;
-                Signal.SmpRate = (USHORT)pFmtParm->dwSamplesPerSec;
+                Signal.SmpRate = pDoc->GetSamplesPerSec();
                 Signal.Length = DspWin::CalcLength(pSpectroParm->Bandwidth(), Signal.SmpRate, ResearchSettings.m_cWindow.m_nType);
                 DWORD dwHalfFrameSize = (Signal.Length/2) * nSmpSize;
                 CPoint MousePosn = m_pPlot->GetMousePointerPosition();
@@ -1427,45 +1406,7 @@ void CGraphWnd::UpdateStatusBar(DWORD dwStartCursor, DWORD dwStopCursor, BOOL bF
             fUncertainty = pChPitch->GetUncertainty(fData);
             UpdatePitchStatusBar(fData, fUncertainty);
             break;
-            /* Not currently in use    AKE 8/16/2000
-            case IDD_CEPPITCH:
-            bShowPosition = bShowDuration = TRUE;
-            CProcessFormants *pFormants = (CProcessFormants*)pDoc->GetFormants(); // get pointer to formants object
-            if (pFormants->IsDataReady(m_pPlot))
-            {
-            // display cepstral pitch data, calculate size factor between raw data and pitch
-            nProcessIndex = m_pPlot->GetProcessIndex();
-            dwAreaPosition = pFormants->GetAreaPosition(nProcessIndex);
-            dwAreaLength = pFormants->GetAreaLength(nProcessIndex);
-            // check, if start cursor is in area
-            if ((dwStartCursor >= dwAreaPosition) && (dwStartCursor < (dwAreaPosition + dwAreaLength)))
-            {
-            // calculate formants data position corresponding to the pitch area
-            nFormantsData = (UINT)((float)(dwStartCursor - dwAreaPosition) * (float)pFormants->GetFormantsSize(m_pPlot) / (float)dwAreaLength);
-            // read the data
-            fData = pFormants->GetFormantsData(m_pPlot, nFormantsData, &bRes)->F[0];
-            if (bRes && fData >= 0.F)
-            {
-            if (nPitchMode == HERTZ)
-            swprintf_s(szText, _countof(szText),"    %.1f Hz", fData);
-            else
-            swprintf_s(szText, _countof(szText),"    %.1f st", GetSemitone(fData));
-            }
-            }
-            }
 
-            // write to pitch pane
-            pStat->SetPaneSymbol(ID_STATUSPANE_PITCH); // switch symbol on
-            pStat->SetPaneText(ID_STATUSPANE_PITCH, szText);
-
-            // clear out other panes
-            pStat->SetPaneSymbol(ID_STATUSPANE_AMPLITUDE, FALSE); // amplitude symbol
-            pStat->SetPaneText(ID_STATUSPANE_AMPLITUDE, "        ");  // amplitude indicator
-            pStat->SetPaneSymbol(ID_STATUSPANE_LENGTH, FALSE); // duration symbol
-            pStat->SetPaneText(ID_STATUSPANE_LENGTH, "        ");  // duration indicator
-
-            break;
-            */
         case IDD_GRAPITCH:
             pGrappl = (CProcessGrappl *)pDoc->GetGrappl();      // get pointer to auto pitch object
 
@@ -1557,8 +1498,7 @@ void CGraphWnd::UpdateStatusBar(DWORD dwStartCursor, DWORD dwStopCursor, BOOL bF
                 if (nSegmentIndex > 0)
                 {
                     fData = (float)pDuration->GetProcessedData(nSegmentIndex);
-                    swprintf_s(szText,_countof(szText), _T("     %.2f ms"), fData * 1000.F / (float)(pFmtParm->wBlockAlign *
-                               pFmtParm->dwSamplesPerSec));
+                    swprintf_s(szText,_countof(szText), _T("     %.2f ms"), fData * 1000.F / (float)(pDoc->GetBlockAlign() * pDoc->GetSamplesPerSec()));
                 }
             }
 

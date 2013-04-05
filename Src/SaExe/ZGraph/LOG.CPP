@@ -19,12 +19,6 @@
 #include <windows.h>
 #endif
 
-#ifdef OS2_PLATFORM
-#define INCL_GPI
-#include <os2.h>
-#endif
-
-
 #include "toolkit.h"                             // Toolkit Header File
 #include "zgraph.h"                              // Basic Graph Class
 
@@ -40,7 +34,7 @@ protected:
     double  ylow                ;   // Used by Log Graph
 
 public:
-    zLogGraph(zGraphStruct * zG) : zGraph(zG)
+    zLogGraph(SGraph * zG) : zGraph(zG)
     {
     }
     ~zLogGraph()
@@ -513,7 +507,7 @@ void zLogGraph::zDraw()
 //  LOG X - LINEAR Y, or LOG Y - LINEAR X
 ////////////////////////////////////////////////////////////////////////////
 
-void LogGraph(zGraphStruct * zG)
+void LogGraph(SGraph * zG)
 {
     // Declare an Instance of the Log Graph
     zLogGraph zLog(zG);

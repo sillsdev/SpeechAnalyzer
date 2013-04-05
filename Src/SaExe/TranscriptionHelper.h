@@ -1,7 +1,7 @@
 #ifndef TRANSCRIPTIONHELPER_H
 #define TRANSCRIPTIONHELPER_H
 
-#include "CSaString.h"
+#include "SaString.h"
 
 typedef std::list<CSaString> MarkerList;
 typedef std::map<int,CSaString> MarkerDefList;

@@ -52,14 +52,9 @@
 
 #include "colors.h"
 #include "sa_ansel.h"
-#include "CSaString.h"
-#include <string>
-#include <vector>
+#include "SaString.h"
 
-using std::wstring;
-using std::vector;
-
-typedef enum ECREATE_HOW { CREATE_STANDARD=0, CREATE_FROMSTREAM=1, CREATE_FROMGRAPH=2, CREATE_FROMSCRATCH=3 } CREATE_HOW;
+typedef enum ECreateHow { CREATE_STANDARD=0, CREATE_FROMSTREAM=1, CREATE_FROMGRAPH=2, CREATE_FROMSCRATCH=3 } CREATE_HOW;
 
 //###########################################################################
 // CSaView view
@@ -68,13 +63,12 @@ class CPickOverlayDlg;
 class CASegmentSelection;
 class CDib;
 class CPrintOptionsDlg;
-class Object_istream;
+class CObjectIStream;
 class CSaApp;
 class CGraphWnd;
 class CRecGraphWnd;
 class CStopwatch;
 class CMainFrame;
-struct CPrintInfo;
 class CMusicPhraseSegment;
 class CSegment;
 class CSaDoc;
@@ -109,21 +103,21 @@ public:
     BOOL IsAnimationRequested();
     BOOL IsAnimating();
     int GetAnimationFrameRate();
-    CURSOR_ALIGNMENT GetCursorAlignment();              // get cursor snap mode
-    void ChangeCursorAlignment(CURSOR_ALIGNMENT nCursorSetting);
+    ECursorAlignment GetCursorAlignment();              // get cursor snap mode
+    void ChangeCursorAlignment(ECursorAlignment nCursorSetting);
     double GetDataPosition(int nWndWidth);              // get the actual data position
     DWORD GetDataFrame();                               // return current data frame (width) of displayed data
     DWORD AdjustDataFrame(int nWndWidth);               // return adjusted data frame width for particular window
     DWORD GetStartCursorPosition();
     DWORD GetStopCursorPosition();
-    void SetCursorPosition(int nCursorSelect, DWORD dwNewPos, SNAP_DIRECTION nSnapDirection = SNAP_BOTH,
-                           CURSOR_ALIGNMENT nCursorAlignment = ALIGN_USER_SETTING);
-    void SetStartCursorPosition(DWORD dwNewPos, SNAP_DIRECTION nSnapDirection = SNAP_BOTH,
-                                CURSOR_ALIGNMENT nCursorAlignment = ALIGN_USER_SETTING); // set new start cursor position
-    void SetStopCursorPosition(DWORD dwNewPos, SNAP_DIRECTION nSnapDirection = SNAP_BOTH,
-                               CURSOR_ALIGNMENT nCursorAlignment = ALIGN_USER_SETTING);  // set new stop cursor
-    void SetStartStopCursorPosition(DWORD dwNewStartPos, DWORD dwNewStopPos, SNAP_DIRECTION nSnapDirection = SNAP_BOTH,
-                                    CURSOR_ALIGNMENT nCursorAlignment = ALIGN_USER_SETTING); // set new start/stop cursor position
+    void SetCursorPosition(int nCursorSelect, DWORD dwNewPos, ESnapDirection nSnapDirection = SNAP_BOTH,
+                           ECursorAlignment nCursorAlignment = ALIGN_USER_SETTING);
+    void SetStartCursorPosition(DWORD dwNewPos, ESnapDirection nSnapDirection = SNAP_BOTH,
+                                ECursorAlignment nCursorAlignment = ALIGN_USER_SETTING); // set new start cursor position
+    void SetStopCursorPosition(DWORD dwNewPos, ESnapDirection nSnapDirection = SNAP_BOTH,
+                               ECursorAlignment nCursorAlignment = ALIGN_USER_SETTING);  // set new stop cursor
+    void SetStartStopCursorPosition(DWORD dwNewStartPos, DWORD dwNewStopPos, ESnapDirection nSnapDirection = SNAP_BOTH,
+                                    ECursorAlignment nCursorAlignment = ALIGN_USER_SETTING); // set new start/stop cursor position
     void SetPlaybackPosition(double dwPos = ~0,int nSpeed = 0, BOOL bEstimate = FALSE);  // default hide playback position indicators
     int iGetStartCursorSegment(int iSegment);
     int iGetStopCursorSegment(int iSegment);
@@ -183,10 +177,10 @@ public:
     CMDIChildWnd * pwndChildFrame() const;
     void ShowInitialStateAndZ();
     void ShowInitialTopState();
-    void WriteProperties(Object_ostream & obs); // Save (Project) Settings
-    BOOL ReadProperties(Object_istream & obs, BOOL createGraphs); // Autoloading
-    BOOL ReadGraphListProperties(Object_istream & obs, BOOL createGraphs); // Autoloading
-    static void s_SetObjectStream(Object_istream & obs);
+    void WriteProperties(CObjectOStream & obs); // Save (Project) Settings
+    BOOL ReadProperties(CObjectIStream & obs, BOOL createGraphs); // Autoloading
+    BOOL ReadGraphListProperties(CObjectIStream & obs, BOOL createGraphs); // Autoloading
+    static void s_SetObjectStream(CObjectIStream & obs);
     static void s_ClearObjectStream();
     BOOL ReadGraphListProperties(const CSaView & fromThis);
     void InitialUpdate(BOOL bTemp=FALSE); // called first time after construct and when applying new wave
@@ -195,10 +189,10 @@ public:
     void SetStaticTWC(BOOL bChecked);
     BOOL GetNormalMelogram();
     void SetNormalMelogram(BOOL bChecked);
-    void MoveStartCursorRight();                                              // TCJ 7/6/00
-    void MoveStartCursorLeft();                                               // TCJ 7/6/00
-    EBoundaries GetEditBoundaries(int nFlags, BOOL checkKeys = TRUE);
-    BOOL AssignOverlay(CGraphWnd * pTarget, CSaView * pSourceView);      // change graph type
+    void MoveStartCursorRight();												// TCJ 7/6/00
+    void MoveStartCursorLeft();													// TCJ 7/6/00
+    EBoundary GetEditBoundaries(int nFlags, BOOL checkKeys = TRUE);
+    BOOL AssignOverlay(CGraphWnd * pTarget, CSaView * pSourceView);				// change graph type
     void RemoveRtPlots();
     virtual ~CSaView();
     CMainFrame * MainFrame();
@@ -220,7 +214,7 @@ protected:
     void Clear(void);
     virtual void OnInitialUpdate(); // called first time after construct
     BOOL DestroyGraph(CGraphWnd ** pGraph, BOOL bResetFocus = TRUE);
-    CRecGraphWnd * CreateRecGraph(CRecGraphWnd * pFromGraph = NULL, Object_istream * pObs = NULL);
+    CRecGraphWnd * CreateRecGraph(CRecGraphWnd * pFromGraph = NULL, CObjectIStream * pObs = NULL);
     void OnUpdateEditPaste(CCmdUI * pCmdUI);
     void OnUpdateEditPasteNew(CCmdUI * pCmdUI);
     void OnEditUndo();
@@ -437,7 +431,7 @@ private:
     WINDOWPLACEMENT DeleteGraphs(int nPosition = -1, BOOL bClearID = TRUE); // delete existing graph objects
     void CreateGraph(int nPosition, int nNewID,
                      CREATE_HOW ch = CREATE_STANDARD,
-                     Object_istream * pFromStream = NULL,
+                     CObjectIStream * pFromStream = NULL,
                      CGraphWnd * pFromGraph= NULL);
     void ChangeLayout(UINT nNewLayout);                     // change graph layout
     void ChangeGraph(int nID);                              // change graph type
@@ -459,7 +453,7 @@ private:
     void ArrangeMelogramGraphs(const CRect * pMeloRect, UINT * pGraphIDs);
     BOOL GraphTypeEnabled(int nID, BOOL bIncludeCtrlKeyCheck = FALSE);
     void CreateOneGraph(UINT * pID, CGraphWnd ** pGraph);
-    void CreateOneGraphStepOne(UINT nID, CGraphWnd ** pGraph, CREATE_HOW how, CGraphWnd * pFromGraph, Object_istream * pObs);
+    void CreateOneGraphStepOne(UINT nID, CGraphWnd ** pGraph, CREATE_HOW how, CGraphWnd * pFromGraph, CObjectIStream * pObs);
     UINT PreCreateOverlayGraph(int nIndex);
     void SetScrollRange(int nBar, int nMinPos, int nMaxPos, BOOL bRedraw = TRUE);
     // printing methods
@@ -497,7 +491,7 @@ private:
     BOOL m_bXScaleNone;                     // x-scale window hide all
     BOOL m_abAnnAll[ANNOT_WND_NUMBER];      // array of boolean, annotation window show/hide all
     BOOL m_abAnnNone[ANNOT_WND_NUMBER];     // array of boolean, annotation window hide all
-    CURSOR_ALIGNMENT m_nCursorAlignment;    // cursor snap mode: align to sample, zero crossing, or fragment
+    ECursorAlignment m_nCursorAlignment;    // cursor snap mode: align to sample, zero crossing, or fragment
     BOOL m_bBoundariesAll;                  // boundaries show/hide all
     BOOL m_bBoundariesNone;                 // boundaries hide all
     BOOL m_bUpdateBoundaries;               // boundaries updated or not in transcription editor
@@ -542,7 +536,7 @@ private:
     // internal data for saving the window state
     int m_z;                                // The z-order of the MDI child frame corresponding to this view.
     int m_eInitialShowCmd;                  // The state of the window when SA was closed.
-    static Object_istream * s_pobsAutoload;
+    static CObjectIStream * s_pobsAutoload;
     BOOL m_WeJustReadTheProperties;
     BOOL m_bViewCreated;
     CSaApp * pSaApp;

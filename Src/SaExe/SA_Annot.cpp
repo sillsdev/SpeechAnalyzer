@@ -107,7 +107,6 @@
 #include "Process\Process.h"
 #include "dsp\dspTypes.h"
 
-
 #ifdef _DEBUG
 #undef THIS_FILE
 static char BASED_CODE THIS_FILE[] = __FILE__;
@@ -391,9 +390,6 @@ void CLegendWnd::CalculateScale(CDC * pDC, CRect * prWnd)
     }
 }
 
-/////////////////////////////////////////////////////////////////////////////
-// CLegendWnd message handlers
-
 /***************************************************************************/
 // CLegendWnd::OnCreate Window creation
 // Creation of the legend font, used in the window.
@@ -461,9 +457,6 @@ int CLegendWnd::OnCreate(LPCREATESTRUCT lpCreateStruct)
         ::SendMessage(hImportButton, WM_SETFONT, (WPARAM)hButtonFont, 0);
         ::SendMessage(hExportButton, WM_SETFONT, (WPARAM)hButtonFont, 0);
         ::SendMessage(hConvertButton, WM_SETFONT, (WPARAM)hButtonFont, 0);
-        //      ::SendMessage(hVoiceButton,   WM_SETFONT, (WPARAM)m_font.m_hObject, 0);
-        //      ::SendMessage(hTempoButton,   WM_SETFONT, (WPARAM)m_font.m_hObject, 0);
-        //      ::SendMessage(hConvertButton, WM_SETFONT, (WPARAM)m_font.m_hObject, 0);
     }
     else if (pGraph->IsPlotID(IDD_TWC) || pGraph->IsPlotID(IDD_WAVELET))
     {
@@ -1015,11 +1008,9 @@ void CLegendWnd::OnDraw(CDC * pDC,
             swprintf_s(szText, _T("%u Bit"), pSaParm->byQuantization);
             pDC->DrawText(szText, -1, rWnd, DT_SINGLELINE | DT_TOP | DT_LEFT | DT_NOCLIP);
             rWnd.top += 5 * tm.tmHeight / 4;
-            // get sa parameters format member data
-            FmtParm * pFmtParm = pDoc->GetFmtParm();
 
             // create and write sample rate text
-            swprintf_s(szText, _T("%ld Hz"), pFmtParm->dwSamplesPerSec);
+            swprintf_s(szText, _T("%ld Hz"), pDoc->GetSamplesPerSec());
             pDC->DrawText(szText, -1, rWnd, DT_SINGLELINE | DT_TOP | DT_LEFT | DT_NOCLIP);
             rWnd.top += 5 * tm.tmHeight / 4;
 
@@ -2034,8 +2025,7 @@ void CAnnotationWnd::OnDraw(CDC * pDC, const CRect & printRect)
         if (pGraph->HavePrivateCursor())
         {
             // get necessary data from between public cursors
-            FmtParm * pFmtParm = pDoc->GetFmtParm();
-            WORD wSmpSize = WORD(pFmtParm->wBlockAlign / pFmtParm->wChannels);
+            WORD wSmpSize = WORD(pDoc->GetSampleSize());
             fDataStart = (double)pView->GetStartCursorPosition(); // data index of first sample to display
             dwDataFrame = pView->GetStopCursorPosition() - (DWORD)fDataStart + wSmpSize; // number of data points to display
         }
@@ -2240,8 +2230,6 @@ void CAnnotationWnd::SetHintUpdateBoundaries(BOOL bHint, DWORD dwStart, DWORD dw
 /////////////////////////////////////////////////////////////////////////////
 // CAnnotationWnd message handlers
 
-
-
 /***************************************************************************/
 // CAnnotationWnd::OnEraseBkgnd Erasing background
 /***************************************************************************/
@@ -2337,8 +2325,7 @@ void CAnnotationWnd::OnLButtonDown(UINT nFlags, CPoint point)
         if (pGraph->HavePrivateCursor())
         {
             // get necessary data from between public cursors
-            FmtParm * pFmtParm = pDoc->GetFmtParm();
-            WORD wSmpSize = WORD(pFmtParm->wBlockAlign / pFmtParm->wChannels);
+            WORD wSmpSize = WORD(pDoc->GetSampleSize());
             fDataStart = (LONG)pView->GetStartCursorPosition(); // data index of first sample to display
             dwDataFrame = pView->GetStopCursorPosition() - (DWORD)fDataStart + wSmpSize; // number of data points to display
         }
@@ -2456,8 +2443,7 @@ void CAnnotationWnd::OnCreateEdit(const CString * szInitialString)
         {
             // get necessary data from between public cursors
             CSaDoc * pDoc = pView->GetDocument();
-            FmtParm * pFmtParm = pDoc->GetFmtParm();
-            WORD wSmpSize = WORD(pFmtParm->wBlockAlign / pFmtParm->wChannels);
+            WORD wSmpSize = WORD(pDoc->GetSampleSize());
             fDataStart = (LONG)pView->GetStartCursorPosition(); // data index of first sample to display
             dwDataFrame = pView->GetStopCursorPosition() - (DWORD)fDataStart + wSmpSize; // number of data points to display
         }
@@ -2502,11 +2488,10 @@ void CAnnotationWnd::OnCreateEdit(const CString * szInitialString)
     }
 }
 
-int CALLBACK EnumFontFamExProc(
-    const ENUMLOGFONTEX * lpelfe,   // logical-font data
-    const NEWTEXTMETRICEX * lpntme, // physical-font data
-    DWORD FontType,           // type of font
-    LPARAM lParam             // application-defined data
+int CALLBACK EnumFontFamExProc( const ENUMLOGFONTEX * lpelfe,   // logical-font data
+								const NEWTEXTMETRICEX * lpntme, // physical-font data
+								DWORD FontType,					// type of font
+								LPARAM lParam					// application-defined data
 )
 {
     UNUSED_ALWAYS(FontType);
@@ -2558,7 +2543,6 @@ void CAnnotationWnd::CreateAnnotationFont(CFont * pFont, int nPoints, LPCTSTR sz
 /***************************************************************************/
 void CGlossWnd::OnDraw(CDC * pDC, const CRect & printRect)
 {
-
     CRect rWnd;
     CRect rClip; // get invalid region
 
@@ -2636,8 +2620,7 @@ void CGlossWnd::OnDraw(CDC * pDC, const CRect & printRect)
         if (pGraph->HavePrivateCursor())
         {
             // get necessary data from between public cursors
-            FmtParm * pFmtParm = pDoc->GetFmtParm();
-            WORD wSmpSize = WORD(pFmtParm->wBlockAlign / pFmtParm->wChannels);
+            WORD wSmpSize = WORD(pDoc->GetSampleSize());
             fDataStart = pView->GetStartCursorPosition(); // data index of first sample to display
             dwDataFrame = pView->GetStopCursorPosition() - (DWORD) fDataStart + wSmpSize; // number of data points to display
         }
@@ -2797,7 +2780,6 @@ void CGlossWnd::OnDraw(CDC * pDC, const CRect & printRect)
 /***************************************************************************/
 void CReferenceWnd::OnDraw(CDC * pDC, const CRect & printRect)
 {
-
     CRect rWnd;
     CRect rClip; // get invalid region
 
@@ -2875,8 +2857,7 @@ void CReferenceWnd::OnDraw(CDC * pDC, const CRect & printRect)
         if (pGraph->HavePrivateCursor())
         {
             // get necessary data from between public cursors
-            FmtParm * pFmtParm = pDoc->GetFmtParm();
-            WORD wSmpSize = WORD(pFmtParm->wBlockAlign / pFmtParm->wChannels);
+            WORD wSmpSize = WORD(pDoc->GetSampleSize());
             fDataStart = pView->GetStartCursorPosition(); // data index of first sample to display
             dwDataFrame = pView->GetStopCursorPosition() - (DWORD) fDataStart + wSmpSize; // number of data points to display
         }

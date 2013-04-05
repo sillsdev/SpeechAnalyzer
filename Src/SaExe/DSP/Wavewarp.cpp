@@ -8,9 +8,7 @@
 *                                                                          *
 * Class to implement speaking rate change in real time.                    *
 *                                                                          *
-*                                                                          *
 * PUBLIC MEMBER VARIABLES:                                                 *
-*                                                                          *
 *                                                                          *
 * PUBLIC MEMBER FUNCTIONS:                                                 *
 *                                                                          *
@@ -42,17 +40,17 @@
 *                          this fragment                                   *
 *                                                                          *
 *   Return value:  4-byte signed integer, defined in ERRCODES.H            *
-*     DONE                      no fatal errors                            *
-*     INVALID_PARM_PTR          fatal error: invalid pointer specified     *
-*     INVALID_BLOCK             fatal error: invalid waveform starting     *
-*                                  index specified                         *
-*     INVALID_WARP_SPEED    fatal error: invalid warp speed specified  *
-*     UNSUPP_SMP_DATA_FMT       fatal error: unsupported sample data       *
-*                                  format specified                        *
-*     FRAGMENT_NOT_FOUND        fatal error: waveform block starting       *
-*                                  index not found in any fragments        *
-*     OUT_OF_MEMORY             fatal error: insufficient memory to        *
-*                                  create object                           *
+*     DONE                 no fatal errors                                 *
+*     INVALID_PARM_PTR     fatal error: invalid pointer specified          *
+*     INVALID_BLOCK        fatal error: invalid waveform starting          *
+*                              index specified                             *
+*     INVALID_WARP_SPEED   fatal error: invalid warp speed specified       *
+*     UNSUPP_SMP_DATA_FMT  fatal error: unsupported sample data            *
+*                              format specified                            *
+*     FRAGMENT_NOT_FOUND   fatal error: waveform block starting            *
+*                              index not found in any fragments            *
+*     OUT_OF_MEMORY        fatal error: insufficient memory to             *
+*                              create object                               *
 *                                                                          *
 *                                                                          *
 * SetWaveBuffer                                                            *
@@ -110,7 +108,7 @@
 *           :                                                              *
 *   FRAG_PARMS stCallFragment;                                             *
 *   CWaveWarp *pWaveWarp;                                                  *
-*   dspError_t Err = CWaveWarp::CreateObject(&pWaveWarp, dwStart/wSmpSize,        *
+*   dspError_t Err = CWaveWarp::CreateObject(&pWaveWarp, dwStart/wSmpSize, *
 *                                     wSpeed, stCallFragment);             *
 *   if (Err) return;                                                       *
 *                                                                          *
@@ -119,7 +117,7 @@
 *   if (Err) return;                                                       *
 *                                                                          *
 *   DWORD dwPlayLength;                                                    *
-*   dspError_t Status;                                                         *
+*   dspError_t Status;                                                     *
 *   do{                                                                    *
 *      (load waveform buffer at pData with dwDataSize bytes of data        *
 *       starting at stCallFragment.dwOffset in waveform)                   *
@@ -159,13 +157,10 @@
 #define VERSION_NUMBER  "2.0"
 
 #include "WaveWarp.h"
+#include "isa_doc.h"
+#include "MathX.h"
 #include "Process\Process.h"
 #include "Process\sa_p_fra.h"
-#include "isa_doc.h"
-
-#include "MathX.h"
-
-
 
 ////////////////////////////////////////////////////////////////////////////////////////
 // Class function to return copyright notice.                                         //
@@ -193,17 +188,21 @@ float CWaveWarp::Version(void)
 ////////////////////////////////////////////////////////////////////////////////////////
 // Class function to construct waveform warping object if parameters are valid.       //
 ////////////////////////////////////////////////////////////////////////////////////////
-dspError_t CWaveWarp::CreateObject(CWaveWarp ** ppWaveWarp, ISaDoc * pDoc, ULONG dwWaveStart, USHORT wSpeed,
+dspError_t CWaveWarp::CreateObject(CWaveWarp ** ppWaveWarp,
+                                   ISaDoc * pDoc,
+                                   ULONG dwWaveStart,
+                                   USHORT wSpeed,
                                    FRAG_PARMS * pstFragStart)
 {
-// Validate parameters passed.
-    if (!ppWaveWarp || !pDoc)
+
+    // Validate parameters passed.
+    if ((ppWaveWarp==NULL) || (pDoc==NULL))
     {
         return(Code(INVALID_PARM_PTR));
     }
+
     *ppWaveWarp = NULL;
-    FmtParm * pstSmpFormat = pDoc->GetFmtParm();
-    ULONG dwWaveLength = pDoc->GetDataSize() / pstSmpFormat->wBlockAlign;
+    ULONG dwWaveLength = pDoc->GetDataSize() / pDoc->GetBlockAlign();
     if (dwWaveStart >= dwWaveLength)
     {
         return(Code(INVALID_BLOCK));
@@ -212,13 +211,13 @@ dspError_t CWaveWarp::CreateObject(CWaveWarp ** ppWaveWarp, ISaDoc * pDoc, ULONG
     {
         return(Code(INVALID_WARP_SPEED));
     }
-    if (pstSmpFormat->wTag != FILE_FORMAT_PCM || pstSmpFormat->wChannels != 1 ||
-            (pstSmpFormat->wBitsPerSample != 8 && pstSmpFormat->wBitsPerSample != 16))
+    if ((!pDoc->IsPCM()) ||
+            ((pDoc->GetBitsPerSample()!=8) && (pDoc->GetBitsPerSample()!=16)))
     {
         return(Code(UNSUPP_SMP_DATA_FMT));
     }
 
-// Locate fragment containing starting position for waveform warping.
+    // Locate fragment containing starting position for waveform warping.
     CProcessFragments * pFragments = pDoc->GetFragments();
     ULONG dwFragCount = pFragments->GetFragmentCount();
     ULONG dwFragBfrLength = pFragments->GetBufferLength();
@@ -232,13 +231,12 @@ dspError_t CWaveWarp::CreateObject(CWaveWarp ** ppWaveWarp, ISaDoc * pDoc, ULONG
     ULONG dwFragBlockLength = min(dwFragBfrLength, dwFragCount - dwFragBlock);
     ULONG dwFragBfrIndex;
 
-// Find fragment containing the wave sample where warping is to start.
     do
     {
         // scan through fragment buffer
         for (dwFragBfrIndex = 0; dwFragBfrIndex < dwFragBlockLength; dwFragBfrIndex++)
-            if (dwWaveStart >= pstFragBfr[dwFragBfrIndex].dwOffset &&
-                    dwWaveStart < pstFragBfr[dwFragBfrIndex].dwOffset + pstFragBfr[dwFragBfrIndex].wLength)
+            if ((dwWaveStart >= pstFragBfr[dwFragBfrIndex].dwOffset) &&
+                (dwWaveStart < (pstFragBfr[dwFragBfrIndex].dwOffset + pstFragBfr[dwFragBfrIndex].wLength)))
             {
                 break;
             }
@@ -267,14 +265,14 @@ dspError_t CWaveWarp::CreateObject(CWaveWarp ** ppWaveWarp, ISaDoc * pDoc, ULONG
     }
     *pstFragStart = pstFragBfr[dwFragBfrIndex];   // return parameters for fragment to load into waveform buffer
 
-// Construct wavewarp object.
+    // Construct wavewarp object.
     *ppWaveWarp = new CWaveWarp(pDoc, dwWaveStart, wSpeed, dwFragBlock + dwFragBfrIndex);
-    if (!*ppWaveWarp)
+    if (*ppWaveWarp==NULL)
     {
-        return(Code(OUT_OF_MEMORY));
+        return (Code(OUT_OF_MEMORY));
     }
 
-    return(DONE);
+    return DONE;
 }
 
 
@@ -284,7 +282,7 @@ dspError_t CWaveWarp::CreateObject(CWaveWarp ** ppWaveWarp, ISaDoc * pDoc, ULONG
 CWaveWarp::CWaveWarp(ISaDoc * pDoc, ULONG dwWaveStart, USHORT wSpeed, ULONG dwFragStart)
 {
 
-// Initialize member variables.
+    // Initialize member variables.
     m_pDoc = pDoc;
     m_pWaveBfr = NULL;
     m_dwWarpStart = dwWaveStart;
@@ -296,15 +294,10 @@ CWaveWarp::CWaveWarp(ISaDoc * pDoc, ULONG dwWaveStart, USHORT wSpeed, ULONG dwFr
     m_pstFragBfr = pDoc->GetFragments()->GetFragmentBlock(dwFragStart);  // load fragment at beginning of buffer
     m_dwFragBfrIndex = 0;
     m_wSpeed = wSpeed;
-    m_sbSmpDataFmt = (char)((pDoc->GetFmtParm()->wBitsPerSample == 8) ? PCM_UBYTE: PCM_2SSHORT);
+    m_sbSmpDataFmt = (char)((pDoc->GetBitsPerSample() == 8) ? PCM_UBYTE: PCM_2SSHORT);
     m_dJitterFactor = 0.;
     m_dSmpTime = m_pstFragBfr[m_dwFragBfrIndex].dwOffset;
     m_nSegmentIndex = 0;
-    /***************************** DEBUG ONLY *************************************/
-#ifdef DUMP
-    m_hPlay = fopen("Playback.txt", "w");
-#endif
-    /******************************************************************************/
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////
@@ -312,11 +305,6 @@ CWaveWarp::CWaveWarp(ISaDoc * pDoc, ULONG dwWaveStart, USHORT wSpeed, ULONG dwFr
 ////////////////////////////////////////////////////////////////////////////////////////
 CWaveWarp::~CWaveWarp()
 {
-    /***************************** DEBUG ONLY *************************************/
-#ifdef DUMP
-    fclose(m_hPlay);
-#endif
-    /******************************************************************************/
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////
@@ -328,9 +316,7 @@ dspError_t CWaveWarp::SetWaveBuffer(void * pWaveBfr)
     {
         return(Code(INVALID_PARM));
     }
-
     m_pWaveBfr = pWaveBfr;
-
     return(DONE);
 }
 
@@ -344,7 +330,6 @@ dspError_t CWaveWarp::SetPlayBuffer(void * pPlayBfr, ULONG dwPlayBfrLength)
     {
         return(Code(INVALID_PARM));
     }
-
     m_pPlayBfr = pPlayBfr;
     m_dwPlayBfrLength = dwPlayBfrLength;
     m_dwPlayLength = 0;
@@ -357,15 +342,12 @@ dspError_t CWaveWarp::SetPlayBuffer(void * pPlayBfr, ULONG dwPlayBfrLength)
 // Object function to fill playback buffer with waveform fragment scaled according    //
 // to requested speaking rate speed.                                                  //
 ////////////////////////////////////////////////////////////////////////////////////////
-dspError_t CWaveWarp::FillPlayBuffer(ULONG dwWaveBlock, ULONG dwWaveBlockLength,  FRAG_PARMS * pstCallFragment,
-                                     ULONG * pdwPlayLength, USHORT wNewSpeed)
+dspError_t CWaveWarp::FillPlayBuffer(ULONG dwWaveBlock,
+                                     ULONG dwWaveBlockLength,
+                                     FRAG_PARMS * pstCallFragment,
+                                     ULONG * pdwPlayLength,
+                                     USHORT wNewSpeed)
 {
-//return when outbuffer full or beyond input buffer length
-//initialize playlength to 0, dwWaveBlock to load offset, pdwFragIndex to 0
-//!!DataFmt
-//!!PlayLength = 0
-//!!reset playindex in SetPlayBuffer(pPlay, wSpeed)
-//!!reset playlength in SetPlayBuffer
 
     if (!m_pWaveBfr || !m_pPlayBfr)
     {
@@ -381,7 +363,6 @@ dspError_t CWaveWarp::FillPlayBuffer(ULONG dwWaveBlock, ULONG dwWaveBlockLength,
         return(Code(INVALID_BLOCK));
     }
 
-//CProcessFragments *pFragments = m_pDoc->GetFragments();
     ULONG dwFragCount = pFragments->GetFragmentCount();
     ULONG dwFragBfrLength = pFragments->GetBufferLength();
     do
@@ -425,17 +406,7 @@ dspError_t CWaveWarp::FillPlayBuffer(ULONG dwWaveBlock, ULONG dwWaveBlockLength,
         if (m_dwFragBlock == dwFragCount)
         {
             // no more fragment blocks
-            /***************************** DEBUG ONLY *************************************/
-#ifdef DUMP
-            if (m_sbSmpDataFmt == 2)
-                for (DWORD i =0; i < m_dwPlayLength; i++)
-                {
-                    fprintf(m_hPlay, "%d ", ((short *)m_pPlayBfr)[i]);
-                }
-#endif
-            /******************************************************************************/
-            pstCallFragment->dwOffset = m_pstFragBfr[dwFragBlockLength-1].dwOffset +
-                                        m_pstFragBfr[dwFragBlockLength-1].wLength;
+            pstCallFragment->dwOffset = m_pstFragBfr[dwFragBlockLength-1].dwOffset + m_pstFragBfr[dwFragBlockLength-1].wLength;
             pstCallFragment->wLength = 0;
             *pdwPlayLength =  m_dwPlayLength;
             return(DONE);
@@ -464,15 +435,6 @@ dspError_t CWaveWarp::FillPlayBuffer(ULONG dwWaveBlock, ULONG dwWaveBlockLength,
         //!! handle partial fragment in calling function by offsetting into play buffer before playback
         if (m_dwPlayLength + dwFragLength > m_dwPlayBfrLength)
         {
-            /***************************** DEBUG ONLY *************************************/
-#ifdef DUMP
-            if (m_sbSmpDataFmt == 2)
-                for (DWORD i =0; i < m_dwPlayLength; i++)
-                {
-                    fprintf(m_hPlay, "%d ", ((short *)m_pPlayBfr)[i]);
-                }
-#endif
-            /******************************************************************************/
             *pstCallFragment = m_pstFragBfr[m_dwFragBfrIndex];
             *pdwPlayLength = m_dwPlayLength;
             m_dwPlayLength = 0;
@@ -493,17 +455,11 @@ dspError_t CWaveWarp::FillPlayBuffer(ULONG dwWaveBlock, ULONG dwWaveBlockLength,
     while (TRUE);
 }
 
-dspError_t CWaveWarp::FillPlayBuffer(ULONG dwWaveBlock, ULONG dwWaveBlockLength,  FRAG_PARMS * pstCallFragment,
+dspError_t CWaveWarp::FillPlayBuffer(ULONG dwWaveBlock,
+                                     ULONG dwWaveBlockLength,
+                                     FRAG_PARMS * pstCallFragment,
                                      ULONG * pdwPlayLength)
 {
-//return when outbuffer full or beyond input buffer length
-//initialize playlength to 0, dwWaveBlock to load offset, pdwFragIndex to 0
-//!!DataFmt
-//!!PlayLength = 0
-//!!reset playindex in SetPlayBuffer(pPlay, wSpeed)
-//!!reset playlength in SetPlayBuffer
-//!!ensure loudness, pitch, duration run in CreateObject
-
     if (!m_pWaveBfr || !m_pPlayBfr)
     {
         return(Code(INVALID_PARM));
@@ -590,8 +546,6 @@ dspError_t CWaveWarp::FillPlayBuffer(ULONG dwWaveBlock, ULONG dwWaveBlockLength,
         // Copy fragment.
         if (m_sbSmpDataFmt == PCM_UBYTE)
         {
-            //   memcpy((void *)&((uint8 *)m_pPlayBfr)[m_dwPlayLength], (void *)&((uint8 *)m_pWaveBfr)[lWaveBfrIndex],
-            //               (size_t)dwFragLength*(size_t)abs(m_sbSmpDataFmt));
             uint8 * pPlay = &((uint8 *)m_pPlayBfr)[m_dwPlayLength];
             uint8 * pBlock = &((uint8 *)m_pWaveBfr)[lWaveBfrIndex];
             for (DWORD i = 0; i < dwFragLength; i++)
@@ -610,8 +564,6 @@ dspError_t CWaveWarp::FillPlayBuffer(ULONG dwWaveBlock, ULONG dwWaveBlockLength,
         }
         else     // PCM_2SSHORT
         {
-            //   memcpy((void *)&((short *)m_pPlayBfr)[m_dwPlayLength], (void *)&((short *)m_pWaveBfr)[lWaveBfrIndex],
-            //               (size_t)dwFragLength*(size_t)abs(m_sbSmpDataFmt));
             short * pPlay = &((short *)m_pPlayBfr)[m_dwPlayLength];
             short * pBlock = &((short *)m_pWaveBfr)[lWaveBfrIndex];
             for (DWORD i = 0; i < dwFragLength; i++)
@@ -637,17 +589,9 @@ dspError_t CWaveWarp::FillPlayBuffer(ULONG dwWaveBlock, ULONG dwWaveBlockLength,
 
 dspError_t CWaveWarp::FillPlayBuffer(FRAG_PARMS * pstCallData,
                                      ULONG dwWaveBlockLength,
-                                     ULONG * pdwPlayLength, USHORT wNewSpeed)
+                                     ULONG * pdwPlayLength,
+                                     USHORT wNewSpeed)
 {
-//return when outbuffer full or beyond input buffer length
-//initialize playlength to 0, dwWaveBlock to load offset, pdwFragIndex to 0
-//!!DataFmt
-//!!PlayLength = 0
-//!!reset playindex in SetPlayBuffer(pPlay, wSpeed)
-//!!reset playlength in SetPlayBuffer
-//!!consolidate pdwCallData and dwWaveBlock?
-//!!change FragStart in CreateObject to CallDataStart and subtract 1 from offset
-
 // Validate buffer pointers.
     if (!m_pWaveBfr || !m_pPlayBfr)
     {

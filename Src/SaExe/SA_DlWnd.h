@@ -259,6 +259,13 @@ protected:
 
 class CComboGridlines : public CComboBox
 {
+    // Construction/destruction/creation
+public:
+
+    // Attributes
+private:
+
+    // Operations
 private:
     virtual void MeasureItem(LPMEASUREITEMSTRUCT lpMIS);
     virtual void DrawItem(LPDRAWITEMSTRUCT lpDIS);
@@ -451,10 +458,8 @@ public:
 
     // Generated message map functions
 protected:
-    //{{AFX_MSG(CFancyArrow)
     afx_msg void OnPaint();
     afx_msg BOOL OnEraseBkgnd(CDC * pDC);
-    //}}AFX_MSG
     DECLARE_MESSAGE_MAP()
 };
 

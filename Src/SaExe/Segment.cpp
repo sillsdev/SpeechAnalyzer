@@ -151,17 +151,17 @@ void CSegment::Serialize(CArchive & ar)
         ar << CSaString(*m_pAnnotation);        // annotation string
         int x = GetOffsetSize();
         SA_ASSERT(x);
-        ArchiveTransfer::tInt(ar, x);
+        CArchiveTransfer::tInt(ar, x);
         for (int i = 0; i<GetOffsetSize(); i++)
         {
-            ArchiveTransfer::tDWORD(ar, GetOffset(i));
+            CArchiveTransfer::tDWORD(ar, GetOffset(i));
         }
-        ArchiveTransfer::tInt(ar, GetDurationSize());
+        CArchiveTransfer::tInt(ar, GetDurationSize());
         for (int i = 0; i< GetDurationSize(); i++)
         {
-            ArchiveTransfer::tDWORD(ar, GetDuration(i));
+            CArchiveTransfer::tDWORD(ar, GetDuration(i));
         }
-        ArchiveTransfer::tInt(ar, m_nSelection);
+        CArchiveTransfer::tInt(ar, m_nSelection);
     }
     else
     {
@@ -169,19 +169,19 @@ void CSegment::Serialize(CArchive & ar)
         ar >> integrityCheck;
         SA_ASSERT(integrityCheck == "integrityCheck");
         ar >> *m_pAnnotation;        // annotation string
-        int x = ArchiveTransfer::tInt(ar);
+        int x = CArchiveTransfer::tInt(ar);
         SA_ASSERT(x);
         m_Offset.SetSize(x);
         for (int i=0; i< GetOffsetSize(); i++)
         {
-            m_Offset.SetAt(i, ArchiveTransfer::tDWORD(ar));
+            m_Offset.SetAt(i, CArchiveTransfer::tDWORD(ar));
         }
-        m_Duration.SetSize(ArchiveTransfer::tInt(ar));
+        m_Duration.SetSize(CArchiveTransfer::tInt(ar));
         for (int i=0; i<m_Duration.GetSize(); i++)
         {
-            m_Duration.SetAt(i, ArchiveTransfer::tDWORD(ar));
+            m_Duration.SetAt(i, CArchiveTransfer::tDWORD(ar));
         }
-        m_nSelection = ArchiveTransfer::tInt(ar);
+        m_nSelection = CArchiveTransfer::tInt(ar);
     }
 }
 
@@ -216,7 +216,6 @@ void CSegment::Remove(CDocument * pSaDoc, BOOL bCheck)
 /***************************************************************************/
 void CSegment::ReplaceSelectedSegment(CDocument * pSaDoc, const CSaString & str)
 {
-
     CSaDoc * pDoc = (CSaDoc *)pSaDoc; // cast pointer
     POSITION pos = pDoc->GetFirstViewPosition();
     CSaView * pView = (CSaView *)pDoc->GetNextView(pos);
@@ -249,7 +248,6 @@ void CSegment::ReplaceSelectedSegment(CDocument * pSaDoc, const CSaString & str)
 /***************************************************************************/
 DWORD CSegment::RemoveNoRefresh(CDocument *)
 {
-
     // find length of string to delete
     int nLength = GetSegmentLength(m_nSelection);
     // change the dependent arrays
@@ -748,7 +746,6 @@ int CSegment::FirstVisibleIndex(CSaDoc & SaDoc) const
 
 int CSegment::LastVisibleIndex(CSaDoc & SaDoc) const
 {
-
     POSITION pos = SaDoc.GetFirstViewPosition();
     CSaView  * pView = (CSaView *)SaDoc.GetNextView(pos);
 
@@ -768,7 +765,6 @@ int CSegment::LastVisibleIndex(CSaDoc & SaDoc) const
 //***************************************************************************/
 int CSegment::FindPrev(int fromIndex, LPCTSTR strToFind)
 {
-
     ASSERT(fromIndex >= -1);
 
     int ret = -1;
@@ -856,8 +852,6 @@ int CSegment::FindNext(int fromIndex, LPCTSTR strToFind)
     }
     return ret;
 }
-
-
 
 /***************************************************************************/
 // CSegment::Match return TRUE if text at index matches strToFind

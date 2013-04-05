@@ -109,8 +109,7 @@ long CProcessFragments::Process(void * pCaller, ISaDoc * pDoc, int nProgress,
     }
 
     // get sample size in bytes
-    FmtParm * pFmtParm = pDoc->GetFmtParm(); // get sa parameters format member data
-    USHORT wSmpSize = USHORT(pFmtParm->wBlockAlign / pFmtParm->wChannels);
+    DWORD wSmpSize = pDoc->GetSampleSize();
 
     // save current wave buffer block offset
     DWORD dwOldWaveBlock = pDoc->GetWaveBufferIndex();
@@ -140,13 +139,13 @@ long CProcessFragments::Process(void * pCaller, ISaDoc * pDoc, int nProgress,
         short * pPitchBuffer = (short *)pAutoPitch->GetProcessedData(m_dwPitchIndex, TRUE);   //!!run pitch first?
 
         // set pitch calculation and buffer parameters
-        PITCH_PARMS PitchParm;
-        PitchParm.dwContourLength = pAutoPitch->GetDataSize();
-        PitchParm.wSmpIntvl = Grappl_calc_intvl;
-        PitchParm.wScaleFac = Grappl_scale_factor;
+        PITCH_PARMS CPitchParm;
+        CPitchParm.dwContourLength = pAutoPitch->GetDataSize();
+        CPitchParm.wSmpIntvl = Grappl_calc_intvl;
+        CPitchParm.wScaleFac = Grappl_scale_factor;
         Grappl_parms CalcParm = pAutoPitch->GetCalcParms();
-        PitchParm.wCalcRangeMin = CalcParm.minpitch;
-        PitchParm.wCalcRangeMax = CalcParm.maxpitch;
+        CPitchParm.wCalcRangeMin = CalcParm.minpitch;
+        CPitchParm.wCalcRangeMax = CalcParm.maxpitch;
 
         DWORD dwPitchBufferLen = pAutoPitch->GetProcessBufferSize() / sizeof(*pPitchBuffer);
 
@@ -155,7 +154,7 @@ long CProcessFragments::Process(void * pCaller, ISaDoc * pDoc, int nProgress,
 
         DWORD dwWaveBufferLen;
         SIG_PARMS SigParm;
-        SigParm.SmpRate = (WORD)pFmtParm->dwSamplesPerSec;
+        SigParm.SmpRate = pDoc->GetSamplesPerSec();
         if (wSmpSize == 1)
         {
             SigParm.SmpDataFmt = PCM_UBYTE;
@@ -177,7 +176,7 @@ long CProcessFragments::Process(void * pCaller, ISaDoc * pDoc, int nProgress,
         // construct fragmenter
         dspError_t Err = CFragment::CreateObject(&m_pFragmenter, pFragParmBuffer, dwFragBufferLen,
                          SigParm, pWaveBuffer, dwWaveBufferLen,
-                         PitchParm, pPitchBuffer, dwPitchBufferLen);
+                         CPitchParm, pPitchBuffer, dwPitchBufferLen);
         if (Err)
         {
             EndProcess(); // end data processing
@@ -319,7 +318,7 @@ ULONG CProcessFragments::GetBufferLength()
 /***************************************************************************/
 FRAG_PARMS * CProcessFragments::GetFragmentBlock(ULONG dwFragmentIndex)
 {
-    return (FRAG_PARMS *) GetProcessedWaveData(dwFragmentIndex*sizeof(FRAG_PARMS), TRUE);
+    return (FRAG_PARMS *)GetProcessedWaveData(dwFragmentIndex*sizeof(FRAG_PARMS), TRUE);
 }
 
 

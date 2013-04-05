@@ -38,6 +38,7 @@
 #include <complex>
 #include <afxdlgs.h>
 #include <string>
+#include <vector>
 
 using std::string;
 using std::wstring;
@@ -55,17 +56,14 @@ using std::getline;
 using std::find;
 using std::distance;
 
+using std::vector;
+
 inline static int round(double value)
 {
     return (int)floor(value + 0.5);
 }
 
 #pragma warning(pop)
-
-static inline DWORD GetBufferSize()
-{
-    return 0x10000;
-}
 
 #ifdef _DEBUG
 #define new DEBUG_NEW

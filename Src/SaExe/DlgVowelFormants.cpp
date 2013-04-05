@@ -28,16 +28,16 @@ void CVowelFormants::Init(const CSaString & szVowel, double inF1, double inF2, d
     F4 = inF4;
 }
 
-static const char * psz_Vowel = "Vowel";
-static const char * psz_F1      = "F1";
-static const char * psz_F2      = "F2";
-static const char * psz_F3      = "F3";
-static const char * psz_F4      = "F4";
+static LPCSTR psz_Vowel = "Vowel";
+static LPCSTR psz_F1      = "F1";
+static LPCSTR psz_F2      = "F2";
+static LPCSTR psz_F3      = "F3";
+static LPCSTR psz_F4      = "F4";
 
 // Write spectrumParm properties to stream
-void CVowelFormants::WriteProperties(Object_ostream & obs) const
+void CVowelFormants::WriteProperties(CObjectOStream & obs) const
 {
-    obs.WriteBeginMarker(psz_Vowel, m_szVowel);
+    obs.WriteBeginMarker(psz_Vowel, m_szVowel.utf8().c_str());
 
     // write out properties
     obs.WriteDouble(psz_F1, F1);
@@ -49,12 +49,15 @@ void CVowelFormants::WriteProperties(Object_ostream & obs) const
 }
 
 // Read spectrumParm properties from *.psa file.
-BOOL CVowelFormants::ReadProperties(Object_istream & obs)
+BOOL CVowelFormants::ReadProperties(CObjectIStream & obs)
 {
-    if (!obs.bAtBackslash() || !obs.bReadBeginMarker(psz_Vowel, &m_szVowel))
+
+    char buffer[1024];
+    if (!obs.bAtBackslash() || !obs.bReadBeginMarker(psz_Vowel, buffer, _countof(buffer)))
     {
         return FALSE;
     }
+    m_szVowel.setUtf8(buffer);
 
     Init(m_szVowel, -1, -1, -1);
 
@@ -72,20 +75,23 @@ BOOL CVowelFormants::ReadProperties(Object_istream & obs)
     return TRUE;
 }
 
-static const char * psz_Version = "Version";
+static LPCSTR psz_Version = "Version";
 
-void CVowelSetVersion::WriteProperties(Object_ostream & obs) const
+void CVowelSetVersion::WriteProperties(CObjectOStream & obs) const
 {
-    obs.WriteBeginMarker(psz_Version, m_szVersion);
+    obs.WriteBeginMarker(psz_Version, m_szVersion.utf8().c_str());
     obs.WriteEndMarker(psz_Version);
 }
 
-BOOL CVowelSetVersion::ReadProperties(Object_istream & obs)
+BOOL CVowelSetVersion::ReadProperties(CObjectIStream & obs)
 {
-    if (!obs.bAtBackslash() || !obs.bReadBeginMarker(psz_Version, &m_szVersion))
+
+    char buffer[1024];
+    if (!obs.bAtBackslash() || !obs.bReadBeginMarker(psz_Version, buffer, _countof(buffer)))
     {
         return FALSE;
     }
+    m_szVersion.setUtf8(buffer);
 
     while (!obs.bAtEnd())
     {
@@ -107,22 +113,23 @@ CVowelFormantSet::CVowelFormantSet(const CSaString & szSetName, const CVowelForm
     m_vowels[2] = vowels[2];
 }
 
-static const char * psz_VowelSet = "VowelSet";
-static const char * psz_Gender = "Gender";
-static const char * psz_User = "UserEditable";
-static const char * psz_DefaultSet = "DefaultSet";
+static LPCSTR psz_VowelSet = "VowelSet";
+static LPCSTR psz_Gender = "Gender";
+static LPCSTR psz_User = "UserEditable";
+static LPCSTR psz_DefaultSet = "DefaultSet";
 
 
 // Write spectrumParm properties to stream
-void CVowelFormantSet::WriteProperties(Object_ostream & obs) const
+void CVowelFormantSet::WriteProperties(CObjectOStream & obs) const
 {
-    obs.WriteBeginMarker(psz_VowelSet, m_szSetName);
+
+    obs.WriteBeginMarker(psz_VowelSet, m_szSetName.utf8().c_str());
     obs.WriteBool(psz_User, m_bUser);
     for (int i = 0; i < 3; i++)
     {
         CSaString szGenderID;
         szGenderID.Format(_T("%d"),i);
-        obs.WriteBeginMarker(psz_Gender, szGenderID);
+        obs.WriteBeginMarker(psz_Gender, szGenderID.utf8().c_str());
         for (CVowelFormantsVector::const_iterator index=m_vowels[i].begin(); index != m_vowels[i].end(); index++)
         {
             index->WriteProperties(obs);
@@ -132,13 +139,15 @@ void CVowelFormantSet::WriteProperties(Object_ostream & obs) const
     obs.WriteEndMarker(psz_VowelSet);
 }
 
-BOOL CVowelFormantSet::ReadProperties(Object_istream & obs)
 // Read spectrumParm properties from *.psa file.
+BOOL CVowelFormantSet::ReadProperties(CObjectIStream & obs)
 {
-    if (!obs.bAtBackslash() || !obs.bReadBeginMarker(psz_VowelSet, &m_szSetName))
+    char buffer[1024];
+    if (!obs.bAtBackslash() || !obs.bReadBeginMarker(psz_VowelSet, buffer, _countof(buffer)))
     {
         return FALSE;
     }
+    m_szSetName.setUtf8(buffer);
 
     CVowelFormants cVowel(_T(""),UNDEFINED_DATA,UNDEFINED_DATA,UNDEFINED_DATA,UNDEFINED_DATA);
     // always empty vowel lists
@@ -153,9 +162,11 @@ BOOL CVowelFormantSet::ReadProperties(Object_istream & obs)
 
     while (!obs.bAtEnd())
     {
-        CSaString szGenderID;
-        if (obs.bReadBeginMarker(psz_Gender, &szGenderID))
+        char buffer[1024];
+        if (obs.bReadBeginMarker(psz_Gender, buffer, _countof(buffer)))
         {
+            CSaString szGenderID;
+            szGenderID.setUtf8(buffer);
             int gender = szGenderID[0] - _T('0');
 
             if (gender >= 3 || gender < 0)
@@ -175,7 +186,9 @@ BOOL CVowelFormantSet::ReadProperties(Object_istream & obs)
                 }
             }
         }
-        else if (obs.bReadBool(psz_User, m_bUser));
+        else if (obs.bReadBool(psz_User, m_bUser))
+        {
+        }
         else if (obs.bEnd(psz_VowelSet))
         {
             break;
@@ -206,8 +219,7 @@ BOOL CVowelFormantSets::Load(const CSaString & szFilename)
 
     try
     {
-        Object_istream obs(szFilename);
-
+        CObjectIStream obs(szFilename.utf8().c_str());
         CVowelSetVersion version;
         if (!version.ReadProperties(obs))
         {
@@ -265,8 +277,7 @@ int CVowelFormantSets::Save(const CSaString & szFilename) const
 
     try
     {
-        Object_ostream obs(szFilename);
-
+        CObjectOStream obs(szFilename.utf8().c_str());
         CVowelSetVersion version;
         version.WriteProperties(obs);
 
@@ -303,7 +314,7 @@ int CVowelFormantSets::SetDefaultSet(int nSet)
 
 #define _AC(a,b) b
 
-static inline CSaString getVowel(const char * pszVowel)
+static inline CSaString getVowel(LPCSTR pszVowel)
 {
     CSaString result;
     result.setUtf8(pszVowel);
@@ -314,7 +325,7 @@ static inline CSaString getVowel(const char * pszVowel)
 CVowelFormantSet CVowelFormantSets::None()
 {
     const int nVowels = 1;
-    const char * szVowels[nVowels] =
+    LPCSTR szVowels[nVowels] =
     {
         _AC("",""),
     };
@@ -369,7 +380,7 @@ CVowelFormantSet CVowelFormantSets::None()
 CVowelFormantSet CVowelFormantSets::HillenbrandEtAl95()
 {
     const int nVowels = 12;
-    const char * szVowels[nVowels] =
+    LPCSTR szVowels[nVowels] =
     {
         _AC("i","i"),
         _AC("I","ɪ"),
@@ -471,7 +482,7 @@ CVowelFormantSet CVowelFormantSets::HillenbrandEtAl95()
 CVowelFormantSet CVowelFormantSets::PetersonBarney52()
 {
     const int nVowels = 10;
-    const char * szVowels[nVowels] =
+    LPCSTR szVowels[nVowels] =
     {
         _AC("i","i"),
         _AC("I","ɪ"),
@@ -561,7 +572,7 @@ CVowelFormantSet CVowelFormantSets::PetersonBarney52()
 CVowelFormantSet CVowelFormantSets::Ladefoged93()
 {
     const int nVowels = 8;
-    const char * szVowels[nVowels] =
+    LPCSTR szVowels[nVowels] =
     {
         _AC("i","i"),
         _AC("I","ɪ"),
@@ -608,7 +619,7 @@ CVowelFormantSet CVowelFormantSets::Ladefoged93()
 CVowelFormantSet CVowelFormantSets::DanielJones()
 {
     const int nVowels = 8;
-    const char * szVowels[nVowels] =
+    LPCSTR szVowels[nVowels] =
     {
         _AC("i","i"),
         _AC("e","e"),
@@ -656,7 +667,7 @@ CVowelFormantSet CVowelFormantSets::DanielJones()
 CVowelFormantSet CVowelFormantSets::Whitley()
 {
     const int nVowels = 8;
-    const char * szVowels[nVowels] =
+    LPCSTR szVowels[nVowels] =
     {
         _AC("i","i"),
         _AC("e","e"),
@@ -704,7 +715,7 @@ CVowelFormantSet CVowelFormantSets::Whitley()
 CVowelFormantSet CVowelFormantSets::SynthesisLadefoged()
 {
     const int nVowels = 8;
-    const char * szVowels[nVowels] =
+    LPCSTR szVowels[nVowels] =
     {
         _AC("i","i"),
         _AC("e","e"),
@@ -861,11 +872,8 @@ void CDlgVowelFormants::OnOK()
 
 void CDlgVowelFormants::OnCancel()
 {
-    // TODO: Add extra cleanup here
-
     CDialog::OnCancel();
 }
-
 
 static void PopulateGrid(CFlexEditGrid & cGrid, const CVowelFormantsVector & cVowels)
 {

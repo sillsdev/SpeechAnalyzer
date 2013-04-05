@@ -284,22 +284,28 @@ long CProcessChange::Process(void * pCaller, ISaDoc * pDoc, int nProgress,
 
     // allocate global buffer for the processed quality data
     // start pitch process
-    BeginWaitCursor(); // wait cursor
-    if (!StartProcess(pCaller, IDS_STATTXT_PROCESSPIT, FALSE))   // start data processing
+    // wait cursor
+    BeginWaitCursor();
+    // start data processing
+    if (!StartProcess(pCaller, IDS_STATTXT_PROCESSPIT, FALSE))
     {
-        EndProcess(); // end data processing
+        // end data processing
+        EndProcess();
         EndWaitCursor();
         return MAKELONG(PROCESS_ERROR, nProgress);
     }
     // allocate global buffer for the processed quality data
-    if (!m_hQualityData)   // not yet allocated
+    // not yet allocated
+    if (!m_hQualityData)
     {
-        m_hQualityData = ::GlobalAlloc(GMEM_MOVEABLE | GMEM_SHARE, GetProcessBufferSize()); // allocate memory
+        // allocate memory
+        m_hQualityData = ::GlobalAlloc(GMEM_MOVEABLE | GMEM_SHARE, GetProcessBufferSize());
         if (!m_hQualityData)
         {
             // memory allocation error
             ErrorMessage(IDS_ERROR_MEMALLOC);
-            EndProcess(); // end data processing
+            // end data processing
+            EndProcess();
             EndWaitCursor();
             return MAKELONG(PROCESS_ERROR, nProgress);
         }
@@ -315,11 +321,10 @@ long CProcessChange::Process(void * pCaller, ISaDoc * pDoc, int nProgress,
             return MAKELONG(PROCESS_ERROR, nProgress);
         }
     }
-    FmtParm * pFmtParm = pDoc->GetFmtParm(); // get sa parameters format member data
-    UttParm myUttParm;
-    UttParm * pUttParm = &myUttParm;
+    CUttParm myUttParm;
+    CUttParm * pUttParm = &myUttParm;
     pDoc->GetUttParm(pUttParm); // get sa parameters utterance member data
-    UINT nBlockAlign = pFmtParm->wBlockAlign;
+    UINT nBlockAlign = pDoc->GetBlockAlign();
     // calculate current processing position (copied but not understood from WINCECIL)
     DWORD dwLoopPos, dwLoopStart;
     if (pUttParm->nMinFreq == 0)
@@ -330,25 +335,25 @@ long CProcessChange::Process(void * pCaller, ISaDoc * pDoc, int nProgress,
     {
         pUttParm->nMaxFreq = 500;    // to prevent 0 divisions
     }
-    dwLoopStart = ((pFmtParm->dwSamplesPerSec / (2 * MAX_CALCULATION_FREQUENCY)
-                    + pFmtParm->dwSamplesPerSec / pUttParm->nMinFreq) / 2
-                   + CALCULATION_DATALENGTH(pFmtParm->dwSamplesPerSec) / 2 + 5) / CALCULATION_INTERVAL(pFmtParm->dwSamplesPerSec) + 1;
+    dwLoopStart = ((pDoc->GetSamplesPerSec() / (2 * MAX_CALCULATION_FREQUENCY)
+                    + pDoc->GetSamplesPerSec() / pUttParm->nMinFreq) / 2
+                   + CALCULATION_DATALENGTH(pDoc->GetSamplesPerSec()) / 2 + 5) / CALCULATION_INTERVAL(pDoc->GetSamplesPerSec()) + 1;
     dwLoopPos = 0;
-    DWORD dwDataPos = dwLoopStart * CALCULATION_INTERVAL(pFmtParm->dwSamplesPerSec) - CALCULATION_DATALENGTH(pFmtParm->dwSamplesPerSec) / 2;
+    DWORD dwDataPos = dwLoopStart * CALCULATION_INTERVAL(pDoc->GetSamplesPerSec()) - CALCULATION_DATALENGTH(pDoc->GetSamplesPerSec()) / 2;
     if (nBlockAlign > 1)
     {
         dwDataPos *= 2;    // 16 bit data
     }
 
     // create the temporary file for quality data
-    if (!CreateAuxTempFile(_T("QUA"), m_pQualityFile, &m_qualityFileStatus))
+    if (!CreateAuxTempFile(_T("QUA"), m_pQualityFile, m_qualityFileStatus))
     {
         return Exit(PROCESS_ERROR);
     }
 
     // calculate lags at which to look for smallest autocorrelation coefficient
-    int nMinLag = (int)(pFmtParm->dwSamplesPerSec / (DWORD)pUttParm->nMaxFreq);
-    int nMaxLag = (int)(pFmtParm->dwSamplesPerSec / (DWORD)pUttParm->nMinFreq);
+    int nMinLag = (int)(pDoc->GetSamplesPerSec() / (DWORD)pUttParm->nMaxFreq);
+    int nMaxLag = (int)(pDoc->GetSamplesPerSec() / (DWORD)pUttParm->nMinFreq);
     int naACFlags[80]; // to be filled with lags at 5% intervals between nMinLag and nMaxLag
     // fill up the lag array
     naACFlags[0] = nMinLag - 1; // extra value to constrain fine tuning at limit
@@ -416,7 +421,7 @@ long CProcessChange::Process(void * pCaller, ISaDoc * pDoc, int nProgress,
             {
                 // try each lag
                 nLagData = (unsigned int)naACFlags[nLoop + 1]; // first entry is dummy
-                int nInnerLoop = CALCULATION_DATALENGTH(pFmtParm->dwSamplesPerSec) / nACFinterval + 1;
+                int nInnerLoop = CALCULATION_DATALENGTH(pDoc->GetSamplesPerSec()) / nACFinterval + 1;
                 if (nBlockAlign > 1) // 16 bit data
                     dwResult = CalculateACF16(pLoudness, (unsigned char *)pSRDdata, &bRes, nACFinterval, nLagData,
                                               nMaxLag, &dwBlockPos, dwDataPos, nInnerLoop);
@@ -446,7 +451,7 @@ long CProcessChange::Process(void * pCaller, ISaDoc * pDoc, int nProgress,
             for (nLagData = (unsigned int)nLagLow; nLagData <= (unsigned int)nLagHigh; nLagData++)
             {
                 // scan around best fit
-                int nInnerLoop = CALCULATION_DATALENGTH(pFmtParm->dwSamplesPerSec) / nACFinterval;
+                int nInnerLoop = CALCULATION_DATALENGTH(pDoc->GetSamplesPerSec()) / nACFinterval;
                 if (nBlockAlign > 1) // 16 bit data
                     dwResult = CalculateACF16(pLoudness, (unsigned char *)pSRDdata, &bRes, nACFinterval, nLagData,
                                               nLagHigh, &dwBlockPos, dwDataPos, nInnerLoop);
@@ -491,7 +496,7 @@ long CProcessChange::Process(void * pCaller, ISaDoc * pDoc, int nProgress,
             {
                 // check frequency / 2
                 nLagData = nFoundLag / 2;
-                int nInnerLoop = CALCULATION_DATALENGTH(pFmtParm->dwSamplesPerSec) / nACFinterval;
+                int nInnerLoop = CALCULATION_DATALENGTH(pDoc->GetSamplesPerSec()) / nACFinterval;
                 if (nBlockAlign > 1) // 16 bit data
                     dwResult = CalculateACF16(pLoudness, (unsigned char *)pSRDdata, &bRes, nACFinterval, nLagData,
                                               nLagData, &dwBlockPos, dwDataPos, nInnerLoop);
@@ -509,7 +514,7 @@ long CProcessChange::Process(void * pCaller, ISaDoc * pDoc, int nProgress,
                     if ((nFoundLag >= (nMinLag * 3)) && bRes)
                     {
                         nLagData = nFoundLag / 3;
-                        int nInnerLoop = CALCULATION_DATALENGTH(pFmtParm->dwSamplesPerSec) / nACFinterval;
+                        int nInnerLoop = CALCULATION_DATALENGTH(pDoc->GetSamplesPerSec()) / nACFinterval;
                         if (nBlockAlign > 1) // 16 bit data
                             dwResult = CalculateACF16(pLoudness, (unsigned char *)pSRDdata, &bRes, nACFinterval, nLagData,
                                                       nLagData, &dwBlockPos, dwDataPos, nInnerLoop);
@@ -532,7 +537,7 @@ long CProcessChange::Process(void * pCaller, ISaDoc * pDoc, int nProgress,
             int nPitchResult = -1;
             if ((nFoundLag != nMinLag) && (nFoundLag != nMaxLag))
             {
-                nPitchResult = (short)((PRECISION_MULTIPLIER * (unsigned long)(pFmtParm->dwSamplesPerSec)) / (unsigned long)nFoundLag);
+                nPitchResult = (short)((PRECISION_MULTIPLIER * (unsigned long)(pDoc->GetSamplesPerSec())) / (unsigned long)nFoundLag);
             }
             // pitch result is ready, store it
             if (nPitchResult >= 0)
@@ -549,11 +554,11 @@ long CProcessChange::Process(void * pCaller, ISaDoc * pDoc, int nProgress,
             // set new calculation window start
             if (nBlockAlign > 1)
             {
-                dwDataPos += CALCULATION_INTERVAL(pFmtParm->dwSamplesPerSec) * 2;    // 16 bit data
+                dwDataPos += CALCULATION_INTERVAL(pDoc->GetSamplesPerSec()) * 2;    // 16 bit data
             }
             else
             {
-                dwDataPos += CALCULATION_INTERVAL(pFmtParm->dwSamplesPerSec);    // 8 bit data
+                dwDataPos += CALCULATION_INTERVAL(pDoc->GetSamplesPerSec());    // 8 bit data
             }
         }
         else     // proplogue and epilogue
@@ -626,9 +631,9 @@ long CProcessChange::Process(void * pCaller, ISaDoc * pDoc, int nProgress,
     }
 
     // calculate current processing position (copied but not understood from WINCECIL)
-    dwLoopStart = ((pFmtParm->dwSamplesPerSec / (2 * MAX_CALCULATION_FREQUENCY)
-                    + pFmtParm->dwSamplesPerSec / pUttParm->nMinFreq) / 2
-                   + CALCULATION_DATALENGTH(pFmtParm->dwSamplesPerSec) / 2 + 5) / CALCULATION_INTERVAL(pFmtParm->dwSamplesPerSec) + 1;
+    dwLoopStart = ((pDoc->GetSamplesPerSec() / (2 * MAX_CALCULATION_FREQUENCY)
+                    + pDoc->GetSamplesPerSec() / pUttParm->nMinFreq) / 2
+                   + CALCULATION_DATALENGTH(pDoc->GetSamplesPerSec()) / 2 + 5) / CALCULATION_INTERVAL(pDoc->GetSamplesPerSec()) + 1;
     dwDataSize = pLoudness->GetDataSize();
     dwLoopEnd = dwDataSize - dwLoopStart; // end of loop
     // create the temporary change file

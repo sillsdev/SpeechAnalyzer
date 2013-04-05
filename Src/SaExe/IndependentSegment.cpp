@@ -15,9 +15,6 @@ CIndependentSegment::CIndependentSegment(int index, int master) :
 {
 }
 
-/////////////////////////////////////////////////////////////////////////////
-// CIndependentSegment helper functions
-
 /***************************************************************************/
 // CIndependentSegment::LimitsPosition Limits positions for annotation window
 // Adjusts the position to acceptable position to adjust boundaries
@@ -106,8 +103,7 @@ void CIndependentSegment::LimitPosition(CSaDoc * pSaDoc, DWORD & dwStart,DWORD &
                     }
                 }
             }
-            int nBlockAlign = pSaDoc->GetFmtParm()->wBlockAlign;
-            if ((nBlockAlign == 2)&&(dwStartMin & 1))
+            if ((pSaDoc->Is16Bit())&&(dwStartMin & 1))
             {
                 dwStartMin++;
             }
@@ -147,8 +143,7 @@ void CIndependentSegment::LimitPosition(CSaDoc * pSaDoc, DWORD & dwStart,DWORD &
                     }
                 }
             }
-            int nBlockAlign = pSaDoc->GetFmtParm()->wBlockAlign;
-            if ((nBlockAlign == 2)&&(dwStopMax & 1))
+            if ((pSaDoc->Is16Bit())&&(dwStopMax & 1))
             {
                 dwStopMax --;
             }
@@ -170,11 +165,10 @@ void CIndependentSegment::LimitPosition(CSaDoc * pSaDoc, DWORD & dwStart,DWORD &
         }
         if (dwStop < (dwStart + pSaDoc->GetBytesFromTime(MIN_EDIT_SEGMENT_TIME)))
         {
-            int nBlockAlign = pSaDoc->GetFmtParm()->wBlockAlign;
             if (nMode & LIMIT_MOVING_STOP)
             {
                 dwStop = dwStart + pSaDoc->GetBytesFromTime(MIN_EDIT_SEGMENT_TIME);
-                if ((nBlockAlign == 2)&&(dwStop & 1))
+                if ((pSaDoc->Is16Bit())&&(dwStop & 1))
                 {
                     dwStop++;
                 }
@@ -183,7 +177,7 @@ void CIndependentSegment::LimitPosition(CSaDoc * pSaDoc, DWORD & dwStart,DWORD &
                 {
                     dwStop = dwStopMax;
                     dwStart = dwStop - pSaDoc->GetBytesFromTime(MIN_EDIT_SEGMENT_TIME);
-                    if ((nBlockAlign == 2)&&(dwStart & 1))
+                    if ((pSaDoc->Is16Bit())&&(dwStart & 1))
                     {
                         dwStart--;
                     }
@@ -193,7 +187,7 @@ void CIndependentSegment::LimitPosition(CSaDoc * pSaDoc, DWORD & dwStart,DWORD &
             else
             {
                 dwStart = dwStop - pSaDoc->GetBytesFromTime(MIN_EDIT_SEGMENT_TIME);
-                if ((nBlockAlign == 2)&&(dwStart & 1))
+                if ((pSaDoc->Is16Bit())&&(dwStart & 1))
                 {
                     dwStart--;
                 }
@@ -202,7 +196,7 @@ void CIndependentSegment::LimitPosition(CSaDoc * pSaDoc, DWORD & dwStart,DWORD &
                 {
                     dwStart = dwStartMin;
                     dwStop = dwStart + pSaDoc->GetBytesFromTime(MIN_EDIT_SEGMENT_TIME);
-                    if ((nBlockAlign == 2)&&(dwStop & 1))
+                    if ((pSaDoc->Is16Bit())&&(dwStop & 1))
                     {
                         dwStop++;
                     }
@@ -381,4 +375,3 @@ int CIndependentSegment::CheckPosition(CSaDoc * pDoc, DWORD dwStart,DWORD dwStop
     }
     return -1;
 }
-

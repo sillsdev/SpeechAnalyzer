@@ -840,10 +840,10 @@ void CDlgVocalTract::OnGetAll()
     CSaDoc * pDoc = (CSaDoc *)pApp->IsFileOpened(m_szSourceFilename);
     {
 
-        UttParm myUttParm;
-        UttParm * pUttParm = &myUttParm;
+        CUttParm myUttParm;
+        CUttParm * pUttParm = &myUttParm;
         pDoc->GetUttParm(pUttParm); // get sa parameters utterance member data
-        UttParm * pSavedUttParm = new UttParm;
+        CUttParm * pSavedUttParm = new CUttParm;
 
         CProcessSmoothedPitch * pPitch = pDoc->GetSmoothedPitch(); // SDM 1.5 Test 11.0
         pDoc->GetUttParm(pSavedUttParm); // save current smoothed pitch parameters
@@ -907,7 +907,8 @@ void CDlgVocalTract::OnUpdateSourceName()
             {
                 if (m_nRequestedOrder == 0)
                 {
-                    m_nRequestedOrder = (reinterpret_cast<CSaDoc *>(pDoc)->GetFmtParm()->dwSamplesPerSec + 500)/1000;
+                    DWORD samplesPerSec = reinterpret_cast<CSaDoc *>(pDoc)->GetSamplesPerSec();
+                    m_nRequestedOrder = (samplesPerSec + 500)/1000;
                 }
                 break;
             }
@@ -1052,9 +1053,10 @@ static double vhx(double meanSqError, double meanQuadError, double /*analysisLen
     return vhx > samplingRate/2 ? samplingRate/2 - pitch : vhx;
 }
 
-struct CAnalyze
+struct SAnalyzer
 {
-    CAnalyze(CSaDoc * ipDoc, WORD iwSmpSize, SIG_PARMS & iSignal, const LPC_SETTINGS & iLpcSetting, BOOL ibClosedPhase = FALSE)
+
+    SAnalyzer(CSaDoc * ipDoc, WORD iwSmpSize, SIG_PARMS & iSignal, const LPC_SETTINGS & iLpcSetting, BOOL ibClosedPhase = FALSE)
         : Signal(iSignal), LpcSetting(iLpcSetting)
     {
         pDoc = ipDoc;
@@ -1069,7 +1071,7 @@ struct CAnalyze
     const LPC_SETTINGS & LpcSetting;
 };
 
-static void Analyze(CAnalyze & a, CString szIpa, DWORD dwStart, DWORD dwEnd, CIpaVTChar & cChar, DWORD dwDuration=0, DWORD dwOffset=0, std::vector<double> * pResidual=NULL)
+static void Analyze(SAnalyzer & a, CString szIpa, DWORD dwStart, DWORD dwEnd, CIpaVTChar & cChar, DWORD dwDuration=0, DWORD dwOffset=0, std::vector<double> * pResidual=NULL)
 {
     double pitch = 0;
 
@@ -1343,11 +1345,9 @@ void CDlgVocalTract::OnGetSegments(CFlexEditGrid & cGrid)
 
     cGrid.SetCols(0, pPhonetic->GetOffsetSize());
 
-    WORD wSmpSize = WORD(pDoc->GetFmtParm()->wBlockAlign / pDoc->GetFmtParm()->wChannels);
+    DWORD wSmpSize = pDoc->GetSampleSize();
 
     SIG_PARMS Signal;
-    FmtParm * pFmtParm = pDoc->GetFmtParm();     //get sample data format
-
     if (wSmpSize == 1)
     {
         Signal.SmpDataFmt = PCM_UBYTE;    //samples are unsigned 8 bit
@@ -1356,8 +1356,7 @@ void CDlgVocalTract::OnGetSegments(CFlexEditGrid & cGrid)
     {
         Signal.SmpDataFmt = PCM_2SSHORT;    //samples are 2's complement 16 bit
     }
-
-    Signal.SmpRate = (unsigned short)pFmtParm->dwSamplesPerSec;  //set sample rate
+    Signal.SmpRate = pDoc->GetSamplesPerSec();  //set sample rate
 
     CIpaVTChar cChar;
 
@@ -1375,7 +1374,7 @@ void CDlgVocalTract::OnGetSegments(CFlexEditGrid & cGrid)
     LpcSetting.nOrder = (unsigned short)m_nCurrentOrder;
     LpcSetting.nFrameLen = 0;
 
-    CAnalyze analyze(pDoc, wSmpSize, Signal, LpcSetting, m_bClosedPhase);
+    SAnalyzer analyze(pDoc, wSmpSize, Signal, LpcSetting, m_bClosedPhase);
 
     // construct table entries
     while (nIndex != -1)
@@ -1430,7 +1429,7 @@ void CDlgVocalTract::OnGetFragments(CFlexEditGrid & cGrid)
         return;
     }
     CSegment * pPhonetic = pDoc->GetSegment(PHONETIC);
-    m_dwSampleRate = pDoc->GetFmtParm()->dwSamplesPerSec;
+    m_dwSampleRate = pDoc->GetSamplesPerSec();
     if (pPhonetic->IsEmpty())   // no annotations
     {
         return;
@@ -1452,26 +1451,21 @@ void CDlgVocalTract::OnGetFragments(CFlexEditGrid & cGrid)
     CString szString;
 
     CProcessFragments * pFragment = pDoc->GetFragments();
-    WORD wSmpSize = WORD(pDoc->GetFmtParm()->wBlockAlign / pDoc->GetFmtParm()->wChannels);
-
+    DWORD wSmpSize = pDoc->GetSampleSize();
     SIG_PARMS Signal;
     if (bVocalTract)
     {
         residual.clear();
         residual.reserve(pDoc->GetDataSize()/wSmpSize);
-
-        FmtParm * pFmtParm = pDoc->GetFmtParm();     //get sample data format
-
         if (wSmpSize == 1)
         {
-            Signal.SmpDataFmt = PCM_UBYTE;    //samples are unsigned 8 bit
+            Signal.SmpDataFmt = PCM_UBYTE;      //samples are unsigned 8 bit
         }
         else
         {
             Signal.SmpDataFmt = PCM_2SSHORT;    //samples are 2's complement 16 bit
         }
-
-        Signal.SmpRate = (unsigned short)pFmtParm->dwSamplesPerSec;  //set sample rate
+        Signal.SmpRate = pDoc->GetSamplesPerSec();  //set sample rate
     }
 
     DWORD dwOffset = 0;
@@ -1510,7 +1504,7 @@ void CDlgVocalTract::OnGetFragments(CFlexEditGrid & cGrid)
     LpcSetting.nOrder = (unsigned short)m_nCurrentOrder;
     LpcSetting.nFrameLen = 0;
 
-    CAnalyze analyze(pDoc, wSmpSize, Signal, LpcSetting, m_bClosedPhase);
+    SAnalyzer analyze(pDoc, wSmpSize, Signal, LpcSetting, m_bClosedPhase);
 
     // construct table entries
     while (nIndex != -1)

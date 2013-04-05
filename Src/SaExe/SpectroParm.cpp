@@ -2,36 +2,36 @@
 #include "SpectroParm.h"
 #include "DSP/SPECTGRM.H"
 
-static const char * psz_spectroA             = "spectrogramA";
-static const char * psz_spectroB             = "spectrogramB";
-static const char * psz_Resolution           = "nResolution3";
-static const char * psz_ResolutionOld        = "nResolution";
-static const char * psz_wavelet              = "Wavelet";               // ARH 8/1/01 Added for Wavelet scalogram graph
-static const char * psz_Color                = "nColor";
-static const char * psz_ShowF1               = "bShowF1";
-static const char * psz_ShowF2               = "bShowF2";
-static const char * psz_ShowF3               = "bShowF3";
-static const char * psz_ShowF4               = "bShowF4";
-static const char * psz_ShowF5andUp          = "bShowF5andUp";
-static const char * psz_SmoothFormantTracks  = "bSmoothFormantTracks";
-static const char * psz_Frequency            = "nFrequency";
-static const char * psz_MaxThreshold         = "nMaxThreshold";
-static const char * psz_MinThreshold         = "nMinThreshold";
-static const char * psz_Overlay              = "nOverlay";
-static const char * psz_ShowPitch            = "bShowPitch";
+static LPCSTR psz_spectroA             = "spectrogramA";
+static LPCSTR psz_spectroB             = "spectrogramB";
+static LPCSTR psz_Resolution           = "nResolution3";
+static LPCSTR psz_ResolutionOld        = "nResolution";
+static LPCSTR psz_wavelet              = "Wavelet";               // ARH 8/1/01 Added for Wavelet scalogram graph
+static LPCSTR psz_Color                = "nColor";
+static LPCSTR psz_ShowF1               = "bShowF1";
+static LPCSTR psz_ShowF2               = "bShowF2";
+static LPCSTR psz_ShowF3               = "bShowF3";
+static LPCSTR psz_ShowF4               = "bShowF4";
+static LPCSTR psz_ShowF5andUp          = "bShowF5andUp";
+static LPCSTR psz_SmoothFormantTracks  = "bSmoothFormantTracks";
+static LPCSTR psz_Frequency            = "nFrequency";
+static LPCSTR psz_MaxThreshold         = "nMaxThreshold";
+static LPCSTR psz_MinThreshold         = "nMinThreshold";
+static LPCSTR psz_Overlay              = "nOverlay";
+static LPCSTR psz_ShowPitch            = "bShowPitch";
 
-void CSpectroParm::WritePropertiesA(Object_ostream & obs)
+void CSpectroParm::WritePropertiesA(CObjectOStream & obs)
 {
     WriteProperties(psz_spectroA, obs);
 }
 
-void CSpectroParm::WritePropertiesB(Object_ostream & obs)
+void CSpectroParm::WritePropertiesB(CObjectOStream & obs)
 {
     WriteProperties(psz_spectroB, obs);
 }
 
 // Write spectroParm properties to *.psa file.
-void CSpectroParm::WriteProperties(const char * pszMarker, Object_ostream & obs)
+void CSpectroParm::WriteProperties(LPCSTR pszMarker, CObjectOStream & obs)
 {
     obs.WriteBeginMarker(pszMarker);
 
@@ -53,18 +53,18 @@ void CSpectroParm::WriteProperties(const char * pszMarker, Object_ostream & obs)
     obs.WriteEndMarker(pszMarker);
 }
 
-BOOL CSpectroParm::ReadPropertiesA(Object_istream & obs)
+BOOL CSpectroParm::ReadPropertiesA(CObjectIStream & obs)
 {
     return ReadProperties(psz_spectroA, obs);
 }
 
-BOOL CSpectroParm::ReadPropertiesB(Object_istream & obs)
+BOOL CSpectroParm::ReadPropertiesB(CObjectIStream & obs)
 {
     return ReadProperties(psz_spectroB, obs);
 }
 
 // Read spectroParm properties from *.psa file.
-BOOL CSpectroParm::ReadProperties(const char * pszMarker, Object_istream & obs)
+BOOL CSpectroParm::ReadProperties(LPCSTR pszMarker, CObjectIStream & obs)
 {
     if (!obs.bAtBackslash() || !obs.bReadBeginMarker(pszMarker))
     {

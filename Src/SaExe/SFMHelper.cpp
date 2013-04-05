@@ -1,11 +1,10 @@
 #include "stdafx.h"
 #include "SFMHelper.h"
 #include <iterator>
-#include "IUtf8String.h"
 #include "TextHelper.h"
 #include "AppDefs.h"
 
-static const char * IMPORT_END = "import";
+static LPCSTR IMPORT_END = "import";
 static const wchar_t * EMPTY = L"";
 
 using std::list;
@@ -14,7 +13,7 @@ using std::map;
 bool CSFMHelper::IsSFM(CSaString & filename)
 {
 
-    Object_istream stream(filename);
+	CObjectIStream stream(filename.utf8().c_str());
     if (stream.getIos().fail())
     {
         return false;
@@ -41,7 +40,7 @@ bool CSFMHelper::IsMultiRecordSFM(CSaString & filename, CSaString & marker)
     int count = 0;
     CSaString buffer;
 
-    Object_istream stream(filename);
+	CObjectIStream stream(filename.utf8().c_str());
     if (stream.getIos().fail())
     {
         return false;
@@ -57,7 +56,7 @@ bool CSFMHelper::IsMultiRecordSFM(CSaString & filename, CSaString & marker)
 
     while (!stream.bAtEnd())
     {
-        if (stream.bReadString(marker, &buffer))
+        if (ReadStreamString(stream,marker.utf8().c_str(),buffer))
         {
             count++;
         }
@@ -80,7 +79,7 @@ TranscriptionDataMap CSFMHelper::ImportMultiRecordSFM(CSaString & filename, CSaS
 
     TranscriptionDataMap result;
 
-    Object_istream stream(filename);
+    CObjectIStream stream(filename.utf8().c_str());
     if (stream.getIos().fail())
     {
         return result;
@@ -107,7 +106,7 @@ TranscriptionDataMap CSFMHelper::ImportMultiRecordSFM(CSaString & filename, CSaS
         {
             CSaString buffer;
             CSaString marker = *it;
-            if (stream.bReadString(marker, &buffer))
+            if (ReadStreamString(stream,marker,buffer))
             {
                 result[marker].push_back(buffer);
                 // when see the sync marker, balance the other entries.

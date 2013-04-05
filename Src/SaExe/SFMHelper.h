@@ -1,16 +1,11 @@
 #ifndef SFMHELPER_H
 #define SFMHELPER_H
 
-#include "CSaString.h"
+#include "SaString.h"
 #include "Settings\obstream.h"
 #include "TranscriptionHelper.h"
 #include <list>
 #include <map>
-#include <string>
-#include <vector>
-
-using std::wstring;
-using std::vector;
 
 class CSFMHelper
 {

@@ -110,13 +110,12 @@ long CProcessLoudness::Process(void * pCaller, ISaDoc * pDoc, int nProgress,
     }
     // process raw data into loudness data
     DWORD dwDataSize = pDoc->GetDataSize(); // size of raw data
-    FmtParm * pFmtParm = pDoc->GetFmtParm(); // get sa parameters format member data
-    UINT nSmpSize = pFmtParm->wBlockAlign / pFmtParm->wChannels;
+    DWORD nSmpSize = pDoc->GetSampleSize();
     // Finish pitch processing if necessary.
-    UINT nCalcDataLength = CALCULATION_DATALENGTH(pFmtParm->dwSamplesPerSec);  //!!this should be based on sampling frequency
+    UINT nCalcDataLength = CALCULATION_DATALENGTH(pDoc->GetSamplesPerSec());  //!!this should be based on sampling frequency
     if (nResult >= 0 && pAutoPitch->GetMaxValue())
     {
-        nCalcDataLength = (UINT)(2*pFmtParm->dwSamplesPerSec / (pAutoPitch->GetMaxValue() / PRECISION_MULTIPLIER));
+        nCalcDataLength = (UINT)(2*pDoc->GetSamplesPerSec() / (pAutoPitch->GetMaxValue() / PRECISION_MULTIPLIER));
     }
     UINT nCalcInterval = nCalcDataLength / 3;   // more than 2 x bandwidth
     nCalcDataLength = nCalcInterval * 3;
@@ -627,23 +626,22 @@ long CProcessSmoothLoudness::Process(void * pCaller, ISaDoc * pDoc,
     }
 
     // create the temporary file for smoothed raw data
-    if (!CreateAuxTempFile(_T("SRD"), m_pSRDfile, &m_SRDfileStatus))
+    if (!CreateAuxTempFile(_T("SRD"), m_pSRDfile, m_SRDfileStatus))
     {
         return Exit(PROCESS_ERROR, NULL);
     }
 
     // process raw data into smoothed loudness data
     DWORD dwDataSize = pDoc->GetDataSize(); // size of raw data
-    FmtParm * pFmtParm = pDoc->GetFmtParm(); // get sa parameters format member data
-    UttParm myUttParm;
-    UttParm * pUttParm = &myUttParm;
+    CUttParm myUttParm;
+    CUttParm * pUttParm = &myUttParm;
     pDoc->GetUttParm(pUttParm); // get sa parameters utterance member data
-    UINT nSmpSize = pFmtParm->wBlockAlign / pFmtParm->wChannels;
+    DWORD nSmpSize = pDoc->GetSampleSize();
 
     // It would be nice to adjust these values, BUT
     // The Change process assumes they are constant
-    UINT nCalcDataLength = CALCULATION_DATALENGTH(pFmtParm->dwSamplesPerSec);  //!!this should be based on sampling frequency
-    UINT nCalcInterval = CALCULATION_INTERVAL(pFmtParm->dwSamplesPerSec);   // more than 2 x bandwidth
+    UINT nCalcDataLength = CALCULATION_DATALENGTH(pDoc->GetSamplesPerSec());  //!!this should be based on sampling frequency
+    UINT nCalcInterval = CALCULATION_INTERVAL(pDoc->GetSamplesPerSec());   // more than 2 x bandwidth
 
     HPSTR pSmoothData = NULL, pBlockStart; // pointers to raw data
     short int * pLoudData = (short int *)m_lpBuffer; // pointer to loudness data
@@ -653,8 +651,8 @@ long CProcessSmoothLoudness::Process(void * pCaller, ISaDoc * pDoc,
     {
         pUttParm->nMinFreq = 50;    // to prevent 0 divisions
     }
-    dwLoudStart = ((pFmtParm->dwSamplesPerSec / (2 * MAX_CALCULATION_FREQUENCY)
-                    + pFmtParm->dwSamplesPerSec / pUttParm->nMinFreq) / 2
+    dwLoudStart = ((pDoc->GetSamplesPerSec() / (2 * MAX_CALCULATION_FREQUENCY)
+                    + pDoc->GetSamplesPerSec() / pUttParm->nMinFreq) / 2
                    + nCalcDataLength / 2 + 5) / nCalcInterval + 1;
     dwDataPos = dwLoudStart * nCalcInterval - nCalcDataLength / 2;
     if (nSmpSize > 1)
@@ -687,7 +685,7 @@ long CProcessSmoothLoudness::Process(void * pCaller, ISaDoc * pDoc,
             nBlockNumber = (int)(dwDataPos / GetProcessBufferSize()); // new block loaded
             // smooth the raw data
             pSmoothData = SmoothRawData(pDoc, lpSmoothBlock, nSmpSize, nOldBlockNumber,
-                                        nBlockNumber, &nCalculatedBlock, pFmtParm->dwSamplesPerSec,
+                                        nBlockNumber, &nCalculatedBlock, pDoc->GetSamplesPerSec(),
                                         dwLoudStart, &nAverage, &lAverage);
             if (!pSmoothData)
             {

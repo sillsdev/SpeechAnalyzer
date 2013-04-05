@@ -13,9 +13,9 @@
 #include "scatter.h"
 
 //////////////////////////////////////////////////////////////////////////
-//                           zScatterGraph Class
+//                           CScatterGraph Class
 //////////////////////////////////////////////////////////////////////////
-BOOL zScatterGraph::zInitGraph()
+BOOL CScatterGraph::zInitGraph()
 {
     // Call Base-Class Implementation
     BOOL status = zGraph::zInitGraph();
@@ -31,7 +31,7 @@ BOOL zScatterGraph::zInitGraph()
     return (status);
 }
 
-void zScatterGraph::zGetGridDimensions()
+void CScatterGraph::zGetGridDimensions()
 {
     //
     // Sets the Dimensions of the 3-D Graph Grid and Sets Some
@@ -60,7 +60,7 @@ void zScatterGraph::zGetGridDimensions()
 }
 
 
-void zScatterGraph::zDraw3DGrid()
+void CScatterGraph::zDraw3DGrid()
 {
     // For the 3-D grid We Add Just a Small Refinement--
     //   More Lines on the Floor Plane
@@ -75,26 +75,12 @@ void zScatterGraph::zDraw3DGrid()
     SelectObject(hDC, hGridPen);
 #endif
 
-#ifdef OS2_PLATFORM
-    // Set the Grid Line Style
-    GpiSetLineType(hPS, OS2_GridLineType);
-
-    // Set Axis Color
-    GpiSetColor(hPS, AxisColor);
-#endif
-
 #ifdef MS_DOS_PLATFORM
     // Select the Grid Mask
     _setlinestyle(GridMask);
 
     // Set Axis Color
     _setcolor((short)AxisColor);
-#endif
-
-#ifdef BGI_DOS_PLATFORM
-    // Select the Type of Lines for the Grid
-    setlinestyle(bgiGridType, 0, NORM_WIDTH);
-    setcolor((int)AxisColor);
 #endif
 
     //
@@ -117,24 +103,15 @@ void zScatterGraph::zDraw3DGrid()
     SelectObject(hDC, hAxisPen);
 #endif
 
-#ifdef OS2_PLATFORM
-    // Back to Solid Lines
-    GpiSetLineType(hPS, LINETYPE_SOLID);
-#endif
-
 #ifdef MS_DOS_PLATFORM
     // Select the Default Line Mask Again
     _setlinestyle(0xFFFF);
 #endif
 
-#ifdef BGI_DOS_PLATFORM
-    // Back to Solid Lines
-    setlinestyle(SOLID_LINE, 0, NORM_WIDTH);
-#endif
 
 }
 
-void zScatterGraph::zDrawDataPoints()
+void CScatterGraph::zDrawDataPoints()
 {
     if (_3D_flag)         // If Making a 3-D Style Graph
     {
@@ -146,7 +123,7 @@ void zScatterGraph::zDrawDataPoints()
     }
 }
 
-void zScatterGraph::zDraw2DDataPoints()
+void CScatterGraph::zDraw2DDataPoints()
 {
     //
     //  Plots Data Points for a Scatter Graph.  This Function is
@@ -210,7 +187,7 @@ void zScatterGraph::zDraw2DDataPoints()
     num_sets = color_index + 1;
 }
 
-void zScatterGraph::zDraw3DDataPoints()
+void CScatterGraph::zDraw3DDataPoints()
 {
     //
     // Draws a 3-D Graph Composed of Discrete Points
@@ -303,7 +280,7 @@ void zScatterGraph::zDraw3DDataPoints()
 
 }
 
-BOOL zScatterGraph::zScaleData()
+BOOL CScatterGraph::zScaleData()
 {
     // Call Base Class to Handle X- and Y- Components
     BOOL bStatus = zGraph::zScaleData();
@@ -311,7 +288,7 @@ BOOL zScatterGraph::zScaleData()
     return (bStatus);
 }
 
-POINT zScatterGraph::zMapCoordinates(double X1, double Y1, double Z1)
+POINT CScatterGraph::zMapCoordinates(double X1, double Y1, double Z1)
 {
     // Maps a 3-D Point Into 2-D Space.  See File XYZ.CPP for Full
     //   Details
@@ -334,7 +311,7 @@ POINT zScatterGraph::zMapCoordinates(double X1, double Y1, double Z1)
     return (pt);
 }
 
-void zScatterGraph::zDrawGraphAxes()
+void CScatterGraph::zDrawGraphAxes()
 {
     //
     // Displays Numbers along the X-, Y-, and Z-axes for the 3-D Graph
@@ -448,7 +425,7 @@ void zScatterGraph::zDrawGraphAxes()
 }
 
 
-void zScatterGraph::zDraw()
+void CScatterGraph::zDraw()
 {
     //
     // Prepare to Draw the Graph
@@ -473,7 +450,7 @@ void zScatterGraph::zDraw()
 
 
 
-void zScatterGraph::zFlip()                      // This routine Flips data for F2 F1 & (F2-F1) F1 Charts
+void CScatterGraph::zFlip()                      // This routine Flips data for F2 F1 & (F2-F1) F1 Charts
 {
     INT grid_width  = abs(X_RIGHT - X_LEFT);     //  Taken from zGraph.cpp   // tdg
     INT grid_height = abs(Y_TOP - Y_BOTTOM);
@@ -502,11 +479,11 @@ void zScatterGraph::zFlip()                      // This routine Flips data for 
 
 //////////////////////////  ScatterGraph() /////////////////////////////////
 
-void zGRAPH_TYPE  ScatterGraph(zGraphStruct * zG)
+void ScatterGraph(SGraph * zG)
 {
-    // Declare an Instance of the "zScatterGraph" Class
-    zScatterGraph zScatter(zG);
 
+    // Declare an Instance of the "CScatterGraph" Class
+    CScatterGraph zScatter(zG);
     // Draw It
     zScatter.zDraw();
 }

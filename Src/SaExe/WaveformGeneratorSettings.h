@@ -9,8 +9,8 @@ class CWaveformGeneratorSettings
 
 public:
     CWaveformGeneratorSettings();
-    virtual void WriteProperties(Object_ostream & obs);
-    virtual BOOL ReadProperties(Object_istream & obs);
+    virtual void WriteProperties(CObjectOStream & obs);
+    virtual BOOL ReadProperties(CObjectIStream & obs);
     BOOL Synthesize(LPCTSTR szFileName);
     void SynthesizeSamples(HPSTR pTargetData, DWORD dwDataPos, DWORD dwBufferSize);
 

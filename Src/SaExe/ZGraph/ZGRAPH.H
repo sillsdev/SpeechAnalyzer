@@ -5,7 +5,6 @@
 //
 // ZGRAF C++ Multi-Platform Graph Toolkit v. 1.41, (c) 1996, ZGRAF Software
 /////////////////////////////////////////////////////////////////////////////
-
 #ifndef _ZGRAPH_H_
 #define _ZGRAPH_H_
 
@@ -13,21 +12,19 @@
 
 class zGraph : public zLowLevelGraphics
 {
-    // protected:
+
 public: // ## sa needs to have access
     //
     // Data for Graph Grid
     //
-    BOOL    GraphOpen           ;   // Set TRUE In Constructor/Test in Dest.
-    BOOL    GridVisible         ;   // ON = Show Grid, OFF = Don't Show Grid
-    INT     GridStyle           ;   //   zNO_GRID = No Grid
-    //   z2D_GRID = 2-D (Flat Grid)
-    //   z3D_GRID = 3-D Grid
-    INT     GridHeight          ;   // Height of Grid in Device Units
-    INT     GridWidth           ;   // Width of Grid in Device Units
-    zRECT   RGraphAxis          ;   // Rectangular Area Bounded by Graph Axes
-    INT     x_axis_divisions    ;   // Number of Graph X-Axis Divisions
-    INT     y_axis_divisions    ;   // Number of Graph Y-Axis Divisions
+    BOOL GraphOpen           ;   // Set TRUE In Constructor/Test in Dest.
+    BOOL GridVisible         ;   // ON = Show Grid, OFF = Don't Show Grid
+    INT GridStyle           ;   //   zNO_GRID = No Grid
+    INT GridHeight          ;   // Height of Grid in Device Units
+    INT GridWidth           ;   // Width of Grid in Device Units
+    zRECT RGraphAxis          ;   // Rectangular Area Bounded by Graph Axes
+    INT x_axis_divisions    ;   // Number of Graph X-Axis Divisions
+    INT y_axis_divisions    ;   // Number of Graph Y-Axis Divisions
 
     INT     X_LEFT              ;   // These Are
     INT     X_RIGHT             ;   //    the Individual
@@ -116,7 +113,7 @@ public: // ## sa needs to have access
     // Class Member Functions
     //
 public:
-    zGraph(zGraphStruct * zGS1 = NULL); // Constructor
+    zGraph(SGraph * zGS1 = NULL); // Constructor
     ~zGraph();                          // Destructor
 
     void zCalculateRGBValues(BYTE Intens,
@@ -132,7 +129,7 @@ public:
     void zGetSetsAndSamples();
     void zGetLongestLegendString(PWCHAR);
     void zInitGraphData(
-        zGraphStruct * zGS1 = NULL);
+        SGraph * zGS1 = NULL);
     BOOL zScaleYData(
         INT slant_offset = 0);
     BOOL zScale3DGraphData();

@@ -26,7 +26,7 @@
 #include "sa_minic.h"
 #include "appdefs.h"
 #include "resource.h"
-#include "csastring.h"
+#include "SaString.h"
 
 #define _SA_GRAPH_H
 
@@ -37,8 +37,8 @@ class CPlotWnd;
 class CLegendWnd;
 class CXScaleWnd;
 class CAnnotationWnd;
-class Object_ostream;
-class Object_istream;
+class CObjectOStream;
+class CObjectIStream;
 
 class CGraphWnd : public CMiniCaptionWnd
 {
@@ -56,8 +56,8 @@ public:
     virtual ~CGraphWnd();
     CPlotWnd * NewPlotFromID(UINT plotID);
     BOOL IsIDincluded(UINT id);
-    void WriteProperties(Object_ostream & obs); // Save (Project) Settings
-    BOOL ReadProperties(Object_istream & obs); // Autoloading
+    void WriteProperties(CObjectOStream & obs); // Save (Project) Settings
+    BOOL ReadProperties(CObjectIStream & obs); // Autoloading
     BOOL bSetProperties(int nNewID); // Set graph's default properties (needed for "FileOpenAs->Phonetic/Music Analysis")
 
     // Attributes

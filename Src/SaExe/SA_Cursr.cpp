@@ -149,7 +149,7 @@ DWORD CStartCursorWnd::CalculateCursorPosition(CView * pSaView,
         dwDataFrame = pView->AdjustDataFrame(nWidth); // number of data points to display
     }
     DWORD dwDataSize = pDoc->GetDataSize();
-    int nSmpSize = pDoc->GetFmtParm()->wBlockAlign / pDoc->GetFmtParm()->wChannels;
+    DWORD nSmpSize = pDoc->GetSampleSize();
     // calculate data samples per pixel
     ASSERT(nWidth);
     double fSamplesPerPix = (double)dwDataFrame / (double)(nWidth*nSmpSize);
@@ -384,10 +384,9 @@ void CStartCursorWnd::OnMouseMove(UINT nFlags, CPoint point)
         pView->MoveStartCursor(dwCursor);
         // set the highlight area for raw data
         if ((pView->GetFocusedGraphID() == IDD_RAWDATA) &&
-                ((nFlags&(MK_CONTROL|MK_SHIFT)) == MK_CONTROL) &&
-                (pView->GetEditBoundaries(nFlags)==BOUNDARIES_EDIT_NULL) &&
-                (!pView->GetDocument()->IsMultiChannel()) &&
-                ((pView->GetGraphUpdateMode() == STATIC_UPDATE) || (!pView->GetDynamicGraphCount())))
+            ((nFlags&(MK_CONTROL|MK_SHIFT)) == MK_CONTROL) &&
+            (pView->GetEditBoundaries(nFlags)==BOUNDARIES_EDIT_NULL) &&
+            ((pView->GetGraphUpdateMode() == STATIC_UPDATE) || (!pView->GetDynamicGraphCount())))
         {
             if (dwCursor > m_dwStartDragPos)
             {
@@ -404,8 +403,7 @@ void CStartCursorWnd::OnMouseMove(UINT nFlags, CPoint point)
         CProcessFragments * pFragments = pDoc->GetFragments();
         if (pFragments && pFragments->IsDataReady())
         {
-            FmtParm * pFmtParm = pView->GetDocument()->GetFmtParm();
-            WORD wSmpSize = WORD(pFmtParm->wBlockAlign / pFmtParm->wChannels);
+            WORD wSmpSize = WORD(pDoc->GetSampleSize());
             DWORD OldFragmentIndex = pFragments->GetFragmentIndex(m_dwDragPos/wSmpSize);
             DWORD dwFragmentIndex = pFragments->GetFragmentIndex(dwCursor/wSmpSize);
             if (dwFragmentIndex != OldFragmentIndex)
@@ -532,8 +530,7 @@ void CStartCursorWnd::OnLButtonDown(UINT nFlags, CPoint point)
     CProcessFragments * pFragments = pDoc->GetFragments();
     if (pFragments && pFragments->IsDataReady())
     {
-        FmtParm * pFmtParm = pView->GetDocument()->GetFmtParm();
-        WORD wSmpSize = WORD(pFmtParm->wBlockAlign / pFmtParm->wChannels);
+        WORD wSmpSize = WORD(pDoc->GetSampleSize());
         DWORD dwFragmentIndex = pFragments->GetFragmentIndex(m_dwStartDragPos/wSmpSize);
         m_dwDragPos = m_dwStartDragPos;
         pView->SendMessage(WM_USER_CURSOR_IN_FRAGMENT, START_CURSOR, dwFragmentIndex);
@@ -605,8 +602,7 @@ void CStartCursorWnd::OnLButtonUp(UINT nFlags, CPoint point)
     // reset start cursor if beyond stop
     if (dwStartCursor >= dwStopCursor)
     {
-        FmtParm * pFmtParm = pView->GetDocument()->GetFmtParm();
-        dwStartCursor = dwStopCursor - pFmtParm->wBlockAlign;
+        dwStartCursor = dwStopCursor - pView->GetDocument()->GetBlockAlign();
     }
 
     // stop cursor is to move also

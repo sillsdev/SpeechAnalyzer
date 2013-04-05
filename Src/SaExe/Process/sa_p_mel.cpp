@@ -131,7 +131,6 @@ long CProcessMelogram::Process(void * pCaller, ISaDoc * pDoc, int nProgress, int
     TRACE(_T("Process: CProcessMelogram\n"));
 
     BOOL bBackground = false;
-    FmtParm * pFmtParm = pDoc->GetFmtParm(); // get sa parameters format member data
 
     if (nLevel < 0)   // memory allocation failed or previous processing error
     {
@@ -157,8 +156,7 @@ long CProcessMelogram::Process(void * pCaller, ISaDoc * pDoc, int nProgress, int
         return MAKELONG(PROCESS_ERROR, nProgress);
     }
     // if file has not been created
-    Boolean ok = TRUE;
-    if (!GetProcessFileName()[0])
+    if (wcslen(GetProcessFileName())==0)
     {
         // create the temporary melogram file
         if (!CreateTempFile(_T("MEL")))   // creating error
@@ -176,8 +174,8 @@ long CProcessMelogram::Process(void * pCaller, ISaDoc * pDoc, int nProgress, int
         m_nMaxValue = 0;
         // process raw data into grappl pitch data
         // initialise user parameters
-        m_CalcParm.sampfreq = (int32)pFmtParm->dwSamplesPerSec;
-        m_CalcParm.eightbit = (int16)(pFmtParm->wBlockAlign == 1);
+        m_CalcParm.sampfreq = (int32)pDoc->GetSamplesPerSec();
+        m_CalcParm.eightbit = (int16)(!pDoc->Is16Bit());
         m_CalcParm.mode = Grappl_fullpitch;
         // convert from semitones to Hz
         int16 nMaxFreqInHz = (int16)(220. * pow(2., ((double)m_nMaxValidSemitone100 / 100. - 57.) / 12.) + 0.5);
@@ -203,7 +201,10 @@ long CProcessMelogram::Process(void * pCaller, ISaDoc * pDoc, int nProgress, int
             return Exit(PROCESS_ERROR); // error, buffer too small
         }
         // init grappl
-        ok = grapplInit(m_lpBuffer, &m_CalcParm);
+        if (!grapplInit(m_lpBuffer, &m_CalcParm))
+		{
+			return Exit(PROCESS_ERROR);
+		}
     }
     else
     {
@@ -219,18 +220,20 @@ long CProcessMelogram::Process(void * pCaller, ISaDoc * pDoc, int nProgress, int
             return MAKELONG(PROCESS_ERROR, nProgress);
         }
     }
-    int16 alldone = FALSE;
-    int16 nomore = FALSE;
+
+    bool alldone = false;
+    bool nomore = false;
     // get block size
-    DWORD dwDataSize = pDoc->GetDataSize(); // raw data size
-    DWORD dwBlockSize = 0x10000 - pFmtParm->wBlockAlign; // 64k - 1
+    DWORD dwDataSize = pDoc->GetDataSize();						// raw data size
+	DWORD dwBlockSize = 0x10000 - pDoc->GetBlockAlign(true);	// 64k - 1
     if (GetBufferSize() < dwBlockSize)
     {
         dwBlockSize = GetBufferSize();
     }
+
     HPSTR pBlockStart;
     // start processing
-    while (ok && (m_dwDataPos < dwDataSize))
+    while (m_dwDataPos < dwDataSize)
     {
         // get raw data block
         pBlockStart = pDoc->GetWaveData(m_dwDataPos, TRUE); // get pointer to data block
@@ -245,21 +248,18 @@ long CProcessMelogram::Process(void * pCaller, ISaDoc * pDoc, int nProgress, int
             nomore = TRUE;
         }
         // set grappl input buffer
-        ok = (Boolean)grapplSetInbuff((pGrappl)m_lpBuffer, (pGrappl)pBlockStart, (uint16)(dwBlockSize / pFmtParm->wBlockAlign), nomore);
-        if (!ok)
+		uint16 length = (WORD)(dwBlockSize / pDoc->GetBlockAlign(true));
+		TRACE("grappl length %d\n",length);
+        if (!grapplSetInbuff((pGrappl)m_lpBuffer, (pGrappl)pBlockStart, length, nomore))
         {
-            break;
+			return Exit(PROCESS_ERROR);
         }
+
         // process
-        //!!m_nMinValue = 0x7FFF;??
         pGrappl_res pResults;
         int16 nresults;
         short nSemitone100;
-        /***************************** DEBUG ONLY *************************************/
-#ifdef DUMP
-        FILE * hPitchData = fopen("Melogram.txt", "w");
-#endif
-        /******************************************************************************/
+
         while (grapplGetResults((pGrappl)m_lpBuffer, &pResults, &nresults, &alldone))
         {
             // get max and min values and save the results
@@ -288,11 +288,6 @@ long CProcessMelogram::Process(void * pCaller, ISaDoc * pDoc, int nProgress, int
                         m_nMinValue = nSemitone100;    // save minimum value
                     }
                 }
-                /***************************** DEBUG ONLY *************************************/
-#ifdef DUMP
-                fprintf(hPitchData, "%5d ", nSemitone100);
-#endif
-                /******************************************************************************/
                 // write one result of the processed melogram data
                 try
                 {
@@ -307,11 +302,7 @@ long CProcessMelogram::Process(void * pCaller, ISaDoc * pDoc, int nProgress, int
                 pResults++;
             }
         }
-        /***************************** DEBUG ONLY *************************************/
-#ifdef DUMP
-        fclose(hPitchData);
-#endif
-        /******************************************************************************/
+
         // set progress bar
         SetProgress(nProgress + (int)(100 * m_dwDataPos / dwDataSize / (DWORD)nLevel));
         if (IsCanceled())
@@ -323,14 +314,12 @@ long CProcessMelogram::Process(void * pCaller, ISaDoc * pDoc, int nProgress, int
             break;
         }
     }
-    if (!ok)
-    {
-        return Exit(PROCESS_ERROR);    // error, processing failed
-    }
+
     // calculate the actual progress
     nProgress = nProgress + (int)(100 / nLevel);
     // close the temporary file and read the status
-    CloseTempFile(); // close the file
+	// close the file
+    CloseTempFile(); 
     if (alldone)
     {
         if (GetDataSize() < 2)
@@ -339,7 +328,7 @@ long CProcessMelogram::Process(void * pCaller, ISaDoc * pDoc, int nProgress, int
         }
         SetStatusFlag(PROCESS_NO_PITCH, m_nMinValue == SHRT_MAX);
     }
-    EndProcess((nProgress >= 95)); // end data processing
+    EndProcess((nProgress >= 95));			// end data processing
     if (!bBackground)
     {
         EndWaitCursor();
@@ -356,8 +345,7 @@ long CProcessMelogram::Process(void * pCaller, ISaDoc * pDoc, int nProgress, int
 /***************************************************************************/
 BOOL CProcessMelogram::IsVoiced(ISaDoc * pDoc, DWORD dwWaveOffset)
 {
-    FmtParm * pFmtParm = pDoc->GetFmtParm(); // get sa parameters format member data
-    UINT nSmpSize = pFmtParm->wBlockAlign / pFmtParm->wChannels;
+    UINT nSmpSize = pDoc->GetSampleSize();
     DWORD dwSmpOffset = dwWaveOffset / nSmpSize;
     DWORD dwPitchBlock = m_dwBufferOffset;
     BOOL bDone;

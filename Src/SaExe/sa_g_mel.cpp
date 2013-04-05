@@ -80,9 +80,9 @@ int CPlotMelogram::GetPenThickness() const
     return nLineThickness;
 }
 
-Grid CPlotMelogram::GetGrid() const
+CGrid CPlotMelogram::GetGrid() const
 {
-    Grid modifiedGrid(*static_cast<CMainFrame *>(AfxGetMainWnd())->GetGrid());
+    CGrid modifiedGrid(*static_cast<CMainFrame *>(AfxGetMainWnd())->GetGrid());
 
     if (GetTWC())
     {
@@ -100,14 +100,14 @@ Grid CPlotMelogram::GetGrid() const
 
 bool CPlotMelogram::GetScaleValues(CSaDoc * pDoc, double * dMaxSemitone,double * dMinSemitone)
 {
-    const MusicParm * pParm = pDoc->GetMusicParm();
+    const CMusicParm * pParm = pDoc->GetMusicParm();
 
     int nUpperBound = pParm->nUpperBound;
     int nLowerBound = pParm->nLowerBound;
 
     if (pParm->nRangeMode == 0)
     {
-        MusicParm::GetAutoRange(pDoc, nUpperBound, nLowerBound);
+        CMusicParm::GetAutoRange(pDoc, nUpperBound, nLowerBound);
     }
 
     if (dMaxSemitone)
@@ -162,7 +162,7 @@ void CPlotMelogram::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView)
         // always use linear display
         pGraph->SetLegendScale(SCALE | NUMBERS, dMinSemitone, dMaxSemitone, _T("Semitones")); // set legend scale
 
-        const MusicParm * pParm = pDoc->GetMusicParm();
+        const CMusicParm * pParm = pDoc->GetMusicParm();
 
         if (pParm->nCalcRangeMode != 0)
         {

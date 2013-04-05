@@ -260,11 +260,11 @@ void CAutoSave::CleanAll()
 void CAutoSave::StoreAutoRecoveryInformation( CSaDoc * pDoc)
 {
 
-    TRACE(L"auto saving...\n");
+    //TRACE(L"auto saving...\n");
 
 	if (updating)
 	{
-		TRACE("save in process. ignoring request\n");
+		//TRACE("save in process. ignoring request\n");
 		return;
 	}
 
@@ -272,7 +272,7 @@ void CAutoSave::StoreAutoRecoveryInformation( CSaDoc * pDoc)
 
     if (!pDoc->IsModified())
     {
-        TRACE("No changes pending. nothing to save\n");
+        //TRACE("No changes pending. nothing to save\n");
 		updating = false;
         return;
     }
@@ -360,11 +360,11 @@ void CAutoSave::StoreAutoRecoveryInformation( CSaDoc * pDoc)
 	// compare sizes.  if they are the same, don't do anything.
 	ULONGLONG srcsize = GetFileSize(restorewave.c_str());
 	ULONGLONG destsize = GetFileSize(currentwave.c_str());
-	TRACE(L"wave size size: %lu dest size: %lu\n",(unsigned long)srcsize,(unsigned long)destsize);
+	//TRACE(L"wave size size: %lu dest size: %lu\n",(unsigned long)srcsize,(unsigned long)destsize);
 
 	if (srcsize!=destsize)
 	{
-	    TRACE(L"saving audio for %s\n",restorewave.c_str());
+	    //TRACE(L"saving audio for %s\n",restorewave.c_str());
 		// if the current autosave wave file exists, delete it
 		if (currentwave.length()>0)
 		{
@@ -381,12 +381,12 @@ void CAutoSave::StoreAutoRecoveryInformation( CSaDoc * pDoc)
 	}
 	else
 	{
-		TRACE("skipping .wave save because files are same size\n");
+		//TRACE("skipping .wave save because files are same size\n");
 	}
 
 	if (pDoc->IsTransModified())
     {
-        TRACE(L"saving transcription for %s\n",(LPCTSTR)restorewave.c_str());
+        //TRACE(L"saving transcription for %s\n",(LPCTSTR)restorewave.c_str());
 
 		if (currentxml.length()>0)
 		{
@@ -402,7 +402,7 @@ void CAutoSave::StoreAutoRecoveryInformation( CSaDoc * pDoc)
         pDoc->WriteDataFiles( currentwave.c_str());
         saving = false;
 		DWORD b = ::GetTickCount();
-		TRACE("elapsed time %lu\n",(b-a));
+		//TRACE("elapsed time %lu\n",(b-a));
 
 		// rename it to the appropriate name
 		wstring oldname;
@@ -421,7 +421,7 @@ void CAutoSave::StoreAutoRecoveryInformation( CSaDoc * pDoc)
 
 	WriteInfo( info.c_str(), isTempFile, currentwave.c_str(), currentxml.c_str(), restorewave.c_str(), root.c_str(), folder.c_str());
 
-    TRACE(L"saved\n");
+    //TRACE(L"saved\n");
 	updating = false;
 }
 

@@ -42,6 +42,7 @@
 #include "FileUtils.h"
 #include "resource.h"
 #include "AutoSave.h"
+#include "WaveIndex.h"
 #include "dsp\dspTypes.h"
 #include "dsp\scale.h"
 #include "Process\Process.h"
@@ -777,9 +778,8 @@ void CSaView::OnUpdateEditBoundaries(CCmdUI * pCmdUI)
 /***************************************************************************/
 // CSaView::GetEditBoundaries
 /***************************************************************************/
-EBoundaries CSaView::GetEditBoundaries(int /*nFlags*/, BOOL checkKeys)
+EBoundary CSaView::GetEditBoundaries(int /*nFlags*/, BOOL checkKeys)
 {
-
     if ((m_bEditSegmentSize) && (checkKeys))
     {
         return BOUNDARIES_EDIT_OVERLAP;
@@ -888,7 +888,13 @@ void CSaView::Dump(CDumpContext & dc) const
     CView::Dump(dc);
 }
 
-#endif //_DEBUG
+#endif
+
+CSaDoc * CSaView::GetDocument()   // non-debug version is inline
+{
+    ASSERT(m_pDocument->IsKindOf(RUNTIME_CLASS(CSaDoc)));
+    return (CSaDoc *)m_pDocument;
+}
 
 void CSaView::Clear(void)
 {
@@ -1234,7 +1240,7 @@ void CSaView::CreateOneGraph(UINT * pID, CGraphWnd ** pGraph)
 /***************************************************************************/
 void CSaView::CreateGraph(int nPosition, int nNewID,
                           CREATE_HOW how         /* = CREATE_STANDARD */,
-                          Object_istream * pObs  /* = NULL */,
+                          CObjectIStream * pObs  /* = NULL */,
                           CGraphWnd * pFromGraph /* = NULL */)
 {
     ASSERT(nPosition != -1);
@@ -1269,7 +1275,7 @@ void CSaView::CreateGraph(int nPosition, int nNewID,
 /***************************************************************************/
 // 09/21/2000 - DDO
 /***************************************************************************/
-CRecGraphWnd * CSaView::CreateRecGraph(CRecGraphWnd * pFromGraph, Object_istream * pObs)
+CRecGraphWnd * CSaView::CreateRecGraph(CRecGraphWnd * pFromGraph, CObjectIStream * pObs)
 {
     CRect rWnd(0, 0, 0, 0);
 
@@ -1778,8 +1784,7 @@ void CSaView::ZoomIn(double fZoomAmount, BOOL bZoom)
     CSaDoc * pDoc = GetDocument(); // get pointer to document
     CRect rWnd;
     GetClientRect(rWnd);
-    FmtParm * pFmtParm = pDoc->GetFmtParm(); // get sa parameters format member data
-    WORD wSmpSize = WORD(pFmtParm->wBlockAlign / pFmtParm->wChannels);
+    DWORD wSmpSize = pDoc->GetSampleSize();
 
     // zoom in
     if (bZoom)
@@ -1855,9 +1860,7 @@ void CSaView::ZoomIn(double fZoomAmount, BOOL bZoom)
 void CSaView::ZoomOut(double fZoomAmount)
 {
     CSaDoc * pDoc = GetDocument(); // get pointer to document
-    FmtParm * pFmtParm = pDoc->GetFmtParm(); // get sa parameters format member data
-    WORD wSmpSize = WORD(pFmtParm->wBlockAlign / pFmtParm->wChannels);
-
+    DWORD wSmpSize = pDoc->GetSampleSize();
 
     if (m_fZoom > 1.0)
     {
@@ -1881,8 +1884,7 @@ void CSaView::ZoomOut(double fZoomAmount)
             {
                 m_dwDataPosition = dwDataCenter - GetDataFrame() / 2; // set new data position
                 // for 16 bit data value must be even
-                FmtParm * pFmtParm = pDoc->GetFmtParm();
-                if (pFmtParm->wBlockAlign > 1)
+                if (pDoc->Is16Bit())
                 {
                     m_dwDataPosition &= ~1;
                 }
@@ -1935,18 +1937,18 @@ void CSaView::ZoomOut(double fZoomAmount)
 /***************************************************************************/
 void CSaView::SetScrolling()
 {
-    CSaDoc * pDoc = GetDocument(); // get pointer to document
-    WORD wSmpSize = WORD(pDoc->GetFmtParm()->wBlockAlign / pDoc->GetFmtParm()->wChannels);
+    CSaDoc * pDoc = GetDocument();													// get pointer to document
+    DWORD wSmpSize = pDoc->GetSampleSize();
     CRect rWnd;
     GetClientRect(rWnd);
     if (rWnd.Width())
     {
-        m_dwScrollLine = GetDataFrame() * LINE_SCROLL_PIXELWIDTH / rWnd.Width(); // one line scroll width
+        m_dwScrollLine = GetDataFrame() * LINE_SCROLL_PIXELWIDTH / rWnd.Width();	// one line scroll width
         if (m_dwScrollLine < wSmpSize)
         {
             m_dwScrollLine = wSmpSize;
         }
-        m_fMaxZoom = (double)(pDoc->GetDataSize() / pDoc->GetFmtParm()->wBlockAlign) / (double)rWnd.Width() * 8.;  // max zoom factor
+        m_fMaxZoom = (double)(pDoc->GetDataSize() / pDoc->GetBlockAlign()) / (double)rWnd.Width() * 8.;  // max zoom factor
         m_fVScrollSteps = ZOOM_SCROLL_RESOLUTION * m_fMaxZoom;
         if (m_fVScrollSteps > 0x7FFFFFFF)
         {
@@ -1972,7 +1974,7 @@ void CSaView::SetInitialCursors()
             double fBytesPerPix = (double)GetDataFrame() / (double)rWnd.Width(); // calculate data samples per pixel
             if ((DWORD)rWnd.Width() > GetDataFrame())
             {
-                fBytesPerPix = (double)pDoc->GetFmtParm()->wBlockAlign;
+                fBytesPerPix = (double)pDoc->GetBlockAlign();
             }
             dwOffset = (DWORD)(CURSOR_WINDOW_HALFWIDTH / 2 * fBytesPerPix);
         }
@@ -1991,9 +1993,7 @@ void CSaView::SetInitialCursors()
 /***************************************************************************/
 void CSaView::AdjustCursors(DWORD dwSectionStart, DWORD dwSectionLength, BOOL bShrink)
 {
-    FmtParm * pFmtParm = GetDocument()->GetFmtParm();
-    WORD wSmpSize = WORD(pFmtParm->wBlockAlign / pFmtParm->wChannels);
-
+    DWORD wSmpSize = GetDocument()->GetSampleSize();
     if (bShrink)
     {
         if (GetStartCursorPosition() >= dwSectionStart)
@@ -2308,8 +2308,7 @@ DWORD CSaView::GetDataFrame()
     // calculate current data frame (width of displayed data)
     DWORD dwFrame = (DWORD)((double)GetDocument()->GetDataSize() / m_fZoom);
     // for 16 bit data value must be even
-    FmtParm * pFmtParm = GetDocument()->GetFmtParm();
-    UINT nSampleSize = pFmtParm->wBlockAlign / pFmtParm->wChannels;
+    DWORD nSampleSize = GetDocument()->GetSampleSize();
     if (nSampleSize == 2)
     {
         dwFrame &= ~1;
@@ -2370,8 +2369,8 @@ DWORD CSaView::AdjustDataFrame(int nWndWidth)
 /***************************************************************************/
 void CSaView::SetCursorPosition(int nCursorSelect,
                                 DWORD dwNewPos,
-                                SNAP_DIRECTION nSnapDirection,
-                                CURSOR_ALIGNMENT nCursorAlignment)
+                                ESnapDirection nSnapDirection,
+                                ECursorAlignment nCursorAlignment)
 {
     switch (nCursorSelect)
     {
@@ -2380,8 +2379,7 @@ void CSaView::SetCursorPosition(int nCursorSelect,
         if (GetDynamicGraphCount())
         {
             CSaDoc * pDoc = (CSaDoc *) GetDocument(); // get pointer to document
-            FmtParm * pFmtParm = pDoc->GetFmtParm();
-            UINT nSampleSize = pFmtParm->wBlockAlign / pFmtParm->wChannels;
+            DWORD nSampleSize = pDoc->GetSampleSize();
             if (GetAnimationGraphCount())
             {
                 StartAnimation(m_dwStartCursor/nSampleSize, m_dwStopCursor/nSampleSize);
@@ -2396,11 +2394,10 @@ void CSaView::SetCursorPosition(int nCursorSelect,
     }
 }
 
-
 /***************************************************************************/
 // CSaView::SetStartCursorPosition Set the start cursor
 /***************************************************************************/
-void CSaView::SetStartCursorPosition(DWORD dwNewPos, SNAP_DIRECTION nSnapDirection, CURSOR_ALIGNMENT nCursorAlignment)
+void CSaView::SetStartCursorPosition(DWORD dwNewPos, ESnapDirection nSnapDirection, ECursorAlignment nCursorAlignment)
 {
     SetStartStopCursorPosition(dwNewPos, m_dwStopCursor, nSnapDirection, nCursorAlignment);
 }
@@ -2408,7 +2405,7 @@ void CSaView::SetStartCursorPosition(DWORD dwNewPos, SNAP_DIRECTION nSnapDirecti
 /***************************************************************************/
 // CSaView::SetStopCursorPosition Set the stop cursor
 /***************************************************************************/
-void CSaView::SetStopCursorPosition(DWORD dwNewPos, SNAP_DIRECTION nSnapDirection, CURSOR_ALIGNMENT nCursorAlignment)
+void CSaView::SetStopCursorPosition(DWORD dwNewPos, ESnapDirection nSnapDirection, ECursorAlignment nCursorAlignment)
 {
     SetStartStopCursorPosition(m_dwStartCursor, dwNewPos, nSnapDirection, nCursorAlignment);
 }
@@ -2421,8 +2418,8 @@ void CSaView::SetStopCursorPosition(DWORD dwNewPos, SNAP_DIRECTION nSnapDirectio
 /***************************************************************************/
 void CSaView::SetStartStopCursorPosition(DWORD dwNewStartPos,
         DWORD dwNewStopPos,
-        SNAP_DIRECTION nSnapDirection,
-        CURSOR_ALIGNMENT nCursorAlignment)
+        ESnapDirection nSnapDirection,
+        ECursorAlignment nCursorAlignment)
 {
     if (nCursorAlignment == ALIGN_USER_SETTING)
     {
@@ -2447,19 +2444,14 @@ void CSaView::SetStartStopCursorPosition(DWORD dwNewStartPos,
     }
 
     // for 16 bit data value must be even
-    FmtParm * pFmtParm = pDoc->GetFmtParm();
-    if (pFmtParm->wBlockAlign > 1)
+    if (pDoc->Is16Bit())
     {
         m_dwStartCursor &= ~1;
         m_dwStopCursor &= ~1;
     }
 
     // snap the start cursor if necessary
-    int nSampleSize = 1;
-    if (pFmtParm->wBlockAlign > 1)
-    {
-        nSampleSize = 2;
-    }
+    DWORD nSampleSize = pDoc->GetSampleSize();
 
     m_dwStartCursor = pDoc->SnapCursor(START_CURSOR, m_dwStartCursor, 0, m_dwStopCursor - nSampleSize, nSnapDirection, nCursorAlignment);
     m_dwStopCursor = pDoc->SnapCursor(STOP_CURSOR, m_dwStopCursor, m_dwStartCursor + nSampleSize, GetDocument()->GetDataSize() - nSampleSize, nSnapDirection, nCursorAlignment);
@@ -2487,7 +2479,6 @@ void CSaView::SetStartStopCursorPosition(DWORD dwNewStartPos,
 /***************************************************************************/
 void CSaView::SetPlaybackPosition(double dNewPos, int nSpeed, BOOL bEstimate)
 {
-
     if (bEstimate)
     {
         SetTimer(ID_PLAYER, /*PLAYBACK_CURSOR_UPDATE_INTERVAL * 1000 */ 1 , NULL);
@@ -2506,8 +2497,7 @@ void CSaView::SetPlaybackPosition(double dNewPos, int nSpeed, BOOL bEstimate)
     DWORD dwPlaybackPosition = ((DWORD)dNewPos);
 
     // for 16 bit data value must be even
-    FmtParm * pFmtParm = GetDocument()->GetFmtParm();
-    if (pFmtParm->wBlockAlign > 1)
+    if (GetDocument()->Is16Bit())
     {
         dwPlaybackPosition = dwPlaybackPosition & ~1;
     }
@@ -2520,7 +2510,6 @@ void CSaView::SetPlaybackPosition(double dNewPos, int nSpeed, BOOL bEstimate)
         }
     }
 }
-
 
 // SDM 1.5Test10.5
 /***************************************************************************/
@@ -2624,13 +2613,12 @@ void CSaView::MoveStopCursor(DWORD dwNewPos)
 void CSaView::SetDataFrame(DWORD dwStart, DWORD dwFrame)
 {
     CSaDoc * pDoc = GetDocument(); // get pointer to document
-    WORD wSmpSize = WORD(pDoc->GetFmtParm()->wBlockAlign / pDoc->GetFmtParm()->wChannels);
+    DWORD wSmpSize = pDoc->GetSampleSize();
     CRect rWnd;
     GetClientRect(rWnd);
     m_dwDataPosition = dwStart; // set start position
     // for 16 bit data value must be even
-    FmtParm * pFmtParm = pDoc->GetFmtParm();
-    if (pFmtParm->wBlockAlign > 1)
+    if (pDoc->Is16Bit())
     {
         m_dwDataPosition &= ~1;
     }
@@ -2641,7 +2629,7 @@ void CSaView::SetDataFrame(DWORD dwStart, DWORD dwFrame)
     {
         fZoom = m_fMaxZoom;
         dwFrame = DWORD(dwDataSize/fZoom);
-        if (pFmtParm->wBlockAlign > 1)
+        if (pDoc->Is16Bit())
         {
             dwFrame &= ~1;
         }
@@ -2772,8 +2760,7 @@ LRESULT CSaView::OnGraphUpdateModeChanged(WPARAM , LPARAM)
     if (GraphUpdateMode == DYNAMIC_UPDATE)
     {
         CSaDoc * pDoc = GetDocument();
-        FmtParm * pFmtParm = pDoc->GetFmtParm();
-        WORD wSmpSize = WORD(pFmtParm->wBlockAlign / pFmtParm->wChannels);
+        DWORD wSmpSize = pDoc->GetSampleSize();
         CProcessFragments * pFragments = pDoc->GetFragments();
         DWORD dwFragmentIndex = pFragments->GetFragmentIndex(m_dwStartCursor/wSmpSize);
         OnCursorInFragment(START_CURSOR, dwFragmentIndex);
@@ -2850,8 +2837,6 @@ BOOL CSaView::StartAnimation(DWORD dwStartWaveIndex, DWORD dwStopWaveIndex)
 {
 
     CSaDoc * pDoc = (CSaDoc *) GetDocument(); // get pointer to document
-    //  FmtParm* pFmtParm = pDoc->GetFmtParm(); // get sa parameters format member data
-    //  WORD wSmpSize = (WORD)(pFmtParm->wBlockAlign / pFmtParm->wChannels);  // calculate sample size in bytes
     CProcessFragments * pFragments = pDoc->GetFragments();
     if (!pFragments->IsDataReady())
     {
@@ -2893,16 +2878,6 @@ BOOL CSaView::StartAnimation(DWORD dwStartWaveIndex, DWORD dwStopWaveIndex)
             m_pStopwatch->Wait(fResyncTime);    // delay to synchronize with requested frame rate
         }
 
-        /*
-        FRAG_PARMS FragParms = pFragments->GetFragmentParms(dwFrameIndex);
-        DWORD dwFrameStart = FragParms.dwOffset * wSmpSize;
-        DWORD dwFrameSize = (DWORD)FragParms.wLength * (DWORD)wSmpSize;
-        if (pWavePlot)
-        {
-        pWavePlot->SetHighLightArea(dwFrameStart, dwFrameStart + dwFrameSize, TRUE, TRUE);
-        pWavePlot->UpdateWindow();
-        }
-        */
         for (int nLoop = 0; nLoop < MAX_GRAPHS_NUMBER; nLoop++)
         {
             // Any keydown might cancel animation
@@ -2933,13 +2908,6 @@ BOOL CSaView::StartAnimation(DWORD dwStartWaveIndex, DWORD dwStopWaveIndex)
             break;
         }
     }
-    /*
-    if (pWavePlot)
-    {
-    pWavePlot->SetHighLightArea(0, 0);
-    pWavePlot->UpdateWindow();
-    }
-    */
     m_bAnimating = FALSE;
     return TRUE;
 }
@@ -2971,8 +2939,6 @@ void CSaView::EndAnimation()
 //    PRINTING CODE - PART 2  (also see PreparePrinting, BeginPrinting,
 //                             and EndPrinting above)
 //
-/***************************************************************************/
-/***************************************************************************/
 /***************************************************************************/
 /***************************************************************************/
 // CSaView::OnPrepareDC - prepare printing context for printing.
@@ -3143,9 +3109,6 @@ void CSaView::DoScreenShot(CDC * pDC, CPrintInfo * /*pInfo*/)
     }
 }
 
-
-
-
 /***************************************************************************/
 // CSaView::DoHiResPrint
 //
@@ -3262,7 +3225,6 @@ void CSaView::CalcCustomPage(CRect * customPage, const CRect * viewRect, int row
 /***************************************************************************/
 void CSaView::PrintPageTitle(CDC * pDC, int titleAreaHeight)
 {
-
     CSaString szDocTitle(GetDocument()->GetTitle()); // load file name
     CSaString szTitle("Speech Analyzer - ");
 
@@ -3354,10 +3316,6 @@ void CSaView::CalcPrintScaling(const CRect * srcRect)
     }
 }
 
-
-
-
-
 /***************************************************************************/
 // CSaView::CalcPrintRect
 //
@@ -3369,9 +3327,6 @@ void CSaView::CalcPrintRect(CRect * pPrintRect, const CRect * srcRect)
                         (int)(m_printScaleY * srcRect->Height()));
 
 }
-
-
-
 
 //*************************************************************************
 // CSaView::CalcPrintPoint
@@ -3437,7 +3392,6 @@ int CSaView::CalculateHiResPrintPages(void)
 /***************************************************************************/
 void CSaView::PreparePrintingForScreenShot(void)
 {
-
     CWindowDC    scrn(pViewMainFrame);
 
     scrn.SelectClipRgn(NULL); // select entire window client area
@@ -3579,18 +3533,14 @@ BOOL CSaView::SaDoPreparePrinting(CPrintInfo * pInfo, BOOL isLandscape)
 }
 
 /***************************************************************************/
-/*************************CUT/COPY/PASTE*************************************/
-/***************************************************************************/
-
-/***************************************************************************/
 // CSaView::IsCutAllowed Checks, if cut possible (return TRUE)
 /***************************************************************************/
 BOOL CSaView::IsCutAllowed()
 {
-
     BOOL bHighLighted = FALSE;
-    if ((m_nFocusedID == IDD_RAWDATA) && !GetDocument()->GetWbProcess() && !GetDocument()->IsMultiChannel() &&
-            (m_pFocusedGraph->GetPlot()->GetHighLightLength() > 0))
+    if ((m_nFocusedID == IDD_RAWDATA) && 
+		(!GetDocument()->GetWbProcess()) && 
+        (m_pFocusedGraph->GetPlot()->GetHighLightLength() > 0))
     {
         bHighLighted = TRUE;
     }
@@ -3602,9 +3552,7 @@ BOOL CSaView::IsCutAllowed()
 /***************************************************************************/
 void CSaView::OnEditCopy()
 {
-
     int nSegment = FindSelectedAnnotationIndex();
-
     if (!IsCutAllowed())   // copy data point
     {
         OnEditCopyMeasurements();
@@ -3653,7 +3601,8 @@ void CSaView::OnEditCopy()
             // get the wave section boundaries
             DWORD dwSectionStart = m_pFocusedGraph->GetPlot()->GetHighLightPosition();
             DWORD dwSectionLength = m_pFocusedGraph->GetPlot()->GetHighLightLength();
-            ((CSaDoc *)GetDocument())->PutWaveToClipboard(dwSectionStart, dwSectionLength);
+			CSaDoc * pDoc = GetDocument();
+			pDoc->PutWaveToClipboard( dwSectionStart, dwSectionLength);
         }
     }
 }
@@ -3740,27 +3689,27 @@ void CSaView::OnEditCopyMeasurements()
 /***************************************************************************/
 void CSaView::OnEditCut()
 {
-
+	// cut annontation
     if (IsAnyAnnotationSelected())
     {
         OnEditCopy();
         RemoveSelectedAnnotation();
+		return;
     }
-    else
+
+	// cut wave
+    if ((m_nFocusedID == IDD_RAWDATA) && (m_pFocusedGraph->GetPlot()->GetHighLightLength() > 0))
     {
-        if ((m_nFocusedID == IDD_RAWDATA) && (m_pFocusedGraph->GetPlot()->GetHighLightLength() > 0))
+        // copy a wavefile section to the clipboard and delete it from the file
+        // get the wave section boundaries
+        DWORD dwSectionStart = m_pFocusedGraph->GetPlot()->GetHighLightPosition();
+        DWORD dwSectionLength = m_pFocusedGraph->GetPlot()->GetHighLightLength();
+        CSaDoc * pDoc = (CSaDoc *)GetDocument();
+         if (pDoc->PutWaveToClipboard( dwSectionStart, dwSectionLength, TRUE))
         {
-            // copy a wavefile section to the clipboard and delete it from the file
-            // get the wave section boundaries
-            DWORD dwSectionStart = m_pFocusedGraph->GetPlot()->GetHighLightPosition();
-            DWORD dwSectionLength = m_pFocusedGraph->GetPlot()->GetHighLightLength();
-            CSaDoc * pDoc = (CSaDoc *)GetDocument();
-            if (pDoc->PutWaveToClipboard(dwSectionStart, dwSectionLength, TRUE))
-            {
-                pDoc->InvalidateAllProcesses();
-                RefreshGraphs();
-                m_pFocusedGraph->GetPlot()->SetHighLightArea(0, 0);
-            }
+            pDoc->InvalidateAllProcesses();
+            RefreshGraphs();
+            m_pFocusedGraph->GetPlot()->SetHighLightArea(0, 0);
         }
     }
 }
@@ -3883,14 +3832,11 @@ CSegment * CSaView::FindSelectedAnnotation()
     return NULL;
 }
 
-
-
 /***************************************************************************/
 // CSaView::FindSelectedAnnotation
 /***************************************************************************/
 int CSaView::FindSelectedAnnotationIndex()
 {
-
     int ret = -1;
     for (int nLoop = 0; nLoop < ANNOT_WND_NUMBER; nLoop++)
     {
@@ -3903,8 +3849,6 @@ int CSaView::FindSelectedAnnotationIndex()
     }
     return ret;
 }
-
-
 
 /***************************************************************************/
 // CSaView::ChangeSelectedAnnotationData
@@ -3925,8 +3869,6 @@ void CSaView::ChangeSelectedAnnotationData(const CSaString & str)
         }
     }
 }
-
-
 
 /***************************************************************************/
 // CSaView::RemoveSelectedAnnotation
@@ -3964,18 +3906,15 @@ void CSaView::OnUpdateEditPaste(CCmdUI * pCmdUI)
     CSaDoc * pDoc = GetDocument();
     if (m_nFocusedID == IDD_RAWDATA)
     {
-        if (!pDoc->IsMultiChannel())
+        if (!pDoc->GetWbProcess())
         {
-            if (!pDoc->GetWbProcess())
+            if (OpenClipboard())
             {
-                if (OpenClipboard())
+                if (IsClipboardFormatAvailable(CF_WAVE))
                 {
-                    if (IsClipboardFormatAvailable(CF_WAVE))
-                    {
-                        enablePaste = TRUE;
-                    }
-                    CloseClipboard();
+                    enablePaste = TRUE;
                 }
+                CloseClipboard();
             }
         }
     }
@@ -4090,11 +4029,10 @@ void CSaView::OnEditCursorStartRight()
     DWORD dwStop;
     DWORD dwStopNew;
     CSaDoc * pDoc = GetDocument();
-    int nBlockAlign = pDoc->GetFmtParm()->wBlockAlign;
+    int nBlockAlign = pDoc->GetBlockAlign();
     DWORD minSeparation = ((DWORD)(CURSOR_MIN_DISTANCE * (m_fMaxZoom/m_fZoom))) * nBlockAlign;
     DWORD dataSize = pDoc->GetDataSize();
     DWORD movementScale = ((DWORD)(m_fMaxZoom/m_fZoom + 0.5))* nBlockAlign;
-
 
     dwOffset = GetStartCursorPosition();
 
@@ -4139,7 +4077,7 @@ void CSaView::OnEditCursorStopRight()
     DWORD dwStop;
     DWORD dwStopNew;
     CSaDoc * pDoc = GetDocument();
-    int nBlockAlign = pDoc->GetFmtParm()->wBlockAlign;
+    int nBlockAlign = pDoc->GetBlockAlign();
     DWORD dataSize = pDoc->GetDataSize();
     DWORD movementScale = ((DWORD)(m_fMaxZoom/m_fZoom + 0.5))* nBlockAlign;
 
@@ -4164,21 +4102,18 @@ void CSaView::OnEditCursorStopRight()
 /***************************************************************************/
 void CSaView::OnEditCursorStartLeft()
 {
-    DWORD dwOffset;
-    DWORD dwOffsetNew;
     CSaDoc * pDoc = GetDocument();
-    int nBlockAlign = pDoc->GetFmtParm()->wBlockAlign;
+    int nBlockAlign = pDoc->GetBlockAlign();
     DWORD movementScale = ((DWORD)(m_fMaxZoom/m_fZoom + 0.5))* nBlockAlign;
 
-
-    dwOffset = GetStartCursorPosition();
+    DWORD dwOffset = GetStartCursorPosition();
 
     if (dwOffset < movementScale)
     {
         return;
     }
 
-    dwOffsetNew = pDoc->SnapCursor(START_CURSOR, dwOffset - movementScale, SNAP_LEFT);
+    DWORD dwOffsetNew = pDoc->SnapCursor(START_CURSOR, dwOffset - movementScale, SNAP_LEFT);
 
     if (dwOffset != dwOffsetNew)
     {
@@ -4191,27 +4126,23 @@ void CSaView::OnEditCursorStartLeft()
 /***************************************************************************/
 void CSaView::OnEditCursorStopLeft()
 {
-    DWORD dwOffset;
-    DWORD dwOffsetNew;
-    DWORD dwStop;
-    DWORD dwStopNew;
+
     CSaDoc * pDoc = GetDocument();
-    int nBlockAlign = pDoc->GetFmtParm()->wBlockAlign;
+    int nBlockAlign = pDoc->GetBlockAlign();
     DWORD minSeparation = ((DWORD)(CURSOR_MIN_DISTANCE * (m_fMaxZoom/m_fZoom))) * nBlockAlign;
     DWORD movementScale = ((DWORD)(m_fMaxZoom/m_fZoom + 0.5))* nBlockAlign;
 
-
-    dwStop = GetStopCursorPosition();
+    DWORD dwStop = GetStopCursorPosition();
 
     if (dwStop < movementScale)
     {
         return;
     }
 
-    dwStopNew = pDoc->SnapCursor(STOP_CURSOR, dwStop - movementScale, SNAP_LEFT);
+    DWORD dwStopNew = pDoc->SnapCursor(STOP_CURSOR, dwStop - movementScale, SNAP_LEFT);
 
-    dwOffset = GetStartCursorPosition();
-    dwOffsetNew = dwOffset;
+    DWORD dwOffset = GetStartCursorPosition();
+    DWORD dwOffsetNew = dwOffset;
     if (dwOffsetNew + minSeparation > dwStopNew)
     {
         dwOffsetNew = pDoc->SnapCursor(START_CURSOR, (dwStopNew > minSeparation) ? (dwStopNew - minSeparation): 0, SNAP_LEFT);
@@ -4258,7 +4189,7 @@ void CSaView::OnEditAddSyllable()
 
         dwMaxStop = dwStart + pSeg->GetDuration(nSelection) - pDoc->GetBytesFromTime(MIN_ADD_SEGMENT_TIME);
 
-        if (pDoc->GetFmtParm()->wBlockAlign == 2)   // SDM 1.5Test8.2
+        if (pDoc->Is16Bit())   // SDM 1.5Test8.2
         {
             dwMaxStop = dwMaxStop & ~1; // Round down
         }
@@ -4268,7 +4199,7 @@ void CSaView::OnEditAddSyllable()
 
         dwStop = (dwStart + pDoc->GetBytesFromTime(ADD_SYLLABLE_TIME));
 
-        if (pDoc->GetFmtParm()->wBlockAlign == 2)   // SDM 1.5Test8.2
+        if (pDoc->Is16Bit())   // SDM 1.5Test8.2
         {
             dwStop = (dwStop + 1) & ~1; // Round up
         }
@@ -4299,7 +4230,6 @@ void CSaView::OnEditAddSyllable()
 /***************************************************************************/
 void CSaView::OnUpdateEditAddSyllable(CCmdUI * pCmdUI)
 {
-
     CSaDoc * pDoc = GetDocument(); // get pointer to document
     BOOL bEnable = FALSE;
 
@@ -4314,7 +4244,7 @@ void CSaView::OnUpdateEditAddSyllable(CCmdUI * pCmdUI)
 
         dwMaxStop = dwStart + pSeg->GetDuration(nSelection) - pDoc->GetBytesFromTime(MIN_ADD_SEGMENT_TIME);
 
-        if (pDoc->GetFmtParm()->wBlockAlign == 2)   // SDM 1.5Test8.2
+        if (pDoc->Is16Bit())            // SDM 1.5Test8.2
         {
             dwMaxStop = dwMaxStop & ~1; // Round down
         }
@@ -4324,7 +4254,7 @@ void CSaView::OnUpdateEditAddSyllable(CCmdUI * pCmdUI)
 
         dwStop = (dwStart + pDoc->GetBytesFromTime(ADD_SYLLABLE_TIME));
 
-        if (pDoc->GetFmtParm()->wBlockAlign == 2)   // SDM 1.5Test8.2
+        if (pDoc->Is16Bit())            // SDM 1.5Test8.2
         {
             dwStop = (dwStop + 1) & ~1; // Round up
         }
@@ -4402,7 +4332,6 @@ void CSaView::OnEditAutoAdd()
 /***************************************************************************/
 void CSaView::OnEditAdd()
 {
-
     CSaDoc * pDoc = (CSaDoc *) GetDocument();
     CPhoneticSegment * pSeg = (CPhoneticSegment *) GetAnnotation(PHONETIC);
     CGlossSegment * pGloss = (CGlossSegment *) GetAnnotation(GLOSS);
@@ -4476,7 +4405,7 @@ void CSaView::OnEditAdd()
 
             dwStop = (dwStart + pDoc->GetBytesFromTime(MIN_ADD_SEGMENT_TIME));
 
-            if (pDoc->GetFmtParm()->wBlockAlign == 2)   // SDM 1.5Test8.2
+            if (pDoc->Is16Bit())            // SDM 1.5Test8.2
             {
                 dwStop = (dwStop + 1) & ~1; // Round up
             }
@@ -4490,7 +4419,7 @@ void CSaView::OnEditAdd()
             {
                 dwStop = dwStart + pDoc->GetBytesFromTime(DEFAULT_ADD_SEGMENT_TIME);
 
-                if (pDoc->GetFmtParm()->wBlockAlign == 2)   // SDM 1.5Test8.2
+                if (pDoc->Is16Bit())            // SDM 1.5Test8.2
                 {
                     dwStop = (dwStop + 1) & ~1; // Round up
                 }
@@ -4576,7 +4505,7 @@ void CSaView::OnUpdateEditAdd(CCmdUI * pCmdUI)
             dwStart = pDoc->SnapCursor(START_CURSOR, dwStart, dwStart, dwMaxStop, SNAP_RIGHT);;
 
             dwStop = (dwStart + pDoc->GetBytesFromTime(MIN_ADD_SEGMENT_TIME));
-            if (pDoc->GetFmtParm()->wBlockAlign == 2)   // SDM 1.5Test8.2
+            if (pDoc->Is16Bit())            // SDM 1.5Test8.2
             {
                 dwStop = (dwStop + 1) & ~1; // Round up
             }
@@ -4590,7 +4519,7 @@ void CSaView::OnUpdateEditAdd(CCmdUI * pCmdUI)
             {
                 dwStop = dwStart + pDoc->GetBytesFromTime(DEFAULT_ADD_SEGMENT_TIME);
 
-                if (pDoc->GetFmtParm()->wBlockAlign == 2)   // SDM 1.5Test8.2
+                if (pDoc->Is16Bit())   // SDM 1.5Test8.2
                 {
                     dwStop = (dwStop + 1) & ~1; // Round up
                 }
@@ -4685,7 +4614,7 @@ void CSaView::OnEditAddPhrase(CMusicPhraseSegment * pSeg)
 
             dwStop = (dwStart + pDoc->GetBytesFromTime(MIN_ADD_SEGMENT_TIME));
 
-            if (pDoc->GetFmtParm()->wBlockAlign == 2)   // SDM 1.5Test8.2
+            if (pDoc->Is16Bit())   // SDM 1.5Test8.2
             {
                 dwStop = (dwStop + 1) & ~1; // Round up
             }
@@ -4699,7 +4628,7 @@ void CSaView::OnEditAddPhrase(CMusicPhraseSegment * pSeg)
             {
                 dwStop = dwStart + pDoc->GetBytesFromTime(DEFAULT_ADD_SEGMENT_TIME);
 
-                if (pDoc->GetFmtParm()->wBlockAlign == 2)   // SDM 1.5Test8.2
+                if (pDoc->Is16Bit())   // SDM 1.5Test8.2
                 {
                     dwStop = (dwStop + 1) & ~1; // Round up
                 }
@@ -4732,7 +4661,6 @@ void CSaView::OnEditAddPhrase(CMusicPhraseSegment * pSeg)
         m_apGraphs[i]->ShowAnnotation(nAnnot, TRUE, TRUE);
     }
 }
-
 
 /***************************************************************************/
 // CSaView::OnUpdateEditAddPhrase
@@ -4769,7 +4697,7 @@ void CSaView::OnUpdateEditAddPhrase(CCmdUI * pCmdUI, CMusicPhraseSegment * pSeg)
             dwStart = pDoc->SnapCursor(START_CURSOR, dwStart, dwStart, dwMaxStop, SNAP_RIGHT);
 
             dwStop = (dwStart + pDoc->GetBytesFromTime(MIN_ADD_SEGMENT_TIME));
-            if (pDoc->GetFmtParm()->wBlockAlign == 2)   // SDM 1.5Test8.2
+            if (pDoc->Is16Bit())   // SDM 1.5Test8.2
             {
                 dwStop = (dwStop + 1) & ~1; // Round up
             }
@@ -4867,7 +4795,7 @@ void CSaView::OnEditAddAutoPhraseL2()
 
             dwStop = (dwStart + pDoc->GetBytesFromTime(MIN_ADD_SEGMENT_TIME));
 
-            if (pDoc->GetFmtParm()->wBlockAlign == 2)   // SDM 1.5Test8.2
+            if (pDoc->Is16Bit())   // SDM 1.5Test8.2
             {
                 dwStop = (dwStop + 1) & ~1; // Round up
             }
@@ -4881,7 +4809,7 @@ void CSaView::OnEditAddAutoPhraseL2()
             {
                 dwStop = dwStart + pDoc->GetBytesFromTime(DEFAULT_ADD_SEGMENT_TIME);
 
-                if (pDoc->GetFmtParm()->wBlockAlign == 2)   // SDM 1.5Test8.2
+                if (pDoc->Is16Bit())   // SDM 1.5Test8.2
                 {
                     dwStop = (dwStop + 1) & ~1; // Round up
                 }
@@ -4984,7 +4912,6 @@ void CSaView::OnEditAddBookmark()
 /***************************************************************************/
 void CSaView::EditAddGloss(bool bDelimiter)
 {
-
     CSaDoc * pDoc = (CSaDoc *)GetDocument(); // get pointer to document
     CSaString szString = ""; //Fill new segment with default character
 
@@ -6027,7 +5954,7 @@ void CSaView::OnUpdateEditNext(CCmdUI * pCmdUI)
 /***************************************************************************/
 // CSaView::GetCursorAlignment()
 /***************************************************************************/
-CURSOR_ALIGNMENT CSaView::GetCursorAlignment()
+ECursorAlignment CSaView::GetCursorAlignment()
 {
     if (GetDocument()->GetFragments()->IsDataReady())
     {
@@ -6196,7 +6123,7 @@ void CSaView::OnMoveStopCursorHere()
     }
 
     DWORD dwDataSize = pDoc->GetDataSize();
-    int nSmpSize = pDoc->GetFmtParm()->wBlockAlign / pDoc->GetFmtParm()->wChannels;
+    DWORD nSmpSize = pDoc->GetSampleSize();
     // calculate data samples per pixel
     ASSERT(rWnd.Width());
     double fSamplesPerPix = (double)dwDataFrame / (double)(rWnd.Width()*nSmpSize);
@@ -6256,7 +6183,6 @@ void CSaView::OnMoveStopCursorHere()
 /***************************************************************************/
 void CSaView::OnEditCopyPhoneticToPhonemic(void)
 {
-
     // doesn't user want to keep existing gloss?
     if (AfxMessageBox(IDS_CONFIRM_PHONEMIC_COPY, MB_YESNO | MB_ICONQUESTION, 0) != IDYES)
     {
@@ -6343,7 +6269,7 @@ BOOL CSaView::IsAnimating()
     return m_bAnimating;
 }
 
-void CSaView::ChangeCursorAlignment(CURSOR_ALIGNMENT nCursorSetting)
+void CSaView::ChangeCursorAlignment(ECursorAlignment nCursorSetting)
 {
     m_nCursorAlignment = nCursorSetting;
     OnCursorAlignmentChanged();
@@ -6454,11 +6380,6 @@ void CSaView::SetNormalMelogram(BOOL bChecked)
 CMainFrame * CSaView::MainFrame()
 {
     return pViewMainFrame;
-}
-
-CSaDoc * CSaView::GetDocument()
-{
-    return (CSaDoc *)m_pDocument;
 }
 
 LRESULT CSaView::OnAutoSave( WPARAM, LPARAM)

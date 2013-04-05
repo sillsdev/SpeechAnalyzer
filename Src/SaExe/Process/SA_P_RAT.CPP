@@ -98,13 +98,12 @@ long CProcessRatio::Process(void * pCaller, ISaDoc * pDoc, int nProgress,
         EndWaitCursor();
         return MAKELONG(PROCESS_ERROR, nProgress);
     }
-    FmtParm * pFmtParm = pDoc->GetFmtParm(); // get sa parameters format member data
-    const UttParm * pUttParm = pDoc->GetUttParm(); // get sa parameters utterance member data
-    UINT nBlockAlign = pFmtParm->wBlockAlign;
+    const CUttParm * pUttParm = pDoc->GetUttParm(); // get sa parameters utterance member data
+    UINT nBlockAlign = pDoc->GetBlockAlign();
     // calculate current processing position (copied but not understood from WINCECIL)
-    DWORD dwLoopStart = ((pFmtParm->dwSamplesPerSec / (2 * MAX_CALCULATION_FREQUENCY)
-                          + pFmtParm->dwSamplesPerSec / pUttParm->nMinFreq) / 2
-                         + CALCULATION_DATALENGTH(pFmtParm->dwSamplesPerSec) / 2 + 5) / CALCULATION_INTERVAL(pFmtParm->dwSamplesPerSec) + 1;
+    DWORD dwLoopStart = ((pDoc->GetSamplesPerSec() / (2 * MAX_CALCULATION_FREQUENCY)
+                          + pDoc->GetSamplesPerSec() / pUttParm->nMinFreq) / 2
+                         + CALCULATION_DATALENGTH(pDoc->GetSamplesPerSec()) / 2 + 5) / CALCULATION_INTERVAL(pDoc->GetSamplesPerSec()) + 1;
     DWORD dwDataSize = pLoudness->GetDataSize();
     DWORD dwLoopEnd = dwDataSize - dwLoopStart; // end of loop
     // create the temporary change file
@@ -157,7 +156,7 @@ long CProcessRatio::Process(void * pCaller, ISaDoc * pDoc, int nProgress,
             // write the processed change data block
             try
             {
-                Write((HPSTR)m_lpBuffer, dwChangeCount * 2);
+                Write(m_lpBuffer, dwChangeCount * 2);
             }
             catch (CFileException e)
             {

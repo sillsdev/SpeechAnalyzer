@@ -11,20 +11,20 @@
 //    SDM   Extract from sa_dlg.h
 //
 /////////////////////////////////////////////////////////////////////////////
-#ifndef _AUTORECORDER__
-#define _AUTORECORDER__
+#ifndef DLGAUTORECORDER_H
+#define DLGAUTORECORDER_H
 
 #include "sa_doc.h"
 #include "sa_dlwnd.h"
 #include "sa_wave.h"
-#include "dlgaudio.h"
-#include "playerrecorder.h"
 #include "AlignInfo.h"
+#include "DlgWaveNotifyObj.h"
+#include "IWaveNotifiable.h"
 
 //###########################################################################
 // CDlgAutoRecorder dialog
 
-class CDlgAutoRecorder : public CDlgAudio
+class CDlgAutoRecorder : public CDialog, public IWaveNotifiable
 {
 
     enum eRecordState { WaitForSilence, WaitingForVoice, Recording, Stopping, Playing, Idle};
@@ -47,39 +47,36 @@ private:
     void StartShutdown();
     BOOL OnAssignOverlay(CSaView * pView);
 
-    CSaView * m_pTargetUntested;  // Be careful, stale.  Maybe deleted under your feet.
-    eRecordMode       m_eMode;          // recorder mode (record, play, stop...)
-    eRecordMode       m_eOldMode;       // previous recorder mode
+    CSaView * m_pTargetUntested;            // Be careful, stale.  Maybe deleted under your feet.
+    eRecordMode m_eMode;                    // recorder mode (record, play, stop...)
+    eRecordMode m_eOldMode;                 // previous recorder mode
 
-    HANDLE            m_hData;          // needed to get m_lpData
-    HPSTR             m_lpData;         // pointer to wave data
-    HMMIO             m_hmmioFile;      // mmio file handle
-    TCHAR              m_szFileName[_MAX_PATH]; // file name of the temporary wave file
-    MMCKINFO          m_mmckinfoSubchunk; // 'data' subchunk information
-    MMCKINFO          m_mmckinfoParent; // 'RIFF' parents chunk information
-    BOOL              m_bFileReady;     // TRUE, if temporary file OK
-    BOOL              m_bFileApplied;   // TRUE, if temporary file ready to copy
-    CLEDDisplay       m_LEDTotalTime;   // embedded control objects
-    CLEDDisplay       m_LEDPosTime;
-    CSliderVertical   m_SliderVolume;
-    CSpinControl      m_SpinVolume;
-    CSliderVertical   m_SliderRecVolume;
-    CSpinControl      m_SpinRecVolume;
-    CVUBar            m_VUBar;
-    CFont             m_Font;           // special font for dialog controls
-    CWave      *      m_pWave;
-    CDlgWaveNotifyObj m_NotifyObj;      // recorder notification object
-    CSaDoc      *     m_pDoc;           // pointer to document
-    CSaView     *     m_pView;          // pointer to view
-    DWORD             m_dwRecordSize;   // size of recorded data
-    DWORD             m_dwPlayPosition;  // pointer in already played data
+    HANDLE m_hData;                         // needed to get m_lpRecData
+    HPSTR m_lpRecData;                      // pointer to wave data
+    HMMIO m_hmmioFile;                      // mmio file handle
+    TCHAR m_szFileName[_MAX_PATH];          // file name of the temporary wave file
+    MMCKINFO m_mmckinfoSubchunk;            // 'data' subchunk information
+    MMCKINFO m_mmckinfoParent;              // 'RIFF' parents chunk information
+    BOOL m_bFileReady;                      // TRUE, if temporary file OK
+    BOOL m_bFileApplied;                    // TRUE, if temporary file ready to copy
+    CLEDDisplay m_LEDTotalTime;             // embedded control objects
+    CLEDDisplay m_LEDPosTime;
+    CSliderVertical m_SliderVolume;
+    CSpinControl m_SpinVolume;
+    CSliderVertical m_SliderRecVolume;
+    CSpinControl m_SpinRecVolume;
+    CVUBar m_VUBar;
+    CFont m_Font;                           // special font for dialog controls
+    CWave * m_pWave;
+    CDlgWaveNotifyObj m_NotifyObj;          // recorder notification object
+    CSaDoc * m_pDoc;                        // pointer to document
+    CSaView * m_pView;                      // pointer to view
+    DWORD m_dwRecordSize;                   // size of recorded data
+    DWORD m_dwPlayPosition;                 // pointer in already played data
 
-    // Dialog Data
-    //{{AFX_DATA(CDlgAutoRecorder)
     enum { IDD = IDD_AUTORECORDER };
     UINT  m_nVolume;
     UINT  m_nRecVolume;
-    //}}AFX_DATA
 
 public:
     // Operations

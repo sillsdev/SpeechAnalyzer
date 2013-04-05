@@ -3,19 +3,19 @@
 #include <stdio.h>
 #include <conio.h>
 #include <math.h>
-
 #include <mmreg.h>
 #include <ks.h>
 #include <ksmedia.h>
-
 #include "waveresampler.h"
-
 #include "dlgmultichannel.h"
+#include <vector>
 
 #define PI  3.14159265359
 #define PERCENT_TRANSITION   .10F
 
 typedef unsigned short USHORT;
+
+using std::vector;
 
 double CWaveResampler::Limit(double val)
 {
@@ -297,13 +297,10 @@ void CWaveResampler::Func(size_t bufferLen,
 * Resamples .WAV files from another sampling rate to 22050 khz
 * the acm* functions will try to convert from other compression types outside of
 * PCM if possible.
-* This method usings 32-bit floating point to do the majority of the work.
+* This method uses 32-bit floating point to do the majority of the work.
 * The incoming default progress bar is 30%....
 */
-CWaveResampler::ECONVERT CWaveResampler::Run(const TCHAR * src,
-        const TCHAR  * dst,
-        CProgressStatusBar * pStatusBar,
-        BOOL bShowAdvancedAudio)
+CWaveResampler::ECONVERT CWaveResampler::Run(const TCHAR * src, const TCHAR  * dst, CProgressStatusBar * pStatusBar, BOOL bShowAdvancedAudio)
 {
 
     // yes, I could have used smart pointers...I was in a hurry.
@@ -373,6 +370,7 @@ CWaveResampler::ECONVERT CWaveResampler::Run(const TCHAR * src,
         }
         else if (fmtChunk.cksize==40)
         {
+
             WAVEFORMATEXTENSIBLE waveInEx;
             memset(&waveInEx,0,sizeof(WAVEFORMATEXTENSIBLE));
             /* Tell Windows to read in the "fmt " chunk into a WAVEFORMATEX structure */
@@ -466,8 +464,7 @@ CWaveResampler::ECONVERT CWaveResampler::Run(const TCHAR * src,
     }
 
     // convert incoming format if possible
-    if ((wFormatTag!=WAVE_FORMAT_PCM)&&
-            (wFormatTag!=WAVE_FORMAT_IEEE_FLOAT))
+    if ((wFormatTag!=WAVE_FORMAT_PCM)&&(wFormatTag!=WAVE_FORMAT_IEEE_FLOAT))
     {
 
         HACMSTREAM hacm = 0;
@@ -718,7 +715,7 @@ CWaveResampler::ECONVERT CWaveResampler::Run(const TCHAR * src,
 
     // at this point we have 32-bit PCM only
     wBitsPerSample = 32;
-    nBlockAlign = 4;
+    nBlockAlign = 4*nChannels;
     wFormatTag = WAVE_FORMAT_PCM;
 
     // at this point the old data pointer is no longer used...
@@ -730,21 +727,11 @@ CWaveResampler::ECONVERT CWaveResampler::Run(const TCHAR * src,
         return EC_SOFTWARE;
     }
 
-    // anything to do?
-    if (nChannels!=1)
-    {
+    vector<double *> buffers;
 
-        int selectedChannel = 0;
-        if (bShowAdvancedAudio)
-        {
-            CDlgMultiChannel dlg(nChannels,true);
-            if (dlg.DoModal()!=IDOK)
-            {
-                delete [] datal;
-                return EC_USERABORT;
-            }
-            selectedChannel = dlg.m_nChannel;
-        }
+    // pull each channel into it's own buffer
+    for (int ch=0; ch<nChannels; ch++)
+    {
 
         size_t numSamples = length/nChannels;
         size_t bufferSize = numSamples;
@@ -765,13 +752,13 @@ CWaveResampler::ECONVERT CWaveResampler::Run(const TCHAR * src,
                     datal = NULL;
                     return EC_SOFTWARE;
                 }
-                if ((selectedChannel==nChannels)||(selectedChannel==c))
+                if (ch==c)
                 {
                     sum += datal[k];
                 }
                 k++;
             }
-            if (selectedChannel==nChannels)
+            if (ch==nChannels)
             {
                 sum /= (double)nChannels;
             }
@@ -790,13 +777,12 @@ CWaveResampler::ECONVERT CWaveResampler::Run(const TCHAR * src,
             return EC_SOFTWARE;
         }
 
-        length = bufferSize;
-        delete [] datal;
-        datal = buffer;
+        buffers.push_back(buffer);
     }
 
-    // channels have now been combined
-    nChannels = 1;
+    // this buffer isn't needed any more
+    delete [] datal;
+    datal = NULL;
 
     /**
     * we will be converting whatever the input format
@@ -810,19 +796,19 @@ CWaveResampler::ECONVERT CWaveResampler::Run(const TCHAR * src,
     Converts from one sampling rate to another.
     In theory, the algorithm proceeds as follows:
 
-    1.  Upsample the original signal to the Least Common Multiple
+    1.  Up-sample the original signal to the Least Common Multiple
     of the two sampling rates, padding in between sample values
     with zeros.
-    2.  Smooth the signal with a Kaiser windowed lowpass FIR filter
+    2.  Smooth the signal with a Kaiser windowed low pass FIR filter
     having a cutoff at half the lesser of the original and target
-    sampling frequencies and a stopband rejection at or below the
+    sampling frequencies and a stop-band rejection at or below the
     full scale signal to quantization noise ratio of the shorter
     of the input and output word lengths.
-    3.  Downsample to the requested sampling frequency.
+    3.  Down-sample to the requested sampling frequency.
 
     In practice, the steps are combined to minimize storage and expedite
     processing.  This is accomplished by filtering only non-zero values
-    of the upsampled signal at intervals of the downsampling rate.
+    of the up-sampled signal at intervals of the down-sampling rate.
 
     The function returns after a specified percentage of output samples,
     designated by ProgIntv, are assembled in an output buffer and
@@ -835,55 +821,66 @@ CWaveResampler::ECONVERT CWaveResampler::Run(const TCHAR * src,
     if ((nSamplesPerSec!=22050))
     {
 
-        // data is already in float
-        // convert to even number of samples (why?)
-        size_t numSamples = length;
-        if ((numSamples-((numSamples/2)*2))>0)
+        size_t newLength = 0;
+
+        for (int ch=0; ch<buffers.size(); ch++)
         {
-            numSamples--;
+
+            // data is already in float
+            // convert to even number of samples (why?)
+            size_t numSamples = length/nChannels;
+            if ((numSamples-((numSamples/2)*2))>0)
+            {
+                numSamples--;
+            }
+
+            DWORD inSampleRate = nSamplesPerSec;
+            DWORD outSampleRate = 22050;
+
+            // calculate lcm and size of buffer
+            unsigned long smpRateLCM = LCM(inSampleRate,outSampleRate);
+            size_t upSmpFactor = (smpRateLCM/(ULONG)inSampleRate);
+            size_t dwnSmpFactor = (smpRateLCM/(ULONG)outSampleRate);
+            TRACE("upSmpFactor=%d\n",upSmpFactor);
+            TRACE("dwnSmpFactor=%d\n",dwnSmpFactor);
+
+            // calculate the new work buffer size;
+            size_t workLen = numSamples*upSmpFactor;
+
+            // create the output buffer
+            size_t bufferLen = workLen/dwnSmpFactor;
+            if (bufferLen > 0x7fffffff)
+            {
+                TRACE("data is too large!\n");
+                for (size_t chx=0; chx<buffers.size(); chx++)
+                {
+                    delete [] buffers[chx];
+                }
+                return EC_TOOLARGE;
+            }
+
+            double * buffer = new double[bufferLen];
+
+            newLength = bufferLen;
+
+            {
+                // build the filter
+                size_t coeffsLen = 0;
+                double * coeffs = NULL;
+                CalculateCoefficients(nSamplesPerSec, wBitsPerSample, coeffs, coeffsLen);
+                TRACE("coeffsLen=%d\n",coeffsLen);
+                // do the work!
+                Func(bufferLen, buffer, coeffsLen, coeffs, upSmpFactor, dwnSmpFactor, buffers[ch], pStatusBar);
+
+                delete [] coeffs;
+            }
+
+            // update results
+            delete [] buffers[ch];
+            buffers[ch] = buffer;
         }
 
-        DWORD inSampleRate = nSamplesPerSec;
-        DWORD outSampleRate = 22050;
-
-        // calculate lcm and size of buffer
-        unsigned long smpRateLCM = LCM(inSampleRate,outSampleRate);
-        size_t upSmpFactor = (smpRateLCM/(ULONG)inSampleRate);
-        size_t dwnSmpFactor = (smpRateLCM/(ULONG)outSampleRate);
-        TRACE("upSmpFactor=%d\n",upSmpFactor);
-        TRACE("dwnSmpFactor=%d\n",dwnSmpFactor);
-
-        // calculate the new work buffer size;
-        size_t workLen = numSamples*upSmpFactor;
-
-        // create the output buffer
-        size_t bufferLen = workLen/dwnSmpFactor;
-        if (bufferLen > 0x7fffffff)
-        {
-            TRACE("data is too large!\n");
-            delete [] datal;
-            datal = NULL;
-            return EC_TOOLARGE;
-        }
-
-        double * buffer = new double[bufferLen];
-
-        {
-            // build the filter
-            size_t coeffsLen = 0;
-            double * coeffs = NULL;
-            CalculateCoefficients(nSamplesPerSec, wBitsPerSample, coeffs, coeffsLen);
-            TRACE("coeffsLen=%d\n",coeffsLen);
-            // do the work!
-            Func(bufferLen, buffer, coeffsLen, coeffs, upSmpFactor, dwnSmpFactor, datal, pStatusBar);
-
-            delete [] coeffs;
-        }
-
-        // update results
-        delete [] datal;
-        length = bufferLen;
-        datal = buffer;
+        length = newLength*nChannels;
     }
 
     nSamplesPerSec = 22050;
@@ -896,8 +893,10 @@ CWaveResampler::ECONVERT CWaveResampler::Run(const TCHAR * src,
         if (hmmio==NULL)
         {
             TRACE("mmioOpen fail\n");
-            delete [] datal;
-            datal = NULL;
+            for (size_t chx=0; chx<buffers.size(); chx++)
+            {
+                delete [] buffers[chx];
+            }
             return EC_WRITEFAIL;
         }
 
@@ -911,12 +910,14 @@ CWaveResampler::ECONVERT CWaveResampler::Run(const TCHAR * src,
         {
             TRACE("mmioCreateChunk fail\n");
             mmioClose(hmmio,0);
-            delete [] datal;
-            datal = NULL;
+            for (size_t chx=0; chx<buffers.size(); chx++)
+            {
+                delete [] buffers[chx];
+            }
             return EC_WRITEFAIL;
         }
 
-        nBlockAlign = 2;
+        nBlockAlign = 2*nChannels;
         wBitsPerSample = 16;
 
         // create the 'fmt ' subchunk
@@ -929,8 +930,10 @@ CWaveResampler::ECONVERT CWaveResampler::Run(const TCHAR * src,
         {
             TRACE("mmioCreateChunk fail\n");
             mmioClose(hmmio,0);
-            delete [] datal;
-            datal = NULL;
+            for (size_t chx=0; chx<buffers.size(); chx++)
+            {
+                delete [] buffers[chx];
+            }
             return EC_WRITEFAIL;
         }
         // write the format parameters into 'fmt ' chunk
@@ -939,17 +942,23 @@ CWaveResampler::ECONVERT CWaveResampler::Run(const TCHAR * src,
         {
             TRACE("mmioWrite fail\n");
             mmioClose(hmmio,0);
-            delete [] datal;
-            datal = NULL;
+            for (size_t chx=0; chx<buffers.size(); chx++)
+            {
+                delete [] buffers[chx];
+            }
             return EC_WRITEFAIL;
         }
+
+        TRACE("writing out %d channels\n",nChannels);
         len = mmioWrite(hmmio, (HPSTR)&nChannels, sizeof(WORD));
         if (len!=sizeof(WORD))
         {
             TRACE("mmioWrite fail\n");
             mmioClose(hmmio,0);
-            delete [] datal;
-            datal = NULL;
+            for (size_t chx=0; chx<buffers.size(); chx++)
+            {
+                delete [] buffers[chx];
+            }
             return EC_WRITEFAIL;
         }
         len = mmioWrite(hmmio, (HPSTR)&nSamplesPerSec, sizeof(DWORD));
@@ -957,8 +966,10 @@ CWaveResampler::ECONVERT CWaveResampler::Run(const TCHAR * src,
         {
             TRACE("mmioWrite fail\n");
             mmioClose(hmmio,0);
-            delete [] datal;
-            datal = NULL;
+            for (size_t chx=0; chx<buffers.size(); chx++)
+            {
+                delete [] buffers[chx];
+            }
             return EC_WRITEFAIL;
         }
         DWORD nAvgBytesPerSec = nSamplesPerSec*nBlockAlign;
@@ -967,8 +978,10 @@ CWaveResampler::ECONVERT CWaveResampler::Run(const TCHAR * src,
         {
             TRACE("mmioWrite fail\n");
             mmioClose(hmmio,0);
-            delete [] datal;
-            datal = NULL;
+            for (size_t chx=0; chx<buffers.size(); chx++)
+            {
+                delete [] buffers[chx];
+            }
             return EC_WRITEFAIL;
         }
         len = mmioWrite(hmmio, (HPSTR)&nBlockAlign, sizeof(WORD));
@@ -976,8 +989,10 @@ CWaveResampler::ECONVERT CWaveResampler::Run(const TCHAR * src,
         {
             TRACE("mmioWrite fail\n");
             mmioClose(hmmio,0);
-            delete [] datal;
-            datal = NULL;
+            for (size_t chx=0; chx<buffers.size(); chx++)
+            {
+                delete [] buffers[chx];
+            }
             return EC_WRITEFAIL;
         }
         len = mmioWrite(hmmio, (HPSTR)&wBitsPerSample, sizeof(WORD));
@@ -985,35 +1000,43 @@ CWaveResampler::ECONVERT CWaveResampler::Run(const TCHAR * src,
         {
             TRACE("mmioWrite fail\n");
             mmioClose(hmmio,0);
-            delete [] datal;
-            datal = NULL;
+            for (size_t chx=0; chx<buffers.size(); chx++)
+            {
+                delete [] buffers[chx];
+            }
             return EC_WRITEFAIL;
         }
         if (mmioAscend(hmmio, &formatChunk, 0))
         {
             TRACE("mmioAscend fail\n");
             mmioClose(hmmio,0);
-            delete [] datal;
-            datal = NULL;
+            for (size_t chx=0; chx<buffers.size(); chx++)
+            {
+                delete [] buffers[chx];
+            }
             return EC_WRITEFAIL;
         }
 
         {
-            // convert the data to 16-bit
+            // convert the data to 16-bit for all channels
             DWORD bufferSize = length*2;
+            DWORD numSamples = length/nChannels;
             BYTE * buffer = new BYTE[bufferSize];
             size_t k=0;
-            for (size_t i=0; i<length; i++)
+            for (size_t i=0; i<numSamples; i++)
             {
-                double dval = datal[i];
-                dval = Limit(dval);
-                long lval = (long)(dval*(double)0x7fffffff);
-                lval /= 0x10000;
-                __int16 ival = (__int16)lval;
-                BYTE lb = ival & 0xff;
-                BYTE hb = ival>>8;
-                buffer[k++] = lb;
-                buffer[k++] = hb;
+                for (size_t ch=0; ch<buffers.size(); ch++)
+                {
+                    double dval = buffers[ch][i];
+                    dval = Limit(dval);
+                    long lval = (long)(dval*(double)0x7fffffff);
+                    lval /= 0x10000;
+                    __int16 ival = (__int16)lval;
+                    BYTE lb = ival & 0xff;
+                    BYTE hb = ival>>8;
+                    buffer[k++] = lb;
+                    buffer[k++] = hb;
+                }
             }
 
             //Creating data chunk and inserting information from source file
@@ -1025,8 +1048,10 @@ CWaveResampler::ECONVERT CWaveResampler::Run(const TCHAR * src,
                 TRACE("mmioCreateChunk fail\n");
                 delete [] buffer;
                 mmioClose(hmmio,0);
-                delete [] datal;
-                datal = NULL;
+                for (size_t chx=0; chx<buffers.size(); chx++)
+                {
+                    delete [] buffers[chx];
+                }
                 return EC_WRITEFAIL;
             }
 
@@ -1038,8 +1063,10 @@ CWaveResampler::ECONVERT CWaveResampler::Run(const TCHAR * src,
             {
                 TRACE("mmioWrite fail\n");
                 mmioClose(hmmio,0);
-                delete [] datal;
-                datal = NULL;
+                for (size_t chx=0; chx<buffers.size(); chx++)
+                {
+                    delete [] buffers[chx];
+                }
                 return EC_WRITEFAIL;
             }
 
@@ -1047,8 +1074,10 @@ CWaveResampler::ECONVERT CWaveResampler::Run(const TCHAR * src,
             {
                 TRACE("mmioAscend fail\n");
                 mmioClose(hmmio,0);
-                delete [] datal;
-                datal = NULL;
+                for (size_t chx=0; chx<buffers.size(); chx++)
+                {
+                    delete [] buffers[chx];
+                }
                 return EC_WRITEFAIL;
             }
         }
@@ -1057,16 +1086,20 @@ CWaveResampler::ECONVERT CWaveResampler::Run(const TCHAR * src,
         if (mmioClose(hmmio, 0))
         {
             TRACE("mmioClose fail\n");
-            delete [] datal;
-            datal = NULL;
+            for (size_t chx=0; chx<buffers.size(); chx++)
+            {
+                delete [] buffers[chx];
+            }
             return EC_WRITEFAIL;
         }
     }
 
     TRACE("format=%d channels=%d bits/sample=%d sps=%d\n",wFormatTag,nChannels,wBitsPerSample,nSamplesPerSec);
 
-    delete [] datal;
-    datal = NULL;
+    for (size_t chx=0; chx<buffers.size(); chx++)
+    {
+        delete [] buffers[chx];
+    }
 
     pStatusBar->SetProgress(100);
 

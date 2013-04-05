@@ -17,10 +17,10 @@
 
 // function key setup
 
-class Object_ostream;
-class Object_istream;
+class CObjectOStream;
+class CObjectIStream;
 
-class FnKeys
+class CFnKeys
 {
 public:
     // SDM increased array size by one to allow use of
@@ -32,11 +32,9 @@ public:
     UINT  nSpeed[26];     // replay speed in %
     UINT  nMode[26];      // replay mode
 
-    void WriteProperties(Object_ostream & obs);
-    BOOL ReadProperties(Object_istream & obs);
-
+    void WriteProperties(CObjectOStream & obs);
+    BOOL ReadProperties(CObjectIStream & obs);
     void SetupDefault(void);
-
 };
 
 #endif  //_FNKEYS_H

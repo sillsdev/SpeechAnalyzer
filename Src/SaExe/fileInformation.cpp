@@ -221,17 +221,30 @@ BOOL CDlgInformationWavePage::OnInitDialog()
     }
     SetDlgItemText(IDC_FILELENGTH, szBuffer);
     // get sa parameters format member data
-    FmtParm * pFmtParm = pDoc->GetFmtParm();
     // create and write number of samples text
-    swprintf_s(szBuffer, _T("%ld"), pDoc->GetDataSize() / pFmtParm->wBlockAlign);
+    swprintf_s(szBuffer, _T("%ld"), pDoc->GetDataSize() / pDoc->GetBlockAlign());
     SetDlgItemText(IDC_NUMBERSAMPLES, szBuffer);
     // create and write sample rate text
-    swprintf_s(szBuffer, _T("%ld Hz"), pFmtParm->dwSamplesPerSec);
+    swprintf_s(szBuffer, _T("%ld Hz"), pDoc->GetSamplesPerSec());
     SetDlgItemText(IDC_SAMPLERATE, szBuffer);
     // create and write sample format text
+	CString szChannels;
+	if (pDoc->GetNumChannels()==1)
+	{
+		szChannels = "Mono";
+	}
+	else if (pDoc->GetNumChannels()==2)
+	{
+		szChannels = "Stereo";
+	}
+	else
+	{
+		char buffer[256];
+		sprintf(buffer,"%d Channels",pDoc->GetNumChannels());
+		szChannels = buffer;
+	}
     CString szFormat;
-    CString szChannels = pDoc->IsMultiChannel() ? "Stereo" : "Mono";
-    szFormat.Format(_T("%u Bits %s"), pFmtParm->wBlockAlign * 8, szChannels);
+    szFormat.Format(_T("%u Bits %s"), pDoc->GetBitsPerSample(), szChannels);
     SetDlgItemText(IDC_SAMPLEFORMAT, szFormat);
     // create and write number of phones text
     int nNumber = 0;

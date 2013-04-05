@@ -180,12 +180,11 @@ void CDlgParametersPitchPage::Apply()
         CSaView * pView = (CSaView *)pMDIFrameWnd->GetCurrSaView();
         CSaDoc * pDoc = (CSaDoc *)pView->GetDocument();
         // get utt, pitch and format parameters document member data
-        UttParm myUttParm;
-        UttParm * pUttParm = &myUttParm;
+        CUttParm myUttParm;
+        CUttParm * pUttParm = &myUttParm;
         pDoc->GetUttParm(pUttParm); // get sa parameters utterance member data
-        FmtParm * pFmtParm = pDoc->GetFmtParm();
         // save member data
-        int nVoicingRaw16 = (int)(m_fVoicing * 16. * .01 * pow(2.F, pFmtParm->wBitsPerSample - 1) + 0.5);
+        int nVoicingRaw16 = (int)(m_fVoicing * 16. * .01 * pow(2.F, pDoc->GetBitsPerSample() - 1) + 0.5);
         if (((UINT)m_nMaxFreq != pUttParm->nMaxFreq) ||
                 ((UINT)m_nMinFreq != pUttParm->nMinFreq) ||
                 (nVoicingRaw16 != pUttParm->nCritLoud))
@@ -216,8 +215,8 @@ void CDlgParametersPitchPage::Apply()
             // processed data is invalid
             pDoc->GetSmoothedPitch()->SetDataInvalid();
         }
-        PitchParm cPitchParm = *pDoc->GetPitchParm();
-        PitchParm * pPitchParm = &cPitchParm;
+        CPitchParm cPitchParm = *pDoc->GetPitchParm();
+        CPitchParm * pPitchParm = &cPitchParm;
         pPitchParm->nUpperBound = m_nUpperBound;
         pPitchParm->nLowerBound = m_nLowerBound;
         pPitchParm->nRangeMode = m_nPitchRange;
@@ -225,7 +224,7 @@ void CDlgParametersPitchPage::Apply()
         {
             CMainFrame * pMainFrame = (CMainFrame *)AfxGetMainWnd();
             ASSERT(pMainFrame->IsKindOf(RUNTIME_CLASS(CMainFrame)));
-            PitchParm cParm = *pMainFrame->GetPitchParmDefaults();
+            CPitchParm cParm = *pMainFrame->GetPitchParmDefaults();
             cParm.nManualPitchLower = m_nLowerBound;
             cParm.nManualPitchUpper = m_nUpperBound;
             pMainFrame->SetPitchParmDefaults(cParm);
@@ -275,9 +274,8 @@ BOOL CDlgParametersPitchPage::OnInitDialog()
     CSaDoc * pDoc = (CSaDoc *)pView->GetDocument();
     m_nFreqLimit = 0x7FFF / PRECISION_MULTIPLIER;
     // get utt, pitch and format parameters document member data
-    const UttParm * pUttParm = pDoc->GetUttParm();
-    const PitchParm * pPitchParm = pDoc->GetPitchParm();
-    FmtParm * pFmtParm = pDoc->GetFmtParm();
+    const CUttParm * pUttParm = pDoc->GetUttParm();
+    const CPitchParm * pPitchParm = pDoc->GetPitchParm();
     // initialize member data
     m_nCepMedianFilterSize = pPitchParm->nCepMedianFilterSize;
     m_bUseCepMedianFilter  = pPitchParm->bUseCepMedianFilter;
@@ -308,7 +306,7 @@ BOOL CDlgParametersPitchPage::OnInitDialog()
     {
         m_nInterpol = 0;
     }
-    m_fVoicing = (double)pUttParm->nCritLoud / 16. / pow(2.F, pFmtParm->wBitsPerSample - 1) * 100.;
+    m_fVoicing = (double)pUttParm->nCritLoud / 16. / pow(2.F, pDoc->GetBitsPerSample() - 1) * 100.;
     if (m_fVoicing > 5.0)
     {
         m_fVoicing = 5.0;
@@ -317,7 +315,7 @@ BOOL CDlgParametersPitchPage::OnInitDialog()
     {
         m_fVoicing = 0.;
     }
-    int nVoicingRaw16 = (int)(m_fVoicing * 16. * .01 * pow(2.F, pFmtParm->wBitsPerSample - 1) + 0.5);
+    int nVoicingRaw16 = (int)(m_fVoicing * 16. * .01 * pow(2.F, pDoc->GetBitsPerSample() - 1) + 0.5);
     m_nMaxFreq = pUttParm->nMaxFreq;
     if (m_nMaxFreq > 2047)
     {
@@ -363,7 +361,7 @@ BOOL CDlgParametersPitchPage::OnInitDialog()
     m_nPitchScaling = pPitchParm->nScaleMode;
     if (!m_nPitchRange)
     {
-        PitchParm::GetAutoRange(pDoc, m_nUpperBound, m_nLowerBound);
+        CPitchParm::GetAutoRange(pDoc, m_nUpperBound, m_nLowerBound);
 
         // auto range, disable boundaries
         GetDlgItem(IDC_PITCH_UPPERBOUNDTITLE)->EnableWindow(FALSE);
@@ -1060,7 +1058,7 @@ void CDlgParametersPitchPage::OnRange()
         CSaView * pView = (CSaView *)(pMDIFrameWnd->GetCurrSaView());
         CSaDoc * pDoc = (CSaDoc *)pView->GetDocument();
 
-        PitchParm::GetAutoRange(pDoc, m_nUpperBound, m_nLowerBound);
+        CPitchParm::GetAutoRange(pDoc, m_nUpperBound, m_nLowerBound);
 
         GetDlgItem(IDC_PITCH_UPPERBOUNDTITLE)->EnableWindow(FALSE);
         GetDlgItem(IDC_PITCH_UPPERBOUNDEDIT)->EnableWindow(FALSE);
@@ -1158,19 +1156,17 @@ void CDlgParametersPitchPage::OnPitchManualDefaultApp()
 
 void CDlgParametersPitchPage::OnPitchManualDefault(BOOL bAppDefaults)
 {
-    UttParm UttDefault;
-    UttParm * pUttParm = &UttDefault;
+    CUttParm UttDefault;
+    CUttParm * pUttParm = &UttDefault;
 
     CMainFrame * pMDIFrameWnd = (CMainFrame *)AfxGetMainWnd();
     ASSERT(pMDIFrameWnd->IsKindOf(RUNTIME_CLASS(CMainFrame)));
     CSaView * pView = (CSaView *)pMDIFrameWnd->GetCurrSaView();
     CSaDoc * pDoc = (CSaDoc *)pView->GetDocument();
-    // get format parameters
-    FmtParm * pFmtParm = pDoc->GetFmtParm();
     if (bAppDefaults)
     {
         // initialize utterance parameters
-        pUttParm->Init(pFmtParm->wBitsPerSample);
+        pUttParm->Init(pDoc->GetBitsPerSample());
     }
     else
     {
@@ -1178,7 +1174,7 @@ void CDlgParametersPitchPage::OnPitchManualDefault(BOOL bAppDefaults)
     }
 
     // calculate raw voicing value
-    int nVoicingRaw16 = (int)(m_fVoicing * 16. * .01 * pow(2.F, pFmtParm->wBitsPerSample - 1) + 0.5);
+    int nVoicingRaw16 = (int)(m_fVoicing * 16. * .01 * pow(2.F, pDoc->GetBitsPerSample() - 1) + 0.5);
 
     if ((m_nChange != pUttParm->nMaxChange) || (m_nGroup != pUttParm->nMinGroup)
             || (m_nInterpol != pUttParm->nMaxInterp) || (nVoicingRaw16 != pUttParm->nCritLoud)
@@ -1189,7 +1185,7 @@ void CDlgParametersPitchPage::OnPitchManualDefault(BOOL bAppDefaults)
         m_nChange = pUttParm->nMaxChange;
         m_nGroup = pUttParm->nMinGroup;
         m_nInterpol = pUttParm->nMaxInterp;
-        m_fVoicing = pUttParm->nCritLoud / 16. / pow(2.F, pFmtParm->wBitsPerSample - 1) * 100.;
+        m_fVoicing = pUttParm->nCritLoud / 16. / pow(2.F, pDoc->GetBitsPerSample() - 1) * 100.;
         m_nMaxFreq = pUttParm->nMaxFreq;
         m_nMinFreq = pUttParm->nMinFreq;
         UpdateData(FALSE);
@@ -1364,8 +1360,7 @@ BOOL CDlgParametersSpectroPage::OnInitDialog()
     CSaView * pView = (CSaView *)pMDIFrameWnd->GetCurrSaView();
     CSaDoc * pDoc = (CSaDoc *)pView->GetDocument();
     // get format parameters document member data
-    FmtParm * pFmtParm = pDoc->GetFmtParm();
-    m_nFreqLimit = (int)(pFmtParm->dwSamplesPerSec / 2); //CLW 8/25/99 ()'s
+    m_nFreqLimit = (int)(pDoc->GetSamplesPerSec() / 2); //CLW 8/25/99 ()'s
     // get spectrogram graph
     UINT * pnID = pView->GetGraphIDs();
     CGraphWnd * pGraph = NULL;
@@ -1705,7 +1700,6 @@ void CDlgParametersSpectroPage::OnMoreInfo()
 // CDlgParametersSpectrumPage message map
 
 BEGIN_MESSAGE_MAP(CDlgParametersSpectrumPage, CPropertyPage)
-    //{{AFX_MSG_MAP(CDlgParametersSpectrumPage)
     ON_COMMAND(IDC_SPECTRUM_PWRUPPERSCROLL, OnPwrUpperScroll)
     ON_EN_KILLFOCUS(IDC_SPECTRUM_PWRUPPEREDIT, OnKillfocusPwrUpper)
     ON_COMMAND(IDC_SPECTRUM_PWRLOWERSCROLL, OnPwrLowerScroll)
@@ -1734,11 +1728,7 @@ BEGIN_MESSAGE_MAP(CDlgParametersSpectrumPage, CPropertyPage)
     ON_BN_CLICKED(IDC_SPECTRUM_FORMANTFREQ, OnModifiedShowFormantFreq)
     ON_BN_CLICKED(IDC_SPECTRUM_FORMANTBANDWIDTH, OnModifiedShowFormantBandwidth)
     ON_BN_CLICKED(IDC_SPECTRUM_FORMANTPOWER, OnModifiedShowFormantPower)
-    //}}AFX_MSG_MAP
 END_MESSAGE_MAP()
-
-/////////////////////////////////////////////////////////////////////////////
-// CDlgParametersSpectrumPage construction/destruction/creation
 
 /***************************************************************************/
 // CDlgParametersSpectrumPage::CDlgParametersSpectrumPage Constructor
@@ -1762,7 +1752,6 @@ void CDlgParametersSpectrumPage::DoDataExchange(CDataExchange * pDX)
 {
 
     CPropertyPage::DoDataExchange(pDX);
-    //{{AFX_DATA_MAP(CDlgParametersSpectrumPage)
     DDX_Text(pDX, IDC_SPECTRUM_PWRLOWEREDIT, m_nPwrLower);
     DDX_Text(pDX, IDC_SPECTRUM_PEAKEDIT, m_nPeak);
     DDX_Text(pDX, IDC_SPECTRUM_SMOOTHEDIT, m_nSmooth);
@@ -1776,7 +1765,6 @@ void CDlgParametersSpectrumPage::DoDataExchange(CDataExchange * pDX)
     DDX_Check(pDX, IDC_SPECTRUM_FORMANTBANDWIDTH, m_bShowFormantBandwidth);
     DDX_Check(pDX, IDC_SPECTRUM_FORMANTPOWER, m_bShowFormantPower);
     DDX_Radio(pDX, IDC_SPECTRUM_FULLSCALE, m_nFreqScaleRange);
-    //}}AFX_DATA_MAP
 }
 
 /***************************************************************************/
@@ -1794,7 +1782,7 @@ void CDlgParametersSpectrumPage::Apply()
         CSaDoc * pDoc = (CSaDoc *)pView->GetDocument();
         CProcessSpectrum * pSpectrum = pDoc->GetSpectrum();
         // get spectrum parameters data
-        SpectrumParm * pSpecParm = pSpectrum->GetSpectrumParms();
+        CSpectrumParm * pSpecParm = pSpectrum->GetSpectrumParms();
         // save the parameters
         pSpecParm->nScaleMode = m_nSpectrumScaling;
         pSpecParm->nPwrUpperBound = m_nPwrUpper;
@@ -1884,7 +1872,7 @@ BOOL CDlgParametersSpectrumPage::OnInitDialog()
     CProcessSpectrum * pSpectrum = pDoc->GetSpectrum();
 
     // get spectrum parameters data
-    SpectrumParm * pSpecParm = pSpectrum->GetSpectrumParms();
+    CSpectrumParm * pSpecParm = pSpectrum->GetSpectrumParms();
     // initialize member data
     m_nSpectrumScaling = pSpecParm->nScaleMode;
     m_nPwrUpper = pSpecParm->nPwrUpperBound;
@@ -1893,8 +1881,7 @@ BOOL CDlgParametersSpectrumPage::OnInitDialog()
     m_nFreqLower = pSpecParm->nFreqLowerBound;
     m_nFreqScaleRange = pSpecParm->nFreqScaleRange;
     // get format parameters document member data
-    FmtParm * pFmtParm = pDoc->GetFmtParm();
-    m_nFreqLimit = (int)(pFmtParm->dwSamplesPerSec / 2); //CLW 8/25/99 ()'s
+    m_nFreqLimit = (int)(pDoc->GetSamplesPerSec() / 2); //CLW 8/25/99 ()'s
     m_bShowLpcSpectrum = pSpecParm->bShowLpcSpectrum;
     m_bShowCepSpectrum = pSpecParm->bShowCepSpectrum;
     m_nSmooth = pSpecParm->nSmoothLevel;
@@ -2542,7 +2529,7 @@ void CDlgParametersFormantsPage::Apply()
         CSaDoc * pDoc = (CSaDoc *)pView->GetDocument();
         CProcessFormants * pFormants = pDoc->GetFormants();
         // save member data
-        FormantParm * pFormantParms = pFormants->GetFormantParms();
+        CFormantParm * pFormantParms = pFormants->GetFormantParms();
         /*
         if (m_nDataSource)
         {
@@ -2587,7 +2574,7 @@ BOOL CDlgParametersFormantsPage::OnInitDialog()
     CProcessFormants * pFormants = pDoc->GetFormants();
 
     // initialize member data
-    FormantParm * pFormantParms = pFormants->GetFormantParms();
+    CFormantParm * pFormantParms = pFormants->GetFormantParms();
 
     m_bCepstralFormants = pFormantParms->bFromCepstralSpectrum;
     m_bTrackFormants = pFormantParms->bTrackFormants;
@@ -3113,7 +3100,7 @@ BOOL CDlgParametersMusicPage::OnInitDialog()
 
     // get pointer to document
     CSaDoc * pDoc = (CSaDoc *)pView->GetDocument();
-    const MusicParm * pParm = pDoc->GetMusicParm();
+    const CMusicParm * pParm = pDoc->GetMusicParm();
     m_nUpperBound = pParm->nUpperBound;
     m_nLowerBound = pParm->nLowerBound;
 
@@ -3125,7 +3112,7 @@ BOOL CDlgParametersMusicPage::OnInitDialog()
     m_nRange = pParm->nRangeMode;
     if (!m_nRange)
     {
-        MusicParm::GetAutoRange(pDoc, m_nUpperBound, m_nLowerBound);
+        CMusicParm::GetAutoRange(pDoc, m_nUpperBound, m_nLowerBound);
         // auto range, disable boundaries
         GetDlgItem(IDC_PITCH_UPPERBOUNDTITLE)->EnableWindow(FALSE);
         GetDlgItem(IDC_PITCH_UPPERBOUNDEDIT)->EnableWindow(FALSE);
@@ -3363,7 +3350,7 @@ void CDlgParametersMusicPage::OnRange()
         CSaView * pView = (CSaView *)(pMDIFrameWnd->GetCurrSaView());
         CSaDoc * pDoc = (CSaDoc *)pView->GetDocument();
 
-        MusicParm::GetAutoRange(pDoc, m_nUpperBound, m_nLowerBound);
+        CMusicParm::GetAutoRange(pDoc, m_nUpperBound, m_nLowerBound);
 
         GetDlgItem(IDC_PITCH_UPPERBOUNDTITLE)->EnableWindow(FALSE);
         GetDlgItem(IDC_PITCH_UPPERBOUNDEDIT)->EnableWindow(FALSE);
@@ -3562,7 +3549,7 @@ void CDlgParametersMusicPage::OnCalcRange()
         // RLJ, 09/21/2000: Bug GPI-01
         // RANGE in Auto Mode, reset boundaries to default values
         // and then disable spin controls for boundaries.
-        MusicParm TempParm;
+        CMusicParm TempParm;
         TempParm.Init(); // Get hardcoded Parm defaults (NOT from *.PSA)
         m_nCalcUpperBound = TempParm.nCalcUpperBound;
         m_nCalcLowerBound = TempParm.nCalcLowerBound;
@@ -3613,8 +3600,8 @@ void CDlgParametersMusicPage::Apply()
         pView->SetNormalMelogram(!m_nWeighted);
         // get pointer to document
         CSaDoc * pDoc = (CSaDoc *)pView->GetDocument();
-        MusicParm cParm = *pDoc->GetMusicParm();
-        MusicParm * pParm = &cParm;
+        CMusicParm cParm = *pDoc->GetMusicParm();
+        CMusicParm * pParm = &cParm;
         pParm->nUpperBound = m_nUpperBound;
         pParm->nLowerBound = m_nLowerBound;
         pParm->nRangeMode = m_nRange;
@@ -3622,7 +3609,7 @@ void CDlgParametersMusicPage::Apply()
         {
             CMainFrame * pMainFrame = (CMainFrame *)AfxGetMainWnd();
             ASSERT(pMainFrame->IsKindOf(RUNTIME_CLASS(CMainFrame)));
-            MusicParm cParm = *pMainFrame->GetMusicParmDefaults();
+            CMusicParm cParm = *pMainFrame->GetMusicParmDefaults();
             cParm.nManualLower = m_nLowerBound;
             cParm.nManualUpper = m_nUpperBound;
             pMainFrame->SetMusicParmDefaults(cParm);
@@ -3635,7 +3622,7 @@ void CDlgParametersMusicPage::Apply()
         {
             CMainFrame * pMainFrame = (CMainFrame *)AfxGetMainWnd();
             ASSERT(pMainFrame->IsKindOf(RUNTIME_CLASS(CMainFrame)));
-            MusicParm cParm = *pMainFrame->GetMusicParmDefaults();
+            CMusicParm cParm = *pMainFrame->GetMusicParmDefaults();
             cParm.nManualCalcLower = m_nCalcLowerBound;
             cParm.nManualCalcUpper = m_nCalcUpperBound;
             pMainFrame->SetMusicParmDefaults(cParm);
@@ -3697,7 +3684,7 @@ BOOL CDlgParametersIntensityPage::OnInitDialog()
     // get pointer to document
     CSaDoc * pDoc = (CSaDoc *)pView->GetDocument();
 
-    const IntensityParm & cIntensity = pDoc->GetIntensityParm();
+    const CIntensityParm & cIntensity = pDoc->GetCIntensityParm();
     m_nScaleMode = cIntensity.nScaleMode;
 
     UpdateData(FALSE);
@@ -3730,12 +3717,12 @@ void CDlgParametersIntensityPage::Apply()
         CSaView * pView = (CSaView *)pMDIFrameWnd->GetCurrSaView();
         // get pointer to document
         CSaDoc * pDoc = (CSaDoc *)pView->GetDocument();
-        IntensityParm cParm = pDoc->GetIntensityParm();
+        CIntensityParm cParm = pDoc->GetCIntensityParm();
 
         cParm.nScaleMode = m_nScaleMode;
 
-        pDoc->SetIntensityParm(cParm);
-        pMDIFrameWnd->SetIntensityParmDefaults(cParm);
+        pDoc->SetCIntensityParm(cParm);
+        pMDIFrameWnd->SetCIntensityParmDefaults(cParm);
 
         m_bModified = FALSE;
         SetModified(FALSE);

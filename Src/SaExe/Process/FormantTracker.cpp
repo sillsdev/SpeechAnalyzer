@@ -120,7 +120,7 @@ CProcessFormantTracker::~CProcessFormantTracker()
 void CProcessFormantTracker::BuildTrack(CTrackState & state, double samplingRate, int pitch)
 {
 
-    TRACE("building trace for %f %d\n",samplingRate,pitch);
+    //TRACE("building trace for %f %d\n",samplingRate,pitch);
 
     // Get Data
     const DEQUE_CDBL & data = state.GetData();
@@ -138,7 +138,7 @@ void CProcessFormantTracker::BuildTrack(CTrackState & state, double samplingRate
     trackOut.resize(tracks);
 
     unsigned int tracksCalculate = tracks < MAX_NUM_FORMANTS ? tracks : MAX_NUM_FORMANTS;
-    TRACE("calculating %d tracks\n",tracksCalculate);
+    //TRACE("calculating %d tracks\n",tracksCalculate);
 
     unsigned int zeroFilterOrder = (trackIn.size() - 1)*(FormantTrackerOptions.m_bAzfAddConjugateZeroes ? 2 : 1) + 1;
     VECTOR_CDBL & filtered = state.GetFiltered();
@@ -363,7 +363,7 @@ long CProcessFormantTracker::Process(void * pCaller, ISaDoc * pDoc, int nProgres
     CProcessTrackState state;
 
     // Set the initial tracking estimates
-    double samplingRate = pDoc->GetFmtParm()->dwSamplesPerSec;
+    double samplingRate = pDoc->GetSamplesPerSec();
     double bandwidthInHertz = 250;
     double radius = exp(-bandwidthInHertz/samplingRate*pi);
 
@@ -379,7 +379,7 @@ long CProcessFormantTracker::Process(void * pCaller, ISaDoc * pDoc, int nProgres
         state.GetTrackOut().push_back(formantEstimate);
     }
     // create the window
-    DspWin window = DspWin::FromBandwidth(FormantTrackerOptions.m_dWindowBandwidth,pDoc->GetFmtParm()->dwSamplesPerSec,FormantTrackerOptions.m_nWindowType);
+    DspWin window = DspWin::FromBandwidth(FormantTrackerOptions.m_dWindowBandwidth,pDoc->GetSamplesPerSec(),FormantTrackerOptions.m_nWindowType);
     state.GetWindow().assign(window.WindowDouble(),window.WindowDouble()+window.Length());
 
     for (int i=0; i<3; i++)

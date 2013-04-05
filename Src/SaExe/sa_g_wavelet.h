@@ -13,6 +13,8 @@
 #ifndef SA_G_WAVELET_H
 #define SA_G_WAVELET_H
 
+#include "AppDefs.h"
+
 #define sparsePaletteSize 30l                   // SDM 1.5Test10.3
 
 #define IDM_BUTTON1     300                     // used for the little arrow buttons on the side of the graph
@@ -21,13 +23,6 @@
 // energy bands
 
 typedef unsigned char UBYTE;
-
-struct RGB
-{
-    long r;
-    long g;
-    long b;
-};
 
 //**************************************************************************
 // CPlotWavelet Class
@@ -69,7 +64,6 @@ public:
             drawing_level--;
         }
     }
-
 
     virtual void OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView);
     virtual ~CPlotWavelet();

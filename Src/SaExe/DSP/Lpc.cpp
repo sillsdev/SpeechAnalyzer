@@ -206,7 +206,7 @@
 *   LPC_SETTINGS LpcSetting;                                               *
 *   CLinPredCoding *pLpcObject;                                            *
 *   LPC_MODEL pLpcModel;                                                   *
-*   dspError_t Err;                                                               *
+*   dspError_t Err;                                                        *
 *                                                                          *
 *   Signal.Start = (void *)pSpeech;                                        *
 *   Signal.Length = nSamples;                                              *
@@ -220,8 +220,8 @@
 *   USHORT nFrameInterval = LpcSetting.nFrameLen - LpcSetting.nOrder;      *
 *   Err = CLinPredCoding::CreateObject(&pLpcObject, LpcSetting, Signal);   *
 *   if (Err) return(Err);                                                  *
-*   for (short *pFrame = (short *)Signal.Start;                  *
-*        pFrame <= (short *)Signal.Start + Signal.Length -            *
+*   for (short *pFrame = (short *)Signal.Start;                            *
+*        pFrame <= (short *)Signal.Start + Signal.Length -                 *
 *                  LpcSetting.nFrameLen;                                   *
 *        pFrame += nFrameInterval)                                         *
 *       {                                                                  *
@@ -1220,8 +1220,7 @@ void CLinPredCoding::CalcCovarMatrix(USHORT nMethod)
         float * pfCepstralCoeff  = &buffer[0];
 
         // Remove excitation characteristic from high time portion
-        double d2Pitch = ResearchSettings.m_nLpcCepstralSmooth != -1 ?
-                         2*ResearchSettings.m_nLpcCepstralSmooth : 0.5*m_Signal.SmpRate/m_LpcParm.Model.nOrder;
+        double d2Pitch = ResearchSettings.m_nLpcCepstralSmooth != -1 ? 2*ResearchSettings.m_nLpcCepstralSmooth : 0.5*m_Signal.SmpRate/m_LpcParm.Model.nOrder;
         int nSmoothPeriod = (int)(m_Signal.SmpRate/d2Pitch + 0.5);
 
         // Multiply low time cesptral coefficients by growing exponential to sharpen formant
@@ -1563,7 +1562,7 @@ dspError_t CLinPredCoding::CalcPoles(void)
     return(DONE);
 }
 
-struct FORMANT_ASSESSMENT
+struct SFormantAssessment
 {
     int index;  // link to unsorted data
     BOOL bValidFrequency;
@@ -1573,7 +1572,7 @@ struct FORMANT_ASSESSMENT
     double dLocalizedSecondDerivative;
 };
 
-static BOOL assessBest(FORMANT_ASSESSMENT & param1, FORMANT_ASSESSMENT & param2)
+static BOOL assessBest(SFormantAssessment & param1, SFormantAssessment & param2)
 {
     if (!param1.bValidFrequency < !param2.bValidFrequency)
     {
@@ -1787,7 +1786,7 @@ void CLinPredCoding::CalcFormants(void)
     {
         // So far what we have are all the LPC poles in the frequency domain
         // We need to pick out the LPC poles which correspond to formants
-        FORMANT_ASSESSMENT defaultAssessment;
+        SFormantAssessment defaultAssessment;
 
         defaultAssessment.index = 0;
         defaultAssessment.bValidFrequency = TRUE;
@@ -1796,7 +1795,7 @@ void CLinPredCoding::CalcFormants(void)
         defaultAssessment.dLocalAvgSecondDerivative = 0;
         defaultAssessment.dLocalizedSecondDerivative = 0;
 
-        vector<FORMANT_ASSESSMENT> assessment;
+        vector<SFormantAssessment> assessment;
         assessment.assign(unfilteredFormants.size(),defaultAssessment);
 
         const int maxK = m_wFFTLength/2 -1;
@@ -1882,7 +1881,7 @@ void CLinPredCoding::CalcFormants(void)
 
         for (USHORT i = 0; i < nDesiredFormants && i < assessment.size(); i++)
         {
-            FORMANT_ASSESSMENT & assess = assessment[i];
+            SFormantAssessment & assess = assessment[i];
             FORMANT_VALUES & formant = unfilteredFormants[assess.index];
 
             if (j < nMaxFormants)

@@ -95,7 +95,7 @@ void CPlotSmoothedPitch::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pV
     {
         m_HelperWnd.SetMode(MODE_HIDDEN);
         // get pointer to pitch parameters
-        const PitchParm * pPitchParm = pDoc->GetPitchParm();
+        const CPitchParm * pPitchParm = pDoc->GetPitchParm();
         // set data range
         int nMinData, nMaxData;
         if (pPitchParm->nRangeMode)
@@ -107,7 +107,7 @@ void CPlotSmoothedPitch::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pV
         else
         {
             // auto range mode
-            PitchParm::GetAutoRange(pDoc, nMaxData, nMinData);
+            CPitchParm::GetAutoRange(pDoc, nMaxData, nMinData);
         }
         SetProcessMultiplier(PRECISION_MULTIPLIER);
         if (pPitchParm->nScaleMode == 1)
