@@ -193,7 +193,7 @@ protected:
     std::vector<double> residual;
 
     PCMWAVEFORMAT pcmWaveFormat();
-    BOOL SynthesizeWave(const TCHAR * pszPathName, CIpaVTCharVector & cChars);
+    BOOL SynthesizeWave(LPCTSTR pszPathName, CIpaVTCharVector & cChars);
     BOOL SynthesizeDataChunk(HMMIO hmmioFile, PCMWAVEFORMAT pcm, CIpaVTCharVector & cChars);
     void OnSynthesize();
 

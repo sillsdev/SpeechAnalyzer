@@ -1215,7 +1215,7 @@ void CSaApp::SetBatchFileChanged(CSaString szFileName, int nID, CDocument * pDoc
 // documents file names with the one given as parameter (full path). If there
 // is a match it returns a pointer to the document that matches, else NULL.
 /***************************************************************************/
-CDocument * CSaApp::IsFileOpened(const TCHAR * pszFileName)
+CDocument * CSaApp::IsFileOpened(LPCTSTR pszFileName)
 {
     CSaString szFileName = pszFileName;
     szFileName.MakeUpper();
@@ -1319,7 +1319,7 @@ void CSaApp::PasteClipboardToNewFile(HGLOBAL hData)
     }
 }
 
-CSaDoc * CSaApp::OpenWavFileAsNew(const TCHAR * szTempPath)
+CSaDoc * CSaApp::OpenWavFileAsNew(LPCTSTR szTempPath)
 {
 
     // create new MDI child, sa type

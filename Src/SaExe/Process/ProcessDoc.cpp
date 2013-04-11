@@ -246,7 +246,7 @@ void * CProcessDoc::GetProcessedDataBlock(LPCTSTR szName, int selectedChannel, i
     return &m_Buffer[dwByteOffset - m_dwBufferOffset]; // return pointer to data
 }
 
-void CProcessDoc::LoadBuffer(char * buffer, size_t size, int sampleSize, int selectedChannel, int numChannels, UINT bytesRead)
+void CProcessDoc::LoadBuffer( char * buffer, size_t size, int sampleSize, int selectedChannel, int numChannels, UINT bytesRead)
 {
 
     if (sampleSize==1)
@@ -256,7 +256,7 @@ void CProcessDoc::LoadBuffer(char * buffer, size_t size, int sampleSize, int sel
         // 8 bit processing
         int index = selectedChannel;
         int write = 0;
-        int i = 0;
+        UINT i = 0;
         while (i<bytesRead)
         {
             dest[write++] = src[index];
@@ -272,7 +272,7 @@ void CProcessDoc::LoadBuffer(char * buffer, size_t size, int sampleSize, int sel
         // 8 bit processing
         int index = selectedChannel;
         int write = 0;
-        int i = 0;
+        UINT i = 0;
         while (i<bytesRead)
         {
             dest[write++] = src[index];

@@ -19,7 +19,7 @@ extern "C" int Lookup(const void * Key, const void * TblEntry)
 }
 
 //translate from IPA to Sampa
-extern "C" char * IpaToSampa(const TCHAR * IpaString)
+extern "C" char * IpaToSampa( const TCHAR * IpaString)
 {
 
     char * Found = NULL;

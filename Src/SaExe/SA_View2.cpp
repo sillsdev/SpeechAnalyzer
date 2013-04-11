@@ -3244,7 +3244,7 @@ void CSaView::PrintPageTitle(CDC * pDC, int titleAreaHeight)
 
     COLORREF oldColor = pDC->SetTextColor(RGB(0,0,0)); // set font color
 
-    const TCHAR * pszName = _T("Arial");
+    LPCTSTR pszName = _T("Arial");
 
     CFont titleFont;
     titleFont.CreateFont(Print_Title_Size, 0, 0, 0, FW_NORMAL, 0, 0, 0,

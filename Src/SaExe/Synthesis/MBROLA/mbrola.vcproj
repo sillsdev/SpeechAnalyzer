@@ -166,16 +166,16 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="odbc32.lib odbccp32.lib msvcrt.lib"
-				OutputFile=".\..\..\..\..\Output\Release\mbrola.dll"
+				OutputFile="$(OutDir)\mbrola.dll"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
 				IgnoreAllDefaultLibraries="true"
 				ModuleDefinitionFile=".\mbrola.def"
 				GenerateDebugInformation="false"
-				ProgramDatabaseFile=".\..\..\..\..\Output\Release\mbrola.pdb"
+				ProgramDatabaseFile="$(OutDir)\mbrola.pdb"
 				RandomizedBaseAddress="1"
 				DataExecutionPrevention="0"
-				ImportLibrary=".\..\..\..\..\Output\Release\mbrola.lib"
+				ImportLibrary="$(OutDir)\mbrola.lib"
 				TargetMachine="1"
 			/>
 			<Tool

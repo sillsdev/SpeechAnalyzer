@@ -1,30 +1,26 @@
 //
 // SelfTest.h
 //
-// Definition of the CSASelfTest class
+// Definition of the CSelfTest class
 //
 // 08/27/2001 TRE - original coding
 //
 
 #ifndef SELFTEST_H
+#define SELFTEST_H
 
 #include <io.h> // for _access()
-#include "stdafx.h"
 #include "sa.h"
 #include "mainfrm.h"
 
-class CSASelfTest
+class CSelfTest
 {
-    CSaApp * m_pApp;
-    CMainFrame * m_pMain;
-    CString m_szTempPath;
-    CString m_szExeFolderPath;
-    CString m_szTestFolderPath;
-    CString m_szLogFileName;
-    CString m_szTestNumber;
-    unsigned m_nTestsPassed, m_nTestsFailed;
+public:
+    CSelfTest();
+    ~CSelfTest();
 
-    void SelfTest();
+protected:
+	void SelfTest();
 
     BOOL StartTest(const CString szTestNumber, const CString szDescription);
     void EndTest(BOOL bSuccess=TRUE);
@@ -38,9 +34,15 @@ class CSASelfTest
     void MessageLoop(DWORD dwMilliSeconds=0);
     void EmptyClipboard();
     BOOL CheckClipboard(UINT nFormat);
-public:
-    CSASelfTest();
-    ~CSASelfTest();
-};//CSASelfTest
 
-#endif //SELFTEST_H
+    CSaApp * m_pApp;
+    CMainFrame * m_pMain;
+    CString m_szTempPath;
+    CString m_szExeFolderPath;
+    CString m_szTestFolderPath;
+    CString m_szLogFileName;
+    CString m_szTestNumber;
+    unsigned m_nTestsPassed, m_nTestsFailed;
+};
+
+#endif

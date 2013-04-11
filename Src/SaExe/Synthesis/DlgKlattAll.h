@@ -169,7 +169,7 @@ private:
 
 
     PCMWAVEFORMAT pcmWaveFormat();
-    BOOL SynthesizeWave(const TCHAR * pszPathName, CIpaCharVector & cChars);
+    BOOL SynthesizeWave(LPCTSTR pszPathName, CIpaCharVector & cChars);
     void OnSynthesize();
 
     void OnKlattGetSegments(CFlexEditGrid & cGrid);

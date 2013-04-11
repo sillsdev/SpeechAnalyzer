@@ -163,17 +163,17 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="MSVCRT.LIB Kernel32.lib MSVCPRT.lib"
-				OutputFile=".\..\..\..\Output\Release/SA_DSP.dll"
+				OutputFile="$(OutDir)/SA_DSP.dll"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
 				IgnoreAllDefaultLibraries="true"
 				ModuleDefinitionFile=".\SA_DSP.def"
 				GenerateDebugInformation="false"
-				ProgramDatabaseFile=".\..\..\..\Output\Release/SA_DSP.pdb"
+				ProgramDatabaseFile="$(OutDir)/SA_DSP.pdb"
 				GenerateMapFile="false"
 				RandomizedBaseAddress="1"
 				DataExecutionPrevention="0"
-				ImportLibrary=".\..\..\..\Output\Release/SA_DSP.lib"
+				ImportLibrary="$(OutDir)/SA_DSP.lib"
 				TargetMachine="1"
 			/>
 			<Tool

@@ -117,12 +117,12 @@
 *          :                                                               *
 *   #include "HPFltr70.h"                                                  *
 *          :                                                               *
-*   uint16 wSmpRate = (uint32)pDoc->GetSamplesPerSec();                     *
+*   uint16 wSmpRate = (uint32)pDoc->GetSamplesPerSec();                    *
 *   uint8  SignalBuffer[BUFFER_SIZE];                                      *
 *          :                                                               *
 *   (load uint8 sample data at SignalBuffer);                              *
 *          :                                                               *
-*   dspError_t Err = CHighPassFilter70::CreateObject(&poHighPass, wSmpRate);      *
+*   dspError_t Err = CHighPassFilter70::CreateObject(&poHighPass, wSmpRate);*
 *   if (Err) return;                                                       *
 *   poHighPass->Filter(SignalBuffer, BUFFER_SIZE);                         *
 *   delete poHighPass;                                                     *
@@ -226,9 +226,9 @@ float CHighPassFilter70::Version(void)
 ////////////////////////////////////////////////////////////////////////////////////////
 // Class function to construct filter object if parameters are valid.                 //
 ////////////////////////////////////////////////////////////////////////////////////////
-dspError_t CHighPassFilter70::CreateObject(CHighPassFilter70 ** ppoHPFilter, uint16 wSmpRate)
+dspError_t CHighPassFilter70::CreateObject(CHighPassFilter70 ** ppoHPFilter, uint32 wSmpRate)
 {
-// Validate parameters passed.
+	// Validate parameters passed.
     if (!ppoHPFilter)
     {
         return(Code(INVALID_PARM_PTR));    //address of pointer to filter object
@@ -255,10 +255,13 @@ dspError_t CHighPassFilter70::CreateObject(CHighPassFilter70 ** ppoHPFilter, uin
 ////////////////////////////////////////////////////////////////////////////////////////
 // Class function to validate signal parameters.                                      //
 ////////////////////////////////////////////////////////////////////////////////////////
-dspError_t CHighPassFilter70::ValidateSignalParms(uint16 wSmpRate)
+dspError_t CHighPassFilter70::ValidateSignalParms( uint16 wSmpRate)
 {
-    if (wSmpRate != 11025 && wSmpRate != 16000 && wSmpRate != 22050 &&
-            wSmpRate != 44100 && wSmpRate != 48000)
+    if ((wSmpRate != 11025) && 
+		(wSmpRate != 16000) && 
+		(wSmpRate != 22050) &&
+        (wSmpRate != 44100) && 
+		(wSmpRate != 48000))
     {
         return(Code(UNSUPP_SMP_RATE));    //  valid Microsoft Windows frequencies
     }
@@ -324,7 +327,7 @@ dspError_t CHighPassFilter70::ValidateSignalParms(uint16 wSmpRate)
 /* same time maximizing precision.                                                     */
 
 
-CHighPassFilter70::CHighPassFilter70(uint16 wSmpRate)
+CHighPassFilter70::CHighPassFilter70(uint32 wSmpRate)
 {
 
 // Set filter coefficients and gain for the specified sampling frequency.
@@ -342,49 +345,49 @@ CHighPassFilter70::CHighPassFilter70(uint16 wSmpRate)
 ////////////////////////////////////////////////////////////////////////////////////////
 // Object function to set filter coefficients and gain.                               //
 ////////////////////////////////////////////////////////////////////////////////////////
-void CHighPassFilter70::SetFilterParms(uint16 wSmpRate)
+void CHighPassFilter70::SetFilterParms(uint32 wSmpRate)
 {
     switch (wSmpRate)
     {
-        // for 2.30 format, scaling factor s = pow(2.,30)
-    case 11025:                      // 70 Hz cut-in high pass at 11025 Hz sampling rate
+										// for 2.30 format, scaling factor s = pow(2.,30)
+    case 11025:							// 70 Hz cut-in high pass at 11025 Hz sampling rate
         m_b11 =  2101293491;            // (int32)Round(-C11025[1][1]*s);
         m_b12 = -1028586461;            // (int32)Round(-C11025[2][1]*s);
         m_f11 = -2147417569;            // (int32)Round(C11025[1][0]/C11025[0][0]*s);
-        // m_f12 =  1073741824;            // (int32)Round(C11025[2][0]/C11025[0][0]*s);
+        // m_f12 =  1073741824;         // (int32)Round(C11025[2][0]/C11025[0][0]*s);
         m_g   =  1050921613;            // (int32)Round(C11025[0][0]*s);
         break;
 
-    case 16000:                      // 70 Hz cut-in high pass at 16000 Hz sampling rate
+    case 16000:							// 70 Hz cut-in high pass at 16000 Hz sampling rate
         m_b11 =  2115665567;            // (int32)Round(-C16000[1][1]*s);
         m_b12 = -1042418362;            // (int32)Round(-C16000[2][1]*s);
         m_f11 = -2147452273;            // (int32)Round(C16000[1][0]/C16000[0][0]*s);
-        // m_f12 =  1073741824;            // (int32)Round(C16000[2][0]/C16000[0][0]*s);
+        // m_f12 =  1073741824;         // (int32)Round(C16000[2][0]/C16000[0][0]*s);
         m_g   =  1057964167;            // (int32)Round(C16000[0][0]*s);
         break;
 
-    case 22050:                       // 70 Hz cut-in high pass at 22050 Hz sampling rate
-        m_b11 =  2124400588;             // (int32)Round(-C22050[1][1]*s);
-        m_b12 = -1050920255;             // (int32)Round(-C22050[2][1]*s);
-        m_f11 = -2147467128;             // (int32)Round(C22050[1][0]/C22050[0][0]*s);
-        // m_f12 =  1073741824;             // (int32)Round(C22050[2][0]/C22050[0][0]*s);
-        m_g   =  1062269752;             // (int32)Round(C22050[0][0]*s);
+    case 22050:							// 70 Hz cut-in high pass at 22050 Hz sampling rate
+        m_b11 =  2124400588;            // (int32)Round(-C22050[1][1]*s);
+        m_b12 = -1050920255;            // (int32)Round(-C22050[2][1]*s);
+        m_f11 = -2147467128;            // (int32)Round(C22050[1][0]/C22050[0][0]*s);
+        // m_f12 =  1073741824;         // (int32)Round(C22050[2][0]/C22050[0][0]*s);
+        m_g   =  1062269752;            // (int32)Round(C22050[0][0]*s);
         break;
 
-    case 44100:                       // 70 Hz cut-in high pass at 44100 Hz sampling rate
-        m_b11 =  2135945678;             // (int32)Round(-C44100[1][1]*s);
-        m_b12 = -1062269579;             // (int32)Round(-C44100[2][1]*s);
-        m_f11 = -2147479518;             // (int32)Round(C44100[1][0]/C44100[0][0]*s);
-        // m_f12 =  1073741824;             // (int32)Round(C44100[2][0]/C44100[0][0]*s);
-        m_g   =  1067990297;             // (int32)Round(C44100[0][0]*s);
+    case 44100:							// 70 Hz cut-in high pass at 44100 Hz sampling rate
+        m_b11 =  2135945678;            // (int32)Round(-C44100[1][1]*s);
+        m_b12 = -1062269579;            // (int32)Round(-C44100[2][1]*s);
+        m_f11 = -2147479518;            // (int32)Round(C44100[1][0]/C44100[0][0]*s);
+        // m_f12 =  1073741824;         // (int32)Round(C44100[2][0]/C44100[0][0]*s);
+        m_g   =  1067990297;            // (int32)Round(C44100[0][0]*s);
         break;
 
-    case 48000:                       // 70 Hz cut-in high pass at 48000 Hz sampling rate
-        m_b11 =  2136883419;             // (int32)Round(-C48000[1][1]*s);
-        m_b12 = -1063197098;             // (int32)Round(-C48000[2][1]*s);
-        m_f11 = -2147480162;             // (int32)Round(C48000[1][0]/C48000[0][0]*s);
-        // m_f12 =  1073741824;             // (int32)Round(C48000[2][0]/C48000[0][0]*s);
-        m_g   =  1068456452;             // (int32)Round(C48000[0][0]*s);
+    case 48000:							// 70 Hz cut-in high pass at 48000 Hz sampling rate
+        m_b11 =  2136883419;            // (int32)Round(-C48000[1][1]*s);
+        m_b12 = -1063197098;            // (int32)Round(-C48000[2][1]*s);
+        m_f11 = -2147480162;            // (int32)Round(C48000[1][0]/C48000[0][0]*s);
+        // m_f12 =  1073741824;         // (int32)Round(C48000[2][0]/C48000[0][0]*s);
+        m_g   =  1068456452;            // (int32)Round(C48000[0][0]*s);
     }
 }
 
@@ -1062,8 +1065,8 @@ dspError_t CHighPassFilter70::BackwardPass(short * pProcessBuffer, uint32 dwProc
 
 void CHighPassFilter70::GenTestSuite(void * pProcessBuffer, uint32 dwProcessLength, uint16 wSmpSize)
 {
-    uint16 wSmpRate[5] = {11025, 16000, 22050, 44100, 48000};
-    uint16 wSigFreq[3] = {7, 70, 700};
+	uint32 wSmpRate[5] = { 11025, 16000, 22050, 44100, 48000, 96000};
+    uint16 wSigFreq[3] = { 7, 70, 700};
     char FileName[13];
     FILE * FltrOut;
 
@@ -1118,3 +1121,13 @@ void CHighPassFilter70::GenTestSuite(void * pProcessBuffer, uint32 dwProcessLeng
 }
 
 #endif
+
+short CHighPassFilter70::GetBlockMin()
+{
+    return m_nBlockMin;
+}
+
+short CHighPassFilter70::GetBlockMax()
+{
+    return m_nBlockMax;
+}

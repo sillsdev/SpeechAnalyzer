@@ -240,7 +240,7 @@ BOOL CDlgInformationWavePage::OnInitDialog()
 	else
 	{
 		char buffer[256];
-		sprintf(buffer,"%d Channels",pDoc->GetNumChannels());
+		sprintf_s(buffer,_countof(buffer),"%d Channels",pDoc->GetNumChannels());
 		szChannels = buffer;
 	}
     CString szFormat;

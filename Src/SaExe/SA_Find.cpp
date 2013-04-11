@@ -54,7 +54,7 @@ END_MESSAGE_MAP()
 // CSaFindDlg::CSaFindDlg Constructor
 /***************************************************************************/
 CSaFindDlg::CSaFindDlg(CWnd * pParent,
-                       const TCHAR * pszFieldsToSearch,
+                       LPCTSTR pszFieldsToSearch,
                        const CString & strToFind,
                        BOOL bFindOnly,
                        const CString & strToReplace,

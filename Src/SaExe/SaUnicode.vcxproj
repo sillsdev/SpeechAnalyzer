@@ -18,6 +18,7 @@
     <ProjectGuid>{67914272-7CF2-4E5B-A0EC-54728888A13D}</ProjectGuid>
     <RootNamespace>SaUnicode</RootNamespace>
     <Keyword>MFCProj</Keyword>
+    <ProjectName>SaUnicode</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
@@ -61,7 +62,7 @@
     </Midl>
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>.;..\lib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.;..;..\lib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_WINDOWS;WINDOWS_PLATFORM;_DEBUG;WIN32;WINVER=0x0501;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
@@ -71,6 +72,7 @@
     <ResourceCompile>
       <PreprocessorDefinitions>_DEBUG;AFX_TARG_NEU;AFX_RESOURCE_DLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <Culture>0x0409</Culture>
+      <AdditionalIncludeDirectories>..</AdditionalIncludeDirectories>
     </ResourceCompile>
     <Link>
       <AdditionalDependencies>mfc100ud.lib;mfcs100ud.lib;atlsd.lib;msvcrtd.lib;msvcprtd.lib;comdlg32.lib;user32.lib;gdi32.lib;kernel32.lib;advapi32.lib;oldnames.lib;winmm.lib;version.lib;imm32.lib;ole32.lib;oleaut32.lib;uuid.lib;comsuppw.lib;htmlhelp.lib;shell32.lib;msacm32.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -106,7 +108,7 @@
     <ClCompile>
       <Optimization>Disabled</Optimization>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
-      <AdditionalIncludeDirectories>.;..\lib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.;..;..\lib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_WINDOWS;WINDOWS_PLATFORM;WIN32;NDEBUG;WINVER=0x501;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
@@ -116,6 +118,7 @@
     <ResourceCompile>
       <PreprocessorDefinitions>AFX_TARG_NEU;AFX_RESOURCE_DLL;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <Culture>0x0409</Culture>
+      <AdditionalIncludeDirectories>..</AdditionalIncludeDirectories>
     </ResourceCompile>
     <Link>
       <AdditionalDependencies>mfc90u.lib;mfcs90u.lib;msvcrt.lib;msvcprt.lib;comdlg32.lib;user32.lib;gdi32.lib;kernel32.lib;advapi32.lib;oldnames.lib;winmm.lib;version.lib;imm32.lib;ole32.lib;oleaut32.lib;uuid.lib;comsuppw.lib;HtmlHelp\htmlhelp.lib;shell32.lib;msacm32.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -260,6 +263,7 @@
     <ClCompile Include="DlgAlignTranscriptionDataSheet.cpp" />
     <ClCompile Include="DlgAutoReferenceData.cpp" />
     <ClCompile Include="DlgImportSFM.cpp" />
+    <ClCompile Include="SelfTest.cpp" />
     <ClCompile Include="SFMHelper.cpp" />
     <ClCompile Include="SpectroParm.cpp" />
     <ClCompile Include="SplitFileUtils.cpp" />
@@ -316,7 +320,6 @@
     <ClCompile Include="SA_View.cpp" />
     <ClCompile Include="SA_View2.cpp" />
     <ClCompile Include="Sa_wave.cpp" />
-    <ClCompile Include="SelfTest.cpp" />
     <ClCompile Include="Stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">stdafx.h</PrecompiledHeaderFile>
@@ -371,7 +374,6 @@
     <None Include="RES\LANDU.BMP" />
     <None Include="RES\LED.BMP" />
     <None Include="RES\LPU.BMP" />
-    <None Include="MainFrm.bmp" />
     <None Include="RES\MCAP_CL.BMP" />
     <None Include="RES\MCAP_MAX.BMP" />
     <None Include="RES\MCAP_MIN.BMP" />
@@ -432,6 +434,7 @@
     <ClInclude Include="DlgRecorderOptions.h" />
     <ClInclude Include="DlgWaveformGenerator.h" />
     <ClInclude Include="DlgWaveNotifyObj.h" />
+    <ClInclude Include="dsp\lpc.h" />
     <ClInclude Include="dsp\WaveWarp.h" />
     <ClInclude Include="ExportFWSettings.h" />
     <ClInclude Include="FileUtils.h" />
@@ -450,9 +453,25 @@
     <ClInclude Include="picture.h" />
     <ClInclude Include="PlayMixer.h" />
     <ClInclude Include="PrivateCursorWnd.h" />
-    <ClInclude Include="Process\Butterworth.H" />
     <ClInclude Include="Clip.hpp" />
     <ClInclude Include="Colors.h" />
+    <ClInclude Include="process\Butterworth.h" />
+    <ClInclude Include="process\formanttracker.h" />
+    <ClInclude Include="Process\IProcess.h" />
+    <ClInclude Include="process\process.h" />
+    <ClInclude Include="process\processdoc.h" />
+    <ClInclude Include="process\sa_p_3dpitch.h" />
+    <ClInclude Include="process\sa_p_cha.h" />
+    <ClInclude Include="process\sa_p_cpi.h" />
+    <ClInclude Include="process\sa_p_dur.h" />
+    <ClInclude Include="process\sa_p_fmt.h" />
+    <ClInclude Include="process\sa_p_fra.h" />
+    <ClInclude Include="process\sa_p_glo.h" />
+    <ClInclude Include="process\sa_p_gra.h" />
+    <ClInclude Include="process\sa_p_instantaneouspower.h" />
+    <ClInclude Include="process\sa_p_lou.h" />
+    <ClInclude Include="process\sa_p_mel.h" />
+    <ClInclude Include="process\sa_p_pit.h" />
     <ClInclude Include="RecMixer.h" />
     <ClInclude Include="SaString.h" />
     <ClInclude Include="DocList.h" />
@@ -468,22 +487,6 @@
     <ClInclude Include="Partiture.hpp" />
     <ClInclude Include="plotwndInfo.h" />
     <ClInclude Include="PrintDim.h" />
-    <ClInclude Include="process\FormantTracker.h" />
-    <ClInclude Include="process\IProcess.h" />
-    <ClInclude Include="process\Process.h" />
-    <ClInclude Include="process\sa_p_3dpitch.h" />
-    <ClInclude Include="process\sa_p_cha.h" />
-    <ClInclude Include="process\sa_p_cpi.h" />
-    <ClInclude Include="process\ProcessDoc.h" />
-    <ClInclude Include="process\sa_p_dur.h" />
-    <ClInclude Include="process\sa_p_fmt.h" />
-    <ClInclude Include="process\sa_p_fra.h" />
-    <ClInclude Include="process\sa_p_glo.h" />
-    <ClInclude Include="process\sa_p_gra.h" />
-    <ClInclude Include="process\sa_p_instantaneouspower.h" />
-    <ClInclude Include="process\sa_p_lou.h" />
-    <ClInclude Include="process\sa_p_mel.h" />
-    <ClInclude Include="process\sa_p_pit.h" />
     <ClInclude Include="process\sa_p_poa.h" />
     <ClInclude Include="process\sa_p_rat.h" />
     <ClInclude Include="process\sa_p_raw.h" />
@@ -560,10 +563,10 @@
     <ClInclude Include="Stdafx.h" />
     <ClInclude Include="StopCursorWnd.h" />
     <ClInclude Include="stpwatch.h" />
-    <ClInclude Include="synthesis\dlgklattall.h" />
-    <ClInclude Include="synthesis\dlgmbrola.h" />
-    <ClInclude Include="synthesis\dlgsynthesis.h" />
-    <ClInclude Include="synthesis\dlgvocaltract.h" />
+    <ClInclude Include="synthesis\DlgKlattAll.h" />
+    <ClInclude Include="synthesis\DlgMbrola.h" />
+    <ClInclude Include="synthesis\DlgSynthesis.h" />
+    <ClInclude Include="synthesis\DlgVocalTract.h" />
     <ClInclude Include="TaskBar.h" />
     <ClInclude Include="TextHelper.h" />
     <ClInclude Include="TextSegment.h" />
@@ -608,29 +611,23 @@
     <ClInclude Include="WaveResampler.h" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="DSP\SA_DSP.vcxproj">
+    <ProjectReference Include="Dsp\SA_DSP.vcxproj">
       <Project>{bb3f670e-28af-42ce-9c9f-de267d3cb986}</Project>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
-    <ProjectReference Include="sa_enu\SA_ENU.vcxproj">
+    <ProjectReference Include="SA_ENU\SA_ENU.vcxproj">
       <Project>{23e56f0e-30a8-4cf2-ab4d-5b1ed39cd268}</Project>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
     <ProjectReference Include="Settings\sfSettings.vcxproj">
       <Project>{8042b26b-82a5-4b16-9a13-9a7f15a2639b}</Project>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
-    <ProjectReference Include="SYNTHESIS\MBROLA\mbrola.vcxproj">
+    <ProjectReference Include="Synthesis\MBROLA\mbrola.vcxproj">
       <Project>{70e56708-42c2-4233-af98-dc57f936c968}</Project>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
     <ProjectReference Include="Synthesis\sa_klatt\SA_KLATT.vcxproj">
       <Project>{c27adb97-de1a-4820-8cf5-7554cf677995}</Project>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
     <ProjectReference Include="ZGraph\zGraph.vcxproj">
       <Project>{f8066672-47ab-44da-8698-ad978581a138}</Project>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -43,22 +43,10 @@ public:
                                    PITCH_PARMS & stPitchParm, short * pPitchBfr, uint32 dwPitchBfrLength);
     dspError_t Fragment(void);
     ~CFragment();
-    uint32 GetWaveBlockIndex()
-    {
-        return m_dwWaveBlock;
-    }
-    uint32 GetPitchBlockIndex()
-    {
-        return m_dwPitchBlock;
-    }
-    uint32 GetFragmentBlockLength()
-    {
-        return m_dwFragBlockLength;
-    }
-    uint32 GetFragmentCount()
-    {
-        return m_dwFragCount;
-    }
+    uint32 GetWaveBlockIndex();
+    uint32 GetPitchBlockIndex();
+    uint32 GetFragmentBlockLength();
+    uint32 GetFragmentCount();
 
 private:
     static dspError_t ValidateSignalParms(SIG_PARMS & stSignal);
@@ -70,54 +58,52 @@ private:
 
     dspError_t Process(uint8 * pbWaveBfr);
     dspError_t Process(short * psWaveBfr);
-    uint32            m_dwSigLength;
-    uint16           m_wSmpRate;
-    int8            m_sbSmpFormat;
-    void      *      m_pWaveBfr;
-    uint32            m_dwWaveBfrLength;
-    uint32            m_dwWaveIndex;
-    uint32            m_dwWaveBlock;
-    uint32            m_dwWaveCrossing;
-    short            m_nMinSmpValue;
-    short            m_nMaxSmpValue;
-    uint32            m_dwMaxRange;
-    uint32            m_dwMaxRangeCrossing;
-    bool         m_bUnvoiced;
-    uint16           m_wPitchScaleFac;
-    uint16           m_wPitchCalcIntvl;
-    uint16           m_wMinPitchPeriod;
-    uint16           m_wMaxPitchPeriod;
-    uint32            m_dwPitchDataLength;
-    uint32            m_dwPitch;
-    short            m_nPrevPitch;
-    short      *     m_psPitchBfr;
-    uint32            m_dwPitchBfrLength;
-    uint32            m_dwPitchBlock;
-    uint16           m_wMaxFltrLen;
-    uint16           m_wMaxFltrHalf;
-    uint16           m_wPrevFltrHalf;
-    int32             m_lPrevFltrOut;
-    int32             m_lCurrSum;
-    int32             m_lPrevSum;
-    uint32            m_dwFltrPeakIndex;
-    int32             m_lFltrPeak;
-    int32             m_lFltrPeakThd;
+    uint32 m_dwSigLength;
+    uint32 m_wSmpRate;
+    int8 m_sbSmpFormat;
+    void * m_pWaveBfr;
+    uint32 m_dwWaveBfrLength;
+    uint32 m_dwWaveIndex;
+    uint32 m_dwWaveBlock;
+    uint32 m_dwWaveCrossing;
+    short m_nMinSmpValue;
+    short m_nMaxSmpValue;
+    uint32 m_dwMaxRange;
+    uint32 m_dwMaxRangeCrossing;
+    bool m_bUnvoiced;
+    uint16 m_wPitchScaleFac;
+    uint16 m_wPitchCalcIntvl;
+    uint16 m_wMinPitchPeriod;
+    uint16 m_wMaxPitchPeriod;
+    uint32 m_dwPitchDataLength;
+    uint32 m_dwPitch;
+    short m_nPrevPitch;
+    short * m_psPitchBfr;
+    uint32 m_dwPitchBfrLength;
+    uint32 m_dwPitchBlock;
+    uint16 m_wMaxFltrLen;
+    uint16 m_wMaxFltrHalf;
+    uint16 m_wPrevFltrHalf;
+    int32 m_lPrevFltrOut;
+    int32 m_lCurrSum;
+    int32 m_lPrevSum;
+    uint32 m_dwFltrPeakIndex;
+    int32 m_lFltrPeak;
+    int32 m_lFltrPeakThd;
     FRAG_PARMS * m_pstFragParmBfr;
-    uint32            m_dwFragBfrLength;
-    uint32            m_dwFragBfrIndex;
-    uint32            m_dwFragBlockLength;
-    uint32            m_dwFragCount;
-    uint32            m_dwWaveFragStart;
+    uint32 m_dwFragBfrLength;
+    uint32 m_dwFragBfrIndex;
+    uint32 m_dwFragBlockLength;
+    uint32 m_dwFragCount;
+    uint32 m_dwWaveFragStart;
     /***************************** DEBUG ONLY *************************************/
 #ifdef DUMP
-    FILE      *      m_hWaveDump;
-    FILE      *      m_hPitchDump;
-    FILE      *      m_hFragDump;
-    FILE      *      m_hFltrDump;
+    FILE * m_hWaveDump;
+    FILE * m_hPitchDump;
+    FILE * m_hFragDump;
+    FILE * m_hFltrDump;
 #endif
     /******************************************************************************/
 };
-
-
 
 #endif

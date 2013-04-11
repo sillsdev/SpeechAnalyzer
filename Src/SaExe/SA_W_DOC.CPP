@@ -33,10 +33,8 @@ IMPLEMENT_SERIAL(CWorkbenchDoc, CDocument, 0 /* schema number*/)
 // CWorkbenchDoc message map
 
 BEGIN_MESSAGE_MAP(CWorkbenchDoc, CDocument)
-    //{{AFX_MSG_MAP(CWorkbenchDoc)
     ON_COMMAND(ID_FILE_SAVE, OnFileSave)
     ON_UPDATE_COMMAND_UI(ID_FILE_SAVE, OnUpdateFileSave)
-    //}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
@@ -79,7 +77,7 @@ void CWorkbenchDoc::Serialize(CArchive & ar)
 // Reads all available information from the workbench file and sets up the
 // workbench processes and all there properties.
 /***************************************************************************/
-BOOL CWorkbenchDoc::OnOpenDocument(const TCHAR * pszPathName)
+BOOL CWorkbenchDoc::OnOpenDocument(LPCTSTR pszPathName)
 {
     if (!((CSaApp *)AfxGetApp())->CloseWorkbench(this))
     {
@@ -114,7 +112,7 @@ BOOL CWorkbenchDoc::OnOpenDocument(const TCHAR * pszPathName)
 // Stores all available information from workbench into the workbench
 // settings file.
 /***************************************************************************/
-BOOL CWorkbenchDoc::OnSaveDocument(const TCHAR * pszPathName)
+BOOL CWorkbenchDoc::OnSaveDocument(LPCTSTR pszPathName)
 {
     BeginWaitCursor(); // wait cursor
     BOOL bRet = FALSE;
@@ -148,7 +146,7 @@ BOOL CWorkbenchDoc::SaveModified()
     {
         return TRUE;    // ok to continue
     }
-    const TCHAR * pszPathName = GetPathName();
+    LPCTSTR pszPathName = GetPathName();
     if (_tcslen(pszPathName) == 0)
     {
         // the pathname is empty, reset title string
@@ -188,7 +186,7 @@ BOOL CWorkbenchDoc::SaveModified()
 void CWorkbenchDoc::OnFileSave()
 {
     CString szCaption, szGraphTitle;
-    const TCHAR * pszPathName = GetPathName();
+    LPCTSTR pszPathName = GetPathName();
     if (_tcslen(pszPathName) == 0)
     {
         // the pathname is empty, reset view title string

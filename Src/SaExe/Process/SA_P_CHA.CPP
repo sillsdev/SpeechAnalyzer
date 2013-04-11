@@ -421,7 +421,7 @@ long CProcessChange::Process(void * pCaller, ISaDoc * pDoc, int nProgress,
             {
                 // try each lag
                 nLagData = (unsigned int)naACFlags[nLoop + 1]; // first entry is dummy
-                int nInnerLoop = CALCULATION_DATALENGTH(pDoc->GetSamplesPerSec()) / nACFinterval + 1;
+                int nInnerLoop = CALCULATION_DATALENGTH( pDoc->GetSamplesPerSec()) / nACFinterval + 1;
                 if (nBlockAlign > 1) // 16 bit data
                     dwResult = CalculateACF16(pLoudness, (unsigned char *)pSRDdata, &bRes, nACFinterval, nLagData,
                                               nMaxLag, &dwBlockPos, dwDataPos, nInnerLoop);
@@ -514,7 +514,7 @@ long CProcessChange::Process(void * pCaller, ISaDoc * pDoc, int nProgress,
                     if ((nFoundLag >= (nMinLag * 3)) && bRes)
                     {
                         nLagData = nFoundLag / 3;
-                        int nInnerLoop = CALCULATION_DATALENGTH(pDoc->GetSamplesPerSec()) / nACFinterval;
+                        int nInnerLoop = CALCULATION_DATALENGTH( pDoc->GetSamplesPerSec()) / nACFinterval;
                         if (nBlockAlign > 1) // 16 bit data
                             dwResult = CalculateACF16(pLoudness, (unsigned char *)pSRDdata, &bRes, nACFinterval, nLagData,
                                                       nLagData, &dwBlockPos, dwDataPos, nInnerLoop);

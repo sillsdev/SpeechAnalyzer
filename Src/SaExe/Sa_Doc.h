@@ -184,21 +184,21 @@ public:
     virtual void OnCloseDocument();
     virtual BOOL DoFileSave();
     BOOL CopySectionToNewWavFile(DWORD dwSectionStart, DWORD dwSectionLength, LPCTSTR szNewWave, BOOL usingClipboard);
-    BOOL LoadDataFiles(const TCHAR * pszPathName, bool bTemp = false);
-    BOOL WriteDataFiles(const TCHAR * pszPathName, BOOL bSaveAudio = TRUE, BOOL bIsClipboardFile = FALSE);
-    bool GetWaveFormatParams(const TCHAR * pszPathName, CFmtParm & fmtParm, DWORD & dwDataSize);
-    bool IsStandardWaveFormat(const TCHAR * pszPathName);
-    bool IsMultiChannelWave(const TCHAR * pszPathName, int & channels);
-    DWORD CheckWaveFormatForPaste(const TCHAR * pszPathName);
-    DWORD CheckWaveFormatForOpen(const TCHAR * pszPathName);
-    bool ConvertToWave(const TCHAR * pszPathName);
+    BOOL LoadDataFiles(LPCTSTR pszPathName, bool bTemp = false);
+    BOOL WriteDataFiles(LPCTSTR pszPathName, BOOL bSaveAudio = TRUE, BOOL bIsClipboardFile = FALSE);
+    bool GetWaveFormatParams(LPCTSTR pszPathName, CFmtParm & fmtParm, DWORD & dwDataSize);
+    bool IsStandardWaveFormat(LPCTSTR pszPathName);
+    bool IsMultiChannelWave(LPCTSTR pszPathName, int & channels);
+    DWORD CheckWaveFormatForPaste(LPCTSTR pszPathName);
+    DWORD CheckWaveFormatForOpen(LPCTSTR pszPathName);
+    bool ConvertToWave(LPCTSTR pszPathName);
     BOOL InsertTranscriptions(LPCTSTR pszPathName, DWORD dwPos);
     BOOL InsertTranscription(int transType, ISaAudioDocumentReaderPtr saAudioDocRdr, DWORD dwPos);
     void InsertGlossPosRefTranscription(ISaAudioDocumentReaderPtr saAudioDocRdr, DWORD dwPos);
-    BOOL CopyWave(const TCHAR * pszSourceName, const TCHAR * pszTargetName);
-    virtual BOOL CopyWave(const TCHAR * pszSourceName, const TCHAR * pszTargetName, const CWaveIndex & dwStart, const CWaveIndex & dwLength, BOOL bTruncate);
-    void ApplyWaveFile(const TCHAR * pszFileName, DWORD dwDataSize, BOOL bInialUpdate=TRUE);     // apply a new recorded wave file
-    void ApplyWaveFile(const TCHAR * pszFileName, DWORD dwDataSize, CAlignInfo alignInfo);       // Update for rt auto-pitch
+    BOOL CopyWave(LPCTSTR pszSourceName, LPCTSTR pszTargetName);
+    virtual BOOL CopyWave(LPCTSTR pszSourceName, LPCTSTR pszTargetName, const CWaveIndex & dwStart, const CWaveIndex & dwLength, BOOL bTruncate);
+    void ApplyWaveFile(LPCTSTR pszFileName, DWORD dwDataSize, BOOL bInialUpdate=TRUE);     // apply a new recorded wave file
+    void ApplyWaveFile(LPCTSTR pszFileName, DWORD dwDataSize, CAlignInfo alignInfo);       // Update for rt auto-pitch
     DWORD SnapCursor(ECursorSelect nCursorSelect,
                      DWORD dwCursorOffset,
                      DWORD dwLowerLimit,
@@ -334,15 +334,15 @@ private:
     CSaString SetFileExtension(CSaString fileName, CSaString fileExtension);
 
     // Methods for loading a wave file and all it's transcription data.
-    BOOL ReadRiff(const TCHAR * pszPathName);
-    BOOL LoadTranscriptionData(const TCHAR * pszPathName, BOOL bTemp);
+    BOOL ReadRiff(LPCTSTR pszPathName);
+    BOOL LoadTranscriptionData(LPCTSTR pszPathName, BOOL bTemp);
     void ReadNonSegmentData(ISaAudioDocumentReaderPtr saAudioDocRdr);
     void ReadTranscription(int transType, ISaAudioDocumentReaderPtr saAudioDocRdr);
     void ReadGlossPosAndRefSegments(ISaAudioDocumentReaderPtr saAudioDocRdr);
     void ReadScoreData(ISaAudioDocumentReaderPtr saAudioDocRdr);
 
     // Methods for saving a wave file and all it's transcription data.
-    DWORD WriteRiff(const TCHAR * pszPathName);
+    DWORD WriteRiff(LPCTSTR pszPathName);
     void WriteNonSegmentData(DWORD dwDataSize, ISaAudioDocumentWriterPtr saAudioDocWriter);
     void WriteTranscription(int transType, ISaAudioDocumentWriterPtr saAudioDocWriter);
     void WriteGlossPosAndRefSegments(ISaAudioDocumentWriterPtr saAudioDocWriter);

@@ -158,7 +158,7 @@
 
 #include "WaveWarp.h"
 #include "isa_doc.h"
-#include "MathX.h"
+#include "dsp\MathX.h"
 #include "Process\Process.h"
 #include "Process\sa_p_fra.h"
 

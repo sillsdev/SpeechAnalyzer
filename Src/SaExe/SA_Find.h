@@ -21,7 +21,7 @@ class CSaFindDlg : public CDialog
     // Construction
 public:
     CSaFindDlg(CWnd * pParent,
-               const TCHAR * pszFieldsToSearch,
+               LPCTSTR pszFieldsToSearch,
                const CString & strToFind,
                BOOL bFindOnly,
                const CString & strToReplace,

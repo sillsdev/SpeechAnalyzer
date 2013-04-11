@@ -465,7 +465,7 @@ BOOL CPlotSpectrogram::OnDrawSpectrogram(CDC * pDC, CRect rWnd, CRect rClip, CSa
     // get pointer to spectrogram parameters
     const CSpectroParm * pSpectroParm = &GetSpectrogram(pDoc)->GetSpectroParm();
 
-    BOOL bFormants = pSpectroParm->bShowF1 || pSpectroParm->bShowF2 || pSpectroParm->bShowF3 || pSpectroParm->bShowF4 || pSpectroParm->bShowF5andUp;
+    BOOL bFormants = (pSpectroParm->bShowF1) || (pSpectroParm->bShowF2) || (pSpectroParm->bShowF3) || (pSpectroParm->bShowF4) || (pSpectroParm->bShowF5andUp);
     BOOL bOverlay = (pSpectroParm->nOverlay == 0) || (!bFormants);
     if (!bOverlay)
     {
@@ -475,9 +475,9 @@ BOOL CPlotSpectrogram::OnDrawSpectrogram(CDC * pDC, CRect rWnd, CRect rClip, CSa
     }
 
     BITMAP * pBitmap = new BITMAP;
-    HBITMAP hBitmap = (HBITMAP) GetCurrentObject(pDC->GetSafeHdc(),OBJ_BITMAP);
+    HBITMAP hBitmap = (HBITMAP) GetCurrentObject( pDC->GetSafeHdc(),OBJ_BITMAP);
 
-    GetObject(hBitmap,sizeof(BITMAP),pBitmap);
+    GetObject( hBitmap, sizeof(BITMAP), pBitmap);
 
     // get spectrogram parameters
     int nSpectraCnt = pSpectrogram->GetWindowWidth();

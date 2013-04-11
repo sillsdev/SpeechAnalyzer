@@ -1,11 +1,11 @@
 #ifndef TRACKSTATE_H
 #define TRACKSTATE_H
 
-#include "DSP/Signal.h"
-#include "DSP/FORMANTS.H"
-#include "DSP/dspTypes.h"
+#include "dsp\Signal.h"
+#include "dsp\Formants.h"
+#include "dsp\dspTypes.h"
 #include "Process.h"
-#include "Process/FormantTracker.h"
+#include "Process\FormantTracker.h"
 
 class CProcessTrackState : public CProcessFormantTracker::CTrackState
 {

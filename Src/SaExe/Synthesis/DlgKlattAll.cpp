@@ -572,7 +572,7 @@ PCMWAVEFORMAT CDlgKlattAll::pcmWaveFormat()
     return pcm;
 }
 
-BOOL CDlgKlattAll::SynthesizeWave(const TCHAR * pszPathName, CIpaCharVector & cChars)
+BOOL CDlgKlattAll::SynthesizeWave(LPCTSTR pszPathName, CIpaCharVector & cChars)
 {
     CSaApp * pApp = (CSaApp *)AfxGetApp(); // get pointer to application
 
@@ -2524,7 +2524,7 @@ void CDlgKlattAll::OnFileSaveAs()
 }
 
 #define NEXTVALUE_ERROR (-1.111)
-static double NextValue(const TCHAR * szString,unsigned & uIndex)
+static double NextValue(LPCTSTR szString,unsigned & uIndex)
 {
     double iReturn = 0;
     CString szField;

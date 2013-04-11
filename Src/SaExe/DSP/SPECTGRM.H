@@ -57,12 +57,12 @@ typedef struct SPGM_SETTINGS
 } SPGM_SETTINGS;
 
 
-class Spectrogram
+class CSpectrogram
 {
 public:
-    static char * Spectrogram::Copyright(void);
-    static float Spectrogram::Version(void);
-    static dspError_t CreateObject(Spectrogram ** Spgm, SPGM_SETTINGS SpgmSetting, SIG_PARMS Signal);
+    static char * Copyright(void);
+    static float Version(void);
+    static dspError_t CreateObject(CSpectrogram ** Spgm, SPGM_SETTINGS SpgmSetting, SIG_PARMS Signal);
     //dspError_t ChangeSettings(SPGM_SETTINGS New);
     dspError_t GetMetrics(float * FreqScale,
                           float * SpectScale, float * SpectRes, float * SpectIntv,
@@ -73,29 +73,18 @@ public:
     static dspError_t CalcPower(float * PowerInDb, float Frequency, int32 nBandwidthSelect, CWindowSettings::Type, SIG_PARMS Signal, bool bPreEmphasis);
     uint8 * ReadPowerSlice(dspError_t * dspError_t, uint16 SpgmX);
     dspError_t ReadFormants(FORMANT_FREQ * Freq, uint16 SpgmX);
-    DspWin & GetWidebandWindow()
-    {
-        return m_Window;
-    }
-    DspWin & GetNarrowbandWindow()
-    {
-        return m_NBWindow;
-    }
-    //dspError_t CalcFormants(FORMANT_FREQ *Formants, uint16 SpectIndex);
+    DspWin & GetWidebandWindow();
+    DspWin & GetNarrowbandWindow();
     dspError_t CalcFormants(void);
-    ~Spectrogram();
-    bool IsAliased()
-    {
-        return m_Aliased;
-    }
-public:
-    uint8  * m_ScreenData;
+    ~CSpectrogram();
+    bool IsAliased();
 
+	uint8  * m_ScreenData;
 
 private:
     static dspError_t ValidateSignalParms(SIG_PARMS Signal);
     static dspError_t ValidateSettings(SPGM_SETTINGS Setting);
-    Spectrogram(SPGM_SETTINGS SpgmSetting, uint8 * SpgmData, FORMANT_FREQ * FmntData,
+    CSpectrogram(SPGM_SETTINGS SpgmSetting, uint8 * SpgmData, FORMANT_FREQ * FmntData,
                 DspWin & Window, DspWin & NBWindow,
                 SIG_PARMS Signal, uint8 * ScreenData);
     dspError_t CalcSpectra(uint8 * BlockStart, uint32 NumSpect);
@@ -108,6 +97,7 @@ private:
     dspError_t SeekFormants(uint8 * BlockStart, uint32 NumFmntSets);
     dspError_t SeekFormants(short * BlockStart, uint32 NumFmntSets);
     dspError_t GetFormants(FORMANT_FREQ * F);
+
     bool m_Aliased;
     FORMANT_FREQ * m_FmntData;
     bool m_PreEmphSw;
@@ -116,7 +106,7 @@ private:
     void * m_SigStart;
     uint32 m_SigLength;
     int8 m_SmpDataFmt;
-    uint16 m_SmpRate;
+    uint32 m_SmpRate;
     uint32 m_SigBlkOffset;
     uint32 m_SigBlkLength;
     uint8 * m_SpgmData;
@@ -141,20 +131,6 @@ private:
     uint8 m_MaxPwr;
     uint8 m_Status;
 };
-
-
-int32 CalcSpectgram(
-    float ** Spectgram,		//pointer to spectrogram base addr
-    float * SpectMax,		//maximum spectral value
-    uint16 * SpectrumLen,	//number of samples in spectrum
-    uint16 * NumSpectra,    //number of spectra
-    uint16 * SpectraIntv,   //spectra calculation interval
-    uint8 BandType,			//type of spectrogram
-    int8  * Signal,         //pointer to signal data
-    uint16 SigLength,       //number of signal samples
-    int8 SmpType,			//sample word type
-    uint16 SmpRate			//sampling rate
-);
 
 #endif
 

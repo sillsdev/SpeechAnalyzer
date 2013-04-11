@@ -24,7 +24,7 @@ protected:
     void SetEnable(int nItem, BOOL bEnable);
     void SetCheck(int nItem, BOOL bCheck);
     void WriteFileUtf8(CFile * pFile, const CSaString szString);
-    void OutputXMLField(CFile * pFile, const TCHAR * szFieldName, const CSaString & szContents);
+    void OutputXMLField(CFile * pFile, LPCTSTR szFieldName, const CSaString & szContents);
 
     afx_msg void OnAllSource();
     afx_msg void OnAllFileInfo();

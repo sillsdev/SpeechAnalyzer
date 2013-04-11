@@ -163,15 +163,15 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="odbc32.lib odbccp32.lib msvcrt.lib"
-				OutputFile=".\..\..\..\Output\Release/zGraph.dll"
+				OutputFile="$(OutDir)/zGraph.dll"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
 				ModuleDefinitionFile=".\zGraph.def"
 				GenerateDebugInformation="false"
-				ProgramDatabaseFile=".\..\..\..\Output\Release/zGraph.pdb"
+				ProgramDatabaseFile="$(OutDir)/zGraph.pdb"
 				RandomizedBaseAddress="1"
 				DataExecutionPrevention="0"
-				ImportLibrary=".\..\..\..\Output\Release/zGraph.lib"
+				ImportLibrary="$(OutDir)/zGraph.lib"
 				TargetMachine="1"
 			/>
 			<Tool

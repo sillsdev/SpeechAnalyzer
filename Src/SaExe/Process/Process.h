@@ -140,21 +140,11 @@ private:
 
     // Operations
 public:
-    virtual void UpdateArea()
-    {
-        SetStatusFlag(PROCESS_IDLE | KEEP_AREA,FALSE);
-        SetDataInvalid();
-    }
+    virtual void UpdateArea();
     BOOL SetArea(CSaView * pView);
 
-    DWORD GetAreaPosition()
-    {
-        return m_dwAreaPos;   // return area position
-    }
-    DWORD GetAreaLength()
-    {
-        return m_dwAreaLength;   // return area length
-    }
+    DWORD GetAreaPosition();
+    DWORD GetAreaLength();
 
 protected:
     BOOL SetArea(DWORD dwAreaPos, DWORD dwAreaLength);

@@ -164,16 +164,16 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="odbc32.lib odbccp32.lib msvcrt.lib msvcprt.lib"
-				OutputFile=".\..\..\..\Output\Release/sfSettings.dll"
+				OutputFile="$(OutDir)/sfSettings.dll"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
 				IgnoreAllDefaultLibraries="true"
 				ModuleDefinitionFile=".\sfSettings.def"
 				GenerateDebugInformation="false"
-				ProgramDatabaseFile=".\..\..\..\Output\Release/sfSettings.pdb"
+				ProgramDatabaseFile="$(OutDir)\sfSettings.pdb"
 				RandomizedBaseAddress="1"
 				DataExecutionPrevention="0"
-				ImportLibrary=".\..\..\..\Output\Release/sfSettings.lib"
+				ImportLibrary="$(OutDir)/sfSettings.lib"
 				TargetMachine="1"
 			/>
 			<Tool

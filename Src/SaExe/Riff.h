@@ -18,7 +18,7 @@ public:
     CRiff();
     virtual ~CRiff();
 
-    static BOOL NewWav(const TCHAR * szPathName, PCMWAVEFORMAT & pcm, const TCHAR * szRawDataPath);
+    static BOOL NewWav(LPCTSTR szPathName, PCMWAVEFORMAT & pcm, LPCTSTR szRawDataPath);
 };
 
 #endif

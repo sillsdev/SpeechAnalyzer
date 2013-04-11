@@ -74,7 +74,7 @@ void AFXAPI SaAssertFailedLine(LPCSTR lpszFileName, int nLine)
     }
 
     // get app name or NULL if unknown (don't call assert)
-    const TCHAR * pszAppName = AfxGetAppName();
+    LPCTSTR pszAppName = AfxGetAppName();
     swprintf_s(sz, szMessage, (pszAppName == NULL) ? szUnknown : pszAppName, lpszFileName, nLine);
 
     if (afxTraceEnabled)

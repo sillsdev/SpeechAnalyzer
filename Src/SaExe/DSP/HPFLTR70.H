@@ -14,7 +14,7 @@ class CHighPassFilter70
 public:
     static char * Copyright(void);
     static float Version(void);
-    static dspError_t CreateObject(CHighPassFilter70 ** ppoHPFilter, uint16 wSmpRate /* in Hz */);
+    static dspError_t CreateObject(CHighPassFilter70 ** ppoHPFilter, uint32 wSmpRate /* in Hz */);
     dspError_t Filter(uint8 * pProcessBuffer, uint32 dwProcessLength /* in samples */);
     dspError_t Filter(short * pProcessBuffer, uint32 dwProcessLength /* in samples */);
     dspError_t ForwardPass(uint8 * pProcessBuffer, uint32 dwProcessLength /* in samples */);
@@ -27,35 +27,29 @@ public:
     dspError_t DoBackwardPass(short * pProcessBuffer, uint32 dwProcessLength /* in samples */);
     void GenTestSuite(void * pProcessBuffer, uint32 dwProcessLength, uint16 wSmpSize);
 #endif
-    short GetBlockMin()
-    {
-        return m_nBlockMin;
-    }
-    short GetBlockMax()
-    {
-        return m_nBlockMax;
-    }
+    short GetBlockMin();
+    short GetBlockMax();
     ~CHighPassFilter70();
 
 private:
     static dspError_t ValidateSignalParms(uint16 wSmpRate);
-    void SetFilterParms(uint16 wSmpRate);
-    CHighPassFilter70(uint16 wSmpRate);
-    bool        m_bFirstForwardPass;
-    bool        m_bFirstBackwardPass;
+    void SetFilterParms(uint32 wSmpRate);
+    CHighPassFilter70(uint32 wSmpRate);
+    bool m_bFirstForwardPass;
+    bool m_bFirstBackwardPass;
 #ifdef TEST_HPF
-    bool        m_bFirstTestPass;
+    bool m_bFirstTestPass;
 #endif
-    int32            m_f11;
-    int32            m_b11;
-    int32            m_b12;
-    int32            m_g;
-    int32            m_r11L;
-    int32            m_r11H;
-    int32            m_r12L;
-    int32            m_r12H;
-    short           m_nBlockMin;
-    short           m_nBlockMax;
+    int32 m_f11;
+    int32 m_b11;
+    int32 m_b12;
+    int32 m_g;
+    int32 m_r11L;
+    int32 m_r11H;
+    int32 m_r12L;
+    int32 m_r12H;
+    short m_nBlockMin;
+    short m_nBlockMax;
 };
 
 // Filter parameter workspace structure.

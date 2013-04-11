@@ -237,7 +237,7 @@ long CProcessSpectrum::Process(void * pCaller, ISaDoc * pDoc, DWORD dwFrameStart
     switch (cWindow.m_nLengthMode)
     {
     case CWindowSettings::kBandwidth:
-        nWindowSize = DspWin::CalcLength(cWindow.m_dBandwidth,pDoc->GetSamplesPerSec(), cWindow.m_nType);
+        nWindowSize = DspWin::CalcLength( cWindow.m_dBandwidth, pDoc->GetSamplesPerSec(), cWindow.m_nType);
         break;
     case CWindowSettings::kTime:
         nWindowSize = (int)(0.001*cWindow.m_dTime*pDoc->GetSamplesPerSec() + 0.5);

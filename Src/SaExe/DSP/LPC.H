@@ -1,12 +1,12 @@
 #ifndef LPC_H
 #define LPC_H
 
-#include "dspTypes.h"
-#include "MathX.h"
-#include "Error.h"
-#include "Signal.h"
-#include "FFT.h"
-#include "Formants.h"
+#include "dsp\dspTypes.h"
+#include "dsp\MathX.h"
+#include "dsp\Error.h"
+#include "dsp\Signal.h"
+#include "dsp\FFT.h"
+#include "dsp\Formants.h"
 
 #define LPC_8BIT_DB_PWR_REF    63.112F
 #define LPC_16BIT_DB_PWR_REF  126.190F

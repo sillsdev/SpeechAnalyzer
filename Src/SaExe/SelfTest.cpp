@@ -1,18 +1,17 @@
 //
 // SelfTest.cpp
 //
-// Implementation of the CSASelfTest class
+// Implementation of the CSelfTest class
 //
 // This class will run through a test routine when instantiated, logging results to an xml file
 //
 // 08/27/2001 TRE - original coding
 //
-
+#include "stdafx.h"
 #include "SelfTest.h"
 #include <windows.h>
 #include <mapiwin.h>
 #include <process.h>
-#include "stdafx.h"
 #include "sa_g_spg.h"
 #include "sa_plot.h"
 #include "SpectroParm.h"
@@ -51,7 +50,7 @@
 // Each test should begin with a call to StartTest() and end with a call to EndTest()
 // The test should be executed only if StartTest() returns TRUE.
 //
-void CSASelfTest::SelfTest()
+void CSelfTest::SelfTest()
 {
 
     BOOL bFileOpened = FALSE;
@@ -718,9 +717,9 @@ void CSASelfTest::SelfTest()
 
 
 //
-// CSASelfTest constructor
+// CSelfTest constructor
 //
-CSASelfTest::CSASelfTest()
+CSelfTest::CSelfTest()
 {
     TCHAR szString[_MAX_PATH] = _T("");
 
@@ -866,12 +865,12 @@ CSASelfTest::CSASelfTest()
     LogFile.Close();
 
     SelfTest();
-}//CSASelfTest constructor
+}//CSelfTest constructor
 
 //
-// CSASelfTest destructor
+// CSelfTest destructor
 //
-CSASelfTest::~CSASelfTest()
+CSelfTest::~CSelfTest()
 {
     CString szMessage = "";
     szMessage.Format(_T("%u tests passed of %u."),m_nTestsPassed,m_nTestsPassed+m_nTestsFailed);
@@ -920,7 +919,7 @@ CSASelfTest::~CSASelfTest()
                                     szCommand = szCommand.Left(nEnd);
                                 }
                             }
-                            _wspawnl(_P_NOWAIT, (const TCHAR *)szCommand, (const TCHAR *)szRestOfCommand, (const TCHAR *)m_szLogFileName, NULL);
+                            _wspawnl(_P_NOWAIT, (LPCTSTR)szCommand, (LPCTSTR)szRestOfCommand, (LPCTSTR)m_szLogFileName, NULL);
                             //"file:////" + m_szTestFolderPath + "selftest.xml", NULL);
                         }
                     }
@@ -928,7 +927,7 @@ CSASelfTest::~CSASelfTest()
             }
         }
     }
-}//CSASelfTest destructor
+}//CSelfTest destructor
 
 
 //
@@ -938,7 +937,7 @@ CSASelfTest::~CSASelfTest()
 //
 // Otherwise, logs the beginning of the test and returns TRUE
 //
-BOOL CSASelfTest::StartTest(const CString szTestNumber, const CString szDescription)
+BOOL CSelfTest::StartTest(const CString szTestNumber, const CString szDescription)
 {
     m_szTestNumber = szTestNumber;
 
@@ -971,7 +970,7 @@ BOOL CSASelfTest::StartTest(const CString szTestNumber, const CString szDescript
 //
 // Logs the end of the current test
 //
-void CSASelfTest::EndTest(BOOL bSuccess)
+void CSelfTest::EndTest(BOOL bSuccess)
 {
     CFile LogFile(m_szLogFileName,CFile::modeWrite);
     LogFile.Seek(-23,CFile::end);
@@ -1023,7 +1022,7 @@ void CSASelfTest::EndTest(BOOL bSuccess)
 //
 // Writes the message into the log file in the current test's area
 //
-void CSASelfTest::LogEntry(const CString szMessage)
+void CSelfTest::LogEntry(const CString szMessage)
 {
     BOOL bInTest = m_szTestNumber.GetLength();
 
@@ -1056,7 +1055,7 @@ void CSASelfTest::LogEntry(const CString szMessage)
 // If FileTwo is NULL, uses the "SelfTest\*.tmp" file, where * corresponds to the test name
 //
 #define BUFFERSIZE 1024
-int CSASelfTest::FileCompare(const CString szFileOne, long nTolerableDifferences, CString szFileTwo)
+int CSelfTest::FileCompare(const CString szFileOne, long nTolerableDifferences, CString szFileTwo)
 {
     long nFileDifferences = 0;
     long nFirstDifference = -1;
@@ -1165,11 +1164,11 @@ int CSASelfTest::FileCompare(const CString szFileOne, long nTolerableDifferences
 }//FileCompare
 
 /***************************************************************************/
-// CSASelfTest::MessageLoop Do windows message loop
+// CSelfTest::MessageLoop Do windows message loop
 // This function enables key down message to come through while
 // processing.
 /***************************************************************************/
-void CSASelfTest::MessageLoop(DWORD dwMilliSeconds)
+void CSelfTest::MessageLoop(DWORD dwMilliSeconds)
 {
     DWORD dwStartTime=::GetTickCount();
     BOOL bDoingBackgroundProcessing = TRUE;
@@ -1195,7 +1194,7 @@ void CSASelfTest::MessageLoop(DWORD dwMilliSeconds)
     }
 }
 
-BOOL CSASelfTest::LogHexDataCompare(CFile & FileOne,CFile & FileTwo,UINT HighlightPosition)
+BOOL CSelfTest::LogHexDataCompare(CFile & FileOne,CFile & FileTwo,UINT HighlightPosition)
 {
     BOOL bInTest = m_szTestNumber.GetLength();
     CString szOutString;
@@ -1330,7 +1329,7 @@ BOOL CSASelfTest::LogHexDataCompare(CFile & FileOne,CFile & FileTwo,UINT Highlig
     return TRUE;
 }//LogHexData
 
-void CSASelfTest::EmptyClipboard()
+void CSelfTest::EmptyClipboard()
 {
     if (::OpenClipboard(*m_pMain))
     {
@@ -1339,7 +1338,7 @@ void CSASelfTest::EmptyClipboard()
     }
 }
 
-BOOL CSASelfTest::CheckClipboard(UINT nFormat)   //CF_BITMAP
+BOOL CSelfTest::CheckClipboard(UINT nFormat)   //CF_BITMAP
 {
     BOOL bReturn = FALSE;
     if (::OpenClipboard(*m_pMain))
@@ -1348,4 +1347,9 @@ BOOL CSASelfTest::CheckClipboard(UINT nFormat)   //CF_BITMAP
         ::CloseClipboard();
     }
     return bReturn;
+}
+
+BOOL FileExists(const CString szFile)
+{
+    return !_taccess(szFile,0);
 }

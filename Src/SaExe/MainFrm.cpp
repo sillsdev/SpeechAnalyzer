@@ -741,7 +741,7 @@ void CMainFrame::OnUpdateToolsOptions(CCmdUI * pCmdUI)
 /***************************************************************************/
 void CMainFrame::OnToolsSelfTest()
 {
-    CSASelfTest Test;
+    CSelfTest Test;
 }
 
 /***************************************************************************/

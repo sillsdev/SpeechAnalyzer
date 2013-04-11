@@ -1,3 +1,10 @@
+SA - 3.1.0.50 - 4/10/2013 (stereo branch)
+1) Fixed Spectrogram display problem.
+Known Problems:
+1) Doing a cut/paste as new/undo corrupts the original graph.
+2) At 96khz, the Spectrum graph isn't able to display a graph when compared to selecting the same region in a 22khz wave file.
+3) At 96khz, the F1vF2 graph isn't able to display a graph when compared to selecting the same region in a 22khz wave file.
+
 SA - 3.1.0.49 - 4/4/2013 (stereo branch)
 1) Fixed problem in autopitch graph where graph was double the length from what it should be.
 2) Fixed crash in spectrogram graph when 96khz file is opened -  Code was truncating data value.

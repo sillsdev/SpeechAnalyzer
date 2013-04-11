@@ -1161,7 +1161,7 @@ void CGraphWnd::UpdateStatusBar(DWORD dwStartCursor, DWORD dwStopCursor, BOOL bF
                 SIG_PARMS Signal;
                 const BOOL bBlockBegin = TRUE;
                 Signal.SmpRate = pDoc->GetSamplesPerSec();
-                Signal.Length = DspWin::CalcLength(pSpectroParm->Bandwidth(), Signal.SmpRate, ResearchSettings.m_cWindow.m_nType);
+                Signal.Length = DspWin::CalcLength( pSpectroParm->Bandwidth(), Signal.SmpRate, ResearchSettings.m_cWindow.m_nType);
                 DWORD dwHalfFrameSize = (Signal.Length/2) * nSmpSize;
                 CPoint MousePosn = m_pPlot->GetMousePointerPosition();
                 DWORD dwWaveOffset = m_pPlot->CalcWaveOffsetAtPixel(MousePosn);
@@ -1177,7 +1177,7 @@ void CGraphWnd::UpdateStatusBar(DWORD dwStartCursor, DWORD dwStopCursor, BOOL bF
                     DWORD dwFrameStart = dwWaveOffset - dwHalfFrameSize;
                     Signal.Start = pDoc->GetWaveData(dwFrameStart, bBlockBegin);
                     Signal.SmpDataFmt = (nSmpSize == 1) ? (int8)PCM_UBYTE: (int8)PCM_2SSHORT;
-                    Spectrogram::CalcPower(&fPowerInDb, fFreq, pSpectroParm->nResolution, (CWindowSettings::Type)ResearchSettings.m_cWindow.m_nType, Signal, bPreEmphasis);
+                    CSpectrogram::CalcPower(&fPowerInDb, fFreq, pSpectroParm->nResolution, (CWindowSettings::Type)ResearchSettings.m_cWindow.m_nType, Signal, bPreEmphasis);
 
                     swprintf_s(szText,_countof(szText), _T("%7.1f Hz"), fFreq);
                     pStat->SetPaneSymbol(ID_STATUSPANE_3, FALSE);

@@ -322,7 +322,7 @@ void CPlotPOA::OnDraw(CDC * pDC, CRect rWnd, CRect /*rClip*/, CSaView * pView)
             int nRowPitch = nCharHeight + nRowSpacing;
             int nRowX = nLeftMargin + nImageWidth;
             int nRowY = nRowPitch;
-            for (int i = 0; i < (UINT)nRows - 1; i++, nRowY += nRowPitch)    //left column
+            for (size_t i = 0; i < (UINT)nRows - 1; i++, nRowY += nRowPitch)    //left column
             {
                 if (i == 0)
                 {
@@ -344,7 +344,7 @@ void CPlotPOA::OnDraw(CDC * pDC, CRect rWnd, CRect /*rClip*/, CSaView * pView)
             int nRowXEnd = nRowX + rText.Width();
             pDC->DrawText(szText, -1, rText, DT_SINGLELINE | DT_TOP | DT_RIGHT | DT_NOCLIP);
             nRowY = 0;
-            for (int i = 0; i < (UINT)nRows - 1; i++, nRowY += nRowPitch)    //right column
+            for (size_t i = 0; i < (UINT)nRows - 1; i++, nRowY += nRowPitch)    //right column
             {
                 swprintf_s(szText, _countof(szText), _T("         %6.2f"), pVocalTract->dNormCrossSectArea[i + nRows - 1]);
                 //rText.SetRect(nWndWidth - strlen(szText)*TextMetric.tmMaxCharWidth, (nCharHeight+nRowSpacing)*i, 100, 10);

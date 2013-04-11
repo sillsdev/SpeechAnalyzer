@@ -2291,7 +2291,7 @@ BOOL CDlgVocalTract::SynthesizeDataChunk(HMMIO hmmioFile, PCMWAVEFORMAT pcm, CIp
     return mmioWrite(hmmioFile, (char *) &shortData[0], sizeof(SHORT)*data.size());
 }
 
-BOOL CDlgVocalTract::SynthesizeWave(const TCHAR * pszPathName, CIpaVTCharVector & cChars)
+BOOL CDlgVocalTract::SynthesizeWave(LPCTSTR pszPathName, CIpaVTCharVector & cChars)
 {
     CSaApp * pApp = (CSaApp *)AfxGetApp(); // get pointer to application
 

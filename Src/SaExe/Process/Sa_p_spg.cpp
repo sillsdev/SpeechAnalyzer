@@ -125,9 +125,10 @@ long CProcessSpectrogram::Process(void * pCaller, ISaDoc * pDoc, CSaView * pView
     else
     {
         // get new area boundaries from window position
-        dwDataStart = (DWORD) pView->GetDataPosition(0); // data index of first sample to display
-        dwDataLength = pView->GetDataFrame(); // number of data points to display
+        dwDataStart = (DWORD) pView->GetDataPosition(0);	// data index of first sample to display
+        dwDataLength = pView->GetDataFrame();				// number of data points to display
     }
+
     // check if data ready
     if (IsDataReady())
     {
@@ -136,8 +137,7 @@ long CProcessSpectrogram::Process(void * pCaller, ISaDoc * pDoc, CSaView * pView
             return MAKELONG(--nLevel, nProgress);
         }
 
-        BOOL bNeedMaxResolution = TRUE;
-        if (!bNeedMaxResolution || IsStatusFlag(MAX_RESOLUTION))
+        if (IsStatusFlag(MAX_RESOLUTION))
         {
             if (GetAreaPosition() <= dwDataStart)
                 if (GetAreaPosition() + GetAreaLength() >= dwDataStart + dwDataLength)
@@ -146,6 +146,7 @@ long CProcessSpectrogram::Process(void * pCaller, ISaDoc * pDoc, CSaView * pView
                 }
         }
     }
+
     BeginWaitCursor(); // wait cursor
     if (!StartProcess(pCaller, IDS_STATTXT_PROCESSSPG))   // memory allocation failed
     {
@@ -173,7 +174,7 @@ long CProcessSpectrogram::Process(void * pCaller, ISaDoc * pDoc, CSaView * pView
     SpgmSetting.preEmphSw = true;
     SpgmSetting.Bandwidth = pSpectroParm->Bandwidth();
     Signal.SmpRate = pDoc->GetSamplesPerSec();
-    SpgmSetting.FFTLength = (USHORT)(2 << USHORT(ceil(log(float(DspWin::CalcLength(SpgmSetting.Bandwidth,Signal.SmpRate, ResearchSettings.m_cWindow.m_nType))/log(2.0) + 0.0))));
+    SpgmSetting.FFTLength = (USHORT)(2 << USHORT(ceil(log(float( DspWin::CalcLength( SpgmSetting.Bandwidth, Signal.SmpRate, ResearchSettings.m_cWindow.m_nType))/log(2.0) + 0.0))));
 
     {
         int minSpectraInterval = wSmpSize*(NyquistSpectraInterval(pDoc->GetSamplesPerSec())/2 + 1);
@@ -215,7 +216,7 @@ long CProcessSpectrogram::Process(void * pCaller, ISaDoc * pDoc, CSaView * pView
     // wide band results, if there is enough data to calculate (spectrogram doesn't
     // do that).
 
-    WORD wHalfCalcWindow = (WORD)(nBlockAlign * ((WORD)DspWin::CalcLength(SpgmSetting.Bandwidth, (WORD)pDoc->GetSamplesPerSec(), ResearchSettings.m_cWindow.m_nType) / 2));
+    WORD wHalfCalcWindow = (WORD)(nBlockAlign * ((WORD)DspWin::CalcLength(SpgmSetting.Bandwidth, pDoc->GetSamplesPerSec(), ResearchSettings.m_cWindow.m_nType) / 2));
 
     double fSpectraInterval = (dwDataLength/wSmpSize)/double(nWidth);
 
@@ -229,17 +230,17 @@ long CProcessSpectrogram::Process(void * pCaller, ISaDoc * pDoc, CSaView * pView
     SpgmSetting.SpectBatchLength = (USHORT)(dwWidth & ~1);  // must be even ?
 
     // create the spectrogram object and initialize spectrogram parameters
-    Spectrogram * pSpectrogram;
+    CSpectrogram * pSpectrogram = NULL;
     BOOL bAliased = TRUE;
 
     Signal.SmpDataFmt = char((!pDoc->Is16Bit()) ? PCM_UBYTE: PCM_2SSHORT);
-    SetStatusFlag(~MAX_RESOLUTION, FALSE); // reset status
+    SetStatusFlag(~MAX_RESOLUTION, FALSE);					// reset status
+
     UINT nSpectSize = sizeof(uint8) * (UINT)nHeight;
 
     // Generate spectrogram.
     for (int wLoop = 0; wLoop < nWidth; wLoop = (wLoop + SpgmSetting.SpectBatchLength))
     {
-
         // now fill up the special raw data buffer
         DWORD dwDataPos = dwDataStart + round(wLoop*fSpectraInterval)*wSmpSize;
         DWORD dwBufferStart = 0;
@@ -264,7 +265,7 @@ long CProcessSpectrogram::Process(void * pCaller, ISaDoc * pDoc, CSaView * pView
         SpgmSetting.SigBlkLength = (DWORD) floor(SpgmSetting.SpectBatchLength*fSpectraInterval);
         SpgmSetting.SpectCnt = SpgmSetting.SpectBatchLength;
 
-        Err = Spectrogram::CreateObject(&pSpectrogram, SpgmSetting, Signal);
+        Err = CSpectrogram::CreateObject(&pSpectrogram, SpgmSetting, Signal);
         if (Err)
         {
             return Exit(PROCESS_ERROR);    // error, setup failed

@@ -300,7 +300,7 @@ void CWaveResampler::Func(size_t bufferLen,
 * This method uses 32-bit floating point to do the majority of the work.
 * The incoming default progress bar is 30%....
 */
-CWaveResampler::ECONVERT CWaveResampler::Run(const TCHAR * src, const TCHAR  * dst, CProgressStatusBar * pStatusBar, BOOL bShowAdvancedAudio)
+CWaveResampler::ECONVERT CWaveResampler::Run(LPCTSTR src, const TCHAR  * dst, CProgressStatusBar * pStatusBar, BOOL bShowAdvancedAudio)
 {
 
     // yes, I could have used smart pointers...I was in a hurry.
@@ -464,7 +464,7 @@ CWaveResampler::ECONVERT CWaveResampler::Run(const TCHAR * src, const TCHAR  * d
     }
 
     // convert incoming format if possible
-    if ((wFormatTag!=WAVE_FORMAT_PCM)&&(wFormatTag!=WAVE_FORMAT_IEEE_FLOAT))
+    if ((wFormatTag!=WAVE_FORMAT_PCM) && (wFormatTag!=WAVE_FORMAT_IEEE_FLOAT))
     {
 
         HACMSTREAM hacm = 0;
@@ -817,6 +817,8 @@ CWaveResampler::ECONVERT CWaveResampler::Run(const TCHAR * src, const TCHAR  * d
     fatal error has occurred.
     */
 
+// we now use the data at whatever frequency it comes in at
+#if 0
     // is there anything to do?
     if ((nSamplesPerSec!=22050))
     {
@@ -882,8 +884,9 @@ CWaveResampler::ECONVERT CWaveResampler::Run(const TCHAR * src, const TCHAR  * d
 
         length = newLength*nChannels;
     }
-
     nSamplesPerSec = 22050;
+
+#endif
 
     pStatusBar->SetProgress(95);
 

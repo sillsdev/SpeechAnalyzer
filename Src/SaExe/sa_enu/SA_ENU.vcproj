@@ -170,15 +170,14 @@
 			<Tool
 				Name="VCLinkerTool"
 				IgnoreImportLibrary="true"
-				OutputFile=".\..\..\..\Output\Release/SA_ENU.dll"
+				OutputFile="$(OutDir)/SA_ENU.dll"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
 				GenerateDebugInformation="false"
-				ProgramDatabaseFile=".\..\..\..\Output\Release/SA_ENU.pdb"
+				ProgramDatabaseFile="$(OutDir)/SA_ENU.pdb"
 				SubSystem="2"
 				RandomizedBaseAddress="1"
 				DataExecutionPrevention="0"
-				ImportLibrary=".\..\..\..\Output\Release/SA_ENU.lib"
 				TargetMachine="1"
 			/>
 			<Tool

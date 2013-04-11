@@ -108,7 +108,7 @@ int CPlotHelperWnd::OnCreate(LPCREATESTRUCT lpCreateStruct)
         return -1;
     }
     // create the helper window font (same font as status bar)
-    const TCHAR * pszName = _T("MS Sans Serif");
+    LPCTSTR pszName = _T("MS Sans Serif");
     m_font.CreateFont(-10, 0, 0, 0, FW_NORMAL, 0, 0, 0,
                       ANSI_CHARSET, OUT_DEFAULT_PRECIS, (CLIP_LH_ANGLES | CLIP_STROKE_PRECIS),
                       DEFAULT_QUALITY, FF_SWISS, pszName);

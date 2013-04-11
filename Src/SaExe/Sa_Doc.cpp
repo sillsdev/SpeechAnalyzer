@@ -810,7 +810,7 @@ BOOL CSaDoc::OnNewDocument()
 // stores it into data members. From the wave data itself only the first
 // block of data is read and stored in the data buffer.
 /***************************************************************************/
-BOOL CSaDoc::OnOpenDocument(const TCHAR * pszPathName)
+BOOL CSaDoc::OnOpenDocument(LPCTSTR pszPathName)
 {
     CSaApp * pApp = (CSaApp *)AfxGetApp();
     CSaString szWavePath = pszPathName;
@@ -875,7 +875,7 @@ public:
 // stores it into data members. From the wave data itself only the first
 // block of data is read and stored in the data buffer.
 /***************************************************************************/
-BOOL CSaDoc::LoadDataFiles(const TCHAR * pszPathName, bool bTemp/*=FALSE*/)
+BOOL CSaDoc::LoadDataFiles(LPCTSTR pszPathName, bool bTemp/*=FALSE*/)
 {
     CMainFrame * pMainWnd = (CMainFrame *)AfxGetMainWnd();
 
@@ -948,7 +948,7 @@ BOOL CSaDoc::LoadDataFiles(const TCHAR * pszPathName, bool bTemp/*=FALSE*/)
 // stores it into data members. From the wave data itself only the first
 // block of data is read and stored in the data buffer.
 /***************************************************************************/
-BOOL CSaDoc::LoadTranscriptionData(const TCHAR * pszWavePath, BOOL bTemp)
+BOOL CSaDoc::LoadTranscriptionData(LPCTSTR pszWavePath, BOOL bTemp)
 {
 
     CSaApp * pApp = (CSaApp *)AfxGetApp();
@@ -1028,7 +1028,7 @@ BOOL CSaDoc::LoadTranscriptionData(const TCHAR * pszWavePath, BOOL bTemp)
 /***************************************************************************/
 // CSaDoc::ReadRiff  Read fmt and (wave) data chunks from wave file
 /***************************************************************************/
-BOOL CSaDoc::ReadRiff(const TCHAR * pszPathName)
+BOOL CSaDoc::ReadRiff(LPCTSTR pszPathName)
 {
 
     CSaApp * pApp = ((CSaApp *)AfxGetApp());
@@ -1469,7 +1469,7 @@ void CSaDoc::InsertGlossPosRefTranscription(ISaAudioDocumentReaderPtr saAudioDoc
 // silent if this is true, do not display an error on NON-PCM files as they
 //        will be retried for conversion at a later point.
 /***************************************************************************/
-bool CSaDoc::GetWaveFormatParams(const TCHAR * pszPathName,
+bool CSaDoc::GetWaveFormatParams(LPCTSTR pszPathName,
                                  CFmtParm & fmtParm,
                                  DWORD & dwDataSize)
 {
@@ -1594,7 +1594,7 @@ bool CSaDoc::GetWaveFormatParams(const TCHAR * pszPathName,
 * No errors will be displayed.  Other code will attempt to read the file
 * and convert it.
 ***************************************************************************/
-bool CSaDoc::IsStandardWaveFormat(const TCHAR * pszPathName)
+bool CSaDoc::IsStandardWaveFormat(LPCTSTR pszPathName)
 {
 
     // open file
@@ -1727,7 +1727,7 @@ bool CSaDoc::IsStandardWaveFormat(const TCHAR * pszPathName)
 * data.
 * This function assumes IsStandardWaveFormat was called first
 ***************************************************************************/
-bool CSaDoc::IsMultiChannelWave(const TCHAR * pszPathName, int & channels)
+bool CSaDoc::IsMultiChannelWave(LPCTSTR pszPathName, int & channels)
 {
     channels = 0;
 
@@ -1796,7 +1796,7 @@ bool CSaDoc::IsMultiChannelWave(const TCHAR * pszPathName, int & channels)
 // CSaDoc::CheckWaveFormatForPaste Checks format of a WAV file for insertion into
 // document.
 /***************************************************************************/
-DWORD CSaDoc::CheckWaveFormatForPaste(const TCHAR * pszPathName)
+DWORD CSaDoc::CheckWaveFormatForPaste(LPCTSTR pszPathName)
 {
 
     CFmtParm fmtParm;
@@ -1832,7 +1832,7 @@ DWORD CSaDoc::CheckWaveFormatForPaste(const TCHAR * pszPathName)
 /***************************************************************************/
 // CSaDoc::CheckWaveFormatForOpen Checks format of a WAV file for opening
 /***************************************************************************/
-DWORD CSaDoc::CheckWaveFormatForOpen(const TCHAR * pszPathName)
+DWORD CSaDoc::CheckWaveFormatForOpen(LPCTSTR pszPathName)
 {
 
     CFmtParm fmtParm;
@@ -1862,7 +1862,7 @@ DWORD CSaDoc::CheckWaveFormatForOpen(const TCHAR * pszPathName)
 /***************************************************************************/
 // CSaDoc::ConvertToWave Converts file to 22kHz, 16bit, Mono WAV format
 /***************************************************************************/
-bool CSaDoc::ConvertToWave(const TCHAR * pszPathName)
+bool CSaDoc::ConvertToWave(LPCTSTR pszPathName)
 {
 
     bool result = true;
@@ -1942,7 +1942,7 @@ bool CSaDoc::ConvertToWave(const TCHAR * pszPathName)
 // CSaDoc::OnSaveDocument Saving a document
 // Override for CDocument::OnSaveDocument()
 /***************************************************************************/
-BOOL CSaDoc::OnSaveDocument(const TCHAR * pszPathName)
+BOOL CSaDoc::OnSaveDocument(LPCTSTR pszPathName)
 {
     return OnSaveDocument(pszPathName, TRUE);
 }
@@ -1957,7 +1957,7 @@ BOOL CSaDoc::OnSaveDocument(const TCHAR * pszPathName)
 // file from the recorder contains the RIFF structure with the fmt and the
 // data chunks. After the copying, the file has to be saved in the normal way.
 /***************************************************************************/
-BOOL CSaDoc::OnSaveDocument( const TCHAR * pszPathName, BOOL bSaveAudio)
+BOOL CSaDoc::OnSaveDocument( LPCTSTR pszPathName, BOOL bSaveAudio)
 {
 
     std::wstring target = pszPathName;
@@ -2098,7 +2098,7 @@ BOOL CSaDoc::OnSaveDocument( const TCHAR * pszPathName, BOOL bSaveAudio)
 // the document (wave file). The fmt and data chunks have to be there al-
 // ready! The temporary wave file data will be copied into the wave chunk.
 /***************************************************************************/
-BOOL CSaDoc::WriteDataFiles(const TCHAR * pszPathName, BOOL bSaveAudio/*=TRUE*/, BOOL bIsClipboardFile/*=FALSE*/)
+BOOL CSaDoc::WriteDataFiles(LPCTSTR pszPathName, BOOL bSaveAudio/*=TRUE*/, BOOL bIsClipboardFile/*=FALSE*/)
 {
 
     CSaApp * pApp = (CSaApp *)AfxGetApp();
@@ -2186,7 +2186,7 @@ BOOL CSaDoc::WriteDataFiles(const TCHAR * pszPathName, BOOL bSaveAudio/*=TRUE*/,
 // CSaDoc::WriteRiff - The fmt and data chunks have to be there already!
 // The temporary wave file data will be copied into the wave chunk.
 /***************************************************************************/
-DWORD CSaDoc::WriteRiff(const TCHAR * pszPathName)
+DWORD CSaDoc::WriteRiff(LPCTSTR pszPathName)
 {
     CSaApp * pApp = (CSaApp *)AfxGetApp(); // get pointer to application
 
@@ -3201,7 +3201,7 @@ BOOL CSaDoc::SaveModified()
 // dwStart indicates position in source file to copy from in bytes  
 // dwLength indicates maximum length to copy in bytes
 /***************************************************************************/
-BOOL CSaDoc::CopyWave(const TCHAR * pszSourceName, const TCHAR * pszTargetName)
+BOOL CSaDoc::CopyWave(LPCTSTR pszSourceName, LPCTSTR pszTargetName)
 {
 	TRACE("copying %s to %s\n",pszSourceName, pszTargetName);
 		
@@ -3284,7 +3284,7 @@ BOOL CSaDoc::CopyWave(const TCHAR * pszSourceName, const TCHAR * pszTargetName)
 // dwStart indicates position in source file to copy from in samples
 // dwLength indicates maximum length to copy in samples
 /***************************************************************************/
-BOOL CSaDoc::CopyWave(const TCHAR * pszSourceName, const TCHAR * pszTargetName, const CWaveIndex & dwStart, const CWaveIndex & dwLength, BOOL bTruncate)
+BOOL CSaDoc::CopyWave(LPCTSTR pszSourceName, LPCTSTR pszTargetName, const CWaveIndex & dwStart, const CWaveIndex & dwLength, BOOL bTruncate)
 {
 	TRACE("copy %s to %s from %d to %d\n",pszSourceName, pszTargetName, dwStart, (dwStart.GetSamples()+dwLength.GetSamples()));
 
@@ -3376,7 +3376,7 @@ BOOL CSaDoc::CopyWave(const TCHAR * pszSourceName, const TCHAR * pszTargetName, 
 // and the graph(s) will be refreshed.
 /***************************************************************************/
 // SDM 1.06.6U2
-void CSaDoc::ApplyWaveFile(const TCHAR * pszFileName, DWORD dwDataSize, BOOL bInitialUpdate)
+void CSaDoc::ApplyWaveFile(LPCTSTR pszFileName, DWORD dwDataSize, BOOL bInitialUpdate)
 {
 
     // save the temporary file
@@ -3416,7 +3416,7 @@ void CSaDoc::ApplyWaveFile(const TCHAR * pszFileName, DWORD dwDataSize, BOOL bIn
 // and the graph(s) will be refreshed.
 /***************************************************************************/
 // SDM 1.06.6U2
-void CSaDoc::ApplyWaveFile(const TCHAR * pszFileName, DWORD dwDataSize, CAlignInfo info)
+void CSaDoc::ApplyWaveFile(LPCTSTR pszFileName, DWORD dwDataSize, CAlignInfo info)
 {
 
     // save the temporary file
@@ -6146,7 +6146,7 @@ void CSaDoc::CopyProcessTempFile()
     // check for Workbench process
     CProcess * pWbProcess = NULL;
     // fallback to adjust temp file
-    const TCHAR * pszWBTempPath = pszAdjustTempPath;
+    LPCTSTR pszWBTempPath = pszAdjustTempPath;
     if (m_nWbProcess>0)
     {
         CMainFrame * pMain = (CMainFrame *)AfxGetMainWnd();
@@ -6160,7 +6160,7 @@ void CSaDoc::CopyProcessTempFile()
 
     if (bAdjust || m_nWbProcess)
     {
-        const TCHAR * pszProcTempPath = (m_nWbProcess ? pszWBTempPath : pszAdjustTempPath); // Workbench temp file takes precedence
+        LPCTSTR pszProcTempPath = (m_nWbProcess ? pszWBTempPath : pszAdjustTempPath); // Workbench temp file takes precedence
         try
         {
             // copy the process temp file as the temporary wave file
@@ -8342,6 +8342,8 @@ CFontTable  * CSaDoc::GetFont(int nIndex)
 }
 
 // return sampled data size from wave file
+// this is the length of the data in bytes
+// for all channels.
 DWORD CSaDoc::GetUnprocessedDataSize() const
 {
     return m_dwDataSize;

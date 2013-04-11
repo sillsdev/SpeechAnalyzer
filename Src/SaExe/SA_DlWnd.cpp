@@ -1048,7 +1048,7 @@ int CVUBar::OnCreate(LPCREATESTRUCT lpCreateStruct)
     {
         return -1;
     }
-    const TCHAR * pszName = _T("MS Sans Serif");
+    LPCTSTR pszName = _T("MS Sans Serif");
     m_font.CreateFont(12, 0, 0, 0, FW_NORMAL, 0, 0, 0,
                       ANSI_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS,
                       DEFAULT_QUALITY, (VARIABLE_PITCH | FF_ROMAN), pszName);
@@ -2118,7 +2118,7 @@ void CToggleButton::DrawText(CDC * pDC, CRect rWnd)
 {
     // create the font
     CFont font;
-    const TCHAR * pszName = _T("MS Sans Serif");
+    LPCTSTR pszName = _T("MS Sans Serif");
     font.CreateFont(15, 0, 0, 0, FW_NORMAL, 0, 0, 0,
                     ANSI_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS,
                     DEFAULT_QUALITY, (VARIABLE_PITCH | FF_ROMAN), pszName);

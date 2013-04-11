@@ -62,7 +62,7 @@
     </Midl>
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>..\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_MBCS;_AFXEXT;WINVER=0x501;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
@@ -75,6 +75,7 @@
     <ResourceCompile>
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <Culture>0x0409</Culture>
+      <AdditionalIncludeDirectories>..</AdditionalIncludeDirectories>
     </ResourceCompile>
     <Link>
       <SuppressStartupBanner>true</SuppressStartupBanner>
@@ -101,7 +102,7 @@
     <ClCompile>
       <Optimization>Disabled</Optimization>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
-      <AdditionalIncludeDirectories>..\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_MBCS;_AFXEXT;WINVER=0x501;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
@@ -114,6 +115,7 @@
     <ResourceCompile>
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <Culture>0x0409</Culture>
+      <AdditionalIncludeDirectories>..</AdditionalIncludeDirectories>
     </ResourceCompile>
     <Link>
       <SuppressStartupBanner>true</SuppressStartupBanner>
@@ -129,15 +131,7 @@
     </Bscmake>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ResourceCompile Include="..\SA.rc">
-      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">\SpeechAnalyzer\trunk\Src\SaExe;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">\SpeechAnalyzer\trunk\Src\SaExe;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-    </ResourceCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="SA_ENU.cpp"/>
+    <ClCompile Include="SA_ENU.cpp" />
     <ClCompile Include="StdAfx.cpp">
       <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -148,67 +142,70 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\resource.h" />
+    <ClInclude Include="..\Res\resource.h" />
     <ClInclude Include="StdAfx.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\RES\1.ICO" />
-    <None Include="..\RES\2A.ICO" />
-    <None Include="..\RES\2B.ICO" />
+    <None Include="..\Res\2A.ICO" />
+    <None Include="..\Res\2B.ICO" />
     <None Include="..\Res\2c.ico" />
-    <None Include="..\RES\3A.ICO" />
-    <None Include="..\RES\3B.ICO" />
+    <None Include="..\Res\3A.ICO" />
+    <None Include="..\Res\3B.ICO" />
     <None Include="..\Res\3c.ico" />
-    <None Include="..\RES\4A.ICO" />
-    <None Include="..\RES\4B.ICO" />
+    <None Include="..\Res\4A.ICO" />
+    <None Include="..\Res\4B.ICO" />
     <None Include="..\Res\4c.ico" />
-    <None Include="..\RES\5.ICO" />
-    <None Include="..\RES\6A.ICO" />
-    <None Include="..\RES\6B.ICO" />
+    <None Include="..\Res\5.ICO" />
+    <None Include="..\Res\6A.ICO" />
+    <None Include="..\Res\6B.ICO" />
     <None Include="..\Res\advanced.bmp" />
-    <None Include="..\RES\BPU.BMP" />
+    <None Include="..\Res\BPU.BMP" />
     <None Include="..\Res\down.ico" />
-    <None Include="..\RES\ECHOU.BMP" />
-    <None Include="..\RES\EQU.BMP" />
-    <None Include="..\RES\FACE.BMP" />
-    <None Include="..\RES\FINGERN.CUR" />
-    <None Include="..\RES\FINGERNW.CUR" />
-    <None Include="..\RES\HANDN.CUR" />
-    <None Include="..\RES\HPU.BMP" />
+    <None Include="..\Res\ECHOU.BMP" />
+    <None Include="..\Res\EQU.BMP" />
+    <None Include="..\Res\FACE.BMP" />
+    <None Include="..\Res\FINGERN.CUR" />
+    <None Include="..\Res\FINGERNW.CUR" />
+    <None Include="..\Res\HANDN.CUR" />
+    <None Include="..\Res\HPU.BMP" />
     <None Include="..\Res\idr_sa_a.ico" />
-    <None Include="..\RES\idr_synthesis_vocal_tract.ico" />
-    <None Include="..\RES\JAW.BMP" />
-    <None Include="..\RES\KNOBH.BMP" />
-    <None Include="..\RES\KNOBV.BMP" />
-    <None Include="..\RES\LANDU.BMP" />
-    <None Include="..\RES\LED.BMP" />
-    <None Include="..\RES\LPU.BMP" />
+    <None Include="..\Res\idr_synthesis_vocal_tract.ico" />
+    <None Include="..\Res\JAW.BMP" />
+    <None Include="..\Res\KNOBH.BMP" />
+    <None Include="..\Res\KNOBV.BMP" />
+    <None Include="..\Res\LANDU.BMP" />
+    <None Include="..\Res\LED.BMP" />
+    <None Include="..\Res\LPU.BMP" />
     <None Include="..\Res\MedFingerN.cur" />
     <None Include="..\Res\MedFingerNW.cur" />
     <None Include="..\Res\MedHandN.cur" />
     <None Include="..\Res\next.ico" />
-    <None Include="..\RES\PORTU.BMP" />
+    <None Include="..\Res\PORTU.BMP" />
     <None Include="..\Res\prev.ico" />
-    <None Include="..\RES\RAWU.BMP" />
-    <None Include="..\RES\RESULTU.BMP" />
-    <None Include="..\RES\REVU.BMP" />
-    <None Include="..\RES\SA.ICO" />
-    <None Include="..\RES\SA_DOC.ICO" />
-    <None Include="..\RES\SA_WB.ICO" />
-    <None Include="..\RES\SAS.ICO" />
-    <None Include="..\RES\SIL.BMP" />
+    <None Include="..\Res\RAWU.BMP" />
+    <None Include="..\Res\RESULTU.BMP" />
+    <None Include="..\Res\REVU.BMP" />
+    <None Include="..\Res\SA.ICO" />
+    <None Include="..\Res\SA_DOC.ICO" />
+    <None Include="..\Res\SA_WB.ICO" />
+    <None Include="..\Res\SAS.ICO" />
+    <None Include="..\Res\SIL.BMP" />
     <None Include="..\Res\Splash-2.bmp" />
     <None Include="..\Res\taskbar.bmp" />
-    <None Include="..\RES\TONGUE.BMP" />
-    <None Include="..\RES\TOOLBAR.BMP" />
+    <None Include="..\Res\TONGUE.BMP" />
+    <None Include="..\Res\TOOLBAR.BMP" />
     <None Include="..\Res\up.ico" />
+    <None Include="..\Res\1.ICO" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="..\SA.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties RESOURCE_FILE="\Working\SIL\MSEA.git\Src\SaExe\SA.rc" />
+      <UserProperties RESOURCE_FILE="..\SA.rc" />
     </VisualStudio>
   </ProjectExtensions>
 </Project>

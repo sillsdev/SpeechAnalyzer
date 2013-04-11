@@ -1,9 +1,9 @@
 #ifndef WAVEWARP_H
 #define WAVEWARP_H
 
-#include "dspTypes.h"
-#include "Error.h"
-#include "Fragment.h"
+#include "dsp\dspTypes.h"
+#include "dsp\Error.h"
+#include "dsp\Fragment.h"
 
 __interface ISaDoc;
 

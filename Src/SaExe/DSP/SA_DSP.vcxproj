@@ -122,25 +122,25 @@
     </Bscmake>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="AcousticTube.cpp"/>
-    <ClCompile Include="cspksrc.cpp"/>
-    <ClCompile Include="curvefit.cpp"/>
-    <ClCompile Include="dspwins.cpp"/>
-    <ClCompile Include="epksrc.cpp"/>
-    <ClCompile Include="fft.cpp"/>
-    <ClCompile Include="formants.cpp"/>
-    <ClCompile Include="Fragment.cpp"/>
-    <ClCompile Include="grappl.cpp"/>
-    <ClCompile Include="histgram.cpp"/>
-    <ClCompile Include="HPFLTR70.CPP"/>
-    <ClCompile Include="mathx.cpp"/>
-    <ClCompile Include="peakpick.cpp"/>
-    <ClCompile Include="qpksrc.cpp"/>
-    <ClCompile Include="Roots.cpp"/>
-    <ClCompile Include="Spectgrm.cpp"/>
-    <ClCompile Include="Spectrum.cpp"/>
-    <ClCompile Include="template.cpp"/>
-    <ClCompile Include="ZTransform.cpp"/>
+    <ClCompile Include="AcousticTube.cpp" />
+    <ClCompile Include="cspksrc.cpp" />
+    <ClCompile Include="curvefit.cpp" />
+    <ClCompile Include="dspwins.cpp" />
+    <ClCompile Include="epksrc.cpp" />
+    <ClCompile Include="fft.cpp" />
+    <ClCompile Include="formants.cpp" />
+    <ClCompile Include="Fragment.cpp" />
+    <ClCompile Include="grappl.cpp" />
+    <ClCompile Include="histgram.cpp" />
+    <ClCompile Include="HPFLTR70.CPP" />
+    <ClCompile Include="mathx.cpp" />
+    <ClCompile Include="peakpick.cpp" />
+    <ClCompile Include="qpksrc.cpp" />
+    <ClCompile Include="Roots.cpp" />
+    <ClCompile Include="Spectgrm.cpp" />
+    <ClCompile Include="Spectrum.cpp" />
+    <ClCompile Include="template.cpp" />
+    <ClCompile Include="ZTransform.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="SA_DSP.def" />

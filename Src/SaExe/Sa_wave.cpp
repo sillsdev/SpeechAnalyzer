@@ -600,7 +600,7 @@ BOOL CWave::Record(HMMIO hmmioFile,
     SaParm * pSaParm = pDoc->GetSaParm();
     if (pSaParm->wFlags & SA_FLAG_HIGHPASS)
         if (!m_pInDev->GetHighPassFilter())
-            if (!m_pInDev->AttachHighPassFilter((USHORT)pDoc->GetSamplesPerSec()))
+            if (!m_pInDev->AttachHighPassFilter(pDoc->GetSamplesPerSec()))
             {
                 // if can't construct highpass filter, reset the flag
                 pSaParm->wFlags &= ~SA_FLAG_HIGHPASS;

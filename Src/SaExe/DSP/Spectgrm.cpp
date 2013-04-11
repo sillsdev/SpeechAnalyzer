@@ -222,7 +222,7 @@
 *       if (SampleByteSize == 1) Signal.SmpDataFmt = PCM_UBYTE;            *
 *       else Signal.SmpDataFmt = PCM_2SSHORT;                              *
 *                                                                          *
-*       dspError_t = Spectrogram::Setup(&m_Spectrogram, SpgmSetting, Signal);     *
+*       dspError_t = CSpectrogram::Setup(&m_Spectrogram, SpgmSetting, Signal);     *
 *       if (dspError_t) return(dspError_t);                                *
 *      }                                                                   *
 *   else                                                                   *
@@ -347,7 +347,7 @@ FILE * CepstraDump;
 ////////////////////////////////////////////////////////////////////////////////////////
 // Class function to return copyright notice.                                         //
 ////////////////////////////////////////////////////////////////////////////////////////
-char * Spectrogram::Copyright(void)
+char * CSpectrogram::Copyright(void)
 {
     static char Banner[] = {"Spectrogram Version " VERSION_NUMBER "\n"
                             "Copyright (c) " COPYRIGHT_DATE " by Summer Institute of Linguistics. "
@@ -359,7 +359,7 @@ char * Spectrogram::Copyright(void)
 ////////////////////////////////////////////////////////////////////////////////////////
 // Class function to return version of class.                                         //
 ////////////////////////////////////////////////////////////////////////////////////////
-float Spectrogram::Version(void)
+float CSpectrogram::Version(void)
 {
     return((float)atof(VERSION_NUMBER));
 }
@@ -367,7 +367,7 @@ float Spectrogram::Version(void)
 ////////////////////////////////////////////////////////////////////////////////////////
 // Class function to construct spectrogram object if parameters are valid.            //
 ////////////////////////////////////////////////////////////////////////////////////////
-dspError_t Spectrogram::CreateObject(Spectrogram ** Spgm, SPGM_SETTINGS SpgmSetting, SIG_PARMS Signal)
+dspError_t CSpectrogram::CreateObject(CSpectrogram ** Spgm, SPGM_SETTINGS SpgmSetting, SIG_PARMS Signal)
 {
     // Validate requested spectrogram settings and signal parameters.
     if (!Spgm)
@@ -396,13 +396,14 @@ dspError_t Spectrogram::CreateObject(Spectrogram ** Spgm, SPGM_SETTINGS SpgmSett
     {
         return Code(INVALID_BLOCK_LEN);    //block to calculate must not go beyond end of signal data
     }
+
     if (SpgmSetting.SpectCnt > Signal.Length)
     {
         return Code(INVALID_NUM_SPECTRA);    //number of spectra must not exceed signal length
     }
 
     // Calculate window for frame data from specified bandwidth.
-    DspWin Window = DspWin::FromBandwidth(SpgmSetting.Bandwidth,Signal.SmpRate, SpgmSetting.windowType);
+    DspWin Window = DspWin::FromBandwidth( SpgmSetting.Bandwidth, Signal.SmpRate, SpgmSetting.windowType);
 
     // Create narrowband window for formant tracking.
     DspWin NBWindow = DspWin::FromBandwidth(NARROW_BW,Signal.SmpRate, SpgmSetting.windowType);
@@ -426,8 +427,8 @@ dspError_t Spectrogram::CreateObject(Spectrogram ** Spgm, SPGM_SETTINGS SpgmSett
     uint8 * ScreenData = NULL;
 
     // Construct spectrogram object.
-    *Spgm = new Spectrogram(SpgmSetting, SpgmData, FmntData, Window, NBWindow, Signal, ScreenData);
-    if (!*Spgm)
+    *Spgm = new CSpectrogram( SpgmSetting, SpgmData, FmntData, Window, NBWindow, Signal, ScreenData);
+    if (*Spgm==NULL)
     {
         //!!put in function
         delete [] ScreenData;
@@ -443,34 +444,34 @@ dspError_t Spectrogram::CreateObject(Spectrogram ** Spgm, SPGM_SETTINGS SpgmSett
 ////////////////////////////////////////////////////////////////////////////////////////
 // Class function to validate signal parameters.                                      //
 ////////////////////////////////////////////////////////////////////////////////////////
-dspError_t Spectrogram::ValidateSignalParms(SIG_PARMS Signal)
+dspError_t CSpectrogram::ValidateSignalParms(SIG_PARMS Signal)
 {
     if (Signal.SmpRate < 1)
     {
-        return(Code(UNSUPP_SMP_RATE));
+        return Code(UNSUPP_SMP_RATE);
     }
-    if (!Signal.Start)
+    if (Signal.Start==NULL)
     {
-        return(Code(INVALID_SIG_DATA_PTR));    //signal data starting address
+        return Code(INVALID_SIG_DATA_PTR);		// signal data starting address
     }
     //  must not be NULL
-    if (!Signal.Length)
+    if (Signal.Length==0)
     {
-        return(Code(INVALID_SIG_LEN));    //number of samples must not be
+        return Code(INVALID_SIG_LEN);			// number of samples must not be
     }
     //  NULL
-    if (Signal.SmpDataFmt != PCM_UBYTE &&   //sample data format should be unsigned byte PCM, or
-            Signal.SmpDataFmt != PCM_2SSHORT)   //  2's complement signed 16-bit PCM
+    if ((Signal.SmpDataFmt != PCM_UBYTE) &&		// sample data format should be unsigned byte PCM, or
+        (Signal.SmpDataFmt != PCM_2SSHORT))		// 2's complement signed 16-bit PCM
     {
-        return(Code(UNSUPP_SMP_DATA_FMT));
+        return Code(UNSUPP_SMP_DATA_FMT);
     }
-    return(DONE);
+    return DONE;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////
 // Class function to validate requested spectrogram settings.                         //
 ////////////////////////////////////////////////////////////////////////////////////////
-dspError_t Spectrogram::ValidateSettings(SPGM_SETTINGS Setting)
+dspError_t CSpectrogram::ValidateSettings(SPGM_SETTINGS Setting)
 {
 	//lower frequency of spectra must be less than upper
     if (Setting.LwrFreq > Setting.UprFreq)   
@@ -504,13 +505,13 @@ dspError_t Spectrogram::ValidateSettings(SPGM_SETTINGS Setting)
     }
 
 	// batch size to process must not be zero or greater than number of spectra
-    if (!Setting.SpectBatchLength || Setting.SpectBatchLength > Setting.SpectCnt)
+    if ((Setting.SpectBatchLength==0) || (Setting.SpectBatchLength > Setting.SpectCnt))
     {
         return Code(INVALID_BATCH_SIZE);    
     }
 
 	// block size of spectra to display must not be zero
-    if (!Setting.SigBlkLength)
+    if (Setting.SigBlkLength==0)
     {
         return Code(INVALID_BLOCK_LEN);    
     }
@@ -518,13 +519,14 @@ dspError_t Spectrogram::ValidateSettings(SPGM_SETTINGS Setting)
     return DONE;
 }
 
-
-
 ////////////////////////////////////////////////////////////////////////////////////////
 // Spectrogram object constructor.                                                    //
 ////////////////////////////////////////////////////////////////////////////////////////
-Spectrogram::Spectrogram(SPGM_SETTINGS SpgmSetting, uint8 * SpgmData, FORMANT_FREQ * FmntData,
-                         DspWin & Window, DspWin & NBWindow, SIG_PARMS Signal, uint8 * ScreenData) : m_Window(Window), m_NBWindow(NBWindow)
+CSpectrogram::CSpectrogram( SPGM_SETTINGS SpgmSetting, 
+							uint8 * SpgmData, 
+							FORMANT_FREQ * FmntData,
+							DspWin & Window, 
+							DspWin & NBWindow, SIG_PARMS Signal, uint8 * ScreenData) : m_Window(Window), m_NBWindow(NBWindow)
 {
     // Update object member variables.
     m_ScreenData = ScreenData;
@@ -576,7 +578,7 @@ Spectrogram::Spectrogram(SPGM_SETTINGS SpgmSetting, uint8 * SpgmData, FORMANT_FR
 ////////////////////////////////////////////////////////////////////////////////////////
 // Spectrogram object destructor.                                                     //
 ////////////////////////////////////////////////////////////////////////////////////////
-Spectrogram::~Spectrogram()
+CSpectrogram::~CSpectrogram()
 {
     // Deallocate all buffers.
     if (m_ScreenData)
@@ -605,7 +607,7 @@ Spectrogram::~Spectrogram()
 ////////////////////////////////////////////////////////////////////////////////////////
 // Object function to retrieve various spectrogram parameters.                        //
 ////////////////////////////////////////////////////////////////////////////////////////
-dspError_t Spectrogram::GetMetrics(float * FreqScale,
+dspError_t CSpectrogram::GetMetrics(float * FreqScale,
                                    float * SpectScale, float * SpectRes, float * SpectIntv,
                                    uint8 * MaxPwr)
 {
@@ -642,7 +644,7 @@ dspError_t Spectrogram::GetMetrics(float * FreqScale,
 ////////////////////////////////////////////////////////////////////////////////////////
 // Object function to return power at specified spectrogram coordinates.              //
 ////////////////////////////////////////////////////////////////////////////////////////
-dspError_t Spectrogram::ReadPower(short * Power, uint16 SpgmX, uint16 SpgmY)
+dspError_t CSpectrogram::ReadPower(short * Power, uint16 SpgmX, uint16 SpgmY)
 {
     if (!Power)
     {
@@ -669,7 +671,7 @@ dspError_t Spectrogram::ReadPower(short * Power, uint16 SpgmX, uint16 SpgmY)
 ////////////////////////////////////////////////////////////////////////////////////////
 // Object function to return a pointer to a power slice at specified spectrogram coordinates. ##             //
 ////////////////////////////////////////////////////////////////////////////////////////
-uint8 * Spectrogram::ReadPowerSlice(dspError_t * dspError_t, uint16 SpgmX)
+uint8 * CSpectrogram::ReadPowerSlice(dspError_t * dspError_t, uint16 SpgmX)
 {
     if (!dspError_t)
     {
@@ -693,7 +695,7 @@ uint8 * Spectrogram::ReadPowerSlice(dspError_t * dspError_t, uint16 SpgmX)
 // Object function to return pitch and formant frequencies for specified spectrogram  //
 // coordinates.                                                                       //
 ////////////////////////////////////////////////////////////////////////////////////////
-dspError_t Spectrogram::ReadFormants(FORMANT_FREQ * Freq, uint16 SpgmX)
+dspError_t CSpectrogram::ReadFormants(FORMANT_FREQ * Freq, uint16 SpgmX)
 {
     if (!Freq)
     {
@@ -717,14 +719,16 @@ dspError_t Spectrogram::ReadFormants(FORMANT_FREQ * Freq, uint16 SpgmX)
 ////////////////////////////////////////////////////////////////////////////////////////
 // Object function to generate spectrogram.                                           //
 ////////////////////////////////////////////////////////////////////////////////////////
-dspError_t Spectrogram::Generate(void)
+dspError_t CSpectrogram::Generate(void)
 {
     // Ensure call is valid.
     if (m_Status == SPGM_NOT_READY)
     {
-        return(Code(NOT_READY));    //if not ready, exit
+	    //if not ready, exit
+        return Code(NOT_READY);
     }
-    if (m_SpectToProc == m_SpectCnt)                                //if already done, exit
+	//if already done, exit
+    if (m_SpectToProc == m_SpectCnt)
     {
         return((int32)END_OF_SPGM);
     }
@@ -733,11 +737,13 @@ dspError_t Spectrogram::Generate(void)
     uint32 NumSpect;
     if (m_SpectToProc+(uint32)m_SpectBatchLength > m_SpectCnt)
     {
-        NumSpect = m_SpectCnt - m_SpectToProc;    //if last batch, calculate no. of spectra left
+		// if last batch, calculate no. of spectra left
+        NumSpect = m_SpectCnt - m_SpectToProc;    
     }
     else
     {
-        NumSpect = (uint32)m_SpectBatchLength;    //otherwise, set to default value
+		// otherwise, set to default value
+        NumSpect = (uint32)m_SpectBatchLength;    
     }
 
 
@@ -745,14 +751,16 @@ dspError_t Spectrogram::Generate(void)
     dspError_t dspError_t;
     switch (m_SmpDataFmt)
     {
-    case PCM_2SSHORT:     // 2's complement short (2-byte) PCM
+    case PCM_2SSHORT:     
+		// 2's complement short (2-byte) PCM
         dspError_t = CalcSpectra((short *)m_SigStart+m_SigBlkOffset, NumSpect);
         if (dspError_t)
         {
             return(dspError_t);
         }
         break;
-    case PCM_UBYTE:       // unsigned byte
+    case PCM_UBYTE:       
+		// unsigned byte
         dspError_t = CalcSpectra((uint8 *)m_SigStart+m_SigBlkOffset, NumSpect);
         if (dspError_t)
         {
@@ -761,53 +769,7 @@ dspError_t Spectrogram::Generate(void)
         break;
     }
 
-
-    // Copy spectra to the screen buffer, transposing in the process, to
-    // permit high speed data transfer to the plotting window via BitBlt.
-
-    /*## #define PALETTE_OFFSET  10                            //offset into palette
-    uint8 * p = ScreenData;
-    uint8 * s = SpgmData + SpectToProc*SpgmHgt;
-    uint16 i, j;
-    for (i = 0; i < SpgmHgt; i++)                  //top to bottom
-    {
-    uint8 * q = &s[i];
-    for (j = 0; j < NumSpect; j++)            //left to right
-    {
-    *p++ = PALETTE_OFFSET + *q;
-    q += SpgmHgt;
-    }
-    if (NumSpect % 2) *p++ = PALETTE_OFFSET + BLANK;  //append blank column -
-    //  required by BitBlt
-    }
-    dspError_t = SPGM_CALC;
-
-    // Superimpose formant tracks if feature is enabled.
-
-    if (fmntTrackSw)
-    {
-    FORMANT_FREQ * Frame = (FORMANT_FREQ *)FmntData + SpectToProc;
-    for (i = 0; i < NumSpect; i++)
-    {
-    #ifdef DEBUG
-    if (Frame[i].F[0] != (float)NA) fprintf(PitchDump, "%6.2f ", Frame[i].F[0]);
-    else fprintf(PitchDump, "0.00 ");
-    #endif
-
-    if (Frame[i].F[0] == 0.F || Frame[i].F[0] == (float)NA) continue; //skip if unvoiced
-    //or blank frame
-    for (j = 1; j <= MAX_NUM_FORMANTS; j++)
-    {
-    if (Frame[i].F[j] < LwrFreq) continue;
-    if (Frame[i].F[j] == 0.F || Frame[i].F[j] > UprFreq) break;
-    *(ScreenData + i + (NumSpect + (NumSpect%2))* (SpgmHgt -
-    (uint16)((Frame[i].F[j]-LwrFreq)/FreqScale + 0.5F))) =
-    PALETTE_OFFSET + FMNT_TRACK;
-    }        //!!use built-in gray?
-    }
-    */     m_Status = FORMANTS_CALC;
-    //##    }
-
+	m_Status = FORMANTS_CALC;
 
     // Advance index to next spectrum to process.
     // m_SpectToProc += NumSpect;
@@ -815,18 +777,18 @@ dspError_t Spectrogram::Generate(void)
     // Return.
     if (m_SpectToProc != m_SpectCnt)
     {
-        return(PENDING);    //indicate spectrogram still incomplete
+		//indicate spectrogram still incomplete
+        return PENDING;    
     }
-    return((int32)END_OF_SPGM);                     //indicate spectrogram done and include
-    //  maximum power calculated in least
-    //  significant byte of return value
+	// indicate spectrogram done and include maximum power calculated in least significant byte of return value
+    return (int32)END_OF_SPGM;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////
 // Private object function to blank out beginning and end of spectrogram for          //
 // synchronizing it with the acoustic waveform.                                       //
 ////////////////////////////////////////////////////////////////////////////////////////
-void Spectrogram::BlankSpectrum(uint8 * Spect)
+void CSpectrogram::BlankSpectrum(uint8 * Spect)
 {
     for (uint16 i = 0; i < m_SpgmHgt; i++)
     {
@@ -838,7 +800,7 @@ void Spectrogram::BlankSpectrum(uint8 * Spect)
 ////////////////////////////////////////////////////////////////////////////////////////
 // Private object functions to calculate spectra based on sample data format.         //
 ////////////////////////////////////////////////////////////////////////////////////////
-dspError_t Spectrogram::CalcSpectra(short * BlockStart, uint32 NumSpect)
+dspError_t CSpectrogram::CalcSpectra( short * BlockStart, uint32 NumSpect)
 {
     // Calculate addresses for first and last spectra.
     uint8 * FirstSpect = m_SpgmData + m_SpectToProc*m_SpgmHgt;
@@ -847,8 +809,9 @@ dspError_t Spectrogram::CalcSpectra(short * BlockStart, uint32 NumSpect)
     // Calculate address for first set of formants.
     FORMANT_FREQ * FirstFmntSet = m_FmntData + m_SpectToProc;
 
-    int32 WinMargin = m_Window.Length() / 2;   // margin available to left and right of frame
-    if (m_FmntTrackSw == true && m_NBWindow.Length() > m_Window.Length())
+	// margin available to left and right of frame
+    int32 WinMargin = m_Window.Length() / 2;   
+    if ((m_FmntTrackSw == true) && (m_NBWindow.Length() > m_Window.Length()))
     {
         WinMargin = m_NBWindow.Length() / 2;
     }
@@ -857,19 +820,15 @@ dspError_t Spectrogram::CalcSpectra(short * BlockStart, uint32 NumSpect)
 
     // Generate spectra.
     FORMANT_FREQ * FmntSet = FirstFmntSet;
-    for (uint8 * Spect = FirstSpect;
-            Spect <= LastSpect;
-            Spect += m_SpgmHgt, m_SpectToProc++)
+    for (uint8 * Spect = FirstSpect; Spect <= LastSpect; Spect += m_SpgmHgt, m_SpectToProc++)
     {
-
-        //   Calculate address for beginning of sample data frame.  Spectrum will be computed
-        //   at the center of the frame.
+        // Calculate address for beginning of sample data frame.  Spectrum will be computed
+        // at the center of the frame.
         short * MidFrame = BlockStart + (uint32)((float)m_SpectToProc*m_SpectIntv + 0.5F);
 
-        //   If frame data invalid, emit blank spectra and formant tracks, if formant tracking
-        //   enabled.
-        if ((MidFrame < (short *)m_SigStart + WinMargin) ||
-                (MidFrame > SigEnd - WinMargin))
+        // If frame data invalid, emit blank spectra and formant tracks, if formant tracking
+        // enabled.
+        if ((MidFrame < (short *)m_SigStart + WinMargin) || (MidFrame > SigEnd - WinMargin))
         {
             BlankSpectrum(Spect);
             if (m_FmntTrackSw == true)
@@ -879,50 +838,55 @@ dspError_t Spectrogram::CalcSpectra(short * BlockStart, uint32 NumSpect)
             }
         }
 
-        //   Otherwise, preprocess frame and compute power spectrum.
+        // Otherwise, preprocess frame and compute power spectrum.
         else
         {
             dspError_t dspError_t = PreProc(MidFrame - m_Window.Length()/2, m_Window);
-            //apply appropriate window for requested
-            //  pre-emphasis and spectral resolution
+            // apply appropriate window for requested
+            // pre-emphasis and spectral resolution
             if (dspError_t)
             {
-                return(dspError_t);
+                return dspError_t;
             }
-            dspError_t = PwrFFT(Spect);                     //calculate spectral values in dB
+			//calculate spectral values in dB
+            dspError_t = PwrFFT(Spect);                     
             if (dspError_t)
             {
-                return(dspError_t);
+                return dspError_t;
             }
-            if (m_FmntTrackSw == true)                   //if formant tracking enabled,
+			// if formant tracking enabled,
+            if (m_FmntTrackSw == true)                   
             {
-                if (m_SpectRes != NARROW_BW)           //  if windowed frame not narrowband,
+				// if windowed frame not narrowband,
+                if (m_SpectRes != NARROW_BW)           
                 {
-                    dspError_t = PreProc(MidFrame - m_NBWindow.Length()/2, m_NBWindow);  //    apply narrowband window
+					// apply narrowband window
+                    dspError_t = PreProc(MidFrame - m_NBWindow.Length()/2, m_NBWindow);  
                     if (dspError_t)
                     {
-                        return(dspError_t);
+                        return dspError_t;
                     }
-                    rfft2f(m_WinFrame,m_FFTLen,FORWARD); //    and calculate spectral values
+					// and calculate spectral values
+                    rfft2f(m_WinFrame,m_FFTLen,FORWARD); 
                 }
-                dspError_t = GetFormants(FmntSet);          //  find the formants if any
+				// find the formants if any
+                dspError_t = GetFormants(FmntSet);          
                 if (dspError_t)
                 {
-                    return(dspError_t);
+                    return dspError_t;
                 }
-                FmntSet++;                           //  point to next location to store formants
+				// point to next location to store formants
+                FmntSet++;                           
             }
         }
     }
-
-    return(DONE);
+    return DONE;
 }
-
 
 ////////////////////////////////////////////////////////////////////////////////////////
 // Object function to calculate spectra for sample data in unsigned byte format.      //
 ////////////////////////////////////////////////////////////////////////////////////////
-dspError_t Spectrogram::CalcSpectra(uint8 * BlockStart, uint32 NumSpect)
+dspError_t CSpectrogram::CalcSpectra(uint8 * BlockStart, uint32 NumSpect)
 {
     // Calculate addresses for first and last spectra.
     uint8 * FirstSpect = m_SpgmData + m_SpectToProc*m_SpgmHgt;
@@ -931,29 +895,26 @@ dspError_t Spectrogram::CalcSpectra(uint8 * BlockStart, uint32 NumSpect)
     // Calculate address for first set of formants.
     FORMANT_FREQ * FirstFmntSet = m_FmntData + m_SpectToProc;
 
-    int32 WinMargin = m_Window.Length() / 2;   // margin available to left and right of frame
+	// margin available to left and right of frame
+    int32 WinMargin = m_Window.Length() / 2;   
     if (m_FmntTrackSw == true && m_NBWindow.Length() > m_Window.Length())
     {
         WinMargin = m_NBWindow.Length() / 2;
     }
     uint8 * SigEnd = (uint8 *)m_SigStart + m_SigLength - abs(m_SmpDataFmt);
 
-
     // Generate spectra.
     FORMANT_FREQ * FmntSet = FirstFmntSet;
-    for (uint8 * Spect = FirstSpect;
-            Spect <= LastSpect;
-            Spect += m_SpgmHgt, m_SpectToProc++)
+    for ( uint8 * Spect = FirstSpect; Spect <= LastSpect; Spect += m_SpgmHgt, m_SpectToProc++)
     {
-
-        //   Calculate address for beginning of sample data frame.  Spectrum will be computed
-        //   at the center of the frame.
+        // Calculate address for beginning of sample data frame.  Spectrum will be computed
+        // at the center of the frame.
         uint8 * MidFrame = BlockStart + (uint32)((float)m_SpectToProc*m_SpectIntv + 0.5F);
 
-        //   If frame data invalid, emit blank spectra and formant tracks, if formant tracking
-        //   enabled.
+        // If frame data invalid, emit blank spectra and formant tracks, if formant tracking
+        // enabled.
         if ((MidFrame < (uint8 *)m_SigStart + WinMargin) ||
-                (MidFrame > SigEnd - WinMargin))
+            (MidFrame > SigEnd - WinMargin))
         {
             BlankSpectrum(Spect);
             if (m_FmntTrackSw == true)
@@ -963,50 +924,57 @@ dspError_t Spectrogram::CalcSpectra(uint8 * BlockStart, uint32 NumSpect)
             }
         }
 
-        //   Otherwise, preprocess frame and compute power spectrum.
+        // Otherwise, preprocess frame and compute power spectrum.
         else
         {
             dspError_t dspError_t = PreProc(MidFrame - m_Window.Length()/2, m_Window);
-            //apply appropriate window for requested
-            //  pre-emphasis and spectral resolution
+            // apply appropriate window for requested
+            // pre-emphasis and spectral resolution
             if (dspError_t)
             {
-                return(dspError_t);
+                return dspError_t;
             }
-            dspError_t = PwrFFT(Spect);                     //calculate spectral values in dB
+			// calculate spectral values in dB
+            dspError_t = PwrFFT(Spect);                     
             if (dspError_t)
             {
-                return(dspError_t);
+                return dspError_t;
             }
-            if (m_FmntTrackSw == true)                   //if formant tracking enabled,
+			// if formant tracking enabled,
+            if (m_FmntTrackSw == true)                   
             {
-                if (m_SpectRes != NARROW_BW)           //  if windowed frame not narrowband,
+				// if windowed frame not narrowband,
+                if (m_SpectRes != NARROW_BW)           
                 {
-                    dspError_t = PreProc(MidFrame - m_NBWindow.Length()/2, m_NBWindow);  //    apply narrowband window
+					// apply narrowband window
+                    dspError_t = PreProc(MidFrame - m_NBWindow.Length()/2, m_NBWindow);  
                     if (dspError_t)
                     {
-                        return(dspError_t);
+                        return dspError_t;
                     }
-                    rfft2f(m_WinFrame,m_FFTLen,FORWARD); //    and calculate spectral values
+					// and calculate spectral values
+                    rfft2f(m_WinFrame,m_FFTLen,FORWARD); 
                 }
-                dspError_t = GetFormants(FmntSet);          //  find the formants if any
+				// find the formants if any
+                dspError_t = GetFormants(FmntSet);          
                 if (dspError_t)
                 {
-                    return(dspError_t);
+                    return dspError_t;
                 }
-                FmntSet++;                           //  point to next location to store formants
+				// point to next location to store formants
+                FmntSet++;                           
             }
         }
     }
 
-    return(DONE);
+    return DONE;
 }
 
 
 ////////////////////////////////////////////////////////////////////////////////////////
 // Object function to pre-process frame of signed 16-bit sample data.                 //
 ////////////////////////////////////////////////////////////////////////////////////////
-dspError_t Spectrogram::PreProc(short * Frame, DspWin & Window)
+dspError_t CSpectrogram::PreProc(short * Frame, DspWin & Window)
 {
     uint16 i;
     int32 j;
@@ -1018,10 +986,12 @@ dspError_t Spectrogram::PreProc(short * Frame, DspWin & Window)
     if (m_PreEmphSw == true)
     {
 
-        //  Initialize windowed frame value with first difference.
-        if (Frame == m_SigStart)   //first difference does not apply to first sample in signal
+        // Initialize windowed frame value with first difference.
+		// first difference does not apply to first sample in signal
+        if (Frame == m_SigStart)   
         {
-            m_WinFrame[0] = WData[0] * Frame[0];    //produces slight error if
+			// produces slight error if
+            m_WinFrame[0] = WData[0] * Frame[0];    
         }
         //  first sample of signal nonzero
         else
@@ -1029,9 +999,9 @@ dspError_t Spectrogram::PreProc(short * Frame, DspWin & Window)
             m_WinFrame[0] = WData[0] * ((float)Frame[0] - (float)Frame[-1]);
         }
 
-        //   Pre-alias in the time domain, if necessary, to keep number of points required in the
-        //   FFT to a minimum without undersampling in the frequency domain.  This will implement
-        //   a bank of filters.
+        // Pre-alias in the time domain, if necessary, to keep number of points required in the
+        // FFT to a minimum without undersampling in the frequency domain.  This will implement
+        // a bank of filters.
         for (j = (int32)m_FFTLen; j < Window.Length(); j += m_FFTLen)
         {
             m_WinFrame[0] += WData[j] * ((float)Frame[j] - (float)Frame[j-1]);
@@ -1057,9 +1027,10 @@ dspError_t Spectrogram::PreProc(short * Frame, DspWin & Window)
 ////////////////////////////////////////////////////////////////////////////////////////
 // Object function to pre-process frame of unsigned byte sample data.                 //
 ////////////////////////////////////////////////////////////////////////////////////////
-dspError_t Spectrogram::PreProc(uint8 * Frame, DspWin & Window)
+dspError_t CSpectrogram::PreProc(uint8 * Frame, DspWin & Window)
 {
-#define SBFrame(i)  (int8)(Frame[i] - 128)  //macro to convert from unsigned to signed byte
+	// macro to convert from unsigned to signed byte
+#define SBFrame(i)  (int8)(Frame[i] - 128)  
 
     uint16 i;
     int32 j;
@@ -1070,22 +1041,21 @@ dspError_t Spectrogram::PreProc(uint8 * Frame, DspWin & Window)
     if (m_PreEmphSw == true)
     {
 
-        //  Initialize windowed frame value with first difference.
+        // Initialize windowed frame value with first difference.
         if (Frame == m_SigStart)
         {
-            m_WinFrame[0] = WData[0] * (float)SBFrame(0);    //first difference does not
+			// first difference does not
+            m_WinFrame[0] = WData[0] * (float)SBFrame(0);    
         }
-        //  apply to first sample in signal
-        //produces slight error if first
-        //  sample of signal non-zero
+        // apply to first sample in signal produces slight error if first sample of signal non-zero
         else
         {
             m_WinFrame[0] = WData[0] * ((float)SBFrame(0) - (float)SBFrame(-1));
         }
 
-        //   Pre-alias in the time domain, if necessary, to keep number of points required in the
-        //   FFT to a minimum without undersampling in the frequency domain.  This will implement
-        //   a bank of filters.
+        // Pre-alias in the time domain, if necessary, to keep number of points required in the
+        // FFT to a minimum without undersampling in the frequency domain.  This will implement
+        // a bank of filters.
         for (j = (int32)m_FFTLen; j < Window.Length(); j += m_FFTLen)
         {
             m_WinFrame[0] += WData[j] * ((float)SBFrame(j) - (float)SBFrame(j-1));
@@ -1125,7 +1095,7 @@ dspError_t Spectrogram::PreProc(uint8 * Frame, DspWin & Window)
 ////////////////////////////////////////////////////////////////////////////////////////
 // Object function to compute power spectrum using a Fast Fourier Transform.          //
 ////////////////////////////////////////////////////////////////////////////////////////
-dspError_t Spectrogram::PwrFFT(uint8 * PwrSpect)
+dspError_t CSpectrogram::PwrFFT(uint8 * PwrSpect)
 {
     typedef struct
     {
@@ -1176,7 +1146,8 @@ dspError_t Spectrogram::PwrFFT(uint8 * PwrSpect)
         ENCODE_DPOWER_AS_DB(dBVal, dPower);
 
         PwrSpect[j] = (uint8)((dBVal-dDbMin) * dDbScale + 0.5);
-        m_MaxPwr = __max(m_MaxPwr , PwrSpect[j]);  //update max power computed for this spectrogram
+		// update max power computed for this spectrogram
+        m_MaxPwr = __max(m_MaxPwr , PwrSpect[j]);  
 
         for (j = 1, i = m_SpectLen - j; j < m_SpectLen; i--, j++)
         {
@@ -1186,7 +1157,8 @@ dspError_t Spectrogram::PwrFFT(uint8 * PwrSpect)
             ENCODE_DPOWER_AS_DB(dBVal, dPower);
 
             PwrSpect[j] = (uint8)((dBVal-dDbMin) * dDbScale + 0.5);
-            m_MaxPwr = __max(m_MaxPwr , PwrSpect[j]);  //update max power computed for this spectrogram
+			// update max power computed for this spectrogram
+            m_MaxPwr = __max(m_MaxPwr , PwrSpect[j]);  
         }
 
         dPower = SpectCoeff[0].real * SpectCoeff[0].real;
@@ -1194,7 +1166,8 @@ dspError_t Spectrogram::PwrFFT(uint8 * PwrSpect)
         ENCODE_DPOWER_AS_DB(dBVal, dPower);
 
         PwrSpect[j] = (uint8)((dBVal-dDbMin) * dDbScale + 0.5);
-        m_MaxPwr = __max(m_MaxPwr , PwrSpect[j]);  //update max power computed for this spectrogram
+		// update max power computed for this spectrogram
+        m_MaxPwr = __max(m_MaxPwr , PwrSpect[j]);  
 
     }
     else
@@ -1210,7 +1183,8 @@ dspError_t Spectrogram::PwrFFT(uint8 * PwrSpect)
         double dPower = SpectCoeff[0].imag * SpectCoeff[0].imag;
         for (; j < m_SpgmHgt; Freq -= m_FreqScale, j++)
         {
-            i = (uint16)(Freq/m_SpectScale + 0.5F);  //set to nearest FFT point
+			// set to nearest FFT point
+            i = (uint16)(Freq/m_SpectScale + 0.5F);  
 
             if (i != m_SpectLen)
             {
@@ -1219,12 +1193,14 @@ dspError_t Spectrogram::PwrFFT(uint8 * PwrSpect)
             ENCODE_DPOWER_AS_DB(dBVal, dPower);
 
             PwrSpect[j] = (uint8)((dBVal-dDbMin) * dDbScale + 0.5);
-            m_MaxPwr = __max(m_MaxPwr , PwrSpect[j]);  //update max power computed for this spectrogram
+			// update max power computed for this spectrogram
+            m_MaxPwr = __max(m_MaxPwr , PwrSpect[j]);  
         }
 
         for (; j < m_SpgmHgt; Freq -= m_FreqScale, j++)
         {
-            i = (uint16)(Freq/m_SpectScale + 0.5F);  //set to nearest FFT point
+			// set to nearest FFT point
+            i = (uint16)(Freq/m_SpectScale + 0.5F);  
             if (i==0)
             {
                 break;
@@ -1235,18 +1211,21 @@ dspError_t Spectrogram::PwrFFT(uint8 * PwrSpect)
             ENCODE_DPOWER_AS_DB(dBVal, dPower);
 
             PwrSpect[j] = (uint8)((dBVal-dDbMin) * dDbScale + 0.5);
-            m_MaxPwr = __max(m_MaxPwr , PwrSpect[j]);  //update max power computed for this spectrogram
+			// update max power computed for this spectrogram
+            m_MaxPwr = __max(m_MaxPwr , PwrSpect[j]);  
         }
 
         for (; j < m_SpgmHgt; Freq -= m_FreqScale, j++)
         {
-            i = 0;  //set to nearest FFT point
+			// set to nearest FFT point
+            i = 0;  
             dPower = SpectCoeff[0].real * SpectCoeff[0].real;
 
             ENCODE_DPOWER_AS_DB(dBVal, dPower);
 
             PwrSpect[j] = (uint8)((dBVal-dDbMin) * dDbScale + 0.5);
-            m_MaxPwr = __max(m_MaxPwr , PwrSpect[j]);  //update max power computed for this spectrogram
+			// update max power computed for this spectrogram
+            m_MaxPwr = __max(m_MaxPwr , PwrSpect[j]);  
         }
     }
 
@@ -1256,15 +1235,17 @@ dspError_t Spectrogram::PwrFFT(uint8 * PwrSpect)
 ////////////////////////////////////////////////////////////////////////////////////////
 // Object function to track formants from spectral data.                              //
 ////////////////////////////////////////////////////////////////////////////////////////
-dspError_t Spectrogram::CalcFormants(void)
+dspError_t CSpectrogram::CalcFormants(void)
 {
     // Ensure call is valid.
     if (m_Status == SPGM_NOT_READY)
     {
-        return(Code(OUT_OF_SEQUENCE));    //if not ready, exit
+		// if not ready, exit
+        return Code(OUT_OF_SEQUENCE);    
     }
-    if (m_FmntSetToProc == m_SpectCnt)                                   //if already done, exit
+    if (m_FmntSetToProc == m_SpectCnt)                                   
     {
+		// if already done, exit
         return((int32)END_FMNT_CALC);
     }
 
@@ -1272,12 +1253,14 @@ dspError_t Spectrogram::CalcFormants(void)
     uint32 NumFmntSets;
     if (m_FmntSetToProc+(uint32)m_SpectBatchLength > m_SpectCnt)
     {
-        NumFmntSets = m_SpectCnt - m_FmntSetToProc;    //if last batch, calculate no. of
+		// if last batch, calculate no. of
+        NumFmntSets = m_SpectCnt - m_FmntSetToProc;    
     }
-    //  formant sets left
+    // formant sets left
     else
     {
-        NumFmntSets = (uint32)m_SpectBatchLength;    //otherwise, set to default value
+		// otherwise, set to default value
+        NumFmntSets = (uint32)m_SpectBatchLength;    
     }
 
 
@@ -1304,15 +1287,17 @@ dspError_t Spectrogram::CalcFormants(void)
     // Return.
     if (m_FmntSetToProc != m_SpectCnt)
     {
-        return(PENDING);    //indicate formant tracking still incomplete
+		// indicate formant tracking still incomplete
+        return PENDING;
     }
-    return((int32)END_FMNT_CALC);                     //indicate formant tracking done
+	// indicate formant tracking done
+    return (int32)END_FMNT_CALC;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////
 // Private object function to search for formants in acoustic waveform                //
 ////////////////////////////////////////////////////////////////////////////////////////
-dspError_t Spectrogram::SeekFormants(short * BlockStart, uint32 NumFmntSets)
+dspError_t CSpectrogram::SeekFormants(short * BlockStart, uint32 NumFmntSets)
 {
     // Calculate addresses where first and last formant sets will be stored.
     FORMANT_FREQ * FirstFmntSet = m_FmntData + m_FmntSetToProc;
@@ -1323,50 +1308,50 @@ dspError_t Spectrogram::SeekFormants(short * BlockStart, uint32 NumFmntSets)
             FmntSet <= LastFmntSet;
             FmntSet++, m_FmntSetToProc++)
     {
-        //   Calculate address for beginning of sample data frame.  Formants will be computed
-        //   at the center of the frame.
+        // Calculate address for beginning of sample data frame.  Formants will be computed
+        // at the center of the frame.
         short * Frame = BlockStart + (uint32)(m_FmntSetToProc*m_SpectIntv+0.5F) - (uint32)m_NBWindow.Length()/2;
 
-        //   If frame data invalid, emit blank formant sets.
-        if (Frame < m_SigStart ||
-                Frame > (short *)m_SigStart + m_SigLength - m_NBWindow.Length())
+        // If frame data invalid, emit blank formant sets.
+        if ((Frame < m_SigStart) ||
+            (Frame > (short *)m_SigStart + m_SigLength - m_NBWindow.Length()))
         {
             BlankFmntSet(FmntSet);
         }
 
-        //   Otherwise, preprocess frame and compute power spectrum.
+        // Otherwise, preprocess frame and compute power spectrum.
         else
         {
-            dspError_t dspError_t = PreProc(Frame, m_NBWindow);   //  apply narrowband window
+			// apply narrowband window
+            dspError_t dspError_t = PreProc(Frame, m_NBWindow);   
             if (dspError_t)
             {
                 return(dspError_t);
             }
-            rfft2f(m_WinFrame,m_FFTLen,FORWARD);  //  and calculate spectral values
-            dspError_t = GetFormants(FmntSet);       //  find the formants if any
+			// and calculate spectral values find the formants if any
+            rfft2f(m_WinFrame,m_FFTLen,FORWARD);  
+            dspError_t = GetFormants(FmntSet);
             if (dspError_t)
             {
-                return(dspError_t);
+                return dspError_t;
             }
         }
     }
 
-    return(DONE);
+    return DONE;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////
 // Private object function to search for formants in acoustic waveform                //
 ////////////////////////////////////////////////////////////////////////////////////////
-dspError_t Spectrogram::SeekFormants(uint8 * BlockStart, uint32 NumFmntSets)
+dspError_t CSpectrogram::SeekFormants(uint8 * BlockStart, uint32 NumFmntSets)
 {
     // Calculate addresses where first and last formant sets will be stored.
     FORMANT_FREQ * FirstFmntSet = m_FmntData + m_FmntSetToProc;
     FORMANT_FREQ * LastFmntSet = FirstFmntSet + NumFmntSets - 1;
 
     // Generate formant sets.
-    for (FORMANT_FREQ * FmntSet = FirstFmntSet;
-            FmntSet <= LastFmntSet;
-            FmntSet++, m_FmntSetToProc++)
+    for (FORMANT_FREQ * FmntSet = FirstFmntSet; FmntSet <= LastFmntSet; FmntSet++, m_FmntSetToProc++)
     {
         //   Calculate address for beginning of sample data frame.  Formants will be computed
         //   at the center of the frame.
@@ -1379,31 +1364,33 @@ dspError_t Spectrogram::SeekFormants(uint8 * BlockStart, uint32 NumFmntSets)
             BlankFmntSet(FmntSet);
         }
 
-        //   Otherwise, preprocess frame and compute power spectrum.
+        // Otherwise, preprocess frame and compute power spectrum.
         else
         {
-            dspError_t dspError_t = PreProc(Frame, m_NBWindow);   //  apply narrowband window
+			// apply narrowband window
+            dspError_t dspError_t = PreProc(Frame, m_NBWindow);   
             if (dspError_t)
             {
-                return(dspError_t);
+                return dspError_t;
             }
-            rfft2f(m_WinFrame,m_FFTLen,FORWARD);  //  and calculate spectral values
-            dspError_t = GetFormants(FmntSet);       //  find the formants if any
+			// and calculate spectral values find the formants if any
+            rfft2f(m_WinFrame,m_FFTLen,FORWARD);  
+            dspError_t = GetFormants(FmntSet);
             if (dspError_t)
             {
-                return(dspError_t);
+                return dspError_t;
             }
         }
     }
 
-    return(DONE);
+    return DONE;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////
 // Private object function to blank out formant array for synchronization with        //
 // the acoustic waveform.                                                             //
 ////////////////////////////////////////////////////////////////////////////////////////
-void Spectrogram::BlankFmntSet(FORMANT_FREQ * Fmnt)
+void CSpectrogram::BlankFmntSet(FORMANT_FREQ * Fmnt)
 {
     for (uint16 i = 0; i <= MAX_NUM_FORMANTS; i++)
     {
@@ -1415,15 +1402,13 @@ void Spectrogram::BlankFmntSet(FORMANT_FREQ * Fmnt)
 ////////////////////////////////////////////////////////////////////////////////////////
 // Private object function to extract formants from spectral data.                    //
 ////////////////////////////////////////////////////////////////////////////////////////
-dspError_t Spectrogram::GetFormants(FORMANT_FREQ * fmnt)
+dspError_t CSpectrogram::GetFormants(FORMANT_FREQ * fmnt)
 {
     // Check for valid state.
-
     COMPLEX_RECT_FLOAT * spectCoeff = (COMPLEX_RECT_FLOAT *)m_WinFrame;
     uint32 i;
 
 #define logMagSpectrum spectCoeff
-
 
     // Cepstrum smoothing
     // Compute log of FFT magnitude and store in real portion of complex array, zeroing out
@@ -1542,9 +1527,8 @@ dspError_t Spectrogram::GetFormants(FORMANT_FREQ * fmnt)
     return(DONE);
 }
 
-dspError_t Spectrogram::CalcPower(float * PowerInDb, float Frequency, float DspWinBandwidth, CWindowSettings::Type windowType, SIG_PARMS Signal, bool bPreEmphasis, float DbRef)
+dspError_t CSpectrogram::CalcPower(float * PowerInDb, float Frequency, float DspWinBandwidth, CWindowSettings::Type windowType, SIG_PARMS Signal, bool bPreEmphasis, float DbRef)
 {
-
     // Calculate window for frame data from specified bandwidth.
     DspWin Window = DspWin::FromBandwidth(DspWinBandwidth,Signal.SmpRate, windowType);
     const float * WData = Window.WindowFloat();
@@ -1589,7 +1573,7 @@ dspError_t Spectrogram::CalcPower(float * PowerInDb, float Frequency, float DspW
     return(DONE);
 }
 
-dspError_t Spectrogram::CalcPower(float * PowerInDb, float Frequency, int32 BandwidthSelect, CWindowSettings::Type windowType, SIG_PARMS Signal, bool bPreEmphasis)
+dspError_t CSpectrogram::CalcPower(float * PowerInDb, float Frequency, int32 BandwidthSelect, CWindowSettings::Type windowType, SIG_PARMS Signal, bool bPreEmphasis)
 {
     // dB reference values determined empirically from 215.332 Hz sine wave (20th harmonic of 2048 FFT at 22050 Hz sampling rate)
     // at 70.7% full scale using waveform generator.
@@ -1611,5 +1595,19 @@ dspError_t Spectrogram::CalcPower(float * PowerInDb, float Frequency, int32 Band
     return dspError_t;
 }
 
+DspWin & CSpectrogram::GetWidebandWindow()
+{
+    return m_Window;
+}
+
+DspWin & CSpectrogram::GetNarrowbandWindow()
+{
+    return m_NBWindow;
+}
+
+bool CSpectrogram::IsAliased()
+{
+    return m_Aliased;
+}
 
 

@@ -1017,6 +1017,21 @@ BOOL CProcessAreaData::SetArea(DWORD dwAreaPos, DWORD dwAreaLength)
     return TRUE;
 }
 
+void CProcessAreaData::UpdateArea()
+{
+    SetStatusFlag(PROCESS_IDLE | KEEP_AREA,FALSE);
+    SetDataInvalid();
+}
+
+DWORD CProcessAreaData::GetAreaPosition()
+{
+    return m_dwAreaPos;   // return area position
+}
+DWORD CProcessAreaData::GetAreaLength()
+{
+    return m_dwAreaLength;   // return area length
+}
+
 long CProcess::GetStatus() const
 {
     return m_nStatus;

@@ -763,7 +763,7 @@ END_MESSAGE_MAP()
 /***************************************************************************/
 // Added the following strings.  DDO - 08/14/00
 /***************************************************************************/
-static const TCHAR * pszFontAnnot[] =
+static LPCTSTR pszFontAnnot[] =
 {
 
     _T("Reference"),

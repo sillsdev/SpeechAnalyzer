@@ -161,10 +161,10 @@ BOOL CWaveInDevice::Close()
 /***************************************************************************/
 // CWaveInDevice::AttachHighPassFilter  Construct a highpass filter
 /***************************************************************************/
-BOOL CWaveInDevice::AttachHighPassFilter(USHORT wSmpRate)
+BOOL CWaveInDevice::AttachHighPassFilter( uint32 wSmpRate)
 {
     ASSERT(m_pHighPassFilter == NULL);
-    return(CHighPassFilter70::CreateObject(&m_pHighPassFilter, wSmpRate) == DONE);
+    return (CHighPassFilter70::CreateObject(&m_pHighPassFilter, wSmpRate) == DONE);
 }
 
 /***************************************************************************/

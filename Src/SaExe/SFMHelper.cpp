@@ -199,7 +199,7 @@ bool CSFMHelper::IsColumnarSFM( LPCTSTR filename)
 	wstring line = lines[start];
 	vector<wstring> tokens = TokenizeLineToTokens( line, 0x09);
 	// the first line must be all tags.
-	for (int i=0;i<tokens.size();i++) {
+	for (size_t i=0;i<tokens.size();i++) {
 		if (!CSFMHelper::IsTag(tokens[i].c_str())) return false;
 	}
 
@@ -207,7 +207,7 @@ bool CSFMHelper::IsColumnarSFM( LPCTSTR filename)
 	start++;
 	line = lines[start];
 	tokens = TokenizeLineToTokens( line, 0x09);
-	for (int i=0;i<tokens.size();i++) {
+	for (size_t i=0;i<tokens.size();i++) {
 		if (CSFMHelper::IsTag(tokens[i].c_str())) return false;
 	}
 
@@ -224,7 +224,7 @@ bool CSFMHelper::IsColumnarSFM( LPCTSTR filename)
 	wstring tagline = lines[start];
 	vector<wstring> tags = TokenizeLineToTokens( tagline, 0x09);
 	// the first line must be all tags.
-	for (int i=0;i<tags.size();i++) {
+	for (size_t i=0;i<tags.size();i++) {
 		if (!CSFMHelper::IsTag(tags[i].c_str())) {
 			TRACE("the first line contains an element that is not a tag '%s'\n",tagline.c_str());
 			return false;
@@ -235,7 +235,7 @@ bool CSFMHelper::IsColumnarSFM( LPCTSTR filename)
 	
 	// run through all the lines and verify that the counts are no greater
 	// than the number of tags
-	for (int i=start;i<lines.size();i++) {
+	for (size_t i=start;i<lines.size();i++) {
 		vector<wstring> tokens = TokenizeLineToTokens( lines[i], 0x09);
 		if (tokens.size()>tagCount) {
 			TRACE("line %d has too many elements '%s'.  The tag count id %d\n",i,lines[i].c_str(),tagCount);
@@ -245,7 +245,7 @@ bool CSFMHelper::IsColumnarSFM( LPCTSTR filename)
 
 	// run through all the lines and verify that there are no more tags
 	// than the number of tags
-	for (int i=start;i<lines.size();i++) {
+	for (size_t i=start;i<lines.size();i++) {
 		vector<wstring> tokens = TokenizeLineToTokens( lines[i], 0x09);
 		for (int j=0;j<tokens.size();j++) {
 			if (CSFMHelper::IsTag(tokens[j].c_str())) {
@@ -306,7 +306,7 @@ TranscriptionDataMap CSFMHelper::ImportColumnarSFM( LPCTSTR filename)
 	wstring tagline = lines[start];
 	vector<wstring> tags = TokenizeLineToTokens( tagline, 0x09);
 	// the first line must be all tags.
-	for (int i=0;i<tags.size();i++) {
+	for (size_t i=0;i<tags.size();i++) {
 		if (!CSFMHelper::IsTag(tags[i].c_str())) {
 			TRACE("the first line contains an element that is not a tag '%s'\n",tagline.c_str());
 			return td;
@@ -317,7 +317,7 @@ TranscriptionDataMap CSFMHelper::ImportColumnarSFM( LPCTSTR filename)
 	
 	// run through all the lines and verify that the counts are no greater
 	// than the number of tags
-	for (int i=start;i<lines.size();i++) {
+	for (size_t i=start;i<lines.size();i++) {
 		vector<wstring> tokens = TokenizeLineToTokens( lines[i], 0x09);
 		if (tokens.size()>tagCount) {
 			TRACE("line %d has too many elements '%s'.  The tag count id %d\n",i,lines[i].c_str(),tagCount);
@@ -327,9 +327,9 @@ TranscriptionDataMap CSFMHelper::ImportColumnarSFM( LPCTSTR filename)
 
 	// run through all the lines and verify that there are no more tags
 	// than the number of tags
-	for (int i=start;i<lines.size();i++) {
+	for (size_t i=start;i<lines.size();i++) {
 		vector<wstring> tokens = TokenizeLineToTokens( lines[i], 0x09);
-		for (int j=0;j<tokens.size();j++) {
+		for (size_t j=0;j<tokens.size();j++) {
 			if (CSFMHelper::IsTag(tokens[j].c_str())) {
 				TRACE("line %d contains a tag '%s'.\n",i,lines[i].c_str());
 				return td;
@@ -338,10 +338,10 @@ TranscriptionDataMap CSFMHelper::ImportColumnarSFM( LPCTSTR filename)
 	}
 
 	// now append the data to the rows
-	for (int i=start;i<lines.size();i++)
+	for (size_t i=start;i<lines.size();i++)
 	{
 		vector<wstring> tokens = TokenizeLineToTokens( lines[i], 0x09);
-		for (int j=0;j<tags.size();j++)
+		for (size_t j=0;j<tags.size();j++)
 		{
 			wstring tag = tags[j];
 			tag = (tag[0]=='\\')?tag.substr(1):tag;
@@ -398,7 +398,7 @@ bool CSFMHelper::IsTag( LPCTSTR text) {
 vector<wstring> CSFMHelper::FilterBlankLines( vector<wstring> & input)
 {
 	vector<wstring> result;
-	for (int i=0;i<input.size();i++)
+	for (size_t i=0;i<input.size();i++)
 	{
 		if (input[i].length()>0)
 		{

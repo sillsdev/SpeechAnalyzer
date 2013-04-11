@@ -294,13 +294,13 @@
 
 #include <search.h>
 #include <math.h>
-#include "mathx.h"
-#include "scale.h"
-#include "fft.h"
-#include "spectrum.h"
+#include "dsp\mathx.h"
+#include "dsp\scale.h"
+#include "dsp\fft.h"
+#include "dsp\spectrum.h"
 #include "Lpc.h"
-#include "PeakPick.h"
-#include "roots.h"
+#include "dsp\PeakPick.h"
+#include "dsp\roots.h"
 #include "appdefs.h"
 
 static float fDbPowerRef[3] = {0.F, LPC_8BIT_DB_PWR_REF, LPC_16BIT_DB_PWR_REF};

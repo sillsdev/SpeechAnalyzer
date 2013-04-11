@@ -396,13 +396,10 @@ void CAutoSave::StoreAutoRecoveryInformation( CSaDoc * pDoc)
 			}
 		}
 
-		DWORD a = ::GetTickCount();
         // copy any transcription to the autosave directory
         saving = true;
         pDoc->WriteDataFiles( currentwave.c_str());
         saving = false;
-		DWORD b = ::GetTickCount();
-		//TRACE("elapsed time %lu\n",(b-a));
 
 		// rename it to the appropriate name
 		wstring oldname;

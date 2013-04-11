@@ -168,7 +168,7 @@ void CPlotMelogram::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView)
         {
             // Load a font for tagging formants.
             CFont Font;
-            const TCHAR * pszName = _T("MS Sans Serif");
+            LPCTSTR pszName = _T("MS Sans Serif");
             Font.CreateFont(-12, 0, 0, 0, FW_NORMAL, 0, 0, 0, ANSI_CHARSET, OUT_DEFAULT_PRECIS,
                             CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, (VARIABLE_PITCH | FF_ROMAN), pszName);  // create font
 

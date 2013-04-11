@@ -37,8 +37,8 @@ public:
         EC_USERABORT    =-12
     };
 
-    ECONVERT Run(const TCHAR * filename,
-                 const TCHAR * outfilename,
+    ECONVERT Run(LPCTSTR filename,
+                 LPCTSTR outfilename,
                  CProgressStatusBar * pStatusBar,
                  BOOL bShowAdvancedAudio);
 

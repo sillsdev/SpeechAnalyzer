@@ -181,7 +181,7 @@ BOOL CDlgExportXML::OnInitDialog()
     return TRUE;  // return TRUE  unless you set the focus to a control
 }
 
-void CDlgExportXML::OutputXMLField(CFile * pFile, const TCHAR * szFieldName, const CSaString & szContents)
+void CDlgExportXML::OutputXMLField(CFile * pFile, LPCTSTR szFieldName, const CSaString & szContents)
 {
 
     if (!szContents || !*szContents)

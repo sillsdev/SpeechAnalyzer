@@ -31,8 +31,8 @@ public:
 protected:
     virtual ~CWorkbenchDoc();
     virtual void Serialize(CArchive & ar); // overridden for document i/o
-    virtual BOOL OnOpenDocument(const TCHAR * pszPathName);
-    virtual BOOL OnSaveDocument(const TCHAR * pszPathName);
+    virtual BOOL OnOpenDocument(LPCTSTR pszPathName);
+    virtual BOOL OnSaveDocument(LPCTSTR pszPathName);
     virtual BOOL SaveModified(); // return TRUE if ok to continue
 
     // Generated message map functions

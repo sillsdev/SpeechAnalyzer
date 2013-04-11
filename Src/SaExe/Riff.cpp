@@ -34,7 +34,7 @@ CRiff::~CRiff()
 
 }
 
-BOOL CRiff::NewWav(const TCHAR * pszPathName, PCMWAVEFORMAT & pcm, const TCHAR * szRawDataPath)
+BOOL CRiff::NewWav(LPCTSTR pszPathName, PCMWAVEFORMAT & pcm, LPCTSTR szRawDataPath)
 {
     CSaApp * pApp = (CSaApp *)AfxGetApp(); // get pointer to application
 

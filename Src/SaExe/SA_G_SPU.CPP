@@ -469,7 +469,7 @@ void CPlotSpectrum::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView)
                 // Load a font for tagging formants.
                 CFont Font;
                 int nHeight = min(32, max(14, (int)(min(.06 * rWnd.Height(),(0.5/11/10) * rWnd.Width()) + 0.5)));
-                const TCHAR * pszName = _T("MS Sans Serif");
+                LPCTSTR pszName = _T("MS Sans Serif");
                 Font.CreateFont(nHeight, 0, 0, 0, FW_NORMAL, 0, 0, 0, ANSI_CHARSET, OUT_DEFAULT_PRECIS,
                                 CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, (VARIABLE_PITCH | FF_ROMAN), pszName);  // create font
 

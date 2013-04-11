@@ -374,7 +374,7 @@ long CProcessFormantTracker::Process(void * pCaller, ISaDoc * pDoc, int nProgres
     {
         double frequency = 2*pi*(i*1000+500)/samplingRate;
         CDBL formantEstimate(std::polar(radius, frequency));
-        TRACE("%d radius=%f frequency=%f polar=%f\n",i,radius,frequency,std::polar(radius, frequency));
+        //TRACE("%d radius=%f frequency=%f polar=%f\n",i,radius,frequency,std::polar(radius, frequency));
         state.GetTrackIn().push_back(formantEstimate);
         state.GetTrackOut().push_back(formantEstimate);
     }
@@ -382,10 +382,10 @@ long CProcessFormantTracker::Process(void * pCaller, ISaDoc * pDoc, int nProgres
     DspWin window = DspWin::FromBandwidth(FormantTrackerOptions.m_dWindowBandwidth,pDoc->GetSamplesPerSec(),FormantTrackerOptions.m_nWindowType);
     state.GetWindow().assign(window.WindowDouble(),window.WindowDouble()+window.Length());
 
-    for (int i=0; i<3; i++)
-    {
-        TRACE("to[%d]=%f\n",i,state.GetTrackOut()[i]);
-    }
+    //for (int i=0; i<3; i++)
+    //{
+    //    TRACE("to[%d]=%f\n",i,state.GetTrackOut()[i]);
+    //}
 
     // determine processing interval
     DWORD dwInterval = DWORD(samplingRate / FormantTrackerOptions.m_dUpdateRate);

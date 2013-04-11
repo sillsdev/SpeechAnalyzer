@@ -30,24 +30,21 @@
 //       RLJ Added OnIPAHelp()
 //   06/17/2000
 //        RLJ Extend FileOpenAs to support not only Phonetic/Music Analysis,
-//              but also OpenScreenF, OpenScreenG, OpenScreenI, OpenScreenK,
-//              OpenScreenM, etc.
+//            but also OpenScreenF, OpenScreenG, OpenScreenI, OpenScreenK,
+//            OpenScreenM, etc.
 //   06/22/2000
 //       RLJ Changed OnHelpIndex to OnHelpContents to allow bypass
-//                   Windows assuming SA.HLP is in same folder as SA.EXE
+//           Windows assuming SA.HLP is in same folder as SA.EXE
 //           Added OnHelpOnHelp
 //   07/24/2000
 //       RLJ Added OnHelpTrouble, OnHelpMusic
 /////////////////////////////////////////////////////////////////////////////
-
 #ifndef __SA_H__
 #define __SA_H__
 
 #ifndef __AFXWIN_H__
 #error include 'stdafx.h' before including this file for PCH
 #endif
-
-#define USE_PRINT_SYSTEM_V3    1
 
 #include "SaString.h"
 #include "resource.h"       // main symbols
@@ -130,7 +127,7 @@ public:
     BOOL WriteSettings();
     BOOL ReadSettings();
     void PasteClipboardToNewFile(HGLOBAL hData); // create a new file and paste the clipboard into it
-    CSaDoc * OpenWavFileAsNew(const TCHAR * szTempPath);
+    CSaDoc * OpenWavFileAsNew(LPCTSTR szTempPath);
     CDocument * OpenBlankView(bool bWithGraphs); // open a blank view to do something on.
     CSaString DefaultDir(CSaString * pFilename = NULL) const;
 
@@ -149,7 +146,7 @@ public:
     void        SetBatchFileChanged(CSaString, int, CDocument *); // set file changed in batch mode list file
     int         GetBatchMode();                                 // return application mode (batch or not, exit allowed)
     void        CancelBatchMode();                              // allow SA to exit
-    CDocument * IsFileOpened(const TCHAR * pszFileName);        // check is this file already opened
+    CDocument * IsFileOpened(LPCTSTR pszFileName);        // check is this file already opened
     bool        IsDocumentOpened(const CSaDoc * pDoc);           // check is this file already opened
     BOOL        CloseWorkbench(CDocument *);                    // close an already opened workbench document
     void        WorkbenchClosed();                              // signal, that workbench has been closed
