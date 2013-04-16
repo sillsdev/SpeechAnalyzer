@@ -171,18 +171,18 @@
 *          :                                                               *
 *   CCurveFitting *pParabola;                                              *
 *   dspError_t dspError_t = CCurveFitting::CreateObject(&pParabola, PARABOLIC);          *
-*   if (dspError_t) return(dspError_t);                                                  *
+*   if (dspError_t) return(dspError_t);                                    *
 *                                                                          *
-*   dspError_t dspError_t = pParabola->FitCurve(y, 3);                                   *
-*   if (dspError_t) return(dspError_t);                                                  *
+*   dspError_t dspError_t = pParabola->FitCurve(y, 3);                     *
+*   if (dspError_t) return(dspError_t);                                    *
 *   float FirstDerivRoot;                                                  *
-*   dspError_t = pParabola->FindFirstDerivRoot(&FirstDerivRoot, 1);               *
-*   if (dspError_t) return(dspError_t);                                                  *
-*   dspError_t = pParabola->GetValue(&Peak, FirstDerivRoot);                      *
-*   if (dspError_t) return(dspError_t);                                                  *
+*   dspError_t = pParabola->FindFirstDerivRoot(&FirstDerivRoot, 1);        *
+*   if (dspError_t) return(dspError_t);                                    *
+*   dspError_t = pParabola->GetValue(&Peak, FirstDerivRoot);               *
+*   if (dspError_t) return(dspError_t);                                    *
 *   float SecondDeriv;                                                     *
 *   dspError_t = pParabola->CalcSecondDerivative(&SecondDeriv, FirstDerivRoot);   *
-*   if (dspError_t) return(dspError_t);                                                  *
+*   if (dspError_t) return(dspError_t);                                    *
 *   if (SecondDeriv >= 0) Peak = (float)UNDEFINED_DATA;                    *
 *   return;                                                                *
 *                                                                          *

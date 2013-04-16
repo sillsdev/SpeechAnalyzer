@@ -49,6 +49,7 @@ BEGIN_MESSAGE_MAP(CMiniCaptionWnd, CWnd)
     ON_WM_INITMENU()
     ON_WM_SYSCOMMAND()
     ON_WM_KEYDOWN()
+    ON_WM_KEYUP()
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
@@ -381,7 +382,6 @@ void CMiniCaptionWnd::OnNcCalcSize(BOOL bCalcValidRects, NCCALCSIZE_PARAMS * lpn
     }
 }
 
-
 void CMiniCaptionWnd::OnNcPaint()
 {
     CRect dummyRect(0,0,0,0); //this is used for the second parameter
@@ -397,7 +397,6 @@ void CMiniCaptionWnd::OnNcPaint()
     CWindowDC dc(this);
     OnNcDraw(&dc, dummyRect, FALSE);
 }
-
 
 void Darken(COLORREF & c)
 {
@@ -1051,6 +1050,12 @@ void CMiniCaptionWnd::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 {
     GetParent()->SendMessage(WM_KEYDOWN, nChar, MAKELONG(nRepCnt, nFlags));
     CWnd::OnKeyDown(nChar, nRepCnt, nFlags);
+}
+
+void CMiniCaptionWnd::OnKeyUp(UINT nChar, UINT nRepCnt, UINT nFlags)
+{
+    GetParent()->SendMessage(WM_KEYUP, nChar, MAKELONG(nRepCnt, nFlags));
+    CWnd::OnKeyUp(nChar, nRepCnt, nFlags);
 }
 
 void CMiniCaptionWnd::DrawCaptionText(CDC * pDC, const CRect & rcWnd)

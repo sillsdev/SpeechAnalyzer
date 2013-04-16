@@ -29,6 +29,7 @@
 #include "sa_cursr.h"
 #include "sa_annot.h"
 #include "grid.h"
+#include "StartCursorWnd.h"
 #include "StopCursorWnd.h"
 
 class CGraphWnd;
@@ -89,13 +90,11 @@ public:
 
     // Generated message map functions
 protected:
-    //{{AFX_MSG(CPlotHelperWnd)
     afx_msg void OnPaint();
     afx_msg BOOL OnEraseBkgnd(CDC * pDC);
     afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
     afx_msg void OnRButtonDown(UINT nFlags, CPoint point);
     afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
-    //}}AFX_MSG
     DECLARE_MESSAGE_MAP()
 };
 

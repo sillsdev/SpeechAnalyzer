@@ -19,9 +19,9 @@ CIndependentSegment::CIndependentSegment(int index, int master) :
 // CIndependentSegment::LimitsPosition Limits positions for annotation window
 // Adjusts the position to acceptable position to adjust boundaries
 /***************************************************************************/
-void CIndependentSegment::LimitPosition(CSaDoc * pSaDoc, DWORD & dwStart,DWORD & dwStop, int nMode) const
+void CIndependentSegment::LimitPosition(CSaDoc * pSaDoc, DWORD & dwStart, DWORD & dwStop, int nMode) const
 {
-    if ((m_nSelection != -1)&&!(nMode&LIMIT_NO_OVERLAP))
+    if ((m_nSelection != -1)&&!(nMode & LIMIT_NO_OVERLAP))
     {
         // segment selected (edit)
         if (m_nSelection > 0)
@@ -232,11 +232,13 @@ int CIndependentSegment::CheckPosition(CSaDoc * pDoc, DWORD dwStart,DWORD dwStop
                 // check if not more than 40% overlap of start with previous character
                 if (dwStart < (GetOffset(m_nSelection - 1) + GetDuration(m_nSelection - 1) *3/5))
                 {
+					TRACE("exceeding 40 percent overlap to left\n");
                     return -1;    // error
                 }
                 // check if more than 40% overlap of previous stop with current character
                 if ((dwStart+(dwStop-dwStart)*2/5) <= GetStop(m_nSelection - 1))
                 {
+					TRACE("exceeding 40 percent overlap to left\n");
                     return -1;    // error
                 }
             }
@@ -245,22 +247,29 @@ int CIndependentSegment::CheckPosition(CSaDoc * pDoc, DWORD dwStart,DWORD dwStop
             if (nNext != -1)
             {
                 // check if not more than 40% overlap with stop
-                if (dwStop > (GetOffset(nNext) + GetDuration(nNext) *2/5))
+				DWORD dwNextOffset = GetOffset(nNext);
+				DWORD dwNextDur = GetDuration(nNext);
+				DWORD dwLimit = (dwNextOffset + dwNextDur * 2/5);
+                if (dwStop > dwLimit)
                 {
+					TRACE("exceeding 40 percent overlap to right\n");
                     return -1;    // error
                 }
                 // check if next character overlaps more than 40% of current character
-                if ((dwStart+(dwStop-dwStart)*3/5) >= GetOffset(nNext))
+                if ((dwStart+(dwStop-dwStart)*3/5) >= dwNextOffset)
                 {
+					TRACE("exceeding 40 percent overlap to right\n");
                     return -1;    // error
                 }
             }
             if (dwStop < dwStart)
             {
+				TRACE("stop less than start\n");
                 return -1;
             }
             if (pDoc->GetTimeFromBytes(dwStop-dwStart) < MIN_EDIT_SEGMENT_TIME)
             {
+				TRACE("min edit segment reached %d\n",__LINE__);
                 return -1;
             }
             return m_nSelection;
@@ -275,6 +284,7 @@ int CIndependentSegment::CheckPosition(CSaDoc * pDoc, DWORD dwStart,DWORD dwStop
                     DWORD dwOverlap = GetStop(nPrevious-1) - GetOffset(nPrevious);
                     if (dwStart < (GetOffset(nPrevious) + dwOverlap*5/2 + 2))
                     {
+						TRACE("exceeding 40 percent overlap to left\n");
                         return -1;
                     }
                 }
@@ -297,16 +307,19 @@ int CIndependentSegment::CheckPosition(CSaDoc * pDoc, DWORD dwStart,DWORD dwStop
                     }
                     if (dwStop > dwStopNext)
                     {
+						TRACE("stop exceeds stop to right\n");
                         return -1;
                     }
                 }
             }
             if (dwStop < dwStart)
             {
+				TRACE("stop less than start\n");
                 return -1;
             }
             if (pDoc->GetTimeFromBytes(dwStop-dwStart) < MIN_EDIT_SEGMENT_TIME)
             {
+				TRACE("min edit segment reached %d\n",__LINE__);
                 return -1;
             }
             return m_nSelection;
@@ -316,10 +329,11 @@ int CIndependentSegment::CheckPosition(CSaDoc * pDoc, DWORD dwStart,DWORD dwStop
     {
         //SDM 1.06.5 add will make room by shifting adjacent segments
         // check the positions
-        if ((dwStop - dwStart)  < pDoc->GetBytesFromTime(MIN_ADD_SEGMENT_TIME))
+        if ((dwStop - dwStart) < pDoc->GetBytesFromTime(MIN_ADD_SEGMENT_TIME))
         {
             return -1;    // segment too small
         }
+
         int nLength = GetOffsetSize();
         int nLoop;
         for (nLoop = 0; nLoop < nLength; nLoop++)
@@ -328,13 +342,18 @@ int CIndependentSegment::CheckPosition(CSaDoc * pDoc, DWORD dwStart,DWORD dwStop
             if (dwStart <= dwOffset)   // this offset
             {
                 // Check if insertion will leave at least minimum segment length
-                if ((dwStop+pDoc->GetBytesFromTime(MIN_ADD_SEGMENT_TIME)) > (dwOffset + GetDuration(nLoop)))
+				DWORD dwTime = pDoc->GetBytesFromTime(MIN_ADD_SEGMENT_TIME);
+				DWORD dwDur = GetDuration(nLoop);
+				//kg: this statement is always true.  i don't know why it's here.
+                if ((dwStop + dwTime) > (dwOffset + dwDur))
                 {
-                    return -1;
+   					//TRACE("min edit segment reached %d\n",__LINE__);
+					return -1;
                 }
                 if ((nLoop > 0)&&
-                        ((dwStart-pDoc->GetBytesFromTime(MIN_ADD_SEGMENT_TIME)) < GetOffset(nLoop - 1)))
+                    ((dwStart-pDoc->GetBytesFromTime(MIN_ADD_SEGMENT_TIME)) < GetOffset(nLoop - 1)))
                 {
+   					TRACE("min edit segment reached %d\n",__LINE__);
                     return -1;
                 }
                 int nNext = GetNext(nLoop);
@@ -343,6 +362,7 @@ int CIndependentSegment::CheckPosition(CSaDoc * pDoc, DWORD dwStart,DWORD dwStop
                     // check if next has more than 40% overlap
                     if ((dwStop+(dwOffset+GetDuration(nLoop)-dwStop)*3/5)  > GetOffset(nNext))
                     {
+						TRACE("exceeding 40 percent overlap to right\n");
                         return -1;    // error
                     }
                 }
@@ -352,14 +372,17 @@ int CIndependentSegment::CheckPosition(CSaDoc * pDoc, DWORD dwStart,DWORD dwStop
                     // check if segment before previous will overlap 40%
                     if ((GetOffset(nPrevious) + (dwStart-GetOffset(nPrevious))*2/5) < GetStop(nPrevious - 1))
                     {
+						TRACE("exceeding 40 percent overlap to left\n");
                         return -1;    // error
                     }
                 }
                 return nLoop; // ok
             }
         }
-        if ((nLoop >0)&&((dwStart - GetOffset(nLoop-1)) < pDoc->GetBytesFromTime(MIN_ADD_SEGMENT_TIME)))
+        if ((nLoop >0)&&
+			((dwStart - GetOffset(nLoop-1)) < pDoc->GetBytesFromTime(MIN_ADD_SEGMENT_TIME)))
         {
+			TRACE("min edit segment reached %d\n",__LINE__);
             return -1;
         }
         int nPrevious = GetPrevious(nLoop);
@@ -368,10 +391,12 @@ int CIndependentSegment::CheckPosition(CSaDoc * pDoc, DWORD dwStart,DWORD dwStop
             // check if segment before previous will overlap 40%
             if ((dwStart + GetOffset(nPrevious))/2 < GetStop(nPrevious - 1))
             {
+				TRACE("exceeding 40 percent overlap to left\n");
                 return -1;    // error
             }
         }
         return nLoop; // append at the end
     }
+	TRACE("unhandled case\n");
     return -1;
 }

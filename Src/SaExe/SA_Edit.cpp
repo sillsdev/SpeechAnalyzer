@@ -922,7 +922,9 @@ BOOL CAnnotationEdit::PreTranslateMessage(MSG * pMsg)
                 pWnd->GetSel(nFirst, nLast);
                 nLength = pWnd->LineLength();
             }
-            if ((pMsg->message == WM_KEYDOWN || pMsg->message == WM_SYSKEYDOWN) && nFirst == nLength && nLast == nFirst)
+            if (((pMsg->message == WM_KEYDOWN) || (pMsg->message == WM_SYSKEYDOWN)) && 
+				(nFirst == nLength) && 
+				(nLast == nFirst))
             {
                 OnOK();
                 SaView()->SendMessage(WM_COMMAND, ID_EDIT_NEXT, 0);
@@ -935,7 +937,7 @@ BOOL CAnnotationEdit::PreTranslateMessage(MSG * pMsg)
             }
         }
         case VK_UP:
-            if ((pMsg->message == WM_KEYDOWN || pMsg->message == WM_SYSKEYDOWN))
+            if ((pMsg->message == WM_KEYDOWN) || (pMsg->message == WM_SYSKEYDOWN))
             {
                 OnOK();
                 SaView()->SendMessage(WM_COMMAND, ID_EDIT_UP, 0);
@@ -943,7 +945,7 @@ BOOL CAnnotationEdit::PreTranslateMessage(MSG * pMsg)
             }
             return TRUE;
         case VK_DOWN:
-            if ((pMsg->message == WM_KEYDOWN || pMsg->message == WM_SYSKEYDOWN))
+            if ((pMsg->message == WM_KEYDOWN) || (pMsg->message == WM_SYSKEYDOWN))
             {
                 OnOK();
                 SaView()->SendMessage(WM_COMMAND, ID_EDIT_DOWN, 0);

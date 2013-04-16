@@ -497,7 +497,8 @@ void CProgressStatusBar::MessageLoop()
 
         m_nInMessageLoop++;
 
-        if (GetAsyncKeyState(VK_ESCAPE) < 0)   // This is risky so only do it if the escape key is pressed
+		// This is risky so only do it if the escape key is pressed
+        if (GetAsyncKeyState(VK_ESCAPE) < 0)   
         {
             while (::PeekMessage(&msg, NULL, WM_KEYDOWN, WM_KEYDOWN, PM_NOREMOVE))
             {

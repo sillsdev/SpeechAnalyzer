@@ -73,6 +73,7 @@ class CMusicPhraseSegment;
 class CSegment;
 class CSaDoc;
 class CDlgAutoRecorder;
+class CPlotWnd;
 
 class CSaView : public CView
 {
@@ -109,7 +110,7 @@ public:
     DWORD AdjustDataFrame(int nWndWidth);               // return adjusted data frame width for particular window
     DWORD GetStartCursorPosition();
     DWORD GetStopCursorPosition();
-    void SetCursorPosition(int nCursorSelect, DWORD dwNewPos, ESnapDirection nSnapDirection = SNAP_BOTH,
+    void SetCursorPosition(ECursorSelect nCursorSelect, DWORD dwNewPos, ESnapDirection nSnapDirection = SNAP_BOTH,
                            ECursorAlignment nCursorAlignment = ALIGN_USER_SETTING);
     void SetStartCursorPosition(DWORD dwNewPos, ESnapDirection nSnapDirection = SNAP_BOTH,
                                 ECursorAlignment nCursorAlignment = ALIGN_USER_SETTING); // set new start cursor position
@@ -477,7 +478,9 @@ private:
     void CalculatePrintOrigin(CDC * pDC);
     int  CalculateHiResPrintPages(void);
     void PreparePrintingForScreenShot(void);
+	void MoveBoundary( bool start, bool left);
 	CGraphWnd * GetGraphForAnnotation( int annotation);
+	DWORD GetMinimumSeparation( CSaDoc * pDoc, CGraphWnd * pGraph, CPlotWnd * pPlot);
 
     UINT m_anGraphID[MAX_GRAPHS_NUMBER];	// array of graph IDs
     UINT m_nLayout;							// actual Layout number
@@ -546,6 +549,12 @@ private:
 
     DWORD lastZStartCursor;
     DWORD lastZStopCursor;
+
+	DWORD lastBoundaryStartCursor;
+	DWORD lastBoundaryStopCursor;
+	int lastBoundaryIndex;
+	ECursorSelect lastBoundaryCursor;
+
 };
 
 #endif

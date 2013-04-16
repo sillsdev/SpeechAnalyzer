@@ -2472,104 +2472,6 @@ void CSaView::OnUpdatePopupgraphStyleDots(CCmdUI * pCmdUI)
 }
 
 /***************************************************************************/
-// CSaView::OnKeyDown Keyboard interface
-/***************************************************************************/
-void CSaView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
-{
-    TRACE("keydown %d %d %d\n",nChar, nRepCnt, nFlags);
-    CProgressStatusBar * pStatusBar = NULL;
-    CProcess * pProcessOwner = NULL;
-    CRect rWnd;
-
-    // are these keys already pressed?
-    bool ctrlPressed = (GetAsyncKeyState(VK_CONTROL) < 0);
-    bool shiftPressed = (GetAsyncKeyState(VK_SHIFT) < 0);
-    TRACE("ctrlPressed=%d shiftPressed=%d\n",ctrlPressed,shiftPressed);
-
-    if ((!ctrlPressed)&&(!shiftPressed))
-    {
-        switch (nChar)
-        {
-        case VK_HOME:
-            OnHScroll(SB_LEFT, 0, GetScrollBarCtrl(SB_HORZ)); // scroll to minimum
-            break;
-        case VK_END:
-            OnHScroll(SB_RIGHT, 0, GetScrollBarCtrl(SB_HORZ)); // scroll to maximum
-            break;
-        case VK_RIGHT:
-            OnHScroll(SB_LINERIGHT, 0, GetScrollBarCtrl(SB_HORZ)); // scroll right
-            break;
-        case VK_LEFT:
-            OnHScroll(SB_LINELEFT, 0, GetScrollBarCtrl(SB_HORZ)); // scroll left
-            break;
-        case VK_UP:
-            OnVScroll(SB_LINEUP, 0, GetScrollBarCtrl(SB_VERT)); // zoom out
-            break;
-        case VK_DOWN:
-            OnVScroll(SB_LINEDOWN, 0, GetScrollBarCtrl(SB_VERT)); // zoom in
-            break;
-        case VK_NEXT: // page down
-            OnHScroll(SB_PAGEUP, 0, GetScrollBarCtrl(SB_HORZ)); // scroll left one page
-            break;
-        case VK_PRIOR: // page up
-            OnHScroll(SB_PAGEDOWN, 0, GetScrollBarCtrl(SB_HORZ)); // scroll right one page
-            break;
-        case VK_ESCAPE: // process interrupt from user and stop player
-            if (pViewMainFrame->IsPlayerPlaying())
-            {
-                pViewMainFrame->SendMessage(WM_COMMAND, ID_PLAYER_STOP, 0L);    // send message to stop player
-            }
-            else if (!IsAnimating())     // Do not cancel processes during animation
-            {
-                // get pointer to status bar
-                pStatusBar = (CProgressStatusBar *)pViewMainFrame->GetProgressStatusBar();
-                pProcessOwner = (CProcess *)pStatusBar->GetProcessOwner(); // get the current process owner
-                if (pProcessOwner)
-                {
-                    pProcessOwner->CancelProcess();    // cancel the process
-                }
-                else
-                {
-                    DeselectAnnotations();
-                }
-            }
-            break;
-        default:
-            CView::OnKeyDown(nChar, nRepCnt, nFlags);
-            break;
-        }
-
-    }
-    else if ((shiftPressed)&&(!ctrlPressed))
-    {
-
-        CView::OnKeyDown(nChar, nRepCnt, nFlags);
-
-    }
-    else if ((ctrlPressed)&&(!shiftPressed))
-    {
-
-        switch (nChar)
-        {
-        case VK_END:
-            OnVScroll(SB_BOTTOM, 0, GetScrollBarCtrl(SB_VERT)); // zoom to maximum
-            break;
-
-        default:
-            CView::OnKeyDown(nChar, nRepCnt, nFlags);
-            break;
-        }
-
-    }
-    else
-    {
-
-        // everything sels
-        CView::OnKeyDown(nChar, nRepCnt, nFlags);
-    }
-}
-
-/***************************************************************************/
 // CSaView::OnPopupRawdata switch focus to next graph
 /***************************************************************************/
 void CSaView::OnNextGraph()
@@ -4304,5 +4206,94 @@ void CSaView::SetScrollRange(int nBar, int nMinPos, int nMaxPos, BOOL bRedraw)
     else
     {
         CView::SetScrollRange(nBar, nMinPos, nMaxPos, bRedraw);
+    }
+}
+
+/***************************************************************************/
+// CSaView::OnKeyDown Keyboard interface
+/***************************************************************************/
+void CSaView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
+{
+    CProgressStatusBar * pStatusBar = NULL;
+    CProcess * pProcessOwner = NULL;
+    CRect rWnd;
+
+    // are these keys already pressed?
+    bool ctrlPressed = (GetAsyncKeyState(VK_CONTROL) < 0);
+    bool shiftPressed = (GetAsyncKeyState(VK_SHIFT) < 0);
+
+    if ((!ctrlPressed)&&(!shiftPressed))
+    {
+        switch (nChar)
+        {
+        case VK_HOME:
+            OnHScroll(SB_LEFT, 0, GetScrollBarCtrl(SB_HORZ)); // scroll to minimum
+            break;
+        case VK_END:
+            OnHScroll(SB_RIGHT, 0, GetScrollBarCtrl(SB_HORZ)); // scroll to maximum
+            break;
+        case VK_RIGHT:
+            OnHScroll(SB_LINERIGHT, 0, GetScrollBarCtrl(SB_HORZ)); // scroll right
+            break;
+        case VK_LEFT:
+            OnHScroll(SB_LINELEFT, 0, GetScrollBarCtrl(SB_HORZ)); // scroll left
+            break;
+        case VK_UP:
+            OnVScroll(SB_LINEUP, 0, GetScrollBarCtrl(SB_VERT)); // zoom out
+            break;
+        case VK_DOWN:
+            OnVScroll(SB_LINEDOWN, 0, GetScrollBarCtrl(SB_VERT)); // zoom in
+            break;
+        case VK_NEXT: // page down
+            OnHScroll(SB_PAGEUP, 0, GetScrollBarCtrl(SB_HORZ)); // scroll left one page
+            break;
+        case VK_PRIOR: // page up
+            OnHScroll(SB_PAGEDOWN, 0, GetScrollBarCtrl(SB_HORZ)); // scroll right one page
+            break;
+        case VK_ESCAPE: // process interrupt from user and stop player
+            if (pViewMainFrame->IsPlayerPlaying())
+            {
+                pViewMainFrame->SendMessage(WM_COMMAND, ID_PLAYER_STOP, 0L);    // send message to stop player
+            }
+            else if (!IsAnimating())     // Do not cancel processes during animation
+            {
+                // get pointer to status bar
+                pStatusBar = (CProgressStatusBar *)pViewMainFrame->GetProgressStatusBar();
+                pProcessOwner = (CProcess *)pStatusBar->GetProcessOwner(); // get the current process owner
+                if (pProcessOwner)
+                {
+                    pProcessOwner->CancelProcess();    // cancel the process
+                }
+                else
+                {
+                    DeselectAnnotations();
+                }
+            }
+            break;
+        default:
+            CView::OnKeyDown(nChar, nRepCnt, nFlags);
+            break;
+        }
+    }
+    else if ((shiftPressed)&&(!ctrlPressed))
+    {
+        CView::OnKeyDown(nChar, nRepCnt, nFlags);
+    }
+    else if ((ctrlPressed)&&(!shiftPressed))
+    {
+        switch (nChar)
+        {
+        case VK_END:
+            OnVScroll(SB_BOTTOM, 0, GetScrollBarCtrl(SB_VERT)); // zoom to maximum
+            break;
+        default:
+			CView::OnKeyDown(nChar, nRepCnt, nFlags);
+            break;
+        }
+    }
+    else
+    {
+        // everything else
+        CView::OnKeyDown(nChar, nRepCnt, nFlags);
     }
 }

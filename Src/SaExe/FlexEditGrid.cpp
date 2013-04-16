@@ -470,13 +470,10 @@ CFlexEditWnd::~CFlexEditWnd()
 {
 }
 
-
 BEGIN_MESSAGE_MAP(CFlexEditWnd, CEdit)
-    //{{AFX_MSG_MAP(CFlexEditWnd)
     ON_WM_CHAR()
     ON_WM_KEYDOWN()
     ON_CONTROL_REFLECT(EN_KILLFOCUS, OnKillfocus)
-    //}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////

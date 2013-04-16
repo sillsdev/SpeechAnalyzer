@@ -20,7 +20,6 @@ CDependentTextSegment::CDependentTextSegment(int index, int master) :
 
 void CDependentTextSegment::LimitPosition(CSaDoc *, DWORD & dwStart, DWORD & dwStop, int /*nMode*/) const
 {
-
     dwStart=GetOffset(GetSelection());
     dwStop=GetStop(GetSelection());
 }

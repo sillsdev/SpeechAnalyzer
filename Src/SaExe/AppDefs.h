@@ -142,8 +142,9 @@ enum EUpdateMode
 enum ECursorSelect
 {
     // selection
-    START_CURSOR,
-    STOP_CURSOR
+	UNDEFINED_CURSOR = -1,
+    START_CURSOR = 1,
+    STOP_CURSOR = 2
 };
 
 enum ESnapDirection

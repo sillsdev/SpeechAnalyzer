@@ -267,6 +267,7 @@
     <ClCompile Include="SFMHelper.cpp" />
     <ClCompile Include="SpectroParm.cpp" />
     <ClCompile Include="SplitFileUtils.cpp" />
+    <ClCompile Include="StartCursorWnd.cpp" />
     <ClCompile Include="StopCursorWnd.cpp" />
     <ClCompile Include="Synthesis\DlgKlattAll.cpp" />
     <ClCompile Include="Synthesis\DlgMbrola.cpp" />
@@ -560,6 +561,7 @@
     <ClInclude Include="sourceParm.h" />
     <ClInclude Include="SpectroParm.h" />
     <ClInclude Include="SplitFileUtils.h" />
+    <ClInclude Include="StartCursorWnd.h" />
     <ClInclude Include="Stdafx.h" />
     <ClInclude Include="StopCursorWnd.h" />
     <ClInclude Include="stpwatch.h" />

@@ -2876,6 +2876,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\StartCursorWnd.cpp"
+				>
+			</File>
+			<File
 				RelativePath="Stdafx.cpp"
 				>
 				<FileConfiguration
@@ -4040,6 +4044,10 @@
 			</File>
 			<File
 				RelativePath=".\SplitFileUtils.h"
+				>
+			</File>
+			<File
+				RelativePath=".\StartCursorWnd.h"
 				>
 			</File>
 			<File

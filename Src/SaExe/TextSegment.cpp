@@ -281,13 +281,15 @@ int CTextSegment::CheckPosition(CSaDoc * pSaDoc, DWORD dwStart, DWORD dwStop, EM
     if (((nMode==MODE_EDIT)||(nMode==MODE_AUTOMATIC))&&(nTextIndex != -1))   // segment selected (edit)
     {
         int nIndex;
-
         if (dwAlignedStart >= dwAlignedStop)
         {
+			TRACE("start exceeds stop\n");
             return -1;    // zero duration (or negative)
         }
-        if (dwAlignedStart == GetOffset(nTextIndex) && (dwAlignedStop == GetStop(nTextIndex)))
+        if ((dwAlignedStart == GetOffset(nTextIndex)) && 
+			(dwAlignedStop == GetStop(nTextIndex)))
         {
+			TRACE("no change detected\n");
             return -1;    // no change
         }
 
@@ -297,6 +299,7 @@ int CTextSegment::CheckPosition(CSaDoc * pSaDoc, DWORD dwStart, DWORD dwStop, EM
         {
             if (GetOffset(nIndex) >= dwAlignedStart)
             {
+				TRACE("previous segment covered\n");
                 return -1;
             }
         }
@@ -306,6 +309,7 @@ int CTextSegment::CheckPosition(CSaDoc * pSaDoc, DWORD dwStart, DWORD dwStop, EM
         {
             if (GetStop(nIndex) <= dwAlignedStop)
             {
+				TRACE("next segment covered\n");
                 return -1;
             }
         }
@@ -315,6 +319,7 @@ int CTextSegment::CheckPosition(CSaDoc * pSaDoc, DWORD dwStart, DWORD dwStop, EM
     {
         if (pDoc->GetSegment(m_nMasterIndex)->IsEmpty())
         {
+			TRACE("no segment\n");
             return -1;
         }
         if (IsEmpty())
@@ -339,6 +344,7 @@ int CTextSegment::CheckPosition(CSaDoc * pSaDoc, DWORD dwStart, DWORD dwStop, EM
 
         return nTextIndex;
     }
+	TRACE("unhandled rejection\n");
     return -1;
 }
 

@@ -63,10 +63,11 @@ protected:
     afx_msg void OnInitMenu(CMenu *);
     afx_msg void OnSysCommand(UINT nID, LPARAM lParam);
     afx_msg void OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags);
+    afx_msg void OnKeyUp(UINT nChar, UINT nRepCnt, UINT nFlags);
 
     DECLARE_MESSAGE_MAP()
 
     void DrawCaptionText(CDC * pDC, const CRect & rcWnd);
 };
 
-#endif //_SA_MINIC_H
+#endif
