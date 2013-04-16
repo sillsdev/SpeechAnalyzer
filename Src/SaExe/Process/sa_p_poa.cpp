@@ -98,7 +98,7 @@ int CProcessPOA::GetProcessedData(DWORD dwOffset, BOOL *)
 /***************************************************************************/
 long CProcessPOA::Process(void * pCaller, ISaDoc * pDoc, DWORD dwStart, DWORD dwStop, int nProgress, int nLevel)
 {
-    TRACE(_T("Process: CProcessPOA\n"));
+    //TRACE(_T("Process: CProcessPOA\n"));
     if (IsCanceled())
     {
         return MAKELONG(PROCESS_CANCELED, nProgress);    // process canceled

@@ -29,10 +29,11 @@ public:
     virtual VECTOR_CDBL & GetZeroFilterCDBL();
     virtual VECTOR_DBL & GetZeroFilterDBL();
 
+	void Dump();
+
 protected:
     DEQUE_CDBL m_data;
     VECTOR_DBL m_window;
-
     VECTOR_CDBL m_trackIn;
     VECTOR_CDBL m_trackOut;
     VECTOR_CDBL m_windowed;

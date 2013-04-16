@@ -128,7 +128,7 @@ long CProcessMelogram::Process(void * pCaller, ISaDoc * pDoc, int nProgress, int
         return MAKELONG(--nLevel, nProgress); // data is already ready
     }
 
-    TRACE(_T("Process: CProcessMelogram\n"));
+    //TRACE(_T("Process: CProcessMelogram\n"));
 
     BOOL bBackground = false;
 
@@ -249,7 +249,7 @@ long CProcessMelogram::Process(void * pCaller, ISaDoc * pDoc, int nProgress, int
         }
         // set grappl input buffer
 		uint16 length = (WORD)(dwBlockSize / pDoc->GetBlockAlign(true));
-		TRACE("grappl length %d\n",length);
+		//TRACE("grappl length %d\n",length);
         if (!grapplSetInbuff((pGrappl)m_lpBuffer, (pGrappl)pBlockStart, length, nomore))
         {
 			return Exit(PROCESS_ERROR);

@@ -424,10 +424,10 @@ CPlotWnd::~CPlotWnd()
     {
         return;
     }
-    BOOL bDynamicUpdate = (pView->GetGraphUpdateMode() == DYNAMIC_UPDATE);
+    bool bDynamicUpdate = (pView->GetGraphUpdateMode() == DYNAMIC_UPDATE);
     BOOL bAnimationPlot = this->IsAnimationPlot();
 
-    if (bDynamicUpdate && bAnimationPlot)
+    if ((bDynamicUpdate) && (bAnimationPlot))
     {
         int nWaveGraphIndex = pView->GetGraphIndexForIDD(IDD_RAWDATA);
         CGraphWnd * pWaveGraph = pView->GetGraph(nWaveGraphIndex);
@@ -673,8 +673,8 @@ void CPlotWnd::SetStartCursor(CSaView * pView)
     {
         ChangeCursorPosition(pView, dwStartCursor, m_pStartCursor);
     }
-    BOOL bDynamicUpdate = (pView->GetGraphUpdateMode() == DYNAMIC_UPDATE);
-    if (bDynamicUpdate && m_bAnimationPlot)
+    bool bDynamicUpdate = (pView->GetGraphUpdateMode() == DYNAMIC_UPDATE);
+    if ((bDynamicUpdate) && (m_bAnimationPlot))
     {
         // Finish pitch processing if necessary.
         CSaDoc * pDoc = (CSaDoc *)pView->GetDocument();
@@ -974,7 +974,7 @@ short int CPlotWnd::CheckResult(short int nResult, CProcess * pProcess)
         // pDC->FillRect(&rClient, &Eraser);  // clear the plot area
         CGraphWnd * pGraph = (CGraphWnd *)GetParent();
         CSaView * pView = (CSaView *)pGraph->GetParent();
-        BOOL bDynamicUpdate = (pView->GetGraphUpdateMode() == DYNAMIC_UPDATE);
+        bool bDynamicUpdate = (pView->GetGraphUpdateMode() == DYNAMIC_UPDATE);
         if (!bDynamicUpdate)
         {
             m_HelperWnd.SetMode(MODE_TEXT | FRAME_POPOUT | POS_HCENTER | POS_VCENTER, IDS_HELPERWND_SELECTVOICED, &rClient);
@@ -1367,11 +1367,11 @@ void CPlotWnd::PlotStandardPaint(CDC * pDC, CRect rWnd, CRect rClip,
         // calculate size factor between raw data and process data
 
         double fSizeFactor = (double)pDoc->GetSampleSize() * ceil((double)(pDoc->GetDataSize()/pDoc->GetSampleSize())/(double)(pProcess->GetDataSize()));
-		TRACE(L"plot %s -----------\n",(LPCTSTR)m_szPlotName);
-		TRACE("doc sample size %d\n",pDoc->GetSampleSize());
-		TRACE("doc data size %d\n",pDoc->GetDataSize());
-		TRACE("proc data size %d\n",pProcess->GetDataSize());
-		TRACE("size factor %f\n",fSizeFactor);
+		//TRACE(L"plot %s -----------\n",(LPCTSTR)m_szPlotName);
+		//TRACE("doc sample size %d\n",pDoc->GetSampleSize());
+		//TRACE("doc data size %d\n",pDoc->GetDataSize());
+		//TRACE("proc data size %d\n",pProcess->GetDataSize());
+		//TRACE("size factor %f\n",fSizeFactor);
 
         // get necessary data from document and from view
         double fDataPos = GetDataPosition(rWnd.Width()); // data index of first sample to display
@@ -1383,7 +1383,7 @@ void CPlotWnd::PlotStandardPaint(CDC * pDC, CRect rWnd, CRect rClip,
 
         // calculate raw data samples per pixel
         double fBytesPerPix = double(dwDataFrame)*pDoc->GetAvgBytesPerSec()/pHostDoc->GetAvgBytesPerSec()/(double)rWnd.Width();
-		TRACE("bytes per pix %f\n",fBytesPerPix);
+		//TRACE("bytes per pix %f\n",fBytesPerPix);
 
         pXScale = new CXScaleLinear(fBytesPerPix/fSizeFactor, fDataPos/fSizeFactor);
         pXScaleRaw = new CXScaleLinear(fBytesPerPix, fDataPos);
@@ -1883,9 +1883,6 @@ void CPlotWnd::SetHighLightArea(DWORD dwStart, DWORD dwStop, BOOL bRedraw, BOOL 
     }
 }
 
-/////////////////////////////////////////////////////////////////////////////
-// CPlotWnd message handlers
-
 /***************************************************************************/
 // CPlotWnd::OnCreate Window creation
 /***************************************************************************/
@@ -2295,7 +2292,7 @@ void CPlotWnd::GraphHasFocus(BOOL bFocus)
         CGraphWnd * pWaveGraph = pView->GetGraph(nWaveGraphIndex);
         if (pWaveGraph)
         {
-            BOOL bDynamicUpdate = (pView->GetGraphUpdateMode() == DYNAMIC_UPDATE);
+            bool bDynamicUpdate = (pView->GetGraphUpdateMode() == DYNAMIC_UPDATE);
             if (bDynamicUpdate)
             {
                 CPlotWnd * pWavePlot = pWaveGraph->GetPlot();

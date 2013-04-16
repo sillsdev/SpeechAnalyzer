@@ -57,3 +57,29 @@ VECTOR_DBL & CProcessTrackState::GetZeroFilterDBL()
 {
     return m_zeroFilterDBL;
 }
+
+void CProcessTrackState::Dump()
+{
+	TRACE("m_data ");
+	for (size_t j=0;j<min(m_data.size(),6);j++)
+	{
+		TRACE("%f ",m_data[j]);
+	}
+	TRACE("\n");
+
+	TRACE("m_window ");
+	for (size_t j=0;j<min(m_window.size(),6);j++)
+	{
+		TRACE("%f ",m_window[j]);
+	}
+	TRACE("\n");
+
+    DEQUE_CDBL m_data;
+    VECTOR_DBL m_window;
+    VECTOR_CDBL m_trackIn;
+    VECTOR_CDBL m_trackOut;
+    VECTOR_CDBL m_windowed;
+    VECTOR_CDBL m_filtered;
+    VECTOR_CDBL m_zeroFilterCDBL;
+    VECTOR_DBL m_zeroFilterDBL;
+}

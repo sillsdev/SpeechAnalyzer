@@ -246,5 +246,5 @@ public:
     BOOL m_bShowOriginalFormantTracks;
 };
 
-extern CFormantTrackerOptions FormantTrackerOptions;
+extern CFormantTrackerOptions formantTrackerOptions;
 #endif // _PARAM_H

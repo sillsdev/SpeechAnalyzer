@@ -107,7 +107,6 @@ SSpectValue & CProcessSpectrum::GetSpectralData(unsigned short wIndex)
 /***************************************************************************/
 SFormantFrame * CProcessSpectrum::GetFormants()
 {
-
     return (SFormantFrame *)(((SSpectValue *)m_lpBuffer) + m_nSpectralBands);
 }
 
@@ -138,13 +137,13 @@ float CProcessSpectrum::GetSpectralRegionPower(ISaDoc * pDoc, unsigned short wFr
 
     // get indexes to start and end frequencies
     DWORD dwSamplesPerSec = pDoc->GetSamplesPerSec();
-    unsigned short nIndexLo = unsigned short((wFreqLo * MAX_FFT_LENGTH + (dwSamplesPerSec/2)) / dwSamplesPerSec);
-    unsigned short nIndexHi = unsigned short((wFreqHi * MAX_FFT_LENGTH + (dwSamplesPerSec/2)) / dwSamplesPerSec);
+    uint32 nIndexLo = uint32((wFreqLo * MAX_FFT_LENGTH + (dwSamplesPerSec/2)) / dwSamplesPerSec);
+    uint32 nIndexHi = uint32((wFreqHi * MAX_FFT_LENGTH + (dwSamplesPerSec/2)) / dwSamplesPerSec);
     double dfSumOfSpectra = 0;
     SSpectValue * pSpectralPower = (SSpectValue *)m_lpBuffer;
 
     // loop over specified region
-    for (unsigned short i = nIndexLo; i <= nIndexHi; i++)
+    for (uint32 i = nIndexLo; i <= nIndexHi; i++)
     {
         // get spectral value & add to sum
         dfSumOfSpectra += pSpectralPower[i].Lpc;
@@ -177,7 +176,7 @@ float CProcessSpectrum::GetSpectralRegionPower(ISaDoc * pDoc, unsigned short wFr
 long CProcessSpectrum::Process(void * pCaller, ISaDoc * pDoc, DWORD dwFrameStart, DWORD dwFrameSize,
                                SSpectProcSelect SpectraSelected, int nProgress, int nLevel)
 {
-    TRACE(_T("Process: CProcessSpectrum\n"));
+    //TRACE(_T("Process: CProcessSpectrum\n"));
     if (IsCanceled())
     {
         return Exit(PROCESS_CANCELED, NULL);    // process canceled

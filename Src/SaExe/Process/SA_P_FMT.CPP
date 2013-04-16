@@ -102,7 +102,7 @@ long CProcessFormants::Process(void * pCaller, ISaDoc * pDoc, BOOL bTrack,
                                SSpectProcSelect SpectraSelected,
                                int nProgress, int nLevel)
 {
-    TRACE(_T("Process: CProcessFormants\n"));
+    //TRACE(_T("Process: CProcessFormants\n"));
     // Check if canceled.
     if (IsCanceled())
     {
@@ -574,12 +574,12 @@ SFormantFrame * CProcessFormants::LoadBuffer(DWORD dwFormantBlockStart)
 // The frequencies of F1, F2, and F3 are returned in the formants structure.
 // The frequencies are returned in Hertz.
 /***************************************************************************/
-FORMANT_FREQ CProcessFormants::GetVowelFreq(int nIndex, int nGender, BOOL bMelScale) const
+SFormantFreq CProcessFormants::GetVowelFreq(int nIndex, int nGender, BOOL bMelScale) const
 {
     const CVowelFormantsVector & vowelVector = GetVowelVector(nGender);
 
     // get frequency range
-    FORMANT_FREQ formants;
+    SFormantFreq formants;
 
     if (nIndex >= 0 && nIndex < (int)vowelVector.size())
     {
@@ -658,7 +658,7 @@ int CProcessFormants::GetVowelCount(int nGender) const
 /***************************************************************************/
 // CProcessFormants::FindNearestVowel Returns vowel closest to F1, F2, and F3
 /***************************************************************************/
-CSaString CProcessFormants::FindNearestVowel(FORMANT_FREQ FormantFreq, ISaDoc * pDoc) const
+CSaString CProcessFormants::FindNearestVowel(SFormantFreq FormantFreq, ISaDoc * pDoc) const
 {
     int nGender = pDoc->GetGender();
     double dMinDistanceSquared = FLT_MAX;
@@ -682,7 +682,7 @@ CSaString CProcessFormants::FindNearestVowel(FORMANT_FREQ FormantFreq, ISaDoc * 
     for (int nVowel = 0; nVowel < GetVowelCount(nGender); nVowel++)
     {
         double dDistanceSquared = 0.;
-        FORMANT_FREQ VowelFreq = GetVowelFreq(nVowel, nGender);
+        SFormantFreq VowelFreq = GetVowelFreq(nVowel, nGender);
         for (int nFormant = 1; nFormant <= 3; nFormant++)
         {
             // compute Euclidean distance squared
@@ -715,7 +715,7 @@ CSaString CProcessFormants::FindNearestVowel(ISaDoc * pDoc) const
     {
         return 0x20;    // return a blank in the IPA font if no valid means
     }
-    FORMANT_FREQ FormantFreq;
+    SFormantFreq FormantFreq;
     FormantFreq.F[1] = (float)m_F[1].Mean;
     FormantFreq.F[2] = (float)m_F[2].Mean;
     FormantFreq.F[3] = (float)m_F[3].Mean;

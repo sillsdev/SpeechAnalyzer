@@ -172,7 +172,7 @@ vector<wstring> TokenizeBufferToLines( wchar_t * buffer, size_t start, size_t le
     vector<wstring> lines;
 
 	wstring line;
-    for (int i=start; i<length; i++)
+    for (size_t i=start; i<length; i++)
     {
         wchar_t c = buffer[i];
         if ((c==0x0d)||(c==0x0a))
@@ -197,7 +197,7 @@ vector<wstring> TokenizeLineToTokens( wstring & line, wchar_t token) {
     vector<wstring> lines;
 
 	wstring sub;
-    for (int i=0; i<line.length(); i++)
+    for (size_t i=0; i<line.length(); i++)
     {
         wchar_t c = line[i];
         if (c==token)
@@ -271,12 +271,12 @@ TranscriptionDataMap attemptTabDelimitedRefOnly(const vector<wstring> & lines, c
     vector<vector<wstring>> list2;
     vector<wstring> tokens;
     wstring token;
-    int min = 100000;
-    int max = 0;
+    size_t min = 100000;
+    size_t max = 0;
     for (vector<wstring>::const_iterator it = lines.begin(); it!=lines.end(); it++)
     {
         wstring line = *it;
-        for (int i=0; i<line.size(); i++)
+        for (size_t i=0; i<line.size(); i++)
         {
             wchar_t c = line[i];
             if (line[i]==0x09)
@@ -332,12 +332,12 @@ TranscriptionDataMap attemptTabDelimited(vector<wstring> lines, MarkerList marke
     vector<vector<wstring>> list2;
     vector<wstring> tokens;
     wstring token;
-    int min = 100000;
-    int max = 0;
+    size_t min = 100000;
+    size_t max = 0;
     for (vector<wstring>::iterator it = lines.begin(); it!=lines.end(); it++)
     {
         wstring line = *it;
-        for (int i=0; i<line.size(); i++)
+        for (size_t i=0; i<line.size(); i++)
         {
             wchar_t c = line[i];
             if (line[i]==0x09)
@@ -398,12 +398,12 @@ TranscriptionDataMap attemptWhitespaceDelimited(vector<wstring> lines, MarkerLis
     vector<vector<wstring>> list2;
     vector<wstring> tokens;
     wstring token;
-    int min = 100000;
-    int max = 0;
+    size_t min = 100000;
+    size_t max = 0;
     for (vector<wstring>::iterator it = lines.begin(); it!=lines.end(); it++)
     {
         wstring line = *it;
-        for (int i=0; i<line.size(); i++)
+        for (size_t i=0; i<line.size(); i++)
         {
             wchar_t c = line[i];
             if ((line[i]==0x20)||(line[i]==0x09))
@@ -470,14 +470,14 @@ TranscriptionDataMap attemptTwoMarkerWhitespaceDelimited(vector<wstring> lines, 
     vector<vector<wstring>> list2;
     vector<wstring> tokens;
     wstring token;
-    int min = 100000;
-    int max = 0;
+    size_t min = 100000;
+    size_t max = 0;
     // only delimit between the first and second token
     for (vector<wstring>::iterator it = lines.begin(); it!=lines.end(); it++)
     {
         bool first = true;
         wstring line = *it;
-        for (int i=0; i<line.size(); i++)
+        for (size_t i=0; i<line.size(); i++)
         {
             wchar_t c = line[i];
             if ((first)&&((line[i]==0x20)||(line[i]==0x09)))

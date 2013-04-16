@@ -271,34 +271,14 @@ public:
     CAnnotationWnd(int nIndex);
     virtual BOOL PreCreateWindow(CREATESTRUCT & cs);
     virtual void OnDraw(CDC * pDC, const CRect & printRect);
-
-    // Attributes
-protected:
-    int       m_nIndex;         // index of annotation window
-    // SDM 1.06.2
-    BOOL      m_bHintUpdateBoundaries;  // request for draw hint of updated boundaries
-    DWORD     m_dwHintStart,m_dwHintStop;
-    BOOL      m_bOverlap;
-private:
-    DWORD     m_nSelectTickCount;
-
-    // Operations
-public:
     int GetWindowHeight(); // return height of selected font
     CFont * GetFont();
     // SDM 1.06.2
-    void SetHintUpdateBoundaries(BOOL bHint, DWORD dwStart, DWORD dwStop, BOOL bOverlap) ;
-    void SetHintUpdateBoundaries(BOOL bHint, BOOL bOverlap)
-    {
-        SetHintUpdateBoundaries(bHint,m_dwHintStart,m_dwHintStop, bOverlap);
-    };
+    void SetHintUpdateBoundaries(bool bHint, DWORD dwStart, DWORD dwStop, bool bOverlap);
+    void SetHintUpdateBoundaries(bool bHint, bool bOverlap);
     void OnCreateEdit(const CString * szString = NULL);
     static void CreateAnnotationFont(CFont * pFont, int nPoint, LPCTSTR szFace);
 
-protected:  // implementation
-    //    void CreateAnnotFont();
-
-    // Generated message map functions
 protected:
     afx_msg BOOL OnEraseBkgnd(CDC * pDC);
     afx_msg void OnRButtonDown(UINT nFlags, CPoint point);
@@ -307,7 +287,16 @@ protected:
     afx_msg void OnLButtonDblClk(UINT nFlags, CPoint point);
     afx_msg void OnMouseMove(UINT nFlags, CPoint point);
     afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
+
+	int m_nIndex;					// index of annotation window
+    bool m_bHintUpdateBoundaries;	// request for draw hint of updated boundaries
+    DWORD m_dwHintStart,m_dwHintStop;
+    bool m_bOverlap;
+
     DECLARE_MESSAGE_MAP()
+
+private:
+    DWORD m_nSelectTickCount;
 };
 
 //###########################################################################
@@ -315,8 +304,6 @@ protected:
 
 class CPhoneticWnd : public CAnnotationWnd
 {
-
-    // Construction/destruction/creation
 public:
     CPhoneticWnd(int nIndex) : CAnnotationWnd(nIndex) {};
 };
@@ -326,8 +313,6 @@ public:
 
 class CToneWnd : public CAnnotationWnd
 {
-
-    // Construction/destruction/creation
 public:
     CToneWnd(int nIndex) : CAnnotationWnd(nIndex) {};
 };
@@ -337,8 +322,6 @@ public:
 
 class CPhonemicWnd : public CAnnotationWnd
 {
-
-    // Construction/destruction/creation
 public:
     CPhonemicWnd(int nIndex) : CAnnotationWnd(nIndex) {};
 };
@@ -348,8 +331,6 @@ public:
 
 class COrthographicWnd : public CAnnotationWnd
 {
-
-    // Construction/destruction/creation
 public:
     COrthographicWnd(int nIndex) : CAnnotationWnd(nIndex) {};
 };
@@ -359,8 +340,6 @@ public:
 
 class CGlossWnd : public CAnnotationWnd
 {
-
-    // Construction/destruction/creation
 public:
     CGlossWnd(int nIndex) : CAnnotationWnd(nIndex) {};
     virtual void OnDraw(CDC * pDC, const CRect & printRect);
@@ -368,7 +347,6 @@ public:
 
 class CReferenceWnd : public CAnnotationWnd
 {
-    // Construction/destruction/creation
 public:
     CReferenceWnd(int nIndex) : CAnnotationWnd(nIndex) {};
     virtual void OnDraw(CDC * pDC, const CRect & printRect);
@@ -376,11 +354,10 @@ public:
 
 class CMusicPhraseWnd : public CAnnotationWnd
 {
-    // Construction/destruction/creation
 public:
     CMusicPhraseWnd(int nIndex) : CAnnotationWnd(nIndex) {};
 };
 
-#endif //_SA_ANNOT_H
+#endif
 
 

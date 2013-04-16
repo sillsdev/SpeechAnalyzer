@@ -258,7 +258,7 @@ void CProcessChange::SetDataInvalid()
 long CProcessChange::Process(void * pCaller, ISaDoc * pDoc, int nProgress,
                              int nLevel)
 {
-    TRACE(_T("Process: CProcessChange\n"));
+    //TRACE(_T("Process: CProcessChange\n"));
     if (IsCanceled())
     {
         return MAKELONG(PROCESS_CANCELED, nProgress);    // process canceled

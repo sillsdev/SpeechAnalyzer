@@ -13,10 +13,10 @@
 
 #define NUM_EXTRA_PEAKS_ALLOWED  MAX_NUM_FORMANTS
 
-typedef struct
+struct SFormantFreq
 {
     float F[MAX_NUM_FORMANTS+1];  //F[0] = pitch, F[1]... = formant frequencies
-} FORMANT_FREQ;
+};
 
 typedef struct
 {

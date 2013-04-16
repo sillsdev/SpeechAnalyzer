@@ -187,7 +187,7 @@ bool CSFMHelper::IsColumnarSFM( LPCTSTR filename)
 		return false;
 	}
 
-	int start = 0;
+	size_t start = 0;
 	while (true) 
 	{
 		if (start>=lines.size()) return false;
@@ -247,7 +247,7 @@ bool CSFMHelper::IsColumnarSFM( LPCTSTR filename)
 	// than the number of tags
 	for (size_t i=start;i<lines.size();i++) {
 		vector<wstring> tokens = TokenizeLineToTokens( lines[i], 0x09);
-		for (int j=0;j<tokens.size();j++) {
+		for (size_t j=0;j<tokens.size();j++) {
 			if (CSFMHelper::IsTag(tokens[j].c_str())) {
 				TRACE("line %d contains a tag '%s'.\n",i,lines[i].c_str());
 				return false;
@@ -294,7 +294,7 @@ TranscriptionDataMap CSFMHelper::ImportColumnarSFM( LPCTSTR filename)
 
 	if (lines.size()==0) return td;
 
-	int start = 0;
+	size_t start = 0;
 	while (true) 
 	{
 		if (start>=lines.size()) return td;

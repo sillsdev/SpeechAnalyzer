@@ -664,7 +664,7 @@ void CMainFrame::OnInitMenu(CMenu * pMenu)
         }
     }
 
-	TRACE(L"posting autosave message %d\n",m_bAutoSave);
+	//TRACE(L"posting autosave message %d\n",m_bAutoSave);
 	if (m_bAutoSave) {
 		PostMessage(WM_COMMAND,ID_AUTOSAVE_ON);
 	} else {
@@ -2563,7 +2563,7 @@ void CMainFrame::OnWaveformGenerator()
 
     dlg.working.pcm.wf.nSamplesPerSec = _tcstol(dlg.m_szSamplingRate,NULL,10);
     ASSERT(dlg.working.pcm.wf.nSamplesPerSec > 0);
-    dlg.working.pcm.wBitsPerSample = (unsigned short) _tcstol(dlg.m_szBits,NULL,10);
+    dlg.working.pcm.wBitsPerSample = (unsigned short) _tcstol( dlg.m_szBits,NULL,10);
     ASSERT(dlg.working.pcm.wBitsPerSample == 8 || dlg.working.pcm.wBitsPerSample == 16);
 
     m_waveformGeneratorSettings = dlg.working;
@@ -3042,7 +3042,6 @@ BOOL CALLBACK AutosaveTimerChildProc( HWND hwnd,  LPARAM)
 {
     if (DYNAMIC_DOWNCAST(CSaView,CWnd::FromHandle(hwnd)) != NULL)
     {
-        TRACE(L"Posting autosave message\n");
         ::PostMessage(hwnd,WM_USER_AUTOSAVE,0,0);
     }
     return(TRUE);
@@ -3050,12 +3049,12 @@ BOOL CALLBACK AutosaveTimerChildProc( HWND hwnd,  LPARAM)
 
 void CMainFrame::OnTimer(UINT nIDEvent)
 {
-    TRACE(L"OnTimer %d\n",nIDEvent);
+    //TRACE(L"OnTimer %d\n",nIDEvent);
     if (nIDEvent == ID_TIMER_AUTOSAVE)
     {
-		if (this->IsPlayerPlaying())
+		// if we are playing something, defer autosave for performance reasons
+		if (IsPlayerPlaying())
 		{
-			TRACE("audio playing. defering auto save\n");
 			return;
 		}
         ::EnumChildWindows(m_hWnd, AutosaveTimerChildProc, NULL);

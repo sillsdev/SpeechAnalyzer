@@ -43,7 +43,7 @@ CProcessDurations::~CProcessDurations()
 long CProcessDurations::Process(void * pCaller, ISaDoc * pDoc, int nProgress, int nLevel)
 {
 
-    TRACE(_T("Process: CProcessDurations\n"));
+    //TRACE(_T("Process: CProcessDurations\n"));
     if (IsCanceled())
     {
         return MAKELONG(PROCESS_CANCELED, nProgress);    // process canceled

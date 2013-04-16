@@ -1845,7 +1845,7 @@ END_MESSAGE_MAP()
 CAnnotationWnd::CAnnotationWnd(int nIndex)
 {
     m_nIndex = nIndex; // index of annotation window
-    m_bHintUpdateBoundaries = FALSE;
+    m_bHintUpdateBoundaries = false;
 }
 
 /***************************************************************************/
@@ -2040,6 +2040,7 @@ void CAnnotationWnd::OnDraw(CDC * pDC, const CRect & printRect)
     {
         return;    // nothing to draw
     }
+
     // calculate the number of data samples per pixel
     ASSERT(rWnd.Width());
     double fBytesPerPix = (double)dwDataFrame / (double)rWnd.Width();
@@ -2197,7 +2198,7 @@ void CAnnotationWnd::OnDraw(CDC * pDC, const CRect & printRect)
 /***************************************************************************/
 // CAnnotationWnd::SetHintUpdateBoundaries Set Hint Data and Invalidate
 /***************************************************************************/
-void CAnnotationWnd::SetHintUpdateBoundaries(BOOL bHint, DWORD dwStart, DWORD dwStop, BOOL bOverlap)
+void CAnnotationWnd::SetHintUpdateBoundaries(bool bHint, DWORD dwStart, DWORD dwStop, bool bOverlap)
 {
     // get pointer to graph, view and document
     CGraphWnd * pGraph = (CGraphWnd *)GetParent();
@@ -2214,9 +2215,12 @@ void CAnnotationWnd::SetHintUpdateBoundaries(BOOL bHint, DWORD dwStart, DWORD dw
         }
     }
 
-    if ((m_bHintUpdateBoundaries != bHint)||(m_dwHintStart!=dwStart)||(m_dwHintStop != dwStop)||(bOverlap != m_bOverlap))   // If change
+    if ((m_bHintUpdateBoundaries != bHint) ||
+		(m_dwHintStart!=dwStart) ||
+		(m_dwHintStop != dwStop) ||
+		(bOverlap != m_bOverlap))   // If change
     {
-        if ((bHint!=FALSE)||(m_bHintUpdateBoundaries!=FALSE))
+        if ((bHint)||(m_bHintUpdateBoundaries))
         {
             InvalidateRect(NULL);    // If hint drawn or will be drawn
         }
@@ -2227,13 +2231,10 @@ void CAnnotationWnd::SetHintUpdateBoundaries(BOOL bHint, DWORD dwStart, DWORD dw
     }
 }
 
-/////////////////////////////////////////////////////////////////////////////
-// CAnnotationWnd message handlers
-
 /***************************************************************************/
 // CAnnotationWnd::OnEraseBkgnd Erasing background
 /***************************************************************************/
-BOOL CAnnotationWnd::OnEraseBkgnd(CDC * pDC)
+BOOL CAnnotationWnd::OnEraseBkgnd( CDC * pDC)
 {
     // get background color from main frame
     CMainFrame * pMainWnd = (CMainFrame *)AfxGetMainWnd();
@@ -2247,7 +2248,6 @@ BOOL CAnnotationWnd::OnEraseBkgnd(CDC * pDC)
     pDC->SelectObject(pOldBrush);
     return TRUE;
 }
-
 
 /***************************************************************************/
 // CAnnotationWnd::OnRButtonDown Mouse right button down
@@ -2346,8 +2346,8 @@ void CAnnotationWnd::OnLButtonDown(UINT nFlags, CPoint point)
         //SDM 1.06.6
         //SDM 1.5Test8.5
         if (((CMainFrame *)AfxGetMainWnd())->IsEditAllowed() &&
-                (!pView->ASelection().SelectFromPosition(pView, m_nIndex, dwPosition)) &&
-                (pView->ASelection().GetSelection().nAnnotationIndex!=-1))
+             (!pView->ASelection().SelectFromPosition( pView, m_nIndex, dwPosition)) &&
+             (pView->ASelection().GetSelection().nAnnotationIndex!=-1))
         {
             //SDM 1.5Test8.5
             // Selection not changed
@@ -3009,3 +3009,8 @@ void CReferenceWnd::OnDraw(CDC * pDC, const CRect & printRect)
     }
     pDC->SelectObject(pOldFont);  // set back old font
 }
+
+void CAnnotationWnd::SetHintUpdateBoundaries(bool bHint, bool bOverlap)
+{
+    SetHintUpdateBoundaries(bHint,m_dwHintStart,m_dwHintStop, bOverlap);
+};

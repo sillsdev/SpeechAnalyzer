@@ -217,7 +217,7 @@ long CGlossSegment::Exit(int nError)
 long CGlossSegment::Process(void * pCaller, CSaDoc * pSaDoc, int nProgress, int nLevel)
 {
 
-    TRACE(_T("Process: CGlossSegment\n"));
+    //TRACE(_T("Process: CGlossSegment\n"));
     if (IsCanceled())
     {
         return MAKELONG(PROCESS_CANCELED, nProgress);    // process canceled

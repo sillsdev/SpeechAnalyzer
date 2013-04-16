@@ -44,7 +44,7 @@ long CProcessRaw::Process(void * pCaller, ISaDoc * pDoc, int nProgress, int nLev
     {
         return MAKELONG(--nLevel, nProgress);    // data is already ready
     }
-    TRACE(_T("Process: CProcessRaw\n"));
+    //TRACE(_T("Process: CProcessRaw\n"));
     BeginWaitCursor(); // wait cursor
     if (!StartProcess(pCaller, IDS_STATTXT_PROCESSRAW))   // memory allocation failed
     {

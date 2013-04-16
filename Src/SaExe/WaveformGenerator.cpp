@@ -21,7 +21,7 @@ CProcessWaveformGenerator::~CProcessWaveformGenerator()
 long CProcessWaveformGenerator::Process(CWaveformGeneratorSettings & parms, void * pCaller, int nProgress, int nLevel)
 {
 
-    TRACE(_T("Process: CProcessWbGenerator\n"));
+    //TRACE(_T("Process: CProcessWbGenerator\n"));
     if (IsCanceled())
     {
         return MAKELONG(PROCESS_CANCELED, nProgress);    // process canceled

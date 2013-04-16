@@ -4899,7 +4899,7 @@ void CSaDoc::OnUpdateBoundaries(void)
         return;
     }
 
-    if (GetSegment(nLoop)->CheckCursors(this, pView->GetEditBoundaries(0, FALSE)==BOUNDARIES_EDIT_OVERLAP) != -1)
+    if (GetSegment(nLoop)->CheckCursors(this, pView->GetEditBoundaries(false)==BOUNDARIES_EDIT_SEGMENT_SIZE) != -1)
     {
         // save state for undo ability
         DWORD dwNewStart = pView->GetStartCursorPosition();
@@ -4926,7 +4926,7 @@ void CSaDoc::OnUpdateBoundaries(void)
         pView->SetStopCursorPosition(dwNewStop, SNAP_RIGHT);
 
         // Do update
-        UpdateSegmentBoundaries(pView->GetEditBoundaries(0, FALSE)==BOUNDARIES_EDIT_OVERLAP);//SDM 1.5Test8.1
+        UpdateSegmentBoundaries(pView->GetEditBoundaries(false)==BOUNDARIES_EDIT_SEGMENT_SIZE);//SDM 1.5Test8.1
     }
 }
 
@@ -4942,7 +4942,7 @@ void CSaDoc::OnUpdateUpdateBoundaries(CCmdUI * pCmdUI)
 
     int nLoop = pView->FindSelectedAnnotationIndex();
 
-    if ((nLoop != -1)&&(GetSegment(nLoop)->CheckCursors(this, pView->GetEditBoundaries(0, FALSE)==BOUNDARIES_EDIT_OVERLAP) != -1))
+    if ((nLoop != -1)&&(GetSegment(nLoop)->CheckCursors(this, pView->GetEditBoundaries(false)==BOUNDARIES_EDIT_SEGMENT_SIZE) != -1))
     {
         int nSelection = GetSegment(nLoop)->GetSelection();
         DWORD dwStart = pView->GetStartCursorPosition();
@@ -4980,17 +4980,13 @@ void CSaDoc::OnUpdateUpdateBoundaries(CCmdUI * pCmdUI)
 /***************************************************************************/
 BOOL CSaDoc::UpdateSegmentBoundaries(BOOL bOverlap)
 {
-    CSaDoc * pDoc = this;
-    POSITION pos = pDoc->GetFirstViewPosition();
-    CSaView * pView = (CSaView *)pDoc->GetNextView(pos);
+    POSITION pos = GetFirstViewPosition();
+    CSaView * pView = (CSaView *)GetNextView(pos);
     CSegment * pSegment;
     int nSelection = -1;
 
     int nLoop = pView->FindSelectedAnnotationIndex();
-    if (nLoop == -1)
-    {
-        return FALSE;
-    }
+    if (nLoop == -1) return FALSE;
 
     pSegment = m_apSegments[nLoop];
     nSelection = pSegment->GetSelection();
@@ -4998,7 +4994,7 @@ BOOL CSaDoc::UpdateSegmentBoundaries(BOOL bOverlap)
     DWORD dwStart = pView->GetStartCursorPosition();
     DWORD dwStop = pView->GetStopCursorPosition();
 
-    BOOL result = UpdateSegmentBoundaries(bOverlap, nLoop, nSelection, dwStart, dwStop);
+    BOOL result = UpdateSegmentBoundaries( bOverlap, nLoop, nSelection, dwStart, dwStop);
 
     // refresh the annotation windows
     for (nLoop = 0; nLoop < MAX_GRAPHS_NUMBER; nLoop++)
@@ -5383,7 +5379,7 @@ CSaString CSaDoc::GetMeasurementsString(DWORD dwOffset, DWORD dwLength, BOOL * p
     }
 
     // get formants
-    double dBytesPerSlice = GetDataSize() / double(m_pProcessFormantTracker->GetDataSize(sizeof(FORMANT_FREQ)));
+    double dBytesPerSlice = GetDataSize() / double(m_pProcessFormantTracker->GetDataSize(sizeof(SFormantFreq)));
     dwStartPos = (DWORD) floor(dwOffset / dBytesPerSlice);
     dwEndPos = (DWORD) floor((dwOffset + dwLength) / dBytesPerSlice);
     double fF1Sum = 0;
@@ -5393,7 +5389,7 @@ CSaString CSaDoc::GetMeasurementsString(DWORD dwOffset, DWORD dwLength, BOOL * p
     count = 0;
     for (DWORD i = dwStartPos; i <= dwEndPos; i++)
     {
-        CProcessIterator<FORMANT_FREQ> iterFormants(*m_pProcessFormantTracker, i);
+        CProcessIterator<SFormantFreq> iterFormants(*m_pProcessFormantTracker, i);
         if ((*iterFormants).F[1] != (double)NA)
         {
             fF1Sum += (*iterFormants).F[1];

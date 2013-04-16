@@ -58,7 +58,7 @@ CProcessCustomPitch::~CProcessCustomPitch()
 long CProcessCustomPitch::Process(void * pCaller, ISaDoc * pDoc, int nProgress,
                                   int nLevel)
 {
-    TRACE(_T("Process: CProcessCustomPitch\n"));
+    //TRACE(_T("Process: CProcessCustomPitch\n"));
     if (IsCanceled())
     {
         return MAKELONG(PROCESS_CANCELED, nProgress);    // process canceled
@@ -173,7 +173,7 @@ long CProcessCustomPitch::Process(void * pCaller, ISaDoc * pDoc, int nProgress,
         }
         // set grappl input buffer
 		uint16 length = (WORD)(dwBlockSize / pDoc->GetBlockAlign(true));
-		TRACE("grappl length %d\n",length);
+		//TRACE("grappl length %d\n",length);
         if (!grapplSetInbuff((pGrappl)m_lpBuffer, (pGrappl)pBlockStart, length, nomore))
         {
 			return Exit(PROCESS_ERROR);

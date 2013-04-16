@@ -169,10 +169,10 @@ void DspWin::Build()
     m_bWindowBuilt = true;
 }
 
-int32 DspWin::CalcLength( double bandwidth, uint32 SmpRate, int32 windowType)
+int32 DspWin::CalcLength( double bandwidth, uint32 smpRate, int32 windowType)
 {
     CWindowParms window = WindowParms(windowType);
-    return (int32)(SmpRate/bandwidth*window.m_bandwidthProduct + 0.5);
+    return (int32)( smpRate/bandwidth * window.m_bandwidthProduct + 0.5);
 }
 
 double DspWin::Bandwidth() const

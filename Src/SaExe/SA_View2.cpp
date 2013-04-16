@@ -206,6 +206,10 @@ BEGIN_MESSAGE_MAP(CSaView, CView)
     ON_COMMAND(ID_EDIT_CURSOR_STOP_LEFT, OnEditCursorStopLeft)
     ON_COMMAND(ID_EDIT_CURSOR_START_RIGHT, OnEditCursorStartRight)
     ON_COMMAND(ID_EDIT_CURSOR_STOP_RIGHT, OnEditCursorStopRight)
+    ON_COMMAND(ID_EDIT_BOUNDARY_START_LEFT, OnEditBoundaryStartLeft)
+    ON_COMMAND(ID_EDIT_BOUNDARY_STOP_LEFT, OnEditBoundaryStopLeft)
+    ON_COMMAND(ID_EDIT_BOUNDARY_START_RIGHT, OnEditBoundaryStartRight)
+    ON_COMMAND(ID_EDIT_BOUNDARY_STOP_RIGHT, OnEditBoundaryStopRight)
     ON_COMMAND(ID_PLAYBACK_SLOW, OnPlaybackSlow)
     ON_COMMAND(ID_DP_GRAPITCH, OnDpGrapitch)
     ON_UPDATE_COMMAND_UI(ID_DP_GRAPITCH, OnUpdateDpGrapitch)
@@ -504,11 +508,12 @@ BOOL CSaView::IDDSelected(const UINT * pGraphIDs, UINT nIDD)
 int CSaView::GetGraphIndexForIDD(UINT nIDD)
 {
     for (int nLoop = 0; nLoop < MAX_GRAPHS_NUMBER; nLoop++)
+	{
         if (m_anGraphID[nLoop] == nIDD)
         {
             return nLoop;
         }
-
+	}
     return -1;
 }
 
@@ -772,21 +777,21 @@ void CSaView::OnEditBoundaries()
 void CSaView::OnUpdateEditBoundaries(CCmdUI * pCmdUI)
 {
     pCmdUI->Enable(TRUE);
-    pCmdUI->SetCheck(GetEditBoundaries(0)==BOUNDARIES_EDIT_NO_OVERLAP);
+    pCmdUI->SetCheck(GetEditBoundaries()==BOUNDARIES_EDIT_BOUNDARIES);
 }
 
 /***************************************************************************/
 // CSaView::GetEditBoundaries
 /***************************************************************************/
-EBoundary CSaView::GetEditBoundaries(int /*nFlags*/, BOOL checkKeys)
+EBoundary CSaView::GetEditBoundaries( bool checkKeys)
 {
     if ((m_bEditSegmentSize) && (checkKeys))
     {
-        return BOUNDARIES_EDIT_OVERLAP;
+        return BOUNDARIES_EDIT_SEGMENT_SIZE;
     }
     if ((m_bEditBoundaries) && (checkKeys))
     {
-        return BOUNDARIES_EDIT_NO_OVERLAP;
+        return BOUNDARIES_EDIT_BOUNDARIES;
     }
     return BOUNDARIES_EDIT_NULL;
 }
@@ -806,7 +811,7 @@ void CSaView::OnEditSegmentSize()
 void CSaView::OnUpdateEditSegmentSize(CCmdUI * pCmdUI)
 {
     pCmdUI->Enable(TRUE);
-    pCmdUI->SetCheck(GetEditBoundaries(0)==BOUNDARIES_EDIT_OVERLAP);
+    pCmdUI->SetCheck(GetEditBoundaries()==BOUNDARIES_EDIT_SEGMENT_SIZE);
 }
 
 /***************************************************************************/
@@ -2399,7 +2404,7 @@ void CSaView::SetCursorPosition(int nCursorSelect,
 /***************************************************************************/
 void CSaView::SetStartCursorPosition(DWORD dwNewPos, ESnapDirection nSnapDirection, ECursorAlignment nCursorAlignment)
 {
-    SetStartStopCursorPosition(dwNewPos, m_dwStopCursor, nSnapDirection, nCursorAlignment);
+    SetStartStopCursorPosition( dwNewPos, m_dwStopCursor, nSnapDirection, nCursorAlignment);
 }
 
 /***************************************************************************/
@@ -2407,7 +2412,7 @@ void CSaView::SetStartCursorPosition(DWORD dwNewPos, ESnapDirection nSnapDirecti
 /***************************************************************************/
 void CSaView::SetStopCursorPosition(DWORD dwNewPos, ESnapDirection nSnapDirection, ECursorAlignment nCursorAlignment)
 {
-    SetStartStopCursorPosition(m_dwStartCursor, dwNewPos, nSnapDirection, nCursorAlignment);
+    SetStartStopCursorPosition( m_dwStartCursor, dwNewPos, nSnapDirection, nCursorAlignment);
 }
 
 /***************************************************************************/
@@ -2416,10 +2421,10 @@ void CSaView::SetStopCursorPosition(DWORD dwNewPos, ESnapDirection nSnapDirectio
 // we update the graphs in case the previous stop position is invalid
 // for the new graph.
 /***************************************************************************/
-void CSaView::SetStartStopCursorPosition(DWORD dwNewStartPos,
-        DWORD dwNewStopPos,
-        ESnapDirection nSnapDirection,
-        ECursorAlignment nCursorAlignment)
+void CSaView::SetStartStopCursorPosition( DWORD dwNewStartPos,
+										  DWORD dwNewStopPos,
+										  ESnapDirection nSnapDirection,
+										  ECursorAlignment nCursorAlignment)
 {
     if (nCursorAlignment == ALIGN_USER_SETTING)
     {
@@ -2769,7 +2774,7 @@ LRESULT CSaView::OnGraphUpdateModeChanged(WPARAM , LPARAM)
     {
         int nWaveGraphIndex = GetGraphIndexForIDD(IDD_RAWDATA);
         CGraphWnd * pWaveGraph = GetGraph(nWaveGraphIndex);
-        if (pWaveGraph)
+        if (pWaveGraph!=NULL)
         {
             CPlotWnd * pWavePlot = pWaveGraph->GetPlot();
             pWavePlot->SetHighLightArea(0, 0);     // turn off highlighted area in raw waveform
@@ -2848,12 +2853,7 @@ BOOL CSaView::StartAnimation(DWORD dwStartWaveIndex, DWORD dwStopWaveIndex)
     float fResyncTime = 0.F;
     BOOL bCancelAnimation = FALSE;
     m_bAnimating = TRUE;
-    /*
-    int nWaveGraphIndex = GetGraphIndexForIDD(IDD_RAWDATA);
-    CGraphWnd* pWaveGraph = GetGraph(nWaveGraphIndex);
-    CPlotWnd* pWavePlot = NULL;
-    if (pWaveGraph) pWavePlot = pWaveGraph->GetPlot();
-    */
+
     for (DWORD dwFrameIndex = dwStartFrame; dwFrameIndex <= dwStopFrame; dwFrameIndex++)
     {
         if (m_pStopwatch && !bFreezeFrame)
@@ -2867,10 +2867,6 @@ BOOL CSaView::StartAnimation(DWORD dwStartWaveIndex, DWORD dwStopWaveIndex)
                 float fFrameTime = m_pStopwatch->GetElapsedTime();
                 float fFrameTimeRequested = 1.F / (float)GetAnimationFrameRate();
                 fResyncTime = fFrameTimeRequested - fFrameTime;
-                /* if (m_Animation.fResyncTime < 0.F)
-                {
-                //!!set top end of animation rate options
-                } */
             }
         }
         if (fResyncTime > 0.F)
@@ -3897,7 +3893,12 @@ void CSaView::OnUpdateEditPaste(CCmdUI * pCmdUI)
         {
             if (IsClipboardFormatAvailable(CF_UNICODETEXT))
             {
-                enablePaste = TRUE;
+				CSaApp * pApp = (CSaApp*)AfxGetApp();
+				LPCTSTR path = pApp->GetLastClipboardPath();
+				if (wcslen(path)>0)
+				{
+	                enablePaste = TRUE;
+				}
             }
             CloseClipboard();
         }
@@ -3932,7 +3933,12 @@ void CSaView::OnUpdateEditPasteNew(CCmdUI * pCmdUI)
     {
         if (IsClipboardFormatAvailable(CF_WAVE))
         {
-            enablePaste = TRUE;
+			CSaApp * pApp = (CSaApp*)AfxGetApp();
+			LPCTSTR path = pApp->GetLastClipboardPath();
+			if (wcslen(path)>0)
+			{
+				enablePaste = TRUE;
+			}
         }
         CloseClipboard();
     }
@@ -4004,19 +4010,21 @@ void CSaView::OnUpdateEditRedo(CCmdUI * pCmdUI)
 }
 
 /***************************************************************************/
-// CSaView::MoveStartCursorRight Move Start Cursor Right
+// CSaView::OnEditCursorStartLeft Move Start Cursor Left
 /***************************************************************************/
-void CSaView::MoveStartCursorRight()
+void CSaView::OnEditCursorStartLeft()
 {
-    OnEditCursorStartRight();
-}
+    CSaDoc * pDoc = GetDocument();
+    int nBlockAlign = pDoc->GetBlockAlign();
+    DWORD movementScale = ((DWORD)(m_fMaxZoom/m_fZoom + 0.5))* nBlockAlign;
+    DWORD dwOffset = GetStartCursorPosition();
+    if (dwOffset < movementScale) return;
 
-/***************************************************************************/
-// CSaView::MoveStartCursorLeft Move Start Cursor Right
-/***************************************************************************/
-void CSaView::MoveStartCursorLeft()
-{
-    OnEditCursorStartLeft();
+	DWORD dwOffsetNew = pDoc->SnapCursor(START_CURSOR, dwOffset - movementScale, SNAP_LEFT);
+	if (dwOffset != dwOffsetNew)
+	{
+		SetStartCursorPosition(dwOffsetNew);
+	}
 }
 
 /***************************************************************************/
@@ -4024,26 +4032,21 @@ void CSaView::MoveStartCursorLeft()
 /***************************************************************************/
 void CSaView::OnEditCursorStartRight()
 {
-    DWORD dwOffset;
-    DWORD dwOffsetNew;
-    DWORD dwStop;
-    DWORD dwStopNew;
     CSaDoc * pDoc = GetDocument();
     int nBlockAlign = pDoc->GetBlockAlign();
     DWORD minSeparation = ((DWORD)(CURSOR_MIN_DISTANCE * (m_fMaxZoom/m_fZoom))) * nBlockAlign;
     DWORD dataSize = pDoc->GetDataSize();
     DWORD movementScale = ((DWORD)(m_fMaxZoom/m_fZoom + 0.5))* nBlockAlign;
-
-    dwOffset = GetStartCursorPosition();
-
-    if (dwOffset + movementScale >= dataSize)
+    DWORD dwOffset = GetStartCursorPosition();
+	// off the end!
+    if ((dwOffset + movementScale) >= dataSize)
     {
         return;
     }
 
-    dwOffsetNew = pDoc->SnapCursor(START_CURSOR, dwOffset + movementScale, SNAP_RIGHT);
-    dwStop = GetStopCursorPosition();
-    dwStopNew = dwStop;
+    DWORD dwOffsetNew = pDoc->SnapCursor(START_CURSOR, dwOffset + movementScale, SNAP_RIGHT);
+    DWORD dwStop = GetStopCursorPosition();
+    DWORD dwStopNew = dwStop;
     if (dwOffsetNew + minSeparation > dwStopNew)
     {
         dwStopNew = pDoc->SnapCursor(STOP_CURSOR, dwOffsetNew + minSeparation, SNAP_RIGHT);
@@ -4052,17 +4055,14 @@ void CSaView::OnEditCursorStartRight()
     {
         dwOffsetNew = pDoc->SnapCursor(START_CURSOR, (dwStopNew > minSeparation) ? (dwStopNew - minSeparation): 0, SNAP_LEFT);
     }
-
     if (dwOffsetNew + minSeparation > dwStopNew)
     {
         return;
     }
-
     if (dwStop != dwStopNew)
     {
         SetStopCursorPosition(dwStopNew);
     }
-
     if (dwOffset != dwOffsetNew)
     {
         SetStartCursorPosition(dwOffsetNew);
@@ -4074,50 +4074,20 @@ void CSaView::OnEditCursorStartRight()
 /***************************************************************************/
 void CSaView::OnEditCursorStopRight()
 {
-    DWORD dwStop;
-    DWORD dwStopNew;
     CSaDoc * pDoc = GetDocument();
     int nBlockAlign = pDoc->GetBlockAlign();
     DWORD dataSize = pDoc->GetDataSize();
     DWORD movementScale = ((DWORD)(m_fMaxZoom/m_fZoom + 0.5))* nBlockAlign;
-
-
-    dwStop = GetStopCursorPosition();
-
+    DWORD dwStop = GetStopCursorPosition();
     if (dwStop + movementScale >= dataSize)
     {
         return;
     }
 
-    dwStopNew = pDoc->SnapCursor(STOP_CURSOR, dwStop + movementScale, SNAP_RIGHT);
-
+    DWORD dwStopNew = pDoc->SnapCursor(STOP_CURSOR, dwStop + movementScale, SNAP_RIGHT);
     if (dwStop != dwStopNew)
     {
         SetStopCursorPosition(dwStopNew);
-    }
-}
-
-/***************************************************************************/
-// CSaView::OnEditCursorStartLeft Move Start Cursor Left
-/***************************************************************************/
-void CSaView::OnEditCursorStartLeft()
-{
-    CSaDoc * pDoc = GetDocument();
-    int nBlockAlign = pDoc->GetBlockAlign();
-    DWORD movementScale = ((DWORD)(m_fMaxZoom/m_fZoom + 0.5))* nBlockAlign;
-
-    DWORD dwOffset = GetStartCursorPosition();
-
-    if (dwOffset < movementScale)
-    {
-        return;
-    }
-
-    DWORD dwOffsetNew = pDoc->SnapCursor(START_CURSOR, dwOffset - movementScale, SNAP_LEFT);
-
-    if (dwOffset != dwOffsetNew)
-    {
-        SetStartCursorPosition(dwOffsetNew);
     }
 }
 
@@ -4126,14 +4096,11 @@ void CSaView::OnEditCursorStartLeft()
 /***************************************************************************/
 void CSaView::OnEditCursorStopLeft()
 {
-
     CSaDoc * pDoc = GetDocument();
     int nBlockAlign = pDoc->GetBlockAlign();
     DWORD minSeparation = ((DWORD)(CURSOR_MIN_DISTANCE * (m_fMaxZoom/m_fZoom))) * nBlockAlign;
     DWORD movementScale = ((DWORD)(m_fMaxZoom/m_fZoom + 0.5))* nBlockAlign;
-
     DWORD dwStop = GetStopCursorPosition();
-
     if (dwStop < movementScale)
     {
         return;
@@ -4143,11 +4110,11 @@ void CSaView::OnEditCursorStopLeft()
 
     DWORD dwOffset = GetStartCursorPosition();
     DWORD dwOffsetNew = dwOffset;
-    if (dwOffsetNew + minSeparation > dwStopNew)
+    if ((dwOffsetNew + minSeparation) > dwStopNew)
     {
         dwOffsetNew = pDoc->SnapCursor(START_CURSOR, (dwStopNew > minSeparation) ? (dwStopNew - minSeparation): 0, SNAP_LEFT);
     }
-    if (dwOffsetNew + minSeparation > dwStopNew)
+    if ((dwOffsetNew + minSeparation) > dwStopNew)
     {
         dwStopNew = pDoc->SnapCursor(STOP_CURSOR, dwOffsetNew + minSeparation, SNAP_RIGHT);
     }
@@ -4166,6 +4133,302 @@ void CSaView::OnEditCursorStopLeft()
     {
         SetStopCursorPosition(dwStopNew);
     }
+}
+
+/***************************************************************************/
+// CSaView::OnEditBoundaryStartLeft Move Start Cursor Left
+/***************************************************************************/
+void CSaView::OnEditBoundaryStartLeft()
+{
+	bool editSegment = (m_bEditSegmentSize|m_bEditBoundaries);
+	if (!editSegment) return;
+
+	bool overlap = m_bEditSegmentSize;
+
+	// if there's no annotation selection, we can't move anything...
+	int nLoop = FindSelectedAnnotationIndex();
+	if (nLoop==-1) return;
+
+	// are we editing segment size?
+	CSegment * pSegment = GetAnnotation(nLoop);
+	if (pSegment==NULL) return;
+	CGraphWnd * pGraph = GetGraphForAnnotation( nLoop);
+	if (pGraph==NULL) return;
+	CAnnotationWnd * pWnd = pGraph->GetAnnotationWnd( nLoop);
+	if (pWnd==NULL) return;
+	CPlotWnd * pPlot = pGraph->GetPlot();
+	if (pPlot==NULL) return;
+
+	// Limit positions of cursors
+	int mode = (overlap) ? CSegment::LIMIT_MOVING_START : CSegment::LIMIT_MOVING_START | CSegment::LIMIT_NO_OVERLAP;
+
+	CSaDoc * pDoc = GetDocument();
+    CPoint point = pPlot->GetMousePointerPosition();
+    CRect rWnd;
+    pPlot->GetClientRect(rWnd);
+    // get actual data position, frame and data size and alignment
+    double fDataPos;
+    DWORD dwDataFrame;
+    // check if area graph type
+    if (pGraph->IsAreaGraph())
+    {
+        // get necessary data from area plot
+        fDataPos = pPlot->GetAreaPosition();
+        dwDataFrame = pPlot->GetAreaLength();
+    }
+    else
+    {
+        // get necessary data from document and from view
+        fDataPos = GetDataPosition(rWnd.Width());       // data index of first sample to display
+        dwDataFrame = AdjustDataFrame(rWnd.Width());    // number of data points to display
+    }
+    DWORD dwDataSize = pDoc->GetDataSize();
+    DWORD nSmpSize = pDoc->GetSampleSize();
+    ASSERT(rWnd.Width());
+    double fSamplesPerPix = (double)dwDataFrame / (double)(rWnd.Width()*nSmpSize);
+    DWORD minSeparation = (DWORD)(CURSOR_MIN_DISTANCE * fSamplesPerPix * nSmpSize);
+
+	int nBlockAlign = pDoc->GetBlockAlign();
+    //DWORD minSeparation = ((DWORD)(CURSOR_MIN_DISTANCE * (m_fMaxZoom/m_fZoom))) * nBlockAlign;
+    DWORD movementScale = ((DWORD)(m_fMaxZoom/m_fZoom + 0.5))* nBlockAlign;
+    DWORD dwStart = GetStartCursorPosition();
+	DWORD dwStop = GetStopCursorPosition();
+
+	// limit to beginning
+	if (dwStart<movementScale)
+	{
+		dwStart = 0;
+	}
+	else
+	{
+		dwStart -= movementScale;
+	}
+	// snap it
+    dwStart = pDoc->SnapCursor( START_CURSOR, dwStart, SNAP_RIGHT);
+
+	if (dwStop<(dwStart+minSeparation))
+	{
+		dwStop = dwStart+minSeparation;
+	}
+	// snap it
+	dwStop = pDoc->SnapCursor( STOP_CURSOR, dwStop, SNAP_RIGHT);
+
+	// see if it will fly...
+    if (pSegment->CheckPosition( pDoc, dwStart, dwStop, CSegment::EMode::MODE_AUTOMATIC, overlap) == -1) return;
+
+	// start making changes...
+	pDoc->CheckPoint(); // Save state
+
+	SetStartCursorPosition( dwStart);
+	SetStopCursorPosition( dwStop);
+	pSegment->LimitPosition( pDoc, dwStart, dwStop, mode); 
+	pWnd->SetHintUpdateBoundaries( false, overlap);
+	pDoc->UpdateSegmentBoundaries(overlap);
+}
+
+/***************************************************************************/
+// CSaView::OnEditBoundaryStartRight Move Start Cursor Right
+/***************************************************************************/
+void CSaView::OnEditBoundaryStartRight()
+{
+	bool editSegment = (m_bEditSegmentSize|m_bEditBoundaries);
+	if (!editSegment) return;
+
+	bool overlap = m_bEditSegmentSize;
+
+	// if there's no annotation selection, we can't move anything...
+	int nLoop = FindSelectedAnnotationIndex();
+	if (nLoop==-1) return;
+
+	// are we editing segment size?
+	CSegment * pSegment = GetAnnotation(nLoop);
+	if (pSegment==NULL) return;
+	CGraphWnd * pGraph = GetGraphForAnnotation( nLoop);
+	if (pGraph==NULL) return;
+	CAnnotationWnd * pWnd = pGraph->GetAnnotationWnd(nLoop);
+	if (pWnd==NULL) return;
+
+	// Limit positions of cursors
+	int mode = (overlap) ? CSegment::LIMIT_MOVING_START : CSegment::LIMIT_MOVING_START | CSegment::LIMIT_NO_OVERLAP;
+
+	CSaDoc * pDoc = GetDocument();
+    int nBlockAlign = pDoc->GetBlockAlign();
+    DWORD movementScale = ((DWORD)(m_fMaxZoom/m_fZoom + 0.5))* nBlockAlign;
+    DWORD minSeparation = ((DWORD)(CURSOR_MIN_DISTANCE * (m_fMaxZoom/m_fZoom))) * nBlockAlign;
+	minSeparation = 502;
+	DWORD dwStart = GetStartCursorPosition();
+	DWORD dwStop = GetStopCursorPosition();
+    DWORD dataSize = pDoc->GetDataSize();
+
+	// figure out if we can move that far...
+	// is stop beyond end?
+	if ((dwStart+movementScale+minSeparation)>dataSize)
+	{
+		// limit the stop if we need to
+		dwStop = dataSize;
+	}
+	else if ((dwStart+movementScale+minSeparation)>dwStop)
+	{
+		// bump the stop if we need to
+		dwStop = dwStart+movementScale+minSeparation;
+	}
+	// snap the stop
+    dwStop = pDoc->SnapCursor( STOP_CURSOR, dwStop, SNAP_LEFT);
+
+	// is start too close
+	if ((dwStart+movementScale+minSeparation)>dwStop)
+	{
+		dwStart = dwStop-minSeparation;
+	}
+	else
+	{
+		dwStart += movementScale;
+	}
+	// snap the start
+    dwStart = pDoc->SnapCursor( START_CURSOR, dwStart, SNAP_LEFT);
+
+	// see if it will fly...
+    if (pSegment->CheckPosition( pDoc, dwStart, dwStop, CSegment::EMode::MODE_AUTOMATIC, overlap) == -1) return;
+
+	// start making changes...
+	pDoc->CheckPoint(); // Save state
+
+    SetStartCursorPosition(dwStart);
+    SetStopCursorPosition(dwStop);
+	pSegment->LimitPosition( pDoc, dwStart, dwStop, mode); 
+	pWnd->SetHintUpdateBoundaries( false, overlap);
+	pDoc->UpdateSegmentBoundaries(overlap);
+}
+
+/***************************************************************************/
+// CSaView::OnEditCursorStopLeft Move Stop Cursor Left
+/***************************************************************************/
+void CSaView::OnEditBoundaryStopLeft()
+{
+	bool editSegment = (m_bEditSegmentSize|m_bEditBoundaries);
+	if (!editSegment) return;
+
+	bool overlap = m_bEditSegmentSize;
+
+	// if there's no annotation selection, we can't move anything...
+	int nLoop = FindSelectedAnnotationIndex();
+	if (nLoop==-1) return;
+
+	// are we editing segment size?
+	CSegment * pSegment = GetAnnotation(nLoop);
+	if (pSegment==NULL) return;
+	CGraphWnd * pGraph = GetGraphForAnnotation( nLoop);
+	if (pGraph==NULL) return;
+	CAnnotationWnd * pWnd = pGraph->GetAnnotationWnd( nLoop);
+	if (pWnd==NULL) return;
+
+	// Limit positions of cursors
+	int mode = (overlap) ? CSegment::LIMIT_MOVING_STOP : CSegment::LIMIT_MOVING_STOP | CSegment::LIMIT_NO_OVERLAP;
+
+	CSaDoc * pDoc = GetDocument();
+    int nBlockAlign = pDoc->GetBlockAlign();
+    DWORD minSeparation = ((DWORD)(CURSOR_MIN_DISTANCE * (m_fMaxZoom/m_fZoom))) * nBlockAlign;
+	minSeparation = 502;
+    DWORD movementScale = ((DWORD)(m_fMaxZoom/m_fZoom + 0.5))* nBlockAlign;
+    DWORD dwStart = GetStartCursorPosition();
+	DWORD dwStop = GetStopCursorPosition();
+
+	if ((dwStop-movementScale)<(0+minSeparation))
+	{
+		// limit to beginning
+		dwStop = minSeparation;
+	}
+	else
+	{
+		dwStop -= movementScale;
+	}
+
+	// snap it
+	dwStop = pDoc->SnapCursor( STOP_CURSOR, dwStop, SNAP_RIGHT);
+
+	if (dwStart>(dwStop-minSeparation))
+	{
+		dwStart = dwStop-minSeparation;
+	}
+	// snap it
+    dwStart = pDoc->SnapCursor( START_CURSOR, dwStart, SNAP_RIGHT);
+
+	// see if it will fly...
+    if (pSegment->CheckPosition( pDoc, dwStart, dwStop, CSegment::EMode::MODE_AUTOMATIC, overlap) == -1) return;
+
+	// start making changes...
+	pDoc->CheckPoint(); // Save state
+
+	SetStartCursorPosition( dwStart);
+	SetStopCursorPosition( dwStop);
+	pSegment->LimitPosition( pDoc, dwStart, dwStop, mode); 
+	pWnd->SetHintUpdateBoundaries( false, overlap);
+	pDoc->UpdateSegmentBoundaries(overlap);
+}
+
+/***************************************************************************/
+// CSaView::OnEditCursorStopRight Move Stop Cursor Right
+/***************************************************************************/
+void CSaView::OnEditBoundaryStopRight()
+{
+	bool editSegment = (m_bEditSegmentSize|m_bEditBoundaries);
+	if (!editSegment) return;
+
+	bool overlap = m_bEditSegmentSize;
+
+	// if there's no annotation selection, we can't move anything...
+	int nLoop = FindSelectedAnnotationIndex();
+	if (nLoop==-1) return;
+
+	// are we editing segment size?
+	CSegment * pSegment = GetAnnotation(nLoop);
+	if (pSegment==NULL) return;
+	CGraphWnd * pGraph = GetGraphForAnnotation( nLoop);
+	if (pGraph==NULL) return;
+	CAnnotationWnd * pWnd = pGraph->GetAnnotationWnd(nLoop);
+	if (pWnd==NULL) return;
+
+	// Limit positions of cursors
+	int mode = (overlap) ? CSegment::LIMIT_MOVING_START : CSegment::LIMIT_MOVING_START | CSegment::LIMIT_NO_OVERLAP;
+
+	CSaDoc * pDoc = GetDocument();
+    int nBlockAlign = pDoc->GetBlockAlign();
+    DWORD movementScale = ((DWORD)(m_fMaxZoom/m_fZoom + 0.5))* nBlockAlign;
+    DWORD minSeparation = ((DWORD)(CURSOR_MIN_DISTANCE * (m_fMaxZoom/m_fZoom))) * nBlockAlign;
+	minSeparation = 502;
+	DWORD dwStart = GetStartCursorPosition();
+	DWORD dwStop = GetStopCursorPosition();
+    DWORD dataSize = pDoc->GetDataSize();
+
+	if ((dwStop+movementScale)>dataSize)
+	{
+		dwStop = dataSize;
+	}
+	else
+	{
+		dwStop += movementScale;
+	}
+	// snap the stop
+    dwStop = pDoc->SnapCursor( STOP_CURSOR, dwStop, SNAP_LEFT);
+
+	if ((dwStart+minSeparation)<dwStop)
+	{
+		dwStart = dwStop-minSeparation;
+	}
+	// snap the start
+    dwStart = pDoc->SnapCursor( START_CURSOR, dwStart, SNAP_LEFT);
+
+	// see if it will fly...
+    if (pSegment->CheckPosition( pDoc, dwStart, dwStop, CSegment::EMode::MODE_AUTOMATIC, overlap) == -1) return;
+
+	// start making changes...
+	pDoc->CheckPoint(); // Save state
+
+    SetStartCursorPosition(dwStart);
+    SetStopCursorPosition(dwStop);
+	pSegment->LimitPosition( pDoc, dwStart, dwStop, mode); 
+	pWnd->SetHintUpdateBoundaries( false, overlap);
+	pDoc->UpdateSegmentBoundaries(overlap);
 }
 
 //SDM 1.06.6U2
@@ -6171,7 +6434,7 @@ void CSaView::OnMoveStopCursorHere()
         }
     }
 
-    TRACE("start=%lu stop=%lu\n",dwStartCursor,dwStopCursor);
+    //TRACE("start=%lu stop=%lu\n",dwStartCursor,dwStopCursor);
 
     // move stop cursor also
     SetStartCursorPosition(dwStartCursor);
@@ -6254,14 +6517,9 @@ UINT * CSaView::GetGraphIDs()
 CGraphWnd * CSaView::GetGraph(int nIndex)
 {
     // get the pointers to a graph
-    if (nIndex < 0 || nIndex > MAX_GRAPHS_NUMBER)
-    {
-        return NULL;
-    }
-    else
-    {
-        return m_apGraphs[nIndex];
-    }
+    if (nIndex < 0) return NULL;
+	if (nIndex > MAX_GRAPHS_NUMBER) return NULL;
+    return m_apGraphs[nIndex];
 }
 
 BOOL CSaView::IsAnimating()
@@ -6384,7 +6642,17 @@ CMainFrame * CSaView::MainFrame()
 
 LRESULT CSaView::OnAutoSave( WPARAM, LPARAM)
 {
-    TRACE(L"OnAutoSave\n");
 	GetDocument()->StoreAutoRecoveryInformation();
     return 0;
+}
+
+CGraphWnd * CSaView::GetGraphForAnnotation( int annotation)
+{
+	for (size_t i = 0; i<MAX_GRAPHS_NUMBER; i++)
+	{
+		CGraphWnd * pGraph = m_apGraphs[i];
+		if (pGraph==NULL) continue;
+		if (pGraph->HaveAnnotation( annotation)) return pGraph;
+	}
+    return NULL;
 }

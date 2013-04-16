@@ -123,10 +123,10 @@ BOOL CStartCursorWnd::PreCreateWindow(CREATESTRUCT & cs)
 // cursor position. This result will be put in a DWORD, to which the pointer
 // given as 4th parameter points to. The results has been range checked.
 /***************************************************************************/
-DWORD CStartCursorWnd::CalculateCursorPosition(CView * pSaView,
-        int nPosition,
-        int nWidth,
-        DWORD * pStopCursor)
+DWORD CStartCursorWnd::CalculateCursorPosition( CView * pSaView,
+												int nPosition,
+												int nWidth,
+												DWORD * pStopCursor)
 {
     CSaView * pView = (CSaView *)pSaView; // cast pointer
     CSaDoc * pDoc = (CSaDoc *)pView->GetDocument(); // get pointer to document
@@ -162,17 +162,13 @@ DWORD CStartCursorWnd::CalculateCursorPosition(CView * pSaView,
         dwCursor = dwDataSize - (DWORD)(2 * nSmpSize);
     }
     // calculate minimum position for stop cursor
-    *pStopCursor = dwCursor + (DWORD)(CURSOR_MIN_DISTANCE * fSamplesPerPix*nSmpSize);
+    *pStopCursor = dwCursor + (DWORD)(CURSOR_MIN_DISTANCE*fSamplesPerPix*nSmpSize);
     if (*pStopCursor >= dwDataSize)
     {
         *pStopCursor = dwDataSize - (DWORD)nSmpSize;
     }
     return dwCursor;
 }
-
-/////////////////////////////////////////////////////////////////////////////
-// CStartCursorWnd message handlers
-
 
 /***************************************************************************/
 // CStartCursorWnd::OnPaint Painting
@@ -249,13 +245,6 @@ void CStartCursorWnd::OnDraw(CDC * pDC, const CRect & printRect)
         // each other.  This will erase them.  (They can be temporarily on top of each other, as long as
         // painting does not occur. This alows setting the cursors in any order within a procedure.)
         //
-#ifdef DoNotPaint
-        if (pDC->IsPrinting()
-                || ((rParent != m_rWnd)
-                    || ((rClip.Width() > 1) && rSect.IntersectRect(rClip, rWnd))
-                   )
-           )
-#endif
         {
             // last time we did not paint here - store new locatation and draw cursor
             if (!pDC->IsPrinting())
@@ -334,11 +323,11 @@ void CStartCursorWnd::OnMouseMove(UINT nFlags, CPoint point)
         int nLoop = pView->FindSelectedAnnotationIndex();
         if (nLoop!=-1)
         {
-            if (m_nEditBoundaries == BOUNDARIES_EDIT_NO_OVERLAP)
+            if (m_nEditBoundaries == BOUNDARIES_EDIT_BOUNDARIES)
             {
                 pView->GetAnnotation(nLoop)->LimitPosition(pView->GetDocument(), dwCursor, dwStopCursor,CSegment::LIMIT_MOVING_START | CSegment::LIMIT_NO_OVERLAP); // Limit positions of cursors
             }
-            else if (m_nEditBoundaries == BOUNDARIES_EDIT_OVERLAP)
+            else if (m_nEditBoundaries == BOUNDARIES_EDIT_SEGMENT_SIZE)
             {
                 pView->GetAnnotation(nLoop)->LimitPosition(pView->GetDocument(), dwCursor, dwStopCursor,CSegment::LIMIT_MOVING_START); // Limit positions of cursors
             }
@@ -360,7 +349,7 @@ void CStartCursorWnd::OnMouseMove(UINT nFlags, CPoint point)
             {
                 // Selected annotation is visible
                 CAnnotationWnd * pWnd = pGraph->GetAnnotationWnd(nLoop);
-                pWnd->SetHintUpdateBoundaries(m_nEditBoundaries!=0, dwCursor, dwStopCursor,m_nEditBoundaries == BOUNDARIES_EDIT_OVERLAP);
+                pWnd->SetHintUpdateBoundaries( m_nEditBoundaries!=0, dwCursor, dwStopCursor,m_nEditBoundaries == BOUNDARIES_EDIT_SEGMENT_SIZE);
             }
         }
 
@@ -385,7 +374,7 @@ void CStartCursorWnd::OnMouseMove(UINT nFlags, CPoint point)
         // set the highlight area for raw data
         if ((pView->GetFocusedGraphID() == IDD_RAWDATA) &&
             ((nFlags&(MK_CONTROL|MK_SHIFT)) == MK_CONTROL) &&
-            (pView->GetEditBoundaries(nFlags)==BOUNDARIES_EDIT_NULL) &&
+            (pView->GetEditBoundaries()==BOUNDARIES_EDIT_NULL) &&
             ((pView->GetGraphUpdateMode() == STATIC_UPDATE) || (!pView->GetDynamicGraphCount())))
         {
             if (dwCursor > m_dwStartDragPos)
@@ -445,12 +434,13 @@ void CStartCursorWnd::OnLButtonDown(UINT nFlags, CPoint point)
 
     // inform graph
     pGraph->SendMessage(WM_LBUTTONDOWN, nFlags, MAKELONG(point.x, point.y));
+
     // set boundaries mode
     CRect rCursorRect;
     GetClientRect(rCursorRect);
-    if (rCursorRect.PtInRect(point) || (pView->GetEditBoundaries(nFlags)!=BOUNDARIES_EDIT_NULL))
+    if (rCursorRect.PtInRect(point) || (pView->GetEditBoundaries()!=BOUNDARIES_EDIT_NULL))
     {
-        m_nEditBoundaries = pView->GetEditBoundaries(nFlags);
+        m_nEditBoundaries = pView->GetEditBoundaries();
     }
     else
     {
@@ -480,11 +470,11 @@ void CStartCursorWnd::OnLButtonDown(UINT nFlags, CPoint point)
     int nLoop = pView->FindSelectedAnnotationIndex();
     if (nLoop!=-1)
     {
-        if (m_nEditBoundaries == BOUNDARIES_EDIT_NO_OVERLAP)
+        if (m_nEditBoundaries == BOUNDARIES_EDIT_BOUNDARIES)
         {
             pView->GetAnnotation(nLoop)->LimitPosition(pView->GetDocument(), m_dwStartDragPos, dwStopCursor,CSegment::LIMIT_MOVING_START | CSegment::LIMIT_NO_OVERLAP); // Limit positions of cursors
         }
-        else if (m_nEditBoundaries == BOUNDARIES_EDIT_OVERLAP)
+        else if (m_nEditBoundaries == BOUNDARIES_EDIT_SEGMENT_SIZE)
         {
             pView->GetAnnotation(nLoop)->LimitPosition(pView->GetDocument(), m_dwStartDragPos, dwStopCursor,CSegment::LIMIT_MOVING_START); // Limit positions of cursors
         }
@@ -506,7 +496,7 @@ void CStartCursorWnd::OnLButtonDown(UINT nFlags, CPoint point)
         {
             // Selected annotation is visible
             CAnnotationWnd * pWnd = pGraph->GetAnnotationWnd(nLoop);
-            pWnd->SetHintUpdateBoundaries(m_nEditBoundaries!=0,m_dwStartDragPos, dwStopCursor,m_nEditBoundaries == BOUNDARIES_EDIT_OVERLAP);//SDM 1.5Test8.1
+            pWnd->SetHintUpdateBoundaries( m_nEditBoundaries!=0, m_dwStartDragPos, dwStopCursor,m_nEditBoundaries == BOUNDARIES_EDIT_SEGMENT_SIZE);//SDM 1.5Test8.1
         }
     }
 
@@ -540,7 +530,6 @@ void CStartCursorWnd::OnLButtonDown(UINT nFlags, CPoint point)
     SetFocus();
     ClipCursor(rWnd);
     CWnd::OnLButtonDown(nFlags, point);
-    pView->BroadcastMessage(WM_USER_CURSOR_CLICKED, START_CURSOR, WM_LBUTTONDOWN);
 }
 
 /***************************************************************************/
@@ -581,11 +570,11 @@ void CStartCursorWnd::OnLButtonUp(UINT nFlags, CPoint point)
     int nLoop = pView->FindSelectedAnnotationIndex();
     if (nLoop!=-1)
     {
-        if (m_nEditBoundaries == BOUNDARIES_EDIT_NO_OVERLAP)
+        if (m_nEditBoundaries == BOUNDARIES_EDIT_BOUNDARIES)
         {
             pView->GetAnnotation(nLoop)->LimitPosition(pView->GetDocument(), dwStartCursor, dwStopCursor,CSegment::LIMIT_MOVING_START | CSegment::LIMIT_NO_OVERLAP); // Limit positions of cursors
         }
-        else if (m_nEditBoundaries == BOUNDARIES_EDIT_OVERLAP)
+        else if (m_nEditBoundaries == BOUNDARIES_EDIT_SEGMENT_SIZE)
         {
             pView->GetAnnotation(nLoop)->LimitPosition(pView->GetDocument(), dwStartCursor, dwStopCursor,CSegment::LIMIT_MOVING_START); // Limit positions of cursors
         }
@@ -595,7 +584,7 @@ void CStartCursorWnd::OnLButtonUp(UINT nFlags, CPoint point)
         {
             // Selected annotation is visible
             CAnnotationWnd * pWnd = pGraph->GetAnnotationWnd(nLoop);
-            pWnd->SetHintUpdateBoundaries(FALSE,m_nEditBoundaries == BOUNDARIES_EDIT_OVERLAP);//SDM 1.5Test8.1
+            pWnd->SetHintUpdateBoundaries( false, m_nEditBoundaries == BOUNDARIES_EDIT_SEGMENT_SIZE);//SDM 1.5Test8.1
         }
     }
 
@@ -613,7 +602,7 @@ void CStartCursorWnd::OnLButtonUp(UINT nFlags, CPoint point)
     // detect update request
     //  If CTRL+SHIFT update segment boundaries
     if ((m_nEditBoundaries && (nLoop!=-1)) &&
-            (pView->GetAnnotation(nLoop)->CheckCursors(pView->GetDocument(), m_nEditBoundaries==BOUNDARIES_EDIT_OVERLAP) != -1))
+        (pView->GetAnnotation(nLoop)->CheckCursors(pView->GetDocument(), m_nEditBoundaries==BOUNDARIES_EDIT_SEGMENT_SIZE) != -1))
     {
 
         CSaDoc * pDoc = pView->GetDocument();
@@ -631,11 +620,10 @@ void CStartCursorWnd::OnLButtonUp(UINT nFlags, CPoint point)
         pView->SetStopCursorPosition(dwStopCursor, SNAP_RIGHT);
 
         // Do update
-        pDoc->UpdateSegmentBoundaries(m_nEditBoundaries == BOUNDARIES_EDIT_OVERLAP);
+        pDoc->UpdateSegmentBoundaries(m_nEditBoundaries == BOUNDARIES_EDIT_SEGMENT_SIZE);
     }
 
     CWnd::OnLButtonUp(nFlags, point);
-    pView->BroadcastMessage(WM_USER_CURSOR_CLICKED, START_CURSOR, WM_LBUTTONUP);
 }
 
 /***************************************************************************/
@@ -669,7 +657,7 @@ void CStartCursorWnd::OnKeyUp(UINT nChar, UINT nRepCnt, UINT nFlags)
             if (pGraph->HaveAnnotation(nLoop))   // Selected annotation is visible
             {
                 CAnnotationWnd * pWnd = pGraph->GetAnnotationWnd(nLoop);
-                pWnd->SetHintUpdateBoundaries(m_nEditBoundaries!=0,m_nEditBoundaries == BOUNDARIES_EDIT_OVERLAP);
+                pWnd->SetHintUpdateBoundaries( m_nEditBoundaries!=0, m_nEditBoundaries == BOUNDARIES_EDIT_SEGMENT_SIZE);
             }
         }
     }
@@ -695,7 +683,7 @@ void CStartCursorWnd::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
             if (pGraph->HaveAnnotation(nLoop))   // Selected annotation is visible
             {
                 CAnnotationWnd * pWnd = pGraph->GetAnnotationWnd(nLoop);
-                pWnd->SetHintUpdateBoundaries(m_nEditBoundaries!=0,m_nEditBoundaries == BOUNDARIES_EDIT_OVERLAP);
+                pWnd->SetHintUpdateBoundaries( m_nEditBoundaries!=0, m_nEditBoundaries == BOUNDARIES_EDIT_SEGMENT_SIZE);
             }
         }
     }

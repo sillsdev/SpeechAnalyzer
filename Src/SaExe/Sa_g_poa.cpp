@@ -97,7 +97,7 @@ void CPlotPOA::OnDraw(CDC * pDC, CRect rWnd, CRect /*rClip*/, CSaView * pView)
     }
 
     // Get frame parameters.
-    BOOL bDynamicUpdate = (pView->GetGraphUpdateMode() == DYNAMIC_UPDATE);
+    bool bDynamicUpdate = (pView->GetGraphUpdateMode() == DYNAMIC_UPDATE);
     CProcessGrappl * pAutoPitch = pDoc->GetGrappl();   // get pitch process object
     CProcessFragments * pFragments = pDoc->GetFragments(); // get fragmenter object
     short int nResult = LOWORD(pFragments->Process(this, pDoc)); // process data
@@ -133,7 +133,7 @@ void CPlotPOA::OnDraw(CDC * pDC, CRect rWnd, CRect /*rClip*/, CSaView * pView)
 
     CGraphWnd * pGraph = GetGraph();
     BOOL bFocus = (pGraph == pView->GetFocusedGraphWnd());
-    if (pWavePlot && (bDynamicUpdate || (!bDynamicUpdate && bFocus)))
+    if ((pWavePlot) && ((bDynamicUpdate) || ((!bDynamicUpdate) && bFocus)))
     {
         // highlight fragment in raw data
         pWavePlot->SetHighLightArea(dwFrameStart, dwFrameStart + dwFrameSize, TRUE, TRUE);
@@ -162,7 +162,7 @@ void CPlotPOA::OnDraw(CDC * pDC, CRect rWnd, CRect /*rClip*/, CSaView * pView)
         }
         return;
     }
-    if (!bDynamicUpdate && dwStartCursorPosn != dwFrameStart)
+    if ((!bDynamicUpdate) && (dwStartCursorPosn != dwFrameStart))
     {
         // start cursor not aligned to start of a pitch period
         m_HelperWnd.SetMode(MODE_TEXT | FRAME_POPOUT | POS_HCENTER | POS_VCENTER, IDS_HELPERWND_START2PITCH, &rWnd);
@@ -399,8 +399,8 @@ void CPlotPOA::GraphHasFocus(BOOL bFocus)
             if (pFragments->IsDataReady())
             {
                 DWORD dwFrameIndex;
-                BOOL bDynamicUpdate = (pView->GetGraphUpdateMode() == DYNAMIC_UPDATE);
-                if (bDynamicUpdate && m_dwAnimationFrame != UNDEFINED_OFFSET)
+                bool bDynamicUpdate = (pView->GetGraphUpdateMode() == DYNAMIC_UPDATE);
+                if ((bDynamicUpdate) && (m_dwAnimationFrame != UNDEFINED_OFFSET))
                 {
                     dwFrameIndex = m_dwAnimationFrame;
                 }

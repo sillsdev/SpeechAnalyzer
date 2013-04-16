@@ -63,7 +63,7 @@ static void StoreWaveData(int nData, int wSmpSize, void * pTargetData)
 
 long CProcessIIRFilter::Process(void * pCaller, ISaDoc * pDoc, int nProgress, int nLevel)
 {
-    TRACE("IIRFilter::Process %d %d\n",nProgress,nLevel);
+    //TRACE("IIRFilter::Process %d %d\n",nProgress,nLevel);
 
     if (IsCanceled())
     {
@@ -75,7 +75,7 @@ long CProcessIIRFilter::Process(void * pCaller, ISaDoc * pDoc, int nProgress, in
     IProcess * pLowerProcess = m_pSourceProcess;
     if (pLowerProcess)
     {
-        TRACE("process lower\n");
+        //TRACE("process lower\n");
         // there is at least one source processes to process first
         long lResult = pLowerProcess->Process(pCaller, pDoc, nProgress, ++nLevel);
         nLevel = (short int)LOWORD(lResult);
@@ -100,7 +100,7 @@ long CProcessIIRFilter::Process(void * pCaller, ISaDoc * pDoc, int nProgress, in
         return MAKELONG(nLevel, nProgress);
     }
 
-    TRACE("start process\n");
+    //TRACE("start process\n");
     // start process
     BeginWaitCursor(); // wait cursor
     if (!StartProcess(pCaller, IDS_STATTXT_PROCESSWBLP))   // start data processing
@@ -131,7 +131,7 @@ long CProcessIIRFilter::Process(void * pCaller, ISaDoc * pDoc, int nProgress, in
     // start processing loop
     if (!m_bReverse)
     {
-        TRACE("forward\n");
+        //TRACE("forward\n");
         m_bReverse = FALSE;
 
         // get source data size
@@ -144,7 +144,7 @@ long CProcessIIRFilter::Process(void * pCaller, ISaDoc * pDoc, int nProgress, in
         {
             dwDataSize = pDoc->GetUnprocessedDataSize(); // size of raw data
         }
-        TRACE("dwDataSize=%d\n",dwDataSize);
+        //TRACE("dwDataSize=%d\n",dwDataSize);
 
         WORD wSrcSmpSize = WORD(m_bSrcWBenchProcess ? pDoc->GetSampleSize() : sizeof(short));
 
@@ -222,11 +222,11 @@ long CProcessIIRFilter::Process(void * pCaller, ISaDoc * pDoc, int nProgress, in
                 WriteWaveDataBlock(dwBlockStart, m_lpBuffer, dwBufferSize*wDstSmpSize/wSrcSmpSize);
             }
         }
-        Dump("butterworth end forward");
+        //Dump("butterworth end forward");
     }
     else
     {
-        TRACE("reverse\n");
+        //TRACE("reverse\n");
         // process in reverse
         // first do forward pass
         CProcessIIRFilter forwardPass(m_bDstWBenchProcess);
@@ -246,7 +246,7 @@ long CProcessIIRFilter::Process(void * pCaller, ISaDoc * pDoc, int nProgress, in
 
         m_pSourceProcess = &forwardPass;
 
-        forwardPass.Dump("forwardPass");
+        //forwardPass.Dump("forwardPass");
 
         WORD wSmpSize = wDstSmpSize;
         DWORD dwDataSize = 0;
@@ -290,7 +290,7 @@ long CProcessIIRFilter::Process(void * pCaller, ISaDoc * pDoc, int nProgress, in
             DWORD dwBlockStart = dwBlockEnd;
 
             pTargetData = m_lpBuffer + dwBufferSize;
-            TRACE("dwDataPos=%d\n",dwDataPos);
+            //TRACE("dwDataPos=%d\n",dwDataPos);
             while (dwDataPos > dwBlockEnd)
             {
                 dwDataPos-= wSmpSize;
@@ -317,7 +317,7 @@ long CProcessIIRFilter::Process(void * pCaller, ISaDoc * pDoc, int nProgress, in
 
         // Preserve source setting so that we can use it
         m_pSourceProcess = forwardPass.m_pSourceProcess;
-        Dump("butterworth end reverse");
+        //Dump("butterworth end reverse");
     }
 
     nProgress = nProgress + (int)(100 / nLevel); // calculate the actual progress
@@ -327,7 +327,7 @@ long CProcessIIRFilter::Process(void * pCaller, ISaDoc * pDoc, int nProgress, in
     EndWaitCursor();
     SetDataReady();
 
-    Dump("iirfilter end process");
+    //Dump("iirfilter end process");
 
     return MAKELONG(nLevel, nProgress);
 }

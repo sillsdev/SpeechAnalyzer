@@ -72,8 +72,7 @@ long CProcessInstantaneousPower::Process(void * pCaller, ISaDoc * pDoc,
     {
         return MAKELONG(--nLevel, nProgress);    // data is already ready
     }
-    TRACE(_T("Process: CProcessInstantaneousPower\n"));
-
+    //TRACE(_T("Process: CProcessInstantaneousPower\n"));
 
     BeginWaitCursor(); // wait cursor
     if (!StartProcess(pCaller))   // memory allocation failed

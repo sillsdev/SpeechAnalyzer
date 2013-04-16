@@ -1,3 +1,6 @@
+SA - 3.1.0.52 - 4/15/2013 (stereo branch)
+1) Implemented capability to move start/stop cursors in edit-segment and edit-boundaries mode using CTRL-ALT and SHIFT-ALT sequences with LEFT and RIGHT arrows.
+
 SA - 3.1.0.50 - 4/10/2013 (stereo branch)
 1) Fixed Spectrogram display problem.
 Known Problems:

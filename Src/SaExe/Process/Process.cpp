@@ -434,7 +434,7 @@ void * CProcess::GetProcessedObject( LPCTSTR /*szName*/, int /*selectedChannel*/
 // CProcess::GetProcessedDataBlock returns a pointer to requested data object
 // uses data buffer to optimize requests
 /***************************************************************************/
-void * CProcess::GetProcessedDataBlock(DWORD dwByteOffset, size_t sObjectSize, BOOL bReverse)
+void * CProcess::GetProcessedDataBlock( DWORD dwByteOffset, size_t sObjectSize, BOOL bReverse)
 {
 
     if (dwByteOffset == UNDEFINED_OFFSET)
@@ -963,9 +963,9 @@ void CProcess::SetStatus(long nStatus)
     m_nStatus = nStatus;
 }
 
-void CProcess::Dump(LPCSTR tag)
+void CProcess::Dump(LPCSTR /*tag*/)
 {
-    TRACE("DataProcess %s size=%d max=%d min=%d status=%d offset=%d\n",tag,m_dwBufferSize, m_nMaxValue, m_nMinValue,m_nStatus,m_dwBufferOffset);
+    //TRACE("DataProcess %s size=%d max=%d min=%d status=%d offset=%d\n",tag,m_dwBufferSize, m_nMaxValue, m_nMinValue,m_nStatus,m_dwBufferOffset);
 }
 
 //###########################################################################

@@ -117,11 +117,8 @@ CProcessFormantTracker::~CProcessFormantTracker()
 
 }
 
-void CProcessFormantTracker::BuildTrack(CTrackState & state, double samplingRate, int pitch)
+void CProcessFormantTracker::BuildTrack( CTrackState & state, double samplingRate, int pitch)
 {
-
-    //TRACE("building trace for %f %d\n",samplingRate,pitch);
-
     // Get Data
     const DEQUE_CDBL & data = state.GetData();
 
@@ -138,9 +135,8 @@ void CProcessFormantTracker::BuildTrack(CTrackState & state, double samplingRate
     trackOut.resize(tracks);
 
     unsigned int tracksCalculate = tracks < MAX_NUM_FORMANTS ? tracks : MAX_NUM_FORMANTS;
-    //TRACE("calculating %d tracks\n",tracksCalculate);
 
-    unsigned int zeroFilterOrder = (trackIn.size() - 1)*(FormantTrackerOptions.m_bAzfAddConjugateZeroes ? 2 : 1) + 1;
+    unsigned int zeroFilterOrder = (trackIn.size() - 1)*(formantTrackerOptions.m_bAzfAddConjugateZeroes ? 2 : 1) + 1;
     VECTOR_CDBL & filtered = state.GetFiltered();
     filtered.resize(window.size() + zeroFilterOrder);
 
@@ -157,8 +153,8 @@ void CProcessFormantTracker::BuildTrack(CTrackState & state, double samplingRate
         windowed[i + zeroFilterOrder] = r;
     }
 
-    double radiusAZF = exp(-FormantTrackerOptions.m_dAzfMinBandwidth/samplingRate*pi);
-    double radiusDTF = exp(-FormantTrackerOptions.m_dDtfMinBandwidth/samplingRate*pi);
+    double radiusAZF = exp(-formantTrackerOptions.m_dAzfMinBandwidth/samplingRate*pi);
+    double radiusDTF = exp(-formantTrackerOptions.m_dDtfMinBandwidth/samplingRate*pi);
 
     double pitchAngle = 2. * pi * pitch / samplingRate;
     CDBL pitchTrack(cos(pitchAngle), sin(pitchAngle));
@@ -171,18 +167,18 @@ void CProcessFormantTracker::BuildTrack(CTrackState & state, double samplingRate
         CZTransformCDBL DTF(1, NULL, denominator);
 
         // Build All Zero Filter
-        CZTransformCDBL AZF;
+        CZTransformCDBL azf;
 
         // Put a zero at pitch so formant 1 doesn't track pitch
-        if (FormantTrackerOptions.m_bAzfAddConjugateZeroes && pitchTrack.imag())
+        if ((formantTrackerOptions.m_bAzfAddConjugateZeroes) && (pitchTrack.imag()))
         {
             CDBL numerator[] = { 1, -2 * pitchTrack.real() * radiusAZF, radiusAZF * radiusAZF };
-            AZF *= CZTransformCDBL(2, numerator, NULL);
+            azf *= CZTransformCDBL(2, numerator, NULL);
         }
         else
         {
             CDBL numerator[] = { 1, -pitchTrack*radiusAZF };
-            AZF *= CZTransformCDBL(1, numerator, NULL);
+            azf *= CZTransformCDBL(1, numerator, NULL);
         }
 
         unsigned int zero = 0;
@@ -193,36 +189,36 @@ void CProcessFormantTracker::BuildTrack(CTrackState & state, double samplingRate
                 continue;
             }
 
-            CDBL track = (zero < formant) && FormantTrackerOptions.m_bAzfMostRecent ? trackOut[zero] : trackIn[zero];
+            CDBL track = ((zero < formant) && (formantTrackerOptions.m_bAzfMostRecent)) ? trackOut[zero] : trackIn[zero];
 
-            if (FormantTrackerOptions.m_bAzfDiscardLpcBandwidth)
+            if (formantTrackerOptions.m_bAzfDiscardLpcBandwidth)
             {
                 track /= std::abs(track);
             }
 
-            if (FormantTrackerOptions.m_bAzfAddConjugateZeroes && track.imag())
+            if ((formantTrackerOptions.m_bAzfAddConjugateZeroes) && track.imag())
             {
                 CDBL numerator[] = { 1, -2*track.real() * radiusAZF, std::norm(track) * radiusAZF*radiusAZF };
-                AZF *= CZTransformCDBL(2, numerator, NULL);
+                azf *= CZTransformCDBL(2, numerator, NULL);
             }
             else
             {
                 CDBL numerator[] = { 1, -track };
-                AZF *= CZTransformCDBL(1, numerator, NULL);
+                azf *= CZTransformCDBL(1, numerator, NULL);
             }
         }
 
-        if (FormantTrackerOptions.m_bAzfAddConjugateZeroes)
+        if (formantTrackerOptions.m_bAzfAddConjugateZeroes)
         {
             // The filter is real... CDBL*double is faster than CDBL*CDBL so this is an optimization
             VECTOR_DBL & filter = state.GetZeroFilterDBL();
 
             // Flatten AZF
             filter.resize(zeroFilterOrder+1);
-            filter[0] = AZF.Tick(1).real();
+            filter[0] = azf.Tick(1).real();
             for (unsigned int z=1; z<=zeroFilterOrder; z++)
             {
-                filter[z] = AZF.Tick(0).real();
+                filter[z] = azf.Tick(0).real();
             }
 
             // Apply AZF & DTF
@@ -245,10 +241,10 @@ void CProcessFormantTracker::BuildTrack(CTrackState & state, double samplingRate
 
             // Flatten AZF
             filter.resize(zeroFilterOrder);
-            filter[0] = AZF.Tick(1);
+            filter[0] = azf.Tick(1);
             for (unsigned int z=1; z<zeroFilterOrder; z++)
             {
-                filter[z] = AZF.Tick(0);
+                filter[z] = azf.Tick(0);
             }
 
             // Apply AZF & DTF
@@ -263,8 +259,17 @@ void CProcessFormantTracker::BuildTrack(CTrackState & state, double samplingRate
             }
         }
 
+		FILE * f = fopen("c:\\working\\filtered.csv","a");
+		for (int j=0;j<filtered.size();j++)
+		{
+			fprintf(f,"%f,",filtered[j]);
+		}
+		fprintf(f,"\n");
+		fclose(f);
+
+
         // Calculate LPC
-        CAnalyticLpcAnalysis lpc(filtered, 1);
+        CAnalyticLpcAnalysis lpc( filtered, 1);
 
         // Store Frequency & BW
         CDBL predictor = lpc.GetPredictor()[1];
@@ -304,7 +309,7 @@ long CProcessFormantTracker::Process(void * pCaller, ISaDoc * pDoc, int nProgres
         nProgress = HIWORD(lResult);
     }
 
-    if ((nLevel >= 0) && !m_pPitch->IsDataReady())
+    if ((nLevel >= 0) && (!m_pPitch->IsDataReady()))
     {
         SetDataInvalid();
         for (int i = 0; i < 3 && !m_pPitch->IsDataReady(); i++)   // make sure pitch is finished!
@@ -329,7 +334,7 @@ long CProcessFormantTracker::Process(void * pCaller, ISaDoc * pDoc, int nProgres
 
     // get source data size
     DWORD dwDataSize = m_pReal->GetDataSize();
-    TRACE("m_pReal dwDataSize=%lu\n",dwDataSize);
+    TRACE("dwDataSize=%lu\n",dwDataSize);
 
     if (nLevel < 0)   // memory allocation failed or previous processing error
     {
@@ -379,16 +384,11 @@ long CProcessFormantTracker::Process(void * pCaller, ISaDoc * pDoc, int nProgres
         state.GetTrackOut().push_back(formantEstimate);
     }
     // create the window
-    DspWin window = DspWin::FromBandwidth(FormantTrackerOptions.m_dWindowBandwidth,pDoc->GetSamplesPerSec(),FormantTrackerOptions.m_nWindowType);
+    DspWin window = DspWin::FromBandwidth(formantTrackerOptions.m_dWindowBandwidth,pDoc->GetSamplesPerSec(),formantTrackerOptions.m_nWindowType);
     state.GetWindow().assign(window.WindowDouble(),window.WindowDouble()+window.Length());
 
-    //for (int i=0; i<3; i++)
-    //{
-    //    TRACE("to[%d]=%f\n",i,state.GetTrackOut()[i]);
-    //}
-
     // determine processing interval
-    DWORD dwInterval = DWORD(samplingRate / FormantTrackerOptions.m_dUpdateRate);
+    DWORD dwInterval = DWORD( samplingRate / formantTrackerOptions.m_dUpdateRate);
 
     //Determine initial data preload
     DWORD dwInitial = ((dwDataSize % dwInterval) + window.Length() + dwInterval)/2;
@@ -409,9 +409,12 @@ long CProcessFormantTracker::Process(void * pCaller, ISaDoc * pDoc, int nProgres
 
         BOOL bRes = TRUE;
         int pitch = m_pPitch->GetProcessedData((DWORD)(dwDataPos / Grappl_calc_intvl), &bRes) / PRECISION_MULTIPLIER;
+		TRACE("dwDataPos %d dwDataSize %d samplingRate %f pitch %d\n", dwDataPos, dwDataSize, (float)samplingRate, pitch);
 
-        BuildTrack(state, samplingRate, pitch);
-        WriteTrack(state, samplingRate, pitch);
+		state.Dump();
+
+		BuildTrack( state, samplingRate, pitch);
+        WriteTrack( state, samplingRate, pitch);
 
         state.GetTrackIn() = state.GetTrackOut();
 
@@ -436,8 +439,8 @@ void CProcessFormantTracker::AdvanceData(CTrackState & state, DWORD dwDataPos, i
     DEQUE_CDBL & data = state.GetData();
     DWORD dwSize = m_pReal->GetDataSize();
     double fSizeFactor = dwSize / m_pImag->GetDataSize();
-    DWORD dwImagPos = (DWORD)((double)dwDataPos / fSizeFactor); // imaginary data position
-    unsigned int nImagSmpSize = sizeof(short) / (unsigned int)fSizeFactor; // imaginary data sample size
+    DWORD dwImagPos = (DWORD)((double)dwDataPos / fSizeFactor);				// imaginary data position
+    unsigned int nImagSmpSize = sizeof(short) / (unsigned int)fSizeFactor;	// imaginary data sample size
 
     if (nSamples > 0)
     {
@@ -447,13 +450,11 @@ void CProcessFormantTracker::AdvanceData(CTrackState & state, DWORD dwDataPos, i
         }
         else
         {
-            data.erase(data.begin(), data.begin() + nSamples);
-
+            data.erase( data.begin(), data.begin() + nSamples);
             for (int i=0; i< nSamples; i++)
             {
                 double dReal = 0;
                 double dImag = 0;
-
                 if (dwDataPos+i < dwSize)
                 {
                     dReal = *reinterpret_cast<short *>(m_pReal->GetProcessedObject(dwDataPos + i, sizeof(short)));
@@ -466,9 +467,10 @@ void CProcessFormantTracker::AdvanceData(CTrackState & state, DWORD dwDataPos, i
                         dImag = *reinterpret_cast<short *>(m_pImag->GetProcessedObject(dwImagPos + i, sizeof(short)));
                     }
                 }
-
+				//FILE * f = fopen("c:\\working\\imaginary.csv","a");
+				//fprintf(f,"%f\n",dImag);
+				//fclose(f);
                 CDBL sample(dReal, dImag);
-
                 data.push_back(sample);
             }
         }
@@ -487,36 +489,57 @@ void CProcessFormantTracker::AdvanceData(CTrackState & state, DWORD dwDataPos, i
             {
                 double dReal = 0;
                 double dImag = 0;
-
                 if ((dwDataPos >= DWORD(i)) && (dwDataPos < dwSize))
                 {
                     dReal = *reinterpret_cast<short *>(m_pReal->GetProcessedObject(dwDataPos-i, sizeof(short), TRUE));
                     dImag = *reinterpret_cast<short *>(m_pImag->GetProcessedObject(dwDataPos-i, sizeof(short), TRUE));
                 }
-
                 CDBL sample(dReal, dImag);
-
                 data.push_front(sample);
             }
         }
     }
 }
 
-void CProcessFormantTracker::WriteTrack(CTrackState & state, double samplingRate, int pitch)
+void CProcessFormantTracker::WriteTrack( CTrackState & state, double samplingRate, int pitch)
 {
-    FORMANT_FREQ FormantFreq;
+    SFormantFreq formant;
     VECTOR_CDBL & pRoots = state.GetTrackOut();
     BOOL bIsDataValid = pRoots.size() && (pitch > 0);
 
-    FormantFreq.F[0] = float(bIsDataValid ? atan2(pRoots[0].imag(), pRoots[0].real())*samplingRate/2/pi : UNDEFINED_DATA);
+    formant.F[0] = float(bIsDataValid ? atan2(pRoots[0].imag(), pRoots[0].real())*samplingRate/2/pi : UNDEFINED_DATA);
     for (unsigned int i=1; i< MAX_NUM_FORMANTS; i++)
     {
         bIsDataValid = (i < pRoots.size()) && (pitch > 0);
-        FormantFreq.F[i] = float(bIsDataValid ? atan2(pRoots[i].imag(), pRoots[i].real())*samplingRate/2/pi : UNDEFINED_DATA);
+        formant.F[i] = float((bIsDataValid) ? (atan2(pRoots[i].imag(), pRoots[i].real())*samplingRate/2/pi) : UNDEFINED_DATA);
     }
 
+	FILE * f = fopen("c:\\working\\real.csv","a");
+	for (int j=0;j<pRoots.size();j++)
+	{
+		fprintf(f,"%f,",pRoots[j].real());
+	}
+	fprintf(f,"\n");
+	fclose(f);
+
+	FILE * f1 = fopen("c:\\working\\imag.csv","a");
+	for (int j=0;j<pRoots.size();j++)
+	{
+		fprintf(f1,"%f,",pRoots[j].imag());
+	}
+	fprintf(f1,"\n");
+	fclose(f1);
+
+	FILE * f2 = fopen("c:\\working\\formant.csv","a");
+	for (int j=0;j<10;j++)
+	{
+		fprintf(f2,"%f,",formant.F[j]);
+	}
+	fprintf(f2,"\n");
+	fclose(f2);
+
     // write unvoiced formant frame
-    Write((HPSTR)&FormantFreq, (UINT)sizeof(FormantFreq));
+    Write((HPSTR)&formant, (UINT)sizeof(SFormantFreq));
 }
 
 /***************************************************************************/
@@ -528,11 +551,10 @@ void CProcessFormantTracker::WriteTrack(CTrackState & state, double samplingRate
 // plot. nIndex is the horizontal index in the formant data.  The function
 // returns NULL on error.
 /***************************************************************************/
-FORMANT_FREQ * CProcessFormantTracker::GetFormant(DWORD dwIndex)
+SFormantFreq * CProcessFormantTracker::GetFormant(DWORD dwIndex)
 {
-    TRACE("GetFormant %d\n",dwIndex);
     // read the data
-    size_t sSize = sizeof(FORMANT_FREQ);
-    return (FORMANT_FREQ *)GetProcessedObject(dwIndex, sSize);
+    size_t sSize = sizeof(SFormantFreq);
+    return (SFormantFreq *)GetProcessedObject( dwIndex, sSize);
 }
 

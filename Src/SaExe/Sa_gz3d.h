@@ -43,7 +43,7 @@ protected:
     void StandardPlot(CSaView * pView, CDC * pDC, CRect rClient, CRect rClip,
                       SGraph & GraphSettings, BOOL bFlipChart = FALSE, BOOL bShowAxes = FALSE, BOOL bValidData = TRUE);
     POINT GetXYCoordinates(void * pG, double x , double y, BOOL bFlip = FALSE);
-    virtual POINT MapVowelsToChart(CDC * /*pDC*/, FORMANT_FREQ & /*VowelFormant*/, int /*VowelSymbolHeight*/, CScatterGraph * /*pFormantChart*/,
+    virtual POINT MapVowelsToChart(CDC * /*pDC*/, SFormantFreq & /*VowelFormant*/, int /*VowelSymbolHeight*/, CScatterGraph * /*pFormantChart*/,
                                    SGraph & /*FormantChartParms*/, BOOL /*bFlip*/ = FALSE)
     {
         POINT p = {0,0};
@@ -82,7 +82,7 @@ private:
 public:
     static RANGE GetChartRange(int nFormant, int nGender);
 protected:
-    virtual POINT MapVowelsToChart(CDC * pDC, FORMANT_FREQ & Formant, int SymbolHeight, CScatterGraph * pFormantChart,
+    virtual POINT MapVowelsToChart(CDC * pDC, SFormantFreq & Formant, int SymbolHeight, CScatterGraph * pFormantChart,
                                    SGraph & ChartParms, BOOL /* bFlip */);
 
     // Generated message map functions
@@ -113,7 +113,7 @@ private:
 public:
     static RANGE GetChartRange(int nFormant, int nGender);
 protected:
-    virtual POINT MapVowelsToChart(CDC * pDC, FORMANT_FREQ & Formant, int /* SymbolHeight */, CScatterGraph * pFormantChart,
+    virtual POINT MapVowelsToChart(CDC * pDC, SFormantFreq & Formant, int /* SymbolHeight */, CScatterGraph * pFormantChart,
                                    SGraph & /* ChartParms */, BOOL bFlip);
 
     // Generated message map functions
@@ -144,7 +144,7 @@ private:
 public:
     static RANGE GetChartRange(int nFormant, int nGender);
 protected:
-    virtual POINT MapVowelsToChart(CDC * pDC, FORMANT_FREQ & Formant, int /* SymbolHeight */, CScatterGraph * pFormantChart,
+    virtual POINT MapVowelsToChart(CDC * pDC, SFormantFreq & Formant, int /* SymbolHeight */, CScatterGraph * pFormantChart,
                                    SGraph & /* ChartParms */, BOOL bFlip = FALSE);
 
     // Generated message map functions
@@ -167,7 +167,7 @@ public:
     virtual void OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView);
 
 protected:
-    virtual POINT MapVowelsToChart(CDC * pDC, FORMANT_FREQ & Formant, int /* SymbolHeight */, CScatterGraph * pFormantChart,
+    virtual POINT MapVowelsToChart(CDC * pDC, SFormantFreq & Formant, int /* SymbolHeight */, CScatterGraph * pFormantChart,
                                    SGraph & /* ChartParms */, BOOL bFlip);
 
     // Generated message map functions

@@ -52,7 +52,7 @@ public:
 
     virtual long Process(void * pCaller, ISaDoc *, int nProgress = 0, int nLevel = 1);
 
-    FORMANT_FREQ * GetFormant(DWORD dwIndex);
+    SFormantFreq * GetFormant(DWORD dwIndex);
 
     class CTrackState
     {

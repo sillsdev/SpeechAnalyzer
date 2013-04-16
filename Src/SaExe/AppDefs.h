@@ -202,7 +202,6 @@ enum ECursorAlignment
 
 #define WM_USER_AUTO_RESTART            WM_USER + 27
 #define WM_USER_AUTOSAVE                WM_USER + 28
-#define WM_USER_CURSOR_CLICKED          WM_USER + 29
 
 #define HINT_APP_DOC_LIST_CHANGED       0x123
 
@@ -281,8 +280,8 @@ enum EOpenMode
 enum EBoundary
 {
     BOUNDARIES_EDIT_NULL = 0,
-    BOUNDARIES_EDIT_OVERLAP = 1,
-    BOUNDARIES_EDIT_NO_OVERLAP = 2
+    BOUNDARIES_EDIT_SEGMENT_SIZE = 1,
+    BOUNDARIES_EDIT_BOUNDARIES = 2
 };
 
 enum EWordFilenameConvention

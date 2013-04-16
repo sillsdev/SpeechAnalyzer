@@ -35,7 +35,7 @@ CASegmentSelection::CASegmentSelection()
 }
 
 /***************************************************************************/
-// CASegmentSelection::SelectFromPosition Select a annotation segment from
+// CASegmentSelection::SelectFromPosition Select an annotation segment from
 // a position. Returns TRUE if selection changed else FALSE
 /***************************************************************************/
 BOOL CASegmentSelection::SelectFromPosition(CSaView * pView, int nSegmentIndex, DWORD dwPosition, int nMode)

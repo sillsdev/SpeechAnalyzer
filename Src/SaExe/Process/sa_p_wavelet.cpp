@@ -76,7 +76,7 @@ long CProcessWavelet::Process(void * pCaller, ISaDoc * , int nWidth, int /*nHeig
 {
     UNUSED_ALWAYS(nWidth);
 
-    TRACE(_T("Process: CProcessWavelet\n"));
+    //TRACE(_T("Process: CProcessWavelet\n"));
 
 
     //**************************************************************************

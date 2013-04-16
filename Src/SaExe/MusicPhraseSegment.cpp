@@ -19,7 +19,7 @@ int CMusicPhraseSegment::CheckPosition(CSaDoc * pDoc, DWORD dwStart,DWORD dwStop
     int nLength = GetOffsetSize();
     if (nLength == 0)
     {
-        return 0;    // no character yet, ok
+        return 0;			// no character yet, ok
     }
 
     if (((nMode==MODE_EDIT)||(nMode==MODE_AUTOMATIC))&&(m_nSelection != -1))   // segment selected (edit)

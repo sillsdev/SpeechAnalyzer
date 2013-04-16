@@ -92,7 +92,8 @@ long CProcessLoudness::Process(void * pCaller, ISaDoc * pDoc, int nProgress,
     }
     CProcessGrappl * pAutoPitch = (CProcessGrappl *)pDoc->GetGrappl();
     short int nResult = LOWORD(pAutoPitch->Process(this, pDoc)); // process data
-    TRACE(_T("Process: CProcessLoudness\n"));
+    //TRACE(_T("Process: CProcessLoudness\n"));
+
     BeginWaitCursor(); // wait cursor
     if (!StartProcess(pCaller, IDS_STATTXT_PROCESSLOU))   // memory allocation failed
     {
@@ -577,7 +578,7 @@ void CProcessSmoothLoudness::SetDataInvalid()
 long CProcessSmoothLoudness::Process(void * pCaller, ISaDoc * pDoc,
                                      int nProgress, int nLevel)
 {
-    TRACE(_T("Process: CProcessSmoothLoudness\n"));
+    //TRACE(_T("Process: CProcessSmoothLoudness\n"));
     if (IsCanceled())
     {
         return MAKELONG(PROCESS_CANCELED, nProgress);    // process canceled
@@ -894,5 +895,5 @@ HPSTR CProcessSmoothLoudness::GetSmoothRawData(DWORD dwOffset, BOOL bBlockBegin)
 DWORD CProcessSmoothLoudness::GetSmoothRawDataSize()
 {
     // return processed data size in words (16 bit)
-    return m_SRDfileStatus.m_size;
+    return (DWORD)m_SRDfileStatus.m_size;
 }

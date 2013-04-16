@@ -708,11 +708,8 @@ int CSegment::CheckCursors(CSaDoc * pDoc, BOOL bOverlap) const
     // get pointer to view
     POSITION pos = pDoc->GetFirstViewPosition();
     CSaView * pView = (CSaView *)pDoc->GetNextView(pos);
-
-    return CheckPosition(pDoc, pView->GetStartCursorPosition(), pView->GetStopCursorPosition(), MODE_AUTOMATIC, bOverlap);
+    return CheckPosition( pDoc, pView->GetStartCursorPosition(), pView->GetStopCursorPosition(), MODE_AUTOMATIC, bOverlap);
 }
-
-
 
 BOOL CSegment::NeedToScroll(CSaView & saView, int index) const
 {

@@ -772,8 +772,8 @@ BOOL CPlotSpectrogram::OnDrawFormantTracks(CDC * pDC, CRect rWnd, CRect rClip, C
 {
 
     BOOL bResult = TRUE;
-    BOOL bTime = !FormantTrackerOptions.m_bShowOriginalFormantTracks;
-    BOOL bFragment = FormantTrackerOptions.m_bShowOriginalFormantTracks;
+    BOOL bTime = !formantTrackerOptions.m_bShowOriginalFormantTracks;
+    BOOL bFragment = formantTrackerOptions.m_bShowOriginalFormantTracks;
 
     if (bTime)
     {
@@ -911,7 +911,7 @@ BOOL CPlotSpectrogram::OnDrawFormantTracksFragment(CDC * pDC, CRect rWnd, CRect 
             BOOL bPlot = FALSE;
             BOOL bOnScreen = FALSE;
             BOOL bSkip = TRUE;
-            FORMANT_FREQ * pFormants = NULL;
+            SFormantFreq * pFormants = NULL;
 
             for (DWORD dwFragment = dwFirstFragment; dwFragment <= dwLastFragment; dwFragment++)
             {
@@ -996,7 +996,7 @@ BOOL CPlotSpectrogram::OnDrawFormantTracksTime(CDC * pDC, CRect rWnd, CRect rCli
 
     if (nResult != PROCESS_CANCELED)
     {
-        double dSamplesPerSlice = pDoc->GetDataSize()/nSmpSize/double(pSpectroFormants->GetDataSize(sizeof(FORMANT_FREQ)));
+        double dSamplesPerSlice = pDoc->GetDataSize()/nSmpSize/double(pSpectroFormants->GetDataSize(sizeof(SFormantFreq)));
         // get pointer to plot colors
         Colors * pColors = pMain->GetColors();
 
@@ -1076,7 +1076,7 @@ BOOL CPlotSpectrogram::OnDrawFormantTracksTime(CDC * pDC, CRect rWnd, CRect rCli
             BOOL bPlot = FALSE;
             BOOL bOnScreen = FALSE;
             BOOL bSkip = TRUE;
-            CProcessIterator<FORMANT_FREQ> iterFormants(*pSpectroFormants, dwFirstSlice);
+            CProcessIterator<SFormantFreq> iterFormants(*pSpectroFormants, dwFirstSlice);
 
             for (DWORD dwSlice = dwFirstSlice; dwSlice <= dwLastSlice; dwSlice++)
             {

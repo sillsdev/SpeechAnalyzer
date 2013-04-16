@@ -642,7 +642,11 @@ void CFlexEditGrid::OnUpdateEditPaste(CCmdUI * pCmdUI)
     BOOL enable = FALSE;
     if (OpenClipboard())
     {
-        enable = IsClipboardFormatAvailable(CF_TEXT);
+        if (IsClipboardFormatAvailable(CF_TEXT))
+		{
+			enable = TRUE;
+		}
+
         CloseClipboard();
     }
     pCmdUI->Enable(enable);

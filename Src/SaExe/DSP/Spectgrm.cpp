@@ -283,7 +283,7 @@
 *   dspError_t = ReadPower(&Power, MouseX, MouseY);                        *
 *   if (dspError_t) return(dspError_t);                                    *
 *                                                                          *
-*   FORMANT_FREQ Freq;                                                     *
+*   SFormantFreq Freq;                                                     *
 *   dspError_t = ReadFormants(&Freq, MouseX);                              *
 *   if (dspError_t) return(dspError_t);                                    *
 *                                                                          *
@@ -417,7 +417,7 @@ dspError_t CSpectrogram::CreateObject(CSpectrogram ** Spgm, SPGM_SETTINGS SpgmSe
     }
 
     // Allocate memory for formant data.
-    FORMANT_FREQ * FmntData = (FORMANT_FREQ *)malloc((uint16)SpgmSetting.SpectCnt * sizeof(FORMANT_FREQ));
+    SFormantFreq * FmntData = (SFormantFreq *)malloc((uint16)SpgmSetting.SpectCnt * sizeof(SFormantFreq));
     if (!FmntData)
     {
         free(SpgmData);
@@ -524,7 +524,7 @@ dspError_t CSpectrogram::ValidateSettings(SPGM_SETTINGS Setting)
 ////////////////////////////////////////////////////////////////////////////////////////
 CSpectrogram::CSpectrogram( SPGM_SETTINGS SpgmSetting, 
 							uint8 * SpgmData, 
-							FORMANT_FREQ * FmntData,
+							SFormantFreq * FmntData,
 							DspWin & Window, 
 							DspWin & NBWindow, SIG_PARMS Signal, uint8 * ScreenData) : m_Window(Window), m_NBWindow(NBWindow)
 {
@@ -695,7 +695,7 @@ uint8 * CSpectrogram::ReadPowerSlice(dspError_t * dspError_t, uint16 SpgmX)
 // Object function to return pitch and formant frequencies for specified spectrogram  //
 // coordinates.                                                                       //
 ////////////////////////////////////////////////////////////////////////////////////////
-dspError_t CSpectrogram::ReadFormants(FORMANT_FREQ * Freq, uint16 SpgmX)
+dspError_t CSpectrogram::ReadFormants(SFormantFreq * Freq, uint16 SpgmX)
 {
     if (!Freq)
     {
@@ -807,7 +807,7 @@ dspError_t CSpectrogram::CalcSpectra( short * BlockStart, uint32 NumSpect)
     uint8 * LastSpect = FirstSpect + (NumSpect-1)*m_SpgmHgt;
 
     // Calculate address for first set of formants.
-    FORMANT_FREQ * FirstFmntSet = m_FmntData + m_SpectToProc;
+    SFormantFreq * FirstFmntSet = m_FmntData + m_SpectToProc;
 
 	// margin available to left and right of frame
     int32 WinMargin = m_Window.Length() / 2;   
@@ -819,7 +819,7 @@ dspError_t CSpectrogram::CalcSpectra( short * BlockStart, uint32 NumSpect)
 
 
     // Generate spectra.
-    FORMANT_FREQ * FmntSet = FirstFmntSet;
+    SFormantFreq * FmntSet = FirstFmntSet;
     for (uint8 * Spect = FirstSpect; Spect <= LastSpect; Spect += m_SpgmHgt, m_SpectToProc++)
     {
         // Calculate address for beginning of sample data frame.  Spectrum will be computed
@@ -893,7 +893,7 @@ dspError_t CSpectrogram::CalcSpectra(uint8 * BlockStart, uint32 NumSpect)
     uint8 * LastSpect = FirstSpect + (NumSpect-1)*m_SpgmHgt;
 
     // Calculate address for first set of formants.
-    FORMANT_FREQ * FirstFmntSet = m_FmntData + m_SpectToProc;
+    SFormantFreq * FirstFmntSet = m_FmntData + m_SpectToProc;
 
 	// margin available to left and right of frame
     int32 WinMargin = m_Window.Length() / 2;   
@@ -904,7 +904,7 @@ dspError_t CSpectrogram::CalcSpectra(uint8 * BlockStart, uint32 NumSpect)
     uint8 * SigEnd = (uint8 *)m_SigStart + m_SigLength - abs(m_SmpDataFmt);
 
     // Generate spectra.
-    FORMANT_FREQ * FmntSet = FirstFmntSet;
+    SFormantFreq * FmntSet = FirstFmntSet;
     for ( uint8 * Spect = FirstSpect; Spect <= LastSpect; Spect += m_SpgmHgt, m_SpectToProc++)
     {
         // Calculate address for beginning of sample data frame.  Spectrum will be computed
@@ -1300,11 +1300,11 @@ dspError_t CSpectrogram::CalcFormants(void)
 dspError_t CSpectrogram::SeekFormants(short * BlockStart, uint32 NumFmntSets)
 {
     // Calculate addresses where first and last formant sets will be stored.
-    FORMANT_FREQ * FirstFmntSet = m_FmntData + m_FmntSetToProc;
-    FORMANT_FREQ * LastFmntSet = FirstFmntSet + NumFmntSets - 1;
+    SFormantFreq * FirstFmntSet = m_FmntData + m_FmntSetToProc;
+    SFormantFreq * LastFmntSet = FirstFmntSet + NumFmntSets - 1;
 
     // Generate formant sets.
-    for (FORMANT_FREQ * FmntSet = FirstFmntSet;
+    for (SFormantFreq * FmntSet = FirstFmntSet;
             FmntSet <= LastFmntSet;
             FmntSet++, m_FmntSetToProc++)
     {
@@ -1347,11 +1347,11 @@ dspError_t CSpectrogram::SeekFormants(short * BlockStart, uint32 NumFmntSets)
 dspError_t CSpectrogram::SeekFormants(uint8 * BlockStart, uint32 NumFmntSets)
 {
     // Calculate addresses where first and last formant sets will be stored.
-    FORMANT_FREQ * FirstFmntSet = m_FmntData + m_FmntSetToProc;
-    FORMANT_FREQ * LastFmntSet = FirstFmntSet + NumFmntSets - 1;
+    SFormantFreq * FirstFmntSet = m_FmntData + m_FmntSetToProc;
+    SFormantFreq * LastFmntSet = FirstFmntSet + NumFmntSets - 1;
 
     // Generate formant sets.
-    for (FORMANT_FREQ * FmntSet = FirstFmntSet; FmntSet <= LastFmntSet; FmntSet++, m_FmntSetToProc++)
+    for (SFormantFreq * FmntSet = FirstFmntSet; FmntSet <= LastFmntSet; FmntSet++, m_FmntSetToProc++)
     {
         //   Calculate address for beginning of sample data frame.  Formants will be computed
         //   at the center of the frame.
@@ -1390,7 +1390,7 @@ dspError_t CSpectrogram::SeekFormants(uint8 * BlockStart, uint32 NumFmntSets)
 // Private object function to blank out formant array for synchronization with        //
 // the acoustic waveform.                                                             //
 ////////////////////////////////////////////////////////////////////////////////////////
-void CSpectrogram::BlankFmntSet(FORMANT_FREQ * Fmnt)
+void CSpectrogram::BlankFmntSet(SFormantFreq * Fmnt)
 {
     for (uint16 i = 0; i <= MAX_NUM_FORMANTS; i++)
     {
@@ -1402,33 +1402,25 @@ void CSpectrogram::BlankFmntSet(FORMANT_FREQ * Fmnt)
 ////////////////////////////////////////////////////////////////////////////////////////
 // Private object function to extract formants from spectral data.                    //
 ////////////////////////////////////////////////////////////////////////////////////////
-dspError_t CSpectrogram::GetFormants(FORMANT_FREQ * fmnt)
+dspError_t CSpectrogram::GetFormants( SFormantFreq * fmnt)
 {
     // Check for valid state.
     COMPLEX_RECT_FLOAT * spectCoeff = (COMPLEX_RECT_FLOAT *)m_WinFrame;
-    uint32 i;
-
-#define logMagSpectrum spectCoeff
 
     // Cepstrum smoothing
     // Compute log of FFT magnitude and store in real portion of complex array, zeroing out
     // imaginary portion.
 
     //!!log instead of log10?
-    logMagSpectrum[0].real = (spectCoeff[0].real == 0.F) ? MIN_LOG_PWR :
-                             (float)log10(fabs((double)spectCoeff[0].real));  //value at 0
+    spectCoeff[0].real = (spectCoeff[0].real == 0.F) ? MIN_LOG_PWR : (float)log10(fabs((double)spectCoeff[0].real));  //value at 0
 
-    logMagSpectrum[0].imag = (spectCoeff[0].imag == 0.F) ? MIN_LOG_PWR :
-                             (float)log10(fabs((double)spectCoeff[0].imag));  //value at SpectLen
+    spectCoeff[0].imag = (spectCoeff[0].imag == 0.F) ? MIN_LOG_PWR : (float)log10(fabs((double)spectCoeff[0].imag));  //value at SpectLen
 
-    for (i = 1; i < m_SpectLen; i++)
+    for (uint32 i = 1; i < m_SpectLen; i++)
     {
-        logMagSpectrum[i].real = (spectCoeff[i].real == 0.F && spectCoeff[i].imag == 0.F) ?
-                                 MIN_LOG_PWR : 0.5F*(float)log10(spectCoeff[i].real*
-                                         spectCoeff[i].real + spectCoeff[i].imag*spectCoeff[i].imag);
-        logMagSpectrum[i].imag = 0.F;
+        spectCoeff[i].real = ((spectCoeff[i].real == 0.F) && (spectCoeff[i].imag == 0.F)) ? MIN_LOG_PWR : 0.5F*(float)log10(spectCoeff[i].real * spectCoeff[i].real + spectCoeff[i].imag*spectCoeff[i].imag);
+        spectCoeff[i].imag = 0.F;
     }
-
 
     // Calculate cepstrum from log spectrum by taking inverse FFT.  As a real-to-complex FFT,
     // the function will assume the real part of the spectral array is even while the imaginary
@@ -1437,27 +1429,23 @@ dspError_t CSpectrogram::GetFormants(FORMANT_FREQ * fmnt)
 
     //!!cos transform for 1st few cepstral coeff and
     //cos transform for pitch peaks may be faster
-    rfft2f((float *)logMagSpectrum,m_FFTLen,INVERSE);
+    rfft2f((float *)spectCoeff,m_FFTLen,INVERSE);
 
     // Check for voicing by examining peak levels over a typical pitch period
     // range (20 ms down to 2 ms) in the high time portion of the cepstrum.
 
-    // float *cepstralCoeff = (float *)logMagSpectrum;
-#define cepstralCoeff m_WinFrame
-
     uint32 hiPeakLoc = 0;
-    float hiPeakVal =   MIN_LOG_PWR;
+    float hiPeakVal = MIN_LOG_PWR;
     const float * hiPeakPtr = NULL;
 
-    hiPeakPtr = FindHighestPeak(cepstralCoeff + m_MinPitchPeriod,
-                                cepstralCoeff + m_MaxPitchPeriod, 0);
+    hiPeakPtr = FindHighestPeak( m_WinFrame + m_MinPitchPeriod, m_WinFrame + m_MaxPitchPeriod, 0);
     if (hiPeakPtr != NULL)
     {
-        hiPeakLoc = hiPeakPtr - cepstralCoeff;
+        hiPeakLoc = hiPeakPtr - m_WinFrame;
         hiPeakVal = *hiPeakPtr;
         assert(hiPeakLoc < m_MaxPitchPeriod);
         assert(hiPeakLoc >= m_MinPitchPeriod);
-        assert(hiPeakVal == cepstralCoeff[hiPeakLoc]);
+        assert(hiPeakVal == m_WinFrame[hiPeakLoc]);
     }
 
     // If the high peak is high enough, then this sound is voiced
@@ -1474,13 +1462,14 @@ dspError_t CSpectrogram::GetFormants(FORMANT_FREQ * fmnt)
     }
 
     // Remove excitation characteristic from high time portion.
-    for (i = m_MinPitchPeriod; i <= m_SpectLen; i++)   //!!start at zero crossing?
+    for (uint32 i = m_MinPitchPeriod; i <= m_SpectLen; i++)   //!!start at zero crossing?
     {
-        cepstralCoeff[i] = cepstralCoeff[m_FFTLen-i] = 0.F;    //!!i > 0
+        m_WinFrame[i] = m_WinFrame[m_FFTLen-i] = 0.F;    //!!i > 0
     }
 
     // Compute FFT to get cepstrally smoothed spectrum.
-    rfft2f(cepstralCoeff, m_FFTLen, FORWARD);  //!!cosine transform faster?
+	//!!cosine transform faster?
+    rfft2f( m_WinFrame, m_FFTLen, FORWARD);  
 
     // Pick peaks from cepstrally smoothed spectrum.
 
@@ -1495,7 +1484,7 @@ dspError_t CSpectrogram::GetFormants(FORMANT_FREQ * fmnt)
     magnitudeSpectrum[0] = spectCoeff[0].real*spectCoeff[0].real;
     magnitudeSpectrum[m_SpectLen] = spectCoeff[0].imag*spectCoeff[0].imag;
 
-    for (i = 1; i < m_SpectLen; i++)
+    for (uint32 i = 1; i < m_SpectLen; i++)
     {
         x = spectCoeff[i].real;
         y = spectCoeff[i].imag;
@@ -1506,13 +1495,13 @@ dspError_t CSpectrogram::GetFormants(FORMANT_FREQ * fmnt)
     const uint32 maxInterestingIndex = (uint32)(5000.0f/m_SpectScale);
     assert(maxInterestingIndex < m_SpectLen);
 
-    uint32 numPeaksFound = FindHighEnergyPeaks(fmnt->F + 1,
-                           magnitudeSpectrum, magnitudeSpectrum + maxInterestingIndex, m_NumFmnt, 0);
+    uint32 numPeaksFound = FindHighEnergyPeaks(fmnt->F + 1, magnitudeSpectrum, magnitudeSpectrum + maxInterestingIndex, m_NumFmnt, 0);
 
     delete [] magnitudeSpectrum;
 
     // Convert from indices to frequencies
-    for (i = 1; i <= numPeaksFound; i++)
+	uint32 i = 0;
+    for (uint32 i = 1; i <= numPeaksFound; i++)
     {
         fmnt->F[i] *= m_SpectScale;
     }

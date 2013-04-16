@@ -194,7 +194,7 @@ DWORD CPhoneticSegment::RemoveNoRefresh(CDocument *)
 /***************************************************************************/
 long CPhoneticSegment::Process(void * pCaller, CSaDoc * pDoc, int nProgress, int nLevel)
 {
-    TRACE(_T("Process: CPhoneticSegment\n"));
+    //TRACE(_T("Process: CPhoneticSegment\n"));
     if (IsCanceled())
     {
         return MAKELONG(PROCESS_CANCELED, nProgress);    // process canceled

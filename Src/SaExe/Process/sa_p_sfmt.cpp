@@ -80,7 +80,7 @@ CProcessSpectroFormants::~CProcessSpectroFormants()
 long CProcessSpectroFormants::Process(void * /*pCaller*/, CView * /*pSaView*/, int /*nWidth*/, int /*nHeight*/,
                                       int nProgress, int /*nLevel*/)
 {
-    TRACE(_T("Process: CProcessSpectroFormants\n"));
+    //TRACE(_T("Process: CProcessSpectroFormants\n"));
     return MAKELONG(PROCESS_ERROR, nProgress);
 }
 
@@ -93,11 +93,11 @@ long CProcessSpectroFormants::Process(void * /*pCaller*/, CView * /*pSaView*/, i
 // plot. nIndex is the horizontal index in the formant data.  The function
 // returns NULL on error.
 /***************************************************************************/
-FORMANT_FREQ * CProcessSpectroFormants::GetFormant(DWORD dwIndex)
+SFormantFreq * CProcessSpectroFormants::GetFormant(DWORD dwIndex)
 {
     // read the data
-    size_t sSize = sizeof(FORMANT_FREQ);
-    return (FORMANT_FREQ *) GetProcessedObject(dwIndex, sSize);
+    size_t sSize = sizeof(SFormantFreq);
+    return (SFormantFreq *)GetProcessedObject(dwIndex, sSize);
 }
 
 /***************************************************************************/
@@ -105,8 +105,7 @@ FORMANT_FREQ * CProcessSpectroFormants::GetFormant(DWORD dwIndex)
 // fragment within the specified range, smooth if requested, and store them in
 // the spectrogram formant track process temp file.
 /***************************************************************************/
-long CProcessSpectroFormants::ExtractFormants(ISaDoc * pDoc, DWORD dwWaveDataStart, DWORD dwWaveDataLength, BOOL bSmooth,
-        int nProgress, int nLevel)
+long CProcessSpectroFormants::ExtractFormants(ISaDoc * pDoc, DWORD dwWaveDataStart, DWORD dwWaveDataLength, BOOL bSmooth, int nProgress, int nLevel)
 {
     TRACE(_T("Process: CProcessSpectroFormants\n"));
     // check canceled
@@ -178,7 +177,7 @@ long CProcessSpectroFormants::ExtractFormants(ISaDoc * pDoc, DWORD dwWaveDataSta
 #endif
 
                 // Extract formants for each fragment.
-                FORMANT_FREQ FormantFreq;
+                SFormantFreq FormantFreq;
                 FormantFreq.F[0] = (float)NA;
                 BOOL bVoiced = TRUE, bFricative = FALSE;
                 DWORD dwVoicedFragStart = (DWORD)UNDEFINED_DATA;
@@ -268,7 +267,7 @@ long CProcessSpectroFormants::ExtractFormants(ISaDoc * pDoc, DWORD dwWaveDataSta
                             for (DWORD dwFormantIndex = dwVoicedFragStart; dwFormantIndex < dwFragmentIndex; dwFormantIndex++)
                             {
                                 // update formant frequencies
-                                FORMANT_FREQ FormantPwr;
+                                SFormantFreq FormantPwr;
                                 SFormantFrame * pFormantFrame = pFormants->GetFormantFrame(dwFormantFrame++);
                                 float MaxPowerInDecibels = FLT_MAX_NEG;
                                 for (USHORT nFormant = 1; nFormant <= MAX_NUM_FORMANTS; nFormant++)
@@ -401,7 +400,7 @@ long CProcessSpectroFormants::ExtractFormants(ISaDoc * pDoc, DWORD dwWaveDataSta
                         DWORD dwFormantFrame = 0;
                         for (DWORD dwFormantIndex = dwVoicedFragStart; dwFormantIndex < dwFragmentIndex; dwFormantIndex++)
                         {
-                            FORMANT_FREQ FormantPwr;
+                            SFormantFreq FormantPwr;
                             SFormantFrame * pFormantFrame = pFormants->GetFormantFrame(dwFormantFrame++);
                             //                FILE *hDump = fopen("formants.txt", "w");
                             float MaxPowerInDecibels = FLT_MAX_NEG;
@@ -515,5 +514,15 @@ BOOL CProcessSpectroFormants::AreFormantTracksReady()
         return FALSE;
     }
     return IsDataReady();
+}
+
+DWORD CProcessSpectroFormants::GetDataSize()
+{
+    return GetDataSize(sizeof(SFormantFreq));   // return processed data size in words (16 bit)
+}
+
+DWORD CProcessSpectroFormants::GetDataSize(size_t nElements)
+{
+    return (DWORD)CProcess::GetDataSize(nElements);   // return processed data size in LPC data structures
 }
 

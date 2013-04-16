@@ -159,13 +159,6 @@ void CPrivateCursorWnd::OnDraw(CDC * pDC, const CRect & printRect)
         // each other.  This will erase them.  (They can be temporarily on top of each other, as long as
         // painting does not occur. This alows setting the cursors in any order within a procedure.)
         //
-#ifdef DoNotPaint
-        if (pDC->IsPrinting()
-                || ((rParent != m_rWnd)
-                    || ((rClip.Width() > 1) && rSect.IntersectRect(rClip, rWnd))
-                   )
-           )
-#endif
         {
             // last time we did not paint here - store new locatation and draw cursor
             if (!pDC->IsPrinting())
@@ -256,13 +249,6 @@ void CPrivateCursorWnd::OnDrawHorizontalCursor(CDC * pDC, const CRect & printRec
 
         //SDM 1.06.6
 
-#ifdef DoNotPaint
-        if (pDC->IsPrinting()
-                || ((rParent != m_rWnd)
-                    || ((rClip.Height() > 1) && rSect.IntersectRect(rClip, rWnd))
-                   )
-           )
-#endif
         {
             // last time we did not paint here - store new locatation and draw cursor
             if (!pDC->IsPrinting())

@@ -66,7 +66,7 @@ long CProcessGrappl::Process(void * pCaller, ISaDoc * pDoc, int nProgress, int n
     {
         return MAKELONG(--nLevel, nProgress);			// data is already ready
     }
-    TRACE(_T("Process: CProcessGrappl --------\n"));
+    //TRACE(_T("Process: CProcessGrappl --------\n"));
     DWORD dwDataSize = pDoc->GetDataSize();				// raw data size for all channels
     if (dwDataSize==0)
     {
@@ -208,7 +208,7 @@ long CProcessGrappl::Process(void * pCaller, ISaDoc * pDoc, int nProgress, int n
 
         // set grappl input buffer
 		uint16 length = (WORD)(dwBlockSize / pDoc->GetBlockAlign(true));
-		TRACE("grappl length %d\n",length);
+		//TRACE("grappl length %d\n",length);
         if (!grapplSetInbuff((pGrappl)m_lpBuffer, (pGrappl)pBlockStart, length, nomore))
         {
 	        return Exit(PROCESS_ERROR);				// error, processing failed
@@ -278,7 +278,7 @@ long CProcessGrappl::Process(void * pCaller, ISaDoc * pDoc, int nProgress, int n
 		iterations++;
     }
 
-	TRACE("iterations=%d\n",iterations);
+	//TRACE("iterations=%d\n",iterations);
 
     // calculate the actual progress
     nProgress = nProgress + (int)(100 / nLevel);

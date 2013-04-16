@@ -106,7 +106,7 @@ long CProcessSpectrogram::Exit(int nError)
 long CProcessSpectrogram::Process(void * pCaller, ISaDoc * pDoc, CSaView * pView, int nWidth, int /*nHeight*/, int nProgress, int nLevel)
 {
 
-    WORD wSmpSize = (WORD)(pDoc->GetSampleSize());
+    DWORD wSmpSize = (DWORD)(pDoc->GetSampleSize());
     // check canceled
     if (IsCanceled())
     {

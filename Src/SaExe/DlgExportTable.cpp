@@ -909,8 +909,8 @@ void CDlgExportTable::OnOK()
             // get FormantTracker data
             for (dwIndex = dwBegin; dwIndex < dwEnd; dwIndex++)
             {
-                DWORD dwProcData = (DWORD)((DWORD)(dwIndex/fSizeFactor[FMTTRACKER]/sizeof(FORMANT_FREQ)))*sizeof(FORMANT_FREQ);
-                FORMANT_FREQ * pFormFreqCurr = (FORMANT_FREQ *)pDoc->GetFormantTracker()->GetProcessedData(dwProcData, sizeof(FORMANT_FREQ));
+                DWORD dwProcData = (DWORD)((DWORD)(dwIndex/fSizeFactor[FMTTRACKER]/sizeof(SFormantFreq)))*sizeof(SFormantFreq);
+                SFormantFreq * pFormFreqCurr = (SFormantFreq *)pDoc->GetFormantTracker()->GetProcessedData(dwProcData, sizeof(SFormantFreq));
                 for (int n = 1; n<5; n++)
                 {
                     if (pFormFreqCurr->F[n] == (float)NA)

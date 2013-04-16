@@ -61,7 +61,7 @@ CProcessZCross::~CProcessZCross()
 long CProcessZCross::Process(void * pCaller, ISaDoc * pDoc, int nProgress,
                              int nLevel)
 {
-    TRACE(_T("Process: CProcessZCross\n"));
+    //TRACE(_T("Process: CProcessZCross\n"));
     if (IsCanceled())
     {
         return MAKELONG(PROCESS_CANCELED, nProgress);    // process canceled

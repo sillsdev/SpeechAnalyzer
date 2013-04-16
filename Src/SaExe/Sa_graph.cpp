@@ -130,24 +130,15 @@ IMPLEMENT_DYNCREATE(CGraphWnd, CMiniCaptionWnd)
 DWORD CGraphWnd::m_dwLastStartCursor = UNDEFINED_OFFSET; // undefined
 DWORD CGraphWnd::m_dwLastStopCursor = UNDEFINED_OFFSET; // undefined
 
-/////////////////////////////////////////////////////////////////////////////
-// CGraphWnd message map
-
 BEGIN_MESSAGE_MAP(CGraphWnd, CMiniCaptionWnd)
-    //{{AFX_MSG_MAP(CGraphWnd)
     ON_WM_CREATE()
     ON_WM_SIZE()
     ON_WM_SETFOCUS()
     ON_MESSAGE(WM_USER_INFO_GENDERCHANGED, OnGenderInfoChanged)
-    ON_MESSAGE(WM_USER_CURSOR_CLICKED, OnCursorClicked)
     ON_WM_NCMOUSEMOVE()
     ON_WM_DESTROY()
     ON_WM_CHAR()
-    //}}AFX_MSG_MAP
 END_MESSAGE_MAP()
-
-/////////////////////////////////////////////////////////////////////////////
-// CGraphWnd construction/destruction/creation
 
 /***************************************************************************/
 // CGraphWnd::CGraphWnd Constructor
@@ -1129,8 +1120,8 @@ void CGraphWnd::UpdateStatusBar(DWORD dwStartCursor, DWORD dwStopCursor, BOOL bF
             if (bShowFormants && pSpectroFormants->IsDataReady())
             {
                 double fSizeFactor = (double)pDoc->GetDataSize() / (double)(pSpectroFormants->GetDataSize() - 1);
-                dwDataPos = (DWORD)((DWORD)(dwStartCursor / fSizeFactor * 2 / sizeof(FORMANT_FREQ))) * sizeof(FORMANT_FREQ) / 2;
-                FORMANT_FREQ * pFormFreqCurr = (FORMANT_FREQ *)pSpectroFormants->GetProcessedData(dwDataPos, sizeof(FORMANT_FREQ));
+                dwDataPos = (DWORD)((DWORD)(dwStartCursor / fSizeFactor * 2 / sizeof(SFormantFreq))) * sizeof(SFormantFreq) / 2;
+                SFormantFreq * pFormFreqCurr = (SFormantFreq *)pSpectroFormants->GetProcessedData( dwDataPos, sizeof(SFormantFreq));
 
                 for (int n = 1; n < 5; n++)
                 {
@@ -1209,8 +1200,8 @@ void CGraphWnd::UpdateStatusBar(DWORD dwStartCursor, DWORD dwStopCursor, BOOL bF
             if (pSpectroFormants->IsDataReady())
             {
                 double fSizeFactor = (double)pDoc->GetDataSize() / (double)(pSpectroFormants->GetDataSize() - 1);
-                dwDataPos = (DWORD)((DWORD)(dwStartCursor / fSizeFactor * 2 / sizeof(FORMANT_FREQ))) * sizeof(FORMANT_FREQ) / 2;
-                FORMANT_FREQ * pFormFreqCurr = (FORMANT_FREQ *)pSpectroFormants->GetProcessedData(dwDataPos, sizeof(FORMANT_FREQ));
+                dwDataPos = (DWORD)((DWORD)(dwStartCursor / fSizeFactor * 2 / sizeof(SFormantFreq))) * sizeof(SFormantFreq) / 2;
+                SFormantFreq * pFormFreqCurr = (SFormantFreq *)pSpectroFormants->GetProcessedData(dwDataPos, sizeof(SFormantFreq));
 
                 for (int n = 1; n < 5; n++)
                 {
@@ -1658,16 +1649,6 @@ LRESULT CGraphWnd::OnGenderInfoChanged(WPARAM nGender, LPARAM)
     return 0L;
 }
 
-/***************************************************************************/
-// CGraphWnd::OnCursorClicked  Cursor clicked
-/***************************************************************************/
-LRESULT CGraphWnd::OnCursorClicked(WPARAM /* Cursor */, LPARAM /* ButtonState */)
-{
-    //!!reserved for future use
-    return 0L;
-}
-
-
 void CGraphWnd::OnDestroy()
 {
     CMiniCaptionWnd::OnDestroy();
@@ -1704,4 +1685,152 @@ void CGraphWnd::OnNcMouseMove(UINT nHitTest, CPoint point)
     CWnd::OnNcMouseMove(nHitTest, point);
 }
 
+CGraphWnd::CGraphWnd()
+{
+}
 
+UINT CGraphWnd::GetPlotID() const
+{
+    return m_nPlotID;   // return plot ID
+}
+
+UINT CGraphWnd::IsPlotID(UINT test) const
+{
+    return test == m_nPlotID;   // return plot ID
+}
+
+void CGraphWnd::ShowBoundaries(BOOL bShow, BOOL bRedraw)
+{
+    m_pPlot->ShowBoundaries(bShow, bRedraw);
+}
+
+double CGraphWnd::GetMagnify()
+{
+    return m_pPlot->GetMagnify();   // return magnify factor
+}
+
+BOOL CGraphWnd::HaveBoundaries()
+{
+    return m_pPlot->HaveBoundaries();   // boundaries visible?
+}
+
+BOOL CGraphWnd::HaveDrawingStyleLine()
+{
+    return m_pPlot->HaveDrawingStyleLine();   // return drawing style
+}
+
+BOOL CGraphWnd::HaveCursors()
+{
+    return m_pPlot->HaveCursors();   // cursors visible?
+}
+
+BOOL CGraphWnd::HavePrivateCursor()
+{
+    return m_pPlot->HavePrivateCursor();   // private cursor visible?
+}
+
+BOOL CGraphWnd::HaveGrid()
+{
+    return m_pPlot->HaveGrid();   // gridlines visible?
+}
+
+void CGraphWnd::SetLineDraw(BOOL bLine)
+{
+    if (m_pPlot)
+    {
+        m_pPlot->SetLineDraw(bLine);
+    }
+}
+
+void CGraphWnd::ShowGrid(BOOL bShow, BOOL bRedraw)
+{
+    m_pPlot->ShowGrid(bShow, bRedraw);
+}
+
+void CGraphWnd::MoveStartCursor(CSaView * pView, DWORD dwNewPositon)
+{
+    m_pPlot->MoveStartCursor(pView, dwNewPositon);
+}
+
+void CGraphWnd::MoveStopCursor(CSaView * pView, DWORD dwNewPositon)
+{
+    m_pPlot->MoveStopCursor(pView, dwNewPositon);
+}
+
+void CGraphWnd::RestartProcess()
+{
+    m_pPlot->RestartProcess();
+}
+
+CAnnotationWnd * CGraphWnd::GetAnnotationWnd(int nIndex)
+{
+    return m_apAnnWnd[nIndex];   // return pointer to indexed annotation window
+}
+
+CLegendWnd * CGraphWnd::GetLegendWnd()
+{
+    return m_pLegend;   // return pointer to legend window
+}
+
+CXScaleWnd * CGraphWnd::GetXScaleWnd()
+{
+    return m_pXScale;   // return pointer to x-scale window
+}
+
+void CGraphWnd::ShowCursors(BOOL bPrivate, BOOL bShow)
+{
+    m_pPlot->ShowCursors(bPrivate, bShow);   // set cursors visible/hidden
+}
+
+BOOL CGraphWnd::HaveLegend()
+{
+    return m_bLegend;   // legend window visible?
+}
+
+BOOL CGraphWnd::HaveXScale()
+{
+    return m_bXScale;   // x-scale window visible?
+}
+
+BOOL CGraphWnd::HaveAnnotation(int nIndex)
+{
+    return m_abAnnWnd[nIndex];   // indexed annotation window visible?
+}
+
+void CGraphWnd::SetAreaGraph(BOOL bArea)
+{
+    m_bAreaGraph = bArea;   // set graph to area processed graph type
+}
+
+CPlotWnd * CGraphWnd::GetPlot() const
+{
+    return m_pPlot;
+}
+
+BOOL CGraphWnd::IsAnnotationVisible(int nAnnot)
+{
+    return m_abAnnWnd[nAnnot];
+}
+
+BOOL CGraphWnd::IsAreaGraph()
+{
+    return m_bAreaGraph;   // is this an area processed graph?
+}
+
+BOOL CGraphWnd::IsAnimationGraph()
+{
+    return (m_pPlot->IsAnimationPlot());
+}
+
+BOOL CGraphWnd::IsCanceled()
+{
+    return  m_pPlot->IsCanceled();
+}
+
+afx_msg void CGraphWnd::OnSetFocus(CWnd * /*cwp*/)
+{
+    if (IsPlotID(IDD_STAFF))
+    {
+        ::SetFocus(m_pPlot->m_hWnd);
+    }
+}

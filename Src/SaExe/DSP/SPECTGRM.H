@@ -72,7 +72,7 @@ public:
     static dspError_t CalcPower(float * PowerInDb, float fFrequency, float fDspWinBandwidth, CWindowSettings::Type, SIG_PARMS Signal, bool bPreEmphasis, float DbRef = 0.F);
     static dspError_t CalcPower(float * PowerInDb, float Frequency, int32 nBandwidthSelect, CWindowSettings::Type, SIG_PARMS Signal, bool bPreEmphasis);
     uint8 * ReadPowerSlice(dspError_t * dspError_t, uint16 SpgmX);
-    dspError_t ReadFormants(FORMANT_FREQ * Freq, uint16 SpgmX);
+    dspError_t ReadFormants(SFormantFreq * Freq, uint16 SpgmX);
     DspWin & GetWidebandWindow();
     DspWin & GetNarrowbandWindow();
     dspError_t CalcFormants(void);
@@ -84,7 +84,7 @@ public:
 private:
     static dspError_t ValidateSignalParms(SIG_PARMS Signal);
     static dspError_t ValidateSettings(SPGM_SETTINGS Setting);
-    CSpectrogram(SPGM_SETTINGS SpgmSetting, uint8 * SpgmData, FORMANT_FREQ * FmntData,
+    CSpectrogram(SPGM_SETTINGS SpgmSetting, uint8 * SpgmData, SFormantFreq * FmntData,
                 DspWin & Window, DspWin & NBWindow,
                 SIG_PARMS Signal, uint8 * ScreenData);
     dspError_t CalcSpectra(uint8 * BlockStart, uint32 NumSpect);
@@ -93,13 +93,13 @@ private:
     dspError_t PreProc(uint8 * Frame, DspWin & Window);
     dspError_t PwrFFT(uint8 * PwrSpect);
     void BlankSpectrum(uint8 * Spect);  //!!Validate Spect?
-    void BlankFmntSet(FORMANT_FREQ * Fmnt);
+    void BlankFmntSet(SFormantFreq * Fmnt);
     dspError_t SeekFormants(uint8 * BlockStart, uint32 NumFmntSets);
     dspError_t SeekFormants(short * BlockStart, uint32 NumFmntSets);
-    dspError_t GetFormants(FORMANT_FREQ * F);
+    dspError_t GetFormants(SFormantFreq * F);
 
     bool m_Aliased;
-    FORMANT_FREQ * m_FmntData;
+    SFormantFreq * m_FmntData;
     bool m_PreEmphSw;
     bool m_FmntTrackSw;
     uint16 m_NumFmnt;

@@ -53,8 +53,6 @@ public:
 protected:
     CASelection m_Selection;
 
-
-
     // Operations
 public:
     BOOL CASegmentSelection::SelectFromPosition(CSaView * pView, int nSegmentIndex, DWORD dwPosition, int nMode = NULL);
@@ -63,6 +61,7 @@ public:
     {
         return m_Selection;
     }; //Access Selection Record
+
     void Update(CSaView * pView, BOOL bClearVirtual = FALSE); //Update Selection Record
     CString GetSelectedAnnotationString(CSaView * pView, BOOL bRemoveDelimiter = TRUE) const;
     BOOL SetSelectedAnnotationString(CSaView * pView, CSaString & szString, BOOL bIncludesDelimiter = FALSE, BOOL bCheck=FALSE);

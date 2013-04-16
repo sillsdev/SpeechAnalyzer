@@ -1885,7 +1885,7 @@ void CSaView::OnUpdateGraphsZoomOut(CCmdUI * pCmdUI)
 /***************************************************************************/
 void CSaView::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar * pScrollBar)
 {
-    TRACE("OnHScroll %d %d %d %d\n",nSBCode,nPos,m_dwDataPosition,m_dwScrollLine);
+    //TRACE("OnHScroll %d %d %d %d\n",nSBCode,nPos,m_dwDataPosition,m_dwScrollLine);
     CSaDoc * pDoc = GetDocument();  // get pointer to document
     if (m_fZoom > 1.0)              // zooming is enabled
     {
@@ -3447,14 +3447,12 @@ void CSaView::OnUpdateSetupFnkeys(CCmdUI * pCmdUI)
 /***************************************************************************/
 CSegment * CSaView::GetAnnotation(int annotSetID)
 {
-    CSegment * pSeg = NULL;
-
-    if (annotSetID >= 0 && annotSetID < ANNOT_WND_NUMBER)
+    if ((annotSetID >= 0) && (annotSetID < ANNOT_WND_NUMBER))
     {
-        pSeg = GetDocument()->GetSegment(annotSetID);
+        return GetDocument()->GetSegment(annotSetID);
     }
 
-    return pSeg;
+    return NULL;
 }
 
 
@@ -4145,8 +4143,9 @@ void CSaView::OnEditInplace()
     m_advancedSelection.Update(this);
     int nAnnotationIndex = m_advancedSelection.GetSelection().nAnnotationIndex;
 
-    if ((nAnnotationIndex != -1) && GetFocusedGraphWnd() &&
-            (GetFocusedGraphWnd()->HaveAnnotation(nAnnotationIndex)))   // Selected annotation is visible
+    if ((nAnnotationIndex != -1) && 
+		(GetFocusedGraphWnd()!=NULL) &&
+        (GetFocusedGraphWnd()->HaveAnnotation(nAnnotationIndex)))   // Selected annotation is visible
     {
         CAnnotationWnd * pWnd = GetFocusedGraphWnd()->GetAnnotationWnd(nAnnotationIndex);
         pWnd->OnCreateEdit();

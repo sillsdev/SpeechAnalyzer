@@ -59,7 +59,7 @@ BEGIN_MESSAGE_MAP(CDlgSplitFile, CDialog)
     ON_BN_CLICKED(IDC_EDIT_GLOSS_FOLDER, &CDlgSplitFile::OnBnClickedEditGlossFolder)
 END_MESSAGE_MAP()
 
-static int CALLBACK BrowseCallbackProc(HWND hwnd,UINT uMsg, LPARAM lParam, LPARAM lpData)
+static int CALLBACK BrowseCallbackProc(HWND hwnd,UINT uMsg, LPARAM /*lParam*/, LPARAM lpData)
 {
 
     // If the BFFM_INITIALIZED message is received

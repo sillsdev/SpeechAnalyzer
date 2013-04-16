@@ -83,7 +83,7 @@ void CPlotSpectrum::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView)
     double SigBandwidth = (double)pDoc->GetSamplesPerSec() / 2.;
     CMainFrame * pMainWnd = (CMainFrame *)AfxGetMainWnd();
     Colors * pColor = pMainWnd->GetColors();            // get application colors
-    BOOL bDynamicUpdate = (pView->GetGraphUpdateMode() == DYNAMIC_UPDATE);
+    bool bDynamicUpdate = (pView->GetGraphUpdateMode() == DYNAMIC_UPDATE);
 
     // Finish fragmenting as needed.
     CProcessFragments * pFragments = (CProcessFragments *)pDoc->GetFragments();
@@ -154,7 +154,7 @@ void CPlotSpectrum::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView)
     {
         pDC->FillRect(&rClip, &Eraser);  // clear the plot area
         m_HelperWnd.SetMode(MODE_TEXT | FRAME_POPOUT | POS_HCENTER | POS_VCENTER, IDS_HELPERWND_CURCLOSER, &rWnd);
-        if (bDynamicUpdate && pWavePlot)
+        if ((bDynamicUpdate) && (pWavePlot!=NULL))
         {
             // turn off highlighted area in raw data
             pWavePlot->SetHighLightArea(0, 0);
@@ -333,10 +333,9 @@ void CPlotSpectrum::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView)
             }
         }
 
-        if ((bDynamicUpdate || pSpectrumParms->bShowLpcSpectrum) &&
-                pSpectrum->GetSpectralData(0).Lpc != (float)UNDEFINED_DATA)
+        if (((bDynamicUpdate) || (pSpectrumParms->bShowLpcSpectrum)) &&
+            (pSpectrum->GetSpectralData(0).Lpc != (float)UNDEFINED_DATA))
         {
-            //if (bDynamicUpdate) pDC->SelectObject(&penLpcBold);
             if (bDynamicUpdate)
             {
                 pDC->SelectObject(&penLpc);

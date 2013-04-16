@@ -76,7 +76,6 @@ class CDlgAutoRecorder;
 
 class CSaView : public CView
 {
-
     DECLARE_DYNCREATE(CSaView)
 
 public:
@@ -189,9 +188,7 @@ public:
     void SetStaticTWC(BOOL bChecked);
     BOOL GetNormalMelogram();
     void SetNormalMelogram(BOOL bChecked);
-    void MoveStartCursorRight();												// TCJ 7/6/00
-    void MoveStartCursorLeft();													// TCJ 7/6/00
-    EBoundary GetEditBoundaries(int nFlags, BOOL checkKeys = TRUE);
+    EBoundary GetEditBoundaries( bool checkKeys = true);
     BOOL AssignOverlay(CGraphWnd * pTarget, CSaView * pSourceView);				// change graph type
     void RemoveRtPlots();
     virtual ~CSaView();
@@ -369,6 +366,10 @@ protected:
     afx_msg void OnEditCursorStopLeft();
     afx_msg void OnEditCursorStartRight();
     afx_msg void OnEditCursorStopRight();
+    afx_msg void OnEditBoundaryStartLeft();
+    afx_msg void OnEditBoundaryStopLeft();
+    afx_msg void OnEditBoundaryStartRight();
+    afx_msg void OnEditBoundaryStopRight();
     afx_msg void OnMoveStopCursorHere();
     afx_msg void OnPlaybackSlow();
     afx_msg void OnDpGrapitch();
@@ -427,7 +428,7 @@ protected:
     DECLARE_MESSAGE_MAP()
 
 private:
-    static int  GetNumberOfGraphs(UINT * pGraphIDs);       // return number of graphs from layout ID                // change graph type
+    static int GetNumberOfGraphs(UINT * pGraphIDs);			// return number of graphs from layout ID
     WINDOWPLACEMENT DeleteGraphs(int nPosition = -1, BOOL bClearID = TRUE); // delete existing graph objects
     void CreateGraph(int nPosition, int nNewID,
                      CREATE_HOW ch = CREATE_STANDARD,
@@ -476,11 +477,12 @@ private:
     void CalculatePrintOrigin(CDC * pDC);
     int  CalculateHiResPrintPages(void);
     void PreparePrintingForScreenShot(void);
+	CGraphWnd * GetGraphForAnnotation( int annotation);
 
-    UINT  m_anGraphID[MAX_GRAPHS_NUMBER]; // array of graph IDs
-    UINT  m_nLayout;                     // actual Layout number
+    UINT m_anGraphID[MAX_GRAPHS_NUMBER];	// array of graph IDs
+    UINT m_nLayout;							// actual Layout number
     CASegmentSelection m_advancedSelection;
-    CGraphWnd * m_pFocusedGraph;         // pointer to focused graph
+    CGraphWnd * m_pFocusedGraph;			// pointer to focused graph
     CPrintOptionsDlg * m_pPageLayout;
     CPrintOptionsDlg * m_pPgLayoutBackup;
     CPickOverlayDlg * m_pPickOverlay;

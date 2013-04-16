@@ -3923,7 +3923,7 @@ END_MESSAGE_MAP()
 
 IMPLEMENT_DYNCREATE(CDlgParametersFormantTracker, CPropertyPage)
 
-CFormantTrackerOptions FormantTrackerOptions;
+CFormantTrackerOptions formantTrackerOptions;
 
 void CFormantTrackerOptions::Init()
 {
@@ -3959,10 +3959,7 @@ BOOL CFormantTrackerOptions::operator !=(const CFormantTrackerOptions & ref) con
 CDlgParametersFormantTracker::CDlgParametersFormantTracker() :
     CPropertyPage(CDlgParametersFormantTracker::IDD)
 {
-    m_workingSettings = FormantTrackerOptions;
-
-    //{{AFX_DATA_INIT(CDlgParametersFormantTracker)
-    //}}AFX_DATA_INIT
+    m_workingSettings = formantTrackerOptions;
 }
 
 CDlgParametersFormantTracker::~CDlgParametersFormantTracker()
@@ -3984,13 +3981,10 @@ void CDlgParametersFormantTracker::DoDataExchange(CDataExchange * pDX)
     DDX_CBIndex(pDX, IDC_RESEARCH_WINDOW_TYPE, m_workingSettings.m_nWindowType);
     DDX_Check(pDX, IDC_FTRACKER_AZF_ADD_CONJUGATE_ZERO, m_workingSettings.m_bAzfAddConjugateZeroes);
     DDX_Check(pDX, IDC_FTRACKER_ORIGINAL, m_workingSettings.m_bShowOriginalFormantTracks);
-    //{{AFX_DATA_MAP(CDlgParametersFormantTracker)
-    //}}AFX_DATA_MAP
 }
 
 
 BEGIN_MESSAGE_MAP(CDlgParametersFormantTracker, CPropertyPage)
-    //{{AFX_MSG_MAP(CDlgParametersFormantTracker)
     ON_BN_CLICKED(IDC_FTRACKER_AZF_ADD_CONJUGATE_ZERO, OnModified)
     ON_EN_KILLFOCUS(IDC_FTRACKER_AZF_BANDWIDTH, OnModified)
     ON_BN_CLICKED(IDC_FTRACKER_AZF_MOST_RECENT, OnModified)
@@ -4002,7 +3996,6 @@ BEGIN_MESSAGE_MAP(CDlgParametersFormantTracker, CPropertyPage)
     ON_BN_CLICKED(IDC_FTRACKER_ORIGINAL, OnModified)
     ON_BN_CLICKED(IDC_FTRACKER_LOWPASS, OnModified)
     ON_EN_KILLFOCUS(IDC_FTRACKER_UPDATE_RATE, OnModified)
-    //}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
@@ -4012,13 +4005,12 @@ void CDlgParametersFormantTracker::OnModified()
 {
 
     UpdateData(TRUE); // Get Data from dialog
-    SetModified(FormantTrackerOptions != m_workingSettings);
+    SetModified(formantTrackerOptions != m_workingSettings);
 }
 
 void CDlgParametersFormantTracker::Apply()
 {
-
-    if ((FormantTrackerOptions != m_workingSettings) && m_hWnd)
+    if ((formantTrackerOptions != m_workingSettings) && m_hWnd)
     {
         UpdateData(TRUE); // Get Data from dialog
 
@@ -4030,13 +4022,13 @@ void CDlgParametersFormantTracker::Apply()
 
         CFormantTrackerOptions testSettings = m_workingSettings;
 
-        testSettings.m_bShowOriginalFormantTracks = FormantTrackerOptions.m_bShowOriginalFormantTracks;
-        if (testSettings != FormantTrackerOptions)
+        testSettings.m_bShowOriginalFormantTracks = formantTrackerOptions.m_bShowOriginalFormantTracks;
+        if (testSettings != formantTrackerOptions)
         {
             pDoc->GetFormantTracker()->SetDataInvalid();
         }
 
-        FormantTrackerOptions = m_workingSettings;
+        formantTrackerOptions = m_workingSettings;
         pView->RefreshGraphs(TRUE, TRUE);
     }
     SetModified(FALSE);
@@ -4070,11 +4062,6 @@ END_MESSAGE_MAP()
 CDlgGraphsParameters::CDlgGraphsParameters(LPCTSTR pszCaption, CWnd * pParent)
     : CPropertySheet(pszCaption, pParent)
 {
-
-    //{{AFX_DATA_INIT(CDlgGraphsParameters)
-    // NOTE: the ClassWizard will add member initialization here
-    //}}AFX_DATA_INIT
-    // check if spectrogram graphs available
 
     m_pDlgSpectrogramPage = NULL;
     m_pDlgSnapshotPage = NULL;

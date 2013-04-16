@@ -121,7 +121,7 @@ long CProcessTonalWeightChart::Process(void * pCaller, ISaDoc * pDoc, DWORD dwFr
         return MAKELONG(--nLevel, nProgress);    // data is already ready
     }
 
-    TRACE(_T("Process: CProcessTonalWeightChart\n"));
+    //TRACE(_T("Process: CProcessTonalWeightChart\n"));
 
     if (nLevel < 0)   // previous processing error
     {

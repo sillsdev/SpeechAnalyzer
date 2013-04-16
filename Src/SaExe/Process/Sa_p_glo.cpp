@@ -59,7 +59,7 @@ CProcessGlottis::~CProcessGlottis()
 long CProcessGlottis::Process(void * pCaller, ISaDoc * pDoc, int nProgress, int nLevel)
 {
 
-    TRACE(_T("Process: CProcessGlottis\n"));
+    //TRACE(_T("Process: CProcessGlottis\n"));
     if (IsCanceled())
     {
         return MAKELONG(PROCESS_CANCELED, nProgress);    // process canceled
