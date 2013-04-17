@@ -104,7 +104,7 @@ void CDlgRecorder::SetTotalTime()
 void CDlgRecorder::SetPositionTime()
 {
     CSaDoc * pDoc = (CSaDoc *)m_pDoc; // cast pointer to document
-    if ((m_nMode == IDC_RECORD) || ((m_nMode == IDC_PAUSE) && (m_nOldMode == IDC_RECORD)))
+    if ((m_nMode == RECORDING) || ((m_nMode == PAUSED) && (m_nOldMode == RECORDING)))
     {
         double fDataSec = pDoc->GetTimeFromBytes(m_dwRecordSize); // calculate time
         m_LEDPosTime.SetTime((int)fDataSec / 60, (int)(fDataSec * 10) % 600);
@@ -163,7 +163,7 @@ void CDlgRecorder::BlockStored(UINT nLevel, DWORD dwPosition, BOOL *)
     // update the VU bar
     m_VUBar.SetVU((int)nLevel);
     // save the position
-    if (m_nMode == IDC_RECORD)
+    if (m_nMode == RECORDING)
     {
         m_dwRecordSize = dwPosition;
         // update the time
@@ -179,7 +179,7 @@ void CDlgRecorder::BlockStored(UINT nLevel, DWORD dwPosition, BOOL *)
 void CDlgRecorder::StoreFailed()
 {
     // stop the recorder
-    SetRecorderMode(IDC_STOP);
+    SetRecorderMode( STOPPED);
     // inform the user
     CSaApp * pApp = (CSaApp *)AfxGetApp();
     pApp->ErrorMessage(IDS_ERROR_STOREWAVEBLOCK, m_szFileName);
@@ -207,9 +207,9 @@ void CDlgRecorder::BlockFinished(UINT nLevel, DWORD dwPosition, UINT)
 /***************************************************************************/
 void CDlgRecorder::EndPlayback()
 {
-    if (m_nMode != 0)
+    if (m_nMode != IDLE)
     {
-        SetRecorderMode(IDC_STOP);
+        SetRecorderMode( STOPPED);
     }
 }
 
@@ -355,13 +355,13 @@ void CDlgRecorder::HighPassFilter()
 /***************************************************************************/
 // CDlgRecorder::SetRecorderMode Set the recorder mode
 /***************************************************************************/
-void CDlgRecorder::SetRecorderMode(UINT nMode)
+void CDlgRecorder::SetRecorderMode( EMode mode)
 {
-    if ((m_nMode == nMode) && (m_nMode != IDC_STOP))
+    if ((m_nMode == mode) && (m_nMode != STOPPED))
     {
         return;    // no change
     }
-    TRACE("SetRecorderMode %d\n",nMode);
+    TRACE("SetRecorderMode %d\n",mode);
 
     // stop, whatever the recorder is doing
     if (m_pWave)
@@ -371,12 +371,13 @@ void CDlgRecorder::SetRecorderMode(UINT nMode)
     SetTotalTime();
     SetPositionTime();
     CSaDoc * pDoc = (CSaDoc *)m_pDoc; // cast pointer to document
-    switch (nMode)
+    
+	switch (mode)
     {
-    case IDC_RECORD:
+    case RECORDING:
         GetDlgItem(IDC_APPLY)->EnableWindow(FALSE); // disable apply button
         // reset the file pointer
-        if (m_nMode == IDC_STOP)
+        if (m_nMode == STOPPED)
         {
             DeleteTempFile(); // delete old temporary mmio file
             m_bFileReady = CreateTempFile(); // create new temporary mmio file
@@ -387,18 +388,18 @@ void CDlgRecorder::SetRecorderMode(UINT nMode)
             }
         }
         // stop monitoring
-        if ((m_nMode == IDC_STOP) || (m_nMode == IDC_PAUSE))
+        if ((m_nMode == STOPPED) || (m_nMode == PAUSED))
         {
-            if (m_pWave)
+            if (m_pWave!=NULL)
             {
                 m_pWave->Stop();
             }
         }
         // enable/disable the buttons for recording
-        m_nMode = IDC_RECORD;
-        m_record.Flash(FALSE); // stop flashing Record button
-        m_play.Release(); // release Play button
-        m_pause.Release(); // release Pause button
+        m_nMode = RECORDING;
+        m_record.Flash(FALSE);		// stop flashing Record button
+        m_play.Release();			// release Play button
+        m_pause.Release();			// release Pause button
         m_play.EnableWindow(FALSE); // disable Play button
         m_pause.EnableWindow(TRUE); // enable Pause button
         GetDlgItem(IDC_SETTINGS)->EnableWindow(FALSE); // disable settings button
@@ -407,19 +408,20 @@ void CDlgRecorder::SetRecorderMode(UINT nMode)
         {
             if (!m_pWave->Record(m_hmmioFile, m_pView, m_dwRecordSize, &m_NotifyObj))   // record
             {
-                m_nMode = IDC_STOP;  // record not successfull
+                m_nMode = STOPPED;  // record not successfull
                 m_record.Release(); // release Record button
                 m_pause.EnableWindow(FALSE); // disable Pause button
                 GetDlgItem(IDC_SETTINGS)->EnableWindow(TRUE); // enable settings button
             }
         }
         break;
-    case IDC_PLAY:
-        m_nMode = IDC_PLAY;
-        m_play.Flash(FALSE); // stop flashing Play button
-        m_play.Push(); // push Play button
-        m_record.Release(); // release Record button
-        m_pause.Release(); // release Pause button
+
+    case PLAYING:
+        m_nMode = PLAYING;
+        m_play.Flash(FALSE);	// stop flashing Play button
+        m_play.Push();			// push Play button
+        m_record.Release();		// release Record button
+        m_pause.Release();		// release Pause button
         m_record.EnableWindow(FALSE); // disable Record button
         m_pause.EnableWindow(TRUE); // enable Pause button
         GetDlgItem(IDC_SETTINGS)->EnableWindow(FALSE); // disable settings button
@@ -427,21 +429,22 @@ void CDlgRecorder::SetRecorderMode(UINT nMode)
         // play back the recorded file
         if (!m_pWave->Play(m_dwPlayPosition, m_dwRecordSize - m_dwPlayPosition, m_nVolume, 100, m_pView, &m_NotifyObj))
         {
-            m_nMode = IDC_STOP;  // play not successfull
-            m_play.Release(); // release Play button
+            m_nMode = STOPPED;  // play not successfull
+            m_play.Release();	// release Play button
             m_pause.EnableWindow(FALSE); // disable Pause button
             GetDlgItem(IDC_SETTINGS)->EnableWindow(TRUE); // enable settings button
         }
         break;
-    case IDC_PAUSE:
+
+    case PAUSED:
         if (m_pWave)
         {
             m_pWave->Stop();
         }
         m_nOldMode = m_nMode;
-        m_nMode = IDC_PAUSE;
+        m_nMode = PAUSED;
         // start flashing paused buttons
-        if (m_nOldMode == IDC_RECORD)
+        if (m_nOldMode == RECORDING)
         {
             m_record.Flash(TRUE);
         }
@@ -452,37 +455,38 @@ void CDlgRecorder::SetRecorderMode(UINT nMode)
         // start monitoring again
         if (!m_pWave->Monitor(m_pView, &m_NotifyObj))   // monitor
         {
-            m_nMode = IDC_STOP;  // monitor not successfull
+            m_nMode = STOPPED;	// monitor not successfull
             m_record.Release(); // release Record button
-            m_play.Release(); // release Play button
-            m_stop.Release(); // release Stop button
-            m_pause.Release(); // release Pause button
+            m_play.Release();	// release Play button
+            m_stop.Release();	// release Stop button
+            m_pause.Release();	// release Pause button
         }
         m_VUBar.SetVU(0);
         break;
-    case IDC_STOP:
-        if ((m_nMode == IDC_RECORD) || (m_nMode == IDC_PLAY) || (m_nMode == IDC_PAUSE))
+
+    case STOPPED:
+        if ((m_nMode == RECORDING) || (m_nMode == PLAYING) || (m_nMode == PAUSED))
         {
             if (m_pWave)
             {
                 m_pWave->Stop();
             }
-            if ((m_nMode == IDC_RECORD) || ((m_nMode == IDC_PAUSE) && (m_nOldMode == IDC_RECORD)))
+            if ((m_nMode == RECORDING) || ((m_nMode == PAUSED) && (m_nOldMode == RECORDING)))
                 if (pDoc->GetSaParm()->wFlags & SA_FLAG_HIGHPASS)
                 {
                     HighPassFilter();
                 }
         }
-        m_nMode = IDC_STOP;
+        m_nMode = STOPPED;
         m_dwPlayPosition = 0;
         SetPositionTime();
-        m_record.Release(); // release Record button
-        m_play.Release(); // release Play button
-        m_stop.Release(); // release Stop button
-        m_pause.Release(); // release Pause button
-        m_record.EnableWindow(TRUE); // enable Record button
-        m_play.EnableWindow(TRUE); // enable Play button
-        m_pause.EnableWindow(FALSE); // disable Pause button
+        m_record.Release();		// release Record button
+        m_play.Release();		// release Play button
+        m_stop.Release();		// release Stop button
+        m_pause.Release();		// release Pause button
+        m_record.EnableWindow(TRUE);// enable Record button
+        m_play.EnableWindow(TRUE);	// enable Play button
+        m_pause.EnableWindow(FALSE);// disable Pause button
         GetDlgItem(IDC_SETTINGS)->EnableWindow(TRUE); // enable settings button
         if (m_dwRecordSize > 0)
         {
@@ -496,19 +500,20 @@ void CDlgRecorder::SetRecorderMode(UINT nMode)
         }
         if (!m_pWave->Monitor(m_pView, &m_NotifyObj))   // monitor
         {
-            m_nMode = IDC_STOP;  // monitor not successfull
+            m_nMode = STOPPED;  // monitor not successfull
         }
         m_VUBar.SetVU(0);
         break;
+
     default:
-        m_nMode = 0;
-        m_record.Release(); // release Record button
-        m_play.Release(); // release Play button
-        m_stop.Release(); // release Stop button
-        m_pause.Release(); // release Pause button
-        m_record.EnableWindow(TRUE); // enable Record button
-        m_play.EnableWindow(TRUE); // enable Play button
-        m_pause.EnableWindow(FALSE); // disable Pause button
+        m_nMode = IDLE;
+        m_record.Release();			// release Record button
+        m_play.Release();			// release Play button
+        m_stop.Release();			// release Stop button
+        m_pause.Release();			// release Pause button
+        m_record.EnableWindow(TRUE);// enable Record button
+        m_play.EnableWindow(TRUE);	// enable Play button
+        m_pause.EnableWindow(FALSE);// disable Pause button
         GetDlgItem(IDC_SETTINGS)->EnableWindow(TRUE); // enable settings button
         GetDlgItem(IDC_APPLY)->EnableWindow(FALSE); // disable apply button
         if (m_pWave)
@@ -643,9 +648,9 @@ void CDlgRecorder::CleanUp()
 /***************************************************************************/
 BOOL CDlgRecorder::CloseRecorder()
 {
-    if (m_nMode != IDC_STOP)
+    if (m_nMode != STOPPED)
     {
-        SetRecorderMode(IDC_STOP);    // stop recording
+        SetRecorderMode(STOPPED);    // stop recording
     }
     m_VUBar.SetVU(0); // reset the VU bar
     if ((m_bFileReady && !m_bFileApplied) && (m_dwRecordSize > 0))
@@ -661,7 +666,7 @@ BOOL CDlgRecorder::CloseRecorder()
         if (nResponse == IDCANCEL)
         {
             // continue with recorder
-            SetRecorderMode(IDC_STOP);
+            SetRecorderMode(STOPPED);
             return FALSE;
         }
     }
@@ -800,7 +805,8 @@ BOOL CDlgRecorder::OnInitDialog()
     CDialog::OnInitDialog();
     m_pWave->GetOutDevice()->ConnectMixer(this);
     m_pWave->GetInDevice()->ConnectMixer(this);
-    m_nMode = 0;
+    m_nMode = IDLE;
+
     // get pointer to view and document
     CMainFrame * pMDIFrameWnd = (CMainFrame *)AfxGetMainWnd();
     m_pView = (CSaView *)pMDIFrameWnd->GetCurrSaView();
@@ -817,12 +823,7 @@ BOOL CDlgRecorder::OnInitDialog()
     pWnd->SetFont(&m_Font);                             // set the modified font
     GetDlgItem(IDC_SETTINGSTEXT)->SetFont(&m_Font);
     // set file name in recorders caption
-    CString szTitle = m_pDoc->GetTitle(); // load file name
-    int nFind = szTitle.Find(':');
-    if (nFind != -1)
-    {
-        szTitle = szTitle.Left(nFind);    // extract part left of :
-    }
+    CString szTitle = m_pDoc->GetFilenameFromTitle().c_str(); // load file name
     CString szCaption;
     GetWindowText(szCaption);
     szCaption += " - " + szTitle;
@@ -874,9 +875,9 @@ BOOL CDlgRecorder::OnInitDialog()
 /***************************************************************************/
 void CDlgRecorder::OnRecord()
 {
-    if ((m_nMode != IDC_RECORD) && (m_nMode != IDC_PAUSE))
+    if ((m_nMode != RECORDING) && (m_nMode != PAUSED))
     {
-        SetRecorderMode(IDC_RECORD);
+        SetRecorderMode(RECORDING);
     }
 }
 
@@ -885,9 +886,9 @@ void CDlgRecorder::OnRecord()
 /***************************************************************************/
 void CDlgRecorder::OnPlay()
 {
-    if ((m_nMode != IDC_PLAY) && (m_nMode != IDC_PAUSE))
+    if ((m_nMode != PLAYING) && (m_nMode != PAUSED))
     {
-        SetRecorderMode(IDC_PLAY);
+        SetRecorderMode(PLAYING);
     }
 }
 
@@ -898,7 +899,7 @@ void CDlgRecorder::OnStop()
 {
     if (m_nMode != IDC_STOP)
     {
-        SetRecorderMode(IDC_STOP);
+        SetRecorderMode(STOPPED);
     }
     else
     {
@@ -911,9 +912,9 @@ void CDlgRecorder::OnStop()
 /***************************************************************************/
 void CDlgRecorder::OnPause()
 {
-    if (m_nMode != IDC_PAUSE)
+    if (m_nMode != PAUSED)
     {
-        SetRecorderMode(IDC_PAUSE);
+        SetRecorderMode(PAUSED);
     }
     else
     {
@@ -1119,7 +1120,7 @@ void CDlgRecorder::OnCancel()
 /***************************************************************************/
 void CDlgRecorder::OnSettings()
 {
-    SetRecorderMode(IDC_STOP);
+    SetRecorderMode( STOPPED);
     CSaDoc * pDoc = (CSaDoc *)m_pDoc; // cast document pointer
 
     // get format parameters
@@ -1207,7 +1208,7 @@ void CDlgRecorder::OnSettings()
         }
         SetSettingsText();
     }
-    SetRecorderMode(IDC_STOP);
+    SetRecorderMode( STOPPED);
 }
 
 /***************************************************************************/

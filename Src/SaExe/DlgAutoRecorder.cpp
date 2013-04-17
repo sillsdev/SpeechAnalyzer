@@ -138,11 +138,6 @@ void CDlgAutoRecorder::SetPositionTime()
         double fDataSec = m_pDoc->GetTimeFromBytes(m_dwRecordSize); // calculate time
         m_LEDPosTime.SetTime((int)fDataSec / 60, (int)(fDataSec * 10) % 600);
     }
-    //  else
-    //  {
-    //    double fDataSec = m_pDoc->GetTimeFromBytes(m_dwPlayPosition); // calculate time
-    //    m_LEDPosTime.SetTime((int)fDataSec / 60, (int)(fDataSec * 10) % 600);
-    //  }
 }
 
 /***************************************************************************/
@@ -171,7 +166,7 @@ void CDlgAutoRecorder::BlockStored(UINT nLevel, DWORD dwPosition, BOOL * bSaveOv
         }
         else if (GetTickCount() - m_dwTickCount > 2*1000)
         {
-            SetRecorderMode(Record);            // start recording now
+            SetRecorderMode( Record);            // start recording now
             ChangeState(WaitingForVoice);
         }
         else if (nLevel >= MIN_VOICE_LEVEL)

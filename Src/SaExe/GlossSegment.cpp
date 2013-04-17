@@ -17,30 +17,19 @@ static char BASED_CODE THIS_FILE[] = __FILE__;
 // CGlossSegment
 // class to do all the handling for the gloss annotation segments.
 
-CGlossSegment::CGlossSegment(int index, int master) : CTextSegment(index,master)
+CGlossSegment::CGlossSegment(int index, int master) : 
+CTextSegment(index,master),
+MARGIN(20)
 {
-    m_pPOS = new CStringArray();
 }
 
 CGlossSegment::~CGlossSegment()
 {
-
-    if (m_pPOS!=NULL)
-    {
-        delete m_pPOS;
-        m_pPOS = NULL;
-    }
 }
 
 CFontTable * CGlossSegment::NewFontTable() const
 {
-    return new CFontTableANSI;
-}
-
-CStringArray * CGlossSegment::GetPOSs()
-{
-
-    return m_pPOS;
+    return new CFontTableANSI();
 }
 
 /***************************************************************************/
@@ -49,15 +38,13 @@ CStringArray * CGlossSegment::GetPOSs()
 /***************************************************************************/
 void CGlossSegment::ReplaceSelectedSegment(CDocument * pSaDoc, const CSaString & str)
 {
-
     CSaString POS;
     if (m_nSelection != -1)
     {
-        POS = m_pPOS->GetAt(m_nSelection); //SDM 1.5Test8.2
+        POS = pos.GetAt(m_nSelection); //SDM 1.5Test8.2
     }
-
     CTextSegment::ReplaceSelectedSegment(pSaDoc, str);
-    m_pPOS->SetAt(m_nSelection, POS); // SDM 1.5Test8.2
+    pos.SetAt(m_nSelection, POS); // SDM 1.5Test8.2
 
 }
 
@@ -105,9 +92,8 @@ void CGlossSegment::Remove(CDocument * pSaDoc, BOOL bCheck)
 /***************************************************************************/
 DWORD CGlossSegment::RemoveNoRefresh(CDocument * pDoc)
 {
-
     // change the segment arrays
-    m_pPOS->RemoveAt(m_nSelection, 1);
+    pos.RemoveAt(m_nSelection, 1);
     return CTextSegment::RemoveNoRefresh(pDoc);
 }
 
@@ -117,8 +103,7 @@ DWORD CGlossSegment::RemoveNoRefresh(CDocument * pDoc)
 /***************************************************************************/
 void CGlossSegment::DeleteContents()
 {
-
-    m_pPOS->RemoveAll();
+    pos.RemoveAll();
     CTextSegment::DeleteContents(); // call the base class to delete positions
 }
 
@@ -135,7 +120,7 @@ BOOL CGlossSegment::SetAt(const CSaString * pszString, bool delimiter, DWORD dwS
     ASSERT(nIndex>=0);
     try
     {
-        m_pPOS->SetAtGrow(nIndex, NULL);
+        pos.SetAtGrow(nIndex, NULL);
     }
     catch (CMemoryException e)
     {
@@ -157,7 +142,7 @@ BOOL CGlossSegment::Insert(int nIndex, LPCTSTR pszString, bool delimiter, DWORD 
 
     try
     {
-        m_pPOS->InsertAt(nIndex, NULL,  1);
+        pos.InsertAt(nIndex, NULL,  1);
     }
     catch (CMemoryException e)
     {
@@ -184,7 +169,7 @@ void CGlossSegment::Serialize(CArchive & ar)
         ar >> detailTagCheck;
         SA_ASSERT(detailTagCheck == "CGlossSegmentDetail tag");
     }
-    m_pPOS->Serialize(ar);
+    pos.Serialize(ar);
 }
 
 
@@ -222,7 +207,8 @@ long CGlossSegment::Process(void * pCaller, CSaDoc * pSaDoc, int nProgress, int 
     {
         return MAKELONG(PROCESS_CANCELED, nProgress);    // process canceled
     }
-    if (IsDataReady())
+    
+	if (IsDataReady())
     {
         return MAKELONG(--nLevel, nProgress);    // data is already ready
     }
@@ -249,21 +235,29 @@ long CGlossSegment::Process(void * pCaller, CSaDoc * pSaDoc, int nProgress, int 
     }
 
     // start parsing
-    BeginWaitCursor(); // wait cursor
-    if (!StartProcess(pCaller, IDS_STATTXT_PARSING, FALSE))   // memory allocation failed or previous processing error
+    BeginWaitCursor();
+    if (!StartProcess(pCaller, IDS_STATTXT_PARSING, FALSE))		// memory allocation failed or previous processing error
     {
         EndProcess(); // end data processing
         EndWaitCursor();
         return MAKELONG(PROCESS_ERROR, nProgress);
     }
-    DWORD dwLoopEnd = pLoudness->GetDataSize();; // end of loop
+
+    DWORD dwLoopEnd = pLoudness->GetDataSize();					// end of loop
     // prepare parameters
     CMainFrame * pMainFrame = (CMainFrame *)AfxGetMainWnd();
     ASSERT(pMainFrame->IsKindOf(RUNTIME_CLASS(CMainFrame)));
 
-    CParseParm * pCParseParm = pMainFrame->GetCParseParm(); // get parsing parameters
-    float fFactor = (float)pDoc->GetUnprocessedDataSize() / (float)dwLoopEnd; // size factor
-    DWORD dwBreakWidth = (DWORD)(pDoc->GetBytesFromTime(pCParseParm->fBreakWidth) / fFactor); // break width in process words
+	// get parsing parameters
+    CParseParm * pCParseParm = pMainFrame->GetCParseParm(); 
+    float fFactor = (float)pDoc->GetUnprocessedDataSize() / (float)dwLoopEnd;	// size factor
+
+	// since detection is always too late or too early, we will add
+	// and subtract a 0.1 margin from the beginning and end
+	// calculate offset for 0.1 second prefix/postfix
+	DWORD dwMargin = (DWORD)((pDoc->GetSamplesPerSec()*MARGIN)/1000);
+
+    DWORD dwBreakWidth = (DWORD)(pDoc->GetBytesFromTime( pCParseParm->fBreakWidth) / fFactor); // break width in process words
     if (!dwBreakWidth)
     {
         dwBreakWidth = 1;
@@ -300,26 +294,33 @@ long CGlossSegment::Process(void * pCaller, CSaDoc * pSaDoc, int nProgress, int 
     while (dwLoopPos < dwLoopEnd)
     {
         // CLW 1.07a
-        int nLoudnessData = pLoudness->GetProcessedData(dwLoopPos++, &bRes); // read zero crossing data point
+        int nLoudnessData = pLoudness->GetProcessedData(dwLoopPos++, &bRes);		// read zero crossing data point
         if (!bRes)
         {
-            return Exit(PROCESS_ERROR);    // error, reading zero crossing data failed
+            return Exit(PROCESS_ERROR);			// error, reading zero crossing data failed
         }
-        if (nLoudnessData > nMaxThreshold)   // point is over max threshold     // CLW 1.07a
+        if (nLoudnessData > nMaxThreshold)		// point is over max threshold     // CLW 1.07a
         {
             if (dwBreakCount >= dwBreakWidth)
             {
                 // ready to store gloss
                 DWORD dwGlossStart = nBlockAlign * (DWORD)(dwBreakEnd * fFactor/nBlockAlign);
+
+				// subtract 0.1 seconds from the detected start
+				//dwGlossStart = (dwGlossStart<dwMargin) ? 0 : (dwGlossStart-dwMargin);
+
                 dwGlossStart = pDoc->SnapCursor(START_CURSOR, dwGlossStart,0,dwGlossStart,SNAP_LEFT);
 
                 // check if the start is within a phonetic segment
+				// NOTE: if we are using this task within the context of 
+				// the 'parse words' feature, than all previous phonetic and gloss segments
+				// have already been deleted.
                 int nPhonetic = pPhonetic->FindFromPosition(dwGlossStart, TRUE);
                 // adjust to phonetic
                 if (nPhonetic != -1)
                 {
                     if ((pPhonetic->GetNext(nPhonetic) != -1) &&
-                            ((pPhonetic->GetOffset(pPhonetic->GetNext(nPhonetic)) - dwGlossStart) < (dwGlossStart - pPhonetic->GetOffset(nPhonetic))))
+                        ((pPhonetic->GetOffset(pPhonetic->GetNext(nPhonetic)) - dwGlossStart) < (dwGlossStart - pPhonetic->GetOffset(nPhonetic))))
                     {
                         // next segment is closer SDM 1.5Test11.0
                         dwGlossStart = pPhonetic->GetOffset(pPhonetic->GetNext(nPhonetic));
@@ -333,7 +334,7 @@ long CGlossSegment::Process(void * pCaller, CSaDoc * pSaDoc, int nProgress, int 
                 {
                     nPhonetic = pPhonetic->FindFromPosition(dwGlossStart);
                     if ((nPhonetic != -1) &&
-                            ((dwGlossStart - pPhonetic->GetOffset(nPhonetic)) < pDoc->GetBytesFromTime(MIN_ADD_SEGMENT_TIME)))
+                        ((dwGlossStart - pPhonetic->GetOffset(nPhonetic)) < pDoc->GetBytesFromTime(MIN_ADD_SEGMENT_TIME)))
                     {
                         // Too close to existing segment SDM 1.5Test11.0
                         dwGlossStart = pPhonetic->GetOffset(nPhonetic);
@@ -347,35 +348,40 @@ long CGlossSegment::Process(void * pCaller, CSaDoc * pSaDoc, int nProgress, int 
                         }
                         else
                         {
-                            if (dwGlossStart > pPhonetic->GetOffset(nPhonetic))
+                            if ( dwGlossStart > pPhonetic->GetOffset(nPhonetic))
                             {
                                 nPhonetic++;    // append at end
                             }
                         }
+
                         // SDM 1.06.3a Insert 0 duration calculate later
                         CSaString szSegment = SEGMENT_DEFAULT_CHAR;
-                        TRACE("phonetic start = %d\n",dwGlossStart);
-                        bRes = pPhonetic->Insert(nPhonetic, szSegment, 0, dwGlossStart, 0);
+                        TRACE("phonetic start = %d\n", dwGlossStart);
+                        bRes = pPhonetic->Insert( nPhonetic, szSegment, 0, dwGlossStart, 0);
                         if (!bRes)
                         {
                             return Exit(PROCESS_ERROR); // error, writing segment failed
                         }
                     }
                 }
+
                 // write gloss
                 TRACE("gloss start = %d\n",dwGlossStart);
-                bRes = Insert(nGlossIndex++, NULL, 0, dwGlossStart, 0);
+                bRes = Insert( nGlossIndex++, NULL, 0, dwGlossStart, 0);
                 if (!bRes)
                 {
                     return Exit(PROCESS_ERROR); // error, writing gloss failed
                 }
 
-                //adjust previous phonetic SDM 1.5Test11.0
-                nPhonetic = pPhonetic->GetPrevious(pPhonetic->FindOffset(dwGlossStart));
+                // adjust previous phonetic SDM 1.5Test11.0
+				DWORD dwOffset = pPhonetic->FindOffset( dwGlossStart);
+                nPhonetic = pPhonetic->GetPrevious( dwOffset);
                 if ((nPhonetic != -1) && (pPhonetic->GetDuration(nPhonetic)==0))
                 {
+					
                     DWORD dwPhoneticStop = nBlockAlign * (DWORD)(dwBreakStart * fFactor/nBlockAlign);
-                    dwPhoneticStop = pDoc->SnapCursor(STOP_CURSOR, dwPhoneticStop,dwPhoneticStop,pDoc->GetUnprocessedDataSize(),SNAP_RIGHT);
+					//dwPhoneticStop = ((dwPhoneticStop+dwMargin) < pDoc->GetUnprocessedDataSize()) ? (dwPhoneticStop+dwMargin) : pDoc->GetUnprocessedDataSize(); 
+                    dwPhoneticStop = pDoc->SnapCursor( STOP_CURSOR, dwPhoneticStop, dwPhoneticStop, pDoc->GetUnprocessedDataSize(), SNAP_RIGHT);
                     if (dwPhoneticStop > pPhonetic->GetOffset(nPhonetic))
                     {
                         pPhonetic->Adjust(pDoc, nPhonetic, pPhonetic->GetOffset(nPhonetic), dwPhoneticStop - pPhonetic->GetOffset(nPhonetic));
@@ -404,6 +410,7 @@ long CGlossSegment::Process(void * pCaller, CSaDoc * pSaDoc, int nProgress, int 
                 dwBreakCount++;
             }
         }
+
         // set progress bar
         SetProgress(nProgress + (int)(100 * dwLoopPos / dwLoopEnd / (DWORD)nLevel));
         if (IsCanceled())
@@ -425,7 +432,7 @@ long CGlossSegment::Process(void * pCaller, CSaDoc * pSaDoc, int nProgress, int 
     }
 
     // Adjust durations of inserted phonetic segments
-    if (!(pPhonetic->IsEmpty()))
+    if (!pPhonetic->IsEmpty())
     {
         int nPhonetic = 0;
         CSaString szSegment = SEGMENT_DEFAULT_CHAR;
@@ -472,5 +479,25 @@ void CGlossSegment::CorrectGlossDurations(CSaDoc * pDoc)
             nGloss = GetNext(nGloss);
         }
     }
+}
+
+CString CGlossSegment::GetPOSAt( int index)
+{
+	return pos.GetAt( index);
+}
+
+void CGlossSegment::POSSetAt( int index, LPCTSTR val)
+{
+	pos.SetAt( index, val);
+}
+
+void CGlossSegment::POSInsertAt( int index, LPCTSTR val)
+{
+	pos.InsertAt( index, val);
+}
+
+void CGlossSegment::POSSetAtGrow( int index, LPCTSTR val)
+{
+	pos.SetAtGrow( index, val);
 }
 

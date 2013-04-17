@@ -166,6 +166,7 @@
 #include "DlgExportSFM.h"
 #include "DlgExportTable.h"
 #include "DlgRecorder.h"
+#include "DlgPlayer.h"
 #include "dsp\dspTypes.h"
 #include "Process\Process.h"
 
@@ -281,9 +282,8 @@ void CSaView::CreateOneGraphStepOne(UINT nID, CGraphWnd ** pGraph, CREATE_HOW ho
 /***************************************************************************/
 void CSaView::SendPlayMessage(WORD Int1, WORD Int2)
 {
-    //    pViewMainFrame->SendMessage(WM_USER_PLAYER, IDC_PLAY, MAKELONG(Int1, Int2)); // send message to start player
     DWORD lParam = MAKELONG(Int1, Int2);
-    pViewMainFrame->SendMessage(WM_USER_PLAYER, IDC_PLAY, lParam); // send message to start player
+    pViewMainFrame->SendMessage(WM_USER_PLAYER, CDlgPlayer::PLAYING, lParam); // send message to start player
 }
 
 /***************************************************************************/
@@ -495,7 +495,7 @@ void CSaView::OnPlaybackSlow()
     pKeys->nSpeed[Player_Slow] = 50;        // default replay speed in %
     pKeys->nVolume[Player_Slow] = 50;       // default play volume in %
 
-    pViewMainFrame->PostMessage(WM_USER_PLAYER, IDC_PLAY, MAKELONG(Player_Slow, -1));
+    pViewMainFrame->PostMessage(WM_USER_PLAYER, CDlgPlayer::PLAYING, MAKELONG(Player_Slow, -1));
 }
 
 /***************************************************************************/
@@ -571,6 +571,29 @@ void CSaView::OnPlaybackStopToR()
 }
 
 /***************************************************************************/
+// CSaView::OnPlayerPause Pause the player
+// The mainframe is informed and it will pause the player. The player
+// message takes as wParam the player mode, in the lower word of lParam the
+// submode and in the higher word if it will be launched in full size (TRUE)
+// or small (FALSE). If the submode is -1, it stays as it was before.
+// ## Under construction!
+/***************************************************************************/
+void CSaView::OnPlayerPause()
+{
+	// send message to pause player
+	pViewMainFrame->SendMessage( WM_USER_PLAYER, CDlgPlayer::PAUSED, MAKELONG(-1, FALSE)); 
+}
+
+/***************************************************************************/
+// CSaView::OnUpdatePlayerStop Menu update
+/***************************************************************************/
+void CSaView::OnUpdatePlayerPause(CCmdUI * pCmdUI)
+{
+	// enable if player is playing
+    pCmdUI->Enable(pViewMainFrame->IsPlayerPlaying()); 
+}
+
+/***************************************************************************/
 // CSaView::OnPlayerStop Stop the player
 // The mainframe is informed and it will stop the player. The player
 // message takes as wParam the player mode, in the lower word of lParam the
@@ -580,7 +603,8 @@ void CSaView::OnPlaybackStopToR()
 /***************************************************************************/
 void CSaView::OnPlayerStop()
 {
-    pViewMainFrame->SendMessage(WM_USER_PLAYER, IDC_STOP, MAKELONG(-1, FALSE)); // send message to stop player
+	// send message to stop player
+    pViewMainFrame->SendMessage(WM_USER_PLAYER, CDlgPlayer::STOPPED, MAKELONG(-1, FALSE)); 
 }
 
 /***************************************************************************/
@@ -588,7 +612,8 @@ void CSaView::OnPlayerStop()
 /***************************************************************************/
 void CSaView::OnUpdatePlayerStop(CCmdUI * pCmdUI)
 {
-    pCmdUI->Enable(pViewMainFrame->IsPlayerPlaying()); // enable if player is playing
+	// enable if player is playing
+    pCmdUI->Enable((pViewMainFrame->IsPlayerPlaying())||(pViewMainFrame->IsPlayerPaused())); 
 }
 
 /***************************************************************************/
@@ -601,7 +626,7 @@ void CSaView::OnUpdatePlayerStop(CCmdUI * pCmdUI)
 /***************************************************************************/
 void CSaView::OnPlayer()
 {
-    pViewMainFrame->SendMessage(WM_USER_PLAYER, IDC_STOP, MAKELONG(-1, TRUE)); // send message to start player
+    pViewMainFrame->SendMessage(WM_USER_PLAYER, CDlgPlayer::STOPPED, MAKELONG(-1, TRUE)); // send message to start player
 }
 
 /***************************************************************************/
@@ -729,7 +754,7 @@ void CSaView::OnImportSFM()
 {
     // Get Export File Type and Name
     CSaString szTitle;
-    szTitle = ((CSaDoc *)GetDocument())->GetFilename().c_str(); // load file name
+    szTitle = ((CSaDoc *)GetDocument())->GetFilenameFromTitle().c_str(); // load file name
     int nFind = szTitle.ReverseFind('.');
     if (nFind >= ((szTitle.GetLength() > 3) ? (szTitle.GetLength()-4) : 0))
     {
@@ -754,13 +779,14 @@ void CSaView::OnImportSFT()
 {
     // Get Export File Type and Name
     CSaString szTitle;
-    szTitle = ((CSaDoc *)GetDocument())->GetFilename().c_str();     // load file name
+    szTitle = ((CSaDoc *)GetDocument())->GetFilenameFromTitle().c_str();     // load file name
     int nFind = szTitle.ReverseFind('.');
     if (nFind >= ((szTitle.GetLength() > 3) ? (szTitle.GetLength()-4) : 0))
     {
         szTitle = szTitle.Left(nFind);    // remove extension
     }
-    CSaString szFilter = "Standard Format (*.sft) |*.sft||";
+    
+	CSaString szFilter = "Standard Format (*.sft) |*.sft||";
     CFileDialog dlgFile(TRUE,_T("sft"),szTitle,OFN_HIDEREADONLY,szFilter,NULL);
     if (dlgFile.DoModal()!=IDOK)
     {
@@ -876,7 +902,7 @@ void CSaView::OnFileInformation()
     SourceParm * pSourceParm = pDoc->GetSourceParm();
     CSaString szCaption, szTitle;
     szCaption.LoadString(IDS_DLGTITLE_FILEINFO);                // load caption string
-    szTitle = pDoc->GetFilename().c_str();                      // load file name
+    szTitle = pDoc->GetFilenameFromTitle().c_str();                      // load file name
     szCaption += " - " + szTitle;                               // build new caption string
     CDlgFileInformation dlg(szCaption, NULL, 0);                // file information dialog
     // set file description string
@@ -2917,8 +2943,9 @@ void CSaView::OnDrawingBoundaries()
 /***************************************************************************/
 void CSaView::OnUpdateDrawingBoundaries(CCmdUI * pCmdUI)
 {
-    pCmdUI->Enable(m_pFocusedGraph && (GetDocument()->GetDataSize() != 0)  // enable if data is available
-                   && (m_pFocusedGraph->HaveCursors())); // enable if cursors visible
+    pCmdUI->Enable((m_pFocusedGraph!=NULL) && 
+				   (GetDocument()->GetDataSize() != 0) &&		// enable if data is available
+                   (m_pFocusedGraph->HaveCursors()));			// enable if cursors visible
     if (m_pFocusedGraph)
     {
         pCmdUI->SetCheck(m_pFocusedGraph->HaveBoundaries());    // check if graph has boundaries
@@ -3328,11 +3355,35 @@ void CSaView::OnUpdatePlayback(CCmdUI * pCmdUI)
 }
 
 /***************************************************************************/
+// CSaView::OnUpdatePlayback Menu update
+/***************************************************************************/
+void CSaView::OnUpdatePlaybackPortion(CCmdUI * pCmdUI)
+{
+	BOOL enable = TRUE;
+	if (GetDocument()->GetDataSize()==0)
+	{
+		enable=FALSE;
+	}
+
+	CMainFrame * pMain = (CMainFrame *)AfxGetMainWnd();
+	CDlgPlayer * pPlayer = pMain->GetPlayer(false);
+	if (pPlayer!=NULL)
+	{
+		if (pPlayer->IsPaused())
+		{
+			enable = FALSE;
+		}
+	}
+
+    pCmdUI->Enable(enable);		// enable if data is available
+}
+
+/***************************************************************************/
 // CSaView::OnSetupFnkeys Calls the player and the setup Fn-keys dialog
 /***************************************************************************/
 void CSaView::OnSetupFnkeys()
 {
-    pViewMainFrame->SendMessage(WM_USER_PLAYER, IDC_STOP, MAKELONG(-1, FALSE));
+    pViewMainFrame->SendMessage(WM_USER_PLAYER, CDlgPlayer::STOPPED, MAKELONG(-1, FALSE));
     pViewMainFrame->SetupFunctionKeys();
 }
 
@@ -3637,12 +3688,12 @@ void CSaView::ShowInitialStateAndZ()
 
     // Find the MDI child window which corresponds to the one --out of those
     // opened so far-- just above this when SA was closed.
-    int zThis = z();
+    int zThis = GetZ();
     CSaView * pviewAboveThis = NULL;
 
     CSaView * pview = pSaApp->GetViewBelow(this);
     for (; pview; pview = pSaApp->GetViewBelow(pview))
-        if (zThis < pview->z())
+        if (zThis < pview->GetZ())
         {
             pviewAboveThis = pview;
         }

@@ -107,7 +107,7 @@ void CPickOverlayDlg::SetupItemsList()
 
             CSaView * pView = (CSaView *)m_apGraphs[i]->GetParent();
             CSaDoc  * pDoc  = pView->GetDocument();
-            CString szDocTitle(pDoc->GetFilename().c_str());    // load file name
+            CString szDocTitle(pDoc->GetFilenameFromTitle().c_str());    // load file name
             szText += " - " + szDocTitle;
 
             int index = m_SelectItems.AddString(szText);
@@ -129,7 +129,7 @@ void CPickOverlayDlg::SetupItemsList()
                 CDocument  * pDoc  = pApp->IsFileOpened(m_szDoc[i]);
                 CSaDoc * pSaDoc = (CSaDoc *)pDoc;
 
-                CString szDocTitle(pSaDoc->GetFilename().c_str()); // load file name
+                CString szDocTitle(pSaDoc->GetFilenameFromTitle().c_str()); // load file name
                 szText += " - " + szDocTitle;
 
                 int index = m_SelectItems.AddString(szText);

@@ -102,6 +102,7 @@
 #include "Process\sa_p_gra.h"
 #include "Process\sa_p_fra.h"
 #include "settings\obstream.h"
+#include "DlgPlayer.h"
 
 #pragma comment(linker, "/SECTION:.shr,RWS")
 #pragma data_seg(".shr")
@@ -1041,7 +1042,7 @@ void CSaApp::OnProcessBatchCommands()
 
         TRACE(_T("PLAY(%u,%u,%lu,%lu)\n"),pKeys->nSpeed[Player_Batch_Settings],pKeys->nVolume[Player_Batch_Settings],dwStart,dwStop);
 
-        m_pMainWnd->PostMessage(WM_USER_PLAYER, IDC_PLAY, MAKELONG(Player_Batch_Settings, -1));
+        m_pMainWnd->PostMessage(WM_USER_PLAYER, CDlgPlayer::PLAYING, MAKELONG(Player_Batch_Settings, -1));
         m_nCommand++;
         // Play Stop will resume batch processing
         // m_pMainWnd->PostMessage(WM_COMMAND, ID_PROCESS_BATCH_COMMANDS, 0L);

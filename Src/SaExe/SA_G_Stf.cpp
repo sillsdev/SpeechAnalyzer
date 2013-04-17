@@ -55,23 +55,18 @@ IMPLEMENT_DYNCREATE(CPlotStaff, CPlotWnd)
 // CPlotStaff message map
 
 BEGIN_MESSAGE_MAP(CPlotStaff, CPlotWnd)
-    //{{AFX_MSG_MAP(CPlotStaff)
     ON_WM_SETFOCUS()
     ON_WM_PARENTNOTIFY()
     ON_WM_CREATE()
-    //}}AFX_MSG_MAP
 END_MESSAGE_MAP()
-
-/////////////////////////////////////////////////////////////////////////////
-// CPlotStaff construction/destruction/creation
 
 /***************************************************************************/
 // CPlotStaff::CPlotStaff Constructor
 /***************************************************************************/
 CPlotStaff::CPlotStaff()
 {
-    m_bCursors = FALSE;
-    m_bPrivateCursor = FALSE;
+    m_bCursors = false;
+    m_bPrivateCursor = false;
     StaffControl = NULL;
     LastSize.left = 0;
     LastSize.top = 0;
@@ -79,7 +74,6 @@ CPlotStaff::CPlotStaff()
     LastSize.bottom = 0;
     m_pView = NULL;
 }
-
 
 CPlotWnd * CPlotStaff::NewCopy()
 {
@@ -300,7 +294,7 @@ int CPlotStaff::StopPlay(void)
         pDoc->SetTransModifiedFlag(TRUE); // transcription has been modified
     }
 
-    m_pView->SendMessage(WM_COMMAND, ID_PLAYER_STOP, 0L); // send message to stop player
+	m_pView->SendMessage(WM_COMMAND, ID_PLAYER_STOP, 0L); // send message to stop player
 
     if (StaffControl)
     {
@@ -881,7 +875,7 @@ void CPlotStaff::OnParentNotify(UINT msg,LPARAM lParam)
             specific.begin = sel.begin;
             specific.end = sel.end;
 
-            pMain->OnPlayer(IDC_PLAY, ID_PLAYBACK_SPECIFIC, &specific);
+            pMain->OnPlayer( IDC_PLAY, ID_PLAYBACK_SPECIFIC, &specific);
         }
         break;
     }

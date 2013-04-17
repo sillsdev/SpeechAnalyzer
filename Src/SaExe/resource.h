@@ -1172,6 +1172,7 @@
 #define IDC_FIRST_GLOSS_RADIO           2055
 #define IDC_RADIO_FILE                  2056
 #define IDC_EDIT1                       2057
+#define IDC_FILENAME_PREFIX             2057
 #define IDC_BEGIN_LABEL                 2058
 #define IDC_END_LABEL                   2059
 #define IDC_BEGIN_COMBO                 2060
@@ -1190,6 +1191,8 @@
 #define IDC_STATIC_WAV_COUNT            2077
 #define IDC_STATIC_DATA_COUNT           2078
 #define IDC_STATIC_SFM_COUNT            2079
+#define IDC_EDIT2                       2080
+#define IDC_FILENAME_SUFFIX             2080
 #define IDS_PLAYER_SMALL                3000
 #define IDS_PLAYER_LARGE                3001
 #define IDS_STATTXT_PROCESSING          4000
@@ -1357,7 +1360,8 @@
 #define ID_POPUPGRAPH_MAGNIFY2          32961
 #define ID_POPUPGRAPH_MAGNIFY4          32962
 #define ID_POPUPGRAPH_MAGNIFYCUSTOM     32963
-#define ID_PLAYER_STOP                  32964
+#define ID_PLAYER_PAUSE                 32964
+#define ID_PLAYER_STOP                  32965
 #define ID_POPUPGRAPH_STYLE_LINE        32967
 #define ID_POPUPGRAPH_STYLE_SOLID       32968
 #define ID_RESTART_PROCESS              32969
@@ -1661,7 +1665,7 @@
 #define IDS_ERROR_NO_REFERENCE          61266
 #define IDS_ERROR_GONE_MISSING          61267
 #define IDS_ERROR_AUTOSAVE_FAIL         61267
-#define IDS_ERROR_FORMAT_CHANNELS		61268
+#define IDS_ERROR_FORMAT_CHANNELS       61268
 #define IDS_AUTO_REF_MAIN               61300
 #define IDS_AUTO_REF_MAIN_1             61300
 #define IDS_AUTO_REF_MAIN_2             61301
@@ -1675,13 +1679,13 @@
 #define IDS_CHOOSE_FOLDER               61310
 
 // Next default values for new objects
-//
+// 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_3D_CONTROLS                     1
 #define _APS_NEXT_RESOURCE_VALUE        365
 #define _APS_NEXT_COMMAND_VALUE         33234
-#define _APS_NEXT_CONTROL_VALUE         2080
+#define _APS_NEXT_CONTROL_VALUE         2081
 #define _APS_NEXT_SYMED_VALUE           105
 #endif
 #endif

@@ -316,7 +316,7 @@ void CDlgExportSFM::ExportStandard()
                     if (nLoop == GLOSS)
                     {
                         szAnnotation[nLoop] += pDoc->GetSegment(nLoop)->GetSegmentString(nFind).Mid(1);
-                        szPOS += ((CGlossSegment *)pDoc->GetSegment(GLOSS))->GetPOSs()->GetAt(nFind);
+                        szPOS += ((CGlossSegment *)pDoc->GetSegment(GLOSS))->GetPOSAt(nFind);
                         if (szPOS.GetLength() > nMaxLength)
                         {
                             nMaxLength = szPOS.GetLength();

@@ -27,18 +27,18 @@ BEGIN_MESSAGE_MAP(CPrivateCursorWnd, CCursorWnd)
     ON_WM_RBUTTONDOWN()
     ON_WM_LBUTTONDOWN()
     ON_WM_LBUTTONUP()
+    ON_WM_TIMER()
 END_MESSAGE_MAP()
-
-/////////////////////////////////////////////////////////////////////////////
-// CPrivateCursorWnd construction/destruction/creation
 
 /***************************************************************************/
 // CPrivateCursorWnd::CPrivateCursorWnd Constructor
 /***************************************************************************/
 CPrivateCursorWnd::CPrivateCursorWnd()
 {
-    m_bCursorDrag = FALSE;
+    m_bCursorDrag = false;
+	created = false;
     m_rWnd.SetRect(0, 0, 0, 0);
+	hidden = false;
 }
 
 /***************************************************************************/
@@ -55,9 +55,11 @@ CPrivateCursorWnd::~CPrivateCursorWnd()
 BOOL CPrivateCursorWnd::Create(LPCTSTR lpszClassName, LPCTSTR lpszWindowName, DWORD dwStyle,
                                const RECT & rect, CWnd * pParentWnd, UINT /*nID*/, CCreateContext * /*pContext*/)
 {
-    return CWnd::CreateEx(WS_EX_TRANSPARENT, lpszClassName, lpszWindowName, dwStyle, rect.left,
-                          rect.top, rect.right - rect.left, rect.bottom - rect.top,
-                          pParentWnd->GetSafeHwnd(), 0);
+    BOOL bResult = CWnd::CreateEx( WS_EX_TRANSPARENT, lpszClassName, lpszWindowName, dwStyle, rect.left,
+								   rect.top, rect.right - rect.left, rect.bottom - rect.top,
+								   pParentWnd->GetSafeHwnd(), 0);
+	created = (bResult!=FALSE);
+	return bResult;
 }
 
 /***************************************************************************/
@@ -356,7 +358,7 @@ void CPrivateCursorWnd::OnLButtonDown(UINT nFlags, CPoint mousePoint)
     // inform graph
     pGraph->SendMessage(WM_LBUTTONDOWN, nFlags, MAKELONG(mousePoint.x, mousePoint.y));
     // set drag mode
-    m_bCursorDrag = TRUE;
+    m_bCursorDrag = true;
     SetCapture(); // receive all mouse input
 
     if (pGraph->IsPlotID(IDD_TWC))
@@ -396,7 +398,7 @@ void CPrivateCursorWnd::OnLButtonDown(UINT nFlags, CPoint mousePoint)
 /***************************************************************************/
 void CPrivateCursorWnd::OnLButtonUp(UINT nFlags, CPoint mousePoint)
 {
-    m_bCursorDrag = FALSE;
+    m_bCursorDrag = false;
     ReleaseCapture(); // mouse input also to other windows
     ClipCursor(NULL); // free mouse to move everywhere
     // get pointer to parent plot, parent graph and to view
@@ -515,7 +517,46 @@ void CPrivateCursorWnd::ResetPosition()
     m_rWnd.SetRect(0, 0, 0, 0);
 }
 
-BOOL CPrivateCursorWnd::IsDragging()
+bool CPrivateCursorWnd::IsDragging()
 {
     return m_bCursorDrag;
 }
+
+bool CPrivateCursorWnd::IsCreated()
+{
+	return created;
+}
+
+void CPrivateCursorWnd::Flash(bool on)
+{
+	if (!created) return;
+	if (on)
+	{
+		SetTimer( ID_TIMER_FLASH, 500, NULL);
+		ShowWindow(SW_SHOW);
+		hidden = false;
+	}
+	else
+	{
+		KillTimer( ID_TIMER_FLASH);
+		ShowWindow(SW_SHOW);
+		hidden = false;
+	}
+}
+
+void CPrivateCursorWnd::OnTimer( UINT /*nIDEvent*/)
+{
+	if (!created) return;
+	if (hidden)
+	{
+		ShowWindow(SW_SHOW);
+		hidden = false;
+	}
+	else
+	{
+		ShowWindow(SW_HIDE);
+		hidden = true;
+	}
+}
+
+

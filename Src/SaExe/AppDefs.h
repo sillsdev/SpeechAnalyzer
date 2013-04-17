@@ -224,6 +224,10 @@ typedef UINT MMRESULT;                  // MMIO function call results
 
 // timer IDs
 #define ID_TIMER_AUTOSAVE               0x1000
+#define ID_TIMER_PLAYBACK				0x1001
+#define ID_TIMER_DELAY					0x1002
+#define ID_TIMER_MIDI					0x1003
+#define ID_TIMER_FLASH					0x1004
 
 struct SDPParm
 {

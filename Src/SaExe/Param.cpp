@@ -43,7 +43,7 @@ void CParseParm::WriteProperties(CObjectOStream & obs)
 BOOL CParseParm::ReadProperties(CObjectIStream & obs)
 {
     if ((!obs.bAtBackslash()) ||
-            (!obs.bReadBeginMarker(psz_parse)))
+        (!obs.bReadBeginMarker(psz_parse)))
     {
         return FALSE;
     }

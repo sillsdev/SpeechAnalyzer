@@ -181,7 +181,7 @@ void CPlotTonalWeightChart::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView *
         // set legend scale to the same as melogram so gridlines line up with TWC shifted legend.
         pGraph->SetLegendScale(SCALE | NUMBERS, dMin, dMax, _T("     Semitones")); // set legend scale (" " characters in "  Semitones" are to distance it from Up button
 
-        PlotPrePaint(pDC, rWnd, rClip, NULL, TRUE, TRUE);
+        PlotPrePaint(pDC, rWnd, rClip, NULL, true, true);
 
         PaintHelper(pDC, rWnd, rClip, pTonalWeightChart, pDoc, SKIP_UNSET); // do standard data paint
 

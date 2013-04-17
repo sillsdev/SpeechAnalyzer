@@ -166,7 +166,6 @@ public:
     CGlossSegment * GetGlossSegment();
     CFontTable * GetFont(int nIndex);                               // return font size
     CSaString GetMeasurementsString(DWORD dwOffset, DWORD dwLength, BOOL * pbRes);
-
     void DestroyAdvancedSegment();
     void DestroyAdvancedParse();
     void CreateFonts(); // set and create fonts
@@ -235,12 +234,10 @@ public:
     virtual void NotifyAutoPitchDone(void * pCaller);
     virtual void NotifyFragmentDone(void * pCaller);
     virtual void Serialize(CArchive & ar);
-
 #ifdef _DEBUG
     virtual void AssertValid() const;
     virtual void Dump(CDumpContext & dc) const;
 #endif
-
     void DoExportFieldWorks(CExportFWSettings & settings);
     const CSaString BuildString(int nSegment);
     const CSaString BuildImportString(BOOL gloss, BOOL phonetic, BOOL phonemic, BOOL orthographic);
@@ -249,6 +246,7 @@ public:
     void RevertTranscriptionChanges();
     bool IsTempFile();
     bool CanEdit();
+	wstring GetFilenameFromTitle();
 
     // wave helper functions
     void GetFmtParm(CFmtParm & format, bool processed);     // get a copy of the format parameters structure
@@ -277,7 +275,6 @@ public:
 	CSaString GetTempFilename();
 	bool IsUsingTempFile();
 	void StoreAutoRecoveryInformation();
-	wstring GetFilename();
 
 protected:
     virtual void DeleteContents();

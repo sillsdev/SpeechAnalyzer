@@ -674,7 +674,7 @@ void CDlgExportTable::OnOK()
                 {
                     if (nIndex != -1)
                     {
-                        szString = ((CGlossSegment *) pDoc->GetSegment(GLOSS))->GetPOSs()->GetAt(nIndex) + "\t";
+                        szString = ((CGlossSegment *) pDoc->GetSegment(GLOSS))->GetPOSAt(nIndex) + "\t";
                     }
                     else
                     {

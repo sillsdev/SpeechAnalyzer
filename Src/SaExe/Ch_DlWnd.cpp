@@ -32,10 +32,8 @@ IMPLEMENT_DYNCREATE(CChartText, CWnd)
 // CChartText message map
 
 BEGIN_MESSAGE_MAP(CChartText, CWnd)
-    //{{AFX_MSG_MAP(CChartText)
     ON_WM_PAINT()
     ON_WM_ERASEBKGND()
-    //}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
@@ -212,18 +210,10 @@ BOOL CChartText::OnEraseBkgnd(CDC * pDC)
 
 IMPLEMENT_DYNCREATE(CChartLine, CWnd)
 
-/////////////////////////////////////////////////////////////////////////////
-// CChartLine message map
-
 BEGIN_MESSAGE_MAP(CChartLine, CWnd)
-    //{{AFX_MSG_MAP(CChartLine)
     ON_WM_PAINT()
     ON_WM_ERASEBKGND()
-    //}}AFX_MSG_MAP
 END_MESSAGE_MAP()
-
-/////////////////////////////////////////////////////////////////////////////
-// CChartLine construction/destruction/creation
 
 /***************************************************************************/
 // CChartLine::CChartLine Constructor
@@ -326,11 +316,7 @@ BOOL CChartLine::OnEraseBkgnd(CDC * /*pDC*/)
 IMPLEMENT_DYNCREATE(CChartChar, CWnd)
 static CChartChar * m_pLastBubble = NULL; // create the bubble window (zoom)
 
-/////////////////////////////////////////////////////////////////////////////
-// CChartChar message map
-
 BEGIN_MESSAGE_MAP(CChartChar, CWnd)
-    //{{AFX_MSG_MAP(CChartChar)
     ON_WM_PAINT()
     ON_WM_ERASEBKGND()
     ON_WM_LBUTTONDOWN()
@@ -338,11 +324,7 @@ BEGIN_MESSAGE_MAP(CChartChar, CWnd)
     ON_WM_LBUTTONUP()
     ON_WM_MOUSEMOVE()
     ON_WM_TIMER()
-    //}}AFX_MSG_MAP
 END_MESSAGE_MAP()
-
-/////////////////////////////////////////////////////////////////////////////
-// CChartChar construction/destruction/creation
 
 /***************************************************************************/
 // CChartChar::CChartChar Constructor
@@ -385,7 +367,7 @@ CChartChar::~CChartChar()
     }
     if (IsWindow(m_hWnd))
     {
-        KillTimer(1);
+        KillTimer(ID_TIMER_DELAY);
     }
 }
 
@@ -499,7 +481,7 @@ void CChartChar::Init()
         else
         {
             m_nPlayState = kStateBegin;
-            SetTimer(1, SOUND_DELAY, NULL); // start the timer
+            SetTimer(ID_TIMER_DELAY, SOUND_DELAY, NULL); // start the timer
         }
     }
 }
@@ -515,9 +497,6 @@ void CChartChar::ChangeMode(int nMode)
         Invalidate(); // redraw with the new mode
     }
 }
-
-/////////////////////////////////////////////////////////////////////////////
-// CChartChar message handlers
 
 /***************************************************************************/
 // CChartChar::OnPaint Painting
@@ -624,7 +603,7 @@ void CChartChar::OnLButtonUp(UINT nFlags, CPoint point)
     {
         m_bReadyToSelect = FALSE;
         ReleaseCapture();
-        KillTimer(1);
+        KillTimer(ID_TIMER_DELAY);
         if (m_pBubble)
         {
             m_pBubble->DestroyWindow();
@@ -666,13 +645,13 @@ void CChartChar::OnMouseMove(UINT nFlags, CPoint point)
             {
                 // no bubble (zoom) yet
                 SetCapture();                   // get all further mouse input
-                SetTimer(1, ZOOM_DELAY, NULL);  // start the zoom timer
+                SetTimer(ID_TIMER_DELAY, ZOOM_DELAY, NULL);  // start the zoom timer
             }
         }
         else
         {
             m_bReadyToSelect = FALSE;
-            KillTimer(1);
+            KillTimer(ID_TIMER_DELAY);
             m_nPlayState = kStateIdle;
             ReleaseCapture();
             if (m_pBubble)
@@ -697,7 +676,7 @@ static void playSoundFile(const CString & szSoundFile);
 /***************************************************************************/
 void CChartChar::OnTimer(UINT nIDEvent)
 {
-    KillTimer(1);
+    KillTimer(ID_TIMER_DELAY);
     if (m_nPlayState == kStateIdle)
     {
         m_pBubble = new CChartChar;
@@ -761,7 +740,7 @@ void CChartChar::OnTimer(UINT nIDEvent)
         {
             // We are playing a sound, but not the last sound
             int nDelayMS = int(pSaView->GetDocument()->GetTimeFromBytes(dwLength)*1000) + SOUND_DELAY;
-            SetTimer(1, nDelayMS, NULL); // start the zoom timer
+            SetTimer(ID_TIMER_DELAY, nDelayMS, NULL); // start the zoom timer
         }
 
         if (m_pCreator)

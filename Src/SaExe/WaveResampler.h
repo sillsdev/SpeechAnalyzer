@@ -37,10 +37,7 @@ public:
         EC_USERABORT    =-12
     };
 
-    ECONVERT Run(LPCTSTR filename,
-                 LPCTSTR outfilename,
-                 CProgressStatusBar * pStatusBar,
-                 BOOL bShowAdvancedAudio);
+    ECONVERT Run(LPCTSTR filename, LPCTSTR outfilename, CProgressStatusBar * pStatusBar);
 
 private:
     double Limit(double val);

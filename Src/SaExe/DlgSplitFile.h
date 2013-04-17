@@ -27,6 +27,8 @@ public:
     CString m_szFolderName;
     CString m_szPhraseFolderName;
     CString m_szGlossFolderName;
+	CString m_szFilenamePrefix;
+	CString m_szFilenameSuffix;
     BOOL m_bSkipGlossEmpty;
     BOOL m_bOverwriteData;
 

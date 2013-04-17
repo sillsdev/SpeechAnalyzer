@@ -932,7 +932,7 @@ BOOL CSaDoc::LoadDataFiles(LPCTSTR pszPathName, bool bTemp/*=FALSE*/)
     // if player is visible, disable the speed slider until required processing is completed
     CMainFrame * pMain = (CMainFrame *)AfxGetMainWnd();
     CDlgPlayer * pPlayer = pMain->GetPlayer();
-    if (pPlayer && pPlayer->IsWindowVisible())
+    if ((pPlayer!=NULL) && (pPlayer->IsWindowVisible()))
     {
         pPlayer->EnableSpeedSlider(FALSE);
     }
@@ -1279,7 +1279,7 @@ void CSaDoc::ReadGlossPosAndRefSegments(ISaAudioDocumentReaderPtr saAudioDocRdr)
 
         CSaString szGloss = *gloss;
         pGloss->Insert(i, szGloss, (isBookmark!=0), offset, length);
-        pGloss->GetPOSs()->SetAtGrow(i++, (CSaString)*pos);
+        pGloss->POSSetAtGrow( i++, (CSaString)*pos);
 
         CSaString szRef = *ref;
         if (szRef.GetLength())
@@ -1450,7 +1450,7 @@ void CSaDoc::InsertGlossPosRefTranscription(ISaAudioDocumentReaderPtr saAudioDoc
         length /= m_FmtParm.wChannels;
         CSaString szGloss = *gloss;
         pGloss->Insert(nIndex, szGloss, (isBookmark!=0), offset + dwPos, length);
-        pGloss->GetPOSs()->InsertAt(nIndex, (CSaString)*pos);
+        pGloss->POSInsertAt( nIndex, (CSaString)*pos);
         CSaString szRef = *ref;
         if (szRef.GetLength())
         {
@@ -1889,8 +1889,7 @@ bool CSaDoc::ConvertToWave(LPCTSTR pszPathName)
     // if this errors, we will just continue on trying with ST_Audio
     {
         CWaveResampler resampler;
-        BOOL bShowAdvancedAudio = pMainFrame->GetShowAdvancedAudio();
-        CWaveResampler::ECONVERT result = resampler.Run(pszPathName, szTempFilePath, pStatusBar,bShowAdvancedAudio);
+        CWaveResampler::ECONVERT result = resampler.Run(pszPathName, szTempFilePath, pStatusBar);
         if (result==CWaveResampler::EC_SUCCESS)
         {
             pMainFrame->ShowDataStatusBar(TRUE); // restore data status bar
@@ -2018,10 +2017,10 @@ BOOL CSaDoc::OnSaveDocument( LPCTSTR pszPathName, BOOL bSaveAudio)
         if (!::FileExists(target.c_str()))
         {
 
-            CSaString fileName=GetPathName();
+            CSaString fileName = GetPathName();
             if (fileName.IsEmpty())
             {
-                fileName = GetFilename().c_str(); // get the current view caption string
+                fileName = GetFilenameFromTitle().c_str(); // get the current view caption string
             }
 
             CSaString fileExt = _T(".wav");
@@ -2439,7 +2438,7 @@ void CSaDoc::WriteGlossPosAndRefSegments(ISaAudioDocumentWriterPtr saAudioDocWri
         length = pGloss->GetDuration(i);
 
         szGloss = pGloss->GetTexts().GetAt(i);
-        szPos = pGloss->GetPOSs()->GetAt(i);
+        szPos = pGloss->GetPOSAt(i);
 
         CReferenceSegment * pRef = (CReferenceSegment *)m_apSegments[REFERENCE];
         if ((nRef < pRef->GetTexts().GetSize()) &&
@@ -3159,14 +3158,14 @@ BOOL CSaDoc::SaveModified()
     else
     {
         // the pathname is empty, reset view title string
-        szCaption = GetTitle(); // get the current view caption string
+        szCaption = GetTitle();					// get the current view caption string
         int nFind = szCaption.Find(':');
         if (nFind != -1)
         {
             szGraphTitle = szCaption.Right(szCaption.GetLength() - nFind); // extract part right of and with :
-            szCaption = szCaption.Left(nFind); // extract part left of :
+            szCaption = szCaption.Left(nFind);	// extract part left of :
         }
-        SetTitle(szCaption); // write the new caption string
+        SetTitle(szCaption);					// write the new caption string
     }
     // call the base class saving
     BOOL bResult = CDocument::SaveModified();
@@ -5300,13 +5299,8 @@ CSaString CSaDoc::GetMeasurementsString(DWORD dwOffset, DWORD dwLength, BOOL * p
     }
 
     // get filename
-    szFilename = GetTitle(); // get the current view caption string
-    int nFind = szFilename.Find(':');
-    if (nFind != -1)
-    {
-        szFilename = szFilename.Left(nFind);    // extract part left of first space
-    }
-    nFind = szFilename.Find(_T(" (Read-Only)"));
+    szFilename = GetFilenameFromTitle().c_str(); // get the current view caption string
+    int nFind = szFilename.Find(_T(" (Read-Only)"));
     if (nFind != -1)
     {
         szFilename = szFilename.Left(nFind);    // extract part left of first space
@@ -5661,6 +5655,7 @@ BOOL CSaDoc::DoFileSave()
         {
             szGraphTitle = fileName.Mid(nFind);
             fileName = fileName.Left(nFind);    // extract part left of :
+			fileName = fileName.Trim();
         }
 
         CFileDialog dlg(FALSE, _T("wav"), fileName, OFN_PATHMUSTEXIST | OFN_OVERWRITEPROMPT, _T("WAV Files (*.wav)|*.wav||"));
@@ -5735,15 +5730,10 @@ void CSaDoc::OnUpdateFileSave(CCmdUI * pCmdUI)
 void CSaDoc::OnFileSaveAs()
 {
 
-    CSaString fileName=GetPathName();
+    CSaString fileName = GetPathName();
     if (fileName.IsEmpty())
     {
-        fileName = GetTitle(); // get the current view caption string
-        int nFind = fileName.Find(':');
-        if (nFind != -1)
-        {
-            fileName = fileName.Left(nFind); // extract part left of :
-        }
+        fileName = GetFilenameFromTitle().c_str(); // get the current view caption string
     }
 
     CSaString fileExt = _T(".wav");
@@ -5831,9 +5821,8 @@ void CSaDoc::OnFileSaveAs()
             OnFileSave();
             return;
         }
-        CSaString szGraphTitle;
         // get graph title string
-        szGraphTitle = GetTitle();      // get the current view caption string
+        CSaString szGraphTitle = GetTitle();      // get the current view caption string
         int nFind = szGraphTitle.Find(':');
         if (nFind != -1)
         {
@@ -5996,7 +5985,7 @@ void CSaDoc::OnFileSplitFile()
         glossPath.append(dlg.m_szFolderLocation).append(dlg.m_szFolderName).append(L"\\").append(dlg.m_szGlossFolderName);
         phrasePath.append(dlg.m_szFolderLocation).append(dlg.m_szFolderName).append(L"\\").append(dlg.m_szPhraseFolderName);
 
-        // check the for preexistence of the folders.
+        // check the for preexistence of a file with the same name as the folder.
         if (FileExists(glossPath.c_str()))
         {
             pApp->ErrorMessage(IDS_SPLIT_FILE_EXISTS,glossPath.c_str());
@@ -6084,28 +6073,20 @@ void CSaDoc::OnFileSplitFile()
 
     if ((hasGloss) || (!dlg.m_bSkipGlossEmpty))
     {
-
-        // the validation function will display a error message on failure
-        if (!ValidateWordFilenames(wordConvention, dlg.m_bSkipGlossEmpty))
-        {
-            EndWaitCursor();
-            return;
-        }
-
-        if (!ExportWordSegments(wordConvention, glossPath.c_str(), dlg.m_bSkipGlossEmpty, dataCount, wavCount))
+        if (!ExportWordSegments( wordConvention, glossPath.c_str(), dlg.m_bSkipGlossEmpty, dataCount, wavCount, dlg.m_szFilenamePrefix, dlg.m_szFilenameSuffix))
         {
             EndWaitCursor();
             return;
         }
     }
 
-    if (!ExportPhraseSegments(MUSIC_PL1, phraseConvention, phrasePath, dataCount, wavCount))
+    if (!ExportPhraseSegments( MUSIC_PL1, phraseConvention, phrasePath, dataCount, wavCount, dlg.m_szFilenamePrefix, dlg.m_szFilenameSuffix))
     {
         EndWaitCursor();
         return;
     }
 
-    if (!ExportPhraseSegments(MUSIC_PL2, phraseConvention, phrasePath, dataCount, wavCount))
+    if (!ExportPhraseSegments( MUSIC_PL2, phraseConvention, phrasePath, dataCount, wavCount, dlg.m_szFilenamePrefix, dlg.m_szFilenameSuffix))
     {
         EndWaitCursor();
         return;
@@ -6317,7 +6298,6 @@ BOOL CSaDoc::AdvancedParseAuto()
 /***************************************************************************/
 BOOL CSaDoc::AdvancedParseWord()
 {
-
     // get pointer to view
     POSITION pos = GetFirstViewPosition();
     CSaView * pView = (CSaView *)GetNextView(pos);
@@ -6335,6 +6315,7 @@ BOOL CSaDoc::AdvancedParseWord()
     CSegment * pSegment = m_apSegments[GLOSS];
     pSegment->RestartProcess(); // for the case of a cancelled process
     pSegment->SetDataInvalid(); // SDM 1.5Test10.7
+
     short int nResult = LOWORD(pSegment->Process(NULL, this));   // process data
     if (nResult == PROCESS_ERROR)
     {
@@ -6359,7 +6340,6 @@ BOOL CSaDoc::AdvancedParseWord()
 /***************************************************************************/
 BOOL CSaDoc::AdvancedParsePhrase()
 {
-
     // get pointer to view
     POSITION pos = GetFirstViewPosition();
     CSaView * pView = (CSaView *)GetNextView(pos);
@@ -8338,8 +8318,7 @@ CFontTable  * CSaDoc::GetFont(int nIndex)
 }
 
 // return sampled data size from wave file
-// this is the length of the data in bytes
-// for all channels.
+// this is the length of the data in bytes for all channels.
 DWORD CSaDoc::GetUnprocessedDataSize() const
 {
     return m_dwDataSize;
@@ -8574,10 +8553,7 @@ void CSaDoc::DoExportFieldWorks(CExportFWSettings & settings)
     TCHAR szBuffer[MAX_PATH];
     wcscpy_s(szBuffer,MAX_PATH,settings.szPath);
     int result = GetSaveAsFilename(settings.szDocTitle, _T("Standard Format (*.sfm) |*.sfm||"), _T("sfm"), szBuffer, filename);
-    if (result!=IDOK)
-    {
-        return;
-    }
+    if (result!=IDOK) return;
 
     if (filename.length()==0)
     {
@@ -8602,25 +8578,15 @@ void CSaDoc::DoExportFieldWorks(CExportFWSettings & settings)
         CreateFolder(szPath);
     }
     wcscat_s(szPath,MAX_PATH,L"AudioVisual\\");
-    if (!FolderExists(szPath))
+    
+	if (!FolderExists(szPath))
     {
         CreateFolder(szPath);
     }
 
-    if (!ValidateWordFilenames(WFC_REF_GLOSS,skipEmptyGloss))
-    {
-        return;
-    }
-
-    if (!ValidatePhraseFilenames(MUSIC_PL1,PFC_REF_GLOSS))
-    {
-        return;
-    }
-
-    if (!ValidatePhraseFilenames(MUSIC_PL2,PFC_REF_GLOSS))
-    {
-        return;
-    }
+    if (!ValidateWordFilenames(WFC_REF_GLOSS,skipEmptyGloss,L"",L"")) return;
+    if (!ValidatePhraseFilenames(MUSIC_PL1,PFC_REF_GLOSS,L"",L"")) return;
+    if (!ValidatePhraseFilenames(MUSIC_PL2,PFC_REF_GLOSS,L"",L"")) return;
 
     CFile file(filename.c_str(), CFile::modeCreate | CFile::modeWrite);
     CSaString szString;
@@ -8749,7 +8715,7 @@ bool CSaDoc::TryExportSegmentsBy(CExportFWSettings & settings, EAnnotation maste
             int index = FindNearestGlossIndex(g,dwStart,dwStop);
             if (index>=0)
             {
-                int result = ComposeWordSegmentFilename(g, index, wordConvention, szPath, filename);
+                int result = ComposeWordSegmentFilename(g, index, wordConvention, szPath, filename, L"", L"");
                 if (result==0)
                 {
                     int result = ExportWordSegment(g, index, filename.c_str(), skipEmptyGloss, dataCount, wavCount);
@@ -8773,7 +8739,7 @@ bool CSaDoc::TryExportSegmentsBy(CExportFWSettings & settings, EAnnotation maste
                 if (index>=0)
                 {
                     TRACE("--exporting PL1\n");
-                    int result = ComposePhraseSegmentFilename(MUSIC_PL1, pl1, index, phraseConvention, szPath, filename);
+                    int result = ComposePhraseSegmentFilename(MUSIC_PL1, pl1, index, phraseConvention, szPath, filename, L"", L"");
                     if (result==0)
                     {
                         int result = ExportPhraseSegment(pl1, index, filename, dataCount, wavCount);
@@ -8795,7 +8761,7 @@ bool CSaDoc::TryExportSegmentsBy(CExportFWSettings & settings, EAnnotation maste
                 if (index>=0)
                 {
                     TRACE("--exporting PL2\n");
-                    int result = ComposePhraseSegmentFilename(MUSIC_PL2, pl2, index, phraseConvention, szPath, filename);
+                    int result = ComposePhraseSegmentFilename(MUSIC_PL2, pl2, index, phraseConvention, szPath, filename, L"", L"");
                     if (result==0)
                     {
                         int result = ExportPhraseSegment(pl2, index, filename, dataCount, wavCount);
@@ -9072,19 +9038,6 @@ DWORD CSaDoc::GetNumSamples() const
     return ( GetUnprocessedDataSize() / m_FmtParm.GetSampleSize())/ m_FmtParm.wChannels;
 }
 
-wstring CSaDoc::GetFilename()
-{
-
-    wstring result;
-    result = GetTitle(); // load file name
-    int nFind = result.find(':');
-    if (nFind != wstring::npos)
-    {
-        result = result.substr(0,nFind-1);    // extract part left of :
-    }
-    return result;
-}
-
 CSaString CSaDoc::GetTempFilename()
 {
 	return m_szTempWave;
@@ -9100,3 +9053,13 @@ void CSaDoc::StoreAutoRecoveryInformation()
 	autoSave.StoreAutoRecoveryInformation(this);
 }
 
+wstring CSaDoc::GetFilenameFromTitle()
+{
+    wstring result = GetTitle();			// load file name
+    int nFind = result.find(':');
+    if (nFind != wstring::npos)
+    {
+        result = result.substr(0,nFind-1);  // extract part left of :
+    }
+    return result;
+}

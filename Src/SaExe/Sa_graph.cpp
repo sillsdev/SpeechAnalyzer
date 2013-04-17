@@ -325,7 +325,6 @@ void CGraphWnd::ShowLegend(BOOL bShow, BOOL bRedraw)
 BOOL CGraphWnd::DisableXScale()
 {
     BOOL result = FALSE;
-
     switch (m_nPlotID)
     {
     case IDD_STAFF:
@@ -432,12 +431,10 @@ void CGraphWnd::SetCaptionStyle(int nStyle, BOOL bRedraw)
 //***************************************************************************/
 void CGraphWnd::ScrollGraph(CSaView * pView, DWORD dwNewPos, DWORD dwOldPos)
 {
-    //TRACE("ScrollGraph %lp %d %d\n",pView,dwNewPos,dwOldPos);
-    if (m_bAreaGraph)
-    {
-        return;    // don't do anything
-    }
-    if (!HaveCursors())
+	// don't process area graphs
+    if (m_bAreaGraph) return;
+
+	if (!m_pPlot->HaveCursors())
     {
         // no cursors visible
         if (HavePrivateCursor())
@@ -587,10 +584,11 @@ void CGraphWnd::ResizeGraph(BOOL bEntire, BOOL bLegend, BOOL bGraph)
             m_pPlot->SetInitialPrivateCursor();    // initialize private cursor
         }
         // SDM 1.06.6U5
-        if (HaveCursors())
+        if (m_pPlot->HaveCursors())
         {
             m_pPlot->SetStartCursor((CSaView *)GetParent());
             m_pPlot->SetStopCursor((CSaView *)GetParent());
+			m_pPlot->SetPlaybackCursor((CSaView *)GetParent());
         }
 
         //***********************************************************
@@ -655,10 +653,11 @@ void CGraphWnd::RedrawGraph(BOOL bEntire, BOOL bLegend, BOOL bGraph)
             m_pLegend->InvalidateRect(NULL);
         }
 
-        if (HaveCursors())
+        if (m_pPlot->HaveCursors())
         {
             m_pPlot->SetStartCursor((CSaView *)GetParent());
             m_pPlot->SetStopCursor((CSaView *)GetParent());
+            m_pPlot->SetPlaybackCursor((CSaView *)GetParent());
         }
 
         //***********************************************************
@@ -1719,12 +1718,12 @@ BOOL CGraphWnd::HaveDrawingStyleLine()
     return m_pPlot->HaveDrawingStyleLine();   // return drawing style
 }
 
-BOOL CGraphWnd::HaveCursors()
+bool CGraphWnd::HaveCursors()
 {
     return m_pPlot->HaveCursors();   // cursors visible?
 }
 
-BOOL CGraphWnd::HavePrivateCursor()
+bool CGraphWnd::HavePrivateCursor()
 {
     return m_pPlot->HavePrivateCursor();   // private cursor visible?
 }
@@ -1764,42 +1763,50 @@ void CGraphWnd::RestartProcess()
 
 CAnnotationWnd * CGraphWnd::GetAnnotationWnd(int nIndex)
 {
-    return m_apAnnWnd[nIndex];   // return pointer to indexed annotation window
+	// return pointer to indexed annotation window
+    return m_apAnnWnd[nIndex];   
 }
 
 CLegendWnd * CGraphWnd::GetLegendWnd()
 {
-    return m_pLegend;   // return pointer to legend window
+	// return pointer to legend window
+    return m_pLegend;   
 }
 
 CXScaleWnd * CGraphWnd::GetXScaleWnd()
 {
-    return m_pXScale;   // return pointer to x-scale window
+	// return pointer to x-scale window
+    return m_pXScale;   
 }
 
-void CGraphWnd::ShowCursors(BOOL bPrivate, BOOL bShow)
+void CGraphWnd::ShowCursors(bool bPrivate, bool bShow)
 {
-    m_pPlot->ShowCursors(bPrivate, bShow);   // set cursors visible/hidden
+	// set cursors visible/hidden
+    m_pPlot->ShowCursors(bPrivate, bShow);   
 }
 
 BOOL CGraphWnd::HaveLegend()
 {
-    return m_bLegend;   // legend window visible?
+	// legend window visible?
+    return m_bLegend;   
 }
 
 BOOL CGraphWnd::HaveXScale()
 {
-    return m_bXScale;   // x-scale window visible?
+	// x-scale window visible?
+    return m_bXScale;   
 }
 
 BOOL CGraphWnd::HaveAnnotation(int nIndex)
 {
-    return m_abAnnWnd[nIndex];   // indexed annotation window visible?
+	// indexed annotation window visible?
+    return m_abAnnWnd[nIndex];   
 }
 
 void CGraphWnd::SetAreaGraph(BOOL bArea)
 {
-    m_bAreaGraph = bArea;   // set graph to area processed graph type
+	// set graph to area processed graph type
+    m_bAreaGraph = bArea;   
 }
 
 CPlotWnd * CGraphWnd::GetPlot() const

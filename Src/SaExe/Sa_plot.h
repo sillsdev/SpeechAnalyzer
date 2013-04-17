@@ -31,13 +31,13 @@
 #include "grid.h"
 #include "StartCursorWnd.h"
 #include "StopCursorWnd.h"
+#include "PrivateCursorWnd.h"
 
 class CGraphWnd;
 class CSaDoc;
 class CSaView;
 class CProcess;
 class CProcessAreaData;
-class CPrivateCursorWnd;
 
 #define IDM_CONVERT          106 // was 105
 #define IDM_CONVERT_DYNAMIC  107 // was 106
@@ -135,7 +135,7 @@ public:
     void SetMousePointerPosition(CPoint point);
     void SetMouseButtonState(UINT state);
     void SetRtOverlay();
-    bool bIsRtOverlay();
+    bool IsRtOverlay();
     virtual void RemoveRtPlots();
     virtual CPlotWnd * NewCopy(void);
     virtual void CopyTo(CPlotWnd * pTarg);
@@ -145,23 +145,23 @@ public:
     BOOL HaveBoundaries();
     BOOL HaveDrawingStyleLine();
     BOOL HaveDrawingStyleDots();
-    BOOL HaveCursors();
-    BOOL HavePrivateCursor();
+    bool HaveCursors();
+    bool HavePrivateCursor();
     BOOL HaveGrid();
     void SetLineDraw(BOOL bLine);                           // set line or solid drawing style
     void SetDotsDraw(BOOL);                                 // set dots drawing style
-    void ShowCursors(BOOL bPrivate, BOOL bShow);            // set cursors visible/hidden
+    void ShowCursors(bool bPrivate, bool bShow);            // set cursors visible/hidden
     BOOL ShowGrid(BOOL bShow, BOOL bRedraw = FALSE);        // show or hide gridlines
     void ScrollPlot(CSaView * pView, int nAmount, DWORD dwOldPos, DWORD dwFrame); // scroll plot and cursors
     void RedrawPlot(BOOL bEntire = TRUE);                   // repaint plot (entire or partial)
     virtual void SetStartCursor(CSaView * pView);           // position the start cursor window
     virtual void SetStopCursor(CSaView * pView);            // position the stop cursor window
-    void SetPlaybackCursor(CSaView * pView, DWORD dwPos);
+    virtual void SetPlaybackCursor(CSaView * pView);            // position the stop cursor window
+	void SetPlaybackFlash( bool val);
     void MoveStartCursor(CSaView * pView, DWORD dwNewPositon); // move the start cursor window
     void MoveStopCursor(CSaView * pView, DWORD dwNewPositon); // move the stop cursor window
     CStartCursorWnd * GetStartCursorWnd();
     CStopCursorWnd * GetStopCursorWnd();
-    CPrivateCursorWnd * GetPrivateCursorWnd();
     int  GetStartCursorPosition();                          // return the pos. in pixel coord. of the start cursor
     int  GetStopCursorPosition();                           // return the pos. in pixel coord. of the stop cursor
     void SetInitialPrivateCursor();                         // set the initial private cursor
@@ -175,20 +175,22 @@ public:
     DWORD GetHighLightLength();
     virtual void  SetHighLightArea(DWORD dwStart, DWORD dwStop, BOOL bRedraw = TRUE, BOOL bSecondSelection = FALSE); // set a highlighted area
     DWORD CalcWaveOffsetAtPixel(CPoint pixel);               // calculate waveform sample byte offset at horizontal pixel position
-
     virtual void GenderInfoChanged(int nGender);
     BOOL IsAnimationPlot();
     void SetAnimationFrame(DWORD dwFrameIndex);
     virtual void AnimateFrame(DWORD dwFrameIndex);          // animate a single frame (fragment)
     virtual void EndAnimation();                            // terminate animation and return to resting state
     virtual BOOL IsAreaGraph() const;
+	void ChangePrivateCursorPosition( CPoint point);
+	void GetPrivateCursorWindowRect( CRect * rect);
+	void OnPrivateCursorDraw( CDC * pDC, CRect rect);
 
 protected:
     virtual void PostNcDestroy();
     void ChangeCursorPosition(CSaView * pView, DWORD dwNewPosition, CCursorWnd *, BOOL bMove = FALSE); // change the current cursor position
     short int CheckResult(short int nResult, CProcess * pProcess); // check the process result
     void PlotPrePaint(CDC * pDC, CRect rWnd, CRect rClip, CLegendWnd * pLegend = NULL,
-                      BOOL bCursors = TRUE, BOOL bPrivateCursor = FALSE);  // do the common plot painting before data has been drawn
+                      bool bCursors = true, bool bPrivateCursor = false);  // do the common plot painting before data has been drawn
     virtual void PlotStandardPaint(CDC * pDC,CRect rWnd, CRect rClip,
                                    CProcess * pProcess, CSaDoc * pProcessDoc, int nFlags = 0); // standard plot painting
     void PlotPaintFinish(CDC * pDC, CRect rWnd, CRect rClip);        // do the common plot paint jobs after data has been drawn
@@ -226,15 +228,15 @@ protected:
     CPlotHelperWnd m_HelperWnd;             // helper window embedded object
     CStartCursorWnd * m_pStartCursor;       // start cursor window embedded object
     CStopCursorWnd * m_pStopCursor;         // stop cursor window embedded object
-    CPrivateCursorWnd * m_pPrivateCursor;   // private cursor window embedded object
-    CPrivateCursorWnd * m_pPlaybackCursor;  // private cursor window embedded object
+    CPrivateCursorWnd m_PrivateCursor;		// private cursor window embedded object
+    CPrivateCursorWnd m_PlaybackCursor;		// private cursor window embedded object
     CProcess * m_pLastProcess;              // pointer to MRU process
     CProcessAreaData * m_pAreaProcess;      // pointer to area process (needs deleting)
     BOOL m_bBoundaries;                     // TRUE = boundaries shown
     BOOL m_bLineDraw;                       // TRUE = drawing style is line
     BOOL m_bDotDraw;                        // TRUE = drawing style is dots
-    BOOL m_bCursors;                        // TRUE = cursors visible
-    BOOL m_bPrivateCursor;                  // TRUE = private cursor visible
+    bool m_bCursors;                        // TRUE = cursors visible
+    bool m_bPrivateCursor;                  // TRUE = private cursor visible
     BOOL m_bGrid;                           // TRUE = gridlines visible
     double m_fMagnify;                      // magnify factor
     double m_fVScale;                       // vertical scale
@@ -246,8 +248,6 @@ protected:
     CPoint m_MousePointerPosn;              // mouse pointer position
     UINT m_MouseButtonState;                // mouse button flags
     CBitmap * m_pBitmapSave;                // pointer to original bitmap
-    HWND DynamicCB;                         // 'Dynamic' check box TWC control
-    HWND WeightedButton;                    // 'Weighted' radio button melogram control
 
     DECLARE_MESSAGE_MAP()
 

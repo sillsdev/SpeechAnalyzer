@@ -110,15 +110,18 @@ public:
     DWORD AdjustDataFrame(int nWndWidth);               // return adjusted data frame width for particular window
     DWORD GetStartCursorPosition();
     DWORD GetStopCursorPosition();
+	DWORD GetPlaybackCursorPosition();
     void SetCursorPosition(ECursorSelect nCursorSelect, DWORD dwNewPos, ESnapDirection nSnapDirection = SNAP_BOTH,
                            ECursorAlignment nCursorAlignment = ALIGN_USER_SETTING);
     void SetStartCursorPosition(DWORD dwNewPos, ESnapDirection nSnapDirection = SNAP_BOTH,
-                                ECursorAlignment nCursorAlignment = ALIGN_USER_SETTING); // set new start cursor position
+                                ECursorAlignment nCursorAlignment = ALIGN_USER_SETTING);	// set new start cursor position
     void SetStopCursorPosition(DWORD dwNewPos, ESnapDirection nSnapDirection = SNAP_BOTH,
-                               ECursorAlignment nCursorAlignment = ALIGN_USER_SETTING);  // set new stop cursor
+                               ECursorAlignment nCursorAlignment = ALIGN_USER_SETTING);		// set new stop cursor
     void SetStartStopCursorPosition(DWORD dwNewStartPos, DWORD dwNewStopPos, ESnapDirection nSnapDirection = SNAP_BOTH,
-                                    ECursorAlignment nCursorAlignment = ALIGN_USER_SETTING); // set new start/stop cursor position
-    void SetPlaybackPosition(double dwPos = ~0,int nSpeed = 0, BOOL bEstimate = FALSE);  // default hide playback position indicators
+                                    ECursorAlignment nCursorAlignment = ALIGN_USER_SETTING);// set new start/stop cursor position
+    void SetPlaybackPosition( DWORD dwPos = ~0,int nSpeed = 0, BOOL bEstimate = FALSE);		// default hide playback position indicators
+    void StopPlaybackTimer();																// stop the cursor from advancing
+	void SetPlaybackFlash( bool on);
     int iGetStartCursorSegment(int iSegment);
     int iGetStopCursorSegment(int iSegment);
     void MoveStartCursor(DWORD);        // move start cursor
@@ -172,7 +175,7 @@ public:
     void NotifyFragmentDone(void * pCaller);
     // methods for saving the windows settings
     static CSaView * GetViewActiveChild(CMDIChildWnd * pwnd);
-    int z() const;
+    int GetZ() const;
     void SetZ(int z);
     CMDIChildWnd * pwndChildFrame() const;
     void ShowInitialStateAndZ();
@@ -245,6 +248,8 @@ protected:
     afx_msg void OnPlaybackStarttor();
     afx_msg void OnPlaybackLtoStop();
     afx_msg void OnPlaybackStopToR();
+    afx_msg void OnPlayerPause();
+    afx_msg void OnUpdatePlayerPause(CCmdUI * pCmdUI);
     afx_msg void OnPlayerStop();
     afx_msg void OnUpdatePlayerStop(CCmdUI * pCmdUI);
     afx_msg void OnPlayer();
@@ -332,6 +337,7 @@ protected:
     afx_msg void OnEditSelectWaveform();
     afx_msg void OnUpdateEditSelectWaveform(CCmdUI * pCmdUI);
     afx_msg void OnUpdatePlayback(CCmdUI * pCmdUI);
+    afx_msg void OnUpdatePlaybackPortion(CCmdUI * pCmdUI);
     afx_msg void OnSetupFnkeys();
     afx_msg void OnUpdateSetupFnkeys(CCmdUI * pCmdUI);
     afx_msg void OnEditRemove();
@@ -512,7 +518,7 @@ private:
     DWORD m_dwScrollLine;                   // number of samples to scroll one line
     DWORD m_dwStartCursor;                  // start cursor position
     DWORD m_dwStopCursor;                   // stop cursor position
-    double m_dPlaybackPosition;             // playback cursor position
+    DWORD m_dPlaybackPosition;				// playback cursor position
     DWORD m_dwPlaybackTime;                 // TickCount of last playback update
     double m_dPlaybackPositionLimit;        // playback cursor position
     int m_nPlaybackSpeed;
@@ -554,7 +560,7 @@ private:
 	DWORD lastBoundaryStopCursor;
 	int lastBoundaryIndex;
 	ECursorSelect lastBoundaryCursor;
-
+	DWORD lastPlaybackPosition;
 };
 
 #endif

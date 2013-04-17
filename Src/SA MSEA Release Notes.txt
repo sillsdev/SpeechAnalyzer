@@ -1,3 +1,9 @@
+SA - 3.1.0.53 - 4/17/2013 (stereo branch)
+1) Fixed bug the occurs during 'save as' on newly recorded file.  A space was appearing at the end of the default filename in the 'save as' dialog box.
+2) Added pause button to toolbars
+3) Modified playback cursor so that it flashes when paused.
+4) Disabled four playback buttons when player is paused.
+
 SA - 3.1.0.52 - 4/15/2013 (stereo branch)
 1) Implemented capability to move start/stop cursors in edit-segment and edit-boundaries mode using CTRL-ALT and SHIFT-ALT sequences with LEFT and RIGHT arrows.
 

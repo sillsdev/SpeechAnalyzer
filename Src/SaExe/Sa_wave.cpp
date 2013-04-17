@@ -513,7 +513,7 @@ BOOL CWave::Play(DWORD dwStart, DWORD dwSize, UINT nVolume, UINT nSpeed, CView *
     CMainFrame * pMainWnd = (CMainFrame *)AfxGetMainWnd();
     // check if player is playing
     if (((pMainWnd->IsPlayerPlaying()) || (pMainWnd->IsPlayerTestRun())) &&
-            (pFragmenter->IsDataReady()))
+         (pFragmenter->IsDataReady()))
     {
         // create WaveWarp object
         dspError_t Err = CWaveWarp::CreateObject(&m_pWaveWarp, pDoc, dwStart/m_FmtParm.wBlockAlign, (USHORT)nSpeed, &m_CallbackData);
@@ -641,7 +641,6 @@ BOOL CWave::Record(HMMIO hmmioFile,
 /***************************************************************************/
 void CWave::Stop()
 {
-
     if (m_pOutDev)
     {
         m_pOutDev->Reset();
@@ -654,7 +653,7 @@ void CWave::Stop()
     m_pInDev->Close(); // close sound device
     m_dwPlayPosition = m_dwEnd;
     m_pNotifyObj = NULL; // don't notify
-    if (m_pWaveWarp)
+    if (m_pWaveWarp!=NULL)
     {
         delete m_pWaveWarp;
         m_pWaveWarp = NULL;

@@ -1126,7 +1126,7 @@ BOOL CImport::ReadTable( CObjectIStream & ostream, int nMode)
     {
         for (int nIndex = 0; nIndex < pDoc->GetSegment(GLOSS)->GetOffsetSize(); nIndex++)
         {
-            ((CGlossSegment *)pDoc->GetSegment(GLOSS))->GetPOSs()->SetAt(nIndex, "");
+            ((CGlossSegment *)pDoc->GetSegment(GLOSS))->POSSetAt( nIndex, L"");
         }
     }
 
@@ -1193,9 +1193,9 @@ BOOL CImport::ReadTable( CObjectIStream & ostream, int nMode)
             {
                 if (bAppendGloss)
                 {
-                    szString = pGloss->GetPOSs()->GetAt(nIndexGloss) + " " + szString;
+                    szString = pGloss->GetPOSAt(nIndexGloss) + " " + szString;
                 }
-                pGloss->GetPOSs()->SetAt(nIndexGloss, szString);
+                pGloss->POSSetAt( nIndexGloss, szString);
             }
             // Reference
             szString = CSFMHelper::ExtractTabField(szLine, nAnnotField[REFERENCE]);

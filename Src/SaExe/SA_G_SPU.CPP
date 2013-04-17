@@ -40,8 +40,6 @@ IMPLEMENT_DYNCREATE(CPlotSpectrum, CPlotWnd)
 // CPlotSpectrum message map
 
 BEGIN_MESSAGE_MAP(CPlotSpectrum, CPlotWnd)
-    //{{AFX_MSG_MAP(CPlotSpectrum)
-    //}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
@@ -52,7 +50,7 @@ END_MESSAGE_MAP()
 /***************************************************************************/
 CPlotSpectrum::CPlotSpectrum()
 {
-    ShowCursors(TRUE,TRUE);
+    ShowCursors(true,true);
     m_bAnimationPlot = TRUE;
 }
 
@@ -216,7 +214,7 @@ void CPlotSpectrum::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView)
 
         // Clear the plot area and set up grid.
         pDC->FillRect(&rClip, &Eraser);
-        PlotPrePaint(pDC, rWnd, rClip, NULL, TRUE, TRUE);
+        PlotPrePaint(pDC, rWnd, rClip, NULL, true, true);
 
         // Calculate plot scale factors.
         int   PlotYRange = rWnd.Height();

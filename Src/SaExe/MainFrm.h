@@ -184,7 +184,7 @@ public:
     BOOL GetShowAdvancedAudio(void);
     void SetShowStartupDlg(BOOL bShow);
     void SetStartDataMode(int nMode);
-    CDlgPlayer * GetPlayer(BOOL bCreate = FALSE);
+    CDlgPlayer * GetPlayer(bool bCreate = false);
 
     // kg 32-bit conversion
     void DestroyPlayer();
@@ -248,9 +248,10 @@ public:
     LRESULT OnPlayer(WPARAM, LPARAM, SSpecific *);
     CGrid * GetGrid();
     BOOL IsStatusBar();
-    BOOL IsPlayerPlaying(); // return TRUE if player is playing
-    BOOL IsPlayerTestRun(); // return TRUE if player is running function key test run
-    void SetPlayerTimes();  // set player dialogue time in LED indicators
+    BOOL IsPlayerPlaying();		// return TRUE if player is playing
+    BOOL IsPlayerPaused();		// return TRUE if player is paused
+    BOOL IsPlayerTestRun();		// return TRUE if player is running function key test run
+    void SetPlayerTimes();		// set player dialogue time in LED indicators
     BOOL IsScrollZoom();
     int  GetStatusPosReadout();
     int  GetStatusPitchReadout();

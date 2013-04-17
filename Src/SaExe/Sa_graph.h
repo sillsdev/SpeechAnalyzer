@@ -92,15 +92,17 @@ public:
     double GetMagnify();
     BOOL HaveBoundaries();
     BOOL HaveDrawingStyleLine();
-    BOOL HaveCursors();
-    BOOL HavePrivateCursor();
+    bool HaveCursors();
+    bool HavePrivateCursor();
     BOOL HaveGrid();
     void SetLineDraw(BOOL bLine);
     void ShowGrid(BOOL bShow, BOOL bRedraw = FALSE);
-    void SetStartCursor(CSaView * pView); // set start cursor position
-    void SetStopCursor(CSaView * pView); // set stop cursor position
-    void SetPlaybackPosition(CSaView * pView, DWORD dwPos); // set start cursor position
-    void MoveStartCursor(CSaView * pView, DWORD dwNewPositon);
+    void SetStartCursor(CSaView * pView);					// set start cursor position
+    void SetStopCursor(CSaView * pView);					// set stop cursor position
+    void SetPlaybackCursor(CSaView * pView);				// set stop cursor position
+    void SetPlaybackPosition(CSaView * pView);				// set start cursor position
+	void SetPlaybackFlash( bool on);
+	void MoveStartCursor(CSaView * pView, DWORD dwNewPositon);
     void MoveStopCursor(CSaView * pView, DWORD dwNewPositon);
     void RestartProcess();
     // interface to annotation and legend/scale windows
@@ -113,7 +115,7 @@ public:
     void ShowLegend(BOOL bShow, BOOL bRedraw = FALSE);   // show or hide legend window
     void ShowXScale(BOOL bShow, BOOL bRedraw = FALSE);   // show or hide x-scale window
     void ShowAnnotation(int nIndex, BOOL bShow, BOOL bRedraw = FALSE); // show or hide indexed annotation window
-    void ShowCursors(BOOL bPrivate, BOOL bShow);
+    void ShowCursors(bool bPrivate, bool bShow);
     BOOL HaveLegend();
     BOOL HaveXScale();
     BOOL HaveAnnotation(int nIndex);

@@ -82,7 +82,7 @@ void CDlgFnKeys::EndPlayback()
     }
     if (m_bRepeat)
     {
-        SetTimer(1, m_nDelay, NULL);    // start repeating
+        SetTimer(ID_TIMER_DELAY, m_nDelay, NULL);    // start repeating
     }
     else
     {
@@ -526,7 +526,7 @@ void CDlgFnKeys::OnClose()
 /***************************************************************************/
 void CDlgFnKeys::OnTimer(UINT nIDEvent)
 {
-    KillTimer(1);
+    KillTimer(ID_TIMER_DELAY);
     if (m_bTestRunning)
     {
         m_bTestRunning = FALSE;
@@ -548,7 +548,7 @@ void CDlgFnKeys::OnTest()
         {
             m_pWave->Stop();
         }
-        KillTimer(1);
+        KillTimer(ID_TIMER_DELAY);
         m_bTestRunning = FALSE;
         pWnd->SetWindowText(m_szTest); // set back the original Test button caption
     }

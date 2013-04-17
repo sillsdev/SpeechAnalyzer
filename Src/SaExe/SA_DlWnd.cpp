@@ -1914,7 +1914,7 @@ void CSpinControl::OnLButtonDown(UINT nFlags, CPoint point)
     SystemParametersInfo(SPI_GETKEYBOARDDELAY, 0, &nTime, 0);
     nTime = WORD((nTime + 1) * 250); // calculate delay time in ms
     m_bTimerStart = TRUE;
-    SetTimer(1, nTime, NULL); // start the mouse repeat timer with the keyboard delay
+    SetTimer( ID_TIMER_DELAY, nTime, NULL); // start the mouse repeat timer with the keyboard delay
     CWnd::OnLButtonDown(nFlags, point);
 }
 
@@ -1932,7 +1932,7 @@ void CSpinControl::OnLButtonDblClk(UINT nFlags, CPoint point)
     SystemParametersInfo(SPI_GETKEYBOARDDELAY, 0, &nTime, 0);
     nTime = (nTime + 1) * 250; // calculate delay time in ms
     m_bTimerStart = TRUE;
-    SetTimer(1, nTime, NULL); // start the mouse repeat timer with the keyboard delay
+    SetTimer(ID_TIMER_DELAY, nTime, NULL); // start the mouse repeat timer with the keyboard delay
     CWnd::OnLButtonDblClk(nFlags, point);
 }
 
@@ -1941,7 +1941,7 @@ void CSpinControl::OnLButtonDblClk(UINT nFlags, CPoint point)
 /***************************************************************************/
 void CSpinControl::OnLButtonUp(UINT nFlags, CPoint point)
 {
-    KillTimer(1); // kill the mouse repeat timer
+    KillTimer(ID_TIMER_DELAY); // kill the mouse repeat timer
     m_bUpButtonDown = FALSE;
     m_bLowButtonDown = FALSE;
     ReleaseCapture();
@@ -1959,13 +1959,13 @@ void CSpinControl::OnTimer(UINT nIDEvent)
 {
     if (m_bTimerStart)
     {
-        KillTimer(1);
+        KillTimer(ID_TIMER_DELAY);
         m_bTimerStart = FALSE;
         WORD nTime;
         SystemParametersInfo(SPI_GETKEYBOARDSPEED, 0, &nTime, 0);
         // calculate delay time in ms (formula is near the truth, a table)
         nTime = (WORD)(33.3 + ((float)(31 - nTime) * 0.69688) * ((float)(31 - nTime) * 0.69688));
-        SetTimer(1, nTime, NULL); // go on with the mouse repeat timer with the keyboard repeat speed
+        SetTimer(ID_TIMER_DELAY, nTime, NULL); // go on with the mouse repeat timer with the keyboard repeat speed
     }
     // repeat the last action if a button pressed
     GetParent()->SendMessage(WM_COMMAND, m_nID, 0); // notify parent
@@ -2026,8 +2026,6 @@ CToggleButton::CToggleButton()
 /***************************************************************************/
 CToggleButton::~CToggleButton()
 {
-    // The window is already destroyed it is too late to kill a timer
-    //KillTimer(1);
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -2178,6 +2176,7 @@ void CToggleButton::DrawSymbol(CDC * pDC)
             pDC->SelectObject(pOldPen);
             pDC->SelectObject(pOldBrush);
             break;
+
         case IDC_PLAY:
             if (m_bSymbolOff || !m_bButtonDown)
             {
@@ -2200,6 +2199,7 @@ void CToggleButton::DrawSymbol(CDC * pDC)
             pDC->SelectObject(pOldPen);
             pDC->SelectObject(pOldBrush);
             break;
+
         case IDC_PAUSE:
             brush.CreateStockObject(BLACK_BRUSH);
             rWnd.SetRect(m_rSymbol.left, m_rSymbol.top, m_rSymbol.left + 4, m_rSymbol.bottom);
@@ -2208,10 +2208,12 @@ void CToggleButton::DrawSymbol(CDC * pDC)
             rWnd.right = rWnd.left + 4;
             pDC->FillRect(&rWnd, &brush);
             break;
+
         case IDC_STOP:
             brush.CreateStockObject(BLACK_BRUSH);
             pDC->FillRect(&m_rSymbol, &brush);
             break;
+
         default:
             break;
         }
@@ -2293,7 +2295,7 @@ void CToggleButton::Flash(BOOL bFlash)
         if (bFlash)
         {
             m_bSymbolFlash = TRUE;
-            SetTimer(1, 500, NULL);             // start the mouse repeat timer with the keyboard delay
+            SetTimer(ID_TIMER_DELAY, 500, NULL);             // start the mouse repeat timer with the keyboard delay
         }
     }
     else
@@ -2302,7 +2304,7 @@ void CToggleButton::Flash(BOOL bFlash)
         {
             m_bSymbolFlash = FALSE;
             m_bSymbolOff = FALSE;
-            KillTimer(1);
+            KillTimer(ID_TIMER_DELAY);
             InvalidateRect(m_rSymbol, FALSE);   // redraw the symbol, don't erase the background
         }
     }

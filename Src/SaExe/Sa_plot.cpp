@@ -340,15 +340,13 @@ CPlotWnd::CPlotWnd()
     m_bInitialPlot = TRUE;
     m_pStartCursor = NULL;
     m_pStopCursor = NULL;
-    m_pPrivateCursor = NULL;
-    m_pPlaybackCursor = NULL;
     m_pLastProcess = NULL;
     m_pAreaProcess = NULL;
     m_bBoundaries = FALSE;
     m_bLineDraw = TRUE;
     m_bDotDraw = FALSE;
-    m_bCursors = FALSE;
-    m_bPrivateCursor = FALSE;
+    m_bCursors = false;
+    m_bPrivateCursor = false;
     m_bGrid = TRUE;
     m_fMagnify = 1.0;
     m_dProcessMultiplier = 1.0;
@@ -366,13 +364,11 @@ CPlotWnd::CPlotWnd()
 }
 
 
-void CPlotWnd::CopyTo(CPlotWnd * pTarg)
+void CPlotWnd::CopyTo( CPlotWnd * pTarg)
 {
     // copies don't have any cursors.
     pTarg->m_pStartCursor = NULL;
     pTarg->m_pStopCursor = NULL;
-    pTarg->m_pPrivateCursor = NULL;
-    pTarg->m_bPrivateCursor = FALSE;
 
     // copies don't have a process???
     pTarg->m_pAreaProcess = NULL;
@@ -405,16 +401,6 @@ CPlotWnd::~CPlotWnd()
     {
         delete m_pStopCursor;
         m_pStopCursor=NULL;
-    }
-    if (m_pPrivateCursor)
-    {
-        delete m_pPrivateCursor;
-        m_pPrivateCursor=NULL;
-    }
-    if (m_pPlaybackCursor)
-    {
-        delete m_pPlaybackCursor;
-        m_pPlaybackCursor=NULL;
     }
 
     // turn off any highlighting in raw waveform due to dynamic update mode
@@ -513,14 +499,14 @@ void CPlotWnd::SetDotsDraw(BOOL bDots)
 /***************************************************************************/
 // CPlotWnd::ShowCursors Set cursors visible/hidden
 /***************************************************************************/
-void CPlotWnd::ShowCursors(BOOL bPrivate, BOOL bShow)
+void CPlotWnd::ShowCursors(bool bPrivate, bool bShow)
 {
     if (bPrivate)
     {
         m_bPrivateCursor = bShow;
         if (m_bPrivateCursor)
         {
-            m_bCursors = FALSE;
+            m_bCursors = false;
         }
     }
     else
@@ -528,7 +514,7 @@ void CPlotWnd::ShowCursors(BOOL bPrivate, BOOL bShow)
         m_bCursors = bShow;
         if (m_bCursors)
         {
-            m_bPrivateCursor = FALSE;
+            m_bPrivateCursor = false;
         }
     }
 }
@@ -609,8 +595,8 @@ void CPlotWnd::ChangeCursorPosition(CSaView * pView, DWORD dwNewPosition, CCurso
         fDataPos = GetDataPosition(rNewWnd.Width()); // data index of first sample to display
         dwDataFrame = AdjustDataFrame(rNewWnd.Width()); // number of data points to display
     }
-    if ((m_bCursors &&   // added by AKE to hide cursors in graph edit mode
-            (dwNewPosition >= (DWORD)fDataPos) && (dwNewPosition < ((DWORD)fDataPos + dwDataFrame))))
+    if (((m_bCursors) &&   // added by AKE to hide cursors in graph edit mode
+         (dwNewPosition >= (DWORD)fDataPos) && (dwNewPosition < ((DWORD)fDataPos + dwDataFrame))))
     {
         // cursor is visible
         ASSERT(rNewWnd.Width());
@@ -699,31 +685,39 @@ void CPlotWnd::SetStopCursor(CSaView * pView)
 {
     if (m_pStopCursor)
     {
-        ChangeCursorPosition(pView, pView->GetStopCursorPosition(), m_pStopCursor);
+        ChangeCursorPosition( pView, pView->GetStopCursorPosition(), m_pStopCursor);
     }
 }
 
 /***************************************************************************/
 // CPlotWnd::SetPlaybackPosition
 /***************************************************************************/
-void CPlotWnd::SetPlaybackCursor(CSaView * pSaView, DWORD dwPos)
+void CPlotWnd::SetPlaybackCursor( CSaView * pView)
 {
-    if (m_pPlaybackCursor)
-    {
-        ChangeCursorPosition(pSaView, dwPos, m_pPlaybackCursor);
-    }
+	if (m_PlaybackCursor.IsCreated())
+	{
+		ChangeCursorPosition( pView, pView->GetPlaybackCursorPosition(), &m_PlaybackCursor);
+	}
 }
+
+void CPlotWnd::SetPlaybackFlash( bool val)
+{
+	if (m_PlaybackCursor.IsCreated())
+	{
+		m_PlaybackCursor.Flash( val);
+	}
+}
+
 
 /***************************************************************************/
 // CPlotWnd::MoveStartCursor Move the start cursor
 /***************************************************************************/
-void CPlotWnd::MoveStartCursor(CSaView * pView, DWORD dwNewPosition)
+void CPlotWnd::MoveStartCursor( CSaView * pView, DWORD dwNewPosition)
 {
-    if (!m_bCursors)
-    {
-        return;    // no cursors visible
-    }
-    ChangeCursorPosition(pView, dwNewPosition, m_pStartCursor, TRUE);
+	// no cursors visible?
+    if (!m_bCursors) return;
+
+	ChangeCursorPosition( pView, dwNewPosition, m_pStartCursor, TRUE);
 }
 
 /***************************************************************************/
@@ -731,10 +725,9 @@ void CPlotWnd::MoveStartCursor(CSaView * pView, DWORD dwNewPosition)
 /***************************************************************************/
 void CPlotWnd::MoveStopCursor(CSaView * pView, DWORD dwNewPosition)
 {
-    if (!m_bCursors)
-    {
-        return;    // no cursors visible
-    }
+	// no cursors visible
+    if (!m_bCursors) return;
+
     ChangeCursorPosition(pView, dwNewPosition, m_pStopCursor, TRUE);
 }
 
@@ -746,7 +739,7 @@ void CPlotWnd::SetInitialPrivateCursor()
 
     CRect rWnd;
     // get the coordinates of the private cursor
-    m_pPrivateCursor->GetClientRect(rWnd);
+    m_PrivateCursor.GetClientRect(rWnd);
     if (rWnd.Height() == 0)
     {
         // private cursor has not been initialized yet
@@ -766,7 +759,7 @@ void CPlotWnd::SetInitialPrivateCursor()
             rWnd.right = rWnd.left + 2 * CURSOR_WINDOW_HALFWIDTH;
         }
         // move the private cursor window
-        m_pPrivateCursor->MoveWindow(rWnd);
+        m_PrivateCursor.MoveWindow(rWnd);
     }
 }
 
@@ -832,7 +825,7 @@ int CPlotWnd::GetPrivateCursorPosition()
 {
     CRect rWnd;
     // get the coordinates of the private cursor
-    m_pPrivateCursor->GetWindowRect(rWnd);
+    m_PrivateCursor.GetWindowRect(rWnd);
     ScreenToClient(rWnd);
 
     if (rWnd.Width() <= 0)
@@ -870,7 +863,6 @@ int CPlotWnd::GetPrivateCursorPosition()
 /***************************************************************************/
 void CPlotWnd::ScrollPlot(CSaView * pView, int nScrollAmount, DWORD dwOldPos, DWORD dwFrame)
 {
-    //TRACE("ScrollPlot %d\n",nScrollAmount);
     // hide the helper windows (do not scroll them)
     int nOldMode = m_HelperWnd.SetMode(MODE_HIDDEN);
     // now scroll
@@ -881,6 +873,8 @@ void CPlotWnd::ScrollPlot(CSaView * pView, int nScrollAmount, DWORD dwOldPos, DW
     // move the cursor windows if necessary
     DWORD dwStartCursorPos = pView->GetStartCursorPosition(); // position of start cursor
     DWORD dwStopCursorPos = pView->GetStopCursorPosition(); // position of stop cursor
+	DWORD dwPlaybackCursorPos = pView->GetPlaybackCursorPosition();
+
     // move cursor windows
     CRect rCursor;
     if ((dwStartCursorPos < dwOldPos) || (dwStartCursorPos >= (dwOldPos + dwFrame)))
@@ -890,6 +884,10 @@ void CPlotWnd::ScrollPlot(CSaView * pView, int nScrollAmount, DWORD dwOldPos, DW
     if ((dwStopCursorPos < dwOldPos) || (dwStopCursorPos >= (dwOldPos + dwFrame)))
     {
         SetStopCursor(pView);    // stop cursor was not visible, move it if it's now visible
+    }
+    if ((dwPlaybackCursorPos < dwOldPos) || (dwPlaybackCursorPos >= (dwOldPos + dwFrame)))
+    {
+        SetPlaybackCursor(pView);    // stop cursor was not visible, move it if it's now visible
     }
 }
 
@@ -915,7 +913,7 @@ void CPlotWnd::RedrawPlot(BOOL bEntire)
     }
     else
     {
-        if (HaveBoundaries() && HaveCursors())
+        if ((HaveBoundaries()) && (HaveCursors()))
         {
             // boundaries displayed?
             // invalidate region between (and with) cursor windows
@@ -1089,7 +1087,7 @@ BOOL CPlotWnd::PlotPrePaintDots(CDC * pDC, int nTop, CRect rClip,
 // OnPaint function before having drawn its own painting job. It paints the
 // gridlines.
 //**************************************************************************/
-void CPlotWnd::PlotPrePaint(CDC * pDC, CRect rWnd, CRect rClip, CLegendWnd * pLegend, BOOL bShowCursors, BOOL bPrivateCursor)
+void CPlotWnd::PlotPrePaint(CDC * pDC, CRect rWnd, CRect rClip, CLegendWnd * pLegend, bool bShowCursors, bool bPrivateCursor)
 {
     // get pointer to graph, grid structure, legend- and x-scale window
     CGraphWnd * pGraph = (CGraphWnd *)GetParent();
@@ -1110,7 +1108,7 @@ void CPlotWnd::PlotPrePaint(CDC * pDC, CRect rWnd, CRect rClip, CLegendWnd * pLe
         return;    // no grid to draw
     }
 
-    ShowCursors(bPrivateCursor, bShowCursors);
+    ShowCursors( bPrivateCursor, bShowCursors);
 
     // prepare to get color from main frame
     Colors * pColors = pMainWnd->GetColors();
@@ -1686,6 +1684,7 @@ void CPlotWnd::PlotPaintFinish(CDC * pDC, CRect rWnd, CRect rClip)
         {
             SetStopCursor(pView);
             SetStartCursor(pView);
+			SetPlaybackCursor(pView);
         }
     }
 
@@ -1895,8 +1894,6 @@ int CPlotWnd::OnCreate(LPCREATESTRUCT lpCreateStruct)
 
     m_pStartCursor = new CStartCursorWnd();
     m_pStopCursor = new CStopCursorWnd();
-    m_pPrivateCursor = new CPrivateCursorWnd();
-    m_pPlaybackCursor = new CPrivateCursorWnd();
     CRect rWnd(0, 0, 0, 0);
     // create the start cursor
     if (!m_pStartCursor->Create(NULL, _T("Cursor"), WS_CHILD | WS_VISIBLE, rWnd, this, 0))
@@ -1911,17 +1908,9 @@ int CPlotWnd::OnCreate(LPCREATESTRUCT lpCreateStruct)
         m_pStopCursor = NULL;
     }
     // create the private cursor
-    if (!m_pPrivateCursor->Create(NULL, _T("Cursor"), WS_CHILD | WS_VISIBLE, rWnd, this, 0))
-    {
-        delete m_pPrivateCursor;
-        m_pPrivateCursor = NULL;
-    }
+    m_PrivateCursor.Create(NULL, _T("Cursor"), WS_CHILD | WS_VISIBLE, rWnd, this, 0);
     // create the playback cursor
-    if (!m_pPlaybackCursor->Create(NULL, _T("Cursor"), WS_CHILD | WS_VISIBLE, rWnd, this, 0))
-    {
-        delete m_pPlaybackCursor;
-        m_pPlaybackCursor = NULL;
-    }
+    m_PlaybackCursor.Create(NULL, _T("Cursor"), WS_CHILD | WS_VISIBLE, rWnd, this, 0);
 
     // create the helper window
     m_HelperWnd.Create(NULL, NULL, WS_CHILD|WS_VISIBLE, rWnd, this, 1);
@@ -1940,8 +1929,8 @@ void CPlotWnd::OnSize(UINT nType, int cx, int cy)
     m_pStartCursor->ResetPosition();
     m_pStopCursor->MoveWindow(0, 0, 0, 0);
     m_pStopCursor->ResetPosition();
-    m_pPrivateCursor->MoveWindow(0, 0, 0, 0);
-    m_pPrivateCursor->ResetPosition();
+    m_PrivateCursor.MoveWindow(0, 0, 0, 0);
+    m_PrivateCursor.ResetPosition();
     CWnd::OnSize(nType, cx, cy);
 }
 
@@ -2109,16 +2098,16 @@ void CPlotWnd::OnLButtonDown(UINT nFlags, CPoint point)
                 m_pStopCursor->SendMessage(WM_LBUTTONDOWN, nFlags, MAKELONG(point.x, point.y));
             }
         }
-        if (m_bPrivateCursor)
+        
+		if (m_bPrivateCursor)
         {
             if (m_bHorizontalCursors)
             {
                 // THIS CODE IS FOR HORIZONTAL CURSORS - TCJ 5/9/00
                 //  see also CPrivateCursorWnd for 2 additional horizontal cursor functions
-
                 // get the actual (old) position of cursor window
                 CRect rLine;
-                m_pPrivateCursor->GetWindowRect(rLine);
+                m_PrivateCursor.GetWindowRect(rLine);
                 ScreenToClient(rLine);
                 // get the line position in the middle
                 rLine.top += CURSOR_WINDOW_HALFWIDTH;
@@ -2127,15 +2116,14 @@ void CPlotWnd::OnLButtonDown(UINT nFlags, CPoint point)
                 InvalidateRect(rLine, TRUE); // redraw old cursor position
                 rWnd.top = point.y - CURSOR_WINDOW_HALFWIDTH;
                 rWnd.bottom = point.y + CURSOR_WINDOW_HALFWIDTH;
-                m_pPrivateCursor->MoveWindow(rWnd, FALSE); // move the cursor window to the new position
+                m_PrivateCursor.MoveWindow(rWnd, FALSE); // move the cursor window to the new position
                 UpdateWindow(); // update this region before redrawing the cursor window
                 rLine.SetRect(rWnd.left, CURSOR_WINDOW_HALFWIDTH, rWnd.right, CURSOR_WINDOW_HALFWIDTH + 1);
-                //          rLine.SetRect(rWnd.left, point.y + CURSOR_WINDOW_HALFWIDTH, rWnd.right, point.y + CURSOR_WINDOW_HALFWIDTH + 1);
 
-                m_pPrivateCursor->InvalidateRect(rLine, TRUE); // redraw new cursor line
-                m_pPrivateCursor->UpdateWindow(); // update the cursor
+                m_PrivateCursor.InvalidateRect(rLine, TRUE); // redraw new cursor line
+                m_PrivateCursor.UpdateWindow(); // update the cursor
                 // and drag the cursor
-                m_pPrivateCursor->SendMessage(WM_LBUTTONDOWN, nFlags, MAKELONG(0, CURSOR_WINDOW_HALFWIDTH));
+                m_PrivateCursor.SendMessage(WM_LBUTTONDOWN, nFlags, MAKELONG(0, CURSOR_WINDOW_HALFWIDTH));
             }
             else
             {
@@ -2143,7 +2131,7 @@ void CPlotWnd::OnLButtonDown(UINT nFlags, CPoint point)
 
                 // get the actual (old) position of cursor window
                 CRect rLine;
-                m_pPrivateCursor->GetWindowRect(rLine);
+                m_PrivateCursor.GetWindowRect(rLine);
                 ScreenToClient(rLine);
                 // get the line position in the middle
                 rLine.left += CURSOR_WINDOW_HALFWIDTH;
@@ -2153,11 +2141,11 @@ void CPlotWnd::OnLButtonDown(UINT nFlags, CPoint point)
                 rWnd.left = point.x - CURSOR_WINDOW_HALFWIDTH;
                 rWnd.right = point.x + CURSOR_WINDOW_HALFWIDTH;
                 rLine.SetRect(CURSOR_WINDOW_HALFWIDTH, rWnd.top, CURSOR_WINDOW_HALFWIDTH + 1, rWnd.bottom);
-                m_pPrivateCursor->InvalidateRect(rLine, TRUE); // redraw new cursor line
-                m_pPrivateCursor->MoveWindow(rWnd, FALSE); // move the cursor window to the new position
+                m_PrivateCursor.InvalidateRect(rLine, TRUE); // redraw new cursor line
+                m_PrivateCursor.MoveWindow(rWnd, FALSE); // move the cursor window to the new position
                 UpdateWindow(); // update this region before redrawing the cursor window
                 // and drag the cursor
-                m_pPrivateCursor->SendMessage(WM_LBUTTONDOWN, nFlags, MAKELONG(CURSOR_WINDOW_HALFWIDTH, 0));
+                m_PrivateCursor.SendMessage(WM_LBUTTONDOWN, nFlags, MAKELONG(CURSOR_WINDOW_HALFWIDTH, 0));
             }
         }
     }
@@ -2353,7 +2341,7 @@ void CPlotWnd::RemoveRtPlots()
     // do nothing.
 }
 
-bool CPlotWnd::bIsRtOverlay()
+bool CPlotWnd::IsRtOverlay()
 {
     return m_bRtPlot;
 }
@@ -2778,13 +2766,12 @@ BOOL CPlotWnd::HaveDrawingStyleDots()
     return m_bDotDraw;
 }
 
-BOOL CPlotWnd::HaveCursors()
+bool CPlotWnd::HaveCursors()
 {
-    // cursors visible?
     return m_bCursors;
 }
 
-BOOL CPlotWnd::HavePrivateCursor()
+bool CPlotWnd::HavePrivateCursor()
 {
     // private cursor visible?
     return m_bPrivateCursor;
@@ -2806,12 +2793,6 @@ CStopCursorWnd * CPlotWnd::GetStopCursorWnd()
 {
     // return pointer to start cursor window
     return m_pStopCursor;
-}
-
-CPrivateCursorWnd * CPlotWnd::GetPrivateCursorWnd()
-{
-    // return pointer to private cursor window
-    return m_pPrivateCursor;
 }
 
 void CPlotWnd::OnDraw(CDC * /*pDC*/, CRect /*rWnd*/, CRect /*rClip*/, CSaView * /*pView*/)
@@ -2904,3 +2885,20 @@ CDataSourceSimple::~CDataSourceSimple()
 CDataSourceValidate::~CDataSourceValidate()
 {
 }
+
+void CPlotWnd::ChangePrivateCursorPosition( CPoint point)
+{
+	m_PrivateCursor.ChangeCursorPosition( point);
+}
+
+void CPlotWnd::GetPrivateCursorWindowRect( CRect * rect)
+{
+	m_PrivateCursor.GetWindowRect(rect);
+}
+
+void CPlotWnd::OnPrivateCursorDraw( CDC * pDC, CRect rect)
+{
+	m_PrivateCursor.OnDraw( pDC, rect);
+}
+
+

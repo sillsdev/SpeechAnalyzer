@@ -491,9 +491,24 @@ void CMainFrame::SetFnKeys(CFnKeys * pfnKeys)
 /***************************************************************************/
 BOOL CMainFrame::IsPlayerPlaying()
 {
-    if (CDlgPlayer::bPlayer)   // player launched
+    if (CDlgPlayer::IsLaunched())				// player launched
     {
-        return GetPlayer(false)->IsPlaying(); // return TRUE if player is playing
+        return GetPlayer(false)->IsPlaying();	// return TRUE if player is playing
+    }
+    else
+    {
+        return FALSE;
+    }
+}
+
+/***************************************************************************/
+// CMainFrame::IsPlayerPlaying Returns TRUE if player is playing
+/***************************************************************************/
+BOOL CMainFrame::IsPlayerPaused()
+{
+    if (CDlgPlayer::IsLaunched())				// player launched
+    {
+        return GetPlayer(false)->IsPaused();	// return TRUE if player is paused
     }
     else
     {
@@ -506,9 +521,9 @@ BOOL CMainFrame::IsPlayerPlaying()
 /***************************************************************************/
 BOOL CMainFrame::IsPlayerTestRun()
 {
-    if (CDlgPlayer::bPlayer)   // player launched
+    if (CDlgPlayer::IsLaunched())				// player launched
     {
-        return GetPlayer(false)->IsTestRun(); // return TRUE if player runs Fn test
+        return GetPlayer(false)->IsTestRun();	// return TRUE if player runs Fn test
     }
     else
     {
@@ -521,7 +536,7 @@ BOOL CMainFrame::IsPlayerTestRun()
 /***************************************************************************/
 void CMainFrame::SetPlayerTimes()
 {
-    if (CDlgPlayer::bPlayer)                                        // if player dialogue launched
+    if (CDlgPlayer::IsLaunched())                                   // if player dialogue launched
     {
         CRect rWnd;
         GetPlayer(false)->SetPositionTime();                        // set the start time
@@ -916,10 +931,10 @@ LRESULT CMainFrame::OnApplyToolsOptions(WPARAM, LPARAM)
     return 0;
 }
 
-CDlgPlayer * CMainFrame::GetPlayer(BOOL bCreate)
+CDlgPlayer * CMainFrame::GetPlayer(bool bCreate)
 {
 
-    if (!CDlgPlayer::bPlayer)
+    if (!CDlgPlayer::IsLaunched())
     {
         // player dialog not launched
         if (!bCreate)
@@ -929,13 +944,13 @@ CDlgPlayer * CMainFrame::GetPlayer(BOOL bCreate)
 
         if (m_pDlgPlayer)
         {
-            delete m_pDlgPlayer;    // delete old dialog object
+            delete m_pDlgPlayer;		// delete old dialog object
         }
-        m_pDlgPlayer = new CDlgPlayer; // create new player object
+        m_pDlgPlayer = new CDlgPlayer;	// create new player object
 
-        if (!CDlgPlayer::bPlayer)   // player dialog not launched
+        if (!CDlgPlayer::IsLaunched())  // player dialog not launched
         {
-            m_pDlgPlayer->Create(); // create player
+            m_pDlgPlayer->Create();		// create player
         }
     }
     return m_pDlgPlayer;
@@ -948,7 +963,7 @@ CDlgPlayer * CMainFrame::GetPlayer(BOOL bCreate)
 // and on top of all other windows. lParam delivers the player mode to be
 // set.
 /***************************************************************************/
-LRESULT CMainFrame::OnPlayer(WPARAM wParam, LPARAM lParam)
+LRESULT CMainFrame::OnPlayer( WPARAM wParam, LPARAM lParam)
 {
     return OnPlayer(wParam, lParam, NULL);
 }
@@ -960,12 +975,14 @@ LRESULT CMainFrame::OnPlayer(WPARAM wParam, LPARAM lParam)
 // and on top of all other windows. lParam delivers the player mode to be
 // set.
 /***************************************************************************/
-LRESULT CMainFrame::OnPlayer(WPARAM wParam, LPARAM lParam, SSpecific * pSpecific)
+LRESULT CMainFrame::OnPlayer( WPARAM wParam2, LPARAM lParam, SSpecific * pSpecific)
 {
-    TRACE(_T("OnPlayer %x %x %x\n"),wParam,HIWORD(lParam),LOWORD(lParam));
+	CDlgPlayer::EMode mode = (CDlgPlayer::EMode)wParam2;
+
+    TRACE(_T("OnPlayer %x %x %x\n"), mode, HIWORD(lParam), LOWORD(lParam));
 
     CWnd * pWnd = GetActiveWindow(); // retrieve pointer to active window
-    if (!CDlgPlayer::bPlayer)   // player dialog not launched
+    if (!CDlgPlayer::IsLaunched())   // player dialog not launched
     {
         GetPlayer(true); // get or create player object
         BOOL bFnKey = FALSE;
@@ -982,7 +999,7 @@ LRESULT CMainFrame::OnPlayer(WPARAM wParam, LPARAM lParam, SSpecific * pSpecific
         {
             pWnd->SetActiveWindow();
         }
-        GetPlayer(false)->SetPlayerMode(wParam, LOWORD(lParam), (BOOL)HIWORD(lParam), bFnKey, pSpecific); // set player mode
+        GetPlayer(false)->SetPlayerMode( mode, LOWORD(lParam), (BOOL)HIWORD(lParam), bFnKey, pSpecific); // set player mode
     }
     else
     {
@@ -997,7 +1014,7 @@ LRESULT CMainFrame::OnPlayer(WPARAM wParam, LPARAM lParam, SSpecific * pSpecific
                 bFnKey = TRUE;
                 lParam = MAKELONG(LOWORD(lParam), FALSE);
             }
-            GetPlayer(false)->SetPlayerMode(wParam, LOWORD(lParam), (BOOL)HIWORD(lParam), bFnKey, pSpecific); // set player mode
+            GetPlayer(false)->SetPlayerMode( mode, LOWORD(lParam), (BOOL)HIWORD(lParam), bFnKey, pSpecific); // set player mode
             if (GetPlayer(false)->IsFullSize())   // player has full size, set it the active window
             {
                 GetPlayer(false)->SetActiveWindow(); // set focus on player
@@ -1146,7 +1163,7 @@ LRESULT CMainFrame::OnChangeView(WPARAM wParam, LPARAM lParam)
             m_pDlgFind->SendMessage(WM_CLOSE);
         }
     }
-    if (CDlgPlayer::bPlayer)   // player dialog launched
+    if (CDlgPlayer::IsLaunched())						// player dialog launched
     {
         if (wParam)
         {
@@ -1232,7 +1249,7 @@ void CMainFrame::OnClose()
     //******************************************************
     // If player dialog open then close it.
     //******************************************************
-    if (CDlgPlayer::bPlayer)
+    if (CDlgPlayer::IsLaunched())
     {
         m_pDlgPlayer->SendMessage(WM_CLOSE);
     }
@@ -2532,7 +2549,7 @@ void CMainFrame::OnWindowTileVert()
 void CMainFrame::NotifyFragmentDone(void * /*pCaller*/)
 {
     // kg - prevent exception
-    if ((CDlgPlayer::bPlayer) && (GetPlayer(false)->IsWindowVisible()))
+    if ((CDlgPlayer::IsLaunched()) && (GetPlayer(false)->IsWindowVisible()))
     {
         GetPlayer(false)->EnableSpeedSlider();
     }
@@ -2546,7 +2563,6 @@ void CMainFrame::DestroyPlayer()
     if (m_pDlgPlayer!=NULL)
     {
         delete m_pDlgPlayer;
-        CDlgPlayer::bPlayer = FALSE;
         m_pDlgPlayer = NULL;
     }
 }
@@ -3049,7 +3065,6 @@ BOOL CALLBACK AutosaveTimerChildProc( HWND hwnd,  LPARAM)
 
 void CMainFrame::OnTimer(UINT nIDEvent)
 {
-    //TRACE(L"OnTimer %d\n",nIDEvent);
     if (nIDEvent == ID_TIMER_AUTOSAVE)
     {
 		// if we are playing something, defer autosave for performance reasons

@@ -24,49 +24,39 @@ class CDlgAdvancedParseWords : public CDialog
 {
     DECLARE_DYNAMIC(CDlgAdvancedParseWords)
 
-    // Construction/destruction/creation
 public:
-    CDlgAdvancedParseWords(CSaDoc * pDoc); // standard constructor
+    CDlgAdvancedParseWords( CSaDoc * pDoc);
     virtual ~CDlgAdvancedParseWords();
-
     BOOL Create();
     void Show(LPCTSTR title);
 
-    // Attributes
-private:
-    CSpinControl m_SpinBreak;
-    CSpinControl m_SpinMaxThreshold;
-    CSpinControl m_SpinMinThreshold;
+    CButton m_ApplyButton;
+    CButton m_OKButton;
+    CSaDoc * m_pDoc;
 
-    // Dialog Data
-    //{{AFX_DATA(CDlgAdvancedParse)
-    enum { IDD = IDD_ADVANCEDPARSEWORD };
-    int m_nBreakWidth;
-    int m_nMaxThreshold;
-    int m_nMinThreshold;
-    //}}AFX_DATA
-
-    // Operations
 protected:
-    virtual void DoDataExchange(CDataExchange * pDX); // DDX/DDV support
+    virtual void DoDataExchange(CDataExchange * pDX);
     void Apply();
     void Undo();
-
-    // Generated message map functions
-    //{{AFX_MSG(CDlgAdvancedParseWords)
     virtual BOOL OnInitDialog();
     afx_msg void OnBreakWidthScroll();
     afx_msg void OnMaxThresholdScroll();
     afx_msg void OnMinThresholdScroll();
     afx_msg void OnBnClickedApply();
-    //}}AFX_MSG
-    DECLARE_MESSAGE_MAP()
     virtual void OnOK();
     virtual void OnCancel();
-public:
 
-    CButton m_ApplyButton;
-    CButton m_OKButton;
-    CSaDoc * m_pDoc;
+    DECLARE_MESSAGE_MAP()
+
+private:
+    CSpinControl m_SpinBreak;
+    CSpinControl m_SpinMaxThreshold;
+    CSpinControl m_SpinMinThreshold;
+
+    enum { IDD = IDD_ADVANCEDPARSEWORD };
+    int m_nBreakWidth;
+    int m_nMaxThreshold;
+    int m_nMinThreshold;
+
 };
 #endif

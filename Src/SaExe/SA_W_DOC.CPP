@@ -156,6 +156,7 @@ BOOL CWorkbenchDoc::SaveModified()
         {
             szGraphTitle = szCaption.Right(szCaption.GetLength() - nFind); // extract part right of and with :
             szCaption = szCaption.Left(nFind); // extract part left of :
+			szCaption = szCaption.Trim();
         }
         SetTitle(szCaption); // write the new caption string
     }
@@ -196,6 +197,7 @@ void CWorkbenchDoc::OnFileSave()
         {
             szGraphTitle = szCaption.Right(szCaption.GetLength() - nFind); // extract part right of and with :
             szCaption = szCaption.Left(nFind); // extract part left of :
+			szCaption = szCaption.Trim();
         }
         SetTitle(szCaption); // write the new caption string
     }

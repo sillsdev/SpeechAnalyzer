@@ -42,9 +42,8 @@
 *
 * @return returns an empty string if an error has occurred
 */
-wstring GenerateWordSplitName(CGlossSegment * g, CSaView * pView, EWordFilenameConvention convention, int index)
+wstring GenerateWordSplitName( CGlossSegment * g, CSaView * pView, EWordFilenameConvention convention, int index, LPCTSTR prefix, LPCTSTR suffix)
 {
-
     wstring gloss(L"");
     wstring ref(L"");
     DWORD dwStart = 0;
@@ -63,8 +62,14 @@ wstring GenerateWordSplitName(CGlossSegment * g, CSaView * pView, EWordFilenameC
         {
             gloss = gloss.substr(1);
         }
-        gloss = FilterName(gloss);
-        // return empty or not
+		if (gloss.length()==0)
+		{
+			// returning empty indicates error
+			return gloss;
+		}
+		gloss.insert(0, prefix);
+		gloss.append(suffix);
+		gloss = FilterName( gloss.c_str());
         return gloss;
 
     case WFC_REF:   //ref
@@ -76,8 +81,14 @@ wstring GenerateWordSplitName(CGlossSegment * g, CSaView * pView, EWordFilenameC
         {
             ref = pView->GetAnnotation(REFERENCE)->GetSegmentString(rindex);
         }
-        ref = FilterName(ref);
+		if (ref.length()==0)
+		{
+			return ref;
+		}
         // return empty or not
+		ref.insert(0, prefix);
+		ref.append(suffix);
+		ref = FilterName( ref.c_str());
         return ref;
 
     default:
@@ -95,24 +106,32 @@ wstring GenerateWordSplitName(CGlossSegment * g, CSaView * pView, EWordFilenameC
         {
             ref = pView->GetAnnotation(REFERENCE)->GetSegmentString(rindex);
         }
-        gloss = FilterName(gloss);
-        ref = FilterName(ref);
         if (ref.length()==0)
         {
             // if ref is empty, return an empty string to cause an
             // error, regardless of gloss
             return ref;
         }
-
         // we know we have ref at this point
         if (gloss.length()!=0)
         {
-            ref = ref.append(L" ").append(gloss);
-            return ref;
+			wstring result;
+			result = prefix;
+			result.append(ref);
+			result.append(L" ");
+			result.append(gloss);
+			result.append(suffix);
+			result = FilterName( result.c_str());
+            return result;
         }
         else
         {
-            return ref;
+			wstring result;
+			result = prefix;
+			result.append(ref);
+			result.append(suffix);
+			result = FilterName( result.c_str());
+            return result;
         }
     }
 }
@@ -150,9 +169,8 @@ wstring GenerateWordSplitName(CGlossSegment * g, CSaView * pView, EWordFilenameC
 *
 * @return returns an empty string if an error has occurred
 */
-bool GeneratePhraseSplitName(EAnnotation type, CMusicPhraseSegment * seg, CSaView * pView, EPhraseFilenameConvention convention, int index, wstring & result)
+bool GeneratePhraseSplitName(EAnnotation type, CMusicPhraseSegment * seg, CSaView * pView, EPhraseFilenameConvention convention, int index, wstring & result, LPCTSTR prefix, LPCTSTR suffix)
 {
-
     wstring gloss(L"");
     wstring ref(L"");
     wstring phrase(L"");
@@ -186,13 +204,17 @@ bool GeneratePhraseSplitName(EAnnotation type, CMusicPhraseSegment * seg, CSaVie
         {
             ref = r->GetSegmentString(rindex);
         }
-        result = FilterName(ref);
-        if (result.length()==0)
+        if (ref.length()==0)
         {
             pApp->ErrorMessage(IDS_SPLIT_NO_REF,(LPCTSTR)szPhrase,(LPCTSTR)szNumber);
             return false;
         }
-        result.append(L" ").append(szTag);
+		result = prefix;
+		result.append(ref);
+        result.append(L" ");
+		result.append(szTag);
+		result.append(suffix);
+		result = FilterName( result.c_str());
         return true;
 
     case PFC_GLOSS:   //gloss
@@ -205,13 +227,17 @@ bool GeneratePhraseSplitName(EAnnotation type, CMusicPhraseSegment * seg, CSaVie
                 gloss = gloss.substr(1);
             }
         }
-        result = FilterName(gloss);
-        if (result.length()==0)
+        if (gloss.length()==0)
         {
             pApp->ErrorMessage(IDS_SPLIT_NO_GLOSS,(LPCTSTR)szPhrase,(LPCTSTR)szNumber);
             return false;
         }
-        result.append(L" ").append(szTag);
+		result = prefix;
+		result.append(gloss);
+        result.append(L" ");
+		result.append(szTag);
+		result.append(suffix);
+		result = FilterName( result.c_str());
         return true;
 
     case PFC_REF_GLOSS:     //ref+gloss
@@ -224,29 +250,42 @@ bool GeneratePhraseSplitName(EAnnotation type, CMusicPhraseSegment * seg, CSaVie
                 gloss = gloss.substr(1);
             }
         }
-        gloss = FilterName(gloss);
         // find the ref based on the gloss position, since GLOSS is the iterator
         rindex = FindNearestReferenceIndex(r,dwStart,dwStop);
         if (rindex!=-1)
         {
             ref = pView->GetAnnotation(REFERENCE)->GetSegmentString(rindex);
         }
-        ref = FilterName(ref);
         if ((ref.length()>0) && (gloss.length()>0))
         {
-            result = ref.append(L" ").append(gloss).append(L" ").append(szTag);
+			result = prefix;
+			result.append(ref);
+			result.append(L" ");
+			result.append(gloss);
+			result.append(L" ");
+			result.append(szTag);
+			result.append(suffix);
+			result = FilterName(result.c_str());
             return true;
         }
         else if ((ref.length()>0)&&(gloss.length()==0))
         {
-            result = ref;
-            result.append(L" ").append(szTag);
+			result = prefix;
+            result.append(ref);
+            result.append(L" ");
+			result.append(szTag);
+			result.append(suffix);
+			result = FilterName(result.c_str());
             return true;
         }
         else if ((ref.length()==0)&&(gloss.length()>0))
         {
-            result = gloss;
-            result.append(L" ").append(szTag);
+			result = prefix;
+            result.append(gloss);
+            result.append(L" ");
+			result.append(szTag);
+			result.append(suffix);
+			result = FilterName(result.c_str());
             return true;
         }
 
@@ -257,14 +296,18 @@ bool GeneratePhraseSplitName(EAnnotation type, CMusicPhraseSegment * seg, CSaVie
     default:
     case PFC_PHRASE:
         phrase = seg->GetSegmentString(index);
-        result = FilterName(phrase);
-        if (result.length()>0)
-        {
-            result.append(L" ").append(szTag);
-            return true;
-        }
-        pApp->ErrorMessage(IDS_SPLIT_NO_PHRASE,(LPCTSTR)szPhrase,(LPCTSTR)szNumber);
-        return false;
+		result = FilterName( phrase.c_str());
+		if (phrase.length()==0)
+		{
+			pApp->ErrorMessage(IDS_SPLIT_NO_PHRASE,(LPCTSTR)szPhrase,(LPCTSTR)szNumber);
+			return false;
+		}
+		result = prefix;
+		result.append(phrase);
+		result.append(L" ");
+		result.append(szTag);
+		result.append(suffix);
+        return true;
     }
 }
 
@@ -407,7 +450,7 @@ int FindNearestPhraseIndex(CMusicPhraseSegment * seg, DWORD dwStart, DWORD dwSto
 * walk through the gloss and reference transcriptions to see if everything
 * is in order
 */
-bool ValidateWordFilenames(EWordFilenameConvention convention, BOOL skipEmptyGloss)
+bool ValidateWordFilenames( EWordFilenameConvention convention, BOOL skipEmptyGloss, LPCTSTR prefix, LPCTSTR suffix)
 {
 
     CSaApp * pApp = (CSaApp *)AfxGetApp();
@@ -451,7 +494,7 @@ bool ValidateWordFilenames(EWordFilenameConvention convention, BOOL skipEmptyGlo
         * so, for this following check, it can only fail if the reference is empty
         */
         // can we piece the name together?
-        wstring splitname = GenerateWordSplitName(g, pView, convention, i);
+        wstring splitname = GenerateWordSplitName( g, pView, convention, i, prefix, suffix);
         if (splitname.length()==0)
         {
             pApp->ErrorMessage(IDS_SPLIT_NO_REF,(LPCTSTR)szGloss,(LPCTSTR)szNumber);
@@ -465,7 +508,7 @@ bool ValidateWordFilenames(EWordFilenameConvention convention, BOOL skipEmptyGlo
 * walk through the gloss and reference transcriptions to see if everything
 * is in order
 */
-bool ValidatePhraseFilenames(EAnnotation type, EPhraseFilenameConvention convention)
+bool ValidatePhraseFilenames(EAnnotation type, EPhraseFilenameConvention convention, LPCTSTR prefix, LPCTSTR suffix)
 {
 
     CSaDoc * pDoc = (CSaDoc *)((CMainFrame *) AfxGetMainWnd())->GetCurrSaView()->GetDocument();
@@ -491,7 +534,7 @@ bool ValidatePhraseFilenames(EAnnotation type, EPhraseFilenameConvention convent
 
         // we are at the start of a segment
         wstring splitname;
-        if (!GeneratePhraseSplitName(type, s, pView, convention, i, splitname))
+        if (!GeneratePhraseSplitName(type, s, pView, convention, i, splitname, prefix, suffix))
         {
             // function will generate error message
             return false;
@@ -503,8 +546,14 @@ bool ValidatePhraseFilenames(EAnnotation type, EPhraseFilenameConvention convent
 /**
 * export words for the given file
 */
-bool ExportWordSegments(EWordFilenameConvention convention, LPCTSTR path, BOOL skipEmptyGloss, int & dataCount, int & wavCount)
+bool ExportWordSegments(EWordFilenameConvention convention, LPCTSTR path, BOOL skipEmptyGloss, int & dataCount, int & wavCount, LPCTSTR prefix, LPCTSTR suffix)
 {
+
+    // the validation function will display a error message on failure
+	if (!ValidateWordFilenames( convention, skipEmptyGloss, prefix, suffix))
+    {
+        return false;
+    }
 
     CSaDoc * pDoc = (CSaDoc *)((CMainFrame *) AfxGetMainWnd())->GetCurrSaView()->GetDocument();
     POSITION pos = pDoc->GetFirstViewPosition();
@@ -516,7 +565,7 @@ bool ExportWordSegments(EWordFilenameConvention convention, LPCTSTR path, BOOL s
     for (int i=0; i<nLoop; i++)
     {
         wstring dest;
-        int result = ComposeWordSegmentFilename(g, i, convention, path, dest);
+        int result = ComposeWordSegmentFilename(g, i, convention, path, dest, prefix, suffix);
         if (result==1)
         {
             break;
@@ -535,7 +584,7 @@ bool ExportWordSegments(EWordFilenameConvention convention, LPCTSTR path, BOOL s
 * return 0 on no errors
 * return 1 on no more data
 */
-int ComposeWordSegmentFilename(CGlossSegment * seg, int index, EWordFilenameConvention convention, LPCTSTR path, wstring & out)
+int ComposeWordSegmentFilename( CGlossSegment * seg, int index, EWordFilenameConvention convention, LPCTSTR path, wstring & out, LPCTSTR prefix, LPCTSTR suffix)
 {
 
     CSaDoc * pDoc = (CSaDoc *)((CMainFrame *) AfxGetMainWnd())->GetCurrSaView()->GetDocument();
@@ -543,7 +592,7 @@ int ComposeWordSegmentFilename(CGlossSegment * seg, int index, EWordFilenameConv
     CSaView * pView = (CSaView *)pDoc->GetNextView(pos);
 
     // can we piece the name together?
-    wstring name = GenerateWordSplitName(seg, pView, convention, index);
+    wstring name = GenerateWordSplitName(seg, pView, convention, index, prefix, suffix);
     if (name.length()==0)
     {
         return 1;
@@ -610,14 +659,14 @@ int ExportWordSegment(CGlossSegment * seg, int index, LPCTSTR filename, BOOL ski
 /**
 * export words for the given file
 */
-bool ExportPhraseSegments(EAnnotation type, EPhraseFilenameConvention convention, wstring & path, int & dataCount, int & wavCount)
+bool ExportPhraseSegments(EAnnotation type, EPhraseFilenameConvention convention, wstring & path, int & dataCount, int & wavCount, LPCTSTR prefix, LPCTSTR suffix)
 {
 
     CSaDoc * pDoc = (CSaDoc *)((CMainFrame *) AfxGetMainWnd())->GetCurrSaView()->GetDocument();
     POSITION pos = pDoc->GetFirstViewPosition();
     CSaView * pView = (CSaView *)pDoc->GetNextView(pos);
 
-    if (!ValidatePhraseFilenames(type, convention))
+    if (!ValidatePhraseFilenames(type, convention, prefix, suffix))
     {
         return false;
     }
@@ -628,7 +677,7 @@ bool ExportPhraseSegments(EAnnotation type, EPhraseFilenameConvention convention
     for (int i=0; i<nLoop; i++)
     {
         wstring filename;
-        int result = ComposePhraseSegmentFilename(type, seg, i, convention, path.c_str(), filename);
+        int result = ComposePhraseSegmentFilename(type, seg, i, convention, path.c_str(), filename, prefix, suffix);
         if (result==1)
         {
             break;
@@ -647,7 +696,7 @@ bool ExportPhraseSegments(EAnnotation type, EPhraseFilenameConvention convention
 * return 0 on no errors
 * return 1 on no more data
 */
-int ComposePhraseSegmentFilename(EAnnotation type, CMusicPhraseSegment * seg, int index, EPhraseFilenameConvention convention, LPCTSTR path, wstring & out)
+int ComposePhraseSegmentFilename(EAnnotation type, CMusicPhraseSegment * seg, int index, EPhraseFilenameConvention convention, LPCTSTR path, wstring & out, LPCTSTR prefix, LPCTSTR suffix)
 {
 
     CSaDoc * pDoc = (CSaDoc *)((CMainFrame *) AfxGetMainWnd())->GetCurrSaView()->GetDocument();
@@ -656,7 +705,7 @@ int ComposePhraseSegmentFilename(EAnnotation type, CMusicPhraseSegment * seg, in
 
     // can we piece the name together?
     wstring name;
-    if (!GeneratePhraseSplitName(type, seg, pView, convention, index, name))
+    if (!GeneratePhraseSplitName(type, seg, pView, convention, index, name, prefix, suffix))
     {
         return 1;
     }
@@ -703,11 +752,10 @@ int ExportPhraseSegment(CMusicPhraseSegment * seg, int index, wstring & filename
 /**
 * filters a segment name so that it is usable in a filename
 */
-wstring FilterName(wstring text)
+wstring FilterName( LPCTSTR text)
 {
     wstring result;
-
-    for (size_t i=0; i<text.length(); i++)
+    for (size_t i=0; i<wcslen(text); i++)
     {
         wchar_t c = text[i];
         if (c==0)

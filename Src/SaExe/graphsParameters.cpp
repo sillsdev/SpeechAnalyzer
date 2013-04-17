@@ -1808,8 +1808,8 @@ void CDlgParametersSpectrumPage::Apply()
         if (nFreqScaleOld != pSpecParm->nFreqScaleRange)
         {
             CPlotWnd * pSpectrumPlot = pSpectrumGraph->GetPlot();
-            CPrivateCursorWnd * pFreqCursor = pSpectrumPlot->GetPrivateCursorWnd();
-            CPoint point;
+            
+			CPoint point;
             point.x = pSpectrumPlot->GetPrivateCursorPosition();
 
             double ratio = (pSpecParm->nFreqScaleRange + 1)/double(nFreqScaleOld + 1);
@@ -1824,10 +1824,10 @@ void CDlgParametersSpectrumPage::Apply()
                 point.x = rPlotWnd.right - 1;
             }
 
-            pFreqCursor->ChangeCursorPosition(point);
+            pSpectrumPlot->ChangePrivateCursorPosition(point);
         }
+
         pSpectrumGraph->RedrawGraph(TRUE,TRUE);
-        //pSpectrumGraph->RedrawGraph(FALSE,TRUE); //by AKE, to retain x-scale during animation
         int nFormantChart = pView->GetGraphIndexForIDD(IDD_F1F2);
         if (nFormantChart >= 0)
         {

@@ -41,7 +41,7 @@ void RemoveFile(LPCTSTR path)
 /**
 * return true if the path exists as a folder
 */
-bool FileExists(LPCTSTR path)
+bool FileExists( LPCTSTR path)
 {
     CFileStatus status;
     if (CFile::GetStatus(path,status))
@@ -137,11 +137,11 @@ int GetSaveAsFilename(LPCTSTR title, LPCTSTR filter, LPCTSTR extension, LPTSTR p
 
     filename = L"";
     CSaString title2 = title;
-
     int nFind = title2.Find(':');
     if (nFind != -1)
     {
         title2 = title2.Left(nFind);
+		title2 = title2.Trim();
     }
     nFind = title2.ReverseFind('.');
 

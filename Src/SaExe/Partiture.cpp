@@ -34,18 +34,17 @@
 #include <windows.h>
 #include <tchar.h>
 #include <fstream>
-
 using std::ofstream;
 using std::ifstream;
 using std::ios;
 using std::streampos;
-
 #include <math.h>
 #include <mmsystem.h>
 #include <commdlg.h>
 #include "Partiture.hpp"
 #include "Clip.hpp"
 #include "Resource.h"
+#include "AppDefs.h"
 
 #define TICKS_PER_Q (120)
 
@@ -4450,7 +4449,7 @@ LRESULT CALLBACK PartitureProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam)
 
                     pwd->m_sPlay.Tempo = pwd->Tempo;
 
-                    SetTimer(hWnd,0,PLAY_TIMER_INTERVAL,NULL);
+                    SetTimer( hWnd, ID_TIMER_MIDI, PLAY_TIMER_INTERVAL,NULL);
                     SendMessage(hWnd,WM_TIMER, 0, 0);
                     if (lParam)
                     {
@@ -4492,7 +4491,7 @@ LRESULT CALLBACK PartitureProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam)
         {
             if (!pwd->m_sPlay.Tempo)
             {
-                KillTimer(hWnd, 0);
+                KillTimer(hWnd, ID_TIMER_MIDI);
                 return 0;
             }
 
@@ -5043,7 +5042,7 @@ static DWORD StopMidiFile(HWND hWnd)
     {
         if (pwd->m_sPlay.Tempo)
         {
-            KillTimer(hWnd, 0);
+            KillTimer(hWnd, ID_TIMER_MIDI);
 
             pwd->m_sPlay.Tempo = 0;
 

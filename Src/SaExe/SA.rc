@@ -26,7 +26,7 @@ LANGUAGE LANG_NEUTRAL, SUBLANG_NEUTRAL
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 3,1,0,52
+ FILEVERSION 3,1,0,53
  PRODUCTVERSION 1,0,0,1
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
@@ -44,7 +44,7 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "SIL International"
             VALUE "FileDescription", "SA"
-            VALUE "FileVersion", "v3.1.0.52a"
+            VALUE "FileVersion", "v3.1.0.53"
             VALUE "InternalName", "SA"
             VALUE "LegalCopyright", "© 1996-2013 SIL International (MSEA)"
             VALUE "ProductName", "SA"
@@ -2195,13 +2195,13 @@ BEGIN
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,83,139,10
 END
 
-IDD_SPLIT DIALOGEX 0, 0, 262, 267
+IDD_SPLIT DIALOGEX 0, 0, 262, 290
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Split File"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
-    DEFPUSHBUTTON   "Split",IDOK,152,246,50,14
-    PUSHBUTTON      "Cancel",IDCANCEL,205,246,50,14
+    DEFPUSHBUTTON   "Split",IDOK,152,269,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,205,269,50,14
     COMBOBOX        IDC_SPLIT_WORD_CONVENTION,8,118,247,63,CBS_DROPDOWNLIST | WS_TABSTOP
     COMBOBOX        IDC_SPLIT_PHRASE_CONVENTION,7,189,247,63,CBS_DROPDOWNLIST | WS_TABSTOP
     LTEXT           "Transcription Data Filename Convention",IDC_STATIC,8,107,247,8
@@ -2217,9 +2217,13 @@ BEGIN
     LTEXT           "Phrase Sub-Folder Name",IDC_STATIC,7,142,247,8
     LTEXT           "Transcription Data Sub-Folder Name",IDC_STATIC,7,72,247,9
     CONTROL         "Do not save segment when Word Gloss is empty.",IDC_CHECK_GLOSS_EMPTY,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,211,247,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,237,247,10
     LTEXT           "Phrase Filename Prefix",IDC_STATIC,7,179,247,8
-    CONTROL         "Overwrite existing data.",IDC_CHECK_OVERWRITE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,226,94,10
+    CONTROL         "Overwrite existing data.",IDC_CHECK_OVERWRITE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,252,94,10
+    LTEXT           "Filename Prefix:",IDC_STATIC,8,216,52,8
+    EDITTEXT        IDC_FILENAME_PREFIX,62,214,65,14,ES_AUTOHSCROLL
+    LTEXT           "Filename Suffix:",IDC_STATIC,132,216,53,8
+    EDITTEXT        IDC_FILENAME_SUFFIX,189,214,65,14,ES_AUTOHSCROLL
 END
 
 IDD_MULTICHANNEL DIALOGEX 0, 0, 309, 79
@@ -2505,7 +2509,7 @@ BEGIN
         LEFTMARGIN, 7
         RIGHTMARGIN, 255
         TOPMARGIN, 7
-        BOTTOMMARGIN, 260
+        BOTTOMMARGIN, 283
     END
 
     IDD_MULTICHANNEL, DIALOG
@@ -2633,6 +2637,7 @@ BEGIN
     SEPARATOR
     BUTTON      ID_PLAYBACK_CURSORS
     BUTTON      ID_PLAYBACK_FILE
+    BUTTON      ID_PLAYER_PAUSE
     BUTTON      ID_PLAYER_STOP
     SEPARATOR
     BUTTON      ID_PLAYER
@@ -2673,6 +2678,7 @@ BEGIN
     BUTTON      ID_PLAYBACK_STOPTOR
     BUTTON      ID_PLAYBACK_WINDOW
     BUTTON      ID_PLAYBACK_FILE
+    BUTTON      ID_PLAYER_PAUSE
     BUTTON      ID_PLAYER_STOP
     SEPARATOR
     BUTTON      ID_PLAYER
@@ -2994,6 +3000,7 @@ BEGIN
         MENUITEM "End cursor -> &Right Window Border\tF10", ID_PLAYBACK_STOPTOR
         MENUITEM "Current &Window\tF11",        ID_PLAYBACK_WINDOW
         MENUITEM "Entire &File\tF12",           ID_PLAYBACK_FILE
+        MENUITEM "Pa&use",		                ID_PLAYER_PAUSE
         MENUITEM "&Stop\tESC",                  ID_PLAYER_STOP
         POPUP "Function &Keys"
         BEGIN
@@ -3379,6 +3386,7 @@ BEGIN
     BEGIN
         MENUITEM "&Between Cursors\tF8",        ID_PLAYBACK_CURSORS
         MENUITEM "Slo&w Replay\tF5",            ID_PLAYBACK_SLOW
+        MENUITEM "Pa&use",                      ID_PLAYER_PAUSE
         MENUITEM "&Stop\tESC",                  ID_PLAYER_STOP
         MENUITEM SEPARATOR
     END
@@ -4235,7 +4243,7 @@ IDC_MHANDN              CURSOR                  "res\\MedHandN.cur"
 
 STRINGTABLE
 BEGIN
-    VS_VERSION              "Version 3.1.0.52a"
+    VS_VERSION              "Version 3.1.0.53"
     VS_COPYRIGHT            "© 1996-2013 SIL International (MSEA).\nAll Rights Reserved."
     IDR_MAINFRAME           "Speech Analyzer"
     IDR_SA_ANNTYPE          "\nSA\nSA Document\nWAV Files (*.wav)\n.wav\nannFileType\nANN File Type"
@@ -4649,7 +4657,7 @@ BEGIN
     IDS_QUESTION_RECREATEGRAPHS 
                             "In order to change the graph window caption style, all graph windows have to be deleted and created again. All overlay graphs will be lost. Do you want to change the caption style?"
     IDS_QUESTION_DELRECORD  "The recorded data has to be deleted, if you change the record settings. Do you want to delete your last recording?"
-    IDS_QUESTION_READ_ONLY  "The audio file you are saving is Read-Only. Would you like to continue saving the audio data?\n\nTo save the audio data to another file, click YES.\nTo skip saving the audio file but save the associated transcription, click NO.\nTo cancel saving altogether, click CANCEL."
+    IDS_QUESTION_READ_ONLY  "The audio file you are saving is Read-Only. Would you like to continue saving the audio data?\n\nTo save the audio data to another file, click YES.\nTo skip saving the audio file but save the transcription data, click NO.\nTo cancel saving altogether, click CANCEL."
     IDS_ERROR_MMIO_BADID_VISTA 
                             "Sound device unavailable.\n\nCheck your microphone and speaker connections."
 END
@@ -4802,6 +4810,7 @@ BEGIN
     ID_POPUPGRAPH_MAGNIFY4  "Show graph data vertically magnified by 4\nMagnify x4"
     ID_POPUPGRAPH_MAGNIFYCUSTOM 
                             "Show graph data vertically magnified by a custom factor\nMagnify Custom"
+    ID_PLAYER_PAUSE         "Pauses playing\nPause Playing"
     ID_PLAYER_STOP          "Stops playing\nStop Playing"
     ID_POPUPGRAPH_STYLE_LINE "Choose graph display style line\nStyle Line"
     ID_POPUPGRAPH_STYLE_SOLID "Choose graph display style solid\nStyle Solid"

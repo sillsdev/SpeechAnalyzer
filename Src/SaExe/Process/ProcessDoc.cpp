@@ -248,7 +248,6 @@ void * CProcessDoc::GetProcessedDataBlock(LPCTSTR szName, int selectedChannel, i
 
 void CProcessDoc::LoadBuffer( char * buffer, size_t size, int sampleSize, int selectedChannel, int numChannels, UINT bytesRead)
 {
-
     if (sampleSize==1)
     {
         char * src = buffer;

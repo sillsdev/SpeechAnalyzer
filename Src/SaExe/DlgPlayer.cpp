@@ -34,7 +34,7 @@
 // Displays the player that allows the user to control the wave data playing
 // process, done by the CWave class.
 
-BOOL CDlgPlayer::bPlayer = FALSE; // player not launched at startup
+bool CDlgPlayer::bPlayer = false; // player not launched at startup
 
 BEGIN_MESSAGE_MAP(CDlgPlayer, CDialog)
     ON_COMMAND(IDC_PLAY, OnPlay)
@@ -76,7 +76,7 @@ CDlgPlayer::CDlgPlayer(CWnd * pParent) : CDialog(CDlgPlayer::IDD, pParent)
     m_nVolume = m_pWave->GetVolume(bResult);
     m_bFullSize = FALSE;
     m_dwPlayPosition = 0;
-    m_bFnKeySetting = FALSE;
+    m_bFnKeySetting = false;
 }
 
 /***************************************************************************/
@@ -87,8 +87,8 @@ CDlgPlayer::CDlgPlayer(CWnd * pParent) : CDialog(CDlgPlayer::IDD, pParent)
 /***************************************************************************/
 CDlgPlayer::~CDlgPlayer()
 {
-    bPlayer = FALSE;
-    if (m_pWave)
+    bPlayer = false;
+    if (m_pWave!=NULL)
     {
         delete m_pWave;
     }
@@ -100,7 +100,7 @@ CDlgPlayer::~CDlgPlayer()
 /***************************************************************************/
 BOOL CDlgPlayer::Create()
 {
-    bPlayer = TRUE; // player launched
+    bPlayer = true; // player launched
     return CDialog::Create(CDlgPlayer::IDD);
 }
 
@@ -220,16 +220,16 @@ const UINT CDlgPlayer::SubModeUndefined = 0x0ffff;
 /***************************************************************************/
 // CDlgPlayer::SetPlayerMode Set the player mode
 /***************************************************************************/
-BOOL CDlgPlayer::SetPlayerMode(UINT nMode, UINT nSubMode, BOOL bFullSize, BOOL bFnKey, SSpecific * pSpecific)
+bool CDlgPlayer::SetPlayerMode( EMode mode, UINT nSubMode, BOOL bFullSize, BOOL bFnKey, SSpecific * pSpecific)
 {
 
-    TRACE(_T("SetPlayerMode %d %d %d %d\n"),(int)nMode,(int)nSubMode,(int)bFullSize,(int)bFnKey);
+    TRACE(_T("SetPlayerMode %d %d %d %d\n"),(int)mode,(int)nSubMode,(int)bFullSize,(int)bFnKey);
     nSubMode = nSubMode & 0x0ffff;
     // SDM 1.06.6U6
-    if (m_bFnKeySetting && (!bFnKey ||(nSubMode != SubModeUndefined)|| !m_bRepeat))
+    if ((m_bFnKeySetting) && (!bFnKey ||(nSubMode != SubModeUndefined)|| !m_bRepeat))
     {
         // restore original player setting
-        m_bFnKeySetting = FALSE;
+        m_bFnKeySetting = false;
         m_nVolume = m_nOldVolume;
         m_nSpeed = m_nOldSpeed;
         m_nDelay = m_nOldDelay;
@@ -245,14 +245,14 @@ BOOL CDlgPlayer::SetPlayerMode(UINT nMode, UINT nSubMode, BOOL bFullSize, BOOL b
         }
     }
     // SDM 1.06.6U6 bFnKey not valid for nSubMode = SubModeUndefined (this is a repeat command or stop command)
-    if (bFnKey && (nSubMode != SubModeUndefined))
+    if ((bFnKey) && (nSubMode != SubModeUndefined))
     {
         // save the current player setting
         m_nOldVolume = m_nVolume;
         m_nOldSpeed = m_nSpeed;
         m_nOldDelay = m_nDelay;
-        m_bOldRepeat = m_bRepeat;
-        m_bFnKeySetting = TRUE;
+        m_bOldRepeat = (m_bRepeat==TRUE);
+        m_bFnKeySetting = true;
         m_nFnKey = nSubMode; // SDM 1.5Test10.4
         // get the function key setting (Fn key number is in nSubMode)
         CMainFrame * pMainFrame = (CMainFrame *)AfxGetMainWnd();
@@ -330,7 +330,7 @@ BOOL CDlgPlayer::SetPlayerMode(UINT nMode, UINT nSubMode, BOOL bFullSize, BOOL b
         SetPlayerFullSize();    // change the size
     }
     // No errors
-    if (m_nMode == nMode)
+    if (m_nMode == mode)
     {
         return TRUE;    // no change
     }
@@ -345,17 +345,17 @@ BOOL CDlgPlayer::SetPlayerMode(UINT nMode, UINT nSubMode, BOOL bFullSize, BOOL b
     CSaApp * pApp = (CSaApp *)AfxGetApp(); // get pointer to application
     CSaView * pView = (CSaView *)m_pView; // cast pointer to view
     CSaDoc * pDoc = (CSaDoc *)m_pDoc; // cast pointer to document
-    switch (nMode)
+    switch (mode)
     {
-    case IDC_PLAY:
-        if (m_nMode != IDC_PAUSE)
+    case PLAYING:
+        if (m_nMode != PAUSED)
         {
             m_dwPlayPosition = 0;
         }
-        m_nMode = IDC_PLAY;
-        m_play.Flash(FALSE); // stop flashing Play button
-        m_play.Push(); // push Play button
-        m_pause.Release(); // release Pause button
+        m_nMode = PLAYING;
+        m_play.Flash(FALSE);		// stop flashing Play button
+        m_play.Push();				// push Play button
+        m_pause.Release();			// release Pause button
         m_pause.EnableWindow(TRUE); // enable Pause button
         GetDlgItem(IDC_PLAYMODE)->EnableWindow(FALSE); // disable mode window
         // get pointer to document
@@ -470,7 +470,7 @@ BOOL CDlgPlayer::SetPlayerMode(UINT nMode, UINT nSubMode, BOOL bFullSize, BOOL b
 
             if (bError)
             {
-                m_nMode = IDC_STOP;  // play not successfull
+                m_nMode = STOPPED;  // play not successfull
                 m_play.Release(); // release Play button
                 m_pause.EnableWindow(FALSE); // disable Pause button
                 GetDlgItem(IDC_PLAYMODE)->EnableWindow(TRUE); // enable mode window
@@ -480,26 +480,31 @@ BOOL CDlgPlayer::SetPlayerMode(UINT nMode, UINT nSubMode, BOOL bFullSize, BOOL b
             }
         }
         break;
-    case IDC_PAUSE:
+
+    case PAUSED:
         if (m_pWave)
         {
             m_pWave->Stop();
         }
         m_nOldMode = m_nMode;
-        m_nMode = IDC_PAUSE;
-        m_pView->SetPlaybackPosition();     // SDM 1.06.6U6 hide playback indicators
+        m_nMode = PAUSED;
+		m_pView->StopPlaybackTimer();
+		m_pView->SetPlaybackFlash(true);
+        //m_pView->SetPlaybackPosition();     // SDM 1.06.6U6 hide playback indicators
         // start flashing paused button
         m_play.Flash(TRUE);
         m_VUBar.SetVU(0);
         break;
-    case IDC_STOP:
-        m_nMode = IDC_STOP;
+
+    case STOPPED:
+        m_nMode = STOPPED;
         if (m_pWave)
         {
             m_pWave->Stop();
         }
         m_dwPlayPosition = 0;
         SetPositionTime();
+		m_pView->StopPlaybackTimer();
         m_pView->SetPlaybackPosition();     // SDM 1.06.6U6 hide playback indicators
         m_play.Release();                   // release Play button
         m_stop.Release();                   // release Stop button
@@ -508,16 +513,17 @@ BOOL CDlgPlayer::SetPlayerMode(UINT nMode, UINT nSubMode, BOOL bFullSize, BOOL b
         GetDlgItem(IDC_PLAYMODE)->EnableWindow(TRUE); // disable mode window
         m_VUBar.Reset();
         break;
+
     default:
-        m_nMode = 0;
+        m_nMode = IDLE;
         if (m_pWave)
         {
             m_pWave->Stop();
         }
-        m_play.Release(); // release Play button
-        m_stop.Release(); // release Stop button
-        m_pause.Release(); // release Pause button
-        m_pause.EnableWindow(FALSE); // disable Pause button
+        m_play.Release();					// release Play button
+        m_stop.Release();					// release Stop button
+        m_pause.Release();					// release Pause button
+        m_pause.EnableWindow(FALSE);		// disable Pause button
         GetDlgItem(IDC_PLAYMODE)->EnableWindow(FALSE); // disable mode window
         m_LEDTotalTime.SetTime(100, 1000);
         m_LEDPosTime.SetTime(100, 1000);
@@ -536,7 +542,7 @@ BOOL CDlgPlayer::SetPlayerMode(UINT nMode, UINT nSubMode, BOOL bFullSize, BOOL b
 void CDlgPlayer::BlockFinished(UINT nLevel, DWORD dwPosition, UINT nSpeed)
 {
 
-    m_pView->SetPlaybackPosition(dwPosition, nSpeed);
+    m_pView->SetPlaybackPosition( dwPosition, nSpeed);
     // update the VU bar
     m_VUBar.SetVU((int)nLevel);
     // update the time
@@ -553,13 +559,12 @@ void CDlgPlayer::BlockFinished(UINT nLevel, DWORD dwPosition, UINT nSpeed)
 /***************************************************************************/
 void CDlgPlayer::EndPlayback()
 {
-
-    if (m_nMode != 0)
+    if (m_nMode != IDLE)
     {
-        SetPlayerMode(IDC_STOP, SubModeUndefined, m_bFullSize, m_bFnKeySetting);  // SDM 1.06.6U6
+        SetPlayerMode( STOPPED, SubModeUndefined, m_bFullSize, m_bFnKeySetting);  // SDM 1.06.6U6
         if (m_bRepeat)
         {
-            SetTimer(1, m_nDelay, NULL);    // start repeating
+            SetTimer(ID_TIMER_DELAY, m_nDelay, NULL);    // start repeating
         }
     }
 }
@@ -580,29 +585,24 @@ void CDlgPlayer::ChangeView(CSaView * pView)
     m_pView = pView;                                // set the new pointer to the active view
     m_pDoc = pView->GetDocument();                  // get the pointer to the attached document
     CSaDoc * pDoc = (CSaDoc *)m_pDoc;
-    CString szTitle = pDoc->GetTitle(); // load the document title
-    int nFind = szTitle.Find(':');
-    if (nFind != -1)
-    {
-        szTitle = szTitle.Left(nFind);    // extract part left of :
-    }
+	CString szTitle = pDoc->GetFilenameFromTitle().c_str(); // load the document title
     CString szCaption;
-    GetWindowText(szCaption); // get the current caption string
-    nFind = szCaption.Find(' ');
+    GetWindowText(szCaption);		// get the current caption string
+    int nFind = szCaption.Find(' ');
     if (nFind != -1)
     {
         szCaption = szCaption.Left(nFind);    // extract part left of first space
     }
-    szCaption += " - " + szTitle; // add new document title
-    SetWindowText(szCaption); // write the new caption string
+    szCaption += " - " + szTitle;	// add new document title
+    SetWindowText(szCaption);		// write the new caption string
     if (pDoc->GetDataSize() == 0)   // no data to play
     {
-        SetPlayerMode(0, m_nSubMode, m_bFullSize);
+        SetPlayerMode( IDLE, m_nSubMode, m_bFullSize);
     }
     else
     {
         // update the time displays
-        SetPlayerMode(IDC_STOP, m_nSubMode, m_bFullSize);
+        SetPlayerMode( STOPPED, m_nSubMode, m_bFullSize);
         SetTotalTime();
         SetPositionTime();
     }
@@ -624,15 +624,15 @@ BOOL CDlgPlayer::OnInitDialog()
     m_pWave->GetOutDevice()->ConnectMixer(this);
 
     // preset the player modes
-    m_nMode = 0;
+    m_nMode = IDLE;
     m_nSubMode = ID_PLAYBACK_FILE; // default
     CRect rWnd;
     // build and place the play toggle button
-    m_play.Init(IDC_PLAY, "Play", this);
+    m_play.Init( IDC_PLAY, "Play", this);
     // build and place the stop toggle button
-    m_stop.Init(IDC_STOP, "Stop", this);
+    m_stop.Init( IDC_STOP, "Stop", this);
     // build and place the pause toggle button
-    m_pause.Init(IDC_PAUSE, "Pause", this);
+    m_pause.Init( IDC_PAUSE, "Pause", this);
     // build and place the total time LED window
     m_LEDTotalTime.Init(IDC_TOTALTIME, this);
     m_LEDTotalTime.SetTime(0, 0);
@@ -702,9 +702,9 @@ BOOL CDlgPlayer::OnInitDialog()
 void CDlgPlayer::OnPlay()
 {
     UpdateData(TRUE);
-    if (m_nMode != IDC_PLAY)
+    if (m_nMode != PLAYING)
     {
-        SetPlayerMode(IDC_PLAY, m_nSubMode, m_bFullSize);
+        SetPlayerMode( PLAYING, m_nSubMode, m_bFullSize);
     }
 }
 
@@ -723,9 +723,9 @@ void CDlgPlayer::OnStop()
         m_bRepeat = FALSE;
     }
 
-    if (m_nMode != IDC_STOP)
+    if (m_nMode != STOPPED)
     {
-        SetPlayerMode(IDC_STOP, m_nSubMode, m_bFullSize);
+        SetPlayerMode( STOPPED, m_nSubMode, m_bFullSize);
     }
     else
     {
@@ -738,13 +738,13 @@ void CDlgPlayer::OnStop()
 /***************************************************************************/
 void CDlgPlayer::OnPause()
 {
-    if (m_nMode != IDC_PAUSE)
+    if (m_nMode != PAUSED)
     {
-        SetPlayerMode(IDC_PAUSE, m_nSubMode, m_bFullSize);
+        SetPlayerMode( PAUSED, m_nSubMode, m_bFullSize);
     }
     else
     {
-        SetPlayerMode(m_nOldMode, m_nSubMode, m_bFullSize);
+        SetPlayerMode( m_nOldMode, m_nSubMode, m_bFullSize);
     }
 }
 
@@ -1052,7 +1052,7 @@ void CDlgPlayer::OnSelchangePlaymode()
     default:
         break;
     }
-    SetPlayerMode(IDC_STOP, nSubMode, m_bFullSize);
+    SetPlayerMode( STOPPED, nSubMode, m_bFullSize);
     SetTotalTime();
     SetPositionTime();
 }
@@ -1097,7 +1097,7 @@ void CDlgPlayer::OnClose()
 {
     OnStop(); // stop the player
     CDialog::OnClose();
-    bPlayer = FALSE;
+    bPlayer = false;
     if (m_pWave)
     {
         delete m_pWave;
@@ -1111,10 +1111,10 @@ void CDlgPlayer::OnClose()
 /***************************************************************************/
 void CDlgPlayer::OnTimer(UINT nIDEvent)
 {
-    KillTimer(1);
-    if ((m_nMode == IDC_STOP) && m_bRepeat)
+    KillTimer(ID_TIMER_DELAY);
+    if ((m_nMode == STOPPED) && (m_bRepeat))
     {
-        SetPlayerMode(IDC_PLAY, SubModeUndefined, m_bFullSize, m_bFnKeySetting);    // SDM 1.06.6U6
+        SetPlayerMode( PLAYING, SubModeUndefined, m_bFullSize, m_bFnKeySetting);    // SDM 1.06.6U6
     }
     CWnd::OnTimer(nIDEvent);
 }
@@ -1137,7 +1137,7 @@ void CDlgPlayer::OnSetup()
     {
         m_pWave->Stop();    // stop recording
     }
-    SetPlayerMode(IDC_STOP, m_nSubMode, m_bFullSize);
+    SetPlayerMode( STOPPED, m_nSubMode, m_bFullSize);
     m_VUBar.SetVU(0); // reset the VU bar
     // create the dialog
     m_bTestRunning = TRUE;
@@ -1184,17 +1184,27 @@ HPSTR CDlgPlayer::GetWaveData(DWORD /*dwPlayPosition*/, DWORD /*dwDataSize*/)
     return NULL;
 }
 
-BOOL CDlgPlayer::IsPlaying()
+bool CDlgPlayer::IsPlaying()
 {
-    return ((m_nMode == IDC_PLAY)||m_bFnKeySetting);   // return TRUE if player is playing
+    return ((m_nMode == PLAYING)||(m_bFnKeySetting));   // return TRUE if player is playing
 }
 
-BOOL CDlgPlayer::IsFullSize()
+bool CDlgPlayer::IsPaused()
 {
-    return m_bFullSize;   // return TRUE if player has full size
+    return (m_nMode == PAUSED);							// return TRUE if player is playing
 }
 
-BOOL CDlgPlayer::IsTestRun()
+bool CDlgPlayer::IsFullSize()
 {
-    return m_bTestRunning;   // return TRUE if function key dialog open
+    return m_bFullSize;			// return TRUE if player has full size
+}
+
+bool CDlgPlayer::IsTestRun()
+{
+    return m_bTestRunning;		// return TRUE if function key dialog open
+}
+
+bool CDlgPlayer::IsLaunched()
+{
+	return bPlayer;
 }

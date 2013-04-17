@@ -21,7 +21,9 @@ CDlgSplitFile::CDlgSplitFile(CWnd * pParent /*=NULL*/) :
     m_szFolderLocation(_T("")),
     m_szFolderName(_T("")),
     m_szPhraseFolderName(_T("")),
-    m_szGlossFolderName(_T(""))
+    m_szGlossFolderName(_T("")),
+	m_szFilenamePrefix(_T("")),
+	m_szFilenameSuffix(_T(""))
 {
 }
 
@@ -49,6 +51,8 @@ void CDlgSplitFile::DoDataExchange(CDataExchange * pDX)
     DDX_Text(pDX, IDC_SPLIT_FOLDER_NAME, m_szFolderName);
     DDX_Text(pDX, IDC_SPLIT_PHRASE_SUBFOLDER_NAME, m_szPhraseFolderName);
     DDX_Text(pDX, IDC_SPLIT_WORD_SUBFOLDER_NAME, m_szGlossFolderName);
+    DDX_Text(pDX, IDC_FILENAME_PREFIX, m_szFilenamePrefix);
+    DDX_Text(pDX, IDC_FILENAME_SUFFIX, m_szFilenameSuffix);
     DDX_Check(pDX, IDC_CHECK_GLOSS_EMPTY, m_bSkipGlossEmpty);
     DDX_Check(pDX, IDC_CHECK_OVERWRITE, m_bOverwriteData);
 }

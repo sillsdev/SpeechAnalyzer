@@ -29,23 +29,15 @@ static char BASED_CODE THIS_FILE[] = __FILE__;
 
 IMPLEMENT_DYNCREATE(CMultiPlotWnd, CPlotWnd)
 
-/////////////////////////////////////////////////////////////////////////////
-// CMultiPlotWnd message map
-
 BEGIN_MESSAGE_MAP(CMultiPlotWnd, CPlotWnd)
-    //{{AFX_MSG_MAP(CMultiPlotWnd)
-    //}}AFX_MSG_MAP
 END_MESSAGE_MAP()
-
-/////////////////////////////////////////////////////////////////////////////
-// CMultiPlotWnd construction/destruction/creation
 
 /***************************************************************************/
 // CMultiPlotWnd::CMultiPlotWnd Constructor
 /***************************************************************************/
 CMultiPlotWnd::CMultiPlotWnd()
 {
-    ShowCursors(FALSE,TRUE);
+    ShowCursors(false,true);
 }
 
 /***************************************************************************/
@@ -200,7 +192,7 @@ void CMultiPlotWnd::RemoveRtPlots()
         {
             POSITION oldPos = pos;
             CPlotWndInfo * pInfo = m_List.GetNext(pos);
-            if (pInfo->m_pPlot->bIsRtOverlay())
+            if (pInfo->m_pPlot->IsRtOverlay())
             {
                 m_List.RemoveAt(oldPos);
                 pInfo->m_pPlot->DestroyWindow();

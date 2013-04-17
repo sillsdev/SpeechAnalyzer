@@ -1163,7 +1163,7 @@ BOOL CPlotSpectrogram::OnDraw2(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pVi
         }
         if (nResult != PROCESS_CANCELED)
         {
-            ShowCursors(FALSE, TRUE);
+            ShowCursors(false,true);
 
             // set legend scale
             pGraph->SetLegendScale(SCALE | NUMBERS, 0, (int)pSpectroParm->nFrequency, _T("f(Hz)")); // set legend scale

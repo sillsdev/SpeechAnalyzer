@@ -50,6 +50,7 @@
 #include "Process\sa_p_spg.h"
 #include "Process\sa_p_sfmt.h"
 #include "settings\obstream.h"
+#include "DlgPlayer.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE
@@ -83,6 +84,8 @@ BEGIN_MESSAGE_MAP(CSaView, CView)
     ON_COMMAND(ID_PLAYBACK_STARTTOR, OnPlaybackStarttor)
     ON_COMMAND(ID_PLAYBACK_LTOSTOP, OnPlaybackLtoStop)
     ON_COMMAND(ID_PLAYBACK_STOPTOR, OnPlaybackStopToR)
+    ON_COMMAND(ID_PLAYER_PAUSE, OnPlayerPause)
+    ON_UPDATE_COMMAND_UI(ID_PLAYER_PAUSE, OnUpdatePlayerPause)
     ON_COMMAND(ID_PLAYER_STOP, OnPlayerStop)
     ON_UPDATE_COMMAND_UI(ID_PLAYER_STOP, OnUpdatePlayerStop)
     ON_COMMAND(ID_PLAYER, OnPlayer)
@@ -168,7 +171,7 @@ BEGIN_MESSAGE_MAP(CSaView, CView)
     ON_UPDATE_COMMAND_UI(ID_RESTART_PROCESS, OnUpdateRestartProcess)
     ON_COMMAND(ID_EDIT_SELECTWAVEFORM, OnEditSelectWaveform)
     ON_UPDATE_COMMAND_UI(ID_EDIT_SELECTWAVEFORM, OnUpdateEditSelectWaveform)
-    ON_UPDATE_COMMAND_UI(ID_PLAYBACK_CURSORS, OnUpdatePlayback)
+    ON_UPDATE_COMMAND_UI(ID_PLAYBACK_CURSORS, OnUpdatePlaybackPortion)
     ON_COMMAND(ID_SETUP_FNKEYS, OnSetupFnkeys)
     ON_UPDATE_COMMAND_UI(ID_SETUP_FNKEYS, OnUpdateSetupFnkeys)
     ON_COMMAND(ID_EDIT_REMOVE, OnEditRemove)
@@ -219,14 +222,14 @@ BEGIN_MESSAGE_MAP(CSaView, CView)
     ON_WM_TIMER()
     ON_COMMAND(ID_EDIT_INPLACE, OnEditInplace)
     ON_UPDATE_COMMAND_UI(ID_PLAYBACK_FILE, OnUpdatePlayback)
-    ON_UPDATE_COMMAND_UI(ID_PLAYBACK_WINDOW, OnUpdatePlayback)
+    ON_UPDATE_COMMAND_UI(ID_PLAYBACK_WINDOW, OnUpdatePlaybackPortion)
     ON_UPDATE_COMMAND_UI(ID_PLAYER, OnUpdatePlayback)
     ON_UPDATE_COMMAND_UI(ID_FILE_PRINT, OnUpdateFilePrint)
     ON_WM_MDIACTIVATE()
     ON_UPDATE_COMMAND_UI(ID_PLAYBACK_LTOSTART, OnUpdatePlayback)
     ON_UPDATE_COMMAND_UI(ID_PLAYBACK_STARTTOR, OnUpdatePlayback)
-    ON_UPDATE_COMMAND_UI(ID_PLAYBACK_LTOSTOP, OnUpdatePlayback)
-    ON_UPDATE_COMMAND_UI(ID_PLAYBACK_STOPTOR, OnUpdatePlayback)
+    ON_UPDATE_COMMAND_UI(ID_PLAYBACK_LTOSTOP, OnUpdatePlaybackPortion)
+    ON_UPDATE_COMMAND_UI(ID_PLAYBACK_STOPTOR, OnUpdatePlaybackPortion)
     ON_COMMAND(ID_ADDOVERLAY, OnAddOverlay)
     ON_UPDATE_COMMAND_UI(ID_ADDOVERLAY, OnUpdateAddOverlay)
     ON_COMMAND(ID_REMOVE_OVERLAY, OnRemoveOverlay)
@@ -424,6 +427,7 @@ CSaView::CSaView(const CSaView * pToBeCopied)
     m_fVScrollSteps = 0;
     m_dwScrollLine = 0;
     m_dPlaybackPosition = 0;
+	lastPlaybackPosition = 0;
     m_dwPlaybackTime = 0;
     m_dPlaybackPositionLimit = 0;
     m_nPlaybackSpeed = 0;
@@ -447,7 +451,6 @@ CSaView::CSaView(const CSaView * pToBeCopied)
 	lastBoundaryStopCursor = UNDEFINED_OFFSET;
 	lastBoundaryIndex = -1;
 	lastBoundaryCursor = UNDEFINED_CURSOR;
-
 }
 
 CSaView::~CSaView()
@@ -1743,7 +1746,7 @@ void CSaView::SetFocusedGraph(CGraphWnd * pWnd)
         pWnd->GetWindowText(szGraph.GetBuffer(64), 64);     // load the graph caption
         szGraph.ReleaseBuffer(-1);
         CSaDoc * pDoc = GetDocument();
-        szCaption = pDoc->GetFilename().c_str();            // get current view's caption string
+        szCaption = pDoc->GetFilenameFromTitle().c_str();   // get current view's caption string
 
         if ((pDoc->IsTempFile())&&(pDoc->CanEdit()))
         {
@@ -1779,7 +1782,7 @@ void CSaView::ResetFocusedGraph()
     if (m_pDocument && GetSafeHwnd())
     {
         CSaDoc * pDoc = GetDocument();  // get pointer to document
-        szCaption = pDoc->GetFilename().c_str();    // get the current view caption string
+        szCaption = pDoc->GetFilenameFromTitle().c_str();    // get the current view caption string
         pDoc->SetTitle(szCaption);      // write the new caption string
     }
 }
@@ -1852,8 +1855,8 @@ void CSaView::ZoomIn(double fZoomAmount, BOOL bZoom)
     for (int nLoop = 0; nLoop < MAX_GRAPHS_NUMBER; nLoop++)
     {
         if ((m_apGraphs[nLoop]) &&
-                (!m_apGraphs[nLoop]->IsAreaGraph()) &&
-                (!m_apGraphs[nLoop]->HavePrivateCursor()))
+            (!m_apGraphs[nLoop]->IsAreaGraph()) &&
+            (!m_apGraphs[nLoop]->HavePrivateCursor()))
         {
             m_apGraphs[nLoop]->RedrawGraph();    // repaint whole graph without legend window
         }
@@ -1924,8 +1927,9 @@ void CSaView::ZoomOut(double fZoomAmount)
         // repaint all graphs
         for (int nLoop = 0; nLoop < MAX_GRAPHS_NUMBER; nLoop++)
         {
-            if ((m_apGraphs[nLoop]) && (!m_apGraphs[nLoop]->IsAreaGraph()) &&
-                    (!m_apGraphs[nLoop]->HavePrivateCursor()))
+            if ((m_apGraphs[nLoop]!=NULL) && 
+				(!m_apGraphs[nLoop]->IsAreaGraph()) &&
+                (!m_apGraphs[nLoop]->HavePrivateCursor()))
             {
                 m_apGraphs[nLoop]->RedrawGraph();    // repaint whole graph without legend window
             }
@@ -2479,6 +2483,10 @@ void CSaView::SetStartStopCursorPosition( DWORD dwNewStartPos,
         {
             m_apGraphs[nLoop]->SetStopCursor(this);
         }
+        if (m_apGraphs[nLoop])
+        {
+            m_apGraphs[nLoop]->SetPlaybackCursor(this);
+        }
     }
 
     pViewMainFrame->SetPlayerTimes();
@@ -2489,59 +2497,80 @@ void CSaView::SetStartStopCursorPosition( DWORD dwNewStartPos,
 /***************************************************************************/
 // CSaView::SetPlaybackPosition Set the playbackPosition
 /***************************************************************************/
-void CSaView::SetPlaybackPosition(double dNewPos, int nSpeed, BOOL bEstimate)
+void CSaView::SetPlaybackPosition( DWORD dwNewPos, int nSpeed, BOOL bEstimate)
 {
     if (bEstimate)
     {
-        SetTimer(ID_PLAYER, /*PLAYBACK_CURSOR_UPDATE_INTERVAL * 1000 */ 1 , NULL);
+        SetTimer( ID_TIMER_PLAYBACK, 1, NULL);
     }
     else
     {
-        if (nSpeed)
+        if (nSpeed!=0)
         {
             m_dwPlaybackTime = GetTickCount();
-            SetTimer(ID_PLAYER, /*PLAYBACK_CURSOR_UPDATE_INTERVAL * 1000 */ 1 , NULL);
+            SetTimer( ID_TIMER_PLAYBACK, 1, NULL);
         }
-        m_dPlaybackPosition = dNewPos;
+        m_dPlaybackPosition = dwNewPos;
         m_nPlaybackSpeed = nSpeed;
     }
 
-    DWORD dwPlaybackPosition = ((DWORD)dNewPos);
-
+    DWORD dwPlaybackPosition = dwNewPos;
     // for 16 bit data value must be even
     if (GetDocument()->Is16Bit())
     {
         dwPlaybackPosition = dwPlaybackPosition & ~1;
     }
+
+	lastPlaybackPosition = dwPlaybackPosition;
+
     // move start cursors in all the graphs
     for (int nLoop = 0; nLoop < MAX_GRAPHS_NUMBER; nLoop++)
     {
         if (m_apGraphs[nLoop])
         {
-            m_apGraphs[nLoop]->SetPlaybackPosition(this, dwPlaybackPosition);
+            m_apGraphs[nLoop]->SetPlaybackPosition( this);
         }
     }
 }
 
 // SDM 1.5Test10.5
 /***************************************************************************/
+// CSaView::SetPlaybackPosition Set the playbackPosition
+/***************************************************************************/
+void CSaView::StopPlaybackTimer()
+{
+	KillTimer( ID_TIMER_PLAYBACK);
+}
+
+void CSaView::SetPlaybackFlash( bool on)
+{
+    // move start cursors in all the graphs
+    for (int nLoop = 0; nLoop < MAX_GRAPHS_NUMBER; nLoop++)
+    {
+        if (m_apGraphs[nLoop])
+        {
+            m_apGraphs[nLoop]->SetPlaybackFlash(on);
+        }
+    }
+}
+// SDM 1.5Test10.5
+/***************************************************************************/
 // CSaView::OnTimer Set the playbackPosition
 /***************************************************************************/
 void CSaView::OnTimer(UINT nIDEvent)
 {
-
-    if (nIDEvent == ID_PLAYER)
+    if (nIDEvent == ID_TIMER_PLAYBACK)
     {
         if (m_nPlaybackSpeed>0)
         {
-            double dNewPos = m_dPlaybackPosition + (GetTickCount()-m_dwPlaybackTime)/GetDocument()->GetTimeFromBytes(1000) * m_nPlaybackSpeed / 100;
-            SetPlaybackPosition(dNewPos, m_nPlaybackSpeed, TRUE);
+            DWORD dwNewPos = (DWORD)(m_dPlaybackPosition + (GetTickCount()-m_dwPlaybackTime)/GetDocument()->GetTimeFromBytes(1000) * m_nPlaybackSpeed / 100);
+            SetPlaybackPosition( dwNewPos, m_nPlaybackSpeed, TRUE);
         }
+		return;
     }
-    else
-    {
-        CView::OnTimer(nIDEvent);
-    }
+
+	// everything else
+    CView::OnTimer(nIDEvent);
 }
 
 /***************************************************************************/
@@ -6491,6 +6520,11 @@ DWORD CSaView::GetStopCursorPosition()
     return m_dwStopCursor;
 }
 
+DWORD CSaView::GetPlaybackCursorPosition()
+{
+	return lastPlaybackPosition;
+}
+
 CGraphWnd * CSaView::GetFocusedGraphWnd()
 {
     // gets the focused graph window pointer
@@ -6551,7 +6585,7 @@ CPoint CSaView::RealPrinterDPI()
     return m_printerDPI;
 };
 
-int CSaView::z() const
+int CSaView::GetZ() const
 {
     return m_z;    // The bottom window's z is zero.
 }

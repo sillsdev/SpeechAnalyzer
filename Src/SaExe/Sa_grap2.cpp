@@ -122,28 +122,12 @@ void CGraphWnd::SetMagnify(double bFactor, BOOL bRedraw)
 /***************************************************************************/
 void CGraphWnd::SetStartCursor(CSaView * pView)
 {
-    //if (HaveCursors())    //!! commented out by AKE to hide cursors for graph editing
     m_pPlot->SetStartCursor(pView);
     if (!m_pPlot->HaveCursors())
     {
         m_pPlot->Invalidate();
     }
-    /*
-    if (HavePrivateCursor())
-    {
-    // if spectrum, only update plot area to allow animation while retaining legend, x-scale, and annotations
-    //!!should refresh annotations as segment boundaries are crossed  AKE
-    if (m_nPlotID == IDD_CEPSPECTRUM)
-    m_pPlot->Invalidate();
-    //otherwise redraw x-scale and annotation because they may change based on cursor position in waveform
-    else
-    RedrawGraph(TRUE, FALSE, TRUE);
-    }
-    if (m_nPlotID == IDD_POA) RedrawGraph(TRUE, FALSE);
-    if (m_nPlotID == IDD_F1F2 || m_nPlotID == IDD_F2F1 || m_nPlotID == IDD_F2F1F1 || m_nPlotID == IDD_3D)
-    m_pPlot->RedrawWindow(NULL, NULL, RDW_INVALIDATE | RDW_UPDATENOW);
-    */
-    UpdateStatusBar(pView->GetStartCursorPosition(), pView->GetStopCursorPosition()); // update the status bar
+    UpdateStatusBar( pView->GetStartCursorPosition(), pView->GetStopCursorPosition()); // update the status bar
 }
 
 /***************************************************************************/
@@ -151,41 +135,44 @@ void CGraphWnd::SetStartCursor(CSaView * pView)
 /***************************************************************************/
 void CGraphWnd::SetStopCursor(CSaView * pView)
 {
-    //if (HaveCursors())    //!! commented out by AKE to hide cursors for graph editing
     m_pPlot->SetStopCursor(pView);
     if (!m_pPlot->HaveCursors())
     {
         m_pPlot->Invalidate();
     }
-    /*
-    if (HavePrivateCursor())
-    {
-    // if spectrum, only update plot area to allow animation while retaining legend, x-scale, and annotations
-    //!!should refresh annotations as segment boundaries are crossed  AKE
-    if (m_nPlotID == IDD_CEPSPECTRUM)
-    m_pPlot->Invalidate();
-    // otherwise redraw x-scale and annotation because they may change based on cursor position in waveform
-    else
-    RedrawGraph(TRUE, FALSE, TRUE);
-    }
-    if (m_nPlotID == IDD_POA)
-    RedrawGraph(TRUE, FALSE);
-    if (m_nPlotID == IDD_F1F2 || m_nPlotID == IDD_F2F1 || m_nPlotID == IDD_F2F1F1 || m_nPlotID == IDD_3D)
-    m_pPlot->RedrawWindow(NULL, NULL, RDW_INVALIDATE | RDW_UPDATENOW);
-    */
     UpdateStatusBar(pView->GetStartCursorPosition(), pView->GetStopCursorPosition()); // update the status bar
+}
+
+/***************************************************************************/
+// CGraphWnd::SetStopCursor Position the stop cursor
+/***************************************************************************/
+void CGraphWnd::SetPlaybackCursor(CSaView * pView)
+{
+    m_pPlot->SetPlaybackCursor(pView);
+    if (!m_pPlot->HaveCursors())
+    {
+        m_pPlot->Invalidate();
+    }
 }
 
 // SDM 1.06.6U6
 /***************************************************************************/
 // CGraphWnd::SetPlaybackPosition
 /***************************************************************************/
-void CGraphWnd::SetPlaybackPosition(CSaView * pSaView, DWORD dwPos)
+void CGraphWnd::SetPlaybackPosition( CSaView * pView)
 {
-    if (HaveCursors())
+    if (m_pPlot->HaveCursors())
     {
-        m_pPlot->SetPlaybackCursor(pSaView, dwPos);
+        m_pPlot->SetPlaybackCursor( pView);
     }
+}
+
+void CGraphWnd::SetPlaybackFlash( bool on)
+{
+	if (m_pPlot->HaveCursors())
+	{
+		m_pPlot->SetPlaybackFlash(on);
+	}
 }
 
 /***************************************************************************/
@@ -540,16 +527,14 @@ void CGraphWnd::PrintHiResGraph(CDC * pDC, const CRect * printRect,
     if (m_pPlot->HavePrivateCursor())
     {
         // print the private cursor
-        CPrivateCursorWnd * pPrivCur = m_pPlot->GetPrivateCursorWnd();
-        pPrivCur->GetWindowRect(&rctCur);
+		m_pPlot->GetPrivateCursorWindowRect( &rctCur);
         rctCur.left += CURSOR_WINDOW_HALFWIDTH;
         rctCur.OffsetRect(-plotRect.left, -plotRect.top);
         ScaleRect(rctCur, scaleCurX, scaleCurY);
         rctCur.right = rctCur.left + 1;
-        pDC->SetWindowOrg(CPoint(originX - P.left - rctCur.left,
-                                 originY - P.top  - rctCur.top));
+        pDC->SetWindowOrg(CPoint(originX - P.left - rctCur.left, originY - P.top  - rctCur.top));
         rctCur.OffsetRect(-rctCur.left, -rctCur.top);
-        pPrivCur->OnDraw(pDC, rctCur);
+        m_pPlot->OnPrivateCursorDraw(pDC, rctCur);
     } // end of if there is a private cursor to print, print it.
 }
 
@@ -902,9 +887,9 @@ BOOL CGraphWnd::bSetProperties(int nID)
         }
     }
 
-    if (nID == IDD_TWC || nID == IDD_STAFF)
+    if ((nID == IDD_TWC) || (nID == IDD_STAFF))
     {
-        ShowCursors(FALSE, FALSE);
+        ShowCursors(false,false);
     }
     SetLineDraw(nID != IDD_MAGNITUDE);
 
