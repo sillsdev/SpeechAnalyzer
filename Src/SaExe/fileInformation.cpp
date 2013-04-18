@@ -49,9 +49,6 @@ END_MESSAGE_MAP()
 /***************************************************************************/
 CDlgInformationFilePage::CDlgInformationFilePage() : CPropertyPage(CDlgInformationFilePage::IDD)
 {
-    //{{AFX_DATA_INIT(CDlgInformationFilePage)
-    // NOTE: the ClassWizard will add member initialization here
-    //}}AFX_DATA_INIT
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -63,9 +60,6 @@ CDlgInformationFilePage::CDlgInformationFilePage() : CPropertyPage(CDlgInformati
 void CDlgInformationFilePage::DoDataExchange(CDataExchange * pDX)
 {
     CPropertyPage::DoDataExchange(pDX);
-    //{{AFX_DATA_MAP(CDlgInformationFilePage)
-    // NOTE: the ClassWizard will add DDX and DDV calls here
-    //}}AFX_DATA_MAP
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -153,9 +147,6 @@ END_MESSAGE_MAP()
 /***************************************************************************/
 CDlgInformationWavePage::CDlgInformationWavePage() : CPropertyPage(CDlgInformationWavePage::IDD)
 {
-    //{{AFX_DATA_INIT(CDlgInformationWavePage)
-    // NOTE: the ClassWizard will add member initialization here
-    //}}AFX_DATA_INIT
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -167,9 +158,6 @@ CDlgInformationWavePage::CDlgInformationWavePage() : CPropertyPage(CDlgInformati
 void CDlgInformationWavePage::DoDataExchange(CDataExchange * pDX)
 {
     CPropertyPage::DoDataExchange(pDX);
-    //{{AFX_DATA_MAP(CDlgInformationWavePage)
-    // NOTE: the ClassWizard will add DDX and DDV calls here
-    //}}AFX_DATA_MAP
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -292,9 +280,7 @@ END_MESSAGE_MAP()
 /***************************************************************************/
 CDlgInformationSourcePage::CDlgInformationSourcePage() : CPropertyPage(CDlgInformationSourcePage::IDD)
 {
-    //{{AFX_DATA_INIT(CDlgInformationSourcePage)
     m_szTranscriber = "";
-    //}}AFX_DATA_INIT
 
     // get pointer to document  SDM 1.5Test10.4
     CMainFrame * pMDIFrameWnd = (CMainFrame *)AfxGetMainWnd();
@@ -323,7 +309,6 @@ CDlgInformationSourcePage::CDlgInformationSourcePage() : CPropertyPage(CDlgInfor
 void CDlgInformationSourcePage::DoDataExchange(CDataExchange * pDX)
 {
     CPropertyPage::DoDataExchange(pDX);
-    //{{AFX_DATA_MAP(CDlgInformationSourcePage)
     DDX_Text(pDX, IDC_COUNTRY, (CString &)m_szCountry);
     DDV_MaxChars(pDX, m_szCountry, 255);
     DDX_Text(pDX, IDC_DIALECT, m_szDialect);
@@ -341,7 +326,6 @@ void CDlgInformationSourcePage::DoDataExchange(CDataExchange * pDX)
     DDX_Text(pDX, IDC_REFERENCE, m_szReference);
     DDV_MaxChars(pDX, m_szReference, 255);
     DDX_Text(pDX, IDC_TRANSCRIBER, m_szTranscriber);
-    //}}AFX_DATA_MAP
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -414,13 +398,8 @@ END_MESSAGE_MAP()
 /***************************************************************************/
 CDlgInformationUserPage::CDlgInformationUserPage() : CPropertyPage(CDlgInformationUserPage::IDD)
 {
-    //{{AFX_DATA_INIT(CDlgInformationUserPage)
     m_szFreeTranslation = "";
-    //}}AFX_DATA_INIT
 }
-
-/////////////////////////////////////////////////////////////////////////////
-// CDlgInformationUserPage helper functions
 
 /***************************************************************************/
 // CDlgInformationUserPage::DoDataExchange Data exchange
@@ -428,11 +407,9 @@ CDlgInformationUserPage::CDlgInformationUserPage() : CPropertyPage(CDlgInformati
 void CDlgInformationUserPage::DoDataExchange(CDataExchange * pDX)
 {
     CPropertyPage::DoDataExchange(pDX);
-    //{{AFX_DATA_MAP(CDlgInformationUserPage)
     DDX_Text(pDX, IDC_FILEDESC, m_szFileDesc);
     DDV_MaxChars(pDX, m_szFileDesc, 255);
     DDX_Text(pDX, IDC_FREE_TRANSLATION, m_szFreeTranslation);
-    //}}AFX_DATA_MAP
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -485,9 +462,6 @@ END_MESSAGE_MAP()
 CDlgFileInformation::CDlgFileInformation(LPCTSTR pszCaption, CWnd * pParent, UINT iSelectPage, BOOL bRecorder)
     : CPropertySheet(pszCaption, pParent, iSelectPage)
 {
-    //{{AFX_DATA_INIT(CDlgFileInformation)
-    // NOTE: the ClassWizard will add member initialization here
-    //}}AFX_DATA_INIT
     // add the property sheet pages
     if (!bRecorder)
     {
@@ -507,9 +481,6 @@ CDlgFileInformation::CDlgFileInformation(LPCTSTR pszCaption, CWnd * pParent, UIN
 void CDlgFileInformation::DoDataExchange(CDataExchange * pDX)
 {
     CPropertySheet::DoDataExchange(pDX);
-    //{{AFX_DATA_MAP(CDlgFileInformation)
-    // NOTE: the ClassWizard will add DDX and DDV calls here
-    //}}AFX_DATA_MAP
 }
 
 /***************************************************************************/

@@ -32,9 +32,6 @@ CTaskBar::CTaskBar()
 {
     m_nHotItem = -1;
     m_nSelectedPage = -1;
-    //{{AFX_DATA_INIT(CTaskBar)
-    // NOTE: the ClassWizard will add member initialization here
-    //}}AFX_DATA_INIT
 }
 
 CTaskBar::~CTaskBar()
@@ -61,11 +58,8 @@ void CTaskBar::Clear()
 void CTaskBar::DoDataExchange(CDataExchange * pDX)
 {
     CDialogBar::DoDataExchange(pDX);
-    //{{AFX_DATA_MAP(CTaskBar)
     DDX_Control(pDX, IDC_TASK_LIST, m_cList);
-    //}}AFX_DATA_MAP
 }
-
 
 // Adjust position of buttons & list based on current size and selected page
 void CTaskBar::UpdateLayout()

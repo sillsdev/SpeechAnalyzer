@@ -35,21 +35,15 @@ static char THIS_FILE[] = __FILE__;
 CDlgVTOrder::CDlgVTOrder(CWnd * pParent /*=NULL*/)
     : CDialog(CDlgVTOrder::IDD, pParent)
 {
-    //{{AFX_DATA_INIT(CDlgVTOrder)
     m_nOrder = 0;
-    //}}AFX_DATA_INIT
 }
-
 
 void CDlgVTOrder::DoDataExchange(CDataExchange * pDX)
 {
     CDialog::DoDataExchange(pDX);
-    //{{AFX_DATA_MAP(CDlgVTOrder)
     DDX_Text(pDX, IDC_ORDER, m_nOrder);
     DDV_MinMaxUInt(pDX, m_nOrder, 1, 889);
-    //}}AFX_DATA_MAP
 }
-
 
 BEGIN_MESSAGE_MAP(CDlgVTOrder, CDialog)
     //{{AFX_MSG_MAP(CDlgVTOrder)
@@ -287,10 +281,6 @@ CDlgVocalTract::CDlgVocalTract(CWnd * pParent /*=NULL*/)
 {
     m_nSelectedView = m_nSelectedMethod;
     m_szGrid[kFragment] = _T("Fragments.txt");
-
-    //{{AFX_DATA_INIT(CDlgVocalTract)
-    // NOTE: the ClassWizard will add member initialization here
-    //}}AFX_DATA_INIT
 
     DWORD dwStyle = 0;
 

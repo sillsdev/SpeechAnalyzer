@@ -42,13 +42,7 @@ END_MESSAGE_MAP()
 /***************************************************************************/
 CDlgChartVowelsPage::CDlgChartVowelsPage() : CPropertyPage(CDlgChartVowelsPage::IDD)
 {
-    //{{AFX_DATA_INIT(CDlgChartVowelsPage)
-    // NOTE: the ClassWizard will add member initialization here
-    //}}AFX_DATA_INIT
 }
-
-/////////////////////////////////////////////////////////////////////////////
-// CDlgChartVowelsPage helper functions
 
 /***************************************************************************/
 // CDlgChartVowelsPage::DoDataExchange Data exchange
@@ -56,13 +50,7 @@ CDlgChartVowelsPage::CDlgChartVowelsPage() : CPropertyPage(CDlgChartVowelsPage::
 void CDlgChartVowelsPage::DoDataExchange(CDataExchange * pDX)
 {
     CPropertyPage::DoDataExchange(pDX);
-    //{{AFX_DATA_MAP(CDlgChartVowelsPage)
-    // NOTE: the ClassWizard will add DDX and DDV calls here
-    //}}AFX_DATA_MAP
 }
-
-/////////////////////////////////////////////////////////////////////////////
-// CDlgChartVowelsPage message handlers
 
 /***************************************************************************/
 // CDlgChartVowelsPage::OnInitDialog Dialog initialisation
@@ -124,9 +112,6 @@ END_MESSAGE_MAP()
 /***************************************************************************/
 CDlgChartConsonantsPage::CDlgChartConsonantsPage() : CPropertyPage(CDlgChartConsonantsPage::IDD)
 {
-    //{{AFX_DATA_INIT(CDlgChartConsonantsPage)
-    // NOTE: the ClassWizard will add member initialization here
-    //}}AFX_DATA_INIT
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -138,9 +123,6 @@ CDlgChartConsonantsPage::CDlgChartConsonantsPage() : CPropertyPage(CDlgChartCons
 void CDlgChartConsonantsPage::DoDataExchange(CDataExchange * pDX)
 {
     CPropertyPage::DoDataExchange(pDX);
-    //{{AFX_DATA_MAP(CDlgChartConsonantsPage)
-    // NOTE: the ClassWizard will add DDX and DDV calls here
-    //}}AFX_DATA_MAP
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -269,12 +251,7 @@ END_MESSAGE_MAP()
 /***************************************************************************/
 CDlgChartDiacriticsPage::CDlgChartDiacriticsPage() : CPropertyPage(CDlgChartDiacriticsPage::IDD)
 {
-    //{{AFX_DATA_INIT(CDlgChartDiacriticsPage)
-    //}}AFX_DATA_INIT
 }
-
-/////////////////////////////////////////////////////////////////////////////
-// CDlgChartDiacriticsPage helper functions
 
 /***************************************************************************/
 // CDlgChartDiacriticsPage::DoDataExchange Data exchange
@@ -282,8 +259,6 @@ CDlgChartDiacriticsPage::CDlgChartDiacriticsPage() : CPropertyPage(CDlgChartDiac
 void CDlgChartDiacriticsPage::DoDataExchange(CDataExchange * pDX)
 {
     CPropertyPage::DoDataExchange(pDX);
-    //{{AFX_DATA_MAP(CDlgChartDiacriticsPage)
-    //}}AFX_DATA_MAP
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -360,8 +335,6 @@ BOOL CDlgChartDiacriticsPage::OnInitDialog()
 // CDlgChartSuprasegsPage message map
 
 BEGIN_MESSAGE_MAP(CDlgChartSuprasegsPage, CPropertyPage)
-    //{{AFX_MSG_MAP(CDlgChartSuprasegsPage)
-    //}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
@@ -372,12 +345,7 @@ END_MESSAGE_MAP()
 /***************************************************************************/
 CDlgChartSuprasegsPage::CDlgChartSuprasegsPage() : CPropertyPage(CDlgChartSuprasegsPage::IDD)
 {
-    //{{AFX_DATA_INIT(CDlgChartSuprasegsPage)
-    //}}AFX_DATA_INIT
 }
-
-/////////////////////////////////////////////////////////////////////////////
-// CDlgChartSuprasegsPage helper functions
 
 /***************************************************************************/
 // CDlgChartSuprasegsPage::DoDataExchange Data exchange
@@ -385,8 +353,6 @@ CDlgChartSuprasegsPage::CDlgChartSuprasegsPage() : CPropertyPage(CDlgChartSupras
 void CDlgChartSuprasegsPage::DoDataExchange(CDataExchange * pDX)
 {
     CPropertyPage::DoDataExchange(pDX);
-    //{{AFX_DATA_MAP(CDlgChartSuprasegsPage)
-    //}}AFX_DATA_MAP
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -487,9 +453,6 @@ END_MESSAGE_MAP()
 CDlgCharChart::CDlgCharChart(LPCTSTR pszCaption, CWnd * pParent, UINT iSelectPage)
     : CPropertySheet(pszCaption, pParent, iSelectPage)
 {
-    //{{AFX_DATA_INIT(CDlgCharChart)
-    // NOTE: the ClassWizard will add member initialization here
-    //}}AFX_DATA_INIT
     // add the property sheet pages
     AddPage(&m_dlgVowelsPage);
     AddPage(&m_dlgConsonantsPage);
@@ -519,9 +482,6 @@ CDlgCharChart::~CDlgCharChart()
 void CDlgCharChart::DoDataExchange(CDataExchange * pDX)
 {
     CPropertySheet::DoDataExchange(pDX);
-    //{{AFX_DATA_MAP(CDlgCharChart)
-    // NOTE: the ClassWizard will add DDX and DDV calls here
-    //}}AFX_DATA_MAP
 }
 
 /***************************************************************************/

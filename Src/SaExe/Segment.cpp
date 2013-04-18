@@ -212,35 +212,97 @@ void CSegment::Remove(CDocument * pSaDoc, BOOL bCheck)
 }
 
 /***************************************************************************/
+// CSegment::Replace
+/***************************************************************************/
+void CSegment::Replace( CSaDoc * pDoc, int index, LPCTSTR find, LPCTSTR replace)
+{
+	if (index==-1) return;
+	if (IsEmpty()) return;
+	if (wcslen(find)==0) return;
+	if (wcslen(replace)==0) return;
+
+	DWORD dwOffset = GetOffset(index);
+	DWORD dwDuration = GetDuration(index);
+	DWORD dwStop = dwOffset+dwDuration;
+
+    // find length of string to delete
+    int length = GetSegmentLength(index); 
+
+	CString segment = GetSegmentString(index);
+
+	// no replacement occurred, just leave
+	if (segment.Replace( find, replace)==0) return;
+
+	// set in the new string
+	CString left = m_pAnnotation->Left(index);
+	CString right = m_pAnnotation->Right( m_pAnnotation->GetLength() - length - index);
+	*m_pAnnotation = left + segment + right;
+
+	// adjust the offset and duration tables
+	int diff = segment.GetLength()-length;
+	if (diff==0)
+	{
+		// if the lengths are the same, we don't need to adjust the offsets
+	}
+	else if (diff<0)
+	{
+		//it shrank
+		for (int j=0;j<abs(diff);j++)
+		{
+			m_Offset.RemoveAt(index,1);
+			m_Duration.RemoveAt(index,1);
+		}
+	}
+	else if (diff>0)
+	{
+		// it grew
+		for (int j=0;j<diff;j++)
+		{
+			m_Offset.InsertAt(index,dwOffset,1);
+			m_Duration.InsertAt(index,dwDuration,1);
+		}
+	}
+
+
+    // get pointer to view
+    POSITION pos = pDoc->GetFirstViewPosition();
+    CSaView * pView = (CSaView *)pDoc->GetNextView(pos);
+
+    pDoc->SetModifiedFlag(TRUE);		// document has been modified
+    pDoc->SetTransModifiedFlag(TRUE);	// transcription data has been modified
+    pView->ChangeAnnotationSelection(this, index, dwOffset, dwStop);	// deselect
+    pView->ChangeAnnotationSelection(this, index, dwOffset, dwStop);	// select again
+    pView->RefreshGraphs(FALSE);		// refresh the graphs between cursors
+}
+
+/***************************************************************************/
 // CSegment::ReplaceSelectedSegment
 /***************************************************************************/
-void CSegment::ReplaceSelectedSegment(CDocument * pSaDoc, const CSaString & str)
+void CSegment::ReplaceSelectedSegment(CSaDoc * pSaDoc, LPCTSTR replace)
 {
     CSaDoc * pDoc = (CSaDoc *)pSaDoc; // cast pointer
     POSITION pos = pDoc->GetFirstViewPosition();
     CSaView * pView = (CSaView *)pDoc->GetNextView(pos);
 
-    if (m_nSelection != -1)   // SDM 1.5Test8.3
-    {
-        DWORD dwOffset = GetOffset(m_nSelection);
-        DWORD dwDuration = GetDuration(m_nSelection);
+	if (m_nSelection==-1) return;
 
-        RemoveNoRefresh(NULL);
+    DWORD dwOffset = GetOffset(m_nSelection);
+    DWORD dwDuration = GetDuration(m_nSelection);
+	DWORD dwStop = dwOffset + dwDuration;
 
-        // insert or append the new dependent segment
-        if (!Insert(m_nSelection, str, 0, dwOffset, dwDuration))
-        {
-            return;    // return on error
-        }
+    RemoveNoRefresh(NULL);
 
-        int nSaveSelection = m_nSelection;
-        //SDM 1.06.5
-        pDoc->SetModifiedFlag(TRUE);        // document has been modified
-        pDoc->SetTransModifiedFlag(TRUE);   // transcription data has been modified
-        pView->ChangeAnnotationSelection(this, m_nSelection, dwOffset, dwOffset + dwDuration); // deselect
-        pView->ChangeAnnotationSelection(this, nSaveSelection, dwOffset, dwOffset + dwDuration); // select again
-        pView->RefreshGraphs(FALSE);        // refresh the graphs between cursors
-    }
+    // insert or append the new dependent segment
+	// return on error
+    if (!Insert( m_nSelection, replace, 0, dwOffset, dwDuration)) return;
+
+    int nSaveSelection = m_nSelection;
+    //SDM 1.06.5
+    pDoc->SetModifiedFlag(TRUE);        // document has been modified
+    pDoc->SetTransModifiedFlag(TRUE);   // transcription data has been modified
+    pView->ChangeAnnotationSelection(this, m_nSelection, dwOffset, dwStop);		// deselect
+    pView->ChangeAnnotationSelection(this, nSaveSelection, dwOffset, dwStop);	// select again
+    pView->RefreshGraphs(FALSE);        // refresh the graphs between cursors
 }
 
 /***************************************************************************/
@@ -624,20 +686,23 @@ int CSegment::FindFromPosition(DWORD dwPosition, BOOL bWithin) const
 /***************************************************************************/
 // CSegment::GetSegmentLength Find the segment length
 // Returns the length (in characters) of the given segment.
+// 
 /***************************************************************************/
-int CSegment::GetSegmentLength(int nIndex) const
+int CSegment::GetSegmentLength( int index) const
 {
-    DWORD dwOffset = GetOffset(nIndex);
-    int nLength = m_pAnnotation->GetLength();
-    int nLoop;
-    for (nLoop = nIndex + 1; nLoop < nLength; nLoop++)
+    DWORD dwOffset = GetOffset(index);
+    int length = m_pAnnotation->GetLength();
+	// breaks when the offsets no longer match
+    for ( int i = index + 1; i < length; i++)
     {
-        if (dwOffset != GetOffset(nLoop))
+        if (dwOffset != GetOffset(i))
         {
-            break;
+			// length of segment
+            return (i-index);
         }
     }
-    return (nLoop - nIndex); // length of segment
+	// all offsets match to end
+    return (length - index); 
 }
 
 /***************************************************************************/
@@ -853,24 +918,20 @@ int CSegment::FindNext(int fromIndex, LPCTSTR strToFind)
 /***************************************************************************/
 // CSegment::Match return TRUE if text at index matches strToFind
 //***************************************************************************/
-BOOL CSegment::Match(int index, const CSaString & strToFind)
+BOOL CSegment::Match( int index, LPCTSTR strToFind)
 {
-    ASSERT(index >= -1);
-    ASSERT(!IsEmpty());
-    BOOL ret = FALSE;
-    CSaString sSegment(*m_pAnnotation);
+	if (index<0) return FALSE;
+	if (IsEmpty()) return FALSE;
+	if (wcslen(strToFind)==0) return FALSE;
 
-    if (index >= 0 &&
-            ((index + strToFind.GetLength() - 1) < sSegment.GetLength()))
-    {
-        sSegment = sSegment.Mid(index, strToFind.GetLength());
-        if (sSegment == strToFind)
-        {
-            ret = TRUE;
-        }
-    }
+    CSaString sSegment = *m_pAnnotation;
+	// our search string is longer than the segment - we will never match
+	if ((index + wcslen(strToFind) - 1) >= sSegment.GetLength()) return FALSE;
 
-    return ret;
+    sSegment = sSegment.Mid( index, wcslen(strToFind));
+	if (sSegment != strToFind) return FALSE;
+
+    return TRUE;
 }
 
 void CSegment::SelectSegment(CSaDoc & SaDoc, int index)
@@ -909,7 +970,7 @@ void CSegment::AdjustCursorsToSnap(CDocument * pSaDoc)
 BOOL CALLBACK EXPORT gIPAInputFilter(CSaString & szString)
 {
 
-    TCHAR cIPASpaceReplace = 0xFFFD; // Box Character
+	TCHAR cIPASpaceReplace = 0xFFFD; // Box Character
     int nIndex = 0;
 
     BOOL bChanged = FALSE;
@@ -1087,4 +1148,14 @@ void CSegment::SetString(LPCTSTR val)
     }
     m_pAnnotation = new CSaString();
     *m_pAnnotation = val;
+}
+
+int CSegment::GetSelection() const
+{
+    return m_nSelection;   // return the index of the selected character
+}
+
+long CSegment::Process(void * /*pCaller*/, CSaDoc * /*pDoc*/, int /*nProgress*/, int /*nLevel*/)
+{
+    return PROCESS_ERROR;
 }

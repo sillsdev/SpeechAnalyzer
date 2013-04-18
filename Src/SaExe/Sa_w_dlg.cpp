@@ -48,11 +48,9 @@ END_MESSAGE_MAP()
 /***************************************************************************/
 CWbDlgProcesses::CWbDlgProcesses(CWnd * pParent) : CDialog(CWbDlgProcesses::IDD, pParent)
 {
-    //{{AFX_DATA_INIT(CWbDlgProcesses)
     m_nFilter1 = 0;
     m_nFilter2 = 0;
     m_nFilter3 = 0;
-    //}}AFX_DATA_INIT
     m_nProcess = 0;
     m_pWbProcessFilter1 = NULL;
     m_pWbProcessFilter2 = NULL;
@@ -71,11 +69,9 @@ CWbDlgProcesses::CWbDlgProcesses(CWnd * pParent) : CDialog(CWbDlgProcesses::IDD,
 void CWbDlgProcesses::DoDataExchange(CDataExchange * pDX)
 {
     CDialog::DoDataExchange(pDX);
-    //{{AFX_DATA_MAP(CWbDlgProcesses)
     DDX_CBIndex(pDX, IDC_FILTERTYPE1, m_nFilter1);
     DDX_CBIndex(pDX, IDC_FILTERTYPE2, m_nFilter2);
     DDX_CBIndex(pDX, IDC_FILTERTYPE3, m_nFilter3);
-    //}}AFX_DATA_MAP
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -441,12 +437,10 @@ END_MESSAGE_MAP()
 /***************************************************************************/
 CWbDlgFilterPass::CWbDlgFilterPass(CWnd * pParent) : CDialog(CWbDlgFilterPass::IDD, pParent)
 {
-    //{{AFX_DATA_INIT(CWbDlgFilterPass)
     m_nLowerFreq = 0;
     m_nUpperFreq = 0;
     m_nOrder = 0;
     m_bFilterFilter = FALSE;
-    //}}AFX_DATA_INIT
     m_bBandPass = TRUE;
     m_bLoPass = TRUE; // m_bBandPass has higher priority
 }
@@ -460,13 +454,11 @@ CWbDlgFilterPass::CWbDlgFilterPass(CWnd * pParent) : CDialog(CWbDlgFilterPass::I
 void CWbDlgFilterPass::DoDataExchange(CDataExchange * pDX)
 {
     CDialog::DoDataExchange(pDX);
-    //{{AFX_DATA_MAP(CWbDlgFilterPass)
     DDX_Text(pDX, IDC_PASS_LOWEREDIT, m_nLowerFreq);
     DDX_Text(pDX, IDC_PASS_UPPEREDIT, m_nUpperFreq);
     DDX_Text(pDX, IDC_PASS_FILTER_ORDER, m_nOrder);
     DDV_MinMaxUInt(pDX, m_nOrder, 1, 99);
     DDX_Check(pDX, IDC_PASS_FILTER_FILTER, m_bFilterFilter);
-    //}}AFX_DATA_MAP
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -708,10 +700,8 @@ END_MESSAGE_MAP()
 /***************************************************************************/
 CWbDlgFilterReverb::CWbDlgFilterReverb(CWnd * pParent) : CDialog(CWbDlgFilterReverb::IDD, pParent)
 {
-    //{{AFX_DATA_INIT(CWbDlgFilterReverb)
     m_nDelay = 100;
     m_nGain = -20;
-    //}}AFX_DATA_INIT
     m_bEcho = TRUE;
 }
 
@@ -724,10 +714,8 @@ CWbDlgFilterReverb::CWbDlgFilterReverb(CWnd * pParent) : CDialog(CWbDlgFilterRev
 void CWbDlgFilterReverb::DoDataExchange(CDataExchange * pDX)
 {
     CDialog::DoDataExchange(pDX);
-    //{{AFX_DATA_MAP(CWbDlgFilterReverb)
     DDX_Text(pDX, IDC_ECHO_DELAYEDIT, m_nDelay);
     DDX_Text(pDX, IDC_ECHO_GAINEDIT, m_nGain);
-    //}}AFX_DATA_MAP
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -875,9 +863,7 @@ END_MESSAGE_MAP()
 /***************************************************************************/
 CWbDlgFilterEquation::CWbDlgFilterEquation(CWnd * pParent) : CDialog(CWbDlgFilterEquation::IDD, pParent)
 {
-    //{{AFX_DATA_INIT(CWbDlgFilterEquation)
     m_szEquation = "";
-    //}}AFX_DATA_INIT
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -889,10 +875,8 @@ CWbDlgFilterEquation::CWbDlgFilterEquation(CWnd * pParent) : CDialog(CWbDlgFilte
 void CWbDlgFilterEquation::DoDataExchange(CDataExchange * pDX)
 {
     CDialog::DoDataExchange(pDX);
-    //{{AFX_DATA_MAP(CWbDlgFilterEquation)
     DDX_Text(pDX, IDC_EQUATION, m_szEquation);
     DDV_MaxChars(pDX, m_szEquation, 64);
-    //}}AFX_DATA_MAP
 }
 
 /////////////////////////////////////////////////////////////////////////////

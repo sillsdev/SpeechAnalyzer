@@ -442,6 +442,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\DlgFind.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\DlgFnKeys.cpp"
 				>
 			</File>
@@ -1182,28 +1186,6 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="SA_AnSel.cpp"
-				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-			</File>
-			<File
 				RelativePath="SA_Asert.cpp"
 				>
 				<FileConfiguration
@@ -1337,28 +1319,6 @@
 			</File>
 			<File
 				RelativePath="SA_Edit.cpp"
-				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath="SA_Find.cpp"
 				>
 				<FileConfiguration
 					Name="Debug|Win32"
@@ -2842,6 +2802,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\SegmentSelection.cpp"
+				>
+			</File>
+			<File
 				RelativePath="SelfTest.cpp"
 				>
 				<FileConfiguration
@@ -3479,6 +3443,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\DlgFind.h"
+				>
+			</File>
+			<File
 				RelativePath=".\DlgFnKeys.h"
 				>
 			</File>
@@ -3723,10 +3691,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\SA_AnSel.h"
-				>
-			</File>
-			<File
 				RelativePath=".\SA_Asert.h"
 				>
 			</File>
@@ -3752,10 +3716,6 @@
 			</File>
 			<File
 				RelativePath=".\SA_Edit.h"
-				>
-			</File>
-			<File
-				RelativePath=".\SA_Find.h"
 				>
 			</File>
 			<File
@@ -4024,6 +3984,10 @@
 			</File>
 			<File
 				RelativePath=".\Segment.h"
+				>
+			</File>
+			<File
+				RelativePath=".\SegmentSelection.h"
 				>
 			</File>
 			<File

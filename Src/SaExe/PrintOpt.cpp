@@ -27,7 +27,6 @@ static char BASED_CODE THIS_FILE[] = __FILE__;
 CPrintOptionsDlg::CPrintOptionsDlg(CWnd * pParent /*=NULL*/)
     : CDialog(CPrintOptionsDlg::IDD, pParent)
 {
-    //{{AFX_DATA_INIT(CPrintOptionsDlg)
     m_bFixedAspectR = TRUE;
     m_bUseSmallFonts = TRUE;
     m_IsLandscape = TRUE;
@@ -37,7 +36,6 @@ CPrintOptionsDlg::CPrintOptionsDlg(CWnd * pParent /*=NULL*/)
     m_LayoutType = 0;
     m_IsExpanded = FALSE;
     m_strNumCols = "1";
-    //}}AFX_DATA_INIT
 
     m_NumRows = 1;
     m_NumCols = 1;
@@ -203,7 +201,6 @@ void CPrintOptionsDlg::SetupGraphsList()
 void CPrintOptionsDlg::DoDataExchange(CDataExchange * pDX)
 {
     CDialog::DoDataExchange(pDX);
-    //{{AFX_DATA_MAP(CPrintOptionsDlg)
     DDX_Radio(pDX, IDC_SCREEN_SHOT, m_IsHiRes);
     DDX_Check(pDX, IDC_FIXED_PRINT_ASPECTR, m_bFixedAspectR);
     DDX_Check(pDX, IDC_SMALL_FONTS, m_bUseSmallFonts);
@@ -212,7 +209,6 @@ void CPrintOptionsDlg::DoDataExchange(CDataExchange * pDX)
     DDX_Radio(pDX, IDC_USESCREENLAYOUT, m_LayoutType);
     DDX_Text(pDX, IDC_PRINT_COLS, m_strNumCols);
     DDX_Control(pDX, IDC_SELECT_GRAPHS2PRINT,  m_listBoxGraphsToPrint);
-    //}}AFX_DATA_MAP
 }
 
 /***************************************************************************/

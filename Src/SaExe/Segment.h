@@ -92,20 +92,17 @@ public:
     DWORD GetDuration(const int nIndex) const;      // return duration
     DWORD GetStop(const int nIndex) const;          // return stop
     TCHAR GetChar(int nIndex) const;                // return annotation character
-    int GetSelection() const
-    {
-        return m_nSelection;   // return the index of the selected character
-    }
+    int GetSelection() const;						// return the index of the selected character
     int GetPrevious(int nIndex = -1) const;         // return the index of the previous segment
     int GetNext(int nIndex = -1) const;             // return the index of the next segment
     int FindOffset(DWORD dwOffset) const;           // return segment with matching offset
     int FindStop(DWORD dwOffset) const;             // return segment with matching stop
     int FindFromPosition(DWORD dwPosition, BOOL bWithin = FALSE) const; // get segment index from position
-    virtual BOOL Match(int index, const CSaString & strToFind);
+    virtual BOOL Match(int index, LPCTSTR find);
+	virtual void Replace( CSaDoc * pDoc, int index, LPCTSTR find, LPCTSTR replace);
     virtual int FindNext(int fromIndex, LPCTSTR strToFind);
     virtual int FindPrev(int fromIndex, LPCTSTR strToFind);
     int CheckCursors(CSaDoc *, BOOL bOverlap) const;        // checks the position of the cursors for new segment
-
     DWORD GetDurationAt(int index) const;
     void SetDurationAt(int index, DWORD duration);
     void SetAt(int index, DWORD offset, DWORD duration);
@@ -143,15 +140,12 @@ public:
     void SetSelection(int nIndex); // set selection
     virtual void Remove(CDocument *, BOOL bCheck = TRUE); // remove a segment
     virtual DWORD RemoveNoRefresh(CDocument *); // remove a segment
-    virtual void ReplaceSelectedSegment(CDocument * pSaDoc, const CSaString & str);
+    virtual void ReplaceSelectedSegment(CSaDoc * pSaDoc, LPCTSTR replace);
     virtual void DeleteContents(); // delete all contents of the segment arrays
     virtual void Adjust(CSaDoc * saDoc, int nIndex, DWORD dwOffset, DWORD dwDuration = 0); // adjust position of segment
     virtual BOOL SetAt(const CSaString *, bool delimiter, DWORD dwStart, DWORD dwDuration);  // sets a new segment
     virtual BOOL Insert(int nIndex, LPCTSTR szText, bool delimiter, DWORD dwStart, DWORD dwDuration); // insert a new segment
-    virtual long Process(void * /*pCaller*/, CSaDoc * /*pDoc*/, int /*nProgress*/ = 0, int /*Level*/ = 1)
-    {
-        return PROCESS_ERROR;
-    };
+    virtual long Process(void * pCaller, CSaDoc * pDoc, int nProgress = 0, int nLevel = 1);
     virtual CSaString GetContainedText(DWORD dwStart, DWORD dwStop);
     virtual CSaString GetOverlappingText(DWORD dwStart, DWORD dwStop);
 

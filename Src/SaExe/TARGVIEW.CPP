@@ -28,9 +28,7 @@ CDlgTargView::CDlgTargView(CMainFrame * pMainFrame)
     CFileStatus * pDocFileStat = pdoc->GetFileStatus();
     TCHAR * pDocFileName = pDocFileStat->m_szFullName;
 
-    //{{AFX_DATA_INIT(CTargViewDlg)
     m_SrcView = pDocFileName;
-    //}}AFX_DATA_INIT
     TrimPath(&m_SrcView);
 
     for (int i=0; i<MAX_TARGETS; i++)

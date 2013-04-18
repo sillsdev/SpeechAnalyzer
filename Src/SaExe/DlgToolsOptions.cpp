@@ -529,7 +529,6 @@ CDlgOptionsColorPage::CDlgOptionsColorPage() : CPropertyPage(CDlgOptionsColorPag
 void CDlgOptionsColorPage::DoDataExchange(CDataExchange * pDX)
 {
     CPropertyPage::DoDataExchange(pDX);
-    //{{AFX_DATA_MAP(CDlgOptionsColorPage)
     DDX_CBIndex(pDX, IDC_COLORSGRAPHSETUP, m_nGraphSelect);
     DDX_CBIndex(pDX, IDC_COLORSANNOTSETUP, m_nAnnotationSelect);
     DDX_CBIndex(pDX, IDC_COLORSSCALESETUP, m_nScaleSelect);

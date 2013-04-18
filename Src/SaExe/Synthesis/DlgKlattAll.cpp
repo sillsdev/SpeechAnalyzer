@@ -38,8 +38,6 @@ CDlgSynthesisAdjustCells::CDlgSynthesisAdjustCells(CWnd * pParent /*=NULL*/, dou
 {
     m_dScale = dScale;
     m_dOffset = dOffset;
-    //{{AFX_DATA_INIT(CDlgSynthesisAdjustCells)
-    //}}AFX_DATA_INIT
 }
 
 

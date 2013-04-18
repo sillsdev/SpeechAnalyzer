@@ -34,9 +34,7 @@ END_MESSAGE_MAP()
 /***************************************************************************/
 CDlgMagnify::CDlgMagnify(CWnd * pParent) : CDialog(CDlgMagnify::IDD, pParent)
 {
-    //{{AFX_DATA_INIT(CDlgMagnify)
     m_fMagnify = 1.0;
-    //}}AFX_DATA_INIT
 }
 
 /***************************************************************************/
@@ -45,9 +43,7 @@ CDlgMagnify::CDlgMagnify(CWnd * pParent) : CDialog(CDlgMagnify::IDD, pParent)
 void CDlgMagnify::DoDataExchange(CDataExchange * pDX)
 {
     CDialog::DoDataExchange(pDX);
-    //{{AFX_DATA_MAP(CDlgMagnify)
     DDX_Text(pDX, IDC_MAGNIFY, m_fMagnify);
-    //}}AFX_DATA_MAP
 }
 
 /////////////////////////////////////////////////////////////////////////////

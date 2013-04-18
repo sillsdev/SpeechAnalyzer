@@ -6,7 +6,7 @@
 //
 // Revision History
 //  1.06.5
-//      SDM Added m_AdvancedSelection & ASelection() to support virtual selection
+//      SDM Added m_AdvancedSelection to support virtual selection
 //      SDM Added command handlers for segment add, edit, remove, & navigation
 //  1.06.6U2
 //      SDM Added OnEditAddSyllable
@@ -51,7 +51,7 @@
 #define _SA_VIEW_H
 
 #include "colors.h"
-#include "sa_ansel.h"
+#include "SegmentSelection.h"
 #include "SaString.h"
 
 typedef enum ECreateHow { CREATE_STANDARD=0, CREATE_FROMSTREAM=1, CREATE_FROMGRAPH=2, CREATE_FROMSCRATCH=3 } CREATE_HOW;
@@ -60,7 +60,7 @@ typedef enum ECreateHow { CREATE_STANDARD=0, CREATE_FROMSTREAM=1, CREATE_FROMGRA
 // CSaView view
 
 class CPickOverlayDlg;
-class CASegmentSelection;
+class CSegmentSelection;
 class CDib;
 class CPrintOptionsDlg;
 class CObjectIStream;
@@ -149,7 +149,6 @@ public:
     void OnUpdateHasSel(CCmdUI * pCmdUI);
     void OnEditCopy();
     void OnUpdateEditCopy(CCmdUI * pCmdUI);
-    CSaString GetSelectedAnnotationString(void);
     void ChangeSelectedAnnotationData(const CSaString & str);
     int FindSelectedAnnotationIndex();
     CSegment * FindSelectedAnnotation();
@@ -159,7 +158,6 @@ public:
     DWORD OnPlaybackPhraseL1();
 
     //SDM 1.06.5
-    CASegmentSelection & ASelection();
     void RemoveSelectedAnnotation();
     void OnEditPaste();
     void OnEditPasteNew();
@@ -205,6 +203,17 @@ public:
     virtual void Dump(CDumpContext & dc) const;
 #endif
     CSaDoc * GetDocument();
+
+	// selection
+	BOOL SelectFromPosition( int nSegmentIndex, DWORD dwPosition, int nMode = NULL);
+    BOOL SetSelectedAnnotationString( CSaString & szString, BOOL bIncludesDelimiter = FALSE, BOOL bCheck=FALSE);
+    CSaString GetSelectedAnnotationString();
+    CString GetSelectedAnnotationString( BOOL bRemoveDelimiter);
+	void UpdateSelection( BOOL bClearVirtual=FALSE);
+	DWORD GetSelectionStart();
+	DWORD GetSelectionStop();
+	int	GetSelectionIndex();
+	bool IsSelectionVirtual();
 
     CGraphWnd * m_apGraphs[MAX_GRAPHS_NUMBER]; // array of pointers to the graph objects
 
@@ -490,7 +499,7 @@ private:
 
     UINT m_anGraphID[MAX_GRAPHS_NUMBER];	// array of graph IDs
     UINT m_nLayout;							// actual Layout number
-    CASegmentSelection m_advancedSelection;
+    CSegmentSelection m_advancedSelection;
     CGraphWnd * m_pFocusedGraph;			// pointer to focused graph
     CPrintOptionsDlg * m_pPageLayout;
     CPrintOptionsDlg * m_pPgLayoutBackup;

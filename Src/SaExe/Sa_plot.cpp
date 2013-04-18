@@ -816,7 +816,7 @@ int CPlotWnd::GetStopCursorPosition()
 }
 
 /***************************************************************************/
-// CPlotWnd::GetPrivateCursorPosition Returns the pos. of the private cursor
+// CPlotWnd::GetPrivateCursorPosition Returns the position of the private cursor
 // The position is returned as pixel coordinate relative to the client area
 // of the plot window. The pixel number returned is the center pixel of the
 // cursor window. If the cursor is not visible, the function returns -1.

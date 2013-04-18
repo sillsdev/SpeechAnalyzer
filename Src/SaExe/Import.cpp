@@ -1111,8 +1111,8 @@ BOOL CImport::ReadTable( CObjectIStream & ostream, int nMode)
     {
         for (int nIndex = 0; nIndex < pPhonetic->GetOffsetSize(); nIndex++)
         {
-            pView->ASelection().SelectFromPosition(pView, PHONETIC, pPhonetic->GetOffset(nIndex), CASegmentSelection::FIND_EXACT);
-            pView->ASelection().SetSelectedAnnotationString(pView, szString, TRUE, FALSE);
+            pView->SelectFromPosition( PHONETIC, pPhonetic->GetOffset(nIndex), CSegmentSelection::FIND_EXACT);
+            pView->SetSelectedAnnotationString( szString, TRUE, FALSE);
         }
     }
     for (int nIndex = PHONETIC+1; nIndex < ANNOT_WND_NUMBER; nIndex++)
@@ -1201,12 +1201,12 @@ BOOL CImport::ReadTable( CObjectIStream & ostream, int nMode)
             szString = CSFMHelper::ExtractTabField(szLine, nAnnotField[REFERENCE]);
             if (szString.GetLength())
             {
-                pView->ASelection().SelectFromPosition(pView, REFERENCE, pGloss->GetOffset(nIndexGloss), CASegmentSelection::FIND_EXACT);
+                pView->SelectFromPosition( REFERENCE, pGloss->GetOffset(nIndexGloss), CSegmentSelection::FIND_EXACT);
                 if (bAppendGloss)
                 {
-                    szString = pView->ASelection().GetSelectedAnnotationString(pView,FALSE) + " " + szString;
+                    szString = pView->GetSelectedAnnotationString(FALSE) + " " + szString;
                 }
-                pView->ASelection().SetSelectedAnnotationString(pView, szString, TRUE, FALSE);
+                pView->SetSelectedAnnotationString( szString, TRUE, FALSE);
             }
         }
         for (int nIndex = PHONETIC; nIndex < GLOSS; nIndex++)
@@ -1214,12 +1214,12 @@ BOOL CImport::ReadTable( CObjectIStream & ostream, int nMode)
             szString = CSFMHelper::ExtractTabField(szLine, nAnnotField[nIndex]);
             if (szString.GetLength())
             {
-                pView->ASelection().SelectFromPosition(pView, nIndex, pPhonetic->GetOffset(nIndexPhonetic), CASegmentSelection::FIND_EXACT);
+                pView->SelectFromPosition( nIndex, pPhonetic->GetOffset(nIndexPhonetic), CSegmentSelection::FIND_EXACT);
                 if (bAppendPhonetic)
                 {
-                    szString = pView->ASelection().GetSelectedAnnotationString(pView,FALSE) + /*" " +*/ szString;    // SDM 1.5Test10.7 remove spaces
+                    szString = pView->GetSelectedAnnotationString(FALSE) + /*" " +*/ szString;    // SDM 1.5Test10.7 remove spaces
                 }
-                pView->ASelection().SetSelectedAnnotationString(pView, szString, TRUE, FALSE);
+                pView->SetSelectedAnnotationString( szString, TRUE, FALSE);
             }
         }
 

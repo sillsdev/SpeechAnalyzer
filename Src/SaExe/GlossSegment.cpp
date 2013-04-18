@@ -36,16 +36,15 @@ CFontTable * CGlossSegment::NewFontTable() const
 // CGlossSegment::ReplaceSelectedSegment
 // Replaces the selected segment with the string passes in.
 /***************************************************************************/
-void CGlossSegment::ReplaceSelectedSegment(CDocument * pSaDoc, const CSaString & str)
+void CGlossSegment::ReplaceSelectedSegment( CSaDoc * pSaDoc, LPCTSTR replace)
 {
     CSaString POS;
     if (m_nSelection != -1)
     {
         POS = pos.GetAt(m_nSelection); //SDM 1.5Test8.2
     }
-    CTextSegment::ReplaceSelectedSegment(pSaDoc, str);
-    pos.SetAt(m_nSelection, POS); // SDM 1.5Test8.2
-
+    CTextSegment::ReplaceSelectedSegment( pSaDoc, replace);
+    pos.SetAt( m_nSelection, POS); // SDM 1.5Test8.2
 }
 
 //SDM 1.5Test8.1
@@ -84,7 +83,6 @@ void CGlossSegment::Remove(CDocument * pSaDoc, BOOL bCheck)
         }
     }
 }
-
 
 //SDM 1.5Test8.1
 /***************************************************************************/
@@ -380,7 +378,6 @@ long CGlossSegment::Process(void * pCaller, CSaDoc * pSaDoc, int nProgress, int 
                 {
 					
                     DWORD dwPhoneticStop = nBlockAlign * (DWORD)(dwBreakStart * fFactor/nBlockAlign);
-					//dwPhoneticStop = ((dwPhoneticStop+dwMargin) < pDoc->GetUnprocessedDataSize()) ? (dwPhoneticStop+dwMargin) : pDoc->GetUnprocessedDataSize(); 
                     dwPhoneticStop = pDoc->SnapCursor( STOP_CURSOR, dwPhoneticStop, dwPhoneticStop, pDoc->GetUnprocessedDataSize(), SNAP_RIGHT);
                     if (dwPhoneticStop > pPhonetic->GetOffset(nPhonetic))
                     {
@@ -468,7 +465,6 @@ long CGlossSegment::Process(void * pCaller, CSaDoc * pSaDoc, int nProgress, int 
 
 void CGlossSegment::CorrectGlossDurations(CSaDoc * pDoc)
 {
-
     // Adjust Gloss Durations
     if (!IsEmpty())
     {

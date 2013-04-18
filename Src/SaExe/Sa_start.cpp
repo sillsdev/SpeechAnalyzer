@@ -42,7 +42,6 @@ static char BASED_CODE THIS_FILE[] = __FILE__;
 // RLJ - April 14, 2000
 
 BEGIN_MESSAGE_MAP(CStartModeDlg, CDialog)
-    //{{AFX_MSG_MAP(CStartModeDlg)
     ON_BN_CLICKED(ID_START_MODE_RECORD, OnStartModeRecord)
     ON_BN_CLICKED(ID_CLOSE, OnCloseButton)
     ON_LBN_DBLCLK(IDC_RECENTLIST, OnDblclkRecentlist)
@@ -51,29 +50,23 @@ BEGIN_MESSAGE_MAP(CStartModeDlg, CDialog)
     ON_LBN_SELCHANGE(IDC_RECENTLIST, OnSelchangeRecentlist)
     ON_BN_CLICKED(IDC_STOP, OnStop)
     ON_COMMAND(IDHELP, OnHelpStartMode)
-    //}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
 //CStartModeDlg::CStartModeDlg(CWnd* pParent /*=NULL*/)
 CStartModeDlg::CStartModeDlg(CWnd * pParent) : CDialog(CStartModeDlg::IDD, pParent)
 {
-    //{{AFX_DATA_INIT(CStartModeDlg)
     m_nDontShowAgain = FALSE;
     m_bShowDontShowAgainOption = TRUE;
     m_nDataMode = -1;
-    //}}AFX_DATA_INIT
 }
 
 void CStartModeDlg::DoDataExchange(CDataExchange * pDX)
 {
     CDialog::DoDataExchange(pDX);
-    //{{AFX_DATA_MAP(CStartModeDlg)
     DDX_Control(pDX, IDC_RECENTLIST, m_lbRecentFiles);
     DDX_Check(pDX, IDC_STARTMODE_DONTSHOW, m_nDontShowAgain);
     DDX_Radio(pDX, IDC_STARTMODE_TEMPLATE, m_nDataMode);
-    //}}AFX_DATA_MAP
 }
-
 
 /////////////////////////////////////////////////////////////////////////////
 // CStartModeDlg message handlers

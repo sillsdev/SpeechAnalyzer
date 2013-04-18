@@ -64,7 +64,7 @@
 #include "sa_view.h"
 #include "doclist.h"
 #include "math.h"
-#include "sa_find.h"
+#include "DlgFind.h"
 #include "sa_cdib.h"
 #include "targview.h"
 #include "sa_dplot.h"
@@ -1342,15 +1342,12 @@ CSegment * CMainFrame::GetAnnotation(int annotSetID)
 {
     CSegment * pSeg = NULL;
     CSaView * pView = (CSaView *)GetCurrSaView();
-
     if ((pView != NULL) && pView->IsKindOf(RUNTIME_CLASS(CSaView)))
     {
         pSeg = pView->GetAnnotation(annotSetID);
     }
-
     return pSeg;
 }
-
 
 //SDM 1.06.6U4
 /***************************************************************************/
@@ -1947,7 +1944,7 @@ void CMainFrame::CreateFindOrReplaceDlg()
     }
     CSaString sFields;
     sFields.LoadString(IDS_FINDFIELDS);
-    m_pDlgFind = new CSaFindDlg((CWnd *)this,sFields,
+    m_pDlgFind = new CDlgFind((CWnd *)this,sFields,
                                 sToFind,m_bFindOnly,CSaString(_T("")),annotWndIndex,this);
     if (!m_pDlgFind->Created())
     {

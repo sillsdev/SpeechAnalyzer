@@ -1601,10 +1601,7 @@ void CSaView::RefreshGraphs(BOOL bEntire, BOOL bLegend, BOOL bLayout)
 // segment, whose segment will be selected. If a segment becomes selected,
 // all the highlighted areas in the plots will be deleted.
 //**************************************************************************/
-void CSaView::ChangeAnnotationSelection(CSegment * pSegment,
-                                        int nSelection,
-                                        DWORD dwStart,
-                                        DWORD dwStop)
+void CSaView::ChangeAnnotationSelection( CSegment * pSegment, int nSelection, DWORD dwStart, DWORD dwStop)
 {
     // set start- and stop cursor if not deselecting
     BOOL bSelect = FALSE;
@@ -1629,6 +1626,7 @@ void CSaView::ChangeAnnotationSelection(CSegment * pSegment,
         }
         bSelect = TRUE;
     }
+
     // select this segment, deselect all the others
     for (int nLoop = 0; nLoop < ANNOT_WND_NUMBER; nLoop++)
     {
@@ -1669,17 +1667,17 @@ void CSaView::ChangeAnnotationSelection(CSegment * pSegment,
     }
 }
 
-void CSaView::ChangeAnnotationSelection(CSegment * pSegment, int nSelection)
+void CSaView::ChangeAnnotationSelection( CSegment * pSegment, int nSelection)
 {
 
     DWORD dwStart = GetStartCursorPosition();
     DWORD dwStop = GetStopCursorPosition();
 
-    if (pSegment && (nSelection >=0))
+    if ((pSegment!=NULL) && (nSelection >=0))
     {
         dwStart = pSegment->GetOffset(nSelection);
     }
-    if (pSegment && (nSelection >=0))
+    if ((pSegment!=NULL) && (nSelection >=0))
     {
         dwStop = pSegment->GetDuration(nSelection) + dwStart;
     }
@@ -1695,7 +1693,7 @@ void CSaView::DeselectAnnotations(void)
         ChangeAnnotationSelection(pSegment, -1);
     }
     // clear virtual selection
-    ASelection().Update(this, TRUE);
+    m_advancedSelection.Update(this, TRUE);
 }
 
 /***************************************************************************/
@@ -3593,7 +3591,7 @@ void CSaView::OnEditCopy()
 
     if (nSegment != -1)
     {
-        CSaString ctext(GetSelectedAnnotationString());
+        CSaString ctext( GetSelectedAnnotationString());
         HGLOBAL hData = GlobalAlloc(GMEM_MOVEABLE, (ctext.GetLength() + 1)*sizeof(TCHAR));
         ASSERT(hData);
         if (hData)
@@ -3769,7 +3767,7 @@ void CSaView::OnEditPaste()
                 if (NULL!=(lpClipData = (LPTSTR)GlobalLock(hClipData)))
                 {
                     CSaString data(lpClipData);
-                    ASelection().SetSelectedAnnotationString(this, data, FALSE, TRUE);
+                    m_advancedSelection.SetSelectedAnnotationString(this, data, FALSE, TRUE);
                     GlobalUnlock(hClipData);
                     RefreshGraphs();
                 }
@@ -3827,27 +3825,6 @@ BOOL CSaView::IsAnyAnnotationSelected(void)
 }
 
 /***************************************************************************/
-// CSaView::GetSelectedAnnotationString
-/***************************************************************************/
-CSaString CSaView::GetSelectedAnnotationString(void)
-{
-    CSaString ret;
-
-    for (int nLoop = 0; nLoop < ANNOT_WND_NUMBER; nLoop++)
-    {
-        CSegment * pSegments = GetAnnotation(nLoop);
-        if (pSegments->GetSelection() != -1)
-        {
-            int selection = pSegments->GetSelection();
-            ret = pSegments->GetSegmentString(selection);
-            break;
-        }
-    }
-
-    return ret;
-}
-
-/***************************************************************************/
 // CSaView::FindSelectedAnnotation
 /***************************************************************************/
 CSegment * CSaView::FindSelectedAnnotation()
@@ -3891,7 +3868,7 @@ void CSaView::ChangeSelectedAnnotationData(const CSaString & str)
     ASSERT(pDoc);
     pDoc->CheckPoint();
 
-    {
+	{
         CSegment * pAnnotationSet = FindSelectedAnnotation();
         ASSERT(pAnnotationSet);
 
@@ -4451,7 +4428,7 @@ void CSaView::OnEditAddSyllable()
             pDoc->SetModifiedFlag(TRUE); // document has been modified
             pDoc->SetTransModifiedFlag(TRUE); // transcription data has been modified
             pSeg->SetSelection(-1);
-            ASelection().SelectFromPosition(this, PHONETIC, dwStart, CASegmentSelection::FIND_EXACT);
+            m_advancedSelection.SelectFromPosition(this, PHONETIC, dwStart, CSegmentSelection::FIND_EXACT);
             RefreshGraphs(TRUE);
         }
     }
@@ -4618,7 +4595,7 @@ void CSaView::OnEditAdd()
         pDoc->SetTransModifiedFlag(TRUE); // transcription data has been modified
         RefreshGraphs(TRUE);
         pSeg->SetSelection(-1);
-        ASelection().SelectFromPosition(this, PHONETIC, GetStartCursorPosition(), CASegmentSelection::FIND_EXACT);
+        m_advancedSelection.SelectFromPosition(this, PHONETIC, GetStartCursorPosition(), CSegmentSelection::FIND_EXACT);
     }
     else     // Can we insert after selected segment
     {
@@ -4689,7 +4666,7 @@ void CSaView::OnEditAdd()
                 pDoc->SetTransModifiedFlag(TRUE); // transcription data has been modified
                 RefreshGraphs(TRUE);
                 pSeg->SetSelection(-1);
-                ASelection().SelectFromPosition(this, PHONETIC, dwStart, CASegmentSelection::FIND_EXACT);
+                m_advancedSelection.SelectFromPosition(this, PHONETIC, dwStart, CSegmentSelection::FIND_EXACT);
             }
         }
     }
@@ -4714,8 +4691,8 @@ void CSaView::OnUpdateEditAdd(CCmdUI * pCmdUI)
     int nInsertAt = pSeg->CheckPosition(pDoc,GetStartCursorPosition(),GetStopCursorPosition(),CSegment::MODE_ADD);
     if (nInsertAt != -1)
     {
-        ASelection().Update(this);
-        int nLoop = ASelection().GetSelection().nAnnotationIndex;
+        m_advancedSelection.Update(this);
+        int nLoop = m_advancedSelection.GetSelectionIndex();
         if (nLoop == -1)
         {
             bEnable = TRUE;
@@ -4827,7 +4804,7 @@ void CSaView::OnEditAddPhrase(CMusicPhraseSegment * pSeg)
         pDoc->SetTransModifiedFlag(TRUE); // transcription data has been modified
         RefreshGraphs(TRUE);
         pSeg->SetSelection(-1);
-        ASelection().SelectFromPosition(this, pSeg->GetAnnotationIndex(), GetStartCursorPosition(), CASegmentSelection::FIND_EXACT);
+        m_advancedSelection.SelectFromPosition(this, pSeg->GetAnnotationIndex(), GetStartCursorPosition(), CSegmentSelection::FIND_EXACT);
     }
     else     // Can we insert after selected segment
     {
@@ -4887,7 +4864,7 @@ void CSaView::OnEditAddPhrase(CMusicPhraseSegment * pSeg)
                 pDoc->SetTransModifiedFlag(TRUE); // transcription data has been modified
                 RefreshGraphs(TRUE);
                 pSeg->SetSelection(-1);
-                ASelection().SelectFromPosition(this, pSeg->GetAnnotationIndex(), dwStart, CASegmentSelection::FIND_EXACT);
+                m_advancedSelection.SelectFromPosition(this, pSeg->GetAnnotationIndex(), dwStart, CSegmentSelection::FIND_EXACT);
             }
         }
     }
@@ -5008,7 +4985,7 @@ void CSaView::OnEditAddAutoPhraseL2()
         pDoc->SetTransModifiedFlag(TRUE); // transcription data has been modified
         RefreshGraphs(TRUE);
         pSeg->SetSelection(-1);
-        ASelection().SelectFromPosition(this, pSeg->GetAnnotationIndex(), GetStartCursorPosition(), CASegmentSelection::FIND_EXACT);
+        m_advancedSelection.SelectFromPosition(this, pSeg->GetAnnotationIndex(), GetStartCursorPosition(), CSegmentSelection::FIND_EXACT);
     }
     else     // Can we insert after selected segment
     {
@@ -5068,7 +5045,7 @@ void CSaView::OnEditAddAutoPhraseL2()
                 pDoc->SetTransModifiedFlag(TRUE); // transcription data has been modified
                 RefreshGraphs(TRUE);
                 pSeg->SetSelection(-1);
-                ASelection().SelectFromPosition(this, pSeg->GetAnnotationIndex(), dwStart, CASegmentSelection::FIND_EXACT);
+                m_advancedSelection.SelectFromPosition(this, pSeg->GetAnnotationIndex(), dwStart, CSegmentSelection::FIND_EXACT);
             }
         }
     }
@@ -5213,8 +5190,8 @@ void CSaView::EditAddGloss(bool bDelimiter)
             {
                 szString = WORD_DELIMITER + szString.Mid(1);
             }
-            ASelection().Update(this);
-            ASelection().SetSelectedAnnotationString(this, szString, TRUE, TRUE);
+            m_advancedSelection.Update(this);
+            m_advancedSelection.SetSelectedAnnotationString(this, szString, TRUE, TRUE);
         }
     }
 
@@ -5434,9 +5411,9 @@ void CSaView::OnEditUp()
 
     if (m_pFocusedGraph)   // needs to have a focused graph
     {
-        ASelection().Update(this);
-        nLoop = ASelection().GetSelection().nAnnotationIndex;
-        dwOffset = ASelection().GetSelection().dwStart;
+        m_advancedSelection.Update(this);
+        nLoop = m_advancedSelection.GetSelectionIndex();
+        dwOffset = m_advancedSelection.GetSelectionStart();
 
         if (nLoop == -1)
         {
@@ -5473,15 +5450,15 @@ void CSaView::OnEditUp()
             if (m_pFocusedGraph->HaveAnnotation(CGraphWnd::m_anAnnWndOrder[nLoop]) && ((GetAnnotation(CGraphWnd::m_anAnnWndOrder[nLoop])->IsEmpty() == FALSE)
                     ||((CGraphWnd::m_anAnnWndOrder[nLoop] != GLOSS)&&(CGraphWnd::m_anAnnWndOrder[nLoop] != PHONETIC))))   // SDM 1.5Test8.1
             {
-                ASelection().SelectFromPosition(this, CGraphWnd::m_anAnnWndOrder[nLoop], dwOffset, CASegmentSelection::FIND_EXACT);// SDM 1.5Test8.1
+                m_advancedSelection.SelectFromPosition(this, CGraphWnd::m_anAnnWndOrder[nLoop], dwOffset, CSegmentSelection::FIND_EXACT);// SDM 1.5Test8.1
 
-                if (ASelection().GetSelection().nAnnotationIndex == -1)
+                if (m_advancedSelection.GetSelectionIndex() == -1)
                 {
-                    ASelection().SelectFromPosition(this, CGraphWnd::m_anAnnWndOrder[nLoop], dwOffset);
+                    m_advancedSelection.SelectFromPosition(this, CGraphWnd::m_anAnnWndOrder[nLoop], dwOffset);
                 }
 
-                if ((ASelection().GetSelection().dwStart <= m_dwDataPosition)
-                        || (ASelection().GetSelection().dwStop >= (m_dwDataPosition + GetDataFrame())))
+                if ((m_advancedSelection.GetSelectionStart() <= m_dwDataPosition) || 
+					(m_advancedSelection.GetSelectionStop() >= (m_dwDataPosition + GetDataFrame())))
                 {
                     ZoomIn(0, FALSE);    // center selection in view
                 }
@@ -5501,8 +5478,8 @@ void CSaView::OnUpdateEditUp(CCmdUI * pCmdUI)
 
     if (m_pFocusedGraph)   // needs to have a focused graph
     {
-        ASelection().Update(this);
-        nLoop = ASelection().GetSelection().nAnnotationIndex;
+        m_advancedSelection.Update(this);
+        nLoop = m_advancedSelection.GetSelectionIndex();
 
         if (nLoop == -1)
         {
@@ -5561,9 +5538,9 @@ void CSaView::OnEditDown()
 
     if (m_pFocusedGraph)   // needs to have a focused graph
     {
-        ASelection().Update(this);
-        nLoop = ASelection().GetSelection().nAnnotationIndex;
-        dwOffset = ASelection().GetSelection().dwStart;
+        m_advancedSelection.Update(this);
+        nLoop = m_advancedSelection.GetSelectionIndex();
+        dwOffset = m_advancedSelection.GetSelectionStart();
 
         if (nLoop == -1)
         {
@@ -5600,16 +5577,16 @@ void CSaView::OnEditDown()
             if (m_pFocusedGraph->HaveAnnotation(CGraphWnd::m_anAnnWndOrder[nLoop]) && ((GetAnnotation(CGraphWnd::m_anAnnWndOrder[nLoop])->IsEmpty() == FALSE)
                     ||((CGraphWnd::m_anAnnWndOrder[nLoop] != GLOSS)&&(CGraphWnd::m_anAnnWndOrder[nLoop] != PHONETIC))))   // SDM 1.5Test8.1
             {
-                ASelection().SelectFromPosition(this, CGraphWnd::m_anAnnWndOrder[nLoop], dwOffset, CASegmentSelection::FIND_EXACT);// SDM 1.5Test8.1
+                m_advancedSelection.SelectFromPosition(this, CGraphWnd::m_anAnnWndOrder[nLoop], dwOffset, CSegmentSelection::FIND_EXACT);// SDM 1.5Test8.1
 
-                if (ASelection().GetSelection().nAnnotationIndex == -1)
+                if (m_advancedSelection.GetSelectionIndex() == -1)
                 {
-                    ASelection().SelectFromPosition(this, CGraphWnd::m_anAnnWndOrder[nLoop], dwOffset);
+                    m_advancedSelection.SelectFromPosition(this, CGraphWnd::m_anAnnWndOrder[nLoop], dwOffset);
                 }
 
 
-                if ((ASelection().GetSelection().dwStart <= m_dwDataPosition)
-                        || (ASelection().GetSelection().dwStop >= (m_dwDataPosition + GetDataFrame())))
+                if ((m_advancedSelection.GetSelectionStart() <= m_dwDataPosition)
+                        || (m_advancedSelection.GetSelectionStop() >= (m_dwDataPosition + GetDataFrame())))
                 {
                     ZoomIn(0, FALSE);    // center selection in view
                 }
@@ -5625,12 +5602,13 @@ void CSaView::OnEditDown()
 /***************************************************************************/
 void CSaView::OnUpdateEditDown(CCmdUI * pCmdUI)
 {
-    int nLoop;
+    int nLoop = -1;
 
-    if (m_pFocusedGraph)   // needs to have a focused graph
+	// needs to have a focused graph
+    if (m_pFocusedGraph!=NULL)   
     {
-        ASelection().Update(this);
-        nLoop = ASelection().GetSelection().nAnnotationIndex;
+        m_advancedSelection.Update(this);
+        nLoop = m_advancedSelection.GetSelectionIndex();
 
         if (nLoop == -1)
         {
@@ -5664,12 +5642,13 @@ void CSaView::OnUpdateEditDown(CCmdUI * pCmdUI)
         // search for next lower visible annotation window which is not empty
         for (nLoop++; nLoop < ANNOT_WND_NUMBER; nLoop++)
         {
-            if (m_pFocusedGraph->HaveAnnotation(CGraphWnd::m_anAnnWndOrder[nLoop])
-                    && ((GetAnnotation(CGraphWnd::m_anAnnWndOrder[nLoop])->IsEmpty() == FALSE)
-                        ||((CGraphWnd::m_anAnnWndOrder[nLoop] != GLOSS)&&(CGraphWnd::m_anAnnWndOrder[nLoop] != PHONETIC))))   // SDM 1.5Test8.1
+			EAnnotation type = CGraphWnd::m_anAnnWndOrder[nLoop];
+            if (m_pFocusedGraph->HaveAnnotation(type) && 
+				((GetAnnotation(type)->IsEmpty() == FALSE) ||
+				((type != GLOSS) && (type != PHONETIC))))
             {
                 pCmdUI->Enable(TRUE);
-                return; // possibility found
+                return; 
             }
         }
     }
@@ -5690,8 +5669,8 @@ void CSaView::OnEditPrevious()
 
     if (m_pFocusedGraph)   // needs to have a focused graph
     {
-        ASelection().Update(this);
-        nLoop = ASelection().GetSelection().nAnnotationIndex;
+        m_advancedSelection.Update(this);
+        nLoop = m_advancedSelection.GetSelectionIndex();
         // only work from visible selections
         if ((nLoop != -1)&& !(m_pFocusedGraph->HaveAnnotation(nLoop)))
         {
@@ -5717,10 +5696,10 @@ void CSaView::OnEditPrevious()
                 return;    // no possibility found
             }
             // try to find selection within start cursor or left of it
-            ASelection().SelectFromPosition(this, nLoop, GetStartCursorPosition(),CASegmentSelection::FIND_EXACT);
-            if (ASelection().GetSelection().nAnnotationIndex == -1)
+            m_advancedSelection.SelectFromPosition(this, nLoop, GetStartCursorPosition(),CSegmentSelection::FIND_EXACT);
+            if (m_advancedSelection.GetSelectionIndex() == -1)
             {
-                ASelection().SelectFromPosition(this, nLoop, GetStartCursorPosition());
+                m_advancedSelection.SelectFromPosition(this, nLoop, GetStartCursorPosition());
             }
         }
         else
@@ -5730,7 +5709,7 @@ void CSaView::OnEditPrevious()
             {
                 CSegment * pMaster=GetAnnotation(MASTER);
 
-                DWORD dwPosition = ASelection().GetSelection().dwStart;
+                DWORD dwPosition = m_advancedSelection.GetSelectionStart();
                 int nIndexMaster = pMaster->FindOffset(dwPosition); // Should always find...
                 if (nIndexMaster==-1)
                 {
@@ -5746,10 +5725,10 @@ void CSaView::OnEditPrevious()
                 {
                     return;
                 }
-                ASelection().SelectFromStopPosition(this, nLoop, pMaster->GetStop(nIndexMaster),CASegmentSelection::FIND_EXACT);
-                if (ASelection().GetSelection().nAnnotationIndex == -1)
+                m_advancedSelection.SelectFromStopPosition(this, nLoop, pMaster->GetStop(nIndexMaster),CSegmentSelection::FIND_EXACT);
+                if (m_advancedSelection.GetSelectionIndex() == -1)
                 {
-                    ASelection().SelectFromStopPosition(this, nLoop, pMaster->GetStop(nIndexMaster));
+                    m_advancedSelection.SelectFromStopPosition(this, nLoop, pMaster->GetStop(nIndexMaster));
                 }
             }
             else
@@ -5760,7 +5739,7 @@ void CSaView::OnEditPrevious()
                 nSelection = GetAnnotation(nLoop)->GetSelection();
                 if (nSelection == -1)
                 {
-                    dwStart = ASelection().GetSelection().dwStart;
+                    dwStart = m_advancedSelection.GetSelectionStart();
                     nSelection = GetAnnotation(nLoop)->FindFromPosition(dwStart,FALSE);
                     if (nSelection == -1)
                     {
@@ -5807,16 +5786,16 @@ void CSaView::OnEditPrevious()
                 }
 
                 // change the selection
-                ASelection().SelectFromStopPosition(this, nLoop, dwStop,CASegmentSelection::FIND_EXACT);
-                if (ASelection().GetSelection().nAnnotationIndex == -1)
+                m_advancedSelection.SelectFromStopPosition(this, nLoop, dwStop,CSegmentSelection::FIND_EXACT);
+                if (m_advancedSelection.GetSelectionIndex() == -1)
                 {
-                    ASelection().SelectFromStopPosition(this, nLoop, dwStop);
+                    m_advancedSelection.SelectFromStopPosition(this, nLoop, dwStop);
                 }
             }
         }
         // if necessary scroll selection into view
-        if ((ASelection().GetSelection().dwStart <= m_dwDataPosition)
-                || (ASelection().GetSelection().dwStop >= (m_dwDataPosition + GetDataFrame())))
+        if ((m_advancedSelection.GetSelectionStart() <= m_dwDataPosition)
+                || (m_advancedSelection.GetSelectionStop() >= (m_dwDataPosition + GetDataFrame())))
         {
             ZoomIn(0, FALSE);    // center selection in view
         }
@@ -5834,8 +5813,8 @@ void CSaView::OnUpdateEditPrevious(CCmdUI * pCmdUI)
     BOOL bEnable = FALSE;
     if ((pDoc->GetUnprocessedDataSize() != 0) && GetFocusedGraphWnd())   // needs focused graph
     {
-        ASelection().Update(this);
-        nLoop = ASelection().GetSelection().nAnnotationIndex;
+        m_advancedSelection.Update(this);
+        nLoop = m_advancedSelection.GetSelectionIndex();
         // only work from visible selections
         if ((nLoop != -1)&& !(m_pFocusedGraph->HaveAnnotation(nLoop)))
         {
@@ -5868,7 +5847,7 @@ void CSaView::OnUpdateEditPrevious(CCmdUI * pCmdUI)
             {
                 CSegment * pMaster=GetAnnotation(MASTER);
 
-                DWORD dwPosition = ASelection().GetSelection().dwStart;
+                DWORD dwPosition = m_advancedSelection.GetSelectionStart();
                 int nIndexMaster = pMaster->FindOffset(dwPosition); // Should always find...
                 if (nIndexMaster==-1)
                 {
@@ -5892,7 +5871,7 @@ void CSaView::OnUpdateEditPrevious(CCmdUI * pCmdUI)
                 nSelection = GetAnnotation(nLoop)->GetSelection();
                 if (nSelection == -1)
                 {
-                    dwStart = ASelection().GetSelection().dwStart;
+                    dwStart = m_advancedSelection.GetSelectionStart();
                     nSelection = GetAnnotation(nLoop)->FindFromPosition(dwStart,FALSE);
                     if (nSelection != -1)
                     {
@@ -5945,8 +5924,8 @@ void CSaView::OnEditNext()
 
     if (m_pFocusedGraph)   // needs to have a focused graph
     {
-        ASelection().Update(this);
-        nLoop = ASelection().GetSelection().nAnnotationIndex;
+        m_advancedSelection.Update(this);
+        nLoop = m_advancedSelection.GetSelectionIndex();
         // only work from visible selections
         if ((nLoop != -1)&& !(m_pFocusedGraph->HaveAnnotation(nLoop)))
         {
@@ -5976,10 +5955,10 @@ void CSaView::OnEditNext()
                 return;    // no possibility found
             }
             // try to find selection within start cursor or left of it
-            ASelection().SelectFromPosition(this, nLoop, GetStartCursorPosition(),CASegmentSelection::FIND_EXACT);
-            if (ASelection().GetSelection().nAnnotationIndex == -1)
+            m_advancedSelection.SelectFromPosition(this, nLoop, GetStartCursorPosition(),CSegmentSelection::FIND_EXACT);
+            if (m_advancedSelection.GetSelectionIndex() == -1)
             {
-                ASelection().SelectFromPosition(this, nLoop, GetStartCursorPosition());
+                m_advancedSelection.SelectFromPosition(this, nLoop, GetStartCursorPosition());
             }
         }
         else
@@ -5989,7 +5968,7 @@ void CSaView::OnEditNext()
             {
                 CSegment * pMaster=GetAnnotation(MASTER);
 
-                DWORD dwPosition = ASelection().GetSelection().dwStop;
+                DWORD dwPosition = m_advancedSelection.GetSelectionStop();
                 int nIndexMaster = pMaster->FindStop(dwPosition); // Should always find...
                 if (nIndexMaster==-1)
                 {
@@ -6005,10 +5984,10 @@ void CSaView::OnEditNext()
                 {
                     return;
                 }
-                ASelection().SelectFromPosition(this, nLoop, pMaster->GetOffset(nIndexMaster),CASegmentSelection::FIND_EXACT);
-                if (ASelection().GetSelection().nAnnotationIndex == -1)
+                m_advancedSelection.SelectFromPosition(this, nLoop, pMaster->GetOffset(nIndexMaster),CSegmentSelection::FIND_EXACT);
+                if (m_advancedSelection.GetSelectionIndex() == -1)
                 {
-                    ASelection().SelectFromPosition(this, nLoop, pMaster->GetOffset(nIndexMaster));
+                    m_advancedSelection.SelectFromPosition(this, nLoop, pMaster->GetOffset(nIndexMaster));
                 }
             }
             else
@@ -6019,7 +5998,7 @@ void CSaView::OnEditNext()
                 nSelection = GetAnnotation(nLoop)->GetSelection();
                 if (nSelection == -1)
                 {
-                    dwStop = ASelection().GetSelection().dwStop;
+                    dwStop = m_advancedSelection.GetSelectionStop();
                     nSelection = GetAnnotation(nLoop)->FindFromPosition(dwStop,FALSE);
                     if (nSelection == -1)
                     {
@@ -6059,16 +6038,16 @@ void CSaView::OnEditNext()
                 }
 
                 // change the selection
-                ASelection().SelectFromPosition(this, nLoop, dwStart,CASegmentSelection::FIND_EXACT);
-                if (ASelection().GetSelection().nAnnotationIndex == -1)
+                m_advancedSelection.SelectFromPosition(this, nLoop, dwStart,CSegmentSelection::FIND_EXACT);
+                if (m_advancedSelection.GetSelectionIndex() == -1)
                 {
-                    ASelection().SelectFromPosition(this, nLoop, dwStart);
+                    m_advancedSelection.SelectFromPosition(this, nLoop, dwStart);
                 }
             }
         }
         // if necessary scroll selection into view
-        if ((ASelection().GetSelection().dwStart <= m_dwDataPosition)
-                || (ASelection().GetSelection().dwStop >= (m_dwDataPosition + GetDataFrame())))
+        if ((m_advancedSelection.GetSelectionStart() <= m_dwDataPosition)
+                || (m_advancedSelection.GetSelectionStop() >= (m_dwDataPosition + GetDataFrame())))
         {
             ZoomIn(0, FALSE);    // center selection in view
         }
@@ -6084,17 +6063,19 @@ void CSaView::OnUpdateEditNext(CCmdUI * pCmdUI)
     int nLoop;
 
     BOOL bEnable = FALSE;
-    if ((pDoc->GetUnprocessedDataSize() != 0) && GetFocusedGraphWnd() && !(GetAnnotation(PHONETIC)->IsEmpty()))   // needs focused graph
+    if ((pDoc->GetUnprocessedDataSize() != 0) && 
+		(GetFocusedGraphWnd()!=NULL) && 
+		(!(GetAnnotation(PHONETIC)->IsEmpty())))   // needs focused graph
     {
-        ASelection().Update(this);
-        nLoop = ASelection().GetSelection().nAnnotationIndex;
+        m_advancedSelection.Update(this);
+        nLoop = m_advancedSelection.GetSelectionIndex();
         // only work from visible selections
         if ((nLoop != -1)&& !(m_pFocusedGraph->HaveAnnotation(nLoop)))
         {
             nLoop=-1;    // only work from visible selections
         }
 
-        int nSelection;
+        int nSelection = -1;
         if (nLoop == -1)
         {
             // no selection yet, search for first visible annotation with segments
@@ -6120,8 +6101,9 @@ void CSaView::OnUpdateEditNext(CCmdUI * pCmdUI)
             {
                 CSegment * pMaster=GetAnnotation(MASTER);
 
-                DWORD dwPosition = ASelection().GetSelection().dwStop;
-                int nIndexMaster = pMaster->FindStop(dwPosition); // Should always find...
+                DWORD dwPosition = m_advancedSelection.GetSelectionStop();
+				// Should always find...
+                int nIndexMaster = pMaster->FindStop(dwPosition); 
                 if (nIndexMaster==-1)
                 {
                     nIndexMaster = pMaster->FindFromPosition(dwPosition, TRUE);    // Better Coverage
@@ -6138,15 +6120,14 @@ void CSaView::OnUpdateEditNext(CCmdUI * pCmdUI)
             }
             else
             {
-                DWORD dwStop;
-                DWORD dwStart;
+                DWORD dwStop = 0;
 
-                dwStart = GetDocument()->GetUnprocessedDataSize();
+				DWORD dwStart = GetDocument()->GetUnprocessedDataSize();
 
                 nSelection = GetAnnotation(nLoop)->GetSelection();
                 if (nSelection == -1)
                 {
-                    dwStop = ASelection().GetSelection().dwStop;
+                    dwStop = m_advancedSelection.GetSelectionStop();
                     nSelection = GetAnnotation(nLoop)->FindFromPosition(dwStop,FALSE);
                     if (nSelection != -1)
                     {
@@ -6157,6 +6138,13 @@ void CSaView::OnUpdateEditNext(CCmdUI * pCmdUI)
                             dwStart = GetDocument()->GetUnprocessedDataSize();
                         }
                     }
+
+					bEnable = TRUE;
+					DWORD dwBytes = GetDocument()->GetBytesFromTime(MIN_ADD_SEGMENT_TIME);
+					if ((dwStart + dwBytes) > GetDocument()->GetUnprocessedDataSize())
+					{
+						bEnable = FALSE;
+					}
                 }
                 else
                 {
@@ -6176,12 +6164,16 @@ void CSaView::OnUpdateEditNext(CCmdUI * pCmdUI)
                     {
                         dwStart = dwStop + 2;
                     }
-                }
-                bEnable = TRUE;
 
-                if (dwStart + GetDocument()->GetBytesFromTime(MIN_ADD_SEGMENT_TIME) > GetDocument()->GetUnprocessedDataSize())
-                {
-                    bEnable = FALSE;
+					if (nNext!=-1)
+					{
+						bEnable = TRUE;
+					}
+					DWORD dwBytes = GetDocument()->GetBytesFromTime(MIN_ADD_SEGMENT_TIME);
+					if ((dwStart + dwBytes) > GetDocument()->GetUnprocessedDataSize())
+					{
+						bEnable = FALSE;
+					}
                 }
             }
         }
@@ -6554,11 +6546,6 @@ void CSaView::SetUpdateBoundaries(BOOL bUpdate)
     m_bUpdateBoundaries = bUpdate;
 }
 
-CASegmentSelection & CSaView::ASelection()
-{
-    return m_advancedSelection;
-};
-
 void CSaView::Scroll(DWORD desiredPosition)
 {
     UINT nPos = (UINT)(desiredPosition / m_dwHScrollFactor);
@@ -6667,3 +6654,66 @@ DWORD CSaView::GetMinimumSeparation( CSaDoc * pDoc, CGraphWnd * pGraph, CPlotWnd
     // calculate minimum position for stop cursor
     return (DWORD)(CURSOR_MIN_DISTANCE*fSamplesPerPix*nSmpSize);
 }
+
+BOOL CSaView::SelectFromPosition( int nSegmentIndex, DWORD dwPosition, int nMode)
+{
+	return m_advancedSelection.SelectFromPosition( this, nSegmentIndex, dwPosition, nMode);
+}
+
+BOOL CSaView::SetSelectedAnnotationString( CSaString & szString, BOOL bIncludesDelimiter, BOOL bCheck)
+{
+	return m_advancedSelection.SetSelectedAnnotationString( this, szString, bIncludesDelimiter, bCheck);
+}
+
+CString CSaView::GetSelectedAnnotationString( BOOL bRemoveDelimiter)
+{
+	return m_advancedSelection.GetSelectedAnnotationString( this, bRemoveDelimiter);
+}
+
+/***************************************************************************/
+// CSaView::GetSelectedAnnotationString
+/***************************************************************************/
+CSaString CSaView::GetSelectedAnnotationString()
+{
+    CSaString ret;
+
+    for (int nLoop = 0; nLoop < ANNOT_WND_NUMBER; nLoop++)
+    {
+        CSegment * pSegments = GetAnnotation(nLoop);
+        if (pSegments->GetSelection() != -1)
+        {
+            int selection = pSegments->GetSelection();
+            ret = pSegments->GetSegmentString(selection);
+            break;
+        }
+    }
+
+    return ret;
+}
+
+void CSaView::UpdateSelection( BOOL bClearVirtual)
+{
+	m_advancedSelection.Update( this, bClearVirtual);
+}
+
+DWORD CSaView::GetSelectionStart()
+{
+	return m_advancedSelection.GetSelectionStart();
+}
+
+DWORD CSaView::GetSelectionStop()
+{
+	return m_advancedSelection.GetSelectionStop();
+}
+
+int CSaView::GetSelectionIndex()
+{
+	return m_advancedSelection.GetSelectionIndex();
+}
+
+bool CSaView::IsSelectionVirtual()
+{
+	return m_advancedSelection.IsSelectionVirtual();
+}
+
+

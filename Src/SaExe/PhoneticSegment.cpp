@@ -50,7 +50,7 @@ long CPhoneticSegment::Exit(int nError)
 // CPhoneticSegment::ReplaceSelectedSegment
 // Replaces the selected segment with the string passes in.
 /***************************************************************************/
-void CPhoneticSegment::ReplaceSelectedSegment(CDocument * pSaDoc, const CSaString & str)
+void CPhoneticSegment::ReplaceSelectedSegment( CSaDoc * pSaDoc, LPCTSTR replace)
 {
     // get pointer to view
     CSaDoc * pDoc = (CSaDoc *)pSaDoc; // cast pointer
@@ -62,7 +62,6 @@ void CPhoneticSegment::ReplaceSelectedSegment(CDocument * pSaDoc, const CSaStrin
     DWORD dwStart = pView->GetStartCursorPosition();
     DWORD dwStop = pView->GetStopCursorPosition();
 
-
     DWORD dwOldOffset = RemoveNoRefresh(pDoc);
     if (dwOldOffset == -1)
     {
@@ -73,7 +72,7 @@ void CPhoneticSegment::ReplaceSelectedSegment(CDocument * pSaDoc, const CSaStrin
     pDoc->SetTransModifiedFlag(TRUE); // transcription data has been modified
 
     // insert or append the new segment
-    if (!Insert(m_nSelection, str, 0, dwStart, dwStop - dwStart))
+    if (!Insert(m_nSelection, replace, 0, dwStart, dwStop - dwStart))
     {
         return; // return on error
     }
@@ -178,7 +177,6 @@ DWORD CPhoneticSegment::RemoveNoRefresh(CDocument *)
 
     return dwOldOffset;
 }
-
 
 /***************************************************************************/
 // CPhoneticSegment::Process Segmenting wave data

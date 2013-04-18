@@ -48,11 +48,7 @@ END_MESSAGE_MAP()
 CDlgSynthesis::CDlgSynthesis(LPCTSTR pszCaption, CWnd * pParent, UINT iSelectPage)
     : CPropertySheet(pszCaption, pParent, iSelectPage)
 {
-    //{{AFX_DATA_INIT(CDlgSynthesis)
-    // NOTE: the ClassWizard will add member initialization here
-    //}}AFX_DATA_INIT
     m_pDlgMbrolaPage = new CDlgMbrola;
-
     AddPage(m_pDlgMbrolaPage);
 }
 
@@ -78,14 +74,10 @@ CDlgSynthesis::~CDlgSynthesis()
 void CDlgSynthesis::DoDataExchange(CDataExchange * pDX)
 {
     CPropertySheet::DoDataExchange(pDX);
-    //{{AFX_DATA_MAP(CDlgSynthesis)
-    // NOTE: the ClassWizard will add DDX and DDV calls here
-    //}}AFX_DATA_MAP
 }
 
 /////////////////////////////////////////////////////////////////////////////
 // CDlgSynthesis message handlers
-
 
 /***************************************************************************/
 // CDlgSynthesis::OnInitDialog

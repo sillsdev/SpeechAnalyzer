@@ -48,7 +48,7 @@
 #include "ToolSettings.h"
 #include "SpectroParm.h"
 
-class CSaFindDlg;
+class CDlgFind;
 class CSegment;
 class CSaDoc;
 class CSaView;
@@ -160,7 +160,7 @@ protected:
 
     // dialogs
     CDlgPlayer * m_pDlgPlayer;          // pointer to player dialog object
-    CSaFindDlg * m_pDlgFind;            // pointer to find/replace dialog object
+    CDlgFind * m_pDlgFind;            // pointer to find/replace dialog object
     CDlgEditor * m_pDlgEditor;
     WINDOWPLACEMENT m_wplDlgEditor;
     BOOL m_bIsPrinting;

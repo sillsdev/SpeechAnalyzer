@@ -71,7 +71,7 @@ protected:
     static DWORD m_dwLastStopCursor;			// last updated status bar stop cursor position
 
 public:
-    static int m_anAnnWndOrder[ANNOT_WND_NUMBER]; // order to display annotation windows
+    static EAnnotation m_anAnnWndOrder[ANNOT_WND_NUMBER]; // order to display annotation windows
     void RemoveRtPlots();
     void SetGraphFocus(BOOL bFocus);
     void PartialCopy(const CGraphWnd & toBeCopied);

@@ -1410,7 +1410,6 @@ void CDlgParametersSpectroPage::DoDataExchange(CDataExchange * pDX)
 {
 
     CPropertyPage::DoDataExchange(pDX);
-    //{{AFX_DATA_MAP(CDlgParametersSpectroPage)
     DDX_Control(pDX, IDC_MIN_STATIC, m_cMinStatic);
     DDX_Control(pDX, IDC_MAX_STATIC, m_cMaxStatic);
     DDX_Control(pDX, IDC_FREQ_STATIC, m_cFreqStatic);
@@ -1423,13 +1422,11 @@ void CDlgParametersSpectroPage::DoDataExchange(CDataExchange * pDX)
     DDX_Check(pDX, IDC_F2, m_bF2);
     DDX_Check(pDX, IDC_F3, m_bF3);
     DDX_Check(pDX, IDC_F4, m_bF4);
-    //DDX_Check(pDX, IDC_SMOOTH_FORMANTTRACKS, m_bSmoothFormantTracks);
     DDX_Radio(pDX, IDC_OVERLAID, m_nOverlay);
     DDX_Check(pDX, IDC_SMOOTH_SPECTRA, m_bSmoothSpectra);
     DDX_Check(pDX, IDC_FORMANTS, m_bFormants);
     DDX_Check(pDX, IDC_FORMANT_COLOR, m_bFormantColor);
     DDX_Check(pDX, IDC_SHOW_PITCH, m_bShowPitch);
-    //}}AFX_DATA_MAP
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -1735,10 +1732,7 @@ END_MESSAGE_MAP()
 /***************************************************************************/
 CDlgParametersSpectrumPage::CDlgParametersSpectrumPage() : CPropertyPage(CDlgParametersSpectrumPage::IDD)
 {
-
-    //{{AFX_DATA_INIT(CDlgParametersSpectrumPage)
     m_nFreqScaleRange = -1;
-    //}}AFX_DATA_INIT
     m_bModified = FALSE;
 }
 
@@ -2488,9 +2482,6 @@ END_MESSAGE_MAP()
 /***************************************************************************/
 CDlgParametersFormantsPage::CDlgParametersFormantsPage() : CPropertyPage(CDlgParametersFormantsPage::IDD)
 {
-
-    //{{AFX_DATA_INIT(CDlgParametersFormantsPage)
-    //}}AFX_DATA_INIT
     m_bModified = FALSE;
 }
 
@@ -2504,14 +2495,12 @@ void CDlgParametersFormantsPage::DoDataExchange(CDataExchange * pDX)
 {
 
     CPropertyPage::DoDataExchange(pDX);
-    //{{AFX_DATA_MAP(CDlgParametersFormantsPage)
     DDX_Control(pDX, IDC_FORMANTS_EDIT, m_cFormantVowelEdit);
     DDX_Control(pDX, IDC_FORMANT_VOWELS, m_cVowelSet);
     DDX_Check(pDX, IDC_FORMANTS_CEPSTRAL, m_bCepstralFormants);
     DDX_Check(pDX, IDC_FORMANTS_TRACK, m_bTrackFormants);
     DDX_Check(pDX, IDC_FORMANTS_TRACK_SMOOTH, m_bSmoothFormants);
     DDX_Check(pDX, IDC_FORMANTS_MELSCALE, m_bMelScale);
-    //}}AFX_DATA_MAP
 }
 
 /***************************************************************************/
@@ -3639,10 +3628,7 @@ void CDlgParametersMusicPage::Apply()
 
 CDlgParametersIntensityPage::CDlgParametersIntensityPage() : CPropertyPage(CDlgParametersIntensityPage::IDD)
 {
-
-    //{{AFX_DATA_INIT(CDlgParametersIntensityPage)
     m_nScaleMode = -1;
-    //}}AFX_DATA_INIT
 }
 
 CDlgParametersIntensityPage::~CDlgParametersIntensityPage()
@@ -3652,11 +3638,8 @@ CDlgParametersIntensityPage::~CDlgParametersIntensityPage()
 
 void CDlgParametersIntensityPage::DoDataExchange(CDataExchange * pDX)
 {
-
     CPropertyPage::DoDataExchange(pDX);
-    //{{AFX_DATA_MAP(CDlgParametersIntensityPage)
     DDX_Radio(pDX, IDC_DISPLAY_SCALEMODE, m_nScaleMode);
-    //}}AFX_DATA_MAP
 }
 
 
@@ -3763,10 +3746,7 @@ void CResearchSettings::Init()
 
 CDlgParametersResearchPage::CDlgParametersResearchPage() : CPropertyPage(CDlgParametersResearchPage::IDD)
 {
-
     m_workingSettings = ResearchSettings;
-    //{{AFX_DATA_INIT(CDlgParametersResearchPage)
-    //}}AFX_DATA_INIT
 }
 
 
@@ -3877,11 +3857,9 @@ void CDlgParametersResearchPage::DoDataExchange(CDataExchange * pDX)
     DDX_Text(pDX, IDC_RESEARCH_WINDOW_TIME_EDIT, m_workingSettings.m_cWindow.m_dTime);
     DDX_Text(pDX, IDC_RESEARCH_WINDOW_BANDWIDTH_EDIT, m_workingSettings.m_cWindow.m_dBandwidth);
     DDX_Radio(pDX, IDC_RESEARCH_WINDOW_BETWEEN_CURSORS, m_workingSettings.m_cWindow.m_nLengthMode);
-    //{{AFX_DATA_MAP(CDlgParametersResearchPage)
     DDX_Control(pDX, IDC_RESEARCH_WINDOW_REPLICATION, m_cWindowReplication);
     DDX_Control(pDX, IDC_RESEARCH_WINDOW_TYPE, m_cWindowType);
     DDX_Control(pDX, IDC_RESEARCH_LPC_SMOOTH, m_cSmooth);
-    //}}AFX_DATA_MAP
 }
 
 void CDlgParametersResearchPage::OnModified()
@@ -4283,11 +4261,7 @@ void CDlgGraphsParameters::ChangeButtons()
 /***************************************************************************/
 void CDlgGraphsParameters::DoDataExchange(CDataExchange * pDX)
 {
-
     CPropertySheet::DoDataExchange(pDX);
-    //{{AFX_DATA_MAP(CDlgGraphsParameters)
-    // NOTE: the ClassWizard will add DDX and DDV calls here
-    //}}AFX_DATA_MAP
 }
 
 /////////////////////////////////////////////////////////////////////////////

@@ -419,7 +419,6 @@ void CTextSegment::Add(CSaDoc * pDoc, DWORD dwStart, CSaString & szString, bool 
     pView->RefreshGraphs(FALSE); // refresh the graphs between cursors
 }
 
-
 // SDM 1.5Test11.3
 /***************************************************************************/
 // CTextSegment::Remove Remove text segment
@@ -460,29 +459,6 @@ DWORD CTextSegment::RemoveNoRefresh(CDocument *)
     return dwOffset;
 }
 
-// SDM 1.5Test8.3
-void CTextSegment::ReplaceSelectedSegment(CDocument * pSaDoc, const CSaString & str1)
-{
-
-    // get pointer to view
-    CSaDoc * pDoc = (CSaDoc *)pSaDoc; // cast pointer
-    POSITION pos = pDoc->GetFirstViewPosition();
-    CSaView * pView = (CSaView *)pDoc->GetNextView(pos);
-
-    if (m_nSelection != -1)
-    {
-        m_Texts.SetAt(m_nSelection, str1);
-    }
-
-    pDoc->SetModifiedFlag(TRUE); // document has been modified
-    pDoc->SetTransModifiedFlag(TRUE); // transcription data has been modified
-
-    int nSaveSelection = m_nSelection; // 1.5Test10.2
-    pView->ChangeAnnotationSelection(this, m_nSelection); // deselect // 1.5Test10.2
-    pView->ChangeAnnotationSelection(this, nSaveSelection); // select again // 1.5Test10.2
-    pView->RefreshGraphs(FALSE); // refresh the graphs between cursors
-}
-
 /***************************************************************************/
 // CSegment::FindNext find next segment matching strToFind and hilite it.
 //***************************************************************************/
@@ -505,19 +481,56 @@ int CTextSegment::FindNext(int fromIndex, LPCTSTR strToFind)
 /***************************************************************************/
 // CSegment::Match find next segment matching strToFind and hilite it.
 //***************************************************************************/
-BOOL CTextSegment::Match(int index, const CSaString & strToFind)
+BOOL CTextSegment::Match( int index, LPCTSTR strToFind)
 {
+	if (index < 0) return FALSE;
+	if (IsEmpty()) return FALSE;
+	if (wcslen(strToFind)==0) return FALSE;
 
-    ASSERT(index >= -1);
-    ASSERT(!IsEmpty());
-    BOOL ret = FALSE;
+	// invalid index
+	if (index >= m_Texts.GetCount()) return FALSE;
+    
+	return (m_Texts[index].Find(strToFind)!=-1);
+}
 
-    if ((index >= 0) && (index < m_Texts.GetCount()))
-    {
-        ret = (m_Texts.GetAt(index) == strToFind);
-    }
+void CTextSegment::Replace( CSaDoc * pDoc, int index, LPCTSTR find, LPCTSTR replace)
+{
+	if (index<0) return;
+	if (IsEmpty()) return;
+	if (wcslen(find)==0) return;
+	if (wcslen(replace)==0) return;
 
-    return ret;
+	// return of zero means nothing was changed.
+	if (m_Texts[index].Replace(find,replace)==0) return;
+
+    POSITION pos = pDoc->GetFirstViewPosition();
+    CSaView * pView = (CSaView *)pDoc->GetNextView(pos);
+
+    pDoc->SetModifiedFlag(TRUE);			// document has been modified
+    pDoc->SetTransModifiedFlag(TRUE);		// transcription data has been modified
+
+    pView->ChangeAnnotationSelection( this, index);	// deselect // 1.5Test10.2
+    pView->ChangeAnnotationSelection( this, index);	// select again // 1.5Test10.2
+    pView->RefreshGraphs(FALSE);					// refresh the graphs between cursors
+}
+
+void CTextSegment::ReplaceSelectedSegment( CSaDoc * pDoc, LPCTSTR replace)
+{
+	if (m_nSelection==-1) return;
+
+    // get pointer to view
+    POSITION pos = pDoc->GetFirstViewPosition();
+    CSaView * pView = (CSaView *)pDoc->GetNextView(pos);
+
+	m_Texts.SetAt( m_nSelection, replace);
+
+    pDoc->SetModifiedFlag(TRUE);		// document has been modified
+    pDoc->SetTransModifiedFlag(TRUE);	// transcription data has been modified
+
+    int nSaveSelection = m_nSelection;	// 1.5Test10.2
+    pView->ChangeAnnotationSelection(this, m_nSelection);	// deselect // 1.5Test10.2
+    pView->ChangeAnnotationSelection(this, nSaveSelection); // select again // 1.5Test10.2
+    pView->RefreshGraphs(FALSE);		// refresh the graphs between cursors
 }
 
 /***************************************************************************/

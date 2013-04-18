@@ -69,9 +69,6 @@ END_MESSAGE_MAP()
 /***************************************************************************/
 CSaWorkbenchView::CSaWorkbenchView() : CFormView(CSaWorkbenchView::IDD)
 {
-    //{{AFX_DATA_INIT(CSaWorkbenchView)
-    // NOTE: the ClassWizard will add member initialization here
-    //}}AFX_DATA_INIT
     m_hWndFocus = NULL;
     m_brBkg.CreateSolidBrush(GetSysColor(COLOR_BTNFACE)); // create the background brush
 }
@@ -85,8 +82,6 @@ CSaWorkbenchView::CSaWorkbenchView() : CFormView(CSaWorkbenchView::IDD)
 void CSaWorkbenchView::DoDataExchange(CDataExchange * pDX)
 {
     CFormView::DoDataExchange(pDX);
-    //{{AFX_DATA_MAP(CSaWorkbenchView)
-    //}}AFX_DATA_MAP
 }
 
 /***************************************************************************/

@@ -26,9 +26,6 @@ static char BASED_CODE THIS_FILE[] = __FILE__;
 CPickOverlayDlg::CPickOverlayDlg(CWnd * pParent /*=NULL*/)
     : CDialog(CPickOverlayDlg::IDD, pParent)
 {
-    //{{AFX_DATA_INIT(CPickOverlayDlg)
-    //}}AFX_DATA_INIT
-
     for (int i=0; i<MAX_LIST_SIZE; i++)
     {
         m_bIsItemSelected[i] = FALSE;
@@ -45,9 +42,7 @@ CPickOverlayDlg::CPickOverlayDlg(CWnd * pParent /*=NULL*/)
 void CPickOverlayDlg::DoDataExchange(CDataExchange * pDX)
 {
     CDialog::DoDataExchange(pDX);
-    //{{AFX_DATA_MAP(CPickOverlayDlg)
     DDX_Control(pDX, IDC_SELECT_GRAPHS2PRINT,  m_SelectItems);
-    //}}AFX_DATA_MAP
 }
 
 BEGIN_MESSAGE_MAP(CPickOverlayDlg, CDialog)

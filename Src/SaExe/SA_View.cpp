@@ -4094,7 +4094,7 @@ BOOL CSaView::ReadGraphListProperties(const CSaView & pTemplateView)
 void CSaView::OnEditInplace()
 {
     m_advancedSelection.Update(this);
-    int nAnnotationIndex = m_advancedSelection.GetSelection().nAnnotationIndex;
+	int nAnnotationIndex = m_advancedSelection.GetSelectionIndex();
 
     if ((nAnnotationIndex != -1) && 
 		(GetFocusedGraphWnd()!=NULL) &&
@@ -4110,7 +4110,7 @@ void CSaView::OnEditInplace()
 void CSaView::OnChar(UINT nChar, UINT nRepCnt, UINT nFlags)
 {
     m_advancedSelection.Update(this);
-    int nAnnotationIndex = m_advancedSelection.GetSelection().nAnnotationIndex;
+    int nAnnotationIndex = m_advancedSelection.GetSelectionIndex();
 
     if (nChar < 32)
     {

@@ -423,8 +423,9 @@ void CDependentSegment::Add(CSaDoc * pDoc, DWORD dwStart, CSaString & szString, 
     }
 
     DWORD dwDuration = pDoc->GetSegment(m_nMasterIndex)->GetDuration(nSegment);
+	DWORD dwStop = dwStart+dwDuration;
 
-    int nPos = CheckPosition(pDoc, dwStart, dwStart + dwDuration, MODE_ADD); // get the insert position
+    int nPos = CheckPosition(pDoc, dwStart, dwStop, MODE_ADD); // get the insert position
     if (nPos == -1)
     {
         return;    // return on error
@@ -443,7 +444,7 @@ void CDependentSegment::Add(CSaDoc * pDoc, DWORD dwStart, CSaString & szString, 
     }
     pDoc->SetModifiedFlag(TRUE); // document has been modified
     pDoc->SetTransModifiedFlag(TRUE); // transcription data has been modified
-    pView->ChangeAnnotationSelection(this, nPos, dwStart, dwStart + dwDuration); // change the selection
+    pView->ChangeAnnotationSelection(this, nPos, dwStart, dwStop); // change the selection
     pView->RefreshGraphs(FALSE); // refresh the graphs between cursors
 }
 

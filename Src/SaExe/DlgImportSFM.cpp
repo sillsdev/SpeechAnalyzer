@@ -73,7 +73,6 @@ static LPCSTR psz_Orthographic = "or";
 CDlgImportSFM::CDlgImportSFM(BOOL bPhonetic, BOOL bPhonemic, BOOL bOrtho, CWnd * pParent /*=NULL*/)
     : CDialog(CDlgImportSFM::IDD, pParent)
 {
-    //{{AFX_DATA_INIT(CDlgImportSFM)
     m_bGloss = FALSE;
     m_bPhonemic = bPhonemic;
     m_bPhonetic = bPhonetic;
@@ -82,13 +81,11 @@ CDlgImportSFM::CDlgImportSFM(BOOL bPhonetic, BOOL bPhonemic, BOOL bOrtho, CWnd *
     m_szGloss = psz_Gloss;
     m_szPhonetic = psz_Phonetic;
     m_szOrthographic = psz_Orthographic;
-    //}}AFX_DATA_INIT
 }
 
 void CDlgImportSFM::DoDataExchange(CDataExchange * pDX)
 {
     CDialog::DoDataExchange(pDX);
-    //{{AFX_DATA_MAP(CDlgImportSFM)
     DDX_Check(pDX, IDC_GLOSS_ENABLED, m_bGloss);
     DDX_Check(pDX, IDC_PHONEMIC_ENABLED, m_bPhonemic);
     DDX_Check(pDX, IDC_PHONETIC_ENABLED, m_bPhonetic);
@@ -97,7 +94,6 @@ void CDlgImportSFM::DoDataExchange(CDataExchange * pDX)
     DDX_Text(pDX, IDC_PHONEMIC, m_szPhonemic);
     DDX_Text(pDX, IDC_PHONETIC, m_szPhonetic);
     DDX_Text(pDX, IDC_ORTHOGRAPHIC, m_szOrthographic);
-    //}}AFX_DATA_MAP
 }
 
 BEGIN_MESSAGE_MAP(CDlgImportSFM, CDialog)

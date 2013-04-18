@@ -29,11 +29,9 @@ IMPLEMENT_DYNAMIC(CDlgAdvancedSegment, CDialog)
 CDlgAdvancedSegment::CDlgAdvancedSegment(CSaDoc * pDoc) :
     CDialog(CDlgAdvancedSegment::IDD,NULL)
 {
-    //{{AFX_DATA_INIT(CDlgAdvancedSegment)
     m_nSegmentWidth = 20;
     m_nChMinThreshold = 17;
     m_nZCMinThreshold = 50;
-    //}}AFX_DATA_INIT
     m_pDoc = pDoc;
 }
 
@@ -72,14 +70,12 @@ void CDlgAdvancedSegment::Show(LPCTSTR title)
 void CDlgAdvancedSegment::DoDataExchange(CDataExchange * pDX)
 {
     CDialog::DoDataExchange(pDX);
-    //{{AFX_DATA_MAP(CDlgAdvancedSegment)
     DDX_Text(pDX, IDC_SEGMENTWIDTHEDIT, m_nSegmentWidth);
     DDV_MinMaxInt(pDX, m_nSegmentWidth, 1, 999);
     DDX_Text(pDX, IDC_CHANGEMINEDIT, m_nChMinThreshold);
     DDV_MinMaxInt(pDX, m_nChMinThreshold, 0, 99);
     DDX_Text(pDX, IDC_ZEROCROSSINGMINEDIT, m_nZCMinThreshold);
     DDV_MinMaxInt(pDX, m_nZCMinThreshold, 0, 99);
-    //}}AFX_DATA_MAP
     DDX_Control(pDX, IDOK, m_OKButton);
     DDX_Control(pDX, IDC_APPLY, m_ApplyButton);
 }

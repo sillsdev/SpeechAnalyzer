@@ -18,7 +18,7 @@
 //   1.06.4
 //         SDM removed member m_font from virtual class CAnnotationWnd
 //   1.06.5
-//         SDM change CAnnotationWnd::OnLMouseDown to use CASegmentSelection to select segment
+//         SDM change CAnnotationWnd::OnLMouseDown to use CSegmentSelection to select segment
 //         SDM change CAnnotationWnd::OnDraw to draw 'virtual' selections
 //         SDM added support for CDlgEditor
 //   1.06.6
@@ -2175,12 +2175,15 @@ void CAnnotationWnd::OnDraw(CDC * pDC, const CRect & printRect)
     }
     //SDM 1.06.5
     //keep up to date of changes force redraw of deselected virtual selections
-    pView->ASelection().Update(pView); // get current selection information
+	// get current selection information
+    pView->UpdateSelection(); 
+
     // Show virtual selection (No text just highlight)
-    if (pView->ASelection().GetSelection().bVirtual && (pView->ASelection().GetSelection().nAnnotationIndex == m_nIndex))
+    if ((pView->IsSelectionVirtual()) && 
+		(pView->GetSelectionIndex() == m_nIndex))
     {
-        int nStart = int(((double)pView->ASelection().GetSelection().dwStart - fDataStart)/ fBytesPerPix);
-        int nStop = int(((double)pView->ASelection().GetSelection().dwStop - fDataStart)/ fBytesPerPix + 1);
+        int nStart = int(((double)pView->GetSelectionStart() - fDataStart)/ fBytesPerPix);
+        int nStop = int(((double)pView->GetSelectionStop() - fDataStart)/ fBytesPerPix + 1);
         rWnd.SetRect(nStart, rWnd.top, nStop, rWnd.bottom);
         CBrush brushBk(pColors->cSysColorHilite);
         CPen penHigh(PS_INSIDEFRAME, 1, pColors->cSysColorHilite);
@@ -2346,8 +2349,8 @@ void CAnnotationWnd::OnLButtonDown(UINT nFlags, CPoint point)
         //SDM 1.06.6
         //SDM 1.5Test8.5
         if (((CMainFrame *)AfxGetMainWnd())->IsEditAllowed() &&
-             (!pView->ASelection().SelectFromPosition( pView, m_nIndex, dwPosition)) &&
-             (pView->ASelection().GetSelection().nAnnotationIndex!=-1))
+             (!pView->SelectFromPosition( m_nIndex, dwPosition)) &&
+             (pView->GetSelectionIndex()!=-1))
         {
             //SDM 1.5Test8.5
             // Selection not changed
@@ -2357,7 +2360,7 @@ void CAnnotationWnd::OnLButtonDown(UINT nFlags, CPoint point)
             }
         };
         // SDM 1.06.6U2
-        if (pView->ASelection().GetSelection().nAnnotationIndex != -1)
+        if (pView->GetSelectionIndex() != -1)
         {
             m_nSelectTickCount = GetTickCount();
         }
@@ -2461,8 +2464,8 @@ void CAnnotationWnd::OnCreateEdit(const CString * szInitialString)
         // Calculate Window Position
         GetClientRect(rWnd);
         CRect rEdit(rWnd);
-        rEdit.left = int((pView->ASelection().GetSelection().dwStart - fDataStart)/fBytesPerPix + 0.5);
-        rEdit.right = int(((double)pView->ASelection().GetSelection().dwStop - (double)fDataStart)/fBytesPerPix + 1.5);
+        rEdit.left = int((pView->GetSelectionStart() - fDataStart)/fBytesPerPix + 0.5);
+        rEdit.right = int(((double)pView->GetSelectionStop() - (double)fDataStart)/fBytesPerPix + 1.5);
         rEdit.IntersectRect(rWnd,rEdit);
         if (rEdit.Width() && dwDataFrame)
         {
@@ -2765,7 +2768,8 @@ void CGlossWnd::OnDraw(CDC * pDC, const CRect & printRect)
 
     //SDM 1.06.5
     //keep up to date of changes force redraw of deselected virtual selections
-    pView->ASelection().Update(pView); // get current selection information
+	// get current selection information
+    pView->UpdateSelection(); 
 }
 
 //SDM 1.5Test8.1
@@ -2992,12 +2996,15 @@ void CReferenceWnd::OnDraw(CDC * pDC, const CRect & printRect)
 
     //SDM 1.06.5
     //keep up to date of changes force redraw of deselected virtual selections
-    pView->ASelection().Update(pView); // get current selection information
+	// get current selection information
+    pView->UpdateSelection();
+
     // Show virtual selection (No text just highlight)
-    if (pView->ASelection().GetSelection().bVirtual && (pView->ASelection().GetSelection().nAnnotationIndex == m_nIndex))
+    if ((pView->IsSelectionVirtual()) && 
+		(pView->GetSelectionIndex() == m_nIndex))
     {
-        int nStart = int(((double)pView->ASelection().GetSelection().dwStart - fDataStart)/ fBytesPerPix);
-        int nStop = int(((double)pView->ASelection().GetSelection().dwStop - fDataStart)/ fBytesPerPix + 1);
+        int nStart = int(((double)pView->GetSelectionStart() - fDataStart)/ fBytesPerPix);
+        int nStop = int(((double)pView->GetSelectionStop() - fDataStart)/ fBytesPerPix + 1);
         rWnd.SetRect(nStart, rWnd.top, nStop, rWnd.bottom);
         CBrush brushBk(pColors->cSysColorHilite);
         CPen penHigh(PS_INSIDEFRAME, 1, pColors->cSysColorHilite);

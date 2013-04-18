@@ -162,10 +162,10 @@ public:
     void MoveStopCursor(CSaView * pView, DWORD dwNewPositon); // move the stop cursor window
     CStartCursorWnd * GetStartCursorWnd();
     CStopCursorWnd * GetStopCursorWnd();
-    int  GetStartCursorPosition();                          // return the pos. in pixel coord. of the start cursor
-    int  GetStopCursorPosition();                           // return the pos. in pixel coord. of the stop cursor
+    int  GetStartCursorPosition();                          // return the position in pixel coord. of the start cursor
+    int  GetStopCursorPosition();                           // return the position in pixel coord. of the stop cursor
     void SetInitialPrivateCursor();                         // set the initial private cursor
-    int  GetPrivateCursorPosition();                        // return the pos. in pixel coord. of the private cursor
+    int  GetPrivateCursorPosition();                        // return the position in pixel coord. of the private cursor
     BOOL IsCanceled();                                      // return canceled state
     virtual void RestartProcess();                          // restart canceled process
     virtual DWORD GetAreaPosition();                        // return area position

@@ -166,7 +166,7 @@ CGraphWnd::CGraphWnd(UINT nID)
     }
 }
 
-int CGraphWnd::m_anAnnWndOrder[] =
+EAnnotation CGraphWnd::m_anAnnWndOrder[] =
 {REFERENCE, PHONETIC, TONE, PHONEMIC, ORTHO, GLOSS, MUSIC_PL1,MUSIC_PL2,MUSIC_PL3,MUSIC_PL4};
 
 CGraphWnd::CGraphWnd(const  CGraphWnd & toBeCopied)

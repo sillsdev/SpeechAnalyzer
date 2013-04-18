@@ -61,14 +61,12 @@ void CDlgAdvancedParsePhrases::Show(LPCTSTR title)
 void CDlgAdvancedParsePhrases::DoDataExchange(CDataExchange * pDX)
 {
     CDialog::DoDataExchange(pDX);
-    //{{AFX_DATA_MAP(CDlgAdvancedParsePhrases)
     DDX_Text(pDX, IDC_BREAKWIDTHEDIT, m_nBreakWidth);
     DDV_MinMaxInt(pDX, m_nBreakWidth, 1, 999);
     DDX_Text(pDX, IDC_PARSEMAXTHRESHOLDEDIT, m_nMaxThreshold);
     DDV_MinMaxInt(pDX, m_nMaxThreshold, 1, 100);
     DDX_Text(pDX, IDC_PARSEMINTHRESHOLDEDIT, m_nMinThreshold);
     DDV_MinMaxInt(pDX, m_nMinThreshold, 0, 99);
-    //}}AFX_DATA_MAP
     DDX_Control(pDX, IDOK, m_OKButton);
     DDX_Control(pDX, IDC_APPLY, m_ApplyButton);
 }

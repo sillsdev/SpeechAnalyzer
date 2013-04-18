@@ -70,9 +70,7 @@ END_MESSAGE_MAP()
 /***************************************************************************/
 CDlgGraphsTypesCustom::CDlgGraphsTypesCustom(CWnd * pParent) : CDialog(CDlgGraphsTypesCustom::IDD, pParent)
 {
-    //{{AFX_DATA_INIT(CDlgGraphsTypesCustom)
     m_nLayout = -1;
-    //}}AFX_DATA_INIT
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -84,9 +82,7 @@ CDlgGraphsTypesCustom::CDlgGraphsTypesCustom(CWnd * pParent) : CDialog(CDlgGraph
 void CDlgGraphsTypesCustom::DoDataExchange(CDataExchange * pDX)
 {
     CDialog::DoDataExchange(pDX);
-    //{{AFX_DATA_MAP(CDlgGraphsTypesCustom)
     DDX_LBIndex(pDX, IDC_LAYOUT, m_nLayout);
-    //}}AFX_DATA_MAP
 }
 
 /***************************************************************************/
@@ -566,18 +562,13 @@ CDlgGraphTypesOrder::CDlgGraphTypesOrder(CGraphList & cOrder, int nLayout, CWnd 
     : CDialog(CDlgGraphTypesOrder::IDD, pParent), m_cResultOrder(cOrder), m_nLayout(nLayout)
 {
     m_cLayoutOrder = GetLayoutOrder(cOrder);
-    //{{AFX_DATA_INIT(CDlgGraphTypesOrder)
-    // NOTE: the ClassWizard will add member initialization here
-    //}}AFX_DATA_INIT
 }
 
 
 void CDlgGraphTypesOrder::DoDataExchange(CDataExchange * pDX)
 {
     CDialog::DoDataExchange(pDX);
-    //{{AFX_DATA_MAP(CDlgGraphTypesOrder)
     DDX_Control(pDX, IDC_LIST, m_cList);
-    //}}AFX_DATA_MAP
 }
 
 
@@ -1008,8 +999,6 @@ CGraphConfigurationVector & GetGraphConfigurationVector(int nTaskType)
 CDlgGraphsTypes::CDlgGraphsTypes(CWnd * pParent, const UINT * pGraphIDs ,int nLayout)
     : CDialog(CDlgGraphsTypes::IDD, pParent), cCurrentConfig(pGraphIDs, nLayout)
 {
-    //{{AFX_DATA_INIT(CDlgGraphsTypes)
-    //}}AFX_DATA_INIT
     bCustom = FALSE;
     m_nConfiguration = -1;
 

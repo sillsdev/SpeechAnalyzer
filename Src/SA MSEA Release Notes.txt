@@ -1,3 +1,7 @@
+SA - 3.1.0.54 - 4/18/2013 (stereo branch)
+1) Fixed find/replace bugs for all transcription types.
+2) Fixed bug in transcription editor where arrow buttons where not always updates correctly when user reaches end of transcription line.  There are still outstanding issues related to the phrase-n transcription lines.
+
 SA - 3.1.0.53 - 4/17/2013 (stereo branch)
 1) Fixed bug the occurs during 'save as' on newly recorded file.  A space was appearing at the end of the default filename in the 'save as' dialog box.
 2) Added pause button to toolbars

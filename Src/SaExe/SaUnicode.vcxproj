@@ -287,7 +287,7 @@
     <ClCompile Include="DlgResult.cpp" />
     <ClCompile Include="SA_DlWnd.cpp" />
     <ClCompile Include="SA_Edit.cpp" />
-    <ClCompile Include="SA_Find.cpp" />
+    <ClCompile Include="DlgFind.cpp" />
     <ClCompile Include="Sa_start.cpp" />
     <ClCompile Include="DlgSaveAsOptions.cpp" />
     <ClCompile Include="Targview.cpp" />
@@ -308,7 +308,7 @@
     <ClCompile Include="Mixer.cpp" />
     <ClCompile Include="Riff.cpp" />
     <ClCompile Include="Sa.cpp" />
-    <ClCompile Include="SA_AnSel.cpp" />
+    <ClCompile Include="SegmentSelection.cpp" />
     <ClCompile Include="SA_Asert.cpp" />
     <ClCompile Include="SA_CDib.cpp" />
     <ClCompile Include="Sa_Doc.cpp" />
@@ -510,14 +510,14 @@
     <ClInclude Include="Rs_MiniC.h" />
     <ClInclude Include="sa.h" />
     <ClInclude Include="SA_Annot.h" />
-    <ClInclude Include="SA_AnSel.h" />
+    <ClInclude Include="SegmentSelection.h" />
     <ClInclude Include="SA_Asert.h" />
     <ClInclude Include="SA_CDib.h" />
     <ClInclude Include="SA_Cursr.h" />
     <ClInclude Include="SA_DlWnd.h" />
     <ClInclude Include="Sa_Doc.h" />
     <ClInclude Include="SA_DPlot.h" />
-    <ClInclude Include="SA_Find.h" />
+    <ClInclude Include="DlgFind.h" />
     <ClInclude Include="sa_g_3dPitch.h" />
     <ClInclude Include="SA_G_Cha.h" />
     <ClInclude Include="SA_G_CPi.h" />
