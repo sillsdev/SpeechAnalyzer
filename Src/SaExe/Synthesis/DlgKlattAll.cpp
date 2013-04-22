@@ -382,17 +382,15 @@ void CDlgKlattAll::OnKlattDisplay()
 {
     OnSynthesize();
     // open synthesized wavefile in SA
-    CFileStatus fileStatus; // file status
-    if (CFile::GetStatus(m_szSynthesizedFilename, fileStatus))
+    CFileStatus status;
+    if (CFile::GetStatus(m_szSynthesizedFilename, status))
     {
-        if (fileStatus.m_size)
+        if (status.m_size)
         {
             // file created open in SA
             CSaApp * pApp = (CSaApp *)(AfxGetApp());
-
             CSaDoc * pDoc = pApp->OpenWavFileAsNew(m_szSynthesizedFilename);
             m_szSynthesizedFilename.Empty();
-
             LabelDocument(pDoc);
 
             if (m_bMinimize)
@@ -2778,11 +2776,10 @@ void CDlgKlattAll::OnKlattHelp()
 void CIpaCharVector::Load(CString szPath)
 {
     // is there a saved map???
-    CFileStatus fileStatus; // file status
+    CFileStatus status;
 
-    reserve(1024);  // growth is exponential save some time here
-
-    if (!CFile::GetStatus(szPath, fileStatus)  || !fileStatus.m_size)
+	reserve(1024);  // growth is exponential save some time here
+    if ((!CFile::GetStatus(szPath, status))  || (!status.m_size))
     {
         return;
     }

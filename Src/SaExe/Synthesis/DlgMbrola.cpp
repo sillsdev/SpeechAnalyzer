@@ -808,10 +808,10 @@ void CDlgMbrola::OnMbrolaDisplay()
     }
 
     // open synthesized wavefile in SA
-    CFileStatus fileStatus; // file status
-    if (CFile::GetStatus(m_szMBRolaName, fileStatus))
+    CFileStatus status; // file status
+    if (CFile::GetStatus(m_szMBRolaName, status))
     {
-        if (fileStatus.m_size)
+        if (status.m_size)
         {
             // file created open in SA
             CSaApp * pApp = (CSaApp *)(AfxGetApp());

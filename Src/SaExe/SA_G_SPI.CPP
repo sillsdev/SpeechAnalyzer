@@ -32,8 +32,6 @@ IMPLEMENT_DYNCREATE(CPlotSmoothedPitch, CPlotWnd)
 // CPlotSmoothedPitch message map
 
 BEGIN_MESSAGE_MAP(CPlotSmoothedPitch, CPlotWnd)
-    //{{AFX_MSG_MAP(CPlotSmoothedPitch)
-    //}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////

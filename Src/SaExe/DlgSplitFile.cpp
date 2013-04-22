@@ -5,6 +5,7 @@
 #include "sa.h"
 #include "DlgSplitFile.h"
 #include "resource.h"
+#include "FileUtils.h"
 
 using std::wstring;
 
@@ -33,7 +34,6 @@ CDlgSplitFile::~CDlgSplitFile()
 
 BOOL CDlgSplitFile::OnInitDialog()
 {
-
     CDialog::OnInitDialog();
     GetDlgItem(IDC_SPLIT_WORD_SUBFOLDER_NAME)->EnableWindow(FALSE);
     GetDlgItem(IDC_SPLIT_PHRASE_SUBFOLDER_NAME)->EnableWindow(FALSE);
@@ -48,13 +48,13 @@ void CDlgSplitFile::DoDataExchange(CDataExchange * pDX)
     DDX_CBIndex(pDX, IDC_SPLIT_WORD_CONVENTION, m_nWordConvention);
     DDX_CBIndex(pDX, IDC_SPLIT_PHRASE_CONVENTION, m_nPhraseConvention);
     DDX_Text(pDX, IDC_SPLIT_FOLDER_LOCATION, m_szFolderLocation);
-    DDX_Text(pDX, IDC_SPLIT_FOLDER_NAME, m_szFolderName);
-    DDX_Text(pDX, IDC_SPLIT_PHRASE_SUBFOLDER_NAME, m_szPhraseFolderName);
-    DDX_Text(pDX, IDC_SPLIT_WORD_SUBFOLDER_NAME, m_szGlossFolderName);
-    DDX_Text(pDX, IDC_FILENAME_PREFIX, m_szFilenamePrefix);
-    DDX_Text(pDX, IDC_FILENAME_SUFFIX, m_szFilenameSuffix);
+    DDX_Filename(pDX, IDC_SPLIT_FOLDER_NAME, m_szFolderName);
+    DDX_Filename(pDX, IDC_SPLIT_PHRASE_SUBFOLDER_NAME, m_szPhraseFolderName);
+    DDX_Filename(pDX, IDC_SPLIT_WORD_SUBFOLDER_NAME, m_szGlossFolderName);
     DDX_Check(pDX, IDC_CHECK_GLOSS_EMPTY, m_bSkipGlossEmpty);
     DDX_Check(pDX, IDC_CHECK_OVERWRITE, m_bOverwriteData);
+	DDX_Filename(pDX, IDC_FILENAME_PREFIX, m_szFilenamePrefix);
+    DDX_Filename(pDX, IDC_FILENAME_SUFFIX, m_szFilenameSuffix);
 }
 
 BEGIN_MESSAGE_MAP(CDlgSplitFile, CDialog)

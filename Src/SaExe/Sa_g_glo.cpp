@@ -44,8 +44,6 @@ IMPLEMENT_DYNCREATE(CPlotGlottis, CPlotWnd)
 // CPlotGlottis message map
 
 BEGIN_MESSAGE_MAP(CPlotGlottis, CPlotWnd)
-    //{{AFX_MSG_MAP(CPlotGlottis)
-    //}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////

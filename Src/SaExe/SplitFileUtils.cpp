@@ -296,7 +296,6 @@ bool GeneratePhraseSplitName(EAnnotation type, CMusicPhraseSegment * seg, CSaVie
     default:
     case PFC_PHRASE:
         phrase = seg->GetSegmentString(index);
-		result = FilterName( phrase.c_str());
 		if (phrase.length()==0)
 		{
 			pApp->ErrorMessage(IDS_SPLIT_NO_PHRASE,(LPCTSTR)szPhrase,(LPCTSTR)szNumber);
@@ -307,6 +306,7 @@ bool GeneratePhraseSplitName(EAnnotation type, CMusicPhraseSegment * seg, CSaVie
 		result.append(L" ");
 		result.append(szTag);
 		result.append(suffix);
+		result = FilterName(result.c_str());
         return true;
     }
 }

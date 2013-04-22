@@ -37,8 +37,6 @@ IMPLEMENT_DYNCREATE(CPlotDurations, CPlotWnd)
 // CPlotDuration message map
 
 BEGIN_MESSAGE_MAP(CPlotDurations, CPlotWnd)
-    //{{AFX_MSG_MAP(CPlotDurations)
-    //}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////

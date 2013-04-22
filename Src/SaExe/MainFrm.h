@@ -152,7 +152,7 @@ protected:
     CToolBar            m_wndToolBarAdvanced;
     CTaskBar            m_wndTaskBar;
     CSaWorkbenchView  * m_pWorkbenchView;      // workbench view
-    BOOL                m_bFindOnly;           // find/replace is only find
+    bool                m_bFindOnly;           // find/replace is only find
 
     // workbench processes and filter IDs
     CProcess    *   m_apWbProcess[MAX_PROCESS_NUMBER][MAX_FILTER_NUMBER];
@@ -268,7 +268,7 @@ public:
     void  SetPrintingFlag();
     void  ClearPrintingFlag();
     void  CreateFindOrReplaceDlg();
-    void  MaybeCreateFindOrReplaceDlg(BOOL bWantFindOnly);
+    void  MaybeCreateFindOrReplaceDlg(bool bWantFindOnly);
     // workbench helper functions
     CProcess * GetWbProcess(int nProcess, int nFilter);
     CProcess * SetWbProcess(int nProcess, int nFilter, CProcess * pProcess); // set new workbench process pointer and return old one

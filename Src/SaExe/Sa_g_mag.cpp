@@ -36,8 +36,6 @@ IMPLEMENT_DYNCREATE(CPlotMagnitude, CPlotWnd)
 // CPlotMagnitude message map
 
 BEGIN_MESSAGE_MAP(CPlotMagnitude, CPlotWnd)
-    //{{AFX_MSG_MAP(CPlotMagnitude)
-    //}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////

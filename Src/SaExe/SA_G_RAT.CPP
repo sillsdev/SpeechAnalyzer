@@ -33,8 +33,6 @@ IMPLEMENT_DYNCREATE(CPlotRatio, CPlotWnd)
 // CPlotRatio message map
 
 BEGIN_MESSAGE_MAP(CPlotRatio, CPlotWnd)
-    //{{AFX_MSG_MAP(CPlotRatio)
-    //}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////

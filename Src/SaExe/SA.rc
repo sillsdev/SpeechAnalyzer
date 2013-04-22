@@ -26,7 +26,7 @@ LANGUAGE LANG_NEUTRAL, SUBLANG_NEUTRAL
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 3,1,0,54
+ FILEVERSION 3,1,0,55
  PRODUCTVERSION 1,0,0,1
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
@@ -44,7 +44,7 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "SIL International"
             VALUE "FileDescription", "SA"
-            VALUE "FileVersion", "v3.1.0.54"
+            VALUE "FileVersion", "v3.1.0.55"
             VALUE "InternalName", "SA"
             VALUE "LegalCopyright", "© 1996-2013 SIL International (MSEA)"
             VALUE "ProductName", "SA"
@@ -3000,7 +3000,7 @@ BEGIN
         MENUITEM "End cursor -> &Right Window Border\tF10", ID_PLAYBACK_STOPTOR
         MENUITEM "Current &Window\tF11",        ID_PLAYBACK_WINDOW
         MENUITEM "Entire &File\tF12",           ID_PLAYBACK_FILE
-        MENUITEM "Pa&use",		                ID_PLAYER_PAUSE
+        MENUITEM "Pa&use",                      ID_PLAYER_PAUSE
         MENUITEM "&Stop\tESC",                  ID_PLAYER_STOP
         POPUP "Function &Keys"
         BEGIN
@@ -4243,7 +4243,7 @@ IDC_MHANDN              CURSOR                  "res\\MedHandN.cur"
 
 STRINGTABLE
 BEGIN
-    VS_VERSION              "Version 3.1.0.54"
+    VS_VERSION              "Version 3.1.0.55"
     VS_COPYRIGHT            "© 1996-2013 SIL International (MSEA).\nAll Rights Reserved."
     IDR_MAINFRAME           "Speech Analyzer"
     IDR_SA_ANNTYPE          "\nSA\nSA Document\nWAV Files (*.wav)\n.wav\nannFileType\nANN File Type"
@@ -4289,6 +4289,8 @@ BEGIN
     IDS_ERROR_NO_REFERENCE  "There are no Reference annotations.\nPlease added Reference numbers before exporting data to FieldWorks."
     IDS_ERROR_AUTOSAVE_FAIL "Unable to create the AutoSave directory '%1'\nThe AutoSave feature is disabled."
     IDS_ERROR_FORMAT_CHANNELS "Data in file '%1' has too many channels"
+    IDS_ERROR_BADFILENAME_CHARS 
+                            "A filename can't contain any of the following characters: \\ / : * "" < > | "
 END
 
 STRINGTABLE

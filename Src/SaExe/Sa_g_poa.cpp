@@ -41,8 +41,6 @@ IMPLEMENT_DYNCREATE(CPlotPOA, CPlotWnd)
 // CPlotPOA message map
 
 BEGIN_MESSAGE_MAP(CPlotPOA, CPlotWnd)
-    //{{AFX_MSG_MAP(CPlotPOA)
-    //}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////

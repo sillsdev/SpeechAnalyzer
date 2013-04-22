@@ -223,11 +223,9 @@ void CDlgAdvancedSegment::OnZeroCrossMinScroll()
 }
 
 BEGIN_MESSAGE_MAP(CDlgAdvancedSegment, CDialog)
-    //{{AFX_MSG_MAP(CDlgAdvancedSegment)
     ON_COMMAND(IDC_SEGMENTWIDTHSCROLL, OnSegmentWidthScroll)
     ON_COMMAND(IDC_CHANGEMINSCROLL, OnChangeMinScroll)
     ON_COMMAND(IDC_ZEROCROSSINGMINSCROLL, OnZeroCrossMinScroll)
-    //}}AFX_MSG_MAP
     ON_BN_CLICKED(IDC_APPLY, &CDlgAdvancedSegment::OnBnClickedApply)
 END_MESSAGE_MAP()
 

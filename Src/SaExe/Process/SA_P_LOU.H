@@ -44,12 +44,12 @@ public:
 
 // Attributes
 private:
-    CFile * m_pSRDfile;     // smooth raw data file object
-    CFileStatus m_SRDfileStatus; // smooth raw data file status
-    HANDLE  m_hSRDdata;       // needed to get m_lpSRDData
-    HPSTR   m_lpSRDdata;      // pointer to processed smooth raw data
-    DWORD   m_dwSRDBufferOffset; // actual smooth raw data buffer offset
-    BOOL    m_bSRDBlockBegin; // actual smooth raw data block begin flag
+    CFile * m_pSRDfile;				// smooth raw data file object
+    CFileStatus m_SRDfileStatus;	// smooth raw data file status
+    HANDLE m_hSRDdata;				// needed to get m_lpSRDData
+    HPSTR m_lpSRDdata;				// pointer to processed smooth raw data
+    DWORD m_dwSRDBufferOffset;		// actual smooth raw data buffer offset
+    BOOL m_bSRDBlockBegin;			// actual smooth raw data block begin flag
 
 // Operations
 protected:

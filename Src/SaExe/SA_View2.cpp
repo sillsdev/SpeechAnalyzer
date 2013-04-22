@@ -2090,8 +2090,9 @@ void CSaView::InitialUpdate(BOOL bTemp)
     {
         CSaDoc * pDoc = GetDocument();
         CSaString docPath = pDoc->GetPathName();
-        CFileStatus fileStatus;
-        if (CFile::GetStatus(docPath, fileStatus) && (fileStatus.m_attribute & CFile::readOnly))
+        CFileStatus status;
+		if (CFile::GetStatus(docPath, status) && 
+			((status.m_attribute & CFile::readOnly)==CFile::readOnly))
         {
             CSaString docTitle = pDoc->GetTitle() + " (Read-Only)";
             pDoc->SetTitle(docTitle);
@@ -3829,7 +3830,6 @@ BOOL CSaView::IsAnyAnnotationSelected(void)
 /***************************************************************************/
 CSegment * CSaView::FindSelectedAnnotation()
 {
-
     for (int nLoop = 0; nLoop < ANNOT_WND_NUMBER; nLoop++)
     {
         CSegment * pSegments = GetAnnotation(nLoop);

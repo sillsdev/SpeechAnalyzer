@@ -1,3 +1,23 @@
+SA - 3.1.0.55 - 4/22/2013 (stereo branch)
+1) Added DDX routine to check splitfile prefix and suffix for invalid characters.
+2) Fixed bug in split file code that was filter filename at wrong time.
+3) Modified autosave code to disable autosave when .wav files are readonly and transcription has not been modified.
+4) Fixed find/replace bug where find/replace was skipping first entry if stop/start markers on not set on a word when the search is started.
+5) Added code to cleanup ~#!tstWrite!#~ test file.
+6) Removed some debug code that was writing files to c:\working when the formant tracker is invoked (spectrogram).
+7) Fixed a bug in SpeechToolUtils that makes it look like a transcription file is saved when the following steps are performed.  The file is not actually saved.
+  a) mark transcription file as 'readonly' in windows
+  b) open SA
+  c) modify transcription
+  d) perform 'save'
+  e) observe warning dialog. press OK.
+  f) reselect identical folder in which error occurred. press OK.
+  g) observe warning dialog. press OK.
+  h) press 'cancel' in folder dialog.
+  i) applications returns without indicating success of failure.
+8) Modified code in SpeechToolUtils that updates (removes old SA chunks) from a wave file.  It now only updates the file if it is not 'readonly'
+  
+
 SA - 3.1.0.54 - 4/18/2013 (stereo branch)
 1) Fixed find/replace bugs for all transcription types.
 2) Fixed bug in transcription editor where arrow buttons where not always updates correctly when user reaches end of transcription line.  There are still outstanding issues related to the phrase-n transcription lines.

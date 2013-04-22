@@ -283,7 +283,6 @@ void CPrintOptionsDlg::EnableCustomLayout(BOOL enable)
 // CPrintOptionsDlg::Message Map
 /***************************************************************************/
 BEGIN_MESSAGE_MAP(CPrintOptionsDlg, CDialog)
-    //{{AFX_MSG_MAP(CPrintOptionsDlg)
     ON_BN_CLICKED(IDC_MORE, OnMore)
     ON_BN_CLICKED(IDC_USESCREENLAYOUT  , OnUseScreenLayout)
     ON_BN_CLICKED(IDC_ONEPERPAGE , OnPrintOnePerPage)
@@ -299,7 +298,6 @@ BEGIN_MESSAGE_MAP(CPrintOptionsDlg, CDialog)
     ON_BN_CLICKED(IDC_PORTRAIT, OnPortrait)
     ON_BN_CLICKED(IDC_LANDSCAPE, OnLandscape)
     ON_COMMAND(IDHELP, OnHelpPrintOptions)
-    //}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
 

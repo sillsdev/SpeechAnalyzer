@@ -118,10 +118,6 @@ BEGIN_MESSAGE_MAP(CDlgExportTable, CDialog)
     ON_COMMAND(IDHELP, OnHelpExportTable)
 END_MESSAGE_MAP()
 
-
-/////////////////////////////////////////////////////////////////////////////
-// CDlgExportTable message handlers
-
 void CDlgExportTable::OnAllAnnotations()
 {
 

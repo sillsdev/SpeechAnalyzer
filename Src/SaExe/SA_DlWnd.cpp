@@ -787,11 +787,9 @@ IMPLEMENT_DYNCREATE(CVUBar, CWnd)
 // CVUBar message map
 
 BEGIN_MESSAGE_MAP(CVUBar, CWnd)
-    //{{AFX_MSG_MAP(CVUBar)
     ON_WM_CREATE()
     ON_WM_PAINT()
     ON_WM_ERASEBKGND()
-    //}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
@@ -1995,7 +1993,6 @@ IMPLEMENT_DYNCREATE(CToggleButton, CWnd)
 // CToggleButton message map
 
 BEGIN_MESSAGE_MAP(CToggleButton, CWnd)
-    //{{AFX_MSG_MAP(CToggleButton)
     ON_WM_PAINT()
     ON_WM_ERASEBKGND()
     ON_WM_LBUTTONDOWN()
@@ -2003,7 +2000,6 @@ BEGIN_MESSAGE_MAP(CToggleButton, CWnd)
     ON_WM_LBUTTONUP()
     ON_WM_TIMER()
     ON_WM_ENABLE()
-    //}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
@@ -2486,10 +2482,8 @@ IMPLEMENT_DYNCREATE(CAboutTitle, CWnd)
 // CAboutTitle message map
 
 BEGIN_MESSAGE_MAP(CAboutTitle, CWnd)
-    //{{AFX_MSG_MAP(CAboutTitle)
     ON_WM_PAINT()
     ON_WM_ERASEBKGND()
-    //}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
@@ -2592,10 +2586,8 @@ IMPLEMENT_DYNCREATE(CStaticText, CWnd)
 // CStaticText message map
 
 BEGIN_MESSAGE_MAP(CStaticText, CWnd)
-    //{{AFX_MSG_MAP(CStaticText)
     ON_WM_PAINT()
     ON_WM_ERASEBKGND()
-    //}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
@@ -2690,10 +2682,8 @@ IMPLEMENT_DYNCREATE(CFancyArrow, CWnd)
 // CFancyArrow message map
 
 BEGIN_MESSAGE_MAP(CFancyArrow, CWnd)
-    //{{AFX_MSG_MAP(CFancyArrow)
     ON_WM_PAINT()
     ON_WM_ERASEBKGND()
-    //}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////

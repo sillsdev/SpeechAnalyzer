@@ -32,8 +32,6 @@ IMPLEMENT_DYNCREATE(CPlotChange, CPlotWnd)
 // CPlotChange message map
 
 BEGIN_MESSAGE_MAP(CPlotChange, CPlotWnd)
-    //{{AFX_MSG_MAP(CPlotChange)
-    //}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////

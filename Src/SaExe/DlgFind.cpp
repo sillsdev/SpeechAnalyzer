@@ -56,7 +56,7 @@ END_MESSAGE_MAP()
 CDlgFind::CDlgFind(CWnd * pParent,
                        LPCTSTR pszFieldsToSearch,
                        const CString & strToFind,
-                       BOOL bFindOnly,
+                       bool bFindOnly,
                        const CString & strToReplace,
                        int idxDefaultField,
                        CMainFrame * pMainFrame) :
@@ -85,7 +85,7 @@ CDlgFind::CDlgFind(CWnd * pParent,
         m_strToFind = m_strToFind.Right(m_strToFind.GetLength() - 1); // delete delimiter
     }
 
-    m_wraped = FALSE;
+    m_wrapped = false;
     m_beginFind = -1;
     m_curPos = -1;
     m_bCreated = Create(CDlgFind::IDD);
@@ -105,11 +105,11 @@ BOOL CDlgFind::Completed(BOOL isForward, int newPos)
 
     if (isForward)
     {
-        ret = (m_wraped && (newPos >= m_beginFind));
+        ret = ((m_wrapped) && (newPos >= m_beginFind));
     }
     else
     {
-        ret = (m_wraped && (newPos <= m_beginFind));
+        ret = ((m_wrapped) && (newPos <= m_beginFind));
     }
 
     return ret;
@@ -121,7 +121,7 @@ BOOL CDlgFind::Completed(BOOL isForward, int newPos)
 void CDlgFind::ResetCompletionCheck()
 {
     m_beginFind = -1;
-    m_wraped = FALSE;
+    m_wrapped = false;
 }
 
 /***************************************************************************/
@@ -317,10 +317,7 @@ void CDlgFind::SaveDialogLayout()
     GetDlgItem(IDC_REPLACESTRING)->GetWindowRect(m_rctReplaceString);
     ScreenToClient(m_rctReplaceString);
     GetWindowRect(m_rctDialog);
-
 }
-
-
 
 int CDlgFind::AnnotationSetID()
 {
@@ -371,9 +368,7 @@ BOOL CDlgFind::OnInitDialog()
     }
     m_annotSetID2.SetCurSel(m_annotWndIndex);
 
-
-
-    EnableDisable();
+	EnableDisable();
     SetEditFont();
     SaveDialogLayout();
 
@@ -469,31 +464,46 @@ void CDlgFind::OnSetFocusReplaceString()
 /***************************************************************************/
 void CDlgFind::OnNext()
 {
-    if (m_pMainFrame==NULL)
-    {
-        return;
-    }
+    if (m_pMainFrame==NULL) return;
+
     CSaDoc * pDoc = m_pMainFrame->GetCurrDoc();
-    if (pDoc==NULL)
-    {
-        return;
-    }
+    if (pDoc==NULL) return;
 
     CString findme = GetFindString();
-    if (findme.IsEmpty())
-    {
-        return;
-    }
+    if (findme.IsEmpty()) return;
 
     CSegment * pAnnot = m_pMainFrame->GetAnnotation(AnnotationSetID());
-    if ((pAnnot->IsEmpty()) || (pAnnot->FindNext(-1,findme)==-1))
+    if ((pAnnot->IsEmpty()) || ((!m_bFindOnly)&&(m_curPos==-1)&&(pAnnot->FindNext(-1,findme)==-1)))
     {
         AfxMessageBox(IDS_FIND_NONE,MB_ICONINFORMATION,0);
         return;
     }
 
     int curSel = pAnnot->GetSelection();
-    if ((m_beginFind == -1) || ((m_curPos != -1) && (curSel != m_curPos)))
+
+	// setup the beginning point, because we don't have one yet.
+	// in this case we don't want to do a replace yet
+	// there's nothing selected, and we haven't started yet
+	if ((curSel==-1)&&(m_beginFind==-1))
+    {
+		m_beginFind = -1;
+		m_wrapped = false;
+		m_beginFind = pAnnot->FirstVisibleIndex(*pDoc);
+		m_curPos = m_beginFind;
+		curSel = m_curPos;
+		if (pAnnot->Match( curSel, findme))
+		{
+	        ScrollIfNeeded();
+		    pAnnot->SelectSegment(*pDoc,m_curPos);
+		}
+		else
+		{
+			OnNext();
+		}
+		return;
+	}
+
+    if ((m_curPos != -1) && (curSel != m_curPos))
     {
         m_beginFind = pAnnot->GetSelection();
         if (m_beginFind == -1)
@@ -527,7 +537,7 @@ void CDlgFind::OnNext()
         if (AfxMessageBox(IDS_FIND_WRAP_PAST_END, MB_YESNO|MB_ICONQUESTION,0)==IDYES)
         {
             m_curPos = -1;
-            m_wraped = TRUE;
+            m_wrapped = true;
             OnNext();
         }
         else
@@ -600,7 +610,7 @@ void CDlgFind::OnPrevious()
         if (AfxMessageBox(IDS_FIND_WRAP_PAST_START, MB_YESNO|MB_ICONQUESTION,0)==IDYES)
         {
             m_curPos = -1;
-            m_wraped = TRUE;
+            m_wrapped = true;
             OnPrevious();
         }
         else
@@ -615,7 +625,7 @@ void CDlgFind::OnReplace()
 {
     if (m_bFindOnly)
     {
-        m_bFindOnly = FALSE;
+        m_bFindOnly = false;
         SetupDialogForFindAndReplace();
     }
     else
@@ -671,21 +681,13 @@ CString CDlgFind::GetReplaceString()
 void CDlgFind::OnReplaceAll()
 {
 
-    if (m_pMainFrame==NULL)
-    {
-        return;
-    }
+    if (m_pMainFrame==NULL) return;
+
     CSaDoc * pDoc = m_pMainFrame->GetCurrDoc();
-    if (pDoc==NULL)
-    {
-        return;
-    }
+    if (pDoc==NULL) return;
 
     CString findme = GetFindString();
-    if (findme.IsEmpty())
-    {
-        return;
-    }
+    if (findme.IsEmpty()) return;
 
     CString replaceme = GetReplaceString();
     if (replaceme.IsEmpty())

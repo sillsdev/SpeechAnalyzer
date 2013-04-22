@@ -97,9 +97,7 @@ void CDlgImportSFM::DoDataExchange(CDataExchange * pDX)
 }
 
 BEGIN_MESSAGE_MAP(CDlgImportSFM, CDialog)
-    //{{AFX_MSG_MAP(CDlgImportSFM)
     ON_BN_CLICKED(IDC_IMPORT_PLAIN_TEXT, OnImportPlainText)
-    //}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
 

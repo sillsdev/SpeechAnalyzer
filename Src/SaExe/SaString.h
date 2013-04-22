@@ -37,7 +37,7 @@ class CSaStringArray : public CStringArray
 public:
 };
 
-double parseUtf8(const CSaString &, INT * att, double X, double Y = 0.0);
+double ParseUtf8(const CSaString &, INT * att, double X, double Y = 0.0);
 LONG mmioWriteUtf8(HMMIO hmmio, const CSaString & str, LONG cch = -1);
 LONG mmioReadUtf8(HMMIO hmmio, CSaString & str, LONG cch);
 BOOL ReadStreamString(CObjectIStream & stream, CSaString pszMarker, CSaString & szResult);

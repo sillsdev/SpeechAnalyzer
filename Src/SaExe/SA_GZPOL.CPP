@@ -35,9 +35,7 @@ static char BASED_CODE THIS_FILE[] = __FILE__;
 // CZPlotPolar message map
 
 BEGIN_MESSAGE_MAP(CZPlotPolar, CPlotWnd)
-    //{{AFX_MSG_MAP(CZPlotPolar)
     ON_WM_CREATE()
-    //}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////

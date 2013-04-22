@@ -123,7 +123,6 @@ static HINSTANCE hInstance = NULL;
 // CLegendWnd message map
 
 BEGIN_MESSAGE_MAP(CLegendWnd, CWnd)
-    //{{AFX_MSG_MAP(CLegendWnd)
     ON_WM_PAINT()
     ON_WM_ERASEBKGND()
     ON_WM_RBUTTONDOWN()
@@ -131,7 +130,6 @@ BEGIN_MESSAGE_MAP(CLegendWnd, CWnd)
     ON_WM_CREATE()
     ON_WM_LBUTTONUP()
     ON_WM_MOUSEMOVE()
-    //}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
@@ -1229,14 +1227,12 @@ void CLegendWnd::OnMouseMove(UINT nFlags, CPoint point)
 // CXScaleWnd message map
 
 BEGIN_MESSAGE_MAP(CXScaleWnd, CWnd)
-    //{{AFX_MSG_MAP(CXScaleWnd)
     ON_WM_ERASEBKGND()
     ON_WM_RBUTTONDOWN()
     ON_WM_LBUTTONDOWN()
     ON_WM_MOUSEMOVE()
     ON_WM_PAINT()
     ON_WM_CREATE()
-    //}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////

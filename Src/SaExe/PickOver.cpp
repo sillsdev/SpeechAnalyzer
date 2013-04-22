@@ -46,11 +46,9 @@ void CPickOverlayDlg::DoDataExchange(CDataExchange * pDX)
 }
 
 BEGIN_MESSAGE_MAP(CPickOverlayDlg, CDialog)
-    //{{AFX_MSG_MAP(CPickOverlayDlg)
     ON_BN_CLICKED(IDC_CLEARALLGRAPHS, OnClearallgraphs)
     ON_BN_CLICKED(IDC_SELECTALLGRAPHS, OnSelectallgraphs)
     ON_COMMAND(IDHELP, OnHelpPickOverlay)
-    //}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
 

@@ -1666,6 +1666,8 @@
 #define IDS_ERROR_GONE_MISSING          61267
 #define IDS_ERROR_AUTOSAVE_FAIL         61267
 #define IDS_ERROR_FORMAT_CHANNELS       61268
+#define IDS_STRING61269                 61269
+#define IDS_ERROR_BADFILENAME_CHARS     61269
 #define IDS_AUTO_REF_MAIN               61300
 #define IDS_AUTO_REF_MAIN_1             61300
 #define IDS_AUTO_REF_MAIN_2             61301

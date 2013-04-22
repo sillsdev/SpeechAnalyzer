@@ -36,8 +36,6 @@ IMPLEMENT_DYNCREATE(CPlotLoudness, CPlotWnd)
 // CPlotLoudness message map
 
 BEGIN_MESSAGE_MAP(CPlotLoudness, CPlotWnd)
-    //{{AFX_MSG_MAP(CPlotLoudness)
-    //}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////

@@ -37,8 +37,6 @@ static char BASED_CODE THIS_FILE[] = __FILE__;
 // CDlgInformationFilePage message map
 
 BEGIN_MESSAGE_MAP(CDlgInformationFilePage, CPropertyPage)
-    //{{AFX_MSG_MAP(CDlgInformationFilePage)
-    //}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
@@ -135,8 +133,6 @@ BOOL CDlgInformationFilePage::OnInitDialog()
 // CDlgInformationWavePage message map
 
 BEGIN_MESSAGE_MAP(CDlgInformationWavePage, CPropertyPage)
-    //{{AFX_MSG_MAP(CDlgInformationWavePage)
-    //}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
@@ -267,9 +263,7 @@ BOOL CDlgInformationWavePage::OnInitDialog()
 // CDlgInformationSourcePage message map
 
 BEGIN_MESSAGE_MAP(CDlgInformationSourcePage, CPropertyPage)
-    //{{AFX_MSG_MAP(CDlgInformationSourcePage)
     ON_EN_UPDATE(IDC_ETHNOID, OnChangeEthnoid)
-    //}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
@@ -386,8 +380,6 @@ void CDlgInformationSourcePage::OnChangeEthnoid()
 // CDlgInformationUserPage message map
 
 BEGIN_MESSAGE_MAP(CDlgInformationUserPage, CPropertyPage)
-    //{{AFX_MSG_MAP(CDlgInformationUserPage)
-    //}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
@@ -447,10 +439,8 @@ IMPLEMENT_DYNAMIC(CDlgFileInformation, CPropertySheet)
 // CDlgFileInformation message map
 
 BEGIN_MESSAGE_MAP(CDlgFileInformation, CPropertySheet)
-    //{{AFX_MSG_MAP(CDlgFileInformation)
     ON_WM_CREATE()
     ON_COMMAND(IDHELP, OnHelpInformation)
-    //}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////

@@ -31,7 +31,6 @@ IMPLEMENT_DYNCREATE(CSaWorkbenchView, CFormView)
 // CSaWorkbenchView message map
 
 BEGIN_MESSAGE_MAP(CSaWorkbenchView, CFormView)
-    //{{AFX_MSG_MAP(CSaWorkbenchView)
     ON_WM_CTLCOLOR()
     ON_WM_DESTROY()
     ON_BN_DOUBLECLICKED(IDC_RAW0, OnProcess0)
@@ -58,7 +57,6 @@ BEGIN_MESSAGE_MAP(CSaWorkbenchView, CFormView)
     ON_COMMAND(ID_PROCESS1_PROPERTIES, OnProcess1)
     ON_COMMAND(ID_PROCESS2_PROPERTIES, OnProcess2)
     ON_COMMAND(ID_PROCESS3_PROPERTIES, OnProcess3)
-    //}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////

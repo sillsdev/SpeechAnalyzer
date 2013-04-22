@@ -32,9 +32,7 @@ static char BASED_CODE THIS_FILE[] = __FILE__;
 // CDataStatusBar message map
 
 BEGIN_MESSAGE_MAP(CDataStatusBar, CStatusBar)
-    //{{AFX_MSG_MAP(CDataStatusBar)
     ON_WM_PAINT()
-    //}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
@@ -446,8 +444,6 @@ void CDataStatusBar::GetItemRect(int nPaneID, LPRECT lpRect)
 // CProgressStatusBar message map
 
 BEGIN_MESSAGE_MAP(CProgressStatusBar, CStatusBar)
-    //{{AFX_MSG_MAP(CProgressStatusBar)
-    //}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////

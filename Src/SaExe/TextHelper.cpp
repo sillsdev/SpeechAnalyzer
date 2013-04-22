@@ -39,7 +39,7 @@ bool ReadFileIntoBuffer( LPCTSTR filename, char ** buffer, streampos & length)
 	return true;
 }
 
-bool isUTF8( BYTE * buffer, std::ios::pos_type length)
+bool IsUTF8( BYTE * buffer, std::ios::pos_type length)
 {
     //EF BB BF      UTF-8
     if (length<3)
@@ -50,7 +50,7 @@ bool isUTF8( BYTE * buffer, std::ios::pos_type length)
     return result;
 }
 
-bool isUTF16(BYTE * buffer, std::ios::pos_type length)
+bool IsUTF16(BYTE * buffer, std::ios::pos_type length)
 {
     //FE FF         UTF-16, big-endian
     //FF FE         UTF-16, little-endian
@@ -69,7 +69,7 @@ bool isUTF16(BYTE * buffer, std::ios::pos_type length)
     return false;
 }
 
-bool isUTF32(BYTE * buffer, std::ios::pos_type length)
+bool IsUTF32(BYTE * buffer, std::ios::pos_type length)
 {
     //00 00 FE FF       UTF-32, big-endian
     //FF FE 00 00       UTF-32, little-endian
@@ -88,7 +88,7 @@ bool isUTF32(BYTE * buffer, std::ios::pos_type length)
     return false;
 }
 
-bool isASCII(BYTE * buffer, std::ios::pos_type length)
+bool IsASCII(BYTE * buffer, std::ios::pos_type length)
 {
     for (int i=0; i<length; i++)
     {
@@ -110,7 +110,7 @@ bool ConvertBufferToUTF16( char * buffer, size_t length, wchar_t ** obuffer, siz
     *obuffer = NULL;
     length2 = 0;
 
-    if (isUTF8((BYTE *)buffer,length))
+    if (IsUTF8((BYTE *)buffer,length))
     {
         length2 = MultiByteToWideChar(CP_UTF8,0,buffer,length,NULL,0);
 		if (length2==0) return false;
@@ -124,7 +124,7 @@ bool ConvertBufferToUTF16( char * buffer, size_t length, wchar_t ** obuffer, siz
 		return (result!=0);
     }
     
-	if (isUTF16((BYTE *)buffer,length))
+	if (IsUTF16((BYTE *)buffer,length))
     {
         // just recast the pointer?
 		length2 = length/2;
@@ -132,13 +132,13 @@ bool ConvertBufferToUTF16( char * buffer, size_t length, wchar_t ** obuffer, siz
 		memcpy( obuffer, buffer, length);
     }
     
-	if (isUTF32((BYTE *)buffer,length))
+	if (IsUTF32((BYTE *)buffer,length))
     {
         // not supported yet
         return false;
     }
     
-	if (isASCII((BYTE *)buffer,length))
+	if (IsASCII((BYTE *)buffer,length))
     {
         // assume ascii
         length2 = MultiByteToWideChar(CP_ACP,0,buffer,length,NULL,0);
@@ -217,7 +217,7 @@ vector<wstring> TokenizeLineToTokens( wstring & line, wchar_t token) {
 	return lines;
 }
 
-bool containsTabs(wchar_t * buffer, int length)
+bool ContainsTabs(wchar_t * buffer, int length)
 {
     for (int i=0; i<length; i++)
     {
@@ -229,7 +229,7 @@ bool containsTabs(wchar_t * buffer, int length)
     return false;
 }
 
-bool containsPoundSigns(wchar_t * buffer, int length)
+bool ContainsPoundSigns(wchar_t * buffer, int length)
 {
     for (int i=0; i<length; i++)
     {
@@ -241,7 +241,7 @@ bool containsPoundSigns(wchar_t * buffer, int length)
     return false;
 }
 
-bool containsUnderscore(wchar_t * buffer, int length)
+bool ContainsUnderscore(wchar_t * buffer, int length)
 {
     for (int i=0; i<length; i++)
     {
@@ -256,7 +256,7 @@ bool containsUnderscore(wchar_t * buffer, int length)
 /**
 * attempt to pull in a tab delimited file, the reference column only
 */
-TranscriptionDataMap attemptTabDelimitedRefOnly(const vector<wstring> & lines, const MarkerList & markers)
+TranscriptionDataMap AttemptTabDelimitedRefOnly(const vector<wstring> & lines, const MarkerList & markers)
 {
 
     TranscriptionDataMap map;
@@ -323,7 +323,7 @@ TranscriptionDataMap attemptTabDelimitedRefOnly(const vector<wstring> & lines, c
     return map;
 }
 
-TranscriptionDataMap attemptTabDelimited(vector<wstring> lines, MarkerList markers)
+TranscriptionDataMap AttemptTabDelimited(vector<wstring> lines, MarkerList markers)
 {
 
     TranscriptionDataMap map;
@@ -389,7 +389,7 @@ TranscriptionDataMap attemptTabDelimited(vector<wstring> lines, MarkerList marke
     return map;
 }
 
-TranscriptionDataMap attemptWhitespaceDelimited(vector<wstring> lines, MarkerList markers)
+TranscriptionDataMap AttemptWhitespaceDelimited(vector<wstring> lines, MarkerList markers)
 {
 
     TranscriptionDataMap map;
@@ -455,7 +455,7 @@ TranscriptionDataMap attemptWhitespaceDelimited(vector<wstring> lines, MarkerLis
     return map;
 }
 
-TranscriptionDataMap attemptTwoMarkerWhitespaceDelimited(vector<wstring> lines, MarkerList markers)
+TranscriptionDataMap AttemptTwoMarkerWhitespaceDelimited(vector<wstring> lines, MarkerList markers)
 {
 
     TranscriptionDataMap map;
@@ -568,7 +568,7 @@ bool CTextHelper::ImportText(const CSaString & filename,
     CString tag;
     tag.LoadStringW(IDS_AUTO_REF_TAG);
 
-    map = attemptTabDelimitedRefOnly(lines,markers);
+    map = AttemptTabDelimitedRefOnly(lines,markers);
     if (map.size()>0)
     {
         if (addTag)
@@ -577,7 +577,7 @@ bool CTextHelper::ImportText(const CSaString & filename,
         }
         return true;
     }
-    map = attemptTabDelimited(lines,markers);
+    map = AttemptTabDelimited(lines,markers);
     if (map.size()>0)
     {
         if (addTag)
@@ -586,7 +586,7 @@ bool CTextHelper::ImportText(const CSaString & filename,
         }
         return true;
     }
-    map = attemptWhitespaceDelimited(lines,markers);
+    map = AttemptWhitespaceDelimited(lines,markers);
     if (map.size()>0)
     {
         if (addTag)
@@ -595,7 +595,7 @@ bool CTextHelper::ImportText(const CSaString & filename,
         }
         return true;
     }
-    map = attemptTwoMarkerWhitespaceDelimited(lines,markers);
+    map = AttemptTwoMarkerWhitespaceDelimited(lines,markers);
     if (map.size()>0)
     {
         if (addTag)

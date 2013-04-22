@@ -29,8 +29,6 @@ IMPLEMENT_DYNCREATE(CPlotBlank, CPlotWnd)
 // CPlotBlank message map
 
 BEGIN_MESSAGE_MAP(CPlotBlank, CPlotWnd)
-    //{{AFX_MSG_MAP(CPlotBlank)
-    //}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////

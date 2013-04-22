@@ -35,8 +35,6 @@ IMPLEMENT_DYNCREATE(CPlotMelogram, CPlotWnd)
 // CPlotMelogram message map
 
 BEGIN_MESSAGE_MAP(CPlotMelogram, CPlotWnd)
-    //{{AFX_MSG_MAP(CPlotMelogram)
-    //}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////

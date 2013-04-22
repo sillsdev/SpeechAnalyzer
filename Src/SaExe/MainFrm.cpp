@@ -1108,7 +1108,7 @@ BOOL CMainFrame::IsEditAllowed()
 /***************************************************************************/
 void CMainFrame::OnEditFind()
 {
-    MaybeCreateFindOrReplaceDlg(TRUE);
+    MaybeCreateFindOrReplaceDlg(true);
 }
 
 /***************************************************************************/
@@ -1944,8 +1944,7 @@ void CMainFrame::CreateFindOrReplaceDlg()
     }
     CSaString sFields;
     sFields.LoadString(IDS_FINDFIELDS);
-    m_pDlgFind = new CDlgFind((CWnd *)this,sFields,
-                                sToFind,m_bFindOnly,CSaString(_T("")),annotWndIndex,this);
+    m_pDlgFind = new CDlgFind((CWnd *)this,sFields, sToFind, m_bFindOnly,CSaString(_T("")),annotWndIndex,this);
     if (!m_pDlgFind->Created())
     {
         delete m_pDlgFind;
@@ -1960,7 +1959,7 @@ void CMainFrame::CreateFindOrReplaceDlg()
 // CMainFrame::MaybeCreateFindOrReplaceDlg
 // Brings up the find or replace dialog, creating it if neccessary.
 /***************************************************************************/
-void CMainFrame::MaybeCreateFindOrReplaceDlg(BOOL bWantFindOnly)
+void CMainFrame::MaybeCreateFindOrReplaceDlg(bool bWantFindOnly)
 {
     if (m_pDlgFind)
     {

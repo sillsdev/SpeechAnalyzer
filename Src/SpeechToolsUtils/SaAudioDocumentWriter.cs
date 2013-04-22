@@ -139,45 +139,49 @@ namespace SIL.SpeechTools.Utils
 				if (!File.Exists(newPath))		// don't copy if it's already backed up
 					File.Copy(m_doc.AudioFile, newPath);
 			}
-		
-			File.SetAttributes(m_doc.AudioFile, FileAttributes.Normal);
-			int newFileLength;
-			byte[] bytes = null;
 
-			// Now, read all the bytes in the file that are not from SA chunks.
-			using (FileStream stream = File.Open(m_doc.AudioFile, FileMode.Open,
-				FileAccess.ReadWrite, FileShare.ReadWrite))
-			{
-				// Get the offset in the file of the first SA chunk. That will
-				// be the length of the file after the SA chunks are removed.
-				newFileLength = (int)AudioReader.GetChunkOffset(stream, AudioReader.kidSAChunk);
-				if (newFileLength > 0)
-				{
-					stream.Position = 0;
-					BinaryReader reader = new BinaryReader(stream);
-					bytes = reader.ReadBytes(newFileLength);
-				}
+            if ((File.GetAttributes(m_doc.AudioFile) & FileAttributes.ReadOnly)!=FileAttributes.ReadOnly)
+            {
+                File.SetAttributes(m_doc.AudioFile, FileAttributes.Normal);
 
-				stream.Flush();
-				stream.Close();
-			}
+                int newFileLength;
+                byte[] bytes = null;
 
-			if (newFileLength <= 0 || bytes == null)
-				return true;
+                // Now, read all the bytes in the file that are not from SA chunks.
+                using (FileStream stream = File.Open(m_doc.AudioFile, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite))
+                {
+                    // Get the offset in the file of the first SA chunk. That will
+                    // be the length of the file after the SA chunks are removed.
+                    newFileLength = (int)AudioReader.GetChunkOffset(stream, AudioReader.kidSAChunk);
+                    if (newFileLength > 0)
+                    {
+                        stream.Position = 0;
+                        BinaryReader reader = new BinaryReader(stream);
+                        bytes = reader.ReadBytes(newFileLength);
+                    }
 
-			// Now rewrite the file without all the SA chunks. Write all the bytes
-			// then skip over the 'RIFF' tag and write out the modify RIFF chunk
-			// length, which is 8 bytes less than the length of the file since it
-			// doesn't include 'RIFF' and the 4 bytes for the RIFF chunk length.
-			using (FileStream stream = File.Open(m_doc.AudioFile, FileMode.Truncate,
-				FileAccess.Write, FileShare.ReadWrite))
-			{
-				BinaryWriter writer = new BinaryWriter(stream);
-				writer.Write(bytes);
-				stream.Position = 4;
-				writer.Write(newFileLength - 8);
-				stream.Close();
-			}
+                    stream.Flush();
+                    stream.Close();
+                }
+
+                if (newFileLength <= 0 || bytes == null)
+                {
+                    return true;
+                }
+
+                // Now rewrite the file without all the SA chunks. Write all the bytes
+                // then skip over the 'RIFF' tag and write out the modify RIFF chunk
+                // length, which is 8 bytes less than the length of the file since it
+                // doesn't include 'RIFF' and the 4 bytes for the RIFF chunk length.
+                using (FileStream stream = File.Open( m_doc.AudioFile, FileMode.Truncate, FileAccess.Write, FileShare.ReadWrite))
+                {
+                    BinaryWriter writer = new BinaryWriter(stream);
+                    writer.Write(bytes);
+                    stream.Position = 4;
+                    writer.Write(newFileLength - 8);
+                    stream.Close();
+                }
+            }
 
 			return true;
 		}

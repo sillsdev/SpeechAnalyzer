@@ -259,6 +259,7 @@ void CProcessFormantTracker::BuildTrack( CTrackState & state, double samplingRat
             }
         }
 
+		/*
 		FILE * f = fopen("c:\\working\\filtered.csv","a");
 		for (int j=0;j<filtered.size();j++)
 		{
@@ -266,7 +267,7 @@ void CProcessFormantTracker::BuildTrack( CTrackState & state, double samplingRat
 		}
 		fprintf(f,"\n");
 		fclose(f);
-
+		*/
 
         // Calculate LPC
         CAnalyticLpcAnalysis lpc( filtered, 1);
@@ -514,6 +515,7 @@ void CProcessFormantTracker::WriteTrack( CTrackState & state, double samplingRat
         formant.F[i] = float((bIsDataValid) ? (atan2(pRoots[i].imag(), pRoots[i].real())*samplingRate/2/pi) : UNDEFINED_DATA);
     }
 
+	/*
 	FILE * f = fopen("c:\\working\\real.csv","a");
 	for (int j=0;j<pRoots.size();j++)
 	{
@@ -537,6 +539,7 @@ void CProcessFormantTracker::WriteTrack( CTrackState & state, double samplingRat
 	}
 	fprintf(f2,"\n");
 	fclose(f2);
+	*/
 
     // write unvoiced formant frame
     Write((HPSTR)&formant, (UINT)sizeof(SFormantFreq));

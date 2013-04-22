@@ -47,7 +47,6 @@
 // CDlgEditor message map
 
 BEGIN_MESSAGE_MAP(CDlgEditor, CDialog)
-    //{{AFX_MSG_MAP(CDlgEditor)
     ON_BN_CLICKED(IDC_CHARACTERCHART, OnCharacterChart)
     ON_BN_CLICKED(IDC_PLAY_SEGMENT, OnPlaybackSegment)
     ON_BN_CLICKED(IDC_PLAY_WORD, OnPlaybackWord)
@@ -59,7 +58,6 @@ BEGIN_MESSAGE_MAP(CDlgEditor, CDialog)
     ON_WM_CLOSE()
     ON_COMMAND(IDHELP, OnHelpEdit)
     ON_COMMAND(IDCANCEL, OnCancel)
-    //}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////

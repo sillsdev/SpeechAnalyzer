@@ -326,6 +326,9 @@ BOOL CSaApp::InitInstance()
     afxMemDF |= checkAlwaysMemDF;  // check for memory overwrites in debug version (see MSDN)
 #endif
 
+	ASSERT(1);
+	ASSERT(2);
+
     m_hEnglishResources = LoadCompatibleLibrary(_T("SA_ENU.DLL"));
     m_hLocalizedResources = LoadCompatibleLibrary(_T("SA_LOC.DLL"));
 
@@ -673,8 +676,8 @@ void CSaApp::ExamineCmdLine(LPCTSTR pCmdLine, WPARAM wParam)
             swscanf_s(in, _T("%*[ 0123456789]%[^\n]"), buffer, 512);
             m_szCmdFileName = buffer;
 
-            CFileStatus TheStatus;
-            if ((m_szCmdFileName.GetLength()==0) || !CFile::GetStatus(m_szCmdFileName,TheStatus))
+            CFileStatus status;
+            if ((m_szCmdFileName.GetLength()==0) || !CFile::GetStatus(m_szCmdFileName,status))
             {
                 // The file does not exist use original profile
                 ASSERT(wParam == SPEECH_WPARAM_SHOWSAREC);
@@ -1578,9 +1581,9 @@ CSaString CSaApp::DefaultDir(CSaString * pFilename) const
         {
             szPath = szPath.Left(nFind);
 
-            CFileStatus cStatus;
-
-            if (CFile::GetStatus(szPath, cStatus) && cStatus.m_attribute & CFile::directory)
+            CFileStatus status;
+            if ((CFile::GetStatus(szPath, status)) && 
+				(status.m_attribute & CFile::directory))
             {
                 return szPath + "\\";
             }
@@ -1598,9 +1601,9 @@ CSaString CSaApp::DefaultDir(CSaString * pFilename) const
             int nFind = szPath.ReverseFind('\\');
             if (nFind != -1)
             {
-                CFileStatus cStatus;
-
-                if (CFile::GetStatus(szPath.Left(nFind), cStatus) && cStatus.m_attribute & CFile::directory)
+                CFileStatus status;
+                if ((CFile::GetStatus(szPath.Left(nFind), status)) && 
+					(status.m_attribute & CFile::directory))
                 {
                     workingDir = szPath.Left(nFind + 1);
                     break;
@@ -2518,8 +2521,8 @@ BOOL CSaApp::ReadSettings()
         szPath = szPath.Left(szPath.GetLength() - 1);
     }
 
-    CFileStatus cStatus;
-    if (!(CFile::GetStatus(szPath, cStatus) && cStatus.m_attribute & CFile::directory))
+    CFileStatus status;
+    if ((!(CFile::GetStatus(szPath, status)) && (status.m_attribute & CFile::directory)))
     {
         CreateDirectory(szPath, NULL);
     }

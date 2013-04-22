@@ -13,7 +13,7 @@
 #include "ch_table.h"
 #include "resource.h"
 
-extern bool checkIPAHelp();
+extern bool CheckIPAHelp();
 
 //###########################################################################
 // CDlgChartVowelsPage property page

@@ -2463,7 +2463,6 @@ void CDlgParametersSpectrumPage::OnModifiedShowFormantPower()
 // CDlgParametersFormantsPage message map
 
 BEGIN_MESSAGE_MAP(CDlgParametersFormantsPage, CPropertyPage)
-    //{{AFX_MSG_MAP(CDlgParametersFormantsPage)
     ON_BN_CLICKED(IDC_FORMANTS_CEPSTRAL, OnModifiedSource)
     ON_BN_CLICKED(IDC_FORMANTS_TRACK, OnModifiedTrack)
     ON_BN_CLICKED(IDC_FORMANTS_TRACK_SMOOTH, OnModifiedSmooth)
@@ -2471,7 +2470,6 @@ BEGIN_MESSAGE_MAP(CDlgParametersFormantsPage, CPropertyPage)
     ON_CBN_EDITCHANGE(IDC_FORMANT_VOWELS, OnEditChangeFormantVowels)
     ON_CBN_SELCHANGE(IDC_FORMANT_VOWELS, OnEditChangeFormantVowels)
     ON_BN_CLICKED(IDC_FORMANTS_EDIT, OnFormantVowelsEdit)
-    //}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
@@ -3644,12 +3642,10 @@ void CDlgParametersIntensityPage::DoDataExchange(CDataExchange * pDX)
 
 
 BEGIN_MESSAGE_MAP(CDlgParametersIntensityPage, CPropertyPage)
-    //{{AFX_MSG_MAP(CDlgParametersIntensityPage)
     ON_CBN_SELCHANGE(IDC_DISPLAY_SCALEMODE, OnChange)
     ON_BN_CLICKED(IDC_DISPLAY_SCALEMODE, OnChange)
     ON_BN_CLICKED(IDC_RADIO2, OnChange)
     ON_BN_CLICKED(IDC_RADIO3, OnChange)
-    //}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
 
@@ -3870,7 +3866,6 @@ void CDlgParametersResearchPage::OnModified()
 }
 
 BEGIN_MESSAGE_MAP(CDlgParametersResearchPage, CPropertyPage)
-    //{{AFX_MSG_MAP(CDlgParametersResearchPage)
     ON_BN_CLICKED(IDC_RADIO3, OnModified)
     ON_BN_CLICKED(IDC_RESEARCH_WINDOW_BANDWIDTH, OnModified)
     ON_BN_CLICKED(IDC_RADIO4, OnModified)
@@ -3890,7 +3885,6 @@ BEGIN_MESSAGE_MAP(CDlgParametersResearchPage, CPropertyPage)
     ON_EN_KILLFOCUS(IDC_RESEARCH_WINDOW_BANDWIDTH_EDIT, OnModified)
     ON_BN_CLICKED(IDC_RESEARCH_WINDOW_CENTER, OnModified)
     ON_EN_KILLFOCUS(IDC_RESEARCH_WINDOW_TIME_EDIT, OnModified)
-    //}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
@@ -4023,12 +4017,10 @@ IMPLEMENT_DYNAMIC(CDlgGraphsParameters, CPropertySheet)
 // CDlgGraphsParameters message map
 
 BEGIN_MESSAGE_MAP(CDlgGraphsParameters, CPropertySheet)
-    //{{AFX_MSG_MAP(CDlgGraphsParameters)
     ON_WM_CREATE()
     ON_COMMAND(ID_APPLY_NOW, OnApply)
     ON_COMMAND(IDOK, OnOK)
     ON_COMMAND(IDHELP, OnHelpParameters)
-    //}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////

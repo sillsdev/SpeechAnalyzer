@@ -30,8 +30,6 @@ static char BASED_CODE THIS_FILE[] = __FILE__;
 // CDlgChartVowelsPage message map
 
 BEGIN_MESSAGE_MAP(CDlgChartVowelsPage, CPropertyPage)
-    //{{AFX_MSG_MAP(CDlgChartVowelsPage)
-    //}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
@@ -100,8 +98,6 @@ BOOL CDlgChartVowelsPage::OnInitDialog()
 // CDlgChartConsonantsPage message map
 
 BEGIN_MESSAGE_MAP(CDlgChartConsonantsPage, CPropertyPage)
-    //{{AFX_MSG_MAP(CDlgChartConsonantsPage)
-    //}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
@@ -239,8 +235,6 @@ BOOL CDlgChartConsonantsPage::OnInitDialog()
 // CDlgChartDiacriticsPage message map
 
 BEGIN_MESSAGE_MAP(CDlgChartDiacriticsPage, CPropertyPage)
-    //{{AFX_MSG_MAP(CDlgChartDiacriticsPage)
-    //}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
@@ -432,13 +426,10 @@ BOOL CDlgCharChart::m_bPlay[kPlayButtons] = { TRUE, FALSE, FALSE };
 // CDlgCharChart message map
 
 BEGIN_MESSAGE_MAP(CDlgCharChart, CPropertySheet)
-    //{{AFX_MSG_MAP(CDlgCharChart)
     ON_WM_CREATE()
     ON_COMMAND(IDOK, OnOK)
     ON_COMMAND(IDCANCEL, OnCancel)
     ON_WM_CLOSE()
-    //}}AFX_MSG_MAP
-    // Custom messages
     ON_COMMAND_RANGE(kPlayButtonIdFirst, kPlayButtonIdFirst+kPlayButtons, OnChecked)
     ON_MESSAGE(WM_USER_CHARSELECT, OnCharSelect)
     ON_COMMAND(IDHELP, OnHelpChart)
@@ -659,7 +650,7 @@ void CDlgCharChart::SetupControls()
     logFont.lfWeight = FW_NORMAL; // not bold
     m_TextFont.CreateFontIndirect(&logFont); // create the modified font
 
-    m_bIPAHelpInstalled = checkIPAHelp();
+    m_bIPAHelpInstalled = CheckIPAHelp();
 
     if (!m_bIPAHelpInstalled)
     {

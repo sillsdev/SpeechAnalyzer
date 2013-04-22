@@ -276,6 +276,8 @@ public:
 	bool IsUsingTempFile();
 	void StoreAutoRecoveryInformation();
 
+	wstring GetTranscriptionFilename();
+
 protected:
     virtual void DeleteContents();
     virtual BOOL OnNewDocument();

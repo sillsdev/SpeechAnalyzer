@@ -2,6 +2,7 @@
 #include <FileUtils.h>
 #include <sys/stat.h>
 #include "SaString.h"
+#include "resource.h"
 
 void GetTempFileName(LPCTSTR szPrefix, LPTSTR szFilename, size_t len)
 {
@@ -39,7 +40,7 @@ void RemoveFile(LPCTSTR path)
 }
 
 /**
-* return true if the path exists as a folder
+* return true if the path exists as a file
 */
 bool FileExists( LPCTSTR path)
 {
@@ -201,3 +202,40 @@ void RenameFile(LPCTSTR oldname, LPCTSTR newname)
 {
 	CFile::Rename( oldname, newname);
 }
+
+bool IsReadOnly( LPCTSTR filename)
+{
+    CFileStatus stat;
+    if (!CFile::GetStatus(filename, stat))
+    {
+        return -1;
+    }
+	return ((stat.m_attribute&CFile::readOnly)==CFile::readOnly);
+}
+
+/**
+* performs validation on a filename for the following characters.
+**/
+
+void DDX_Filename(CDataExchange* pDX, int nIDC, CString& value)
+{
+	//  \ / : * ? “ < > |
+   HWND hWndCtrl = pDX->PrepareEditCtrl(nIDC);
+	if (pDX->m_bSaveAndValidate)
+	{
+		CString temp;
+        int nLen = ::GetWindowTextLength( hWndCtrl);
+        ::GetWindowText( hWndCtrl, temp.GetBufferSetLength(nLen), nLen+1);
+        temp.ReleaseBuffer();
+		if (temp.FindOneOf(L"/\\:*?\"<>|")!=-1)
+		{
+            pDX->PrepareEditCtrl( nIDC);
+            CString msg;
+            msg.FormatMessage(IDS_ERROR_BADFILENAME_CHARS);
+            AfxMessageBox(msg, MB_OK|MB_ICONEXCLAMATION, 0);
+            pDX->Fail();
+		}
+    }
+	DDX_Text(pDX, nIDC, value);
+}
+

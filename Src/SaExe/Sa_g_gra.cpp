@@ -37,9 +37,7 @@ IMPLEMENT_DYNCREATE(CPlotGrappl, CPlotWnd)
 // CPlotGrappl message map
 
 BEGIN_MESSAGE_MAP(CPlotGrappl, CPlotWnd)
-    //{{AFX_MSG_MAP(CPlotGrappl)
     ON_WM_CREATE()
-    //}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////

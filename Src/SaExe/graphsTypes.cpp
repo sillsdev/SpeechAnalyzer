@@ -30,10 +30,8 @@
 // CDlgGraphsTypesCustom message map
 
 BEGIN_MESSAGE_MAP(CDlgGraphsTypesCustom, CDialog)
-    //{{AFX_MSG_MAP(CDlgGraphsTypesCustom)
     ON_LBN_SELCHANGE(IDC_LAYOUT, OnSelchangeLayout)
     ON_BN_CLICKED(IDC_ORDER, OnOrder)
-    //}}AFX_MSG_MAP
     ON_CONTROL_RANGE(BN_CLICKED, IDD_SPECTROGRAM, IDD_SPECTROGRAM, OnGraphCheck)
     ON_CONTROL_RANGE(BN_CLICKED, IDD_SNAPSHOT, IDD_SNAPSHOT, OnGraphCheck)
     ON_CONTROL_RANGE(BN_CLICKED, IDD_SPECTRUM, IDD_SPECTRUM, OnGraphCheck)
@@ -573,13 +571,11 @@ void CDlgGraphTypesOrder::DoDataExchange(CDataExchange * pDX)
 
 
 BEGIN_MESSAGE_MAP(CDlgGraphTypesOrder, CDialog)
-    //{{AFX_MSG_MAP(CDlgGraphTypesOrder)
     ON_BN_CLICKED(IDC_DOWN, OnDown)
     ON_BN_CLICKED(IDC_UP, OnUp)
     ON_LBN_SELCHANGE(IDC_LIST, OnSelchangeList)
     ON_WM_DRAWITEM()
     ON_COMMAND(IDHELP, OnHelpGraphTypesOrder)
-    //}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
@@ -1034,7 +1030,6 @@ void CDlgGraphsTypes::DoDataExchange(CDataExchange * pDX)
 }
 
 BEGIN_MESSAGE_MAP(CDlgGraphsTypes, CDialog)
-    //{{AFX_MSG_MAP(CDlgGraphsTypes)
     ON_BN_CLICKED(IDC_CUSTOM, OnCustom)
     ON_BN_CLICKED(IDC_ADD, OnAdd)
     ON_BN_CLICKED(IDC_REMOVE, OnRemove)
@@ -1042,7 +1037,6 @@ BEGIN_MESSAGE_MAP(CDlgGraphsTypes, CDialog)
     ON_LBN_SELCHANGE(IDC_LIST, OnSelchangeGraphTypes)
     ON_LBN_DBLCLK(IDC_LIST, OnOK)
     ON_COMMAND(IDHELP, OnHelpGraphsTypes)
-    //}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
 

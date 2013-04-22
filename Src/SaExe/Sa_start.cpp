@@ -106,7 +106,6 @@ BOOL CStartModeDlg::OnInitDialog()
     for (int i = 0; i < _AFX_MRU_MAX_COUNT; i++)
     {
         CFileStatus status;
-
         pApp->GetMRUFilePath(i,workDir);
         if ((workDir.GetLength() > 0)  && CFile::GetStatus(workDir, status))
         {

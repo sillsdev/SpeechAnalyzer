@@ -26,7 +26,7 @@ void CSaString::setUtf8(LPCSTR pUtf8)
 }
 
 
-double parseUtf8(const CSaString & sz, INT * att, double X, double Y)
+double ParseUtf8(const CSaString & sz, INT * att, double X, double Y)
 {
 
     std::string szUtf8 = sz.utf8();

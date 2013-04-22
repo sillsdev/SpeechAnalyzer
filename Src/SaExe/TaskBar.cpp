@@ -145,11 +145,9 @@ void CTaskBar::UpdateLayout()
 }
 
 BEGIN_MESSAGE_MAP(CTaskBar, CDialogBar)
-    //{{AFX_MSG_MAP(CTaskBar)
     ON_WM_SIZE()
     ON_WM_SYSCOLORCHANGE()
     ON_NOTIFY(NM_SETFOCUS, IDC_TASK_LIST, OnSetfocusTaskList)
-    //}}AFX_MSG_MAP
     ON_NOTIFY(LVN_GETINFOTIP, IDC_TASK_LIST, OnGetInfoTip)
     ON_MESSAGE(WM_INITDIALOG, HandleInitDialog)
     ON_NOTIFY(NM_CLICK, IDC_TASK_LIST, OnTaskItem)
@@ -485,9 +483,7 @@ CTaskButton::~CTaskButton()
 
 
 BEGIN_MESSAGE_MAP(CTaskButton, CButton)
-    //{{AFX_MSG_MAP(CTaskButton)
     ON_WM_SETFOCUS()
-    //}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////

@@ -34,7 +34,6 @@
 // CDlgOptionsViewPage message map
 
 BEGIN_MESSAGE_MAP(CDlgOptionsViewPage, CPropertyPage)
-    //{{AFX_MSG_MAP(CDlgOptionsViewPage)
     ON_BN_CLICKED(ID_VIEW_STATUSBAR, OnModifiedStatusbar)
     ON_CBN_SELCHANGE(IDC_VIEW_UNITSMODE, OnModified)
     ON_BN_CLICKED(ID_VIEW_TOOLBAR, OnModified)
@@ -54,7 +53,6 @@ BEGIN_MESSAGE_MAP(CDlgOptionsViewPage, CPropertyPage)
     ON_BN_CLICKED(IDC_VIEW_UPDATE_DYNAMIC, OnModifiedRange)
     ON_BN_CLICKED(IDC_VIEW_ANIMATE, OnModifiedAnimate)
     ON_EN_CHANGE(IDC_VIEW_ANIMRATEEDIT, OnChange)
-    //}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////

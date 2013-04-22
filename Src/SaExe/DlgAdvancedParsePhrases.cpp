@@ -221,11 +221,9 @@ void CDlgAdvancedParsePhrases::OnMinThresholdScroll()
 }
 
 BEGIN_MESSAGE_MAP(CDlgAdvancedParsePhrases, CDialog)
-    //{{AFX_MSG_MAP(CDlgAdvancedParsePhrase)
     ON_COMMAND(IDC_BREAKWIDTHSCROLL, OnBreakWidthScroll)
     ON_COMMAND(IDC_PARSEMAXTHRESHOLDSCROLL, OnMaxThresholdScroll)
     ON_COMMAND(IDC_PARSEMINTHRESHOLDSCROLL, OnMinThresholdScroll)
-    //}}AFX_MSG_MAP
     ON_BN_CLICKED(IDC_APPLY, &CDlgAdvancedParsePhrases::OnBnClickedApply)
 END_MESSAGE_MAP()
 

@@ -754,7 +754,7 @@ void CChartChar::OnTimer(UINT nIDEvent)
 /**
 * returns true if IPAHelp seems to be installed
 */
-bool checkIPAHelp()
+bool CheckIPAHelp()
 {
 
     // retrieve IPA Help location from registry

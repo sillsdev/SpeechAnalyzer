@@ -99,10 +99,10 @@ void CAutoSave::Check( CSaApp * pApp)
 		::DeleteFile(path.c_str());
 
 		CString time;
-		CFileStatus fs;
-		if (CFile::GetStatus( aswave.c_str(), fs))
+		CFileStatus status;
+		if (CFile::GetStatus( aswave.c_str(), status))
 		{
-			CTime t = fs.m_mtime;
+			CTime t = status.m_mtime;
 			time = t.Format("%#c");
 		}
 		else
@@ -259,15 +259,11 @@ void CAutoSave::CleanAll()
 
 void CAutoSave::StoreAutoRecoveryInformation( CSaDoc * pDoc)
 {
-
-    //TRACE(L"auto saving...\n");
-
 	if (updating)
 	{
 		//TRACE("save in process. ignoring request\n");
 		return;
 	}
-
 	updating = true;
 
     if (!pDoc->IsModified())
@@ -338,7 +334,7 @@ void CAutoSave::StoreAutoRecoveryInformation( CSaDoc * pDoc)
         // a prerecorded file
         wstring original = pDoc->GetPathName();
         filename = original;
-        int pos = filename.rfind('\\');
+        size_t pos = filename.rfind('\\');
         if (pos!=wstring::npos)
         {
             filename = filename.substr(pos+1,filename.length()-pos-1);
@@ -362,26 +358,33 @@ void CAutoSave::StoreAutoRecoveryInformation( CSaDoc * pDoc)
 	ULONGLONG destsize = GetFileSize(currentwave.c_str());
 	//TRACE(L"wave size size: %lu dest size: %lu\n",(unsigned long)srcsize,(unsigned long)destsize);
 
-	if (srcsize!=destsize)
-	{
-	    //TRACE(L"saving audio for %s\n",restorewave.c_str());
-		// if the current autosave wave file exists, delete it
-		if (currentwave.length()>0)
+	wstring original = pDoc->GetPathName();
+	if (!::IsReadOnly(original.c_str())) {
+		if (srcsize!=destsize)
 		{
-			if (::FileExists(currentwave.c_str()))
+			//TRACE(L"saving audio for %s\n",restorewave.c_str());
+			// if the current autosave wave file exists, delete it
+			if (currentwave.length()>0)
 			{
-				::RemoveFile(currentwave.c_str());
+				if (::FileExists(currentwave.c_str()))
+				{
+					::RemoveFile(currentwave.c_str());
+				}
+			}
+			if (!::CopyFile(restorewave.c_str(), currentwave.c_str(), TRUE))
+			{
+				TRACE(L"Unable to save wave file\n");
 			}
 		}
-
-		if (!::CopyFile(restorewave.c_str(), currentwave.c_str(), TRUE))
+		else
 		{
-			TRACE(L"Unable to save wave file\n");
+			//TRACE("skipping .wave save because files are same size\n");
 		}
 	}
 	else
 	{
-		//TRACE("skipping .wave save because files are same size\n");
+		TRACE("skipping autosave because .wave file is readonly\n");
+		return;
 	}
 
 	if (pDoc->IsTransModified())

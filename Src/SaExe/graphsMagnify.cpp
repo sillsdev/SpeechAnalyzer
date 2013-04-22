@@ -22,8 +22,6 @@
 // CDlgMagnify message map
 
 BEGIN_MESSAGE_MAP(CDlgMagnify, CDialog)
-//{{AFX_MSG_MAP(CDlgMagnify)
-//}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////

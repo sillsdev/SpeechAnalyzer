@@ -1974,8 +1974,9 @@ BOOL CSaDoc::OnSaveDocument( LPCTSTR pszPathName, BOOL bSaveAudio)
             return FALSE;
         }
         // temporary wave file to rename
-        CFileStatus rStatus;
-        if (CFile::GetStatus(target.c_str(), rStatus) != 0)   // check if file exists already
+        CFileStatus status;
+		// check if file exists already
+        if (CFile::GetStatus(target.c_str(), status) != 0)   
         {
             // file does exist already, be sure to allow writing and delete it
             RemoveFile(target.c_str());
@@ -2051,13 +2052,13 @@ BOOL CSaDoc::OnSaveDocument( LPCTSTR pszPathName, BOOL bSaveAudio)
                 return FALSE;
             }
 
-            CFileStatus newFileStatus;
-            if (CFile::GetStatus(fileName, newFileStatus))
+            CFileStatus status;
+            if (CFile::GetStatus(fileName, status))
             {
                 // File exists overwrite existing file
                 try
                 {
-                    CFile::SetStatus(fileName, newFileStatus);
+                    CFile::SetStatus(fileName, status);
                 }
                 catch (...)
                 {
@@ -2097,7 +2098,7 @@ BOOL CSaDoc::OnSaveDocument( LPCTSTR pszPathName, BOOL bSaveAudio)
 // the document (wave file). The fmt and data chunks have to be there al-
 // ready! The temporary wave file data will be copied into the wave chunk.
 /***************************************************************************/
-BOOL CSaDoc::WriteDataFiles(LPCTSTR pszPathName, BOOL bSaveAudio/*=TRUE*/, BOOL bIsClipboardFile/*=FALSE*/)
+BOOL CSaDoc::WriteDataFiles( LPCTSTR pszPathName, BOOL bSaveAudio/*=TRUE*/, BOOL bIsClipboardFile/*=FALSE*/)
 {
 
     CSaApp * pApp = (CSaApp *)AfxGetApp();
@@ -3193,7 +3194,7 @@ BOOL CSaDoc::CopyWave(LPCTSTR pszSourceName, LPCTSTR pszTargetName)
     CFile sourceFile;
     CFile targetFile; // destructor will close the files
 
-    CFileStatus rStatus;
+    CFileStatus status;
     // open the files
     if (!sourceFile.Open(pszSourceName, CFile::modeRead))
     {
@@ -3210,14 +3211,14 @@ BOOL CSaDoc::CopyWave(LPCTSTR pszSourceName, LPCTSTR pszTargetName)
     }
 
     // get the source file status
-    if (!sourceFile.GetStatus(rStatus))
+    if (!sourceFile.GetStatus(status))
     {
         sourceFile.Abort(); // close the source file
         targetFile.Abort(); // close the target file
         return FALSE;
     }
 
-    DWORD dwSize = rStatus.m_size;
+    DWORD dwSize = status.m_size;
 
     try
     {
@@ -3276,7 +3277,7 @@ BOOL CSaDoc::CopyWave(LPCTSTR pszSourceName, LPCTSTR pszTargetName, const CWaveI
     CFile sourceFile;
     CFile targetFile; // destructor will close the files
 
-    CFileStatus rStatus;
+    CFileStatus status;
     // open the files
     if (!sourceFile.Open(pszSourceName, CFile::modeRead))
     {
@@ -3293,14 +3294,14 @@ BOOL CSaDoc::CopyWave(LPCTSTR pszSourceName, LPCTSTR pszTargetName, const CWaveI
     }
 
     // get the source file status
-    if (!sourceFile.GetStatus(rStatus))
+    if (!sourceFile.GetStatus(status))
     {
         sourceFile.Abort(); // close the source file
         targetFile.Abort(); // close the target file
         return FALSE;
     }
 
-    DWORD dwSize = rStatus.m_size;
+    DWORD dwSize = status.m_size;
 	if (dwSize < dwStart.GetSamples())
     {
         return TRUE; // Empty file
@@ -4409,7 +4410,6 @@ BOOL CSaDoc::PasteClipboardToWave( HGLOBAL hData, DWORD dwPastePos)
     }
 
     CFileStatus status;
-
     DWORD dwPasteSize = CheckWaveFormatForPaste(szTempPath);
     if (dwPasteSize == 0)
     {
@@ -5607,7 +5607,7 @@ BOOL CSaDoc::DoFileSave()
     {
         if (SetFileAttributes(szPathName, (DWORD)m_fileStat.m_attribute))
         {
-            if (m_fileStat.m_attribute & CFile::readOnly)
+			if (::IsReadOnly( szPathName))
             {
                 switch (AfxMessageBox(IDS_QUESTION_READ_ONLY, MB_YESNOCANCEL))
                 {
@@ -5659,10 +5659,10 @@ BOOL CSaDoc::DoFileSave()
             szPathName = dlg.GetPathName();
         }
 
-        CFileStatus fileStat;
-        if (CFile::GetStatus(szPathName, fileStat))
+        CFileStatus status;
+        if (CFile::GetStatus(szPathName, status))
         {
-            CFile::SetStatus(szPathName, fileStat);
+            CFile::SetStatus(szPathName, status);
         }
 
         bResult = OnSaveDocument(szPathName, bSaveAudio);
@@ -5750,13 +5750,13 @@ void CSaDoc::OnFileSaveAs()
         return;
     }
 
-    CFileStatus newFileStatus;
-    if (CFile::GetStatus(fileName, newFileStatus))
+    CFileStatus status;
+    if (CFile::GetStatus(fileName, status))
     {
         // File exists overwrite existing file
         try
         {
-            CFile::SetStatus(fileName, newFileStatus);
+            CFile::SetStatus(fileName, status);
         }
         catch (...)
         {
@@ -9048,4 +9048,13 @@ wstring CSaDoc::GetFilenameFromTitle()
         result = result.substr(0,nFind-1);  // extract part left of :
     }
     return result;
+}
+
+wstring CSaDoc::GetTranscriptionFilename()
+{
+    // a prerecorded file
+    wstring result = GetPathName();
+	result = result.substr( 0, result.length()-4);
+	result.append(L".saxml");
+	return result;
 }

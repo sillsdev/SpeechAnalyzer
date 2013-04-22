@@ -28,7 +28,6 @@ static char BASED_CODE THIS_FILE[] = __FILE__;
 // CWbDlgProcesses message map
 
 BEGIN_MESSAGE_MAP(CWbDlgProcesses, CDialog)
-    //{{AFX_MSG_MAP(CWbDlgProcesses)
     ON_BN_CLICKED(IDC_PROPERTIES1, OnProperties1)
     ON_BN_CLICKED(IDC_PROPERTIES2, OnProperties2)
     ON_BN_CLICKED(IDC_PROPERTIES3, OnProperties3)
@@ -37,7 +36,6 @@ BEGIN_MESSAGE_MAP(CWbDlgProcesses, CDialog)
     ON_CBN_SELCHANGE(IDC_FILTERTYPE2, OnSelchangeFilter2)
     ON_CBN_SELCHANGE(IDC_FILTERTYPE3, OnSelchangeFilter3)
     ON_COMMAND(IDHELP, OnHelpWorkbench)
-    //}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
@@ -418,7 +416,6 @@ void CWbDlgProcesses::OnHelpWorkbench()
 // CWbDlgFilterPass message map
 
 BEGIN_MESSAGE_MAP(CWbDlgFilterPass, CDialog)
-    //{{AFX_MSG_MAP(CWbDlgFilterPass)
     ON_COMMAND(IDC_PASS_UPPERSCROLL, OnUpperFreqScroll)
     ON_EN_KILLFOCUS(IDC_PASS_UPPEREDIT, OnKillfocusUpperfreq)
     ON_COMMAND(IDC_PASS_LOWERSCROLL, OnLowerFreqScroll)
@@ -426,7 +423,6 @@ BEGIN_MESSAGE_MAP(CWbDlgFilterPass, CDialog)
     ON_COMMAND(IDC_PASS_ORDERSCROLL, OnOrderScroll)
     ON_EN_KILLFOCUS(IDC_PASS_FILTER_ORDER, OnKillfocusOrder)
     ON_COMMAND(IDHELP, OnHelpWorkbench)
-    //}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
@@ -683,13 +679,11 @@ void CWbDlgFilterPass::OnHelpWorkbench()
 // CWbDlgFilterReverb message map
 
 BEGIN_MESSAGE_MAP(CWbDlgFilterReverb, CDialog)
-    //{{AFX_MSG_MAP(CWbDlgFilterReverb)
     ON_COMMAND(IDC_ECHO_DELAYSCROLL, OnDelayScroll)
     ON_EN_KILLFOCUS(IDC_ECHO_DELAYEDIT, OnKillfocusDelay)
     ON_COMMAND(IDC_ECHO_GAINSCROLL, OnGainScroll)
     ON_EN_KILLFOCUS(IDC_ECHO_GAINEDIT, OnKillfocusGain)
     ON_COMMAND(IDHELP, OnHelpWorkbench)
-    //}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
@@ -850,9 +844,7 @@ void CWbDlgFilterReverb::OnHelpWorkbench()
 // CWbDlgFilterEquation message map
 
 BEGIN_MESSAGE_MAP(CWbDlgFilterEquation, CDialog)
-    //{{AFX_MSG_MAP(CWbDlgFilterEquation)
     ON_COMMAND(IDHELP, OnHelpWorkbench)
-    //}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////

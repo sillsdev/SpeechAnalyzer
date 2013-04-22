@@ -53,9 +53,7 @@ IMPLEMENT_DYNCREATE(CFormantChart, CPlotWnd)
 // FormantChart message map
 
 BEGIN_MESSAGE_MAP(CFormantChart, CPlotWnd)
-    //{{AFX_MSG_MAP(CFormantChart)
     ON_WM_CREATE()
-    //}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
@@ -677,9 +675,7 @@ IMPLEMENT_DYNCREATE(CPlot3D, CFormantChart)
 // FormantChart message map
 
 BEGIN_MESSAGE_MAP(CPlot3D, CPlotWnd)
-    //{{AFX_MSG_MAP(CPlot3D)
     ON_WM_CREATE()
-    //}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
@@ -975,9 +971,7 @@ IMPLEMENT_DYNCREATE(CPlotF1F2, CFormantChart)
 // CPlotF1F2 message map
 
 BEGIN_MESSAGE_MAP(CPlotF1F2, CPlotWnd)
-    //{{AFX_MSG_MAP(CPlotF1F2)
     ON_WM_CREATE()
-    //}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
@@ -1810,9 +1804,7 @@ IMPLEMENT_DYNCREATE(CPlotInvSDP, CPlotWnd)
 // CPlotInvSDP message map
 
 BEGIN_MESSAGE_MAP(CPlotInvSDP, CPlotWnd)
-    //{{AFX_MSG_MAP(CPlotInvSDP)
     ON_WM_CREATE()
-    //}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////

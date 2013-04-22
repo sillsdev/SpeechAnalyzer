@@ -32,8 +32,6 @@ IMPLEMENT_DYNCREATE(CPlotCustomPitch, CPlotWnd)
 // CPlotCustomPitch message map
 
 BEGIN_MESSAGE_MAP(CPlotCustomPitch, CPlotWnd)
-    //{{AFX_MSG_MAP(CPlotCustomPitch)
-    //}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////

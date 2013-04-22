@@ -53,7 +53,7 @@ BOOL CProcessWbEquation::CheckFunction(CSaString * pszFunction)
     if (pszFunction && !pszFunction->IsEmpty())
     {
         int nType = 0;
-        parseUtf8(*pszFunction, &nType, 1.0);
+        ParseUtf8(*pszFunction, &nType, 1.0);
         if (nType)
         {
             return TRUE;
@@ -203,7 +203,7 @@ long CProcessWbEquation::Process(void * pCaller, ISaDoc * pDoc, int nProgress,
                 {
                     dData = 1.7E-12;    // to protect parser from crashing
                 }
-                dData = (int)parseUtf8(m_szEquation, &nType, dData);
+                dData = (int)ParseUtf8(m_szEquation, &nType, dData);
                 if (!nType)
                 {
                     return Exit(PROCESS_ERROR);    // error, parsing failed

@@ -325,7 +325,8 @@ namespace SIL.SpeechTools.Utils
 			{
 				// Check to see if the folder and transcription file are writable
 				File.WriteAllText(tmpFile, string.Empty);
-				string transFilePath = Path.ChangeExtension( audioFile, ".saxml");
+                File.Delete(tmpFile);
+                string transFilePath = Path.ChangeExtension(audioFile, ".saxml");
                 if (File.Exists(transFilePath)) 
                 {
                     if ((File.GetAttributes(transFilePath) & FileAttributes.ReadOnly) == FileAttributes.ReadOnly)
@@ -336,7 +337,11 @@ namespace SIL.SpeechTools.Utils
 			}
 			catch
 			{
-				// Warn the user that we don't have write privileges
+                if (File.Exists(tmpFile))
+                {
+                    File.Delete(tmpFile);
+                }
+                // Warn the user that we don't have write privileges
 				string audioFileNameOnly = Path.GetFileName(audioFile);
 				string transFileNameOnly = Path.ChangeExtension(audioFileNameOnly, ".saxml");
 				string msg = Resources.kstidReadOnlyFolderMsg;
@@ -357,17 +362,12 @@ namespace SIL.SpeechTools.Utils
 				}
 
 				// Try again.
-				Save(audioFile);
+                if (!Save(audioFile))
+                {
+                    return false;
+                }
 			}
-
-			try
-			{
-				File.Delete(tmpFile);
-			}
-			catch 
-            { 
-            }
-
+			
 			// If the specified audio file doesn't exist, it means it's original
 			// location is read-only. Therefore, copy it to the newly specified
 			// location.

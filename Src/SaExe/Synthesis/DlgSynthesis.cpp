@@ -33,8 +33,6 @@ IMPLEMENT_DYNAMIC(CDlgSynthesis, CPropertySheet)
 // CDlgSynthesis message map
 
 BEGIN_MESSAGE_MAP(CDlgSynthesis, CPropertySheet)
-    //{{AFX_MSG_MAP(CDlgSynthesis)
-    //}}AFX_MSG_MAP
     ON_COMMAND(IDHELP, OnHelpSynthesis)
     ON_COMMAND(IDOK, OnClose)
 END_MESSAGE_MAP()

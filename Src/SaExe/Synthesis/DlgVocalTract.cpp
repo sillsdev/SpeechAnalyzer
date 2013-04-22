@@ -46,8 +46,6 @@ void CDlgVTOrder::DoDataExchange(CDataExchange * pDX)
 }
 
 BEGIN_MESSAGE_MAP(CDlgVTOrder, CDialog)
-    //{{AFX_MSG_MAP(CDlgVTOrder)
-    //}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
@@ -63,11 +61,11 @@ void CDlgVTOrder::OnOK()
 void CIpaVTCharVector::Load(CString szPath)
 {
     // is there a saved map???
-    CFileStatus fileStatus; // file status
+    CFileStatus status; // file status
 
     reserve(1024);  // growth is exponential save some time here
 
-    if (!CFile::GetStatus(szPath, fileStatus)  || !fileStatus.m_size)
+    if ((!CFile::GetStatus(szPath, status)) || (status.m_size==0))
     {
         return;
     }
@@ -349,7 +347,6 @@ void CDlgVocalTract::DestroySynthesizer()
 }
 
 BEGIN_MESSAGE_MAP(CDlgVocalTract, CFrameWnd)
-    //{{AFX_MSG_MAP(CDlgVocalTract)
     ON_COMMAND(ID_KLATT_GET_ALL, OnGetAll)
     ON_COMMAND(ID_CLOSE, OnClose)
     ON_UPDATE_COMMAND_UI(ID_CLOSE, OnUpdateClose)
@@ -417,7 +414,6 @@ BEGIN_MESSAGE_MAP(CDlgVocalTract, CFrameWnd)
     ON_COMMAND(ID_SYNTH_SHOW, OnSynthShow)
     ON_COMMAND(ID_SYNTHESIS_VTRACT_PREEMPHASIZE, OnPreemphasize)
     ON_UPDATE_COMMAND_UI(ID_SYNTHESIS_VTRACT_PREEMPHASIZE, OnUpdatePreemphasize)
-    //}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
@@ -536,10 +532,10 @@ void CDlgVocalTract::OnSynthDisplay()
 {
     OnSynthesize();
     // open synthesized wavefile in SA
-    CFileStatus fileStatus; // file status
-    if (CFile::GetStatus(m_szSynthesizedFilename, fileStatus))
+    CFileStatus status; // file status
+    if (CFile::GetStatus(m_szSynthesizedFilename, status))
     {
-        if (fileStatus.m_size)
+        if (status.m_size!=0)
         {
             // file created open in SA
             CSaApp * pApp = (CSaApp *)(AfxGetApp());
@@ -565,10 +561,10 @@ void CDlgVocalTract::OnSynthShow()
 
     OnSynthesize();
     // open synthesized wavefile in SA
-    CFileStatus fileStatus; // file status
-    if (CFile::GetStatus(m_szSynthesizedFilename, fileStatus))
+    CFileStatus status; // file status
+    if (CFile::GetStatus(m_szSynthesizedFilename, status))
     {
-        if (fileStatus.m_size)
+        if (status.m_size!=0)
         {
             // file created open in SA
             CSaApp * pApp = (CSaApp *)(AfxGetApp());
@@ -1015,7 +1011,7 @@ static void CurveFitPitch(CSaDoc * pDoc, double fSizeFactor, double dBeginWAV, d
 // The following formula attempts to calculate the VH crossover using higher order statistics
 // to distinguish between harmonics and noise.
 // See derivation in mathcad...  You would never believe
-static double vhx(double meanSqError, double meanQuadError, double /*analysisLength*/, double samplingRate, double pitch)
+static double VHX(double meanSqError, double meanQuadError, double /*analysisLength*/, double samplingRate, double pitch)
 {
     double nyquistRate = samplingRate/2;
     double fr2 = meanSqError;
@@ -1207,23 +1203,13 @@ static void Analyze(SAnalyzer & a, CString szIpa, DWORD dwStart, DWORD dwEnd, CI
 
         if (pitch > 0)
         {
-#ifdef OriginalArtificialLpcResidue
-            double dPitchPeriods = dwFrameSize/double(a.Signal.SmpRate/pitch);
-            double dImpulseEnergy = pLpc->dGain*pLpc->dGain/dPitchPeriods*(pLpc->dMeanEnergy-pLpc->dMeanSqPredError) / (pLpc->dMeanEnergy+0.25);
-            double dAspirationEnergy = pLpc->dMeanSqPredError*pLpc->dMeanSqPredError / (pLpc->dMeanEnergy+0.25);
-            cChar.m_stimulus.AV = 10*log10(dImpulseEnergy) - 3;
-            cChar.m_stimulus.AH = 10*log10(dAspirationEnergy) - 3;
-            cChar.m_stimulus.AF = 0;
-            cChar.m_stimulus.VHX = 1000;
-#else
             cChar.m_stimulus.AV =
                 cChar.m_stimulus.AH = 10*log10(pLpc->dMeanSqPredError) - 3;
             cChar.m_stimulus.AF = 0;
 
             // This is a place holder...
             // Needs to be replaced by an analysis of the Voicing Aspiration Crossover frequency
-            cChar.m_stimulus.VHX = vhx(pLpc->dMeanSqPredError, pLpc->dMeanQuadPredError, pLpc->nResiduals, a.Signal.SmpRate, pitch);
-#endif
+            cChar.m_stimulus.VHX = VHX(pLpc->dMeanSqPredError, pLpc->dMeanQuadPredError, pLpc->nResiduals, a.Signal.SmpRate, pitch);
         }
         else
         {
@@ -1891,14 +1877,14 @@ PCMWAVEFORMAT CDlgVocalTract::pcmWaveFormat()
     return pcm;
 }
 
-static double randOneRms()
+static double RandOneRms()
 {
     double randOnePeakPeak = double(rand()*2 - RAND_MAX)/RAND_MAX;
 
     return 1.5*randOnePeakPeak*rand()/RAND_MAX;
 }
 
-static double impulse(double dImpulsePhase, int nHarmonics)
+static double Impulse(double dImpulsePhase, int nHarmonics)
 {
     double pulse = 0;
     double alt = 1;
@@ -1938,144 +1924,6 @@ BOOL CDlgVocalTract::SynthesizeDataChunk(HMMIO hmmioFile, PCMWAVEFORMAT pcm, CIp
     double dImpulsePhase = -pi;
     double dAspOpen = 10;
     double dAspClose = 0;
-#ifdef OriginalArtificialLpcResidue
-    for (unsigned int i = 0; i < cChars.size(); i++)
-    {
-        int nSections = cChars[i].m_areas.size();
-        vt.SetTransform(cChars[i].m_areas, cChars[i].m_reflection);
-        double AH = pow(10, cChars[i].m_stimulus.AH/20);
-        double AF = pow(10, cChars[i].m_stimulus.AF/20);
-        double AV = pow(10, cChars[i].m_stimulus.AV/20);
-
-        // Change from amplitude of impulse to amplitude of single harmonic of impulse train
-        double AVSH = AV*2*cChars[i].m_stimulus.Pitch/pcm.wf.nSamplesPerSec;
-
-        nSamples += cChars[i].m_duration*pcm.wf.nSamplesPerSec/1000;
-        while (data.size() < nSamples)
-        {
-            double stimulus = 0;
-
-            if (artificialStimulus)
-            {
-                stimulus += (AF+0.1*AH)*double(rand()*2 - RAND_MAX)/RAND_MAX*2;
-
-                if (dAspOpen < data.size() && cChars[i].m_stimulus.Pitch)
-                {
-                    stimulus += 1.4*AH*double(rand()*2 - RAND_MAX)/RAND_MAX*2;
-                }
-
-                if (dAspClose <= data.size())
-                {
-                    if (cChars[i].m_stimulus.Pitch)
-                    {
-                        dAspClose += pcm.wf.nSamplesPerSec/cChars[i].m_stimulus.Pitch;
-                        dAspOpen = dAspClose - 0.5*pcm.wf.nSamplesPerSec/cChars[i].m_stimulus.Pitch;
-                    }
-                    else
-                    {
-                        dAspClose = nSamples;
-                        dAspOpen = dAspOpen + 10;
-                    }
-                }
-
-                if (dVoice <= data.size())
-                {
-                    if (cChars[i].m_stimulus.Pitch)
-                    {
-                        dVoicePitch = cChars[i].m_stimulus.Pitch;
-                        if (dImpulsePhase >= pi)
-                        {
-                            dImpulsePhase -= 2*pi;
-                        }
-                    }
-
-                    else if (dImpulsePhase >= pi)
-                    {
-                        dVoice = nSamples;
-                        dImpulsePhase = pi;  // as soon as we are commanded to begin voicing start
-                        dVoicePitch = 0;  // wait till we know the pitch
-                    }
-
-                    if (dVoicePitch > 0)
-                    {
-                        int nHarmonics = 10;
-                        double dImpulse = 0;
-
-                        // Use a couple of harmonics to generate the voicing source
-                        if (!m_bPreEmphasize)
-                        {
-                            for (int i = 1; i < nHarmonics; i++)
-                            {
-                                dImpulse += sin(i*dImpulsePhase);
-                            }
-                        }
-                        else
-                        {
-                            double FC = 1;
-                            double NF = nHarmonics;
-                            double dScale0to6 = 0.7*sqrt((NF-FC)/(FC*atan2(NF,FC) - FC*atan2(FC,FC)));
-                            for (int i = 1; i < nHarmonics; i++)
-                            {
-                                dImpulse += sin(i*dImpulsePhase)/i;
-                            }
-
-                            dImpulse *= dScale0to6;
-                        }
-
-                        dImpulse *= 0.67*(1+cos(dImpulsePhase));
-
-                        stimulus += AVSH*dImpulse;
-
-                        double dImpulsePhaseChange = 2*pi*dVoicePitch/pcm.wf.nSamplesPerSec;
-
-                        if (dImpulsePhase > 0 && dImpulsePhase <=dImpulsePhaseChange)
-                        {
-                            stimulus += 0.1*AV;
-                        }
-
-                        dImpulsePhase += dImpulsePhaseChange;
-                    }
-                }
-            }
-            else
-            {
-                stimulus = residual[data.size()];
-            }
-
-            double dOutput = 0;
-
-            switch (m_nStructure)
-            {
-            case DIRECT:
-            {
-                dOutput = stimulus;
-
-                for (int j = 0; j < nSections; j++)
-                {
-                    if (data.size() > (unsigned) j)
-                    {
-                        dOutput += cChars[i].m_pred[j]*data[data.size()-1-j];
-                    }
-                }
-            }
-            break;
-            case RESIDUAL_ERROR:
-                dOutput = stimulus;
-                break;
-            case VTGAIN:
-                dOutput = stimulus * 0.5 * pow(10, cChars[i].m_dVTGain/20);
-                break;
-            case SQ_ERROR:
-                dOutput = stimulus * stimulus * 0.5/10 * pow(10, (90. - 2*(cChars[i].m_dFrameEnergy - cChars[i].m_dVTGain))/20);
-                break;
-            default:
-                dOutput = vt.Tick(stimulus, m_nStructure == LATTICE, TRUE);
-            }
-
-            data.push_back(dOutput);
-        }
-    }
-#else
     for (unsigned int i = 0; i < cChars.size(); i++)
     {
         int nSections = cChars[i].m_areas.size();
@@ -2103,8 +1951,8 @@ BOOL CDlgVocalTract::SynthesizeDataChunk(HMMIO hmmioFile, PCMWAVEFORMAT pcm, CIp
 
             for (int j = int(10*pcm.wf.nSamplesPerSec/cChars[i].m_stimulus.VHX); j>0; j--)
             {
-                artificialStimulusAspiration.ForwardTick(randOneRms());
-                artificialStimulusVoice.ForwardTick(impulse(dImpulsePhase - j*dImpulsePhaseChange, nHarmonics));
+                artificialStimulusAspiration.ForwardTick(RandOneRms());
+                artificialStimulusVoice.ForwardTick(Impulse(dImpulsePhase - j*dImpulsePhaseChange, nHarmonics));
             }
         }
 
@@ -2115,15 +1963,15 @@ BOOL CDlgVocalTract::SynthesizeDataChunk(HMMIO hmmioFile, PCMWAVEFORMAT pcm, CIp
 
             if (artificialStimulus)
             {
-                stimulus += AF*randOneRms();
+                stimulus += AF*RandOneRms();
 
                 if (AH)
                 {
-                    stimulus += 0.1*AH*artificialStimulusAspiration.ForwardTick(randOneRms());
+                    stimulus += 0.1*AH*artificialStimulusAspiration.ForwardTick(RandOneRms());
 
                     if (dAspOpen < data.size() && cChars[i].m_stimulus.Pitch)
                     {
-                        stimulus += 1.4*AH*artificialStimulusAspiration.ForwardTick(randOneRms());
+                        stimulus += 1.4*AH*artificialStimulusAspiration.ForwardTick(RandOneRms());
                     }
                 }
 
@@ -2158,7 +2006,7 @@ BOOL CDlgVocalTract::SynthesizeDataChunk(HMMIO hmmioFile, PCMWAVEFORMAT pcm, CIp
 
                     if (dVoicePitch > 0)
                     {
-                        double dImpulse = artificialStimulusVoice.ForwardTick(impulse(dImpulsePhase, nHarmonics));
+                        double dImpulse = artificialStimulusVoice.ForwardTick(Impulse(dImpulsePhase, nHarmonics));
                         //            double dImpulse = impulse(dImpulsePhase, nHarmonics);
 
                         dImpulse *= 0.50*(1+cos(dImpulsePhase));
@@ -2215,7 +2063,6 @@ BOOL CDlgVocalTract::SynthesizeDataChunk(HMMIO hmmioFile, PCMWAVEFORMAT pcm, CIp
             data.push_back(dOutput);
         }
     }
-#endif
 
     if (m_nTilt == DB12 || m_nTilt == DB6)
     {

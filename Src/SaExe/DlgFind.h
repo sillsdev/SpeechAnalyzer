@@ -19,7 +19,7 @@ public:
     CDlgFind( CWnd * pParent,
                LPCTSTR pszFieldsToSearch,
                const CString & strToFind,
-               BOOL bFindOnly,
+               bool bFindOnly,
                const CString & strToReplace,
                int idxDefaultField,
                CMainFrame * pMainFrame);
@@ -38,7 +38,7 @@ public:
     enum { IDD = IDD_FINDREPLACE };
     CString  m_strToFind;
     CComboBox m_annotSetId;
-    int    m_breakOrBookMark;
+    int m_breakOrBookMark;
     CString  m_replaceStr;
     CComboBox m_annotSetID2;
 
@@ -72,25 +72,25 @@ protected:
     void EnableSearch(BOOL enable);
 
     // internal data
-    BOOL    m_bCreated;
+    BOOL m_bCreated;
     CString m_sFieldsToSearch;
-    int     m_annotWndIndex;
-    int     m_beginFind;
-    int     m_curPos;
-    BOOL    m_bFindOnly;
+    int m_annotWndIndex;
+    int m_beginFind;
+    int m_curPos;
+    bool m_bFindOnly;
     CMainFrame * m_pMainFrame;
-    BOOL    m_wraped;
-    CRect   m_rctSearchInText;
-    CRect   m_rctSearchInCombo;
-    CRect   m_rctGlossGroup;
-    CRect   m_rctWordbreakRadio;
-    CRect   m_rctBookmarkRadio;
-    CRect   m_rctCancelButton;
-    CRect   m_rctHelpButton;
-    CRect   m_rctChartButton;
-    CRect   m_rctDialog;
-    CRect   m_rctReplaceString;
-    int     m_nTextBoxInFocus;
+    bool m_wrapped;
+    CRect m_rctSearchInText;
+    CRect m_rctSearchInCombo;
+    CRect m_rctGlossGroup;
+    CRect m_rctWordbreakRadio;
+    CRect m_rctBookmarkRadio;
+    CRect m_rctCancelButton;
+    CRect m_rctHelpButton;
+    CRect m_rctChartButton;
+    CRect m_rctDialog;
+    CRect m_rctReplaceString;
+    int m_nTextBoxInFocus;
 };
 
 #endif

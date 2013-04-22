@@ -32,8 +32,6 @@ IMPLEMENT_DYNCREATE(CPlotZCross, CPlotWnd)
 // CPlotZCross message map
 
 BEGIN_MESSAGE_MAP(CPlotZCross, CPlotWnd)
-    //{{AFX_MSG_MAP(CPlotZCross)
-    //}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////

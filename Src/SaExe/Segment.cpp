@@ -780,13 +780,12 @@ BOOL CSegment::NeedToScroll(CSaView & saView, int index) const
 {
     ASSERT(index >= 0 && index < GetOffsetSize());
 
-    DWORD    viewLeftEdge = (int) saView.GetDataPosition(0);
-    DWORD    viewRightEdge = viewLeftEdge + saView.GetDataFrame();
-    DWORD    anotLeftEdge = GetOffset(index);
-    DWORD    anotRightEdge = anotLeftEdge + GetDuration(index);
+    DWORD viewLeftEdge = (int) saView.GetDataPosition(0);
+    DWORD viewRightEdge = viewLeftEdge + saView.GetDataFrame();
+    DWORD anotLeftEdge = GetOffset(index);
+    DWORD anotRightEdge = anotLeftEdge + GetDuration(index);
 
-    return ((anotLeftEdge < viewLeftEdge) ||
-            (anotRightEdge > viewRightEdge));
+    return ((anotLeftEdge < viewLeftEdge) || (anotRightEdge > viewRightEdge));
 }
 
 
@@ -794,7 +793,6 @@ int CSegment::FirstVisibleIndex(CSaDoc & SaDoc) const
 {
     POSITION pos = SaDoc.GetFirstViewPosition();
     CSaView  * pView = (CSaView *)SaDoc.GetNextView(pos);
-
     for (int index=0; index<GetOffsetSize(); index++)
     {
         if (!NeedToScroll(*pView,index))
@@ -802,7 +800,6 @@ int CSegment::FirstVisibleIndex(CSaDoc & SaDoc) const
             return index;
         }
     }
-
     return 0;
 }
 

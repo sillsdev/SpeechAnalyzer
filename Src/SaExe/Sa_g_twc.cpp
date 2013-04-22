@@ -38,8 +38,6 @@ IMPLEMENT_DYNCREATE(CPlotTonalWeightChart, CPlotWnd)
 // CPlotTonalWeightChart message map
 
 BEGIN_MESSAGE_MAP(CPlotTonalWeightChart, CPlotWnd)
-    //{{AFX_MSG_MAP(CPlotTonalWeightChart)
-    //}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////

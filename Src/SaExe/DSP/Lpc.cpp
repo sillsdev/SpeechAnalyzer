@@ -1572,7 +1572,7 @@ struct SFormantAssessment
     double dLocalizedSecondDerivative;
 };
 
-static BOOL assessBest(SFormantAssessment & param1, SFormantAssessment & param2)
+static BOOL AssessBest(SFormantAssessment & param1, SFormantAssessment & param2)
 {
     if (!param1.bValidFrequency < !param2.bValidFrequency)
     {
@@ -1875,7 +1875,7 @@ void CLinPredCoding::CalcFormants(void)
             assessment[i].dLocalizedSecondDerivative = assessment[i].dSecondDerivative - assessment[i].dLocalAvgSecondDerivative/2;
         }
 
-        sort(assessment.begin(), assessment.end(), assessBest);
+        sort(assessment.begin(), assessment.end(), AssessBest);
 
         int nDesiredFormants = int(Round(m_Signal.SmpRate/2000.));
 
