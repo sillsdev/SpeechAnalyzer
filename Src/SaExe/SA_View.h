@@ -108,8 +108,8 @@ public:
     double GetDataPosition(int nWndWidth);              // get the actual data position
     DWORD GetDataFrame();                               // return current data frame (width) of displayed data
     DWORD AdjustDataFrame(int nWndWidth);               // return adjusted data frame width for particular window
-    DWORD GetStartCursorPosition();
-    DWORD GetStopCursorPosition();
+    CURSORPOS GetStartCursorPosition();
+    CURSORPOS GetStopCursorPosition();
 	DWORD GetPlaybackCursorPosition();
     void SetCursorPosition(ECursorSelect nCursorSelect, DWORD dwNewPos, ESnapDirection nSnapDirection = SNAP_BOTH,
                            ECursorAlignment nCursorAlignment = ALIGN_USER_SETTING);

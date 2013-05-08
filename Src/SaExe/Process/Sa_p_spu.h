@@ -51,8 +51,8 @@ struct SSpectPowerRange
 #pragma pack(1)
 struct SFormant
 {
-    FORMANT_VALUES Cepstral;
-    FORMANT_VALUES Lpc;
+    SFormantValues Cepstral;
+    SFormantValues Lpc;
 };
 #pragma pack()
 

@@ -17,19 +17,16 @@ void CWindowSettings::Init()
 
 bool CWindowSettings::operator==(const CWindowSettings & a) const
 {
-    bool sameLength =
-        (m_nLengthMode == kBetweenCursors) ||
-        (m_nLengthMode == kTime) && (m_dTime == a.m_dTime) ||
-        (m_nLengthMode == kBandwidth) && (m_dBandwidth == a.m_dBandwidth) ||
-        (m_nLengthMode == kFragments) && (m_nFragments == a. m_nFragments);
-    bool result =
-        m_nType == a.m_nType &&
-        m_nLengthMode == a.m_nLengthMode &&
-        sameLength &&
-        m_bEquivalentLength == a. m_bEquivalentLength &&
-        m_bCenter == a. m_bCenter &&
-        m_nReplication == a.m_nReplication;
-
+    bool sameLength = (m_nLengthMode == kBetweenCursors) ||
+					  (m_nLengthMode == kTime) && (m_dTime == a.m_dTime) ||
+					  (m_nLengthMode == kBandwidth) && (m_dBandwidth == a.m_dBandwidth) ||
+					  (m_nLengthMode == kFragments) && (m_nFragments == a. m_nFragments);
+    bool result = (m_nType == a.m_nType) &&
+				  (m_nLengthMode == a.m_nLengthMode) &&
+				  (sameLength) &&
+				  (m_bEquivalentLength == a. m_bEquivalentLength) &&
+				  (m_bCenter == a. m_bCenter) &&
+				  (m_nReplication == a.m_nReplication);
     return result;
 }
 
@@ -43,7 +40,7 @@ bool CWindowSettings::operator!=(const CWindowSettings & a) const
     return !operator==(a);
 }
 
-DspWin::CWindowParms RectParms()
+CDspWin::CWindowParms RectParms()
 {
     double bandwidthProduct = 2.416228*0.576000; // 1.39
     static const double coefficients[] =
@@ -51,10 +48,10 @@ DspWin::CWindowParms RectParms()
         1.
     };
 
-    return DspWin::CWindowParms(bandwidthProduct, sizeof(coefficients)/sizeof(double), coefficients);
+    return CDspWin::CWindowParms(bandwidthProduct, sizeof(coefficients)/sizeof(double), coefficients);
 }
 
-DspWin::CWindowParms HannParms()   // Also known as Hanning
+CDspWin::CWindowParms HannParms()   // Also known as Hanning
 {
     double bandwidthProduct = 1.414790*1.599393; // 2.26
     static const double coefficients[] =
@@ -63,10 +60,10 @@ DspWin::CWindowParms HannParms()   // Also known as Hanning
         0.5
     };
 
-    return DspWin::CWindowParms(bandwidthProduct, sizeof(coefficients)/sizeof(double), coefficients);
+    return CDspWin::CWindowParms(bandwidthProduct, sizeof(coefficients)/sizeof(double), coefficients);
 }
 
-DspWin::CWindowParms HammingParms()
+CDspWin::CWindowParms HammingParms()
 {
     double bandwidthProduct = 1.358215*1.506903; // 2.05
     static const double coefficients[] =
@@ -75,10 +72,10 @@ DspWin::CWindowParms HammingParms()
         0.46
     };
 
-    return DspWin::CWindowParms(bandwidthProduct, sizeof(coefficients)/sizeof(double), coefficients);
+    return CDspWin::CWindowParms(bandwidthProduct, sizeof(coefficients)/sizeof(double), coefficients);
 }
 
-DspWin::CWindowParms BlackmanParms()
+CDspWin::CWindowParms BlackmanParms()
 {
     double bandwidthProduct = 1.309175*1.969723; // 2.58
     static const double coefficients[] =
@@ -88,10 +85,10 @@ DspWin::CWindowParms BlackmanParms()
         0.08
     };
 
-    return DspWin::CWindowParms(bandwidthProduct, sizeof(coefficients)/sizeof(double), coefficients);
+    return CDspWin::CWindowParms(bandwidthProduct, sizeof(coefficients)/sizeof(double), coefficients);
 }
 
-DspWin::CWindowParms BlackmanHarrisParms()
+CDspWin::CWindowParms BlackmanHarrisParms()
 {
     double bandwidthProduct = 1.277152*2.334273; // 2.98
     static const double coefficients[] =
@@ -102,10 +99,10 @@ DspWin::CWindowParms BlackmanHarrisParms()
         0.01168
     };
 
-    return DspWin::CWindowParms(bandwidthProduct, sizeof(coefficients)/sizeof(double), coefficients);
+    return CDspWin::CWindowParms(bandwidthProduct, sizeof(coefficients)/sizeof(double), coefficients);
 }
 
-DspWin::CWindowParms GaussianParms()
+CDspWin::CWindowParms GaussianParms()
 {
     double bandwidthProduct = 1.222838*3.354341; // 4.10
     static const double coefficients[] =
@@ -120,12 +117,12 @@ DspWin::CWindowParms GaussianParms()
         1.036901498651440E-5
     };
 
-    return DspWin::CWindowParms(bandwidthProduct, sizeof(coefficients)/sizeof(double), coefficients);
+    return CDspWin::CWindowParms(bandwidthProduct, sizeof(coefficients)/sizeof(double), coefficients);
 }
 
-DspWin::CWindowParms DspWin::WindowParms(int32 windowType)
+CDspWin::CWindowParms CDspWin::WindowParms(int32 windowType)
 {
-    DspWin::CWindowParms(*parms[])(void) =
+    CDspWin::CWindowParms(*parms[])(void) =
     {
         RectParms,
         HannParms,
@@ -138,7 +135,7 @@ DspWin::CWindowParms DspWin::WindowParms(int32 windowType)
     return parms[windowType]();
 }
 
-void DspWin::Build()
+void CDspWin::Build()
 {
     if (m_bWindowBuilt)
     {
@@ -169,26 +166,26 @@ void DspWin::Build()
     m_bWindowBuilt = true;
 }
 
-int32 DspWin::CalcLength( double bandwidth, uint32 smpRate, int32 windowType)
+int32 CDspWin::CalcLength( double bandwidth, uint32 smpRate, int32 windowType)
 {
     CWindowParms window = WindowParms(windowType);
     return (int32)( smpRate/bandwidth * window.m_bandwidthProduct + 0.5);
 }
 
-double DspWin::Bandwidth() const
+double CDspWin::Bandwidth() const
 {
     CWindowParms window = WindowParms(m_windowType);
     return double(m_smpRate)/m_nLength*window.m_bandwidthProduct;
 }
 
-int32 DspWin::CalcEquivalentLength(int32 length, int32 dstWindowType, int32 srcWindowType)
+int32 CDspWin::CalcEquivalentLength(int32 length, int32 dstWindowType, int32 srcWindowType)
 {
     CWindowParms dstWindow = WindowParms(dstWindowType);
     CWindowParms srcWindow = WindowParms(srcWindowType);
     return (int32)(length*dstWindow.m_bandwidthProduct/srcWindow.m_bandwidthProduct);
 }
 
-dspError_t HanningWin::FromLength(HanningWin ** Hanning, int32 Length, uint32 SmpRate)
+dspError_t CHanningWin::FromLength(CHanningWin ** Hanning, int32 Length, uint32 SmpRate)
 {
     if (!Hanning)
     {
@@ -207,7 +204,7 @@ dspError_t HanningWin::FromLength(HanningWin ** Hanning, int32 Length, uint32 Sm
     {
         return(Code(OUT_OF_MEMORY));
     }
-    *Hanning = new HanningWin(Data,Length,SmpRate);
+    *Hanning = new CHanningWin(Data,Length,SmpRate);
     if (!*Hanning)
     {
         return(Code(OUT_OF_MEMORY));
@@ -215,7 +212,7 @@ dspError_t HanningWin::FromLength(HanningWin ** Hanning, int32 Length, uint32 Sm
     return(DONE);
 }
 
-int32 HanningWin::CalcLength( float Bandwidth, uint32 SmpRate)
+int32 CHanningWin::CalcLength( float Bandwidth, uint32 SmpRate)
 {
     if (!Bandwidth || (Bandwidth>=(float)SmpRate/2.F))
     {
@@ -233,13 +230,13 @@ int32 HanningWin::CalcLength( float Bandwidth, uint32 SmpRate)
 }
 
 
-dspError_t HanningWin::FromBandwidth( HanningWin ** Hanning, float Bandwidth, uint32 SmpRate)
+dspError_t CHanningWin::FromBandwidth( CHanningWin ** Hanning, float Bandwidth, uint32 SmpRate)
 {
     if (!Hanning)
     {
         return(Code(INVALID_PARM_PTR));
     }
-    int32 Length = HanningWin::CalcLength( Bandwidth, SmpRate);
+    int32 Length = CHanningWin::CalcLength( Bandwidth, SmpRate);
     if (Length < 0)
     {
         return(Length);
@@ -250,7 +247,7 @@ dspError_t HanningWin::FromBandwidth( HanningWin ** Hanning, float Bandwidth, ui
         return(Code(OUT_OF_MEMORY));
     }
 
-    *Hanning = new HanningWin(Data,Length,SmpRate);
+    *Hanning = new CHanningWin(Data,Length,SmpRate);
     if (!*Hanning)
     {
         return(Code(OUT_OF_MEMORY));
@@ -258,7 +255,7 @@ dspError_t HanningWin::FromBandwidth( HanningWin ** Hanning, float Bandwidth, ui
     return(DONE);
 }
 
-HanningWin::HanningWin(float * Data, int32 Length, uint32 SmpRate)
+CHanningWin::CHanningWin(float * Data, int32 Length, uint32 SmpRate)
 {
     m_Data = Data;
     m_Length = Length;
@@ -271,27 +268,26 @@ HanningWin::HanningWin(float * Data, int32 Length, uint32 SmpRate)
     }
 }
 
-int32 HanningWin::Length()
+int32 CHanningWin::Length()
 {
     return m_Length;
 }
-float HanningWin::Bandwidth()
+float CHanningWin::Bandwidth()
 {
     return m_Bandwidth;
 }
-float HanningWin::Data(uint32 i)
+float CHanningWin::Data(uint32 i)
 {
     return m_Data[i];
 }
 
-HanningWin::~HanningWin()
+CHanningWin::~CHanningWin()
 {
     free(m_Data);
 }
 
 
-dspError_t KaiserWin::Setup(KaiserWin ** Kaiser, float Bandwidth, float Gain,
-                            float Atten, float SmpRate)
+dspError_t CKaiserWin::Setup( CKaiserWin ** Kaiser, float Bandwidth, float Gain, float Atten, float SmpRate)
 {
 #define PERCENT_TRANSITION   .10F
 
@@ -341,7 +337,7 @@ dspError_t KaiserWin::Setup(KaiserWin ** Kaiser, float Bandwidth, float Gain,
     }
 
 
-    *Kaiser = new KaiserWin(Coeff, CoeffSet, Bandwidth, Gain, Atten, Transition, GroupDelay, SmpRate);
+    *Kaiser = new CKaiserWin(Coeff, CoeffSet, Bandwidth, Gain, Atten, Transition, GroupDelay, SmpRate);
     if (!*Kaiser)
     {
         return(Code(OUT_OF_MEMORY));
@@ -350,7 +346,7 @@ dspError_t KaiserWin::Setup(KaiserWin ** Kaiser, float Bandwidth, float Gain,
     return(DONE);
 }
 
-KaiserWin::KaiserWin(float * Coeff, bool * CoeffSet, float Bandwidth, float Gain, float Atten,
+CKaiserWin::CKaiserWin(float * Coeff, bool * CoeffSet, float Bandwidth, float Gain, float Atten,
                      float Transition, int32 GroupDelay, float SmpRate)
 {
     m_GroupDelay = GroupDelay;
@@ -382,13 +378,13 @@ KaiserWin::KaiserWin(float * Coeff, bool * CoeffSet, float Bandwidth, float Gain
     return;
 }
 
-KaiserWin::~KaiserWin()
+CKaiserWin::~CKaiserWin()
 {
     free(m_CoeffSet);
     free(m_Coeff);
 }
 
-float KaiserWin::CalcCoeff(int32 i)
+float CKaiserWin::CalcCoeff(int32 i)
 {
     if (i > m_GroupDelay)
     {
@@ -411,7 +407,7 @@ float KaiserWin::CalcCoeff(int32 i)
     return(m_Coeff[i]);
 }
 
-void KaiserWin::Fill(void)
+void CKaiserWin::Fill(void)
 {
     for (int32 i = 0; i < m_Length; i++)
     {
@@ -421,17 +417,17 @@ void KaiserWin::Fill(void)
     return;
 }
 
-DspWin::DspWin( int32 nLength, uint32 smpRate, int32 windowType) :
+CDspWin::CDspWin( int32 nLength, uint32 smpRate, int32 windowType) :
     m_nLength(nLength), m_smpRate(smpRate), m_windowType(windowType), m_bWindowBuilt(false)
 {
 }
 
-DspWin::DspWin( const DspWin & from) :
+CDspWin::CDspWin( const CDspWin & from) :
     m_nLength(from.m_nLength), m_smpRate(from.m_smpRate), m_windowType(from.m_windowType), m_bWindowBuilt(false)
 {
 }
 
-DspWin & DspWin::operator=( const DspWin & from)
+CDspWin & CDspWin::operator=( const CDspWin & from)
 {
     m_bWindowBuilt = false;
     m_windowType = from.m_windowType;
@@ -440,39 +436,54 @@ DspWin & DspWin::operator=( const DspWin & from)
     return *this;
 }
 
-DspWin DspWin::FromLength(int32 nLength, uint32 smpRate, int32 windowType)
+CDspWin CDspWin::FromLength(int32 nLength, uint32 smpRate, int32 windowType)
 {
-    return DspWin( nLength, smpRate, windowType);
+    return CDspWin( nLength, smpRate, windowType);
 }
 
-DspWin DspWin::FromBandwidth(double bandwidth, uint32 smpRate, int32 windowType)
+CDspWin CDspWin::FromBandwidth(double bandwidth, uint32 smpRate, int32 windowType)
 {
-    return DspWin( CalcLength( bandwidth, smpRate, windowType), smpRate, windowType);
+    return CDspWin( CalcLength( bandwidth, smpRate, windowType), smpRate, windowType);
 }
 
-const double * DspWin::WindowDouble()
+const double * CDspWin::WindowDouble()
 {
     Build();
     return &m_cDWindow[0];
 }
 
-const float * DspWin::WindowFloat()
+const float * CDspWin::WindowFloat()
 {
     Build();
     return &m_cFWindow[0];
 }
 
-int32 DspWin::Length() const
+int32 CDspWin::Length() const
 {
     return m_nLength;
 }
 
-int32 DspWin::Type() const
+int32 CDspWin::Type() const
 {
     return m_windowType;
 }
 
-float KaiserWin::Coeff(uint32 i)
+float CKaiserWin::Coeff(uint32 i)
 {
     return m_Coeff[i];
+}
+
+void CDspWin::Dump( const char * ofilename)
+{
+	return;
+	FILE * ofile = NULL;
+	errno_t err = fopen_s( &ofile, ofilename, "w");
+	fprintf( ofile, "dspwin data\n");
+	fprintf(ofile, "double,float\n");
+	for (int i=0;i<m_cDWindow.size();i++)
+	{
+		fprintf(ofile, "%f,%f\n",m_cDWindow[i],m_cFWindow[i]);
+	}
+	fflush(ofile);
+	fclose(ofile);
 }

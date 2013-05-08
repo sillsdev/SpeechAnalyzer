@@ -30,16 +30,8 @@ protected:
     virtual long Exit(int nError, HANDLE hDataFrame); // exit processing on error
 public:
     virtual long Process(void * pCaller, ISaDoc * pDoc, DWORD dwStart, DWORD dwStop, int nProgress = 0, int nLevel = 1);
-    virtual DWORD GetDataSize()
-    {
-        // return processed data size in LPC data structures
-        return GetDataSize(sizeof(LPC_MODEL));
-    }
-    virtual DWORD GetDataSize(size_t nElements)
-    {
-        // return processed data size in LPC data structures
-        return CProcess::GetDataSize(nElements);
-    }
+    virtual DWORD GetDataSize();
+    virtual DWORD GetDataSize(size_t nElements);
     virtual void * GetProcessedData(DWORD dwOffset = 0, BOOL bBlockBegin = FALSE); // return POA data pointer on given position (offset)
     virtual int GetProcessedData(DWORD dwOffset, BOOL *); // return POA data from given position (offset)
     long Process(void * pCaller, ISaDoc * pDoc, int nWidth, int nHeight, int nProgress = 0, int nLevel = 1);

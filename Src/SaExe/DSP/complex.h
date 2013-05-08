@@ -1,30 +1,32 @@
 #ifndef COMPLEX_H
 #define COMPLEX_H
 
-typedef struct
+struct SComplexRectFloat
 {
     float real;
     float imag;
-} COMPLEX_RECT_FLOAT;
-typedef struct
+};
+
+struct SComplexPolarFloat
 {
     float mag;
     float phase;
-} COMPLEX_POLAR_FLOAT;
-typedef union
-{
-    COMPLEX_RECT_FLOAT rect;
-    COMPLEX_POLAR_FLOAT polar;
-} COMPLEX_FLOAT;
+};
 
-COMPLEX_RECT_FLOAT Cadd(COMPLEX_RECT_FLOAT a, COMPLEX_RECT_FLOAT b);
-COMPLEX_RECT_FLOAT Csub(COMPLEX_RECT_FLOAT a, COMPLEX_RECT_FLOAT b);
-COMPLEX_RECT_FLOAT Cmul(COMPLEX_RECT_FLOAT a, COMPLEX_RECT_FLOAT b);
-COMPLEX_RECT_FLOAT Complex(float re, float im);
-COMPLEX_RECT_FLOAT Conjg(COMPLEX_RECT_FLOAT z);
-COMPLEX_RECT_FLOAT Cdiv(COMPLEX_RECT_FLOAT a, COMPLEX_RECT_FLOAT b);
-float Cabs(COMPLEX_RECT_FLOAT z);
-COMPLEX_RECT_FLOAT Csqrt(COMPLEX_RECT_FLOAT z);
-COMPLEX_RECT_FLOAT RCmul(float x, COMPLEX_RECT_FLOAT a);
+union UComplexFloat
+{
+    SComplexRectFloat rect;
+    SComplexPolarFloat polar;
+};
+
+SComplexRectFloat Cadd(SComplexRectFloat a, SComplexRectFloat b);
+SComplexRectFloat Csub(SComplexRectFloat a, SComplexRectFloat b);
+SComplexRectFloat Cmul(SComplexRectFloat a, SComplexRectFloat b);
+SComplexRectFloat Complex(float re, float im);
+SComplexRectFloat Conjg(SComplexRectFloat z);
+SComplexRectFloat Cdiv(SComplexRectFloat a, SComplexRectFloat b);
+float Cabs(SComplexRectFloat z);
+SComplexRectFloat Csqrt(SComplexRectFloat z);
+SComplexRectFloat RCmul(float x, SComplexRectFloat a);
 
 #endif

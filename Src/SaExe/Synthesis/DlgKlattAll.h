@@ -12,13 +12,14 @@
 /////////////////////////////////////////////////////////////////////////////
 // CDlgKlattAll dialog
 
-struct CIpaChar
+struct SIpaChar
 {
-    CIpaChar()
+    SIpaChar()
     {
         ;
     }
-    CIpaChar(const CString & r_ipa, const TEMPORAL & r_parameters, double r_duration = -1)
+
+    SIpaChar(const CString & r_ipa, const TEMPORAL & r_parameters, double r_duration = -1)
     {
         ipa = r_ipa;
         duration = r_duration;
@@ -30,7 +31,7 @@ struct CIpaChar
     TEMPORAL parameters;
 };
 
-class CIpaCharVector : public std::vector<CIpaChar>
+class CIpaCharVector : public std::vector<SIpaChar>
 {
 public:
     void Load(CString szPath);
@@ -128,13 +129,13 @@ private:
     void LabelGrid(int nGrid);
     void NumberGrid(int nGrid);
     void PopulateParameterGrid(CFlexEditGrid & cGrid, const CIpaCharVector & cChars, BOOL bDuration = FALSE);
-    void PopulateParameterGrid(CFlexEditGrid & cGrid, const CIpaChar & cChar, int nColumn, BOOL bDuration = TRUE);
+    void PopulateParameterGrid(CFlexEditGrid & cGrid, const SIpaChar & cChar, int nColumn, BOOL bDuration = TRUE);
     void PopulateParameterGrid(CFlexEditGrid & cGrid, const TEMPORAL * pParameters, int nColumn);
     void PopulateParameterGrid(int nGrid, const CIpaCharVector & cChars, BOOL bDuration = FALSE)
     {
         PopulateParameterGrid(m_cGrid[nGrid], cChars, bDuration);
     }
-    void PopulateParameterGrid(int nGrid, const CIpaChar & cChar, int nColumn, BOOL bDuration = TRUE)
+    void PopulateParameterGrid(int nGrid, const SIpaChar & cChar, int nColumn, BOOL bDuration = TRUE)
     {
         PopulateParameterGrid(m_cGrid[nGrid], cChar, nColumn, bDuration);
     }
@@ -191,7 +192,6 @@ private:
 protected:
 
     // Generated message map functions
-    //{{AFX_MSG(CDlgKlattAll)
     afx_msg void OnSize(UINT nType, int cx, int cy);
     afx_msg void OnEditCopy();
     afx_msg void OnFileOpen();
@@ -236,7 +236,6 @@ protected:
     afx_msg void OnSynthHide();
     afx_msg void OnUpdateSynthHide(CCmdUI * pCmdUI);
     afx_msg void OnSynthShow();
-    //}}AFX_MSG
     afx_msg void OnIntervalNFrag(UINT nID);
     afx_msg void OnIntervalNMs(UINT nID);
     afx_msg void OnWindowNFrag(UINT nID);

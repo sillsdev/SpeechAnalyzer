@@ -549,7 +549,7 @@ void CDlgAutoRecorder::SetRecorderMode(eRecordMode eMode)
         StopWave();
         m_eMode = Play;
         // play back the recorded file
-        if (!m_pWave->Play(0, m_pDoc->GetDataSize(), m_nVolume, 100, m_pView, &m_NotifyObj))
+        if (!m_pWave->Play( 0, m_pDoc->GetDataSize(), m_nVolume, 100, m_pView, &m_NotifyObj))
         {
             SetRecorderMode(Record);            // start recording now
             ChangeState(WaitingForVoice);

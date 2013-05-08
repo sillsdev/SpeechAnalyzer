@@ -29,8 +29,6 @@ public:
     virtual void OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView);
 
 protected:
-    //{{AFX_MSG(CPlotLoudness)
-    //}}AFX_MSG
     DECLARE_MESSAGE_MAP()
 };
 

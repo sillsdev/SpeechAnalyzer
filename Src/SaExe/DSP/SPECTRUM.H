@@ -16,25 +16,25 @@
 #define MAX_FRAME_DUR    2.0F       //maximum frame duration (in sec) allowed
 
 
-typedef struct
+struct SSpectrumSettings
 {
-    short    nScaleSelect;         //scale, either LINEAR or DB
-    uint16   wLength;              //number of spectral values to calculate
-    float    fSmoothFreq;          //max frequency allowed for smoothing
-    float    fFFTRadius;           //radius for evaluating FFT in z-plane
-    int32      nWindowType;            //DSP window switch:  ON = apply window
-} SPECT_SETTINGS;
+    short nScaleSelect;				//scale, either LINEAR or DB
+    uint16 wLength;					//number of spectral values to calculate
+    float fSmoothFreq;				//max frequency allowed for smoothing
+    float fFFTRadius;				//radius for evaluating FFT in z-plane
+    int32 nWindowType;				//DSP window switch:  ON = apply window
+};
 
-typedef struct
+struct SSpectrumParms
 {
-    uint16          wSpectLength;
-    float           fFreqScale;
-    float           fdBRef;
-    float     *     pfRawSpectrum;
-    float     *     pfSmoothSpectrum;
-    uint16          wNumFormants;
-    FORMANT_VALUES * pstFormant;
-} SPECT_PARMS;
+    uint16 wSpectLength;
+    float fFreqScale;
+    float fdBRef;
+    float * pfRawSpectrum;
+    float * pfSmoothSpectrum;
+    uint16 wNumFormants;
+    SFormantValues * pstFormant;
+};
 
 class CSpectrum
 {
@@ -42,9 +42,9 @@ public:
     static char * Copyright(void);
     static float Version(void);
     static dspError_t CreateObject(CSpectrum ** ppoSpectrum,
-                                   SPECT_SETTINGS & stSpectSetting, SIG_PARMS & stSignalParm,
+                                   SSpectrumSettings & stSpectSetting, SSigParms & stSignalParm,
                                    uint16 wFFTLength = MAX_FFT_LENGTH);  //must be a power of 2
-    SPECT_PARMS GetSpectParms(void);
+    SSpectrumParms GetSpectParms(void);
 
 
     //dspError_t GetMetrics(uint16 *pwFreqCnt, float *pfFreqScale, uint16 *pwWinLen);
@@ -52,10 +52,10 @@ public:
     ~CSpectrum();
 
 private:
-    static dspError_t ValidateSignalParms(SIG_PARMS & stSignalParms);
-    static dspError_t ValidateSettings(SPECT_SETTINGS & stSpectSetting);
-    CSpectrum(SPECT_SETTINGS & stSpectSetting,
-              SIG_PARMS & stSignalParm, DspWin & poDSPWindow,
+    static dspError_t ValidateSignalParms(SSigParms & stSignalParms);
+    static dspError_t ValidateSettings(SSpectrumSettings & stSpectSetting);
+    CSpectrum(SSpectrumSettings & stSpectSetting,
+              SSigParms & stSignalParm, CDspWin & poDSPWindow,
               uint16 wFFTLength, float * pfFFTBuffer,
               float * pfRawSpectrum, float * pfSmoothSpectrum);
     dspError_t Preprocess(uint8 * pubFrame);
@@ -71,13 +71,13 @@ private:
     short           m_nScaleSelect;
     float           m_fSmoothFreq;
     float           m_fSpectCalcRadius;
-    DspWin          m_oDSPWindow;
+    CDspWin          m_oDSPWindow;
     uint16          m_wFFTLength;
     float     *     m_pfFFTBuffer;
     float     *     m_pfRawSpectrum;
     float     *     m_pfSmoothSpectrum;
     uint16          m_wNumFormants;
-    FORMANT_VALUES  m_pstFormant[MAX_NUM_FORMANTS+1];   //pitch and formants 1, 2, etc.
+    SFormantValues  m_pstFormant[MAX_NUM_FORMANTS+1];   //pitch and formants 1, 2, etc.
     uint16          m_wMinPitchPeriod;
     uint16          m_wMaxPitchPeriod;
     double             m_dMaxRawPower;

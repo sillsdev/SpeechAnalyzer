@@ -53,8 +53,6 @@ protected:
 
     // Generated message map functions
 protected:
-    //{{AFX_MSG(CPlotRecording)
-    //}}AFX_MSG
     DECLARE_MESSAGE_MAP()
 
     virtual void OnPaint();

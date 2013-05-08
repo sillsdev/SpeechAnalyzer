@@ -24,7 +24,7 @@ private:
     DWORD m_dwDataPos;  // byte offset into waveform data
     int m_nMinValidSemitone100;
     int m_nMaxValidSemitone100;
-    Grappl_parms m_CalcParm;
+    SGrapplParms m_CalcParm;
 
 };
 

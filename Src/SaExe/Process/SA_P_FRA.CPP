@@ -139,11 +139,11 @@ long CProcessFragments::Process(void * pCaller, ISaDoc * pDoc, int nProgress,
         short * pPitchBuffer = (short *)pAutoPitch->GetProcessedData(m_dwPitchIndex, TRUE);   //!!run pitch first?
 
         // set pitch calculation and buffer parameters
-        PITCH_PARMS CPitchParm;
+        SPitchParms CPitchParm;
         CPitchParm.dwContourLength = pAutoPitch->GetDataSize();
         CPitchParm.wSmpIntvl = Grappl_calc_intvl;
         CPitchParm.wScaleFac = Grappl_scale_factor;
-        Grappl_parms CalcParm = pAutoPitch->GetCalcParms();
+        SGrapplParms CalcParm = pAutoPitch->GetCalcParms();
         CPitchParm.wCalcRangeMin = CalcParm.minpitch;
         CPitchParm.wCalcRangeMax = CalcParm.maxpitch;
 
@@ -153,7 +153,7 @@ long CProcessFragments::Process(void * pCaller, ISaDoc * pDoc, int nProgress,
         void * pWaveBuffer = (void *)pDoc->GetWaveData(m_dwWaveIndex * wSmpSize, TRUE);
 
         DWORD dwWaveBufferLen;
-        SIG_PARMS SigParm;
+        SSigParms SigParm;
         SigParm.SmpRate = pDoc->GetSamplesPerSec();
         if (wSmpSize == 1)
         {
@@ -169,8 +169,8 @@ long CProcessFragments::Process(void * pCaller, ISaDoc * pDoc, int nProgress,
         }
 
         // set fragment buffer parameters
-        FRAG_PARMS * pFragParmBuffer = (FRAG_PARMS *)m_lpBuffer;
-        DWORD dwFragBufferLen = GetProcessBufferSize() / sizeof(FRAG_PARMS);
+        SFragParms * pFragParmBuffer = (SFragParms *)m_lpBuffer;
+        DWORD dwFragBufferLen = GetProcessBufferSize() / sizeof(SFragParms);
 
 
         // construct fragmenter
@@ -240,7 +240,7 @@ long CProcessFragments::Process(void * pCaller, ISaDoc * pDoc, int nProgress,
             // write the processed data block
             try
             {
-                Write(m_lpBuffer, m_pFragmenter->GetFragmentBlockLength() * sizeof(FRAG_PARMS));
+                Write(m_lpBuffer, m_pFragmenter->GetFragmentBlockLength() * sizeof(SFragParms));
             }
             catch (CFileException e)
             {
@@ -308,7 +308,7 @@ long CProcessFragments::Process(void * pCaller, ISaDoc * pDoc, int nProgress,
 /***************************************************************************/
 ULONG CProcessFragments::GetBufferLength()
 {
-    return GetProcessBufferSize() / sizeof(FRAG_PARMS);
+    return GetProcessBufferSize() / sizeof(SFragParms);
 }
 
 
@@ -316,9 +316,9 @@ ULONG CProcessFragments::GetBufferLength()
 // CProcessFragments::GetFragmentBlock Loads buffer with block of fragment
 // parms starting at specified index.
 /***************************************************************************/
-FRAG_PARMS * CProcessFragments::GetFragmentBlock(ULONG dwFragmentIndex)
+SFragParms * CProcessFragments::GetFragmentBlock(ULONG dwFragmentIndex)
 {
-    return (FRAG_PARMS *)GetProcessedWaveData(dwFragmentIndex*sizeof(FRAG_PARMS), TRUE);
+    return (SFragParms *)GetProcessedWaveData(dwFragmentIndex*sizeof(SFragParms), TRUE);
 }
 
 
@@ -326,11 +326,10 @@ FRAG_PARMS * CProcessFragments::GetFragmentBlock(ULONG dwFragmentIndex)
 // CProcessFragments::GetFragmentParms Returns reference to fragment parms
 // at specified index.
 /***************************************************************************/
-const FRAG_PARMS & CProcessFragments::GetFragmentParms(ULONG dwFragmentIndex)
+const SFragParms & CProcessFragments::GetFragmentParms(ULONG dwFragmentIndex)
 {
-    return *(FRAG_PARMS *) GetProcessedObject(dwFragmentIndex,sizeof(FRAG_PARMS));
+    return *(SFragParms *) GetProcessedObject(dwFragmentIndex,sizeof(SFragParms));
 }
-
 
 /***************************************************************************/
 // CProcessFragments::GetFragmentIndex Returns index of fragment containing
@@ -345,7 +344,7 @@ ULONG CProcessFragments::GetFragmentIndex(ULONG dwWaveIndex)
 
     // But first check to see if current fragment or adjacent fragments contain the waveform sample.
     // This is the fastest method if cursor is being dragged across fragments.
-    FRAG_PARMS stFragment = GetFragmentParms(m_dwFragmentIndex);
+    SFragParms stFragment = GetFragmentParms(m_dwFragmentIndex);
     if (dwWaveIndex >= stFragment.dwOffset)
     {
         if (dwWaveIndex < stFragment.dwOffset + stFragment.wLength)
@@ -370,7 +369,7 @@ ULONG CProcessFragments::GetFragmentIndex(ULONG dwWaveIndex)
     // Otherwise resort to a binary search.
     while (dwMinSearchIndex < dwMaxSearchIndex)   // true as long as dwWaveIndex within range spanned by fragments
     {
-        FRAG_PARMS stFragment = GetFragmentParms(m_dwFragmentIndex);
+        SFragParms stFragment = GetFragmentParms(m_dwFragmentIndex);
         if (dwWaveIndex >= stFragment.dwOffset)
         {
             if (dwWaveIndex < stFragment.dwOffset + stFragment.wLength)

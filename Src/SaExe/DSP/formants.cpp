@@ -46,7 +46,7 @@ dspError_t CFormantPicker::CreateObject(CFormantPicker ** ppFormantPicker, uint1
         return(Code(INVALID_NUM_FORMANTS));
     }
     uint16 nMaxNumFreq = (uint16)(nMaxNumFormants + 1);  //include pitch at F[0]
-    FORMANT_VALUES * FormantTable = (FORMANT_VALUES *)new FORMANT_VALUES[nMaxNumFreq];
+    SFormantValues * FormantTable = (SFormantValues *)new SFormantValues[nMaxNumFreq];
     if (!FormantTable)
     {
         return(Code(OUT_OF_MEMORY));
@@ -69,7 +69,7 @@ dspError_t CFormantPicker::CreateObject(CFormantPicker ** ppFormantPicker, uint1
 ////////////////////////////////////////////////////////////////////////////////////////
 // Formant picker object constructor.                                                 //
 ////////////////////////////////////////////////////////////////////////////////////////
-CFormantPicker::CFormantPicker(FORMANT_VALUES * FormantTable, uint16 nMaxNumFormants, short nSource):
+CFormantPicker::CFormantPicker(SFormantValues * FormantTable, uint16 nMaxNumFormants, short nSource):
     CPeakPicker(nMaxNumFormants+NUM_EXTRA_PEAKS_ALLOWED)
 {
     m_FormantTable = FormantTable;
@@ -92,7 +92,7 @@ CFormantPicker::~CFormantPicker()
 const float fMaxBandwidth = 800.F;
 //       Unknown           Men            Women          Children   Musical Instrument
 //     Low   High      Low   High      Low   High      Low   High      Low   High
-static RANGE FormantRange[5][5] =
+static SRange FormantRange[5][5] =
 {
     {{  50.,  500.}, {  50.,  200.}, { 200.,  350.}, { 350.,  500.}, {  50.,  500.}}, // F0    //!!base on Grappl range
     {{ 100., 1100.}, { 100., 1000.}, { 300., 1000.}, { 400., 1100.}, { 500., 1500.}}, // F1
@@ -105,7 +105,7 @@ static RANGE FormantRange[5][5] =
 ////////////////////////////////////////////////////////////////////////////////////////
 // Object function to get formant locations and their log magnitudes.                 //
 ////////////////////////////////////////////////////////////////////////////////////////
-dspError_t CFormantPicker::PickFormants(FORMANT_VALUES ** ppFormantTable, uint16 * pFormantCount,
+dspError_t CFormantPicker::PickFormants(SFormantValues ** ppFormantTable, uint16 * pFormantCount,
                                         float * pSmoothLogPwrSpectrum, uint16 nSpectrumLength,
                                         double dSpectralResolution, float fPitch)
 {
@@ -128,7 +128,7 @@ dspError_t CFormantPicker::PickFormants(FORMANT_VALUES ** ppFormantTable, uint16
     }
 
     uint32 dwBumpCount;
-    BUMP_TABLE_ENTRY * BumpTable;
+    SBumpTableEntry * BumpTable;
     dspError_t Err = GetBumps(&BumpTable, &dwBumpCount, (float *)pSmoothLogPwrSpectrum, (uint32)nSpectrumLength);
     if (Err)
     {
@@ -207,7 +207,7 @@ dspError_t CFormantPicker::PickFormants(FORMANT_VALUES ** ppFormantTable, uint16
 // (i.e. gender for speech) and formant index.  This function does not require that   //
 // an object be constructed.                                                          //
 ////////////////////////////////////////////////////////////////////////////////////////
-RANGE CFormantPicker::FormantRange(int32 nSource, uint32 nFormantIndex)
+SRange CFormantPicker::FormantRange(int32 nSource, uint32 nFormantIndex)
 {
     nSource = (short)(nSource + 1);   //adjust for zero based formant array indexing
     if (nSource > 4)
@@ -218,7 +218,7 @@ RANGE CFormantPicker::FormantRange(int32 nSource, uint32 nFormantIndex)
     {
         return(::FormantRange[nFormantIndex][nSource]);
     }
-    RANGE FormantFreqRange;
+    SRange FormantFreqRange;
     float fNominalFrequency = (nFormantIndex-1)*1000.F + 500.F;
     FormantFreqRange.Low = 0.85F*fNominalFrequency;
     FormantFreqRange.High = 1.5F*fNominalFrequency;

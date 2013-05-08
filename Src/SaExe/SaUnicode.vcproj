@@ -218,6 +218,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Process\AnalyticLpcAnalysis.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\ArchiveTransfer.cpp"
 				>
 			</File>
@@ -846,6 +850,14 @@
 						PreprocessorDefinitions=""
 					/>
 				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\Process\Hilbert.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Process\IIRFilter.cpp"
+				>
 			</File>
 			<File
 				RelativePath=".\Import.cpp"
@@ -2896,6 +2908,10 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\StringUtils.cpp"
+				>
+			</File>
+			<File
 				RelativePath="Targview.cpp"
 				>
 				<FileConfiguration
@@ -3025,10 +3041,6 @@
 			</File>
 			<File
 				RelativePath=".\WaveInDevice.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\WaveIndex.cpp"
 				>
 			</File>
 			<File
@@ -3323,6 +3335,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Process\AnalyticLpcAnalysis.h"
+				>
+			</File>
+			<File
 				RelativePath=".\AppDefs.h"
 				>
 			</File>
@@ -3568,6 +3584,14 @@
 			</File>
 			<File
 				RelativePath=".\Grid.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Process\Hilbert.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Process\IIRFilter.h"
 				>
 			</File>
 			<File
@@ -4027,6 +4051,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\StringUtils.h"
+				>
+			</File>
+			<File
 				RelativePath=".\TARGVIEW.H"
 				>
 			</File>
@@ -4088,10 +4116,6 @@
 			</File>
 			<File
 				RelativePath=".\WaveInDevice.h"
-				>
-			</File>
-			<File
-				RelativePath=".\WaveIndex.h"
 				>
 			</File>
 			<File

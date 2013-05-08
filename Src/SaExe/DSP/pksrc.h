@@ -1,24 +1,24 @@
 #ifndef PKSRC_H
 #define PKSRC_H
 
-// A PeakSource is an iterator over peaks in a sampled function.
+// A CPeakSource is an iterator over peaks in a sampled function.
 // The Search() function limits this interface to working on a
 // particular kind of sample function.  This is a time trade-off.
 // Since a spectrogram needs to use a peak source for every time
 // slice, it is not practical to create and destroy a peak source for
-// every one.  Thus, it must be possible to reset a PeakSource to work
+// every one.  Thus, it must be possible to reset a CPeakSource to work
 // on different spectra.
 //
 // Note: The order in which peaks are returned is not specified.
-// Concrete subclasses of PeakSource define their own order.
+// Concrete subclasses of CPeakSource define their own order.
 //
 // This is an instance of the Strategy design pattern, implemented as
 // an Iterator.
 
-class PeakSource
+class CPeakSource
 {
 public:
-    virtual ~PeakSource() {};
+    virtual ~CPeakSource() {};
 
     // Tell this peak source to search the given array for peaks, and
     // advance to the first peak.
@@ -41,12 +41,12 @@ public:
     virtual int IsDone() const = 0;
 
 protected:
-    PeakSource() {};
+    CPeakSource() {};
 
 private:
     // These should never be called
-    PeakSource(const PeakSource &);
-    const PeakSource & operator=(const PeakSource &);
+    CPeakSource(const CPeakSource &);
+    const CPeakSource & operator=(const CPeakSource &);
 };
 
 #endif

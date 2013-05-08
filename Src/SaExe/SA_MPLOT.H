@@ -43,8 +43,6 @@ public:
 
     // Generated message map functions
 protected:
-    //{{AFX_MSG(CMultiPlotWnd)
-    //}}AFX_MSG
     DECLARE_MESSAGE_MAP()
 };
 

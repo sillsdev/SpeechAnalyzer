@@ -42,7 +42,7 @@ void CIndependentSegment::LimitPosition(CSaDoc * pSaDoc, DWORD & dwStart, DWORD 
                 if (nMode==LIMIT_MOVING_STOP)
                 {
                     dwStop = (GetStop(m_nSelection - 1)*5 - dwStart*3)/2 + 2;
-                    dwStop = pSaDoc->SnapCursor(STOP_CURSOR, dwStop,dwStop,pSaDoc->GetUnprocessedDataSize(),SNAP_RIGHT);
+                    dwStop = pSaDoc->SnapCursor(STOP_CURSOR, dwStop,dwStop,pSaDoc->GetDataSize(),SNAP_RIGHT);
                 }
                 else
                 {
@@ -55,8 +55,8 @@ void CIndependentSegment::LimitPosition(CSaDoc * pSaDoc, DWORD & dwStart, DWORD 
         int nNext = GetNext(m_nSelection);
         if (nNext != -1)
         {
-            DWORD dwStartPlus = pSaDoc->SnapCursor(START_CURSOR, dwStart,dwStart,pSaDoc->GetUnprocessedDataSize(),SNAP_RIGHT);
-            DWORD dwStopPlus = pSaDoc->SnapCursor(STOP_CURSOR, dwStop,dwStop,pSaDoc->GetUnprocessedDataSize(),SNAP_RIGHT);
+            DWORD dwStartPlus = pSaDoc->SnapCursor(START_CURSOR, dwStart,dwStart,pSaDoc->GetDataSize(),SNAP_RIGHT);
+            DWORD dwStopPlus = pSaDoc->SnapCursor(STOP_CURSOR, dwStop,dwStop,pSaDoc->GetDataSize(),SNAP_RIGHT);
 
             // check if not more than 40% overlap with stop
             if (dwStopPlus > (GetOffset(nNext) + GetDuration(nNext) *2/5))
@@ -85,7 +85,7 @@ void CIndependentSegment::LimitPosition(CSaDoc * pSaDoc, DWORD & dwStart, DWORD 
     {
         // SDM 1.5Test8.1
         DWORD dwStartMin=0;
-        DWORD dwStopMax= pSaDoc->GetUnprocessedDataSize();
+        DWORD dwStopMax= pSaDoc->GetDataSize();
 
         if (m_nSelection > 0)
         {

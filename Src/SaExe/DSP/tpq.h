@@ -1,8 +1,8 @@
-class tpqueue
+class CTPQueue
 {
 public:
-    tpqueue();
-    ~tpqueue();
+    CTPQueue();
+    ~CTPQueue();
     void push(const Type & elt);
     int size() const;
     int empty() const;
@@ -13,6 +13,6 @@ private:
     void init(int n = 10);
     void heapify(int vroot);             // percolate down function
 
-    tvector myList;                // array of prioritized stuff
+    CTVector myList;                // array of prioritized stuff
     int myNumElts;                       // # elements in priority queue
 };

@@ -16,16 +16,16 @@ public:
     static char * Copyright(void);
     static float Version(void);
     static dspError_t CreateObject(CWaveWarp ** ppWaveWarp, ISaDoc * pDoc, ULONG dwWaveStart, USHORT wSpeed,
-                                   FRAG_PARMS * pstFragStart);
+                                   SFragParms * pstFragStart);
     dspError_t SetWaveBuffer(void * pWaveBfr);
     dspError_t SetPlayBuffer(void * pPlayBfr, ULONG dwPlayBfrLength);
     dspError_t FillPlayBuffer(ULONG dwWaveBlock, ULONG dwWaveBlockLength,
-                              FRAG_PARMS * pstCallFragment,
+                              SFragParms * pstCallFragment,
                               ULONG * pdwPlayLength);
     dspError_t FillPlayBuffer(ULONG dwWaveBlock, ULONG dwWaveBlockLength,
-                              FRAG_PARMS * pstCallFragment,
+                              SFragParms * pstCallFragment,
                               ULONG * pdwPlayLength, USHORT wNewSpeed);
-    dspError_t FillPlayBuffer(FRAG_PARMS * pstCallData,
+    dspError_t FillPlayBuffer(SFragParms * pstCallData,
                               ULONG dwWaveBlockLength,
                               ULONG * pdwPlayLength, USHORT wSpeed);
     ~CWaveWarp(void);
@@ -42,7 +42,7 @@ private:
     void * m_pPlayBfr;
     ULONG m_dwPlayBfrLength;
     ULONG m_dwPlayLength;
-    FRAG_PARMS * m_pstFragBfr;
+    SFragParms * m_pstFragBfr;
     ULONG m_dwFragBfrLength;
     ULONG m_dwFragBfrIndex;
     ULONG m_dwFragBlock;

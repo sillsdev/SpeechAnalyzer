@@ -100,7 +100,6 @@ protected:
     void ShowLandscapeBitmap(BOOL show);
 
     // Generated message map functions
-    //{{AFX_MSG(CPrintOptionsDlg)
     afx_msg void OnMore();
     afx_msg void OnUseScreenLayout()
     {
@@ -124,7 +123,6 @@ protected:
     afx_msg void OnSpinCol();
     afx_msg void OnPortrait();
     afx_msg void OnLandscape();
-    //}}AFX_MSG
     DECLARE_MESSAGE_MAP()
 
     // Dialog Data

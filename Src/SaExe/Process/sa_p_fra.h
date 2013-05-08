@@ -33,8 +33,8 @@ private:
 public:
     long Process(void * pCaller, ISaDoc * pDoc, int nProgress = 0, int nLevel = 1);
     ULONG GetBufferLength();
-    FRAG_PARMS * GetFragmentBlock(ULONG dwFragmentIndex);
-    const FRAG_PARMS & GetFragmentParms(ULONG dwFragmentIndex);
+    SFragParms * GetFragmentBlock(ULONG dwFragmentIndex);
+    const SFragParms & GetFragmentParms(ULONG dwFragmentIndex);
     ULONG GetFragmentCount()
     {
         return m_dwFragmentCount;

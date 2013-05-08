@@ -2,7 +2,7 @@
 #include "cspksrc.h"
 #include <assert.h>
 
-CountedSortedPeakSource::CountedSortedPeakSource(PeakSource & ps,
+CountedSortedPeakSource::CountedSortedPeakSource(CPeakSource & ps,
         uint32 maxNumPeaks)
     : myPS(ps), myQ(0), myMaxNumPeaks(maxNumPeaks)
 {
@@ -21,7 +21,7 @@ CountedSortedPeakSource::Search(const float * start, const float * end)
     rpair_float_float point;
 
     // This time, we are sorting by frequency so point.first is location
-    // and point.second is value.  This is backwards from EnergyPeakSource.
+    // and point.second is value.  This is backwards from CEnergyPeakSource.
 
     delete myQ;
     myQ = new pq_rpair_float_float;

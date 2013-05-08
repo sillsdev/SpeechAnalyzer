@@ -53,13 +53,11 @@ protected:
     void Undo();
 
     // Generated message map functions
-    //{{AFX_MSG(CDlgAdvancedParse)
     virtual BOOL OnInitDialog();
     afx_msg void OnBreakWidthScroll();
     afx_msg void OnMaxThresholdScroll();
     afx_msg void OnMinThresholdScroll();
     afx_msg void OnBnClickedApply();
-    //}}AFX_MSG
     DECLARE_MESSAGE_MAP()
     virtual void OnOK();
     virtual void OnCancel();

@@ -33,14 +33,14 @@ public:
     int nParseMode;             // parsing mode
 };
 
-class CSegmentParm                 // segmenting parameters
+class CSegmentParm              // segmenting parameters
 {
 public:
-    float        fSegmentWidth;     // minimum width of peak (ms)
-    int          nChThreshold;      // minimum Change threshold (%)
-    int          nZCThreshold;      // minimum Zero Crossing threshold (# of crossings)
-    int          nSegmentMode;      // segmenting mode
-    BOOL         bKeepSegments;     // TRUE if existing segments to keep
+    float fSegmentWidth;		// minimum width of peak (ms)
+    int nChThreshold;			// minimum Change threshold (%)
+    int nZCThreshold;			// minimum Zero Crossing threshold (# of crossings)
+    int nSegmentMode;			// segmenting mode
+    BOOL bKeepSegments;			// TRUE if existing segments to keep
 
     void WriteProperties(CObjectOStream & obs);
     BOOL ReadProperties(CObjectIStream & obs);
@@ -128,11 +128,11 @@ public:
     BOOL ReadProperties(CObjectIStream & obs);
     void Init();
 
-    int  nResolution;       // resolution of display
-    int  nColor;            // color of display
-    int  nFrequency;        // frequency range to calculate
-    int  nMinThreshold;     // minimum threshold
-    int  nMaxThreshold;     // maximum threshold
+    int nResolution;       // resolution of display
+    int nColor;            // color of display
+    int nFrequency;        // frequency range to calculate
+    int nMinThreshold;     // minimum threshold
+    int nMaxThreshold;     // maximum threshold
     BOOL bSmoothSpectra;    // TRUE = smooth spectra
 };
 
@@ -140,20 +140,20 @@ public:
 class CSpectrumParm   // spectrum parameters
 {
 public:
-    int          nScaleMode;        // scale display mode
-    int          nPwrUpperBound;    // upper power display boundary
-    int          nPwrLowerBound;    // lower power display boundary
-    int          nFreqUpperBound;   // upper frequency display boundary
-    int          nFreqLowerBound;   // lower frequency display boundary
-    int          nFreqScaleRange;   // frequency range: 0 = full scale, 1 = half scale, 2 = third scale, 3 = quarter scale
-    int          nSmoothLevel;      // level to control spectral smoothing
-    int          nPeakSharpFac;     // factor to control sharpening of formant peaks
-    CWindowSettings cWindow;        // DSP Window settings
-    BOOL         bShowLpcSpectrum;  // TRUE = show LPC-smoothed spectrum
-    BOOL         bShowCepSpectrum;  // TRUE = show cepstrally-smoothed spectrum
-    BOOL         bShowFormantFreq;  // TRUE = show formant frequencies
-    BOOL         bShowFormantBandwidth;  // TRUE = show formant bandwidths
-    BOOL         bShowFormantPower; // TRUE = show formant powers
+    int nScaleMode;				// scale display mode
+    int nPwrUpperBound;			// upper power display boundary
+    int nPwrLowerBound;			// lower power display boundary
+    int nFreqUpperBound;		// upper frequency display boundary
+    int nFreqLowerBound;		// lower frequency display boundary
+    int nFreqScaleRange;		// frequency range: 0 = full scale, 1 = half scale, 2 = third scale, 3 = quarter scale
+    int nSmoothLevel;			// level to control spectral smoothing
+    int nPeakSharpFac;			// factor to control sharpening of formant peaks
+    CWindowSettings cWindow;    // DSP Window settings
+    BOOL bShowLpcSpectrum;		// TRUE = show LPC-smoothed spectrum
+    BOOL bShowCepSpectrum;		// TRUE = show cepstrally-smoothed spectrum
+    BOOL bShowFormantFreq;		// TRUE = show formant frequencies
+    BOOL bShowFormantBandwidth;  // TRUE = show formant bandwidths
+    BOOL bShowFormantPower;		// TRUE = show formant powers
 
     void WriteProperties(CObjectOStream & obs);
     BOOL ReadProperties(CObjectIStream & obs);
@@ -183,10 +183,10 @@ public:
 class CRecordingParm   // Recording parameters
 {
 public:
-    int     nRate;      // Sampling Rate code (0=11KHz, 1=22KHz, 2=44KHz)
-    int     nBits;      // Sample data width in bits
-    BOOL    bHighpass;  // User 70KHz highpass filter (0=FALSE, 1=TRUE)
-    int     nMode;      // Recording mode (0=mono, 1=stereo)
+    int nRate;			// Sampling Rate code (0=11KHz, 1=22KHz, 2=44KHz)
+    int nBits;			// Sample data width in bits
+    BOOL bHighpass;		// User 70KHz highpass filter (0=FALSE, 1=TRUE)
+    int nMode;			// Recording mode (0=mono, 1=stereo)
 
     void WriteProperties(CObjectOStream & obs);
     BOOL ReadProperties(CObjectIStream & obs);
@@ -206,16 +206,16 @@ public:
 
     void Init();
 
-    BOOL    m_bSpectrogramConnectFormants;
-    BOOL    m_bSpectrogramContrastEnhance;
-    BOOL  m_bShowHilbertTransform;
-    BOOL  m_bShowInstantaneousPower;
-    int     m_nSpectrumLpcMethod;
-    int     m_nSpectrumLpcOrderFsMult;
-    int     m_nSpectrumLpcOrderExtra;
-    int     m_nSpectrumLpcOrderAuxMax;
-    int   m_nLpcCepstralSmooth;
-    int   m_nLpcCepstralSharp;
+    BOOL m_bSpectrogramConnectFormants;
+    BOOL m_bSpectrogramContrastEnhance;
+    BOOL m_bShowHilbertTransform;
+    BOOL m_bShowInstantaneousPower;
+    int m_nSpectrumLpcMethod;
+    int m_nSpectrumLpcOrderFsMult;
+    int m_nSpectrumLpcOrderExtra;
+    int m_nSpectrumLpcOrderAuxMax;
+    int m_nLpcCepstralSmooth;
+    int m_nLpcCepstralSharp;
     CWindowSettings m_cWindow;
 };
 

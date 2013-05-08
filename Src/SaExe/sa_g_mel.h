@@ -40,7 +40,5 @@ public:
 
     // Generated message map functions
 protected:
-    //{{AFX_MSG(CPlotMelogram)
-    //}}AFX_MSG
     DECLARE_MESSAGE_MAP()
 };

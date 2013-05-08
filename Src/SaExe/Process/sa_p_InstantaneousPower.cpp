@@ -97,9 +97,9 @@ long CProcessInstantaneousPower::Process(void * pCaller, ISaDoc * pDoc,
         return Exit(nResult);
     }
 
-    CProcessIIRFilter & phaseFilter = *pDoc->GetHilbert();
+    CProcessIIRFilter * phaseFilter = (CProcessIIRFilter*)pDoc->GetHilbert();
 
-    long lResult = phaseFilter.Process(pCaller, pDoc, nProgress, ++nLevel);
+    long lResult = phaseFilter->Process(pCaller, pDoc, nProgress, ++nLevel);
     nLevel = (short int)LOWORD(lResult);
     if ((nLevel == PROCESS_CANCELED))
     {
@@ -119,7 +119,7 @@ long CProcessInstantaneousPower::Process(void * pCaller, ISaDoc * pDoc,
 
     double dScale = 0.707/2;
 
-    DWORD dwWaveSize = phaseFilter.GetDataSize();
+    DWORD dwWaveSize = phaseFilter->GetDataSize();
     DWORD dwBufferSize = GetProcessBufferSize();
     short * pProcData = (short *)m_lpBuffer;
     DWORD dwProcDataCount = 0;
@@ -135,7 +135,7 @@ long CProcessInstantaneousPower::Process(void * pCaller, ISaDoc * pDoc,
     for (DWORD dwWaveOffset = 1; dwWaveOffset < dwWaveSize - 1; dwWaveOffset++)
     {
         short * pData = (short *)pRaw->GetProcessedDataBlock((dwWaveOffset-1)*sizeof(short),3*sizeof(short));
-        short * pDataPhased = (short *)phaseFilter.GetProcessedDataBlock((dwWaveOffset-1)*sizeof(short),3*sizeof(short));
+        short * pDataPhased = (short *)phaseFilter->GetProcessedDataBlock((dwWaveOffset-1)*sizeof(short),3*sizeof(short));
         if (!pData || !pDataPhased)   // reading failed
         {
             EndProcess(); // end data processing

@@ -4,21 +4,21 @@
 #include "pksrc.h"
 #include "template.h"
 
-// An EnergyPeakSource is a Decorator class.  It finds all peaks from
-// a given PeakSource and returns them in order of energy from most
+// An CEnergyPeakSource is a Decorator class.  It finds all peaks from
+// a given CPeakSource and returns them in order of energy from most
 // energetic to least energetic.
 //
-// See class PeakSource for more documentation.
+// See class CPeakSource for more documentation.
 //
 // This is an instance of the Decorator design pattern.
 
-class EnergyPeakSource : public PeakSource
+class CEnergyPeakSource : public CPeakSource
 {
 public:
     // Construct this peak source as a wrapper around the given peak
     // source.
-    EnergyPeakSource(PeakSource & ps);
-    ~EnergyPeakSource();
+    CEnergyPeakSource(CPeakSource & ps);
+    ~CEnergyPeakSource();
 
     virtual void Search(const float * start, const float * end);
     virtual void Next();
@@ -27,10 +27,10 @@ public:
 
 private:
     // These should never be called
-    EnergyPeakSource(const EnergyPeakSource &);
-    const EnergyPeakSource & operator=(const EnergyPeakSource &);
+    CEnergyPeakSource(const CEnergyPeakSource &);
+    const CEnergyPeakSource & operator=(const CEnergyPeakSource &);
 
-    PeakSource & myPS;
+    CPeakSource & myPS;
     pq_pair_float_float * myQ;
 };
 

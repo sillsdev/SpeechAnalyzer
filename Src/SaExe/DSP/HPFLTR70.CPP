@@ -447,7 +447,7 @@ dspError_t CHighPassFilter70::Filter(short * pProcessBuffer, uint32 dwProcessLen
 
 
 ////////////////////////////////////////////////////////////////////////////////////////
-// Workspace definitions, based on HPF_WORKSPACE structure in Hpfltr70.h              //
+// Workspace definitions, based on SHPFWorkspace structure in Hpfltr70.h              //
 ////////////////////////////////////////////////////////////////////////////////////////
 #define F11    Workspace.f11
 #define B11    Workspace.b11
@@ -492,7 +492,7 @@ dspError_t CHighPassFilter70::ForwardPass(uint8 * pProcessBuffer, uint32 dwProce
     }
 
     /* Transfer filter parameters from object to workspace.                                */
-    HPF_WORKSPACE Workspace;
+    SHPFWorkspace Workspace;
 
     Workspace.f11  = m_f11;
     Workspace.b11  = m_b11;
@@ -628,7 +628,7 @@ dspError_t CHighPassFilter70::ForwardPass(short * pProcessBuffer, uint32 dwProce
     }
 
     /* Transfer filter parameters from object to workspace.                                */
-    HPF_WORKSPACE Workspace;
+    SHPFWorkspace Workspace;
 
     Workspace.f11  = m_f11;
     Workspace.b11  = m_b11;
@@ -769,7 +769,7 @@ dspError_t CHighPassFilter70::BackwardPass(uint8 * pProcessBuffer, uint32 dwProc
     }
 
     /* Transfer filter parameters from object to workspace.                                */
-    HPF_WORKSPACE Workspace;
+    SHPFWorkspace Workspace;
 
     Workspace.f11  = m_f11;
     Workspace.b11  = m_b11;
@@ -909,7 +909,7 @@ dspError_t CHighPassFilter70::BackwardPass(short * pProcessBuffer, uint32 dwProc
     }
 
     /* Transfer filter parameters from object to workspace.                                */
-    HPF_WORKSPACE Workspace;
+    SHPFWorkspace Workspace;
 
     Workspace.f11  = m_f11;
     Workspace.b11  = m_b11;
@@ -1078,8 +1078,7 @@ void CHighPassFilter70::GenTestSuite(void * pProcessBuffer, uint32 dwProcessLeng
             // Test 8 bit unsigned sample data.
             uint32 dwSineLength = dwBfrSize / sizeof(uint8);
 
-            sprintf(FileName, "hp%uk%dbu.%d", wSmpRate[i]/1000,
-                    (int32)sizeof(uint8)*8, (int32)wSigFreq[j]);
+            sprintf(FileName, "hp%uk%dbu.%d", wSmpRate[i]/1000, (int32)sizeof(uint8)*8, (int32)wSigFreq[j]);
             FltrOut = fopen(FileName, "w");
 
             for (uint32 n = 0; n < dwSineLength; n++)

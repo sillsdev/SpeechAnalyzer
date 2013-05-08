@@ -203,7 +203,7 @@ void CWbDlgProcesses::OnProperties2()
                 delete m_pWbProcessFilter2;
             }
             // create new process
-            m_pWbProcessFilter2 = ((CSaWorkbenchView *)GetParent())->CreateWbProcess(m_nFilter2); // create new process
+            m_pWbProcessFilter2 = ((CSaWorkbenchView *)GetParent())->CreateWbProcess(m_nFilter2);
             m_nLocalFilter2 = m_nFilter2;
         }
         // if process created call process properties dialog

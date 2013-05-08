@@ -564,7 +564,7 @@ void CDlgExportTable::OnOK()
             }
             else
             {
-                dwNext = pDoc->GetUnprocessedDataSize();
+                dwNext = pDoc->GetDataSize();
             }
         }
 
@@ -1150,7 +1150,7 @@ static void CreateWordSegments(const int nWord, int & nSegments)
             dwStart = 0;
             if (pDoc->GetSegment(GLOSS)->IsEmpty())
             {
-                dwStop = pDoc->GetUnprocessedDataSize();
+                dwStop = pDoc->GetDataSize();
             }
             else
             {

@@ -19,7 +19,6 @@ static char THIS_FILE[]=__FILE__;
 CAcousticTube::CAcousticTube(const std::vector<double> & dDiameters, const std::vector<double> & dReflections)
 {
     m_nOrder = -1;
-
     SetTransform(dDiameters, dReflections);
 }
 

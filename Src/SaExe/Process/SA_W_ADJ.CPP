@@ -85,7 +85,7 @@ long CProcessAdjust::Process(void * pCaller, ISaDoc * pDoc, int nProgress, int n
         double dScale = m_bInvert ? -1 : 1;
         if (m_bNormalize)
         {
-            CButterworth butterworth;
+            CProcessButterworth butterworth;
             butterworth.SetSourceProcess(pLowerProcess);
             butterworth.SetFilterFilter(TRUE);
             butterworth.HighPass(m_bZero ? 3 : 0, 40., 1.);
@@ -101,7 +101,7 @@ long CProcessAdjust::Process(void * pCaller, ISaDoc * pDoc, int nProgress, int n
         SetSourceProcess(pLowerProcess);
         SetFilterFilter(TRUE);
         HighPass(m_bZero ? 3 : 0, 40., dScale);
-        return CButterworth::Process(pCaller, pDoc, nProgress, nLevel);
+        return CProcessButterworth::Process(pCaller, pDoc, nProgress, nLevel);
     }
     else
     {
@@ -133,7 +133,7 @@ DWORD CProcessAdjust::GetProcessBufferIndex(size_t nSize)
     // return index to process buffer
     if (NeedsAdjustment())
     {
-        return CButterworth::GetProcessBufferIndex(nSize);
+        return CProcessButterworth::GetProcessBufferIndex(nSize);
     }
     return m_pDoc->GetUnprocessedBufferIndex(nSize);
 }

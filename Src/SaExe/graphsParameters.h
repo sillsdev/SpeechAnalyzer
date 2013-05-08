@@ -51,10 +51,8 @@ public:
 
     // Generated message map functions
 protected:
-    //{{AFX_MSG(CDlgParametersRawdataPage)
     virtual BOOL OnInitDialog();
     afx_msg void OnProcess();
-    //}}AFX_MSG
     DECLARE_MESSAGE_MAP()
 };
 
@@ -244,7 +242,6 @@ public:
 
     // Generated message map functions
 protected:
-    //{{AFX_MSG(CDlgParametersSpectrumPage)
     virtual BOOL OnInitDialog();
     afx_msg void OnPwrUpperScroll();
     afx_msg void OnKillfocusPwrUpper();
@@ -265,7 +262,6 @@ protected:
     afx_msg void OnModifiedShowFormantFreq();
     afx_msg void OnModifiedShowFormantBandwidth();
     afx_msg void OnModifiedShowFormantPower();
-    //}}AFX_MSG
     DECLARE_MESSAGE_MAP()
 };
 
@@ -303,7 +299,6 @@ public:
 
     // Generated message map functions
 protected:
-    //{{AFX_MSG(CDlgParametersFormantsPage)
     virtual BOOL OnInitDialog();
     afx_msg void OnModifiedSource();
     afx_msg void OnModifiedTrack();
@@ -311,7 +306,6 @@ protected:
     afx_msg void OnModifiedScale();
     afx_msg void OnEditChangeFormantVowels();
     afx_msg void OnFormantVowelsEdit();
-    //}}AFX_MSG
     DECLARE_MESSAGE_MAP()
 };
 
@@ -349,7 +343,6 @@ public:
 
     // Generated message map functions
 protected:
-    //{{AFX_MSG(CDlgParametersSDPPage)
     virtual BOOL OnInitDialog();
     afx_msg void OnPanesScroll();
     afx_msg void OnKillfocusPanes();
@@ -360,7 +353,6 @@ protected:
     afx_msg void OnStepMode();
     afx_msg void OnModified();
     afx_msg void OnChange();
-    //}}AFX_MSG
     DECLARE_MESSAGE_MAP()
 };
 
@@ -406,7 +398,6 @@ protected:
     virtual void DoDataExchange(CDataExchange * pDX); // DDX/DDV support
 
     // Generated message map functions
-    //{{AFX_MSG(CDlgParametersMusicPage)
     virtual BOOL OnInitDialog();
     afx_msg void OnClickWeighted();
     afx_msg void OnClickDynamic();
@@ -421,7 +412,6 @@ protected:
     afx_msg void OnKillfocusCalcLowerBound();
     afx_msg void OnCalcRange();
     afx_msg void OnChange();
-    //}}AFX_MSG
     DECLARE_MESSAGE_MAP()
 };
 
@@ -457,10 +447,8 @@ protected:
     // Implementation
 protected:
     // Generated message map functions
-    //{{AFX_MSG(CDlgParametersIntensityPage)
     afx_msg void OnChange();
     virtual BOOL OnInitDialog();
-    //}}AFX_MSG
     DECLARE_MESSAGE_MAP()
 
 };
@@ -502,10 +490,8 @@ protected:
     // Implementation
 protected:
     // Generated message map functions
-    //{{AFX_MSG(CDlgParametersResearchPage)
     afx_msg void OnModified();
     virtual BOOL OnInitDialog();
-    //}}AFX_MSG
     DECLARE_MESSAGE_MAP()
 
 };
@@ -543,9 +529,7 @@ protected:
     // Implementation
 protected:
     // Generated message map functions
-    //{{AFX_MSG(CDlgParametersFormantTracker)
     afx_msg void OnModified();
-    //}}AFX_MSG
     DECLARE_MESSAGE_MAP()
 
 };
@@ -586,12 +570,10 @@ public:
 
     // Generated message map functions
 protected:
-    //{{AFX_MSG(CDlgGraphsParameters)
     virtual BOOL OnInitDialog();
     afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
     afx_msg void OnApply();
     afx_msg void OnOK();
-    //}}AFX_MSG
     DECLARE_MESSAGE_MAP()
 };
 

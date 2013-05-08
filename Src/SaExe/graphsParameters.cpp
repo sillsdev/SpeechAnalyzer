@@ -3900,7 +3900,7 @@ CFormantTrackerOptions formantTrackerOptions;
 void CFormantTrackerOptions::Init()
 {
 
-    m_nWindowType = DspWin::kBlackman;
+    m_nWindowType = CDspWin::kBlackman;
     m_dUpdateRate = 100;
     m_dWindowBandwidth = 125;
     m_dDtfMinBandwidth = 125;

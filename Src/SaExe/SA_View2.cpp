@@ -42,7 +42,6 @@
 #include "FileUtils.h"
 #include "resource.h"
 #include "AutoSave.h"
-#include "WaveIndex.h"
 #include "dsp\dspTypes.h"
 #include "dsp\scale.h"
 #include "Process\Process.h"
@@ -622,7 +621,7 @@ void CSaView::OnUpdateGraphTypesSelect(CCmdUI * pCmdUI)
 /***************************************************************************/
 void CSaView::OnGraphsTypesPostProcess(const UINT * anNewGraphID, int nLayout)
 {
-    UINT       anTmpGraphID[MAX_GRAPHS_NUMBER];
+    UINT anTmpGraphID[MAX_GRAPHS_NUMBER];
     CGraphWnd * apTmpGraphs[MAX_GRAPHS_NUMBER];
 
     //**************************************************************
@@ -1962,7 +1961,7 @@ void CSaView::SetScrolling()
         {
             m_dwScrollLine = wSmpSize;
         }
-        m_fMaxZoom = (double)(pDoc->GetDataSize() / pDoc->GetBlockAlign()) / (double)rWnd.Width() * 8.;  // max zoom factor
+        m_fMaxZoom = (double)(pDoc->GetNumSamples()) / (double)rWnd.Width() * 8.;  // max zoom factor
         m_fVScrollSteps = ZOOM_SCROLL_RESOLUTION * m_fMaxZoom;
         if (m_fVScrollSteps > 0x7FFFFFFF)
         {
@@ -2736,7 +2735,7 @@ LRESULT CSaView::OnCursorInFragment(WPARAM nCursorSelect, LPARAM dwFragmentIndex
     case START_CURSOR:
         CSaDoc * pDoc = GetDocument();
         CProcessFragments * pFragments = pDoc->GetFragments();
-        FRAG_PARMS FragmentParms = pFragments->GetFragmentParms(dwFragmentIndex);
+        SFragParms FragmentParms = pFragments->GetFragmentParms(dwFragmentIndex);
         if (GetDynamicGraphCount())
         {
             StartAnimation(FragmentParms.dwOffset, FragmentParms.dwOffset);
@@ -3633,7 +3632,9 @@ void CSaView::OnEditCopy()
             DWORD dwSectionStart = m_pFocusedGraph->GetPlot()->GetHighLightPosition();
             DWORD dwSectionLength = m_pFocusedGraph->GetPlot()->GetHighLightLength();
 			CSaDoc * pDoc = GetDocument();
-			pDoc->PutWaveToClipboard( dwSectionStart, dwSectionLength);
+			WAVETIME start = pDoc->fromBytes( dwSectionStart, true);
+			WAVETIME length = pDoc->fromBytes( dwSectionLength, true);
+			pDoc->PutWaveToClipboard( start, length);
         }
     }
 }
@@ -3736,7 +3737,9 @@ void CSaView::OnEditCut()
         DWORD dwSectionStart = m_pFocusedGraph->GetPlot()->GetHighLightPosition();
         DWORD dwSectionLength = m_pFocusedGraph->GetPlot()->GetHighLightLength();
         CSaDoc * pDoc = (CSaDoc *)GetDocument();
-         if (pDoc->PutWaveToClipboard( dwSectionStart, dwSectionLength, TRUE))
+		WAVETIME start = pDoc->fromBytes( dwSectionStart, true);
+		WAVETIME length = pDoc->fromBytes( dwSectionLength, true);
+        if (pDoc->PutWaveToClipboard( start, length, TRUE))
         {
             pDoc->InvalidateAllProcesses();
             RefreshGraphs();
@@ -4419,7 +4422,7 @@ void CSaView::OnEditAddSyllable()
             dwStop = (dwStop + 1) & ~1; // Round up
         }
 
-        dwStop = pDoc->SnapCursor(STOP_CURSOR, dwStop, dwStop, pDoc->GetUnprocessedDataSize(), SNAP_RIGHT);
+        dwStop = pDoc->SnapCursor(STOP_CURSOR, dwStop, dwStop, pDoc->GetDataSize(), SNAP_RIGHT);
 
         if (dwStop <= dwMaxStop)   // enough room
         {
@@ -4474,7 +4477,7 @@ void CSaView::OnUpdateEditAddSyllable(CCmdUI * pCmdUI)
             dwStop = (dwStop + 1) & ~1; // Round up
         }
 
-        dwStop = pDoc->SnapCursor(STOP_CURSOR, dwStop, dwStop, pDoc->GetUnprocessedDataSize(), SNAP_RIGHT);
+        dwStop = pDoc->SnapCursor(STOP_CURSOR, dwStop, dwStop, pDoc->GetDataSize(), SNAP_RIGHT);
 
         if (dwStop <= dwMaxStop)   // enough room
         {
@@ -4608,7 +4611,7 @@ void CSaView::OnEditAdd()
 
             if (pSeg->GetNext(nSelection) == -1)   // Last Selection
             {
-                dwMaxStop = pDoc->GetUnprocessedDataSize();
+                dwMaxStop = pDoc->GetDataSize();
             }
             else     // Fit before next
             {
@@ -4627,7 +4630,7 @@ void CSaView::OnEditAdd()
 
             if (pSeg->GetNext(nSelection) != -1)
             {
-                dwStop = pDoc->SnapCursor(STOP_CURSOR, dwStop, dwStop, pDoc->GetUnprocessedDataSize(), SNAP_RIGHT);
+                dwStop = pDoc->SnapCursor(STOP_CURSOR, dwStop, dwStop, pDoc->GetDataSize(), SNAP_RIGHT);
             }
 
             if (dwStop <= dwMaxStop)   // enough room
@@ -4709,7 +4712,7 @@ void CSaView::OnUpdateEditAdd(CCmdUI * pCmdUI)
 
             if (pSeg->GetNext(nSelection) == -1)		// Last Selection
             {
-                dwMaxStop = pDoc->GetUnprocessedDataSize();
+                dwMaxStop = pDoc->GetDataSize();
             }
             else     // Fit before next
             {
@@ -4727,7 +4730,7 @@ void CSaView::OnUpdateEditAdd(CCmdUI * pCmdUI)
 
             if (pSeg->GetNext(nSelection) != -1)
             {
-                dwStop = pDoc->SnapCursor(STOP_CURSOR, dwStop, dwStop, pDoc->GetUnprocessedDataSize(), SNAP_RIGHT);
+                dwStop = pDoc->SnapCursor(STOP_CURSOR, dwStop, dwStop, pDoc->GetDataSize(), SNAP_RIGHT);
             }
 
             if (dwStop <= dwMaxStop)   // enough room
@@ -4817,7 +4820,7 @@ void CSaView::OnEditAddPhrase(CMusicPhraseSegment * pSeg)
 
             if (pSeg->GetNext(nSelection) == -1)   // Last Selection
             {
-                dwMaxStop = pDoc->GetUnprocessedDataSize();
+                dwMaxStop = pDoc->GetDataSize();
             }
             else     // Fit before next
             {
@@ -4836,7 +4839,7 @@ void CSaView::OnEditAddPhrase(CMusicPhraseSegment * pSeg)
 
             if (pSeg->GetNext(nSelection) != -1)
             {
-                dwStop = pDoc->SnapCursor(STOP_CURSOR, dwStop, dwStop, pDoc->GetUnprocessedDataSize(), SNAP_RIGHT);
+                dwStop = pDoc->SnapCursor(STOP_CURSOR, dwStop, dwStop, pDoc->GetDataSize(), SNAP_RIGHT);
             }
 
             if (dwStop <= dwMaxStop)   // enough room
@@ -4901,7 +4904,7 @@ void CSaView::OnUpdateEditAddPhrase(CCmdUI * pCmdUI, CMusicPhraseSegment * pSeg)
 
             if (pSeg->GetNext(nSelection) == -1)   // Last Selection
             {
-                dwMaxStop = pDoc->GetUnprocessedDataSize();
+                dwMaxStop = pDoc->GetDataSize();
             }
             else     // Fit before next
             {
@@ -4919,7 +4922,7 @@ void CSaView::OnUpdateEditAddPhrase(CCmdUI * pCmdUI, CMusicPhraseSegment * pSeg)
 
             if (pSeg->GetNext(nSelection) != -1)
             {
-                dwStop = pDoc->SnapCursor(STOP_CURSOR, dwStop, dwStop, pDoc->GetUnprocessedDataSize(), SNAP_RIGHT);
+                dwStop = pDoc->SnapCursor(STOP_CURSOR, dwStop, dwStop, pDoc->GetDataSize(), SNAP_RIGHT);
             }
 
             if (dwStop <= dwMaxStop)   // enough room
@@ -4998,7 +5001,7 @@ void CSaView::OnEditAddAutoPhraseL2()
 
             if (pSeg->GetNext(nSelection) == -1)   // Last Selection
             {
-                dwMaxStop = pDoc->GetUnprocessedDataSize();
+                dwMaxStop = pDoc->GetDataSize();
             }
             else     // Fit before next
             {
@@ -5017,7 +5020,7 @@ void CSaView::OnEditAddAutoPhraseL2()
 
             if (pSeg->GetNext(nSelection) != -1)
             {
-                dwStop = pDoc->SnapCursor(STOP_CURSOR, dwStop, dwStop, pDoc->GetUnprocessedDataSize(), SNAP_RIGHT);
+                dwStop = pDoc->SnapCursor(STOP_CURSOR, dwStop, dwStop, pDoc->GetDataSize(), SNAP_RIGHT);
             }
 
             if (dwStop <= dwMaxStop)   // enough room
@@ -5156,7 +5159,7 @@ void CSaView::EditAddGloss(bool bDelimiter)
         DWORD dwStop;
         if ((nPos == -1) || (nPos >= pSeg->GetTexts().GetSize()))
         {
-            dwStop = pDoc->GetUnprocessedDataSize();
+            dwStop = pDoc->GetDataSize();
         }
         else
         {
@@ -5247,7 +5250,7 @@ void CSaView::OnUpdateEditAddWord(CCmdUI * pCmdUI)
         if ((nPos == -1) || (nPos >= pSeg->GetOffsetSize()))
         {
             // stop will be at end of data
-            dwStop = pDoc->GetUnprocessedDataSize();
+            dwStop = pDoc->GetDataSize();
         }
         else
         {
@@ -5285,7 +5288,7 @@ void CSaView::OnUpdateEditAddWord(CCmdUI * pCmdUI)
     if (nPos >= pSeg->GetOffsetSize())
     {
         // stop will be at end of data
-        dwStop = pDoc->GetUnprocessedDataSize();
+        dwStop = pDoc->GetDataSize();
     }
     else
     {
@@ -5348,7 +5351,7 @@ void CSaView::OnUpdateEditAddBookmark(CCmdUI * pCmdUI)
         DWORD dwStop;
         if ((nPos == -1) || (nPos >= pSeg->GetOffsetSize()))
         {
-            dwStop = pDoc->GetUnprocessedDataSize();
+            dwStop = pDoc->GetDataSize();
         }
         else
         {
@@ -5811,7 +5814,7 @@ void CSaView::OnUpdateEditPrevious(CCmdUI * pCmdUI)
     int nLoop;
 
     BOOL bEnable = FALSE;
-    if ((pDoc->GetUnprocessedDataSize() != 0) && GetFocusedGraphWnd())   // needs focused graph
+    if ((pDoc->GetDataSize() != 0) && GetFocusedGraphWnd())   // needs focused graph
     {
         m_advancedSelection.Update(this);
         nLoop = m_advancedSelection.GetSelectionIndex();
@@ -6019,7 +6022,7 @@ void CSaView::OnEditNext()
 
                     if (nNext == -1)
                     {
-                        dwStart = GetDocument()->GetUnprocessedDataSize();
+                        dwStart = GetDocument()->GetDataSize();
                     }
                     else
                     {
@@ -6032,7 +6035,7 @@ void CSaView::OnEditNext()
                     }
                 }
 
-                if (dwStart + GetDocument()->GetBytesFromTime(MIN_ADD_SEGMENT_TIME) > GetDocument()->GetUnprocessedDataSize())
+                if (dwStart + GetDocument()->GetBytesFromTime(MIN_ADD_SEGMENT_TIME) > GetDocument()->GetDataSize())
                 {
                     return;
                 }
@@ -6063,7 +6066,7 @@ void CSaView::OnUpdateEditNext(CCmdUI * pCmdUI)
     int nLoop;
 
     BOOL bEnable = FALSE;
-    if ((pDoc->GetUnprocessedDataSize() != 0) && 
+    if ((pDoc->GetDataSize() != 0) && 
 		(GetFocusedGraphWnd()!=NULL) && 
 		(!(GetAnnotation(PHONETIC)->IsEmpty())))   // needs focused graph
     {
@@ -6122,7 +6125,7 @@ void CSaView::OnUpdateEditNext(CCmdUI * pCmdUI)
             {
                 DWORD dwStop = 0;
 
-				DWORD dwStart = GetDocument()->GetUnprocessedDataSize();
+				DWORD dwStart = GetDocument()->GetDataSize();
 
                 nSelection = GetAnnotation(nLoop)->GetSelection();
                 if (nSelection == -1)
@@ -6135,13 +6138,13 @@ void CSaView::OnUpdateEditNext(CCmdUI * pCmdUI)
 
                         if (dwStop > GetAnnotation(nLoop)->GetOffset(nSelection))
                         {
-                            dwStart = GetDocument()->GetUnprocessedDataSize();
+                            dwStart = GetDocument()->GetDataSize();
                         }
                     }
 
 					bEnable = TRUE;
 					DWORD dwBytes = GetDocument()->GetBytesFromTime(MIN_ADD_SEGMENT_TIME);
-					if ((dwStart + dwBytes) > GetDocument()->GetUnprocessedDataSize())
+					if ((dwStart + dwBytes) > GetDocument()->GetDataSize())
 					{
 						bEnable = FALSE;
 					}
@@ -6153,7 +6156,7 @@ void CSaView::OnUpdateEditNext(CCmdUI * pCmdUI)
 
                     if (nNext == -1)
                     {
-                        dwStart = GetDocument()->GetUnprocessedDataSize();
+                        dwStart = GetDocument()->GetDataSize();
                     }
                     else
                     {
@@ -6170,7 +6173,7 @@ void CSaView::OnUpdateEditNext(CCmdUI * pCmdUI)
 						bEnable = TRUE;
 					}
 					DWORD dwBytes = GetDocument()->GetBytesFromTime(MIN_ADD_SEGMENT_TIME);
-					if ((dwStart + dwBytes) > GetDocument()->GetUnprocessedDataSize())
+					if ((dwStart + dwBytes) > GetDocument()->GetDataSize())
 					{
 						bEnable = FALSE;
 					}
@@ -6500,13 +6503,13 @@ void CSaView::ChangeCursorAlignment(ECursorAlignment nCursorSetting)
     OnCursorAlignmentChanged();
 }
 
-DWORD CSaView::GetStartCursorPosition()
+CURSORPOS CSaView::GetStartCursorPosition()
 {
     // get the start cursor position
     return m_dwStartCursor;
 }
 
-DWORD CSaView::GetStopCursorPosition()
+CURSORPOS CSaView::GetStopCursorPosition()
 {
     // get the stop cursor position
     return m_dwStopCursor;

@@ -242,7 +242,7 @@ long CPhoneticSegment::Process(void * pCaller, CSaDoc * pDoc, int nProgress, int
     ASSERT(pMainFrame->IsKindOf(RUNTIME_CLASS(CMainFrame)));
 
     CSegmentParm * pSegParm = pMainFrame->GetSegmentParm(); // get segment parameters // RLJ 1.5Test11.1A
-    // float fFactor = (float)pDoc->GetUnprocessedDataSize() / (float)dwLoopEnd; // size factor
+    // float fFactor = (float)pDoc->GetDataSize() / (float)dwLoopEnd; // size factor
     // fFactor based on frame-length for accuracy (CLW 1/20/98)
     float fFactor = (float) CALCULATION_INTERVAL(pDoc->GetSamplesPerSec()) * pDoc->GetBlockAlign(); // size factor
     // Flank Width needs to be rounded up to guarantee minimum width (CLW 1/19/98)
@@ -303,7 +303,7 @@ long CPhoneticSegment::Process(void * pCaller, CSaDoc * pDoc, int nProgress, int
     DWORD dwShortZCStop = 0; // end of previous peak if short, otherwise 0
     DWORD dwOldZCStart = 0; // start of last valid peak
     DWORD dwOldZCStop = 0; // end of last valid peak
-    DWORD dwLastSample = pDoc->GetUnprocessedDataSize() - pDoc->GetBlockAlign();
+    DWORD dwLastSample = pDoc->GetDataSize() - pDoc->GetBlockAlign();
     DWORD dwZBase; // candidate for zero crossing peak base
     /*********************************************************************/
     DWORD dwChLoopEnd;

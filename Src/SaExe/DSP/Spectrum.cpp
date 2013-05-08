@@ -93,7 +93,7 @@
 *          :                                                               *
 *   #include "spectrum.h"                                                  *
 *          :                                                               *
-*   SIG_PARMS stFrameParm;                                                 *
+*   SSigParms stFrameParm;                                                 *
 *   stFrameParm.Length = dwFrameSize / wSmpSize;                           *
 *   stFrameParm.SmpRate = pDoc->GetSamplesPerSec();                        *
 *   if (wSmpSize == 1) stFrameParm.SmpDataFmt = PCM_UBYTE;                 *
@@ -102,18 +102,18 @@
 *          :                                                               *
 *   (load frame buffer)                                                    *
 *          :                                                               *
-*   SPECT_SETTINGS stSpectSetting;                                         *
+*   SSpectrumSettings stSpectSetting;                                      *
 *   stSpectSetting.wLength = nScreenWidth;                                 *
 *   stSpectSetting.nScaleSelect = DB;                                      *
 *   stSpectSetting.fSmoothFreq = 500.F;                                    *
 *   stSpectSetting.fFFTRadius = 1.F;                                       *
 *   stSpectSetting.bDSPWinSw = ON;                                         *
 *                                                                          *
-*   dspError_t Err = CSpectrum::CreateObject(&poSpectrum, stSpectSetting,         *
+*   dspError_t Err = CSpectrum::CreateObject(&poSpectrum, stSpectSetting,  *
 *                                     stFrameParm);                        *
 *   if (Err) return;                                                       *
 *                                                                          *
-*   SPECT_PARMS stSpectParm = poSpectrum->GetSpectParms();                 *
+*   SSpectrumParms stSpectParm = poSpectrum->GetSpectParms();                 *
 *          :                                                               *
 *   delete poSpectrum;                                                     *
 *                                                                          *
@@ -198,8 +198,7 @@ float CSpectrum::Version(void)
 ////////////////////////////////////////////////////////////////////////////////////////
 // Class function to construct spectrum object if parameters are valid.               //
 ////////////////////////////////////////////////////////////////////////////////////////
-dspError_t CSpectrum::CreateObject(CSpectrum ** ppoSpectrum,
-                                   SPECT_SETTINGS & stSpectSetting, SIG_PARMS & stFrameParm, uint16 wFFTLength)
+dspError_t CSpectrum::CreateObject(CSpectrum ** ppoSpectrum, SSpectrumSettings & stSpectSetting, SSigParms & stFrameParm, uint16 wFFTLength)
 {
 // Validate requested spectrum settings and signal parameters.
     if (!ppoSpectrum)
@@ -256,7 +255,7 @@ dspError_t CSpectrum::CreateObject(CSpectrum ** ppoSpectrum,
     }
 
 // Calculate window for frame data.
-    DspWin oDSPWindow = DspWin::FromLength((uint16)stFrameParm.Length, stFrameParm.SmpRate, stSpectSetting.nWindowType);
+    CDspWin oDSPWindow = CDspWin::FromLength((uint16)stFrameParm.Length, stFrameParm.SmpRate, stSpectSetting.nWindowType);
 
 // Construct spectrum object.
     CSpectrum * poSpectrum = new CSpectrum(stSpectSetting, stFrameParm, oDSPWindow,
@@ -278,7 +277,7 @@ dspError_t CSpectrum::CreateObject(CSpectrum ** ppoSpectrum,
 ////////////////////////////////////////////////////////////////////////////////////////
 // Class function to validate signal parameters.                                      //
 ////////////////////////////////////////////////////////////////////////////////////////
-dspError_t CSpectrum::ValidateSignalParms(SIG_PARMS & stFrame)
+dspError_t CSpectrum::ValidateSignalParms(SSigParms & stFrame)
 {
     if (!stFrame.Start)
     {
@@ -307,7 +306,7 @@ dspError_t CSpectrum::ValidateSignalParms(SIG_PARMS & stFrame)
 ////////////////////////////////////////////////////////////////////////////////////////
 // Class function to validate requested spectrum settings.                            //
 ////////////////////////////////////////////////////////////////////////////////////////
-dspError_t CSpectrum::ValidateSettings(SPECT_SETTINGS & stSpectSetting)
+dspError_t CSpectrum::ValidateSettings(SSpectrumSettings & stSpectSetting)
 {
     if (stSpectSetting.nScaleSelect != LINEAR &&
             stSpectSetting.nScaleSelect != DB)
@@ -332,8 +331,8 @@ dspError_t CSpectrum::ValidateSettings(SPECT_SETTINGS & stSpectSetting)
 ////////////////////////////////////////////////////////////////////////////////////////
 // Spectrum object constructor.                                                       //
 ////////////////////////////////////////////////////////////////////////////////////////
-CSpectrum::CSpectrum(SPECT_SETTINGS & stSpectSetting,
-                     SIG_PARMS & stFrameParm, DspWin & oDSPWindow,
+CSpectrum::CSpectrum(SSpectrumSettings & stSpectSetting,
+                     SSigParms & stFrameParm, CDspWin & oDSPWindow,
                      uint16 wFFTLength, float * pfFFTBuffer,
                      float * pfRawSpectrum, float * pfSmoothSpectrum) : m_oDSPWindow(oDSPWindow)
 {
@@ -388,9 +387,9 @@ CSpectrum::~CSpectrum()
 ////////////////////////////////////////////////////////////////////////////////////////
 // Public object function to retrieve spectral parameters.                            //
 ////////////////////////////////////////////////////////////////////////////////////////
-SPECT_PARMS CSpectrum::GetSpectParms(void)
+SSpectrumParms CSpectrum::GetSpectParms(void)
 {
-    SPECT_PARMS stSpectParm;
+    SSpectrumParms stSpectParm;
 
     stSpectParm.wSpectLength = m_wSpectLength;
     stSpectParm.fFreqScale = (float)((double)m_wSmpRate / (double)m_wSpectLength);
@@ -400,7 +399,7 @@ SPECT_PARMS CSpectrum::GetSpectParms(void)
     stSpectParm.pstFormant = m_pstFormant;
     stSpectParm.fdBRef = m_fPwrDbRef[abs(m_sbSmpFormat)];
 
-    return(stSpectParm);
+    return stSpectParm;
 }
 
 
@@ -460,7 +459,7 @@ dspError_t CSpectrum::Preprocess(uint8 * pubFrame)
     const float * WData = m_oDSPWindow.WindowFloat();
     uint32 dwWinLength = m_oDSPWindow.Length();
 
-    double dFftScale = WindowWeight*double(m_wFFTLength)/DspWin::CalcEquivalentLength(m_dwFrameLength, DspWin::kHanning, m_oDSPWindow.Type());
+    double dFftScale = WindowWeight*double(m_wFFTLength)/CDspWin::CalcEquivalentLength(m_dwFrameLength, CDspWin::kHanning, m_oDSPWindow.Type());
     for (i = 0; i < m_wFFTLength; i++)
     {
         m_pfFFTBuffer[i] = 0.F;
@@ -537,7 +536,7 @@ dspError_t CSpectrum::Preprocess(short * psFrame)
 dspError_t CSpectrum::CalcPwrFFT(void)
 {
     // Reference location where complex spectral values will be returned.
-    COMPLEX_RECT_FLOAT * pfSpectCoeff = (COMPLEX_RECT_FLOAT *)m_pfFFTBuffer;
+    SComplexRectFloat * pfSpectCoeff = (SComplexRectFloat *)m_pfFFTBuffer;
 
     // Calculate FFT on real data.
     rfft2f(m_pfFFTBuffer,m_wFFTLength,FORWARD);

@@ -10,22 +10,22 @@
 #undef Second
 
 #define Type pair_float_float
-#define tpqueue pq_pair_float_float
-#define tvector vector_pair_float_float
+#define CTPQueue pq_pair_float_float
+#define CTVector vector_pair_float_float
 #include "tvector.h"
 #include "tpq.h"
 #undef Type
-#undef tpqueue
-#undef tvector
+#undef CTPQueue
+#undef CTVector
 
 #define Type float
-#define tpqueue pq_float
-#define tvector vector_float
+#define CTPQueue pq_float
+#define CTVector vector_float
 #include "tvector.h"
 #include "tpq.h"
 #undef Type
-#undef tpqueue
-#undef tvector
+#undef CTPQueue
+#undef CTVector
 
 struct rpair_float_float : public pair_float_float
 {
@@ -36,12 +36,12 @@ struct rpair_float_float : public pair_float_float
 int operator <(const rpair_float_float &, const rpair_float_float &);
 
 #define Type rpair_float_float
-#define tpqueue pq_rpair_float_float
-#define tvector vector_rpair_float_float
+#define CTPQueue pq_rpair_float_float
+#define CTVector vector_rpair_float_float
 #include "tvector.h"
 #include "tpq.h"
 #undef Type
-#undef tpqueue
-#undef tvector
+#undef CTPQueue
+#undef CTVector
 
 #endif

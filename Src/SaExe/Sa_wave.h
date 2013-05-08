@@ -95,7 +95,7 @@ private:
     DWORD m_dwEnd;                  // index of last sample to play
     int m_nActiveBlock;             // current block recording or playing
     int m_nNextBlock;               // next block to be queued for playback
-    FRAG_PARMS m_CallbackData;      // callback waveform data
+    SFragParms m_CallbackData;      // callback waveform data
     UINT m_nMaxLevel;               // maximal volume level of sound data
     bool m_bRecording;              // TRUE, if recording, FALSE if monitoring
     UINT m_nSpeed;                  // playback speed

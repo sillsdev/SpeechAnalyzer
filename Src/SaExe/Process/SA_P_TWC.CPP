@@ -221,8 +221,8 @@ CHistogram * CProcessTonalWeightChart::MakeTwcHistogram(CProcessMelogram * pMelo
 {
     // prepare histogram parameters
     CHistogram * ppoHist = NULL;
-    HIST_PARMS stHistParms;
-    memset(&stHistParms,0,sizeof(HIST_PARMS));
+    SHistogramParms stHistParms;
+    memset(&stHistParms,0,sizeof(SHistogramParms));
 
     stHistParms.nBins = short((dMaxSemitone - dMinSemitone) * (double)nBinsPerSemitone);
     stHistParms.pBinDivs = (short *)new short[stHistParms.nBins + 1];
@@ -238,8 +238,8 @@ CHistogram * CProcessTonalWeightChart::MakeTwcHistogram(CProcessMelogram * pMelo
         stHistParms.pBinDivs[nBin] = (short)(fSemitone * MEL_MULT + 0.5);
     }
     // prepare process parameters
-    PROC_PARMS stProcParms;
-    memset(&stProcParms,0,sizeof(PROC_PARMS));
+    SProcParms stProcParms;
+    memset(&stProcParms,0,sizeof(SProcParms));
     stProcParms.dwBufferSize = GetBufferSize() / sizeof(SHORT);
     stProcParms.dwBlockOffset = dwFrameStart;
     stProcParms.dwBlockLength = dwFrameSize;

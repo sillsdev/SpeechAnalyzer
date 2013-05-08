@@ -46,7 +46,6 @@
 #include <vector>
 #include "FmtParm.h"
 #include "AutoSave.h"
-#include "WaveIndex.h"
 #include "Process\ProcessDoc.h"
 
 #import "speechtoolsutils.tlb" no_namespace named_guids
@@ -71,7 +70,7 @@ class CProcessGrappl;
 class CProcessMelogram;
 class CProcessChange;
 class CProcessRaw;
-class CHilbert;
+class CProcessHilbert;
 class CProcessSpectrum;
 class CProcessSpectrogram;
 class CProcessWavelet;              // ARH 8/2/01 Added for wavelet graph
@@ -94,7 +93,6 @@ class CMusicPhraseSegment;
 
 class CSaDoc : public CUndoRedoDoc, public ISaDoc
 {
-
     DECLARE_DYNCREATE(CSaDoc)
 
 protected:
@@ -128,8 +126,8 @@ public:
     const CIntensityParm & GetCIntensityParm() const;               // pointer to music parameters structure
     void SetCIntensityParm(const CIntensityParm & parm);
     SDPParm * GetSDPParm();                                         // pointer to SDP parameters structure
-    DWORD GetDataSize();                                            // return wave source data size
-    DWORD GetUnprocessedDataSize() const;                           // return sampled data size from wave file
+    DWORD GetDataSize() const;                                      // return wave source data size in bytes for one channel
+    DWORD GetRawDataSize() const;                                   // return wave source data size in bytes for all channels
     HPSTR GetWaveData(DWORD dwOffset, BOOL bBlockBegin = FALSE);    // return wave source data pointer on given position (offset)
     int GetWaveData(DWORD dwOffset, BOOL *);                        // return wave source (one sample) on given position (offset)
     DWORD GetWaveBufferIndex();                                     // return index for wave source data buffer
@@ -147,7 +145,7 @@ public:
     CProcessSmoothedPitch * GetSmoothedPitch();                     // process pointer to smoothed pitch object
     CProcessChange * GetChange();                                   // process pointer to change object
     CProcessRaw * GetRaw();                                         // process pointer to change object
-    CHilbert * GetHilbert();                                        // process pointer to change object
+    CProcessHilbert * GetHilbert();                                 // process pointer to change object
     CProcessSpectrogram * GetSpectrogram(bool bRealTime);           // returns either the spectrogram or snapshot process dependent on flag
     CProcessWavelet * GetWavelet();                                 // process pointer to wavelet object  ARH 8/2/01 added for wavelet graph
     CProcessSpectrum * GetSpectrum();                               // process pointer to spectrum object
@@ -182,7 +180,7 @@ public:
     bool IsTempOverlay();
     virtual void OnCloseDocument();
     virtual BOOL DoFileSave();
-    BOOL CopySectionToNewWavFile(DWORD dwSectionStart, DWORD dwSectionLength, LPCTSTR szNewWave, BOOL usingClipboard);
+    BOOL CopySectionToNewWavFile( WAVETIME dwSectionStart, WAVETIME dwSectionLength, LPCTSTR szNewWave, BOOL usingClipboard);
     BOOL LoadDataFiles(LPCTSTR pszPathName, bool bTemp = false);
     BOOL WriteDataFiles(LPCTSTR pszPathName, BOOL bSaveAudio = TRUE, BOOL bIsClipboardFile = FALSE);
     bool GetWaveFormatParams(LPCTSTR pszPathName, CFmtParm & fmtParm, DWORD & dwDataSize);
@@ -195,7 +193,7 @@ public:
     BOOL InsertTranscription(int transType, ISaAudioDocumentReaderPtr saAudioDocRdr, DWORD dwPos);
     void InsertGlossPosRefTranscription(ISaAudioDocumentReaderPtr saAudioDocRdr, DWORD dwPos);
     BOOL CopyWave(LPCTSTR pszSourceName, LPCTSTR pszTargetName);
-    virtual BOOL CopyWave(LPCTSTR pszSourceName, LPCTSTR pszTargetName, const CWaveIndex & dwStart, const CWaveIndex & dwLength, BOOL bTruncate);
+    virtual BOOL CopyWave(LPCTSTR pszSourceName, LPCTSTR pszTargetName, WAVETIME start, WAVETIME length, BOOL bTruncate);
     void ApplyWaveFile(LPCTSTR pszFileName, DWORD dwDataSize, BOOL bInialUpdate=TRUE);     // apply a new recorded wave file
     void ApplyWaveFile(LPCTSTR pszFileName, DWORD dwDataSize, CAlignInfo alignInfo);       // Update for rt auto-pitch
     DWORD SnapCursor(ECursorSelect nCursorSelect,
@@ -213,14 +211,14 @@ public:
 	// process the actually selected workbench process
     BOOL WorkbenchProcess(BOOL bInvalidate = FALSE, BOOL bRestart = FALSE); 
 	// copies wave data out of the wave file
-    BOOL PutWaveToClipboard(DWORD dwSectionStart, DWORD dwSectionLength, BOOL bDelete = FALSE); 
+    BOOL PutWaveToClipboard( WAVETIME sectionStart, WAVETIME sectionLength, BOOL bDelete = FALSE); 
 	// pastes wave data into the wave file
     BOOL PasteClipboardToWave(HGLOBAL hGlobal, DWORD dwPastePos);  
     void DeleteWaveFromUndo();		// deletes a wave undo entry from the undo list
     void UndoWaveFile();			// undo a wave file change
     BOOL IsWaveToUndo();
     void CopyProcessTempFile();
-    void AdjustSegments(DWORD dwSectionStart, DWORD dwSectionLength, BOOL bShrink); // adjust segments to new file size
+    void AdjustSegments( WAVETIME sectionStart, WAVETIME sectionLength, bool bShrink); // adjust segments to new file size
     BOOL UpdateSegmentBoundaries(BOOL bOverlap);		// update segment boundaries
     BOOL UpdateSegmentBoundaries(BOOL bOverlap, int nAnnotation, int nSelection, DWORD start, DWORD stop);
     BOOL AutoSnapUpdateNeeded(void);
@@ -258,12 +256,11 @@ public:
     DWORD GetUnprocessedWaveDataBufferSize();
     DWORD GetWaveDataBufferSize();
     DWORD GetSelectedChannel();
-    // get the sample size in bytes for a single channel
     DWORD GetSampleSize() const;
-    double GetTimeFromBytes(DWORD dwSize);
-    DWORD GetBytesFromTime(double fSize);
-    // get the number of samples for a single channel
+    WAVETIME GetTimeFromBytes(DWORD dwSize);
+    DWORD GetBytesFromTime(WAVETIME fSize);
     DWORD GetSamplesPerSec();
+	DWORD GetBytesPerSample( bool singleChannel);
     WORD GetBitsPerSample();
     WORD GetBlockAlign( bool singleChannel=false);
     bool Is16Bit();
@@ -271,6 +268,11 @@ public:
     DWORD GetAvgBytesPerSec();
     DWORD GetNumChannels() const;
     DWORD GetNumSamples() const;
+	WAVETIME fromCursor( CURSORPOS val);
+	WAVETIME fromBytes( DWORD val, bool singleChannel);
+	DWORD toBytes( WAVETIME val, bool singleChannel);
+	WAVETIME fromSamples( WAVESAMP val);
+	DWORD toSamples( WAVETIME val);
 
 	CSaString GetTempFilename();
 	bool IsUsingTempFile();
@@ -362,7 +364,7 @@ private:
 
 
     wstring m_szRawDataWrk;                     // wave working temporary represents all channels of data
-    DWORD m_dwDataSize;                         // size of the data subchunk
+    DWORD m_dwDataSize;                         // size of the data subchunk for all channels
     CFmtParm m_FmtParm;                         // contains format parameters
     SaParm m_saParm;                            // contains sa parameters
     SourceParm m_sourceParm;                    // contains source parameters
@@ -387,7 +389,7 @@ private:
     CProcessMelogram * m_pProcessMelogram;      // data processing object
     CProcessChange * m_pProcessChange;          // data processing object
     CProcessRaw * m_pProcessRaw;                // data processing object
-    CHilbert * m_pProcessHilbert;               // data processing object
+    CProcessHilbert * m_pProcessHilbert;        // data processing object
     CProcessSpectrum * m_pProcessSpectrum;      // data processing object
     CProcessSpectrogram * m_pProcessSpectrogram; // data processing object
     CProcessSpectrogram * m_pProcessSnapshot; // data processing object

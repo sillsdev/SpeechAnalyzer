@@ -35,8 +35,6 @@ public:
 
     // Generated message map functions
 protected:
-    //{{AFX_MSG(CPlotBlank)
-    //}}AFX_MSG
     DECLARE_MESSAGE_MAP()
 };
 

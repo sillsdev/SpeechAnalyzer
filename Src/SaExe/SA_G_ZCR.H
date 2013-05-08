@@ -29,8 +29,6 @@ public:
 
     // Generated message map functions
 protected:
-    //{{AFX_MSG(CPlotZCross)
-    //}}AFX_MSG
     DECLARE_MESSAGE_MAP()
 };
 

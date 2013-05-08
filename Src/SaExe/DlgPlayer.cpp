@@ -128,9 +128,9 @@ void CDlgPlayer::DoDataExchange(CDataExchange * pDX)
 /***************************************************************************/
 void CDlgPlayer::SetTotalTime()
 {
-    CSaView * pView = (CSaView *)m_pView; // cast pointer to view
-    CSaDoc * pDoc = (CSaDoc *)m_pDoc; // cast pointer to document
-    DWORD dwEnd = pDoc->GetDataSize(); // data end
+    CSaView * pView = (CSaView *)m_pView;	// cast pointer to view
+    CSaDoc * pDoc = (CSaDoc *)m_pDoc;		// cast pointer to document
+    DWORD dwEnd = pDoc->GetDataSize();		// data end
     if (dwEnd > 0)
     {
         // display depends on the submode

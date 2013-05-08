@@ -53,7 +53,7 @@ private:
 };
 
 // Filter parameter workspace structure.
-typedef struct
+struct SHPFWorkspace
 {
     int32 f11;
     int32 b11;
@@ -70,7 +70,7 @@ typedef struct
     uint8 * pEnd;
     short nMin;
     short nMax;
-} HPF_WORKSPACE;
+};
 
 
 #endif

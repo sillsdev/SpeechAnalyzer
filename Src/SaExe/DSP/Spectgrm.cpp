@@ -197,8 +197,8 @@
 *          :                                                               *
 *   #include "ASAPDSP.h"                                                   *
 *          :                                                               *
-*   SPGM_SETTINGS SpgmSetting;                                             *
-*   SIG_PARMS Signal;                                                      *
+*   SSpectrogramSettings SpgmSetting;                                             *
+*   SSigParms Signal;                                                      *
 *   dspError_t dspError_t;                                                 *
 *                                                                          *
 *   SpgmSetting.LwrFreq = (float)MinDisplayFrequency;                      *
@@ -367,7 +367,7 @@ float CSpectrogram::Version(void)
 ////////////////////////////////////////////////////////////////////////////////////////
 // Class function to construct spectrogram object if parameters are valid.            //
 ////////////////////////////////////////////////////////////////////////////////////////
-dspError_t CSpectrogram::CreateObject(CSpectrogram ** Spgm, SPGM_SETTINGS SpgmSetting, SIG_PARMS Signal)
+dspError_t CSpectrogram::CreateObject(CSpectrogram ** Spgm, SSpectrogramSettings SpgmSetting, SSigParms Signal)
 {
     // Validate requested spectrogram settings and signal parameters.
     if (!Spgm)
@@ -403,10 +403,10 @@ dspError_t CSpectrogram::CreateObject(CSpectrogram ** Spgm, SPGM_SETTINGS SpgmSe
     }
 
     // Calculate window for frame data from specified bandwidth.
-    DspWin Window = DspWin::FromBandwidth( SpgmSetting.Bandwidth, Signal.SmpRate, SpgmSetting.windowType);
+    CDspWin Window = CDspWin::FromBandwidth( SpgmSetting.Bandwidth, Signal.SmpRate, SpgmSetting.windowType);
 
     // Create narrowband window for formant tracking.
-    DspWin NBWindow = DspWin::FromBandwidth(NARROW_BW,Signal.SmpRate, SpgmSetting.windowType);
+    CDspWin NBWindow = CDspWin::FromBandwidth(NARROW_BW,Signal.SmpRate, SpgmSetting.windowType);
 
     // Allocate memory for spectrogram based on number of points to display.
     int32 Size = (int32)SpgmSetting.FreqCnt * (int32)SpgmSetting.SpectCnt;
@@ -444,7 +444,7 @@ dspError_t CSpectrogram::CreateObject(CSpectrogram ** Spgm, SPGM_SETTINGS SpgmSe
 ////////////////////////////////////////////////////////////////////////////////////////
 // Class function to validate signal parameters.                                      //
 ////////////////////////////////////////////////////////////////////////////////////////
-dspError_t CSpectrogram::ValidateSignalParms(SIG_PARMS Signal)
+dspError_t CSpectrogram::ValidateSignalParms(SSigParms Signal)
 {
     if (Signal.SmpRate < 1)
     {
@@ -471,7 +471,7 @@ dspError_t CSpectrogram::ValidateSignalParms(SIG_PARMS Signal)
 ////////////////////////////////////////////////////////////////////////////////////////
 // Class function to validate requested spectrogram settings.                         //
 ////////////////////////////////////////////////////////////////////////////////////////
-dspError_t CSpectrogram::ValidateSettings(SPGM_SETTINGS Setting)
+dspError_t CSpectrogram::ValidateSettings(SSpectrogramSettings Setting)
 {
 	//lower frequency of spectra must be less than upper
     if (Setting.LwrFreq > Setting.UprFreq)   
@@ -493,7 +493,7 @@ dspError_t CSpectrogram::ValidateSettings(SPGM_SETTINGS Setting)
 
 	//can't exceed limit
     if ((Setting.fmntTrackSw) &&
-        ((Setting.NumFmnt > MAX_NUM_FORMANTS) || (Setting.NumFmnt < 0)))   
+		((Setting.NumFmnt > MAX_NUM_FORMANTS) || (Setting.NumFmnt < 0)))   
     {
         return Code(INVALID_FMNTTRACK_OPTION);
     }
@@ -522,11 +522,11 @@ dspError_t CSpectrogram::ValidateSettings(SPGM_SETTINGS Setting)
 ////////////////////////////////////////////////////////////////////////////////////////
 // Spectrogram object constructor.                                                    //
 ////////////////////////////////////////////////////////////////////////////////////////
-CSpectrogram::CSpectrogram( SPGM_SETTINGS SpgmSetting, 
+CSpectrogram::CSpectrogram( SSpectrogramSettings SpgmSetting, 
 							uint8 * SpgmData, 
 							SFormantFreq * FmntData,
-							DspWin & Window, 
-							DspWin & NBWindow, SIG_PARMS Signal, uint8 * ScreenData) : m_Window(Window), m_NBWindow(NBWindow)
+							CDspWin & Window, 
+							CDspWin & NBWindow, SSigParms Signal, uint8 * ScreenData) : m_Window(Window), m_NBWindow(NBWindow)
 {
     // Update object member variables.
     m_ScreenData = ScreenData;
@@ -974,7 +974,7 @@ dspError_t CSpectrogram::CalcSpectra(uint8 * BlockStart, uint32 NumSpect)
 ////////////////////////////////////////////////////////////////////////////////////////
 // Object function to pre-process frame of signed 16-bit sample data.                 //
 ////////////////////////////////////////////////////////////////////////////////////////
-dspError_t CSpectrogram::PreProc(short * Frame, DspWin & Window)
+dspError_t CSpectrogram::PreProc(short * Frame, CDspWin & Window)
 {
     uint16 i;
     int32 j;
@@ -1027,7 +1027,7 @@ dspError_t CSpectrogram::PreProc(short * Frame, DspWin & Window)
 ////////////////////////////////////////////////////////////////////////////////////////
 // Object function to pre-process frame of unsigned byte sample data.                 //
 ////////////////////////////////////////////////////////////////////////////////////////
-dspError_t CSpectrogram::PreProc(uint8 * Frame, DspWin & Window)
+dspError_t CSpectrogram::PreProc(uint8 * Frame, CDspWin & Window)
 {
 	// macro to convert from unsigned to signed byte
 #define SBFrame(i)  (int8)(Frame[i] - 128)  
@@ -1121,7 +1121,7 @@ dspError_t CSpectrogram::PwrFFT(uint8 * PwrSpect)
     double dBVal;
 
     // Reference location where complex spectral values will be returned.
-    COMPLEX_RECT_FLOAT * SpectCoeff = (COMPLEX_RECT_FLOAT *)m_WinFrame;
+    SComplexRectFloat * SpectCoeff = (SComplexRectFloat *)m_WinFrame;
 
     // Calculate FFT on real data.
 
@@ -1405,7 +1405,7 @@ void CSpectrogram::BlankFmntSet(SFormantFreq * Fmnt)
 dspError_t CSpectrogram::GetFormants( SFormantFreq * fmnt)
 {
     // Check for valid state.
-    COMPLEX_RECT_FLOAT * spectCoeff = (COMPLEX_RECT_FLOAT *)m_WinFrame;
+    SComplexRectFloat * spectCoeff = (SComplexRectFloat *)m_WinFrame;
 
     // Cepstrum smoothing
     // Compute log of FFT magnitude and store in real portion of complex array, zeroing out
@@ -1516,10 +1516,10 @@ dspError_t CSpectrogram::GetFormants( SFormantFreq * fmnt)
     return(DONE);
 }
 
-dspError_t CSpectrogram::CalcPower(float * PowerInDb, float Frequency, float DspWinBandwidth, CWindowSettings::Type windowType, SIG_PARMS Signal, bool bPreEmphasis, float DbRef)
+dspError_t CSpectrogram::CalcPower(float * PowerInDb, float Frequency, float DspWinBandwidth, CWindowSettings::Type windowType, SSigParms Signal, bool bPreEmphasis, float DbRef)
 {
     // Calculate window for frame data from specified bandwidth.
-    DspWin Window = DspWin::FromBandwidth(DspWinBandwidth,Signal.SmpRate, windowType);
+    CDspWin Window = CDspWin::FromBandwidth(DspWinBandwidth,Signal.SmpRate, windowType);
     const float * WData = Window.WindowFloat();
 
     double FrameSample;  //!!double
@@ -1562,7 +1562,7 @@ dspError_t CSpectrogram::CalcPower(float * PowerInDb, float Frequency, float Dsp
     return(DONE);
 }
 
-dspError_t CSpectrogram::CalcPower(float * PowerInDb, float Frequency, int32 BandwidthSelect, CWindowSettings::Type windowType, SIG_PARMS Signal, bool bPreEmphasis)
+dspError_t CSpectrogram::CalcPower(float * PowerInDb, float Frequency, int32 BandwidthSelect, CWindowSettings::Type windowType, SSigParms Signal, bool bPreEmphasis)
 {
     // dB reference values determined empirically from 215.332 Hz sine wave (20th harmonic of 2048 FFT at 22050 Hz sampling rate)
     // at 70.7% full scale using waveform generator.
@@ -1584,12 +1584,12 @@ dspError_t CSpectrogram::CalcPower(float * PowerInDb, float Frequency, int32 Ban
     return dspError_t;
 }
 
-DspWin & CSpectrogram::GetWidebandWindow()
+CDspWin & CSpectrogram::GetWidebandWindow()
 {
     return m_Window;
 }
 
-DspWin & CSpectrogram::GetNarrowbandWindow()
+CDspWin & CSpectrogram::GetNarrowbandWindow()
 {
     return m_NBWindow;
 }

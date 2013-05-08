@@ -803,7 +803,7 @@ void CDlgExportSFM::ExportAllParameters(CSaDoc * pDoc, CFile & file)
 
     if (m_bNumberSamples)   // \samp Number of Samples
     {
-        swprintf_s(szString.GetBuffer(25),25,_T("%ld"), pDoc->GetDataSize() / pDoc->GetBlockAlign());
+        swprintf_s(szString.GetBuffer(25),25,_T("%ld"), pDoc->GetNumSamples());
         szString.ReleaseBuffer();
         szString = "\\samp " +  szString + szCrLf;
         WriteFileUtf8(&file, szString);
@@ -811,7 +811,7 @@ void CDlgExportSFM::ExportAllParameters(CSaDoc * pDoc, CFile & file)
     if (m_bLength)   // \len  Length
     {
         // create and write length text
-        double fDataSec = pDoc->GetTimeFromBytes(pDoc->GetUnprocessedDataSize()); // get sampled data size in seconds
+        double fDataSec = pDoc->GetTimeFromBytes( pDoc->GetDataSize()); // get sampled data size in seconds
         int nMinutes = (int)fDataSec / 60;
 
         if (nMinutes == 0)   // length is less than one minute

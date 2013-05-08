@@ -319,7 +319,7 @@ int CTextSegment::CheckPosition(CSaDoc * pSaDoc, DWORD dwStart, DWORD dwStop, EM
     {
         if (pDoc->GetSegment(m_nMasterIndex)->IsEmpty())
         {
-			TRACE("no segment\n");
+			//TRACE("no segment\n");
             return -1;
         }
         if (IsEmpty())

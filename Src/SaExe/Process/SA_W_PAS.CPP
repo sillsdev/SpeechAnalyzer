@@ -71,9 +71,9 @@ long CProcessWbHighpass::Process(void * pCaller, ISaDoc * pDoc, int nProgress, i
         pLowerProcess = ((CProcess *)pMain->GetWbProcess(pDoc->GetWbProcess() - 1, nLevel));
     }
     SetSourceProcess(pLowerProcess);
-    SetFilterFilter(m_bFilterFilter);
+    SetFilterFilter(m_bFilterFilter!=FALSE);
     HighPass(m_nOrder, m_nCutoff);
-    return CButterworth::Process(pCaller, pDoc, nProgress, nLevel);
+    return CProcessButterworth::Process(pCaller, pDoc, nProgress, nLevel);
 }
 
 /***************************************************************************/
@@ -187,8 +187,7 @@ CProcessWbLowpass::~CProcessWbLowpass()
 // calling queue, or -1 in case of an error in the lower word of the long
 // value and the end process progress percentage in the higher word.
 /***************************************************************************/
-long CProcessWbLowpass::Process(void * pCaller, ISaDoc * pDoc, int nProgress,
-                                int nLevel)
+long CProcessWbLowpass::Process( void * pCaller, ISaDoc * pDoc, int nProgress, int nLevel)
 {
     // check if nested workbench processes
     CProcess * pLowerProcess = NULL;
@@ -200,7 +199,7 @@ long CProcessWbLowpass::Process(void * pCaller, ISaDoc * pDoc, int nProgress,
     SetSourceProcess(pLowerProcess);
     SetFilterFilter(m_bFilterFilter);
     LowPass(m_nOrder, m_nCutoff);
-    return CButterworth::Process(pCaller, pDoc, nProgress, nLevel);
+    return CProcessButterworth::Process(pCaller, pDoc, nProgress, nLevel);
 }
 
 /***************************************************************************/
@@ -319,7 +318,7 @@ long CProcessWbBandpass::Process(void * pCaller, ISaDoc * pDoc, int nProgress,
     SetSourceProcess(pLowerProcess);
     SetFilterFilter(m_bFilterFilter);
     BandPass(m_nOrder, (m_nUpperCutoff + m_nLowerCutoff)/2,m_nUpperCutoff - m_nLowerCutoff);
-    return CButterworth::Process(pCaller, pDoc, nProgress, nLevel);
+    return CProcessButterworth::Process(pCaller, pDoc, nProgress, nLevel);
 }
 
 /***************************************************************************/

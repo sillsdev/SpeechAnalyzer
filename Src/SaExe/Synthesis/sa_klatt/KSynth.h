@@ -78,7 +78,7 @@ typedef struct SCoefficients
 } Coefficients;
 
 /* Synthesizer structure */
-typedef struct
+struct Synthesizer
 {
     /* static data */
     BOOL parallel_only_flag;
@@ -111,7 +111,7 @@ typedef struct
     int AV;
     int TL;
 
-} Synthesizer;
+};
 
 class SilVoicing
 {
@@ -138,7 +138,7 @@ public:
 
 };
 
-enum
+enum EKSYNTH_LOC
 {
     O_NORMAL = 0,
     O_VOICING = 1,

@@ -99,13 +99,13 @@ FindNextPeak(const float *& first, const float * const last,
     }
 }
 
-QuadraticPeakSource::QuadraticPeakSource(float threshold)
+CQuadraticPeakSource::CQuadraticPeakSource(float threshold)
     : myThreshold(threshold)
 {
 }
 
 void
-QuadraticPeakSource::Search(const float * start, const float * end)
+CQuadraticPeakSource::Search(const float * start, const float * end)
 {
     assert(start);
     assert(end);
@@ -127,7 +127,7 @@ QuadraticPeakSource::Search(const float * start, const float * end)
 }
 
 void
-QuadraticPeakSource::Next()
+CQuadraticPeakSource::Next()
 {
     assert(myStart);
     assert(myMark);
@@ -149,7 +149,7 @@ QuadraticPeakSource::Next()
 }
 
 void
-QuadraticPeakSource::Get(float & location, float & value) const
+CQuadraticPeakSource::Get(float & location, float & value) const
 {
     assert(!IsDone());
 
@@ -158,7 +158,7 @@ QuadraticPeakSource::Get(float & location, float & value) const
 }
 
 int32
-QuadraticPeakSource::IsDone() const
+CQuadraticPeakSource::IsDone() const
 {
     return imDone;
 }

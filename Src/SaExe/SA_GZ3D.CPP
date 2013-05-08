@@ -227,7 +227,7 @@ short int CFormantChart::ProcessFormants()
             DWORD dwStartCursor = pView->GetStartCursorPosition();
             m_dwAnimationFrame = pFragments->GetFragmentIndex(dwStartCursor/wSmpSize);
         }
-        FRAG_PARMS FragParms = pFragments->GetFragmentParms(m_dwAnimationFrame);
+        SFragParms FragParms = pFragments->GetFragmentParms(m_dwAnimationFrame);
         dwFrameStart = FragParms.dwOffset * wSmpSize;
         dwFrameSize = (DWORD)FragParms.wLength * (DWORD)wSmpSize;
         SpectraSelected.bCepstralSpectrum = FALSE;    // turn off to reduce processing time
@@ -645,7 +645,7 @@ void CFormantChart::GraphHasFocus(BOOL bFocus)
                     {
                         dwFrame = pFragments->GetFragmentIndex(pView->GetStartCursorPosition()/wSmpSize);
                     }
-                    FRAG_PARMS FragParms = pFragments->GetFragmentParms(dwFrame);
+                    SFragParms FragParms = pFragments->GetFragmentParms(dwFrame);
                     DWORD dwFrameStart = FragParms.dwOffset * wSmpSize;
                     DWORD dwFrameSize = (DWORD)FragParms.wLength * (DWORD)wSmpSize;
                     pWavePlot->SetHighLightArea(dwFrameStart, dwFrameStart + dwFrameSize, TRUE, TRUE);
@@ -699,10 +699,10 @@ CPlot3D::~CPlot3D()
 // CPlot3D::GetChartRange Retrieves ranges for each axis
 // Returns range of plot along an axis for a given formant and gender
 /***************************************************************************/
-RANGE CPlot3D::GetChartRange(int nFormant, int nGender)
+SRange CPlot3D::GetChartRange(int nFormant, int nGender)
 {
     //               F1          F2            F3
-    static RANGE Scale[3][4] =
+    static SRange Scale[3][4] =
     {
         {{0.,0.},{200.,1000.},{650.,2500.},{1500.,3200.}},  // man
         {{0.,0.},{280.,1000.},{700.,3000.},{1850.,3500.}},  // woman
@@ -932,7 +932,7 @@ void CPlot3D::OnDraw(CDC * pDC, CRect rClient, CRect rClip, CSaView * pView)
     FormantChartParm.line_connect = ON;          ;
 
     int nGender = pDoc->GetGender();
-    RANGE FormantScale = GetChartRange(2, nGender);
+    SRange FormantScale = GetChartRange(2, nGender);
     FormantChartParm.xstart = pFormantParms->bMelScale ? Scale::ToMels(FormantScale.Low): FormantScale.Low;
     FormantChartParm.xend = pFormantParms->bMelScale ? Scale::ToMels(FormantScale.High): FormantScale.High;
     FormantScale = GetChartRange(1, nGender);
@@ -995,10 +995,10 @@ CPlotF1F2::~CPlotF1F2()
 // CPlotF1F2::GetChartRange Retrieves ranges for each axis
 // Returns range of plot along an axis for a given formant and gender
 /***************************************************************************/
-RANGE CPlotF1F2::GetChartRange(int nFormant, int nGender)
+SRange CPlotF1F2::GetChartRange(int nFormant, int nGender)
 {
     //              F1          F2
-    static RANGE Scale[3][3] = {{{0.,0.},{200., 800.},{600.,2600.}},  // man
+    static SRange Scale[3][3] = {{{0.,0.},{200., 800.},{600.,2600.}},  // man
         {{0.,0.},{280., 900.},{700.,3000.}},  // woman
         {{0.,0.},{350.,1100.},{900.,3400.}}
     }; // child
@@ -1204,7 +1204,7 @@ void CPlotF1F2::OnDraw(CDC * pDC, CRect rClient, CRect rClip, CSaView * pView)
     FormantChartParm.line_connect = FALSE;           ;
 
     int nGender = pDoc->GetGender();
-    RANGE FormantScale = GetChartRange(1, nGender);
+    SRange FormantScale = GetChartRange(1, nGender);
     FormantChartParm.xstart = pFormantParms->bMelScale ? Scale::ToMels(FormantScale.Low): FormantScale.Low;
     FormantChartParm.xend = pFormantParms->bMelScale ? Scale::ToMels(FormantScale.High): FormantScale.High;
     FormantScale = GetChartRange(2, nGender);
@@ -1276,10 +1276,10 @@ CPlotF2F1::~CPlotF2F1()
 // CPlotF2F1::GetChartRange Retrieves ranges for each axis
 // Returns range of plot along an axis for a given formant and gender
 /***************************************************************************/
-RANGE CPlotF2F1::GetChartRange(int nFormant, int nGender)
+SRange CPlotF2F1::GetChartRange(int nFormant, int nGender)
 {
     //               F1          F2
-    static RANGE Scale[3][3] =
+    static SRange Scale[3][3] =
     {
         {{0.,0.},{200., 800.},{600.,2600.}},  // man
         {{0.,0.},{280., 900.},{700.,3000.}},  // woman
@@ -1487,7 +1487,7 @@ void CPlotF2F1::OnDraw(CDC * pDC, CRect rClient, CRect rClip, CSaView * pView)
     formantChartParm.item_title_format = zNUMBERS;
 
     int nGender = pDoc->GetGender();
-    RANGE FormantScale = GetChartRange(2, nGender);
+    SRange FormantScale = GetChartRange(2, nGender);
     formantChartParm.xend = pFormantParms->bMelScale ? Scale::ToMels(FormantScale.Low): FormantScale.Low;
     formantChartParm.xstart = pFormantParms->bMelScale ? Scale::ToMels(FormantScale.High): FormantScale.High;
     FormantScale = GetChartRange(1, nGender);

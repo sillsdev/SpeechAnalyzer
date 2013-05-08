@@ -122,8 +122,8 @@
 *          :                                                               *
 *   #include "dsp\histgram.h"                                              *
 *          :                                                               *
-*   PROC_PARMS stProcParms;                                                *
-*   HIST_PARMS stHistParms;                                                *
+*   SProcParms stProcParms;                                                *
+*   SHistogramParms stHistParms;                                           *
 *   CHistogram* ppoHist;                                                   *
 *   dspError_t Err;                                                        *
 *                                                                          *
@@ -214,8 +214,7 @@ float CHistogram::Version(void)
 ////////////////////////////////////////////////////////////////////////////////////////
 // Class function to validate Histogram settings and construct object.                //
 ////////////////////////////////////////////////////////////////////////////////////////
-dspError_t CHistogram::CreateObject(CHistogram ** ppoHistogram, HIST_PARMS & stHistParms,
-                                    PROC_PARMS & stProcParms)
+dspError_t CHistogram::CreateObject(CHistogram ** ppoHistogram, SHistogramParms & stHistParms, SProcParms & stProcParms)
 {
     // validate process parameters
     if (!stProcParms.pBufferStart)
@@ -270,7 +269,7 @@ dspError_t CHistogram::CreateObject(CHistogram ** ppoHistogram, HIST_PARMS & stH
 ////////////////////////////////////////////////////////////////////////////////////////
 // Histogram object constructor.                                                      //
 ////////////////////////////////////////////////////////////////////////////////////////
-CHistogram::CHistogram(HIST_PARMS & stHistParms, PROC_PARMS & stProcParms)
+CHistogram::CHistogram(SHistogramParms & stHistParms, SProcParms & stProcParms)
 {
     // Update object member variables.
     m_stProcParms = stProcParms;

@@ -65,7 +65,6 @@ public:
 
     // Generated message map functions
 protected:
-    //{{AFX_MSG(CPlotStaff)
     afx_msg void OnSetFocus(CWnd *)
     {
         if ((HWND)StaffControl)
@@ -75,6 +74,5 @@ protected:
     }
     afx_msg void OnParentNotify(UINT msg,LPARAM lParam);
     afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
-    //}}AFX_MSG
     DECLARE_MESSAGE_MAP()
 };

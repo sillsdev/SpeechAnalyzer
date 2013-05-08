@@ -35,10 +35,10 @@ typedef int16 * Shortptr;
 #define    Lag(i)    (((pWorkspace)(work))->lagelem[i])
 
 /* GRAPPL states */
-enum {  Idle,WantIn,WantOut };
+enum EGRAPPL_STATES {  Idle,WantIn,WantOut };
 
 /* hardcoded parameter values */
-enum
+enum EGRAPPL_PARAMS
 {
     Badcoeff=-20000,		/* invalid acf coeff */
     Baseweighting=20,		/* base for freq reliability weights for contouring algorithm */
@@ -92,7 +92,7 @@ typedef struct SRoute
     int16  confirm;
 } Route;
 
-typedef struct
+struct SSysparms
 {
     /* overall flow control */
     int16 state;		/* Idle, Wantin or Wantout */
@@ -159,21 +159,22 @@ typedef struct
     int16 lastfsmooth;			/* used for joining smooth16 across unvoiced sections */
     int16 prevwt[2];			/* weights of select16 values before start of res block */
     int16 prevfch[2];			/* select16 values preceding this results block */
-} Sysparms;
-typedef  Sysparms * Sysparmsptr;
+};
+typedef SSysparms * Sysparmsptr;
 
-typedef struct
+struct SWorkspace
 {
     int32 check;				/* check double word */
     int8 wave[Maxdata];			/* private (wrapping) buffer of waveform data */
     int8 swave[Maxdata];		/* ditto, smoothed waveform */
     uint32 cross[Maxcross];		/* (wrapping) buffer of zero-crossing posns */
-    Grappl_res userres[Maxres]; /* buffer for results returned to user */
+    SGrapplResult userres[Maxres]; /* buffer for results returned to user */
     Sysres sysres[Maxres];		/* buffer for related intermediate results */
     Lagelem lagelem[Maxlag+5];  /* potential raw pitch estimates */
-    Sysparms sysparms;			/* all other 'static' variables */
-} Workspace;
-typedef Workspace * pWorkspace;
+    SSysparms sysparms;			/* all other 'static' variables */
+};
+
+typedef SWorkspace * pWorkspace;
 
 /* function prototypes */
 static bool update_data(pGrappl,int16);
@@ -223,7 +224,7 @@ static void Check(pGrappl work)
 int16 grapplGetError(pGrappl work)
 {
     /* return current error state */
-    Sysparms * SysParams = &(((pWorkspace)(work))->sysparms);
+    SSysparms * SysParams = &(((pWorkspace)(work))->sysparms);
 
     Check(work);
 
@@ -233,7 +234,7 @@ int16 grapplGetError(pGrappl work)
 bool grapplGetResults( pGrappl work,pGrappl_res * res,int16 * nres, bool * alldone)
 {
     /* return next block of results */
-    Sysparms * SysParams = &(((pWorkspace)(work))->sysparms);
+    SSysparms * SysParams = &(((pWorkspace)(work))->sysparms);
     Check(work);
 
     *nres=0;
@@ -274,7 +275,7 @@ bool grapplGetResults( pGrappl work,pGrappl_res * res,int16 * nres, bool * alldo
 bool grapplInit(pGrappl work,pGrappl_parms parms)
 {
     /* initialise GRAPPL invocation */
-    Sysparms * SysParams = &(((pWorkspace)(work))->sysparms);
+    SSysparms * SysParams = &(((pWorkspace)(work))->sysparms);
     ((pWorkspace)(work))->check=CHECKVAL;
 
     SysParams->state=WantIn;
@@ -370,7 +371,7 @@ bool grapplInit(pGrappl work,pGrappl_parms parms)
 bool grapplSetInbuff( pGrappl work, pGrappl data, uint16 length, bool alldone)
 {
     /* declare more input data */
-    Sysparms * SysParams = &(((pWorkspace)(work))->sysparms);
+    SSysparms * SysParams = &(((pWorkspace)(work))->sysparms);
     int32 pending;
 
     Check(work);
@@ -426,14 +427,14 @@ uint32 grapplWorkspace(void)
         }
     }
 #endif
-    return(sizeof(Workspace)+10U);
+    return(sizeof(SWorkspace)+10U);
 }
 
 /**** UPDATE ************************************************************/
 static bool update_data(pGrappl work,int16 init)
 {
     /* get enough data in to calculate results for next point */
-    Sysparms * SysParams = &(((pWorkspace)(work))->sysparms);
+    SSysparms * SysParams = &(((pWorkspace)(work))->sysparms);
     if (init)
     {
         /* setup sampling widths etc, and calc how much data needs to be read
@@ -563,7 +564,7 @@ static bool update_data(pGrappl work,int16 init)
 static bool update_results(pGrappl work,int16 init)
 {
     /* attempt to fill result buffer with fresh results */
-    Sysparms * SysParams = &(((pWorkspace)(work))->sysparms);
+    SSysparms * SysParams = &(((pWorkspace)(work))->sysparms);
     if (init)
     {
         /* initialise system */
@@ -644,7 +645,7 @@ static bool update_results(pGrappl work,int16 init)
 static  void  magnitude(pGrappl work,int16 init)
 {
     /* calc abs magnitude x16 for current point */
-    Sysparms * SysParams = &(((pWorkspace)(work))->sysparms);
+    SSysparms * SysParams = &(((pWorkspace)(work))->sysparms);
     if (init)
     {
         /* initialise system */
@@ -690,7 +691,7 @@ static  void  magnitude(pGrappl work,int16 init)
 
 static  void  calculate(pGrappl work,int16 init)
 {
-    Sysparms * SysParams = &(((pWorkspace)(work))->sysparms);
+    SSysparms * SysParams = &(((pWorkspace)(work))->sysparms);
     if (init)
     {
         /* initialise system */
@@ -728,7 +729,7 @@ static  void  calculate(pGrappl work,int16 init)
 static  void  calculate_addprev(pGrappl work)
 {
     /* merge in previous fcalc16 wavelengths as starting estimates for acfs */
-    Sysparms * SysParams = &(((pWorkspace)(work))->sysparms);
+    SSysparms * SysParams = &(((pWorkspace)(work))->sysparms);
     int16 itest=0;
     int16 nxing=0;
     int16 percent10=0;
@@ -818,7 +819,7 @@ static  void  calculate_addprev(pGrappl work)
 static  int16  calculate_acf16(pGrappl work,uint16 offset16)
 {
     /* get auto-correlation coefficient for this interval at current data pos */
-    Sysparms * SysParams = &(((pWorkspace)(work))->sysparms);
+    SSysparms * SysParams = &(((pWorkspace)(work))->sysparms);
     int16 coeff,nsamp=NsampAcf;
     uint16 leftpos,step,whole,frac;
     int32 diffsum,abssum;
@@ -874,7 +875,7 @@ static  int16  calculate_acf16(pGrappl work,uint16 offset16)
 static  void  calculate_choosebest2(pGrappl work)
 {
     /* find best two of three pitch period estimates */
-    Sysparms * SysParams = &(((pWorkspace)(work))->sysparms);
+    SSysparms * SysParams = &(((pWorkspace)(work))->sysparms);
     int16 i,dist16,ires,ibest,best1,best2,temp;
     pLagelem lptr=&Lag(0);
     Fraw ftemp;
@@ -976,7 +977,7 @@ static  void  calculate_choosebest2(pGrappl work)
 static  int16  calculate_findbest(pGrappl work,int16 avoid)
 {
     /* return largest coeff in array, optionally ignoring one (that we've already found) */
-    Sysparms * SysParams = &(((pWorkspace)(work))->sysparms);
+    SSysparms * SysParams = &(((pWorkspace)(work))->sysparms);
     int16 i,bestindx,bestcoeff;
 
     for (i=0,bestindx=UNSET,bestcoeff=Badcoeff; i < SysParams->nlag; i++)
@@ -998,7 +999,7 @@ static int32 forever()
 static  void  calculate_lagacfs(pGrappl work)
 {
     /* set up seed acf values for up to first Maxlag zero-crossings in pitch period range */
-    Sysparms * SysParams = &(((pWorkspace)(work))->sysparms);
+    SSysparms * SysParams = &(((pWorkspace)(work))->sysparms);
     int16 istart,iend,ilag;
     uint16 dist16;
     uint32 ldist;
@@ -1044,7 +1045,7 @@ static  void  calculate_lagacfs(pGrappl work)
 static  int16  calculate_magnitude(pGrappl work,int16 init)
 {
     /* calc abs magnitude x16 for smoothed waveform (to determine voicing) */
-    Sysparms * SysParams = &(((pWorkspace)(work))->sysparms);
+    SSysparms * SysParams = &(((pWorkspace)(work))->sysparms);
     int16 i,val,mean;
     int32 pos,sum;
     int16 pt[NsampMag];
@@ -1083,7 +1084,7 @@ static  void  calculate_nextgap(pGrappl work,int16 * istart,int16 * iend,
     /* find next appropriate zero-crossing gap interval
       Note that the zero-crossing buffer wraps round, but everything is a power of 2
       so our indices wrap and index correctly also */
-    Sysparms * SysParams = &(((pWorkspace)(work))->sysparms);
+    SSysparms * SysParams = &(((pWorkspace)(work))->sysparms);
     int16 low,high=0,mid;
 
     if (init)
@@ -1184,7 +1185,7 @@ static  void  calculate_optimise(pGrappl work,pLagelem lelem,
                                  int16 range_pc100,int16 npos)
 {
     /* optimise for specified lag to min of 1/16ths of a data sample interval */
-    Sysparms * SysParams = &(((pWorkspace)(work))->sysparms);
+    SSysparms * SysParams = &(((pWorkspace)(work))->sysparms);
     int16 bestcoeff,coeff,i;
     uint16 bestdist16,range16,step16,dist16;
 
@@ -1248,7 +1249,7 @@ static  void  calculate_selectbest(pGrappl work)
 {
     /* reduce lags to two best, and a third if at shorter lag than
       first two and within 20% of best */
-    Sysparms * SysParams = &(((pWorkspace)(work))->sysparms);
+    SSysparms * SysParams = &(((pWorkspace)(work))->sysparms);
     Lagelem bestlag,bestlag2;
     pLagelem lptr=&Lag(0);
     int16 i,indx1,indx2,indx3,percent10,j;
@@ -1324,7 +1325,7 @@ static  void  calculate_selectbest(pGrappl work)
 static  void  calculate_voiced(pGrappl work)
 {
     /* determine whether position is voiced or not */
-    Sysparms * SysParams = &(((pWorkspace)(work))->sysparms);
+    SSysparms * SysParams = &(((pWorkspace)(work))->sysparms);
     pSres thiss=&Sres(SysParams->ncalc);
 
     thiss->magnitude=calculate_magnitude(work,false);
@@ -1343,7 +1344,7 @@ static  void  calculate_weights(pGrappl work)
     /* calculate a 'likelihood' weight for each pitch guess; variable
       component lies between 0 and 1000 */
     /* each component part of these estimates is constrained to range 0-100 */
-    Sysparms * SysParams = &(((pWorkspace)(work))->sysparms);
+    SSysparms * SysParams = &(((pWorkspace)(work))->sysparms);
     int16 diff,i,mpart,dpart[2],apart;
     pFraw fraw;
     pSres thiss=&Sres(SysParams->ncalc);
@@ -1402,7 +1403,7 @@ static  void  select(pGrappl work)
 {
     /* find each voiced section in results workspace and generate zero
       or more continuous tone contours from it */
-    Sysparms * SysParams = &(((pWorkspace)(work))->sysparms);
+    SSysparms * SysParams = &(((pWorkspace)(work))->sysparms);
     int16 indx,voiced,istart=UNSET,iend;
 
     voiced=false;
@@ -1441,7 +1442,7 @@ static  int16  select_continuous(pGrappl work,int16 this16,int16 mid16,
                                  int16 next16)
 {
     /* return true if this16 is 'continuous' with other two */
-    Sysparms * SysParams = &(((pWorkspace)(work))->sysparms);
+    SSysparms * SysParams = &(((pWorkspace)(work))->sysparms);
     int16 mean16,change_pc10;
 
     /* first check in range */
@@ -1671,7 +1672,7 @@ static  int16  select_routenext(pGrappl work,Route * rt)
 static  void  select_section(pGrappl work,int16 istart,int16 iend)
 {
     /* interpret a voiced section as zero or more continuous pitch contours */
-    Sysparms * SysParams = &(((pWorkspace)(work))->sysparms);
+    SSysparms * SysParams = &(((pWorkspace)(work))->sysparms);
     int16 i,ibestpos=UNSET,ipos,isstart,isend,bestwt,weight,f1,f2,f3;
 
     /* clear 'has been looked at' flag */
@@ -1761,7 +1762,7 @@ static  void  select_section(pGrappl work,int16 istart,int16 iend)
 static  void  smooth(pGrappl work)
 {
     /* find each selected section and smooth it */
-    Sysparms * SysParams = &(((pWorkspace)(work))->sysparms);
+    SSysparms * SysParams = &(((pWorkspace)(work))->sysparms);
     int16 indx,selected,iprevend,prevpitch16,istart=0,iend,f1,f2,
                                              change,i,lastindx;
 
@@ -1859,7 +1860,7 @@ static  void  smooth_section(pGrappl work,int16 istart,int16 iend,
     /* smooth the specified section (which is a continuous pitch trace)
       and then interpolate across the previous section and store
       as negative values */
-    Sysparms * SysParams = &(((pWorkspace)(work))->sysparms);
+    SSysparms * SysParams = &(((pWorkspace)(work))->sysparms);
     int16 store[3],i,j,idiv,wt,pitch16,ipass,fch=0;
     int32 lval;
 
@@ -1965,7 +1966,7 @@ static  void  parse(pGrappl work)
 {
     /* determine where best to break results so that break will be pasted over when
       next group of results are returned; reset SysParams->nres to no. of results to return */
-    Sysparms * SysParams = &(((pWorkspace)(work))->sysparms);
+    SSysparms * SysParams = &(((pWorkspace)(work))->sysparms);
     int16 indx,imid,lastok=0,voiced,ibreak,iend;
 
     imid=SysParams->ncalc/2;

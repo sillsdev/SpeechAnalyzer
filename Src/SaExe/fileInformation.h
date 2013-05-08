@@ -49,9 +49,7 @@ protected:
 
     // Generated message map functions
 protected:
-    //{{AFX_MSG(CDlgInformationFilePage)
     virtual BOOL OnInitDialog();
-    //}}AFX_MSG
     DECLARE_MESSAGE_MAP()
 };
 
@@ -80,9 +78,7 @@ protected:
 
     // Generated message map functions
 protected:
-    //{{AFX_MSG(CDlgInformationWavePage)
     virtual BOOL OnInitDialog();
-    //}}AFX_MSG
     DECLARE_MESSAGE_MAP()
 };
 
@@ -121,11 +117,9 @@ protected:
 
     // Generated message map functions
 protected:
-    //{{AFX_MSG(CDlgInformationSourcePage)
     virtual BOOL OnInitDialog();
     virtual void OnOK();
     afx_msg void OnChangeEthnoid();
-    //}}AFX_MSG
     DECLARE_MESSAGE_MAP()
 };
 
@@ -157,9 +151,7 @@ protected:
 
     // Generated message map functions
 protected:
-    //{{AFX_MSG(CDlgInformationUserPage)
     virtual BOOL OnInitDialog();
-    //}}AFX_MSG
     DECLARE_MESSAGE_MAP()
 };
 //###########################################################################
@@ -193,10 +185,8 @@ private:
 
     // Generated message map functions
 protected:
-    //{{AFX_MSG(CDlgFileInformation)
     virtual BOOL OnInitDialog();
     afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
-    //}}AFX_MSG
     DECLARE_MESSAGE_MAP()
 };
 

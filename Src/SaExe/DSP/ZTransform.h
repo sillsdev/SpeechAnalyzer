@@ -11,49 +11,33 @@ template<class _Ty>
 class CZTransformGeneric
 {
 public:
-    typedef CZTransformGeneric<_Ty> CZT;
     CZTransformGeneric();
-    CZTransformGeneric(const CZT & value);
+    CZTransformGeneric(const CZTransformGeneric<_Ty> & value);
     CZTransformGeneric(const int32 nOrder, const _Ty * const numeratorCoef, const _Ty * const denominatorCoef);
     virtual ~CZTransformGeneric();
 
-    CZT & operator *=(const CZT & value);
-    CZT & operator =(const CZT & value)
-    {
-        _Ty one = 1;
-        SetTransform(0, &one, NULL);
-        *this *= value;
-        return *this;
-    }
+    CZTransformGeneric<_Ty> & operator *=(const CZTransformGeneric<_Ty> & value);
+    CZTransformGeneric<_Ty> & operator =(const CZTransformGeneric<_Ty> & value);
 
     _Ty Tick(_Ty dInput);
-
     bool IsIdentity();
 
-    typedef std::vector<CZT> CZStageVector;
-
 private:
-    void SetTransform(const int32 nOrder, const _Ty * const numeratorCoef, const _Ty * const denominatorCoef);
-    void GetTransform(int32 & nOrder, const _Ty * numeratorCoef, const _Ty * denominatorCoef);
+    void SetTransform( const int32 nOrder, const _Ty * const numeratorCoef, const _Ty * const denominatorCoef);
+    void GetTransform( int32 & nOrder, const _Ty * numeratorCoef, const _Ty * denominatorCoef);
     int32 GetOrder() const;
 
-    _Ty GetNumerator(int32 nPower) const
-    {
-        return (nPower > m_nOrder) ? 0 : m_pNumerator[nPower];
-    }
-    _Ty GetDenominator(int32 nPower) const
-    {
-        return (nPower > m_nOrder) ? 0 : m_pDenominator[nPower];
-    }
+    _Ty GetNumerator(int32 nPower) const;
+    _Ty GetDenominator(int32 nPower) const;
 
     // Implementation
-private:
+public:
     int32 m_nOrder;
     _Ty * m_pNumerator;
     _Ty * m_pDenominator;
     _Ty * m_pState;
 
-    CZStageVector m_cStages;
+    std::vector<CZTransformGeneric<_Ty>> m_cStages;
 };
 
 template<class _Ty> CZTransformGeneric<_Ty>::CZTransformGeneric()
@@ -65,7 +49,10 @@ template<class _Ty> CZTransformGeneric<_Ty>::CZTransformGeneric()
     SetTransform(0, NULL, NULL);
 }
 
-template<class _Ty> CZTransformGeneric<_Ty>::CZTransformGeneric(const CZT & value)
+/**
+* copy constructor
+*/
+template<class _Ty> CZTransformGeneric<_Ty>::CZTransformGeneric(const CZTransformGeneric<_Ty> & value)
 {
     m_pNumerator = NULL;
     m_pDenominator = NULL;
@@ -75,17 +62,16 @@ template<class _Ty> CZTransformGeneric<_Ty>::CZTransformGeneric(const CZT & valu
     m_cStages = value.m_cStages;
 }
 
-template<class _Ty> CZTransformGeneric<_Ty>::CZTransformGeneric(const int32 nOrder,
-        const _Ty * const numeratorCoef,
-        const _Ty * const denominatorCoef)
+/**
+* normal constructor
+*/
+template<class _Ty> CZTransformGeneric<_Ty>::CZTransformGeneric(const int32 nOrder, const _Ty * const numeratorCoef, const _Ty * const denominatorCoef)
 {
     m_pNumerator = NULL;
     m_pDenominator = NULL;
     m_pState = NULL;
-    SetTransform(nOrder, numeratorCoef, denominatorCoef);
+    SetTransform( nOrder, numeratorCoef, denominatorCoef);
 }
-
-
 
 template<class _Ty> CZTransformGeneric<_Ty>::~CZTransformGeneric()
 {
@@ -94,6 +80,10 @@ template<class _Ty> CZTransformGeneric<_Ty>::~CZTransformGeneric()
     delete [] m_pState;
 }
 
+/**
+* Creates the numerator and denominator arrays
+* @param nOrder the length of the vector
+*/
 template<class _Ty> void CZTransformGeneric<_Ty>::SetTransform(const int32 nOrder, const _Ty * const numeratorCoef, const _Ty * const denominatorCoef)
 {
     delete [] m_pNumerator;
@@ -108,39 +98,40 @@ template<class _Ty> void CZTransformGeneric<_Ty>::SetTransform(const int32 nOrde
 
     for (int32 i = 0; i <= m_nOrder; i++)
     {
-        if (numeratorCoef)
+        if (numeratorCoef!=NULL)
         {
             m_pNumerator[i] = numeratorCoef[i];
         }
         else
         {
-            m_pNumerator[i] = (i == 0) ? 1. : 0.;
+            m_pNumerator[i] = (i == 0) ? 1.0 : 0.0;
         }
 
-        if (denominatorCoef)
+        if (denominatorCoef!=NULL)
         {
             m_pDenominator[i] = denominatorCoef[i];
         }
         else
         {
-            m_pDenominator[i] = (i == 0) ? 1. : 0.;
+            m_pDenominator[i] = (i == 0) ? 1.0 : 0.0;
         }
 
-
-        m_pState[i] = 0.;
+        m_pState[i] = 0.0;
     }
-    ASSERT(m_pDenominator[0] == 1.); // The denominator zero lag coefficient must be 1
+
+	ASSERT(m_pDenominator[0] == 1.0);	// The denominator zero lag coefficient must be 1
 
     m_cStages.clear();
 }
 
-template<class _Ty> CZTransformGeneric<_Ty> & CZTransformGeneric<_Ty>::operator *=(const CZT & value)
+template<class _Ty> CZTransformGeneric<_Ty> & CZTransformGeneric<_Ty>::operator *=(const CZTransformGeneric<_Ty> & value)
 {
     if (m_nOrder + value.m_nOrder > 2)
     {
         m_cStages.push_back(value);
         return *this;
     }
+
     // preserve the original values
     _Ty * pNumerator = m_pNumerator;
     _Ty * pDenominator = m_pDenominator;
@@ -172,10 +163,10 @@ template<class _Ty> CZTransformGeneric<_Ty> & CZTransformGeneric<_Ty>::operator 
         }
         m_pNumerator[i] = numerator;
         m_pDenominator[i] = denominator;
-        m_pState[i] = 0.;
+        m_pState[i] = 0.0;
 
-        if (i == m_nOrder && numerator == 0. && denominator == 0.)
-            // reduce the order of the filter
+        // reduce the order of the filter
+        if ((i == m_nOrder) && (numerator == 0.0) && (denominator == 0.0))
         {
             m_nOrder--;
         }
@@ -191,9 +182,9 @@ template<class _Ty> CZTransformGeneric<_Ty> & CZTransformGeneric<_Ty>::operator 
     return *this;
 }
 
-template<class _Ty> _Ty CZTransformGeneric<_Ty>::Tick(_Ty dInput)
+template<class _Ty> _Ty CZTransformGeneric<_Ty>::Tick( _Ty dInput)
 {
-    _Ty partialOutput = 0.;
+    _Ty partialOutput = 0.0;
     _Ty partialState = dInput;
 
     for (int32 i = m_nOrder; i>0; i--)
@@ -238,6 +229,24 @@ template<class _Ty> int32 CZTransformGeneric<_Ty>::GetOrder() const
     }
 
     return nOrder;
+}
+
+template<class _Ty> CZTransformGeneric<_Ty> & CZTransformGeneric<_Ty>::operator =(const CZTransformGeneric<_Ty> & value)
+{
+    _Ty one = 1;
+    SetTransform(0, &one, NULL);
+    *this *= value;
+    return *this;
+}
+
+template<class _Ty> _Ty CZTransformGeneric<_Ty>::GetNumerator(int32 nPower) const
+{
+    return (nPower > m_nOrder) ? 0 : m_pNumerator[nPower];
+}
+
+template<class _Ty> _Ty CZTransformGeneric<_Ty>::GetDenominator(int32 nPower) const
+{
+    return (nPower > m_nOrder) ? 0 : m_pDenominator[nPower];
 }
 
 typedef CZTransformGeneric<double> CZTransform;

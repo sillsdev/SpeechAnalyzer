@@ -201,7 +201,7 @@ void CSaWorkbenchView::SetupFilterProcesses(CObject * pDialog)
                     CProcess * pProcess = CreateWbProcess(pDlg->m_nFilter3);
                     if (pProcess)
                     {
-                        pMain->SetWbProcess(pDlg->m_nProcess, nLoop, pProcess);
+                        pMain->SetWbProcess( pDlg->m_nProcess, nLoop, pProcess);
                     }
                     else
                     {

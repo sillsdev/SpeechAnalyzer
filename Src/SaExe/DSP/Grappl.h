@@ -29,7 +29,7 @@
 typedef void * pGrappl;		/* generic 32-bit pointer */
 
 /* user input parameters */
-typedef  struct
+struct SGrapplParms
 {
     int32 sampfreq;			/* acoustic data sampling frequency */
     int16 eightbit;			/* true for 8-bit data */
@@ -44,20 +44,20 @@ typedef  struct
     int16 minmeanweight;	/* min mean weight for significant pitch contour */
     int16 maxinterp_pc10;	/* max % change (x10) to join contours across 1-pt gap */
     int16 reslag;			/* max results to hold in store (0=maximum possible) */
-} Grappl_parms;
-typedef Grappl_parms * pGrappl_parms;
+};
+typedef SGrapplParms * pGrappl_parms;
 
 /* output result structure */
-typedef  struct
+struct SGrapplResult
 {
     int16  mag16;      /* short-term abs magnitude (8-bit x16, 16-bit /16) */
     int16  fcalc16;    /* best guess at point pitch frequency (x16) */
     int16  fselect16;    /* corrected guess at point pitch frequency within contour (x16) */
     int16  fsmooth16;    /* smoothed pitch contour point (x16) */
     int16  acfcoeff;     /* autocorrelation function coefficient for best lag */
-} Grappl_res;
+};
 
-typedef Grappl_res * pGrappl_res;
+typedef SGrapplResult * pGrappl_res;
 
 /* function prototypes */
 int16  grapplGetError(pGrappl);

@@ -570,7 +570,7 @@ void CPlotStaff::Convert(void)
     double dSemitoneShift = nCalSemitone - dCalSemitone;
 
     // get sampling rate
-    double dQNotesPerFrame = GetTempo()*pDoc->GetDataSize()/pDoc->GetBlockAlign()/pMelogram->GetDataSize()/60.0/pDoc->GetSamplesPerSec();
+    double dQNotesPerFrame = GetTempo()*pDoc->GetNumSamples()/pMelogram->GetDataSize()/60.0/pDoc->GetSamplesPerSec();
     const int nMelogramAverageInterval = int(1./(8*dQNotesPerFrame) + 1.0);  // Average over grace note interval
 
     // parse into notes

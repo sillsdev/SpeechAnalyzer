@@ -288,7 +288,7 @@ void CDlgEditor::OnUpdateInputstring()
 /***************************************************************************/
 void CDlgEditor::UpdateDialog()
 {
-    if ((!SaView())||(SaDoc()->GetUnprocessedDataSize()==0))   // CSaView not active or no WAV data
+    if ((!SaView())||(SaDoc()->GetDataSize()==0))   // CSaView not active or no WAV data
     {
         if (IsWindowVisible())
         {

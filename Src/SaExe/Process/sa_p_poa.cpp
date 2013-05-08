@@ -134,7 +134,7 @@ long CProcessPOA::Process(void * pCaller, ISaDoc * pDoc, DWORD dwStart, DWORD dw
 
     // Set signal parameters.
     DWORD dwOldWaveBufferIndex = pDoc->GetWaveBufferIndex();    // save current buffer offset into waveform
-    SIG_PARMS Signal;
+    SSigParms Signal;
     Signal.Start = (void *)pDoc->GetWaveData(dwStart, TRUE);    //load sample
     //buffer starting
     //at begin cursor
@@ -158,7 +158,7 @@ long CProcessPOA::Process(void * pCaller, ISaDoc * pDoc, DWORD dwStart, DWORD dw
     }
 
     // Specify LPC settings.
-    LPC_SETTINGS LpcSetting;
+    SLPCSettings LpcSetting;
 
     Signal.SmpRate = pDoc->GetSamplesPerSec();				//set sample rate
     LpcSetting.Process.Flags = PRE_EMPHASIS | NORM_CROSS_SECT | MEAN_SQ_ERR | ENERGY;
@@ -178,7 +178,7 @@ long CProcessPOA::Process(void * pCaller, ISaDoc * pDoc, DWORD dwStart, DWORD dw
     }
 
     // Perform LPC analysis.
-    LPC_MODEL * pLpcModel;
+    SLPCModel * pLpcModel;
     Err = pLpcObject->GetLpcModel(&pLpcModel, Signal.Start);
 
     if (Err)
@@ -188,7 +188,7 @@ long CProcessPOA::Process(void * pCaller, ISaDoc * pDoc, DWORD dwStart, DWORD dw
     }
 
     // Allocate global buffer for the processed data
-    SetDataSize(sizeof(VOCAL_TRACT_MODEL) + (pLpcModel->nNormCrossSectAreas-1) * sizeof(*pLpcModel->pNormCrossSectArea));
+    SetDataSize(sizeof(SVocalTractModel) + (pLpcModel->nNormCrossSectAreas-1) * sizeof(*pLpcModel->pNormCrossSectArea));
     if (!m_lpBuffer)   // not yet allocated
     {
         m_lpBuffer = new char[GetDataSize(sizeof(char))];
@@ -204,7 +204,7 @@ long CProcessPOA::Process(void * pCaller, ISaDoc * pDoc, DWORD dwStart, DWORD dw
     }
 
     // Copy vocal tract model to data buffer;
-    VOCAL_TRACT_MODEL * pVocalTractModel = (VOCAL_TRACT_MODEL *)m_lpBuffer;
+    SVocalTractModel * pVocalTractModel = (SVocalTractModel *)m_lpBuffer;
     if (pLpcModel->dMeanEnergy)
     {
         pVocalTractModel->dErrorRatio = pLpcModel->dMeanSqPredError / pLpcModel->dMeanEnergy;
@@ -233,4 +233,16 @@ long CProcessPOA::Process(void * pCaller, ISaDoc * pDoc, DWORD dwStart, DWORD dw
     }
 
     return MAKELONG(nLevel, nProgress);
+}
+
+DWORD CProcessPOA::GetDataSize()
+{
+    // return processed data size in LPC data structures
+    return GetDataSize(sizeof(SLPCModel));
+}
+
+DWORD CProcessPOA::GetDataSize(size_t nElements)
+{
+    // return processed data size in LPC data structures
+    return CProcess::GetDataSize(nElements);
 }

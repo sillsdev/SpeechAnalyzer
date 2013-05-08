@@ -1035,7 +1035,7 @@ void CSaApp::OnProcessBatchCommands()
         swscanf_s(szField, _T("%lu"), &dwStart);
 
         //Get Stop Position
-        DWORD dwStop = pDoc->GetUnprocessedDataSize();
+        DWORD dwStop = pDoc->GetDataSize();
         szField = extractCommaField(szParameterList, 3);
         swscanf_s(szField, _T("%lu"), &dwStop);
 
@@ -1822,13 +1822,15 @@ void CSaApp::OnUpdateAppExit(CCmdUI * pCmdUI)
 /***************************************************************************/
 BOOL CSaApp::OnIdle(LONG lCount)
 {
+	// during termination, the main window may no longer be valid
+    CMainFrame * pMainWnd = (CMainFrame *)AfxGetMainWnd();
+	if (pMainWnd==NULL) return FALSE;
 
     // SDM 1.06.5 Send mainframe idle update message
     if (lCount <= 0)
     {
-        CWnd * pMainWnd = AfxGetMainWnd();
-        if (pMainWnd != NULL && pMainWnd->m_hWnd != NULL &&
-                pMainWnd->IsWindowVisible())
+        if ((pMainWnd->m_hWnd != NULL) && 
+			(pMainWnd->IsWindowVisible()))
         {
             pMainWnd->SendMessage(WM_USER_IDLE_UPDATE, 0, 0L); // SDM 32 bit conversion
         }
@@ -1844,7 +1846,6 @@ BOOL CSaApp::OnIdle(LONG lCount)
     }
 
     // get active document
-    CMainFrame * pMainWnd = (CMainFrame *)AfxGetMainWnd();
     CSaDoc * pSaDoc = pMainWnd->GetCurrDoc();
 
     // perform pitch processing if not already done
@@ -1880,7 +1881,7 @@ BOOL CSaApp::OnIdle(LONG lCount)
         if (!pFragmenter->IsDataReady())
         {
             short int nResult = LOWORD(pFragmenter->Process(this, (CSaDoc *)pSaDoc)); // process data
-            if (nResult == PROCESS_ERROR || nResult == PROCESS_NO_DATA || nResult == PROCESS_CANCELED)
+            if ((nResult == PROCESS_ERROR) || (nResult == PROCESS_NO_DATA) || (nResult == PROCESS_CANCELED))
             {
                 pFragmenter->SetDataInvalid();
                 pSaDoc->EnableBackgroundProcessing(FALSE);

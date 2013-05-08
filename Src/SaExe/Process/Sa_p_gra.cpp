@@ -10,6 +10,7 @@
 #include "Process.h"
 #include "sa_p_gra.h"
 #include "isa_doc.h"
+#include "StringUtils.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE
@@ -341,3 +342,48 @@ double CProcessGrappl::GetUncertainty(double fPitch)
     return fUncertainty;
 }
 
+SGrapplParms & CProcessGrappl::GetCalcParms()
+{
+    return m_CalcParm;
+}
+
+double CProcessGrappl::GetAveragePitch()
+{
+    return m_dAvgPitch;
+}
+
+void CProcessGrappl::SetDataInvalid()
+{
+    CProcess::SetDataInvalid();
+}
+
+void CProcessGrappl::Dump( LPCSTR ofilename)
+{
+	return;
+	FILE * ofile = NULL;
+	errno_t err = fopen_s( &ofile, ofilename, "w");
+	fprintf( ofile, "autopitch data\n");
+	fprintf( ofile, "uncertainty = %f\n", GetUncertainty(m_dAvgPitch));
+	fprintf( ofile, "average pitch = %f", m_dAvgPitch);
+	{
+		string ifilename = Utf8(GetProcessFileName());
+		FILE * ifile = NULL;
+		err = fopen_s( &ifile, ifilename.c_str(), "r");
+		int16 buffer = 0;
+		while (true)
+		{
+			int read = fread( &buffer, 1, sizeof(int16), ifile);
+			if (read<sizeof(int16)) break;
+			fprintf( ofile, "%d ",buffer);
+		}
+		if (!feof(ifile))
+		{
+			fprintf( ofile, "premature termination");
+		}
+		fflush(ifile);
+		fclose(ifile);
+	}
+	fprintf( ofile, "\n");
+	fflush(ofile);
+	fclose(ofile);
+}

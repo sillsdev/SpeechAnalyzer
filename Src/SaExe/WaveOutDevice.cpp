@@ -349,7 +349,6 @@ void CWaveOutDevice::SetVolume(UINT nVolume, BOOL & bResult)
 /***************************************************************************/
 BOOL CWaveOutDevice::ShowMixer(BOOL bShow)
 {
-
     BOOL bWasOpen = m_hOutDev!=NULL;
     BOOL bResult = FALSE;
     MMRESULT mmr = 0;
@@ -394,8 +393,7 @@ BOOL CWaveOutDevice::ShowMixer(BOOL bShow)
 /***************************************************************************/
 BOOL CWaveOutDevice::ConnectMixer(CWnd * pCallback)
 {
-
-    TRACE("ConnectMixer\n");
+    //TRACE("ConnectMixer\n");
     if (m_hOutDev!=NULL)
     {
         // already opened
@@ -456,7 +454,6 @@ BOOL CWaveOutDevice::ConnectMixer(CWnd * pCallback)
 /***************************************************************************/
 void CWaveOutDevice::Reset()
 {
-
     if (m_hOutDev==NULL)
     {
         return;
@@ -475,7 +472,7 @@ void CWaveOutDevice::Reset()
 void CWaveOutDevice::WaveOutDone(CWave * /*pWave*/, WAVEHDR * pHdr)
 {
 
-    TRACE("WaveOutDone\n");
+    //TRACE("WaveOutDone\n");
     // unprepare the header
     MMRESULT mmr = waveOutUnprepareHeader(m_hOutDev, pHdr, sizeof(WAVEHDR));
     if (mmr!=MMSYSERR_NOERROR)
@@ -499,7 +496,7 @@ void CWaveOutDevice::WaveOutDone(CWave * /*pWave*/, WAVEHDR * pHdr)
 LRESULT CWaveOutDevice::OnWomDone(WPARAM /*wParam*/, LPARAM lParam)
 {
 
-    TRACE("OnWomDone\n");
+    //TRACE("OnWomDone\n");
     WAVEHDR * pHdr = (WAVEHDR *)lParam;         // get pointer to wave header
     CWave * pWave = (CWave *)(pHdr->dwUser);    // get pointer to CWave object
     CWaveOutDevice * pOutDev = pWave->GetOutDevice(); // get pointer to output device

@@ -2,12 +2,12 @@
 #define SIGNAL_H
 #include "dspTypes.h"
 
-enum {PCM_UBYTE=-1, PCM_2SBYTE=1, PCM_2SSHORT=2};
-enum SIG_SOURCE {UNKNOWN_HUMAN=-1, MAN=0, WOMAN=1, CHILD=2, MUSICAL_INSTRUMENT=3};
+enum EPCM_TYPE {PCM_UBYTE=-1, PCM_2SBYTE=1, PCM_2SSHORT=2};
+enum ESIG_SOURCE {UNKNOWN_HUMAN=-1, MAN=0, WOMAN=1, CHILD=2, MUSICAL_INSTRUMENT=3};
 
-typedef struct SIG_PARMS
+struct SSigParms
 {
-    SIG_PARMS()
+    SSigParms()
     {
         Start = 0;
         Length = 0;
@@ -19,17 +19,17 @@ typedef struct SIG_PARMS
     uint32 Length;
     int8 SmpDataFmt;
     uint32 SmpRate;
-    SIG_SOURCE Source;
-} SIG_PARMS;
+    ESIG_SOURCE Source;
+};
 
-// PROC_PARMS added by CLW 1/5/99
-typedef struct
+// SProcParms added by CLW 1/5/99
+struct SProcParms
 {
     void * pBufferStart;	// pointer to buffer containing data to be processed
     uint32 dwBufferSize;	// size of buffer in bytes
     uint32 dwBlockOffset;	// sample number at which processing begins
     uint32 dwBlockLength;	// number of samples in process data
-    SIG_PARMS stSigParms;
-} PROC_PARMS;
+    SSigParms stSigParms;
+};
 
 #endif

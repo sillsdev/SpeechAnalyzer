@@ -14,16 +14,16 @@
 
 
 #pragma pack(1)
-typedef struct
+struct SFragParms
 {
     uint32 dwOffset;                    // sample offset into waveform
     uint16 wLength;                     // length of fragment in samples
     short  nPitch;                      // pitch value for fragment
     uint16 wAvgMag;                     // average magnitude of samples within fragment
-} FRAG_PARMS;
+};
 #pragma pack()
 
-typedef struct
+struct SPitchParms
 {
     uint16      wSmpIntvl;              // calculation interval in waveform samples
     uint16      wScaleFac;              // scale factor
@@ -31,16 +31,16 @@ typedef struct
     uint16      wCalcRangeMax;          // max pitch allowed
     uint32      dwContourLength;        // number of pitch data values, including unvoiced portions
     short    *   psContour;             // pointer to pitch data
-} PITCH_PARMS;
+};
 
 class CFragment
 {
 public:
     static char * Copyright(void);
     static float Version(void);
-    static dspError_t CreateObject(CFragment ** ppoFragment, FRAG_PARMS * pstFragParmBfr, uint32 dwFragParmBfrLength,
-                                   SIG_PARMS & stSigParm, void * pWaveBfr, uint32 dwWaveBfrLength,
-                                   PITCH_PARMS & stPitchParm, short * pPitchBfr, uint32 dwPitchBfrLength);
+    static dspError_t CreateObject(CFragment ** ppoFragment, SFragParms * pstFragParmBfr, uint32 dwFragParmBfrLength,
+                                   SSigParms & stSigParm, void * pWaveBfr, uint32 dwWaveBfrLength,
+                                   SPitchParms & stPitchParm, short * pPitchBfr, uint32 dwPitchBfrLength);
     dspError_t Fragment(void);
     ~CFragment();
     uint32 GetWaveBlockIndex();
@@ -49,12 +49,12 @@ public:
     uint32 GetFragmentCount();
 
 private:
-    static dspError_t ValidateSignalParms(SIG_PARMS & stSignal);
-    static dspError_t ValidatePitchParms(PITCH_PARMS & stPitchParm);
+    static dspError_t ValidateSignalParms(SSigParms & stSignal);
+    static dspError_t ValidatePitchParms(SPitchParms & stPitchParm);
 
-    CFragment(SIG_PARMS & stSigParm, void * pWaveBfr, uint32 dwWaveBfrLength,
-              PITCH_PARMS & stPitchParm, short * psPitchBfr, uint32 dwPitchBfrLength,
-              FRAG_PARMS * pstFragParmBfr, uint32 dwFragParmBfrLength);
+    CFragment(SSigParms & stSigParm, void * pWaveBfr, uint32 dwWaveBfrLength,
+              SPitchParms & stPitchParm, short * psPitchBfr, uint32 dwPitchBfrLength,
+              SFragParms * pstFragParmBfr, uint32 dwFragParmBfrLength);
 
     dspError_t Process(uint8 * pbWaveBfr);
     dspError_t Process(short * psWaveBfr);
@@ -90,7 +90,7 @@ private:
     uint32 m_dwFltrPeakIndex;
     int32 m_lFltrPeak;
     int32 m_lFltrPeakThd;
-    FRAG_PARMS * m_pstFragParmBfr;
+    SFragParms * m_pstFragParmBfr;
     uint32 m_dwFragBfrLength;
     uint32 m_dwFragBfrIndex;
     uint32 m_dwFragBlockLength;

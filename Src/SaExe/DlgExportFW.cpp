@@ -280,22 +280,28 @@ void CDlgExportFW::OnClickedBrowseOther()
     TCHAR szFolderLocation[MAX_PATH];
     memset(szFolderLocation, 0, sizeof(szFolderLocation));
 
+	CString msg;
+	msg.LoadStringW(IDS_CHOOSE_FOLDER);
+
     ctlEditOtherFolder.GetWindowTextW(szFolderLocation, MAX_PATH);
 
     BROWSEINFO bi = { 0 };
     bi.hwndOwner = this->m_hWnd;
     bi.pszDisplayName = szDisplay;
-    bi.lpszTitle = TEXT("Please choose a folder.");
+	bi.lpszTitle = msg.GetBuffer(msg.GetLength());
     bi.ulFlags = BIF_RETURNONLYFSDIRS | BIF_NEWDIALOGSTYLE;
     bi.lpfn = BrowseCallbackProc;
-    bi.lParam = (LPARAM)(LPCTSTR) szFolderLocation;
+    bi.lParam = (LPARAM)(LPCTSTR)szFolderLocation;
     LPITEMIDLIST pidl = SHBrowseForFolder(&bi);
     if (pidl == NULL)
     {
         // they canceled...
+		msg.ReleaseBuffer();
         CoUninitialize();
         return;
     }
+
+	msg.ReleaseBuffer();
 
     TCHAR szPath[MAX_PATH];
     memset(szPath, 0, sizeof(szPath));

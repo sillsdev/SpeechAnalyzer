@@ -13,15 +13,6 @@ public:
 private:
     BOOL m_bVisible;
 
-    // Operations
-public:
-
-    // Overrides
-    // ClassWizard generated virtual function overrides
-    //{{AFX_VIRTUAL(CFlexEditWnd)
-    //}}AFX_VIRTUAL
-
-    // Implementation
 public:
     virtual BOOL IsVisible() const;
     virtual BOOL SetVisible(BOOL bState);
@@ -29,11 +20,9 @@ public:
 
     // Generated message map functions
 protected:
-    //{{AFX_MSG(CFlexEditWnd)
     afx_msg void OnChar(UINT nChar, UINT nRepCnt, UINT nFlags);
     afx_msg void OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags);
     afx_msg void OnKillfocus();
-    //}}AFX_MSG
 
     DECLARE_MESSAGE_MAP()
 };

@@ -102,11 +102,11 @@
 *          :                                                               *
 *   #include "WaveWarp.h"                                                  *
 *          :                                                               *
-*   FRAG_PARMS *lpFragment                                                 *
+*   SFragParms *lpFragment                                                 *
 *           :                                                              *
 *   (load fragment parameters)                                             *
 *           :                                                              *
-*   FRAG_PARMS stCallFragment;                                             *
+*   SFragParms stCallFragment;                                             *
 *   CWaveWarp *pWaveWarp;                                                  *
 *   dspError_t Err = CWaveWarp::CreateObject(&pWaveWarp, dwStart/wSmpSize, *
 *                                     wSpeed, stCallFragment);             *
@@ -192,7 +192,7 @@ dspError_t CWaveWarp::CreateObject(CWaveWarp ** ppWaveWarp,
                                    ISaDoc * pDoc,
                                    ULONG dwWaveStart,
                                    USHORT wSpeed,
-                                   FRAG_PARMS * pstFragStart)
+                                   SFragParms * pstFragStart)
 {
 
     // Validate parameters passed.
@@ -202,7 +202,7 @@ dspError_t CWaveWarp::CreateObject(CWaveWarp ** ppWaveWarp,
     }
 
     *ppWaveWarp = NULL;
-    ULONG dwWaveLength = pDoc->GetDataSize() / pDoc->GetBlockAlign();
+    ULONG dwWaveLength = pDoc->GetNumSamples();
     if (dwWaveStart >= dwWaveLength)
     {
         return(Code(INVALID_BLOCK));
@@ -223,7 +223,7 @@ dspError_t CWaveWarp::CreateObject(CWaveWarp ** ppWaveWarp,
     ULONG dwFragBfrLength = pFragments->GetBufferLength();
 
     ULONG dwFragBlock = 0;
-    FRAG_PARMS * pstFragBfr = pFragments->GetFragmentBlock(dwFragBlock);
+    SFragParms * pstFragBfr = pFragments->GetFragmentBlock(dwFragBlock);
     if (!pstFragBfr)
     {
         return(Code(FRAGMENT_NOT_FOUND));
@@ -344,7 +344,7 @@ dspError_t CWaveWarp::SetPlayBuffer(void * pPlayBfr, ULONG dwPlayBfrLength)
 ////////////////////////////////////////////////////////////////////////////////////////
 dspError_t CWaveWarp::FillPlayBuffer(ULONG dwWaveBlock,
                                      ULONG dwWaveBlockLength,
-                                     FRAG_PARMS * pstCallFragment,
+                                     SFragParms * pstCallFragment,
                                      ULONG * pdwPlayLength,
                                      USHORT wNewSpeed)
 {
@@ -457,7 +457,7 @@ dspError_t CWaveWarp::FillPlayBuffer(ULONG dwWaveBlock,
 
 dspError_t CWaveWarp::FillPlayBuffer(ULONG dwWaveBlock,
                                      ULONG dwWaveBlockLength,
-                                     FRAG_PARMS * pstCallFragment,
+                                     SFragParms * pstCallFragment,
                                      ULONG * pdwPlayLength)
 {
     if (!m_pWaveBfr || !m_pPlayBfr)
@@ -587,7 +587,7 @@ dspError_t CWaveWarp::FillPlayBuffer(ULONG dwWaveBlock,
     while (TRUE);
 }
 
-dspError_t CWaveWarp::FillPlayBuffer(FRAG_PARMS * pstCallData,
+dspError_t CWaveWarp::FillPlayBuffer(SFragParms * pstCallData,
                                      ULONG dwWaveBlockLength,
                                      ULONG * pdwPlayLength,
                                      USHORT wNewSpeed)

@@ -166,15 +166,15 @@ long CProcessSpectrogram::Process(void * pCaller, ISaDoc * pDoc, CSaView * pView
     const CSpectroParm * pSpectroParm = & GetSpectroParm(); // get pointer to spectrogram parameters
     
 	UINT nBlockAlign = pDoc->GetBlockAlign(true);
-    SPGM_SETTINGS SpgmSetting;
-    SIG_PARMS Signal;
+    SSpectrogramSettings SpgmSetting;
+    SSigParms Signal;
     dspError_t Err;
     SpgmSetting.LwrFreq = (float)0;
     SpgmSetting.UprFreq = (float)(pDoc->GetSamplesPerSec()/2.0);
     SpgmSetting.preEmphSw = true;
     SpgmSetting.Bandwidth = pSpectroParm->Bandwidth();
     Signal.SmpRate = pDoc->GetSamplesPerSec();
-    SpgmSetting.FFTLength = (USHORT)(2 << USHORT(ceil(log(float( DspWin::CalcLength( SpgmSetting.Bandwidth, Signal.SmpRate, ResearchSettings.m_cWindow.m_nType))/log(2.0) + 0.0))));
+    SpgmSetting.FFTLength = (USHORT)(2 << USHORT(ceil(log(float( CDspWin::CalcLength( SpgmSetting.Bandwidth, Signal.SmpRate, ResearchSettings.m_cWindow.m_nType))/log(2.0) + 0.0))));
 
     {
         int minSpectraInterval = wSmpSize*(NyquistSpectraInterval(pDoc->GetSamplesPerSec())/2 + 1);
@@ -216,7 +216,7 @@ long CProcessSpectrogram::Process(void * pCaller, ISaDoc * pDoc, CSaView * pView
     // wide band results, if there is enough data to calculate (spectrogram doesn't
     // do that).
 
-    WORD wHalfCalcWindow = (WORD)(nBlockAlign * ((WORD)DspWin::CalcLength(SpgmSetting.Bandwidth, pDoc->GetSamplesPerSec(), ResearchSettings.m_cWindow.m_nType) / 2));
+    WORD wHalfCalcWindow = (WORD)(nBlockAlign * ((WORD)CDspWin::CalcLength(SpgmSetting.Bandwidth, pDoc->GetSamplesPerSec(), ResearchSettings.m_cWindow.m_nType) / 2));
 
     double fSpectraInterval = (dwDataLength/wSmpSize)/double(nWidth);
 

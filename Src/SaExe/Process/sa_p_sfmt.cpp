@@ -192,7 +192,7 @@ long CProcessSpectroFormants::ExtractFormants(ISaDoc * pDoc, DWORD dwWaveDataSta
                         break;
                     }
                     // for each spectrum
-                    FRAG_PARMS FragmentParmInfo = pFragments->GetFragmentParms(dwFragmentIndex);  // get fragment parameters
+                    SFragParms FragmentParmInfo = pFragments->GetFragmentParms(dwFragmentIndex);  // get fragment parameters
                     DWORD dwFrameStartIndex, dwFrameEndIndex;
 
                     dwFrameStartIndex = DWORD(FragmentParmInfo.dwOffset+FragmentParmInfo.wLength/2.-0.005*pDoc->GetSamplesPerSec());
@@ -279,7 +279,7 @@ long CProcessSpectroFormants::ExtractFormants(ISaDoc * pDoc, DWORD dwWaveDataSta
                                     }
                                 }
 #ifdef DUMP_FORMANT_TRACKS
-                                FRAG_PARMS FragmentParm = pFragments->GetFragmentParms(dwFormantIndex);
+                                SFragParms FragmentParm = pFragments->GetFragmentParms(dwFormantIndex);
                                 fprintf(hDump, "%lu\t%lu\t%u", dwFormantIndex, FragmentParm.dwOffset, FragmentParm.wLength);
                                 CSegment * pSegments = pDoc->GetSegment(PHONETIC);
                                 const bWithin = TRUE;
@@ -404,14 +404,14 @@ long CProcessSpectroFormants::ExtractFormants(ISaDoc * pDoc, DWORD dwWaveDataSta
                             SFormantFrame * pFormantFrame = pFormants->GetFormantFrame(dwFormantFrame++);
                             //                FILE *hDump = fopen("formants.txt", "w");
                             float MaxPowerInDecibels = FLT_MAX_NEG;
-                            for (USHORT nFormant = 0; nFormant <= MAX_NUM_FORMANTS; nFormant++)
+							for (USHORT nFormant = 0; nFormant <= MAX_NUM_FORMANTS; nFormant++)
                                 if (pFormantFrame->Formant[nFormant].Lpc.PowerInDecibels != (float)NA &&
                                         MaxPowerInDecibels > pFormantFrame->Formant[nFormant].Lpc.PowerInDecibels)
                                 {
                                     MaxPowerInDecibels = pFormantFrame->Formant[nFormant].Lpc.PowerInDecibels;    // find max power
                                 }
 #ifdef DUMP_FORMANT_TRACKS
-                            FRAG_PARMS FragmentParm = pFragments->GetFragmentParms(dwFormantIndex);
+                            SFragParms FragmentParm = pFragments->GetFragmentParms(dwFormantIndex);
                             fprintf(hDump, "%lu\t%lu\t%u", dwFormantIndex, FragmentParm.dwOffset, FragmentParm.wLength);
                             CSegment * pSegments = pDoc->GetSegment(PHONETIC);
                             const bWithin = TRUE;
@@ -516,13 +516,16 @@ BOOL CProcessSpectroFormants::AreFormantTracksReady()
     return IsDataReady();
 }
 
+/**
+* return the number of samples
+*/
 DWORD CProcessSpectroFormants::GetDataSize()
 {
-    return GetDataSize(sizeof(SFormantFreq));   // return processed data size in words (16 bit)
+    return GetDataSize(sizeof(SFormantFreq));
 }
 
 DWORD CProcessSpectroFormants::GetDataSize(size_t nElements)
 {
-    return (DWORD)CProcess::GetDataSize(nElements);   // return processed data size in LPC data structures
+    return (DWORD)CProcess::GetDataSize(nElements);		// return processed data size in LPC data structures
 }
 

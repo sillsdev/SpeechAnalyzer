@@ -42,9 +42,7 @@ protected:
 
     // Generated message map functions
 protected:
-    //{{AFX_MSG(CDlgSynthesis)
     virtual BOOL OnInitDialog();
-    //}}AFX_MSG
     DECLARE_MESSAGE_MAP()
 };
 

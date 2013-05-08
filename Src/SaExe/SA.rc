@@ -26,7 +26,7 @@ LANGUAGE LANG_NEUTRAL, SUBLANG_NEUTRAL
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 3,1,0,55
+ FILEVERSION 3,1,0,57
  PRODUCTVERSION 1,0,0,1
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
@@ -44,7 +44,7 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "SIL International"
             VALUE "FileDescription", "SA"
-            VALUE "FileVersion", "v3.1.0.55"
+            VALUE "FileVersion", "v3.1.0.57"
             VALUE "InternalName", "SA"
             VALUE "LegalCopyright", "© 1996-2013 SIL International (MSEA)"
             VALUE "ProductName", "SA"
@@ -2408,9 +2408,21 @@ BEGIN
         RIGHTMARGIN, 352
     END
 
+    IDD_ANNOTATION_ALIGN_PAGE, DIALOG
+    BEGIN
+    END
+
+    IDD_ANNOTATION_FINISH_PAGE, DIALOG
+    BEGIN
+    END
+
     IDD_EDITOR, DIALOG
     BEGIN
         BOTTOMMARGIN, 95
+    END
+
+    IDD_ANNOTATION_EDIT, DIALOG
+    BEGIN
     END
 
     IDD_EXPORT_TABLE, DIALOG
@@ -2443,6 +2455,10 @@ BEGIN
         RIGHTMARGIN, 280
         TOPMARGIN, 10
         BOTTOMMARGIN, 290
+    END
+
+    IDD_IMPORT_DIALOG, DIALOG
+    BEGIN
     END
 
     IDD_OPTIONSVIEWPAGE, DIALOG
@@ -2526,6 +2542,10 @@ BEGIN
         RIGHTMARGIN, 267
         TOPMARGIN, 7
         BOTTOMMARGIN, 156
+    END
+
+    IDD_ANNOTATION_GLOSS_PAGE, DIALOG
+    BEGIN
     END
 
     IDD_ANNOTATION_IMPORT_REF, DIALOG
@@ -4243,7 +4263,7 @@ IDC_MHANDN              CURSOR                  "res\\MedHandN.cur"
 
 STRINGTABLE
 BEGIN
-    VS_VERSION              "Version 3.1.0.55"
+    VS_VERSION              "Version 3.1.0.57"
     VS_COPYRIGHT            "© 1996-2013 SIL International (MSEA).\nAll Rights Reserved."
     IDR_MAINFRAME           "Speech Analyzer"
     IDR_SA_ANNTYPE          "\nSA\nSA Document\nWAV Files (*.wav)\n.wav\nannFileType\nANN File Type"
@@ -4290,7 +4310,7 @@ BEGIN
     IDS_ERROR_AUTOSAVE_FAIL "Unable to create the AutoSave directory '%1'\nThe AutoSave feature is disabled."
     IDS_ERROR_FORMAT_CHANNELS "Data in file '%1' has too many channels"
     IDS_ERROR_BADFILENAME_CHARS 
-                            "A filename can't contain any of the following characters: \\ / : * "" < > | "
+                            "A filename can't contain any of the following characters: \\ / : * ? "" < > | "
 END
 
 STRINGTABLE
@@ -4558,7 +4578,7 @@ BEGIN
     IDS_ERROR_MEMALLOC      "Out of memory. Free memory by closing other applications."
     IDS_ERROR_MEMLOCK       "Failed to lock allocated memory."
     IDS_ERROR_READFORMAT    "Can't read format chunk. File '%1' may be corrupted."
-    IDS_ERROR_FORMATPCM     "Unable to load %1\n\nFile format was not recognized. Try converting to 8 or 16 bit mono WAV format."
+    IDS_ERROR_FORMATPCM     "Unable to load %1\n\nFile format was not recognized. Please trry converting the source file to a 8 or 16 bit mono WAV format."
 END
 
 STRINGTABLE
@@ -5283,6 +5303,7 @@ BEGIN
     IDS_AUTOSAVE_RESTORE_TEMP 
                             "An unsaved recording was found.\nDo you wish to restore '%1'?\n\nThis file was last updated on %2.\nIf you select YES, Speech Analyzer will then ask you for a folder to restore the file to."
     IDS_CHOOSE_FOLDER       "Please choose a folder."
+    IDS_CHOOSE_SELFTEST_FOLDER "Please select the Self Test data directory."
 END
 
 #endif    // English (United States) resources

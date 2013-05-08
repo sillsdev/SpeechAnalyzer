@@ -612,7 +612,6 @@ void CProgressStatusBar::SetProgress(int nVal)
     }
 }
 
-
 /***************************************************************************/
 // CProgressStatusBar::SetPaneText Set text in status panes
 /***************************************************************************/

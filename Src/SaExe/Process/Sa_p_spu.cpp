@@ -236,7 +236,7 @@ long CProcessSpectrum::Process(void * pCaller, ISaDoc * pDoc, DWORD dwFrameStart
     switch (cWindow.m_nLengthMode)
     {
     case CWindowSettings::kBandwidth:
-        nWindowSize = DspWin::CalcLength( cWindow.m_dBandwidth, pDoc->GetSamplesPerSec(), cWindow.m_nType);
+        nWindowSize = CDspWin::CalcLength( cWindow.m_dBandwidth, pDoc->GetSamplesPerSec(), cWindow.m_nType);
         break;
     case CWindowSettings::kTime:
         nWindowSize = (int)(0.001*cWindow.m_dTime*pDoc->GetSamplesPerSec() + 0.5);
@@ -244,7 +244,7 @@ long CProcessSpectrum::Process(void * pCaller, ISaDoc * pDoc, DWORD dwFrameStart
     default:
         if (cWindow.m_bEquivalentLength)
         {
-            nWindowSize = DspWin::CalcEquivalentLength(nWindowSize, cWindow.m_nType);
+            nWindowSize = CDspWin::CalcEquivalentLength(nWindowSize, cWindow.m_nType);
         }
         break;
     }
@@ -265,7 +265,7 @@ long CProcessSpectrum::Process(void * pCaller, ISaDoc * pDoc, DWORD dwFrameStart
     }
 
     // Initialize frame structure.
-    SIG_PARMS stFrameParm;
+    SSigParms stFrameParm;
     stFrameParm.Length = nWindowSize;
     stFrameParm.SmpRate = pDoc->GetSamplesPerSec();
     if (wSmpSize == 1)
@@ -276,10 +276,10 @@ long CProcessSpectrum::Process(void * pCaller, ISaDoc * pDoc, DWORD dwFrameStart
     {
         stFrameParm.SmpDataFmt = PCM_2SSHORT;
     }
-    stFrameParm.Source = (SIG_SOURCE)pDoc->GetGender();
+    stFrameParm.Source = (ESIG_SOURCE)pDoc->GetGender();
 
     // Initialize spectrum settings.
-    SPECT_SETTINGS stSpectSetting;
+    SSpectrumSettings stSpectSetting;
     stSpectSetting.wLength = m_nSpectralBands;
     stSpectSetting.nScaleSelect = LINEAR;  // save as linear values, convert in plot code to dB after consolidating each band
     stSpectSetting.fSmoothFreq = (float)(m_stParmProc.nSmoothLevel+1.F)*100.F;
@@ -336,7 +336,7 @@ long CProcessSpectrum::Process(void * pCaller, ISaDoc * pDoc, DWORD dwFrameStart
     // Calculate standard spectrum if in static calculation mode.
     dspError_t Err;
     CSpectrum * poSpectrum = NULL;
-    SPECT_PARMS stSpectParm;
+    SSpectrumParms stSpectParm;
     memset(&stSpectParm,0,sizeof(stSpectParm));
     if (SpectraSelected.bCepstralSpectrum)
     {
@@ -358,14 +358,14 @@ long CProcessSpectrum::Process(void * pCaller, ISaDoc * pDoc, DWORD dwFrameStart
     // Calculate LPC spectrum only if cursors aligned to a single voiced fragment.
     ULONG dwFrameStartIndex = nWindowStart;
     ULONG dwFragmentIndex = pFragments->GetFragmentIndex(dwFrameStartIndex);
-    FRAG_PARMS stFragment = pFragments->GetFragmentParms(dwFragmentIndex);
+    SFragParms stFragment = pFragments->GetFragmentParms(dwFragmentIndex);
     UNUSED_ALWAYS(stFragment);
 
     CProcessGrappl * pAutoPitch = pDoc->GetGrappl();
     BOOL bVoiced = pAutoPitch->IsVoiced(pDoc, nWindowStart*wSmpSize);
 
     CLinPredCoding * poLpcObject = NULL;
-    LPC_MODEL * pstLpcModel = NULL;
+    SLPCModel * pstLpcModel = NULL;
     double LpcError = (double)UNDEFINED_DATA;
 
     if ((SpectraSelected.bLpcSpectrum) /*!! temporarily removed to study LPC results on various start positions
@@ -378,7 +378,7 @@ long CProcessSpectrum::Process(void * pCaller, ISaDoc * pDoc, DWORD dwFrameStart
         //!!Ensure frame length less than FFT length to prevent aliasing
 
         // Specify LPC settings.
-        LPC_SETTINGS stLpcSetting;
+        SLPCSettings stLpcSetting;
 
         stLpcSetting.Process.Flags = PRED_COEFF | GAIN | POWER_SPECTRUM | FORMANTS | PRED_SIGNAL | MEAN_SQ_ERR | ENERGY| WINDOW_SIGNAL;
         ;
@@ -532,7 +532,7 @@ long CProcessSpectrum::Process(void * pCaller, ISaDoc * pDoc, DWORD dwFrameStart
     const double MaxFormantBandwidth = 1000.F;   // determined empirically
     const int MinFormantFrequency = int(70.F);         // based on highpass cut-in frequency
     unsigned short j = 0;
-    for (unsigned short i = 0; i <= MAX_NUM_FORMANTS; i++)
+	for (unsigned short i = 0; i <= MAX_NUM_FORMANTS; i++)
     {
         if (poSpectrum)
         {

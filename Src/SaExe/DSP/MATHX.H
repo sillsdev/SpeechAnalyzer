@@ -19,14 +19,14 @@
 #define FLT_MIN_NEG  (-FLT_MIN)
 
 // Type definitions
-typedef struct SSTATISTIC
+struct SStatistic
 {
     double Mean;
     double StdDev;
-} STATISTIC;
+};
 
 // Miscellaneous definitions
-enum Comparison {LESS = -1, EQUAL = 0, GREATER = 1};
+enum ECOMPARISON {LESS = -1, EQUAL = 0, GREATER = 1};
 
 // Function prototypes
 float BessI0(float x);

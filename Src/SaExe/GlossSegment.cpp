@@ -248,7 +248,7 @@ long CGlossSegment::Process(void * pCaller, CSaDoc * pSaDoc, int nProgress, int 
 
 	// get parsing parameters
     CParseParm * pCParseParm = pMainFrame->GetCParseParm(); 
-    float fFactor = (float)pDoc->GetUnprocessedDataSize() / (float)dwLoopEnd;	// size factor
+    float fFactor = (float)pDoc->GetDataSize() / (float)dwLoopEnd;	// size factor
 
 	// since detection is always too late or too early, we will add
 	// and subtract a 0.1 margin from the beginning and end
@@ -378,7 +378,7 @@ long CGlossSegment::Process(void * pCaller, CSaDoc * pSaDoc, int nProgress, int 
                 {
 					
                     DWORD dwPhoneticStop = nBlockAlign * (DWORD)(dwBreakStart * fFactor/nBlockAlign);
-                    dwPhoneticStop = pDoc->SnapCursor( STOP_CURSOR, dwPhoneticStop, dwPhoneticStop, pDoc->GetUnprocessedDataSize(), SNAP_RIGHT);
+                    dwPhoneticStop = pDoc->SnapCursor( STOP_CURSOR, dwPhoneticStop, dwPhoneticStop, pDoc->GetDataSize(), SNAP_RIGHT);
                     if (dwPhoneticStop > pPhonetic->GetOffset(nPhonetic))
                     {
                         pPhonetic->Adjust(pDoc, nPhonetic, pPhonetic->GetOffset(nPhonetic), dwPhoneticStop - pPhonetic->GetOffset(nPhonetic));
@@ -421,7 +421,7 @@ long CGlossSegment::Process(void * pCaller, CSaDoc * pSaDoc, int nProgress, int 
     if ((nPhonetic != -1) && (pPhonetic->GetDuration(nPhonetic)==0))
     {
         DWORD dwPhoneticStop = nBlockAlign*(DWORD)(dwBreakStart * fFactor/nBlockAlign);
-        dwPhoneticStop = pDoc->SnapCursor(STOP_CURSOR, dwPhoneticStop,dwPhoneticStop,pDoc->GetUnprocessedDataSize(),SNAP_RIGHT);
+        dwPhoneticStop = pDoc->SnapCursor(STOP_CURSOR, dwPhoneticStop,dwPhoneticStop,pDoc->GetDataSize(),SNAP_RIGHT);
         if (dwPhoneticStop > pPhonetic->GetOffset(nPhonetic))
         {
             pPhonetic->Adjust(pDoc,nPhonetic, pPhonetic->GetOffset(nPhonetic),dwPhoneticStop - pPhonetic->GetOffset(nPhonetic));
@@ -446,7 +446,7 @@ long CGlossSegment::Process(void * pCaller, CSaDoc * pSaDoc, int nProgress, int 
                 else
                 {
                     // Last phonetic segment
-                    pPhonetic->Adjust(pDoc, nPhonetic, pPhonetic->GetOffset(nPhonetic),pDoc->GetUnprocessedDataSize() - 1 - pPhonetic->GetOffset(nPhonetic));
+                    pPhonetic->Adjust(pDoc, nPhonetic, pPhonetic->GetOffset(nPhonetic),pDoc->GetDataSize() - 1 - pPhonetic->GetOffset(nPhonetic));
                 }
             }
             nPhonetic = nNext;

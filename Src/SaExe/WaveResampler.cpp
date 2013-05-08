@@ -79,10 +79,10 @@ double CWaveResampler::BessI0(float x)
     return ans;
 }
 
-void CWaveResampler::CalculateCoefficients(DWORD inSampleRate,
-        WORD sampleSize, // wBitsPerSample bit size for one sample on one channel
-        double *& coeffs,
-        size_t & coeffsLen)
+void CWaveResampler::CalculateCoefficients( DWORD inSampleRate,
+											WORD sampleSize, // wBitsPerSample bit size for one sample on one channel
+											double *& coeffs,
+											size_t & coeffsLen)
 {
 
     size_t groupDelay = 0;

@@ -675,8 +675,7 @@ void CWave::Stop()
 /***************************************************************************/
 void CWave::NextBlock()
 {
-
-    TRACE("NextBlock\n");
+    //TRACE("NextBlock\n");
     if (!m_bPlayDone)
     {
         m_nActiveBlock = ++m_nActiveBlock % m_kPlayBuffers;   // switch buffers
@@ -748,7 +747,6 @@ void CWave::NextBlock()
 /***************************************************************************/
 void CWave::StoreBlock()
 {
-
     // find the maximum level in the recorded data
     HPSTR pSource = GetBufferPointer(m_nActiveBlock); // pointer to source buffer
     int nMaxValue = 0;

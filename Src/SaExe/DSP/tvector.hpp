@@ -1,12 +1,12 @@
 // *******************************************************************
-//  see tvector.h for complete documentation of functions
+//  see CTVector.h for complete documentation of functions
 //
 //  vector class consistent with a subset of the standard C++ vector class
 //  as defined in the draft ANSI standard (part of standard template library)
 // *******************************************************************
 #include <assert.h>
 
-tvector::tvector()
+CTVector::CTVector()
 //postcondition: vector has a capacity of 0 items
     : mySize(0),
       myCapacity(0),
@@ -16,7 +16,7 @@ tvector::tvector()
 }
 
 
-tvector::tvector(int size)
+CTVector::CTVector(int size)
 // precondition: size >= 0
 // postcondition: vector has size/capacity of size items
    : mySize(size),
@@ -26,7 +26,7 @@ tvector::tvector(int size)
 }
 
 
-tvector::tvector(int size, const Type & fillValue)
+CTVector::CTVector(int size, const Type & fillValue)
 // precondition: size >= 0
 // postcondition: vector has size/capacity of size items, all of which are set
 //                by assignment to fillValue after default construction
@@ -43,7 +43,7 @@ tvector::tvector(int size, const Type & fillValue)
 }
 
 
-tvector::tvector(const tvector & vec)
+CTVector::CTVector(const CTVector & vec)
 // postcondition: vector is a copy of vec
     : mySize(vec.size()),
       myCapacity(vec.capacity())
@@ -58,7 +58,7 @@ tvector::tvector(const tvector & vec)
 }
 
 
-tvector::~tvector ()
+CTVector::~CTVector ()
 // postcondition: vector is destroyed
 {
     delete [] myList;
@@ -66,8 +66,8 @@ tvector::~tvector ()
 }
 
 
-const tvector &
-tvector::operator = (const tvector & rhs)
+const CTVector &
+CTVector::operator = (const CTVector & rhs)
 // postcondition: normal assignment via copying has been performed;
 //                vector size and capacity match rhs
 {
@@ -90,7 +90,7 @@ tvector::operator = (const tvector & rhs)
 
 
 
-int tvector::capacity() const
+int CTVector::capacity() const
 // postcondition: returns vector's size (number of memory cells
 //                allocated for vector)
 {
@@ -98,14 +98,14 @@ int tvector::capacity() const
 }
 
 
-int tvector::size() const
+int CTVector::size() const
 {
     return mySize;
 }
 
 
 
-void tvector::push_back(const Type & t)
+void CTVector::push_back(const Type & t)
 {
     if (mySize >= myCapacity)
     {
@@ -116,7 +116,7 @@ void tvector::push_back(const Type & t)
 }
 
 
-void tvector::pop_back()
+void CTVector::pop_back()
 {
     if (mySize > 0)
     {
@@ -126,7 +126,7 @@ void tvector::pop_back()
 
 
 
-Type & tvector::operator [] (int k)
+Type & CTVector::operator [] (int k)
 // description: range-checked indexing, returning kth item
 // precondition: 0 <= k < length()
 // postcondition: returns the kth item
@@ -139,7 +139,7 @@ Type & tvector::operator [] (int k)
 }
 
 
-const Type & tvector::operator [] (int k) const
+const Type & CTVector::operator [] (int k) const
 // safe indexing, returning const reference to avoid modification
 // precondition: 0 <= index < length
 // postcondition: return index-th item
@@ -153,7 +153,7 @@ const Type & tvector::operator [] (int k) const
 }
 
 
-void tvector::resize(int newSize)
+void CTVector::resize(int newSize)
 // description:  resizes the vector to newSize elements
 // precondition: the current capacity of vector is capacity(); newSize >= 0
 //               the current size is size()
@@ -182,13 +182,13 @@ void tvector::resize(int newSize)
     myList = newList;
 }
 
-Type & tvector::back()
+Type & CTVector::back()
 {
   assert(size() > 0);
   return (*this)[size()-1];
 }
 
-void tvector::reserve(int size)
+void CTVector::reserve(int size)
 {
     // punt to resize in current implementation
     
@@ -201,17 +201,17 @@ void tvector::reserve(int size)
 }
 
 
-void tvector::clear()
+void CTVector::clear()
 {
     mySize = 0;
 }
 
-tvector::iterator tvector::begin()
+CTVector::iterator CTVector::begin()
 {
   return myList;
 }
 
-tvector::iterator tvector::end()
+CTVector::iterator CTVector::end()
 {
   return myList + size();
 }

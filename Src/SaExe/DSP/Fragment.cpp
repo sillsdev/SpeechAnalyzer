@@ -88,7 +88,7 @@
 *          :                                                                  *
 *   #include "Fragment.h"                                                     *
 *          :                                                                  *
-*   SIG_PARMS stFrameParm;                                                    *
+*   SSigParms stFrameParm;                                                    *
 *   stFrameParm.Length = dwFrameSize / wSmpSize;                              *
 *   stFrameParm.SmpRate = pDoc->GetSamplesPerSec();							  *
 *   if (wSmpSize == 1) stFrameParm.SmpDataFmt = PCM_UBYTE;                    *
@@ -97,14 +97,14 @@
 *          :                                                                  *
 *   (load frame buffer)                                                       *
 *          :                                                                  *
-*   PITCH_PARMS stPitchParm;                                                  *
+*   SPitchParms stPitchParm;                                                  *
 *          :                                                                  *
 *   stPitchParm.psContour = (short *)new short[stPitchParm.dwContourLength];  *
 *          :                                                                  *
 *   (load pitch contour buffer)                                               *
 *          :                                                                  *
 *   CFragment *poFragment;                                                    *
-*   FRAG_PARMS *pstFragParm;												  *
+*   SFragParms *pstFragParm;												  *
 *   dspError_t Err = CFragment::CreateObject(&poFragment, , &pstFragParm,     *
 *                                     stFrameParm, stPitchParm);              *
 *   if (Err) return;                                                          *
@@ -187,9 +187,9 @@ float CFragment::Version(void)
 ////////////////////////////////////////////////////////////////////////////////////////
 // Class function to construct fragment object if parameters are valid.               //
 ////////////////////////////////////////////////////////////////////////////////////////
-dspError_t CFragment::CreateObject(CFragment ** ppoFragment, FRAG_PARMS * pstFragParmBfr, uint32 dwFragParmBfrLength,
-                                   SIG_PARMS & stSigParm, void * pWaveBfr, uint32 dwWaveBfrLength,
-                                   PITCH_PARMS & stPitchParm, short * psPitchBfr, uint32 dwPitchBfrLength)
+dspError_t CFragment::CreateObject(CFragment ** ppoFragment, SFragParms * pstFragParmBfr, uint32 dwFragParmBfrLength,
+                                   SSigParms & stSigParm, void * pWaveBfr, uint32 dwWaveBfrLength,
+                                   SPitchParms & stPitchParm, short * psPitchBfr, uint32 dwPitchBfrLength)
 {
 // Validate parameters passed.
     if (!ppoFragment)
@@ -251,7 +251,7 @@ dspError_t CFragment::CreateObject(CFragment ** ppoFragment, FRAG_PARMS * pstFra
 ////////////////////////////////////////////////////////////////////////////////////////
 // Class function to validate signal parameters.                                      //
 ////////////////////////////////////////////////////////////////////////////////////////
-dspError_t CFragment::ValidateSignalParms(SIG_PARMS & stSigParm)
+dspError_t CFragment::ValidateSignalParms(SSigParms & stSigParm)
 {
     if (!stSigParm.Length)
     {
@@ -276,7 +276,7 @@ dspError_t CFragment::ValidateSignalParms(SIG_PARMS & stSigParm)
 ////////////////////////////////////////////////////////////////////////////////////////
 // Class function to validate pitch parameters.                                       //
 ////////////////////////////////////////////////////////////////////////////////////////
-dspError_t CFragment::ValidatePitchParms(PITCH_PARMS & stPitchParm)
+dspError_t CFragment::ValidatePitchParms(SPitchParms & stPitchParm)
 {
     if (!stPitchParm.dwContourLength)
     {
@@ -302,9 +302,9 @@ dspError_t CFragment::ValidatePitchParms(PITCH_PARMS & stPitchParm)
 ////////////////////////////////////////////////////////////////////////////////////////
 // Fragment object constructor.                                                       //
 ////////////////////////////////////////////////////////////////////////////////////////
-CFragment::CFragment(SIG_PARMS & stSigParm, void * pWaveBfr, uint32 dwWaveBfrLength,
-                     PITCH_PARMS & stPitchParm, short * psPitchBfr, uint32 dwPitchBfrLength,
-                     FRAG_PARMS * pstFragParmBfr, uint32 dwFragParmBfrLength)
+CFragment::CFragment(SSigParms & stSigParm, void * pWaveBfr, uint32 dwWaveBfrLength,
+                     SPitchParms & stPitchParm, short * psPitchBfr, uint32 dwPitchBfrLength,
+                     SFragParms * pstFragParmBfr, uint32 dwFragParmBfrLength)
 {
 // Update object member variables.
     m_pWaveBfr = pWaveBfr;

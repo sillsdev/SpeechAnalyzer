@@ -54,13 +54,11 @@ protected:
 
     // Generated message map functions
     // CLW 1.07a
-    //{{AFX_MSG(CDlgAdvancedSegment)
     virtual BOOL OnInitDialog();
     afx_msg void OnSegmentWidthScroll();
     afx_msg void OnChangeMinScroll();
     afx_msg void OnZeroCrossMinScroll();
     afx_msg void OnBnClickedApply();
-    //}}AFX_MSG
     DECLARE_MESSAGE_MAP()
     virtual void OnOK();
     virtual void OnCancel();

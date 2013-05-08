@@ -752,11 +752,12 @@ void CMainFrame::OnUpdateToolsOptions(CCmdUI * pCmdUI)
 }
 
 /***************************************************************************/
-// CMainFrame::OnToolsSelfTest Starts SelfTest
+// CMainFrame::OnToolsSelfTest Starts CSelfTest
 /***************************************************************************/
 void CMainFrame::OnToolsSelfTest()
 {
-    CSelfTest Test;
+    CSelfTestRunner test;
+	test.Do();
 }
 
 /***************************************************************************/
@@ -1136,7 +1137,7 @@ void CMainFrame::OnUpdateEditReplace(CCmdUI * pCmdUI)
 
     if (pDoc)
     {
-        pCmdUI->Enable(pDoc->GetUnprocessedDataSize() != 0); // enable if data is available
+        pCmdUI->Enable(pDoc->GetDataSize() != 0); // enable if data is available
     }
     else
     {
@@ -1894,7 +1895,7 @@ void CMainFrame::OnEqualizeLength()
                 DWORD SrcLen = (pSrcView->GetStopCursorPosition() - pSrcView->GetStartCursorPosition() + wSrcSmpSize) / wSrcSmpSize;
                 DWORD wTargSmpSize = pTargDoc->GetSampleSize();
                 DWORD TargStop = pTarg->GetStartCursorPosition() + (DWORD)((double)SrcLen * (double)pTargDoc->GetSamplesPerSec() / (double)pSrcDoc->GetSamplesPerSec() + 0.5) * wTargSmpSize;
-                if (TargStop > pTargDoc->GetUnprocessedDataSize())
+                if (TargStop > pTargDoc->GetDataSize())
                 {
                     AfxMessageBox(IDS_EQUALIZE_TOO_FAR_RIGHT);
                 }
@@ -2029,7 +2030,7 @@ void CMainFrame::DeleteWbProcesses(BOOL bSwitchBack)
             if (m_apWbProcess[nLoop][nFilterLoop])
             {
                 CDocument * pDoc = IsProcessUsed(nLoop);
-                if (pDoc && bSwitchBack)
+                if ((pDoc!=NULL) && (bSwitchBack))
                 {
                     ((CSaDoc *)pDoc)->SetWbProcess(0);    // switch back to plain
                 }

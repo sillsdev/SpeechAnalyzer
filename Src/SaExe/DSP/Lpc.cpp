@@ -202,10 +202,10 @@
 *          :                                                               *
 *   #include "ASAPDSP.h"                                                   *
 *          :                                                               *
-*   SIG_PARMS Signal;                                                      *
-*   LPC_SETTINGS LpcSetting;                                               *
+*   SSigParms Signal;                                                      *
+*   SLPCSettings LpcSetting;                                               *
 *   CLinPredCoding *pLpcObject;                                            *
-*   LPC_MODEL pLpcModel;                                                   *
+*   SLPCModel pLpcModel;                                                   *
 *   dspError_t Err;                                                        *
 *                                                                          *
 *   Signal.Start = (void *)pSpeech;                                        *
@@ -335,8 +335,8 @@ float CLinPredCoding::Version(void)
 ////////////////////////////////////////////////////////////////////////////////////////
 // Class function to validate LPC settings and construct object.                      //
 ////////////////////////////////////////////////////////////////////////////////////////
-dspError_t CLinPredCoding::CreateObject(CLinPredCoding ** ppLpcObject, LPC_SETTINGS & LpcSetting,
-                                        SIG_PARMS & Signal, USHORT wFFTLength)
+dspError_t CLinPredCoding::CreateObject(CLinPredCoding ** ppLpcObject, SLPCSettings & LpcSetting,
+                                        SSigParms & Signal, USHORT wFFTLength)
 {
     if (!ppLpcObject)
     {
@@ -366,7 +366,7 @@ dspError_t CLinPredCoding::CreateObject(CLinPredCoding ** ppLpcObject, LPC_SETTI
         return(Code(INVALID_FFT_LENGTH));
     }
 
-    LPC_PARMS LpcParm;
+    SLPCParms LpcParm;
     LpcParm.ppCovarMatrix = NULL;
     LpcParm.pScratchArray = NULL;
     LpcParm.Model.pFrameBfr = NULL;
@@ -510,7 +510,7 @@ dspError_t CLinPredCoding::CreateObject(CLinPredCoding ** ppLpcObject, LPC_SETTI
     }
     if (LpcParm.Process.ParmSet.bFormants)
     {
-        LpcParm.Model.pPole = (COMPLEX_POLAR_FLOAT *)new COMPLEX_POLAR_FLOAT[LpcParm.Model.nOrder];
+        LpcParm.Model.pPole = (SComplexPolarFloat *)new SComplexPolarFloat[LpcParm.Model.nOrder];
         if (!LpcParm.Model.pPole)
         {
             RetMemErr;
@@ -586,7 +586,7 @@ dspError_t CLinPredCoding::CreateObject(CLinPredCoding ** ppLpcObject, LPC_SETTI
 ////////////////////////////////////////////////////////////////////////////////////////
 // LPC object constructor.                                                            //
 ////////////////////////////////////////////////////////////////////////////////////////
-CLinPredCoding::CLinPredCoding(LPC_PARMS & LpcParm, SIG_PARMS & Signal, USHORT wFFTLength)
+CLinPredCoding::CLinPredCoding(SLPCParms & LpcParm, SSigParms & Signal, USHORT wFFTLength)
 {
     //Copy LPC and signal parameters into object member variables.
     m_Signal = Signal;
@@ -606,7 +606,7 @@ CLinPredCoding::~CLinPredCoding()
 ////////////////////////////////////////////////////////////////////////////////////////
 // Class function to free memory allocated for LPC parameters.                        //
 ////////////////////////////////////////////////////////////////////////////////////////
-void CLinPredCoding::FreeLpcMem(LPC_PARMS & LpcParm)
+void CLinPredCoding::FreeLpcMem(SLPCParms & LpcParm)
 {
     if (LpcParm.ppCovarMatrix)
     {
@@ -670,7 +670,7 @@ void CLinPredCoding::FreeLpcMem(LPC_PARMS & LpcParm)
 ////////////////////////////////////////////////////////////////////////////////////////
 // Object function to calculate LPC model parameters.                                 //
 ////////////////////////////////////////////////////////////////////////////////////////
-dspError_t CLinPredCoding::GetLpcModel(LPC_MODEL ** ppLpcModel, uint8 * pFrame)   //for 8-bit unsigned data
+dspError_t CLinPredCoding::GetLpcModel(SLPCModel ** ppLpcModel, uint8 * pFrame)   //for 8-bit unsigned data
 {
     if (!ppLpcModel)
     {
@@ -767,7 +767,7 @@ dspError_t CLinPredCoding::GetLpcModel(LPC_MODEL ** ppLpcModel, uint8 * pFrame) 
     return(DONE);
 }
 
-dspError_t CLinPredCoding::GetLpcModel(LPC_MODEL ** ppLpcModel, short * pFrame)   //for 16-bit signed data
+dspError_t CLinPredCoding::GetLpcModel(SLPCModel ** ppLpcModel, short * pFrame)   //for 16-bit signed data
 {
     if (!ppLpcModel)
     {
@@ -861,7 +861,7 @@ dspError_t CLinPredCoding::GetLpcModel(LPC_MODEL ** ppLpcModel, short * pFrame) 
 }
 
 
-dspError_t CLinPredCoding::GetLpcModel(LPC_MODEL ** ppLpcModel, void * pFrame)
+dspError_t CLinPredCoding::GetLpcModel(SLPCModel ** ppLpcModel, void * pFrame)
 {
     dspError_t Err = Code(INVALID_FRAME_PTR);
 
@@ -940,7 +940,7 @@ void CLinPredCoding::ApplyWindow()
 {
     double dTotalInput = 0;
     double dTotalWindow = 0.25;
-    DspWin cWindow = DspWin::FromLength(m_LpcParm.Model.nFrameLen, m_Signal.SmpRate, ResearchSettings.m_cWindow.m_nType);
+    CDspWin cWindow = CDspWin::FromLength(m_LpcParm.Model.nFrameLen, m_Signal.SmpRate, ResearchSettings.m_cWindow.m_nType);
     const double * Window = cWindow.WindowDouble();
 
     for (USHORT i = 0; i < m_LpcParm.Model.nFrameLen; i++)
@@ -1190,7 +1190,7 @@ void CLinPredCoding::CalcCovarMatrix(USHORT nMethod)
         int i;
 
         // Reference location where complex spectral values will be returned.
-        COMPLEX_RECT_FLOAT * pfSpectCoeff = (COMPLEX_RECT_FLOAT *)&buffer[0];
+        SComplexRectFloat * pfSpectCoeff = (SComplexRectFloat *)&buffer[0];
 
         double    dPower = pfSpectCoeff[0].real*pfSpectCoeff[0].real;
 
@@ -1457,7 +1457,7 @@ void CLinPredCoding::CalcCrossSectAreas(void)
 extern "C" int cdecl Compare(const void * pPole1, const void * pPole2)
 {
     // Sort by increasing phase.
-    double dPhaseDiff = ((COMPLEX_POLAR_FLOAT *)pPole1)->phase - ((COMPLEX_POLAR_FLOAT *)pPole2)->phase;
+    double dPhaseDiff = ((SComplexPolarFloat *)pPole1)->phase - ((SComplexPolarFloat *)pPole2)->phase;
     if (dPhaseDiff > 0.)
     {
         return(GREATER);
@@ -1467,7 +1467,7 @@ extern "C" int cdecl Compare(const void * pPole1, const void * pPole2)
         return(LESS);
     }
     // Then by increasing magnitude.
-    double dMagDiff = ((COMPLEX_POLAR_FLOAT *)pPole1)->mag - ((COMPLEX_POLAR_FLOAT *)pPole2)->mag;
+    double dMagDiff = ((SComplexPolarFloat *)pPole1)->mag - ((SComplexPolarFloat *)pPole2)->mag;
     if (dMagDiff > 0.)
     {
         return(GREATER);
@@ -1609,7 +1609,7 @@ static BOOL AssessBest(SFormantAssessment & param1, SFormantAssessment & param2)
     return FALSE;
 }
 
-static BOOL frequencyLess(FORMANT_VALUES & param1, FORMANT_VALUES & param2)
+static BOOL frequencyLess(SFormantValues & param1, SFormantValues & param2)
 {
     if (param1.FrequencyInHertz < param2.FrequencyInHertz)
     {
@@ -1633,7 +1633,7 @@ void CLinPredCoding::CalcFormants(void)
     if (!Err)
     {
         // Select formants and store them in the LPC model array.
-        //FORMANT_VALUES *Formant;
+        //SFormantValues *Formant;
         //USHORT nFormants;
         USHORT wSpectLength = (USHORT)(m_wFFTLength/2 + 1);
         double dFFTScale = (double)m_Signal.SmpRate / (double)m_wFFTLength;
@@ -1641,7 +1641,7 @@ void CLinPredCoding::CalcFormants(void)
         //dspError_t Err = pFormantPicker->PickFormants(&Formant, &nFormants, (float *)LogPwrSpectrum, wSpectLength,
         //                                       dFFTScale, m_LpcParm.Model.Formant[0].FrequencyInHertz);
         ULONG dwBumpCount;
-        BUMP_TABLE_ENTRY * BumpTable;
+        SBumpTableEntry * BumpTable;
         dspError_t Err = pFormantPicker->GetBumps(&BumpTable, (uint32 *)&dwBumpCount, (float *)LogPwrSpectrum, (ULONG)wSpectLength);
         USHORT nFormants = (USHORT)min(dwBumpCount, (ULONG)nMaxFormants);
 
@@ -1690,12 +1690,12 @@ void CLinPredCoding::CalcFormants(void)
 
     double TwoPi = 2.*PI;
     const double MinHalfPwrRadius = (6. - sqrt(30.)) / 2.;  // minimum magnitude required for a half power bandwidth
-    vector<FORMANT_VALUES> unfilteredFormants;
+    vector<SFormantValues> unfilteredFormants;
     unfilteredFormants.reserve((unsigned int)(m_LpcParm.Model.nPoles)); // reserve space to prevent reallocation
 
     for (USHORT i = 0; i < m_LpcParm.Model.nPoles; i++)
     {
-        FORMANT_VALUES formant;
+        SFormantValues formant;
         if (m_LpcParm.Model.pPole[i].phase > PI)
         {
             break;    // The poles are sorted by phase we do not need both complex conjugate pairs
@@ -1805,7 +1805,7 @@ void CLinPredCoding::CalcFormants(void)
         {
             assessment[i].index = i; // save index so later we can sort and keep track of original data
 
-            FORMANT_VALUES & formant = unfilteredFormants[i];
+            SFormantValues & formant = unfilteredFormants[i];
 
             // Delete if real pole (not resonant)
             if (Round(formant.FrequencyInHertz) == 0 || Round(formant.FrequencyInHertz) == Round(m_Signal.SmpRate/2.))
@@ -1846,7 +1846,7 @@ void CLinPredCoding::CalcFormants(void)
         ULONG nUpperIndex = 0;
         for (USHORT i = 0; i < unfilteredFormants.size(); i++)
         {
-            FORMANT_VALUES & formant = unfilteredFormants[i];
+            SFormantValues & formant = unfilteredFormants[i];
             while (dUpperFrequency < formant.FrequencyInHertz + 2500)
             {
                 if (nUpperIndex < unfilteredFormants.size())
@@ -1882,7 +1882,7 @@ void CLinPredCoding::CalcFormants(void)
         for (USHORT i = 0; i < nDesiredFormants && i < assessment.size(); i++)
         {
             SFormantAssessment & assess = assessment[i];
-            FORMANT_VALUES & formant = unfilteredFormants[assess.index];
+            SFormantValues & formant = unfilteredFormants[assess.index];
 
             if (j < nMaxFormants)
             {
@@ -1939,70 +1939,6 @@ void CLinPredCoding::CalcPredSignal(void)
 
         m_LpcParm.Model.pPredValue[i] = (fPredValue);
     }
-    //m_LpcParm.Model.dGain = m_LpcParm.ppCovarMatrix[0][0] / m_LpcParm.Model.dGain;                     //!!temp?
-    /*
-    //m_LpcParm.Model.nPredValues = (USHORT)(m_LpcParm.Model.nFrameLen - m_LpcParm.Model.nOrder);
-    m_LpcParm.Model.nPredValues = (USHORT)m_LpcParm.Model.nFrameLen;
-
-    #ifdef DUMP_PRED
-    FILE *FrameDump = fopen("sig.txt", "w");
-    // for (USHORT k = m_LpcParm.Model.nOrder; k < m_LpcParm.Model.nFrameLen; k++)
-    for (USHORT k = 0; k < m_LpcParm.Model.nFrameLen; k++)
-    fprintf(FrameDump, "%d ", m_LpcParm.Model.pFrameBfr[k]);
-    fclose(FrameDump);
-
-    FILE *PredSmp = fopen("predsmp.txt", "w");
-    #endif
-
-    for (USHORT i = 0; i < m_LpcParm.Model.nOrder; i++)
-    {
-    m_LpcParm.Model.pPredValue[i] = m_LpcParm.Model.pFrameBfr[i];
-    #ifdef DUMP_PRED
-    fprintf(PredSmp, "%d ", m_LpcParm.Model.pPredValue[i]);
-    #endif
-    }
-    //for (USHORT i = 0; i < m_LpcParm.Model.nPredValues; i++)
-    for (i = m_LpcParm.Model.nOrder; i < m_LpcParm.Model.nPredValues; i++)
-    {
-    double fPredValue = 0.;
-    for (USHORT j = 1; j <= m_LpcParm.Model.nOrder; j++)
-    fPredValue += m_LpcParm.Model.pPredCoeff[j]*
-    //(double)m_LpcParm.Model.pFrameBfr[i+m_LpcParm.Model.nOrder-j];
-    (double)m_LpcParm.Model.pFrameBfr[i-j];
-
-    m_LpcParm.Model.pPredValue[i] = (short)Round(fPredValue); //!!overflow?
-    #ifdef DUMP_PRED
-    fprintf(PredSmp, "%d ", m_LpcParm.Model.pPredValue[i]);
-    #endif
-    //m_LpcParm.Model.dGain += (double)m_LpcParm.Model.pPredValue[i]*(double)m_LpcParm.Model.pPredValue[i];     //!!temp, create sep function?
-    }
-    //m_LpcParm.Model.dGain = m_LpcParm.ppCovarMatrix[0][0] / m_LpcParm.Model.dGain;                     //!!temp?
-    #ifdef DUMP_PRED
-    fclose(PredSmp);
-    FILE *PredDump = fopen("predsig.txt", "w");
-    #endif
-
-    m_LpcParm.Model.pPredValue[0] = (short)Round(m_LpcParm.Model.dGain);
-    #ifdef DUMP_PRED
-    fprintf(PredDump, "%d ", m_LpcParm.Model.pPredValue[0]);
-    #endif
-    //for (USHORT i = 1; i < m_LpcParm.Model.nPredValues; i++)
-    for (i = 1; i < m_LpcParm.Model.nFrameLen; i++)
-    {
-    double dPredValue = 0.;
-    USHORT n = min(i, m_LpcParm.Model.nOrder);
-    for (USHORT j = 1; j <= n ; j++)
-    dPredValue += m_LpcParm.Model.pPredCoeff[j]*
-    (double)m_LpcParm.Model.pPredValue[i-j];
-    m_LpcParm.Model.pPredValue[i] = (short)Round(dPredValue);
-    #ifdef DUMP_PRED
-    fprintf(PredDump, "%d ", m_LpcParm.Model.pPredValue[i]);
-    #endif
-    }
-    #ifdef DUMP_PRED
-    fclose(PredDump);
-    #endif
-    */
 }
 
 
@@ -2055,7 +1991,7 @@ void CLinPredCoding::CalcPowerSpectrum(void)
 {
     // Point to buffer which first contains LPC input data, then FFT results, and finally power spectrum.
     float * LpcCoeff = (float *)m_LpcParm.Model.pPwrSpectrum;
-    COMPLEX_RECT_FLOAT * FFT = (COMPLEX_RECT_FLOAT *)m_LpcParm.Model.pPwrSpectrum;
+    SComplexRectFloat * FFT = (SComplexRectFloat *)m_LpcParm.Model.pPwrSpectrum;
 
     // Load buffer with negative LPC predictor coefficients.  The denominator of the LPC model transfer function contains
     // a power series in z with negative predictor coefficients.  Except for the upper limit, the power series has the same
@@ -2120,43 +2056,12 @@ void CLinPredCoding::CalcPowerSpectrum(void)
 
     // Construct a formant picker object, which selects peaks or bumps in the log spectrum which fall within acceptable
     // ranges for each formant.
-    /*
-    m_LpcParm.Model.nFormants = 0;
-    CFormantPicker *pFormantPicker;
-    dspError_t Err = CFormantPicker::CreateObject(&pFormantPicker, nMaxFormants, m_Signal.Source);
-    if (!Err)
-    { */
     // Compute log power spectrum from linear spectrum.
     for (i = 0; i < wSpectLength; i++)
-        pLogPwrSpectrum[i] = (m_LpcParm.Model.pPwrSpectrum[i] == 0.F) ? MIN_LOG_PWR / 10.F:
-                             (float)log10(m_LpcParm.Model.pPwrSpectrum[i]);
-    /*
-    // Select formants and store them in the LPC model array.
-    FORMANT_VALUES *Formant;
-    USHORT nFormants;
-    dspError_t Err = pFormantPicker->PickFormants(&Formant, &nFormants, (float *)pLogPwrSpectrum, wSpectLength,
-    dFFTScale, m_LpcParm.Model.Formant[0].FrequencyInHertz);
-    //   FILE *hDump = fopen("formants.txt", "w");
-    if (!Err)
-    for (m_LpcParm.Model.nFormants = 0; m_LpcParm.Model.nFormants < nFormants; m_LpcParm.Model.nFormants++)
-    {
-    m_LpcParm.Model.Formant[m_LpcParm.Model.nFormants+1] = Formant[m_LpcParm.Model.nFormants+1];
-    //            fprintf(hDump, "F%d: %f Hz    %f\n", m_LpcParm.Model.nFormants+1, Formant[m_LpcParm.Model.nFormants+1].FrequencyInHertz, Formant[m_LpcParm.Model.nFormants+1].PowerInDecibels);
-    }
-    //   fclose(hDump);
-
-    // Clear out the rest of the formant array.
-    //   for (i = (USHORT)(m_LpcParm.Model.nFormants + 1); i <= nMaxFormants; i++)
-    //   {
-    //     m_LpcParm.Model.Formant[i].FrequencyInHertz = (float)UNDEFINED_DATA;
-    //     m_LpcParm.Model.Formant[i].PowerInDecibels = FLT_MAX_NEG;
-    //   }
-
-    delete pFormantPicker;
-    }
-    */
+	{
+        pLogPwrSpectrum[i] = (m_LpcParm.Model.pPwrSpectrum[i] == 0.F) ? MIN_LOG_PWR / 10.F:(float)log10(m_LpcParm.Model.pPwrSpectrum[i]);
+	}
 }
-
 
 dspError_t CLinPredCoding::GetPowerSpectrum(USHORT wSpectLength, int nScaleSelect)
 {
@@ -2247,10 +2152,10 @@ void main(void)
                           -38,-36,-31,-13,  6, 15, 19, 35
                          };
 
-    SIG_PARMS Signal;
-    LPC_SETTINGS LpcSetting;
+    SSigParms Signal;
+    SLPCSettings LpcSetting;
     CLinPredCoding * pLpcObject;
-    LPC_MODEL * pLpcModel;
+    SLPCModel * pLpcModel;
     dspError_t Err;
 
     Signal.Start = (void *)Sig;

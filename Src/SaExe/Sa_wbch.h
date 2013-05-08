@@ -61,7 +61,6 @@ public:
 
     // Generated message map functions
 protected:
-    //{{AFX_MSG(CSaWorkbenchView)
     afx_msg HBRUSH OnCtlColor(CDC * pDC, CWnd * pWnd, UINT nCtlColor);
     afx_msg void OnActivateView(BOOL, CView *, CView *);
     afx_msg void OnDestroy();
@@ -81,7 +80,6 @@ protected:
     afx_msg void OnFilter31();
     afx_msg void OnFilter32();
     afx_msg void OnFilter33();
-    //}}AFX_MSG
     DECLARE_MESSAGE_MAP()
 };
 

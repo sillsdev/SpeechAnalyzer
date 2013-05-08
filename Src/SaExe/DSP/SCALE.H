@@ -1,7 +1,7 @@
 #ifndef SCALE_H
 #define SCALE_H
 
-enum {DB = 0 , LINEAR = 1};         //scale options
+enum ESCALE_OPTIONS {DB = 0 , LINEAR = 1};         //scale options
 
 /* Minimum log power is derived from the theoretical signal-to-quantization noise level given by  */
 /* 6*b - 1.24, when b is the number of quantization bits per sample.  For 16-bit data, this works */

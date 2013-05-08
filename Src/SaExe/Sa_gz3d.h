@@ -80,16 +80,14 @@ private:
 
     // Operations
 public:
-    static RANGE GetChartRange(int nFormant, int nGender);
+    static SRange GetChartRange(int nFormant, int nGender);
 protected:
     virtual POINT MapVowelsToChart(CDC * pDC, SFormantFreq & Formant, int SymbolHeight, CScatterGraph * pFormantChart,
                                    SGraph & ChartParms, BOOL /* bFlip */);
 
     // Generated message map functions
 protected:
-    //{{AFX_MSG(CPlot3D)
     afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
-    //}}AFX_MSG
     DECLARE_MESSAGE_MAP()
 };
 
@@ -111,16 +109,14 @@ private:
 
     // Operations
 public:
-    static RANGE GetChartRange(int nFormant, int nGender);
+    static SRange GetChartRange(int nFormant, int nGender);
 protected:
     virtual POINT MapVowelsToChart(CDC * pDC, SFormantFreq & Formant, int /* SymbolHeight */, CScatterGraph * pFormantChart,
                                    SGraph & /* ChartParms */, BOOL bFlip);
 
     // Generated message map functions
 protected:
-    //{{AFX_MSG(CPlotF1F2)
     afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
-    //}}AFX_MSG
     DECLARE_MESSAGE_MAP()
 };
 
@@ -142,7 +138,7 @@ private:
 
     // Operations
 public:
-    static RANGE GetChartRange(int nFormant, int nGender);
+    static SRange GetChartRange(int nFormant, int nGender);
 protected:
     virtual POINT MapVowelsToChart(CDC * pDC, SFormantFreq & Formant, int /* SymbolHeight */, CScatterGraph * pFormantChart,
                                    SGraph & /* ChartParms */, BOOL bFlip = FALSE);

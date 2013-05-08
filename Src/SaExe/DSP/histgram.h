@@ -7,13 +7,13 @@
 #include "Signal.h"
 
 
-enum {COUNTS = 0, PDF = 1, CDF = 2};
+enum EHISTOGRAM_TYPE {COUNTS = 0, PDF = 1, CDF = 2};
 
-typedef struct
+struct SHistogramParms
 {
-    uint16  nBins;        // Number of bins in histogram
-    short * pBinDivs; // Pointer to an array containing the bin divisions
-} HIST_PARMS;
+    uint16  nBins;			// Number of bins in histogram
+    short * pBinDivs;		// Pointer to an array containing the bin divisions
+};
 
 
 class CHistogram
@@ -21,15 +21,14 @@ class CHistogram
 public:
     static char * Copyright(void);
     static float Version(void);
-    static dspError_t CreateObject(CHistogram ** ppoHistogram, HIST_PARMS & stHistParms,
-                                   PROC_PARMS & stProcParms);
+    static dspError_t CreateObject(CHistogram ** ppoHistogram, SHistogramParms & stHistParms, SProcParms & stProcParms);
     dspError_t GenerateHistogram(void);
     dspError_t GetBin(int32 & nBinValue, uint16 nBinNum, double fCoeff, uint16 wGraphForm);
     dspError_t GetBinByData(int32 & nBinValue, int16 nData, double fCoeff, uint16 wGraphForm);
     dspError_t GetBinNum(int32 & nBinNum, int16 nData);
     dspError_t GetHistogram(short * pBins, double fCoeff, uint16 wGraphForm);
     ~CHistogram();
-    virtual const HIST_PARMS & GetHistogramParms() const
+    virtual const SHistogramParms & GetHistogramParms() const
     {
         return m_stHistParms;   // return histogram parms as const
     }
@@ -46,20 +45,20 @@ public:
         return m_dwTotalCounts;   // return total counts
     }
 private:
-    CHistogram(HIST_PARMS & stHistParms, PROC_PARMS & stProcParms);
+    CHistogram(SHistogramParms & stHistParms, SProcParms & stProcParms);
     dspError_t Process(uint8 * pBuffer);
     dspError_t Process(short * pBuffer);
     static void FreeHistMem(void);
     // member variables
-    PROC_PARMS   m_stProcParms;
-    HIST_PARMS   m_stHistParms;
-    void  * m_pSigBfr;
-    int8       m_sbSmpFormat;
-    uint32          m_dwBatchOffset;
-    short   *   m_pHistogram;
-    short      m_nMaxValue;
-    short      m_nMinValue;
-    uint32      m_dwTotalCounts;
+    SProcParms m_stProcParms;
+    SHistogramParms m_stHistParms;
+    void * m_pSigBfr;
+    int8 m_sbSmpFormat;
+    uint32 m_dwBatchOffset;
+    short * m_pHistogram;
+    short m_nMaxValue;
+    short m_nMinValue;
+    uint32 m_dwTotalCounts;
 };
 
 #endif

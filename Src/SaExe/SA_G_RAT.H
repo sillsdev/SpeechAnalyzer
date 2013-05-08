@@ -28,8 +28,6 @@ public:
 
     // Generated message map functions
 protected:
-    //{{AFX_MSG(CPlotRatio)
-    //}}AFX_MSG
     DECLARE_MESSAGE_MAP()
 };
 

@@ -171,9 +171,12 @@
     <ClCompile Include="PhoneticSegment.cpp" />
     <ClCompile Include="PlayMixer.cpp" />
     <ClCompile Include="PrivateCursorWnd.cpp" />
+    <ClCompile Include="Process\AnalyticLpcAnalysis.cpp" />
     <ClCompile Include="Process\Butterworth.cpp" />
     <ClCompile Include="Process\FormantTracker.cpp" />
     <ClCompile Include="Dsp\Lpc.cpp" />
+    <ClCompile Include="Process\Hilbert.cpp" />
+    <ClCompile Include="Process\IIRFilter.cpp" />
     <ClCompile Include="Process\TrackState.cpp" />
     <ClCompile Include="Process\sa_p_3dPitch.cpp" />
     <ClCompile Include="Process\SA_P_CHA.CPP" />
@@ -269,6 +272,7 @@
     <ClCompile Include="SplitFileUtils.cpp" />
     <ClCompile Include="StartCursorWnd.cpp" />
     <ClCompile Include="StopCursorWnd.cpp" />
+    <ClCompile Include="StringUtils.cpp" />
     <ClCompile Include="Synthesis\DlgKlattAll.cpp" />
     <ClCompile Include="Synthesis\DlgMbrola.cpp" />
     <ClCompile Include="DlgMultiChannel.cpp" />
@@ -334,7 +338,6 @@
     <ClCompile Include="WaveformGenerator.cpp" />
     <ClCompile Include="WaveformGeneratorSettings.cpp" />
     <ClCompile Include="WaveInDevice.cpp" />
-    <ClCompile Include="WaveIndex.cpp" />
     <ClCompile Include="WaveOutDevice.cpp" />
     <ClCompile Include="WaveResampler.cpp" />
   </ItemGroup>
@@ -456,11 +459,14 @@
     <ClInclude Include="PrivateCursorWnd.h" />
     <ClInclude Include="Clip.hpp" />
     <ClInclude Include="Colors.h" />
+    <ClInclude Include="Process\AnalyticLpcAnalysis.h" />
     <ClInclude Include="process\Butterworth.h" />
-    <ClInclude Include="process\formanttracker.h" />
+    <ClInclude Include="process\FormantTracker.h" />
+    <ClInclude Include="Process\IIRFilter.h" />
     <ClInclude Include="Process\IProcess.h" />
     <ClInclude Include="process\process.h" />
-    <ClInclude Include="process\processdoc.h" />
+    <ClInclude Include="process\ProcessDoc.h" />
+    <ClInclude Include="Process\Hilbert.h" />
     <ClInclude Include="process\sa_p_3dpitch.h" />
     <ClInclude Include="process\sa_p_cha.h" />
     <ClInclude Include="process\sa_p_cpi.h" />
@@ -565,6 +571,7 @@
     <ClInclude Include="Stdafx.h" />
     <ClInclude Include="StopCursorWnd.h" />
     <ClInclude Include="stpwatch.h" />
+    <ClInclude Include="StringUtils.h" />
     <ClInclude Include="synthesis\DlgKlattAll.h" />
     <ClInclude Include="synthesis\DlgMbrola.h" />
     <ClInclude Include="synthesis\DlgSynthesis.h" />
@@ -608,7 +615,6 @@
     <ClInclude Include="WaveformGenerator.h" />
     <ClInclude Include="WaveformGeneratorSettings.h" />
     <ClInclude Include="WaveInDevice.h" />
-    <ClInclude Include="WaveIndex.h" />
     <ClInclude Include="waveoutdevice.h" />
     <ClInclude Include="WaveResampler.h" />
   </ItemGroup>

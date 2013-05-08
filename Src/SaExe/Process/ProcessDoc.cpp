@@ -117,7 +117,7 @@ HPSTR CProcessDoc::GetProcessedWaveData( LPCTSTR szName, int selectedChannel, in
     try
     {
         UINT bytesRead = file.Read(buffer, size);
-        LoadBuffer(buffer, size, sampleSize, selectedChannel, numChannels, bytesRead);
+        LoadBuffer( buffer, size, sampleSize, selectedChannel, numChannels, bytesRead);
     }
     catch (CFileException e)
     {
@@ -159,8 +159,8 @@ void * CProcessDoc::GetProcessedObject(LPCTSTR szName, int selectedChannel, int 
 /***************************************************************************/
 void * CProcessDoc::GetProcessedDataBlock(LPCTSTR szName, int selectedChannel, int numChannels, int sampleSize, DWORD dwByteOffset, size_t sObjectSize, BOOL bReverse)
 {
-
-    TRACE(L"GetProcessedDataBlock %s\n",szName);
+	//TRACE("read %d %d %d %d %d\n",dwByteOffset,m_dwBufferOffset,sObjectSize,_countof(m_Buffer),bReverse);
+    //TRACE(L"GetProcessedDataBlock %s\n",szName);
 
     if (dwByteOffset == UNDEFINED_OFFSET)
     {
@@ -175,6 +175,7 @@ void * CProcessDoc::GetProcessedDataBlock(LPCTSTR szName, int selectedChannel, i
         return &m_Buffer[dwByteOffset - m_dwBufferOffset];
     }
 
+	TRACE("reading\n");
     // new data block has to be read
     m_dwBufferOffset = dwByteOffset; // given offset is the first sample in data block
     if (bReverse)
@@ -227,7 +228,7 @@ void * CProcessDoc::GetProcessedDataBlock(LPCTSTR szName, int selectedChannel, i
     // read the processed data block
     try
     {
-        UINT bytesRead = file.Read(m_Buffer, _countof(m_Buffer));
+        UINT bytesRead = file.Read( buffer, size);
         LoadBuffer(buffer, size, sampleSize, selectedChannel, numChannels, bytesRead);
     }
     catch (...)
@@ -288,7 +289,7 @@ DWORD CProcessDoc::GetNumSamples(ISaDoc * pDoc) const
 
 DWORD CProcessDoc::GetProcessedWaveDataSize(ISaDoc * pDoc)
 {
-    return pDoc->GetUnprocessedDataSize();
+    return pDoc->GetDataSize();
 }
 
 DWORD CProcessDoc::GetProcessBufferIndex(size_t nSize)

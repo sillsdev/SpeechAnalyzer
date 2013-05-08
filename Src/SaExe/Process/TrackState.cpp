@@ -1,5 +1,22 @@
+// FormantTracker.cpp: implementation of the CFormantTracker class.
+//
+// Author: Steve MacLean
+// copyright 2003 SIL
+//////////////////////////////////////////////////////////////////////
+
 #include "stdafx.h"
-#include "Process\TrackState.h"
+#include "resource.h"
+#include "sa_doc.h"
+#include "Process.h"
+#include "dsp\ZTransform.h"
+#include "dsp\DspWins.h"
+#include "dsp\signal.h"
+#include "dsp\Grappl.h"
+#include "dsp\Formants.h"
+#include "Process/FormantTracker.h"
+#include "Process/TrackState.h"
+#include "FileUtils.h"
+#include "StringUtils.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE
@@ -7,79 +24,47 @@ static char THIS_FILE[]=__FILE__;
 #define new DEBUG_NEW
 #endif
 
-CProcessTrackState::CProcessTrackState()
+void STrackState::DumpWindowed( LPCSTR ofilename)
 {
-}
-
-CProcessTrackState::~CProcessTrackState()
-{
-}
-
-DEQUE_CDBL & CProcessTrackState::GetData()
-{
-    return m_data;
-}
-
-VECTOR_DBL & CProcessTrackState::GetWindow()
-{
-    return m_window;
-}
-
-// Previous track position
-VECTOR_CDBL & CProcessTrackState::GetTrackIn()
-{
-    return m_trackIn;
-}
-
-// Result track position
-VECTOR_CDBL & CProcessTrackState::GetTrackOut()
-{
-    return m_trackOut;
-}
-
-// Working intermediates to eliminate memory thrashing
-VECTOR_CDBL & CProcessTrackState::GetWindowed()
-{
-    return m_windowed;
-}
-
-VECTOR_CDBL & CProcessTrackState::GetFiltered()
-{
-    return m_filtered;
-}
-
-VECTOR_CDBL & CProcessTrackState::GetZeroFilterCDBL()
-{
-    return m_zeroFilterCDBL;
-}
-
-VECTOR_DBL & CProcessTrackState::GetZeroFilterDBL()
-{
-    return m_zeroFilterDBL;
-}
-
-void CProcessTrackState::Dump()
-{
-	TRACE("m_data ");
-	for (size_t j=0;j<min(m_data.size(),6);j++)
+	return;
+	FILE * ofile = NULL;
+	fopen_s( &ofile, ofilename, "w");
+	fprintf( ofile, "windowed\n");
+	fprintf( ofile,"real,imag\n");
+	for (int i=0;i<windowed.size();i++)
 	{
-		TRACE("%f ",m_data[j]);
+ 		fprintf( ofile, "%f,%f\n",windowed[i].real(), windowed[i].imag());
 	}
-	TRACE("\n");
+	fflush(ofile);
+	fclose(ofile);
+}
 
-	TRACE("m_window ");
-	for (size_t j=0;j<min(m_window.size(),6);j++)
+void STrackState::DumpFiltered( LPCSTR ofilename)
+{
+	return;
+	FILE * ofile = NULL;
+	fopen_s( &ofile, ofilename, "w");
+	fprintf( ofile, "filtered\n");
+	fprintf( ofile,"real,imag\n");
+	for (int i=0;i<filtered.size();i++)
 	{
-		TRACE("%f ",m_window[j]);
+ 		fprintf( ofile, "%f,%f\n",filtered[i].real(), filtered[i].imag());
 	}
-	TRACE("\n");
+	fflush(ofile);
+	fclose(ofile);
+}
 
-    DEQUE_CDBL m_data;
-    VECTOR_DBL m_window;
-    VECTOR_CDBL m_trackIn;
-    VECTOR_CDBL m_trackOut;
-    VECTOR_CDBL m_windowed;
-    VECTOR_CDBL m_filtered;
-    VECTOR_CDBL m_zeroFilterCDBL;
-    VECTOR_DBL m_zeroFilterDBL;
+void STrackState::DumpZeroFilterDBL( LPCSTR ofilename)
+{
+	return;
+	FILE * ofile = NULL;
+	fopen_s( &ofile, ofilename, "w");
+	fprintf( ofile,"zerofilter\n");
+	fprintf( ofile,"double\n");
+	for (int i=0;i<zeroFilterDBL.size();i++)
+	{
+ 		fprintf( ofile, "%f\n",zeroFilterDBL[i]);
+	}
+	fflush(ofile);
+	fclose(ofile);
 }

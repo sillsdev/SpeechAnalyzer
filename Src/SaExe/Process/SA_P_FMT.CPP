@@ -39,9 +39,9 @@
 static char BASED_CODE THIS_FILE[] = __FILE__;
 #endif
 
-static const RANGE MenRange[4] =      {{200,1000},{650,2500},{1500,3200}, {3300,3700}};
-static const RANGE WomenRange[4] =    {{280,1000},{700,3000},{1850,3500}, {3900,4400}};
-static const RANGE ChildrenRange[4] = {{350,1100},{900,3400},{1950,3900}, {3700,4700}};
+static const SRange MenRange[4] =      {{200,1000},{650,2500},{1500,3200}, {3300,3700}};
+static const SRange WomenRange[4] =    {{280,1000},{700,3000},{1850,3500}, {3900,4400}};
+static const SRange ChildrenRange[4] = {{350,1100},{900,3400},{1950,3900}, {3700,4700}};
 
 //###########################################################################
 // CProcessFormants
@@ -304,7 +304,7 @@ void CProcessFormants::SmoothMedian(ISaDoc * pDoc)
                     MedianFreq[nFormant].Lpc.FrequencyInHertz = FormantFrame[0][nFormant].Lpc.FrequencyInHertz;
                 }
                 float fMinDistance = FLT_MAX;
-                for (; nPole < MAX_NUM_FORMANTS; nPole++)   //!!number of formants
+				for (; nPole < MAX_NUM_FORMANTS; nPole++)   //!!number of formants
                 {
                     if (FormantFrame[2][nPole].Lpc.FrequencyInHertz == (float)NA)
                     {
@@ -664,7 +664,7 @@ CSaString CProcessFormants::FindNearestVowel(SFormantFreq FormantFreq, ISaDoc * 
     double dMinDistanceSquared = FLT_MAX;
     int nNearestVowel = -1;
 
-    RANGE FormantScale[4];
+    SRange FormantScale[4];
 
     for (int nFormant = 1; nFormant <= 3; nFormant++)
     {
@@ -726,26 +726,32 @@ void CProcessFormants::SetFormantParms(CFormantParm * pFormantParms)
 {
     m_FormantParms = *pFormantParms;
 }
+
 void CProcessFormants::SetDataInvalid()
 {
     SetDataReady(FALSE);
 }
+
 CFormantParm * CProcessFormants::GetFormantParms()
 {
     return &m_FormantParms;
 }
+
 DWORD CProcessFormants::GetFormantFrameCount()
 {
     return m_dwFormantFrameCount;
 }
+
 unsigned short CProcessFormants::GetFormantFrameSize()
 {
     return m_nFormantFrameSize;
 }
-STATISTIC CProcessFormants::GetFormantStats(int nFormant)
+
+SStatistic CProcessFormants::GetFormantStats(int nFormant)
 {
     return m_F[nFormant];
 }
+
 void CProcessFormants::ResetTracking()
 {
     m_bTrack = FALSE;

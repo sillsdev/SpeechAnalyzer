@@ -160,7 +160,7 @@ BOOL CSegmentSelection::SelectFromPosition(CSaView * pView, int nSegmentIndex, D
             dwStop = (dwStop + 1) & ~1; // Round up
         }
 
-        dwStop = pDoc->SnapCursor(STOP_CURSOR, dwStop, dwStop, pDoc->GetUnprocessedDataSize(), SNAP_RIGHT);
+        dwStop = pDoc->SnapCursor(STOP_CURSOR, dwStop, dwStop, pDoc->GetDataSize(), SNAP_RIGHT);
 
         int nInsertAt = pSegment->CheckPosition(pDoc,dwStart,dwStop,CSegment::MODE_ADD);
         if (nInsertAt != -1)
@@ -192,13 +192,13 @@ BOOL CSegmentSelection::SelectFromPosition(CSaView * pView, int nSegmentIndex, D
             }
             else
             {
-                if ((dwStart+pDoc->GetBytesFromTime(DEFAULT_ADD_SEGMENT_TIME) + pDoc->GetBytesFromTime(MIN_ADD_SEGMENT_TIME)) < pDoc->GetUnprocessedDataSize())
+                if ((dwStart+pDoc->GetBytesFromTime(DEFAULT_ADD_SEGMENT_TIME) + pDoc->GetBytesFromTime(MIN_ADD_SEGMENT_TIME)) < pDoc->GetDataSize())
                 {
                     dwStop = (dwStart + pDoc->GetBytesFromTime(DEFAULT_ADD_SEGMENT_TIME));
                 }
                 else
                 {
-                    dwStop = pDoc->GetUnprocessedDataSize();
+                    dwStop = pDoc->GetDataSize();
                 }
             }
 
@@ -207,7 +207,7 @@ BOOL CSegmentSelection::SelectFromPosition(CSaView * pView, int nSegmentIndex, D
                 dwStop = (dwStop + 1) & ~1; // Round up
             }
 
-            dwStart = pDoc->SnapCursor(START_CURSOR, dwStart, dwStart, pDoc->GetUnprocessedDataSize(), SNAP_RIGHT);
+            dwStart = pDoc->SnapCursor(START_CURSOR, dwStart, dwStart, pDoc->GetDataSize(), SNAP_RIGHT);
             dwStop = pDoc->SnapCursor(STOP_CURSOR, dwStop, 0, dwStop, SNAP_LEFT);
 
             m_bVirtual = TRUE;
@@ -350,7 +350,7 @@ BOOL CSegmentSelection::SelectFromStopPosition(CSaView * pView, int nSegmentInde
     {
         DWORD dwStart = 0;
 
-        dwStop = pDoc->SnapCursor(STOP_CURSOR, dwStop, dwStop, pDoc->GetUnprocessedDataSize(), SNAP_RIGHT);
+        dwStop = pDoc->SnapCursor(STOP_CURSOR, dwStop, dwStop, pDoc->GetDataSize(), SNAP_RIGHT);
 
         // Snap Start Position
         if (dwStop > pDoc->GetBytesFromTime(DEFAULT_ADD_SEGMENT_TIME))
@@ -397,7 +397,7 @@ BOOL CSegmentSelection::SelectFromStopPosition(CSaView * pView, int nSegmentInde
             }
             else
             {
-                if ((dwStart+pDoc->GetBytesFromTime(DEFAULT_ADD_SEGMENT_TIME) + pDoc->GetBytesFromTime(MIN_ADD_SEGMENT_TIME)) < pDoc->GetUnprocessedDataSize())
+                if ((dwStart+pDoc->GetBytesFromTime(DEFAULT_ADD_SEGMENT_TIME) + pDoc->GetBytesFromTime(MIN_ADD_SEGMENT_TIME)) < pDoc->GetDataSize())
                 {
                     dwStart = (dwStop - pDoc->GetBytesFromTime(DEFAULT_ADD_SEGMENT_TIME));
                 }
@@ -412,7 +412,7 @@ BOOL CSegmentSelection::SelectFromStopPosition(CSaView * pView, int nSegmentInde
                 dwStart = (dwStart + 1) & ~1; // Round up
             }
 
-            dwStart = pDoc->SnapCursor(START_CURSOR, dwStart, dwStart, pDoc->GetUnprocessedDataSize(), SNAP_RIGHT);
+            dwStart = pDoc->SnapCursor(START_CURSOR, dwStart, dwStart, pDoc->GetDataSize(), SNAP_RIGHT);
             dwStop = pDoc->SnapCursor(STOP_CURSOR, dwStop, 0, dwStop, SNAP_LEFT);
 
             m_bVirtual = TRUE;

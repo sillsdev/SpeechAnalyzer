@@ -33,26 +33,26 @@ typedef uint32 uint32;
 
 
 
-class complexFloat
+class CComplexFloat
 {
 public:
     float real;
     float imaginary;
 
-    inline complexFloat(const float & in_real = 0, const float & in_imaginary = 0)
+    inline CComplexFloat(const float & in_real = 0, const float & in_imaginary = 0)
     {
         real = in_real;
         imaginary = in_imaginary;
     }
 
-    inline complexFloat & operator=(const complexFloat & other)
+    inline CComplexFloat & operator=(const CComplexFloat & other)
     {
         real = other.real;
         imaginary = other.imaginary;
         return *this;
     }
 
-    inline const complexFloat & operator*=(const complexFloat & other)
+    inline const CComplexFloat & operator*=(const CComplexFloat & other)
     {
         float realnew = real*other.real-imaginary*other.imaginary;
         imaginary = imaginary*other.real+real*other.imaginary;
@@ -60,42 +60,42 @@ public:
         return *this;
     }
 
-    inline const complexFloat & operator+=(const complexFloat & other)
+    inline const CComplexFloat & operator+=(const CComplexFloat & other)
     {
         real = real+other.real;
         imaginary = imaginary+other.imaginary;
         return *this;
     }
 
-    inline const complexFloat & operator-=(const complexFloat & other)
+    inline const CComplexFloat & operator-=(const CComplexFloat & other)
     {
         real = real-other.real;
         imaginary = imaginary-other.imaginary;
         return *this;
     }
-    inline const complexFloat  operator*(const complexFloat & other) const
+    inline const CComplexFloat  operator*(const CComplexFloat & other) const
     {
-        return complexFloat(*this) *= other;
+        return CComplexFloat(*this) *= other;
     }
-    inline const complexFloat  operator+(const complexFloat & other) const
+    inline const CComplexFloat  operator+(const CComplexFloat & other) const
     {
-        return complexFloat(*this) += other;
+        return CComplexFloat(*this) += other;
     }
-    inline const complexFloat  operator-(const complexFloat & other) const
+    inline const CComplexFloat  operator-(const CComplexFloat & other) const
     {
-        return complexFloat(*this) -= other;
+        return CComplexFloat(*this) -= other;
     }
-    inline const complexFloat  conjugate() const
+    inline const CComplexFloat  conjugate() const
     {
-        return complexFloat(real,-imaginary);
+        return CComplexFloat(real,-imaginary);
     }
-    inline const complexFloat  undo_j() const
+    inline const CComplexFloat  undo_j() const
     {
-        return complexFloat(imaginary,-real);
+        return CComplexFloat(imaginary,-real);
     }
-    inline const complexFloat  redo_j() const
+    inline const CComplexFloat  redo_j() const
     {
-        return complexFloat(-imaginary,real);
+        return CComplexFloat(-imaginary,real);
     }
 };
 
@@ -104,14 +104,14 @@ inline static const float pi(void)
     return (float) 3.1415926535897932384626433832795;
 }
 
-inline static const complexFloat w(int32 m, int32 N)
+inline static const CComplexFloat w(int32 m, int32 N)
 {
-    return complexFloat((float)cos(2*pi()*m/N),(float)sin(2*pi()*m/N));
+    return CComplexFloat((float)cos(2*pi()*m/N),(float)sin(2*pi()*m/N));
 }
 
-inline static void butterfly(complexFloat & top, complexFloat & bottom, const complexFloat & scale)
+inline static void butterfly(CComplexFloat & top, CComplexFloat & bottom, const CComplexFloat & scale)
 {
-    complexFloat scaleBottom = bottom*scale;
+    CComplexFloat scaleBottom = bottom*scale;
     bottom = top - scaleBottom;
     top += scaleBottom;
 }
@@ -203,7 +203,7 @@ inline static uint32 reverseBits(uint32 value, uint32 maxValue)
 
 #pragma auto_inline(off)
 
-void swapOrder(complexFloat * const complexData, const int32 n)
+void swapOrder(CComplexFloat * const complexData, const int32 n)
 {
     // swap order
     for (uint32 swap = 0; swap < (uint32) n; swap++)
@@ -211,7 +211,7 @@ void swapOrder(complexFloat * const complexData, const int32 n)
         uint32 reverse = reverseBits(swap, n);
         if (swap > reverse)   // avoid swapping twice
         {
-            complexFloat temp = complexData[swap];
+            CComplexFloat temp = complexData[swap];
             complexData[swap] = complexData[reverse];
             complexData[reverse] = temp;
         }
@@ -220,7 +220,7 @@ void swapOrder(complexFloat * const complexData, const int32 n)
 #pragma auto_inline(on)
 
 
-static void cfft2f(complexFloat * const complexData, const int32 n, const int32 idir)
+static void cfft2f(CComplexFloat * const complexData, const int32 n, const int32 idir)
 {
     // swap order
     swapOrder(complexData, n);
@@ -232,8 +232,8 @@ static void cfft2f(complexFloat * const complexData, const int32 n, const int32 
         {
             int32 mPasses = 1 << (pass-1); // 1,2,4,8,16....
 
-            complexFloat scaleFactor = w(-1,2*mPasses);
-            complexFloat scale(1, 0);
+            CComplexFloat scaleFactor = w(-1,2*mPasses);
+            CComplexFloat scale(1, 0);
             for (int32 m=0; m<mPasses; m++)
             {
                 for (int32 top=m; top < n; top += 2*mPasses)
@@ -258,8 +258,8 @@ static void cfft2f(complexFloat * const complexData, const int32 n, const int32 
         {
             int32 mPasses = 1 << (pass-1); // 1,2,4,8,16....
 
-            complexFloat scaleFactor = w(1,2*mPasses);
-            complexFloat scale(1, 0);
+            CComplexFloat scaleFactor = w(1,2*mPasses);
+            CComplexFloat scale(1, 0);
             for (int32 m=0; m<mPasses; m++)
             {
                 for (int32 top=m; top < n; top += 2*mPasses)
@@ -273,7 +273,7 @@ static void cfft2f(complexFloat * const complexData, const int32 n, const int32 
         }
         for (int32 i=0; i<n; i++)
         {
-            complexData[i] = complexData[i] * complexFloat(1.0f/float(n));
+            complexData[i] = complexData[i] * CComplexFloat(1.0f/float(n));
         }
     }
 }
@@ -291,7 +291,7 @@ static void cfft2f(complexFloat * const complexData, const int32 n, const int32 
 // the sin transform takes an equivalent number of operations
 extern "C" int32 slowrfft2f(float * pfarray, int32 n, int32 idir)
 {
-    complexFloat * data = new complexFloat[n];
+    CComplexFloat * data = new CComplexFloat[n];
     float * floatData = (float *) data;
 
     if (idir == FORWARD)
@@ -341,15 +341,15 @@ extern "C" int32 rfft2f(float * pfarray, int32 n, int32 idir)
     int32 halfN = n/2;
     if (idir == FORWARD)
     {
-        complexFloat Pm,Qm,Wm;
-        complexFloat * data = (complexFloat *) pfarray;
-        complexFloat WmScale = w(-1,n);
+        CComplexFloat Pm,Qm,Wm;
+        CComplexFloat * data = (CComplexFloat *) pfarray;
+        CComplexFloat WmScale = w(-1,n);
         float a,b;
         // treat real data as two half length arrays
         // interleaved.  Functionally equivalent to
         // multiplying odd data by complex j
         // process using complex fft
-        cfft2f((complexFloat *)pfarray, halfN, idir);
+        cfft2f((CComplexFloat *)pfarray, halfN, idir);
         // extract terms Pm Qm corresponding to each half real array
         // calculate final term using Am = Pm + Qm*W2n^m
         // remember Pm = P-m*, Qm = Q-m*
@@ -370,9 +370,9 @@ extern "C" int32 rfft2f(float * pfarray, int32 n, int32 idir)
     }
     else
     {
-        complexFloat Pm,Qm,Wm;
-        complexFloat * data = (complexFloat *) pfarray;
-        complexFloat WmScale = w(1,n);
+        CComplexFloat Pm,Qm,Wm;
+        CComplexFloat * data = (CComplexFloat *) pfarray;
+        CComplexFloat WmScale = w(1,n);
         float a,b;
         // see ablove inverse operation
         a = pfarray[0]/2;
@@ -389,7 +389,7 @@ extern "C" int32 rfft2f(float * pfarray, int32 n, int32 idir)
             Wm *= WmScale;
         }
         // treat real data as two half length arrays
-        cfft2f((complexFloat *)pfarray, n/2, idir);
+        cfft2f((CComplexFloat *)pfarray, n/2, idir);
     }
     return 0;
 }

@@ -61,10 +61,8 @@ protected:
     virtual void DoDataExchange(CDataExchange * pDX);   // DDX/DDV support
 
     // Generated message map functions
-    //{{AFX_MSG(CPickOverlayDlg)
     afx_msg void OnClearallgraphs();
     afx_msg void OnSelectallgraphs();
-    //}}AFX_MSG
     virtual BOOL OnInitDialog();
     virtual void OnOK();
     DECLARE_MESSAGE_MAP()

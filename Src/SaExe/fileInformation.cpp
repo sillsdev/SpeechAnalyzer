@@ -192,7 +192,7 @@ BOOL CDlgInformationWavePage::OnInitDialog()
         }
     }
     // create and write length text
-    double fDataSec = pDoc->GetTimeFromBytes(pDoc->GetUnprocessedDataSize()); // get sampled data size in seconds
+    double fDataSec = pDoc->GetTimeFromBytes(pDoc->GetDataSize());	// get sampled data size in seconds
     int nMinutes = (int)fDataSec / 60;
     if (nMinutes == 0)   // length is less than one minute
     {
@@ -206,7 +206,7 @@ BOOL CDlgInformationWavePage::OnInitDialog()
     SetDlgItemText(IDC_FILELENGTH, szBuffer);
     // get sa parameters format member data
     // create and write number of samples text
-    swprintf_s(szBuffer, _T("%ld"), pDoc->GetDataSize() / pDoc->GetBlockAlign());
+    swprintf_s(szBuffer, _T("%ld"), pDoc->GetNumSamples());
     SetDlgItemText(IDC_NUMBERSAMPLES, szBuffer);
     // create and write sample rate text
     swprintf_s(szBuffer, _T("%ld Hz"), pDoc->GetSamplesPerSec());

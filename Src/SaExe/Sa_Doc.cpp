@@ -122,7 +122,6 @@
 #include "DlgExportFWResult.h"
 #include "ClipboardHelper.h"
 #include "DlgPlayer.h"
-#include "WaveIndex.h"
 #include "Process\Process.h"
 #include "Process\ProcessDoc.h"
 #include "Process\sa_w_adj.h"
@@ -147,6 +146,7 @@
 #include "Process\sa_p_rat.h"
 #include "Process\sa_p_twc.h"
 #include "Process\FormantTracker.h"
+#include "Process\Hilbert.h"
 #include "settings\obstream.h"
 #include "settings\tools.h"
 #include "dsp\fragment.h"
@@ -244,7 +244,7 @@ CSaDoc::CSaDoc()
     m_pProcessMelogram = new CProcessMelogram();        // create data processing object CLW 4/5/00
     m_pProcessChange = new CProcessChange();            // create data processing object
     m_pProcessRaw = new CProcessRaw();                  // create data processing object
-    m_pProcessHilbert = new CHilbert(m_pProcessRaw);    // create data processing object
+    m_pProcessHilbert = new CProcessHilbert(m_pProcessRaw);// create data processing object
     m_pProcessSpectrogram = NULL;                       // create data processing object
     m_pProcessSnapshot = NULL;                          // create data processing object
     m_pProcessFormants = new CProcessFormants();        // create data processing object
@@ -899,12 +899,12 @@ BOOL CSaDoc::LoadDataFiles(LPCTSTR pszPathName, bool bTemp/*=FALSE*/)
     //handle temporary file load.
     if (bTemp)
     {
-        ApplyWaveFile(pszPathName, GetUnprocessedDataSize());
+        ApplyWaveFile( pszPathName, GetRawDataSize());
     }
     else
     {
         // create the temporary wave chunk copy
-        CopyWaveToTemp(szWavePath);
+        CopyWaveToTemp( szWavePath);
     }
 
     // This flag will be the only signature of a "Stereo file"
@@ -912,7 +912,6 @@ BOOL CSaDoc::LoadDataFiles(LPCTSTR pszPathName, bool bTemp/*=FALSE*/)
     if (m_bMultiChannel)
     {
         // stereo SA is expecting a mono file (so we will make this a mono file)
-        m_dwDataSize /= m_FmtParm.wChannels;
         m_nSelectedChannel = 0;
         if (pMainWnd->GetShowAdvancedAudio())
         {
@@ -1011,7 +1010,7 @@ BOOL CSaDoc::LoadTranscriptionData(LPCTSTR pszWavePath, BOOL bTemp)
             m_saParm.RecordTimeStamp = m_fileStat.m_ctime; // Creation time of file
             m_saParm.dwRecordBandWidth = m_FmtParm.dwSamplesPerSec / 2; // Assume raw untouched file
             m_saParm.byRecordSmpSize = (BYTE)m_FmtParm.wBitsPerSample;
-            m_saParm.dwNumberOfSamples = GetUnprocessedDataSize() / m_FmtParm.wBlockAlign;
+            m_saParm.dwNumberOfSamples = GetDataSize() / m_FmtParm.wBlockAlign;
             m_saParm.dwSignalBandWidth = m_FmtParm.dwSamplesPerSec / 2;
             m_saParm.byQuantization = (BYTE)m_FmtParm.wBitsPerSample;
         }
@@ -1918,7 +1917,7 @@ bool CSaDoc::ConvertToWave(LPCTSTR pszPathName)
     pStatusBar->SetProgress(30);
     try
     {
-        result = (stAudio->ConvertToWAV(_bstr_t(pszPathName), _bstr_t(szTempFilePath), 22050, 16, 1)==TRUE);
+        result = (stAudio->ConvertToWAV(_bstr_t(pszPathName), _bstr_t(szTempFilePath), 22050, 16, 1)==VARIANT_TRUE);
     }
     catch (...)
     {
@@ -2519,7 +2518,7 @@ BOOL CSaDoc::CopyWaveToTemp(LPCTSTR pszSourcePathName, CAlignInfo info)
         {
             // error opening file
             pApp->ErrorMessage(IDS_ERROR_OPENTEMPFILE, pszTempPathName);
-            m_dwDataSize = 0; // no data available
+            m_dwDataSize = 0;		// no data available
             SetModifiedFlag(FALSE); // will be unable to save
             pView->SendMessage(WM_COMMAND, ID_FILE_CLOSE, 0L); // close file
             return FALSE;
@@ -2531,7 +2530,7 @@ BOOL CSaDoc::CopyWaveToTemp(LPCTSTR pszSourcePathName, CAlignInfo info)
         {
             // error opening file
             pApp->ErrorMessage(IDS_ERROR_FILEOPEN, pszSourcePathName);
-            m_dwDataSize = 0; // no data available
+            m_dwDataSize = 0;		// no data available
             SetModifiedFlag(FALSE); // will be unable to save
             pView->SendMessage(WM_COMMAND, ID_FILE_CLOSE, 0L); // close file
             return FALSE;
@@ -2544,7 +2543,7 @@ BOOL CSaDoc::CopyWaveToTemp(LPCTSTR pszSourcePathName, CAlignInfo info)
             // error descending into wave chunk
             pApp->ErrorMessage(IDS_ERROR_WAVECHUNK, m_fileStat.m_szFullName);
             mmioClose(hmmioFile, 0);
-            m_dwDataSize = 0; // no data available
+            m_dwDataSize = 0;		// no data available
             SetModifiedFlag(FALSE); // will be unable to save
             pView->SendMessage(WM_COMMAND, ID_FILE_CLOSE, 0L); // close file
             return FALSE;
@@ -2557,7 +2556,7 @@ BOOL CSaDoc::CopyWaveToTemp(LPCTSTR pszSourcePathName, CAlignInfo info)
             // error descending into data chunk
             pApp->ErrorMessage(IDS_ERROR_DATACHUNK, m_fileStat.m_szFullName);
             mmioClose(hmmioFile, 0);
-            m_dwDataSize = 0; // no data available
+            m_dwDataSize = 0;		// no data available
             SetModifiedFlag(FALSE); // will be unable to save
             pView->SendMessage(WM_COMMAND, ID_FILE_CLOSE, 0L); // close file
             return FALSE;
@@ -2590,7 +2589,7 @@ BOOL CSaDoc::CopyWaveToTemp(LPCTSTR pszSourcePathName, CAlignInfo info)
                 // error reading from data chunk
                 pApp->ErrorMessage(IDS_ERROR_READDATACHUNK, m_fileStat.m_szFullName);
                 mmioClose(hmmioFile, 0);
-                m_dwDataSize = 0; // no data available
+                m_dwDataSize = 0;		// no data available
                 SetModifiedFlag(FALSE); // will be unable to save
                 pView->SendMessage(WM_COMMAND, ID_FILE_CLOSE, 0L); // close file
                 return FALSE;
@@ -2665,7 +2664,7 @@ BOOL CSaDoc::CopyWaveToTemp(LPCTSTR pszSourcePathName, CAlignInfo info)
                     {
                         // error writing file
                         pApp->ErrorMessage(IDS_ERROR_WRITETEMPFILE, pszTempPathName);
-                        m_dwDataSize = 0; // no data available
+                        m_dwDataSize = 0;		// no data available
                         SetModifiedFlag(FALSE); // will be unable to save
                         pView->SendMessage(WM_COMMAND, ID_FILE_CLOSE, 0L); // close file
                         return FALSE;
@@ -2689,7 +2688,7 @@ BOOL CSaDoc::CopyWaveToTemp(LPCTSTR pszSourcePathName, CAlignInfo info)
                     {
                         // error writing file
                         pApp->ErrorMessage(IDS_ERROR_WRITETEMPFILE, pszTempPathName);
-                        m_dwDataSize = 0; // no data available
+                        m_dwDataSize = 0;		// no data available
                         SetModifiedFlag(FALSE); // will be unable to save
                         pView->SendMessage(WM_COMMAND, ID_FILE_CLOSE, 0L); // close file
                         return FALSE;
@@ -2713,7 +2712,7 @@ BOOL CSaDoc::CopyWaveToTemp(LPCTSTR pszSourcePathName, CAlignInfo info)
                 // error reading from data chunk
                 pApp->ErrorMessage(IDS_ERROR_READDATACHUNK, m_fileStat.m_szFullName);
                 mmioClose(hmmioFile, 0);
-                m_dwDataSize = 0; // no data available
+                m_dwDataSize = 0;		// no data available
                 SetModifiedFlag(FALSE); // will be unable to save
                 pView->SendMessage(WM_COMMAND, ID_FILE_CLOSE, 0L); // close file
                 return FALSE;
@@ -2745,7 +2744,7 @@ BOOL CSaDoc::CopyWaveToTemp(LPCTSTR pszSourcePathName, CAlignInfo info)
             {
                 // error writing file
                 pApp->ErrorMessage(IDS_ERROR_WRITETEMPFILE, pszTempPathName);
-                m_dwDataSize = 0; // no data available
+                m_dwDataSize = 0;		// no data available
                 SetModifiedFlag(FALSE); // will be unable to save
                 pView->SendMessage(WM_COMMAND, ID_FILE_CLOSE, 0L); // close file
                 return FALSE;
@@ -2787,7 +2786,7 @@ BOOL CSaDoc::CopyWaveToTemp(LPCTSTR pszSourcePathName, CAlignInfo info)
         {
             // error writing file
             pApp->ErrorMessage(IDS_ERROR_WRITETEMPFILE, pszTempPathName);
-            m_dwDataSize = 0; // no data available
+            m_dwDataSize = 0;		// no data available
             SetModifiedFlag(FALSE); // will be unable to save
             pView->SendMessage(WM_COMMAND, ID_FILE_CLOSE, 0L); // close file
             return FALSE;
@@ -2845,7 +2844,7 @@ BOOL CSaDoc::CopyWaveToTemp(LPCTSTR pszSourcePathName)
     {
         // error opening file
         pApp->ErrorMessage(IDS_ERROR_OPENTEMPFILE, pszTempPathName);
-        m_dwDataSize = 0; // no data available
+        m_dwDataSize = 0;		// no data available
         SetModifiedFlag(FALSE); // will be unable to save
         pView->SendMessage(WM_COMMAND, ID_FILE_CLOSE, 0L); // close file
         return FALSE;
@@ -2857,7 +2856,7 @@ BOOL CSaDoc::CopyWaveToTemp(LPCTSTR pszSourcePathName)
     {
         // error opening file
         pApp->ErrorMessage(IDS_ERROR_FILEOPEN, pszSourcePathName);
-        m_dwDataSize = 0; // no data available
+        m_dwDataSize = 0;		// no data available
         SetModifiedFlag(FALSE); // will be unable to save
         pView->SendMessage(WM_COMMAND, ID_FILE_CLOSE, 0L); // close file
         return FALSE;
@@ -2871,7 +2870,7 @@ BOOL CSaDoc::CopyWaveToTemp(LPCTSTR pszSourcePathName)
         // error descending into wave chunk
         pApp->ErrorMessage(IDS_ERROR_WAVECHUNK, m_fileStat.m_szFullName);
         mmioClose(hmmioFile, 0);
-        m_dwDataSize = 0; // no data available
+        m_dwDataSize = 0;		// no data available
         SetModifiedFlag(FALSE); // will be unable to save
         pView->SendMessage(WM_COMMAND, ID_FILE_CLOSE, 0L); // close file
         return FALSE;
@@ -2885,7 +2884,7 @@ BOOL CSaDoc::CopyWaveToTemp(LPCTSTR pszSourcePathName)
         // error descending into data chunk
         pApp->ErrorMessage(IDS_ERROR_DATACHUNK, m_fileStat.m_szFullName);
         mmioClose(hmmioFile, 0);
-        m_dwDataSize = 0; // no data available
+        m_dwDataSize = 0;		// no data available
         SetModifiedFlag(FALSE); // will be unable to save
         pView->SendMessage(WM_COMMAND, ID_FILE_CLOSE, 0L); // close file
         return FALSE;
@@ -2906,7 +2905,7 @@ BOOL CSaDoc::CopyWaveToTemp(LPCTSTR pszSourcePathName)
             // error reading from data chunk
             pApp->ErrorMessage(IDS_ERROR_READDATACHUNK, m_fileStat.m_szFullName);
             mmioClose(hmmioFile, 0);
-            m_dwDataSize = 0; // no data available
+            m_dwDataSize = 0;		// no data available
             SetModifiedFlag(FALSE); // will be unable to save
             pView->SendMessage(WM_COMMAND, ID_FILE_CLOSE, 0L); // close file
             return FALSE;
@@ -2927,7 +2926,7 @@ BOOL CSaDoc::CopyWaveToTemp(LPCTSTR pszSourcePathName)
         {
             // error writing file
             pApp->ErrorMessage(IDS_ERROR_WRITETEMPFILE, pszTempPathName);
-            m_dwDataSize = 0; // no data available
+            m_dwDataSize = 0;		// no data available
             SetModifiedFlag(FALSE); // will be unable to save
             pView->SendMessage(WM_COMMAND, ID_FILE_CLOSE, 0L); // close file
             return FALSE;
@@ -2994,7 +2993,7 @@ BOOL CSaDoc::InsertWaveToTemp(LPCTSTR pszSourcePathName, LPCTSTR pszTempPathName
     {
         // error opening file
         pApp->ErrorMessage(IDS_ERROR_FILEOPEN, pszSourcePathName);
-        m_dwDataSize = 0; // no data available
+        m_dwDataSize = 0;		// no data available
         SetModifiedFlag(FALSE); // will be unable to save
         pView->SendMessage(WM_COMMAND, ID_FILE_CLOSE, 0L); // close file
         return FALSE;
@@ -3008,7 +3007,7 @@ BOOL CSaDoc::InsertWaveToTemp(LPCTSTR pszSourcePathName, LPCTSTR pszTempPathName
         // error descending into wave chunk
         pApp->ErrorMessage(IDS_ERROR_WAVECHUNK, m_fileStat.m_szFullName);
         mmioClose(hmmioFile, 0);
-        m_dwDataSize = 0; // no data available
+        m_dwDataSize = 0;		// no data available
         SetModifiedFlag(FALSE); // will be unable to save
         pView->SendMessage(WM_COMMAND, ID_FILE_CLOSE, 0L); // close file
         return FALSE;
@@ -3022,7 +3021,7 @@ BOOL CSaDoc::InsertWaveToTemp(LPCTSTR pszSourcePathName, LPCTSTR pszTempPathName
         // error descending into data chunk
         pApp->ErrorMessage(IDS_ERROR_DATACHUNK, m_fileStat.m_szFullName);
         mmioClose(hmmioFile, 0);
-        m_dwDataSize = 0; // no data available
+        m_dwDataSize = 0;		// no data available
         SetModifiedFlag(FALSE); // will be unable to save
         pView->SendMessage(WM_COMMAND, ID_FILE_CLOSE, 0L); // close file
         return FALSE;
@@ -3044,7 +3043,7 @@ BOOL CSaDoc::InsertWaveToTemp(LPCTSTR pszSourcePathName, LPCTSTR pszTempPathName
             // error reading from data chunk
             pApp->ErrorMessage(IDS_ERROR_READDATACHUNK, m_fileStat.m_szFullName);
             mmioClose(hmmioFile, 0);
-            m_dwDataSize = 0; // no data available
+            m_dwDataSize = 0;		// no data available
             SetModifiedFlag(FALSE); // will be unable to save
             pView->SendMessage(WM_COMMAND, ID_FILE_CLOSE, 0L); // close file
             return FALSE;
@@ -3065,7 +3064,7 @@ BOOL CSaDoc::InsertWaveToTemp(LPCTSTR pszSourcePathName, LPCTSTR pszTempPathName
         {
             // error writing file
             pApp->ErrorMessage(IDS_ERROR_WRITETEMPFILE, pszTempPathName);
-            m_dwDataSize = 0; // no data available
+            m_dwDataSize = 0;		// no data available
             SetModifiedFlag(FALSE); // will be unable to save
             pView->SendMessage(WM_COMMAND, ID_FILE_CLOSE, 0L); // close file
             return FALSE;
@@ -3267,12 +3266,12 @@ BOOL CSaDoc::CopyWave(LPCTSTR pszSourceName, LPCTSTR pszTargetName)
 // The function returns TRUE, if the copying was successful and FALSE, if
 // not. It uses the data read buffer to copy the files data. The buffer
 // contents will be destroyed after the call.  
-// dwStart indicates position in source file to copy from in samples
-// dwLength indicates maximum length to copy in samples
+// dwStart indicates position in source file to copy from in seconds
+// dwLength indicates maximum length to copy in seconds
 /***************************************************************************/
-BOOL CSaDoc::CopyWave(LPCTSTR pszSourceName, LPCTSTR pszTargetName, const CWaveIndex & dwStart, const CWaveIndex & dwLength, BOOL bTruncate)
+BOOL CSaDoc::CopyWave(LPCTSTR pszSourceName, LPCTSTR pszTargetName, WAVETIME start, WAVETIME length, BOOL bTruncate)
 {
-	TRACE("copy %s to %s from %d to %d\n",pszSourceName, pszTargetName, dwStart, (dwStart.GetSamples()+dwLength.GetSamples()));
+	TRACE("copy %s to %s from %f to %f\n",pszSourceName, pszTargetName, start, start+length);
 
     CFile sourceFile;
     CFile targetFile; // destructor will close the files
@@ -3302,7 +3301,7 @@ BOOL CSaDoc::CopyWave(LPCTSTR pszSourceName, LPCTSTR pszTargetName, const CWaveI
     }
 
     DWORD dwSize = status.m_size;
-	if (dwSize < dwStart.GetSamples())
+	if (dwSize < toBytes( start, false))
     {
         return TRUE; // Empty file
     }
@@ -3310,7 +3309,7 @@ BOOL CSaDoc::CopyWave(LPCTSTR pszSourceName, LPCTSTR pszTargetName, const CWaveI
     try
     {
         targetFile.SeekToEnd();
-		sourceFile.Seek(dwStart.GetBytes(false), CFile::begin);
+		sourceFile.Seek( toBytes( start, false), CFile::begin);
     }
     catch (CFileException e)
     {
@@ -3318,10 +3317,10 @@ BOOL CSaDoc::CopyWave(LPCTSTR pszSourceName, LPCTSTR pszTargetName, const CWaveI
         targetFile.Abort(); // close the target file
         return FALSE;
     }
-    dwSize -= dwStart.GetBytes(false); // size to copy
-	if (dwSize > dwLength.GetBytes(false))
+    dwSize -= toBytes( start, false); // size to copy
+	if (dwSize > toBytes( length, false))
     {
-		dwSize = dwLength.GetBytes(false);
+		dwSize = toBytes( length, false);
     }
 
     // use local buffer
@@ -3364,7 +3363,6 @@ BOOL CSaDoc::CopyWave(LPCTSTR pszSourceName, LPCTSTR pszTargetName, const CWaveI
 // SDM 1.06.6U2
 void CSaDoc::ApplyWaveFile(LPCTSTR pszFileName, DWORD dwDataSize, BOOL bInitialUpdate)
 {
-
     // save the temporary file
     m_szTempWave = pszFileName;
     // set the data size
@@ -3489,7 +3487,7 @@ DWORD CSaDoc::SnapCursor(ECursorSelect nCursorSelect,
                          ESnapDirection nSnapDirection,
                          ECursorAlignment nCursorAlignment)
 {
-    if (GetUnprocessedDataSize() == 0)
+    if (GetDataSize() == 0)
     {
         return dwCursorOffset;
     }
@@ -3516,21 +3514,20 @@ DWORD CSaDoc::SnapCursor(ECursorSelect nCursorSelect,
 
         // search for left zero crossing first
         DWORD dwDataPos = dwCursorOffset;
-        int nData = GetWaveData(dwDataPos, &bOk); // get actual data block
+        int nData = GetWaveData(dwDataPos, &bOk);	// get actual data block
         if (!bOk)
         {
-            return dwCursorOffset; // error, return current position
+            return dwCursorOffset;					// error, return current position
         }
         dwDataPos-=wSmpSize;
 
         while ((dwDataPos >= dwLowerLimit) && (dwDataPos <= dwUpperLimit))
         {
             int nOldData = nData;
-
-            nData = GetWaveData(dwDataPos, &bOk); // get actual data block
+            nData = GetWaveData(dwDataPos, &bOk);	// get actual data block
             if (!bOk)
             {
-                return dwCursorOffset; // error, return current position
+                return dwCursorOffset;				// error, return current position
             }
 
             // check if positive zero crossing
@@ -3665,7 +3662,7 @@ DWORD CSaDoc::SnapCursor(ECursorSelect nCursorSelect,
                 return dwCursorOffset;
             }
 
-            FRAG_PARMS stFragment = m_pProcessFragments->GetFragmentParms(dwFragmentIndex);
+            SFragParms stFragment = m_pProcessFragments->GetFragmentParms(dwFragmentIndex);
             DWORD dwFragmentStart = stFragment.dwOffset * wSmpSize;
             DWORD dwFragmentEnd = (stFragment.dwOffset + stFragment.wLength - 1) * wSmpSize;
 
@@ -4232,7 +4229,7 @@ BOOL CSaDoc::WorkbenchProcess(BOOL bInvalidate, BOOL bRestart)
 // handle. If the flag bDelete is TRUE (default is FALSE) it deletes the
 // copied section out of the wavefile.
 /***************************************************************************/
-BOOL CSaDoc::PutWaveToClipboard( DWORD dwSectionStart, DWORD dwSectionLength, BOOL bDelete)
+BOOL CSaDoc::PutWaveToClipboard( WAVETIME sectionStart, WAVETIME sectionLength, BOOL bDelete)
 {
     // because we now use true CF_WAVE we support annotations embedded in the data
     // temporary target file has to be created
@@ -4241,9 +4238,9 @@ BOOL CSaDoc::PutWaveToClipboard( DWORD dwSectionStart, DWORD dwSectionLength, BO
     TCHAR szTempNewWave[_MAX_PATH];
     GetTempFileName(_T("WAV"), szTempNewWave, _countof(szTempNewWave));
 
-    DWORD tempSize = GetFileSize(m_szRawDataWrk.c_str());
+    DWORD tempSize = GetFileSize( m_szRawDataWrk.c_str());
 
-    if (!CopySectionToNewWavFile( dwSectionStart, dwSectionLength, szTempNewWave, TRUE))
+    if (!CopySectionToNewWavFile( sectionStart, sectionLength, szTempNewWave, TRUE))
     {
         return FALSE;
     }
@@ -4321,8 +4318,14 @@ BOOL CSaDoc::PutWaveToClipboard( DWORD dwSectionStart, DWORD dwSectionLength, BO
             pApp->ErrorMessage(IDS_ERROR_OPENTEMPFILE, m_szRawDataWrk.c_str());
             return FALSE;
         }
+
+		DWORD dwSectionStart1 = toBytes( sectionStart, true);
+		DWORD dwSectionLength1 = toBytes( sectionLength, true);
+		DWORD dwSectionStart = toBytes( sectionStart, false);
+		DWORD dwSectionLength = toBytes( sectionLength, false);
+
         DWORD dwDataTail = tempSize - dwSectionStart - dwSectionLength;
-        if (dwDataTail)
+        if (dwDataTail>0)
         {
 			// do nothing
         }
@@ -4379,12 +4382,13 @@ BOOL CSaDoc::PutWaveToClipboard( DWORD dwSectionStart, DWORD dwSectionLength, BO
         m_nCheckPointCount++;
 
         // set new data size
-        m_dwDataSize -= dwSectionLength;
+		m_dwDataSize -= dwSectionLength;
         SetModifiedFlag(TRUE); // data has been modified
         SetAudioModifiedFlag(TRUE);
         POSITION pos = GetFirstViewPosition();
-        ((CSaView *)GetNextView(pos))->AdjustCursors(dwSectionStart, dwSectionLength, TRUE); // adjust cursors to new file size
-        AdjustSegments(dwSectionStart, dwSectionLength, TRUE); // adjust segments to new file size
+
+        ((CSaView *)GetNextView(pos))->AdjustCursors( dwSectionStart1, dwSectionLength1, TRUE); // adjust cursors to new file size
+        AdjustSegments( sectionStart, sectionLength, true); // adjust segments to new file size
     }
 
     return TRUE;
@@ -4425,7 +4429,9 @@ BOOL CSaDoc::PasteClipboardToWave( HGLOBAL hData, DWORD dwPastePos)
         TCHAR lpszRawTempPath[_MAX_PATH];
         GetTempFileName(_T("WAV"), lpszRawTempPath, _countof(lpszRawTempPath));
 
-		CopyWave( m_szRawDataWrk.c_str(), lpszRawTempPath, CWaveIndex::FromSamples( *this, 0), CWaveIndex::FromBytes( *this, dwPastePos, true), TRUE);
+		WAVETIME start = fromSamples( 0);
+		WAVETIME length = fromBytes( dwPastePos, true);
+		CopyWave( m_szRawDataWrk.c_str(), lpszRawTempPath, start, length, TRUE);
 
         // increase the size of the file
         try
@@ -4446,7 +4452,9 @@ BOOL CSaDoc::PasteClipboardToWave( HGLOBAL hData, DWORD dwPastePos)
             return FALSE;
         }
 
-		CopyWave(m_szRawDataWrk.c_str(), lpszRawTempPath, CWaveIndex::FromBytes(*this,dwPastePos,true), CWaveIndex::FromBytes( *this, 0xffffffff, true), FALSE);
+		start = fromBytes( dwPastePos, true);
+		length = fromBytes( 0xffffffff, true);
+		CopyWave(m_szRawDataWrk.c_str(), lpszRawTempPath, start, length, FALSE);
         RemoveFile(m_szRawDataWrk.c_str());
         m_szRawDataWrk = lpszRawTempPath;
     }
@@ -4467,7 +4475,9 @@ BOOL CSaDoc::PasteClipboardToWave( HGLOBAL hData, DWORD dwPastePos)
     POSITION pos = GetFirstViewPosition();
     ((CSaView *)GetNextView(pos))->SetStartStopCursorPosition( dwPastePos, dwPastePos+dwPasteSize, SNAP_BOTH, ALIGN_AT_SAMPLE);
 
-    AdjustSegments( dwPastePos, dwPasteSize, FALSE);  // adjust segments to new file size
+	WAVETIME start = fromBytes( dwPastePos, true);
+	WAVETIME length = fromBytes( dwPasteSize, true);
+    AdjustSegments( start, length, false);  // adjust segments to new file size
 
     //Get new segments
     InsertTranscriptions( pApp->GetLastClipboardPath(), dwPastePos);
@@ -4556,17 +4566,20 @@ CSaString CSaDoc::SetFileExtension(CSaString fileName, CSaString fileExtension)
     return szReturn;
 }
 
-/***************************************************************************/
-// CSaDoc::AdjustSegments Adjust segments to new file size
-// The function adjusts the segments to the new file size. The file size
-// changed at the position dwSectionStart by dwSectionLength bytes and it
-// shrunk, if the flag bShrink is TRUE, otherwise it grew. In case of growth
-// all the segments offsets after dwSectionStart change. In the other way,
-// the segments in the deleted section will be deleted. The ones that over-
-// lap into the section will be adjusted if valid
-/***************************************************************************/
-void CSaDoc::AdjustSegments(DWORD dwSectionStart, DWORD dwSectionLength, BOOL bShrink)
+/***************************************************************************
+* CSaDoc::AdjustSegments Adjust segments to new file size
+* The function adjusts the segments to the new file size. The file size
+* changed at the position dwSectionStart by dwSectionLength bytes and it
+* shrunk, if the flag bShrink is TRUE, otherwise it grew. In case of growth
+* all the segments offsets after dwSectionStart change. In the other way,
+* the segments in the deleted section will be deleted. The ones that over-
+* lap into the section will be adjusted if valid
+***************************************************************************/
+void CSaDoc::AdjustSegments( WAVETIME sectionStart, WAVETIME sectionLength, bool bShrink)
 {
+
+	DWORD dwSectionStart = toBytes( sectionStart, true);
+	DWORD dwSectionLength = toBytes( sectionLength, true);
 
     if (bShrink)
     {
@@ -4892,8 +4905,8 @@ void CSaDoc::OnUpdateBoundaries(void)
         int nIndex = GetSegment(nLoop)->GetSelection();
 
         // first adjust cursors to old segment boundaries (undo to here)
-        pView->SetStartCursorPosition(GetSegment(nLoop)->GetOffset(nIndex), SNAP_RIGHT);
-        pView->SetStopCursorPosition(GetSegment(nLoop)->GetStop(nIndex), SNAP_LEFT);
+        pView->SetStartCursorPosition( GetSegment(nLoop)->GetOffset(nIndex), SNAP_RIGHT);
+        pView->SetStopCursorPosition( GetSegment(nLoop)->GetStop(nIndex), SNAP_LEFT);
 
         // If independent segment boundaries have moved they need to be updated for snapping
         if (((GetSegment(nLoop)->GetMasterIndex()==-1) &&
@@ -4907,8 +4920,8 @@ void CSaDoc::OnUpdateBoundaries(void)
         CheckPoint(); // Save state
 
         // Reload cursor locations to new segment boundaries
-        pView->SetStartCursorPosition(dwNewStart, SNAP_LEFT);
-        pView->SetStopCursorPosition(dwNewStop, SNAP_RIGHT);
+        pView->SetStartCursorPosition( dwNewStart, SNAP_LEFT);
+        pView->SetStopCursorPosition( dwNewStop, SNAP_RIGHT);
 
         // Do update
         UpdateSegmentBoundaries(pView->GetEditBoundaries(false)==BOUNDARIES_EDIT_SEGMENT_SIZE);//SDM 1.5Test8.1
@@ -4941,11 +4954,11 @@ void CSaDoc::OnUpdateUpdateBoundaries(CCmdUI * pCmdUI)
         }
         else
         {
-            if (dwStart != SnapCursor(START_CURSOR, GetSegment(nLoop)->GetOffset(nSelection),0,GetUnprocessedDataSize(), SNAP_RIGHT))
+            if (dwStart != SnapCursor(START_CURSOR, GetSegment(nLoop)->GetOffset(nSelection),0,GetDataSize(), SNAP_RIGHT))
             {
                 enable = TRUE;
             }
-            if (dwStop != SnapCursor(STOP_CURSOR, GetSegment(nLoop)->GetStop(nSelection),0,GetUnprocessedDataSize(),SNAP_LEFT))
+            if (dwStop != SnapCursor(STOP_CURSOR, GetSegment(nLoop)->GetStop(nSelection),0,GetDataSize(),SNAP_LEFT))
             {
                 enable = TRUE;
             }
@@ -5134,13 +5147,23 @@ BOOL CSaDoc::UpdateSegmentBoundaries(BOOL bOverlap, int nAnnotation, int nSelect
 }
 
 /***************************************************************************/
+// CSaDoc::GetDataSize
+// Returns data size in bytes for a single channel
+/***************************************************************************/
+DWORD CSaDoc::GetDataSize() const
+{
+    return GetNumSamples() * m_FmtParm.GetSampleSize();
+}
+
+/***************************************************************************/
 // CSaDoc::GetDataSize Return size of wave source data in bytes
 // Returns the size of the wave file or of a workbench process temporary
 // file according to the process selected.
+// this is the length of the data in bytes for all channels.
 /***************************************************************************/
-DWORD CSaDoc::GetDataSize()
+DWORD CSaDoc::GetRawDataSize() const
 {
-    return GetUnprocessedDataSize();
+    return m_dwDataSize;
 }
 
 /***************************************************************************/
@@ -5776,7 +5799,9 @@ void CSaDoc::OnFileSaveAs()
         CSaView * pView = (CSaView *)pDoc->GetNextView(pos);
         DWORD dwStart = pView->GetStartCursorPosition();
         DWORD dwStop = pView->GetStopCursorPosition();
-        bSuccess = CopySectionToNewWavFile(dwStart,dwStop-dwStart,fileName, TRUE);
+		WAVETIME start = pDoc->fromCursor( dwStart);
+		WAVETIME stop = pDoc->fromCursor( dwStop);
+        bSuccess = CopySectionToNewWavFile( start, stop-start,fileName, TRUE);
     }
     else if (dlg.m_nSaveArea == CDlgSaveAsOptions::saveView)
     {
@@ -5795,7 +5820,9 @@ void CSaDoc::OnFileSaveAs()
     }
     else if (dlg.m_nShowFiles != CDlgSaveAsOptions::showNew)
     {
-        bSuccess = CopySectionToNewWavFile(0,GetUnprocessedDataSize(),fileName, TRUE);
+		WAVETIME start = 0;
+		WAVETIME length = fromBytes( GetDataSize(), true);
+        bSuccess = CopySectionToNewWavFile( start, length, fileName, TRUE);
     }
     else
     {
@@ -6194,7 +6221,7 @@ void CSaDoc::OnAdvancedParseWords()
 /***************************************************************************/
 void CSaDoc::OnUpdateAdvancedParseWords(CCmdUI * pCmdUI)
 {
-    pCmdUI->Enable(GetUnprocessedDataSize() != 0); // enable if data is available
+    pCmdUI->Enable(GetDataSize() != 0); // enable if data is available
 }
 
 // Split function SDM 1.5Test8.2
@@ -6225,7 +6252,7 @@ void CSaDoc::OnAdvancedParsePhrases()
 /***************************************************************************/
 void CSaDoc::OnUpdateAdvancedParsePhrases(CCmdUI * pCmdUI)
 {
-    pCmdUI->Enable(GetUnprocessedDataSize() != 0); // enable if data is available
+    pCmdUI->Enable(GetDataSize() != 0); // enable if data is available
 }
 
 /**
@@ -6571,7 +6598,7 @@ BOOL CSaDoc::AdvancedSegment()
 /***************************************************************************/
 void CSaDoc::OnUpdateAdvancedSegment(CCmdUI * pCmdUI)
 {
-    pCmdUI->Enable(GetUnprocessedDataSize() != 0); // enable if data is available
+    pCmdUI->Enable(GetDataSize() != 0); // enable if data is available
 }
 
 void CSaDoc::WriteProperties(CObjectOStream & obs)
@@ -6761,7 +6788,7 @@ void CSaDoc::RevertTranscriptionChanges()
 
 void CSaDoc::OnUpdateAutoAlign(CCmdUI * pCmdUI)
 {
-    pCmdUI->Enable(GetUnprocessedDataSize() != 0); // enable if data is available
+    pCmdUI->Enable(GetDataSize() != 0); // enable if data is available
 }
 
 // SDM 1.5Test8.5
@@ -6830,7 +6857,7 @@ void CSaDoc::GetAlignInfo(CAlignInfo & info)
     // get source data size
     info.bValid = true;
 
-    DWORD dwDataSize = GetUnprocessedDataSize();
+    DWORD dwDataSize = GetDataSize();
     DWORD wSmpSize = GetSampleSize();
 
     info.dStart = 0;
@@ -7222,7 +7249,7 @@ void CSaDoc::OnAutoReferenceData()
 void CSaDoc::OnUpdateAutoReferenceData(CCmdUI * pCmdUI)
 {
     // enable if data is available
-    pCmdUI->Enable(GetUnprocessedDataSize() != 0);
+    pCmdUI->Enable(GetDataSize() != 0);
 }
 
 void CSaDoc::AlignTranscriptionData(CTranscriptionDataSettings & settings)
@@ -7316,7 +7343,7 @@ void CSaDoc::AlignTranscriptionData(CTranscriptionDataSettings & settings)
                 nIndex++;
             }
             // Add final duration to fill remainder of waveform
-            pArray[CHARACTER_DURATIONS].Add(GetUnprocessedDataSize() - pArray[CHARACTER_OFFSETS][nIndex - 1]);
+            pArray[CHARACTER_DURATIONS].Add(GetDataSize() - pArray[CHARACTER_OFFSETS][nIndex - 1]);
             break;
         }
         case IDC_CHARACTER:
@@ -7336,7 +7363,7 @@ void CSaDoc::AlignTranscriptionData(CTranscriptionDataSettings & settings)
                 }
                 else
                 {
-                    dwDuration = GetUnprocessedDataSize() - pArray[WORD_OFFSETS][nGlossWordIndex];
+                    dwDuration = GetDataSize() - pArray[WORD_OFFSETS][nGlossWordIndex];
                     szWord = pTable->GetNext(CFontTable::DELIMITEDWORD, nWord, settings.m_szPhonetic);
                     nCharacters = pTable->GetLength(CFontTable::CHARACTER, szWord);
                     szWord = pTable->GetRemainder(CFontTable::DELIMITEDWORD, nWord, settings.m_szPhonetic);
@@ -7371,7 +7398,7 @@ void CSaDoc::AlignTranscriptionData(CTranscriptionDataSettings & settings)
                 nIndex++;
             }
             // Add final duration to fill remainder of waveform
-            pArray[CHARACTER_DURATIONS].Add(GetUnprocessedDataSize() - pArray[CHARACTER_OFFSETS][nIndex - 1]);
+            pArray[CHARACTER_DURATIONS].Add(GetDataSize() - pArray[CHARACTER_OFFSETS][nIndex - 1]);
             break;
         }
         }
@@ -8250,7 +8277,7 @@ CProcessRaw * CSaDoc::GetRaw()
 {
     return m_pProcessRaw;
 }
-CHilbert * CSaDoc::GetHilbert()
+CProcessHilbert * CSaDoc::GetHilbert()
 {
     return m_pProcessHilbert;
 }
@@ -8301,13 +8328,6 @@ CProcessTonalWeightChart * CSaDoc::GetTonalWeightChart()
 CFontTable  * CSaDoc::GetFont(int nIndex)
 {
     return (CFontTable *)m_pCreatedFonts->GetAt(nIndex);
-}
-
-// return sampled data size from wave file
-// this is the length of the data in bytes for all channels.
-DWORD CSaDoc::GetUnprocessedDataSize() const
-{
-    return m_dwDataSize;
 }
 
 void CSaDoc::SetAudioModifiedFlag(bool bMod)
@@ -8407,10 +8427,10 @@ SDPParm * CSaDoc::GetSDPParm()
 /***************************************************************************/
 // CSaDoc::CopySectionToNewWavFile Copies wave data out of the wave file
 // and places in a new wav file
-// dwSectionStart the start index in samples
-// dwSectionLength the length in samples
+// dwSectionStart the start index in bytes (single channel)
+// dwSectionLength the length in bytes (single channel)
 /***************************************************************************/
-BOOL CSaDoc::CopySectionToNewWavFile( DWORD dwSectionStart, DWORD dwSectionLength, LPCTSTR szNewWave, BOOL usingClipboard)
+BOOL CSaDoc::CopySectionToNewWavFile( WAVETIME sectionStart, WAVETIME sectionLength, LPCTSTR szNewWave, BOOL usingClipboard)
 {
 
     CSaString szOriginalWave;
@@ -8444,7 +8464,7 @@ BOOL CSaDoc::CopySectionToNewWavFile( DWORD dwSectionStart, DWORD dwSectionLengt
     TCHAR szTempNewTemp[_MAX_PATH];
     GetTempFileName(_T("TMP"), szTempNewTemp, _countof(szTempNewTemp));
 
-	if (!CopyWave( m_szRawDataWrk.c_str(), szTempNewTemp, CWaveIndex::FromBytes( *this, dwSectionStart, true), CWaveIndex::FromBytes( *this, dwSectionLength, true), TRUE))
+	if (!CopyWave( m_szRawDataWrk.c_str(), szTempNewTemp, sectionStart, sectionLength, TRUE))
     {
         if (!bSameFileName)
         {
@@ -8462,15 +8482,17 @@ BOOL CSaDoc::CopySectionToNewWavFile( DWORD dwSectionStart, DWORD dwSectionLengt
 
     // Set segments to selected wave
     // adjust segments to new file size
-    AdjustSegments( dwSectionStart+dwSectionLength, GetUnprocessedDataSize()-(dwSectionStart+dwSectionLength), TRUE);
-    AdjustSegments( 0, dwSectionStart, TRUE);
+	WAVETIME length = fromBytes( GetDataSize(), true);
+    AdjustSegments( sectionStart+sectionLength, length-(sectionStart+sectionLength), true);
+    AdjustSegments( 0, sectionStart, TRUE);
 
     if ( bSameFileName)
     {
         // Set document to use new wave data
-        m_dwDataSize = dwSectionLength;
+		m_dwDataSize = toBytes( sectionLength, false);
 
         RemoveFile(m_szRawDataWrk.c_str());  // Done with this file
+
         m_szRawDataWrk = szTempNewTemp;
         OnFileSave();
         InvalidateAllProcesses();
@@ -8478,7 +8500,7 @@ BOOL CSaDoc::CopySectionToNewWavFile( DWORD dwSectionStart, DWORD dwSectionLengt
         POSITION pos = GetFirstViewPosition();
         CSaView * pView = ((CSaView *)GetNextView(pos));
 
-        pView->SetStartStopCursorPosition(0, GetUnprocessedDataSize());
+        pView->SetStartStopCursorPosition(0, GetDataSize());
         pView->RefreshGraphs();
 
         while (CanUndo())
@@ -8491,11 +8513,11 @@ BOOL CSaDoc::CopySectionToNewWavFile( DWORD dwSectionStart, DWORD dwSectionLengt
 
     //Copy key document parameters
     wstring szTempName = m_szRawDataWrk;
-    DWORD dwDataSize = GetUnprocessedDataSize();
+    DWORD dwDataSize = GetRawDataSize();
     WORD wFlags = m_saParm.wFlags;
 
     // Set document to use new wave data
-    m_dwDataSize = dwSectionLength;
+	m_dwDataSize = toBytes( sectionLength, true);
 
     // Create Wave file
     try
@@ -8968,16 +8990,33 @@ DWORD CSaDoc::GetSampleSize() const
     return m_FmtParm.GetSampleSize();
 }
 
-double CSaDoc::GetTimeFromBytes(DWORD dwSize)
+WAVETIME CSaDoc::GetTimeFromBytes( DWORD dwSize)
 {
     // return sampled data size in seconds
-    return ((double)dwSize)/(((double)m_FmtParm.dwAvgBytesPerSec)/((double)m_FmtParm.wChannels));
+	WAVETIME result = dwSize;
+	result /= (((double)m_FmtParm.dwAvgBytesPerSec)/((double)m_FmtParm.wChannels));
+	return result;
 }
 
-DWORD CSaDoc::GetBytesFromTime(double fSize)
+DWORD CSaDoc::GetBytesFromTime(WAVETIME fSize)
 {
     // return sampled data size in bytes
     return (DWORD)(((double)fSize)*(((double)m_FmtParm.dwAvgBytesPerSec)/((double)m_FmtParm.wChannels)));
+}
+
+/**
+* return the number of bytes used.
+* @param singleChannel if true return bytes used for a single channel
+*/
+DWORD CSaDoc::GetBytesPerSample( bool singleChannel)
+{
+	if (singleChannel)
+	{
+		DWORD result = m_FmtParm.wBlockAlign;
+		result /= m_FmtParm.wChannels;
+		return result;
+	}
+	return m_FmtParm.wBlockAlign;
 }
 
 DWORD CSaDoc::GetSamplesPerSec()
@@ -9021,7 +9060,7 @@ DWORD CSaDoc::GetNumChannels() const
 
 DWORD CSaDoc::GetNumSamples() const
 {
-    return ( GetUnprocessedDataSize() / m_FmtParm.GetSampleSize())/ m_FmtParm.wChannels;
+    return ( GetRawDataSize() / m_FmtParm.GetSampleSize())/ GetNumChannels();
 }
 
 CSaString CSaDoc::GetTempFilename()
@@ -9058,3 +9097,45 @@ wstring CSaDoc::GetTranscriptionFilename()
 	result.append(L".saxml");
 	return result;
 }
+
+WAVETIME CSaDoc::fromBytes( DWORD bytes, bool singleChannel)
+{
+	WAVETIME result = (WAVETIME)bytes;
+	result /= (WAVETIME)GetBytesPerSample(singleChannel);
+	result /= (WAVETIME)GetSamplesPerSec();
+	return result;
+}
+
+DWORD CSaDoc::toBytes( WAVETIME val, bool singleChannel)
+{
+	WAVETIME result = val;
+	result *= GetSamplesPerSec();
+	result *= GetBytesPerSample(singleChannel);
+	return (DWORD)result;
+}
+
+WAVETIME CSaDoc::fromSamples( WAVESAMP samples)
+{
+	WAVETIME result = (WAVETIME)samples;
+	result /= (WAVETIME)GetSamplesPerSec();
+	return result;
+}
+
+WAVESAMP CSaDoc::toSamples( WAVETIME val)
+{
+	WAVETIME result = val;
+	result *= GetSamplesPerSec();
+	return (WAVESAMP)result;
+}
+
+/**
+* return position in time from cursor position, which is always for a single channel
+*/
+WAVETIME CSaDoc::fromCursor( CURSORPOS val)
+{
+	WAVETIME result = (WAVETIME)val;
+	result /= (WAVETIME)GetBytesPerSample(true);
+	result /= (WAVETIME)GetSamplesPerSec();
+	return result;
+}
+

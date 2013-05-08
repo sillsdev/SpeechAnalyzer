@@ -57,10 +57,10 @@ public:
     BOOL m_bBandPass; // TRUE if bandpass properties
     BOOL m_bLoPass;   // TRUE if lowpass properties
     enum { IDD = IDD_WB_FILTERPASS };
-    UINT    m_nLowerFreq;
-    UINT    m_nUpperFreq;
-    UINT    m_nOrder;
-    BOOL    m_bFilterFilter;
+    UINT m_nLowerFreq;
+    UINT m_nUpperFreq;
+    UINT m_nOrder;
+    BOOL m_bFilterFilter;
 
 protected:
     virtual void DoDataExchange(CDataExchange * pDX);   // DDX/DDV support

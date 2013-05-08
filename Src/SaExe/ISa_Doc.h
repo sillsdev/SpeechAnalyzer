@@ -20,7 +20,7 @@ class CProcessGrappl;
 class CProcessMelogram;
 class CProcessChange;
 class CProcessRaw;
-class CHilbert;
+class CProcessHilbert;
 class CProcessSpectrum;
 class CProcessSpectrogram;
 class CProcessWavelet;
@@ -47,13 +47,13 @@ public:
     void GetUttParm(CUttParm *, BOOL bOriginal=FALSE);
     void GetFmtParm(CFmtParm & format, bool processed);
 
-    DWORD GetDataSize();
+    DWORD GetDataSize() const;
+	DWORD GetRawDataSize() const;
     HPSTR GetWaveData(DWORD dwOffset, BOOL bBlockBegin = FALSE);
     int GetWaveData(DWORD dwOffset, BOOL *);
     void * GetUnprocessedDataBlock(DWORD dwByteOffset, size_t sObjectSize, BOOL bReverse);
     DWORD GetUnprocessedBufferIndex(size_t nSize);
 
-    DWORD GetUnprocessedDataSize() const;
     HPSTR GetAdjustedUnprocessedWaveData(DWORD dwOffset);
     HPSTR GetUnprocessedWaveData(DWORD dwOffset, BOOL bBlockBegin);
     DWORD GetUnprocessedWaveDataBufferSize();
@@ -74,7 +74,7 @@ public:
     CProcessSmoothedPitch * GetSmoothedPitch();
     CProcessChange * GetChange();
     CProcessRaw * GetRaw();
-    CHilbert * GetHilbert();
+    CProcessHilbert * GetHilbert();
     CProcessSpectrogram * GetSpectrogram(bool bRealTime);
     CProcessWavelet * GetWavelet();
     CProcessSpectrum * GetSpectrum();

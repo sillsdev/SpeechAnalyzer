@@ -472,14 +472,14 @@ void CDlgExportXML::OnOK()
     pFile->Write("<DataInfo>\r\n",12);
     if (m_bNumberSamples)
     {
-        swprintf_s(szString.GetBuffer(25),25,_T("%ld"), pDoc->GetDataSize() / pDoc->GetBlockAlign());
+        swprintf_s(szString.GetBuffer(25),25,_T("%ld"), pDoc->GetNumSamples());
         szString.ReleaseBuffer();
         OutputXMLField(pFile,_T("NumSamples"),szString);
     }
     if (m_bLength)
     {
         // create and write length text
-        double fDataSec = pDoc->GetTimeFromBytes(pDoc->GetUnprocessedDataSize()); // get sampled data size in seconds
+        double fDataSec = pDoc->GetTimeFromBytes(pDoc->GetDataSize()); // get sampled data size in seconds
         int nMinutes = (int)fDataSec / 60;
 
         if (nMinutes == 0)

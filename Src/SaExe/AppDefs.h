@@ -311,6 +311,13 @@ struct RGB
     long b;
 };
 
+/**
+* used to represt a wave file length or length in seconds
+*/
+typedef double WAVETIME;
+typedef DWORD WAVESAMP;
+typedef DWORD CURSORPOS;
+
 #include "grid.h"
 #include "param.h"
 #endif  //_APPDEFS_H

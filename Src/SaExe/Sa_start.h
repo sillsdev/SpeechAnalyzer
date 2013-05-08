@@ -53,7 +53,6 @@ protected:
     bool Cleanup();
 
     // Generated message map functions
-    //{{AFX_MSG(CStartModeDlg)
     virtual BOOL OnInitDialog();
     afx_msg void OnStartModeRecord();
     afx_msg void OnCloseButton();
@@ -62,7 +61,6 @@ protected:
     afx_msg void OnPlay();
     afx_msg void OnSelchangeRecentlist();
     afx_msg void OnStop();
-    //}}AFX_MSG
     DECLARE_MESSAGE_MAP()
 };
 

@@ -121,7 +121,7 @@ void CPlotSpectrum::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView)
             DWORD dwStartCursor = pView->GetStartCursorPosition();
             m_dwAnimationFrame = pFragments->GetFragmentIndex(dwStartCursor/wSmpSize);
         }
-        FRAG_PARMS FragParms = pFragments->GetFragmentParms(m_dwAnimationFrame);
+        SFragParms FragParms = pFragments->GetFragmentParms(m_dwAnimationFrame);
         dwFrameStart = FragParms.dwOffset * wSmpSize;
         dwFrameSize = (DWORD)FragParms.wLength * (DWORD)wSmpSize;
         /*
@@ -416,7 +416,7 @@ void CPlotSpectrum::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView)
             // Draw boxes around formants.
             if (pSpectrumParms->bShowFormantFreq || pSpectrumParms->bShowFormantPower)
             {
-                for (unsigned short nFormant = 1; nFormant <= MAX_NUM_FORMANTS; nFormant++)
+				for (unsigned short nFormant = 1; nFormant <= MAX_NUM_FORMANTS; nFormant++)
                 {
                     SFormant Formant = pSpectrum->GetFormant(nFormant);
 

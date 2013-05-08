@@ -32,7 +32,7 @@ public:
     DWORD GetFormantFrameCount();
     unsigned short GetFormantFrameSize();
     SFormantFrame * GetFormantFrame(DWORD dwFrame);
-    STATISTIC GetFormantStats(int nFormant);
+    SStatistic GetFormantStats(int nFormant);
     void ResetTracking();
     long Process(void * pCaller, ISaDoc * pDoc, BOOL bTrack, DWORD dwFrameStart, DWORD dwFrameSize, SSpectProcSelect SpectraSelected, int nProgress = 0, int nLevel = 1);
     int GetVowelCount(int nGender) const;
@@ -55,7 +55,7 @@ private:
     DWORD m_dwValidFrameCount;
     unsigned short m_nFormantFrameSize;
     CFormantParm m_FormantParms;
-    STATISTIC m_F[MAX_NUM_FORMANTS+1];
+    SStatistic m_F[MAX_NUM_FORMANTS+1];
 };
 
 #endif

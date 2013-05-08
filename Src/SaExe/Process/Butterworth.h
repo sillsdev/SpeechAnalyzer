@@ -1,59 +1,23 @@
-// Butterworth.h: interface for the CButterworth class.
+// Butterworth.h: interface for the CProcessButterworth class.
 //
 //////////////////////////////////////////////////////////////////////
 #ifndef BUTTERWORTH_H
 #define BUTTERWORTH_H
 
-#include "IProcess.h"
+#include "IIRFilter.h"
 #include "Process.h"
 #include "dsp\ZTransform.h"
 
-class CProcessIIRFilter : public CProcess
+class CProcessButterworth : public CProcessIIRFilter
 {
 public:
-    CProcessIIRFilter(BOOL bDstWBench = TRUE);
-    virtual ~CProcessIIRFilter();
-
-    void SetSourceProcess(IProcess * pSourceProcess, BOOL bWBenchProcess = TRUE);
-    void SetOutputType(BOOL bWBenchProcess = TRUE);
-    virtual long Process(void * pCaller, ISaDoc *, int nProgress = 0, int nLevel = 1);
-    void SetFilterFilterSilenceSamples(int forwardSamples);
-    int FilterFilterSilenceSamples();
-    CZTransform GetForward();
-
-protected:
-    CZTransform m_zForwardTransform;
-    CZTransform m_zReverseTransform;
-
-private:
-    enum
-    {
-        DEFAULT_FILTER_FILTER_SILENCE_SAMPLES = 4096
-    };
-
-    void SetFilterFilter(BOOL bSet);
-    static int round(double value);
-    int ReadSourceData(DWORD dwDataPos, int wSmpSize, ISaDoc * pDoc);
-    // write a block into the temporary file
-    BOOL WriteWaveDataBlock(DWORD dwPosition, HPSTR lpData, DWORD dwDataLength);
-    BOOL m_bReverse;
-    BOOL m_bFilterFilter;
-    int m_nFilterFilterSilence;
-    BOOL m_bSrcWBenchProcess;
-    BOOL m_bDstWBenchProcess;
-    IProcess * m_pSourceProcess;
-};
-
-class CButterworth : public CProcessIIRFilter
-{
-public:
-    CButterworth(BOOL bWorkBenchOutput = TRUE);
-    virtual ~CButterworth();
+    CProcessButterworth(BOOL bWorkBenchOutput = TRUE);
+    virtual ~CProcessButterworth();
 
     void LowPass(int nOrder, double dFrequency, double dScale=1.);
     void HighPass(int nOrder, double dFrequency, double dScale=1.);
     void BandPass(int nOrder, double dFrequency, double dBandwidth, double dScale=1.);
-    void SetFilterFilter(BOOL bSet);
+    void SetFilterFilter(bool bSet);
     virtual long Process(void * pCaller, ISaDoc *, int nProgress = 0, int nLevel = 1);
     void ConfigureProcess(double dSampling);
     double ForwardTick(double data);
@@ -73,7 +37,7 @@ private:
         kftLowPass,
         kftBandPass
     };
-    BOOL m_bFilterFilter;
+    bool m_bFilterFilter;
     BOOL m_bReverse;
     int m_nOrder;
     FilterType m_ftFilterType;
@@ -81,18 +45,6 @@ private:
     double m_dFrequency;
     double m_dBandwidth;
     double m_dScale;
-};
-
-class CHilbert : public CProcessIIRFilter
-{
-public:
-    CHilbert(CProcess * pSourceProcess = NULL, BOOL bWBenchProcess = FALSE);
-
-private:
-    static const double Pole1000x96dB[];
-
-    CZTransform AllPass(double pole);
-    CZTransform DelayHalf();
 };
 
 #endif

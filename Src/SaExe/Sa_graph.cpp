@@ -1148,10 +1148,10 @@ void CGraphWnd::UpdateStatusBar(DWORD dwStartCursor, DWORD dwStopCursor, BOOL bF
             {
                 // show frequency and power at mouse pointer
                 const BOOL bPreEmphasis = TRUE;
-                SIG_PARMS Signal;
+                SSigParms Signal;
                 const BOOL bBlockBegin = TRUE;
                 Signal.SmpRate = pDoc->GetSamplesPerSec();
-                Signal.Length = DspWin::CalcLength( pSpectroParm->Bandwidth(), Signal.SmpRate, ResearchSettings.m_cWindow.m_nType);
+                Signal.Length = CDspWin::CalcLength( pSpectroParm->Bandwidth(), Signal.SmpRate, ResearchSettings.m_cWindow.m_nType);
                 DWORD dwHalfFrameSize = (Signal.Length/2) * nSmpSize;
                 CPoint MousePosn = m_pPlot->GetMousePointerPosition();
                 DWORD dwWaveOffset = m_pPlot->CalcWaveOffsetAtPixel(MousePosn);

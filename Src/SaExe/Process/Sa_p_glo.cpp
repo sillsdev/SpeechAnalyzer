@@ -96,10 +96,10 @@ long CProcessGlottis::Process(void * pCaller, ISaDoc * pDoc, int nProgress, int 
     DWORD dwProcDataCount = 0;
 
     // Construct an LPC object for vocal tract modeling.
-    SIG_PARMS Signal;
-    LPC_SETTINGS LpcSetting;
+    SSigParms Signal;
+    SLPCSettings LpcSetting;
     CLinPredCoding * pLpcObject = NULL;
-    LPC_MODEL * pLpcModel;
+    SLPCModel * pLpcModel;
     dspError_t Err;
 
     if (wSmpSize == 1)

@@ -158,7 +158,7 @@ dspError_t CPeakPicker::CreateObject(CPeakPicker ** ppPeakPicker, uint32 dwMaxNu
     {
         return(Code(INVALID_NUM_PEAKS));
     }
-    BUMP_TABLE_ENTRY * BumpTable = (BUMP_TABLE_ENTRY *)malloc((int32)dwMaxNumBumps * sizeof(*BumpTable));
+    SBumpTableEntry * BumpTable = (SBumpTableEntry *)malloc((int32)dwMaxNumBumps * sizeof(*BumpTable));
     if (!BumpTable)
     {
         return(Code(OUT_OF_MEMORY));
@@ -185,12 +185,12 @@ CPeakPicker::CPeakPicker(uint32 dwMaxNumBumps)
     m_dwMaxNumBumps = dwMaxNumBumps;
     if (m_dwMaxNumBumps)
     {
-        m_BumpTable = (BUMP_TABLE_ENTRY *)malloc((int32)dwMaxNumBumps * sizeof(*m_BumpTable));
+        m_BumpTable = (SBumpTableEntry *)malloc((int32)dwMaxNumBumps * sizeof(*m_BumpTable));
     }
     CCurveFitting::CreateObject(&m_pParabola, PARABOLIC);
 }
 
-CPeakPicker::CPeakPicker(BUMP_TABLE_ENTRY BumpTable[], uint32 dwMaxNumBumps, CCurveFitting * pCurveFitter)
+CPeakPicker::CPeakPicker(SBumpTableEntry BumpTable[], uint32 dwMaxNumBumps, CCurveFitting * pCurveFitter)
 {
     m_BumpTable = BumpTable;
     m_dwMaxNumBumps = dwMaxNumBumps;
@@ -218,7 +218,7 @@ CPeakPicker::~CPeakPicker()
 ////////////////////////////////////////////////////////////////////////////////////////
 // Object function to get peak locations and their amplitudes.                        //
 ////////////////////////////////////////////////////////////////////////////////////////
-dspError_t CPeakPicker::GetPeaks(BUMP_TABLE_ENTRY * pPeakTable[], uint32 * pPeakCount,
+dspError_t CPeakPicker::GetPeaks(SBumpTableEntry * pPeakTable[], uint32 * pPeakCount,
                                  float * pSignal, uint32 dwSignalLength)
 {
     if (!pPeakCount)
@@ -287,8 +287,7 @@ dspError_t CPeakPicker::GetPeaks(BUMP_TABLE_ENTRY * pPeakTable[], uint32 * pPeak
 ////////////////////////////////////////////////////////////////////////////////////////
 // Object function to get bumps in curve.                                             //
 ////////////////////////////////////////////////////////////////////////////////////////
-dspError_t CPeakPicker::GetBumps(BUMP_TABLE_ENTRY ** ppBumpTable, uint32 * pBumpCount,
-                                 float * pSignal, uint32 dwSignalLength)
+dspError_t CPeakPicker::GetBumps(SBumpTableEntry ** ppBumpTable, uint32 * pBumpCount, float * pSignal, uint32 dwSignalLength)
 {
     if (!pBumpCount)
     {
@@ -388,7 +387,7 @@ dspError_t CPeakPicker::GetBumps(BUMP_TABLE_ENTRY ** ppBumpTable, uint32 * pBump
 
 
     // Now look for bumps.
-    BUMP_TABLE_ENTRY Bump;
+    SBumpTableEntry Bump;
     const float * pStart = y;
 
     for (; m_dwBumpCount < m_dwMaxNumBumps; m_dwBumpCount++)
@@ -428,7 +427,7 @@ dspError_t CPeakPicker::GetBumps(BUMP_TABLE_ENTRY ** ppBumpTable, uint32 * pBump
 // start is set to where it stopped looking so you can call this                      //
 // again.                                                                             //
 ////////////////////////////////////////////////////////////////////////////////////////
-dspError_t CPeakPicker::FindNextBump(BUMP_TABLE_ENTRY * pBump, const float ** ppStart, const float * const pEnd)
+dspError_t CPeakPicker::FindNextBump(SBumpTableEntry * pBump, const float ** ppStart, const float * const pEnd)
 {
     ASSERT(pBump != NULL);
     ASSERT(ppStart);
@@ -546,26 +545,26 @@ dspError_t CPeakPicker::FindNextBump(BUMP_TABLE_ENTRY * pBump, const float ** pp
 #undef Second
 
 #define Type pair_float_uint
-#define tpqueue pq_pair_float_uint
-#define tvector vector_pair_float_uint
+#define CTPQueue pq_pair_float_uint
+#define CTVector vector_pair_float_uint
 #include "tvector.h"
 #include "tvector.hpp"
 #include "tpq.h"
 #include "tpq.hpp"
 #undef Type
-#undef tpqueue
-#undef tvector
+#undef CTPQueue
+#undef CTVector
 
 #define Type uint32
-#define tpqueue pq_uint
-#define tvector vector_uint
+#define CTPQueue pq_uint
+#define CTVector vector_uint
 #include "tvector.h"
 #include "tvector.hpp"
 #include "tpq.h"
 #include "tpq.hpp"
 #undef Type
-#undef tpqueue
-#undef tvector
+#undef CTPQueue
+#undef CTVector
 
 // Fit a parabola p[0] + p[1] x + p[2] x^2 to the points
 // (-1,y[0]), (0,y[1]), (1,y[2]).

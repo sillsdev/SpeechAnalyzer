@@ -24,9 +24,13 @@ static char BASED_CODE THIS_FILE[] = __FILE__;
 // data processing derived classes.
 CProcess::CProcess()
 {
-    m_nStatus = PROCESS_IDLE;
+	m_fileStatus.m_size = 0;
+	m_fileStatus.m_attribute = 0;
+	m_fileStatus._m_padding = 0;
+	wmemset(m_fileStatus.m_szFullName,0,_countof(m_fileStatus.m_szFullName));
+
+	m_nStatus = PROCESS_IDLE;
     m_pFile = NULL;
-    wmemset(m_fileStatus.m_szFullName,0,_countof(m_fileStatus.m_szFullName));
     m_lpBuffer = NULL;
     m_nMaxValue = 0;
     m_nMinValue = 0;
@@ -468,7 +472,8 @@ void * CProcess::GetProcessedDataBlock( DWORD dwByteOffset, size_t sObjectSize, 
         }
 
         // open the temporary file
-        if (!Open(GetProcessFileName(), CFile::modeRead | CFile::shareExclusive))
+		wstring name = GetProcessFileName();
+        if (!Open( name.c_str(), CFile::modeRead | CFile::shareExclusive))
         {
             // error opening file
             ErrorMessage(IDS_ERROR_OPENTEMPFILE, GetProcessFileName());
@@ -559,11 +564,10 @@ BOOL CProcess::CreateTempFile(TCHAR * szName, CFileStatus * pFileStatus)
 
 BOOL CProcess::Open(LPCTSTR lpszFileName, UINT nOpenFlags, CFileException * pError)
 {
-    ASSERT(m_pFile == NULL);
-    ASSERT(lpszFileName);
-    ASSERT(lpszFileName[0] != 0);
+    ASSERT(lpszFileName!=NULL);
+    ASSERT(wcslen(lpszFileName)>0);
 
-    if (m_pFile)
+    if (m_pFile!=NULL)
     {
         delete m_pFile;    // We shouldn't really get here...
         m_pFile = NULL;
@@ -687,9 +691,11 @@ long CProcess::Exit(int nError)
 /***************************************************************************/
 BOOL CProcess::WriteDataBlock(DWORD dwPosition, HPSTR lpData, DWORD dwDataLength, size_t nElementSize)
 {
+	TRACE("writing pos=%d length=%d size=%d\n",dwPosition, dwDataLength, nElementSize);
+
     // open the temporary file
     BOOL bClose = (m_pFile == NULL);
-    if (!m_pFile && !Open(GetProcessFileName(), CFile::modeReadWrite | CFile::shareExclusive))
+    if ((m_pFile==NULL) && (!Open(GetProcessFileName(), CFile::modeReadWrite | CFile::shareExclusive)))
     {
         // error opening file
         ErrorMessage(IDS_ERROR_OPENTEMPFILE, GetProcessFileName());
@@ -698,7 +704,7 @@ BOOL CProcess::WriteDataBlock(DWORD dwPosition, HPSTR lpData, DWORD dwDataLength
     // find the right position in the data
     try
     {
-        m_pFile->Seek(dwPosition * nElementSize, CFile::begin);
+        m_pFile->Seek( dwPosition * nElementSize, CFile::begin);
     }
     catch (CFileException e)
     {
@@ -896,8 +902,8 @@ BOOL CProcess::SmoothData(int nTimes)
                 }
             }
             *pSmoothData++;
-            if ((++dwSmoothPos == GetProcessBufferSize() / 2) // smoothed buffer is full
-                    || ((DWORD)dwDataPos == dwDataSize - 1))   // last result in loop
+            if ((++dwSmoothPos == GetProcessBufferSize() / 2) ||	// smoothed buffer is full
+                ((DWORD)dwDataPos == dwDataSize - 1))				// last result in loop
             {
                 bRes = WriteDataBlock(dwBlockSize, lpSmoothData, dwSmoothPos); // write the buffer into the temporary file
                 if (!bRes)
@@ -961,11 +967,6 @@ BOOL CProcess::ReadProperties(CObjectIStream &)
 void CProcess::SetStatus(long nStatus)
 {
     m_nStatus = nStatus;
-}
-
-void CProcess::Dump(LPCSTR /*tag*/)
-{
-    //TRACE("DataProcess %s size=%d max=%d min=%d status=%d offset=%d\n",tag,m_dwBufferSize, m_nMaxValue, m_nMinValue,m_nStatus,m_dwBufferOffset);
 }
 
 //###########################################################################
@@ -1065,6 +1066,7 @@ void CProcess::SetDataInvalid()
     m_dwBufferOffset = UNDEFINED_OFFSET;
 }
 
+// effectively return the number of samples
 DWORD CProcess::GetDataSize() const
 {
     // return processed data size in words (16 bit)

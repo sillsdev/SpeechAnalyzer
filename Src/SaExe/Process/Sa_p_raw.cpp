@@ -65,7 +65,7 @@ long CProcessRaw::Process(void * pCaller, ISaDoc * pDoc, int nProgress, int nLev
     pDoc->GetAdjust()->Process(pCaller, pDoc, nProgress, nLevel);
 
     // process raw data
-    DWORD dwDataSize = pDoc->GetDataSize();                                 // size of raw data
+	DWORD dwDataSize = pDoc->GetDataSize();									// size of raw data
     DWORD nSmpSize = pDoc->GetSampleSize();
 
     short int * pProcessedData = (short int *)m_lpBuffer;                   // pointer to process data
@@ -74,7 +74,7 @@ long CProcessRaw::Process(void * pCaller, ISaDoc * pDoc, int nProgress, int nLev
     DWORD dwProcessCount = 0;
 
     DWORD dwDocWaveBufferSize = GetBufferSize();
-    HPSTR pDocData = dwDataSize ? pDoc->GetWaveData(dwDataPos,FALSE) : 0;   // get pointer to data block
+    HPSTR pDocData = (dwDataSize!=0) ? pDoc->GetWaveData(dwDataPos,FALSE) : 0;   // get pointer to data block
     DWORD dwDocWavBufferPosition = pDoc->GetWaveBufferIndex();
 
     int nScale = pDoc->GetBitsPerSample() == 8 ? 256 : 1;
@@ -86,6 +86,7 @@ long CProcessRaw::Process(void * pCaller, ISaDoc * pDoc, int nProgress, int nLev
         if (dwDataPos >= dwDocWavBufferPosition + dwDocWaveBufferSize)
         {
             // get pointer to data block
+			TRACE("reading %d\n",dwDataPos);
             pDocData = pDoc->GetWaveData(dwDataPos,TRUE);
             dwDocWavBufferPosition = pDoc->GetWaveBufferIndex();
         }
@@ -137,8 +138,8 @@ long CProcessRaw::Process(void * pCaller, ISaDoc * pDoc, int nProgress, int nLev
     // calculate the actual progress
     nProgress = nProgress + (int)(100 / nLevel);
     // close the temporary file and read the status
-    CloseTempFile(); // close the file
-    EndProcess(nProgress >= 95); // end data processing
+    CloseTempFile();				// close the file
+    EndProcess(nProgress >= 95);	// end data processing
     EndWaitCursor();
     SetDataReady(TRUE);
     return MAKELONG(nLevel, nProgress);

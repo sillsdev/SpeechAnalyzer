@@ -865,8 +865,7 @@ BOOL CPlotSpectrogram::OnDrawFormantTracksFragment(CDC * pDC, CRect rWnd, CRect 
         double fFormantFactor = (double)pSpectroParm->nFrequency / (double)rWnd.Height();
 
         COLORREF cFormantColor = pColors->cPlotData[pSpectroParm->nColor && pSpectroParm->bFormantColor? 4 : 0];
-        //int nNumberFormants = pSpectroParm->nNumberFormants;
-        int nNumberFormants = MAX_NUM_FORMANTS;
+		int nNumberFormants = MAX_NUM_FORMANTS;
         CPen penFormantTrack(PS_SOLID, 2, cFormantColor);
         CPen * pOldPen = pDC->SelectObject(&penFormantTrack);
         int nDrawMode = 0;
@@ -929,7 +928,7 @@ BOOL CPlotSpectrogram::OnDrawFormantTracksFragment(CDC * pDC, CRect rWnd, CRect 
                         bOnScreen = TRUE;
                     }
                     bSkip = bSkip || !ResearchSettings.m_bSpectrogramConnectFormants;  // Research Setting
-                    FRAG_PARMS FragmentParm = pFragments->GetFragmentParms(dwFragment);
+                    SFragParms FragmentParm = pFragments->GetFragmentParms(dwFragment);
                     int x = max((int)(((double)FragmentParm.dwOffset - (double)fDataStart) / fSamplesPerPix + 0.5), rClip.left);
                     if (bSkip)
                     {

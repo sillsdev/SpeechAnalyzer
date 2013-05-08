@@ -12,40 +12,25 @@
 //
 /////////////////////////////////////////////////////////////////////////////
 #ifndef _GRAPHS_MAGNIFY_H
+#define _GRAPHS_MAGNIFY_H
 
 #include "resource.h"
 
-#define _GRAPHS_MAGNIFY_H
-
-//###########################################################################
-// CDlgMagnify dialog
-
 class CDlgMagnify : public CDialog
 {
-
-    // Construction/destruction/creation
 public:
-    CDlgMagnify(CWnd * pParent = NULL); // standard constructor
+    CDlgMagnify(CWnd * pParent = NULL);					// standard constructor
 
-    // Attributes
-private:
-
-    // Dialog Data
-public:
-    //{{AFX_DATA(CDlgMagnify)
     enum { IDD = IDD_MAGNIFY };
     double   m_fMagnify;
-    //}}AFX_DATA
 
-    // Operations
 protected:
     virtual void DoDataExchange(CDataExchange * pDX);   // DDX/DDV support
 
     // Generated message map functions
-    //{{AFX_MSG(CDlgMagnify)
     virtual BOOL OnInitDialog();
-    //}}AFX_MSG
-    DECLARE_MESSAGE_MAP()
+
+	DECLARE_MESSAGE_MAP()
 };
 
-#endif //_GRAPHS_MAGNIFY_H
+#endif

@@ -568,21 +568,19 @@ void CDlgVocalTract::OnSynthShow()
         {
             // file created open in SA
             CSaApp * pApp = (CSaApp *)(AfxGetApp());
-
             CSaDoc * pDoc = pApp->IsDocumentOpened(m_pShowDoc) ? m_pShowDoc : NULL;
-
-            if (pDoc && pDoc->GetFileStatus()->m_szFullName != m_szSynthesizedFilename)
+            if ((pDoc!=NULL) && (pDoc->GetFileStatus()->m_szFullName != m_szSynthesizedFilename))
             {
                 pDoc = NULL;
             }
 
             // Load temporarary file into document
-            if (pDoc)
+            if (pDoc!=NULL)
             {
-                pDoc->ApplyWaveFile(m_szSynthesizedFilename, pDoc->GetUnprocessedDataSize(), FALSE);
+                pDoc->ApplyWaveFile(m_szSynthesizedFilename, pDoc->GetRawDataSize(), FALSE);
             }
 
-            if (!pDoc)
+            if (pDoc==NULL)
             {
                 pDoc = pApp->OpenWavFileAsNew(m_szSynthesizedFilename);
             }
@@ -1042,7 +1040,7 @@ static double VHX(double meanSqError, double meanQuadError, double /*analysisLen
 struct SAnalyzer
 {
 
-    SAnalyzer(CSaDoc * ipDoc, WORD iwSmpSize, SIG_PARMS & iSignal, const LPC_SETTINGS & iLpcSetting, BOOL ibClosedPhase = FALSE)
+    SAnalyzer(CSaDoc * ipDoc, WORD iwSmpSize, SSigParms & iSignal, const SLPCSettings & iLpcSetting, BOOL ibClosedPhase = FALSE)
         : Signal(iSignal), LpcSetting(iLpcSetting)
     {
         pDoc = ipDoc;
@@ -1053,8 +1051,8 @@ struct SAnalyzer
     CSaDoc * pDoc;
     WORD wSmpSize;
     BOOL bClosedPhase;
-    SIG_PARMS & Signal;
-    const LPC_SETTINGS & LpcSetting;
+    SSigParms & Signal;
+    const SLPCSettings & LpcSetting;
 };
 
 static void Analyze(SAnalyzer & a, CString szIpa, DWORD dwStart, DWORD dwEnd, CIpaVTChar & cChar, DWORD dwDuration=0, DWORD dwOffset=0, std::vector<double> * pResidual=NULL)
@@ -1151,7 +1149,7 @@ static void Analyze(SAnalyzer & a, CString szIpa, DWORD dwStart, DWORD dwEnd, CI
         a.Signal.Start = (void *)a.pDoc->GetWaveData(nNewStart*a.wSmpSize, TRUE); //load sample
         a.Signal.Length = dwFrameSize;
 
-        LPC_SETTINGS LpcSetting = a.LpcSetting;
+        SLPCSettings LpcSetting = a.LpcSetting;
         LpcSetting.nOrder = (unsigned short)nSections;
         LpcSetting.nFrameLen = (unsigned short)(dwFrameSize);
 
@@ -1165,7 +1163,7 @@ static void Analyze(SAnalyzer & a, CString szIpa, DWORD dwStart, DWORD dwEnd, CI
             Err = CLinPredCoding::CreateObject(&pLpcObject, LpcSetting, a.Signal);
 
             // Perform LPC analysis.
-            LPC_MODEL * pLpc;
+            SLPCModel * pLpc;
             Err = pLpcObject->GetLpcModel(&pLpc, a.Signal.Start);
 
             double dSin = 0;
@@ -1194,7 +1192,7 @@ static void Analyze(SAnalyzer & a, CString szIpa, DWORD dwStart, DWORD dwEnd, CI
         Err = CLinPredCoding::CreateObject(&pLpcObject, LpcSetting, a.Signal);
 
         // Perform LPC analysis.
-        LPC_MODEL * pLpc;
+        SLPCModel * pLpc;
         Err = pLpcObject->GetLpcModel(&pLpc, a.Signal.Start);
 
         cChar.m_dFrameEnergy = 10*log10(pLpc->dMeanEnergy);
@@ -1323,7 +1321,7 @@ void CDlgVocalTract::OnGetSegments(CFlexEditGrid & cGrid)
 
     DWORD wSmpSize = pDoc->GetSampleSize();
 
-    SIG_PARMS Signal;
+    SSigParms Signal;
     if (wSmpSize == 1)
     {
         Signal.SmpDataFmt = PCM_UBYTE;    //samples are unsigned 8 bit
@@ -1336,7 +1334,7 @@ void CDlgVocalTract::OnGetSegments(CFlexEditGrid & cGrid)
 
     CIpaVTChar cChar;
 
-    LPC_SETTINGS LpcSetting;
+    SLPCSettings LpcSetting;
     LpcSetting.Process.Flags = NORM_CROSS_SECT | MEAN_SQ_ERR | ENERGY | RESIDUAL;
     if (m_bWindowLPC)
     {
@@ -1428,7 +1426,7 @@ void CDlgVocalTract::OnGetFragments(CFlexEditGrid & cGrid)
 
     CProcessFragments * pFragment = pDoc->GetFragments();
     DWORD wSmpSize = pDoc->GetSampleSize();
-    SIG_PARMS Signal;
+    SSigParms Signal;
     if (bVocalTract)
     {
         residual.clear();
@@ -1451,7 +1449,7 @@ void CDlgVocalTract::OnGetFragments(CFlexEditGrid & cGrid)
     DWORD dwFragmentIndex = 0;
     DWORD dwFragmentStart = 0;
     DWORD dwFragmentEnd = 0;
-    FRAG_PARMS stFragment;
+    SFragParms stFragment;
 
     DWORD dwLastFragmentIndex = pFragment->GetFragmentIndex((pDoc->GetDataSize() - 1) / wSmpSize);
 
@@ -1466,7 +1464,7 @@ void CDlgVocalTract::OnGetFragments(CFlexEditGrid & cGrid)
 
     CIpaVTChar cChar;
 
-    LPC_SETTINGS LpcSetting;
+    SLPCSettings LpcSetting;
     LpcSetting.Process.Flags = NORM_CROSS_SECT | MEAN_SQ_ERR | ENERGY | RESIDUAL;
     if (m_bWindowLPC)
     {
@@ -1939,8 +1937,8 @@ BOOL CDlgVocalTract::SynthesizeDataChunk(HMMIO hmmioFile, PCMWAVEFORMAT pcm, CIp
         // Change from amplitude of impulse to amplitude of single harmonic of impulse train
         double AVSH = AV/pow(nHarmonics*0.5, 0.5);
 
-        CButterworth artificialStimulusAspiration;
-        CButterworth artificialStimulusVoice;
+        CProcessButterworth artificialStimulusAspiration;
+        CProcessButterworth artificialStimulusVoice;
 
         if (artificialStimulus && cChars[i].m_stimulus.VHX)
         {
@@ -2067,7 +2065,7 @@ BOOL CDlgVocalTract::SynthesizeDataChunk(HMMIO hmmioFile, PCMWAVEFORMAT pcm, CIp
     if (m_nTilt == DB12 || m_nTilt == DB6)
     {
         // Apply radiation and glottal spectral shape
-        CButterworth filter(NULL);
+        CProcessButterworth filter(NULL);
         double FC = 20;
         double HP = 40;
         double NF = pcm.wf.nSamplesPerSec/2.;

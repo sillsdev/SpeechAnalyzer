@@ -58,8 +58,7 @@ CProcessZCross::~CProcessZCross()
 // calling queue, or -1 in case of an error in the lower word of the long
 // value and the end process progress percentage in the higher word.
 /***************************************************************************/
-long CProcessZCross::Process(void * pCaller, ISaDoc * pDoc, int nProgress,
-                             int nLevel)
+long CProcessZCross::Process( void * pCaller, ISaDoc * pDoc, int nProgress, int nLevel)
 {
     //TRACE(_T("Process: CProcessZCross\n"));
     if (IsCanceled())

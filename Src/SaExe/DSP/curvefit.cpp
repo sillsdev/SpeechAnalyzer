@@ -238,7 +238,7 @@ float CCurveFitting::Version(void)
 ////////////////////////////////////////////////////////////////////////////////////////
 // Class function to validate curve fitter parameters and construct object.           //
 ////////////////////////////////////////////////////////////////////////////////////////
-dspError_t CCurveFitting::CreateObject(CCurveFitting ** ppCurveFitter, CURVE_TYPE CurveType)
+dspError_t CCurveFitting::CreateObject(CCurveFitting ** ppCurveFitter, ECURVE_TYPE CurveType)
 {
     if (!ppCurveFitter)
     {
@@ -261,7 +261,7 @@ dspError_t CCurveFitting::CreateObject(CCurveFitting ** ppCurveFitter, CURVE_TYP
 ////////////////////////////////////////////////////////////////////////////////////////
 // Peak picker object constructor.                                                    //
 ////////////////////////////////////////////////////////////////////////////////////////
-CCurveFitting::CCurveFitting(CURVE_TYPE CurveType, float * pCoeff)
+CCurveFitting::CCurveFitting(ECURVE_TYPE CurveType, float * pCoeff)
 {
     m_nCurveType = (short)CurveType;
     m_coeff = pCoeff;

@@ -59,10 +59,8 @@ public:
 
     // Generated message map functions
 protected:
-    //{{AFX_MSG(CLEDDisplay)
     afx_msg void OnPaint();
     afx_msg BOOL OnEraseBkgnd(CDC * pDC);
-    //}}AFX_MSG
     DECLARE_MESSAGE_MAP()
 };
 
@@ -99,13 +97,11 @@ public:
 
     // Generated message map functions
 protected:
-    //{{AFX_MSG(CSliderVertical)
     afx_msg void OnPaint();
     afx_msg BOOL OnEraseBkgnd(CDC * pDC);
     afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
     afx_msg void OnLButtonUp(UINT nFlags, CPoint point);
     afx_msg void OnMouseMove(UINT nFlags, CPoint point);
-    //}}AFX_MSG
     DECLARE_MESSAGE_MAP()
 };
 
@@ -142,13 +138,11 @@ public:
 
     // Generated message map functions
 protected:
-    //{{AFX_MSG(CSliderHorizontal)
     afx_msg void OnPaint();
     afx_msg BOOL OnEraseBkgnd(CDC * pDC);
     afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
     afx_msg void OnLButtonUp(UINT nFlags, CPoint point);
     afx_msg void OnMouseMove(UINT nFlags, CPoint point);
-    //}}AFX_MSG
     DECLARE_MESSAGE_MAP()
 };
 
@@ -201,11 +195,9 @@ public:
 
     // Generated message map functions
 protected:
-    //{{AFX_MSG(CVUBar)
     afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
     afx_msg void OnPaint();
     afx_msg BOOL OnEraseBkgnd(CDC * pDC);
-    //}}AFX_MSG
     DECLARE_MESSAGE_MAP()
 };
 
@@ -242,10 +234,8 @@ public:
 
     // Generated message map functions
 protected:
-    //{{AFX_MSG(CProgressBar)
     afx_msg void OnPaint();
     afx_msg BOOL OnEraseBkgnd(CDC * pDC);
-    //}}AFX_MSG
     DECLARE_MESSAGE_MAP()
 };
 
@@ -356,7 +346,6 @@ public:
 
     // Generated message map functions
 protected:
-    //{{AFX_MSG(CToggleButton)
     afx_msg void OnPaint();
     afx_msg BOOL OnEraseBkgnd(CDC * pDC);
     afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
@@ -364,7 +353,6 @@ protected:
     afx_msg void OnLButtonUp(UINT nFlags, CPoint point);
     afx_msg void OnTimer(UINT nIDEvent);
     afx_msg void OnEnable(BOOL bEnable);
-    //}}AFX_MSG
     DECLARE_MESSAGE_MAP()
 };
 
@@ -401,10 +389,8 @@ public:
 
     // Generated message map functions
 protected:
-    //{{AFX_MSG(CAboutTitle)
     afx_msg void OnPaint();
     afx_msg BOOL OnEraseBkgnd(CDC * pDC);
-    //}}AFX_MSG
     DECLARE_MESSAGE_MAP()
 };
 
@@ -430,10 +416,8 @@ public:
 
     // Generated message map functions
 protected:
-    //{{AFX_MSG(CStaticText)
     afx_msg void OnPaint();
     afx_msg BOOL OnEraseBkgnd(CDC * pDC);
-    //}}AFX_MSG
     DECLARE_MESSAGE_MAP()
 };
 

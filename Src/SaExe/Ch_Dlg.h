@@ -30,10 +30,7 @@ private:
     CChartLine m_ChartLine[18];
 
     // Dialog Data
-    //{{AFX_DATA(CDlgChartVowelsPage)
     enum { IDD = IDD_CHARTVOWELSPAGE };
-    // NOTE: the ClassWizard will add data members here
-    //}}AFX_DATA
 
     // Operations
 protected:
@@ -41,9 +38,7 @@ protected:
 
     // Generated message map functions
 protected:
-    //{{AFX_MSG(CDlgChartVowelsPage)
     virtual BOOL OnInitDialog();
-    //}}AFX_MSG
     DECLARE_MESSAGE_MAP()
 };
 
@@ -72,9 +67,7 @@ protected:
 
     // Generated message map functions
 protected:
-    //{{AFX_MSG(CDlgChartConsonantsPage)
     virtual BOOL OnInitDialog();
-    //}}AFX_MSG
     DECLARE_MESSAGE_MAP()
 };
 
@@ -103,9 +96,7 @@ protected:
 
     // Generated message map functions
 protected:
-    //{{AFX_MSG(CDlgChartDiacriticsPage)
     virtual BOOL OnInitDialog();
-    //}}AFX_MSG
     DECLARE_MESSAGE_MAP()
 };
 
@@ -210,13 +201,11 @@ private:
 
     // Generated message map functions
 protected:
-    //{{AFX_MSG(CDlgCharChart)
     virtual BOOL OnInitDialog();
     afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
     afx_msg void OnOK();
     afx_msg void OnCancel();
     afx_msg void OnClose();
-    //}}AFX_MSG
     afx_msg void OnChecked(UINT nID);
     afx_msg LRESULT OnCharSelect(WPARAM, LPARAM);
     DECLARE_MESSAGE_MAP()

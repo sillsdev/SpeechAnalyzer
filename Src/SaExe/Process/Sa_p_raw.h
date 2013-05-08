@@ -12,16 +12,10 @@
 
 class CProcessRaw : public CProcess
 {
-// Construction/destruction/creation
 public:
     CProcessRaw();
     virtual ~CProcessRaw();
 
-// Attributes
-private:
-
-// Operations
-public:
     long Process(void * pCaller, ISaDoc * pDoc, int nProgress = 0, int nLevel = 1);
 };
 

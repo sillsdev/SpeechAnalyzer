@@ -1,45 +1,37 @@
 #ifndef TRACKSTATE_H
 #define TRACKSTATE_H
 
-#include "dsp\Signal.h"
-#include "dsp\Formants.h"
-#include "dsp\dspTypes.h"
-#include "Process.h"
-#include "Process\FormantTracker.h"
+#include "..\DSP\ZTransform.h"
+#include "Process\TrackState.h"
 
-class CProcessTrackState : public CProcessFormantTracker::CTrackState
+typedef std::complex<double> CDBL;
+typedef std::vector<CDBL> VECTOR_CDBL;
+typedef std::deque<CDBL> DEQUE_CDBL;
+typedef double DBL;
+typedef std::vector<DBL> VECTOR_DBL;
+
+class STrackState
 {
-
 public:
-    CProcessTrackState();
-    virtual ~CProcessTrackState();
-
-    virtual DEQUE_CDBL & GetData();
-    virtual VECTOR_DBL & GetWindow();
+	DEQUE_CDBL data;
+	// the filter window
+	VECTOR_DBL window;
 
     // Previous track position
-    virtual VECTOR_CDBL & GetTrackIn();
+	VECTOR_CDBL trackIn;
 
-    // Result track position
-    virtual VECTOR_CDBL & GetTrackOut();
+    // the results
+	VECTOR_CDBL trackOut;
 
     // Working intermediates to eliminate memory thrashing
-    virtual VECTOR_CDBL & GetWindowed();
-    virtual VECTOR_CDBL & GetFiltered();
-    virtual VECTOR_CDBL & GetZeroFilterCDBL();
-    virtual VECTOR_DBL & GetZeroFilterDBL();
+	VECTOR_CDBL windowed;
+	VECTOR_CDBL filtered;
+	VECTOR_CDBL zeroFilterCDBL;
+	VECTOR_DBL zeroFilterDBL;
 
-	void Dump();
-
-protected:
-    DEQUE_CDBL m_data;
-    VECTOR_DBL m_window;
-    VECTOR_CDBL m_trackIn;
-    VECTOR_CDBL m_trackOut;
-    VECTOR_CDBL m_windowed;
-    VECTOR_CDBL m_filtered;
-    VECTOR_CDBL m_zeroFilterCDBL;
-    VECTOR_DBL m_zeroFilterDBL;
+	void DumpWindowed( LPCSTR ofilename);
+	void DumpFiltered( LPCSTR ofilename);
+	void DumpZeroFilterDBL( LPCSTR ofilename);
 };
 
 #endif

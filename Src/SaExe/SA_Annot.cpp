@@ -1013,7 +1013,7 @@ void CLegendWnd::OnDraw(CDC * pDC,
             rWnd.top += 5 * tm.tmHeight / 4;
 
             // create and write length text
-            double fDataSec = pDoc->GetTimeFromBytes(pDoc->GetUnprocessedDataSize()); // get sampled data size in seconds
+            double fDataSec = pDoc->GetTimeFromBytes(pDoc->GetDataSize()); // get sampled data size in seconds
             swprintf_s(szText, _T("%-5.1f sec"), fDataSec);
             pDC->DrawText(szText, -1, rWnd, DT_SINGLELINE | DT_TOP | DT_LEFT | DT_NOCLIP);
         }
@@ -1611,7 +1611,7 @@ void CXScaleWnd::OnDraw(CDC * pDC,
         pGraph->GetPlot()->GetClientRect(rPlotWnd);
     }
 
-    if ((rPlotWnd.Height() <= 0) || (pDoc->GetUnprocessedDataSize() == 0))
+    if ((rPlotWnd.Height() <= 0) || (pDoc->GetDataSize() == 0))
     {
         pDC->SelectObject(pOldFont); // set back old font
         return; // nothing to draw
@@ -1648,7 +1648,7 @@ void CXScaleWnd::OnDraw(CDC * pDC,
     pDC->SetBkMode(TRANSPARENT); // letters may overlap, so they must be transparent
     rWnd.top += 2; // don't draw over the border
     rWnd.bottom -= 2;
-    if ((m_nScaleMode != NO_SCALE) && (pDoc->GetUnprocessedDataSize() > 0))
+    if ((m_nScaleMode != NO_SCALE) && (pDoc->GetDataSize() > 0))
     {
         if (rWnd.Width() < (5 * tm.tmAveCharWidth))
         {

@@ -37,10 +37,8 @@ protected:
 
     // Generated message map functions
 protected:
-    //{{AFX_MSG(CWorkbenchDoc)
     afx_msg void OnFileSave();
     afx_msg void OnUpdateFileSave(CCmdUI * pCmdUI);
-    //}}AFX_MSG
     DECLARE_MESSAGE_MAP()
 };
 

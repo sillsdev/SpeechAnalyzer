@@ -284,7 +284,7 @@ void CDlgKlattAll::PopulateParameterGrid(CFlexEditGrid & cGrid, const CIpaCharVe
     }
 }
 
-void CDlgKlattAll::PopulateParameterGrid(CFlexEditGrid & cGrid, const CIpaChar & cChar, int nColumn, BOOL bDuration)
+void CDlgKlattAll::PopulateParameterGrid(CFlexEditGrid & cGrid, const SIpaChar & cChar, int nColumn, BOOL bDuration)
 {
     if (nColumn >= cGrid.GetCols(0))
     {
@@ -427,7 +427,7 @@ void CDlgKlattAll::OnSynthShow()
             // Load temporarary file into document
             if (pDoc)
             {
-                pDoc->ApplyWaveFile(m_szSynthesizedFilename, pDoc->GetUnprocessedDataSize(), FALSE);
+                pDoc->ApplyWaveFile( m_szSynthesizedFilename, pDoc->GetRawDataSize(), FALSE);
             }
 
             if (!pDoc)
@@ -659,7 +659,7 @@ BOOL CDlgKlattAll::SynthesizeWave(LPCTSTR pszPathName, CIpaCharVector & cChars)
         // initialize resonators (prevents initial "explosions")
         if (cChars[0].parameters.AV)
         {
-            CIpaChar cInitColumn;
+            SIpaChar cInitColumn;
             cInitColumn.parameters = GetTemporalKlattDefaults();             // use parameter defaults
             cInitColumn.duration = 7. / cInitColumn.parameters.F0 * 1000.;   // set duration to 7 pitch periods
             time += timeScale*cInitColumn.duration/1000.;
@@ -787,7 +787,7 @@ void CDlgKlattAll::ParseParameterGrid(int nGrid, CIpaCharVector & cChars)
     cChars.reserve(cGrid.GetCols(0));
     for (int column = columnFirst; column < cGrid.GetCols(0); column++)
     {
-        CIpaChar columnChar;
+        SIpaChar columnChar;
         BOOL bColumnValid = FALSE;
         columnChar.ipa = cGrid.GetTextMatrix(rowIpa,column);
         if (columnChar.ipa.IsEmpty())
@@ -874,7 +874,7 @@ void CDlgKlattAll::ConvertCStringToCharVector(CString const & szGrid, CIpaCharVe
             continue;
         }
 
-        CIpaChar columnChar;
+        SIpaChar columnChar;
         BOOL bColumnValid = FALSE;
 
         // populate default values
@@ -2000,7 +2000,7 @@ void CDlgKlattAll::OnKlattGetFrames(CFlexEditGrid & cGrid, int nFrameLengthInMs,
             {
                 dwStartIndex = dwOffsetIndex > DWORD(nFrameLengthInFrags-1)/2 ? dwOffsetIndex - (nFrameLengthInFrags-1)/2 : 0;
 
-                FRAG_PARMS stFragment = pFragment->GetFragmentParms(dwStartIndex);
+                SFragParms stFragment = pFragment->GetFragmentParms(dwStartIndex);
 
                 if (dwStart > stFragment.dwOffset)
                 {
@@ -2018,7 +2018,7 @@ void CDlgKlattAll::OnKlattGetFrames(CFlexEditGrid & cGrid, int nFrameLengthInMs,
             {
                 dwEndIndex = dwOffsetIndex + (nFrameLengthInFrags-1)/2 < dwLastFragmentIndex ? dwOffsetIndex + (nFrameLengthInFrags-1)/2 : dwLastFragmentIndex;
 
-                FRAG_PARMS stFragment = pFragment->GetFragmentParms(dwEndIndex);
+                SFragParms stFragment = pFragment->GetFragmentParms(dwEndIndex);
 
                 if (dwEnd < stFragment.dwOffset + stFragment.wLength - 1)
                 {
@@ -2042,7 +2042,7 @@ void CDlgKlattAll::OnKlattGetFrames(CFlexEditGrid & cGrid, int nFrameLengthInMs,
                 break;
             }
 
-            FRAG_PARMS stFragment = pFragment->GetFragmentParms(dwFragmentIndex);
+            SFragParms stFragment = pFragment->GetFragmentParms(dwFragmentIndex);
 
             if (dwOffset < stFragment.dwOffset + stFragment.wLength)
             {
@@ -2163,7 +2163,7 @@ static double InterpolateWeight(double dLocation, double dBreakPoint, double dEn
     }
 }
 
-static void WeighChars(CIpaChar & cPrev, CIpaChar & cNext, double dWeight, CIpaChar & cThis)
+static void WeighChars( SIpaChar & cPrev, SIpaChar & cNext, double dWeight, SIpaChar & cThis)
 {
 #define WeighParameter(P) ((cThis. ## P) = ((cPrev. ## P)*dWeight + (cNext. ## P)*(1 - dWeight)))
 
@@ -2268,7 +2268,7 @@ void CDlgKlattAll::OnKlattBlendSegments(int nSrc, CFlexEditGrid & cGrid)
                 (cSegments[nIndex].parameters.AV == 0. || cSegments[nIndex].parameters.F0 == 0.))
         {
             // Silence
-            CIpaChar value(cSegments[nIndex].ipa, cSegments[nIndex > 0 ? nIndex - 1 : nIndex].parameters, 0);
+            SIpaChar value(cSegments[nIndex].ipa, cSegments[nIndex > 0 ? nIndex - 1 : nIndex].parameters, 0);
             // Insert end marker to prevent blending amlitudes
             value.duration = 0;
             cInterpolated.push_back(value);
@@ -2298,7 +2298,7 @@ void CDlgKlattAll::OnKlattBlendSegments(int nSrc, CFlexEditGrid & cGrid)
         }
         else
         {
-            CIpaChar newValue(cSegments[nIndex]);
+            SIpaChar newValue(cSegments[nIndex]);
 
             double dLength = cSegments[nIndex].duration/2;
 
@@ -2810,7 +2810,7 @@ void CIpaCharVector::Load(CString szPath)
             swscanf(value, parameterInfo[i].typeScanf, ((char *)pTemporal)+parameterInfo[i].parameterOffset);
         }
 
-        this->push_back(CIpaChar(CSFMHelper::ExtractTabField(line, 0), cTemporal));
+        this->push_back(SIpaChar(CSFMHelper::ExtractTabField(line, 0), cTemporal));
     }
 
     CIpaCharVector(*this).swap(*this); // shrink size using swap trick from Effective STL #18
@@ -2825,9 +2825,7 @@ void CIpaCharVector::Save(CString szPath)
     UINT nSuccess = file.Open(szPath,CFile::modeWrite | CFile::modeCreate | CFile::shareDenyWrite);
     if (!nSuccess)
     {
-        //MsgBox(GetDesktopWindow(), "Could not open IpaDefaults.txt. Check Read-Only status.", "IPADefaults", MB_OK);
-        ::MessageBox(::GetDesktopWindow(),_T("Could not open IpaDefaults.txt.\n    Check Read-Only status."),
-                     _T("IPADefaults"),MB_OK|MB_ICONEXCLAMATION);
+        ::MessageBox(::GetDesktopWindow(),_T("Could not open IpaDefaults.txt.\n    Check Read-Only status."), _T("IPADefaults"),MB_OK|MB_ICONEXCLAMATION);
         return;
     }
 

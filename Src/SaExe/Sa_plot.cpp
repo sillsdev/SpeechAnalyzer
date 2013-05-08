@@ -1338,8 +1338,7 @@ void DrawData(CRect & rClip, CDataSource & dataSource, const CXScale & cXScale, 
 // magnify factor and not divided by the precision multiplier, this will be
 // done here.
 //**************************************************************************/
-void CPlotWnd::PlotStandardPaint(CDC * pDC, CRect rWnd, CRect rClip,
-                                 CProcess * pProcess, CSaDoc * pProcessDoc, int nFlags)
+void CPlotWnd::PlotStandardPaint(CDC * pDC, CRect rWnd, CRect rClip, CProcess * pProcess, CSaDoc * pProcessDoc, int nFlags)
 {
     if (rClip.IsRectEmpty())
     {
@@ -1365,11 +1364,11 @@ void CPlotWnd::PlotStandardPaint(CDC * pDC, CRect rWnd, CRect rClip,
         // calculate size factor between raw data and process data
 
         double fSizeFactor = (double)pDoc->GetSampleSize() * ceil((double)(pDoc->GetDataSize()/pDoc->GetSampleSize())/(double)(pProcess->GetDataSize()));
-		//TRACE(L"plot %s -----------\n",(LPCTSTR)m_szPlotName);
-		//TRACE("doc sample size %d\n",pDoc->GetSampleSize());
-		//TRACE("doc data size %d\n",pDoc->GetDataSize());
-		//TRACE("proc data size %d\n",pProcess->GetDataSize());
-		//TRACE("size factor %f\n",fSizeFactor);
+		TRACE(L"plot %s -----------\n",(LPCTSTR)m_szPlotName);
+		TRACE("doc sample size %d\n",pDoc->GetSampleSize());
+		TRACE("doc data size %d\n",pDoc->GetDataSize());
+		TRACE("proc data size %d\n",pProcess->GetDataSize());
+		TRACE("size factor %f\n",fSizeFactor);
 
         // get necessary data from document and from view
         double fDataPos = GetDataPosition(rWnd.Width()); // data index of first sample to display
@@ -1381,7 +1380,8 @@ void CPlotWnd::PlotStandardPaint(CDC * pDC, CRect rWnd, CRect rClip,
 
         // calculate raw data samples per pixel
         double fBytesPerPix = double(dwDataFrame)*pDoc->GetAvgBytesPerSec()/pHostDoc->GetAvgBytesPerSec()/(double)rWnd.Width();
-		//TRACE("bytes per pix %f\n",fBytesPerPix);
+		TRACE("bytes per pix %f\n",fBytesPerPix);
+		TRACE("----\n");
 
         pXScale = new CXScaleLinear(fBytesPerPix/fSizeFactor, fDataPos/fSizeFactor);
         pXScaleRaw = new CXScaleLinear(fBytesPerPix, fDataPos);
@@ -1810,8 +1810,7 @@ void CPlotWnd::SetHighLightArea(DWORD dwStart, DWORD dwStop, BOOL bRedraw, BOOL 
         {
             dwStart = pDoc->SnapCursor(START_CURSOR, dwStart, 0, pDoc->GetDataSize() - nSampleSize);
         }
-        if ((dwStop > 0) &&
-                (dwStop < (pDoc->GetDataSize() - nSampleSize)))
+        if ((dwStop > 0) && (dwStop < (pDoc->GetDataSize() - nSampleSize)))
         {
             dwStop = pDoc->SnapCursor(STOP_CURSOR, dwStop, 0, pDoc->GetDataSize() - nSampleSize);
         }
@@ -2227,7 +2226,7 @@ void CPlotWnd::StandardAnimateFrame(DWORD dwFrameIndex)
         CSaDoc * pDoc = pView->GetDocument();
         DWORD wSmpSize = pDoc->GetSampleSize();
         CProcessFragments * pFragments = pDoc->GetFragments();
-        FRAG_PARMS FragParms = pFragments->GetFragmentParms(m_dwAnimationFrame);
+        SFragParms FragParms = pFragments->GetFragmentParms(m_dwAnimationFrame);
         DWORD dwFrameStart = FragParms.dwOffset * wSmpSize;
         DWORD dwFrameSize = (DWORD)FragParms.wLength * (DWORD)wSmpSize;
         CPlotWnd * pWavePlot = pWaveGraph->GetPlot();
@@ -2295,7 +2294,7 @@ void CPlotWnd::GraphHasFocus(BOOL bFocus)
                     {
                         dwFrame = pFragments->GetFragmentIndex(pView->GetStartCursorPosition()/wSmpSize);
                     }
-                    FRAG_PARMS FragParms = pFragments->GetFragmentParms(dwFrame);
+                    SFragParms FragParms = pFragments->GetFragmentParms(dwFrame);
                     DWORD dwFrameStart = FragParms.dwOffset * wSmpSize;
                     DWORD dwFrameSize = (DWORD)FragParms.wLength * (DWORD)wSmpSize;
                     pWavePlot->SetHighLightArea(dwFrameStart, dwFrameStart + dwFrameSize, TRUE, TRUE);

@@ -1,14 +1,14 @@
-class tvector
+class CTVector
 {
 public:
 
-    tvector();
-    tvector(int size);
-    tvector(int size, const Type & fillValue);
-    tvector(const tvector & vec);
-    ~tvector();
+    CTVector();
+    CTVector(int size);
+    CTVector(int size, const Type & fillValue);
+    CTVector(const CTVector & vec);
+    ~CTVector();
 
-    const tvector & operator =(const tvector & vec);
+    const CTVector & operator =(const CTVector & vec);
 
     int capacity() const;
     int size()     const;

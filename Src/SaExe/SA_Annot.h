@@ -159,7 +159,6 @@ private:
 
     // Generated message map functions
 protected:
-    //{{AFX_MSG(CLegendWnd)
     afx_msg void OnPaint();
     afx_msg BOOL OnEraseBkgnd(CDC * pDC);
     afx_msg void OnRButtonDown(UINT nFlags, CPoint point);
@@ -169,7 +168,6 @@ protected:
     afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
     afx_msg BOOL OnCommand(WPARAM wParam, LPARAM lParam);
     afx_msg void OnSetFocus(CWnd * pOldWnd);
-    //}}AFX_MSG
     DECLARE_MESSAGE_MAP()
 };
 
@@ -247,14 +245,12 @@ private:
 
     // Generated message map functions
 protected:
-    //{{AFX_MSG(CXScaleWnd)
     afx_msg void OnPaint();
     afx_msg BOOL OnEraseBkgnd(CDC * pDC);
     afx_msg void OnRButtonDown(UINT nFlags, CPoint point);
     afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
     afx_msg void OnMouseMove(UINT nFlags, CPoint point);
     afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
-    //}}AFX_MSG
     DECLARE_MESSAGE_MAP()
 };
 

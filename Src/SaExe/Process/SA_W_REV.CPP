@@ -126,7 +126,7 @@ long CProcessWbEcho::Process(void * pCaller, ISaDoc * pDoc, int nProgress,
     }
     else
     {
-        dwDataSize = pDoc->GetUnprocessedDataSize();    // size of raw data
+        dwDataSize = pDoc->GetDataSize();    // size of raw data
     }
     DWORD dwBufferSize = GetBufferSize();
     DWORD wSmpSize = pDoc->GetSampleSize();
@@ -459,7 +459,7 @@ long CProcessWbReverb::Process(void * pCaller, ISaDoc * pDoc, int nProgress,
     }
     else
     {
-        dwDataSize = pDoc->GetUnprocessedDataSize();    // size of raw data
+        dwDataSize = pDoc->GetDataSize();    // size of raw data
     }
     DWORD dwBufferSize = GetBufferSize();
     DWORD wSmpSize = pDoc->GetSampleSize();

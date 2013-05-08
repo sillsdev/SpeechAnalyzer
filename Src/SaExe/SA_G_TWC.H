@@ -48,8 +48,6 @@ private:
 
     // Generated message map functions
 protected:
-    //{{AFX_MSG(CPlotTonalWeightChart)
-    //}}AFX_MSG
     DECLARE_MESSAGE_MAP()
 };
 

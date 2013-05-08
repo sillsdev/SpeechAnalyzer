@@ -641,7 +641,9 @@ int ExportWordSegment(CGlossSegment * seg, int index, LPCTSTR filename, BOOL ski
     }
 
     // copy the audio portion
-    bSuccess = pDoc->CopySectionToNewWavFile(dwStart,dwStop-dwStart, filename, FALSE);
+	WAVETIME start = pDoc->fromBytes( dwStart, true);
+	WAVETIME stop = pDoc->fromBytes( dwStop, true);
+    bSuccess = pDoc->CopySectionToNewWavFile( start, stop-start, filename, FALSE);
     if (!bSuccess)
     {
         // be sure to delete the file
@@ -734,7 +736,9 @@ int ExportPhraseSegment(CMusicPhraseSegment * seg, int index, wstring & filename
     DWORD dwStop = dwStart + seg->GetDuration(index);
     TRACE("dwStart=%d dwStop=%d\n",dwStart,dwStop);
 
-    BOOL bSuccess = pDoc->CopySectionToNewWavFile(dwStart,dwStop-dwStart,filename.c_str(),FALSE);
+	WAVETIME start = pDoc->fromBytes( dwStart, true);
+	WAVETIME stop = pDoc->fromBytes( dwStop, true);
+    BOOL bSuccess = pDoc->CopySectionToNewWavFile(start,stop-start,filename.c_str(),FALSE);
     if (!bSuccess)
     {
         // be sure to delete the file

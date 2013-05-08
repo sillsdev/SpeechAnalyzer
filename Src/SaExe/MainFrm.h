@@ -155,8 +155,8 @@ protected:
     bool                m_bFindOnly;           // find/replace is only find
 
     // workbench processes and filter IDs
-    CProcess    *   m_apWbProcess[MAX_PROCESS_NUMBER][MAX_FILTER_NUMBER];
-    int                 m_aWbFilterID[MAX_PROCESS_NUMBER][MAX_FILTER_NUMBER];
+    CProcess * m_apWbProcess[MAX_PROCESS_NUMBER][MAX_FILTER_NUMBER];
+    int m_aWbFilterID[MAX_PROCESS_NUMBER][MAX_FILTER_NUMBER];
 
     // dialogs
     CDlgPlayer * m_pDlgPlayer;          // pointer to player dialog object

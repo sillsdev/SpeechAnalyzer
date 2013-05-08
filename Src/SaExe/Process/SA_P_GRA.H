@@ -8,39 +8,24 @@
 #define _SA_P_GRA_H
 #include "dsp\grappl.h"
 
-//###########################################################################
-// CProcessGrappl data processing
-
 class CProcessGrappl : public CProcess
 {
-// Construction/destruction/creation
 public:
     CProcessGrappl();
     virtual ~CProcessGrappl();
+    SGrapplParms & GetCalcParms();
+    long Process(void * pCaller, ISaDoc * pDoc, int nProgress = 0, int nLevel = 1);
+    BOOL IsVoiced(ISaDoc * pDoc, DWORD dwWaveOffset);
+    double GetAveragePitch();
+    double GetUncertainty(double fPitch);
+    virtual void SetDataInvalid();
+	void Dump( LPCSTR ofilename);
 
-// Attributes
 private:
-    Grappl_parms m_CalcParm;
+    SGrapplParms m_CalcParm;
     double m_dAvgPitch;
     DWORD m_dwDataPos;  // byte offset into waveform data
 
-// Operations
-public:
-    Grappl_parms & GetCalcParms()
-    {
-        return m_CalcParm;
-    }
-    long Process(void * pCaller, ISaDoc * pDoc, int nProgress = 0, int nLevel = 1);
-    BOOL IsVoiced(ISaDoc * pDoc, DWORD dwWaveOffset);
-    double GetAveragePitch()
-    {
-        return m_dAvgPitch;
-    }
-    double GetUncertainty(double fPitch);
-    virtual void SetDataInvalid()
-    {
-        CProcess::SetDataInvalid();
-    }
 };
 
-#endif //_SA_P_GRA_H
+#endif

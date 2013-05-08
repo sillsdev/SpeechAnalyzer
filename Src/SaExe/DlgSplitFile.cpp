@@ -94,11 +94,12 @@ void CDlgSplitFile::OnBnClickedBrowseFolder()
     TCHAR szPath[MAX_PATH];
     memset(szPath,0,sizeof(szPath));
 
+	CString msg;
+	msg.LoadStringW(IDS_CHOOSE_FOLDER);
+
     BROWSEINFO bi = { 0 };
     bi.hwndOwner = this->m_hWnd;
     bi.pszDisplayName = szDisplay;
-	CString msg;
-	msg.LoadStringW(IDS_CHOOSE_FOLDER);
 	bi.lpszTitle = msg.GetBuffer(msg.GetLength());
     bi.ulFlags = BIF_RETURNONLYFSDIRS | BIF_NEWDIALOGSTYLE;
     bi.lpfn = BrowseCallbackProc;

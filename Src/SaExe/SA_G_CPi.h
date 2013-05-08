@@ -30,8 +30,6 @@ public:
 
     // Generated message map functions
 protected:
-    //{{AFX_MSG(CPlotCustomPitch)
-    //}}AFX_MSG
     DECLARE_MESSAGE_MAP()
 };
 

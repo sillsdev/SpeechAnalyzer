@@ -1,7 +1,7 @@
 //
-// SelfTest.h
+// CSelfTest.h
 //
-// Definition of the CSelfTest class
+// Definition of the CSelfTestRunner class
 //
 // 08/27/2001 TRE - original coding
 //
@@ -12,37 +12,85 @@
 #include <io.h> // for _access()
 #include "sa.h"
 #include "mainfrm.h"
+#include <vector>
+using std::vector;
 
 class CSelfTest
 {
 public:
-    CSelfTest();
-    ~CSelfTest();
+	class Summary
+	{
+	public:
+		string status;
+		string datetime;
+		int testspassed;
+		int testsfailed;
+	} summary;
+	class SysInfo
+	{
+	public:
+		string user;
+		string computer;
+		string os;
+		string processor;
+		string version;
+	} sysInfo;
+	class Test
+	{
+	public:
+		string id;
+		string description;
+		vector<string> details;
+		bool success;
+		class FileDifference
+		{
+		public:
+			string id1;
+			string id2;
+			string notice;
+			string data1;
+			string data2;
+		};
+		vector<FileDifference> differences;
+	};
+	vector<Test> tests;
+};
+
+class CSelfTestRunner
+{
+public:
+    CSelfTestRunner( );
+    ~CSelfTestRunner();
+	void Do();
+
+	LPCTSTR GetTestDataFolder();
+	LPCTSTR GetTestOutputFolder();
+	LPCTSTR GetTempPath();
+    int FileCompare( CSelfTest::Test & testresult, LPCTSTR szFileOne, long nTolerableDifferences=0);
+    int FileCompare( CSelfTest::Test & testresult, LPCTSTR szFileOne, long nTolerableDifferences, LPCTSTR szFileTwo);
+    void MessageLoop(DWORD dwMilliSeconds=0);
+    bool CheckClipboard(UINT nFormat);
 
 protected:
-	void SelfTest();
+	bool SelectTestDataDirectory();
+	void GetSystemInfo();
+	void RunTests();
+	void RunTest( LPCSTR szTestNumber, LPCSTR szDescription, void (*test)( CSelfTestRunner & runner, CSelfTest::Test & test));
+	void LogResults();
+	void DisplayResults();
 
-    BOOL StartTest(const CString szTestNumber, const CString szDescription);
-    void EndTest(BOOL bSuccess=TRUE);
-    void LogEntry(const CString szMessage);
-    BOOL LogHexDataCompare(CFile & FileOne,CFile & FileTwo,UINT HighlightPosition);
-    int FileCompare(const CString szFileOne, long nTolerableDifferences=0, CString szFileTwo="");
-    BOOL FileExists(const CString szFile)
-    {
-        return !_taccess(szFile,0);
-    }
-    void MessageLoop(DWORD dwMilliSeconds=0);
+    bool HexDataCompare( CSelfTest::Test & testresult, CFile & FileOne,CFile & FileTwo,UINT HighlightPosition);
     void EmptyClipboard();
-    BOOL CheckClipboard(UINT nFormat);
 
     CSaApp * m_pApp;
-    CMainFrame * m_pMain;
-    CString m_szTempPath;
-    CString m_szExeFolderPath;
-    CString m_szTestFolderPath;
-    CString m_szLogFileName;
-    CString m_szTestNumber;
-    unsigned m_nTestsPassed, m_nTestsFailed;
+
+	CSelfTest result;
+
+    wstring m_szTempPath;
+    wstring m_szExePath;
+    wstring m_szTestOutputPath;
+    wstring m_szTestDataPath;
+    wstring m_szLogFileName;
 };
 
 #endif

@@ -8,12 +8,12 @@
 /***********************************************************************************/
 /*               Peak Picking Methods                                              */
 /***********************************************************************************/
-enum {TREND_FOLLOWING};
+enum EPEAK_METHODS {TREND_FOLLOWING};
 
 /***********************************************************************************/
 /*               Trend Following Technique                                         */
 /***********************************************************************************/
-enum {UNKNOWN_TREND=-1, RISING_TREND=0, LEVEL_TREND=1, FALLING_TREND=2};
+enum EPEAK_FOLLOWING {UNKNOWN_TREND=-1, RISING_TREND=0, LEVEL_TREND=1, FALLING_TREND=2};
 
 
 /***********************************************************************************/
@@ -21,29 +21,30 @@ enum {UNKNOWN_TREND=-1, RISING_TREND=0, LEVEL_TREND=1, FALLING_TREND=2};
 /***********************************************************************************/
 #define CURVATURE_THD  0.F
 
-typedef struct
+struct SBumpTableEntry
 {
     float Distance;
     float Amplitude;
-} BUMP_TABLE_ENTRY;
+};
+
 class CPeakPicker
 {
 public:
     static char * Copyright(void);
     static float Version(void);
     static dspError_t CreateObject(CPeakPicker ** ppPeakPicker, uint32 dwMaxNumBumps);
-    dspError_t GetPeaks(BUMP_TABLE_ENTRY * BumpTable[], uint32 * pBumpCount,
+    dspError_t GetPeaks(SBumpTableEntry * BumpTable[], uint32 * pBumpCount,
                         float * pSignal, uint32 dwSignalLength);
-    dspError_t GetBumps(BUMP_TABLE_ENTRY ** ppBumpTable, uint32 * pBumpCount,
+    dspError_t GetBumps(SBumpTableEntry ** ppBumpTable, uint32 * pBumpCount,
                         float * pSignal, uint32 dwSignalLength);
     ~CPeakPicker();
 protected:
     CPeakPicker(uint32 dwMaxNumBumps);
     dspError_t ValidateObject();
-    CPeakPicker(BUMP_TABLE_ENTRY BumpTable[], uint32 dwMaxNumBumps, CCurveFitting * pCurveFitter);
-    dspError_t FindNextBump(BUMP_TABLE_ENTRY * pBump, const float ** ppStart, const float * const pEnd);
+    CPeakPicker(SBumpTableEntry BumpTable[], uint32 dwMaxNumBumps, CCurveFitting * pCurveFitter);
+    dspError_t FindNextBump(SBumpTableEntry * pBump, const float ** ppStart, const float * const pEnd);
     CCurveFitting * m_pParabola;
-    BUMP_TABLE_ENTRY * m_BumpTable;
+    SBumpTableEntry * m_BumpTable;
     uint32 m_dwBumpCount;
     uint32 m_dwMaxNumBumps;
 };

@@ -7,7 +7,7 @@
 #define MAX_FFT_LENGTH  8192
 
 
-enum {FORWARD=1, INVERSE=-1};
+enum EFFT_DIRECTION {FORWARD=1, INVERSE=-1};
 
 /* fft.h - C function declaration header file for FFT library */
 

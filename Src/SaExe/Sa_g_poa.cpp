@@ -124,7 +124,7 @@ void CPlotPOA::OnDraw(CDC * pDC, CRect rWnd, CRect /*rClip*/, CSaView * pView)
     {
         dwFrameIndex = pFragments->GetFragmentIndex(dwStartCursorPosn / wSmpSize);
     }
-    FRAG_PARMS FragParms = pFragments->GetFragmentParms(dwFrameIndex);
+    SFragParms FragParms = pFragments->GetFragmentParms(dwFrameIndex);
     DWORD dwFrameStart = FragParms.dwOffset * wSmpSize;
     DWORD dwFrameSize = (DWORD)FragParms.wLength * (DWORD)wSmpSize;
     DWORD dwFrameEnd = dwFrameStart + dwFrameSize - wSmpSize;
@@ -191,7 +191,7 @@ void CPlotPOA::OnDraw(CDC * pDC, CRect rWnd, CRect /*rClip*/, CSaView * pView)
     if (nResult != PROCESS_CANCELED)
     {
         m_HelperWnd.SetMode(MODE_HIDDEN);
-        VOCAL_TRACT_MODEL * pVocalTract = (VOCAL_TRACT_MODEL *)pPOA->GetProcessedData();
+        SVocalTractModel * pVocalTract = (SVocalTractModel *)pPOA->GetProcessedData();
 
         // Alter the face diagram.
         CBitmap bmFace;
@@ -407,7 +407,7 @@ void CPlotPOA::GraphHasFocus(BOOL bFocus)
                     DWORD dwStartCursorPosn = pView->GetStartCursorPosition();  // get start cursor position in bytes
                     dwFrameIndex = pFragments->GetFragmentIndex(dwStartCursorPosn / wSmpSize);
                 }
-                FRAG_PARMS FragParms = pFragments->GetFragmentParms(dwFrameIndex);
+                SFragParms FragParms = pFragments->GetFragmentParms(dwFrameIndex);
                 DWORD dwFrameStart = FragParms.dwOffset * wSmpSize;     // frame start in bytes
                 DWORD dwFrameSize = (DWORD)FragParms.wLength * (DWORD)wSmpSize;    // frame size in bytes
                 pWavePlot->SetHighLightArea(dwFrameStart, dwFrameStart + dwFrameSize, TRUE, TRUE);  // highlight the fragment in the raw waveform

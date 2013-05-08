@@ -27,7 +27,7 @@ CProcess3dPitch::~CProcess3dPitch()
 BEGIN_MESSAGE_MAP(CProcess3dPitch, CProcess)
 END_MESSAGE_MAP()
 
-static int ReadDataBlock(CButterworth & source, DWORD dwStart, DWORD dwStop, DWORD dwPos, int wSmpSize);
+static int ReadDataBlock(CProcessButterworth & source, DWORD dwStart, DWORD dwStop, DWORD dwPos, int wSmpSize);
 
 /***************************************************************************/
 // CProcess3dPitch::Process
@@ -78,10 +78,10 @@ long CProcess3dPitch::Process(void * pCaller, ISaDoc * pSaDoc, int nProgress, in
         return MAKELONG(PROCESS_ERROR, nProgress);
     }
     // get source data size
-    DWORD dwDataSize = pDoc->GetUnprocessedDataSize();    // size of raw data
+    DWORD dwDataSize = pDoc->GetDataSize();    // size of raw data
     DWORD wSmpSize = pDoc->GetSampleSize();
 
-    CButterworth butterworth;
+    CProcessButterworth butterworth;
     butterworth.SetSourceProcess(NULL);
     butterworth.SetFilterFilter(TRUE);
     butterworth.LowPass(m_nFilterOrder, m_dFilterUpperFrequency);
@@ -157,7 +157,7 @@ long CProcess3dPitch::Process(void * pCaller, ISaDoc * pSaDoc, int nProgress, in
     return MAKELONG(nLevel, nProgress);
 }
 
-static int ReadDataBlock(CButterworth & source, DWORD dwStart, DWORD dwStop, DWORD dwPos, int wSmpSize)
+static int ReadDataBlock(CProcessButterworth & source, DWORD dwStart, DWORD dwStop, DWORD dwPos, int wSmpSize)
 {
     BYTE * pSourceData = (BYTE *) source.GetProcessedDataBlock(dwStart*wSmpSize, (dwStop - dwStart + 1)*wSmpSize);
     pSourceData += (dwPos - dwStart)*wSmpSize;

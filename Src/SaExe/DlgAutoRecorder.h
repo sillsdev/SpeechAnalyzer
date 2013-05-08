@@ -113,7 +113,6 @@ protected:
     eRecordState m_eState;
     DWORD m_dwTickCount;    // current reference time
 
-    //{{AFX_MSG(CDlgAutoRecorder)
     virtual BOOL OnInitDialog();
     afx_msg void OnStop();
     afx_msg void OnClose();
@@ -126,7 +125,6 @@ protected:
     afx_msg void OnKillfocusRecVolumeEdit();
     afx_msg LRESULT OnMixerControlChange(WPARAM, LPARAM);
     afx_msg void OnPlay();
-    //}}AFX_MSG
     afx_msg LRESULT OnAutoRestart(WPARAM, LPARAM);
     DECLARE_MESSAGE_MAP()
 };

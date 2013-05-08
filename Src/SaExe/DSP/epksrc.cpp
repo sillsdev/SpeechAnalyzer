@@ -2,19 +2,19 @@
 #include <assert.h>
 #include "epksrc.h"
 
-EnergyPeakSource::EnergyPeakSource(PeakSource & ps)
+CEnergyPeakSource::CEnergyPeakSource(CPeakSource & ps)
     : myPS(ps), myQ(0)
 {
 }
 
-EnergyPeakSource::~EnergyPeakSource()
+CEnergyPeakSource::~CEnergyPeakSource()
 {
     delete myQ;
     myQ = 0;
 }
 
 void
-EnergyPeakSource::Search(const float * start, const float * end)
+CEnergyPeakSource::Search(const float * start, const float * end)
 {
     delete myQ;
     myQ = new pq_pair_float_float;
@@ -33,14 +33,14 @@ EnergyPeakSource::Search(const float * start, const float * end)
 }
 
 void
-EnergyPeakSource::Next()
+CEnergyPeakSource::Next()
 {
     assert(!IsDone());
     myQ->pop();
 }
 
 void
-EnergyPeakSource::Get(float & location, float & value) const
+CEnergyPeakSource::Get(float & location, float & value) const
 {
     assert(!IsDone());
     // Remember, .first is y and .second is x.
@@ -49,7 +49,7 @@ EnergyPeakSource::Get(float & location, float & value) const
 }
 
 int32
-EnergyPeakSource::IsDone() const
+CEnergyPeakSource::IsDone() const
 {
     return myQ->empty();
 }

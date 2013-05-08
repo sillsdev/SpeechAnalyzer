@@ -21,7 +21,7 @@ public:
 
 // Attributes
 private:
-    Grappl_parms m_CalcParm;
+    SGrapplParms m_CalcParm;
     DWORD m_dwDataPos;  // byte offset into waveform data
 
 // Operations

@@ -96,12 +96,10 @@ private:
 
     // Generated message map functions
 protected:
-    //{{AFX_MSG(CDlgGraphsTypesCustom)
     virtual BOOL OnInitDialog();
     virtual void OnOK();
     afx_msg void OnSelchangeLayout();
     afx_msg void OnOrder();
-    //}}AFX_MSG
     afx_msg void OnGraphCheck(UINT nID);
     afx_msg void OnMelogram();
     DECLARE_MESSAGE_MAP()
@@ -240,7 +238,6 @@ private:
     CGraphConfigurationVector m_cMusic;
 
     // Generated message map functions
-    //{{AFX_MSG(CDlgGraphsTypes)
     afx_msg void OnCustom();
     virtual void OnOK();
     afx_msg void OnAdd();
@@ -248,7 +245,6 @@ private:
     virtual BOOL OnInitDialog();
     afx_msg void OnTaskTypeChange(NMHDR * pNMHDR = NULL , LRESULT * pResult = NULL);
     afx_msg void OnSelchangeGraphTypes();
-    //}}AFX_MSG
     DECLARE_MESSAGE_MAP()
 };
 
@@ -294,14 +290,12 @@ public:
 protected:
 
     // Generated message map functions
-    //{{AFX_MSG(CDlgGraphTypesOrder)
     afx_msg void OnDown();
     afx_msg void OnUp();
     afx_msg void OnSelchangeList();
     virtual BOOL OnInitDialog();
     virtual void OnOK();
     afx_msg void OnDrawItem(int nIDCtl, LPDRAWITEMSTRUCT lpDrawItemStruct);
-    //}}AFX_MSG
     DECLARE_MESSAGE_MAP()
 };
 

@@ -617,7 +617,7 @@ int CSegment::FindStop(DWORD dwStop) const
 * if bWithin=true, index is return if within segment.  -1 returned otherwise
 *
 ***************************************************************************/
-int CSegment::FindFromPosition(DWORD dwPosition, BOOL bWithin) const
+int CSegment::FindFromPosition( DWORD dwPosition, BOOL bWithin) const
 {
 
     if (IsEmpty())

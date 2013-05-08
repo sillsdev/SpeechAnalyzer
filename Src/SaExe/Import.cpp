@@ -201,7 +201,7 @@ void CImport::AutoAlign(CSaDoc * pSaDoc, LPCTSTR pPhonetic, LPCTSTR pPhonemic, L
                 nIndex++;
             }
             // Add final duration to fill remainder of waveform
-            charDurations.Add(pSaDoc->GetUnprocessedDataSize() - charOffsets[nIndex - 1]);
+            charDurations.Add(pSaDoc->GetDataSize() - charOffsets[nIndex - 1]);
             break;
         }
         case IDC_CHARACTER:
@@ -221,7 +221,7 @@ void CImport::AutoAlign(CSaDoc * pSaDoc, LPCTSTR pPhonetic, LPCTSTR pPhonemic, L
                 }
                 else
                 {
-                    dwDuration = pSaDoc->GetUnprocessedDataSize() - wordOffsets[nGlossWordIndex];
+                    dwDuration = pSaDoc->GetDataSize() - wordOffsets[nGlossWordIndex];
                     szWord = pTable->GetNext(CFontTable::DELIMITEDWORD, nWord, settings.m_szPhonetic);
                     nCharacters = pTable->GetLength(CFontTable::CHARACTER, szWord);
                     szWord = pTable->GetRemainder(CFontTable::DELIMITEDWORD, nWord, settings.m_szPhonetic);
@@ -256,7 +256,7 @@ void CImport::AutoAlign(CSaDoc * pSaDoc, LPCTSTR pPhonetic, LPCTSTR pPhonemic, L
                 nIndex++;
             }
             // Add final duration to fill remainder of waveform
-            charDurations.Add(pSaDoc->GetUnprocessedDataSize() - charOffsets[nIndex - 1]);
+            charDurations.Add(pSaDoc->GetDataSize() - charOffsets[nIndex - 1]);
             break;
         }
         }
@@ -783,7 +783,7 @@ static void CreateWordSegments(const int nWord, int & nSegments)
             dwStart = 0;
             if (pDoc->GetSegment(GLOSS)->IsEmpty())
             {
-                dwStop = pDoc->GetUnprocessedDataSize();
+                dwStop = pDoc->GetDataSize();
             }
             else
             {
@@ -1016,7 +1016,7 @@ BOOL CImport::ReadTable( CObjectIStream & ostream, int nMode)
         CSaString szEmpty(SEGMENT_DEFAULT_CHAR);
         CSaString szEmptyGloss = "";
         CGlossSegment * pGloss = (CGlossSegment *)pDoc->GetSegment(GLOSS);
-        DWORD dwFileLength = pDoc->GetUnprocessedDataSize();
+        DWORD dwFileLength = pDoc->GetDataSize();
         int nIndex = pPhonetic->FindFromPosition(0);
         int nWordCurr = 0;
         DWORD dwStart = 0;

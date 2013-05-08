@@ -35,7 +35,7 @@ void RemoveFile(LPCTSTR path)
     }
     catch (...)
     {
-        TRACE("failed to delete %s\n",path);
+        TRACE(L"failed to delete %s\n",path);
     }
 }
 

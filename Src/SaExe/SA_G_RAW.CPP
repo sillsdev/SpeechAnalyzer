@@ -19,18 +19,16 @@
 #include "stdafx.h"
 #include "sa_plot.h"
 #include "sa_g_raw.h"
-#include "Process\Process.h"
-#include "Process\sa_p_raw.h"
 #include "sa_minic.h"
 #include "sa_graph.h"
-#include "Process\butterworth.h"
-
 #include "sa_doc.h"
 #include "sa_view.h"
-//#include "sa_wbch.h"
 #include "mainfrm.h"
-
 #include "sa_mplot.h"
+#include "Process\Process.h"
+#include "Process\sa_p_raw.h"
+#include "Process\Butterworth.h"
+#include "Process\Hilbert.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE
@@ -59,7 +57,6 @@ END_MESSAGE_MAP()
 CPlotRawData::CPlotRawData()
 {
 }
-
 
 void  CPlotRawData::CopyTo(CPlotWnd * pT)
 {
@@ -111,7 +108,7 @@ void CPlotRawData::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView)
 {
 
     // get pointer to graph, view and document
-    CSaDoc  *  pDoc   = pView->GetDocument();
+    CSaDoc * pDoc = pView->GetDocument();
 
     // create raw data
     CProcessRaw * pRaw = pDoc->GetRaw();                    // get pointer to change object
@@ -137,7 +134,7 @@ void CPlotRawData::OnDraw(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pView)
 	if (ResearchSettings.m_bShowHilbertTransform)
     {
         // create raw data
-        CHilbert * pHilbert = pDoc->GetHilbert();           // get pointer to change object
+        CProcessHilbert * pHilbert = pDoc->GetHilbert();    // get pointer to change object
         nResult = LOWORD(pHilbert->Process(this, pDoc));    // process data
         nResult = CheckResult(nResult, pHilbert);           // check the process result
         if (nResult == PROCESS_ERROR)
