@@ -1007,19 +1007,23 @@ dspError_t CSpectrogram::PreProc(short * Frame, CDspWin & Window)
             m_WinFrame[0] += WData[j] * ((float)Frame[j] - (float)Frame[j-1]);
         }
         for (i = 1; i < m_FFTLen; i++)
+		{
             for (m_WinFrame[i] = 0.F, j = (int32)i; j < m_Window.Length(); j += m_FFTLen)
             {
                 m_WinFrame[i] += WData[j] * ((float)Frame[j] - (float)Frame[j-1]);
             }
+		}
     }
 
     // Otherwise, process without taking the first difference.  If necessary, pre-alias
     // as in the pre-emphasis case.
     else for (i = 0; i < m_FFTLen; i++)
-            for (m_WinFrame[i] = 0.F, j = (int32)i; j < Window.Length(); j += m_FFTLen)
-            {
-                m_WinFrame[i] += WData[j] * (float)Frame[j];
-            }
+	{
+        for (m_WinFrame[i] = 0.F, j = (int32)i; j < Window.Length(); j += m_FFTLen)
+        {
+            m_WinFrame[i] += WData[j] * (float)Frame[j];
+        }
+	}
     return(DONE);
 }
 
@@ -1061,19 +1065,23 @@ dspError_t CSpectrogram::PreProc(uint8 * Frame, CDspWin & Window)
             m_WinFrame[0] += WData[j] * ((float)SBFrame(j) - (float)SBFrame(j-1));
         }
         for (i = 1; i < m_FFTLen; i++)
+		{
             for (m_WinFrame[i] = 0.F, j = (int32)i; j < Window.Length(); j += m_FFTLen)
             {
                 m_WinFrame[i] += WData[j] * ((float)SBFrame(j) - (float)SBFrame(j-1));
             }
+		}
     }
 
     // Otherwise, process without taking the first difference.  If necessary, pre-alias
     // as in the pre-emphasis case.
     else for (i = 0; i < m_FFTLen; i++)
-            for (m_WinFrame[i] = 0.F, j = (int32)i; j < Window.Length(); j += m_FFTLen)
-            {
-                m_WinFrame[i] += WData[j] * (float)SBFrame(j);
-            }
+	{
+        for (m_WinFrame[i] = 0.F, j = (int32)i; j < Window.Length(); j += m_FFTLen)
+        {
+            m_WinFrame[i] += WData[j] * (float)SBFrame(j);
+        }
+	}
     return(DONE);
 
 #undef SBFrame

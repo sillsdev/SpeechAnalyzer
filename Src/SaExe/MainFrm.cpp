@@ -301,11 +301,11 @@ CMainFrame::CMainFrame()
     }
 
     m_bPrintPreviewInProgress = FALSE;
-    m_wplDlgEditor.length = 0; // SDM 1.5Test8.2
-    m_pDisplayPlot = NULL; // SDM 1.5Test8.5
-    m_hNewMenu = NULL; // SDM 1.5Test8.5
-    m_hNewAccel = NULL; // SDM 1.5Test8.5
-    m_nPopup = 0; // SDM 1.5Test8.5
+    m_wplDlgEditor.length = 0;	// SDM 1.5Test8.2
+    m_pDisplayPlot = NULL;		// SDM 1.5Test8.5
+    m_hNewMenu = NULL;			// SDM 1.5Test8.5
+    m_hNewAccel = NULL;			// SDM 1.5Test8.5
+    m_nPopup = 0;				// SDM 1.5Test8.5
 
     // Initialize parsing, segmenting, pitch, spectrum and spectrogram parameter defaults // RLJ 11.1A
     m_parseParmDefaults.Init();
@@ -2465,7 +2465,7 @@ void CMainFrame::WriteReadDefaultViewToTempFile(BOOL bWrite)
 void CMainFrame::OnActivateApp(BOOL bActive, DWORD dwThreadID)
 {
     CMDIFrameWnd::OnActivateApp(bActive, dwThreadID);
-    if (!bActive && m_pDisplayPlot)
+    if ((!bActive) && (m_pDisplayPlot!=NULL))
     {
         delete m_pDisplayPlot;
         m_pDisplayPlot = NULL;
@@ -2730,7 +2730,7 @@ void CMainFrame::OnUpdateRecordOverlay(CCmdUI * pCmdUI)
             // graphs that can be merged with it, (m_pPickOverlay) then
             // call AssignGraph to merge them in.
             if ((pSourceView->GetFocusedGraphWnd()) &&
-                    (CGraphWnd::IsMergeableGraph(pSourceView->GetFocusedGraphWnd())))
+                (CGraphWnd::IsMergeableGraph(pSourceView->GetFocusedGraphWnd())))
             {
                 bEnable = TRUE;
             }

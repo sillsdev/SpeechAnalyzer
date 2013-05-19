@@ -501,11 +501,11 @@ int CSaDoc::GetGender()
         if (m_pProcessGrappl->IsDataReady())
         {
             double dAvgPitch = m_pProcessGrappl->GetAveragePitch();
-            if (dAvgPitch < 200.)
+            if (dAvgPitch < 200.0)
             {
                 nGender = 0;    // adult male
             }
-            else if (dAvgPitch < 350.)
+            else if (dAvgPitch < 350.0)
             {
                 nGender = 1;    // adult female
             }
@@ -3402,7 +3402,7 @@ void CSaDoc::ApplyWaveFile(LPCTSTR pszFileName, DWORD dwDataSize, BOOL bInitialU
 // SDM 1.06.6U2
 void CSaDoc::ApplyWaveFile(LPCTSTR pszFileName, DWORD dwDataSize, CAlignInfo info)
 {
-
+	TRACE("Applying wave file\n");
     // save the temporary file
     if (!m_szTempWave.IsEmpty())
     {
@@ -5338,7 +5338,7 @@ CSaString CSaDoc::GetMeasurementsString(DWORD dwOffset, DWORD dwLength, BOOL * p
     for (DWORD i = dwStartPos; i <= dwEndPos; i++)
     {
         fData = (float)m_pProcessGrappl->GetProcessedData(i, pbRes) / (float)PRECISION_MULTIPLIER;
-        if (fData > 0.)
+        if (fData > 0.0)
         {
             fSum += fData;
             count++;

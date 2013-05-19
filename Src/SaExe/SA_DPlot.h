@@ -8,12 +8,10 @@ class CMainFrame;
 
 class CDisplayPlot
 {
-    // Construction
 public:
     CDisplayPlot(CString & szPlot);
+    virtual ~CDisplayPlot();
 
-    // Attributes
-public:
     CMainFrame * m_pMainFrame;
     HMENU m_hNewMenu;
     HACCEL m_hNewAccel;
@@ -24,16 +22,6 @@ public:
     int m_nCaptionStyle;
     BOOL m_bScrollZoom;
     CDialog * m_pModal;
-
-    // Operations
-public:
-
-
-    // Implementation
-public:
-    virtual ~CDisplayPlot();
-
-protected:
 };
 
 /////////////////////////////////////////////////////////////////////////////

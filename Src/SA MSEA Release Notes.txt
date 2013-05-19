@@ -1,3 +1,16 @@
+SA - 3.1.0.58 (stereo branch)
+1) Adjusted F1 & F2 ranges for male voice.
+Old Range:
+F1 200-800
+F2 800-2600
+F3 1690-3010
+
+New Range:
+F1 200-1000
+F2 500-2500
+F3 1690-3010
+
+
 SA - 3.1.0.57 - 5/8/2013 (stereo branch)
 1) Fixed bug that was prevent opening of .WMA files (VARIANT_BOOL was not properly converted to c++ bool).
 2) Fixed cut/'paste as new' bug that occurred when editing stereo files.

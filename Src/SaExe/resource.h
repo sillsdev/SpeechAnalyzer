@@ -149,6 +149,7 @@
 #define IDD_SPLIT                       360
 #define IDD_MULTICHANNEL                362
 #define IDD_AUTO_REFERENCE_DATA         363
+#define IDD_DIALOG1                     365
 #define IDC_HIGHPASS                    502
 #define ID_STATUSPANE_1                 701
 #define ID_STATUSPANE_2                 702
@@ -1193,6 +1194,8 @@
 #define IDC_STATIC_SFM_COUNT            2079
 #define IDC_EDIT2                       2080
 #define IDC_FILENAME_SUFFIX             2080
+#define IDC_MSFLEXGRID1                 2081
+#define IDC_MFCPROPERTYGRID1            2082
 #define IDS_PLAYER_SMALL                3000
 #define IDS_PLAYER_LARGE                3001
 #define IDS_STATTXT_PROCESSING          4000
@@ -1686,9 +1689,9 @@
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_3D_CONTROLS                     1
-#define _APS_NEXT_RESOURCE_VALUE        365
+#define _APS_NEXT_RESOURCE_VALUE        367
 #define _APS_NEXT_COMMAND_VALUE         33234
-#define _APS_NEXT_CONTROL_VALUE         2081
+#define _APS_NEXT_CONTROL_VALUE         2083
 #define _APS_NEXT_SYMED_VALUE           105
 #endif
 #endif

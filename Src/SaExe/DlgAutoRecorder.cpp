@@ -250,7 +250,7 @@ void CDlgAutoRecorder::BlockStored(UINT nLevel, DWORD dwPosition, BOOL * bSaveOv
             SetPositionTime();
 
             if (((m_bFileReady) && (!m_bFileApplied)) &&
-                    (m_dwRecordSize > 0))
+                 (m_dwRecordSize > 0))
             {
                 if (!Apply())
                 {
@@ -269,7 +269,7 @@ void CDlgAutoRecorder::BlockStored(UINT nLevel, DWORD dwPosition, BOOL * bSaveOv
             if (!m_bStopPending)
             {
                 CSaView * pTarget = GetTarget();
-                if (pTarget)
+                if (pTarget!=NULL)
                 {
                     LRESULT lResult = OnAssignOverlay(m_pView);
                     if (lResult)
@@ -353,8 +353,6 @@ void CDlgAutoRecorder::EndPlayback()
 /***************************************************************************/
 HPSTR CDlgAutoRecorder::GetWaveData(DWORD dwPlayPosition, DWORD dwDataSize)
 {
-
-    //TRACE(_T("GetWaveData %g %g\n"), double(dwPlayPosition), double(dwDataSize));
     CSaDoc * pDoc = (CSaDoc *)m_pDoc;
     DWORD dwWaveBufferSize = pDoc->GetWaveDataBufferSize();
     if (((dwPlayPosition + dwDataSize) > (pDoc->GetWaveBufferIndex() + dwWaveBufferSize)) ||
@@ -1208,7 +1206,7 @@ BOOL CDlgAutoRecorder::OnAssignOverlay(CSaView * pSourceView)
 
         graphIDs[i] = 0;
 
-        if (pGraph)
+        if (pGraph!=NULL)
         {
             graphIDs[i] = pGraph->GetPlotID();
             if (graphIDs[i] == ID_GRAPHS_OVERLAY)
