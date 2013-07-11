@@ -172,8 +172,8 @@ protected:
     CToolSettings toolSettings;
 
 public:
-    BOOL bToolBar();               // toolbar on/off
-    BOOL bTaskBar();               // taskbar on/off
+    BOOL bToolBarVisible();			// toolbar on/off
+    BOOL bTaskBarVisible();			// taskbar on/off
     const CSaString GetPermGraphNames(void);
     const CSaString GetTempGraphNames(void);
     const UINT GetPermLayout(void);
@@ -330,6 +330,7 @@ protected:
     afx_msg LRESULT OnPlayer(WPARAM, LPARAM);
     afx_msg LRESULT OnChangeView(WPARAM, LPARAM);
     afx_msg LRESULT OnSpeechAppCall(WPARAM, LPARAM);
+	afx_msg LRESULT OnUpdatePlayer(WPARAM, LPARAM);
     afx_msg void OnUpdateDataPane(CCmdUI * pCmdUI);
     afx_msg void OnUpdateProgressPane(CCmdUI * pCmdUI);
     afx_msg void OnEqualizeLength();

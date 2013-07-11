@@ -102,16 +102,16 @@ public:
     virtual HPSTR GetWaveData(DWORD dwPlayPosition, DWORD dwDataSize);
     HMMIO GetFileHandle()
     {
-        return m_hmmioFile;   // return handle to wave file
+        return m_hmmioFile;		// return handle to wave file
     }
     void OnHelpAutoRecorder();
 
     // Generated message map functions
 protected:
     void ChangeState(eRecordState eState);
-    BOOL Apply(); // apply wave file to document
+    BOOL Apply();				// apply wave file to document
     eRecordState m_eState;
-    DWORD m_dwTickCount;    // current reference time
+    DWORD m_dwTickCount;		// current reference time
 
     virtual BOOL OnInitDialog();
     afx_msg void OnStop();
@@ -127,6 +127,9 @@ protected:
     afx_msg void OnPlay();
     afx_msg LRESULT OnAutoRestart(WPARAM, LPARAM);
     DECLARE_MESSAGE_MAP()
+public:
+	int m_nPlayWholeFile;
+	afx_msg void OnPlaybackFile();
 };
 
 #endif

@@ -28,6 +28,7 @@
 #include "Process\Process.h"
 #include "Process\sa_p_fra.h"
 #include "settings\obstream.h"
+#include "DlgPlayer.h"
 
 //###########################################################################
 // CDlgAutoRecorder dialog
@@ -52,13 +53,15 @@ BEGIN_MESSAGE_MAP(CDlgAutoRecorder, CDialog)
     ON_MESSAGE(WM_USER_AUTO_RESTART, OnAutoRestart)
     ON_BN_CLICKED(IDC_PLAY, OnPlay)
     ON_COMMAND(IDHELP, OnHelpAutoRecorder)
+	ON_BN_CLICKED(ID_PLAYBACK_FILE, &CDlgAutoRecorder::OnPlaybackFile)
 END_MESSAGE_MAP()
 
 /***************************************************************************/
 // CDlgAutoRecorder::CDlgAutoRecorder Constructor
 /***************************************************************************/
 CDlgAutoRecorder::CDlgAutoRecorder(CSaDoc * pDoc, CSaView * pView, CSaView * pTarget, CAlignInfo & alignInfo) :
-    CDialog(IDD)
+CDialog(IDD),
+m_nPlayWholeFile(0)
 {
     m_hmmioFile = NULL;
     m_szFileName[0] = 0; // no file name
@@ -116,7 +119,8 @@ CDlgAutoRecorder::~CDlgAutoRecorder()
 /***************************************************************************/
 void CDlgAutoRecorder::DoDataExchange(CDataExchange * pDX)
 {
-    CDialog::DoDataExchange(pDX);
+	CDialog::DoDataExchange(pDX);
+	DDX_Radio(pDX, IDC_RADIO_WHOLE_FILE, m_nPlayWholeFile);
 }
 
 /***************************************************************************/
@@ -174,6 +178,7 @@ void CDlgAutoRecorder::BlockStored(UINT nLevel, DWORD dwPosition, BOOL * bSaveOv
             m_dwTickCount = GetTickCount(); // Restart silence timer
         }
         break;
+
     case WaitingForVoice:
         ASSERT(m_eMode == Record);
         if (bSaveOverride)
@@ -194,13 +199,14 @@ void CDlgAutoRecorder::BlockStored(UINT nLevel, DWORD dwPosition, BOOL * bSaveOv
             ChangeState(Recording);
         }
         break;
-    case Recording:
+    
+	case Recording:
         ASSERT(m_eMode == Record);
         m_dwRecordSize = dwPosition;
         // update the time
         fDataSec = m_pDoc->GetTimeFromBytes(m_dwRecordSize); // get sampled data size in seconds
         m_LEDPosTime.SetTime((int)fDataSec / 60, (int)(fDataSec * 10) % 600);
-        if (m_bStopPending || fDataSec > m_AlignInfo.dTotalLength)
+        if ((m_bStopPending) || (fDataSec > m_AlignInfo.dTotalLength))
         {
             ChangeState(Stopping);
         }
@@ -218,6 +224,7 @@ void CDlgAutoRecorder::BlockStored(UINT nLevel, DWORD dwPosition, BOOL * bSaveOv
             m_dwTickCount = GetTickCount();  // Restart silence timer
         }
         break;
+
     case Stopping:
         m_dwRecordSize = dwPosition;
         // update the time
@@ -320,7 +327,7 @@ void CDlgAutoRecorder::StoreFailed()
 /***************************************************************************/
 void CDlgAutoRecorder::BlockFinished(UINT nLevel, DWORD dwPosition, UINT)
 {
-    TRACE(_T("Block Finished %g\n"), double(dwPosition));
+    //TRACE(_T("Block Finished %g\n"), double(dwPosition));
     m_dwPlayPosition = dwPosition;
     // update the VU bar
     m_VUBar.SetVU((int)nLevel);
@@ -356,7 +363,7 @@ HPSTR CDlgAutoRecorder::GetWaveData(DWORD dwPlayPosition, DWORD dwDataSize)
     CSaDoc * pDoc = (CSaDoc *)m_pDoc;
     DWORD dwWaveBufferSize = pDoc->GetWaveDataBufferSize();
     if (((dwPlayPosition + dwDataSize) > (pDoc->GetWaveBufferIndex() + dwWaveBufferSize)) ||
-            ((dwPlayPosition + dwDataSize) > (dwPlayPosition - (dwPlayPosition % dwWaveBufferSize) + dwWaveBufferSize)))
+         ((dwPlayPosition + dwDataSize) > (dwPlayPosition - (dwPlayPosition % dwWaveBufferSize) + dwWaveBufferSize)))
     {
         return pDoc->GetWaveData(dwPlayPosition, TRUE); // get pointer to data block
     }
@@ -525,6 +532,7 @@ void CDlgAutoRecorder::SetRecorderMode(eRecordMode eMode)
             }
         }
         break;
+
     case Monitor:
         StopWave();
         m_eMode = Monitor;
@@ -544,14 +552,25 @@ void CDlgAutoRecorder::SetRecorderMode(eRecordMode eMode)
         break;
 
     case Play:
-        StopWave();
-        m_eMode = Play;
-        // play back the recorded file
-        if (!m_pWave->Play( 0, m_pDoc->GetDataSize(), m_nVolume, 100, m_pView, &m_NotifyObj))
-        {
-            SetRecorderMode(Record);            // start recording now
-            ChangeState(WaitingForVoice);
-        }
+		{
+			StopWave();
+			m_eMode = Play;
+			// play back the recorded file
+			DWORD start = 0;
+			DWORD size = m_pDoc->GetDataSize();
+			if (m_nPlayWholeFile!=0)
+			{
+				CMainFrame * pFrame = (CMainFrame *)AfxGetMainWnd();
+				CSaView * pView = pFrame->GetCurrSaView();
+				start = pView->GetStartCursorPosition();
+				size = m_pDoc->GetDataSize()-start;
+			}
+			if (!m_pWave->Play( start, size, m_nVolume, 100, m_pView, &m_NotifyObj))
+			{
+				SetRecorderMode(Record);            // start recording now
+				ChangeState(WaitingForVoice);
+			}
+		}
         break;
 
     default:
@@ -689,7 +708,7 @@ void CDlgAutoRecorder::CleanUp()
 BOOL CDlgAutoRecorder::Apply()
 {
 
-    ASSERT(m_hmmioFile);
+    ASSERT(m_hmmioFile!=NULL);
 
     CSaApp * pApp = (CSaApp *)AfxGetApp(); // get pointer to application
     // set file pointer to end of file (also end of 'data' chunk)
@@ -729,6 +748,7 @@ BOOL CDlgAutoRecorder::Apply()
         pApp->ErrorMessage(IDS_ERROR_WRITEFORMATCHUNK, m_szFileName);
         return FALSE;
     }
+
     // write the format parameters into 'fmt ' chunk
     // get pointer to format parameters
     CFmtParm fmtParm;
@@ -766,7 +786,6 @@ BOOL CDlgAutoRecorder::Apply()
     mmioClose(m_hmmioFile, 0); // close file
     m_hmmioFile = NULL;
 
-
     {
         // get sa parameters
         SaParm saParm;
@@ -786,8 +805,21 @@ BOOL CDlgAutoRecorder::Apply()
         m_pDoc->RestartAllProcesses();
         m_pDoc->InvalidateAllProcesses();
 
-        // tell the document to apply the file
-        m_pDoc->ApplyWaveFile(m_szFileName, m_dwRecordSize, m_AlignInfo);
+		// make a copy to save the original!
+		CAlignInfo info = m_AlignInfo;
+
+		UpdateData(TRUE);
+
+		if (m_nPlayWholeFile!=0)
+		{
+			CMainFrame * pFrame = (CMainFrame *)AfxGetMainWnd();
+		    CSaView * pView = pFrame->GetCurrSaView();
+			DWORD dwOffset = pView->GetStartCursorPosition();
+			double seconds = m_pDoc->GetTimeFromBytes(dwOffset);
+			info.dStart += seconds;
+		}
+
+        m_pDoc->ApplyWaveFile(m_szFileName, m_dwRecordSize, info);
         m_pDoc->InvalidateAllProcesses();
 
     }
@@ -895,6 +927,8 @@ LRESULT CDlgAutoRecorder::OnAutoRestart(WPARAM, LPARAM)
     ASSERT(m_eState == Idle);
     ASSERT(m_pDoc);
     ASSERT(m_pView);
+
+	UpdateData(TRUE);
 
     // load and update for title bar
     ChangeState(WaitForSilence);
@@ -1226,7 +1260,7 @@ BOOL CDlgAutoRecorder::OnAssignOverlay(CSaView * pSourceView)
     for (int i=0; i<MAX_GRAPHS_NUMBER; i++)
     {
         CGraphWnd * pGraph = pView->GetGraph(i);
-        if (pGraph && CGraphWnd::IsMergeableGraph(pGraph))
+        if ((pGraph!=NULL) && (CGraphWnd::IsMergeableGraph(pGraph)))
         {
             bFound |= pView->AssignOverlay(pGraph,pSourceView);
         }
@@ -1236,14 +1270,30 @@ BOOL CDlgAutoRecorder::OnAssignOverlay(CSaView * pSourceView)
     return bFound;
 }
 
-
-
-
 void CDlgAutoRecorder::OnPlay()
 {
+	UpdateData(TRUE);
     if (m_eMode != Play)
     {
         SetRecorderMode(Play);
         ChangeState(Playing);
     }
+}
+
+
+void CDlgAutoRecorder::OnPlaybackFile()
+{
+	UpdateData(TRUE);
+	CMainFrame * pFrame = (CMainFrame *)AfxGetMainWnd();
+	if (m_nPlayWholeFile==0)
+	{
+		DWORD lParam = MAKELONG(ID_PLAYBACK_FILE, FALSE);
+		pFrame->SendMessage(WM_USER_PLAYER, CDlgPlayer::PLAYING, lParam);	// send message to start player
+	}
+	else
+	{
+		DWORD lParam = MAKELONG(ID_PLAYBACK_CURSORS, FALSE);
+		pFrame->SendMessage(WM_USER_PLAYER, CDlgPlayer::PLAYING, lParam);	// send message to start player
+	}
+
 }

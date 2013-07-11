@@ -18,8 +18,7 @@ static char BASED_CODE THIS_FILE[] = __FILE__;
 // class to do all the handling for the gloss annotation segments.
 
 CGlossSegment::CGlossSegment(int index, int master) : 
-CTextSegment(index,master),
-MARGIN(20)
+CTextSegment(index,master)
 {
 }
 
@@ -249,11 +248,6 @@ long CGlossSegment::Process(void * pCaller, CSaDoc * pSaDoc, int nProgress, int 
 	// get parsing parameters
     CParseParm * pCParseParm = pMainFrame->GetCParseParm(); 
     float fFactor = (float)pDoc->GetDataSize() / (float)dwLoopEnd;	// size factor
-
-	// since detection is always too late or too early, we will add
-	// and subtract a 0.1 margin from the beginning and end
-	// calculate offset for 0.1 second prefix/postfix
-	DWORD dwMargin = (DWORD)((pDoc->GetSamplesPerSec()*MARGIN)/1000);
 
     DWORD dwBreakWidth = (DWORD)(pDoc->GetBytesFromTime( pCParseParm->fBreakWidth) / fFactor); // break width in process words
     if (!dwBreakWidth)

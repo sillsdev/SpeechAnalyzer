@@ -812,7 +812,6 @@ void CGraphWnd::UpdateStatusBar(DWORD dwStartCursor, DWORD dwStopCursor, BOOL bF
         double fData = 0.0;
         BOOL bRes=FALSE;
         CRect rWnd;
-        //if ((dwStartCursor == 0) && (dwStopCursor == 0))
         if (HavePrivateCursor())
         {
             // this is a private cursor graph
@@ -1115,8 +1114,7 @@ void CGraphWnd::UpdateStatusBar(DWORD dwStartCursor, DWORD dwStopCursor, BOOL bF
             // prepare spectrograms formant data, if ready
             CProcessSpectrogram * pSpectrogram = pDoc->GetSpectrogram(m_nPlotID==IDD_SPECTROGRAM); // get pointer to spectrogram object
             const CSpectroParm * pSpectroParm = &pSpectrogram->GetSpectroParm();
-            BOOL bShowFormants = pSpectroParm->bShowF1 || pSpectroParm->bShowF2 || pSpectroParm->bShowF3 || pSpectroParm->bShowF4 || pSpectroParm->bShowF5andUp;
-            if (bShowFormants && pSpectroFormants->IsDataReady())
+            if ((pSpectroParm->bShowFormants) && (pSpectroFormants->IsDataReady()))
             {
                 double fSizeFactor = (double)pDoc->GetDataSize() / (double)(pSpectroFormants->GetDataSize() - 1);
                 dwDataPos = (DWORD)((DWORD)(dwStartCursor / fSizeFactor * 2 / sizeof(SFormantFreq))) * sizeof(SFormantFreq) / 2;
@@ -1551,6 +1549,7 @@ void CGraphWnd::UpdateStatusBar(DWORD dwStartCursor, DWORD dwStopCursor, BOOL bF
             pStat->SetPaneText(ID_STATUSPANE_LENGTH, szText);
             break;
         }
+
         default:
             bShowPosition = bShowDuration = TRUE;
             pStat->SetPaneSymbol(ID_STATUSPANE_AMPLITUDE, FALSE); // amplitude symbol
@@ -1631,7 +1630,129 @@ void CGraphWnd::UpdateStatusBar(DWORD dwStartCursor, DWORD dwStopCursor, BOOL bF
             pStat->SetPaneText(ID_STATUSPANE_LENGTH, szText);
         }
 
-        pStat->UpdateWindow();
+		// show the frequency	
+		{
+			DWORD samplesPerSecond = pDoc->GetSamplesPerSec();
+			swprintf_s( szText, _countof(szText), _T("       %d Hz"), samplesPerSecond);
+            // write to frequency pane
+            pStat->SetPaneSymbol(ID_STATUSPANE_SAMPLES);
+            pStat->SetPaneText(ID_STATUSPANE_SAMPLES, szText);
+        }
+
+		// show the storage format
+		{
+			WORD bitsPerSample = pDoc->GetBitsPerSample();
+			swprintf_s( szText, _countof(szText), _T("       %d Bits"), bitsPerSample);
+            // write to frequency pane
+            pStat->SetPaneSymbol(ID_STATUSPANE_FORMAT);
+            pStat->SetPaneText(ID_STATUSPANE_FORMAT, szText);
+        }
+
+		// show the number of channels
+		{
+			if (pDoc->GetNumChannels()==1)
+			{
+				swprintf_s( szText, _countof(szText), _T("       Mono"));
+			}
+			else if (pDoc->GetNumChannels()==2)
+			{
+				swprintf_s( szText, _countof(szText), _T("       Stereo"));
+			}
+			else
+			{
+				swprintf_s( szText, _countof(szText), _T("       %d Channels"),pDoc->GetNumChannels());
+			}
+
+            pStat->SetPaneSymbol(ID_STATUSPANE_CHANNELS);
+            pStat->SetPaneText(ID_STATUSPANE_CHANNELS, szText);
+        }
+
+#define KB 1024.0
+#define MB (1024.0*1024.0)
+#define GB (1024.0*1024.0*1024.0)
+
+		// show the number of size in KB/MB/GB
+		{
+			double size = (double)pDoc->GetDataSize();
+			if (size < MB)
+			{
+				size /= KB;
+				swprintf_s(szText,_countof(szText), _T("       %.2f KB"), size);
+			}
+			else if (size < GB)
+			{
+				size /= MB;
+				swprintf_s(szText,_countof(szText), _T("       %.2f MB"), size);
+			}
+			else
+			{
+				size /= GB;
+				swprintf_s(szText,_countof(szText), _T("       %.2f GB"), size);
+			}
+            pStat->SetPaneSymbol(ID_STATUSPANE_SIZE);
+            pStat->SetPaneText(ID_STATUSPANE_SIZE, szText);
+        }
+
+		// show the number of length
+		{
+			// create and write length text
+			double fDataSec = pDoc->GetTimeFromBytes(pDoc->GetDataSize());	// get sampled data size in seconds
+			int nHours = (int)fDataSec / 3600;
+			if (nHours > 0)
+			{
+				// calculate remainder
+				fDataSec -= (double)(nHours*3600);
+				int nMinutes = (int)fDataSec / 60;
+				swprintf_s( szText, _countof(szText), _T("       %0d:%02d H:M"), nHours, nMinutes);
+			}
+			else
+			{
+				// show minutes and seconds
+				int nMinutes = (int)fDataSec / 60;
+				fDataSec -= (double)(nMinutes*60);
+				int nSeconds = (fDataSec>=1.0)?(int)fDataSec:1;
+				swprintf_s( szText, _countof(szText), _T("       %0d:%02d M:S"), nMinutes, nSeconds);
+			}
+            pStat->SetPaneSymbol(ID_STATUSPANE_TLENGTH);
+            pStat->SetPaneText(ID_STATUSPANE_TLENGTH, szText);
+        }
+
+		// show the number of type
+		{
+			wstring name = pDoc->GetFilenameFromTitle();
+			size_t idx = name.find_last_of('.');
+			if (idx!=wstring::npos)
+			{
+				wstring extension = name.substr(idx+1);
+				CString ext = extension.c_str();
+				ext = ext.MakeUpper();
+				swprintf_s( szText, _countof(szText), _T("       %s"), (LPCTSTR)ext);
+				pStat->SetPaneSymbol(ID_STATUSPANE_TYPE);
+				pStat->SetPaneText(ID_STATUSPANE_TYPE, szText);
+			}
+			else
+			{
+				pStat->SetPaneSymbol(ID_STATUSPANE_TYPE);
+				pStat->SetPaneText(ID_STATUSPANE_TYPE, _T(""));
+			}
+        }
+
+		// show the number of bitrate
+		{
+			double temp = pDoc->GetAvgBytesPerSec()*8;
+			if (temp>KB)
+			{
+				swprintf_s( szText, _countof(szText), _T("       %dk bps"), (int)(temp/KB));
+			}
+			else
+			{
+				swprintf_s( szText, _countof(szText), _T("       %d bps"), (int)temp);
+			}
+            pStat->SetPaneSymbol(ID_STATUSPANE_BITRATE);
+            pStat->SetPaneText(ID_STATUSPANE_BITRATE, szText);
+        }
+
+		pStat->UpdateWindow();
     }
     else
     {

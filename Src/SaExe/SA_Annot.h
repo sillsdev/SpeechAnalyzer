@@ -257,7 +257,7 @@ protected:
 //###########################################################################
 // CAnnotationWnd window
 
-class CAnnotationEdit;
+class CDlgAnnotationEdit;
 
 class CAnnotationWnd : public CWnd
 {

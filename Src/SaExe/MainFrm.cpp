@@ -153,13 +153,21 @@ BEGIN_MESSAGE_MAP(CMainFrame, CMDIFrameWnd)
     ON_COMMAND(ID_CONTEXT_HELP, CMDIFrameWnd::OnHelpIndex) // SDM 1.5Test8.5 disable context sensitive help
     // Custom messages
     ON_MESSAGE(WM_USER_APPLY_TOOLSOPTIONS, OnApplyToolsOptions)
+	ON_MESSAGE(WM_USER_UPDATE_PLAYER, OnUpdatePlayer)
     ON_MESSAGE(WM_USER_PLAYER, OnPlayer)
     ON_MESSAGE(WM_USER_CHANGEVIEW, OnChangeView)
     ON_MESSAGE(WM_USER_SPEECHAPPLICATION, OnSpeechAppCall)
     ON_COMMAND(ID_GRAPHS_EQUALIZELENGTH, OnEqualizeLength)
     ON_UPDATE_COMMAND_UI(ID_GRAPHS_EQUALIZELENGTH, OnUpdateEqualizeLength)
-    //ON_COMMAND(ID_SETDEFAULT, OnSetDefault)
     // status bar update
+    ON_UPDATE_COMMAND_UI(ID_STATUSPANE_SAMPLES, OnUpdateDataPane)
+    ON_UPDATE_COMMAND_UI(ID_STATUSPANE_FORMAT, OnUpdateDataPane)
+    ON_UPDATE_COMMAND_UI(ID_STATUSPANE_CHANNELS, OnUpdateDataPane)
+    ON_UPDATE_COMMAND_UI(ID_STATUSPANE_SIZE, OnUpdateDataPane)
+    ON_UPDATE_COMMAND_UI(ID_STATUSPANE_TLENGTH, OnUpdateDataPane)
+    ON_UPDATE_COMMAND_UI(ID_STATUSPANE_TYPE, OnUpdateDataPane)
+    ON_UPDATE_COMMAND_UI(ID_STATUSPANE_BITRATE, OnUpdateDataPane)
+    ON_UPDATE_COMMAND_UI(ID_STATUSPANE_EMPTY, OnUpdateDataPane)
     ON_UPDATE_COMMAND_UI(ID_STATUSPANE_1, OnUpdateDataPane)
     ON_UPDATE_COMMAND_UI(ID_STATUSPANE_2, OnUpdateDataPane)
     ON_UPDATE_COMMAND_UI(ID_STATUSPANE_3, OnUpdateDataPane)
@@ -177,6 +185,13 @@ END_MESSAGE_MAP()
 static UINT BASED_CODE dataIndicators[] =
 {
     ID_SEPARATOR,           // data status line indicator
+    ID_SEPARATOR,
+    ID_SEPARATOR,
+    ID_SEPARATOR,
+    ID_SEPARATOR,
+    ID_SEPARATOR,
+    ID_SEPARATOR,
+    ID_SEPARATOR,
     ID_SEPARATOR,
     ID_SEPARATOR,
     ID_SEPARATOR,
@@ -352,7 +367,7 @@ CMainFrame::~CMainFrame()
         delete m_pDlgPlayer;
         m_pDlgPlayer = NULL;
     }
-    if (m_pDlgEditor)
+    if (m_pDlgEditor!=NULL)
     {
         delete m_pDlgEditor; // SDM 1.06.5 editor
         m_pDlgEditor = NULL;
@@ -607,8 +622,8 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
     }
 
     // create data statusbar
-    if (!m_dataStatusBar.Create(this) ||
-            !m_dataStatusBar.SetIndicators(dataIndicators, sizeof(dataIndicators)/sizeof(UINT)))
+    if ((!m_dataStatusBar.Create(this)) ||
+        (!m_dataStatusBar.SetIndicators( dataIndicators, sizeof(dataIndicators)/sizeof(UINT))))
     {
         TRACE(_T("Failed to create data status bar\n"));
         return -1; // failed to create
@@ -617,8 +632,8 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
     // initialize data statusbar
     m_dataStatusBar.Init();
     // create progress statusbar
-    if (!m_progressStatusBar.Create(this) ||
-            !m_progressStatusBar.SetIndicators(progressIndicators, sizeof(progressIndicators)/sizeof(UINT)))
+    if ((!m_progressStatusBar.Create(this)) ||
+        (!m_progressStatusBar.SetIndicators(progressIndicators, sizeof(progressIndicators)/sizeof(UINT))))
     {
         TRACE(_T("Failed to create progress status bar\n"));
         return -1; // failed to create
@@ -708,8 +723,8 @@ void CMainFrame::OnToolsOptions()
     dlg.m_dlgViewPage.m_bStatusbar = m_bStatusBar;       // setup check boxes
     dlg.m_dlgViewPage.m_nPosMode = m_nStatusPosReadout;
     dlg.m_dlgViewPage.m_nPitchMode = m_nStatusPitchReadout;
-    dlg.m_dlgViewPage.m_bToolbar = bToolBar();
-    dlg.m_dlgViewPage.m_bTaskbar = bTaskBar();
+    dlg.m_dlgViewPage.m_bToolbar = bToolBarVisible();
+    dlg.m_dlgViewPage.m_bTaskbar = bTaskBarVisible();
     dlg.m_dlgViewPage.m_bToneAbove = m_bToneAbove;
     dlg.m_dlgViewPage.m_bScrollZoom = m_bScrollZoom;
     dlg.m_dlgViewPage.m_nCursorAlignment = pView->GetCursorAlignment();
@@ -811,14 +826,14 @@ LRESULT CMainFrame::OnApplyToolsOptions(WPARAM, LPARAM)
 
     m_nStatusPitchReadout = toolSettings.m_nPitchMode;
     // apply to toolbar
-    if (toolSettings.m_bToolbar != bToolBar())
+    if (toolSettings.m_bToolbar != bToolBarVisible())
     {
         BOOL bAdvanced = toolSettings.m_bToolbar;
         ShowControlBar(GetControlBar(IDR_BAR_BASIC),!bAdvanced, FALSE); // change toolbar status
         ShowControlBar(GetControlBar(IDR_BAR_ADVANCED), bAdvanced, FALSE); // change toolbar status
     }
     // apply to taskbar
-    if (toolSettings.m_bTaskbar != bTaskBar())
+    if (toolSettings.m_bTaskbar != bTaskBarVisible())
     {
         BOOL bTaskbar = toolSettings.m_bTaskbar;
         ShowControlBar(GetControlBar(ID_VIEW_TASKBAR),bTaskbar, FALSE); // change taskbar status
@@ -934,7 +949,6 @@ LRESULT CMainFrame::OnApplyToolsOptions(WPARAM, LPARAM)
 
 CDlgPlayer * CMainFrame::GetPlayer(bool bCreate)
 {
-
     if (!CDlgPlayer::IsLaunched())
     {
         // player dialog not launched
@@ -1039,21 +1053,21 @@ void CMainFrame::OnEditor()
     {
         return;
     }
-    if (!m_pDlgEditor)
+    if (m_pDlgEditor==NULL)
     {
         m_pDlgEditor = new CDlgEditor(this);  // New Editor with view parent
     }
-    if (m_pDlgEditor)
+    if (m_pDlgEditor!=NULL)
     {
         // Create window if necessary
         m_pDlgEditor->CreateSafe(CDlgEditor::IDD, this, &m_wplDlgEditor);
     }
 
-    if (m_pDlgEditor  && !m_pDlgEditor->IsWindowVisible())
+    if ((m_pDlgEditor!=NULL) && (!m_pDlgEditor->IsWindowVisible()))
     {
         m_pDlgEditor->SetWindowPos(&wndTop, 0, 0, 0, 0, SWP_NOMOVE|SWP_NOSIZE|SWP_SHOWWINDOW);
     }
-    else if (m_pDlgEditor)
+    else if (m_pDlgEditor!=NULL)
     {
         m_pDlgEditor->ShowWindow(SW_HIDE);
     }
@@ -1063,7 +1077,7 @@ void CMainFrame::OnEditor()
 /**************************************************************************/
 void CMainFrame::OnUpdateEditEditor(CCmdUI * pCmdUI)
 {
-    if (m_pDlgEditor  && m_pDlgEditor->IsWindowVisible())
+    if ((m_pDlgEditor!=NULL) && (m_pDlgEditor->IsWindowVisible()))
     {
         pCmdUI->SetText(_T("Hide Transcription Editor\tF4"));
     }
@@ -1079,7 +1093,7 @@ void CMainFrame::OnUpdateEditEditor(CCmdUI * pCmdUI)
 /***************************************************************************/
 LRESULT CMainFrame::OnIdleUpdate(WPARAM /*wParam*/, LPARAM /*lParam*/)
 {
-    if (m_pDlgEditor)
+    if (m_pDlgEditor!=NULL)
     {
         m_pDlgEditor->UpdateDialog();
     }
@@ -1177,18 +1191,32 @@ LRESULT CMainFrame::OnChangeView(WPARAM wParam, LPARAM lParam)
     }
     if (!wParam)   // last view closed
     {
-        // get pointer to status bar
-        CDataStatusBar * pStat = GetDataStatusBar();
         // turn off symbols
-        pStat->SetPaneSymbol(ID_STATUSPANE_1, FALSE);
-        pStat->SetPaneSymbol(ID_STATUSPANE_2, FALSE);
-        pStat->SetPaneSymbol(ID_STATUSPANE_3, FALSE);
-        pStat->SetPaneSymbol(ID_STATUSPANE_4, FALSE);
+        m_dataStatusBar.SetPaneSymbol(ID_STATUSPANE_SAMPLES, FALSE);
+        m_dataStatusBar.SetPaneSymbol(ID_STATUSPANE_FORMAT, FALSE);
+        m_dataStatusBar.SetPaneSymbol(ID_STATUSPANE_CHANNELS, FALSE);
+        m_dataStatusBar.SetPaneSymbol(ID_STATUSPANE_SIZE, FALSE);
+        m_dataStatusBar.SetPaneSymbol(ID_STATUSPANE_TLENGTH, FALSE);
+        m_dataStatusBar.SetPaneSymbol(ID_STATUSPANE_TYPE, FALSE);
+        m_dataStatusBar.SetPaneSymbol(ID_STATUSPANE_BITRATE, FALSE);
+        m_dataStatusBar.SetPaneSymbol(ID_STATUSPANE_EMPTY, FALSE);
+        m_dataStatusBar.SetPaneSymbol(ID_STATUSPANE_1, FALSE);
+        m_dataStatusBar.SetPaneSymbol(ID_STATUSPANE_2, FALSE);
+        m_dataStatusBar.SetPaneSymbol(ID_STATUSPANE_3, FALSE);
+        m_dataStatusBar.SetPaneSymbol(ID_STATUSPANE_4, FALSE);
         // clear the panes
-        pStat->SetPaneText(ID_STATUSPANE_1, _T(""));
-        pStat->SetPaneText(ID_STATUSPANE_2, _T(""));
-        pStat->SetPaneText(ID_STATUSPANE_3, _T(""));
-        pStat->SetPaneText(ID_STATUSPANE_4, _T(""));
+        m_dataStatusBar.SetPaneText(ID_STATUSPANE_SAMPLES, _T(""));
+        m_dataStatusBar.SetPaneText(ID_STATUSPANE_FORMAT, _T(""));
+        m_dataStatusBar.SetPaneText(ID_STATUSPANE_CHANNELS, _T(""));
+        m_dataStatusBar.SetPaneText(ID_STATUSPANE_SIZE, _T(""));
+        m_dataStatusBar.SetPaneText(ID_STATUSPANE_TLENGTH, _T(""));
+        m_dataStatusBar.SetPaneText(ID_STATUSPANE_TYPE, _T(""));
+        m_dataStatusBar.SetPaneText(ID_STATUSPANE_BITRATE, _T(""));
+        m_dataStatusBar.SetPaneText(ID_STATUSPANE_EMPTY, _T(""));
+        m_dataStatusBar.SetPaneText(ID_STATUSPANE_1, _T(""));
+        m_dataStatusBar.SetPaneText(ID_STATUSPANE_2, _T(""));
+        m_dataStatusBar.SetPaneText(ID_STATUSPANE_3, _T(""));
+        m_dataStatusBar.SetPaneText(ID_STATUSPANE_4, _T(""));
     }
 
     return 0;
@@ -2105,7 +2133,7 @@ void CMainFrame::WriteProperties(CObjectOStream & obs)
     this->GetWindowPlacement(&wpl);
     obs.WriteWindowPlacement(psz_placementMain, wpl);
 
-    if (m_pDlgEditor)
+    if (m_pDlgEditor!=NULL)
     {
         m_pDlgEditor->GetWindowPlacement(&wpl);
         obs.WriteWindowPlacement(psz_placementEditor, wpl);
@@ -2128,8 +2156,8 @@ void CMainFrame::WriteProperties(CObjectOStream & obs)
     obs.WriteBool(psz_statusbar , m_bStatusBar);
     obs.WriteInteger(psz_statusposreadout, m_nStatusPosReadout);
     obs.WriteInteger(psz_statuspitchreadout, m_nStatusPitchReadout);
-    obs.WriteBool(psz_toolbar, bToolBar());
-    obs.WriteBool(psz_taskbar, bTaskBar());
+    obs.WriteBool(psz_toolbar, bToolBarVisible());
+    obs.WriteBool(psz_taskbar, bTaskBarVisible());
     obs.WriteBool(psz_toneAbove, m_bToneAbove);  //SDM 1.5Test8.2
     obs.WriteBool(psz_scrollzoom, m_bScrollZoom);
     obs.WriteInteger(psz_graphUpdateMode, m_nGraphUpdateMode);
@@ -2240,7 +2268,7 @@ BOOL CMainFrame::ReadProperties(CObjectIStream & obs)
         else if (obs.bReadInteger(psz_statuspitchreadout, m_nStatusPitchReadout));
         else if (obs.bReadBool(psz_toolbar, b))
         {
-            if (b != bToolBar())
+            if (b != bToolBarVisible())
             {
                 BOOL bAdvanced = b;
                 ShowControlBar(GetControlBar(IDR_BAR_BASIC),!bAdvanced, TRUE); // change toolbar status
@@ -2249,7 +2277,7 @@ BOOL CMainFrame::ReadProperties(CObjectIStream & obs)
         }
         else if (obs.bReadBool(psz_taskbar, b))
         {
-            if (b != bTaskBar())
+            if (b != bTaskBarVisible())
             {
                 ShowControlBar(GetControlBar(ID_VIEW_TASKBAR),b, TRUE); // change toolbar status
             }
@@ -2676,7 +2704,7 @@ void CMainFrame::OnRecordOverlay()
     CSaApp * pApp = (CSaApp *)AfxGetApp();
     CSaDoc * pDoc = (CSaDoc *)pApp->OpenBlankView(true);
 
-    if (pDoc)
+    if (pDoc!=NULL)
     {
         //hide the temporary overlay document
         MDIActivate(pSourceView->pwndChildFrame());
@@ -2685,29 +2713,29 @@ void CMainFrame::OnRecordOverlay()
         pDoc->SetTempOverlay(); //mark this for reuse.
         POSITION pos = pDoc->GetFirstViewPosition();
         CSaDoc * pSourceDoc = pSourceView->GetDocument();
+
         CAlignInfo alignInfo;
         memset(&alignInfo,0,sizeof(alignInfo));
         pSourceDoc->GetAlignInfo(alignInfo);
-        if (pos)
+        
+		if (pos)
         {
             CSaView * pView = (CSaView *)pDoc->GetNextView(pos);
             if (pView->IsKindOf(RUNTIME_CLASS(CSaView)))
             {
-                CDlgAutoRecorder * pDlgAutoRecorder = new CDlgAutoRecorder(pDoc,(CSaView *)pView,pSourceView,alignInfo);
+                CDlgAutoRecorder dlg(pDoc,(CSaView *)pView,pSourceView,alignInfo);
 
-                if (m_pDisplayPlot)
+                if (m_pDisplayPlot!=NULL)
                 {
-                    m_pDisplayPlot->m_pModal = pDlgAutoRecorder;
+                    m_pDisplayPlot->m_pModal = &dlg;
                 }
 
-                pDlgAutoRecorder->DoModal();
+                dlg.DoModal();
 
-                if (m_pDisplayPlot)
+                if (m_pDisplayPlot!=NULL)
                 {
                     m_pDisplayPlot->m_pModal = NULL;
                 }
-
-                delete pDlgAutoRecorder;
             }
         }
         else
@@ -2755,15 +2783,15 @@ BOOL CMainFrame::OnCopyData(CWnd * /*pWnd*/, COPYDATASTRUCT * pCopyDataStruct)
     return TRUE;
 }
 
-BOOL CMainFrame::bToolBar()
+BOOL CMainFrame::bToolBarVisible()
 {
     // toolbar on/off
     return m_wndToolBarAdvanced.IsVisible() ;
 };
-BOOL CMainFrame::bTaskBar()
+BOOL CMainFrame::bTaskBarVisible()
 {
     // taskbar on/off
-    return m_wndTaskBar.IsVisible() ;
+    return m_wndTaskBar.IsVisible();
 };
 const CSaString CMainFrame::GetPermGraphNames(void)
 {
@@ -3100,4 +3128,14 @@ void CMainFrame::OnAutoSaveOff()
 	KillTimer(ID_TIMER_AUTOSAVE);
 	CAutoSave::CleanAll();
 	m_bAutoSave = FALSE;
+}
+
+LRESULT CMainFrame::OnUpdatePlayer(WPARAM, LPARAM)
+{
+	TRACE("updating\n");
+	if (m_pDlgEditor!=NULL)
+	{
+		m_pDlgEditor->UpdatePlayer();
+	}
+	return 0;
 }

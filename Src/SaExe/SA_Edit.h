@@ -1,7 +1,7 @@
 /////////////////////////////////////////////////////////////////////////////
 // sa_edit.h:
 // Definition of the CDlgEditor (dialog)
-//                   CAnnotationEdit                   classes.
+//                   CDlgAnnotationEdit                   classes.
 //
 // Author: Steve MacLean
 // copyright 1999 JAARS Inc. SIL
@@ -10,7 +10,7 @@
 // 1.06.5
 //      SDM Original
 // 1.06.6
-//      SDM Added class CAnnotationEdit class
+//      SDM Added class CDlgAnnotationEdit class
 // 1.06.6U4
 //      SDM Added OnCancel to undo changes on ESC (Alt+F4)
 // 1.5Test8.2
@@ -40,19 +40,20 @@ public:
     CDlgEditor(CWnd * pParent=NULL);
 
     BOOL CreateSafe(UINT nIDTemplate, CWnd * pParentWnd=NULL, WINDOWPLACEMENT * pWPL=NULL);
-    CMainFrame * MainFrame() const;
-    CSaView * SaView() const;
-    CSaDoc * SaDoc() const;
+    CMainFrame * GetMainFrame() const;
+    CSaView * GetView() const;
+    CSaDoc * GetDoc() const;
     CSegment * GetSelectedSegment() const;
     void UpdateDialog();
     virtual BOOL PreTranslateMessage(MSG * pMsg);
     void OnHelpEdit();
+	void UpdatePlayer();
 
     enum { IDD = IDD_EDITOR };
-    CButton m_cNextButton;
-    CButton m_cPreviousButton;
-    CButton m_cUpButton;
-    CButton m_cDownButton;
+    CButton m_NextButton;
+    CButton m_PreviousButton;
+    CButton m_UpButton;
+    CButton m_DownButton;
 
 protected:
     virtual void DoDataExchange(CDataExchange * pDX);   // DDX/DDV support
@@ -64,6 +65,8 @@ protected:
     afx_msg void OnPlaybackSegment();
     afx_msg void OnPlaybackWord();
     afx_msg void OnPlaybackPhraseL1();
+    afx_msg void OnStopWord();
+    afx_msg void OnStopPhraseL1();
     afx_msg void OnUpdateInputstring();
     afx_msg void OnDestroy();
     afx_msg void OnActivate(UINT nState, CWnd * pWndOther, BOOL bMinimized);
@@ -74,6 +77,8 @@ protected:
 
 private:
     BOOL IsDifferent(BOOL bUpdate);
+	void SetButtonState( int button1, int button2, bool playing);
+
     //Annotation Navigation Buttons
     //
     // IsDifferentData
@@ -82,9 +87,9 @@ private:
     DWORD m_dwPreviousStart;
     DWORD m_dwPreviousStop;
     CString m_szPreviousString;
-    //OnUpdateInputStringData
+    // OnUpdateInputStringData
     BOOL m_bCheck;
-    //Aid to help in setting focus
+    // Aid to help in setting focus
     BOOL m_bActivated;
     // Cursor scrooling data
     BOOL m_bScroll;
@@ -93,10 +98,10 @@ private:
     BOOL bEditor;
 };
 
-class CAnnotationEdit : public CDialog
+class CDlgAnnotationEdit : public CDialog
 {
 public:
-    CAnnotationEdit(CWnd * pParent = NULL);
+    CDlgAnnotationEdit(CWnd * pParent = NULL);
     BOOL Create(UINT nIDTemplate, CWnd * pParentWnd=NULL);
     enum { IDD = IDD_ANNOTATION_EDIT };
 
@@ -126,7 +131,7 @@ protected:
 	DECLARE_MESSAGE_MAP()
 
 private:
-    CMainFrame * MainFrame() const;
-    CSaView * SaView() const;
-    CSaDoc * SaDoc() const;
+    CMainFrame * GetMainFrame() const;
+    CSaView * GetView() const;
+    CSaDoc * GetDoc() const;
 };

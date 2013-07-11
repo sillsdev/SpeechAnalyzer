@@ -118,6 +118,9 @@ enum EUpdateMode
 #define STATUSPANE_2_WIDTH              95
 #define STATUSPANE_3_WIDTH              95
 #define STATUSPANE_4_WIDTH              95
+#define STATUSPANE_5_WIDTH              95
+#define STATUSPANE_6_WIDTH              70
+#define STATUSPANE_7_WIDTH              70
 #define PROGRESSPANE_2_WIDTH            70          // width of the progress statusbar panes
 #define PROGRESSPANE_3_WIDTH            150
 
@@ -203,6 +206,8 @@ enum ECursorAlignment
 
 #define WM_USER_AUTO_RESTART            WM_USER + 27
 #define WM_USER_AUTOSAVE                WM_USER + 28
+
+#define WM_USER_UPDATE_PLAYER			WM_USER + 29
 
 #define HINT_APP_DOC_LIST_CHANGED       0x123
 

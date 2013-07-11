@@ -42,12 +42,12 @@ CDisplayPlot::CDisplayPlot(CString & szPlot)
         m_pMainFrame->m_bStatusBar = !m_pMainFrame->m_bStatusBar;
     }
     // disable toolbar
-    m_bToolBar = m_pMainFrame->bToolBar();
+    m_bToolBar = m_pMainFrame->bToolBarVisible();
     m_pMainFrame->ShowControlBar(m_pMainFrame->GetControlBar(IDR_BAR_BASIC), FALSE, TRUE); // change toolbar status
     m_pMainFrame->ShowControlBar(m_pMainFrame->GetControlBar(IDR_BAR_ADVANCED), FALSE, TRUE); // change toolbar status
 
     // disable toolbar
-    m_bTaskBar = m_pMainFrame->bTaskBar();
+    m_bTaskBar = m_pMainFrame->bTaskBarVisible();
     m_pMainFrame->ShowControlBar(m_pMainFrame->GetControlBar(ID_VIEW_TASKBAR), FALSE, TRUE); // change toolbar status
 
     // disable scrolling zoom

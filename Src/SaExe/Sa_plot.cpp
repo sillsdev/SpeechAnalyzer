@@ -1364,11 +1364,11 @@ void CPlotWnd::PlotStandardPaint(CDC * pDC, CRect rWnd, CRect rClip, CProcess * 
         // calculate size factor between raw data and process data
 
         double fSizeFactor = (double)pDoc->GetSampleSize() * ceil((double)(pDoc->GetDataSize()/pDoc->GetSampleSize())/(double)(pProcess->GetDataSize()));
-		TRACE(L"plot %s -----------\n",(LPCTSTR)m_szPlotName);
-		TRACE("doc sample size %d\n",pDoc->GetSampleSize());
-		TRACE("doc data size %d\n",pDoc->GetDataSize());
-		TRACE("proc data size %d\n",pProcess->GetDataSize());
-		TRACE("size factor %f\n",fSizeFactor);
+		//TRACE(L"plot %s -----------\n",(LPCTSTR)m_szPlotName);
+		//TRACE("doc sample size %d\n",pDoc->GetSampleSize());
+		//TRACE("doc data size %d\n",pDoc->GetDataSize());
+		//TRACE("proc data size %d\n",pProcess->GetDataSize());
+		//TRACE("size factor %f\n",fSizeFactor);
 
         // get necessary data from document and from view
         double fDataPos = GetDataPosition(rWnd.Width()); // data index of first sample to display
@@ -1380,8 +1380,8 @@ void CPlotWnd::PlotStandardPaint(CDC * pDC, CRect rWnd, CRect rClip, CProcess * 
 
         // calculate raw data samples per pixel
         double fBytesPerPix = double(dwDataFrame)*pDoc->GetAvgBytesPerSec()/pHostDoc->GetAvgBytesPerSec()/(double)rWnd.Width();
-		TRACE("bytes per pix %f\n",fBytesPerPix);
-		TRACE("----\n");
+		//TRACE("bytes per pix %f\n",fBytesPerPix);
+		//TRACE("----\n");
 
         pXScale = new CXScaleLinear(fBytesPerPix/fSizeFactor, fDataPos/fSizeFactor);
         pXScaleRaw = new CXScaleLinear(fBytesPerPix, fDataPos);

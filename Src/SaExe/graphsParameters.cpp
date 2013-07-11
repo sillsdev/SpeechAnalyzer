@@ -54,13 +54,11 @@ END_MESSAGE_MAP()
 
 CDlgParametersRawdataPage::CDlgParametersRawdataPage() : CPropertyPage(CDlgParametersRawdataPage::IDD)
 {
-
     m_nProcess = 0;
 }
 
 void CDlgParametersRawdataPage::DoDataExchange(CDataExchange * pDX)
 {
-
     CPropertyPage::DoDataExchange(pDX);
     DDX_CBIndex(pDX, IDC_RAWDATA_PROCESS, m_nProcess);
 }
@@ -135,7 +133,6 @@ END_MESSAGE_MAP()
 
 CDlgParametersPitchPage::CDlgParametersPitchPage() : CPropertyPage(CDlgParametersPitchPage::IDD)
 {
-
     m_bModified = FALSE;
 }
 
@@ -419,7 +416,6 @@ BOOL CDlgParametersPitchPage::OnInitDialog()
 /***************************************************************************/
 BOOL CDlgParametersPitchPage::OnSetActive()
 {
-
     CPropertyPage::OnSetActive();
     return TRUE;
 }
@@ -429,7 +425,6 @@ BOOL CDlgParametersPitchPage::OnSetActive()
 /***************************************************************************/
 void CDlgParametersPitchPage::OnChangeScroll()
 {
-
     int nData = GetDlgItemInt(IDC_PITCH_CHANGE, NULL, TRUE);
     if (m_SpinChange.UpperButtonClicked())
     {
@@ -461,7 +456,6 @@ void CDlgParametersPitchPage::OnChangeScroll()
 /***************************************************************************/
 void CDlgParametersPitchPage::OnChange()
 {
-
     m_bModified = TRUE;
     SetModified(TRUE); // data modified, enable apply button
 }
@@ -471,7 +465,6 @@ void CDlgParametersPitchPage::OnChange()
 /***************************************************************************/
 void CDlgParametersPitchPage::OnKillfocusChange()
 {
-
     int nData = GetDlgItemInt(IDC_PITCH_CHANGE, NULL, TRUE);
     if (nData > 20)
     {
@@ -495,7 +488,6 @@ void CDlgParametersPitchPage::OnKillfocusChange()
 /***************************************************************************/
 void CDlgParametersPitchPage::OnGroupScroll()
 {
-
     int nData = GetDlgItemInt(IDC_PITCH_GROUP, NULL, TRUE);
     if (m_SpinGroup.UpperButtonClicked())
     {
@@ -527,7 +519,6 @@ void CDlgParametersPitchPage::OnGroupScroll()
 /***************************************************************************/
 void CDlgParametersPitchPage::OnKillfocusGroup()
 {
-
     int nData = GetDlgItemInt(IDC_PITCH_GROUP, NULL, TRUE);
     if (nData > 20)
     {
@@ -551,7 +542,6 @@ void CDlgParametersPitchPage::OnKillfocusGroup()
 /***************************************************************************/
 void CDlgParametersPitchPage::OnInterpolScroll()
 {
-
     int nData = GetDlgItemInt(IDC_PITCH_INTERPOLATION, NULL, TRUE);
     if (m_SpinInterpol.UpperButtonClicked())
     {
@@ -583,7 +573,6 @@ void CDlgParametersPitchPage::OnInterpolScroll()
 /***************************************************************************/
 void CDlgParametersPitchPage::OnKillfocusInterpol()
 {
-
     int nData = GetDlgItemInt(IDC_PITCH_INTERPOLATION, NULL, TRUE);
     if (nData > 10)
     {
@@ -715,9 +704,9 @@ void CDlgParametersPitchPage::OnMaxFreqScroll()
 void CDlgParametersPitchPage::OnKillfocusMaxfreq()
 {
 
-    BOOL bTrans; //CLW 8/27/99
+    BOOL bTrans = FALSE; //CLW 8/27/99
     int nData = (int)GetDlgItemInt(IDC_PITCH_MAXFREQ, &bTrans, TRUE); //CLW 8/27/99
-    if (!bTrans && (nData==0))
+    if ((!bTrans) && (nData==0))
     {
         nData = 460;    //CLW 8/27/99
     }
@@ -893,7 +882,7 @@ void CDlgParametersPitchPage::OnUpperBoundScroll()
 void CDlgParametersPitchPage::OnKillfocusUpperBound()
 {
 
-    BOOL bTrans; //CLW 8/27/99
+    BOOL bTrans = FALSE; //CLW 8/27/99
     int nData = (int)GetDlgItemInt(IDC_PITCH_UPPERBOUNDEDIT, &bTrans, TRUE); //CLW 8/27/99
     // RLJ 09/21/2000: Bug GPI-03
     //    if (!bTrans && (nData==0)) nData = m_nFreqLimit; //CLW 8/27/99
@@ -965,8 +954,6 @@ void CDlgParametersPitchPage::OnLowerBoundScroll()
         }
     }
 }
-
-
 
 /***************************************************************************/
 // CDlgParametersPitchPage::OnMedianFilterSizeSpin size spin hit.
@@ -1141,7 +1128,6 @@ void CDlgParametersPitchPage::OnUsemedianfilter()
 /***************************************************************************/
 void CDlgParametersPitchPage::OnPitchManualDefaultFile()
 {
-
     OnPitchManualDefault(FALSE);
 }
 
@@ -1150,7 +1136,6 @@ void CDlgParametersPitchPage::OnPitchManualDefaultFile()
 /***************************************************************************/
 void CDlgParametersPitchPage::OnPitchManualDefaultApp()
 {
-
     OnPitchManualDefault(TRUE);
 }
 
@@ -1176,9 +1161,12 @@ void CDlgParametersPitchPage::OnPitchManualDefault(BOOL bAppDefaults)
     // calculate raw voicing value
     int nVoicingRaw16 = (int)(m_fVoicing * 16. * .01 * pow(2.F, pDoc->GetBitsPerSample() - 1) + 0.5);
 
-    if ((m_nChange != pUttParm->nMaxChange) || (m_nGroup != pUttParm->nMinGroup)
-            || (m_nInterpol != pUttParm->nMaxInterp) || (nVoicingRaw16 != pUttParm->nCritLoud)
-            || (m_nMaxFreq != (int)pUttParm->nMaxFreq) || (m_nMinFreq != (int)pUttParm->nMinFreq))
+    if ((m_nChange != pUttParm->nMaxChange) || 
+		(m_nGroup != pUttParm->nMinGroup) || 
+		(m_nInterpol != pUttParm->nMaxInterp) || 
+		(nVoicingRaw16 != pUttParm->nCritLoud) || 
+		(m_nMaxFreq != (int)pUttParm->nMaxFreq) || 
+		(m_nMinFreq != (int)pUttParm->nMinFreq))
     {
         m_bModified = TRUE;
         SetModified(TRUE); // data modified, enable apply button
@@ -1223,9 +1211,9 @@ CDlgParametersSpectroPage::CDlgParametersSpectroPage(UINT nID, UINT graphId, con
 {
 
     m_GraphId = graphId;
-    m_bShowPitch = FALSE;
     m_nResolution = (UINT) pSpectroParmDefaults->nResolution;
     m_nColor = (UINT) pSpectroParmDefaults->nColor;
+	m_bShowFormants = pSpectroParmDefaults->bShowFormants;
     m_bF1 = (UINT) pSpectroParmDefaults->bShowF1;
     m_bF2 = (UINT) pSpectroParmDefaults->bShowF2;
     m_bF3 = (UINT) pSpectroParmDefaults->bShowF3;
@@ -1235,7 +1223,6 @@ CDlgParametersSpectroPage::CDlgParametersSpectroPage(UINT nID, UINT graphId, con
     m_bSmoothSpectra = pSpectroParmDefaults->bSmoothSpectra;
     m_bFormantColor = pSpectroParmDefaults->bFormantColor;
     m_bShowPitch = pSpectroParmDefaults->bShowPitch;
-    m_bFormants = m_bShowPitch || m_bF1 || m_bF2 || m_bF3 || m_bF4;
     m_nFrequency = (UINT) pSpectroParmDefaults->nFrequency;
     m_nMaxThreshold = (UINT) pSpectroParmDefaults->nMaxThreshold;
     m_nMinThreshold = (UINT) pSpectroParmDefaults->nMinThreshold;
@@ -1290,6 +1277,8 @@ void CDlgParametersSpectroPage::Apply()
         pSpectroParm->nResolution = m_nResolution;
         pSpectroParm->nColor = m_nColor;
         pSpectroParm->nOverlay = m_nOverlay;
+		pSpectroParm->bShowFormants = m_bShowFormants;
+        pSpectroParm->bShowPitch = m_bShowPitch;
         pSpectroParm->bShowF1 = m_bF1;
         pSpectroParm->bShowF2 = m_bF2;
         pSpectroParm->bShowF3 = m_bF3;
@@ -1299,7 +1288,6 @@ void CDlgParametersSpectroPage::Apply()
         pSpectroParm->bSmoothFormantTracks = m_bSmoothFormantTracks;
         pSpectroParm->bSmoothSpectra = m_bSmoothSpectra;
         pSpectroParm->bFormantColor = m_bFormantColor;
-        pSpectroParm->bShowPitch = m_bShowPitch;
 
         m_bModified = FALSE;
         SetModified(FALSE);
@@ -1377,6 +1365,7 @@ BOOL CDlgParametersSpectroPage::OnInitDialog()
     m_nResolution = pSpectroParm->nResolution;
     m_nColor = pSpectroParm->nColor;
     m_nOverlay = pSpectroParm->nOverlay;
+	m_bShowFormants = pSpectroParm->bShowFormants;
     m_bF1 = pSpectroParm->bShowF1;
     m_bF2 = pSpectroParm->bShowF2;
     m_bF3 = pSpectroParm->bShowF3;
@@ -1385,7 +1374,6 @@ BOOL CDlgParametersSpectroPage::OnInitDialog()
     m_bSmoothSpectra = pSpectroParm->bSmoothSpectra;
     m_bFormantColor = pSpectroParm->bFormantColor;
     m_bShowPitch = pSpectroParm->bShowPitch;
-    m_bFormants = m_bShowPitch || m_bF1 || m_bF2 || m_bF3 || m_bF4;
     UpdateData(FALSE);
     m_cSliderFreq.SetRange(0,m_nFreqLimit, TRUE);
     m_cSliderFreq.SetLineSize(50);
@@ -1424,7 +1412,7 @@ void CDlgParametersSpectroPage::DoDataExchange(CDataExchange * pDX)
     DDX_Check(pDX, IDC_F4, m_bF4);
     DDX_Radio(pDX, IDC_OVERLAID, m_nOverlay);
     DDX_Check(pDX, IDC_SMOOTH_SPECTRA, m_bSmoothSpectra);
-    DDX_Check(pDX, IDC_FORMANTS, m_bFormants);
+    DDX_Check(pDX, IDC_FORMANTS, m_bShowFormants);
     DDX_Check(pDX, IDC_FORMANT_COLOR, m_bFormantColor);
     DDX_Check(pDX, IDC_SHOW_PITCH, m_bShowPitch);
 }
@@ -1564,7 +1552,7 @@ void CDlgParametersSpectroPage::OnModifiedFormants()
 
 void CDlgParametersSpectroPage::OnModifiedFormants(BOOL bMessage)
 {
-    BOOL bOldFormants = m_bFormants;
+    BOOL bOldFormants = m_bShowFormants;
     BOOL bMasterEnableChange = !bMessage;
 
     if (bMessage)
@@ -1574,36 +1562,28 @@ void CDlgParametersSpectroPage::OnModifiedFormants(BOOL bMessage)
         m_bModified = TRUE;
     }
 
-    if ((m_bFormants != bOldFormants) ||
-            (!m_bFormants && (m_bShowPitch || m_bF1 || m_bF2 || m_bF3 || m_bF4)))
+    if ((m_bShowFormants != bOldFormants) ||
+        ((!m_bShowFormants) && (m_bShowPitch || m_bF1 || m_bF2 || m_bF3 || m_bF4)))
     {
-        m_bF1 = m_bF2 = m_bF3 = m_bF4 = m_bFormants;
-        m_bShowPitch = FALSE;
-
         UpdateData(FALSE);
-
         bMasterEnableChange = TRUE;
     }
 
     if (bMasterEnableChange)
     {
-        GetDlgItem(IDC_SHOW_PITCH)->EnableWindow(m_bFormants);
-        GetDlgItem(IDC_F1)->EnableWindow(m_bFormants);
-        GetDlgItem(IDC_F2)->EnableWindow(m_bFormants);
-        GetDlgItem(IDC_F3)->EnableWindow(m_bFormants);
-        GetDlgItem(IDC_F4)->EnableWindow(m_bFormants);
+        GetDlgItem(IDC_SHOW_PITCH)->EnableWindow(m_bShowFormants);
+        GetDlgItem(IDC_F1)->EnableWindow(m_bShowFormants);
+        GetDlgItem(IDC_F2)->EnableWindow(m_bShowFormants);
+        GetDlgItem(IDC_F3)->EnableWindow(m_bShowFormants);
+        GetDlgItem(IDC_F4)->EnableWindow(m_bShowFormants);
     }
 
-    BOOL bShowFormants = m_bF1 || m_bF2 || m_bF3 || m_bF4;
-    //GetDlgItem(IDC_SMOOTH_FORMANTTRACKS)->EnableWindow(bShowFormants);
-    GetDlgItem(IDC_OVERLAID)->EnableWindow(bShowFormants);
-    GetDlgItem(IDC_ONLY)->EnableWindow(bShowFormants);
+    GetDlgItem(IDC_OVERLAID)->EnableWindow(m_bShowFormants);
+    GetDlgItem(IDC_ONLY)->EnableWindow(m_bShowFormants);
 
-    bShowFormants = bShowFormants || m_bShowPitch;
-    GetDlgItem(IDC_FORMANT_COLOR)->EnableWindow((m_bShowPitch || bShowFormants) && m_nColor);
-
-    GetDlgItem(IDC_FORMANT_NOTE)->EnableWindow(m_bFormants);
-    GetDlgItem(IDC_MORE_INFO)->EnableWindow(m_bFormants);
+    GetDlgItem(IDC_FORMANT_COLOR)->EnableWindow((m_bShowFormants) && (m_nColor));
+    GetDlgItem(IDC_FORMANT_NOTE)->EnableWindow(m_bShowFormants);
+    GetDlgItem(IDC_MORE_INFO)->EnableWindow(m_bShowFormants);
 }
 
 
@@ -1633,8 +1613,7 @@ void CDlgParametersSpectroPage::OnModifiedColor()
     {
         m_nColor = nData;
         m_bModified = TRUE;
-        BOOL bShowFormants = m_bShowPitch || m_bF1 || m_bF2 || m_bF3 || m_bF4;
-        GetDlgItem(IDC_FORMANT_COLOR)->EnableWindow(m_nColor && bShowFormants);
+        GetDlgItem(IDC_FORMANT_COLOR)->EnableWindow((m_nColor) && (m_bShowFormants));
         SetModified(TRUE); // data modified, enable apply button
         Apply();
     }
@@ -2580,8 +2559,6 @@ BOOL CDlgParametersFormantsPage::OnInitDialog()
         GetDlgItem(IDC_STATIC_TEXT)->ShowWindow(SW_SHOW);
     }
 
-    //  if (pFormantParms->bFromLpcSpectrum) m_nDataSource = 0;
-    //  else m_nDataSource = 1;
     BOOL bStaticMode = (pView->GetGraphUpdateMode() == STATIC_UPDATE);
     GetDlgItem(IDC_FORMANTS_CEPSTRAL)->EnableWindow(bStaticMode);
     CheckDlgButton(IDC_FORMANTS_CEPSTRAL, pFormantParms->bFromCepstralSpectrum);
@@ -3828,8 +3805,6 @@ void CDlgParametersResearchPage::Apply()
 void CDlgParametersResearchPage::DoDataExchange(CDataExchange * pDX)
 {
 
-    int temp;
-
     CPropertyPage::DoDataExchange(pDX);
     DDX_Check(pDX, IDC_RESEARCH_HILBERT, m_workingSettings.m_bShowHilbertTransform);
     DDX_Check(pDX, IDC_RESEARCH_INSTANTANEOUS_POWER, m_workingSettings.m_bShowInstantaneousPower);
@@ -3841,7 +3816,7 @@ void CDlgParametersResearchPage::DoDataExchange(CDataExchange * pDX)
     DDX_Text(pDX, IDC_RESEARCH_LPC_ORDER_AUX_MAX_EDIT, m_workingSettings.m_nSpectrumLpcOrderAuxMax);
     DDX_CBIndex(pDX, IDC_RESEARCH_LPC_SHARP, m_workingSettings.m_nLpcCepstralSharp);
 
-    temp = m_workingSettings.m_cWindow.m_bEquivalentLength;
+    int temp = m_workingSettings.m_cWindow.m_bEquivalentLength;
     DDX_Check(pDX, IDC_RESEARCH_EXTENDED, temp);
     m_workingSettings.m_cWindow.m_bEquivalentLength = (temp == TRUE);
 
@@ -4104,10 +4079,10 @@ CDlgGraphsParameters::CDlgGraphsParameters(LPCTSTR pszCaption, CWnd * pParent)
         }
     }
 
-    if (pView->GetGraphIndexForIDD(IDD_F1F2) >= 0
-            || pView->GetGraphIndexForIDD(IDD_F2F1) >= 0
-            || pView->GetGraphIndexForIDD(IDD_F2F1F1) >= 0
-            || pView->GetGraphIndexForIDD(IDD_3D) >= 0)
+    if ((pView->GetGraphIndexForIDD(IDD_F1F2) >= 0) || 
+		(pView->GetGraphIndexForIDD(IDD_F2F1) >= 0) || 
+		(pView->GetGraphIndexForIDD(IDD_F2F1F1) >= 0) || 
+		(pView->GetGraphIndexForIDD(IDD_3D) >= 0))
     {
         AddPage(&m_dlgFormantsPage);
         m_dlgFormantsPage.m_bAccess = EXPERIMENTAL_ACCESS;
@@ -4181,7 +4156,6 @@ CDlgGraphsParameters::CDlgGraphsParameters(LPCTSTR pszCaption, CWnd * pParent)
 /***************************************************************************/
 CDlgGraphsParameters::~CDlgGraphsParameters()
 {
-
     if (m_pDlgSpectrogramPage)
     {
         delete m_pDlgSpectrogramPage;
@@ -4299,7 +4273,7 @@ void CDlgGraphsParameters::OnApply()
     {
         m_pDlgSnapshotPage->Apply();
     }
-    if (pView->GetGraphIndexForIDD(IDD_SPECTRUM)      >= 0)
+    if (pView->GetGraphIndexForIDD(IDD_SPECTRUM) >= 0)
     {
         m_dlgSpectrumPage.Apply();
     }
@@ -4307,9 +4281,9 @@ void CDlgGraphsParameters::OnApply()
     //***********************************************************
     // If any of the SDP graphs are visible apply their settings.
     //***********************************************************
-    if (pView->GetGraphIndexForIDD(IDD_SDP_A)  >= 0 ||
-            pView->GetGraphIndexForIDD(IDD_SDP_B)  >= 0 ||
-            pView->GetGraphIndexForIDD(IDD_INVSDP) >= 0)
+    if ((pView->GetGraphIndexForIDD(IDD_SDP_A)  >= 0) ||
+        (pView->GetGraphIndexForIDD(IDD_SDP_B)  >= 0) ||
+        (pView->GetGraphIndexForIDD(IDD_INVSDP) >= 0))
     {
         m_dlgSDPPage.Apply();
     }
@@ -4317,8 +4291,8 @@ void CDlgGraphsParameters::OnApply()
     //***********************************************************
     // If music graphs are visible then apply their settings.
     //***********************************************************
-    if (pView->GetGraphIndexForIDD(IDD_MELOGRAM) >= 0 ||
-            pView->GetGraphIndexForIDD(IDD_TWC)      >= 0)
+    if ((pView->GetGraphIndexForIDD(IDD_MELOGRAM) >= 0) ||
+        (pView->GetGraphIndexForIDD(IDD_TWC) >= 0))
     {
         m_dlgMusicPage.Apply();
     }

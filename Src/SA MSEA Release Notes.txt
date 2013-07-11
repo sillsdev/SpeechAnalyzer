@@ -1,3 +1,19 @@
+SA - 3.1.0.60 (stereo branch)
+1) Updated 'formant tracks' options so that Pitch/F1-F4 checkboxes are tracked 'through' the changing of the 'show formant tracks' checkbox
+2) Added Stop button to Transcription Editor dialog box.
+3) Added shortcut to 'Select Waveform' menu item
+4) Added seven new fields to the status bar.  The file information now displayed is extension, bitrate, length (time), size (KB/MB/GB), frequency, sample size and stereo/mono.
+5) Tied mouse wheel movements to 'zoom'
+6) Updated 'Record Overlay' dialog so that it now can reference the start stop cursors for playback and recording.
+
+SA - 3.1.0.59 (stereo branch)
+1) For Formant chart,
+ (a) modified application so that the title and 'nearest vowel' labels are no longer resized when graph is resized.
+ (b) fixed bug which was causing 'nearest vowel' to move horizontally when graph was resized vertically.
+ (c) modified rendering so that 'nearest vowel' label and vowel are drawn on same baseline.
+2) For 'Graph Parameters'/Spectogram dialog box,
+ (a) modified application so that F4 is not enabled by default on initial program start.
+
 SA - 3.1.0.58 (stereo branch)
 1) Adjusted F1 & F2 ranges for male voice.
 Old Range:
@@ -9,7 +25,6 @@ New Range:
 F1 200-1000
 F2 500-2500
 F3 1690-3010
-
 
 SA - 3.1.0.57 - 5/8/2013 (stereo branch)
 1) Fixed bug that was prevent opening of .WMA files (VARIANT_BOOL was not properly converted to c++ bool).

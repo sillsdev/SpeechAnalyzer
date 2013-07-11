@@ -465,6 +465,9 @@ bool CDlgPlayer::SetPlayerMode( EMode mode, UINT nSubMode, BOOL bFullSize, BOOL 
             {
                 SetDlgItemText(IDC_TIMERTEXT, _T("Current Time"));
                 m_pView->SetPlaybackPosition(dwStart); // SDM 1.5Test10.5
+
+				AfxGetMainWnd()->PostMessageW( WM_USER_UPDATE_PLAYER, 0, 0);
+
                 bError = !m_pWave->Play(m_dwPlayPosition, dwStart + dwSize - m_dwPlayPosition, m_nVolume, m_nSpeed, m_pView, &m_NotifyObj);
             }
 
@@ -490,7 +493,6 @@ bool CDlgPlayer::SetPlayerMode( EMode mode, UINT nSubMode, BOOL bFullSize, BOOL 
         m_nMode = PAUSED;
 		m_pView->StopPlaybackTimer();
 		m_pView->SetPlaybackFlash(true);
-        //m_pView->SetPlaybackPosition();     // SDM 1.06.6U6 hide playback indicators
         // start flashing paused button
         m_play.Flash(TRUE);
         m_VUBar.SetVU(0);
@@ -506,6 +508,9 @@ bool CDlgPlayer::SetPlayerMode( EMode mode, UINT nSubMode, BOOL bFullSize, BOOL 
         SetPositionTime();
 		m_pView->StopPlaybackTimer();
         m_pView->SetPlaybackPosition();     // SDM 1.06.6U6 hide playback indicators
+
+		AfxGetMainWnd()->PostMessageW(  WM_USER_UPDATE_PLAYER, 0, 0);
+
         m_play.Release();                   // release Play button
         m_stop.Release();                   // release Stop button
         m_pause.Release();                  // release Pause button
@@ -543,14 +548,20 @@ void CDlgPlayer::BlockFinished(UINT nLevel, DWORD dwPosition, UINT nSpeed)
 {
 
     m_pView->SetPlaybackPosition( dwPosition, nSpeed);
+
+	AfxGetMainWnd()->PostMessageW(  WM_USER_UPDATE_PLAYER, 0, 0);
+
     // update the VU bar
     m_VUBar.SetVU((int)nLevel);
     // update the time
     m_dwPlayPosition = dwPosition;
-    CSaDoc * pDoc = (CSaDoc *)m_pDoc;
+    
+	CSaDoc * pDoc = (CSaDoc *)m_pDoc;
     DWORD dwBlockEnd = m_dwPlayPosition - pDoc->GetSampleSize();
     double fDataSec = pDoc->GetTimeFromBytes(dwBlockEnd);
     m_LEDPosTime.SetTime((int)fDataSec / 60, (int)(fDataSec * 10) % 600);
+
+
 }
 
 /***************************************************************************/

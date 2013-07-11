@@ -33,7 +33,6 @@ protected:
 private:
     CStringArray pos;						// array of text strings
     virtual CFontTable * NewFontTable() const;
-	const DWORD MARGIN;						// a 0.1 second margin in milliseconds
 };
 
 #endif

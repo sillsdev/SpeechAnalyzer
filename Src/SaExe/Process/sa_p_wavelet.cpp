@@ -1297,7 +1297,7 @@ BOOL CProcessWavelet::Get_Raw_Data(long ** pDataOut, DWORD * dwDataSizeOut, ISaD
     {
         pData = pDoc->GetWaveData(dwDataPosBytes, TRUE);
 
-        // Get the bitrate (8 or 16bit data)
+        // Get the data size (8 or 16bit data)
 
         // FIX: pad the data with 0's if we have 8 bit data
 

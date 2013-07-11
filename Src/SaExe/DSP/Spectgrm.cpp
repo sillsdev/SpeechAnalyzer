@@ -491,13 +491,6 @@ dspError_t CSpectrogram::ValidateSettings(SSpectrogramSettings Setting)
         return Code(INVALID_BANDWIDTH);
     }
 
-	//can't exceed limit
-    if ((Setting.fmntTrackSw) &&
-		((Setting.NumFmnt > MAX_NUM_FORMANTS) || (Setting.NumFmnt < 0)))   
-    {
-        return Code(INVALID_FMNTTRACK_OPTION);
-    }
-
 	//requested number of spectra to generate must not be zero
     if (Setting.SpectCnt==0)
     {
@@ -536,7 +529,7 @@ CSpectrogram::CSpectrogram( SSpectrogramSettings SpgmSetting,
     m_FreqScale = (SpgmSetting.UprFreq - SpgmSetting.LwrFreq)/ (float)(SpgmSetting.FreqCnt - 1);
     m_PreEmphSw = SpgmSetting.preEmphSw;
     m_FmntTrackSw = SpgmSetting.fmntTrackSw;
-    m_NumFmnt = SpgmSetting.NumFmnt;
+    m_NumFmnt = MAX_NUM_FORMANTS;
     m_SigStart = Signal.Start;
     m_SigLength = Signal.Length;
     m_SigBlkOffset = SpgmSetting.SigBlkOffset;

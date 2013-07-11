@@ -126,18 +126,16 @@ protected:
     DECLARE_MESSAGE_MAP()
 
     // Dialog Data
-    //{{AFX_DATA(CPrintOptionsDlg)
     enum { IDD = IDD_PRINTOPTIONS };
-    BOOL  m_bFixedAspectR;
-    BOOL  m_bUseSmallFonts;
-    int   m_IsLandscape;
-    int   m_NumColumnsLessOne;
+    BOOL m_bFixedAspectR;
+    BOOL m_bUseSmallFonts;
+    int m_IsLandscape;
+    int m_NumColumnsLessOne;
     CString m_strNumRows;
-    int   m_IsHiRes;
-    int   m_LayoutType;
+    int m_IsHiRes;
+    int m_LayoutType;
     CListBox m_listBoxGraphsToPrint;
     CString m_strNumCols;
-    //}}AFX_DATA
 
     // internal data
     CBitmapButton m_bmpPort;

@@ -169,9 +169,9 @@ protected:
     BOOL    m_bSmoothFormantTracks;
     int     m_nOverlay;
     BOOL    m_bSmoothSpectra;
-    BOOL    m_bFormants;
     BOOL    m_bFormantColor;
     BOOL    m_bShowPitch;
+    BOOL    m_bShowFormants;
 
 protected:
     virtual void DoDataExchange(CDataExchange * pDX); // DDX/DDV support

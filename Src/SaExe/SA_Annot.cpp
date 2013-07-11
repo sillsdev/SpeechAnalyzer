@@ -41,7 +41,7 @@
 //         SDM added support for dynamic popup menu changes
 //         SDM disable editing in pDisplayPlot mode
 //   1.5Test10.7
-//         SDM moved creation of CAnnotationEdit to OnCreateEdit
+//         SDM moved creation of CDlgAnnotationEdit to OnCreateEdit
 //   1.5Test11.1
 //         SDM change CGlossWnd::OnDraw to properly draw hint during gloss change
 //   07/20/2000
@@ -2475,8 +2475,8 @@ void CAnnotationWnd::OnCreateEdit(const CString * szInitialString)
             }
             ClientToScreen(rEdit);
             // ShowWindow
-            CAnnotationEdit * pAnnotationEdit = new CAnnotationEdit();
-            pAnnotationEdit->Create(CAnnotationEdit::IDD);
+            CDlgAnnotationEdit * pAnnotationEdit = new CDlgAnnotationEdit();
+            pAnnotationEdit->Create(CDlgAnnotationEdit::IDD);
             pAnnotationEdit->SetWindowPos(&wndTop,rEdit.left,rEdit.top + 1,rEdit.Width(),rEdit.Height() - 2,SWP_SHOWWINDOW);
             if (szInitialString)
             {

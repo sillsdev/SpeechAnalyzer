@@ -13,7 +13,7 @@ public:
     int  nFrequency;        // frequency range to calculate
     int  nMinThreshold;     // minimum threshold
     int  nMaxThreshold;     // maximum threshold
-    int  nNumberFormants;   // number of calculated/displayed formants
+	BOOL bShowFormants;		// true if picture or any of the formants should be displayed
     BOOL bShowF1;           // show/hide formants (TRUE = show)
     BOOL bShowF2;
     BOOL bShowF3;

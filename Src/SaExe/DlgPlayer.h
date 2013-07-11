@@ -55,7 +55,6 @@ public:
     void OnHelpPlayer();
 	static bool IsLaunched();
 
-
 protected:
     virtual void DoDataExchange(CDataExchange * pDX);   // DDX/DDV support
     void SetPlayerFullSize();							// set the full size of the player

@@ -202,7 +202,6 @@ long CProcessSpectrogram::Process(void * pCaller, ISaDoc * pDoc, CSaView * pView
     SpgmSetting.FreqCnt = USHORT(SpgmSetting.FFTLength/2 + 1);
     int nHeight = SpgmSetting.FreqCnt;
     SpgmSetting.fmntTrackSw = false;      // will use LPC formant tracking later
-    SpgmSetting.NumFmnt = (USHORT)pSpectroParm->nNumberFormants;
 
     // calculate start and end positions
     // dwDataStart contains the offset to the first displayed byte and dwDataLength

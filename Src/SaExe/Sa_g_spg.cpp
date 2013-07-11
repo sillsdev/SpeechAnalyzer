@@ -465,8 +465,7 @@ BOOL CPlotSpectrogram::OnDrawSpectrogram(CDC * pDC, CRect rWnd, CRect rClip, CSa
     // get pointer to spectrogram parameters
     const CSpectroParm * pSpectroParm = &GetSpectrogram(pDoc)->GetSpectroParm();
 
-    BOOL bFormants = (pSpectroParm->bShowF1) || (pSpectroParm->bShowF2) || (pSpectroParm->bShowF3) || (pSpectroParm->bShowF4) || (pSpectroParm->bShowF5andUp);
-    BOOL bOverlay = (pSpectroParm->nOverlay == 0) || (!bFormants);
+    BOOL bOverlay = (pSpectroParm->nOverlay == 0) || (!pSpectroParm->bShowFormants);
     if (!bOverlay)
     {
         CMainFrame * pMain = (CMainFrame *)AfxGetMainWnd();
@@ -865,7 +864,6 @@ BOOL CPlotSpectrogram::OnDrawFormantTracksFragment(CDC * pDC, CRect rWnd, CRect 
         double fFormantFactor = (double)pSpectroParm->nFrequency / (double)rWnd.Height();
 
         COLORREF cFormantColor = pColors->cPlotData[pSpectroParm->nColor && pSpectroParm->bFormantColor? 4 : 0];
-		int nNumberFormants = MAX_NUM_FORMANTS;
         CPen penFormantTrack(PS_SOLID, 2, cFormantColor);
         CPen * pOldPen = pDC->SelectObject(&penFormantTrack);
         int nDrawMode = 0;
@@ -873,36 +871,36 @@ BOOL CPlotSpectrogram::OnDrawFormantTracksFragment(CDC * pDC, CRect rWnd, CRect 
         {
             nDrawMode = pDC->SetROP2(R2_NOTMASKPEN);
         }
-        for (int nFormantIndex = 1; nFormantIndex <= nNumberFormants; nFormantIndex++)
+        for (int nFormantIndex = 1; nFormantIndex <= MAX_NUM_FORMANTS; nFormantIndex++)
         {
             switch (nFormantIndex)
             {
             case 1:
-                if (!pSpectroParm->bShowF1)
+                if ((pSpectroParm->bShowFormants)&&(!pSpectroParm->bShowF1))
                 {
                     continue;
                 }
                 break;
             case 2:
-                if (!pSpectroParm->bShowF2)
+                if ((pSpectroParm->bShowFormants)&&(!pSpectroParm->bShowF2))
                 {
                     continue;
                 }
                 break;
             case 3:
-                if (!pSpectroParm->bShowF3)
+                if ((pSpectroParm->bShowFormants)&&(!pSpectroParm->bShowF3))
                 {
                     continue;
                 }
                 break;
             case 4:
-                if (!pSpectroParm->bShowF4)
+                if ((pSpectroParm->bShowFormants)&&(!pSpectroParm->bShowF4))
                 {
                     continue;
                 }
                 break;
             default:
-                if (!pSpectroParm->bShowF5andUp)
+                if ((pSpectroParm->bShowFormants)&&(!pSpectroParm->bShowF5andUp))
                 {
                     continue;
                 }
@@ -918,8 +916,8 @@ BOOL CPlotSpectrogram::OnDrawFormantTracksFragment(CDC * pDC, CRect rWnd, CRect 
                 pFormants = pSpectroFormants->GetFormant(dwFragment); // return formant slice data
                 ASSERT(pFormants);
                 if ((pFormants->F[0] != (double)UNVOICED) &&
-                        (pFormants->F[0] != (double)NA) &&
-                        (pFormants->F[nFormantIndex] != (double)NA))
+                    (pFormants->F[0] != (double)NA) &&
+                    (pFormants->F[nFormantIndex] != (double)NA))
                 {
                     bPlot = TRUE;
                     int y = rWnd.bottom - (int)Round((double)pFormants->F[nFormantIndex]/(double)fFormantFactor);
@@ -1029,8 +1027,6 @@ BOOL CPlotSpectrogram::OnDrawFormantTracksTime(CDC * pDC, CRect rWnd, CRect rCli
         double fFormantFactor = (double)pSpectroParm->nFrequency / (double)rWnd.Height();
 
         COLORREF cFormantColor = pColors->cPlotData[pSpectroParm->nColor && pSpectroParm->bFormantColor? 4 : 0];
-        //int nNumberFormants = pSpectroParm->nNumberFormants;
-        int nNumberFormants = MAX_NUM_FORMANTS;
         CPen penFormantTrack(PS_SOLID, 2, cFormantColor);
         CPen * pOldPen = pDC->SelectObject(&penFormantTrack);
         int nDrawMode = 0;
@@ -1038,36 +1034,36 @@ BOOL CPlotSpectrogram::OnDrawFormantTracksTime(CDC * pDC, CRect rWnd, CRect rCli
         {
             nDrawMode = pDC->SetROP2(R2_NOTMASKPEN);
         }
-        for (int nFormantIndex = 1; nFormantIndex <= nNumberFormants; nFormantIndex++)
+        for (int nFormantIndex = 1; nFormantIndex <= MAX_NUM_FORMANTS; nFormantIndex++)
         {
             switch (nFormantIndex)
             {
             case 1:
-                if (!pSpectroParm->bShowF1)
+				if ((pSpectroParm->bShowFormants)&&(!pSpectroParm->bShowF1))
                 {
                     continue;
                 }
                 break;
             case 2:
-                if (!pSpectroParm->bShowF2)
+                if ((pSpectroParm->bShowFormants)&&(!pSpectroParm->bShowF2))
                 {
                     continue;
                 }
                 break;
             case 3:
-                if (!pSpectroParm->bShowF3)
+                if ((pSpectroParm->bShowFormants)&&(!pSpectroParm->bShowF3))
                 {
                     continue;
                 }
                 break;
             case 4:
-                if (!pSpectroParm->bShowF4)
+                if ((pSpectroParm->bShowFormants)&&(!pSpectroParm->bShowF4))
                 {
                     continue;
                 }
                 break;
             default:
-                if (!pSpectroParm->bShowF5andUp)
+                if ((pSpectroParm->bShowFormants)&&(!pSpectroParm->bShowF5andUp))
                 {
                     continue;
                 }
@@ -1179,7 +1175,7 @@ BOOL CPlotSpectrogram::OnDraw2(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pVi
                 return TRUE;
             }
 
-            if (pSpectroParm->bShowPitch)
+			if ((pSpectroParm->bShowFormants) && (pSpectroParm->bShowPitch))
             {
                 BOOL bPitch = TRUE;
                 CProcessGrappl * pGrappl = (CProcessGrappl *)pDoc->GetGrappl(); // get pointer to grappl object
@@ -1197,8 +1193,7 @@ BOOL CPlotSpectrogram::OnDraw2(CDC * pDC, CRect rWnd, CRect rClip, CSaView * pVi
                 }
             }
 
-            BOOL bShowFormantTracks = pSpectroParm->bShowF1 || pSpectroParm->bShowF2 || pSpectroParm->bShowF3 || pSpectroParm->bShowF4 || pSpectroParm->bShowF5andUp;
-            if (bShowFormantTracks)
+            if (pSpectroParm->bShowFormants)
             {
                 if (!GetFormantProcess(pDoc)->IsCanceled())
                 {
@@ -1357,8 +1352,7 @@ BOOL CPlotSpectrogram::OnSetCursor(CWnd * /*pWnd*/, UINT /*nHitTest*/, UINT /*me
     CProcessSpectrogram * pSpectrogram = GetSpectrogram(pDoc); // get pointer to spectrogram object
     // get pointer to spectrogram parameters
     const CSpectroParm * pSpectroParm = &pSpectrogram->GetSpectroParm();
-    BOOL bShowFormantTracks = ((pSpectroParm->bShowF1 || pSpectroParm->bShowF2 || pSpectroParm->bShowF3 || pSpectroParm->bShowF4 || pSpectroParm->bShowF5andUp) &&
-                               (GetFormantProcess(pDoc)->AreFormantTracksReady()));
+	BOOL bShowFormantTracks = ((pSpectroParm->bShowFormants) && (GetFormantProcess(pDoc)->AreFormantTracksReady()));
     BOOL bHasFocus = (pGraph == pView->GetFocusedGraphWnd());
     if (bShowFormantTracks || !bHasFocus)
     {

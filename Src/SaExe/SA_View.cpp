@@ -308,7 +308,7 @@ DWORD CSaView::OnPlaybackSegment()
 
     CSegment * pSelected = FindSelectedAnnotation();
 
-    if (pSelected)   // Adjust Cursors to Current Boundaries
+    if (pSelected!=NULL)   // Adjust Cursors to Current Boundaries
     {
         int nSelection = pSelected->GetSelection();
         // set cursor to segment boundaries
@@ -334,7 +334,7 @@ DWORD CSaView::OnPlaybackWord()
 {
     // find actual gloss segment for playback
     CSaDoc * pDoc = GetDocument();
-    if (!pDoc)
+    if (pDoc==NULL)
     {
         return 0;    //no document
     }
@@ -345,7 +345,7 @@ DWORD CSaView::OnPlaybackWord()
     DWORD dwStart = GetStartCursorPosition();
     DWORD dwStop = GetStopCursorPosition();
 
-    if (pSelected)
+    if (pSelected!=NULL)
     {
         nSelection = pSelected->GetSelection();
         nActualGloss = pSegment->FindFromPosition(pSelected->GetOffset(nSelection), TRUE);
@@ -1797,9 +1797,9 @@ void CSaView::GraphsZoomCursors(DWORD startReq, DWORD stopReq, DWORD percent)
 void CSaView::OnUpdateGraphsZoomCursors(CCmdUI * pCmdUI)
 {
     BOOL enable = TRUE;
-    if ((GetDocument()->GetDataSize() == 0) // nothing to zoom
-            || (m_fZoom >= m_fMaxZoom) // zoom limit
-            || (m_dwStopCursor == m_dwStartCursor))   // zoom limit
+    if ((GetDocument()->GetDataSize() == 0) ||	// nothing to zoom
+        (m_fZoom >= m_fMaxZoom) ||				// zoom limit
+        (m_dwStopCursor == m_dwStartCursor))	// zoom limit
     {
         enable = FALSE;
     }
@@ -1852,8 +1852,8 @@ void CSaView::OnUpdateGraphsZoomCursors(CCmdUI * pCmdUI)
 /***************************************************************************/
 void CSaView::OnGraphsZoomAll()
 {
-    m_fZoom = 1.0; // no zoom
-    ZoomIn(0, TRUE);  // Handle Zoom
+    m_fZoom = 1.0;		// no zoom
+    ZoomIn(0, TRUE);	// Handle Zoom
 }
 
 /***************************************************************************/
@@ -2012,29 +2012,30 @@ void CSaView::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar * pScrollBar)
 /***************************************************************************/
 // CSaView::OnVScroll Vertical scrolling
 /***************************************************************************/
-void CSaView::OnVScroll(UINT nSBCode, UINT nPos, CScrollBar * pScrollBar)
+void CSaView::OnVScroll( UINT nSBCode, UINT nPos, CScrollBar * pScrollBar)
 {
-    TRACE("OnVScroll %d\n",nPos);
+    TRACE("OnVScroll %d %f %f\n",nPos,m_fZoom,m_fVScrollSteps);
+
     double fZoom = m_fZoom;
     double fActualPos = m_fVScrollSteps / m_fZoom; // actual position
     switch (nSBCode)
     {
-    case SB_BOTTOM: // zoom maximum
+    case SB_BOTTOM:		// zoom maximum
         fZoom = m_fMaxZoom;
         break;
-    case SB_LINEDOWN: // zoom one step more
+    case SB_LINEDOWN:	// zoom one step more
         fZoom = m_fVScrollSteps / (fActualPos - 1);
         break;
-    case SB_TOP:    // no zoom
+    case SB_TOP:		// no zoom
         fZoom = (double)0.5;
-        break;      // to be sure it will be set to 1.0 (rounding errors)
-    case SB_LINEUP: // zoom one step less
+        break;			// to be sure it will be set to 1.0 (rounding errors)
+    case SB_LINEUP:		// zoom one step less
         fZoom = m_fVScrollSteps / (fActualPos + 1);
         break;
-    case SB_PAGEDOWN: // double zoom
+    case SB_PAGEDOWN:	// double zoom
         fZoom = 2.*m_fZoom;
         break;
-    case SB_PAGEUP: // divide zoom by two
+    case SB_PAGEUP:		// divide zoom by two
         fZoom = 0.5*m_fZoom;
         break;
     case SB_THUMBTRACK:
@@ -2050,6 +2051,7 @@ void CSaView::OnVScroll(UINT nSBCode, UINT nPos, CScrollBar * pScrollBar)
     default:
         break;
     }
+
     // is zooming necessary?
     if (fZoom != m_fZoom)   // zoom
     {
@@ -2563,11 +2565,27 @@ void CSaView::OnActivateView(BOOL bActivate, CView * pActivateView, CView * pDea
             // get pointer to status bar
             CDataStatusBar * pStat = pViewMainFrame->GetDataStatusBar();
             // turn off symbols
+            pStat->SetPaneSymbol(ID_STATUSPANE_SAMPLES, FALSE);
+            pStat->SetPaneSymbol(ID_STATUSPANE_FORMAT, FALSE);
+            pStat->SetPaneSymbol(ID_STATUSPANE_CHANNELS, FALSE);
+            pStat->SetPaneSymbol(ID_STATUSPANE_SIZE, FALSE);
+            pStat->SetPaneSymbol(ID_STATUSPANE_TLENGTH, FALSE);
+            pStat->SetPaneSymbol(ID_STATUSPANE_TYPE, FALSE);
+            pStat->SetPaneSymbol(ID_STATUSPANE_BITRATE, FALSE);
+            pStat->SetPaneSymbol(ID_STATUSPANE_EMPTY, FALSE);
             pStat->SetPaneSymbol(ID_STATUSPANE_1, FALSE);
             pStat->SetPaneSymbol(ID_STATUSPANE_2, FALSE);
             pStat->SetPaneSymbol(ID_STATUSPANE_3, FALSE);
             pStat->SetPaneSymbol(ID_STATUSPANE_4, FALSE);
             // clear the panes
+            pStat->SetPaneText(ID_STATUSPANE_SAMPLES, _T(""));
+            pStat->SetPaneText(ID_STATUSPANE_FORMAT, _T(""));
+            pStat->SetPaneText(ID_STATUSPANE_CHANNELS, _T(""));
+            pStat->SetPaneText(ID_STATUSPANE_SIZE, _T(""));
+            pStat->SetPaneText(ID_STATUSPANE_TLENGTH, _T(""));
+            pStat->SetPaneText(ID_STATUSPANE_TYPE, _T(""));
+            pStat->SetPaneText(ID_STATUSPANE_BITRATE, _T(""));
+            pStat->SetPaneText(ID_STATUSPANE_EMPTY, _T(""));
             pStat->SetPaneText(ID_STATUSPANE_1, _T(""));
             pStat->SetPaneText(ID_STATUSPANE_2, _T(""));
             pStat->SetPaneText(ID_STATUSPANE_3, _T(""));
@@ -2599,7 +2617,7 @@ void CSaView::OnDestroy()
 /***************************************************************************/
 BOOL CSaView::GraphTypeEnabled(int nID, BOOL bIncludeCtrlKeyCheck)
 {
-    BOOL bTest = (GetDocument()->GetDataSize() != 0 &&
+    BOOL bTest = ((GetDocument()->GetDataSize() != 0) &&
                   (m_nFocusedID != IDD_MELOGRAM &&
                    m_nFocusedID != IDD_TWC && nID != IDD_TWC &&
                    m_nFocusedID != IDD_MAGNITUDE && nID != IDD_MAGNITUDE &&
@@ -4347,4 +4365,36 @@ void CSaView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
         // everything else
         CView::OnKeyDown(nChar, nRepCnt, nFlags);
     }
+}
+
+
+/**
+* tie mouse wheel movements to the zoom control
+*
+* nFlags
+*    Indicates whether various virtual keys are down. This parameter can be any combination of the following values:
+*        MK_CONTROL   Set if the CTRL key is down.
+*        MK_LBUTTON   Set if the left mouse button is down.
+*        MK_MBUTTON   Set if the middle mouse button is down.
+*        MK_RBUTTON   Set if the right mouse button is down.
+*        MK_SHIFT   Set if the SHIFT key is down.
+* zDelta
+*    Indicates distance rotated. The zDelta value is expressed in multiples or divisions of WHEEL_DELTA, which is 120. A value less than zero indicates rotating back (toward the user) while a value greater than zero indicates rotating forward (away from the user). The user can reverse this response by changing the Wheel setting in the mouse software. See the Remarks for more information about this parameter.
+* pt
+*    Specifies the x- and y-coordinate of the cursor. These coordinates are always relative to the upper-left corner of the screen.
+*/
+BOOL CSaView::OnMouseWheel( UINT nFlags, short zDelta, CPoint pt)
+{
+    TRACE("OnMouseWheel %d\n",zDelta);
+	if (zDelta>=0) 
+	{
+		double fZoom = 1.25*m_fZoom;
+		ZoomIn(fZoom - m_fZoom);
+	}
+	else
+	{
+		double fZoom = (1.0/1.25)*m_fZoom;
+		ZoomOut(-(fZoom-m_fZoom));
+	}
+	return CView::OnMouseWheel(nFlags, zDelta, pt);
 }

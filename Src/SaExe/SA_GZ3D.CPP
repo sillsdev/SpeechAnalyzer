@@ -273,6 +273,8 @@ short int CFormantChart::ProcessFormants()
 void CFormantChart::StandardPlot(CSaView * pView, CDC * pDC, CRect rClient, CRect rClip,
                                  SGraph & zG, BOOL bFlipChart, BOOL bShowAxes, BOOL bValidData)
 {
+#define VOWEL_FONT_HEIGHT 25
+
     if (IsIconic())
     {
         return;    // nothing to draw
@@ -390,7 +392,7 @@ void CFormantChart::StandardPlot(CSaView * pView, CDC * pDC, CRect rClient, CRec
     TEXTMETRIC tm;
     pDC->GetTextMetrics(&tm);
     CFont GridVowelFont;
-    int nHeight = max(25, (int)(.15 * min(rClient.Height(),rClient.Width()) + 0.5));
+    int nHeight = max( VOWEL_FONT_HEIGHT, (int)(.15 * min(rClient.Height(),rClient.Width()) + 0.5));
     GridVowelFont.CreateFont(nHeight, 0, 0, 0, FW_NORMAL, 0, 0, 0, tm.tmCharSet, OUT_DEFAULT_PRECIS,
                              CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, DEFAULT_PITCH|FF_DONTCARE,
                              pMainWnd->GetFontFace(PHONETIC));  // create font for vowels on the grid
@@ -400,7 +402,6 @@ void CFormantChart::StandardPlot(CSaView * pView, CDC * pDC, CRect rClient, CRec
     CPen GridVowelPen(PS_SOLID, 1, pColor->cPlotGrid);
     CPen * pOldPen = pDC->SelectObject(&GridVowelPen);
 
-    CRect rVowel;
     POINT p;
 
     // draw the vowels
@@ -408,23 +409,23 @@ void CFormantChart::StandardPlot(CSaView * pView, CDC * pDC, CRect rClient, CRec
 
     // Draw Vowel Set Title
     const CSaString & szVowelSetName = GetDefaultVowelSet().GetName();
-    if (!szVowelSetName.IsEmpty() && szVowelSetName != "(None)")
+    if ((!szVowelSetName.IsEmpty()) && (szVowelSetName != "(None)"))
     {
-        CFont VowelTitleFont;
+        CFont vowelTitleFont;
         const _TCHAR VowelTitleTypeface[] = _T("Arial");
-        VowelTitleFont.CreateFont(int(0.6*nHeight), 0, 0, 0, FW_NORMAL, 0, 0, 0,
+        vowelTitleFont.CreateFont(int(0.6*VOWEL_FONT_HEIGHT), 0, 0, 0, FW_NORMAL, 0, 0, 0,
                                   ANSI_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS,
                                   DEFAULT_QUALITY, (VARIABLE_PITCH | FF_ROMAN), VowelTitleTypeface);
-        CFont * pOldFont = pDC->SelectObject(&VowelTitleFont);
+        CFont * pOldFont = pDC->SelectObject(&vowelTitleFont);
         CSize TitleSize = pDC->GetTextExtent((CString &)szVowelSetName);
         int nLeft = pFormantChart->X_LEFT + TitleSize.cy/3;
         int nRight = nLeft + TitleSize.cx;
         int nBottom = pFormantChart->Y_BOTTOM;
         int nTop = nBottom - TitleSize.cy;
-        CRect rVowel(nLeft, nTop, nRight, nBottom);
+        CRect rect(nLeft, nTop, nRight, nBottom);
         COLORREF oldColor = pDC->SetTextColor(pColor->cPlotData[0]); // set font color
-        pDC->DrawText(szVowelSetName, rVowel,
-                      DT_SINGLELINE | DT_TOP | DT_LEFT | DT_NOCLIP | DT_NOPREFIX);
+        pDC->DrawText(szVowelSetName, rect, DT_SINGLELINE | DT_TOP | DT_LEFT | DT_NOCLIP | DT_NOPREFIX);
+
         if (pFormants->GetVowelCount(nGender) == 0)
         {
             int nTop = pFormantChart->Y_TOP + (pFormantChart->Y_BOTTOM - pFormantChart->Y_TOP)/3;
@@ -433,8 +434,7 @@ void CFormantChart::StandardPlot(CSaView * pView, CDC * pDC, CRect rClient, CRec
             CSaString szWarning;
 
             szWarning.LoadString(IDS_EMPTY_FORMANT_VOWEL_SET);
-            pDC->DrawText(szWarning, rVowel,
-                          DT_SINGLELINE | DT_CENTER | DT_TOP | DT_NOCLIP | DT_NOPREFIX);
+            pDC->DrawText(szWarning, rVowel, DT_SINGLELINE | DT_CENTER | DT_TOP | DT_NOCLIP | DT_NOPREFIX);
         }
         pDC->SetTextColor(oldColor); // reset font color
         pDC->SelectObject(pOldFont);
@@ -442,43 +442,60 @@ void CFormantChart::StandardPlot(CSaView * pView, CDC * pDC, CRect rClient, CRec
 
     for (int nVowel = 0; nVowel < pFormants->GetVowelCount(nGender); nVowel++)
     {
-        CSaString Vowel = pFormants->GetVowel(nVowel, nGender);
+        CSaString vowel = pFormants->GetVowel(nVowel, nGender);
         SFormantFreq Formant = pFormants->GetVowelFreq(nVowel, nGender, pFormantParms->bMelScale);
-        CSize VowelSize = pDC->GetTextExtent(Vowel);
-        p = MapVowelsToChart(pDC, Formant, VowelSize.cy, pFormantChart, zG, bFlipChart);
+        CSize extent = pDC->GetTextExtent(vowel);
+        p = MapVowelsToChart(pDC, Formant, extent.cy, pFormantChart, zG, bFlipChart);
         // display the vowel symbol
-        rVowel.SetRect(p.x - VowelSize.cx/2, p.y - VowelSize.cy/2, p.x + VowelSize.cx/2, p.y + VowelSize.cy/2);
-        pDC->DrawText(Vowel, rVowel, DT_SINGLELINE | DT_VCENTER | DT_CENTER | DT_NOCLIP);
+        CRect rect(p.x - extent.cx/2, p.y - extent.cy/2, p.x + extent.cx/2, p.y + extent.cy/2);
+        pDC->DrawText( vowel, rect, DT_SINGLELINE | DT_VCENTER | DT_CENTER | DT_NOCLIP);
     }
+
     // draw the nearest vowel
     if ((bDynamicUpdate) && (bValidData) && (szVowelSetName != "(None)") && (pFormants->GetVowelCount(nGender)))
     {
-        CSaString VowelId = pFormants->FindNearestVowel(pDoc);
-        CSize VowelIdSize = pDC->GetTextExtent(VowelId);
-        int nTop = pFormantChart->Y_TOP;
-        int nBottom = nTop + VowelIdSize.cy;
-        int nRight = pFormantChart->X_RIGHT  - VowelIdSize.cx/3;
-        int nLeft = nRight - VowelIdSize.cx;
-        CRect rVowel;
 
-        rVowel.SetRect(nLeft, nTop, nRight, nBottom);
-        pDC->DrawText(VowelId, rVowel, DT_SINGLELINE | DT_BOTTOM | DT_RIGHT | DT_NOCLIP);
+#define NEAREST_SPACING 15
+
+		// draw the 'nearest vowel' character
+        CSaString vowelId = pFormants->FindNearestVowel(pDoc);
+		vowelId = vowelId.Trim();
+        CSize extent = pDC->GetTextExtent( vowelId);
+
+		TEXTMETRIC tm;
+		pDC->GetTextMetrics(&tm);
+
+		int nTop = pFormantChart->Y_TOP;
+        int nBottom = nTop + extent.cy;
+        int nRight = pFormantChart->X_RIGHT - NEAREST_SPACING;
+        int nLeft = nRight - extent.cx;
+        CRect rect( nLeft, nTop, nRight, nBottom);
+        pDC->DrawText( vowelId, rect, DT_SINGLELINE | DT_BOTTOM | DT_CENTER | DT_NOCLIP);
 
         pDC->SetTextColor(pColor->cPlotData[0]); // set font color
-        CFont VowelIdTitleFont;
-        const TCHAR VowelIdTitleTypeface[] = _T("Arial");
-        VowelIdTitleFont.CreateFont(int(0.6*nHeight), 0, 0, 0, FW_NORMAL, 0, 0, 0,
+
+        const TCHAR vowelIdTitleTypeface[] = _T("Arial");
+        CFont titleFont;
+        titleFont.CreateFont(int(0.6*VOWEL_FONT_HEIGHT), 0, 0, 0, FW_NORMAL, 0, 0, 0,
                                     ANSI_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS,
-                                    DEFAULT_QUALITY, (VARIABLE_PITCH | FF_ROMAN), VowelIdTitleTypeface);
-        CFont * pGridVowelFont = pDC->SelectObject(&VowelIdTitleFont);
-        const CSaString VowelIdTitle = _T("Nearest Vowel:  ");
-        CSize VowelIdTitleSize = pDC->GetTextExtent(VowelIdTitle);
-        nRight = pFormantChart->X_RIGHT - VowelIdSize.cx;
-        nLeft = nRight - VowelIdTitleSize.cx;
-        rVowel.SetRect(nLeft, nTop, nRight, nBottom);
-        pDC->DrawText(VowelIdTitle, rVowel,
-                      DT_SINGLELINE | DT_VCENTER | DT_LEFT | DT_NOCLIP);
-        pDC->SelectObject(pGridVowelFont);
+                                    DEFAULT_QUALITY, (VARIABLE_PITCH | FF_ROMAN), vowelIdTitleTypeface);
+        CFont * oldFont = pDC->SelectObject(&titleFont);
+        const CSaString title = _T("Nearest Vowel: ");
+        CSize extent2 = pDC->GetTextExtent(title);
+
+		TEXTMETRIC tm2;
+		pDC->GetTextMetrics(&tm2);
+
+		// adjust top and bottom so that our baselines match
+		int diff = tm.tmDescent - tm2.tmDescent;
+		nTop -= diff;
+		nBottom -= diff;
+        nRight = pFormantChart->X_RIGHT - NEAREST_SPACING - extent.cx;
+        nLeft = nRight - extent2.cx;
+        CRect rect2( nLeft, nTop, nRight, nBottom);
+        pDC->DrawText( title, rect2, DT_SINGLELINE | DT_BOTTOM | DT_CENTER | DT_NOCLIP);
+        pDC->SelectObject(oldFont);
+
     }
     pDC->SelectObject(pOldPen);  // restore old pen
     pDC->SelectObject(pOldFont); // restore old font

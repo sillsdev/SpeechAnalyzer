@@ -1130,7 +1130,6 @@ void Test016( CSelfTestRunner & runner, CSelfTest::Test & test)
     pSpectroParm->nFrequency = 8000;
     pSpectroParm->nMinThreshold = 1;
     pSpectroParm->nMaxThreshold = 233;
-    pSpectroParm->nNumberFormants = 3;
     pSpectroParm->bSmoothSpectra = 1;
     pSpectrogram->SetSpectroParm(*pSpectroParm);
     // process spectrogram

@@ -6188,7 +6188,7 @@ void CSaDoc::CopyProcessTempFile()
 /***************************************************************************/
 void CSaDoc::OnUpdateFileSaveAs(CCmdUI * pCmdUI)
 {
-    pCmdUI->Enable(!((CSaApp *) AfxGetApp())->GetBatchMode() && !m_bMultiChannel); // SDM 1.5Test8.2
+    pCmdUI->Enable(!((CSaApp *)AfxGetApp())->GetBatchMode() && (!m_bMultiChannel)); // SDM 1.5Test8.2
 }
 
 // SDM 1.06.5 Removed unused command handlers

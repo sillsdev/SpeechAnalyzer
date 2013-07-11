@@ -28,19 +28,10 @@ static char BASED_CODE THIS_FILE[] = __FILE__;
 // Customized status bar class. The base class is the general status bar
 // class.
 
-/////////////////////////////////////////////////////////////////////////////
-// CDataStatusBar message map
-
 BEGIN_MESSAGE_MAP(CDataStatusBar, CStatusBar)
     ON_WM_PAINT()
 END_MESSAGE_MAP()
 
-/////////////////////////////////////////////////////////////////////////////
-// CDataStatusBar construction/destruction/creation
-
-/***************************************************************************/
-// CDataStatusBar::CDataStatusBar Constructor
-/***************************************************************************/
 CDataStatusBar::CDataStatusBar()
 {
     m_pFont = NULL;
@@ -55,14 +46,11 @@ CDataStatusBar::CDataStatusBar()
 /***************************************************************************/
 CDataStatusBar::~CDataStatusBar()
 {
-    if (m_pFont)
+    if (m_pFont!=NULL)
     {
         delete m_pFont;
     }
 }
-
-/////////////////////////////////////////////////////////////////////////////
-// CDataStatusBar helper functions
 
 /***************************************************************************/
 // CDataStatusBar::Init Initialisation
@@ -83,11 +71,18 @@ void CDataStatusBar::Init()
     m_pFont = new CFont;  // create new font
     m_pFont->CreateFontIndirect(&logFont);
     SetFont(m_pFont, TRUE); // set new font in bar
-    SetPaneInfo(0, 0, SBPS_STRETCH, 0);
-    SetPaneInfo(1, ID_STATUSPANE_1, SBPS_NORMAL , STATUSPANE_1_WIDTH);
-    SetPaneInfo(2, ID_STATUSPANE_2, SBPS_NORMAL , STATUSPANE_2_WIDTH);
-    SetPaneInfo(3, ID_STATUSPANE_3, SBPS_NORMAL , STATUSPANE_3_WIDTH);
-    SetPaneInfo(4, ID_STATUSPANE_4, SBPS_NORMAL , STATUSPANE_4_WIDTH);
+    SetPaneInfo(0, ID_STATUSPANE_SAMPLES, SBPS_NORMAL , STATUSPANE_5_WIDTH);
+    SetPaneInfo(1, ID_STATUSPANE_FORMAT, SBPS_NORMAL , STATUSPANE_6_WIDTH);
+    SetPaneInfo(2, ID_STATUSPANE_CHANNELS, SBPS_NORMAL , STATUSPANE_7_WIDTH);
+    SetPaneInfo(3, ID_STATUSPANE_SIZE, SBPS_NORMAL , STATUSPANE_7_WIDTH);
+    SetPaneInfo(4, ID_STATUSPANE_TLENGTH, SBPS_NORMAL , STATUSPANE_7_WIDTH);
+    SetPaneInfo(5, ID_STATUSPANE_TYPE, SBPS_NORMAL , STATUSPANE_7_WIDTH);
+    SetPaneInfo(6, ID_STATUSPANE_BITRATE, SBPS_NORMAL , STATUSPANE_7_WIDTH);
+    SetPaneInfo(7, ID_STATUSPANE_EMPTY, SBPS_STRETCH, 0);
+    SetPaneInfo(8, ID_STATUSPANE_1, SBPS_NORMAL , STATUSPANE_1_WIDTH);
+    SetPaneInfo(9, ID_STATUSPANE_2, SBPS_NORMAL , STATUSPANE_2_WIDTH);
+    SetPaneInfo(10, ID_STATUSPANE_3, SBPS_NORMAL , STATUSPANE_3_WIDTH);
+    SetPaneInfo(11, ID_STATUSPANE_4, SBPS_NORMAL , STATUSPANE_4_WIDTH);
 }
 
 /***************************************************************************/
@@ -252,7 +247,20 @@ void CDataStatusBar::DoPaint(CDC * pDC)
 /***************************************************************************/
 void CDataStatusBar::SetPaneSymbol(int nPaneID, BOOL bShow)
 {
-    // Pane #1 symbols
+    // Pane #5 Symbols
+    if ((nPaneID == ID_STATUSPANE_SAMPLES) ||
+        (nPaneID == ID_STATUSPANE_FORMAT) ||
+        (nPaneID == ID_STATUSPANE_CHANNELS) ||
+        (nPaneID == ID_STATUSPANE_SIZE) ||
+        (nPaneID == ID_STATUSPANE_TLENGTH) ||
+        (nPaneID == ID_STATUSPANE_TYPE) ||
+        (nPaneID == ID_STATUSPANE_BITRATE) ||
+        (nPaneID == ID_STATUSPANE_EMPTY))
+    {
+        return;
+    }
+
+	// Pane #1 symbols
     if (nPaneID == ID_STATUSPANE_1)
     {
         m_bScaleSymbol = m_bPositionSymbol = m_bFrequencySymbol = FALSE;
@@ -352,6 +360,7 @@ void CDataStatusBar::SetPaneSymbol(int nPaneID, BOOL bShow)
         m_bLpcSpectrumSymbol = FALSE;
         return;
     }
+
 }
 
 
@@ -364,6 +373,16 @@ BOOL CDataStatusBar::SetPaneText(int nPaneID, LPCTSTR lpszText, BOOL bUpdate)
 
     switch (nPaneID)
     {
+    case ID_STATUSPANE_SAMPLES:
+    case ID_STATUSPANE_FORMAT:
+    case ID_STATUSPANE_CHANNELS:
+    case ID_STATUSPANE_SIZE:
+    case ID_STATUSPANE_TLENGTH:
+    case ID_STATUSPANE_TYPE:
+    case ID_STATUSPANE_BITRATE:
+    case ID_STATUSPANE_EMPTY:
+        nPaneIndex = CommandToIndex(nPaneID);
+        break;
     case ID_STATUSPANE_1:
     case ID_STATUSPANE_POSITION:
     case ID_STATUSPANE_SCALE:
@@ -404,6 +423,16 @@ void CDataStatusBar::GetItemRect(int nPaneID, LPRECT lpRect)
 
     switch (nPaneID)
     {
+    case ID_STATUSPANE_SAMPLES:
+    case ID_STATUSPANE_FORMAT:
+    case ID_STATUSPANE_CHANNELS:
+    case ID_STATUSPANE_SIZE:
+    case ID_STATUSPANE_TLENGTH:
+    case ID_STATUSPANE_TYPE:
+    case ID_STATUSPANE_BITRATE:
+    case ID_STATUSPANE_EMPTY:
+        CStatusBar::GetItemRect(CommandToIndex(nPaneID), lpRect);
+        break;
     case ID_STATUSPANE_1:
     case ID_STATUSPANE_POSITION:
     case ID_STATUSPANE_SCALE:

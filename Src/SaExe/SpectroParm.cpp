@@ -8,17 +8,18 @@ static LPCSTR psz_Resolution           = "nResolution3";
 static LPCSTR psz_ResolutionOld        = "nResolution";
 static LPCSTR psz_wavelet              = "Wavelet";               // ARH 8/1/01 Added for Wavelet scalogram graph
 static LPCSTR psz_Color                = "nColor";
+static LPCSTR psz_ShowPitch            = "bShowPitch";
 static LPCSTR psz_ShowF1               = "bShowF1";
 static LPCSTR psz_ShowF2               = "bShowF2";
 static LPCSTR psz_ShowF3               = "bShowF3";
 static LPCSTR psz_ShowF4               = "bShowF4";
+static LPCSTR psz_ShowFormants         = "bShowFormants";
 static LPCSTR psz_ShowF5andUp          = "bShowF5andUp";
 static LPCSTR psz_SmoothFormantTracks  = "bSmoothFormantTracks";
 static LPCSTR psz_Frequency            = "nFrequency";
 static LPCSTR psz_MaxThreshold         = "nMaxThreshold";
 static LPCSTR psz_MinThreshold         = "nMinThreshold";
 static LPCSTR psz_Overlay              = "nOverlay";
-static LPCSTR psz_ShowPitch            = "bShowPitch";
 
 void CSpectroParm::WritePropertiesA(CObjectOStream & obs)
 {
@@ -49,6 +50,7 @@ void CSpectroParm::WriteProperties(LPCSTR pszMarker, CObjectOStream & obs)
     obs.WriteInteger(psz_MinThreshold, nMinThreshold);
     obs.WriteInteger(psz_Overlay, nOverlay);
     obs.WriteBool(psz_ShowPitch, bShowPitch);
+	obs.WriteBool(psz_ShowFormants, bShowFormants);
 
     obs.WriteEndMarker(pszMarker);
 }
@@ -71,6 +73,8 @@ BOOL CSpectroParm::ReadProperties(LPCSTR pszMarker, CObjectIStream & obs)
         return FALSE;
     }
 
+	bool showFormants = false;
+
     while (!obs.bAtEnd())
     {
         if (obs.bReadInteger(psz_Resolution, nResolution));
@@ -91,11 +95,24 @@ BOOL CSpectroParm::ReadProperties(LPCSTR pszMarker, CObjectIStream & obs)
         else if (obs.bReadInteger(psz_MinThreshold, nMinThreshold));
         else if (obs.bReadInteger(psz_Overlay, nOverlay));
         else if (obs.bReadBool(psz_ShowPitch, bShowPitch));
+		else if (obs.bReadBool(psz_ShowFormants, bShowFormants)) showFormants=true;
         else if (obs.bEnd(pszMarker))
         {
             break;
         }
     }
+
+	/*
+	* model old behaviour.  Previously if any of the items were checked, than formants were shown.
+	* this has now changed.
+	* if the global is off, nothing is shown - but the formant booleans and the pitch boolean will retain
+	* their previous setting.
+	* - so - if we don't find it in the settings file, we will assume this is a 'old' settings file, and
+	* and use the settings for the formant and pitch booleans to set the 'showFormants' member.
+	*/
+	if ((!showFormants) && ((bShowF1) || (bShowF2) || (bShowF3) || (bShowF4) || (bShowF5andUp) || (bShowPitch))) {
+		bShowFormants = TRUE;
+	}
     return TRUE;
 }
 
@@ -106,16 +123,16 @@ void CSpectroParm::Init()
     nResolution = 2;
     nColor = 1; // Monochrome
     nOverlay = 0;
-    bShowF1 = FALSE;
-    bShowF2 = FALSE;
-    bShowF3 = FALSE;
+    bShowF1 = TRUE;
+    bShowF2 = TRUE;
+    bShowF3 = TRUE;
     bShowF4 = FALSE;
+	bShowFormants = FALSE;
     bShowF5andUp = FALSE;
     bSmoothFormantTracks = TRUE;
     nFrequency = 3200;
     nMinThreshold = 61;
     nMaxThreshold = 209;
-    nNumberFormants = 3;
     bSmoothSpectra = TRUE;
     bFormantColor = TRUE;
     bShowPitch = FALSE;

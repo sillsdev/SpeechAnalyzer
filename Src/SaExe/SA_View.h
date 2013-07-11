@@ -570,6 +570,9 @@ private:
 	int lastBoundaryIndex;
 	ECursorSelect lastBoundaryCursor;
 	DWORD lastPlaybackPosition;
+
+public:
+	afx_msg BOOL OnMouseWheel(UINT nFlags, short zDelta, CPoint pt);
 };
 
 #endif

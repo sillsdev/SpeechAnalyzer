@@ -350,6 +350,7 @@ BEGIN_MESSAGE_MAP(CSaView, CView)
     ON_COMMAND(ID_EDIT_COPY_PHONETIC_TO_PHONEMIC, OnEditCopyPhoneticToPhonemic)
     ON_UPDATE_COMMAND_UI(ID_EDIT_COPY_PHONETIC_TO_PHONEMIC, OnUpdateEditCopyPhoneticToPhonemic)
 	ON_WM_KEYUP()
+	ON_WM_MOUSEWHEEL()
 	END_MESSAGE_MAP()
 
 CSaView::CSaView(const CSaView * pToBeCopied)
@@ -6242,52 +6243,29 @@ void CSaView::OnSpectroFormants()
 
     CSaDoc * pDoc = GetDocument();
 
-    CSpectroParm cParm = pDoc->GetSpectrogram(TRUE)->GetSpectroParm();
+    CSpectroParm parameters = pDoc->GetSpectrogram(TRUE)->GetSpectroParm();
 
-    BOOL bFormantSelected = cParm.bShowF1 || cParm.bShowF2 || cParm.bShowF3 || cParm.bShowF4 || cParm.bShowF5andUp || cParm.bShowPitch;
-
-    bFormantSelected = !bFormantSelected;
+	BOOL bFormantSelected = !parameters.bShowFormants;
 
     for (int AB = FALSE; AB <= TRUE; AB++)
     {
         bool ab = (AB == TRUE);
-        CSpectroParm cParm = pDoc->GetSpectrogram(ab)->GetSpectroParm();
-
-        cParm.bShowF1 = bFormantSelected;
-        cParm.bShowF2 = bFormantSelected;
-        cParm.bShowF3 = bFormantSelected;
-        cParm.bShowF4 = bFormantSelected;
-        cParm.bShowF5andUp = bFormantSelected;
-        cParm.bShowPitch = bFormantSelected;
-
-        pDoc->GetSpectrogram(ab)->SetSpectroParm(cParm);
+        CSpectroParm parameters = pDoc->GetSpectrogram(ab)->GetSpectroParm();
+		parameters.bShowFormants = bFormantSelected;
+        pDoc->GetSpectrogram(ab)->SetSpectroParm(parameters);
     }
 
     CMainFrame * pMain = (CMainFrame *) AfxGetMainWnd();
     {
-        CSpectroParm cParm = *pMain->GetSpectrogramParmDefaults();
-
-        cParm.bShowF1 = bFormantSelected;
-        cParm.bShowF2 = bFormantSelected;
-        cParm.bShowF3 = bFormantSelected;
-        cParm.bShowF4 = bFormantSelected;
-        cParm.bShowF5andUp = bFormantSelected;
-        cParm.bShowPitch = bFormantSelected;
-
-        pMain->SetSpectrogramParmDefaults(cParm);
+        CSpectroParm parameters = *pMain->GetSpectrogramParmDefaults();
+		parameters.bShowFormants = bFormantSelected;
+        pMain->SetSpectrogramParmDefaults(parameters);
     }
 
     {
-        CSpectroParm cParm = *pMain->GetSnapshotParmDefaults();
-
-        cParm.bShowF1 = bFormantSelected;
-        cParm.bShowF2 = bFormantSelected;
-        cParm.bShowF3 = bFormantSelected;
-        cParm.bShowF4 = bFormantSelected;
-        cParm.bShowF5andUp = bFormantSelected;
-        cParm.bShowPitch = bFormantSelected;
-
-        pMain->SetSnapshotParmDefaults(cParm);
+        CSpectroParm parameters = *pMain->GetSnapshotParmDefaults();
+		parameters.bShowFormants = bFormantSelected;
+        pMain->SetSnapshotParmDefaults(parameters);
     }
 
     if (bFormantSelected && pDoc->GetSpectrogram(TRUE)->GetFormantProcess()->IsCanceled())
@@ -6302,15 +6280,14 @@ void CSaView::OnUpdateSpectroFormants(CCmdUI * pCmdUI)
 {
     CSaDoc * pDoc = GetDocument();
 
-    CSpectroParm cParm = pDoc->GetSpectrogram(TRUE)->GetSpectroParm();
+    CSpectroParm parameters = pDoc->GetSpectrogram(TRUE)->GetSpectroParm();
 
-    BOOL bFormantSelected = cParm.bShowF1 || cParm.bShowF2 || cParm.bShowF3 || cParm.bShowF4 || cParm.bShowF5andUp || cParm.bShowPitch;
-    if (bFormantSelected && pDoc->GetSpectrogram(TRUE)->GetFormantProcess()->IsCanceled())
+	if ((parameters.bShowFormants) && pDoc->GetSpectrogram(TRUE)->GetFormantProcess()->IsCanceled())
     {
         OnSpectroFormants();
     }
 
-    pCmdUI->SetCheck(bFormantSelected);
+    pCmdUI->SetCheck(parameters.bShowFormants);
 }
 
 void CSaView::OnMoveStopCursorHere()
@@ -6718,5 +6695,3 @@ bool CSaView::IsSelectionVirtual()
 {
 	return m_advancedSelection.IsSelectionVirtual();
 }
-
-

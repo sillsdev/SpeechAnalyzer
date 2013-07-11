@@ -42,7 +42,6 @@ struct SSpectrogramSettings
     uint32 SpectCnt;			//number of spectra to calculate
     bool preEmphSw;				//pre-emphasis switch
     bool fmntTrackSw;			//formant tracking switch
-    uint16 NumFmnt;				//number of formants to track
     uint32 SigBlkOffset;		//number of samples offset into speech data
     uint32 SigBlkLength;		//number of speech samples over which spectra will be calculated
     uint16 SpectBatchLength;	//number of spectra to be calculated at one time
