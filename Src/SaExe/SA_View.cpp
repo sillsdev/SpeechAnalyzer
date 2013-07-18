@@ -3349,6 +3349,13 @@ void CSaView::OnEditSelectWaveform()
 }
 
 /***************************************************************************/
+// CSaView::OnEditSelectWaveform Select Waveform data between cursors
+/***************************************************************************/
+void CSaView::OnEditSelectWaveformFake()
+{
+}
+
+/***************************************************************************/
 // CSaView::OnUpdateEditSelectWaveform Select Waveform data between cursors
 /***************************************************************************/
 void CSaView::OnUpdateEditSelectWaveform(CCmdUI * pCmdUI)
@@ -4386,7 +4393,7 @@ void CSaView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 BOOL CSaView::OnMouseWheel( UINT nFlags, short zDelta, CPoint pt)
 {
     TRACE("OnMouseWheel %d\n",zDelta);
-	if (zDelta>=0) 
+	if (zDelta<0) 
 	{
 		double fZoom = 1.25*m_fZoom;
 		ZoomIn(fZoom - m_fZoom);

@@ -3,7 +3,7 @@
 
 CAlignInfo::CAlignInfo()
 {
-    bValid = FALSE;
+    bValid = false;
     dTotalLength = 0.0;
     dStart = 0.0;
 }

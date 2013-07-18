@@ -344,6 +344,7 @@ protected:
     afx_msg void OnRestartProcess();
     afx_msg void OnUpdateRestartProcess(CCmdUI * pCmdUI);
     afx_msg void OnEditSelectWaveform();
+    afx_msg void OnEditSelectWaveformFake();
     afx_msg void OnUpdateEditSelectWaveform(CCmdUI * pCmdUI);
     afx_msg void OnUpdatePlayback(CCmdUI * pCmdUI);
     afx_msg void OnUpdatePlaybackPortion(CCmdUI * pCmdUI);

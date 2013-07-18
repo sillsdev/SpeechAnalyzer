@@ -2500,7 +2500,6 @@ void CSaDoc::WriteScoreData(ISaAudioDocumentWriterPtr saAudioDocWriter)
 /***************************************************************************/
 BOOL CSaDoc::CopyWaveToTemp(LPCTSTR pszSourcePathName, CAlignInfo info)
 {
-
     TCHAR szTempPath[_MAX_PATH];
     GetTempFileName(_T("WAV"), szTempPath, _countof(szTempPath));
     LPCTSTR pszTempPathName = szTempPath;
@@ -6853,7 +6852,6 @@ void CSaDoc::SetTempOverlay()
 
 void CSaDoc::GetAlignInfo(CAlignInfo & info)
 {
-
     // get source data size
     info.bValid = true;
 
@@ -6865,7 +6863,8 @@ void CSaDoc::GetAlignInfo(CAlignInfo & info)
 
     // find the maximum level in the recorded data
     int nMaxValue = 0;
-    int nData, nMinValue = 0;
+    int nData = 0;
+	int nMinValue = 0;
     BYTE bData;
     unsigned int usMaxLevel = 0;
 
@@ -6952,7 +6951,7 @@ void CSaDoc::GetAlignInfo(CAlignInfo & info)
         }
     }
 
-    TRACE(_T("found @ %f of %f\n"),info.dStart, info.dTotalLength);
+    TRACE(_T("found @ %f of %f\n"), info.dStart, info.dTotalLength);
     info.bValid = TRUE;
 }
 

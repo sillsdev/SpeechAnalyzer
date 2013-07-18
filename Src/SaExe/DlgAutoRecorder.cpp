@@ -54,6 +54,8 @@ BEGIN_MESSAGE_MAP(CDlgAutoRecorder, CDialog)
     ON_BN_CLICKED(IDC_PLAY, OnPlay)
     ON_COMMAND(IDHELP, OnHelpAutoRecorder)
 	ON_BN_CLICKED(ID_PLAYBACK_FILE, &CDlgAutoRecorder::OnPlaybackFile)
+	ON_COMMAND(IDC_RADIO_BETWEEN_CURSORS, &CDlgAutoRecorder::OnRadioBetweenCursors)
+	ON_BN_CLICKED(IDC_RADIO_WHOLE_FILE, &CDlgAutoRecorder::OnClickedRadioWholeFile)
 END_MESSAGE_MAP()
 
 /***************************************************************************/
@@ -109,7 +111,7 @@ m_nPlayWholeFile(0)
 CDlgAutoRecorder::~CDlgAutoRecorder()
 {
     CleanUp();
-};
+}
 
 /////////////////////////////////////////////////////////////////////////////
 // CDlgAutoRecorder helper functions
@@ -126,22 +128,20 @@ void CDlgAutoRecorder::DoDataExchange(CDataExchange * pDX)
 /***************************************************************************/
 // CDlgAutoRecorder::SetTotalTime Set total time display
 /***************************************************************************/
-void CDlgAutoRecorder::SetTotalTime()
+void CDlgAutoRecorder::SetTotalTime( DWORD val)
 {
-    double fDataSec = m_pDoc->GetTimeFromBytes(m_dwRecordSize); // calculate time
+    double fDataSec = m_pDoc->GetTimeFromBytes(val); // calculate time
     m_LEDTotalTime.SetTime((int)fDataSec / 60, (int)(fDataSec * 10) % 600);
 }
 
 /***************************************************************************/
 // CDlgAutoRecorder::SetPositionTime Set position time display
 /***************************************************************************/
-void CDlgAutoRecorder::SetPositionTime()
+double CDlgAutoRecorder::SetPositionTime( DWORD val)
 {
-    if ((m_eMode == Record) || ((m_eMode == Monitor) && (m_eOldMode == Record)))
-    {
-        double fDataSec = m_pDoc->GetTimeFromBytes(m_dwRecordSize); // calculate time
-        m_LEDPosTime.SetTime((int)fDataSec / 60, (int)(fDataSec * 10) % 600);
-    }
+    double fDataSec = m_pDoc->GetTimeFromBytes( val); // calculate time
+    m_LEDPosTime.SetTime((int)fDataSec / 60, (int)(fDataSec * 10) % 600);
+	return fDataSec;
 }
 
 /***************************************************************************/
@@ -157,6 +157,8 @@ void CDlgAutoRecorder::BlockStored(UINT nLevel, DWORD dwPosition, BOOL * bSaveOv
     // TRACE(_T("Block Stored %g\n"), double(dwPosition));
 
     double fDataSec = 0.0;
+	double end = 0.0;
+
     // update the VU bar
     m_VUBar.SetVU((int)nLevel);
 
@@ -181,7 +183,7 @@ void CDlgAutoRecorder::BlockStored(UINT nLevel, DWORD dwPosition, BOOL * bSaveOv
 
     case WaitingForVoice:
         ASSERT(m_eMode == Record);
-        if (bSaveOverride)
+        if (bSaveOverride!=NULL)
         {
             *bSaveOverride = FALSE;
         }
@@ -192,7 +194,7 @@ void CDlgAutoRecorder::BlockStored(UINT nLevel, DWORD dwPosition, BOOL * bSaveOv
         else if (nLevel > MIN_VOICE_LEVEL)
         {
             // start recording
-            if (bSaveOverride)
+            if (bSaveOverride!=NULL)
             {
                 *bSaveOverride = TRUE;
             }
@@ -201,22 +203,43 @@ void CDlgAutoRecorder::BlockStored(UINT nLevel, DWORD dwPosition, BOOL * bSaveOv
         break;
     
 	case Recording:
+        //TRACE(_T("recording %f %f\n"),fDataSec, m_AlignInfo.dTotalLength);
         ASSERT(m_eMode == Record);
         m_dwRecordSize = dwPosition;
+
+		// for whole file, the end is the length of the current file in seconds
+		// between segments it is the stop cursor time
+		end = m_AlignInfo.dTotalLength;
+		if (m_nPlayWholeFile!=0)
+		{
+			CMainFrame * pFrame = (CMainFrame *)AfxGetMainWnd();
+			CSaView * pView = pFrame->GetCurrSaView();
+			DWORD start = pView->GetStartCursorPosition();
+			DWORD stop = pView->GetStopCursorPosition();
+		    end = m_pDoc->GetTimeFromBytes( stop-start); // calculate time
+		}
+
         // update the time
-        fDataSec = m_pDoc->GetTimeFromBytes(m_dwRecordSize); // get sampled data size in seconds
-        m_LEDPosTime.SetTime((int)fDataSec / 60, (int)(fDataSec * 10) % 600);
-        if ((m_bStopPending) || (fDataSec > m_AlignInfo.dTotalLength))
+		fDataSec = SetPositionTime( m_dwRecordSize);
+		TRACE("fDataSec = %f\n",fDataSec);
+		// the user pushed the stop button, stop
+        if (m_bStopPending)
         {
             ChangeState(Stopping);
         }
+		// if we've reached the end of the file stop
+        else if (fDataSec > end)
+        {
+            ChangeState(Stopping);
+        }
+		// if the user has quit speaking, stop after two seconds.
         else if (nLevel < MAX_SILENCE_LEVEL)
         {
             if (GetTickCount() - m_dwTickCount > 2*1000)
             {
                 // shutdown recording
                 ChangeState(Stopping);
-                TRACE(_T("Stopping\n"));
+                TRACE(_T("stopping because of silence\n"));
             }
         }
         else if (nLevel >= MAX_SILENCE_LEVEL)
@@ -228,9 +251,8 @@ void CDlgAutoRecorder::BlockStored(UINT nLevel, DWORD dwPosition, BOOL * bSaveOv
     case Stopping:
         m_dwRecordSize = dwPosition;
         // update the time
-        fDataSec = m_pDoc->GetTimeFromBytes(m_dwRecordSize); // get sampled data size in seconds
-        TRACE(_T("Match %f %f\n"),fDataSec, m_AlignInfo.dTotalLength);
-        m_LEDPosTime.SetTime((int)fDataSec / 60, (int)(fDataSec * 10) % 600);
+		fDataSec = SetPositionTime( m_dwRecordSize);
+        TRACE(_T("stopping %f %f\n"),fDataSec, m_AlignInfo.dTotalLength);
         if (m_bStopPending)
         {
             SetRecorderMode(Stop);
@@ -254,7 +276,11 @@ void CDlgAutoRecorder::BlockStored(UINT nLevel, DWORD dwPosition, BOOL * bSaveOv
             ASSERT(m_hmmioFile);
             m_VUBar.SetVU(0); // reset the VU bar
             m_eMode = Stop;
-            SetPositionTime();
+			if ((m_eMode == Record) || 
+				((m_eMode == Monitor) && (m_eOldMode == Record)))
+			{
+	            SetPositionTime(m_dwRecordSize);
+			}
 
             if (((m_bFileReady) && (!m_bFileApplied)) &&
                  (m_dwRecordSize > 0))
@@ -332,9 +358,7 @@ void CDlgAutoRecorder::BlockFinished(UINT nLevel, DWORD dwPosition, UINT)
     // update the VU bar
     m_VUBar.SetVU((int)nLevel);
     // update the time
-    CSaDoc * pDoc = (CSaDoc *)m_pDoc;
-    double fDataSec = pDoc->GetTimeFromBytes(dwPosition); // get sampled data size in seconds
-    m_LEDPosTime.SetTime((int)fDataSec / 60, (int)(fDataSec * 10) % 600);
+	SetPositionTime(dwPosition);
 }
 
 /***************************************************************************/
@@ -498,18 +522,21 @@ void CDlgAutoRecorder::HighPassFilter()
 /***************************************************************************/
 void CDlgAutoRecorder::SetRecorderMode(eRecordMode eMode)
 {
+	TRACE("setrecordermode\n");
     if ((m_eMode == eMode) && (m_eMode != Stop))
     {
         return;    // no change
     }
 
-    SetTotalTime();
-    SetPositionTime();
+    SetTotalTime(m_dwRecordSize);
 
     m_eOldMode = m_eMode;
+
     switch (eMode)
     {
     case Record:
+		TRACE("Record size = %d\n",m_dwRecordSize);
+	    SetPositionTime(m_dwRecordSize);
         DeleteTempFile();
         // reset the file pointer
         m_bFileReady = CreateTempFile(); // create new temporary mmio file
@@ -524,9 +551,9 @@ void CDlgAutoRecorder::SetRecorderMode(eRecordMode eMode)
         // enable/disable the buttons for recording
         m_eMode = Record;
         // start or continue recording
-        if (m_pWave)
+        if (m_pWave!=NULL)
         {
-            if (!m_pWave->Record(m_hmmioFile, m_pView, m_dwRecordSize, &m_NotifyObj))   // record
+            if (!m_pWave->Record( m_hmmioFile, m_pView, m_dwRecordSize, &m_NotifyObj))   // record
             {
                 SetRecorderMode(Stop);  // record not successfull
             }
@@ -534,6 +561,11 @@ void CDlgAutoRecorder::SetRecorderMode(eRecordMode eMode)
         break;
 
     case Monitor:
+	    if (m_eOldMode == Record)
+	    {
+		    SetPositionTime(m_dwRecordSize);
+		}
+
         StopWave();
         m_eMode = Monitor;
         m_VUBar.SetVU(0);
@@ -547,7 +579,6 @@ void CDlgAutoRecorder::SetRecorderMode(eRecordMode eMode)
     case Stop:
         StopWave();
         m_eMode = Stop;
-        SetPositionTime();
         m_VUBar.SetVU(0);
         break;
 
@@ -808,8 +839,6 @@ BOOL CDlgAutoRecorder::Apply()
 		// make a copy to save the original!
 		CAlignInfo info = m_AlignInfo;
 
-		UpdateData(TRUE);
-
 		if (m_nPlayWholeFile!=0)
 		{
 			CMainFrame * pFrame = (CMainFrame *)AfxGetMainWnd();
@@ -819,7 +848,7 @@ BOOL CDlgAutoRecorder::Apply()
 			info.dStart += seconds;
 		}
 
-        m_pDoc->ApplyWaveFile(m_szFileName, m_dwRecordSize, info);
+        m_pDoc->ApplyWaveFile( m_szFileName, m_dwRecordSize, info);
         m_pDoc->InvalidateAllProcesses();
 
     }
@@ -1283,7 +1312,6 @@ void CDlgAutoRecorder::OnPlay()
 
 void CDlgAutoRecorder::OnPlaybackFile()
 {
-	UpdateData(TRUE);
 	CMainFrame * pFrame = (CMainFrame *)AfxGetMainWnd();
 	if (m_nPlayWholeFile==0)
 	{
@@ -1296,4 +1324,21 @@ void CDlgAutoRecorder::OnPlaybackFile()
 		pFrame->SendMessage(WM_USER_PLAYER, CDlgPlayer::PLAYING, lParam);	// send message to start player
 	}
 
+}
+
+HMMIO CDlgAutoRecorder::GetFileHandle()
+{
+    return m_hmmioFile;		// return handle to wave file
+}
+
+
+void CDlgAutoRecorder::OnRadioBetweenCursors()
+{
+	UpdateData(TRUE);
+}
+
+
+void CDlgAutoRecorder::OnClickedRadioWholeFile()
+{
+	UpdateData(TRUE);
 }

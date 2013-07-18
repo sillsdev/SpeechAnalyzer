@@ -2715,7 +2715,6 @@ void CMainFrame::OnRecordOverlay()
         CSaDoc * pSourceDoc = pSourceView->GetDocument();
 
         CAlignInfo alignInfo;
-        memset(&alignInfo,0,sizeof(alignInfo));
         pSourceDoc->GetAlignInfo(alignInfo);
         
 		if (pos)

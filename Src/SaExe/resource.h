@@ -1432,6 +1432,7 @@
 #define ID_EDIT_PASTENEW                33054
 #define ID_EDIT_SELECTWAVEFORM          33055
 #define ID_EDIT_AUTO_ADD                33056
+#define ID_EDIT_SELECTWAVEFORM_FAKE     33057
 #define ID_AUTO_ALIGN                   33060
 #define ID_EDIT_AUTO_SNAP_UPDATE        33061
 #define ID_EDIT_UPDATE_BOUNDARIES       33062

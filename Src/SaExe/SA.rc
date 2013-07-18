@@ -26,7 +26,7 @@ LANGUAGE LANG_NEUTRAL, SUBLANG_NEUTRAL
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 3,1,0,60
+ FILEVERSION 3,1,0,61
  PRODUCTVERSION 1,0,0,1
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
@@ -44,7 +44,7 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "SIL International"
             VALUE "FileDescription", "SA"
-            VALUE "FileVersion", "v3.1.0.60"
+            VALUE "FileVersion", "v3.1.0.61"
             VALUE "InternalName", "SA"
             VALUE "LegalCopyright", "© 1996-2013 SIL International (MSEA)"
             VALUE "ProductName", "SA"
@@ -2901,8 +2901,8 @@ BEGIN
         MENUITEM "Paste As &New File\tCtrl+N",  ID_EDIT_PASTENEW
         MENUITEM SEPARATOR
         MENUITEM "Copy &Measurements\tCtrl+Shift+C", ID_EDIT_COPY_MEASUREMENTS
-        MENUITEM "Select Waveform\tCtrl+A",     ID_EDIT_SELECTWAVEFORM
-        MENUITEM "\tCtrl+Click&Drag",           ID_EDIT_SELECTWAVEFORM
+        MENUITEM "Select Waveform\tCtrl+A",     ID_EDIT_SELECTWAVEFORM_FAKE
+        MENUITEM "\tCtrl+Click&Drag",           ID_EDIT_SELECTWAVEFORM_FAKE
         MENUITEM SEPARATOR
         POPUP "Select Segment"
         BEGIN
@@ -4348,7 +4348,7 @@ IDC_MHANDN              CURSOR                  "res\\MedHandN.cur"
 
 STRINGTABLE
 BEGIN
-    VS_VERSION              "Version 3.1.0.60"
+    VS_VERSION              "Version 3.1.0.61"
     VS_COPYRIGHT            "© 1996-2013 SIL International (MSEA).\nAll Rights Reserved."
     IDR_MAINFRAME           "Speech Analyzer"
     IDR_SA_ANNTYPE          "\nSA\nSA Document\nWAV Files (*.wav)\n.wav\nannFileType\nANN File Type"
@@ -5038,6 +5038,7 @@ BEGIN
     ID_FILE_IMPORT          "Import Standard Format Markers\nImport SFM"
     ID_EDIT_PASTENEW        "Paste clipboard wave data into a new file\nPaste As New File"
     ID_EDIT_SELECTWAVEFORM  "Select waveform data between cursors\nSelect Waveform"
+    ID_EDIT_SELECTWAVEFORM_FAKE  "Select waveform data between cursors\nSelect Waveform"
 END
 
 STRINGTABLE

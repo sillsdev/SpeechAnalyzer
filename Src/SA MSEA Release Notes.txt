@@ -1,3 +1,8 @@
+SA - 3.1.0.61 - 7/16/2013 (stereo branch)
+1) Reversed mouse wheel/zoom operation.
+2) Disabled action associated with 'Select Waveform' menu item.
+3) Modified AutoRecorder so that when 'between cursors' is selected, the recorder limits the record time to the length of the start/stop cursor size.
+
 SA - 3.1.0.60 (stereo branch)
 1) Updated 'formant tracks' options so that Pitch/F1-F4 checkboxes are tracked 'through' the changing of the 'show formant tracks' checkbox
 2) Added Stop button to Transcription Editor dialog box.

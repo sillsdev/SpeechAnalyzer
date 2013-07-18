@@ -38,9 +38,53 @@ public:
     CDlgAutoRecorder(CSaDoc * pDoc, CSaView * pParent, CSaView * pTarget, CAlignInfo & alignInfo); // standard constructor
     virtual ~CDlgAutoRecorder();
 
-    // Attributes
+	UINT GetRecVolume();
+    void SetRecVolume(int nVolume);
+    CSaView * GetTarget();
+    CString m_szTitle;
+    void CleanUp();         // clean up memory and delete the temporary wave file
+    virtual void BlockStored(UINT nLevel, DWORD dwPosition, BOOL * bSaveOverride = 0);
+    virtual void BlockFinished(UINT nLevel, DWORD dwPosition, UINT = 100);
+    virtual void StoreFailed();
+    virtual void EndPlayback();
+    virtual HPSTR GetWaveData(DWORD dwPlayPosition, DWORD dwDataSize);
+    HMMIO GetFileHandle();
+    void OnHelpAutoRecorder();
+
+protected:
+    virtual void DoDataExchange(CDataExchange * pDX); // DDX/DDV support
+    void SetTotalTime( DWORD val);		// set total time display
+    double SetPositionTime(  DWORD val);// set position time display
+    void HighPassFilter();				// filter the waveform
+    BOOL CreateTempFile();				// create the temporary wave file for writing
+    void DeleteTempFile();				// delete the temporary wave file
+    void SetRecorderMode(eRecordMode eMode);  // set recorder mode (record, play, stop...)
+
+    void ChangeState(eRecordState eState);
+    BOOL Apply();						// apply wave file to document
+
+    virtual BOOL OnInitDialog();
+    afx_msg void OnStop();
+    afx_msg void OnClose();
+    afx_msg void OnCancel();
+    afx_msg void OnVolumeSlide();
+    afx_msg void OnVolumeScroll();
+    afx_msg void OnKillfocusVolumeEdit();
+    afx_msg void OnRecVolumeSlide();
+    afx_msg void OnRecVolumeScroll();
+    afx_msg void OnKillfocusRecVolumeEdit();
+    afx_msg LRESULT OnMixerControlChange(WPARAM, LPARAM);
+    afx_msg void OnPlay();
+    afx_msg LRESULT OnAutoRestart(WPARAM, LPARAM);
+	afx_msg void OnPlaybackFile();
+    DECLARE_MESSAGE_MAP()
+
+    eRecordState m_eState;
+    DWORD m_dwTickCount;				// current reference time
+
 private:
     void EnableRecVolume(BOOL bEnable);
+
     bool m_bStopPending;
     void StopWave();
     CAlignInfo m_AlignInfo;
@@ -77,59 +121,11 @@ private:
     enum { IDD = IDD_AUTORECORDER };
     UINT  m_nVolume;
     UINT  m_nRecVolume;
-
-public:
-    // Operations
-protected:
-    virtual void DoDataExchange(CDataExchange * pDX); // DDX/DDV support
-    void SetTotalTime();    // set total time display
-    void SetPositionTime(); // set position time display
-    void HighPassFilter();  // filter the waveform
-    BOOL CreateTempFile();  // create the temporary wave file for writing
-    void DeleteTempFile();  // delete the temporary wave file
-    void SetRecorderMode(eRecordMode eMode);  // set recorder mode (record, play, stop...)
-
-public:
-    UINT GetRecVolume();
-    void SetRecVolume(int nVolume);
-    CSaView * GetTarget();
-    CString m_szTitle;
-    void CleanUp();         // clean up memory and delete the temporary wave file
-    virtual void BlockStored(UINT nLevel, DWORD dwPosition, BOOL * bSaveOverride = 0);
-    virtual void BlockFinished(UINT nLevel, DWORD dwPosition, UINT = 100);
-    virtual void StoreFailed();
-    virtual void EndPlayback();
-    virtual HPSTR GetWaveData(DWORD dwPlayPosition, DWORD dwDataSize);
-    HMMIO GetFileHandle()
-    {
-        return m_hmmioFile;		// return handle to wave file
-    }
-    void OnHelpAutoRecorder();
-
-    // Generated message map functions
-protected:
-    void ChangeState(eRecordState eState);
-    BOOL Apply();				// apply wave file to document
-    eRecordState m_eState;
-    DWORD m_dwTickCount;		// current reference time
-
-    virtual BOOL OnInitDialog();
-    afx_msg void OnStop();
-    afx_msg void OnClose();
-    afx_msg void OnCancel();
-    afx_msg void OnVolumeSlide();
-    afx_msg void OnVolumeScroll();
-    afx_msg void OnKillfocusVolumeEdit();
-    afx_msg void OnRecVolumeSlide();
-    afx_msg void OnRecVolumeScroll();
-    afx_msg void OnKillfocusRecVolumeEdit();
-    afx_msg LRESULT OnMixerControlChange(WPARAM, LPARAM);
-    afx_msg void OnPlay();
-    afx_msg LRESULT OnAutoRestart(WPARAM, LPARAM);
-    DECLARE_MESSAGE_MAP()
-public:
 	int m_nPlayWholeFile;
-	afx_msg void OnPlaybackFile();
+
+public:
+	afx_msg void OnRadioBetweenCursors();
+	afx_msg void OnClickedRadioWholeFile();
 };
 
 #endif

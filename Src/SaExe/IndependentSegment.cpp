@@ -269,7 +269,7 @@ int CIndependentSegment::CheckPosition(CSaDoc * pDoc, DWORD dwStart,DWORD dwStop
             }
             if (pDoc->GetTimeFromBytes(dwStop-dwStart) < MIN_EDIT_SEGMENT_TIME)
             {
-				TRACE("min edit segment reached %d\n",__LINE__);
+				//TRACE("min edit segment reached %d\n",__LINE__);
                 return -1;
             }
             return m_nSelection;
@@ -319,7 +319,7 @@ int CIndependentSegment::CheckPosition(CSaDoc * pDoc, DWORD dwStart,DWORD dwStop
             }
             if (pDoc->GetTimeFromBytes(dwStop-dwStart) < MIN_EDIT_SEGMENT_TIME)
             {
-				TRACE("min edit segment reached %d\n",__LINE__);
+				//TRACE("min edit segment reached %d\n",__LINE__);
                 return -1;
             }
             return m_nSelection;
@@ -353,7 +353,7 @@ int CIndependentSegment::CheckPosition(CSaDoc * pDoc, DWORD dwStart,DWORD dwStop
                 if ((nLoop > 0)&&
                     ((dwStart-pDoc->GetBytesFromTime(MIN_ADD_SEGMENT_TIME)) < GetOffset(nLoop - 1)))
                 {
-   					TRACE("min edit segment reached %d\n",__LINE__);
+   					//TRACE("min edit segment reached %d\n",__LINE__);
                     return -1;
                 }
                 int nNext = GetNext(nLoop);
