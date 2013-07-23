@@ -286,7 +286,7 @@ protected:
     virtual BOOL OnOpenDocument(LPCTSTR pszPathName);
     virtual BOOL OnSaveDocument(LPCTSTR pszPathName);
     virtual BOOL OnSaveDocument(LPCTSTR pszPathName, BOOL bSaveAudio);
-    virtual BOOL CopyWaveToTemp(LPCTSTR pszSourcePathName, CAlignInfo info);
+    BOOL CopyWaveToTemp(LPCTSTR pszSourcePathName, double dStart, double dTotalLength);
     virtual BOOL SaveModified(); // return TRUE if ok to continue
     void AlignTranscriptionData(CTranscriptionDataSettings & settings);
     void AlignTranscriptionDataByRef(CTranscriptionData & td);
@@ -419,7 +419,7 @@ private:
 
     bool m_bMultiChannel;
     int m_nSelectedChannel;
-	CAutoSave autoSave;
+	CAutoSave m_AutoSave;
 };
 
 #endif

@@ -1472,7 +1472,7 @@
 #define ID_EDIT_ADD_PHRASE_L2           33123
 #define ID_EDIT_ADD_PHRASE_L3           33124
 #define ID_EDIT_ADD_PHRASE_L4           33125
-#define ID_EDIT_BOUNDARIES              33126
+#define ID_EDIT_SEGMENT_BOUNDARIES      33126
 #define ID_GRAPHS_ZOOM_CURSORS          33127
 #define ID_IMPORT_MIDI                  33128
 #define ID_EDIT_SEGMENT_SIZE            33129

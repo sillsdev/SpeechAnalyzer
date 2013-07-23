@@ -2491,23 +2491,33 @@ void CSaDoc::WriteScoreData(ISaAudioDocumentWriterPtr saAudioDocWriter)
 }
 
 // SDM 1.06.6U2 added ability to insert wave dat from a file
+/***************************************************************************
+* CSaDoc::CopyWaveToTemp Copy the wave chunk into a temporary file
+* The function creates a temporary file if pszTempPathName points to NULL
+* (default), and it copies the wave chunk from the wave file with the
+* pathname pszSourcePathName points to to the file (the tempfile or the one
+* with the pathname pszPathName points to).
+* NOTE This is only used by the auto recorder.
+*
+* dStart is the starting location where the first audible data portion should
+* be located.
+* dTotalLength is the expected total length, include dStart.
+*
 /***************************************************************************/
-// CSaDoc::CopyWaveToTemp Copy the wave chunk into a temporary file
-// The function creates a temporary file if pszTempPathName points to NULL
-// (default), and it copies the wave chunk from the wave file with the
-// pathname pszSourcePathName points to to the file (the tempfile or the one
-// with the pathname pszPathName points to).
-/***************************************************************************/
-BOOL CSaDoc::CopyWaveToTemp(LPCTSTR pszSourcePathName, CAlignInfo info)
+BOOL CSaDoc::CopyWaveToTemp(LPCTSTR pszSourcePathName, double dStart, double dTotalLength)
 {
     TCHAR szTempPath[_MAX_PATH];
     GetTempFileName(_T("WAV"), szTempPath, _countof(szTempPath));
     LPCTSTR pszTempPathName = szTempPath;
+	TRACE(L"using %s\n",pszSourcePathName);
+	TRACE(L"generating %s\n",szTempPath);
 
     // get pointer to view and app
     POSITION pos = GetFirstViewPosition();
     CSaView * pView = (CSaView *)GetNextView(pos);
     CSaApp * pApp = (CSaApp *)AfxGetApp();
+
+	ASSERT(dStart<dTotalLength);
 
     long lSizeWritten = 0;  // this is number of bytes written
     {
@@ -2561,148 +2571,152 @@ BOOL CSaDoc::CopyWaveToTemp(LPCTSTR pszSourcePathName, CAlignInfo info)
             return FALSE;
         }
 
+        DWORD dwSmpSize = DWORD(GetSampleSize());
+
+		// first write the front pad
+        // number of zero samples to add
+        try
+        {
+            long lFrontPad = ((long)(dStart*m_FmtParm.dwSamplesPerSec)*dwSmpSize)/dwSmpSize;
+	        TRACE(_T("front pad samples=%lu\n"), lFrontPad);
+            if (dwSmpSize == 1)
+            {
+                char cData = 0;
+                for (long j=0; j<lFrontPad; j++)
+                {
+                    file.Write(&cData, sizeof(cData));
+                    lSizeWritten++;
+                }
+            }
+            else
+            {
+                short int iData = 0;
+                for (long j=0; j<lFrontPad; j++)
+                {
+                    file.Write(&iData, sizeof(iData));
+                    lSizeWritten+=2;
+                }
+            }
+	        TRACE(_T("front pad bytes written=%lu\n"), lSizeWritten);
+        }
+        catch (CFileException e)
+        {
+            // error writing file
+            pApp->ErrorMessage(IDS_ERROR_WRITETEMPFILE, pszTempPathName);
+            m_dwDataSize = 0;		// no data available
+            SetModifiedFlag(FALSE); // will be unable to save
+            pView->SendMessage(WM_COMMAND, ID_FILE_CLOSE, 0L); // close file
+            return FALSE;
+        }
+
         // why are we here?
         // the basic assumption is that the autorecord starts when a level
         // is reached, so there is blank data in the front.
         // We need to carefully trim it
-        ASSERT(info.bValid);
 
-        WORD wSmpSize = WORD(GetSampleSize());
+		long lTotalLength = (long)((dTotalLength)*m_FmtParm.dwSamplesPerSec);
+		if (dwSmpSize == 2)
+		{
+			lTotalLength *= 2;
+		}
+		TRACE("lTotalLength=%lu\n",lTotalLength);
 
-        // calculate how much to add.
-        long lLengthRaw = (long)(info.dTotalLength*m_FmtParm.dwSamplesPerSec);
-        if (wSmpSize == 2)
-        {
-            lLengthRaw *= 2;
-        }
+		// get the size of the data subchunk
+		DWORD dwSizeLeft = mmckinfoSubchunk.cksize;
+		TRACE("dwSizeLeft=%lu\n",dwSizeLeft);
 
-        // get the size of the data subchunk
-        DWORD dwSizeLeft = mmckinfoSubchunk.cksize;
-        char buffer[0x10000];
-        while (dwSizeLeft)
-        {
-            // read the waveform data block
-            long lSizeRead = mmioRead(hmmioFile, buffer, _countof(buffer));
-            if (lSizeRead == -1)
-            {
-                // error reading from data chunk
-                pApp->ErrorMessage(IDS_ERROR_READDATACHUNK, m_fileStat.m_szFullName);
-                mmioClose(hmmioFile, 0);
-                m_dwDataSize = 0;		// no data available
-                SetModifiedFlag(FALSE); // will be unable to save
-                pView->SendMessage(WM_COMMAND, ID_FILE_CLOSE, 0L); // close file
-                return FALSE;
-            }
+		char buffer[0x10000];
+		while (dwSizeLeft>0)
+		{
+			// read the waveform data block
+			long lSizeRead = mmioRead( hmmioFile, buffer, _countof(buffer));
+			if (lSizeRead == -1)
+			{
+				// error reading from data chunk
+				pApp->ErrorMessage(IDS_ERROR_READDATACHUNK, m_fileStat.m_szFullName);
+				mmioClose(hmmioFile, 0);
+				m_dwDataSize = 0;		// no data available
+				SetModifiedFlag(FALSE); // will be unable to save
+				pView->SendMessage(WM_COMMAND, ID_FILE_CLOSE, 0L); // close file
+				return FALSE;
+			}
 
-            if ((DWORD)lSizeRead > dwSizeLeft)
-            {
-                lSizeRead = (long)dwSizeLeft;
-            }
-            dwSizeLeft -= (DWORD)lSizeRead;
+			if ((DWORD)lSizeRead > dwSizeLeft)
+			{
+				lSizeRead = (long)dwSizeLeft;
+			}
+			dwSizeLeft -= (DWORD)lSizeRead;
 
-            long dwBlockEnd = lSizeRead;
+			bool bDone = false;
+			long dwDataPos = 0;
+			unsigned char * pSource = (unsigned char *)buffer;
+			while (dwDataPos < lSizeRead)
+			{
+				// read data
+				LONG nData;
+				if (dwSmpSize == 1)
+				{
+					// 8 bit per sample
+					// data range is 0...255 (128 is center)
+					unsigned char bData = *pSource++;
+					nData = bData - 128;
+					nData *= 256;
+				}
+				else
+				{
+					// 16 bit data
+					nData = *((short int *)pSource++);
+					pSource++;
+					dwDataPos++;
+				}
 
-            bool bDone = false;
-            long dwDataPos = 0;
-            unsigned char * pSource = (unsigned char *)buffer;
-            while (dwDataPos < dwBlockEnd)
-            {
-                // read data
-                LONG nData;
-                if (wSmpSize == 1)
-                {
-                    // 8 bit per sample
-                    // data range is 0...255 (128 is center)
-                    unsigned char bData = *pSource++;
-                    nData = bData - 128;
-                    nData *= 256;
-                }
-                else
-                {
-                    // 16 bit data
-                    nData = *((short int *)pSource++);
-                    pSource++;
-                    dwDataPos++;
-                }
+				// set peak level
+				LONG nMaxLevel = abs(nData);
+				nMaxLevel = ((LONG)100 * (LONG)nMaxLevel / 32768);
+				dwDataPos++;
 
-                // set peak level
-                LONG nMaxLevel = abs(nData);
+				// we are about to record our first valid sample
+				// first write out the pad
+				if (nMaxLevel > MIN_VOICE_LEVEL)
+				{
+					TRACE("voice found %d\n",dwDataPos);
+					// write the data block from the buffer
+					try
+					{
+						// always write one sample short when we are truncating so
+						// that it will be zero-filled
+						DWORD lWriteSize = lSizeRead - dwDataPos;
+						if ((lSizeWritten + lWriteSize + dwSmpSize)>lTotalLength)
+						{
+							TRACE("truncating data\n");
+							lWriteSize = lTotalLength-lSizeWritten-dwSmpSize;
+							ASSERT(lWriteSize>=0);
+						}
+						file.Write(&buffer[dwDataPos], (DWORD)lWriteSize);
+						lSizeWritten += lWriteSize;
+					}
+					catch (CFileException e)
+					{
+						// error writing file
+						pApp->ErrorMessage(IDS_ERROR_WRITETEMPFILE, pszTempPathName);
+						m_dwDataSize = 0;		// no data available
+						SetModifiedFlag(FALSE); // will be unable to save
+						pView->SendMessage(WM_COMMAND, ID_FILE_CLOSE, 0L); // close file
+						return FALSE;
+					}
+					bDone = true;
+					break;
+				}
+			}
+			if (bDone)
+			{
+				break;
+			}
+		}
 
-                nMaxLevel = ((LONG)100 * (LONG)nMaxLevel / 32768);
+        TRACE(_T("first segment bytes written=%lu\n"), lSizeWritten);
 
-                dwDataPos++;
-
-                if (nMaxLevel > MIN_VOICE_LEVEL)
-                {
-                    // number of zero samples to add
-                    long lFront = (long)(info.dStart*m_FmtParm.dwSamplesPerSec)*wSmpSize;
-                    TRACE(_T("Front pad=%lu\n"), lFront);
-                    try
-                    {
-                        long lFrontPad = (lFront - dwDataPos)/wSmpSize;
-                        if (wSmpSize == 1)
-                        {
-                            char cData = 0;
-                            for (long j=0; j<lFrontPad; j++)
-                            {
-                                file.Write(&cData, sizeof(cData));
-                                lSizeWritten++;
-                            }
-                        }
-                        else
-                        {
-                            short int iData = 0;
-                            for (long j=0; j<lFrontPad; j++)
-                            {
-                                file.Write(&iData, sizeof(iData));
-                                lSizeWritten+=2;
-                            }
-                        }
-                    }
-                    catch (CFileException e)
-                    {
-                        // error writing file
-                        pApp->ErrorMessage(IDS_ERROR_WRITETEMPFILE, pszTempPathName);
-                        m_dwDataSize = 0;		// no data available
-                        SetModifiedFlag(FALSE); // will be unable to save
-                        pView->SendMessage(WM_COMMAND, ID_FILE_CLOSE, 0L); // close file
-                        return FALSE;
-                    }
-
-                    TRACE(_T("Zero Front pad=%lu\n"), lSizeWritten);
-                    // write the data block from the buffer
-                    try
-                    {
-                        int nStart = (lFront >= dwDataPos) ? 0 : dwDataPos - lFront;
-                        long lWriteSize = lSizeRead - nStart;
-                        if ((lSizeWritten + lWriteSize) > lLengthRaw)
-                        {
-                            lWriteSize = lLengthRaw - lSizeWritten;
-                        }
-
-                        file.Write(&buffer[nStart], (DWORD)lWriteSize);
-                        lSizeWritten += lWriteSize;
-                    }
-                    catch (CFileException e)
-                    {
-                        // error writing file
-                        pApp->ErrorMessage(IDS_ERROR_WRITETEMPFILE, pszTempPathName);
-                        m_dwDataSize = 0;		// no data available
-                        SetModifiedFlag(FALSE); // will be unable to save
-                        pView->SendMessage(WM_COMMAND, ID_FILE_CLOSE, 0L); // close file
-                        return FALSE;
-                    }
-                    bDone = true;
-                    break;
-                }
-            }
-            if (bDone)
-            {
-                break;
-            }
-        }
-
-        while (dwSizeLeft)
+        while (dwSizeLeft>0)
         {
             // read the waveform data block
             long lSizeRead = mmioRead(hmmioFile, buffer, _countof(buffer));
@@ -2724,18 +2738,16 @@ BOOL CSaDoc::CopyWaveToTemp(LPCTSTR pszSourcePathName, CAlignInfo info)
             dwSizeLeft -= (DWORD)lSizeRead;
 
             // write the data block from the buffer
+			// we will truncate the data if we need to.
             try
             {
-                long lWriteSize = 0;
-                if ((lSizeWritten + lSizeRead) > lLengthRaw)
+                long lWriteSize = lSizeRead;
+                if ((lSizeWritten + lSizeRead + dwSmpSize) > lTotalLength)
                 {
-                    lWriteSize = lLengthRaw - lSizeWritten;
+					TRACE("truncating data\n");
+                    lWriteSize = lTotalLength - lSizeWritten - dwSmpSize;
                 }
-                else
-                {
-                    lWriteSize = lSizeRead;
-                }
-
+				ASSERT(lWriteSize>=0);
                 file.Write(buffer, (DWORD)lWriteSize);
                 lSizeWritten += lWriteSize;
             }
@@ -2750,17 +2762,16 @@ BOOL CSaDoc::CopyWaveToTemp(LPCTSTR pszSourcePathName, CAlignInfo info)
             }
         }
 
-        TRACE(_T("Middle pad=%lu\n"), lSizeWritten);
+        TRACE(_T("remainder bytes written=%lu\n"), lSizeWritten);
 
-        // now, if this data is still to short,
-        // add the remainder
+        // now, if this data is still to short, add the remainder
         try
         {
-            if (lSizeWritten < lLengthRaw)
+            if (lSizeWritten < lTotalLength)
             {
-                long lRearPad = lLengthRaw-lSizeWritten;
-                TRACE(_T("Rear pad=%lu\n"), lRearPad);
-                if (wSmpSize == 1)
+                long lRearPad = (lTotalLength-lSizeWritten)/dwSmpSize;
+                TRACE(_T("rear pad samples=%lu\n"), lRearPad);
+                if (dwSmpSize == 1)
                 {
                     char cData = 0;
                     for (long j=0; j<lRearPad; j++)
@@ -2771,7 +2782,6 @@ BOOL CSaDoc::CopyWaveToTemp(LPCTSTR pszSourcePathName, CAlignInfo info)
                 }
                 else
                 {
-                    lRearPad /= 2;  //convert to samples
                     short int iData = 0;
                     for (long j=0; j<lRearPad; j++)
                     {
@@ -2790,7 +2800,8 @@ BOOL CSaDoc::CopyWaveToTemp(LPCTSTR pszSourcePathName, CAlignInfo info)
             pView->SendMessage(WM_COMMAND, ID_FILE_CLOSE, 0L); // close file
             return FALSE;
         }
-        TRACE(_T("Total pad=%lu\n"), lSizeWritten);
+
+        TRACE(_T("total bytes written=%lu\n"), lSizeWritten);
 
         // ascend out of the data chunk
         mmioAscend(hmmioFile, &mmckinfoSubchunk, 0);
@@ -3401,12 +3412,13 @@ void CSaDoc::ApplyWaveFile(LPCTSTR pszFileName, DWORD dwDataSize, BOOL bInitialU
 // SDM 1.06.6U2
 void CSaDoc::ApplyWaveFile(LPCTSTR pszFileName, DWORD dwDataSize, CAlignInfo info)
 {
-	TRACE("Applying wave file\n");
+	TRACE(L"Applying wave file  %s of %d at %f for %f\n",pszFileName,dwDataSize,info.dStart,info.dTotalLength);
     // save the temporary file
     if (!m_szTempWave.IsEmpty())
     {
         RemoveFile(m_szTempWave);
     }
+
     m_szTempWave = pszFileName;
     // set the data size
     m_dwDataSize = dwDataSize;
@@ -3414,7 +3426,8 @@ void CSaDoc::ApplyWaveFile(LPCTSTR pszFileName, DWORD dwDataSize, CAlignInfo inf
     CFile::GetStatus(pszFileName, m_fileStat);
 
     // create the temporary wave copy
-    CopyWaveToTemp(pszFileName,info);
+	ASSERT(info.bValid);
+	CopyWaveToTemp( pszFileName, info.dStart, info.dTotalLength+info.dStart);
 
     // get pointer to view
     POSITION pos = GetFirstViewPosition();
@@ -8341,7 +8354,7 @@ bool CSaDoc::IsAudioModified() const
 
 void CSaDoc::SetTransModifiedFlag(bool bMod)
 {
-	if (autoSave.IsSaving())
+	if (m_AutoSave.IsSaving())
     {
         return;
     }
@@ -9074,7 +9087,7 @@ bool CSaDoc::IsUsingTempFile()
 
 void CSaDoc::StoreAutoRecoveryInformation()
 {
-	autoSave.StoreAutoRecoveryInformation(this);
+	m_AutoSave.StoreAutoRecoveryInformation(this);
 }
 
 wstring CSaDoc::GetFilenameFromTitle()

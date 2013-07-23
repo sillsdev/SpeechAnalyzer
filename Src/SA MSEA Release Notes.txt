@@ -1,3 +1,10 @@
+SA - 3.1.0.62 - 7/22/2013 (stereo branch)
+1) Fixed problems with positioning and truncating of overlay data that occurs when using auto recorder.
+2) Added 'Entire File' menu choice for SaServer
+3) Renamed 'Edit/Segment Boundaries' menu items to 'Edit/Edit Segment Boundaries'
+4) Renamed 'Edit/Segment Size' menu items to 'Edit/Edit Segment Size'
+5) Lowered frequency limit for female voice for formant charts.
+
 SA - 3.1.0.61 - 7/16/2013 (stereo branch)
 1) Reversed mouse wheel/zoom operation.
 2) Disabled action associated with 'Select Waveform' menu item.

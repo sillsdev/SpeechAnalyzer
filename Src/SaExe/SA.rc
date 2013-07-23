@@ -26,7 +26,7 @@ LANGUAGE LANG_NEUTRAL, SUBLANG_NEUTRAL
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 3,1,0,61
+ FILEVERSION 3,1,0,62
  PRODUCTVERSION 1,0,0,1
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
@@ -44,7 +44,7 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "SIL International"
             VALUE "FileDescription", "SA"
-            VALUE "FileVersion", "v3.1.0.61"
+            VALUE "FileVersion", "v3.1.0.62"
             VALUE "InternalName", "SA"
             VALUE "LegalCopyright", "© 1996-2013 SIL International (MSEA)"
             VALUE "ProductName", "SA"
@@ -2680,7 +2680,7 @@ BEGIN
     SEPARATOR
     BUTTON      ID_EDIT_ADD
     BUTTON      ID_EDIT_ADD_WORD
-    BUTTON      ID_EDIT_BOUNDARIES
+    BUTTON      ID_EDIT_SEGMENT_BOUNDARIES
     BUTTON      ID_EDIT_SEGMENT_SIZE
     SEPARATOR
     BUTTON      ID_GRAPHS_TYPES
@@ -2717,7 +2717,7 @@ BEGIN
     BUTTON      ID_EDIT_ADD
     BUTTON      ID_EDIT_ADD_SYLLABLE
     BUTTON      ID_EDIT_ADD_WORD
-    BUTTON      ID_EDIT_BOUNDARIES
+    BUTTON      ID_EDIT_SEGMENT_BOUNDARIES
     BUTTON      ID_EDIT_SEGMENT_SIZE
     SEPARATOR
     BUTTON      ID_GRAPHS_TYPES
@@ -2892,8 +2892,8 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "Copy Phonetic to Phonemic",   ID_EDIT_COPY_PHONETIC_TO_PHONEMIC
         END
-        MENUITEM "Segment &Boundaries\tINS",    ID_EDIT_BOUNDARIES
-        MENUITEM "Segment Size\tCtrl+E",        ID_EDIT_SEGMENT_SIZE
+        MENUITEM "Edit Segment &Boundaries\tINS",    ID_EDIT_SEGMENT_BOUNDARIES
+        MENUITEM "Edit Segment Size\tCtrl+E",        ID_EDIT_SEGMENT_SIZE
         MENUITEM SEPARATOR
         MENUITEM "Cu&t\tCtrl+X",                ID_EDIT_CUT
         MENUITEM "&Copy\tCtrl+C",               ID_EDIT_COPY
@@ -3426,28 +3426,29 @@ BEGIN
         MENUITEM SEPARATOR
         POPUP "&Zoom"
         BEGIN
-            MENUITEM "Step &In\tCtrl+PgDn",         ID_GRAPHS_ZOOM_IN
-            MENUITEM "Step &Out\tCtrl+PgUp",        ID_GRAPHS_ZOOM_OUT
-            MENUITEM "&Full\tCtrl+Home",            ID_GRAPHS_ZOOM_ALL
+            MENUITEM "Step &In\tCtrl+PgDn",     ID_GRAPHS_ZOOM_IN
+            MENUITEM "Step &Out\tCtrl+PgUp",    ID_GRAPHS_ZOOM_OUT
+            MENUITEM "&Full\tCtrl+Home",        ID_GRAPHS_ZOOM_ALL
         END
         POPUP "Magn&ify"
         BEGIN
-            MENUITEM "x&1",                         ID_GRAPHS_MAGNIFY1
-            MENUITEM "x&2",                         ID_GRAPHS_MAGNIFY2
-            MENUITEM "x&4",                         ID_GRAPHS_MAGNIFY4
-            MENUITEM "&Custom...",                  ID_GRAPHS_MAGNIFYCUSTOM
+            MENUITEM "x&1",                     ID_GRAPHS_MAGNIFY1
+            MENUITEM "x&2",                     ID_GRAPHS_MAGNIFY2
+            MENUITEM "x&4",                     ID_GRAPHS_MAGNIFY4
+            MENUITEM "&Custom...",              ID_GRAPHS_MAGNIFYCUSTOM
         END
         MENUITEM SEPARATOR
     END
     POPUP "&Playback"
     BEGIN
-        MENUITEM "&Between Cursors\tF8",        ID_PLAYBACK_CURSORS
-        MENUITEM "Slo&w Replay\tF5",            ID_PLAYBACK_SLOW
-        MENUITEM "Pa&use",                      ID_PLAYER_PAUSE
-        MENUITEM "&Stop\tESC",                  ID_PLAYER_STOP
+		MENUITEM "Entire &File\tF12",			ID_PLAYBACK_FILE
+        MENUITEM "&Between Cursors\tF8",		ID_PLAYBACK_CURSORS
+        MENUITEM "Slo&w Replay\tF5",			ID_PLAYBACK_SLOW
+        MENUITEM "Pa&use",						ID_PLAYER_PAUSE
+        MENUITEM "&Stop\tESC",					ID_PLAYER_STOP
         MENUITEM SEPARATOR
     END
-    MENUITEM "P&ractice",                   ID_POPUP_RECORD_OVERLAY
+    MENUITEM "P&ractice",						ID_POPUP_RECORD_OVERLAY
     POPUP "&Window"
     BEGIN
         MENUITEM "&Cascade",                    ID_WINDOW_CASCADE
@@ -3701,7 +3702,7 @@ BEGIN
     "4",            ID_EDIT_ADD_PHRASE_L4,  VIRTKEY, CONTROL, NOINVERT
     "L",            ID_EDIT_ADD_SYLLABLE,   VIRTKEY, CONTROL, NOINVERT
     "W",            ID_EDIT_ADD_WORD,       VIRTKEY, CONTROL, NOINVERT
-    VK_INSERT,      ID_EDIT_BOUNDARIES,     VIRTKEY, NOINVERT
+    VK_INSERT,      ID_EDIT_SEGMENT_BOUNDARIES, VIRTKEY, NOINVERT
     "C",            ID_EDIT_COPY,           VIRTKEY, CONTROL, NOINVERT
     VK_INSERT,      ID_EDIT_COPY,           VIRTKEY, CONTROL, NOINVERT
     "C",            ID_EDIT_COPY_MEASUREMENTS, VIRTKEY, SHIFT, CONTROL, NOINVERT
@@ -3785,6 +3786,7 @@ BEGIN
     VK_F1,          ID_HELP_CONTENTS,       VIRTKEY, NOINVERT
     VK_F5,          ID_PLAYBACK_SLOW,       VIRTKEY, NOINVERT
     VK_F8,          ID_PLAYBACK_CURSORS,    VIRTKEY, NOINVERT
+    VK_F12,         ID_PLAYBACK_FILE,		VIRTKEY, NOINVERT
     VK_RETURN,      ID_RESTART_PROCESS,     VIRTKEY, NOINVERT
 END
 
@@ -4348,7 +4350,7 @@ IDC_MHANDN              CURSOR                  "res\\MedHandN.cur"
 
 STRINGTABLE
 BEGIN
-    VS_VERSION              "Version 3.1.0.61"
+    VS_VERSION              "Version 3.1.0.62"
     VS_COPYRIGHT            "© 1996-2013 SIL International (MSEA).\nAll Rights Reserved."
     IDR_MAINFRAME           "Speech Analyzer"
     IDR_SA_ANNTYPE          "\nSA\nSA Document\nWAV Files (*.wav)\n.wav\nannFileType\nANN File Type"
@@ -5181,7 +5183,7 @@ BEGIN
     ID_EDIT_ADD_PHRASE_L2   "Add Phrase L2 Segment\nAdd Phrase"
     ID_EDIT_ADD_PHRASE_L3   "Add Phrase L3 Segment\nAdd Phrase"
     ID_EDIT_ADD_PHRASE_L4   "Add Phrase L4 Segment\nAdd Phrase"
-    ID_EDIT_BOUNDARIES      "Edit transcription segment boundaries\nEdit Boundaries"
+    ID_EDIT_SEGMENT_BOUNDARIES "Edit transcription segment boundaries\nEdit Boundaries"
     ID_GRAPHS_ZOOM_CURSORS  "Zoom to View Between Cursors\nZoom Cursors"
     ID_IMPORT_MIDI          "Import Midi file into staff\nImport Staff"
     ID_EDIT_SEGMENT_SIZE    "Edit transcription segment sizes\nEdit Segment Size"

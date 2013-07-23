@@ -35,7 +35,7 @@ class CDlgAutoRecorder : public CDialog, public IWaveNotifiable
 
     // Construction/destruction/creation
 public:
-    CDlgAutoRecorder(CSaDoc * pDoc, CSaView * pParent, CSaView * pTarget, CAlignInfo & alignInfo); // standard constructor
+    CDlgAutoRecorder(CSaDoc * pDoc, CSaView * pParent, CSaView * pTarget, CAlignInfo & alignInfo, int wholeFile); // standard constructor
     virtual ~CDlgAutoRecorder();
 
 	UINT GetRecVolume();
@@ -50,6 +50,9 @@ public:
     virtual HPSTR GetWaveData(DWORD dwPlayPosition, DWORD dwDataSize);
     HMMIO GetFileHandle();
     void OnHelpAutoRecorder();
+	afx_msg void OnRadioBetweenCursors();
+	afx_msg void OnClickedRadioWholeFile();
+	int GetPlayWholeFile();
 
 protected:
     virtual void DoDataExchange(CDataExchange * pDX); // DDX/DDV support
@@ -84,16 +87,18 @@ protected:
 
 private:
     void EnableRecVolume(BOOL bEnable);
-
-    bool m_bStopPending;
     void StopWave();
-    CAlignInfo m_AlignInfo;
     void StartShutdown();
     BOOL OnAssignOverlay(CSaView * pView);
 
     CSaView * m_pTargetUntested;            // Be careful, stale.  Maybe deleted under your feet.
     eRecordMode m_eMode;                    // recorder mode (record, play, stop...)
     eRecordMode m_eOldMode;                 // previous recorder mode
+
+    bool m_bStopPending;
+	CAlignInfo m_AlignInfo;
+	double m_dSourceLength;					// length of original source wave file
+	double m_dRecordLength;					// the amount data we will be recording.
 
     HANDLE m_hData;                         // needed to get m_lpRecData
     HPSTR m_lpRecData;                      // pointer to wave data
@@ -123,9 +128,6 @@ private:
     UINT  m_nRecVolume;
 	int m_nPlayWholeFile;
 
-public:
-	afx_msg void OnRadioBetweenCursors();
-	afx_msg void OnClickedRadioWholeFile();
 };
 
 #endif

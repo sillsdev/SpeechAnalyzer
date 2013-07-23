@@ -2722,19 +2722,18 @@ void CMainFrame::OnRecordOverlay()
             CSaView * pView = (CSaView *)pDoc->GetNextView(pos);
             if (pView->IsKindOf(RUNTIME_CLASS(CSaView)))
             {
-                CDlgAutoRecorder dlg(pDoc,(CSaView *)pView,pSourceView,alignInfo);
-
+			    int wholeFile = (AfxGetApp()->GetProfileInt(L"AutoRecorder",L"WholeFile",0)!=0);
+                CDlgAutoRecorder dlg( pDoc, pView, pSourceView, alignInfo, wholeFile);
                 if (m_pDisplayPlot!=NULL)
                 {
                     m_pDisplayPlot->m_pModal = &dlg;
                 }
-
                 dlg.DoModal();
-
                 if (m_pDisplayPlot!=NULL)
                 {
                     m_pDisplayPlot->m_pModal = NULL;
                 }
+		        AfxGetApp()->WriteProfileInt(L"AutoRecorder",L"WholeFile",dlg.GetPlayWholeFile());
             }
         }
         else

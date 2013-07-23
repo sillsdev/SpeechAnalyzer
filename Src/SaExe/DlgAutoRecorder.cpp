@@ -61,12 +61,13 @@ END_MESSAGE_MAP()
 /***************************************************************************/
 // CDlgAutoRecorder::CDlgAutoRecorder Constructor
 /***************************************************************************/
-CDlgAutoRecorder::CDlgAutoRecorder(CSaDoc * pDoc, CSaView * pView, CSaView * pTarget, CAlignInfo & alignInfo) :
-CDialog(IDD),
-m_nPlayWholeFile(0)
+CDlgAutoRecorder::CDlgAutoRecorder(CSaDoc * pDoc, CSaView * pView, CSaView * pTarget, CAlignInfo & alignInfo, int playWholeFile) :
+CDialog(IDD)
 {
     m_hmmioFile = NULL;
     m_szFileName[0] = 0; // no file name
+
+	m_nPlayWholeFile = playWholeFile;
 
     m_bStopPending = false;
     m_pDoc = pDoc;
@@ -77,6 +78,7 @@ m_nPlayWholeFile(0)
     m_eOldMode = Disabled;
 
     m_AlignInfo = alignInfo;
+	m_dSourceLength = m_AlignInfo.dTotalLength;
 
     ChangeState(WaitForSilence);
 
@@ -157,7 +159,6 @@ void CDlgAutoRecorder::BlockStored(UINT nLevel, DWORD dwPosition, BOOL * bSaveOv
     // TRACE(_T("Block Stored %g\n"), double(dwPosition));
 
     double fDataSec = 0.0;
-	double end = 0.0;
 
     // update the VU bar
     m_VUBar.SetVU((int)nLevel);
@@ -198,44 +199,56 @@ void CDlgAutoRecorder::BlockStored(UINT nLevel, DWORD dwPosition, BOOL * bSaveOv
             {
                 *bSaveOverride = TRUE;
             }
+
+			// for whole file, the end is the length of the current file in seconds
+			// between segments it is the stop cursor time
+			if (m_nPlayWholeFile==0)
+			{
+				m_dRecordLength = m_dSourceLength;
+			}
+			else
+			{
+				CMainFrame * pFrame = (CMainFrame *)AfxGetMainWnd();
+				CSaView * pView = pFrame->GetCurrSaView();
+				DWORD start = pView->GetStartCursorPosition();
+				DWORD stop = pView->GetStopCursorPosition();
+				// add one 16k buffer to account for data that may be skipped because it is below the min voicing level.
+				DWORD margin = m_pDoc->GetTimeFromBytes( 16384);
+				stop+margin;
+				m_dRecordLength = m_pDoc->GetTimeFromBytes( stop-start); // calculate time
+				if (m_dRecordLength>m_dSourceLength)
+				{
+					m_dRecordLength = m_dSourceLength;
+				}
+			}
+
+			TRACE(_T("recording %f seconds of data\n"),m_dRecordLength);
             ChangeState(Recording);
         }
         break;
     
 	case Recording:
-        //TRACE(_T("recording %f %f\n"),fDataSec, m_AlignInfo.dTotalLength);
         ASSERT(m_eMode == Record);
         m_dwRecordSize = dwPosition;
-
-		// for whole file, the end is the length of the current file in seconds
-		// between segments it is the stop cursor time
-		end = m_AlignInfo.dTotalLength;
-		if (m_nPlayWholeFile!=0)
-		{
-			CMainFrame * pFrame = (CMainFrame *)AfxGetMainWnd();
-			CSaView * pView = pFrame->GetCurrSaView();
-			DWORD start = pView->GetStartCursorPosition();
-			DWORD stop = pView->GetStopCursorPosition();
-		    end = m_pDoc->GetTimeFromBytes( stop-start); // calculate time
-		}
-
-        // update the time
+        
+		// update the time
 		fDataSec = SetPositionTime( m_dwRecordSize);
-		TRACE("fDataSec = %f\n",fDataSec);
+        TRACE(_T("recording %f %f\n"),fDataSec,m_dRecordLength);
+
 		// the user pushed the stop button, stop
         if (m_bStopPending)
         {
             ChangeState(Stopping);
         }
 		// if we've reached the end of the file stop
-        else if (fDataSec > end)
+        else if (fDataSec > m_dRecordLength)
         {
             ChangeState(Stopping);
         }
 		// if the user has quit speaking, stop after two seconds.
         else if (nLevel < MAX_SILENCE_LEVEL)
         {
-            if (GetTickCount() - m_dwTickCount > 2*1000)
+            if ((GetTickCount() - m_dwTickCount) > 2*1000)
             {
                 // shutdown recording
                 ChangeState(Stopping);
@@ -252,7 +265,7 @@ void CDlgAutoRecorder::BlockStored(UINT nLevel, DWORD dwPosition, BOOL * bSaveOv
         m_dwRecordSize = dwPosition;
         // update the time
 		fDataSec = SetPositionTime( m_dwRecordSize);
-        TRACE(_T("stopping %f %f\n"),fDataSec, m_AlignInfo.dTotalLength);
+        TRACE(_T("stopping at %f. limit=%f\n"),fDataSec, m_dRecordLength);
         if (m_bStopPending)
         {
             SetRecorderMode(Stop);
@@ -838,6 +851,7 @@ BOOL CDlgAutoRecorder::Apply()
 
 		// make a copy to save the original!
 		CAlignInfo info = m_AlignInfo;
+		info.dTotalLength = m_dRecordLength;
 
 		if (m_nPlayWholeFile!=0)
 		{
@@ -845,7 +859,7 @@ BOOL CDlgAutoRecorder::Apply()
 		    CSaView * pView = pFrame->GetCurrSaView();
 			DWORD dwOffset = pView->GetStartCursorPosition();
 			double seconds = m_pDoc->GetTimeFromBytes(dwOffset);
-			info.dStart += seconds;
+			info.dStart = seconds;
 		}
 
         m_pDoc->ApplyWaveFile( m_szFileName, m_dwRecordSize, info);
@@ -1341,4 +1355,9 @@ void CDlgAutoRecorder::OnRadioBetweenCursors()
 void CDlgAutoRecorder::OnClickedRadioWholeFile()
 {
 	UpdateData(TRUE);
+}
+
+int CDlgAutoRecorder::GetPlayWholeFile()
+{
+	return m_nPlayWholeFile;
 }
