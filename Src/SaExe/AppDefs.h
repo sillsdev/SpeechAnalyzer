@@ -319,9 +319,9 @@ struct RGB
 /**
 * used to represt a wave file length or length in seconds
 */
-typedef double WAVETIME;
-typedef DWORD WAVESAMP;
-typedef DWORD CURSORPOS;
+typedef double WAVETIME;	// location in seconds
+typedef DWORD WAVESAMP;		// location in samples
+typedef DWORD CURSORPOS;	// location in bytes
 
 #include "grid.h"
 #include "param.h"

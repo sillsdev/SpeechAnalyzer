@@ -171,10 +171,10 @@ BOOL CWave::ProcessData(int nBuffer)
     if (m_pWaveWarp==NULL)
     {
         DWORD dwDataSize = min(m_dwEnd - m_dwPlayPosition, dwBufferSize);
-        if (dwDataSize)
+        if (dwDataSize > 0)
         {
-            HPSTR pData = m_pNotifyObj->GetWaveData(m_pView, m_dwPlayPosition, dwDataSize);
-            if (!pData)
+            HPSTR pData = m_pNotifyObj->GetWaveData( m_pView, m_dwPlayPosition, dwDataSize);
+            if (pData==NULL)
             {
                 return FALSE;
             }
@@ -185,9 +185,7 @@ BOOL CWave::ProcessData(int nBuffer)
                 m_bProcessDone = TRUE;
             }
         }
-
         SetBufferSize(nBuffer, dwDataSize, dwDataSize);      // set member variables for playback
-
     }
     else
     {
@@ -218,8 +216,7 @@ BOOL CWave::ProcessData(int nBuffer)
                 return FALSE;                                                               // pass waveform buffer pointer
             }
             Status = m_pWaveWarp->FillPlayBuffer(m_CallbackData.dwOffset, dwDataSize/wSmpSize, &m_CallbackData, &dwPlayLength);
-        }
-        while (Status == OUTSIDE_WAVE_BUFFER);
+        } while (Status == OUTSIDE_WAVE_BUFFER);
 
         if (Status < DONE)
         {
@@ -272,8 +269,6 @@ BOOL CWave::ProcessData(int nBuffer)
     {
         m_nMaxLevel = (UINT)(100 * (long)m_nMaxLevel / 32768);
     }
-
-
     return TRUE;
 }
 
@@ -501,7 +496,7 @@ BOOL CWave::Play(DWORD dwStart, DWORD dwSize, UINT nVolume, UINT nSpeed, CView *
     {
         // finish fragmenting
         short int nResult = LOWORD(pFragmenter->Process(this, (CSaDoc *)pDoc)); // process data
-        if (nResult == PROCESS_ERROR || nResult == PROCESS_NO_DATA || nResult == PROCESS_CANCELED)
+        if ((nResult == PROCESS_ERROR) || (nResult == PROCESS_NO_DATA) || (nResult == PROCESS_CANCELED))
         {
             pFragmenter->SetDataInvalid();
             m_bBackgroundEnabled = FALSE;
@@ -526,7 +521,7 @@ BOOL CWave::Play(DWORD dwStart, DWORD dwSize, UINT nVolume, UINT nSpeed, CView *
     }
     else
     {
-        TRACE(_T("CWaveWarp object not created: PlayerPlaying %u, PlayerTest %u, FragmentReady %u\n"),pMainWnd->IsPlayerPlaying(), pMainWnd->IsPlayerTestRun(),  pFragmenter->IsDataReady());
+        TRACE(_T("CWaveWarp object not created: PlayerPlaying %u, PlayerTest %u, FragmentReady %u\n"), pMainWnd->IsPlayerPlaying(), pMainWnd->IsPlayerTestRun(),  pFragmenter->IsDataReady());
     }
 
     for (int i = 0; i < m_kPlayBuffers; i++)
@@ -541,7 +536,7 @@ BOOL CWave::Play(DWORD dwStart, DWORD dwSize, UINT nVolume, UINT nSpeed, CView *
         m_nProcessedSpeed[m_nNextBlock] = m_nSpeed;
         m_nProcessedMax[m_nNextBlock] = m_nMaxLevel;
         // play buffer 0
-        if (!m_pOutDev->Play(m_nNextBlock, nVolume, this, !m_bProcessDone && (i + 1) < m_kPlayBuffers))
+        if (!m_pOutDev->Play( m_nNextBlock, nVolume, this, !m_bProcessDone && (i + 1) < m_kPlayBuffers))
         {
             return FALSE;
         }
@@ -553,7 +548,8 @@ BOOL CWave::Play(DWORD dwStart, DWORD dwSize, UINT nVolume, UINT nSpeed, CView *
             break;
         }
     }
-    if (m_pNotifyObj && !m_bPlayDone)
+
+    if ((m_pNotifyObj!=NULL) && (!m_bPlayDone))
     {
         m_pNotifyObj->BlockFinished(m_nProcessedMax[m_nActiveBlock], m_dwPosition[m_nActiveBlock], m_nProcessedSpeed[m_nActiveBlock]);    // update player dialog
     }
@@ -681,7 +677,7 @@ void CWave::NextBlock()
         m_nActiveBlock = ++m_nActiveBlock % m_kPlayBuffers;   // switch buffers
         m_bPlayDone = (m_nActiveBlock == m_nNextBlock);
 
-        if (m_pNotifyObj && !m_bPlayDone)
+        if ((m_pNotifyObj!=NULL) && (!m_bPlayDone))
         {
             m_pNotifyObj->BlockFinished(m_nProcessedMax[m_nActiveBlock], m_dwPosition[m_nActiveBlock], m_nProcessedSpeed[m_nActiveBlock]);     // update player dialog
         }
@@ -701,11 +697,11 @@ void CWave::NextBlock()
             {
                 // error in processing
                 m_pOutDev->Close();                 // close sound device
-                if (m_pNotifyObj)
+                if (m_pNotifyObj!=NULL)
                 {
                     m_pNotifyObj->EndPlayback();    // inform notify object
                 }
-                if (m_pWaveWarp)
+                if (m_pWaveWarp!=NULL)
                 {
                     delete m_pWaveWarp;
                     m_pWaveWarp = NULL;
@@ -719,11 +715,11 @@ void CWave::NextBlock()
     {
         // shutdown playback device if processing complete
         m_pOutDev->Close();                 // close sound device
-        if (m_pNotifyObj)
+        if (m_pNotifyObj!=NULL)
         {
             m_pNotifyObj->EndPlayback();    // inform notify object
         }
-        if (m_pWaveWarp)
+        if (m_pWaveWarp!=NULL)
         {
             delete m_pWaveWarp;
             m_pWaveWarp = NULL;
@@ -826,7 +822,7 @@ void CWave::StoreBlock()
 
     // inform notify object
     BOOL bRecord = m_bRecording;
-    if (m_pNotifyObj)
+    if (m_pNotifyObj!=NULL)
     {
         BOOL * pOverride = bRecord ? &bRecord : NULL;
         m_pNotifyObj->BlockStored(m_nMaxLevel, m_dwRecordPointer+GetBufferSize(m_nActiveBlock), pOverride);
@@ -838,7 +834,7 @@ void CWave::StoreBlock()
         if (mmioWrite(m_hmmioFile, GetBufferPointer(m_nActiveBlock), (long)GetBufferSize(m_nActiveBlock)) == -1)
         {
             // error
-            if (m_pNotifyObj)
+            if (m_pNotifyObj!=NULL)
             {
                 m_pNotifyObj->StoreFailed();
             }
@@ -848,7 +844,7 @@ void CWave::StoreBlock()
     }
 
     // inform notify object
-    if (m_pNotifyObj)
+    if (m_pNotifyObj!=NULL)
     {
         m_pInDev->Record(m_nActiveBlock, this); // record again into this buffer
         m_nActiveBlock = ++m_nActiveBlock % m_kRecordBuffers; // next buffer

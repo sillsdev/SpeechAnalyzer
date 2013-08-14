@@ -576,17 +576,17 @@ void CSaView::CreateOpenAsGraphs(UINT OpenAsID)
 /***************************************************************************/
 void CSaView::OnGraphsTypes()
 {
-    CDlgGraphsTypes dlgGraphsTypes(this, m_anGraphID, m_nLayout);
+    CDlgGraphsTypes dlg(this, m_anGraphID, m_nLayout);
 
     //**************************************************************
     // If the user chose OK then store the chosen IDs in a temp.
     // array and process the request.
     //**************************************************************
-    if (dlgGraphsTypes.DoModal() == IDOK)
+    if (dlg.DoModal() == IDOK)
     {
         UINT anNewGraphID[MAX_GRAPHS_NUMBER];
         int nLayout = -1;
-        dlgGraphsTypes.GetCheckedGraphs(&anNewGraphID[0], &nLayout);
+        dlg.GetCheckedGraphs(&anNewGraphID[0], &nLayout);
         OnGraphsTypesPostProcess(&anNewGraphID[0], nLayout);
     }
 }
@@ -3635,8 +3635,8 @@ void CSaView::OnEditCopy()
             DWORD dwSectionStart = m_pFocusedGraph->GetPlot()->GetHighLightPosition();
             DWORD dwSectionLength = m_pFocusedGraph->GetPlot()->GetHighLightLength();
 			CSaDoc * pDoc = GetDocument();
-			WAVETIME start = pDoc->fromBytes( dwSectionStart, true);
-			WAVETIME length = pDoc->fromBytes( dwSectionLength, true);
+			WAVETIME start = pDoc->toTime( dwSectionStart, true);
+			WAVETIME length = pDoc->toTime( dwSectionLength, true);
 			pDoc->PutWaveToClipboard( start, length);
         }
     }
@@ -3740,8 +3740,8 @@ void CSaView::OnEditCut()
         DWORD dwSectionStart = m_pFocusedGraph->GetPlot()->GetHighLightPosition();
         DWORD dwSectionLength = m_pFocusedGraph->GetPlot()->GetHighLightLength();
         CSaDoc * pDoc = (CSaDoc *)GetDocument();
-		WAVETIME start = pDoc->fromBytes( dwSectionStart, true);
-		WAVETIME length = pDoc->fromBytes( dwSectionLength, true);
+		WAVETIME start = pDoc->toTime( dwSectionStart, true);
+		WAVETIME length = pDoc->toTime( dwSectionLength, true);
         if (pDoc->PutWaveToClipboard( start, length, TRUE))
         {
             pDoc->InvalidateAllProcesses();
@@ -3758,7 +3758,6 @@ void CSaView::OnEditCut()
 /***************************************************************************/
 void CSaView::OnEditPaste()
 {
-
     // get pointer to document
     CSaDoc * pDoc = (CSaDoc *)GetDocument();
     // is an annotation selected?
@@ -3873,12 +3872,10 @@ void CSaView::ChangeSelectedAnnotationData(const CSaString & str)
     CSaDoc * pDoc = (CSaDoc *) GetDocument(); // get pointer to document
     ASSERT(pDoc);
     pDoc->CheckPoint();
-
 	{
         CSegment * pAnnotationSet = FindSelectedAnnotation();
         ASSERT(pAnnotationSet);
-
-        if (pAnnotationSet)
+        if (pAnnotationSet!=NULL)
         {
             pAnnotationSet->ReplaceSelectedSegment(pDoc,str);
         }
@@ -6697,3 +6694,4 @@ bool CSaView::IsSelectionVirtual()
 {
 	return m_advancedSelection.IsSelectionVirtual();
 }
+

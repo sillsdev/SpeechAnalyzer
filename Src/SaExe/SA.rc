@@ -26,7 +26,7 @@ LANGUAGE LANG_NEUTRAL, SUBLANG_NEUTRAL
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 3,1,0,62
+ FILEVERSION 3,1,0,64
  PRODUCTVERSION 1,0,0,1
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
@@ -44,7 +44,7 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "SIL International"
             VALUE "FileDescription", "SA"
-            VALUE "FileVersion", "v3.1.0.62"
+            VALUE "FileVersion", "v3.1.0.64"
             VALUE "InternalName", "SA"
             VALUE "LegalCopyright", "© 1996-2013 SIL International (MSEA)"
             VALUE "ProductName", "SA"
@@ -2018,8 +2018,9 @@ CAPTION "Record Overlay"
 FONT 8, "MS Sans Serif", 0, 0, 0x0
 BEGIN
     PUSHBUTTON      "&Play",IDC_PLAY,9,48,50,14,WS_DISABLED
+    PUSHBUTTON      "&Stop",IDC_STOP,9,48,50,14,WS_DISABLED
     PUSHBUTTON      "&Original",ID_PLAYBACK_FILE,63,48,50,14
-    DEFPUSHBUTTON   "&Close",IDC_STOP,282,7,50,14
+    DEFPUSHBUTTON   "&Close",IDC_CLOSE,282,7,50,14
     EDITTEXT        IDC_RECVOLUMEEDIT,198,54,16,12
     LTEXT           "",IDC_RECVOLUMESCROLL,214,54,10,12
     LTEXT           "%",IDC_RECVOLUMETEXT,224,56,8,8
@@ -2336,16 +2337,18 @@ BEGIN
     LTEXT           "Run FieldWorks and import this SFM file.",IDC_STATIC,16,84,212,9
 END
 
-IDD_DIALOG1 DIALOGEX 0, 0, 316, 183
+IDD_INSERT_SILENCE DIALOGEX 0, 0, 192, 49
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Dialog"
+CAPTION "Insert Silence"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
-    DEFPUSHBUTTON   "OK",IDOK,205,162,50,14
-    PUSHBUTTON      "Cancel",IDCANCEL,259,162,50,14
-    CONTROL         "",IDC_MSFLEXGRID1,
-                    "{6262D3A0-531B-11CF-91F6-C2863C385E30}",WS_TABSTOP,0,0,184,115
-    CONTROL         "",IDC_MFCPROPERTYGRID1,"MfcPropertyGrid",0x100,37,15,61,69
+    DEFPUSHBUTTON   "Cancel",IDCANCEL,71,28,50,14
+    PUSHBUTTON      "Finished",IDOK,135,28,50,14
+    DEFPUSHBUTTON   "Insert",IDC_INSERT,7,28,50,14
+    LTEXT           "Insert Multiple Segment Lengths",IDC_STATIC,11,12,104,8
+    EDITTEXT        IDC_EDIT_SILENCE,120,11,27,14
+    CONTROL         "",IDC_SPIN_SILENCE,"msctls_updown32",UDS_ARROWKEYS,151,11,11,14
+	LTEXT           "Sec.",IDC_STATIC,168,13,15,8
 END
 
 
@@ -2600,6 +2603,14 @@ BEGIN
         RIGHTMARGIN, 309
         TOPMARGIN, 7
         BOTTOMMARGIN, 176
+    END
+
+    IDD_INSERT_SILENCE, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 185
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 42
     END
 END
 #endif    // APSTUDIO_INVOKED
@@ -2890,10 +2901,10 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "&Update All Boundaries",      ID_EDIT_AUTO_SNAP_UPDATE
             MENUITEM SEPARATOR
-            MENUITEM "Copy Phonetic to Phonemic",   ID_EDIT_COPY_PHONETIC_TO_PHONEMIC
+            MENUITEM "Copy Phonetic Transcription to Phonemic", ID_EDIT_COPY_PHONETIC_TO_PHONEMIC
         END
-        MENUITEM "Edit Segment &Boundaries\tINS",    ID_EDIT_SEGMENT_BOUNDARIES
-        MENUITEM "Edit Segment Size\tCtrl+E",        ID_EDIT_SEGMENT_SIZE
+        MENUITEM "Edit Segment &Boundaries\tINS", ID_EDIT_SEGMENT_BOUNDARIES
+        MENUITEM "Edit Segment Size\tCtrl+E",   ID_EDIT_SEGMENT_SIZE
         MENUITEM SEPARATOR
         MENUITEM "Cu&t\tCtrl+X",                ID_EDIT_CUT
         MENUITEM "&Copy\tCtrl+C",               ID_EDIT_COPY
@@ -3085,6 +3096,7 @@ BEGIN
             MENUITEM "&Invert",                     ID_TOOLS_ADJUST_INVERT
             MENUITEM "&Normalize",                  ID_TOOLS_ADJUST_NORMALIZE
             MENUITEM "&Zero Offset",                ID_TOOLS_ADJUST_ZERO
+            MENUITEM "Insert &Silence",             ID_AUTOSAVE_OFF
         END
         POPUP "Automatic &Markup"
         BEGIN
@@ -3426,29 +3438,29 @@ BEGIN
         MENUITEM SEPARATOR
         POPUP "&Zoom"
         BEGIN
-            MENUITEM "Step &In\tCtrl+PgDn",     ID_GRAPHS_ZOOM_IN
-            MENUITEM "Step &Out\tCtrl+PgUp",    ID_GRAPHS_ZOOM_OUT
-            MENUITEM "&Full\tCtrl+Home",        ID_GRAPHS_ZOOM_ALL
+            MENUITEM "Step &In\tCtrl+PgDn",         ID_GRAPHS_ZOOM_IN
+            MENUITEM "Step &Out\tCtrl+PgUp",        ID_GRAPHS_ZOOM_OUT
+            MENUITEM "&Full\tCtrl+Home",            ID_GRAPHS_ZOOM_ALL
         END
         POPUP "Magn&ify"
         BEGIN
-            MENUITEM "x&1",                     ID_GRAPHS_MAGNIFY1
-            MENUITEM "x&2",                     ID_GRAPHS_MAGNIFY2
-            MENUITEM "x&4",                     ID_GRAPHS_MAGNIFY4
-            MENUITEM "&Custom...",              ID_GRAPHS_MAGNIFYCUSTOM
+            MENUITEM "x&1",                         ID_GRAPHS_MAGNIFY1
+            MENUITEM "x&2",                         ID_GRAPHS_MAGNIFY2
+            MENUITEM "x&4",                         ID_GRAPHS_MAGNIFY4
+            MENUITEM "&Custom...",                  ID_GRAPHS_MAGNIFYCUSTOM
         END
         MENUITEM SEPARATOR
     END
     POPUP "&Playback"
     BEGIN
-		MENUITEM "Entire &File\tF12",			ID_PLAYBACK_FILE
-        MENUITEM "&Between Cursors\tF8",		ID_PLAYBACK_CURSORS
-        MENUITEM "Slo&w Replay\tF5",			ID_PLAYBACK_SLOW
-        MENUITEM "Pa&use",						ID_PLAYER_PAUSE
-        MENUITEM "&Stop\tESC",					ID_PLAYER_STOP
+        MENUITEM "Entire &File\tF12",           ID_PLAYBACK_FILE
+        MENUITEM "&Between Cursors\tF8",        ID_PLAYBACK_CURSORS
+        MENUITEM "Slo&w Replay\tF5",            ID_PLAYBACK_SLOW
+        MENUITEM "Pa&use",                      ID_PLAYER_PAUSE
+        MENUITEM "&Stop\tESC",                  ID_PLAYER_STOP
         MENUITEM SEPARATOR
     END
-    MENUITEM "P&ractice",						ID_POPUP_RECORD_OVERLAY
+    MENUITEM "P&ractice",                   ID_POPUP_RECORD_OVERLAY
     POPUP "&Window"
     BEGIN
         MENUITEM "&Cascade",                    ID_WINDOW_CASCADE
@@ -3786,7 +3798,7 @@ BEGIN
     VK_F1,          ID_HELP_CONTENTS,       VIRTKEY, NOINVERT
     VK_F5,          ID_PLAYBACK_SLOW,       VIRTKEY, NOINVERT
     VK_F8,          ID_PLAYBACK_CURSORS,    VIRTKEY, NOINVERT
-    VK_F12,         ID_PLAYBACK_FILE,		VIRTKEY, NOINVERT
+    VK_F12,         ID_PLAYBACK_FILE,       VIRTKEY, NOINVERT
     VK_RETURN,      ID_RESTART_PROCESS,     VIRTKEY, NOINVERT
 END
 
@@ -4350,7 +4362,7 @@ IDC_MHANDN              CURSOR                  "res\\MedHandN.cur"
 
 STRINGTABLE
 BEGIN
-    VS_VERSION              "Version 3.1.0.62"
+    VS_VERSION              "Version 3.1.0.64"
     VS_COPYRIGHT            "© 1996-2013 SIL International (MSEA).\nAll Rights Reserved."
     IDR_MAINFRAME           "Speech Analyzer"
     IDR_SA_ANNTYPE          "\nSA\nSA Document\nWAV Files (*.wav)\n.wav\nannFileType\nANN File Type"
@@ -4387,6 +4399,11 @@ BEGIN
     IDS_AUTO_WAITING        "Waiting for input..."
     IDS_AUTO_RECORD         "Recording..."
     IDS_AUTO_WAITING_SILENCE "Waiting for 2 Seconds of Silence..."
+END
+
+STRINGTABLE
+BEGIN
+    IDS_AUTO_PLAYING        "Playing..."
 END
 
 STRINGTABLE
@@ -5040,7 +5057,26 @@ BEGIN
     ID_FILE_IMPORT          "Import Standard Format Markers\nImport SFM"
     ID_EDIT_PASTENEW        "Paste clipboard wave data into a new file\nPaste As New File"
     ID_EDIT_SELECTWAVEFORM  "Select waveform data between cursors\nSelect Waveform"
-    ID_EDIT_SELECTWAVEFORM_FAKE  "Select waveform data between cursors\nSelect Waveform"
+END
+
+STRINGTABLE
+BEGIN
+    ID_EDIT_SELECTWAVEFORM_FAKE 
+                            "Select waveform data between cursors\nSelect Waveform"
+    ID_AUTO_ALIGN           "Automatic alignment of transcriptions\nAlign transcriptions"
+    ID_EDIT_AUTO_SNAP_UPDATE 
+                            "Update all transcription segment boundaries\nUpdate All"
+    ID_EDIT_UPDATE_BOUNDARIES 
+                            "Update transcription segment boundaries\nUpdate Boundaries"
+    ID_EDIT_ADD             "Add a phonetic segment\nAdd Phonetic Segment"
+    ID_EDIT_EDITOR          "Show/Hide transcription editor\nToggle Editor"
+    ID_EDIT_ADD_BOOKMARK    "Add gloss bookmark\nAdd Bookmark"
+    ID_EDIT_REMOVE          "Remove a selected character or string\nRemove"
+    ID_EDIT_UP              "Move up visible transcription\nUp Transcription"
+    ID_EDIT_DOWN            "Move down visible transcription\nDown Transcription"
+    ID_EDIT_ADD_WORD        "Add gloss word\nAdd Word Segment"
+    ID_GRAPHS_SCREENCOPY    "Copy whole SA screen to clipboard\nCopy Screenshot"
+    ID_GRAPHS_GRAPHSCAPTURE "Capture graphs screenshot and save it in a file\nSave Graphs"
 END
 
 STRINGTABLE
@@ -5061,24 +5097,6 @@ END
 STRINGTABLE
 BEGIN
     IDS_TASK_PAGE_BUTTON    "Select Task Page\nSelect Page"
-END
-
-STRINGTABLE
-BEGIN
-    ID_AUTO_ALIGN           "Automatic alignment of transcriptions\nAlign transcriptions"
-    ID_EDIT_AUTO_SNAP_UPDATE 
-                            "Update all transcription segment boundaries\nUpdate All"
-    ID_EDIT_UPDATE_BOUNDARIES 
-                            "Update transcription segment boundaries\nUpdate Boundaries"
-    ID_EDIT_ADD             "Add a phonetic segment\nAdd Phonetic Segment"
-    ID_EDIT_EDITOR          "Show/Hide transcription editor\nToggle Editor"
-    ID_EDIT_ADD_BOOKMARK    "Add gloss bookmark\nAdd Bookmark"
-    ID_EDIT_REMOVE          "Remove a selected character or string\nRemove"
-    ID_EDIT_UP              "Move up visible transcription\nUp Transcription"
-    ID_EDIT_DOWN            "Move down visible transcription\nDown Transcription"
-    ID_EDIT_ADD_WORD        "Add gloss word\nAdd Word Segment"
-    ID_GRAPHS_SCREENCOPY    "Copy whole SA screen to clipboard\nCopy Screenshot"
-    ID_GRAPHS_GRAPHSCAPTURE "Capture graphs screenshot and save it in a file\nSave Graphs"
 END
 
 STRINGTABLE
@@ -5183,7 +5201,8 @@ BEGIN
     ID_EDIT_ADD_PHRASE_L2   "Add Phrase L2 Segment\nAdd Phrase"
     ID_EDIT_ADD_PHRASE_L3   "Add Phrase L3 Segment\nAdd Phrase"
     ID_EDIT_ADD_PHRASE_L4   "Add Phrase L4 Segment\nAdd Phrase"
-    ID_EDIT_SEGMENT_BOUNDARIES "Edit transcription segment boundaries\nEdit Boundaries"
+    ID_EDIT_SEGMENT_BOUNDARIES 
+                            "Edit transcription segment boundaries\nEdit Boundaries"
     ID_GRAPHS_ZOOM_CURSORS  "Zoom to View Between Cursors\nZoom Cursors"
     ID_IMPORT_MIDI          "Import Midi file into staff\nImport Staff"
     ID_EDIT_SEGMENT_SIZE    "Edit transcription segment sizes\nEdit Segment Size"
@@ -5331,6 +5350,8 @@ BEGIN
     IDS_SPLIT_COMPLETE      "The split is complete.  %1 files were created."
     IDS_CONFIRM_PHONEMIC_COPY 
                             "This process will delete the existing phonemic data.\nDo you want to continue?"
+    ID_EDIT_COPY_PHONETIC_TO_PHONEMIC 
+                            "Copy Phonetic Transcriptions to Phonemic Transcriptions"
     IDS_SPLIT_INCOMPLETE    "The split was not completed.  No segments were found."
     ID_AUTOMATICMARKUP_REFERENCEDATA "Renumber the Reference Data"
     IDS_SPLIT_NO_GLOSS      "An empty Gloss transcription field was found at %1 segment %2.\nPlease correct the transcription or rerun the Split File feature and use the checkbox to allow skipping of blank words."

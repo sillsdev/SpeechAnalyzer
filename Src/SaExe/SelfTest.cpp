@@ -10,7 +10,7 @@
 #include "stdafx.h"
 #include "SelfTest.h"
 #include <windows.h>
-#include <mapiwin.h>
+//#include <mapiwin.h>
 #include <process.h>
 #include "sa_g_spg.h"
 #include "sa_plot.h"

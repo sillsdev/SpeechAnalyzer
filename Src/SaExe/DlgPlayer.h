@@ -121,8 +121,9 @@ private:
     UINT m_nSpeed;
     UINT m_nDelay;
     BOOL m_bRepeat;
+
     static const UINT SubModeUndefined;
-    static bool bPlayer;
+    static bool bLaunched;
 };
 
 #endif

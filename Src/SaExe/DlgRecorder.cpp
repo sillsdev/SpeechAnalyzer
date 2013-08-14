@@ -782,7 +782,7 @@ BOOL CDlgRecorder::Apply(CDocument * pDocument)
     // if player is visible, disable the speed slider until required processing is completed
     CMainFrame * pMain = (CMainFrame *)AfxGetMainWnd();
     CDlgPlayer * pPlayer = pMain->GetPlayer();
-    if (pPlayer && pPlayer->IsWindowVisible())
+    if ((pPlayer!=NULL) && (pPlayer->IsWindowVisible()))
     {
         pPlayer->EnableSpeedSlider(FALSE);
     }

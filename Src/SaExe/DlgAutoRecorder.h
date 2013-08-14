@@ -27,8 +27,8 @@
 class CDlgAutoRecorder : public CDialog, public IWaveNotifiable
 {
 
-    enum eRecordState { WaitForSilence, WaitingForVoice, Recording, Stopping, Playing, Idle};
-    enum eRecordMode { Disabled, Record, Stop, Monitor, Play};
+    enum ERecordState { WaitForSilence, WaitingForVoice, Recording, Stopping, Playing, Idle};
+    enum ERecordMode { Disabled, Record, Stop, Monitor, PlayRecording, PlayOriginal};
 
 #define MAX_SILENCE_LEVEL 5
 #define MIN_VOICE_LEVEL 12
@@ -37,6 +37,8 @@ class CDlgAutoRecorder : public CDialog, public IWaveNotifiable
 public:
     CDlgAutoRecorder(CSaDoc * pDoc, CSaView * pParent, CSaView * pTarget, CAlignInfo & alignInfo, int wholeFile); // standard constructor
     virtual ~CDlgAutoRecorder();
+	
+	void Create( CWnd * pParent);
 
 	UINT GetRecVolume();
     void SetRecVolume(int nVolume);
@@ -53,6 +55,10 @@ public:
 	afx_msg void OnRadioBetweenCursors();
 	afx_msg void OnClickedRadioWholeFile();
 	int GetPlayWholeFile();
+	void UpdatePlayer();
+	static bool IsLaunched();
+
+    enum { IDD = IDD_AUTORECORDER };
 
 protected:
     virtual void DoDataExchange(CDataExchange * pDX); // DDX/DDV support
@@ -61,12 +67,13 @@ protected:
     void HighPassFilter();				// filter the waveform
     BOOL CreateTempFile();				// create the temporary wave file for writing
     void DeleteTempFile();				// delete the temporary wave file
-    void SetRecorderMode(eRecordMode eMode);  // set recorder mode (record, play, stop...)
+    void SetRecorderMode(ERecordMode eMode);  // set recorder mode (record, play, stop...)
 
-    void ChangeState(eRecordState eState);
+    void ChangeState(ERecordState eState);
     BOOL Apply();						// apply wave file to document
 
     virtual BOOL OnInitDialog();
+    afx_msg void OnPlay();
     afx_msg void OnStop();
     afx_msg void OnClose();
     afx_msg void OnCancel();
@@ -77,12 +84,11 @@ protected:
     afx_msg void OnRecVolumeScroll();
     afx_msg void OnKillfocusRecVolumeEdit();
     afx_msg LRESULT OnMixerControlChange(WPARAM, LPARAM);
-    afx_msg void OnPlay();
     afx_msg LRESULT OnAutoRestart(WPARAM, LPARAM);
-	afx_msg void OnPlaybackFile();
+	afx_msg void OnPlaybackOriginal();
     DECLARE_MESSAGE_MAP()
 
-    eRecordState m_eState;
+    ERecordState m_eState;
     DWORD m_dwTickCount;				// current reference time
 
 private:
@@ -92,10 +98,10 @@ private:
     BOOL OnAssignOverlay(CSaView * pView);
 
     CSaView * m_pTargetUntested;            // Be careful, stale.  Maybe deleted under your feet.
-    eRecordMode m_eMode;                    // recorder mode (record, play, stop...)
-    eRecordMode m_eOldMode;                 // previous recorder mode
+    ERecordMode m_eMode;                    // recorder mode (record, play, stop...)
+    ERecordMode m_eOldMode;                 // previous recorder mode
 
-    bool m_bStopPending;
+    bool m_bClosePending;					// the close button was pressed
 	CAlignInfo m_AlignInfo;
 	double m_dSourceLength;					// length of original source wave file
 	double m_dRecordLength;					// the amount data we will be recording.
@@ -123,11 +129,13 @@ private:
     DWORD m_dwRecordSize;                   // size of recorded data
     DWORD m_dwPlayPosition;                 // pointer in already played data
 
-    enum { IDD = IDD_AUTORECORDER };
-    UINT  m_nVolume;
-    UINT  m_nRecVolume;
+    UINT m_nVolume;
+    UINT m_nRecVolume;
 	int m_nPlayWholeFile;
 
+	virtual void PostNcDestroy();
+
+	static bool bLaunched;
 };
 
 #endif

@@ -112,6 +112,7 @@ long CProcessAdjust::Process(void * pCaller, ISaDoc * pDoc, int nProgress, int n
 
 HPSTR CProcessAdjust::GetProcessedWaveData(DWORD dwOffset, BOOL bBlockBegin)
 {
+	//TRACE("GetProcessedWaveData %d %d\n", dwOffset, bBlockBegin);
     if (NeedsAdjustment())
     {
         return CProcess::GetProcessedWaveData(dwOffset, bBlockBegin);

@@ -597,14 +597,14 @@ void CSaWorkbenchView::OnDestroy()
 /***************************************************************************/
 void CSaWorkbenchView::OnProcess0()
 {
-    CWbDlgProcesses dlgProcesses;
-    dlgProcesses.m_nProcess = 0; // set process number
-    if (dlgProcesses.DoModal() == IDOK)
+    CWbDlgProcesses dlg;
+    dlg.m_nProcess = 0; // set process number
+    if (dlg.DoModal() == IDOK)
     {
-        SetupFilterProcesses(&dlgProcesses);
+        SetupFilterProcesses(&dlg);
         // load appropriate bitmaps for filter bitmap buttons
         int nFilter1, nFilter2, nFilter3;
-        LoadAndSortFilter(dlgProcesses.m_nProcess, &nFilter1, &nFilter2, &nFilter3);
+        LoadAndSortFilter(dlg.m_nProcess, &nFilter1, &nFilter2, &nFilter3);
         m_aFilterButton[0][0].LoadBitmaps(GetFilterResource(nFilter1));
         if (nFilter1)
         {
@@ -647,14 +647,14 @@ void CSaWorkbenchView::OnProcess0()
 /***************************************************************************/
 void CSaWorkbenchView::OnProcess1()
 {
-    CWbDlgProcesses dlgProcesses;
-    dlgProcesses.m_nProcess = 1; // set process number
-    if (dlgProcesses.DoModal() == IDOK)
+    CWbDlgProcesses dlg;
+    dlg.m_nProcess = 1; // set process number
+    if (dlg.DoModal() == IDOK)
     {
-        SetupFilterProcesses(&dlgProcesses);
+        SetupFilterProcesses(&dlg);
         // load appropriate bitmaps for filter bitmap buttons
         int nFilter1, nFilter2, nFilter3;
-        LoadAndSortFilter(dlgProcesses.m_nProcess, &nFilter1, &nFilter2, &nFilter3);
+        LoadAndSortFilter(dlg.m_nProcess, &nFilter1, &nFilter2, &nFilter3);
         m_aFilterButton[1][0].LoadBitmaps(GetFilterResource(nFilter1));
         if (nFilter1)
         {
@@ -697,14 +697,14 @@ void CSaWorkbenchView::OnProcess1()
 /***************************************************************************/
 void CSaWorkbenchView::OnProcess2()
 {
-    CWbDlgProcesses dlgProcesses;
-    dlgProcesses.m_nProcess = 2; // set process number
-    if (dlgProcesses.DoModal() == IDOK)
+    CWbDlgProcesses dlg;
+    dlg.m_nProcess = 2; // set process number
+    if (dlg.DoModal() == IDOK)
     {
-        SetupFilterProcesses(&dlgProcesses);
+        SetupFilterProcesses(&dlg);
         // load appropriate bitmaps for filter bitmap buttons
         int nFilter1, nFilter2, nFilter3;
-        LoadAndSortFilter(dlgProcesses.m_nProcess, &nFilter1, &nFilter2, &nFilter3);
+        LoadAndSortFilter(dlg.m_nProcess, &nFilter1, &nFilter2, &nFilter3);
         m_aFilterButton[2][0].LoadBitmaps(GetFilterResource(nFilter1));
         if (nFilter1)
         {
@@ -747,14 +747,14 @@ void CSaWorkbenchView::OnProcess2()
 /***************************************************************************/
 void CSaWorkbenchView::OnProcess3()
 {
-    CWbDlgProcesses dlgProcesses;
-    dlgProcesses.m_nProcess = 3; // set process number
-    if (dlgProcesses.DoModal() == IDOK)
+    CWbDlgProcesses dlg;
+    dlg.m_nProcess = 3; // set process number
+    if (dlg.DoModal() == IDOK)
     {
-        SetupFilterProcesses(&dlgProcesses);
+        SetupFilterProcesses(&dlg);
         // load appropriate bitmaps for filter bitmap buttons
         int nFilter1, nFilter2, nFilter3;
-        LoadAndSortFilter(dlgProcesses.m_nProcess, &nFilter1, &nFilter2, &nFilter3);
+        LoadAndSortFilter(dlg.m_nProcess, &nFilter1, &nFilter2, &nFilter3);
         m_aFilterButton[3][0].LoadBitmaps(GetFilterResource(nFilter1));
         if (nFilter1)
         {

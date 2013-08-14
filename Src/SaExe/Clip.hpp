@@ -6,7 +6,7 @@
 
 extern "C" {
 
-	class Clipboard {
+	class CClipboard {
 
 		HWND hWindow;
 		int clipboard_open;
@@ -16,17 +16,13 @@ extern "C" {
 		unsigned int RTFFormat;
 
 	public:
-		Clipboard(HWND);
+		CClipboard(HWND);
+		~CClipboard();
 
-		Clipboard & operator <<(LPCSTR);
-		Clipboard & operator >>(char *&);
+		CClipboard & operator <<(LPCSTR);
+		CClipboard & operator >>(char *&);
 		int hasText();
-
 		void SetTextRTF(LPCSTR RTFstring, LPCSTR TEXTstring);
-
-		~Clipboard() {
-			close();
-		}
 	};
 
 }

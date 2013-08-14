@@ -155,6 +155,7 @@
     <ClCompile Include="DlgFnKeys.cpp" />
     <ClCompile Include="DlgImport.cpp" />
     <ClCompile Include="DlgImportSFMRef.cpp" />
+    <ClCompile Include="DlgInsertSilence.cpp" />
     <ClCompile Include="DlgRecorder.cpp" />
     <ClCompile Include="DlgRecorderOptions.cpp" />
     <ClCompile Include="DlgWaveformGenerator.cpp" />
@@ -342,6 +343,7 @@
     <ClCompile Include="WaveResampler.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="ClassDiagram1.cd" />
     <None Include="Export.cd" />
     <None Include="Graphs.cd" />
     <None Include="Process.cd" />
@@ -434,6 +436,7 @@
     <ClInclude Include="DlgFnKeys.h" />
     <ClInclude Include="DlgImport.h" />
     <ClInclude Include="DlgImportSFMRef.h" />
+    <ClInclude Include="DlgInsertSilence.h" />
     <ClInclude Include="DlgRecorder.h" />
     <ClInclude Include="DlgRecorderOptions.h" />
     <ClInclude Include="DlgWaveformGenerator.h" />

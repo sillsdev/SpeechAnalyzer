@@ -288,14 +288,8 @@ private:
     void MouseClick(UINT nFlags, CPoint point);
 public:
     void Init(UINT nID, CWnd * pParent);
-    int GetID()
-    {
-        return m_nID;   // get spin control ID
-    }
-    BOOL UpperButtonClicked()
-    {
-        return m_bUpButtonDown;   // return TRUE if upper button hit
-    }
+    int GetID();
+    BOOL UpperButtonClicked();
 
     // Generated message map functions
 protected:

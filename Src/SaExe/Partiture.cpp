@@ -4012,7 +4012,7 @@ LRESULT CALLBACK PartitureProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam)
     }
     case WM_COPY:
     {
-        Clipboard Clip(hWnd);
+        CClipboard Clip(hWnd);
         struct SPartWindowData * pwd = (struct SPartWindowData *)GetWindowLong(hWnd,GWL_USERDATA);
         if (pwd)
         {
@@ -4155,7 +4155,7 @@ LRESULT CALLBACK PartitureProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam)
     }
     case WM_PASTE:
     {
-        Clipboard Clip(hWnd);
+        CClipboard Clip(hWnd);
         if (Clip.hasText())
         {
             struct SPartWindowData * pwd = (struct SPartWindowData *)GetWindowLong(hWnd,GWL_USERDATA);

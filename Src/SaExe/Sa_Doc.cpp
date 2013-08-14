@@ -150,6 +150,7 @@
 #include "settings\obstream.h"
 #include "settings\tools.h"
 #include "dsp\fragment.h"
+#include "DlgInsertSilence.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE
@@ -194,6 +195,8 @@ BEGIN_MESSAGE_MAP(CSaDoc, CDocument)
     ON_UPDATE_COMMAND_UI(ID_TOOLS_ADJUST_ZERO, OnUpdateToolsAdjustZero)
     ON_COMMAND(ID_AUTOMATICMARKUP_REFERENCEDATA, OnAutoReferenceData)
     ON_UPDATE_COMMAND_UI(ID_AUTOMATICMARKUP_REFERENCEDATA, OnUpdateAutoReferenceData)
+    ON_COMMAND(ID_TOOLS_ADJUST_SILENCE, OnToolsAdjustSilence)
+    ON_UPDATE_COMMAND_UI(ID_TOOLS_ADJUST_SILENCE, OnUpdateToolsAdjustSilence)
 END_MESSAGE_MAP()
 
 static LPCSTR IMPORT_END = "import";
@@ -2383,18 +2386,18 @@ void CSaDoc::WriteTranscription(int transType, ISaAudioDocumentWriterPtr saAudio
 	TRACE("trans length = %d\n",wTransLength);
 
     CSaString szAnnotation = _T("");
-    DWORD dwOffset = m_apSegments[transType]->GetOffset(0);
-    DWORD dwLength = m_apSegments[transType]->GetDuration(0);
+	DWORD dwOffset = m_apSegments[transType]->GetOffset(0) * m_FmtParm.wChannels;
+    DWORD dwLength = m_apSegments[transType]->GetDuration(0) * m_FmtParm.wChannels;
 
     for (int i = 0; i < (int)wTransLength; i++)
     {
-        if (dwOffset != m_apSegments[transType]->GetOffset(i))
+        if (dwOffset != m_apSegments[transType]->GetOffset(i) * m_FmtParm.wChannels)
         {
             // Write annotation
-            saAudioDocWriter->AddSegment(transType, dwOffset, dwLength, (_bstr_t)szAnnotation);
+            saAudioDocWriter->AddSegment( transType, dwOffset, dwLength, (_bstr_t)szAnnotation);
             szAnnotation.Empty();
-            dwOffset = m_apSegments[transType]->GetOffset(i);
-            dwLength = m_apSegments[transType]->GetDuration(i);
+            dwOffset = m_apSegments[transType]->GetOffset(i) * m_FmtParm.wChannels;
+            dwLength = m_apSegments[transType]->GetDuration(i) * m_FmtParm.wChannels;
         }
 
         szAnnotation += szFullTrans[i];
@@ -4413,7 +4416,7 @@ BOOL CSaDoc::PutWaveToClipboard( WAVETIME sectionStart, WAVETIME sectionLength, 
 // It pastes the data into the wave file at the position (in bytes) given as parameter. 
 // In case of error it returns FALSE, else TRUE.
 /***************************************************************************/
-BOOL CSaDoc::PasteClipboardToWave( HGLOBAL hData, DWORD dwPastePos)
+BOOL CSaDoc::PasteClipboardToWave( HGLOBAL hData, CURSORPOS dwPastePos)
 {
 
     TRACE("dwPastPos=%d\n",dwPastePos);
@@ -4441,8 +4444,8 @@ BOOL CSaDoc::PasteClipboardToWave( HGLOBAL hData, DWORD dwPastePos)
         TCHAR lpszRawTempPath[_MAX_PATH];
         GetTempFileName(_T("WAV"), lpszRawTempPath, _countof(lpszRawTempPath));
 
-		WAVETIME start = fromSamples( 0);
-		WAVETIME length = fromBytes( dwPastePos, true);
+		WAVETIME start = toTimeFromSamples( 0);
+		WAVETIME length = toTime( dwPastePos, true);
 		CopyWave( m_szRawDataWrk.c_str(), lpszRawTempPath, start, length, TRUE);
 
         // increase the size of the file
@@ -4464,8 +4467,8 @@ BOOL CSaDoc::PasteClipboardToWave( HGLOBAL hData, DWORD dwPastePos)
             return FALSE;
         }
 
-		start = fromBytes( dwPastePos, true);
-		length = fromBytes( 0xffffffff, true);
+		start = toTime( dwPastePos, true);
+		length = toTime( 0xffffffff, true);
 		CopyWave(m_szRawDataWrk.c_str(), lpszRawTempPath, start, length, FALSE);
         RemoveFile(m_szRawDataWrk.c_str());
         m_szRawDataWrk = lpszRawTempPath;
@@ -4487,12 +4490,155 @@ BOOL CSaDoc::PasteClipboardToWave( HGLOBAL hData, DWORD dwPastePos)
     POSITION pos = GetFirstViewPosition();
     ((CSaView *)GetNextView(pos))->SetStartStopCursorPosition( dwPastePos, dwPastePos+dwPasteSize, SNAP_BOTH, ALIGN_AT_SAMPLE);
 
-	WAVETIME start = fromBytes( dwPastePos, true);
-	WAVETIME length = fromBytes( dwPasteSize, true);
+	WAVETIME start = toTime( dwPastePos, true);
+	WAVETIME length = toTime( dwPasteSize, true);
     AdjustSegments( start, length, false);  // adjust segments to new file size
 
     //Get new segments
     InsertTranscriptions( pApp->GetLastClipboardPath(), dwPastePos);
+
+    return TRUE;
+}
+
+/***************************************************************************
+* CSaDoc::PasteClipboardToWave inserts a section of silence into the current
+* wave.
+* silence - the length to insert specified in seconds.
+* insertAt - the location where to insert the new section.  this is for
+* a single channel and may need to be converted
+* In case of error it returns FALSE, else TRUE.
+***************************************************************************/
+BOOL CSaDoc::InsertSilenceIntoWave( WAVETIME silence, WAVETIME insertAt)
+{
+    TRACE("start=%d\n",insertAt);
+
+    CSaApp * pApp = (CSaApp *)AfxGetApp();
+
+	CURSORPOS dwSilenceSize = toCursor( silence); 
+
+    // open temporary wave file
+    {
+        TCHAR lpszRawTempPath[_MAX_PATH];
+        GetTempFileName(_T("WAV"), lpszRawTempPath, _countof(lpszRawTempPath));
+
+		// copy the 'pre' section part of the wave
+		WAVETIME start = toTimeFromSamples( 0);
+		WAVETIME length = insertAt;
+		CopyWave( m_szRawDataWrk.c_str(), lpszRawTempPath, start, length, TRUE);
+
+        // increase the size of the file
+        try
+        {
+			// get pointer to view and app
+			POSITION pos = GetFirstViewPosition();
+			CSaView * pView = (CSaView *)GetNextView(pos);
+			CSaApp * pApp = (CSaApp *)AfxGetApp();
+
+			CFile file;
+			// open the file
+			if (!file.Open(lpszRawTempPath, CFile::modeReadWrite | CFile::shareExclusive))
+			{
+				// error opening file
+				pApp->ErrorMessage(IDS_ERROR_OPENTEMPFILE, lpszRawTempPath);
+				Undo(FALSE);
+				return FALSE;
+			}
+			// seek insert position
+			try
+			{
+				DWORD dwTemp = toBytes( insertAt, false);
+				file.Seek( dwTemp, CFile::begin);
+			}
+			catch (CFileException e)
+			{
+				// error opening file
+				pApp->ErrorMessage(IDS_ERROR_OPENTEMPFILE, lpszRawTempPath);
+				Undo(FALSE);
+				return FALSE;
+			}
+
+			// calculate the data size
+			DWORD dwSizeLeft = toBytes( silence, false);
+
+			// use local buffer
+			char buffer[0x10000];
+			memset(buffer,0,_countof(buffer));
+			DWORD lSizeRead = _countof(buffer);
+
+			VirtualLock(buffer, _countof(buffer));
+			while (dwSizeLeft)
+			{
+				// read the waveform data block
+				if ((DWORD)lSizeRead > dwSizeLeft)
+				{
+					lSizeRead = (long)dwSizeLeft;
+				}
+				dwSizeLeft -= (DWORD)lSizeRead;
+
+				// write the data block from the buffer
+				try
+				{
+					file.Write(buffer, (DWORD)lSizeRead);
+				}
+				catch (CFileException e)
+				{
+					// error writing file
+					pApp->ErrorMessage(IDS_ERROR_WRITETEMPFILE, lpszRawTempPath);
+					m_dwDataSize = 0;		// no data available
+					SetModifiedFlag(FALSE); // will be unable to save
+					pView->SendMessage(WM_COMMAND, ID_FILE_CLOSE, 0L); // close file
+					Undo(FALSE);
+					return FALSE;
+				}
+			}
+
+			VirtualUnlock(buffer, _countof(buffer));
+
+			file.Close();
+
+			// read temporary file status and set new data size
+			m_dwDataSize = GetFileSize(m_szRawDataWrk.c_str());
+
+			// fragment the waveform
+			m_pProcessFragments->SetDataInvalid();  // remove old fragmented data
+        }
+        catch (CFileException e)
+        {
+            // error writing file
+            pApp->ErrorMessage(IDS_ERROR_WRITETEMPFILE, lpszRawTempPath);
+            return FALSE;
+        }
+
+		// copy the 'post' section part of the wave
+		length =  (WAVETIME)GetFileSize(m_szRawDataWrk.c_str());
+		length /= (WAVETIME)GetBytesPerSample(false);
+		length /= (WAVETIME)GetSamplesPerSec();
+		CopyWave( m_szRawDataWrk.c_str(), lpszRawTempPath, insertAt, length, FALSE);
+
+		// all done!
+        RemoveFile(m_szRawDataWrk.c_str());
+        m_szRawDataWrk = lpszRawTempPath;
+    }
+
+
+    // SDM 1.06.6U4 - Change Document after checkpoint (except wave)
+    // register for undo function
+    m_bWaveUndoNow = TRUE;
+    CheckPoint();
+    m_bWaveUndoNow = FALSE;
+    m_nCheckPointCount++;
+
+    // set new data size
+    m_dwDataSize += (dwSilenceSize*GetNumChannels());
+
+	SetModifiedFlag(TRUE); // data has been modified
+    SetAudioModifiedFlag();
+
+    POSITION pos = GetFirstViewPosition();
+	CURSORPOS startPos = toCursor( insertAt);
+    ((CSaView *)GetNextView(pos))->SetStartStopCursorPosition( startPos, startPos+dwSilenceSize, SNAP_BOTH, ALIGN_AT_SAMPLE);
+
+	AdjustSegments( insertAt, silence, false);  // adjust segments to new file size
 
     return TRUE;
 }
@@ -4507,7 +4653,7 @@ void CSaDoc::DeleteWaveFromUndo()
 
     // first undo until no more wave entries or end of list found
     int nUndoCount = 0;
-    while (CanUndo() && m_nCheckPointCount)
+    while ((CanUndo()) && (m_nCheckPointCount>0))
     {
         Undo(TRUE, TRUE); // undo and add to redo list
         if (IsWaveToUndo())
@@ -4536,12 +4682,12 @@ void CSaDoc::DeleteWaveFromUndo()
 
 /***************************************************************************/
 // CSaDoc::UndoWaveFile Undo a wave file change
-// All wave undo entries have to be undone all the previous undos also have
-// to, they will not be able to be redone.
+// All wave undo entries have to be undone 
+// all the previous undos also have to, they will not be able to be redone.
 /***************************************************************************/
 void CSaDoc::UndoWaveFile()
 {
-    while (CanUndo() && m_nCheckPointCount)
+    while (CanUndo() && (m_nCheckPointCount))
     {
         Undo(FALSE, TRUE); // undo but no redo
     }
@@ -4552,6 +4698,7 @@ void CSaDoc::UndoWaveFile()
 
     InvalidateAllProcesses();
     m_bWaveUndoNow = FALSE;
+
     // Clear Redo List
     CheckPoint();
     Undo(FALSE, FALSE); // SDM 1.5Test10.5
@@ -5187,7 +5334,7 @@ DWORD CSaDoc::GetRawDataSize() const
 /***************************************************************************/
 HPSTR CSaDoc::GetWaveData(DWORD dwOffset, BOOL bBlockBegin)
 {
-    //TRACE("GetWaveData %d\n",dwOffset);
+    //TRACE("GetWaveData %d %d\n",dwOffset,bBlockBegin);
     if (m_nWbProcess>0)
     {
         CProcess * pWbProcess = ((CMainFrame *)AfxGetMainWnd())->GetWbProcess(m_nWbProcess - 1, 0);
@@ -5735,7 +5882,7 @@ void CSaDoc::OnUpdateFileSave(CCmdUI * pCmdUI)
     }
     else
     {
-        pCmdUI->Enable((IsModified() || m_nWbProcess));    // path name ok, enable if dirty or processed
+        pCmdUI->Enable((IsModified() || (m_nWbProcess)));    // path name ok, enable if dirty or processed
     }
 }
 
@@ -5809,10 +5956,10 @@ void CSaDoc::OnFileSaveAs()
         CSaDoc * pDoc = this;
         POSITION pos = pDoc->GetFirstViewPosition();
         CSaView * pView = (CSaView *)pDoc->GetNextView(pos);
-        DWORD dwStart = pView->GetStartCursorPosition();
-        DWORD dwStop = pView->GetStopCursorPosition();
-		WAVETIME start = pDoc->fromCursor( dwStart);
-		WAVETIME stop = pDoc->fromCursor( dwStop);
+        CURSORPOS dwStart = pView->GetStartCursorPosition();
+        CURSORPOS dwStop = pView->GetStopCursorPosition();
+		WAVETIME start = pDoc->toTime( (CURSORPOS)dwStart);
+		WAVETIME stop = pDoc->toTime( (CURSORPOS)dwStop);
         bSuccess = CopySectionToNewWavFile( start, stop-start,fileName, TRUE);
     }
     else if (dlg.m_nSaveArea == CDlgSaveAsOptions::saveView)
@@ -5833,7 +5980,7 @@ void CSaDoc::OnFileSaveAs()
     else if (dlg.m_nShowFiles != CDlgSaveAsOptions::showNew)
     {
 		WAVETIME start = 0;
-		WAVETIME length = fromBytes( GetDataSize(), true);
+		WAVETIME length = toTime( GetDataSize(), true);
         bSuccess = CopySectionToNewWavFile( start, length, fileName, TRUE);
     }
     else
@@ -5914,11 +6061,11 @@ void CSaDoc::OnFileSaveAs()
 }
 
 /***************************************************************************/
-// CSaDoc::OnUpdateFileSave Menu Update
+// CSaDoc::OnUpdateFileSaveAs Menu Update
 /***************************************************************************/
-void CSaDoc::OnUpdateFileSplit(CCmdUI * pCmdUI)
+void CSaDoc::OnUpdateFileSaveAs(CCmdUI * pCmdUI)
 {
-    pCmdUI->Enable(!((CSaApp *) AfxGetApp())->GetBatchMode() && !m_bMultiChannel);
+    pCmdUI->Enable(!((CSaApp *)AfxGetApp())->GetBatchMode() && (!m_bMultiChannel)); // SDM 1.5Test8.2
 }
 
 /***************************************************************************/
@@ -6135,6 +6282,14 @@ void CSaDoc::OnFileSplitFile()
 }
 
 /***************************************************************************/
+// CSaDoc::OnUpdateFileSplit Menu Update
+/***************************************************************************/
+void CSaDoc::OnUpdateFileSplit(CCmdUI * pCmdUI)
+{
+    pCmdUI->Enable(!((CSaApp *) AfxGetApp())->GetBatchMode() && (!m_bMultiChannel));
+}
+
+/***************************************************************************/
 // CSaDoc::CopyProcessTempFile
 // Copies either the Waveform Adjust process or Workbench process temp file
 // over the raw waveform temp file to prepare for saving.
@@ -6193,14 +6348,6 @@ void CSaDoc::CopyProcessTempFile()
         }
         m_nWbProcess = 0;
     }
-}
-
-/***************************************************************************/
-// CSaDoc::OnUpdateFileSaveAs Menu Update
-/***************************************************************************/
-void CSaDoc::OnUpdateFileSaveAs(CCmdUI * pCmdUI)
-{
-    pCmdUI->Enable(!((CSaApp *)AfxGetApp())->GetBatchMode() && (!m_bMultiChannel)); // SDM 1.5Test8.2
 }
 
 // SDM 1.06.5 Removed unused command handlers
@@ -8494,7 +8641,7 @@ BOOL CSaDoc::CopySectionToNewWavFile( WAVETIME sectionStart, WAVETIME sectionLen
 
     // Set segments to selected wave
     // adjust segments to new file size
-	WAVETIME length = fromBytes( GetDataSize(), true);
+	WAVETIME length = toTime( GetDataSize(), true);
     AdjustSegments( sectionStart+sectionLength, length-(sectionStart+sectionLength), true);
     AdjustSegments( 0, sectionStart, TRUE);
 
@@ -8973,6 +9120,7 @@ BOOL CSaDoc::IsWaveToUndo()
 
 HPSTR CSaDoc::GetUnprocessedWaveData(DWORD dwOffset, BOOL bBlockBegin)
 {
+	//TRACE("GetUnprocessedWaveData %d %d\n", dwOffset, bBlockBegin);
     return m_ProcessDoc.GetProcessedWaveData( GetProcessFilename(), GetSelectedChannel(), GetNumChannels(), GetSampleSize(), dwOffset, bBlockBegin);
 }
 
@@ -9110,7 +9258,10 @@ wstring CSaDoc::GetTranscriptionFilename()
 	return result;
 }
 
-WAVETIME CSaDoc::fromBytes( DWORD bytes, bool singleChannel)
+/*
+* convert a position - in bytes into time.
+*/
+WAVETIME CSaDoc::toTime( CURSORPOS bytes, bool singleChannel)
 {
 	WAVETIME result = (WAVETIME)bytes;
 	result /= (WAVETIME)GetBytesPerSample(singleChannel);
@@ -9118,36 +9269,79 @@ WAVETIME CSaDoc::fromBytes( DWORD bytes, bool singleChannel)
 	return result;
 }
 
-DWORD CSaDoc::toBytes( WAVETIME val, bool singleChannel)
-{
-	WAVETIME result = val;
-	result *= GetSamplesPerSec();
-	result *= GetBytesPerSample(singleChannel);
-	return (DWORD)result;
-}
-
-WAVETIME CSaDoc::fromSamples( WAVESAMP samples)
+WAVETIME CSaDoc::toTimeFromSamples( WAVESAMP samples)
 {
 	WAVETIME result = (WAVETIME)samples;
 	result /= (WAVETIME)GetSamplesPerSec();
 	return result;
 }
 
-WAVESAMP CSaDoc::toSamples( WAVETIME val)
-{
-	WAVETIME result = val;
-	result *= GetSamplesPerSec();
-	return (WAVESAMP)result;
-}
-
 /**
-* return position in time from cursor position, which is always for a single channel
+* convert cursor position ( a single channel) into time
 */
-WAVETIME CSaDoc::fromCursor( CURSORPOS val)
+WAVETIME CSaDoc::toTime( CURSORPOS val)
 {
 	WAVETIME result = (WAVETIME)val;
 	result /= (WAVETIME)GetBytesPerSample(true);
 	result /= (WAVETIME)GetSamplesPerSec();
 	return result;
+}
+
+DWORD CSaDoc::toBytes( WAVETIME val, bool singleChannel)
+{
+	val *= GetSamplesPerSec();
+	// round up to nearest sample
+	DWORD dwResult = ::ceil(val);
+	dwResult *= GetBytesPerSample(singleChannel);
+	return dwResult;
+}
+
+WAVESAMP CSaDoc::toSamples( WAVETIME val)
+{
+	val *= GetSamplesPerSec();
+	WAVESAMP dwResult = ::ceil(val);
+	return (WAVESAMP)dwResult;
+}
+
+CURSORPOS CSaDoc::toCursor( WAVETIME val)
+{
+	val *= GetSamplesPerSec();
+	// round up to nearest sample
+	CURSORPOS dwResult = ::ceil(val);
+	dwResult *= GetBytesPerSample(true);
+	return (CURSORPOS)dwResult;
+}
+
+CURSORPOS CSaDoc::toCursor( WAVESAMP val)
+{
+	val *= GetBytesPerSample(true);
+	return (CURSORPOS)val;
+}
+
+void CSaDoc::OnToolsAdjustSilence()
+{
+    CheckPoint();
+
+    POSITION pos = GetFirstViewPosition();
+    CSaView * pView = (CSaView *)GetNextView(pos);  // get pointer to view
+	CURSORPOS oldStart = pView->GetStartCursorPosition();
+	CURSORPOS oldStop = pView->GetStopCursorPosition();
+
+	CDlgInsertSilence dlg(this);
+	if (dlg.DoModal()!=IDOK)
+	{
+		UndoWaveFile();
+		// get wave from the clipboard
+		InvalidateAllProcesses();
+		// restore the cursors
+		pView->SetStartCursorPosition(oldStart);
+		pView->SetStopCursorPosition(oldStop);
+		pView->RefreshGraphs(TRUE);
+	}
+}
+
+void CSaDoc::OnUpdateToolsAdjustSilence(CCmdUI * pCmdUI)
+{
+	pCmdUI->Enable(TRUE);
 }
 

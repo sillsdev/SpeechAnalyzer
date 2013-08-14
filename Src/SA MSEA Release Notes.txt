@@ -1,3 +1,11 @@
+SA - 3.1.0.64 - 8/14/2013 (stereo branch)
+1) Added instruction to copy Sa.exe to SaServer.exe during installation compile.
+2) Fixed state bug where recording and playing can occur at the same time when using 'between cursors'.  The state machine now blocks until playback is completed.
+3) Added the word 'transcription' to the 'Edit/Transcription/Copy Phonetic to Phonemic' menu item.
+4) Added 'Insert Silence' feature
+5) Made the record-overlay feature dialog modeless.
+6) Added stop button to record-overlay feature dialog.
+
 SA - 3.1.0.62 - 7/22/2013 (stereo branch)
 1) Fixed problems with positioning and truncating of overlay data that occurs when using auto recorder.
 2) Added 'Entire File' menu choice for SaServer

@@ -34,7 +34,7 @@
 // Displays the player that allows the user to control the wave data playing
 // process, done by the CWave class.
 
-bool CDlgPlayer::bPlayer = false; // player not launched at startup
+bool CDlgPlayer::bLaunched = false; // player not launched at startup
 
 BEGIN_MESSAGE_MAP(CDlgPlayer, CDialog)
     ON_COMMAND(IDC_PLAY, OnPlay)
@@ -87,10 +87,11 @@ CDlgPlayer::CDlgPlayer(CWnd * pParent) : CDialog(CDlgPlayer::IDD, pParent)
 /***************************************************************************/
 CDlgPlayer::~CDlgPlayer()
 {
-    bPlayer = false;
+    bLaunched = false;
     if (m_pWave!=NULL)
     {
         delete m_pWave;
+		m_pWave=NULL;
     }
     DestroyWindow();
 }
@@ -100,7 +101,7 @@ CDlgPlayer::~CDlgPlayer()
 /***************************************************************************/
 BOOL CDlgPlayer::Create()
 {
-    bPlayer = true; // player launched
+    bLaunched = true; // player launched
     return CDialog::Create(CDlgPlayer::IDD);
 }
 
@@ -223,8 +224,9 @@ const UINT CDlgPlayer::SubModeUndefined = 0x0ffff;
 bool CDlgPlayer::SetPlayerMode( EMode mode, UINT nSubMode, BOOL bFullSize, BOOL bFnKey, SSpecific * pSpecific)
 {
 
-    TRACE(_T("SetPlayerMode %d %d %d %d\n"),(int)mode,(int)nSubMode,(int)bFullSize,(int)bFnKey);
+    TRACE(_T(">>SetPlayerMode %d->%d\n"),m_nMode,mode);
     nSubMode = nSubMode & 0x0ffff;
+
     // SDM 1.06.6U6
     if ((m_bFnKeySetting) && (!bFnKey ||(nSubMode != SubModeUndefined)|| !m_bRepeat))
     {
@@ -244,6 +246,7 @@ bool CDlgPlayer::SetPlayerMode( EMode mode, UINT nSubMode, BOOL bFullSize, BOOL 
             AfxGetMainWnd()->PostMessage(WM_COMMAND, ID_PROCESS_BATCH_COMMANDS, 0L);    // SDM 1.5Test8.5 resume batch command
         }
     }
+
     // SDM 1.06.6U6 bFnKey not valid for nSubMode = SubModeUndefined (this is a repeat command or stop command)
     if ((bFnKey) && (nSubMode != SubModeUndefined))
     {
@@ -296,6 +299,7 @@ bool CDlgPlayer::SetPlayerMode( EMode mode, UINT nSubMode, BOOL bFullSize, BOOL 
     {
         m_nSubMode = nSubMode;    // save submode
     }
+
     // set mode combobox, but only if not called for full size
     if (!bFullSize)
     {
@@ -329,6 +333,7 @@ bool CDlgPlayer::SetPlayerMode( EMode mode, UINT nSubMode, BOOL bFullSize, BOOL 
     {
         SetPlayerFullSize();    // change the size
     }
+
     // No errors
     if (m_nMode == mode)
     {
@@ -339,6 +344,7 @@ bool CDlgPlayer::SetPlayerMode( EMode mode, UINT nSubMode, BOOL bFullSize, BOOL 
     {
         m_pWave->Stop();
     }
+
     SetTotalTime();
     SetPositionTime();
     DWORD dwSize, dwStart = 0;
@@ -359,7 +365,7 @@ bool CDlgPlayer::SetPlayerMode( EMode mode, UINT nSubMode, BOOL bFullSize, BOOL 
         m_pause.EnableWindow(TRUE); // enable Pause button
         GetDlgItem(IDC_PLAYMODE)->EnableWindow(FALSE); // disable mode window
         // get pointer to document
-        if (m_pWave)
+        if (m_pWave!=NULL)
         {
             BOOL bError = FALSE;
             switch (m_nSubMode)
@@ -466,7 +472,8 @@ bool CDlgPlayer::SetPlayerMode( EMode mode, UINT nSubMode, BOOL bFullSize, BOOL 
                 SetDlgItemText(IDC_TIMERTEXT, _T("Current Time"));
                 m_pView->SetPlaybackPosition(dwStart); // SDM 1.5Test10.5
 
-				AfxGetMainWnd()->PostMessageW( WM_USER_UPDATE_PLAYER, 0, 0);
+				//TRACE("Post UPDATE_PLAYER 1\n");
+				AfxGetMainWnd()->PostMessageW( WM_USER_UPDATE_PLAYER, 1, 0		);
 
                 bError = !m_pWave->Play(m_dwPlayPosition, dwStart + dwSize - m_dwPlayPosition, m_nVolume, m_nSpeed, m_pView, &m_NotifyObj);
             }
@@ -499,24 +506,31 @@ bool CDlgPlayer::SetPlayerMode( EMode mode, UINT nSubMode, BOOL bFullSize, BOOL 
         break;
 
     case STOPPED:
-        m_nMode = STOPPED;
-        if (m_pWave)
-        {
-            m_pWave->Stop();
-        }
-        m_dwPlayPosition = 0;
-        SetPositionTime();
-		m_pView->StopPlaybackTimer();
-        m_pView->SetPlaybackPosition();     // SDM 1.06.6U6 hide playback indicators
+		{
+			bool postUpdate = (m_nMode==PLAYING)?true:false;
+			m_nMode = STOPPED;
+			if (m_pWave)
+			{
+				m_pWave->Stop();
+			}
+			m_dwPlayPosition = 0;
+			SetPositionTime();
+			m_pView->StopPlaybackTimer();
+			m_pView->SetPlaybackPosition();     // SDM 1.06.6U6 hide playback indicators
 
-		AfxGetMainWnd()->PostMessageW(  WM_USER_UPDATE_PLAYER, 0, 0);
+			if (postUpdate)
+			{
+				//TRACE("Post UPDATE_PLAYER 2\n");
+				AfxGetMainWnd()->PostMessageW(  WM_USER_UPDATE_PLAYER, 2, 0);
+			}
 
-        m_play.Release();                   // release Play button
-        m_stop.Release();                   // release Stop button
-        m_pause.Release();                  // release Pause button
-        m_pause.EnableWindow(FALSE);        // disable Pause button
-        GetDlgItem(IDC_PLAYMODE)->EnableWindow(TRUE); // disable mode window
-        m_VUBar.Reset();
+			m_play.Release();                   // release Play button
+			m_stop.Release();                   // release Stop button
+			m_pause.Release();                  // release Pause button
+			m_pause.EnableWindow(FALSE);        // disable Pause button
+			GetDlgItem(IDC_PLAYMODE)->EnableWindow(TRUE); // disable mode window
+			m_VUBar.Reset();
+		}
         break;
 
     default:
@@ -549,7 +563,8 @@ void CDlgPlayer::BlockFinished(UINT nLevel, DWORD dwPosition, UINT nSpeed)
 
     m_pView->SetPlaybackPosition( dwPosition, nSpeed);
 
-	AfxGetMainWnd()->PostMessageW(  WM_USER_UPDATE_PLAYER, 0, 0);
+	//TRACE("Post UPDATE_PLAYER 3\n");
+	AfxGetMainWnd()->PostMessageW(  WM_USER_UPDATE_PLAYER, 3, 0);
 
     // update the VU bar
     m_VUBar.SetVU((int)nLevel);
@@ -1108,12 +1123,12 @@ void CDlgPlayer::OnClose()
 {
     OnStop(); // stop the player
     CDialog::OnClose();
-    bPlayer = false;
-    if (m_pWave)
+    bLaunched = false;
+    if (m_pWave!=NULL)
     {
         delete m_pWave;
+		m_pWave=NULL;
     }
-    m_pWave = NULL;
     DestroyWindow();
 }
 
@@ -1217,5 +1232,5 @@ bool CDlgPlayer::IsTestRun()
 
 bool CDlgPlayer::IsLaunched()
 {
-	return bPlayer;
+	return bLaunched;
 }

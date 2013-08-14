@@ -58,7 +58,6 @@ HPSTR CProcessDoc::GetProcessedWaveData( LPCTSTR szName, int selectedChannel, in
     }
 
     //TRACE(L"GetProcessedWaveData %s %d %d %d %d %d %d %d\n", szName, selectedChannel, numChannels, sampleSize, dwOffset, bBlockBegin,m_dwBufferOffset,_countof(m_Buffer));
-
     if (((!bBlockBegin) && ((dwOffset >= m_dwBufferOffset) && (dwOffset < m_dwBufferOffset + _countof(m_Buffer)))) ||
          ((bBlockBegin) && (m_dwBufferOffset == dwOffset)))
     {

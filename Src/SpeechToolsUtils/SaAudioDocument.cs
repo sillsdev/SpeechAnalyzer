@@ -387,12 +387,10 @@ namespace SIL.SpeechTools.Utils
 		/// file) to its equivalent value in seconds.
 		/// </summary>
 		/// ------------------------------------------------------------------------------------
-		public static double BytesToSeconds(ulong byteVal, int channels, long samplesPerSec,
-			int bitsPerSample)
+		public static double BytesToSeconds( ulong byteVal, int channels, long samplesPerSec, int bitsPerSample)
 		{
 			int bytesPerSample = (bitsPerSample / 8) * channels;
 			long bytesPerSecond = bytesPerSample * samplesPerSec;
-
 			return (double)byteVal / (double)bytesPerSecond;
 		}
 
@@ -421,16 +419,14 @@ namespace SIL.SpeechTools.Utils
 		public double BytesToSeconds(ulong byteVal)
 		{
 			// Make sure we have valid sampling rate, channels and bits per sample
-			string audioFilePath = (m_audioFile != null || s_audioFileLoading == null)
-				? m_audioFile : s_audioFileLoading;
+			string audioFilePath = (m_audioFile != null || s_audioFileLoading == null) ? m_audioFile : s_audioFileLoading;
 			if (m_samplesPerSecond == -1)
 			{
 				if (!File.Exists(audioFilePath) || !GetAudioFormatValues(audioFilePath))
 					return 0;
 			}
 
-			return BytesToSeconds(byteVal, m_channels,
-				m_samplesPerSecond, m_bitsPerSample);
+			return BytesToSeconds(byteVal, m_channels, m_samplesPerSecond, m_bitsPerSample);
 		}
 
 		/// ------------------------------------------------------------------------------------
@@ -442,8 +438,7 @@ namespace SIL.SpeechTools.Utils
 		public uint SecondsToBytes(double seconds)
 		{
 			// Make sure we have valid sampling rate, channels and bits per sample
-			string audioFilePath = (m_audioFile != null || s_audioFileLoading == null)
-				? m_audioFile : s_audioFileLoading;
+			string audioFilePath = (m_audioFile != null || s_audioFileLoading == null) ? m_audioFile : s_audioFileLoading;
 			if (m_samplesPerSecond == -1)
 			{
 				if (!File.Exists(audioFilePath) || !GetAudioFormatValues(audioFilePath))
@@ -451,8 +446,7 @@ namespace SIL.SpeechTools.Utils
 			}
 
 
-			return SecondsToBytes(seconds, m_channels,
-				m_samplesPerSecond, m_bitsPerSample);
+			return SecondsToBytes(seconds, m_channels, m_samplesPerSecond, m_bitsPerSample);
 		}
 
 		/// ------------------------------------------------------------------------------------

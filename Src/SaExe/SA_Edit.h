@@ -21,7 +21,6 @@
 //      SDM fix bug on close of TE which cancel previous change & ESC would not cancel see 1.06.6U4 & 1.5Test8.2
 /////////////////////////////////////////////////////////////////////////////
 
-
 #include "resource.h"
 
 //###########################################################################
@@ -32,7 +31,6 @@ class CSegment;
 class CMainFrame;
 class CSaDoc;
 class CSaView;
-
 
 class CDlgEditor : public CDialog
 {

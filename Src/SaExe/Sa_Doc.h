@@ -213,7 +213,9 @@ public:
 	// copies wave data out of the wave file
     BOOL PutWaveToClipboard( WAVETIME sectionStart, WAVETIME sectionLength, BOOL bDelete = FALSE); 
 	// pastes wave data into the wave file
-    BOOL PasteClipboardToWave(HGLOBAL hGlobal, DWORD dwPastePos);  
+    BOOL PasteClipboardToWave(HGLOBAL hGlobal, CURSORPOS dwPastePos);
+	BOOL InsertSilenceIntoWave( WAVETIME silence, WAVETIME start);
+
     void DeleteWaveFromUndo();		// deletes a wave undo entry from the undo list
     void UndoWaveFile();			// undo a wave file change
     BOOL IsWaveToUndo();
@@ -268,10 +270,13 @@ public:
     DWORD GetAvgBytesPerSec();
     DWORD GetNumChannels() const;
     DWORD GetNumSamples() const;
-	WAVETIME fromCursor( CURSORPOS val);
-	WAVETIME fromBytes( DWORD val, bool singleChannel);
+
+	WAVETIME toTime( CURSORPOS val);
+	WAVETIME toTime( CURSORPOS val, bool singleChannel);
+	WAVETIME toTimeFromSamples( WAVESAMP val);
+	CURSORPOS toCursor( WAVETIME val);
+	CURSORPOS toCursor( WAVESAMP val);
 	DWORD toBytes( WAVETIME val, bool singleChannel);
-	WAVETIME fromSamples( WAVESAMP val);
 	DWORD toSamples( WAVETIME val);
 
 	CSaString GetTempFilename();
@@ -324,6 +329,8 @@ protected:
     afx_msg void OnUpdateToolsAdjustNormalize(CCmdUI * pCmdUI);
     afx_msg void OnToolsAdjustZero();
     afx_msg void OnUpdateToolsAdjustZero(CCmdUI * pCmdUI);
+    afx_msg void OnToolsAdjustSilence();
+    afx_msg void OnUpdateToolsAdjustSilence(CCmdUI * pCmdUI);
 
     int m_nTranscriptionApplicationCount;
 

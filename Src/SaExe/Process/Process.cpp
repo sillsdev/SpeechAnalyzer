@@ -26,7 +26,6 @@ CProcess::CProcess()
 {
 	m_fileStatus.m_size = 0;
 	m_fileStatus.m_attribute = 0;
-	m_fileStatus._m_padding = 0;
 	wmemset(m_fileStatus.m_szFullName,0,_countof(m_fileStatus.m_szFullName));
 
 	m_nStatus = PROCESS_IDLE;

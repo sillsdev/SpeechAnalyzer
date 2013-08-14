@@ -117,7 +117,7 @@ void CUndoRedoDoc::CheckPoint()
     }
     catch (...)
     {
-        if (file)
+        if (file!=NULL)
         {
             delete file;
         }

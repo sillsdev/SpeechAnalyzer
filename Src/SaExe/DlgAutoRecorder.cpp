@@ -39,7 +39,6 @@
 // CDlgAutoRecorder message map
 
 BEGIN_MESSAGE_MAP(CDlgAutoRecorder, CDialog)
-    ON_BN_CLICKED(IDC_STOP, OnStop)
     ON_WM_CLOSE()
     ON_COMMAND(IDC_VOLUMESLIDER, OnVolumeSlide)
     ON_COMMAND(IDC_VOLUMESCROLL, OnVolumeScroll)
@@ -52,11 +51,15 @@ BEGIN_MESSAGE_MAP(CDlgAutoRecorder, CDialog)
     ON_WM_DESTROY()
     ON_MESSAGE(WM_USER_AUTO_RESTART, OnAutoRestart)
     ON_BN_CLICKED(IDC_PLAY, OnPlay)
+    ON_BN_CLICKED(IDC_STOP, OnStop)
+    ON_BN_CLICKED(IDC_CLOSE, OnClose)
     ON_COMMAND(IDHELP, OnHelpAutoRecorder)
-	ON_BN_CLICKED(ID_PLAYBACK_FILE, &CDlgAutoRecorder::OnPlaybackFile)
+	ON_BN_CLICKED(ID_PLAYBACK_FILE, &CDlgAutoRecorder::OnPlaybackOriginal)
 	ON_COMMAND(IDC_RADIO_BETWEEN_CURSORS, &CDlgAutoRecorder::OnRadioBetweenCursors)
 	ON_BN_CLICKED(IDC_RADIO_WHOLE_FILE, &CDlgAutoRecorder::OnClickedRadioWholeFile)
 END_MESSAGE_MAP()
+
+bool CDlgAutoRecorder::bLaunched = false;
 
 /***************************************************************************/
 // CDlgAutoRecorder::CDlgAutoRecorder Constructor
@@ -69,7 +72,7 @@ CDialog(IDD)
 
 	m_nPlayWholeFile = playWholeFile;
 
-    m_bStopPending = false;
+    m_bClosePending = false;
     m_pDoc = pDoc;
     m_pView = pView;
     m_pTargetUntested = pTarget;
@@ -83,7 +86,7 @@ CDialog(IDD)
     ChangeState(WaitForSilence);
 
     m_NotifyObj.Attach(this); // attach notify object
-    m_pWave = new CWave;      // create CWave object
+    m_pWave = new CWave();      // create CWave object
     BOOL bResult = FALSE;
     m_nVolume = m_pWave->GetVolume(bResult);
     m_dwRecordSize = 0;
@@ -115,8 +118,57 @@ CDlgAutoRecorder::~CDlgAutoRecorder()
     CleanUp();
 }
 
-/////////////////////////////////////////////////////////////////////////////
-// CDlgAutoRecorder helper functions
+void CDlgAutoRecorder::Create( CWnd * pParent)
+{
+	CDialog::Create( IDD, pParent);
+	bLaunched = true;
+}
+
+/***************************************************************************/
+// CDlgAutoRecorder::OnInitDialog Dialog initialization
+// All the necessary special control windows have to be created and placed
+// over their placeholders in the dialog. The dialog is centered over the
+// mainframe window.
+/***************************************************************************/
+BOOL CDlgAutoRecorder::OnInitDialog()
+{
+    ASSERT(m_pDoc);
+    ASSERT(m_pView);
+
+    // load and update for title bar
+    GetWindowText(m_szTitle);
+    ChangeState(WaitForSilence);
+
+    CDialog::OnInitDialog();
+    m_pWave->GetOutDevice()->ConnectMixer(this);
+    m_pWave->GetInDevice()->ConnectMixer(this);
+
+    m_LEDTotalTime.Init(IDC_TOTALTIME, this);
+    m_LEDTotalTime.SetTime(100, 1000);
+    // build and place the position time LED window
+    m_LEDPosTime.Init(IDC_POSITIONTIME, this);
+    m_LEDPosTime.SetTime(0, 0);
+    // build and place the VUbar window
+    m_VUBar.Init(IDC_VUBAR, this);
+    m_VUBar.SetVU(0);
+
+    // build and place the volume slider windows
+    m_SliderVolume.Init(IDC_VOLUMESLIDER, this);
+    m_SliderRecVolume.Init(IDC_RECVOLUMESLIDER, this);
+    m_SpinVolume.Init(IDC_VOLUMESCROLL, this);
+    m_SpinRecVolume.Init(IDC_RECVOLUMESCROLL, this);
+
+    OnMixerControlChange(0,0);
+
+    SetRecorderMode(Monitor);       // initialize the buttons
+
+	GetDlgItem(IDC_PLAY)->EnableWindow(FALSE);
+	GetDlgItem(IDC_STOP)->EnableWindow(FALSE);
+	GetDlgItem(IDC_STOP)->ShowWindow(SW_HIDE);
+	GetDlgItem(ID_PLAYBACK_FILE)->EnableWindow(TRUE);
+
+    return TRUE;  // return TRUE  unless you set the focus to a control
+}
 
 /***************************************************************************/
 // CDlgAutoRecorder::DoDataExchange Data exchange
@@ -167,18 +219,18 @@ void CDlgAutoRecorder::BlockStored(UINT nLevel, DWORD dwPosition, BOOL * bSaveOv
     {
     case WaitForSilence:
         ASSERT(m_eMode == Monitor);
-        if (m_bStopPending)
+        if (m_bClosePending)
         {
             ChangeState(Stopping);
         }
         else if (GetTickCount() - m_dwTickCount > 2*1000)
         {
-            SetRecorderMode( Record);            // start recording now
+            SetRecorderMode(Record);            // start recording now
             ChangeState(WaitingForVoice);
         }
         else if (nLevel >= MIN_VOICE_LEVEL)
         {
-            m_dwTickCount = GetTickCount(); // Restart silence timer
+            m_dwTickCount = GetTickCount();		// Restart silence timer
         }
         break;
 
@@ -188,7 +240,7 @@ void CDlgAutoRecorder::BlockStored(UINT nLevel, DWORD dwPosition, BOOL * bSaveOv
         {
             *bSaveOverride = FALSE;
         }
-        if (m_bStopPending)
+        if (m_bClosePending)
         {
             ChangeState(Stopping);
         }
@@ -214,7 +266,7 @@ void CDlgAutoRecorder::BlockStored(UINT nLevel, DWORD dwPosition, BOOL * bSaveOv
 				DWORD stop = pView->GetStopCursorPosition();
 				// add one 16k buffer to account for data that may be skipped because it is below the min voicing level.
 				DWORD margin = m_pDoc->GetTimeFromBytes( 16384);
-				stop+margin;
+				stop += margin;
 				m_dRecordLength = m_pDoc->GetTimeFromBytes( stop-start); // calculate time
 				if (m_dRecordLength>m_dSourceLength)
 				{
@@ -224,6 +276,11 @@ void CDlgAutoRecorder::BlockStored(UINT nLevel, DWORD dwPosition, BOOL * bSaveOv
 
 			TRACE(_T("recording %f seconds of data\n"),m_dRecordLength);
             ChangeState(Recording);
+			GetDlgItem(IDC_STOP)->EnableWindow(TRUE);
+			GetDlgItem(IDC_STOP)->ShowWindow(SW_SHOW);
+			GetDlgItem(IDC_PLAY)->EnableWindow(FALSE);
+			GetDlgItem(IDC_PLAY)->ShowWindow(SW_HIDE);
+			GetDlgItem(ID_PLAYBACK_FILE)->EnableWindow(FALSE);
         }
         break;
     
@@ -236,7 +293,7 @@ void CDlgAutoRecorder::BlockStored(UINT nLevel, DWORD dwPosition, BOOL * bSaveOv
         TRACE(_T("recording %f %f\n"),fDataSec,m_dRecordLength);
 
 		// the user pushed the stop button, stop
-        if (m_bStopPending)
+        if (m_bClosePending)
         {
             ChangeState(Stopping);
         }
@@ -266,66 +323,66 @@ void CDlgAutoRecorder::BlockStored(UINT nLevel, DWORD dwPosition, BOOL * bSaveOv
         // update the time
 		fDataSec = SetPositionTime( m_dwRecordSize);
         TRACE(_T("stopping at %f. limit=%f\n"),fDataSec, m_dRecordLength);
-        if (m_bStopPending)
+        if (m_bClosePending)
         {
             SetRecorderMode(Stop);
             ChangeState(Idle);
             StartShutdown();
+			break;
         }
-        else
+
+        ASSERT(m_eMode == Record);
+        // we've reached 2 seconds of silence
+        // stop recording, but don't delete the wave file.
+        if (m_eMode != Stop)
         {
-            ASSERT(m_eMode == Record);
-            // we've reached 2 seconds of silence
-            // stop recording, but don't delete the wave file.
-            if (m_eMode != Stop)
-            {
-                m_pWave->Stop();    // stop recording
-            }
-            if (m_pDoc->GetSaParm()->wFlags & SA_FLAG_HIGHPASS)
-            {
-                HighPassFilter();
-            }
+			StopWave();
+        }
+        if (m_pDoc->GetSaParm()->wFlags & SA_FLAG_HIGHPASS)
+        {
+            HighPassFilter();
+        }
 
-            ASSERT(m_hmmioFile);
-            m_VUBar.SetVU(0); // reset the VU bar
-            m_eMode = Stop;
-			if ((m_eMode == Record) || 
-				((m_eMode == Monitor) && (m_eOldMode == Record)))
-			{
-	            SetPositionTime(m_dwRecordSize);
-			}
+        ASSERT(m_hmmioFile);
+        m_VUBar.SetVU(0); // reset the VU bar
+        m_eMode = Stop;
+		if ((m_eMode == Record) || 
+			((m_eMode == Monitor) && (m_eOldMode == Record)))
+		{
+	        SetPositionTime(m_dwRecordSize);
+		}
 
-            if (((m_bFileReady) && (!m_bFileApplied)) &&
-                 (m_dwRecordSize > 0))
+        if (((m_bFileReady) && (!m_bFileApplied)) &&
+            (m_dwRecordSize > 0))
+        {
+            if (!Apply())
             {
-                if (!Apply())
+                m_bFileReady = FALSE;
+                CleanUp();
+                break;
+            }
+            GetDlgItem(IDC_PLAY)->EnableWindow(TRUE);
+            GetDlgItem(IDC_PLAY)->ShowWindow(SW_SHOW);
+			GetDlgItem(IDC_STOP)->EnableWindow(FALSE);
+			GetDlgItem(IDC_STOP)->ShowWindow(SW_HIDE);
+        }
+
+        GetDlgItem(ID_PLAYBACK_FILE)->EnableWindow(TRUE);
+
+        // disable the wave device so it can be restarted
+        SetRecorderMode(Stop);
+
+        // if the data is applied, restart recording
+        // if the apply didn't work, then it's time to stop
+        if (!m_bClosePending)
+        {
+            CSaView * pTarget = GetTarget();
+            if (pTarget!=NULL)
+            {
+                LRESULT lResult = OnAssignOverlay(m_pView);
+                if (lResult)
                 {
-                    m_bFileReady = FALSE;
-                    CleanUp();
-                    break;
-                }
-                GetDlgItem(IDC_PLAY)->EnableWindow(TRUE);
-            }
-
-            // disable the wave device so it can be restarted
-            SetRecorderMode(Stop);
-
-            // if the data is applied, restart recording
-            // if the apply didn't work, then it's time to stop
-            if (!m_bStopPending)
-            {
-                CSaView * pTarget = GetTarget();
-                if (pTarget!=NULL)
-                {
-                    LRESULT lResult = OnAssignOverlay(m_pView);
-                    if (lResult)
-                    {
-                        PostMessage(WM_USER_AUTO_RESTART,0,0);
-                    }
-                    else
-                    {
-                        StartShutdown();
-                    }
+                    PostMessage(WM_USER_AUTO_RESTART,0,0);
                 }
                 else
                 {
@@ -336,8 +393,12 @@ void CDlgAutoRecorder::BlockStored(UINT nLevel, DWORD dwPosition, BOOL * bSaveOv
             {
                 StartShutdown();
             }
-            ChangeState(Idle);
         }
+        else
+        {
+            StartShutdown();
+        }
+        ChangeState(Idle);
         break;
 
     case Idle:
@@ -380,8 +441,8 @@ void CDlgAutoRecorder::BlockFinished(UINT nLevel, DWORD dwPosition, UINT)
 /***************************************************************************/
 void CDlgAutoRecorder::EndPlayback()
 {
-    TRACE(_T("End Playback\n"));
-    if (m_eMode == Play)
+    TRACE(_T("End Playback %d\n"),m_eMode);
+    if ((m_eMode == PlayRecording) || (m_eMode == PlayOriginal))
     {
         SetRecorderMode(Record);            // start recording now
         ChangeState(WaitingForVoice);
@@ -533,9 +594,9 @@ void CDlgAutoRecorder::HighPassFilter()
 /***************************************************************************/
 // CDlgAutoRecorder::SetRecorderMode Set the recorder mode
 /***************************************************************************/
-void CDlgAutoRecorder::SetRecorderMode(eRecordMode eMode)
+void CDlgAutoRecorder::SetRecorderMode( ERecordMode eMode)
 {
-	TRACE("setrecordermode\n");
+	TRACE("SetRecorderMode %d %d\n",m_eMode, eMode);
     if ((m_eMode == eMode) && (m_eMode != Stop))
     {
         return;    // no change
@@ -595,25 +656,37 @@ void CDlgAutoRecorder::SetRecorderMode(eRecordMode eMode)
         m_VUBar.SetVU(0);
         break;
 
-    case Play:
+    case PlayRecording:
 		{
 			StopWave();
-			m_eMode = Play;
+			m_eMode = PlayRecording;
 			// play back the recorded file
 			DWORD start = 0;
 			DWORD size = m_pDoc->GetDataSize();
+			// are we only playing a portion?
+			// playing of the whole file is initiated with a windows message in the caller.
 			if (m_nPlayWholeFile!=0)
 			{
 				CMainFrame * pFrame = (CMainFrame *)AfxGetMainWnd();
 				CSaView * pView = pFrame->GetCurrSaView();
 				start = pView->GetStartCursorPosition();
-				size = m_pDoc->GetDataSize()-start;
+				DWORD stop = pView->GetStopCursorPosition();
+				size = stop-start;
 			}
 			if (!m_pWave->Play( start, size, m_nVolume, 100, m_pView, &m_NotifyObj))
 			{
 				SetRecorderMode(Record);            // start recording now
 				ChangeState(WaitingForVoice);
 			}
+		}
+        break;
+
+    case PlayOriginal:
+		{
+			StopWave();
+			m_eMode = PlayOriginal;
+			// play back the recorded file
+			// playing of the original is initiated with a windows message in the caller.
 		}
         break;
 
@@ -853,6 +926,7 @@ BOOL CDlgAutoRecorder::Apply()
 		CAlignInfo info = m_AlignInfo;
 		info.dTotalLength = m_dRecordLength;
 
+		// are we playing a section?
 		if (m_nPlayWholeFile!=0)
 		{
 			CMainFrame * pFrame = (CMainFrame *)AfxGetMainWnd();
@@ -873,57 +947,14 @@ BOOL CDlgAutoRecorder::Apply()
     return TRUE;
 }
 
-/////////////////////////////////////////////////////////////////////////////
-// CDlgAutoRecorder message handlers
-
 /***************************************************************************/
-// CDlgAutoRecorder::OnInitDialog Dialog initialization
-// All the necessary special control windows have to be created and placed
-// over their placeholders in the dialog. The dialog is centered over the
-// mainframe window.
+// CDlgAutoRecorder::OnClose The close button was pressed
 /***************************************************************************/
-BOOL CDlgAutoRecorder::OnInitDialog()
+void CDlgAutoRecorder::OnClose()
 {
-    ASSERT(m_pDoc);
-    ASSERT(m_pView);
-
-    // load and update for title bar
-    GetWindowText(m_szTitle);
-    ChangeState(WaitForSilence);
-
-    CDialog::OnInitDialog();
-    m_pWave->GetOutDevice()->ConnectMixer(this);
-    m_pWave->GetInDevice()->ConnectMixer(this);
-
-    m_LEDTotalTime.Init(IDC_TOTALTIME, this);
-    m_LEDTotalTime.SetTime(100, 1000);
-    // build and place the position time LED window
-    m_LEDPosTime.Init(IDC_POSITIONTIME, this);
-    m_LEDPosTime.SetTime(0, 0);
-    // build and place the VUbar window
-    m_VUBar.Init(IDC_VUBAR, this);
-    m_VUBar.SetVU(0);
-
-    // build and place the volume slider windows
-    m_SliderVolume.Init(IDC_VOLUMESLIDER, this);
-    m_SliderRecVolume.Init(IDC_RECVOLUMESLIDER, this);
-    m_SpinVolume.Init(IDC_VOLUMESCROLL, this);
-    m_SpinRecVolume.Init(IDC_RECVOLUMESCROLL, this);
-
-    OnMixerControlChange(0,0);
-
-    SetRecorderMode(Monitor);       // initialize the buttons
-
-    return TRUE;  // return TRUE  unless you set the focus to a control
-}
-
-/***************************************************************************/
-// CDlgAutoRecorder::OnStop Button stop hit
-/***************************************************************************/
-void CDlgAutoRecorder::OnStop()
-{
-    m_bStopPending = true;
-    if (m_eState == Idle || m_eState == Playing)
+    m_bClosePending = true;
+    AfxGetApp()->WriteProfileInt(L"AutoRecorder",L"WholeFile",GetPlayWholeFile());
+    if ((m_eState == Idle) || (m_eState == Playing))
     {
         StartShutdown();
     }
@@ -936,11 +967,13 @@ void CDlgAutoRecorder::OnStop()
 }
 
 /***************************************************************************/
-// CDlgAutoRecorder::OnClose Close the dialog
+// CDlgAutoRecorder::OnStop The stop button was pressed.
+// Just stop the recording
 /***************************************************************************/
-void CDlgAutoRecorder::OnClose()
+void CDlgAutoRecorder::OnStop()
 {
-    OnStop();
+	TRACE("OnStop\n");
+    ChangeState(Stopping);
 }
 
 /***************************************************************************/
@@ -951,7 +984,8 @@ void CDlgAutoRecorder::OnClose()
 void CDlgAutoRecorder::OnCancel()
 {
     OnStop();
-    CDialog::OnCancel();
+    //CDialog::OnCancel();
+	DestroyWindow();
 }
 
 /***************************************************************************/
@@ -987,8 +1021,10 @@ LRESULT CDlgAutoRecorder::OnAutoRestart(WPARAM, LPARAM)
     return 0;
 }
 
-void CDlgAutoRecorder::ChangeState(eRecordState eState)
+void CDlgAutoRecorder::ChangeState(ERecordState eState)
 {
+	TRACE("ChangeState %d %d\n", m_eState, eState);
+
     if (m_hWnd)
     {
         CString str;
@@ -1004,9 +1040,10 @@ void CDlgAutoRecorder::ChangeState(eRecordState eState)
             str.LoadString(IDS_AUTO_RECORD);
             break;
         case Stopping:
-            str.LoadString((m_bStopPending)?IDS_AUTO_STOPPING:IDS_AUTO_PROCESSING);
+            str.LoadString((m_bClosePending)?IDS_AUTO_STOPPING:IDS_AUTO_PROCESSING);
             break;
         case Playing:
+            str.LoadString(IDS_AUTO_PLAYING);
             break;
         case Idle:
             break;
@@ -1032,7 +1069,7 @@ void CDlgAutoRecorder::StartShutdown()
 {
     // tell the host the user requested a stop, cancel or esc
     // the host will destroy this window and destroy the document
-    TRACE(_T("\nRecorder stopping recorder\n\n"));
+    TRACE(_T("StartShutdown\n"));
 
     // destroy the recorder..
     CSaView * pTarget = GetTarget();
@@ -1063,12 +1100,13 @@ void CDlgAutoRecorder::StartShutdown()
         pDoc = docList.pdocNext();
     }
 
-    EndDialog(IDOK);
+    //EndDialog(IDOK);
+	DestroyWindow();
 }
 
 void CDlgAutoRecorder::StopWave()
 {
-    if (m_pWave)
+    if (m_pWave!=NULL)
     {
         m_pWave->Stop();
     }
@@ -1078,9 +1116,9 @@ CSaView * CDlgAutoRecorder::GetTarget()
 {
     CDocList docList;
     CSaDoc * pDoc = docList.pdocFirst();
-    while (pDoc)
+    while (pDoc!=NULL)
     {
-        if (m_pTargetUntested)
+        if (m_pTargetUntested!=NULL)
         {
             POSITION pos = pDoc->GetFirstViewPosition();
             if (pos)
@@ -1096,7 +1134,7 @@ CSaView * CDlgAutoRecorder::GetTarget()
         pDoc = docList.pdocNext();
     }
 
-    if (m_pTargetUntested)
+    if (m_pTargetUntested!=NULL)
     {
         // target view destroyed close dialog
         m_pTargetUntested = NULL;
@@ -1313,20 +1351,26 @@ BOOL CDlgAutoRecorder::OnAssignOverlay(CSaView * pSourceView)
     return bFound;
 }
 
+// playback the recording
 void CDlgAutoRecorder::OnPlay()
 {
 	UpdateData(TRUE);
-    if (m_eMode != Play)
+    if ((m_eMode != PlayRecording) && (m_eMode != PlayOriginal))
     {
-        SetRecorderMode(Play);
+        SetRecorderMode(PlayRecording);
         ChangeState(Playing);
     }
 }
 
-
-void CDlgAutoRecorder::OnPlaybackFile()
+// playback the original
+void CDlgAutoRecorder::OnPlaybackOriginal()
 {
 	CMainFrame * pFrame = (CMainFrame *)AfxGetMainWnd();
+    if ((m_eMode != PlayRecording) && (m_eMode != PlayOriginal))
+    {
+        SetRecorderMode(PlayOriginal);
+        ChangeState(Playing);
+    }
 	if (m_nPlayWholeFile==0)
 	{
 		DWORD lParam = MAKELONG(ID_PLAYBACK_FILE, FALSE);
@@ -1337,7 +1381,6 @@ void CDlgAutoRecorder::OnPlaybackFile()
 		DWORD lParam = MAKELONG(ID_PLAYBACK_CURSORS, FALSE);
 		pFrame->SendMessage(WM_USER_PLAYER, CDlgPlayer::PLAYING, lParam);	// send message to start player
 	}
-
 }
 
 HMMIO CDlgAutoRecorder::GetFileHandle()
@@ -1360,4 +1403,25 @@ void CDlgAutoRecorder::OnClickedRadioWholeFile()
 int CDlgAutoRecorder::GetPlayWholeFile()
 {
 	return m_nPlayWholeFile;
+}
+
+void CDlgAutoRecorder::UpdatePlayer()
+{
+	CMainFrame * pFrame = (CMainFrame *)AfxGetMainWnd();
+	if (pFrame!=NULL)
+	{
+		if (!pFrame->IsPlayerPlaying()) {
+		}
+	}
+}
+
+void CDlgAutoRecorder::PostNcDestroy()
+{
+	delete this;
+	bLaunched = false;
+}
+
+bool CDlgAutoRecorder::IsLaunched()
+{
+	return bLaunched;
 }

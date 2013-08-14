@@ -165,11 +165,12 @@ protected:
     WINDOWPLACEMENT m_wplDlgEditor;
     BOOL m_bIsPrinting;
     BOOL m_bPrintPreviewInProgress;
-    CDisplayPlot * m_pDisplayPlot;
     HMENU m_hNewMenu;
     HACCEL m_hNewAccel;
     int m_nPopup;
     CToolSettings toolSettings;
+    CDisplayPlot * m_pDisplayPlot;
+	CDlgAutoRecorder * m_pAutoRecorder;
 
 public:
     BOOL bToolBarVisible();			// toolbar on/off

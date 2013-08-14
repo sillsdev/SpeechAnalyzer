@@ -34,7 +34,7 @@ CDlgWaveNotifyObj::~CDlgWaveNotifyObj()
 {
 }
 
-void CDlgWaveNotifyObj::Attach(IWaveNotifiable * pClient)
+void CDlgWaveNotifyObj::Attach( IWaveNotifiable * pClient)
 {
     m_pClient = pClient;
 }
@@ -121,7 +121,7 @@ HPSTR CDlgWaveNotifyObj::GetWaveData(CView * pView, DWORD dwPlayPosition, DWORD 
 {
 
     //TRACE("GetWaveData %d %d\n",dwPlayPosition, dwDataSize);
-    ASSERT(m_pClient);
+    ASSERT(m_pClient!=NULL);
     CMainFrame * pMainWnd = (CMainFrame *)AfxGetMainWnd();
     // check if player is playing
     if (pMainWnd->IsPlayerPlaying() || pMainWnd->IsPlayerTestRun())
@@ -129,8 +129,10 @@ HPSTR CDlgWaveNotifyObj::GetWaveData(CView * pView, DWORD dwPlayPosition, DWORD 
         // request for data comes from player
         CSaDoc * pDoc = (CSaDoc *)pView->GetDocument();
         DWORD dwWaveBufferSize = pDoc->GetWaveDataBufferSize();
+		// if the request is outside of the documents buffer or
         if (((dwPlayPosition + dwDataSize) > (pDoc->GetWaveBufferIndex() + dwWaveBufferSize)) ||
-                ((dwPlayPosition + dwDataSize) > (dwPlayPosition - (dwPlayPosition % dwWaveBufferSize) + dwWaveBufferSize)))
+			// the request is greater than the buffer?
+            ((dwPlayPosition + dwDataSize) > (dwPlayPosition - (dwPlayPosition % dwWaveBufferSize) + dwWaveBufferSize)))
         {
             return pDoc->GetWaveData(dwPlayPosition, TRUE);     // get pointer to data block
         }

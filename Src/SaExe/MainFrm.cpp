@@ -237,6 +237,7 @@ CMainFrame::CMainFrame()
     //SDM 1.06.5
     m_pDlgEditor = NULL;              // editor
     m_bIsPrinting = FALSE;
+	m_pAutoRecorder = NULL;
 
     // reset workbench processes and filter IDs
     for (int nLoop = 0; nLoop < MAX_PROCESS_NUMBER; nLoop++)
@@ -318,6 +319,7 @@ CMainFrame::CMainFrame()
     m_bPrintPreviewInProgress = FALSE;
     m_wplDlgEditor.length = 0;	// SDM 1.5Test8.2
     m_pDisplayPlot = NULL;		// SDM 1.5Test8.5
+	m_pAutoRecorder = NULL;
     m_hNewMenu = NULL;			// SDM 1.5Test8.5
     m_hNewAccel = NULL;			// SDM 1.5Test8.5
     m_nPopup = 0;				// SDM 1.5Test8.5
@@ -377,6 +379,11 @@ CMainFrame::~CMainFrame()
         delete m_pDefaultViewConfig;
         m_pDefaultViewConfig = NULL;
     }
+	if (CDlgAutoRecorder::IsLaunched())
+	{
+		m_pAutoRecorder->SendMessage(WM_CLOSE);
+		m_pAutoRecorder = NULL;
+	}
 
     DestroySynthesizer();
     CDlgKlattAll::DestroySynthesizer();
@@ -392,7 +399,7 @@ CMainFrame::~CMainFrame()
             }
     }
 
-    if (m_pDisplayPlot)
+    if (m_pDisplayPlot!=NULL)
     {
         // SDM 1.5Test8.5
         delete m_pDisplayPlot;
@@ -956,12 +963,12 @@ CDlgPlayer * CMainFrame::GetPlayer(bool bCreate)
         {
             return NULL;
         }
-
-        if (m_pDlgPlayer)
+        if (m_pDlgPlayer!=NULL)
         {
             delete m_pDlgPlayer;		// delete old dialog object
+			m_pDlgPlayer = NULL;
         }
-        m_pDlgPlayer = new CDlgPlayer;	// create new player object
+        m_pDlgPlayer = new CDlgPlayer();	// create new player object
 
         if (!CDlgPlayer::IsLaunched())  // player dialog not launched
         {
@@ -1107,7 +1114,7 @@ LRESULT CMainFrame::OnIdleUpdate(WPARAM /*wParam*/, LPARAM /*lParam*/)
 /***************************************************************************/
 BOOL CMainFrame::IsEditAllowed()
 {
-    if (m_pDisplayPlot)
+    if (m_pDisplayPlot!=NULL)
     {
         return FALSE;
     }
@@ -1165,22 +1172,23 @@ void CMainFrame::OnUpdateEditReplace(CCmdUI * pCmdUI)
 // informed to stop playing immediatly and to change caption. The statusbar
 // panes have to be cleared if there is no more view.
 /***************************************************************************/
-LRESULT CMainFrame::OnChangeView(WPARAM wParam, LPARAM lParam)
+LRESULT CMainFrame::OnChangeView( WPARAM wParam, LPARAM lParam)
 {
-    if (m_pDlgFind)
+    if (m_pDlgFind!=NULL)
     {
-        if (wParam)
+        if (wParam!=FALSE)
         {
             m_pDlgFind->ChangeView();
         }
         else
         {
             m_pDlgFind->SendMessage(WM_CLOSE);
+			m_pDlgFind = NULL;
         }
     }
     if (CDlgPlayer::IsLaunched())						// player dialog launched
     {
-        if (wParam)
+        if (wParam!=FALSE)
         {
             GetPlayer(false)->ChangeView((CSaView *)lParam);    // inform player
         }
@@ -1189,7 +1197,16 @@ LRESULT CMainFrame::OnChangeView(WPARAM wParam, LPARAM lParam)
             GetPlayer(false)->SendMessage(WM_CLOSE);    // last view closed, close player too
         }
     }
-    if (!wParam)   // last view closed
+	if (CDlgAutoRecorder::IsLaunched())
+	{
+		if (wParam==FALSE)
+		{
+			m_pAutoRecorder->SendMessage(WM_CLOSE);
+			m_pAutoRecorder = NULL;
+		}
+	}
+
+    if (wParam==FALSE)   // last view closed
     {
         // turn off symbols
         m_dataStatusBar.SetPaneSymbol(ID_STATUSPANE_SAMPLES, FALSE);
@@ -1281,15 +1298,23 @@ void CMainFrame::OnClose()
     if (CDlgPlayer::IsLaunched())
     {
         m_pDlgPlayer->SendMessage(WM_CLOSE);
+		m_pDlgPlayer = NULL;
     }
 
     //******************************************************
     // If find dialog open then close it.
     //******************************************************
-    if (m_pDlgFind)
+    if (m_pDlgFind!=NULL)
     {
         m_pDlgFind->SendMessage(WM_CLOSE);
+		m_pDlgFind = NULL;
     }
+
+	if (CDlgAutoRecorder::IsLaunched())
+	{
+		m_pAutoRecorder->SendMessage(WM_CLOSE);
+		m_pAutoRecorder = NULL;
+	}
 
     CMDIFrameWnd::OnClose();
 }
@@ -2722,18 +2747,16 @@ void CMainFrame::OnRecordOverlay()
             CSaView * pView = (CSaView *)pDoc->GetNextView(pos);
             if (pView->IsKindOf(RUNTIME_CLASS(CSaView)))
             {
-			    int wholeFile = (AfxGetApp()->GetProfileInt(L"AutoRecorder",L"WholeFile",0)!=0);
-                CDlgAutoRecorder dlg( pDoc, pView, pSourceView, alignInfo, wholeFile);
-                if (m_pDisplayPlot!=NULL)
-                {
-                    m_pDisplayPlot->m_pModal = &dlg;
-                }
-                dlg.DoModal();
-                if (m_pDisplayPlot!=NULL)
-                {
-                    m_pDisplayPlot->m_pModal = NULL;
-                }
-		        AfxGetApp()->WriteProfileInt(L"AutoRecorder",L"WholeFile",dlg.GetPlayWholeFile());
+				if (!CDlgAutoRecorder::IsLaunched())
+				{
+					int wholeFile = (AfxGetApp()->GetProfileInt(L"AutoRecorder",L"WholeFile",0)!=0);
+					m_pAutoRecorder = new CDlgAutoRecorder( pDoc, pView, pSourceView, alignInfo, wholeFile);
+					if (m_pDisplayPlot!=NULL)
+					{
+						m_pDisplayPlot->m_pModal = m_pAutoRecorder;
+					}
+					m_pAutoRecorder->Create(this);
+				}
             }
         }
         else
@@ -3128,12 +3151,16 @@ void CMainFrame::OnAutoSaveOff()
 	m_bAutoSave = FALSE;
 }
 
-LRESULT CMainFrame::OnUpdatePlayer(WPARAM, LPARAM)
+LRESULT CMainFrame::OnUpdatePlayer( WPARAM wParam, LPARAM /*lParam*/)
 {
-	TRACE("updating\n");
 	if (m_pDlgEditor!=NULL)
 	{
 		m_pDlgEditor->UpdatePlayer();
 	}
+	if (CDlgAutoRecorder::IsLaunched())
+	{
+		if (wParam ==2) m_pAutoRecorder->EndPlayback();
+	}
 	return 0;
 }
+

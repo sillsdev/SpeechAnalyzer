@@ -6,6 +6,8 @@
 #define IDS_ACTIVEX_PPG                 2
 #define IDC_CUSTOM                      3
 #define IDS_COPY                        3
+#define IDOK2                           3
+#define IDC_INSERT                      3
 #define ID_START_MODE_RECORD            4
 #define IDS_STRING4                     4
 #define IDS_STRING5                     5
@@ -149,7 +151,6 @@
 #define IDD_SPLIT                       360
 #define IDD_MULTICHANNEL                362
 #define IDD_AUTO_REFERENCE_DATA         363
-#define IDD_DIALOG1                     365
 #define IDC_HIGHPASS                    502
 #define ID_STATUSPANE_EMPTY             700
 #define ID_STATUSPANE_1                 701
@@ -315,6 +316,7 @@
 #define IDC_COLORSANNOTSETUP            1081
 #define IDC_COLORSOVERLAY               1082
 #define IDS_AUTO_WAITING_SILENCE        1083
+#define IDC_CLOSE                       1084
 #define IDC_VIEWCAPTION                 1085
 #define IDC_COLORSSCALESETUP            1086
 #define IDD_EXPORT_FW                   1087
@@ -329,6 +331,7 @@
 #define IDS_ERROR_SINGLETON             1101
 #define IDS_ERROR_RANGE                 1102
 #define IDS_AUTO_PROCESSING             1103
+#define IDS_AUTO_PLAYING                1104
 #define IDC_RECORD                      1109
 #define IDC_FONTSGRAPHSETUP             1126
 #define IDC_FONT                        1130
@@ -1209,6 +1212,10 @@
 #define IDC_RADIO1                      2083
 #define IDC_RADIO_WHOLE_FILE            2083
 #define IDC_RADIO_BETWEEN_CURSORS       2084
+#define IDC_CANCEL                      2085
+#define IDC_SPIN1                       2087
+#define IDC_EDIT_SILENCE                2088
+#define IDC_SPIN_SILENCE                2089
 #define IDS_PLAYER_SMALL                3000
 #define IDS_PLAYER_LARGE                3001
 #define IDS_STATTXT_PROCESSING          4000
@@ -1452,6 +1459,7 @@
 #define ID_GRAPHS_WINDOWCOPY            33076
 #define ID_PLAYBACK_SLOW                33082
 #define IDD_DP_RAWDATA                  33083
+#define IDD_INSERT_SILENCE              33084
 #define IDD_DP_GRAPITCH                 33085
 #define IDD_DP_SPECTROGRAM              33086
 #define ID_DP_RAWDATA                   33087
@@ -1542,9 +1550,9 @@
 #define IDS_SPLIT_NO_PHRASE_ANNOTATION  33214
 #define IDS_SPLIT_BAD_DIRECTORY         33215
 #define IDS_GLOSS_EMPTY_ANNOTATION      33216
-#define IDS_SPLIT_COMPLETE              33218
-#define IDS_CONFIRM_PHONEMIC_COPY       33219
-#define ID_EDIT_COPY_PHONETIC_TO_PHONEMIC 33220
+#define IDS_SPLIT_COMPLETE              33217
+#define IDS_CONFIRM_PHONEMIC_COPY       33218
+#define ID_EDIT_COPY_PHONETIC_TO_PHONEMIC 33219
 #define IDS_SPLIT_INCOMPLETE            33220
 #define ID_AUTOMATICMARKUP_REFERENCEDATA 33221
 #define ID_FILE_PHONOLOGYASSISTANT      33224
@@ -1558,6 +1566,7 @@
 #define ID_FILE_AUTOSAVE                33234
 #define ID_AUTOSAVE_ON                  33235
 #define ID_AUTOSAVE_OFF                 33236
+#define ID_TOOLS_ADJUST_SILENCE         33236
 #define ID_GRAPHTYPES_SELECT_FIRST      40000
 #define ID_GRAPHTYPES_SELECT_LAST       40011
 #define ID_PHONETIC_ALL                 40100
@@ -1703,9 +1712,9 @@
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_3D_CONTROLS                     1
-#define _APS_NEXT_RESOURCE_VALUE        367
-#define _APS_NEXT_COMMAND_VALUE         33234
-#define _APS_NEXT_CONTROL_VALUE         2085
+#define _APS_NEXT_RESOURCE_VALUE        368
+#define _APS_NEXT_COMMAND_VALUE         33237
+#define _APS_NEXT_CONTROL_VALUE         2090
 #define _APS_NEXT_SYMED_VALUE           105
 #endif
 #endif

@@ -466,6 +466,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\DlgInsertSilence.cpp"
+				>
+			</File>
+			<File
 				RelativePath="Synthesis\DlgKlattAll.cpp"
 				>
 				<FileConfiguration
@@ -3476,6 +3480,10 @@
 			</File>
 			<File
 				RelativePath=".\DlgImportSFMRef.h"
+				>
+			</File>
+			<File
+				RelativePath=".\DlgInsertSilence.h"
 				>
 			</File>
 			<File

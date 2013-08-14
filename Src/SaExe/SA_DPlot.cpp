@@ -19,6 +19,7 @@
 #include "sa.h"
 #include "sa_dplot.h"
 #include "doclist.h"
+#include "DlgAutoRecorder.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE
@@ -135,7 +136,7 @@ CDisplayPlot::CDisplayPlot(CString & szPlot)
 
 CDisplayPlot::~CDisplayPlot()
 {
-    if (m_pModal)
+    if (CDlgAutoRecorder::IsLaunched())
     {
         m_pModal->SendMessage(WM_CLOSE, 0, 0);
         m_pModal = NULL;

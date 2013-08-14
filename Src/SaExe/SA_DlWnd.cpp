@@ -2766,3 +2766,13 @@ BOOL CFancyArrow::OnEraseBkgnd(CDC * pDC)
 
     return CWnd::OnEraseBkgnd(pDC);
 }
+
+int CSpinControl::GetID()
+{
+    return m_nID;   // get spin control ID
+}
+
+BOOL CSpinControl::UpperButtonClicked()
+{
+    return m_bUpButtonDown;   // return TRUE if upper button hit
+}

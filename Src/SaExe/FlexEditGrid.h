@@ -43,7 +43,7 @@ public:
     }
     void SetFont(LPCTSTR face, float nPointSize, long startRow, long startCol = 0, long rows = 1,  long cols = 1);
 
-    // Clipboard Utilities
+    // CClipboard Utilities
     CString SaveRange(int top, int left, int bottom, int right, BOOL bRotate);
     void LoadRange(int top, int left, CString szData, BOOL bRotate);
     void ClearRange(int top, int left, int bottom, int right);

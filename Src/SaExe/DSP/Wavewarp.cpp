@@ -314,10 +314,10 @@ dspError_t CWaveWarp::SetWaveBuffer(void * pWaveBfr)
 {
     if (!pWaveBfr)
     {
-        return(Code(INVALID_PARM));
+        return Code(INVALID_PARM);
     }
     m_pWaveBfr = pWaveBfr;
-    return(DONE);
+    return DONE;
 }
 
 
@@ -326,15 +326,15 @@ dspError_t CWaveWarp::SetWaveBuffer(void * pWaveBfr)
 ////////////////////////////////////////////////////////////////////////////////////////
 dspError_t CWaveWarp::SetPlayBuffer(void * pPlayBfr, ULONG dwPlayBfrLength)
 {
-    if (!pPlayBfr || !dwPlayBfrLength)
+    if ((pPlayBfr==NULL) || (dwPlayBfrLength==0))
     {
-        return(Code(INVALID_PARM));
+        return Code(INVALID_PARM);
     }
     m_pPlayBfr = pPlayBfr;
     m_dwPlayBfrLength = dwPlayBfrLength;
     m_dwPlayLength = 0;
 
-    return(DONE);
+    return DONE;
 }
 
 
@@ -428,17 +428,17 @@ dspError_t CWaveWarp::FillPlayBuffer(ULONG dwWaveBlock,
         {
             *pstCallFragment = m_pstFragBfr[m_dwFragBfrIndex];
             *pdwPlayLength =  m_dwPlayLength;
-            return(OUTSIDE_WAVE_BUFFER);  //!!last playback should be cut short in calling function
-        }                             //!!use WAVE_BUFFER_CALLBACK
+            return OUTSIDE_WAVE_BUFFER;		//!!last playback should be cut short in calling function
+        }									//!!use WAVE_BUFFER_CALLBACK
 
         // If play buffer is full, return for playback.
         //!! handle partial fragment in calling function by offsetting into play buffer before playback
-        if (m_dwPlayLength + dwFragLength > m_dwPlayBfrLength)
+        if ((m_dwPlayLength + dwFragLength) > m_dwPlayBfrLength)
         {
             *pstCallFragment = m_pstFragBfr[m_dwFragBfrIndex];
             *pdwPlayLength = m_dwPlayLength;
             m_dwPlayLength = 0;
-            return(PLAY_BUFFER_FULL);
+            return PLAY_BUFFER_FULL;
         }
 
         // Copy fragment.
@@ -460,9 +460,11 @@ dspError_t CWaveWarp::FillPlayBuffer(ULONG dwWaveBlock,
                                      SFragParms * pstCallFragment,
                                      ULONG * pdwPlayLength)
 {
-    if (!m_pWaveBfr || !m_pPlayBfr)
+    //TRACE("FillPlayBuffer %d %d\n", dwWaveBlock, dwWaveBlockLength);
+
+	if ((m_pWaveBfr==NULL) || (m_pPlayBfr==NULL))
     {
-        return(Code(INVALID_PARM));
+        return Code(INVALID_PARM);
     }
     CProcessFragments * pFragments = m_pDoc->GetFragments();
     if (pFragments->GetProcessBufferIndex() != m_dwFragBlock)
@@ -471,7 +473,7 @@ dspError_t CWaveWarp::FillPlayBuffer(ULONG dwWaveBlock,
     }
     if (dwWaveBlock != m_pstFragBfr[m_dwFragBfrIndex].dwOffset)
     {
-        return(Code(INVALID_BLOCK));
+        return Code(INVALID_BLOCK);
     }
 
     ULONG dwFragCount = pFragments->GetFragmentCount();
@@ -487,8 +489,8 @@ dspError_t CWaveWarp::FillPlayBuffer(ULONG dwWaveBlock,
         {
             // scan through fragment buffer
             for (; m_dwFragBfrIndex < dwFragBlockLength; m_dwFragBfrIndex++)   // continues from last fragment checked
-                if (dwWaveIndex >= m_pstFragBfr[m_dwFragBfrIndex].dwOffset &&
-                        dwWaveIndex < m_pstFragBfr[m_dwFragBfrIndex].dwOffset + m_pstFragBfr[m_dwFragBfrIndex].wLength)
+                if ((dwWaveIndex >= m_pstFragBfr[m_dwFragBfrIndex].dwOffset) &&
+                    (dwWaveIndex < m_pstFragBfr[m_dwFragBfrIndex].dwOffset + m_pstFragBfr[m_dwFragBfrIndex].wLength))
                 {
                     break;
                 }
@@ -510,8 +512,7 @@ dspError_t CWaveWarp::FillPlayBuffer(ULONG dwWaveBlock,
                 break;
             }
 
-        }
-        while (m_dwFragBlock < dwFragCount);   // loop through fragment blocks
+        } while (m_dwFragBlock < dwFragCount);   // loop through fragment blocks
 
         if (m_dwFragBlock == dwFragCount)
         {
@@ -520,27 +521,28 @@ dspError_t CWaveWarp::FillPlayBuffer(ULONG dwWaveBlock,
                                         m_pstFragBfr[dwFragBlockLength-1].wLength;
             pstCallFragment->wLength = 0;
             *pdwPlayLength =  m_dwPlayLength;
-            return(DONE);
+            return DONE;
         }
 
         long lWaveBfrIndex = (long)m_pstFragBfr[m_dwFragBfrIndex].dwOffset - (long)dwWaveBlock;
         ULONG dwFragLength =  m_pstFragBfr[m_dwFragBfrIndex].wLength;
 
-        if (lWaveBfrIndex < 0 || (ULONG)lWaveBfrIndex + dwFragLength > dwWaveBlockLength)
+        if ((lWaveBfrIndex < 0) || 
+			((ULONG)lWaveBfrIndex + dwFragLength > dwWaveBlockLength))
         {
             *pstCallFragment = m_pstFragBfr[m_dwFragBfrIndex];
             *pdwPlayLength =  m_dwPlayLength;
-            return(OUTSIDE_WAVE_BUFFER);  //!!last playback should be cut short in calling function
-        }                              //!!use WAVE_BUFFER_CALLBACK
+            return OUTSIDE_WAVE_BUFFER;		//!!last playback should be cut short in calling function
+        }									//!!use WAVE_BUFFER_CALLBACK
 
         // If play buffer is full, return for playback.
         //!! handle partial fragment in calling function by offsetting into play buffer before playback
-        if (m_dwPlayLength + dwFragLength > m_dwPlayBfrLength)
+        if ((m_dwPlayLength + dwFragLength) > m_dwPlayBfrLength)
         {
             *pstCallFragment = m_pstFragBfr[m_dwFragBfrIndex];
             *pdwPlayLength = m_dwPlayLength;
             m_dwPlayLength = 0;
-            return(PLAY_BUFFER_FULL);
+            return PLAY_BUFFER_FULL;
         }
 
         // Copy fragment.
@@ -583,8 +585,8 @@ dspError_t CWaveWarp::FillPlayBuffer(ULONG dwWaveBlock,
         m_dwPlayLength += dwFragLength;    // update playback length
         m_dwWarpIndex += dwFragLength;     // update scaling index
 
-    }
-    while (TRUE);
+    } 
+	while (TRUE);
 }
 
 dspError_t CWaveWarp::FillPlayBuffer(SFragParms * pstCallData,
@@ -592,10 +594,11 @@ dspError_t CWaveWarp::FillPlayBuffer(SFragParms * pstCallData,
                                      ULONG * pdwPlayLength,
                                      USHORT wNewSpeed)
 {
-// Validate buffer pointers.
-    if (!m_pWaveBfr || !m_pPlayBfr)
+	//TRACE("FillPlayBuffer %d\n",dwWaveBlockLength);
+	// Validate buffer pointers.
+    if ((m_pWaveBfr==NULL) || (m_pPlayBfr==NULL))
     {
-        return(Code(INVALID_PARM));
+        return Code(INVALID_PARM);
     }
 
     CProcessFragments * pFragments = m_pDoc->GetFragments();
@@ -613,8 +616,8 @@ dspError_t CWaveWarp::FillPlayBuffer(SFragParms * pstCallData,
         {
             // scan through fragment buffer
             for (; m_dwFragBfrIndex < dwFragBlockLength; m_dwFragBfrIndex++)   // continues from last fragment checked
-                if (dwWaveIndex >= m_pstFragBfr[m_dwFragBfrIndex].dwOffset &&
-                        dwWaveIndex < m_pstFragBfr[m_dwFragBfrIndex].dwOffset + m_pstFragBfr[m_dwFragBfrIndex].wLength)
+                if ((dwWaveIndex >= m_pstFragBfr[m_dwFragBfrIndex].dwOffset) &&
+                    (dwWaveIndex < m_pstFragBfr[m_dwFragBfrIndex].dwOffset + m_pstFragBfr[m_dwFragBfrIndex].wLength))
                 {
                     break;
                 }
@@ -642,8 +645,7 @@ dspError_t CWaveWarp::FillPlayBuffer(SFragParms * pstCallData,
         if (m_dwFragBlock == dwFragCount)
         {
             // no more fragment blocks
-            pstCallData->dwOffset = m_pstFragBfr[dwFragBlockLength-1].dwOffset +
-                                    m_pstFragBfr[dwFragBlockLength-1].wLength;
+            pstCallData->dwOffset = m_pstFragBfr[dwFragBlockLength-1].dwOffset + m_pstFragBfr[dwFragBlockLength-1].wLength;
             pstCallData->wLength = 0;
             *pdwPlayLength =  m_dwPlayLength;
             return(DONE);
@@ -658,7 +660,7 @@ dspError_t CWaveWarp::FillPlayBuffer(SFragParms * pstCallData,
             pstCallData->dwOffset = m_pstFragBfr[m_dwFragBfrIndex].dwOffset - (m_dwFragBfrIndex != 0);
             pstCallData->wLength = (USHORT)(m_pstFragBfr[m_dwFragBfrIndex].wLength + (m_dwFragBfrIndex != 0));
             *pdwPlayLength =  m_dwPlayLength;
-            return(OUTSIDE_WAVE_BUFFER);  //!!last playback should be cut short in calling function
+            return OUTSIDE_WAVE_BUFFER;  //!!last playback should be cut short in calling function
         }
 
         // If new fragment, estimate start and end times.
@@ -770,7 +772,7 @@ dspError_t CWaveWarp::FillPlayBuffer(SFragParms * pstCallData,
         dwPrevFragIndex = m_dwFragBfrIndex;
         //!! handle partial fragment in calling function by offsetting into play buffer before playback
         ULONG dwSamples = (ULONG)floor(m_dFragEndTime - m_dSmpTime) + 1;
-        if (m_dwPlayLength + dwSamples > m_dwPlayBfrLength)
+        if ((m_dwPlayLength + dwSamples) > m_dwPlayBfrLength)
         {
             pstCallData->dwOffset = m_pstFragBfr[m_dwFragBfrIndex].dwOffset - (pstCallData->dwOffset != 0);
             pstCallData->wLength = (USHORT)(m_pstFragBfr[m_dwFragBfrIndex].wLength + (pstCallData->dwOffset != 0));

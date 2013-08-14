@@ -169,8 +169,6 @@ BOOL CWaveOutDevice::Close()
 /***************************************************************************/
 BOOL CWaveOutDevice::Play(int nBuffer, UINT nVolume, CWave * pWave, BOOL bPause)
 {
-
-    TRACE("Play\n");
     if (pWave->GetPlaybackSize(nBuffer)==0)
     {
         return TRUE;

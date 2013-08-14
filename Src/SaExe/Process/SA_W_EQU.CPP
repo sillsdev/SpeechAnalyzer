@@ -281,11 +281,11 @@ long CProcessWbEquation::Process(void * pCaller, ISaDoc * pDoc, int nProgress,
 /***************************************************************************/
 int CProcessWbEquation::PropertiesDialog()
 {
-    CWbDlgFilterEquation dlgEquation;
-    dlgEquation.m_szEquation = m_szEquation;
-    if (dlgEquation.DoModal() == IDOK)
+    CWbDlgFilterEquation dlg;
+    dlg.m_szEquation = m_szEquation;
+    if (dlg.DoModal() == IDOK)
     {
-        m_szEquation = dlgEquation.m_szEquation;
+        m_szEquation = dlg.m_szEquation;
         SetDataInvalid();
         return IDOK;
     }

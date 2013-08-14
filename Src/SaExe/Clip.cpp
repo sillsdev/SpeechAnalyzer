@@ -8,7 +8,7 @@ char * RTFprolog =
 char * RTFepilog = "\\par}";
 
 
-Clipboard::Clipboard(HWND hwnd)
+CClipboard::CClipboard(HWND hwnd)
 {
     hWindow = hwnd;
     OpenClipboard(hwnd);
@@ -17,7 +17,11 @@ Clipboard::Clipboard(HWND hwnd)
     RTFFormat = RegisterClipboardFormat(_T("Rich Text Format"));
 }
 
-Clipboard & Clipboard::operator<<(LPCSTR string)
+CClipboard::~CClipboard() {
+	close();
+}
+
+CClipboard & CClipboard::operator<<(LPCSTR string)
 {
     // clear out old contents of clipboard
     EmptyClipboard();
@@ -46,7 +50,7 @@ Clipboard & Clipboard::operator<<(LPCSTR string)
     return *this;
 }
 
-Clipboard & Clipboard::operator>>(char *& string)
+CClipboard & CClipboard::operator>>(char *& string)
 {
     HANDLE hClipboard = GetClipboardData(CF_OEMTEXT);
     if (!hClipboard)
@@ -81,7 +85,7 @@ Clipboard & Clipboard::operator>>(char *& string)
     return *this;
 }
 
-void Clipboard::SetTextRTF(LPCSTR RTFstring, LPCSTR TEXTstring)
+void CClipboard::SetTextRTF(LPCSTR RTFstring, LPCSTR TEXTstring)
 {
     // clear out old contents of clipboard
     EmptyClipboard();
@@ -137,7 +141,7 @@ void Clipboard::SetTextRTF(LPCSTR RTFstring, LPCSTR TEXTstring)
     SetClipboardData(CF_OEMTEXT, hTEXTMemory);
 }
 
-void Clipboard::reportError()
+void CClipboard::reportError()
 {
     // Close clipboard and report the error
     close();
@@ -149,13 +153,13 @@ void Clipboard::reportError()
     return;
 }
 
-int Clipboard::hasText()
+int CClipboard::hasText()
 {
     // see if the clipboard contains text
     return IsClipboardFormatAvailable(CF_TEXT);
 }
 
-void Clipboard::close()
+void CClipboard::close()
 {
     if (!clipboard_open)
         // clipboard has already been closed
