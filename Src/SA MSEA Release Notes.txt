@@ -1,3 +1,7 @@
+SA - 3.1.0.65 - 8/21/2013 (stereo branch)
+1) Added stop buttons for 'Play' and 'Original' buttons on record-overlay dialog box.
+2) Fixed problem with gaps in playback of recording when using record-overlay dialog box.
+
 SA - 3.1.0.64 - 8/14/2013 (stereo branch)
 1) Added instruction to copy Sa.exe to SaServer.exe during installation compile.
 2) Fixed state bug where recording and playing can occur at the same time when using 'between cursors'.  The state machine now blocks until playback is completed.

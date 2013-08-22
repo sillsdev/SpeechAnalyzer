@@ -54,6 +54,7 @@ public:
     bool IsTestRun();
     void OnHelpPlayer();
 	static bool IsLaunched();
+	static const char * GetMode( EMode mode);
 
 protected:
     virtual void DoDataExchange(CDataExchange * pDX);   // DDX/DDV support

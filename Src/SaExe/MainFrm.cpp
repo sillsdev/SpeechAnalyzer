@@ -1001,7 +1001,7 @@ LRESULT CMainFrame::OnPlayer( WPARAM wParam2, LPARAM lParam, SSpecific * pSpecif
 {
 	CDlgPlayer::EMode mode = (CDlgPlayer::EMode)wParam2;
 
-    TRACE(_T("OnPlayer %x %x %x\n"), mode, HIWORD(lParam), LOWORD(lParam));
+    TRACE("OnPlayer %s %x %x\n", CDlgPlayer::GetMode(mode), HIWORD(lParam), LOWORD(lParam));
 
     CWnd * pWnd = GetActiveWindow(); // retrieve pointer to active window
     if (!CDlgPlayer::IsLaunched())   // player dialog not launched

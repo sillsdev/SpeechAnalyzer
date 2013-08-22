@@ -323,6 +323,9 @@
 #define IDS_ERROR_CREATE_INSTANCE       1088
 #define IDC_PLAY                        1089
 #define IDS_ERROR_READ_ONLY             1090
+#define IDC_STOP_RECORDING              1091
+#define IDC_STOP_PLAYING                1092
+#define IDC_STOP_ORIGINAL               1093
 #define IDC_STOP                        1096
 #define IDC_PAUSE                       1097
 #define IDS_ERROR_MMIO_INVALIDPARAM     1098
@@ -1326,6 +1329,7 @@
 #define ID_PLAYBACK_LTOSTART            32835
 #define ID_PLAYBACK_STARTTOR            32836
 #define ID_PLAYBACK_SPECIFIC            32837
+#define ID_PLAYBACK_ORIGINAL            32838
 #define ID_TOOLS_OPTIONS                32844
 #define ID_TOOLS_SELFTEST               32845
 #define ID_POPUP0_PHONETIC              32850

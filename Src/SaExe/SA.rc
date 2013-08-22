@@ -26,7 +26,7 @@ LANGUAGE LANG_NEUTRAL, SUBLANG_NEUTRAL
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 3,1,0,64
+ FILEVERSION 3,1,0,65
  PRODUCTVERSION 1,0,0,1
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
@@ -44,7 +44,7 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "SIL International"
             VALUE "FileDescription", "SA"
-            VALUE "FileVersion", "v3.1.0.64"
+            VALUE "FileVersion", "v3.1.0.65"
             VALUE "InternalName", "SA"
             VALUE "LegalCopyright", "© 1996-2013 SIL International (MSEA)"
             VALUE "ProductName", "SA"
@@ -2018,8 +2018,10 @@ CAPTION "Record Overlay"
 FONT 8, "MS Sans Serif", 0, 0, 0x0
 BEGIN
     PUSHBUTTON      "&Play",IDC_PLAY,9,48,50,14,WS_DISABLED
-    PUSHBUTTON      "&Stop",IDC_STOP,9,48,50,14,WS_DISABLED
-    PUSHBUTTON      "&Original",ID_PLAYBACK_FILE,63,48,50,14
+    PUSHBUTTON      "&Stop",IDC_STOP_RECORDING,9,48,50,14,WS_DISABLED
+    PUSHBUTTON      "&Stop",IDC_STOP_PLAYING,9,48,50,14,WS_DISABLED
+    PUSHBUTTON      "&Original",ID_PLAYBACK_ORIGINAL,63,48,50,14
+    PUSHBUTTON      "S&top",IDC_STOP_ORIGINAL,63,48,50,14
     DEFPUSHBUTTON   "&Close",IDC_CLOSE,282,7,50,14
     EDITTEXT        IDC_RECVOLUMEEDIT,198,54,16,12
     LTEXT           "",IDC_RECVOLUMESCROLL,214,54,10,12
@@ -4362,7 +4364,7 @@ IDC_MHANDN              CURSOR                  "res\\MedHandN.cur"
 
 STRINGTABLE
 BEGIN
-    VS_VERSION              "Version 3.1.0.64"
+    VS_VERSION              "Version 3.1.0.65"
     VS_COPYRIGHT            "© 1996-2013 SIL International (MSEA).\nAll Rights Reserved."
     IDR_MAINFRAME           "Speech Analyzer"
     IDR_SA_ANNTYPE          "\nSA\nSA Document\nWAV Files (*.wav)\n.wav\nannFileType\nANN File Type"

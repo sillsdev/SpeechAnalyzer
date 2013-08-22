@@ -218,13 +218,22 @@ void CDlgPlayer::SetPlayerFullSize()
 
 const UINT CDlgPlayer::SubModeUndefined = 0x0ffff;
 
+const char * CDlgPlayer::GetMode( EMode mode)
+{
+	if (mode==IDLE) return "IDLE";
+	else if (mode==STOPPED) return "STOPPED";
+	else if (mode==PLAYING) return "PLAYING";
+	else if (mode==RECORDING) return "RECORDING";
+	return "ERROR!";
+}
+
 /***************************************************************************/
 // CDlgPlayer::SetPlayerMode Set the player mode
 /***************************************************************************/
 bool CDlgPlayer::SetPlayerMode( EMode mode, UINT nSubMode, BOOL bFullSize, BOOL bFnKey, SSpecific * pSpecific)
 {
 
-    TRACE(_T(">>SetPlayerMode %d->%d\n"),m_nMode,mode);
+    TRACE(">>SetPlayerMode %s->%s\n",GetMode(m_nMode),GetMode(mode));
     nSubMode = nSubMode & 0x0ffff;
 
     // SDM 1.06.6U6
@@ -339,6 +348,7 @@ bool CDlgPlayer::SetPlayerMode( EMode mode, UINT nSubMode, BOOL bFullSize, BOOL 
     {
         return TRUE;    // no change
     }
+
     // stop, whatever the player is doing
     if (m_pWave)
     {

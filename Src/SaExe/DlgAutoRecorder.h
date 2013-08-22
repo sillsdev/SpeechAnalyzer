@@ -27,7 +27,7 @@
 class CDlgAutoRecorder : public CDialog, public IWaveNotifiable
 {
 
-    enum ERecordState { WaitForSilence, WaitingForVoice, Recording, Stopping, Playing, Idle};
+    enum ERecordState { WaitForSilence, WaitingForVoice, Recording, Stopping, PlayingRecording, PlayingOriginal, Idle};
     enum ERecordMode { Disabled, Record, Stop, Monitor, PlayRecording, PlayOriginal};
 
 #define MAX_SILENCE_LEVEL 5
@@ -55,7 +55,6 @@ public:
 	afx_msg void OnRadioBetweenCursors();
 	afx_msg void OnClickedRadioWholeFile();
 	int GetPlayWholeFile();
-	void UpdatePlayer();
 	static bool IsLaunched();
 
     enum { IDD = IDD_AUTORECORDER };
@@ -69,12 +68,17 @@ protected:
     void DeleteTempFile();				// delete the temporary wave file
     void SetRecorderMode(ERecordMode eMode);  // set recorder mode (record, play, stop...)
 
-    void ChangeState(ERecordState eState);
+    void ChangeState( ERecordState eState);
+	const char * GetState( ERecordState eState);
+
     BOOL Apply();						// apply wave file to document
 
     virtual BOOL OnInitDialog();
-    afx_msg void OnPlay();
-    afx_msg void OnStop();
+    afx_msg void OnPlayRecording();
+    afx_msg void OnStopRecording();
+    afx_msg void OnStopPlaying();
+	afx_msg void OnPlaybackOriginal();
+    afx_msg void OnStopOriginal();
     afx_msg void OnClose();
     afx_msg void OnCancel();
     afx_msg void OnVolumeSlide();
@@ -85,7 +89,6 @@ protected:
     afx_msg void OnKillfocusRecVolumeEdit();
     afx_msg LRESULT OnMixerControlChange(WPARAM, LPARAM);
     afx_msg LRESULT OnAutoRestart(WPARAM, LPARAM);
-	afx_msg void OnPlaybackOriginal();
     DECLARE_MESSAGE_MAP()
 
     ERecordState m_eState;
@@ -114,6 +117,7 @@ private:
     MMCKINFO m_mmckinfoParent;              // 'RIFF' parents chunk information
     BOOL m_bFileReady;                      // TRUE, if temporary file OK
     BOOL m_bFileApplied;                    // TRUE, if temporary file ready to copy
+	bool m_bRecordingAvailable;
     CLEDDisplay m_LEDTotalTime;             // embedded control objects
     CLEDDisplay m_LEDPosTime;
     CSliderVertical m_SliderVolume;
