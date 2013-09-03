@@ -1570,7 +1570,7 @@
 #define ID_FILE_AUTOSAVE                33234
 #define ID_AUTOSAVE_ON                  33235
 #define ID_AUTOSAVE_OFF                 33236
-#define ID_TOOLS_ADJUST_SILENCE         33236
+#define ID_TOOLS_ADJUST_SILENCE         33237
 #define ID_GRAPHTYPES_SELECT_FIRST      40000
 #define ID_GRAPHTYPES_SELECT_LAST       40011
 #define ID_PHONETIC_ALL                 40100

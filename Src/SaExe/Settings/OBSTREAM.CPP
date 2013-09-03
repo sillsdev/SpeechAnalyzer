@@ -19,6 +19,8 @@ using std::ios;
 #include "patch.h"  // Shw_bAtWhiteSpace, Shw_pszOtherWhiteSpace
 #include "defs.h"
 
+static const Length maxsizMString = 32767;
+
 CObjectOStream::CObjectOStream(LPCSTR filename) : m_ios()
 {
     m_ios.open(filename);
@@ -189,8 +191,6 @@ void CObjectOStream::WriteWindowPlacement(LPCSTR pszMarker, WINDOWPLACEMENT & wp
 
 // ==========================================================================
 
-static const Length maxsizMString = 32767;
-
 CObjectIStream::CObjectIStream(LPCSTR filename) :
     m_ios()
 {
@@ -209,6 +209,10 @@ CObjectIStream::~CObjectIStream()
     delete [] m_pszMStringBuf;
 }
 
+size_t CObjectIStream::GetBufferSize()
+{
+	return maxsizMString;
+}
 
 void CObjectIStream::SkipBOM()
 {
@@ -362,13 +366,13 @@ BOOL CObjectIStream::bReadEndMarkerWithQualifier(LPCSTR pszMarker, LPCSTR pszQua
     return bReadMarker('-', buf);
 }
 
-BOOL CObjectIStream::bReadString(LPCSTR pszMarker, LPSTR szResult, size_t size)
+BOOL CObjectIStream::bReadString( LPCSTR pszMarker, LPSTR szResult, size_t size)
 {
-
     LPCSTR read = NULL;
     BOOL result = bReadString(pszMarker, &read);
     if (result)
     {
+		size_t sz = strlen(read);
         strcpy_s(szResult, size, read);
     }
     return result;
@@ -376,7 +380,6 @@ BOOL CObjectIStream::bReadString(LPCSTR pszMarker, LPSTR szResult, size_t size)
 
 BOOL CObjectIStream::bReadString(LPCSTR pszMarker, LPCSTR * s)
 {
-
     LPCSTR pszMarkerRead = NULL;
     LPCSTR pszStringRead = NULL;
     ReadMarkedString(&pszMarkerRead, &pszStringRead);
@@ -715,6 +718,7 @@ void CObjectIStream::Rewind()
     m_bUnRead = FALSE;
     m_chEndOfLine = '\n';  // Default for Mac and Windows
 }
+
 
 ifstream & CObjectIStream::getIos()
 {

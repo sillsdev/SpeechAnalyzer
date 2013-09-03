@@ -1,3 +1,7 @@
+SA - 3.1.0.66 - 9/2/2013 (stereo branch)
+1) Fixed buffer overrun bug in CObjectIStream
+2) Fixed resource collision problem (autosave off)
+
 SA - 3.1.0.65 - 8/21/2013 (stereo branch)
 1) Added stop buttons for 'Play' and 'Original' buttons on record-overlay dialog box.
 2) Fixed problem with gaps in playback of recording when using record-overlay dialog box.

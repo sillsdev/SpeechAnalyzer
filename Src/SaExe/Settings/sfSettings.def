@@ -4,6 +4,7 @@ EXPORTS
 ??0CObjectOStream@@QAE@PBD@Z
 ??1CObjectIStream@@QAE@XZ
 ??0CObjectIStream@@QAE@PBD@Z
+?GetBufferSize@CObjectIStream@@QAEIXZ
 ?ReadMarkedString@CObjectIStream@@QAEXXZ
 ?Rewind@CObjectIStream@@QAEXXZ
 ?Shw_bAtWhiteSpace@@YA_NPBD@Z

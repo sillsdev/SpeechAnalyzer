@@ -59,13 +59,26 @@ BOOL ReadStreamString(CObjectIStream & stream, CSaString pszMarker, CSaString & 
 
 BOOL ReadStreamString(CObjectIStream & stream, LPCSTR pszMarker, CSaString & szResult)
 {
-
-    char buffer[1024];
-    memset(buffer,0,_countof(buffer));
-    BOOL result = stream.bReadString(pszMarker, buffer, _countof(buffer));
-    if (result)
-    {
-        szResult.setUtf8(buffer);
-    }
-    return result;
+	size_t size = stream.GetBufferSize()+1;
+	LPSTR buffer = new char[size];
+	try
+	{
+		memset( buffer, 0, size);
+		BOOL result = stream.bReadString(pszMarker, buffer, size);
+		if (result)
+		{
+			szResult.setUtf8(buffer);
+		}
+		delete [] buffer;
+		buffer = NULL;
+	    return result;
+	}
+	catch(...)
+	{
+		if (buffer!=NULL)
+		{
+			delete [] buffer;
+			buffer = NULL;
+		}
+	}
 }

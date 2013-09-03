@@ -106,6 +106,7 @@ public:
     BOOL bReadWindowPlacement(LPCSTR pszMarker, WINDOWPLACEMENT & wpl);
 #endif  // not NO_INTERFACE
 
+	size_t GetBufferSize();
 
 protected:
     // Read any marked string
