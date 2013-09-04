@@ -89,6 +89,21 @@ BOOL CDependentTextSegment::Insert(int nIndex, LPCTSTR pszString, bool, DWORD dw
     return TRUE;
 }
 
+BOOL CDependentTextSegment::InsertBlank(int nIndex, DWORD dwStart, DWORD dwDuration)
+{
+    try
+    {
+        InsertAt(nIndex,dwStart,dwDuration);
+    }
+    catch (CMemoryException e)
+    {
+        // memory allocation error
+        ErrorMessage(IDS_ERROR_MEMALLOC);
+        return FALSE;
+    }
+    return TRUE;
+}
+
 //SDM 1.5Test8.1
 /////////////////////////////////////////////////////////////////////////////
 // CDependentTextSegment helper functions

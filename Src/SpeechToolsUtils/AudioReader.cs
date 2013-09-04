@@ -276,9 +276,9 @@ namespace SIL.SpeechTools.Utils
 				// Read the chunk id.
 				string id = new string(Encoding.ASCII.GetChars(reader.ReadBytes(4)));
 
-				// if we don't have a fmt tag to start with don't try to read anything else
-				if ((stream.Position == 16) && (id != "fmt "))
-					return -1;
+    			// if we don't have a fmt tag to start with don't try to read anything else
+				//if ((stream.Position == 16) && (id != "fmt "))
+                //  return -1;
 
 				// If we've found the chunk id we're looking for, then return the
 				// current position less the 4 bytes we just read to get the id.

@@ -244,7 +244,7 @@ bool CSFMHelper::IsColumnarSFM( LPCTSTR filename)
 	}
 
 	// run through all the lines and verify that there are no more tags
-	// than the number of tags
+	// on any other lines
 	for (size_t i=start;i<lines.size();i++) {
 		vector<wstring> tokens = TokenizeLineToTokens( lines[i], 0x09);
 		for (size_t j=0;j<tokens.size();j++) {

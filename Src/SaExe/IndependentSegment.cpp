@@ -70,7 +70,11 @@ void CIndependentSegment::LimitPosition(CSaDoc * pSaDoc, DWORD & dwStart, DWORD 
             {
                 if (nMode==LIMIT_MOVING_START)
                 {
-                    dwStart = (GetOffset(nNext)*5 - dwStop*3)/2 - 2;
+					// prevent calculation of a negative number...
+					DWORD a = GetOffset(nNext)*5;
+					DWORD b = dwStop*3;
+					a = ((a-4)<b)?4:a-b;
+                    dwStart = (DWORD)((a)/2 - 2);
                     dwStart = pSaDoc->SnapCursor(START_CURSOR, dwStart,0,dwStart,SNAP_LEFT);
                 }
                 else
@@ -379,7 +383,7 @@ int CIndependentSegment::CheckPosition(CSaDoc * pDoc, DWORD dwStart,DWORD dwStop
                 return nLoop; // ok
             }
         }
-        if ((nLoop >0)&&
+        if ((nLoop >0) &&
 			((dwStart - GetOffset(nLoop-1)) < pDoc->GetBytesFromTime(MIN_ADD_SEGMENT_TIME)))
         {
 			TRACE("min edit segment reached %d\n",__LINE__);

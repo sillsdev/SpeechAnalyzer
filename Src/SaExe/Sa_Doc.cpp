@@ -5374,10 +5374,10 @@ DWORD CSaDoc::GetWaveDataBufferSize()
 // buffer. The caller gives a pointer to a BOOLEAN result variable. If this
 // is FALSE after the operation, an error occured.
 /***************************************************************************/
-int CSaDoc::GetWaveData(DWORD dwOffset, BOOL * pbRes)
+int CSaDoc::GetWaveData( DWORD dwOffset, BOOL * pbRes)
 {
     HPSTR pData = GetWaveData(dwOffset); // read from file into buffer if necessary
-    if (!pData)
+    if (pData==NULL)
     {
         // error reading wave file
         *pbRes = FALSE; // set operation result
@@ -7304,8 +7304,8 @@ void CSaDoc::OnAutoReferenceData()
     pApp->WriteProfileString(L"AutoRef",L"LastImport",dlg.mLastImport);
     pApp->WriteProfileString(L"AutoRef",L"BeginRef",dlg.mBeginRef);
     pApp->WriteProfileString(L"AutoRef",L"EndRef",dlg.mEndRef);
-    pApp->WriteProfileInt(L"AutoRef",L"UsingNumbers",((dlg.mUsingNumbers!=0)?1:0));
-    pApp->WriteProfileInt(L"AutoRef",L"UsingFirstGloss",((dlg.mUsingFirstGloss!=0)?1:0));
+    pApp->WriteProfileInt(L"AutoRef",L"UsingNumbers",((dlg.mUsingNumbers)?1:0));
+    pApp->WriteProfileInt(L"AutoRef",L"UsingFirstGloss",((dlg.mUsingFirstGloss)?1:0));
 
     if (dlg.mUsingNumbers)
     {
@@ -7366,11 +7366,22 @@ void CSaDoc::OnAutoReferenceData()
         // iterate through the gloss segments and add number to empty reference fields
         CReferenceSegment * pReference = (CReferenceSegment *)m_apSegments[REFERENCE];
         int start = (dlg.mUsingFirstGloss)?0:selection;
+		// if preceeding reference fields don't exist, then install place holders
+		for (int i = 0; i < start; i++)
+		{
+            DWORD offset = pGloss->GetOffset(i);
+            DWORD duration = pGloss->GetDuration(i);
+            DWORD roffset = pReference->GetOffset(i);
+            if (roffset==0)
+            {
+                pReference->InsertBlank(i,offset,duration);
+            }
+		}
+		// now fill in the real data
         for (int i = start; i < pGloss->GetOffsetSize(); i++)
         {
             DWORD offset = pGloss->GetOffset(i);
             DWORD duration = pGloss->GetDuration(i);
-
             CSaString text = *begin;
             DWORD roffset = pReference->GetOffset(i);
             if (roffset==0)

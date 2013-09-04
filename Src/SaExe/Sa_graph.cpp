@@ -1233,7 +1233,7 @@ void CGraphWnd::UpdateStatusBar(DWORD dwStartCursor, DWORD dwStopCursor, BOOL bF
             bShowPosition = bShowDuration = TRUE;
 
             bRes = TRUE;
-            nData = pDoc->GetWaveData(dwStartCursor, &bRes);
+            nData = pDoc->GetWaveData( dwStartCursor, &bRes);
             fData = 100.0 * (double)nData / pow(2.0, 8.0 * (double)nSmpSize - 1);
             if (bRes)   // no error reading data?
             {
