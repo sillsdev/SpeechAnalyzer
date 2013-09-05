@@ -1450,6 +1450,7 @@ void CSaDoc::InsertGlossPosRefTranscription(ISaAudioDocumentReaderPtr saAudioDoc
     {
         offset /= m_FmtParm.wChannels;
         length /= m_FmtParm.wChannels;
+
         CSaString szGloss = *gloss;
         pGloss->Insert(nIndex, szGloss, (isBookmark!=0), offset + dwPos, length);
         pGloss->POSInsertAt( nIndex, (CSaString)*pos);
@@ -2430,8 +2431,7 @@ void CSaDoc::WriteGlossPosAndRefSegments(ISaAudioDocumentWriterPtr saAudioDocWri
         szPos = pGloss->GetPOSAt(i);
 
         CReferenceSegment * pRef = (CReferenceSegment *)m_apSegments[REFERENCE];
-        if ((nRef < pRef->GetTexts().GetSize()) &&
-                (pRef->GetOffset(nRef) == offset))
+        if ((nRef < pRef->GetTexts().GetSize()) && (pRef->GetOffset(nRef) == offset))
         {
             szRef = pRef->GetTexts().GetAt(nRef++);
         }
@@ -2439,17 +2439,23 @@ void CSaDoc::WriteGlossPosAndRefSegments(ISaAudioDocumentWriterPtr saAudioDocWri
         VARIANT_BOOL isBookmark = FALSE;
 
         // Strip off the word boundary or bookmark character.
-        if (szGloss.GetLength() > 0 &&
-                (szGloss[0] == WORD_DELIMITER || szGloss[0] == TEXT_DELIMITER))
+        if ((szGloss.GetLength() > 0) && 
+			((szGloss[0] == WORD_DELIMITER) || (szGloss[0] == TEXT_DELIMITER)))
         {
             isBookmark = (szGloss[0] == TEXT_DELIMITER);
             szGloss = szGloss.Mid(1);
         }
 
-        saAudioDocWriter->AddMarkSegment(offset, length,
+		// the length and offset at this point is for a single channel
+		// we need to scale up to match audio data
+		offset *= m_FmtParm.wChannels;
+		length *= m_FmtParm.wChannels;
+
+        saAudioDocWriter->AddMarkSegment( offset, length,
                                          (szGloss.GetLength() == 0 ? (wchar_t *)0 : (_bstr_t)szGloss),
                                          (szPos.GetLength() == 0 ? (wchar_t *)0 : (_bstr_t)szPos),
-                                         (szRef.GetLength() == 0 ? (wchar_t *)0 : (_bstr_t)szRef), isBookmark);
+                                         (szRef.GetLength() == 0 ? (wchar_t *)0 : (_bstr_t)szRef), 
+										 isBookmark);
 
         szRef.Empty();
     }

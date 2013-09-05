@@ -1,3 +1,6 @@
+SA - 3.1.0.68 - 9/4/2013 (stereo branch)
+1) Fixed transcription mis-alignment bug.  For stereo files only, this bug occurred when the data was written to the .saxml file.  The gloss, reference and POS transcriptions were not written with the correct offset and length.  This also caused improper segment indexing when trying to determine the segment number of the transcription.  Gloss, reference and POS transcription lengths are written in the 'MarkDuration' field of the .saxml.
+
 SA - 3.1.0.67 - 9/3/2013 (stereo branch)
 1) Fixed transcription mis-alignment bug.  Caused by SpeechToolUtils dll because it wasn't able to read a Broadcast Wave Format meta tag.
 2) Fixed reference numbering problem that occurs when importing reference numbers start at a gloss position beyond the first gloss.  Because the reference indexes were empty at the start of the operation, the synchronization between the reference segments and gloss segments was broke.  Added code to insert empty reference segments for the skipped positions if one doesn't exist already.

@@ -226,8 +226,7 @@ namespace SIL.SpeechTools.Utils
 		/// false when no segment was read and there are no more to read.
 		/// </summary>
 		/// ------------------------------------------------------------------------------------
-		public bool ReadSegment(int annotationType, out uint offset, out uint length,
-			out string annotation)
+		public bool ReadSegment( int annotationType, out uint offset, out uint length, out string annotation)
 		{
 			offset = length = 0;
 			annotation = null;
@@ -342,8 +341,7 @@ namespace SIL.SpeechTools.Utils
 		/// no segment was read and there are no more to read.
 		/// </summary>
 		/// ------------------------------------------------------------------------------------
-		public bool ReadMarkSegment(out uint offset, out uint length, out string gloss,
-			out string partOfSpeech, out string reference, out bool isBookmark)
+		public bool ReadMarkSegment( out uint offset, out uint length, out string gloss, out string partOfSpeech, out string reference, out bool isBookmark)
 		{
 			// Get the intialization out of the way.
 			offset = length = 0;
@@ -351,12 +349,12 @@ namespace SIL.SpeechTools.Utils
 			isBookmark = false;
 		
 			// Check if there is no record for the audio file or we've finished reading segments.
-			if (m_doc == null || m_doc.m_segments == null || m_markEnumIndex == m_doc.m_segments.Count)
+			if ((m_doc == null) || (m_doc.m_segments == null) || (m_markEnumIndex == m_doc.m_segments.Count))
 				return false;
 
 			// Increment the mark enumerator until we find a non-zero mark length
 			// (or until there are no more segments to enumerate).
-			while (m_markEnumIndex < m_doc.m_segments.Count && m_doc.m_segments[m_markEnumIndex].MarkDuration == 0)
+			while ((m_markEnumIndex < m_doc.m_segments.Count) && (m_doc.m_segments[m_markEnumIndex].MarkDuration == 0))
 				m_markEnumIndex++;
 
 			// If we didn't find the beginning of a mark segment then there's nothing left to do.

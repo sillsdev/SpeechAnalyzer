@@ -400,14 +400,12 @@ namespace SIL.SpeechTools.Utils
 		/// by SA).
 		/// </summary>
 		/// ------------------------------------------------------------------------------------
-		public static uint SecondsToBytes(double seconds, int channels, long samplesPerSec,
-			int bitsPerSample)
+		public static uint SecondsToBytes(double seconds, int channels, long samplesPerSec, int bitsPerSample)
 		{
 			int bytesPerSample = (bitsPerSample / 8) * channels;
 			long bytesPerSecond = bytesPerSample * samplesPerSec;
 
-			return (uint)(Math.Round(seconds * (double)bytesPerSecond,
-				MidpointRounding.AwayFromZero));
+			return (uint)(Math.Round(seconds * (double)bytesPerSecond, MidpointRounding.AwayFromZero));
 		}
 
 		/// ------------------------------------------------------------------------------------
@@ -426,7 +424,7 @@ namespace SIL.SpeechTools.Utils
 					return 0;
 			}
 
-			return BytesToSeconds(byteVal, m_channels, m_samplesPerSecond, m_bitsPerSample);
+			return BytesToSeconds( byteVal, m_channels, m_samplesPerSecond, m_bitsPerSample);
 		}
 
 		/// ------------------------------------------------------------------------------------
@@ -1277,9 +1275,7 @@ namespace SIL.SpeechTools.Utils
 			set
 			{
 				// This setter is mainly used by the XML deserialization.
-				m_markDurationInSeconds = (m_owningAudioDoc == null ||
-					m_owningAudioDoc.m_docVer >= kFirstVerWithByteSecondSwitch ? value :
-					m_owningAudioDoc.BytesToSeconds((ulong)value));
+				m_markDurationInSeconds = ((m_owningAudioDoc == null) || (m_owningAudioDoc.m_docVer >= kFirstVerWithByteSecondSwitch) ? value : m_owningAudioDoc.BytesToSeconds((ulong)value));
 			}
 		}
 
