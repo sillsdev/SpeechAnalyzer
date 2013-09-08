@@ -3889,7 +3889,7 @@ void CSaView::RemoveSelectedAnnotation()
 {
     CSegment * pAnnotationSet = FindSelectedAnnotation();
 
-    if (pAnnotationSet)
+    if (pAnnotationSet!=NULL)
     {
         pAnnotationSet->Remove(GetDocument());
     }
@@ -4775,36 +4775,31 @@ void CSaView::OnEditAddPhrase(CMusicPhraseSegment * pSeg)
     pDoc->CheckPoint();
     CSaString szString = SEGMENT_DEFAULT_CHAR; //Fill new segment with default character
 
-    int nInsertAt = pSeg->CheckPosition(pDoc,GetStartCursorPosition(),GetStopCursorPosition(),CSegment::MODE_ADD);
+    int nInsertAt = pSeg->CheckPosition( pDoc,GetStartCursorPosition(),GetStopCursorPosition(),CSegment::MODE_ADD);
     if (nInsertAt != -1)
     {
         int nPrevious = pSeg->GetPrevious(nInsertAt);
         if (nPrevious != -1)
         {
+			// is the previous segment+jointime overlapping our start?
             if (pSeg->GetStop(nPrevious) + pDoc->GetBytesFromTime(MAX_ADD_JOIN_TIME)> GetStartCursorPosition())   // SDM 1.5Test10.2
             {
-                pSeg->Adjust(pDoc, nPrevious,pSeg->GetOffset(nPrevious),GetStartCursorPosition() - pSeg->GetOffset(nPrevious));
+                pSeg->Adjust(pDoc,nPrevious,pSeg->GetOffset(nPrevious),GetStartCursorPosition()-pSeg->GetOffset(nPrevious));
             }
         }
-        int nNext  = -1;
-        if (nInsertAt > 0)
-        {
-            nNext = pSeg->GetNext(nInsertAt - 1);
-        }
-        else if (!pSeg->IsEmpty())
-        {
-            nNext = nInsertAt;
-        }
+
+		// this code seems useless...
+		int nNext = pSeg->GetNext(nInsertAt - 1);
         if (nNext != -1)
         {
-            if (pSeg->GetOffset(nNext) < GetStopCursorPosition()+pDoc->GetBytesFromTime(MAX_ADD_JOIN_TIME))   // SDM 1.5Test10.2
+            if (pSeg->GetOffset(nNext)<GetStopCursorPosition()+pDoc->GetBytesFromTime(MAX_ADD_JOIN_TIME))   // SDM 1.5Test10.2
             {
-                pSeg->Adjust(pDoc, nNext,GetStopCursorPosition(),pSeg->GetStop(nNext)-GetStopCursorPosition());
+                pSeg->Adjust(pDoc,nNext,GetStopCursorPosition(),pSeg->GetStop(nNext)-GetStopCursorPosition());
             }
         }
-        pSeg->Insert(nInsertAt, szString, true, GetStartCursorPosition(),GetStopCursorPosition()-GetStartCursorPosition());
-        pDoc->SetModifiedFlag(TRUE); // document has been modified
-        pDoc->SetTransModifiedFlag(TRUE); // transcription data has been modified
+        pSeg->Insert( nInsertAt, szString, true, GetStartCursorPosition(),GetStopCursorPosition()-GetStartCursorPosition());
+        pDoc->SetModifiedFlag(TRUE);		// document has been modified
+        pDoc->SetTransModifiedFlag(TRUE);	// transcription data has been modified
         RefreshGraphs(TRUE);
         pSeg->SetSelection(-1);
         m_advancedSelection.SelectFromPosition(this, pSeg->GetAnnotationIndex(), GetStartCursorPosition(), CSegmentSelection::FIND_EXACT);
@@ -4936,7 +4931,6 @@ void CSaView::OnUpdateEditAddPhrase(CCmdUI * pCmdUI, CMusicPhraseSegment * pSeg)
 
 void CSaView::OnEditAddAutoPhraseL2()
 {
-
     CMusicPhraseSegment * pSeg = (CMusicPhraseSegment *)GetAnnotation(MUSIC_PL2);
 
     CSaDoc * pDoc = (CSaDoc *) GetDocument();
@@ -4950,10 +4944,82 @@ void CSaView::OnEditAddAutoPhraseL2()
     }
     else
     {
-        // there segments. // get the last one and add after it.
+        // there are segments. // get the last one and add after it.
         int size = pSeg->GetOffsetSize();
         DWORD offset = pSeg->GetStop(size-1);
-        SetStartCursorPosition(offset);
+
+		// determine if we are adding beyond the end of the last segment, or if we are in between two segments...
+		DWORD newStart = GetStartCursorPosition();
+		DWORD newStop = GetStopCursorPosition();
+		ASSERT(newStart<newStop);
+
+		bool found = false;
+		for (int i=0;i<size;i++)
+		{
+			// if there's only one, where are we?
+			DWORD thisStart = pSeg->GetOffset(i);
+			DWORD thisStop = pSeg->GetStop(i);
+			// are we after?
+			if (newStart>thisStop)
+			{
+				continue;
+			}
+			
+			// are we before?
+			if (newStop<thisStart)
+			{
+				// it's before or overlapping
+				if (i>0)
+				{
+					//place after previous segment
+					SetStartCursorPosition(pSeg->GetStop(i-1));
+					TRACE("Adding PL2 after previous segment\n");
+					found=true;
+					break;
+				}
+				else
+				{
+					// place at beginning of file
+					SetStartCursorPosition(0);
+					TRACE("Adding PL2 at beginning of file\n");
+					found=true;
+					break;
+				}
+			}
+			else
+			{
+				// we are overlapping in some way...
+				if ((newStart<thisStart)&&(newStop>thisStart)&&(newStop<thisStop))
+				{
+					// we are overlapping beginning
+					SetStartCursorPosition(newStart);
+					found=true;
+					break;
+				} 
+				else if ((newStart>thisStart)&&(newStart<thisStop)&&(newStop>thisStop))
+				{
+					// we are overlapping at end
+					// we are overlapping beginning
+					SetStartCursorPosition(thisStop);
+					found=true;
+					break;
+				}
+				else
+				{
+				}
+				// it's overlapping
+				// leave the position alone - it will default in the following code and
+				// place the segment after the overlapping one.
+				found=true;
+				break;
+			}
+		}
+		if (!found)
+		{
+			// set at end
+		    SetStartCursorPosition(pSeg->GetStop(size-1));
+			TRACE("Adding PL2 at end of file\n");
+		}
     }
 
     int nInsertAt = pSeg->CheckPosition(pDoc,GetStartCursorPosition(),GetStopCursorPosition(),CSegment::MODE_ADD);
@@ -4990,7 +5056,7 @@ void CSaView::OnEditAddAutoPhraseL2()
         pSeg->SetSelection(-1);
         m_advancedSelection.SelectFromPosition(this, pSeg->GetAnnotationIndex(), GetStartCursorPosition(), CSegmentSelection::FIND_EXACT);
     }
-    else     // Can we insert after selected segment
+    else     // Can we insert after selected segment?
     {
         if (pSeg->GetSelection()!=-1)   // Phonetic Segment Selected
         {

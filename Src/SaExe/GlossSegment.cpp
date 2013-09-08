@@ -71,7 +71,7 @@ void CGlossSegment::Remove(CDocument * pSaDoc, BOOL bCheck)
     for (int nLoop = GLOSS + 1; nLoop < ANNOT_WND_NUMBER; nLoop++)
     {
         CSegment * pSegment = pDoc->GetSegment(nLoop);
-        if (pSegment)
+        if (pSegment!=NULL)
         {
             int nIndex = pSegment->FindOffset(dwOldOffset);
             if (nIndex != -1)

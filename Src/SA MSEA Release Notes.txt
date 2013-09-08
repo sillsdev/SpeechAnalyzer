@@ -1,3 +1,7 @@
+SA - 3.1.0.69 - 9/??/2013 (stereo branch)
+1) Modified Tools/Options dialog so that the audio portion is available when no view has been displayed yet.
+2) Modified OnEditAddAutoPhraseL2 to handle cases where the start/cursors are located between two other PL2 segments, or before or after all other segments.
+
 SA - 3.1.0.68 - 9/4/2013 (stereo branch)
 1) Fixed transcription mis-alignment bug.  For stereo files only, this bug occurred when the data was written to the .saxml file.  The gloss, reference and POS transcriptions were not written with the correct offset and length.  This also caused improper segment indexing when trying to determine the segment number of the transcription.  Gloss, reference and POS transcription lengths are written in the 'MarkDuration' field of the .saxml.
 

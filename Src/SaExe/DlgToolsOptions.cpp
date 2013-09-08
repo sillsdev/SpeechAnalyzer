@@ -1174,7 +1174,6 @@ void CDlgOptionsSavePage::OnReopenFiles()
 /***************************************************************************/
 void CDlgOptionsSavePage::OnShowsStartupDlg()
 {
-
     UpdateData();
     SetStartDlgCheckHelp();
 }
@@ -1191,19 +1190,16 @@ CDlgOptionsAudioPage::CDlgOptionsAudioPage() : CPropertyPage(CDlgOptionsAudioPag
 {
     CMainFrame * pMainWnd = (CMainFrame *)AfxGetMainWnd();
     m_bShowAdvancedAudio = pMainWnd->GetShowAdvancedAudio();
-
 }
 
 void CDlgOptionsAudioPage::DoDataExchange(CDataExchange * pDX)
 {
-
     CPropertyPage::DoDataExchange(pDX);
     DDX_Check(pDX, IDC_SHOW_ADVANCED_OPTIONS, m_bShowAdvancedAudio);
 }
 
 BOOL CDlgOptionsAudioPage::OnInitDialog()
 {
-
     CPropertyPage::OnInitDialog();
     return TRUE;
 }
@@ -1223,14 +1219,17 @@ END_MESSAGE_MAP()
 /***************************************************************************/
 // CDlgToolsOptions::CDlgToolsOptions Constructor
 /***************************************************************************/
-CDlgToolsOptions::CDlgToolsOptions(LPCTSTR pszCaption, CWnd * pParent) :
+CDlgToolsOptions::CDlgToolsOptions( LPCTSTR pszCaption, CWnd * pParent, bool full) :
     CPropertySheet(pszCaption, pParent, 0)
 {
-
-    AddPage(&m_dlgViewPage);
-    AddPage(&m_dlgColorPage);
-    AddPage(&m_dlgFontPage);
-    AddPage(&m_dlgSavePage);
+	fullView = full;
+	if (full)
+	{
+		AddPage(&m_dlgViewPage);
+		AddPage(&m_dlgColorPage);
+		AddPage(&m_dlgFontPage);
+		AddPage(&m_dlgSavePage);
+	}
     AddPage(&m_dlgAudioPage);
 }
 
@@ -1239,7 +1238,6 @@ CDlgToolsOptions::CDlgToolsOptions(LPCTSTR pszCaption, CWnd * pParent) :
 /***************************************************************************/
 void CDlgToolsOptions::DoDataExchange(CDataExchange * pDX)
 {
-
     CPropertySheet::DoDataExchange(pDX);
 }
 
@@ -1248,7 +1246,6 @@ void CDlgToolsOptions::DoDataExchange(CDataExchange * pDX)
 /***************************************************************************/
 int CDlgToolsOptions::OnCreate(LPCREATESTRUCT lpCreateStruct)
 {
-
     if (CPropertySheet::OnCreate(lpCreateStruct) == -1)
     {
         return -1;
@@ -1261,7 +1258,6 @@ int CDlgToolsOptions::OnCreate(LPCREATESTRUCT lpCreateStruct)
 /***************************************************************************/
 BOOL CDlgToolsOptions::OnInitDialog()
 {
-
     CPropertySheet::OnInitDialog();
     ChangeButtons();
     return TRUE;
@@ -1272,7 +1268,6 @@ BOOL CDlgToolsOptions::OnInitDialog()
 /***************************************************************************/
 void CDlgToolsOptions::ChangeButtons()
 {
-
     CWnd * pWndOK = GetDlgItem(IDOK); // get pointers to the button objects
     CWnd * pWndCancel = GetDlgItem(IDCANCEL);
     CWnd * pWndApply = GetDlgItem(ID_APPLY_NOW);
@@ -1308,11 +1303,10 @@ void CDlgToolsOptions::ChangeButtons()
 /***************************************************************************/
 void CDlgToolsOptions::OnApplyNow()
 {
-
     GetActivePage()->UpdateData(TRUE); // retrieve data
 
     CMainFrame * pMainWnd = (CMainFrame *)AfxGetMainWnd();
-    pMainWnd->SetToolSettings(GetSettings());
+    pMainWnd->SetToolSettings(GetSettings(),fullView);
     AfxGetMainWnd()->SendMessage(WM_USER_APPLY_TOOLSOPTIONS, 0, 0);
     GetActivePage()->SetModified(FALSE);
     SendMessage(PSM_CANCELTOCLOSE, 0, 0L);
@@ -1323,7 +1317,6 @@ void CDlgToolsOptions::OnApplyNow()
 /***************************************************************************/
 void CDlgToolsOptions::OnHelpToolsOptions()
 {
-
     // create the pathname
     long nActiveIndex = GetActiveIndex();
     CString szPath = AfxGetApp()->m_pszHelpFilePath;
@@ -1351,7 +1344,6 @@ void CDlgToolsOptions::OnHelpToolsOptions()
 
 CToolSettings CDlgToolsOptions::GetSettings()
 {
-
     // view page
     CToolSettings settings;
     settings.m_bStatusbar = m_dlgViewPage.m_bStatusbar;
@@ -1407,4 +1399,9 @@ CToolSettings CDlgToolsOptions::GetSettings()
     // audio page
     settings.m_bShowAdvancedAudio = m_dlgAudioPage.m_bShowAdvancedAudio;
     return settings;
+}
+
+void CDlgToolsOptions::ApplyNow()
+{
+    OnApplyNow();
 }

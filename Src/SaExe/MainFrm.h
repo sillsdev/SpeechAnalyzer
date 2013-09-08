@@ -289,7 +289,7 @@ public:
     void SetPopup(int nPopup);
     int GetPopup() const;
     BOOL IsEditAllowed();
-    void SetToolSettings(CToolSettings settings);
+    void SetToolSettings( CToolSettings settings, bool fullView);
 
     friend CDisplayPlot;
 

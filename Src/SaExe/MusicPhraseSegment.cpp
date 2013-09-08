@@ -14,7 +14,7 @@ CMusicPhraseSegment::CMusicPhraseSegment(int index, int master) :
 // (0 based), otherwise -1. The function allows an overlap of 50% of
 // existing annotation segments at both ends.
 /***************************************************************************/
-int CMusicPhraseSegment::CheckPosition(CSaDoc * pDoc, DWORD dwStart,DWORD dwStop, EMode nMode, BOOL bOverlap) const
+int CMusicPhraseSegment::CheckPosition( CSaDoc * pDoc, DWORD dwStart, DWORD dwStop, EMode nMode, BOOL bOverlap) const
 {
     int nLength = GetOffsetSize();
     if (nLength == 0)
@@ -28,20 +28,26 @@ int CMusicPhraseSegment::CheckPosition(CSaDoc * pDoc, DWORD dwStart,DWORD dwStop
     }
     else if ((nMode==MODE_ADD)||(nMode==MODE_AUTOMATIC))
     {
-        if ((dwStop - dwStart)  < pDoc->GetBytesFromTime(MIN_ADD_SEGMENT_TIME))
+		// if segment is less than 20 ms, we can't add
+		DWORD dwSize = dwStop-dwStart;
+        if ((dwSize)  < pDoc->GetBytesFromTime(MIN_ADD_SEGMENT_TIME))
         {
             return -1;    // segment too small
         }
+
         int nLoop;
         for (nLoop = 0; nLoop < nLength; nLoop++)
         {
             DWORD dwOffset = GetOffset(nLoop);
+			// are we before this segment?
             if (dwStart <= dwOffset)   // this offset
             {
+				// did our stop overlap it's start?
                 if (dwStop > dwOffset)
                 {
                     return -1;
                 }
+				// is our start less than the previous stop?
                 if ((nLoop > 0)&&(dwStart < GetStop(nLoop - 1)))
                 {
                     return -1;
@@ -49,7 +55,8 @@ int CMusicPhraseSegment::CheckPosition(CSaDoc * pDoc, DWORD dwStart,DWORD dwStop
                 return nLoop; // ok
             }
         }
-        if ((nLoop >0)&&(dwStart < GetStop(nLoop-1)))
+		// we didn't find anything - is our start overlapping the last stop?
+        if ((nLoop>0)&&(dwStart < GetStop(nLoop-1)))
         {
             return -1;
         }

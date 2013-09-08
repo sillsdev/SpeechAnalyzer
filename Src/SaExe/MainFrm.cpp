@@ -717,60 +717,77 @@ void CMainFrame::OnInitMenu(CMenu * pMenu)
 /***************************************************************************/
 void CMainFrame::OnToolsOptions()
 {
+	if (GetCurrSaView() != NULL)
+	{
+		// set property sheet caption
+		CSaString szCaption;
+		szCaption.LoadString(IDS_DLGTITLE_TOOLSOPTIO); // load caption string
+		// create property sheet object
+		CDlgToolsOptions dlg( szCaption, NULL, true);
+		// get pointer to active view and document
+		CSaView * pView = (CSaView *)GetCurrSaView();
+		// setup initial dialog values
+		dlg.m_dlgViewPage.m_nCaptionStyle = m_nCaptionStyle; // DDO - 08/07/00
+		dlg.m_dlgViewPage.m_bStatusbar = m_bStatusBar;       // setup check boxes
+		dlg.m_dlgViewPage.m_nPosMode = m_nStatusPosReadout;
+		dlg.m_dlgViewPage.m_nPitchMode = m_nStatusPitchReadout;
+		dlg.m_dlgViewPage.m_bToolbar = bToolBarVisible();
+		dlg.m_dlgViewPage.m_bTaskbar = bTaskBarVisible();
+		dlg.m_dlgViewPage.m_bToneAbove = m_bToneAbove;
+		dlg.m_dlgViewPage.m_bScrollZoom = m_bScrollZoom;
+		dlg.m_dlgViewPage.m_nCursorAlignment = pView->GetCursorAlignment();
+		dlg.m_dlgViewPage.m_nGraphUpdateMode = pView->GetGraphUpdateMode();
+		dlg.m_dlgViewPage.m_bAnimate = pView->IsAnimationRequested();
+		dlg.m_dlgViewPage.m_nAnimationRate = pView->GetAnimationFrameRate();
+		dlg.m_dlgViewPage.m_bXGrid = m_grid.bXGrid;
+		dlg.m_dlgViewPage.m_bYGrid = m_grid.bYGrid;
+		dlg.m_dlgViewPage.SetGridStyle(m_grid.nXStyle, m_grid.nYStyle);
+		dlg.m_dlgColorPage.m_cColors = m_colors;
 
-    // set property sheet caption
-    CSaString szCaption;
-    szCaption.LoadString(IDS_DLGTITLE_TOOLSOPTIO); // load caption string
-    // create property sheet object
-    CDlgToolsOptions dlg(szCaption, NULL);
-    // get pointer to active view and document
-    CSaView * pView = (CSaView *)GetCurrSaView();
-    // setup initial dialog values
-    dlg.m_dlgViewPage.m_nCaptionStyle = m_nCaptionStyle; // DDO - 08/07/00
-    dlg.m_dlgViewPage.m_bStatusbar = m_bStatusBar;       // setup check boxes
-    dlg.m_dlgViewPage.m_nPosMode = m_nStatusPosReadout;
-    dlg.m_dlgViewPage.m_nPitchMode = m_nStatusPitchReadout;
-    dlg.m_dlgViewPage.m_bToolbar = bToolBarVisible();
-    dlg.m_dlgViewPage.m_bTaskbar = bTaskBarVisible();
-    dlg.m_dlgViewPage.m_bToneAbove = m_bToneAbove;
-    dlg.m_dlgViewPage.m_bScrollZoom = m_bScrollZoom;
-    dlg.m_dlgViewPage.m_nCursorAlignment = pView->GetCursorAlignment();
-    dlg.m_dlgViewPage.m_nGraphUpdateMode = pView->GetGraphUpdateMode();
-    dlg.m_dlgViewPage.m_bAnimate = pView->IsAnimationRequested();
-    dlg.m_dlgViewPage.m_nAnimationRate = pView->GetAnimationFrameRate();
-    dlg.m_dlgViewPage.m_bXGrid = m_grid.bXGrid;
-    dlg.m_dlgViewPage.m_bYGrid = m_grid.bYGrid;
-    dlg.m_dlgViewPage.SetGridStyle(m_grid.nXStyle, m_grid.nYStyle);
-    dlg.m_dlgColorPage.m_cColors = m_colors;
+		try
+		{
+			for (int nLoop = 0; nLoop < ANNOT_WND_NUMBER; nLoop++)
+			{
+				dlg.m_dlgFontPage.m_GraphFonts.Add(GetFontFace(nLoop));
+				dlg.m_dlgFontPage.m_GraphFontSizes.Add(GetFontSize(nLoop));
+			}
+		}
+		catch (CMemoryException e)
+		{
+			// memory allocation error
+			CSaApp * pApp = (CSaApp *)AfxGetApp();
+			pApp->ErrorMessage(IDS_ERROR_MEMALLOC);
+			return;
+		}
 
-    try
-    {
-        for (int nLoop = 0; nLoop < ANNOT_WND_NUMBER; nLoop++)
-        {
-            dlg.m_dlgFontPage.m_GraphFonts.Add(GetFontFace(nLoop));
-            dlg.m_dlgFontPage.m_GraphFontSizes.Add(GetFontSize(nLoop));
-        }
-    }
-    catch (CMemoryException e)
-    {
-        // memory allocation error
-        CSaApp * pApp = (CSaApp *)AfxGetApp();
-        pApp->ErrorMessage(IDS_ERROR_MEMALLOC);
-        return;
-    }
+		// create the modal dialog box
+		if (dlg.DoModal() == IDOK)         // OK button pressed
+		{
+			SetToolSettings(dlg.GetSettings(),true);
+			SendMessage(WM_USER_APPLY_TOOLSOPTIONS, 0, 0);    // do apply changes
+		}
+	}
+	else
+	{
+		// there is no view - show a limited version of the tools options dialog box
+		// set property sheet caption
+		CSaString szCaption;
+		szCaption.LoadString(IDS_DLGTITLE_TOOLSOPTIO); // load caption string
+		// create property sheet object
+		CDlgToolsOptions dlg( szCaption, NULL, false);
 
-
-    // create the modal dialog box
-    if (dlg.DoModal() == IDOK)         // OK button pressed
-    {
-        SetToolSettings(dlg.GetSettings());
-        SendMessage(WM_USER_APPLY_TOOLSOPTIONS, 0, 0);    // do apply changes
-    }
+		// create the modal dialog box
+		if (dlg.DoModal() == IDOK)         // OK button pressed
+		{
+			SetToolSettings(dlg.GetSettings(),false);
+			SendMessage(WM_USER_APPLY_TOOLSOPTIONS, 0, 0);    // do apply changes
+		}
+	}
 }
 
 void CMainFrame::OnUpdateToolsOptions(CCmdUI * pCmdUI)
 {
-    pCmdUI->Enable(GetCurrSaView() != NULL);
+    pCmdUI->Enable(TRUE);
 }
 
 /***************************************************************************/
@@ -3092,9 +3109,16 @@ int CMainFrame::GetPopup() const
     return m_nPopup ? m_nPopup : IDR_SA_FLOATINGPOPUP;
 };
 
-void CMainFrame::SetToolSettings(CToolSettings settings)
+void CMainFrame::SetToolSettings( CToolSettings settings, bool fullView)
 {
-    toolSettings = settings;
+	if (fullView)
+	{
+	    toolSettings = settings;
+	}
+	else
+	{
+		toolSettings.m_bShowAdvancedAudio = settings.m_bShowAdvancedAudio;
+	}
 }
 
 /**

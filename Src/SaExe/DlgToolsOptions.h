@@ -228,11 +228,8 @@ class CDlgToolsOptions : public CPropertySheet
     DECLARE_DYNAMIC(CDlgToolsOptions)
 
 public:
-    CDlgToolsOptions(LPCTSTR pszCaption, CWnd * pParent);
-    void ApplyNow()
-    {
-        OnApplyNow();
-    };
+    CDlgToolsOptions(LPCTSTR pszCaption, CWnd * pParent, bool fullView);
+    void ApplyNow();
     void OnHelpToolsOptions();
 
     CDlgOptionsViewPage m_dlgViewPage;
@@ -251,6 +248,7 @@ protected:
     void ChangeButtons();                               // delete Apply button, move other buttons
 
     CButton m_cHelp;
+	bool fullView;
 
     DECLARE_MESSAGE_MAP()
 };
