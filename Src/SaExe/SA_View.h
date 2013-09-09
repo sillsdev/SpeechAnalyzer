@@ -353,6 +353,7 @@ protected:
     afx_msg void OnEditRemove();
     afx_msg void OnUpdateEditRemove(CCmdUI * pCmdUI);
     afx_msg void OnEditAutoAdd();
+    afx_msg void OnUpdateEditAutoAdd(CCmdUI * pCmdUI);
     afx_msg void OnEditAdd();
     afx_msg void OnUpdateEditAdd(CCmdUI * pCmdUI);
     afx_msg void OnEditAddAutoPhraseL2();
@@ -498,6 +499,11 @@ private:
 	CGraphWnd * GetGraphForAnnotation( int annotation);
 	DWORD GetMinimumSeparation( CSaDoc * pDoc, CGraphWnd * pGraph, CPlotWnd * pPlot);
 
+	BOOL AllowEditAdd();
+	BOOL AllowAddPhrase( CMusicPhraseSegment * pSeg);
+	BOOL IsPhoneticOverlapping();
+	BOOL AllowAutoAdd();
+
     UINT m_anGraphID[MAX_GRAPHS_NUMBER];	// array of graph IDs
     UINT m_nLayout;							// actual Layout number
     CSegmentSelection m_advancedSelection;
@@ -562,9 +568,6 @@ private:
     BOOL m_bViewCreated;
     CSaApp * pSaApp;
     CMainFrame * pViewMainFrame;
-
-    DWORD lastZStartCursor;
-    DWORD lastZStopCursor;
 
 	DWORD lastBoundaryStartCursor;
 	DWORD lastBoundaryStopCursor;

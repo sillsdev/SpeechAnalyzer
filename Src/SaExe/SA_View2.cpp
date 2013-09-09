@@ -178,6 +178,7 @@ BEGIN_MESSAGE_MAP(CSaView, CView)
     ON_COMMAND(ID_EDIT_REMOVE, OnEditRemove)
     ON_UPDATE_COMMAND_UI(ID_EDIT_REMOVE, OnUpdateEditRemove)
     ON_COMMAND(ID_EDIT_AUTO_ADD, OnEditAutoAdd)
+    ON_UPDATE_COMMAND_UI(ID_EDIT_AUTO_ADD, OnUpdateEditAutoAdd)
     ON_COMMAND(ID_EDIT_ADD, OnEditAdd)
     ON_UPDATE_COMMAND_UI(ID_EDIT_ADD, OnUpdateEditAdd)
     ON_COMMAND(ID_EDIT_ADD_AUTO_PHRASE_L2, OnEditAddAutoPhraseL2)
@@ -444,10 +445,6 @@ CSaView::CSaView(const CSaView * pToBeCopied)
     {
         *this = *pToBeCopied;
     }
-
-    lastZStartCursor = UNDEFINED_OFFSET;
-    lastZStopCursor = UNDEFINED_OFFSET;
-
 
 	lastBoundaryStartCursor = UNDEFINED_OFFSET;
 	lastBoundaryStopCursor = UNDEFINED_OFFSET;
@@ -4493,42 +4490,8 @@ void CSaView::OnUpdateEditAddSyllable(CCmdUI * pCmdUI)
 /***************************************************************************/
 void CSaView::OnEditAutoAdd()
 {
-
     DWORD start = GetStartCursorPosition();
     DWORD stop = GetStopCursorPosition();
-
-    bool execute = true;
-    // check if this is not the first time
-    if ((lastZStartCursor!=UNDEFINED_OFFSET) || (lastZStopCursor!=UNDEFINED_OFFSET))
-    {
-        // If the numbers match, then do nothing, since they have not moved the cursors.
-        if ((lastZStartCursor==start)&&(lastZStopCursor==stop))
-        {
-            // no need to go any farther
-            return;
-        }
-        // Check if either the Begin cursor or the End cursor are inside of any existing segment.
-        // If either of them are, then that would result in an invalid new segment, so again do nothing.
-        CPhoneticSegment * pSeg = (CPhoneticSegment *) GetAnnotation(PHONETIC);
-        for (int i = 0; i< pSeg->GetOffsetSize(); i++)
-        {
-            DWORD begin = pSeg->GetOffset(i);
-            DWORD end = pSeg->GetStop(i);
-            if (((begin<=start)&&(start<=end)) || ((begin<=stop)&&(stop<=end)))
-            {
-                execute = false;
-                break;
-            }
-        }
-    }
-
-    lastZStartCursor = start;
-    lastZStopCursor = stop;
-
-    if (!execute)
-    {
-        return;
-    }
 
     TRACE("Running WAT macro\n");
     OnEditAdd();
@@ -4542,6 +4505,52 @@ void CSaView::OnEditAutoAdd()
     {
         SetStopCursorPosition(start+1);
     }
+}
+
+BOOL CSaView::IsPhoneticOverlapping()
+{
+	DWORD start = GetStartCursorPosition();
+    DWORD stop = GetStopCursorPosition();
+    // Check if either the Begin cursor or the End cursor are inside of any existing phonetic segment.
+    // If either of them are, then that would result in an invalid new segment, so again do nothing.
+    CPhoneticSegment * pSeg = (CPhoneticSegment *) GetAnnotation(PHONETIC);
+    for (int i = 0; i< pSeg->GetOffsetSize(); i++)
+    {
+        DWORD begin = pSeg->GetOffset(i);
+        DWORD end = pSeg->GetStop(i);
+        if (((begin<=start)&&(start<=end)) || ((begin<=stop)&&(stop<=end)))
+        {
+			return TRUE;
+        }
+    }
+	return FALSE;
+}
+
+BOOL CSaView::AllowAutoAdd()
+{
+	// check the phonetic location
+	if (!AllowEditAdd()) return FALSE;
+
+	if (IsPhoneticOverlapping()) return FALSE;
+	
+	// no checks for gloss at this point...
+
+	// check the PL1 location
+	if (!AllowAddPhrase((CMusicPhraseSegment *)GetAnnotation(MUSIC_PL1))) return FALSE;
+
+	// check the PL2 location
+	if (!AllowAddPhrase((CMusicPhraseSegment *)GetAnnotation(MUSIC_PL2))) return FALSE;
+
+	return TRUE;
+}
+
+//SDM 1.5Test11.3
+/***************************************************************************/
+// CSaView::OnEditAutoAdd WAT macro
+/***************************************************************************/
+void CSaView::OnUpdateEditAutoAdd(CCmdUI * pCmdUI)
+{
+    pCmdUI->Enable(AllowAutoAdd());
 }
 
 //SDM 1.5Test11.3
@@ -4682,15 +4691,10 @@ void CSaView::OnEditAdd()
     }
 }
 
-/***************************************************************************/
-// CSaView::OnUpdateEditAdd
-/***************************************************************************/
-void CSaView::OnUpdateEditAdd(CCmdUI * pCmdUI)
+BOOL CSaView::AllowEditAdd()
 {
-    BOOL bEnable = FALSE;
     CSaDoc * pDoc = GetDocument(); // get pointer to document
-
-    CPhoneticSegment * pSeg = (CPhoneticSegment *) GetAnnotation(PHONETIC);
+    CPhoneticSegment * pSeg = (CPhoneticSegment *)GetAnnotation(PHONETIC);
     int nInsertAt = pSeg->CheckPosition(pDoc,GetStartCursorPosition(),GetStopCursorPosition(),CSegment::MODE_ADD);
     if (nInsertAt != -1)
     {
@@ -4698,78 +4702,86 @@ void CSaView::OnUpdateEditAdd(CCmdUI * pCmdUI)
         int nLoop = m_advancedSelection.GetSelectionIndex();
         if (nLoop == -1)
         {
-            bEnable = TRUE;
+			return TRUE;
         }
+		return FALSE;
+    }
+
+    if (pSeg->GetSelection()==-1)					// Phonetic Segment not selected
+	{
+		return FALSE;
+	}
+
+    int nSelection = pSeg->GetSelection();
+    DWORD dwStart = pSeg->GetStop(nSelection);	// Start at current stop
+    DWORD dwMaxStop = 0;
+    DWORD dwStop = 0;
+
+    if (pSeg->GetNext(nSelection) == -1)		// Last Selection
+    {
+        dwMaxStop = pDoc->GetDataSize();
+    }
+    else     // Fit before next
+    {
+        dwMaxStop = pSeg->GetOffset(pSeg->GetNext(nSelection));
+    }
+
+    // Snap Start Position
+    dwStart = pDoc->SnapCursor(START_CURSOR, dwStart, dwStart, dwMaxStop, SNAP_RIGHT);;
+
+    dwStop = (dwStart + pDoc->GetBytesFromTime(MIN_ADD_SEGMENT_TIME));
+    if (pDoc->Is16Bit())            // SDM 1.5Test8.2
+    {
+        dwStop = (dwStop + 1) & ~1; // Round up
+    }
+
+    if (pSeg->GetNext(nSelection) != -1)
+    {
+        dwStop = pDoc->SnapCursor(STOP_CURSOR, dwStop, dwStop, pDoc->GetDataSize(), SNAP_RIGHT);
+    }
+
+    if (dwStop > dwMaxStop)   // not enough room
+    {
+		return FALSE;
+	}
+
+    dwStop = dwStart + pDoc->GetBytesFromTime(DEFAULT_ADD_SEGMENT_TIME);
+    if (pDoc->Is16Bit())   // SDM 1.5Test8.2
+    {
+        dwStop = (dwStop + 1) & ~1; // Round up
+    }
+
+    if (dwStop > dwMaxStop)
+    {
+        dwStop = dwMaxStop;
     }
     else
     {
-        if (pSeg->GetSelection()!=-1)					// Phonetic Segment Selected
-        {
-            int nSelection = pSeg->GetSelection();
-            DWORD dwStart = pSeg->GetStop(nSelection);	// Start at current stop
-            DWORD dwMaxStop;
-            DWORD dwStop;
-
-            if (pSeg->GetNext(nSelection) == -1)		// Last Selection
-            {
-                dwMaxStop = pDoc->GetDataSize();
-            }
-            else     // Fit before next
-            {
-                dwMaxStop = pSeg->GetOffset(pSeg->GetNext(nSelection));
-            }
-
-            // Snap Start Position
-            dwStart = pDoc->SnapCursor(START_CURSOR, dwStart, dwStart, dwMaxStop, SNAP_RIGHT);;
-
-            dwStop = (dwStart + pDoc->GetBytesFromTime(MIN_ADD_SEGMENT_TIME));
-            if (pDoc->Is16Bit())            // SDM 1.5Test8.2
-            {
-                dwStop = (dwStop + 1) & ~1; // Round up
-            }
-
-            if (pSeg->GetNext(nSelection) != -1)
-            {
-                dwStop = pDoc->SnapCursor(STOP_CURSOR, dwStop, dwStop, pDoc->GetDataSize(), SNAP_RIGHT);
-            }
-
-            if (dwStop <= dwMaxStop)   // enough room
-            {
-                dwStop = dwStart + pDoc->GetBytesFromTime(DEFAULT_ADD_SEGMENT_TIME);
-
-                if (pDoc->Is16Bit())   // SDM 1.5Test8.2
-                {
-                    dwStop = (dwStop + 1) & ~1; // Round up
-                }
-
-                if (dwStop > dwMaxStop)
-                {
-                    dwStop = dwMaxStop;
-                }
-                else
-                {
-                    // Snap Stop Position
-                    dwStop = pDoc->SnapCursor(STOP_CURSOR, dwStop, dwStart, dwMaxStop, SNAP_LEFT);
-                }
-
-                nInsertAt = pSeg->CheckPosition(pDoc,dwStart,dwStop,CSegment::MODE_ADD);
-                if (nInsertAt >= 0)
-                {
-                    bEnable = TRUE;
-                }
-            }
-        }
+        // Snap Stop Position
+        dwStop = pDoc->SnapCursor(STOP_CURSOR, dwStop, dwStart, dwMaxStop, SNAP_LEFT);
     }
-    pCmdUI->Enable(bEnable);
+
+    nInsertAt = pSeg->CheckPosition(pDoc,dwStart,dwStop,CSegment::MODE_ADD);
+    if (nInsertAt >= 0)
+    {
+		return TRUE;
+    }
+	return FALSE;
 }
 
+/***************************************************************************/
+// CSaView::OnUpdateEditAdd
+/***************************************************************************/
+void CSaView::OnUpdateEditAdd(CCmdUI * pCmdUI)
+{
+    pCmdUI->Enable(AllowEditAdd());
+}
 
 /***************************************************************************/
 // CSaView::OnEditAddPhrase
 /***************************************************************************/
 void CSaView::OnEditAddPhrase(CMusicPhraseSegment * pSeg)
 {
-
     CSaDoc * pDoc = (CSaDoc *) GetDocument();
 
     pDoc->CheckPoint();
@@ -4875,58 +4887,63 @@ void CSaView::OnEditAddPhrase(CMusicPhraseSegment * pSeg)
     }
 }
 
-/***************************************************************************/
-// CSaView::OnUpdateEditAddPhrase
-/***************************************************************************/
-void CSaView::OnUpdateEditAddPhrase(CCmdUI * pCmdUI, CMusicPhraseSegment * pSeg)
+BOOL CSaView::AllowAddPhrase( CMusicPhraseSegment * pSeg)
 {
-
-    BOOL bEnable = FALSE;
     CSaDoc * pDoc = GetDocument(); // get pointer to document
 
     int nInsertAt = pSeg->CheckPosition(pDoc,GetStartCursorPosition(),GetStopCursorPosition(),CSegment::MODE_ADD);
     if (nInsertAt != -1)
     {
-        bEnable = TRUE;
+        return TRUE;
     }
+
+    if (pSeg->GetSelection()==-1)				// no segment selected
+	{
+		return FALSE;
+	}
+
+    int nSelection = pSeg->GetSelection();
+    DWORD dwStart = pSeg->GetStop(nSelection);	// Start at current stop
+    DWORD dwMaxStop;
+    DWORD dwStop;
+
+    if (pSeg->GetNext(nSelection) == -1)		// Last Selection
     {
-        if (pSeg->GetSelection()!=-1)   // Phonetic Segment Selected
-        {
-            int nSelection = pSeg->GetSelection();
-            DWORD dwStart = pSeg->GetStop(nSelection); // Start at current stop
-            DWORD dwMaxStop;
-            DWORD dwStop;
-
-            if (pSeg->GetNext(nSelection) == -1)   // Last Selection
-            {
-                dwMaxStop = pDoc->GetDataSize();
-            }
-            else     // Fit before next
-            {
-                dwMaxStop = pSeg->GetOffset(pSeg->GetNext(nSelection));
-            }
-
-            // Snap Start Position
-            dwStart = pDoc->SnapCursor(START_CURSOR, dwStart, dwStart, dwMaxStop, SNAP_RIGHT);
-
-            dwStop = (dwStart + pDoc->GetBytesFromTime(MIN_ADD_SEGMENT_TIME));
-            if (pDoc->Is16Bit())   // SDM 1.5Test8.2
-            {
-                dwStop = (dwStop + 1) & ~1; // Round up
-            }
-
-            if (pSeg->GetNext(nSelection) != -1)
-            {
-                dwStop = pDoc->SnapCursor(STOP_CURSOR, dwStop, dwStop, pDoc->GetDataSize(), SNAP_RIGHT);
-            }
-
-            if (dwStop <= dwMaxStop)   // enough room
-            {
-                bEnable = TRUE;
-            }
-        }
+        dwMaxStop = pDoc->GetDataSize();
     }
-    pCmdUI->Enable(bEnable);
+    else     // Fit before next
+    {
+        dwMaxStop = pSeg->GetOffset(pSeg->GetNext(nSelection));
+    }
+
+    // Snap Start Position
+    dwStart = pDoc->SnapCursor(START_CURSOR, dwStart, dwStart, dwMaxStop, SNAP_RIGHT);
+
+    dwStop = (dwStart + pDoc->GetBytesFromTime(MIN_ADD_SEGMENT_TIME));
+    if (pDoc->Is16Bit())   // SDM 1.5Test8.2
+    {
+        dwStop = (dwStop + 1) & ~1; // Round up
+    }
+
+    if (pSeg->GetNext(nSelection) != -1)
+    {
+        dwStop = pDoc->SnapCursor(STOP_CURSOR, dwStop, dwStop, pDoc->GetDataSize(), SNAP_RIGHT);
+    }
+
+    if (dwStop <= dwMaxStop)   // enough room
+    {
+        return TRUE;
+    }
+
+	return FALSE;
+}
+
+/***************************************************************************/
+// CSaView::OnUpdateEditAddPhrase
+/***************************************************************************/
+void CSaView::OnUpdateEditAddPhrase(CCmdUI * pCmdUI, CMusicPhraseSegment * pSeg)
+{
+    pCmdUI->Enable(AllowAddPhrase( pSeg));
 }
 
 void CSaView::OnEditAddAutoPhraseL2()
@@ -4966,7 +4983,7 @@ void CSaView::OnEditAddAutoPhraseL2()
 			}
 			
 			// are we before?
-			if (newStop<thisStart)
+			if (newStop<=thisStart)
 			{
 				// it's before or overlapping
 				if (i>0)
@@ -4988,8 +5005,17 @@ void CSaView::OnEditAddAutoPhraseL2()
 			}
 			else
 			{
+				// we are overlapping at end
+				if ((newStart==thisStop)&&(newStop>thisStop))
+				{
+					// just insert as normal
+					SetStartCursorPosition(thisStop);
+					TRACE("Adding PL2 after previous segment\n");
+					found=true;
+					break;
+				}
 				// we are overlapping in some way...
-				if ((newStart<thisStart)&&(newStop>thisStart)&&(newStop<thisStop))
+				else if ((newStart<thisStart)&&(newStop>thisStart)&&(newStop<thisStop))
 				{
 					// we are overlapping beginning
 					SetStartCursorPosition(newStart);
@@ -5127,6 +5153,11 @@ void CSaView::OnEditAddAutoPhraseL2()
     }
 }
 
+void CSaView::OnUpdateEditAddAutoPhraseL2(CCmdUI * pCmdUI)
+{
+    pCmdUI->Enable(AllowAddPhrase((CMusicPhraseSegment *) GetAnnotation(MUSIC_PL2)));
+}
+
 void CSaView::OnEditAddPhraseL1()
 {
     OnEditAddPhrase((CMusicPhraseSegment *) GetAnnotation(MUSIC_PL1));
@@ -5145,11 +5176,6 @@ void CSaView::OnEditAddPhraseL3()
 void CSaView::OnEditAddPhraseL4()
 {
     OnEditAddPhrase((CMusicPhraseSegment *) GetAnnotation(MUSIC_PL4));
-}
-
-void CSaView::OnUpdateEditAddAutoPhraseL2(CCmdUI * pCmdUI)
-{
-    OnUpdateEditAddPhrase(pCmdUI, (CMusicPhraseSegment *) GetAnnotation(MUSIC_PL2));
 }
 
 void CSaView::OnUpdateEditAddPhraseL1(CCmdUI * pCmdUI)

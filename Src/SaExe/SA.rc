@@ -26,7 +26,7 @@ LANGUAGE LANG_NEUTRAL, SUBLANG_NEUTRAL
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 3,1,0,69
+ FILEVERSION 3,1,0,70
  PRODUCTVERSION 1,0,0,1
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
@@ -44,7 +44,7 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "SIL International"
             VALUE "FileDescription", "SA"
-            VALUE "FileVersion", "v3.1.0.69"
+            VALUE "FileVersion", "v3.1.0.70"
             VALUE "InternalName", "SA"
             VALUE "LegalCopyright", "© 1996-2013 SIL International (MSEA)"
             VALUE "ProductName", "SA"
@@ -2796,12 +2796,6 @@ BEGIN
     END
     POPUP "&Tools"
     BEGIN
-        POPUP "&Adjust Waveform", GRAYED
-        BEGIN
-            MENUITEM "&Invert",                     ID_TOOLS_ADJUST_INVERT
-            MENUITEM "&Normalize",                  ID_TOOLS_ADJUST_NORMALIZE
-            MENUITEM "&Zero Offset",                ID_TOOLS_ADJUST_ZERO
-        END
         MENUITEM "&Workbench",                  ID_WORKBENCH
         MENUITEM SEPARATOR
         MENUITEM "Waveform &Generator...",      ID_WAVEFORM_GENERATOR
@@ -3098,7 +3092,7 @@ BEGIN
             MENUITEM "&Invert",                     ID_TOOLS_ADJUST_INVERT
             MENUITEM "&Normalize",                  ID_TOOLS_ADJUST_NORMALIZE
             MENUITEM "&Zero Offset",                ID_TOOLS_ADJUST_ZERO
-            MENUITEM "Insert &Silence",             ID_AUTOSAVE_OFF
+            MENUITEM "Insert &Silence",             ID_TOOLS_ADJUST_SILENCE
         END
         POPUP "Automatic &Markup"
         BEGIN
@@ -4364,7 +4358,7 @@ IDC_MHANDN              CURSOR                  "res\\MedHandN.cur"
 
 STRINGTABLE
 BEGIN
-    VS_VERSION              "Version 3.1.0.69"
+    VS_VERSION              "Version 3.1.0.70"
     VS_COPYRIGHT            "© 1996-2013 SIL International (MSEA).\nAll Rights Reserved."
     IDR_MAINFRAME           "Speech Analyzer"
     IDR_SA_ANNTYPE          "\nSA\nSA Document\nWAV Files (*.wav)\n.wav\nannFileType\nANN File Type"

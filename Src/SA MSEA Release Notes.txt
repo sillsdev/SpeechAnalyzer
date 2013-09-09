@@ -1,4 +1,9 @@
-SA - 3.1.0.69 - 9/??/2013 (stereo branch)
+SA - 3.1.0.70 - 9/9/2013 (stereo branch)
+1) Corrected menu/resource problem which was preventing InsertSilence feature from operating correctly.
+2) Added code to disable ALT+Z when it overlaps an existing phonetic, PL1 or PL2 segment.
+3) Corrected code the prevented ALT+Z from executing when the new PL2 segment to be added is just touching an existing PL2 segment.
+
+SA - 3.1.0.69 - 9/8/2013 (stereo branch)
 1) Modified Tools/Options dialog so that the audio portion is available when no view has been displayed yet.
 2) Modified OnEditAddAutoPhraseL2 to handle cases where the start/cursors are located between two other PL2 segments, or before or after all other segments.
 
