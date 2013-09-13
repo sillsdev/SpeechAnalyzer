@@ -1,3 +1,11 @@
+SA - 3.1.0.71 - 9/12/2013 (stereo branch)
+1) Fixed GPF that occurs during transcription alignment if a field is selected that does not exist in the data.  The software will now insert a '?' for fields that are missing in the data.
+2) Fixed copy/paste alignment issues.  There were several problems.
+  a) The software wasn't calculating the end of the source file correctly, causing an overflow in the math of the length of the data to be copied.  In some cases, no data was copied, yet the system still updated the length of the new file to what the length should be.  this caused display problems.
+  b) The software wasn't handling the offset and duration for stereo files correctly when adjusting the annotation segments.
+  c) The system wasn't calculating the new position of the stop cursor after the paste operation for a stereo file.
+  d) When adjusting the annotations, the software was improperly modifying the old-last segment if the new segment was pasted to the right and outside of it's boundary.
+
 SA - 3.1.0.70 - 9/9/2013 (stereo branch)
 1) Corrected menu/resource problem which was preventing InsertSilence feature from operating correctly.
 2) Added code to disable ALT+Z when it overlaps an existing phonetic, PL1 or PL2 segment.

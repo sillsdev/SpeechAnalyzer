@@ -1376,12 +1376,12 @@ void CSaApp::CopyClipboardTranscription(LPCTSTR szTempPath)
 
     CoInitialize(NULL);
     ISaAudioDocumentWriterPtr saAudioDocWriter;
-    HRESULT createResult = saAudioDocWriter.CreateInstance(__uuidof(SaAudioDocumentWriter));
-    if (createResult)
+    HRESULT hr = saAudioDocWriter.CreateInstance(__uuidof(SaAudioDocumentWriter));
+    if (hr)
     {
-        CSaString szCreateResult;
-        szCreateResult.Format(_T("%x"), createResult);
-        ErrorMessage(IDS_ERROR_CREATE_INSTANCE, _T("SaAudioDocumentWriter.CreateInstance()"), szCreateResult);
+        CSaString msg;
+        msg.Format(_T("%x"), hr);
+        ErrorMessage(IDS_ERROR_CREATE_INSTANCE, _T("SaAudioDocumentWriter.CreateInstance()"), msg);
         return;
     }
 
@@ -1397,8 +1397,26 @@ void CSaApp::CopyClipboardTranscription(LPCTSTR szTempPath)
         return;
     }
 
-    _bstr_t szDest = szTempPath;
-    saAudioDocWriter->Copy(szDest, VARIANT_TRUE);
+	try {
+		_bstr_t szDest = szTempPath;
+		hr = saAudioDocWriter->Copy( szDest, VARIANT_TRUE);
+		if (hr)
+		{
+			CSaString msg;
+			msg.Format(_T("%x"), hr);
+			ErrorMessage(IDS_ERROR_CREATE_INSTANCE, _T("SaAudioDocumentWriter.Copy()"), msg);
+		}
+	} 
+	catch(_com_error & e)
+	{
+		CString msg;
+		msg.Format(_T("%x"), hr);
+		ErrorMessage(IDS_ERROR_CREATE_INSTANCE, _T("SaAudioDocumentWriter.Copy()"), msg);
+	}
+	catch(...)
+	{
+		int i=0;
+	}
 }
 
 /***************************************************************************/

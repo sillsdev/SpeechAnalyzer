@@ -35,8 +35,12 @@ CSaString CTranscriptionHelper::Render(CTranscriptionData & td)
             {
                 continue;
             }
-            CSaString value = *indexes[*it2];
-            indexes[*it2]++;
+			CSaString value = "?";
+			if (indexes.count(*it2)>0)
+			{
+				value = *indexes[*it2];
+	            indexes[*it2]++;
+			}
             result.Append(value);
             result.Append(TAB);
         }

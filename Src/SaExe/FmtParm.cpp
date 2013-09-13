@@ -35,3 +35,15 @@ WAVEFORMATEX CFmtParm::GetWaveFormatEX()
     formatEx.cbSize = 0;
     return formatEx;
 }
+
+void CFmtParm::Trace()
+{
+	TRACE("WAVE FORMAT --------\n");
+	TRACE("wFormatTag=%d\n",wTag);
+	TRACE("channels=%d\n",wChannels);
+	TRACE("samples per sec=%d\n",dwSamplesPerSec);
+	TRACE("bytes per sec=%d\n",dwAvgBytesPerSec);
+	TRACE("block align=%d\n",wBlockAlign);
+	TRACE("bits per sample=%d\n",wBitsPerSample);
+	TRACE("--------------------\n");
+}

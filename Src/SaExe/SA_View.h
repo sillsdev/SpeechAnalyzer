@@ -119,6 +119,8 @@ public:
                                ECursorAlignment nCursorAlignment = ALIGN_USER_SETTING);		// set new stop cursor
     void SetStartStopCursorPosition(DWORD dwNewStartPos, DWORD dwNewStopPos, ESnapDirection nSnapDirection = SNAP_BOTH,
                                     ECursorAlignment nCursorAlignment = ALIGN_USER_SETTING);// set new start/stop cursor position
+    void SetStartStopCursorPosition(WAVETIME startTime, WAVETIME stopTime, ESnapDirection nSnapDirection = SNAP_BOTH,
+                                    ECursorAlignment nCursorAlignment = ALIGN_USER_SETTING);// set new start/stop cursor position
     void SetPlaybackPosition( DWORD dwPos = ~0,int nSpeed = 0, BOOL bEstimate = FALSE);		// default hide playback position indicators
     void StopPlaybackTimer();																// stop the cursor from advancing
 	void SetPlaybackFlash( bool on);

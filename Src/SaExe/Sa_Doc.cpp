@@ -1801,16 +1801,18 @@ bool CSaDoc::IsMultiChannelWave(LPCTSTR pszPathName, int & channels)
 /***************************************************************************/
 DWORD CSaDoc::CheckWaveFormatForPaste(LPCTSTR pszPathName)
 {
-
+	TRACE(L"CheckWaveFormatForPaste %s\n",pszPathName);
     CFmtParm fmtParm;
     DWORD dwDataSize;
 
-    if (!GetWaveFormatParams(pszPathName, fmtParm, dwDataSize))
+    if (!GetWaveFormatParams( pszPathName, fmtParm, dwDataSize))
     {
         // there is an error in the file.
         // an error message will have already been displayed
         return 0;
     }
+
+	fmtParm.Trace();
 
     CSaApp * pApp = (CSaApp *)AfxGetApp();
 
@@ -1818,10 +1820,10 @@ DWORD CSaDoc::CheckWaveFormatForPaste(LPCTSTR pszPathName)
     {
         CFmtParm * pFmtParm = &fmtParm;
         if ((m_FmtParm.wChannels != pFmtParm->wChannels) ||
-                (m_FmtParm.dwSamplesPerSec != pFmtParm->dwSamplesPerSec) ||
-                (m_FmtParm.dwAvgBytesPerSec != pFmtParm->dwAvgBytesPerSec) ||
-                (m_FmtParm.wBlockAlign != pFmtParm->wBlockAlign) ||
-                (m_FmtParm.wBitsPerSample != pFmtParm->wBitsPerSample))
+			(m_FmtParm.dwSamplesPerSec != pFmtParm->dwSamplesPerSec) ||
+			(m_FmtParm.dwAvgBytesPerSec != pFmtParm->dwAvgBytesPerSec) ||
+			(m_FmtParm.wBlockAlign != pFmtParm->wBlockAlign) ||
+			(m_FmtParm.wBitsPerSample != pFmtParm->wBitsPerSample))
         {
             // not the right format
             pApp->ErrorMessage(IDS_ERROR_PASTEFORMAT);
@@ -2979,7 +2981,7 @@ BOOL CSaDoc::CopyWaveToTemp(LPCTSTR pszSourcePathName)
 * pathname pszSourcePathName points to to the file (the tempfile or the one
 * with the pathname pszPathName points to).
 ***************************************************************************/
-BOOL CSaDoc::InsertWaveToTemp(LPCTSTR pszSourcePathName, LPCTSTR pszTempPathName, DWORD dwPos)
+BOOL CSaDoc::InsertWaveToTemp(LPCTSTR pszSourcePathName, LPCTSTR pszTempPathName, DWORD insertPos)
 {
     // get pointer to view and app
     POSITION pos = GetFirstViewPosition();
@@ -2997,7 +2999,7 @@ BOOL CSaDoc::InsertWaveToTemp(LPCTSTR pszSourcePathName, LPCTSTR pszTempPathName
     // seek insert position
     try
     {
-        file.Seek(dwPos,CFile::begin);
+        file.Seek(insertPos,CFile::begin);
     }
     catch (CFileException e)
     {
@@ -3100,12 +3102,6 @@ BOOL CSaDoc::InsertWaveToTemp(LPCTSTR pszSourcePathName, LPCTSTR pszTempPathName
 
     file.Close();
 
-    // read temporary file status and set new data size
-    m_dwDataSize = GetFileSize(m_szRawDataWrk.c_str());
-
-    // fragment the waveform
-    m_pProcessFragments->SetDataInvalid();  // remove old fragmented data
-
     return TRUE;
 }
 
@@ -3207,7 +3203,7 @@ BOOL CSaDoc::SaveModified()
 /***************************************************************************/
 BOOL CSaDoc::CopyWave(LPCTSTR pszSourceName, LPCTSTR pszTargetName)
 {
-	TRACE("copying %s to %s\n",pszSourceName, pszTargetName);
+	TRACE(L"copying %s to %s\n",pszSourceName, pszTargetName);
 		
     CFile sourceFile;
     CFile targetFile; // destructor will close the files
@@ -3290,7 +3286,7 @@ BOOL CSaDoc::CopyWave(LPCTSTR pszSourceName, LPCTSTR pszTargetName)
 /***************************************************************************/
 BOOL CSaDoc::CopyWave(LPCTSTR pszSourceName, LPCTSTR pszTargetName, WAVETIME start, WAVETIME length, BOOL bTruncate)
 {
-	TRACE("copy %s to %s from %f to %f\n",pszSourceName, pszTargetName, start, start+length);
+	TRACE(L"CopyWave %s to %s from %f to %f\n",pszSourceName, pszTargetName, start, start+length);
 
     CFile sourceFile;
     CFile targetFile; // destructor will close the files
@@ -3320,15 +3316,18 @@ BOOL CSaDoc::CopyWave(LPCTSTR pszSourceName, LPCTSTR pszTargetName, WAVETIME sta
     }
 
     DWORD dwSize = status.m_size;
-	if (dwSize < toBytes( start, false))
+	TRACE("source file size=%d\n",dwSize);
+	DWORD startBytes = toBytes( start, false);
+	if (dwSize < startBytes)
     {
         return TRUE; // Empty file
     }
+	TRACE("startBytes=%d\n",startBytes);
 
     try
     {
         targetFile.SeekToEnd();
-		sourceFile.Seek( toBytes( start, false), CFile::begin);
+		sourceFile.Seek( startBytes, CFile::begin);
     }
     catch (CFileException e)
     {
@@ -3336,11 +3335,14 @@ BOOL CSaDoc::CopyWave(LPCTSTR pszSourceName, LPCTSTR pszTargetName, WAVETIME sta
         targetFile.Abort(); // close the target file
         return FALSE;
     }
-    dwSize -= toBytes( start, false); // size to copy
-	if (dwSize > toBytes( length, false))
+    dwSize -= startBytes; // size to copy
+	DWORD lengthBytes = toBytes( length, false);
+	TRACE("lengthBytes=%d\n",lengthBytes);
+	if (dwSize > lengthBytes)
     {
-		dwSize = toBytes( length, false);
+		dwSize = lengthBytes;
     }
+	TRACE("size to copy=%d\n",dwSize);
 
     // use local buffer
     char buffer[0x10000];
@@ -4417,15 +4419,15 @@ BOOL CSaDoc::PutWaveToClipboard( WAVETIME sectionStart, WAVETIME sectionLength, 
 
 /***************************************************************************/
 // CSaDoc::PasteClipboardToWave Pastes wave data into the wave file
-// This function gets a handle with a globally allocated block of memory full
-// of wave data. 
-// It pastes the data into the wave file at the position (in bytes) given as parameter. 
+// This function gets a handle with a globally allocated block of memory 
+// full of wave data. 
+// It pastes the data into the wave file at the position (in seconds) given as parameter. 
 // In case of error it returns FALSE, else TRUE.
 /***************************************************************************/
-BOOL CSaDoc::PasteClipboardToWave( HGLOBAL hData, CURSORPOS dwPastePos)
+BOOL CSaDoc::PasteClipboardToWave( HGLOBAL hData, WAVETIME insertTime)
 {
 
-    TRACE("dwPastPos=%d\n",dwPastePos);
+    TRACE("PasteClipboardToWave insertTime=%f\n",insertTime);
 
     TCHAR szTempPath[_MAX_PATH];
     if (!CClipboardHelper::LoadFileFromData(hData,szTempPath,_MAX_PATH))
@@ -4433,6 +4435,15 @@ BOOL CSaDoc::PasteClipboardToWave( HGLOBAL hData, CURSORPOS dwPastePos)
         TRACE("Unable to retrieve clipboard data\n");
         return FALSE;
     }
+
+	TRACE(L"clipping is located in %s\n",szTempPath);
+
+	// check the file size
+	DWORD originalSize = GetFileSize(m_szRawDataWrk.c_str());
+	TRACE("originalSize=%d\n",originalSize);
+
+	WAVETIME lengthInTime = toTime(originalSize,false);
+	TRACE("length in seconds=%f\n",lengthInTime);
 
     CFileStatus status;
     DWORD dwPasteSize = CheckWaveFormatForPaste(szTempPath);
@@ -4442,23 +4453,30 @@ BOOL CSaDoc::PasteClipboardToWave( HGLOBAL hData, CURSORPOS dwPastePos)
         RemoveFile(szTempPath);
         return FALSE;
     }
+	WAVETIME pasteLength = toTime(dwPasteSize,false);
 
     CSaApp * pApp = (CSaApp *)AfxGetApp();
 
-    // open temporary wave file
+	// fragment the waveform
+	m_pProcessFragments->SetDataInvalid();  // remove old fragmented data
+
+    // open temporary wave file to create new data in
     {
+		TRACE("Copying portion before start cursor\n");
         TCHAR lpszRawTempPath[_MAX_PATH];
         GetTempFileName(_T("WAV"), lpszRawTempPath, _countof(lpszRawTempPath));
 
 		WAVETIME start = toTimeFromSamples( 0);
-		WAVETIME length = toTime( dwPastePos, true);
+		WAVETIME length = insertTime;
 		CopyWave( m_szRawDataWrk.c_str(), lpszRawTempPath, start, length, TRUE);
 
-        // increase the size of the file
+		TRACE("Inserting pasted portion\n");
+       // increase the size of the file
         try
         {
+			DWORD insertPos = toBytes( insertTime, false);
             //Get new wave data
-            if (!InsertWaveToTemp(szTempPath, lpszRawTempPath, dwPastePos))
+            if (!InsertWaveToTemp(szTempPath, lpszRawTempPath, insertPos))
             {
                 RemoveFile(szTempPath);
                 Undo(FALSE);
@@ -4473,8 +4491,13 @@ BOOL CSaDoc::PasteClipboardToWave( HGLOBAL hData, CURSORPOS dwPastePos)
             return FALSE;
         }
 
-		start = toTime( dwPastePos, true);
-		length = toTime( 0xffffffff, true);
+		DWORD newSize = GetFileSize(lpszRawTempPath);
+		TRACE("length after insertion=%d\n",newSize);
+
+		TRACE("Copying portion after start cursor\n");
+		start = insertTime;
+		length = lengthInTime-insertTime;
+
 		CopyWave(m_szRawDataWrk.c_str(), lpszRawTempPath, start, length, FALSE);
         RemoveFile(m_szRawDataWrk.c_str());
         m_szRawDataWrk = lpszRawTempPath;
@@ -4489,25 +4512,32 @@ BOOL CSaDoc::PasteClipboardToWave( HGLOBAL hData, CURSORPOS dwPastePos)
     m_nCheckPointCount++;
 
     // set new data size
-    m_dwDataSize += dwPasteSize;
+    m_dwDataSize = GetFileSize(m_szRawDataWrk.c_str());
+	TRACE("new datasize=%d\n",m_dwDataSize);
+
     SetModifiedFlag(TRUE); // data has been modified
     SetAudioModifiedFlag();
 
-    POSITION pos = GetFirstViewPosition();
-    ((CSaView *)GetNextView(pos))->SetStartStopCursorPosition( dwPastePos, dwPastePos+dwPasteSize, SNAP_BOTH, ALIGN_AT_SAMPLE);
+	// check the file size
+	TRACE("expected size=%d\n",(originalSize+dwPasteSize));
+	ASSERT((originalSize+dwPasteSize)==m_dwDataSize);
 
-	WAVETIME start = toTime( dwPastePos, true);
-	WAVETIME length = toTime( dwPasteSize, true);
+    POSITION pos = GetFirstViewPosition();
+	DWORD insertPos = toBytes( insertTime, true);
+    ((CSaView *)GetNextView(pos))->SetStartStopCursorPosition( insertTime, insertTime+pasteLength, SNAP_BOTH, ALIGN_AT_SAMPLE);
+
+	WAVETIME start = insertTime;
+	WAVETIME length = pasteLength;
     AdjustSegments( start, length, false);  // adjust segments to new file size
 
     //Get new segments
-    InsertTranscriptions( pApp->GetLastClipboardPath(), dwPastePos);
+    InsertTranscriptions( pApp->GetLastClipboardPath(), insertPos);
 
     return TRUE;
 }
 
 /***************************************************************************
-* CSaDoc::PasteClipboardToWave inserts a section of silence into the current
+* CSaDoc::InsertSilenceIntoWave inserts a section of silence into the current
 * wave.
 * silence - the length to insert specified in seconds.
 * insertAt - the location where to insert the new section.  this is for
@@ -4748,14 +4778,6 @@ void CSaDoc::AdjustSegments( WAVETIME sectionStart, WAVETIME sectionLength, bool
 
     if (bShrink)
     {
-        // save new file size for later
-        int nGlossIndex = m_apSegments[GLOSS]->GetOffsetSize() - 1;
-        DWORD dwNewDataSize ;
-        if (nGlossIndex != -1)   // we don't need the value if there is no gloss
-        {
-            dwNewDataSize = m_apSegments[GLOSS]->GetStop(nGlossIndex) - dwSectionLength;
-        }
-
         for (int independent=0; independent<ANNOT_WND_NUMBER; independent++)
         {
             if (m_apSegments[independent]->GetMasterIndex() != -1)
@@ -4868,14 +4890,6 @@ void CSaDoc::AdjustSegments( WAVETIME sectionStart, WAVETIME sectionLength, bool
     }
     else
     {
-        // save new file size for later
-        int nGlossIndex = m_apSegments[GLOSS]->GetOffsetSize() - 1;
-        DWORD dwNewDataSize ;
-        if (nGlossIndex != -1)   // we don't need the value if there is no gloss
-        {
-            dwNewDataSize = m_apSegments[GLOSS]->GetStop(nGlossIndex) + dwSectionLength;
-        }
-
         for (int independent=0; independent<ANNOT_WND_NUMBER; independent++)
         {
             if (m_apSegments[independent]->GetMasterIndex() != -1)
@@ -4883,8 +4897,8 @@ void CSaDoc::AdjustSegments( WAVETIME sectionStart, WAVETIME sectionLength, bool
                 continue;
             }
 
-            m_apSegments[independent]->SetSelection(-1); // make sure nothing selected
-            int nIndex = m_apSegments[independent]->GetPrevious(-1); // find last index (works if nothing selected)
+            m_apSegments[independent]->SetSelection(-1);				// make sure nothing selected
+            int nIndex = m_apSegments[independent]->GetPrevious(-1);	// find last index (works if nothing selected)
 
             // now change all the offsets of the following segment
             while (nIndex != -1)
@@ -4913,12 +4927,18 @@ void CSaDoc::AdjustSegments( WAVETIME sectionStart, WAVETIME sectionLength, bool
                     // check if insertion into segment happened
                     DWORD dwOldCenter = dwOldOffset + dwOldDuration/2;
 
+					// we are to the right of center
                     if (dwOldCenter <= dwSectionStart)
                     {
-                        ((CIndependentSegment *)m_apSegments[independent])->Adjust(this, nIndex, dwOldOffset, dwSectionStart - dwOldOffset);
+						// but still within the old segment
+						if (dwSectionStart<(dwOldOffset+dwOldDuration))
+						{
+							((CIndependentSegment *)m_apSegments[independent])->Adjust(this, nIndex, dwOldOffset, dwSectionStart - dwOldOffset);
+						}
                     }
                     else
                     {
+						// insert the new segment before this overlapping one
                         ((CIndependentSegment *)m_apSegments[independent])->Adjust(this, nIndex, dwSectionStart + dwSectionLength , dwOldOffset + dwOldDuration - dwSectionStart);
                     }
                 }

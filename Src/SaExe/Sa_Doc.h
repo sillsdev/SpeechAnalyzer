@@ -213,7 +213,7 @@ public:
 	// copies wave data out of the wave file
     BOOL PutWaveToClipboard( WAVETIME sectionStart, WAVETIME sectionLength, BOOL bDelete = FALSE); 
 	// pastes wave data into the wave file
-    BOOL PasteClipboardToWave(HGLOBAL hGlobal, CURSORPOS dwPastePos);
+    BOOL PasteClipboardToWave(HGLOBAL hGlobal, WAVETIME start);
 	BOOL InsertSilenceIntoWave( WAVETIME silence, WAVETIME start);
 
     void DeleteWaveFromUndo();		// deletes a wave undo entry from the undo list
@@ -338,7 +338,7 @@ protected:
 
 private:
     BOOL CopyWaveToTemp(LPCTSTR pszSourcePathName);
-    BOOL InsertWaveToTemp(LPCTSTR pszSourcePathName, LPCTSTR pszTempPathName, DWORD dwPos);
+    BOOL InsertWaveToTemp(LPCTSTR pszSourcePathName, LPCTSTR pszTempPathName, DWORD insertPos);
     CSaString SetFileExtension(CSaString fileName, CSaString fileExtension);
 
     // Methods for loading a wave file and all it's transcription data.

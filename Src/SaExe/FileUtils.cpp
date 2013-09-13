@@ -179,12 +179,12 @@ int GetSaveAsFilename(LPCTSTR title, LPCTSTR filter, LPCTSTR extension, LPTSTR p
 
 DWORD GetFileSize(LPCTSTR szFile)
 {
-    CFileStatus tempFileStat;
-    if (!CFile::GetStatus(szFile, tempFileStat))
+    CFileStatus stat;
+    if (!CFile::GetStatus(szFile, stat))
     {
         return -1;
     }
-    return tempFileStat.m_size;
+    return stat.m_size;
 }
 
 bool EndsWith(LPCTSTR path, LPCTSTR extension)

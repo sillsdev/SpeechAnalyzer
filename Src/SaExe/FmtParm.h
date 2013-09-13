@@ -13,6 +13,7 @@ public:
     DWORD GetSampleSize() const;
     // create a WAVEFORMATEX structure from this object
     WAVEFORMATEX GetWaveFormatEX();
+	void Trace();
 
     WORD wTag;                      // format tag
     WORD wChannels;                 // number of channels

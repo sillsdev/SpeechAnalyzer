@@ -2430,6 +2430,23 @@ void CSaView::SetStopCursorPosition(DWORD dwNewPos, ESnapDirection nSnapDirectio
 // we update the graphs in case the previous stop position is invalid
 // for the new graph.
 /***************************************************************************/
+void CSaView::SetStartStopCursorPosition( WAVETIME startTime,
+										  WAVETIME stopTime,
+										  ESnapDirection nSnapDirection,
+										  ECursorAlignment nCursorAlignment)
+{
+    CSaDoc * pDoc = (CSaDoc *) GetDocument(); // get pointer to document
+	DWORD startPos = pDoc->toBytes(startTime,true);
+	DWORD stopPos = pDoc->toBytes(stopTime,true);
+	SetStartStopCursorPosition( startPos, stopPos, nSnapDirection,nCursorAlignment);
+}
+
+/***************************************************************************/
+// CSaView::SetStartStopCursorPosition Set the start cursor
+// kg in some case we need to update the member variables before
+// we update the graphs in case the previous stop position is invalid
+// for the new graph.
+/***************************************************************************/
 void CSaView::SetStartStopCursorPosition( DWORD dwNewStartPos,
 										  DWORD dwNewStopPos,
 										  ESnapDirection nSnapDirection,
@@ -3788,7 +3805,9 @@ void CSaView::OnEditPaste()
                 HGLOBAL hGlobal = GetClipboardData(CF_WAVE);
                 if (hGlobal!=NULL)
                 {
-                    if (pDoc->PasteClipboardToWave(hGlobal, GetStartCursorPosition()))
+					DWORD start = GetStartCursorPosition();
+					WAVETIME startTime = pDoc->toTime(start,true);
+                    if (pDoc->PasteClipboardToWave(hGlobal, startTime ))
                     {
                         // get wave from the clipboard
                         pDoc->InvalidateAllProcesses();
