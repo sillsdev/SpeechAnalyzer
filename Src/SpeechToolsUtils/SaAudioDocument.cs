@@ -200,51 +200,52 @@ namespace SIL.SpeechTools.Utils
 		/// ------------------------------------------------------------------------------------
 		public SaAudioDocument Clone()
 		{
-			SaAudioDocument clone = new SaAudioDocument();
+            SaAudioDocument clone = new SaAudioDocument();
 
-			clone.m_isForTmpOperation = m_isForTmpOperation;
-			clone.DocVersion = m_docVer;
-			clone.Segments = (SegmentData[])this.Segments.Clone();
-			clone.MusicSegments = (MusicSegmentData[])this.MusicSegments.Clone();
-			clone.AudioFile = m_audioFile;
-			clone.MD5HashCode = m_MD5HashCode;
-			clone.SpeakerName = m_speakerName;
-			clone.SpeakerGender = m_serializedGender[0];
-			clone.EthnologueId = m_ethnologueId;
-			clone.Region = m_region;
-			clone.Country = m_country;
-			clone.Family = m_family;
-			clone.LanguageName = m_languageName;
-			clone.Dialect = m_dialect;
-			clone.NoteBookReference = m_noteBookRef;
-			clone.FreeFormTranslation = m_freeFormTrans;
-			clone.Transcriber = m_transcriber;
-			clone.SADescription = m_saDescription;
-			clone.DataChunkSize = m_dataChunkSize;
-			clone.FormatTag = m_formatTag;
-			clone.Channels = m_channels;
-			clone.SamplesPerSecond = m_samplesPerSecond;
-			clone.AverageBytesPerSecond = m_averageBytesPerSecond;
-			clone.BlockAlignment = m_blockAlignment;
-			clone.BitsPerSample = m_bitsPerSample;
-			clone.SAFlags = m_saFlags;
-			clone.RecordFileFormat = m_recordFileFormat;
-			clone.RecordTimeStamp = m_recordTimeStamp;
-			clone.RecordBandWidth = m_recordBandWidth;
-			clone.RecordSampleSize = m_recordSampleSize;
-			clone.NumberOfSamples = m_numberOfSamples;
-			clone.SignalMax = m_signalMax;
-			clone.SignalMin = m_signalMin;
-			clone.SignalBandWidth = m_signalBandWidth;
-			clone.SignalEffSampSize = m_signalEffSampSize;
-			clone.CalcFreqLow = m_calcFreqLow;
-			clone.CalcFreqHigh = m_calcFreqHigh;
-			clone.CalcVoicingThd = m_calcVoicingThd;
-			clone.CalcPercntChng = m_calcPercntChng;
-			clone.CalcGrpSize = m_calcGrpSize;
-			clone.CalcIntrpGap = m_calcIntrpGap;
+            clone.m_isForTmpOperation = m_isForTmpOperation;
+            // AudioFile is used by the music segment cloning - do this first!
+            clone.AudioFile = m_audioFile;
+            clone.FormatTag = m_formatTag;
+            clone.Channels = m_channels;
+            clone.SamplesPerSecond = m_samplesPerSecond;
+            clone.AverageBytesPerSecond = m_averageBytesPerSecond;
+            clone.BlockAlignment = m_blockAlignment;
+            clone.BitsPerSample = m_bitsPerSample;
+            clone.NumberOfSamples = m_numberOfSamples;
+            clone.DocVersion = m_docVer;
+            clone.Segments = (SegmentData[])this.Segments.Clone();
+            clone.MusicSegments = (MusicSegmentData[])this.MusicSegments.Clone();
+            clone.MD5HashCode = m_MD5HashCode;
+            clone.SpeakerName = m_speakerName;
+            clone.SpeakerGender = m_serializedGender[0];
+            clone.EthnologueId = m_ethnologueId;
+            clone.Region = m_region;
+            clone.Country = m_country;
+            clone.Family = m_family;
+            clone.LanguageName = m_languageName;
+            clone.Dialect = m_dialect;
+            clone.NoteBookReference = m_noteBookRef;
+            clone.FreeFormTranslation = m_freeFormTrans;
+            clone.Transcriber = m_transcriber;
+            clone.SADescription = m_saDescription;
+            clone.DataChunkSize = m_dataChunkSize;
+            clone.SAFlags = m_saFlags;
+            clone.RecordFileFormat = m_recordFileFormat;
+            clone.RecordTimeStamp = m_recordTimeStamp;
+            clone.RecordBandWidth = m_recordBandWidth;
+            clone.RecordSampleSize = m_recordSampleSize;
+            clone.SignalMax = m_signalMax;
+            clone.SignalMin = m_signalMin;
+            clone.SignalBandWidth = m_signalBandWidth;
+            clone.SignalEffSampSize = m_signalEffSampSize;
+            clone.CalcFreqLow = m_calcFreqLow;
+            clone.CalcFreqHigh = m_calcFreqHigh;
+            clone.CalcVoicingThd = m_calcVoicingThd;
+            clone.CalcPercntChng = m_calcPercntChng;
+            clone.CalcGrpSize = m_calcGrpSize;
+            clone.CalcIntrpGap = m_calcIntrpGap;
 
-			return clone;
+            return clone;
 		}
 
 		/// ------------------------------------------------------------------------------------
@@ -1162,7 +1163,7 @@ namespace SIL.SpeechTools.Utils
 					seg.SaAudioDocument = this;
 					key.PhraseLevel = seg.PhraseLevel;
 					key.Offset = seg.Offset;
-					m_musicSegments.Add(key, seg);
+                    m_musicSegments.Add(key, seg);
 				}
 			}
 		}

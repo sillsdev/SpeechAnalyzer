@@ -37,6 +37,7 @@ private:
     DWORD m_dwStartDragPos;     // cursor position when starting drag
     DWORD m_dwDragPos;          // current drag position
     int m_nEditBoundaries;		// editing boundaries
+	bool m_bSelectDrag;			// true if the user pressed control before or while dragging
 };
 
 #endif

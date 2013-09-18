@@ -8148,50 +8148,59 @@ void CSaDoc::AlignTranscriptionDataByRef(CTranscriptionData & td)
         MarkerList::iterator pmit = td.m_TranscriptionData[td.m_MarkerDefs[PHONEMIC]].begin();
         MarkerList::iterator pnit = td.m_TranscriptionData[td.m_MarkerDefs[PHONETIC]].begin();
         MarkerList::iterator oit = td.m_TranscriptionData[td.m_MarkerDefs[ORTHO]].begin();
+
+        bool glossValid = git!=td.m_TranscriptionData[td.m_MarkerDefs[GLOSS]].end();
+        bool phonemicValid = pmit!=td.m_TranscriptionData[td.m_MarkerDefs[PHONEMIC]].end();
+		bool phoneticValid = pnit!=td.m_TranscriptionData[td.m_MarkerDefs[PHONETIC]].end();
+        bool orthoValid = oit!=td.m_TranscriptionData[td.m_MarkerDefs[ORTHO]].end();
+
         MarkerList refs = td.m_TranscriptionData[td.m_szPrimary];
         for (MarkerList::iterator it = refs.begin(); it!=refs.end(); it++)
         {
             CSaString thatRef = *it;
             if (thisRef.Compare(thatRef)==0)
             {
-                if (td.m_bPhonetic)
+                if ((td.m_bPhonetic)&&(phoneticValid))
                 {
-                    CSaString text = *pnit;
-                    pPhonetic->SetAt(&text,false,start,duration);
+					CSaString text = *pnit;
+					pPhonetic->SetAt(&text,false,start,duration);
                 }
-                if (td.m_bPhonemic)
+                if ((td.m_bPhonemic)&&(phonemicValid))
                 {
-                    CSaString text = *pmit;
-                    pPhonemic->SetAt(&text,false,start,duration);
+					CSaString text = *pmit;
+					pPhonemic->SetAt(&text,false,start,duration);
                 }
-                if (td.m_bOrthographic)
+                if ((td.m_bOrthographic)&&(orthoValid))
                 {
-                    CSaString text = *oit;
-                    pOrthographic->SetAt(&text,false,start,duration);
+					CSaString text = *oit;
+					pOrthographic->SetAt(&text,false,start,duration);
                 }
-                if (td.m_bGloss)
+                if ((td.m_bGloss)&&(glossValid))
                 {
-                    CSaString text = *git;
-                    if (text[0]==WORD_DELIMITER)
-                    {
-                        text = text.Mid(1);
-                    }
-                    pGloss->SetAt(&text,false,start,duration);
+					if (git!=td.m_TranscriptionData[td.m_MarkerDefs[GLOSS]].end())
+					{
+						CSaString text = *git;
+						if (text[0]==WORD_DELIMITER)
+						{
+							text = text.Mid(1);
+						}
+						pGloss->SetAt(&text,false,start,duration);
+					}
                 }
             }
-            if (td.m_bPhonetic)
+            if ((td.m_bPhonetic)&&(phoneticValid))
             {
                 pnit++;
             }
-            if (td.m_bPhonemic)
+            if ((td.m_bPhonemic)&&(phonemicValid))
             {
                 pmit++;
             }
-            if (td.m_bOrthographic)
+            if ((td.m_bOrthographic)&&(orthoValid))
             {
                 oit++;
             }
-            if (td.m_bGloss)
+            if ((td.m_bGloss)&&(glossValid))
             {
                 git++;
             }

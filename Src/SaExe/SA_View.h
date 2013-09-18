@@ -216,6 +216,8 @@ public:
 	DWORD GetSelectionStop();
 	int	GetSelectionIndex();
 	bool IsSelectionVirtual();
+	void ShowCursors();
+	void HideCursors();
 
     CGraphWnd * m_apGraphs[MAX_GRAPHS_NUMBER]; // array of pointers to the graph objects
 

@@ -2408,6 +2408,30 @@ void CSaView::SetCursorPosition(ECursorSelect nCursorSelect,
     }
 }
 
+void CSaView::HideCursors()
+{
+    // move start cursors in all the graphs
+    for (int nLoop = 0; nLoop < MAX_GRAPHS_NUMBER; nLoop++)
+    {
+        if (m_apGraphs[nLoop])
+        {
+            m_apGraphs[nLoop]->HideCursors();
+        }
+    }
+}
+
+void CSaView::ShowCursors()
+{
+    // move start cursors in all the graphs
+    for (int nLoop = 0; nLoop < MAX_GRAPHS_NUMBER; nLoop++)
+    {
+        if (m_apGraphs[nLoop])
+        {
+            m_apGraphs[nLoop]->ShowCursors();
+        }
+    }
+}
+
 /***************************************************************************/
 // CSaView::SetStartCursorPosition Set the start cursor
 /***************************************************************************/

@@ -678,6 +678,30 @@ void CPlotWnd::SetStartCursor(CSaView * pView)
     }
 }
 
+void CPlotWnd::HideCursors()
+{
+	if (m_pStartCursor!=NULL)
+	{
+		m_pStartCursor->ShowWindow(SW_HIDE);
+	}
+	if (m_pStopCursor!=NULL)
+	{
+		m_pStopCursor->ShowWindow(SW_HIDE);
+	}
+}
+
+void CPlotWnd::ShowCursors()
+{
+	if (m_pStartCursor!=NULL)
+	{
+		m_pStartCursor->ShowWindow(SW_SHOW);
+	}
+	if (m_pStopCursor!=NULL)
+	{
+		m_pStopCursor->ShowWindow(SW_SHOW);
+	}
+}
+
 /***************************************************************************/
 // CPlotWnd::SetStopCursor Position the stop cursor
 /***************************************************************************/

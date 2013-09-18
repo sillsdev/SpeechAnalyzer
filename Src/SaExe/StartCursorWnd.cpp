@@ -43,6 +43,7 @@ CStartCursorWnd::CStartCursorWnd()
     m_bCursorDrag = FALSE;
     m_dwDragPos = (DWORD)UNDEFINED_OFFSET;
     m_rWnd.SetRect(0, 0, 0, 0);
+	m_bSelectDrag = false;
 }
 
 /***************************************************************************/
@@ -333,11 +334,22 @@ void CStartCursorWnd::OnMouseMove(UINT nFlags, CPoint point)
             pGraph->UpdateWindow();
         }
 
+		// set the highlight area for raw data
+		if ((pView->GetFocusedGraphID() == IDD_RAWDATA) &&
+			((nFlags&(MK_CONTROL|MK_SHIFT)) == MK_CONTROL) &&
+			(pView->GetEditBoundaries()==BOUNDARIES_EDIT_NULL) &&
+			((pView->GetGraphUpdateMode() == STATIC_UPDATE) || (!pView->GetDynamicGraphCount())))
+		{
+			m_bSelectDrag = true;
+			pView->HideCursors();
+		}
+
         // stop cursor is to move also
         pView->MoveStopCursor(dwStopCursor);
         // move start cursor
         pView->MoveStartCursor(dwCursor);
-        // set the highlight area for raw data
+        
+		// set the highlight area for raw data
         if ((pView->GetFocusedGraphID() == IDD_RAWDATA) &&
             ((nFlags&(MK_CONTROL|MK_SHIFT)) == MK_CONTROL) &&
             (pView->GetEditBoundaries()==BOUNDARIES_EDIT_NULL) &&
@@ -399,7 +411,7 @@ void CStartCursorWnd::OnLButtonDown(UINT nFlags, CPoint point)
     CSaView * pView = (CSaView *)pGraph->GetParent();
 
     // inform graph
-    pGraph->SendMessage(WM_LBUTTONDOWN, nFlags, MAKELONG(point.x, point.y));
+    pGraph->SendMessage( WM_LBUTTONDOWN, nFlags, MAKELONG(point.x, point.y));
 
     // set boundaries mode
     CRect rCursorRect;
@@ -496,6 +508,7 @@ void CStartCursorWnd::OnLButtonDown(UINT nFlags, CPoint point)
     SetFocus();
     ClipCursor(rWnd);
     CWnd::OnLButtonDown(nFlags, point);
+
 }
 
 /***************************************************************************/
@@ -527,12 +540,14 @@ void CStartCursorWnd::OnLButtonUp(UINT nFlags, CPoint point)
     pGraph->SetGraphFocus(TRUE); // Reset Focus
 
     // set the new positions
-    DWORD dwStopCursor;
+    DWORD dwStopCursor = 0;
     DWORD dwStartCursor = CalculateCursorPosition(pView, point.x, rWnd.Width(), &dwStopCursor);
+
     if (pView->GetStopCursorPosition() >= dwStopCursor)
     {
         dwStopCursor = pView->GetStopCursorPosition();
     }
+
     int nLoop = pView->FindSelectedAnnotationIndex();
     if (nLoop!=-1)
     {
@@ -558,6 +573,28 @@ void CStartCursorWnd::OnLButtonUp(UINT nFlags, CPoint point)
     if (dwStartCursor >= dwStopCursor)
     {
         dwStartCursor = dwStopCursor - pView->GetDocument()->GetBlockAlign();
+    }
+
+	// set the highlight area for raw data
+    if (m_bSelectDrag)
+    {
+		// calculate the location where the mouse was lifted
+		CRect rWnd;
+		pWnd->GetClientRect(rWnd);
+		DWORD dwTempStopCursor = 0;
+		DWORD dwCursor = CalculateCursorPosition( pView, point.x, rWnd.Width(), &dwTempStopCursor);
+        if (dwCursor > m_dwStartDragPos)
+        {
+			dwStartCursor = m_dwStartDragPos;
+			dwStopCursor = dwCursor;
+        }
+        else
+        {
+			dwStartCursor = dwCursor;
+			dwStopCursor = m_dwStartDragPos;
+        }
+		pView->ShowCursors();
+		m_bSelectDrag = false;
     }
 
     // stop cursor is to move also

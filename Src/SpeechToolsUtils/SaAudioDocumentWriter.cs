@@ -1,5 +1,6 @@
 using System.IO;
 using System.Runtime.InteropServices;
+using System;
 
 namespace SIL.SpeechTools.Utils
 {
@@ -119,28 +120,28 @@ namespace SIL.SpeechTools.Utils
 		/// ------------------------------------------------------------------------------------
 		public bool Commit(bool backupOldAudioFile)
 		{
-			bool retVal = m_doc.Save();
+            bool retVal = m_doc.Save();
 
-			if (!retVal)
-				return false;
+            if (!retVal)
+                return false;
 
-			if (backupOldAudioFile)
-			{
-				// First, make a backup copy of the file.
-				string newExt = "SA2" + Path.GetExtension(m_doc.AudioFile);
-				string newPath = Path.GetDirectoryName(m_doc.AudioFile);
-				if (!newPath.EndsWith("\\"))
-					newPath += "\\";
-				newPath += "SA2 Wav Files\\";
-				Directory.CreateDirectory(newPath);
-				newPath += Path.GetFileName(m_doc.AudioFile);
-				newPath = Path.ChangeExtension(newPath, newExt);
+            if (backupOldAudioFile)
+            {
+                // First, make a backup copy of the file.
+                string newExt = "SA2" + Path.GetExtension(m_doc.AudioFile);
+                string newPath = Path.GetDirectoryName(m_doc.AudioFile);
+                if (!newPath.EndsWith("\\"))
+                    newPath += "\\";
+                newPath += "SA2 Wav Files\\";
+                Directory.CreateDirectory(newPath);
+                newPath += Path.GetFileName(m_doc.AudioFile);
+                newPath = Path.ChangeExtension(newPath, newExt);
 
-				if (!File.Exists(newPath))		// don't copy if it's already backed up
-					File.Copy(m_doc.AudioFile, newPath);
-			}
+                if (!File.Exists(newPath))		// don't copy if it's already backed up
+                    File.Copy(m_doc.AudioFile, newPath);
+            }
 
-            if ((File.GetAttributes(m_doc.AudioFile) & FileAttributes.ReadOnly)!=FileAttributes.ReadOnly)
+            if ((File.GetAttributes(m_doc.AudioFile) & FileAttributes.ReadOnly) != FileAttributes.ReadOnly)
             {
                 File.SetAttributes(m_doc.AudioFile, FileAttributes.Normal);
 
@@ -173,7 +174,7 @@ namespace SIL.SpeechTools.Utils
                 // then skip over the 'RIFF' tag and write out the modify RIFF chunk
                 // length, which is 8 bytes less than the length of the file since it
                 // doesn't include 'RIFF' and the 4 bytes for the RIFF chunk length.
-                using (FileStream stream = File.Open( m_doc.AudioFile, FileMode.Truncate, FileAccess.Write, FileShare.ReadWrite))
+                using (FileStream stream = File.Open(m_doc.AudioFile, FileMode.Truncate, FileAccess.Write, FileShare.ReadWrite))
                 {
                     BinaryWriter writer = new BinaryWriter(stream);
                     writer.Write(bytes);
@@ -182,8 +183,7 @@ namespace SIL.SpeechTools.Utils
                     stream.Close();
                 }
             }
-
-			return true;
+            return true;
 		}
 
 		#endregion
@@ -337,14 +337,14 @@ namespace SIL.SpeechTools.Utils
 		/// ------------------------------------------------------------------------------------
 		public void Copy(string destFilePath, bool md5MustMatch)
 		{
-			// first check MD5
-			if (md5MustMatch && (AudioReader.GetMD5HashCode(destFilePath) != m_doc.MD5HashCode))
-				return;
+            // first check MD5
+            if (md5MustMatch && (AudioReader.GetMD5HashCode(destFilePath) != m_doc.MD5HashCode))
+                return;
 
-			// copy the transcription data
-			m_doc = m_doc.Clone();
-			m_doc.AudioFile = destFilePath;
-			Commit();
+            // copy the transcription data
+            m_doc = m_doc.Clone();
+            m_doc.AudioFile = destFilePath;
+            Commit();
 		}
 
 		#endregion

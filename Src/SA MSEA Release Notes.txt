@@ -1,3 +1,9 @@
+SA - 3.1.0.72 - 9/17/2013 (stereo branch)
+1) Update waveform selection feature so that the start/stop cursors are hidden during selection and redrawn when left mouse button is released.  The start and stop cursors are placed at the edges of the highlight region when the selection is completed.
+2) Modified code to avoid GPF when transcription data is imported but fields are missing.
+3) Fixed crash that occurs during a PasteAsNew when more than one Phrase Level transcription is copied (more than one for one level).
+4) Modified text on InsertSilence dialog box.
+
 SA - 3.1.0.71 - 9/12/2013 (stereo branch)
 1) Fixed GPF that occurs during transcription alignment if a field is selected that does not exist in the data.  The software will now insert a '?' for fields that are missing in the data.
 2) Fixed copy/paste alignment issues.  There were several problems.

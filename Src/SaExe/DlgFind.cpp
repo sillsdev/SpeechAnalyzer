@@ -87,6 +87,7 @@ CDlgFind::CDlgFind(CWnd * pParent,
 
     m_wrapped = false;
     m_beginFind = -1;
+	TRACE("bf:init\n");
     m_curPos = -1;
     m_bCreated = Create(CDlgFind::IDD);
     if (m_bCreated)
@@ -121,6 +122,7 @@ BOOL CDlgFind::Completed(BOOL isForward, int newPos)
 void CDlgFind::ResetCompletionCheck()
 {
     m_beginFind = -1;
+	TRACE("bf:reset\n");
     m_wrapped = false;
 }
 
@@ -464,6 +466,7 @@ void CDlgFind::OnSetFocusReplaceString()
 /***************************************************************************/
 void CDlgFind::OnNext()
 {
+	TRACE("OnNext %d %d\n",m_curPos,m_beginFind);
     if (m_pMainFrame==NULL) return;
 
     CSaDoc * pDoc = m_pMainFrame->GetCurrDoc();
@@ -487,8 +490,10 @@ void CDlgFind::OnNext()
 	if ((curSel==-1)&&(m_beginFind==-1))
     {
 		m_beginFind = -1;
+		TRACE("bf:begin\n");
 		m_wrapped = false;
 		m_beginFind = pAnnot->FirstVisibleIndex(*pDoc);
+		TRACE("bf:begin2\n");
 		m_curPos = m_beginFind;
 		curSel = m_curPos;
 		if (pAnnot->Match( curSel, findme))
@@ -506,9 +511,11 @@ void CDlgFind::OnNext()
     if ((m_curPos != -1) && (curSel != m_curPos))
     {
         m_beginFind = pAnnot->GetSelection();
+		TRACE("bf:test\n");
         if (m_beginFind == -1)
         {
             m_beginFind = pAnnot->FirstVisibleIndex(*pDoc);
+			TRACE("bf:first visible %d\n",m_beginFind);
         }
         m_curPos = m_beginFind;
     }
@@ -580,9 +587,11 @@ void CDlgFind::OnPrevious()
     if ((m_beginFind == -1) || ((m_curPos != -1) && (curSel != m_curPos)))
     {
         m_beginFind = pAnnot->GetSelection();
-        if (m_beginFind == -1)
+		TRACE("bf:do\n");
+		if (m_beginFind == -1)
         {
             m_beginFind = pAnnot->LastVisibleIndex(*pDoc);
+			TRACE("bf:do2\n");
         }
         m_curPos = m_beginFind;
     }

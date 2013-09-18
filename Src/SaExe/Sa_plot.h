@@ -184,6 +184,8 @@ public:
 	void ChangePrivateCursorPosition( CPoint point);
 	void GetPrivateCursorWindowRect( CRect * rect);
 	void OnPrivateCursorDraw( CDC * pDC, CRect rect);
+	void HideCursors();
+	void ShowCursors();
 
 protected:
     virtual void PostNcDestroy();

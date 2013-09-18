@@ -56,6 +56,8 @@ public:
     void WriteProperties(CObjectOStream & obs); // Save (Project) Settings
     BOOL ReadProperties(CObjectIStream & obs);	// Autoloading
     BOOL bSetProperties(int nNewID);			// Set graph's default properties (needed for "FileOpenAs->Phonetic/Music Analysis")
+	void HideCursors();
+	void ShowCursors();
 
 protected:
     CPlotWnd * m_pPlot;							// plot window

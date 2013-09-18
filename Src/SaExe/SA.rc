@@ -26,7 +26,7 @@ LANGUAGE LANG_NEUTRAL, SUBLANG_NEUTRAL
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 3,1,0,71
+ FILEVERSION 3,1,0,72
  PRODUCTVERSION 1,0,0,1
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
@@ -44,7 +44,7 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "SIL International"
             VALUE "FileDescription", "SA"
-            VALUE "FileVersion", "v3.1.0.71"
+            VALUE "FileVersion", "v3.1.0.72"
             VALUE "InternalName", "SA"
             VALUE "LegalCopyright", "© 1996-2013 SIL International (MSEA)"
             VALUE "ProductName", "SA"
@@ -2339,18 +2339,18 @@ BEGIN
     LTEXT           "Run FieldWorks and import this SFM file.",IDC_STATIC,16,84,212,9
 END
 
-IDD_INSERT_SILENCE DIALOGEX 0, 0, 192, 49
+IDD_INSERT_SILENCE DIALOGEX 0, 0, 194, 49
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Insert Silence"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
     DEFPUSHBUTTON   "Cancel",IDCANCEL,71,28,50,14
-    PUSHBUTTON      "Finished",IDOK,135,28,50,14
-    DEFPUSHBUTTON   "Insert",IDC_INSERT,7,28,50,14
-    LTEXT           "Insert Multiple Segment Lengths",IDC_STATIC,11,12,104,8
-    EDITTEXT        IDC_EDIT_SILENCE,120,11,27,14
-    CONTROL         "",IDC_SPIN_SILENCE,"msctls_updown32",UDS_ARROWKEYS,151,11,11,14
-	LTEXT           "Sec.",IDC_STATIC,168,13,15,8
+    PUSHBUTTON      "Finished",IDOK,137,28,50,14
+    DEFPUSHBUTTON   "Add",IDC_INSERT,7,28,50,14
+    LTEXT           "Press Add to insert a length of",IDC_STATIC,11,13,98,8
+    EDITTEXT        IDC_EDIT_SILENCE,114,11,27,14
+    CONTROL         "",IDC_SPIN_SILENCE,"msctls_updown32",UDS_ARROWKEYS,140,11,11,14
+    LTEXT           "Seconds",IDC_STATIC,156,14,28,8
 END
 
 
@@ -2599,18 +2599,10 @@ BEGIN
         BOTTOMMARGIN, 137
     END
 
-    IDD_DIALOG1, DIALOG
-    BEGIN
-        LEFTMARGIN, 7
-        RIGHTMARGIN, 309
-        TOPMARGIN, 7
-        BOTTOMMARGIN, 176
-    END
-
     IDD_INSERT_SILENCE, DIALOG
     BEGIN
         LEFTMARGIN, 7
-        RIGHTMARGIN, 185
+        RIGHTMARGIN, 187
         TOPMARGIN, 7
         BOTTOMMARGIN, 42
     END
@@ -4358,7 +4350,7 @@ IDC_MHANDN              CURSOR                  "res\\MedHandN.cur"
 
 STRINGTABLE
 BEGIN
-    VS_VERSION              "Version 3.1.0.71"
+    VS_VERSION              "Version 3.1.0.72"
     VS_COPYRIGHT            "© 1996-2013 SIL International (MSEA).\nAll Rights Reserved."
     IDR_MAINFRAME           "Speech Analyzer"
     IDR_SA_ANNTYPE          "\nSA\nSA Document\nWAV Files (*.wav)\n.wav\nannFileType\nANN File Type"
@@ -4374,7 +4366,7 @@ END
 STRINGTABLE
 BEGIN
     IDS_ERROR_CREATE_INSTANCE 
-                            "A serious error has occurred. If this error persists, try reinstalling the application.\n\nModule: %1\nError Code: 0x%2"
+	"A serious error has occurred. If this error persists, try reinstalling the application.\n\nModule: %1\nError Code: 0x%2"
     IDS_ERROR_READ_ONLY     "Unable to save to read-only file '%1'"
     IDS_ERROR_MMIO_INVALIDPARAM "Sound device error: invalid parameter."
     IDS_ERROR_EQUATION      "The function you entered contains errors. Please revise it."

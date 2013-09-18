@@ -961,3 +961,19 @@ BOOL CRecGraphWnd::PreCreateWindow(CREATESTRUCT & cs)
     cs.style = WS_VISIBLE | WS_CHILD | WS_CLIPSIBLINGS | WS_BORDER;
     return bRet;
 }
+
+void CGraphWnd::HideCursors()
+{
+	if (m_pPlot!=NULL)
+	{
+		m_pPlot->HideCursors();
+	}
+}
+
+void CGraphWnd::ShowCursors()
+{
+	if (m_pPlot!=NULL)
+	{
+		m_pPlot->ShowCursors();
+	}
+}
