@@ -1984,7 +1984,7 @@ void CSaApp::OnHelpTrainingStudent()
 
     CSaString szAppPath = m_pszHelpFilePath;
     szAppPath = szAppPath.Left(szAppPath.ReverseFind('\\'));
-    CSaString szCommandLine = "\"" + szAppPath + _T("\\Training\\SA Student Manual.doc\"");
+    CSaString szCommandLine = "\"" + szAppPath + _T("\\Training\\SA Student Manual.pdf\"");
     ShellExecute(NULL, _T("open"), szCommandLine.GetBuffer(1), NULL, NULL, SW_SHOWNORMAL);
 }
 
@@ -1996,7 +1996,7 @@ void CSaApp::OnHelpTrainingInstructor()
 
     CSaString szAppPath = m_pszHelpFilePath;
     szAppPath = szAppPath.Left(szAppPath.ReverseFind('\\'));
-    CSaString szCommandLine = "\"" + szAppPath + _T("\\Training\\SA Instructor Guide.doc\"");
+    CSaString szCommandLine = "\"" + szAppPath + _T("\\Training\\SA Instructor Guide.pdf\"");
     ShellExecute(NULL, _T("open"), szCommandLine.GetBuffer(1), NULL, NULL, SW_SHOWNORMAL);
 }
 

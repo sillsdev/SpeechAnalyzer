@@ -6663,12 +6663,12 @@ void CSaView::SetUpdateBoundaries(BOOL bUpdate)
 void CSaView::Scroll(DWORD desiredPosition)
 {
     UINT nPos = (UINT)(desiredPosition / m_dwHScrollFactor);
-    SendMessage(WM_HSCROLL, SB_THUMBPOSITION, nPos);
+    SendMessage( WM_HSCROLL, MAKEWPARAM(SB_THUMBPOSITION,nPos));
 };
 
 void CSaView::Scroll(UINT nSBCode, UINT nPos)
 {
-    SendMessage(WM_HSCROLL, nSBCode, nPos);
+    SendMessage( WM_HSCROLL, MAKEWPARAM(nSBCode, nPos));
 }
 
 BOOL CSaView::PrintPreviewInProgress()

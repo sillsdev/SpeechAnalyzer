@@ -183,7 +183,6 @@ void CDlgFind::ScrollIfNeeded()
     CSegment * pAnnot = m_pMainFrame->GetAnnotation(AnnotationSetID());
 
     CSaView * pView = (CSaView *)m_pMainFrame->GetCurrSaView();
-
     ASSERT(pView);
     if (pAnnot->NeedToScroll(*pView,m_curPos))
     {
@@ -489,13 +488,31 @@ void CDlgFind::OnNext()
 	// there's nothing selected, and we haven't started yet
 	if ((curSel==-1)&&(m_beginFind==-1))
     {
-		m_beginFind = -1;
 		TRACE("bf:begin\n");
 		m_wrapped = false;
 		m_beginFind = pAnnot->FirstVisibleIndex(*pDoc);
 		TRACE("bf:begin2\n");
 		m_curPos = m_beginFind;
 		curSel = m_curPos;
+		if (pAnnot->Match( curSel, findme))
+		{
+	        ScrollIfNeeded();
+		    pAnnot->SelectSegment(*pDoc,m_curPos);
+		}
+		else
+		{
+			OnNext();
+		}
+		return;
+	}
+	// next special case - initial selection has already been done
+	else if (m_beginFind==-1)
+	{
+		TRACE("bf:begin\n");
+		m_wrapped = false;
+		m_beginFind = curSel;
+		TRACE("bf:begin2\n");
+		m_curPos = m_beginFind;
 		if (pAnnot->Match( curSel, findme))
 		{
 	        ScrollIfNeeded();

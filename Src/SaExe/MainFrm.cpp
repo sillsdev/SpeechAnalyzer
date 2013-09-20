@@ -841,8 +841,7 @@ LRESULT CMainFrame::OnApplyToolsOptions(WPARAM, LPARAM)
         m_nStatusPosReadout = toolSettings.m_nPosMode;
         CSaView * pView = GetCurrSaView();
         CGraphWnd * pGraph = pView ? pView->GetFocusedGraphWnd() : NULL;
-
-        if (pGraph)
+        if (pGraph!=NULL)
         {
             pGraph->UpdateStatusBar(pView->GetStartCursorPosition(), pView->GetStopCursorPosition(), TRUE);    // update the status bar
         }
