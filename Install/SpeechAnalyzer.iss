@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "Speech Analyzer MSEA Beta"
-#define MyAppVersion "3.1.0.73"
+#define MyAppVersion "3.1.0.74"
 #define MyAppPublisher "SIL International, Inc."
 #define MyAppURL "http://www.speechanalyzer.sil.org/"
 #define MyAppExeName "SA.exe"
@@ -30,7 +30,7 @@ SolidCompression=yes
 Name: "english"; MessagesFile: "compiler:Default.isl"
 
 [Tasks]
-Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
+Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"
 Name: "quicklaunchicon"; Description: "{cm:CreateQuickLaunchIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked; OnlyBelowVersion: 0,6.1
 
 [Files]
@@ -50,7 +50,7 @@ Source: "C:\Working\SIL\MSEA\Output\Release\yeti.wmfsdk.dll"; DestDir: "{app}"; 
 Source: "C:\Working\SIL\MSEA\Output\Release\zGraph.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "C:\Working\SIL\MSEA\Src\SA MSEA Release Notes.txt"; DestDir: "{app}"; Flags: ignoreversion
 Source: "C:\Working\SIL\MSEA\DistFiles\usp10.dll"; DestDir: "{app}"; Flags: ignoreversion
-; NOTE: Don't use "Flags: ignoreversion" on any shared system files
+Source: "C:\Working\SIL\MSEA\DistFiles\Microsoft\vcredist_x86.exe"; DestDir: "{app}\components"; Flags: ignoreversion; Check: VCRedistCheck()
 
 [Icons]
 Name: "{group}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"
@@ -58,5 +58,30 @@ Name: "{commondesktop}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; Tasks: 
 Name: "{userappdata}\Microsoft\Internet Explorer\Quick Launch\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; Tasks: quicklaunchicon
 
 [Run]
-Filename: "{app}\{#MyAppExeName}"; Description: "{cm:LaunchProgram,{#StringChange(MyAppName, '&', '&&')}}"; Flags: nowait postinstall skipifsilent
+Filename: "{app}\components\vcredist_x86.exe"; Parameters: "/q"; WorkingDir: "{app}\components"; Flags: waituntilterminated skipifdoesntexist; Description: "{cm:LaunchProgram,{#StringChange(MyAppName, '&', '&&')}}"; StatusMsg: "Installing Microsoft Visual C++ 2008 Redistributable"
+Filename: "{win}\Microsoft.NET\Framework\v2.0.50727\regasm.exe"; Parameters: "SpeechToolsUtils.dll /tlb:SpeechToolsUtils.tlb /codebase"; WorkingDir: "{app}"; Flags: waituntilterminated runhidden; Description: "Registering SpeechToolsUtils"
+Filename: "{win}\Microsoft.NET\Framework\v2.0.50727\regasm.exe"; Parameters: "ST_Audio.dll /tlb:ST_Audio.tlb /codebase"; WorkingDir: "{app}"; Flags: waituntilterminated runhidden; Description: "Registering ST_Audio"
+Filename: "{win}\Microsoft.NET\Framework\v2.0.50727\regasm.exe"; Parameters: "yeti.mmedia.dll /tlb:yeti.mmedia.tlb /codebase"; WorkingDir: "{app}"; Flags: waituntilterminated runhidden; Description: "Registering yeti.mmedia"
+Filename: "{win}\Microsoft.NET\Framework\v2.0.50727\regasm.exe"; Parameters: "yeti.wmfsdk.dll /tlb:yeti.wmfsdk.tlb /codebase"; WorkingDir: "{app}"; Flags: waituntilterminated runhidden; Description: "Registering yeti.wmfsdk"
 
+[UninstallRun]
+Filename: "{win}\Microsoft.NET\Framework\v2.0.50727\regasm.exe"; Parameters: "SpeechToolsUtils.dll /unregister"; WorkingDir: "{app}"; Flags: waituntilterminated runhidden
+Filename: "{win}\Microsoft.NET\Framework\v2.0.50727\regasm.exe"; Parameters: "ST_Audio.dll /unregister"; WorkingDir: "{app}"; Flags: waituntilterminated runhidden
+Filename: "{win}\Microsoft.NET\Framework\v2.0.50727\regasm.exe"; Parameters: "yeti.mmedia.dll /unregister"; WorkingDir: "{app}"; Flags: waituntilterminated runhidden
+Filename: "{win}\Microsoft.NET\Framework\v2.0.50727\regasm.exe"; Parameters: "yeti.wmfsdk.dll /unregister"; WorkingDir: "{app}"; Flags: waituntilterminated runhidden
+
+[Dirs]
+Name: "{app}\components"
+
+
+[UninstallDelete]
+Type: files; Name: "{app}\SpeechToolsUtils.tlb"
+Type: files; Name: "{app}\ST_Audio.tlb"
+Type: files; Name: "{app}\yeti.mmedia.tlb"
+Type: files; Name: "{app}\yeti.wmfsdk.tlb"
+
+[Code]
+function VCRedistCheck(): Boolean;
+begin
+  Result := (FileExists(ExpandConstant('{win}\WinSxS\x86_Microsoft.VC90.MFC_1fc8b3b9a1e18e3b_9.0.30729.1_x-ww_405b0943\mfc90.dll'))=false);
+end;

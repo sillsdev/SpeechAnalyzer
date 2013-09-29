@@ -1,3 +1,7 @@
+SA - 3.1.0.74 - 9/29/2013 (stereo branch)
+1) Updated install application to include Microsoft VC++ 2008 Redistributables.
+2) Fixed install application so that the C# dlls are registered at install time.
+
 SA - 3.1.0.73 - 9/19/2013 (stereo branch)
 1) Renamed links for help documents from *.doc to *.pdf.
 2) Corrected scrolling problem in Find dialog box feature.  The code was not properly setting the position parameter in the windows message, so all scrolling updates were effectively disabled.
