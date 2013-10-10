@@ -803,14 +803,11 @@
 #define IDC_EX_SFM_COMMENTS             1596
 #define IDC_SFM_LABEL                   1596
 #define IDC_CHART_L351                  1597
-#define IDC_EX_SFM_INTERLINEAR          1597
 #define IDD_RECORDING                   1597
 #define IDC_CHART_CV513                 1598
 #define IDC_EX_SFM_COUNTRY              1598
 #define IDD_STAFF                       1598
 #define IDC_CHART_L352                  1599
-#define IDC_EX_SFM_INTERLINEAR2         1599
-#define IDC_EX_SFM_MULTIRECORD          1599
 #define IDC_CHART_CV514                 1600
 #define IDD_MAGNITUDE                   1600
 #define IDC_CHART_CV515                 1601
@@ -1051,6 +1048,11 @@
 #define IDC_CHART_CV606                 1757
 #define IDC_REGION                      1759
 #define IDC_CHART_CV111                 1795
+#define IDC_EX_SFM_INTERLINEAR          1800
+#define IDC_EX_SFM_MULTIRECORD          1801
+#define IDC_EX_SFM_COLUMN_DATA          1802
+#define IDC_EX_SFM_DEFAULT_SFM          1803
+#define IDC_EX_SFM_EXPORT_TYPE          1804
 #define IDC_MBROLA_GRID                 1855
 #define IDC_MBROLA_DICTIONARY           1857
 #define IDC_MBROLA_IPA                  1858
@@ -1314,6 +1316,10 @@
 #define IDS_MC_CHANNEL_LEFT             11025
 #define IDS_MC_CHANNEL_RIGHT            11026
 #define IDS_SUPPORT_WAVE_COPY           11028
+#define IDS_DEFAULT                     11029
+#define IDS_INTERLINEAR                 11030
+#define IDS_MULTIRECORD                 11031
+#define IDS_COLUMNAR                    11032
 #define ID_FILE_RECORD                  32776
 #define ID_EDIT_SCREENCAPTURE           32778
 #define ID_EDIT_EQUALIZELENGTH          32785
@@ -1716,9 +1722,9 @@
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_3D_CONTROLS                     1
-#define _APS_NEXT_RESOURCE_VALUE        368
+#define _APS_NEXT_RESOURCE_VALUE        369
 #define _APS_NEXT_COMMAND_VALUE         33237
-#define _APS_NEXT_CONTROL_VALUE         2090
+#define _APS_NEXT_CONTROL_VALUE         2091
 #define _APS_NEXT_SYMED_VALUE           105
 #endif
 #endif

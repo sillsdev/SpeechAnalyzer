@@ -18,16 +18,19 @@ protected:
     virtual void OnOK();
     virtual void DoDataExchange(CDataExchange * pDX);
     virtual BOOL OnInitDialog();
-    void ExportStandard();
-    void ExportMultiRec();
+    void ExportDefault();
+	void ExportColumnar();
+    void ExportInterlinear();
+    void ExportMultiRecord();
     void ExportFile(CSaDoc * pDoc, CFile & file);
     void ExportCounts(CSaDoc * pDoc, CFile & file);
     void ExportAllFileInformation(CSaDoc * pDoc, CFile & file);
     void ExportAllParameters(CSaDoc * pDoc, CFile & file);
     void ExportAllSource(CSaDoc * pDoc, CFile & file);
     bool TryExportSegmentsBy(EAnnotation master, CSaDoc * pDoc, CFile & file);
-    CSaString BuildRecord(EAnnotation target, DWORD dwStart, DWORD dwStop, CSaDoc * pDoc);
-    CSaString BuildPhrase(EAnnotation target, DWORD dwStart, DWORD dwStop, CSaDoc * pDoc);
+    bool TryExportColumnsBy(EAnnotation master, CSaDoc * pDoc, CFile & file);
+    CSaString BuildRecord(EAnnotation target, DWORD dwStart, DWORD dwStop, CSaDoc * pDoc, bool plain);
+    CSaString BuildPhrase(EAnnotation target, DWORD dwStart, DWORD dwStop, CSaDoc * pDoc, bool plain);
     EAnnotation GetAnnotation(int val);
     BOOL GetFlag(EAnnotation val);
     int GetIndex(EAnnotation val);
@@ -36,8 +39,8 @@ protected:
     void SetCheck(int nItem, BOOL bCheck);
     void WriteFileUtf8(CFile * pFile, const CSaString szString);
 
-    afx_msg void OnClickedExSfmInterlinear();
-    afx_msg void OnClickedExSfmMultirecord();
+    //afx_msg void OnClickedExSfmInterlinear();
+    //afx_msg void OnClickedExSfmMultirecord();
     afx_msg void OnAllSource();
     afx_msg void OnAllFileInfo();
     afx_msg void OnAllParameters();
@@ -60,8 +63,9 @@ protected:
     BOOL m_bFree;
     BOOL m_bGender;
     BOOL m_bHighPass;
-    BOOL m_bInterlinear;
-    BOOL m_bMultiRecord;
+    //BOOL m_bInterlinear;
+    //BOOL m_bMultiRecord;
+	int m_nExportFormat;
     BOOL m_bLanguage;
     BOOL m_bLastModified;
     BOOL m_bLength;
@@ -90,6 +94,10 @@ protected:
 
     DECLARE_MESSAGE_MAP()
 
+public:
+	CComboBox m_ctlExportType;
+	afx_msg void OnSelchangeExSfmExportType();
+	CButton m_btnOK;
 };
 
 #endif DLGEXPORTSFM_H

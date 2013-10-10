@@ -41,6 +41,7 @@ static char BASED_CODE THIS_FILE[] = __FILE__;
 #endif
 
 LPCTSTR szCrLf = L"\r\n";
+LPCTSTR szTab = L"\t";
 
 /////////////////////////////////////////////////////////////////////////////
 // CDlgExportSFM dialog
@@ -101,8 +102,9 @@ CDlgExportSFM::CDlgExportSFM(const CSaString & szDocTitle, CWnd * pParent) :
     m_bFree = TRUE;
     m_bGender = FALSE;
     m_bHighPass = FALSE;
-    m_bInterlinear = FALSE;
-    m_bMultiRecord = FALSE;
+	m_nExportFormat = 0;
+    //m_bInterlinear = FALSE;
+    //m_bMultiRecord = FALSE;
     m_bLanguage = FALSE;
     m_bLastModified = FALSE;
     m_bLength = FALSE;
@@ -141,55 +143,83 @@ BOOL CDlgExportSFM::OnInitDialog()
     OnAllParameters();
     OnAllFileInfo();
 
-    CenterWindow();
+	CString noChoice;
+	CString choice1;
+	CString choice2;
+	CString choice3;
+	CString choice4;
+
+	choice1.LoadStringW(IDS_DEFAULT);
+	choice2.LoadStringW(IDS_COLUMNAR);
+	choice3.LoadStringW(IDS_INTERLINEAR);
+	choice4.LoadStringW(IDS_MULTIRECORD);
+
+	m_ctlExportType.AddString(noChoice);
+	m_ctlExportType.AddString(choice1);
+	m_ctlExportType.AddString(choice2);
+	m_ctlExportType.AddString(choice3);
+	m_ctlExportType.AddString(choice4);
+
+	m_btnOK.EnableWindow(FALSE);
+
+    CRect cbSize;           // current size of combo box
+    m_ctlExportType.GetClientRect(cbSize);
+    int height = m_ctlExportType.GetItemHeight(-1);
+    height += m_ctlExportType.GetItemHeight(0) * 20;
+    height += GetSystemMetrics(SM_CYEDGE) * 2;
+    height += GetSystemMetrics(SM_CYEDGE) * 2;
+    m_ctlExportType.SetWindowPos(NULL,0, 0,cbSize.right, height,SWP_NOMOVE|SWP_NOZORDER);
+	m_ctlExportType.SetCurSel(0);
+
+	CenterWindow();
 
     return TRUE;  // return TRUE  unless you set the focus to a control
 }
 
 void CDlgExportSFM::DoDataExchange(CDataExchange * pDX)
 {
-
-    CDialog::DoDataExchange(pDX);
-    DDX_Check(pDX, IDC_EX_SFM_ALL_SOURCE, m_bAllSource);
-    DDX_Check(pDX, IDC_EX_SFM_BANDWIDTH, m_bBandwidth);
-    DDX_Check(pDX, IDC_EX_SFM_BITS, m_bBits);
-    DDX_Check(pDX, IDC_EX_SFM_COMMENTS, m_bComments);
-    DDX_Check(pDX, IDC_EX_SFM_DIALECT, m_bDialect);
-    DDX_Check(pDX, IDC_EX_SFM_ETHNOLOGUE_ID, m_bEthnologue);
-    DDX_Check(pDX, IDC_EX_SFM_FAMILY, m_bFamily);
-    DDX_Check(pDX, IDC_EX_SFM_FILE_INFO, m_bAllFile);
-    DDX_Check(pDX, IDC_EX_SFM_FILE_SIZE, m_bFileSize);
-    DDX_Check(pDX, IDC_EX_SFM_FILENAME, m_bFileName);
-    DDX_Check(pDX, IDC_EX_SFM_FREE, m_bFree);
-    DDX_Check(pDX, IDC_EX_SFM_GENDER, m_bGender);
-    DDX_Check(pDX, IDC_EX_SFM_HIGHPASS, m_bHighPass);
-    DDX_Check(pDX, IDC_EX_SFM_INTERLINEAR, m_bInterlinear);
-    DDX_Check(pDX, IDC_EX_SFM_MULTIRECORD, m_bMultiRecord);
-    DDX_Check(pDX, IDC_EX_SFM_LANGUAGE, m_bLanguage);
-    DDX_Check(pDX, IDC_EX_SFM_LAST_DATE, m_bLastModified);
-    DDX_Check(pDX, IDC_EX_SFM_LENGTH, m_bLength);
-    DDX_Check(pDX, IDC_EX_SFM_NOTEBOOKREF, m_bNotebookRef);
-    DDX_Check(pDX, IDC_EX_SFM_NUMBER_OF_SAMPLES, m_bNumberSamples);
-    DDX_Check(pDX, IDC_EX_SFM_ORIGINAL_DATE, m_bOriginalDate);
-    DDX_Check(pDX, IDC_EX_SFM_ORIGINAL_FORMAT, m_bOriginalFormat);
-    DDX_Check(pDX, IDC_EX_SFM_PHONES, m_bPhones);
-    DDX_Check(pDX, IDC_EX_SFM_RATE, m_bSampleRate);
-    DDX_Check(pDX, IDC_EX_SFM_RECORD_DATA, m_bAllParameters);
-    DDX_Check(pDX, IDC_EX_SFM_REGION, m_bRegion);
-    DDX_Check(pDX, IDC_EX_SFM_SPEAKER, m_bSpeaker);
-    DDX_Check(pDX, IDC_EX_SFM_TRANSCRIBER, m_bTranscriber);
-    DDX_Check(pDX, IDC_EX_SFM_WORDS, m_bWords);
-    DDX_Check(pDX, IDC_EXTAB_ANNOTATIONS, m_bAllAnnotations);
-    DDX_Check(pDX, IDC_EXTAB_GLOSS, m_bGloss);
-    DDX_Check(pDX, IDC_EXTAB_ORTHO, m_bOrtho);
-    DDX_Check(pDX, IDC_EXTAB_PHONEMIC, m_bPhonemic);
-    DDX_Check(pDX, IDC_EXTAB_PHONETIC, m_bPhonetic);
-    DDX_Check(pDX, IDC_EXTAB_POS, m_bPOS);
-    DDX_Check(pDX, IDC_EXTAB_REFERENCE, m_bReference);
-    DDX_Check(pDX, IDC_EXTAB_TONE, m_bTone);
-    DDX_Check(pDX, IDC_EXTAB_PHRASE, m_bPhrase);
-    DDX_Check(pDX, IDC_EX_SFM_COUNTRY, m_bCountry);
-    DDX_Check(pDX, IDC_EX_SFM_QUANTIZATION, m_bQuantization);
+	CDialog::DoDataExchange(pDX);
+	DDX_CBIndex(pDX, IDC_EX_SFM_EXPORT_TYPE, m_nExportFormat);
+	DDX_Control(pDX, IDC_EX_SFM_EXPORT_TYPE, m_ctlExportType);
+	DDX_Check(pDX, IDC_EX_SFM_ALL_SOURCE, m_bAllSource);
+	DDX_Check(pDX, IDC_EX_SFM_BANDWIDTH, m_bBandwidth);
+	DDX_Check(pDX, IDC_EX_SFM_BITS, m_bBits);
+	DDX_Check(pDX, IDC_EX_SFM_COMMENTS, m_bComments);
+	DDX_Check(pDX, IDC_EX_SFM_DIALECT, m_bDialect);
+	DDX_Check(pDX, IDC_EX_SFM_ETHNOLOGUE_ID, m_bEthnologue);
+	DDX_Check(pDX, IDC_EX_SFM_FAMILY, m_bFamily);
+	DDX_Check(pDX, IDC_EX_SFM_FILE_INFO, m_bAllFile);
+	DDX_Check(pDX, IDC_EX_SFM_FILE_SIZE, m_bFileSize);
+	DDX_Check(pDX, IDC_EX_SFM_FILENAME, m_bFileName);
+	DDX_Check(pDX, IDC_EX_SFM_FREE, m_bFree);
+	DDX_Check(pDX, IDC_EX_SFM_GENDER, m_bGender);
+	DDX_Check(pDX, IDC_EX_SFM_HIGHPASS, m_bHighPass);
+	DDX_Check(pDX, IDC_EX_SFM_LANGUAGE, m_bLanguage);
+	DDX_Check(pDX, IDC_EX_SFM_LAST_DATE, m_bLastModified);
+	DDX_Check(pDX, IDC_EX_SFM_LENGTH, m_bLength);
+	DDX_Check(pDX, IDC_EX_SFM_NOTEBOOKREF, m_bNotebookRef);
+	DDX_Check(pDX, IDC_EX_SFM_NUMBER_OF_SAMPLES, m_bNumberSamples);
+	DDX_Check(pDX, IDC_EX_SFM_ORIGINAL_DATE, m_bOriginalDate);
+	DDX_Check(pDX, IDC_EX_SFM_ORIGINAL_FORMAT, m_bOriginalFormat);
+	DDX_Check(pDX, IDC_EX_SFM_PHONES, m_bPhones);
+	DDX_Check(pDX, IDC_EX_SFM_RATE, m_bSampleRate);
+	DDX_Check(pDX, IDC_EX_SFM_RECORD_DATA, m_bAllParameters);
+	DDX_Check(pDX, IDC_EX_SFM_REGION, m_bRegion);
+	DDX_Check(pDX, IDC_EX_SFM_SPEAKER, m_bSpeaker);
+	DDX_Check(pDX, IDC_EX_SFM_TRANSCRIBER, m_bTranscriber);
+	DDX_Check(pDX, IDC_EX_SFM_WORDS, m_bWords);
+	DDX_Check(pDX, IDC_EXTAB_ANNOTATIONS, m_bAllAnnotations);
+	DDX_Check(pDX, IDC_EXTAB_GLOSS, m_bGloss);
+	DDX_Check(pDX, IDC_EXTAB_ORTHO, m_bOrtho);
+	DDX_Check(pDX, IDC_EXTAB_PHONEMIC, m_bPhonemic);
+	DDX_Check(pDX, IDC_EXTAB_PHONETIC, m_bPhonetic);
+	DDX_Check(pDX, IDC_EXTAB_POS, m_bPOS);
+	DDX_Check(pDX, IDC_EXTAB_REFERENCE, m_bReference);
+	DDX_Check(pDX, IDC_EXTAB_TONE, m_bTone);
+	DDX_Check(pDX, IDC_EXTAB_PHRASE, m_bPhrase);
+	DDX_Check(pDX, IDC_EX_SFM_COUNTRY, m_bCountry);
+	DDX_Check(pDX, IDC_EX_SFM_QUANTIZATION, m_bQuantization);
+	DDX_Control(pDX, IDOK, m_btnOK);
 }
 
 BEGIN_MESSAGE_MAP(CDlgExportSFM, CDialog)
@@ -198,8 +228,9 @@ BEGIN_MESSAGE_MAP(CDlgExportSFM, CDialog)
     ON_BN_CLICKED(IDC_EX_SFM_RECORD_DATA, OnAllParameters)
     ON_BN_CLICKED(IDC_EXTAB_ANNOTATIONS, OnAllAnnotations)
     ON_COMMAND(IDHELP, OnHelpExportBasic)
-    ON_BN_CLICKED(IDC_EX_SFM_INTERLINEAR, OnClickedExSfmInterlinear)
-    ON_BN_CLICKED(IDC_EX_SFM_MULTIRECORD, OnClickedExSfmMultirecord)
+    //ON_BN_CLICKED(IDC_EX_SFM_INTERLINEAR, OnClickedExSfmInterlinear)
+    //ON_BN_CLICKED(IDC_EX_SFM_MULTIRECORD, OnClickedExSfmMultirecord)
+	ON_CBN_SELCHANGE(IDC_EX_SFM_EXPORT_TYPE, &CDlgExportSFM::OnSelchangeExSfmExportType)
 END_MESSAGE_MAP()
 
 void CDlgExportSFM::OnOK()
@@ -239,14 +270,21 @@ void CDlgExportSFM::OnOK()
         m_bLanguage = m_bDialect = m_bSpeaker = m_bGender = m_bEthnologue = m_bFamily = m_bRegion = m_bNotebookRef =
                 m_bTranscriber = m_bComments = m_bCountry = TRUE;
 
-    if (m_bMultiRecord)
-    {
-        ExportMultiRec();
-    }
-    else
-    {
-        ExportStandard();
-    }
+	switch (m_nExportFormat)
+	{
+	case 1:
+        ExportDefault();
+		break;
+	case 2:
+		ExportColumnar();
+		break;
+	case 3:
+        ExportInterlinear();
+		break;
+	case 4:
+        ExportMultiRecord();
+		break;
+	}
 
     CDialog::OnOK();
 }
@@ -254,7 +292,252 @@ void CDlgExportSFM::OnOK()
 /**
 * output the SFM file in standard format
 */
-void CDlgExportSFM::ExportStandard()
+void CDlgExportSFM::ExportDefault()
+{
+    CFile file(m_szFileName, CFile::modeCreate|CFile::modeWrite);
+    CSaString szString;
+
+    CSaDoc * pDoc = (CSaDoc *)((CMainFrame *)AfxGetMainWnd())->GetCurrSaView()->GetDocument();
+
+    ExportFile(pDoc, file);
+
+    if (!pDoc->GetSegment(PHONETIC)->IsEmpty())
+    {
+        CSaString szAnnotation[ANNOT_WND_NUMBER];
+        CSaString szPOS;
+        int nMaxLength = 0;
+        int nNumber = 0;
+        DWORD dwOffset;
+
+        while (nNumber != -1)
+        {
+            BOOL bBreak = FALSE;
+
+            dwOffset = pDoc->GetSegment(PHONETIC)->GetOffset(nNumber);
+
+            int nFind = pDoc->GetSegment(GLOSS)->FindOffset(dwOffset);
+            if ((nNumber > 0) && (nFind != -1))
+            {
+                bBreak = TRUE;
+            }
+            if (bBreak)
+            {
+                for (int nLoop = PHONETIC; nLoop < ANNOT_WND_NUMBER; nLoop++)
+                {
+                    szAnnotation[nLoop] += " ";
+                }
+                szPOS +=" ";
+            }
+
+            szAnnotation[PHONETIC] += pDoc->GetSegment(PHONETIC)->GetSegmentString(nNumber);
+
+            for (int nLoop = PHONETIC+1; nLoop < ANNOT_WND_NUMBER; nLoop++)
+            {
+                nFind = pDoc->GetSegment(nLoop)->FindOffset(dwOffset);
+                if (nFind != -1)
+                {
+                    if (nLoop == GLOSS)
+                    {
+                        szAnnotation[nLoop] += pDoc->GetSegment(nLoop)->GetSegmentString(nFind).Mid(1);
+                        szPOS += ((CGlossSegment *)pDoc->GetSegment(GLOSS))->GetPOSAt(nFind);
+                        if (szPOS.GetLength() > nMaxLength)
+                        {
+                            nMaxLength = szPOS.GetLength();
+                        }
+                    }
+                    else
+                    {
+                        szAnnotation[nLoop] += pDoc->GetSegment(nLoop)->GetSegmentString(nFind);
+                    }
+                }
+                if (szAnnotation[nLoop].GetLength() > nMaxLength)
+                {
+                    nMaxLength = szAnnotation[nLoop].GetLength();
+                }
+            }
+
+            nNumber = pDoc->GetSegment(PHONETIC)->GetNext(nNumber);
+        }
+        // write out results
+        if (m_bReference)   // \ref  Reference
+        {
+            szString = "\\ref " + szAnnotation[REFERENCE] + szCrLf;
+            WriteFileUtf8(&file, szString);
+        }
+        if (m_bPhonetic)   // \ph   Phonetic text
+        {
+            szString = "\\ph  " + szAnnotation[PHONETIC] + szCrLf;
+            WriteFileUtf8(&file, szString);
+        }
+        if (m_bTone)   // \tn   Tone
+        {
+            szString = "\\tn  " + szAnnotation[TONE] + szCrLf;
+            WriteFileUtf8(&file, szString);
+        }
+        if (m_bPhonemic)   // \pm   Phonemic text
+        {
+            szString = "\\pm  " + szAnnotation[PHONEMIC] + szCrLf;
+            WriteFileUtf8(&file, szString);
+        }
+        if (m_bOrtho)   // \or   Orthographic
+        {
+            szString = "\\or  " + szAnnotation[ORTHO] + szCrLf;
+            WriteFileUtf8(&file, szString);
+        }
+        if (m_bGloss)   // \gl   Gloss
+        {
+            szString = "\\gl  " + szAnnotation[GLOSS] + szCrLf;
+            WriteFileUtf8(&file, szString);
+        }
+        if (m_bPOS)   // \pos  Part of Speech
+        {
+            szString = "\\pos " + szPOS + szCrLf;
+            WriteFileUtf8(&file, szString);
+        }
+    }
+
+    for (int nPhrase = MUSIC_PL1; nPhrase <= MUSIC_PL4; nPhrase++)
+    {
+
+        szString.Format(_T("\\phr%d "), nPhrase - MUSIC_PL1 + 1);
+        CSaString szPhrase;
+        if ((m_bPhrase) && (!pDoc->GetSegment(nPhrase)->IsEmpty()))
+        {
+            int nNumber = 0;
+            while (nNumber != -1)
+            {
+                szPhrase += pDoc->GetSegment(nPhrase)->GetSegmentString(nNumber);
+                szPhrase += L" ";
+                nNumber = pDoc->GetSegment(nPhrase)->GetNext(nNumber);
+            }
+        }
+        if (m_bPhrase)   // \phr1-\phr3  Phrase Level
+        {
+            szPhrase.TrimRight();
+            szString = szString + szPhrase + szCrLf;
+            WriteFileUtf8(&file, szString);
+        }
+    }
+
+    ExportCounts(pDoc, file);
+    ExportAllFileInformation(pDoc, file);
+    ExportAllParameters(pDoc, file);
+    ExportAllSource(pDoc, file);
+
+    file.Close();
+}
+
+/**
+* output the SFM file in columnar format
+*/
+void CDlgExportSFM::ExportColumnar()
+{
+    CFile file(m_szFileName, CFile::modeCreate|CFile::modeWrite);
+    CSaString szString;
+
+    CSaDoc * pDoc = (CSaDoc *)((CMainFrame *)AfxGetMainWnd())->GetCurrSaView()->GetDocument();
+
+    ExportFile(pDoc, file);
+
+    // \name write filename
+	szString.Empty();
+	szString.Append(szCrLf);
+    szString.Append(L"\\table");
+	szString.Append(szCrLf);
+    WriteFileUtf8(&file, szString);
+
+	// generate the headers
+	szString.Empty();
+    if (m_bReference)   // \ref  Reference
+    {
+        szString.Append(L"\\ref");
+		szString.Append(szTab);
+    }
+    if (m_bPhonetic)   // \ph   Phonetic text
+    {
+        szString.Append(L"\\ph");
+		szString.Append(szTab);
+    }
+    if (m_bTone)   // \tn   Tone
+    {
+        szString.Append(L"\\tn");
+		szString.Append(szTab);
+    }
+    if (m_bPhonemic)   // \pm   Phonemic text
+    {
+        szString.Append(L"\\pm");
+		szString.Append(szTab);
+    }
+    if (m_bOrtho)   // \or   Orthographic
+    {
+        szString.Append(L"\\or");
+		szString.Append(szTab);
+    }
+    if (m_bGloss)   // \gl   Gloss
+    {
+        szString.Append(L"\\gl");
+		szString.Append(szTab);
+    }
+    if (m_bPOS)   // \pos  Part of Speech
+    {
+        szString.Append(L"\\pos");
+		szString.Append(szTab);
+    }
+	if (m_bPhrase)
+	{
+	    for (int nPhrase = MUSIC_PL1; nPhrase <= MUSIC_PL4; nPhrase++)
+		{
+			CSaString temp;
+			temp.Format(_T("\\phr%d"), nPhrase - MUSIC_PL1 + 1);
+			szString.Append(temp);
+			szString.Append(szTab);
+		}
+	}
+	if (szString.GetLength()>0)
+	{
+		// remove the last trailing tab
+		szString.Delete(szString.GetLength()-1);
+		szString.Append(szCrLf);
+		szString.Append(szCrLf);
+		WriteFileUtf8(&file, szString);
+	}
+
+	szString.Empty();
+
+	// generate the data
+    if (!TryExportColumnsBy(REFERENCE,pDoc,file))
+    {
+        if (!TryExportColumnsBy(GLOSS,pDoc,file))
+        {
+            if (!TryExportColumnsBy(ORTHO,pDoc,file))
+            {
+                if (!TryExportColumnsBy(PHONEMIC,pDoc,file))
+                {
+                    if (!TryExportColumnsBy(TONE,pDoc,file))
+                    {
+                        TryExportColumnsBy(PHONETIC,pDoc,file);
+                    }
+                }
+            }
+        }
+    }
+
+	szString.Empty();
+	szString.Append(szCrLf);
+	WriteFileUtf8(&file, szString);
+
+    ExportCounts(pDoc, file);
+    ExportAllFileInformation(pDoc, file);
+    ExportAllParameters(pDoc, file);
+    ExportAllSource(pDoc, file);
+
+    file.Close();
+}
+
+/**
+* output the SFM file in interlinear format
+*/
+void CDlgExportSFM::ExportInterlinear()
 {
 
     CFile file(m_szFileName, CFile::modeCreate|CFile::modeWrite);
@@ -283,15 +566,7 @@ void CDlgExportSFM::ExportStandard()
             {
                 bBreak = TRUE;
             }
-            if (!m_bInterlinear && bBreak)
-            {
-                for (int nLoop = PHONETIC; nLoop < ANNOT_WND_NUMBER; nLoop++)
-                {
-                    szAnnotation[nLoop] += " ";
-                }
-                szPOS +=" ";
-            }
-            else if (bBreak)
+            if (bBreak)
             {
                 for (int nLoop = PHONETIC; nLoop < ANNOT_WND_NUMBER; nLoop++)
                 {
@@ -407,7 +682,7 @@ void CDlgExportSFM::ExportStandard()
 /**
 * Output the SFM file in multi-record format
 */
-void CDlgExportSFM::ExportMultiRec()
+void CDlgExportSFM::ExportMultiRecord()
 {
 
     CFile file(m_szFileName, CFile::modeCreate|CFile::modeWrite);
@@ -481,15 +756,15 @@ bool CDlgExportSFM::TryExportSegmentsBy(EAnnotation master, CSaDoc * pDoc, CFile
             {
                 continue;
             }
-            results[target] = BuildRecord(target,dwStart,dwStop,pDoc);
+            results[target] = BuildRecord(target,dwStart,dwStop,pDoc,false);
         }
 
         if (m_bPhrase)
         {
-            results[MUSIC_PL1] = BuildPhrase(MUSIC_PL1, dwStart, dwStop, pDoc);
-            results[MUSIC_PL2] = BuildPhrase(MUSIC_PL2, dwStart, dwStop, pDoc);
-            results[MUSIC_PL3] = BuildPhrase(MUSIC_PL3, dwStart, dwStop, pDoc);
-            results[MUSIC_PL4] = BuildPhrase(MUSIC_PL4, dwStart, dwStop, pDoc);
+            results[MUSIC_PL1] = BuildPhrase(MUSIC_PL1, dwStart, dwStop, pDoc,false);
+            results[MUSIC_PL2] = BuildPhrase(MUSIC_PL2, dwStart, dwStop, pDoc,false);
+            results[MUSIC_PL3] = BuildPhrase(MUSIC_PL3, dwStart, dwStop, pDoc,false);
+            results[MUSIC_PL4] = BuildPhrase(MUSIC_PL4, dwStart, dwStop, pDoc,false);
         }
 
         if (results[REFERENCE].GetLength()>0)
@@ -539,7 +814,110 @@ bool CDlgExportSFM::TryExportSegmentsBy(EAnnotation master, CSaDoc * pDoc, CFile
     return true;
 }
 
-CSaString CDlgExportSFM::BuildRecord(EAnnotation target, DWORD dwStart, DWORD dwStop, CSaDoc * pDoc)
+bool CDlgExportSFM::TryExportColumnsBy(EAnnotation master, CSaDoc * pDoc, CFile & file)
+{
+
+    if (!GetFlag(master))
+    {
+        return false;
+    }
+
+    CSegment * pSeg = pDoc->GetSegment(master);
+
+    if (pSeg->GetOffsetSize() == 0)
+    {
+        return false;
+    }
+
+    CSaString results[ANNOT_WND_NUMBER];
+    for (int i=0; i<ANNOT_WND_NUMBER; i++)
+    {
+        results[i] = L"";
+    }
+    DWORD last = pSeg->GetOffset(0)-1;
+    for (int i=0; i<pSeg->GetOffsetSize(); i++)
+    {
+        DWORD dwStart = pSeg->GetOffset(i);
+        DWORD dwStop = pSeg->GetStop(i);
+        if (dwStart==last)
+        {
+            continue;
+        }
+        last = dwStart;
+        for (int j=master; j>=0; j--)
+        {
+            EAnnotation target = GetAnnotation(j);
+            if (!GetFlag(target))
+            {
+                continue;
+            }
+            results[target] = BuildRecord(target,dwStart,dwStop,pDoc,true);
+        }
+
+        if (m_bPhrase)
+        {
+            results[MUSIC_PL1] = BuildPhrase(MUSIC_PL1, dwStart, dwStop, pDoc,true);
+            results[MUSIC_PL2] = BuildPhrase(MUSIC_PL2, dwStart, dwStop, pDoc,true);
+            results[MUSIC_PL3] = BuildPhrase(MUSIC_PL3, dwStart, dwStop, pDoc,true);
+            results[MUSIC_PL4] = BuildPhrase(MUSIC_PL4, dwStart, dwStop, pDoc,true);
+        }
+
+		CString result;
+		if (m_bReference)
+		{
+			result.Append(results[REFERENCE]);
+			result.Append(szTab);
+        }
+        if (m_bPhonetic)
+        {
+            result.Append(results[PHONETIC]);
+			result.Append(szTab);
+        }
+        if (m_bTone)
+        {
+            result.Append(results[TONE]);
+			result.Append(szTab);
+        }
+		if (m_bPhonemic)
+        {
+            result.Append(results[PHONEMIC]);
+			result.Append(szTab);
+        }
+		if (m_bOrtho)
+        {
+            result.Append(results[ORTHO]);
+			result.Append(szTab);
+        }
+		if (m_bGloss)
+        {
+            result.Append(results[GLOSS]);
+			result.Append(szTab);
+        }
+		if (m_bPhrase)
+		{
+            result.Append(results[MUSIC_PL1]);
+			result.Append(szTab);
+            result.Append(results[MUSIC_PL2]);
+			result.Append(szTab);
+            result.Append(results[MUSIC_PL3]);
+			result.Append(szTab);
+            result.Append(results[MUSIC_PL4]);
+			result.Append(szTab);
+        }
+
+		if (result.GetLength()>0)
+		{
+			// delete trailing tab
+			result.Delete(result.GetLength()-1);
+			result.Append(szCrLf);
+			WriteFileUtf8(&file, result);
+		}
+    }
+
+    return true;
+}
+
+CSaString CDlgExportSFM::BuildRecord(EAnnotation target, DWORD dwStart, DWORD dwStop, CSaDoc * pDoc, bool plain)
 {
 
     CSaString szTag = GetTag(target);
@@ -557,10 +935,10 @@ CSaString CDlgExportSFM::BuildRecord(EAnnotation target, DWORD dwStart, DWORD dw
             szText = szText.Right(szText.GetLength()-1);
         }
     }
-    return szTag + L" " + szText + szCrLf;
+	return (plain) ? (szText) : (szTag + L" " + szText + szCrLf);
 }
 
-CSaString CDlgExportSFM::BuildPhrase(EAnnotation target, DWORD dwStart, DWORD dwStop, CSaDoc * pDoc)
+CSaString CDlgExportSFM::BuildPhrase(EAnnotation target, DWORD dwStart, DWORD dwStop, CSaDoc * pDoc, bool plain)
 {
 
     CSaString szTag = GetTag(target);
@@ -571,7 +949,7 @@ CSaString CDlgExportSFM::BuildPhrase(EAnnotation target, DWORD dwStart, DWORD dw
     {
         return L"";
     }
-    return szTag + L" " + szText + szCrLf;
+	return (plain) ? (szText) : (szTag + L" " + szText + szCrLf);
 }
 
 BOOL CDlgExportSFM::GetFlag(EAnnotation val)
@@ -1074,6 +1452,7 @@ void CDlgExportSFM::OnHelpExportBasic()
     ::HtmlHelp(NULL, szPath, HH_DISPLAY_TOPIC, NULL);
 }
 
+/*
 void CDlgExportSFM::OnClickedExSfmInterlinear()
 {
 
@@ -1093,11 +1472,19 @@ void CDlgExportSFM::OnClickedExSfmMultirecord()
         pWnd->SetCheck(FALSE);
     }
 }
+*/
 
 void CDlgExportSFM::WriteFileUtf8(CFile * pFile, const CSaString szString)
 {
-
     std::string szUtf8 = szString.utf8();
     pFile->Write(szUtf8.c_str(), szUtf8.size());
 }
 
+
+
+void CDlgExportSFM::OnSelchangeExSfmExportType()
+{
+	// TODO: Add your control notification handler code here
+	BOOL enable = m_ctlExportType.GetCurSel()!=0?TRUE:FALSE;
+	m_btnOK.EnableWindow(enable);
+}

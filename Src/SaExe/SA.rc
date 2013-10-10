@@ -26,7 +26,7 @@ LANGUAGE LANG_NEUTRAL, SUBLANG_NEUTRAL
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 3,1,0,74
+ FILEVERSION 3,1,0,75
  PRODUCTVERSION 1,0,0,1
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
@@ -44,7 +44,7 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "SIL International"
             VALUE "FileDescription", "SA"
-            VALUE "FileVersion", "v3.1.0.74"
+            VALUE "FileVersion", "v3.1.0.75"
             VALUE "InternalName", "SA"
             VALUE "LegalCopyright", "© 1996-2013 SIL International (MSEA)"
             VALUE "ProductName", "SA"
@@ -1627,7 +1627,7 @@ BEGIN
     PUSHBUTTON      "&Help",IDHELP,211,147,50,14
 END
 
-IDD_EXPORT_SFM DIALOGEX 0, 0, 310, 205
+IDD_EXPORT_SFM DIALOGEX 0, 0, 310, 207
 STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
 CAPTION "Export Standard Format"
 FONT 8, "MS Sans Serif", 0, 0, 0x0
@@ -1669,13 +1669,12 @@ BEGIN
     CONTROL         "Notebook Ref.",IDC_EX_SFM_NOTEBOOKREF,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,222,126,63,10
     CONTROL         "Transcriber",IDC_EX_SFM_TRANSCRIBER,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,222,138,51,10
     CONTROL         "Comments",IDC_EX_SFM_COMMENTS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,222,150,49,10
-    CONTROL         "Interlinearize",IDC_EX_SFM_INTERLINEAR,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,183,54,10
-    PUSHBUTTON      "Cancel",IDCANCEL,197,181,50,14
-    DEFPUSHBUTTON   "Export",IDOK,143,181,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,197,179,50,14
+    DEFPUSHBUTTON   "Export",IDOK,143,179,50,14
     GROUPBOX        "Include",-1,9,6,292,170
     CONTROL         "Quantization Size",IDC_EX_SFM_QUANTIZATION,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,118,162,71,10
-    PUSHBUTTON      "&Help",IDHELP,251,181,50,14
-    CONTROL         "Multi-Record",IDC_EX_SFM_MULTIRECORD,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,78,183,54,10
+    PUSHBUTTON      "&Help",IDHELP,251,179,50,14
+    COMBOBOX        IDC_EX_SFM_EXPORT_TYPE,14,180,123,10,CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
 END
 
 IDD_EXPORT_XML DIALOGEX 0, 0, 295, 205
@@ -2471,7 +2470,7 @@ BEGIN
         LEFTMARGIN, 10
         RIGHTMARGIN, 300
         TOPMARGIN, 10
-        BOTTOMMARGIN, 195
+        BOTTOMMARGIN, 197
     END
 
     IDD_EXPORT_XML, DIALOG
@@ -4350,7 +4349,7 @@ IDC_MHANDN              CURSOR                  "res\\MedHandN.cur"
 
 STRINGTABLE
 BEGIN
-    VS_VERSION              "Version 3.1.0.74"
+    VS_VERSION              "Version 3.1.0.75"
     VS_COPYRIGHT            "© 1996-2013 SIL International (MSEA).\nAll Rights Reserved."
     IDR_MAINFRAME           "Speech Analyzer"
     IDR_SA_ANNTYPE          "\nSA\nSA Document\nWAV Files (*.wav)\n.wav\nannFileType\nANN File Type"
@@ -4366,7 +4365,7 @@ END
 STRINGTABLE
 BEGIN
     IDS_ERROR_CREATE_INSTANCE 
-	"A serious error has occurred. If this error persists, try reinstalling the application.\n\nModule: %1\nError Code: 0x%2"
+                            "A serious error has occurred. If this error persists, try reinstalling the application.\n\nModule: %1\nError Code: 0x%2"
     IDS_ERROR_READ_ONLY     "Unable to save to read-only file '%1'"
     IDS_ERROR_MMIO_INVALIDPARAM "Sound device error: invalid parameter."
     IDS_ERROR_EQUATION      "The function you entered contains errors. Please revise it."
@@ -5385,6 +5384,10 @@ BEGIN
     IDS_MC_CHANNEL_LEFT     "Channel %1 (Left)"
     IDS_MC_CHANNEL_RIGHT    "Channel %1 (Right)"
     IDS_SUPPORT_WAVE_COPY   "This files format is not directly editable by Speech Analyzer.\nSpeech Analyzer will now make a copy of the file and convert it to a supported format.\nYou can use 'Save As' to save this copy."
+    IDS_DEFAULT             "Default"
+    IDS_INTERLINEAR         "Interlinear"
+    IDS_MULTIRECORD         "Multi-Record"
+    IDS_COLUMNAR            "Columnar"
 END
 
 STRINGTABLE

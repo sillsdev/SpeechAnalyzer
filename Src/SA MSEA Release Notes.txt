@@ -1,3 +1,6 @@
+SA - 3.1.0.75 - 10/9/2013 (stereo branch)
+1) Added capability to export columnar data in the Export SFM dialog box.
+
 SA - 3.1.0.74 - 9/29/2013 (stereo branch)
 1) Updated install application to include Microsoft VC++ 2008 Redistributables.
 2) Fixed install application so that the C# dlls are registered at install time.
