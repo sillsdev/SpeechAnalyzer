@@ -26,7 +26,7 @@ LANGUAGE LANG_NEUTRAL, SUBLANG_NEUTRAL
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 3,1,0,75
+ FILEVERSION 3,1,0,76
  PRODUCTVERSION 1,0,0,1
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
@@ -44,7 +44,7 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "SIL International"
             VALUE "FileDescription", "SA"
-            VALUE "FileVersion", "v3.1.0.75"
+            VALUE "FileVersion", "v3.1.0.76"
             VALUE "InternalName", "SA"
             VALUE "LegalCopyright", "© 1996-2013 SIL International (MSEA)"
             VALUE "ProductName", "SA"
@@ -1824,7 +1824,7 @@ BEGIN
     GROUPBOX        "",IDC_STATIC,3,10,264,94
     LTEXT           "Opens waveform and autopitch graphs",IDC_STATIC2,95,148,73,26
     LTEXT           "Opens position view, melogram, tonal weight and staff graphs",IDC_STATIC3,180,148,72,27
-    LTEXT           "Opens graphs previously specified by user under Tools/Startup Options",IDC_STATIC1,9,148,85,29
+    LTEXT           "Opens graphs previously specified by user under Tools/Options.../Startup",IDC_STATIC1,9,148,85,29
     PUSHBUTTON      "&Help",IDHELP,224,197,42,14
 END
 
@@ -2267,9 +2267,10 @@ BEGIN
     CONTROL         "",IDC_END_SPIN,"msctls_updown32",UDS_ARROWKEYS,225,113,10,14
     DEFPUSHBUTTON   "OK",IDOK,84,142,50,14
     PUSHBUTTON      "Cancel",IDCANCEL,138,142,50,14
-    EDITTEXT        IDC_FILENAME,20,82,188,14,ES_AUTOHSCROLL
+    EDITTEXT        IDC_FILENAME,51,82,157,14,ES_AUTOHSCROLL
     COMBOBOX        IDC_BEGIN_COMBO,71,113,58,30,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
     COMBOBOX        IDC_END_COMBO,177,113,58,30,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "Wordlist",IDC_STATIC,21,84,27,8
 END
 
 IDD_ANNOTATION_GLOSS_PAGE DIALOGEX 0, 0, 335, 186
@@ -2346,7 +2347,7 @@ BEGIN
     DEFPUSHBUTTON   "Cancel",IDCANCEL,71,28,50,14
     PUSHBUTTON      "Finished",IDOK,137,28,50,14
     DEFPUSHBUTTON   "Add",IDC_INSERT,7,28,50,14
-    LTEXT           "Press Add to insert a length of",IDC_STATIC,11,13,98,8
+    LTEXT           "Add one or more lengths of",IDC_STATIC,11,13,98,8
     EDITTEXT        IDC_EDIT_SILENCE,114,11,27,14
     CONTROL         "",IDC_SPIN_SILENCE,"msctls_updown32",UDS_ARROWKEYS,140,11,11,14
     LTEXT           "Seconds",IDC_STATIC,156,14,28,8
@@ -2796,6 +2797,7 @@ BEGIN
     POPUP "&Help"
     BEGIN
         MENUITEM "Speech Analyzer &Help\tF1",   ID_HELP_CONTENTS
+        MENUITEM "What's New?",                 ID_HELP_WHATS_NEW
         MENUITEM "T&roubleshooting",            ID_HELP_TROUBLE
         MENUITEM "&Graphs",                     ID_HELP_GRAPHS
         MENUITEM "&Music Analysis",             ID_HELP_MUSIC
@@ -2899,8 +2901,8 @@ BEGIN
         MENUITEM "Paste As &New File\tCtrl+N",  ID_EDIT_PASTENEW
         MENUITEM SEPARATOR
         MENUITEM "Copy &Measurements\tCtrl+Shift+C", ID_EDIT_COPY_MEASUREMENTS
-        MENUITEM "Select Waveform\tCtrl+A",     ID_EDIT_SELECTWAVEFORM_FAKE
-        MENUITEM "\tCtrl+Click&Drag",           ID_EDIT_SELECTWAVEFORM_FAKE
+        MENUITEM "Select Waveform Segment\tCtrl+A", ID_EDIT_SELECTWAVEFORM_FAKE
+        MENUITEM "Select Waveform\tCtrl+Click&Drag", ID_EDIT_SELECTWAVEFORM_FAKE
         MENUITEM SEPARATOR
         POPUP "Select Segment"
         BEGIN
@@ -2910,12 +2912,41 @@ BEGIN
             MENUITEM "Down Item\tAlt+Down",         ID_EDIT_DOWN
         END
         MENUITEM SEPARATOR
-        MENUITEM "&Find...\tF3",                ID_EDIT_FIND
+        MENUITEM "&Find...\tCtrl+F",            ID_EDIT_FIND
         MENUITEM "&Replace...",                 ID_EDIT_REPLACE
     END
     POPUP "&Graphs"
     BEGIN
-        MENUITEM "T&ypes...\tF7",               ID_GRAPHS_TYPES
+        MENUITEM "&Layout",                     ID_GRAPHS_LAYOUT
+        POPUP "T&ypes"
+        BEGIN
+            MENUITEM "Raw &Waveform",               IDD_RAWDATA
+            MENUITEM "&Intensity",                  IDD_LOUDNESS
+            MENUITEM "&Duration",                   IDD_DURATION
+            MENUITEM "C&hange",                     IDD_CHANGE
+            MENUITEM SEPARATOR
+            MENUITEM "&Raw Pitch",                  IDD_PITCH
+            MENUITEM "&Custom Pitch",               IDD_CHPITCH
+            MENUITEM "Sm&oothed Pitch",             IDD_SMPITCH
+            MENUITEM "A&uto Pitch",                 IDD_GRAPITCH
+            MENUITEM SEPARATOR
+            MENUITEM "Spectrogram",                 IDD_SPECTROGRAM
+            MENUITEM "Snapshot",                    IDD_SNAPSHOT
+            MENUITEM "S&pectrum",                   IDD_SPECTRUM
+            MENUITEM "&Zero Crossing",              IDD_ZCROSS
+            MENUITEM "&F1 v. F2",                   IDD_F1F2, MENUBARBREAK
+            MENUITEM "F2 v. F&1",                   IDD_F2F1
+            MENUITEM "(F&2-F1) v. F1",              IDD_F2F1F1
+            MENUITEM "F1 v. F2 v. F&3",             IDD_3D
+            MENUITEM SEPARATOR
+            MENUITEM "Me&logram",                   IDD_MELOGRAM
+            MENUITEM "Tonal Weighting Chart",       IDD_TWC
+            MENUITEM "Magnitude",                   IDD_MAGNITUDE
+            MENUITEM "&Staff",                      IDD_STAFF
+            MENUITEM SEPARATOR
+            MENUITEM "Pos&ition View",              IDD_RECORDING
+        END
+        MENUITEM "Taskbar T&ypes",              ID_GRAPHS_TYPES
         MENUITEM "&Parameters...",              ID_GRAPHS_PARAMETERS
         MENUITEM SEPARATOR
         POPUP "&Transcription Bars"
@@ -3083,16 +3114,18 @@ BEGIN
             MENUITEM "&Invert",                     ID_TOOLS_ADJUST_INVERT
             MENUITEM "&Normalize",                  ID_TOOLS_ADJUST_NORMALIZE
             MENUITEM "&Zero Offset",                ID_TOOLS_ADJUST_ZERO
-            MENUITEM "Insert &Silence",             ID_TOOLS_ADJUST_SILENCE
+            MENUITEM "Insert &Silence...",          ID_TOOLS_ADJUST_SILENCE
         END
         POPUP "Automatic &Markup"
         BEGIN
-            MENUITEM "Add &Reference Numbers",      ID_AUTOMATICMARKUP_REFERENCEDATA
-            MENUITEM "&Align Transcription Data",   ID_AUTO_ALIGN
-            MENUITEM SEPARATOR
-            MENUITEM "Locate Phonetic &Segments",   ID_ADVANCED_SEGMENT
-            MENUITEM "Locate &Words",               ID_ADVANCED_PARSE_WORD
-            MENUITEM "Locate &Phrases",             ID_ADVANCED_PARSE_PHRASE
+            MENUITEM "Locate Phonetic &Segments...", ID_ADVANCED_SEGMENT
+            MENUITEM "Locate &Words...",            ID_ADVANCED_PARSE_WORD
+            MENUITEM "Locate &Phrases...",          ID_ADVANCED_PARSE_PHRASE
+        END
+        POPUP "Align &Transcription"
+        BEGIN
+            MENUITEM "Add &Reference Numbers...",   ID_AUTOMATICMARKUP_REFERENCEDATA
+            MENUITEM "&Align Transcription Data...", ID_AUTO_ALIGN
         END
         MENUITEM SEPARATOR
         MENUITEM "Waveform &Generator...",      ID_WAVEFORM_GENERATOR
@@ -3111,6 +3144,7 @@ BEGIN
     POPUP "&Help"
     BEGIN
         MENUITEM "Speech Analyzer &Help\tF1",   ID_HELP_CONTENTS
+        MENUITEM "What's New?",                 ID_HELP_WHATS_NEW
         MENUITEM "T&roubleshooting",            ID_HELP_TROUBLE
         MENUITEM "&Graphs",                     ID_HELP_GRAPHS
         MENUITEM "&Music Analysis",             ID_HELP_MUSIC
@@ -3223,7 +3257,7 @@ BEGIN
         MENUITEM "&Copy\tCtrl+C",               ID_EDIT_COPY
         MENUITEM "&Paste\tCtrl+V",              ID_EDIT_PASTE
         MENUITEM SEPARATOR
-        MENUITEM "&Find...\tF3",                ID_EDIT_FIND
+        MENUITEM "&Find...\tCtrl+F",            ID_EDIT_FIND
         MENUITEM "&Replace...",                 ID_EDIT_REPLACE
     END
     POPUP "Toolbars"
@@ -3524,6 +3558,7 @@ BEGIN
     BEGIN
         MENUITEM "Speech Analyzer &Help\tF1",   ID_HELP_CONTENTS
         MENUITEM SEPARATOR
+        MENUITEM "What's New?",                 ID_HELP_WHATS_NEW
         MENUITEM "T&roubleshooting",            ID_HELP_TROUBLE
         MENUITEM SEPARATOR
         MENUITEM "Music Analysis",              ID_HELP_MUSIC
@@ -3717,7 +3752,7 @@ BEGIN
     "X",            ID_EDIT_CUT,            VIRTKEY, CONTROL, NOINVERT
     VK_DOWN,        ID_EDIT_DOWN,           VIRTKEY, ALT, NOINVERT
     VK_F4,          ID_EDIT_EDITOR,         VIRTKEY, NOINVERT
-    VK_F3,          ID_EDIT_FIND,           VIRTKEY, NOINVERT
+    "F",            ID_EDIT_FIND,           VIRTKEY, CONTROL, NOINVERT
     VK_F2,          ID_EDIT_INPLACE,        VIRTKEY, NOINVERT
     VK_RIGHT,       ID_EDIT_NEXT,           VIRTKEY, ALT, NOINVERT
     VK_TAB,         ID_EDIT_NEXT,           VIRTKEY, NOINVERT
@@ -4349,7 +4384,7 @@ IDC_MHANDN              CURSOR                  "res\\MedHandN.cur"
 
 STRINGTABLE
 BEGIN
-    VS_VERSION              "Version 3.1.0.75"
+    VS_VERSION              "Version 3.1.0.76"
     VS_COPYRIGHT            "© 1996-2013 SIL International (MSEA).\nAll Rights Reserved."
     IDR_MAINFRAME           "Speech Analyzer"
     IDR_SA_ANNTYPE          "\nSA\nSA Document\nWAV Files (*.wav)\n.wav\nannFileType\nANN File Type"
@@ -5151,6 +5186,7 @@ BEGIN
                             "Open *.wav & display Raw Waveform\nOpenPA"
     ID_FILE_OPENAS_MUSICANALYSIS 
                             "Open *.Wav & display Raw Waveform, Melogram, and Tonal Wght.\nOpenMA"
+    ID_HELP_WHATS_NEW       "Help with new Speech Analyzer features\nWhat's New"
     IDS_HELP                "&Help"
     ID_HELP_CONTENTS        "List help topics\nSpeech Analyzer Help"
     ID_HELP_USINGHELP       "Help about how to use help\nUsing Help"

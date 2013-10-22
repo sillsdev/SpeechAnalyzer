@@ -207,6 +207,7 @@ protected:
     afx_msg void OnHelpContents();
     afx_msg void OnHelpMiscInfo();
     afx_msg void OnHelpTrouble();
+    afx_msg void OnHelpWhatsNew();
     afx_msg void OnHelpGraphs();
     afx_msg void OnHelpMusic();
     afx_msg void OnHelpTrainingStudent();

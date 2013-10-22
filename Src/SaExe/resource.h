@@ -1479,6 +1479,7 @@
 #define ID_HELP_MN                      33095
 #define ID_FILE_OPENAS_PHONETICANALYSIS 33096
 #define ID_FILE_OPENAS_MUSICANALYSIS    33097
+#define ID_HELP_WHATS_NEW				33100
 #define IDS_HELP                        33101
 #define ID_HELP_CONTENTS                33102
 #define ID_HELP_USINGHELP               33103

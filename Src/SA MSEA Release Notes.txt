@@ -1,3 +1,14 @@
+SA - 3.1.0.76 10/21/2013) (Stereo Branch)
+1) Modified text on 'Insert Silence' dialog
+2) Added 'What's New' menu item to Help menu.
+3) Rearranged Tools menu.
+4) Added ellipsis to menu items that needed them.
+5) Renamed 'Select Waveform' menu items.
+6) Changed 'Find...' key sequence to Ctrl-F (from F3)
+7) Corrected text on startup menu.
+8) Added 'Layout' and 'Types' to 'Graphs' main menu.
+9) Removed extra space in export-sfm data files.
+
 SA - 3.1.0.75 - 10/9/2013 (stereo branch)
 1) Added capability to export columnar data in the Export SFM dialog box.
 

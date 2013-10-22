@@ -498,7 +498,6 @@ void CDlgExportSFM::ExportColumnar()
 		// remove the last trailing tab
 		szString.Delete(szString.GetLength()-1);
 		szString.Append(szCrLf);
-		szString.Append(szCrLf);
 		WriteFileUtf8(&file, szString);
 	}
 

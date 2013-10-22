@@ -170,6 +170,7 @@ BEGIN_MESSAGE_MAP(CSaApp, CWinApp)
     ON_COMMAND(ID_FILE_RETURN, OnFileReturn)
     ON_UPDATE_COMMAND_UI(ID_FILE_RETURN, OnUpdateFileReturn)
     ON_COMMAND(ID_HELP_CONTENTS, OnHelpContents)
+    ON_COMMAND(ID_HELP_WHATS_NEW, OnHelpWhatsNew)
     ON_COMMAND(ID_HELP_TROUBLE, OnHelpTrouble)
     ON_COMMAND(ID_HELP_GRAPHS, OnHelpGraphs)
     ON_COMMAND(ID_HELP_MUSIC, OnHelpMusic)
@@ -1950,6 +1951,18 @@ void CSaApp::OnHelpTrouble()
     CSaString szPath = m_pszHelpFilePath;
     szPath += "::/Troubleshooting/Troubleshooting_overview.htm";
     ::HtmlHelp(NULL, szPath, HH_DISPLAY_TOPIC, NULL);
+}
+
+/***************************************************************************/
+// CSaApp::OnHelpWhatsNew Call new feature documentation
+/***************************************************************************/
+void CSaApp::OnHelpWhatsNew()
+{
+
+    CSaString szAppPath = m_pszHelpFilePath;
+    szAppPath = szAppPath.Left(szAppPath.ReverseFind('\\'));
+    CSaString szCommandLine = "\"" + szAppPath + _T("\\what's new.pdf\"");
+    ShellExecute(NULL, _T("open"), szCommandLine.GetBuffer(1), NULL, NULL, SW_SHOWNORMAL);
 }
 
 /***************************************************************************/
