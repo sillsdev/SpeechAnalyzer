@@ -38,8 +38,7 @@ public:
     CBitmap * MakeBitmap(CDC * pDC, CSize & bmSize); // bmsize returned
     BOOL Display(CDC *, CPoint origin);
     BOOL Stretch(CDC *, CPoint origin, CSize size);
-    BOOL Paint(CDC * pDC,
-               const CRect & targRect);
+    BOOL Paint(CDC * pDC, const CRect & targRect);
     void CreateDIBPalette();
     WORD NumColors(void) const;
     int GetColorBits() const;  // bits per pixel

@@ -115,6 +115,8 @@ BEGIN_MESSAGE_MAP(CMainFrame, CMDIFrameWnd)
     ON_COMMAND(ID_TOOLS_SELFTEST, OnToolsSelfTest)
     ON_COMMAND(ID_EDIT_FIND, OnEditFind)
     ON_UPDATE_COMMAND_UI(ID_EDIT_FIND, OnUpdateEditFind)
+    ON_COMMAND(ID_EDIT_FIND_NEXT, OnEditFindNext)
+    ON_UPDATE_COMMAND_UI(ID_EDIT_FIND_NEXT, OnUpdateEditFindNext)
     ON_COMMAND(ID_EDIT_REPLACE, OnEditReplace)
     ON_UPDATE_COMMAND_UI(ID_EDIT_REPLACE, OnUpdateEditReplace)
     ON_WM_CLOSE()
@@ -1157,12 +1159,35 @@ void CMainFrame::OnUpdateEditFind(CCmdUI * pCmdUI)
     OnUpdateEditReplace(pCmdUI);
 }
 
+// CMainFrame::OnEditFind Launches the find dialog
+/***************************************************************************/
+void CMainFrame::OnEditFindNext()
+{
+	// if the dialog is available, force it to do a 'next'
+	if ((m_pDlgFind!=NULL)&&(m_pDlgFind->IsWindowVisible()))
+    {
+		m_pDlgFind->OnNext();
+    }
+	else
+	{
+	    MaybeCreateFindOrReplaceDlg(true);
+	}
+}
+
+/***************************************************************************/
+// CMainFrame::OnUpdateEditFindNext Menu Update
+/***************************************************************************/
+void CMainFrame::OnUpdateEditFindNext(CCmdUI * pCmdUI)
+{
+    OnUpdateEditReplace(pCmdUI);
+}
+
 /***************************************************************************/
 // CMainFrame::OnEditReplace Launches the replace dialog
 /***************************************************************************/
 void CMainFrame::OnEditReplace()
 {
-    MaybeCreateFindOrReplaceDlg(FALSE);
+    MaybeCreateFindOrReplaceDlg(false);
 }
 
 /***************************************************************************/
@@ -1171,8 +1196,7 @@ void CMainFrame::OnEditReplace()
 void CMainFrame::OnUpdateEditReplace(CCmdUI * pCmdUI)
 {
     CSaDoc * pDoc = GetCurrDoc();
-
-    if (pDoc)
+    if (pDoc!=NULL)
     {
         pCmdUI->Enable(pDoc->GetDataSize() != 0); // enable if data is available
     }
@@ -1491,24 +1515,14 @@ void  CMainFrame::ClearPrintingFlag()
 /***************************************************************************/
 void CMainFrame::OnSaveScreenAsBMP()
 {
-    CDib * pCDib = new CDib;
+    CDib dib;
     CWnd * pWnd = GetTopLevelParent();
-    if (!pWnd)
+    if (pWnd==NULL)
     {
         pWnd = this;
     }
-    if (pCDib)
-    {
-        pCDib->CaptureWindow(pWnd);
-    }
-    if (pCDib)
-    {
-        pCDib->Save();
-    }
-    if (pCDib)
-    {
-        delete pCDib;
-    }
+    dib.CaptureWindow(pWnd);
+    dib.Save();
 }
 
 //SDM 1.06.6U5
@@ -1517,16 +1531,8 @@ void CMainFrame::OnSaveScreenAsBMP()
 /***************************************************************************/
 void CMainFrame::OnSaveWindowAsBMP()
 {
-    CWnd * pWnd = this;
-
-    if (!pWnd)
-    {
-        return;
-    }
-    CDib * pCDib = new CDib;
-
+    CDib dib;
     CRect rectCrop(0,0,0,0);
-
     CRect rectToolbar, rectMainWnd;
     GetControlBar(IDR_BAR_BASIC)->GetWindowRect(&rectToolbar);
     AfxGetMainWnd()->GetWindowRect(&rectMainWnd);
@@ -1543,19 +1549,8 @@ void CMainFrame::OnSaveWindowAsBMP()
             rectCrop.left = nWidth - 2;
         }
     }
-
-    if (pCDib)
-    {
-        pCDib->CaptureWindow(pWnd, rectCrop, TRUE);
-    }
-    if (pCDib)
-    {
-        pCDib->Save();
-    }
-    if (pCDib)
-    {
-        delete pCDib;
-    }
+    dib.CaptureWindow( this, rectCrop, TRUE);
+    dib.Save();
 }
 
 //SDM 1.06.6U4
@@ -1565,24 +1560,14 @@ void CMainFrame::OnSaveWindowAsBMP()
 void CMainFrame::OnSaveGraphsAsBMP()
 {
     CSaView * pSaView = GetCurrSaView();
-    if (!pSaView)
+    if (pSaView==NULL)
     {
         return;
     }
-    CDib * pCDib = new CDib;
+    CDib dib;
     // SDM 1.06.6U5 capture client area
-    if (pCDib)
-    {
-        pCDib->CaptureWindow(pSaView);
-    }
-    if (pCDib)
-    {
-        pCDib->Save();
-    }
-    if (pCDib)
-    {
-        delete pCDib;
-    }
+    dib.CaptureWindow(pSaView);
+    dib.Save();
 }
 
 //SDM 1.06.6U4
@@ -1591,24 +1576,14 @@ void CMainFrame::OnSaveGraphsAsBMP()
 /***************************************************************************/
 void CMainFrame::OnCopyScreenAsBMP()
 {
-    CDib * pCDib = new CDib;
     CWnd * pWnd = GetTopLevelParent();
-    if (!pWnd)
+    if (pWnd==NULL)
     {
         pWnd = this;
     }
-    if (pCDib)
-    {
-        pCDib->CaptureWindow(pWnd);
-    }
-    if (pCDib)
-    {
-        pCDib->CopyToClipboard(pWnd);
-    }
-    if (pCDib)
-    {
-        delete pCDib;
-    }
+	CDib dib;
+    dib.CaptureWindow(pWnd);
+    dib.CopyToClipboard(pWnd);
 }
 
 //SDM 1.06.6U5
@@ -1617,16 +1592,8 @@ void CMainFrame::OnCopyScreenAsBMP()
 /***************************************************************************/
 void CMainFrame::OnCopyWindowAsBMP()
 {
-    CWnd * pWnd = this;
-
-    if (!pWnd)
-    {
-        return;
-    }
-    CDib * pCDib = new CDib;
-
+    CDib dib;
     CRect rectCrop(0,0,0,0);
-
     CRect rectToolbar, rectMainWnd;
     GetControlBar(IDR_BAR_BASIC)->GetWindowRect(&rectToolbar);
     AfxGetMainWnd()->GetWindowRect(&rectMainWnd);
@@ -1644,18 +1611,8 @@ void CMainFrame::OnCopyWindowAsBMP()
         }
     }
 
-    if (pCDib)
-    {
-        pCDib->CaptureWindow(pWnd, rectCrop, TRUE);
-    }
-    if (pCDib)
-    {
-        pCDib->CopyToClipboard(pWnd);
-    }
-    if (pCDib)
-    {
-        delete pCDib;
-    }
+	dib.CaptureWindow( this, rectCrop, TRUE);
+    dib.CopyToClipboard( this);
 }
 
 //SDM 1.06.6U4
@@ -1665,24 +1622,13 @@ void CMainFrame::OnCopyWindowAsBMP()
 void CMainFrame::OnCopyGraphsAsBMP()
 {
     CSaView * pSaView = GetCurrSaView();
-    if (!pSaView)
+    if (pSaView==NULL)
     {
         return;
     }
-    CDib * pCDib = new CDib;
-    // SDM 1.06.6U5 capture client area
-    if (pCDib)
-    {
-        pCDib->CaptureWindow(pSaView);
-    }
-    if (pCDib)
-    {
-        pCDib->CopyToClipboard(pSaView);
-    }
-    if (pCDib)
-    {
-        delete pCDib;
-    }
+	CDib dib;
+    dib.CaptureWindow(pSaView);
+    dib.CopyToClipboard(pSaView);
 }
 
 //SDM 1.06.6U4
@@ -2005,7 +1951,7 @@ void CMainFrame::CreateFindOrReplaceDlg()
 {
     // Get the string segment represented;
     CSaString sToFind;
-    int  annotWndIndex = 0;
+    int annotWndIndex = 0;
     CSaView * pView = (CSaView *)GetCurrSaView();
     if (pView->IsAnyAnnotationSelected())
     {
@@ -2031,7 +1977,7 @@ void CMainFrame::CreateFindOrReplaceDlg()
 /***************************************************************************/
 void CMainFrame::MaybeCreateFindOrReplaceDlg(bool bWantFindOnly)
 {
-    if (m_pDlgFind)
+    if (m_pDlgFind!=NULL)
     {
         delete m_pDlgFind;
         m_pDlgFind = NULL;

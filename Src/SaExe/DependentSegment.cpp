@@ -442,6 +442,7 @@ void CDependentSegment::Add(CSaDoc * pDoc, DWORD dwStart, CSaString & szString, 
     {
         return;    // return on error
     }
+
     pDoc->SetModifiedFlag(TRUE); // document has been modified
     pDoc->SetTransModifiedFlag(TRUE); // transcription data has been modified
     pView->ChangeAnnotationSelection(this, nPos, dwStart, dwStop); // change the selection

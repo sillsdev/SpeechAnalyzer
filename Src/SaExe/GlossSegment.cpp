@@ -136,7 +136,6 @@ BOOL CGlossSegment::SetAt(const CSaString * pszString, bool delimiter, DWORD dwS
 /***************************************************************************/
 BOOL CGlossSegment::Insert(int nIndex, LPCTSTR pszString, bool delimiter, DWORD dwStart, DWORD dwDuration)
 {
-
     try
     {
         pos.InsertAt(nIndex, NULL,  1);

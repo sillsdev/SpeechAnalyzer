@@ -398,7 +398,7 @@ BOOL CSegment::SetAt(const CSaString * pszString, bool, DWORD dwStart, DWORD dwD
 * nDelimiter is not used in this basic version of the function.
 * nIndex index into annotation string
 ***************************************************************************/
-BOOL CSegment::Insert(int nIndex, LPCTSTR pszString, bool, DWORD dwStart, DWORD dwDuration)
+BOOL CSegment::Insert( int nIndex, LPCTSTR pszString, bool delimiter, DWORD dwStart, DWORD dwDuration)
 {
 
     // get the length of the new string
@@ -919,16 +919,19 @@ BOOL CSegment::Match( int index, LPCTSTR strToFind)
 {
 	if (index<0) return FALSE;
 	if (IsEmpty()) return FALSE;
-	if (wcslen(strToFind)==0) return FALSE;
+	int findLength = wcslen(strToFind);
+	if (findLength==0) return FALSE;
 
     CSaString sSegment = *m_pAnnotation;
+
+	int segLength = GetSegmentLength( index);
+	CSaString segText = GetSegmentString( index);
+
 	// our search string is longer than the segment - we will never match
-	if ((index + wcslen(strToFind) - 1) >= sSegment.GetLength()) return FALSE;
+	if (findLength>segLength) return FALSE;
 
-    sSegment = sSegment.Mid( index, wcslen(strToFind));
-	if (sSegment != strToFind) return FALSE;
-
-    return TRUE;
+	int nFind = segText.Find( strToFind);
+	return (nFind!=-1);
 }
 
 void CSegment::SelectSegment(CSaDoc & SaDoc, int index)

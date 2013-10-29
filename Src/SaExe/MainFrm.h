@@ -301,6 +301,8 @@ protected:
     afx_msg void OnToolsSelfTest();
     afx_msg void OnEditFind();
     afx_msg void OnUpdateEditFind(CCmdUI * pCmdUI);
+    afx_msg void OnEditFindNext();
+    afx_msg void OnUpdateEditFindNext(CCmdUI * pCmdUI);
     afx_msg void OnEditReplace();
     afx_msg void OnUpdateEditReplace(CCmdUI * pCmdUI);
     afx_msg void OnClose();

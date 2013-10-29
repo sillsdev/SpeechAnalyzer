@@ -1,4 +1,10 @@
-SA - 3.1.0.76 10/21/2013) (Stereo Branch)
+SA - 3.1.0.77 10/28/2013 (Stereo Branch)
+1) Fixed find/replace bug that occurs when phonetic/phonemic/orthographic segments contain more than one character.
+2) Fixed cut/paste bug that occurs when pasting in phonetic/phonemic/orthographic segments that contain more than one character per segment.
+3) Fixed screen capture bug that occurred because bmp2png.exe was missing from install, and because the input file path to bmp2png.exe was not valid.
+4) Added 'space' accelerator to 'pause' menu item.
+
+SA - 3.1.0.76 10/21/2013 (Stereo Branch)
 1) Modified text on 'Insert Silence' dialog
 2) Added 'What's New' menu item to Help menu.
 3) Rearranged Tools menu.

@@ -1397,7 +1397,8 @@ BOOL CSaDoc::InsertTranscription(int transType, ISaAudioDocumentReaderPtr saAudi
         CSaString szString = *annotation;
         offset /= m_FmtParm.wChannels;
         length /= m_FmtParm.wChannels;
-        pSegment->Insert(nIndex++, szString, false, offset+dwPos, length);
+        pSegment->Insert(nIndex, szString, false, offset+dwPos, length);
+		nIndex += szString.GetLength();
     }
 
     free(annotation);

@@ -17,12 +17,12 @@ class CDlgFind : public CDialog
     // Construction
 public:
     CDlgFind( CWnd * pParent,
-               LPCTSTR pszFieldsToSearch,
-               const CString & strToFind,
-               bool bFindOnly,
-               const CString & strToReplace,
-               int idxDefaultField,
-               CMainFrame * pMainFrame);
+              LPCTSTR pszFieldsToSearch,
+              const CString & strToFind,
+              bool bFindOnly,
+              const CString & strToReplace,
+              int idxDefaultField,
+              CMainFrame * pMainFrame);
 
     BOOL Created() const;
     int AnnotationSetID();
@@ -43,10 +43,9 @@ public:
     CComboBox m_annotSetID2;
 
     // Implementation
-protected:
-
-    // Generated message map functions
+public:
     afx_msg void OnNext();
+protected:
     afx_msg void OnPrevious();
     afx_msg void OnCharacterChart();
     afx_msg void OnSelchangeCbofield();

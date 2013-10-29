@@ -1382,6 +1382,7 @@
 #define ID_TYPES_CEPPITCH               32928
 #define ID_POPUPGRAPH_GRIDLINES         32939
 #define ID_POPUPGRAPH_PRINT             32942
+#define ID_EDIT_FIND_NEXT               32952
 #define ID_EDIT_PREVIOUS                32953
 #define ID_EDIT_NEXT                    32954
 #define ID_GRAPHS_LAYOUT                32955
@@ -1479,7 +1480,7 @@
 #define ID_HELP_MN                      33095
 #define ID_FILE_OPENAS_PHONETICANALYSIS 33096
 #define ID_FILE_OPENAS_MUSICANALYSIS    33097
-#define ID_HELP_WHATS_NEW				33100
+#define ID_HELP_WHATS_NEW               33100
 #define IDS_HELP                        33101
 #define ID_HELP_CONTENTS                33102
 #define ID_HELP_USINGHELP               33103
@@ -1578,6 +1579,7 @@
 #define ID_AUTOSAVE_ON                  33235
 #define ID_AUTOSAVE_OFF                 33236
 #define ID_TOOLS_ADJUST_SILENCE         33237
+#define ID_ACCELERATOR33238             33238
 #define ID_GRAPHTYPES_SELECT_FIRST      40000
 #define ID_GRAPHTYPES_SELECT_LAST       40011
 #define ID_PHONETIC_ALL                 40100
@@ -1724,7 +1726,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_3D_CONTROLS                     1
 #define _APS_NEXT_RESOURCE_VALUE        369
-#define _APS_NEXT_COMMAND_VALUE         33237
+#define _APS_NEXT_COMMAND_VALUE         33239
 #define _APS_NEXT_CONTROL_VALUE         2091
 #define _APS_NEXT_SYMED_VALUE           105
 #endif

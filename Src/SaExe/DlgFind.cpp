@@ -475,7 +475,7 @@ void CDlgFind::OnNext()
     if (findme.IsEmpty()) return;
 
     CSegment * pAnnot = m_pMainFrame->GetAnnotation(AnnotationSetID());
-    if ((pAnnot->IsEmpty()) || ((!m_bFindOnly)&&(m_curPos==-1)&&(pAnnot->FindNext(-1,findme)==-1)))
+    if ((pAnnot->IsEmpty()) || ((!m_bFindOnly) && (m_curPos==-1) && (pAnnot->FindNext(-1,findme)==-1)))
     {
         AfxMessageBox(IDS_FIND_NONE,MB_ICONINFORMATION,0);
         return;
@@ -486,7 +486,7 @@ void CDlgFind::OnNext()
 	// setup the beginning point, because we don't have one yet.
 	// in this case we don't want to do a replace yet
 	// there's nothing selected, and we haven't started yet
-	if ((curSel==-1)&&(m_beginFind==-1))
+	if ((curSel==-1) && (m_beginFind==-1))
     {
 		TRACE("bf:begin\n");
 		m_wrapped = false;
@@ -685,7 +685,7 @@ void CDlgFind::Replace()
     }
 
     int curSel = pAnnot->GetSelection();
-    if ((curSel >= 0) && (pAnnot->Match(curSel,findme)))
+    if ((curSel >= 0) && (pAnnot->Match( curSel, findme)))
     {
         pDoc->CheckPoint();
         pAnnot->Replace( pDoc, curSel, findme, replaceme);
@@ -772,6 +772,4 @@ BOOL CDlgFind::Created() const
 void CDlgFind::ChangeView()
 {
     OnSelchangeCbofield();
-};
-
-
+}

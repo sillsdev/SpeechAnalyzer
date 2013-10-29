@@ -240,13 +240,13 @@ void CDib::Serialize(CArchive & ar)
 // SDM 1.06.6U5 capture client or entire window area
 // SDM 1.06.6U4 moved function from mainframe
 ///////////////////////////////////////////////////////////////////
-void CDib::CaptureWindow(CWnd * pCaptureThis, CRect rectCrop, BOOL bClient)
+void CDib::CaptureWindow( CWnd * pCaptureThis, CRect rectCrop, BOOL bClient)
 {
     if (pCaptureThis)
     {
         pCaptureThis->UpdateWindow();
     }
-    CDC * pScreen;
+    CDC * pScreen = NULL;
     if (bClient)
     {
         pScreen = new CClientDC(pCaptureThis);
@@ -255,40 +255,29 @@ void CDib::CaptureWindow(CWnd * pCaptureThis, CRect rectCrop, BOOL bClient)
     {
         pScreen = new CWindowDC(pCaptureThis);
     }
-    CRect        memRect;
+    CRect memRect;
 
     pScreen->GetClipBox(&memRect);
     memRect -= rectCrop;
 
     // create a temporary DC for the reading the screen
-    CDC * pMemDC = new CDC;
-    if (!pMemDC)
+    CDC memDC;
+    if (!memDC.CreateCompatibleDC(pScreen))
     {
         ASSERT(0);
-    }
-    else if (!pMemDC->CreateCompatibleDC(pScreen))
-    {
-        ASSERT(0);
-        delete pMemDC;
     }
     else
     {
         // create a bitmap to read the screen into and select it
         // into the temporary DC
-        CBitmap * pBitmapForPrint = new CBitmap;
-
-        if (!pBitmapForPrint)
+        CBitmap bitmapForPrint;
+        if (!bitmapForPrint.CreateCompatibleBitmap(pScreen, memRect.Width(), memRect.Height()))
         {
             ASSERT(0);
-        }
-        else if (!pBitmapForPrint->CreateCompatibleBitmap(pScreen, memRect.Width(), memRect.Height()))
-        {
-            ASSERT(0);
-            delete pBitmapForPrint;
         }
         else
         {
-            CBitmap * oldBitmap = (CBitmap *)pMemDC->SelectObject(pBitmapForPrint);
+            CBitmap * oldBitmap = (CBitmap *)memDC.SelectObject(&bitmapForPrint);
             if (!oldBitmap)
             {
                 ASSERT(0);
@@ -296,21 +285,18 @@ void CDib::CaptureWindow(CWnd * pCaptureThis, CRect rectCrop, BOOL bClient)
             else
             {
                 // BitBlt the screen data into the bitmap
-                if (!pMemDC->BitBlt(0,0, memRect.Width(), memRect.Height(), pScreen,
-                                    memRect.left,    memRect.top, SRCCOPY))
+                if (!memDC.BitBlt(0,0, memRect.Width(), memRect.Height(), pScreen, memRect.left, memRect.top, SRCCOPY))
                 {
                     ASSERT(0);
                 }
                 else
                 {
                     // create a device independent bitmap from the regular bitmap
-                    Construct(pMemDC, 0, FALSE);
+                    Construct(&memDC, 0, FALSE);
                 }
-                pMemDC->SelectObject((HBITMAP)oldBitmap->GetSafeHandle());
+                memDC.SelectObject((HBITMAP)oldBitmap->GetSafeHandle());
             }
-            delete pBitmapForPrint;
         }
-        delete pMemDC;
     }
     delete pScreen;
 }
@@ -423,7 +409,7 @@ void CDib::Save(void)
                     if (AfxMessageBox(szPrompt, MB_YESNO) == IDNO)
                     {
                         // User does not want to overwrite
-                        //            dlg.m_ofn.lpstrInitialDir = dlg.GetFolderPath();
+                        // dlg.m_ofn.lpstrInitialDir = dlg.GetFolderPath();
                         continue;
                     }
                 }
@@ -440,8 +426,8 @@ void CDib::Save(void)
             if (dlg.m_ofn.nFilterIndex == 1)
             {
                 szPngFilename = szPathnameExtended;
-
-                GetTempFileName(_T("TMP"), szBmpFilename.GetBuffer(_MAX_PATH), MAX_PATH);
+                GetTempFileName( _T("TMP"), szBmpFilename.GetBuffer(_MAX_PATH), MAX_PATH);
+				szBmpFilename.ReleaseBuffer();
                 // delete temporary file automatically created by GetTempFileName
                 RemoveFile(szBmpFilename);
                 // This is likely but not guaranteed to be unique, but bmp2png insist that bmp's have ".bmp" extension
@@ -471,8 +457,7 @@ void CDib::Save(void)
                         szB2PPath = szB2PPath.Left(szB2PPath.ReverseFind('\\')) + _T("\\bmp2png.exe");
                         CSaString szQuotedBmp = _T("\"") + szBmpFilename + _T("\"");
                         CSaString szQuotedPng = _T("\"") + szPngFilename + _T("\"");
-                        int nResult = _wspawnlp(_P_WAIT, szB2PPath,
-                                                _T("bmp2png.exe"), /*_T("-L"),*/ _T("-E"), _T("-Q"), _T("-O"), (LPCTSTR)szQuotedPng, (LPCTSTR)szQuotedBmp, NULL);
+                        int nResult = _wspawnlp(_P_WAIT, szB2PPath, _T("bmp2png.exe"), /*_T("-L"),*/ _T("-E"), _T("-Q"), _T("-O"), (LPCTSTR)szQuotedPng, (LPCTSTR)szQuotedBmp, NULL);
                         if (nResult != 0)
                         {
                             AfxMessageBox(IDS_ERROR_SCREEN_CAPTURE_SAVE);
