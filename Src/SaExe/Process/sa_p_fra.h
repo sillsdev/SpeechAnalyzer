@@ -35,10 +35,7 @@ public:
     ULONG GetBufferLength();
     SFragParms * GetFragmentBlock(ULONG dwFragmentIndex);
     const SFragParms & GetFragmentParms(ULONG dwFragmentIndex);
-    ULONG GetFragmentCount()
-    {
-        return m_dwFragmentCount;
-    }
+    ULONG GetFragmentCount();
     ULONG GetFragmentIndex(ULONG dwWaveIndex);
 };
 

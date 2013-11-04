@@ -225,12 +225,11 @@ CSaApp theApp;
 /////////////////////////////////////////////////////////////////////////////
 // CSaApp helper functions
 
-HMODULE LoadCompatibleLibrary(LPCTSTR szCName)
+HMODULE LoadCompatibleLibrary( LPCTSTR szCName)
 {
     // Is Library Compatible
     CSaString szApp;
-
-    GetModuleFileName(AfxGetInstanceHandle(), szApp.GetBuffer(MAX_PATH*4), MAX_PATH*4);
+    GetModuleFileName( AfxGetInstanceHandle(), szApp.GetBuffer(MAX_PATH*4), MAX_PATH*4);
     szApp.ReleaseBuffer();
 
     CSaString szName = szCName;
@@ -244,14 +243,12 @@ HMODULE LoadCompatibleLibrary(LPCTSTR szCName)
     DWORD dwHandle;
 
     DWORD dwSize = GetFileVersionInfoSize(szName.GetBuffer(0), &dwHandle);
-
-    if (!dwSize)
+	if (!dwSize)
     {
         return 0;
     }
 
     void * pLibVersion = (void *) new char[dwSize];
-
     if (!GetFileVersionInfo(szName.GetBuffer(0), dwHandle, dwSize, pLibVersion))
     {
         delete [] pLibVersion;
@@ -267,7 +264,6 @@ HMODULE LoadCompatibleLibrary(LPCTSTR szCName)
     }
 
     dwSize = GetFileVersionInfoSize(szApp.GetBuffer(0), &dwHandle);
-
     if (!dwSize)
     {
         return 0;
@@ -290,15 +286,14 @@ HMODULE LoadCompatibleLibrary(LPCTSTR szCName)
         return 0;
     }
 
-    if (pAppVS->dwFileVersionLS != pLibVS->dwFileVersionLS ||
-            pAppVS->dwFileVersionMS != pLibVS->dwFileVersionMS ||
-            pAppVS->dwProductVersionLS != pLibVS->dwProductVersionLS ||
-            pAppVS->dwProductVersionMS != pLibVS->dwProductVersionMS ||
-            pAppVS->dwFileFlags != pLibVS->dwFileFlags)
+    if ((pAppVS->dwFileVersionLS != pLibVS->dwFileVersionLS) ||
+        (pAppVS->dwFileVersionMS != pLibVS->dwFileVersionMS) ||
+        (pAppVS->dwProductVersionLS != pLibVS->dwProductVersionLS) ||
+        (pAppVS->dwProductVersionMS != pLibVS->dwProductVersionMS) ||
+        (pAppVS->dwFileFlags != pLibVS->dwFileFlags))
     {
         CSaString szMessage;
-
-        szMessage.FormatMessage(_T("%1 contains resources from incompatible version, unloading"), szCName);
+        szMessage.FormatMessage(_T("%1 was found, but contains resources from incompatible version.\nIt will not be used."), szCName);
         AfxMessageBox(szMessage);
         delete [] pLibVersion;
         delete [] pAppVersion;
@@ -317,6 +312,8 @@ HMODULE LoadCompatibleLibrary(LPCTSTR szCName)
 /***************************************************************************/
 BOOL CSaApp::InitInstance()
 {
+	//AfxMessageBox(L"Hello");
+
     // handle single instance
     if (CreateAsSingleton(_T("418486C0-7EEE-448d-AD39-2522F5D553A7"))==FALSE)
     {
@@ -329,10 +326,9 @@ BOOL CSaApp::InitInstance()
 
     m_hEnglishResources = LoadCompatibleLibrary(_T("SA_ENU.DLL"));
     m_hLocalizedResources = LoadCompatibleLibrary(_T("SA_LOC.DLL"));
-
     if ((!m_hEnglishResources) && (!m_hLocalizedResources))
     {
-        AfxMessageBox(_T("No resources found, exiting"));
+        AfxMessageBox(L"Speech Analyzer was unable to locate or use SA_ENU.DLL or SA_LOC.DLL.\nIt will now exit.");
         return FALSE;
     }
 
@@ -477,7 +473,7 @@ BOOL CSaApp::InitInstance()
 
         // Dispatch commands specified on the command line
         if ((cmdInfo.m_nShellCommand != CCommandLineInfo::FileNew) &&
-                (!ProcessShellCommand(cmdInfo)))
+            (!ProcessShellCommand(cmdInfo)))
         {
             return FALSE;
         }
@@ -640,7 +636,7 @@ void CSaApp::ExamineCmdLine(LPCTSTR pCmdLine, WPARAM wParam)
 {
     if (pCmdLine[0] != '\0')
     {
-        // AfxMessageBox(pCmdLine);
+		//AfxMessageBox(pCmdLine);
         // ASSERT(FALSE);  // Assert to allow debuging of the interface
         CSaString szCmdLine = pCmdLine; // copy string into CSaString object
         szCmdLine.MakeUpper(); // convert the whole string to upper case letters
@@ -675,11 +671,19 @@ void CSaApp::ExamineCmdLine(LPCTSTR pCmdLine, WPARAM wParam)
             m_szCmdFileName = buffer;
 
             CFileStatus status;
-            if ((m_szCmdFileName.GetLength()==0) || !CFile::GetStatus(m_szCmdFileName,status))
+            if (m_szCmdFileName.GetLength()==0)
             {
-                // The file does not exist use original profile
+                // The file does not exist. use original profile
+				// i think only SPEECH_WPARAM_SHOWSAREC does not use a command line file
                 ASSERT(wParam == SPEECH_WPARAM_SHOWSAREC);
-            }
+            } else if (!CFile::GetStatus(m_szCmdFileName,status)) {
+				// if IPA Help is used to launch SA, it must be run using compatibility mode for Windows XP SP3.
+				CString msg;
+				msg.FormatMessage(L"The file:\n'%1'\nwas specified on the command line, but it does not exist.\nIf you are using IPA Help on Windows 7 or later, please use the compatibility mode for Windows XP.\nSpeech Analyzer will now exit.",(LPCTSTR)m_szCmdFileName);
+				AfxMessageBox(msg,MB_ICONEXCLAMATION);
+				ExitProcess(0);
+				return;
+			}
 
             m_szCallingApp = GetBatchString(_T("Settings"), _T("CallingApp"), SM_CAPTION); // get the entry // SDM 1.5Test8.5
 
@@ -851,18 +855,16 @@ void CSaApp::OnProcessBatchCommands()
     // Process Commands
     CSaString szEntry;
     CSaString szReturn;
-    CSaString szParameterList;
-
+	TCHAR szParameterList[1024];
+	wmemset(szParameterList,0,_countof(szParameterList));
 
     swprintf_s(szEntry.GetBuffer(12),12,_T("command%i"), m_nCommand);
     szEntry.ReleaseBuffer();
     szReturn = GetBatchString(_T("Commands"), szEntry, _T("")); // get the entry
     szReturn.MakeUpper(); // convert the whole string to upper case letters
-    szParameterList = "";
     szEntry = szReturn;
-    swscanf_s(szEntry,_T("%[^(]%(%[^)]"),szReturn.GetBuffer(szReturn.GetLength()), szReturn.GetLength(), szParameterList.GetBuffer(szParameterList.GetLength()),szParameterList.GetLength());
+    swscanf_s(szEntry,_T("%[^(]%(%[^)]"),szReturn.GetBuffer(szReturn.GetLength()), szReturn.GetLength(), szParameterList,_countof(szParameterList));
     szReturn.ReleaseBuffer();
-    szParameterList.ReleaseBuffer();
 
     if (szReturn == "")
     {
@@ -1414,10 +1416,6 @@ void CSaApp::CopyClipboardTranscription(LPCTSTR szTempPath)
 		msg.Format(_T("%x"), hr);
 		ErrorMessage(IDS_ERROR_CREATE_INSTANCE, _T("SaAudioDocumentWriter.Copy()"), msg);
 	}
-	catch(...)
-	{
-		int i=0;
-	}
 }
 
 /***************************************************************************/
@@ -1755,7 +1753,6 @@ void CSaApp::OnFileReturn()
 
 void CSaApp::FileReturn(BOOL bHide)
 {
-
     if (SaveAllModified())
     {
         CloseAllDocuments(FALSE);
@@ -1766,7 +1763,7 @@ void CSaApp::FileReturn(BOOL bHide)
             RemoveFile(m_szCmdFileName);
         }
         CWnd * pWnd = IsAppRunning(); // SDM 1.5Test8.5
-        if (pWnd)
+        if (pWnd!=NULL)
         {
             if (bHide)   // Optional Hide
             {
@@ -2665,7 +2662,6 @@ void CSaApp::SetupNewUser()
 
 CDocument * CSaApp::OpenDocumentFile(LPCTSTR lpszFileName)
 {
-
     CSaString szPrettyName = lpszFileName;
     LPTSTR pszPretty = szPrettyName.GetBuffer(_MAX_PATH);
     GetLongPathNameW(pszPretty, pszPretty, _MAX_PATH);
@@ -2677,14 +2673,12 @@ BOOL CSaApp::m_bUseUnicodeEncoding = FALSE;
 // return application mode (batch or not, exit allowed)
 int CSaApp::GetBatchMode()
 {
-
     return m_nBatchMode;
 }
 
 // allow SA to exit
 void CSaApp::CancelBatchMode()
 {
-
     if (m_nBatchMode != 0)
     {
         m_nBatchMode = 3;
@@ -2693,7 +2687,6 @@ void CSaApp::CancelBatchMode()
 
 void CSaApp::GetMRUFilePath(int i, CSaString & buffer) const
 {
-
     buffer.Empty();
     if (!m_pRecentFileList->GetSize())   // no entries, need to load from registry, this is the MRU list
     {

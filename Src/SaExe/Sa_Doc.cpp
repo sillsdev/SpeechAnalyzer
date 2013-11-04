@@ -983,7 +983,7 @@ BOOL CSaDoc::LoadTranscriptionData(LPCTSTR pszWavePath, BOOL bTemp)
     // re-initialize the utterance parameters
     m_uttParm.Init(m_FmtParm.wBitsPerSample);
 
-    if (initSucceeded && saAudioDocRdr->DocumentExistsInDB)
+    if ((initSucceeded) && (saAudioDocRdr->DocumentExistsInDB))
     {
         ReadNonSegmentData(saAudioDocRdr);
         ReadTranscription(PHONETIC, saAudioDocRdr);

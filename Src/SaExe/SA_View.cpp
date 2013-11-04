@@ -830,7 +830,7 @@ void CSaView::OnFilePhonologyAssistant()
     HMODULE hmod = GetModuleHandle(exeName);
 
     TCHAR fullPath[_MAX_PATH + 1];
-    ::GetModuleFileName(hmod, fullPath, MAX_PATH);
+    GetModuleFileName(hmod, fullPath, MAX_PATH);
 
     // write to both the 32-bit and 64-bit hives...
 

@@ -259,9 +259,7 @@ namespace SIL.SpeechTools.Utils
 			// Make sure the wave file exists.
 			if (!File.Exists(audioFilePath))
 			{
-				string msg = string.Format(Resources.kstidWaveFileNotFound,
-					SilUtils.Utils.PrepFilePathForSTMsgBox(audioFilePath));
-
+				string msg = string.Format(Resources.kstidWaveFileNotFound,SilUtils.Utils.PrepFilePathForSTMsgBox(audioFilePath));
 				SilUtils.Utils.STMsgBox(msg, MessageBoxButtons.OK);
 				return null;
 			}
@@ -284,8 +282,7 @@ namespace SIL.SpeechTools.Utils
 				// Get the transcription data from the companion transcription file.
 				Exception e;
 				s_audioFileLoading = audioFilePath;
-				doc = SilUtils.Utils.DeserializeData(transcriptionFile,
-					typeof(SaAudioDocument), out e) as SaAudioDocument;
+				doc = SilUtils.Utils.DeserializeData(transcriptionFile,typeof(SaAudioDocument), out e) as SaAudioDocument;
 
 				if (e != null)
 				{

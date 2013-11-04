@@ -1,3 +1,24 @@
+SA - 3.1.0.78 11/03/2013 (Stereo Branch)
+1) Fixes for interface with IPA Help.  
+1a) Modified the message:
+	'No resources found, exiting.' 
+	to read 
+	'Speech Analyzer was unable to locate or use SA_ENU.DLL or SA_LOC.DLL.\nIt will now exit.'
+	
+1c) There was a buffer length problem that was preventing the code from correctly parsing parameters received in the batch file.  This resulted in the wrong graph types being displayed.
+1d) NOTE!!!! IPA Help needs to be run with 'Windows XP SP3' compatibility mode under Windows 7 and later.  If it is not,
+a message will be displayed when Speech Analyzer is unable to located the batch file.  
+The message is:
+	The file:
+	'C:\Program Files (x86)\Speech Tools\IPA-Help\IPA-Help.lst'
+	was specified on the command line, but it does not exist.
+	If you are using IPA Help on Windows 7 or later, please use the compatibility mode for Windows XP.
+	Speech Analyzer will now exit.
+
+Without the compatibility mode set, the file will be put in:
+C:\Users\yournamegoeshere\AppData\Local\VirtualStore\Program Files (x86)\Speech Tools\IPA-Help\ipa-help.lst 
+by IPA Help.
+
 SA - 3.1.0.77 10/28/2013 (Stereo Branch)
 1) Fixed find/replace bug that occurs when phonetic/phonemic/orthographic segments contain more than one character.
 2) Fixed cut/paste bug that occurs when pasting in phonetic/phonemic/orthographic segments that contain more than one character per segment.

@@ -177,10 +177,10 @@ enum ECursorAlignment
 #define FILE_DESCRIPTION_SIZE           256         // file description string length
 // user windows messages
 #define WM_USER_SPEECHAPPLICATION       0x7FF0
-#define SPEECH_WPARAM_SHOWSA            0xE001
+#define SPEECH_WPARAM_SHOWSA            0xE001		// startup SA in batch mode with a list
 #define SPEECH_WPARAM_SHOWSM            0xE002
 #define SPEECH_WPARAM_CLOSE             0xE003
-#define SPEECH_WPARAM_SHOWSAREC         0xE004
+#define SPEECH_WPARAM_SHOWSAREC         0xE004		// start up SA in batch mode in recording mode
 #define WM_USER_CURSOR_IN_FRAGMENT      WM_USER + 5
 #define WM_USER_APPLY_TOOLSOPTIONS      WM_USER + 6
 #define WM_USER_RECORDER                WM_USER + 7

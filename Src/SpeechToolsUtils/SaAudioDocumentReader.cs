@@ -94,18 +94,14 @@ namespace SIL.SpeechTools.Utils
 					AudioReader.InitResult result = audioReader.Initialize(audioFilePath);
 					if (result == AudioReader.InitResult.FileNotFound)
 					{
-						string msg = string.Format(Resources.kstidWaveFileNotFound,
-							SilUtils.Utils.PrepFilePathForSTMsgBox(audioFilePath));
-
+						string msg = string.Format(Resources.kstidWaveFileNotFound, SilUtils.Utils.PrepFilePathForSTMsgBox(audioFilePath));
 						SilUtils.Utils.STMsgBox(msg, MessageBoxButtons.OK);
 						return false;
 					}
 
 					if ((result == AudioReader.InitResult.InvalidFormat))
 					{
-						string msg = string.Format(Resources.kstidInvalidWaveFile,
-							SilUtils.Utils.PrepFilePathForSTMsgBox(audioFilePath));
-
+						string msg = string.Format(Resources.kstidInvalidWaveFile, SilUtils.Utils.PrepFilePathForSTMsgBox(audioFilePath));
 						SilUtils.Utils.STMsgBox(msg, MessageBoxButtons.OK);
 						return false;
 					}
@@ -122,9 +118,7 @@ namespace SIL.SpeechTools.Utils
 			}
 			catch (Exception e)
 			{
-				string msg = string.Format(Resources.kstidErrorInitializingDocReader,
-					e.Message);
-
+				string msg = string.Format(Resources.kstidErrorInitializingDocReader, e.Message);
 				SilUtils.Utils.STMsgBox(msg, MessageBoxButtons.OK);
 				return false;
 			}

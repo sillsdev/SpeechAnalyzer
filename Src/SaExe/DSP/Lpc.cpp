@@ -2143,7 +2143,6 @@ float CLinPredCoding::GetDecibelPowerRef()
 #ifdef TEST_LPC
 #include <stdio.h>
 
-void main(void);
 void main(void)
 {
     static short Sig[] = {-16,-18,-21,-24,-27,-30,-31,-33,

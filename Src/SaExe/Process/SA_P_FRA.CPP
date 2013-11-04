@@ -39,7 +39,7 @@ CProcessFragments::CProcessFragments()
 /***************************************************************************/
 CProcessFragments::~CProcessFragments()
 {
-    if (m_pFragmenter)
+    if (m_pFragmenter!=NULL)
     {
         delete m_pFragmenter;
         m_pFragmenter = NULL;
@@ -117,7 +117,7 @@ long CProcessFragments::Process(void * pCaller, ISaDoc * pDoc, int nProgress,
     // if file has not been created
     if (!GetProcessFileName()[0])
     {
-        if (m_pFragmenter)
+        if (m_pFragmenter!=NULL)
         {
             delete m_pFragmenter;
             m_pFragmenter = NULL;
@@ -174,9 +174,7 @@ long CProcessFragments::Process(void * pCaller, ISaDoc * pDoc, int nProgress,
 
 
         // construct fragmenter
-        dspError_t Err = CFragment::CreateObject(&m_pFragmenter, pFragParmBuffer, dwFragBufferLen,
-                         SigParm, pWaveBuffer, dwWaveBufferLen,
-                         CPitchParm, pPitchBuffer, dwPitchBufferLen);
+        dspError_t Err = CFragment::CreateObject( &m_pFragmenter, pFragParmBuffer, dwFragBufferLen, SigParm, pWaveBuffer, dwWaveBufferLen, CPitchParm, pPitchBuffer, dwPitchBufferLen);
         if (Err)
         {
             EndProcess(); // end data processing
@@ -199,7 +197,7 @@ long CProcessFragments::Process(void * pCaller, ISaDoc * pDoc, int nProgress,
             {
                 EndWaitCursor();
             }
-            if (m_pFragmenter)
+            if (m_pFragmenter!=NULL)
             {
                 delete m_pFragmenter;
                 m_pFragmenter = NULL;
@@ -277,8 +275,10 @@ long CProcessFragments::Process(void * pCaller, ISaDoc * pDoc, int nProgress,
     if (lStatus == DONE)
     {
         m_dwFragmentIndex = (m_dwFragmentCount - 1) / 2;  // initialize for GetFragmentIndex() binary search
-        delete m_pFragmenter;
-        m_pFragmenter = NULL;
+		if (m_pFragmenter!=NULL) {
+			delete m_pFragmenter;
+			m_pFragmenter = NULL;
+		}
         SetDataReady();
         if (GetDataSize() == 0)
         {
@@ -387,4 +387,9 @@ ULONG CProcessFragments::GetFragmentIndex(ULONG dwWaveIndex)
     }
 
     return UNDEFINED_OFFSET;
+}
+
+ULONG CProcessFragments::GetFragmentCount()
+{
+    return m_dwFragmentCount;
 }
