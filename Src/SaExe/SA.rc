@@ -26,7 +26,7 @@ LANGUAGE LANG_NEUTRAL, SUBLANG_NEUTRAL
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 3,1,0,78
+ FILEVERSION 3,1,0,79
  PRODUCTVERSION 1,0,0,1
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
@@ -44,7 +44,7 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "SIL International"
             VALUE "FileDescription", "SA"
-            VALUE "FileVersion", "v3.1.0.78"
+            VALUE "FileVersion", "v3.1.0.79"
             VALUE "InternalName", "SA"
             VALUE "LegalCopyright", "© 1996-2013 SIL International (MSEA)"
             VALUE "ProductName", "SA"
@@ -3814,7 +3814,7 @@ BEGIN
     VK_F10,         ID_PLAYBACK_STOPTOR,    VIRTKEY, NOINVERT
     VK_F11,         ID_PLAYBACK_WINDOW,     VIRTKEY, NOINVERT
     VK_RETURN,      ID_RESTART_PROCESS,     VIRTKEY, NOINVERT
-    " ",            ID_PLAYER_PAUSE,		ASCII,  NOINVERT
+    " ",            ID_PLAYER_PAUSE,        ASCII,  NOINVERT
 END
 
 IDR_SA_DISPLAYPLOT ACCELERATORS
@@ -4388,7 +4388,7 @@ IDC_MHANDN              CURSOR                  "res\\MedHandN.cur"
 
 STRINGTABLE
 BEGIN
-    VS_VERSION              "Version 3.1.0.78"
+    VS_VERSION              "Version 3.1.0.79"
     VS_COPYRIGHT            "© 1996-2013 SIL International (MSEA).\nAll Rights Reserved."
     IDR_MAINFRAME           "Speech Analyzer"
     IDR_SA_ANNTYPE          "\nSA\nSA Document\nWAV Files (*.wav)\n.wav\nannFileType\nANN File Type"
@@ -5445,6 +5445,12 @@ BEGIN
                             "An unsaved recording was found.\nDo you wish to restore '%1'?\n\nThis file was last updated on %2.\nIf you select YES, Speech Analyzer will then ask you for a folder to restore the file to."
     IDS_CHOOSE_FOLDER       "Please choose a folder."
     IDS_CHOOSE_SELFTEST_FOLDER "Please select the Self Test data directory."
+END
+
+STRINGTABLE
+BEGIN
+    IDS_NO_FIELDWORKS_PROJECT 
+                            "Speech Analyzer was unable to find the FieldWorks Projects directory.\nYou will have to select an alternate location."
 END
 
 #endif    // English (United States) resources

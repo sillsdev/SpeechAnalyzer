@@ -1719,6 +1719,8 @@
 #define IDS_AUTOSAVE_RESTORE_TEMP       61309
 #define IDS_CHOOSE_FOLDER               61310
 #define IDS_CHOOSE_SELFTEST_FOLDER      61311
+#define IDS_STRING61312                 61312
+#define IDS_NO_FIELDWORKS_PROJECT       61312
 
 // Next default values for new objects
 // 

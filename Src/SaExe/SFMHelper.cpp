@@ -444,6 +444,16 @@ bool CSFMHelper::IsGloss( LPCTSTR text, size_t length)
 	return true;
 }
 
+bool CSFMHelper::IsRef( LPCTSTR text, size_t length)
+{
+	if (length<4) return false;
+	if (::tolower(text[0])!='\\') return false;
+	if (::tolower(text[1])!='r') return false;
+	if (::tolower(text[2])!='e') return false;
+	if (::tolower(text[3])!='f') return false;
+	return true;
+}
+
 /***************************************************************************/
 // extractTabField local helper function to get field from tab delimited string
 /***************************************************************************/

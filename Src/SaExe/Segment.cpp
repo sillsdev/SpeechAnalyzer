@@ -1150,6 +1150,10 @@ void CSegment::SetString(LPCTSTR val)
     *m_pAnnotation = val;
 }
 
+/**
+* returns the selection index, or -1 if
+* no segment is selected
+*/
 int CSegment::GetSelection() const
 {
     return m_nSelection;   // return the index of the selected character

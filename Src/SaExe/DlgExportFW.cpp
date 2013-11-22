@@ -95,14 +95,28 @@ BOOL CDlgExportFW::OnInitDialog()
 
     CDialog::OnInitDialog();
 
-    ctlEditFieldWorksFolder.SetWindowTextW(GetFieldWorksProjectDirectory());
-    SetCheck(IDC_RADIO_FIELDWORKS, TRUE);
+	CSaString dir = GetFieldWorksProjectDirectory();
+	bool found = true;
+	if (dir.GetLength()==0) {
+		AfxMessageBox(IDS_NO_FIELDWORKS_PROJECT,MB_OK|MB_ICONEXCLAMATION);
+		found = false;
+	}
+
+    ctlEditFieldWorksFolder.SetWindowTextW( dir);
     SetCheck(IDC_EXTAB_ANNOTATIONS, TRUE);
     CString tags;
     tags.LoadString(IDS_SFM_TAGS);
     ctlStaticTags.SetWindowTextW(tags);
 
-    OnRadioFieldworks();
+	if (found) {
+		ctlRadioFieldWorks.SetCheck(TRUE);
+		ctlRadioOther.SetCheck(FALSE);
+		OnRadioFieldworks();
+	} else {
+		ctlRadioFieldWorks.SetCheck(FALSE);
+		ctlRadioOther.SetCheck(TRUE);
+		OnRadioOther();
+	}
     OnAllAnnotations();
     CenterWindow();
     UpdateButtonState();
@@ -201,7 +215,6 @@ void CDlgExportFW::OnAllAnnotations()
 
 void CDlgExportFW::SetEnable(int nItem, BOOL bEnable)
 {
-
     CWnd * pWnd = GetDlgItem(nItem);
     if (pWnd)
     {
@@ -211,7 +224,6 @@ void CDlgExportFW::SetEnable(int nItem, BOOL bEnable)
 
 void CDlgExportFW::SetCheck(int nItem, BOOL bChecked)
 {
-
     CButton * pWnd = (CButton *) GetDlgItem(nItem);
     if (pWnd)
     {
@@ -240,7 +252,6 @@ void CDlgExportFW::OnClickedExSfmInterlinear()
 
 void CDlgExportFW::OnClickedExSfmMultirecord()
 {
-
     CButton * pWnd = (CButton *) GetDlgItem(IDC_EX_SFM_INTERLINEAR);
     if (pWnd)
     {
@@ -328,7 +339,6 @@ void CDlgExportFW::OnClickedBrowseOther()
 
 void CDlgExportFW::OnRadioFieldworks()
 {
-
     ctlEditFieldWorksFolder.EnableWindow(FALSE);
     ctlComboFieldWorksProject.EnableWindow(TRUE);
     ctlStaticFieldWorksProject.EnableWindow(TRUE);
@@ -340,7 +350,6 @@ void CDlgExportFW::OnRadioFieldworks()
 
 void CDlgExportFW::OnRadioOther()
 {
-
     ctlEditFieldWorksFolder.EnableWindow(FALSE);
     ctlComboFieldWorksProject.EnableWindow(FALSE);
     ctlStaticFieldWorksProject.EnableWindow(FALSE);
@@ -351,9 +360,7 @@ void CDlgExportFW::OnRadioOther()
 
 void CDlgExportFW::GetCurrentPath(LPTSTR szBuffer, size_t size)
 {
-
     wmemset(szBuffer,0,MAX_PATH);
-
     if (ctlRadioFieldWorks.GetCheck() == BST_CHECKED)
     {
         TCHAR szTemp[MAX_PATH];
@@ -387,13 +394,10 @@ void CDlgExportFW::OnKillfocusComboFieldworksProject()
 
 void CDlgExportFW::UpdateButtonState()
 {
-
     TCHAR szBuffer[MAX_PATH];
     GetCurrentPath(szBuffer,MAX_PATH);
-
     bool valid = FolderExists(szBuffer);
     bool selected = ((ctlRadioOther.GetCheck()==BST_CHECKED)||(ctlComboFieldWorksProject.GetCurSel()!=-1));
-
     ctlButtonOK.EnableWindow(((valid)&&(selected))?TRUE:FALSE);
 }
 
@@ -405,27 +409,180 @@ void CDlgExportFW::WriteFileUtf8(CFile * pFile, const CSaString szString)
 }
 
 /**
-* return the registered fieldworks project directory
+* Return the registered fieldworks project directory
+* The FieldWorks application stores it's information under registry keys that are named
+* according to the version - so we will recursively hunt for the ProjectsDir value
+* to figure out where they are storing their projects.
+*
+* and to make things really interesting, FieldWorks doesn't cleanup the registry very
+* well when it is uninstalled - so we need to check the validity of the registry entry.
+*
 */
 CSaString CDlgExportFW::GetFieldWorksProjectDirectory()
 {
+	// first try the 32-bit registry hive
+	DWORD sam = KEY_ENUMERATE_SUB_KEYS | KEY_QUERY_VALUE | KEY_READ | KEY_WOW64_32KEY;
+	wstring value;
+	HKEY hRootKey = HKEY_LOCAL_MACHINE;
+	wstring keyName = _T("Software\\SIL\\FieldWorks");
+	if (SearchForValue( hRootKey, sam, keyName, L"ProjectsDir", value)) {
+		if (FolderExists(value.c_str())) {
+			return CSaString(value.c_str());
+		}
+	}
+	hRootKey = HKEY_CURRENT_USER;
+	if (SearchForValue( hRootKey, sam, keyName, L"ProjectsDir", value)) {
+		if (FolderExists(value.c_str())) {
+			return CSaString(value.c_str());
+		}
+	}
 
-    // retrieve IPA Help location from registry
-    TCHAR szPathBuf[_MAX_PATH + 1];
-    HKEY hKey = NULL;
-    DWORD dwBufLen = MAX_PATH + 1;
+	// now try the 64-bit registry hive
+	sam = KEY_ENUMERATE_SUB_KEYS | KEY_QUERY_VALUE | KEY_READ;
+	hRootKey = HKEY_LOCAL_MACHINE;
+	if (SearchForValue( hRootKey, sam, keyName, L"ProjectsDir", value)) {
+		if (FolderExists(value.c_str())) {
+			return CSaString(value.c_str());
+		}
+	}
+	hRootKey = HKEY_CURRENT_USER;
+	if (SearchForValue( hRootKey, sam, keyName, L"ProjectsDir", value)) {
+		if (FolderExists(value.c_str())) {
+			return CSaString(value.c_str());
+		}
+	}
 
-    if (RegOpenKeyEx(HKEY_LOCAL_MACHINE, _T("Software\\SIL\\FieldWorks\\7.0"), 0, KEY_QUERY_VALUE, &hKey))
-    {
-        return L"";
-    }
-    long nError = RegQueryValueEx(hKey, _T("ProjectsDir"), NULL, NULL, (LPBYTE) szPathBuf, &dwBufLen);
-    RegCloseKey(hKey);
-    if ((nError) || (!wcslen(szPathBuf)))
-    {
-        return L"";
-    }
+	OSVERSIONINFO versionInfo;
+    memset(&versionInfo,0,sizeof(OSVERSIONINFO));
+    versionInfo.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
+    BOOL result = ::GetVersionEx(&versionInfo);
+    ASSERT(result);
+    bool xp = versionInfo.dwMajorVersion<6;
+	xp = true;
+	if (xp) {
+		wstring path = GetShellFolderPath(CSIDL_COMMON_APPDATA);
+		if (path.length()>0) {
+			wstring projPath = path;
+			projPath.append(L"\\SIL\\FieldWorks\\Projects");
+			if (FolderExists(projPath.c_str())) {
+				return CSaString(projPath.c_str());
+			} else {
+				projPath = path;
+				projPath.append(L"\\SIL\\FieldWorks 7\\Projects");
+				if (FolderExists(projPath.c_str())) {
+					return CSaString(projPath.c_str());
+				}
+			}
+		}
+	} else {
+		wstring path = _wgetenv(L"ProgramData");
+		if (path.length()>0) {
+			wstring projPath = path;
+			projPath.append(L"\\SIL\\FieldWorks\\Projects");
+			if (FolderExists(projPath.c_str())) {
+				return CSaString(projPath.c_str());
+			} else {
+				projPath = path;
+				projPath.append(L"\\SIL\\FieldWorks 7\\Projects");
+				if (FolderExists(projPath.c_str())) {
+					return CSaString(projPath.c_str());
+				}
+			}
+		}
+	}
 
-    return CSaString(szPathBuf);
+	// it's really bad!!
+	return CSaString(L"");
+}
+
+#define MAX_KEY_LENGTH 255
+#define MAX_VALUE_NAME 16383
+ 
+bool CDlgExportFW::SearchForValue( HKEY hRootKey, DWORD sam, wstring keyName, LPCTSTR valueName, wstring & value) 
+{ 
+	TRACE(L"Trying %s\n", keyName.c_str());
+
+	HKEY hKey = NULL;
+	DWORD retCode = RegOpenKeyEx( hRootKey, keyName.c_str(), 0, sam, &hKey);
+	if (retCode!=ERROR_SUCCESS) {
+		TRACE(L"Unable to open %s because of %d\n", keyName.c_str(), retCode);
+		return false;
+	}
+
+    TCHAR achKey[MAX_KEY_LENGTH];		// buffer for subkey name
+    DWORD cbName;						// size of name string 
+    TCHAR achClass[MAX_PATH] = TEXT("");  // buffer for class name 
+    DWORD cchClassName = MAX_PATH;		// size of class string 
+    DWORD cSubKeys=0;					// number of subkeys 
+    DWORD cbMaxSubKey;					// longest subkey size 
+    DWORD cchMaxClass;					// longest class string 
+    DWORD cValues;						// number of values for key 
+    DWORD cchMaxValue;					// longest value name 
+    DWORD cbMaxValueData;				// longest value data 
+    DWORD cbSecurityDescriptor;			// size of security descriptor 
+    FILETIME ftLastWriteTime;			// last write time 
+    TCHAR achValue[MAX_VALUE_NAME]; 
+    DWORD cchValue = MAX_VALUE_NAME;
+
+    // Get the class name and the value count. 
+    retCode = RegQueryInfoKey( hKey, achClass, &cchClassName, NULL, &cSubKeys, &cbMaxSubKey, &cchMaxClass, &cValues, &cchMaxValue, &cbMaxValueData, &cbSecurityDescriptor, &ftLastWriteTime);
+	if (retCode!=ERROR_SUCCESS) {
+		RegCloseKey( hKey);
+		TRACE(L"unable to query key info %s because of %d\n", keyName.c_str(), retCode);
+		return false;
+	}
+
+    // Enumerate the subkeys, until RegEnumKeyEx fails.
+    if (cSubKeys>0) {
+        TRACE(L"Number of subkeys: %d\n", cSubKeys);
+        for (DWORD i=0; i<cSubKeys; i++) { 
+            cbName = MAX_KEY_LENGTH;
+			memset(achKey,0,sizeof(achKey));
+            retCode = RegEnumKeyEx( hKey, i, achKey, &cbName, NULL, NULL, NULL, &ftLastWriteTime); 
+            if (retCode == ERROR_SUCCESS) {
+				wstring childKey;
+				childKey = keyName;
+				childKey.append(L"\\");
+				childKey.append(achKey);
+				if (SearchForValue( hRootKey, sam, childKey, valueName, value)) {
+					RegCloseKey( hKey);
+					return true;
+				}
+            }
+        }
+    } else {
+		TRACE(L"No sub keys found\n");
+	}
+ 
+    // Enumerate the key values. 
+    if (cValues>0) {
+        TRACE(L"number of values: %d\n", cValues);
+        for (DWORD i=0, retCode=ERROR_SUCCESS; i<cValues; i++) { 
+            cchValue = MAX_VALUE_NAME; 
+			wmemset(achValue,0,_countof(achValue));
+            retCode = RegEnumValue( hKey, i, achValue, &cchValue, NULL, NULL, NULL, NULL);
+            if (retCode == ERROR_SUCCESS ) {
+				TRACE(L"considering value %s\n",achValue);
+				// is this the correct value?
+				if (_wcsicmp( achValue, valueName)==0) {
+					TCHAR szValue[1024];
+					wmemset(szValue,0,_countof(szValue));
+					DWORD dwBufLen = sizeof(szValue);
+					retCode = RegQueryValueEx( hKey, _T("ProjectsDir"), NULL, NULL, (LPBYTE)szValue, &dwBufLen);
+					if (retCode==ERROR_SUCCESS) {
+						value = szValue;
+						TRACE(L"success at %s : %s\n", keyName.c_str(), value.c_str());
+						RegCloseKey( hKey);
+						return true;
+					}
+				}
+            } 
+        }
+    } else {
+		TRACE(L"No values found\n");
+	}
+	TRACE(L"no joy\n");
+	RegCloseKey( hKey);
+	return false;
 }
 

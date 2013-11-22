@@ -7,8 +7,6 @@
 #include "Shlobj.h"
 #include <Windows.h>
 
-typedef HMODULE(__stdcall * SHGETFOLDERPATH)(HWND, int, HANDLE, DWORD, LPTSTR);
-
 static int CALLBACK BrowseCallbackProc(HWND hwnd, UINT uMsg, LPARAM /*lParam*/, LPARAM lpData)
 {
 
@@ -122,19 +120,7 @@ void CAutoSave::Check( CSaApp * pApp)
 			}
 
 			// select a directory to restore the file to.
-			TCHAR documentPath[_MAX_PATH];
-			wmemset( documentPath, 0, _countof(documentPath));
-
-			HMODULE hModule = LoadLibrary(_T("SHFOLDER.DLL"));
-			if (hModule != NULL)
-			{
-				SHGETFOLDERPATH fnShGetFolderPath = (SHGETFOLDERPATH)GetProcAddress(hModule, "SHGetFolderPathW");
-				if (fnShGetFolderPath != NULL)
-				{
-					fnShGetFolderPath(NULL, CSIDL_PERSONAL, NULL, 0, documentPath);
-				}
-				FreeLibrary(hModule);
-			}
+			wstring documentPath = GetShellFolderPath(CSIDL_PERSONAL);
 
 			{
 				// szCurrent is an optional start folder. Can be NULL.
@@ -156,7 +142,7 @@ void CAutoSave::Check( CSaApp * pApp)
 				bi.lpszTitle = msg.GetBuffer(msg.GetLength());
 				bi.ulFlags = BIF_RETURNONLYFSDIRS | BIF_NEWDIALOGSTYLE;
 				bi.lpfn = BrowseCallbackProc;
-				bi.lParam = (LPARAM)(LPCTSTR)documentPath;
+				bi.lParam = (LPARAM)(LPCTSTR)documentPath.c_str();
 				LPITEMIDLIST pidl = SHBrowseForFolder(&bi);
 				if (pidl==NULL)
 				{

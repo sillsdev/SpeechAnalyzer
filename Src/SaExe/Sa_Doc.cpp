@@ -6092,7 +6092,7 @@ void CSaDoc::OnFileSaveAs()
 /***************************************************************************/
 void CSaDoc::OnUpdateFileSaveAs(CCmdUI * pCmdUI)
 {
-    pCmdUI->Enable(!((CSaApp *)AfxGetApp())->GetBatchMode() && (!m_bMultiChannel)); // SDM 1.5Test8.2
+    pCmdUI->Enable(!((CSaApp *)AfxGetApp())->GetBatchMode()); // SDM 1.5Test8.2
 }
 
 /***************************************************************************/
@@ -7449,7 +7449,7 @@ void CSaDoc::OnUpdateAutoReferenceData(CCmdUI * pCmdUI)
     pCmdUI->Enable(GetDataSize() != 0);
 }
 
-void CSaDoc::AlignTranscriptionData(CTranscriptionDataSettings & settings)
+void CSaDoc::AlignTranscriptionData( CTranscriptionDataSettings & settings)
 {
     // save state for undo ability
     CheckPoint();
@@ -7760,7 +7760,8 @@ void CSaDoc::AlignTranscriptionData(CTranscriptionDataSettings & settings)
 
         // Process phonemic
         // SDM 1.06.8 only change  if new segmentation or text changed
-        if ((settings.m_bPhonemic) && ((settings.m_nSegmentBy != IDC_KEEP)||(settings.m_bPhonemicModified)))
+        if ((settings.m_bPhonemic) && 
+			((settings.m_nSegmentBy != IDC_KEEP)||(settings.m_bPhonemicModified)))
         {
 
             nStringIndex = 0;

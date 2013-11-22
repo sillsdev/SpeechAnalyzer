@@ -22,6 +22,7 @@ public:
 	static bool IsPhonetic( LPCTSTR text, size_t length);
 	static bool IsOrthographic( LPCTSTR text, size_t length);
 	static bool IsGloss( LPCTSTR text, size_t length);
+	static bool IsRef( LPCTSTR text, size_t length);
 
 	static const CSaString ExtractTabField(const CSaString & szLine, const int nField);
 

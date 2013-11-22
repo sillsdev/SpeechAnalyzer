@@ -74,8 +74,8 @@ protected:
     BOOL m_bCreated;
     CString m_sFieldsToSearch;
     int m_annotWndIndex;
-    int m_beginFind;
-    int m_curPos;
+    int m_beginFind;		// where we began the search
+    int m_curPos;			// our current position
     bool m_bFindOnly;
     CMainFrame * m_pMainFrame;
     bool m_wrapped;

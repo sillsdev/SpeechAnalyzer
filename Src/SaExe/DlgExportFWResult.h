@@ -2,8 +2,7 @@
 
 #include "resource.h"
 
-class CDlgExportFWResult : public CDialog
-{
+class CDlgExportFWResult : public CDialog {
 
     DECLARE_DYNAMIC(CDlgExportFWResult)
 

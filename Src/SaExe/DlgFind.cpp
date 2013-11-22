@@ -87,8 +87,8 @@ CDlgFind::CDlgFind(CWnd * pParent,
 
     m_wrapped = false;
     m_beginFind = -1;
-	TRACE("bf:init\n");
     m_curPos = -1;
+	TRACE("bf:init\n");
     m_bCreated = Create(CDlgFind::IDD);
     if (m_bCreated)
     {
@@ -121,8 +121,8 @@ BOOL CDlgFind::Completed(BOOL isForward, int newPos)
 /***************************************************************************/
 void CDlgFind::ResetCompletionCheck()
 {
-    m_beginFind = -1;
 	TRACE("bf:reset\n");
+    m_beginFind = -1;
     m_wrapped = false;
 }
 
@@ -267,8 +267,7 @@ void CDlgFind::SetupDialogForFindAndReplace()
 
     // restore the dialog size
     GetWindowRect(r);
-    r2 = CRect(r.left,r.top,r.left + m_rctDialog.Width(),
-               r.top  + m_rctDialog.Height());
+    r2 = CRect(r.left,r.top,r.left + m_rctDialog.Width(),r.top  + m_rctDialog.Height());
     MoveWindow(r2);
 
     // restore positions of controls, making room for restore controls
@@ -465,64 +464,78 @@ void CDlgFind::OnSetFocusReplaceString()
 /***************************************************************************/
 void CDlgFind::OnNext()
 {
-	TRACE("OnNext %d %d\n",m_curPos,m_beginFind);
-    if (m_pMainFrame==NULL) return;
-
+	TRACE(">>>OnNext %d %d\n",m_curPos,m_beginFind);
+    if (m_pMainFrame==NULL)
+	{
+		return;
+	}
+	
     CSaDoc * pDoc = m_pMainFrame->GetCurrDoc();
-    if (pDoc==NULL) return;
+    if (pDoc==NULL)
+	{
+		return;
+	}
 
     CString findme = GetFindString();
-    if (findme.IsEmpty()) return;
+    if (findme.IsEmpty())
+	{
+		return;
+	}
 
     CSegment * pAnnot = m_pMainFrame->GetAnnotation(AnnotationSetID());
-    if ((pAnnot->IsEmpty()) || ((!m_bFindOnly) && (m_curPos==-1) && (pAnnot->FindNext(-1,findme)==-1)))
+    if ((pAnnot->IsEmpty()) || 
+		((!m_bFindOnly) && (m_curPos==-1) && (pAnnot->FindNext(-1,findme)==-1)))
     {
         AfxMessageBox(IDS_FIND_NONE,MB_ICONINFORMATION,0);
         return;
     }
 
+	// curSel will be selection index or 
+	// -1 if nothing is selected
     int curSel = pAnnot->GetSelection();
+
+	TRACE("curSel=%d\n",curSel);
+	TRACE("m_beginFind=%d\n",m_beginFind);
+	TRACE("m_curPos=%d\n",m_curPos);
 
 	// setup the beginning point, because we don't have one yet.
 	// in this case we don't want to do a replace yet
-	// there's nothing selected, and we haven't started yet
-	if ((curSel==-1) && (m_beginFind==-1))
-    {
-		TRACE("bf:begin\n");
-		m_wrapped = false;
-		m_beginFind = pAnnot->FirstVisibleIndex(*pDoc);
-		TRACE("bf:begin2\n");
-		m_curPos = m_beginFind;
-		curSel = m_curPos;
-		if (pAnnot->Match( curSel, findme))
+	if (curSel==-1) {
+		// there's nothing selected, and we haven't started yet
+		if (m_beginFind==-1)
 		{
-	        ScrollIfNeeded();
-		    pAnnot->SelectSegment(*pDoc,m_curPos);
+			TRACE("bf:begin\n");
+			m_wrapped = false;
+			m_beginFind = pAnnot->FirstVisibleIndex(*pDoc);
+			m_curPos = m_beginFind;
+			curSel = m_curPos;
+			TRACE("bf:begin2\n");
+			if (pAnnot->Match( curSel, findme))
+			{
+				ScrollIfNeeded();
+				pAnnot->SelectSegment(*pDoc,m_curPos);
+			}
+			else
+			{
+				TRACE("onnext1\n");
+				OnNext();
+			}
+			TRACE("1\n");
+			return;
 		}
-		else
+	} else {
+		// next special case - initial selection has already been done
+		if (m_beginFind==-1)
 		{
+			TRACE("bf:begin\n");
+			m_wrapped = false;
+			m_beginFind = curSel;
+			m_curPos = m_beginFind;
+			TRACE("onnext2\n");
 			OnNext();
+			TRACE("2\n");
+			return;
 		}
-		return;
-	}
-	// next special case - initial selection has already been done
-	else if (m_beginFind==-1)
-	{
-		TRACE("bf:begin\n");
-		m_wrapped = false;
-		m_beginFind = curSel;
-		TRACE("bf:begin2\n");
-		m_curPos = m_beginFind;
-		if (pAnnot->Match( curSel, findme))
-		{
-	        ScrollIfNeeded();
-		    pAnnot->SelectSegment(*pDoc,m_curPos);
-		}
-		else
-		{
-			OnNext();
-		}
-		return;
 	}
 
     if ((m_curPos != -1) && (curSel != m_curPos))
@@ -569,6 +582,7 @@ void CDlgFind::OnNext()
             ResetCompletionCheck();
         }
     }
+	TRACE("3\n");
 }
 
 /***************************************************************************/
@@ -577,9 +591,9 @@ void CDlgFind::OnNext()
 /***************************************************************************/
 void CDlgFind::OnPrevious()
 {
-    if (m_pMainFrame==NULL)
-    {
-        return;
+    if (m_pMainFrame==NULL) 
+	{
+		return;
     }
     CSaDoc * pDoc = m_pMainFrame->GetCurrDoc();
     if (pDoc==NULL)

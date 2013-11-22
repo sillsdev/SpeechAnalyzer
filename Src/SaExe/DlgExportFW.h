@@ -47,6 +47,7 @@ protected:
     void UpdateButtonState();
     void WriteFileUtf8(CFile * pFile, const CSaString szString);
     CSaString GetFieldWorksProjectDirectory();
+	bool SearchForValue( HKEY root, DWORD sam, wstring keyName, LPCTSTR valueName, wstring & value);
 
     afx_msg void OnAllAnnotations();
     afx_msg void OnClickedExSfmInterlinear();

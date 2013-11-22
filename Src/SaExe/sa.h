@@ -247,4 +247,6 @@ private:
     BOOL WriteBatchString(LPCTSTR lpSection, LPCTSTR lpKey, LPCTSTR lpValue);
 };
 
+CSaString GetShellFolderPath( DWORD csidl);
+
 #endif // __SA_H__

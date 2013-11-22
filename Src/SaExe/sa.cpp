@@ -115,7 +115,6 @@ HWND hGlobal = NULL;
 static char THIS_FILE[] = __FILE__;
 #endif
 
-
 // Name:        CSingleInstanceData
 // Parent:       N/A
 // Description: Manages shared data between applications, could be anything,
@@ -855,16 +854,16 @@ void CSaApp::OnProcessBatchCommands()
     // Process Commands
     CSaString szEntry;
     CSaString szReturn;
-	TCHAR szParameterList[1024];
-	wmemset(szParameterList,0,_countof(szParameterList));
+	CSaString szParameterList;
 
     swprintf_s(szEntry.GetBuffer(12),12,_T("command%i"), m_nCommand);
     szEntry.ReleaseBuffer();
     szReturn = GetBatchString(_T("Commands"), szEntry, _T("")); // get the entry
     szReturn.MakeUpper(); // convert the whole string to upper case letters
     szEntry = szReturn;
-    swscanf_s(szEntry,_T("%[^(]%(%[^)]"),szReturn.GetBuffer(szReturn.GetLength()), szReturn.GetLength(), szParameterList,_countof(szParameterList));
+    swscanf_s(szEntry,_T("%[^(]%(%[^)]"),szReturn.GetBuffer(szReturn.GetLength()), szReturn.GetLength(), szParameterList.GetBuffer(szReturn.GetLength()),szReturn.GetLength());
     szReturn.ReleaseBuffer();
+	szParameterList.ReleaseBuffer();
 
     if (szReturn == "")
     {
@@ -2512,7 +2511,6 @@ BOOL CSaApp::ReadSettings()
 
     // get the data location and create it if it doesn't exist
     CSaString szPath = ((CWinApp *)this)->GetProfileString(_T(""), _T("DataLocation"), _T("*Missing*"));
-
     if (szPath == _T("*Missing*"))
     {
         m_bNewUser = TRUE;
@@ -2522,19 +2520,7 @@ BOOL CSaApp::ReadSettings()
     if (szPath.IsEmpty())
     {
         // Set the DataLocation path and write it to the registry
-        TCHAR buf[MAX_PATH];
-        HMODULE hModule = LoadLibrary(_T("SHFOLDER.DLL"));
-        if (hModule != NULL)
-        {
-            SHGETFOLDERPATH fnShGetFolderPath = (SHGETFOLDERPATH)GetProcAddress(hModule, "SHGetFolderPathW");
-            if (fnShGetFolderPath != NULL)
-            {
-                fnShGetFolderPath(NULL, CSIDL_PERSONAL, NULL, 0, buf);
-                szPath = (LPTSTR)buf;
-            }
-            FreeLibrary(hModule);
-        }
-
+		szPath = GetShellFolderPath(CSIDL_PERSONAL);
         if (szPath.Right(1) != "\\")
         {
             szPath += _T("\\");
@@ -3071,5 +3057,25 @@ void CSaApp::SetLastClipboardPath(LPCTSTR szPath)
 LPCTSTR CSaApp::GetLastClipboardPath()
 {
     return m_szLastClipboardPath;
+}
+
+typedef HMODULE(__stdcall * SHGETFOLDERPATH)(HWND, int, HANDLE, DWORD, LPTSTR);
+
+CSaString GetShellFolderPath( DWORD csidl) {
+
+	// select a directory to restore the file to.
+	TCHAR documentPath[_MAX_PATH];
+	wmemset( documentPath, 0, _countof(documentPath));
+	HMODULE hModule = LoadLibrary(_T("SHFOLDER.DLL"));
+	if (hModule != NULL)
+	{
+		SHGETFOLDERPATH fnShGetFolderPath = (SHGETFOLDERPATH)GetProcAddress(hModule, "SHGetFolderPathW");
+		if (fnShGetFolderPath != NULL)
+		{
+			fnShGetFolderPath(NULL, csidl, NULL, 0, documentPath);
+		}
+		FreeLibrary(hModule);
+	}
+	return CSaString(documentPath);
 }
 

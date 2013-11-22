@@ -1,3 +1,8 @@
+SA - 3.1.0.79 11/17/2013 (Stereo Branch)
+1) Fixed find/replace bug that occurs when user changes 'find' value on initial selection.  The subsequent search will fail to select a value if the 'find' value is a partial match within the currently selected string.
+2) Fixed bug which prevented SA from finding the current FieldWorks project directory during an export.  The code now recursively searches both the 32 and 64-bit registry hives for the 'ProjectsDir' value.  FieldWorks names it's registry keys according to version. The new code enumerates over this key.  If SA is unable to find the key, it will attempt to use either the "ProgramData" default FW path on MS Vista and above, or the "Application Data" path for XP.  If that fails, a warning will be posted and the user will be allowed to select an alternate path.
+3) Fixed a bug that prevented the 'Import SFM' feature from importing reference numbers in a SFM file.
+	
 SA - 3.1.0.78 11/03/2013 (Stereo Branch)
 1) Fixes for interface with IPA Help.  
 1a) Modified the message:
