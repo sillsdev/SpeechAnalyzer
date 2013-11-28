@@ -86,8 +86,7 @@ void AFXAPI SaAssertFailedLine(LPCSTR lpszFileName, int nLine)
         ::OutputDebugString(_T("\n\r"));
     }
 
-    int nCode = ::MessageBox(NULL, sz, szTitle,
-                             MB_SYSTEMMODAL | MB_ICONHAND | MB_ABORTRETRYIGNORE);
+    int nCode = ::MessageBox(NULL, sz, szTitle, MB_SYSTEMMODAL | MB_ICONHAND | MB_ABORTRETRYIGNORE);
     saAssertBusy--;
 
     // break into the debugger (or Dr Watson log)

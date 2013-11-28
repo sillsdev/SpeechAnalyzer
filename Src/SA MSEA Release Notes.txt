@@ -1,3 +1,9 @@
+SA - 3.1.0.80 11/27/2013 (Stereo Branch)
+1) Added menu item for 'Auto Add' feature
+2) Added checks, messages and conversion functions for UTF16 BE&LE files.  The transcription alignment feature still does not support UTF16 files properly, but most other import functions now provide checks and conversions for UTF16.  The code will not currently properly identify UTF-32.  If the unicode BOM is not provided at the beginning of the file, and the data contains characters > 0x7f, the file will be treated as UTF-8 without warning.
+3) Fixed the crash that prevents the display of the Duration graph type.
+4) Fixed 'SaveAs' menuitem problem.  SaveAs was disabled for stereo files for no apparent reason.
+
 SA - 3.1.0.79 11/17/2013 (Stereo Branch)
 1) Fixed find/replace bug that occurs when user changes 'find' value on initial selection.  The subsequent search will fail to select a value if the 'find' value is a partial match within the currently selected string.
 2) Fixed bug which prevented SA from finding the current FieldWorks project directory during an export.  The code now recursively searches both the 32 and 64-bit registry hives for the 'ProjectsDir' value.  FieldWorks names it's registry keys according to version. The new code enumerates over this key.  If SA is unable to find the key, it will attempt to use either the "ProgramData" default FW path on MS Vista and above, or the "Application Data" path for XP.  If that fails, a warning will be posted and the user will be allowed to select an alternate path.

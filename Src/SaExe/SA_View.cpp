@@ -169,6 +169,7 @@
 #include "DlgPlayer.h"
 #include "dsp\dspTypes.h"
 #include "Process\Process.h"
+#include "TextHelper.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE
@@ -768,7 +769,12 @@ void CSaView::OnImportSFM()
     }
 
     CSaString szPath = dlgFile.GetPathName();
-    CImport import(szPath);
+
+	if (!CheckEncoding(szPath,true)) {
+		return;
+	}
+
+	CImport import(szPath);
     import.Import();
 }
 

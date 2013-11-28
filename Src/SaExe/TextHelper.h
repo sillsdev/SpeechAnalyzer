@@ -7,6 +7,8 @@
 
 using std::vector;
 using std::streampos;
+using std::stringstream;
+using std::wstringstream;
 
 class CTextHelper
 {
@@ -16,9 +18,9 @@ private:
     static vector<string> Tokenize(const string & str, const string & delimiters);
 };
 
-extern bool ReadFileIntoBuffer( LPCTSTR filename, char ** buffer, std::ios::pos_type & length);
-extern bool ConvertBufferToUTF16( char * buffer, size_t length, wchar_t ** obuffer, size_t & len);
-extern vector<wstring> TokenizeBufferToLines( wchar_t * buffer, size_t start, size_t length);
+extern bool CheckEncoding( LPCTSTR filename, bool display);
+extern bool ConvertFileToUTF16( LPCTSTR filename, wstring & obuffer);
+extern vector<wstring> TokenizeBufferToLines( wstring buffer);
 extern vector<wstring> TokenizeLineToTokens( wstring & line, wchar_t token);
 
 #endif

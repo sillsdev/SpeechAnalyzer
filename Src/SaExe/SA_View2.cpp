@@ -5006,7 +5006,6 @@ void CSaView::OnEditAddAutoPhraseL2()
     {
         // there are segments. // get the last one and add after it.
         int size = pSeg->GetOffsetSize();
-        DWORD offset = pSeg->GetStop(size-1);
 
 		// determine if we are adding beyond the end of the last segment, or if we are in between two segments...
 		DWORD newStart = GetStartCursorPosition();

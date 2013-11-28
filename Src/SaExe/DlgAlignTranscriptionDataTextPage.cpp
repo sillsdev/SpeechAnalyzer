@@ -9,6 +9,7 @@
 #include "SaString.h"
 #include "Segment.h"
 #include "DlgImportSFM.h"
+#include "TextHelper.h"
 
 static LPCSTR psz_ImportEnd = "import";
 
@@ -55,14 +56,20 @@ void CDlgAlignTranscriptionDataTextPage::OnClickedImport()
         return;
     }
 
-    CSaString path = dlg.GetPathName();
+	CString temp = dlg.GetPathName();
+	if (!CheckEncoding(temp,true)) 
+	{
+		return;
+	}
+
+    CSaString path = temp;
     CObjectIStream obs(path.utf8().c_str());
     if (obs.getIos().fail())
     {
         return;
     }
 
-    BOOL SFM = FALSE;
+    bool SFM = false;
 
     SaveAnnotation();
 
@@ -77,9 +84,9 @@ void CDlgAlignTranscriptionDataTextPage::OnClickedImport()
             return;
         }
 
-        SFM = TRUE;
+        SFM = true;
 
-        while (SFM && !obs.bAtEnd())
+        while ((SFM) && (!obs.bAtEnd()))
         {
             if (dlg2.m_bPhonetic && ReadStreamString(obs,dlg2.m_szPhonetic,pSheet->phonetic.m_szText));
             else if (dlg2.m_bPhonemic && ReadStreamString(obs,dlg2.m_szPhonemic,pSheet->phonemic.m_szText));
@@ -99,13 +106,12 @@ void CDlgAlignTranscriptionDataTextPage::OnClickedImport()
 
     if (!SFM)
     {
-        const int MAXLINE = 32000;
-        char * pBuf = new char[MAXLINE];
-        obs.getIos().seekg(0);  // start to file start
-        obs.getIos().getline(pBuf,MAXLINE, '\000');
-        SetText(IDC_ANNOTATION, pBuf);
+		// for use with plain text
+		wstring input;
+		ConvertFileToUTF16( temp, input);
+		CSaString buffer = input.c_str();
+        SetText(IDC_ANNOTATION, buffer);
         OnUpdateAnnotation(); // Set Modified
-        delete [] pBuf;
     }
 }
 

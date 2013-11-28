@@ -566,13 +566,11 @@ BOOL CLegendWnd::OnCommand(WPARAM wParam, LPARAM /* lParam */)
         case IDM_UP:
             pWavelet->IncreaseDrawingLevel();
             pWavelet->RedrawPlot(true);
-            //MessageBox(_T("up"), "up", MB_OK);
             break;
 
         case IDM_DOWN:
             pWavelet->DecreaseDrawingLevel();
             pWavelet->RedrawPlot(true);
-            //MessageBox(_T("down"), "down", MB_OK);
             break;
 
         }

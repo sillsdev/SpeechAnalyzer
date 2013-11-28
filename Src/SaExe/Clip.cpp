@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "clip.hpp"
+#include "resource.h"
 
 char * RTFprolog =
     "{\\rtf1\\ansi\\ftnbj{\\fonttbl{\\f0 \\fnil Musique;}}"
@@ -145,11 +146,7 @@ void CClipboard::reportError()
 {
     // Close clipboard and report the error
     close();
-    static TCHAR * message =
-        _T("Couldn't allocate sufficient memory ")
-        _T("for the clipboard operation.");
-    MessageBox(hWindow, message, _T("Memory failure"),
-               MB_OK | MB_ICONEXCLAMATION);
+    AfxMessageBox( IDS_MEMORY_FAILURE, MB_OK | MB_ICONEXCLAMATION);
     return;
 }
 

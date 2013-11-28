@@ -63,6 +63,10 @@ long CProcessDurations::Process(void * pCaller, ISaDoc * pDoc, int nProgress, in
     // set pointer to segment durations
     CSegment * pSegment = pDoc->GetSegment(PHONETIC);
     CString * pPhonetic = pSegment->GetString();
+	m_Durations.RemoveAll();
+	for (int i=0;i<pSegment->GetDurationSize();i++) {
+		m_Durations.Add(pSegment->GetDuration(i));
+	}
 
     // find min and max durations
     m_dwMaxValue = 0;

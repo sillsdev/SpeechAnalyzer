@@ -8311,7 +8311,7 @@ const CSaString CSaDoc::BuildImportString(BOOL /*gloss*/, BOOL /*phonetic*/, BOO
 * This is used by the automatic transcription feature
 * returns false on failure
 */
-const bool CSaDoc::ImportTranscription(CSaString & filename, bool gloss, bool phonetic, bool phonemic, bool orthographic, CTranscriptionData & td, bool addTag, bool showDlg)
+const bool CSaDoc::ImportTranscription( CSaString & filename, bool gloss, bool phonetic, bool phonemic, bool orthographic, CTranscriptionData & td, bool addTag, bool showDlg)
 {
 
     td.m_MarkerDefs[REFERENCE] = psz_Reference;
@@ -9392,4 +9392,3 @@ void CSaDoc::OnUpdateToolsAdjustSilence(CCmdUI * pCmdUI)
 {
 	pCmdUI->Enable(TRUE);
 }
-

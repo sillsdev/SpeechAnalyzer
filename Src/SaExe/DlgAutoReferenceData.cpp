@@ -11,6 +11,7 @@
 #include "DlgAutoReferenceData.h"
 #include "Sa_Doc.h"
 #include "resource.h"
+#include "TextHelper.h"
 
 using std::find;
 
@@ -150,6 +151,13 @@ void CDlgAutoReferenceData::DoDataExchange(CDataExchange * pDX)
                 mComboBegin.SetCurSel(-1);
                 mComboEnd.SetCurSel(-1);
             }
+			else if (!CheckEncoding(mLastImport,false)) {
+                // the encoding is wrong
+                mComboBegin.ResetContent();
+                mComboEnd.ResetContent();
+                mComboBegin.SetCurSel(-1);
+                mComboEnd.SetCurSel(-1);
+			}
             else
             {
                 CTranscriptionData td;
@@ -225,6 +233,11 @@ void CDlgAutoReferenceData::DoDataExchange(CDataExchange * pDX)
                 AfxMessageBox(msg, MB_OK|MB_ICONEXCLAMATION, 0);
                 pDX->Fail();
             }
+
+			if (!CheckEncoding(mLastImport,true)) {
+                pDX->PrepareEditCtrl(IDC_FILENAME);
+                pDX->Fail();
+			}
 
             CTranscriptionData td;
             CSaString temp = mLastImport;
@@ -417,7 +430,12 @@ void CDlgAutoReferenceData::OnClickedBrowseButton()
     {
         return;
     }
-    mLastImport = dlg.GetPathName();
+    CString temp = dlg.GetPathName();
+	if (!CheckEncoding(temp,true)) 
+	{
+		return;
+	}
+	mLastImport = temp;
     UpdateData(FALSE);
 }
 

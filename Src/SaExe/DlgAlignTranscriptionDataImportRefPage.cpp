@@ -10,6 +10,7 @@
 #include "Segment.h"
 #include "TranscriptionData.h"
 #include "sa.h"
+#include "TextHelper.h"
 
 CDlgAlignTranscriptionDataImportRefPage::CDlgAlignTranscriptionDataImportRefPage(CSaDoc * pSaDoc) :
     CPropertyPage(IDD),
@@ -79,6 +80,11 @@ void CDlgAlignTranscriptionDataImportRefPage::OnClickedImport()
     }
 
     CSaString path = dlg.GetPathName();
+
+	if (!CheckEncoding(path,true)) 
+	{
+		return;
+	}
 
     CSaApp * pApp = (CSaApp *)AfxGetApp();
     pApp->WriteProfileString(L"AutoRef",L"LastImport",(LPCTSTR)path);

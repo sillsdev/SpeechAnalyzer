@@ -26,7 +26,7 @@ LANGUAGE LANG_NEUTRAL, SUBLANG_NEUTRAL
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 3,1,0,79
+ FILEVERSION 3,1,0,80
  PRODUCTVERSION 1,0,0,1
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
@@ -44,7 +44,7 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "SIL International"
             VALUE "FileDescription", "SA"
-            VALUE "FileVersion", "v3.1.0.79"
+            VALUE "FileVersion", "v3.1.0.80"
             VALUE "InternalName", "SA"
             VALUE "LegalCopyright", "© 1996-2013 SIL International (MSEA)"
             VALUE "ProductName", "SA"
@@ -2887,6 +2887,7 @@ BEGIN
             MENUITEM "Add Phrase L&2 Segment\tCtrl+2", ID_EDIT_ADD_PHRASE_L2
             MENUITEM "Add Phrase L&3 Segment\tCtrl+3", ID_EDIT_ADD_PHRASE_L3
             MENUITEM "Add Phrase L&4 Segment\tCtrl+4", ID_EDIT_ADD_PHRASE_L4
+            MENUITEM "Add &Record Markup\tAlt+Z",   ID_EDIT_AUTO_ADD
             MENUITEM SEPARATOR
             MENUITEM "&Update All Boundaries",      ID_EDIT_AUTO_SNAP_UPDATE
             MENUITEM SEPARATOR
@@ -4388,7 +4389,7 @@ IDC_MHANDN              CURSOR                  "res\\MedHandN.cur"
 
 STRINGTABLE
 BEGIN
-    VS_VERSION              "Version 3.1.0.79"
+    VS_VERSION              "Version 3.1.0.80"
     VS_COPYRIGHT            "© 1996-2013 SIL International (MSEA).\nAll Rights Reserved."
     IDR_MAINFRAME           "Speech Analyzer"
     IDR_SA_ANNTYPE          "\nSA\nSA Document\nWAV Files (*.wav)\n.wav\nannFileType\nANN File Type"
@@ -5451,6 +5452,9 @@ STRINGTABLE
 BEGIN
     IDS_NO_FIELDWORKS_PROJECT 
                             "Speech Analyzer was unable to find the FieldWorks Projects directory.\nYou will have to select an alternate location."
+    IDS_WARN_CONVERT        "This file is in Unicode UTF-16 format.\nSpeech Analyzer can open this file.\nBut it would be better to use UTF-8."
+    IDS_NO_CONVERT          "This file is in a non-standard format.\nSpeech Analyzer cannot open this file.\nIt should be save as Unicode UTF-8."
+    IDS_MEMORY_FAILURE      "Couldn't allocate sufficient memory for the clipboard operation."
 END
 
 #endif    // English (United States) resources

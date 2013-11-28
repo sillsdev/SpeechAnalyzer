@@ -9,6 +9,7 @@ static const wchar_t * EMPTY = L"";
 
 using std::list;
 using std::map;
+using std::wstringstream;
 
 bool CSFMHelper::IsSFM(CSaString & filename)
 {
@@ -151,33 +152,13 @@ void CSFMHelper::BalanceDataMap(TranscriptionDataMap & map, CSaString & marker)
 
 bool CSFMHelper::IsColumnarSFM( LPCTSTR filename)
 {
-	size_t length2 = 0;
-	wchar_t * obuffer = NULL;
+	wstring obuffer;
+	if (!ConvertFileToUTF16( filename, obuffer))
 	{
-		streampos length = 0;
-		char * buffer = NULL;
-		if (!ReadFileIntoBuffer( filename, &buffer, length)) return FALSE;
-
-		if (!ConvertBufferToUTF16( buffer, length, &obuffer, length2))
-		{
-			delete [] buffer;
-			return FALSE;
-		}
-
-		delete [] buffer;
+		return FALSE;
 	}
 	
-	int i = 0;
-    if ((obuffer[0]==0xfeff)||(obuffer[0]==0xfffe))
-	{
-		i++;
-	}
-
-	vector<wstring> lines = TokenizeBufferToLines( obuffer, i, length2);
-
-	delete [] obuffer;
-	obuffer = NULL;
-	length2 = 0;
+	vector<wstring> lines = TokenizeBufferToLines( obuffer);
 
 	lines = CSFMHelper::FilterBlankLines(lines);
 
@@ -262,33 +243,13 @@ TranscriptionDataMap CSFMHelper::ImportColumnarSFM( LPCTSTR filename)
 {
 	TranscriptionDataMap td;
 
-	size_t length2 = 0;
-	wchar_t * obuffer = NULL;
+	wstring obuffer;
+	if (!ConvertFileToUTF16( filename, obuffer))
 	{
-		streampos length = 0;
-		char * buffer = NULL;
-		if (!ReadFileIntoBuffer( filename, &buffer, length)) return td;
-
-		if (!ConvertBufferToUTF16( buffer, length, &obuffer, length2))
-		{
-			delete [] buffer;
-			return td;
-		}
-
-		delete [] buffer;
+		return td;
 	}
 	
-	int i = 0;
-    if ((obuffer[0]==0xfeff)||(obuffer[0]==0xfffe))
-	{
-		i++;
-	}
-
-	vector<wstring> lines = TokenizeBufferToLines( obuffer, i, length2);
-
-	delete [] obuffer;
-	obuffer = NULL;
-	length2 = 0;
+	vector<wstring> lines = TokenizeBufferToLines( obuffer);
 
 	lines = CSFMHelper::FilterBlankLines(lines);
 

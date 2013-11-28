@@ -63,7 +63,10 @@ BOOL CImport::Import( EImportMode nMode)
 	if (CSFMHelper::IsColumnarSFM(m_szPath)) {
 		ProcessTable( result);
 	} else {
-		if (!ProcessNormal(nMode,result)) return FALSE;
+		if (!ProcessNormal(nMode,result))
+		{
+			return FALSE;
+		}
 	}
 
     if (!m_bBatch)
@@ -1073,33 +1076,13 @@ BOOL CImport::ProcessTable( wstring & result)
 {
 	result.clear();
 
-	size_t length2 = 0;
-	wchar_t * obuffer = NULL;
+	wstring obuffer;
+	if (!ConvertFileToUTF16( m_szPath, obuffer))
 	{
-		streampos length = 0;
-		char * buffer = NULL;
-		if (!ReadFileIntoBuffer( m_szPath, &buffer, length)) return FALSE;
-
-		if (!ConvertBufferToUTF16( buffer, length, &obuffer, length2))
-		{
-			delete [] buffer;
-			return FALSE;
-		}
-
-		delete [] buffer;
+		return FALSE;
 	}
 	
-	int i = 0;
-    if ((obuffer[0]==0xfeff)||(obuffer[0]==0xfffe))
-	{
-		i++;
-	}
-
-	vector<wstring> lines = TokenizeBufferToLines( obuffer, i, length2);
-
-	delete [] obuffer;
-	obuffer = NULL;
-	length2 = 0;
+	vector<wstring> lines = TokenizeBufferToLines( obuffer);
 
 	lines = CSFMHelper::FilterBlankLines(lines);
 

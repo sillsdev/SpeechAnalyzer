@@ -182,8 +182,7 @@ void CPlotPOA::OnDraw(CDC * pDC, CRect rWnd, CRect /*rClip*/, CSaView * pView)
     nResult = CheckResult(nResult, pPOA); // check the process result
     if (nResult == PROCESS_ERROR)
     {
-        MessageBox(_T("Error occurred in vocal tract analysis"), _T("Vocal Tract"),
-                   MB_OK | MB_ICONEXCLAMATION);
+        MessageBox(_T("Error occurred in vocal tract analysis"), _T("Vocal Tract"), MB_OK | MB_ICONEXCLAMATION);
         OnSysCommand(SC_CLOSE, 0L); // close the graph
         return;
     }
@@ -215,8 +214,7 @@ void CPlotPOA::OnDraw(CDC * pDC, CRect rWnd, CRect /*rClip*/, CSaView * pView)
                 !dcJaw.CreateCompatibleDC(pDC) ||
                 !dcTongue.CreateCompatibleDC(pDC))   //create memory space with a compatible device context
         {
-            MessageBox(_T("Error occurred in vocal tract plot"), _T("Vocal Tract"),
-                       MB_OK | MB_ICONEXCLAMATION);
+            MessageBox(_T("Error occurred in vocal tract plot"), _T("Vocal Tract"), MB_OK | MB_ICONEXCLAMATION);
             OnSysCommand(SC_CLOSE, 0L); //close the graph
             return;
         }

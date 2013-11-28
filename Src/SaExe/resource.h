@@ -1580,6 +1580,7 @@
 #define ID_AUTOSAVE_OFF                 33236
 #define ID_TOOLS_ADJUST_SILENCE         33237
 #define ID_ACCELERATOR33238             33238
+
 #define ID_GRAPHTYPES_SELECT_FIRST      40000
 #define ID_GRAPHTYPES_SELECT_LAST       40011
 #define ID_PHONETIC_ALL                 40100
@@ -1719,8 +1720,10 @@
 #define IDS_AUTOSAVE_RESTORE_TEMP       61309
 #define IDS_CHOOSE_FOLDER               61310
 #define IDS_CHOOSE_SELFTEST_FOLDER      61311
-#define IDS_STRING61312                 61312
 #define IDS_NO_FIELDWORKS_PROJECT       61312
+#define IDS_WARN_CONVERT                61313
+#define IDS_NO_CONVERT                  61314
+#define IDS_MEMORY_FAILURE              61315
 
 // Next default values for new objects
 // 
@@ -1728,7 +1731,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_3D_CONTROLS                     1
 #define _APS_NEXT_RESOURCE_VALUE        369
-#define _APS_NEXT_COMMAND_VALUE         33239
+#define _APS_NEXT_COMMAND_VALUE         33240
 #define _APS_NEXT_CONTROL_VALUE         2091
 #define _APS_NEXT_SYMED_VALUE           105
 #endif
