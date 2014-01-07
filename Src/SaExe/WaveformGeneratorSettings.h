@@ -2,7 +2,8 @@
 #define WAVEFORMGENERATORSETTINGS_H
 
 #include "resource.h"
-#include "Settings/OBSTREAM.H"
+#include "objectistream.h"
+#include "objectostream.h"
 
 class CWaveformGeneratorSettings
 {

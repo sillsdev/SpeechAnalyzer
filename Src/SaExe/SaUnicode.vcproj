@@ -4159,6 +4159,42 @@
 				>
 			</File>
 		</Filter>
+		<File
+			RelativePath=".\DEFS.H"
+			>
+		</File>
+		<File
+			RelativePath=".\FileEncodingHelper.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\FileEncodingHelper.h"
+			>
+		</File>
+		<File
+			RelativePath=".\ObjectIStream.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\ObjectIStream.h"
+			>
+		</File>
+		<File
+			RelativePath=".\ObjectOStream.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\ObjectOStream.h"
+			>
+		</File>
+		<File
+			RelativePath=".\StringStream.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\StringStream.h"
+			>
+		</File>
 	</Files>
 	<Globals>
 		<Global

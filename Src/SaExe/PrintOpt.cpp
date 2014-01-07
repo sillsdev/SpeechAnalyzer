@@ -12,8 +12,8 @@
 #include "sa_minic.h"
 #include "sa_graph.h"
 #include "printopt.h"
-#include "settings\obstream.h"
-
+#include "objectostream.h"
+#include "objectistream.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE

@@ -53,6 +53,8 @@
 
 using std::wstring;
 using std::vector;
+using std::istringstream;
+using std::wistringstream;
 
 //###########################################################################
 // CSaDoc document
@@ -241,7 +243,7 @@ public:
     void DoExportFieldWorks(CExportFWSettings & settings);
     const CSaString BuildString(int nSegment);
     const CSaString BuildImportString(BOOL gloss, BOOL phonetic, BOOL phonemic, BOOL orthographic);
-    const bool ImportTranscription(CSaString & filename, bool gloss, bool phonetic, bool phonemic, bool orthographic, CTranscriptionData & td, bool addTag, bool showDlg);
+    const bool ImportTranscription( wistringstream & strm, bool gloss, bool phonetic, bool phonemic, bool orthographic, CTranscriptionData & td, bool addTag, bool showDlg);
     void ApplyTranscriptionChanges(CTranscriptionDataSettings & settings);
     void RevertTranscriptionChanges();
     bool IsTempFile();

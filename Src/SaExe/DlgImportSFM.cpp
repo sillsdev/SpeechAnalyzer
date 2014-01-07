@@ -2,7 +2,7 @@
 // DlgAnnotationImport.cpp:
 // Implementation of the CDlgImportSFM class.
 // Author: Steve MacLean
-// copyright 2012 JAARS Inc. SIL
+// copyright 2014 JAARS Inc. SIL
 //
 // Revision History
 // 1.5Test8.3
@@ -37,7 +37,7 @@
 #include "doclist.h"
 #include "dlgimportsfm.h"
 #include "TranscriptionDataSettings.h"
-#include "settings\obstream.h"
+#include "objectostream.h"
 #include "Process\Process.h"
 #include "Process\sa_p_lou.h"
 #include "Process\sa_p_gra.h"

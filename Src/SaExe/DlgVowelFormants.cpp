@@ -6,7 +6,7 @@
 #include "sa_doc.h"
 #include "mainfrm.h"
 #include "DlgVowelFormants.h"
-#include "settings\obstream.h"
+#include "objectistream.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW

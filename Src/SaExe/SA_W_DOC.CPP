@@ -11,7 +11,7 @@
 #include "sa_w_dlg.h"
 #include "mainfrm.h"
 #include "sa_w_doc.h"
-#include "settings\obstream.h"
+#include "objectostream.h"
 using std::ios;
 using std::ifstream;
 using std::ofstream;

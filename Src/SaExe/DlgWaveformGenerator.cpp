@@ -15,7 +15,7 @@
 #include "sa_doc.h"
 #include "sa.h"
 #include "sa_view.h"
-#include "settings\obstream.h"
+#include "objectostream.h"
 #include "riff.h"
 
 #ifdef _DEBUG

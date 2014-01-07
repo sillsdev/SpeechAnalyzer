@@ -52,12 +52,12 @@ LONG mmioReadUtf8(HMMIO hmmio, CSaString & str, LONG cch)
     return result;
 }
 
-BOOL ReadStreamString(CObjectIStream & stream, CSaString pszMarker, CSaString & szResult)
+bool ReadStreamString(CObjectIStream & stream, CSaString pszMarker, CSaString & szResult)
 {
     return ReadStreamString(stream, pszMarker.utf8().c_str(), szResult);
 }
 
-BOOL ReadStreamString(CObjectIStream & stream, LPCSTR pszMarker, CSaString & szResult)
+bool ReadStreamString(CObjectIStream & stream, LPCSTR pszMarker, CSaString & szResult)
 {
 	size_t size = stream.GetBufferSize()+1;
 	LPSTR buffer = new char[size];
@@ -81,4 +81,5 @@ BOOL ReadStreamString(CObjectIStream & stream, LPCSTR pszMarker, CSaString & szR
 			buffer = NULL;
 		}
 	}
+	return FALSE;
 }

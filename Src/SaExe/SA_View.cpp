@@ -155,7 +155,7 @@
 #include "sa_cdib.h"
 #include "sa_mplot.h"
 #include "pickover.h"
-#include "settings\obstream.h"
+#include "objectistream.h"
 #include "DlgExportFW.h"
 #include "sa_g_stf.h"
 #include "Segment.h"
@@ -170,6 +170,7 @@
 #include "dsp\dspTypes.h"
 #include "Process\Process.h"
 #include "TextHelper.h"
+#include "FileEncodingHelper.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE
@@ -770,7 +771,8 @@ void CSaView::OnImportSFM()
 
     CSaString szPath = dlgFile.GetPathName();
 
-	if (!CheckEncoding(szPath,true)) {
+	CFileEncodingHelper feh(szPath);
+	if (!feh.CheckEncoding(true)) {
 		return;
 	}
 

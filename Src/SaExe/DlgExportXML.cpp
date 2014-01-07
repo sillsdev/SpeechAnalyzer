@@ -28,7 +28,7 @@
 #include "dsp\formants.h"
 #include "dsp\ztransform.h"
 #include "dsp\mathx.h"
-#include "settings\obstream.h"
+#include "objectostream.h"
 
 using std::ifstream;
 using std::ios;

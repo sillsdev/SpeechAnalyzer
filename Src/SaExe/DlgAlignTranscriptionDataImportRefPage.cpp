@@ -4,13 +4,14 @@
 #include "stdafx.h"
 #include "DlgAlignTranscriptionDataImportRefPage.h"
 #include "DlgAlignTranscriptionDataSheet.h"
-#include "settings\obstream.h"
+#include "objectostream.h"
 #include "Sa_Doc.h"
 #include "SaString.h"
 #include "Segment.h"
 #include "TranscriptionData.h"
 #include "sa.h"
 #include "TextHelper.h"
+#include "FileEncodingHelper.h"
 
 CDlgAlignTranscriptionDataImportRefPage::CDlgAlignTranscriptionDataImportRefPage(CSaDoc * pSaDoc) :
     CPropertyPage(IDD),
@@ -39,28 +40,49 @@ BOOL CDlgAlignTranscriptionDataImportRefPage::OnSetActive()
 
     m_TranscriptionData = CTranscriptionData();
 
-    if (path.GetLength()!=0)
+	if (path.GetLength()==0) {
+        m_TranscriptionData = CTranscriptionData();
+        m_szText = "";
+		SetAnnotation();
+		SetEnable(IDC_REVERT,m_bModified);
+		pParent->SetWizardButtons(PSWIZB_BACK|PSWIZB_NEXT);
+		return CPropertyPage::OnSetActive();
+	}
+
+	CFileEncodingHelper feh(path);
+	if (feh.CheckEncoding(false)) {
+        m_TranscriptionData = CTranscriptionData();
+        m_szText = "";
+		SetAnnotation();
+		SetEnable(IDC_REVERT,m_bModified);
+		pParent->SetWizardButtons(PSWIZB_BACK|PSWIZB_NEXT);
+		return CPropertyPage::OnSetActive();
+	}
+
+	wistringstream stream;
+	if (!feh.ConvertFileToUTF16(stream)) {
+        m_TranscriptionData = CTranscriptionData();
+        m_szText = "";
+		SetAnnotation();
+		SetEnable(IDC_REVERT,m_bModified);
+		pParent->SetWizardButtons(PSWIZB_BACK|PSWIZB_NEXT);
+		return CPropertyPage::OnSetActive();
+	}
+
+    if (m_pSaDoc->ImportTranscription( stream,
+                                       pParent->init.m_bGloss,
+                                       pParent->init.m_bPhonetic,
+                                       pParent->init.m_bPhonemic,
+                                       pParent->init.m_bOrthographic,
+                                       m_TranscriptionData,
+                                       false,
+									   true))
     {
-        if (m_pSaDoc->ImportTranscription(path,
-                                          pParent->init.m_bGloss,
-                                          pParent->init.m_bPhonetic,
-                                          pParent->init.m_bPhonemic,
-                                          pParent->init.m_bOrthographic,
-                                          m_TranscriptionData,
-                                          false,
-										  true))
-        {
-            m_szText = CTranscriptionHelper::Render(m_TranscriptionData);
-        }
-        else
-        {
-            m_szText = L"";
-        }
+        m_szText = CTranscriptionHelper::Render(m_TranscriptionData);
     }
     else
     {
-        m_TranscriptionData = CTranscriptionData();
-        m_szText = "";
+        m_szText = L"";
     }
 
     SetAnnotation();
@@ -81,7 +103,8 @@ void CDlgAlignTranscriptionDataImportRefPage::OnClickedImport()
 
     CSaString path = dlg.GetPathName();
 
-	if (!CheckEncoding(path,true)) 
+	CFileEncodingHelper feh(path);
+	if (!feh.CheckEncoding(true)) 
 	{
 		return;
 	}
@@ -93,15 +116,20 @@ void CDlgAlignTranscriptionDataImportRefPage::OnClickedImport()
 
     m_TranscriptionData = CTranscriptionData();
 
+	wistringstream stream;
+	if (!feh.ConvertFileToUTF16(stream)) {
+		return;
+	}
+
     m_bModified = true;
-    if (m_pSaDoc->ImportTranscription(path,
-                                      pParent->init.m_bGloss,
-                                      pParent->init.m_bPhonetic,
-                                      pParent->init.m_bPhonemic,
-                                      pParent->init.m_bOrthographic,
-                                      m_TranscriptionData,
-                                      false,
-									  true))
+    if (m_pSaDoc->ImportTranscription( stream,
+                                       pParent->init.m_bGloss,
+                                       pParent->init.m_bPhonetic,
+                                       pParent->init.m_bPhonemic,
+                                       pParent->init.m_bOrthographic,
+                                       m_TranscriptionData,
+                                       false,
+									   true))
     {
         m_szText = CTranscriptionHelper::Render(m_TranscriptionData);
 

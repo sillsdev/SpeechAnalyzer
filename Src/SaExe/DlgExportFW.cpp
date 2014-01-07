@@ -2,7 +2,7 @@
 // DlgExportFW.cpp:
 // Implementation of the CDlgExportFW class.
 // Author: Kent Gorham
-// copyright 2013 JAARS Inc. SIL
+// copyright 2014 JAARS Inc. SIL
 //
 /////////////////////////////////////////////////////////////////////////////
 #include "stdafx.h"
@@ -39,7 +39,7 @@
 #include "dsp\formants.h"
 #include "dsp\ztransform.h"
 #include "dsp\mathx.h"
-#include "settings\obstream.h"
+#include "objectostream.h"
 
 using std::ifstream;
 using std::ios;

@@ -20,7 +20,8 @@
 #include "sa_view.h"
 #include "sa_mplot.h"
 #include "mainfrm.h"
-#include "settings\obstream.h"
+#include "objectostream.h"
+#include "objectistream.h"
 
 //###########################################################################
 // CDlgGraphsTypesCustom dialog

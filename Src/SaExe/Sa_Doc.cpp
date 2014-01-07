@@ -147,10 +147,12 @@
 #include "Process\sa_p_twc.h"
 #include "Process\FormantTracker.h"
 #include "Process\Hilbert.h"
-#include "settings\obstream.h"
-#include "settings\tools.h"
+#include "objectostream.h"
+#include "objectistream.h"
 #include "dsp\fragment.h"
 #include "DlgInsertSilence.h"
+#include <io.h>
+#include "FileEncodingHelper.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE
@@ -215,6 +217,10 @@ static LPCSTR psz_saview = "saview";
 
 /////////////////////////////////////////////////////////////////////////////
 // CSaDoc construction/destruction/creation
+bool bFileExists(const char * pszFile)
+{
+    return _access(pszFile, 0) == 0; // _access returns 0 on success
+}
 
 /***************************************************************************/
 // CSaDoc::CSaDoc Constructor
@@ -7372,7 +7378,14 @@ void CSaDoc::OnAutoReferenceData()
         // data should be fully validated by dialog!
         CTranscriptionData td;
         CSaString temp = dlg.mLastImport;
-        if (!ImportTranscription(temp,false,false,false,false,td,true,false))
+
+		CFileEncodingHelper feh(temp);
+		if (!feh.CheckEncoding(true)) {
+		}
+		wistringstream stream;
+		if (!feh.ConvertFileToUTF16(stream)) {
+		}
+        if (!ImportTranscription(stream,false,false,false,false,td,true,false))
         {
             CString msg;
             msg.LoadStringW(IDS_AUTO_REF_MAIN_1);
@@ -8311,8 +8324,12 @@ const CSaString CSaDoc::BuildImportString(BOOL /*gloss*/, BOOL /*phonetic*/, BOO
 * This is used by the automatic transcription feature
 * returns false on failure
 */
-const bool CSaDoc::ImportTranscription( CSaString & filename, bool gloss, bool phonetic, bool phonemic, bool orthographic, CTranscriptionData & td, bool addTag, bool showDlg)
+const bool CSaDoc::ImportTranscription( wistringstream & stream, bool gloss, bool phonetic, bool phonemic, bool orthographic, CTranscriptionData & td, bool addTag, bool showDlg)
 {
+	// rewind the stream
+	stream.clear();
+	stream.seekg(0);
+	stream.clear();
 
     td.m_MarkerDefs[REFERENCE] = psz_Reference;
     td.m_szPrimary = psz_Reference;
@@ -8344,7 +8361,7 @@ const bool CSaDoc::ImportTranscription( CSaString & filename, bool gloss, bool p
         td.m_bGloss = true;
     }
 
-    if (CSFMHelper::IsSFM(filename))
+    if (CSFMHelper::IsSFM(stream))
     {
 		if (showDlg)
 		{
@@ -8357,7 +8374,7 @@ const bool CSaDoc::ImportTranscription( CSaString & filename, bool gloss, bool p
 
 			if (result==IDC_IMPORT_PLAIN_TEXT)
 			{
-				return CTextHelper::ImportText(filename,td.m_szPrimary,td.m_Markers,td.m_TranscriptionData, addTag);
+				return CTextHelper::ImportText(stream,td.m_szPrimary,td.m_Markers,td.m_TranscriptionData, addTag);
 			}
 
 			// proceeding as SFM
@@ -8392,14 +8409,14 @@ const bool CSaDoc::ImportTranscription( CSaString & filename, bool gloss, bool p
 			}
 		}
 
-        if (CSFMHelper::IsMultiRecordSFM(filename, td.m_MarkerDefs[REFERENCE]))
+        if (CSFMHelper::IsMultiRecordSFM( stream, td.m_MarkerDefs[REFERENCE]))
         {
-            td.m_TranscriptionData = CSFMHelper::ImportMultiRecordSFM(filename, td.m_MarkerDefs[REFERENCE], td.m_Markers, addTag);
+            td.m_TranscriptionData = CSFMHelper::ImportMultiRecordSFM(stream, td.m_MarkerDefs[REFERENCE], td.m_Markers, addTag);
             return true;
         }
-		if (CSFMHelper::IsColumnarSFM(filename))
+		if (CSFMHelper::IsColumnarSFM(stream))
 		{
-            td.m_TranscriptionData = CSFMHelper::ImportColumnarSFM(filename);
+            td.m_TranscriptionData = CSFMHelper::ImportColumnarSFM(stream);
             return true;
 		}
 
@@ -8408,7 +8425,7 @@ const bool CSaDoc::ImportTranscription( CSaString & filename, bool gloss, bool p
     }
 
     // proceeding as text
-    return CTextHelper::ImportText(filename,td.m_szPrimary,td.m_Markers,td.m_TranscriptionData, addTag);
+    return CTextHelper::ImportText(stream,td.m_szPrimary,td.m_Markers,td.m_TranscriptionData, addTag);
 }
 
 int CSaDoc::GetSegmentSize(EAnnotation nIndex)

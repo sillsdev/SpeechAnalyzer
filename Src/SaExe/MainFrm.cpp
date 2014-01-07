@@ -79,7 +79,8 @@
 #include "Process\sa_p_spu.h"
 #include "Process\sa_p_fmt.h"
 #include "Process\sa_p_spg.h"
-#include "settings\obstream.h"
+#include "objectostream.h"
+#include "objectistream.h"
 #include "synthesis\DlgSynthesis.h"
 #include "synthesis\DlgKlattAll.h"
 #include "synthesis\DlgVocalTract.h"
@@ -2463,7 +2464,7 @@ void CMainFrame::WriteReadDefaultViewToTempFile(BOOL bWrite)
             m_pDefaultViewConfig = new CSaView();
 
             m_pDefaultViewConfig->ReadProperties(obs, FALSE);
-            obs.getIos().close();
+			obs.Close();
             std::string szUtf8 = szPath.utf8();
             remove(szUtf8.c_str());
         }

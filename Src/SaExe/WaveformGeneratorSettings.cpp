@@ -5,7 +5,8 @@
 #include "sa_doc.h"
 #include "sa.h"
 #include "sa_view.h"
-#include "settings\obstream.h"
+#include "objectostream.h"
+#include "objectistream.h"
 #include "riff.h"
 #include "WaveformGenerator.h"
 

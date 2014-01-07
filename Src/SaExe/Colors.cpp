@@ -1,5 +1,6 @@
 #include "stdafx.h"
-#include "settings\obstream.h"
+#include "objectistream.h"
+#include "objectostream.h"
 #include "colors.h"
 
 
@@ -59,9 +60,6 @@ void Colors::WriteProperties(CObjectOStream & obs)
 
     obs.WriteEndMarker(psz_colors);
 }
-
-
-
 
 BOOL Colors::ReadProperties(CObjectIStream & obs)
 {

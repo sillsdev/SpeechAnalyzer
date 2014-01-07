@@ -101,7 +101,8 @@
 #include "Process\Process.h"
 #include "Process\sa_p_gra.h"
 #include "Process\sa_p_fra.h"
-#include "settings\obstream.h"
+#include "objectostream.h"
+#include "objectistream.h"
 #include "DlgPlayer.h"
 
 #pragma comment(linker, "/SECTION:.shr,RWS")
@@ -2552,7 +2553,7 @@ BOOL CSaApp::ReadSettings()
 
     CObjectIStream obs(szPath.utf8().c_str());
 
-    if (!obs.getIos().fail())
+    if (!obs.bFail())
     {
         ret = ReadProperties(obs);
     }

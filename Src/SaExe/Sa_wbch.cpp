@@ -15,7 +15,7 @@
 #include "Process\sa_w_equ.h"
 #include "sa_w_doc.h"
 #include "sa.h"
-#include "settings\obstream.h"
+#include "objectostream.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE

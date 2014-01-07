@@ -48,7 +48,7 @@
 #include "Process\sa_p_fra.h"
 #include "Process\sa_p_spg.h"
 #include "Process\sa_p_sfmt.h"
-#include "settings\obstream.h"
+#include "objectostream.h"
 #include "DlgPlayer.h"
 
 #ifdef _DEBUG

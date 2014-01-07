@@ -11,7 +11,7 @@
 //      RLJ Added CRecordingParm class
 /////////////////////////////////////////////////////////////////////////////
 #include "stdafx.h"
-#include "settings\obstream.h"
+#include "objectostream.h"
 #include "dsp\spectgrm.h"
 #include "sa_doc.h"
 #include "Process\Process.h"

@@ -1,15 +1,13 @@
 #include "stdafx.h"
-#include "settings\obstream.h"
+#include "objectostream.h"
+#include "objectistream.h"
 #include "grid.h"
-
 
 static LPCSTR psz_grid   = "grid";
 static LPCSTR psz_xgrid   = "xgrid";
 static LPCSTR psz_ygrid   = "ygrid";
 static LPCSTR psz_xstyle = "xstyle";
 static LPCSTR psz_ystyle = "ystyle";
-
-
 
 void CGrid::WriteProperties(CObjectOStream & obs)
 {
@@ -24,9 +22,6 @@ void CGrid::WriteProperties(CObjectOStream & obs)
 
     obs.WriteEndMarker(psz_grid);
 }
-
-
-
 
 BOOL CGrid::ReadProperties(CObjectIStream & obs)
 {

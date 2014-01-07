@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Jaars, Inc.")]
 [assembly: AssemblyProduct("ST_Audio")]
-[assembly: AssemblyCopyright("Copyright © Jaars, Inc. 2006")]
+[assembly: AssemblyCopyright("Copyright © Jaars, Inc. 2014")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

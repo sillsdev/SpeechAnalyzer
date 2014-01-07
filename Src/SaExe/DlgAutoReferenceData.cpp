@@ -3,7 +3,7 @@
 // Implementation of the CDlgAutoReferenceData
 //
 // Author: Kent Gorham
-// Copyright 2012 JAARS Inc. SIL
+// Copyright 2014 JAARS Inc. SIL
 //
 /////////////////////////////////////////////////////////////////////////////
 
@@ -12,6 +12,7 @@
 #include "Sa_Doc.h"
 #include "resource.h"
 #include "TextHelper.h"
+#include "FileEncodingHelper.h"
 
 using std::find;
 
@@ -137,6 +138,7 @@ void CDlgAutoReferenceData::DoDataExchange(CDataExchange * pDX)
         if (!mUsingNumbers)
         {
             struct _stat buffer;
+			CFileEncodingHelper feh(mLastImport);
             // update the dialog display
             if (mLastImport.GetLength()==0)
             {
@@ -151,7 +153,7 @@ void CDlgAutoReferenceData::DoDataExchange(CDataExchange * pDX)
                 mComboBegin.SetCurSel(-1);
                 mComboEnd.SetCurSel(-1);
             }
-			else if (!CheckEncoding(mLastImport,false)) {
+			else if (!feh.CheckEncoding(false)) {
                 // the encoding is wrong
                 mComboBegin.ResetContent();
                 mComboEnd.ResetContent();
@@ -162,47 +164,63 @@ void CDlgAutoReferenceData::DoDataExchange(CDataExchange * pDX)
             {
                 CTranscriptionData td;
                 CSaString temp = mLastImport;
-                if (mSaDoc->ImportTranscription(temp,false,false,false,false,td,true,false))
-                {
-                    CString ref = td.m_szPrimary;
-                    mComboBegin.ResetContent();
-                    mComboEnd.ResetContent();
-                    TranscriptionDataMap & tdm = td.m_TranscriptionData;
-                    MarkerList refs = tdm[ref];
-                    for (MarkerList::iterator it = refs.begin(); it!=refs.end(); it++)
-                    {
-                        mComboBegin.AddString(*it);
-                        mComboEnd.AddString(*it);
-                    }
-                    if (refs.size()>1)
-                    {
-                        // the table is not empty
-                        if (mBeginRef.GetLength()==0)
-                        {
-                            // the user didn't previously select something
-                            MarkerList::iterator it = refs.begin();
-                            it++;
-                            mBeginRef = *it;
-                            mComboBegin.SelectString(-1,mBeginRef);
-                        }
-                        else
-                        {
-                            mComboBegin.SelectString(-1,mBeginRef);
-                        }
-                    }
-                    else
-                    {
-                        mComboBegin.SelectString(-1,mBeginRef);
-                    }
-                    mComboEnd.SelectString(-1,mEndRef);
-                }
-                else
-                {
+
+				CFileEncodingHelper feh(temp);
+				if (!feh.CheckEncoding(false)) {
                     mComboBegin.ResetContent();
                     mComboEnd.ResetContent();
                     mComboBegin.SetCurSel(-1);
                     mComboEnd.SetCurSel(-1);
-                }
+				} else {
+					wistringstream stream;
+					if (!feh.ConvertFileToUTF16(stream)) {
+						mComboBegin.ResetContent();
+						mComboEnd.ResetContent();
+						mComboBegin.SetCurSel(-1);
+						mComboEnd.SetCurSel(-1);
+					} else {
+						if (mSaDoc->ImportTranscription(stream,false,false,false,false,td,true,false)) {
+							CString ref = td.m_szPrimary;
+							mComboBegin.ResetContent();
+							mComboEnd.ResetContent();
+							TranscriptionDataMap & tdm = td.m_TranscriptionData;
+							MarkerList refs = tdm[ref];
+							for (MarkerList::iterator it = refs.begin(); it!=refs.end(); it++)
+							{
+								mComboBegin.AddString(*it);
+								mComboEnd.AddString(*it);
+							}
+							if (refs.size()>1)
+							{
+								// the table is not empty
+								if (mBeginRef.GetLength()==0)
+								{
+									// the user didn't previously select something
+									MarkerList::iterator it = refs.begin();
+									it++;
+									mBeginRef = *it;
+									mComboBegin.SelectString(-1,mBeginRef);
+								}
+								else
+								{
+									mComboBegin.SelectString(-1,mBeginRef);
+								}
+							}
+							else
+							{
+								mComboBegin.SelectString(-1,mBeginRef);
+							}
+							mComboEnd.SelectString(-1,mEndRef);
+						}
+						else
+						{
+							mComboBegin.ResetContent();
+							mComboEnd.ResetContent();
+							mComboBegin.SetCurSel(-1);
+							mComboEnd.SetCurSel(-1);
+						}
+					}
+				}
             }
         }
     }
@@ -234,14 +252,22 @@ void CDlgAutoReferenceData::DoDataExchange(CDataExchange * pDX)
                 pDX->Fail();
             }
 
-			if (!CheckEncoding(mLastImport,true)) {
+			CFileEncodingHelper feh(mLastImport);
+			if (!feh.CheckEncoding(true)) {
                 pDX->PrepareEditCtrl(IDC_FILENAME);
                 pDX->Fail();
 			}
 
             CTranscriptionData td;
             CSaString temp = mLastImport;
-            if (!mSaDoc->ImportTranscription(temp,false,false,false,false,td,true,false))
+
+			wistringstream stream;
+			if (!feh.ConvertFileToUTF16(stream)) {
+                pDX->PrepareEditCtrl(IDC_FILENAME);
+                pDX->Fail();
+			}
+
+            if (!mSaDoc->ImportTranscription(stream,false,false,false,false,td,true,false))
             {
                 pDX->PrepareEditCtrl(IDC_FILENAME);
                 CString msg;
@@ -431,7 +457,8 @@ void CDlgAutoReferenceData::OnClickedBrowseButton()
         return;
     }
     CString temp = dlg.GetPathName();
-	if (!CheckEncoding(temp,true)) 
+	CFileEncodingHelper feh(temp);
+	if (!feh.CheckEncoding(true)) 
 	{
 		return;
 	}

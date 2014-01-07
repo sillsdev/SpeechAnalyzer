@@ -4,14 +4,16 @@
 #include "stdafx.h"
 #include "DlgAlignTranscriptionDataTextPage.h"
 #include "DlgAlignTranscriptionDataSheet.h"
-#include "settings\obstream.h"
+#include "objectostream.h"
 #include "Sa_Doc.h"
 #include "SaString.h"
 #include "Segment.h"
 #include "DlgImportSFM.h"
 #include "TextHelper.h"
+#include "StringStream.h"
+#include "FileEncodingHelper.h"
 
-static LPCSTR psz_ImportEnd = "import";
+static LPCTSTR psz_ImportEnd = L"import";
 
 CDlgAlignTranscriptionDataTextPage::CDlgAlignTranscriptionDataTextPage(CSaDoc * pSaDoc, EAnnotation type, int aIDD) :
     CPropertyPage(aIDD),
@@ -57,14 +59,22 @@ void CDlgAlignTranscriptionDataTextPage::OnClickedImport()
     }
 
 	CString temp = dlg.GetPathName();
-	if (!CheckEncoding(temp,true)) 
+	CFileEncodingHelper feh(temp);
+
+	if (!feh.CheckEncoding(true)) 
 	{
 		return;
 	}
 
-    CSaString path = temp;
-    CObjectIStream obs(path.utf8().c_str());
-    if (obs.getIos().fail())
+	wistringstream input;
+	if (!feh.ConvertFileToUTF16(input)) {
+		// display a message here
+		return;
+	}
+
+
+	CStringStream stream( input.str().c_str());
+    if (stream.bFail())
     {
         return;
     }
@@ -73,7 +83,7 @@ void CDlgAlignTranscriptionDataTextPage::OnClickedImport()
 
     SaveAnnotation();
 
-    if (obs.bAtBackslash())
+    if (stream.bAtBackslash())
     {
         // assume SFM
         CDlgAlignTranscriptionDataSheet * pSheet = reinterpret_cast<CDlgAlignTranscriptionDataSheet *>(GetParent());
@@ -86,13 +96,13 @@ void CDlgAlignTranscriptionDataTextPage::OnClickedImport()
 
         SFM = true;
 
-        while ((SFM) && (!obs.bAtEnd()))
+        while ((SFM) && (!stream.bAtEnd()))
         {
-            if (dlg2.m_bPhonetic && ReadStreamString(obs,dlg2.m_szPhonetic,pSheet->phonetic.m_szText));
-            else if (dlg2.m_bPhonemic && ReadStreamString(obs,dlg2.m_szPhonemic,pSheet->phonemic.m_szText));
-            else if (dlg2.m_bOrthographic && ReadStreamString(obs,dlg2.m_szOrthographic,pSheet->ortho.m_szText));
-            else if (dlg2.m_bGloss  && ReadStreamString(obs,dlg2.m_szGloss,pSheet->gloss.m_szText));
-            else if (obs.bEnd(psz_ImportEnd))
+			if ((dlg2.m_bPhonetic) && (stream.ReadStreamString(dlg2.m_szPhonetic,pSheet->phonetic.m_szText)));
+            else if ((dlg2.m_bPhonemic) && (stream.ReadStreamString(dlg2.m_szPhonemic,pSheet->phonemic.m_szText)));
+            else if ((dlg2.m_bOrthographic) && (stream.ReadStreamString(dlg2.m_szOrthographic,pSheet->ortho.m_szText)));
+            else if ((dlg2.m_bGloss)  && (stream.ReadStreamString(dlg2.m_szGloss,pSheet->gloss.m_szText)));
+            else if (stream.bEnd(psz_ImportEnd))
             {
                 break;
             }
@@ -107,9 +117,7 @@ void CDlgAlignTranscriptionDataTextPage::OnClickedImport()
     if (!SFM)
     {
 		// for use with plain text
-		wstring input;
-		ConvertFileToUTF16( temp, input);
-		CSaString buffer = input.c_str();
+		CSaString buffer = input.str().c_str();
         SetText(IDC_ANNOTATION, buffer);
         OnUpdateAnnotation(); // Set Modified
     }

@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "Import.h"
-#include "Settings\OBSTREAM.H"
+#include "objectostream.h"
 #include "MainFrm.h"
 #include "SA_View.h"
 #include "TranscriptionDataSettings.h"
@@ -12,33 +12,35 @@
 #include "PhoneticSegment.h"
 #include "TextHelper.h"
 #include "SFMHelper.h"
+#include "FileEncodingHelper.h"
+#include "StringStream.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE
 static char BASED_CODE THIS_FILE[] = __FILE__;
 #endif
 
-static LPCSTR psz_Ref = "ref";
-static LPCSTR psz_Phonemic = "pm";
-static LPCSTR psz_Gloss = "gl";
-static LPCSTR psz_Phonetic = "ph";
-static LPCSTR psz_Orthographic = "or";
-static LPCSTR psz_ImportEnd = "import";
+static LPCTSTR psz_Ref = L"ref";
+static LPCTSTR psz_Phonemic = L"pm";
+static LPCTSTR psz_Gloss = L"gl";
+static LPCTSTR psz_Phonetic = L"ph";
+static LPCTSTR psz_Orthographic = L"or";
+static LPCTSTR psz_ImportEnd = L"import";
 
-static LPCSTR psz_FreeTranslation = "ft"; // Free Translation
-static LPCSTR psz_Language ="ln"; // Language Name
-static LPCSTR psz_Dialect = "dlct"; // Dialect
-static LPCSTR psz_Family = "fam"; // Family
-static LPCSTR psz_Ethno = "id"; // Ethnologue ID number
-static LPCSTR psz_Country = "cnt"; // Country
-static LPCSTR psz_Region = "reg"; // Region
-static LPCSTR psz_Speaker = "spkr"; // Speaker Name
-static LPCSTR psz_Gender = "gen"; // Gender
-static LPCSTR psz_NotebookReference = "nbr"; // Notebook Reference
-static LPCSTR psz_Transcriber = "tr"; // Transcriber
-static LPCSTR psz_Comments = "cmnt"; // Comments
-static LPCSTR psz_Description = "desc"; // Description
-static LPCSTR psz_Table = "table";
+static LPCTSTR psz_FreeTranslation = L"ft"; // Free Translation
+static LPCTSTR psz_Language =L"ln";			// Language Name
+static LPCTSTR psz_Dialect = L"dlct";		// Dialect
+static LPCTSTR psz_Family = L"fam";			// Family
+static LPCTSTR psz_Ethno = L"id";			// Ethnologue ID number
+static LPCTSTR psz_Country = L"cnt";		// Country
+static LPCTSTR psz_Region = L"reg";			// Region
+static LPCTSTR psz_Speaker = L"spkr";		// Speaker Name
+static LPCTSTR psz_Gender = L"gen";			// Gender
+static LPCTSTR psz_NotebookReference = L"nbr"; // Notebook Reference
+static LPCTSTR psz_Transcriber = L"tr";		// Transcriber
+static LPCTSTR psz_Comments = L"cmnt";		// Comments
+static LPCTSTR psz_Description = L"desc";	// Description
+static LPCTSTR psz_Table = L"table";
 
 CImport::CImport( const CSaString & szFileName, BOOL batch)
 {
@@ -60,10 +62,18 @@ BOOL CImport::Import( EImportMode nMode)
 
 	wstring result;
 
-	if (CSFMHelper::IsColumnarSFM(m_szPath)) {
-		ProcessTable( result);
+	CFileEncodingHelper feh(m_szPath);
+	if (!feh.CheckEncoding(false)) {
+		return FALSE;
+	}
+
+	wistringstream stream;
+	feh.ConvertFileToUTF16(stream);
+
+	if (CSFMHelper::IsColumnarSFM(stream)) {
+		ProcessColumnar( stream, result);
 	} else {
-		if (!ProcessNormal(nMode,result))
+		if (!ProcessNormal( stream, nMode,result))
 		{
 			return FALSE;
 		}
@@ -703,23 +713,24 @@ static void CreateWordSegments(const int nWord, int & nSegments)
     }
     nSegments = 0;
 }
+
 /***************************************************************************/
 // CImport::ReadTable read table from import file
 // file position should be '\' of table marker
 /***************************************************************************/
-BOOL CImport::ReadTable( CObjectIStream & ostream, int nMode)
+BOOL CImport::ReadTable( CStringStream & stream, int nMode)
 {
     CSaView * pView = (CSaView *)((CMainFrame *)AfxGetMainWnd())->GetCurrSaView();
 
     CSaDoc * pDoc = (CSaDoc *)pView->GetDocument();
 
     const int MAXLINE = 32000;
-    char * pUtf8 = new char[MAXLINE];
+    wchar_t * pUtf8 = new wchar_t[MAXLINE];
     CSaString szLine;
 
     // eat table marker
-    ostream.getIos().getline(pUtf8,MAXLINE);
-    szLine.setUtf8(pUtf8);
+    stream.GetLine(pUtf8,MAXLINE);
+    szLine = pUtf8;
     if (szLine.GetLength() >= (MAXLINE - 1))   // error
     {
         return FALSE;
@@ -730,8 +741,8 @@ BOOL CImport::ReadTable( CObjectIStream & ostream, int nMode)
     }
 
     // read header
-    ostream.getIos().getline(pUtf8,MAXLINE);
-    szLine.setUtf8(pUtf8);
+    stream.GetLine(pUtf8,MAXLINE);
+    szLine = pUtf8;
     if (szLine.GetLength() >= (MAXLINE - 1))   // error
     {
         return FALSE;
@@ -799,17 +810,17 @@ BOOL CImport::ReadTable( CObjectIStream & ostream, int nMode)
     if ((pDoc->GetSegment(GLOSS)->IsEmpty())&& (nMode!=KEEP))
     {
         // do equal segmentation (replaces auto parse)
-        streampos pos = ostream.getIos().tellg();  // save top of file position
+        streampos pos = stream.TellG();  // save top of file position
 
         // find number of segments in each word
         int nSegmentCount = 0;
         int nWords = 0;
         int nSegmentToBeginWord[MAX_INT];
-        while (ostream.getIos().peek() != EOF)
+        while (stream.Peek() != std::char_traits<wchar_t>::eof())
         {
             // read line
-            ostream.getIos().getline(pUtf8,MAXLINE);
-            szLine.setUtf8(pUtf8);
+            stream.GetLine(pUtf8,MAXLINE);
+            szLine = pUtf8;
             if (szLine.GetLength() >= (MAXLINE - 1))   // error
             {
                 return FALSE;
@@ -821,8 +832,8 @@ BOOL CImport::ReadTable( CObjectIStream & ostream, int nMode)
             }
             nSegmentCount++;
         }
-        ostream.getIos().seekg(pos);  // return to top of table
-        ostream.getIos().clear();  // clear the EOF flag
+        stream.SeekG(pos);  // return to top of table
+        stream.Clear();  // clear the EOF flag
         if (nSegmentCount == 0)
         {
             nSegmentCount = 1;
@@ -879,15 +890,15 @@ BOOL CImport::ReadTable( CObjectIStream & ostream, int nMode)
 
     if (nMode == MANUAL)
     {
-        streampos pos = ostream.getIos().tellg();  // save top of file position
+        streampos pos = stream.TellG();  // save top of file position
 
         int nSegmentCount = 0;
         int nWordCount = -1;
-        while (ostream.getIos().peek() != EOF)
+        while (stream.Peek() != std::char_traits<wchar_t>::eof())
         {
             // read line
-            ostream.getIos().getline(pUtf8,MAXLINE);
-            szLine.setUtf8(pUtf8);
+            stream.GetLine(pUtf8,MAXLINE);
+            szLine = pUtf8;
             if (szLine.GetLength() >= (MAXLINE - 1))   // error
             {
                 return FALSE;
@@ -900,8 +911,8 @@ BOOL CImport::ReadTable( CObjectIStream & ostream, int nMode)
             nSegmentCount++;
         }
         CreateWordSegments(nWordCount, nSegmentCount);
-        ostream.getIos().seekg(pos);  // return to top of table
-        ostream.getIos().clear();  // clear the EOF flag
+        stream.SeekG(pos);  // return to top of table
+        stream.Clear();  // clear the EOF flag
     }
     else if (nMode == AUTO)
     {
@@ -961,11 +972,11 @@ BOOL CImport::ReadTable( CObjectIStream & ostream, int nMode)
     {
         return FALSE;    // no where to go
     }
-    while (ostream.getIos().peek() != EOF)
+    while (stream.Peek() != std::char_traits<wchar_t>::eof())
     {
         // read line
-        ostream.getIos().getline(pUtf8,MAXLINE);
-        szLine.setUtf8(pUtf8);
+        stream.GetLine(pUtf8,MAXLINE);
+        szLine = pUtf8;
         if (szLine.GetLength() >= (MAXLINE - 1))   // error
         {
             return FALSE;
@@ -1070,28 +1081,33 @@ BOOL CImport::ReadTable( CObjectIStream & ostream, int nMode)
 }
 
 /**
-* isTabular should have already confirmed that this is a tabular file
+* isColumnar should have already confirmed that this is a columnar file
 */
-BOOL CImport::ProcessTable( wstring & result)
+BOOL CImport::ProcessColumnar( wistringstream & stream, wstring & result)
 {
+	// rewind the stream
+	stream.clear();
+	stream.seekg(0);
+	stream.clear();
+
 	result.clear();
 
-	wstring obuffer;
-	if (!ConvertFileToUTF16( m_szPath, obuffer))
-	{
-		return FALSE;
-	}
-	
-	vector<wstring> lines = TokenizeBufferToLines( obuffer);
+	vector<wstring> lines = TokenizeBufferToLines( stream);
 
 	lines = CSFMHelper::FilterBlankLines(lines);
 
-	if (lines.size()==0) return false;
+	if (lines.size()==0) {
+		TRACE("no data\n");
+		return false;
+	}
 
 	size_t start = 0;
 	while (true) 
 	{
-		if (start>=lines.size()) return false;
+		if (start>=lines.size()) {
+			TRACE("data is empty\n");
+			return false;
+		}
 		if (lines[start].length()>0) break;
 		start++;
 	}
@@ -1264,7 +1280,7 @@ BOOL CImport::ProcessTable( wstring & result)
 	return true;
 }
 
-BOOL CImport::ProcessNormal( EImportMode nMode, wstring & result)
+bool CImport::ProcessNormal( wistringstream & data, EImportMode nMode, wstring & result)
 {
     CSaString text;
 	CSaString ref;
@@ -1278,36 +1294,41 @@ BOOL CImport::ProcessNormal( EImportMode nMode, wstring & result)
     CSaString imported("Imported...\r\n");
     CSaString skipped("Skipped... \r\n");
 
+	// rewind the stream
+	data.clear();
+	data.seekg(0);
+	data.clear();
+
 	result.clear();
 
 	CSaDoc * pDoc = (CSaDoc *)((CMainFrame *)AfxGetMainWnd())->GetCurrSaView()->GetDocument();
     try
     {
-		CObjectIStream ostream(m_szPath.utf8().c_str());
-        if (!ostream.bAtBackslash())
+		int ch = data.peek();
+		CStringStream stream( data.str().c_str());
+        if (!stream.bAtBackslash())
         {
-            ostream.SkipBOM();
-            if (!ostream.bAtBackslash())
+            if (!stream.bAtBackslash())
             {
-                return FALSE;
+                return false;
             }
         }
-        while (!ostream.bAtEnd())
+        while (!stream.bAtEnd())
         {
-            streampos pos = ostream.getIos().tellg();
+            streampos pos = stream.TellG();
             
-			const char * pszMarkerRead = NULL;
-			char buffer[1024];
+			LPCTSTR pszMarkerRead = NULL;
+			wchar_t buffer[1024];
 			memset(buffer,0,_countof(buffer));
-            ostream.PeekMarkedString( &pszMarkerRead, buffer, _countof(buffer));
+            stream.PeekMarkedString( &pszMarkerRead, buffer, _countof(buffer));
             CSaString szStringRead;
-			szStringRead.setUtf8(buffer);
+			szStringRead = buffer;
 
-            if (ReadStreamString( ostream, psz_Table, text))
+            if (stream.ReadStreamString( psz_Table, text))
             {
-                ostream.getIos().seekg(pos);  // start before marker
-                ostream.getIos().clear();
-                BOOL result = ReadTable(ostream, nMode);
+                stream.SeekG(pos);  // start before marker
+                stream.Clear();
+                BOOL result = ReadTable( stream, nMode);
                 if (result)
                 {
 					imported += "\\";
@@ -1325,39 +1346,39 @@ BOOL CImport::ProcessNormal( EImportMode nMode, wstring & result)
                 }
                 break;  // this must be last marker
             }
-            else if (ReadStreamString( ostream,psz_FreeTranslation, text))
+            else if (stream.ReadStreamString(psz_FreeTranslation, text))
             {
                 pDoc->GetSourceParm()->szFreeTranslation = text;
             }
-            else if (ReadStreamString( ostream,psz_Language, text))
+            else if (stream.ReadStreamString(psz_Language, text))
             {
                 pDoc->GetSourceParm()->szLanguage = text;
             }
-            else if (ReadStreamString( ostream,psz_Dialect, text))
+            else if (stream.ReadStreamString(psz_Dialect, text))
             {
                 pDoc->GetSourceParm()->szDialect = text;
             }
-            else if (ReadStreamString( ostream,psz_Family, text))
+            else if (stream.ReadStreamString(psz_Family, text))
             {
                 pDoc->GetSourceParm()->szFamily = text;
             }
-            else if (ReadStreamString( ostream,psz_Ethno, text))
+            else if (stream.ReadStreamString(psz_Ethno, text))
             {
                 pDoc->GetSourceParm()->szEthnoID = text;
             }
-            else if (ReadStreamString( ostream,psz_Country, text))
+            else if (stream.ReadStreamString(psz_Country, text))
             {
                 pDoc->GetSourceParm()->szCountry = text;
             }
-            else if (ReadStreamString( ostream,psz_Region, text))
+            else if (stream.ReadStreamString(psz_Region, text))
             {
                 pDoc->GetSourceParm()->szRegion = text;
             }
-            else if (ReadStreamString( ostream,psz_Speaker, text))
+            else if (stream.ReadStreamString(psz_Speaker, text))
             {
                 pDoc->GetSourceParm()->szSpeaker = text;
             }
-            else if (ReadStreamString( ostream,psz_Gender, text))
+            else if (stream.ReadStreamString(psz_Gender, text))
             {
                 int nGender = pDoc->GetSourceParm()->nGender;
 
@@ -1378,38 +1399,38 @@ BOOL CImport::ProcessNormal( EImportMode nMode, wstring & result)
 
                 pDoc->GetSourceParm()->nGender = nGender;
             }
-            else if (ReadStreamString( ostream,psz_NotebookReference, text))
+            else if (stream.ReadStreamString(psz_NotebookReference, text))
             {
                 pDoc->GetSourceParm()->szReference = text;
             }
-            else if (ReadStreamString( ostream,psz_Transcriber, text))
+            else if (stream.ReadStreamString(psz_Transcriber, text))
             {
                 pDoc->GetSourceParm()->szTranscriber = text;
             }
-            else if (ReadStreamString( ostream,psz_Comments, text))
+            else if (stream.ReadStreamString(psz_Comments, text))
             {
                 pDoc->GetSaParm()->szDescription = text;
             }
-            else if (ReadStreamString( ostream,psz_Description, text))
+            else if (stream.ReadStreamString(psz_Description, text))
             {
                 pDoc->GetSaParm()->szDescription = text;
             }
-            else if (ReadStreamString( ostream,psz_Phonetic, text))
+            else if (stream.ReadStreamString(psz_Phonetic, text))
             {
                 phonetic = text;
                 continue;
             }
-            else if (ReadStreamString( ostream,psz_Phonemic, text))
+            else if (stream.ReadStreamString(psz_Phonemic, text))
             {
                 phonemic = text;
                 continue;
             }
-            else if (ReadStreamString( ostream,psz_Orthographic, text))
+            else if (stream.ReadStreamString(psz_Orthographic, text))
             {
                 ortho = text;
                 continue;
             }
-            else if (ReadStreamString( ostream,psz_Gloss, text))
+            else if (stream.ReadStreamString(psz_Gloss, text))
             {
 				bool first = true;
 				bool hasSpaces = (text.Find(SPACE_DELIMITER)!=-1);
@@ -1486,7 +1507,7 @@ BOOL CImport::ProcessNormal( EImportMode nMode, wstring & result)
 				}
                 continue;
             }
-            else if (ostream.bEnd(psz_ImportEnd))
+            else if (stream.bEnd(psz_ImportEnd))
             {
                 break;
             }
@@ -1518,7 +1539,7 @@ BOOL CImport::ProcessNormal( EImportMode nMode, wstring & result)
     {
         if (!bTable)
         {
-            AutoAlign(pDoc, ref, phonetic, phonemic, ortho, gloss);
+            AutoAlign( pDoc, ref, phonetic, phonemic, ortho, gloss);
         }
 
         CSaString Report;
@@ -1556,5 +1577,5 @@ BOOL CImport::ProcessNormal( EImportMode nMode, wstring & result)
 	result.append(imported);
 	result.append(L"\r\n");
 	result.append(skipped);
-	return TRUE;
+	return true;
 }

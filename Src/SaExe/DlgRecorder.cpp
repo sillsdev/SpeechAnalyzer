@@ -14,7 +14,7 @@
 #include "DlgPlayer.h"
 #include "Process\sa_p_fra.h"
 #include "Process\Process.h"
-#include "settings\obstream.h"
+#include "objectostream.h"
 
 //###########################################################################
 // CDlgRecorder dialog

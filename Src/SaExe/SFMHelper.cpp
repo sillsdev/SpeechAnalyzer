@@ -3,31 +3,26 @@
 #include <iterator>
 #include "TextHelper.h"
 #include "AppDefs.h"
+#include "StringStream.h"
 
-static LPCSTR IMPORT_END = "import";
-static const wchar_t * EMPTY = L"";
+static LPCTSTR IMPORT_END = L"import";
+static LPCTSTR EMPTY = L"";
 
 using std::list;
 using std::map;
 using std::wstringstream;
 
-bool CSFMHelper::IsSFM(CSaString & filename)
+bool CSFMHelper::IsSFM( wistringstream & stream)
 {
+	// rewind the stream
+	stream.clear();
+	stream.seekg(0);
+	stream.clear();
 
-	CObjectIStream stream(filename.utf8().c_str());
-    if (stream.getIos().fail())
-    {
-        return false;
-    }
-    if (!stream.bAtBackslash())
-    {
-        stream.SkipBOM();
-    }
-    if (!stream.bAtBackslash())
-    {
-        return false;
-    }
-    return true;
+	if (stream.fail()) {
+		return false;
+	}
+	return (stream.peek()=='\\');
 }
 
 /**
@@ -35,35 +30,34 @@ bool CSFMHelper::IsSFM(CSaString & filename)
 * then it's a multirecord file
 *
 */
-bool CSFMHelper::IsMultiRecordSFM(CSaString & filename, CSaString & marker)
+bool CSFMHelper::IsMultiRecordSFM( wistringstream & stream, CSaString & marker)
 {
+	// rewind the stream
+	stream.clear();
+	stream.seekg(0);
+	stream.clear();
 
     int count = 0;
-    CSaString buffer;
-
-	CObjectIStream stream(filename.utf8().c_str());
-    if (stream.getIos().fail())
+	CStringStream cstream( stream.str().c_str());
+    if (cstream.bFail())
     {
         return false;
     }
-    if (!stream.bAtBackslash())
-    {
-        stream.SkipBOM();
-    }
-    if (!stream.bAtBackslash())
+    if (!cstream.bAtBackslash())
     {
         return false;
     }
 
-    while (!stream.bAtEnd())
+	CSaString buffer;
+    while (!cstream.bAtEnd())
     {
-        if (ReadStreamString(stream,marker.utf8().c_str(),buffer))
+		if (cstream.ReadStreamString( marker, buffer))
         {
             count++;
         }
         else
         {
-            stream.bEnd(IMPORT_END);
+            cstream.bEnd(IMPORT_END);
         }
     }
     return (count>1);
@@ -75,21 +69,21 @@ bool CSFMHelper::IsMultiRecordSFM(CSaString & filename, CSaString & marker)
 * Whenever syncMarker is encountered, the list will be balanced for consistency
 * Return a map using key marker as a key and the list of value for that marker
 */
-TranscriptionDataMap CSFMHelper::ImportMultiRecordSFM(CSaString & filename, CSaString & syncMarker, MarkerList & markers, bool /*addTag*/)
+TranscriptionDataMap CSFMHelper::ImportMultiRecordSFM( wistringstream & stream, CSaString & syncMarker, MarkerList & markers, bool /*addTag*/)
 {
+	// rewind the stream
+	stream.clear();
+	stream.seekg(0);
+	stream.clear();
 
     TranscriptionDataMap result;
 
-    CObjectIStream stream(filename.utf8().c_str());
-    if (stream.getIos().fail())
+	CStringStream cstream(stream.str().c_str());
+    if (cstream.bFail())
     {
         return result;
     }
-    if (!stream.bAtBackslash())
-    {
-        stream.SkipBOM();
-    }
-    if (!stream.bAtBackslash())
+    if (!cstream.bAtBackslash())
     {
         return result;
     }
@@ -99,7 +93,7 @@ TranscriptionDataMap CSFMHelper::ImportMultiRecordSFM(CSaString & filename, CSaS
     * then we will build the output after the data
     * has been completely read
     */
-    while (!stream.bAtEnd())
+    while (!cstream.bAtEnd())
     {
         MarkerList::const_iterator it = markers.begin();
         bool found = false;
@@ -107,7 +101,7 @@ TranscriptionDataMap CSFMHelper::ImportMultiRecordSFM(CSaString & filename, CSaS
         {
             CSaString buffer;
             CSaString marker = *it;
-            if (ReadStreamString(stream,marker,buffer))
+            if (cstream.ReadStreamString( marker, buffer))
             {
                 result[marker].push_back(buffer);
                 // when see the sync marker, balance the other entries.
@@ -122,7 +116,7 @@ TranscriptionDataMap CSFMHelper::ImportMultiRecordSFM(CSaString & filename, CSaS
         if (!found)
         {
             //we are at string that doesn't match - skip over it
-            stream.bEnd(IMPORT_END);
+            cstream.bEnd(IMPORT_END);
         }
     }
 
@@ -150,15 +144,14 @@ void CSFMHelper::BalanceDataMap(TranscriptionDataMap & map, CSaString & marker)
     }
 }
 
-bool CSFMHelper::IsColumnarSFM( LPCTSTR filename)
+bool CSFMHelper::IsColumnarSFM( wistringstream & stream)
 {
-	wstring obuffer;
-	if (!ConvertFileToUTF16( filename, obuffer))
-	{
-		return FALSE;
-	}
-	
-	vector<wstring> lines = TokenizeBufferToLines( obuffer);
+	// rewind the stream
+	stream.clear();
+	stream.seekg(0);
+	stream.clear();
+
+	vector<wstring> lines = TokenizeBufferToLines( stream);
 
 	lines = CSFMHelper::FilterBlankLines(lines);
 
@@ -239,17 +232,16 @@ bool CSFMHelper::IsColumnarSFM( LPCTSTR filename)
 	return true;
 }
 
-TranscriptionDataMap CSFMHelper::ImportColumnarSFM( LPCTSTR filename)
+TranscriptionDataMap CSFMHelper::ImportColumnarSFM( wistringstream & stream)
 {
-	TranscriptionDataMap td;
+	// rewind stream
+	stream.clear();
+	stream.seekg(0);
+	stream.clear();
 
-	wstring obuffer;
-	if (!ConvertFileToUTF16( filename, obuffer))
-	{
-		return td;
-	}
+	TranscriptionDataMap td;
 	
-	vector<wstring> lines = TokenizeBufferToLines( obuffer);
+	vector<wstring> lines = TokenizeBufferToLines( stream);
 
 	lines = CSFMHelper::FilterBlankLines(lines);
 

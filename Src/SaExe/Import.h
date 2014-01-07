@@ -4,8 +4,10 @@
 #include "SaString.h"
 #include "Sa_Doc.h"
 #include <string>
+#include "StringStream.h"
 
 using std::wstring;
+using std::wistringstream;
 
 class CImport
 {
@@ -20,9 +22,9 @@ public:
     BOOL m_bBatch;
 
 private:
-    BOOL ReadTable(CObjectIStream & ios, int nMode = QUERY);
-	BOOL ProcessNormal( EImportMode nMode, wstring & result);
-	BOOL ProcessTable( wstring & result);
+    BOOL ReadTable( CStringStream & ios, int nMode = QUERY);
+	bool ProcessNormal(  wistringstream & stream, EImportMode nMode, wstring & result);
+	BOOL ProcessColumnar( wistringstream & stream, wstring & result);
 };
 
 #endif

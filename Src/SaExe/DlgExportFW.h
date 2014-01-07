@@ -13,7 +13,7 @@
 #ifndef _DGLEXPORTFW_H
 #define _DGLEXPORTFW_H
 
-#include "Settings\OBSTREAM.H"
+#include "objectostream.h"
 #include "AppDefs.h"
 #include "SaString.h"
 #include "resource.h"

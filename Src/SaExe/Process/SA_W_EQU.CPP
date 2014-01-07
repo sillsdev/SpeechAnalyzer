@@ -12,7 +12,7 @@
 #include "isa_doc.h"
 #include "sa_w_dlg.h"
 #include "zgraph\toolkit.h"
-#include "settings\obstream.h"
+#include "objectostream.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE

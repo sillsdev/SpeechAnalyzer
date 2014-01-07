@@ -1,8 +1,8 @@
 #include "stdafx.h"
 #include "fnkeys.h"
-#include "settings\obstream.h"
+#include "objectostream.h"
+#include "objectistream.h"
 #include "resource.h"
-
 
 static LPCSTR psz_fnkeys = "fnkeys";
 
@@ -28,9 +28,6 @@ void CFnKeys::WriteProperties(CObjectOStream & obs)
 
     obs.WriteEndMarker(psz_fnkeys);
 }
-
-
-
 
 BOOL CFnKeys::ReadProperties(CObjectIStream & obs)
 {

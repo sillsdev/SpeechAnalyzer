@@ -161,12 +161,15 @@
     <ClCompile Include="DlgWaveformGenerator.cpp" />
     <ClCompile Include="DlgWaveNotifyObj.cpp" />
     <ClCompile Include="ExportFWSettings.cpp" />
+    <ClCompile Include="FileEncodingHelper.cpp" />
     <ClCompile Include="FileUtils.cpp" />
     <ClCompile Include="FmtParm.cpp" />
     <ClCompile Include="GlossSegment.cpp" />
     <ClCompile Include="Import.cpp" />
     <ClCompile Include="IndependentSegment.cpp" />
     <ClCompile Include="MusicPhraseSegment.cpp" />
+    <ClCompile Include="ObjectIStream.cpp" />
+    <ClCompile Include="ObjectOStream.cpp" />
     <ClCompile Include="OrthoSegment.cpp" />
     <ClCompile Include="PhonemicSegment.cpp" />
     <ClCompile Include="PhoneticSegment.cpp" />
@@ -273,6 +276,7 @@
     <ClCompile Include="SplitFileUtils.cpp" />
     <ClCompile Include="StartCursorWnd.cpp" />
     <ClCompile Include="StopCursorWnd.cpp" />
+    <ClCompile Include="StringStream.cpp" />
     <ClCompile Include="StringUtils.cpp" />
     <ClCompile Include="Synthesis\DlgKlattAll.cpp" />
     <ClCompile Include="Synthesis\DlgMbrola.cpp" />
@@ -417,6 +421,7 @@
     <ClInclude Include="AlignInfo.h" />
     <ClInclude Include="AppDefs.h" />
     <ClInclude Include="ArchiveTransfer.h" />
+    <ClInclude Include="DEFS.H" />
     <ClInclude Include="DlgAutoRecorder.h" />
     <ClInclude Include="AutoSave.h" />
     <ClInclude Include="ChildFrame.h" />
@@ -444,6 +449,7 @@
     <ClInclude Include="dsp\lpc.h" />
     <ClInclude Include="dsp\WaveWarp.h" />
     <ClInclude Include="ExportFWSettings.h" />
+    <ClInclude Include="FileEncodingHelper.h" />
     <ClInclude Include="FileUtils.h" />
     <ClInclude Include="flexeditgrid.h" />
     <ClInclude Include="FmtParm.h" />
@@ -454,6 +460,8 @@
     <ClInclude Include="IWaveNotifiable.h" />
     <ClInclude Include="mshflexgrid.h" />
     <ClInclude Include="MusicPhraseSegment.h" />
+    <ClInclude Include="ObjectIStream.h" />
+    <ClInclude Include="ObjectOStream.h" />
     <ClInclude Include="OrthoSegment.h" />
     <ClInclude Include="PhonemicSegment.h" />
     <ClInclude Include="PhoneticSegment.h" />
@@ -574,6 +582,7 @@
     <ClInclude Include="Stdafx.h" />
     <ClInclude Include="StopCursorWnd.h" />
     <ClInclude Include="stpwatch.h" />
+    <ClInclude Include="StringStream.h" />
     <ClInclude Include="StringUtils.h" />
     <ClInclude Include="synthesis\DlgKlattAll.h" />
     <ClInclude Include="synthesis\DlgMbrola.h" />
@@ -627,9 +636,6 @@
     </ProjectReference>
     <ProjectReference Include="SA_ENU\SA_ENU.vcxproj">
       <Project>{23e56f0e-30a8-4cf2-ab4d-5b1ed39cd268}</Project>
-    </ProjectReference>
-    <ProjectReference Include="Settings\sfSettings.vcxproj">
-      <Project>{8042b26b-82a5-4b16-9a13-9a7f15a2639b}</Project>
     </ProjectReference>
     <ProjectReference Include="Synthesis\MBROLA\mbrola.vcxproj">
       <Project>{70e56708-42c2-4233-af98-dc57f936c968}</Project>

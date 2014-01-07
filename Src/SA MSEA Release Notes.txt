@@ -1,3 +1,9 @@
+SA - 3.1.0.81 1/6/2014
+1) Added support for UTF16 (BE&LE) that are encountered during the import process.  UTF32 files are disallowed.  UTF16 files will cause a warning message to be displayed but the contents will be converted and imported.
+2) Removed dependency on sfSettings.DLL.  The code has been imported in the main SA project.
+3) Updated application copyright dates.
+4) Fixed build problem. C# projects (speechtoolsutils.dll, yeti.mmedia.dll, yeti.wmfsdk.dll and st_audio.dll) were not getting harvested.  The binaries in the install were outdated from 9/2013.
+
 SA - 3.1.0.80 11/27/2013 (Stereo Branch)
 1) Added menu item for 'Auto Add' feature
 2) Added checks, messages and conversion functions for UTF16 BE&LE files.  The transcription alignment feature still does not support UTF16 files properly, but most other import functions now provide checks and conversions for UTF16.  The code will not currently properly identify UTF-32.  If the unicode BOM is not provided at the beginning of the file, and the data contains characters > 0x7f, the file will be treated as UTF-8 without warning.

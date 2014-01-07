@@ -93,7 +93,7 @@
 #include "mainfrm.h"
 #include "printdim.h"
 #include "sa_mplot.h"
-#include "settings\obstream.h"
+#include "objectostream.h"
 #include "time.h"
 #include <afxpriv.h>
 #include "PrivateCursorWnd.h"

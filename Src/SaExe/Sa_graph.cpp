@@ -110,7 +110,7 @@
 #include "Process\sa_p_twc.h"
 #include "Process\sa_p_zcr.h"
 #include "Process\FormantTracker.h"
-#include "settings\obstream.h"
+#include "objectostream.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE

@@ -2,19 +2,23 @@
 #define SFMHELPER_H
 
 #include "SaString.h"
-#include "Settings\obstream.h"
+#include "objectostream.h"
 #include "TranscriptionHelper.h"
 #include <list>
 #include <map>
+#include <streambuf>
+
+using std::stringstream;
+using std::wistringstream;
 
 class CSFMHelper
 {
 public:
-    static bool IsSFM(CSaString & filename);
-    static bool IsMultiRecordSFM(CSaString & filename, CSaString & marker);
-	static bool IsColumnarSFM( LPCTSTR filename);
-    static TranscriptionDataMap ImportMultiRecordSFM(CSaString & filename, CSaString & syncMarker, MarkerList & markers, bool addTag);
-	static TranscriptionDataMap ImportColumnarSFM( LPCTSTR filename);
+    static bool IsSFM( wistringstream & strm);
+    static bool IsMultiRecordSFM( wistringstream & stream, CSaString & marker);
+	static bool IsColumnarSFM( wistringstream & stream);
+    static TranscriptionDataMap ImportMultiRecordSFM( wistringstream & stream, CSaString & syncMarker, MarkerList & markers, bool addTag);
+	static TranscriptionDataMap ImportColumnarSFM( wistringstream & stream);
     static TranscriptionDataMap ImportSFM(CSaString & filename);
 	static bool IsTag( LPCTSTR text);
 	static vector<wstring> FilterBlankLines( vector<wstring> & input);
