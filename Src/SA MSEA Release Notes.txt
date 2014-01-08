@@ -1,3 +1,7 @@
+SA - 3.1.0.82 1/7/2014
+1) Fixed bug that was preventing automatic loading of transcription data after the user clicks 'next' on the first dialog of the Align-Transcription-Data feature.
+2) Modified code to better support importing of SFM tags that aren't lower case.
+
 SA - 3.1.0.81 1/6/2014
 1) Added support for UTF16 (BE&LE) that are encountered during the import process.  UTF32 files are disallowed.  UTF16 files will cause a warning message to be displayed but the contents will be converted and imported.
 2) Removed dependency on sfSettings.DLL.  The code has been imported in the main SA project.

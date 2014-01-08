@@ -91,7 +91,7 @@ bool CStringStream::bAtBeginMarker(LPCTSTR pszMarker, LPCTSTR pszName)
     }
     UnReadMarkedString();
     ReadMarkedString(&pszMarkerRead, &pszStringRead);
-    bool b = ((!pszName) || (wcscmp(pszName, pszStringRead)==0));   // If name given, it must match
+    bool b = ((!pszName) || (_wcsicmp(pszName, pszStringRead)==0));   // If name given, it must match
     UnReadMarkedString();
     return b;
 }
@@ -114,7 +114,7 @@ bool CStringStream::bReadBeginMarker(LPCTSTR pszMarker, LPTSTR psName, size_t si
     LPCTSTR pszStringRead = NULL;
     ReadMarkedString( &pszMarkerRead, &pszStringRead);
 
-    BOOL bBeginMarker = ((*pszMarkerRead == '+') && (wcscmp(pszMarker, pszMarkerRead+1)==0));
+    BOOL bBeginMarker = ((*pszMarkerRead == '+') && (_wcsicmp(pszMarker, pszMarkerRead+1)==0));
     if (!bBeginMarker)
     {
         UnReadMarkedString();
@@ -132,7 +132,7 @@ bool CStringStream::bReadMarker(wchar_t cFirstChar, LPCTSTR pszMarker)
     LPCTSTR pszStringRead = NULL;
     ReadMarkedString(&pszMarkerRead, &pszStringRead);
 
-    BOOL bMarkerFound = (*pszMarkerRead == cFirstChar) && (wcscmp(pszMarker, pszMarkerRead+1)==0);
+    BOOL bMarkerFound = (*pszMarkerRead == cFirstChar) && (_wcsicmp(pszMarker, pszMarkerRead+1)==0);
     if (!bMarkerFound)
     {
         UnReadMarkedString();
@@ -189,7 +189,7 @@ bool CStringStream::bReadString(LPCTSTR pszMarker, LPCTSTR * s)
     LPCTSTR pszStringRead = NULL;
     ReadMarkedString(&pszMarkerRead, &pszStringRead);
 
-    if (wcscmp(pszMarker, pszMarkerRead)!=0)
+    if (_wcsicmp(pszMarker, pszMarkerRead)!=0)
     {
         UnReadMarkedString();
         return false;
@@ -313,53 +313,6 @@ bool CStringStream::bEndWithQualifier(LPCTSTR pszMarker, LPCTSTR pszQualifier)
     return bEnd(buf);
 }
 
-#ifndef NO_INTERFACE
-bool CStringStream::bReadWindowPlacement(LPCTSTR pszMarker, WINDOWPLACEMENT & wpl)
-{
-    LPCTSTR sPlacement = NULL;
-    if (!bReadString(pszMarker, &sPlacement))
-    {
-        return FALSE;
-    }
-
-    wpl.length = sizeof(wpl);
-    wpl.flags = WPF_SETMINPOSITION;
-    wchar_t pszShowState[7];
-    int nItems = swscanf_s( sPlacement, L"%s %d %d %d %d %d %d %d %d",pszShowState, _countof(pszShowState), &wpl.ptMinPosition.x,
-                          &wpl.ptMinPosition.y,
-                          &wpl.ptMaxPosition.x,
-                          &wpl.ptMaxPosition.y,
-                          &wpl.rcNormalPosition.left,
-                          &wpl.rcNormalPosition.top,
-                          &wpl.rcNormalPosition.right,
-                          &wpl.rcNormalPosition.bottom);
-
-    if (nItems != 9)
-    {
-        return FALSE;
-    }
-
-    if (wcscmp(pszShowState, L"normal")==0)
-    {
-        wpl.showCmd = SW_SHOWNORMAL;
-    }
-    else if (wcscmp(pszShowState, L"min")==0)
-    {
-        wpl.showCmd = SW_SHOWMINIMIZED;
-    }
-    else if (wcscmp(pszShowState, L"max")==0)
-    {
-        wpl.showCmd = SW_SHOWMAXIMIZED;
-    }
-    else
-    {
-        wpl.showCmd = SW_SHOWNORMAL;
-    };
-
-    return TRUE;
-}
-#endif  // not NO_INTERFACE
-
 void CStringStream::ReadMarkedString( LPCTSTR * ppszMarker, LPCTSTR * ppszString, bool bTrimWhiteSpace)
 {
     if (m_bUnRead)
@@ -412,7 +365,6 @@ void CStringStream::UnReadMarkedString()
     m_bUnRead = TRUE;
 }
 
-
 void CStringStream::ReadMarkedLine(LPCTSTR * ppszMarker, LPCTSTR * ppszString)
 {
     assert(!m_bUnRead);
@@ -426,7 +378,7 @@ void CStringStream::ReadMarkedLine(LPCTSTR * ppszMarker, LPCTSTR * ppszString)
     psz += 1; // move past the backslash
 
     m_pszMarker = psz;
-    Length lenMarker = wcscspn(psz, L" \t\n");
+    Length lenMarker = wcscspn(psz, L" \t\n\r");
     // 1996-11-04 MRP: This temporary patch will skip the rest of a field
     // that contains a backslash at the beginning of one of its lines.
     // The real fix is to use the read-line-ahead approach in sfstream.cpp
@@ -448,8 +400,8 @@ void CStringStream::ReadMarkedLine(LPCTSTR * ppszMarker, LPCTSTR * ppszString)
         //
         // Move the marker left one position (covering the backslash)
         m_pszMarker = m_pszMStringBuf;
-        memcpy(m_pszMarker, m_pszMStringBuf + 1, lenMarker);
-        assert(m_pszMarker + lenMarker == psz - 1);
+        wmemcpy(m_pszMarker, m_pszMStringBuf + 1, lenMarker);
+        assert((m_pszMarker + lenMarker) == (psz - 1));
         m_pszMarker[lenMarker] = '\0'; // making a place for its null
     }
 
@@ -539,16 +491,12 @@ bool CStringStream::bReadDWord(LPCTSTR pszMarker, DWORD & dw)
 void CStringStream::PeekMarkedString( LPCTSTR * ppszMarker, LPTSTR pszString, size_t len, bool bTrimWhiteSpace)
 {
     LPCTSTR read = 0;
-    peekMarkedString( ppszMarker, &read, bTrimWhiteSpace);
-    wcscpy_s( pszString, len, read);
-}
-
-void CStringStream::peekMarkedString( LPCTSTR * ppszMarker, LPCTSTR * ppszString, bool bTrimWhiteSpace)
-{
     // Read any marked string
-    ReadMarkedString( ppszMarker, ppszString, bTrimWhiteSpace);
+    ReadMarkedString( ppszMarker, &read, bTrimWhiteSpace);
     // Store most recently read marked string for next read
     UnReadMarkedString();
+
+    wcscpy_s( pszString, len, read);
 }
 
 bool CStringStream::bFail() 

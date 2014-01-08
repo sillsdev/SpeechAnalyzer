@@ -3944,8 +3944,7 @@ BOOL CSaView::ReadProperties(CObjectIStream & obs, BOOL bCreateGraphs)
 
     while (!obs.bAtEnd())
     {
-        if (pwndFrame &&
-                obs.bReadWindowPlacement(psz_placement, wpl))
+        if ((pwndFrame) && (obs.bReadWindowPlacement(psz_placement, wpl)))
         {
             m_eInitialShowCmd = wpl.showCmd;
             wpl.showCmd = SW_HIDE;

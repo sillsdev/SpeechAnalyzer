@@ -575,7 +575,7 @@
     <ClInclude Include="DlgSaveAsOptions.h" />
     <ClInclude Include="SelfTest.h" />
     <ClInclude Include="SFMHelper.h" />
-    <ClInclude Include="sourceParm.h" />
+    <ClInclude Include="SourceParm.h" />
     <ClInclude Include="SpectroParm.h" />
     <ClInclude Include="SplitFileUtils.h" />
     <ClInclude Include="StartCursorWnd.h" />

@@ -14,6 +14,7 @@ using std::wistringstream;
 class CSFMHelper
 {
 public:
+	static wstring ToLower( wstring in);
     static bool IsSFM( wistringstream & strm);
     static bool IsMultiRecordSFM( wistringstream & stream, CSaString & marker);
 	static bool IsColumnarSFM( wistringstream & stream);

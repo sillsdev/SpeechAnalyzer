@@ -50,7 +50,7 @@ BOOL CDlgAlignTranscriptionDataImportRefPage::OnSetActive()
 	}
 
 	CFileEncodingHelper feh(path);
-	if (feh.CheckEncoding(false)) {
+	if (!feh.CheckEncoding(false)) {
         m_TranscriptionData = CTranscriptionData();
         m_szText = "";
 		SetAnnotation();
@@ -132,7 +132,6 @@ void CDlgAlignTranscriptionDataImportRefPage::OnClickedImport()
 									   true))
     {
         m_szText = CTranscriptionHelper::Render(m_TranscriptionData);
-
         CSaApp * pApp = (CSaApp *)AfxGetApp();
         pApp->WriteProfileString(L"AutoRef",L"LastImport",(LPCTSTR)path);
 

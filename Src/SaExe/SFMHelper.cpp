@@ -4,6 +4,8 @@
 #include "TextHelper.h"
 #include "AppDefs.h"
 #include "StringStream.h"
+#include <algorithm>
+#include <string> 
 
 static LPCTSTR IMPORT_END = L"import";
 static LPCTSTR EMPTY = L"";
@@ -11,6 +13,11 @@ static LPCTSTR EMPTY = L"";
 using std::list;
 using std::map;
 using std::wstringstream;
+
+wstring CSFMHelper::ToLower( wstring in) {
+	std::transform( in.begin(), in.end(), in.begin(), ::towlower);
+	return in;
+}
 
 bool CSFMHelper::IsSFM( wistringstream & stream)
 {
@@ -103,7 +110,7 @@ TranscriptionDataMap CSFMHelper::ImportMultiRecordSFM( wistringstream & stream, 
             CSaString marker = *it;
             if (cstream.ReadStreamString( marker, buffer))
             {
-                result[marker].push_back(buffer);
+				result[marker.MakeLower()].push_back(buffer);
                 // when see the sync marker, balance the other entries.
                 if (marker.Compare(syncMarker)==0)
                 {
@@ -317,7 +324,7 @@ TranscriptionDataMap CSFMHelper::ImportColumnarSFM( wistringstream & stream)
 				{
 					data.push_back(WORD_DELIMITER);
 				}
-				td[tag.c_str()].push_back(data.c_str());
+				td[ToLower(tag).c_str()].push_back(data.c_str());
 			}
 			else
 			{
@@ -329,7 +336,7 @@ TranscriptionDataMap CSFMHelper::ImportColumnarSFM( wistringstream & stream)
 				{
 					data = L"";
 				}
-				td[tag.c_str()].push_back(data.c_str());
+				td[ToLower(tag).c_str()].push_back(data.c_str());
 			}
 		}
 	}

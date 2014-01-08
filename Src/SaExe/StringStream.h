@@ -54,10 +54,6 @@ public:
 
     void PeekMarkedString(LPCTSTR * ppszMarker, LPTSTR pszString, size_t len, bool bTrimWhiteSpace = true);
 
-#ifndef NO_INTERFACE
-    bool bReadWindowPlacement(LPCTSTR pszMarker, WINDOWPLACEMENT & wpl);
-#endif  // not NO_INTERFACE
-
 	size_t GetBufferSize();
 	bool ReadStreamString( LPCTSTR pszMarker, CSaString & szResult);
 
@@ -65,7 +61,6 @@ protected:
     // Read any marked string
     void ReadMarkedString(LPCTSTR * ppszMarker, LPCTSTR * ppszString, bool bTrimWhiteSpace = true);
     bool bReadString(LPCTSTR pszMarker, LPCTSTR * s);
-    void peekMarkedString(LPCTSTR * ppszMarker, LPCTSTR * ppszString, bool bTrimWhiteSpace = true);
     void UnReadMarkedString(); // Store most recently read marked string for next read
 
 private:
@@ -74,11 +69,11 @@ private:
     void ReadLine();			// Read one line
 
     wstringstream m_ios;		// iostream from which input is read
-    LPTSTR m_pszMStringBuf;	// input buffer for a marked string
+    LPTSTR m_pszMStringBuf;		// input buffer for a marked string
     LPTSTR m_pszEnd;			// end of string (i.e. its null) where next line is read
     bool m_bUnRead;				// buffer contains a marked string which has been "unread"
-    LPTSTR m_pszMarker;		// beginning of unread marker
-    LPTSTR m_pszString;		// beginning of unread string
+    LPTSTR m_pszMarker;			// beginning of unread marker
+    LPTSTR m_pszString;			// beginning of unread string
     wchar_t m_chEndOfLine;		// delimiter for the get-one-line function
 
     bool bReadMarker(wchar_t cFirstChar, LPCTSTR pszMarker); // low level read begin or end marker

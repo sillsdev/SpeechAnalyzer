@@ -16,7 +16,7 @@ CSaString CTranscriptionHelper::Render(CTranscriptionData & td)
     // create a list of iterators for all markers of everything except the sync marker
     for (TranscriptionDataMap::iterator it = td.m_TranscriptionData.begin(); it!=td.m_TranscriptionData.end(); it++)
     {
-        if (it->first.Compare(td.m_szPrimary)==0)
+		if (it->first.CompareNoCase(td.m_szPrimary)==0)
         {
             continue;
         }
@@ -31,7 +31,7 @@ CSaString CTranscriptionHelper::Render(CTranscriptionData & td)
         result.Append(TAB);
         for (MarkerList::iterator it2 = td.m_Markers.begin(); it2!=td.m_Markers.end(); it2++)
         {
-            if ((*it2).Compare(td.m_szPrimary)==0)
+            if ((*it2).CompareNoCase(td.m_szPrimary)==0)
             {
                 continue;
             }
