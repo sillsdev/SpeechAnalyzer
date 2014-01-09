@@ -153,6 +153,7 @@
 #include "DlgInsertSilence.h"
 #include <io.h>
 #include "FileEncodingHelper.h"
+#include "resource.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE
@@ -986,22 +987,28 @@ BOOL CSaDoc::LoadTranscriptionData(LPCTSTR pszWavePath, BOOL bTemp)
         initSucceeded = FALSE;
     }
 
+	// get sampled data size in seconds
+	// we need to filter the incoming data for segments that fall outside of the
+	// length of the audio file.  They will be dropped, but we need to tell the user
+	int exceeded = 0;
+    DWORD limit = GetDataSize();
+
     // re-initialize the utterance parameters
     m_uttParm.Init(m_FmtParm.wBitsPerSample);
 
     if ((initSucceeded) && (saAudioDocRdr->DocumentExistsInDB))
     {
         ReadNonSegmentData(saAudioDocRdr);
-        ReadTranscription(PHONETIC, saAudioDocRdr);
-        ReadTranscription(PHONEMIC, saAudioDocRdr);
-        ReadTranscription(TONE, saAudioDocRdr);
-        ReadTranscription(ORTHO, saAudioDocRdr);
-        ReadGlossPosAndRefSegments(saAudioDocRdr);
+        exceeded += ReadTranscription(PHONETIC, saAudioDocRdr, limit);
+        exceeded += ReadTranscription(PHONEMIC, saAudioDocRdr, limit);
+        exceeded += ReadTranscription(TONE, saAudioDocRdr, limit);
+        exceeded += ReadTranscription(ORTHO, saAudioDocRdr, limit);
+        exceeded += ReadGlossPosAndRefSegments(saAudioDocRdr, limit);
         ReadScoreData(saAudioDocRdr);
-        ReadTranscription(MUSIC_PL1, saAudioDocRdr);
-        ReadTranscription(MUSIC_PL2, saAudioDocRdr);
-        ReadTranscription(MUSIC_PL3, saAudioDocRdr);
-        ReadTranscription(MUSIC_PL4, saAudioDocRdr);
+        exceeded += ReadTranscription(MUSIC_PL1, saAudioDocRdr, limit);
+        exceeded += ReadTranscription(MUSIC_PL2, saAudioDocRdr, limit);
+        exceeded += ReadTranscription(MUSIC_PL3, saAudioDocRdr, limit);
+        exceeded += ReadTranscription(MUSIC_PL4, saAudioDocRdr, limit);
     }
     else
     {
@@ -1012,18 +1019,28 @@ BOOL CSaDoc::LoadTranscriptionData(LPCTSTR pszWavePath, BOOL bTemp)
         m_saParm.lSignalMax = 0;
         m_saParm.lSignalMin = 0;
 
-        if (m_saParm.dwRecordBandWidth == 0 && m_saParm.byRecordSmpSize == 0 &&
-                m_saParm.dwSignalBandWidth == 0 && m_saParm.byQuantization == 0)
+        if ((m_saParm.dwRecordBandWidth == 0) && 
+			(m_saParm.byRecordSmpSize == 0) &&
+            (m_saParm.dwSignalBandWidth == 0) && 
+			(m_saParm.byQuantization == 0))
         {
             // These parameters used to be initialized improperly to 0 -- Change them
-            m_saParm.RecordTimeStamp = m_fileStat.m_ctime; // Creation time of file
-            m_saParm.dwRecordBandWidth = m_FmtParm.dwSamplesPerSec / 2; // Assume raw untouched file
+            m_saParm.RecordTimeStamp = m_fileStat.m_ctime;					// Creation time of file
+            m_saParm.dwRecordBandWidth = m_FmtParm.dwSamplesPerSec / 2;		// Assume raw untouched file
             m_saParm.byRecordSmpSize = (BYTE)m_FmtParm.wBitsPerSample;
             m_saParm.dwNumberOfSamples = GetDataSize() / m_FmtParm.wBlockAlign;
             m_saParm.dwSignalBandWidth = m_FmtParm.dwSamplesPerSec / 2;
             m_saParm.byQuantization = (BYTE)m_FmtParm.wBitsPerSample;
         }
     }
+
+	if (exceeded>0) {
+		CString param;
+		param.Format(L"%d",exceeded);
+		CString msg;
+	    AfxFormatString1(msg,IDS_LENGTH_EXCEEDED,param);
+		AfxMessageBox(msg, MB_OK | MB_ICONEXCLAMATION);
+	}
 
     saAudioDocRdr->Close();
     saAudioDocRdr->Release();
@@ -1183,7 +1200,9 @@ void CSaDoc::ReadNonSegmentData(ISaAudioDocumentReaderPtr saAudioDocRdr)
     m_uttParm.nMaxInterp = (USHORT)saAudioDocRdr->CalcIntrpGap;
 
     // check the value of nCritLoud
-    if ((m_FmtParm.wBitsPerSample == 16) && (m_uttParm.nCritLoud > 0) && (m_uttParm.nCritLoud < 256))
+    if ((m_FmtParm.wBitsPerSample == 16) && 
+		(m_uttParm.nCritLoud > 0) && 
+		(m_uttParm.nCritLoud < 256))
     {
         m_uttParm.nCritLoud <<= 8;
     }
@@ -1225,21 +1244,22 @@ void CSaDoc::ReadNonSegmentData(ISaAudioDocumentReaderPtr saAudioDocRdr)
 /***************************************************************************/
 // CSaDoc::ReadTranscription  Read a transcription from the transcription
 // database and load it into the document.
+// @param limit the length of the audio data in seconds.
 /***************************************************************************/
-void CSaDoc::ReadTranscription(int transType, ISaAudioDocumentReaderPtr saAudioDocRdr)
+int CSaDoc::ReadTranscription( int transType, ISaAudioDocumentReaderPtr saAudioDocRdr, DWORD limit)
 {
-
+	int exceeded = 0;
     CSegment * pSegment = ((CSaDoc *)this)->GetSegment(transType);
 
     DWORD offset = 0;
-    DWORD nLength = 0;
+    DWORD length = 0;
     BSTR * annotation = (BSTR *)calloc(1, sizeof(long));
     CSaString szFullTrans = _T("");
 
     CDWordArray dwOffsets;
     CDWordArray dwDurations;
 
-    while (saAudioDocRdr->ReadSegment((long)transType, &offset, &nLength, annotation))
+    while (saAudioDocRdr->ReadSegment((long)transType, &offset, &length, annotation))
     {
         CSaString sztmpAnnotation = *annotation;
         szFullTrans += sztmpAnnotation;
@@ -1248,8 +1268,18 @@ void CSaDoc::ReadTranscription(int transType, ISaAudioDocumentReaderPtr saAudioD
         // offsets and durations for each.
         for (int i = 0; i < sztmpAnnotation.GetLength(); i++)
         {
-            dwOffsets.Add(offset / (long)m_FmtParm.wChannels);
-            dwDurations.Add(nLength / (long)m_FmtParm.wChannels);
+			offset = offset / (long)m_FmtParm.wChannels;
+			length = length / (long)m_FmtParm.wChannels;
+			if ((offset+length)>limit) 
+			{
+				TRACE("dropping segment type:%d offset:%d duration:%d sum:%d limit:%d\n",transType,offset,length,(offset+length),limit);
+				exceeded++;
+			} 
+			else 
+			{
+				dwOffsets.Add(offset);
+				dwDurations.Add(length);
+			}
         }
     }
 
@@ -1261,15 +1291,17 @@ void CSaDoc::ReadTranscription(int transType, ISaAudioDocumentReaderPtr saAudioD
     }
 
     free(annotation);
+	return exceeded;
 }
 
 /***************************************************************************/
 // CSaDoc::ReadGlossPosAndRefSegments reads the gloss, part of speech and
 // reference information from the database.
+// @param limit the length of the audio data in seconds.
 /***************************************************************************/
-void CSaDoc::ReadGlossPosAndRefSegments(ISaAudioDocumentReaderPtr saAudioDocRdr)
+int CSaDoc::ReadGlossPosAndRefSegments( ISaAudioDocumentReaderPtr saAudioDocRdr, DWORD limit)
 {
-
+	int exceeded = 0;
     CGlossSegment * pGloss = (CGlossSegment *)m_apSegments[GLOSS];
     DWORD offset = 0;
     DWORD length = 0;
@@ -1285,20 +1317,28 @@ void CSaDoc::ReadGlossPosAndRefSegments(ISaAudioDocumentReaderPtr saAudioDocRdr)
         offset /= m_FmtParm.wChannels;
         length /= m_FmtParm.wChannels;
 
-        CSaString szGloss = *gloss;
-        pGloss->Insert(i, szGloss, (isBookmark!=0), offset, length);
-        pGloss->POSSetAtGrow( i++, (CSaString)*pos);
-
-        CSaString szRef = *ref;
-        if (szRef.GetLength())
-        {
-            m_apSegments[REFERENCE]->Insert(nRef++, szRef, 0, offset, length);
-        }
+		if ((offset+length)>limit) 
+		{
+			TRACE("dropping gloss segment offset:%d duration:%d sum:%d limit:%d\n",offset,length,(offset+length),limit);
+			exceeded++;
+		} 
+		else 
+		{
+			CSaString szGloss = *gloss;
+			pGloss->Insert(i, szGloss, (isBookmark!=0), offset, length);
+			pGloss->POSSetAtGrow( i++, (CSaString)*pos);
+			CSaString szRef = *ref;
+			if (szRef.GetLength())
+			{
+				m_apSegments[REFERENCE]->Insert(nRef++, szRef, 0, offset, length);
+			}
+		}
     }
 
     free(gloss);
     free(pos);
     free(ref);
+	return exceeded;
 }
 
 /***************************************************************************/

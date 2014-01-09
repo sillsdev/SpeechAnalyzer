@@ -26,7 +26,7 @@ LANGUAGE LANG_NEUTRAL, SUBLANG_NEUTRAL
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 3,1,0,82
+ FILEVERSION 3,1,0,83
  PRODUCTVERSION 1,0,0,1
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
@@ -44,7 +44,7 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "SIL International"
             VALUE "FileDescription", "SA"
-            VALUE "FileVersion", "v3.1.0.82"
+            VALUE "FileVersion", "v3.1.0.83"
             VALUE "InternalName", "SA"
             VALUE "LegalCopyright", "© 1996-2014 SIL International (MSEA)"
             VALUE "ProductName", "SA"
@@ -4357,7 +4357,7 @@ IDC_MHANDN              CURSOR                  "res\\MedHandN.cur"
 
 STRINGTABLE
 BEGIN
-    VS_VERSION              "Version 3.1.0.82"
+    VS_VERSION              "Version 3.1.0.83"
     VS_COPYRIGHT            "© 1996-2014 SIL International (MSEA).\nAll Rights Reserved."
     IDR_MAINFRAME           "Speech Analyzer"
     IDR_SA_ANNTYPE          "\nSA\nSA Document\nWAV Files (*.wav)\n.wav\nannFileType\nANN File Type"
@@ -5423,6 +5423,7 @@ BEGIN
     IDS_WARN_CONVERT        "This file is in Unicode UTF-16 format.\nSpeech Analyzer is able to open this file, but it would be better to use UTF-8."
     IDS_NO_CONVERT          "This file is in a non-standard format.\nSpeech Analyzer is not able to open this file.\nIt should be save as Unicode UTF-8."
     IDS_MEMORY_FAILURE      "Couldn't allocate sufficient memory for the clipboard operation."
+    IDS_LENGTH_EXCEEDED     "The .SAXML transcription file contains %1 segments that are located beyond the end of the audio data.\nThe segments have been ignored.\nIf you save this file, the segments will be permanently deleted."
 END
 
 #endif    // English (United States) resources

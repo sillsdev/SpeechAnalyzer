@@ -1,3 +1,6 @@
+SA - 3.1.0.83 1/8/2014
+1) Added code to check for segments that are beyond the end of the audio data when the segments are loaded on a file-open.  A message is displayed if bad segments are found.  The bad segments are ignored.
+
 SA - 3.1.0.82 1/7/2014
 1) Fixed bug that was preventing automatic loading of transcription data after the user clicks 'next' on the first dialog of the Align-Transcription-Data feature.
 2) Modified code to better support importing of SFM tags that aren't lower case.

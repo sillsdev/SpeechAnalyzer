@@ -1580,7 +1580,6 @@
 #define ID_AUTOSAVE_OFF                 33236
 #define ID_TOOLS_ADJUST_SILENCE         33237
 #define ID_ACCELERATOR33238             33238
-
 #define ID_GRAPHTYPES_SELECT_FIRST      40000
 #define ID_GRAPHTYPES_SELECT_LAST       40011
 #define ID_PHONETIC_ALL                 40100
@@ -1724,6 +1723,7 @@
 #define IDS_WARN_CONVERT                61313
 #define IDS_NO_CONVERT                  61314
 #define IDS_MEMORY_FAILURE              61315
+#define IDS_LENGTH_EXCEEDED             61316
 
 // Next default values for new objects
 // 

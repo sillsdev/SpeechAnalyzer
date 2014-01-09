@@ -136,7 +136,8 @@ public:
     CSaString GetMusicScore();
     BOOL IsBackgroundProcessing();
     BOOL EnableBackgroundProcessing(BOOL bState = TRUE);            // background processing: TRUE = enabled
-    CProcessDoc * GetUnprocessed();                                 // process pointer to Unprocessed
+	
+	CProcessDoc * GetUnprocessed();                                 // process pointer to Unprocessed
     CProcessAdjust * GetAdjust();                                   // process pointer to adjust
     CProcessFragments * GetFragments();                             // process pointer to fragment object
     CProcessLoudness * GetLoudness();                               // process pointer to loudness object
@@ -347,8 +348,8 @@ private:
     BOOL ReadRiff(LPCTSTR pszPathName);
     BOOL LoadTranscriptionData(LPCTSTR pszPathName, BOOL bTemp);
     void ReadNonSegmentData(ISaAudioDocumentReaderPtr saAudioDocRdr);
-    void ReadTranscription(int transType, ISaAudioDocumentReaderPtr saAudioDocRdr);
-    void ReadGlossPosAndRefSegments(ISaAudioDocumentReaderPtr saAudioDocRdr);
+    int ReadTranscription(int transType, ISaAudioDocumentReaderPtr saAudioDocRdr, DWORD limit);
+    int ReadGlossPosAndRefSegments(ISaAudioDocumentReaderPtr saAudioDocRdr, DWORD limit);
     void ReadScoreData(ISaAudioDocumentReaderPtr saAudioDocRdr);
 
     // Methods for saving a wave file and all it's transcription data.

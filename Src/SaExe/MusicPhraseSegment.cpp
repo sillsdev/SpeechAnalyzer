@@ -3,8 +3,9 @@
 #include "Sa_Doc.h"
 
 CMusicPhraseSegment::CMusicPhraseSegment(int index, int master) :
-    CIndependentSegment(index,master)
+    CIndependentSegment(index,master) 
 {
+	TRACE("adding segment %d %d\n",index,master);
 }
 
 /***************************************************************************/

@@ -770,10 +770,7 @@ void CDlgKlattAll::ParseConstantsGrid(int nGrid, CKlattConstants & cConstants)
     for (int i=0; parameterInfo[i].parameterOffset != -1; i++)
     {
         int row = i + 1;
-
-        CString value;
-
-        value = m_cGrid[nGrid].GetTextMatrix(row,2);
+        CString value = m_cGrid[nGrid].GetTextMatrix(row,2);
         swscanf(value, parameterInfo[i].typeScanf, ((char *)&cConstants)+parameterInfo[i].parameterOffset);
     }
 }
