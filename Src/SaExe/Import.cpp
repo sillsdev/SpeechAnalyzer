@@ -1409,11 +1409,11 @@ bool CImport::ProcessNormal( wistringstream & data, EImportMode nMode, wstring &
             }
             else if (stream.ReadStreamString(psz_Comments, text))
             {
-                pDoc->GetSaParm()->szDescription = text;
+                pDoc->SetDescription(text);
             }
             else if (stream.ReadStreamString(psz_Description, text))
             {
-                pDoc->GetSaParm()->szDescription = text;
+                pDoc->SetDescription(text);
             }
             else if (stream.ReadStreamString(psz_Phonetic, text))
             {

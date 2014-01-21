@@ -1,5 +1,4 @@
 #include "stdafx.h"
-
 #include <stdio.h>
 #include <conio.h>
 #include <math.h>
@@ -9,6 +8,7 @@
 #include "waveresampler.h"
 #include "dlgmultichannel.h"
 #include <vector>
+#include "AppDefs.h"
 
 #define PI  3.14159265359
 #define PERCENT_TRANSITION   .10F
@@ -300,7 +300,7 @@ void CWaveResampler::Func(size_t bufferLen,
 * This method uses 32-bit floating point to do the majority of the work.
 * The incoming default progress bar is 30%....
 */
-CWaveResampler::ECONVERT CWaveResampler::Run(LPCTSTR src, const TCHAR  * dst, CProgressStatusBar * pStatusBar)
+CWaveResampler::ECONVERT CWaveResampler::Resample(LPCTSTR src, const TCHAR  * dst, CProgressStatusBar * pStatusBar)
 {
 
     // yes, I could have used smart pointers...I was in a hurry.
@@ -1105,6 +1105,607 @@ CWaveResampler::ECONVERT CWaveResampler::Run(LPCTSTR src, const TCHAR  * dst, CP
     }
 
     pStatusBar->SetProgress(100);
+
+    return EC_SUCCESS;
+}
+
+/**
+* Convert the incoming .WAV file to mono.
+*/
+CWaveResampler::ECONVERT CWaveResampler::Monotize( LPCTSTR src, LPCTSTR dst, EFileFormat fileFormat)
+{
+    // yes, I could have used smart pointers...I was in a hurry.
+    TRACE(L"reading %s\n",src);
+
+    size_t length = 0;
+    BYTE * data = NULL;
+    WORD wBitsPerSample = 0;
+    WORD wFormatTag = 0;
+    WORD nChannels = 0;
+    DWORD nSamplesPerSec = 0;
+    WORD nBlockAlign = 0;
+
+    // read in the data
+    {
+        // open existing file
+        HMMIO hmmio = mmioOpen(const_cast<TCHAR *>(src), 0, MMIO_ALLOCBUF | MMIO_READ);
+        if (hmmio==NULL)
+        {
+            TRACE("mmioOpen fail\n");
+            return EC_NOWAVE;
+        }
+
+        MMCKINFO waveChunk;
+        memset(&waveChunk,0,sizeof(waveChunk));
+        /* Tell Windows to locate a WAVE Group header somewhere in the file, and read it in.
+        This marks the start of any embedded WAVE format within the file */
+        waveChunk.fccType = mmioFOURCC('W', 'A', 'V', 'E');
+        if (mmioDescend(hmmio, (LPMMCKINFO)&waveChunk, NULL, MMIO_FINDRIFF))
+        {
+            /* Oops! No embedded WAVE format within this file */
+            TRACE("mmioDescend fail\n");
+            mmioClose(hmmio, 0);
+            return EC_NOWAVE;
+        }
+
+        MMCKINFO fmtChunk;
+        memset(&fmtChunk,0,sizeof(fmtChunk));
+        /* Tell Windows to locate the WAVE's "fmt " chunk and read in its header */
+        fmtChunk.ckid = mmioFOURCC('f', 'm', 't', ' ');
+        if (mmioDescend(hmmio, &fmtChunk, &waveChunk, MMIO_FINDCHUNK))
+        {
+            TRACE("mmioDescend fail\n");
+            mmioClose(hmmio, 0);
+            return EC_READFAIL;
+        }
+
+        if ((fmtChunk.cksize==16)||(fmtChunk.cksize==18))
+        {
+            /* Tell Windows to read in the "fmt " chunk into a WAVEFORMATEX structure */
+            WAVEFORMATEX format;
+            memset(&format,0,sizeof(format));
+            if (mmioRead(hmmio, (HPSTR)&format, fmtChunk.cksize) != (LRESULT)fmtChunk.cksize)
+            {
+                TRACE("mmioRead fail\n");
+                mmioClose(hmmio, 0);
+                return EC_READFAIL;
+            }
+
+            wFormatTag = format.wFormatTag;
+            nChannels = format.nChannels;
+            nSamplesPerSec = format.nSamplesPerSec;
+            nBlockAlign = format.nBlockAlign;
+            wBitsPerSample = format.wBitsPerSample;
+
+        }
+        else if (fmtChunk.cksize==40)
+        {
+
+            WAVEFORMATEXTENSIBLE waveInEx;
+            memset(&waveInEx,0,sizeof(WAVEFORMATEXTENSIBLE));
+            /* Tell Windows to read in the "fmt " chunk into a WAVEFORMATEX structure */
+            if (mmioRead(hmmio, (HPSTR)&waveInEx, fmtChunk.cksize) != (LRESULT)fmtChunk.cksize)
+            {
+                TRACE("mmioRead fail\n");
+                mmioClose(hmmio, 0);
+                return EC_READFAIL;
+            }
+
+            wFormatTag = waveInEx.Format.wFormatTag;
+            nChannels = waveInEx.Format.nChannels;
+            nSamplesPerSec = waveInEx.Format.nSamplesPerSec;
+            nBlockAlign = waveInEx.Format.nBlockAlign;
+            wBitsPerSample = waveInEx.Format.wBitsPerSample;
+
+            if (waveInEx.SubFormat==KSDATAFORMAT_SUBTYPE_PCM)
+            {
+                wFormatTag = WAVE_FORMAT_PCM;
+            }
+            else if (waveInEx.SubFormat==KSDATAFORMAT_SUBTYPE_IEEE_FLOAT)
+            {
+                wFormatTag = WAVE_FORMAT_IEEE_FLOAT;
+            }
+        }
+        else
+        {
+            TRACE("unsupported format chunk size %d\n",fmtChunk.cksize);
+            mmioClose(hmmio, 0);
+            return EC_READFAIL;
+        }
+
+        if (mmioAscend(hmmio, &fmtChunk, 0))
+        {
+            TRACE("mmioAscend fail\n");
+            mmioClose(hmmio, 0);
+            return EC_READFAIL;
+        }
+
+        TRACE("format=%d channels=%d bits/sample=%d sps=%d\n",wFormatTag,nChannels,wBitsPerSample,nSamplesPerSec);
+
+        if (wBitsPerSample==64)
+        {
+            TRACE("64-bit samples are not supported\n");
+            mmioClose(hmmio, 0);
+            return EC_NOTSUPPORTED;
+        }
+
+        // read the data chunk
+        MMCKINFO dataChunk;
+        memset(&dataChunk,0,sizeof(dataChunk));
+        /* Tell Windows to locate the WAVE's "fmt " chunk and read in its header */
+        dataChunk.ckid = mmioFOURCC('d', 'a', 't', 'a');
+        if (mmioDescend(hmmio, &dataChunk, NULL, MMIO_FINDCHUNK))
+        {
+            TRACE("mmioDescend fail\n");
+            mmioClose(hmmio, 0);
+            return EC_NODATA;
+        }
+
+        length = dataChunk.cksize;
+        data = new BYTE[dataChunk.cksize];
+
+        /** read the data */
+        if (mmioRead(hmmio, (HPSTR)data, dataChunk.cksize) != (LRESULT)dataChunk.cksize)
+        {
+            TRACE("mmioRead fail\n");
+            mmioClose(hmmio, 0);
+            delete [] data;
+            data = NULL;
+            return EC_READFAIL;
+        }
+
+        if (mmioAscend(hmmio, &dataChunk, 0))
+        {
+            TRACE("mmioAscend fail\n");
+            mmioClose(hmmio, 0);
+            delete [] data;
+            data = NULL;
+            return EC_READFAIL;
+        }
+
+        // Close the file.
+        if (mmioClose(hmmio, 0))
+        {
+            TRACE("mmioClose fail\n");
+            delete [] data;
+            data = NULL;
+            return EC_READFAIL;
+        }
+    }
+
+    // convert incoming format if possible
+    if ((wFormatTag!=WAVE_FORMAT_PCM) && 
+		(wFormatTag!=WAVE_FORMAT_IEEE_FLOAT))
+    {
+		return EC_NOTSUPPORTED;
+	}
+
+    if (data==NULL)
+    {
+        TRACE("data is NULL\n");
+        return EC_SOFTWARE;
+    }
+
+    // convert everything to 32-bit float
+    double * datal = NULL;
+    {
+        size_t numSamples = length/nBlockAlign;
+        size_t bufferSize = numSamples*nChannels;
+        double * buffer = new double[bufferSize];
+
+        size_t j = 0;
+        size_t k = 0;
+        if (wFormatTag==WAVE_FORMAT_PCM)
+        {
+            // if it's 32 bit, we also don't need to do this
+            switch (wBitsPerSample)
+            {
+            case 16:
+            {
+                for (size_t i=0; i<numSamples; i++)
+                {
+                    for (unsigned int c=0; c<nChannels; c++)
+                    {
+                        unsigned long b0 = data[k++];
+                        unsigned long b1 = data[k++];
+                        unsigned long val = b1;
+                        val = val<<8L;
+                        val += b0;
+                        long result = ConvBitSize(val,16);
+                        result *= 0x10000;
+                        double temp = result;
+                        temp /= (double)0x7fffffff;
+                        temp = Limit(temp);
+                        buffer[j++]=temp;
+                    }
+                }
+            }
+            break;
+            case 24:
+            {
+                for (size_t i=0; i<numSamples; i++)
+                {
+                    for (unsigned int c=0; c<nChannels; c++)
+                    {
+                        unsigned long b0 = data[k++];
+                        unsigned long b1 = data[k++];
+                        unsigned long b2 = data[k++];
+                        unsigned long val = b2;
+                        val = val<<8L;
+                        val += b1;
+                        val = val<<8L;
+                        val += b0;
+                        long result = ConvBitSize(val,24);
+                        result *= 0x100;
+                        double temp = result;
+                        temp /= (double)0x7fffffff;
+                        temp = Limit(temp);
+                        buffer[j++]=temp;
+                    }
+                }
+            }
+            break;
+            case 32:
+            {
+                for (size_t i=0; i<numSamples; i++)
+                {
+                    for (unsigned int c=0; c<nChannels; c++)
+                    {
+                        unsigned long b0 = data[k++];
+                        unsigned long b1 = data[k++];
+                        unsigned long b2 = data[k++];
+                        unsigned long b3 = data[k++];
+                        unsigned long val = b3;
+                        val = val<<8L;
+                        val += b2;
+                        val = val<<8L;
+                        val += b1;
+                        val = val<<8L;
+                        val += b0;
+                        long result = ConvBitSize(val,32);
+                        double temp = result;
+                        temp /= (double)0x7fffffff;
+                        temp = Limit(temp);
+                        buffer[j++]=temp;
+                    }
+                }
+            }
+            break;
+            default:
+                TRACE("unsupported format size %d\n",wBitsPerSample);
+                delete [] buffer;
+                delete [] data;
+                data = NULL;
+                return EC_WRONGFORMAT;
+            }
+        }
+        else if (wFormatTag==WAVE_FORMAT_IEEE_FLOAT)
+        {
+            // assume float
+            switch (wBitsPerSample)
+            {
+            case 32:
+            {
+                float * samples = (float *)data;
+                for (size_t i=0; i<numSamples; i++)
+                {
+                    int z = i*nChannels;
+                    for (unsigned int c=0; c<nChannels; c++)
+                    {
+                        double temp = samples[z+c];
+                        temp = Limit(temp);
+                        buffer[j++] = temp;
+                    }
+                }
+            }
+            break;
+            default:
+                TRACE("unsupported floating-point format size %d\n",wBitsPerSample);
+                delete [] buffer;
+                delete [] data;
+                data = NULL;
+                return EC_WRONGFORMAT;
+            }
+        }
+        else
+        {
+            TRACE("unsupported format %d\n",wFormatTag);
+            delete [] buffer;
+            delete [] data;
+            data = NULL;
+            return EC_WRONGFORMAT;
+        }
+
+        length = bufferSize;
+        delete [] data;
+        data = NULL;
+        datal = buffer;
+    }
+
+    // at this point we have 32-bit PCM only
+    wBitsPerSample = 32;
+    nBlockAlign = 4*nChannels;
+    wFormatTag = WAVE_FORMAT_PCM;
+
+    // at this point the old data pointer is no longer used...
+
+    if (datal==NULL)
+    {
+        // shouldn't be!
+        TRACE("datal is NULL\n");
+        return EC_SOFTWARE;
+    }
+
+    vector<double *> buffers;
+
+    // pull each channel into it's own buffer
+    for (int ch=0; ch<nChannels; ch++)
+    {
+
+        size_t numSamples = length/nChannels;
+        size_t bufferSize = numSamples;
+        double * buffer = new double[bufferSize];
+
+        size_t k=0;
+        size_t j=0;
+        for (size_t i=0; i<numSamples; i++)
+        {
+            double sum = 0;
+            for (size_t c=0; c<nChannels; c++)
+            {
+                if (k>=length)
+                {
+                    TRACE("buffer index problem\n");
+                    delete [] buffer;
+                    delete [] datal;
+                    datal = NULL;
+                    return EC_SOFTWARE;
+                }
+                if (ch==c)
+                {
+                    sum += datal[k];
+                }
+                k++;
+            }
+            if (ch==nChannels)
+            {
+                sum /= (double)nChannels;
+            }
+            else
+            {
+                // it's a single channel - do nothing
+            }
+            buffer[j++]=sum;
+        }
+        if (j!=bufferSize)
+        {
+            TRACE("buffer size problem\n");
+            delete [] buffer;
+            delete [] datal;
+            datal = NULL;
+            return EC_SOFTWARE;
+        }
+
+        buffers.push_back(buffer);
+    }
+
+    // this buffer isn't needed any more
+    delete [] datal;
+    datal = NULL;
+
+    {
+        //Creating new wav file.
+        HMMIO hmmio = mmioOpen(const_cast<TCHAR *>(dst), 0, MMIO_CREATE | MMIO_WRITE);
+        if (hmmio==NULL)
+        {
+            TRACE("mmioOpen fail\n");
+            for (size_t chx=0; chx<buffers.size(); chx++)
+            {
+                delete [] buffers[chx];
+            }
+            return EC_WRITEFAIL;
+        }
+
+        // create a 'RIFF' chunk with a 'WAVE' form type
+        MMCKINFO riffChunk;
+        riffChunk.fccType = mmioFOURCC('W', 'A', 'V', 'E'); // prepare search code
+        // set chunk size
+        riffChunk.cksize = 4+8+16+8+length;
+        //Creating RIFF chunk
+        if (mmioCreateChunk(hmmio, &riffChunk, MMIO_CREATERIFF))
+        {
+            TRACE("mmioCreateChunk fail\n");
+            mmioClose(hmmio,0);
+            for (size_t chx=0; chx<buffers.size(); chx++)
+            {
+                delete [] buffers[chx];
+            }
+            return EC_WRITEFAIL;
+        }
+
+        nBlockAlign = 2*nChannels;
+        wBitsPerSample = 16;
+
+        // create the 'fmt ' subchunk
+        MMCKINFO formatChunk;
+        formatChunk.ckid = mmioFOURCC('f', 'm', 't', ' ');
+        // set chunk size
+        formatChunk.cksize = 16;
+        //Creating format chunk and inserting information from source file
+        if (mmioCreateChunk(hmmio, &formatChunk, 0))
+        {
+            TRACE("mmioCreateChunk fail\n");
+            mmioClose(hmmio,0);
+            for (size_t chx=0; chx<buffers.size(); chx++)
+            {
+                delete [] buffers[chx];
+            }
+            return EC_WRITEFAIL;
+        }
+        // write the format parameters into 'fmt ' chunk
+        LONG len = mmioWrite(hmmio, (HPSTR)&wFormatTag, sizeof(WORD));
+        if (len!=sizeof(WORD))
+        {
+            TRACE("mmioWrite fail\n");
+            mmioClose(hmmio,0);
+            for (size_t chx=0; chx<buffers.size(); chx++)
+            {
+                delete [] buffers[chx];
+            }
+            return EC_WRITEFAIL;
+        }
+
+        TRACE("writing out %d channels\n",nChannels);
+        len = mmioWrite(hmmio, (HPSTR)&nChannels, sizeof(WORD));
+        if (len!=sizeof(WORD))
+        {
+            TRACE("mmioWrite fail\n");
+            mmioClose(hmmio,0);
+            for (size_t chx=0; chx<buffers.size(); chx++)
+            {
+                delete [] buffers[chx];
+            }
+            return EC_WRITEFAIL;
+        }
+        len = mmioWrite(hmmio, (HPSTR)&nSamplesPerSec, sizeof(DWORD));
+        if (len!=sizeof(DWORD))
+        {
+            TRACE("mmioWrite fail\n");
+            mmioClose(hmmio,0);
+            for (size_t chx=0; chx<buffers.size(); chx++)
+            {
+                delete [] buffers[chx];
+            }
+            return EC_WRITEFAIL;
+        }
+        DWORD nAvgBytesPerSec = nSamplesPerSec*nBlockAlign;
+        len = mmioWrite(hmmio, (HPSTR)&nAvgBytesPerSec, sizeof(DWORD));
+        if (len!=sizeof(DWORD))
+        {
+            TRACE("mmioWrite fail\n");
+            mmioClose(hmmio,0);
+            for (size_t chx=0; chx<buffers.size(); chx++)
+            {
+                delete [] buffers[chx];
+            }
+            return EC_WRITEFAIL;
+        }
+        len = mmioWrite(hmmio, (HPSTR)&nBlockAlign, sizeof(WORD));
+        if (len!=sizeof(WORD))
+        {
+            TRACE("mmioWrite fail\n");
+            mmioClose(hmmio,0);
+            for (size_t chx=0; chx<buffers.size(); chx++)
+            {
+                delete [] buffers[chx];
+            }
+            return EC_WRITEFAIL;
+        }
+        len = mmioWrite(hmmio, (HPSTR)&wBitsPerSample, sizeof(WORD));
+        if (len!=sizeof(WORD))
+        {
+            TRACE("mmioWrite fail\n");
+            mmioClose(hmmio,0);
+            for (size_t chx=0; chx<buffers.size(); chx++)
+            {
+                delete [] buffers[chx];
+            }
+            return EC_WRITEFAIL;
+        }
+        if (mmioAscend(hmmio, &formatChunk, 0))
+        {
+            TRACE("mmioAscend fail\n");
+            mmioClose(hmmio,0);
+            for (size_t chx=0; chx<buffers.size(); chx++)
+            {
+                delete [] buffers[chx];
+            }
+            return EC_WRITEFAIL;
+        }
+
+        {
+            // convert the data to 16-bit for all channels
+            DWORD bufferSize = length*2;
+            DWORD numSamples = length/nChannels;
+            BYTE * buffer = new BYTE[bufferSize];
+            size_t k=0;
+            for (size_t i=0; i<numSamples; i++)
+            {
+                for (size_t ch=0; ch<buffers.size(); ch++)
+                {
+                    double dval = buffers[ch][i];
+                    dval = Limit(dval);
+                    long lval = (long)(dval*(double)0x7fffffff);
+                    lval /= 0x10000;
+                    __int16 ival = (__int16)lval;
+                    BYTE lb = ival & 0xff;
+                    BYTE hb = ival>>8;
+                    buffer[k++] = lb;
+                    buffer[k++] = hb;
+                }
+            }
+
+            //Creating data chunk and inserting information from source file
+            MMCKINFO dataChunk;
+            dataChunk.ckid = mmioFOURCC('d', 'a', 't', 'a');
+            dataChunk.cksize = bufferSize;
+            if (mmioCreateChunk(hmmio, &dataChunk, 0))
+            {
+                TRACE("mmioCreateChunk fail\n");
+                delete [] buffer;
+                mmioClose(hmmio,0);
+                for (size_t chx=0; chx<buffers.size(); chx++)
+                {
+                    delete [] buffers[chx];
+                }
+                return EC_WRITEFAIL;
+            }
+
+            len = mmioWrite(hmmio, (char *)buffer, dataChunk.cksize);
+
+            delete [] buffer;
+
+            if (len!=dataChunk.cksize)
+            {
+                TRACE("mmioWrite fail\n");
+                mmioClose(hmmio,0);
+                for (size_t chx=0; chx<buffers.size(); chx++)
+                {
+                    delete [] buffers[chx];
+                }
+                return EC_WRITEFAIL;
+            }
+
+            if (mmioAscend(hmmio, &dataChunk, 0))
+            {
+                TRACE("mmioAscend fail\n");
+                mmioClose(hmmio,0);
+                for (size_t chx=0; chx<buffers.size(); chx++)
+                {
+                    delete [] buffers[chx];
+                }
+                return EC_WRITEFAIL;
+            }
+        }
+
+        // Close the file.
+        if (mmioClose(hmmio, 0))
+        {
+            TRACE("mmioClose fail\n");
+            for (size_t chx=0; chx<buffers.size(); chx++)
+            {
+                delete [] buffers[chx];
+            }
+            return EC_WRITEFAIL;
+        }
+    }
+
+    TRACE("format=%d channels=%d bits/sample=%d sps=%d\n",wFormatTag,nChannels,wBitsPerSample,nSamplesPerSec);
+
+    for (size_t chx=0; chx<buffers.size(); chx++)
+    {
+        delete [] buffers[chx];
+    }
 
     return EC_SUCCESS;
 }

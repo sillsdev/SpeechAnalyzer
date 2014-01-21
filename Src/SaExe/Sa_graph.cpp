@@ -1552,10 +1552,10 @@ void CGraphWnd::UpdateStatusBar(DWORD dwStartCursor, DWORD dwStopCursor, BOOL bF
 
         default:
             bShowPosition = bShowDuration = TRUE;
-            pStat->SetPaneSymbol(ID_STATUSPANE_AMPLITUDE, FALSE); // amplitude symbol
-            pStat->SetPaneText(ID_STATUSPANE_AMPLITUDE, _T("        "));  // amplitude indicator
-            pStat->SetPaneSymbol(ID_STATUSPANE_PITCH, FALSE); // pitch symbol
-            pStat->SetPaneText(ID_STATUSPANE_PITCH, _T("        "));  // pitch indicator
+            pStat->SetPaneSymbol(ID_STATUSPANE_AMPLITUDE, FALSE);			// amplitude symbol
+            pStat->SetPaneText(ID_STATUSPANE_AMPLITUDE, _T("        "));	// amplitude indicator
+            pStat->SetPaneSymbol(ID_STATUSPANE_PITCH, FALSE);				// pitch symbol
+            pStat->SetPaneText(ID_STATUSPANE_PITCH, _T("        "));		// pitch indicator
             break;
         }
 

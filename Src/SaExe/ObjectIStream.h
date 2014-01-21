@@ -10,6 +10,8 @@
 #ifndef OBJECTISTREAM_H
 #define OBJECTISTREAM_H
 
+#include <fstream>
+
 using std::ifstream;  // iostream
 using std::ofstream;  // iostream
 using std::streampos;

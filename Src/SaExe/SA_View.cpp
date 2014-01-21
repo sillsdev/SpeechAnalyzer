@@ -914,13 +914,13 @@ void CSaView::OnFileInformation()
     szCaption += " - " + szTitle;                               // build new caption string
     CDlgFileInformation dlg(szCaption, NULL, 0);                // file information dialog
     // set file description string
-    dlg.m_dlgUserPage.m_szFileDesc = pDoc->GetSaParm()->szDescription;
+    dlg.m_dlgUserPage.m_szFileDesc = pDoc->GetDescription();
     dlg.m_dlgUserPage.m_szFreeTranslation = pSourceParm->szFreeTranslation;
     if (dlg.DoModal() == IDOK)
     {
         // get new file description string
         BOOL modified = FALSE;
-        if (pDoc->GetSaParm()->szDescription != dlg.m_dlgUserPage.m_szFileDesc)
+        if (!pDoc->MatchesDescription(dlg.m_dlgUserPage.m_szFileDesc))
         {
             modified = TRUE;
         }
@@ -951,9 +951,9 @@ void CSaView::OnFileInformation()
         }
 
 
-        if (pDoc->GetSaParm()->szDescription != dlg.m_dlgUserPage.m_szFileDesc)
+        if (!pDoc->MatchesDescription(dlg.m_dlgUserPage.m_szFileDesc))
         {
-            pDoc->GetSaParm()->szDescription = dlg.m_dlgUserPage.m_szFileDesc;
+			pDoc->SetDescription(dlg.m_dlgUserPage.m_szFileDesc);
             pDoc->SetModifiedFlag(TRUE);                        // document has been modified
             pDoc->SetTransModifiedFlag(TRUE);                   // transcription data has been modified
         }

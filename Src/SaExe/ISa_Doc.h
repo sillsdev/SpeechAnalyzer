@@ -1,7 +1,6 @@
 #ifndef _ISA_DOC__
 #define _ISA_DOC__
 
-struct SaParm;
 class CFmtParm;
 class CMusicParm;
 class CUttParm;
@@ -33,6 +32,7 @@ class CProcessRatio;
 class CProcessPOA;
 class CProcessGlottis;
 class CProcessTonalWeightChart;
+class CSaParam;
 
 __interface ISaDoc
 {
@@ -41,8 +41,6 @@ public:
     int GetWbProcess();
     int GetGender();
     const CMusicParm * GetMusicParm() const;
-    SaParm * GetSaParm();
-    void GetSaParm(SaParm *);
     const CUttParm * GetUttParm();
     void GetUttParm(CUttParm *, BOOL bOriginal=FALSE);
     void GetFmtParm(CFmtParm & format, bool processed);
@@ -103,6 +101,7 @@ public:
     DWORD GetAvgBytesPerSec();
     DWORD GetNumChannels() const;
     DWORD GetNumSamples() const;
+	DWORD GetSignalBandWidth();
 };
 
 #endif

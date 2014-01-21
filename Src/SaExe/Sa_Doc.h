@@ -36,7 +36,6 @@
 #include "undoredo.h"
 #include "SaString.h"
 #include "Appdefs.h"
-#include "saParm.h"
 #include "sourceParm.h"
 #include "ISa_Doc.h"
 #include "TranscriptionData.h"
@@ -47,6 +46,7 @@
 #include "FmtParm.h"
 #include "AutoSave.h"
 #include "Process\ProcessDoc.h"
+#include "SaParam.h"
 
 #import "speechtoolsutils.tlb" no_namespace named_guids
 #import "st_audio.tlb" no_namespace named_guids
@@ -111,15 +111,12 @@ public:
     void SetWbProcess(int nProcess);                                // set workbench process number
     int GetWbProcess();                                             // return workbench process number
     CFileStatus * GetFileStatus();                                  // pointer to file status structure
-    SaParm * GetSaParm();                                           // pointer to sa parameters structure
     SourceParm * GetSourceParm();                                   // pointer to source parameters structure
     int GetGender();                                                // returns gender: 0 = male, 1 = female, 2 = child
     // guesses if undefined in source parameters
     const CUttParm * GetUttParm();
-    void GetSaParm(SaParm *);                                       // get a copy of the sa parameters structure
     void GetUttParm(CUttParm *, BOOL bOriginal=FALSE);              // get a copy of the utterance parameters structure
     void SetFmtParm(CFmtParm *, BOOL bAdjustSpectro = TRUE);        // set format parameters structure
-    void SetSaParm(SaParm *);                                       // set sa parameters structure
     void SetUttParm(const CUttParm *, BOOL bOriginal = FALSE);      // set utterance parameters structure
     const CPitchParm * GetPitchParm() const;                        // pointer to pitch parameters structure
     void SetPitchParm(const CPitchParm & parm);
@@ -184,6 +181,7 @@ public:
     virtual void OnCloseDocument();
     virtual BOOL DoFileSave();
     BOOL CopySectionToNewWavFile( WAVETIME dwSectionStart, WAVETIME dwSectionLength, LPCTSTR szNewWave, BOOL usingClipboard);
+	bool ConvertToMono( bool stereo, EFileFormat fileFormat, LPCTSTR filename);
     BOOL LoadDataFiles(LPCTSTR pszPathName, bool bTemp = false);
     BOOL WriteDataFiles(LPCTSTR pszPathName, BOOL bSaveAudio = TRUE, BOOL bIsClipboardFile = FALSE);
     bool GetWaveFormatParams(LPCTSTR pszPathName, CFmtParm & fmtParm, DWORD & dwDataSize);
@@ -287,6 +285,26 @@ public:
 	void StoreAutoRecoveryInformation();
 
 	wstring GetTranscriptionFilename();
+	bool IsUsingHighPassFilter();
+	void DisableHighPassFilter();
+	CSaString GetDescription();
+	void SetDescription( LPCTSTR val);
+	bool MatchesDescription( LPCTSTR val);
+	bool IsValidRecordFileFormat();
+	int GetRecordFileFormat();
+	DWORD GetRecordBandWidth();
+	BYTE GetRecordSampleSize();
+	BYTE GetQuantization();
+	void SetQuantization( BYTE val);
+	DWORD GetSignalBandWidth();
+	void SetSignalBandWidth( DWORD val);
+	void ClearHighPassFilter();
+	void SetHighPassFilter();
+	DWORD GetNumberOfSamples();
+	void SetNumberOfSamples( DWORD val);
+	void SetRecordSampleSize( BYTE val);
+	void SetRecordBandWidth( DWORD val);
+	void SetRecordTimeStamp( CTime & val);
 
 protected:
     virtual void DeleteContents();
@@ -372,11 +390,10 @@ private:
     // for stereo 16 bit, the data is ordered
     // left(low), left(high), right(low), right(high)
 
-
     wstring m_szRawDataWrk;                     // wave working temporary represents all channels of data
     DWORD m_dwDataSize;                         // size of the data subchunk for all channels
     CFmtParm m_FmtParm;                         // contains format parameters
-    SaParm m_saParm;                            // contains sa parameters
+    CSaParam m_saParam;                         // contains sa parameters
     SourceParm m_sourceParm;                    // contains source parameters
     CUttParm m_uttParm;                         // contains utterance (pitch) parameters
     CUttParm m_uttOriginal;                     // contains utterance (pitch) parameters as read from file

@@ -123,10 +123,6 @@ void CDlgRecorder::SetSettingsText()
 {
     CSaDoc * pDoc = (CSaDoc *)m_pDoc; // cast pointer to document
 
-    // get sa parameters
-    SaParm saParm;
-    pDoc->GetSaParm(&saParm);
-
     TCHAR szBuffer[60];
     swprintf_s(szBuffer, _T("%u Hz"), pDoc->GetSamplesPerSec());
 	if (pDoc->GetNumChannels()==1)
@@ -142,7 +138,7 @@ void CDlgRecorder::SetSettingsText()
 		swprintf_s(szBuffer, _T("%s, %u-bit\n%d Channels"), szBuffer, pDoc->GetBitsPerSample(), pDoc->GetNumChannels());
     }
 
-	if (saParm.wFlags & SA_FLAG_HIGHPASS)
+	if (pDoc->IsUsingHighPassFilter())
     {
         swprintf_s(szBuffer, _T("%s, Highpass"), szBuffer);
     }
@@ -472,7 +468,7 @@ void CDlgRecorder::SetRecorderMode( EMode mode)
                 m_pWave->Stop();
             }
             if ((m_nMode == RECORDING) || ((m_nMode == PAUSED) && (m_nOldMode == RECORDING)))
-                if (pDoc->GetSaParm()->wFlags & SA_FLAG_HIGHPASS)
+				if (pDoc->IsUsingHighPassFilter())
                 {
                     HighPassFilter();
                 }
@@ -762,21 +758,15 @@ BOOL CDlgRecorder::Apply(CDocument * pDocument)
         return FALSE;
     }
     mmioClose(m_hmmioFile, 0); // close file
-    // get sa parameters
-    SaParm saParm;
-    pDoc->GetSaParm(&saParm);
+    
     // set the sa parameters
-    saParm.RecordTimeStamp = CTime::GetCurrentTime();
-    saParm.dwRecordBandWidth = fmtParm.dwSamplesPerSec / 2;
-    if (saParm.wFlags & SA_FLAG_HIGHPASS)
-    {
-        saParm.dwRecordBandWidth -= 70;
-    }
-    saParm.byRecordSmpSize = (BYTE)fmtParm.wBitsPerSample;
-    saParm.dwNumberOfSamples = m_dwRecordSize / fmtParm.wBlockAlign;
-    saParm.dwSignalBandWidth = saParm.dwRecordBandWidth;
-    saParm.byQuantization = (BYTE)fmtParm.wBitsPerSample;
-    pDoc->SetSaParm(&saParm);
+	pDoc->SetRecordTimeStamp(CTime::GetCurrentTime());
+	pDoc->SetRecordSampleSize((BYTE)fmtParm.wBitsPerSample);
+	pDoc->SetNumberOfSamples(m_dwRecordSize / fmtParm.wBlockAlign);
+	pDoc->SetRecordBandWidth(fmtParm.dwSamplesPerSec / 2);
+	pDoc->SetSignalBandWidth(fmtParm.dwSamplesPerSec / 2);
+	pDoc->SetQuantization((BYTE)fmtParm.wBitsPerSample);
+
     // tell the document to apply the file
     pDoc->ApplyWaveFile(m_szFileName, m_dwRecordSize);
     // if player is visible, disable the speed slider until required processing is completed
@@ -1127,10 +1117,6 @@ void CDlgRecorder::OnSettings()
     CFmtParm fmtParm;
     pDoc->GetFmtParm(fmtParm,false);
 
-    // get sa parameters
-    SaParm saParm;
-    pDoc->GetSaParm(&saParm);
-
     // create the dialog
     CDlgRecorderOptions dlg(this);
 
@@ -1138,7 +1124,7 @@ void CDlgRecorder::OnSettings()
     dlg.SetSamplingRate(fmtParm.dwSamplesPerSec);
     dlg.SetBitDepth(fmtParm.wBitsPerSample);
     dlg.SetChannels(fmtParm.wChannels);
-    dlg.SetHighpass((saParm.wFlags & SA_FLAG_HIGHPASS) ? TRUE : FALSE);
+	dlg.SetHighpass(pDoc->IsUsingHighPassFilter() ? TRUE : FALSE);
 
     if (dlg.DoModal() == IDOK)
     {
@@ -1146,7 +1132,7 @@ void CDlgRecorder::OnSettings()
             ((dlg.GetSamplingRate() != (fmtParm.dwSamplesPerSec)) ||
              (dlg.GetBitDepth() != fmtParm.wBitsPerSample) ||
              (dlg.GetChannels() != fmtParm.wChannels) ||
-             (dlg.GetHighpass() != ((saParm.wFlags & SA_FLAG_HIGHPASS) ? TRUE : FALSE))))
+             (dlg.GetHighpass() != ((pDoc->IsUsingHighPassFilter()) ? TRUE : FALSE))))
         {
             // ask user to delete recorded file before changing the settings
             int nResponse = AfxMessageBox(IDS_QUESTION_DELRECORD, MB_YESNO | MB_ICONQUESTION, 0);
@@ -1172,7 +1158,7 @@ void CDlgRecorder::OnSettings()
         fmtParm.dwAvgBytesPerSec = fmtParm.dwSamplesPerSec * fmtParm.wBlockAlign;
         if (dlg.GetHighpass())
         {
-            saParm.wFlags |= SA_FLAG_HIGHPASS;
+			pDoc->SetHighPassFilter();
         }
         else
         {
@@ -1181,12 +1167,10 @@ void CDlgRecorder::OnSettings()
             {
                 pRecorder->DetachHighPassFilter();
             }
-            saParm.wFlags &= ~SA_FLAG_HIGHPASS;
+			pDoc->ClearHighPassFilter();
         }
         // set format parameters
         pDoc->SetFmtParm(&fmtParm);
-        // set sa parameters
-        pDoc->SetSaParm(&saParm);
 
         if (!GetStaticSourceInfo().bEnable)
         {
@@ -1251,7 +1235,7 @@ void CDlgRecorder::OnApply()
         pSourceParm->szSpeaker = m_source.source.szSpeaker;
         pSourceParm->szReference = m_source.source.szReference;
         pSourceParm->szTranscriber = m_source.source.szTranscriber;
-        pDoc->GetSaParm()->szDescription = m_source.source.szDescription;
+        pDoc->SetDescription(m_source.source.szDescription);
         pSourceParm->szFreeTranslation = m_source.source.szFreeTranslation;
     }
     return;

@@ -4,11 +4,11 @@
 #include <stdio.h>
 #include <tchar.h>
 #include <mmsystem.h>
-
 #include "errors.h"
 #include "mmreg.h"
 #include "msacm.h"
 #include "sa_sbar.h"
+#include "AppDefs.h"
 
 #pragma comment( lib, "winmm" )
 #pragma comment( lib, "msacm32.lib")
@@ -37,7 +37,8 @@ public:
         EC_USERABORT    =-12
     };
 
-    ECONVERT Run(LPCTSTR filename, LPCTSTR outfilename, CProgressStatusBar * pStatusBar);
+    ECONVERT Resample(LPCTSTR infilename, LPCTSTR outfilename, CProgressStatusBar * pStatusBar);
+	ECONVERT Monotize( LPCTSTR infilename, LPCTSTR outfilename, EFileFormat fileFormat);
 
 private:
     double Limit(double val);

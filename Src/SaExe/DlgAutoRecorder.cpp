@@ -29,6 +29,7 @@
 #include "Process\sa_p_fra.h"
 #include "objectostream.h"
 #include "DlgPlayer.h"
+#include "SaParam.h"
 
 //###########################################################################
 // CDlgAutoRecorder dialog
@@ -335,7 +336,7 @@ void CDlgAutoRecorder::BlockStored(UINT nLevel, DWORD dwPosition, BOOL * bSaveOv
         {
 			StopWave();
         }
-        if (m_pDoc->GetSaParm()->wFlags & SA_FLAG_HIGHPASS)
+        if (m_pDoc->IsUsingHighPassFilter())
         {
             HighPassFilter();
         }
@@ -897,21 +898,14 @@ BOOL CDlgAutoRecorder::Apply()
     m_hmmioFile = NULL;
 
     {
-        // get sa parameters
-        SaParm saParm;
-        m_pDoc->GetSaParm(&saParm);
         // set the sa parameters
-        saParm.RecordTimeStamp = CTime::GetCurrentTime();
-        saParm.dwRecordBandWidth = fmtParm.dwSamplesPerSec / 2;
-        if (saParm.wFlags & SA_FLAG_HIGHPASS)
-        {
-            saParm.dwRecordBandWidth -= 70;
-        }
-        saParm.byRecordSmpSize = (BYTE)fmtParm.wBitsPerSample;
-        saParm.dwNumberOfSamples = m_dwRecordSize / fmtParm.wBlockAlign;
-        saParm.dwSignalBandWidth = saParm.dwRecordBandWidth;
-        saParm.byQuantization = (BYTE)fmtParm.wBitsPerSample;
-        m_pDoc->SetSaParm(&saParm);
+		m_pDoc->SetRecordTimeStamp(CTime::GetCurrentTime());
+		m_pDoc->SetRecordSampleSize((BYTE)fmtParm.wBitsPerSample);
+		m_pDoc->SetNumberOfSamples(m_dwRecordSize / fmtParm.wBlockAlign);
+		m_pDoc->SetRecordBandWidth(fmtParm.dwSamplesPerSec / 2);
+		m_pDoc->SetSignalBandWidth(fmtParm.dwSamplesPerSec / 2);
+		m_pDoc->SetQuantization(fmtParm.wBitsPerSample);
+
         m_pDoc->RestartAllProcesses();
         m_pDoc->InvalidateAllProcesses();
 

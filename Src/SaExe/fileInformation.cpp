@@ -23,6 +23,7 @@
 #include "sa_view.h"
 #include "mainfrm.h"
 #include "TextSegment.h"
+#include "SaParam.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE
@@ -112,12 +113,12 @@ BOOL CDlgInformationFilePage::OnInitDialog()
         TCHAR szBuffer[32]; // create and write size text
         swprintf_s(szBuffer, _T("%ld Bytes"), pFileStatus->m_size);
         SetDlgItemText(IDC_FILESIZE, szBuffer);
+
         // get sa parameters document member data
-        SaParm * pSaParm = pDoc->GetSaParm();
-        if (pSaParm->byRecordFileFormat <= FILE_FORMAT_TIMIT)
+		if (pDoc->IsValidRecordFileFormat())
         {
             CString szTemp; // load and write file type string
-            szTemp.LoadString((UINT)pSaParm->byRecordFileFormat + IDS_FILETYPE_UTT);
+            szTemp.LoadString((UINT)pDoc->GetRecordFileFormat() + IDS_FILETYPE_UTT);
             SetDlgItemText(IDC_FILEFORMAT, szTemp);
         }
     }
@@ -170,27 +171,28 @@ BOOL CDlgInformationWavePage::OnInitDialog()
     CMainFrame * pMDIFrameWnd = (CMainFrame *)AfxGetMainWnd();
     CSaView * pView = pMDIFrameWnd->GetCurrSaView();
     CSaDoc * pDoc = (CSaDoc *)pView->GetDocument();
+
     // get sa parameters document member data
-    SaParm * pSaParm = pDoc->GetSaParm();
     TCHAR szBuffer[32];
-    if (pSaParm->dwNumberOfSamples > 0L)   // there is an sa chunk
+	if (pDoc->GetNumberOfSamples() > 0L)   // there is an sa chunk
     {
-        if (pSaParm->dwSignalBandWidth)
+		if (pDoc->GetSignalBandWidth() > 0)
         {
             // create and write bandwith text
-            swprintf_s(szBuffer, _T("%ld Hz"), pSaParm->dwSignalBandWidth);
+            swprintf_s(szBuffer, _T("%ld Hz"), pDoc->GetSignalBandWidth());
             SetDlgItemText(IDC_BANDWIDTH, szBuffer);
             // create and write highpass status text
-            swprintf_s(szBuffer, _T("%s"), pSaParm->wFlags & SA_FLAG_HIGHPASS ? _T("Yes"):_T("No"));
+            swprintf_s(szBuffer, _T("%s"), pDoc->IsUsingHighPassFilter() ? _T("Yes"):_T("No"));
             SetDlgItemText(IDC_HPFSTATUS, szBuffer);
         }
-        if (pSaParm->byQuantization)
+		if (pDoc->GetQuantization()>0)
         {
             // create and write quantization size text
-            swprintf_s(szBuffer, _T("%u Bits"), pSaParm->byQuantization);
+            swprintf_s(szBuffer, _T("%u Bits"), pDoc->GetQuantization());
             SetDlgItemText(IDC_SAMPLESIZE, szBuffer);
         }
     }
+
     // create and write length text
     double fDataSec = pDoc->GetTimeFromBytes(pDoc->GetDataSize());	// get sampled data size in seconds
     int nMinutes = (int)fDataSec / 60;

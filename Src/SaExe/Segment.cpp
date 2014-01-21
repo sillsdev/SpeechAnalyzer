@@ -398,7 +398,7 @@ BOOL CSegment::SetAt(const CSaString * pszString, bool, DWORD dwStart, DWORD dwD
 * nDelimiter is not used in this basic version of the function.
 * nIndex index into annotation string
 ***************************************************************************/
-BOOL CSegment::Insert( int nIndex, LPCTSTR pszString, bool delimiter, DWORD dwStart, DWORD dwDuration)
+BOOL CSegment::Insert( int nIndex, LPCTSTR pszString, bool /*delimiter*/, DWORD dwStart, DWORD dwDuration)
 {
 
     // get the length of the new string

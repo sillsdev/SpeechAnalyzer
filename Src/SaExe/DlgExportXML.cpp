@@ -273,7 +273,7 @@ void CDlgExportXML::OnOK()
 
     if (m_bComments)
     {
-        OutputXMLField(pFile,_T("Comments"),pDoc->GetSaParm()->szDescription);
+        OutputXMLField(pFile,_T("Comments"),pDoc->GetDescription());
     }
     if (m_bFileName)
     {
@@ -299,10 +299,9 @@ void CDlgExportXML::OnOK()
         }
         if (m_bOriginalFormat)
         {
-            SaParm * pSaParm = pDoc->GetSaParm();
-            if (pSaParm->byRecordFileFormat <= FILE_FORMAT_TIMIT)
+			if (pDoc->IsValidRecordFileFormat())
             {
-                szString.LoadString((UINT)pSaParm->byRecordFileFormat + IDS_FILETYPE_UTT);
+                szString.LoadString((UINT)pDoc->GetRecordFileFormat() + IDS_FILETYPE_UTT);
                 OutputXMLField(pFile,_T("OrigFormat"),szString);
             }
         }
@@ -504,13 +503,13 @@ void CDlgExportXML::OnOK()
     }
     if (m_bBandwidth)
     {
-        swprintf_s(szString.GetBuffer(25),25,_T("%lu Hz"),pDoc->GetSaParm()->dwRecordBandWidth);
+        swprintf_s(szString.GetBuffer(25),25,_T("%lu Hz"),pDoc->GetRecordBandWidth());
         szString.ReleaseBuffer();
         OutputXMLField(pFile,_T("Bandwidth"),szString);
     }
     if (m_bHighPass)
     {
-        szString = pDoc->GetSaParm()->wFlags & SA_FLAG_HIGHPASS ? "Yes":"No";
+        szString = pDoc->IsUsingHighPassFilter() ? "Yes":"No";
         OutputXMLField(pFile,_T("HighPassFiltered"),szString);
     }
     if (m_bBits)
@@ -521,7 +520,7 @@ void CDlgExportXML::OnOK()
     }
     if (m_bQuantization)
     {
-        swprintf_s(szString.GetBuffer(25),25,_T("%d Bits"),(int)pDoc->GetSaParm()->byRecordSmpSize);
+        swprintf_s(szString.GetBuffer(25),25,_T("%d Bits"),(int)pDoc->GetRecordSampleSize());
         szString.ReleaseBuffer();
         OutputXMLField(pFile,_T("QuantizSize"),szString);
     }

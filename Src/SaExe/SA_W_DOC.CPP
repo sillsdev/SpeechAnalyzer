@@ -201,6 +201,7 @@ void CWorkbenchDoc::OnFileSave()
         }
         SetTitle(szCaption); // write the new caption string
     }
+
     // call the base class saving
     CDocument::OnFileSave();
     if (!szCaption.IsEmpty())

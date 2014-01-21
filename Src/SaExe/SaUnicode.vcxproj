@@ -217,6 +217,7 @@
     <ClCompile Include="PickOver.cpp" />
     <ClCompile Include="RecMixer.cpp" />
     <ClCompile Include="ReferenceSegment.cpp" />
+    <ClCompile Include="SaParam.cpp" />
     <ClCompile Include="SaString.cpp" />
     <ClCompile Include="SA_Annot.cpp" />
     <ClCompile Include="SA_Cursr.cpp" />
@@ -270,6 +271,7 @@
     <ClCompile Include="DlgAlignTranscriptionDataSheet.cpp" />
     <ClCompile Include="DlgAutoReferenceData.cpp" />
     <ClCompile Include="DlgImportSFM.cpp" />
+    <ClCompile Include="ScopedCursor.cpp" />
     <ClCompile Include="SelfTest.cpp" />
     <ClCompile Include="SFMHelper.cpp" />
     <ClCompile Include="SpectroParm.cpp" />
@@ -491,6 +493,7 @@
     <ClInclude Include="process\sa_p_mel.h" />
     <ClInclude Include="process\sa_p_pit.h" />
     <ClInclude Include="RecMixer.h" />
+    <ClInclude Include="SaParam.h" />
     <ClInclude Include="SaString.h" />
     <ClInclude Include="DocList.h" />
     <ClInclude Include="FaceDiag.h" />
@@ -527,6 +530,7 @@
     <ClInclude Include="Rs_MiniC.h" />
     <ClInclude Include="sa.h" />
     <ClInclude Include="SA_Annot.h" />
+    <ClInclude Include="ScopedCursor.h" />
     <ClInclude Include="SegmentSelection.h" />
     <ClInclude Include="SA_Asert.h" />
     <ClInclude Include="SA_CDib.h" />
@@ -571,7 +575,6 @@
     <ClInclude Include="SA_W_DOC.H" />
     <ClInclude Include="Sa_wave.h" />
     <ClInclude Include="Sa_wbch.h" />
-    <ClInclude Include="saParm.h" />
     <ClInclude Include="DlgSaveAsOptions.h" />
     <ClInclude Include="SelfTest.h" />
     <ClInclude Include="SFMHelper.h" />
@@ -627,7 +630,7 @@
     <ClInclude Include="WaveformGenerator.h" />
     <ClInclude Include="WaveformGeneratorSettings.h" />
     <ClInclude Include="WaveInDevice.h" />
-    <ClInclude Include="waveoutdevice.h" />
+    <ClInclude Include="WaveOutDevice.h" />
     <ClInclude Include="WaveResampler.h" />
   </ItemGroup>
   <ItemGroup>

@@ -997,11 +997,9 @@ void CLegendWnd::OnDraw(CDC * pDC,
         if (rWnd.Height() >= nHeight)
         {
             rWnd.top += (rWnd.Height() - nHeight) / 2;
-            // get sa parameters document member data
-            SaParm * pSaParm = pDoc->GetSaParm();
 
             // create and write effective sample size text
-            swprintf_s(szText, _T("%u Bit"), pSaParm->byQuantization);
+			swprintf_s(szText, _T("%u Bit"), pDoc->GetQuantization());
             pDC->DrawText(szText, -1, rWnd, DT_SINGLELINE | DT_TOP | DT_LEFT | DT_NOCLIP);
             rWnd.top += 5 * tm.tmHeight / 4;
 
@@ -1972,19 +1970,8 @@ void CAnnotationWnd::OnDraw(CDC * pDC, const CRect & printRect)
     CPen penDkgray(PS_SOLID, 1, pColors->cSysBtnShadow);
     CPen penLtgray(PS_SOLID, 1, pColors->cSysBtnHilite);
     CPen * pOldPen = pDC->SelectObject(&penDkgray);
-    // SDM 1.06.6 make annotation windows symettrical
-    //    // check if this is the bottom window of annotation windows
-    //    BOOL bBottom = TRUE;
-    //    if (m_nIndex < (ANNOT_WND_NUMBER - 1))
-    //    {  forint nLoop = m_nIndex + 1; nLoop < ANNOT_WND_NUMBER; nLoop++)
-    //      if (pGraph->HaveAnnotation(nLoop)) bBottom = FALSE;
-    //    }
-    //    if (!bBottom)
-    //    { pDC->MoveTo(rClip.left, rWnd.bottom - 2);
-    //      pDC->LineTo(rClip.right, rWnd.bottom - 2);
-    //      pDC->SelectObject(&penLtgray);
-    //    }
-    pDC->MoveTo(rClip.left, rWnd.bottom - 1);
+
+	pDC->MoveTo(rClip.left, rWnd.bottom - 1);
     pDC->LineTo(rClip.right, rWnd.bottom - 1);
     pDC->SelectObject(&penLtgray);
     pDC->MoveTo(rClip.left, rWnd.top);
@@ -2070,7 +2057,8 @@ void CAnnotationWnd::OnDraw(CDC * pDC, const CRect & printRect)
             do
             {
                 //SDM 1.06.6U4
-                nDisplayPos = round((pSegment->GetOffset(nLoop) - fDataStart) / fBytesPerPix);
+				DWORD o = pSegment->GetOffset(nLoop);
+                nDisplayPos = round((o - fDataStart) / fBytesPerPix);
                 // check if the character is selected
                 BOOL bSelect = FALSE;
                 if (pSegment->GetSelection() == nLoop)

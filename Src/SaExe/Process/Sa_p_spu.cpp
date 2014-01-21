@@ -12,9 +12,9 @@
 #include "sa_p_gra.h"
 #include "resource.h"
 #include "isa_doc.h"
-#include "saParm.h"
 #include "dsp\mathx.h"
 #include "dsp\spectgrm.h"
+#include "SaParam.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE
@@ -173,8 +173,7 @@ float CProcessSpectrum::GetSpectralRegionPower(ISaDoc * pDoc, unsigned short wFr
 #include "dsp\Signal.h"
 #include "dsp\Spectrum.h"
 #include "dsp\Lpc.h"
-long CProcessSpectrum::Process(void * pCaller, ISaDoc * pDoc, DWORD dwFrameStart, DWORD dwFrameSize,
-                               SSpectProcSelect SpectraSelected, int nProgress, int nLevel)
+long CProcessSpectrum::Process(void * pCaller, ISaDoc * pDoc, DWORD dwFrameStart, DWORD dwFrameSize, SSpectProcSelect SpectraSelected, int nProgress, int nLevel)
 {
     //TRACE(_T("Process: CProcessSpectrum\n"));
     if (IsCanceled())
@@ -381,7 +380,7 @@ long CProcessSpectrum::Process(void * pCaller, ISaDoc * pDoc, DWORD dwFrameStart
         SLPCSettings stLpcSetting;
 
         stLpcSetting.Process.Flags = PRED_COEFF | GAIN | POWER_SPECTRUM | FORMANTS | PRED_SIGNAL | MEAN_SQ_ERR | ENERGY| WINDOW_SIGNAL;
-        ;
+        
         // stLpcSetting.nMethod = LPC_AUTOCOR;        //use autocorrelation LPC analysis
         // stLpcSetting.nMethod = LPC_CEPSTRAL;       //use cepstral LPC analysis
         // stLpcSetting.nMethod = LPC_COVAR_LATTICE;  //use covariance LPC analysis
@@ -390,17 +389,16 @@ long CProcessSpectrum::Process(void * pCaller, ISaDoc * pDoc, DWORD dwFrameStart
         //if (bRemoveDcBias)
         //    stLpcSetting.Process.Flags |= NO_DC_BIAS;
 
-        SaParm * pSaParm = pDoc->GetSaParm(); // get sa parameters
         if (bVoiced)
         {
             stLpcSetting.Process.Flags |= PRE_EMPHASIS;  // turn pre-emphasis on to remove effects of glottis and lip radiation
-            DWORD dwBandwidth = (!pSaParm->dwSignalBandWidth)?pDoc->GetSamplesPerSec()/2:pSaParm->dwSignalBandWidth;
+            DWORD dwBandwidth = (pDoc->GetSignalBandWidth()==0)?pDoc->GetSamplesPerSec()/2:pDoc->GetSignalBandWidth();
             // allow 2 poles per kHz of signal bandwidth and reserve 4 for zero approximation
             stLpcSetting.nOrder = (unsigned char)(dwBandwidth * 2/1000 * ResearchSettings.m_nSpectrumLpcOrderFsMult + ResearchSettings.m_nSpectrumLpcOrderExtra);
         }
         else
         {
-            DWORD dwBandwidth = (!pSaParm->dwSignalBandWidth)?pDoc->GetSamplesPerSec()/2:pSaParm->dwSignalBandWidth;
+            DWORD dwBandwidth = (pDoc->GetSignalBandWidth()==0)?pDoc->GetSamplesPerSec()/2:pDoc->GetSignalBandWidth();
             // allow 2 poles per kHz of signal bandwidth and reserve 4 for zero approximation
             stLpcSetting.nOrder = (unsigned char)(dwBandwidth * 2/1000 * ResearchSettings.m_nSpectrumLpcOrderFsMult + ResearchSettings.m_nSpectrumLpcOrderExtra);
         }

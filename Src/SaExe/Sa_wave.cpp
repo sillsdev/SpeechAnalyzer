@@ -593,19 +593,20 @@ BOOL CWave::Record(HMMIO hmmioFile,
     m_dwRecordPointer = dwOffset;
     m_dwEnd = 0;
 
-    SaParm * pSaParm = pDoc->GetSaParm();
-    if (pSaParm->wFlags & SA_FLAG_HIGHPASS)
+	if (pDoc->IsUsingHighPassFilter())
+	{
         if (!m_pInDev->GetHighPassFilter())
+		{
             if (!m_pInDev->AttachHighPassFilter(pDoc->GetSamplesPerSec()))
             {
                 // if can't construct highpass filter, reset the flag
-                pSaParm->wFlags &= ~SA_FLAG_HIGHPASS;
-                pDoc->SetSaParm(pSaParm);
-                CSaApp * pApp = (CSaApp *)AfxGetApp(); // get pointer to application
-                pApp->ErrorMessage(IDS_ERROR_RECHPFILTER); // send error message
+				pDoc->DisableHighPassFilter();
+                CSaApp * pApp = (CSaApp *)AfxGetApp();		// get pointer to application
+                pApp->ErrorMessage(IDS_ERROR_RECHPFILTER);	// send error message
                 return FALSE;
             }
-
+		}
+	}
     if (!m_pInDev->GetPreparedBuffers())
     {
         m_nActiveBlock = 0; // use block 0 first

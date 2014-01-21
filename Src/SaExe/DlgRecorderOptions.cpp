@@ -226,48 +226,44 @@ void CDlgRecorderOptions::OnSource()
     }
     CString szCaption;
     szCaption.LoadString(IDS_DLGTITLE_FILEINFO);                 // load caption string
-    CDlgFileInformation * dlgFileInformation;                    // file information dialog
-    dlgFileInformation = new CDlgFileInformation(szCaption, NULL, 0, TRUE);  // create the property sheet
+    CDlgFileInformation dlg(szCaption, NULL, 0, TRUE);  // create the property sheet
     // set file description string
-    dlgFileInformation->m_dlgUserPage.m_szFileDesc =
-        pSourceParm->szDescription;
-    dlgFileInformation->m_dlgUserPage.m_szFreeTranslation =
-        pSourceParm->szFreeTranslation;
-    if (dlgFileInformation->DoModal() == IDOK)
+    dlg.m_dlgUserPage.m_szFileDesc = pSourceParm->szDescription;
+    dlg.m_dlgUserPage.m_szFreeTranslation = pSourceParm->szFreeTranslation;
+    if (dlg.DoModal() == IDOK)
     {
         // get new file description string
-        pDoc->GetSaParm()->szDescription = dlgFileInformation->m_dlgUserPage.m_szFileDesc;
-        pSourceParm->szDescription = dlgFileInformation->m_dlgUserPage.m_szFileDesc;
-        pSourceParm->szFreeTranslation = dlgFileInformation->m_dlgUserPage.m_szFreeTranslation;
-        pSourceParm->szCountry = dlgFileInformation->m_dlgSourcePage.m_szCountry;
-        pSourceParm->szDialect = dlgFileInformation->m_dlgSourcePage.m_szDialect;
-        if (dlgFileInformation->m_dlgSourcePage.m_szEthnoID.GetLength() < 3)
+        pDoc->SetDescription(dlg.m_dlgUserPage.m_szFileDesc);
+        pSourceParm->szDescription = dlg.m_dlgUserPage.m_szFileDesc;
+        pSourceParm->szFreeTranslation = dlg.m_dlgUserPage.m_szFreeTranslation;
+        pSourceParm->szCountry = dlg.m_dlgSourcePage.m_szCountry;
+        pSourceParm->szDialect = dlg.m_dlgSourcePage.m_szDialect;
+        if (dlg.m_dlgSourcePage.m_szEthnoID.GetLength() < 3)
         {
-            dlgFileInformation->m_dlgSourcePage.m_szEthnoID += "   ";
+            dlg.m_dlgSourcePage.m_szEthnoID += "   ";
         }
-        pSourceParm->szEthnoID = dlgFileInformation->m_dlgSourcePage.m_szEthnoID.Left(3);
-        pSourceParm->szFamily = dlgFileInformation->m_dlgSourcePage.m_szFamily;
-        pSourceParm->szLanguage = dlgFileInformation->m_dlgSourcePage.m_szLanguage;
-        pSourceParm->nGender = dlgFileInformation->m_dlgSourcePage.m_nGender;
-        pSourceParm->szRegion = dlgFileInformation->m_dlgSourcePage.m_szRegion;
-        pSourceParm->szSpeaker = dlgFileInformation->m_dlgSourcePage.m_szSpeaker;
-        pSourceParm->szReference = dlgFileInformation->m_dlgSourcePage.m_szReference;
-        pSourceParm->szTranscriber = dlgFileInformation->m_dlgSourcePage.m_szTranscriber;
+        pSourceParm->szEthnoID = dlg.m_dlgSourcePage.m_szEthnoID.Left(3);
+        pSourceParm->szFamily = dlg.m_dlgSourcePage.m_szFamily;
+        pSourceParm->szLanguage = dlg.m_dlgSourcePage.m_szLanguage;
+        pSourceParm->nGender = dlg.m_dlgSourcePage.m_nGender;
+        pSourceParm->szRegion = dlg.m_dlgSourcePage.m_szRegion;
+        pSourceParm->szSpeaker = dlg.m_dlgSourcePage.m_szSpeaker;
+        pSourceParm->szReference = dlg.m_dlgSourcePage.m_szReference;
+        pSourceParm->szTranscriber = dlg.m_dlgSourcePage.m_szTranscriber;
 
-        m_source.source.szCountry = dlgFileInformation->m_dlgSourcePage.m_szCountry;
-        m_source.source.szDialect = dlgFileInformation->m_dlgSourcePage.m_szDialect;
-        m_source.source.szEthnoID = dlgFileInformation->m_dlgSourcePage.m_szEthnoID.Left(3);
-        m_source.source.szFamily = dlgFileInformation->m_dlgSourcePage.m_szFamily;
-        m_source.source.szLanguage = dlgFileInformation->m_dlgSourcePage.m_szLanguage;
-        m_source.source.nGender = dlgFileInformation->m_dlgSourcePage.m_nGender;
-        m_source.source.szRegion = dlgFileInformation->m_dlgSourcePage.m_szRegion;
-        m_source.source.szSpeaker = dlgFileInformation->m_dlgSourcePage.m_szSpeaker;
-        m_source.source.szReference = dlgFileInformation->m_dlgSourcePage.m_szReference;
-        m_source.source.szTranscriber = dlgFileInformation->m_dlgSourcePage.m_szTranscriber;
-        m_source.source.szFreeTranslation = dlgFileInformation->m_dlgUserPage.m_szFreeTranslation;
-        m_source.source.szDescription = dlgFileInformation->m_dlgUserPage.m_szFileDesc;
+        m_source.source.szCountry = dlg.m_dlgSourcePage.m_szCountry;
+        m_source.source.szDialect = dlg.m_dlgSourcePage.m_szDialect;
+        m_source.source.szEthnoID = dlg.m_dlgSourcePage.m_szEthnoID.Left(3);
+        m_source.source.szFamily = dlg.m_dlgSourcePage.m_szFamily;
+        m_source.source.szLanguage = dlg.m_dlgSourcePage.m_szLanguage;
+        m_source.source.nGender = dlg.m_dlgSourcePage.m_nGender;
+        m_source.source.szRegion = dlg.m_dlgSourcePage.m_szRegion;
+        m_source.source.szSpeaker = dlg.m_dlgSourcePage.m_szSpeaker;
+        m_source.source.szReference = dlg.m_dlgSourcePage.m_szReference;
+        m_source.source.szTranscriber = dlg.m_dlgSourcePage.m_szTranscriber;
+        m_source.source.szFreeTranslation = dlg.m_dlgUserPage.m_szFreeTranslation;
+        m_source.source.szDescription = dlg.m_dlgUserPage.m_szFileDesc;
     }
-    delete dlgFileInformation;                                    // delete the property sheet
 }
 
 /***************************************************************************/

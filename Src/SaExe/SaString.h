@@ -1,7 +1,10 @@
 #ifndef SASTRING_H_
 #define SASTRING_H_
 
+#include <afx.h>
 #include "objectistream.h"
+#include <string>
+#include <MMSystem.h>
 
 class CSaString : public CString
 {

@@ -17,8 +17,9 @@ static char BASED_CODE THIS_FILE[] = __FILE__;
 // class to do all the handling for the phonetic annotation segments.
 
 CPhoneticSegment::CPhoneticSegment(int index, int master) :
-    CIndependentSegment(index,master)
+CIndependentSegment(index,master)
 {
+	TRACE("adding phonetic segment %d %d\n",index,master);
 }
 
 CSegment::TpInputFilterProc CPhoneticSegment::GetInputFilter(void) const
@@ -263,27 +264,23 @@ long CPhoneticSegment::Process(void * pCaller, CSaDoc * pDoc, int nProgress, int
     DWORD dwHillTop = 0;
     // prepare segment data
     int nSegmentIndex = 0;
-    //    if (!pSegParm->bKeepSegments) // not yet implemented
-    if (TRUE)
+    // SDM 1.06.4 move question to Command Level
+    // remove all annotations and deselect everything
+    for (int nLoop = 0; nLoop < ANNOT_WND_NUMBER; nLoop++)
     {
-        // SDM 1.06.4 move question to Command Level
-        // remove all annotations and deselect everything
-        for (int nLoop = 0; nLoop < ANNOT_WND_NUMBER; nLoop++)
+        if (pDoc->GetSegment(nLoop))
         {
-            if (pDoc->GetSegment(nLoop))
+            pDoc->GetSegment(nLoop)->DeleteContents();
+            if (pDoc->GetSegment(nLoop)->GetSelection() != -1)
             {
-                pDoc->GetSegment(nLoop)->DeleteContents();
-                if (pDoc->GetSegment(nLoop)->GetSelection() != -1)
-                {
-                    pDoc->GetSegment(nLoop)->SetSelection(-1);
-                }
+                pDoc->GetSegment(nLoop)->SetSelection(-1);
             }
         }
-        pDoc->SetModifiedFlag(TRUE); // document has been modified
-        pDoc->SetTransModifiedFlag(TRUE); // transcription data has been modified
-        // invalidate parsing information
-        pDoc->GetSegment(GLOSS)->SetDataInvalid();
     }
+    pDoc->SetModifiedFlag(TRUE); // document has been modified
+    pDoc->SetTransModifiedFlag(TRUE); // transcription data has been modified
+    // invalidate parsing information
+    pDoc->GetSegment(GLOSS)->SetDataInvalid();
 
     /*********************************************************************/
     // Added by CLW 6/98 - 9/25/98

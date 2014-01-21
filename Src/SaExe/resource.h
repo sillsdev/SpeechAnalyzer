@@ -376,14 +376,13 @@
 #define IDC_22KHZ                       1199
 #define IDC_44KHZ                       1200
 #define IDC_RADIO4                      1201
-#define IDC_8BIT                        1201
-#define IDC_GENERATOR_N_HARMONICS       1201
-#define IDC_SAVEAS_ORIGINAL             1201
-#define IDC_16BIT                       1202
-#define IDC_GENERATOR_NYQUIST           1202
-#define IDC_RESEARCH_WINDOW_FRAGMENTS   1202
-#define IDC_EDIT                        1203
-#define IDC_SETUP                       1207
+#define IDC_8BIT                        1202
+#define IDC_GENERATOR_N_HARMONICS       1203
+#define IDC_16BIT                       1204
+#define IDC_GENERATOR_NYQUIST           1205
+#define IDC_RESEARCH_WINDOW_FRAGMENTS   1206
+#define IDC_EDIT                        1207
+#define IDC_SETUP                       1208
 #define IDC_REPEAT                      1211
 #define IDC_APPLY                       1213
 #define IDC_EDIT_SET_NAME               1214
@@ -1068,14 +1067,19 @@
 #define IDC_MBROLA_CONVERT              1902
 #define IDC_MBROLA_DISPLAY              1903
 #define IDC_MIXER                       1904
-#define IDC_GENERATOR_SAMPLINGRATE      1908
-#define IDC_GENERATOR_LENGTH            1909
-#define IDC_GENERATOR_BITS              1911
-#define IDC_SAVEAS_ENTIRE               1912
-#define IDC_SAVEAS_OPEN                 1914
-#define IDC_SAVEAS_CURSORS              1915
-#define IDC_SAVEAS_BOTH                 1916
-#define IDC_SAVEAS_VIEW                 1917
+#define IDC_GENERATOR_SAMPLINGRATE      1905
+#define IDC_GENERATOR_LENGTH            1906
+#define IDC_GENERATOR_BITS              1907
+#define IDC_SAVEAS_ORIGINAL             1908
+#define IDC_SAVEAS_ENTIRE               1909
+#define IDC_SAVEAS_OPEN                 1910
+#define IDC_SAVEAS_CURSORS              1911
+#define IDC_SAVEAS_BOTH                 1912
+#define IDC_SAVEAS_VIEW                 1913
+#define IDC_SAVEAS_STEREO               1914
+#define IDC_SAVEAS_MONO                 1915
+#define IDC_SAVEAS_RIGHT                1916
+#define IDC_GROUP_FILE_STATIC           1917
 #define IDC_PASS_FILTER_FILTER          1926
 #define IDD_3D_PITCH                    1927
 #define IDC_SPECTRUM_SMOOTHLEVEL        1929
@@ -1724,6 +1728,7 @@
 #define IDS_NO_CONVERT                  61314
 #define IDS_MEMORY_FAILURE              61315
 #define IDS_LENGTH_EXCEEDED             61316
+#define IDS_ERROR_NO_DUPE_FILENAME      61317
 
 // Next default values for new objects
 // 

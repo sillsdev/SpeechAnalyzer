@@ -142,7 +142,7 @@ namespace SIL.SpeechTools.Utils
 			if (new string(Encoding.ASCII.GetChars(reader.ReadBytes(4))) != kidWave)
 				return false;
 
-            // Verify WAVE chunk exists
+            // Verify Format chunk exists
             stream.Position = 12;
             if (new string(Encoding.ASCII.GetChars(reader.ReadBytes(4))) != kidFmtChunk)
                 return false;

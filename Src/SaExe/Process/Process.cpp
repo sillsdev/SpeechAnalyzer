@@ -541,9 +541,9 @@ BOOL CProcess::CreateTempFile(TCHAR * szName)
 BOOL CProcess::CreateTempFile(TCHAR * szName, CFileStatus * pFileStatus)
 {
     TCHAR szTempPath[_MAX_PATH];
-    GetTempFileName(szName, szTempPath, _countof(szTempPath));
+    GetTempFileName( szName, szTempPath, _countof(szTempPath));
     // create and open the file
-    if (!Open(szTempPath, CFile::modeCreate | CFile::modeReadWrite | CFile::shareExclusive))
+    if (!Open( szTempPath, CFile::modeCreate | CFile::modeReadWrite | CFile::shareExclusive))
     {
         // error opening file
         ErrorMessage(IDS_ERROR_OPENTEMPFILE, szTempPath);

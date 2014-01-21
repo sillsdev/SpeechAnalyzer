@@ -41,12 +41,12 @@
 #include "fnkeys.h"
 #include "colors.h"
 #include "appdefs.h"
-#include "saParm.h"
 #include "sourceParm.h"
 #include "SaString.h"
 #include "WaveformGeneratorSettings.h"
 #include "ToolSettings.h"
 #include "SpectroParm.h"
+#include "SaParam.h"
 
 class CDlgFind;
 class CSegment;

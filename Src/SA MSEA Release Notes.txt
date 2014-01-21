@@ -1,3 +1,8 @@
+SA - 3.1.0.84 1/20/2014
+1) Fixed segment rendering problem that occurs when stereo audio files are used.  The bug was introduced in 3.1.083.
+2) Implemented partial change for stereo-to-mono conversion.  The 'SaveAs' dialog has been modified.  The conversion checks are in place, but the conversion function has been disabled.
+3) Refactored the code that references the SaParm structure into a class.  The code was modified to reduce the usage of the structure as much as possible.
+
 SA - 3.1.0.83 1/8/2014
 1) Added code to check for segments that are beyond the end of the audio data when the segments are loaded on a file-open.  A message is displayed if bad segments are found.  The bad segments are ignored.
 

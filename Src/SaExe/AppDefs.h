@@ -11,7 +11,7 @@
 //        SDM added SLOW_CLICK_TIME_LIMIT
 //   1.06.6U2
 //        SDM added ADD_SYLLABLE_TIME
-//        SDM removed nWordCount from SaParm
+//        SDM removed nWordCount from CSaParam
 //        SDM added MIN_EDIT_TIME
 //   1.06.8
 //        SDM added SPACE_DELIMITER & EDIT_DELIMITER_REPLACEMENT
@@ -42,8 +42,6 @@
 
 // system defines
 #define SM_CAPTION                      _T("Phonology Assistant") // caption text of SM  //Name changed  -ALB
-//#define RIFF_VERSION                    ((float)9.0)// RIFF structure version
-#define RIFF_VERSION_UNKNOWN            ((float)-1.0) // RIFF structure version
 #define MMIO_BUFFER_SIZE                16384       // buffer size for wave data
 #define MAX_SCREEN_WIDTH                2048        // maximum width of screen in pixels
 
@@ -167,13 +165,37 @@ enum ECursorAlignment
     ALIGN_USER_SETTING       =  1000 // use global user setting
 };
 
+// used by saveas dialog
+enum ESaveArea 
+{ 
+	saveEntire = 0, 
+	saveView = 1, 
+	saveCursors = 2 
+};
+
+// used by saveas dialog
+enum EShowFiles { 
+	showNew = 0, 
+	showOriginal = 1, 
+	showBoth = 2
+};
+
+// used by saveas dialog
+enum EFileFormat { 
+	formatStereo = 0, 
+	formatMono = 1, 
+	formatRight = 2
+};
+
 // RIFF header definitions
 #define FILE_FORMAT_PCM                 1           // PCM format in format chunk
+
 #define FILE_FORMAT_UTT                 0           // record file format in sa chunk
 #define FILE_FORMAT_WAV                 1           // record file format in sa chunk
 #define FILE_FORMAT_MAC                 2           // record file format in sa chunk
 #define FILE_FORMAT_TIMIT               3           // record file format in sa chunk
 #define FILE_FORMAT_OTHER               4           // record file format in sa chunk
+
 #define FILE_DESCRIPTION_SIZE           256         // file description string length
 // user windows messages
 #define WM_USER_SPEECHAPPLICATION       0x7FF0

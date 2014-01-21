@@ -4007,10 +4007,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\saParm.h"
-				>
-			</File>
-			<File
 				RelativePath=".\SaString.h"
 				>
 			</File>
@@ -4185,6 +4181,22 @@
 		</File>
 		<File
 			RelativePath=".\ObjectOStream.h"
+			>
+		</File>
+		<File
+			RelativePath=".\SaParam.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\SaParam.h"
+			>
+		</File>
+		<File
+			RelativePath=".\ScopedCursor.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\ScopedCursor.h"
 			>
 		</File>
 		<File
