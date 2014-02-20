@@ -9,10 +9,6 @@
       <Configuration>Release</Configuration>
       <Platform>Win32</Platform>
     </ProjectConfiguration>
-    <ProjectConfiguration Include="Template|Win32">
-      <Configuration>Template</Configuration>
-      <Platform>Win32</Platform>
-    </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{67914272-7CF2-4E5B-A0EC-54728888A13D}</ProjectGuid>
@@ -62,7 +58,7 @@
     </Midl>
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>.;..;..\lib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.;..;..\lib;..\WaveUtils;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_WINDOWS;WINDOWS_PLATFORM;_DEBUG;WIN32;WINVER=0x0501;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
@@ -75,7 +71,7 @@
       <AdditionalIncludeDirectories>..</AdditionalIncludeDirectories>
     </ResourceCompile>
     <Link>
-      <AdditionalDependencies>mfc100ud.lib;mfcs100ud.lib;atlsd.lib;msvcrtd.lib;msvcprtd.lib;comdlg32.lib;user32.lib;gdi32.lib;kernel32.lib;advapi32.lib;oldnames.lib;winmm.lib;version.lib;imm32.lib;ole32.lib;oleaut32.lib;uuid.lib;comsuppw.lib;htmlhelp.lib;shell32.lib;msacm32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>mfc100ud.lib;mfcs100ud.lib;atlsd.lib;msvcrtd.lib;msvcprtd.lib;comdlg32.lib;user32.lib;gdi32.lib;kernel32.lib;advapi32.lib;oldnames.lib;winmm.lib;version.lib;imm32.lib;ole32.lib;oleaut32.lib;uuid.lib;comsuppw.lib;htmlhelp.lib;shell32.lib;msacm32.lib;%(AdditionalDependencies);waveutils.lib</AdditionalDependencies>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <IgnoreAllDefaultLibraries>true</IgnoreAllDefaultLibraries>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -87,6 +83,7 @@
       <DataExecutionPrevention>
       </DataExecutionPrevention>
       <UACExecutionLevel>HighestAvailable</UACExecutionLevel>
+      <AdditionalLibraryDirectories>..\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
@@ -346,7 +343,6 @@
     <ClCompile Include="WaveformGeneratorSettings.cpp" />
     <ClCompile Include="WaveInDevice.cpp" />
     <ClCompile Include="WaveOutDevice.cpp" />
-    <ClCompile Include="WaveResampler.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="ClassDiagram1.cd" />
@@ -631,7 +627,6 @@
     <ClInclude Include="WaveformGeneratorSettings.h" />
     <ClInclude Include="WaveInDevice.h" />
     <ClInclude Include="WaveOutDevice.h" />
-    <ClInclude Include="WaveResampler.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="Dsp\SA_DSP.vcxproj">

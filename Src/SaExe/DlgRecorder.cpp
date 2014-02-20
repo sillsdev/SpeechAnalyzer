@@ -691,6 +691,7 @@ BOOL CDlgRecorder::Apply(CDocument * pDocument)
 
     CSaDoc * pDoc = (CSaDoc *)pDocument; // cast document pointer
     CSaApp * pApp = (CSaApp *)AfxGetApp(); // get pointer to application
+
     // set file pointer to end of file (also end of 'data' chunk)
     mmioSeek(m_hmmioFile, 0, SEEK_END);
     // get out of 'data' chunk

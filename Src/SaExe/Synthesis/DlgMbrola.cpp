@@ -229,8 +229,7 @@ void CDlgMbrola::OnLeaveCellMbrolaGrid()
         double value;
         char dummy[3];
         CString cellText = m_cGrid.GetText();
-        if (cellText.GetLength() && swscanf(cellText,_T("%f%2s"), &value, &dummy) != 1)
-        {
+        if ((cellText.GetLength()) && (swscanf(cellText,_T("%f%2s"), &value, &dummy) != 1)) {
             CString error;
             error.Format(_T("\"%s\" is not a number. Please correct"), LPCTSTR(cellText));
             AfxMessageBox(error, MB_OK | MB_ICONEXCLAMATION, 0);
@@ -593,6 +592,8 @@ void CDlgMbrola::OnMbrolaSynthesize()
         GetTempFileName(_T("MBR"), m_szMBRolaName.GetBuffer(_MAX_PATH), _MAX_PATH);
         m_szMBRolaName.ReleaseBuffer();
     }
+
+
     HMMIO hmmioFile = mmioOpen(const_cast<TCHAR *>(LPCTSTR(m_szMBRolaName)), NULL, MMIO_CREATE | MMIO_WRITE | MMIO_EXCLUSIVE);
     if (!(hmmioFile))
     {

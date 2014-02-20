@@ -1,3 +1,6 @@
+SA - 3.1.0.85 2/19/2014
+1) Added capability to save stereo files as mono audio files via the 'SaveAs' dialog box.  The user has the option to select the left or right channel for saving.
+
 SA - 3.1.0.84 1/20/2014
 1) Fixed segment rendering problem that occurs when stereo audio files are used.  The bug was introduced in 3.1.083.
 2) Implemented partial change for stereo-to-mono conversion.  The 'SaveAs' dialog has been modified.  The conversion checks are in place, but the conversion function has been disabled.

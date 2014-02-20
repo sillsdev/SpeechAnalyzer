@@ -24,23 +24,12 @@ static char THIS_FILE[]=__FILE__;
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
 
-CRiff::CRiff()
-{
-
-}
-
-CRiff::~CRiff()
-{
-
-}
-
 BOOL CRiff::NewWav(LPCTSTR pszPathName, PCMWAVEFORMAT & pcm, LPCTSTR szRawDataPath)
 {
     CSaApp * pApp = (CSaApp *)AfxGetApp(); // get pointer to application
 
     // open file
-    HMMIO hmmioFile; // file handle
-    hmmioFile = mmioOpen(const_cast<TCHAR *>(pszPathName), NULL, MMIO_READWRITE | MMIO_EXCLUSIVE);
+    HMMIO hmmioFile = mmioOpen(const_cast<TCHAR *>(pszPathName), NULL, MMIO_READWRITE | MMIO_EXCLUSIVE);
     if (!hmmioFile)
     {
         // error opening file
@@ -50,9 +39,9 @@ BOOL CRiff::NewWav(LPCTSTR pszPathName, PCMWAVEFORMAT & pcm, LPCTSTR szRawDataPa
 
     /* Create the output file RIFF chunk of form type 'WAVE'.
     */
-    MMCKINFO mmckinfoParent;  // chunk info. for output RIFF chunk
-    mmckinfoParent.fccType = mmioFOURCC('W', 'A', 'V', 'E');
-    if (mmioCreateChunk(hmmioFile, &mmckinfoParent, MMIO_CREATERIFF) != 0)
+    MMCKINFO riffChunk;  // chunk info. for output RIFF chunk
+    riffChunk.fccType = mmioFOURCC('W', 'A', 'V', 'E');
+    if (mmioCreateChunk(hmmioFile, &riffChunk, MMIO_CREATERIFF) != 0)
     {
         // error writing data chunk
         pApp->ErrorMessage(IDS_ERROR_WRITEDATACHUNK, pszPathName);
@@ -65,10 +54,10 @@ BOOL CRiff::NewWav(LPCTSTR pszPathName, PCMWAVEFORMAT & pcm, LPCTSTR szRawDataPa
     * specify it in the MMCKINFO structure so MMIO doesn't have to seek
     * back and set the chunk size after ascending from the chunk.
     */
-    MMCKINFO       mmckinfoSubchunk;      // info. for a chunk in output file
-    mmckinfoSubchunk.ckid = mmioFOURCC('f', 'm', 't', ' ');
-    mmckinfoSubchunk.cksize = sizeof(PCMWAVEFORMAT);  // we know the size of this ck.
-    if (mmioCreateChunk(hmmioFile, &mmckinfoSubchunk, 0) != 0)
+    MMCKINFO fmtChunk;      // info. for a chunk in output file
+    fmtChunk.ckid = mmioFOURCC('f', 'm', 't', ' ');
+    fmtChunk.cksize = sizeof(PCMWAVEFORMAT);  // we know the size of this ck.
+    if (mmioCreateChunk(hmmioFile, &fmtChunk, 0) != 0)
     {
         // error writing data chunk
         pApp->ErrorMessage(IDS_ERROR_WRITEDATACHUNK, pszPathName);
@@ -78,8 +67,7 @@ BOOL CRiff::NewWav(LPCTSTR pszPathName, PCMWAVEFORMAT & pcm, LPCTSTR szRawDataPa
 
     /* Write the PCMWAVEFORMAT structure to the 'fmt ' chunk.
     */
-    if (mmioWrite(hmmioFile, (HPSTR) &pcm, sizeof(PCMWAVEFORMAT))
-            != sizeof(PCMWAVEFORMAT))
+    if (mmioWrite(hmmioFile, (HPSTR) &pcm, sizeof(PCMWAVEFORMAT)) != sizeof(PCMWAVEFORMAT))
     {
         // error writing data chunk
         pApp->ErrorMessage(IDS_ERROR_WRITEDATACHUNK, pszPathName);
@@ -89,7 +77,7 @@ BOOL CRiff::NewWav(LPCTSTR pszPathName, PCMWAVEFORMAT & pcm, LPCTSTR szRawDataPa
 
     /* Ascend out of the 'fmt ' chunk, back into the 'RIFF' chunk.
     */
-    if (mmioAscend(hmmioFile, &mmckinfoSubchunk, 0) != 0)
+    if (mmioAscend(hmmioFile, &fmtChunk, 0) != 0)
     {
         // error writing data chunk
         pApp->ErrorMessage(IDS_ERROR_WRITEDATACHUNK, pszPathName);
@@ -99,8 +87,9 @@ BOOL CRiff::NewWav(LPCTSTR pszPathName, PCMWAVEFORMAT & pcm, LPCTSTR szRawDataPa
 
     /* Create the 'data' chunk that holds the waveform samples.
     */
-    mmckinfoSubchunk.ckid = mmioFOURCC('d', 'a', 't', 'a');
-    if (mmioCreateChunk(hmmioFile, &mmckinfoSubchunk, 0) != 0)
+    MMCKINFO dataChunk;     // info. for a chunk in output file
+    dataChunk.ckid = mmioFOURCC('d', 'a', 't', 'a');
+    if (mmioCreateChunk(hmmioFile, &dataChunk, 0) != 0)
     {
         // error writing data chunk
         pApp->ErrorMessage(IDS_ERROR_WRITEDATACHUNK, pszPathName);
@@ -108,8 +97,8 @@ BOOL CRiff::NewWav(LPCTSTR pszPathName, PCMWAVEFORMAT & pcm, LPCTSTR szRawDataPa
         return FALSE;
     }
 
-    mmckinfoSubchunk.dwFlags = MMIO_DIRTY; // force ascend to update the chunk length
-    mmckinfoParent.dwFlags = MMIO_DIRTY;
+    dataChunk.dwFlags = MMIO_DIRTY; // force ascend to update the chunk length
+    riffChunk.dwFlags = MMIO_DIRTY;
 
     {
         CFile * pFile = NULL;
@@ -163,7 +152,7 @@ BOOL CRiff::NewWav(LPCTSTR pszPathName, PCMWAVEFORMAT & pcm, LPCTSTR szRawDataPa
     }
 
     // get out of 'data' chunk
-    if (mmioAscend(hmmioFile, &mmckinfoSubchunk, 0))
+    if (mmioAscend(hmmioFile, &dataChunk, 0))
     {
         // error writing data chunk
         pApp->ErrorMessage(IDS_ERROR_WRITEDATACHUNK, pszPathName);
@@ -172,13 +161,14 @@ BOOL CRiff::NewWav(LPCTSTR pszPathName, PCMWAVEFORMAT & pcm, LPCTSTR szRawDataPa
     }
 
     // get out of 'RIFF' chunk, to write RIFF size
-    if (mmioAscend(hmmioFile, &mmckinfoParent, 0))
+    if (mmioAscend(hmmioFile, &riffChunk, 0))
     {
         // error writing RIFF chunk
         pApp->ErrorMessage(IDS_ERROR_WRITERIFFCHUNK, pszPathName);
         mmioClose(hmmioFile, 0);
         return FALSE;
     }
+
     if (!mmioClose(hmmioFile, 0))   // close file
     {
         // Set File Length ...

@@ -98,7 +98,6 @@
 #include "DlgSaveAsOptions.h"
 #include "DlgAutoRecorder.h"
 #include "DlgSplitFile.h"
-#include "waveresampler.h"
 #include "dlgmultichannel.h"
 #include "dlgaligntranscriptiondatasheet.h"
 #include "TranscriptionDataSettings.h"
@@ -156,6 +155,10 @@
 #include "resource.h"
 #include "SaParam.h"
 #include "ScopedCursor.h"
+#include "WaveUtils.h"
+#include <stdexcept>
+
+using std::logic_error;
 
 #ifdef _DEBUG
 #undef THIS_FILE
@@ -1873,6 +1876,23 @@ DWORD CSaDoc::CheckWaveFormatForOpen(LPCTSTR pszPathName)
     return dwDataSize; // OK return data chunk length
 }
 
+/**
+* helper class to implement IProgressUpdate interface
+*/
+class CProgressUpdater : public IProgressUpdate {
+public:
+	CProgressStatusBar & tool;
+	CProgressUpdater( CProgressStatusBar & aTool) :
+	tool(aTool) {
+	}
+	void SetProgress( int value) {
+		tool.SetProgress( value);
+	}
+	int GetProgress() {
+		return tool.GetProgress();
+	}
+};
+
 /***************************************************************************/
 // CSaDoc::ConvertToWave Converts file to 22kHz, 16bit, Mono WAV format
 /***************************************************************************/
@@ -1902,8 +1922,9 @@ bool CSaDoc::ConvertToWave(LPCTSTR pszPathName)
     // if it's a wave file, but in a different format then try and convert it
     // if this errors, we will just continue on trying with ST_Audio
     {
+		CProgressUpdater updater(*pStatusBar);
         CWaveResampler resampler;
-        CWaveResampler::ECONVERT result = resampler.Resample(pszPathName, szTempFilePath, pStatusBar);
+        CWaveResampler::ECONVERT result = resampler.Resample(pszPathName, szTempFilePath, updater);
         if (result==CWaveResampler::EC_SUCCESS)
         {
             pMainFrame->ShowDataStatusBar(TRUE); // restore data status bar
@@ -1970,8 +1991,8 @@ BOOL CSaDoc::OnSaveDocument(LPCTSTR pszPathName)
 // file from the recorder contains the RIFF structure with the fmt and the
 // data chunks. After the copying, the file has to be saved in the normal way.
 /***************************************************************************/
-BOOL CSaDoc::OnSaveDocument( LPCTSTR pszPathName, BOOL bSaveAudio)
-{
+BOOL CSaDoc::OnSaveDocument( LPCTSTR pszPathName, BOOL bSaveAudio) {
+
     std::wstring target = pszPathName;
 
     CSaApp * pApp = (CSaApp *)AfxGetApp(); // get pointer to application
@@ -1979,11 +2000,10 @@ BOOL CSaDoc::OnSaveDocument( LPCTSTR pszPathName, BOOL bSaveAudio)
 	{
 		CScopedCursor waitCursor(this);
 
-		if (!m_szTempWave.IsEmpty())
-		{
+		if (!m_szTempWave.IsEmpty()) {
+
 			// check if the file already opened
-			if (pApp->IsFileOpened(target.c_str()))
-			{
+			if (pApp->IsFileOpened(target.c_str())) {
 				// error file already opened by SA
 				pApp->ErrorMessage(IDS_ERROR_FILEOPENED, target.c_str());
 				return FALSE;
@@ -1991,14 +2011,12 @@ BOOL CSaDoc::OnSaveDocument( LPCTSTR pszPathName, BOOL bSaveAudio)
 			// temporary wave file to rename
 			CFileStatus status;
 			// check if file exists already
-			if (CFile::GetStatus(target.c_str(), status) != 0)   
-			{
+			if (CFile::GetStatus(target.c_str(), status) != 0) {
 				// file does exist already, be sure to allow writing and delete it
 				RemoveFile(target.c_str());
 			}
 			// check if a copy is needed
-			if (m_szTempWave[0] != target.c_str()[0])
-			{
+			if (m_szTempWave[0] != target.c_str()[0]) {
 				// different drives, copy the file
 				if (!CopyWave( m_szTempWave, target.c_str()))
 				{
@@ -2037,8 +2055,7 @@ BOOL CSaDoc::OnSaveDocument( LPCTSTR pszPathName, BOOL bSaveAudio)
 					fileName = GetFilenameFromTitle().c_str(); // get the current view caption string
 				}
 
-				CSaString fileExt = _T(".wav");
-				fileName = SetFileExtension(fileName, fileExt);
+				fileName = SetFileExtension(fileName, _T(".wav"));
 
 				CDlgSaveAsOptions dlg(_T("wav"), fileName, OFN_PATHMUSTEXIST | OFN_OVERWRITEPROMPT, _T("WAV Files (*.wav)|*.wav||"), NULL, false, (GetNumChannels()!=1));
 				CSaString szDefault = pApp->DefaultDir(); // need to save copy (return value is destroyed)
@@ -2069,6 +2086,7 @@ BOOL CSaDoc::OnSaveDocument( LPCTSTR pszPathName, BOOL bSaveAudio)
 					// File exists overwrite existing file
 					try
 					{
+						status.m_attribute |= CFile::readOnly;
 						CFile::SetStatus(fileName, status);
 					}
 					catch (...)
@@ -4750,20 +4768,19 @@ void CSaDoc::UndoWaveFile()
 /***************************************************************************/
 // CSaDoc::SetFileExtension Sets the file extension of a filename.
 /***************************************************************************/
-CSaString CSaDoc::SetFileExtension(CSaString fileName, CSaString fileExtension)
-{
-    CSaString szReturn = fileName;
+CSaString CSaDoc::SetFileExtension( CSaString fileName, LPCTSTR szExt) {
+
+	CSaString szReturn = fileName;
 
     // get rid of existing file extension
     int pos = fileName.ReverseFind(_T('.'));
-    if (pos == -1)
-    {
+    if (pos == -1) {
         pos = fileName.GetLength();
     }
     szReturn = fileName.Left(pos);
 
     // append desired file extension
-    szReturn += fileExtension;
+    szReturn += szExt;
 
     return szReturn;
 }
@@ -5930,189 +5947,148 @@ void CSaDoc::OnUpdateFileSave(CCmdUI * pCmdUI)
 /***************************************************************************/
 void CSaDoc::OnFileSaveAs()
 {
-    CSaString fileName = GetPathName();
-    if (fileName.IsEmpty())
-    {
-        fileName = GetFilenameFromTitle().c_str(); // get the current view caption string
+	const bool stereo = GetNumChannels()>1;
+
+	CSaString ifileName = GetPathName();
+    if (ifileName.IsEmpty()) {
+        ifileName = GetFilenameFromTitle().c_str(); // get the current view caption string
     }
+    ifileName = SetFileExtension(ifileName, _T(".wav"));
 
-	bool stereo = GetNumChannels()!=1;
+	CSaString originalFile = ifileName;
 
-    CSaString fileExt = _T(".wav");
-    fileName = SetFileExtension(fileName, fileExt);
-
-    CDlgSaveAsOptions dlg(_T("wav"), fileName, OFN_PATHMUSTEXIST | OFN_OVERWRITEPROMPT, _T("WAV Files (*.wav)|*.wav||"), NULL, true, stereo);
+    CDlgSaveAsOptions dlg(_T("wav"), ifileName, OFN_PATHMUSTEXIST | OFN_OVERWRITEPROMPT, _T("WAV Files (*.wav)|*.wav||"), NULL, true, stereo);
 
 	// need to save copy (return value is destroyed)
     CSaString szDefault = static_cast<CSaApp *>(AfxGetApp())->DefaultDir();		
     dlg.m_ofn.lpstrInitialDir = szDefault;
-    if (dlg.DoModal()!=IDOK)
-    {
+    if (dlg.DoModal()!=IDOK) {
         return;
     }
 
-    fileName = dlg.GetPathName();
+    CSaString newFile = dlg.GetPathName();
 
-    bool bSameFileName = false;
-    if (fileName == GetPathName())
-    {
-        bSameFileName = true;
+    bool bSameFile = false;
+	if (newFile.CompareNoCase(originalFile)==0) {
+        bSameFile = true;
         dlg.m_eShowFiles = showNew; // There is only one file.
-		if ((stereo)&&((dlg.m_eFileFormat==formatMono)||(dlg.m_eFileFormat==formatRight)))
-		{
+		if ((stereo) && 
+			((dlg.m_eFileFormat==formatMono) || (dlg.m_eFileFormat==formatRight))) {
 			((CSaApp *) AfxGetApp())->ErrorMessage( IDS_ERROR_NO_DUPE_FILENAME);
 			return;
 		}
-    }
-    else if (static_cast<CSaApp *>(AfxGetApp())->IsFileOpened(fileName))
-    {
+    } else if (static_cast<CSaApp *>(AfxGetApp())->IsFileOpened(newFile)) {
         // error file already opened by SA
-        static_cast<CSaApp *>(AfxGetApp())->ErrorMessage(IDS_ERROR_FILEOPENED, fileName);
+        static_cast<CSaApp *>(AfxGetApp())->ErrorMessage(IDS_ERROR_FILEOPENED, newFile);
         return;
-    }
-
-    CFileStatus status;
-    if (CFile::GetStatus(fileName, status))
-    {
-        // File exists overwrite existing file
-        try
-        {
-            CFile::SetStatus(fileName, status);
-        }
-        catch (...)
-        {
-            ((CSaApp *) AfxGetApp())->ErrorMessage(IDS_ERROR_FILEWRITE, fileName);
-            return;
-        }
     }
 
 	CScopedCursor waitCursor(this);
 
-    if (dlg.m_eSaveArea == saveCursors)
-    {
-        POSITION pos = GetFirstViewPosition();
-        CSaView * pView = (CSaView *)GetNextView(pos);
-        CURSORPOS dwStart = pView->GetStartCursorPosition();
-        CURSORPOS dwStop = pView->GetStopCursorPosition();
-		WAVETIME start = toTime( (CURSORPOS)dwStart);
-		WAVETIME stop = toTime( (CURSORPOS)dwStop);
-        if (!CopySectionToNewWavFile( start, stop-start, fileName, TRUE)) 
-		{
-			RemoveFile( fileName);
-			return;
-		}
-		if (!ConvertToMono( stereo, dlg.m_eFileFormat, fileName))
-		{
-			RemoveFile( fileName);
-			return;
-		}
-    }
-    else if (dlg.m_eSaveArea == saveView)
-    {
-        POSITION pos = GetFirstViewPosition();
-        CSaView * pView = (CSaView *)GetNextView(pos);
-        DWORD dwStart;
-        DWORD dwFrame;
-        pView->GetDataFrame(dwStart, dwFrame);
-        if (GetBitsPerSample() == 16)
-        {
-            dwFrame &= ~0x1; // force even if file is 16 bit.
-        }
-        if (!CopySectionToNewWavFile( dwStart, dwFrame, fileName, TRUE))
-		{
-			RemoveFile( fileName);
-			return;
-		}
-		if (!ConvertToMono( stereo, dlg.m_eFileFormat, fileName))
-		{
-			RemoveFile( fileName);
-			return;
-		}
-    }
-    else if (dlg.m_eShowFiles != showNew)
-    {
-		WAVETIME start = 0;
-		WAVETIME length = toTime( GetDataSize(), true);
-        if (!CopySectionToNewWavFile( start, length, fileName, TRUE))
-		{
-			RemoveFile( fileName);
-			return;
-		}
-		if (!ConvertToMono( stereo, dlg.m_eFileFormat, fileName))
-		{
-			RemoveFile( fileName);
-			return;
-		}
-    }
-    else
-    {
-        if (bSameFileName)
-        {
-            SetModifiedFlag();			// Force SA to update file format
-            SetAudioModifiedFlag();
-            SetTransModifiedFlag(TRUE);
-            OnFileSave();
-            return;
-        }
+	// do all the work in a temporary file, and copy it when done
+	wstring tempFile = GetTempFileName(L"OFSA");
 
-        // get graph title string
-        CSaString szGraphTitle = GetTitle();      // get the current view caption string
-        int nFind = szGraphTitle.Find(':');
-        if (nFind != -1)
-        {
-            szGraphTitle = szGraphTitle.Right(szGraphTitle.GetLength() - nFind); // extract part right of and with :
-        }
-        else
-        {
-            szGraphTitle = _T("");
-        }
-
-        CSaString sourceFileName = ((!m_bUsingTempFile) ? GetPathName() : m_szTempConvertedWave);
-        if (sourceFileName.GetLength()>0)
+	switch (dlg.m_eSaveArea) {
+	case saveCursors:
 		{
-			if (!CopyWave( sourceFileName, fileName))    // SDM 1.5Test10.2
-			{
-				// error copying file
-				((CSaApp *) AfxGetApp())->ErrorMessage(IDS_ERROR_FILEWRITE, fileName);
+			POSITION pos = GetFirstViewPosition();
+			CSaView * pView = (CSaView *)GetNextView(pos);
+			CURSORPOS dwStart = pView->GetStartCursorPosition();
+			CURSORPOS dwStop = pView->GetStopCursorPosition();
+			WAVETIME start = toTime( (CURSORPOS)dwStart);
+			WAVETIME stop = toTime( (CURSORPOS)dwStop);
+			if (!CopySectionToNewWavFile( start, stop-start, tempFile.c_str(), TRUE)) {
+				RemoveFile( tempFile.c_str());
 				return;
 			}
-        }
-
-		if (!ConvertToMono( stereo, dlg.m_eFileFormat, fileName))
+		}
+		break;
+	case saveView:
 		{
-			RemoveFile( fileName);
+			POSITION pos = GetFirstViewPosition();
+			CSaView * pView = (CSaView *)GetNextView(pos);
+			DWORD dwStart = 0;
+			DWORD dwFrame = 0;
+			pView->GetDataFrame( dwStart, dwFrame);
+			if (GetBitsPerSample() == 16) {
+				dwFrame &= ~0x1; // force even if file is 16 bit.
+			}
+			WAVETIME start = toTime( (CURSORPOS)dwStart);
+			WAVETIME stop = toTime( (CURSORPOS)dwFrame);
+			if (!CopySectionToNewWavFile( start, stop, tempFile.c_str(), TRUE)) {
+				RemoveFile( tempFile.c_str());
+				return;
+			}
+		}
+		break;
+	case saveEntire:
+		{
+			// save entire file
+			// show original or both?
+			WAVETIME start = 0;
+			WAVETIME length = toTime( GetDataSize(), true);
+			if (!CopySectionToNewWavFile( start, length, tempFile.c_str(), TRUE)) {
+				RemoveFile( tempFile.c_str());
+				return;
+			}
+		}
+		break;
+	}
+
+	switch (dlg.m_eFileFormat) {
+	case formatStereo:
+		// no conversion
+		break;
+	case formatMono:
+		if (!ConvertToMono( true, tempFile.c_str())) {
+			RemoveFile( tempFile.c_str());
 			return;
 		}
-
-        if (!OnSaveDocument( fileName, TRUE))
-		{
-			RemoveFile( fileName);
+		break;
+	case formatRight:
+		if (!ConvertToMono( false, tempFile.c_str())) {
+			RemoveFile( tempFile.c_str());
 			return;
 		}
+		break;
+	}
 
-        // Change the document name
-        SetPathName(fileName);
-        // set back the title string
-        CSaString szCaption = GetTitle(); // get the current view caption string
-        szCaption += szGraphTitle; // add the graph title
-        SetTitle(szCaption); // write the new caption string
-    }
+	// the temp file now contains the new data.
+	// if the destination file and the source are the same, we need to overwrite
+	if (FileExists(newFile)) {
+		DeleteFile(newFile);
+	}
+	if (bSameFile) {
+		// the same file. delete the original and rename
+		DeleteFile(originalFile);
+		RenameFile(tempFile.c_str(),newFile);
+	} else {
+		// not the same, just simply rename it
+		RenameFile(tempFile.c_str(),newFile);
+	}
+
+	// save the transcriptions...
+	if (!OnSaveDocument( newFile, FALSE)) {
+		RemoveFile( newFile);
+		return;
+	}
 
     // change the file attribute to read only
-    if (_tcslen(fileName) > 0)
-    {
-        CFile::SetStatus(fileName, m_fileStat);
+    if (_tcslen(newFile) > 0) {
+        CFile::SetStatus( newFile, m_fileStat);
     }
 
-    if (dlg.m_eShowFiles == showBoth)
-    {
-        AfxGetApp()->OpenDocumentFile(fileName); // Open new document
-    }
-    if ((dlg.m_eShowFiles == showNew) && (fileName != GetPathName()))
-    {
-        AfxGetApp()->OpenDocumentFile(fileName); // Open new document
-        OnCloseDocument();  // Close Original
-    }
+	switch (dlg.m_eShowFiles) {
+	case showBoth:
+        AfxGetApp()->OpenDocumentFile(newFile);			// Open new document
+		break;
+	case showNew:
+		OnCloseDocument();
+        AfxGetApp()->OpenDocumentFile(newFile);			// Open new document
+		break;
+	case showOriginal:									// show nothing
+		break;
+	}
 }
 
 /***************************************************************************/
@@ -8791,28 +8767,65 @@ BOOL CSaDoc::CopySectionToNewWavFile( WAVETIME sectionStart, WAVETIME sectionLen
     return TRUE;
 }
 
-bool CSaDoc::ConvertToMono( bool stereo, EFileFormat fileFormat, LPCTSTR filename) {
+/**
+* Extracts the left or right channel from the audio data
+* the left channel is stored at 0 in wave audio data
+* the right channel begins at 0+(blockAlign/channels) in the wave audio data
+*
+* @param wasStereo true if the original data is stereo
+* @param left true if we should extract the left channel, false to extract the right channel
+* @param filename the source (and target) file to modify
+* @return false on failure
+*/
+bool CSaDoc::ConvertToMono( bool extractLeft, LPCTSTR filename) {
 
-	return true;
-
-	if (!stereo) return true;
-
+	// do the work in a temporary file
     TCHAR tempfilename[_MAX_PATH];
-    GetTempFileName(_T("MON"), tempfilename, _countof(tempfilename));
-	if (!CopyWave( filename, tempfilename))
-	{
+    GetTempFileName(_T("MONO"), tempfilename, _countof(tempfilename));
+	if (!CopyWave( filename, tempfilename))	{
 		return false;
 	}
 
-	CWaveResampler resampler;
-	if (!resampler.Monotize( tempfilename, filename, fileFormat))
-	{
-		RemoveFile( tempfilename);
+	WORD bitsPerSample = 0;
+	WORD formatTag = 0;
+	WORD channels = 0;
+	DWORD samplesPerSec = 0;
+	WORD blockAlign = 0;
+	DWORD length = 0;
+
+	try {
+		//TODO handle memory during exceptions
+		vector<char> buffer;
+		
+		CWaveReader reader;
+		reader.read(filename,MMIO_ALLOCBUF | MMIO_READ, bitsPerSample, formatTag, channels, samplesPerSec, blockAlign, buffer);
+
+		// is there anything for us to do?
+		if (channels==1) return true;
+
+		WORD channel = extractLeft?0:1;
+
+		vector<char> newBuffer;
+		extractChannel(channel,channels,blockAlign,buffer,newBuffer);
+
+		WORD newChannels = 1;
+		CWaveWriter writer;
+		writer.write( tempfilename, MMIO_CREATE | MMIO_WRITE, bitsPerSample, formatTag, newChannels, samplesPerSec, newBuffer);
+
+		// delete the original file
+		::DeleteFileW( filename);
+
+		// rename the new file
+		::RenameFile( tempfilename, filename);
+
+		return true;
+	} catch (logic_error e) {
+		AfxMessageBox( L"logic_error occurred!", MB_OK|MB_ICONEXCLAMATION, 0);
+		return false;
+	} catch (...) {
+		AfxMessageBox( L"Unexpected exception!", MB_OK|MB_ICONEXCLAMATION, 0);
 		return false;
 	}
-
-	RemoveFile(tempfilename);
-	return true;
 }
 
 void CSaDoc::DoExportFieldWorks(CExportFWSettings & settings)

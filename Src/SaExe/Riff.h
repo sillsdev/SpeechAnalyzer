@@ -12,12 +12,8 @@
 #ifndef RIFF_H
 #define RIFF_H
 
-class CRiff
-{
+class CRiff {
 public:
-    CRiff();
-    virtual ~CRiff();
-
     static BOOL NewWav(LPCTSTR szPathName, PCMWAVEFORMAT & pcm, LPCTSTR szRawDataPath);
 };
 

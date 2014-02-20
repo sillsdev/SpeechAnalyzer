@@ -4,8 +4,7 @@
 #include "SaString.h"
 #include "resource.h"
 
-void GetTempFileName(LPCTSTR szPrefix, LPTSTR szFilename, size_t len)
-{
+void GetTempFileName(LPCTSTR szPrefix, LPTSTR szFilename, size_t len) {
 
     TCHAR lpszTempPath[_MAX_PATH];
     wmemset(lpszTempPath,0,_MAX_PATH);
@@ -15,26 +14,33 @@ void GetTempFileName(LPCTSTR szPrefix, LPTSTR szFilename, size_t len)
     GetTempFileName(lpszTempPath, szPrefix, 0, szFilename);
 }
 
-void RemoveFile(LPCTSTR path)
-{
-    if (path==NULL)
-    {
+wstring GetTempFileName(LPCTSTR szPrefix) {
+
+	wstring result;
+    TCHAR szPath[_MAX_PATH];
+    wmemset(szPath,0,_countof(szPath));
+    GetTempPath(_MAX_PATH, szPath);
+	TCHAR szFilename[_MAX_PATH];
+    wmemset(szFilename,0,_countof(szFilename));
+    GetTempFileName( szPath, szPrefix, 0, szFilename);
+	result = szFilename;
+	return result;
+}
+
+void RemoveFile(LPCTSTR path) {
+    
+	if (path==NULL) {
         return;
     }
-    if (wcslen(path)==0)
-    {
+    if (wcslen(path)==0) {
         return;
     }
-    try
-    {
+    try {
         CFileStatus status;
-        if (CFile::GetStatus(path, status))
-        {
+        if (CFile::GetStatus(path, status)) {
             CFile::Remove(path);
         }
-    }
-    catch (...)
-    {
+    } catch (...) {
         TRACE(L"failed to delete %s\n",path);
     }
 }
@@ -42,13 +48,10 @@ void RemoveFile(LPCTSTR path)
 /**
 * return true if the path exists as a file
 */
-bool FileExists( LPCTSTR path)
-{
+bool FileExists( LPCTSTR path) {
     CFileStatus status;
-    if (CFile::GetStatus(path,status))
-    {
-        if (!(status.m_attribute & CFile::directory))
-        {
+    if (CFile::GetStatus(path,status)) {
+        if (!(status.m_attribute & CFile::directory)) {
             return true;
         }
     }
@@ -58,19 +61,15 @@ bool FileExists( LPCTSTR path)
 /**
 * return true if the path exists as a folder
 */
-bool FolderExists(LPCTSTR path)
-{
+bool FolderExists(LPCTSTR path) {
 
-    if (wcslen(path)==0)
-    {
+    if (wcslen(path)==0) {
         return false;
     }
 
     CFileStatus status;
-    if (CFile::GetStatus(path,status))
-    {
-        if (status.m_attribute & CFile::directory)
-        {
+    if (CFile::GetStatus(path,status)) {
+        if (status.m_attribute & CFile::directory) {
             return true;
         }
     }
@@ -80,15 +79,12 @@ bool FolderExists(LPCTSTR path)
 /**
 * create a non-exitent folder
 */
-bool CreateFolder(LPCTSTR path)
-{
+bool CreateFolder(LPCTSTR path) {
 
-    if (FolderExists(path))
-    {
+    if (FolderExists(path)) {
         return true;
     }
-    if (FileExists(path))
-    {
+    if (FileExists(path)) {
         // it exists, but it's not a directory
         TRACE1("%s already exists, but it's not a directory\n",path);
         return false;
@@ -99,48 +95,40 @@ bool CreateFolder(LPCTSTR path)
     return true;
 }
 
-void AppendDirSep(LPTSTR path, size_t size)
-{
+void AppendDirSep(LPTSTR path, size_t size) {
 
     size_t len = wcslen(path);
-    if (len == 0)
-    {
+    if (len == 0) {
         return;
     }
 
-    if (path[len - 1] == '\\')
-    {
+    if (path[len - 1] == '\\') {
         return;
     }
 
     wcscat_s(path,size,L"\\");
 }
 
-void AppendDirSep( wstring & path)
-{
+void AppendDirSep( wstring & path) {
 
     size_t len = path.length();
-    if (len == 0)
-    {
+    if (len == 0) {
         return;
     }
 
-    if (path[len - 1] == '\\')
-    {
+    if (path[len - 1] == '\\') {
         return;
     }
 
     path.append(L"\\");
 }
 
-int GetSaveAsFilename(LPCTSTR title, LPCTSTR filter, LPCTSTR extension, LPTSTR path, wstring & filename)
-{
+int GetSaveAsFilename(LPCTSTR title, LPCTSTR filter, LPCTSTR extension, LPTSTR path, wstring & filename) {
 
     filename = L"";
     CSaString title2 = title;
     int nFind = title2.Find(':');
-    if (nFind != -1)
-    {
+    if (nFind != -1) {
         title2 = title2.Left(nFind);
 		title2 = title2.Trim();
     }
@@ -148,15 +136,13 @@ int GetSaveAsFilename(LPCTSTR title, LPCTSTR filter, LPCTSTR extension, LPTSTR p
 
     // remove extension
     title2.Trim();
-    if (nFind >= ((title2.GetLength() > 3) ? (title2.GetLength() - 4) : 0))
-    {
+    if (nFind >= ((title2.GetLength() > 3) ? (title2.GetLength() - 4) : 0)) {
         title2 = title2.Left(nFind);
     }
 
     CFileDialog dlg(FALSE, extension, title2, OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT, filter, NULL);
 
-    if ((title2.GetLength()>0)&&(path!=NULL))
-    {
+    if ((title2.GetLength()>0)&&(path!=NULL)) {
         TCHAR temp[MAX_PATH];
         wmemset(temp,0,MAX_PATH);
         wcscat_s(temp,MAX_PATH,path);
@@ -169,28 +155,25 @@ int GetSaveAsFilename(LPCTSTR title, LPCTSTR filter, LPCTSTR extension, LPTSTR p
     }
 
     int result = dlg.DoModal();
-    if (result == IDOK)
-    {
+    if (result == IDOK) {
         // return the dialog result
         filename = dlg.GetPathName();
     }
     return result;
 }
 
-DWORD GetFileSize(LPCTSTR szFile)
-{
-    CFileStatus stat;
-    if (!CFile::GetStatus(szFile, stat))
-    {
+DWORD GetFileSize(LPCTSTR szFile) {
+    
+	CFileStatus stat;
+    if (!CFile::GetStatus(szFile, stat)) {
         return -1;
     }
     return stat.m_size;
 }
 
-bool EndsWith(LPCTSTR path, LPCTSTR extension)
-{
-    if (wcslen(path)<wcslen(extension))
-    {
+bool EndsWith(LPCTSTR path, LPCTSTR extension) {
+    
+	if (wcslen(path)<wcslen(extension)) {
         return false;
     }
     wstring sub(path);
@@ -198,16 +181,13 @@ bool EndsWith(LPCTSTR path, LPCTSTR extension)
     return (_wcsicmp(sub.c_str(),extension)==0);
 }
 
-void RenameFile(LPCTSTR oldname, LPCTSTR newname)
-{
+void RenameFile(LPCTSTR oldname, LPCTSTR newname) {
 	CFile::Rename( oldname, newname);
 }
 
-bool IsReadOnly( LPCTSTR filename)
-{
+bool IsReadOnly( LPCTSTR filename) {
     CFileStatus stat;
-    if (!CFile::GetStatus(filename, stat))
-    {
+    if (!CFile::GetStatus(filename, stat)) {
         return -1;
     }
 	return ((stat.m_attribute&CFile::readOnly)==CFile::readOnly);
@@ -216,13 +196,11 @@ bool IsReadOnly( LPCTSTR filename)
 /**
 * performs validation on a filename for the following characters.
 **/
+void DDX_Filename(CDataExchange* pDX, int nIDC, CString& value) {
 
-void DDX_Filename(CDataExchange* pDX, int nIDC, CString& value)
-{
 	//  \ / : * ? “ < > |
    HWND hWndCtrl = pDX->PrepareEditCtrl(nIDC);
-	if (pDX->m_bSaveAndValidate)
-	{
+	if (pDX->m_bSaveAndValidate) {
 		CString temp;
         int nLen = ::GetWindowTextLength( hWndCtrl);
         ::GetWindowText( hWndCtrl, temp.GetBufferSetLength(nLen), nLen+1);

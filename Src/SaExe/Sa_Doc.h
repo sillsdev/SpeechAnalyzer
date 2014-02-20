@@ -181,7 +181,7 @@ public:
     virtual void OnCloseDocument();
     virtual BOOL DoFileSave();
     BOOL CopySectionToNewWavFile( WAVETIME dwSectionStart, WAVETIME dwSectionLength, LPCTSTR szNewWave, BOOL usingClipboard);
-	bool ConvertToMono( bool stereo, EFileFormat fileFormat, LPCTSTR filename);
+	bool ConvertToMono( bool extractLeft, LPCTSTR filename);
     BOOL LoadDataFiles(LPCTSTR pszPathName, bool bTemp = false);
     BOOL WriteDataFiles(LPCTSTR pszPathName, BOOL bSaveAudio = TRUE, BOOL bIsClipboardFile = FALSE);
     bool GetWaveFormatParams(LPCTSTR pszPathName, CFmtParm & fmtParm, DWORD & dwDataSize);
@@ -360,7 +360,7 @@ protected:
 private:
     BOOL CopyWaveToTemp(LPCTSTR pszSourcePathName);
     BOOL InsertWaveToTemp(LPCTSTR pszSourcePathName, LPCTSTR pszTempPathName, DWORD insertPos);
-    CSaString SetFileExtension(CSaString fileName, CSaString fileExtension);
+    CSaString SetFileExtension( CSaString fileName, LPCTSTR szExt);
 
     // Methods for loading a wave file and all it's transcription data.
     BOOL ReadRiff(LPCTSTR pszPathName);

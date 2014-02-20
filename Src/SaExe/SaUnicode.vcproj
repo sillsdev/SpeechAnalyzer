@@ -146,7 +146,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="4"
 				InlineFunctionExpansion="2"
-				AdditionalIncludeDirectories=".,..\lib"
+				AdditionalIncludeDirectories=".;..\lib;..\waveutils"
 				PreprocessorDefinitions="_WINDOWS;WINDOWS_PLATFORM;WIN32;NDEBUG;WINVER=0x501"
 				MinimalRebuild="true"
 				RuntimeLibrary="2"
@@ -173,6 +173,7 @@
 				OutputFile="$(OutDir)\SA.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
+				AdditionalLibraryDirectories=".\..\..\Output\Release"
 				IgnoreAllDefaultLibraries="true"
 				GenerateDebugInformation="false"
 				ProgramDatabaseFile="$(OutDir)\SA.pdb"
@@ -3052,10 +3053,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\WaveResampler.cpp"
-				>
-			</File>
-			<File
 				RelativePath="Dsp\Wavewarp.cpp"
 				>
 				<FileConfiguration
@@ -4124,10 +4121,6 @@
 			</File>
 			<File
 				RelativePath=".\WaveOutDevice.h"
-				>
-			</File>
-			<File
-				RelativePath=".\WaveResampler.h"
 				>
 			</File>
 		</Filter>
