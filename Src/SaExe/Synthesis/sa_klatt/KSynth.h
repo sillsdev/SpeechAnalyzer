@@ -113,10 +113,10 @@ struct Synthesizer
 
 };
 
-class SilVoicing
+class CSilVoicing
 {
 public:
-    SilVoicing();
+    CSilVoicing();
     void clear();
 
     /* static data */
@@ -187,7 +187,7 @@ private:
 
     Coefficients coefs;
     Synthesizer synth;
-    SilVoicing m_silVoicing;
+    CSilVoicing m_silVoicing;
 
     // Glottal Sound Sources
     CResonator glottal_pulse;

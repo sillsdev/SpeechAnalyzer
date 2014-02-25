@@ -179,6 +179,8 @@ BEGIN_MESSAGE_MAP(CSaView, CView)
     ON_UPDATE_COMMAND_UI(ID_EDIT_REMOVE, OnUpdateEditRemove)
     ON_COMMAND(ID_EDIT_AUTO_ADD, OnEditAutoAdd)
     ON_UPDATE_COMMAND_UI(ID_EDIT_AUTO_ADD, OnUpdateEditAutoAdd)
+    ON_COMMAND(ID_EDIT_AUTO_ADD_STORY_SECTION, OnEditAutoAddStorySection)
+    ON_UPDATE_COMMAND_UI(ID_EDIT_AUTO_ADD_STORY_SECTION, OnUpdateEditAutoAddStorySection)
     ON_COMMAND(ID_EDIT_ADD, OnEditAdd)
     ON_UPDATE_COMMAND_UI(ID_EDIT_ADD, OnUpdateEditAdd)
     ON_COMMAND(ID_EDIT_ADD_AUTO_PHRASE_L2, OnEditAddAutoPhraseL2)
@@ -4436,7 +4438,7 @@ void CSaView::OnEditAddSyllable()
     pDoc->CheckPoint();
     CSaString szString = "."; //Fill new segment with segment break character
 
-    CPhoneticSegment * pSeg = (CPhoneticSegment *) GetAnnotation(PHONETIC);
+    CPhoneticSegment * pSeg = (CPhoneticSegment *)GetAnnotation(PHONETIC);
 
     if (pSeg->GetSelection()!=-1)   // Phonetic Segment Selected
     {
@@ -4550,39 +4552,104 @@ void CSaView::OnEditAutoAdd()
     }
 }
 
-BOOL CSaView::IsPhoneticOverlapping()
+//SDM 1.5Test11.3
+/***************************************************************************
+* CSaView::OnEditAutoAddStorySection Story macro
+*
+* NOTE: If the start cursor is not in the correct position, we need
+* to move it to the end of the last segment before the stop cursor
+***************************************************************************/
+void CSaView::OnEditAutoAddStorySection()
+{
+    DWORD stop = GetStopCursorPosition();
+
+	// move the start cursor to the end of the last phonetic segment
+    CSaDoc * pDoc = GetDocument();	// get pointer to document
+	int nSelection = pDoc->GetLastSegmentBeforePosition(PHONETIC,stop);
+	DWORD offset = 0;
+	if (nSelection!=-1)
+	{
+		CPhoneticSegment * pSeg = (CPhoneticSegment *) GetAnnotation(PHONETIC);
+		offset = pSeg->GetStop(nSelection);
+	}
+	SetCursorPosition(ECursorSelect::START_CURSOR,offset);
+    DWORD start = GetStartCursorPosition();
+	
+    TRACE("Running Story Section macro\n");
+    OnEditAdd();
+    OnEditAddWord();
+    OnEditAddPhraseL1();
+    OnEditAddAutoPhraseL2();
+
+    start = GetStartCursorPosition();
+    stop = GetStopCursorPosition();
+    if (stop<start)
+    {
+        SetStopCursorPosition(start+1);
+    }
+}
+
+BOOL CSaView::IsPhoneticOverlapping(bool story)
 {
 	DWORD start = GetStartCursorPosition();
     DWORD stop = GetStopCursorPosition();
     // Check if either the Begin cursor or the End cursor are inside of any existing phonetic segment.
     // If either of them are, then that would result in an invalid new segment, so again do nothing.
-    CPhoneticSegment * pSeg = (CPhoneticSegment *) GetAnnotation(PHONETIC);
+    CPhoneticSegment * pSeg = (CPhoneticSegment *)GetAnnotation(PHONETIC);
     for (int i = 0; i< pSeg->GetOffsetSize(); i++)
     {
         DWORD begin = pSeg->GetOffset(i);
         DWORD end = pSeg->GetStop(i);
-        if (((begin<=start)&&(start<=end)) || ((begin<=stop)&&(stop<=end)))
-        {
-			return TRUE;
-        }
+		// for story mode, only worry about the stop cursor.
+		// the start cursor will be automatically advanced
+		if (story)
+		{
+			if ((begin<=stop)&&(stop<=end))
+			{
+				return TRUE;
+			}
+		}
+		else
+		{
+			if (((begin<=start)&&(start<=end)) || ((begin<=stop)&&(stop<=end)))
+			{
+				return TRUE;
+			}
+		}
     }
 	return FALSE;
 }
 
-BOOL CSaView::AllowAutoAdd()
+BOOL CSaView::AllowAutoAdd( bool story)
 {
 	// check the phonetic location
-	if (!AllowEditAdd()) return FALSE;
+	if (!AllowEditAdd(story))
+	{
+		TRACE("edit-add not allowed\n");
+		return FALSE;
+	}
 
-	if (IsPhoneticOverlapping()) return FALSE;
+	if (IsPhoneticOverlapping(story)) 
+	{
+		TRACE("phonetic overlap\n");
+		return FALSE;
+	}
 	
 	// no checks for gloss at this point...
 
 	// check the PL1 location
-	if (!AllowAddPhrase((CMusicPhraseSegment *)GetAnnotation(MUSIC_PL1))) return FALSE;
+	if (!AllowAddPhrase(MUSIC_PL1,story))
+	{
+		TRACE("not allowed to add PL1\n");
+		return FALSE;
+	}
 
 	// check the PL2 location
-	if (!AllowAddPhrase((CMusicPhraseSegment *)GetAnnotation(MUSIC_PL2))) return FALSE;
+	if (!AllowAddPhrase(MUSIC_PL2,story))
+	{
+		TRACE("not allowed to add PL2\n");
+		return FALSE;
+	}
 
 	return TRUE;
 }
@@ -4593,7 +4660,15 @@ BOOL CSaView::AllowAutoAdd()
 /***************************************************************************/
 void CSaView::OnUpdateEditAutoAdd(CCmdUI * pCmdUI)
 {
-    pCmdUI->Enable(AllowAutoAdd());
+    pCmdUI->Enable(AllowAutoAdd(false));
+}
+
+/***************************************************************************/
+// CSaView::OnEditAutoAddStorySection Story Section macro
+/***************************************************************************/
+void CSaView::OnUpdateEditAutoAddStorySection(CCmdUI * pCmdUI)
+{
+    pCmdUI->Enable(AllowAutoAdd(true));
 }
 
 //SDM 1.5Test11.3
@@ -4734,11 +4809,21 @@ void CSaView::OnEditAdd()
     }
 }
 
-BOOL CSaView::AllowEditAdd()
+/**
+* Check and see if we are able to add a new segment
+* @param story true if we are performing a check for adding a story section
+*
+* NOTE: Story sections can be automatically added to the end of the last phonetic
+* section
+* NOTE: Be careful not to change cursor positions in this code!
+*/
+BOOL CSaView::AllowEditAdd( bool story)
 {
     CSaDoc * pDoc = GetDocument(); // get pointer to document
     CPhoneticSegment * pSeg = (CPhoneticSegment *)GetAnnotation(PHONETIC);
-    int nInsertAt = pSeg->CheckPosition(pDoc,GetStartCursorPosition(),GetStopCursorPosition(),CSegment::MODE_ADD);
+	DWORD startCursor = GetStartCursorPosition();
+	DWORD stopCursor = GetStopCursorPosition();
+    int nInsertAt = pSeg->CheckPosition(pDoc,startCursor,stopCursor,CSegment::MODE_ADD);
     if (nInsertAt != -1)
     {
         m_advancedSelection.Update(this);
@@ -4750,16 +4835,21 @@ BOOL CSaView::AllowEditAdd()
 		return FALSE;
     }
 
-    if (pSeg->GetSelection()==-1)					// Phonetic Segment not selected
+	int nSelection = pSeg->GetSelection();
+    if (nSelection==-1)				// Phonetic Segment not selected
 	{
-		return FALSE;
+		if (story) 
+		{
+			nSelection = pDoc->GetLastSegmentBeforePosition( PHONETIC, stopCursor);
+		}
+		else
+		{
+			return FALSE;
+		}
 	}
 
-    int nSelection = pSeg->GetSelection();
     DWORD dwStart = pSeg->GetStop(nSelection);	// Start at current stop
     DWORD dwMaxStop = 0;
-    DWORD dwStop = 0;
-
     if (pSeg->GetNext(nSelection) == -1)		// Last Selection
     {
         dwMaxStop = pDoc->GetDataSize();
@@ -4771,8 +4861,7 @@ BOOL CSaView::AllowEditAdd()
 
     // Snap Start Position
     dwStart = pDoc->SnapCursor(START_CURSOR, dwStart, dwStart, dwMaxStop, SNAP_RIGHT);;
-
-    dwStop = (dwStart + pDoc->GetBytesFromTime(MIN_ADD_SEGMENT_TIME));
+    DWORD dwStop = (dwStart + pDoc->GetBytesFromTime(MIN_ADD_SEGMENT_TIME));
     if (pDoc->Is16Bit())            // SDM 1.5Test8.2
     {
         dwStop = (dwStop + 1) & ~1; // Round up
@@ -4817,7 +4906,7 @@ BOOL CSaView::AllowEditAdd()
 /***************************************************************************/
 void CSaView::OnUpdateEditAdd(CCmdUI * pCmdUI)
 {
-    pCmdUI->Enable(AllowEditAdd());
+    pCmdUI->Enable(AllowEditAdd(false));
 }
 
 /***************************************************************************/
@@ -4930,25 +5019,33 @@ void CSaView::OnEditAddPhrase(CMusicPhraseSegment * pSeg)
     }
 }
 
-BOOL CSaView::AllowAddPhrase( CMusicPhraseSegment * pSeg)
+BOOL CSaView::AllowAddPhrase( EAnnotation annot, bool story)
 {
     CSaDoc * pDoc = GetDocument(); // get pointer to document
-
-    int nInsertAt = pSeg->CheckPosition(pDoc,GetStartCursorPosition(),GetStopCursorPosition(),CSegment::MODE_ADD);
+	CMusicPhraseSegment * pSeg = (CMusicPhraseSegment*)GetAnnotation(annot);
+	DWORD startCursor = GetStartCursorPosition();
+	DWORD stopCursor = GetStopCursorPosition();
+    int nInsertAt = pSeg->CheckPosition(pDoc,startCursor,stopCursor,CSegment::MODE_ADD);
     if (nInsertAt != -1)
     {
         return TRUE;
     }
 
-    if (pSeg->GetSelection()==-1)				// no segment selected
+	int nSelection = pSeg->GetSelection();
+    if (nSelection==-1)				// no segment selected
 	{
-		return FALSE;
+		if (story) 
+		{
+			nSelection = pDoc->GetLastSegmentBeforePosition( PHONETIC, stopCursor);
+		}
+		else
+		{
+			return FALSE;
+		}
 	}
 
-    int nSelection = pSeg->GetSelection();
     DWORD dwStart = pSeg->GetStop(nSelection);	// Start at current stop
-    DWORD dwMaxStop;
-    DWORD dwStop;
+    DWORD dwMaxStop = 0;
 
     if (pSeg->GetNext(nSelection) == -1)		// Last Selection
     {
@@ -4962,7 +5059,7 @@ BOOL CSaView::AllowAddPhrase( CMusicPhraseSegment * pSeg)
     // Snap Start Position
     dwStart = pDoc->SnapCursor(START_CURSOR, dwStart, dwStart, dwMaxStop, SNAP_RIGHT);
 
-    dwStop = (dwStart + pDoc->GetBytesFromTime(MIN_ADD_SEGMENT_TIME));
+    DWORD dwStop = (dwStart + pDoc->GetBytesFromTime(MIN_ADD_SEGMENT_TIME));
     if (pDoc->Is16Bit())   // SDM 1.5Test8.2
     {
         dwStop = (dwStop + 1) & ~1; // Round up
@@ -4984,9 +5081,9 @@ BOOL CSaView::AllowAddPhrase( CMusicPhraseSegment * pSeg)
 /***************************************************************************/
 // CSaView::OnUpdateEditAddPhrase
 /***************************************************************************/
-void CSaView::OnUpdateEditAddPhrase(CCmdUI * pCmdUI, CMusicPhraseSegment * pSeg)
+void CSaView::OnUpdateEditAddPhrase( CCmdUI * pCmdUI, EAnnotation annot)
 {
-    pCmdUI->Enable(AllowAddPhrase( pSeg));
+    pCmdUI->Enable(AllowAddPhrase( annot, false));
 }
 
 void CSaView::OnEditAddAutoPhraseL2()
@@ -5197,7 +5294,7 @@ void CSaView::OnEditAddAutoPhraseL2()
 
 void CSaView::OnUpdateEditAddAutoPhraseL2(CCmdUI * pCmdUI)
 {
-    pCmdUI->Enable(AllowAddPhrase((CMusicPhraseSegment *) GetAnnotation(MUSIC_PL2)));
+    pCmdUI->Enable(AllowAddPhrase(MUSIC_PL2,false));
 }
 
 void CSaView::OnEditAddPhraseL1()
@@ -5222,22 +5319,22 @@ void CSaView::OnEditAddPhraseL4()
 
 void CSaView::OnUpdateEditAddPhraseL1(CCmdUI * pCmdUI)
 {
-    OnUpdateEditAddPhrase(pCmdUI, (CMusicPhraseSegment *) GetAnnotation(MUSIC_PL1));
+    OnUpdateEditAddPhrase(pCmdUI,MUSIC_PL1);
 }
 
 void CSaView::OnUpdateEditAddPhraseL2(CCmdUI * pCmdUI)
 {
-    OnUpdateEditAddPhrase(pCmdUI, (CMusicPhraseSegment *) GetAnnotation(MUSIC_PL2));
+    OnUpdateEditAddPhrase(pCmdUI,MUSIC_PL2);
 }
 
 void CSaView::OnUpdateEditAddPhraseL3(CCmdUI * pCmdUI)
 {
-    OnUpdateEditAddPhrase(pCmdUI, (CMusicPhraseSegment *) GetAnnotation(MUSIC_PL3));
+    OnUpdateEditAddPhrase(pCmdUI,MUSIC_PL3);
 }
 
 void CSaView::OnUpdateEditAddPhraseL4(CCmdUI * pCmdUI)
 {
-    OnUpdateEditAddPhrase(pCmdUI, (CMusicPhraseSegment *) GetAnnotation(MUSIC_PL4));
+    OnUpdateEditAddPhrase(pCmdUI,MUSIC_PL4);
 }
 
 //SDM 1.06.5
@@ -5362,7 +5459,6 @@ void CSaView::OnUpdateEditAddWord(CCmdUI * pCmdUI)
     int nPos = pSeg->FindFromPosition(dwStart,TRUE);
     if (nPos == -1)
     {
-
         // if there aren't any segments yet...
         if (pSeg->GetOffsetSize()==0)
         {
@@ -5373,6 +5469,7 @@ void CSaView::OnUpdateEditAddWord(CCmdUI * pCmdUI)
         // if we are outside and beyond the last segment we are done.
         if (dwStart > pSeg->GetStop(pSeg->GetOffsetSize()-1))
         {
+			TRACE("outside and beyond last segment\n");
             pCmdUI->Enable(FALSE);
             return;
         }
@@ -5820,9 +5917,9 @@ void CSaView::OnEditPrevious()
             // no selection yet, search for first visible annotation with segments
             for (nLoop = 0; nLoop < ANNOT_WND_NUMBER; nLoop++)
             {
-                if (m_pFocusedGraph->HaveAnnotation(CGraphWnd::m_anAnnWndOrder[nLoop])
-                        && ((GetAnnotation(CGraphWnd::m_anAnnWndOrder[nLoop])->IsEmpty() == FALSE)
-                            ||((CGraphWnd::m_anAnnWndOrder[nLoop] != GLOSS)&&(CGraphWnd::m_anAnnWndOrder[nLoop] != PHONETIC))))   // SDM 1.5Test8.1
+                if ((m_pFocusedGraph->HaveAnnotation(CGraphWnd::m_anAnnWndOrder[nLoop])) && 
+					((GetAnnotation(CGraphWnd::m_anAnnWndOrder[nLoop])->IsEmpty() == FALSE) ||
+					((CGraphWnd::m_anAnnWndOrder[nLoop] != GLOSS) && (CGraphWnd::m_anAnnWndOrder[nLoop] != PHONETIC))))   // SDM 1.5Test8.1
                 {
                     nLoop = CGraphWnd::m_anAnnWndOrder[nLoop];
                     break;

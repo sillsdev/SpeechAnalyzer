@@ -31,11 +31,9 @@ typedef enum EStatePhone
 
 /* Polymorphic type */
 
-typedef struct Parser Parser;
-
-typedef void (*reset_ParserFunction)(Parser * ps);
-typedef void (*close_ParserFunction)(Parser * ps);
-typedef StatePhone(*nextphone_ParserFunction)(Parser * ps,LPPHONE * ph);
+typedef void (*reset_ParserFunction)(struct SParser * ps);
+typedef void (*close_ParserFunction)(struct SParser * ps);
+typedef StatePhone(*nextphone_ParserFunction)(struct SParser * ps,LPPHONE * ph);
 
 /*
 * Generic parser :
@@ -51,7 +49,7 @@ typedef StatePhone(*nextphone_ParserFunction)(Parser * ps,LPPHONE * ph);
 *     WITH nextphone
 */
 
-struct Parser
+struct SParser
 {
     void * self;               /* Polymorphic on the real type */
     reset_ParserFunction reset_Parser;         /* virtual func */

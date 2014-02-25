@@ -582,7 +582,8 @@ BOOL CProcess::Open(LPCTSTR lpszFileName, UINT nOpenFlags, CFileException * pErr
 // This is used for temp files whose contents are not the primary
 // data for this process.
 /***************************************************************************/
-BOOL CProcess::CreateAuxTempFile( TCHAR * szName, CFile * pFile, CFileStatus & fileStatus) {
+BOOL CProcess::CreateAuxTempFile( TCHAR * szName, CFile * pFile, CFileStatus & fileStatus) 
+{
 
 	if (!pFile)
     {

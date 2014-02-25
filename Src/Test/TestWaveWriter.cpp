@@ -13,7 +13,8 @@
 using std::string;
 using std::wstring;
 
-TEST( WaveWriteTest, InvalidParams_01) {
+TEST( WaveWriteTest, InvalidParams_01) 
+{
 
 	wstring ofilename = buildSourcePath(L"silence.wav"); 
 	DWORD flags = MMIO_CREATE|MMIO_WRITE;
@@ -24,7 +25,8 @@ TEST( WaveWriteTest, InvalidParams_01) {
 	WORD blockAlign = 0;
 	vector<char> buffer;
 
-	for (int i=0;i<22050;i++) {
+	for (int i=0;i<22050;i++) 
+	{
 		buffer.push_back(0);
 		buffer.push_back(0);
 	}
@@ -33,7 +35,8 @@ TEST( WaveWriteTest, InvalidParams_01) {
 	EXPECT_THROW(writer.write( ofilename.c_str(), flags, bitsPerSample, formatTag, channels, samplesPerSec, buffer),invalid_argument);
 };
 
-TEST( WaveWriteTest, SimpleWrite_01) {
+TEST( WaveWriteTest, SimpleWrite_01) 
+{
 
 	wstring ofilename = buildSourcePath(L"silence.wav"); 
 	DWORD flags = MMIO_CREATE|MMIO_WRITE;
@@ -44,7 +47,8 @@ TEST( WaveWriteTest, SimpleWrite_01) {
 	WORD blockAlign = 4;
 	vector<char> buffer;
 
-	for (int i=0;i<22050;i++) {
+	for (int i=0;i<22050;i++) 
+	{
 		buffer.push_back(0);
 		buffer.push_back(0);
 	}
@@ -66,7 +70,8 @@ TEST( WaveWriteTest, SimpleWrite_01) {
 	// do nothing for now
 };
 
-TEST( WaveWriteTest, ExtractChannel_01) {
+TEST( WaveWriteTest, ExtractChannel_01) 
+{
 
 	wstring ifilename = buildSourcePath(L"4ch.wav"); 
 	WORD bitsPerSample = 0;
@@ -87,8 +92,10 @@ TEST( WaveWriteTest, ExtractChannel_01) {
 	WORD newBlockAlign = blockAlign/channels;
 	WORD remainder = blockAlign-newBlockAlign;
 	DWORD l = 0;
-	for (int i=0;i<numSamples;i++) {
-		for (int j=0;j<newBlockAlign;j++) {
+	for (int i=0;i<numSamples;i++) 
+	{
+		for (int j=0;j<newBlockAlign;j++) 
+		{
 			newBuffer.push_back(buffer[l++]);
 		}
 		l += remainder;
@@ -100,7 +107,8 @@ TEST( WaveWriteTest, ExtractChannel_01) {
 	writer.write( ofilename.c_str(), MMIO_CREATE | MMIO_WRITE, bitsPerSample, formatTag, newChannels, samplesPerSec, newBuffer);
 };
 
-TEST( WaveWriteTest, ExtractChannel_02) {
+TEST( WaveWriteTest, ExtractChannel_02) 
+{
 
 	wstring ifilename = buildSourcePath(L"4ch.wav"); 
 	WORD bitsPerSample = 0;

@@ -2,7 +2,7 @@
 // Copyright JAARS 2001
 //
 // Modification History
-//   2/22/2001 SDM Created PARAMETER_DESC concept to allow programatic access to Klatt defaults and desriptions
+//   2/22/2001 SDM Created SParameterDescription concept to allow programatic access to Klatt defaults and desriptions
 //                  copied text from sensimetrics parameter file (text from Klatt)
 
 
@@ -13,7 +13,7 @@
 #define kp(sym, type, min, val, max, description, units) \
 { offsetof(TEMPORAL, sym), _T(#sym), _T("%") _T(#type), min, val, max, _T(description) , _T(units)}
 
-static const PARAMETER_DESC temporalDesc[] =
+static const SParameterDescription temporalDesc[] =
 {
     kp(F0,  lgdddd,     0,  1000,  5000  ,"Fundamental frequency","Hz"),
     kp(AV,  lg,     0,    60,    80  ,"Amplitude of voicing","dB"),
@@ -74,7 +74,7 @@ static const PARAMETER_DESC temporalDesc[] =
 #define kp(sym, type, min, val, max, description, units) \
 { offsetof(SPKRDEF, sym), _T(#sym), _T("%") _T(#type), min, val, max, _T(description) , _T(units)}
 
-static const PARAMETER_DESC constDesc[] =
+static const SParameterDescription constDesc[] =
 {
     kp(DU,   d,    30,   500,  5000,  "Duration of the utterance", "msec"),
     kp(UI,   d,     1,     5,    20,  "Update interval for parameter reset", "msec"),
@@ -163,12 +163,12 @@ static SPKRDEF globalDefaults =
     60,
 };
 
-const PARAMETER_DESC * GetTemporalKlattDesc()
+const SParameterDescription * GetTemporalKlattDesc()
 {
     return temporalDesc;
 }
 
-const PARAMETER_DESC * GetGlobalKlattDesc()
+const SParameterDescription * GetGlobalKlattDesc()
 {
     return constDesc;
 }

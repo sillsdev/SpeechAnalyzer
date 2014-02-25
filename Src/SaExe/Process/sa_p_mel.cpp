@@ -83,18 +83,18 @@ long CProcessMelogram::Process(void * pCaller, ISaDoc * pDoc, int nProgress, int
         }
         else
         {
-            int nGender = pDoc->GetGender(); // use guessing
+            EGender nGender = pDoc->GetGender(); // use guessing
             switch (nGender)
             {
-            case 0: // adult male
+            case male: // adult male
                 nMinValidSemitone100 = 2750; // ~40Hz
                 nMaxValidSemitone100 = 7150; // ~500Hz
                 break;
-            case 1: // adult female
+            case female: // adult female
                 nMinValidSemitone100 = 3950; // ~80Hz
                 nMaxValidSemitone100 = 8450; // ~1070Hz
                 break;
-            case 2: // child
+            case child: // child
                 nMinValidSemitone100 = 3950; // ~80Hz
                 nMaxValidSemitone100 = 8450; // ~1070Hz
                 break;

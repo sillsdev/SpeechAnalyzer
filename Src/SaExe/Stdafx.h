@@ -58,7 +58,8 @@ using std::distance;
 
 using std::vector;
 
-inline static int round(double value) {
+inline static int round(double value) 
+{
     return (int)floor(value + 0.5);
 }
 

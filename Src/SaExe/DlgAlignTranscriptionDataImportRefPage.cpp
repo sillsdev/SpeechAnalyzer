@@ -40,7 +40,8 @@ BOOL CDlgAlignTranscriptionDataImportRefPage::OnSetActive()
 
     m_TranscriptionData = CTranscriptionData();
 
-	if (path.GetLength()==0) {
+	if (path.GetLength()==0) 
+	{
         m_TranscriptionData = CTranscriptionData();
         m_szText = "";
 		SetAnnotation();
@@ -50,7 +51,8 @@ BOOL CDlgAlignTranscriptionDataImportRefPage::OnSetActive()
 	}
 
 	CFileEncodingHelper feh(path);
-	if (!feh.CheckEncoding(false)) {
+	if (!feh.CheckEncoding(false)) 
+	{
         m_TranscriptionData = CTranscriptionData();
         m_szText = "";
 		SetAnnotation();
@@ -60,7 +62,8 @@ BOOL CDlgAlignTranscriptionDataImportRefPage::OnSetActive()
 	}
 
 	wistringstream stream;
-	if (!feh.ConvertFileToUTF16(stream)) {
+	if (!feh.ConvertFileToUTF16(stream)) 
+	{
         m_TranscriptionData = CTranscriptionData();
         m_szText = "";
 		SetAnnotation();
@@ -117,7 +120,8 @@ void CDlgAlignTranscriptionDataImportRefPage::OnClickedImport()
     m_TranscriptionData = CTranscriptionData();
 
 	wistringstream stream;
-	if (!feh.ConvertFileToUTF16(stream)) {
+	if (!feh.ConvertFileToUTF16(stream)) 
+	{
 		return;
 	}
 

@@ -705,9 +705,12 @@ void CMainFrame::OnInitMenu(CMenu * pMenu)
     }
 
 	//TRACE(L"posting autosave message %d\n",m_bAutoSave);
-	if (m_bAutoSave) {
+	if (m_bAutoSave) 
+	{
 		PostMessage(WM_COMMAND,ID_AUTOSAVE_ON);
-	} else {
+	} 
+	else 
+	{
 		PostMessage(WM_COMMAND,ID_AUTOSAVE_OFF);
 	}
 }

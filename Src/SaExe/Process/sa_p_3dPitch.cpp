@@ -3,6 +3,7 @@
 
 #include "stdafx.h"
 #include "resource.h"
+#include "AppDefs.h"
 #include "isa_doc.h"
 #include "sa_p_3dPitch.h"
 #include "Butterworth.h"

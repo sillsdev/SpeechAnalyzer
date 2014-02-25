@@ -155,6 +155,7 @@ public:
     int FindSelectedAnnotationIndex();
     CSegment * FindSelectedAnnotation();
     CSegment * GetAnnotation(int annotSetID);
+    CSegment * GetAnnotation(EAnnotation annot);
     DWORD OnPlaybackSegment();
     DWORD OnPlaybackWord();
     DWORD OnPlaybackPhraseL1();
@@ -236,7 +237,7 @@ protected:
     void OnEditRedo();
     void OnUpdateEditRedo(CCmdUI * pCmdUI);
     void OnEditAddPhrase(CMusicPhraseSegment * pSeg);
-    void OnUpdateEditAddPhrase(CCmdUI * pCmdUI, CMusicPhraseSegment * pSeg);
+    void OnUpdateEditAddPhrase(CCmdUI * pCmdUI, EAnnotation annot);
     virtual BOOL OnPreparePrinting(CPrintInfo * pInfo);
     virtual void OnBeginPrinting(CDC * pDC, CPrintInfo * pInfo);
     virtual void OnEndPrinting(CDC * pDC, CPrintInfo * pInfo);
@@ -358,6 +359,8 @@ protected:
     afx_msg void OnUpdateEditRemove(CCmdUI * pCmdUI);
     afx_msg void OnEditAutoAdd();
     afx_msg void OnUpdateEditAutoAdd(CCmdUI * pCmdUI);
+    afx_msg void OnEditAutoAddStorySection();
+    afx_msg void OnUpdateEditAutoAddStorySection(CCmdUI * pCmdUI);
     afx_msg void OnEditAdd();
     afx_msg void OnUpdateEditAdd(CCmdUI * pCmdUI);
     afx_msg void OnEditAddAutoPhraseL2();
@@ -503,10 +506,10 @@ private:
 	CGraphWnd * GetGraphForAnnotation( int annotation);
 	DWORD GetMinimumSeparation( CSaDoc * pDoc, CGraphWnd * pGraph, CPlotWnd * pPlot);
 
-	BOOL AllowEditAdd();
-	BOOL AllowAddPhrase( CMusicPhraseSegment * pSeg);
-	BOOL IsPhoneticOverlapping();
-	BOOL AllowAutoAdd();
+	BOOL AllowEditAdd( bool story);
+	BOOL AllowAddPhrase( EAnnotation annot, bool story);
+	BOOL IsPhoneticOverlapping(bool story);
+	BOOL AllowAutoAdd(bool story);
 
     UINT m_anGraphID[MAX_GRAPHS_NUMBER];	// array of graph IDs
     UINT m_nLayout;							// actual Layout number

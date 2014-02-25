@@ -676,7 +676,9 @@ void CSaApp::ExamineCmdLine(LPCTSTR pCmdLine, WPARAM wParam)
                 // The file does not exist. use original profile
 				// i think only SPEECH_WPARAM_SHOWSAREC does not use a command line file
                 ASSERT(wParam == SPEECH_WPARAM_SHOWSAREC);
-            } else if (!CFile::GetStatus(m_szCmdFileName,status)) {
+            } 
+			else if (!CFile::GetStatus(m_szCmdFileName,status)) 
+			{
 				// if IPA Help is used to launch SA, it must be run using compatibility mode for Windows XP SP3.
 				CString msg;
 				msg.FormatMessage(L"The file:\n'%1'\nwas specified on the command line, but it does not exist.\nIf you are using IPA Help on Windows 7 or later, please use the compatibility mode for Windows XP.\nSpeech Analyzer will now exit.",(LPCTSTR)m_szCmdFileName);
@@ -1400,7 +1402,8 @@ void CSaApp::CopyClipboardTranscription(LPCTSTR szTempPath)
         return;
     }
 
-	try {
+	try 
+	{
 		_bstr_t szDest = szTempPath;
 		hr = saAudioDocWriter->Copy( szDest, VARIANT_TRUE);
 		if (hr)
@@ -3062,7 +3065,8 @@ LPCTSTR CSaApp::GetLastClipboardPath()
 
 typedef HMODULE(__stdcall * SHGETFOLDERPATH)(HWND, int, HANDLE, DWORD, LPTSTR);
 
-CSaString GetShellFolderPath( DWORD csidl) {
+CSaString GetShellFolderPath( DWORD csidl) 
+{
 
 	// select a directory to restore the file to.
 	TCHAR documentPath[_MAX_PATH];

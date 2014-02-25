@@ -111,7 +111,8 @@ BOOL CSpectroParm::ReadProperties(LPCSTR pszMarker, CObjectIStream & obs)
 	* - so - if we don't find it in the settings file, we will assume this is a 'old' settings file, and
 	* and use the settings for the formant and pitch booleans to set the 'showFormants' member.
 	*/
-	if ((!showFormants) && ((bShowF1) || (bShowF2) || (bShowF3) || (bShowF4) || (bShowF5andUp) || (bShowPitch))) {
+	if ((!showFormants) && ((bShowF1) || (bShowF2) || (bShowF3) || (bShowF4) || (bShowF5andUp) || (bShowPitch))) 
+	{
 		bShowFormants = TRUE;
 	}
     return TRUE;

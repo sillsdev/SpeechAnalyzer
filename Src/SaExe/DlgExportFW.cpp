@@ -97,7 +97,8 @@ BOOL CDlgExportFW::OnInitDialog()
 
 	CSaString dir = GetFieldWorksProjectDirectory();
 	bool found = true;
-	if (dir.GetLength()==0) {
+	if (dir.GetLength()==0) 
+	{
 		AfxMessageBox(IDS_NO_FIELDWORKS_PROJECT,MB_OK|MB_ICONEXCLAMATION);
 		found = false;
 	}
@@ -108,11 +109,14 @@ BOOL CDlgExportFW::OnInitDialog()
     tags.LoadString(IDS_SFM_TAGS);
     ctlStaticTags.SetWindowTextW(tags);
 
-	if (found) {
+	if (found) 
+	{
 		ctlRadioFieldWorks.SetCheck(TRUE);
 		ctlRadioOther.SetCheck(FALSE);
 		OnRadioFieldworks();
-	} else {
+	} 
+	else 
+	{
 		ctlRadioFieldWorks.SetCheck(FALSE);
 		ctlRadioOther.SetCheck(TRUE);
 		OnRadioOther();
@@ -425,14 +429,18 @@ CSaString CDlgExportFW::GetFieldWorksProjectDirectory()
 	wstring value;
 	HKEY hRootKey = HKEY_LOCAL_MACHINE;
 	wstring keyName = _T("Software\\SIL\\FieldWorks");
-	if (SearchForValue( hRootKey, sam, keyName, L"ProjectsDir", value)) {
-		if (FolderExists(value.c_str())) {
+	if (SearchForValue( hRootKey, sam, keyName, L"ProjectsDir", value)) 
+	{
+		if (FolderExists(value.c_str())) 
+		{
 			return CSaString(value.c_str());
 		}
 	}
 	hRootKey = HKEY_CURRENT_USER;
-	if (SearchForValue( hRootKey, sam, keyName, L"ProjectsDir", value)) {
-		if (FolderExists(value.c_str())) {
+	if (SearchForValue( hRootKey, sam, keyName, L"ProjectsDir", value)) 
+	{
+		if (FolderExists(value.c_str())) 
+		{
 			return CSaString(value.c_str());
 		}
 	}
@@ -440,14 +448,18 @@ CSaString CDlgExportFW::GetFieldWorksProjectDirectory()
 	// now try the 64-bit registry hive
 	sam = KEY_ENUMERATE_SUB_KEYS | KEY_QUERY_VALUE | KEY_READ;
 	hRootKey = HKEY_LOCAL_MACHINE;
-	if (SearchForValue( hRootKey, sam, keyName, L"ProjectsDir", value)) {
-		if (FolderExists(value.c_str())) {
+	if (SearchForValue( hRootKey, sam, keyName, L"ProjectsDir", value)) 
+	{
+		if (FolderExists(value.c_str())) 
+		{
 			return CSaString(value.c_str());
 		}
 	}
 	hRootKey = HKEY_CURRENT_USER;
-	if (SearchForValue( hRootKey, sam, keyName, L"ProjectsDir", value)) {
-		if (FolderExists(value.c_str())) {
+	if (SearchForValue( hRootKey, sam, keyName, L"ProjectsDir", value)) 
+	{
+		if (FolderExists(value.c_str())) 
+		{
 			return CSaString(value.c_str());
 		}
 	}
@@ -459,32 +471,45 @@ CSaString CDlgExportFW::GetFieldWorksProjectDirectory()
     ASSERT(result);
     bool xp = versionInfo.dwMajorVersion<6;
 	xp = true;
-	if (xp) {
+	if (xp) 
+	{
 		wstring path = GetShellFolderPath(CSIDL_COMMON_APPDATA);
-		if (path.length()>0) {
+		if (path.length()>0) 
+		{
 			wstring projPath = path;
 			projPath.append(L"\\SIL\\FieldWorks\\Projects");
-			if (FolderExists(projPath.c_str())) {
+			if (FolderExists(projPath.c_str())) 
+			{
 				return CSaString(projPath.c_str());
-			} else {
+			} 
+			else 
+			{
 				projPath = path;
 				projPath.append(L"\\SIL\\FieldWorks 7\\Projects");
-				if (FolderExists(projPath.c_str())) {
+				if (FolderExists(projPath.c_str())) 
+				{
 					return CSaString(projPath.c_str());
 				}
 			}
 		}
-	} else {
+	} 
+	else 
+	{
 		wstring path = _wgetenv(L"ProgramData");
-		if (path.length()>0) {
+		if (path.length()>0) 
+		{
 			wstring projPath = path;
 			projPath.append(L"\\SIL\\FieldWorks\\Projects");
-			if (FolderExists(projPath.c_str())) {
+			if (FolderExists(projPath.c_str())) 
+			{
 				return CSaString(projPath.c_str());
-			} else {
+			} 
+			else 
+			{
 				projPath = path;
 				projPath.append(L"\\SIL\\FieldWorks 7\\Projects");
-				if (FolderExists(projPath.c_str())) {
+				if (FolderExists(projPath.c_str())) 
+				{
 					return CSaString(projPath.c_str());
 				}
 			}
@@ -504,7 +529,8 @@ bool CDlgExportFW::SearchForValue( HKEY hRootKey, DWORD sam, wstring keyName, LP
 
 	HKEY hKey = NULL;
 	DWORD retCode = RegOpenKeyEx( hRootKey, keyName.c_str(), 0, sam, &hKey);
-	if (retCode!=ERROR_SUCCESS) {
+	if (retCode!=ERROR_SUCCESS) 
+	{
 		TRACE(L"Unable to open %s because of %d\n", keyName.c_str(), retCode);
 		return false;
 	}
@@ -526,50 +552,62 @@ bool CDlgExportFW::SearchForValue( HKEY hRootKey, DWORD sam, wstring keyName, LP
 
     // Get the class name and the value count. 
     retCode = RegQueryInfoKey( hKey, achClass, &cchClassName, NULL, &cSubKeys, &cbMaxSubKey, &cchMaxClass, &cValues, &cchMaxValue, &cbMaxValueData, &cbSecurityDescriptor, &ftLastWriteTime);
-	if (retCode!=ERROR_SUCCESS) {
+	if (retCode!=ERROR_SUCCESS) 
+	{
 		RegCloseKey( hKey);
 		TRACE(L"unable to query key info %s because of %d\n", keyName.c_str(), retCode);
 		return false;
 	}
 
     // Enumerate the subkeys, until RegEnumKeyEx fails.
-    if (cSubKeys>0) {
+    if (cSubKeys>0) 
+	{
         TRACE(L"Number of subkeys: %d\n", cSubKeys);
-        for (DWORD i=0; i<cSubKeys; i++) { 
+        for (DWORD i=0; i<cSubKeys; i++) 
+		{ 
             cbName = MAX_KEY_LENGTH;
 			memset(achKey,0,sizeof(achKey));
             retCode = RegEnumKeyEx( hKey, i, achKey, &cbName, NULL, NULL, NULL, &ftLastWriteTime); 
-            if (retCode == ERROR_SUCCESS) {
+            if (retCode == ERROR_SUCCESS) 
+			{
 				wstring childKey;
 				childKey = keyName;
 				childKey.append(L"\\");
 				childKey.append(achKey);
-				if (SearchForValue( hRootKey, sam, childKey, valueName, value)) {
+				if (SearchForValue( hRootKey, sam, childKey, valueName, value)) 
+				{
 					RegCloseKey( hKey);
 					return true;
 				}
             }
         }
-    } else {
+    } 
+	else 
+	{
 		TRACE(L"No sub keys found\n");
 	}
  
     // Enumerate the key values. 
-    if (cValues>0) {
+    if (cValues>0) 
+	{
         TRACE(L"number of values: %d\n", cValues);
-        for (DWORD i=0, retCode=ERROR_SUCCESS; i<cValues; i++) { 
+        for (DWORD i=0, retCode=ERROR_SUCCESS; i<cValues; i++) 
+		{ 
             cchValue = MAX_VALUE_NAME; 
 			wmemset(achValue,0,_countof(achValue));
             retCode = RegEnumValue( hKey, i, achValue, &cchValue, NULL, NULL, NULL, NULL);
-            if (retCode == ERROR_SUCCESS ) {
+            if (retCode == ERROR_SUCCESS ) 
+			{
 				TRACE(L"considering value %s\n",achValue);
 				// is this the correct value?
-				if (_wcsicmp( achValue, valueName)==0) {
+				if (_wcsicmp( achValue, valueName)==0) 
+				{
 					TCHAR szValue[1024];
 					wmemset(szValue,0,_countof(szValue));
 					DWORD dwBufLen = sizeof(szValue);
 					retCode = RegQueryValueEx( hKey, _T("ProjectsDir"), NULL, NULL, (LPBYTE)szValue, &dwBufLen);
-					if (retCode==ERROR_SUCCESS) {
+					if (retCode==ERROR_SUCCESS) 
+					{
 						value = szValue;
 						TRACE(L"success at %s : %s\n", keyName.c_str(), value.c_str());
 						RegCloseKey( hKey);
@@ -578,7 +616,9 @@ bool CDlgExportFW::SearchForValue( HKEY hRootKey, DWORD sam, wstring keyName, LP
 				}
             } 
         }
-    } else {
+    } 
+	else 
+	{
 		TRACE(L"No values found\n");
 	}
 	TRACE(L"no joy\n");

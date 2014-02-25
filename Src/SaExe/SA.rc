@@ -26,7 +26,7 @@ LANGUAGE LANG_NEUTRAL, SUBLANG_NEUTRAL
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 3,1,0,85
+ FILEVERSION 3,1,0,86
  PRODUCTVERSION 1,0,0,1
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
@@ -44,7 +44,7 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "SIL International"
             VALUE "FileDescription", "SA"
-            VALUE "FileVersion", "v3.1.0.85"
+            VALUE "FileVersion", "v3.1.0.86"
             VALUE "InternalName", "SA"
             VALUE "LegalCopyright", "© 1996-2014 SIL International (MSEA)"
             VALUE "ProductName", "SA"
@@ -2859,6 +2859,7 @@ BEGIN
             MENUITEM "Add Phrase L&3 Segment\tCtrl+3", ID_EDIT_ADD_PHRASE_L3
             MENUITEM "Add Phrase L&4 Segment\tCtrl+4", ID_EDIT_ADD_PHRASE_L4
             MENUITEM "Add &Record Markup\tAlt+Z",   ID_EDIT_AUTO_ADD
+            MENUITEM "Add Stor&y Section\tAlt+X",   ID_EDIT_AUTO_ADD_STORY_SECTION
             MENUITEM SEPARATOR
             MENUITEM "&Update All Boundaries",      ID_EDIT_AUTO_SNAP_UPDATE
             MENUITEM SEPARATOR
@@ -3711,6 +3712,7 @@ BEGIN
     "L",            ID_EDIT_ADD_SYLLABLE,   VIRTKEY, CONTROL, NOINVERT
     "W",            ID_EDIT_ADD_WORD,       VIRTKEY, CONTROL, NOINVERT
     "Z",            ID_EDIT_AUTO_ADD,       VIRTKEY, ALT, NOINVERT
+    "X",            ID_EDIT_AUTO_ADD_STORY_SECTION, VIRTKEY, ALT, NOINVERT
     VK_LEFT,        ID_EDIT_BOUNDARY_START_LEFT, VIRTKEY, CONTROL, ALT, NOINVERT
     VK_RIGHT,       ID_EDIT_BOUNDARY_START_RIGHT, VIRTKEY, CONTROL, ALT, NOINVERT
     VK_LEFT,        ID_EDIT_BOUNDARY_STOP_LEFT, VIRTKEY, SHIFT, ALT, NOINVERT
@@ -4360,7 +4362,7 @@ IDC_MHANDN              CURSOR                  "res\\MedHandN.cur"
 
 STRINGTABLE
 BEGIN
-    VS_VERSION              "Version 3.1.0.85"
+    VS_VERSION              "Version 3.1.0.86"
     VS_COPYRIGHT            "© 1996-2014 SIL International (MSEA).\nAll Rights Reserved."
     IDR_MAINFRAME           "Speech Analyzer"
     IDR_SA_ANNTYPE          "\nSA\nSA Document\nWAV Files (*.wav)\n.wav\nannFileType\nANN File Type"

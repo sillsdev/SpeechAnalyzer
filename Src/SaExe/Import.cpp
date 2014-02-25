@@ -63,16 +63,20 @@ BOOL CImport::Import( EImportMode nMode)
 	wstring result;
 
 	CFileEncodingHelper feh(m_szPath);
-	if (!feh.CheckEncoding(false)) {
+	if (!feh.CheckEncoding(false)) 
+	{
 		return FALSE;
 	}
 
 	wistringstream stream;
 	feh.ConvertFileToUTF16(stream);
 
-	if (CSFMHelper::IsColumnarSFM(stream)) {
+	if (CSFMHelper::IsColumnarSFM(stream)) 
+	{
 		ProcessColumnar( stream, result);
-	} else {
+	} 
+	else 
+	{
 		if (!ProcessNormal( stream, nMode,result))
 		{
 			return FALSE;
@@ -1096,7 +1100,8 @@ BOOL CImport::ProcessColumnar( wistringstream & stream, wstring & result)
 
 	lines = CSFMHelper::FilterBlankLines(lines);
 
-	if (lines.size()==0) {
+	if (lines.size()==0) 
+	{
 		TRACE("no data\n");
 		return false;
 	}
@@ -1104,7 +1109,8 @@ BOOL CImport::ProcessColumnar( wistringstream & stream, wstring & result)
 	size_t start = 0;
 	while (true) 
 	{
-		if (start>=lines.size()) {
+		if (start>=lines.size()) 
+		{
 			TRACE("data is empty\n");
 			return false;
 		}
@@ -1116,8 +1122,10 @@ BOOL CImport::ProcessColumnar( wistringstream & stream, wstring & result)
 	wstring tagline = lines[start];
 	vector<wstring> tags = TokenizeLineToTokens( tagline, 0x09);
 	// the first line must be all tags.
-	for (size_t i=0;i<tags.size();i++) {
-		if (!CSFMHelper::IsTag(tags[i].c_str())) {
+	for (size_t i=0;i<tags.size();i++) 
+	{
+		if (!CSFMHelper::IsTag(tags[i].c_str())) 
+		{
 			TRACE("the first line contains an element that is not a tag '%s'\n",tagline.c_str());
 			return false;
 		}
@@ -1127,9 +1135,11 @@ BOOL CImport::ProcessColumnar( wistringstream & stream, wstring & result)
 	
 	// run through all the lines and verify that the counts are no greater
 	// than the number of tags
-	for (size_t i=start;i<lines.size();i++) {
+	for (size_t i=start;i<lines.size();i++) 
+	{
 		vector<wstring> tokens = TokenizeLineToTokens( lines[i], 0x09);
-		if (tokens.size()>tagCount) {
+		if (tokens.size()>tagCount) 
+		{
 			TRACE("line %d has too many elements '%s'.  The tag count id %d\n",i,lines[i].c_str(),tagCount);
 			return false;
 		}
@@ -1137,10 +1147,13 @@ BOOL CImport::ProcessColumnar( wistringstream & stream, wstring & result)
 
 	// run through all the lines and verify that there are no more tags
 	// than the number of tags
-	for (size_t i=start;i<lines.size();i++) {
+	for (size_t i=start;i<lines.size();i++) 
+	{
 		vector<wstring> tokens = TokenizeLineToTokens( lines[i], 0x09);
-		for (size_t j=0;j<tokens.size();j++) {
-			if (CSFMHelper::IsTag(tokens[j].c_str())) {
+		for (size_t j=0;j<tokens.size();j++) 
+		{
+			if (CSFMHelper::IsTag(tokens[j].c_str())) 
+			{
 				TRACE("line %d contains a tag '%s'.\n",i,lines[i].c_str());
 				return false;
 			}
@@ -1161,7 +1174,8 @@ BOOL CImport::ProcessColumnar( wistringstream & stream, wstring & result)
 		for (size_t j=0;j<tags.size();j++)
 		{
 			bool gloss = false;
-			if (CSFMHelper::IsGloss(tags[j].c_str(),tags[j].length())) {
+			if (CSFMHelper::IsGloss(tags[j].c_str(),tags[j].length())) 
+			{
 				gloss = true;
 			}
 			wstring data = L"";

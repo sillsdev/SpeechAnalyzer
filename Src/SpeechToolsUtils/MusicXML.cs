@@ -405,7 +405,10 @@ namespace SIL.SpeechTools.Utils
 		{
 			XmlNode nodePartList = AddNode(m_doc.DocumentElement, "part-list", "");
 
-			if (nodePartList == null) { return false; }
+			if (nodePartList == null) 
+            { 
+                return false; 
+            }
 
 			// Create child nodes of <part-list>
 			XmlNode nodeScorePart = AddNode(nodePartList, "score-part", "");
@@ -423,7 +426,10 @@ namespace SIL.SpeechTools.Utils
 			XmlNode nodePart = AddNode(m_doc.DocumentElement, "part", "");
 			AddAttribute(nodePart, "id", "P1");
 
-			if (nodePart == null) { return false; }
+			if (nodePart == null) 
+            { 
+                return false; 
+            }
 			AddMeasure();
 			return true;
 		}

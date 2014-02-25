@@ -2570,8 +2570,6 @@ BOOL CDlgParametersFormantsPage::OnInitDialog()
     UpdateData(TRUE);
     PopulateVowelSetCombo(m_cVowelSet);
 
-    int curSel = m_cVowelSet.GetCurSel();
-    BOOL enable = GetVowelSets()[curSel].IsUser();
     m_cFormantVowelEdit.EnableWindow(TRUE);
     return TRUE;
 }
@@ -2590,15 +2588,10 @@ void CDlgParametersFormantsPage::OnModifiedSource()
 
 void CDlgParametersFormantsPage::OnEditChangeFormantVowels()
 {
-
     m_bModified = TRUE;
     SetModified(TRUE); // data modified, enable apply button
-
-    int curSel = m_cVowelSet.GetCurSel();
-    BOOL enable = GetVowelSets()[curSel].IsUser();
     m_cFormantVowelEdit.EnableWindow(TRUE);
 }
-
 
 void CDlgParametersFormantsPage::OnFormantVowelsEdit()
 {

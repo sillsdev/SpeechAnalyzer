@@ -20,11 +20,13 @@ CFileEncodingHelper::~CFileEncodingHelper(void)
 {
 }
 
-bool CFileEncodingHelper::CheckEncoding( bool display) {
-
+bool CFileEncodingHelper::CheckEncoding( bool display) 
+{
 	string unknown;
-	if (!ReadFileIntoBuffer( unknown)) {
-		if (display) {
+	if (!ReadFileIntoBuffer( unknown)) 
+	{
+		if (display) 
+		{
 			CString msg;
 			msg.FormatMessage(IDS_ERROR_FILENAME,filename);
 			AfxMessageBox(msg, MB_OK|MB_ICONEXCLAMATION, 0);
@@ -32,70 +34,98 @@ bool CFileEncodingHelper::CheckEncoding( bool display) {
 		return false;
 	}
 
-	if (IsUTF32( unknown)) {
-		if (display) {
+	if (IsUTF32( unknown)) 
+	{
+		if (display) 
+		{
 			AfxMessageBox(IDS_NO_CONVERT, MB_OK|MB_ICONEXCLAMATION);
 		}
 		return false;
-	} else if (IsUTF8( unknown)) {
+	} 
+	else if (IsUTF8( unknown)) 
+	{
 		return true;
-	} else if (IsUTF16BE(unknown)) {
-		if (display) {
+	} 
+	else if (IsUTF16BE(unknown)) 
+	{
+		if (display) 
+		{
 			AfxMessageBox(IDS_WARN_CONVERT, MB_OK|MB_ICONEXCLAMATION);
 		}
 		return true;
-	} else if (IsUTF16LE(unknown)) {
-		if (display) {
+	} 
+	else if (IsUTF16LE(unknown)) 
+	{
+		if (display) 
+		{
 			AfxMessageBox(IDS_WARN_CONVERT, MB_OK|MB_ICONEXCLAMATION);
 		}
 		return true;
-	} else if (IsASCII(unknown)) {
+	} 
+	else if (IsASCII(unknown)) 
+	{
 		return true;
 	}
 	return true;
 }
 
-bool CFileEncodingHelper::ConvertFileToUTF8( istringstream & result) {
+bool CFileEncodingHelper::ConvertFileToUTF8( istringstream & result) 
+{
 
 	wstring buffer;
-	if (!ConvertFileToUTF16( buffer)) {
+	if (!ConvertFileToUTF16( buffer)) 
+	{
 		return false;
 	}
 	return ConvertUTF16ToUTF8( buffer, result);
 }
 
-bool CFileEncodingHelper::ConvertFileToUTF16( wistringstream & result) {
+bool CFileEncodingHelper::ConvertFileToUTF16( wistringstream & result) 
+{
 	result.str(L"");
 	wstring buffer;
-	if (!ConvertFileToUTF16(buffer)) {
+	if (!ConvertFileToUTF16(buffer)) 
+	{
 		return false;
 	}
 	result.str(buffer);
 	return true;
 }
 
-bool CFileEncodingHelper::ConvertFileToUTF16( wstring & result) {
+bool CFileEncodingHelper::ConvertFileToUTF16( wstring & result) 
+{
 
 	string unknown;
-	if (!ReadFileIntoBuffer( unknown)) {
+	if (!ReadFileIntoBuffer( unknown)) 
+	{
 		return false;
 	}
-	if (IsUTF32( unknown)) {
+	if (IsUTF32( unknown)) 
+	{
 		return false;
-	} else if (IsUTF8( unknown)) {
+	} 
+	else if (IsUTF8( unknown)) 
+	{
 		return ConvertUTF8ToUTF16( unknown, result, true);
-	} else if (IsUTF16BE(unknown)) {
+	} 
+	else if (IsUTF16BE(unknown)) 
+	{
 		return ConvertUTF16BEToUTF16( unknown, result);
-	} else if (IsUTF16LE(unknown)) {
+	} 
+	else if (IsUTF16LE(unknown)) 
+	{
 		return ConvertUTF16LEToUTF16( unknown, result);
-	} else if (IsASCII(unknown)) {
+	} 
+	else if (IsASCII(unknown)) 
+	{
 		return ConvertASCIIToUTF16( unknown, result);
 	}
 	// unknown or no BOM - don't remove it
 	return ConvertUTF8ToUTF16( unknown, result, false);
 }
 
-bool CFileEncodingHelper::ConvertUTF16ToUTF8( wstring & unknown, istringstream & result) {
+bool CFileEncodingHelper::ConvertUTF16ToUTF8( wstring & unknown, istringstream & result) 
+{
 	// remove the BOM
 	int length2 = WideCharToMultiByte(CP_UTF8,0,unknown.data(),unknown.length(),NULL,0,NULL,NULL);
 	if (length2==0) return false;
@@ -103,7 +133,8 @@ bool CFileEncodingHelper::ConvertUTF16ToUTF8( wstring & unknown, istringstream &
 	string buffer;
 	buffer.resize(length2);
     length2 = WideCharToMultiByte(CP_UTF8,0,unknown.data(),unknown.length(),&buffer[0],buffer.length(),NULL,NULL);
-	if (length2==0) {
+	if (length2==0) 
+	{
 		return false;
 	}
 	result.str(buffer);
@@ -240,14 +271,16 @@ bool CFileEncodingHelper::IsASCII( string & unknown)
 * if the function returns true, obuffer will be a pointer to the newly created array
 * the caller is responsible for deleting buffer.
 */
-bool CFileEncodingHelper::ConvertUTF16BEToUTF16( string & unknown, wstring & obuffer) {
+bool CFileEncodingHelper::ConvertUTF16BEToUTF16( string & unknown, wstring & obuffer) 
+{
 
 	// remove BOM
 	unknown.erase(unknown.begin());
 	unknown.erase(unknown.begin());
 
 	// swap the bytes
-	for (size_t i=0;i<unknown.length();) {
+	for (size_t i=0;i<unknown.length();) 
+	{
 		char c1 = unknown[i];
 		char c2 = unknown[i+1];
 		unknown[i] = c2;
@@ -267,7 +300,8 @@ bool CFileEncodingHelper::ConvertUTF16BEToUTF16( string & unknown, wstring & obu
 * if the function returns true, obuffer will be a pointer to the newly created array
 * the caller is responsible for deleting buffer.
 */
-bool CFileEncodingHelper::ConvertUTF16LEToUTF16( string & unknown, wstring & obuffer) {
+bool CFileEncodingHelper::ConvertUTF16LEToUTF16( string & unknown, wstring & obuffer) 
+{
 
 	// remove BOM
 	unknown.erase(unknown.begin());
@@ -285,10 +319,12 @@ bool CFileEncodingHelper::ConvertUTF16LEToUTF16( string & unknown, wstring & obu
 * if the function returns true, obuffer will be a pointer to the newly created array
 * the caller is responsible for deleting buffer.
 */
-bool CFileEncodingHelper::ConvertUTF8ToUTF16( string & unknown, wstring & obuffer, bool removeBOM) {
+bool CFileEncodingHelper::ConvertUTF8ToUTF16( string & unknown, wstring & obuffer, bool removeBOM) 
+{
 
 	// remove the BOM
-	if (removeBOM) {
+	if (removeBOM) 
+	{
 		unknown.erase(unknown.begin());
 		unknown.erase(unknown.begin());
 		unknown.erase(unknown.begin());
@@ -306,7 +342,8 @@ bool CFileEncodingHelper::ConvertUTF8ToUTF16( string & unknown, wstring & obuffe
 * if the function returns true, obuffer will be a pointer to the newly created array
 * the caller is responsible for deleting buffer.
 */
-bool CFileEncodingHelper::ConvertASCIIToUTF16( string & unknown, wstring & obuffer) {
+bool CFileEncodingHelper::ConvertASCIIToUTF16( string & unknown, wstring & obuffer) 
+{
 
 	obuffer=L"";
     int length2 = MultiByteToWideChar(CP_ACP,0,unknown.data(),unknown.length(),NULL,0);

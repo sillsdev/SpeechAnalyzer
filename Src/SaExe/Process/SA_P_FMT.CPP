@@ -280,7 +280,7 @@ void CProcessFormants::SmoothMedian(ISaDoc * pDoc)
     // Try to find pole frequency within valid formant frequency range nearest current median value
     if (m_dwFormantFrameCount >= 3)
     {
-        int nGender = pDoc->GetGender();
+        EGender nGender = pDoc->GetGender();
 
         SFormant * FormantFrame[3];
         SFormant MedianFreq[MAX_NUM_FORMANTS+1];
@@ -574,7 +574,7 @@ SFormantFrame * CProcessFormants::LoadBuffer(DWORD dwFormantBlockStart)
 // The frequencies of F1, F2, and F3 are returned in the formants structure.
 // The frequencies are returned in Hertz.
 /***************************************************************************/
-SFormantFreq CProcessFormants::GetVowelFreq(int nIndex, int nGender, BOOL bMelScale) const
+SFormantFreq CProcessFormants::GetVowelFreq(int nIndex, EGender nGender, BOOL bMelScale) const
 {
     const CVowelFormantsVector & vowelVector = GetVowelVector(nGender);
 
@@ -631,7 +631,7 @@ SFormantFreq CProcessFormants::GetVowelFreq(int nIndex, int nGender, BOOL bMelSc
 /***************************************************************************/
 // CProcessFormants::GetVowel Returns vowel
 /***************************************************************************/
-CSaString CProcessFormants::GetVowel(int nIndex, int nGender) const
+CSaString CProcessFormants::GetVowel(int nIndex, EGender nGender) const
 {
     const CVowelFormantsVector & vowelVector = GetVowelVector(nGender);
 
@@ -649,7 +649,7 @@ CSaString CProcessFormants::GetVowel(int nIndex, int nGender) const
 /***************************************************************************/
 // CProcessFormants::GetVowelCount Returns number of vowels for gender
 /***************************************************************************/
-int CProcessFormants::GetVowelCount(int nGender) const
+int CProcessFormants::GetVowelCount(EGender nGender) const
 {
     const CVowelFormantsVector & vowelVector = GetVowelVector(nGender);
     return vowelVector.size();
@@ -660,7 +660,7 @@ int CProcessFormants::GetVowelCount(int nGender) const
 /***************************************************************************/
 CSaString CProcessFormants::FindNearestVowel(SFormantFreq FormantFreq, ISaDoc * pDoc) const
 {
-    int nGender = pDoc->GetGender();
+    EGender nGender = pDoc->GetGender();
     double dMinDistanceSquared = FLT_MAX;
     int nNearestVowel = -1;
 

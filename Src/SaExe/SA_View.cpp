@@ -772,7 +772,8 @@ void CSaView::OnImportSFM()
     CSaString szPath = dlgFile.GetPathName();
 
 	CFileEncodingHelper feh(szPath);
-	if (!feh.CheckEncoding(true)) {
+	if (!feh.CheckEncoding(true)) 
+	{
 		return;
 	}
 
@@ -3431,7 +3432,7 @@ void CSaView::OnUpdateSetupFnkeys(CCmdUI * pCmdUI)
 /***************************************************************************/
 // CSaView::GetAnnotation - returns a pointer tothe annotation number annotSetID.
 /***************************************************************************/
-CSegment * CSaView::GetAnnotation(int annotSetID)
+CSegment * CSaView::GetAnnotation( int annotSetID)
 {
     if ((annotSetID >= 0) && (annotSetID < ANNOT_WND_NUMBER))
     {
@@ -3441,6 +3442,13 @@ CSegment * CSaView::GetAnnotation(int annotSetID)
     return NULL;
 }
 
+/***************************************************************************/
+// CSaView::GetAnnotation - returns a pointer tothe annotation number annotSetID.
+/***************************************************************************/
+CSegment * CSaView::GetAnnotation( EAnnotation annot)
+{
+    return GetDocument()->GetSegment(annot);
+}
 
 /***************************************************************************/
 // CSaView::OnFilePrint

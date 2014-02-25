@@ -15,13 +15,14 @@ using std::wistringstream;
 /*
 * uses the current position in the stream
 */
-vector<wstring> TokenizeBufferToLines( wistringstream & stream) {
-
+vector<wstring> TokenizeBufferToLines( wistringstream & stream) 
+{
     // now tokenize the buffer
     vector<wstring> lines;
 	wstring line;
 
-	while (stream.good()) {
+	while (stream.good()) 
+	{
 		std::wistringstream::int_type c = stream.get();
         if ((c==0x0d)||(c==0x0a))
         {
@@ -39,7 +40,8 @@ vector<wstring> TokenizeBufferToLines( wistringstream & stream) {
 	return lines;
 }
 
-vector<wstring> TokenizeLineToTokens( wstring & line, wchar_t token) {
+vector<wstring> TokenizeLineToTokens( wstring & line, wchar_t token) 
+{
 
     // now tokenize the buffer
     vector<wstring> lines;

@@ -4,14 +4,14 @@
 // Modification History
 //   2/14/2001 SDM Created to provide a clean interface to the Klatt synthesizer.
 //                    Designed to hide class details.
-//   2/22/2001 SDM Created PARAMETER_DESC concept to allow programatic access to Klatt defaults and desriptions
+//   2/22/2001 SDM Created SParameterDescription concept to allow programatic access to Klatt defaults and desriptions
 
 typedef double Float;
 typedef short INT16;
 
 #include <tchar.h>
 
-struct PARAMETER_DESC
+struct SParameterDescription
 {
     size_t parameterOffset;
     TCHAR const * symbolDescription;
@@ -105,8 +105,8 @@ void SynthesizeFrame(CKSynth * synth, TEMPORAL * par, INT16 * wave);
 
 Float WaveformMaximum(CKSynth * synth);
 
-const PARAMETER_DESC * GetTemporalKlattDesc();
-const PARAMETER_DESC * GetGlobalKlattDesc();
+const SParameterDescription * GetTemporalKlattDesc();
+const SParameterDescription * GetGlobalKlattDesc();
 
 const TEMPORAL & GetTemporalKlattDefaults();
 const SPKRDEF & GetGlobalKlattDefaults();

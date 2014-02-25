@@ -1,7 +1,8 @@
 #include "SaParam.h"
 #include "AppDefs.h"
 
-CSaParam::CSaParam() {
+CSaParam::CSaParam() 
+{
     wFlags = 0;
     byRecordFileFormat = FILE_FORMAT_WAV;
     dwRecordBandWidth = 0;
@@ -13,7 +14,8 @@ CSaParam::CSaParam() {
     byQuantization = 0;
 }
 
-CSaParam CSaParam::operator=(const CSaParam & right) {
+CSaParam CSaParam::operator=(const CSaParam & right) 
+{
 	szDescription = right.szDescription;
 	wFlags = right.wFlags;
 	byRecordFileFormat = right.byRecordFileFormat;

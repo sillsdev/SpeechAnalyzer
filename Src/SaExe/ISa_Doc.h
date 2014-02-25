@@ -39,7 +39,7 @@ __interface ISaDoc
 
 public:
     int GetWbProcess();
-    int GetGender();
+    EGender GetGender();
     const CMusicParm * GetMusicParm() const;
     const CUttParm * GetUttParm();
     void GetUttParm(CUttParm *, BOOL bOriginal=FALSE);

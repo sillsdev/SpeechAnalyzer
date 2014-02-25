@@ -4200,6 +4200,10 @@
 			RelativePath=".\StringStream.h"
 			>
 		</File>
+		<File
+			RelativePath=".\DSP\WAVEWARP.H"
+			>
+		</File>
 	</Files>
 	<Globals>
 		<Global

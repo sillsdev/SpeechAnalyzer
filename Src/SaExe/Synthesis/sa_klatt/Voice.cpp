@@ -366,14 +366,14 @@ Float CKSynth::next_sil_voice_sample(void)
 }
 
 
-SilVoicing::SilVoicing()
+CSilVoicing::CSilVoicing()
 {
     clear();
 }
 
-void SilVoicing::clear()
+void CSilVoicing::clear()
 {
-    SilVoicing & synth = *this;
+    CSilVoicing & synth = *this;
 
     synth.pulse_freq = 0;
     synth.period_ctr = 0;

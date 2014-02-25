@@ -405,7 +405,7 @@ void CFormantChart::StandardPlot(CSaView * pView, CDC * pDC, CRect rClient, CRec
     POINT p;
 
     // draw the vowels
-    int nGender = pDoc->GetGender();
+    EGender nGender = pDoc->GetGender();
 
     // Draw Vowel Set Title
     const CSaString & szVowelSetName = GetDefaultVowelSet().GetName();
@@ -948,7 +948,7 @@ void CPlot3D::OnDraw(CDC * pDC, CRect rClient, CRect rClip, CSaView * pView)
     FormantChartParm.item_title_format = zNUMBERS;         // show numbers along axes
     FormantChartParm.line_connect = ON;          ;
 
-    int nGender = pDoc->GetGender();
+    EGender nGender = pDoc->GetGender();
     SRange FormantScale = GetChartRange(2, nGender);
     FormantChartParm.xstart = pFormantParms->bMelScale ? Scale::ToMels(FormantScale.Low): FormantScale.Low;
     FormantChartParm.xend = pFormantParms->bMelScale ? Scale::ToMels(FormantScale.High): FormantScale.High;
@@ -1221,9 +1221,9 @@ void CPlotF1F2::OnDraw(CDC * pDC, CRect rClient, CRect rClip, CSaView * pView)
     FormantChartParm.x_axis_divisions = 6;                 // x-axis divisions
     FormantChartParm.y_axis_divisions = 5;                 // y-axis divisions
     FormantChartParm.item_title_format = zNUMBERS;         // no numbers along axes
-    FormantChartParm.line_connect = FALSE;           ;
+    FormantChartParm.line_connect = FALSE;
 
-    int nGender = pDoc->GetGender();
+    EGender nGender = pDoc->GetGender();
     SRange FormantScale = GetChartRange(1, nGender);
     FormantChartParm.xstart = pFormantParms->bMelScale ? Scale::ToMels(FormantScale.Low): FormantScale.Low;
     FormantChartParm.xend = pFormantParms->bMelScale ? Scale::ToMels(FormantScale.High): FormantScale.High;
@@ -1498,14 +1498,14 @@ void CPlotF2F1::OnDraw(CDC * pDC, CRect rClient, CRect rClip, CSaView * pView)
     }
 
     // Customize the axes.
-    formantChartParm.line_connect = FALSE;           ;
+    formantChartParm.line_connect = FALSE;
     formantChartParm.x_axis_style = zLINEAR;
     formantChartParm.y_axis_style = zLINEAR;
     formantChartParm.x_axis_divisions = 5;                 // x-axis divisions
     formantChartParm.y_axis_divisions = 6;                 // y-axis divisions
     formantChartParm.item_title_format = zNUMBERS;
 
-    int nGender = pDoc->GetGender();
+    EGender nGender = pDoc->GetGender();
     SRange FormantScale = GetChartRange(2, nGender);
     formantChartParm.xend = pFormantParms->bMelScale ? Scale::ToMels(FormantScale.Low): FormantScale.Low;
     formantChartParm.xstart = pFormantParms->bMelScale ? Scale::ToMels(FormantScale.High): FormantScale.High;
@@ -1756,18 +1756,18 @@ void CPlotF2F1F1::OnDraw(CDC * pDC, CRect rClient, CRect rClip, CSaView * pView)
     }
 
     // Customize the chart.
-    int nGender = pDoc->GetGender();
+    EGender nGender = pDoc->GetGender();
     switch (nGender)   // set the frequency ranges
     {
-    case 0:  // male
+    case male:  // male
         FormantChartParm.xend   = 0  , FormantChartParm.xstart = 2500;
         FormantChartParm.yend   = 200, FormantChartParm.ystart = 1000;
         break;
-    case 1:  // female
+    case female:  // female
         FormantChartParm.xend   = 0,   FormantChartParm.xstart = 3000;
         FormantChartParm.yend   = 200, FormantChartParm.ystart = 1000;
         break;
-    case 2:  // child
+    case child:  // child
         FormantChartParm.xend   = 0,   FormantChartParm.xstart = 3000;
         FormantChartParm.yend   = 350, FormantChartParm.ystart = 1100;
     }

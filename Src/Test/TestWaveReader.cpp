@@ -12,7 +12,8 @@
 
 using std::string;
 
-TEST( WaveReadTest, SimpleRead_01) {
+TEST( WaveReadTest, SimpleRead_01) 
+{
 
 	wstring ifilename = buildSourcePath(L"chfrench.wav"); 
 	DWORD flags = MMIO_READ | MMIO_DENYWRITE;
@@ -34,7 +35,8 @@ TEST( WaveReadTest, SimpleRead_01) {
 	// do nothing for now
 };
 
-TEST( WaveReadTest, SimpleRead_02) {
+TEST( WaveReadTest, SimpleRead_02) 
+{
 
 	wstring ifilename = buildSourcePath(L"4ch.wav"); 
 	DWORD flags = MMIO_READ | MMIO_DENYWRITE;
@@ -56,7 +58,8 @@ TEST( WaveReadTest, SimpleRead_02) {
 	// do nothing for now
 };
 
-TEST( WaveReadTest, SimpleRead_03) {
+TEST( WaveReadTest, SimpleRead_03) 
+{
 
 	wstring ifilename = buildSourcePath(L"181.wav"); 
 	DWORD flags = MMIO_READ | MMIO_DENYWRITE;
@@ -78,7 +81,8 @@ TEST( WaveReadTest, SimpleRead_03) {
 	// do nothing for now
 };
 
-TEST( WaveReadTest, SimpleRead_04) {
+TEST( WaveReadTest, SimpleRead_04) 
+{
 
 	wstring ifilename = buildSourcePath(L"182.wav"); 
 	DWORD flags = MMIO_READ | MMIO_DENYWRITE;

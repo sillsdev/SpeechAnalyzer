@@ -153,7 +153,8 @@ void CDlgAutoReferenceData::DoDataExchange(CDataExchange * pDX)
                 mComboBegin.SetCurSel(-1);
                 mComboEnd.SetCurSel(-1);
             }
-			else if (!feh.CheckEncoding(false)) {
+			else if (!feh.CheckEncoding(false)) 
+			{
                 // the encoding is wrong
                 mComboBegin.ResetContent();
                 mComboEnd.ResetContent();
@@ -166,20 +167,27 @@ void CDlgAutoReferenceData::DoDataExchange(CDataExchange * pDX)
                 CSaString temp = mLastImport;
 
 				CFileEncodingHelper feh(temp);
-				if (!feh.CheckEncoding(false)) {
+				if (!feh.CheckEncoding(false)) 
+				{
                     mComboBegin.ResetContent();
                     mComboEnd.ResetContent();
                     mComboBegin.SetCurSel(-1);
                     mComboEnd.SetCurSel(-1);
-				} else {
+				} 
+				else 
+				{
 					wistringstream stream;
-					if (!feh.ConvertFileToUTF16(stream)) {
+					if (!feh.ConvertFileToUTF16(stream)) 
+					{
 						mComboBegin.ResetContent();
 						mComboEnd.ResetContent();
 						mComboBegin.SetCurSel(-1);
 						mComboEnd.SetCurSel(-1);
-					} else {
-						if (mSaDoc->ImportTranscription(stream,false,false,false,false,td,true,false)) {
+					} 
+					else 
+					{
+						if (mSaDoc->ImportTranscription(stream,FALSE,FALSE,FALSE,FALSE,td,true,false)) 
+						{
 							CString ref = td.m_szPrimary;
 							mComboBegin.ResetContent();
 							mComboEnd.ResetContent();
@@ -253,7 +261,8 @@ void CDlgAutoReferenceData::DoDataExchange(CDataExchange * pDX)
             }
 
 			CFileEncodingHelper feh(mLastImport);
-			if (!feh.CheckEncoding(true)) {
+			if (!feh.CheckEncoding(true)) 
+			{
                 pDX->PrepareEditCtrl(IDC_FILENAME);
                 pDX->Fail();
 			}
@@ -262,12 +271,13 @@ void CDlgAutoReferenceData::DoDataExchange(CDataExchange * pDX)
             CSaString temp = mLastImport;
 
 			wistringstream stream;
-			if (!feh.ConvertFileToUTF16(stream)) {
+			if (!feh.ConvertFileToUTF16(stream)) 
+			{
                 pDX->PrepareEditCtrl(IDC_FILENAME);
                 pDX->Fail();
 			}
 
-            if (!mSaDoc->ImportTranscription(stream,false,false,false,false,td,true,false))
+            if (!mSaDoc->ImportTranscription(stream,FALSE,FALSE,FALSE,FALSE,td,true,false))
             {
                 pDX->PrepareEditCtrl(IDC_FILENAME);
                 CString msg;

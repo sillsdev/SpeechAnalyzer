@@ -157,6 +157,7 @@
 #define VERSION_NUMBER  "2.0"
 
 #include "WaveWarp.h"
+#include "AppDefs.h"
 #include "isa_doc.h"
 #include "dsp\MathX.h"
 #include "Process\Process.h"

@@ -485,7 +485,7 @@ void CSaDoc::GetFmtParm(CFmtParm & format, bool processed)
 /***************************************************************************/
 // CSaDoc::GetGender  Retrieve gender info
 /***************************************************************************/
-int CSaDoc::GetGender()
+EGender CSaDoc::GetGender()
 {
     SourceParm * pSourceParm = GetSourceParm();
     int nGender = pSourceParm->nGender;
@@ -498,19 +498,19 @@ int CSaDoc::GetGender()
             double dAvgPitch = m_pProcessGrappl->GetAveragePitch();
             if (dAvgPitch < 200.0)
             {
-                nGender = 0;    // adult male
+                nGender = male;    // adult male
             }
             else if (dAvgPitch < 350.0)
             {
-                nGender = 1;    // adult female
+                nGender = female;    // adult female
             }
             else
             {
-                nGender = 2;    // child
+                nGender = child;    // child
             }
         }
     }
-    return nGender;
+    return (EGender)nGender;
 }
 
 /***************************************************************************/
@@ -1000,7 +1000,8 @@ BOOL CSaDoc::LoadTranscriptionData(LPCTSTR pszWavePath, BOOL bTemp)
         }
     }
 
-	if (exceeded>0) {
+	if (exceeded>0) 
+	{
 		CString param;
 		param.Format(L"%d",exceeded);
 		CString msg;
@@ -1883,12 +1884,15 @@ class CProgressUpdater : public IProgressUpdate {
 public:
 	CProgressStatusBar & tool;
 	CProgressUpdater( CProgressStatusBar & aTool) :
-	tool(aTool) {
+	tool(aTool) 
+	{
 	}
-	void SetProgress( int value) {
+	void SetProgress( int value) 
+	{
 		tool.SetProgress( value);
 	}
-	int GetProgress() {
+	int GetProgress() 
+	{
 		return tool.GetProgress();
 	}
 };
@@ -1991,7 +1995,8 @@ BOOL CSaDoc::OnSaveDocument(LPCTSTR pszPathName)
 // file from the recorder contains the RIFF structure with the fmt and the
 // data chunks. After the copying, the file has to be saved in the normal way.
 /***************************************************************************/
-BOOL CSaDoc::OnSaveDocument( LPCTSTR pszPathName, BOOL bSaveAudio) {
+BOOL CSaDoc::OnSaveDocument( LPCTSTR pszPathName, BOOL bSaveAudio) 
+{
 
     std::wstring target = pszPathName;
 
@@ -2000,10 +2005,12 @@ BOOL CSaDoc::OnSaveDocument( LPCTSTR pszPathName, BOOL bSaveAudio) {
 	{
 		CScopedCursor waitCursor(this);
 
-		if (!m_szTempWave.IsEmpty()) {
+		if (!m_szTempWave.IsEmpty()) 
+		{
 
 			// check if the file already opened
-			if (pApp->IsFileOpened(target.c_str())) {
+			if (pApp->IsFileOpened(target.c_str())) 
+			{
 				// error file already opened by SA
 				pApp->ErrorMessage(IDS_ERROR_FILEOPENED, target.c_str());
 				return FALSE;
@@ -2011,12 +2018,14 @@ BOOL CSaDoc::OnSaveDocument( LPCTSTR pszPathName, BOOL bSaveAudio) {
 			// temporary wave file to rename
 			CFileStatus status;
 			// check if file exists already
-			if (CFile::GetStatus(target.c_str(), status) != 0) {
+			if (CFile::GetStatus(target.c_str(), status) != 0) 
+			{
 				// file does exist already, be sure to allow writing and delete it
 				RemoveFile(target.c_str());
 			}
 			// check if a copy is needed
-			if (m_szTempWave[0] != target.c_str()[0]) {
+			if (m_szTempWave[0] != target.c_str()[0]) 
+			{
 				// different drives, copy the file
 				if (!CopyWave( m_szTempWave, target.c_str()))
 				{
@@ -4768,13 +4777,15 @@ void CSaDoc::UndoWaveFile()
 /***************************************************************************/
 // CSaDoc::SetFileExtension Sets the file extension of a filename.
 /***************************************************************************/
-CSaString CSaDoc::SetFileExtension( CSaString fileName, LPCTSTR szExt) {
+CSaString CSaDoc::SetFileExtension( CSaString fileName, LPCTSTR szExt) 
+{
 
 	CSaString szReturn = fileName;
 
     // get rid of existing file extension
     int pos = fileName.ReverseFind(_T('.'));
-    if (pos == -1) {
+    if (pos == -1) 
+	{
         pos = fileName.GetLength();
     }
     szReturn = fileName.Left(pos);
@@ -5012,7 +5023,6 @@ void CSaDoc::AutoSnapUpdate(void)
         }
 
         CSegment * pIndependent = GetSegment(independent);
-
 
         if (pIndependent->IsEmpty())
         {
@@ -5950,7 +5960,8 @@ void CSaDoc::OnFileSaveAs()
 	const bool stereo = GetNumChannels()>1;
 
 	CSaString ifileName = GetPathName();
-    if (ifileName.IsEmpty()) {
+    if (ifileName.IsEmpty()) 
+	{
         ifileName = GetFilenameFromTitle().c_str(); // get the current view caption string
     }
     ifileName = SetFileExtension(ifileName, _T(".wav"));
@@ -5962,22 +5973,27 @@ void CSaDoc::OnFileSaveAs()
 	// need to save copy (return value is destroyed)
     CSaString szDefault = static_cast<CSaApp *>(AfxGetApp())->DefaultDir();		
     dlg.m_ofn.lpstrInitialDir = szDefault;
-    if (dlg.DoModal()!=IDOK) {
+    if (dlg.DoModal()!=IDOK) 
+	{
         return;
     }
 
     CSaString newFile = dlg.GetPathName();
 
     bool bSameFile = false;
-	if (newFile.CompareNoCase(originalFile)==0) {
+	if (newFile.CompareNoCase(originalFile)==0)
+	{
         bSameFile = true;
         dlg.m_eShowFiles = showNew; // There is only one file.
 		if ((stereo) && 
-			((dlg.m_eFileFormat==formatMono) || (dlg.m_eFileFormat==formatRight))) {
+			((dlg.m_eFileFormat==formatMono) || (dlg.m_eFileFormat==formatRight))) 
+		{
 			((CSaApp *) AfxGetApp())->ErrorMessage( IDS_ERROR_NO_DUPE_FILENAME);
 			return;
 		}
-    } else if (static_cast<CSaApp *>(AfxGetApp())->IsFileOpened(newFile)) {
+    } 
+	else if (static_cast<CSaApp *>(AfxGetApp())->IsFileOpened(newFile)) 
+	{
         // error file already opened by SA
         static_cast<CSaApp *>(AfxGetApp())->ErrorMessage(IDS_ERROR_FILEOPENED, newFile);
         return;
@@ -5988,7 +6004,8 @@ void CSaDoc::OnFileSaveAs()
 	// do all the work in a temporary file, and copy it when done
 	wstring tempFile = GetTempFileName(L"OFSA");
 
-	switch (dlg.m_eSaveArea) {
+	switch (dlg.m_eSaveArea) 
+	{
 	case saveCursors:
 		{
 			POSITION pos = GetFirstViewPosition();
@@ -5997,7 +6014,8 @@ void CSaDoc::OnFileSaveAs()
 			CURSORPOS dwStop = pView->GetStopCursorPosition();
 			WAVETIME start = toTime( (CURSORPOS)dwStart);
 			WAVETIME stop = toTime( (CURSORPOS)dwStop);
-			if (!CopySectionToNewWavFile( start, stop-start, tempFile.c_str(), TRUE)) {
+			if (!CopySectionToNewWavFile( start, stop-start, tempFile.c_str(), TRUE)) 
+			{
 				RemoveFile( tempFile.c_str());
 				return;
 			}
@@ -6010,12 +6028,14 @@ void CSaDoc::OnFileSaveAs()
 			DWORD dwStart = 0;
 			DWORD dwFrame = 0;
 			pView->GetDataFrame( dwStart, dwFrame);
-			if (GetBitsPerSample() == 16) {
+			if (GetBitsPerSample() == 16) 
+			{
 				dwFrame &= ~0x1; // force even if file is 16 bit.
 			}
 			WAVETIME start = toTime( (CURSORPOS)dwStart);
 			WAVETIME stop = toTime( (CURSORPOS)dwFrame);
-			if (!CopySectionToNewWavFile( start, stop, tempFile.c_str(), TRUE)) {
+			if (!CopySectionToNewWavFile( start, stop, tempFile.c_str(), TRUE)) 
+			{
 				RemoveFile( tempFile.c_str());
 				return;
 			}
@@ -6027,7 +6047,8 @@ void CSaDoc::OnFileSaveAs()
 			// show original or both?
 			WAVETIME start = 0;
 			WAVETIME length = toTime( GetDataSize(), true);
-			if (!CopySectionToNewWavFile( start, length, tempFile.c_str(), TRUE)) {
+			if (!CopySectionToNewWavFile( start, length, tempFile.c_str(), TRUE)) 
+			{
 				RemoveFile( tempFile.c_str());
 				return;
 			}
@@ -6035,18 +6056,21 @@ void CSaDoc::OnFileSaveAs()
 		break;
 	}
 
-	switch (dlg.m_eFileFormat) {
+	switch (dlg.m_eFileFormat) 
+	{
 	case formatStereo:
 		// no conversion
 		break;
 	case formatMono:
-		if (!ConvertToMono( true, tempFile.c_str())) {
+		if (!ConvertToMono( true, tempFile.c_str())) 
+		{
 			RemoveFile( tempFile.c_str());
 			return;
 		}
 		break;
 	case formatRight:
-		if (!ConvertToMono( false, tempFile.c_str())) {
+		if (!ConvertToMono( false, tempFile.c_str())) 
+		{
 			RemoveFile( tempFile.c_str());
 			return;
 		}
@@ -6055,30 +6079,37 @@ void CSaDoc::OnFileSaveAs()
 
 	// the temp file now contains the new data.
 	// if the destination file and the source are the same, we need to overwrite
-	if (FileExists(newFile)) {
+	if (FileExists(newFile)) 
+	{
 		DeleteFile(newFile);
 	}
-	if (bSameFile) {
+	if (bSameFile) 
+	{
 		// the same file. delete the original and rename
 		DeleteFile(originalFile);
 		RenameFile(tempFile.c_str(),newFile);
-	} else {
+	} 
+	else 
+	{
 		// not the same, just simply rename it
 		RenameFile(tempFile.c_str(),newFile);
 	}
 
 	// save the transcriptions...
-	if (!OnSaveDocument( newFile, FALSE)) {
+	if (!OnSaveDocument( newFile, FALSE)) 
+	{
 		RemoveFile( newFile);
 		return;
 	}
 
     // change the file attribute to read only
-    if (_tcslen(newFile) > 0) {
+    if (_tcslen(newFile) > 0) 
+	{
         CFile::SetStatus( newFile, m_fileStat);
     }
 
-	switch (dlg.m_eShowFiles) {
+	switch (dlg.m_eShowFiles) 
+	{
 	case showBoth:
         AfxGetApp()->OpenDocumentFile(newFile);			// Open new document
 		break;
@@ -7378,12 +7409,14 @@ void CSaDoc::OnAutoReferenceData()
         CSaString temp = dlg.mLastImport;
 
 		CFileEncodingHelper feh(temp);
-		if (!feh.CheckEncoding(true)) {
+		if (!feh.CheckEncoding(true)) 
+		{
 		}
 		wistringstream stream;
-		if (!feh.ConvertFileToUTF16(stream)) {
+		if (!feh.ConvertFileToUTF16(stream)) 
+		{
 		}
-        if (!ImportTranscription(stream,false,false,false,false,td,true,false))
+        if (!ImportTranscription(stream,FALSE,FALSE,FALSE,FALSE,td,true,false))
         {
             CString msg;
             msg.LoadStringW(IDS_AUTO_REF_MAIN_1);
@@ -8322,7 +8355,7 @@ const CSaString CSaDoc::BuildImportString(BOOL /*gloss*/, BOOL /*phonetic*/, BOO
 * This is used by the automatic transcription feature
 * returns false on failure
 */
-const bool CSaDoc::ImportTranscription( wistringstream & stream, bool gloss, bool phonetic, bool phonemic, bool orthographic, CTranscriptionData & td, bool addTag, bool showDlg)
+const bool CSaDoc::ImportTranscription( wistringstream & stream, BOOL gloss, BOOL phonetic, BOOL phonemic, BOOL orthographic, CTranscriptionData & td, bool addTag, bool showDlg)
 {
 	// rewind the stream
 	stream.clear();
@@ -8432,6 +8465,11 @@ int CSaDoc::GetSegmentSize(EAnnotation nIndex)
 }
 
 CSegment * CSaDoc::GetSegment(int nIndex)
+{
+    return m_apSegments[nIndex];
+}
+
+CSegment * CSaDoc::GetSegment(EAnnotation nIndex)
 {
     return m_apSegments[nIndex];
 }
@@ -8777,12 +8815,13 @@ BOOL CSaDoc::CopySectionToNewWavFile( WAVETIME sectionStart, WAVETIME sectionLen
 * @param filename the source (and target) file to modify
 * @return false on failure
 */
-bool CSaDoc::ConvertToMono( bool extractLeft, LPCTSTR filename) {
-
+bool CSaDoc::ConvertToMono( bool extractLeft, LPCTSTR filename) 
+{
 	// do the work in a temporary file
     TCHAR tempfilename[_MAX_PATH];
     GetTempFileName(_T("MONO"), tempfilename, _countof(tempfilename));
-	if (!CopyWave( filename, tempfilename))	{
+	if (!CopyWave( filename, tempfilename))
+	{
 		return false;
 	}
 
@@ -8793,7 +8832,8 @@ bool CSaDoc::ConvertToMono( bool extractLeft, LPCTSTR filename) {
 	WORD blockAlign = 0;
 	DWORD length = 0;
 
-	try {
+	try 
+	{
 		//TODO handle memory during exceptions
 		vector<char> buffer;
 		
@@ -8819,10 +8859,14 @@ bool CSaDoc::ConvertToMono( bool extractLeft, LPCTSTR filename) {
 		::RenameFile( tempfilename, filename);
 
 		return true;
-	} catch (logic_error e) {
+	} 
+	catch (logic_error e) 
+	{
 		AfxMessageBox( L"logic_error occurred!", MB_OK|MB_ICONEXCLAMATION, 0);
 		return false;
-	} catch (...) {
+	} 
+	catch (...) 
+	{
 		AfxMessageBox( L"Unexpected exception!", MB_OK|MB_ICONEXCLAMATION, 0);
 		return false;
 	}
@@ -8949,9 +8993,9 @@ bool CSaDoc::TryExportSegmentsBy(CExportFWSettings & settings, EAnnotation maste
             continue;
         }
         last = dwStart;
-        for (int j = master; j >= 0; j--)
+        for ( int j = master; j >= 0; j--)
         {
-            EAnnotation target = GetAnnotation(j);
+            EAnnotation target = ConvertToAnnotation(j);
             if (!GetFlag(target,settings))
             {
                 continue;
@@ -9176,30 +9220,20 @@ LPCTSTR CSaDoc::GetTag(EAnnotation val)
     return L"";
 }
 
-EAnnotation CSaDoc::GetAnnotation(int val)
+EAnnotation CSaDoc::ConvertToAnnotation(int val)
 {
     switch (val)
     {
-    case 0:
-        return PHONETIC;
-    case 1:
-        return TONE;
-    case 2:
-        return PHONEMIC;
-    case 3:
-        return ORTHO;
-    case 4:
-        return GLOSS;
-    case 5:
-        return REFERENCE;
-    case 6:
-        return MUSIC_PL1;
-    case 7:
-        return MUSIC_PL2;
-    case 8:
-        return MUSIC_PL3;
-    case 9:
-        return MUSIC_PL4;
+    case 0: return PHONETIC;
+    case 1: return TONE;
+    case 2: return PHONEMIC;
+    case 3: return ORTHO;
+    case 4: return GLOSS;
+    case 5: return REFERENCE;
+    case 6: return MUSIC_PL1;
+    case 7: return MUSIC_PL2;
+    case 8: return MUSIC_PL3;
+    case 9: return MUSIC_PL4;
     }
     return PHONETIC;
 }
@@ -9464,55 +9498,68 @@ void CSaDoc::OnUpdateToolsAdjustSilence(CCmdUI * pCmdUI)
 	pCmdUI->Enable(TRUE);
 }
 
-bool CSaDoc::IsUsingHighPassFilter() {
+bool CSaDoc::IsUsingHighPassFilter() 
+{
 	return (m_saParam.wFlags & SA_FLAG_HIGHPASS);
 }
 
-void CSaDoc::DisableHighPassFilter() {
+void CSaDoc::DisableHighPassFilter() 
+{
 	m_saParam.wFlags &= ~SA_FLAG_HIGHPASS;
 }
 
-CSaString CSaDoc::GetDescription() {
+CSaString CSaDoc::GetDescription() 
+{
 	return m_saParam.szDescription;
 }
 
-void CSaDoc::SetDescription( LPCTSTR val) {
+void CSaDoc::SetDescription( LPCTSTR val) 
+{
 	m_saParam.szDescription = val;
 }
 
-bool CSaDoc::MatchesDescription( LPCTSTR val) {
+bool CSaDoc::MatchesDescription( LPCTSTR val) 
+{
 	return (m_saParam.szDescription.CompareNoCase(val)==0);
 }
 
-bool CSaDoc::IsValidRecordFileFormat() {
+bool CSaDoc::IsValidRecordFileFormat() 
+{
 	return (m_saParam.byRecordFileFormat <= FILE_FORMAT_TIMIT);
 }
 
-int CSaDoc::GetRecordFileFormat() {
+int CSaDoc::GetRecordFileFormat() 
+{
 	return m_saParam.byRecordFileFormat;
 }
 
-DWORD CSaDoc::GetRecordBandWidth() {
+DWORD CSaDoc::GetRecordBandWidth() 
+{
 	return m_saParam.dwRecordBandWidth;
 }
 
-BYTE CSaDoc::GetRecordSampleSize() {
+BYTE CSaDoc::GetRecordSampleSize() 
+{
 	return m_saParam.byRecordSmpSize;
 }
 
-BYTE CSaDoc::GetQuantization() {
+BYTE CSaDoc::GetQuantization() 
+{
 	return m_saParam.byQuantization;
 }
 
-void CSaDoc::SetQuantization( BYTE val) {
+void CSaDoc::SetQuantization( BYTE val) 
+{
 	m_saParam.byQuantization = val;
 }
 
-DWORD CSaDoc::GetSignalBandWidth() {
+DWORD CSaDoc::GetSignalBandWidth() 
+{
 	return m_saParam.dwSignalBandWidth;
 }
 
-void CSaDoc::SetSignalBandWidth( DWORD val) {
+void CSaDoc::SetSignalBandWidth( DWORD val) 
+{
 	m_saParam.dwSignalBandWidth = val;
 	if (IsUsingHighPassFilter())
     {
@@ -9520,27 +9567,33 @@ void CSaDoc::SetSignalBandWidth( DWORD val) {
     }
 }
 
-void CSaDoc::ClearHighPassFilter() {
+void CSaDoc::ClearHighPassFilter() 
+{
 	m_saParam.wFlags &= ~SA_FLAG_HIGHPASS;
 }
 
-void CSaDoc::SetHighPassFilter() {
+void CSaDoc::SetHighPassFilter() 
+{
 	m_saParam.wFlags |= SA_FLAG_HIGHPASS;
 }
 
-DWORD CSaDoc::GetNumberOfSamples() {
+DWORD CSaDoc::GetNumberOfSamples() 
+{
 	return m_saParam.dwNumberOfSamples;
 }
 
-void CSaDoc::SetNumberOfSamples( DWORD val) {
+void CSaDoc::SetNumberOfSamples( DWORD val) 
+{
 	m_saParam.dwNumberOfSamples = val;
 }
 
-void CSaDoc::SetRecordSampleSize( BYTE val) {
+void CSaDoc::SetRecordSampleSize( BYTE val) 
+{
 	m_saParam.byRecordSmpSize = val;
 }
 
-void CSaDoc::SetRecordBandWidth( DWORD val) {
+void CSaDoc::SetRecordBandWidth( DWORD val) 
+{
 	m_saParam.dwRecordBandWidth = val;
 	if (IsUsingHighPassFilter())
     {
@@ -9548,8 +9601,28 @@ void CSaDoc::SetRecordBandWidth( DWORD val) {
     }
 }
 
-void CSaDoc::SetRecordTimeStamp( CTime & val) {
+void CSaDoc::SetRecordTimeStamp( CTime & val) 
+{
 	m_saParam.RecordTimeStamp = val;
+}
+
+int CSaDoc::GetLastSegmentBeforePosition( int annotSetID, DWORD cursorPos) 
+{
+	CSegment * pSeg = GetSegment(annotSetID);
+	int selection = -1;
+	for (int i=0;i<pSeg->GetOffsetSize();i++) {
+		DWORD offset = pSeg->GetOffset(i);
+		DWORD duration = pSeg->GetDuration(i);
+		if ((offset+duration)<cursorPos) 
+		{
+			selection = i;
+		}
+		else
+		{
+			break;
+		}
+	}
+	return selection;
 }
 
 

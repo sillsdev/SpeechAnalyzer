@@ -45,7 +45,8 @@ void CDlgInsertSilence::OnClickedInsert()
     CSaView * pView = (CSaView *)mpDoc->GetNextView(pos);
 	CURSORPOS start = pView->GetStartCursorPosition();
 	WAVETIME startt = mpDoc->toTime( start, true);
-    if (mpDoc->InsertSilenceIntoWave( mSilence, startt)) {
+    if (mpDoc->InsertSilenceIntoWave( mSilence, startt)) 
+	{
 		// get wave from the clipboard
 		mpDoc->InvalidateAllProcesses();
 		pView->RefreshGraphs();

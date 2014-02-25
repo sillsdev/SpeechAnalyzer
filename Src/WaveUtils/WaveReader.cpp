@@ -5,12 +5,15 @@
 
 using std::logic_error;
 
-CWaveReader::CWaveReader( ) {
+CWaveReader::CWaveReader( ) 
+{
 	hmmio = NULL;
 }
 
-CWaveReader::~CWaveReader() {
-    if (hmmio!=NULL) {
+CWaveReader::~CWaveReader() 
+{
+    if (hmmio!=NULL) 
+	{
 		mmioClose(hmmio, 0);
 		hmmio = NULL;
 	}
@@ -49,7 +52,8 @@ CWaveReader::~CWaveReader() {
 /**
 * expects the buffer to be preallocated and match datachunk size
 */
-void CWaveReader::read( LPCTSTR afilename, DWORD flags, WORD & bitsPerSample, WORD & formatTag, WORD & channels, DWORD & samplesPerSec, WORD & blockAlign, vector<char> & buffer) {
+void CWaveReader::read( LPCTSTR afilename, DWORD flags, WORD & bitsPerSample, WORD & formatTag, WORD & channels, DWORD & samplesPerSec, WORD & blockAlign, vector<char> & buffer) 
+{
 
 	// empty the buffer
 	buffer.clear();
@@ -60,7 +64,8 @@ void CWaveReader::read( LPCTSTR afilename, DWORD flags, WORD & bitsPerSample, WO
 
 	// open existing file
 	hmmio = mmioOpen( filename, 0, flags);
-	if (hmmio==NULL) {
+	if (hmmio==NULL) 
+	{
 		throw wave_error(cant_open_file_for_reading);
 	}
 
@@ -69,7 +74,8 @@ void CWaveReader::read( LPCTSTR afilename, DWORD flags, WORD & bitsPerSample, WO
 	MMCKINFO riffChunk;
 	memset(&riffChunk,0,sizeof(riffChunk));
 	riffChunk.fccType = mmioFOURCC('W', 'A', 'V', 'E');
-	if (mmioDescend(hmmio, (LPMMCKINFO)&riffChunk, NULL, MMIO_FINDRIFF)) {
+	if (mmioDescend(hmmio, (LPMMCKINFO)&riffChunk, NULL, MMIO_FINDRIFF)) 
+	{
 		throw wave_error(no_riff_chunk);
 	}
 
@@ -83,15 +89,18 @@ void CWaveReader::read( LPCTSTR afilename, DWORD flags, WORD & bitsPerSample, WO
 	MMCKINFO fmtChunk;
 	memset(&fmtChunk,0,sizeof(fmtChunk));
 	fmtChunk.ckid = mmioFOURCC('f', 'm', 't', ' ');
-	if (mmioDescend(hmmio, &fmtChunk, &riffChunk, MMIO_FINDCHUNK)) {
+	if (mmioDescend(hmmio, &fmtChunk, &riffChunk, MMIO_FINDCHUNK)) 
+	{
 		throw wave_error(no_format_chunk);
 	}
 
-	if ((fmtChunk.cksize==16)||(fmtChunk.cksize==18)) {
+	if ((fmtChunk.cksize==16)||(fmtChunk.cksize==18)) 
+	{
 		/* Tell Windows to read in the "fmt " chunk into a WAVEFORMATEX structure */
 		WAVEFORMATEX format;
 		memset(&format,0,sizeof(format));
-		if (mmioRead(hmmio, (HPSTR)&format, fmtChunk.cksize) != (LRESULT)fmtChunk.cksize) {
+		if (mmioRead(hmmio, (HPSTR)&format, fmtChunk.cksize) != (LRESULT)fmtChunk.cksize) 
+		{
 			throw wave_error(format_chunk_read_failure);
 		}
 
@@ -101,12 +110,15 @@ void CWaveReader::read( LPCTSTR afilename, DWORD flags, WORD & bitsPerSample, WO
 		blockAlign = format.nBlockAlign;
 		bitsPerSample = format.wBitsPerSample;
 
-	} else if (fmtChunk.cksize==40) {
+	} 
+	else if (fmtChunk.cksize==40) 
+	{
 
 		WAVEFORMATEXTENSIBLE waveInEx;
 		memset(&waveInEx,0,sizeof(WAVEFORMATEXTENSIBLE));
 		/* Tell Windows to read in the "fmt " chunk into a WAVEFORMATEX structure */
-		if (mmioRead(hmmio, (HPSTR)&waveInEx, fmtChunk.cksize) != (LRESULT)fmtChunk.cksize)	{
+		if (mmioRead(hmmio, (HPSTR)&waveInEx, fmtChunk.cksize) != (LRESULT)fmtChunk.cksize)
+		{
 			throw wave_error(format_chunk_read_failure);
 		}
 
@@ -116,16 +128,22 @@ void CWaveReader::read( LPCTSTR afilename, DWORD flags, WORD & bitsPerSample, WO
 		blockAlign = waveInEx.Format.nBlockAlign;
 		bitsPerSample = waveInEx.Format.wBitsPerSample;
 
-		if (waveInEx.SubFormat==KSDATAFORMAT_SUBTYPE_PCM) {
+		if (waveInEx.SubFormat==KSDATAFORMAT_SUBTYPE_PCM) 
+		{
 			formatTag = WAVE_FORMAT_PCM;
-		} else if (waveInEx.SubFormat==KSDATAFORMAT_SUBTYPE_IEEE_FLOAT)	{
+		} 
+		else if (waveInEx.SubFormat==KSDATAFORMAT_SUBTYPE_IEEE_FLOAT)	
+		{
 			formatTag = WAVE_FORMAT_IEEE_FLOAT;
 		}
-	} else {
+	} 
+	else 
+	{
 		throw wave_error(unsupported_format_chunk_size);
 	}
 
-	if (mmioAscend(hmmio, &fmtChunk, 0)) {
+	if (mmioAscend(hmmio, &fmtChunk, 0)) 
+	{
 		throw wave_error(cant_ascend_from_format_chunk);
 	}
 
@@ -134,7 +152,8 @@ void CWaveReader::read( LPCTSTR afilename, DWORD flags, WORD & bitsPerSample, WO
 	memset(&dataChunk,0,sizeof(dataChunk));
 	/* Tell Windows to locate the WAVE's "fmt " chunk and read in its header */
 	dataChunk.ckid = mmioFOURCC('d', 'a', 't', 'a');
-	if (mmioDescend(hmmio, &dataChunk, NULL, MMIO_FINDCHUNK)) {
+	if (mmioDescend(hmmio, &dataChunk, NULL, MMIO_FINDCHUNK)) 
+	{
 		throw wave_error(no_data_chunk);
 	}
 
@@ -143,15 +162,18 @@ void CWaveReader::read( LPCTSTR afilename, DWORD flags, WORD & bitsPerSample, WO
 	buffer.resize(length);
 
 	LONG read = mmioRead( hmmio, &buffer[0], length);
-	if (read!=length) {
+	if (read!=length) 
+	{
 		throw wave_error(data_read_failure);
 	}
 
-    if (mmioAscend(hmmio, &dataChunk, 0)) {
+    if (mmioAscend(hmmio, &dataChunk, 0)) 
+	{
 		throw wave_error(cant_ascend_from_data_chunk);
 	}
 
-    if (hmmio!=NULL) {
+    if (hmmio!=NULL) 
+	{
 		mmioClose(hmmio, 0);
 		hmmio = NULL;
 	}

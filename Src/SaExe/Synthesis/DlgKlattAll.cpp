@@ -302,7 +302,7 @@ void CDlgKlattAll::PopulateParameterGrid(CFlexEditGrid & cGrid, const SIpaChar &
 
 void CDlgKlattAll::PopulateParameterGrid(CFlexEditGrid & cGrid, const TEMPORAL * pParameters, int nColumn)
 {
-    const PARAMETER_DESC * parameterInfo = GetTemporalKlattDesc();
+    const SParameterDescription * parameterInfo = GetTemporalKlattDesc();
 
     if (nColumn >= cGrid.GetCols(0))
     {
@@ -765,7 +765,7 @@ CString CDlgKlattAll::GetDefaultsPath()
 
 void CDlgKlattAll::ParseConstantsGrid(int nGrid, CKlattConstants & cConstants)
 {
-    const PARAMETER_DESC * parameterInfo = GetGlobalKlattDesc();
+    const SParameterDescription * parameterInfo = GetGlobalKlattDesc();
 
     for (int i=0; parameterInfo[i].parameterOffset != -1; i++)
     {
@@ -777,7 +777,7 @@ void CDlgKlattAll::ParseConstantsGrid(int nGrid, CKlattConstants & cConstants)
 
 void CDlgKlattAll::ParseParameterGrid(int nGrid, CIpaCharVector & cChars)
 {
-    const PARAMETER_DESC * parameterInfo = GetTemporalKlattDesc();
+    const SParameterDescription * parameterInfo = GetTemporalKlattDesc();
     cChars.clear();
     CFlexEditGrid & cGrid = m_cGrid[nGrid];
 
@@ -850,7 +850,7 @@ void CDlgKlattAll::OnSynthesize()
 
 void CDlgKlattAll::ConvertCStringToCharVector(CString const & szGrid, CIpaCharVector & cChars)
 {
-    const PARAMETER_DESC * parameterInfo = GetTemporalKlattDesc();
+    const SParameterDescription * parameterInfo = GetTemporalKlattDesc();
     cChars.clear();
 
     int nLength = szGrid.GetLength();
@@ -965,7 +965,7 @@ void CDlgKlattAll::LabelGrid(int nGrid)
         }
         m_cGrid[nGrid].SetFixedCols(2);
 
-        const PARAMETER_DESC * parameterInfo = GetGlobalKlattDesc();
+        const SParameterDescription * parameterInfo = GetGlobalKlattDesc();
 
         for (int i=0; parameterInfo[i].parameterOffset != -1; i++)
         {
@@ -1029,7 +1029,7 @@ void CDlgKlattAll::LabelGrid(int nGrid)
 
         NumberGrid(nGrid);
 
-        const PARAMETER_DESC * parameterInfo = GetTemporalKlattDesc();
+        const SParameterDescription * parameterInfo = GetTemporalKlattDesc();
 
         for (register int i=0; parameterInfo[i].parameterOffset != -1; i++)
         {
@@ -1494,7 +1494,7 @@ BOOL CDlgKlattAll::GetFormants(CFlexEditGrid & cGrid, int column, CSaView * pVie
     szString.Format(_T("%u"),nAV);
     cGrid.SetTextMatrix(rowAV,column,szString);
 
-    const PARAMETER_DESC * parameterInfo = GetTemporalKlattDesc();
+    const SParameterDescription * parameterInfo = GetTemporalKlattDesc();
     double LpcRef;
     double MaxLpcBandPwr = pSpectrum->GetSpectralPowerRange().Max.Lpc;
     double MaxRawBandPwr = pSpectrum->GetSpectralPowerRange().Max.Raw;
@@ -2785,7 +2785,7 @@ void CIpaCharVector::Load(CString szPath)
 
     file.Open(szPath,CFile::modeRead | CFile::shareDenyWrite);
 
-    const PARAMETER_DESC * parameterInfo = GetTemporalKlattDesc();
+    const SParameterDescription * parameterInfo = GetTemporalKlattDesc();
 
     CString line;
     while (file.ReadString(line))
@@ -2826,7 +2826,7 @@ void CIpaCharVector::Save(CString szPath)
         return;
     }
 
-    const PARAMETER_DESC * parameterInfo = GetTemporalKlattDesc();
+    const SParameterDescription * parameterInfo = GetTemporalKlattDesc();
 
     const_iterator pParm;
 

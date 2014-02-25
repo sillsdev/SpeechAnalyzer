@@ -229,7 +229,8 @@ void CDlgMbrola::OnLeaveCellMbrolaGrid()
         double value;
         char dummy[3];
         CString cellText = m_cGrid.GetText();
-        if ((cellText.GetLength()) && (swscanf(cellText,_T("%f%2s"), &value, &dummy) != 1)) {
+        if ((cellText.GetLength()) && (swscanf(cellText,_T("%f%2s"), &value, &dummy) != 1)) 
+		{
             CString error;
             error.Format(_T("\"%s\" is not a number. Please correct"), LPCTSTR(cellText));
             AfxMessageBox(error, MB_OK | MB_ICONEXCLAMATION, 0);
@@ -429,10 +430,10 @@ void CDlgMbrola::OnMbrolaGet()
     }
 
     // select dictionary based on gender
-    int nGender = pDoc->GetGender();
-    if (nGender > 1)
+    EGender nGender = pDoc->GetGender();
+    if (nGender > female)
     {
-        nGender = 1;    // force to female since no dictionary exists for child
+        nGender = female;    // force to female since no dictionary exists for child
     }
     m_cDictionary.SetCurSel(nGender);
 

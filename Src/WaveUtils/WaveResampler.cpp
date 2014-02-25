@@ -17,16 +17,19 @@ typedef unsigned short USHORT;
 
 using std::vector;
 
-double CWaveResampler::Limit(double val) {
+double CWaveResampler::Limit(double val) 
+{
     return (val>1.0)?1.0:((val<-1.0)?-1.0:val);
 }
 
-long CWaveResampler::Round(double val) {
+long CWaveResampler::Round(double val) 
+{
     double result = val+0.5;
     return (long)result;
 }
 
-long CWaveResampler::ConvBitSize(unsigned long in, int bps) {
+long CWaveResampler::ConvBitSize(unsigned long in, int bps) 
+{
     const unsigned long max = (1 << (bps-1)) - 1;
     return in > max ? in - (max<<1) : in;
 }
@@ -34,9 +37,11 @@ long CWaveResampler::ConvBitSize(unsigned long in, int bps) {
 /**
 * calculate greatest common denominator
 */
-unsigned long CWaveResampler::GCD(unsigned long m, unsigned long n) {
+unsigned long CWaveResampler::GCD(unsigned long m, unsigned long n) 
+{
     
-	while (n != 0) {
+	while (n != 0) 
+	{
         unsigned long r = m % n;
         m = n;
         n = r;
@@ -47,7 +52,8 @@ unsigned long CWaveResampler::GCD(unsigned long m, unsigned long n) {
 /**
 * calculate least common multiple
 */
-unsigned long CWaveResampler::LCM(unsigned long m, unsigned long n) {
+unsigned long CWaveResampler::LCM(unsigned long m, unsigned long n) 
+{
     if ((m==0) || (n==0))
     {
         return 0;
@@ -55,7 +61,8 @@ unsigned long CWaveResampler::LCM(unsigned long m, unsigned long n) {
     return ((m*n)/GCD(m,n));
 }
 
-double CWaveResampler::BessI0(float x) {
+double CWaveResampler::BessI0(float x) 
+{
 
     double ans = 0;
     double ax=fabs(x);
@@ -76,7 +83,8 @@ double CWaveResampler::BessI0(float x) {
 void CWaveResampler::CalculateCoefficients( DWORD inSampleRate,
 											WORD sampleSize, // wBitsPerSample bit size for one sample on one channel
 											double *& coeffs,
-											size_t & coeffsLen) {
+											size_t & coeffsLen) 
+{
 
     size_t groupDelay = 0;
 
@@ -213,7 +221,8 @@ void CWaveResampler::Func(size_t bufferLen,
                           size_t upSmpFactor,
                           size_t dwnSmpFactor,
                           double * datal,
-                          IProgressUpdate & progressUpdater) {
+                          IProgressUpdate & progressUpdater) 
+{
 
     size_t workIdx = 0;
     size_t historyLen = coeffsLen-1;
@@ -223,7 +232,8 @@ void CWaveResampler::Func(size_t bufferLen,
     double step = remain / 10.0;
     double current = step;
 
-    for (size_t i=0; i<bufferLen; i++) {
+    for (size_t i=0; i<bufferLen; i++) 
+	{
 
         buffer[i] = 0;
 
@@ -285,7 +295,8 @@ void CWaveResampler::Func(size_t bufferLen,
 * This method uses 32-bit floating point to do the majority of the work.
 * The incoming default progress bar is 30%....
 */
-CWaveResampler::ECONVERT CWaveResampler::Resample(LPCTSTR src, const TCHAR  * dst, IProgressUpdate & progressUpdater) {
+CWaveResampler::ECONVERT CWaveResampler::Resample(LPCTSTR src, const TCHAR  * dst, IProgressUpdate & progressUpdater) 
+{
 
     // yes, I could have used smart pointers...I was in a hurry.
     size_t length = 0;
@@ -431,7 +442,8 @@ CWaveResampler::ECONVERT CWaveResampler::Resample(LPCTSTR src, const TCHAR  * ds
     }
 
     // convert incoming format if possible
-    if ((wFormatTag!=WAVE_FORMAT_PCM) && (wFormatTag!=WAVE_FORMAT_IEEE_FLOAT)) {
+    if ((wFormatTag!=WAVE_FORMAT_PCM) && (wFormatTag!=WAVE_FORMAT_IEEE_FLOAT)) 
+	{
 
         HACMSTREAM hacm = 0;
         HACMDRIVER had = NULL;
@@ -462,7 +474,8 @@ CWaveResampler::ECONVERT CWaveResampler::Resample(LPCTSTR src, const TCHAR  * ds
         DWORD cbInput = length;
         DWORD outputBytes = 0;
         DWORD fdwSize = ACM_STREAMSIZEF_SOURCE;
-        if (acmStreamSize(hacm,cbInput,&outputBytes,fdwSize)) {
+        if (acmStreamSize(hacm,cbInput,&outputBytes,fdwSize)) 
+		{
             acmStreamClose(hacm,0);
             delete [] data;
             data = NULL;
@@ -544,10 +557,12 @@ CWaveResampler::ECONVERT CWaveResampler::Resample(LPCTSTR src, const TCHAR  * ds
 
         size_t j = 0;
         size_t k = 0;
-        if (wFormatTag==WAVE_FORMAT_PCM) {
+        if (wFormatTag==WAVE_FORMAT_PCM) 
+		{
 
             // if it's 32 bit, we also don't need to do this
-            switch (wBitsPerSample) {
+            switch (wBitsPerSample) 
+			{
             case 16:
             {
                 for (size_t i=0; i<numSamples; i++)
@@ -683,35 +698,44 @@ CWaveResampler::ECONVERT CWaveResampler::Resample(LPCTSTR src, const TCHAR  * ds
     vector<vector<double>> buffers;
 
     // pull each channel into it's own buffer
-    for (int ch=0; ch<nChannels; ch++) {
+    for (int ch=0; ch<nChannels; ch++) 
+	{
 
         size_t numSamples = length/nChannels;
         size_t bufferSize = numSamples;
 		vector<double> buffer;
 
         size_t k=0;
-        for (size_t i=0; i<numSamples; i++) {
+        for (size_t i=0; i<numSamples; i++) 
+		{
             double sum = 0;
-            for (size_t c=0; c<nChannels; c++) {
-                if (k>=length) {
+            for (size_t c=0; c<nChannels; c++) 
+			{
+                if (k>=length) 
+				{
                     delete [] datal;
                     datal = NULL;
                     return EC_SOFTWARE;
                 }
-                if (ch==c) {
+                if (ch==c) 
+				{
                     sum += datal[k];
                 }
                 k++;
             }
-            if (ch==nChannels) {
+            if (ch==nChannels) 
+			{
                 sum /= (double)nChannels;
-            } else {
+            } 
+			else 
+			{
                 // it's a single channel - do nothing
             }
             buffer.push_back(sum);
         }
 
-		if (buffer.size()!=bufferSize) {
+		if (buffer.size()!=bufferSize) 
+		{
             delete [] datal;
             datal = NULL;
             return EC_SOFTWARE;
@@ -766,8 +790,10 @@ CWaveResampler::ECONVERT CWaveResampler::Resample(LPCTSTR src, const TCHAR  * ds
 
 	{
 		vector<char> buffer;
-		for (size_t i=0; i<numSamples; i++) {
-			for (size_t ch=0; ch<buffers.size(); ch++) {
+		for (size_t i=0; i<numSamples; i++) 
+		{
+			for (size_t ch=0; ch<buffers.size(); ch++) 
+			{
 				double dval = buffers[ch][i];
 				dval = Limit(dval);
 				long lval = (long)(dval*(double)0x7fffffff);
@@ -781,9 +807,12 @@ CWaveResampler::ECONVERT CWaveResampler::Resample(LPCTSTR src, const TCHAR  * ds
 		}
 
 		CWaveWriter writer;
-		try {
+		try 
+		{
 			writer.write( dst, MMIO_CREATE|MMIO_WRITE|MMIO_EXCLUSIVE, 16, wFormatTag, nChannels, nSamplesPerSec, buffer);
-		} catch (wave_error & e) {
+		} 
+		catch (wave_error & e) 
+		{
 			return EC_WRITEFAIL;
 		}
 	}

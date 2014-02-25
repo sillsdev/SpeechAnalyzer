@@ -194,10 +194,6 @@ public:
         m_nCurrentIndex--;
         return *this;
     }
-    // postfix operators (not implemented)
-    // const CIter operator++(int) {CIter old=*this; m_nCurrentIndex++; return old;}
-    // const CIter operator--(int) {CIter old=*this; m_nCurrentIndex--; return old;}
-
 
 private:
     CProcess & m_process;

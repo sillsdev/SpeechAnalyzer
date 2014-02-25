@@ -996,7 +996,8 @@ void CDlgEditor::UpdatePlayer()
 {
 	CMainFrame * pMainWnd = GetMainFrame();
 	if (pMainWnd==NULL) return;
-	if (!pMainWnd->IsPlayerPlaying()) {
+	if (!pMainWnd->IsPlayerPlaying()) 
+	{
 		SetButtonState(IDC_PLAY_WORD,IDC_STOP_WORD,false);
 		SetButtonState(IDC_PLAY_PHRASE_L1,IDC_STOP_PHRASE_L1,false);
 	}

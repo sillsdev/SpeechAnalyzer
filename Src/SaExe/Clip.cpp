@@ -18,7 +18,8 @@ CClipboard::CClipboard(HWND hwnd)
     RTFFormat = RegisterClipboardFormat(_T("Rich Text Format"));
 }
 
-CClipboard::~CClipboard() {
+CClipboard::~CClipboard() 
+{
 	close();
 }
 

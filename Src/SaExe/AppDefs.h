@@ -187,6 +187,12 @@ enum EFileFormat {
 	formatRight = 2
 };
 
+enum EGender {
+	male = 0, 
+	female = 1, 
+	child = 2
+};
+
 // RIFF header definitions
 #define FILE_FORMAT_PCM                 1           // PCM format in format chunk
 

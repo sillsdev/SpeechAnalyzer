@@ -67,7 +67,8 @@ void CDlgAlignTranscriptionDataTextPage::OnClickedImport()
 	}
 
 	wistringstream input;
-	if (!feh.ConvertFileToUTF16(input)) {
+	if (!feh.ConvertFileToUTF16(input)) 
+	{
 		// display a message here
 		return;
 	}

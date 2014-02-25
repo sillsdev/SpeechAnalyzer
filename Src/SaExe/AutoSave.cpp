@@ -345,7 +345,8 @@ void CAutoSave::StoreAutoRecoveryInformation( CSaDoc * pDoc)
 	//TRACE(L"wave size size: %lu dest size: %lu\n",(unsigned long)srcsize,(unsigned long)destsize);
 
 	wstring original = pDoc->GetPathName();
-	if (!::IsReadOnly(original.c_str())) {
+	if (!::IsReadOnly(original.c_str())) 
+	{
 		if (srcsize!=destsize)
 		{
 			//TRACE(L"saving audio for %s\n",restorewave.c_str());

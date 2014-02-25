@@ -34,7 +34,7 @@ typedef enum EAudioType
 typedef void (WINAPI * PROCVV)(void);
 typedef void (WINAPI * PROCVI)(int);
 typedef void (WINAPI * PROCVF)(float);
-typedef void (WINAPI * PROCPPAR)(Parser *);
+typedef void (WINAPI * PROCPPAR)(struct SParser *);
 typedef void (WINAPI * PROCVPPHO)(LPPHONE);
 typedef void (WINAPI * PROCVPPHOFF)(LPPHONE,float,float);
 typedef int (WINAPI * PROCIV)();

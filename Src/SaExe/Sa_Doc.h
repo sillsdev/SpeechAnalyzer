@@ -112,7 +112,7 @@ public:
     int GetWbProcess();                                             // return workbench process number
     CFileStatus * GetFileStatus();                                  // pointer to file status structure
     SourceParm * GetSourceParm();                                   // pointer to source parameters structure
-    int GetGender();                                                // returns gender: 0 = male, 1 = female, 2 = child
+    EGender GetGender();											// returns gender: 0 = male, 1 = female, 2 = child
     // guesses if undefined in source parameters
     const CUttParm * GetUttParm();
     void GetUttParm(CUttParm *, BOOL bOriginal=FALSE);              // get a copy of the utterance parameters structure
@@ -160,7 +160,8 @@ public:
     CProcessGlottis * GetGlottalWave();                             // process pointer to glottal waveform object
     CProcessTonalWeightChart * GetTonalWeightChart();               // process pointer to tonal weighting chart CLW 11/8/99
     int GetSegmentSize(EAnnotation nIndex);                         // get the pointers to a segment object
-    CSegment * GetSegment(int nIndex);                              // get the pointers to a segment object
+    CSegment * GetSegment(int nIndex);								// get the pointers to a segment object
+    CSegment * GetSegment(EAnnotation nIndex);                      // get the pointers to a segment object
     CGlossSegment * GetGlossSegment();
     CFontTable * GetFont(int nIndex);                               // return font size
     CSaString GetMeasurementsString(DWORD dwOffset, DWORD dwLength, BOOL * pbRes);
@@ -242,7 +243,7 @@ public:
     void DoExportFieldWorks(CExportFWSettings & settings);
     const CSaString BuildString(int nSegment);
     const CSaString BuildImportString(BOOL gloss, BOOL phonetic, BOOL phonemic, BOOL orthographic);
-    const bool ImportTranscription( wistringstream & strm, bool gloss, bool phonetic, bool phonemic, bool orthographic, CTranscriptionData & td, bool addTag, bool showDlg);
+    const bool ImportTranscription( wistringstream & strm, BOOL gloss, BOOL phonetic, BOOL phonemic, BOOL orthographic, CTranscriptionData & td, bool addTag, bool showDlg);
     void ApplyTranscriptionChanges(CTranscriptionDataSettings & settings);
     void RevertTranscriptionChanges();
     bool IsTempFile();
@@ -306,6 +307,8 @@ public:
 	void SetRecordBandWidth( DWORD val);
 	void SetRecordTimeStamp( CTime & val);
 
+	int GetLastSegmentBeforePosition( int annotSetID, DWORD cursorPos);
+
 protected:
     virtual void DeleteContents();
     virtual BOOL OnNewDocument();
@@ -318,7 +321,7 @@ protected:
     void AlignTranscriptionDataByRef(CTranscriptionData & td);
     bool TryExportSegmentsBy(CExportFWSettings & settings, EAnnotation master, CFile & file, bool skipEmptyGloss, LPCTSTR szPath, int & dataCount, int & wavCount);
     CSaString BuildRecord(EAnnotation target, DWORD dwStart, DWORD dwStop);
-    EAnnotation GetAnnotation(int val);
+    EAnnotation ConvertToAnnotation(int val);
     BOOL GetFlag(EAnnotation val, CExportFWSettings & settings);
     int GetIndex(EAnnotation val);
     LPCTSTR GetTag(EAnnotation val);

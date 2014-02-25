@@ -35,9 +35,9 @@ public:
     SStatistic GetFormantStats(int nFormant);
     void ResetTracking();
     long Process(void * pCaller, ISaDoc * pDoc, BOOL bTrack, DWORD dwFrameStart, DWORD dwFrameSize, SSpectProcSelect SpectraSelected, int nProgress = 0, int nLevel = 1);
-    int GetVowelCount(int nGender) const;
-    SFormantFreq GetVowelFreq(int nIndex, int nGender, BOOL bMelScale = FALSE) const; // get vowel frequencies
-    CSaString GetVowel(int nIndex, int nGender) const; // returns the vowel for the graph
+    int GetVowelCount(EGender nGender) const;
+    SFormantFreq GetVowelFreq(int nIndex, EGender nGender, BOOL bMelScale = FALSE) const; // get vowel frequencies
+    CSaString GetVowel(int nIndex, EGender nGender) const; // returns the vowel for the graph
     CSaString FindNearestVowel(SFormantFreq FormantFreq, ISaDoc * pDoc) const; // returns nearest vowel for specified set of F1, F2, and F3 frequencies
     CSaString FindNearestVowel(ISaDoc * pDoc) const;  // returns nearest vowel from F1, F2, and F3 mean frequencies, as tracked internally by object
 

@@ -500,7 +500,8 @@ void CDlgFind::OnNext()
 
 	// setup the beginning point, because we don't have one yet.
 	// in this case we don't want to do a replace yet
-	if (curSel==-1) {
+	if (curSel==-1) 
+	{
 		// there's nothing selected, and we haven't started yet
 		if (m_beginFind==-1)
 		{
@@ -523,7 +524,9 @@ void CDlgFind::OnNext()
 			TRACE("1\n");
 			return;
 		}
-	} else {
+	} 
+	else 
+	{
 		// next special case - initial selection has already been done
 		if (m_beginFind==-1)
 		{

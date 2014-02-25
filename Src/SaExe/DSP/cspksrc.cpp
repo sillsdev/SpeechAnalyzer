@@ -2,20 +2,19 @@
 #include "cspksrc.h"
 #include <assert.h>
 
-CountedSortedPeakSource::CountedSortedPeakSource(CPeakSource & ps,
+CCountedSortedPeakSource::CCountedSortedPeakSource(CPeakSource & ps,
         uint32 maxNumPeaks)
     : myPS(ps), myQ(0), myMaxNumPeaks(maxNumPeaks)
 {
 }
 
-CountedSortedPeakSource::~CountedSortedPeakSource()
+CCountedSortedPeakSource::~CCountedSortedPeakSource()
 {
     // I want to see how good the memory checker is :-)
     delete myQ;
 }
 
-void
-CountedSortedPeakSource::Search(const float * start, const float * end)
+void CCountedSortedPeakSource::Search(const float * start, const float * end)
 {
     uint32 numPeaks = 0;
     rpair_float_float point;
@@ -37,22 +36,20 @@ CountedSortedPeakSource::Search(const float * start, const float * end)
     }
 }
 
-void
-CountedSortedPeakSource::Next()
+void CCountedSortedPeakSource::Next()
 {
     assert(!IsDone());
     myQ->pop();
 }
 
-void
-CountedSortedPeakSource::Get(float & location, float & value) const
+void CCountedSortedPeakSource::Get(float & location, float & value) const
 {
     assert(!IsDone());
     location = myQ->top().first;
     value = myQ->top().second;
 }
 
-int32 CountedSortedPeakSource::IsDone() const
+int32 CCountedSortedPeakSource::IsDone() const
 {
     return myQ->empty();
 }

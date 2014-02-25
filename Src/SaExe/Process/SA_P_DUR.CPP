@@ -64,7 +64,8 @@ long CProcessDurations::Process(void * pCaller, ISaDoc * pDoc, int nProgress, in
     CSegment * pSegment = pDoc->GetSegment(PHONETIC);
     CString * pPhonetic = pSegment->GetString();
 	m_Durations.RemoveAll();
-	for (int i=0;i<pSegment->GetDurationSize();i++) {
+	for (int i=0;i<pSegment->GetDurationSize();i++) 
+	{
 		m_Durations.Add(pSegment->GetDuration(i));
 	}
 

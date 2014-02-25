@@ -5,7 +5,7 @@ class CSaApp;
 class CSaDoc;
 
 #ifdef DEBUG
-#define AUTOSAVE_TIMER      5000	// fires once a minute
+#define AUTOSAVE_TIMER      10000	// fires once a minute
 #else
 #define AUTOSAVE_TIMER      60000   // fires once a minute
 #endif

@@ -275,7 +275,8 @@ long CProcessFragments::Process(void * pCaller, ISaDoc * pDoc, int nProgress,
     if (lStatus == DONE)
     {
         m_dwFragmentIndex = (m_dwFragmentCount - 1) / 2;  // initialize for GetFragmentIndex() binary search
-		if (m_pFragmenter!=NULL) {
+		if (m_pFragmenter!=NULL) 
+		{
 			delete m_pFragmenter;
 			m_pFragmenter = NULL;
 		}

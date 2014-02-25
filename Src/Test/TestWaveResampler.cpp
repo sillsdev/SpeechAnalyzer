@@ -8,14 +8,21 @@
 using std::string;
 using std::wstring;
 
-class ProgressUpdater : public IProgressUpdate {
-	virtual void SetProgress( int value) {};
-	virtual int GetProgress() { return 0;};
+class ProgressUpdater : public IProgressUpdate 
+{
+	virtual void SetProgress( int value) 
+	{
+	};
+	virtual int GetProgress() 
+	{ 
+		return 0;
+	};
 };
 
 ProgressUpdater updater;
 
-void test( LPCTSTR ifile) {
+void test( LPCTSTR ifile) 
+{
 
 	wstring ifilename = buildSourcePath(ifile);
 	wstring ofilename = buildResultPath(L"temp.wav");

@@ -449,7 +449,7 @@
     <ClInclude Include="ExportFWSettings.h" />
     <ClInclude Include="FileEncodingHelper.h" />
     <ClInclude Include="FileUtils.h" />
-    <ClInclude Include="flexeditgrid.h" />
+    <ClInclude Include="FlexEditGrid.h" />
     <ClInclude Include="FmtParm.h" />
     <ClInclude Include="font.h" />
     <ClInclude Include="GlossSegment.h" />
@@ -538,9 +538,9 @@
     <ClInclude Include="sa_g_3dPitch.h" />
     <ClInclude Include="SA_G_Cha.h" />
     <ClInclude Include="SA_G_CPi.h" />
-    <ClInclude Include="SA_G_DUR.H" />
-    <ClInclude Include="SA_G_GLO.H" />
-    <ClInclude Include="SA_G_GRA.H" />
+    <ClInclude Include="Sa_G_Dur.h" />
+    <ClInclude Include="Sa_g_glo.h" />
+    <ClInclude Include="Sa_g_gra.h" />
     <ClInclude Include="SA_G_LOU.H" />
     <ClInclude Include="Sa_g_mag.h" />
     <ClInclude Include="sa_g_mel.h" />

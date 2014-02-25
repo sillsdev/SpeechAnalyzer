@@ -14,7 +14,8 @@ using std::list;
 using std::map;
 using std::wstringstream;
 
-wstring CSFMHelper::ToLower( wstring in) {
+wstring CSFMHelper::ToLower( wstring in) 
+{
 	std::transform( in.begin(), in.end(), in.begin(), ::towlower);
 	return in;
 }
@@ -26,7 +27,8 @@ bool CSFMHelper::IsSFM( wistringstream & stream)
 	stream.seekg(0);
 	stream.clear();
 
-	if (stream.fail()) {
+	if (stream.fail()) 
+	{
 		return false;
 	}
 	return (stream.peek()=='\\');
@@ -180,7 +182,8 @@ bool CSFMHelper::IsColumnarSFM( wistringstream & stream)
 	wstring line = lines[start];
 	vector<wstring> tokens = TokenizeLineToTokens( line, 0x09);
 	// the first line must be all tags.
-	for (size_t i=0;i<tokens.size();i++) {
+	for (size_t i=0;i<tokens.size();i++) 
+	{
 		if (!CSFMHelper::IsTag(tokens[i].c_str())) return false;
 	}
 
@@ -188,7 +191,8 @@ bool CSFMHelper::IsColumnarSFM( wistringstream & stream)
 	start++;
 	line = lines[start];
 	tokens = TokenizeLineToTokens( line, 0x09);
-	for (size_t i=0;i<tokens.size();i++) {
+	for (size_t i=0;i<tokens.size();i++) 
+	{
 		if (CSFMHelper::IsTag(tokens[i].c_str())) return false;
 	}
 
@@ -205,8 +209,10 @@ bool CSFMHelper::IsColumnarSFM( wistringstream & stream)
 	wstring tagline = lines[start];
 	vector<wstring> tags = TokenizeLineToTokens( tagline, 0x09);
 	// the first line must be all tags.
-	for (size_t i=0;i<tags.size();i++) {
-		if (!CSFMHelper::IsTag(tags[i].c_str())) {
+	for (size_t i=0;i<tags.size();i++) 
+	{
+		if (!CSFMHelper::IsTag(tags[i].c_str())) 
+		{
 			TRACE("the first line contains an element that is not a tag '%s'\n",tagline.c_str());
 			return false;
 		}
@@ -216,9 +222,11 @@ bool CSFMHelper::IsColumnarSFM( wistringstream & stream)
 	
 	// run through all the lines and verify that the counts are no greater
 	// than the number of tags
-	for (size_t i=start;i<lines.size();i++) {
+	for (size_t i=start;i<lines.size();i++) 
+	{
 		vector<wstring> tokens = TokenizeLineToTokens( lines[i], 0x09);
-		if (tokens.size()>tagCount) {
+		if (tokens.size()>tagCount) 
+		{
 			TRACE("line %d has too many elements '%s'.  The tag count id %d\n",i,lines[i].c_str(),tagCount);
 			return false;
 		}
@@ -226,10 +234,13 @@ bool CSFMHelper::IsColumnarSFM( wistringstream & stream)
 
 	// run through all the lines and verify that there are no more tags
 	// on any other lines
-	for (size_t i=start;i<lines.size();i++) {
+	for (size_t i=start;i<lines.size();i++) 
+	{
 		vector<wstring> tokens = TokenizeLineToTokens( lines[i], 0x09);
-		for (size_t j=0;j<tokens.size();j++) {
-			if (CSFMHelper::IsTag(tokens[j].c_str())) {
+		for (size_t j=0;j<tokens.size();j++) 
+		{
+			if (CSFMHelper::IsTag(tokens[j].c_str())) 
+			{
 				TRACE("line %d contains a tag '%s'.\n",i,lines[i].c_str());
 				return false;
 			}
@@ -266,8 +277,10 @@ TranscriptionDataMap CSFMHelper::ImportColumnarSFM( wistringstream & stream)
 	wstring tagline = lines[start];
 	vector<wstring> tags = TokenizeLineToTokens( tagline, 0x09);
 	// the first line must be all tags.
-	for (size_t i=0;i<tags.size();i++) {
-		if (!CSFMHelper::IsTag(tags[i].c_str())) {
+	for (size_t i=0;i<tags.size();i++) 
+	{
+		if (!CSFMHelper::IsTag(tags[i].c_str())) 
+		{
 			TRACE("the first line contains an element that is not a tag '%s'\n",tagline.c_str());
 			return td;
 		}
@@ -277,9 +290,11 @@ TranscriptionDataMap CSFMHelper::ImportColumnarSFM( wistringstream & stream)
 	
 	// run through all the lines and verify that the counts are no greater
 	// than the number of tags
-	for (size_t i=start;i<lines.size();i++) {
+	for (size_t i=start;i<lines.size();i++) 
+	{
 		vector<wstring> tokens = TokenizeLineToTokens( lines[i], 0x09);
-		if (tokens.size()>tagCount) {
+		if (tokens.size()>tagCount) 
+		{
 			TRACE("line %d has too many elements '%s'.  The tag count id %d\n",i,lines[i].c_str(),tagCount);
 			return td;
 		}
@@ -287,10 +302,13 @@ TranscriptionDataMap CSFMHelper::ImportColumnarSFM( wistringstream & stream)
 
 	// run through all the lines and verify that there are no more tags
 	// than the number of tags
-	for (size_t i=start;i<lines.size();i++) {
+	for (size_t i=start;i<lines.size();i++) 
+	{
 		vector<wstring> tokens = TokenizeLineToTokens( lines[i], 0x09);
-		for (size_t j=0;j<tokens.size();j++) {
-			if (CSFMHelper::IsTag(tokens[j].c_str())) {
+		for (size_t j=0;j<tokens.size();j++) 
+		{
+			if (CSFMHelper::IsTag(tokens[j].c_str())) 
+			{
 				TRACE("line %d contains a tag '%s'.\n",i,lines[i].c_str());
 				return td;
 			}
@@ -306,7 +324,8 @@ TranscriptionDataMap CSFMHelper::ImportColumnarSFM( wistringstream & stream)
 			wstring tag = tags[j];
 			tag = (tag[0]=='\\')?tag.substr(1):tag;
 			bool gloss = false;
-			if (CSFMHelper::IsGloss(tag.c_str(),tags[j].length())) {
+			if (CSFMHelper::IsGloss(tag.c_str(),tags[j].length())) 
+			{
 				gloss = true;
 			}
 			wstring data = L"";
@@ -349,7 +368,8 @@ TranscriptionDataMap CSFMHelper::ImportSFM(CSaString & /*filename*/)
     return map;
 }
 
-bool CSFMHelper::IsTag( LPCTSTR text) {
+bool CSFMHelper::IsTag( LPCTSTR text) 
+{
 	if (wcslen(text)==0) return false;
 	if (text[0] != '\\') return false;
 	return true;

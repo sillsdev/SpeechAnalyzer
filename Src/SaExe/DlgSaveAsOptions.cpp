@@ -53,17 +53,23 @@ void CDlgSaveAsOptions::OnClicked()
 BOOL CDlgSaveAsOptions::OnInitDialog()
 {
     CFileDialog::OnInitDialog();
-	if (saveAs) {
-		if (stereo) {
+	if (saveAs) 
+	{
+		if (stereo) 
+		{
 			GetDlgItem(IDC_SAVEAS_STEREO)->EnableWindow(TRUE);
 			GetDlgItem(IDC_SAVEAS_MONO)->EnableWindow(TRUE);
 			GetDlgItem(IDC_SAVEAS_RIGHT)->EnableWindow(TRUE);
-		} else {
+		} 
+		else 
+		{
 			GetDlgItem(IDC_SAVEAS_STEREO)->EnableWindow(FALSE);
 			GetDlgItem(IDC_SAVEAS_MONO)->EnableWindow(FALSE);
 			GetDlgItem(IDC_SAVEAS_RIGHT)->EnableWindow(FALSE);
 		}
-	} else {
+	} 
+	else 
+	{
 		GetDlgItem(IDC_SAVEAS_STEREO)->ShowWindow(SW_HIDE);
 		GetDlgItem(IDC_SAVEAS_MONO)->ShowWindow(SW_HIDE);
 		GetDlgItem(IDC_SAVEAS_RIGHT)->ShowWindow(SW_HIDE);

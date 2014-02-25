@@ -4,12 +4,15 @@
 
 using std::invalid_argument;
 
-CWaveWriter::CWaveWriter() {
+CWaveWriter::CWaveWriter() 
+{
 	hmmio = NULL;
 }
 
-CWaveWriter::~CWaveWriter() {
-	if (hmmio!=NULL) {
+CWaveWriter::~CWaveWriter() 
+{
+	if (hmmio!=NULL) 
+	{
 		mmioClose(hmmio, 0);
 		hmmio = NULL;
 	}
@@ -44,7 +47,8 @@ CWaveWriter::~CWaveWriter() {
 * up to the nearest byte size and the unused bytes are set to 0 and ignored. 
 * 
 */
-void CWaveWriter::write( LPCTSTR afilename, DWORD dwFlags, WORD bitsPerSample, WORD formatTag, WORD channels, DWORD samplesPerSec, vector<char> & buffer) {
+void CWaveWriter::write( LPCTSTR afilename, DWORD dwFlags, WORD bitsPerSample, WORD formatTag, WORD channels, DWORD samplesPerSec, vector<char> & buffer) 
+{
 
 	if (bitsPerSample==0) throw invalid_argument("bitsPerSample");
 	if (channels==0) throw invalid_argument("channels");
@@ -56,7 +60,8 @@ void CWaveWriter::write( LPCTSTR afilename, DWORD dwFlags, WORD bitsPerSample, W
 
     //Creating new wav file.
 	hmmio = mmioOpen( filename, 0, MMIO_CREATE | MMIO_WRITE | MMIO_EXCLUSIVE);
-	if (hmmio==NULL) {
+	if (hmmio==NULL) 
+	{
 		throw wave_error(cant_open_file_for_writing);
 	}
 
@@ -69,7 +74,8 @@ void CWaveWriter::write( LPCTSTR afilename, DWORD dwFlags, WORD bitsPerSample, W
 	MMCKINFO riffChunk;
 	riffChunk.fccType = mmioFOURCC('W', 'A', 'V', 'E'); // prepare search code
 	//Creating RIFF chunk
-	if (mmioCreateChunk(hmmio, &riffChunk, MMIO_CREATERIFF)) {
+	if (mmioCreateChunk(hmmio, &riffChunk, MMIO_CREATERIFF)) 
+	{
 		throw wave_error(cant_write_riff_chunk);
 	}
 
@@ -83,42 +89,50 @@ void CWaveWriter::write( LPCTSTR afilename, DWORD dwFlags, WORD bitsPerSample, W
 	// set chunk size
 	fmtChunk.cksize = 16;
 	//Creating format chunk and inserting information from source file
-	if (mmioCreateChunk(hmmio, &fmtChunk, 0)) {
+	if (mmioCreateChunk(hmmio, &fmtChunk, 0)) 
+	{
 		throw wave_error(cant_write_format_chunk);
 	}
 
 	// write the format parameters into 'fmt ' chunk
 	LONG len = mmioWrite(hmmio, (HPSTR)&formatTag, sizeof(WORD));
-	if (len!=sizeof(WORD)) {
+	if (len!=sizeof(WORD)) 
+	{
 		throw wave_error(cant_write_format_tag);
 	}
 
 	len = mmioWrite(hmmio, (HPSTR)&channels, sizeof(WORD));
-	if (len!=sizeof(WORD)) {
+	if (len!=sizeof(WORD)) 
+	{
 		throw wave_error(cant_write_num_channels);
 	}
 
 	len = mmioWrite(hmmio, (HPSTR)&samplesPerSec, sizeof(DWORD));
-	if (len!=sizeof(DWORD))	{
+	if (len!=sizeof(DWORD))
+	{
 		throw wave_error(cant_write_samples_per_second);
 	}
 
 	len = mmioWrite(hmmio, (HPSTR)&nAvgBytesPerSec, sizeof(DWORD));
-	if (len!=sizeof(DWORD))	{
+	if (len!=sizeof(DWORD))
+	{
 		throw wave_error(cant_write_bytes_per_second);
 	}
 
 	len = mmioWrite(hmmio, (HPSTR)&blockAlign, sizeof(WORD));
-	if (len!=sizeof(WORD))	{
+	if (len!=sizeof(WORD))
+	{
 		throw wave_error(cant_write_block_align);
 	}
 
 	len = mmioWrite(hmmio, (HPSTR)&bitsPerSample, sizeof(WORD));
-	if (len!=sizeof(WORD)) {
+	if (len!=sizeof(WORD)) 
+	{
 		throw wave_error(cant_write_bits_per_sample);
 	}
 
-	if (mmioAscend(hmmio, &fmtChunk, 0))	{
+	if (mmioAscend(hmmio, &fmtChunk, 0))
+	{
 		throw wave_error(cant_ascend_from_format_chunk);
 	}
 
@@ -126,26 +140,31 @@ void CWaveWriter::write( LPCTSTR afilename, DWORD dwFlags, WORD bitsPerSample, W
 	MMCKINFO dataChunk;
 	memset(&dataChunk,0,sizeof(dataChunk));
 	dataChunk.ckid = mmioFOURCC('d', 'a', 't', 'a');
-	if (mmioCreateChunk(hmmio, &dataChunk, 0)) {
+	if (mmioCreateChunk(hmmio, &dataChunk, 0)) 
+	{
 		throw wave_error(cant_create_data_chunk);
 	}
 
 	LONG wrote = mmioWrite( hmmio, &buffer[0], buffer.size());
-	if (wrote!=buffer.size()) {
+	if (wrote!=buffer.size()) 
+	{
 		throw wave_error(cant_write_data_chunk);
 	}
 
 	// we don't really care if this succeeds or not...
-	if (mmioAscend(hmmio, &dataChunk, 0)) {
+	if (mmioAscend(hmmio, &dataChunk, 0)) 
+	{
 		throw wave_error(cant_ascend_from_data_chunk);
 	}
 
 	// we don't really care if this succeeds or not...
-	if (mmioAscend(hmmio, &riffChunk, 0)) {
+	if (mmioAscend(hmmio, &riffChunk, 0)) 
+	{
 		throw wave_error(cant_ascend_from_riff_chunk);
 	}
 
-	if (hmmio!=NULL) {
+	if (hmmio!=NULL) 
+	{
 		mmioClose(hmmio, 0);
 		hmmio = NULL;
 	}
