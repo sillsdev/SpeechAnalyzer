@@ -11,7 +11,6 @@
 #include "appdefs.h"
 #include "IProcess.h"
 #include "FmtParm.h"
-#include <string>
 
 using std::wstring;
 

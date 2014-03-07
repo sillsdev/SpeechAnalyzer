@@ -1,14 +1,5 @@
 #pragma once
 
-#include <vector>
-
-using std::vector;
-using std::streampos;
-using std::stringstream;
-using std::wstringstream;
-using std::wistringstream;
-using std::istringstream;
-
 class CFileEncodingHelper
 {
 public:

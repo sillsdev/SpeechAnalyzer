@@ -10,10 +10,7 @@
 #include "sa_p_spu.h"
 #include "sa_p_fra.h"
 #include "sa_p_gra.h"
-#include "resource.h"
 #include "isa_doc.h"
-#include "dsp\mathx.h"
-#include "dsp\spectgrm.h"
 #include "SaParam.h"
 
 #ifdef _DEBUG
@@ -170,9 +167,8 @@ float CProcessSpectrum::GetSpectralRegionPower(ISaDoc * pDoc, unsigned short wFr
 // pointer to the view instead the pointer to the document like other process
 // calls. It calculates spectrum data.
 /***************************************************************************/
-#include "dsp\Signal.h"
-#include "dsp\Spectrum.h"
-#include "dsp\Lpc.h"
+#include "Lpc.h"
+
 long CProcessSpectrum::Process(void * pCaller, ISaDoc * pDoc, DWORD dwFrameStart, DWORD dwFrameSize, SSpectProcSelect SpectraSelected, int nProgress, int nLevel)
 {
     //TRACE(_T("Process: CProcessSpectrum\n"));

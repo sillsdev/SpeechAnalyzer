@@ -30,6 +30,8 @@
 #pragma warning(push, 3)  // these files generate a lot of warnings at level 4
 #pragma warning(pop)
 
+#include <complex>
+#include <SA_DSP.h>
 #include <stdlib.h>
 #include <windows.h>
 #include <tchar.h>
@@ -43,8 +45,8 @@ using std::streampos;
 #include <commdlg.h>
 #include "Partiture.hpp"
 #include "Clip.hpp"
-#include "Resource.h"
 #include "AppDefs.h"
+#include <sa_enu_resource.h>
 
 #define TICKS_PER_Q (120)
 

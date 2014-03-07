@@ -1,8 +1,6 @@
 #ifndef IPROCESS_H
 #define IPROCESS_H
 
-#include "afxwin.h"
-
 __interface ISaDoc;
 
 __interface IProcess

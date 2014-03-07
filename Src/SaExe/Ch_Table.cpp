@@ -9,7 +9,6 @@
 #include "stdafx.h"
 #include "ch_table.h"
 #include "ch_dlwnd.h"
-#include "resource.h"
 #include "SaString.h"
 
 #ifdef _DEBUG

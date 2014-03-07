@@ -15,7 +15,6 @@
 #ifndef _GRAPHS_TYPES_H
 
 #include "sa_dlwnd.h"
-#include "resource.h"
 #include "appdefs.h"
 
 #define _GRAPHS_TYPES_H

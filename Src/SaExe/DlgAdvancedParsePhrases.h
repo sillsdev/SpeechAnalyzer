@@ -15,8 +15,6 @@
 #define DLGADVANCEDPARSEPHRASES_H
 
 #include "sa_dlwnd.h"
-#include "resource.h"
-#include "afxwin.h"
 
 class CSaDoc;
 

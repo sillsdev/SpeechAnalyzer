@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "PrivateCursorWnd.h"
 #include "MainFrm.h"
-#include "resource.h"
 #include "Sa_plot.h"
 #include "Sa_graph.h"
 

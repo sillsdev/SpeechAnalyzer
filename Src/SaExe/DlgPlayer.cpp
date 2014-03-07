@@ -37,33 +37,33 @@
 bool CDlgPlayer::bLaunched = false; // player not launched at startup
 
 BEGIN_MESSAGE_MAP(CDlgPlayer, CDialog)
-    ON_COMMAND(IDC_PLAY, OnPlay)
-    ON_COMMAND(IDC_STOP, OnStop)
-    ON_COMMAND(IDC_PAUSE, OnPause)
-    ON_COMMAND(IDC_VOLUMESLIDER, OnVolumeSlide)
-    ON_COMMAND(IDC_VOLUMESCROLL, OnVolumeScroll)
-    ON_EN_KILLFOCUS(IDC_VOLUMEEDIT, OnKillfocusVolumeEdit)
-    ON_COMMAND(IDC_SPEEDSLIDER, OnSpeedSlide)
-    ON_COMMAND(IDC_SPEEDSCROLL, OnSpeedScroll)
-    ON_EN_KILLFOCUS(IDC_SPEEDEDIT, OnKillfocusSpeedEdit)
-    ON_COMMAND(IDC_DELAYSLIDER, OnDelaySlide)
-    ON_COMMAND(IDC_DELAYSCROLL, OnDelayScroll)
-    ON_EN_KILLFOCUS(IDC_DELAYEDIT, OnKillfocusDelayEdit)
-    ON_CBN_SELCHANGE(IDC_PLAYMODE, OnSelchangePlaymode)
-    ON_WM_CLOSE()
-    ON_BN_CLICKED(IDC_REPEAT, OnRepeat)
-    ON_WM_TIMER()
-    ON_BN_CLICKED(IDC_SETUP, OnSetup)
     ON_BN_CLICKED(IDC_PLAY_CONTROLS, OnPlayControls)
-    ON_MESSAGE(MM_MIXM_CONTROL_CHANGE, OnMixerControlChange)
-    ON_COMMAND(IDHELP, OnHelpPlayer)
+    ON_BN_CLICKED(IDC_REPEAT, OnRepeat)
+    ON_BN_CLICKED(IDC_SETUP, OnSetup)
     ON_BN_CLICKED(ID_CLOSE, OnClose)
+    ON_CBN_SELCHANGE(IDC_PLAYMODE, OnSelchangePlaymode)
+    ON_COMMAND(IDC_DELAYSCROLL, OnDelayScroll)
+    ON_COMMAND(IDC_DELAYSLIDER, OnDelaySlide)
+    ON_COMMAND(IDC_PAUSE, OnPause)
+    ON_COMMAND(IDC_PLAY, OnPlay)
+    ON_COMMAND(IDC_SPEEDSCROLL, OnSpeedScroll)
+    ON_COMMAND(IDC_SPEEDSLIDER, OnSpeedSlide)
+    ON_COMMAND(IDC_STOP, OnStop)
+    ON_COMMAND(IDC_VOLUMESCROLL, OnVolumeScroll)
+    ON_COMMAND(IDC_VOLUMESLIDER, OnVolumeSlide)
+    ON_COMMAND(IDHELP, OnHelpPlayer)
+    ON_EN_KILLFOCUS(IDC_DELAYEDIT, OnKillfocusDelayEdit)
+    ON_EN_KILLFOCUS(IDC_SPEEDEDIT, OnKillfocusSpeedEdit)
+    ON_EN_KILLFOCUS(IDC_VOLUMEEDIT, OnKillfocusVolumeEdit)
+    ON_MESSAGE(MM_MIXM_CONTROL_CHANGE, OnMixerControlChange)
     ON_MESSAGE(WM_USER_SETUP_FNKEYS, OnSetupFnKeys)
+    ON_WM_CLOSE()
+    ON_WM_TIMER()
 END_MESSAGE_MAP()
 
 CDlgPlayer::CDlgPlayer(CWnd * pParent) : CDialog(CDlgPlayer::IDD, pParent)
 {
-    m_nComboPlayMode = 2;
+    m_nComboPlayMode = 3;
     m_nSpeed = 100;
     m_nDelay = 1000;
     m_bRepeat = FALSE;
@@ -129,7 +129,6 @@ void CDlgPlayer::DoDataExchange(CDataExchange * pDX)
 /***************************************************************************/
 void CDlgPlayer::SetTotalTime()
 {
-    CSaView * pView = (CSaView *)m_pView;	// cast pointer to view
     CSaDoc * pDoc = (CSaDoc *)m_pDoc;		// cast pointer to document
     DWORD dwEnd = pDoc->GetDataSize();		// data end
     if (dwEnd > 0)
@@ -137,24 +136,25 @@ void CDlgPlayer::SetTotalTime()
         // display depends on the submode
         switch (m_nSubMode)
         {
+		case ID_PLAYBACK_ENDCURSOR:
         case ID_PLAYBACK_FILE:
             break;
         case ID_PLAYBACK_WINDOW:
         case ID_PLAYBACK_STOPTOR:
         case ID_PLAYBACK_STARTTOR:
-            dwEnd = DWORD(pView->GetDataPosition(0)) + pView->GetDataFrame();
+            dwEnd = DWORD(m_pView->GetDataPosition(0)) + m_pView->GetDataFrame();
             break;
         case ID_PLAYBACK_CURSORS:
         case ID_PLAYBACK_LTOSTOP:
-            dwEnd = pView->GetStopCursorPosition();
+            dwEnd = m_pView->GetStopCursorPosition();
             break;
         case ID_PLAYBACK_LTOSTART:
-            dwEnd = pView->GetStartCursorPosition();
+            dwEnd = m_pView->GetStartCursorPosition();
             break;
         default:
             break;
         }
-        double fDataSec = pView->GetDocument()->GetTimeFromBytes(dwEnd); // calculate time
+        double fDataSec = m_pView->GetDocument()->GetTimeFromBytes(dwEnd); // calculate time
         m_LEDTotalTime.SetTime((int)fDataSec / 60, (int)(fDataSec * 10) % 600);
     }
 }
@@ -164,7 +164,6 @@ void CDlgPlayer::SetTotalTime()
 /***************************************************************************/
 void CDlgPlayer::SetPositionTime()
 {
-    CSaView * pView = (CSaView *)m_pView; // cast pointer to view
     CSaDoc * pDoc = (CSaDoc *)m_pDoc; // cast pointer to document
     if (pDoc->GetDataSize() > 0)
     {
@@ -179,14 +178,15 @@ void CDlgPlayer::SetPositionTime()
             case ID_PLAYBACK_WINDOW:
             case ID_PLAYBACK_LTOSTART:
             case ID_PLAYBACK_LTOSTOP:
-                dwPosition = DWORD(pView->GetDataPosition(0));
+                dwPosition = DWORD(m_pView->GetDataPosition(0));
                 break;
             case ID_PLAYBACK_CURSORS:
             case ID_PLAYBACK_STARTTOR:
-                dwPosition = pView->GetStartCursorPosition();
+                dwPosition = m_pView->GetStartCursorPosition();
                 break;
+			case ID_PLAYBACK_ENDCURSOR:
             case ID_PLAYBACK_STOPTOR:
-                dwPosition = pView->GetStopCursorPosition();
+                dwPosition = m_pView->GetStopCursorPosition();
                 break;
             default:
                 break;
@@ -237,7 +237,8 @@ bool CDlgPlayer::SetPlayerMode( EMode mode, UINT nSubMode, BOOL bFullSize, BOOL 
     nSubMode = nSubMode & 0x0ffff;
 
     // SDM 1.06.6U6
-    if ((m_bFnKeySetting) && (!bFnKey ||(nSubMode != SubModeUndefined)|| !m_bRepeat))
+    if ((m_bFnKeySetting) && 
+		((!bFnKey) || (nSubMode != SubModeUndefined) || (!m_bRepeat)))
     {
         // restore original player setting
         m_bFnKeySetting = false;
@@ -274,28 +275,32 @@ bool CDlgPlayer::SetPlayerMode( EMode mode, UINT nSubMode, BOOL bFullSize, BOOL 
         m_nDelay = pFnKeys->nDelay[nSubMode];
         m_bRepeat = pFnKeys->bRepeat[nSubMode];
         nSubMode = pFnKeys->nMode[nSubMode];
+
         switch (nSubMode)
         {
+		case ID_PLAYBACK_ENDCURSOR:
+			m_nComboPlayMode = 0;
+			break;
         case ID_PLAYBACK_CURSORS:
-            m_nComboPlayMode = 0;
-            break;
-        case ID_PLAYBACK_LTOSTART:
             m_nComboPlayMode = 1;
             break;
-        case ID_PLAYBACK_STARTTOR:
+        case ID_PLAYBACK_LTOSTART:
             m_nComboPlayMode = 2;
             break;
-        case ID_PLAYBACK_LTOSTOP:
+        case ID_PLAYBACK_STARTTOR:
             m_nComboPlayMode = 3;
             break;
-        case ID_PLAYBACK_STOPTOR:
+        case ID_PLAYBACK_LTOSTOP:
             m_nComboPlayMode = 4;
             break;
-        case ID_PLAYBACK_WINDOW:
+        case ID_PLAYBACK_STOPTOR:
             m_nComboPlayMode = 5;
             break;
-        default:
+        case ID_PLAYBACK_WINDOW:
             m_nComboPlayMode = 6;
+            break;
+        default:
+            m_nComboPlayMode = 7;
             break;
         }
         UpdateData(FALSE);
@@ -309,31 +314,39 @@ bool CDlgPlayer::SetPlayerMode( EMode mode, UINT nSubMode, BOOL bFullSize, BOOL 
         m_nSubMode = nSubMode;    // save submode
     }
 
+	m_pView->EnableScrolling(false);
+	if (nSubMode==ID_PLAYBACK_ENDCURSOR) {
+		m_pView->EnableScrolling(true);
+	}
+
     // set mode combobox, but only if not called for full size
     if (!bFullSize)
     {
         switch (m_nSubMode)
         {
-        case ID_PLAYBACK_CURSORS:
+		case ID_PLAYBACK_ENDCURSOR:
             m_nComboPlayMode = 0;
-            break;
-        case ID_PLAYBACK_LTOSTART:
+			break;
+        case ID_PLAYBACK_CURSORS:
             m_nComboPlayMode = 1;
             break;
-        case ID_PLAYBACK_STARTTOR:
+        case ID_PLAYBACK_LTOSTART:
             m_nComboPlayMode = 2;
             break;
-        case ID_PLAYBACK_LTOSTOP:
+        case ID_PLAYBACK_STARTTOR:
             m_nComboPlayMode = 3;
             break;
-        case ID_PLAYBACK_STOPTOR:
+        case ID_PLAYBACK_LTOSTOP:
             m_nComboPlayMode = 4;
             break;
-        case ID_PLAYBACK_WINDOW:
+        case ID_PLAYBACK_STOPTOR:
             m_nComboPlayMode = 5;
             break;
-        default:
+        case ID_PLAYBACK_WINDOW:
             m_nComboPlayMode = 6;
+            break;
+        default:
+            m_nComboPlayMode = 7;
             break;
         }
         UpdateData(FALSE);
@@ -350,7 +363,7 @@ bool CDlgPlayer::SetPlayerMode( EMode mode, UINT nSubMode, BOOL bFullSize, BOOL 
     }
 
     // stop, whatever the player is doing
-    if (m_pWave)
+    if (m_pWave!=NULL)
     {
         m_pWave->Stop();
     }
@@ -359,7 +372,6 @@ bool CDlgPlayer::SetPlayerMode( EMode mode, UINT nSubMode, BOOL bFullSize, BOOL 
     SetPositionTime();
     DWORD dwSize, dwStart = 0;
     CSaApp * pApp = (CSaApp *)AfxGetApp(); // get pointer to application
-    CSaView * pView = (CSaView *)m_pView; // cast pointer to view
     CSaDoc * pDoc = (CSaDoc *)m_pDoc; // cast pointer to document
     switch (mode)
     {
@@ -380,20 +392,24 @@ bool CDlgPlayer::SetPlayerMode( EMode mode, UINT nSubMode, BOOL bFullSize, BOOL 
             BOOL bError = FALSE;
             switch (m_nSubMode)
             {
+			case ID_PLAYBACK_ENDCURSOR:
+                dwStart = m_pView->GetStopCursorPosition();
+                dwSize = pDoc->GetDataSize()-dwStart;
+				break;
             case ID_PLAYBACK_FILE:
                 dwSize = pDoc->GetDataSize();
                 break;
             case ID_PLAYBACK_WINDOW:
-                dwStart = DWORD(pView->GetDataPosition(0));
-                dwSize = pView->GetDataFrame();
+                dwStart = DWORD(m_pView->GetDataPosition(0));
+                dwSize = m_pView->GetDataFrame();
                 break;
             case ID_PLAYBACK_CURSORS:
-                dwStart = pView->GetStartCursorPosition();
-                dwSize = pView->GetStopCursorPosition() - dwStart;
+                dwStart = m_pView->GetStartCursorPosition();
+                dwSize = m_pView->GetStopCursorPosition() - dwStart;
                 break;
             case ID_PLAYBACK_LTOSTART:
-                dwStart = DWORD(pView->GetDataPosition(0));
-                dwSize = pView->GetStartCursorPosition();
+                dwStart = DWORD(m_pView->GetDataPosition(0));
+                dwSize = m_pView->GetStartCursorPosition();
                 if (dwSize > dwStart)
                 {
                     dwSize -= dwStart;
@@ -404,8 +420,8 @@ bool CDlgPlayer::SetPlayerMode( EMode mode, UINT nSubMode, BOOL bFullSize, BOOL 
                 }
                 break;
             case ID_PLAYBACK_STARTTOR:
-                dwStart = pView->GetStartCursorPosition();
-                dwSize = DWORD(pView->GetDataPosition(0) + pView->GetDataFrame());
+                dwStart = m_pView->GetStartCursorPosition();
+                dwSize = DWORD(m_pView->GetDataPosition(0) + m_pView->GetDataFrame());
                 if (dwSize > dwStart)
                 {
                     dwSize -= dwStart;
@@ -416,8 +432,8 @@ bool CDlgPlayer::SetPlayerMode( EMode mode, UINT nSubMode, BOOL bFullSize, BOOL 
                 }
                 break;
             case ID_PLAYBACK_LTOSTOP:
-                dwStart = DWORD(pView->GetDataPosition(0));
-                dwSize = pView->GetStopCursorPosition();
+                dwStart = DWORD(m_pView->GetDataPosition(0));
+                dwSize = m_pView->GetStopCursorPosition();
                 if (dwSize > dwStart)
                 {
                     dwSize -= dwStart;
@@ -428,8 +444,8 @@ bool CDlgPlayer::SetPlayerMode( EMode mode, UINT nSubMode, BOOL bFullSize, BOOL 
                 }
                 break;
             case ID_PLAYBACK_STOPTOR:
-                dwStart = pView->GetStopCursorPosition();
-                dwSize = DWORD(pView->GetDataPosition(0)) + pView->GetDataFrame();
+                dwStart = m_pView->GetStopCursorPosition();
+                dwSize = DWORD(m_pView->GetDataPosition(0)) + m_pView->GetDataFrame();
                 if (dwSize > dwStart)
                 {
                     dwSize -= dwStart;
@@ -570,7 +586,6 @@ bool CDlgPlayer::SetPlayerMode( EMode mode, UINT nSubMode, BOOL bFullSize, BOOL 
 /***************************************************************************/
 void CDlgPlayer::BlockFinished(UINT nLevel, DWORD dwPosition, UINT nSpeed)
 {
-
     m_pView->SetPlaybackPosition( dwPosition, nSpeed);
 
 	//TRACE("Post UPDATE_PLAYER 3\n");
@@ -1062,27 +1077,32 @@ void CDlgPlayer::OnSelchangePlaymode()
 {
     UpdateData(TRUE);
     UINT nSubMode = ID_PLAYBACK_FILE;
+	m_pView->EnableScrolling(false);
     switch (m_nComboPlayMode)
     {
-    case 0:
+	case 0:
+		nSubMode = ID_PLAYBACK_ENDCURSOR;
+		m_pView->EnableScrolling(true);
+		break;
+    case 1:
         nSubMode = ID_PLAYBACK_CURSORS;
         break;
-    case 1:
+    case 2:
         nSubMode = ID_PLAYBACK_LTOSTART;
         break;
-    case 2:
+    case 3:
         nSubMode = ID_PLAYBACK_STARTTOR;
         break;
-    case 3:
+    case 4:
         nSubMode = ID_PLAYBACK_LTOSTOP;
         break;
-    case 4:
+    case 5:
         nSubMode = ID_PLAYBACK_STOPTOR;
         break;
-    case 5:
+    case 6:
         nSubMode = ID_PLAYBACK_WINDOW;
         break;
-    case 6:
+    case 7:
         nSubMode = ID_PLAYBACK_FILE;
         break;
     default:

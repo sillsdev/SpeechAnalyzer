@@ -5,7 +5,6 @@
 #include "AppDefs.h"
 #include "StringStream.h"
 #include <algorithm>
-#include <string> 
 
 static LPCTSTR IMPORT_END = L"import";
 static LPCTSTR EMPTY = L"";

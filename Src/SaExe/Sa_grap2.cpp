@@ -59,8 +59,6 @@
 #include "sa_minic.h"
 #include "sa_graph.h"
 #include "sa_plot.h"
-#include "dsp\signal.h"
-#include "dsp\formants.h"
 #include "Process\Process.h"
 
 #include "math.h"
@@ -144,11 +142,11 @@ void CGraphWnd::SetStopCursor(CSaView * pView)
 }
 
 /***************************************************************************/
-// CGraphWnd::SetStopCursor Position the stop cursor
+// CGraphWnd::SetPlaybackCursor Position the playback cursor
 /***************************************************************************/
 void CGraphWnd::SetPlaybackCursor(CSaView * pView)
 {
-    m_pPlot->SetPlaybackCursor(pView);
+    m_pPlot->SetPlaybackCursor(pView,false);
     if (!m_pPlot->HaveCursors())
     {
         m_pPlot->Invalidate();
@@ -159,11 +157,11 @@ void CGraphWnd::SetPlaybackCursor(CSaView * pView)
 /***************************************************************************/
 // CGraphWnd::SetPlaybackPosition
 /***************************************************************************/
-void CGraphWnd::SetPlaybackPosition( CSaView * pView)
+void CGraphWnd::SetPlaybackPosition( CSaView * pView, bool scroll)
 {
     if (m_pPlot->HaveCursors())
     {
-        m_pPlot->SetPlaybackCursor( pView);
+        m_pPlot->SetPlaybackCursor( pView, scroll);
     }
 }
 

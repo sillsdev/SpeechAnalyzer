@@ -1,7 +1,6 @@
 #ifndef DLGSPLITFILE_H
 #define DLGSPLITFILE_H
 
-#include "afxwin.h"
 #include "appdefs.h"
 
 // CDlgSplitFile dialog

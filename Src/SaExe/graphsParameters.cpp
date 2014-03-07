@@ -41,8 +41,7 @@
 #include "Process\sa_p_spu.h"
 #include "Process\sa_p_fmt.h"
 #include "Process\FormantTracker.h"
-#include "dsp\lpc.h"
-#include "dsp\ZTransform.h"
+#include "lpc.h"
 
 //###########################################################################
 // CDlgParametersRawdataPage property page

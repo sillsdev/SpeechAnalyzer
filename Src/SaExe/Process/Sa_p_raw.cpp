@@ -13,9 +13,7 @@
 #include "Process.h"
 #include "sa_p_raw.h"
 #include "Process\sa_w_adj.h"
-
 #include "isa_doc.h"
-#include "resource.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE

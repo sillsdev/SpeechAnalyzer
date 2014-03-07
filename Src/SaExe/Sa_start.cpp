@@ -27,7 +27,6 @@
 #include "sa_view.h"
 #include "sa_wbch.h"
 #include "mainfrm.h"
-#include "dsp\hpfltr70.h"
 #include "sa.h"
 
 #ifdef _DEBUG

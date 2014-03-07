@@ -4,7 +4,6 @@
 #include "stdafx.h"
 #include "sa_doc.h"
 #include "DlgAlignTranscriptionDataSheet.h"
-#include "resource.h"
 #include "Segment.h"
 #include "TranscriptionDataSettings.h"
 

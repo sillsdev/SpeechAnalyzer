@@ -4,7 +4,6 @@
 // Author: Urs Ruchti
 // copyright 1996 JAARS Inc. SIL
 /////////////////////////////////////////////////////////////////////////////
-
 #include "stdafx.h"
 #include "Process\Process.h"
 #include "sa_wbch.h"

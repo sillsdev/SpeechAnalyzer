@@ -16,7 +16,6 @@
 #include "sa_wbch.h"
 #include "mainfrm.h"
 #include "math.h"
-#include "zgraph\toolkit.h"
 #include "sa_graph.h"
 
 #ifdef _DEBUG

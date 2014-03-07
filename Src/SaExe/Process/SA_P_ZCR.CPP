@@ -13,9 +13,7 @@
 #include "Process.h"
 #include "sa_p_zcr.h"
 #include "sa_p_lou.h"
-
 #include "isa_doc.h"
-#include "resource.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE

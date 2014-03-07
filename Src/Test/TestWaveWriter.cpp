@@ -10,9 +10,6 @@
 #pragma comment( lib, "gtest")
 #pragma comment( lib, "gtest_main")
 
-using std::string;
-using std::wstring;
-
 TEST( WaveWriteTest, InvalidParams_01) 
 {
 

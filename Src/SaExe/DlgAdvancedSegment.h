@@ -15,7 +15,6 @@
 #define DLGADVANCEDPARSESEGMENT_H
 
 #include "sa_dlwnd.h"
-#include "resource.h"
 
 class CSaDoc;
 

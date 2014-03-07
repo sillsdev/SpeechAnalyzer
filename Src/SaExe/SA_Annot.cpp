@@ -105,7 +105,6 @@
 #include "GlossSegment.h"
 #include "ReferenceSegment.h"
 #include "Process\Process.h"
-#include "dsp\dspTypes.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE
@@ -2013,7 +2012,7 @@ void CAnnotationWnd::OnDraw(CDC * pDC, const CRect & printRect)
         else
         {
             // get necessary data from document and from view
-            fDataStart = pView->GetDataPosition(rWnd.Width()); // data index of first sample to display
+            fDataStart = pView->GetDataPosition(rWnd.Width());	// data index of first sample to display
             dwDataFrame = pView->AdjustDataFrame(rWnd.Width()); // number of data points to display
         }
     }

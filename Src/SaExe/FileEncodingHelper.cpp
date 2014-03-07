@@ -1,13 +1,11 @@
 #include "Stdafx.h"
 #include "FileEncodingHelper.h"
-#include "resource.h"
 #include <iostream>
 #include "SaString.h"
 
 using std::vector;
 using std::ifstream;
 using std::streampos;
-using std::stringstream;
 using std::wstringstream;
 
 CFileEncodingHelper::CFileEncodingHelper(LPCTSTR filenamearg) :

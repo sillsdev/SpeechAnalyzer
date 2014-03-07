@@ -1,8 +1,6 @@
 #ifndef DLGALIGNTRANSCRIPTIONDATAFINISHPAGE_H
 #define DLGALIGNTRANSCRIPTIONDATAFINISHPAGE_H
 
-#include "resource.h"
-
 class CDlgAlignTranscriptionDataSheet;
 class CSaDoc;
 

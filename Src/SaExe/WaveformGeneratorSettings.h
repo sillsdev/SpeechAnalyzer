@@ -1,7 +1,6 @@
 #ifndef WAVEFORMGENERATORSETTINGS_H
 #define WAVEFORMGENERATORSETTINGS_H
 
-#include "resource.h"
 #include "objectistream.h"
 #include "objectostream.h"
 

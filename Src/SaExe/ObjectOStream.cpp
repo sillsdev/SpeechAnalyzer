@@ -7,6 +7,7 @@
 // 1.5Test8.2
 //        SDM Added WriteWindowPlacement(const char*,WINDOWPLACEMENT&)
 /////////////////////////////////////////////////////////////////////////////
+#include "Stdafx.h"
 #include <windows.h>
 #include <fstream>
 #include "objectostream.h"

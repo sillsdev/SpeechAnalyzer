@@ -11,7 +11,6 @@
 
 #include "ch_dlwnd.h"
 #include "ch_table.h"
-#include "resource.h"
 
 extern bool CheckIPAHelp();
 

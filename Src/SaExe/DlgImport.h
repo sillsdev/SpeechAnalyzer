@@ -1,8 +1,6 @@
 #ifndef DLGIMPORT_H
 #define DLGIMPORT_H
 
-#include "resource.h"
-
 class CDlgImport : public CDialog
 {
     // Construction

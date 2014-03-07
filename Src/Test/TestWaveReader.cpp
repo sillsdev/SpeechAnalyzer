@@ -10,8 +10,6 @@
 #pragma comment( lib, "gtest")
 #pragma comment( lib, "gtest_main")
 
-using std::string;
-
 TEST( WaveReadTest, SimpleRead_01) 
 {
 

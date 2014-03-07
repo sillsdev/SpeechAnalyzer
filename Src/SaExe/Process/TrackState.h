@@ -1,7 +1,6 @@
 #ifndef TRACKSTATE_H
 #define TRACKSTATE_H
 
-#include "..\DSP\ZTransform.h"
 #include "Process\TrackState.h"
 
 typedef std::complex<double> CDBL;

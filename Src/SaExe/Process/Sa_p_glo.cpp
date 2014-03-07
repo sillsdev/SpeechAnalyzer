@@ -8,10 +8,7 @@
 #include "stdafx.h"
 #include "Process.h"
 #include "sa_p_glo.h"
-
-#include "resource.h"
 #include "isa_doc.h"
-#include "dsp\spectgrm.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE
@@ -54,8 +51,8 @@ CProcessGlottis::~CProcessGlottis()
 // pointer to the view instead the pointer to the document like other process
 // calls. It calculates glottal waveform data.
 /***************************************************************************/
-#include "dsp\Signal.h"
-#include "dsp\lpc.h"
+#include "lpc.h"
+
 long CProcessGlottis::Process(void * pCaller, ISaDoc * pDoc, int nProgress, int nLevel)
 {
 

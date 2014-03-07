@@ -23,7 +23,6 @@
 
 #include "sa_dlwnd.h"
 #include "param.h"
-#include "resource.h"
 #include "SpectroParm.h"
 
 //###########################################################################

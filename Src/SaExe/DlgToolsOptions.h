@@ -21,7 +21,6 @@
 
 #include "sa_dlwnd.h"
 #include "colors.h"
-#include "resource.h"
 #include "ToolSettings.h"
 
 typedef struct SColorComboInfo

@@ -73,7 +73,6 @@
 #include "SelfTest.h"
 #include "AlignInfo.h"
 #include "FileUtils.h"
-#include "resource.h"
 #include "DlgPlayer.h"
 #include "Process\Process.h"
 #include "Process\sa_p_spu.h"
@@ -81,9 +80,9 @@
 #include "Process\sa_p_spg.h"
 #include "objectostream.h"
 #include "objectistream.h"
-#include "synthesis\DlgSynthesis.h"
-#include "synthesis\DlgKlattAll.h"
-#include "synthesis\DlgVocalTract.h"
+#include "DlgSynthesis.h"
+#include "DlgKlattAll.h"
+#include "DlgVocalTract.h"
 
 using std::ifstream;
 using std::ofstream;
@@ -1030,8 +1029,6 @@ LRESULT CMainFrame::OnPlayer( WPARAM wParam2, LPARAM lParam, SSpecific * pSpecif
     {
         GetPlayer(true); // get or create player object
         BOOL bFnKey = FALSE;
-        // RLJ 09/14/2000: Update for 32-bit
-        //      if (HIWORD(lParam) == -1)
         if (HIWORD(lParam) == (WORD) -1)
         {
             // function key call
@@ -1051,7 +1048,7 @@ LRESULT CMainFrame::OnPlayer( WPARAM wParam2, LPARAM lParam, SSpecific * pSpecif
         {
             // player not running function key test
             BOOL bFnKey = FALSE;
-            //kg 32 bit cast needed
+            // kg 32 bit cast needed
             if (HIWORD(lParam) == (WORD)-1)
             {
                 // function key call

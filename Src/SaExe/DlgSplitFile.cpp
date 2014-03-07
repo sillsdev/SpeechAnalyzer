@@ -4,7 +4,6 @@
 #include "stdafx.h"
 #include "sa.h"
 #include "DlgSplitFile.h"
-#include "resource.h"
 #include "FileUtils.h"
 
 using std::wstring;

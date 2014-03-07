@@ -21,10 +21,7 @@
 #include "Process.h"
 #include "sa_p_twc.h"
 #include "sa_p_mel.h"
-
-#include "resource.h"
 #include "isa_doc.h"
-#include "dsp\histgram.h"
 #include "math.h"
 
 #ifdef _DEBUG

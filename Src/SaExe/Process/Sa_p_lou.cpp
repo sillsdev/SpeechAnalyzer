@@ -18,7 +18,6 @@
 #include "sa_p_lou.h"
 #include "sa_p_gra.h"
 #include "isa_doc.h"
-#include "resource.h"
 #include "FileUtils.h"
 
 #ifdef _DEBUG

@@ -3,11 +3,8 @@
 
 #include "SaString.h"
 #include "Sa_Doc.h"
-#include <string>
 #include "StringStream.h"
 
-using std::wstring;
-using std::wistringstream;
 
 class CImport
 {

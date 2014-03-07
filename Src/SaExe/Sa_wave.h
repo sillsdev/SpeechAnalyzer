@@ -13,8 +13,8 @@
 #include <mmsystem.h>
 #include "FmtParm.h"
 #include "RecMixer.h"
-#include "dsp\wavewarp.h"
-#include "dsp\hpfltr70.h"
+#include <wavewarp.h>
+#include <hpfltr70.h>
 
 class CRecMixer;
 class CPlayMixer;

@@ -1,8 +1,6 @@
 #ifndef DLGALIGNTRANSCRIPTIONDATAALIGNBYPAGE_H
 #define DLGALIGNTRANSCRIPTIONDATAALIGNBYPAGE_H
 
-#include "resource.h"
-
 class CDlgAlignTranscriptionDataAlignByPage : public CPropertyPage
 {
 public:

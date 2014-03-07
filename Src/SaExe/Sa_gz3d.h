@@ -17,7 +17,6 @@
 #define _SA_GZ3D_H
 
 #include "sa_plot.h"
-#include "DSP/FORMANTS.H"
 
 struct SGraph;
 class CScatterGraph;

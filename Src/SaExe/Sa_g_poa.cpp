@@ -14,8 +14,6 @@
 #include "Process\sa_p_gra.h"
 #include "sa_minic.h"
 #include "sa_graph.h"
-
-
 #include <math.h>
 #include "mainfrm.h"
 #include "sa_doc.h"
@@ -23,6 +21,7 @@
 #include "stpwatch.h"
 #include "FaceDiag.h"
 #include "Process\sa_p_poa.h"
+#include "Lpc.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE

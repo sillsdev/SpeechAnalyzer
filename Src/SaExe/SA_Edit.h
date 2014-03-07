@@ -21,8 +21,6 @@
 //      SDM fix bug on close of TE which cancel previous change & ESC would not cancel see 1.06.6U4 & 1.5Test8.2
 /////////////////////////////////////////////////////////////////////////////
 
-#include "resource.h"
-
 //###########################################################################
 // CDlgEditor dialog
 // Forward declarations
@@ -89,8 +87,7 @@ private:
     BOOL m_bCheck;
     // Aid to help in setting focus
     BOOL m_bActivated;
-    // Cursor scrooling data
-    BOOL m_bScroll;
+    // Cursor scrolling data
     DWORD m_dwOriginalCursorPosition;
     DWORD m_lScrollOriginalTime;
     BOOL bEditor;

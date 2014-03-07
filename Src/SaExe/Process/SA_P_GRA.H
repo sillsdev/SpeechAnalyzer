@@ -6,7 +6,6 @@
 /////////////////////////////////////////////////////////////////////////////
 #ifndef _SA_P_GRA_H
 #define _SA_P_GRA_H
-#include "dsp\grappl.h"
 
 class CProcessGrappl : public CProcess
 {

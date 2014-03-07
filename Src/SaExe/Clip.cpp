@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "clip.hpp"
-#include "resource.h"
 
 char * RTFprolog =
     "{\\rtf1\\ansi\\ftnbj{\\fonttbl{\\f0 \\fnil Musique;}}"

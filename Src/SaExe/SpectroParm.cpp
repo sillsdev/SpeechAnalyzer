@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "SpectroParm.h"
-#include "DSP/SPECTGRM.H"
 #include "ObjectIStream.h"
 
 static LPCSTR psz_spectroA             = "spectrogramA";

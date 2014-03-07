@@ -12,7 +12,6 @@
 #include "Process\sa_p_fra.h"
 #include "sa_minic.h"
 #include "sa_graph.h"
-#include "dsp\mathx.h"
 
 #include <windows.h>
 #include <math.h>

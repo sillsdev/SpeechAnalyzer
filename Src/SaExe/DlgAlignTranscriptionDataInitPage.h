@@ -2,8 +2,6 @@
 #define DLGALIGNTRANSCRIPTIONDATAINITPAGE_H
 
 // CDlgAlignTranscriptionDataInitPage
-#include "resource.h"
-
 class CDlgAlignTranscriptionDataInitPage : public CPropertyPage
 {
 public:

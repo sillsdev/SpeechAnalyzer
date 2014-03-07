@@ -10,10 +10,8 @@
 #define OEMRESOURCE         // necessary to use system bitmaps
 
 #include <afxwin.h>         // MFC core and standard components
-
 #include <afxext.h>         // MFC extensions (including VB)
 #include <afxtempl.h>
-
 #include <mmsystem.h>       // multimedia extensions
 
 #include <afxdisp.h>        // MFC Automation classes
@@ -39,24 +37,26 @@
 #include <afxdlgs.h>
 #include <string>
 #include <vector>
+#include <memory>
 
-using std::string;
-using std::wstring;
-
+using std::auto_ptr;
+using std::distance;
+using std::find;
+using std::getline;
 using std::ifstream;
-using std::wifstream;
-using std::ofstream;
-using std::wofstream;
-
 using std::ios;
 using std::ios_base;
+using std::istringstream;
+using std::ofstream;
 using std::streampos;
-
-using std::getline;
-using std::find;
-using std::distance;
-
+using std::string;
+using std::stringstream;
 using std::vector;
+using std::wifstream;
+using std::wistringstream;
+using std::wofstream;
+using std::wstring;
+using std::wstringstream;
 
 inline static int round(double value) 
 {
@@ -86,5 +86,11 @@ inline static int round(double value)
 #define EXPERIMENTAL_ACCESS true
 
 #define PROGRAMMER_ACCESS ((GetKeyState(VK_CONTROL) & GetKeyState(VK_SHIFT)) < 0)
+
+#include <SA_DSP.h>
+#include <SA_KLATT.h>
+#include <zGraphLib.h>
+#include <sa_enu_resource.h>
+#include <custom_menu.h>
 
 #endif

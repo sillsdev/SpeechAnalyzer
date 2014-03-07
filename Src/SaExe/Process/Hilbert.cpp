@@ -3,7 +3,6 @@
 //////////////////////////////////////////////////////////////////////
 #include "stdafx.h"
 #include "Hilbert.h"
-#include "resource.h"
 #include "isa_doc.h"
 #include "sa_w_adj.h"
 #include "StringUtils.h"

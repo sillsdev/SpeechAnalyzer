@@ -5,14 +5,8 @@
 //////////////////////////////////////////////////////////////////////
 
 #include "stdafx.h"
-#include "resource.h"
 #include "sa_doc.h"
 #include "Process.h"
-#include "dsp\ZTransform.h"
-#include "dsp\DspWins.h"
-#include "dsp\signal.h"
-#include "dsp\Grappl.h"
-#include "dsp\Formants.h"
 #include "FormantTracker.h"
 #include "Process/TrackState.h"
 #include "FileUtils.h"

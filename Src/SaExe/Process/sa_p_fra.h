@@ -9,7 +9,6 @@
 
 #include "appdefs.h"
 #include "Process\Process.h"
-#include "dsp\fragment.h"
 
 //###########################################################################
 // CProcessFragments data processing

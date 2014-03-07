@@ -10,7 +10,6 @@
 #include "stdafx.h"
 #include "DlgAutoReferenceData.h"
 #include "Sa_Doc.h"
-#include "resource.h"
 #include "TextHelper.h"
 #include "FileEncodingHelper.h"
 

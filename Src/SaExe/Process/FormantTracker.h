@@ -1,7 +1,6 @@
 #ifndef FORMANTTRACKER_H
 #define FORMANTTRACKER_H
 
-#include "..\DSP\ZTransform.h"
 #include "Process\TrackState.h"
 
 typedef std::complex<double> CDBL;

@@ -13,12 +13,8 @@
 #include "stdafx.h"
 #include "Process.h"
 #include "isa_doc.h"
-
 #include "sa_p_wavelet.h"
-
-#include "resource.h"
 #include "math.h"
-#include "dsp\dspTypes.h"
 
 #pragma warning(push, 3)
 #pragma warning(disable : 4284)

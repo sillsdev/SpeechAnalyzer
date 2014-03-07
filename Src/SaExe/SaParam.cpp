@@ -1,3 +1,4 @@
+#include "Stdafx.h"
 #include "SaParam.h"
 #include "AppDefs.h"
 

@@ -3,7 +3,6 @@
 
 #include <afx.h>
 #include "objectistream.h"
-#include <string>
 #include <MMSystem.h>
 
 class CSaString : public CString

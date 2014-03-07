@@ -47,10 +47,8 @@
 #endif
 
 #include "SaString.h"
-#include "resource.h"       // main symbols
 #include "sa_dlwnd.h"
 #include <afxmt.h>
-#include <string>
 
 #import "speechtoolsutils.tlb" no_namespace named_guids
 

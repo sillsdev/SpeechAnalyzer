@@ -1,8 +1,6 @@
 #ifndef TASKBAR_H
 #define TASKBAR_H
 
-#include "resource.h"
-
 /////////////////////////////////////////////////////////////////////////////
 // CTaskBar dialog
 class CSaTaskItem : public LVITEM

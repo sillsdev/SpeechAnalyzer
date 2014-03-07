@@ -19,7 +19,6 @@
 
 #include "SaString.h"
 #include "sa_dlwnd.h"
-#include "resource.h"
 
 #define _FILE_INFORMATION_H
 

@@ -11,9 +11,6 @@
 #ifndef DLGMULTICHANNEL_H
 #define DLGMULTICHANNEL_H
 
-#include "resource.h"
-#include "afxwin.h"
-
 class CSaDoc;
 
 class CDlgMultiChannel : public CDialog

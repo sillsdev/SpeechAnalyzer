@@ -14,8 +14,6 @@
 #ifndef _PARAM_H
 #define _PARAM_H
 
-#include "dsp\dspWins.h"
-
 class CObjectOStream;
 class CObjectIStream;
 

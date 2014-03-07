@@ -1,7 +1,6 @@
 #ifndef DLGALIGNTRANSCRIPTIONDATAIMPORTREFPAGE_H
 #define DLGALIGNTRANSCRIPTIONDATAIMPORTREFPAGE_H
 
-#include "resource.h"
 #include "AppDefs.h"
 #include "SaString.h"
 #include "TranscriptionHelper.h"

@@ -1,7 +1,6 @@
 #ifndef ANALYTICLPCANALYSIS_H
 #define ANALYTICLPCANALYSIS_H
 
-#include "..\DSP\ZTransform.h"
 #include "Process\TrackState.h"
 #include "AnalyticLpcAnalysis.h"
 

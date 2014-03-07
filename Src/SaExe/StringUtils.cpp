@@ -1,3 +1,4 @@
+#include "Stdafx.h"
 #include "StringUtils.h"
 #include "SaString.h"
 

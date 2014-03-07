@@ -160,14 +160,12 @@
 #include "sa_g_stf.h"
 #include "Segment.h"
 #include "graphsTypes.h"
-#include "resource.h"
 #include "DlgExportXML.h"
 #include "Import.h"
 #include "DlgExportSFM.h"
 #include "DlgExportTable.h"
 #include "DlgRecorder.h"
 #include "DlgPlayer.h"
-#include "dsp\dspTypes.h"
 #include "Process\Process.h"
 #include "TextHelper.h"
 #include "FileEncodingHelper.h"
@@ -558,6 +556,18 @@ void CSaView::OnPlaybackStarttor()
 void CSaView::OnPlaybackLtoStop()
 {
     SendPlayMessage(ID_PLAYBACK_LTOSTOP, FALSE); // send message to start player
+}
+
+/***************************************************************************/
+// CSaView::OnPlaybackEndCursor Playback stop cursor to end of file
+// The mainframe is informed and it will launch the player. The player
+// message takes as wParam the player mode, in the lower word of lParam the
+// submode and in the higher word if it will be launched in full size (TRUE)
+// or small (FALSE).
+/***************************************************************************/
+void CSaView::OnPlaybackEndCursor()
+{
+    SendPlayMessage(ID_PLAYBACK_ENDCURSOR, FALSE); // send message to start player
 }
 
 /***************************************************************************/
@@ -4420,3 +4430,8 @@ BOOL CSaView::OnMouseWheel( UINT nFlags, short zDelta, CPoint pt)
 	}
 	return CView::OnMouseWheel(nFlags, zDelta, pt);
 }
+
+void CSaView::EnableScrolling( bool value) {
+	bEnableScrolling = value;
+}
+

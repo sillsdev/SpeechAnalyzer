@@ -1,8 +1,6 @@
 #include "stdafx.h"
 #include "StopCursorWnd.h"
 #include "SA_Cursr.h"
-
-#include "resource.h"
 #include "Sa_Doc.h"
 #include "SA_View.h"
 #include "Segment.h"

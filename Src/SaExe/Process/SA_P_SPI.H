@@ -7,8 +7,6 @@
 #ifndef _SA_P_SPI_H
 #define _SA_P_SPI_H
 
-#include "dsp\grappl.h"
-
 //###########################################################################
 // CProcessSmoothedPitch data processing
 

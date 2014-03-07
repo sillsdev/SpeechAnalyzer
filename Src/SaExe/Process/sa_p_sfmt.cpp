@@ -17,12 +17,8 @@
 #include "sa_p_gra.h"
 #include "sa_p_fra.h"
 #include "sa_p_fmt.h"
-
-#include "resource.h"
 #include "isa_doc.h"
 #include "math.h"
-#include "dsp\spectgrm.h"
-#include "dsp\dspTypes.h"
 
 #ifdef DUMP_FORMANT_TRACKS
 #include "Segment.h"

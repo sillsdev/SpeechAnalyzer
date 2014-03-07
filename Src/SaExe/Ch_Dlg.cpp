@@ -15,7 +15,6 @@
 
 #include "stdafx.h"
 #include "ch_dlg.h"
-#include "resource.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE

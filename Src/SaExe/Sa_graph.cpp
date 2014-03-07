@@ -91,10 +91,6 @@
 #include "printdim.h"
 #include "sa_mplot.h"
 #include "time.h"
-#include "dsp\signal.h"
-#include "dsp\spectgrm.h"
-#include "dsp\formants.h"
-#include "dsp\ztransform.h"
 #include "Process\Process.h"
 #include "Process\sa_p_fra.h"
 #include "Process\sa_p_cha.h"
@@ -588,7 +584,7 @@ void CGraphWnd::ResizeGraph(BOOL bEntire, BOOL bLegend, BOOL bGraph)
         {
             m_pPlot->SetStartCursor((CSaView *)GetParent());
             m_pPlot->SetStopCursor((CSaView *)GetParent());
-			m_pPlot->SetPlaybackCursor((CSaView *)GetParent());
+			m_pPlot->SetPlaybackCursor((CSaView *)GetParent(),false);
         }
 
         //***********************************************************
@@ -657,7 +653,7 @@ void CGraphWnd::RedrawGraph(BOOL bEntire, BOOL bLegend, BOOL bGraph)
         {
             m_pPlot->SetStartCursor((CSaView *)GetParent());
             m_pPlot->SetStopCursor((CSaView *)GetParent());
-            m_pPlot->SetPlaybackCursor((CSaView *)GetParent());
+            m_pPlot->SetPlaybackCursor((CSaView *)GetParent(),false);
         }
 
         //***********************************************************

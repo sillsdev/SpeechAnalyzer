@@ -1,7 +1,7 @@
 #ifndef SPECTROPARM_H
 #define SPECTROPARM_H
 
-#include "dsp\dspWins.h"
+#include <dspWins.h>
 #include "objectostream.h"
 #include "objectistream.h"
 

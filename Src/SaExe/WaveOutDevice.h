@@ -3,8 +3,8 @@
 
 #include "RecMixer.h"
 #include <mmsystem.h>
-#include "dsp\wavewarp.h"
-#include "dsp\hpfltr70.h"
+#include <wavewarp.h>
+#include <hpfltr70.h>
 #include "Sa_wave.h"
 
 class CWave;

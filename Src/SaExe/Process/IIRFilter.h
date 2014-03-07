@@ -6,7 +6,6 @@
 
 #include "IProcess.h"
 #include "Process.h"
-#include "dsp\ZTransform.h"
 
 class CProcessIIRFilter : public CProcess
 {

@@ -10,7 +10,6 @@
 #define DLGAUTOREFERENCEDATA_H
 
 #include "sa_dlwnd.h"
-#include "resource.h"
 #include "SaString.h"
 #include "TranscriptionData.h"
 #include "sa_doc.h"

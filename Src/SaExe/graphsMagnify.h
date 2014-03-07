@@ -14,8 +14,6 @@
 #ifndef _GRAPHS_MAGNIFY_H
 #define _GRAPHS_MAGNIFY_H
 
-#include "resource.h"
-
 class CDlgMagnify : public CDialog
 {
 public:

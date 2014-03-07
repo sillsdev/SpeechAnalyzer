@@ -5,12 +5,10 @@
 // copyright 1996 JAARS Inc. SIL
 /////////////////////////////////////////////////////////////////////////////
 #ifndef _SA_WBCH_H
+#define _SA_WBCH_H
 
 #include "appdefs.h"
-#include "resource.h"
 #include "Sa_dlWnd.h"
-
-#define _SA_WBCH_H
 
 //###########################################################################
 // CSaWorkbenchView frame

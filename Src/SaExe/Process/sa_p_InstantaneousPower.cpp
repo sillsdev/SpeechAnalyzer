@@ -10,8 +10,6 @@
 #include "sa_p_InstantaneousPower.h"
 #include "sa_p_raw.h"
 #include "sa_p_glo.h"
-
-#include "resource.h"
 #include "isa_doc.h"
 #include "Butterworth.h"
 

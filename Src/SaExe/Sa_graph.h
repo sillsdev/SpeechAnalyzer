@@ -25,7 +25,6 @@
 #include "sa_plot.h"
 #include "sa_minic.h"
 #include "appdefs.h"
-#include "resource.h"
 #include "SaString.h"
 
 #define _SA_GRAPH_H
@@ -102,7 +101,7 @@ public:
     void SetStartCursor(CSaView * pView);					// set start cursor position
     void SetStopCursor(CSaView * pView);					// set stop cursor position
     void SetPlaybackCursor(CSaView * pView);				// set stop cursor position
-    void SetPlaybackPosition(CSaView * pView);				// set start cursor position
+    void SetPlaybackPosition(CSaView * pView, bool scroll);	// set start cursor position
 	void SetPlaybackFlash( bool on);
 	void MoveStartCursor(CSaView * pView, DWORD dwNewPositon);
     void MoveStopCursor(CSaView * pView, DWORD dwNewPositon);

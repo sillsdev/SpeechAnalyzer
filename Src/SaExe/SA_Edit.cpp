@@ -127,7 +127,7 @@ BOOL CDlgEditor::OnInitDialog()
 	bool playing = false;
 	if (pMainWnd!=NULL)
 	{
-		playing = pMainWnd->IsPlayerPlaying();
+		playing = (pMainWnd->IsPlayerPlaying())?true:false;
 	}
 	SetButtonState(IDC_PLAY_WORD,IDC_STOP_WORD,false);
 	SetButtonState(IDC_PLAY_PHRASE_L1,IDC_STOP_PHRASE_L1,playing);

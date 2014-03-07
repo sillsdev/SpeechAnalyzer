@@ -8,11 +8,8 @@
 #include "stdafx.h"
 #include "Process.h"
 #include "sa_p_poa.h"
-
-#include "resource.h"
 #include "isa_doc.h"
-#include "dsp\Signal.h"
-
+#include "Lpc.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE

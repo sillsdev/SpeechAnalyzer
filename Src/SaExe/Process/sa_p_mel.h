@@ -8,7 +8,6 @@
 #define _SA_P_MEL_H
 
 #include "Process\Process.h"
-#include "dsp\grappl.h"
 
 class CProcessMelogram : public CProcess
 {

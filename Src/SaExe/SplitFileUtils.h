@@ -3,7 +3,6 @@
 
 #include "AppDefs.h"
 
-#include <string>
 using std::wstring;
 
 class CSaView;

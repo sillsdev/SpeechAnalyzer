@@ -6,7 +6,6 @@
 
 #include "IIRFilter.h"
 #include "Process.h"
-#include "dsp\ZTransform.h"
 
 class CProcessButterworth : public CProcessIIRFilter
 {

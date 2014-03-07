@@ -39,7 +39,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>..\Debug;$(GTEST_HOME)\build\Debug</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>.\..\..\Output\Debug;$(GTEST_HOME)\build\Debug</AdditionalLibraryDirectories>
       <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>

@@ -7,8 +7,6 @@
 #ifndef _SA_P_CPI_H
 #define _SA_P_CPI_H
 
-#include "dsp\grappl.h"
-
 //###########################################################################
 // CProcessCustomPitch data processing
 

@@ -1,0 +1,22 @@
+add_library(SA_DSP SHARED
+AcousticTube.cpp
+cspksrc.cpp
+curvefit.cpp
+dspwins.cpp
+epksrc.cpp
+fft.cpp
+Formants.cpp
+Fragment.cpp
+grappl.cpp
+histgram.cpp
+HPFLTR70.CPP
+mathx.cpp
+peakpick.cpp
+qpksrc.cpp
+Roots.cpp
+Spectgrm.cpp
+Spectrum.cpp
+SuperPitch.cpp
+template.cpp
+ZTransform.cpp
+)

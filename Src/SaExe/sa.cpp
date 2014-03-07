@@ -95,7 +95,6 @@
 #include "ChildFrame.h"
 #include "ClipboardHelper.h"
 #include "FileUtils.h"
-#include "resource.h"
 #include "AutoSave.h"
 #include "DlgRecorder.h"
 #include "Process\Process.h"
@@ -104,6 +103,8 @@
 #include "objectostream.h"
 #include "objectistream.h"
 #include "DlgPlayer.h"
+
+#include <wchar.h>
 
 #pragma comment(linker, "/SECTION:.shr,RWS")
 #pragma data_seg(".shr")
@@ -225,83 +226,72 @@ CSaApp theApp;
 /////////////////////////////////////////////////////////////////////////////
 // CSaApp helper functions
 
-HMODULE LoadCompatibleLibrary( LPCTSTR szCName)
+HMODULE LoadCompatibleLibrary( LPCTSTR szTarget)
 {
     // Is Library Compatible
-    CSaString szApp;
-    GetModuleFileName( AfxGetInstanceHandle(), szApp.GetBuffer(MAX_PATH*4), MAX_PATH*4);
-    szApp.ReleaseBuffer();
+	wchar_t szApp[MAX_PATH*4];
+	wmemset(szApp,0,_countof(szApp));
+    GetModuleFileName( AfxGetInstanceHandle(), szApp, _countof(szApp));
 
-    CSaString szName = szCName;
+	wchar_t szName[MAX_PATH*4];
+	wcscpy_s(szName,_countof(szName),szTarget);
 
-    int nFind = szApp.ReverseFind('\\');
-    if (nFind != -1)
+	wchar_t * loc = wcsrchr(szApp,L'\\');
+    if (loc!=NULL)
     {
-        szName = szApp.Left(nFind+1) + szCName;
+		wmemset(szName,0,_countof(szName));
+		wcsncat_s(szName,_countof(szName),szApp,(loc-szApp)+1);
+		wcscat_s(szName,_countof(szName),szTarget);
     }
 
-    DWORD dwHandle;
-
-    DWORD dwSize = GetFileVersionInfoSize(szName.GetBuffer(0), &dwHandle);
+    DWORD dwHandle = 0;
+    DWORD dwSize = GetFileVersionInfoSize(szName, &dwHandle);
 	if (!dwSize)
     {
         return 0;
     }
 
-    void * pLibVersion = (void *) new char[dwSize];
-    if (!GetFileVersionInfo(szName.GetBuffer(0), dwHandle, dwSize, pLibVersion))
+    auto_ptr<BYTE> pLibVersion(new BYTE[dwSize]);
+    if (!GetFileVersionInfo(szName, dwHandle, dwSize, pLibVersion.get()))
     {
-        delete [] pLibVersion;
         return 0;
     }
 
+    unsigned int nLen = 0;
     VS_FIXEDFILEINFO * pLibVS = NULL;
-    unsigned int nLen;
-    if (!VerQueryValue(pLibVersion, _T("\\"), (void **) &pLibVS, &nLen))
+    if (!VerQueryValue( pLibVersion.get(), _T("\\"), (LPVOID*)&pLibVS, &nLen))
     {
-        delete [] pLibVersion;
         return 0;
     }
 
-    dwSize = GetFileVersionInfoSize(szApp.GetBuffer(0), &dwHandle);
+    dwSize = GetFileVersionInfoSize(szApp, &dwHandle);
     if (!dwSize)
     {
         return 0;
     }
 
-    void * pAppVersion = (void *) new char[dwSize];
-
-    if (!GetFileVersionInfo(szApp.GetBuffer(0), dwHandle, dwSize, pAppVersion))
+	auto_ptr<BYTE> pAppVersion(new BYTE[dwSize]);
+    if (!GetFileVersionInfo(szApp, dwHandle, dwSize, pAppVersion.get()))
     {
-        delete [] pLibVersion;
-        delete [] pAppVersion;
         return 0;
     }
 
     VS_FIXEDFILEINFO * pAppVS = NULL;
-    if (!VerQueryValue(pAppVersion, _T("\\"), (void **) &pAppVS, &nLen))
+    if (!VerQueryValue(pAppVersion.get(), _T("\\"), (void **) &pAppVS, &nLen))
     {
-        delete [] pLibVersion;
-        delete [] pAppVersion;
         return 0;
     }
 
     if ((pAppVS->dwFileVersionLS != pLibVS->dwFileVersionLS) ||
         (pAppVS->dwFileVersionMS != pLibVS->dwFileVersionMS) ||
         (pAppVS->dwProductVersionLS != pLibVS->dwProductVersionLS) ||
-        (pAppVS->dwProductVersionMS != pLibVS->dwProductVersionMS) ||
-        (pAppVS->dwFileFlags != pLibVS->dwFileFlags))
+        (pAppVS->dwProductVersionMS != pLibVS->dwProductVersionMS))
     {
         CSaString szMessage;
-        szMessage.FormatMessage(_T("%1 was found, but contains resources from incompatible version.\nIt will not be used."), szCName);
+        szMessage.FormatMessage(_T("%1 was found, but contains resources from incompatible version.\nIt will not be used."), szTarget);
         AfxMessageBox(szMessage);
-        delete [] pLibVersion;
-        delete [] pAppVersion;
         return 0;
     }
-
-    delete [] pLibVersion;
-    delete [] pAppVersion;
 
     return LoadLibrary(szName);
 }
@@ -331,6 +321,8 @@ BOOL CSaApp::InitInstance()
         AfxMessageBox(L"Speech Analyzer was unable to locate or use SA_ENU.DLL or SA_LOC.DLL.\nIt will now exit.");
         return FALSE;
     }
+
+	AfxSetResourceHandle(m_hEnglishResources);
 
     if (!CWinApp::InitInstance())
     {
@@ -2698,7 +2690,6 @@ bool CSaApp::IsSAS()
 // Description: Create shared memory mapped file or create view of it
 CSingleInstanceData::CSingleInstanceData(LPCTSTR aName)
 {
-
     // Build names
     CString lFileName = aName ;
     lFileName += _T("-Data-Mapping-File");

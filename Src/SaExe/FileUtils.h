@@ -3,9 +3,6 @@
 
 #define DIRECTORY_SEPARATOR '\\'
 
-#include <string>
-using std::wstring;
-
 wstring GetTempFileName(LPCTSTR szPrefix);
 void GetTempFileName(LPCTSTR szPrefix, LPTSTR szTempFileName, size_t len);
 extern void RemoveFile(LPCTSTR path);

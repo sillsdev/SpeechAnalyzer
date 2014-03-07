@@ -8,10 +8,8 @@
 #include "stdafx.h"
 #include "sa_plot.h"
 #include "sa_g_spe.h"
-
 #include "sa_doc.h"
 #include "sa_view.h"
-#include "resource.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE

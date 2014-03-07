@@ -6,10 +6,8 @@
 /////////////////////////////////////////////////////////////////////////////
 
 #include "stdafx.h"
-#include "resource.h"
 #include "Process.h"
 #include "sa_p_pit.h"
-
 #include <limits.h>
 #include "isa_doc.h"
 

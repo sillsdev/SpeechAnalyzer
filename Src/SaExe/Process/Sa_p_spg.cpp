@@ -16,13 +16,10 @@
 #include "Process.h"
 #include "sa_p_spg.h"
 #include "sa_p_sfmt.h"
-#include "resource.h"
 #include "isa_doc.h"
 #include "sa_view.h"
 #include "math.h"
 #include "SpectroParm.h"
-#include "dsp\spectgrm.h"
-#include "dsp\dspTypes.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE

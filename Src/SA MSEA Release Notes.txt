@@ -1,3 +1,8 @@
+SA - 3.1.0.87 3/6/2014
+1) Added feature to automatic scroll wave form during playback - specifically when playing between the end cursor and the end of the file.
+2) Modified menu wording.
+3) Converted SA_ENU.dll to a 'resource only' DLL.
+
 SA - 3.1.0.86 2/24/2014
 1) Added Alt-X feature to be used for quickly marking up stories in a wave file.
 

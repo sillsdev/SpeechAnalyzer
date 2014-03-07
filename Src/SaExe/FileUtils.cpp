@@ -2,7 +2,6 @@
 #include <FileUtils.h>
 #include <sys/stat.h>
 #include "SaString.h"
-#include "resource.h"
 
 void GetTempFileName(LPCTSTR szPrefix, LPTSTR szFilename, size_t len) 
 {

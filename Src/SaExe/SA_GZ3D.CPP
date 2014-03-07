@@ -11,8 +11,6 @@
 /////////////////////////////////////////////////////////////////////////////
 #include "stdafx.h"
 #include "sa_plot.h"
-#include "dsp\signal.h"
-#include "dsp\formants.h"
 #include "sa_gZ3D.h"
 #include "Process\Process.h"
 #include "Process\sa_p_spu.h"
@@ -29,10 +27,6 @@
 #include "sa_view.h"
 #include "sa_wbch.h"
 #include "mainfrm.h"
-#include "zgraph\zgraph.h"
-#include "zgraph\scatter.h"
-#include "dsp\scale.h"
-#include "dsp\ZTransform.h"
 #include "Process\FormantTracker.h"
 
 #ifdef _DEBUG

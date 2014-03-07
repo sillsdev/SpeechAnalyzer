@@ -2,7 +2,6 @@
 #include "fnkeys.h"
 #include "objectostream.h"
 #include "objectistream.h"
-#include "resource.h"
 
 static LPCSTR psz_fnkeys = "fnkeys";
 

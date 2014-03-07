@@ -9,10 +9,7 @@
 #include "Process.h"
 #include "sa_p_fra.h"
 #include "sa_p_gra.h"
-
 #include "isa_doc.h"
-#include "resource.h"
-#include "dsp\grappl.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE

@@ -2,7 +2,6 @@
 #define DLGEXPORTTABLE_H
 
 #include "SaString.h"
-#include "resource.h"
 
 class CDlgExportTable : public CDialog
 {

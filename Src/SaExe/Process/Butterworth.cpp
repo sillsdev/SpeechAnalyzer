@@ -4,7 +4,6 @@
 
 #include "stdafx.h"
 #include "Butterworth.h"
-#include "resource.h"
 #include "isa_doc.h"
 #include "sa_w_adj.h"
 #include "StringUtils.h"

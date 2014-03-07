@@ -7,11 +7,9 @@
 #include "stdafx.h"
 #include "Process.h"
 #include "sa_w_equ.h"
-#include "resource.h"
 #include "mainfrm.h"
 #include "isa_doc.h"
 #include "sa_w_dlg.h"
-#include "zgraph\toolkit.h"
 #include "objectostream.h"
 
 #ifdef _DEBUG

@@ -10,7 +10,6 @@
 #include "stdafx.h"
 #include "SaString.h"
 #include "UnicodeString.h"
-#include "ZGraph\toolkit.h"
 
 std::string CSaString::utf8() const
 {

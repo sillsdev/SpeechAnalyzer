@@ -8,8 +8,6 @@
 #define _SA_P_FMT_H
 
 #include "sa_p_spu.h"
-#include "dsp\mathx.h"
-#include "dsp\formants.h"
 #include "SaString.h"
 
 #define MAX_FILTERS 5

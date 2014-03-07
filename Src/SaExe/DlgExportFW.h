@@ -16,7 +16,6 @@
 #include "objectostream.h"
 #include "AppDefs.h"
 #include "SaString.h"
-#include "resource.h"
 #include "ExportFWSettings.h"
 
 class CSaDoc;

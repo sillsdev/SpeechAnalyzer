@@ -7,8 +7,6 @@
 #ifndef _SA_P_POA_H
 #define _SA_P_POA_H
 
-#include "dsp\Lpc.h"
-
 #define MODEL_SECTION_COUNT  18
 
 //###########################################################################

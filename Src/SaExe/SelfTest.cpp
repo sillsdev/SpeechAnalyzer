@@ -38,10 +38,10 @@
 #include "Process\formanttracker.h"
 #include "sa_doc.h"
 #include "sa_view.h"
-#include "resource.h"
 #include "FileUtils.h"
 #include "StringUtils.h"
 #include "Process\Hilbert.h"
+#include "Lpc.h"
 
 //
 // file location of messages that get updated regularly

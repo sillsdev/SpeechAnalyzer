@@ -28,8 +28,6 @@
 #include <mmsystem.h>
 #include <math.h>
 #include "DlgPlayer.h"
-#include "dsp\histgram.h"
-#include "dsp\dspTypes.h"
 #include "Process\Process.h"
 #include "Process\sa_p_twc.h"
 #include "Process\sa_p_mel.h"

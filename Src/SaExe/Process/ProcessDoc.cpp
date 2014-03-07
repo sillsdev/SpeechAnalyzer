@@ -246,7 +246,7 @@ void * CProcessDoc::GetProcessedDataBlock(LPCTSTR szName, int selectedChannel, i
     return &m_Buffer[dwByteOffset - m_dwBufferOffset]; // return pointer to data
 }
 
-void CProcessDoc::LoadBuffer( char * buffer, size_t size, int sampleSize, int selectedChannel, int numChannels, UINT bytesRead)
+void CProcessDoc::LoadBuffer( char * buffer, size_t /*size*/, int sampleSize, int selectedChannel, int numChannels, UINT bytesRead)
 {
     if (sampleSize==1)
     {

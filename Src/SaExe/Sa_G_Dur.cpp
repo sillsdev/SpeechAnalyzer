@@ -13,7 +13,6 @@
 #include "sa_minic.h"
 #include "sa_graph.h"
 #include "Segment.h"
-#include "dsp\mathx.h"
 
 #include "sa_doc.h"
 #include "sa_view.h"

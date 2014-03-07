@@ -10,10 +10,8 @@
 #include "Process.h"
 #include "sa_p_dur.h"
 #include "Segment.h"
-
 #include <limits.h>
 #include "isa_doc.h"
-#include "resource.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE

@@ -222,6 +222,10 @@ public:
 
     CGraphWnd * m_apGraphs[MAX_GRAPHS_NUMBER]; // array of pointers to the graph objects
 
+	afx_msg BOOL OnMouseWheel(UINT nFlags, short zDelta, CPoint pt);
+
+	void EnableScrolling( bool val);
+
 protected:
     BOOL PreCreateWindow(CREATESTRUCT & cs);
     void Copy(const CSaView & toBeCopied);
@@ -255,6 +259,7 @@ protected:
     afx_msg void OnUpdateExportStaff(CCmdUI * pCmdUI);
     afx_msg void OnImportStaff();
     afx_msg void OnUpdateImportStaff(CCmdUI * pCmdUI);
+    afx_msg void OnPlaybackEndCursor();
     afx_msg void OnPlaybackCursors();
     afx_msg void OnPlaybackFile();
     afx_msg void OnPlaybackWindow();
@@ -582,8 +587,8 @@ private:
 	ECursorSelect lastBoundaryCursor;
 	DWORD lastPlaybackPosition;
 
-public:
-	afx_msg BOOL OnMouseWheel(UINT nFlags, short zDelta, CPoint pt);
+	bool bEnableScrolling;					// true if we should scroll during playback
+
 };
 
 #endif

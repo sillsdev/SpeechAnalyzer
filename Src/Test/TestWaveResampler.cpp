@@ -5,9 +5,6 @@
 #include "WaveUtils.h"
 #include "Test.h"
 
-using std::string;
-using std::wstring;
-
 class ProgressUpdater : public IProgressUpdate 
 {
 	virtual void SetProgress( int value) 
@@ -28,7 +25,7 @@ void test( LPCTSTR ifile)
 	wstring ofilename = buildResultPath(L"temp.wav");
 	CWaveResampler resampler;
 	CWaveResampler::ECONVERT result = resampler.Resample( ifilename.c_str(),ofilename.c_str(),updater);
-	ASSERT_TRUE(result==CWaveResampler::ECONVERT::EC_SUCCESS) << "expected success status";
+	ASSERT_TRUE(result==CWaveResampler::EC_SUCCESS) << "expected success status";
 
 	DWORD flags = MMIO_READ | MMIO_DENYWRITE;
 	WORD bitsPerSample = 0;

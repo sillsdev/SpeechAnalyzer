@@ -8,9 +8,7 @@
 #include "stdafx.h"
 #include "Process.h"
 #include "sa_p_cpi.h"
-
 #include "isa_doc.h"
-#include "resource.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE

@@ -26,9 +26,6 @@
 #include "Process\sa_p_spu.h"
 #include "Process\sa_p_spg.h"
 #include "Process\FormantTracker.h"
-#include "dsp\formants.h"
-#include "dsp\ztransform.h"
-#include "dsp\mathx.h"
 #include "objectostream.h"
 
 using std::ifstream;

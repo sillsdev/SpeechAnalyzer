@@ -6,7 +6,6 @@
 /////////////////////////////////////////////////////////////////////////////
 
 #include "stdafx.h"
-#include "resource.h"
 #include "Process.h"
 #include "sa_p_gra.h"
 #include "isa_doc.h"

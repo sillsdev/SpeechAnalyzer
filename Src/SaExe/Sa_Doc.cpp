@@ -148,11 +148,9 @@
 #include "Process\Hilbert.h"
 #include "objectostream.h"
 #include "objectistream.h"
-#include "dsp\fragment.h"
 #include "DlgInsertSilence.h"
 #include <io.h>
 #include "FileEncodingHelper.h"
-#include "resource.h"
 #include "SaParam.h"
 #include "ScopedCursor.h"
 #include "WaveUtils.h"

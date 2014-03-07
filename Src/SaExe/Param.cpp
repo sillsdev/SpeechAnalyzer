@@ -12,7 +12,6 @@
 /////////////////////////////////////////////////////////////////////////////
 #include "stdafx.h"
 #include "objectostream.h"
-#include "dsp\spectgrm.h"
 #include "sa_doc.h"
 #include "Process\Process.h"
 #include "Process\sa_p_gra.h"

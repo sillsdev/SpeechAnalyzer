@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "DependentTextSegment.h"
-#include "resource.h"
 #include "Sa_Doc.h"
 #include "SA_View.h"
 

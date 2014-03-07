@@ -11,7 +11,6 @@
 #include "sa_p_pit.h"
 #include "sa_p_lou.h"
 #include "isa_doc.h"
-#include "resource.h"
 #include "FileUtils.h"
 
 #ifdef _DEBUG

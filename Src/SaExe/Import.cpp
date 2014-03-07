@@ -1318,7 +1318,7 @@ bool CImport::ProcessNormal( wistringstream & data, EImportMode nMode, wstring &
 	CSaDoc * pDoc = (CSaDoc *)((CMainFrame *)AfxGetMainWnd())->GetCurrSaView()->GetDocument();
     try
     {
-		int ch = data.peek();
+		data.peek();
 		CStringStream stream( data.str().c_str());
         if (!stream.bAtBackslash())
         {

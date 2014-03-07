@@ -1,6 +1,5 @@
 #include "Stdafx.h"
 #include "AutoSave.h"
-#include "resource.h"
 #include "Sa_Doc.h"
 #include "FileUtils.h"
 #include "sa.h"

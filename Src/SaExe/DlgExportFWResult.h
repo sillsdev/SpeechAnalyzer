@@ -1,7 +1,5 @@
 #pragma once
 
-#include "resource.h"
-
 class CDlgExportFWResult : public CDialog {
 
     DECLARE_DYNAMIC(CDlgExportFWResult)

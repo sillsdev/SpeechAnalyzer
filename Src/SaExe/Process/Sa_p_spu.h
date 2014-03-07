@@ -8,7 +8,6 @@
 #define _SA_P_SPU_H
 
 #include "appdefs.h"
-#include "dsp\spectrum.h"
 
 enum ESpectrum {CEPSTRAL_SPECTRUM = 0x0001, LPC_SPECTRUM = 0x0002};   // spectra selections
 

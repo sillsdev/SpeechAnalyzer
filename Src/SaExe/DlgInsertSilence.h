@@ -1,6 +1,5 @@
 #pragma once
 
-#include "resource.h"
 class CSaDoc;
 
 // CDlgInsertSilence dialog

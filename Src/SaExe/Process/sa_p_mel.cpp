@@ -15,12 +15,9 @@
 #include "stdafx.h"
 #include "Process.h"
 #include "sa_p_mel.h"
-
 #include <limits.h>
-#include "resource.h"
 #include "isa_doc.h"
 #include "math.h"
-#include "dsp\grappl.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE

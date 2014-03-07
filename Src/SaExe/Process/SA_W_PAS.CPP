@@ -9,8 +9,6 @@
 
 #include "stdafx.h"
 #include "Process.h"
-
-#include "resource.h"
 #include "mainfrm.h"
 #include "isa_doc.h"
 #include "sa_w_pas.h"

@@ -8,8 +8,6 @@
 #ifndef DLGFIND_H
 #define DLGFIND_H
 
-#include "resource.h"
-
 class CMainFrame;
 
 class CDlgFind : public CDialog

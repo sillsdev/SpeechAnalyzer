@@ -9,7 +9,6 @@
 #include "Process.h"
 #include "sa_w_rev.h"
 #include "math.h"
-#include "resource.h"
 #include "mainfrm.h"
 #include "isa_doc.h"
 #include "sa_w_dlg.h"

@@ -156,7 +156,7 @@ public:
     void RedrawPlot(BOOL bEntire = TRUE);                   // repaint plot (entire or partial)
     virtual void SetStartCursor(CSaView * pView);           // position the start cursor window
     virtual void SetStopCursor(CSaView * pView);            // position the stop cursor window
-    virtual void SetPlaybackCursor(CSaView * pView);            // position the stop cursor window
+    virtual void SetPlaybackCursor(CSaView * pView, bool scroll);// position the stop cursor window
 	void SetPlaybackFlash( bool val);
     void MoveStartCursor(CSaView * pView, DWORD dwNewPositon); // move the start cursor window
     void MoveStopCursor(CSaView * pView, DWORD dwNewPositon); // move the stop cursor window
@@ -189,7 +189,7 @@ public:
 
 protected:
     virtual void PostNcDestroy();
-    void ChangeCursorPosition(CSaView * pView, DWORD dwNewPosition, CCursorWnd *, BOOL bMove = FALSE); // change the current cursor position
+    void ChangeCursorPosition(CSaView * pView, DWORD dwNewPosition, CCursorWnd *, bool bMove = false, bool scroll = false); // change the current cursor position
     short int CheckResult(short int nResult, CProcess * pProcess); // check the process result
     void PlotPrePaint(CDC * pDC, CRect rWnd, CRect rClip, CLegendWnd * pLegend = NULL,
                       bool bCursors = true, bool bPrivateCursor = false);  // do the common plot painting before data has been drawn

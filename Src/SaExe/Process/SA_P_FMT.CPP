@@ -23,15 +23,9 @@
 #include "Process.h"
 #include "sa_p_spu.h"
 #include "sa_p_fmt.h"
-
-#include "resource.h"
 #include "isa_doc.h"
 #include "sa_gz3d.h"
 #include "math.h"
-#include "dsp\spectgrm.h"
-#include "dsp\signal.h"
-#include "dsp\spectrum.h"
-#include "dsp\scale.h"
 #include "DlgVowelFormants.h"
 
 #ifdef _DEBUG

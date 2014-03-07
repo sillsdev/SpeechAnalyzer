@@ -42,7 +42,6 @@
 #include "sa_minic.h"
 #include "sa_graph.h"
 #include "Segment.h"
-#include "dsp\mathx.h"
 
 #include "sa_doc.h"
 #include "sa.h"
@@ -564,21 +563,23 @@ DWORD CPlotWnd::AdjustDataFrame(int iWidth)
 // CURSOR_WINDOW_HALFWIDTH. If the position of the cursor line (in the middle
 // of the cursor window) changes, the old position has to be invalidated and
 // redrawn. If the cursor is not visible on the new position (out of the
-// plot), its window size ill be 0.
+// plot), its window size will be 0.
 /***************************************************************************/
-void CPlotWnd::ChangeCursorPosition(CSaView * pView, DWORD dwNewPosition, CCursorWnd * pWnd, BOOL /*bMove*/)
+void CPlotWnd::ChangeCursorPosition( CSaView * pView, DWORD dwNewPosition, CCursorWnd * pWnd, bool /*bMove*/, bool scroll)
 {
     UNUSED_ALWAYS(pView);
 
     CGraphWnd * pGraph = (CGraphWnd *)GetParent(); // get pointer to parent graph
-    // get window coordinates
-    CRect rWnd, rNewWnd, rNewLine, rOldLine;
+
+	// get window coordinates
+    CRect rWnd;
     GetClientRect(rWnd);
     if (rWnd.Width() == 0)
     {
         return;    // cursor not visible SDM 1.5Test8.5
     }
-    rNewWnd = rWnd;
+
+    CRect rNewWnd = rWnd;
     // get actual data position and frame
     double fDataPos;
     DWORD dwDataFrame;
@@ -592,9 +593,11 @@ void CPlotWnd::ChangeCursorPosition(CSaView * pView, DWORD dwNewPosition, CCurso
     else
     {
         // get necessary data from view
-        fDataPos = GetDataPosition(rNewWnd.Width()); // data index of first sample to display
-        dwDataFrame = AdjustDataFrame(rNewWnd.Width()); // number of data points to display
+        fDataPos = GetDataPosition(rNewWnd.Width());		// data index of first sample to display
+        dwDataFrame = AdjustDataFrame(rNewWnd.Width());		// number of data points to display
     }
+
+	CRect rNewLine;
     if (((m_bCursors) &&   // added by AKE to hide cursors in graph edit mode
          (dwNewPosition >= (DWORD)fDataPos) && (dwNewPosition < ((DWORD)fDataPos + dwDataFrame))))
     {
@@ -613,13 +616,37 @@ void CPlotWnd::ChangeCursorPosition(CSaView * pView, DWORD dwNewPosition, CCurso
     }
     else
     {
-        // cursor is not visible
-        rNewLine.SetRect(0, 0, 0, 0); // shrink it to 0 size
-        rNewWnd = rNewLine;
+		if (scroll) 
+		{
+	        DWORD start = (DWORD)GetDataPosition(rNewWnd.Width());		// data index of first sample to display
+		    DWORD size = pView->GetDataFrame();							// number of data points to display
+			DWORD margin = size/4;
+			if (dwNewPosition>margin) {
+				DWORD newStart = dwNewPosition-margin;
+				TRACE("%d %d %d %d\n",start,size,dwNewPosition,newStart);
+				pView->Scroll(newStart);
+				pGraph->UpdateWindow();
+			}
+			else
+			{
+				// cursor is not visible
+				rNewLine.SetRect(0, 0, 0, 0); // shrink it to 0 size
+				rNewWnd = rNewLine;
+			}
+		}
+		else
+		{
+	        // cursor is not visible
+		    rNewLine.SetRect(0, 0, 0, 0); // shrink it to 0 size
+			rNewWnd = rNewLine;
+		}
     }
+
     // get the actual (old) position of cursor window
+	CRect rOldLine;
     pWnd->GetWindowRect(rOldLine);
     ScreenToClient(rOldLine);
+
     // get the line position in the middle
     if (rOldLine.Width() > 1)   // cursor window has large width
     {
@@ -714,13 +741,13 @@ void CPlotWnd::SetStopCursor(CSaView * pView)
 }
 
 /***************************************************************************/
-// CPlotWnd::SetPlaybackPosition
+// CPlotWnd::SetPlaybackCursor
 /***************************************************************************/
-void CPlotWnd::SetPlaybackCursor( CSaView * pView)
+void CPlotWnd::SetPlaybackCursor( CSaView * pView, bool scroll)
 {
 	if (m_PlaybackCursor.IsCreated())
 	{
-		ChangeCursorPosition( pView, pView->GetPlaybackCursorPosition(), &m_PlaybackCursor);
+		ChangeCursorPosition( pView, pView->GetPlaybackCursorPosition(), &m_PlaybackCursor, false, scroll);
 	}
 }
 
@@ -732,7 +759,6 @@ void CPlotWnd::SetPlaybackFlash( bool val)
 	}
 }
 
-
 /***************************************************************************/
 // CPlotWnd::MoveStartCursor Move the start cursor
 /***************************************************************************/
@@ -741,7 +767,7 @@ void CPlotWnd::MoveStartCursor( CSaView * pView, DWORD dwNewPosition)
 	// no cursors visible?
     if (!m_bCursors) return;
 
-	ChangeCursorPosition( pView, dwNewPosition, m_pStartCursor, TRUE);
+	ChangeCursorPosition( pView, dwNewPosition, m_pStartCursor, true);
 }
 
 /***************************************************************************/
@@ -752,7 +778,7 @@ void CPlotWnd::MoveStopCursor(CSaView * pView, DWORD dwNewPosition)
 	// no cursors visible
     if (!m_bCursors) return;
 
-    ChangeCursorPosition(pView, dwNewPosition, m_pStopCursor, TRUE);
+    ChangeCursorPosition(pView, dwNewPosition, m_pStopCursor, true);
 }
 
 /***************************************************************************/
@@ -911,7 +937,7 @@ void CPlotWnd::ScrollPlot(CSaView * pView, int nScrollAmount, DWORD dwOldPos, DW
     }
     if ((dwPlaybackCursorPos < dwOldPos) || (dwPlaybackCursorPos >= (dwOldPos + dwFrame)))
     {
-        SetPlaybackCursor(pView);    // stop cursor was not visible, move it if it's now visible
+        SetPlaybackCursor(pView, false);    // stop cursor was not visible, move it if it's now visible
     }
 }
 
@@ -1708,7 +1734,7 @@ void CPlotWnd::PlotPaintFinish(CDC * pDC, CRect rWnd, CRect rClip)
         {
             SetStopCursor(pView);
             SetStartCursor(pView);
-			SetPlaybackCursor(pView);
+			SetPlaybackCursor(pView,false);
         }
     }
 

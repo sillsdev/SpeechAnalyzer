@@ -11,8 +11,6 @@
 #ifndef _SA_P_SFMT_H
 #define _SA_P_SFMT_H
 
-#include "dsp\spectgrm.h"
-
 //###########################################################################
 // CProcessSpectroFormants data processing
 
