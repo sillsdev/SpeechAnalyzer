@@ -70,6 +70,7 @@ long CProcessFragments::Process(void * pCaller, ISaDoc * pDoc, int nProgress,
     {
         return MAKELONG(--nLevel, nProgress);    // data is already ready
     }
+
     BOOL bBackground = pDoc->IsBackgroundProcessing();
     if (!bBackground)
     {
@@ -94,10 +95,11 @@ long CProcessFragments::Process(void * pCaller, ISaDoc * pDoc, int nProgress,
     DWORD dwOldPitchBlock = pAutoPitch->GetProcessBufferIndex();  // save current pitch buffer block offset
 
     // start processing fragments
-    if (!(bBackground?StartProcess(pCaller, IDS_STATTXT_BACKGNDFRA):
-            StartProcess(pCaller, IDS_STATTXT_PROCESSFRA)))   // memory allocation failed
+    if (!(bBackground ? StartProcess(pCaller, IDS_STATTXT_BACKGNDFRA) : StartProcess(pCaller, IDS_STATTXT_PROCESSFRA)))   
     {
-        EndProcess(); // end data processing
+		// memory allocation failed
+		// end data processing
+        EndProcess(); 
         if (!bBackground)
         {
             EndWaitCursor();

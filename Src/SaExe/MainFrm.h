@@ -128,19 +128,19 @@ protected:
     void WriteReadDefaultViewToTempFile(BOOL bWrite);
 
     // Default values for various parameters                     // RLJ 11.1A
-    CSaView      *      m_pDefaultViewConfig;   // holds the default view for when a doc is newly opened.
-    BOOL                m_bDefaultMaximizeView;  // maximize view if no other view open
-    int                 m_nDefaultHeightView;    // default view height
-    int                 m_nDefaultWidthView;     // default view width
-    CParseParm           m_parseParmDefaults;    // parsing
-    CSegmentParm         m_segmentParmDefaults;  // segmenting
-    CPitchParm           m_pitchParmDefaults;    // pitch
-    CMusicParm           m_musicParmDefaults;    // music
-    CIntensityParm       m_intensityParmDefaults;// intensity
-    CFormantParm         m_formantParmDefaults;  // formant
-    CSpectrumParm        m_spectrumParmDefaults; // spectrum
-    CSpectroParm         m_spectrogramParmDefaults; // spectrogram
-    CSpectroParm         m_snapshotParmDefaults; // snapshot
+    CSaView      *      m_pDefaultViewConfig;		// holds the default view for when a doc is newly opened.
+    BOOL                m_bDefaultMaximizeView;		// maximize view if no other view open
+    int                 m_nDefaultHeightView;		// default view height
+    int                 m_nDefaultWidthView;		// default view width
+    CParseParm          m_parseParmDefaults;		// parsing
+    CSegmentParm        m_segmentParmDefaults;		// segmenting
+    CPitchParm          m_pitchParmDefaults;		// pitch
+    CMusicParm          m_musicParmDefaults;		// music
+    CIntensityParm      m_intensityParmDefaults;	// intensity
+    CFormantParm        m_formantParmDefaults;		// formant
+    CSpectrumParm       m_spectrumParmDefaults;		// spectrum
+    CSpectroParm        m_spectrogramParmDefaults;	// spectrogram
+    CSpectroParm        m_snapshotParmDefaults;		// snapshot
 
     // other members
     BOOL                m_bMenuModified;       // menu already modified

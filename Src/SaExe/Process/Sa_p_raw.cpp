@@ -84,7 +84,6 @@ long CProcessRaw::Process(void * pCaller, ISaDoc * pDoc, int nProgress, int nLev
         if (dwDataPos >= dwDocWavBufferPosition + dwDocWaveBufferSize)
         {
             // get pointer to data block
-			TRACE("reading %d\n",dwDataPos);
             pDocData = pDoc->GetWaveData(dwDataPos,TRUE);
             dwDocWavBufferPosition = pDoc->GetWaveBufferIndex();
         }

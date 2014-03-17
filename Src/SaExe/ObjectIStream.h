@@ -11,6 +11,7 @@
 #define OBJECTISTREAM_H
 
 #include <fstream>
+#include "array_ptr.h"
 
 using std::ifstream;  // iostream
 using std::ofstream;  // iostream
@@ -21,7 +22,7 @@ using std::streampos;
 class CObjectIStream
 {
 public:
-    CObjectIStream(LPCSTR filename);
+    CObjectIStream( LPCSTR filename);
     ~CObjectIStream();
 
 	void Clear();
@@ -69,7 +70,7 @@ public:
     bool bReadWindowPlacement(LPCSTR pszMarker, WINDOWPLACEMENT & wpl);
 #endif  // not NO_INTERFACE
 
-	size_t GetBufferSize();
+	size_t GetBufferSize() const;
 
 protected:
     // Read any marked string
@@ -81,15 +82,15 @@ protected:
 private:
 	bool Shw_bAtWhiteSpace(const char * psz);
     void ReadMarkedLine(LPCSTR * ppszMarker, LPCSTR * ppszString); // Read any marked line
-    void ReadLine();        // Read one line
+    void ReadLine();				// Read one line
 
-    ifstream m_ios;         // iostream from which input is read
-    char * m_pszMStringBuf; // input buffer for a marked string
-    char * m_pszEnd;        // end of string (i.e. its null) where next line is read
-    bool m_bUnRead;         // buffer contains a marked string which has been "unread"
-    char * m_pszMarker;     // beginning of unread marker
-    char * m_pszString;     // beginning of unread string
-    char m_chEndOfLine;     // delimiter for the get-one-line function
+    ifstream m_ios;					// iostream from which input is read
+	array_ptr<char> string_buffer;	// input buffer for a marked string
+    char * m_pszEnd;				// end of string (i.e. its null) where next line is read
+    bool m_bUnRead;					// buffer contains a marked string which has been "unread"
+    char * m_pszMarker;				// beginning of unread marker
+    char * m_pszString;				// beginning of unread string
+    char m_chEndOfLine;				// delimiter for the get-one-line function
 
     bool bReadMarker(char cFirstChar, LPCSTR pszMarker); // low level read begin or end marker
 

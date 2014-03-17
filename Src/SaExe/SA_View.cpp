@@ -772,7 +772,7 @@ void CSaView::OnImportSFM()
     {
         szTitle = szTitle.Left(nFind);    // remove extension
     }
-    CSaString szFilter = "Standard Format (*.sfm) |*.sfm|All Files (*.*) |*.*||";
+    CSaString szFilter = "Standard Format (*.sfm)(*.txt)|*.sfm;*.txt|All Files (*.*) |*.*||";
     CFileDialog dlgFile(TRUE,_T("sfm"),szTitle,OFN_HIDEREADONLY,szFilter,NULL);
     if (dlgFile.DoModal()!=IDOK)
     {

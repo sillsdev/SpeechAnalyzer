@@ -2,6 +2,7 @@
 #include <streambuf>
 #include <sstream>
 #include "SaString.h"
+#include "array_ptr.h"
 
 using std::wstringstream;
 using std::streampos;
@@ -12,7 +13,7 @@ using std::streampos;
 class CStringStream
 {
 public:
-	CStringStream(LPCTSTR data);
+	CStringStream( LPCTSTR data);
 	~CStringStream();
 
 	void Clear();
@@ -54,7 +55,6 @@ public:
 
     void PeekMarkedString(LPCTSTR * ppszMarker, LPTSTR pszString, size_t len, bool bTrimWhiteSpace = true);
 
-	size_t GetBufferSize();
 	bool ReadStreamString( LPCTSTR pszMarker, CSaString & szResult);
 
 protected:
@@ -69,7 +69,7 @@ private:
     void ReadLine();			// Read one line
 
     wstringstream m_ios;		// iostream from which input is read
-    LPTSTR m_pszMStringBuf;		// input buffer for a marked string
+	array_ptr<wchar_t> string_buffer;
     LPTSTR m_pszEnd;			// end of string (i.e. its null) where next line is read
     bool m_bUnRead;				// buffer contains a marked string which has been "unread"
     LPTSTR m_pszMarker;			// beginning of unread marker

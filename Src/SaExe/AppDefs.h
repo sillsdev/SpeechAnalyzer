@@ -145,7 +145,7 @@ enum ECursorAlignment
     ALIGN_AT_ZERO_CROSSING  =  1,
     ALIGN_AT_FRAGMENT       =  2,
     ALIGN_AT_SEGMENT        =  3,   // !!future use
-    ALIGN_USER_SETTING       =  1000 // use global user setting
+    ALIGN_USER_SETTING      =  1000 // use global user setting
 };
 
 // used by saveas dialog

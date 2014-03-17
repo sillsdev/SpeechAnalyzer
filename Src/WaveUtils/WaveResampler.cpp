@@ -698,7 +698,7 @@ CWaveResampler::ECONVERT CWaveResampler::Resample(LPCTSTR src, const TCHAR  * ds
     vector<vector<double>> buffers;
 
     // pull each channel into it's own buffer
-    for (int ch=0; ch<nChannels; ch++) 
+    for (size_t ch=0; ch<nChannels; ch++) 
 	{
 
         size_t numSamples = length/nChannels;
@@ -811,7 +811,7 @@ CWaveResampler::ECONVERT CWaveResampler::Resample(LPCTSTR src, const TCHAR  * ds
 		{
 			writer.write( dst, MMIO_CREATE|MMIO_WRITE|MMIO_EXCLUSIVE, 16, wFormatTag, nChannels, nSamplesPerSec, buffer);
 		} 
-		catch (wave_error & e) 
+		catch (wave_error & /*e*/) 
 		{
 			return EC_WRITEFAIL;
 		}

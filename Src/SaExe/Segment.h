@@ -118,16 +118,18 @@ public:
     };
 
     virtual int CheckPosition(CSaDoc *,DWORD dwStart,DWORD dwStop, EMode nMode=MODE_AUTOMATIC, BOOL bOverlap=TRUE) const = 0;
-
-    enum
-    {
+	
+	enum ELimit
+	{
         LIMIT_MOVING_START=1,
         LIMIT_MOVING_STOP=2,
         LIMIT_MOVING_BOTH=3,
-        LIMIT_NO_OVERLAP=4
+        LIMIT_MOVING_START_NO_OVERLAP=4,
+        LIMIT_MOVING_STOP_NO_OVERLAP=5,
+        LIMIT_MOVING_BOTH_NO_OVERLAP=6,
     };
 
-    virtual void LimitPosition(CSaDoc *,DWORD & dwStart,DWORD & dwStop, int nMode=LIMIT_MOVING_BOTH) const = 0;
+    virtual void LimitPosition(CSaDoc *,DWORD & dwStart,DWORD & dwStop, ELimit nMode=LIMIT_MOVING_BOTH) const = 0;
     BOOL NeedToScroll(CSaView & saView, int nIndex) const;
     int FirstVisibleIndex(CSaDoc & saDoc) const;
     int LastVisibleIndex(CSaDoc & saDoc) const;
@@ -156,6 +158,8 @@ public:
     CSaString * GetString();                                // return pointer to annotation string
     size_t GetStringLength();                               // return the text string length
     void SetString(LPCTSTR val);                             // sets the annotation string
+
+	void Validate();
 
 protected:
     typedef BOOL (CALLBACK EXPORT * TpInputFilterProc)(CSaString &);

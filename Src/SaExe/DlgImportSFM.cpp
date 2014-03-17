@@ -121,7 +121,6 @@ void CDlgImportSFM::OnImportPlainText()
     EndDialog(IDC_IMPORT_PLAIN_TEXT);
 }
 
-
 /***************************************************************************/
 // CDlgAnnotation::OnInitDialog
 /***************************************************************************/

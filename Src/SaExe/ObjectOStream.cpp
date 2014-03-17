@@ -13,7 +13,6 @@
 #include "objectostream.h"
 #include <string.h>
 #include <assert.h>
-#include "defs.h"
 
 using std::ofstream;
 using std::ifstream;

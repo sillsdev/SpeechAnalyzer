@@ -144,19 +144,25 @@ BOOL CTextSegment::Insert(int nIndex, LPCTSTR pszString, bool delimiter, DWORD d
 DWORD CTextSegment::CalculateDuration(CSaDoc * pDoc, const int nIndex) const
 {
 
-    CSegment * pMaster = (CSegment *) pDoc->GetSegment(m_nMasterIndex);
+    CSegment * pMaster = (CSegment *)pDoc->GetSegment(m_nMasterIndex);
 
-    if ((nIndex < 0) || (nIndex >= (GetOffsetSize())))
+	pMaster->Validate();
+
+	DWORD offset_size = GetOffsetSize();
+    if ((nIndex < 0) || (nIndex >= offset_size))
     {
         return DWORD(-1);
     }
-    if ((nIndex + 1) == GetOffsetSize())
+    if ((nIndex + 1) == offset_size)
     {
-        return pMaster->GetStop(pMaster->GetOffsetSize()-1) - GetOffset(nIndex);
+        return pMaster->GetStop( pMaster->GetOffsetSize()-1) - GetOffset(nIndex);
     }
     else
     {
-        DWORD dwStop = pMaster->GetStop(pMaster->FindOffset(GetOffset(GetNext(nIndex)))-1);
+		DWORD next = GetNext(nIndex);
+		DWORD offset = GetOffset(next);
+		DWORD find_offset = pMaster->FindOffset(offset)-1;
+        DWORD dwStop = pMaster->GetStop(find_offset);
         if (dwStop == -1)
         {
             return DWORD(-1);
@@ -183,7 +189,7 @@ void CTextSegment::DeleteContents()
 // start cursor must not be placed in the range of a segment, where already
 // another segment is aligned to, but there must be a segment to align to.
 /***************************************************************************/
-void CTextSegment::LimitPosition(CSaDoc * pSaDoc, DWORD & dwStart, DWORD & dwStop, int) const
+void CTextSegment::LimitPosition(CSaDoc * pSaDoc, DWORD & dwStart, DWORD & dwStop, ELimit) const
 {
 
     // get pointer to view

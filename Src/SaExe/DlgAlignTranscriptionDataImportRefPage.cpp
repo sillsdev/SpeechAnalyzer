@@ -98,7 +98,7 @@ BOOL CDlgAlignTranscriptionDataImportRefPage::OnSetActive()
 void CDlgAlignTranscriptionDataImportRefPage::OnClickedImport()
 {
 
-    CFileDialog dlg(TRUE, NULL, NULL, OFN_HIDEREADONLY, _T("Text Files (*.txt)|*.txt|Standard Format (*.sfm)|*.sfm| All Files (*.*) |*.*||"), this);
+    CFileDialog dlg(TRUE, NULL, NULL, OFN_HIDEREADONLY, _T("Standard Format (*.sfm)(*.txt)|*.sfm;*.txt| All Files (*.*) |*.*||"), this);
     if (dlg.DoModal() != IDOK)
     {
         return;

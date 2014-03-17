@@ -103,8 +103,8 @@
 #include "objectostream.h"
 #include "objectistream.h"
 #include "DlgPlayer.h"
-
 #include <wchar.h>
+#include "array_ptr.h"
 
 #pragma comment(linker, "/SECTION:.shr,RWS")
 #pragma data_seg(".shr")
@@ -251,7 +251,7 @@ HMODULE LoadCompatibleLibrary( LPCTSTR szTarget)
         return 0;
     }
 
-    auto_ptr<BYTE> pLibVersion(new BYTE[dwSize]);
+    array_ptr<BYTE> pLibVersion(dwSize);
     if (!GetFileVersionInfo(szName, dwHandle, dwSize, pLibVersion.get()))
     {
         return 0;
@@ -270,7 +270,7 @@ HMODULE LoadCompatibleLibrary( LPCTSTR szTarget)
         return 0;
     }
 
-	auto_ptr<BYTE> pAppVersion(new BYTE[dwSize]);
+	array_ptr<BYTE> pAppVersion(dwSize);
     if (!GetFileVersionInfo(szApp, dwHandle, dwSize, pAppVersion.get()))
     {
         return 0;
@@ -354,13 +354,14 @@ BOOL CSaApp::InitInstance()
 
     AfxOleInit();
 
-    // Register the application's document templates. Document templates
-    // serve as the connection between documents, frame windows and views.
+    // Register the application's document templates. 
+	// Document templates serve as the connection between documents, frame windows and views.
     m_pDocTemplate = new CMultiDocTemplate(IDR_SA_ANNTYPE,
                                            RUNTIME_CLASS(CSaDoc),
                                            RUNTIME_CLASS(CChildFrame),
                                            RUNTIME_CLASS(CSaView));
     AddDocTemplate(m_pDocTemplate);
+
     // add workbench template
     AddDocTemplate(new CMultiDocTemplate(IDR_SA_WBTYPE,
                                          RUNTIME_CLASS(CWorkbenchDoc),
@@ -1563,6 +1564,7 @@ void CSaApp::FileOpen()
     CDlgFileOpen dlgFile(_T("wav"),
                          _T("*.wav"),
                          OFN_HIDEREADONLY | OFN_FILEMUSTEXIST,
+                         //_T("WAV Files (*.wav)|*.wav|Other Audio Files (*.mp3;*.wma )|*.mp3;*.wma|Speech Analyzer Workbench Files (*.wb) |*.wb|ELAN Files (*.eaf)|*.eaf||"));
                          _T("WAV Files (*.wav)|*.wav|Other Audio Files (*.mp3;*.wma )|*.mp3;*.wma|Speech Analyzer Workbench Files (*.wb) |*.wb||"));
 
     CSaString szDefault = DefaultDir(); // need to save copy (return value is destroyed)

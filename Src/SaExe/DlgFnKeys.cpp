@@ -564,18 +564,25 @@ void CDlgFnKeys::OnTest()
         UpdateData(TRUE);
         CString szText;
         szText.LoadString(IDS_STOP_TEST);
-        pWnd->SetWindowText(szText); // set the stop Test button caption
+        pWnd->SetWindowText(szText);			// set the stop Test button caption
         DWORD dwSize, dwStart = 0;
-        CSaDoc * pDoc = (CSaDoc *)m_pDoc; // cast pointer to document
+        CSaDoc * pDoc = (CSaDoc *)m_pDoc;		// cast pointer to document
         WORD wSmpSize = (WORD)pDoc->GetSampleSize();
         BOOL bError = FALSE;
         switch (m_nPlayMode)
         {
-        case 0:
+		case 0:
+			//ID_PLAYBACK_ENDCURSOR
+            dwStart = m_pView->GetStopCursorPosition();
+            dwSize = pDoc->GetDataSize()-dwStart;
+			break;
+        case 1:
+			//ID_PLAYBACK_CURSORS
             dwStart = m_pView->GetStartCursorPosition();
             dwSize = m_pView->GetStopCursorPosition() - dwStart + wSmpSize;
             break;
-        case 1:
+        case 2:
+			//ID_PLAYBACK_LTOSTART
             dwStart = DWORD(m_pView->GetDataPosition(0));
             dwSize = m_pView->GetStartCursorPosition();
             if (dwSize > dwStart)
@@ -587,7 +594,8 @@ void CDlgFnKeys::OnTest()
                 bError = TRUE;
             }
             break;
-        case 2:
+        case 3:
+			//ID_PLAYBACK_STARTTOR
             dwStart = m_pView->GetStartCursorPosition();
             dwSize = DWORD(m_pView->GetDataPosition(0) + m_pView->GetDataFrame());
             if (dwSize > dwStart)
@@ -599,7 +607,8 @@ void CDlgFnKeys::OnTest()
                 bError = TRUE;
             }
             break;
-        case 3:
+        case 4:
+			//ID_PLAYBACK_LTOSTOP
             dwStart = DWORD(m_pView->GetDataPosition(0));
             dwSize = m_pView->GetStopCursorPosition();
             if (dwSize > dwStart)
@@ -611,7 +620,8 @@ void CDlgFnKeys::OnTest()
                 bError = TRUE;
             }
             break;
-        case 4:
+        case 5:
+			//ID_PLAYBACK_STOPTOR
             dwStart = m_pView->GetStopCursorPosition();
             dwSize = DWORD(m_pView->GetDataPosition(0) + m_pView->GetDataFrame());
             if (dwSize > dwStart)
@@ -623,11 +633,13 @@ void CDlgFnKeys::OnTest()
                 bError = TRUE;
             }
             break;
-        case 5:
+        case 6:
+			//ID_PLAYBACK_WINDOW
             dwStart = DWORD(m_pView->GetDataPosition(0));
             dwSize = m_pView->GetDataFrame();
             break;
-        case 6:
+        case 7:
+			//ID_PLAYBACK_FILE
             dwSize = pDoc->GetDataSize();
             break;
         default:

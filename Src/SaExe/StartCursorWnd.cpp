@@ -292,7 +292,7 @@ void CStartCursorWnd::OnMouseMove(UINT nFlags, CPoint point)
         {
             if (m_nEditBoundaries == BOUNDARIES_EDIT_BOUNDARIES)
             {
-                pView->GetAnnotation(nLoop)->LimitPosition(pView->GetDocument(), dwCursor, dwStopCursor,CSegment::LIMIT_MOVING_START | CSegment::LIMIT_NO_OVERLAP); // Limit positions of cursors
+                pView->GetAnnotation(nLoop)->LimitPosition(pView->GetDocument(), dwCursor, dwStopCursor, CSegment::LIMIT_MOVING_START_NO_OVERLAP); // Limit positions of cursors
             }
             else if (m_nEditBoundaries == BOUNDARIES_EDIT_SEGMENT_SIZE)
             {
@@ -450,7 +450,7 @@ void CStartCursorWnd::OnLButtonDown(UINT nFlags, CPoint point)
     {
         if (m_nEditBoundaries == BOUNDARIES_EDIT_BOUNDARIES)
         {
-            pView->GetAnnotation(nLoop)->LimitPosition(pView->GetDocument(), m_dwStartDragPos, dwStopCursor,CSegment::LIMIT_MOVING_START | CSegment::LIMIT_NO_OVERLAP); // Limit positions of cursors
+            pView->GetAnnotation(nLoop)->LimitPosition(pView->GetDocument(), m_dwStartDragPos, dwStopCursor,CSegment::LIMIT_MOVING_START_NO_OVERLAP); // Limit positions of cursors
         }
         else if (m_nEditBoundaries == BOUNDARIES_EDIT_SEGMENT_SIZE)
         {
@@ -553,7 +553,7 @@ void CStartCursorWnd::OnLButtonUp(UINT nFlags, CPoint point)
     {
         if (m_nEditBoundaries == BOUNDARIES_EDIT_BOUNDARIES)
         {
-            pView->GetAnnotation(nLoop)->LimitPosition(pView->GetDocument(), dwStartCursor, dwStopCursor,CSegment::LIMIT_MOVING_START | CSegment::LIMIT_NO_OVERLAP); // Limit positions of cursors
+            pView->GetAnnotation(nLoop)->LimitPosition(pView->GetDocument(), dwStartCursor, dwStopCursor,CSegment::LIMIT_MOVING_START_NO_OVERLAP); // Limit positions of cursors
         }
         else if (m_nEditBoundaries == BOUNDARIES_EDIT_SEGMENT_SIZE)
         {

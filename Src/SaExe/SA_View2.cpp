@@ -4273,11 +4273,7 @@ void CSaView::MoveBoundary( bool start, bool left)
 	if (pPlot==NULL) return;
 
 	// Limit positions of cursors
-	int mode = (start)? CSegment::LIMIT_MOVING_START : CSegment::LIMIT_MOVING_STOP;
-	if (!overlap)
-	{
-		mode |= CSegment::LIMIT_NO_OVERLAP;
-	}
+	CSegment::ELimit mode = (start)?((overlap)?CSegment::LIMIT_MOVING_START:CSegment::LIMIT_MOVING_START_NO_OVERLAP):((overlap)?CSegment::LIMIT_MOVING_STOP:CSegment::LIMIT_MOVING_STOP_NO_OVERLAP);
 
 	CSaDoc * pDoc = GetDocument();
 
@@ -4538,6 +4534,7 @@ void CSaView::OnEditAutoAdd()
     OnEditAdd();
     OnEditAddWord();
     OnEditAddPhraseL1();
+	DWORD save = GetStartCursorPosition();
     OnEditAddAutoPhraseL2();
 
     start = GetStartCursorPosition();
@@ -4546,6 +4543,8 @@ void CSaView::OnEditAutoAdd()
     {
         SetStopCursorPosition(start+1);
     }
+
+    m_advancedSelection.SelectFromPosition( this, MUSIC_PL1, save, CSegmentSelection::FIND_EXACT);
 }
 
 //SDM 1.5Test11.3
@@ -4575,6 +4574,7 @@ void CSaView::OnEditAutoAddStorySection()
     OnEditAdd();
     OnEditAddWord();
     OnEditAddPhraseL1();
+	DWORD save = GetStartCursorPosition();
     OnEditAddAutoPhraseL2();
 
     start = GetStartCursorPosition();
@@ -4583,6 +4583,8 @@ void CSaView::OnEditAutoAddStorySection()
     {
         SetStopCursorPosition(start+1);
     }
+
+    m_advancedSelection.SelectFromPosition( this, MUSIC_PL1, save, CSegmentSelection::FIND_EXACT);
 }
 
 BOOL CSaView::IsPhoneticOverlapping(bool story)
@@ -6073,7 +6075,7 @@ void CSaView::OnUpdateEditPrevious(CCmdUI * pCmdUI)
         else
         {
             int MASTER = GetAnnotation(nLoop)->GetMasterIndex();
-            if ((MASTER!=-1)&&(nLoop != GLOSS)&&(nLoop != PHONETIC))
+            if ((MASTER!=-1) && (nLoop != GLOSS) && (nLoop != PHONETIC))
             {
                 CSegment * pMaster=GetAnnotation(MASTER);
 

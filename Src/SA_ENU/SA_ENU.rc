@@ -26,7 +26,7 @@ LANGUAGE LANG_NEUTRAL, SUBLANG_NEUTRAL
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 3,1,0,87
+ FILEVERSION 3,1,0,88
  PRODUCTVERSION 1,0,0,1
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
@@ -44,7 +44,7 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "SIL International"
             VALUE "FileDescription", "Speech Analyzer Resource DLL"
-            VALUE "FileVersion", "v3.1.0.87"
+            VALUE "FileVersion", "v3.1.0.88"
             VALUE "InternalName", "SA_ENU"
             VALUE "LegalCopyright", "© 1996-2014 SIL International (MSEA)"
             VALUE "OriginalFilename", "SA_ENU.dll"
@@ -704,10 +704,10 @@ BEGIN
     CONTROL         "&Bandwidth",IDC_SPECTRUM_FORMANTBANDWIDTH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,145,110,91,14
 END
 
-IDD_FNKEYS DIALOG 0, 0, 258, 121
+IDD_FNKEYS DIALOGEX 0, 0, 258, 121
 STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
 CAPTION "Function Keys Setup"
-FONT 8, "MS Sans Serif"
+FONT 8, "MS Sans Serif", 0, 0, 0x0
 BEGIN
     GROUPBOX        "",IDC_STATIC,149,13,45,81
     DEFPUSHBUTTON   "OK",IDOK,205,6,50,14
@@ -2423,6 +2423,10 @@ BEGIN
         BOTTOMMARGIN, 126
     END
 
+    IDD_FNKEYS, DIALOG
+    BEGIN
+    END
+
     IDD_CHARTCONSONANTSPAGE, DIALOG
     BEGIN
         TOPMARGIN, 3
@@ -2633,7 +2637,7 @@ IDB_LANDU               BITMAP                  "RES\\LANDU.BMP"
 IDB_FACE                BITMAP                  "RES\\FACE.BMP"
 IDB_JAW                 BITMAP                  "RES\\JAW.BMP"
 IDB_TONGUE              BITMAP                  "RES\\TONGUE.BMP"
-IDR_BAR_ADVANCED        BITMAP                  "res\\advanced.bmp"
+IDR_BAR_ADVANCED        BITMAP                  "res\\IDR_BAR_ADVANCED.bmp"
 IDR_TASKBAR             BITMAP                  "res\\taskbar.bmp"
 
 /////////////////////////////////////////////////////////////////////////////
@@ -2706,6 +2710,7 @@ BEGIN
     BUTTON      ID_PLAYBACK_CURSORS
     BUTTON      ID_PLAYBACK_LTOSTOP
     BUTTON      ID_PLAYBACK_STOPTOR
+    BUTTON      ID_PLAYBACK_ENDCURSOR
     BUTTON      ID_PLAYBACK_WINDOW
     BUTTON      ID_PLAYBACK_FILE
     BUTTON      ID_PLAYER_PAUSE
@@ -2856,8 +2861,8 @@ BEGIN
             MENUITEM "Add Phrase L&2 Segment\tCtrl+2", ID_EDIT_ADD_PHRASE_L2
             MENUITEM "Add Phrase L&3 Segment\tCtrl+3", ID_EDIT_ADD_PHRASE_L3
             MENUITEM "Add Phrase L&4 Segment\tCtrl+4", ID_EDIT_ADD_PHRASE_L4
-            MENUITEM "Add Wordlist &Record Markup\tAlt+Z",   ID_EDIT_AUTO_ADD
-            MENUITEM "Add Text Breath &Group Markup\tAlt+X",   ID_EDIT_AUTO_ADD_STORY_SECTION
+            MENUITEM "Add Wordlist &Record Markup\tAlt+Z", ID_EDIT_AUTO_ADD
+            MENUITEM "Add Text Breath &Group Markup\tAlt+X", ID_EDIT_AUTO_ADD_STORY_SECTION
             MENUITEM SEPARATOR
             MENUITEM "&Update All Boundaries",      ID_EDIT_AUTO_SNAP_UPDATE
             MENUITEM SEPARATOR
@@ -3920,6 +3925,9 @@ END
 
 IDD_FNKEYS DLGINIT
 BEGIN
+    IDC_PLAYMODE, 0x403, 23, 0
+0x6e45, 0x2064, 0x7543, 0x7372, 0x726f, 0x2d20, 0x203e, 0x6946, 0x656c, 
+0x4520, 0x646e, "\000" 
     IDC_PLAYMODE, 0x403, 16, 0
 0x6542, 0x7774, 0x6565, 0x206e, 0x7543, 0x7372, 0x726f, 0x0073, 
     IDC_PLAYMODE, 0x403, 28, 0
@@ -4364,7 +4372,7 @@ IDC_MHANDN              CURSOR                  "res\\MedHandN.cur"
 
 STRINGTABLE
 BEGIN
-    VS_VERSION              "Version 3.1.0.87"
+    VS_VERSION              "Version 3.1.0.88"
     VS_COPYRIGHT            "© 1996-2014 SIL International (MSEA).\nAll Rights Reserved."
     IDR_MAINFRAME           "Speech Analyzer"
     IDR_SA_ANNTYPE          "\nSA\nSA Document\nWAV Files (*.wav)\n.wav\nannFileType\nANN File Type"
@@ -5215,7 +5223,7 @@ END
 STRINGTABLE
 BEGIN
     ID_PLAYBACK_LTOSTOP     "Plays between the left window border and the end cursor\nPlay Left -> End Cursor"
-    ID_PLAYBACK_STOPTOR     "Plays between the end cursor and end of the file\nPlay End Cursor -> File End"
+    ID_PLAYBACK_STOPTOR     "Plays between the end cursor and the right window border\nPlay End Cursor -> Right"
     ID_IMPORT_TIME_TABLE    "Import Time Table data\nImport Time Table"
     ID_IMPORT_SFM           "Import Standard Format Markers\nImport SFM"
     IDC_SYNTHESIS           "Future synthesis option, Construction in progress"
@@ -5370,7 +5378,7 @@ STRINGTABLE
 BEGIN
     ID_AUTOSAVE_ON          "Enables auto-saving of all documents every minute."
     ID_AUTOSAVE_OFF         "Disables the AutoSave feature."
-    ID_PLAYBACK_ENDCURSOR   "Plays between the end cursor and the right window border\nPlay End Cursor -> Right"
+    ID_PLAYBACK_ENDCURSOR   "Plays between the end cursor and the end of the file\nPlay End Cursor -> File End"
 END
 
 STRINGTABLE

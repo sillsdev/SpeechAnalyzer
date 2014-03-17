@@ -34,6 +34,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SA_ENU", "SA_ENU\SA_ENU.vcx
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SA_DSP", "SA_DSP\SA_DSP.vcxproj", "{BB3F670E-28AF-42CE-9C9F-DE267D3CB986}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ElanUtils", "ElanUtils\ElanUtils.vcxproj", "{2C51801D-26B9-4ED5-81B2-324E5AAB3FD8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Mixed Platforms = Debug|Mixed Platforms
@@ -131,6 +133,14 @@ Global
 		{BB3F670E-28AF-42CE-9C9F-DE267D3CB986}.Release|Mixed Platforms.Build.0 = Release|Win32
 		{BB3F670E-28AF-42CE-9C9F-DE267D3CB986}.Release|Win32.ActiveCfg = Release|Win32
 		{BB3F670E-28AF-42CE-9C9F-DE267D3CB986}.Release|Win32.Build.0 = Release|Win32
+		{2C51801D-26B9-4ED5-81B2-324E5AAB3FD8}.Debug|Mixed Platforms.ActiveCfg = Debug|Win32
+		{2C51801D-26B9-4ED5-81B2-324E5AAB3FD8}.Debug|Mixed Platforms.Build.0 = Debug|Win32
+		{2C51801D-26B9-4ED5-81B2-324E5AAB3FD8}.Debug|Win32.ActiveCfg = Debug|Win32
+		{2C51801D-26B9-4ED5-81B2-324E5AAB3FD8}.Debug|Win32.Build.0 = Debug|Win32
+		{2C51801D-26B9-4ED5-81B2-324E5AAB3FD8}.Release|Mixed Platforms.ActiveCfg = Release|Win32
+		{2C51801D-26B9-4ED5-81B2-324E5AAB3FD8}.Release|Mixed Platforms.Build.0 = Release|Win32
+		{2C51801D-26B9-4ED5-81B2-324E5AAB3FD8}.Release|Win32.ActiveCfg = Release|Win32
+		{2C51801D-26B9-4ED5-81B2-324E5AAB3FD8}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

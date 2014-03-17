@@ -17,7 +17,7 @@ CDependentTextSegment::CDependentTextSegment(int index, int master) :
 {
 }
 
-void CDependentTextSegment::LimitPosition(CSaDoc *, DWORD & dwStart, DWORD & dwStop, int /*nMode*/) const
+void CDependentTextSegment::LimitPosition(CSaDoc *, DWORD & dwStart, DWORD & dwStop, ELimit /*nMode*/) const
 {
     dwStart=GetOffset(GetSelection());
     dwStop=GetStop(GetSelection());

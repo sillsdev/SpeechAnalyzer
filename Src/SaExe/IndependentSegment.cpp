@@ -19,9 +19,12 @@ CIndependentSegment::CIndependentSegment(int index, int master) :
 // CIndependentSegment::LimitsPosition Limits positions for annotation window
 // Adjusts the position to acceptable position to adjust boundaries
 /***************************************************************************/
-void CIndependentSegment::LimitPosition(CSaDoc * pSaDoc, DWORD & dwStart, DWORD & dwStop, int nMode) const
+void CIndependentSegment::LimitPosition(CSaDoc * pSaDoc, DWORD & dwStart, DWORD & dwStop, ELimit nMode) const
 {
-    if ((m_nSelection != -1)&&!(nMode & LIMIT_NO_OVERLAP))
+    if ((m_nSelection != -1) && 
+		((nMode==LIMIT_MOVING_START)||
+		(nMode==LIMIT_MOVING_STOP)||
+		(nMode==LIMIT_MOVING_BOTH)))
     {
         // segment selected (edit)
         if (m_nSelection > 0)
@@ -85,7 +88,10 @@ void CIndependentSegment::LimitPosition(CSaDoc * pSaDoc, DWORD & dwStart, DWORD 
             }
         }
     }
-    else if ((m_nSelection != -1)&&(nMode&LIMIT_NO_OVERLAP))
+    else if ((m_nSelection != -1) && 
+			 ((nMode==LIMIT_MOVING_START_NO_OVERLAP)||
+			  (nMode==LIMIT_MOVING_STOP_NO_OVERLAP)||
+			  (nMode==LIMIT_MOVING_BOTH_NO_OVERLAP)))
     {
         // SDM 1.5Test8.1
         DWORD dwStartMin=0;

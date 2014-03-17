@@ -13,18 +13,22 @@
 #include "objectistream.h"
 #include <string.h>
 #include <assert.h>
-#include "defs.h"
+#include "FileUtils.h"
 
 using std::ofstream;
 using std::ifstream;
 using std::ios;
 
+#define maxsizMString 32000
+
 // ==========================================================================
-CObjectIStream::CObjectIStream(LPCSTR filename) :
-    m_ios()
+CObjectIStream::CObjectIStream( LPCSTR filename) :
+m_ios(),
+string_buffer()
 {
     m_ios.open(filename);
-    m_pszMStringBuf = new char[maxsizMString];
+	DWORD file_length = GetFileSize( filename);
+	string_buffer.reallocate(file_length+1);
     m_pszEnd = NULL;
     m_pszMarker = NULL;
     m_pszString = NULL;
@@ -34,12 +38,11 @@ CObjectIStream::CObjectIStream(LPCSTR filename) :
 
 CObjectIStream::~CObjectIStream()
 {
-    delete [] m_pszMStringBuf;
 }
 
-size_t CObjectIStream::GetBufferSize()
+size_t CObjectIStream::GetBufferSize() const
 {
-	return maxsizMString;
+	return string_buffer.size();
 }
 
 void CObjectIStream::SkipBOM()
@@ -136,7 +139,7 @@ bool CObjectIStream::bReadBeginMarker(LPCSTR pszMarker, LPSTR psName, size_t siz
     LPCSTR pszStringRead = NULL;
     ReadMarkedString(&pszMarkerRead, &pszStringRead);
 
-    BOOL bBeginMarker = (*pszMarkerRead == '+') && bEqual(pszMarker, pszMarkerRead+1);
+    BOOL bBeginMarker = (*pszMarkerRead == '+') && (strcmp(pszMarker, pszMarkerRead+1)==0);
     if (!bBeginMarker)
     {
         UnReadMarkedString();
@@ -154,7 +157,7 @@ bool CObjectIStream::bReadMarker(char cFirstChar, LPCSTR pszMarker)
     LPCSTR pszStringRead = NULL;
     ReadMarkedString(&pszMarkerRead, &pszStringRead);
 
-    BOOL bMarkerFound = (*pszMarkerRead == cFirstChar) && bEqual(pszMarker, pszMarkerRead+1);
+    BOOL bMarkerFound = (*pszMarkerRead == cFirstChar) && (strcmp(pszMarker, pszMarkerRead+1)==0);
     if (!bMarkerFound)
     {
         UnReadMarkedString();
@@ -212,7 +215,7 @@ bool CObjectIStream::bReadString(LPCSTR pszMarker, LPCSTR * s)
     LPCSTR pszStringRead = NULL;
     ReadMarkedString(&pszMarkerRead, &pszStringRead);
 
-    if (!bEqual(pszMarker, pszMarkerRead))
+    if (strcmp(pszMarker, pszMarkerRead)!=0)
     {
         UnReadMarkedString();
         return false;
@@ -365,15 +368,15 @@ bool CObjectIStream::bReadWindowPlacement(LPCSTR pszMarker, WINDOWPLACEMENT & wp
         return FALSE;
     }
 
-    if (bEqual(pszShowState, "normal"))
+    if (strcmp(pszShowState, "normal")==0)
     {
         wpl.showCmd = SW_SHOWNORMAL;
     }
-    else if (bEqual(pszShowState, "min"))
+    else if (strcmp(pszShowState, "min")==0)
     {
         wpl.showCmd = SW_SHOWMINIMIZED;
     }
-    else if (bEqual(pszShowState, "max"))
+    else if (strcmp(pszShowState, "max")==0)
     {
         wpl.showCmd = SW_SHOWMAXIMIZED;
     }
@@ -442,7 +445,7 @@ void CObjectIStream::UnReadMarkedString()
 void CObjectIStream::ReadMarkedLine(LPCSTR * ppszMarker, LPCSTR * ppszString)
 {
     assert(!m_bUnRead);
-    char * psz = m_pszEnd = m_pszMStringBuf;
+    char * psz = m_pszEnd = string_buffer.get();
     *psz = '\0';
     ReadLine();
 
@@ -452,7 +455,7 @@ void CObjectIStream::ReadMarkedLine(LPCSTR * ppszMarker, LPCSTR * ppszString)
     psz += 1; // move past the backslash
 
     m_pszMarker = psz;
-    Length lenMarker = strcspn(psz, " \t\n");
+    size_t lenMarker = strcspn(psz, " \t\n");
     // 1996-11-04 MRP: This temporary patch will skip the rest of a field
     // that contains a backslash at the beginning of one of its lines.
     // The real fix is to use the read-line-ahead approach in sfstream.cpp
@@ -473,8 +476,8 @@ void CObjectIStream::ReadMarkedLine(LPCSTR * ppszMarker, LPCSTR * ppszString)
         // field's content follows in additional lines we must do it.
         //
         // Move the marker left one position (covering the backslash)
-        m_pszMarker = m_pszMStringBuf;
-        memcpy(m_pszMarker, m_pszMStringBuf + 1, lenMarker);
+        m_pszMarker = string_buffer.get();
+        memcpy(m_pszMarker, string_buffer.get() + 1, lenMarker);
         assert(m_pszMarker + lenMarker == psz - 1);
         m_pszMarker[lenMarker] = '\0'; // making a place for its null
     }
@@ -487,8 +490,8 @@ void CObjectIStream::ReadLine()
 {
     assert(!m_bUnRead);
     // 1995-04-12 MRP: use get in order to detect line longer than buffer
-    Length sizRemaining = maxsizMString - (m_pszEnd - m_pszMStringBuf);
-    m_ios.get(m_pszEnd, sizRemaining, m_chEndOfLine);
+    size_t sizRemaining = maxsizMString - (m_pszEnd - string_buffer.get());
+    m_ios.get( m_pszEnd, sizRemaining, m_chEndOfLine);
     m_ios.clear(); // if get encounters an empty line it will set fail bit, must be cleared
     size_t lenLine = strlen(m_pszEnd);
     m_pszEnd += lenLine;
@@ -535,7 +538,8 @@ void CObjectIStream::Rewind()
     m_ios.seekg(0);
 	m_ios.clear();
     // reset all internal data
-    m_pszMStringBuf = new char[maxsizMString];
+	size_t length = string_buffer.size();
+    string_buffer.reallocate(length);
     m_pszEnd = NULL;
     m_pszMarker = NULL;
     m_pszString = NULL;

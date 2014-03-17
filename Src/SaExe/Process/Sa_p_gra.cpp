@@ -186,7 +186,7 @@ long CProcessGrappl::Process(void * pCaller, ISaDoc * pDoc, int nProgress, int n
     // start processing
     while (m_dwDataPos < dwDataSize)
     {
-		TRACE("m_dwDataPos=%d\n",m_dwDataPos);
+		//TRACE("m_dwDataPos=%d\n",m_dwDataPos);
 
         // get raw data block
 		// this should be single channel data
@@ -220,7 +220,6 @@ long CProcessGrappl::Process(void * pCaller, ISaDoc * pDoc, int nProgress, int n
         DWORD dwPitchCount = 0;
         while (grapplGetResults( (pGrappl)m_lpBuffer, &pResults, &nresults, &alldone))
         {
-			TRACE("nresults=%d\n",nresults);
             // get max and min values and save the results
             for (int16 nLoop = 0; nLoop < nresults; nLoop++)
             {

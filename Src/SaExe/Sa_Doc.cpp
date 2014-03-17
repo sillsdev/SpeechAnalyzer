@@ -785,7 +785,7 @@ BOOL CSaDoc::OnNewDocument()
 // stores it into data members. From the wave data itself only the first
 // block of data is read and stored in the data buffer.
 /***************************************************************************/
-BOOL CSaDoc::OnOpenDocument(LPCTSTR pszPathName)
+BOOL CSaDoc::OnOpenDocument( LPCTSTR pszPathName)
 {
     CSaApp * pApp = (CSaApp *)AfxGetApp();
     CSaString szWavePath = pszPathName;
@@ -801,6 +801,7 @@ BOOL CSaDoc::OnOpenDocument(LPCTSTR pszPathName)
         EndWaitCursor();
         return FALSE;
     }
+
 
     m_bAllowEdit = true;
 
@@ -938,7 +939,6 @@ BOOL CSaDoc::LoadTranscriptionData(LPCTSTR pszWavePath, BOOL bTemp)
         return FALSE;
     }
 
-    TRACE(L"reading %s\n",pszWavePath);
     short initSucceeded = TRUE;
     try
     {
@@ -1340,7 +1340,6 @@ BOOL CSaDoc::InsertTranscriptions(LPCTSTR pszPathName, DWORD dwPos)
         return FALSE;
     }
 
-    TRACE(L"reading %s\n",pszPathName);
     if (!saAudioDocRdr->Initialize(pszPathName, VARIANT_TRUE))
     {
         // TODO: Display a more relevant error message.
@@ -6479,7 +6478,6 @@ void CSaDoc::OnUpdateAdvancedParsePhrases(CCmdUI * pCmdUI)
 */
 void CSaDoc::DeleteSegmentContents(EAnnotation type)
 {
-
     CSegment * pSegment = m_apSegments[type];
     pSegment->DeleteContents();
 }
@@ -6541,6 +6539,10 @@ BOOL CSaDoc::AdvancedParseWord()
 
     RestartAllProcesses();
 
+	DeleteSegmentContents(REFERENCE);
+	DeleteSegmentContents(TONE);
+	DeleteSegmentContents(PHONEMIC);
+	DeleteSegmentContents(ORTHO);
     DeleteSegmentContents(PHONETIC);
     DeleteSegmentContents(GLOSS);
 

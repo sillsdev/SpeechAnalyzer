@@ -19,7 +19,6 @@ static char BASED_CODE THIS_FILE[] = __FILE__;
 CPhoneticSegment::CPhoneticSegment(int index, int master) :
 CIndependentSegment(index,master)
 {
-	TRACE("adding phonetic segment %d %d\n",index,master);
 }
 
 CSegment::TpInputFilterProc CPhoneticSegment::GetInputFilter(void) const

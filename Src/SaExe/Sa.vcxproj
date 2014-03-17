@@ -344,10 +344,10 @@
     <ClCompile Include="WaveWarp.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="ClassDiagram1.cd" />
     <None Include="Export.cd" />
     <None Include="Graphs.cd" />
     <None Include="Process.cd" />
+    <None Include="Res\SA.ICO" />
     <None Include="Segments.cd" />
     <None Include="Windows.cd" />
   </ItemGroup>
@@ -355,7 +355,7 @@
     <ClInclude Include="AlignInfo.h" />
     <ClInclude Include="AppDefs.h" />
     <ClInclude Include="ArchiveTransfer.h" />
-    <ClInclude Include="DEFS.H" />
+    <ClInclude Include="array_ptr.h" />
     <ClInclude Include="DlgAutoRecorder.h" />
     <ClInclude Include="AutoSave.h" />
     <ClInclude Include="ChildFrame.h" />

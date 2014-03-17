@@ -9,7 +9,7 @@
 #include <fstream>
 #include <string.h>
 #include <assert.h>
-#include "defs.h"
+#include "array_ptr.h"
 
 using std::ofstream;
 using std::ifstream;
@@ -17,10 +17,12 @@ using std::ios;
 
 // ==========================================================================
 CStringStream::CStringStream(LPCTSTR data) :
-m_ios()
+m_ios(),
+string_buffer()
 {
 	m_ios.str(data);
-    m_pszMStringBuf = new wchar_t[maxsizMString];
+	size_t length = wcslen(data);
+	string_buffer.reallocate(length);
     m_pszEnd = NULL;
     m_pszMarker = NULL;
     m_pszString = NULL;
@@ -30,12 +32,6 @@ m_ios()
 
 CStringStream::~CStringStream()
 {
-    delete [] m_pszMStringBuf;
-}
-
-size_t CStringStream::GetBufferSize()
-{
-	return maxsizMString;
 }
 
 bool CStringStream::bAtEnd()
@@ -368,7 +364,7 @@ void CStringStream::UnReadMarkedString()
 void CStringStream::ReadMarkedLine(LPCTSTR * ppszMarker, LPCTSTR * ppszString)
 {
     assert(!m_bUnRead);
-    LPTSTR psz = m_pszEnd = m_pszMStringBuf;
+    LPTSTR psz = m_pszEnd = string_buffer.get();
     *psz = '\0';
     ReadLine();
 
@@ -378,7 +374,7 @@ void CStringStream::ReadMarkedLine(LPCTSTR * ppszMarker, LPCTSTR * ppszString)
     psz += 1; // move past the backslash
 
     m_pszMarker = psz;
-    Length lenMarker = wcscspn(psz, L" \t\n\r");
+    size_t lenMarker = wcscspn(psz, L" \t\n\r");
     // 1996-11-04 MRP: This temporary patch will skip the rest of a field
     // that contains a backslash at the beginning of one of its lines.
     // The real fix is to use the read-line-ahead approach in sfstream.cpp
@@ -399,8 +395,8 @@ void CStringStream::ReadMarkedLine(LPCTSTR * ppszMarker, LPCTSTR * ppszString)
         // field's content follows in additional lines we must do it.
         //
         // Move the marker left one position (covering the backslash)
-        m_pszMarker = m_pszMStringBuf;
-        wmemcpy(m_pszMarker, m_pszMStringBuf + 1, lenMarker);
+        m_pszMarker = string_buffer.get();
+        wmemcpy(m_pszMarker, &string_buffer.get()[1], lenMarker);
         assert((m_pszMarker + lenMarker) == (psz - 1));
         m_pszMarker[lenMarker] = '\0'; // making a place for its null
     }
@@ -413,7 +409,7 @@ void CStringStream::ReadLine()
 {
     assert(!m_bUnRead);
     // 1995-04-12 MRP: use get in order to detect line longer than buffer
-    Length sizRemaining = maxsizMString - (m_pszEnd - m_pszMStringBuf);
+    size_t sizRemaining = string_buffer.size() - (m_pszEnd - string_buffer.get());
     m_ios.get(m_pszEnd, sizRemaining, m_chEndOfLine);
     m_ios.clear(); // if get encounters an empty line it will set fail bit, must be cleared
     size_t lenLine = wcslen(m_pszEnd);
@@ -461,8 +457,9 @@ void CStringStream::Rewind()
 	m_ios.clear();
     m_ios.seekg(0);
 	m_ios.clear();
+
     // reset all internal data
-    m_pszMStringBuf = new wchar_t[maxsizMString];
+	wmemset(string_buffer.get(),0,string_buffer.size());
     m_pszEnd = NULL;
     m_pszMarker = NULL;
     m_pszString = NULL;
@@ -536,27 +533,14 @@ bool CStringStream::Shw_bAtWhiteSpace( LPCTSTR psz)
 
 bool CStringStream::ReadStreamString( LPCTSTR pszMarker, CSaString & szResult)
 {
-	size_t size = GetBufferSize()+1;
-	LPTSTR buffer = new wchar_t[size];
-	try
+	size_t length = string_buffer.size()+1;
+	array_ptr<wchar_t> buffer(length);
+	wmemset(buffer.get(),0,length);
+
+	bool result = bReadString (pszMarker, buffer.get(), length);
+	if (result)
 	{
-		memset( buffer, 0, size);
-		bool result = bReadString (pszMarker, buffer, size);
-		if (result)
-		{
-			szResult = buffer;
-		}
-		delete [] buffer;
-		buffer = NULL;
-	    return result;
+		szResult = buffer.get();
 	}
-	catch(...)
-	{
-		if (buffer!=NULL)
-		{
-			delete [] buffer;
-			buffer = NULL;
-		}
-	}
-	return false;
+	return result;
 }

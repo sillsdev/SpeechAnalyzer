@@ -8,7 +8,7 @@ class CDependentTextSegment : public CTextSegment
 public:
     CDependentTextSegment(int index, int master = -1);
 
-    virtual void LimitPosition(CSaDoc *,DWORD & dwStart,DWORD & dwStop, int nMode=LIMIT_MOVING_BOTH) const;
+    virtual void LimitPosition(CSaDoc *,DWORD & dwStart,DWORD & dwStop, ELimit nMode=LIMIT_MOVING_BOTH) const;
     virtual BOOL SetAt(const CSaString *, bool delimiter, DWORD dwStart, DWORD dwDuration);                 // set text segment
     virtual BOOL Insert(int nIndex, LPCTSTR pszString, bool delimiter, DWORD dwStart, DWORD dwDuration);    // insert a new segment with text
     virtual BOOL InsertBlank( int nIndex, DWORD dwStart, DWORD dwDuration);									// insert a new segment with no text

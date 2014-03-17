@@ -2192,7 +2192,7 @@ void CAnnotationWnd::SetHintUpdateBoundaries(bool bHint, DWORD dwStart, DWORD dw
 
     if (bHint==TRUE)
     {
-        pSegment->LimitPosition(pDoc,dwStart, dwStop, CSegment::LIMIT_MOVING_BOTH | (bOverlap ? 0 : CSegment::LIMIT_NO_OVERLAP));
+        pSegment->LimitPosition(pDoc,dwStart, dwStop, (bOverlap)?CSegment::LIMIT_MOVING_BOTH:CSegment::LIMIT_MOVING_BOTH_NO_OVERLAP);
         if (pSegment->CheckPosition(pDoc, dwStart, dwStop, CSegment::MODE_EDIT, bOverlap)==-1)
         {
             bHint=FALSE;

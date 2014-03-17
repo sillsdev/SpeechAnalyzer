@@ -23,10 +23,9 @@ public:
 protected:
     virtual void DoDataExchange(CDataExchange * pDX);   // DDX/DDV support
     void SetEnable(int nItem, BOOL bEnable);
-
-    // Generated message map functions
     afx_msg void OnImportPlainText();
     virtual BOOL OnInitDialog();
-    DECLARE_MESSAGE_MAP()
+
+	DECLARE_MESSAGE_MAP()
 };
 #endif

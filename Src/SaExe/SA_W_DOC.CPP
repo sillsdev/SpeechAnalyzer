@@ -221,3 +221,7 @@ void CWorkbenchDoc::OnUpdateFileSave(CCmdUI * pCmdUI)
     pCmdUI->Enable(TRUE); // enable always to be able to save window placement
 }
 
+BOOL CWorkbenchDoc::IsDifferentFile() 
+{
+    return m_bDifferentFile;   // returns TRUE, if file has different path
+}

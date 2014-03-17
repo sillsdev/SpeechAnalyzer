@@ -92,7 +92,7 @@ int CDependentSegment::AlignStopToMaster(CDocument * pSaDoc, DWORD * pdwStop) co
 // CDependentSegment::LimitPosition Limit positions for start and stop based
 // on segment rules for update
 /***************************************************************************/
-void CDependentSegment::LimitPosition(CSaDoc * pSaDoc, DWORD & dwStart, DWORD & dwStop, int) const
+void CDependentSegment::LimitPosition(CSaDoc * pSaDoc, DWORD & dwStart, DWORD & dwStop, ELimit) const
 {
     // get pointer to view
     CSaDoc * pDoc = (CSaDoc *)pSaDoc; // cast pointer

@@ -174,7 +174,6 @@ void * CProcessDoc::GetProcessedDataBlock(LPCTSTR szName, int selectedChannel, i
         return &m_Buffer[dwByteOffset - m_dwBufferOffset];
     }
 
-	TRACE("reading\n");
     // new data block has to be read
     m_dwBufferOffset = dwByteOffset; // given offset is the first sample in data block
     if (bReverse)

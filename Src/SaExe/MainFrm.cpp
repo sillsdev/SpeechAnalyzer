@@ -2452,7 +2452,7 @@ void CMainFrame::WriteReadDefaultViewToTempFile(BOOL bWrite)
         }
         else
         {
-            CObjectIStream obs(szPath.utf8().c_str());
+            CObjectIStream obs( szPath.utf8().c_str());
 
             obs.bReadBool(psz_bMaxView, m_bDefaultMaximizeView);
             obs.bReadInteger(psz_HeightView, m_nDefaultHeightView);

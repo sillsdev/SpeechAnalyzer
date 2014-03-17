@@ -7,6 +7,7 @@
 #include "mainfrm.h"
 #include "DlgVowelFormants.h"
 #include "objectistream.h"
+#include "FileUtils.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -219,7 +220,7 @@ BOOL CVowelFormantSets::Load(const CSaString & szFilename)
 
     try
     {
-        CObjectIStream obs(szFilename.utf8().c_str());
+        CObjectIStream obs( szFilename.utf8().c_str());
         CVowelSetVersion version;
         if (!version.ReadProperties(obs))
         {

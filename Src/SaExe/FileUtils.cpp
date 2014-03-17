@@ -2,6 +2,12 @@
 #include <FileUtils.h>
 #include <sys/stat.h>
 #include "SaString.h"
+#include <stdio.h>
+#include <io.h>
+#include <fcntl.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <share.h>
 
 void GetTempFileName(LPCTSTR szPrefix, LPTSTR szFilename, size_t len) 
 {
@@ -193,13 +199,31 @@ int GetSaveAsFilename(LPCTSTR title, LPCTSTR filter, LPCTSTR extension, LPTSTR p
 
 DWORD GetFileSize(LPCTSTR szFile) 
 {
-    
 	CFileStatus stat;
     if (!CFile::GetStatus(szFile, stat)) 
 	{
         return -1;
     }
     return stat.m_size;
+}
+
+/**
+* returns the file size in bytes
+*/
+DWORD GetFileSize( LPCSTR filename) 
+{
+   DWORD size = 0;
+   int fd = _sopen( filename, _O_RDONLY, _SH_DENYNO, 0);
+   if ( fd != -1 ) {
+	   struct _stat stat;
+	   memset(&stat,0,sizeof(stat));
+	   int result = _fstat( fd, &stat);
+	   if (result==0) {
+		   size = stat.st_size;
+	   }
+	   _close(fd);
+	}
+	return size;
 }
 
 bool EndsWith(LPCTSTR path, LPCTSTR extension) 

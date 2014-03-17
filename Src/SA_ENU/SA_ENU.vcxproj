@@ -145,7 +145,6 @@
     <None Include="Res\5.ICO" />
     <None Include="Res\6A.ICO" />
     <None Include="Res\6B.ICO" />
-    <None Include="Res\advanced.bmp" />
     <None Include="Res\BPU.BMP" />
     <None Include="Res\down.ico" />
     <None Include="Res\ECHOU.BMP" />
@@ -155,6 +154,7 @@
     <None Include="Res\FINGERNW.CUR" />
     <None Include="Res\HANDN.CUR" />
     <None Include="Res\HPU.BMP" />
+    <None Include="res\IDR_BAR_ADVANCED.bmp" />
     <None Include="Res\idr_sa_a.ico" />
     <None Include="Res\idr_synthesis_vocal_tract.ico" />
     <None Include="Res\JAW.BMP" />

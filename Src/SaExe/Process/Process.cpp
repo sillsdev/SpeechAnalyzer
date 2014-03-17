@@ -253,7 +253,7 @@ void * CProcess::GetProcessedData(DWORD dwOffset, BOOL bBlockBegin)
 // Processed data is always 16bit data (dwOffset is a word index) but the
 // buffer offset contains a byte index! pCaller is for further use.
 /***************************************************************************/
-int CProcess::GetProcessedData(DWORD dwOffset, BOOL * pbRes)
+int CProcess::GetProcessedData( DWORD dwOffset, BOOL * pbRes)
 {
     if (dwOffset == UNDEFINED_OFFSET)
     {
@@ -691,8 +691,6 @@ long CProcess::Exit(int nError)
 /***************************************************************************/
 BOOL CProcess::WriteDataBlock(DWORD dwPosition, HPSTR lpData, DWORD dwDataLength, size_t nElementSize)
 {
-	TRACE("writing pos=%d length=%d size=%d\n",dwPosition, dwDataLength, nElementSize);
-
     // open the temporary file
     BOOL bClose = (m_pFile == NULL);
     if ((m_pFile==NULL) && (!Open(GetProcessFileName(), CFile::modeReadWrite | CFile::shareExclusive)))

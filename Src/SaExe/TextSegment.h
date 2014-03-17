@@ -28,7 +28,7 @@ public:
     virtual int FindNext(int fromIndex, LPCTSTR strToFind);
     virtual int FindPrev(int fromIndex, LPCTSTR strToFind);
     virtual int CheckPosition(CSaDoc *,DWORD dwStart,DWORD dwStop, EMode nMode=MODE_AUTOMATIC, BOOL bUnused = TRUE) const;
-    virtual void  LimitPosition(CSaDoc *,DWORD & dwStart,DWORD & dwStop, int nMode=LIMIT_MOVING_BOTH) const;
+    virtual void  LimitPosition(CSaDoc *,DWORD & dwStart,DWORD & dwStop, ELimit nMode=LIMIT_MOVING_BOTH) const;
     int CountWords();
     DWORD CalculateDuration(CSaDoc * pDoc, const int nIndex) const;
     virtual CSaString GetContainedText(DWORD dwStart, DWORD dwStop);

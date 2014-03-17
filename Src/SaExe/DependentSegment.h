@@ -23,7 +23,7 @@ public:
     int AdjustPositionToMaster(CDocument * pSaDoc, DWORD & pdwOffset, DWORD & pdwStop) const;
     int CheckPositionToMaster(CSaDoc * pDoc, DWORD dwStart, DWORD dwStop, EMode nMode) const;
     virtual int CheckPosition(CSaDoc * pDoc, DWORD dwStart, DWORD dwStop, EMode nMode=MODE_AUTOMATIC, BOOL /*bUnused*/=TRUE) const;
-    virtual void LimitPosition(CSaDoc *,DWORD & dwStart,DWORD & dwStop, int nMode=LIMIT_MOVING_BOTH) const;
+    virtual void LimitPosition(CSaDoc *,DWORD & dwStart,DWORD & dwStop, ELimit nMode=LIMIT_MOVING_BOTH) const;
     virtual void Add(CSaDoc * pDoc, DWORD dwStart, CSaString & szString, BOOL bDelimiter = FALSE, BOOL bCheck = TRUE); // add a segment
 };
 

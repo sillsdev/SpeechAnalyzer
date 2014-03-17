@@ -1,3 +1,11 @@
+SA - 3.1.0.88 3/16/2014
+1) After using Alt-Z or Alt-X, the software now automatically selects the PL1 segment that was just created.
+2) Updated the player and the tool bar icons to show the new 'Play End Cursor->File End' feature addted in 3.1.0.87
+3) Fixed a GPF that was occuring with the new large word lists.  The error occurred because the CObjectIStream class used a buffer with a fix size of 32,000 bytes, regardless of the incoming file size.
+4) The 'Locate Word' feature now automatically clears the Ref, Phonemic, Tone and Ortho segments before processing
+5) Import file now allows .txt files as a default file type.
+6) Fixed a 'Locate Words' bug that was causing a crash in some files.  The crash is caused with the detected word to be created has a duration that is the exact same size of the segment being created, causing the segment end to be at the same location as the next segment start.  This causes the next segment calculation to fail.  The issue was resolved by 'pushing' the next segment ahead, if it's start overlaps the previous segments stop location.
+
 SA - 3.1.0.87 3/6/2014
 1) Added feature to automatic scroll wave form during playback - specifically when playing between the end cursor and the end of the file.
 2) Modified menu wording.
