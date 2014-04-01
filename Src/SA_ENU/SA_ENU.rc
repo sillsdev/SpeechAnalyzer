@@ -26,7 +26,7 @@ LANGUAGE LANG_NEUTRAL, SUBLANG_NEUTRAL
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 3,1,0,88
+ FILEVERSION 3,1,0,89
  PRODUCTVERSION 1,0,0,1
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
@@ -44,7 +44,7 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "SIL International"
             VALUE "FileDescription", "Speech Analyzer Resource DLL"
-            VALUE "FileVersion", "v3.1.0.88"
+            VALUE "FileVersion", "v3.1.0.89"
             VALUE "InternalName", "SA_ENU"
             VALUE "LegalCopyright", "© 1996-2014 SIL International (MSEA)"
             VALUE "OriginalFilename", "SA_ENU.dll"
@@ -96,7 +96,6 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 
 // Icon with lowest ID value placed first to ensure application icon
 // remains consistent on all systems.
-IDR_SA_WBTYPE           ICON                    "RES\\SA_WB.ICO"
 IDI_LAYOUT3B            ICON                    "RES\\3B.ICO"
 IDI_LAYOUT3A            ICON                    "RES\\3A.ICO"
 IDI_LAYOUT1             ICON                    "RES\\1.ICO"
@@ -109,7 +108,6 @@ IDI_LAYOUT6A            ICON                    "RES\\6A.ICO"
 IDI_LAYOUT6B            ICON                    "RES\\6B.ICO"
 IDR_MAINFRAME_SAS       ICON                    "RES\\SAS.ICO"
 IDR_KLATT               ICON                    "res\\idr_sa_a.ico"
-IDR_SA_ANNTYPE          ICON                    "RES\\Sa_doc.ico"
 IDI_LAYOUT2C            ICON                    "res\\2c.ico"
 IDI_LAYOUT3C            ICON                    "res\\3c.ico"
 IDI_LAYOUT4C            ICON                    "res\\4c.ico"
@@ -118,6 +116,8 @@ IDI_PREV                ICON                    "res\\prev.ico"
 IDI_UP                  ICON                    "res\\up.ico"
 IDI_DOWN                ICON                    "res\\down.ico"
 IDR_SYNTHESIS_VOCAL_TRACT ICON                    "res\\idr_synthesis_vocal_tract.ico"
+IDR_SA_WBTYPE           ICON                    "RES\\SA_WB.ICO"
+IDR_SA_ANNTYPE          ICON                    "RES\\Sa_doc.ico"
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -2357,6 +2357,59 @@ BEGIN
     LTEXT           "Seconds",IDC_STATIC,156,14,28,8
 END
 
+IDD_IMPORT_ELAN_FINISH_PAGE DIALOGEX 0, 0, 335, 186
+STYLE DS_SETFONT | DS_CENTER | WS_CHILD | WS_DISABLED | WS_CAPTION
+CAPTION "ELAN Import"
+FONT 8, "MS Sans Serif", 0, 0, 0x0
+BEGIN
+    LTEXT           "Complete Task",IDC_TITLE,5,7,324,10
+    LTEXT           "Please select Finish to perform automatic import.\n\nNOTE: The result can be undone using the Undo command in the edit menu.",IDC_INSTRUCTION,5,19,324,47
+END
+
+IDD_IMPORT_ELAN_INTRO_PAGE DIALOGEX 0, 0, 335, 186
+STYLE DS_SETFONT | WS_CHILD | WS_DISABLED | WS_CAPTION
+CAPTION "ELAN Import"
+FONT 8, "MS Sans Serif", 0, 0, 0x0
+BEGIN
+    CONTROL         "SayMore",IDC_RADIO_SAYMORE,"Button",BS_AUTORADIOBUTTON | WS_GROUP,11,39,44,10
+    CONTROL         "ELAN",IDC_RADIO_ELAN,"Button",BS_AUTORADIOBUTTON,12,52,35,10
+    GROUPBOX        "Import ELAN File",IDC_STATIC,5,4,325,67
+    LTEXT           "Select which program wrote the .EAF file.",IDC_STATIC,11,20,172,13
+    GROUPBOX        "Method",IDC_STATIC,4,75,326,74
+    LTEXT           "Speech Analyzer will markup the audio file according to the markup that was done in SayMore and ELAN.",IDC_STATIC,9,87,316,17
+    LTEXT           "The other tiers that were added in the ELAN program will need to associated with a transcription field in Speech Analyzer.\n\nThe next dialog will allow you to match these additional names.",IDC_STATIC,9,109,316,34
+END
+
+IDD_IMPORT_ELAN_SELECT_PAGE DIALOGEX 0, 0, 335, 169
+STYLE DS_SETFONT | WS_CHILD | WS_DISABLED | WS_CAPTION
+CAPTION "ELAN Import"
+FONT 8, "MS Sans Serif", 0, 0, 0x0
+BEGIN
+    GROUPBOX        "File Analysis",IDC_STATIC,4,5,326,106
+    GROUPBOX        "Status",IDC_STATIC,4,114,326,50
+    LTEXT           "Select the ELAN tier which matches the Speech Analyzer transcription field.\n\nYou can assign the ELAN tier to more than one transcription field.",IDC_STATIC,8,127,317,32
+    LTEXT           "Ref Num",IDC_STATIC,13,24,29,8
+    COMBOBOX        IDC_COMBO_REF_NUM,45,22,110,30,CBS_DROPDOWN | CBS_SORT | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "Phonetic",IDC_STATIC,13,41,29,8
+    COMBOBOX        IDC_COMBO_PHONETIC,45,39,110,30,CBS_DROPDOWN | CBS_SORT | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "Phonemic",IDC_STATIC,10,57,32,8
+    COMBOBOX        IDC_COMBO_PHONEMIC,45,55,110,30,CBS_DROPDOWN | CBS_SORT | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "Ortho.",IDC_STATIC,22,74,20,8
+    COMBOBOX        IDC_COMBO_ORTHO,45,72,110,30,CBS_DROPDOWN | CBS_SORT | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "Gloss",IDC_STATIC,24,91,18,8
+    COMBOBOX        IDC_COMBO_GLOSS,45,89,110,30,CBS_DROPDOWN | CBS_SORT | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "POS",IDC_STATIC,195,24,16,8
+    COMBOBOX        IDC_COMBO_POS,215,22,110,30,CBS_DROPDOWN | CBS_SORT | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "Phrase L1",IDC_STATIC,178,41,33,8
+    COMBOBOX        IDC_COMBO_PL1,215,39,110,30,CBS_DROPDOWN | CBS_SORT | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "Phrase L2",IDC_STATIC,178,58,33,8
+    COMBOBOX        IDC_COMBO_PL2,215,56,110,30,CBS_DROPDOWN | CBS_SORT | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "Phrase L3",IDC_STATIC,178,74,33,8
+    COMBOBOX        IDC_COMBO_PL3,215,72,110,30,CBS_DROPDOWN | CBS_SORT | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "Phrase L3",IDC_STATIC,178,91,33,8
+    COMBOBOX        IDC_COMBO_PL4,215,88,110,30,CBS_DROPDOWN | CBS_SORT | WS_VSCROLL | WS_TABSTOP
+END
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -2435,6 +2488,30 @@ BEGIN
     IDD_CHARTSUPRASEGSPAGE, DIALOG
     BEGIN
         RIGHTMARGIN, 352
+    END
+
+    IDD_ANNOTATION_INIT_PAGE, DIALOG
+    BEGIN
+    END
+
+    IDD_ANNOTATION_ORTHOGRAPHIC_PAGE, DIALOG
+    BEGIN
+    END
+
+    IDD_ANNOTATION_PHONETIC_PAGE, DIALOG
+    BEGIN
+    END
+
+    IDD_ANNOTATION_PHONEMIC_PAGE, DIALOG
+    BEGIN
+    END
+
+    IDD_ANNOTATION_SEGMENT_PAGE, DIALOG
+    BEGIN
+    END
+
+    IDD_ANNOTATION_FINISH_PAGE, DIALOG
+    BEGIN
     END
 
     IDD_EDITOR, DIALOG
@@ -2557,6 +2634,10 @@ BEGIN
         BOTTOMMARGIN, 156
     END
 
+    IDD_ANNOTATION_GLOSS_PAGE, DIALOG
+    BEGIN
+    END
+
     IDD_ANNOTATION_IMPORT_REF, DIALOG
     BEGIN
         BOTTOMMARGIN, 183
@@ -2581,6 +2662,18 @@ BEGIN
         RIGHTMARGIN, 187
         TOPMARGIN, 7
         BOTTOMMARGIN, 42
+    END
+
+    IDD_IMPORT_ELAN_FINISH_PAGE, DIALOG
+    BEGIN
+    END
+
+    IDD_IMPORT_ELAN_INTRO_PAGE, DIALOG
+    BEGIN
+    END
+
+    IDD_IMPORT_ELAN_SELECT_PAGE, DIALOG
+    BEGIN
     END
 END
 #endif    // APSTUDIO_INVOKED
@@ -4372,7 +4465,7 @@ IDC_MHANDN              CURSOR                  "res\\MedHandN.cur"
 
 STRINGTABLE
 BEGIN
-    VS_VERSION              "Version 3.1.0.88"
+    VS_VERSION              "Version 3.1.0.89"
     VS_COPYRIGHT            "© 1996-2014 SIL International (MSEA).\nAll Rights Reserved."
     IDR_MAINFRAME           "Speech Analyzer"
     IDR_SA_ANNTYPE          "\nSA\nSA Document\nWAV Files (*.wav)\n.wav\nannFileType\nANN File Type"
@@ -5112,6 +5205,22 @@ END
 
 STRINGTABLE
 BEGIN
+    IDS_NO_FIELDWORKS_PROJECT 
+                            "Speech Analyzer was unable to find the FieldWorks Projects directory.\nYou will have to select an alternate location."
+    IDS_WARN_CONVERT        "This file is in Unicode UTF-16 format.\nSpeech Analyzer is able to open this file, but it would be better to use UTF-8."
+    IDS_NO_CONVERT          "This file is in a non-standard format.\nSpeech Analyzer is not able to open this file.\nIt should be save as Unicode UTF-8."
+    IDS_MEMORY_FAILURE      "Couldn't allocate sufficient memory for the clipboard operation."
+    IDS_LENGTH_EXCEEDED     "The .SAXML transcription file contains %1 segments that are located beyond the end of the audio data.\nThe segments have been ignored.\nIf you save this file, the segments will be permanently deleted."
+    IDS_ERROR_NO_DUPE_FILENAME 
+                            "You have specified that the audio file should be converted to mono, but the filename has not been changed.\nPlease specify a new filename so that your original data is not lost!"
+    IDS_ERROR_ELAN_DUPE     "The ELAN file contains references multiple .WAV files.  Speech Analyzer is unable to this file."
+    IDS_ERROR_ELAN_NO_FILE  "Speech Analyzer was unable to find any exisiting .WAV file references in the ELAN file.  Please verify that the ELAN file uses a .WAV file, and that the .WAV file is available."
+    IDS_AWIZ_CAPTION_IMPORT_ELAN "Import ELAN"
+    IDS_LENGTH_LIMITED      "The .SAXML transcription file contains %1 segments that extended beyond the end of the audio data.\nThe segments have been truncated.\nIf you save this file, the segments will be modified permanently."
+END
+
+STRINGTABLE
+BEGIN
     IDS_AWIZ_CAPTION_IMPORT "Transcription Import"
     IDS_AWIZ_CAPTION_ALIGN  "Transcription Alignment"
     IDS_AWIZ_TITLE_INIT     "Select Transcriptions To Modify"
@@ -5379,6 +5488,7 @@ BEGIN
     ID_AUTOSAVE_ON          "Enables auto-saving of all documents every minute."
     ID_AUTOSAVE_OFF         "Disables the AutoSave feature."
     ID_PLAYBACK_ENDCURSOR   "Plays between the end cursor and the end of the file\nPlay End Cursor -> File End"
+    ID_IMPORT_ELAN          "Import ELAN file\nImport ELAN"
 END
 
 STRINGTABLE
@@ -5430,18 +5540,6 @@ BEGIN
                             "An unsaved recording was found.\nDo you wish to restore '%1'?\n\nThis file was last updated on %2.\nIf you select YES, Speech Analyzer will then ask you for a folder to restore the file to."
     IDS_CHOOSE_FOLDER       "Please choose a folder."
     IDS_CHOOSE_SELFTEST_FOLDER "Please select the Self Test data directory."
-END
-
-STRINGTABLE
-BEGIN
-    IDS_NO_FIELDWORKS_PROJECT 
-                            "Speech Analyzer was unable to find the FieldWorks Projects directory.\nYou will have to select an alternate location."
-    IDS_WARN_CONVERT        "This file is in Unicode UTF-16 format.\nSpeech Analyzer is able to open this file, but it would be better to use UTF-8."
-    IDS_NO_CONVERT          "This file is in a non-standard format.\nSpeech Analyzer is not able to open this file.\nIt should be save as Unicode UTF-8."
-    IDS_MEMORY_FAILURE      "Couldn't allocate sufficient memory for the clipboard operation."
-    IDS_LENGTH_EXCEEDED     "The .SAXML transcription file contains %1 segments that are located beyond the end of the audio data.\nThe segments have been ignored.\nIf you save this file, the segments will be permanently deleted."
-    IDS_ERROR_NO_DUPE_FILENAME 
-                            "You have specified that the audio file should be converted to mono, but the filename has not been changed.\nPlease specify a new filename so that your original data is not lost!"
 END
 
 #endif    // English (United States) resources

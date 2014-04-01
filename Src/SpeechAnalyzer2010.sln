@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SA", "SaExe\Sa.vcxproj", "{67914272-7CF2-4E5B-A0EC-54728888A13D}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SA", "SA\Sa.vcxproj", "{67914272-7CF2-4E5B-A0EC-54728888A13D}"
 	ProjectSection(ProjectDependencies) = postProject
 		{7710BEA3-39DC-4485-893F-ED4D9CA91973} = {7710BEA3-39DC-4485-893F-ED4D9CA91973}
 	EndProjectSection
@@ -21,6 +21,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "WaveUtils", "WaveUtils\Wave
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Test", "Test\test.vcxproj", "{EA21B139-5D66-46F9-A6B7-11D2647E8947}"
 	ProjectSection(ProjectDependencies) = postProject
+		{2C51801D-26B9-4ED5-81B2-324E5AAB3FD8} = {2C51801D-26B9-4ED5-81B2-324E5AAB3FD8}
 		{7710BEA3-39DC-4485-893F-ED4D9CA91973} = {7710BEA3-39DC-4485-893F-ED4D9CA91973}
 	EndProjectSection
 EndProject

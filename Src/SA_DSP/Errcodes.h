@@ -13,7 +13,7 @@
 
 #define DONE                        0
 
-#define SYNTAX_ERR                 -1     //for main test driver
+#define SYNTAX_ERROR               -1     //for main test driver
 #define NOT_READY                  -2
 #define OUT_OF_SEQUENCE            -3
 #define INVALID_STATE              -4

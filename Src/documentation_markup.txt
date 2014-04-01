@@ -1,0 +1,38 @@
+Documentation Markup:
+
+Doxygen allows for simple markup tags in the comments (I used some in the sample documentation) they start with either a backslash, or an @. The most important I listed here:
+
+\param name descripiton 
+Intended for documenting function parameters. see the full sample source and documentation for how it looks like. 
+
+\return description 
+describe what a function returns 
+\b \c \e 
+set the next word to bold, italic, or courier, respectively. e.g.
+/// You can make things \b bold, \e italic, or set them in \c courier 
+results in You can make things bold, italic, or set them in courier. 
+
+\code 
+\endcode 
+starts and ends a section of code, respectively. (it will be formatted nicely) 
+
+\n force a newline 
+
+\internal 
+starts a paragraph with "internal information" (such as implementaiton details). The paragraph will be included only if the INTERNAL_DOCS option is enabled. 
+
+\mainpage 
+Indictaes that the following section should appear on the main page. it's a good place to introduce your most important classes, etc. (entities will be crosslinked) 
+
+\par
+
+\par Title  
+Starts a new paragraph (optionally with a paragraph title), works also inside other paragraphs (such as \param) 
+
+Lists Doxygen automatically creates a list if multiple lines start with a dash at the same position. Numbered lists can be created by starting the line with a dach and a hash (-#). See the doxygen documentation for more. 
+
+More...
+(doxygen documentation) Doxygen supports many more tags, many of them allowing for further markup, or are intended for working in conjucntion with the XML export. (e.g. you can makr the specificaiton of pre- and post-conditions, bugs, test cases, todo's, etc.) 
+
+HTML
+(doxygen documentation) Doxygen also supports HTML tags, which get converted to other outputs mroe or less correctly.  

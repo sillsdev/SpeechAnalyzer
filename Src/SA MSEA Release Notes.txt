@@ -1,3 +1,6 @@
+SA - 3.1.0.89 3/31/2014
+1) Added rudimentary ELAN support.
+
 SA - 3.1.0.88 3/16/2014
 1) After using Alt-Z or Alt-X, the software now automatically selects the PL1 segment that was just created.
 2) Updated the player and the tool bar icons to show the new 'Play End Cursor->File End' feature addted in 3.1.0.87

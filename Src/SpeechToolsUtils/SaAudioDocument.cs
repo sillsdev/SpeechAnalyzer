@@ -253,8 +253,7 @@ namespace SIL.SpeechTools.Utils
 		/// Loads the transcription file for the specified audio file path.
 		/// </summary>
 		/// ------------------------------------------------------------------------------------
-		public static SaAudioDocument Load(string audioFilePath, bool isForTmpOperation,
-			bool returnNullIfNoExist)
+		public static SaAudioDocument Load(string audioFilePath, bool isForTmpOperation, bool returnNullIfNoExist)
 		{
 			// Make sure the wave file exists.
 			if (!File.Exists(audioFilePath))
@@ -1160,7 +1159,10 @@ namespace SIL.SpeechTools.Utils
 					seg.SaAudioDocument = this;
 					key.PhraseLevel = seg.PhraseLevel;
 					key.Offset = seg.Offset;
-                    m_musicSegments.Add(key, seg);
+                    if (!m_musicSegments.ContainsKey(key))
+                    {
+                        m_musicSegments.Add(key, seg);
+                    }
 				}
 			}
 		}

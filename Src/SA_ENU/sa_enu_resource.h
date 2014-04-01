@@ -1181,6 +1181,9 @@
 #define IDD_ANNOTATION_IMPORT_SFM_WITH_REF 2045
 #define IDC_BEGIN_EDIT                  2045
 #define IDC_END_EDIT                    2046
+#define IDD_IMPORT_ELAN_FINISH_PAGE     2046
+#define IDD_IMPORT_ELAN_INTRO_PAGE      2047
+#define IDD_IMPORT_ELAN_SELECT_PAGE     2048
 #define IDC_BROWSE_FOLDER               2049
 #define IDC_BROWSE_BUTTON               2049
 #define IDC_USE_REFERENCE               2050
@@ -1220,11 +1223,23 @@
 #define IDC_MFCPROPERTYGRID1            2082
 #define IDC_RADIO1                      2083
 #define IDC_RADIO_WHOLE_FILE            2083
+#define IDC_RADIO_SAYMORE               2083
 #define IDC_RADIO_BETWEEN_CURSORS       2084
 #define IDC_CANCEL                      2085
 #define IDC_SPIN1                       2087
 #define IDC_EDIT_SILENCE                2088
 #define IDC_SPIN_SILENCE                2089
+#define IDC_RADIO_ELAN                  2091
+#define IDC_COMBO_REF_NUM               2093
+#define IDC_COMBO_PHONETIC              2094
+#define IDC_COMBO_PHONEMIC              2096
+#define IDC_COMBO_ORTHO                 2097
+#define IDC_COMBO_GLOSS                 2098
+#define IDC_COMBO_POS                   2099
+#define IDC_COMBO_PL1                   2100
+#define IDC_COMBO_PL2                   2101
+#define IDC_COMBO_PL3                   2102
+#define IDC_COMBO_PL4                   2103
 #define IDS_PLAYER_SMALL                3000
 #define IDS_PLAYER_LARGE                3001
 #define IDS_STATTXT_PROCESSING          4000
@@ -1586,6 +1601,7 @@
 #define ID_TOOLS_ADJUST_SILENCE         33237
 #define ID_ACCELERATOR33238             33238
 #define ID_PLAYBACK_ENDCURSOR           33240
+#define ID_IMPORT_ELAN                  33242
 #define ID_GRAPHTYPES_SELECT_FIRST      40000
 #define ID_GRAPHTYPES_SELECT_LAST       40011
 #define ID_PHONETIC_ALL                 40100
@@ -1731,6 +1747,10 @@
 #define IDS_MEMORY_FAILURE              61315
 #define IDS_LENGTH_EXCEEDED             61316
 #define IDS_ERROR_NO_DUPE_FILENAME      61317
+#define IDS_ERROR_ELAN_DUPE             61318
+#define IDS_ERROR_ELAN_NO_FILE          61319
+#define IDS_AWIZ_CAPTION_IMPORT_ELAN    61320
+#define IDS_LENGTH_LIMITED              61321
 
 // Next default values for new objects
 // 
@@ -1738,8 +1758,8 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_3D_CONTROLS                     1
 #define _APS_NEXT_RESOURCE_VALUE        369
-#define _APS_NEXT_COMMAND_VALUE         33241
-#define _APS_NEXT_CONTROL_VALUE         2091
+#define _APS_NEXT_COMMAND_VALUE         33243
+#define _APS_NEXT_CONTROL_VALUE         2094
 #define _APS_NEXT_SYMED_VALUE           105
 #endif
 #endif

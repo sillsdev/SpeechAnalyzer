@@ -119,7 +119,6 @@ namespace SIL.SpeechTools.Utils
 		private bool IsValidAudioFile()
 		{
 			// TODO: add format checking for all media types
-			
 			return true;
 		}
 

@@ -33,18 +33,19 @@
       <WarningLevel>Level4</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32_LEAN_AND_MEAN;WIN32;_DEBUG;WINVER=0x0501;WINDOWS_PLATFORM;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(GTEST_HOME)/include;../waveutils;../saexe</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(GTEST_HOME)/include;../waveutils;../saexe;../ElanUtils;$(XERCES_VC10_HOME)/include;</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>.\..\..\Output\Debug;$(GTEST_HOME)\build\Debug</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>.\..\..\Output\Debug;$(GTEST_HOME)\build\Debug;$(XERCES_VC10_HOME)\lib</AdditionalLibraryDirectories>
       <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Test.cpp" />
+    <ClCompile Include="TestElan.cpp" />
     <ClCompile Include="TestWaveReader.cpp" />
     <ClCompile Include="TestWaveResampler.cpp" />
     <ClCompile Include="TestWaveWriter.cpp" />

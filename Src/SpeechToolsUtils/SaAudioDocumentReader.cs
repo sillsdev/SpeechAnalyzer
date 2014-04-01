@@ -261,8 +261,9 @@ namespace SIL.SpeechTools.Utils
 		/// ------------------------------------------------------------------------------------
 		private bool ReadPhoneticSegment(out uint offset, out uint length, out string annotation)
 		{
-			while (m_doc.m_segments != null && m_eticEnumIndex < m_doc.m_segments.Count &&
-				m_doc.m_segments[m_eticEnumIndex].Phonetic == null)
+			while ((m_doc.m_segments != null) && 
+                   (m_eticEnumIndex < m_doc.m_segments.Count) &&
+				   (m_doc.m_segments[m_eticEnumIndex].Phonetic == null))
 			{
 				m_eticEnumIndex++;
 			}

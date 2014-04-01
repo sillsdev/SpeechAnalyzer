@@ -5,6 +5,8 @@
 #ifndef ROOTS_H
 #define ROOTS_H
 
+#include <complex>
+
 using std::complex;
 typedef complex<double> CDBL;
 

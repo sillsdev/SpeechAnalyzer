@@ -5,6 +5,7 @@
     <ClCompile Include="TestWaveResampler.cpp" />
     <ClCompile Include="TestWaveWriter.cpp" />
     <ClCompile Include="Test.cpp" />
+    <ClCompile Include="TestElan.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Test.h" />
