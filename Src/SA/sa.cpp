@@ -105,6 +105,7 @@
 #include "DlgPlayer.h"
 #include <wchar.h>
 #include "array_ptr.h"
+#include <direct.h>
 
 #pragma comment(linker, "/SECTION:.shr,RWS")
 #pragma data_seg(".shr")
@@ -385,8 +386,14 @@ BOOL CSaApp::InitInstance()
     m_nBatchMode = CheckForBatchMode(m_lpCmdLine);
 
     // update help file path
-    CSaString szNewPath = m_pszHelpFilePath;
-    szNewPath = szNewPath.Left(szNewPath.ReverseFind('\\')) + _T("\\Speech_Analyzer_Help.chm");
+	//		m_pszHelpFilePath;
+	char buffer[MAX_PATH];
+	memset(buffer,0,_countof(buffer));
+    _getcwd(buffer,_countof(buffer));
+	CSaString szNewPath = buffer;
+	szNewPath = szNewPath + "\\";
+	szNewPath = szNewPath + "Speech_Analyzer_Help.chm";
+    //szNewPath = szNewPath.Left(szNewPath.ReverseFind('\\')) + _T("\\Speech_Analyzer_Help.chm");
     free((void *)m_pszHelpFilePath);
     m_pszHelpFilePath = _tcsdup(szNewPath);
 
@@ -1929,7 +1936,6 @@ void CSaApp::DisplayMessages()
 /***************************************************************************/
 void CSaApp::OnHelpContents()
 {
-
     ::HtmlHelp(NULL, m_pszHelpFilePath, HH_DISPLAY_TOC, NULL);
 }
 
@@ -1952,7 +1958,7 @@ void CSaApp::OnHelpWhatsNew()
 
     CSaString szAppPath = m_pszHelpFilePath;
     szAppPath = szAppPath.Left(szAppPath.ReverseFind('\\'));
-    CSaString szCommandLine = "\"" + szAppPath + _T("\\what's new.pdf\"");
+    CSaString szCommandLine = "\"" + szAppPath + _T("\\What's new.pdf\"");
     ShellExecute(NULL, _T("open"), szCommandLine.GetBuffer(1), NULL, NULL, SW_SHOWNORMAL);
 }
 
@@ -2012,7 +2018,8 @@ void CSaApp::OnHelpOnHelp()
 
     // create the pathname
     CSaString szPath = m_pszHelpFilePath;
-    szPath = szPath + "::/Redirect.htm#its:Using_Help.chm::/Using_Help/Using_Help_overview.htm";
+    szPath = szPath.Left(szPath.ReverseFind('\\'));
+    szPath = szPath + "\\"+ "Using_Help.chm" + "::/Using_Help/Using_Help_overview.htm";
     ::HtmlHelp(NULL, szPath, HH_DISPLAY_TOPIC, NULL);
 }
 

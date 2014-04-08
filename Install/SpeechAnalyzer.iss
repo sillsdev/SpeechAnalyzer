@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "Speech Analyzer MSEA Beta"
-#define MyAppVersion "3.1.0.90"
+#define MyAppVersion "3.1.0.91"
 #define MyAppPublisher "SIL International, Inc."
 #define MyAppURL "http://www.speechanalyzer.sil.org/"
 #define MyAppExeName "SA.exe"
@@ -54,13 +54,14 @@ Source: "C:\Working\SIL\MSEA\DistFiles\Bmp2png.exe"; DestDir: "{app}"; Flags: ig
 Source: "C:\Working\SIL\MSEA\DistFiles\xerces\xerces-c_3_1.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "C:\Working\SIL\MSEA\DistFiles\xerces\notice"; DestDir: "{app}"; Flags: ignoreversion
 Source: "C:\Working\SIL\MSEA\DistFiles\xerces\license"; DestDir: "{app}"; Flags: ignoreversion
-;whats new file
-Source: "C:\Working\SIL\MSEA\DistFiles\Whats New.pdf"; DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\Working\SIL\MSEA\DistFiles\What's New.pdf"; DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\Working\SIL\MSEA\DistFiles\Speech_Analyzer_Help.chm"; DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\Working\SIL\MSEA\DistFiles\Using_Help.chm"; DestDir: "{app}"; Flags: ignoreversion
 ;samples
 Source: "C:\Working\SIL\MSEA\DistFiles\Samples\*"; DestDir: "{app}\Samples"; Flags: ignoreversion
 Source: "C:\Working\SIL\MSEA\DistFiles\Samples\Music\*"; DestDir: "{app}\Samples\Music"; Flags: ignoreversion
 ;training
-Source: "C:\Working\SIL\MSEA\DistFiles\Training\*"; DestDir: "{app}\Training"; Flags: ignoreversion
+Source: "C:\Working\SIL\MSEA\DistFiles\Training\*.pdf"; DestDir: "{app}\Training"; Flags: ignoreversion
 
 [Icons]
 Name: "{group}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"
