@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "Speech Analyzer MSEA Beta"
-#define MyAppVersion "3.1.0.89"
+#define MyAppVersion "3.1.0.90"
 #define MyAppPublisher "SIL International, Inc."
 #define MyAppURL "http://www.speechanalyzer.sil.org/"
 #define MyAppExeName "SA.exe"
@@ -54,6 +54,13 @@ Source: "C:\Working\SIL\MSEA\DistFiles\Bmp2png.exe"; DestDir: "{app}"; Flags: ig
 Source: "C:\Working\SIL\MSEA\DistFiles\xerces\xerces-c_3_1.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "C:\Working\SIL\MSEA\DistFiles\xerces\notice"; DestDir: "{app}"; Flags: ignoreversion
 Source: "C:\Working\SIL\MSEA\DistFiles\xerces\license"; DestDir: "{app}"; Flags: ignoreversion
+;whats new file
+Source: "C:\Working\SIL\MSEA\DistFiles\Whats New.pdf"; DestDir: "{app}"; Flags: ignoreversion
+;samples
+Source: "C:\Working\SIL\MSEA\DistFiles\Samples\*"; DestDir: "{app}\Samples"; Flags: ignoreversion
+Source: "C:\Working\SIL\MSEA\DistFiles\Samples\Music\*"; DestDir: "{app}\Samples\Music"; Flags: ignoreversion
+;training
+Source: "C:\Working\SIL\MSEA\DistFiles\Training\*"; DestDir: "{app}\Training"; Flags: ignoreversion
 
 [Icons]
 Name: "{group}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"
@@ -75,6 +82,9 @@ Filename: "{win}\Microsoft.NET\Framework\v2.0.50727\regasm.exe"; Parameters: "ye
 
 [Dirs]
 Name: "{app}\components"
+Name: "{app}\Samples"
+Name: "{app}\Samples\Music"
+Name: "{app}\Training"
 
 [UninstallDelete]
 Type: files; Name: "{app}\SpeechToolsUtils.tlb"

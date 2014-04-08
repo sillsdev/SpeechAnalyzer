@@ -1232,6 +1232,7 @@
 #define IDC_RADIO_ELAN                  2091
 #define IDC_COMBO_REF_NUM               2093
 #define IDC_COMBO_PHONETIC              2094
+#define IDC_METHOD_TEXT                 2094
 #define IDC_COMBO_PHONEMIC              2096
 #define IDC_COMBO_ORTHO                 2097
 #define IDC_COMBO_GLOSS                 2098
@@ -1751,6 +1752,9 @@
 #define IDS_ERROR_ELAN_NO_FILE          61319
 #define IDS_AWIZ_CAPTION_IMPORT_ELAN    61320
 #define IDS_LENGTH_LIMITED              61321
+#define IDS_IMPORT_ELAN_METHOD_ELAN     61322
+#define IDS_IMPORT_ELAN_METHOD_ELAN2    61323
+#define IDS_IMPORT_ELAN_METHOD_SAYMORE  61323
 
 // Next default values for new objects
 // 
@@ -1759,7 +1763,7 @@
 #define _APS_3D_CONTROLS                     1
 #define _APS_NEXT_RESOURCE_VALUE        369
 #define _APS_NEXT_COMMAND_VALUE         33243
-#define _APS_NEXT_CONTROL_VALUE         2094
+#define _APS_NEXT_CONTROL_VALUE         2095
 #define _APS_NEXT_SYMED_VALUE           105
 #endif
 #endif

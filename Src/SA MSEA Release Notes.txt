@@ -1,3 +1,7 @@
+SA - 3.1.0.90 4/7/2014
+1) Added Training and Samples subdirectories to install.
+2) Updated text on first page of ELAN import dialog sequence.
+
 SA - 3.1.0.89 3/31/2014
 1) Added rudimentary ELAN support.
 

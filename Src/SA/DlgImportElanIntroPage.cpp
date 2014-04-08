@@ -26,6 +26,8 @@ CDlgImportElanIntroPage::~CDlgImportElanIntroPage()
 }
 
 BEGIN_MESSAGE_MAP(CDlgImportElanIntroPage, CPropertyPage)
+    ON_BN_CLICKED( IDC_RADIO_ELAN, &CDlgImportElanIntroPage::OnClickedElan)
+    ON_BN_CLICKED( IDC_RADIO_SAYMORE, &CDlgImportElanIntroPage::OnClickedSayMore)
 END_MESSAGE_MAP()
 
 BOOL CDlgImportElanIntroPage::OnSetActive()
@@ -55,4 +57,25 @@ void CDlgImportElanIntroPage::DoDataExchange(CDataExchange* pDX)
 	    CDlgImportElanSheet * pSheet = reinterpret_cast<CDlgImportElanSheet *>(GetParent());
 		pSheet->selection = selection;
 	}
+}
+
+BOOL CDlgImportElanIntroPage::OnInitDialog()
+{
+	CPropertyPage::OnInitDialog();
+	CString str;
+	str.LoadStringW(IDS_IMPORT_ELAN_METHOD_ELAN);
+	GetDlgItem(IDC_METHOD_TEXT)->SetWindowTextW(str);
+	return TRUE;
+}
+
+void CDlgImportElanIntroPage::OnClickedElan() {
+	CString str;
+	str.LoadStringW(IDS_IMPORT_ELAN_METHOD_ELAN);
+	GetDlgItem(IDC_METHOD_TEXT)->SetWindowTextW(str);
+}
+
+void CDlgImportElanIntroPage::OnClickedSayMore() {
+	CString str;
+	str.LoadStringW(IDS_IMPORT_ELAN_METHOD_SAYMORE);
+	GetDlgItem(IDC_METHOD_TEXT)->SetWindowTextW(str);
 }

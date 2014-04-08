@@ -26,7 +26,7 @@ LANGUAGE LANG_NEUTRAL, SUBLANG_NEUTRAL
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 3,1,0,89
+ FILEVERSION 3,1,0,90
  PRODUCTVERSION 1,0,0,1
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
@@ -44,7 +44,7 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "SIL International"
             VALUE "FileDescription", "Speech Analyzer Resource DLL"
-            VALUE "FileVersion", "v3.1.0.89"
+            VALUE "FileVersion", "v3.1.0.90"
             VALUE "InternalName", "SA_ENU"
             VALUE "LegalCopyright", "© 1996-2014 SIL International (MSEA)"
             VALUE "OriginalFilename", "SA_ENU.dll"
@@ -2376,8 +2376,7 @@ BEGIN
     GROUPBOX        "Import ELAN File",IDC_STATIC,5,4,325,67
     LTEXT           "Select which program wrote the .EAF file.",IDC_STATIC,11,20,172,13
     GROUPBOX        "Method",IDC_STATIC,4,75,326,74
-    LTEXT           "Speech Analyzer will markup the audio file according to the markup that was done in SayMore and ELAN.",IDC_STATIC,9,87,316,17
-    LTEXT           "The other tiers that were added in the ELAN program will need to associated with a transcription field in Speech Analyzer.\n\nThe next dialog will allow you to match these additional names.",IDC_STATIC,9,109,316,34
+    LTEXT           "",IDC_METHOD_TEXT,9,87,316,57
 END
 
 IDD_IMPORT_ELAN_SELECT_PAGE DIALOGEX 0, 0, 335, 169
@@ -4465,7 +4464,7 @@ IDC_MHANDN              CURSOR                  "res\\MedHandN.cur"
 
 STRINGTABLE
 BEGIN
-    VS_VERSION              "Version 3.1.0.89"
+    VS_VERSION              "Version 3.1.0.90"
     VS_COPYRIGHT            "© 1996-2014 SIL International (MSEA).\nAll Rights Reserved."
     IDR_MAINFRAME           "Speech Analyzer"
     IDR_SA_ANNTYPE          "\nSA\nSA Document\nWAV Files (*.wav)\n.wav\nannFileType\nANN File Type"
@@ -5217,6 +5216,10 @@ BEGIN
     IDS_ERROR_ELAN_NO_FILE  "Speech Analyzer was unable to find any exisiting .WAV file references in the ELAN file.  Please verify that the ELAN file uses a .WAV file, and that the .WAV file is available."
     IDS_AWIZ_CAPTION_IMPORT_ELAN "Import ELAN"
     IDS_LENGTH_LIMITED      "The .SAXML transcription file contains %1 segments that extended beyond the end of the audio data.\nThe segments have been truncated.\nIf you save this file, the segments will be modified permanently."
+    IDS_IMPORT_ELAN_METHOD_ELAN 
+                            "Speech Analyzer will markup the audio file according to the markup that was done with the ELAN program.\nThe segment names used in ELAN need to bematched up with Transcription names that are used in Speech Analyzer.\nThe  next dialog will allow you to match these names."
+    IDS_IMPORT_ELAN_METHOD_SAYMORE 
+                            "Speech Analyzer will markup the audio file according to the markup that was done in SayMore.\nThese segments will be considered as breath groups and  the Transcription from SayMore will be placed in the Phonetic Transcription field.\nThe Free Translation will be associated with each group and placed in the Phrase Level 1 Transcription field."
 END
 
 STRINGTABLE
