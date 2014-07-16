@@ -41,7 +41,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="$(XERCES_VC10_HOME)\include"
+				AdditionalIncludeDirectories="../XMLUtils;$(XERCES_VC9_HOME)\include"
 				PreprocessorDefinitions="WIN32;_DEBUG;_LIB"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -105,11 +105,11 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				EnableIntrinsicFunctions="true"
-				AdditionalIncludeDirectories="$(XERCES_VC9_HOME)\include"
+				AdditionalIncludeDirectories="../XMLUtils;$(XERCES_VC9_HOME)\include"
 				PreprocessorDefinitions="WIN32;NDEBUG;_LIB"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
-				UsePrecompiledHeader="2"
+				UsePrecompiledHeader="0"
 				WarningLevel="4"
 				DebugInformationFormat="3"
 			/>
@@ -156,22 +156,6 @@
 		</File>
 		<File
 			RelativePath=".\ElanUtils.h"
-			>
-		</File>
-		<File
-			RelativePath=".\stdafx.cpp"
-			>
-			<FileConfiguration
-				Name="Release|Win32"
-				>
-				<Tool
-					Name="VCCLCompilerTool"
-					UsePrecompiledHeader="1"
-				/>
-			</FileConfiguration>
-		</File>
-		<File
-			RelativePath=".\stdafx.h"
 			>
 		</File>
 	</Files>

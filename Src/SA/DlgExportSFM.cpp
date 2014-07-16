@@ -100,8 +100,6 @@ CDlgExportSFM::CDlgExportSFM(const CSaString & szDocTitle, CWnd * pParent) :
     m_bGender = FALSE;
     m_bHighPass = FALSE;
 	m_nExportFormat = 0;
-    //m_bInterlinear = FALSE;
-    //m_bMultiRecord = FALSE;
     m_bLanguage = FALSE;
     m_bLastModified = FALSE;
     m_bLength = FALSE;
@@ -234,7 +232,7 @@ void CDlgExportSFM::OnOK()
 {
 
     wstring filename;
-    int result = FileUtils::GetSaveAsFilename(m_szDocTitle, _T("Standard Format (*.sfm) |*.sfm||"), _T("sfm"), NULL, filename);
+    int result = CSaDoc::GetSaveAsFilename(m_szDocTitle, _T("Standard Format (*.sfm) |*.sfm||"), _T("sfm"), NULL, filename);
     if (result!=IDOK)
     {
         return;
@@ -1420,7 +1418,6 @@ void CDlgExportSFM::OnAllSource()
 
 void CDlgExportSFM::SetEnable(int nItem, BOOL bEnable)
 {
-
     CWnd * pWnd = GetDlgItem(nItem);
     if (pWnd)
     {
@@ -1430,7 +1427,6 @@ void CDlgExportSFM::SetEnable(int nItem, BOOL bEnable)
 
 void CDlgExportSFM::SetCheck(int nItem, BOOL bChecked)
 {
-
     CButton * pWnd = (CButton *)GetDlgItem(nItem);
     if (pWnd)
     {
@@ -1440,42 +1436,17 @@ void CDlgExportSFM::SetCheck(int nItem, BOOL bChecked)
 
 void CDlgExportSFM::OnHelpExportBasic()
 {
-
     // create the pathname
     CString szPath = AfxGetApp()->m_pszHelpFilePath;
     szPath = szPath + "::/User_Interface/Menus/File/Export/Standard_format_or_extensible_markup.htm";
     ::HtmlHelp(NULL, szPath, HH_DISPLAY_TOPIC, NULL);
 }
 
-/*
-void CDlgExportSFM::OnClickedExSfmInterlinear()
-{
-
-    CButton * pWnd = (CButton *)GetDlgItem(IDC_EX_SFM_MULTIRECORD);
-    if (pWnd)
-    {
-        pWnd->SetCheck(FALSE);
-    }
-}
-
-void CDlgExportSFM::OnClickedExSfmMultirecord()
-{
-
-    CButton * pWnd = (CButton *)GetDlgItem(IDC_EX_SFM_INTERLINEAR);
-    if (pWnd)
-    {
-        pWnd->SetCheck(FALSE);
-    }
-}
-*/
-
 void CDlgExportSFM::WriteFileUtf8(CFile * pFile, const CSaString szString)
 {
     std::string szUtf8 = szString.utf8();
     pFile->Write(szUtf8.c_str(), szUtf8.size());
 }
-
-
 
 void CDlgExportSFM::OnSelchangeExSfmExportType()
 {

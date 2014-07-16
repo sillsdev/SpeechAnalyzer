@@ -1,16 +1,20 @@
-#pragma once
+#ifndef ELAN_H
+#define ELAN_H
 
 #include <Windows.h>
 #include <vector>
 #include <string>
 #include <sstream>
 #include <stdexcept>
+#include <XMLUtils.h>
 
 using std::logic_error;
 using std::vector;
 using std::string;
 using std::wstring;
 using std::stringstream;
+
+using namespace XML;
 
 namespace Elan {
 
@@ -61,60 +65,6 @@ namespace Elan {
 #define TIME_VALUE			L"TIME_VALUE"
 #define VERSION				L"VERSION"
 
-/*
-* generic document nodes
-*/
-
-class Attribute {
-public:
-	Attribute( LPCTSTR _localname, LPCTSTR _qname, LPCTSTR _type, LPCTSTR _value, LPCTSTR _uri) :
-	localname(_localname),
-	qname(_qname),
-	type(_type),
-	value(_value),
-	uri(_uri) {
-	};
-
-	wstring localname;
-	wstring qname;
-	wstring type;
-	wstring value;
-	wstring uri;
-};
-
-class Element {
-public:
-	Element();
-	Element( LPCTSTR _localname, LPCTSTR _qname, LPCTSTR _uri);
-
-	wstring uri;
-	wstring localname;
-	wstring qname;
-	wstring value;
-
-	Element * owner;
-
-	vector<Element> elements;
-	vector<Attribute> attributes;
-};
-
-class Document {
-public:
-	Element element;
-};
-
-}
-
-// helper methods
-extern void unexpected( LPCTSTR name, Elan::Element & right);
-extern void unexpected( LPCTSTR name, Elan::Attribute & right);
-extern string utf8( LPCTSTR in);
-extern void expect( LPCTSTR name, Elan::Element & element);
-extern void restrict_attributes( LPCTSTR name, Elan::Element & element);
-extern void restrict_elements( LPCTSTR name, Elan::Element & element);
-
-namespace Elan {
-
 // the Elan model
 
 /*
@@ -132,23 +82,24 @@ class CMediaDescriptor {
 public:
 	CMediaDescriptor() {
 	};
-	CMediaDescriptor(Element & right) {
+	CMediaDescriptor(XML::Element & right) {
 		expect(MEDIA_DESCRIPTOR,right);
 		restrict_elements(MEDIA_DESCRIPTOR,right);
-		vector<Attribute>::iterator it = right.attributes.begin();
+		vector<XML::Attribute>::iterator it = right.attributes.begin();
 		while (it!=right.attributes.end()) {
-			if (it->localname.compare(MEDIA_URL)==0) {
-				mediaURL = it->value;
-			} else if (it->localname.compare(RELATIVE_MEDIA_URL)==0) {
-				relativeMediaURL = it->value;
-			} else if (it->localname.compare(MIME_TYPE)==0) {
-				mimeType = it->value;
-			} else if (it->localname.compare(TIME_ORIGIN)==0) {
-				timeOrigin = _wtoi(it->value.c_str());
-			} else if (it->localname.compare(EXTRACTED_FROM)==0) {
-				extractedFrom = it->value;
+			Attribute & attribute = *it;
+			if (attribute.localname.compare(MEDIA_URL)==0) {
+				mediaURL = attribute.value;
+			} else if (attribute.localname.compare(RELATIVE_MEDIA_URL)==0) {
+				relativeMediaURL = attribute.value;
+			} else if (attribute.localname.compare(MIME_TYPE)==0) {
+				mimeType = attribute.value;
+			} else if (attribute.localname.compare(TIME_ORIGIN)==0) {
+				timeOrigin = _wtoi(attribute.value.c_str());
+			} else if (attribute.localname.compare(EXTRACTED_FROM)==0) {
+				extractedFrom = attribute.value;
 			} else {
-				unexpected(MEDIA_DESCRIPTOR,*it);
+				unexpected(MEDIA_DESCRIPTOR,attribute);
 			}
 			it++;
 		}
@@ -190,18 +141,19 @@ public:
 		restrict_elements(LINKED_FILE_DESCRIPTOR,right);
 		vector<Attribute>::iterator it = right.attributes.begin();
 		while (it!=right.attributes.end()) {
-			if (it->localname.compare(LINK_URL)==0) {
-				linkURL = it->value;
-			} else if (it->localname.compare(RELATIVE_LINK_URL)==0) {
-				relativeLinkURL = it->value;
-			} else if (it->localname.compare(MIME_TYPE)==0) {
-				mimeType = it->value;
-			} else if (it->localname.compare(TIME_ORIGIN)==0) {
-				timeOrigin = _wtoi(it->value.c_str());
-			} else if (it->localname.compare(ASSOCIATED_WITH)==0) {
-				associatedWith = it->value;
+			Attribute & attribute = *it;
+			if (attribute.localname.compare(LINK_URL)==0) {
+				linkURL = attribute.value;
+			} else if (attribute.localname.compare(RELATIVE_LINK_URL)==0) {
+				relativeLinkURL = attribute.value;
+			} else if (attribute.localname.compare(MIME_TYPE)==0) {
+				mimeType = attribute.value;
+			} else if (attribute.localname.compare(TIME_ORIGIN)==0) {
+				timeOrigin = _wtoi(attribute.value.c_str());
+			} else if (attribute.localname.compare(ASSOCIATED_WITH)==0) {
+				associatedWith = attribute.value;
 			} else {
-				unexpected(LINKED_FILE_DESCRIPTOR,*it);
+				unexpected(LINKED_FILE_DESCRIPTOR,attribute);
 			}
 			it++;
 		}
@@ -286,36 +238,38 @@ public:
 	CHeader(Element & right) {
 		expect(HEADER,right);
 
-		vector<Element>::iterator it = right.elements.begin();
+		vector<Element*>::iterator it = right.elements.begin();
 		while (it!=right.elements.end()) {
-			if (it->localname.compare(MEDIA_DESCRIPTOR)==0) {
-				mediaDescriptors.push_back(CMediaDescriptor(*it));
-			} else if (it->localname.compare(LINKED_FILE_DESCRIPTOR)==0) {
-				linkedFileDescriptors.push_back(CLinkedFileDescriptor(*it));
-			} else if (it->localname.compare(PROPERTY)==0) {
-				properties.push_back(CProperty(*it));
+			Element & element = **it;
+			if (element.localname.compare(MEDIA_DESCRIPTOR)==0) {
+				mediaDescriptors.push_back(CMediaDescriptor(element));
+			} else if (element.localname.compare(LINKED_FILE_DESCRIPTOR)==0) {
+				linkedFileDescriptors.push_back(CLinkedFileDescriptor(element));
+			} else if (element.localname.compare(PROPERTY)==0) {
+				properties.push_back(CProperty(element));
 			} else {
-				unexpected(HEADER,*it);
+				unexpected(HEADER,element);
 			}
 			it++;
 		}
 
 		vector<Attribute>::iterator it2 = right.attributes.begin();
 		while (it2!=right.attributes.end()) {
-			if (it2->localname.compare(MEDIA_FILE)==0) {
-				mediaFile = it2->value;
-			} else if (it2->localname.compare(TIME_UNITS)==0) {
-				if (it2->value.compare(L"NTSC-frames")==0) {
+			Attribute & attribute = *it2;
+			if (attribute.localname.compare(MEDIA_FILE)==0) {
+				mediaFile = attribute.value;
+			} else if (attribute.localname.compare(TIME_UNITS)==0) {
+				if (attribute.value.compare(L"NTSC-frames")==0) {
 					timeUnits = NTSC_frames;
-				} else if (it2->value.compare(L"PAL-frames")==0) {
+				} else if (attribute.value.compare(L"PAL-frames")==0) {
 					timeUnits = PAL_frames;
-				} else if (it2->value.compare(L"milliseconds")==0) {
+				} else if (attribute.value.compare(L"milliseconds")==0) {
 					timeUnits = milliseconds;
 				} else {
 					throw logic_error("unexpectd TIME_VALUE");
 				}
 			} else {
-				unexpected(HEADER,*it2);
+				unexpected(HEADER,attribute);
 			}
 			it2++;
 		}
@@ -342,18 +296,19 @@ class CTimeSlot {
 public:
 	CTimeSlot() {
 	}
-	CTimeSlot(Element & right) {
+	CTimeSlot( Element & right) {
 		expect(TIME_SLOT,right);
 		restrict_elements(TIME_SLOT,right);
 
 		vector<Attribute>::iterator it = right.attributes.begin();
 		while (it!=right.attributes.end()) {
-			if (it->localname.compare(TIME_SLOT_ID)==0) {
-				timeSlotID = it->value;
-			} else if (it->localname.compare(TIME_VALUE)==0) {
-				timeValue = _wtoi(it->value.c_str());
+			Attribute & attribute = *it;
+			if (attribute.localname.compare(TIME_SLOT_ID)==0) {
+				timeSlotID = attribute.value;
+			} else if (attribute.localname.compare(TIME_VALUE)==0) {
+				timeValue = _wtoi(attribute.value.c_str());
 			} else {
-				unexpected(TIME_SLOT,*it);
+				unexpected(TIME_SLOT,attribute);
 			}
 			it++;
 		}
@@ -383,12 +338,13 @@ public:
 		expect(TIME_ORDER,right);
 		restrict_attributes(TIME_ORDER,right);
 
-		vector<Element>::iterator it = right.elements.begin();
+		vector<Element*>::iterator it = right.elements.begin();
 		while (it!=right.elements.end()) {
-			if (it->localname.compare(TIME_SLOT)==0) {
-				timeSlots.push_back(CTimeSlot(*it));
+			Element & element = **it;
+			if (element.localname.compare(TIME_SLOT)==0) {
+				timeSlots.push_back(CTimeSlot(element));
 			} else {
-				unexpected(TIME_ORDER,*it);
+				unexpected(TIME_ORDER,element);
 			}
 			it++;
 		}
@@ -416,28 +372,30 @@ public:
 	CAlignableAnnotation(Element & right) {
 		expect(ALIGNABLE_ANNOTATION,right);
 
-		vector<Element>::iterator it = right.elements.begin();
+		vector<Element*>::iterator it = right.elements.begin();
 		while (it!=right.elements.end()) {
-			if (it->localname.compare(ANNOTATION_VALUE)==0) {
-				annotationValue = it->value;
+			Element & element = **it;
+			if (element.localname.compare(ANNOTATION_VALUE)==0) {
+				annotationValue = element.value;
 			} else {
-				unexpected(ALIGNABLE_ANNOTATION,*it);
+				unexpected(ALIGNABLE_ANNOTATION,element);
 			}
 			it++;
 		}
 
 		vector<Attribute>::iterator it2 = right.attributes.begin();
 		while (it2!=right.attributes.end()) {
-			if (it2->localname.compare(TIME_SLOT_REF1)==0) {
-				timeSlotRef1 = it2->value;
-			} else if (it2->localname.compare(TIME_SLOT_REF2)==0) {
-				timeSlotRef2 = it2->value;
-			} else if (it2->localname.compare(SVG_REF)==0) {
-				svgRef = it2->value;
-			} else if (it2->localname.compare(ANNOTATION_ID)==0) {
-				annotationID = it2->value;
+			Attribute & attribute = *it2;
+			if (attribute.localname.compare(TIME_SLOT_REF1)==0) {
+				timeSlotRef1 = attribute.value;
+			} else if (attribute.localname.compare(TIME_SLOT_REF2)==0) {
+				timeSlotRef2 = attribute.value;
+			} else if (attribute.localname.compare(SVG_REF)==0) {
+				svgRef = attribute.value;
+			} else if (attribute.localname.compare(ANNOTATION_ID)==0) {
+				annotationID = attribute.value;
 			} else {
-				unexpected(ALIGNABLE_ANNOTATION,*it2);
+				unexpected(ALIGNABLE_ANNOTATION,attribute);
 			}
 			it2++;
 		}
@@ -475,26 +433,28 @@ public:
 	CRefAnnotation(Element & right) {
 		expect(REF_ANNOTATION,right);
 
-		vector<Element>::iterator it = right.elements.begin();
+		vector<Element*>::iterator it = right.elements.begin();
 		while (it!=right.elements.end()) {
-			if (it->localname.compare(ANNOTATION_VALUE)==0) {
-				annotationValue = it->value;
+			Element & element = **it;
+			if (element.localname.compare(ANNOTATION_VALUE)==0) {
+				annotationValue = element.value;
 			} else {
-				unexpected(REF_ANNOTATION,*it);
+				unexpected(REF_ANNOTATION,element);
 			}
 			it++;
 		}
 
 		vector<Attribute>::iterator it2 = right.attributes.begin();
 		while (it2!=right.attributes.end()) {
-			if (it2->localname.compare(ANNOTATION_REF)==0) {
-				annotationRef = it2->value;
-			} else if (it2->localname.compare(PREVIOUS_ANNOTATION)==0) {
-				previousAnnotation = it2->value;
-			} else if (it2->localname.compare(ANNOTATION_ID)==0) {
-				annotationID = it2->value;
+			Attribute & attribute = *it2;
+			if (attribute.localname.compare(ANNOTATION_REF)==0) {
+				annotationRef = attribute.value;
+			} else if (attribute.localname.compare(PREVIOUS_ANNOTATION)==0) {
+				previousAnnotation = attribute.value;
+			} else if (attribute.localname.compare(ANNOTATION_ID)==0) {
+				annotationID = attribute.value;
 			} else {
-				unexpected(REF_ANNOTATION,*it2);
+				unexpected(REF_ANNOTATION,attribute);
 			}
 			it2++;
 		}
@@ -525,14 +485,15 @@ public:
 		expect(ANNOTATIONE,right);
 		restrict_attributes(ANNOTATIONE,right);
 
-		vector<Element>::iterator it = right.elements.begin();
+		vector<Element*>::iterator it = right.elements.begin();
 		while (it!=right.elements.end()) {
-			if (it->localname.compare(ALIGNABLE_ANNOTATION)==0) {
-				alignableAnnotation = CAlignableAnnotation(*it);
-			} else if (it->localname.compare(REF_ANNOTATION)==0) {
-				refAnnotation = CRefAnnotation(*it);
+			Element & element = **it;
+			if (element.localname.compare(ALIGNABLE_ANNOTATION)==0) {
+				alignableAnnotation = CAlignableAnnotation(element);
+			} else if (element.localname.compare(REF_ANNOTATION)==0) {
+				refAnnotation = CRefAnnotation(element);
 			} else {
-				unexpected(ANNOTATIONE,*it);
+				unexpected(ANNOTATIONE,element);
 			}
 			it++;
 		}
@@ -562,32 +523,34 @@ public:
 	CTier(Element & right) {
 		expect(TIER,right);
 
-		vector<Element>::iterator it = right.elements.begin();
+		vector<Element*>::iterator it = right.elements.begin();
 		while (it!=right.elements.end()) {
-			if (it->localname.compare(ANNOTATIONE)==0) {
-				annotations.push_back(CAnnotation(*it));
+			Element & element = **it;
+			if (element.localname.compare(ANNOTATIONE)==0) {
+				annotations.push_back(CAnnotation(element));
 			} else {
-				unexpected(TIER,*it);
+				unexpected(TIER,element);
 			}
 			it++;
 		}
 
 		vector<Attribute>::iterator it2 = right.attributes.begin();
 		while (it2!=right.attributes.end()) {
-			if (it2->localname.compare(TIER_ID)==0) {
-				tierID = it2->value;
-			} else if (it2->localname.compare(PARTICIPANT)==0) {
-				participant = it2->value;
-			} else if (it2->localname.compare(ANNOTATOR)==0) {
-				annotator = it2->value;
-			} else if (it2->localname.compare(LINGUISTIC_TYPE_REF)==0) {
-				linguisticTypeRef = it2->value;
-			} else if (it2->localname.compare(DEFAULT_LOCALE)==0) {
-				defaultLocale = it2->value;
-			} else if (it2->localname.compare(PARENT_REF)==0) {
-				parentRef = it2->value;
+			Attribute & attribute = *it2;
+			if (attribute.localname.compare(TIER_ID)==0) {
+				tierID = attribute.value;
+			} else if (attribute.localname.compare(PARTICIPANT)==0) {
+				participant = attribute.value;
+			} else if (attribute.localname.compare(ANNOTATOR)==0) {
+				annotator = attribute.value;
+			} else if (attribute.localname.compare(LINGUISTIC_TYPE_REF)==0) {
+				linguisticTypeRef = attribute.value;
+			} else if (attribute.localname.compare(DEFAULT_LOCALE)==0) {
+				defaultLocale = attribute.value;
+			} else if (attribute.localname.compare(PARENT_REF)==0) {
+				parentRef = attribute.value;
 			} else {
-				unexpected(TIER,*it2);
+				unexpected(TIER,attribute);
 			}
 			it2++;
 		}
@@ -711,3 +674,4 @@ public:
 CAnnotationDocument LoadDocument( LPCTSTR filename);
 
 }
+#endif

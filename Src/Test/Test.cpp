@@ -3,6 +3,7 @@
 #include <gtest/gtest.h>
 #include <conio.h>
 #include <string>
+#include <FileUtils.h>
 #include "Test.h"
 
 #pragma comment( lib, "winmm")
@@ -17,8 +18,9 @@ int round(double value)
 
 wstring buildResultPath( LPCTSTR filename) 
 {
+	FileUtils::CreateFolder(L"\\Working\\SIL\\MSEA\\test_samples\\out\\");
 	wstring result;
-	result.append(L"\\Working\\SIL\\MSEA\\test_out\\");
+	result.append(L"\\Working\\SIL\\MSEA\\test_samples\\out\\");
 	result.append(filename);
 	return result;
 }
@@ -33,8 +35,13 @@ wstring buildSourcePath( LPCTSTR filename)
 
 int main(int argc, char **argv) 
 {
-	::testing::InitGoogleTest(&argc, argv);
-	int result = RUN_ALL_TESTS();
+	int result = 0;
+	try {
+		::testing::InitGoogleTest(&argc, argv);
+		result = RUN_ALL_TESTS();
+	} catch (...) {
+		printf("exception occurred\n");
+	}
 	_getch();
 	return result;
 }

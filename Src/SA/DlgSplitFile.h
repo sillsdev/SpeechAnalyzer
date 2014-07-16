@@ -38,6 +38,8 @@ public:
 protected:
     virtual void DoDataExchange(CDataExchange * pDX);   // DDX/DDV support
 
+	void DDX_Filename( CDataExchange* pDX, int nIDC, CString& value, UINT msgID);
+
 private:
     int m_nWordConvention;
     int m_nPhraseConvention;

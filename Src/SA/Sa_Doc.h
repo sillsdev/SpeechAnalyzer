@@ -42,6 +42,7 @@
 #include "DlgAutoReferenceData.h"
 #include "AlignInfo.h"
 #include "ExportFWSettings.h"
+#include "ExportLiftSettings.h"
 #include "FmtParm.h"
 #include "AutoSave.h"
 #include "Process\ProcessDoc.h"
@@ -237,6 +238,7 @@ public:
     virtual void Dump(CDumpContext & dc) const;
 #endif
     void DoExportFieldWorks(CExportFWSettings & settings);
+    void DoExportLift(CExportLiftSettings & settings);
     const CSaString BuildString(int nSegment);
     const CSaString BuildImportString(BOOL gloss, BOOL phonetic, BOOL phonemic, BOOL orthographic);
     const bool ImportTranscription( wistringstream & strm, BOOL gloss, BOOL phonetic, BOOL phonemic, BOOL orthographic, CTranscriptionData & td, bool addTag, bool showDlg);
@@ -305,6 +307,8 @@ public:
 
 	int GetLastSegmentBeforePosition( int annotSetID, DWORD cursorPos);
 
+	static int GetSaveAsFilename(LPCTSTR title, LPCTSTR filter, LPCTSTR extension, LPTSTR path, wstring & result);
+
 protected:
     virtual void DeleteContents();
     virtual BOOL OnNewDocument();
@@ -316,9 +320,11 @@ protected:
     void AlignTranscriptionData(CTranscriptionDataSettings & settings);
     void AlignTranscriptionDataByRef(CTranscriptionData & td);
     bool TryExportSegmentsBy(CExportFWSettings & settings, EAnnotation master, CFile & file, bool skipEmptyGloss, LPCTSTR szPath, int & dataCount, int & wavCount);
+    bool TryExportSegmentsBy(CExportLiftSettings & settings, EAnnotation master, CFile & file, bool skipEmptyGloss, LPCTSTR szPath, int & dataCount, int & wavCount);
     CSaString BuildRecord(EAnnotation target, DWORD dwStart, DWORD dwStop);
     EAnnotation ConvertToAnnotation(int val);
     BOOL GetFlag(EAnnotation val, CExportFWSettings & settings);
+    BOOL GetFlag(EAnnotation val, CExportLiftSettings & settings);
     int GetIndex(EAnnotation val);
     LPCTSTR GetTag(EAnnotation val);
     void WriteFileUtf8(CFile * pFile, const CSaString szString);

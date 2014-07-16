@@ -164,14 +164,16 @@ static char BASED_CODE THIS_FILE[] = __FILE__;
 #define new DEBUG_NEW
 #endif
 
-#pragma comment( lib, "waveutils")
-#pragma comment( lib, "elanutils")
+#pragma comment( lib, "WaveUtils")
+#pragma comment( lib, "XMLUtils")
+#pragma comment( lib, "LiftUtils")
+#pragma comment( lib, "ElanUtils")
+#pragma comment( lib, "FileUtils")
 #ifdef _DEBUG
 #pragma comment( lib, "xerces-c_3D")
 #else
 #pragma comment( lib, "xerces-c_3")
 #endif
-
 
 //###########################################################################
 // CSaDoc
@@ -809,6 +811,20 @@ BOOL CSaDoc::OnOpenDocument( LPCTSTR pszPathName)
 		int found = 0;
 		for (int i=0;i<document.header.mediaDescriptors.size();i++) {
 			wstring filename = document.header.mediaDescriptors[i].mediaURL.c_str();
+
+			wchar_t buffer[MAX_PATH];
+			wmemset(buffer,0,_countof(buffer));
+			DWORD length = MAX_PATH;
+
+			/*
+			HRESULT result = PathCreateFromUrl( filename.c_str(), buffer, &length, NULL);
+			if (result!=S_OK) {
+				continue;
+			}
+			Use the Uri.LocalPath property
+			filename = buffer;
+			*/
+
 			if (FileUtils::EndsWith(filename.c_str(),L".wav")) 
 			{
 				if (FileUtils::FileExists(filename.c_str()))
@@ -868,7 +884,6 @@ BOOL CSaDoc::OnOpenDocument( LPCTSTR pszPathName)
 		{
 			map<EAnnotation,wstring> assignments = dlg.getAssignments();
 			// create a SAXML file
-
 			wstring filename = wave_file_name.substr(0,wave_file_name.length()-wcslen(L".wav"));
 			filename.append(L".saxml");
 			CSAXMLUtils::WriteSAXML( filename.c_str(), document, assignments);
@@ -8952,7 +8967,7 @@ void CSaDoc::DoExportFieldWorks(CExportFWSettings & settings)
     wstring filename;
     TCHAR szBuffer[MAX_PATH];
     wcscpy_s(szBuffer,MAX_PATH,settings.szPath);
-    int result = FileUtils::GetSaveAsFilename(settings.szDocTitle, _T("Standard Format (*.sfm) |*.sfm||"), _T("sfm"), szBuffer, filename);
+    int result = GetSaveAsFilename(settings.szDocTitle, _T("Standard Format (*.sfm) |*.sfm||"), _T("sfm"), szBuffer, filename);
     if (result!=IDOK) return;
 
     if (filename.length()==0)
@@ -9021,6 +9036,249 @@ void CSaDoc::DoExportFieldWorks(CExportFWSettings & settings)
     dlg.m_SFMCount.Format(L"%d",sfmCount);
     dlg.DoModal();
 
+}
+
+void CSaDoc::DoExportLift(CExportLiftSettings & settings)
+{
+
+    int dataCount = 0;
+    int sfmCount = 0;
+    int wavCount = 0;
+
+    wstring filename;
+    TCHAR szBuffer[MAX_PATH];
+    wcscpy_s(szBuffer,MAX_PATH,settings.szPath);
+    int result = GetSaveAsFilename(settings.szDocTitle, _T("Standard Format (*.sfm) |*.sfm||"), _T("sfm"), szBuffer, filename);
+    if (result!=IDOK) return;
+
+    if (filename.length()==0)
+    {
+        ErrorMessage(IDS_ERROR_NO_FW_FILE);
+        return;
+    }
+
+    bool skipEmptyGloss = true;
+
+    TCHAR szPath[MAX_PATH];
+    memset(szPath, 0, MAX_PATH);
+    wcscpy_s(szPath,MAX_PATH,settings.szPath);
+
+    if (!FileUtils::FolderExists(szPath))
+    {
+        FileUtils::CreateFolder(szPath);
+    }
+    wcscat_s(szPath,MAX_PATH,L"LinkedFiles\\");
+    if (!FileUtils::FolderExists(szPath))
+    {
+        FileUtils::CreateFolder(szPath);
+    }
+    wcscat_s(szPath,MAX_PATH,L"AudioVisual\\");
+    
+	if (!FileUtils::FolderExists(szPath))
+    {
+        FileUtils::CreateFolder(szPath);
+    }
+
+    if (!ValidateWordFilenames(WFC_REF_GLOSS,skipEmptyGloss,L"",L"")) return;
+    if (!ValidatePhraseFilenames(MUSIC_PL1,PFC_REF_GLOSS,L"",L"")) return;
+    if (!ValidatePhraseFilenames(MUSIC_PL2,PFC_REF_GLOSS,L"",L"")) return;
+
+    CFile file(filename.c_str(), CFile::modeCreate | CFile::modeWrite);
+    CSaString szString;
+
+    if (!TryExportSegmentsBy(settings,REFERENCE, file, skipEmptyGloss, szPath, dataCount, wavCount))
+    {
+        if (!TryExportSegmentsBy(settings,GLOSS, file, skipEmptyGloss, szPath, dataCount, wavCount))
+        {
+            if (!TryExportSegmentsBy(settings,ORTHO, file, skipEmptyGloss, szPath, dataCount, wavCount))
+            {
+                if (!TryExportSegmentsBy(settings,PHONEMIC, file, skipEmptyGloss, szPath, dataCount, wavCount))
+                {
+                    if (!TryExportSegmentsBy(settings,TONE, file, skipEmptyGloss, szPath, dataCount, wavCount))
+                    {
+                        TryExportSegmentsBy(settings,PHONETIC, file, skipEmptyGloss, szPath, dataCount, wavCount);
+                    }
+                }
+            }
+        }
+    }
+
+    // \date write current time
+    CTime time = CTime::GetCurrentTime();
+    szString = "\\dt " + time.Format("%A, %B %d, %Y, %X") + "\r\n";
+    WriteFileUtf8(&file, szString);
+
+    file.Close();
+    sfmCount++;
+
+    CDlgExportFWResult dlg;
+    dlg.m_WAVCount.Format(L"%d",wavCount);
+    dlg.m_DataCount.Format(L"%d",dataCount);
+    dlg.m_SFMCount.Format(L"%d",sfmCount);
+    dlg.DoModal();
+
+}
+
+bool CSaDoc::TryExportSegmentsBy(CExportLiftSettings & settings, EAnnotation master, CFile & file, bool skipEmptyGloss, LPCTSTR szPath, int & dataCount, int & wavCount)
+{
+
+    TRACE("EXPORTING>>>>%d\n",master);
+
+    LPCTSTR szCrLf = L"\r\n";
+
+    EWordFilenameConvention wordConvention = WFC_REF_GLOSS;
+    EPhraseFilenameConvention phraseConvention = PFC_REF_GLOSS;
+
+    if (!GetFlag(master,settings))
+    {
+        return false;
+    }
+
+    CSegment * pSeg = GetSegment(master);
+
+    if (pSeg->GetOffsetSize() == 0)
+    {
+        return false;
+    }
+
+    WriteFileUtf8(&file, szCrLf);
+
+    CSaString results[ANNOT_WND_NUMBER];
+    for (int i = 0; i < ANNOT_WND_NUMBER; i++)
+    {
+        results[i] = L"";
+    }
+    DWORD last = pSeg->GetOffset(0) - 1;
+    for (int i = 0; i < pSeg->GetOffsetSize(); i++)
+    {
+        DWORD dwStart = pSeg->GetOffset(i);
+        DWORD dwStop = pSeg->GetStop(i);
+        if (dwStart == last)
+        {
+            continue;
+        }
+        last = dwStart;
+        for ( int j = master; j >= 0; j--)
+        {
+            EAnnotation target = ConvertToAnnotation(j);
+            if (!GetFlag(target,settings))
+            {
+                continue;
+            }
+            results[target] = BuildRecord(target, dwStart, dwStop);
+        }
+
+        if (results[PHONETIC].GetLength() > 0)
+        {
+            WriteFileUtf8(&file, results[PHONETIC]);
+        }
+        if (results[TONE].GetLength() > 0)
+        {
+            WriteFileUtf8(&file, results[TONE]);
+        }
+        if (results[PHONEMIC].GetLength() > 0)
+        {
+            WriteFileUtf8(&file, results[PHONEMIC]);
+        }
+        if (results[ORTHO].GetLength() > 0)
+        {
+            WriteFileUtf8(&file, results[ORTHO]);
+        }
+        if (results[GLOSS].GetLength() > 0)
+        {
+            WriteFileUtf8(&file, results[GLOSS]);
+        }
+        if (results[REFERENCE].GetLength() > 0)
+        {
+            WriteFileUtf8(&file, results[REFERENCE]);
+        }
+
+        POSITION pos = GetFirstViewPosition();
+        CSaView * pView = (CSaView *) GetNextView(pos);  // get pointer to view
+        CGlossSegment * g = (CGlossSegment *)pView->GetAnnotation(GLOSS);
+        CMusicPhraseSegment * pl1 = (CMusicPhraseSegment *)pView->GetAnnotation(MUSIC_PL1);
+        CMusicPhraseSegment * pl2 = (CMusicPhraseSegment *)pView->GetAnnotation(MUSIC_PL2);
+        DWORD offsetSize = g->GetOffsetSize();
+        bool hasGloss = (offsetSize != 0);
+
+        TRACE("gloss %d %d\n",dwStart,dwStop);
+
+        if ((hasGloss) || (!skipEmptyGloss))
+        {
+
+            wstring filename;
+            int index = FindNearestGlossIndex(g,dwStart,dwStop);
+            if (index>=0)
+            {
+                int result = ComposeWordSegmentFilename(g, index, wordConvention, szPath, filename, L"", L"");
+                if (result==0)
+                {
+                    int result = ExportWordSegment(g, index, filename.c_str(), skipEmptyGloss, dataCount, wavCount);
+                    if (result<0)
+                    {
+                        return false;
+                    }
+                    TCHAR szBuffer[MAX_PATH];
+                    wmemset(szBuffer,0,MAX_PATH);
+                    wcscat_s(szBuffer,MAX_PATH,L"\\pf ");
+                    wcscat_s(szBuffer,MAX_PATH,filename.c_str());
+                    wcscat_s(szBuffer,MAX_PATH,szCrLf);
+                    WriteFileUtf8(&file, szBuffer);
+                }
+            }
+
+            if (settings.bPhrase)
+            {
+                TRACE("--searching for PL1\n");
+                index = FindNearestPhraseIndex(pl1,dwStart,dwStop);
+                if (index>=0)
+                {
+                    TRACE("--exporting PL1\n");
+                    int result = ComposePhraseSegmentFilename(MUSIC_PL1, pl1, index, phraseConvention, szPath, filename, L"", L"");
+                    if (result==0)
+                    {
+                        int result = ExportPhraseSegment(pl1, index, filename, dataCount, wavCount);
+                        if (result<0)
+                        {
+                            return false;
+                        }
+                        TCHAR szBuffer[MAX_PATH];
+                        wmemset(szBuffer,0,MAX_PATH);
+                        wcscat_s(szBuffer,MAX_PATH,L"\\pf ");
+                        wcscat_s(szBuffer,MAX_PATH,filename.c_str());
+                        wcscat_s(szBuffer,MAX_PATH,szCrLf);
+                        WriteFileUtf8(&file, szBuffer);
+                    }
+                }
+
+                TRACE("--searching for PL2\n");
+                index = FindNearestPhraseIndex(pl2,dwStart,dwStop);
+                if (index>=0)
+                {
+                    TRACE("--exporting PL2\n");
+                    int result = ComposePhraseSegmentFilename(MUSIC_PL2, pl2, index, phraseConvention, szPath, filename, L"", L"");
+                    if (result==0)
+                    {
+                        int result = ExportPhraseSegment(pl2, index, filename, dataCount, wavCount);
+                        if (result<0)
+                        {
+                            return false;
+                        }
+                        TCHAR szBuffer[MAX_PATH];
+                        wmemset(szBuffer,0,MAX_PATH);
+                        wcscat_s(szBuffer,MAX_PATH,L"\\pf ");
+                        wcscat_s(szBuffer,MAX_PATH,filename.c_str());
+                        wcscat_s(szBuffer,MAX_PATH,szCrLf);
+                        WriteFileUtf8(&file, szBuffer);
+                    }
+                }
+            }
+        }
+
+        WriteFileUtf8(&file, szCrLf);
+    }
+
+    return true;
 }
 
 bool CSaDoc::TryExportSegmentsBy(CExportFWSettings & settings, EAnnotation master, CFile & file, bool skipEmptyGloss, LPCTSTR szPath, int & dataCount, int & wavCount)
@@ -9207,7 +9465,33 @@ CSaString CSaDoc::BuildRecord(EAnnotation target, DWORD dwStart, DWORD dwStop)
     return szTag + L" " + szText + szCrLf;
 }
 
-BOOL CSaDoc::GetFlag(EAnnotation val, CExportFWSettings & settings)
+BOOL CSaDoc::GetFlag( EAnnotation val, CExportFWSettings & settings)
+{
+    switch (val)
+    {
+    case PHONETIC:
+        return settings.bPhonetic;
+    case PHONEMIC:
+        return settings.bPhonemic;
+    case ORTHO:
+        return settings.bOrtho;
+    case GLOSS:
+        return settings.bGloss;
+    case REFERENCE:
+        return settings.bReference;
+    case MUSIC_PL1:
+        return settings.bPhrase;
+    case MUSIC_PL2:
+        return settings.bPhrase;
+    case MUSIC_PL3:
+        return settings.bPhrase;
+    case MUSIC_PL4:
+        return settings.bPhrase;
+    }
+    return false;
+}
+
+BOOL CSaDoc::GetFlag( EAnnotation val, CExportLiftSettings & settings)
 {
     switch (val)
     {
@@ -9705,5 +9989,50 @@ void CSaDoc::ErrorMessage( CSaString & msg)
     CSaApp * pApp = (CSaApp *)AfxGetApp();
 	pApp->ErrorMessage( msg);
 }
+
+int CSaDoc::GetSaveAsFilename(LPCTSTR title, LPCTSTR filter, LPCTSTR extension, LPTSTR path, wstring & filename) 
+{
+
+    filename = L"";
+    wstring title2 = title;
+    int nFind = title2.find(':');
+    if (nFind != -1) 
+	{
+        title2 = title2.substr(0,nFind);
+		title2 = FileUtils::Trim(title2);
+    }
+    nFind = title2.rfind('.');
+
+    // remove extension
+    title2 = FileUtils::Trim(title2);
+    if (nFind >= ((title2.size() > 3) ? (title2.size() - 4) : 0)) 
+	{
+        title2 = title2.substr(0,nFind);
+    }
+
+	CFileDialog dlg( FALSE, extension, title2.c_str(), OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT, filter, NULL);
+
+    if ((title2.size()>0)&&(path!=NULL)) 
+	{
+        TCHAR temp[MAX_PATH];
+        wmemset(temp,0,MAX_PATH);
+        wcscat_s(temp,MAX_PATH,path);
+        FileUtils::AppendDirSep(temp,MAX_PATH);
+		wcscat_s(temp,MAX_PATH,title2.c_str());
+        wcscat_s(temp,MAX_PATH,L".");
+        wcscat_s(temp,MAX_PATH,extension);
+        dlg.m_ofn.lpstrFile = temp;
+        dlg.m_ofn.lpstrInitialDir = path;
+    }
+
+    int result = dlg.DoModal();
+    if (result == IDOK) 
+	{
+        // return the dialog result
+        filename = dlg.GetPathName();
+    }
+    return result;
+}
+
 
 

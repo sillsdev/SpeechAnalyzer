@@ -205,7 +205,7 @@ void CDlgExportTable::OnOK()
 {
 
     wstring filename;
-    int result = FileUtils::GetSaveAsFilename(m_szDocTitle, _T("SFM Time Table (*.sft) |*.sft||"), _T("sft"), NULL, filename);
+    int result = CSaDoc::GetSaveAsFilename(m_szDocTitle, _T("SFM Time Table (*.sft) |*.sft||"), _T("sft"), NULL, filename);
     if (result!=IDOK)
     {
         return;

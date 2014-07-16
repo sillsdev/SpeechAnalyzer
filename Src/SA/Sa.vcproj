@@ -50,7 +50,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories=".;..\lib;..\waveutils;..\sa_dsp;..\mbrola;..\zgraph;..\sa_klatt;..\sa_enu"
+				AdditionalIncludeDirectories=".;..\fileutils;..\xmlutils;..\elanutils;..\lib;..\waveutils;..\sa_dsp;..\mbrola;..\zgraph;..\sa_klatt;..\sa_enu"
 				PreprocessorDefinitions="_WINDOWS;WINDOWS_PLATFORM;_DEBUG;WIN32;WINVER=0x0501"
 				MinimalRebuild="true"
 				RuntimeLibrary="3"
@@ -148,7 +148,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="4"
 				InlineFunctionExpansion="2"
-				AdditionalIncludeDirectories=".;..\elanutils;..\lib;..\waveutils;..\sa_dsp;..\mbrola;..\zgraph;..\sa_klatt;..\sa_enu;$(XERCES_VC9_HOME)\include"
+				AdditionalIncludeDirectories=".;..\fileutils;..\xmlutils;..\elanutils;..\lib;..\waveutils;..\sa_dsp;..\mbrola;..\zgraph;..\sa_klatt;..\sa_enu;$(XERCES_VC9_HOME)\include"
 				PreprocessorDefinitions="_WINDOWS;WINDOWS_PLATFORM;WIN32;NDEBUG;WINVER=0x501"
 				MinimalRebuild="true"
 				RuntimeLibrary="2"
@@ -329,6 +329,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\DlgExportLift.cpp"
+				>
+			</File>
+			<File
 				RelativePath="DlgExportSFM.cpp"
 				>
 			</File>
@@ -350,6 +354,22 @@
 			</File>
 			<File
 				RelativePath="DlgImport.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\DlgImportElanFinishPage.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\DlgImportElanIntroPage.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\DlgImportElanSelectPage.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\DlgImportElanSheet.cpp"
 				>
 			</File>
 			<File
@@ -441,10 +461,6 @@
 				>
 			</File>
 			<File
-				RelativePath="FileUtils.cpp"
-				>
-			</File>
-			<File
 				RelativePath="FlexEditGrid.cpp"
 				>
 			</File>
@@ -490,6 +506,14 @@
 			</File>
 			<File
 				RelativePath="Process\IIRFilter.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ImportELAN.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ImportSFM.cpp"
 				>
 			</File>
 			<File
@@ -921,6 +945,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\SAXMLUtils.cpp"
+				>
+			</File>
+			<File
 				RelativePath="ScopedCursor.cpp"
 				>
 			</File>
@@ -1092,6 +1120,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\array_ptr.h"
+				>
+			</File>
+			<File
 				RelativePath="AutoSave.h"
 				>
 			</File>
@@ -1192,6 +1224,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\DlgExportLift.h"
+				>
+			</File>
+			<File
 				RelativePath="DlgExportSFM.h"
 				>
 			</File>
@@ -1216,6 +1252,22 @@
 				>
 			</File>
 			<File
+				RelativePath=".\DlgImportElanFinishPage.h"
+				>
+			</File>
+			<File
+				RelativePath=".\DlgImportElanIntroPage.h"
+				>
+			</File>
+			<File
+				RelativePath=".\DlgImportElanSelectPage.h"
+				>
+			</File>
+			<File
+				RelativePath=".\DlgImportElanSheet.h"
+				>
+			</File>
+			<File
 				RelativePath="DlgImportSFM.h"
 				>
 			</File>
@@ -1225,6 +1277,14 @@
 			</File>
 			<File
 				RelativePath="DlgInsertSilence.h"
+				>
+			</File>
+			<File
+				RelativePath=".\DlgKlattAll.h"
+				>
+			</File>
+			<File
+				RelativePath=".\DlgMbrola.h"
 				>
 			</File>
 			<File
@@ -1256,7 +1316,15 @@
 				>
 			</File>
 			<File
+				RelativePath=".\DlgSynthesis.h"
+				>
+			</File>
+			<File
 				RelativePath="DlgToolsOptions.h"
+				>
+			</File>
+			<File
+				RelativePath=".\DlgVocalTract.h"
 				>
 			</File>
 			<File
@@ -1293,10 +1361,6 @@
 			</File>
 			<File
 				RelativePath="FileOpen.h"
-				>
-			</File>
-			<File
-				RelativePath="FileUtils.h"
 				>
 			</File>
 			<File
@@ -1348,6 +1412,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ImportELAN.h"
+				>
+			</File>
+			<File
+				RelativePath=".\ImportSFM.h"
+				>
+			</File>
+			<File
 				RelativePath="IndependentSegment.h"
 				>
 			</File>
@@ -1361,6 +1433,10 @@
 			</File>
 			<File
 				RelativePath="IWaveNotifiable.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Lpc.h"
 				>
 			</File>
 			<File
@@ -1764,6 +1840,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\SAXMLUtils.h"
+				>
+			</File>
+			<File
 				RelativePath="ScopedCursor.h"
 				>
 			</File>
@@ -1916,86 +1996,6 @@
 				>
 			</File>
 		</Filter>
-		<File
-			RelativePath=".\array_ptr.h"
-			>
-		</File>
-		<File
-			RelativePath=".\DlgImportElanFinishPage.cpp"
-			>
-		</File>
-		<File
-			RelativePath=".\DlgImportElanFinishPage.h"
-			>
-		</File>
-		<File
-			RelativePath=".\DlgImportElanIntroPage.cpp"
-			>
-		</File>
-		<File
-			RelativePath=".\DlgImportElanIntroPage.h"
-			>
-		</File>
-		<File
-			RelativePath=".\DlgImportElanSelectPage.cpp"
-			>
-		</File>
-		<File
-			RelativePath=".\DlgImportElanSelectPage.h"
-			>
-		</File>
-		<File
-			RelativePath=".\DlgImportElanSheet.cpp"
-			>
-		</File>
-		<File
-			RelativePath=".\DlgImportElanSheet.h"
-			>
-		</File>
-		<File
-			RelativePath=".\DlgKlattAll.h"
-			>
-		</File>
-		<File
-			RelativePath=".\DlgMbrola.h"
-			>
-		</File>
-		<File
-			RelativePath=".\DlgSynthesis.h"
-			>
-		</File>
-		<File
-			RelativePath=".\DlgVocalTract.h"
-			>
-		</File>
-		<File
-			RelativePath=".\ImportELAN.cpp"
-			>
-		</File>
-		<File
-			RelativePath=".\ImportELAN.h"
-			>
-		</File>
-		<File
-			RelativePath=".\ImportSFM.cpp"
-			>
-		</File>
-		<File
-			RelativePath=".\ImportSFM.h"
-			>
-		</File>
-		<File
-			RelativePath=".\Lpc.h"
-			>
-		</File>
-		<File
-			RelativePath=".\SAXMLUtils.cpp"
-			>
-		</File>
-		<File
-			RelativePath=".\SAXMLUtils.h"
-			>
-		</File>
 	</Files>
 	<Globals>
 		<Global

@@ -314,10 +314,22 @@ bool CDlgPlayer::SetPlayerMode( EMode mode, UINT nSubMode, BOOL bFullSize, BOOL 
         m_nSubMode = nSubMode;    // save submode
     }
 
-	m_pView->EnableScrolling(false);
-	if (nSubMode==ID_PLAYBACK_ENDCURSOR) {
+    switch (nSubMode)
+    {
+	case ID_PLAYBACK_FILE:
+	case ID_PLAYBACK_ENDCURSOR:
+    case ID_PLAYBACK_CURSORS:
+    case ID_PLAYBACK_LTOSTART:
+    case ID_PLAYBACK_STARTTOR:
+    case ID_PLAYBACK_LTOSTOP:
+    case ID_PLAYBACK_STOPTOR:
 		m_pView->EnableScrolling(true);
-	}
+        break;
+    default:
+    case ID_PLAYBACK_WINDOW:
+		m_pView->EnableScrolling(false);
+        break;
+    }
 
     // set mode combobox, but only if not called for full size
     if (!bFullSize)
@@ -1086,24 +1098,30 @@ void CDlgPlayer::OnSelchangePlaymode()
 		break;
     case 1:
         nSubMode = ID_PLAYBACK_CURSORS;
+		m_pView->EnableScrolling(true);
         break;
     case 2:
         nSubMode = ID_PLAYBACK_LTOSTART;
+		m_pView->EnableScrolling(true);
         break;
     case 3:
         nSubMode = ID_PLAYBACK_STARTTOR;
+		m_pView->EnableScrolling(true);
         break;
     case 4:
         nSubMode = ID_PLAYBACK_LTOSTOP;
+		m_pView->EnableScrolling(true);
         break;
     case 5:
         nSubMode = ID_PLAYBACK_STOPTOR;
+		m_pView->EnableScrolling(true);
         break;
     case 6:
         nSubMode = ID_PLAYBACK_WINDOW;
         break;
     case 7:
         nSubMode = ID_PLAYBACK_FILE;
+		m_pView->EnableScrolling(true);
         break;
     default:
         break;
@@ -1264,3 +1282,9 @@ bool CDlgPlayer::IsLaunched()
 {
 	return bLaunched;
 }
+
+UINT CDlgPlayer::GetSubmode()
+{
+	return m_nSubMode;
+}
+

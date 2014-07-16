@@ -273,6 +273,7 @@ protected:
     afx_msg void OnUpdatePlayerStop(CCmdUI * pCmdUI);
     afx_msg void OnPlayer();
     afx_msg void OnExportXML();
+    afx_msg void OnExportLift();
     afx_msg void OnExportFW();
     afx_msg void OnExportSFM();
     afx_msg void OnExportTimeTable();

@@ -1186,6 +1186,8 @@
 #define IDD_IMPORT_ELAN_SELECT_PAGE     2048
 #define IDC_BROWSE_FOLDER               2049
 #define IDC_BROWSE_BUTTON               2049
+#define IDD_EXPORT_FW1                  2049
+#define IDD_EXPORT_LIFT                 2049
 #define IDC_USE_REFERENCE               2050
 #define IDC_EDIT_PHRASE_FOLDER          2050
 #define IDC_BROWSE_OTHER                2050
@@ -1603,6 +1605,7 @@
 #define ID_ACCELERATOR33238             33238
 #define ID_PLAYBACK_ENDCURSOR           33240
 #define ID_IMPORT_ELAN                  33242
+#define ID_EXPORT_LIFT                  33243
 #define ID_GRAPHTYPES_SELECT_FIRST      40000
 #define ID_GRAPHTYPES_SELECT_LAST       40011
 #define ID_PHONETIC_ALL                 40100
@@ -1762,7 +1765,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_3D_CONTROLS                     1
 #define _APS_NEXT_RESOURCE_VALUE        369
-#define _APS_NEXT_COMMAND_VALUE         33243
+#define _APS_NEXT_COMMAND_VALUE         33244
 #define _APS_NEXT_CONTROL_VALUE         2095
 #define _APS_NEXT_SYMED_VALUE           105
 #endif

@@ -166,6 +166,7 @@
 #include "DlgExportTable.h"
 #include "DlgRecorder.h"
 #include "DlgPlayer.h"
+#include "DlgExportLift.h"
 #include "Process\Process.h"
 #include "TextHelper.h"
 #include "FileEncodingHelper.h"
@@ -177,7 +178,7 @@ static char BASED_CODE THIS_FILE[] = __FILE__;
 #endif
 
 CObjectIStream * CSaView::s_pobsAutoload = NULL;
-static LPCSTR psz_sagraph      = "sagraph";
+static LPCSTR psz_sagraph = "sagraph";
 
 
 /***************************************************************************/
@@ -666,6 +667,36 @@ void CSaView::OnExportXML()
 {
     CDlgExportXML dlg(((CSaDoc *)GetDocument())->GetTitle());
     dlg.DoModal();
+}
+
+/***************************************************************************/
+// CSaView::OnExportLift Export wave file data using Lexicon Interchange Format
+/***************************************************************************/
+void CSaView::OnExportLift()
+{
+    CSaDoc * pDoc = GetDocument();
+    int count = pDoc->GetSegmentSize(REFERENCE);
+    if (count==0)
+    {
+        CSaApp * pApp = (CSaApp *)AfxGetApp(); // get pointer to application
+        pApp->ErrorMessage(IDS_ERROR_NO_REFERENCE);
+        return;
+    }
+
+    CSaString title = pDoc->GetTitle();
+    BOOL gloss = pDoc->HasSegmentData(GLOSS);
+    BOOL ortho = pDoc->HasSegmentData(ORTHO);
+    BOOL phonemic = pDoc->HasSegmentData(PHONEMIC);
+    BOOL phonetic = pDoc->HasSegmentData(PHONETIC);
+    BOOL pos = FALSE;
+    BOOL reference = pDoc->HasSegmentData(REFERENCE);
+    BOOL phrase = pDoc->HasSegmentData(MUSIC_PL1)|pDoc->HasSegmentData(MUSIC_PL1);
+
+    CDlgExportLift dlg(title, gloss, ortho, phonemic, phonetic, pos, reference, phrase);
+    if (dlg.DoModal()==IDOK)
+    {
+        pDoc->DoExportLift(dlg.settings);
+    }
 }
 
 /***************************************************************************/
@@ -3436,23 +3467,36 @@ void CSaView::OnUpdatePlayback(CCmdUI * pCmdUI)
 /***************************************************************************/
 void CSaView::OnUpdatePlaybackPortion(CCmdUI * pCmdUI)
 {
-	BOOL enable = TRUE;
 	if (GetDocument()->GetDataSize()==0)
 	{
-		enable=FALSE;
+		pCmdUI->Enable(FALSE);
+		return;
 	}
 
 	CMainFrame * pMain = (CMainFrame *)AfxGetMainWnd();
 	CDlgPlayer * pPlayer = pMain->GetPlayer(false);
-	if (pPlayer!=NULL)
+	if (pPlayer==NULL)
 	{
-		if (pPlayer->IsPaused())
-		{
-			enable = FALSE;
-		}
+		pCmdUI->Enable(TRUE);
+		return;
 	}
 
-    pCmdUI->Enable(enable);		// enable if data is available
+	if (pPlayer->IsPaused()) 
+	{
+		if (pCmdUI->m_nID!=pPlayer->GetSubmode())
+		{
+			pCmdUI->Enable(FALSE);
+			return;
+		}
+	}
+	
+	if (pPlayer->IsPlaying())
+	{
+		pCmdUI->Enable(FALSE);
+		return;
+	}
+
+    pCmdUI->Enable(TRUE);
 }
 
 /***************************************************************************/

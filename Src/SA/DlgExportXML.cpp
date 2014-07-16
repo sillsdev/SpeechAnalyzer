@@ -225,7 +225,7 @@ void CDlgExportXML::OnOK()
 {
 
     wstring filename;
-    int result = FileUtils::GetSaveAsFilename(m_szDocTitle, _T("Extensible Markup (*.xml) |*.xml||"), _T("xml"), NULL, filename);
+    int result = CSaDoc::GetSaveAsFilename(m_szDocTitle, _T("Extensible Markup (*.xml) |*.xml||"), _T("xml"), NULL, filename);
     if (result!=IDOK)
     {
         return;

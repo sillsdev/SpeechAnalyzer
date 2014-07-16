@@ -55,6 +55,7 @@ public:
     void OnHelpPlayer();
 	static bool IsLaunched();
 	static const char * GetMode( EMode mode);
+	UINT GetSubmode();
 
 protected:
     virtual void DoDataExchange(CDataExchange * pDX);   // DDX/DDV support

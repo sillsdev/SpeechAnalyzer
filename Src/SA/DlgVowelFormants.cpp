@@ -315,7 +315,7 @@ int CVowelFormantSets::SetDefaultSet(int nSet)
 
 #define _AC(a,b) b
 
-static inline CSaString getVowel(LPCSTR pszVowel)
+static inline CSaString GetVowel(LPCSTR pszVowel)
 {
     CSaString result;
     result.setUtf8(pszVowel);
@@ -354,7 +354,7 @@ CVowelFormantSet CVowelFormantSets::None()
 
     for (int nIndex = 0; nIndex < nVowels; nIndex++)
     {
-        CSaString szVowel = getVowel(szVowels[nIndex]);
+        CSaString szVowel = GetVowel(szVowels[nIndex]);
 
         vowels[CVowelFormantSet::male].push_back(CVowelFormants(szVowel,
                 Men[nIndex][0],
@@ -457,7 +457,7 @@ CVowelFormantSet CVowelFormantSets::HillenbrandEtAl95()
 
     for (int nIndex = 0; nIndex < nVowels; nIndex++)
     {
-        CSaString szVowel = getVowel(szVowels[nIndex]);
+        CSaString szVowel = GetVowel(szVowels[nIndex]);
 
         vowels[CVowelFormantSet::male].push_back(CVowelFormants(szVowel,
                 Men[nIndex][0],
@@ -547,7 +547,7 @@ CVowelFormantSet CVowelFormantSets::PetersonBarney52()
 
     for (int nIndex = 0; nIndex < nVowels; nIndex++)
     {
-        CSaString szVowel = getVowel(szVowels[nIndex]);
+        CSaString szVowel = GetVowel(szVowels[nIndex]);
 
         vowels[CVowelFormantSet::male].push_back(CVowelFormants(szVowel,
                 Men[nIndex][0],
@@ -604,7 +604,7 @@ CVowelFormantSet CVowelFormantSets::Ladefoged93()
 
     for (int nIndex = 0; nIndex < nVowels; nIndex++)
     {
-        CSaString szVowel = getVowel(szVowels[nIndex]);
+        CSaString szVowel = GetVowel(szVowels[nIndex]);
 
         vowels[CVowelFormantSet::male].push_back(CVowelFormants(szVowel,
                 Men[nIndex][0],
@@ -652,7 +652,7 @@ CVowelFormantSet CVowelFormantSets::DanielJones()
 
     for (int nIndex = 0; nIndex < nVowels; nIndex++)
     {
-        CSaString szVowel = getVowel(szVowels[nIndex]);
+        CSaString szVowel = GetVowel(szVowels[nIndex]);
 
         vowels[CVowelFormantSet::male].push_back(CVowelFormants(szVowel,
                 Men[nIndex][0],
@@ -700,7 +700,7 @@ CVowelFormantSet CVowelFormantSets::Whitley()
 
     for (int nIndex = 0; nIndex < nVowels; nIndex++)
     {
-        CSaString szVowel = getVowel(szVowels[nIndex]);
+        CSaString szVowel = GetVowel(szVowels[nIndex]);
 
         vowels[CVowelFormantSet::male].push_back(CVowelFormants(szVowel,
                 Men[nIndex][0],
@@ -747,7 +747,7 @@ CVowelFormantSet CVowelFormantSets::SynthesisLadefoged()
 
     for (int nIndex = 0; nIndex < nVowels; nIndex++)
     {
-        CSaString szVowel = getVowel(szVowels[nIndex]);
+        CSaString szVowel = GetVowel(szVowels[nIndex]);
 
         vowels[CVowelFormantSet::male].push_back(CVowelFormants(szVowel,
                 Men[nIndex][0],

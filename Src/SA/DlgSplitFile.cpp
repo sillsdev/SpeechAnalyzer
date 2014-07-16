@@ -47,13 +47,13 @@ void CDlgSplitFile::DoDataExchange(CDataExchange * pDX)
     DDX_CBIndex(pDX, IDC_SPLIT_WORD_CONVENTION, m_nWordConvention);
     DDX_CBIndex(pDX, IDC_SPLIT_PHRASE_CONVENTION, m_nPhraseConvention);
     DDX_Text(pDX, IDC_SPLIT_FOLDER_LOCATION, m_szFolderLocation);
-    FileUtils::DDX_Filename(pDX, IDC_SPLIT_FOLDER_NAME, m_szFolderName);
-    FileUtils::DDX_Filename(pDX, IDC_SPLIT_PHRASE_SUBFOLDER_NAME, m_szPhraseFolderName);
-    FileUtils::DDX_Filename(pDX, IDC_SPLIT_WORD_SUBFOLDER_NAME, m_szGlossFolderName);
+    DDX_Filename(pDX, IDC_SPLIT_FOLDER_NAME, m_szFolderName, IDS_ERROR_BADFILENAME_CHARS);
+    DDX_Filename(pDX, IDC_SPLIT_PHRASE_SUBFOLDER_NAME, m_szPhraseFolderName, IDS_ERROR_BADFILENAME_CHARS);
+    DDX_Filename(pDX, IDC_SPLIT_WORD_SUBFOLDER_NAME, m_szGlossFolderName, IDS_ERROR_BADFILENAME_CHARS);
     DDX_Check(pDX, IDC_CHECK_GLOSS_EMPTY, m_bSkipGlossEmpty);
     DDX_Check(pDX, IDC_CHECK_OVERWRITE, m_bOverwriteData);
-	FileUtils::DDX_Filename(pDX, IDC_FILENAME_PREFIX, m_szFilenamePrefix);
-    FileUtils::DDX_Filename(pDX, IDC_FILENAME_SUFFIX, m_szFilenameSuffix);
+	DDX_Filename(pDX, IDC_FILENAME_PREFIX, m_szFilenamePrefix, IDS_ERROR_BADFILENAME_CHARS);
+    DDX_Filename(pDX, IDC_FILENAME_SUFFIX, m_szFilenameSuffix, IDS_ERROR_BADFILENAME_CHARS);
 }
 
 BEGIN_MESSAGE_MAP(CDlgSplitFile, CDialog)
@@ -202,5 +202,32 @@ void CDlgSplitFile::SetPhraseFilenameConvention(int value)
         m_nPhraseConvention = 3;
         break;
     }
+}
+
+/**
+* performs validation on a filename for the following characters.
+* IDS_ERROR_BADFILENAME_CHARS
+**/
+void CDlgSplitFile::DDX_Filename( CDataExchange* pDX, int nIDC, CString& value, UINT msgID) 
+{
+
+	//  \ / : * ? “ < > |
+   HWND hWndCtrl = pDX->PrepareEditCtrl(nIDC);
+	if (pDX->m_bSaveAndValidate) 
+	{
+		CString temp;
+        int nLen = ::GetWindowTextLength( hWndCtrl);
+        ::GetWindowText( hWndCtrl, temp.GetBufferSetLength(nLen), nLen+1);
+        temp.ReleaseBuffer();
+		if (temp.FindOneOf(L"/\\:*?\"<>|")!=-1)
+		{
+            pDX->PrepareEditCtrl( nIDC);
+            CString msg;
+            msg.FormatMessage(msgID);
+            AfxMessageBox(msg, MB_OK|MB_ICONEXCLAMATION, 0);
+            pDX->Fail();
+		}
+    }
+	DDX_Text(pDX, nIDC, value);
 }
 

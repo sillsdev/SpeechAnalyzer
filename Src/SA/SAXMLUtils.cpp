@@ -4,18 +4,18 @@
 
 #include <xercesc/util/PlatformUtils.hpp>
 #include <xercesc/util/TransService.hpp>
-#include <xercesc/sax2/SAX2XMLReader.hpp>
-#include <xercesc/sax2/XMLReaderFactory.hpp>
 #include <xercesc/util/OutOfMemoryException.hpp>
-#include <xercesc/sax2/DefaultHandler.hpp>
-#include <xercesc/framework/XMLFormatter.hpp>
 #include <xercesc/util/XMLUniDefs.hpp>
-#include <xercesc/sax2/Attributes.hpp>
 #include <xercesc/util/XMLString.hpp>
 #include <xercesc/dom/DOM.hpp>
+#include <xercesc/framework/XMLFormatter.hpp>
 #include <xercesc/framework/LocalFileFormatTarget.hpp>
-#include "DlgImportElanSheet.h"
+#include <xercesc/sax2/Attributes.hpp>
+#include <xercesc/sax2/DefaultHandler.hpp>
+#include <xercesc/sax2/SAX2XMLReader.hpp>
+#include <xercesc/sax2/XMLReaderFactory.hpp>
 
+#include "DlgImportElanSheet.h"
 #include "Elan.h"
 
 using namespace xercesc_3_1;
@@ -25,16 +25,6 @@ using namespace xercesc_3_1;
 static char THIS_FILE[]=__FILE__;
 #define new DEBUG_NEW
 #endif
-
-class ScopedXMLUtils {
-public:
-	ScopedXMLUtils() {
-         XMLPlatformUtils::Initialize();
-	}
-	virtual ~ScopedXMLUtils() {
-	    XMLPlatformUtils::Terminate();
-	}
-};
 
 LPCTSTR GetAnnotationName( EAnnotation ea) {
 	switch (ea) {
@@ -104,7 +94,7 @@ void CSAXMLUtils::WriteSAXML( LPCTSTR filename, Elan::CAnnotationDocument & docu
 {
 	ScopedXMLUtils utils;
 
-    DOMImplementation* impl = DOMImplementationRegistry::getDOMImplementation(L"Core");
+    DOMImplementation * impl = DOMImplementationRegistry::getDOMImplementation(L"Core");
     if (impl == NULL) throw logic_error("Unable to load xerces library");
 
 	try 

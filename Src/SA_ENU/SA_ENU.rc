@@ -26,7 +26,7 @@ LANGUAGE LANG_NEUTRAL, SUBLANG_NEUTRAL
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 3,1,0,91
+ FILEVERSION 3,1,0,92
  PRODUCTVERSION 1,0,0,1
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
@@ -44,12 +44,12 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "SIL International"
             VALUE "FileDescription", "Speech Analyzer Resource DLL"
-            VALUE "FileVersion", "v3.1.0.91"
+            VALUE "FileVersion", "v3.1.0.92"
             VALUE "InternalName", "SA_ENU"
             VALUE "LegalCopyright", "© 1996-2014 SIL International (MSEA)"
             VALUE "OriginalFilename", "SA_ENU.dll"
             VALUE "ProductName", "SA"
-            VALUE "ProductVersion", "1.0.001"
+            VALUE "ProductVersion", "1.0.0.1"
         END
     END
     BLOCK "VarFileInfo"
@@ -2409,6 +2409,33 @@ BEGIN
     COMBOBOX        IDC_COMBO_PL4,215,88,110,30,CBS_DROPDOWN | CBS_SORT | WS_VSCROLL | WS_TABSTOP
 END
 
+IDD_EXPORT_LIFT DIALOGEX 0, 0, 290, 300
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
+CAPTION "Export Lift"
+FONT 8, "MS Sans Serif", 0, 0, 0x0
+BEGIN
+    CONTROL         "All Transcriptions",IDC_EXTAB_ANNOTATIONS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,19,23,69,10
+    CONTROL         "Reference",IDC_EXTAB_REFERENCE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,27,35,49,10
+    CONTROL         "Phonetic",IDC_EXTAB_PHONETIC,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,27,47,44,10
+    CONTROL         "Phonemic",IDC_EXTAB_PHONEMIC,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,27,58,47,10
+    CONTROL         "Orthographic",IDC_EXTAB_ORTHO,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,27,69,57,10
+    CONTROL         "Gloss",IDC_EXTAB_GLOSS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,27,81,33,10
+    CONTROL         "Part of Speech",IDC_EXTAB_POS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,27,93,63,10
+    CONTROL         "Phrase Levels",IDC_EXTAB_PHRASE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,27,105,61,10
+    PUSHBUTTON      "Cancel",IDCANCEL,177,277,50,14
+    DEFPUSHBUTTON   "Export",IDOK,123,277,50,14
+    GROUPBOX        "Include",IDC_STATIC,9,6,271,147
+    PUSHBUTTON      "&Help",IDHELP,231,277,50,14
+    LTEXT           "FieldWorks Project",IDC_STATIC_FIELDWORKS_PROJECT,9,202,270,8
+    EDITTEXT        IDC_EDIT_FIELDWORKS_FOLDER,10,182,271,14,ES_AUTOHSCROLL | WS_DISABLED
+    EDITTEXT        IDC_EDIT_OTHER_FOLDER,9,253,215,14,ES_AUTOHSCROLL
+    PUSHBUTTON      "Browse...",IDC_BROWSE_OTHER,231,253,50,14
+    CONTROL         "Export To FieldWorks Directory",IDC_RADIO_FIELDWORKS,
+                    "Button",BS_AUTORADIOBUTTON,9,169,270,10
+    CONTROL         "Export To Another Location",IDC_RADIO_OTHER,"Button",BS_AUTORADIOBUTTON,9,240,270,10
+    COMBOBOX        IDC_COMBO_FIELDWORKS_PROJECT,10,213,271,101,CBS_DROPDOWN | CBS_SORT | WS_DISABLED | WS_VSCROLL | WS_TABSTOP
+END
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -2674,6 +2701,14 @@ BEGIN
     IDD_IMPORT_ELAN_SELECT_PAGE, DIALOG
     BEGIN
     END
+
+    IDD_EXPORT_LIFT, DIALOG
+    BEGIN
+        LEFTMARGIN, 10
+        RIGHTMARGIN, 280
+        TOPMARGIN, 10
+        BOTTOMMARGIN, 290
+    END
 END
 #endif    // APSTUDIO_INVOKED
 
@@ -2901,6 +2936,7 @@ BEGIN
             MENUITEM "&Fieldworks (.SFM)",          ID_EXPORT_FW
             MENUITEM "&Standard Format (.SFM)",     ID_EXPORT_SFM
             MENUITEM "SFM &Time Table (.SFT)",      ID_EXPORT_TIME_TABLE
+            MENUITEM "&Lift Format (.LIFT)",        ID_EXPORT_LIFT
             MENUITEM "E&xtensible Markup (.XML)",   ID_EXPORT_XML
             MENUITEM SEPARATOR
             MENUITEM "Staff &Notes...",             ID_EXPORT_MIDI
@@ -4464,7 +4500,7 @@ IDC_MHANDN              CURSOR                  "res\\MedHandN.cur"
 
 STRINGTABLE
 BEGIN
-    VS_VERSION              "Version 3.1.0.91"
+    VS_VERSION              "Version 3.1.0.92"
     VS_COPYRIGHT            "© 1996-2014 SIL International (MSEA).\nAll Rights Reserved."
     IDR_MAINFRAME           "Speech Analyzer"
     IDR_SA_ANNTYPE          "\nSA\nSA Document\nWAV Files (*.wav)\n.wav\nannFileType\nANN File Type"
@@ -5492,6 +5528,7 @@ BEGIN
     ID_AUTOSAVE_OFF         "Disables the AutoSave feature."
     ID_PLAYBACK_ENDCURSOR   "Plays between the end cursor and the end of the file\nPlay End Cursor -> File End"
     ID_IMPORT_ELAN          "Import ELAN file\nImport ELAN"
+    ID_EXPORT_LIFT          "Export the document data using Lexicon Interchange Format\nExport LIFT"
 END
 
 STRINGTABLE
