@@ -15,14 +15,14 @@ namespace XML {
 
 class Attribute {
 public:
-	Attribute( LPCTSTR _name, LPCTSTR _value);
-	Attribute( LPCTSTR _localname, LPCTSTR _qname, LPCTSTR _type, LPCTSTR _value, LPCTSTR _uri);
+    Attribute(LPCTSTR _name, LPCTSTR _value);
+    Attribute(LPCTSTR _localname, LPCTSTR _qname, LPCTSTR _type, LPCTSTR _value, LPCTSTR _uri);
 
-	wstring localname;
-	wstring qname;
-	wstring type;
-	wstring value;
-	wstring uri;
+    wstring localname;
+    wstring qname;
+    wstring type;
+    wstring value;
+    wstring uri;
 };
 
 }

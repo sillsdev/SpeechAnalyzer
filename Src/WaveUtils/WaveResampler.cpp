@@ -17,19 +17,16 @@ typedef unsigned short USHORT;
 
 using std::vector;
 
-double CWaveResampler::Limit(double val) 
-{
+double CWaveResampler::Limit(double val) {
     return (val>1.0)?1.0:((val<-1.0)?-1.0:val);
 }
 
-long CWaveResampler::Round(double val) 
-{
+long CWaveResampler::Round(double val) {
     double result = val+0.5;
     return (long)result;
 }
 
-long CWaveResampler::ConvBitSize(unsigned long in, int bps) 
-{
+long CWaveResampler::ConvBitSize(unsigned long in, int bps) {
     const unsigned long max = (1 << (bps-1)) - 1;
     return in > max ? in - (max<<1) : in;
 }
@@ -37,11 +34,9 @@ long CWaveResampler::ConvBitSize(unsigned long in, int bps)
 /**
 * calculate greatest common denominator
 */
-unsigned long CWaveResampler::GCD(unsigned long m, unsigned long n) 
-{
-    
-	while (n != 0) 
-	{
+unsigned long CWaveResampler::GCD(unsigned long m, unsigned long n) {
+
+    while (n != 0) {
         unsigned long r = m % n;
         m = n;
         n = r;
@@ -52,39 +47,32 @@ unsigned long CWaveResampler::GCD(unsigned long m, unsigned long n)
 /**
 * calculate least common multiple
 */
-unsigned long CWaveResampler::LCM(unsigned long m, unsigned long n) 
-{
-    if ((m==0) || (n==0))
-    {
+unsigned long CWaveResampler::LCM(unsigned long m, unsigned long n) {
+    if ((m==0) || (n==0)) {
         return 0;
     }
     return ((m*n)/GCD(m,n));
 }
 
-double CWaveResampler::BessI0(float x) 
-{
+double CWaveResampler::BessI0(float x) {
 
     double ans = 0;
     double ax=fabs(x);
-    if (ax < 3.75)
-    {
+    if (ax < 3.75) {
         double y=x/3.75;
         y*=y;
         ans=(double)(1.0+y*(3.5156229+y*(3.0899424+y*(1.2067492+y*(0.2659732+y*(0.360768e-1+y*0.45813e-2))))));
-    }
-    else
-    {
+    } else {
         double y=3.75/ax;
         ans=(double)((exp(ax)/sqrt(ax))*(0.39894228+y*(0.1328592e-1+y*((0.225319e-2)+y*((-0.157565e-2)+y*((0.916281e-2)+y*(-0.2057706e-1+y*(0.2635537e-1+y*(-0.1647633e-1+y*0.392377e-2)))))))));
     }
     return ans;
 }
 
-void CWaveResampler::CalculateCoefficients( DWORD inSampleRate,
-											WORD sampleSize, // wBitsPerSample bit size for one sample on one channel
-											double *& coeffs,
-											size_t & coeffsLen) 
-{
+void CWaveResampler::CalculateCoefficients(DWORD inSampleRate,
+        WORD sampleSize, // wBitsPerSample bit size for one sample on one channel
+        double *& coeffs,
+        size_t & coeffsLen) {
 
     size_t groupDelay = 0;
 
@@ -122,16 +110,11 @@ void CWaveResampler::CalculateCoefficients( DWORD inSampleRate,
     //  Compute the tradeoff between a sharp transition from passband to
     //  stopband and greater attenuation.
     float tradeOff = 0;
-    if (attenuation > 50.F)
-    {
+    if (attenuation > 50.F) {
         tradeOff = 0.1102F*(attenuation - 8.7F);
-    }
-    else if (attenuation > 21.F)
-    {
+    } else if (attenuation > 21.F) {
         tradeOff = 0.5842F*(float)pow((double)attenuation - 21.0,0.4) + .07886F*(attenuation - 21.0F);
-    }
-    else
-    {
+    } else {
         tradeOff = 0.F;
     }
 
@@ -147,8 +130,7 @@ void CWaveResampler::CalculateCoefficients( DWORD inSampleRate,
     coeffs = new double[coeffsLen];
 
     // create a filter for this case
-    for (size_t i = 0; i < groupDelay; i++)
-    {
+    for (size_t i = 0; i < groupDelay; i++) {
         double p = pow((((double)i-(double)groupDelay)/(double)groupDelay),2.0);
         double b = (double)BessI0(tradeOff*(float)pow(1.0-p,0.5));
         double b2 = (double)BessI0(tradeOff);
@@ -162,15 +144,12 @@ void CWaveResampler::CalculateCoefficients( DWORD inSampleRate,
         // count and remove the leading zeros
         size_t count=0;
         size_t lastmin=0;
-        for (size_t i=0; i<=groupDelay; i++)
-        {
+        for (size_t i=0; i<=groupDelay; i++) {
             // we will limit anything below
-            if (abs(coeffs[i])>(1.0/65536.0))
-            {
+            if (abs(coeffs[i])>(1.0/65536.0)) {
                 break;
             }
-            if ((i>0) && (abs(coeffs[i])<abs(coeffs[i-1])))
-            {
+            if ((i>0) && (abs(coeffs[i])<abs(coeffs[i-1]))) {
                 lastmin = i;
             }
             count++;
@@ -178,8 +157,7 @@ void CWaveResampler::CalculateCoefficients( DWORD inSampleRate,
 
         size_t j=0;
         double * temp = new double[coeffsLen-(lastmin*2)];
-        for (size_t i=lastmin; i<=groupDelay; i++)
-        {
+        for (size_t i=lastmin; i<=groupDelay; i++) {
             temp[j++]=coeffs[i];
         }
         coeffsLen = coeffsLen-(lastmin*2);
@@ -191,22 +169,18 @@ void CWaveResampler::CalculateCoefficients( DWORD inSampleRate,
     double sum = 0.0;
     double min = 2;
     double max = -2;
-    for (size_t i=0; i<coeffsLen/2; i++)
-    {
+    for (size_t i=0; i<coeffsLen/2; i++) {
         sum += coeffs[i];
-        if (coeffs[i]<min)
-        {
+        if (coeffs[i]<min) {
             min = coeffs[i];
         }
-        if (coeffs[i]>max)
-        {
+        if (coeffs[i]>max) {
             max = coeffs[i];
         }
     }
 
     // create the other half of the filter
-    for (size_t i = groupDelay+1; i < coeffsLen; i++)
-    {
+    for (size_t i = groupDelay+1; i < coeffsLen; i++) {
         coeffs[i] = coeffs[coeffsLen-1-i];
     }
 }
@@ -221,8 +195,7 @@ void CWaveResampler::Func(size_t bufferLen,
                           size_t upSmpFactor,
                           size_t dwnSmpFactor,
                           double * datal,
-                          IProgressUpdate & progressUpdater) 
-{
+                          IProgressUpdate & progressUpdater) {
 
     size_t workIdx = 0;
     size_t historyLen = coeffsLen-1;
@@ -232,8 +205,7 @@ void CWaveResampler::Func(size_t bufferLen,
     double step = remain / 10.0;
     double current = step;
 
-    for (size_t i=0; i<bufferLen; i++) 
-	{
+    for (size_t i=0; i<bufferLen; i++) {
 
         buffer[i] = 0;
 
@@ -243,8 +215,7 @@ void CWaveResampler::Func(size_t bufferLen,
         // skip past the beginning where the history buffer is zeros
         size_t skip = (historyLen>workIdx)?(historyLen-workIdx):0;
         size_t start = 0;
-        if (skip>0)
-        {
+        if (skip>0) {
             start += skip;
             coeffIdx -= skip;
         }
@@ -253,8 +224,7 @@ void CWaveResampler::Func(size_t bufferLen,
         int z = (int)workIdx-(int)historyLen+(int)skip;
         size_t remainder = z % upSmpFactor;
         size_t offset = 0;
-        if (remainder>0)
-        {
+        if (remainder>0) {
             offset = upSmpFactor-remainder;
             start += offset;
             coeffIdx -= offset;
@@ -265,8 +235,7 @@ void CWaveResampler::Func(size_t bufferLen,
         size_t quotient = (size_t)(z/upSmpFactor);
 
         size_t j = start;
-        while (j<=historyLen)
-        {
+        while (j<=historyLen) {
             // z is guaranteed to be greater than or equal to zero
             // z is guaranteed to start on a valid sample
             buffer[i] += datal[quotient++] * coeffs[coeffIdx];
@@ -278,8 +247,7 @@ void CWaveResampler::Func(size_t bufferLen,
         double complete = ((double)i)/((double)bufferLen);
         double val = remain*complete;
         // only call the status bar once in a while
-        if (val>current)
-        {
+        if (val>current) {
             progressUpdater.SetProgress(progress+((int)val));
             current += step;
         }
@@ -295,8 +263,7 @@ void CWaveResampler::Func(size_t bufferLen,
 * This method uses 32-bit floating point to do the majority of the work.
 * The incoming default progress bar is 30%....
 */
-CWaveResampler::ECONVERT CWaveResampler::Resample(LPCTSTR src, const TCHAR  * dst, IProgressUpdate & progressUpdater) 
-{
+CWaveResampler::ECONVERT CWaveResampler::Resample(LPCTSTR src, const TCHAR  * dst, IProgressUpdate & progressUpdater) {
 
     // yes, I could have used smart pointers...I was in a hurry.
     size_t length = 0;
@@ -311,8 +278,7 @@ CWaveResampler::ECONVERT CWaveResampler::Resample(LPCTSTR src, const TCHAR  * ds
     {
         //Creating new wav file.
         HMMIO hmmio = mmioOpen(const_cast<TCHAR *>(src), 0, MMIO_ALLOCBUF | MMIO_READ);
-        if (hmmio==NULL)
-        {
+        if (hmmio==NULL) {
             return EC_NOWAVE;
         }
 
@@ -321,8 +287,7 @@ CWaveResampler::ECONVERT CWaveResampler::Resample(LPCTSTR src, const TCHAR  * ds
         /* Tell Windows to locate a WAVE Group header somewhere in the file, and read it in.
         This marks the start of any embedded WAVE format within the file */
         waveChunk.fccType = mmioFOURCC('W', 'A', 'V', 'E');
-        if (mmioDescend(hmmio, (LPMMCKINFO)&waveChunk, NULL, MMIO_FINDRIFF))
-        {
+        if (mmioDescend(hmmio, (LPMMCKINFO)&waveChunk, NULL, MMIO_FINDRIFF)) {
             /* Oops! No embedded WAVE format within this file */
             mmioClose(hmmio, 0);
             return EC_NOWAVE;
@@ -332,19 +297,16 @@ CWaveResampler::ECONVERT CWaveResampler::Resample(LPCTSTR src, const TCHAR  * ds
         memset(&fmtChunk,0,sizeof(fmtChunk));
         /* Tell Windows to locate the WAVE's "fmt " chunk and read in its header */
         fmtChunk.ckid = mmioFOURCC('f', 'm', 't', ' ');
-        if (mmioDescend(hmmio, &fmtChunk, &waveChunk, MMIO_FINDCHUNK))
-        {
+        if (mmioDescend(hmmio, &fmtChunk, &waveChunk, MMIO_FINDCHUNK)) {
             mmioClose(hmmio, 0);
             return EC_READFAIL;
         }
 
-        if ((fmtChunk.cksize==16)||(fmtChunk.cksize==18))
-        {
+        if ((fmtChunk.cksize==16)||(fmtChunk.cksize==18)) {
             /* Tell Windows to read in the "fmt " chunk into a WAVEFORMATEX structure */
             WAVEFORMATEX format;
             memset(&format,0,sizeof(format));
-            if (mmioRead(hmmio, (HPSTR)&format, fmtChunk.cksize) != (LRESULT)fmtChunk.cksize)
-            {
+            if (mmioRead(hmmio, (HPSTR)&format, fmtChunk.cksize) != (LRESULT)fmtChunk.cksize) {
                 mmioClose(hmmio, 0);
                 return EC_READFAIL;
             }
@@ -355,15 +317,12 @@ CWaveResampler::ECONVERT CWaveResampler::Resample(LPCTSTR src, const TCHAR  * ds
             nBlockAlign = format.nBlockAlign;
             wBitsPerSample = format.wBitsPerSample;
 
-        }
-        else if (fmtChunk.cksize==40)
-        {
+        } else if (fmtChunk.cksize==40) {
 
             WAVEFORMATEXTENSIBLE waveInEx;
             memset(&waveInEx,0,sizeof(WAVEFORMATEXTENSIBLE));
             /* Tell Windows to read in the "fmt " chunk into a WAVEFORMATEX structure */
-            if (mmioRead(hmmio, (HPSTR)&waveInEx, fmtChunk.cksize) != (LRESULT)fmtChunk.cksize)
-            {
+            if (mmioRead(hmmio, (HPSTR)&waveInEx, fmtChunk.cksize) != (LRESULT)fmtChunk.cksize) {
                 mmioClose(hmmio, 0);
                 return EC_READFAIL;
             }
@@ -374,29 +333,22 @@ CWaveResampler::ECONVERT CWaveResampler::Resample(LPCTSTR src, const TCHAR  * ds
             nBlockAlign = waveInEx.Format.nBlockAlign;
             wBitsPerSample = waveInEx.Format.wBitsPerSample;
 
-            if (waveInEx.SubFormat==KSDATAFORMAT_SUBTYPE_PCM)
-            {
+            if (waveInEx.SubFormat==KSDATAFORMAT_SUBTYPE_PCM) {
                 wFormatTag = WAVE_FORMAT_PCM;
-            }
-            else if (waveInEx.SubFormat==KSDATAFORMAT_SUBTYPE_IEEE_FLOAT)
-            {
+            } else if (waveInEx.SubFormat==KSDATAFORMAT_SUBTYPE_IEEE_FLOAT) {
                 wFormatTag = WAVE_FORMAT_IEEE_FLOAT;
             }
-        }
-        else
-        {
+        } else {
             mmioClose(hmmio, 0);
             return EC_READFAIL;
         }
 
-        if (mmioAscend(hmmio, &fmtChunk, 0))
-        {
+        if (mmioAscend(hmmio, &fmtChunk, 0)) {
             mmioClose(hmmio, 0);
             return EC_READFAIL;
         }
 
-        if (wBitsPerSample==64)
-        {
+        if (wBitsPerSample==64) {
             mmioClose(hmmio, 0);
             return EC_NOTSUPPORTED;
         }
@@ -406,8 +358,7 @@ CWaveResampler::ECONVERT CWaveResampler::Resample(LPCTSTR src, const TCHAR  * ds
         memset(&dataChunk,0,sizeof(dataChunk));
         /* Tell Windows to locate the WAVE's "fmt " chunk and read in its header */
         dataChunk.ckid = mmioFOURCC('d', 'a', 't', 'a');
-        if (mmioDescend(hmmio, &dataChunk, NULL, MMIO_FINDCHUNK))
-        {
+        if (mmioDescend(hmmio, &dataChunk, NULL, MMIO_FINDCHUNK)) {
             mmioClose(hmmio, 0);
             return EC_NODATA;
         }
@@ -416,16 +367,14 @@ CWaveResampler::ECONVERT CWaveResampler::Resample(LPCTSTR src, const TCHAR  * ds
         data = new BYTE[dataChunk.cksize];
 
         /** read the data */
-        if (mmioRead(hmmio, (HPSTR)data, dataChunk.cksize) != (LRESULT)dataChunk.cksize)
-        {
+        if (mmioRead(hmmio, (HPSTR)data, dataChunk.cksize) != (LRESULT)dataChunk.cksize) {
             mmioClose(hmmio, 0);
             delete [] data;
             data = NULL;
             return EC_READFAIL;
         }
 
-        if (mmioAscend(hmmio, &dataChunk, 0))
-        {
+        if (mmioAscend(hmmio, &dataChunk, 0)) {
             mmioClose(hmmio, 0);
             delete [] data;
             data = NULL;
@@ -433,8 +382,7 @@ CWaveResampler::ECONVERT CWaveResampler::Resample(LPCTSTR src, const TCHAR  * ds
         }
 
         // Close the file.
-        if (mmioClose(hmmio, 0))
-        {
+        if (mmioClose(hmmio, 0)) {
             delete [] data;
             data = NULL;
             return EC_READFAIL;
@@ -442,8 +390,7 @@ CWaveResampler::ECONVERT CWaveResampler::Resample(LPCTSTR src, const TCHAR  * ds
     }
 
     // convert incoming format if possible
-    if ((wFormatTag!=WAVE_FORMAT_PCM) && (wFormatTag!=WAVE_FORMAT_IEEE_FLOAT)) 
-	{
+    if ((wFormatTag!=WAVE_FORMAT_PCM) && (wFormatTag!=WAVE_FORMAT_IEEE_FLOAT)) {
 
         HACMSTREAM hacm = 0;
         HACMDRIVER had = NULL;
@@ -464,8 +411,7 @@ CWaveResampler::ECONVERT CWaveResampler::Resample(LPCTSTR src, const TCHAR  * ds
         DWORD_PTR dwCallback = 0;
         DWORD_PTR dwInstance = 0;
         DWORD fdwOpen = ACM_STREAMOPENF_NONREALTIME;
-        if (acmStreamOpen(&hacm,had,&fxSrc,&fxDst,pwfltr,dwCallback,dwInstance,fdwOpen))
-        {
+        if (acmStreamOpen(&hacm,had,&fxSrc,&fxDst,pwfltr,dwCallback,dwInstance,fdwOpen)) {
             delete [] data;
             data = NULL;
             return EC_CONVERTFORMATFAIL;
@@ -474,8 +420,7 @@ CWaveResampler::ECONVERT CWaveResampler::Resample(LPCTSTR src, const TCHAR  * ds
         DWORD cbInput = length;
         DWORD outputBytes = 0;
         DWORD fdwSize = ACM_STREAMSIZEF_SOURCE;
-        if (acmStreamSize(hacm,cbInput,&outputBytes,fdwSize)) 
-		{
+        if (acmStreamSize(hacm,cbInput,&outputBytes,fdwSize)) {
             acmStreamClose(hacm,0);
             delete [] data;
             data = NULL;
@@ -496,24 +441,21 @@ CWaveResampler::ECONVERT CWaveResampler::Resample(LPCTSTR src, const TCHAR  * ds
         ash.cbDstLengthUsed = 0;
         ash.dwDstUser = NULL;
 
-        if (acmStreamPrepareHeader(hacm,&ash,0))
-        {
+        if (acmStreamPrepareHeader(hacm,&ash,0)) {
             acmStreamClose(hacm,0);
             delete [] data;
             data = NULL;
             return EC_CONVERTFORMATFAIL;
         }
 
-        if (acmStreamConvert(hacm,&ash,0))
-        {
+        if (acmStreamConvert(hacm,&ash,0)) {
             acmStreamClose(hacm,0);
             delete [] data;
             data = NULL;
             return EC_CONVERTFORMATFAIL;
         }
 
-        if (acmStreamUnprepareHeader(hacm,&ash,0))
-        {
+        if (acmStreamUnprepareHeader(hacm,&ash,0)) {
             acmStreamClose(hacm,0);
             delete [] data;
             data = NULL;
@@ -535,16 +477,14 @@ CWaveResampler::ECONVERT CWaveResampler::Resample(LPCTSTR src, const TCHAR  * ds
         delete [] data;
         data = ash.pbDst;
 
-        if (acmStreamClose(hacm,0))
-        {
+        if (acmStreamClose(hacm,0)) {
             delete [] data;
             data = NULL;
             return EC_CONVERTFORMATFAIL;
         }
     }
 
-    if (data==NULL)
-    {
+    if (data==NULL) {
         return EC_SOFTWARE;
     }
 
@@ -557,18 +497,13 @@ CWaveResampler::ECONVERT CWaveResampler::Resample(LPCTSTR src, const TCHAR  * ds
 
         size_t j = 0;
         size_t k = 0;
-        if (wFormatTag==WAVE_FORMAT_PCM) 
-		{
+        if (wFormatTag==WAVE_FORMAT_PCM) {
 
             // if it's 32 bit, we also don't need to do this
-            switch (wBitsPerSample) 
-			{
-            case 16:
-            {
-                for (size_t i=0; i<numSamples; i++)
-                {
-                    for (unsigned int c=0; c<nChannels; c++)
-                    {
+            switch (wBitsPerSample) {
+            case 16: {
+                for (size_t i=0; i<numSamples; i++) {
+                    for (unsigned int c=0; c<nChannels; c++) {
                         unsigned long b0 = data[k++];
                         unsigned long b1 = data[k++];
                         unsigned long val = b1;
@@ -584,12 +519,9 @@ CWaveResampler::ECONVERT CWaveResampler::Resample(LPCTSTR src, const TCHAR  * ds
                 }
             }
             break;
-            case 24:
-            {
-                for (size_t i=0; i<numSamples; i++)
-                {
-                    for (unsigned int c=0; c<nChannels; c++)
-                    {
+            case 24: {
+                for (size_t i=0; i<numSamples; i++) {
+                    for (unsigned int c=0; c<nChannels; c++) {
                         unsigned long b0 = data[k++];
                         unsigned long b1 = data[k++];
                         unsigned long b2 = data[k++];
@@ -608,12 +540,9 @@ CWaveResampler::ECONVERT CWaveResampler::Resample(LPCTSTR src, const TCHAR  * ds
                 }
             }
             break;
-            case 32:
-            {
-                for (size_t i=0; i<numSamples; i++)
-                {
-                    for (unsigned int c=0; c<nChannels; c++)
-                    {
+            case 32: {
+                for (size_t i=0; i<numSamples; i++) {
+                    for (unsigned int c=0; c<nChannels; c++) {
                         unsigned long b0 = data[k++];
                         unsigned long b1 = data[k++];
                         unsigned long b2 = data[k++];
@@ -640,20 +569,14 @@ CWaveResampler::ECONVERT CWaveResampler::Resample(LPCTSTR src, const TCHAR  * ds
                 data = NULL;
                 return EC_WRONGFORMAT;
             }
-        }
-        else if (wFormatTag==WAVE_FORMAT_IEEE_FLOAT)
-        {
+        } else if (wFormatTag==WAVE_FORMAT_IEEE_FLOAT) {
             // assume float
-            switch (wBitsPerSample)
-            {
-            case 32:
-            {
+            switch (wBitsPerSample) {
+            case 32: {
                 float * samples = (float *)data;
-                for (size_t i=0; i<numSamples; i++)
-                {
+                for (size_t i=0; i<numSamples; i++) {
                     int z = i*nChannels;
-                    for (unsigned int c=0; c<nChannels; c++)
-                    {
+                    for (unsigned int c=0; c<nChannels; c++) {
                         double temp = samples[z+c];
                         temp = Limit(temp);
                         buffer[j++] = temp;
@@ -667,9 +590,7 @@ CWaveResampler::ECONVERT CWaveResampler::Resample(LPCTSTR src, const TCHAR  * ds
                 data = NULL;
                 return EC_WRONGFORMAT;
             }
-        }
-        else
-        {
+        } else {
             delete [] buffer;
             delete [] data;
             data = NULL;
@@ -689,8 +610,7 @@ CWaveResampler::ECONVERT CWaveResampler::Resample(LPCTSTR src, const TCHAR  * ds
 
     // at this point the old data pointer is no longer used...
 
-    if (datal==NULL)
-    {
+    if (datal==NULL) {
         // shouldn't be!
         return EC_SOFTWARE;
     }
@@ -698,44 +618,35 @@ CWaveResampler::ECONVERT CWaveResampler::Resample(LPCTSTR src, const TCHAR  * ds
     vector<vector<double>> buffers;
 
     // pull each channel into it's own buffer
-    for (size_t ch=0; ch<nChannels; ch++) 
-	{
+    for (size_t ch=0; ch<nChannels; ch++) {
 
         size_t numSamples = length/nChannels;
         size_t bufferSize = numSamples;
-		vector<double> buffer;
+        vector<double> buffer;
 
         size_t k=0;
-        for (size_t i=0; i<numSamples; i++) 
-		{
+        for (size_t i=0; i<numSamples; i++) {
             double sum = 0;
-            for (size_t c=0; c<nChannels; c++) 
-			{
-                if (k>=length) 
-				{
+            for (size_t c=0; c<nChannels; c++) {
+                if (k>=length) {
                     delete [] datal;
                     datal = NULL;
                     return EC_SOFTWARE;
                 }
-                if (ch==c) 
-				{
+                if (ch==c) {
                     sum += datal[k];
                 }
                 k++;
             }
-            if (ch==nChannels) 
-			{
+            if (ch==nChannels) {
                 sum /= (double)nChannels;
-            } 
-			else 
-			{
+            } else {
                 // it's a single channel - do nothing
             }
             buffer.push_back(sum);
         }
 
-		if (buffer.size()!=bufferSize) 
-		{
+        if (buffer.size()!=bufferSize) {
             delete [] datal;
             datal = NULL;
             return EC_SOFTWARE;
@@ -781,41 +692,36 @@ CWaveResampler::ECONVERT CWaveResampler::Resample(LPCTSTR src, const TCHAR  * ds
     fatal error has occurred.
     */
 
-	// we now use the data at whatever frequency it comes in at
+    // we now use the data at whatever frequency it comes in at
 
     progressUpdater.SetProgress(95);
 
     // convert the data to 16-bit for all channels
     DWORD numSamples = length/nChannels;
 
-	{
-		vector<char> buffer;
-		for (size_t i=0; i<numSamples; i++) 
-		{
-			for (size_t ch=0; ch<buffers.size(); ch++) 
-			{
-				double dval = buffers[ch][i];
-				dval = Limit(dval);
-				long lval = (long)(dval*(double)0x7fffffff);
-				lval /= 0x10000;
-				__int16 ival = (__int16)lval;
-				BYTE lb = ival & 0xff;
-				BYTE hb = ival>>8;
-				buffer.push_back(lb);
-				buffer.push_back(hb);
-			}
-		}
+    {
+        vector<char> buffer;
+        for (size_t i=0; i<numSamples; i++) {
+            for (size_t ch=0; ch<buffers.size(); ch++) {
+                double dval = buffers[ch][i];
+                dval = Limit(dval);
+                long lval = (long)(dval*(double)0x7fffffff);
+                lval /= 0x10000;
+                __int16 ival = (__int16)lval;
+                BYTE lb = ival & 0xff;
+                BYTE hb = ival>>8;
+                buffer.push_back(lb);
+                buffer.push_back(hb);
+            }
+        }
 
-		CWaveWriter writer;
-		try 
-		{
-			writer.write( dst, MMIO_CREATE|MMIO_WRITE|MMIO_EXCLUSIVE, 16, wFormatTag, nChannels, nSamplesPerSec, buffer);
-		} 
-		catch (wave_error & /*e*/) 
-		{
-			return EC_WRITEFAIL;
-		}
-	}
+        CWaveWriter writer;
+        try {
+            writer.write(dst, MMIO_CREATE|MMIO_WRITE|MMIO_EXCLUSIVE, 16, wFormatTag, nChannels, nSamplesPerSec, buffer);
+        } catch (wave_error & /*e*/) {
+            return EC_WRITEFAIL;
+        }
+    }
 
     progressUpdater.SetProgress(100);
 

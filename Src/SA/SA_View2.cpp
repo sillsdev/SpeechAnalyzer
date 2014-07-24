@@ -66,6 +66,7 @@ BEGIN_MESSAGE_MAP(CSaView, CView)
 	ON_COMMAND(ID_BOUNDARIES_ALL, OnBoundariesAll)
 	ON_COMMAND(ID_BOUNDARIES_NONE, OnBoundariesNone)
 	ON_COMMAND(ID_BOUNDARIES_RAWDATA, OnBoundariesRawdata)
+	ON_COMMAND(ID_VIEW_TRANSCRIPTION_BOUNDARIES, OnViewTranscriptionBoundaries)
 	ON_COMMAND(ID_DP_GRAPITCH, OnDpGrapitch)
 	ON_COMMAND(ID_DP_RAWDATA, OnDpRawdata)
 	ON_COMMAND(ID_DP_SPECTROGRAM, OnDpSpectrogram)
@@ -255,6 +256,7 @@ BEGIN_MESSAGE_MAP(CSaView, CView)
 	ON_UPDATE_COMMAND_UI(ID_BOUNDARIES_ALL, OnUpdateBoundariesAll)
 	ON_UPDATE_COMMAND_UI(ID_BOUNDARIES_NONE, OnUpdateBoundariesNone)
 	ON_UPDATE_COMMAND_UI(ID_BOUNDARIES_RAWDATA, OnUpdateBoundariesRawdata)
+	ON_UPDATE_COMMAND_UI(ID_VIEW_TRANSCRIPTION_BOUNDARIES, OnUpdateViewTranscriptionBoundaries)
 	ON_UPDATE_COMMAND_UI(ID_DP_GRAPITCH, OnUpdateDpGrapitch)
 	ON_UPDATE_COMMAND_UI(ID_DP_RAWDATA, OnUpdateDpRawdata)
 	ON_UPDATE_COMMAND_UI(ID_DP_SPECTROGRAM, OnUpdateDpSpectrogram)
@@ -400,7 +402,8 @@ CSaView::CSaView(const CSaView * pToBeCopied)
         }
     }
     m_nCursorAlignment = MainFrame()->GetCursorAlignment();
-    m_bBoundariesAll = FALSE;
+	m_bTranscriptionBoundaries = false;
+	m_bBoundariesAll = FALSE;
     m_bBoundariesNone = TRUE;
     m_bUpdateBoundaries = TRUE;
     m_bDrawStyleLine = TRUE;
@@ -930,18 +933,19 @@ void CSaView::Clear(void)
     }
 }
 
-void  CSaView::PartialCopy(const CSaView & fromThis)
+void  CSaView::PartialCopy(const CSaView & right)
 {
     m_nFocusedID = 0;
-    m_nLayout = fromThis.m_nLayout; // default layout
-    m_bLegendAll = fromThis.m_bLegendAll;
-    m_bLegendNone = fromThis.m_bLegendNone;
-    m_bXScaleAll = fromThis.m_bXScaleAll;
-    m_bXScaleNone = fromThis.m_bXScaleNone;
-    m_bBoundariesAll = fromThis.m_bBoundariesAll ;
-    m_bBoundariesNone = fromThis.m_bBoundariesNone;
-    m_bUpdateBoundaries = fromThis.m_bUpdateBoundaries;
-    m_bDrawStyleLine = fromThis.m_bDrawStyleLine;
+    m_nLayout = right.m_nLayout; // default layout
+    m_bLegendAll = right.m_bLegendAll;
+    m_bLegendNone = right.m_bLegendNone;
+    m_bXScaleAll = right.m_bXScaleAll;
+    m_bXScaleNone = right.m_bXScaleNone;
+	m_bTranscriptionBoundaries = right.m_bTranscriptionBoundaries;
+    m_bBoundariesAll = right.m_bBoundariesAll ;
+    m_bBoundariesNone = right.m_bBoundariesNone;
+    m_bUpdateBoundaries = right.m_bUpdateBoundaries;
+    m_bDrawStyleLine = right.m_bDrawStyleLine;
     m_dwDataPosition = 0; // start with first sample data
     m_fMagnify = 1.0; // no magnify
     m_fZoom = 1.0; // no zoom
@@ -951,8 +955,8 @@ void  CSaView::PartialCopy(const CSaView & fromThis)
     //***********************************************************
     // Added following two lines: DDO - 09/25/00
     //***********************************************************
-    m_bStaticTWC = fromThis.m_bStaticTWC;
-    m_bNormalMelogram = fromThis.m_bNormalMelogram;
+    m_bStaticTWC = right.m_bStaticTWC;
+    m_bNormalMelogram = right.m_bNormalMelogram;
 
     //***********************************************************
     // Added following two lines: DDO - 08/07/00
@@ -962,11 +966,11 @@ void  CSaView::PartialCopy(const CSaView & fromThis)
 
     for (int nLoop = 0; nLoop < ANNOT_WND_NUMBER; nLoop++)
     {
-        m_abAnnAll[nLoop] = fromThis.m_abAnnAll[nLoop];
-        m_abAnnNone[nLoop] = fromThis.m_abAnnNone[nLoop];
+        m_abAnnAll[nLoop] = right.m_abAnnAll[nLoop];
+        m_abAnnNone[nLoop] = right.m_abAnnNone[nLoop];
 
     }
-    m_eInitialShowCmd = fromThis.m_eInitialShowCmd;
+    m_eInitialShowCmd = right.m_eInitialShowCmd;
 }
 
 /***************************************************************************/

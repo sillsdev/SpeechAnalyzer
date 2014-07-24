@@ -21,8 +21,7 @@
 typedef void * LPPHONE;
 
 /* Return values of the nextphone function */
-typedef enum EStatePhone
-{
+typedef enum EStatePhone {
     PHO_OK,
     PHO_EOF,
     PHO_FLUSH
@@ -49,8 +48,7 @@ typedef StatePhone(*nextphone_ParserFunction)(struct SParser * ps,LPPHONE * ph);
 *     WITH nextphone
 */
 
-struct SParser
-{
+struct SParser {
     void * self;               /* Polymorphic on the real type */
     reset_ParserFunction reset_Parser;         /* virtual func */
     close_ParserFunction close_Parser;         /* virtual func */

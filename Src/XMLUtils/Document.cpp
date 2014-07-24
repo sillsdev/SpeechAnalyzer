@@ -12,10 +12,10 @@ Document::Document() {
 }
 
 Document::~Document() {
-	if (element!=NULL) {
-		delete element;
-		element = NULL;
-	}
+    if (element!=NULL) {
+        delete element;
+        element = NULL;
+    }
 }
 
 }

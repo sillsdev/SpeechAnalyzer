@@ -11,7 +11,7 @@ using std::wstring;
 
 namespace FileUtils {
 
-wstring Trim( wstring & in);
+wstring Trim(wstring & in);
 wstring GetTempFileName(LPCTSTR szPrefix);
 void GetTempFileName(LPCTSTR szPrefix, LPTSTR szTempFileName, size_t len);
 extern void RemoveFile(LPCTSTR path);
@@ -25,7 +25,7 @@ extern DWORD GetFileSize(LPCTSTR path);
 extern DWORD GetFileSize(LPCSTR path);
 extern bool EndsWith(LPCTSTR path, LPCTSTR extension);
 extern bool IsReadOnly(LPCTSTR path);
-extern wstring NormalizePath( LPCTSTR path);
+extern wstring NormalizePath(LPCTSTR path);
 
 }
 

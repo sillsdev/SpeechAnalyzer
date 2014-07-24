@@ -26,7 +26,7 @@ LANGUAGE LANG_NEUTRAL, SUBLANG_NEUTRAL
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 3,1,0,92
+ FILEVERSION 3,1,0,93
  PRODUCTVERSION 1,0,0,1
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
@@ -44,7 +44,7 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "SIL International"
             VALUE "FileDescription", "Speech Analyzer Resource DLL"
-            VALUE "FileVersion", "v3.1.0.92"
+            VALUE "FileVersion", "v3.1.0.93"
             VALUE "InternalName", "SA_ENU"
             VALUE "LegalCopyright", "© 1996-2014 SIL International (MSEA)"
             VALUE "OriginalFilename", "SA_ENU.dll"
@@ -3143,6 +3143,7 @@ BEGIN
                 MENUITEM "&Waveform Only",              ID_XSCALE_RAWDATA
                 MENUITEM "&No Graphs",                  ID_XSCALE_NONE
             END
+            MENUITEM "Transcription Boundaries",    ID_VIEW_TRANSCRIPTION_BOUNDARIES
             POPUP "Segment &Boundaries"
             BEGIN
                 MENUITEM "&All Graphs",                 ID_BOUNDARIES_ALL
@@ -4500,7 +4501,7 @@ IDC_MHANDN              CURSOR                  "res\\MedHandN.cur"
 
 STRINGTABLE
 BEGIN
-    VS_VERSION              "Version 3.1.0.92"
+    VS_VERSION              "Version 3.1.0.93"
     VS_COPYRIGHT            "© 1996-2014 SIL International (MSEA).\nAll Rights Reserved."
     IDR_MAINFRAME           "Speech Analyzer"
     IDR_SA_ANNTYPE          "\nSA\nSA Document\nWAV Files (*.wav)\n.wav\nannFileType\nANN File Type"
@@ -5529,6 +5530,8 @@ BEGIN
     ID_PLAYBACK_ENDCURSOR   "Plays between the end cursor and the end of the file\nPlay End Cursor -> File End"
     ID_IMPORT_ELAN          "Import ELAN file\nImport ELAN"
     ID_EXPORT_LIFT          "Export the document data using Lexicon Interchange Format\nExport LIFT"
+    ID_VIEW_TRANSCRIPTION_BOUNDARIES 
+                            "Show/Hide transcription boundaries on all transcriptions\nAll Transcription Boundaries"
 END
 
 STRINGTABLE

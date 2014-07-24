@@ -10033,6 +10033,3 @@ int CSaDoc::GetSaveAsFilename(LPCTSTR title, LPCTSTR filter, LPCTSTR extension, 
     }
     return result;
 }
-
-
-

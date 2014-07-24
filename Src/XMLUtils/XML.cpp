@@ -36,90 +36,97 @@ static char THIS_FILE[]=__FILE__;
 namespace XML {
 
 ScopedXMLUtils::ScopedXMLUtils() {
-	XMLPlatformUtils::Initialize();
+    XMLPlatformUtils::Initialize();
 }
 
 ScopedXMLUtils::~ScopedXMLUtils() {
-	XMLPlatformUtils::Terminate();
+    XMLPlatformUtils::Terminate();
 }
 
 }
 
-Attribute factory( int index, const Attributes & attributes) {
-	wstring localname = attributes.getLocalName(index);
-	wstring qname = attributes.getLocalName(index);
-	wstring type = attributes.getType(index);
-	wstring value(attributes.getValue(index));
-	wstring uri(attributes.getURI(index));
-	return Attribute( localname.c_str(),qname.c_str(),type.c_str(),value.c_str(),uri.c_str());
+Attribute factory(int index, const Attributes & attributes) {
+    wstring localname = attributes.getLocalName(index);
+    wstring qname = attributes.getLocalName(index);
+    wstring type = attributes.getType(index);
+    wstring value(attributes.getValue(index));
+    wstring uri(attributes.getURI(index));
+    return Attribute(localname.c_str(),qname.c_str(),type.c_str(),value.c_str(),uri.c_str());
 }
 
-string utf8( const wstring & in) {
-	return utf8(in.c_str());
+string utf8(const wstring & in) {
+    return utf8(in.c_str());
 }
 
-string utf8( LPCTSTR in) {
-	if (in==NULL) {
-		return "";
-	}
-	// remove the BOM
-	int length2 = WideCharToMultiByte(CP_UTF8,0,in,wcslen(in),NULL,0,NULL,NULL);
-	if (length2==0) {
-		return "";
-	}
-	string result;
-	result.resize(length2);
+string utf8(LPCTSTR in) {
+    if (in==NULL) {
+        return "";
+    }
+    // remove the BOM
+    int length2 = WideCharToMultiByte(CP_UTF8,0,in,wcslen(in),NULL,0,NULL,NULL);
+    if (length2==0) {
+        return "";
+    }
+    string result;
+    result.resize(length2);
     length2 = WideCharToMultiByte(CP_UTF8,0,in, wcslen(in),&result[0],result.length(),NULL,NULL);
-	if (length2==0) 
-	{
-		return "";
-	}
-	return result;
+    if (length2==0) {
+        return "";
+    }
+    return result;
 }
 
-wstring utf16( string & in) {
-	return utf16(in.c_str());
+wstring utf16(string & in) {
+    return utf16(in.c_str());
 }
 
-wstring utf16( LPCSTR in) {
+wstring utf16(LPCSTR in) {
     int length2 = MultiByteToWideChar(CP_ACP,0,in,strlen(in),NULL,0);
-	if (length2==0) return false;
-	wstring result;
-	result.resize(length2);
+    if (length2==0) {
+        return false;
+    }
+    wstring result;
+    result.resize(length2);
     length2 = MultiByteToWideChar(CP_ACP,0,in,strlen(in),&result[0],result.length());
-	return result;
+    return result;
 }
 
-void restrict_elements( LPCTSTR name, Element & right) {
-	if (right.elementCount()==0) return;
-	stringstream msg;
-	msg << "unexpected elements for "<<utf8(name);
-	throw logic_error(msg.str().c_str());
+void restrict_elements(LPCTSTR name, Element & right) {
+    if (right.elementCount()==0) {
+        return;
+    }
+    stringstream msg;
+    msg << "unexpected elements for "<<utf8(name);
+    throw logic_error(msg.str().c_str());
 }
 
-void restrict_attributes( LPCTSTR name, Element & right) {
-	if (right.attributeCount()==0) return;
-	stringstream msg;
-	msg << "unexpected attributes for "<<utf8(name);
-	throw logic_error(msg.str().c_str());
+void restrict_attributes(LPCTSTR name, Element & right) {
+    if (right.attributeCount()==0) {
+        return;
+    }
+    stringstream msg;
+    msg << "unexpected attributes for "<<utf8(name);
+    throw logic_error(msg.str().c_str());
 }
 
-void expect( LPCTSTR name, Element & element) {
-	if (element.localname.compare(name)==0) return;
-	stringstream msg;
-	msg << "expected node : " << utf8(name).c_str() << " saw: " << utf8( element.localname.c_str()).c_str();
-	throw logic_error(msg.str().c_str());
+void expect(LPCTSTR name, Element & element) {
+    if (element.localname.compare(name)==0) {
+        return;
+    }
+    stringstream msg;
+    msg << "expected node : " << utf8(name).c_str() << " saw: " << utf8(element.localname.c_str()).c_str();
+    throw logic_error(msg.str().c_str());
 }
 
-void unexpected( LPCTSTR name, Element & right) {
-	stringstream msg;
-	msg << "unexpected element in "<<utf8(name)<<" : "<<utf8(right.localname.c_str())<<" : "<<utf8(right.value.c_str());
-	throw logic_error(msg.str().c_str());
+void unexpected(LPCTSTR name, Element & right) {
+    stringstream msg;
+    msg << "unexpected element in "<<utf8(name)<<" : "<<utf8(right.localname.c_str())<<" : "<<utf8(right.value.c_str());
+    throw logic_error(msg.str().c_str());
 }
 
-void unexpected( LPCTSTR name, Attribute & right) {
-	stringstream msg;
-	msg << "unexpected attribute in "<<utf8(name)<<" : "<<utf8(right.localname.c_str())<<" : "<<utf8(right.value.c_str());
-	throw logic_error(msg.str().c_str());
+void unexpected(LPCTSTR name, Attribute & right) {
+    stringstream msg;
+    msg << "unexpected attribute in "<<utf8(name)<<" : "<<utf8(right.localname.c_str())<<" : "<<utf8(right.value.c_str());
+    throw logic_error(msg.str().c_str());
 }
 

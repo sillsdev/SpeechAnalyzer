@@ -1,7 +1,6 @@
 #include "WaveError.h"
 
-wave_error::wave_error( EWaveError val) :
-exception("wave error"),
-reason(val) 
-{
+wave_error::wave_error(EWaveError val) :
+    exception("wave error"),
+    reason(val) {
 }

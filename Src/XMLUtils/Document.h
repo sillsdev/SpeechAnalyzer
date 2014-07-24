@@ -7,9 +7,9 @@ namespace XML {
 
 class Document {
 public:
-	Document();
-	~Document();
-	Element * element;
+    Document();
+    ~Document();
+    Element * element;
 };
 
 }

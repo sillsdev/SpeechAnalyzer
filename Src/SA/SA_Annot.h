@@ -66,6 +66,8 @@
 #define IDM_PLAY_BOTH 112
 #define IDM_PLAY_WAVE 113
 
+class Colors;
+
 class CLegendWnd : public CWnd
 {
 
@@ -274,8 +276,11 @@ public:
     void SetHintUpdateBoundaries(bool bHint, bool bOverlap);
     void OnCreateEdit(const CString * szString = NULL);
     static void CreateAnnotationFont(CFont * pFont, int nPoint, LPCTSTR szFace);
+	void ShowTranscriptionBoundaries( bool val);
 
 protected:
+	void DrawTranscriptionBorders(CDC * pDC, CRect rWnd, Colors * pColors);
+
     afx_msg BOOL OnEraseBkgnd(CDC * pDC);
     afx_msg void OnRButtonDown(UINT nFlags, CPoint point);
     afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
@@ -290,6 +295,9 @@ protected:
     bool m_bOverlap;
 
     DECLARE_MESSAGE_MAP()
+
+protected:
+	bool m_bTranscriptionBoundary;
 
 private:
     DWORD m_nSelectTickCount;

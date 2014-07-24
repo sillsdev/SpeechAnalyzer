@@ -13,12 +13,12 @@ using std::vector;
 */
 class CWaveWriter {
 public:
-	CWaveWriter();
-	~CWaveWriter();
+    CWaveWriter();
+    ~CWaveWriter();
 
-	void write( LPCTSTR filename, DWORD flags, WORD bitsPerSample, WORD formatTag, WORD channels, DWORD samplesPerSec, vector<char> & buffer);
+    void write(LPCTSTR filename, DWORD flags, WORD bitsPerSample, WORD formatTag, WORD channels, DWORD samplesPerSec, vector<char> & buffer);
 
 private:
-	HMMIO hmmio;
+    HMMIO hmmio;
 };
 

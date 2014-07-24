@@ -12,8 +12,8 @@
 #pragma comment( lib, "msacm32.lib")
 
 __interface IProgressUpdate {
-	void SetProgress( int value);
-	int GetProgress();
+    void SetProgress(int value);
+    int GetProgress();
 };
 
 /**

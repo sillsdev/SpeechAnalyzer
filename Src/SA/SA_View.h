@@ -297,6 +297,8 @@ protected:
     afx_msg void OnUpdateXScaleRawdata(CCmdUI * pCmdUI);
     afx_msg void OnXScaleNone();
     afx_msg void OnUpdateXScaleNone(CCmdUI * pCmdUI);
+	afx_msg void OnViewTranscriptionBoundaries();
+	afx_msg void OnUpdateViewTranscriptionBoundaries(CCmdUI * pCmdUI);
     afx_msg void OnBoundariesAll();
     afx_msg void OnUpdateBoundariesAll(CCmdUI * pCmdUI);
     afx_msg void OnBoundariesRawdata();
@@ -533,6 +535,7 @@ private:
     BOOL m_abAnnAll[ANNOT_WND_NUMBER];      // array of boolean, annotation window show/hide all
     BOOL m_abAnnNone[ANNOT_WND_NUMBER];     // array of boolean, annotation window hide all
     ECursorAlignment m_nCursorAlignment;    // cursor snap mode: align to sample, zero crossing, or fragment
+	BOOL m_bTranscriptionBoundaries;		// show transcription boundaries
     BOOL m_bBoundariesAll;                  // boundaries show/hide all
     BOOL m_bBoundariesNone;                 // boundaries hide all
     BOOL m_bUpdateBoundaries;               // boundaries updated or not in transcription editor

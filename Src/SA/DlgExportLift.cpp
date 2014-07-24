@@ -175,6 +175,7 @@ void CDlgExportLift::DoDataExchange(CDataExchange * pDX)
     {
         TCHAR szBuffer[MAX_PATH];
         GetCurrentPath(szBuffer,MAX_PATH);
+        FileUtils::AppendDirSep(szBuffer,MAX_PATH);
         settings.szPath = szBuffer;
     }
 }
@@ -364,10 +365,12 @@ void CDlgExportLift::GetCurrentPath(LPTSTR szBuffer, size_t size)
         ctlEditFieldWorksFolder.GetWindowTextW(szTemp, MAX_PATH);
         wcscat_s(szBuffer,size,szTemp);
         FileUtils::AppendDirSep(szBuffer,size);
+        wmemset(szTemp,0,MAX_PATH);
         int sel = ctlComboFieldWorksProject.GetCurSel();
-        ctlComboFieldWorksProject.GetLBText(sel, szTemp);
-        wcscat_s(szBuffer,size,szTemp);
-        FileUtils::AppendDirSep(szBuffer,MAX_PATH);
+		if (sel!=-1) {
+	        ctlComboFieldWorksProject.GetLBText(sel, szTemp);
+		    wcscat_s(szBuffer,size,szTemp);
+		}
         return;
     }
 

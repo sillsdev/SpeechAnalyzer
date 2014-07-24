@@ -12,12 +12,12 @@ using std::vector;
 */
 class CWaveReader {
 public:
-	CWaveReader();
-	~CWaveReader();
+    CWaveReader();
+    ~CWaveReader();
 
-	void read( LPCTSTR filename, DWORD flags, WORD & bitsPerSample, WORD & formatTag, WORD & channels, DWORD & samplesPerSec, WORD & blockAlign, vector<char> & buffer);
+    void read(LPCTSTR filename, DWORD flags, WORD & bitsPerSample, WORD & formatTag, WORD & channels, DWORD & samplesPerSec, WORD & blockAlign, vector<char> & buffer);
 
 private:
-	HMMIO hmmio;
+    HMMIO hmmio;
 };
 

@@ -5,5 +5,5 @@
 
 using std::wstring;
 
-wstring buildResultPath( LPCTSTR filename);
-wstring buildSourcePath( LPCTSTR filename);
+wstring buildResultPath(LPCTSTR filename);
+wstring buildSourcePath(LPCTSTR filename);
