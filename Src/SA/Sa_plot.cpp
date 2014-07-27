@@ -444,9 +444,9 @@ BOOL CPlotWnd::PreCreateWindow(CREATESTRUCT & cs)
 }
 
 /***************************************************************************/
-// CPlotWnd::ShowBoundaries Show or hide the boundaries
+// CPlotWnd::ShowSegmentBoundaries Show or hide the boundaries
 /***************************************************************************/
-void CPlotWnd::ShowBoundaries(BOOL bShow, BOOL bRedraw)
+void CPlotWnd::ShowSegmentBoundaries(BOOL bShow, BOOL bRedraw)
 {
     m_bBoundaries = bShow;
     if (bRedraw)

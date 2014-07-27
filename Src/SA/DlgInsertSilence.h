@@ -17,14 +17,16 @@ public:
     afx_msg void OnDeltaposTimeSpin(NMHDR * pNMHDR, LRESULT * pResult);
 
 	enum { IDD = IDD_INSERT_SILENCE };
-    CSpinButtonCtrl mSpinSilence;
-	double mSilence;
-    const double MIN_NUM_VALUE;
-    const double MAX_NUM_VALUE;
-	CSaDoc * mpDoc;
 
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
+
+    const double MIN_NUM_VALUE;
+    const double MAX_NUM_VALUE;
+	int repetitions;
+    CSpinButtonCtrl spinSilence;
+	double silence;
+	CSaDoc * pDocument;
 
 	DECLARE_MESSAGE_MAP()
 };

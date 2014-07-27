@@ -157,6 +157,7 @@
     <ClCompile Include="DlgInsertSilence.cpp" />
     <ClCompile Include="DlgRecorder.cpp" />
     <ClCompile Include="DlgRecorderOptions.cpp" />
+    <ClCompile Include="DlgSelectTranscriptionBars.cpp" />
     <ClCompile Include="DlgWaveformGenerator.cpp" />
     <ClCompile Include="DlgWaveNotifyObj.cpp" />
     <ClCompile Include="ExportFWSettings.cpp" />
@@ -392,6 +393,7 @@
     <ClInclude Include="DlgInsertSilence.h" />
     <ClInclude Include="DlgRecorder.h" />
     <ClInclude Include="DlgRecorderOptions.h" />
+    <ClInclude Include="DlgSelectTranscriptionBars.h" />
     <ClInclude Include="DlgWaveformGenerator.h" />
     <ClInclude Include="DlgWaveNotifyObj.h" />
     <ClInclude Include="dsp\lpc.h" />

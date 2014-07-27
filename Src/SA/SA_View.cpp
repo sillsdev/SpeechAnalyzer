@@ -234,7 +234,7 @@ void CSaView::CreateOneGraphStepOne(UINT nID, CGraphWnd ** pGraph, CREATE_HOW ho
     //****************************************************
     case IDD_RAWDATA:
         (*pGraph)->ShowGrid(TRUE);
-        (*pGraph)->ShowBoundaries(!m_bBoundariesNone);
+        (*pGraph)->ShowSegmentBoundaries(m_bSegmentBoundaries);
         if (!m_WeJustReadTheProperties) {
             (*pGraph)->ShowLegend(!m_bLegendNone);
             (*pGraph)->ShowXScale(!m_bXScaleNone);
@@ -250,7 +250,7 @@ void CSaView::CreateOneGraphStepOne(UINT nID, CGraphWnd ** pGraph, CREATE_HOW ho
     default:
         if (nID != IDD_POA) {
             (*pGraph)->ShowGrid(TRUE);
-            (*pGraph)->ShowBoundaries(m_bBoundariesAll);
+            (*pGraph)->ShowSegmentBoundaries(m_bSegmentBoundaries);
 
             if (!m_WeJustReadTheProperties) {
                 (*pGraph)->ShowLegend(m_bLegendAll);
@@ -1567,7 +1567,6 @@ void CSaView::OnViewTranscriptionBoundaries() {
             }
         }
     }
-
 }
 
 void CSaView::OnUpdateViewTranscriptionBoundaries(CCmdUI * pCmdUI) {
@@ -1578,12 +1577,11 @@ void CSaView::OnUpdateViewTranscriptionBoundaries(CCmdUI * pCmdUI) {
 // CSaView::OnBoundariesAll Show the boundaries on all graphs
 /***************************************************************************/
 void CSaView::OnBoundariesAll() {
-    m_bBoundariesAll = TRUE; // show boundaries in all the graphs
-    m_bBoundariesNone = FALSE;
+    m_bSegmentBoundaries = TRUE;
     // show boundaries
     for (int nLoop = 0; nLoop < MAX_GRAPHS_NUMBER; nLoop++) {
         if (m_apGraphs[nLoop]) {
-            m_apGraphs[nLoop]->ShowBoundaries(TRUE, TRUE);
+            m_apGraphs[nLoop]->ShowSegmentBoundaries(TRUE, TRUE);
         }
     }
 }
@@ -1592,39 +1590,75 @@ void CSaView::OnBoundariesAll() {
 // CSaView::OnUpdateBoundariesAll Menu update
 /***************************************************************************/
 void CSaView::OnUpdateBoundariesAll(CCmdUI * pCmdUI) {
-    pCmdUI->SetCheck(m_bBoundariesAll);
+    pCmdUI->SetCheck(m_bSegmentBoundaries);
 }
 
 /***************************************************************************/
 // CSaView::OnBoundariesRawdata Show the boundaries on raw data graph only
 /***************************************************************************/
 void CSaView::OnBoundariesRawdata() {
-    m_bBoundariesAll = FALSE; // show boundaries only in raw data graph
-    m_bBoundariesNone = FALSE;
+    m_bSegmentBoundaries = FALSE;
     // hide boundaries except for raw data
-    for (int nLoop = 0; nLoop < MAX_GRAPHS_NUMBER; nLoop++)
+    for (int nLoop = 0; nLoop < MAX_GRAPHS_NUMBER; nLoop++) {
         if (m_apGraphs[nLoop]) {
-            m_apGraphs[nLoop]->ShowBoundaries(m_anGraphID[nLoop] == IDD_RAWDATA, TRUE);
+            m_apGraphs[nLoop]->ShowSegmentBoundaries(m_anGraphID[nLoop] == IDD_RAWDATA, TRUE);
         }
+	}
 }
 
 /***************************************************************************/
 // CSaView::OnUpdateBoundariesRawdata Menu update
 /***************************************************************************/
 void CSaView::OnUpdateBoundariesRawdata(CCmdUI * pCmdUI) {
-    pCmdUI->SetCheck(!(m_bBoundariesAll || m_bBoundariesNone));
+	// check to see if we are only show boundaries on the raw data graph
+	BOOL bCondition = TRUE;
+    for (int nLoop = 0; nLoop < MAX_GRAPHS_NUMBER; nLoop++) {
+        if (m_apGraphs[nLoop]) {
+			if (m_anGraphID[nLoop] == IDD_RAWDATA) {
+				if (!m_apGraphs[nLoop]->HaveBoundaries()) bCondition = FALSE;
+			} else {
+				if (m_apGraphs[nLoop]->HaveBoundaries()) bCondition = FALSE;
+			}
+        }
+	}
+	pCmdUI->SetCheck(bCondition);
+}
+
+/***************************************************************************/
+// CSaView::OnDrawingBoundaries Show or hide boundaries
+/***************************************************************************/
+void CSaView::OnBoundariesThis() {
+    if (m_pFocusedGraph) {
+        m_pFocusedGraph->ShowSegmentBoundaries(!m_pFocusedGraph->HaveBoundaries(), TRUE);
+    }
+}
+
+/***************************************************************************/
+// CSaView::OnUpdateBoundariesThis Menu update
+/***************************************************************************/
+void CSaView::OnUpdateBoundariesThis(CCmdUI * pCmdUI) {
+    
+	pCmdUI->Enable((m_pFocusedGraph!=NULL) &&
+                   (GetDocument()->GetDataSize() != 0) &&       // enable if data is available
+                   (m_pFocusedGraph->HaveCursors()));           // enable if cursors visible
+
+
+    if (m_pFocusedGraph) {
+        pCmdUI->SetCheck(m_pFocusedGraph->HaveBoundaries());    // check if graph has boundaries
+    } else {
+        pCmdUI->SetCheck(FALSE);
+    }
 }
 
 /***************************************************************************/
 // CSaView::OnBoundariesNone Hide the boundaries on all graphs
 /***************************************************************************/
 void CSaView::OnBoundariesNone() {
-    m_bBoundariesNone = TRUE; // hide boundaries in all the graphs
-    m_bBoundariesAll = FALSE;
+    m_bSegmentBoundaries = FALSE;
     // hide boundaries
     for (int nLoop = 0; nLoop < MAX_GRAPHS_NUMBER; nLoop++) {
         if (m_apGraphs[nLoop]) {
-            m_apGraphs[nLoop]->ShowBoundaries(FALSE, TRUE);
+            m_apGraphs[nLoop]->ShowSegmentBoundaries(FALSE, TRUE);
         }
     }
 }
@@ -1633,7 +1667,15 @@ void CSaView::OnBoundariesNone() {
 // CSaView::OnUpdateBoundariesNone Menu update
 /***************************************************************************/
 void CSaView::OnUpdateBoundariesNone(CCmdUI * pCmdUI) {
-    pCmdUI->SetCheck(m_bBoundariesNone);
+	
+	BOOL bShown = false;
+	bShown |= m_bSegmentBoundaries;
+	    for (int nLoop = 0; nLoop < MAX_GRAPHS_NUMBER; nLoop++) {
+        if (m_apGraphs[nLoop]) {
+            bShown |= m_apGraphs[nLoop]->HaveBoundaries();
+        }
+    }
+	pCmdUI->SetCheck(!bShown);
 }
 
 /***************************************************************************/
@@ -1642,7 +1684,6 @@ void CSaView::OnUpdateBoundariesNone(CCmdUI * pCmdUI) {
 void CSaView::OnGraphsZoomCursors() {
     GraphsZoomCursors(m_dwStartCursor, m_dwStopCursor, 99);
 }
-
 
 /***************************************************************************/
 // CSaView::OnGraphsZoomAll Zoom all
@@ -2640,10 +2681,10 @@ void CSaView::OnUpdatePopupgraphXScale(CCmdUI * pCmdUI) {
 //                  I don't understand what the deal is.
 /***************************************************************************/
 void CSaView::ShowAnnotation(int nAnnot) {
+
     if (m_pFocusedGraph) {
         m_pFocusedGraph->ShowAnnotation(nAnnot, !m_pFocusedGraph->HaveAnnotation(nAnnot), TRUE);
     }
-
     if (m_nFocusedID == IDD_MELOGRAM) {
         int i = GetGraphIndexForIDD(IDD_TWC);
         if ((i != -1) && m_apGraphs[i]) {
@@ -2652,29 +2693,6 @@ void CSaView::ShowAnnotation(int nAnnot) {
     }
 }
 
-
-/***************************************************************************/
-// CSaView::OnDrawingBoundaries Show or hide boundaries
-/***************************************************************************/
-void CSaView::OnDrawingBoundaries() {
-    if (m_pFocusedGraph) {
-        m_pFocusedGraph->ShowBoundaries(!m_pFocusedGraph->HaveBoundaries(), TRUE);
-    }
-}
-
-/***************************************************************************/
-// CSaView::OnUpdateDrawingBoundaries Menu update
-/***************************************************************************/
-void CSaView::OnUpdateDrawingBoundaries(CCmdUI * pCmdUI) {
-    pCmdUI->Enable((m_pFocusedGraph!=NULL) &&
-                   (GetDocument()->GetDataSize() != 0) &&       // enable if data is available
-                   (m_pFocusedGraph->HaveCursors()));           // enable if cursors visible
-    if (m_pFocusedGraph) {
-        pCmdUI->SetCheck(m_pFocusedGraph->HaveBoundaries());    // check if graph has boundaries
-    } else {
-        pCmdUI->SetCheck(FALSE);
-    }
-}
 
 /***************************************************************************/
 // CSaView::OnGraphsMagnify1 Set magnify factor
@@ -3395,7 +3413,7 @@ static LPCSTR psz_legendnone         = "legendnone";
 static LPCSTR psz_xscaleall          = "xscaleall";
 static LPCSTR psz_xscalenone         = "xscalenone";
 static LPCSTR psz_boundariesall      = "boundariesall";
-static LPCSTR psz_boundariesnone     = "boundariesnone";
+static LPCSTR psz_transcription_boundaries = "transcriptionboundaries";
 static LPCSTR psz_drawstyleline      = "drawstyleline";
 static LPCSTR psz_updateboundaries   = "updateboundaries";
 static LPCSTR psz_graphlist          = "graphlist";
@@ -3482,8 +3500,8 @@ void CSaView::WriteProperties(CObjectOStream & obs) {
     //**********************************************************
     // Write other misc. global properties.
     //**********************************************************
-    obs.WriteBool(psz_boundariesall, m_bBoundariesAll);
-    obs.WriteBool(psz_boundariesnone, m_bBoundariesNone);
+    obs.WriteBool(psz_boundariesall, m_bSegmentBoundaries);
+    obs.WriteBool(psz_transcription_boundaries, m_bTranscriptionBoundaries);
     obs.WriteBool(psz_drawstyleline, m_bDrawStyleLine);
     obs.WriteBool(psz_updateboundaries, m_bUpdateBoundaries);
 
@@ -3506,6 +3524,7 @@ void CSaView::WriteProperties(CObjectOStream & obs) {
 /***************************************************************************/
 /***************************************************************************/
 BOOL CSaView::ReadProperties(CObjectIStream & obs, BOOL bCreateGraphs) {
+
     CWnd * pwndFrame = NULL;
     WINDOWPLACEMENT wpl;
 
@@ -3531,8 +3550,8 @@ BOOL CSaView::ReadProperties(CObjectIStream & obs, BOOL bCreateGraphs) {
         else if (obs.bReadBool(psz_legendnone, m_bLegendNone));
         else if (obs.bReadBool(psz_xscaleall, m_bXScaleAll));
         else if (obs.bReadBool(psz_xscalenone, m_bXScaleNone));
-        else if (obs.bReadBool(psz_boundariesall, m_bBoundariesAll));
-        else if (obs.bReadBool(psz_boundariesnone, m_bBoundariesNone));
+        else if (obs.bReadBool(psz_boundariesall, m_bSegmentBoundaries));
+		else if (obs.bReadBool(psz_transcription_boundaries, m_bTranscriptionBoundaries));
         else if (obs.bReadBool(psz_drawstyleline, m_bDrawStyleLine));
         else if (obs.bReadBool(psz_updateboundaries, m_bUpdateBoundaries));
 

@@ -213,7 +213,7 @@ public:
     BOOL PutWaveToClipboard( WAVETIME sectionStart, WAVETIME sectionLength, BOOL bDelete = FALSE); 
 	// pastes wave data into the wave file
     BOOL PasteClipboardToWave(HGLOBAL hGlobal, WAVETIME start);
-	BOOL InsertSilenceIntoWave( WAVETIME silence, WAVETIME start);
+	BOOL InsertSilenceIntoWave( WAVETIME silence, WAVETIME start, int repetitions);
 
     void DeleteWaveFromUndo();		// deletes a wave undo entry from the undo list
     void UndoWaveFile();			// undo a wave file change

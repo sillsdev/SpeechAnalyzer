@@ -139,7 +139,7 @@ public:
     virtual void RemoveRtPlots();
     virtual CPlotWnd * NewCopy(void);
     virtual void CopyTo(CPlotWnd * pTarg);
-    void ShowBoundaries(BOOL bShow, BOOL bRedraw = FALSE);  // show or hide boundaries
+    void ShowSegmentBoundaries(BOOL bShow, BOOL bRedraw = FALSE);  // show or hide boundaries
     virtual void SetMagnify(double, BOOL bRedraw = FALSE);  // set magnify factor
     double GetMagnify();
     BOOL HaveBoundaries();

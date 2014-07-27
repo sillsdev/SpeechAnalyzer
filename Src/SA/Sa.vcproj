@@ -417,6 +417,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\DlgSelectTranscriptionBars.cpp"
+				>
+			</File>
+			<File
 				RelativePath="DlgSplitFile.cpp"
 				>
 			</File>
@@ -1309,6 +1313,10 @@
 			</File>
 			<File
 				RelativePath="DlgSaveAsOptions.h"
+				>
+			</File>
+			<File
+				RelativePath=".\DlgSelectTranscriptionBars.h"
 				>
 			</File>
 			<File

@@ -250,6 +250,7 @@ protected:
     afx_msg void OnUpdatePrintPreview(CCmdUI * pCmdUI);
     afx_msg void OnUpdateFilenew(CCmdUI * pCmdUI);
     afx_msg void OnGraphsTypes();
+	afx_msg void OnShowBorders();
     afx_msg void OnGraphsParameters();
     afx_msg void OnEditBoundaries();
     afx_msg void OnUpdateEditBoundaries(CCmdUI * pCmdUI);
@@ -330,6 +331,7 @@ protected:
     afx_msg void OnActivateView(BOOL, CView *, CView *);
     afx_msg void OnDestroy();
     afx_msg void OnUpdateGraphsTypes(CCmdUI * pCmdUI);
+	afx_msg void OnUpdateShowBorders(CCmdUI * pCmdUI);
     afx_msg void OnUpdateGraphsParameters(CCmdUI * pCmdUI);
     afx_msg void OnPopupgraphGridlines();
     afx_msg void OnUpdatePopupgraphGridlines(CCmdUI * pCmdUI);
@@ -337,8 +339,8 @@ protected:
     afx_msg void OnUpdatePopupgraphLegend(CCmdUI * pCmdUI);
     afx_msg void OnPopupgraphXScale();
     afx_msg void OnUpdatePopupgraphXScale(CCmdUI * pCmdUI);
-    afx_msg void OnDrawingBoundaries();
-    afx_msg void OnUpdateDrawingBoundaries(CCmdUI * pCmdUI);
+    afx_msg void OnBoundariesThis();
+    afx_msg void OnUpdateBoundariesThis(CCmdUI * pCmdUI);
     afx_msg void OnGraphsMagnify1();
     afx_msg void OnUpdateGraphsMagnify1(CCmdUI * pCmdUI);
     afx_msg void OnGraphsMagnify2();
@@ -459,6 +461,8 @@ protected:
     afx_msg void OnRemoveOverlays();
     afx_msg void OnEditCopyPhoneticToPhonemic();
     afx_msg void OnUpdateEditCopyPhoneticToPhonemic(CCmdUI * pCmdUI);
+	afx_msg void OnSelectTranscriptionBars();
+	afx_msg void OnUpdateSelectTranscriptionBars(CCmdUI * pCmdUI);
     DECLARE_MESSAGE_MAP()
 
 private:
@@ -536,9 +540,8 @@ private:
     BOOL m_abAnnNone[ANNOT_WND_NUMBER];     // array of boolean, annotation window hide all
     ECursorAlignment m_nCursorAlignment;    // cursor snap mode: align to sample, zero crossing, or fragment
 	BOOL m_bTranscriptionBoundaries;		// show transcription boundaries
-    BOOL m_bBoundariesAll;                  // boundaries show/hide all
-    BOOL m_bBoundariesNone;                 // boundaries hide all
-    BOOL m_bUpdateBoundaries;               // boundaries updated or not in transcription editor
+	BOOL m_bSegmentBoundaries;              // boundaries show/hide all
+	BOOL m_bUpdateBoundaries;               // boundaries updated or not in transcription editor
     bool m_bEditBoundaries;                 // TRUE = INS pressed
     bool m_bEditSegmentSize;                // TRUE = CTRL_SHIFT pressed
     BOOL m_bDrawStyleLine;                  // graph drawing style line or solid

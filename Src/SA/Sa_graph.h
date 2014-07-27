@@ -88,7 +88,8 @@ public:
     // interface to plot window
     UINT GetPlotID() const;
     UINT IsPlotID(UINT test) const;
-    void ShowBoundaries(BOOL bShow, BOOL bRedraw = FALSE);
+    void ShowSegmentBoundaries(BOOL bShow, BOOL bRedraw = FALSE);
+	void ShowTranscriptionBoundaries( BOOL bShow);
     void SetMagnify(double bFactor, BOOL bRedraw = FALSE); // set magnify factor
     double GetMagnify();
     BOOL HaveBoundaries();

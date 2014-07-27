@@ -151,6 +151,8 @@
 #define IDD_SPLIT                       360
 #define IDD_MULTICHANNEL                362
 #define IDD_AUTO_REFERENCE_DATA         363
+#define IDD_DIALOG1                     369
+#define IDD_SELECT_TRANSCRIPTION_BARS   369
 #define IDC_HIGHPASS                    502
 #define ID_STATUSPANE_EMPTY             700
 #define ID_STATUSPANE_1                 701
@@ -181,6 +183,7 @@
 #define ID_PROGRESSPANE_LEFTTEXT        733
 #define ID_PROGRESSPANE_BAR             734
 #define ID_PROGRESSPANE_RIGHTTEXT       735
+#define ID_SHOW_BORDERS                 736
 #define IDS_ERROR_NOTIMER               1000
 #define IDS_ERROR_FILEOPEN              1001
 #define IDS_ERROR_WAVECHUNK             1002
@@ -1351,6 +1354,7 @@
 #define ID_GRAPHS_STYLE_LINE            32814
 #define ID_GRAPHS_STYLE_SOLID           32815
 #define ID_GRAPHS_PARAMETERS            32829
+#define ID_SELECT_TRANSCRIPTION_BARS    32830
 #define ID_PLAYBACK_CURSORS             32832
 #define ID_PLAYBACK_WINDOW              32833
 #define ID_PLAYBACK_FILE                32834
@@ -1398,7 +1402,7 @@
 #define ID_GRAPHS_SCREENCAPTURE         32912
 #define ID_POPUP0_OVERLAY               32913
 #define ID_TYPES_AVERAGE                32914
-#define ID_DRAWING_BOUNDARIES           32925
+#define ID_BOUNDARIES_THIS              32925
 #define ID_DRAWING_CECIL                32926
 #define ID_TYPES_CEPSPECTROGRAM         32927
 #define ID_TYPES_CEPPITCH               32928
@@ -1607,6 +1611,7 @@
 #define ID_IMPORT_ELAN                  33242
 #define ID_EXPORT_LIFT                  33243
 #define ID_VIEW_TRANSCRIPTION_BOUNDARIES 33244
+#define ID_Menu                         33245
 #define ID_GRAPHTYPES_SELECT_FIRST      40000
 #define ID_GRAPHTYPES_SELECT_LAST       40011
 #define ID_PHONETIC_ALL                 40100
@@ -1765,8 +1770,8 @@
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_3D_CONTROLS                     1
-#define _APS_NEXT_RESOURCE_VALUE        369
-#define _APS_NEXT_COMMAND_VALUE         33245
+#define _APS_NEXT_RESOURCE_VALUE        370
+#define _APS_NEXT_COMMAND_VALUE         33246
 #define _APS_NEXT_CONTROL_VALUE         2095
 #define _APS_NEXT_SYMED_VALUE           105
 #endif
