@@ -1,3 +1,6 @@
+SA - 3.1.0.95 7/27/2014
+1) Updated 'show boundaries' toolbar bitmap and tooltip text.
+
 SA - 3.1.0.94 7/27/2014
 1) Tweaked "Insert Silence" feature to place stop cursor at beginning of wave data following the silence section.
 2) Converted popup menu for displaying/hiding transcription bars into a popup dialog.

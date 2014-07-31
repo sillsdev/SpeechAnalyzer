@@ -234,7 +234,19 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Res\1.ICO"
+				>
+			</File>
+			<File
 				RelativePath="..\RES\2A.ICO"
+				>
+			</File>
+			<File
+				RelativePath=".\Res\2A.ICO"
+				>
+			</File>
+			<File
+				RelativePath=".\Res\2B.ICO"
 				>
 			</File>
 			<File
@@ -246,6 +258,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Res\2c.ico"
+				>
+			</File>
+			<File
+				RelativePath=".\Res\3A.ICO"
+				>
+			</File>
+			<File
 				RelativePath="..\RES\3A.ICO"
 				>
 			</File>
@@ -254,11 +274,27 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Res\3B.ICO"
+				>
+			</File>
+			<File
+				RelativePath=".\Res\3c.ico"
+				>
+			</File>
+			<File
 				RelativePath="..\Res\3c.ico"
 				>
 			</File>
 			<File
+				RelativePath=".\Res\4A.ICO"
+				>
+			</File>
+			<File
 				RelativePath="..\RES\4A.ICO"
+				>
+			</File>
+			<File
+				RelativePath=".\Res\4B.ICO"
 				>
 			</File>
 			<File
@@ -270,6 +306,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Res\4c.ico"
+				>
+			</File>
+			<File
+				RelativePath=".\Res\5.ICO"
+				>
+			</File>
+			<File
 				RelativePath="..\RES\5.ICO"
 				>
 			</File>
@@ -278,11 +322,23 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Res\6A.ICO"
+				>
+			</File>
+			<File
 				RelativePath="..\RES\6B.ICO"
 				>
 			</File>
 			<File
+				RelativePath=".\Res\6B.ICO"
+				>
+			</File>
+			<File
 				RelativePath="..\Res\advanced.bmp"
+				>
+			</File>
+			<File
+				RelativePath=".\Res\BPU.BMP"
 				>
 			</File>
 			<File
@@ -294,7 +350,19 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Res\down.ico"
+				>
+			</File>
+			<File
+				RelativePath=".\Res\ECHOU.BMP"
+				>
+			</File>
+			<File
 				RelativePath="..\RES\ECHOU.BMP"
+				>
+			</File>
+			<File
+				RelativePath=".\Res\EQU.BMP"
 				>
 			</File>
 			<File
@@ -306,7 +374,15 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Res\FACE.BMP"
+				>
+			</File>
+			<File
 				RelativePath="..\RES\FINGERN.CUR"
+				>
+			</File>
+			<File
+				RelativePath=".\Res\FINGERN.CUR"
 				>
 			</File>
 			<File
@@ -314,7 +390,15 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Res\FINGERNW.CUR"
+				>
+			</File>
+			<File
 				RelativePath="..\RES\HANDN.CUR"
+				>
+			</File>
+			<File
+				RelativePath=".\Res\HANDN.CUR"
 				>
 			</File>
 			<File
@@ -322,7 +406,27 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Res\HPU.BMP"
+				>
+			</File>
+			<File
+				RelativePath=".\Res\IDR_BAR_ADVANCED.bmp"
+				>
+			</File>
+			<File
+				RelativePath=".\Res\IDR_BAR_BASIC.BMP"
+				>
+			</File>
+			<File
+				RelativePath=".\Res\idr_sa_a.ico"
+				>
+			</File>
+			<File
 				RelativePath="..\Res\idr_sa_a.ico"
+				>
+			</File>
+			<File
+				RelativePath=".\Res\idr_synthesis_vocal_tract.ico"
 				>
 			</File>
 			<File
@@ -334,6 +438,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Res\JAW.BMP"
+				>
+			</File>
+			<File
+				RelativePath=".\Res\KNOBH.BMP"
+				>
+			</File>
+			<File
 				RelativePath="..\RES\KNOBH.BMP"
 				>
 			</File>
@@ -342,7 +454,19 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Res\KNOBV.BMP"
+				>
+			</File>
+			<File
 				RelativePath="..\RES\LANDU.BMP"
+				>
+			</File>
+			<File
+				RelativePath=".\Res\LANDU.BMP"
+				>
+			</File>
+			<File
+				RelativePath=".\Res\LED.BMP"
 				>
 			</File>
 			<File
@@ -354,7 +478,19 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Res\LPU.BMP"
+				>
+			</File>
+			<File
 				RelativePath="..\Res\MedFingerN.cur"
+				>
+			</File>
+			<File
+				RelativePath=".\Res\MedFingerN.cur"
+				>
+			</File>
+			<File
+				RelativePath=".\Res\MedFingerNW.cur"
 				>
 			</File>
 			<File
@@ -366,7 +502,19 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Res\MedHandN.cur"
+				>
+			</File>
+			<File
 				RelativePath="..\Res\next.ico"
+				>
+			</File>
+			<File
+				RelativePath=".\Res\next.ico"
+				>
+			</File>
+			<File
+				RelativePath=".\Res\PORTU.BMP"
 				>
 			</File>
 			<File
@@ -374,7 +522,15 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Res\prev.ico"
+				>
+			</File>
+			<File
 				RelativePath="..\Res\prev.ico"
+				>
+			</File>
+			<File
+				RelativePath=".\Res\RAWU.BMP"
 				>
 			</File>
 			<File
@@ -386,7 +542,15 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Res\RESULTU.BMP"
+				>
+			</File>
+			<File
 				RelativePath="..\RES\REVU.BMP"
+				>
+			</File>
+			<File
+				RelativePath=".\Res\REVU.BMP"
 				>
 			</File>
 			<File
@@ -394,7 +558,15 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Res\SA.ICO"
+				>
+			</File>
+			<File
 				RelativePath="..\RES\SA_DOC.ICO"
+				>
+			</File>
+			<File
+				RelativePath=".\Res\SA_DOC.ICO"
 				>
 			</File>
 			<File
@@ -402,7 +574,15 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Res\SA_WB.ICO"
+				>
+			</File>
+			<File
 				RelativePath="..\RES\SAS.ICO"
+				>
+			</File>
+			<File
+				RelativePath=".\Res\SAS.ICO"
 				>
 			</File>
 			<File
@@ -418,15 +598,23 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Res\taskbar.bmp"
+				>
+			</File>
+			<File
+				RelativePath=".\Res\TONGUE.BMP"
+				>
+			</File>
+			<File
 				RelativePath="..\RES\TONGUE.BMP"
 				>
 			</File>
 			<File
-				RelativePath="..\RES\TOOLBAR.BMP"
+				RelativePath="..\Res\up.ico"
 				>
 			</File>
 			<File
-				RelativePath="..\Res\up.ico"
+				RelativePath=".\Res\up.ico"
 				>
 			</File>
 		</Filter>
