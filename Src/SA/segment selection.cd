@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="CSegmentSelection">
+    <Position X="4.25" Y="1.25" Width="2.25" />
+    <NestedTypes>
+      <Enum Name="CSegmentSelection::__unnamed_enum_05e8_1" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>SegmentSelection.h</NewMemberFileName>
+        </TypeIdentifier>
+      </Enum>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>AIQAAAAAACAAAAAAAAAQABCAgUAABAAAAAEIGAAAEAg=</HashCode>
+      <FileName>SegmentSelection.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

@@ -948,7 +948,7 @@ BOOL CImportELAN::ReadTable( CStringStream & stream, int nMode)
     {
         for (int nIndex = 0; nIndex < pPhonetic->GetOffsetSize(); nIndex++)
         {
-            pView->SelectFromPosition( PHONETIC, pPhonetic->GetOffset(nIndex), CSegmentSelection::FIND_EXACT);
+            pView->SelectFromPosition( PHONETIC, pPhonetic->GetOffset(nIndex), true);
             pView->SetSelectedAnnotationString( szString, TRUE, FALSE);
         }
     }
@@ -1038,7 +1038,7 @@ BOOL CImportELAN::ReadTable( CStringStream & stream, int nMode)
             szString = CSFMHelper::ExtractTabField(szLine, nAnnotField[REFERENCE]);
             if (szString.GetLength())
             {
-                pView->SelectFromPosition( REFERENCE, pGloss->GetOffset(nIndexGloss), CSegmentSelection::FIND_EXACT);
+                pView->SelectFromPosition( REFERENCE, pGloss->GetOffset(nIndexGloss), true);
                 if (bAppendGloss)
                 {
                     szString = pView->GetSelectedAnnotationString(FALSE) + " " + szString;
@@ -1051,7 +1051,7 @@ BOOL CImportELAN::ReadTable( CStringStream & stream, int nMode)
             szString = CSFMHelper::ExtractTabField(szLine, nAnnotField[nIndex]);
             if (szString.GetLength())
             {
-                pView->SelectFromPosition( nIndex, pPhonetic->GetOffset(nIndexPhonetic), CSegmentSelection::FIND_EXACT);
+                pView->SelectFromPosition( nIndex, pPhonetic->GetOffset(nIndexPhonetic), true);
                 if (bAppendPhonetic)
                 {
                     szString = pView->GetSelectedAnnotationString(FALSE) + /*" " +*/ szString;    // SDM 1.5Test10.7 remove spaces

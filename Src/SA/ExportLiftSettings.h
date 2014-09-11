@@ -13,7 +13,16 @@ public:
     BOOL bPOS;
     BOOL bReference;
     BOOL bPhrase;
-    CString szDocTitle;
+
+    wstring gloss;
+    wstring ortho;
+    wstring phonemic;
+    wstring phonetic;
+    wstring pos;
+    wstring reference;
+    wstring phrase;
+
+	CString szDocTitle;
     CString szPath;
 };
 

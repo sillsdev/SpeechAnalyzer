@@ -1081,6 +1081,7 @@ public:
         producer(L"producer"),
         header(L"header"),
         entry(L"entry") {
+		version = wstring(L"0.14");
     };
 
     void load(Element * in) {

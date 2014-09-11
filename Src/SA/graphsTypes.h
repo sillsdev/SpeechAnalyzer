@@ -207,11 +207,9 @@ public:
 
     // Dialog Data
     int m_nTaskType;
-    //{{AFX_DATA(CDlgGraphsTypes)
     enum { IDD = IDD_GRAPHSTYPES };
     CListBox  m_cList;
     CTabCtrl  m_cTaskType;
-    //}}AFX_DATA
 
 public:
     void GetCheckedGraphs(UINT * pGraphIDs, int * nLayout); // return checked graphs
@@ -262,18 +260,13 @@ public:
     CGraphList m_cLayoutOrder;
     const int m_nLayout;
 
-    //{{AFX_DATA(CDlgGraphTypesOrder)
     enum { IDD = IDD_GRAPHTYPES_ORDER };
     CListBox  m_cList;
-    //}}AFX_DATA
-
 
     // Overrides
     // ClassWizard generated virtual function overrides
-    //{{AFX_VIRTUAL(CDlgGraphTypesOrder)
 protected:
     virtual void DoDataExchange(CDataExchange * pDX);   // DDX/DDV support
-    //}}AFX_VIRTUAL
 
 private:
     void OnGraphListChanged();

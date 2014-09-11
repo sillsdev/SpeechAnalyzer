@@ -27,8 +27,8 @@ class CSegmentSelection
 {
 public:
     CSegmentSelection();
-    BOOL CSegmentSelection::SelectFromPosition(CSaView * pView, int nSegmentIndex, DWORD dwPosition, int nMode = NULL);
-    BOOL CSegmentSelection::SelectFromStopPosition(CSaView * pView, int nSegmentIndex, DWORD dwPosition, int nMode = NULL);
+    BOOL SelectFromPosition(CSaView * pView, int nSegmentIndex, DWORD dwPosition, bool bFindExact);
+    BOOL SelectFromStopPosition(CSaView * pView, int nSegmentIndex, DWORD dwPosition, bool bFindExact);
     void Update(CSaView * pView, BOOL bClearVirtual = FALSE); //Update Selection Record
     CString GetSelectedAnnotationString(CSaView * pView, BOOL bRemoveDelimiter = TRUE) const;
     BOOL SetSelectedAnnotationString(CSaView * pView, CSaString & szString, BOOL bIncludesDelimiter = FALSE, BOOL bCheck=FALSE);
@@ -37,16 +37,11 @@ public:
 	int GetSelectionIndex();
 	bool IsSelectionVirtual();
 
-    enum
-    {
-        FIND_EXACT = 1
-    };
-
 protected:
     DWORD m_dwStart;
     DWORD m_dwStop;
     DWORD m_dwDuration;
-    int m_nAnnotationIndex;
+    int m_nIndex;
     bool m_bVirtual;
 
 private:

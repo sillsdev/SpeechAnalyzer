@@ -47,8 +47,8 @@
 #include "AutoSave.h"
 #include "Process\ProcessDoc.h"
 #include "SaParam.h"
-
-#include "ElanUtils.h"
+#include <ElanUtils.h>
+#include <LiftUtils.h>
 
 #import "speechtoolsutils.tlb" no_namespace named_guids
 #import "st_audio.tlb" no_namespace named_guids
@@ -319,8 +319,8 @@ protected:
     virtual BOOL SaveModified(); // return TRUE if ok to continue
     void AlignTranscriptionData(CTranscriptionDataSettings & settings);
     void AlignTranscriptionDataByRef(CTranscriptionData & td);
+    bool ExportSegments(CExportLiftSettings & settings, Lift13::lift & document, bool skipEmptyGloss, LPCTSTR szPath, int & dataCount, int & wavCount);
     bool TryExportSegmentsBy(CExportFWSettings & settings, EAnnotation master, CFile & file, bool skipEmptyGloss, LPCTSTR szPath, int & dataCount, int & wavCount);
-    bool TryExportSegmentsBy(CExportLiftSettings & settings, EAnnotation master, CFile & file, bool skipEmptyGloss, LPCTSTR szPath, int & dataCount, int & wavCount);
     CSaString BuildRecord(EAnnotation target, DWORD dwStart, DWORD dwStop);
     EAnnotation ConvertToAnnotation(int val);
     BOOL GetFlag(EAnnotation val, CExportFWSettings & settings);

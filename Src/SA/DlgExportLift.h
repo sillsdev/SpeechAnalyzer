@@ -17,6 +17,9 @@
 #include "AppDefs.h"
 #include "SaString.h"
 #include "ExportLiftSettings.h"
+#include <list>
+
+using std::list;
 
 class CSaDoc;
 
@@ -32,7 +35,7 @@ public:
                  BOOL phonetic,
                  BOOL pos,
                  BOOL reference,
-                 BOOL phrase,
+				 list<wstring> iso,
                  CWnd * pParent = NULL);
 
     CExportLiftSettings settings;
@@ -48,25 +51,18 @@ protected:
     CSaString GetFieldWorksProjectDirectory();
 	bool SearchForValue( HKEY root, DWORD sam, wstring keyName, LPCTSTR valueName, wstring & value);
 
-    afx_msg void OnAllAnnotations();
     afx_msg void OnClickedExSfmInterlinear();
     afx_msg void OnClickedExSfmMultirecord();
     afx_msg void OnClickedBrowseFieldworks();
-    afx_msg void OnClickedBrowseOther();
-    afx_msg void OnRadioFieldworks();
-    afx_msg void OnRadioOther();
     afx_msg void OnHelpExportBasic();
     afx_msg void OnSelchangeComboFieldworksProject();
     afx_msg void OnKillfocusComboFieldworksProject();
 
-    enum { IDD = IDD_EXPORT_FW };
-    CButton ctlButtonBrowseOther;
+    enum { IDD = IDD_EXPORT_LIFT };
     CEdit ctlEditFieldWorksFolder;
-    CEdit ctlEditOtherFolder;
+
     CComboBox ctlComboFieldWorksProject;
     CStatic ctlStaticFieldWorksProject;
-    CButton ctlRadioFieldWorks;
-    CButton ctlRadioOther;
     CButton ctlButtonOK;
     
     BOOL bGlossDflt;
@@ -75,7 +71,22 @@ protected:
     BOOL bPhoneticDflt;
     BOOL bPOSDflt;
     BOOL bReferenceDflt;
-    BOOL bPhraseDflt;
+
+	CComboBox ctlReferenceList;
+	CComboBox ctlPhonemicList;
+	CComboBox ctlPhoneticList;
+	CComboBox ctlGlossList;
+	CComboBox ctlOrthoList;
+	CComboBox ctlPOSList;
+
+	wstring refLang;
+	wstring phonemicLang;
+	wstring phoneticLang;
+	wstring glossLang;
+	wstring orthoLang;
+	wstring posLang;
+
+	list<wstring> iso;
 
     DECLARE_MESSAGE_MAP()
 };

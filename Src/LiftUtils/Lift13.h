@@ -43,6 +43,16 @@ public:
         _span(SPAN) {
     };
 
+	span( LPCTSTR _name, LPCTSTR _lang, LPCTSTR _data) :
+        lift_base(_name),
+        lang(L"lang"),
+        href(L"href"),
+        clazz(L"clazz"),
+        _span(SPAN) {
+		lang = wstring(_lang);
+		pcdata = _data;
+    };
+
     void load(Element * in) {
         expect(in,name);
         load_attribute(lang,in);
@@ -78,6 +88,11 @@ class text : public lift_base {
 public:
     text(LPCTSTR _name) :
         lift_base(_name) {
+    };
+
+    text(LPCTSTR _name, LPCTSTR _content) :
+        lift_base(_name) {
+		pcdata = _content;
     };
 
     void load(Element * in) {
@@ -224,6 +239,15 @@ public:
         annotation(ANNOTATION) {
     };
 
+    form(LPCTSTR _name, LPCTSTR _lang, text _text) :
+        lift_base(_name),
+        lang(L"lang"),
+        text(L"text"),
+        annotation(ANNOTATION) {
+			lang = wstring(_lang);
+			text = _text;
+    };
+
     void load(Element * in) {
         expect(in,name);
         load_derived(in);
@@ -331,6 +355,19 @@ public:
         annotation(ANNOTATION) {
     };
 
+	field( LPCTSTR _name, key _type) : 
+    multitext(_name),
+    type(L"type"),
+    datecreated(DATE_CREATED),
+    datemodified(DATE_MODIFIED),
+    //trait(L"trait"),
+    form(L"form"),
+    annotation(ANNOTATION) 	{
+		type = _type;
+		datecreated = createDate();
+		datemodified = createDate();
+	}
+
     void load(Element * in) {
         expect(in,multitext::name);
         multitext::load_derived(in);
@@ -359,7 +396,7 @@ public:
     optional<datetime> datemodified;
     // elements
     //zero_more<trait> trait;
-    zero_more<span> form;
+    zero_more<Lift13::form> form;
     zero_more<annotation> annotation;
 };
 
@@ -367,8 +404,8 @@ class extensible : public lift_base {
 public:
     extensible(LPCTSTR name) :
         lift_base(name),
-        datecreated(DATE_CREATED),
-        datemodified(DATE_MODIFIED),
+        date_created(DATE_CREATED),
+        date_modified(DATE_MODIFIED),
         field(L"field"),
         trait(L"trait"),
         annotation(ANNOTATION) {
@@ -381,8 +418,8 @@ public:
     };
 
     void load_derived(Element * in) {
-        load_attribute(datecreated,in);
-        load_attribute(datemodified,in);
+        load_attribute(date_created,in);
+        load_attribute(date_modified,in);
         load_element(field,in);
         load_element(trait,in);
         load_element(annotation,in);
@@ -395,16 +432,16 @@ public:
     };
 
     void store_derived(Element * out) {
-        store_attribute(datecreated,out);
-        store_attribute(datemodified,out);
+        store_attribute(date_created,out);
+        store_attribute(date_modified,out);
         store_element(field,out);
         store_element(trait,out);
         store_element(annotation,out);
     }
 
     // attributes
-    optional<datetime> datecreated;
-    optional<datetime> datemodified;
+    optional<datetime> date_created;
+    optional<datetime> date_modified;
     // elements
     zero_more<field> field;
     zero_more<trait> trait;
@@ -547,10 +584,6 @@ public:
         return out;
     };
 
-    size_t size() const {
-        return range.size();
-    };
-
     // attributes
     zero_more<range> range;
 };
@@ -595,7 +628,7 @@ public:
     void apply_lift_ranges(lift_range_map & range_map) {
 
         // no href? nothing to do...
-        if (!href.has_entry()) {
+        if (href.size()==0) {
             return;
         }
         // this href is not in this map
@@ -604,27 +637,29 @@ public:
         }
         lift_ranges & lift_ranges = range_map[href.get()];
         // there is no range data available
-        if (!lift_ranges.range.has_entries()) {
+        if (lift_ranges.range.size()==0) {
             return;
         }
         for (size_t i=0; i<lift_ranges.range.size(); i++) {
 
-            range & right = lift_ranges.range.get(i);
+            range & right = lift_ranges.range[i];
             // this this the correct ID?
             if (id != right.id) {
                 continue;
             }
             // we if don't have anything, just append the external data
             if (range_element.size()==0) {
-                range_element.append(right.range_element.inner);
+				for (size_t j=0;j<right.range_element.size();j++) {
+					range_element.append(right.range_element[j]);
+				}
                 continue;
             }
             // we already have something?
             for (size_t j=0; j<right.range_element.size(); j++) {
                 bool found = false;
-                Lift13::range_element & rre = right.range_element.get(j);
-                for (size_t k=0; j<range_element.size(); k++) {
-                    Lift13::range_element & re = range_element.get(k);
+                Lift13::range_element & rre = right.range_element[j];
+                for (size_t k=0; k<range_element.size(); k++) {
+                    Lift13::range_element & re = range_element[k];
                     if (re.id == rre.id) {
                         // carefully merge the item
                         re.add(rre);
@@ -656,6 +691,11 @@ class gloss : public form {
 public:
     gloss(LPCTSTR _name) :
         form(_name),
+        trait(L"trait") {
+    };
+
+    gloss(LPCTSTR _name, LPCTSTR _lang, LPCTSTR _data) :
+        form(_name, _lang, Lift13::text(L"text",_data)),
         trait(L"trait") {
     };
 
@@ -725,29 +765,29 @@ public:
 
     lift_ranges export_lift_ranges(LPCTSTR filename) {
         lift_ranges result;
-        if (!range.has_entries()) {
+        if (range.size()==0) {
             return result;
         }
         for (size_t i=0; i<range.size(); i++) {
-            range.get(i).href.remove();
-            result.range.append(range.get(i));
+            range[i].href.remove();
+            result.range.append(range[i]);
             wstring href;
             href.append(L"file:\\");
             href.append(filename);
-            range.get(i).href=href;
-            range.get(i).range_element.remove();
+            range[i].href = href;
+            range[i].range_element.remove();
         }
         return result;
     }
 
     void apply_lift_ranges(lift_range_map & range_map) {
-        if (!range.has_entries()) {
+        if (range.size()==0) {
             return;
         }
         for (size_t i=0; i<range.size(); i++) {
             printf("applying range %d\n",i);
-            range.get(i).apply_lift_ranges(range_map);
-            range.get(i).href.get()=L"";
+            range[i].apply_lift_ranges(range_map);
+            range[i].href.get()=L"";
         }
     }
 
@@ -781,14 +821,14 @@ public:
     };
 
     lift_ranges export_lift_ranges(LPCTSTR filename) {
-        if (!ranges.has_entry()) {
+        if (ranges.size()==0) {
             return lift_ranges();
         }
         return ranges.get().export_lift_ranges(filename);
     }
 
     void apply_lift_ranges(lift_range_map & range_map) {
-        if (!ranges.has_entry()) {
+        if (ranges.size()==0) {
             return;
         }
         ranges.get().apply_lift_ranges(range_map);
@@ -851,7 +891,7 @@ public:
     // attributes
     // elements
     zero_more<urlref> media;
-    zero_more<span> form;
+    zero_more<Lift13::form> form;
 };
 
 class etymology : public extensible {
@@ -1077,10 +1117,25 @@ public:
 
 class sense : public extensible {
 public:
-    sense(LPCTSTR varname) :
-        extensible(varname),
+    sense(LPCTSTR _name) :
+        extensible(_name),
         id(L"id"),
         order(L"order"),
+        grammatical_info(L"grammatical-info"),
+        gloss(L"gloss"),
+        definition(L"definition"),
+        relation(L"relation"),
+        note(L"note"),
+        example(L"example"),
+        reversal(L"reversal"),
+        illustration(L"illustration"),
+        subsense(L"subsense") {
+    };
+
+    sense(LPCTSTR _name, LPCTSTR _id, int _order) :
+        extensible(_name),
+        id(L"id",wstring(_id)),
+        order(L"order",_order),
         grammatical_info(L"grammatical-info"),
         gloss(L"gloss"),
         definition(L"definition"),
@@ -1147,7 +1202,7 @@ public:
         id(L"id"),
         guid(L"guid"),
         order(L"order"),
-        dateDeleted(L"dateDeleted"),
+        date_deleted(L"dateDeleted"),
         lexical_unit(L"lexical-unit"),
         citation(L"citation"),
         pronunciation(L"pronunciation"),
@@ -1165,7 +1220,7 @@ public:
         load_attribute(id,in);
         load_attribute(guid,in);
         load_attribute(order,in);
-        load_attribute(dateDeleted,in);
+        load_attribute(date_deleted,in);
         load_element(lexical_unit,in);
         load_element(citation,in);
         load_element(pronunciation,in);
@@ -1183,7 +1238,7 @@ public:
         store_attribute(id,out);
         store_attribute(guid,out);
         store_attribute(order,out);
-        store_attribute(dateDeleted,out);
+        store_attribute(date_deleted,out);
         store_element(lexical_unit,out);
         store_element(citation,out);
         store_element(pronunciation,out);
@@ -1200,7 +1255,7 @@ public:
     optional<refid> id;
     optional<int> order;
     optional<wstring> guid;
-    optional<datetime> dateDeleted;
+    optional<datetime> date_deleted;
     // elements
     optional<multitext> lexical_unit;
     optional<multitext> citation;
@@ -1215,7 +1270,7 @@ public:
 
 class multitext_extensible;
 
-class field_defn : multitext {
+class field_defn : public multitext {
 public:
     field_defn(LPCTSTR name) :
         multitext(name),
@@ -1267,7 +1322,19 @@ public:
         producer(L"producer"),
         header(L"header"),
         entry(L"entry") {
+		version = wstring(L"0.13");
     };
+
+	lift( LPCTSTR _producer) :
+        lift_base(L"lift"),
+        version(L"version"),
+        producer(L"producer"),
+        header(L"header"),
+        entry(L"entry") {
+		version = wstring(L"0.13");
+		producer = wstring(_producer);
+    };
+
 
     void load(Element * in) {
         expect(in,name);
@@ -1289,17 +1356,16 @@ public:
     lift_range_map get_external_range_refs() {
 
         lift_range_map hrefs;
-        if (!header.has_entry()) {
+        if (header.size()==0) {
             return hrefs;
         }
-        if (!header.get().ranges.has_entry()) {
+        if (header.get().ranges.size()==0) {
             return hrefs;
         }
-
-        if (header.get().ranges.get().range.has_entries()) {
+        if (header.get().ranges.get().range.size()>0) {
             for (size_t i=0; i<header.get().ranges.get().range.size(); i++) {
-                if (header.get().ranges.get().range.get(i).href.has_entry()) {
-                    wstring key = header.get().ranges.get().range.get(i).href.get();
+                if (header.get().ranges.get().range[i].href.size()>0) {
+                    wstring key = header.get().ranges.get().range[i].href.get();
                     hrefs[key] = lift_ranges();
                 }
             }
@@ -1308,14 +1374,14 @@ public:
     }
 
     lift_ranges export_lift_ranges(LPCTSTR filename) {
-        if (!header.has_entry()) {
-            lift_ranges();
+        if (header.size()==0) {
+            return lift_ranges();
         }
         return header.get().export_lift_ranges(filename);
     }
 
     void apply_lift_ranges(lift_range_map & range_map) {
-        if (!header.has_entry()) {
+        if (header.size()==0) {
             return;
         }
         header.get().apply_lift_ranges(range_map);

@@ -9,7 +9,6 @@
 #define IDOK2                           3
 #define IDC_INSERT                      3
 #define ID_START_MODE_RECORD            4
-#define IDS_STRING4                     4
 #define IDS_STRING5                     5
 #define VS_VERSION                      80
 #define VS_COPYRIGHT                    81
@@ -1194,6 +1193,7 @@
 #define IDC_USE_REFERENCE               2050
 #define IDC_EDIT_PHRASE_FOLDER          2050
 #define IDC_BROWSE_OTHER                2050
+#define IDD_EXPORTLIFTRESULT            2050
 #define IDC_NUMBERS_GLOSS               2051
 #define IDC_RADIO_NUMBERS               2051
 #define IDC_EDIT_GLOSS_FOLDER           2051
@@ -1246,6 +1246,13 @@
 #define IDC_COMBO_PL2                   2101
 #define IDC_COMBO_PL3                   2102
 #define IDC_COMBO_PL4                   2103
+#define IDC_LIST_REFERENCE              2104
+#define IDC_LIST_PHONETIC               2105
+#define IDC_LIST_PHONEMIC               2106
+#define IDC_LIST_ORTHO                  2107
+#define IDC_LIST_GLOSS                  2108
+#define IDC_LIST_POS                    2109
+#define IDC_COMBO1                      2110
 #define IDS_PLAYER_SMALL                3000
 #define IDS_PLAYER_LARGE                3001
 #define IDS_STATTXT_PROCESSING          4000
@@ -1764,6 +1771,9 @@
 #define IDS_IMPORT_ELAN_METHOD_ELAN     61322
 #define IDS_IMPORT_ELAN_METHOD_ELAN2    61323
 #define IDS_IMPORT_ELAN_METHOD_SAYMORE  61323
+#define IDS_NO_ISO                      61324
+#define IDS_STRING4                     61325
+#define IDS_DISABLED_SEGMENT            61325
 
 // Next default values for new objects
 // 
@@ -1772,7 +1782,7 @@
 #define _APS_3D_CONTROLS                     1
 #define _APS_NEXT_RESOURCE_VALUE        370
 #define _APS_NEXT_COMMAND_VALUE         33246
-#define _APS_NEXT_CONTROL_VALUE         2095
+#define _APS_NEXT_CONTROL_VALUE         2111
 #define _APS_NEXT_SYMED_VALUE           105
 #endif
 #endif

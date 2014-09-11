@@ -2013,6 +2013,7 @@ void CAnnotationWnd::OnRButtonDown(UINT nFlags, CPoint point) {
 // view.
 /***************************************************************************/
 void CAnnotationWnd::OnLButtonDown(UINT nFlags, CPoint point) {
+
     // inform parent plot
     CGraphWnd * pGraph = (CGraphWnd *)GetParent();
     pGraph->SendMessage(WM_LBUTTONDOWN, nFlags, MAKELONG(point.x, point.y)); // send message to parent
@@ -2020,7 +2021,8 @@ void CAnnotationWnd::OnLButtonDown(UINT nFlags, CPoint point) {
         CWnd::OnLButtonDown(nFlags, point);
         return;
     }
-    // get pointer to view and to document
+    
+	// get pointer to view and to document
     CSaView * pView = (CSaView *)pGraph->GetParent();
     CSaDoc * pDoc = (CSaDoc *)pView->GetDocument();
     // find out, which character has been clicked
@@ -2054,21 +2056,22 @@ void CAnnotationWnd::OnLButtonDown(UINT nFlags, CPoint point) {
         //SDM 1.06.5
         //SDM 1.06.6
         //SDM 1.5Test8.5
+		TRACE("selection_index=%d selectpos=%d\n",pView->GetSelectionIndex(),!pView->SelectFromPosition(m_nIndex, dwPosition));
         if (((CMainFrame *)AfxGetMainWnd())->IsEditAllowed() &&
-                (!pView->SelectFromPosition(m_nIndex, dwPosition)) &&
-                (pView->GetSelectionIndex()!=-1)) {
+             (!pView->SelectFromPosition(m_nIndex, dwPosition)) &&
+             (pView->GetSelectionIndex()!=-1)) {
             //SDM 1.5Test8.5
             // Selection not changed
             if (GetTickCount() < (m_nSelectTickCount + SLOW_CLICK_TIME_LIMIT * 1000)) {
                 OnCreateEdit();
             }
         };
+
         // SDM 1.06.6U2
         if (pView->GetSelectionIndex() != -1) {
             m_nSelectTickCount = GetTickCount();
-        } else
+        } else {
             // disable slow click (timed out)
-        {
             m_nSelectTickCount = GetTickCount() - DWORD(SLOW_CLICK_TIME_LIMIT * 1000);
         }
     }
@@ -2118,11 +2121,13 @@ void CAnnotationWnd::OnLButtonDblClk(UINT nFlags, CPoint point) {
 // CAnnotationWnd::CreateEdit
 //###########################################################################
 void CAnnotationWnd::OnCreateEdit(const CString * szInitialString) {
+
     CGraphWnd * pGraph = (CGraphWnd *)GetParent();
     if (pGraph->IsPlotID(IDD_TWC)) {
         return;
     }
     CSaView * pView = (CSaView *)pGraph->GetParent();
+
     // Slow click show annotation edit dialog over selection
     CRect rWnd;
     GetClientRect(rWnd);
@@ -2147,7 +2152,9 @@ void CAnnotationWnd::OnCreateEdit(const CString * szInitialString) {
             dwDataFrame = pView->AdjustDataFrame(rWnd.Width()); // number of data points to display
         }
     }
-    if (dwDataFrame != 0) { // data is available
+
+	// data is available
+    if (dwDataFrame != 0) { 
         ASSERT(rWnd.Width());
         double fBytesPerPix = (double)dwDataFrame / (double)rWnd.Width();
         // Calculate Window Position

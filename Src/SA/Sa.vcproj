@@ -148,7 +148,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="4"
 				InlineFunctionExpansion="2"
-				AdditionalIncludeDirectories=".;..\fileutils;..\xmlutils;..\elanutils;..\lib;..\waveutils;..\sa_dsp;..\mbrola;..\zgraph;..\sa_klatt;..\sa_enu;$(XERCES_VC9_HOME)\include"
+				AdditionalIncludeDirectories=".;..\liftutils;..\uriparser\include;..\fileutils;..\xmlutils;..\elanutils;..\lib;..\waveutils;..\sa_dsp;..\mbrola;..\zgraph;..\sa_klatt;..\sa_enu;$(XERCES_VC9_HOME)\include"
 				PreprocessorDefinitions="_WINDOWS;WINDOWS_PLATFORM;WIN32;NDEBUG;WINVER=0x501"
 				MinimalRebuild="true"
 				RuntimeLibrary="2"
@@ -171,7 +171,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="xerces-c_3.lib mfc90u.lib mfcs90u.lib msvcrt.lib msvcprt.lib comdlg32.lib user32.lib gdi32.lib kernel32.lib advapi32.lib oldnames.lib winmm.lib version.lib imm32.lib ole32.lib oleaut32.lib uuid.lib comsuppw.lib shell32.lib msacm32.lib htmlhelp.lib"
+				AdditionalDependencies="xerces-c_3.lib mfc90u.lib mfcs90u.lib msvcrt.lib msvcprt.lib comdlg32.lib user32.lib gdi32.lib kernel32.lib advapi32.lib oldnames.lib winmm.lib version.lib imm32.lib ole32.lib oleaut32.lib uuid.lib comsuppw.lib shell32.lib msacm32.lib htmlhelp.lib rpcrt4.lib"
 				OutputFile="$(OutDir)\SA.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
@@ -330,6 +330,10 @@
 			</File>
 			<File
 				RelativePath=".\DlgExportLift.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\DlgExportLiftResult.cpp"
 				>
 			</File>
 			<File
@@ -1232,6 +1236,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\DlgExportLiftResult.h"
+				>
+			</File>
+			<File
 				RelativePath="DlgExportSFM.h"
 				>
 			</File>
@@ -1993,6 +2001,10 @@
 			</File>
 			<File
 				RelativePath="Process.cd"
+				>
+			</File>
+			<File
+				RelativePath=".\segment selection.cd"
 				>
 			</File>
 			<File

@@ -50,31 +50,26 @@ static char BASED_CODE THIS_FILE[] = __FILE__;
 // CDlgExportLift dialog
 
 BEGIN_MESSAGE_MAP(CDlgExportLift, CDialog)
-    ON_BN_CLICKED(IDC_EXTAB_ANNOTATIONS, OnAllAnnotations)
     ON_BN_CLICKED(IDC_EX_SFM_INTERLINEAR, OnClickedExSfmInterlinear)
     ON_BN_CLICKED(IDC_EX_SFM_MULTIRECORD, OnClickedExSfmMultirecord)
-    ON_BN_CLICKED(IDC_BROWSE_OTHER, OnClickedBrowseOther)
     ON_CBN_SELCHANGE(IDC_COMBO_FIELDWORKS_PROJECT, OnSelchangeComboFieldworksProject)
     ON_CBN_KILLFOCUS(IDC_COMBO_FIELDWORKS_PROJECT, OnKillfocusComboFieldworksProject)
     ON_COMMAND(IDHELP, OnHelpExportBasic)
-    ON_COMMAND(IDC_RADIO_FIELDWORKS, OnRadioFieldworks)
-    ON_COMMAND(IDC_RADIO_OTHER, OnRadioOther)
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
 // CExportSFM message handlers
 
 CDlgExportLift::CDlgExportLift(LPCTSTR docTitle,
-                           BOOL gloss,
-                           BOOL ortho,
-                           BOOL phonemic,
-                           BOOL phonetic,
-                           BOOL pos,
-                           BOOL reference,
-                           BOOL phrase,
-                           CWnd * pParent) :
-    CDialog(CDlgExportLift::IDD, pParent)
-{
+							   BOOL gloss,
+							   BOOL ortho,
+							   BOOL phonemic,
+							   BOOL phonetic,
+							   BOOL pos,
+							   BOOL reference,
+							   list<wstring> codes,
+							   CWnd * pParent) :
+    CDialog(CDlgExportLift::IDD, pParent) {
 
     settings.bGloss = bGlossDflt = gloss;
     settings.bOrtho = bOrthoDflt = ortho;
@@ -82,13 +77,13 @@ CDlgExportLift::CDlgExportLift(LPCTSTR docTitle,
     settings.bPhonetic = bPhoneticDflt = phonetic;
     settings.bPOS = bPOSDflt = pos;
     settings.bReference = bReferenceDflt = reference;
-    settings.bPhrase = bPhraseDflt = phrase;
+    settings.bPhrase = false;
     settings.szDocTitle = docTitle;
+	iso = codes;
 }
 
 BOOL CDlgExportLift::OnInitDialog()
 {
-
     CDialog::OnInitDialog();
 
 	CSaString dir = GetFieldWorksProjectDirectory();
@@ -102,21 +97,27 @@ BOOL CDlgExportLift::OnInitDialog()
     ctlEditFieldWorksFolder.SetWindowTextW( dir);
     SetCheck(IDC_EXTAB_ANNOTATIONS, TRUE);
 
-	if (found) 
-	{
-		ctlRadioFieldWorks.SetCheck(TRUE);
-		ctlRadioOther.SetCheck(FALSE);
-		OnRadioFieldworks();
-	} 
-	else 
-	{
-		ctlRadioFieldWorks.SetCheck(FALSE);
-		ctlRadioOther.SetCheck(TRUE);
-		OnRadioOther();
-	}
-    OnAllAnnotations();
     CenterWindow();
     UpdateButtonState();
+
+	list<wstring>::iterator it = iso.begin();
+	while (it!=iso.end()) {
+		wstring code = *it;
+		ctlReferenceList.AddString(code.c_str());
+		ctlOrthoList.AddString(code.c_str());
+		ctlGlossList.AddString(code.c_str());
+		ctlPOSList.AddString(code.c_str());
+		ctlPhonemicList.AddString(code.c_str());
+		ctlPhoneticList.AddString(code.c_str());
+		it++;
+	}
+
+	ctlReferenceList.SetCurSel(0);
+	ctlOrthoList.SetCurSel(0);
+	ctlGlossList.SetCurSel(0);
+	ctlPOSList.SetCurSel(0);
+	ctlPhonemicList.SetCurSel(0);
+	ctlPhoneticList.SetCurSel(0);
 
     UpdateData(FALSE);
 
@@ -133,19 +134,18 @@ void CDlgExportLift::DoDataExchange(CDataExchange * pDX)
     DDX_Check(pDX, IDC_EXTAB_PHONETIC,settings. bPhonetic);
     DDX_Check(pDX, IDC_EXTAB_POS, settings.bPOS);
     DDX_Check(pDX, IDC_EXTAB_REFERENCE, settings.bReference);
-    DDX_Check(pDX, IDC_EXTAB_PHRASE, settings.bPhrase);
-    DDX_Control(pDX, IDC_BROWSE_OTHER, ctlButtonBrowseOther);
     DDX_Control(pDX, IDC_EDIT_FIELDWORKS_FOLDER, ctlEditFieldWorksFolder);
-    DDX_Control(pDX, IDC_EDIT_OTHER_FOLDER, ctlEditOtherFolder);
     DDX_Control(pDX, IDC_COMBO_FIELDWORKS_PROJECT, ctlComboFieldWorksProject);
-    DDX_Control(pDX, IDC_STATIC_FIELDWORKS_PROJECT, ctlStaticFieldWorksProject);
-    DDX_Control(pDX, IDC_RADIO_FIELDWORKS, ctlRadioFieldWorks);
-    DDX_Control(pDX, IDC_RADIO_OTHER, ctlRadioOther);
     DDX_Control(pDX, IDOK, ctlButtonOK);
+	DDX_Control(pDX, IDC_LIST_REFERENCE, ctlReferenceList);
+	DDX_Control(pDX, IDC_LIST_PHONEMIC, ctlPhonemicList);
+	DDX_Control(pDX, IDC_LIST_PHONETIC, ctlPhoneticList);
+	DDX_Control(pDX, IDC_LIST_ORTHO, ctlOrthoList);
+	DDX_Control(pDX, IDC_LIST_GLOSS, ctlGlossList);
+	DDX_Control(pDX, IDC_LIST_POS, ctlPOSList);
 
     if (!pDX->m_bSaveAndValidate)
     {
-
         ctlComboFieldWorksProject.ResetContent();
 
         TCHAR szPath[MAX_PATH];
@@ -177,37 +177,26 @@ void CDlgExportLift::DoDataExchange(CDataExchange * pDX)
         GetCurrentPath(szBuffer,MAX_PATH);
         FileUtils::AppendDirSep(szBuffer,MAX_PATH);
         settings.szPath = szBuffer;
-    }
+
+		CString buffer;
+		ctlGlossList.GetWindowTextW(buffer);
+		settings.gloss = buffer;
+
+		ctlReferenceList.GetWindowTextW(buffer);
+		settings.reference = buffer;
+
+		ctlOrthoList.GetWindowTextW(buffer);
+		settings.ortho = buffer;
+
+		ctlPhonemicList.GetWindowTextW(buffer);
+		settings.phonemic = buffer;
+
+		ctlPhoneticList.GetWindowTextW(buffer);
+		settings.phonetic = buffer;
+
+		ctlPOSList.GetWindowTextW(buffer);
+		settings.pos = buffer;
 }
-
-void CDlgExportLift::OnAllAnnotations()
-{
-
-    UpdateData(TRUE);
-    bool checked = ::IsDlgButtonChecked(m_hWnd,IDC_EXTAB_ANNOTATIONS)?true:false;
-    BOOL bEnable = !checked;
-    SetEnable(IDC_EXTAB_PHONETIC, bEnable);
-    SetEnable(IDC_EXTAB_PHONEMIC, bEnable);
-    SetEnable(IDC_EXTAB_ORTHO, bEnable);
-    SetEnable(IDC_EXTAB_GLOSS, bEnable);
-    SetEnable(IDC_EXTAB_REFERENCE, bEnable);
-    SetEnable(IDC_EXTAB_POS, bEnable);
-    SetEnable(IDC_EXTAB_PHRASE, bEnable);
-    if (checked)
-    {
-        settings.bGloss = bGlossDflt;
-        settings.bOrtho = bOrthoDflt;
-        settings.bPhonemic = bPhonemicDflt;
-        settings.bPhonetic = bPhoneticDflt;
-        settings.bPOS = bPOSDflt;
-        settings.bReference = bReferenceDflt;
-        settings.bPhrase = bPhraseDflt;
-    }
-    else
-    {
-        settings.bReference = settings.bPhonetic = settings.bPhonemic = settings.bOrtho = settings.bGloss = settings.bPOS = settings.bPhrase = FALSE;
-    }
-    UpdateData(FALSE);
 }
 
 void CDlgExportLift::SetEnable(int nItem, BOOL bEnable)
@@ -274,109 +263,20 @@ static int CALLBACK BrowseCallbackProc(HWND hwnd, UINT uMsg, LPARAM /*lParam*/, 
     return 0;
 }
 
-void CDlgExportLift::OnClickedBrowseOther()
-{
-
-    // szCurrent is an optional start folder. Can be NULL.
-    // szPath receives the selected path on success. Must be MAX_PATH characters in length.
-
-    CoInitialize(NULL);
-
-    TCHAR szDisplay[MAX_PATH];
-    memset(szDisplay, 0, sizeof(szDisplay));
-
-    TCHAR szFolderLocation[MAX_PATH];
-    memset(szFolderLocation, 0, sizeof(szFolderLocation));
-
-	CString msg;
-	msg.LoadStringW(IDS_CHOOSE_FOLDER);
-
-    ctlEditOtherFolder.GetWindowTextW(szFolderLocation, MAX_PATH);
-
-    BROWSEINFO bi = { 0 };
-    bi.hwndOwner = this->m_hWnd;
-    bi.pszDisplayName = szDisplay;
-	bi.lpszTitle = msg.GetBuffer(msg.GetLength());
-    bi.ulFlags = BIF_RETURNONLYFSDIRS | BIF_NEWDIALOGSTYLE;
-    bi.lpfn = BrowseCallbackProc;
-    bi.lParam = (LPARAM)(LPCTSTR)szFolderLocation;
-    LPITEMIDLIST pidl = SHBrowseForFolder(&bi);
-    if (pidl == NULL)
-    {
-        // they canceled...
-		msg.ReleaseBuffer();
-        CoUninitialize();
-        return;
-    }
-
-	msg.ReleaseBuffer();
-
-    TCHAR szPath[MAX_PATH];
-    memset(szPath, 0, sizeof(szPath));
-
-    BOOL retval = SHGetPathFromIDList(pidl, szPath);
-    CoTaskMemFree(pidl);
-    if (!retval)
-    {
-        szPath[0] = TEXT('\0');
-    }
-    else
-    {
-        wstring temp(szPath);
-        if (temp[temp.length() - 1] != '\\')
-        {
-            temp.append(L"\\");
-        }
-        ctlEditOtherFolder.SetWindowText(temp.c_str());
-    }
-
-    CoUninitialize();
-    UpdateButtonState();
-}
-
-void CDlgExportLift::OnRadioFieldworks()
-{
-    ctlEditFieldWorksFolder.EnableWindow(FALSE);
-    ctlComboFieldWorksProject.EnableWindow(TRUE);
-    ctlStaticFieldWorksProject.EnableWindow(TRUE);
-    ctlEditOtherFolder.EnableWindow(FALSE);
-    ctlButtonBrowseOther.EnableWindow(FALSE);
-    UpdateButtonState();
-}
-
-
-void CDlgExportLift::OnRadioOther()
-{
-    ctlEditFieldWorksFolder.EnableWindow(FALSE);
-    ctlComboFieldWorksProject.EnableWindow(FALSE);
-    ctlStaticFieldWorksProject.EnableWindow(FALSE);
-    ctlEditOtherFolder.EnableWindow(TRUE);
-    ctlButtonBrowseOther.EnableWindow(TRUE);
-    UpdateButtonState();
-}
-
 void CDlgExportLift::GetCurrentPath(LPTSTR szBuffer, size_t size)
 {
     wmemset(szBuffer,0,MAX_PATH);
-    if (ctlRadioFieldWorks.GetCheck() == BST_CHECKED)
-    {
-        TCHAR szTemp[MAX_PATH];
-        wmemset(szTemp,0,MAX_PATH);
+    TCHAR szTemp[MAX_PATH];
+    wmemset(szTemp,0,MAX_PATH);
         ctlEditFieldWorksFolder.GetWindowTextW(szTemp, MAX_PATH);
-        wcscat_s(szBuffer,size,szTemp);
-        FileUtils::AppendDirSep(szBuffer,size);
-        wmemset(szTemp,0,MAX_PATH);
-        int sel = ctlComboFieldWorksProject.GetCurSel();
-		if (sel!=-1) {
-	        ctlComboFieldWorksProject.GetLBText(sel, szTemp);
-		    wcscat_s(szBuffer,size,szTemp);
-		}
-        return;
-    }
-
-    // at this point we are assuming they selected 'other'
-    ctlEditOtherFolder.GetWindowTextW(szBuffer, MAX_PATH);
-    FileUtils::AppendDirSep(szBuffer,MAX_PATH);
+    wcscat_s(szBuffer,size,szTemp);
+    FileUtils::AppendDirSep(szBuffer,size);
+    wmemset(szTemp,0,MAX_PATH);
+    int sel = ctlComboFieldWorksProject.GetCurSel();
+	if (sel!=-1) {
+	    ctlComboFieldWorksProject.GetLBText(sel, szTemp);
+		wcscat_s(szBuffer,size,szTemp);
+	}
 }
 
 
@@ -396,7 +296,7 @@ void CDlgExportLift::UpdateButtonState()
     TCHAR szBuffer[MAX_PATH];
     GetCurrentPath(szBuffer,MAX_PATH);
     bool valid = FileUtils::FolderExists(szBuffer);
-    bool selected = ((ctlRadioOther.GetCheck()==BST_CHECKED)||(ctlComboFieldWorksProject.GetCurSel()!=-1));
+    bool selected = (ctlComboFieldWorksProject.GetCurSel()!=-1);
     ctlButtonOK.EnableWindow(((valid)&&(selected))?TRUE:FALSE);
 }
 
@@ -620,4 +520,3 @@ bool CDlgExportLift::SearchForValue( HKEY hRootKey, DWORD sam, wstring keyName, 
 	RegCloseKey( hKey);
 	return false;
 }
-

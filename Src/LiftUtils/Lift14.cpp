@@ -1,14 +1,11 @@
 #include "Lift14.h"
 #include <Windows.h>
 #include <iostream>
-#include <memory>
-#include <iostream>
 
 using std::auto_ptr;
 using std::cout;
 using std::cerr;
 using std::endl;
-using std::unique_ptr;
 using namespace XML;
 using namespace xercesc_3_1;
 using namespace Lift14;

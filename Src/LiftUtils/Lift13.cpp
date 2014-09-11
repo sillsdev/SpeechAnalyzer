@@ -5,25 +5,25 @@
 #include <iostream>
 #include <algorithm>
 #include <map>
-#include <memory>
 #include <FileUtils.h>
 
 #include <xercesc/dom/DOM.hpp>
 #include <xercesc/framework/LocalFileFormatTarget.hpp>
+
+#include <uriparser/uri.h>
 
 using std::auto_ptr;
 using std::map;
 using std::cout;
 using std::cerr;
 using std::endl;
-using std::unique_ptr;
 using std::basic_string;
 
 using namespace XML;
 using namespace xercesc_3_1;
 using namespace Lift13;
 
-void toDOM(DOMDocument * pDoc, DOMElement * pElement, Element * element) {
+void toDOM(xercesc_3_1::DOMDocument * pDoc, DOMElement * pElement, Element * element) {
 
     AttributeList::iterator it = element->attributes.begin();
     while (it!=element->attributes.end()) {
@@ -45,7 +45,7 @@ void toDOM(DOMDocument * pDoc, DOMElement * pElement, Element * element) {
     }
 }
 
-DOMDocument * toDOM(Document & document) {
+xercesc_3_1::DOMDocument * toDOM(Document & document) {
 
     DOMImplementation * impl = DOMImplementationRegistry::getDOMImplementation(L"Core");
     if (impl == NULL) {
@@ -54,7 +54,7 @@ DOMDocument * toDOM(Document & document) {
     if (document.element==NULL) {
         throw logic_error("document element is empty");
     }
-    DOMDocument * pDoc = impl->createDocument(0, document.element->localname.c_str(), 0);
+    xercesc_3_1::DOMDocument * pDoc = impl->createDocument(0, document.element->localname.c_str(), 0);
     DOMElement * pElement = pDoc->getDocumentElement();
     toDOM(pDoc, pElement, document.element);
     return pDoc;
@@ -63,7 +63,7 @@ DOMDocument * toDOM(Document & document) {
 void Lift13::write_document(Document & doc, LPCTSTR filename) {
 
     // convert to xerces DOM
-    DOMDocument * pDoc = toDOM(doc);
+    xercesc_3_1::DOMDocument * pDoc = toDOM(doc);
 
     // checking file existence
     FileUtils::RemoveFile(filename);
@@ -116,25 +116,34 @@ void Lift13::store(lift & root, LPCTSTR filename) {
 }
 
 wstring parse_uri(LPCTSTR in) {
-    LPCTSTR FILE_TAG = L"file://";
-    wstring uri = in;
-    size_t pos = uri.find(FILE_TAG);
-    if ((pos==std::wstring::npos)||(pos!=0)) {
-        stringstream msg;
-        msg << utf8(uri)<< " is not a file URL.";
-        throw logic_error(msg.str().c_str());
+
+    UriParserStateW state;
+    UriUriW uri;
+    state.uri = &uri;
+    if (uriParseUriW( &state, in) != URI_SUCCESS) {
+        uriFreeUriMembersW(&uri);
+		stringstream msg;
+		msg << "unable to parse URI. position="<<state.errorPos<<", error="<<state.errorCode;
+		throw logic_error(msg.str().c_str());
     }
-    uri = uri.substr(7);
-    return uri;
+
+	wstring result = uri.hostText.first;
+    uriFreeUriMembersW(&uri);
+	return result;
 }
 
 /**
-* read in filename and create a lift document
+* Read in filename and create a lift document
+* NOTE: throws exception if error is detected
 */
 lift Lift13::load(LPCTSTR filename) {
 
     lift document;
     try {
+		if (!FileUtils::FileExists(filename)) {
+			throw exception("file not found");
+		}
+
         // Initialize the XML4C2 system
         ScopedXMLUtils xmlUtils;
 
@@ -169,7 +178,11 @@ lift Lift13::load(LPCTSTR filename) {
         parser->setErrorHandler(&handler);
         parser->parse(filename);
         errorCount = parser->getErrorCount();
-        document.load(handler.document.element);
+		if (errorCount!=0) {
+			throw exception("document contained errors");
+		}
+
+		document.load(handler.document.element);
 
         // get the list of external files
         map<wstring,lift_ranges> hrefs = document.get_external_range_refs();

@@ -157,6 +157,9 @@
 #include "StringUtils.h"
 #include "DlgImportElanSheet.h"
 #include "SAXMLUtils.h"
+#include "DlgExportLiftResult.h"
+#include <LiftUtils.h>
+#include <uriparser/uri.h>
 
 #ifdef _DEBUG
 #undef THIS_FILE
@@ -164,13 +167,14 @@ static char BASED_CODE THIS_FILE[] = __FILE__;
 #define new DEBUG_NEW
 #endif
 
-#pragma comment( lib, "WaveUtils")
-#pragma comment( lib, "XMLUtils")
-#pragma comment( lib, "LiftUtils")
-#pragma comment( lib, "ElanUtils")
-#pragma comment( lib, "FileUtils")
+#pragma comment( lib, "waveutils")
+#pragma comment( lib, "xmlutils")
+#pragma comment( lib, "liftutils")
+#pragma comment( lib, "elanutils")
+#pragma comment( lib, "fileutils")
+#pragma comment( lib, "uriparser")
 #ifdef _DEBUG
-#pragma comment( lib, "xerces-c_3D")
+#pragma comment( lib, "xerces-c_3d")
 #else
 #pragma comment( lib, "xerces-c_3")
 #endif
@@ -267,15 +271,15 @@ CSaDoc::CSaDoc() {
     m_pProcessSnapshot = NULL;                          // create data processing object
     m_pProcessFormants = new CProcessFormants();        // create data processing object
     m_pProcessFormantTracker = new CProcessFormantTracker(*m_pProcessRaw, *m_pProcessHilbert, *m_pProcessGrappl);  // create data processing object
-    m_pProcessZCross   = new CProcessZCross();          // create data processing object
+    m_pProcessZCross = new CProcessZCross();			// create data processing object
     m_pProcessSpectrum = new CProcessSpectrum();        // create data processing object
     m_pProcessDurations = new CProcessDurations();      // create data processing object
-    m_pProcessGlottis  = new CProcessGlottis();         // create data processing object
+    m_pProcessGlottis = new CProcessGlottis();			// create data processing object
     m_pProcessPOA = new CProcessPOA();                  // create data processing object
     m_pProcessSDP[0] = NULL;
     m_pProcessSDP[1] = NULL;
     m_pProcessSDP[2] = NULL;
-    m_pProcessRatio    = new CProcessRatio();           // create data processing object
+    m_pProcessRatio = new CProcessRatio();				// create data processing object
     m_pProcessTonalWeightChart = new CProcessTonalWeightChart(); // create data processing object CLW 11/4/99
     m_pCreatedFonts = new CObArray;                     // create graph font array object
 
@@ -5757,8 +5761,6 @@ BOOL CSaDoc::AdvancedParseWord() {
     // add the gloss transcription bar to all views
     pView->SendMessage(WM_COMMAND, ID_GLOSS_ALL);
 
-    CSaApp * pApp = (CSaApp *)AfxGetApp();
-
     RestartAllProcesses();
 
     DeleteSegmentContents(REFERENCE);
@@ -5799,8 +5801,6 @@ BOOL CSaDoc::AdvancedParsePhrase() {
 
     // add the gloss transcription bar to all views
     pView->SendMessage(WM_COMMAND, ID_GLOSS_ALL);
-
-    CSaApp * pApp = (CSaApp *)AfxGetApp();
 
     RestartAllProcesses();
 
@@ -5904,7 +5904,6 @@ BOOL CSaDoc::AdvancedSegment() {
     pSegment->SetDataInvalid(); // clear data from previous run SDM 1.06.4
 
     short int nResult = LOWORD(pSegment->Process(NULL, this)); // process data
-    CSaApp * pApp = (CSaApp *)AfxGetApp();
 
     // restore preserved gloss etc. SDM 1.5Test8.2
     for (int nLoop = GLOSS; nLoop < ANNOT_WND_NUMBER; nLoop++) {
@@ -7654,7 +7653,6 @@ bool CSaDoc::ConvertToMono(bool extractLeft, LPCTSTR filename) {
     WORD channels = 0;
     DWORD samplesPerSec = 0;
     WORD blockAlign = 0;
-    DWORD length = 0;
 
     try {
         //TODO handle memory during exceptions
@@ -7744,12 +7742,12 @@ void CSaDoc::DoExportFieldWorks(CExportFWSettings & settings) {
     CFile file(filename.c_str(), CFile::modeCreate | CFile::modeWrite);
     CSaString szString;
 
-    if (!TryExportSegmentsBy(settings,REFERENCE, file, skipEmptyGloss, szPath, dataCount, wavCount)) {
-        if (!TryExportSegmentsBy(settings,GLOSS, file, skipEmptyGloss, szPath, dataCount, wavCount)) {
-            if (!TryExportSegmentsBy(settings,ORTHO, file, skipEmptyGloss, szPath, dataCount, wavCount)) {
-                if (!TryExportSegmentsBy(settings,PHONEMIC, file, skipEmptyGloss, szPath, dataCount, wavCount)) {
-                    if (!TryExportSegmentsBy(settings,TONE, file, skipEmptyGloss, szPath, dataCount, wavCount)) {
-                        TryExportSegmentsBy(settings,PHONETIC, file, skipEmptyGloss, szPath, dataCount, wavCount);
+    if (!TryExportSegmentsBy( settings, REFERENCE, file, skipEmptyGloss, szPath, dataCount, wavCount)) {
+        if (!TryExportSegmentsBy( settings, GLOSS, file, skipEmptyGloss, szPath, dataCount, wavCount)) {
+            if (!TryExportSegmentsBy( settings, ORTHO, file, skipEmptyGloss, szPath, dataCount, wavCount)) {
+                if (!TryExportSegmentsBy( settings, PHONEMIC, file, skipEmptyGloss, szPath, dataCount, wavCount)) {
+                    if (!TryExportSegmentsBy( settings, TONE, file, skipEmptyGloss, szPath, dataCount, wavCount)) {
+                        TryExportSegmentsBy( settings, PHONETIC, file, skipEmptyGloss, szPath, dataCount, wavCount);
                     }
                 }
             }
@@ -7775,13 +7773,20 @@ void CSaDoc::DoExportFieldWorks(CExportFWSettings & settings) {
 void CSaDoc::DoExportLift(CExportLiftSettings & settings) {
 
     int dataCount = 0;
-    int sfmCount = 0;
+    int liftCount = 0;
     int wavCount = 0;
 
     wstring filename;
     TCHAR szBuffer[MAX_PATH];
     wcscpy_s(szBuffer,MAX_PATH,settings.szPath);
-    int result = GetSaveAsFilename(settings.szDocTitle, _T("Standard Format (*.sfm) |*.sfm||"), _T("sfm"), szBuffer, filename);
+    if (!FileUtils::FolderExists(szBuffer)) {
+        FileUtils::CreateFolder(szBuffer);
+    }
+    wcscat_s(szBuffer,MAX_PATH,L"LinkedFiles\\");
+    if (!FileUtils::FolderExists(szBuffer)) {
+        FileUtils::CreateFolder(szBuffer);
+    }
+    int result = GetSaveAsFilename(settings.szDocTitle, _T("Lift Format (*.lift) |*.lift||"), _T("lift"), szBuffer, filename);
     if (result!=IDOK) {
         return;
     }
@@ -7796,81 +7801,63 @@ void CSaDoc::DoExportLift(CExportLiftSettings & settings) {
     TCHAR szPath[MAX_PATH];
     memset(szPath, 0, MAX_PATH);
     wcscpy_s(szPath,MAX_PATH,settings.szPath);
-
     if (!FileUtils::FolderExists(szPath)) {
         FileUtils::CreateFolder(szPath);
     }
-    wcscat_s(szPath,MAX_PATH,L"LinkedFiles\\");
-    if (!FileUtils::FolderExists(szPath)) {
-        FileUtils::CreateFolder(szPath);
-    }
-    wcscat_s(szPath,MAX_PATH,L"AudioVisual\\");
-
+    wcscat_s(szPath,MAX_PATH,L"LinkedFiles\\Media\\");
     if (!FileUtils::FolderExists(szPath)) {
         FileUtils::CreateFolder(szPath);
     }
 
-    if (!ValidateWordFilenames(WFC_REF_GLOSS,skipEmptyGloss,L"",L"")) {
-        return;
-    }
-    if (!ValidatePhraseFilenames(MUSIC_PL1,PFC_REF_GLOSS,L"",L"")) {
-        return;
-    }
-    if (!ValidatePhraseFilenames(MUSIC_PL2,PFC_REF_GLOSS,L"",L"")) {
-        return;
-    }
+	Lift13::field_defn field(L"field");
+	field.tag = wstring(L"Reference");
+	field.form.append(Lift13::form(L"form",L"en",Lift13::text(L"text",L"")));
+	field.form.append(Lift13::form(L"form",L"qaa-x-spec",Lift13::text(L"text",L"Class=LexEntry; Type=String; WsSelector=kwsAnal")));
 
-    CFile file(filename.c_str(), CFile::modeCreate | CFile::modeWrite);
-    CSaString szString;
+	Lift13::field_defns fields(L"fields");
+	fields.field.append(field);
 
-    if (!TryExportSegmentsBy(settings,REFERENCE, file, skipEmptyGloss, szPath, dataCount, wavCount)) {
-        if (!TryExportSegmentsBy(settings,GLOSS, file, skipEmptyGloss, szPath, dataCount, wavCount)) {
-            if (!TryExportSegmentsBy(settings,ORTHO, file, skipEmptyGloss, szPath, dataCount, wavCount)) {
-                if (!TryExportSegmentsBy(settings,PHONEMIC, file, skipEmptyGloss, szPath, dataCount, wavCount)) {
-                    if (!TryExportSegmentsBy(settings,TONE, file, skipEmptyGloss, szPath, dataCount, wavCount)) {
-                        TryExportSegmentsBy(settings,PHONETIC, file, skipEmptyGloss, szPath, dataCount, wavCount);
-                    }
-                }
-            }
-        }
-    }
+	Lift13::header header(L"header");
+	header.fields = fields;
 
-    // \date write current time
-    CTime time = CTime::GetCurrentTime();
-    szString = "\\dt " + time.Format("%A, %B %d, %Y, %X") + "\r\n";
-    WriteFileUtf8(&file, szString);
+	Lift13::lift document(L"Speech Analyzer 3.1.0.96");
+	document.header = header;
 
-    file.Close();
-    sfmCount++;
+    ExportSegments( settings, document, skipEmptyGloss, szPath, dataCount, wavCount);
 
-    CDlgExportFWResult dlg;
+	Lift13::store(document, filename.c_str());
+
+    liftCount++;
+
+    CDlgExportLiftResult dlg;
     dlg.m_WAVCount.Format(L"%d",wavCount);
     dlg.m_DataCount.Format(L"%d",dataCount);
-    dlg.m_SFMCount.Format(L"%d",sfmCount);
+    dlg.m_SFMCount.Format(L"%d",liftCount);
     dlg.DoModal();
 
 }
 
-bool CSaDoc::TryExportSegmentsBy(CExportLiftSettings & settings, EAnnotation master, CFile & file, bool skipEmptyGloss, LPCTSTR szPath, int & dataCount, int & wavCount) {
-
-    TRACE("EXPORTING>>>>%d\n",master);
+bool CSaDoc::ExportSegments( CExportLiftSettings & settings, 
+							 Lift13::lift & document, 
+							 bool skipEmptyGloss, 
+							 LPCTSTR szPath, 
+							 int & dataCount, 
+							 int & wavCount) {
 
     LPCTSTR szCrLf = L"\r\n";
 
     EWordFilenameConvention wordConvention = WFC_REF_GLOSS;
     EPhraseFilenameConvention phraseConvention = PFC_REF_GLOSS;
 
-    if (!GetFlag(master,settings)) {
+    if (!GetFlag(REFERENCE,settings)) {
         return false;
     }
 
-    CSegment * pSeg = GetSegment(master);
+    CSegment * pSeg = GetSegment(REFERENCE);
 
     if (pSeg->GetOffsetSize() == 0) {
         return false;
     }
-
-    WriteFileUtf8(&file, szCrLf);
 
     CSaString results[ANNOT_WND_NUMBER];
     for (int i = 0; i < ANNOT_WND_NUMBER; i++) {
@@ -7884,111 +7871,99 @@ bool CSaDoc::TryExportSegmentsBy(CExportLiftSettings & settings, EAnnotation mas
             continue;
         }
         last = dwStart;
-        for (int j = master; j >= 0; j--) {
+        for (int j = REFERENCE; j >= 0; j--) {
             EAnnotation target = ConvertToAnnotation(j);
             if (!GetFlag(target,settings)) {
                 continue;
             }
-            results[target] = BuildRecord(target, dwStart, dwStop);
+			CSegment * pSegment = GetSegment(target);
+			CSaString szText = pSegment->GetContainedText(dwStart, dwStop);
+			szText = szText.Trim();
+			if (szText.GetLength() == 0) {
+				results[target] = L"";
+				continue;
+			}
+			if (target == GLOSS) {
+				if (szText[0] == WORD_DELIMITER) {
+					szText = szText.Right(szText.GetLength() - 1);
+				}
+			}
+			results[target] = szText;
         }
 
-        if (results[PHONETIC].GetLength() > 0) {
-            WriteFileUtf8(&file, results[PHONETIC]);
-        }
-        if (results[TONE].GetLength() > 0) {
-            WriteFileUtf8(&file, results[TONE]);
-        }
-        if (results[PHONEMIC].GetLength() > 0) {
-            WriteFileUtf8(&file, results[PHONEMIC]);
-        }
-        if (results[ORTHO].GetLength() > 0) {
-            WriteFileUtf8(&file, results[ORTHO]);
-        }
-        if (results[GLOSS].GetLength() > 0) {
-            WriteFileUtf8(&file, results[GLOSS]);
-        }
+		Lift13::entry entry(L"entry");
+		entry.date_created = Lift::createDate();
+		entry.date_modified = Lift::createDate();
+
         if (results[REFERENCE].GetLength() > 0) {
-            WriteFileUtf8(&file, results[REFERENCE]);
-        }
+			
+			entry.id = Lift::createUUID();
+			entry.guid = entry.id;
 
-        POSITION pos = GetFirstViewPosition();
-        CSaView * pView = (CSaView *) GetNextView(pos);  // get pointer to view
-        CGlossSegment * g = (CGlossSegment *)pView->GetAnnotation(GLOSS);
-        CMusicPhraseSegment * pl1 = (CMusicPhraseSegment *)pView->GetAnnotation(MUSIC_PL1);
-        CMusicPhraseSegment * pl2 = (CMusicPhraseSegment *)pView->GetAnnotation(MUSIC_PL2);
-        DWORD offsetSize = g->GetOffsetSize();
-        bool hasGloss = (offsetSize != 0);
+			// build the pronunciation
+			entry.pronunciation = Lift13::phonetic(L"pronunciation");
 
-        TRACE("gloss %d %d\n",dwStart,dwStop);
-
-        if ((hasGloss) || (!skipEmptyGloss)) {
+			// add the phonetic
+			wstring buffer;
+			buffer.append(settings.phonetic);
+			buffer.append(L"-fonipa-x-etic");
+			entry.pronunciation[0].form.append( Lift13::form( L"form", buffer.c_str(), Lift13::text(L"text",results[PHONETIC])));
 
             wstring filename;
-            int index = FindNearestGlossIndex(g,dwStart,dwStop);
+	        POSITION pos = GetFirstViewPosition();
+			CSaView * pView = (CSaView *) GetNextView(pos);
+			CGlossSegment * gloss = (CGlossSegment *)pView->GetAnnotation(GLOSS);
+            int index = FindNearestGlossIndex(gloss,dwStart,dwStop);
             if (index>=0) {
-                int result = ComposeWordSegmentFilename(g, index, wordConvention, szPath, filename, L"", L"");
+                int result = ComposeWordSegmentFilename(gloss, index, wordConvention, szPath, filename, L"", L"");
                 if (result==0) {
-                    int result = ExportWordSegment(g, index, filename.c_str(), skipEmptyGloss, dataCount, wavCount);
-                    if (result<0) {
-                        return false;
-                    }
-                    TCHAR szBuffer[MAX_PATH];
-                    wmemset(szBuffer,0,MAX_PATH);
-                    wcscat_s(szBuffer,MAX_PATH,L"\\pf ");
-                    wcscat_s(szBuffer,MAX_PATH,filename.c_str());
-                    wcscat_s(szBuffer,MAX_PATH,szCrLf);
-                    WriteFileUtf8(&file, szBuffer);
+                    int result = ExportWordSegment(gloss, index, filename.c_str(), skipEmptyGloss, dataCount, wavCount);
+                    if (result==0) {
+						size_t index = filename.find_last_of('\\');
+						wstring uri = filename.substr(index+1);
+						entry.pronunciation[0].media.append( Lift13::urlref( L"media"));
+						entry.pronunciation[0].media[0].href = uri;
+						/*
+						size_t len = 8 + 3 * filename.size() + 1;
+						wchar_t * buffer = new wchar_t[len];
+						wmemset(buffer,0,len);
+						if (uriWindowsFilenameToUriStringW( filename.c_str(), buffer) != URI_SUCCESS) {
+							delete [] buffer;
+						} else {
+							wstring uri = buffer;
+							delete [] buffer;
+							entry.pronunciation[0].media.append( Lift13::urlref( L"media"));
+							entry.pronunciation[0].media[0].href = uri;
+						}
+						*/
+					}
                 }
             }
 
-            if (settings.bPhrase) {
-                TRACE("--searching for PL1\n");
-                index = FindNearestPhraseIndex(pl1,dwStart,dwStop);
-                if (index>=0) {
-                    TRACE("--exporting PL1\n");
-                    int result = ComposePhraseSegmentFilename(MUSIC_PL1, pl1, index, phraseConvention, szPath, filename, L"", L"");
-                    if (result==0) {
-                        int result = ExportPhraseSegment(pl1, index, filename, dataCount, wavCount);
-                        if (result<0) {
-                            return false;
-                        }
-                        TCHAR szBuffer[MAX_PATH];
-                        wmemset(szBuffer,0,MAX_PATH);
-                        wcscat_s(szBuffer,MAX_PATH,L"\\pf ");
-                        wcscat_s(szBuffer,MAX_PATH,filename.c_str());
-                        wcscat_s(szBuffer,MAX_PATH,szCrLf);
-                        WriteFileUtf8(&file, szBuffer);
-                    }
-                }
+			// build the lexical unit
+			entry.lexical_unit = Lift13::multitext(L"lexical-unit");
+			entry.lexical_unit.get().form.append( Lift13::form(L"form",settings.ortho.c_str(),Lift13::text(L"text",results[ORTHO])));
 
-                TRACE("--searching for PL2\n");
-                index = FindNearestPhraseIndex(pl2,dwStart,dwStop);
-                if (index>=0) {
-                    TRACE("--exporting PL2\n");
-                    int result = ComposePhraseSegmentFilename(MUSIC_PL2, pl2, index, phraseConvention, szPath, filename, L"", L"");
-                    if (result==0) {
-                        int result = ExportPhraseSegment(pl2, index, filename, dataCount, wavCount);
-                        if (result<0) {
-                            return false;
-                        }
-                        TCHAR szBuffer[MAX_PATH];
-                        wmemset(szBuffer,0,MAX_PATH);
-                        wcscat_s(szBuffer,MAX_PATH,L"\\pf ");
-                        wcscat_s(szBuffer,MAX_PATH,filename.c_str());
-                        wcscat_s(szBuffer,MAX_PATH,szCrLf);
-                        WriteFileUtf8(&file, szBuffer);
-                    }
-                }
-            }
-        }
+			wstring phonemic;
+			phonemic.append(settings.phonemic);
+			phonemic.append(L"-fonipa-x-emic");
+			entry.lexical_unit.get().form.append( Lift13::form(L"form",phonemic.c_str(),Lift13::text(L"text",results[PHONEMIC])));
 
-        WriteFileUtf8(&file, szCrLf);
+			// build the field
+			entry.field = Lift13::field(L"field",L"Reference");
+			entry.field[0].form = Lift13::form(L"form",settings.reference.c_str(),Lift13::text(L"text",results[REFERENCE]));
+
+			// build the sense field
+			entry.sense = Lift13::sense(L"sense",createUUID().c_str(),i);
+			entry.sense[0].gloss = Lift13::gloss(L"gloss",settings.gloss.c_str(),results[GLOSS]);
+		}
+
+		document.entry.append(entry);
     }
-
     return true;
 }
 
-bool CSaDoc::TryExportSegmentsBy(CExportFWSettings & settings, EAnnotation master, CFile & file, bool skipEmptyGloss, LPCTSTR szPath, int & dataCount, int & wavCount) {
+bool CSaDoc::TryExportSegmentsBy( CExportFWSettings & settings, EAnnotation master, CFile & file, bool skipEmptyGloss, LPCTSTR szPath, int & dataCount, int & wavCount) {
 
     TRACE("EXPORTING>>>>%d\n",master);
 

@@ -58,7 +58,7 @@
     </Midl>
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>.;..\ElanUtils;..\XMLUtils;..\FileUtils;..\LiftUtils;..\lib;..\WaveUtils;..\SA_KLATT;..\mbrola;..\SA_ENU;..\SA_DSP;..\zGraph;$(XERCES_VC10_HOME)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.;..\ElanUtils;..\XMLUtils;..\FileUtils;..\LiftUtils;..\lib;..\WaveUtils;..\SA_KLATT;..\mbrola;..\SA_ENU;..\SA_DSP;..\zGraph;$(XERCES_VC10_HOME)\include;..\uriparser\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_WINDOWS;WINDOWS_PLATFORM;_DEBUG;WIN32;WINVER=0x0501;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
@@ -144,6 +144,7 @@
     <ClCompile Include="DlgExportFW.cpp" />
     <ClCompile Include="DlgExportFWResult.cpp" />
     <ClCompile Include="DlgExportLift.cpp" />
+    <ClCompile Include="DlgExportLiftResult.cpp" />
     <ClCompile Include="DlgExportSFM.cpp" />
     <ClCompile Include="DlgExportTable.cpp" />
     <ClCompile Include="DlgExportXML.cpp" />
@@ -358,6 +359,7 @@
     <None Include="Graphs.cd" />
     <None Include="Process.cd" />
     <None Include="Res\SA.ICO" />
+    <None Include="segment selection.cd" />
     <None Include="Segments.cd" />
     <None Include="Windows.cd" />
   </ItemGroup>
@@ -380,6 +382,7 @@
     <ClInclude Include="DlgExportFW.h" />
     <ClInclude Include="DlgExportFWResult.h" />
     <ClInclude Include="DlgExportLift.h" />
+    <ClInclude Include="DlgExportLiftResult.h" />
     <ClInclude Include="DlgExportSFM.h" />
     <ClInclude Include="DlgExportTable.h" />
     <ClInclude Include="DlgExportXML.h" />

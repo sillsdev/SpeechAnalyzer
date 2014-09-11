@@ -171,6 +171,7 @@
 #include "TextHelper.h"
 #include "FileEncodingHelper.h"
 #include "ImportELAN.h"
+#include "FileUtils.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE
@@ -631,7 +632,78 @@ void CSaView::OnExportLift() {
     BOOL reference = pDoc->HasSegmentData(REFERENCE);
     BOOL phrase = pDoc->HasSegmentData(MUSIC_PL1)|pDoc->HasSegmentData(MUSIC_PL1);
 
-    CDlgExportLift dlg(title, gloss, ortho, phonemic, phonetic, pos, reference, phrase);
+    CSaApp * pApp = ((CSaApp *)AfxGetApp());
+
+    wstring path = AfxGetApp()->m_pszExeName;
+    path.append(L".exe");
+	HMODULE hmod = GetModuleHandle(path.c_str());
+
+    CString fullPath;
+    DWORD pathLen = ::GetModuleFileName( hmod, fullPath.GetBufferSetLength(MAX_PATH+1), MAX_PATH); // hmod of zero gets the main EXE
+    fullPath.ReleaseBuffer( pathLen );
+	int pos2 = fullPath.ReverseFind('\\');
+	fullPath = fullPath.Left(pos2);
+
+	wstring filepath = (LPCTSTR)fullPath;
+	filepath.append(L"\\");
+	filepath.append(L"iso639.txt");
+
+	FILE * ifile = NULL;
+	errno_t err = fopen_s(&ifile,utf8(filepath.c_str()).c_str(),"rb");
+	if (err!=0) {
+		pApp->ErrorMessage(IDS_NO_ISO,filepath.c_str());
+		return;
+	}
+
+	DWORD len = FileUtils::GetFileSize(utf8(filepath.c_str()).c_str());
+	// read in the file
+	char * data = new char[len];
+	int read = fread( data, 1, len, ifile);
+	fclose(ifile);
+	if (read!=len) {
+		delete [] data;
+	    CSaApp * pApp = ((CSaApp *)AfxGetApp());
+        pApp->ErrorMessage(IDS_NO_ISO);
+		return;
+	}
+
+	// break the data into lines
+	list<wstring> lines;
+	string buffer;
+	for (int i=0;i<read;i++) {
+		if ((data[i]==0x0d)||(data[i]==0x0a)) {
+			if (buffer.size()>0) {
+				lines.push_back(utf16(buffer));
+				buffer.clear();
+			}
+		} else {
+			buffer.push_back(data[i]);
+		}
+	}
+
+	// pull on the 2-character country codes
+	list<wstring> codes;
+	list<wstring>::iterator it = lines.begin();
+	while (it!=lines.end()) {
+		wstring line = *it;
+		size_t delimit = 0;
+		for (int j=0;j<line.size();j++) {
+			if (line[j]=='|') {
+				delimit++;
+				continue;
+			}
+			if (delimit==2) {
+				wstring code;
+				code.push_back(line[j]);
+				code.push_back(line[j+1]);
+				codes.push_back(code);
+				break;
+			}
+		}
+		it++;
+	}
+
+    CDlgExportLift dlg(title, gloss, ortho, phonemic, phonetic, pos, reference,codes);
     if (dlg.DoModal()==IDOK) {
         pDoc->DoExportLift(dlg.settings);
     }
@@ -3688,12 +3760,13 @@ BOOL CSaView::ReadGraphListProperties(const CSaView & pTemplateView) {
 /***************************************************************************/
 /***************************************************************************/
 void CSaView::OnEditInplace() {
+
     m_advancedSelection.Update(this);
     int nAnnotationIndex = m_advancedSelection.GetSelectionIndex();
 
     if ((nAnnotationIndex != -1) &&
-            (GetFocusedGraphWnd()!=NULL) &&
-            (GetFocusedGraphWnd()->HaveAnnotation(nAnnotationIndex))) { // Selected annotation is visible
+        (GetFocusedGraphWnd()!=NULL) &&
+        (GetFocusedGraphWnd()->HaveAnnotation(nAnnotationIndex))) { // Selected annotation is visible
         CAnnotationWnd * pWnd = GetFocusedGraphWnd()->GetAnnotationWnd(nAnnotationIndex);
         pWnd->OnCreateEdit();
     }
@@ -3702,6 +3775,7 @@ void CSaView::OnEditInplace() {
 /***************************************************************************/
 /***************************************************************************/
 void CSaView::OnChar(UINT nChar, UINT nRepCnt, UINT nFlags) {
+
     m_advancedSelection.Update(this);
     int nAnnotationIndex = m_advancedSelection.GetSelectionIndex();
 
@@ -3710,8 +3784,9 @@ void CSaView::OnChar(UINT nChar, UINT nRepCnt, UINT nFlags) {
         return;
     }
 
-    if ((nAnnotationIndex != -1) && GetFocusedGraphWnd() &&
-            (GetFocusedGraphWnd()->HaveAnnotation(nAnnotationIndex))) { // Selected annotation is visible
+    if ((nAnnotationIndex != -1) && 
+		(GetFocusedGraphWnd()!=NULL) &&
+        (GetFocusedGraphWnd()->HaveAnnotation(nAnnotationIndex))) { // Selected annotation is visible
         CSaString szString(static_cast<TCHAR>(nChar));
         CAnnotationWnd * pWnd = GetFocusedGraphWnd()->GetAnnotationWnd(nAnnotationIndex);
         pWnd->OnCreateEdit(&szString);

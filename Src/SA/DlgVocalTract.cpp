@@ -187,9 +187,7 @@ void CIpaVTCharVector::Save(CString szPath)
     UINT nSuccess = file.Open(szPath,CFile::modeWrite | CFile::modeCreate | CFile::shareDenyWrite);
     if (!nSuccess)
     {
-        //MsgBox(GetDesktopWindow(), "Could not open IpaDefaults.txt. Check Read-Only status.", "IPADefaults", MB_OK);
-        ::MessageBoxA(::GetDesktopWindow(),"Could not open IpaVTDefaults#.txt.\n    Check Read-Only status.",
-                      "IPAVTDefaults#",MB_OK|MB_ICONEXCLAMATION);
+        ::MessageBoxA(::GetDesktopWindow(),"Could not open IpaVTDefaults#.txt.\n    Check Read-Only status.", "IPAVTDefaults#",MB_OK|MB_ICONEXCLAMATION);
         return;
     }
 

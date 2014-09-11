@@ -30,6 +30,8 @@ class multitext;
 
 extern void removeElement(Element & parent, Element & element);
 extern void dumpChildren(Element & element);
+extern wstring createUUID();
+extern wstring createDate();
 
 // node names
 #define DATE_CREATED    L"dateCreated"
@@ -41,26 +43,20 @@ extern void dumpChildren(Element & element);
 template<class T> class required {
 public:
     required(LPCTSTR _name) :
-        data(_name),
+        inner(_name),
         name(_name) {
     };
-    T & get() {
-        return data;
-    }
-    void set(T value) {
-        data = value;
-    }
     void load(Element * element) {
-        data.load(element);
+        inner.load(element);
     }
     Element * store() {
-        return data.store();
+        return inner.store();
     }
     bool operator!=(const required<T> & right) const {
         if (_wcsicmp(name,right.name)==0) {
             return false;
         }
-        if (data==right.data) {
+        if (inner==right.inner) {
             return false;
         }
         return true;
@@ -69,31 +65,38 @@ public:
         if (_wcsicmp(name,right.name)!=0) {
             return false;
         }
-        if (data!=right.data) {
+        if (inner!=right.inner) {
             return false;
         }
         return true;
     }
+	const T & get() {
+		return inner;
+	}
+	void operator = ( const T & right) {
+		inner = right;
+	}
 
     LPCTSTR name;
 private:
-    T data;
+    T inner;
 };
 
 template<class T> class optional {
 public:
     optional(LPCTSTR _name) :
         name(_name) {
-    };
-    bool has_entry() {
-        return (value.size()>0);
     }
-    T & get() {
-        return value[0];
+    optional(LPCTSTR _name, const T & value) :
+        name(_name) {
+		inner.push_back(value);
     }
+	size_t size() {
+		return inner.size();
+	}
     void add(const optional<T> & right) {
-        if (value.size()==0) {
-            value = right.value;
+        if (inner.size()!=0) {
+            inner = right.inner;
             return;
         }
         // we already have something, do nothing
@@ -102,21 +105,26 @@ public:
         if (name==right.name) {
             return false;
         }
-        if (value==right.value) {
+        if (inner==right.inner) {
             return false;
         }
         return true;
     }
     void remove() {
-        value.clear();
+        inner.clear();
     }
-    void operator=(const T & right) {
-        value.clear();
-        value.push_back(right);
+	T & get() {
+		assert(inner.size()>0);
+        return inner[0];
+    }
+    void operator = (const T & right) {
+        inner.clear();
+        inner.push_back(right);
     }
 
-    LPCTSTR name;
-    vector<T> value;
+	LPCTSTR name;
+private:
+    vector<T> inner;
 };
 
 template<class T> class zero_more {
@@ -124,15 +132,12 @@ public:
     zero_more(LPCTSTR _name) :
         name(_name) {
     };
-    bool has_entries() {
-        return (inner.size()>0);
-    }
-    T & get(int idx) {
+	size_t size() {
+		return inner.size();
+	}
+	T & operator[](size_t idx) {
         return inner[idx];
-    }
-    size_t size() const {
-        return inner.size();
-    }
+	}
     void append(T & right) {
         inner.push_back(right);
     }
@@ -142,7 +147,6 @@ public:
         }
     }
     void add(const zero_more<T> & right) {
-
         if (inner.size()==0) {
             inner = right.inner;
             return;
@@ -162,6 +166,15 @@ public:
             }
         }
     }
+	/**
+	* Assignment.  if we are shoving in a value, very
+	* that there are no pre-existing entries.
+	* We are assuming the user is doing this as the one-and-only.
+	*/
+	void operator=(const T & right) {
+		assert(inner.size()==0);
+		inner.push_back(right);
+	}
 
     bool operator!=(const zero_more<T> & right) const {
         if (name!=right.name) {
@@ -175,8 +188,12 @@ public:
     void remove() {
         inner.clear();
     }
+	void push_back( const T & right) {
+		inner.push_back(right);
+	}
 
-    LPCTSTR name;
+	LPCTSTR name;
+private:
     vector<T> inner;
 };
 
@@ -185,10 +202,15 @@ public:
     one_more(LPCTSTR _name) :
         name(_name) {
     };
-    bool has_entries() {
-        return (inner.size()>0);
-    }
+	size_t size() {
+		return inner.size();
+	}
+	T & operator[](size_t idx) {
+        return inner[idx];
+	}
+
     LPCTSTR name;
+private:
     vector<T> inner;
 };
 
@@ -222,7 +244,7 @@ public:
         for (size_t i=0; i<children.size(); i++) {
             T t(target.name);
             t.load(parent->popElement(children[i]));
-            target.inner.push_back(t);
+            target.push_back(t);
         }
     };
 
@@ -236,7 +258,7 @@ public:
         for (size_t i=0; i<children.size(); i++) {
             T t(target.name.c_str());
             t.load(children[i]);
-            target.inner.push_back(t);
+            target.push_back(t);
             parent->removeElement(children[i]);
         }
     };
@@ -247,18 +269,18 @@ public:
         if (!parent->has(target.name)) {
             return;
         }
-        assert(target.value.size()==0);
+        assert(target.size()==0);
         Attribute attribute = parent->remove(target.name);
-        target.value.push_back(attribute.value);
+        target = attribute.value;
     };
 
     void load_attribute(optional<int> & target, Element * parent) {
         if (!parent->has(target.name)) {
             return;
         }
-        assert(target.value.size()==0);
+        assert(target.size()==0);
         Attribute attribute = parent->remove(target.name);
-        target.value.push_back(_wtoi(attribute.value.c_str()));
+        target = _wtoi(attribute.value.c_str());
     };
 
     template<class T> void load_element(optional<T> & target, Element * parent) {
@@ -270,10 +292,10 @@ public:
             throw logic_error("contained multiple elements. expected one");
         }
         //printf("children=%d for %s\n",children.size(),utf8(parent->localname).c_str());
-        assert(target.value.size()==0);
+        assert(target.size()==0);
         T t(target.name);
         t.load(parent->popElement(children[0]));
-        target.value.push_back(t);
+        target = t;
     };
 
     template<> void load_element<wstring>(optional<wstring> & target, Element * parent) {
@@ -284,9 +306,9 @@ public:
         if (children.size()>1) {
             throw logic_error("document has multiple entries. expected one");
         }
-        assert(target.value.size()==0);
+        assert(target.size()==0);
         Element * element = parent->popElement(children[0]);
-        target.value.push_back(element->value);
+        target = element->value;
     };
 
 
@@ -296,7 +318,7 @@ public:
             throw logic_error("required attribute is missing");
         }
         Attribute attribute = parent->remove(target.name);
-        target.set(attribute.value);
+        target = attribute.value;
     };
 
     template<class T> void load_element(required<T> & target, Element * parent) {
@@ -325,36 +347,36 @@ public:
         if (target.inner.size()==0) {
             return;
         }
-        parent->getAttributes().push_back(target.inner[0].store());
+        parent->getAttributes().push_back(target[0].store());
     }
     template<> void store_attribute<wstring>(optional<wstring> & target, Element * parent) {
-        if (target.value.size()==0) {
+        if (target.size()==0) {
             return;
         }
-        parent->setAttribute(target.name, target.value[0].c_str());
+        parent->setAttribute(target.name, target.get().c_str());
     }
     template<> void store_attribute<int>(optional<int> & target, Element * parent) {
-        if (target.value.size()==0) {
+        if (target.size()==0) {
             return;
         }
         wchar_t buffer[128];
         wmemset(buffer,0,_countof(buffer));
-        _itow_s(target.value[0],buffer,_countof(buffer),10);
+        _itow_s(target.get(),buffer,_countof(buffer),10);
         parent->setAttribute(target.name, buffer);
     }
     template<class T> void store_element(optional<T> & target, Element * parent) {
-        if (target.value.size()==0) {
+        if (target.size()==0) {
             return;
         }
-        Element * e = target.value[0].store();
+        Element * e = target.get().store();
         parent->appendChild(e);
     }
     template<> void store_element<wstring>(optional<wstring> & target, Element * parent) {
-        if (target.value.size()==0) {
+        if (target.size()==0) {
             return;
         }
         Element * element = new Element(target.name);
-        element->value = target.value[0].c_str();
+        element->value = target.get().c_str();
         parent->appendChild(element);
     }
 
@@ -369,29 +391,29 @@ public:
         }
     }
     template<> void store_attribute<wstring>(zero_more<wstring> & target, Element * parent) {
-        if (target.inner.size()==0) {
+        if (target.size()==0) {
             return;
         }
-        for (size_t i=0; i<target.inner.size(); i++) {
-            parent->setAttribute(target.name,target.inner[i].c_str());
+        for (size_t i=0; i<target.size(); i++) {
+            parent->setAttribute(target.name,target[i].c_str());
         }
     }
     template<class T> void store_element(zero_more<T> & target, Element * parent) {
-        if (target.inner.size()==0) {
+        if (target.size()==0) {
             return;
         }
-        for (size_t i=0; i<target.inner.size(); i++) {
-            Element * element = target.inner[i].store();
+        for (size_t i=0; i<target.size(); i++) {
+            Element * element = target[i].store();
             parent->appendChild(element);
         }
     }
     template<> void store_element<wstring>(zero_more<wstring> & target, Element * parent) {
-        if (target.inner.size()==0) {
+        if (target.size()==0) {
             return;
         }
-        for (size_t i=0; i<target.inner.size(); i++) {
+        for (size_t i=0; i<target.size(); i++) {
             Element * element = new Element(target.name);
-            element->value = target.inner[i].c_str();
+            element->value = target[i].c_str();
             parent->appendChild(element);
         }
     }
@@ -399,19 +421,19 @@ public:
 
     // zero_more
     template<class T> void store_attribute(one_more<T> & target, Element * parent) {
-        if (target.inner.size()==0) {
+        if (target.size()==0) {
             throw logic_error("required-multiple element is empty");
         }
-        for (int i=0; i<target.inner.size(); i++) {
+        for (int i=0; i<target.size(); i++) {
             parent->getAttributes().push_back(target.inner[i].store());
         }
     }
     template<> void store_attribute<wstring>(one_more<wstring> & target, Element * parent) {
-        if (target.inner.size()==0) {
+        if (target.size()==0) {
             throw logic_error("required-multiple element is empty");
         }
-        for (size_t i=0; i<target.inner.size(); i++) {
-            parent->setAttribute(target.name,target.inner[i].c_str());
+        for (size_t i=0; i<target.size(); i++) {
+            parent->setAttribute(target.name,target[i].c_str());
         }
     }
     template<class T> void store_element(one_more<T> & target, Element * parent) {
@@ -424,17 +446,15 @@ public:
         }
     }
     template<> void store_element<wstring>(one_more<wstring> & target, Element * parent) {
-        if (target.inner.size()==0) {
+        if (target.size()==0) {
             throw logic_error("required-multiple element is empty");
         }
-        for (size_t i=0; i<target.inner.size(); i++) {
+        for (size_t i=0; i<target.size(); i++) {
             Element * element = new Element(target.name);
-            element->value = target.inner[i].c_str();
+            element->value = target[i].c_str();
             parent->appendChild(element);
         }
     }
-
-
 
     //value
     void store_value(wstring & target, Element * parent) {

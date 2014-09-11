@@ -1,3 +1,7 @@
+SA - 3.1.0.96 9/10/2014
+1) Added FLEX-Lift export feature.
+2) Fixed gloss selection bug.  Software was allowing gloss field to be edited before it was tagged as a word or bookmark.
+
 SA - 3.1.0.95 7/27/2014
 1) Updated 'show boundaries' toolbar bitmap and tooltip text.
 

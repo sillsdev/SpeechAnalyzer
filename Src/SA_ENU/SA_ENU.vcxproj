@@ -133,6 +133,7 @@
     <ClInclude Include="sa_enu_resource.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\uriparser-0.8.0.1\win32\Visual_Studio_2010\uriparser.vcxproj" />
     <None Include="Res\2A.ICO" />
     <None Include="Res\2B.ICO" />
     <None Include="Res\2c.ico" />
