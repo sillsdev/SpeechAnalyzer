@@ -1,0 +1,14 @@
+Speech Analyzer Technical Support
+
+Speech Analyzer 3.0.1, including AudioCon 3.21
+
+1. Go to the Help menu
+
+2. Read the known issues in the ReadMe.rtf
+
+3. Read the service bulletins found in the "SILSoftwareSupport" folder on the SIL Freeware Disc
+
+4. Read the Speech Tools web site for the latest information, 
+   http://www.sil.org/computing/sa
+
+
