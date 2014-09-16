@@ -1248,7 +1248,8 @@ void CSaDoc::ReadTranscription(int transType, ISaAudioDocumentReaderPtr saAudioD
 // @param limit the length of the audio data in seconds.
 /***************************************************************************/
 void CSaDoc::ReadGlossPosAndRefSegments(ISaAudioDocumentReaderPtr saAudioDocRdr, DWORD limit, int & exceeded, int & limited) {
-    CGlossSegment * pGloss = (CGlossSegment *)m_apSegments[GLOSS];
+    
+	CGlossSegment * pGloss = (CGlossSegment *)m_apSegments[GLOSS];
     DWORD offset = 0;
     DWORD length = 0;
     BSTR * gloss = (BSTR *)calloc(1, sizeof(long));
@@ -1258,14 +1259,11 @@ void CSaDoc::ReadGlossPosAndRefSegments(ISaAudioDocumentReaderPtr saAudioDocRdr,
     int i = 0;
     int nRef = 0;
 
+	// length (which is mark duration) determines whether segment exists or not
+	// string pointer may be NULL if no data exists - but length>0 indicates empty segment.
     while (saAudioDocRdr->ReadMarkSegment(&offset, &length, gloss, pos, ref, &isBookmark)) {
         offset /= m_FmtParm.wChannels;
         length /= m_FmtParm.wChannels;
-
-        if (((*gloss)==NULL)&&((*pos)==NULL)&&((*ref)==NULL)) {
-            // this wasn't a gloss, ref or pos segment
-            continue;
-        }
 
         if (offset>limit) {
             TRACE("dropping gloss-pos-ref segment offset:%d duration:%d sum:%d limit:%d\n",offset,length,(offset+length),limit);
@@ -1282,7 +1280,8 @@ void CSaDoc::ReadGlossPosAndRefSegments(ISaAudioDocumentReaderPtr saAudioDocRdr,
         CSaString szGloss = *gloss;
         pGloss->Insert(i, szGloss, (isBookmark!=0), offset, length);
         pGloss->POSSetAtGrow(i++, (CSaString)*pos);
-        CSaString szRef = *ref;
+        
+		CSaString szRef = *ref;
         if (szRef.GetLength()) {
             m_apSegments[REFERENCE]->Insert(nRef++, szRef, 0, offset, length);
         }
@@ -7820,7 +7819,7 @@ void CSaDoc::DoExportLift(CExportLiftSettings & settings) {
 	Lift13::header header(L"header");
 	header.fields = fields;
 
-	Lift13::lift document(L"Speech Analyzer 3.1.0.96");
+	Lift13::lift document(L"Speech Analyzer 3.1.0.97");
 	document.header = header;
 
     ExportSegments( settings, document, skipEmptyGloss, szPath, dataCount, wavCount);

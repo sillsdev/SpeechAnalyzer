@@ -334,6 +334,22 @@ namespace SIL.SpeechTools.Utils
 		/// <summary>
 		/// Returns the next "word" level mark annotation information. Returns false when
 		/// no segment was read and there are no more to read.
+        /// 
+        /// 
+        ///  For each "Segment Data"...
+        ///  there is always a <Phonetic>...</Phonetic>
+        ///  there is always a "IsBookmark=" flag...
+        ///      which by default is set to "false" which means if there is Gloss segment show the " # " symbol.
+        ///      if the flag is set to "true" , then show a " ! " symbol at the beginning of the Gloss segment.
+        ///  the "Offset" number is the time from the beginning of the file to the beginning of the Phonetic segment.
+        ///  the "Duration" number is the time length of the Phonetic segment itself.
+        ///  the "MarkDuration" number is the time length of the Gloss segment { this is what I was overlooking }
+        ///      if the time number is " 0 ", then the Gloss segment does not exist.
+        ///      if there is a time number the Gloss segment DOES exist, but:
+        ///          if that number is exactly the same as Duration and DOES NOT HAVE a <Gloss>...</Gloss>, then it's an empty segment.
+        ///          if that number is exactly the same as Duration and HAS <Gloss>....</Gloss>, then it's a Gloss segment with some data.
+        ///          if that number is larger than Duration, then it is a Gloss segment that spans more than one Phonetic segment.
+
 		/// </summary>
 		/// ------------------------------------------------------------------------------------
 		public bool ReadMarkSegment( out uint offset, out uint length, out string gloss, out string partOfSpeech, out string reference, out bool isBookmark)
@@ -344,17 +360,24 @@ namespace SIL.SpeechTools.Utils
 			isBookmark = false;
 		
 			// Check if there is no record for the audio file or we've finished reading segments.
-			if ((m_doc == null) || (m_doc.m_segments == null) || (m_markEnumIndex == m_doc.m_segments.Count))
-				return false;
+            if ((m_doc == null) || (m_doc.m_segments == null) || (m_markEnumIndex == m_doc.m_segments.Count))
+            {
+                return false;
+            }
 
 			// Increment the mark enumerator until we find a non-zero mark length
 			// (or until there are no more segments to enumerate).
-			while ((m_markEnumIndex < m_doc.m_segments.Count) && (m_doc.m_segments[m_markEnumIndex].MarkDuration == 0))
-				m_markEnumIndex++;
+            while ((m_markEnumIndex < m_doc.m_segments.Count) && 
+                   (m_doc.m_segments[m_markEnumIndex].MarkDuration == 0))
+            {
+                m_markEnumIndex++;
+            }
 
 			// If we didn't find the beginning of a mark segment then there's nothing left to do.
-			if (m_markEnumIndex == m_doc.m_segments.Count)
-				return false;
+            if (m_markEnumIndex == m_doc.m_segments.Count)
+            {
+                return false;
+            }
 
 			offset = m_doc.m_segments[m_markEnumIndex].Offset;
 			length = m_doc.m_segments[m_markEnumIndex].MarkDuration;

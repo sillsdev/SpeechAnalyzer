@@ -4185,6 +4185,7 @@ void CSaView::OnEditAdd() {
 * NOTE: Be careful not to change cursor positions in this code!
 */
 BOOL CSaView::AllowEditAdd(bool story) {
+
     CSaDoc * pDoc = GetDocument(); // get pointer to document
     CPhoneticSegment * pSeg = (CPhoneticSegment *)GetAnnotation(PHONETIC);
     DWORD startCursor = GetStartCursorPosition();

@@ -1,3 +1,6 @@
+SA - 3.1.0.97 9/15/2014
+1) Fixed missing-gloss bug.  When blank gloss field is saved to an SAXML file, it is not recreated when the file is reopened in SA.
+
 SA - 3.1.0.96 9/10/2014
 1) Added FLEX-Lift export feature.
 2) Fixed gloss selection bug.  Software was allowing gloss field to be edited before it was tagged as a word or bookmark.
