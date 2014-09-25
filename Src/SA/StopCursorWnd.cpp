@@ -302,13 +302,15 @@ void CStopCursorWnd::OnMouseMove( UINT nFlags, CPoint point)
                 // Added and modified from CStopCursorWnd::OnLButtonUp and modified by AKE 7/22/01 to deselect segment
                 // while cursor is moving
                 CSegment * pSegment = pView->FindSelectedAnnotation();
-                int nIndex = pSegment->GetSelection();
-                if ((dwCursor > pSegment->GetStop(nIndex)) ||
-                    (dwStartCursor < pSegment->GetOffset(nIndex)))
-                {
-                    // Deselect segment
-                    pView->DeselectAnnotations();
-                }
+				if (pSegment!=NULL) {
+					int nIndex = pSegment->GetSelection();
+					if ((dwCursor > pSegment->GetStop(nIndex)) ||
+						(dwStartCursor < pSegment->GetOffset(nIndex)))
+					{
+						// Deselect segment
+						pView->DeselectAnnotations();
+					}
+				}
             }
             // detect update request and update annotationWnd to hint
             if (pGraph->HaveAnnotation(nLoop))
@@ -381,6 +383,7 @@ void CStopCursorWnd::OnMouseMove( UINT nFlags, CPoint point)
 /***************************************************************************/
 void CStopCursorWnd::OnLButtonDown(UINT nFlags, CPoint point)
 {
+	TRACE("OnLButtonDown %d\n",nFlags);
     // get pointer to parent plot, parent graph and to view
     CPlotWnd * pWnd = (CPlotWnd *)GetParent();
     CGraphWnd * pGraph = (CGraphWnd *)pWnd->GetParent();
@@ -431,13 +434,15 @@ void CStopCursorWnd::OnLButtonDown(UINT nFlags, CPoint point)
             // Moved from CStopCursorWnd::OnLButtonUp and modified by AKE 7/22/01 to deselect segment,
             // providing consistent operation with start cursor
             CSegment * pSegment = pView->FindSelectedAnnotation();
-            int nIndex = pSegment->GetSelection();
-            if ((dwCursor > pSegment->GetStop(nIndex)) ||
-                    (dwStartCursor < pSegment->GetOffset(nIndex)))
-            {
-                // Deselect segment
-                pView->DeselectAnnotations();
-            }
+			if (pSegment!=NULL) {
+				int nIndex = pSegment->GetSelection();
+				if ((dwCursor > pSegment->GetStop(nIndex)) ||
+					(dwStartCursor < pSegment->GetOffset(nIndex)))
+				{
+					// Deselect segment
+					pView->DeselectAnnotations();
+				}
+			}
         }
         // detect update request and update annotationWnd to hint
         if (pGraph->HaveAnnotation(nLoop))   // Selected annotation is visible

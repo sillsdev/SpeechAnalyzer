@@ -1,3 +1,8 @@
+SA - 3.1.0.98 9/24/2014
+1) Fixed 'Show Boundaries' bug.  Annotation windows that were hidden were not being updated with change-in-state of 'show-boundaries' flag.
+2) Ref Bug#1 - Fixed problem where Reference fields were not added when new gloss segments were added.  NOTE: Reference segments are not automatically added if the entire reference annotation line is empty.
+3) Ref Bug#2 - Fixed problem where selecting graphs with mouse was not deselecting high-lighted reference fields.
+
 SA - 3.1.0.97 9/15/2014
 1) Fixed missing-gloss bug.  When blank gloss field is saved to an SAXML file, it is not recreated when the file is reopened in SA.
 

@@ -47,29 +47,29 @@ class CGraphWnd : public CMiniCaptionWnd
 public:
     CGraphWnd();
     CGraphWnd(UINT nID);
-    CGraphWnd(const CGraphWnd & toBeCopied);	// copy constructor
-    CGraphWnd & operator=(const CGraphWnd &);	// assignment operator
+    CGraphWnd(const CGraphWnd & toBeCopied);    // copy constructor
+    CGraphWnd & operator=(const CGraphWnd &);   // assignment operator
     virtual ~CGraphWnd();
     CPlotWnd * NewPlotFromID(UINT plotID);
     BOOL IsIDincluded(UINT id);
     void WriteProperties(CObjectOStream & obs); // Save (Project) Settings
-    BOOL ReadProperties(CObjectIStream & obs);	// Autoloading
-    BOOL bSetProperties(int nNewID);			// Set graph's default properties (needed for "FileOpenAs->Phonetic/Music Analysis")
-	void HideCursors();
-	void ShowCursors();
+    BOOL ReadProperties(CObjectIStream & obs);  // Autoloading
+    BOOL bSetProperties(int nNewID);            // Set graph's default properties (needed for "FileOpenAs->Phonetic/Music Analysis")
+    void HideCursors();
+    void ShowCursors();
 
 protected:
-    CPlotWnd * m_pPlot;							// plot window
-    UINT m_nPlotID;								// ID of plot window
-    CLegendWnd * m_pLegend;						// legend window embedded object
-    CXScaleWnd * m_pXScale;						// x-scale window embedded object
-    BOOL m_bLegend;								// TRUE = legend window shown
-    BOOL m_bXScale;								// TRUE = x-scale window shown
+    CPlotWnd * m_pPlot;                         // plot window
+    UINT m_nPlotID;                             // ID of plot window
+    CLegendWnd * m_pLegend;                     // legend window embedded object
+    CXScaleWnd * m_pXScale;                     // x-scale window embedded object
+    BOOL m_bLegend;                             // TRUE = legend window shown
+    BOOL m_bXScale;                             // TRUE = x-scale window shown
     CAnnotationWnd * m_apAnnWnd[ANNOT_WND_NUMBER]; // array of pointers to the annotation window objects
-    BOOL m_abAnnWnd[ANNOT_WND_NUMBER];			// array of boolean, TRUE if annotation window shown
-    BOOL m_bAreaGraph;							// TRUE = this is a area processed graph
-    static DWORD m_dwLastStartCursor;			// last updated status bar start cursor position
-    static DWORD m_dwLastStopCursor;			// last updated status bar stop cursor position
+    BOOL m_abAnnWnd[ANNOT_WND_NUMBER];          // array of boolean, TRUE if annotation window shown
+    BOOL m_bAreaGraph;                          // TRUE = this is a area processed graph
+    static DWORD m_dwLastStartCursor;           // last updated status bar start cursor position
+    static DWORD m_dwLastStopCursor;            // last updated status bar stop cursor position
 
 public:
     static EAnnotation m_anAnnWndOrder[ANNOT_WND_NUMBER]; // order to display annotation windows
@@ -89,7 +89,7 @@ public:
     UINT GetPlotID() const;
     UINT IsPlotID(UINT test) const;
     void ShowSegmentBoundaries(BOOL bShow, BOOL bRedraw = FALSE);
-	void ShowTranscriptionBoundaries( BOOL bShow);
+    void ShowTranscriptionBoundaries(BOOL bShow);
     void SetMagnify(double bFactor, BOOL bRedraw = FALSE); // set magnify factor
     double GetMagnify();
     BOOL HaveBoundaries();
@@ -99,12 +99,12 @@ public:
     BOOL HaveGrid();
     void SetLineDraw(BOOL bLine);
     void ShowGrid(BOOL bShow, BOOL bRedraw = FALSE);
-    void SetStartCursor(CSaView * pView);					// set start cursor position
-    void SetStopCursor(CSaView * pView);					// set stop cursor position
-    void SetPlaybackCursor(CSaView * pView);				// set stop cursor position
-    void SetPlaybackPosition(CSaView * pView, bool scroll);	// set start cursor position
-	void SetPlaybackFlash( bool on);
-	void MoveStartCursor(CSaView * pView, DWORD dwNewPositon);
+    void SetStartCursor(CSaView * pView);                   // set start cursor position
+    void SetStopCursor(CSaView * pView);                    // set stop cursor position
+    void SetPlaybackCursor(CSaView * pView);                // set stop cursor position
+    void SetPlaybackPosition(CSaView * pView, bool scroll); // set start cursor position
+    void SetPlaybackFlash(bool on);
+    void MoveStartCursor(CSaView * pView, DWORD dwNewPositon);
     void MoveStopCursor(CSaView * pView, DWORD dwNewPositon);
     void RestartProcess();
     // interface to annotation and legend/scale windows

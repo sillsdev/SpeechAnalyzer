@@ -424,6 +424,7 @@ void CStartCursorWnd::OnLButtonDown(UINT nFlags, CPoint point)
     {
         m_nEditBoundaries = BOUNDARIES_EDIT_NULL;
     }
+
     // set drag mode
     m_bCursorDrag = TRUE;
     SetCapture(); // receive all mouse input
@@ -461,13 +462,15 @@ void CStartCursorWnd::OnLButtonDown(UINT nFlags, CPoint point)
             // Moved from CStartCursorWnd::OnLButtonUp and modified by AKE 7/22/01 to deselect segment if
             // not editing segment boundaries in order to allow highlighting for cut and paste operation
             CSegment * pSegment = pView->FindSelectedAnnotation();
-            int nIndex = pSegment->GetSelection();
-            if ((dwStopCursor > pSegment->GetStop(nIndex)) ||
-                    (m_dwStartDragPos < pSegment->GetOffset(nIndex)))
-            {
-                // Deselect segment
-                pView->DeselectAnnotations();
-            }
+			if (pSegment!=NULL) {
+				int nIndex = pSegment->GetSelection();
+				if ((dwStopCursor > pSegment->GetStop(nIndex)) ||
+					(m_dwStartDragPos < pSegment->GetOffset(nIndex)))
+				{
+					// Deselect segment
+					pView->DeselectAnnotations();
+				}
+			}
         }
         // detect update request and update annotationWnd to hint
         if (pGraph->HaveAnnotation(nLoop))
@@ -476,7 +479,16 @@ void CStartCursorWnd::OnLButtonDown(UINT nFlags, CPoint point)
             CAnnotationWnd * pWnd = pGraph->GetAnnotationWnd(nLoop);
             pWnd->SetHintUpdateBoundaries( m_nEditBoundaries!=0, m_dwStartDragPos, dwStopCursor,m_nEditBoundaries == BOUNDARIES_EDIT_SEGMENT_SIZE);//SDM 1.5Test8.1
         }
-    }
+    } 
+	else
+	{
+		if (pView->IsSelectionVirtual()) 
+		{
+			pView->DeselectAnnotations();
+		}
+	}
+
+	// also check and deselect the advanced selection in the view
 
     // stop cursor is to move also
     pView->MoveStopCursor(dwStopCursor);

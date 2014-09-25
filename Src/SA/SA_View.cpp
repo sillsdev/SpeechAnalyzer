@@ -34,7 +34,7 @@
 //        SDM Implemented File/Import
 // 1.5Test10.2
 //        SDM added OnPlaybackSlow
-//        SDM changed OnEditAdd to Join only if segments closer than MAX_ADD_JOIN_TIME
+//        SDM changed OnEditAddPhonetic to Join only if segments closer than MAX_ADD_JOIN_TIME
 // 1.5Test10.4
 //        SDM added messages to support graph toggling for DisplayPlot
 // 1.5Test10.5
@@ -53,7 +53,7 @@
 //        SDM replaced GetOffset() + GetDuration() with CSegment::GetStop()
 //        SDM replaced GetTexts()->GetSize() with GetSize()
 // 1.5Test11.3
-//         SDM changed OnEditAdd to support new Gloss positions
+//         SDM changed OnEditAddPhonetic to support new Gloss positions
 //         SDM changed CSegment::AdjustPositionAll to CSegment::Adjust
 // 03/29/2000
 //        RLJ Modified File-->Export to support "Export MIDI"
@@ -189,30 +189,38 @@ static LPCSTR psz_sagraph = "sagraph";
 //                  which was too bloated.
 /***************************************************************************/
 void CSaView::CreateOneGraphStepOne(UINT nID, CGraphWnd ** pGraph, CREATE_HOW how,
-                                    CGraphWnd * pFromGraph, CObjectIStream * pObs) {
-    if (nID != ID_GRAPHS_OVERLAY) {
+                                    CGraphWnd * pFromGraph, CObjectIStream * pObs)
+{
+    if (nID != ID_GRAPHS_OVERLAY)
+    {
         (*pGraph) = new CGraphWnd(nID);
 
-        switch (how) {
+        switch (how)
+        {
         case CREATE_FROMSTREAM:
             ASSERT(pObs);
-            if (*pGraph) {
+            if (*pGraph)
+            {
                 m_WeJustReadTheProperties = (*pGraph)->ReadProperties(*pObs);
-            } else {
+            }
+            else
+            {
                 pObs->SkipToEndMarker(psz_sagraph);
             }
             break;
 
         case CREATE_FROMGRAPH:
             ASSERT(pFromGraph);
-            if (*pGraph) {
+            if (*pGraph)
+            {
                 (*pGraph)->PartialCopy(*pFromGraph);
                 m_WeJustReadTheProperties = TRUE;
             }
             break;
 
         case CREATE_FROMSCRATCH:  // Use program defaults
-            if (*pGraph) {
+            if (*pGraph)
+            {
                 (*pGraph)->bSetProperties(nID);
                 m_WeJustReadTheProperties = TRUE;
             }
@@ -221,7 +229,8 @@ void CSaView::CreateOneGraphStepOne(UINT nID, CGraphWnd ** pGraph, CREATE_HOW ho
             ;  // Use current user settings
         }
         CreateOneGraph(&nID, pGraph);
-        if (!nID) {
+        if (!nID)
+        {
             return;
         }
     }
@@ -229,17 +238,20 @@ void CSaView::CreateOneGraphStepOne(UINT nID, CGraphWnd ** pGraph, CREATE_HOW ho
     (*pGraph)->SetCaptionStyle(pViewMainFrame->GetCaptionStyle());     // set caption style
     (*pGraph)->SetMagnify(m_fMagnify);                                 // set the magnify factor
 
-    switch (nID) {
+    switch (nID)
+    {
     //****************************************************
     // Set properties for raw data graphs
     //****************************************************
     case IDD_RAWDATA:
         (*pGraph)->ShowGrid(TRUE);
         (*pGraph)->ShowSegmentBoundaries(m_bSegmentBoundaries);
-        if (!m_WeJustReadTheProperties) {
+        if (!m_WeJustReadTheProperties)
+        {
             (*pGraph)->ShowLegend(!m_bLegendNone);
             (*pGraph)->ShowXScale(!m_bXScaleNone);
-            for (int i = 0; i < ANNOT_WND_NUMBER; i++) {
+            for (int i = 0; i < ANNOT_WND_NUMBER; i++)
+            {
                 (*pGraph)->ShowAnnotation(i, !m_abAnnNone[i]);
             }
         }
@@ -249,14 +261,17 @@ void CSaView::CreateOneGraphStepOne(UINT nID, CGraphWnd ** pGraph, CREATE_HOW ho
     // Do this for all graphs but RAW and POA.
     //****************************************************
     default:
-        if (nID != IDD_POA) {
+        if (nID != IDD_POA)
+        {
             (*pGraph)->ShowGrid(TRUE);
             (*pGraph)->ShowSegmentBoundaries(m_bSegmentBoundaries);
 
-            if (!m_WeJustReadTheProperties) {
+            if (!m_WeJustReadTheProperties)
+            {
                 (*pGraph)->ShowLegend(m_bLegendAll);
                 (*pGraph)->ShowXScale(m_bXScaleAll);
-                for (int i = 0; i < ANNOT_WND_NUMBER; i++) {
+                for (int i = 0; i < ANNOT_WND_NUMBER; i++)
+                {
                     (*pGraph)->ShowAnnotation(i, m_abAnnAll[i]);
                 }
             }
@@ -268,7 +283,8 @@ void CSaView::CreateOneGraphStepOne(UINT nID, CGraphWnd ** pGraph, CREATE_HOW ho
 /***************************************************************************/
 // CSaView::SendPlayMessage Send specified IDC_PLAY message to player.
 /***************************************************************************/
-void CSaView::SendPlayMessage(WORD Int1, WORD Int2) {
+void CSaView::SendPlayMessage(WORD Int1, WORD Int2)
+{
     DWORD lParam = MAKELONG(Int1, Int2);
     pViewMainFrame->SendMessage(WM_USER_PLAYER, CDlgPlayer::PLAYING, lParam); // send message to start player
 }
@@ -280,21 +296,23 @@ void CSaView::SendPlayMessage(WORD Int1, WORD Int2) {
 // submode and in the higher word if it will be launched in full size (TRUE)
 // or small (FALSE).
 /***************************************************************************/
-void CSaView::OnPlaybackCursors() {
+void CSaView::OnPlaybackCursors()
+{
     SendPlayMessage(ID_PLAYBACK_CURSORS, FALSE); // send message to start player
 }
 
 /***************************************************************************/
 // CSaView::OnPlaybackSegment Playback current selected segment
 /***************************************************************************/
-DWORD CSaView::OnPlaybackSegment() {
+DWORD CSaView::OnPlaybackSegment()
+{
 
     DWORD dwStart = GetStartCursorPosition();
     DWORD dwStop = GetStopCursorPosition();
 
     CSegment * pSelected = FindSelectedAnnotation();
-
-    if (pSelected!=NULL) { // Adjust Cursors to Current Boundaries
+    if (pSelected!=NULL)   // Adjust Cursors to Current Boundaries
+    {
         int nSelection = pSelected->GetSelection();
         // set cursor to segment boundaries
         SetStartCursorPosition(pSelected->GetOffset(nSelection));
@@ -315,10 +333,12 @@ DWORD CSaView::OnPlaybackSegment() {
 /***************************************************************************/
 // CSaView::OnPlaybackWord Playback current selected word
 /***************************************************************************/
-DWORD CSaView::OnPlaybackWord() {
+DWORD CSaView::OnPlaybackWord()
+{
     // find actual gloss segment for playback
     CSaDoc * pDoc = GetDocument();
-    if (pDoc==NULL) {
+    if (pDoc==NULL)
+    {
         return 0;    //no document
     }
     CSegment * pSegment = pDoc->GetSegment(GLOSS);
@@ -328,25 +348,33 @@ DWORD CSaView::OnPlaybackWord() {
     DWORD dwStart = GetStartCursorPosition();
     DWORD dwStop = GetStopCursorPosition();
 
-    if (pSelected!=NULL) {
+    if (pSelected!=NULL)
+    {
         nSelection = pSelected->GetSelection();
         nActualGloss = pSegment->FindFromPosition(pSelected->GetOffset(nSelection), TRUE);
     }
-    if (nActualGloss == -1) {
+    if (nActualGloss == -1)
+    {
         // nothing within, check if there is gloss
-        if (pSegment->GetOffsetSize() > 0) {
+        if (pSegment->GetOffsetSize() > 0)
+        {
             // there is gloss, so the segment must be below the first gloss
             pSegment->SelectSegment(*pDoc, 0); // select first gloss
             // playback below start cursor
             SetStartCursorPosition(0);
             SetStopCursorPosition(pSegment->GetOffset(0));
-        } else {
+        }
+        else
+        {
             // there is no gloss, playback the whole file
             OnPlaybackFile();
             return pDoc->GetDataSize();
         }
-    } else {
-        if (pSegment->GetSelection()==nActualGloss) {
+    }
+    else
+    {
+        if (pSegment->GetSelection()==nActualGloss)
+        {
             pSegment->SelectSegment(*pDoc, -1);
         }
         pSegment->SelectSegment(*pDoc, nActualGloss);
@@ -360,9 +388,11 @@ DWORD CSaView::OnPlaybackWord() {
     pSegment->SelectSegment(*pDoc, -1);
 
     // set back actual segment
-    if (nSelection != -1) {
+    if (nSelection != -1)
+    {
         // Select segment (do not toggle off.)
-        if (pSelected->GetSelection()!=nSelection) {
+        if (pSelected->GetSelection()!=nSelection)
+        {
             pSelected->SelectSegment(*pDoc, nSelection);
         }
     }
@@ -376,10 +406,12 @@ DWORD CSaView::OnPlaybackWord() {
 /***************************************************************************/
 // CSaView::OnPlaybackPhraseL1 Playback current selected phrase
 /***************************************************************************/
-DWORD CSaView::OnPlaybackPhraseL1() {
+DWORD CSaView::OnPlaybackPhraseL1()
+{
     // find actual gloss segment for playback
     CSaDoc * pDoc = GetDocument();
-    if (!pDoc) {
+    if (!pDoc)
+    {
         return 0;    //no document
     }
     CSegment * pSegment = pDoc->GetSegment(MUSIC_PL1);
@@ -389,25 +421,33 @@ DWORD CSaView::OnPlaybackPhraseL1() {
     DWORD dwStart = GetStartCursorPosition();
     DWORD dwStop = GetStopCursorPosition();
 
-    if (pSelected) {
+    if (pSelected!=NULL)
+    {
         nSelection = pSelected->GetSelection();
         nActualPhrase = pSegment->FindFromPosition(pSelected->GetOffset(nSelection), TRUE);
     }
-    if (nActualPhrase == -1) {
+    if (nActualPhrase == -1)
+    {
         // nothing within, check if there is phrase
-        if (pSegment->GetOffsetSize() > 0) {
+        if (pSegment->GetOffsetSize() > 0)
+        {
             // there is phrase, so the segment must be below the first phrase
             pSegment->SelectSegment(*pDoc, 0); // select first phrase
             // playback below start cursor
             SetStartCursorPosition(0);
             SetStopCursorPosition(pSegment->GetOffset(0));
-        } else {
+        }
+        else
+        {
             // there is no gloss, playback the whole file
             OnPlaybackFile();
             return pDoc->GetDataSize();
         }
-    } else {
-        if (pSegment->GetSelection()==nActualPhrase) {
+    }
+    else
+    {
+        if (pSegment->GetSelection()==nActualPhrase)
+        {
             pSegment->SelectSegment(*pDoc, -1);
         }
         pSegment->SelectSegment(*pDoc, nActualPhrase);
@@ -421,9 +461,11 @@ DWORD CSaView::OnPlaybackPhraseL1() {
     pSegment->SelectSegment(*pDoc, -1);
 
     // set back actual segment
-    if (nSelection != -1) {
+    if (nSelection != -1)
+    {
         // Select segment (do not toggle off.)
-        if (pSelected->GetSelection()!=nSelection) {
+        if (pSelected->GetSelection()!=nSelection)
+        {
             pSelected->SelectSegment(*pDoc, nSelection);
         }
     }
@@ -442,8 +484,10 @@ DWORD CSaView::OnPlaybackPhraseL1() {
 // submode and in the higher word if it will be launched in full size (TRUE)
 // or small (FALSE).
 /***************************************************************************/
-void CSaView::OnPlaybackSlow() {
-    enum {
+void CSaView::OnPlaybackSlow()
+{
+    enum
+    {
         Player_Slow = 25
     };
 
@@ -464,7 +508,8 @@ void CSaView::OnPlaybackSlow() {
 // submode and in the higher word if it will be launched in full size (TRUE)
 // or small (FALSE).
 /***************************************************************************/
-void CSaView::OnPlaybackFile() {
+void CSaView::OnPlaybackFile()
+{
     SendPlayMessage(ID_PLAYBACK_FILE, FALSE); // send message to start player
 }
 
@@ -475,7 +520,8 @@ void CSaView::OnPlaybackFile() {
 // submode and in the higher word if it will be launched in full size (TRUE)
 // or small (FALSE).
 /***************************************************************************/
-void CSaView::OnPlaybackWindow() {
+void CSaView::OnPlaybackWindow()
+{
     SendPlayMessage(ID_PLAYBACK_WINDOW, FALSE); // send message to start player
 }
 
@@ -486,7 +532,8 @@ void CSaView::OnPlaybackWindow() {
 // submode and in the higher word if it will be launched in full size (TRUE)
 // or small (FALSE).
 /***************************************************************************/
-void CSaView::OnPlaybackLtostart() {
+void CSaView::OnPlaybackLtostart()
+{
     SendPlayMessage(ID_PLAYBACK_LTOSTART, FALSE); // send message to start player
 }
 
@@ -497,7 +544,8 @@ void CSaView::OnPlaybackLtostart() {
 // submode and in the higher word if it will be launched in full size (TRUE)
 // or small (FALSE).
 /***************************************************************************/
-void CSaView::OnPlaybackStarttor() {
+void CSaView::OnPlaybackStarttor()
+{
     SendPlayMessage(ID_PLAYBACK_STARTTOR, FALSE); // send message to start player
 }
 
@@ -508,7 +556,8 @@ void CSaView::OnPlaybackStarttor() {
 // submode and in the higher word if it will be launched in full size (TRUE)
 // or small (FALSE).
 /***************************************************************************/
-void CSaView::OnPlaybackLtoStop() {
+void CSaView::OnPlaybackLtoStop()
+{
     SendPlayMessage(ID_PLAYBACK_LTOSTOP, FALSE); // send message to start player
 }
 
@@ -519,7 +568,8 @@ void CSaView::OnPlaybackLtoStop() {
 // submode and in the higher word if it will be launched in full size (TRUE)
 // or small (FALSE).
 /***************************************************************************/
-void CSaView::OnPlaybackEndCursor() {
+void CSaView::OnPlaybackEndCursor()
+{
     SendPlayMessage(ID_PLAYBACK_ENDCURSOR, FALSE); // send message to start player
 }
 
@@ -530,7 +580,8 @@ void CSaView::OnPlaybackEndCursor() {
 // submode and in the higher word if it will be launched in full size (TRUE)
 // or small (FALSE).
 /***************************************************************************/
-void CSaView::OnPlaybackStopToR() {
+void CSaView::OnPlaybackStopToR()
+{
     SendPlayMessage(ID_PLAYBACK_STOPTOR, FALSE); // send message to start player
 }
 
@@ -542,7 +593,8 @@ void CSaView::OnPlaybackStopToR() {
 // or small (FALSE). If the submode is -1, it stays as it was before.
 // ## Under construction!
 /***************************************************************************/
-void CSaView::OnPlayerPause() {
+void CSaView::OnPlayerPause()
+{
     // send message to pause player
     pViewMainFrame->SendMessage(WM_USER_PLAYER, CDlgPlayer::PAUSED, MAKELONG(-1, FALSE));
 }
@@ -550,7 +602,8 @@ void CSaView::OnPlayerPause() {
 /***************************************************************************/
 // CSaView::OnUpdatePlayerStop Menu update
 /***************************************************************************/
-void CSaView::OnUpdatePlayerPause(CCmdUI * pCmdUI) {
+void CSaView::OnUpdatePlayerPause(CCmdUI * pCmdUI)
+{
     // enable if player is playing
     pCmdUI->Enable(pViewMainFrame->IsPlayerPlaying());
 }
@@ -563,7 +616,8 @@ void CSaView::OnUpdatePlayerPause(CCmdUI * pCmdUI) {
 // or small (FALSE). If the submode is -1, it stays as it was before.
 // ## Under construction!
 /***************************************************************************/
-void CSaView::OnPlayerStop() {
+void CSaView::OnPlayerStop()
+{
     // send message to stop player
     pViewMainFrame->SendMessage(WM_USER_PLAYER, CDlgPlayer::STOPPED, MAKELONG(-1, FALSE));
 }
@@ -571,7 +625,8 @@ void CSaView::OnPlayerStop() {
 /***************************************************************************/
 // CSaView::OnUpdatePlayerStop Menu update
 /***************************************************************************/
-void CSaView::OnUpdatePlayerStop(CCmdUI * pCmdUI) {
+void CSaView::OnUpdatePlayerStop(CCmdUI * pCmdUI)
+{
     // enable if player is playing
     pCmdUI->Enable((pViewMainFrame->IsPlayerPlaying())||(pViewMainFrame->IsPlayerPaused()));
 }
@@ -584,14 +639,16 @@ void CSaView::OnUpdatePlayerStop(CCmdUI * pCmdUI) {
 // or small (FALSE).
 // ## Under construction!
 /***************************************************************************/
-void CSaView::OnPlayer() {
+void CSaView::OnPlayer()
+{
     pViewMainFrame->SendMessage(WM_USER_PLAYER, CDlgPlayer::STOPPED, MAKELONG(-1, TRUE)); // send message to start player
 }
 
 /***************************************************************************/
 // CSaView::OnLayout Change the layout type
 /***************************************************************************/
-void CSaView::OnLayout(UINT nID) {
+void CSaView::OnLayout(UINT nID)
+{
     ChangeLayout(nID);
     OnGraphsRetile(); // retile graphs
 }
@@ -599,14 +656,16 @@ void CSaView::OnLayout(UINT nID) {
 /***************************************************************************/
 // CSaView::OnUpdateLayout Menu update
 /***************************************************************************/
-void CSaView::OnUpdateLayout(CCmdUI * pCmdUI) {
+void CSaView::OnUpdateLayout(CCmdUI * pCmdUI)
+{
     pCmdUI->SetCheck(m_nLayout == pCmdUI->m_nID); // m_nID is the menu ID
 }
 
 /***************************************************************************/
 // CSaView::OnExportXML Export wave file data using Extensible Markup Language
 /***************************************************************************/
-void CSaView::OnExportXML() {
+void CSaView::OnExportXML()
+{
     CDlgExportXML dlg(((CSaDoc *)GetDocument())->GetTitle());
     dlg.DoModal();
 }
@@ -614,10 +673,12 @@ void CSaView::OnExportXML() {
 /***************************************************************************/
 // CSaView::OnExportLift Export wave file data using Lexicon Interchange Format
 /***************************************************************************/
-void CSaView::OnExportLift() {
+void CSaView::OnExportLift()
+{
     CSaDoc * pDoc = GetDocument();
     int count = pDoc->GetSegmentSize(REFERENCE);
-    if (count==0) {
+    if (count==0)
+    {
         CSaApp * pApp = (CSaApp *)AfxGetApp(); // get pointer to application
         pApp->ErrorMessage(IDS_ERROR_NO_REFERENCE);
         return;
@@ -636,75 +697,87 @@ void CSaView::OnExportLift() {
 
     wstring path = AfxGetApp()->m_pszExeName;
     path.append(L".exe");
-	HMODULE hmod = GetModuleHandle(path.c_str());
+    HMODULE hmod = GetModuleHandle(path.c_str());
 
     CString fullPath;
-    DWORD pathLen = ::GetModuleFileName( hmod, fullPath.GetBufferSetLength(MAX_PATH+1), MAX_PATH); // hmod of zero gets the main EXE
-    fullPath.ReleaseBuffer( pathLen );
-	int pos2 = fullPath.ReverseFind('\\');
-	fullPath = fullPath.Left(pos2);
+    DWORD pathLen = ::GetModuleFileName(hmod, fullPath.GetBufferSetLength(MAX_PATH+1), MAX_PATH);  // hmod of zero gets the main EXE
+    fullPath.ReleaseBuffer(pathLen);
+    int pos2 = fullPath.ReverseFind('\\');
+    fullPath = fullPath.Left(pos2);
 
-	wstring filepath = (LPCTSTR)fullPath;
-	filepath.append(L"\\");
-	filepath.append(L"iso639.txt");
+    wstring filepath = (LPCTSTR)fullPath;
+    filepath.append(L"\\");
+    filepath.append(L"iso639.txt");
 
-	FILE * ifile = NULL;
-	errno_t err = fopen_s(&ifile,utf8(filepath.c_str()).c_str(),"rb");
-	if (err!=0) {
-		pApp->ErrorMessage(IDS_NO_ISO,filepath.c_str());
-		return;
-	}
+    FILE * ifile = NULL;
+    errno_t err = fopen_s(&ifile,utf8(filepath.c_str()).c_str(),"rb");
+    if (err!=0)
+    {
+        pApp->ErrorMessage(IDS_NO_ISO,filepath.c_str());
+        return;
+    }
 
-	DWORD len = FileUtils::GetFileSize(utf8(filepath.c_str()).c_str());
-	// read in the file
-	char * data = new char[len];
-	int read = fread( data, 1, len, ifile);
-	fclose(ifile);
-	if (read!=len) {
-		delete [] data;
-	    CSaApp * pApp = ((CSaApp *)AfxGetApp());
+    DWORD len = FileUtils::GetFileSize(utf8(filepath.c_str()).c_str());
+    // read in the file
+    char * data = new char[len];
+    int read = fread(data, 1, len, ifile);
+    fclose(ifile);
+    if (read!=len)
+    {
+        delete [] data;
+        CSaApp * pApp = ((CSaApp *)AfxGetApp());
         pApp->ErrorMessage(IDS_NO_ISO);
-		return;
-	}
+        return;
+    }
 
-	// break the data into lines
-	list<wstring> lines;
-	string buffer;
-	for (int i=0;i<read;i++) {
-		if ((data[i]==0x0d)||(data[i]==0x0a)) {
-			if (buffer.size()>0) {
-				lines.push_back(utf16(buffer));
-				buffer.clear();
-			}
-		} else {
-			buffer.push_back(data[i]);
-		}
-	}
+    // break the data into lines
+    list<wstring> lines;
+    string buffer;
+    for (int i=0; i<read; i++)
+    {
+        if ((data[i]==0x0d)||(data[i]==0x0a))
+        {
+            if (buffer.size()>0)
+            {
+                lines.push_back(utf16(buffer));
+                buffer.clear();
+            }
+        }
+        else
+        {
+            buffer.push_back(data[i]);
+        }
+    }
 
-	// pull on the 2-character country codes
-	list<wstring> codes;
-	list<wstring>::iterator it = lines.begin();
-	while (it!=lines.end()) {
-		wstring line = *it;
-		size_t delimit = 0;
-		for (int j=0;j<line.size();j++) {
-			if (line[j]=='|') {
-				delimit++;
-				continue;
-			}
-			if (delimit==2) {
-				wstring code;
-				code.push_back(line[j]);
-				code.push_back(line[j+1]);
-				codes.push_back(code);
-				break;
-			}
-		}
-		it++;
-	}
+    // pull on the 2-character country codes
+    list<wstring> codes;
+    list<wstring>::iterator it = lines.begin();
+    while (it!=lines.end())
+    {
+        wstring line = *it;
+        size_t delimit = 0;
+        for (int j=0; j<line.size(); j++)
+        {
+            if (line[j]=='|')
+            {
+                delimit++;
+                continue;
+            }
+            if (delimit==2)
+            {
+                wstring code;
+                code.push_back(line[j]);
+                code.push_back(line[j+1]);
+                codes.push_back(code);
+                break;
+            }
+        }
+        it++;
+    }
 
     CDlgExportLift dlg(title, gloss, ortho, phonemic, phonetic, pos, reference,codes);
-    if (dlg.DoModal()==IDOK) {
+    if (dlg.DoModal()==IDOK)
+    {
         pDoc->DoExportLift(dlg.settings);
     }
 }
@@ -714,10 +787,12 @@ void CSaView::OnExportLift() {
 //
 // Modified on 07/27/2000
 /***************************************************************************/
-void CSaView::OnExportFW() {
+void CSaView::OnExportFW()
+{
     CSaDoc * pDoc = GetDocument();
     int count = pDoc->GetSegmentSize(REFERENCE);
-    if (count==0) {
+    if (count==0)
+    {
         CSaApp * pApp = (CSaApp *)AfxGetApp(); // get pointer to application
         pApp->ErrorMessage(IDS_ERROR_NO_REFERENCE);
         return;
@@ -733,7 +808,8 @@ void CSaView::OnExportFW() {
     BOOL phrase = pDoc->HasSegmentData(MUSIC_PL1)|pDoc->HasSegmentData(MUSIC_PL1);
 
     CDlgExportFW dlg(title, gloss, ortho, phonemic, phonetic, pos, reference, phrase);
-    if (dlg.DoModal()==IDOK) {
+    if (dlg.DoModal()==IDOK)
+    {
         pDoc->DoExportFieldWorks(dlg.settings);
     }
 }
@@ -743,7 +819,8 @@ void CSaView::OnExportFW() {
 //
 // Modified on 07/27/2000
 /***************************************************************************/
-void CSaView::OnExportSFM() {
+void CSaView::OnExportSFM()
+{
     CDlgExportSFM dlg(((CSaDoc *)GetDocument())->GetTitle());
     dlg.DoModal();
 }
@@ -751,7 +828,8 @@ void CSaView::OnExportSFM() {
 /***************************************************************************/
 // CSaView::OnExportTimeTable Export wave file data as time table
 /***************************************************************************/
-void CSaView::OnExportTimeTable() {
+void CSaView::OnExportTimeTable()
+{
     CDlgExportTable dlg(((CSaDoc *)GetDocument())->GetTitle());
     dlg.DoModal();
 }
@@ -759,7 +837,8 @@ void CSaView::OnExportTimeTable() {
 /***************************************************************************/
 // CSaView::OnExportMIDI Export MIDI file data
 /***************************************************************************/
-void CSaView::OnExportMIDI() {
+void CSaView::OnExportMIDI()
+{
 
     ///// RLJ 06/01/2000
     /////
@@ -798,24 +877,28 @@ void CSaView::OnExportMIDI() {
 /***************************************************************************/
 // CSaView::OnImportSFM Import wave file data
 /***************************************************************************/
-void CSaView::OnImportSFM() {
+void CSaView::OnImportSFM()
+{
     // Get Export File Type and Name
     CSaString szTitle;
     szTitle = ((CSaDoc *)GetDocument())->GetFilenameFromTitle().c_str(); // load file name
     int nFind = szTitle.ReverseFind('.');
-    if (nFind >= ((szTitle.GetLength() > 3) ? (szTitle.GetLength()-4) : 0)) {
+    if (nFind >= ((szTitle.GetLength() > 3) ? (szTitle.GetLength()-4) : 0))
+    {
         szTitle = szTitle.Left(nFind);    // remove extension
     }
     CSaString szFilter = "Standard Format (*.sfm)(*.txt)|*.sfm;*.txt|All Files (*.*) |*.*||";
     CFileDialog dlgFile(TRUE,_T("sfm"),szTitle,OFN_HIDEREADONLY,szFilter,NULL);
-    if (dlgFile.DoModal()!=IDOK) {
+    if (dlgFile.DoModal()!=IDOK)
+    {
         return;
     }
 
     CSaString szPath = dlgFile.GetPathName();
 
     CFileEncodingHelper feh(szPath);
-    if (!feh.CheckEncoding(true)) {
+    if (!feh.CheckEncoding(true))
+    {
         return;
     }
 
@@ -826,24 +909,28 @@ void CSaView::OnImportSFM() {
 /***************************************************************************/
 // CSaView::OnImportELAN Import wave file data from ELAN transcription
 /***************************************************************************/
-void CSaView::OnImportELAN() {
+void CSaView::OnImportELAN()
+{
     // Get Export File Type and Name
     CSaString szTitle;
     szTitle = ((CSaDoc *)GetDocument())->GetFilenameFromTitle().c_str(); // load file name
     int nFind = szTitle.ReverseFind('.');
-    if (nFind >= ((szTitle.GetLength() > 3) ? (szTitle.GetLength()-4) : 0)) {
+    if (nFind >= ((szTitle.GetLength() > 3) ? (szTitle.GetLength()-4) : 0))
+    {
         szTitle = szTitle.Left(nFind);    // remove extension
     }
     CSaString szFilter = "ELAN Format (*.eaf)|*.eaf||";
     CFileDialog dlgFile(TRUE,_T("eaf"),szTitle,OFN_HIDEREADONLY,szFilter,NULL);
-    if (dlgFile.DoModal()!=IDOK) {
+    if (dlgFile.DoModal()!=IDOK)
+    {
         return;
     }
 
     CSaString szPath = dlgFile.GetPathName();
 
     CFileEncodingHelper feh(szPath);
-    if (!feh.CheckEncoding(true)) {
+    if (!feh.CheckEncoding(true))
+    {
         return;
     }
 
@@ -854,18 +941,21 @@ void CSaView::OnImportELAN() {
 /***************************************************************************/
 // CSaView::ImportSFT Import wave file data
 /***************************************************************************/
-void CSaView::OnImportSFT() {
+void CSaView::OnImportSFT()
+{
     // Get Export File Type and Name
     CSaString szTitle;
     szTitle = ((CSaDoc *)GetDocument())->GetFilenameFromTitle().c_str();     // load file name
     int nFind = szTitle.ReverseFind('.');
-    if (nFind >= ((szTitle.GetLength() > 3) ? (szTitle.GetLength()-4) : 0)) {
+    if (nFind >= ((szTitle.GetLength() > 3) ? (szTitle.GetLength()-4) : 0))
+    {
         szTitle = szTitle.Left(nFind);    // remove extension
     }
 
     CSaString szFilter = "Standard Format (*.sft) |*.sft||";
     CFileDialog dlgFile(TRUE,_T("sft"),szTitle,OFN_HIDEREADONLY,szFilter,NULL);
-    if (dlgFile.DoModal()!=IDOK) {
+    if (dlgFile.DoModal()!=IDOK)
+    {
         return;
     }
 
@@ -875,8 +965,10 @@ void CSaView::OnImportSFT() {
     import.Import();
 }
 
-void CSaView::OnFilePhonologyAssistant() {
-    if (AfxMessageBox(IDS_ENABLE_PA, MB_OKCANCEL, 0)!=IDOK) {
+void CSaView::OnFilePhonologyAssistant()
+{
+    if (AfxMessageBox(IDS_ENABLE_PA, MB_OKCANCEL, 0)!=IDOK)
+    {
         return;
     }
 
@@ -911,24 +1003,28 @@ void CSaView::OnFilePhonologyAssistant() {
     // KEY_WOW64_64KEY allows us to write to the 64-bit hive
     // wow64 is true if we are a 32-bit app on a 64-bit system.
     // we now write to the 64-bit hive
-    if (wow64) {
+    if (wow64)
+    {
         REGSAM sam = KEY_ALL_ACCESS|KEY_WOW64_64KEY;
         HKEY hKey = 0;
         DWORD disposition = 0;
         LONG lResult = RegCreateKeyEx(HKEY_LOCAL_MACHINE, _T("Software\\SIL\\Speech Analyzer"), 0, NULL, 0, sam, NULL, &hKey, &disposition);
-        if (lResult!=ERROR_SUCCESS) {
+        if (lResult!=ERROR_SUCCESS)
+        {
             AfxMessageBox(IDS_ERROR_REGISTRY, MB_OK|MB_ICONEXCLAMATION, 0);
             return;
         }
         DWORD len = (wcslen(fullPath)+1)*sizeof(TCHAR);
         lResult = RegSetValueEx(hKey, L"Location", 0, REG_SZ, (const BYTE *)fullPath, len);
-        if (lResult!=ERROR_SUCCESS) {
+        if (lResult!=ERROR_SUCCESS)
+        {
             RegCloseKey(hKey);
             AfxMessageBox(IDS_ERROR_REGISTRY, MB_OK|MB_ICONEXCLAMATION, 0);
             return;
         }
         lResult = RegCloseKey(hKey);
-        if (lResult!=ERROR_SUCCESS) {
+        if (lResult!=ERROR_SUCCESS)
+        {
             AfxMessageBox(IDS_ERROR_REGISTRY, MB_OK|MB_ICONEXCLAMATION, 0);
             return;
         }
@@ -941,19 +1037,22 @@ void CSaView::OnFilePhonologyAssistant() {
     HKEY hKey = 0;
     DWORD disposition = 0;
     LONG lResult = RegCreateKeyEx(HKEY_LOCAL_MACHINE, _T("Software\\SIL\\Speech Analyzer"), 0, NULL, 0, sam, NULL, &hKey, &disposition);
-    if (lResult!=ERROR_SUCCESS) {
+    if (lResult!=ERROR_SUCCESS)
+    {
         AfxMessageBox(IDS_ERROR_REGISTRY, MB_OK|MB_ICONEXCLAMATION, 0);
         return;
     }
     DWORD len = (wcslen(fullPath)+1)*sizeof(TCHAR);
     lResult = RegSetValueEx(hKey, L"Location", 0, REG_SZ, (const BYTE *)fullPath, len);
-    if (lResult!=ERROR_SUCCESS) {
+    if (lResult!=ERROR_SUCCESS)
+    {
         RegCloseKey(hKey);
         AfxMessageBox(IDS_ERROR_REGISTRY, MB_OK|MB_ICONEXCLAMATION, 0);
         return;
     }
     lResult = RegCloseKey(hKey);
-    if (lResult!=ERROR_SUCCESS) {
+    if (lResult!=ERROR_SUCCESS)
+    {
         AfxMessageBox(IDS_ERROR_REGISTRY, MB_OK|MB_ICONEXCLAMATION, 0);
         return;
     }
@@ -963,7 +1062,8 @@ void CSaView::OnFilePhonologyAssistant() {
 // CSaView::OnFileInformation File information
 /***************************************************************************/
 
-void CSaView::OnFileInformation() {
+void CSaView::OnFileInformation()
+{
     CSaDoc * pDoc = (CSaDoc *)GetDocument();
     SourceParm * pSourceParm = pDoc->GetSourceParm();
     CSaString szCaption, szTitle;
@@ -974,13 +1074,16 @@ void CSaView::OnFileInformation() {
     // set file description string
     dlg.m_dlgUserPage.m_szFileDesc = pDoc->GetDescription();
     dlg.m_dlgUserPage.m_szFreeTranslation = pSourceParm->szFreeTranslation;
-    if (dlg.DoModal() == IDOK) {
+    if (dlg.DoModal() == IDOK)
+    {
         // get new file description string
         BOOL modified = FALSE;
-        if (!pDoc->MatchesDescription(dlg.m_dlgUserPage.m_szFileDesc)) {
+        if (!pDoc->MatchesDescription(dlg.m_dlgUserPage.m_szFileDesc))
+        {
             modified = TRUE;
         }
-        if (pSourceParm->szFreeTranslation != dlg.m_dlgUserPage.m_szFreeTranslation) {
+        if (pSourceParm->szFreeTranslation != dlg.m_dlgUserPage.m_szFreeTranslation)
+        {
             modified = TRUE;
         }
 
@@ -995,21 +1098,25 @@ void CSaView::OnFileInformation() {
         BOOL bReferenceChanged   = (pSourceParm->szReference != dlg.m_dlgSourcePage.m_szReference);
         BOOL bTranscriberChanged = (pSourceParm->szTranscriber != dlg.m_dlgSourcePage.m_szTranscriber);
         if (bCountryChanged || bDailectChanged || bEthnoIDChanged || bFamilyChanged || bLanguageChanged ||
-                bGenderChanged  || bRegionChanged  || bSpeakerChanged  || bReferenceChanged || bTranscriberChanged) {
+                bGenderChanged  || bRegionChanged  || bSpeakerChanged  || bReferenceChanged || bTranscriberChanged)
+        {
             modified = TRUE;
         }
 
-        if (modified) {
+        if (modified)
+        {
             pDoc->CheckPoint();
         }
 
 
-        if (!pDoc->MatchesDescription(dlg.m_dlgUserPage.m_szFileDesc)) {
+        if (!pDoc->MatchesDescription(dlg.m_dlgUserPage.m_szFileDesc))
+        {
             pDoc->SetDescription(dlg.m_dlgUserPage.m_szFileDesc);
             pDoc->SetModifiedFlag(TRUE);                        // document has been modified
             pDoc->SetTransModifiedFlag(TRUE);                   // transcription data has been modified
         }
-        if (pSourceParm->szFreeTranslation != dlg.m_dlgUserPage.m_szFreeTranslation) {
+        if (pSourceParm->szFreeTranslation != dlg.m_dlgUserPage.m_szFreeTranslation)
+        {
             pSourceParm->szFreeTranslation = dlg.m_dlgUserPage.m_szFreeTranslation;
             pDoc->SetModifiedFlag(TRUE);                        // document has been modified
             pDoc->SetTransModifiedFlag(TRUE);                   // transcription data has been modified
@@ -1017,10 +1124,12 @@ void CSaView::OnFileInformation() {
 
 
         if (bCountryChanged || bDailectChanged || bEthnoIDChanged || bFamilyChanged || bLanguageChanged ||
-                bGenderChanged  || bRegionChanged  || bSpeakerChanged  || bReferenceChanged || bTranscriberChanged) {
+                bGenderChanged  || bRegionChanged  || bSpeakerChanged  || bReferenceChanged || bTranscriberChanged)
+        {
             pSourceParm->szCountry = dlg.m_dlgSourcePage.m_szCountry;
             pSourceParm->szDialect = dlg.m_dlgSourcePage.m_szDialect;
-            if (dlg.m_dlgSourcePage.m_szEthnoID.GetLength() < 3) {
+            if (dlg.m_dlgSourcePage.m_szEthnoID.GetLength() < 3)
+            {
                 dlg.m_dlgSourcePage.m_szEthnoID += "   ";
             }
             pSourceParm->szEthnoID = dlg.m_dlgSourcePage.m_szEthnoID.Left(3);
@@ -1035,7 +1144,8 @@ void CSaView::OnFileInformation() {
             pDoc->SetTransModifiedFlag(TRUE);                   // transcription data has been modified
         }
 
-        if (bGenderChanged) {
+        if (bGenderChanged)
+        {
             BroadcastMessage(WM_USER_INFO_GENDERCHANGED, pSourceParm->nGender);
         }
     }
@@ -1048,7 +1158,8 @@ void CSaView::OnFileInformation() {
 // windows will be rearranged. Counting order is from left top to left bottom
 // and then right top to right bottom.
 /***************************************************************************/
-void CSaView::OnGraphsRetile() {
+void CSaView::OnGraphsRetile()
+{
     int nPos = 0;
     BOOL bLastGraph = FALSE;
     CWnd * pMaxWnd = NULL;
@@ -1060,8 +1171,10 @@ void CSaView::OnGraphsRetile() {
     WINDOWPLACEMENT wpl;       // find zoomed (maximized) window and set it to normal state
 
     wpl.length = sizeof(WINDOWPLACEMENT);
-    for (int i=0; i < MAX_GRAPHS_NUMBER; i++) {
-        if ((m_apGraphs[i]) && (m_apGraphs[i]->IsZoomed())) {
+    for (int i=0; i < MAX_GRAPHS_NUMBER; i++)
+    {
+        if ((m_apGraphs[i]) && (m_apGraphs[i]->IsZoomed()))
+        {
             // window is maximized
             pMaxWnd = m_apGraphs[i];
             pMaxWnd->GetWindowPlacement(&wpl);  // get window placement information
@@ -1070,7 +1183,8 @@ void CSaView::OnGraphsRetile() {
         }
     }
 
-    for (int i = 0; (i < MAX_GRAPHS_NUMBER && !bLastGraph); i++) {
+    for (int i = 0; (i < MAX_GRAPHS_NUMBER && !bLastGraph); i++)
+    {
         //********************************************************************
         // If the recording graph is to be displayed then display it and
         // resize the remaining area to accomodate the layout. For example,
@@ -1078,26 +1192,32 @@ void CSaView::OnGraphsRetile() {
         // graph will not be included in the 4 graphs but will sit on top of
         // the grid of 4 graphs.
         //********************************************************************
-        if (m_apGraphs[i] && m_anGraphID[i] == IDD_RECORDING) {
+        if (m_apGraphs[i] && m_anGraphID[i] == IDD_RECORDING)
+        {
             rGraph = rWnd;
             rGraph.bottom = rGraph.bottom / 8;
-            if (!m_apGraphs[i]->IsIconic()) {
+            if (!m_apGraphs[i]->IsIconic())
+            {
                 m_apGraphs[i]->MoveWindow(rGraph, TRUE);
             }
             rWnd.top = rWnd.bottom / 8;
             continue;
         }
 
-        if (m_apGraphs[i] && !m_apGraphs[i]->IsIconic() && m_anGraphID[i] != IDD_TWC && m_anGraphID[i] != IDD_MAGNITUDE) {
+        if (m_apGraphs[i] && !m_apGraphs[i]->IsIconic() && m_anGraphID[i] != IDD_TWC && m_anGraphID[i] != IDD_MAGNITUDE)
+        {
 
             //********************************************************************
             // Get the rectangle in which to move the graph. Then move it into
             // that rectangle.
             //********************************************************************
             bLastGraph = GetGraphSubRect(&rWnd, &rGraph, nPos++, m_anGraphID);
-            if (m_anGraphID[i] == IDD_MELOGRAM) {
+            if (m_anGraphID[i] == IDD_MELOGRAM)
+            {
                 ArrangeMelogramGraphs(&rGraph, &m_anGraphID[0]);
-            } else {
+            }
+            else
+            {
                 m_apGraphs[i]->MoveWindow(rGraph, TRUE);
             }
         }
@@ -1106,13 +1226,15 @@ void CSaView::OnGraphsRetile() {
     //****************************************************
     // There was a maximized window so maximize it again.
     //****************************************************
-    if (pMaxWnd) {
+    if (pMaxWnd)
+    {
         pMaxWnd->GetWindowPlacement(&wpl);
         wpl.showCmd = SW_SHOWMAXIMIZED;
         pMaxWnd->SetWindowPlacement(&wpl);
     }
 
-    if (!GetFocusedGraphWnd()) {
+    if (!GetFocusedGraphWnd())
+    {
         SetFocusedGraph(m_apGraphs[0]);
     }
 
@@ -1128,9 +1250,11 @@ void CSaView::OnGraphsRetile() {
 // pRect is the rectangle within the view's client area that deliniates the
 // section in which the melogram graphs are stuffed.
 /***************************************************************************/
-void CSaView::ArrangeMelogramGraphs(const CRect * pRect, UINT *) {
+void CSaView::ArrangeMelogramGraphs(const CRect * pRect, UINT *)
+{
     int nMelIdx = GetGraphIndexForIDD(IDD_MELOGRAM);
-    if (nMelIdx == -1) {
+    if (nMelIdx == -1)
+    {
         return;
     }
     int nTWCIdx = GetGraphIndexForIDD(IDD_TWC);
@@ -1144,7 +1268,8 @@ void CSaView::ArrangeMelogramGraphs(const CRect * pRect, UINT *) {
     // quarter the width of the rectangle. Then move it
     // to the left side of the rectangle.
     //*****************************************************
-    if (nTWCIdx >= 0) {
+    if (nTWCIdx >= 0)
+    {
         rSubGraph.right = pRect->left + pRect->Width() / 4;
         m_apGraphs[nTWCIdx]->MoveWindow(rSubGraph, TRUE);
         rSubGraph.left = rSubGraph.right;
@@ -1156,7 +1281,8 @@ void CSaView::ArrangeMelogramGraphs(const CRect * pRect, UINT *) {
     // the height of the rectangle and place it just to
     // the right of the TWC graph.
     //*****************************************************
-    if (nMagIdx >= 0) {
+    if (nMagIdx >= 0)
+    {
         rSubGraph.top = pRect->top + (pRect->Height() / 4 * 3);
         m_apGraphs[nMagIdx]->MoveWindow(rSubGraph, TRUE);
         rSubGraph.bottom = rSubGraph.top;
@@ -1191,7 +1317,8 @@ void CSaView::ArrangeMelogramGraphs(const CRect * pRect, UINT *) {
 //                  This function will also return TRUE if nPos is the last
 //                  graph in the layout.
 /***************************************************************************/
-BOOL CSaView::GetGraphSubRect(int nLayout, const CRect * pWndRect, CRect * pSubRect, int nPos, const UINT * anIncomingGraphID) {
+BOOL CSaView::GetGraphSubRect(int nLayout, const CRect * pWndRect, CRect * pSubRect, int nPos, const UINT * anIncomingGraphID)
+{
     double dThirdHeight = pWndRect->Height() / 3.;
     double dHalfHeight  = pWndRect->Height() / 2.;
     int nHalfWidth   = int(pWndRect->Width() / 2. + 0.5);
@@ -1203,20 +1330,26 @@ BOOL CSaView::GetGraphSubRect(int nLayout, const CRect * pWndRect, CRect * pSubR
 
     const UINT * anGraphID = cList.GetGraphs();
 
-    switch (nLayout) {
+    switch (nLayout)
+    {
     //**************************************************************
     // One graph on top of another
     //**************************************************************
     case ID_LAYOUT_2A:
-        if (STAFF_IS_SECOND) {
+        if (STAFF_IS_SECOND)
+        {
             double dHeightOfStaff = min(dThirdHeight,MAXIMUM_STAFF_HEIGHT);
 
             ((nPos == 0) ? pSubRect->bottom : pSubRect->top) = pSubRect->bottom - int(dHeightOfStaff + 0.5);
-        } else if (STAFF_IS_FIRST) {
+        }
+        else if (STAFF_IS_FIRST)
+        {
             double dHeightOfStaff = min(dThirdHeight,MAXIMUM_STAFF_HEIGHT);
 
             ((nPos == 0) ? pSubRect->bottom : pSubRect->top) = pSubRect->top + int(dHeightOfStaff + 0.5);
-        } else {
+        }
+        else
+        {
             ((nPos == 0) ? pSubRect->bottom : pSubRect->top) = pSubRect->top + int(dHalfHeight + 0.5);
         }
         return (nPos == 1);
@@ -1242,44 +1375,68 @@ BOOL CSaView::GetGraphSubRect(int nLayout, const CRect * pWndRect, CRect * pSubR
     // Three graphs stacked horizontally
     //**************************************************************
     case ID_LAYOUT_3A:
-        if (STAFF_IS_THIRD) {
+        if (STAFF_IS_THIRD)
+        {
             double dHeightOfStaff = min(dThirdHeight * 2/3, MAXIMUM_STAFF_HEIGHT);
 
-            if (nPos == 0) {
+            if (nPos == 0)
+            {
                 pSubRect->bottom = pSubRect->top + int(dThirdHeight + 0.5);
-            } else if (nPos == 1) {
+            }
+            else if (nPos == 1)
+            {
                 pSubRect->bottom -= int(dHeightOfStaff + 0.5);
                 pSubRect->top += int(dThirdHeight + 0.5);
-            } else {
+            }
+            else
+            {
                 pSubRect->top = pSubRect->bottom - int(dHeightOfStaff + 0.5);
             }
-        } else if (STAFF_IS_SECOND) {
+        }
+        else if (STAFF_IS_SECOND)
+        {
             double dHeightOfStaff = min(dThirdHeight * 2/3, MAXIMUM_STAFF_HEIGHT);
 
-            if (nPos == 0) {
+            if (nPos == 0)
+            {
                 pSubRect->bottom = pSubRect->top + int((dThirdHeight * 2) - dHeightOfStaff + 0.5);
-            } else if (nPos == 1) {
+            }
+            else if (nPos == 1)
+            {
                 pSubRect->bottom = pSubRect->top + int(dThirdHeight * 2 + 0.5);
                 pSubRect->top = pSubRect->top + int((dThirdHeight * 2) - dHeightOfStaff + 0.5);
-            } else {
+            }
+            else
+            {
                 pSubRect->top += int(dThirdHeight * 2 + 0.5);
             }
-        } else if (STAFF_IS_FIRST) {
+        }
+        else if (STAFF_IS_FIRST)
+        {
             double dHeightOfStaff = min(dThirdHeight * 2/3, MAXIMUM_STAFF_HEIGHT);
 
-            if (nPos == 0) {
+            if (nPos == 0)
+            {
                 pSubRect->bottom = pSubRect->top + int(dHeightOfStaff + 0.5);
-            } else if (nPos == 1) {
+            }
+            else if (nPos == 1)
+            {
                 pSubRect->bottom = pSubRect->top + int(dThirdHeight * 2 + 0.5);
                 pSubRect->top += int(dHeightOfStaff + 0.5);
-            } else {
+            }
+            else
+            {
                 pSubRect->top += int(dThirdHeight * 2 + 0.5);
             }
-        } else {
-            if (nPos < 2) {
+        }
+        else
+        {
+            if (nPos < 2)
+            {
                 pSubRect->bottom = pSubRect->top + int(dThirdHeight * (nPos + 1) + 0.5);
             }
-            if (nPos > 0) {
+            if (nPos > 0)
+            {
                 pSubRect->top = pSubRect->top + int(dThirdHeight * nPos + 0.5);
             }
         }
@@ -1291,7 +1448,8 @@ BOOL CSaView::GetGraphSubRect(int nLayout, const CRect * pWndRect, CRect * pSubR
     //**************************************************************
     case ID_LAYOUT_3B:
         ((nPos == 0) ? pSubRect->bottom : pSubRect->top) = pSubRect->top + int(dHalfHeight + 0.5);
-        if (nPos > 0) {
+        if (nPos > 0)
+        {
             ((nPos == 1) ? pSubRect->right : pSubRect->left) = pSubRect->left + nHalfWidth;
         }
         return (nPos == 2);
@@ -1302,7 +1460,8 @@ BOOL CSaView::GetGraphSubRect(int nLayout, const CRect * pWndRect, CRect * pSubR
     //**************************************************************
     case ID_LAYOUT_3C:
         ((nPos == 0) ? pSubRect->bottom : pSubRect->top) = pSubRect->top + int(dThirdHeight + 0.5);
-        if (nPos > 0) {
+        if (nPos > 0)
+        {
             ((nPos == 1) ? pSubRect->right : pSubRect->left) = pSubRect->left + nHalfWidth;
         }
         return (nPos == 2);
@@ -1312,10 +1471,12 @@ BOOL CSaView::GetGraphSubRect(int nLayout, const CRect * pWndRect, CRect * pSubR
     // Four graphs stacked horizonatally
     //**************************************************************
     case ID_LAYOUT_4A:
-        if (nPos < 3) {
+        if (nPos < 3)
+        {
             pSubRect->bottom = pSubRect->top + int(pWndRect->Height() / 4. * (nPos + 1) + 0.5);
         }
-        if (nPos > 0) {
+        if (nPos > 0)
+        {
             pSubRect->top = pSubRect->top + int(pWndRect->Height() / 4. * nPos + 0.5);
         }
         return (nPos == 3);
@@ -1336,7 +1497,8 @@ BOOL CSaView::GetGraphSubRect(int nLayout, const CRect * pWndRect, CRect * pSubR
     case ID_LAYOUT_4C:
         pSubRect->bottom = pSubRect->top + int(dThirdHeight*(nPos > 2 ? 3 : nPos + 1) + 0.5);
         pSubRect->top = pSubRect->top + int(dThirdHeight*(nPos > 2 ? 2 : nPos) + 0.5);
-        if (nPos >= 2) {
+        if (nPos >= 2)
+        {
             (nPos == 2 ? pSubRect->right : pSubRect->left) = pSubRect->left + nHalfWidth;
         }
         return (nPos == 3);
@@ -1347,11 +1509,15 @@ BOOL CSaView::GetGraphSubRect(int nLayout, const CRect * pWndRect, CRect * pSubR
     // like layout 4b
     //**************************************************************
     case ID_LAYOUT_5:
-        if (nPos == 0) {
+        if (nPos == 0)
+        {
             pSubRect->bottom = pSubRect->top + int(dThirdHeight + 0.5);
-        } else {
+        }
+        else
+        {
             pSubRect->top = pSubRect->top + int(dThirdHeight * ((nPos < 3) ? 1 : 2) + 0.5);
-            if (nPos < 3) {
+            if (nPos < 3)
+            {
                 pSubRect->bottom = pSubRect->bottom - int(dThirdHeight + 0.5);
             }
             ((nPos == 1 || nPos == 3) ? pSubRect->right : pSubRect->left) = pSubRect->left + nHalfWidth;
@@ -1363,10 +1529,12 @@ BOOL CSaView::GetGraphSubRect(int nLayout, const CRect * pWndRect, CRect * pSubR
     // Six graphs stacked horizontally
     //**************************************************************
     case ID_LAYOUT_6A:
-        if (nPos < 5) {
+        if (nPos < 5)
+        {
             pSubRect->bottom = pSubRect->top + int(pWndRect->Height() / 6. * (nPos + 1) + 0.5);
         }
-        if (nPos > 0) {
+        if (nPos > 0)
+        {
             pSubRect->top = pSubRect->top + int(pWndRect->Height() / 6. * nPos + 0.5);
         }
         return (nPos == 5);
@@ -1376,10 +1544,12 @@ BOOL CSaView::GetGraphSubRect(int nLayout, const CRect * pWndRect, CRect * pSubR
     // Six graphs in a 3 x 2 grid (three rows by two cols.)
     //**************************************************************
     case ID_LAYOUT_6B:
-        if (nPos > 1) {
+        if (nPos > 1)
+        {
             pSubRect->top = pSubRect->top + int(dThirdHeight * ((nPos < 4) ? 1 : 2) + 0.5);
         }
-        if (nPos < 4) {
+        if (nPos < 4)
+        {
             pSubRect->bottom = pSubRect->bottom - int(dThirdHeight * ((nPos < 2) ? 2 : 1) + 0.5);
         }
         ((nPos == 0 || nPos == 2 || nPos == 4) ? pSubRect->right : pSubRect->left) = pSubRect->left + nHalfWidth;
@@ -1396,12 +1566,15 @@ BOOL CSaView::GetGraphSubRect(int nLayout, const CRect * pWndRect, CRect * pSubR
 /***************************************************************************/
 // CSaView::OnLegendAll Show the legend window on all graphs
 /***************************************************************************/
-void CSaView::OnLegendAll() {
+void CSaView::OnLegendAll()
+{
     m_bLegendAll = TRUE; // show legend windows in all the graphs
     m_bLegendNone = FALSE;
     // show legend windows
-    for (int nLoop = 0; nLoop < MAX_GRAPHS_NUMBER; nLoop++) {
-        if (m_apGraphs[nLoop]) {
+    for (int nLoop = 0; nLoop < MAX_GRAPHS_NUMBER; nLoop++)
+    {
+        if (m_apGraphs[nLoop])
+        {
             m_apGraphs[nLoop]->ShowLegend(TRUE, TRUE);
         }
     }
@@ -1410,19 +1583,23 @@ void CSaView::OnLegendAll() {
 /***************************************************************************/
 // CSaView::OnUpdateLegendAll Menu update
 /***************************************************************************/
-void CSaView::OnUpdateLegendAll(CCmdUI * pCmdUI) {
+void CSaView::OnUpdateLegendAll(CCmdUI * pCmdUI)
+{
     pCmdUI->SetCheck(m_bLegendAll);
 }
 
 /***************************************************************************/
 // CSaView::OnLegendRawdata Show the legend wnd on raw data graph only
 /***************************************************************************/
-void CSaView::OnLegendRawdata() {
+void CSaView::OnLegendRawdata()
+{
     m_bLegendAll = FALSE; // show legend windows only in raw data graph
     m_bLegendNone = FALSE;
     // hide legend windows except for raw data
-    for (int nLoop = 0; nLoop < MAX_GRAPHS_NUMBER; nLoop++) {
-        if (m_apGraphs[nLoop]) {
+    for (int nLoop = 0; nLoop < MAX_GRAPHS_NUMBER; nLoop++)
+    {
+        if (m_apGraphs[nLoop])
+        {
             m_apGraphs[nLoop]->ShowLegend(m_anGraphID[nLoop] == IDD_RAWDATA, TRUE);
         }
     }
@@ -1431,19 +1608,23 @@ void CSaView::OnLegendRawdata() {
 /***************************************************************************/
 // CSaView::OnUpdateLegendRawdata Menu update
 /***************************************************************************/
-void CSaView::OnUpdateLegendRawdata(CCmdUI * pCmdUI) {
+void CSaView::OnUpdateLegendRawdata(CCmdUI * pCmdUI)
+{
     pCmdUI->SetCheck(!(m_bLegendAll || m_bLegendNone));
 }
 
 /***************************************************************************/
 // CSaView::OnLegendNone Hide legend windows in all the graphs
 /***************************************************************************/
-void CSaView::OnLegendNone() {
+void CSaView::OnLegendNone()
+{
     m_bLegendNone = TRUE; // hide legend windows in all the graphs
     m_bLegendAll = FALSE;
     // hide legend windows
-    for (int nLoop = 0; nLoop < MAX_GRAPHS_NUMBER; nLoop++) {
-        if (m_apGraphs[nLoop]) {
+    for (int nLoop = 0; nLoop < MAX_GRAPHS_NUMBER; nLoop++)
+    {
+        if (m_apGraphs[nLoop])
+        {
             m_apGraphs[nLoop]->ShowLegend(FALSE, TRUE);
         }
     }
@@ -1452,19 +1633,23 @@ void CSaView::OnLegendNone() {
 /***************************************************************************/
 // CSaView::OnUpdateLegendNone Menu update
 /***************************************************************************/
-void CSaView::OnUpdateLegendNone(CCmdUI * pCmdUI) {
+void CSaView::OnUpdateLegendNone(CCmdUI * pCmdUI)
+{
     pCmdUI->SetCheck(m_bLegendNone);
 }
 
 /***************************************************************************/
 // CSaView::OnXScaleAll Show the x-scale window on all graphs
 /***************************************************************************/
-void CSaView::OnXScaleAll() {
+void CSaView::OnXScaleAll()
+{
     m_bXScaleAll = TRUE; // show x-scale windows in all the graphs
     m_bXScaleNone = FALSE;
     // show x-scale windows
-    for (int nLoop = 0; nLoop < MAX_GRAPHS_NUMBER; nLoop++) {
-        if (m_apGraphs[nLoop]) {
+    for (int nLoop = 0; nLoop < MAX_GRAPHS_NUMBER; nLoop++)
+    {
+        if (m_apGraphs[nLoop])
+        {
             m_apGraphs[nLoop]->ShowXScale(m_apGraphs[nLoop]->HaveCursors(), m_apGraphs[nLoop]->HaveCursors());
         }
     }
@@ -1473,19 +1658,23 @@ void CSaView::OnXScaleAll() {
 /***************************************************************************/
 // CSaView::OnUpdateXScaleAll Menu update
 /***************************************************************************/
-void CSaView::OnUpdateXScaleAll(CCmdUI * pCmdUI) {
+void CSaView::OnUpdateXScaleAll(CCmdUI * pCmdUI)
+{
     pCmdUI->SetCheck(m_bXScaleAll);
 }
 
 /***************************************************************************/
 // CSaView::OnXScaleRawdata Show the x-scale wnd on raw data graph only
 /***************************************************************************/
-void CSaView::OnXScaleRawdata() {
+void CSaView::OnXScaleRawdata()
+{
     m_bXScaleAll = FALSE; // show x-scale windows only in raw data graph
     m_bXScaleNone = FALSE;
     // hide x-scale windows
-    for (int nLoop = 0; nLoop < MAX_GRAPHS_NUMBER; nLoop++) {
-        if (m_apGraphs[nLoop]) {
+    for (int nLoop = 0; nLoop < MAX_GRAPHS_NUMBER; nLoop++)
+    {
+        if (m_apGraphs[nLoop])
+        {
             m_apGraphs[nLoop]->ShowXScale(m_anGraphID[nLoop] == IDD_RAWDATA, TRUE);
         }
     }
@@ -1494,19 +1683,23 @@ void CSaView::OnXScaleRawdata() {
 /***************************************************************************/
 // CSaView::OnUpdateXScaleRawdata Menu update
 /***************************************************************************/
-void CSaView::OnUpdateXScaleRawdata(CCmdUI * pCmdUI) {
+void CSaView::OnUpdateXScaleRawdata(CCmdUI * pCmdUI)
+{
     pCmdUI->SetCheck(!(m_bXScaleAll || m_bXScaleNone));
 }
 
 /***************************************************************************/
 // CSaView::OnXScaleNone Hide x-scale windows in all the graphs
 /***************************************************************************/
-void CSaView::OnXScaleNone() {
+void CSaView::OnXScaleNone()
+{
     m_bXScaleNone = TRUE; // hide x-scale windows in all the graphs
     m_bXScaleAll = FALSE;
     // hide x-scale windows
-    for (int nLoop = 0; nLoop < MAX_GRAPHS_NUMBER; nLoop++) {
-        if (m_apGraphs[nLoop]) {
+    for (int nLoop = 0; nLoop < MAX_GRAPHS_NUMBER; nLoop++)
+    {
+        if (m_apGraphs[nLoop])
+        {
             m_apGraphs[nLoop]->ShowXScale(FALSE, TRUE);
         }
     }
@@ -1515,27 +1708,34 @@ void CSaView::OnXScaleNone() {
 /***************************************************************************/
 // CSaView::OnUpdateXScaleNone Menu update
 /***************************************************************************/
-void CSaView::OnUpdateXScaleNone(CCmdUI * pCmdUI) {
+void CSaView::OnUpdateXScaleNone(CCmdUI * pCmdUI)
+{
     pCmdUI->SetCheck(m_bXScaleNone);
 }
 
 /***************************************************************************/
 // 09/24/2000 - DDO
 /***************************************************************************/
-void CSaView::ToggleAnnotation(int nAnnot, BOOL bShow, BOOL bRawDataOnly) {
-    if (!bRawDataOnly) {
+void CSaView::ToggleAnnotation(int nAnnot, BOOL bShow, BOOL bRawDataOnly)
+{
+    if (!bRawDataOnly)
+    {
         m_abAnnAll[nAnnot]  = bShow;  //Show annotation in all graphs
         m_abAnnNone[nAnnot] = !bShow;
 
         //**************************************************
         // Show annotation window in all but music graphs.
         //**************************************************
-        for (int i = 0; i < MAX_GRAPHS_NUMBER; i++) {
-            if (m_apGraphs[i]) {
+        for (int i = 0; i < MAX_GRAPHS_NUMBER; i++)
+        {
+            if (m_apGraphs[i])
+            {
                 m_apGraphs[i]->ShowAnnotation(nAnnot, bShow, TRUE);
             }
         }
-    } else {
+    }
+    else
+    {
         m_abAnnAll[nAnnot]  = FALSE; // show annotation only in raw data graph
         m_abAnnNone[nAnnot] = FALSE;
 
@@ -1543,7 +1743,8 @@ void CSaView::ToggleAnnotation(int nAnnot, BOOL bShow, BOOL bRawDataOnly) {
         // Hide annotation window in all graphs.
         //**************************************************
         for (int i = 0; i < MAX_GRAPHS_NUMBER; i++)
-            if (m_apGraphs[i]) {
+            if (m_apGraphs[i])
+            {
                 m_apGraphs[i]->ShowAnnotation(nAnnot, m_anGraphID[i] == IDD_RAWDATA, TRUE);
             }
     }
@@ -1552,7 +1753,8 @@ void CSaView::ToggleAnnotation(int nAnnot, BOOL bShow, BOOL bRawDataOnly) {
 /***************************************************************************/
 // CSaView::OnAnnotationAll Show the Annotation window on all graphs
 /***************************************************************************/
-void CSaView::OnAnnotationAll(UINT nID) {
+void CSaView::OnAnnotationAll(UINT nID)
+{
     int nAnnotationID = nID - ID_PHONETIC_ALL;
     ToggleAnnotation(nAnnotationID, TRUE);
 }
@@ -1560,7 +1762,8 @@ void CSaView::OnAnnotationAll(UINT nID) {
 /***************************************************************************/
 // CSaView::OnUpdateAnnotationAll Menu update
 /***************************************************************************/
-void CSaView::OnUpdateAnnotationAll(CCmdUI * pCmdUI) {
+void CSaView::OnUpdateAnnotationAll(CCmdUI * pCmdUI)
+{
     int nAnnotationID = pCmdUI->m_nID - ID_PHONETIC_ALL;
     pCmdUI->SetCheck(m_abAnnAll[nAnnotationID]);
 }
@@ -1569,7 +1772,8 @@ void CSaView::OnUpdateAnnotationAll(CCmdUI * pCmdUI) {
 /***************************************************************************/
 // CSaView::OnAnnotationRawdata Show the Annotation wnd on raw data graph only
 /***************************************************************************/
-void CSaView::OnAnnotationRawdata(UINT nID) {
+void CSaView::OnAnnotationRawdata(UINT nID)
+{
     int nAnnotationID = nID - ID_PHONETIC_RAWDATA;
     ToggleAnnotation(nAnnotationID, TRUE, TRUE);
 }
@@ -1578,7 +1782,8 @@ void CSaView::OnAnnotationRawdata(UINT nID) {
 /***************************************************************************/
 // CSaView::OnUpdateAnnotationRawdata Menu update
 /***************************************************************************/
-void CSaView::OnUpdateAnnotationRawdata(CCmdUI * pCmdUI) {
+void CSaView::OnUpdateAnnotationRawdata(CCmdUI * pCmdUI)
+{
     int nAnnotationID = pCmdUI->m_nID - ID_PHONETIC_RAWDATA;
     pCmdUI->SetCheck(!(m_abAnnAll[nAnnotationID] || m_abAnnNone[nAnnotationID]));
 }
@@ -1587,7 +1792,8 @@ void CSaView::OnUpdateAnnotationRawdata(CCmdUI * pCmdUI) {
 /***************************************************************************/
 // CSaView::OnAnnotationNone Hide Annotation windows in all the graphs
 /***************************************************************************/
-void CSaView::OnAnnotationNone(UINT nID) {
+void CSaView::OnAnnotationNone(UINT nID)
+{
     int nAnnotationID = nID - ID_PHONETIC_NONE;
     ToggleAnnotation(nAnnotationID, FALSE);
 }
@@ -1596,7 +1802,8 @@ void CSaView::OnAnnotationNone(UINT nID) {
 /***************************************************************************/
 // CSaView::OnUpdateAnnotationNone Menu update
 /***************************************************************************/
-void CSaView::OnUpdateAnnotationNone(CCmdUI * pCmdUI) {
+void CSaView::OnUpdateAnnotationNone(CCmdUI * pCmdUI)
+{
     int nAnnotationID = pCmdUI->m_nID - ID_PHONETIC_NONE;
     pCmdUI->SetCheck(m_abAnnNone[nAnnotationID]);
 }
@@ -1604,7 +1811,8 @@ void CSaView::OnUpdateAnnotationNone(CCmdUI * pCmdUI) {
 /***************************************************************************/
 // CSaView::OnPopupgraphAnnotation Show or hide Annotation window
 /***************************************************************************/
-void CSaView::OnPopupgraphAnnotation(UINT nID) {
+void CSaView::OnPopupgraphAnnotation(UINT nID)
+{
     int nAnnotationID = nID - ID_POPUPGRAPH_PHONETIC;
     ShowAnnotation(nAnnotationID);
 }
@@ -1613,46 +1821,56 @@ void CSaView::OnPopupgraphAnnotation(UINT nID) {
 /***************************************************************************/
 // CSaView::OnUpdatePopupgraphAnnotation Menu update
 /***************************************************************************/
-void CSaView::OnUpdatePopupgraphAnnotation(CCmdUI * pCmdUI) {
+void CSaView::OnUpdatePopupgraphAnnotation(CCmdUI * pCmdUI)
+{
     int nAnnotationID = pCmdUI->m_nID - ID_POPUPGRAPH_PHONETIC;
     BOOL bEnable = (m_pFocusedGraph && GetDocument()->GetDataSize() != 0 && (m_pFocusedGraph->HaveAnnotation(REFERENCE) || !m_pFocusedGraph->DisableAnnotation(nAnnotationID)) && m_nFocusedID != IDD_TWC);
     pCmdUI->Enable(bEnable);
-    if (m_pFocusedGraph) {
+    if (m_pFocusedGraph)
+    {
         pCmdUI->SetCheck(m_pFocusedGraph->HaveAnnotation(nAnnotationID));    // check if graph has reference window
-    } else {
+    }
+    else
+    {
         pCmdUI->SetCheck(FALSE);
     }
 }
 
-void CSaView::OnViewTranscriptionBoundaries() {
+void CSaView::OnViewTranscriptionBoundaries()
+{
 
     m_bTranscriptionBoundaries = (!m_bTranscriptionBoundaries);
     // refresh the annotation windows
-    for (int nGraph = 0; nGraph < MAX_GRAPHS_NUMBER; nGraph++) {
+    for (int nGraph = 0; nGraph < MAX_GRAPHS_NUMBER; nGraph++)
+    {
         CGraphWnd * pGraph = GetGraph(nGraph);
-        if (pGraph!=NULL) {
-            for (int nWnd = 0; nWnd < ANNOT_WND_NUMBER; nWnd++) {
-                if (pGraph->HaveAnnotation(nWnd)) {
-                    pGraph->GetAnnotationWnd(nWnd)->ShowTranscriptionBoundaries(m_bTranscriptionBoundaries);
-					pGraph->GetAnnotationWnd(nWnd)->Invalidate(TRUE);
-                }
+        if (pGraph!=NULL)
+        {
+            for (int nWnd = 0; nWnd < ANNOT_WND_NUMBER; nWnd++)
+            {
+                pGraph->GetAnnotationWnd(nWnd)->ShowTranscriptionBoundaries(m_bTranscriptionBoundaries);
+                pGraph->GetAnnotationWnd(nWnd)->Invalidate(TRUE);
             }
         }
     }
 }
 
-void CSaView::OnUpdateViewTranscriptionBoundaries(CCmdUI * pCmdUI) {
+void CSaView::OnUpdateViewTranscriptionBoundaries(CCmdUI * pCmdUI)
+{
     pCmdUI->SetCheck(m_bTranscriptionBoundaries);
 }
 
 /***************************************************************************/
 // CSaView::OnBoundariesAll Show the boundaries on all graphs
 /***************************************************************************/
-void CSaView::OnBoundariesAll() {
+void CSaView::OnBoundariesAll()
+{
     m_bSegmentBoundaries = TRUE;
     // show boundaries
-    for (int nLoop = 0; nLoop < MAX_GRAPHS_NUMBER; nLoop++) {
-        if (m_apGraphs[nLoop]) {
+    for (int nLoop = 0; nLoop < MAX_GRAPHS_NUMBER; nLoop++)
+    {
+        if (m_apGraphs[nLoop])
+        {
             m_apGraphs[nLoop]->ShowSegmentBoundaries(TRUE, TRUE);
         }
     }
@@ -1661,46 +1879,64 @@ void CSaView::OnBoundariesAll() {
 /***************************************************************************/
 // CSaView::OnUpdateBoundariesAll Menu update
 /***************************************************************************/
-void CSaView::OnUpdateBoundariesAll(CCmdUI * pCmdUI) {
+void CSaView::OnUpdateBoundariesAll(CCmdUI * pCmdUI)
+{
     pCmdUI->SetCheck(m_bSegmentBoundaries);
 }
 
 /***************************************************************************/
 // CSaView::OnBoundariesRawdata Show the boundaries on raw data graph only
 /***************************************************************************/
-void CSaView::OnBoundariesRawdata() {
+void CSaView::OnBoundariesRawdata()
+{
     m_bSegmentBoundaries = FALSE;
     // hide boundaries except for raw data
-    for (int nLoop = 0; nLoop < MAX_GRAPHS_NUMBER; nLoop++) {
-        if (m_apGraphs[nLoop]) {
+    for (int nLoop = 0; nLoop < MAX_GRAPHS_NUMBER; nLoop++)
+    {
+        if (m_apGraphs[nLoop])
+        {
             m_apGraphs[nLoop]->ShowSegmentBoundaries(m_anGraphID[nLoop] == IDD_RAWDATA, TRUE);
         }
-	}
+    }
 }
 
 /***************************************************************************/
 // CSaView::OnUpdateBoundariesRawdata Menu update
 /***************************************************************************/
-void CSaView::OnUpdateBoundariesRawdata(CCmdUI * pCmdUI) {
-	// check to see if we are only show boundaries on the raw data graph
-	BOOL bCondition = TRUE;
-    for (int nLoop = 0; nLoop < MAX_GRAPHS_NUMBER; nLoop++) {
-        if (m_apGraphs[nLoop]) {
-			if (m_anGraphID[nLoop] == IDD_RAWDATA) {
-				if (!m_apGraphs[nLoop]->HaveBoundaries()) bCondition = FALSE;
-			} else {
-				if (m_apGraphs[nLoop]->HaveBoundaries()) bCondition = FALSE;
-			}
+void CSaView::OnUpdateBoundariesRawdata(CCmdUI * pCmdUI)
+{
+    // check to see if we are only show boundaries on the raw data graph
+    BOOL bCondition = TRUE;
+    for (int nLoop = 0; nLoop < MAX_GRAPHS_NUMBER; nLoop++)
+    {
+        if (m_apGraphs[nLoop])
+        {
+            if (m_anGraphID[nLoop] == IDD_RAWDATA)
+            {
+                if (!m_apGraphs[nLoop]->HaveBoundaries())
+                {
+                    bCondition = FALSE;
+                }
+            }
+            else
+            {
+                if (m_apGraphs[nLoop]->HaveBoundaries())
+                {
+                    bCondition = FALSE;
+                }
+            }
         }
-	}
-	pCmdUI->SetCheck(bCondition);
+    }
+    pCmdUI->SetCheck(bCondition);
 }
 
 /***************************************************************************/
 // CSaView::OnDrawingBoundaries Show or hide boundaries
 /***************************************************************************/
-void CSaView::OnBoundariesThis() {
-    if (m_pFocusedGraph) {
+void CSaView::OnBoundariesThis()
+{
+    if (m_pFocusedGraph)
+    {
         m_pFocusedGraph->ShowSegmentBoundaries(!m_pFocusedGraph->HaveBoundaries(), TRUE);
     }
 }
@@ -1708,16 +1944,20 @@ void CSaView::OnBoundariesThis() {
 /***************************************************************************/
 // CSaView::OnUpdateBoundariesThis Menu update
 /***************************************************************************/
-void CSaView::OnUpdateBoundariesThis(CCmdUI * pCmdUI) {
-    
-	pCmdUI->Enable((m_pFocusedGraph!=NULL) &&
+void CSaView::OnUpdateBoundariesThis(CCmdUI * pCmdUI)
+{
+
+    pCmdUI->Enable((m_pFocusedGraph!=NULL) &&
                    (GetDocument()->GetDataSize() != 0) &&       // enable if data is available
                    (m_pFocusedGraph->HaveCursors()));           // enable if cursors visible
 
 
-    if (m_pFocusedGraph) {
+    if (m_pFocusedGraph)
+    {
         pCmdUI->SetCheck(m_pFocusedGraph->HaveBoundaries());    // check if graph has boundaries
-    } else {
+    }
+    else
+    {
         pCmdUI->SetCheck(FALSE);
     }
 }
@@ -1725,11 +1965,14 @@ void CSaView::OnUpdateBoundariesThis(CCmdUI * pCmdUI) {
 /***************************************************************************/
 // CSaView::OnBoundariesNone Hide the boundaries on all graphs
 /***************************************************************************/
-void CSaView::OnBoundariesNone() {
+void CSaView::OnBoundariesNone()
+{
     m_bSegmentBoundaries = FALSE;
     // hide boundaries
-    for (int nLoop = 0; nLoop < MAX_GRAPHS_NUMBER; nLoop++) {
-        if (m_apGraphs[nLoop]) {
+    for (int nLoop = 0; nLoop < MAX_GRAPHS_NUMBER; nLoop++)
+    {
+        if (m_apGraphs[nLoop])
+        {
             m_apGraphs[nLoop]->ShowSegmentBoundaries(FALSE, TRUE);
         }
     }
@@ -1738,29 +1981,34 @@ void CSaView::OnBoundariesNone() {
 /***************************************************************************/
 // CSaView::OnUpdateBoundariesNone Menu update
 /***************************************************************************/
-void CSaView::OnUpdateBoundariesNone(CCmdUI * pCmdUI) {
-	
-	BOOL bShown = false;
-	bShown |= m_bSegmentBoundaries;
-	    for (int nLoop = 0; nLoop < MAX_GRAPHS_NUMBER; nLoop++) {
-        if (m_apGraphs[nLoop]) {
+void CSaView::OnUpdateBoundariesNone(CCmdUI * pCmdUI)
+{
+
+    BOOL bShown = false;
+    bShown |= m_bSegmentBoundaries;
+    for (int nLoop = 0; nLoop < MAX_GRAPHS_NUMBER; nLoop++)
+    {
+        if (m_apGraphs[nLoop])
+        {
             bShown |= m_apGraphs[nLoop]->HaveBoundaries();
         }
     }
-	pCmdUI->SetCheck(!bShown);
+    pCmdUI->SetCheck(!bShown);
 }
 
 /***************************************************************************/
 // CSaView::OnGraphsZoomAll Zoom all
 /***************************************************************************/
-void CSaView::OnGraphsZoomCursors() {
+void CSaView::OnGraphsZoomCursors()
+{
     GraphsZoomCursors(m_dwStartCursor, m_dwStopCursor, 99);
 }
 
 /***************************************************************************/
 // CSaView::OnGraphsZoomAll Zoom all
 /***************************************************************************/
-void CSaView::GraphsZoomCursors(DWORD startReq, DWORD stopReq, DWORD percent) {
+void CSaView::GraphsZoomCursors(DWORD startReq, DWORD stopReq, DWORD percent)
+{
     // divide by two to guarantee result even
     DWORD start = ((startReq)/2);
     DWORD stop = ((stopReq+1)/2);
@@ -1772,14 +2020,18 @@ void CSaView::GraphsZoomCursors(DWORD startReq, DWORD stopReq, DWORD percent) {
     offset = (DWORD)((stop - start)*(100-percent)/100.0/2.0);
 
     // zoom cursors to fill % of screen
-    if (start > offset) {
+    if (start > offset)
+    {
         start = (start - offset)*2;
-    } else {
+    }
+    else
+    {
         start = 0;
     }
 
     stop = (stop + offset)*2;
-    if (stop > GetDocument()->GetDataSize()) {
+    if (stop > GetDocument()->GetDataSize())
+    {
         stop = GetDocument()->GetDataSize();
     }
 
@@ -1792,13 +2044,17 @@ void CSaView::GraphsZoomCursors(DWORD startReq, DWORD stopReq, DWORD percent) {
 /***************************************************************************/
 // CSaView::OnUpdateGraphsZoomCursors Menu update
 /***************************************************************************/
-void CSaView::OnUpdateGraphsZoomCursors(CCmdUI * pCmdUI) {
+void CSaView::OnUpdateGraphsZoomCursors(CCmdUI * pCmdUI)
+{
     BOOL enable = TRUE;
     if ((GetDocument()->GetDataSize() == 0) ||  // nothing to zoom
             (m_fZoom >= m_fMaxZoom) ||              // zoom limit
-            (m_dwStopCursor == m_dwStartCursor)) {  // zoom limit
+            (m_dwStopCursor == m_dwStartCursor))    // zoom limit
+    {
         enable = FALSE;
-    } else {
+    }
+    else
+    {
         // divide by two to guarantee result even
         DWORD start = ((m_dwStartCursor)/2);
         DWORD stop = ((m_dwStopCursor+1)/2);
@@ -1806,25 +2062,33 @@ void CSaView::OnUpdateGraphsZoomCursors(CCmdUI * pCmdUI) {
         DWORD frameWidth;
         DWORD offset;
 
-        if (stop <= start) {
+        if (stop <= start)
+        {
             enable = FALSE;
-        } else {
+        }
+        else
+        {
             offset = (DWORD)((stop - start)*(100-97)/100.0/2.0);
 
             // zoom cursors to fill 97% of screen
-            if (start > offset) {
+            if (start > offset)
+            {
                 start = (start - offset)*2;
-            } else {
+            }
+            else
+            {
                 start = 0;
             }
 
             stop = (stop + offset)*2;
-            if (stop > GetDocument()->GetDataSize()) {
+            if (stop > GetDocument()->GetDataSize())
+            {
                 stop = GetDocument()->GetDataSize();
             }
 
             GetDataFrame(frameStart, frameWidth);
-            if ((frameStart == start)&&(frameWidth == (stop-start))) {
+            if ((frameStart == start)&&(frameWidth == (stop-start)))
+            {
                 enable = FALSE;
             }
         }
@@ -1836,7 +2100,8 @@ void CSaView::OnUpdateGraphsZoomCursors(CCmdUI * pCmdUI) {
 /***************************************************************************/
 // CSaView::OnGraphsZoomAll Zoom all
 /***************************************************************************/
-void CSaView::OnGraphsZoomAll() {
+void CSaView::OnGraphsZoomAll()
+{
     m_fZoom = 1.0;      // no zoom
     ZoomIn(0, TRUE);    // Handle Zoom
 }
@@ -1844,27 +2109,33 @@ void CSaView::OnGraphsZoomAll() {
 /***************************************************************************/
 // CSaView::OnUpdateGraphsZoomAll Menu update
 /***************************************************************************/
-void CSaView::OnUpdateGraphsZoomAll(CCmdUI * pCmdUI) {
+void CSaView::OnUpdateGraphsZoomAll(CCmdUI * pCmdUI)
+{
     pCmdUI->Enable(m_fZoom > 1.0);
 }
 
 /***************************************************************************/
 // CSaView::OnGraphsZoomIn Zoom in
 /***************************************************************************/
-void CSaView::OnGraphsZoomIn() {
+void CSaView::OnGraphsZoomIn()
+{
     ZoomIn(m_fZoom); // double zooming
 }
 
 /***************************************************************************/
 // CSaView::OnUpdateGraphsZoomIn Menu update
 /***************************************************************************/
-void CSaView::OnUpdateGraphsZoomIn(CCmdUI * pCmdUI) {
+void CSaView::OnUpdateGraphsZoomIn(CCmdUI * pCmdUI)
+{
     CRect rWnd;
     GetClientRect(rWnd);
     if ((GetDocument()->GetDataSize() == 0) // nothing to zoom
-            || (m_fZoom >= m_fMaxZoom)) { // zoom limit
+            || (m_fZoom >= m_fMaxZoom))   // zoom limit
+    {
         pCmdUI->Enable(FALSE);
-    } else {
+    }
+    else
+    {
         pCmdUI->Enable(TRUE);
     }
 }
@@ -1872,33 +2143,41 @@ void CSaView::OnUpdateGraphsZoomIn(CCmdUI * pCmdUI) {
 /***************************************************************************/
 // CSaView::OnGraphsZoomOut Zoom out
 /***************************************************************************/
-void CSaView::OnGraphsZoomOut() {
+void CSaView::OnGraphsZoomOut()
+{
     ZoomOut(m_fZoom / 2); // divide zoom by two
 }
 
 /***************************************************************************/
 // CSaView::OnUpdateGraphsZoomOut Menu update
 /***************************************************************************/
-void CSaView::OnUpdateGraphsZoomOut(CCmdUI * pCmdUI) {
+void CSaView::OnUpdateGraphsZoomOut(CCmdUI * pCmdUI)
+{
     pCmdUI->Enable(m_fZoom > 1.0);
 }
 
 /***************************************************************************/
 // CSaView::OnHScroll Horizontal scrolling
 /***************************************************************************/
-void CSaView::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar * pScrollBar) {
+void CSaView::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar * pScrollBar)
+{
     //TRACE("OnHScroll %d %d %d %d\n",nSBCode,nPos,m_dwDataPosition,m_dwScrollLine);
     CSaDoc * pDoc = GetDocument();  // get pointer to document
-    if (m_fZoom > 1.0) {            // zooming is enabled
+    if (m_fZoom > 1.0)              // zooming is enabled
+    {
         DWORD dwOldDataPosition = m_dwDataPosition; // save actual data position
-        switch (nSBCode) {
+        switch (nSBCode)
+        {
         case SB_LEFT: // scroll to the leftmost position
             m_dwDataPosition = 0;
             break;
         case SB_LINELEFT: // scroll one line left
-            if (m_dwDataPosition >= m_dwScrollLine) {
+            if (m_dwDataPosition >= m_dwScrollLine)
+            {
                 m_dwDataPosition -= m_dwScrollLine;
-            } else {
+            }
+            else
+            {
                 m_dwDataPosition = 0;
             }
             break;
@@ -1907,31 +2186,41 @@ void CSaView::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar * pScrollBar) {
             break;
         case SB_LINERIGHT: // scroll one line right
             if ((m_dwDataPosition <= (pDoc->GetDataSize() - GetDataFrame() - m_dwScrollLine)) &&
-                    (pDoc->GetDataSize() >= (GetDataFrame() + m_dwScrollLine))) {
+                    (pDoc->GetDataSize() >= (GetDataFrame() + m_dwScrollLine)))
+            {
                 m_dwDataPosition += m_dwScrollLine;
-            } else {
+            }
+            else
+            {
                 m_dwDataPosition = pDoc->GetDataSize() - GetDataFrame();
             }
             break;
         case SB_PAGELEFT: // scroll one page left
-            if (m_dwDataPosition >= GetDataFrame()) {
+            if (m_dwDataPosition >= GetDataFrame())
+            {
                 m_dwDataPosition -= GetDataFrame();
-            } else {
+            }
+            else
+            {
                 m_dwDataPosition = 0;
             }
             break;
         case SB_PAGERIGHT: // scroll one page right
             if ((m_dwDataPosition <= (pDoc->GetDataSize() - 2 * GetDataFrame())) &&
-                    (pDoc->GetDataSize() >= (2 * GetDataFrame()))) {
+                    (pDoc->GetDataSize() >= (2 * GetDataFrame())))
+            {
                 m_dwDataPosition += GetDataFrame();
-            } else {
+            }
+            else
+            {
                 m_dwDataPosition = pDoc->GetDataSize() - GetDataFrame();
             }
             break;
         case SB_THUMBTRACK:
         case SB_THUMBPOSITION: // scroll to position
             m_dwDataPosition = nPos * m_dwHScrollFactor;
-            if (m_dwDataPosition > (pDoc->GetDataSize() - GetDataFrame())) {
+            if (m_dwDataPosition > (pDoc->GetDataSize() - GetDataFrame()))
+            {
                 m_dwDataPosition = pDoc->GetDataSize() - GetDataFrame();
             }
             break;
@@ -1940,21 +2229,26 @@ void CSaView::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar * pScrollBar) {
             break;
         }
         // for 16 bit data value must be even
-        if (pDoc->Is16Bit()) {
+        if (pDoc->Is16Bit())
+        {
             m_dwDataPosition &= ~1;
         }
         // is scrolling necessary?
-        if (dwOldDataPosition != m_dwDataPosition) { // scroll
+        if (dwOldDataPosition != m_dwDataPosition)   // scroll
+        {
             // set scroll bar
             SetScrollPos(SB_HORZ, (int)(m_dwDataPosition / m_dwHScrollFactor), TRUE);
             // scroll all graph windows (only if the have cursors visible)
-            for (int nLoop = 0; nLoop < MAX_GRAPHS_NUMBER; nLoop++) {
-                if (m_apGraphs[nLoop]) {
+            for (int nLoop = 0; nLoop < MAX_GRAPHS_NUMBER; nLoop++)
+            {
+                if (m_apGraphs[nLoop])
+                {
                     m_apGraphs[nLoop]->ScrollGraph(this, m_dwDataPosition, dwOldDataPosition);
                 }
             }
 
-            if (GraphIDtoPtr(IDD_RECORDING)) {
+            if (GraphIDtoPtr(IDD_RECORDING))
+            {
                 GraphIDtoPtr(IDD_RECORDING)->GetPlot()->RedrawWindow(NULL,NULL,RDW_INTERNALPAINT|RDW_UPDATENOW);
             }
         }
@@ -1968,12 +2262,14 @@ void CSaView::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar * pScrollBar) {
 /***************************************************************************/
 // CSaView::OnVScroll Vertical scrolling
 /***************************************************************************/
-void CSaView::OnVScroll(UINT nSBCode, UINT nPos, CScrollBar * pScrollBar) {
+void CSaView::OnVScroll(UINT nSBCode, UINT nPos, CScrollBar * pScrollBar)
+{
     TRACE("OnVScroll %d %f %f\n",nPos,m_fZoom,m_fVScrollSteps);
 
     double fZoom = m_fZoom;
     double fActualPos = m_fVScrollSteps / m_fZoom; // actual position
-    switch (nSBCode) {
+    switch (nSBCode)
+    {
     case SB_BOTTOM:     // zoom maximum
         fZoom = m_fMaxZoom;
         break;
@@ -1993,7 +2289,8 @@ void CSaView::OnVScroll(UINT nSBCode, UINT nPos, CScrollBar * pScrollBar) {
         fZoom = 0.5*m_fZoom;
         break;
     case SB_THUMBTRACK:
-    case SB_THUMBPOSITION: { // zoom from position
+    case SB_THUMBPOSITION:   // zoom from position
+    {
         SCROLLINFO info;
         GetScrollInfo(SB_VERT, &info, SIF_TRACKPOS);
         nPos = info.nTrackPos;
@@ -2006,10 +2303,14 @@ void CSaView::OnVScroll(UINT nSBCode, UINT nPos, CScrollBar * pScrollBar) {
     }
 
     // is zooming necessary?
-    if (fZoom != m_fZoom) { // zoom
-        if (fZoom > m_fZoom) {
+    if (fZoom != m_fZoom)   // zoom
+    {
+        if (fZoom > m_fZoom)
+        {
             ZoomIn(fZoom - m_fZoom);
-        } else {
+        }
+        else
+        {
             ZoomOut(-(fZoom-m_fZoom));
         }
     }
@@ -2020,30 +2321,37 @@ void CSaView::OnVScroll(UINT nSBCode, UINT nPos, CScrollBar * pScrollBar) {
 /***************************************************************************/
 // CSaView::OnSize Sizeing the view
 /***************************************************************************/
-void CSaView::OnSize(UINT nType, int cx, int cy) {
+void CSaView::OnSize(UINT nType, int cx, int cy)
+{
     CSaDoc * pDoc = GetDocument(); // get pointer to document
 
     CView::OnSize(nType, cx, cy);
 
-    if ((nType == SIZE_MAXIMIZED) || (nType == SIZE_RESTORED)) {
+    if ((nType == SIZE_MAXIMIZED) || (nType == SIZE_RESTORED))
+    {
         // check if there is at least one graph
         int nLoop;
-        for (nLoop = 0; nLoop < MAX_GRAPHS_NUMBER; nLoop++) {
-            if (m_apGraphs[nLoop]) {
+        for (nLoop = 0; nLoop < MAX_GRAPHS_NUMBER; nLoop++)
+        {
+            if (m_apGraphs[nLoop])
+            {
                 break;
             }
         }
-        if (nLoop >= MAX_GRAPHS_NUMBER) {
+        if (nLoop >= MAX_GRAPHS_NUMBER)
+        {
             return;    // no graph to retile
         }
         // calculate new scroll parameters
         SetScrolling();
-        if (m_fZoom > 1.0) {
+        if (m_fZoom > 1.0)
+        {
             // set horizontal scroll bar
             SetScrollRange(SB_HORZ, 0, (int)((pDoc->GetDataSize() - GetDataFrame()) / m_dwHScrollFactor), FALSE);
             SetScrollPos(SB_HORZ, (int)(m_dwDataPosition / m_dwHScrollFactor), TRUE);
         }
-        if (pViewMainFrame->IsScrollZoom() && (pDoc->GetDataSize() > 0)) {
+        if (pViewMainFrame->IsScrollZoom() && (pDoc->GetDataSize() > 0))
+        {
             // set vertical scroll bar
             SetScrollRange(SB_VERT, ZOOM_SCROLL_RESOLUTION, (int)m_fVScrollSteps, FALSE);
             SetScrollPos(SB_VERT, (int)(m_fVScrollSteps + ZOOM_SCROLL_RESOLUTION - m_fVScrollSteps / m_fZoom), TRUE);
@@ -2058,7 +2366,8 @@ void CSaView::OnSize(UINT nType, int cx, int cy) {
 // erases it from the graph arrays and if it was the last graph it closes
 // itself.
 /***************************************************************************/
-LRESULT CSaView::OnGraphDestroyed(WPARAM, LPARAM lParam) {
+LRESULT CSaView::OnGraphDestroyed(WPARAM, LPARAM lParam)
+{
     int index;
 
     //************************************************
@@ -2066,7 +2375,8 @@ LRESULT CSaView::OnGraphDestroyed(WPARAM, LPARAM lParam) {
     // graph being destroyed. It should always be
     // found or there is big trouble.
     //************************************************
-    if ((index = GraphPtrToOffset((CGraphWnd *)lParam)) == -1) {
+    if ((index = GraphPtrToOffset((CGraphWnd *)lParam)) == -1)
+    {
         return 0;
     }
 
@@ -2076,15 +2386,18 @@ LRESULT CSaView::OnGraphDestroyed(WPARAM, LPARAM lParam) {
     // if melogram is being destroyed then make
     // sure the TWC and magnitude are also destroyed.
     //************************************************
-    if (m_anGraphID[index] == IDD_MELOGRAM) {
+    if (m_anGraphID[index] == IDD_MELOGRAM)
+    {
         int i = GetGraphIndexForIDD(IDD_TWC);
-        if (i >= 0) {
+        if (i >= 0)
+        {
             DestroyGraph(&(m_apGraphs[i]));
             m_anGraphID[i] = 0;
         }
 
         i = GetGraphIndexForIDD(IDD_MAGNITUDE);
-        if (i >= 0) {
+        if (i >= 0)
+        {
             DestroyGraph(&(m_apGraphs[i]));
             m_anGraphID[i] = 0;
         }
@@ -2094,9 +2407,11 @@ LRESULT CSaView::OnGraphDestroyed(WPARAM, LPARAM lParam) {
     // graph exists then redraw the TWC graph so its
     // x-scale window is removed.
     //**************************************************
-    else if (m_anGraphID[index] == IDD_MAGNITUDE) {
+    else if (m_anGraphID[index] == IDD_MAGNITUDE)
+    {
         int i = GetGraphIndexForIDD(IDD_TWC);
-        if (i >= 0) {
+        if (i >= 0)
+        {
             m_apGraphs[i]->ResizeGraph(TRUE, TRUE);
         }
     }
@@ -2106,13 +2421,16 @@ LRESULT CSaView::OnGraphDestroyed(WPARAM, LPARAM lParam) {
     // the legend is displayed for the melogram and
     // magnitude graphs.
     //**************************************************
-    else if (m_anGraphID[index] == IDD_TWC) {
+    else if (m_anGraphID[index] == IDD_TWC)
+    {
         int i = GetGraphIndexForIDD(IDD_MELOGRAM);
-        if (i >= 0) {
+        if (i >= 0)
+        {
             m_apGraphs[i]->ShowLegend(TRUE, FALSE);
         }
         i = GetGraphIndexForIDD(IDD_MAGNITUDE);
-        if (i >= 0) {
+        if (i >= 0)
+        {
             m_apGraphs[i]->ShowLegend(TRUE, FALSE);
         }
     }
@@ -2128,9 +2446,12 @@ LRESULT CSaView::OnGraphDestroyed(WPARAM, LPARAM lParam) {
     //**************************************************
     // No more graphs in view so close view.
     //**************************************************
-    if (m_nLayout == -1) {
+    if (m_nLayout == -1)
+    {
         SendMessage(WM_COMMAND, ID_FILE_CLOSE, 0);    // close view
-    } else {
+    }
+    else
+    {
         OnGraphsRetile();
     }
 
@@ -2140,10 +2461,13 @@ LRESULT CSaView::OnGraphDestroyed(WPARAM, LPARAM lParam) {
 /***************************************************************************/
 // 09/21/2000 - DDO
 /***************************************************************************/
-BOOL CSaView::DestroyGraph(CGraphWnd ** pGraph, BOOL bResetFocus) {
-    if (*pGraph) {
+BOOL CSaView::DestroyGraph(CGraphWnd ** pGraph, BOOL bResetFocus)
+{
+    if (*pGraph)
+    {
         (*pGraph)->DestroyWindow();
-        if (*pGraph == m_pFocusedGraph && bResetFocus) {
+        if (*pGraph == m_pFocusedGraph && bResetFocus)
+        {
             ResetFocusedGraph();
         }
         delete *pGraph;
@@ -2161,12 +2485,16 @@ BOOL CSaView::DestroyGraph(CGraphWnd ** pGraph, BOOL bResetFocus) {
 // ID arrays are contiguous starting from the beginning of the array. There
 // are no holes allowed.
 /***************************************************************************/
-void CSaView::MakeGraphArraysContiguous() {
-    for (int i = 0; i < MAX_GRAPHS_NUMBER - 1; i++) {
-        if (!m_apGraphs[i]) {
+void CSaView::MakeGraphArraysContiguous()
+{
+    for (int i = 0; i < MAX_GRAPHS_NUMBER - 1; i++)
+    {
+        if (!m_apGraphs[i])
+        {
             int j;
             for (j = i + 1; j < MAX_GRAPHS_NUMBER && !m_apGraphs[j]; j++);
-            if (j < MAX_GRAPHS_NUMBER && m_apGraphs[j]) {
+            if (j < MAX_GRAPHS_NUMBER && m_apGraphs[j])
+            {
                 m_apGraphs[i]  = m_apGraphs[j];
                 m_anGraphID[i] = m_anGraphID[j];
                 m_apGraphs[j]  = NULL;
@@ -2179,15 +2507,20 @@ void CSaView::MakeGraphArraysContiguous() {
 /***************************************************************************/
 // CSaView::OnGraphStyleChanged Graphs caption styles have changed
 /***************************************************************************/
-LRESULT CSaView::OnGraphStyleChanged(WPARAM, LPARAM) {
-    for (int nLoop = 0; nLoop < MAX_GRAPHS_NUMBER; nLoop++) {
-        if (m_anGraphID[nLoop] == ID_GRAPHS_OVERLAY) {
+LRESULT CSaView::OnGraphStyleChanged(WPARAM, LPARAM)
+{
+    for (int nLoop = 0; nLoop < MAX_GRAPHS_NUMBER; nLoop++)
+    {
+        if (m_anGraphID[nLoop] == ID_GRAPHS_OVERLAY)
+        {
             CMultiPlotWnd * pMPlot = (CMultiPlotWnd *)(m_apGraphs[nLoop]->GetPlot());
             int baseType = pMPlot->GetBasePlotID();
 
             DeleteGraphs(nLoop);
             CreateGraph(nLoop, baseType);
-        } else if (m_anGraphID[nLoop]) {
+        }
+        else if (m_anGraphID[nLoop])
+        {
             DeleteGraphs(nLoop, FALSE);  // 09/26/2000 - DDO Delete graphs without clear IDs.
             CreateGraph(nLoop, m_anGraphID[nLoop]); // delete and recreate all graphs with new caption style
         }
@@ -2199,7 +2532,8 @@ LRESULT CSaView::OnGraphStyleChanged(WPARAM, LPARAM) {
 /***************************************************************************/
 // CSaView::OnGraphGridChanged Graphs grids have changed
 /***************************************************************************/
-LRESULT CSaView::OnGraphGridChanged(WPARAM, LPARAM) {
+LRESULT CSaView::OnGraphGridChanged(WPARAM, LPARAM)
+{
     RefreshGraphs();
     return 0;
 }
@@ -2208,7 +2542,8 @@ LRESULT CSaView::OnGraphGridChanged(WPARAM, LPARAM) {
 /***************************************************************************/
 // CSaView::OnGraphOrderChanged Graphs colors have changed
 /***************************************************************************/
-LRESULT CSaView::OnGraphOrderChanged(WPARAM, LPARAM) {
+LRESULT CSaView::OnGraphOrderChanged(WPARAM, LPARAM)
+{
     RefreshGraphs(TRUE, TRUE, TRUE);
     return 0;
 }
@@ -2216,7 +2551,8 @@ LRESULT CSaView::OnGraphOrderChanged(WPARAM, LPARAM) {
 /***************************************************************************/
 // CSaView::OnGraphColorChanged Graphs colors have changed
 /***************************************************************************/
-LRESULT CSaView::OnGraphColorChanged(WPARAM, LPARAM) {
+LRESULT CSaView::OnGraphColorChanged(WPARAM, LPARAM)
+{
     RefreshGraphs(TRUE, TRUE);
     return 0;
 }
@@ -2224,7 +2560,8 @@ LRESULT CSaView::OnGraphColorChanged(WPARAM, LPARAM) {
 /***************************************************************************/
 // CSaView::OnGraphFontChanged Graphs font styles have changed
 /***************************************************************************/
-LRESULT CSaView::OnGraphFontChanged(WPARAM, LPARAM) {
+LRESULT CSaView::OnGraphFontChanged(WPARAM, LPARAM)
+{
     RefreshGraphs(TRUE, TRUE, TRUE);
     return 0;
 }
@@ -2232,10 +2569,14 @@ LRESULT CSaView::OnGraphFontChanged(WPARAM, LPARAM) {
 /***************************************************************************/
 // CSaView::OnScrollZoomChanged Scroll zooming option has changed
 /***************************************************************************/
-LRESULT CSaView::OnScrollZoomChanged(WPARAM wParam, LPARAM) {
-    if ((wParam == 0) || (GetDocument()->GetDataSize() == 0)) {
+LRESULT CSaView::OnScrollZoomChanged(WPARAM wParam, LPARAM)
+{
+    if ((wParam == 0) || (GetDocument()->GetDataSize() == 0))
+    {
         SetScrollRange(SB_VERT, 0, 0, FALSE);    // hide scroll bar
-    } else {
+    }
+    else
+    {
         SetScrollRange(SB_VERT, ZOOM_SCROLL_RESOLUTION, (int)m_fVScrollSteps, FALSE);
         SetScrollPos(SB_VERT, (int)(m_fVScrollSteps + ZOOM_SCROLL_RESOLUTION - m_fVScrollSteps / m_fZoom), TRUE);
     }
@@ -2245,9 +2586,11 @@ LRESULT CSaView::OnScrollZoomChanged(WPARAM wParam, LPARAM) {
 /***************************************************************************/
 // CSaView::OnRecorder Launches the recorder
 /***************************************************************************/
-LRESULT CSaView::OnRecorder(WPARAM /*wParam*/, LPARAM /*lParam*/) {
+LRESULT CSaView::OnRecorder(WPARAM /*wParam*/, LPARAM /*lParam*/)
+{
     CDlgRecorder dlg;
-    if (dlg.DoModal() != IDOK) {
+    if (dlg.DoModal() != IDOK)
+    {
         SendMessage(WM_COMMAND, ID_FILE_CLOSE, 0L);    // close the file
     }
     return 0;
@@ -2256,11 +2599,14 @@ LRESULT CSaView::OnRecorder(WPARAM /*wParam*/, LPARAM /*lParam*/) {
 /***************************************************************************/
 // CSaView::OnGraphsStyleLine Set the graphs drawing style to line
 /***************************************************************************/
-void CSaView::OnGraphsStyleLine() {
+void CSaView::OnGraphsStyleLine()
+{
     m_bDrawStyleLine = TRUE; // draw style is line for all graphs
     // set graph styles
-    for (int nLoop = 0; nLoop < MAX_GRAPHS_NUMBER; nLoop++) {
-        if (m_apGraphs[nLoop]) {
+    for (int nLoop = 0; nLoop < MAX_GRAPHS_NUMBER; nLoop++)
+    {
+        if (m_apGraphs[nLoop])
+        {
             m_apGraphs[nLoop]->SetLineDraw(m_bDrawStyleLine);
         }
     }
@@ -2269,18 +2615,22 @@ void CSaView::OnGraphsStyleLine() {
 /***************************************************************************/
 // CSaView::OnUpdateGraphsStyleLine Menu update
 /***************************************************************************/
-void CSaView::OnUpdateGraphsStyleLine(CCmdUI * pCmdUI) {
+void CSaView::OnUpdateGraphsStyleLine(CCmdUI * pCmdUI)
+{
     pCmdUI->SetCheck(m_bDrawStyleLine);
 }
 
 /***************************************************************************/
 // CSaView::OnGraphsStyleSolid Set the graphs drawing style to solid
 /***************************************************************************/
-void CSaView::OnGraphsStyleSolid() {
+void CSaView::OnGraphsStyleSolid()
+{
     m_bDrawStyleLine = FALSE; // draw style is solid for all graphs
     // set graph styles
-    for (int nLoop = 0; nLoop < MAX_GRAPHS_NUMBER; nLoop++) {
-        if (m_apGraphs[nLoop]) {
+    for (int nLoop = 0; nLoop < MAX_GRAPHS_NUMBER; nLoop++)
+    {
+        if (m_apGraphs[nLoop])
+        {
             m_apGraphs[nLoop]->SetLineDraw(m_bDrawStyleLine);
         }
     }
@@ -2289,15 +2639,18 @@ void CSaView::OnGraphsStyleSolid() {
 /***************************************************************************/
 // CSaView::OnUpdateGraphsStyleSolid Menu update
 /***************************************************************************/
-void CSaView::OnUpdateGraphsStyleSolid(CCmdUI * pCmdUI) {
+void CSaView::OnUpdateGraphsStyleSolid(CCmdUI * pCmdUI)
+{
     pCmdUI->SetCheck(!m_bDrawStyleLine);
 }
 
 /***************************************************************************/
 // CSaView::OnPopupgraphStyleLine Set the graph drawing style to line
 /***************************************************************************/
-void CSaView::OnPopupgraphStyleLine() {
-    if (!m_pFocusedGraph) {
+void CSaView::OnPopupgraphStyleLine()
+{
+    if (!m_pFocusedGraph)
+    {
         return;
     }
 
@@ -2308,7 +2661,8 @@ void CSaView::OnPopupgraphStyleLine() {
 /***************************************************************************/
 // CSaView::OnUpdatePopupgraphStyleLine Menu update
 /***************************************************************************/
-void CSaView::OnUpdatePopupgraphStyleLine(CCmdUI * pCmdUI) {
+void CSaView::OnUpdatePopupgraphStyleLine(CCmdUI * pCmdUI)
+{
     pCmdUI->Enable(m_pFocusedGraph // enable if focused graph
                    && (GetDocument()->GetDataSize() != 0) // enable if data is available
                    && (m_nFocusedID != IDD_SPECTROGRAM) // enable if graph is not this type
@@ -2325,7 +2679,8 @@ void CSaView::OnUpdatePopupgraphStyleLine(CCmdUI * pCmdUI) {
         pCmdUI->SetCheck((m_pFocusedGraph->HaveDrawingStyleLine() && (m_nFocusedID != IDD_RAWDATA))
                          || (m_pFocusedGraph->HaveDrawingStyleLine() &&
                              (!(m_pFocusedGraph->GetPlot())->HaveDrawingStyleDots())));
-    else {
+    else
+    {
         pCmdUI->SetCheck(FALSE);
     }
 
@@ -2334,8 +2689,10 @@ void CSaView::OnUpdatePopupgraphStyleLine(CCmdUI * pCmdUI) {
 /***************************************************************************/
 // CSaView::OnPopupgraphStyleSolid Set the graph drawing style to solid
 /***************************************************************************/
-void CSaView::OnPopupgraphStyleSolid() {
-    if (!m_pFocusedGraph) {
+void CSaView::OnPopupgraphStyleSolid()
+{
+    if (!m_pFocusedGraph)
+    {
         return;
     }
 
@@ -2346,7 +2703,8 @@ void CSaView::OnPopupgraphStyleSolid() {
 /***************************************************************************/
 // CSaView::OnUpdatePopupgraphStyleSolid Menu update
 /***************************************************************************/
-void CSaView::OnUpdatePopupgraphStyleSolid(CCmdUI * pCmdUI) {
+void CSaView::OnUpdatePopupgraphStyleSolid(CCmdUI * pCmdUI)
+{
     pCmdUI->Enable(m_pFocusedGraph // enable if focused graph
                    && (GetDocument()->GetDataSize() != 0) // enable if data is available
                    && (m_nFocusedID != IDD_SPECTROGRAM) // enable if graph is not this type
@@ -2361,7 +2719,8 @@ void CSaView::OnUpdatePopupgraphStyleSolid(CCmdUI * pCmdUI) {
     if (m_pFocusedGraph)
         pCmdUI->SetCheck((!m_pFocusedGraph->HaveDrawingStyleLine() && (m_nFocusedID != IDD_RAWDATA))
                          || (!m_pFocusedGraph->HaveDrawingStyleLine() && (!(m_pFocusedGraph->GetPlot())->HaveDrawingStyleDots())));
-    else {
+    else
+    {
         pCmdUI->SetCheck(FALSE);
     }
 }
@@ -2369,8 +2728,10 @@ void CSaView::OnUpdatePopupgraphStyleSolid(CCmdUI * pCmdUI) {
 /***************************************************************************/
 // CSaView::OnPopupgraphStyleDots Set the raw data graph drawing style to dots
 /***************************************************************************/
-void CSaView::OnPopupgraphStyleDots() {
-    if (!m_pFocusedGraph) {
+void CSaView::OnPopupgraphStyleDots()
+{
+    if (!m_pFocusedGraph)
+    {
         return;
     }
 
@@ -2380,7 +2741,8 @@ void CSaView::OnPopupgraphStyleDots() {
 /***************************************************************************/
 // CSaView::OnUpdatePopupgraphStyleDots Menu update
 /***************************************************************************/
-void CSaView::OnUpdatePopupgraphStyleDots(CCmdUI * pCmdUI) {
+void CSaView::OnUpdatePopupgraphStyleDots(CCmdUI * pCmdUI)
+{
     pCmdUI->Enable((GetDocument()->GetDataSize() != 0) // enable if data is available
                    && ((m_nFocusedID == IDD_RAWDATA) || (m_nFocusedID == IDD_GLOTWAVE)|| (m_nFocusedID == IDD_MELOGRAM))); // enable if graph is this type
     pCmdUI->SetCheck(((m_nFocusedID == IDD_RAWDATA) || (m_nFocusedID == IDD_GLOTWAVE)|| (m_nFocusedID == IDD_MELOGRAM))
@@ -2390,15 +2752,20 @@ void CSaView::OnUpdatePopupgraphStyleDots(CCmdUI * pCmdUI) {
 /***************************************************************************/
 // CSaView::OnPopupRawdata switch focus to next graph
 /***************************************************************************/
-void CSaView::OnNextGraph() {
+void CSaView::OnNextGraph()
+{
     int nSelection = -1;
 
-    if (m_pFocusedGraph) {
+    if (m_pFocusedGraph)
+    {
         nSelection = GraphPtrToOffset(m_pFocusedGraph) + 1;
-        if (nSelection >= MAX_GRAPHS_NUMBER || !m_apGraphs[nSelection]) {
+        if (nSelection >= MAX_GRAPHS_NUMBER || !m_apGraphs[nSelection])
+        {
             nSelection = 0;
         }
-    } else {
+    }
+    else
+    {
         nSelection = 0;
     }
 
@@ -2412,30 +2779,39 @@ void CSaView::OnNextGraph() {
 // has to be informed, because of the player or recorder launched, which have
 // to be stopped immediately.
 /***************************************************************************/
-void CSaView::OnActivateView(BOOL bActivate, CView * pActivateView, CView * pDeactivateView) {
+void CSaView::OnActivateView(BOOL bActivate, CView * pActivateView, CView * pDeactivateView)
+{
     CSaDoc * pDoc = (CSaDoc *)GetDocument(); // get pointer to document
     CView::OnActivateView(bActivate, pActivateView, pDeactivateView);
 
     m_bViewIsActive = bActivate;
-    if (m_pFocusedGraph) {
-        if (m_bViewIsActive) {
+    if (m_pFocusedGraph)
+    {
+        if (m_bViewIsActive)
+        {
             m_pFocusedGraph->SetGraphFocus(TRUE);
         }
         m_pFocusedGraph->RedrawCaption(); // graph has to lose or gain focus too
     }
-    if (bActivate) { // activating
+    if (bActivate)   // activating
+    {
         // inform mainframe
         pViewMainFrame->SendMessage(WM_USER_CHANGEVIEW, TRUE, (LONG)this);
         // process workbench if necessary
-        if (pDoc->WorkbenchProcess()) {
+        if (pDoc->WorkbenchProcess())
+        {
             RefreshGraphs(TRUE, TRUE);
         };
         // redraw statusbar if data is present
-        if (pDoc->GetDataSize() != 0) {
-            if (m_pFocusedGraph) {
+        if (pDoc->GetDataSize() != 0)
+        {
+            if (m_pFocusedGraph)
+            {
                 m_pFocusedGraph->UpdateStatusBar(GetStartCursorPosition(), GetStopCursorPosition(), TRUE);
             }
-        } else { // clear status bar panes
+        }
+        else     // clear status bar panes
+        {
             // get pointer to status bar
             CDataStatusBar * pStat = pViewMainFrame->GetDataStatusBar();
             // turn off symbols
@@ -2474,10 +2850,12 @@ void CSaView::OnActivateView(BOOL bActivate, CView * pActivateView, CView * pDea
 // The mainframe has to be informed, if the last view has been destroyed,
 // because the player or recorder then have to be stopped and closed.
 /***************************************************************************/
-void CSaView::OnDestroy() {
+void CSaView::OnDestroy()
+{
     CView::OnDestroy();
 
-    if (pViewMainFrame->ComputeNumberOfViews(-1) == 0) { // last view destroyed?
+    if (pViewMainFrame->ComputeNumberOfViews(-1) == 0)   // last view destroyed?
+    {
         pViewMainFrame->SendMessage(WM_USER_CHANGEVIEW, FALSE, (LONG)this);    // inform mainframe
     }
 }
@@ -2487,7 +2865,8 @@ void CSaView::OnDestroy() {
 //                  and disabling graph types. The conditions are standard
 //                  conditions for the types.
 /***************************************************************************/
-BOOL CSaView::GraphTypeEnabled(int nID, BOOL bIncludeCtrlKeyCheck) {
+BOOL CSaView::GraphTypeEnabled(int nID, BOOL bIncludeCtrlKeyCheck)
+{
     BOOL bTest = ((GetDocument()->GetDataSize() != 0) &&
                   (m_nFocusedID != IDD_MELOGRAM &&
                    m_nFocusedID != IDD_TWC && nID != IDD_TWC &&
@@ -2496,20 +2875,24 @@ BOOL CSaView::GraphTypeEnabled(int nID, BOOL bIncludeCtrlKeyCheck) {
 
     bTest &= (nID != IDD_RATIO);
 
-    if (bIncludeCtrlKeyCheck) {
+    if (bIncludeCtrlKeyCheck)
+    {
         bTest &= (GetKeyState(VK_CONTROL) < 0);
     }
 
     return bTest;
 }
 
-struct SGraphTypeInfo {
+struct SGraphTypeInfo
+{
     int nID;
     BOOL bIncludeCtrlKeyCheck;
 } ;
 
-static const SGraphTypeInfo * GetGraphTypeInfo(int nID) {
-    static const SGraphTypeInfo kGraphTypeInfo[] = {
+static const SGraphTypeInfo * GetGraphTypeInfo(int nID)
+{
+    static const SGraphTypeInfo kGraphTypeInfo[] =
+    {
         // nID              bCtrl
         {  IDD_3D,          FALSE },
         {  IDD_CEPPITCH,    FALSE },
@@ -2544,8 +2927,10 @@ static const SGraphTypeInfo * GetGraphTypeInfo(int nID) {
         {  NULL,            FALSE },
     };
 
-    for (int i=0; kGraphTypeInfo[i].nID; i++) {
-        if (kGraphTypeInfo[i].nID == nID) {
+    for (int i=0; kGraphTypeInfo[i].nID; i++)
+    {
+        if (kGraphTypeInfo[i].nID == nID)
+        {
             return &kGraphTypeInfo[i];
         }
     }
@@ -2556,8 +2941,10 @@ static const SGraphTypeInfo * GetGraphTypeInfo(int nID) {
 /***************************************************************************/
 // CSaView::OnChangeGraph Change the graph type
 /***************************************************************************/
-void CSaView::OnChangeGraph(UINT nID) {
-    if (GetGraphTypeInfo(nID)) {
+void CSaView::OnChangeGraph(UINT nID)
+{
+    if (GetGraphTypeInfo(nID))
+    {
         ChangeGraph(nID);
     }
 }
@@ -2565,7 +2952,8 @@ void CSaView::OnChangeGraph(UINT nID) {
 /***************************************************************************/
 // CSaView::OnUpdateChangeGraph Menu update
 /***************************************************************************/
-void CSaView::OnUpdateChangeGraph(CCmdUI * pCmdUI) {
+void CSaView::OnUpdateChangeGraph(CCmdUI * pCmdUI)
+{
     const SGraphTypeInfo * pInfo = GetGraphTypeInfo(pCmdUI->m_nID);
     ASSERT(pInfo);
 
@@ -2579,26 +2967,35 @@ void CSaView::OnUpdateChangeGraph(CCmdUI * pCmdUI) {
 /***************************************************************************/
 // 09/27/2000 - DDO
 /***************************************************************************/
-void CSaView::ToggleDpGraph(UINT nID) {
+void CSaView::ToggleDpGraph(UINT nID)
+{
     int i = GetGraphIndexForIDD(nID);
-    if (i >= 0) {
+    if (i >= 0)
+    {
         DeleteGraphs(i);                                               // delete this graph
         MakeGraphArraysContiguous();                                   // clean up the old arrays
-        if (m_apGraphs[0]) {
+        if (m_apGraphs[0])
+        {
             m_apGraphs[0]->SendMessage(WM_LBUTTONDOWN, 0, MAKELONG(0, 0));    // change focus SDM 1.5Test10.6
         }
-    } else {
+    }
+    else
+    {
         // create new graph
-        for (i = 0; i < MAX_GRAPHS_NUMBER; i++) {
-            if (m_anGraphID[i] < nID) {
-                if (m_apGraphs[i]) {
+        for (i = 0; i < MAX_GRAPHS_NUMBER; i++)
+        {
+            if (m_anGraphID[i] < nID)
+            {
+                if (m_apGraphs[i])
+                {
                     DeleteGraphs(i);
                 }
                 m_apGraphs[i] = NULL;
                 m_anGraphID[i] = 0;
                 MakeGraphArraysContiguous();
                 CreateGraph(i, nID);
-                if (m_apGraphs[i]) {
+                if (m_apGraphs[i])
+                {
                     m_apGraphs[i]->SendMessage(WM_LBUTTONDOWN, 0, MAKELONG(0, 0));    // change focus SDM 1.5Test10.6
                 }
                 break;
@@ -2614,7 +3011,8 @@ void CSaView::ToggleDpGraph(UINT nID) {
 /***************************************************************************/
 // 09/27/2000 - DDO
 /***************************************************************************/
-void CSaView::UpdateDpGraphsMenu(CCmdUI * pCmdUI, int nID) {
+void CSaView::UpdateDpGraphsMenu(CCmdUI * pCmdUI, int nID)
+{
     int index = GetGraphIndexForIDD(nID);
     pCmdUI->SetCheck(index >= 0);
     pCmdUI->Enable(GetNumberOfGraphs(&m_anGraphID[0]) > 1 || index == -1);
@@ -2624,13 +3022,15 @@ void CSaView::UpdateDpGraphsMenu(CCmdUI * pCmdUI, int nID) {
 /***************************************************************************/
 // CSaView::OnDpGrapitch Toggle AutoPitch graph
 /***************************************************************************/
-void CSaView::OnDpGrapitch() {
+void CSaView::OnDpGrapitch()
+{
     ToggleDpGraph(IDD_GRAPITCH);
 }
 
 /***************************************************************************/
 /***************************************************************************/
-void CSaView::OnUpdateDpGrapitch(CCmdUI * pCmdUI) {
+void CSaView::OnUpdateDpGrapitch(CCmdUI * pCmdUI)
+{
     UpdateDpGraphsMenu(pCmdUI, IDD_GRAPITCH);
 }
 
@@ -2638,13 +3038,15 @@ void CSaView::OnUpdateDpGrapitch(CCmdUI * pCmdUI) {
 /***************************************************************************/
 // CSaView::OnDpGrapitch Toggle waveform graph
 /***************************************************************************/
-void CSaView::OnDpRawdata() {
+void CSaView::OnDpRawdata()
+{
     ToggleDpGraph(IDD_RAWDATA);
 }
 
 /***************************************************************************/
 /***************************************************************************/
-void CSaView::OnUpdateDpRawdata(CCmdUI * pCmdUI) {
+void CSaView::OnUpdateDpRawdata(CCmdUI * pCmdUI)
+{
     UpdateDpGraphsMenu(pCmdUI, IDD_RAWDATA);
 }
 
@@ -2652,21 +3054,25 @@ void CSaView::OnUpdateDpRawdata(CCmdUI * pCmdUI) {
 /***************************************************************************/
 // CSaView::OnDpGrapitch Toggle Spectrogram graph
 /***************************************************************************/
-void CSaView::OnDpSpectrogram() {
+void CSaView::OnDpSpectrogram()
+{
     ToggleDpGraph(IDD_SPECTROGRAM);
 }
 
 /***************************************************************************/
 /***************************************************************************/
-void CSaView::OnUpdateDpSpectrogram(CCmdUI * pCmdUI) {
+void CSaView::OnUpdateDpSpectrogram(CCmdUI * pCmdUI)
+{
     UpdateDpGraphsMenu(pCmdUI, IDD_SPECTROGRAM);
 }
 
 /***************************************************************************/
 // CSaView::OnPopupgraphGridlines Change gridlines
 /***************************************************************************/
-void CSaView::OnPopupgraphGridlines() {
-    if (m_pFocusedGraph) {
+void CSaView::OnPopupgraphGridlines()
+{
+    if (m_pFocusedGraph)
+    {
         m_pFocusedGraph->ShowGrid(!m_pFocusedGraph->HaveGrid(), TRUE);
     }
 }
@@ -2674,11 +3080,15 @@ void CSaView::OnPopupgraphGridlines() {
 /***************************************************************************/
 // CSaView::OnUpdatePopupgraphGridlines Menu update
 /***************************************************************************/
-void CSaView::OnUpdatePopupgraphGridlines(CCmdUI * pCmdUI) {
+void CSaView::OnUpdatePopupgraphGridlines(CCmdUI * pCmdUI)
+{
     pCmdUI->Enable(m_pFocusedGraph && GetDocument()->GetDataSize() != 0); // enable if data is available
-    if (m_pFocusedGraph) {
+    if (m_pFocusedGraph)
+    {
         pCmdUI->SetCheck(m_pFocusedGraph->HaveGrid());    // check if graph has gridlines
-    } else {
+    }
+    else
+    {
         pCmdUI->SetCheck(FALSE);
     }
 }
@@ -2686,8 +3096,10 @@ void CSaView::OnUpdatePopupgraphGridlines(CCmdUI * pCmdUI) {
 /***************************************************************************/
 // CSaView::OnPopupgraphLegend Show or hide legend window
 /***************************************************************************/
-void CSaView::OnPopupgraphLegend() {
-    if (m_pFocusedGraph) {
+void CSaView::OnPopupgraphLegend()
+{
+    if (m_pFocusedGraph)
+    {
         m_pFocusedGraph->ShowLegend(!m_pFocusedGraph->HaveLegend(), TRUE);
     }
 
@@ -2697,9 +3109,11 @@ void CSaView::OnPopupgraphLegend() {
     // it's legend, then automatically show the legend for
     // the melogram.
     //*****************************************************
-    if (m_nFocusedID == IDD_TWC) {
+    if (m_nFocusedID == IDD_TWC)
+    {
         int i = GetGraphIndexForIDD(IDD_MELOGRAM);
-        if (m_apGraphs[i] && !m_apGraphs[i]->HaveLegend()) {
+        if (m_apGraphs[i] && !m_apGraphs[i]->HaveLegend())
+        {
             m_apGraphs[i]->ShowLegend(TRUE, TRUE);
         }
     }
@@ -2708,15 +3122,20 @@ void CSaView::OnPopupgraphLegend() {
 /***************************************************************************/
 // CSaView::OnUpdatePopupgraphLegend Menu update
 /***************************************************************************/
-void CSaView::OnUpdatePopupgraphLegend(CCmdUI * pCmdUI) {
+void CSaView::OnUpdatePopupgraphLegend(CCmdUI * pCmdUI)
+{
     BOOL bEnable = m_pFocusedGraph && GetDocument()->GetDataSize() != 0;
-    if (bEnable && m_nFocusedID != IDD_MELOGRAM) {
+    if (bEnable && m_nFocusedID != IDD_MELOGRAM)
+    {
         bEnable &= (!m_pFocusedGraph->DisableLegend() || m_pFocusedGraph->HaveLegend());
     }
     pCmdUI->Enable(bEnable);
-    if (m_pFocusedGraph) {
+    if (m_pFocusedGraph)
+    {
         pCmdUI->SetCheck(m_pFocusedGraph->HaveLegend());    // check if graph has legend window
-    } else {
+    }
+    else
+    {
         pCmdUI->SetCheck(FALSE);
     }
 }
@@ -2724,8 +3143,10 @@ void CSaView::OnUpdatePopupgraphLegend(CCmdUI * pCmdUI) {
 /***************************************************************************/
 // CSaView::OnPopupgraphXScale Show or hide x-scale window
 /***************************************************************************/
-void CSaView::OnPopupgraphXScale() {
-    if (m_pFocusedGraph) {
+void CSaView::OnPopupgraphXScale()
+{
+    if (m_pFocusedGraph)
+    {
         m_pFocusedGraph->ShowXScale(!m_pFocusedGraph->HaveXScale(), TRUE);
     }
 }
@@ -2733,12 +3154,16 @@ void CSaView::OnPopupgraphXScale() {
 /***************************************************************************/
 // CSaView::OnUpdatePopupgraphXScale Menu update
 /***************************************************************************/
-void CSaView::OnUpdatePopupgraphXScale(CCmdUI * pCmdUI) {
+void CSaView::OnUpdatePopupgraphXScale(CCmdUI * pCmdUI)
+{
     BOOL bEnable = m_pFocusedGraph && GetDocument()->GetDataSize() != 0 && (m_pFocusedGraph->HaveXScale() || !m_pFocusedGraph->DisableXScale()) && m_nFocusedID != IDD_TWC;
     pCmdUI->Enable(bEnable);
-    if (m_pFocusedGraph) {
+    if (m_pFocusedGraph)
+    {
         pCmdUI->SetCheck(m_pFocusedGraph->HaveXScale());    // check if graph has x-scale window
-    } else {
+    }
+    else
+    {
         pCmdUI->SetCheck(FALSE);
     }
 }
@@ -2752,15 +3177,19 @@ void CSaView::OnUpdatePopupgraphXScale(CCmdUI * pCmdUI) {
 //                  current view when the view is first being started up.
 //                  I don't understand what the deal is.
 /***************************************************************************/
-void CSaView::ShowAnnotation(int nAnnot) {
+void CSaView::ShowAnnotation(int nAnnot)
+{
 
-    if (m_pFocusedGraph) {
-        m_pFocusedGraph->ShowAnnotation(nAnnot, !m_pFocusedGraph->HaveAnnotation(nAnnot), TRUE);
+    if (m_pFocusedGraph)
+    {
+        m_pFocusedGraph->ShowAnnotation(nAnnot, (!m_pFocusedGraph->HaveAnnotation(nAnnot)), TRUE);
     }
-    if (m_nFocusedID == IDD_MELOGRAM) {
+    if (m_nFocusedID == IDD_MELOGRAM)
+    {
         int i = GetGraphIndexForIDD(IDD_TWC);
-        if ((i != -1) && m_apGraphs[i]) {
-            m_apGraphs[i]->ShowAnnotation(nAnnot, !m_apGraphs[i]->HaveAnnotation(nAnnot), TRUE);
+        if ((i != -1) && (m_apGraphs[i]))
+        {
+            m_apGraphs[i]->ShowAnnotation(nAnnot, (!m_apGraphs[i]->HaveAnnotation(nAnnot)), TRUE);
         }
     }
 }
@@ -2769,11 +3198,14 @@ void CSaView::ShowAnnotation(int nAnnot) {
 /***************************************************************************/
 // CSaView::OnGraphsMagnify1 Set magnify factor
 /***************************************************************************/
-void CSaView::OnGraphsMagnify1() {
+void CSaView::OnGraphsMagnify1()
+{
     m_fMagnify = 1.0;
     // set graphs magnify
-    for (int nLoop = 0; nLoop < MAX_GRAPHS_NUMBER; nLoop++) {
-        if (m_apGraphs[nLoop]) {
+    for (int nLoop = 0; nLoop < MAX_GRAPHS_NUMBER; nLoop++)
+    {
+        if (m_apGraphs[nLoop])
+        {
             m_apGraphs[nLoop]->SetMagnify(m_fMagnify, TRUE);
         }
     }
@@ -2782,7 +3214,8 @@ void CSaView::OnGraphsMagnify1() {
 /***************************************************************************/
 // CSaView::OnUpdateGraphsMagnify1 Menu update
 /***************************************************************************/
-void CSaView::OnUpdateGraphsMagnify1(CCmdUI * pCmdUI) {
+void CSaView::OnUpdateGraphsMagnify1(CCmdUI * pCmdUI)
+{
     pCmdUI->Enable(GetDocument()->GetDataSize() != 0); // enable if data is available
     pCmdUI->SetCheck(m_fMagnify == 1.0); // check if factor matches
 }
@@ -2790,11 +3223,14 @@ void CSaView::OnUpdateGraphsMagnify1(CCmdUI * pCmdUI) {
 /***************************************************************************/
 // CSaView::OnGraphsMagnify2 Set magnify factor
 /***************************************************************************/
-void CSaView::OnGraphsMagnify2() {
+void CSaView::OnGraphsMagnify2()
+{
     m_fMagnify = 2.0;
     // set graphs magnify
-    for (int nLoop = 0; nLoop < MAX_GRAPHS_NUMBER; nLoop++) {
-        if (m_apGraphs[nLoop]) {
+    for (int nLoop = 0; nLoop < MAX_GRAPHS_NUMBER; nLoop++)
+    {
+        if (m_apGraphs[nLoop])
+        {
             m_apGraphs[nLoop]->SetMagnify(m_fMagnify, TRUE);
         }
     }
@@ -2803,7 +3239,8 @@ void CSaView::OnGraphsMagnify2() {
 /***************************************************************************/
 // CSaView::OnUpdateGraphsMagnify2 Menu update
 /***************************************************************************/
-void CSaView::OnUpdateGraphsMagnify2(CCmdUI * pCmdUI) {
+void CSaView::OnUpdateGraphsMagnify2(CCmdUI * pCmdUI)
+{
     pCmdUI->Enable(GetDocument()->GetDataSize() != 0); // enable if data is available
     pCmdUI->SetCheck(m_fMagnify == 2.0); // check if factor matches
 }
@@ -2811,11 +3248,14 @@ void CSaView::OnUpdateGraphsMagnify2(CCmdUI * pCmdUI) {
 /***************************************************************************/
 // CSaView::OnGraphsMagnify4 Set magnify factor
 /***************************************************************************/
-void CSaView::OnGraphsMagnify4() {
+void CSaView::OnGraphsMagnify4()
+{
     m_fMagnify = 4.0;
     // set graphs magnify
-    for (int nLoop = 0; nLoop < MAX_GRAPHS_NUMBER; nLoop++) {
-        if (m_apGraphs[nLoop]) {
+    for (int nLoop = 0; nLoop < MAX_GRAPHS_NUMBER; nLoop++)
+    {
+        if (m_apGraphs[nLoop])
+        {
             m_apGraphs[nLoop]->SetMagnify(m_fMagnify, TRUE);
         }
     }
@@ -2824,7 +3264,8 @@ void CSaView::OnGraphsMagnify4() {
 /***************************************************************************/
 // CSaView::OnUpdateGraphsMagnify4 Menu update
 /***************************************************************************/
-void CSaView::OnUpdateGraphsMagnify4(CCmdUI * pCmdUI) {
+void CSaView::OnUpdateGraphsMagnify4(CCmdUI * pCmdUI)
+{
     pCmdUI->Enable(GetDocument()->GetDataSize() != 0); // enable if data is available
     pCmdUI->SetCheck(m_fMagnify == 4.0); // check if factor matches
 }
@@ -2832,15 +3273,19 @@ void CSaView::OnUpdateGraphsMagnify4(CCmdUI * pCmdUI) {
 /***************************************************************************/
 // CSaView::OnGraphsMagnifycustom Set magnify factor
 /***************************************************************************/
-void CSaView::OnGraphsMagnifycustom() {
+void CSaView::OnGraphsMagnifycustom()
+{
     // input dialog
     CDlgMagnify * pDlgMagnify = new CDlgMagnify;
     pDlgMagnify->m_fMagnify = m_fMagnify;
-    if (pDlgMagnify->DoModal() == IDOK) {
+    if (pDlgMagnify->DoModal() == IDOK)
+    {
         m_fMagnify = pDlgMagnify->m_fMagnify;
         // set graphs magnify
-        for (int nLoop = 0; nLoop < MAX_GRAPHS_NUMBER; nLoop++) {
-            if (m_apGraphs[nLoop]) {
+        for (int nLoop = 0; nLoop < MAX_GRAPHS_NUMBER; nLoop++)
+        {
+            if (m_apGraphs[nLoop])
+            {
                 m_apGraphs[nLoop]->SetMagnify(m_fMagnify, TRUE);
             }
         }
@@ -2851,7 +3296,8 @@ void CSaView::OnGraphsMagnifycustom() {
 /***************************************************************************/
 // CSaView::OnUpdateGraphsMagnifycustom Menu update
 /***************************************************************************/
-void CSaView::OnUpdateGraphsMagnifycustom(CCmdUI * pCmdUI) {
+void CSaView::OnUpdateGraphsMagnifycustom(CCmdUI * pCmdUI)
+{
     pCmdUI->Enable(GetDocument()->GetDataSize() != 0); // enable if data is available
     pCmdUI->SetCheck((m_fMagnify != 1.0) // check if factor does not match
                      && (m_fMagnify != 2.0)
@@ -2861,8 +3307,10 @@ void CSaView::OnUpdateGraphsMagnifycustom(CCmdUI * pCmdUI) {
 /***************************************************************************/
 // CSaView::OnPopupgraphMagnify1 Set magnify factor for graph
 /***************************************************************************/
-void CSaView::OnPopupgraphMagnify1() {
-    if (m_pFocusedGraph) {
+void CSaView::OnPopupgraphMagnify1()
+{
+    if (m_pFocusedGraph)
+    {
         m_pFocusedGraph->SetMagnify(1.0, TRUE);
     }
 }
@@ -2870,7 +3318,8 @@ void CSaView::OnPopupgraphMagnify1() {
 /***************************************************************************/
 // CSaView::OnUpdatePopupgraphMagnify1 Menu update
 /***************************************************************************/
-void CSaView::OnUpdatePopupgraphMagnify1(CCmdUI * pCmdUI) {
+void CSaView::OnUpdatePopupgraphMagnify1(CCmdUI * pCmdUI)
+{
     pCmdUI->Enable(m_pFocusedGraph // enable if focused graph
                    && (GetDocument()->GetDataSize() != 0) // enable if data is available
                    && (m_nFocusedID != IDD_SPECTROGRAM) // enable if graph is not this type
@@ -2894,7 +3343,8 @@ void CSaView::OnUpdatePopupgraphMagnify1(CCmdUI * pCmdUI) {
                          || (m_nFocusedID == IDD_SDP_A) // check if graph is this type
                          || (m_nFocusedID == IDD_SDP_B) // check if graph is this type
                          || (m_nFocusedID == IDD_INVSDP)); // check if graph is this type
-    else {
+    else
+    {
         pCmdUI->SetCheck(FALSE);
     }
 }
@@ -2902,8 +3352,10 @@ void CSaView::OnUpdatePopupgraphMagnify1(CCmdUI * pCmdUI) {
 /***************************************************************************/
 // CSaView::OnPopupgraphMagnify2 Set magnify factor for focused graph
 /***************************************************************************/
-void CSaView::OnPopupgraphMagnify2() {
-    if (m_pFocusedGraph) {
+void CSaView::OnPopupgraphMagnify2()
+{
+    if (m_pFocusedGraph)
+    {
         m_pFocusedGraph->SetMagnify(2.0, TRUE);
     }
 }
@@ -2911,7 +3363,8 @@ void CSaView::OnPopupgraphMagnify2() {
 /***************************************************************************/
 // CSaView::OnUpdatePopupgraphMagnify2 Menu update
 /***************************************************************************/
-void CSaView::OnUpdatePopupgraphMagnify2(CCmdUI * pCmdUI) {
+void CSaView::OnUpdatePopupgraphMagnify2(CCmdUI * pCmdUI)
+{
     pCmdUI->Enable(m_pFocusedGraph // enable if focused graph
                    && (GetDocument()->GetDataSize() != 0) // enable if data is available
                    && (m_nFocusedID != IDD_SPECTROGRAM) // enable if graph is not this type
@@ -2935,7 +3388,8 @@ void CSaView::OnUpdatePopupgraphMagnify2(CCmdUI * pCmdUI) {
                          && (m_nFocusedID != IDD_SDP_A) // check only if graph is not this type
                          && (m_nFocusedID != IDD_SDP_B) // check only if graph is not this type
                          && (m_nFocusedID != IDD_INVSDP)); // check only if graph is not this type
-    else {
+    else
+    {
         pCmdUI->SetCheck(FALSE);
     }
 }
@@ -2943,8 +3397,10 @@ void CSaView::OnUpdatePopupgraphMagnify2(CCmdUI * pCmdUI) {
 /***************************************************************************/
 // CSaView::OnPopupgraphMagnify4 Set magnify factor for focused graph
 /***************************************************************************/
-void CSaView::OnPopupgraphMagnify4() {
-    if (m_pFocusedGraph) {
+void CSaView::OnPopupgraphMagnify4()
+{
+    if (m_pFocusedGraph)
+    {
         m_pFocusedGraph->SetMagnify(4.0, TRUE);
     }
 }
@@ -2952,7 +3408,8 @@ void CSaView::OnPopupgraphMagnify4() {
 /***************************************************************************/
 // CSaView::OnUpdatePopupgraphMagnify4 Menu update
 /***************************************************************************/
-void CSaView::OnUpdatePopupgraphMagnify4(CCmdUI * pCmdUI) {
+void CSaView::OnUpdatePopupgraphMagnify4(CCmdUI * pCmdUI)
+{
     pCmdUI->Enable(m_pFocusedGraph // enable if focused graph
                    && (GetDocument()->GetDataSize() != 0) // enable if data is available
                    && (m_nFocusedID != IDD_SPECTROGRAM) // enable if graph is not this type
@@ -2976,7 +3433,8 @@ void CSaView::OnUpdatePopupgraphMagnify4(CCmdUI * pCmdUI) {
                          && (m_nFocusedID != IDD_SDP_A) // check only if graph is not this type
                          && (m_nFocusedID != IDD_SDP_B) // check only if graph is not this type
                          && (m_nFocusedID != IDD_INVSDP)); // check only if graph is not this type
-    else {
+    else
+    {
         pCmdUI->SetCheck(FALSE);
     }
 }
@@ -2984,15 +3442,18 @@ void CSaView::OnUpdatePopupgraphMagnify4(CCmdUI * pCmdUI) {
 /***************************************************************************/
 // CSaView::OnPopupgraphMagnifycustom Set magnify factor for focused graph
 /***************************************************************************/
-void CSaView::OnPopupgraphMagnifycustom() {
-    if (!m_pFocusedGraph) {
+void CSaView::OnPopupgraphMagnifycustom()
+{
+    if (!m_pFocusedGraph)
+    {
         return;
     }
 
     // input dialog
     CDlgMagnify * pDlgMagnify = new CDlgMagnify;
     pDlgMagnify->m_fMagnify = m_pFocusedGraph->GetMagnify();
-    if (pDlgMagnify->DoModal() == IDOK) {
+    if (pDlgMagnify->DoModal() == IDOK)
+    {
         m_pFocusedGraph->SetMagnify(pDlgMagnify->m_fMagnify, TRUE);
     }
     delete pDlgMagnify;
@@ -3001,7 +3462,8 @@ void CSaView::OnPopupgraphMagnifycustom() {
 /***************************************************************************/
 // CSaView::OnUpdatePopupgraphMagnifycustom Menu update
 /***************************************************************************/
-void CSaView::OnUpdatePopupgraphMagnifycustom(CCmdUI * pCmdUI) {
+void CSaView::OnUpdatePopupgraphMagnifycustom(CCmdUI * pCmdUI)
+{
     pCmdUI->Enable(m_pFocusedGraph // enable if focused graph
                    && (GetDocument()->GetDataSize() != 0) // enable if data is available
                    && (m_nFocusedID != IDD_SPECTROGRAM) // enable if graph is not this type
@@ -3027,7 +3489,8 @@ void CSaView::OnUpdatePopupgraphMagnifycustom(CCmdUI * pCmdUI) {
                          && (m_nFocusedID != IDD_SDP_A) // check only if graph is not this type
                          && (m_nFocusedID != IDD_SDP_B) // check only if graph is not this type
                          && (m_nFocusedID != IDD_INVSDP)); // check only if graph is not this type
-    else {
+    else
+    {
         pCmdUI->SetCheck(FALSE);
     }
 }
@@ -3035,23 +3498,29 @@ void CSaView::OnUpdatePopupgraphMagnifycustom(CCmdUI * pCmdUI) {
 /***************************************************************************/
 // CSaView::OnRestartProcess Restart the canceled process
 /***************************************************************************/
-void CSaView::OnRestartProcess() {
+void CSaView::OnRestartProcess()
+{
     // invoked via Recalc button on area graph or Enter key on non-area graph
-    for (int nLoop = 0; nLoop < MAX_GRAPHS_NUMBER; nLoop++) {
-        if (m_apGraphs[nLoop]) {
-            if (!m_apGraphs[nLoop]->IsAreaGraph() && m_apGraphs[nLoop]->IsCanceled()) {
+    for (int nLoop = 0; nLoop < MAX_GRAPHS_NUMBER; nLoop++)
+    {
+        if (m_apGraphs[nLoop])
+        {
+            if (!m_apGraphs[nLoop]->IsAreaGraph() && m_apGraphs[nLoop]->IsCanceled())
+            {
                 m_apGraphs[nLoop]->RestartProcess();    // restart all canceled non-area graphs
             }
             // process results may be needed by area graph,
             // so restart even if the function is invoked
             // via Recalc
-            if (m_apGraphs[nLoop]->IsPlotID(IDD_SNAPSHOT)) {
+            if (m_apGraphs[nLoop]->IsPlotID(IDD_SNAPSHOT))
+            {
                 // restart area graph process only if graph has focus
                 m_apGraphs[nLoop]->RestartProcess();
             }
         }
     }
-    if (m_pFocusedGraph && m_pFocusedGraph->IsAreaGraph() && !m_pFocusedGraph->IsPlotID(IDD_SNAPSHOT)) {
+    if (m_pFocusedGraph && m_pFocusedGraph->IsAreaGraph() && !m_pFocusedGraph->IsPlotID(IDD_SNAPSHOT))
+    {
         // restart area graph process only if graph has focus
         m_pFocusedGraph->RestartProcess();
     }
@@ -3062,13 +3531,16 @@ void CSaView::OnRestartProcess() {
 /***************************************************************************/
 // CSaView::OnUpdateRestartProcess Menu update
 /***************************************************************************/
-void CSaView::OnUpdateRestartProcess(CCmdUI * pCmdUI) {
+void CSaView::OnUpdateRestartProcess(CCmdUI * pCmdUI)
+{
     BOOL bEnable = GetDocument()->AnyProcessCanceled();
-    if (m_pFocusedGraph && m_pFocusedGraph->IsAreaGraph()  && !m_pFocusedGraph->IsPlotID(IDD_RECORDING)) {
+    if (m_pFocusedGraph && m_pFocusedGraph->IsAreaGraph()  && !m_pFocusedGraph->IsPlotID(IDD_RECORDING))
+    {
         // restart area graph process only if graph has focus
         bEnable = TRUE;
     }
-    if (GraphIDtoPtr(IDD_SNAPSHOT)) {
+    if (GraphIDtoPtr(IDD_SNAPSHOT))
+    {
         bEnable = TRUE;
     }
 
@@ -3078,15 +3550,20 @@ void CSaView::OnUpdateRestartProcess(CCmdUI * pCmdUI) {
 /***************************************************************************/
 // CSaView::OnEditSelectWaveform Select Waveform data between cursors
 /***************************************************************************/
-void CSaView::OnEditSelectWaveform() {
+void CSaView::OnEditSelectWaveform()
+{
     // select/deselect raw data area
     int i = GetGraphIndexForIDD(IDD_RAWDATA);
 
-    if (i >= 0 && m_apGraphs[i]) {
+    if (i >= 0 && m_apGraphs[i])
+    {
         // check if already area selected
-        if (m_apGraphs[i]->GetPlot()->GetHighLightLength()) {
+        if (m_apGraphs[i]->GetPlot()->GetHighLightLength())
+        {
             m_apGraphs[i]->GetPlot()->SetHighLightArea(0, 0);    // deselect
-        } else {
+        }
+        else
+        {
             m_apGraphs[i]->GetPlot()->SetHighLightArea(GetStartCursorPosition(), GetStopCursorPosition());    // select
         }
     }
@@ -3095,54 +3572,64 @@ void CSaView::OnEditSelectWaveform() {
 /***************************************************************************/
 // CSaView::OnEditSelectWaveform Select Waveform data between cursors
 /***************************************************************************/
-void CSaView::OnEditSelectWaveformFake() {
+void CSaView::OnEditSelectWaveformFake()
+{
 }
 
 /***************************************************************************/
 // CSaView::OnUpdateEditSelectWaveform Select Waveform data between cursors
 /***************************************************************************/
-void CSaView::OnUpdateEditSelectWaveform(CCmdUI * pCmdUI) {
+void CSaView::OnUpdateEditSelectWaveform(CCmdUI * pCmdUI)
+{
     pCmdUI->Enable(true);
 }
 
 /***************************************************************************/
 // CSaView::OnPlayFKey Playback according to function key setting
 /***************************************************************************/
-void CSaView::OnPlayFKey(UINT nID) {
+void CSaView::OnPlayFKey(UINT nID)
+{
     SendPlayMessage(WORD(nID - ID_PLAY_F1), WORD(-1)); // send message to start player
 }
 
 /***************************************************************************/
 // CSaView::OnUpdatePlayback Menu update
 /***************************************************************************/
-void CSaView::OnUpdatePlayback(CCmdUI * pCmdUI) {
+void CSaView::OnUpdatePlayback(CCmdUI * pCmdUI)
+{
     pCmdUI->Enable(GetDocument()->GetDataSize() != 0); // enable if data is available
 }
 
 /***************************************************************************/
 // CSaView::OnUpdatePlayback Menu update
 /***************************************************************************/
-void CSaView::OnUpdatePlaybackPortion(CCmdUI * pCmdUI) {
-    if (GetDocument()->GetDataSize()==0) {
+void CSaView::OnUpdatePlaybackPortion(CCmdUI * pCmdUI)
+{
+    if (GetDocument()->GetDataSize()==0)
+    {
         pCmdUI->Enable(FALSE);
         return;
     }
 
     CMainFrame * pMain = (CMainFrame *)AfxGetMainWnd();
     CDlgPlayer * pPlayer = pMain->GetPlayer(false);
-    if (pPlayer==NULL) {
+    if (pPlayer==NULL)
+    {
         pCmdUI->Enable(TRUE);
         return;
     }
 
-    if (pPlayer->IsPaused()) {
-        if (pCmdUI->m_nID!=pPlayer->GetSubmode()) {
+    if (pPlayer->IsPaused())
+    {
+        if (pCmdUI->m_nID!=pPlayer->GetSubmode())
+        {
             pCmdUI->Enable(FALSE);
             return;
         }
     }
 
-    if (pPlayer->IsPlaying()) {
+    if (pPlayer->IsPlaying())
+    {
         pCmdUI->Enable(FALSE);
         return;
     }
@@ -3153,7 +3640,8 @@ void CSaView::OnUpdatePlaybackPortion(CCmdUI * pCmdUI) {
 /***************************************************************************/
 // CSaView::OnSetupFnkeys Calls the player and the setup Fn-keys dialog
 /***************************************************************************/
-void CSaView::OnSetupFnkeys() {
+void CSaView::OnSetupFnkeys()
+{
     pViewMainFrame->SendMessage(WM_USER_PLAYER, CDlgPlayer::STOPPED, MAKELONG(-1, FALSE));
     pViewMainFrame->SetupFunctionKeys();
 }
@@ -3161,15 +3649,18 @@ void CSaView::OnSetupFnkeys() {
 /***************************************************************************/
 // CSaView::OnUpdateSetupFnkeys Menu update
 /***************************************************************************/
-void CSaView::OnUpdateSetupFnkeys(CCmdUI * pCmdUI) {
+void CSaView::OnUpdateSetupFnkeys(CCmdUI * pCmdUI)
+{
     pCmdUI->Enable(GetDocument()->GetDataSize() != 0); // enable if data is available
 }
 
 /***************************************************************************/
 // CSaView::GetAnnotation - returns a pointer tothe annotation number annotSetID.
 /***************************************************************************/
-CSegment * CSaView::GetAnnotation(int annotSetID) {
-    if ((annotSetID >= 0) && (annotSetID < ANNOT_WND_NUMBER)) {
+CSegment * CSaView::GetAnnotation(int annotSetID)
+{
+    if ((annotSetID >= 0) && (annotSetID < ANNOT_WND_NUMBER))
+    {
         return GetDocument()->GetSegment(annotSetID);
     }
 
@@ -3179,14 +3670,16 @@ CSegment * CSaView::GetAnnotation(int annotSetID) {
 /***************************************************************************/
 // CSaView::GetAnnotation - returns a pointer tothe annotation number annotSetID.
 /***************************************************************************/
-CSegment * CSaView::GetAnnotation(EAnnotation annot) {
+CSegment * CSaView::GetAnnotation(EAnnotation annot)
+{
     return GetDocument()->GetSegment(annot);
 }
 
 /***************************************************************************/
 // CSaView::OnFilePrint
 /***************************************************************************/
-void CSaView::OnFilePrint() {
+void CSaView::OnFilePrint()
+{
     pViewMainFrame->UpdateWindow();      // Repaint window in case a screen shot print is requested
     pViewMainFrame->SetPrintingFlag();
     CView::OnFilePrint();
@@ -3195,7 +3688,8 @@ void CSaView::OnFilePrint() {
 /***************************************************************************/
 // CSaView::OnFilePrintPreview
 /***************************************************************************/
-void CSaView::OnFilePrintPreview() {
+void CSaView::OnFilePrintPreview()
+{
     pViewMainFrame->UpdateWindow();
     pViewMainFrame->SetPrintingFlag();
     m_bPrintPreviewInProgress = TRUE;
@@ -3206,8 +3700,10 @@ void CSaView::OnFilePrintPreview() {
 
 /***************************************************************************/
 /***************************************************************************/
-BOOL CSaView::IsFocusGraph(UINT id) {
-    if (m_nFocusedID==ID_GRAPHS_OVERLAY) {
+BOOL CSaView::IsFocusGraph(UINT id)
+{
+    if (m_nFocusedID==ID_GRAPHS_OVERLAY)
+    {
         return GraphIDtoPtr(m_nFocusedID)->IsIDincluded(id);
     }
 
@@ -3217,9 +3713,11 @@ BOOL CSaView::IsFocusGraph(UINT id) {
 
 /***************************************************************************/
 /***************************************************************************/
-UINT CSaView::GraphPtrtoID(CGraphWnd * pGraph) {
+UINT CSaView::GraphPtrtoID(CGraphWnd * pGraph)
+{
     int offset = GraphPtrToOffset(pGraph);
-    if (offset >= 0) {
+    if (offset >= 0)
+    {
         return m_anGraphID[offset];
     }
     return UINT(-1);
@@ -3227,9 +3725,12 @@ UINT CSaView::GraphPtrtoID(CGraphWnd * pGraph) {
 
 /***************************************************************************/
 /***************************************************************************/
-int CSaView::GraphPtrToOffset(CGraphWnd * pGraph) {
-    for (int nLoop = 0; nLoop < MAX_GRAPHS_NUMBER; nLoop++) {
-        if (m_apGraphs[nLoop] == pGraph) {
+int CSaView::GraphPtrToOffset(CGraphWnd * pGraph)
+{
+    for (int nLoop = 0; nLoop < MAX_GRAPHS_NUMBER; nLoop++)
+    {
+        if (m_apGraphs[nLoop] == pGraph)
+        {
             return nLoop;
         }
     }
@@ -3238,9 +3739,12 @@ int CSaView::GraphPtrToOffset(CGraphWnd * pGraph) {
 
 /***************************************************************************/
 /***************************************************************************/
-CGraphWnd * CSaView::GraphIDtoPtr(UINT id) {
-    for (int nLoop=0; nLoop<MAX_GRAPHS_NUMBER; nLoop++) {
-        if (m_anGraphID[nLoop] == id) {
+CGraphWnd * CSaView::GraphIDtoPtr(UINT id)
+{
+    for (int nLoop=0; nLoop<MAX_GRAPHS_NUMBER; nLoop++)
+    {
+        if (m_anGraphID[nLoop] == id)
+        {
             return m_apGraphs[nLoop];
         }
     }
@@ -3249,9 +3753,12 @@ CGraphWnd * CSaView::GraphIDtoPtr(UINT id) {
 
 /***************************************************************************/
 /***************************************************************************/
-BOOL CSaView::GraphIDincluded(UINT id) {
-    for (int nLoop=0; nLoop<MAX_GRAPHS_NUMBER; nLoop++) {
-        if (id == m_anGraphID[nLoop]) {
+BOOL CSaView::GraphIDincluded(UINT id)
+{
+    for (int nLoop=0; nLoop<MAX_GRAPHS_NUMBER; nLoop++)
+    {
+        if (id == m_anGraphID[nLoop])
+        {
             return TRUE;
         }
     }
@@ -3260,21 +3767,26 @@ BOOL CSaView::GraphIDincluded(UINT id) {
 
 /***************************************************************************/
 /***************************************************************************/
-void CSaView::OnAddOverlay() {
+void CSaView::OnAddOverlay()
+{
     // if the focused graph is mergeable, bring up a list of all other
     // graphs that can be merged with it, (m_pPickOverlay) then
     // call ChangeGraph to merge them in.
-    if (m_pFocusedGraph && CGraphWnd::IsMergeableGraph(m_pFocusedGraph, TRUE)) {
+    if (m_pFocusedGraph && CGraphWnd::IsMergeableGraph(m_pFocusedGraph, TRUE))
+    {
         CSaDoc * pDoc = GetDocument(); // get pointer to document
         m_pPickOverlay->ResetGraphsPtr();
 
         //      m_pPickOverlay->SetGraphsPtr(m_apGraphs, m_pFocusedGraph);
         POSITION position = pDoc->GetTemplate()->GetFirstDocPosition();
-        while (position != NULL) {
+        while (position != NULL)
+        {
             CDocument * pNextDoc = pDoc->GetTemplate()->GetNextDoc(position); // get pointer to document
-            if (pNextDoc) {
+            if (pNextDoc)
+            {
                 POSITION pos = pNextDoc->GetFirstViewPosition();
-                while (pos != NULL) {
+                while (pos != NULL)
+                {
                     CSaView * pView = (CSaView *)(pNextDoc->GetNextView(pos));
                     m_pPickOverlay->SetGraphsPtr(pView->m_apGraphs, m_pFocusedGraph);
                 }
@@ -3282,7 +3794,8 @@ void CSaView::OnAddOverlay() {
         }
 
         if ((m_pPickOverlay->DoModal()==IDOK) &&
-                (m_pPickOverlay->GraphsCount())) {
+                (m_pPickOverlay->GraphsCount()))
+        {
             ChangeGraph(ID_GRAPHS_OVERLAY);
         }
 
@@ -3291,26 +3804,32 @@ void CSaView::OnAddOverlay() {
 
 /***************************************************************************/
 /***************************************************************************/
-void CSaView::OnUpdateAddOverlay(CCmdUI * pCmdUI) {
+void CSaView::OnUpdateAddOverlay(CCmdUI * pCmdUI)
+{
     BOOL enable = FALSE;
 
-    if (m_pFocusedGraph && CGraphWnd::IsMergeableGraph(m_pFocusedGraph, TRUE)) {
+    if (m_pFocusedGraph && CGraphWnd::IsMergeableGraph(m_pFocusedGraph, TRUE))
+    {
         m_pPickOverlay->ResetGraphsPtr();
 
         //      m_pPickOverlay->SetGraphsPtr(m_apGraphs, m_pFocusedGraph);
         POSITION position = GetDocument()->GetTemplate()->GetFirstDocPosition();
-        while (position != NULL) {
+        while (position != NULL)
+        {
             CDocument * pDoc = GetDocument()->GetTemplate()->GetNextDoc(position); // get pointer to document
-            if (pDoc) {
+            if (pDoc)
+            {
                 POSITION pos = pDoc->GetFirstViewPosition();
-                while (pos != NULL) {
+                while (pos != NULL)
+                {
                     CSaView * pView = (CSaView *)(pDoc->GetNextView(pos));
                     m_pPickOverlay->SetGraphsPtr(pView->m_apGraphs, m_pFocusedGraph);
                 }
             }
         }
 
-        if (m_pPickOverlay->GraphsCount()) {
+        if (m_pPickOverlay->GraphsCount())
+        {
             enable = TRUE;
         }
     }
@@ -3320,41 +3839,58 @@ void CSaView::OnUpdateAddOverlay(CCmdUI * pCmdUI) {
 
 /***************************************************************************/
 /***************************************************************************/
-void CSaView::OnRemoveOverlay() {
-    if (m_pFocusedGraph && (m_nFocusedID == ID_GRAPHS_OVERLAY)) {
+void CSaView::OnRemoveOverlay()
+{
+    if (m_pFocusedGraph && (m_nFocusedID == ID_GRAPHS_OVERLAY))
+    {
         m_pPickOverlay->ResetPlots();
         CMultiPlotWnd * pMPlot = (CMultiPlotWnd *)(m_pFocusedGraph->GetPlot());
         POSITION pos = pMPlot->m_List.GetHeadPosition();
-        while (pos) {
+        while (pos)
+        {
             CPlotWndInfo * pInfo = pMPlot->m_List.GetNext(pos);
             m_pPickOverlay->AddPlot(pInfo->m_pPlot, pInfo->m_pDoc->GetPathName());
         }
 
-        if (m_pPickOverlay->DoModal()==IDOK) {
-            for (int i=(pMPlot->m_List.GetCount()-1); i>=0; i--) {
-                if (m_pPickOverlay->IsItemSelected(i)) {
+        if (m_pPickOverlay->DoModal()==IDOK)
+        {
+            for (int i=(pMPlot->m_List.GetCount()-1); i>=0; i--)
+            {
+                if (m_pPickOverlay->IsItemSelected(i))
+                {
                     m_pFocusedGraph->RemoveOverlayItem(m_pPickOverlay->GetPlot(i));
                 }
             }
             int numPlots = pMPlot->GetNumPlots();
-            if (numPlots > 1) {
+            if (numPlots > 1)
+            {
                 m_pFocusedGraph->RedrawGraph(TRUE, TRUE, TRUE);
-            } else {
-                if (numPlots == 0) {
+            }
+            else
+            {
+                if (numPlots == 0)
+                {
                     ChangeGraph(IDD_BLANK);
-                } else {
+                }
+                else
+                {
                     ASSERT(numPlots==1);
                     UINT plotID = pMPlot->GetBasePlotID();
 
                     int nLoop;
-                    for (nLoop = 0; nLoop < MAX_GRAPHS_NUMBER; nLoop++) {
-                        if (m_anGraphID[nLoop] == plotID) {
+                    for (nLoop = 0; nLoop < MAX_GRAPHS_NUMBER; nLoop++)
+                    {
+                        if (m_anGraphID[nLoop] == plotID)
+                        {
                             break; // graph exists already
                         }
                     }
-                    if (nLoop >= MAX_GRAPHS_NUMBER) {
+                    if (nLoop >= MAX_GRAPHS_NUMBER)
+                    {
                         ChangeGraph(plotID);
-                    } else {
+                    }
+                    else
+                    {
                         // since the last graph already exists and we don't
                         // wan't to create two of them, we will just make it a blank graph.
                         ChangeGraph(IDD_BLANK);
@@ -3367,21 +3903,28 @@ void CSaView::OnRemoveOverlay() {
 
 /***************************************************************************/
 /***************************************************************************/
-void CSaView::OnRemoveOverlays() {
-    if (m_pFocusedGraph && (m_nFocusedID == ID_GRAPHS_OVERLAY)) {
+void CSaView::OnRemoveOverlays()
+{
+    if (m_pFocusedGraph && (m_nFocusedID == ID_GRAPHS_OVERLAY))
+    {
         CMultiPlotWnd * pMPlot = (CMultiPlotWnd *)(m_pFocusedGraph->GetPlot());
 
         UINT plotID = pMPlot->GetBasePlotID();
 
         int nLoop;
-        for (nLoop = 0; nLoop < MAX_GRAPHS_NUMBER; nLoop++) {
-            if (m_anGraphID[nLoop] == plotID) {
+        for (nLoop = 0; nLoop < MAX_GRAPHS_NUMBER; nLoop++)
+        {
+            if (m_anGraphID[nLoop] == plotID)
+            {
                 break; // graph exists already
             }
         }
-        if (nLoop >= MAX_GRAPHS_NUMBER) {
+        if (nLoop >= MAX_GRAPHS_NUMBER)
+        {
             ChangeGraph(plotID);
-        } else {
+        }
+        else
+        {
             // since the last graph already exists and we don't
             // wan't to create two of them, we will just make it a blank graph.
             ChangeGraph(IDD_BLANK);
@@ -3391,18 +3934,21 @@ void CSaView::OnRemoveOverlays() {
 
 /***************************************************************************/
 /***************************************************************************/
-void CSaView::OnUpdateRemoveOverlay(CCmdUI * pCmdUI) {
+void CSaView::OnUpdateRemoveOverlay(CCmdUI * pCmdUI)
+{
     pCmdUI->Enable(m_nFocusedID == ID_GRAPHS_OVERLAY);
     pCmdUI->SetCheck(FALSE);
 }
 
 /***************************************************************************/
 /***************************************************************************/
-void CSaView::ShowInitialStateAndZ() {
+void CSaView::ShowInitialStateAndZ()
+{
     CMDIChildWnd * pwnd = pwndChildFrame();
 
     // Minimize this window if it had been when SA was closed.
-    if (m_eInitialShowCmd == SW_SHOWMINIMIZED) {
+    if (m_eInitialShowCmd == SW_SHOWMINIMIZED)
+    {
         pwnd->ShowWindow(m_eInitialShowCmd);
     }
 
@@ -3413,12 +3959,14 @@ void CSaView::ShowInitialStateAndZ() {
 
     CSaView * pview = pSaApp->GetViewBelow(this);
     for (; pview; pview = pSaApp->GetViewBelow(pview))
-        if (zThis < pview->GetZ()) {
+        if (zThis < pview->GetZ())
+        {
             pviewAboveThis = pview;
         }
 
     // Set this window's z-order. (The framework has opened it on top.)
-    if (pviewAboveThis) {
+    if (pviewAboveThis)
+    {
         BOOL bSetZ = pwnd->SetWindowPos(pviewAboveThis->pwndChildFrame(),
                                         0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
         ASSERT(bSetZ);
@@ -3427,7 +3975,8 @@ void CSaView::ShowInitialStateAndZ() {
 
 /***************************************************************************/
 /***************************************************************************/
-void CSaView::ShowInitialTopState() {
+void CSaView::ShowInitialTopState()
+{
     CMDIChildWnd * pwnd = pwndChildFrame();
 
     // Make this the active MDI child window, since it had been
@@ -3437,14 +3986,16 @@ void CSaView::ShowInitialTopState() {
     pwndMainFrame->MDIActivate(pwnd);
 
     // Maximize this window if it had been when SA was closed.
-    if (m_eInitialShowCmd == SW_SHOWMAXIMIZED) {
+    if (m_eInitialShowCmd == SW_SHOWMAXIMIZED)
+    {
         pwnd->ShowWindow(m_eInitialShowCmd);
     }
 }
 
 /***************************************************************************/
 /***************************************************************************/
-CMDIChildWnd * CSaView::pwndChildFrame() const {
+CMDIChildWnd * CSaView::pwndChildFrame() const
+{
     CMDIChildWnd * pwnd = (CMDIChildWnd *)GetParent();
     ASSERT(pwnd);
     ASSERT(pwnd->IsKindOf(RUNTIME_CLASS(CMDIChildWnd)));
@@ -3454,7 +4005,8 @@ CMDIChildWnd * CSaView::pwndChildFrame() const {
 
 /***************************************************************************/
 /***************************************************************************/
-CSaView * CSaView::GetViewActiveChild(CMDIChildWnd * pwnd) {
+CSaView * CSaView::GetViewActiveChild(CMDIChildWnd * pwnd)
+{
     ASSERT(pwnd->IsKindOf(RUNTIME_CLASS(CMDIChildWnd)));
     CSaView * pview = (CSaView *)pwnd->GetActiveView();
     ASSERT(pview);
@@ -3465,14 +4017,16 @@ CSaView * CSaView::GetViewActiveChild(CMDIChildWnd * pwnd) {
 
 /***************************************************************************/
 /***************************************************************************/
-void CSaView::s_SetObjectStream(CObjectIStream & obs) {
+void CSaView::s_SetObjectStream(CObjectIStream & obs)
+{
     ASSERT(!s_pobsAutoload);
     s_pobsAutoload = &obs;
 }
 
 /***************************************************************************/
 /***************************************************************************/
-void CSaView::s_ClearObjectStream() {
+void CSaView::s_ClearObjectStream()
+{
     s_pobsAutoload = NULL;
 }
 
@@ -3497,7 +4051,8 @@ static LPCSTR psz_annotnone          = "annotnone";
 
 /***************************************************************************/
 /***************************************************************************/
-void CSaView::WriteProperties(CObjectOStream & obs) {
+void CSaView::WriteProperties(CObjectOStream & obs)
+{
     int i = 0;
 
     //**********************************************************
@@ -3508,7 +4063,8 @@ void CSaView::WriteProperties(CObjectOStream & obs) {
     //**********************************************************
     // save the window placement.
     //**********************************************************
-    if (m_bViewCreated && GetSafeHwnd()) {
+    if (m_bViewCreated && GetSafeHwnd())
+    {
         WINDOWPLACEMENT wpl;
         GetParent()->GetWindowPlacement(&wpl);
 
@@ -3523,15 +4079,21 @@ void CSaView::WriteProperties(CObjectOStream & obs) {
     //*************************************************
     // Save the properties for each graph that exists.
     //*************************************************
-    for (i = 0; i < MAX_GRAPHS_NUMBER; i++) {
-        if (m_apGraphs[i]) {
+    for (i = 0; i < MAX_GRAPHS_NUMBER; i++)
+    {
+        if (m_apGraphs[i])
+        {
             int nID = m_anGraphID[i];
 
-            if (nID == ID_GRAPHS_OVERLAY) {
+            if (nID == ID_GRAPHS_OVERLAY)
+            {
                 CMultiPlotWnd * pPlot = (CMultiPlotWnd *)m_apGraphs[i]->GetPlot();
-                if (pPlot) {
+                if (pPlot)
+                {
                     nID = pPlot->GetBasePlotID();
-                } else {
+                }
+                else
+                {
                     nID = IDD_BLANK;
                 }
             }
@@ -3546,7 +4108,8 @@ void CSaView::WriteProperties(CObjectOStream & obs) {
     //**********************************************************
     // Write page layout properties if they exist.
     //**********************************************************
-    if (m_pPageLayout) {
+    if (m_pPageLayout)
+    {
         m_pPageLayout->WriteProperties(obs);
     }
 
@@ -3563,7 +4126,8 @@ void CSaView::WriteProperties(CObjectOStream & obs) {
     // Write the global properties for the annotation windows.
     //**********************************************************
     obs.WriteBeginMarker(psz_annotallornonelist);
-    for (i = 0; i < ANNOT_WND_NUMBER; i++) {
+    for (i = 0; i < ANNOT_WND_NUMBER; i++)
+    {
         obs.WriteBool(psz_annotall,  m_abAnnAll[i]);
         obs.WriteBool(psz_annotnone, m_abAnnNone[i]);
     }
@@ -3595,26 +4159,32 @@ void CSaView::WriteProperties(CObjectOStream & obs) {
 
 /***************************************************************************/
 /***************************************************************************/
-BOOL CSaView::ReadProperties(CObjectIStream & obs, BOOL bCreateGraphs) {
+BOOL CSaView::ReadProperties(CObjectIStream & obs, BOOL bCreateGraphs)
+{
 
     CWnd * pwndFrame = NULL;
     WINDOWPLACEMENT wpl;
 
-    if (GetSafeHwnd()) {
+    if (GetSafeHwnd())
+    {
         pwndFrame = GetParent();
     }
 
-    if (!obs.bReadBeginMarker(psz_saview)) {
+    if (!obs.bReadBeginMarker(psz_saview))
+    {
         return FALSE;
     }
     ASSERT(m_pPageLayout);
 
-    while (!obs.bAtEnd()) {
-        if ((pwndFrame) && (obs.bReadWindowPlacement(psz_placement, wpl))) {
+    while (!obs.bAtEnd())
+    {
+        if ((pwndFrame) && (obs.bReadWindowPlacement(psz_placement, wpl)))
+        {
             m_eInitialShowCmd = wpl.showCmd;
             wpl.showCmd = SW_HIDE;
             pwndFrame->SetWindowPlacement(&wpl);
-        } else if (obs.bReadInteger(psz_z, m_z));
+        }
+        else if (obs.bReadInteger(psz_z, m_z));
         else if (ReadGraphListProperties(obs, bCreateGraphs));
         else if (m_pPageLayout->ReadProperties(obs));
         else if (obs.bReadUInt(psz_layout, m_nLayout));
@@ -3623,25 +4193,32 @@ BOOL CSaView::ReadProperties(CObjectIStream & obs, BOOL bCreateGraphs) {
         else if (obs.bReadBool(psz_xscaleall, m_bXScaleAll));
         else if (obs.bReadBool(psz_xscalenone, m_bXScaleNone));
         else if (obs.bReadBool(psz_boundariesall, m_bSegmentBoundaries));
-		else if (obs.bReadBool(psz_transcription_boundaries, m_bTranscriptionBoundaries));
+        else if (obs.bReadBool(psz_transcription_boundaries, m_bTranscriptionBoundaries));
         else if (obs.bReadBool(psz_drawstyleline, m_bDrawStyleLine));
         else if (obs.bReadBool(psz_updateboundaries, m_bUpdateBoundaries));
 
-        else if (obs.bReadBeginMarker(psz_annotallornonelist)) {
-            for (int i = 0; i < ANNOT_WND_NUMBER; i++) {
+        else if (obs.bReadBeginMarker(psz_annotallornonelist))
+        {
+            for (int i = 0; i < ANNOT_WND_NUMBER; i++)
+            {
                 obs.bReadBool(psz_annotall,  m_abAnnAll[i]);
                 obs.bReadBool(psz_annotnone, m_abAnnNone[i]);
             }
             obs.SkipToEndMarker(psz_annotallornonelist);
-        } else if (obs.bReadEndMarker(psz_saview)) {
+        }
+        else if (obs.bReadEndMarker(psz_saview))
+        {
             break;
-        } else {
+        }
+        else
+        {
             obs.ReadMarkedString();    // Skip unexpected field
         }
     }
 
     UINT nDefaultLayout = SetLayout(m_anGraphID);
-    if (GetNumberOfGraphsInLayout(m_nLayout) != GetNumberOfGraphsInLayout(nDefaultLayout)) {
+    if (GetNumberOfGraphsInLayout(m_nLayout) != GetNumberOfGraphsInLayout(nDefaultLayout))
+    {
         m_nLayout = nDefaultLayout;
     }
 
@@ -3654,8 +4231,10 @@ BOOL CSaView::ReadProperties(CObjectIStream & obs, BOOL bCreateGraphs) {
 // graphs being read are properties for graphs in the permanent template
 // view.
 /***************************************************************************/
-BOOL CSaView::ReadGraphListProperties(CObjectIStream & obs, BOOL bCreateGraphs) {
-    if (!obs.bReadBeginMarker(psz_graphlist)) {
+BOOL CSaView::ReadGraphListProperties(CObjectIStream & obs, BOOL bCreateGraphs)
+{
+    if (!obs.bReadBeginMarker(psz_graphlist))
+    {
         return FALSE;
     }
 
@@ -3666,21 +4245,29 @@ BOOL CSaView::ReadGraphListProperties(CObjectIStream & obs, BOOL bCreateGraphs) 
     memset(&m_apGraphs[0],  0, sizeof(CGraphWnd *) * MAX_GRAPHS_NUMBER);
     memset(&m_anGraphID[0], 0, sizeof(UINT) * MAX_GRAPHS_NUMBER);
 
-    while (!obs.bAtEnd()) {
-        if (obs.bReadUInt(psz_graphid, id)) {
+    while (!obs.bAtEnd())
+    {
+        if (obs.bReadUInt(psz_graphid, id))
+        {
 
             //*********************************************************
             // If we're suppposed to create visible graphs then create
             // the appropriate graph (i.e. a position view or other).
             //*********************************************************
-            if (bCreateGraphs && OpenAsID == ID_FILE_OPEN) {
-                if (id == IDD_RECORDING) {
+            if (bCreateGraphs && OpenAsID == ID_FILE_OPEN)
+            {
+                if (id == IDD_RECORDING)
+                {
                     m_apGraphs[i] = CreateRecGraph(NULL, &obs);
                     m_anGraphID[i] = IDD_RECORDING;
-                } else {
+                }
+                else
+                {
                     CreateGraph(i, id, CREATE_FROMSTREAM, &obs);
                 }
-            } else {
+            }
+            else
+            {
                 BOOL bSkipToEnd = TRUE;
 
                 //*******************************************************
@@ -3692,7 +4279,8 @@ BOOL CSaView::ReadGraphListProperties(CObjectIStream & obs, BOOL bCreateGraphs) 
                 //*******************************************************
                 ASSERT(m_apGraphs[i] == NULL);  // we shouldn't be destroying a pointer to a graph
                 m_apGraphs[i] = new CGraphWnd(id);
-                if ((m_apGraphs[i])) {
+                if ((m_apGraphs[i]))
+                {
                     m_anGraphID[i] = id;
                     m_WeJustReadTheProperties = m_apGraphs[i]->ReadProperties(obs);
                     bSkipToEnd = FALSE;
@@ -3702,15 +4290,19 @@ BOOL CSaView::ReadGraphListProperties(CObjectIStream & obs, BOOL bCreateGraphs) 
                 // If for some reason the construction of graphs failed
                 // then skip to the end marker for this section.
                 //*******************************************************
-                if (bSkipToEnd) {
+                if (bSkipToEnd)
+                {
                     obs.SkipToEndMarker(psz_sagraph);    // move past this graph record
                 }
             }
 
-            if (m_apGraphs[i]) {
+            if (m_apGraphs[i])
+            {
                 i++;    // successfully filled in a space, move to next space.
             }
-        } else if (obs.bReadEndMarker(psz_graphlist)) {
+        }
+        else if (obs.bReadEndMarker(psz_graphlist))
+        {
             break;
         }
     }
@@ -3721,7 +4313,8 @@ BOOL CSaView::ReadGraphListProperties(CObjectIStream & obs, BOOL bCreateGraphs) 
     // RLJ 06/06/2000 - If OpenAsID = "Phonetic/Music Analysis",
     //                  then create corresponding graphs.
     //************************************************************
-    if (bCreateGraphs && OpenAsID != ID_FILE_OPEN) {
+    if (bCreateGraphs && OpenAsID != ID_FILE_OPEN)
+    {
         CreateOpenAsGraphs(OpenAsID);
     }
 
@@ -3732,16 +4325,20 @@ BOOL CSaView::ReadGraphListProperties(CObjectIStream & obs, BOOL bCreateGraphs) 
 // This function to read graph properties is used when the graphs are being
 // created from a template view.
 /***************************************************************************/
-BOOL CSaView::ReadGraphListProperties(const CSaView & pTemplateView) {
+BOOL CSaView::ReadGraphListProperties(const CSaView & pTemplateView)
+{
     int OpenAsID = pSaApp->GetOpenAsID();
 
-    if (OpenAsID == ID_FILE_OPEN) {
-        for (int i = 0, nLoop = 0; nLoop < MAX_GRAPHS_NUMBER; nLoop++) {
+    if (OpenAsID == ID_FILE_OPEN)
+    {
+        for (int i = 0, nLoop = 0; nLoop < MAX_GRAPHS_NUMBER; nLoop++)
+        {
             if (pTemplateView.m_apGraphs[nLoop])
                 CreateGraph(i, pTemplateView.m_anGraphID[nLoop], CREATE_FROMGRAPH,
                             NULL, pTemplateView.m_apGraphs[nLoop]);
 
-            if (m_apGraphs[i]) {
+            if (m_apGraphs[i])
+            {
                 i++;
             }
         }
@@ -3750,7 +4347,8 @@ BOOL CSaView::ReadGraphListProperties(const CSaView & pTemplateView) {
     // RLJ 06/06/2000 - If OpenAsID = "Phonetic/Music Analysis",
     //                  then create corresponding graphs.
     /*****************************************************************/
-    else {
+    else
+    {
         CreateOpenAsGraphs(OpenAsID);
     }
 
@@ -3759,14 +4357,16 @@ BOOL CSaView::ReadGraphListProperties(const CSaView & pTemplateView) {
 
 /***************************************************************************/
 /***************************************************************************/
-void CSaView::OnEditInplace() {
+void CSaView::OnEditInplace()
+{
 
     m_advancedSelection.Update(this);
     int nAnnotationIndex = m_advancedSelection.GetSelectionIndex();
 
     if ((nAnnotationIndex != -1) &&
-        (GetFocusedGraphWnd()!=NULL) &&
-        (GetFocusedGraphWnd()->HaveAnnotation(nAnnotationIndex))) { // Selected annotation is visible
+            (GetFocusedGraphWnd()!=NULL) &&
+            (GetFocusedGraphWnd()->HaveAnnotation(nAnnotationIndex)))   // Selected annotation is visible
+    {
         CAnnotationWnd * pWnd = GetFocusedGraphWnd()->GetAnnotationWnd(nAnnotationIndex);
         pWnd->OnCreateEdit();
     }
@@ -3774,19 +4374,22 @@ void CSaView::OnEditInplace() {
 
 /***************************************************************************/
 /***************************************************************************/
-void CSaView::OnChar(UINT nChar, UINT nRepCnt, UINT nFlags) {
+void CSaView::OnChar(UINT nChar, UINT nRepCnt, UINT nFlags)
+{
 
     m_advancedSelection.Update(this);
     int nAnnotationIndex = m_advancedSelection.GetSelectionIndex();
 
-    if (nChar < 32) {
+    if (nChar < 32)
+    {
         CView::OnChar(nChar, nRepCnt, nFlags);
         return;
     }
 
-    if ((nAnnotationIndex != -1) && 
-		(GetFocusedGraphWnd()!=NULL) &&
-        (GetFocusedGraphWnd()->HaveAnnotation(nAnnotationIndex))) { // Selected annotation is visible
+    if ((nAnnotationIndex != -1) &&
+            (GetFocusedGraphWnd()!=NULL) &&
+            (GetFocusedGraphWnd()->HaveAnnotation(nAnnotationIndex)))   // Selected annotation is visible
+    {
         CSaString szString(static_cast<TCHAR>(nChar));
         CAnnotationWnd * pWnd = GetFocusedGraphWnd()->GetAnnotationWnd(nAnnotationIndex);
         pWnd->OnCreateEdit(&szString);
@@ -3796,9 +4399,12 @@ void CSaView::OnChar(UINT nChar, UINT nRepCnt, UINT nFlags) {
 /***************************************************************************/
 // CSaView::BroadcastMessage  sends a message to every graph
 /***************************************************************************/
-void CSaView::BroadcastMessage(UINT Message, WPARAM wParam, LPARAM lParam) {
-    for (int nLoop = 0; nLoop < MAX_GRAPHS_NUMBER; nLoop++) {
-        if (!m_apGraphs[nLoop]) {
+void CSaView::BroadcastMessage(UINT Message, WPARAM wParam, LPARAM lParam)
+{
+    for (int nLoop = 0; nLoop < MAX_GRAPHS_NUMBER; nLoop++)
+    {
+        if (!m_apGraphs[nLoop])
+        {
             break;
         }
         m_apGraphs[nLoop]->SendMessage(Message, wParam, lParam);
@@ -3808,8 +4414,10 @@ void CSaView::BroadcastMessage(UINT Message, WPARAM wParam, LPARAM lParam) {
 /***************************************************************************/
 // CSaView::OnAppMessage App notification
 /***************************************************************************/
-LRESULT CSaView::OnAppMessage(WPARAM wParam, LPARAM /*lParam*/) {
-    switch (wParam) {
+LRESULT CSaView::OnAppMessage(WPARAM wParam, LPARAM /*lParam*/)
+{
+    switch (wParam)
+    {
     case HINT_APP_DOC_LIST_CHANGED:
         OnVerifyOverlays();
         break;
@@ -3817,9 +4425,12 @@ LRESULT CSaView::OnAppMessage(WPARAM wParam, LPARAM /*lParam*/) {
     return TRUE;
 }
 
-void CSaView::OnVerifyOverlays() {
-    for (int nLoop = 0; nLoop < MAX_GRAPHS_NUMBER; nLoop++) {
-        if (m_anGraphID[nLoop] == ID_GRAPHS_OVERLAY) {
+void CSaView::OnVerifyOverlays()
+{
+    for (int nLoop = 0; nLoop < MAX_GRAPHS_NUMBER; nLoop++)
+    {
+        if (m_anGraphID[nLoop] == ID_GRAPHS_OVERLAY)
+        {
             CMultiPlotWnd * pMPlot = (CMultiPlotWnd *)(m_apGraphs[nLoop]->GetPlot());
             int numPlots = pMPlot->GetNumPlots();
 
@@ -3827,22 +4438,32 @@ void CSaView::OnVerifyOverlays() {
 
             numPlots = pMPlot->GetNumPlots();
 
-            if (numPlots > 1) {
+            if (numPlots > 1)
+            {
                 m_apGraphs[nLoop]->RedrawGraph(TRUE, TRUE, TRUE);
-            } else if (numPlots == 0) {
+            }
+            else if (numPlots == 0)
+            {
                 ChangeGraph(IDD_BLANK);
-            } else {
+            }
+            else
+            {
                 ASSERT(numPlots==1);
                 UINT plotID = pMPlot->GetBasePlotID();
                 int i2;
-                for (i2 = 0; i2 < MAX_GRAPHS_NUMBER; i2++) {
-                    if (m_anGraphID[i2] == plotID) {
+                for (i2 = 0; i2 < MAX_GRAPHS_NUMBER; i2++)
+                {
+                    if (m_anGraphID[i2] == plotID)
+                    {
                         break; // graph exists already
                     }
                 }
-                if (i2 >= MAX_GRAPHS_NUMBER) {
+                if (i2 >= MAX_GRAPHS_NUMBER)
+                {
                     ChangeGraph(nLoop,plotID);
-                } else {
+                }
+                else
+                {
                     // since the last graph already exists and we don't
                     // want to create two of them, we will just make it a blank graph.
                     ChangeGraph(IDD_BLANK);
@@ -3856,14 +4477,18 @@ void CSaView::OnVerifyOverlays() {
 // CSaString CSaView::GetGraphsDescription()
 // Build a string from graph captions.
 //**********************************************************
-CSaString CSaView::GetGraphsDescription() const {
+CSaString CSaView::GetGraphsDescription() const
+{
     return GetGraphsDescription(m_anGraphID);
 }
 
-CSaString CSaView::GetGraphsDescription(const UINT * anGraphID) {
+CSaString CSaView::GetGraphsDescription(const UINT * anGraphID)
+{
     CSaString szDescription;
-    for (int i = 0; anGraphID[i]; i++) {
-        if (i > 0) {
+    for (int i = 0; anGraphID[i]; i++)
+    {
+        if (i > 0)
+        {
             szDescription += ", ";
         }
         int nID = anGraphID[i];
@@ -3872,9 +4497,12 @@ CSaString CSaView::GetGraphsDescription(const UINT * anGraphID) {
     return szDescription;
 }
 
-void CSaView::RemoveRtPlots() {
-    for (int nLoop = 0; nLoop < MAX_GRAPHS_NUMBER; nLoop++) {
-        if (m_apGraphs[nLoop]) {
+void CSaView::RemoveRtPlots()
+{
+    for (int nLoop = 0; nLoop < MAX_GRAPHS_NUMBER; nLoop++)
+    {
+        if (m_apGraphs[nLoop])
+        {
             m_apGraphs[nLoop]->RemoveRtPlots();
         }
     }
@@ -3882,8 +4510,10 @@ void CSaView::RemoveRtPlots() {
 
 
 // Override default SetScrollRange function so that we do not hide the scroll bar
-void CSaView::SetScrollRange(int nBar, int nMinPos, int nMaxPos, BOOL bRedraw) {
-    if (nBar == SB_HORZ) {
+void CSaView::SetScrollRange(int nBar, int nMinPos, int nMaxPos, BOOL bRedraw)
+{
+    if (nBar == SB_HORZ)
+    {
         SCROLLINFO info;
 
         info.nMin = nMinPos;
@@ -3892,7 +4522,9 @@ void CSaView::SetScrollRange(int nBar, int nMinPos, int nMaxPos, BOOL bRedraw) {
         info.fMask = SIF_RANGE | SIF_DISABLENOSCROLL;
 
         SetScrollInfo(nBar, &info, bRedraw);
-    } else {
+    }
+    else
+    {
         CView::SetScrollRange(nBar, nMinPos, nMaxPos, bRedraw);
     }
 }
@@ -3900,7 +4532,8 @@ void CSaView::SetScrollRange(int nBar, int nMinPos, int nMaxPos, BOOL bRedraw) {
 /***************************************************************************/
 // CSaView::OnKeyDown Keyboard interface
 /***************************************************************************/
-void CSaView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags) {
+void CSaView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
+{
     CProgressStatusBar * pStatusBar = NULL;
     CProcess * pProcessOwner = NULL;
     CRect rWnd;
@@ -3909,8 +4542,10 @@ void CSaView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags) {
     bool ctrlPressed = (GetAsyncKeyState(VK_CONTROL) < 0);
     bool shiftPressed = (GetAsyncKeyState(VK_SHIFT) < 0);
 
-    if ((!ctrlPressed)&&(!shiftPressed)) {
-        switch (nChar) {
+    if ((!ctrlPressed)&&(!shiftPressed))
+    {
+        switch (nChar)
+        {
         case VK_HOME:
             OnHScroll(SB_LEFT, 0, GetScrollBarCtrl(SB_HORZ)); // scroll to minimum
             break;
@@ -3936,15 +4571,21 @@ void CSaView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags) {
             OnHScroll(SB_PAGEDOWN, 0, GetScrollBarCtrl(SB_HORZ)); // scroll right one page
             break;
         case VK_ESCAPE: // process interrupt from user and stop player
-            if (pViewMainFrame->IsPlayerPlaying()) {
+            if (pViewMainFrame->IsPlayerPlaying())
+            {
                 pViewMainFrame->SendMessage(WM_COMMAND, ID_PLAYER_STOP, 0L);    // send message to stop player
-            } else if (!IsAnimating()) { // Do not cancel processes during animation
+            }
+            else if (!IsAnimating())     // Do not cancel processes during animation
+            {
                 // get pointer to status bar
                 pStatusBar = (CProgressStatusBar *)pViewMainFrame->GetProgressStatusBar();
                 pProcessOwner = (CProcess *)pStatusBar->GetProcessOwner(); // get the current process owner
-                if (pProcessOwner) {
+                if (pProcessOwner)
+                {
                     pProcessOwner->CancelProcess();    // cancel the process
-                } else {
+                }
+                else
+                {
                     DeselectAnnotations();
                 }
             }
@@ -3953,10 +4594,15 @@ void CSaView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags) {
             CView::OnKeyDown(nChar, nRepCnt, nFlags);
             break;
         }
-    } else if ((shiftPressed)&&(!ctrlPressed)) {
+    }
+    else if ((shiftPressed)&&(!ctrlPressed))
+    {
         CView::OnKeyDown(nChar, nRepCnt, nFlags);
-    } else if ((ctrlPressed)&&(!shiftPressed)) {
-        switch (nChar) {
+    }
+    else if ((ctrlPressed)&&(!shiftPressed))
+    {
+        switch (nChar)
+        {
         case VK_END:
             OnVScroll(SB_BOTTOM, 0, GetScrollBarCtrl(SB_VERT)); // zoom to maximum
             break;
@@ -3964,7 +4610,9 @@ void CSaView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags) {
             CView::OnKeyDown(nChar, nRepCnt, nFlags);
             break;
         }
-    } else {
+    }
+    else
+    {
         // everything else
         CView::OnKeyDown(nChar, nRepCnt, nFlags);
     }
@@ -3986,19 +4634,24 @@ void CSaView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags) {
 * pt
 *    Specifies the x- and y-coordinate of the cursor. These coordinates are always relative to the upper-left corner of the screen.
 */
-BOOL CSaView::OnMouseWheel(UINT nFlags, short zDelta, CPoint pt) {
+BOOL CSaView::OnMouseWheel(UINT nFlags, short zDelta, CPoint pt)
+{
     TRACE("OnMouseWheel %d\n",zDelta);
-    if (zDelta<0) {
+    if (zDelta<0)
+    {
         double fZoom = 1.25*m_fZoom;
         ZoomIn(fZoom - m_fZoom);
-    } else {
+    }
+    else
+    {
         double fZoom = (1.0/1.25)*m_fZoom;
         ZoomOut(-(fZoom-m_fZoom));
     }
     return CView::OnMouseWheel(nFlags, zDelta, pt);
 }
 
-void CSaView::EnableScrolling(bool value) {
+void CSaView::EnableScrolling(bool value)
+{
     bEnableScrolling = value;
 }
 

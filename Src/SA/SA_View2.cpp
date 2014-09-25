@@ -48,6 +48,7 @@
 #include "objectostream.h"
 #include "DlgPlayer.h"
 #include "DlgSelectTranscriptionBars.h"
+#include "ReferenceSegment.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE
@@ -72,7 +73,7 @@ BEGIN_MESSAGE_MAP(CSaView, CView)
     ON_COMMAND(ID_DP_GRAPITCH, OnDpGrapitch)
     ON_COMMAND(ID_DP_RAWDATA, OnDpRawdata)
     ON_COMMAND(ID_DP_SPECTROGRAM, OnDpSpectrogram)
-    ON_COMMAND(ID_EDIT_ADD, OnEditAdd)
+    ON_COMMAND(ID_EDIT_ADD, OnEditAddPhonetic)
     ON_COMMAND(ID_EDIT_ADD_AUTO_PHRASE_L2, OnEditAddAutoPhraseL2)
     ON_COMMAND(ID_EDIT_ADD_BOOKMARK, OnEditAddBookmark)
     ON_COMMAND(ID_EDIT_ADD_PHRASE_L1, OnEditAddPhraseL1)
@@ -80,7 +81,7 @@ BEGIN_MESSAGE_MAP(CSaView, CView)
     ON_COMMAND(ID_EDIT_ADD_PHRASE_L3, OnEditAddPhraseL3)
     ON_COMMAND(ID_EDIT_ADD_PHRASE_L4, OnEditAddPhraseL4)
     ON_COMMAND(ID_EDIT_ADD_SYLLABLE, OnEditAddSyllable)
-    ON_COMMAND(ID_EDIT_ADD_WORD, OnEditAddWord)
+    ON_COMMAND(ID_EDIT_ADD_WORD, OnEditAddGloss)
     ON_COMMAND(ID_EDIT_AUTO_ADD, OnEditAutoAdd)
     ON_COMMAND(ID_EDIT_AUTO_ADD_STORY_SECTION, OnEditAutoAddStorySection)
     ON_COMMAND(ID_EDIT_BOUNDARY_START_LEFT, OnEditBoundaryStartLeft)
@@ -173,7 +174,7 @@ BEGIN_MESSAGE_MAP(CSaView, CView)
     ON_COMMAND(ID_XSCALE_ALL, OnXScaleAll)
     ON_COMMAND(ID_XSCALE_NONE, OnXScaleNone)
     ON_COMMAND(ID_XSCALE_RAWDATA, OnXScaleRawdata)
-	ON_COMMAND(ID_SELECT_TRANSCRIPTION_BARS, OnSelectTranscriptionBars)
+    ON_COMMAND(ID_SELECT_TRANSCRIPTION_BARS, OnSelectTranscriptionBars)
     ON_COMMAND_RANGE(IDD_3D, IDD_3D, OnChangeGraph)
     ON_COMMAND_RANGE(IDD_3D_PITCH, IDD_3D_PITCH, OnChangeGraph)
     ON_COMMAND_RANGE(IDD_CEPPITCH, IDD_CEPPITCH, OnChangeGraph)
@@ -259,7 +260,7 @@ BEGIN_MESSAGE_MAP(CSaView, CView)
     ON_UPDATE_COMMAND_UI(ID_BOUNDARIES_ALL, OnUpdateBoundariesAll)
     ON_UPDATE_COMMAND_UI(ID_BOUNDARIES_NONE, OnUpdateBoundariesNone)
     ON_UPDATE_COMMAND_UI(ID_BOUNDARIES_RAWDATA, OnUpdateBoundariesRawdata)
-	ON_UPDATE_COMMAND_UI(ID_BOUNDARIES_THIS, OnUpdateBoundariesThis)
+    ON_UPDATE_COMMAND_UI(ID_BOUNDARIES_THIS, OnUpdateBoundariesThis)
     ON_UPDATE_COMMAND_UI(ID_VIEW_TRANSCRIPTION_BOUNDARIES, OnUpdateViewTranscriptionBoundaries)
     ON_UPDATE_COMMAND_UI(ID_DP_GRAPITCH, OnUpdateDpGrapitch)
     ON_UPDATE_COMMAND_UI(ID_DP_RAWDATA, OnUpdateDpRawdata)
@@ -272,7 +273,7 @@ BEGIN_MESSAGE_MAP(CSaView, CView)
     ON_UPDATE_COMMAND_UI(ID_EDIT_ADD_PHRASE_L3, OnUpdateEditAddPhraseL3)
     ON_UPDATE_COMMAND_UI(ID_EDIT_ADD_PHRASE_L4, OnUpdateEditAddPhraseL4)
     ON_UPDATE_COMMAND_UI(ID_EDIT_ADD_SYLLABLE, OnUpdateEditAddSyllable)
-    ON_UPDATE_COMMAND_UI(ID_EDIT_ADD_WORD, OnUpdateEditAddWord)
+    ON_UPDATE_COMMAND_UI(ID_EDIT_ADD_WORD, OnUpdateEditAddGloss)
     ON_UPDATE_COMMAND_UI(ID_EDIT_AUTO_ADD, OnUpdateEditAutoAdd)
     ON_UPDATE_COMMAND_UI(ID_EDIT_AUTO_ADD_STORY_SECTION, OnUpdateEditAutoAddStorySection)
     ON_UPDATE_COMMAND_UI(ID_EDIT_COPY, OnUpdateEditCopy)
@@ -345,7 +346,7 @@ BEGIN_MESSAGE_MAP(CSaView, CView)
     ON_UPDATE_COMMAND_UI(ID_XSCALE_ALL, OnUpdateXScaleAll)
     ON_UPDATE_COMMAND_UI(ID_XSCALE_NONE, OnUpdateXScaleNone)
     ON_UPDATE_COMMAND_UI(ID_XSCALE_RAWDATA, OnUpdateXScaleRawdata)
-	ON_UPDATE_COMMAND_UI(ID_SELECT_TRANSCRIPTION_BARS, OnUpdateSelectTranscriptionBars)
+    ON_UPDATE_COMMAND_UI(ID_SELECT_TRANSCRIPTION_BARS, OnUpdateSelectTranscriptionBars)
     ON_UPDATE_COMMAND_UI_RANGE(ID_PHONETIC_ALL, ID_PHRASE_L4_ALL, OnUpdateAnnotationAll)
     ON_UPDATE_COMMAND_UI_RANGE(ID_PHONETIC_NONE, ID_PHRASE_L4_NONE, OnUpdateAnnotationNone)
     ON_UPDATE_COMMAND_UI_RANGE(ID_PHONETIC_RAWDATA, ID_PHRASE_L4_RAWDATA, OnUpdateAnnotationRawdata)
@@ -361,7 +362,8 @@ BEGIN_MESSAGE_MAP(CSaView, CView)
     ON_WM_VSCROLL()
 END_MESSAGE_MAP()
 
-CSaView::CSaView(const CSaView * pToBeCopied) {
+CSaView::CSaView(const CSaView * pToBeCopied)
+{
 
     // RLJ 06/01/2000
     pSaApp = (CSaApp *)AfxGetApp();
@@ -377,7 +379,8 @@ CSaView::CSaView(const CSaView * pToBeCopied) {
     m_bStaticTWC = TRUE;
     m_bNormalMelogram = TRUE;
 
-    for (int nLoop = 0; nLoop < MAX_GRAPHS_NUMBER; nLoop++) {
+    for (int nLoop = 0; nLoop < MAX_GRAPHS_NUMBER; nLoop++)
+    {
         m_apGraphs[nLoop] = NULL;
         m_anGraphID[nLoop] = 0;
     }
@@ -391,11 +394,15 @@ CSaView::CSaView(const CSaView * pToBeCopied) {
     m_bXScaleAll = TRUE;
     m_bXScaleNone = FALSE;
 
-    for (int nLoop = 0; nLoop < ANNOT_WND_NUMBER; nLoop++) {
-        if (nLoop == PHONETIC) {
+    for (int nLoop = 0; nLoop < ANNOT_WND_NUMBER; nLoop++)
+    {
+        if (nLoop == PHONETIC)
+        {
             m_abAnnAll[nLoop] = FALSE;
             m_abAnnNone[nLoop] = FALSE;
-        } else {
+        }
+        else
+        {
             m_abAnnAll[nLoop] = FALSE;
             m_abAnnNone[nLoop] = TRUE;
         }
@@ -440,7 +447,8 @@ CSaView::CSaView(const CSaView * pToBeCopied) {
     m_printScaleX = 0;
     m_printScaleY = 0;
 
-    if (pToBeCopied) {
+    if (pToBeCopied)
+    {
         *this = *pToBeCopied;
     }
 
@@ -452,15 +460,19 @@ CSaView::CSaView(const CSaView * pToBeCopied) {
     bEnableScrolling = false;
 }
 
-CSaView::~CSaView() {
+CSaView::~CSaView()
+{
     Clear();
-    if (m_pStopwatch) {
+    if (m_pStopwatch)
+    {
         delete m_pStopwatch;
     }
 }
 
-CSaView & CSaView::operator=(const CSaView & fromThis) {
-    if (&fromThis != this) {
+CSaView & CSaView::operator=(const CSaView & fromThis)
+{
+    if (&fromThis != this)
+    {
         Clear();
         Copy(fromThis);
     }
@@ -468,15 +480,18 @@ CSaView & CSaView::operator=(const CSaView & fromThis) {
     return *this;
 }
 
-void CSaView::OnUpdateFilenew(CCmdUI * pCmdUI) {
+void CSaView::OnUpdateFilenew(CCmdUI * pCmdUI)
+{
     pCmdUI->Enable(FALSE);
 }
 
 /***************************************************************************/
 // CSaView::OnCreate View creation
 /***************************************************************************/
-int CSaView::OnCreate(LPCREATESTRUCT lpCreateStruct) {
-    if (CView::OnCreate(lpCreateStruct) == -1) {
+int CSaView::OnCreate(LPCREATESTRUCT lpCreateStruct)
+{
+    if (CView::OnCreate(lpCreateStruct) == -1)
+    {
         return -1;
     }
 
@@ -491,9 +506,12 @@ int CSaView::OnCreate(LPCREATESTRUCT lpCreateStruct) {
 // CSaView::IDDSelected - TCJRLJ
 //  Return TRUE if the check box associated is selected; else return FALSE
 /***************************************************************************/
-BOOL CSaView::IDDSelected(const UINT * pGraphIDs, UINT nIDD) {
-    for (int nLoop = 0; nLoop < MAX_GRAPHS_NUMBER; nLoop++) {
-        if ((*(pGraphIDs + nLoop)) == nIDD) {
+BOOL CSaView::IDDSelected(const UINT * pGraphIDs, UINT nIDD)
+{
+    for (int nLoop = 0; nLoop < MAX_GRAPHS_NUMBER; nLoop++)
+    {
+        if ((*(pGraphIDs + nLoop)) == nIDD)
+        {
             return TRUE;
         }
     }
@@ -504,9 +522,12 @@ BOOL CSaView::IDDSelected(const UINT * pGraphIDs, UINT nIDD) {
 // CSaView::GetGraphIndexForIDD - TCJ 3/27/00
 //  Return the index of the graph that has the given IDD.
 /***************************************************************************/
-int CSaView::GetGraphIndexForIDD(UINT nIDD) {
-    for (int nLoop = 0; nLoop < MAX_GRAPHS_NUMBER; nLoop++) {
-        if (m_anGraphID[nLoop] == nIDD) {
+int CSaView::GetGraphIndexForIDD(UINT nIDD)
+{
+    for (int nLoop = 0; nLoop < MAX_GRAPHS_NUMBER; nLoop++)
+    {
+        if (m_anGraphID[nLoop] == nIDD)
+        {
             return nLoop;
         }
     }
@@ -517,9 +538,11 @@ int CSaView::GetGraphIndexForIDD(UINT nIDD) {
 // CSaView::CreateOpenAsGraphs Create graphs for "File-->Open As"
 // Create graphs for "File-->Open As" (Phonetic/Music Analysis)
 /***************************************************************************/
-void CSaView::CreateOpenAsGraphs(UINT OpenAsID) {
+void CSaView::CreateOpenAsGraphs(UINT OpenAsID)
+{
     DeleteGraphs(); // RLJ 07/28/2000
-    switch (OpenAsID) {
+    switch (OpenAsID)
+    {
     case ID_FILE_OPENAS_MUSICANALYSIS:
         // Open *.Wav & display Raw Waveform, Melogram, and Tonal Weighting Chart -- OpenMA
         m_nLayout = ID_LAYOUT_2A; // Use default layout.  // RLJ 07/28/2000
@@ -556,14 +579,16 @@ void CSaView::CreateOpenAsGraphs(UINT OpenAsID) {
 // the new chosen graphs and deletes the no longer chosen graphs. The order
 // will be after the new selection. The graphs will be retiled.
 /***************************************************************************/
-void CSaView::OnGraphsTypes() {
+void CSaView::OnGraphsTypes()
+{
     CDlgGraphsTypes dlg(this, m_anGraphID, m_nLayout);
 
     //**************************************************************
     // If the user chose OK then store the chosen IDs in a temp.
     // array and process the request.
     //**************************************************************
-    if (dlg.DoModal() == IDOK) {
+    if (dlg.DoModal() == IDOK)
+    {
         UINT anNewGraphID[MAX_GRAPHS_NUMBER];
         int nLayout = -1;
         dlg.GetCheckedGraphs(&anNewGraphID[0], &nLayout);
@@ -571,17 +596,19 @@ void CSaView::OnGraphsTypes() {
     }
 }
 
-void CSaView::OnShowBorders() {
-
-	// if one or more aren't on, turn everything on, otherwise, turn them off
-	BOOL bShow = ((!m_bTranscriptionBoundaries)||(!m_bSegmentBoundaries))?TRUE:FALSE;
-	m_bTranscriptionBoundaries = bShow;
-	m_bSegmentBoundaries = bShow;
+void CSaView::OnShowBorders()
+{
+    // if one or more aren't on, turn everything on, otherwise, turn them off
+    BOOL bShow = ((!m_bTranscriptionBoundaries)||(!m_bSegmentBoundaries))?TRUE:FALSE;
+    m_bTranscriptionBoundaries = bShow;
+    m_bSegmentBoundaries = bShow;
 
     // refresh the annotation windows
-    for (int nLoop = 0; nLoop < MAX_GRAPHS_NUMBER; nLoop++) {
-        if (m_apGraphs[nLoop]) {
-			m_apGraphs[nLoop]->ShowTranscriptionBoundaries(bShow);
+    for (int nLoop = 0; nLoop < MAX_GRAPHS_NUMBER; nLoop++)
+    {
+        if (m_apGraphs[nLoop]!=NULL)
+        {
+            m_apGraphs[nLoop]->ShowTranscriptionBoundaries(bShow);
             m_apGraphs[nLoop]->ShowSegmentBoundaries(bShow, TRUE);
         }
     }
@@ -590,7 +617,8 @@ void CSaView::OnShowBorders() {
 /***************************************************************************/
 // CSaView::OnGraphTypesSelect Change the graphs
 /***************************************************************************/
-void CSaView::OnGraphTypesSelect(UINT nID) {
+void CSaView::OnGraphTypesSelect(UINT nID)
+{
     int nConfiguration = nID - ID_GRAPHTYPES_SELECT_FIRST;
 
     UINT anNewGraphID[MAX_GRAPHS_NUMBER];
@@ -602,10 +630,14 @@ void CSaView::OnGraphTypesSelect(UINT nID) {
 /***************************************************************************/
 // CSaView::OnUpdateGraphTypesSelect Menu update
 /***************************************************************************/
-void CSaView::OnUpdateGraphTypesSelect(CCmdUI * pCmdUI) {
-    if (pCmdUI->m_nID >= ID_GRAPHTYPES_SELECT_FIRST && pCmdUI->m_nID <= ID_GRAPHTYPES_SELECT_LAST) {
+void CSaView::OnUpdateGraphTypesSelect(CCmdUI * pCmdUI)
+{
+    if (pCmdUI->m_nID >= ID_GRAPHTYPES_SELECT_FIRST && pCmdUI->m_nID <= ID_GRAPHTYPES_SELECT_LAST)
+    {
         pCmdUI->Enable();
-    } else {
+    }
+    else
+    {
         pCmdUI->Enable(FALSE);
     }
 }
@@ -613,7 +645,8 @@ void CSaView::OnUpdateGraphTypesSelect(CCmdUI * pCmdUI) {
 /***************************************************************************/
 // CSaView::OnGraphsTypesPostProcess
 /***************************************************************************/
-void CSaView::OnGraphsTypesPostProcess(const UINT * anNewGraphID, int nLayout) {
+void CSaView::OnGraphsTypesPostProcess(const UINT * anNewGraphID, int nLayout)
+{
     UINT anTmpGraphID[MAX_GRAPHS_NUMBER];
     CGraphWnd * apTmpGraphs[MAX_GRAPHS_NUMBER];
 
@@ -630,7 +663,8 @@ void CSaView::OnGraphsTypesPostProcess(const UINT * anNewGraphID, int nLayout) {
     // Make sure the position data comes first in the array so it will
     // display first.
     //**************************************************************
-    if (IDDSelected(&anNewGraphID[0], IDD_RECORDING)) {
+    if (IDDSelected(&anNewGraphID[0], IDD_RECORDING))
+    {
         anTmpGraphID[index++] = IDD_RECORDING;
     }
 
@@ -639,8 +673,10 @@ void CSaView::OnGraphsTypesPostProcess(const UINT * anNewGraphID, int nLayout) {
     // graph IDs already copied to the temp. ID array should be
     // copied to the temp. array.
     //**************************************************************
-    for (int i = 0; i < MAX_GRAPHS_NUMBER; i++) {
-        if (anNewGraphID[i] && anNewGraphID[i] != IDD_RECORDING) {
+    for (int i = 0; i < MAX_GRAPHS_NUMBER; i++)
+    {
+        if (anNewGraphID[i] && anNewGraphID[i] != IDD_RECORDING)
+        {
             anTmpGraphID[index++] = anNewGraphID[i];
         }
     }
@@ -651,8 +687,10 @@ void CSaView::OnGraphsTypesPostProcess(const UINT * anNewGraphID, int nLayout) {
     // NOTE: Do this first because the destructors want the graph
     // list intact to be able to inter communicate.
     //**************************************************************
-    for (int i = 0; i < MAX_GRAPHS_NUMBER; i++) {
-        if (m_apGraphs[i] && !IDDSelected(&anTmpGraphID[0], m_anGraphID[i])) {
+    for (int i = 0; i < MAX_GRAPHS_NUMBER; i++)
+    {
+        if (m_apGraphs[i] && !IDDSelected(&anTmpGraphID[0], m_anGraphID[i]))
+        {
             DeleteGraphs(i);
             m_apGraphs[i] = NULL;
             m_anGraphID[i] = 0;
@@ -666,10 +704,13 @@ void CSaView::OnGraphsTypesPostProcess(const UINT * anNewGraphID, int nLayout) {
     // elements in the permanent array of graph pointers and IDs
     // so those graphs won't get deleted later in this function.
     //**************************************************************
-    for (int i = 0; i < MAX_GRAPHS_NUMBER; i++) {
-        if (anTmpGraphID[i] && IDDSelected(&m_anGraphID[0], anTmpGraphID[i])) {
+    for (int i = 0; i < MAX_GRAPHS_NUMBER; i++)
+    {
+        if (anTmpGraphID[i] && IDDSelected(&m_anGraphID[0], anTmpGraphID[i]))
+        {
             index = GetGraphIndexForIDD(anTmpGraphID[i]);
-            if (index >= 0) {
+            if (index >= 0)
+            {
                 apTmpGraphs[i] = m_apGraphs[index];
                 m_apGraphs[index] = NULL;
                 m_anGraphID[index] = 0;
@@ -677,9 +718,12 @@ void CSaView::OnGraphsTypesPostProcess(const UINT * anNewGraphID, int nLayout) {
         }
     }
 
-    if (nLayout == -1) {
+    if (nLayout == -1)
+    {
         m_nLayout = SetLayout(&anTmpGraphID[0]);
-    } else {
+    }
+    else
+    {
         m_nLayout = nLayout;
     }
 
@@ -687,12 +731,16 @@ void CSaView::OnGraphsTypesPostProcess(const UINT * anNewGraphID, int nLayout) {
     // For those graph IDs in the temp. graph ID array that don't
     // have corresponding graph pointers, create graphs.
     //**************************************************************
-    for (int i = 0; i < MAX_GRAPHS_NUMBER; i++) {
+    for (int i = 0; i < MAX_GRAPHS_NUMBER; i++)
+    {
         ASSERT(m_apGraphs[i] == NULL);
         m_anGraphID[i] = anTmpGraphID[i];
-        if (anTmpGraphID[i] && !apTmpGraphs[i]) {
+        if (anTmpGraphID[i] && !apTmpGraphs[i])
+        {
             CreateGraph(i, m_anGraphID[i]);
-        } else {
+        }
+        else
+        {
             m_apGraphs[i] = apTmpGraphs[i];
         }
     }
@@ -703,21 +751,24 @@ void CSaView::OnGraphsTypesPostProcess(const UINT * anNewGraphID, int nLayout) {
 /***************************************************************************/
 // CSaView::OnUpdateGraphsTypes Menu Update
 /***************************************************************************/
-void CSaView::OnUpdateGraphsTypes(CCmdUI * pCmdUI) {
+void CSaView::OnUpdateGraphsTypes(CCmdUI * pCmdUI)
+{
     pCmdUI->Enable(GetDocument()->GetDataSize() != 0); // enable if data is available
 }
 
 /***************************************************************************/
 // CSaView::OnUpdateShowBorders Menu Update
 /***************************************************************************/
-void CSaView::OnUpdateShowBorders(CCmdUI * pCmdUI) {
+void CSaView::OnUpdateShowBorders(CCmdUI * pCmdUI)
+{
     pCmdUI->Enable(TRUE);
 }
 
 /***************************************************************************/
 // CSaView::OnGraphsParameters Changing the graph parameters
 /***************************************************************************/
-void CSaView::OnGraphsParameters() {
+void CSaView::OnGraphsParameters()
+{
     CSaString szCaption;
     szCaption.LoadString(IDS_DLGTITLE_GRAPHSPARA); // load caption string
     // set the pitch parameters to enable manual analysing
@@ -731,14 +782,16 @@ void CSaView::OnGraphsParameters() {
     BOOL bProcessChange = FALSE;
     dlgGraphsParameters->m_dlgRawdataPage.m_nProcess = pDoc->GetWbProcess();
     if ((dlgGraphsParameters->DoModal() == IDOK) &&
-            (pDoc->GetWbProcess() != dlgGraphsParameters->m_dlgRawdataPage.m_nProcess)) {
+            (pDoc->GetWbProcess() != dlgGraphsParameters->m_dlgRawdataPage.m_nProcess))
+    {
         pDoc->SetWbProcess(dlgGraphsParameters->m_dlgRawdataPage.m_nProcess);
         bProcessChange = TRUE;
     }
     delete dlgGraphsParameters;
 
     // process workbench if necessary
-    if ((bProcessChange) && (pDoc->WorkbenchProcess(TRUE, TRUE))) {
+    if ((bProcessChange) && (pDoc->WorkbenchProcess(TRUE, TRUE)))
+    {
         RefreshGraphs(TRUE, TRUE);
     }
 }
@@ -746,14 +799,16 @@ void CSaView::OnGraphsParameters() {
 /***************************************************************************/
 // CSaView::OnUpdateGraphsParameters Menu Update
 /***************************************************************************/
-void CSaView::OnUpdateGraphsParameters(CCmdUI * pCmdUI) {
+void CSaView::OnUpdateGraphsParameters(CCmdUI * pCmdUI)
+{
     pCmdUI->Enable(GetDocument()->GetDataSize() != 0); // enable if data is available
 }
 
 /***************************************************************************/
 // CSaView::OnEditBoundaries
 /***************************************************************************/
-void CSaView::OnEditBoundaries() {
+void CSaView::OnEditBoundaries()
+{
     m_bEditBoundaries = !m_bEditBoundaries;
     m_bEditSegmentSize = false;
 }
@@ -762,7 +817,8 @@ void CSaView::OnEditBoundaries() {
 /***************************************************************************/
 // CSaView::OnUpdateEditBoundaries
 /***************************************************************************/
-void CSaView::OnUpdateEditBoundaries(CCmdUI * pCmdUI) {
+void CSaView::OnUpdateEditBoundaries(CCmdUI * pCmdUI)
+{
     pCmdUI->Enable(TRUE);
     pCmdUI->SetCheck(GetEditBoundaries()==BOUNDARIES_EDIT_BOUNDARIES);
 }
@@ -770,11 +826,14 @@ void CSaView::OnUpdateEditBoundaries(CCmdUI * pCmdUI) {
 /***************************************************************************/
 // CSaView::GetEditBoundaries
 /***************************************************************************/
-EBoundary CSaView::GetEditBoundaries(bool checkKeys) {
-    if ((m_bEditSegmentSize) && (checkKeys)) {
+EBoundary CSaView::GetEditBoundaries(bool checkKeys)
+{
+    if ((m_bEditSegmentSize) && (checkKeys))
+    {
         return BOUNDARIES_EDIT_SEGMENT_SIZE;
     }
-    if ((m_bEditBoundaries) && (checkKeys)) {
+    if ((m_bEditBoundaries) && (checkKeys))
+    {
         return BOUNDARIES_EDIT_BOUNDARIES;
     }
     return BOUNDARIES_EDIT_NULL;
@@ -783,7 +842,8 @@ EBoundary CSaView::GetEditBoundaries(bool checkKeys) {
 /***************************************************************************/
 // CSaView::OnEditSegmentSize
 /***************************************************************************/
-void CSaView::OnEditSegmentSize() {
+void CSaView::OnEditSegmentSize()
+{
     m_bEditSegmentSize = !m_bEditSegmentSize;
     m_bEditBoundaries = false;
 }
@@ -791,7 +851,8 @@ void CSaView::OnEditSegmentSize() {
 /***************************************************************************/
 // CSaView::OnUpdateEditSegmentSize
 /***************************************************************************/
-void CSaView::OnUpdateEditSegmentSize(CCmdUI * pCmdUI) {
+void CSaView::OnUpdateEditSegmentSize(CCmdUI * pCmdUI)
+{
     pCmdUI->Enable(TRUE);
     pCmdUI->SetCheck(GetEditBoundaries()==BOUNDARIES_EDIT_SEGMENT_SIZE);
 }
@@ -799,10 +860,12 @@ void CSaView::OnUpdateEditSegmentSize(CCmdUI * pCmdUI) {
 /***************************************************************************/
 // CSaView::OnExportStaff
 /***************************************************************************/
-void CSaView::OnExportStaff() {
+void CSaView::OnExportStaff()
+{
     int nGraphIndex = GetGraphIndexForIDD(IDD_STAFF);
     CPlotStaff * pMusicStaff;
-    if (nGraphIndex >= 0) {
+    if (nGraphIndex >= 0)
+    {
         CGraphWnd * pMusicGraph = GetGraph(nGraphIndex);
         pMusicStaff = (CPlotStaff *)pMusicGraph->GetPlot();
         pMusicStaff->ExportFile();
@@ -813,11 +876,15 @@ void CSaView::OnExportStaff() {
 /***************************************************************************/
 // CSaView::OnUpdateExportStaff
 /***************************************************************************/
-void CSaView::OnUpdateExportStaff(CCmdUI * pCmdUI) {
+void CSaView::OnUpdateExportStaff(CCmdUI * pCmdUI)
+{
     int nGraphIndex = GetGraphIndexForIDD(IDD_STAFF);
-    if (nGraphIndex >= 0) {
+    if (nGraphIndex >= 0)
+    {
         pCmdUI->Enable(TRUE);
-    } else {
+    }
+    else
+    {
         pCmdUI->Enable(FALSE);
     }
 }
@@ -826,10 +893,12 @@ void CSaView::OnUpdateExportStaff(CCmdUI * pCmdUI) {
 /***************************************************************************/
 // CSaView::OnImportStaff
 /***************************************************************************/
-void CSaView::OnImportStaff() {
+void CSaView::OnImportStaff()
+{
     int nGraphIndex = GetGraphIndexForIDD(IDD_STAFF);
     CPlotStaff * pMusicStaff;
-    if (nGraphIndex >= 0) {
+    if (nGraphIndex >= 0)
+    {
         CGraphWnd * pMusicGraph = GetGraph(nGraphIndex);
         pMusicStaff = (CPlotStaff *)pMusicGraph->GetPlot();
         pMusicStaff->ImportFile();
@@ -840,11 +909,15 @@ void CSaView::OnImportStaff() {
 /***************************************************************************/
 // CSaView::OnUpdateImportStaff
 /***************************************************************************/
-void CSaView::OnUpdateImportStaff(CCmdUI * pCmdUI) {
+void CSaView::OnUpdateImportStaff(CCmdUI * pCmdUI)
+{
     int nGraphIndex = GetGraphIndexForIDD(IDD_STAFF);
-    if (nGraphIndex >= 0) {
+    if (nGraphIndex >= 0)
+    {
         pCmdUI->Enable(TRUE);
-    } else {
+    }
+    else
+    {
         pCmdUI->Enable(FALSE);
     }
 }
@@ -853,38 +926,46 @@ void CSaView::OnUpdateImportStaff(CCmdUI * pCmdUI) {
 // CSaView diagnostics
 
 #ifdef _DEBUG
-void CSaView::AssertValid() const {
+void CSaView::AssertValid() const
+{
     CView::AssertValid();
 }
 
-void CSaView::Dump(CDumpContext & dc) const {
+void CSaView::Dump(CDumpContext & dc) const
+{
     CView::Dump(dc);
 }
 
 #endif
 
-CSaDoc * CSaView::GetDocument() { // non-debug version is inline
+CSaDoc * CSaView::GetDocument()   // non-debug version is inline
+{
     ASSERT(m_pDocument->IsKindOf(RUNTIME_CLASS(CSaDoc)));
     return (CSaDoc *)m_pDocument;
 }
 
-void CSaView::Clear(void) {
+void CSaView::Clear(void)
+{
     DeleteGraphs(); // delete existing graph objects
-    if (m_pPageLayout) {
+    if (m_pPageLayout)
+    {
         delete m_pPageLayout;
         m_pPageLayout = NULL;
     }
-    if (m_pPgLayoutBackup) {
+    if (m_pPgLayoutBackup)
+    {
         delete m_pPgLayoutBackup;
         m_pPgLayoutBackup = NULL;
     }
-    if (m_pPickOverlay) {
+    if (m_pPickOverlay)
+    {
         delete m_pPickOverlay;
         m_pPickOverlay = NULL;
     }
 }
 
-void  CSaView::PartialCopy(const CSaView & right) {
+void  CSaView::PartialCopy(const CSaView & right)
+{
     m_nFocusedID = 0;
     m_nLayout = right.m_nLayout; // default layout
     m_bLegendAll = right.m_bLegendAll;
@@ -913,7 +994,8 @@ void  CSaView::PartialCopy(const CSaView & right) {
     pSaApp = (CSaApp *)AfxGetApp();
     pViewMainFrame = (CMainFrame *)AfxGetMainWnd();
 
-    for (int nLoop = 0; nLoop < ANNOT_WND_NUMBER; nLoop++) {
+    for (int nLoop = 0; nLoop < ANNOT_WND_NUMBER; nLoop++)
+    {
         m_abAnnAll[nLoop] = right.m_abAnnAll[nLoop];
         m_abAnnNone[nLoop] = right.m_abAnnNone[nLoop];
 
@@ -923,7 +1005,8 @@ void  CSaView::PartialCopy(const CSaView & right) {
 
 /***************************************************************************/
 /***************************************************************************/
-void  CSaView::Copy(const CSaView & fromThis) {
+void  CSaView::Copy(const CSaView & fromThis)
+{
     PartialCopy(fromThis);
     m_restartPageOptions = fromThis.m_restartPageOptions;
     m_pPageLayout = new CPrintOptionsDlg(fromThis.m_pPageLayout);
@@ -935,11 +1018,15 @@ void  CSaView::Copy(const CSaView & fromThis) {
     m_WeJustReadTheProperties = FALSE;
     m_pDocument = NULL;
 
-    for (int nLoop = 0; nLoop < MAX_GRAPHS_NUMBER; nLoop++) {
-        if (fromThis.m_apGraphs[nLoop]) {
+    for (int nLoop = 0; nLoop < MAX_GRAPHS_NUMBER; nLoop++)
+    {
+        if (fromThis.m_apGraphs[nLoop])
+        {
             m_apGraphs[nLoop] = new CGraphWnd(*(fromThis.m_apGraphs[nLoop]));
             m_anGraphID[nLoop] = m_apGraphs[nLoop]->GetPlotID();
-        } else {
+        }
+        else
+        {
             m_apGraphs[nLoop] = NULL;
             m_anGraphID[nLoop] = 0;
         }
@@ -953,8 +1040,10 @@ void  CSaView::Copy(const CSaView & fromThis) {
 // Called from the framework before the creation of the window. Changes the
 // window style as desired.
 /***************************************************************************/
-BOOL CSaView::PreCreateWindow(CREATESTRUCT & cs) {
-    if (!CView::PreCreateWindow(cs)) {
+BOOL CSaView::PreCreateWindow(CREATESTRUCT & cs)
+{
+    if (!CView::PreCreateWindow(cs))
+    {
         return FALSE;
     }
     cs.style |= WS_HSCROLL | WS_VSCROLL;  // enable scrolling
@@ -972,25 +1061,33 @@ BOOL CSaView::PreCreateWindow(CREATESTRUCT & cs) {
 // the rectangle of the deleted graph window in the case of one deleted
 // graph, otherwise a 0 rectangle, used to create new graphs.
 /***************************************************************************/
-WINDOWPLACEMENT CSaView::DeleteGraphs(int nPosition, BOOL bClearID) {
+WINDOWPLACEMENT CSaView::DeleteGraphs(int nPosition, BOOL bClearID)
+{
     WINDOWPLACEMENT WP;
     WP.length = sizeof(WINDOWPLACEMENT);
     WP.showCmd = SW_HIDE; // use default size if not changed
 
-    if (nPosition == -1) {
-        for (int nLoop = 0; nLoop < MAX_GRAPHS_NUMBER; nLoop++) {
+    if (nPosition == -1)
+    {
+        for (int nLoop = 0; nLoop < MAX_GRAPHS_NUMBER; nLoop++)
+        {
             if (DestroyGraph(&(m_apGraphs[nLoop]), FALSE))
-                if (bClearID) {
+                if (bClearID)
+                {
                     m_anGraphID[nLoop] = 0;
                 }
         }
         ResetFocusedGraph(); // no graph focused
-    } else {
+    }
+    else
+    {
         // delete only given graph object
-        if (m_apGraphs[nPosition]) {
+        if (m_apGraphs[nPosition])
+        {
             m_apGraphs[nPosition]->GetWindowPlacement(&WP);                  // get window placement of the graph
             DestroyGraph(&(m_apGraphs[nPosition]));
-            if (bClearID) {
+            if (bClearID)
+            {
                 m_anGraphID[nPosition] = 0;    // reset ID
             }
         }
@@ -1007,10 +1104,12 @@ WINDOWPLACEMENT CSaView::DeleteGraphs(int nPosition, BOOL bClearID) {
 //                  That's because, for the purposes of the layout,
 //                  several music graphs can be considered one graph.
 /***************************************************************************/
-int CSaView::GetNumberOfGraphs(UINT * pGraphIDs) {
+int CSaView::GetNumberOfGraphs(UINT * pGraphIDs)
+{
     int nNumOfGraphs = 0;
     for (int i = 0; i < MAX_GRAPHS_NUMBER; i++)
-        if (pGraphIDs[i]) {
+        if (pGraphIDs[i])
+        {
             nNumOfGraphs++;
         }
 
@@ -1021,8 +1120,10 @@ int CSaView::GetNumberOfGraphs(UINT * pGraphIDs) {
 // 09/20/2000 - DDO This function returns the number of graphs in a given
 //                  layout.
 /***************************************************************************/
-int CSaView::GetNumberOfGraphsInLayout(UINT nLayoutID) {
-    switch (nLayoutID) {
+int CSaView::GetNumberOfGraphsInLayout(UINT nLayoutID)
+{
+    switch (nLayoutID)
+    {
     case ID_LAYOUT_1:
         return 1;
     case ID_LAYOUT_2A:
@@ -1054,7 +1155,8 @@ int CSaView::GetNumberOfGraphsInLayout(UINT nLayoutID) {
 //   09/20/2000 - DDO Tweaked code mainly so the recording graph isn't
 //                    considered as part of the layout.
 /***************************************************************************/
-UINT CSaView::SetLayout(UINT * pGraphIDs) {
+UINT CSaView::SetLayout(UINT * pGraphIDs)
+{
     //******************************************************
     // Get the graph count.
     //******************************************************
@@ -1067,13 +1169,16 @@ UINT CSaView::SetLayout(UINT * pGraphIDs) {
     // since the recording graph isn't part of the layout,
     // don't count it.
     //******************************************************
-    if (IDDSelected(pGraphIDs, IDD_TWC)) {
+    if (IDDSelected(pGraphIDs, IDD_TWC))
+    {
         nNumOfGraphs--;
     }
-    if (IDDSelected(pGraphIDs, IDD_MAGNITUDE)) {
+    if (IDDSelected(pGraphIDs, IDD_MAGNITUDE))
+    {
         nNumOfGraphs--;
     }
-    if (IDDSelected(pGraphIDs, IDD_RECORDING)) {
+    if (IDDSelected(pGraphIDs, IDD_RECORDING))
+    {
         nNumOfGraphs--;
     }
 
@@ -1085,7 +1190,8 @@ UINT CSaView::SetLayout(UINT * pGraphIDs) {
 //
 // 09/23/2000 - DDO
 /***************************************************************************/
-CSaString CSaView::GetGraphTitle(UINT nID) {
+CSaString CSaView::GetGraphTitle(UINT nID)
+{
     CSaString szTitle;
 
     szTitle.LoadString(IDS_UNDEFINED);
@@ -1093,9 +1199,11 @@ CSaString CSaView::GetGraphTitle(UINT nID) {
     //**************************************************
     // Get the graph title from the floating popup menu
     //**************************************************
-    if (nID != IDD_BLANK) {
+    if (nID != IDD_BLANK)
+    {
         CMenu mPopup;
-        if (mPopup.LoadMenu(IDR_SA_FLOATINGPOPUP)) {
+        if (mPopup.LoadMenu(IDR_SA_FLOATINGPOPUP))
+        {
             CMenu & pmFloatingPopup = *mPopup.GetSubMenu(0);
             pmFloatingPopup.GetMenuString(nID, szTitle.GetBuffer(32), 32, MF_BYCOMMAND);
             szTitle.ReleaseBuffer(-1);
@@ -1106,7 +1214,8 @@ CSaString CSaView::GetGraphTitle(UINT nID) {
     // Remove ampersand
     //**************************************************
     int nTemp = szTitle.Find('&');
-    if (nTemp != -1) {
+    if (nTemp != -1)
+    {
         szTitle = szTitle.Left(nTemp) + szTitle.Right(szTitle.GetLength() - nTemp - 1);
     }
 
@@ -1118,16 +1227,19 @@ CSaString CSaView::GetGraphTitle(UINT nID) {
 //                  overlay graph is created. I wrote this to get it out
 //                  of the CreateGraphs functions which was too bloated.
 /***************************************************************************/
-UINT CSaView::PreCreateOverlayGraph(int nIndex) {
+UINT CSaView::PreCreateOverlayGraph(int nIndex)
+{
     m_anGraphID[nIndex] = ID_GRAPHS_OVERLAY;       // set graph ID of new graph to create
 
     int pos = 0;
     CGraphWnd * pGrph = m_pPickOverlay->GetNextSelectedGraph(pos);
-    if (!pGrph) {
+    if (!pGrph)
+    {
         m_anGraphID[nIndex] = IDD_BLANK;
     }
 
-    while (pGrph) {
+    while (pGrph)
+    {
         m_apGraphs[nIndex]->MergeInGraph(pGrph, (CSaView *)pGrph->GetParent(),false);
         pGrph = m_pPickOverlay->GetNextSelectedGraph(pos);
     }
@@ -1141,17 +1253,20 @@ UINT CSaView::PreCreateOverlayGraph(int nIndex) {
 //                  I wrote this to get it out of the CreateGraphs functions
 //                  which was too bloated.
 /***************************************************************************/
-void CSaView::CreateOneGraph(UINT * pID, CGraphWnd ** pGraph) {
+void CSaView::CreateOneGraph(UINT * pID, CGraphWnd ** pGraph)
+{
     CRect rWnd(0,0,0,0);
     CSaString szTitle = GetGraphTitle(*pID);
 
-    if (!(*pGraph)->Create(NULL, szTitle, WS_CHILD | WS_VISIBLE | WS_BORDER, rWnd, this, 0)) {
+    if (!(*pGraph)->Create(NULL, szTitle, WS_CHILD | WS_VISIBLE | WS_BORDER, rWnd, this, 0))
+    {
         delete *pGraph;
         *pID = 0;
         *pGraph = NULL;
     }
 
-    if (!m_pFocusedGraph) {
+    if (!m_pFocusedGraph)
+    {
         SetFocusedGraph(*pGraph);    // set focus to first graph
     }
     //!! AKE 10/21/2000  The following line of code has been removed.  At this point,
@@ -1174,25 +1289,30 @@ void CSaView::CreateOneGraph(UINT * pID, CGraphWnd ** pGraph) {
 void CSaView::CreateGraph(int nPosition, int nNewID,
                           CREATE_HOW how         /* = CREATE_STANDARD */,
                           CObjectIStream * pObs  /* = NULL */,
-                          CGraphWnd * pFromGraph /* = NULL */) {
+                          CGraphWnd * pFromGraph /* = NULL */)
+{
     ASSERT(nPosition != -1);
 
     int nLoop = nPosition;
     m_anGraphID[nLoop] = nNewID;
 
-    if (nNewID == IDD_RECORDING) {
+    if (nNewID == IDD_RECORDING)
+    {
         m_apGraphs[nLoop] = CreateRecGraph(reinterpret_cast<CRecGraphWnd *>(pFromGraph), pObs);
         return;
     }
 
-    if (nNewID == ID_GRAPHS_OVERLAY) {
+    if (nNewID == ID_GRAPHS_OVERLAY)
+    {
         nNewID = PreCreateOverlayGraph(nPosition);
     }
 
     CreateOneGraphStepOne(nNewID, &m_apGraphs[nLoop], how, pFromGraph, pObs);
 
-    if (nNewID == ID_GRAPHS_OVERLAY) {
-        if (m_apGraphs[nLoop]) {
+    if (nNewID == ID_GRAPHS_OVERLAY)
+    {
+        if (m_apGraphs[nLoop])
+        {
             m_apGraphs[nLoop]->SetWindowText(_T("Overlay"));
             m_apGraphs[nLoop]->ResizeGraph(TRUE, TRUE);
         }
@@ -1203,17 +1323,23 @@ void CSaView::CreateGraph(int nPosition, int nNewID,
 /***************************************************************************/
 // 09/21/2000 - DDO
 /***************************************************************************/
-CRecGraphWnd * CSaView::CreateRecGraph(CRecGraphWnd * pFromGraph, CObjectIStream * pObs) {
+CRecGraphWnd * CSaView::CreateRecGraph(CRecGraphWnd * pFromGraph, CObjectIStream * pObs)
+{
     CRect rWnd(0, 0, 0, 0);
 
     CRecGraphWnd * pRecGraph = new CRecGraphWnd;
     pRecGraph->SetCaptionStyle(NoneThin);
 
-    if (pFromGraph) {
+    if (pFromGraph)
+    {
         pRecGraph->PartialCopy(*pFromGraph);
-    } else if (pObs) {
+    }
+    else if (pObs)
+    {
         pRecGraph->ReadProperties(*pObs);
-    } else {
+    }
+    else
+    {
         pRecGraph->ShowXScale(TRUE, FALSE);
         pRecGraph->ShowAnnotation(PHONETIC, FALSE, FALSE);
         pRecGraph->ShowLegend(m_bLegendAll);
@@ -1222,12 +1348,16 @@ CRecGraphWnd * CSaView::CreateRecGraph(CRecGraphWnd * pFromGraph, CObjectIStream
         pRecGraph->SetMagnify(m_fMagnify);
     }
 
-    if (!pRecGraph->Create(NULL, _T(""), WS_CHILD | WS_VISIBLE, rWnd, this, 0)) {
+    if (!pRecGraph->Create(NULL, _T(""), WS_CHILD | WS_VISIBLE, rWnd, this, 0))
+    {
         delete pRecGraph;
         pRecGraph = NULL;
-    } else {
+    }
+    else
+    {
         pRecGraph->SetLineDraw(m_bDrawStyleLine);
-        if (m_pFocusedGraph == NULL) {
+        if (m_pFocusedGraph == NULL)
+        {
             SetFocusedGraph(pRecGraph);
         }
         m_pFocusedGraph->UpdateStatusBar(m_dwStartCursor, m_dwStopCursor, TRUE);
@@ -1242,7 +1372,8 @@ CRecGraphWnd * CSaView::CreateRecGraph(CRecGraphWnd * pFromGraph, CObjectIStream
 // the parameter (ID). If this type of graph already exists, the focused
 // graph will not change.
 /***************************************************************************/
-void CSaView::ChangeGraph(int nID) {
+void CSaView::ChangeGraph(int nID)
+{
     int i = m_nFocusedID ? GetGraphIndexForIDD(m_nFocusedID) : -1;
     ChangeGraph(i, nID);
 }
@@ -1253,9 +1384,12 @@ void CSaView::ChangeGraph(int nID) {
 // the parameter (ID). If this type of graph already exists, the focused
 // graph will not change.
 /***************************************************************************/
-void CSaView::ChangeGraph(int idx, int nID) {
-    if (GetGraphIndexForIDD(nID) >= 0 && nID != ID_GRAPHS_OVERLAY) {
-        if (nID == IDD_RECORDING) {
+void CSaView::ChangeGraph(int idx, int nID)
+{
+    if (GetGraphIndexForIDD(nID) >= 0 && nID != ID_GRAPHS_OVERLAY)
+    {
+        if (nID == IDD_RECORDING)
+        {
             int nRecording = GetGraphIndexForIDD(IDD_RECORDING);
 
             DeleteGraphs(nRecording);
@@ -1264,28 +1398,37 @@ void CSaView::ChangeGraph(int idx, int nID) {
         return;
     }
 
-    if (nID == IDD_RECORDING) {
+    if (nID == IDD_RECORDING)
+    {
         UINT anTmpGraphID[MAX_GRAPHS_NUMBER];
         anTmpGraphID[0] = IDD_RECORDING;
-        for (int i = 0; i < MAX_GRAPHS_NUMBER - 1; i++) {
+        for (int i = 0; i < MAX_GRAPHS_NUMBER - 1; i++)
+        {
             anTmpGraphID[i+1] = m_anGraphID[i];
         }
         OnGraphsTypesPostProcess(&anTmpGraphID[0], m_nLayout);
-    } else {
+    }
+    else
+    {
         int i = m_nFocusedID ? GetGraphIndexForIDD(m_nFocusedID) : -1;
-        if (idx >= 0) {
+        if (idx >= 0)
+        {
             WINDOWPLACEMENT WP;
             WP.showCmd = SW_HIDE;
-            if (nID != ID_GRAPHS_OVERLAY) {
+            if (nID != ID_GRAPHS_OVERLAY)
+            {
                 WP = DeleteGraphs(idx);
             }
             CreateGraph(idx, nID);
-            if (m_apGraphs[idx]) {
+            if (m_apGraphs[idx])
+            {
                 // if the graph we are changing is the focused graph, then reset it
-                if (idx == i) {
+                if (idx == i)
+                {
                     SetFocusedGraph(m_apGraphs[idx]);
                 }
-                if (WP.showCmd != SW_HIDE) {
+                if (WP.showCmd != SW_HIDE)
+                {
                     m_apGraphs[idx]->SetWindowPlacement(&WP);
                 }
             }
@@ -1295,9 +1438,11 @@ void CSaView::ChangeGraph(int idx, int nID) {
 
 /***************************************************************************/
 /***************************************************************************/
-BOOL CSaView::AssignOverlay(CGraphWnd * pTarget, CSaView * pSourceView) {
+BOOL CSaView::AssignOverlay(CGraphWnd * pTarget, CSaView * pSourceView)
+{
     int nTargetID = pTarget->GetPlotID();
-    if (nTargetID == ID_GRAPHS_OVERLAY) {
+    if (nTargetID == ID_GRAPHS_OVERLAY)
+    {
         ASSERT(pTarget);
         ASSERT(pTarget->GetPlot());
         CMultiPlotWnd * pPlot = (CMultiPlotWnd *)pTarget->GetPlot();
@@ -1310,12 +1455,14 @@ BOOL CSaView::AssignOverlay(CGraphWnd * pTarget, CSaView * pSourceView) {
     // get the matching graph from the source
     int nSourceIndex = pSourceView->GetGraphIndexForIDD(nTargetID);
     ASSERT(nSourceIndex >= 0);
-    if (nSourceIndex < 0) {
+    if (nSourceIndex < 0)
+    {
         return FALSE;
     }
     CGraphWnd * pGraph = pSourceView->GetGraph(nSourceIndex);
     ASSERT(pGraph);
-    if (pGraph == NULL) {
+    if (pGraph == NULL)
+    {
         return FALSE;
     }
 
@@ -1323,15 +1470,18 @@ BOOL CSaView::AssignOverlay(CGraphWnd * pTarget, CSaView * pSourceView) {
     // being more than one overlay in the view.  We need to find
     // the right one.
     int nPosition = -1;
-    for (int j=0; j<MAX_GRAPHS_NUMBER; j++) {
-        if (m_apGraphs[j] == pTarget) {
+    for (int j=0; j<MAX_GRAPHS_NUMBER; j++)
+    {
+        if (m_apGraphs[j] == pTarget)
+        {
             nPosition = j;
             break;
         }
     }
 
     ASSERT(nPosition >= 0);
-    if (nPosition < 0) {
+    if (nPosition < 0)
+    {
         return FALSE;
     }
 
@@ -1339,13 +1489,15 @@ BOOL CSaView::AssignOverlay(CGraphWnd * pTarget, CSaView * pSourceView) {
 
     m_apGraphs[nPosition]->MergeInGraph(pGraph, (CSaView *)pSourceView, true);
 
-    if (m_apGraphs[nPosition]) {
+    if (m_apGraphs[nPosition])
+    {
         m_apGraphs[nPosition]->SetWindowText(_T("Overlay"));
         m_apGraphs[nPosition]->ResizeGraph(TRUE, TRUE);
     }
 
     m_nFocusedID = m_anGraphID[nPosition];
-    if (m_apGraphs[nPosition]) {
+    if (m_apGraphs[nPosition])
+    {
         SetFocusedGraph(m_apGraphs[nPosition]);
     }
 
@@ -1358,8 +1510,10 @@ BOOL CSaView::AssignOverlay(CGraphWnd * pTarget, CSaView * pSourceView) {
 // 09/20/2000 - DDO Reworked to accomodate multiple music graphs in a single
 //                  layout section.
 /***************************************************************************/
-void CSaView::ChangeLayout(UINT nNewLayout) {
-    if (m_nLayout == nNewLayout) {
+void CSaView::ChangeLayout(UINT nNewLayout)
+{
+    if (m_nLayout == nNewLayout)
+    {
         return;
     }
 
@@ -1369,13 +1523,16 @@ void CSaView::ChangeLayout(UINT nNewLayout) {
     //**************************************************************
     int nOldNumOfGraphs = GetNumberOfGraphs(&m_anGraphID[0]);
     int nMinNumGraphsInNewLayout = GetNumberOfGraphsInLayout(nNewLayout);
-    if (IDDSelected(&m_anGraphID[0], IDD_TWC)) {
+    if (IDDSelected(&m_anGraphID[0], IDD_TWC))
+    {
         nOldNumOfGraphs--;
     }
-    if (IDDSelected(&m_anGraphID[0], IDD_MAGNITUDE)) {
+    if (IDDSelected(&m_anGraphID[0], IDD_MAGNITUDE))
+    {
         nOldNumOfGraphs--;
     }
-    if (IDDSelected(&m_anGraphID[0], IDD_RECORDING)) {
+    if (IDDSelected(&m_anGraphID[0], IDD_RECORDING))
+    {
         nOldNumOfGraphs--;
     }
     m_nLayout = nNewLayout;
@@ -1386,30 +1543,41 @@ void CSaView::ChangeLayout(UINT nNewLayout) {
     // If there are more graphs than will fit into the new layout
     // then delete graphs that won't fit into the new layout.
     //**************************************************************
-    if (nGraphDiff > 0) {
-        for (int i = MAX_GRAPHS_NUMBER - 1; nGraphDiff; i--) {
-            if (m_apGraphs[i]) {
+    if (nGraphDiff > 0)
+    {
+        for (int i = MAX_GRAPHS_NUMBER - 1; nGraphDiff; i--)
+        {
+            if (m_apGraphs[i])
+            {
                 //********************************************************
                 // If the graph we're on is any of the melogram-related
                 // graphs then treat them as one graph and delete all of
                 // them. Otherwise just delete the single graph.
                 //********************************************************
-                if (m_anGraphID[i] == IDD_TWC || m_anGraphID[i] == IDD_MELOGRAM || m_anGraphID[i] == IDD_MAGNITUDE) {
+                if (m_anGraphID[i] == IDD_TWC || m_anGraphID[i] == IDD_MELOGRAM || m_anGraphID[i] == IDD_MAGNITUDE)
+                {
                     int nidx = GetGraphIndexForIDD(IDD_TWC);
-                    if (nidx >= 0) {
+                    if (nidx >= 0)
+                    {
                         DeleteGraphs(nidx);
                     }
                     nidx = GetGraphIndexForIDD(IDD_MELOGRAM);
-                    if (nidx >= 0) {
+                    if (nidx >= 0)
+                    {
                         DeleteGraphs(nidx);
                     }
                     nidx = GetGraphIndexForIDD(IDD_MAGNITUDE);
-                    if (nidx >= 0) {
+                    if (nidx >= 0)
+                    {
                         DeleteGraphs(nidx);
                     }
-                } else if (m_anGraphID[i] == IDD_RECORDING) { // Position View does not count as a graph
+                }
+                else if (m_anGraphID[i] == IDD_RECORDING)     // Position View does not count as a graph
+                {
                     continue;
-                } else {
+                }
+                else
+                {
                     DeleteGraphs(i);
                 }
                 nGraphDiff--;
@@ -1424,11 +1592,13 @@ void CSaView::ChangeLayout(UINT nNewLayout) {
     // create enough to fit.
     //**************************************************************
     if (nGraphDiff < 0)
-        for (int i = GetNumberOfGraphs(&m_anGraphID[0]); nGraphDiff; i++, nGraphDiff++) {
+        for (int i = GetNumberOfGraphs(&m_anGraphID[0]); nGraphDiff; i++, nGraphDiff++)
+        {
             CreateGraph(i, IDD_BLANK);
         }
 
-    if (!GetFocusedGraphWnd()) {
+    if (!GetFocusedGraphWnd())
+    {
         SetFocusedGraph(m_apGraphs[0]);
     }
 }
@@ -1436,12 +1606,18 @@ void CSaView::ChangeLayout(UINT nNewLayout) {
 /***************************************************************************/
 // CSaView::RefreshGraphs Refresh (redraw) the entire or partial graph window
 //**************************************************************************/
-void CSaView::RefreshGraphs(BOOL bEntire, BOOL bLegend, BOOL bLayout) {
-    for (int nLoop = 0; nLoop < MAX_GRAPHS_NUMBER; nLoop++) {
-        if (m_apGraphs[nLoop]) {
-            if (bLayout) {
+void CSaView::RefreshGraphs(BOOL bEntire, BOOL bLegend, BOOL bLayout)
+{
+    for (int nLoop = 0; nLoop < MAX_GRAPHS_NUMBER; nLoop++)
+    {
+        if (m_apGraphs[nLoop])
+        {
+            if (bLayout)
+            {
                 m_apGraphs[nLoop]->ResizeGraph(bEntire, bLegend);
-            } else {
+            }
+            else
+            {
                 m_apGraphs[nLoop]->RedrawGraph(bEntire, bLegend);
             }
         }
@@ -1458,18 +1634,24 @@ void CSaView::RefreshGraphs(BOOL bEntire, BOOL bLegend, BOOL bLayout) {
 // segment, whose segment will be selected. If a segment becomes selected,
 // all the highlighted areas in the plots will be deleted.
 //**************************************************************************/
-void CSaView::ChangeAnnotationSelection( CSegment * pSegment, int nSelection, DWORD dwStart, DWORD dwStop) {
+void CSaView::ChangeAnnotationSelection(CSegment * pSegment, int nSelection, DWORD dwStart, DWORD dwStop)
+{
     // set start- and stop cursor if not deselecting
     BOOL bSelect = FALSE;
 
-    if (nSelection != pSegment->GetSelection()) {
-        if (nSelection != -1) {
+    if (nSelection != pSegment->GetSelection())
+    {
+        if (nSelection != -1)
+        {
             // added conditional to prevent cursors from being set if just deselecting  AKE 8/3/2001
-            if (pSegment->GetOffset(nSelection) > GetStopCursorPosition()) {
+            if (pSegment->GetOffset(nSelection) > GetStopCursorPosition())
+            {
                 // new segment is right of current cursor location
                 SetStopCursorPosition(dwStop, SNAP_LEFT);
                 SetStartCursorPosition(dwStart, SNAP_RIGHT);
-            } else {
+            }
+            else
+            {
                 // new segment is left of current cursor location
                 SetStartCursorPosition(dwStart, SNAP_RIGHT);
                 SetStopCursorPosition(dwStop, SNAP_LEFT);
@@ -1479,27 +1661,37 @@ void CSaView::ChangeAnnotationSelection( CSegment * pSegment, int nSelection, DW
     }
 
     // select this segment, deselect all the others
-    for (int nLoop = 0; nLoop < ANNOT_WND_NUMBER; nLoop++) {
+    for (int nLoop = 0; nLoop < ANNOT_WND_NUMBER; nLoop++)
+    {
         CSegment * pSegments = GetAnnotation(nLoop);
-        if (pSegment == pSegments) {
+        if (pSegment == pSegments)
+        {
             // this is the segment to select
             pSegment->SetSelection(nSelection);
             // change it in all graphs
-            for (int nGraphLoop = 0; nGraphLoop < MAX_GRAPHS_NUMBER; nGraphLoop++) {
-                if (m_apGraphs[nGraphLoop]) {
+            for (int nGraphLoop = 0; nGraphLoop < MAX_GRAPHS_NUMBER; nGraphLoop++)
+            {
+                if (m_apGraphs[nGraphLoop])
+                {
                     m_apGraphs[nGraphLoop]->ChangeAnnotationSelection(nLoop);
-                    if (bSelect) {
+                    if (bSelect)
+                    {
                         m_apGraphs[nGraphLoop]->GetPlot()->SetHighLightArea(0, 0); // deselect
                     }
                 }
             }
-        } else {
-            if (pSegments->GetSelection() != -1) {
+        }
+        else
+        {
+            if (pSegments->GetSelection() != -1)
+            {
                 // this segment is to deselect
                 pSegments->SetSelection(-1);
                 // change it in all graphs
-                for (int nGraphLoop = 0; nGraphLoop < MAX_GRAPHS_NUMBER; nGraphLoop++) {
-                    if (m_apGraphs[nGraphLoop]) {
+                for (int nGraphLoop = 0; nGraphLoop < MAX_GRAPHS_NUMBER; nGraphLoop++)
+                {
+                    if (m_apGraphs[nGraphLoop])
+                    {
                         m_apGraphs[nGraphLoop]->ChangeAnnotationSelection(nLoop);
                     }
                 }
@@ -1508,24 +1700,30 @@ void CSaView::ChangeAnnotationSelection( CSegment * pSegment, int nSelection, DW
     }
 }
 
-void CSaView::ChangeAnnotationSelection( CSegment * pSegment, int nSelection) {
+void CSaView::ChangeAnnotationSelection(CSegment * pSegment, int nSelection)
+{
 
     DWORD dwStart = GetStartCursorPosition();
     DWORD dwStop = GetStopCursorPosition();
 
-    if ((pSegment!=NULL) && (nSelection >=0)) {
+    if ((pSegment!=NULL) && (nSelection >=0))
+    {
         dwStart = pSegment->GetOffset(nSelection);
     }
-    if ((pSegment!=NULL) && (nSelection >=0)) {
+    if ((pSegment!=NULL) && (nSelection >=0))
+    {
         dwStop = pSegment->GetDuration(nSelection) + dwStart;
     }
 
     ChangeAnnotationSelection(pSegment, nSelection, dwStart, dwStop);
 }
 
-void CSaView::DeselectAnnotations(void) {
+void CSaView::DeselectAnnotations(void)
+{
     CSegment * pSegment = FindSelectedAnnotation();
-    if (pSegment) {
+    if (pSegment!=NULL)
+    {
+        TRACE("deselecting annotation %lp\n",pSegment);
         ChangeAnnotationSelection(pSegment, -1);
     }
     // clear virtual selection
@@ -1536,12 +1734,15 @@ void CSaView::DeselectAnnotations(void) {
 // CSaView::SetFocusedGraph Set the graph with focus
 // Give graph, pWnd focus and change its caption to the graphs title.
 /***************************************************************************/
-void CSaView::SetFocusedGraph(CGraphWnd * pWnd) {
+void CSaView::SetFocusedGraph(CGraphWnd * pWnd)
+{
 
-    if (m_pFocusedGraph == pWnd) {
+    if (m_pFocusedGraph == pWnd)
+    {
         return;
     }
-    if (!pWnd) {
+    if (!pWnd)
+    {
         return; // have to set focus to some window...
     }
 
@@ -1553,7 +1754,8 @@ void CSaView::SetFocusedGraph(CGraphWnd * pWnd) {
     //******************************************************
     // If there was another graph that had focus, reset it.
     //******************************************************
-    if (m_pFocusedGraph) {
+    if (m_pFocusedGraph)
+    {
         m_pFocusedGraph->SetGraphFocus(FALSE);
     }
 
@@ -1561,7 +1763,8 @@ void CSaView::SetFocusedGraph(CGraphWnd * pWnd) {
     // Set pointer to new graph with focus.
     //******************************************************
     m_pFocusedGraph = pWnd;
-    if (ViewIsActive()) {
+    if (ViewIsActive())
+    {
         m_pFocusedGraph->SetGraphFocus(TRUE);
     }
 
@@ -1577,7 +1780,8 @@ void CSaView::SetFocusedGraph(CGraphWnd * pWnd) {
         CSaDoc * pDoc = GetDocument();
         szCaption = pDoc->GetFilenameFromTitle().c_str();   // get current view's caption string
 
-        if ((pDoc->IsTempFile())&&(pDoc->CanEdit())) {
+        if ((pDoc->IsTempFile())&&(pDoc->CanEdit()))
+        {
             CString szCopy;
             szCopy.LoadString(IDS_COPY);
             szCaption.Append(L" : ");
@@ -1590,7 +1794,8 @@ void CSaView::SetFocusedGraph(CGraphWnd * pWnd) {
 
     CSaDoc * pDoc = (CSaDoc *)GetDocument();
     // update the status bar
-    if (pDoc->GetDataSize() > 0) {
+    if (pDoc->GetDataSize() > 0)
+    {
         pWnd->UpdateStatusBar(GetStartCursorPosition(), GetStopCursorPosition(), TRUE);
     }
 }
@@ -1599,13 +1804,15 @@ void CSaView::SetFocusedGraph(CGraphWnd * pWnd) {
 // CSaView::ResetFocusedGraph Reset the graph with focus
 // No graph has focus.
 /***************************************************************************/
-void CSaView::ResetFocusedGraph() {
+void CSaView::ResetFocusedGraph()
+{
     // reset focused graph pointer
     m_pFocusedGraph = NULL;
     m_nFocusedID = 0;
     // delete name of graph in caption of view
     CSaString szCaption;
-    if (m_pDocument && GetSafeHwnd()) {
+    if (m_pDocument && GetSafeHwnd())
+    {
         CSaDoc * pDoc = GetDocument();  // get pointer to document
         szCaption = pDoc->GetFilenameFromTitle().c_str();    // get the current view caption string
         pDoc->SetTitle(szCaption);      // write the new caption string
@@ -1619,22 +1826,26 @@ void CSaView::ResetFocusedGraph() {
 // stays the same. If bZoom is FALSE (default is TRUE), the function won't
 // zoom, but only do the rest (center etc).
 /***************************************************************************/
-void CSaView::ZoomIn(double fZoomAmount, BOOL bZoom) {
+void CSaView::ZoomIn(double fZoomAmount, BOOL bZoom)
+{
     CSaDoc * pDoc = GetDocument(); // get pointer to document
     CRect rWnd;
     GetClientRect(rWnd);
     DWORD wSmpSize = pDoc->GetSampleSize();
 
     // zoom in
-    if (bZoom) {
+    if (bZoom)
+    {
         m_fZoom += fZoomAmount;    // add zoom
     }
-    if (m_fZoom > m_fMaxZoom) {
+    if (m_fZoom > m_fMaxZoom)
+    {
         m_fZoom = m_fMaxZoom;
     }
 
     m_dwScrollLine = GetDataFrame() * LINE_SCROLL_PIXELWIDTH / rWnd.Width(); // one line scroll width
-    if (m_dwScrollLine < wSmpSize) {
+    if (m_dwScrollLine < wSmpSize)
+    {
         m_dwScrollLine = wSmpSize;
     }
 
@@ -1642,18 +1853,23 @@ void CSaView::ZoomIn(double fZoomAmount, BOOL bZoom) {
     DWORD dwDataCenter = GetStartCursorPosition() + (GetStopCursorPosition() - GetStartCursorPosition() + wSmpSize) / 2;
 
     // limit left border
-    if (dwDataCenter > GetDataFrame() / 2) {
+    if (dwDataCenter > GetDataFrame() / 2)
+    {
         m_dwDataPosition = dwDataCenter - GetDataFrame() / 2; // set new data position
         // for 16 bit data value must be even
-        if (wSmpSize == 2) {
+        if (wSmpSize == 2)
+        {
             m_dwDataPosition &= ~1;
         }
-    } else {
+    }
+    else
+    {
         m_dwDataPosition = 0;
     }
 
     // limit right border
-    if (m_dwDataPosition > (pDoc->GetDataSize() - GetDataFrame())) { // is data position too high?
+    if (m_dwDataPosition > (pDoc->GetDataSize() - GetDataFrame()))   // is data position too high?
+    {
         m_dwDataPosition = pDoc->GetDataSize() - GetDataFrame(); // reduce data position to maximum
     }
 
@@ -1662,19 +1878,23 @@ void CSaView::ZoomIn(double fZoomAmount, BOOL bZoom) {
     SetScrollPos(SB_HORZ, (int)(m_dwDataPosition / m_dwHScrollFactor), TRUE);
 
     // if scrolling zoom enabled, set the new position
-    if (pViewMainFrame->IsScrollZoom()) {
+    if (pViewMainFrame->IsScrollZoom())
+    {
         SetScrollPos(SB_VERT, (int)(m_fVScrollSteps + ZOOM_SCROLL_RESOLUTION - m_fVScrollSteps / m_fZoom), TRUE);
     }
 
     // repaint all graphs (not area and private cursor graphs)
-    for (int nLoop = 0; nLoop < MAX_GRAPHS_NUMBER; nLoop++) {
+    for (int nLoop = 0; nLoop < MAX_GRAPHS_NUMBER; nLoop++)
+    {
         if ((m_apGraphs[nLoop]) &&
                 (!m_apGraphs[nLoop]->IsAreaGraph()) &&
-                (!m_apGraphs[nLoop]->HavePrivateCursor())) {
+                (!m_apGraphs[nLoop]->HavePrivateCursor()))
+        {
             m_apGraphs[nLoop]->RedrawGraph();    // repaint whole graph without legend window
         }
     }
-    if (GraphIDtoPtr(IDD_RECORDING)) {
+    if (GraphIDtoPtr(IDD_RECORDING))
+    {
         GraphIDtoPtr(IDD_RECORDING)->GetPlot()->RedrawWindow(NULL,NULL,RDW_INTERNALPAINT|RDW_UPDATENOW);
     }
 
@@ -1684,17 +1904,22 @@ void CSaView::ZoomIn(double fZoomAmount, BOOL bZoom) {
 /***************************************************************************/
 // CSaView::ZoomOut Zoom out
 /***************************************************************************/
-void CSaView::ZoomOut(double fZoomAmount) {
+void CSaView::ZoomOut(double fZoomAmount)
+{
     CSaDoc * pDoc = GetDocument(); // get pointer to document
     DWORD wSmpSize = pDoc->GetSampleSize();
 
-    if (m_fZoom > 1.0) {
+    if (m_fZoom > 1.0)
+    {
         m_fZoom -= fZoomAmount; // subtract zoom
-        if (m_fZoom <= 1.0) {
+        if (m_fZoom <= 1.0)
+        {
             m_fZoom = 1.0;
             SetScrollRange(SB_HORZ, 0, 0, FALSE); // hide scroll bar
             m_dwDataPosition = 0;
-        } else { // repaint all graphs
+        }
+        else     // repaint all graphs
+        {
             CRect rWnd;
             GetClientRect(rWnd);
 
@@ -1702,22 +1927,28 @@ void CSaView::ZoomOut(double fZoomAmount) {
             DWORD dwDataCenter = GetStartCursorPosition() + (GetStopCursorPosition() - GetStartCursorPosition() + wSmpSize) / 2;
 
             // limit left border
-            if (dwDataCenter > GetDataFrame() / 2) {
+            if (dwDataCenter > GetDataFrame() / 2)
+            {
                 m_dwDataPosition = dwDataCenter - GetDataFrame() / 2; // set new data position
                 // for 16 bit data value must be even
-                if (pDoc->Is16Bit()) {
+                if (pDoc->Is16Bit())
+                {
                     m_dwDataPosition &= ~1;
                 }
-            } else {
+            }
+            else
+            {
                 m_dwDataPosition = 0;
             }
             // limit right border
-            if (m_dwDataPosition > (pDoc->GetDataSize() - GetDataFrame())) { // is data position too high?
+            if (m_dwDataPosition > (pDoc->GetDataSize() - GetDataFrame()))   // is data position too high?
+            {
                 m_dwDataPosition = pDoc->GetDataSize() - GetDataFrame();    // reduce data position to maximum
             }
             // set scroll bar
             m_dwScrollLine = GetDataFrame() * LINE_SCROLL_PIXELWIDTH / rWnd.Width(); // one line scroll width
-            if (m_dwScrollLine < wSmpSize) {
+            if (m_dwScrollLine < wSmpSize)
+            {
                 m_dwScrollLine = wSmpSize;
             }
 
@@ -1726,19 +1957,23 @@ void CSaView::ZoomOut(double fZoomAmount) {
         }
 
         // repaint all graphs
-        for (int nLoop = 0; nLoop < MAX_GRAPHS_NUMBER; nLoop++) {
+        for (int nLoop = 0; nLoop < MAX_GRAPHS_NUMBER; nLoop++)
+        {
             if ((m_apGraphs[nLoop]!=NULL) &&
                     (!m_apGraphs[nLoop]->IsAreaGraph()) &&
-                    (!m_apGraphs[nLoop]->HavePrivateCursor())) {
+                    (!m_apGraphs[nLoop]->HavePrivateCursor()))
+            {
                 m_apGraphs[nLoop]->RedrawGraph();    // repaint whole graph without legend window
             }
         }
-        if (GraphIDtoPtr(IDD_RECORDING)) {
+        if (GraphIDtoPtr(IDD_RECORDING))
+        {
             GraphIDtoPtr(IDD_RECORDING)->GetPlot()->RedrawWindow(NULL,NULL,RDW_INTERNALPAINT|RDW_UPDATENOW);
         }
 
         // if scrolling zoom enabled, set the new position
-        if (pViewMainFrame->IsScrollZoom()) {
+        if (pViewMainFrame->IsScrollZoom())
+        {
             SetScrollPos(SB_VERT, (int)(m_fVScrollSteps + ZOOM_SCROLL_RESOLUTION - m_fVScrollSteps / m_fZoom), TRUE);
         }
         pViewMainFrame->SetPlayerTimes();
@@ -1748,19 +1983,23 @@ void CSaView::ZoomOut(double fZoomAmount) {
 /***************************************************************************/
 // CSaView::SetScrolling Set new scrolling parameters
 /***************************************************************************/
-void CSaView::SetScrolling() {
+void CSaView::SetScrolling()
+{
     CSaDoc * pDoc = GetDocument();                                                  // get pointer to document
     DWORD wSmpSize = pDoc->GetSampleSize();
     CRect rWnd;
     GetClientRect(rWnd);
-    if (rWnd.Width()) {
+    if (rWnd.Width())
+    {
         m_dwScrollLine = GetDataFrame() * LINE_SCROLL_PIXELWIDTH / rWnd.Width();    // one line scroll width
-        if (m_dwScrollLine < wSmpSize) {
+        if (m_dwScrollLine < wSmpSize)
+        {
             m_dwScrollLine = wSmpSize;
         }
         m_fMaxZoom = (double)(pDoc->GetNumSamples()) / (double)rWnd.Width() * 8.;  // max zoom factor
         m_fVScrollSteps = ZOOM_SCROLL_RESOLUTION * m_fMaxZoom;
-        if (m_fVScrollSteps > 0x7FFFFFFF) {
+        if (m_fVScrollSteps > 0x7FFFFFFF)
+        {
             m_fVScrollSteps = 0x7FFFFFFF;
         }
         m_dwHScrollFactor = (GetDocument()->GetDataSize() / 0x7FFF) + 1;
@@ -1770,15 +2009,19 @@ void CSaView::SetScrolling() {
 /***************************************************************************/
 // CSaView::SetInitialCursors Set initial cursor positions
 /***************************************************************************/
-void CSaView::SetInitialCursors() {
+void CSaView::SetInitialCursors()
+{
     CSaDoc * pDoc = (CSaDoc *)GetDocument(); // get pointer to document
     DWORD dwOffset = 0;
-    if (pDoc->GetDataSize() > 0) {
+    if (pDoc->GetDataSize() > 0)
+    {
         CRect rWnd;
         GetClientRect(rWnd);
-        if (rWnd.Width() && GetDataFrame()) {
+        if (rWnd.Width() && GetDataFrame())
+        {
             double fBytesPerPix = (double)GetDataFrame() / (double)rWnd.Width(); // calculate data samples per pixel
-            if ((DWORD)rWnd.Width() > GetDataFrame()) {
+            if ((DWORD)rWnd.Width() > GetDataFrame())
+            {
                 fBytesPerPix = (double)pDoc->GetBlockAlign();
             }
             dwOffset = (DWORD)(CURSOR_WINDOW_HALFWIDTH / 2 * fBytesPerPix);
@@ -1796,33 +2039,48 @@ void CSaView::SetInitialCursors() {
 // size changed at the position dwSectionStart by dwSectionLength bytes and
 // it shrunk, if the flag bShrink is TRUE, otherwise it grew.
 /***************************************************************************/
-void CSaView::AdjustCursors(DWORD dwSectionStart, DWORD dwSectionLength, BOOL bShrink) {
+void CSaView::AdjustCursors(DWORD dwSectionStart, DWORD dwSectionLength, BOOL bShrink)
+{
     DWORD wSmpSize = GetDocument()->GetSampleSize();
-    if (bShrink) {
-        if (GetStartCursorPosition() >= dwSectionStart) {
-            if (GetStartCursorPosition() >= (dwSectionStart + dwSectionLength)) {
+    if (bShrink)
+    {
+        if (GetStartCursorPosition() >= dwSectionStart)
+        {
+            if (GetStartCursorPosition() >= (dwSectionStart + dwSectionLength))
+            {
                 m_dwStartCursor = GetStartCursorPosition() - dwSectionLength;
-            } else {
+            }
+            else
+            {
                 m_dwStartCursor = dwSectionStart;
             }
         }
-        if (GetStopCursorPosition() >= dwSectionStart) {
-            if (GetStopCursorPosition() >= (dwSectionStart + dwSectionLength)) {
+        if (GetStopCursorPosition() >= dwSectionStart)
+        {
+            if (GetStopCursorPosition() >= (dwSectionStart + dwSectionLength))
+            {
                 m_dwStopCursor = GetStopCursorPosition() - dwSectionLength;
-            } else {
+            }
+            else
+            {
                 m_dwStopCursor = dwSectionStart + dwSectionLength - wSmpSize;
             }
         }
-    } else {
-        if (GetStartCursorPosition() >= dwSectionStart) {
+    }
+    else
+    {
+        if (GetStartCursorPosition() >= dwSectionStart)
+        {
             m_dwStartCursor = GetStartCursorPosition() + dwSectionLength;
         }
-        if (GetStopCursorPosition() >= dwSectionStart) {
+        if (GetStopCursorPosition() >= dwSectionStart)
+        {
             m_dwStopCursor = GetStopCursorPosition() + dwSectionLength;
         }
     }
     // for 16 bit data cursor positons must be even
-    if (wSmpSize == 2) {
+    if (wSmpSize == 2)
+    {
         m_dwStartCursor &= ~1;
         m_dwStopCursor &= ~1;
     }
@@ -1834,7 +2092,8 @@ void CSaView::AdjustCursors(DWORD dwSectionStart, DWORD dwSectionLength, BOOL bS
 /***************************************************************************/
 // CSaView::OnDraw Drawing
 /***************************************************************************/
-void CSaView::OnDraw(CDC * /*pDC*/) {
+void CSaView::OnDraw(CDC * /*pDC*/)
+{
     CSaDoc * pDoc = GetDocument();
     ASSERT_VALID(pDoc);
 }
@@ -1843,7 +2102,8 @@ void CSaView::OnDraw(CDC * /*pDC*/) {
 /***************************************************************************/
 // CSaView::OnInitialUpdate initialization
 /***************************************************************************/
-void CSaView::OnInitialUpdate() {
+void CSaView::OnInitialUpdate()
+{
     InitialUpdate();
 }
 
@@ -1851,24 +2111,32 @@ void CSaView::OnInitialUpdate() {
 /***************************************************************************/
 // CSaView::InitialUpdate initialization
 /***************************************************************************/
-void CSaView::InitialUpdate(BOOL bTemp) {
+void CSaView::InitialUpdate(BOOL bTemp)
+{
 
-    if (s_pobsAutoload) {
+    if (s_pobsAutoload)
+    {
         ReadProperties(*s_pobsAutoload, TRUE);
-    } else if ((pSaApp->IsCreatingNewFile()) ||
-               (!pViewMainFrame) ||
-               (!pViewMainFrame->DefaultIsValid())) {
+    }
+    else if ((pSaApp->IsCreatingNewFile()) ||
+             (!pViewMainFrame) ||
+             (!pViewMainFrame->DefaultIsValid()))
+    {
         CSaDoc * pDoc = GetDocument();
         CSaString docPath = pDoc->GetPathName();
         CFileStatus status;
         if (CFile::GetStatus(docPath, status) &&
-                ((status.m_attribute & CFile::readOnly)==CFile::readOnly)) {
+                ((status.m_attribute & CFile::readOnly)==CFile::readOnly))
+        {
             CSaString docTitle = pDoc->GetTitle() + " (Read-Only)";
             pDoc->SetTitle(docTitle);
         }
         CreateOpenAsGraphs(pSaApp->GetOpenAsID()); // SDM don't open 10-20 blank graphs...
-    } else {
-        if (bTemp) {
+    }
+    else
+    {
+        if (bTemp)
+        {
             DeleteGraphs(); // ReadGraphListProperties assumes no graphs
         }
         PartialCopy(*(pViewMainFrame->pDefaultViewConfig()));
@@ -1882,7 +2150,8 @@ void CSaView::InitialUpdate(BOOL bTemp) {
         //pViewMainFrame->SetDocDefaultFonts(this);
     }
 
-    if (!bTemp) {
+    if (!bTemp)
+    {
         CView::OnInitialUpdate();
     }
 
@@ -1900,10 +2169,13 @@ void CSaView::InitialUpdate(BOOL bTemp) {
     // if scrolling zoom enabled, show the scroll bar and set the
     // new position otherwise hide the vertical scroll bar.
     //**************************************************************
-    if ((pViewMainFrame->IsScrollZoom()) && (GetDocument()->GetDataSize() != 0)) {
+    if ((pViewMainFrame->IsScrollZoom()) && (GetDocument()->GetDataSize() != 0))
+    {
         SetScrollRange(SB_VERT, ZOOM_SCROLL_RESOLUTION, (int)m_fVScrollSteps, FALSE);
         SetScrollPos(SB_VERT, (int)(m_fVScrollSteps + ZOOM_SCROLL_RESOLUTION - m_fVScrollSteps / m_fZoom), TRUE);
-    } else {
+    }
+    else
+    {
         SetScrollRange(SB_VERT, 0, 0, FALSE);
     }
 
@@ -1924,12 +2196,15 @@ void CSaView::InitialUpdate(BOOL bTemp) {
 /***************************************************************************/
 // CSaView::OnPreparePrinting Prepare to print
 /***************************************************************************/
-BOOL CSaView::OnPreparePrinting(CPrintInfo * pInfo) {
+BOOL CSaView::OnPreparePrinting(CPrintInfo * pInfo)
+{
     BOOL ok = TRUE;
-    if (m_pPageLayout->bIsHiRes()) {
+    if (m_pPageLayout->bIsHiRes())
+    {
         int pages = CalculateHiResPrintPages();
 
-        if (pages == -1) {
+        if (pages == -1)
+        {
             CPrintOptionsDlg * pPgLayoutBckup = new CPrintOptionsDlg(m_pPageLayout);
 
             // error - bring up the dialog to fix
@@ -1937,25 +2212,33 @@ BOOL CSaView::OnPreparePrinting(CPrintInfo * pInfo) {
             // and number of graphs per page
             m_pPageLayout->SetGraphsPtr(m_apGraphs);
             ok = m_pPageLayout->DoModal()==IDOK;
-            if (ok) {
+            if (ok)
+            {
                 pages = CalculateHiResPrintPages();
-            } else if (pPgLayoutBckup) {
+            }
+            else if (pPgLayoutBckup)
+            {
                 *m_pPageLayout = *pPgLayoutBckup;
             }
 
-            if (pPgLayoutBckup) {
+            if (pPgLayoutBckup)
+            {
                 delete pPgLayoutBckup;
             }
         }
-        if (ok) {
+        if (ok)
+        {
             pInfo->SetMaxPage(pages);
         }
-    } else {
+    }
+    else
+    {
         pInfo->SetMaxPage(1);
         PreparePrintingForScreenShot();
     }
 
-    if (ok) {
+    if (ok)
+    {
         ok = SaDoPreparePrinting(pInfo, m_pPageLayout->bIsLandscape());
     }
 
@@ -1965,15 +2248,20 @@ BOOL CSaView::OnPreparePrinting(CPrintInfo * pInfo) {
 /***************************************************************************/
 // CSaView::OnBeginPrinting Begin printing
 /***************************************************************************/
-void CSaView::OnBeginPrinting(CDC * pDC, CPrintInfo * /*pInfo*/) {
+void CSaView::OnBeginPrinting(CDC * pDC, CPrintInfo * /*pInfo*/)
+{
     BOOL isColor = (pDC->GetDeviceCaps(NUMCOLORS)>2);
 
-    if (m_pPageLayout->bIsHiRes()) {
-        if (!isColor) {
+    if (m_pPageLayout->bIsHiRes())
+    {
+        if (!isColor)
+        {
             m_saveColors = *pViewMainFrame->GetColors();
             pViewMainFrame->GetColors()->SetupDefault(TRUE, TRUE);
         }
-    } else if (m_bPrintPreviewInProgress && !isColor && m_pCDibForPrint) {
+    }
+    else if (m_bPrintPreviewInProgress && !isColor && m_pCDibForPrint)
+    {
         m_pCDibForPrint->GoGreyScale();
     }
 }
@@ -1981,21 +2269,27 @@ void CSaView::OnBeginPrinting(CDC * pDC, CPrintInfo * /*pInfo*/) {
 /***************************************************************************/
 // CSaView::OnEndPrinting End printing
 /***************************************************************************/
-void CSaView::OnEndPrinting(CDC * pDC, CPrintInfo * /*pInfo*/) {
+void CSaView::OnEndPrinting(CDC * pDC, CPrintInfo * /*pInfo*/)
+{
     BOOL isColor = (pDC->GetDeviceCaps(NUMCOLORS)>2);
 
-    if (m_pPageLayout->bIsHiRes()) {
-        if (!isColor) {
+    if (m_pPageLayout->bIsHiRes())
+    {
+        if (!isColor)
+        {
             *pViewMainFrame->GetColors() = m_saveColors;
         }
-    } else if (m_pCDibForPrint) {
+    }
+    else if (m_pCDibForPrint)
+    {
         delete m_pCDibForPrint;
         m_pCDibForPrint = NULL;
     }
     m_bPrintPreviewInProgress = FALSE;
     pViewMainFrame->ClearPreviewFlag();
     pViewMainFrame->ClearPrintingFlag();
-    if (m_restartPageOptions) {
+    if (m_restartPageOptions)
+    {
         PostMessage(WM_COMMAND, ID_FILE_PAGE_SETUP);
     }
 }
@@ -2003,41 +2297,52 @@ void CSaView::OnEndPrinting(CDC * pDC, CPrintInfo * /*pInfo*/) {
 /***************************************************************************/
 // CSaView::OnUpdatePrint Menu Update
 /***************************************************************************/
-void CSaView::OnUpdateFilePrint(CCmdUI * pCmdUI) {
+void CSaView::OnUpdateFilePrint(CCmdUI * pCmdUI)
+{
     pCmdUI->Enable(TRUE);
 }
 
 /***************************************************************************/
 // CSaView::OnUpdatePrintPreview Menu Update
 /***************************************************************************/
-void CSaView::OnUpdatePrintPreview(CCmdUI * pCmdUI) {
+void CSaView::OnUpdatePrintPreview(CCmdUI * pCmdUI)
+{
     pCmdUI->Enable(TRUE);
 }
 
 /***************************************************************************/
 // CSaView::OnPrintPageSetup - Setup page layout preferences for printing
 /***************************************************************************/
-void CSaView::OnPrintPageSetup(void) {
-    if (m_restartPageOptions) {
+void CSaView::OnPrintPageSetup(void)
+{
+    if (m_restartPageOptions)
+    {
         m_restartPageOptions = FALSE;
-    } else {
+    }
+    else
+    {
         m_pPgLayoutBackup = new CPrintOptionsDlg(m_pPageLayout);
     }
 
     m_pPageLayout->SetGraphsPtr(m_apGraphs);
 
-    if ((m_pPageLayout->DoModal()!=IDOK) && (m_pPgLayoutBackup)) {
+    if ((m_pPageLayout->DoModal()!=IDOK) && (m_pPgLayoutBackup))
+    {
         *m_pPageLayout = *m_pPgLayoutBackup;
     }
 
-    if (m_pPageLayout->UserClickedPrint()) {
+    if (m_pPageLayout->UserClickedPrint())
+    {
         PostMessage(WM_COMMAND, ID_FILE_PRINT);
-    } else if (m_pPageLayout->UserClickedPreview()) {
+    }
+    else if (m_pPageLayout->UserClickedPreview())
+    {
         m_restartPageOptions = TRUE;
         PostMessage(WM_COMMAND, ID_FILE_PRINT_PREVIEW);
     }
 
-    if (!m_restartPageOptions && m_pPgLayoutBackup) {
+    if (!m_restartPageOptions && m_pPgLayoutBackup)
+    {
         delete m_pPgLayoutBackup;
         m_pPgLayoutBackup = NULL;
     }
@@ -2047,12 +2352,14 @@ void CSaView::OnPrintPageSetup(void) {
 /***************************************************************************/
 // CSaView::GetDataFrame Get the number of displayed data samples
 /***************************************************************************/
-DWORD CSaView::GetDataFrame() {
+DWORD CSaView::GetDataFrame()
+{
     // calculate current data frame (width of displayed data)
     DWORD dwFrame = (DWORD)((double)GetDocument()->GetDataSize() / m_fZoom);
     // for 16 bit data value must be even
     DWORD nSampleSize = GetDocument()->GetSampleSize();
-    if (nSampleSize == 2) {
+    if (nSampleSize == 2)
+    {
         dwFrame &= ~1;
     }
     return dwFrame;
@@ -2064,13 +2371,15 @@ DWORD CSaView::GetDataFrame() {
 // Since scrolling is really a pixel based function the position is first
 // converted to pixels then to bytes using the width provided
 /***************************************************************************/
-double CSaView::GetDataPosition(int nWndWidth) {
+double CSaView::GetDataPosition(int nWndWidth)
+{
     double fDataPos = m_dwDataPosition;
 
     DWORD dwDataFrame = GetDataFrame(); // number of data points to display
 
     // SDM 1.06.6U4 Calculate position based on pixel aligned graph
-    if ((nWndWidth) && (dwDataFrame)) {
+    if ((nWndWidth) && (dwDataFrame))
+    {
         // calculate data samples per pixel
         double fBytesPerPix = (double)dwDataFrame / (double)(nWndWidth);
         fDataPos = round(fDataPos/fBytesPerPix)*fBytesPerPix;
@@ -2087,15 +2396,18 @@ double CSaView::GetDataPosition(int nWndWidth) {
 // window with data. The function does not affect the views data frame
 // settings. It checks and limits the result against the available data size.
 /***************************************************************************/
-DWORD CSaView::AdjustDataFrame(int nWndWidth) {
+DWORD CSaView::AdjustDataFrame(int nWndWidth)
+{
     DWORD dwDataFrame = GetDataFrame(); // number of data points to display
-    if (dwDataFrame == 0) {
+    if (dwDataFrame == 0)
+    {
         return 0;    // nothing to draw
     }
 
     CSaDoc * pDoc = (CSaDoc *) GetDocument(); // get pointer to document
     DWORD dwDataSize = pDoc->GetDataSize();
-    if (dwDataSize >= GetDataPosition(nWndWidth) && (GetDataPosition(nWndWidth) + dwDataFrame) > dwDataSize) {
+    if (dwDataSize >= GetDataPosition(nWndWidth) && (GetDataPosition(nWndWidth) + dwDataFrame) > dwDataSize)
+    {
         dwDataFrame = DWORD(dwDataSize - GetDataPosition(nWndWidth));
     }
     return dwDataFrame;
@@ -2107,14 +2419,18 @@ DWORD CSaView::AdjustDataFrame(int nWndWidth) {
 void CSaView::SetCursorPosition(ECursorSelect nCursorSelect,
                                 DWORD dwNewPos,
                                 ESnapDirection nSnapDirection,
-                                ECursorAlignment nCursorAlignment) {
-    switch (nCursorSelect) {
+                                ECursorAlignment nCursorAlignment)
+{
+    switch (nCursorSelect)
+    {
     case START_CURSOR:
         SetStartCursorPosition(dwNewPos, nSnapDirection, nCursorAlignment);
-        if (GetDynamicGraphCount()) {
+        if (GetDynamicGraphCount())
+        {
             CSaDoc * pDoc = (CSaDoc *) GetDocument(); // get pointer to document
             DWORD nSampleSize = pDoc->GetSampleSize();
-            if (GetAnimationGraphCount()) {
+            if (GetAnimationGraphCount())
+            {
                 StartAnimation(m_dwStartCursor/nSampleSize, m_dwStopCursor/nSampleSize);
             }
             EndAnimation();
@@ -2127,19 +2443,25 @@ void CSaView::SetCursorPosition(ECursorSelect nCursorSelect,
     }
 }
 
-void CSaView::HideCursors() {
+void CSaView::HideCursors()
+{
     // move start cursors in all the graphs
-    for (int nLoop = 0; nLoop < MAX_GRAPHS_NUMBER; nLoop++) {
-        if (m_apGraphs[nLoop]) {
+    for (int nLoop = 0; nLoop < MAX_GRAPHS_NUMBER; nLoop++)
+    {
+        if (m_apGraphs[nLoop])
+        {
             m_apGraphs[nLoop]->HideCursors();
         }
     }
 }
 
-void CSaView::ShowCursors() {
+void CSaView::ShowCursors()
+{
     // move start cursors in all the graphs
-    for (int nLoop = 0; nLoop < MAX_GRAPHS_NUMBER; nLoop++) {
-        if (m_apGraphs[nLoop]) {
+    for (int nLoop = 0; nLoop < MAX_GRAPHS_NUMBER; nLoop++)
+    {
+        if (m_apGraphs[nLoop])
+        {
             m_apGraphs[nLoop]->ShowCursors();
         }
     }
@@ -2148,14 +2470,16 @@ void CSaView::ShowCursors() {
 /***************************************************************************/
 // CSaView::SetStartCursorPosition Set the start cursor
 /***************************************************************************/
-void CSaView::SetStartCursorPosition(DWORD dwNewPos, ESnapDirection nSnapDirection, ECursorAlignment nCursorAlignment) {
+void CSaView::SetStartCursorPosition(DWORD dwNewPos, ESnapDirection nSnapDirection, ECursorAlignment nCursorAlignment)
+{
     SetStartStopCursorPosition(dwNewPos, m_dwStopCursor, nSnapDirection, nCursorAlignment);
 }
 
 /***************************************************************************/
 // CSaView::SetStopCursorPosition Set the stop cursor
 /***************************************************************************/
-void CSaView::SetStopCursorPosition(DWORD dwNewPos, ESnapDirection nSnapDirection, ECursorAlignment nCursorAlignment) {
+void CSaView::SetStopCursorPosition(DWORD dwNewPos, ESnapDirection nSnapDirection, ECursorAlignment nCursorAlignment)
+{
     SetStartStopCursorPosition(m_dwStartCursor, dwNewPos, nSnapDirection, nCursorAlignment);
 }
 
@@ -2168,7 +2492,8 @@ void CSaView::SetStopCursorPosition(DWORD dwNewPos, ESnapDirection nSnapDirectio
 void CSaView::SetStartStopCursorPosition(WAVETIME startTime,
         WAVETIME stopTime,
         ESnapDirection nSnapDirection,
-        ECursorAlignment nCursorAlignment) {
+        ECursorAlignment nCursorAlignment)
+{
     CSaDoc * pDoc = (CSaDoc *) GetDocument(); // get pointer to document
     DWORD startPos = pDoc->toBytes(startTime,true);
     DWORD stopPos = pDoc->toBytes(stopTime,true);
@@ -2184,8 +2509,10 @@ void CSaView::SetStartStopCursorPosition(WAVETIME startTime,
 void CSaView::SetStartStopCursorPosition(DWORD dwNewStartPos,
         DWORD dwNewStopPos,
         ESnapDirection nSnapDirection,
-        ECursorAlignment nCursorAlignment) {
-    if (nCursorAlignment == ALIGN_USER_SETTING) {
+        ECursorAlignment nCursorAlignment)
+{
+    if (nCursorAlignment == ALIGN_USER_SETTING)
+    {
         nCursorAlignment = GetCursorAlignment();
     }
 
@@ -2194,17 +2521,21 @@ void CSaView::SetStartStopCursorPosition(DWORD dwNewStartPos,
     m_dwStopCursor = dwNewStopPos;
 
     // position limit
-    if (pDoc->GetDataSize() > 0) {
-        if (m_dwStartCursor >= pDoc->GetDataSize()) {
+    if (pDoc->GetDataSize() > 0)
+    {
+        if (m_dwStartCursor >= pDoc->GetDataSize())
+        {
             m_dwStartCursor = pDoc->GetDataSize() - 1;
         }
-        if (m_dwStopCursor >= pDoc->GetDataSize()) {
+        if (m_dwStopCursor >= pDoc->GetDataSize())
+        {
             m_dwStopCursor = pDoc->GetDataSize() - 1;
         }
     }
 
     // for 16 bit data value must be even
-    if (pDoc->Is16Bit()) {
+    if (pDoc->Is16Bit())
+    {
         m_dwStartCursor &= ~1;
         m_dwStopCursor &= ~1;
     }
@@ -2216,14 +2547,18 @@ void CSaView::SetStartStopCursorPosition(DWORD dwNewStartPos,
     m_dwStopCursor = pDoc->SnapCursor(STOP_CURSOR, m_dwStopCursor, m_dwStartCursor + nSampleSize, GetDocument()->GetDataSize() - nSampleSize, nSnapDirection, nCursorAlignment);
 
     // move start cursors in all the graphs
-    for (int nLoop = 0; nLoop < MAX_GRAPHS_NUMBER; nLoop++) {
-        if (m_apGraphs[nLoop]) {
+    for (int nLoop = 0; nLoop < MAX_GRAPHS_NUMBER; nLoop++)
+    {
+        if (m_apGraphs[nLoop])
+        {
             m_apGraphs[nLoop]->SetStartCursor(this);
         }
-        if (m_apGraphs[nLoop]) {
+        if (m_apGraphs[nLoop])
+        {
             m_apGraphs[nLoop]->SetStopCursor(this);
         }
-        if (m_apGraphs[nLoop]) {
+        if (m_apGraphs[nLoop])
+        {
             m_apGraphs[nLoop]->SetPlaybackCursor(this);
         }
     }
@@ -2236,11 +2571,16 @@ void CSaView::SetStartStopCursorPosition(DWORD dwNewStartPos,
 /***************************************************************************/
 // CSaView::SetPlaybackPosition Set the playbackPosition
 /***************************************************************************/
-void CSaView::SetPlaybackPosition(DWORD dwNewPos, int nSpeed, BOOL bEstimate) {
-    if (bEstimate) {
+void CSaView::SetPlaybackPosition(DWORD dwNewPos, int nSpeed, BOOL bEstimate)
+{
+    if (bEstimate)
+    {
         SetTimer(ID_TIMER_PLAYBACK, 1, NULL);
-    } else {
-        if (nSpeed!=0) {
+    }
+    else
+    {
+        if (nSpeed!=0)
+        {
             m_dwPlaybackTime = GetTickCount();
             SetTimer(ID_TIMER_PLAYBACK, 1, NULL);
         }
@@ -2250,15 +2590,18 @@ void CSaView::SetPlaybackPosition(DWORD dwNewPos, int nSpeed, BOOL bEstimate) {
 
     DWORD dwPlaybackPosition = dwNewPos;
     // for 16 bit data value must be even
-    if (GetDocument()->Is16Bit()) {
+    if (GetDocument()->Is16Bit())
+    {
         dwPlaybackPosition = dwPlaybackPosition & ~1;
     }
 
     lastPlaybackPosition = dwPlaybackPosition;
 
     // move start cursors in all the graphs
-    for (int nLoop = 0; nLoop < MAX_GRAPHS_NUMBER; nLoop++) {
-        if (m_apGraphs[nLoop]) {
+    for (int nLoop = 0; nLoop < MAX_GRAPHS_NUMBER; nLoop++)
+    {
+        if (m_apGraphs[nLoop])
+        {
             m_apGraphs[nLoop]->SetPlaybackPosition(this,bEnableScrolling);
         }
     }
@@ -2268,14 +2611,18 @@ void CSaView::SetPlaybackPosition(DWORD dwNewPos, int nSpeed, BOOL bEstimate) {
 /***************************************************************************/
 // CSaView::SetPlaybackPosition Set the playbackPosition
 /***************************************************************************/
-void CSaView::StopPlaybackTimer() {
+void CSaView::StopPlaybackTimer()
+{
     KillTimer(ID_TIMER_PLAYBACK);
 }
 
-void CSaView::SetPlaybackFlash(bool on) {
+void CSaView::SetPlaybackFlash(bool on)
+{
     // move start cursors in all the graphs
-    for (int nLoop = 0; nLoop < MAX_GRAPHS_NUMBER; nLoop++) {
-        if (m_apGraphs[nLoop]) {
+    for (int nLoop = 0; nLoop < MAX_GRAPHS_NUMBER; nLoop++)
+    {
+        if (m_apGraphs[nLoop])
+        {
             m_apGraphs[nLoop]->SetPlaybackFlash(on);
         }
     }
@@ -2284,9 +2631,12 @@ void CSaView::SetPlaybackFlash(bool on) {
 /***************************************************************************/
 // CSaView::OnTimer Set the playbackPosition
 /***************************************************************************/
-void CSaView::OnTimer(UINT nIDEvent) {
-    if (nIDEvent == ID_TIMER_PLAYBACK) {
-        if (m_nPlaybackSpeed>0) {
+void CSaView::OnTimer(UINT nIDEvent)
+{
+    if (nIDEvent == ID_TIMER_PLAYBACK)
+    {
+        if (m_nPlaybackSpeed>0)
+        {
             DWORD dwNewPos = (DWORD)(m_dPlaybackPosition + (GetTickCount()-m_dwPlaybackTime)/GetDocument()->GetTimeFromBytes(1000) * m_nPlaybackSpeed / 100);
             SetPlaybackPosition(dwNewPos, m_nPlaybackSpeed, TRUE);
         }
@@ -2300,7 +2650,8 @@ void CSaView::OnTimer(UINT nIDEvent) {
 /***************************************************************************/
 // CSaView::iGetStartCursorSegment Get segment index at start cursor position
 /***************************************************************************/
-int CSaView::iGetStartCursorSegment(int iSegment) {
+int CSaView::iGetStartCursorSegment(int iSegment)
+{
     int idxPosition = 0;
 
     CSegment * pSegment = GetAnnotation(iSegment);
@@ -2319,14 +2670,16 @@ int CSaView::iGetStartCursorSegment(int iSegment) {
 /***************************************************************************/
 // CSaView::iGetStopCursorSegment Get segment index at stop cursor position
 /***************************************************************************/
-int CSaView::iGetStopCursorSegment(int iSegment) {
+int CSaView::iGetStopCursorSegment(int iSegment)
+{
     int idxPosition = 0;
 
     CSegment * pSegment = GetAnnotation(iSegment);
     ASSERT(pSegment);
 
     // get pointer to annotation offsets
-    if (pSegment->GetOffsetSize() > 0) {
+    if (pSegment->GetOffsetSize() > 0)
+    {
         // there is at least one segment
         // get the segment index at the given position
         idxPosition = pSegment->FindFromPosition(m_dwStopCursor);
@@ -2338,10 +2691,13 @@ int CSaView::iGetStopCursorSegment(int iSegment) {
 /***************************************************************************/
 // CSaView::MoveStartCursor Move the start cursor
 /***************************************************************************/
-void CSaView::MoveStartCursor(DWORD dwNewPos) {
+void CSaView::MoveStartCursor(DWORD dwNewPos)
+{
     // move start cursors in all the graphs
-    for (int nLoop = 0; nLoop < MAX_GRAPHS_NUMBER; nLoop++) {
-        if (m_apGraphs[nLoop]) {
+    for (int nLoop = 0; nLoop < MAX_GRAPHS_NUMBER; nLoop++)
+    {
+        if (m_apGraphs[nLoop])
+        {
             m_apGraphs[nLoop]->MoveStartCursor(this, dwNewPos);
         }
     }
@@ -2350,10 +2706,13 @@ void CSaView::MoveStartCursor(DWORD dwNewPos) {
 /***************************************************************************/
 // CSaView::MoveStopCursor Move the stop cursor
 /***************************************************************************/
-void CSaView::MoveStopCursor(DWORD dwNewPos) {
+void CSaView::MoveStopCursor(DWORD dwNewPos)
+{
     // move stop cursors in all the graphs
-    for (int nLoop = 0; nLoop < MAX_GRAPHS_NUMBER; nLoop++) {
-        if (m_apGraphs[nLoop]) {
+    for (int nLoop = 0; nLoop < MAX_GRAPHS_NUMBER; nLoop++)
+    {
+        if (m_apGraphs[nLoop])
+        {
             m_apGraphs[nLoop]->MoveStopCursor(this, dwNewPos);
         }
     }
@@ -2366,50 +2725,65 @@ void CSaView::MoveStopCursor(DWORD dwNewPos) {
 // calculates the nearest possible zooming factor and sets up the real dis-
 // playable first data and the number of samples to display.
 /***************************************************************************/
-void CSaView::SetDataFrame(DWORD dwStart, DWORD dwFrame) {
+void CSaView::SetDataFrame(DWORD dwStart, DWORD dwFrame)
+{
     CSaDoc * pDoc = GetDocument(); // get pointer to document
     DWORD wSmpSize = pDoc->GetSampleSize();
     CRect rWnd;
     GetClientRect(rWnd);
     m_dwDataPosition = dwStart; // set start position
     // for 16 bit data value must be even
-    if (pDoc->Is16Bit()) {
+    if (pDoc->Is16Bit())
+    {
         m_dwDataPosition &= ~1;
     }
     // calculate zooming factor
     DWORD dwDataSize = pDoc->GetDataSize();
     double fZoom = (double)dwDataSize / (double)dwFrame; // zoom factor
-    if (fZoom > m_fMaxZoom) {
+    if (fZoom > m_fMaxZoom)
+    {
         fZoom = m_fMaxZoom;
         dwFrame = DWORD(dwDataSize/fZoom);
-        if (pDoc->Is16Bit()) {
+        if (pDoc->Is16Bit())
+        {
             dwFrame &= ~1;
         }
     }
     // if scrolling zoom enabled, set the new position
-    if (pViewMainFrame->IsScrollZoom()) {
+    if (pViewMainFrame->IsScrollZoom())
+    {
         SetScrollPos(SB_VERT, (int)(m_fVScrollSteps + ZOOM_SCROLL_RESOLUTION - m_fVScrollSteps / m_fZoom), TRUE);
     }
-    if (fZoom > 1.0) { // zoom in
+    if (fZoom > 1.0)   // zoom in
+    {
         // set new scrolling parameters
         m_dwScrollLine = dwFrame * LINE_SCROLL_PIXELWIDTH / rWnd.Width(); // one line scroll width
-        if (m_dwScrollLine < wSmpSize) {
+        if (m_dwScrollLine < wSmpSize)
+        {
             m_dwScrollLine = wSmpSize;
         }
         SetScrollRange(SB_HORZ, 0, (int)((dwDataSize - dwFrame) / m_dwHScrollFactor), FALSE);
-        if (m_fZoom == 1.0) { // first zoom in -> set scroll bar
+        if (m_fZoom == 1.0)   // first zoom in -> set scroll bar
+        {
             SetScrollPos(SB_HORZ, (int)(m_dwDataPosition / m_dwHScrollFactor), TRUE);
-        } else { // not first zoom in, repaint all graphs
-            for (int nLoop = 0; nLoop < MAX_GRAPHS_NUMBER; nLoop++) {
-                if (m_apGraphs[nLoop]) {
+        }
+        else     // not first zoom in, repaint all graphs
+        {
+            for (int nLoop = 0; nLoop < MAX_GRAPHS_NUMBER; nLoop++)
+            {
+                if (m_apGraphs[nLoop])
+                {
                     m_apGraphs[nLoop]->RedrawGraph();    // repaint whole graph window without legend
                 }
             }
         }
         m_fZoom = fZoom; // set new zooming factor
-    } else { // no zooming
+    }
+    else     // no zooming
+    {
         m_dwDataPosition = 0;
-        if (m_fZoom > 1.0) { // already zoomed in
+        if (m_fZoom > 1.0)   // already zoomed in
+        {
             SendMessage(WM_COMMAND, ID_GRAPHS_ZOOM_ALL, 0L);    // zoom all
         }
     }
@@ -2418,7 +2792,8 @@ void CSaView::SetDataFrame(DWORD dwStart, DWORD dwFrame) {
 /***************************************************************************/
 // CSaView::GetDataFrame returns the parameters set by set
 /***************************************************************************/
-void CSaView::GetDataFrame(DWORD & dwStart, DWORD & dwFrame) {
+void CSaView::GetDataFrame(DWORD & dwStart, DWORD & dwFrame)
+{
     CSaDoc * pDoc = GetDocument(); // get pointer to document
 
     dwStart = m_dwDataPosition; // set start position
@@ -2429,13 +2804,16 @@ void CSaView::GetDataFrame(DWORD & dwStart, DWORD & dwFrame) {
     dwFrame = (DWORD)(((double)dwDataSize) / m_fZoom + 0.5); // zoom factor
 }
 
-LRESULT CSaView::OnCursorInFragment(WPARAM nCursorSelect, LPARAM dwFragmentIndex) {
-    switch (nCursorSelect) {
+LRESULT CSaView::OnCursorInFragment(WPARAM nCursorSelect, LPARAM dwFragmentIndex)
+{
+    switch (nCursorSelect)
+    {
     case START_CURSOR:
         CSaDoc * pDoc = GetDocument();
         CProcessFragments * pFragments = pDoc->GetFragments();
         SFragParms FragmentParms = pFragments->GetFragmentParms(dwFragmentIndex);
-        if (GetDynamicGraphCount()) {
+        if (GetDynamicGraphCount())
+        {
             StartAnimation(FragmentParms.dwOffset, FragmentParms.dwOffset);
         }
         break;
@@ -2444,21 +2822,29 @@ LRESULT CSaView::OnCursorInFragment(WPARAM nCursorSelect, LPARAM dwFragmentIndex
     return 0L;
 }
 
-void CSaView::NotifyFragmentDone(void * /*pCaller*/) {
-    if (GetCursorAlignment() == ALIGN_AT_FRAGMENT) {
+void CSaView::NotifyFragmentDone(void * /*pCaller*/)
+{
+    if (GetCursorAlignment() == ALIGN_AT_FRAGMENT)
+    {
         OnCursorAlignmentChanged();    // fragmenter finished, alignment mode just changed
     }
 }
 
-UINT CSaView::GetDynamicGraphCount(void) {
+UINT CSaView::GetDynamicGraphCount(void)
+{
     UINT nCount = 0;
-    for (int nLoop = 0; nLoop < MAX_GRAPHS_NUMBER; nLoop++) {
-        if (m_apGraphs[nLoop]) {
+    for (int nLoop = 0; nLoop < MAX_GRAPHS_NUMBER; nLoop++)
+    {
+        if (m_apGraphs[nLoop])
+        {
             BOOL bDynamicMode = (GetGraphUpdateMode() == DYNAMIC_UPDATE && m_apGraphs[nLoop]->IsAnimationGraph());
-            if (bDynamicMode) {
+            if (bDynamicMode)
+            {
                 nCount++;
             }
-        } else {
+        }
+        else
+        {
             break;
         }
     }
@@ -2469,7 +2855,8 @@ UINT CSaView::GetDynamicGraphCount(void) {
 /***************************************************************************/
 // CSaView::OnCursorAlignmentChanged Cursor alignment option has changed
 /***************************************************************************/
-LRESULT CSaView::OnCursorAlignmentChanged(WPARAM, LPARAM) {
+LRESULT CSaView::OnCursorAlignmentChanged(WPARAM, LPARAM)
+{
     SetStartCursorPosition(m_dwStartCursor, SNAP_BOTH);
     SetStopCursorPosition(m_dwStopCursor, SNAP_BOTH);
 
@@ -2481,19 +2868,24 @@ LRESULT CSaView::OnCursorAlignmentChanged(WPARAM, LPARAM) {
 /***************************************************************************/
 // CSaView::OnGraphUpdateModeChanged  Graph update mode has changed
 /***************************************************************************/
-LRESULT CSaView::OnGraphUpdateModeChanged(WPARAM , LPARAM) {
+LRESULT CSaView::OnGraphUpdateModeChanged(WPARAM , LPARAM)
+{
     int GraphUpdateMode = GetGraphUpdateMode();
 
-    if (GraphUpdateMode == DYNAMIC_UPDATE) {
+    if (GraphUpdateMode == DYNAMIC_UPDATE)
+    {
         CSaDoc * pDoc = GetDocument();
         DWORD wSmpSize = pDoc->GetSampleSize();
         CProcessFragments * pFragments = pDoc->GetFragments();
         DWORD dwFragmentIndex = pFragments->GetFragmentIndex(m_dwStartCursor/wSmpSize);
         OnCursorInFragment(START_CURSOR, dwFragmentIndex);
-    } else {
+    }
+    else
+    {
         int nWaveGraphIndex = GetGraphIndexForIDD(IDD_RAWDATA);
         CGraphWnd * pWaveGraph = GetGraph(nWaveGraphIndex);
-        if (pWaveGraph!=NULL) {
+        if (pWaveGraph!=NULL)
+        {
             CPlotWnd * pWavePlot = pWaveGraph->GetPlot();
             pWavePlot->SetHighLightArea(0, 0);     // turn off highlighted area in raw waveform
         }
@@ -2504,15 +2896,21 @@ LRESULT CSaView::OnGraphUpdateModeChanged(WPARAM , LPARAM) {
 /***************************************************************************/
 // CSaView::OnAnimationChanged Animation selection has changed
 /***************************************************************************/
-LRESULT CSaView::OnAnimationChanged(WPARAM, LPARAM) {
+LRESULT CSaView::OnAnimationChanged(WPARAM, LPARAM)
+{
     BOOL AnimateChecked = IsAnimationRequested();
-    if (AnimateChecked) {
-        for (int nLoop = 0; nLoop < MAX_GRAPHS_NUMBER; nLoop++) {
-            if (m_apGraphs[nLoop]) {
+    if (AnimateChecked)
+    {
+        for (int nLoop = 0; nLoop < MAX_GRAPHS_NUMBER; nLoop++)
+        {
+            if (m_apGraphs[nLoop])
+            {
                 BOOL bAnimationGraph = m_apGraphs[nLoop]->IsAnimationGraph();
-                if (bAnimationGraph) {
+                if (bAnimationGraph)
+                {
                     CPlotWnd * pPlot = m_apGraphs[nLoop]->GetPlot();
-                    if (pPlot) {
+                    if (pPlot)
+                    {
                         pPlot->RedrawWindow();
                     }
                 }
@@ -2525,15 +2923,21 @@ LRESULT CSaView::OnAnimationChanged(WPARAM, LPARAM) {
 /***************************************************************************/
 // CSaView::GetAnimationGraphCount  Return number of graphs to animate
 /***************************************************************************/
-UINT CSaView::GetAnimationGraphCount(void) {
+UINT CSaView::GetAnimationGraphCount(void)
+{
     UINT nCount = 0;
-    for (int nLoop = 0; nLoop < MAX_GRAPHS_NUMBER; nLoop++) {
-        if (m_apGraphs[nLoop]) {
+    for (int nLoop = 0; nLoop < MAX_GRAPHS_NUMBER; nLoop++)
+    {
+        if (m_apGraphs[nLoop])
+        {
             BOOL bAnimation = IsAnimationRequested() && m_apGraphs[nLoop]->IsAnimationGraph();
-            if (bAnimation) {
+            if (bAnimation)
+            {
                 nCount++;
             }
-        } else {
+        }
+        else
+        {
             break;
         }
     }
@@ -2544,11 +2948,13 @@ UINT CSaView::GetAnimationGraphCount(void) {
 /***************************************************************************/
 // CSaView::StartAnimation  Animate from specified start to stop sample
 /***************************************************************************/
-BOOL CSaView::StartAnimation(DWORD dwStartWaveIndex, DWORD dwStopWaveIndex) {
+BOOL CSaView::StartAnimation(DWORD dwStartWaveIndex, DWORD dwStopWaveIndex)
+{
 
     CSaDoc * pDoc = (CSaDoc *) GetDocument(); // get pointer to document
     CProcessFragments * pFragments = pDoc->GetFragments();
-    if (!pFragments->IsDataReady()) {
+    if (!pFragments->IsDataReady())
+    {
         return FALSE;
     }
     DWORD dwStartFrame = pFragments->GetFragmentIndex(dwStartWaveIndex);
@@ -2558,40 +2964,52 @@ BOOL CSaView::StartAnimation(DWORD dwStartWaveIndex, DWORD dwStopWaveIndex) {
     BOOL bCancelAnimation = FALSE;
     m_bAnimating = TRUE;
 
-    for (DWORD dwFrameIndex = dwStartFrame; dwFrameIndex <= dwStopFrame; dwFrameIndex++) {
-        if (m_pStopwatch && !bFreezeFrame) {
-            if (dwFrameIndex == dwStartFrame) {
+    for (DWORD dwFrameIndex = dwStartFrame; dwFrameIndex <= dwStopFrame; dwFrameIndex++)
+    {
+        if (m_pStopwatch && !bFreezeFrame)
+        {
+            if (dwFrameIndex == dwStartFrame)
+            {
                 m_pStopwatch->Reset();    // timing only required to synchronize animations
-            } else if (dwFrameIndex == dwStartFrame + 1) {
+            }
+            else if (dwFrameIndex == dwStartFrame + 1)
+            {
                 float fFrameTime = m_pStopwatch->GetElapsedTime();
                 float fFrameTimeRequested = 1.F / (float)GetAnimationFrameRate();
                 fResyncTime = fFrameTimeRequested - fFrameTime;
             }
         }
-        if (fResyncTime > 0.F) {
+        if (fResyncTime > 0.F)
+        {
             m_pStopwatch->Wait(fResyncTime);    // delay to synchronize with requested frame rate
         }
 
-        for (int nLoop = 0; nLoop < MAX_GRAPHS_NUMBER; nLoop++) {
+        for (int nLoop = 0; nLoop < MAX_GRAPHS_NUMBER; nLoop++)
+        {
             // Any keydown might cancel animation
-            if (GetAsyncKeyState(VK_ESCAPE) < 0) {
+            if (GetAsyncKeyState(VK_ESCAPE) < 0)
+            {
                 bCancelAnimation = TRUE;
                 break;
             }
-            if (!m_apGraphs[nLoop]) {
+            if (!m_apGraphs[nLoop])
+            {
                 break;
             }
             BOOL bDynamicMode = (GetGraphUpdateMode() == DYNAMIC_UPDATE && m_apGraphs[nLoop]->IsAnimationGraph());
             BOOL bAnimation = (IsAnimationRequested() && m_apGraphs[nLoop]->IsAnimationGraph());
-            if (bFreezeFrame && bDynamicMode || !bFreezeFrame && bAnimation) {
+            if (bFreezeFrame && bDynamicMode || !bFreezeFrame && bAnimation)
+            {
                 m_apGraphs[nLoop]->AnimateFrame(dwFrameIndex);
-                if (m_apGraphs[nLoop]->IsCanceled()) {
+                if (m_apGraphs[nLoop]->IsCanceled())
+                {
                     bCancelAnimation = TRUE;
                     break;
                 }
             }
         }
-        if (bCancelAnimation) {
+        if (bCancelAnimation)
+        {
             EndAnimation();
             break;
         }
@@ -2603,13 +3021,17 @@ BOOL CSaView::StartAnimation(DWORD dwStartWaveIndex, DWORD dwStopWaveIndex) {
 /***************************************************************************/
 // CSaView::EndAnimation  Finish animation
 /***************************************************************************/
-void CSaView::EndAnimation() {
-    for (int nLoop = 0; nLoop < MAX_GRAPHS_NUMBER; nLoop++) {
-        if (!m_apGraphs[nLoop]) {
+void CSaView::EndAnimation()
+{
+    for (int nLoop = 0; nLoop < MAX_GRAPHS_NUMBER; nLoop++)
+    {
+        if (!m_apGraphs[nLoop])
+        {
             break;
         }
         BOOL bDynamicMode = (GetGraphUpdateMode() == DYNAMIC_UPDATE && m_apGraphs[nLoop]->IsAnimationGraph());
-        if (bDynamicMode) {
+        if (bDynamicMode)
+        {
             m_apGraphs[nLoop]->EndAnimation();
         }
     }
@@ -2628,8 +3050,10 @@ void CSaView::EndAnimation() {
 // CSaView::OnPrepareDC - prepare printing context for printing.
 //                        (set up scaling, page size, and margins)
 /***************************************************************************/
-void CSaView::OnPrepareDC(CDC * pDC, CPrintInfo * pInfo) {
-    if (pDC->IsPrinting()) {
+void CSaView::OnPrepareDC(CDC * pDC, CPrintInfo * pInfo)
+{
+    if (pDC->IsPrinting())
+    {
         // get the printers dots per inch
         m_printerDPI = CPoint(pDC->GetDeviceCaps(LOGPIXELSX),pDC->GetDeviceCaps(LOGPIXELSY));
 
@@ -2637,7 +3061,8 @@ void CSaView::OnPrepareDC(CDC * pDC, CPrintInfo * pInfo) {
         // to see if the printable region will allow those margins.
         CalculatePrintArea(pDC, pInfo);
 
-        if (m_pPageLayout->bIsHiRes()) {
+        if (m_pPageLayout->bIsHiRes())
+        {
             PrepareDCforHiResPrint(pDC, pInfo);
         }
         //  set up a print origin that yields the desired margins
@@ -2656,17 +3081,20 @@ void CSaView::OnPrepareDC(CDC * pDC, CPrintInfo * pInfo) {
 // CSaView::CalculatePrintOrigin - calculate a m_printOrigin that will
 // yield the desired margins
 /***************************************************************************/
-void CSaView::CalculatePrintOrigin(CDC * pDC) {
+void CSaView::CalculatePrintOrigin(CDC * pDC)
+{
     CPoint desiredOffset(fract_multiply(Print_Margin,m_printerDPI.x),
                          fract_multiply(Print_Margin,m_printerDPI.y));
     POINT pageOffset;
     pDC->Escape(GETPRINTINGOFFSET, NULL, NULL, &pageOffset);
     m_printOrigin.x = desiredOffset.x - pageOffset.x;
     m_printOrigin.y = desiredOffset.y - pageOffset.y;
-    if (m_printOrigin.x<0) {
+    if (m_printOrigin.x<0)
+    {
         m_printOrigin.x=0;    // no printing out of the printable area
     }
-    if (m_printOrigin.y<0) {
+    if (m_printOrigin.y<0)
+    {
         m_printOrigin.y=0;    // no printing out of the printable area
     }
     pDC->DPtoLP(&m_printOrigin, 1);
@@ -2676,7 +3104,8 @@ void CSaView::CalculatePrintOrigin(CDC * pDC) {
 // CSaView::PrepareDCforHiResPrint - prepare printing context for printing.
 //                                  (set up scaling, page size, and margins)
 /***************************************************************************/
-void CSaView::PrepareDCforHiResPrint(CDC * pDC, CPrintInfo * /*pInfo*/) {
+void CSaView::PrepareDCforHiResPrint(CDC * pDC, CPrintInfo * /*pInfo*/)
+{
     // set the logical dots per inch based on user preferences.
     // the higher logical dots per inch yields smaller fonts
     m_newPrinterDPI = (m_pPageLayout->bUseSmallFonts()) ? Small_Font_DPI : Standard_DPI;
@@ -2697,16 +3126,19 @@ void CSaView::PrepareDCforHiResPrint(CDC * pDC, CPrintInfo * /*pInfo*/) {
 // Calculate a m_printArea that will yield the desired margins, also checking
 // to see if the printable region will allow those margins.
 /***************************************************************************/
-void CSaView::CalculatePrintArea(CDC * pDC, CPrintInfo * pInfo) {
+void CSaView::CalculatePrintArea(CDC * pDC, CPrintInfo * pInfo)
+{
     pDC->Escape(GETPHYSPAGESIZE, NULL, NULL, &m_printArea);
     m_printArea.x -= m_printerDPI.x; // subtract half inch margins on each side
     m_printArea.y -= m_printerDPI.y; // subtract half inch margins on each side
     CRect printableArea(pInfo->m_rectDraw);
     pDC->LPtoDP(&printableArea);
-    if (printableArea.Width()) {
+    if (printableArea.Width())
+    {
         m_printArea.x = min(m_printArea.x , printableArea.Width());
     }
-    if (printableArea.Height()) {
+    if (printableArea.Height())
+    {
         m_printArea.y = min(m_printArea.y , printableArea.Height());
     }
 }
@@ -2719,12 +3151,16 @@ void CSaView::CalculatePrintArea(CDC * pDC, CPrintInfo * pInfo) {
 //
 // Print the current page.
 /***************************************************************************/
-void CSaView::OnPrint(CDC * pDC, CPrintInfo * pInfo) {
+void CSaView::OnPrint(CDC * pDC, CPrintInfo * pInfo)
+{
     OnPrepareDC(pDC,pInfo); // SDM1.5Test10.8 duplicate call (first call dependencies not initialized)
 
-    if (m_pPageLayout->bIsHiRes()) {
+    if (m_pPageLayout->bIsHiRes())
+    {
         DoHiResPrint(pDC, pInfo);
-    } else {
+    }
+    else
+    {
         DoScreenShot(pDC, pInfo);
     }
 }
@@ -2736,11 +3172,15 @@ void CSaView::OnPrint(CDC * pDC, CPrintInfo * pInfo) {
 //
 // Print the screen.
 /***************************************************************************/
-void CSaView::DoScreenShot(CDC * pDC, CPrintInfo * /*pInfo*/) {
-    if (!m_pCDibForPrint) {
+void CSaView::DoScreenShot(CDC * pDC, CPrintInfo * /*pInfo*/)
+{
+    if (!m_pCDibForPrint)
+    {
         // SDM 1.5Test10.8 do not use null pointer
         ASSERT(0);
-    } else {
+    }
+    else
+    {
         CRect targRect(m_printOrigin.x,m_printOrigin.y,
                        m_printOrigin.x + m_printArea.x,
                        m_printOrigin.y + m_printArea.y);
@@ -2751,12 +3191,15 @@ void CSaView::DoScreenShot(CDC * pDC, CPrintInfo * /*pInfo*/) {
         double srcSizePixelsY = m_pCDibForPrint->GetSize().cy;
 
         if ((targSizeInch1200thsX / srcSizePixelsX) >
-                (targSizeInch1200thsY / srcSizePixelsY)) {
+                (targSizeInch1200thsY / srcSizePixelsY))
+        {
 
             // we are strecthing x more than y.
             targSizeInch1200thsX = srcSizePixelsX *
                                    (targSizeInch1200thsY / srcSizePixelsY);
-        } else {
+        }
+        else
+        {
             targSizeInch1200thsY = srcSizePixelsY *
                                    (targSizeInch1200thsX / srcSizePixelsX);
         }
@@ -2765,7 +3208,8 @@ void CSaView::DoScreenShot(CDC * pDC, CPrintInfo * /*pInfo*/) {
                          (int)(m_printOrigin.x + (m_printerDPI.x / 1200.0) * targSizeInch1200thsX),
                          (int)(m_printOrigin.y + (m_printerDPI.y / 1200.0) * targSizeInch1200thsY));
 
-        if (!m_pCDibForPrint->Paint(pDC, targRect)) {
+        if (!m_pCDibForPrint->Paint(pDC, targRect))
+        {
             ASSERT(0);
         }
     }
@@ -2776,7 +3220,8 @@ void CSaView::DoScreenShot(CDC * pDC, CPrintInfo * /*pInfo*/) {
 //
 // Print the graphs using the OnDraw() methods.
 /***************************************************************************/
-void CSaView::DoHiResPrint(CDC * pDC, CPrintInfo * pInfo) {
+void CSaView::DoHiResPrint(CDC * pDC, CPrintInfo * pInfo)
+{
     CRect viewRect;
     GetWindowRect(&viewRect);
 
@@ -2791,28 +3236,39 @@ void CSaView::DoHiResPrint(CDC * pDC, CPrintInfo * pInfo) {
 
     CalcPrintScaling(&viewRect);
 
-    if (m_pPageLayout->LayoutType() == m_pPageLayout->LAYOUT_1GRAPH_PER_PAGE()) {
+    if (m_pPageLayout->LayoutType() == m_pPageLayout->LAYOUT_1GRAPH_PER_PAGE())
+    {
         int graphIndex = CalcGraphIndexForCurrentPage(pInfo->m_nCurPage);
-        if (graphIndex < MAX_GRAPHS_NUMBER) {
+        if (graphIndex < MAX_GRAPHS_NUMBER)
+        {
             PrintGraph(pDC, &viewRect, graphIndex, &viewRect, oldOrg.x, oldOrg.y);
         }
-    } else if (m_pPageLayout->LayoutType() == m_pPageLayout->LAYOUT_AS_SCREEN()) {
-        for (int nLoop = 0; nLoop < MAX_GRAPHS_NUMBER; nLoop++) {
-            if (m_apGraphs[nLoop]) {
+    }
+    else if (m_pPageLayout->LayoutType() == m_pPageLayout->LAYOUT_AS_SCREEN())
+    {
+        for (int nLoop = 0; nLoop < MAX_GRAPHS_NUMBER; nLoop++)
+        {
+            if (m_apGraphs[nLoop])
+            {
                 CRect graphRect;
                 m_apGraphs[nLoop]->GetWindowRect(&graphRect);
                 PrintGraph(pDC, &viewRect, nLoop, &graphRect, oldOrg.x, oldOrg.y);
             }
         }
-    } else {
+    }
+    else
+    {
         // custom layout - user specifies number of rows and columns
         int virtualPage = (pInfo->m_nCurPage - 1) * m_pPageLayout->NumRows() * m_pPageLayout->NumCols() + 1;
-        for (int row = 1; row <= m_pPageLayout->NumRows(); row++) {
-            for (int col = 1; col <= m_pPageLayout->NumCols(); col++) {
+        for (int row = 1; row <= m_pPageLayout->NumRows(); row++)
+        {
+            for (int col = 1; col <= m_pPageLayout->NumCols(); col++)
+            {
                 int graphIndex = CalcGraphIndexForCurrentPage(virtualPage);
                 CRect customPage;
                 CalcCustomPage(&customPage, &viewRect, row, col);
-                if (graphIndex < MAX_GRAPHS_NUMBER) {
+                if (graphIndex < MAX_GRAPHS_NUMBER)
+                {
                     PrintGraph(pDC, &viewRect, graphIndex, &customPage, oldOrg.x, oldOrg.y);
                 }
                 virtualPage++;
@@ -2828,16 +3284,20 @@ void CSaView::DoHiResPrint(CDC * pDC, CPrintInfo * pInfo) {
 // (if there are 4 graphs to a page, then each graph is considered a
 //  different virtual page).
 /***************************************************************************/
-int CSaView::CalcGraphIndexForCurrentPage(int currPage) {
+int CSaView::CalcGraphIndexForCurrentPage(int currPage)
+{
     int page = 0;
     int graphForPage = 0;
 
-    for (; graphForPage < MAX_GRAPHS_NUMBER; graphForPage++) {
-        if (m_apGraphs[graphForPage] && m_pPageLayout->IsGraphSelected(graphForPage)) {
+    for (; graphForPage < MAX_GRAPHS_NUMBER; graphForPage++)
+    {
+        if (m_apGraphs[graphForPage] && m_pPageLayout->IsGraphSelected(graphForPage))
+        {
             page++;
         }
 
-        if (page==currPage) {
+        if (page==currPage)
+        {
             break;
         }
     }
@@ -2851,7 +3311,8 @@ int CSaView::CalcGraphIndexForCurrentPage(int currPage) {
 //
 // Calculate the area to use for the given graph row and column of a custom page.
 /***************************************************************************/
-void CSaView::CalcCustomPage(CRect * customPage, const CRect * viewRect, int row, int col) {
+void CSaView::CalcCustomPage(CRect * customPage, const CRect * viewRect, int row, int col)
+{
     int seperator = fract_multiply(Print_Graph_Seperator,m_newPrinterDPI);
     CPoint customDimensions(viewRect->Width() / m_pPageLayout->NumCols(),
                             viewRect->Height() / m_pPageLayout->NumRows());
@@ -2868,12 +3329,14 @@ void CSaView::CalcCustomPage(CRect * customPage, const CRect * viewRect, int row
 //
 // Print a title on the page.
 /***************************************************************************/
-void CSaView::PrintPageTitle(CDC * pDC, int titleAreaHeight) {
+void CSaView::PrintPageTitle(CDC * pDC, int titleAreaHeight)
+{
     CSaString szDocTitle(GetDocument()->GetTitle()); // load file name
     CSaString szTitle("Speech Analyzer - ");
 
     int nFind = szDocTitle.Find(':');
-    if (nFind != -1) {
+    if (nFind != -1)
+    {
         szDocTitle = szDocTitle.Left(nFind);    // extract part left of :
     }
     szTitle += szDocTitle;
@@ -2914,7 +3377,8 @@ void CSaView::PrintPageTitle(CDC * pDC, int titleAreaHeight) {
 /***************************************************************************/
 void CSaView::PrintGraph(CDC * pDC, const CRect * viewRect, int graphNum,
                          const CRect * graphRect,
-                         int originX, int originY) {
+                         int originX, int originY)
+{
     CRect printRect;
 
     // calculate printRect and scaledOffset
@@ -2939,15 +3403,20 @@ void CSaView::PrintGraph(CDC * pDC, const CRect * viewRect, int graphNum,
 //
 // Calculate the scaling factor to fit the srcRect in the m_printArea.
 /***************************************************************************/
-void CSaView::CalcPrintScaling(const CRect * srcRect) {
+void CSaView::CalcPrintScaling(const CRect * srcRect)
+{
     m_printScaleX = (double)((1.0 * m_printArea.x)  / srcRect->Width());
     m_printScaleY = (double)((1.0 * m_printArea.y)  / srcRect->Height());
 
-    if (m_pPageLayout->bFixedAspectR()) {
+    if (m_pPageLayout->bFixedAspectR())
+    {
         // force equal scaling of x and y
-        if (m_printScaleX > m_printScaleY) {
+        if (m_printScaleX > m_printScaleY)
+        {
             m_printScaleX = m_printScaleY;
-        } else if (m_printScaleY > m_printScaleX) {
+        }
+        else if (m_printScaleY > m_printScaleX)
+        {
             m_printScaleY = m_printScaleX;
         }
     }
@@ -2958,7 +3427,8 @@ void CSaView::CalcPrintScaling(const CRect * srcRect) {
 //
 // Scale a srcRect by the scaling factors, return as pPrintRect.
 /***************************************************************************/
-void CSaView::CalcPrintRect(CRect * pPrintRect, const CRect * srcRect) {
+void CSaView::CalcPrintRect(CRect * pPrintRect, const CRect * srcRect)
+{
     *pPrintRect = CRect(0,0,(int)(m_printScaleX * srcRect->Width()),
                         (int)(m_printScaleY * srcRect->Height()));
 
@@ -2969,7 +3439,8 @@ void CSaView::CalcPrintRect(CRect * pPrintRect, const CRect * srcRect) {
 //
 // Scale a srcPoint by the scaling factors, return as pPrintPoint.
 /***************************************************************************/
-void CSaView::CalcPrintPoint(CPoint * pPrintPoint, const CPoint * srcPoint) {
+void CSaView::CalcPrintPoint(CPoint * pPrintPoint, const CPoint * srcPoint)
+{
     *pPrintPoint = CPoint((int)(m_printScaleX * srcPoint->x),
                           (int)(m_printScaleY * srcPoint->y));
 }
@@ -2982,25 +3453,34 @@ void CSaView::CalcPrintPoint(CPoint * pPrintPoint, const CPoint * srcPoint) {
 // number of graphs selected and the number of the number
 // of graphs per page.
 /***************************************************************************/
-int CSaView::CalculateHiResPrintPages(void) {
+int CSaView::CalculateHiResPrintPages(void)
+{
     int numGraphs = 0;
 
-    for (int nLoop = 0; nLoop < MAX_GRAPHS_NUMBER; nLoop++) {
-        if (m_apGraphs[nLoop]) {
+    for (int nLoop = 0; nLoop < MAX_GRAPHS_NUMBER; nLoop++)
+    {
+        if (m_apGraphs[nLoop])
+        {
             numGraphs++;
         }
     }
     numGraphs = min(m_pPageLayout->NumGraphsSelected(),numGraphs);
 
-    if (m_pPageLayout->LayoutType() == m_pPageLayout->LAYOUT_1GRAPH_PER_PAGE()) {
+    if (m_pPageLayout->LayoutType() == m_pPageLayout->LAYOUT_1GRAPH_PER_PAGE())
+    {
         return numGraphs;
-    } else if (m_pPageLayout->LayoutType() == m_pPageLayout->LAYOUT_AS_SCREEN()) {
+    }
+    else if (m_pPageLayout->LayoutType() == m_pPageLayout->LAYOUT_AS_SCREEN())
+    {
         return 1;
-    } else {
+    }
+    else
+    {
         int graphsPerPage = m_pPageLayout->NumRows() * m_pPageLayout->NumCols();
         int remainder = numGraphs % graphsPerPage;
 
-        if (!remainder) {
+        if (!remainder)
+        {
             return (numGraphs / graphsPerPage);
         }
     }
@@ -3016,12 +3496,14 @@ int CSaView::CalculateHiResPrintPages(void) {
 // that the CDib can be printed later.
 //
 /***************************************************************************/
-void CSaView::PreparePrintingForScreenShot(void) {
+void CSaView::PreparePrintingForScreenShot(void)
+{
     CWindowDC    scrn(pViewMainFrame);
 
     scrn.SelectClipRgn(NULL); // select entire window client area
     scrn.GetClipBox(&m_memRect);
-    if (!m_memRect.Width() || !m_memRect.Height()) {
+    if (!m_memRect.Width() || !m_memRect.Height())
+    {
         CSaString szError = "printing area empty, nothing to print";
         pSaApp->ErrorMessage(szError);
         return;
@@ -3029,48 +3511,65 @@ void CSaView::PreparePrintingForScreenShot(void) {
 
     // create a temporary DC for the reading the screen
     CDC * pMemDC = new CDC;
-    if (!pMemDC) {
+    if (!pMemDC)
+    {
         CSaString szError = "unable to allocate memory for screen shot printing";
         pSaApp->ErrorMessage(szError);
         ASSERT(0);
-    } else if (!pMemDC->CreateCompatibleDC(&scrn)) {
+    }
+    else if (!pMemDC->CreateCompatibleDC(&scrn))
+    {
         CSaString szError = "unable to allocate memory for screen shot printing";
         pSaApp->ErrorMessage(szError);
         ASSERT(0);
         delete pMemDC;
-    } else {
+    }
+    else
+    {
         // create a bitmap to read the screen into and select it
         // into the temporary DC
         CBitmap * pBitmapForPrint = new CBitmap;
 
-        if (!pBitmapForPrint) {
+        if (!pBitmapForPrint)
+        {
             CSaString szError = "unable to allocate memory for screen shot printing";
             pSaApp->ErrorMessage(szError);
             ASSERT(0);
-        } else if (!pBitmapForPrint->CreateCompatibleBitmap(&scrn, m_memRect.Width(), m_memRect.Height())) {
+        }
+        else if (!pBitmapForPrint->CreateCompatibleBitmap(&scrn, m_memRect.Width(), m_memRect.Height()))
+        {
             CSaString szError = "unable to allocate memory for screen shot printing";
             pSaApp->ErrorMessage(szError);
             ASSERT(0);
             delete pBitmapForPrint;
-        } else {
+        }
+        else
+        {
             CBitmap * oldBitmap = (CBitmap *)pMemDC->SelectObject(pBitmapForPrint);
 
-            if (!oldBitmap) {
+            if (!oldBitmap)
+            {
                 CSaString szError = "unable to select bitmap for screen shot printing";
                 pSaApp->ErrorMessage(szError);
                 ASSERT(0);
-            } else {
+            }
+            else
+            {
                 // BitBlt the screen data into the bitmap
                 if (!pMemDC->BitBlt(0,0, m_memRect.Width(), m_memRect.Height(), &scrn,
-                                    m_memRect.left,    m_memRect.top, SRCCOPY)) {
+                                    m_memRect.left,    m_memRect.top, SRCCOPY))
+                {
                     CSaString szError = "unable to copy for screen shot printing";
                     pSaApp->ErrorMessage(szError);
                     ASSERT(0);
                     m_pCDibForPrint = NULL;
-                } else {
+                }
+                else
+                {
                     // create a device independent bitmap from the regular bitmap
                     m_pCDibForPrint = new CDib(pMemDC, 8, FALSE);  // 8-bit screen shot
-                    if (!m_pCDibForPrint) {
+                    if (!m_pCDibForPrint)
+                    {
                         CSaString szError = "unable to convert for screen shot printing";
                         pSaApp->ErrorMessage(szError);
                         ASSERT(m_pCDibForPrint);
@@ -3088,12 +3587,14 @@ void CSaView::PreparePrintingForScreenShot(void) {
 // CSaView::SaDoPreparePrinting - based on MFC base code DoPreparePrinting,
 // but modified slightly to allow us to set the print orientation (portrait/landscape
 /***************************************************************************/
-BOOL CSaView::SaDoPreparePrinting(CPrintInfo * pInfo, BOOL isLandscape) {
+BOOL CSaView::SaDoPreparePrinting(CPrintInfo * pInfo, BOOL isLandscape)
+{
 
     ASSERT(pInfo != NULL);
     ASSERT(pInfo->m_pPD != NULL);
 
-    if (pInfo->m_bPreview) {
+    if (pInfo->m_bPreview)
+    {
         // if preview, get default printer DC and create DC without calling
         //   print dialog.
         if ((!pSaApp->SaGetPrinterDeviceDefaults(&pInfo->m_pPD->m_pd, isLandscape)) &&
@@ -3114,14 +3615,17 @@ BOOL CSaView::SaDoPreparePrinting(CPrintInfo * pInfo, BOOL isLandscape) {
         pInfo->m_pPD->m_pd.nFromPage = (WORD)pInfo->GetMinPage();
         pInfo->m_pPD->m_pd.nToPage = (WORD)pInfo->GetMaxPage();
 
-    } else {
+    }
+    else
+    {
         // otherwise, bring up the print dialog and allow user to change things
 
         // preset From-To range same as Min-Max range
         pInfo->m_pPD->m_pd.nFromPage = (WORD)pInfo->GetMinPage();
         pInfo->m_pPD->m_pd.nToPage = (WORD)pInfo->GetMaxPage();
 
-        if (pSaApp->SaDoPrintDialog(pInfo->m_pPD, isLandscape) != IDOK) {
+        if (pSaApp->SaDoPrintDialog(pInfo->m_pPD, isLandscape) != IDOK)
+        {
             return FALSE;    // do not print
         }
     }
@@ -3137,11 +3641,13 @@ BOOL CSaView::SaDoPreparePrinting(CPrintInfo * pInfo, BOOL isLandscape) {
 /***************************************************************************/
 // CSaView::IsCutAllowed Checks, if cut possible (return TRUE)
 /***************************************************************************/
-BOOL CSaView::IsCutAllowed() {
+BOOL CSaView::IsCutAllowed()
+{
     BOOL bHighLighted = FALSE;
     if ((m_nFocusedID == IDD_RAWDATA) &&
             (!GetDocument()->GetWbProcess()) &&
-            (m_pFocusedGraph->GetPlot()->GetHighLightLength() > 0)) {
+            (m_pFocusedGraph->GetPlot()->GetHighLightLength() > 0))
+    {
         bHighLighted = TRUE;
     }
     return (IsAnyAnnotationSelected() || bHighLighted);
@@ -3150,25 +3656,31 @@ BOOL CSaView::IsCutAllowed() {
 /***************************************************************************/
 // CSaView::OnEditCopy
 /***************************************************************************/
-void CSaView::OnEditCopy() {
+void CSaView::OnEditCopy()
+{
     int nSegment = FindSelectedAnnotationIndex();
-    if (!IsCutAllowed()) { // copy data point
+    if (!IsCutAllowed())   // copy data point
+    {
         OnEditCopyMeasurements();
         return;
     }
 
-    if (nSegment != -1) {
+    if (nSegment != -1)
+    {
         CSaString ctext(GetSelectedAnnotationString());
         HGLOBAL hData = GlobalAlloc(GMEM_MOVEABLE, (ctext.GetLength() + 1)*sizeof(TCHAR));
         ASSERT(hData);
-        if (hData) {
+        if (hData)
+        {
             LPTSTR lpData = (TCHAR *)GlobalLock(hData);
             ASSERT(lpData);
-            if (lpData) {
+            if (lpData)
+            {
                 int len = ctext.GetLength();
                 TCHAR * str = ctext.GetBuffer(len+1);
                 ASSERT(str);
-                if (nSegment == GLOSS) {
+                if (nSegment == GLOSS)
+                {
                     str++;
                     len--;
                 }
@@ -3179,15 +3691,19 @@ void CSaView::OnEditCopy() {
 
                 // Clear the current contents of the clipboard, and set
                 // the data handle to the new string.
-                if (OpenClipboard()) {
+                if (OpenClipboard())
+                {
                     EmptyClipboard();
                     SetClipboardData(CF_UNICODETEXT, hData);
                     CloseClipboard();
                 }
             }
         }
-    } else {
-        if ((m_nFocusedID == IDD_RAWDATA) && (m_pFocusedGraph->GetPlot()->GetHighLightLength() > 0)) {
+    }
+    else
+    {
+        if ((m_nFocusedID == IDD_RAWDATA) && (m_pFocusedGraph->GetPlot()->GetHighLightLength() > 0))
+        {
             // get the wave section boundaries
             DWORD dwSectionStart = m_pFocusedGraph->GetPlot()->GetHighLightPosition();
             DWORD dwSectionLength = m_pFocusedGraph->GetPlot()->GetHighLightLength();
@@ -3202,14 +3718,18 @@ void CSaView::OnEditCopy() {
 /***************************************************************************/
 // CSaView::OnEditCopy
 /***************************************************************************/
-void CSaView::OnUpdateEditCopy(CCmdUI * pCmdUI) {
+void CSaView::OnUpdateEditCopy(CCmdUI * pCmdUI)
+{
 
     BOOL enable = FALSE;
 
     int nSegment = FindSelectedAnnotationIndex();
-    if (nSegment!=-1) {
+    if (nSegment!=-1)
+    {
         enable=TRUE;
-    } else if ((m_nFocusedID == IDD_RAWDATA) && (m_pFocusedGraph->GetPlot()->GetHighLightLength() > 0)) {
+    }
+    else if ((m_nFocusedID == IDD_RAWDATA) && (m_pFocusedGraph->GetPlot()->GetHighLightLength() > 0))
+    {
         enable=TRUE;
     }
 
@@ -3219,7 +3739,8 @@ void CSaView::OnUpdateEditCopy(CCmdUI * pCmdUI) {
 /***************************************************************************/
 // CSaView::OnEditCopyMeasurements
 /***************************************************************************/
-void CSaView::OnEditCopyMeasurements() {
+void CSaView::OnEditCopyMeasurements()
+{
 
     // get info from the document
     DWORD dwOffset = GetStartCursorPosition();
@@ -3232,9 +3753,12 @@ void CSaView::OnEditCopyMeasurements() {
     CSaDoc * pDoc = GetDocument();
 
     CSaString ctext;
-    if (bSection) {
+    if (bSection)
+    {
         ctext = pDoc->GetMeasurementsString(dwSectionStart, dwSectionLength, &pbRes);
-    } else {
+    }
+    else
+    {
         ctext = pDoc->GetMeasurementsString(dwOffset, 0, &pbRes);
     }
 
@@ -3243,10 +3767,12 @@ void CSaView::OnEditCopyMeasurements() {
     // clear the clipboard and pass the new text
     HGLOBAL hData = GlobalAlloc(GMEM_MOVEABLE, (len + 1)*sizeof(TCHAR));
     ASSERT(hData);
-    if (hData) {
+    if (hData)
+    {
         LPTSTR lpData = (TCHAR *)GlobalLock(hData);
         ASSERT(lpData);
-        if (lpData) {
+        if (lpData)
+        {
             TCHAR * str = ctext.GetBuffer(len+1);
             ASSERT(str);
             memcpy(lpData, str, len*sizeof(TCHAR));
@@ -3254,7 +3780,8 @@ void CSaView::OnEditCopyMeasurements() {
             ctext.ReleaseBuffer();
             GlobalUnlock(hData);
 
-            if (OpenClipboard()) {
+            if (OpenClipboard())
+            {
                 EmptyClipboard();
                 SetClipboardData(CF_UNICODETEXT, hData);
                 CloseClipboard();
@@ -3268,16 +3795,19 @@ void CSaView::OnEditCopyMeasurements() {
 /***************************************************************************/
 // CSaView::OnEditCut
 /***************************************************************************/
-void CSaView::OnEditCut() {
+void CSaView::OnEditCut()
+{
     // cut annontation
-    if (IsAnyAnnotationSelected()) {
+    if (IsAnyAnnotationSelected())
+    {
         OnEditCopy();
         RemoveSelectedAnnotation();
         return;
     }
 
     // cut wave
-    if ((m_nFocusedID == IDD_RAWDATA) && (m_pFocusedGraph->GetPlot()->GetHighLightLength() > 0)) {
+    if ((m_nFocusedID == IDD_RAWDATA) && (m_pFocusedGraph->GetPlot()->GetHighLightLength() > 0))
+    {
         // copy a wavefile section to the clipboard and delete it from the file
         // get the wave section boundaries
         DWORD dwSectionStart = m_pFocusedGraph->GetPlot()->GetHighLightPosition();
@@ -3285,7 +3815,8 @@ void CSaView::OnEditCut() {
         CSaDoc * pDoc = (CSaDoc *)GetDocument();
         WAVETIME start = pDoc->toTime(dwSectionStart, true);
         WAVETIME length = pDoc->toTime(dwSectionLength, true);
-        if (pDoc->PutWaveToClipboard(start, length, TRUE)) {
+        if (pDoc->PutWaveToClipboard(start, length, TRUE))
+        {
             pDoc->InvalidateAllProcesses();
             RefreshGraphs();
             m_pFocusedGraph->GetPlot()->SetHighLightArea(0, 0);
@@ -3298,17 +3829,22 @@ void CSaView::OnEditCut() {
 /***************************************************************************/
 // CSaView::OnEditPaste
 /***************************************************************************/
-void CSaView::OnEditPaste() {
+void CSaView::OnEditPaste()
+{
     // get pointer to document
     CSaDoc * pDoc = (CSaDoc *)GetDocument();
     // is an annotation selected?
-    if (IsAnyAnnotationSelected()) {
-        if (OpenClipboard()) {
+    if (IsAnyAnnotationSelected())
+    {
+        if (OpenClipboard())
+        {
             HGLOBAL hClipData = NULL;
             LPTSTR lpClipData = NULL;
             // get text from the clipboard
-            if (NULL!=(hClipData = GetClipboardData(CF_UNICODETEXT))) {
-                if (NULL!=(lpClipData = (LPTSTR)GlobalLock(hClipData))) {
+            if (NULL!=(hClipData = GetClipboardData(CF_UNICODETEXT)))
+            {
+                if (NULL!=(lpClipData = (LPTSTR)GlobalLock(hClipData)))
+                {
                     CSaString data(lpClipData);
                     m_advancedSelection.SetSelectedAnnotationString(this, data, FALSE, TRUE);
                     GlobalUnlock(hClipData);
@@ -3319,14 +3855,19 @@ void CSaView::OnEditPaste() {
         }
     }
     // is a wave selected?
-    if (m_nFocusedID == IDD_RAWDATA) {
-        if (OpenClipboard()) {
-            if (IsClipboardFormatAvailable(CF_WAVE)) {
+    if (m_nFocusedID == IDD_RAWDATA)
+    {
+        if (OpenClipboard())
+        {
+            if (IsClipboardFormatAvailable(CF_WAVE))
+            {
                 HGLOBAL hGlobal = GetClipboardData(CF_WAVE);
-                if (hGlobal!=NULL) {
+                if (hGlobal!=NULL)
+                {
                     DWORD start = GetStartCursorPosition();
                     WAVETIME startTime = pDoc->toTime(start,true);
-                    if (pDoc->PasteClipboardToWave(hGlobal, startTime)) {
+                    if (pDoc->PasteClipboardToWave(hGlobal, startTime))
+                    {
                         // get wave from the clipboard
                         pDoc->InvalidateAllProcesses();
                         RefreshGraphs();
@@ -3342,9 +3883,12 @@ void CSaView::OnEditPaste() {
 /***************************************************************************/
 // CSaView::OnEditPasteNew
 /***************************************************************************/
-void CSaView::OnEditPasteNew() {
-    if (OpenClipboard()) {
-        if (IsClipboardFormatAvailable(CF_WAVE)) {
+void CSaView::OnEditPasteNew()
+{
+    if (OpenClipboard())
+    {
+        if (IsClipboardFormatAvailable(CF_WAVE))
+        {
             // call the application to create a new file and put in the clipboard contents
             ((CSaApp *)pSaApp)->PasteClipboardToNewFile(GetClipboardData(CF_WAVE));
         }
@@ -3356,17 +3900,21 @@ void CSaView::OnEditPasteNew() {
 // CSaView::IsAnyAnnotationSelected
 // Returns TRUE if something is selected in some annotation window, else FALSE.
 /***************************************************************************/
-BOOL CSaView::IsAnyAnnotationSelected(void) {
+BOOL CSaView::IsAnyAnnotationSelected(void)
+{
     return (FindSelectedAnnotation() != NULL);
 }
 
 /***************************************************************************/
 // CSaView::FindSelectedAnnotation
 /***************************************************************************/
-CSegment * CSaView::FindSelectedAnnotation() {
-    for (int nLoop = 0; nLoop < ANNOT_WND_NUMBER; nLoop++) {
+CSegment * CSaView::FindSelectedAnnotation()
+{
+    for (int nLoop = 0; nLoop < ANNOT_WND_NUMBER; nLoop++)
+    {
         CSegment * pSegments = GetAnnotation(nLoop);
-        if ((pSegments!=NULL) && (pSegments->GetSelection() != -1)) {
+        if ((pSegments!=NULL) && (pSegments->GetSelection() != -1))
+        {
             return pSegments;
         }
     }
@@ -3376,29 +3924,32 @@ CSegment * CSaView::FindSelectedAnnotation() {
 /***************************************************************************/
 // CSaView::FindSelectedAnnotation
 /***************************************************************************/
-int CSaView::FindSelectedAnnotationIndex() {
-    int ret = -1;
-    for (int nLoop = 0; nLoop < ANNOT_WND_NUMBER; nLoop++) {
-        CSegment * pSegments = GetAnnotation(nLoop);
-        if (pSegments && (pSegments->GetSelection() != -1)) {
-            ret = nLoop;
-            break;
+int CSaView::FindSelectedAnnotationIndex()
+{
+    for (int nLoop = 0; nLoop < ANNOT_WND_NUMBER; nLoop++)
+    {
+        CSegment * pSegment = GetAnnotation(nLoop);
+        if ((pSegment!=NULL) && (pSegment->GetSelection() != -1))
+        {
+            return nLoop;
         }
     }
-    return ret;
+    return -1;
 }
 
 /***************************************************************************/
 // CSaView::ChangeSelectedAnnotationData
 /***************************************************************************/
-void CSaView::ChangeSelectedAnnotationData(const CSaString & str) {
+void CSaView::ChangeSelectedAnnotationData(const CSaString & str)
+{
     CSaDoc * pDoc = (CSaDoc *) GetDocument(); // get pointer to document
     ASSERT(pDoc);
     pDoc->CheckPoint();
     {
         CSegment * pAnnotationSet = FindSelectedAnnotation();
         ASSERT(pAnnotationSet);
-        if (pAnnotationSet!=NULL) {
+        if (pAnnotationSet!=NULL)
+        {
             pAnnotationSet->ReplaceSelectedSegment(pDoc,str);
         }
     }
@@ -3407,10 +3958,12 @@ void CSaView::ChangeSelectedAnnotationData(const CSaString & str) {
 /***************************************************************************/
 // CSaView::RemoveSelectedAnnotation
 /***************************************************************************/
-void CSaView::RemoveSelectedAnnotation() {
-    CSegment * pAnnotationSet = FindSelectedAnnotation();
+void CSaView::RemoveSelectedAnnotation()
+{
 
-    if (pAnnotationSet!=NULL) {
+    CSegment * pAnnotationSet = FindSelectedAnnotation();
+    if (pAnnotationSet!=NULL)
+    {
         pAnnotationSet->Remove(GetDocument());
     }
 }
@@ -3419,15 +3972,20 @@ void CSaView::RemoveSelectedAnnotation() {
 // CSaView::OnUpdateEditPaste
 // If something for the clipboard is selected, it enables the item.
 /***************************************************************************/
-void CSaView::OnUpdateEditPaste(CCmdUI * pCmdUI) {
+void CSaView::OnUpdateEditPaste(CCmdUI * pCmdUI)
+{
     BOOL enablePaste = FALSE;
 
-    if (IsAnyAnnotationSelected()) {
-        if (OpenClipboard()) {
-            if (IsClipboardFormatAvailable(CF_UNICODETEXT)) {
+    if (IsAnyAnnotationSelected())
+    {
+        if (OpenClipboard())
+        {
+            if (IsClipboardFormatAvailable(CF_UNICODETEXT))
+            {
                 CSaApp * pApp = (CSaApp *)AfxGetApp();
                 LPCTSTR path = pApp->GetLastClipboardPath();
-                if (wcslen(path)>0) {
+                if (wcslen(path)>0)
+                {
                     enablePaste = TRUE;
                 }
             }
@@ -3436,10 +3994,14 @@ void CSaView::OnUpdateEditPaste(CCmdUI * pCmdUI) {
     }
 
     CSaDoc * pDoc = GetDocument();
-    if (m_nFocusedID == IDD_RAWDATA) {
-        if (!pDoc->GetWbProcess()) {
-            if (OpenClipboard()) {
-                if (IsClipboardFormatAvailable(CF_WAVE)) {
+    if (m_nFocusedID == IDD_RAWDATA)
+    {
+        if (!pDoc->GetWbProcess())
+        {
+            if (OpenClipboard())
+            {
+                if (IsClipboardFormatAvailable(CF_WAVE))
+                {
                     enablePaste = TRUE;
                 }
                 CloseClipboard();
@@ -3453,13 +4015,17 @@ void CSaView::OnUpdateEditPaste(CCmdUI * pCmdUI) {
 // CSaView::OnUpdateEditPasteNew
 // If waveform available on the clipboard, it enables the item.
 /***************************************************************************/
-void CSaView::OnUpdateEditPasteNew(CCmdUI * pCmdUI) {
+void CSaView::OnUpdateEditPasteNew(CCmdUI * pCmdUI)
+{
     BOOL enablePaste = FALSE;
-    if (OpenClipboard()) {
-        if (IsClipboardFormatAvailable(CF_WAVE)) {
+    if (OpenClipboard())
+    {
+        if (IsClipboardFormatAvailable(CF_WAVE))
+        {
             CSaApp * pApp = (CSaApp *)AfxGetApp();
             LPCTSTR path = pApp->GetLastClipboardPath();
-            if (wcslen(path)>0) {
+            if (wcslen(path)>0)
+            {
                 enablePaste = TRUE;
             }
         }
@@ -3472,7 +4038,8 @@ void CSaView::OnUpdateEditPasteNew(CCmdUI * pCmdUI) {
 // CSaView::OnUpdateHasSel
 // Is something for the clipboard is selected, it enables the item.
 /***************************************************************************/
-void CSaView::OnUpdateHasSel(CCmdUI * pCmdUI) {
+void CSaView::OnUpdateHasSel(CCmdUI * pCmdUI)
+{
     pCmdUI->Enable(IsCutAllowed());
 }
 
@@ -3483,15 +4050,18 @@ void CSaView::OnUpdateHasSel(CCmdUI * pCmdUI) {
 /***************************************************************************/
 // CSaView::OnEditUndo
 /***************************************************************************/
-void CSaView::OnEditUndo() {
+void CSaView::OnEditUndo()
+{
     CSaDoc * pDoc = (CSaDoc *)GetDocument();
     pDoc->Undo();
-    if (pDoc->IsWaveToUndo()) {
+    if (pDoc->IsWaveToUndo())
+    {
         pDoc->UndoWaveFile();
     }
     // SDM 1.06.6U4 Set cursors to selected segment on undo
     CSegment * pSegment = FindSelectedAnnotation();
-    if (pSegment) {
+    if (pSegment!=NULL)
+    {
         int nIndex = pSegment->GetSelection();
         SetStartCursorPosition(pSegment->GetOffset(nIndex));
         SetStopCursorPosition(pSegment->GetStop(nIndex));
@@ -3503,7 +4073,8 @@ void CSaView::OnEditUndo() {
 /***************************************************************************/
 // CSaView::OnUpdateEditUndo
 /***************************************************************************/
-void CSaView::OnUpdateEditUndo(CCmdUI * pCmdUI) {
+void CSaView::OnUpdateEditUndo(CCmdUI * pCmdUI)
+{
     pCmdUI->Enable(((CSaDoc *)GetDocument())->CanUndo());
 }
 
@@ -3512,7 +4083,8 @@ void CSaView::OnUpdateEditUndo(CCmdUI * pCmdUI) {
 /***************************************************************************/
 // CSaView::OnEditRedo
 /***************************************************************************/
-void CSaView::OnEditRedo() {
+void CSaView::OnEditRedo()
+{
     ((CSaDoc *)GetDocument())->Redo();
     RefreshGraphs();
 }
@@ -3521,24 +4093,28 @@ void CSaView::OnEditRedo() {
 /***************************************************************************/
 // CSaView::OnUpdateEditRedo
 /***************************************************************************/
-void CSaView::OnUpdateEditRedo(CCmdUI * pCmdUI) {
+void CSaView::OnUpdateEditRedo(CCmdUI * pCmdUI)
+{
     pCmdUI->Enable(((CSaDoc *)GetDocument())->CanRedo());
 }
 
 /***************************************************************************/
 // CSaView::OnEditCursorStartLeft Move Start Cursor Left
 /***************************************************************************/
-void CSaView::OnEditCursorStartLeft() {
+void CSaView::OnEditCursorStartLeft()
+{
     CSaDoc * pDoc = GetDocument();
     int nBlockAlign = pDoc->GetBlockAlign();
     DWORD movementScale = ((DWORD)(m_fMaxZoom/m_fZoom + 0.5))* nBlockAlign;
     DWORD dwOffset = GetStartCursorPosition();
-    if (dwOffset < movementScale) {
+    if (dwOffset < movementScale)
+    {
         return;
     }
 
     DWORD dwOffsetNew = pDoc->SnapCursor(START_CURSOR, dwOffset - movementScale, SNAP_LEFT);
-    if (dwOffset != dwOffsetNew) {
+    if (dwOffset != dwOffsetNew)
+    {
         SetStartCursorPosition(dwOffsetNew);
     }
 }
@@ -3546,7 +4122,8 @@ void CSaView::OnEditCursorStartLeft() {
 /***************************************************************************/
 // CSaView::OnEditCursorStartRight Move Start Cursor Right
 /***************************************************************************/
-void CSaView::OnEditCursorStartRight() {
+void CSaView::OnEditCursorStartRight()
+{
     CSaDoc * pDoc = GetDocument();
     int nBlockAlign = pDoc->GetBlockAlign();
     DWORD minSeparation = ((DWORD)(CURSOR_MIN_DISTANCE * (m_fMaxZoom/m_fZoom))) * nBlockAlign;
@@ -3554,26 +4131,32 @@ void CSaView::OnEditCursorStartRight() {
     DWORD movementScale = ((DWORD)(m_fMaxZoom/m_fZoom + 0.5))* nBlockAlign;
     DWORD dwOffset = GetStartCursorPosition();
     // off the end!
-    if ((dwOffset + movementScale) >= dataSize) {
+    if ((dwOffset + movementScale) >= dataSize)
+    {
         return;
     }
 
     DWORD dwOffsetNew = pDoc->SnapCursor(START_CURSOR, dwOffset + movementScale, SNAP_RIGHT);
     DWORD dwStop = GetStopCursorPosition();
     DWORD dwStopNew = dwStop;
-    if (dwOffsetNew + minSeparation > dwStopNew) {
+    if (dwOffsetNew + minSeparation > dwStopNew)
+    {
         dwStopNew = pDoc->SnapCursor(STOP_CURSOR, dwOffsetNew + minSeparation, SNAP_RIGHT);
     }
-    if (dwOffsetNew + minSeparation > dwStopNew) {
+    if (dwOffsetNew + minSeparation > dwStopNew)
+    {
         dwOffsetNew = pDoc->SnapCursor(START_CURSOR, (dwStopNew > minSeparation) ? (dwStopNew - minSeparation): 0, SNAP_LEFT);
     }
-    if (dwOffsetNew + minSeparation > dwStopNew) {
+    if (dwOffsetNew + minSeparation > dwStopNew)
+    {
         return;
     }
-    if (dwStop != dwStopNew) {
+    if (dwStop != dwStopNew)
+    {
         SetStopCursorPosition(dwStopNew);
     }
-    if (dwOffset != dwOffsetNew) {
+    if (dwOffset != dwOffsetNew)
+    {
         SetStartCursorPosition(dwOffsetNew);
     }
 }
@@ -3581,18 +4164,21 @@ void CSaView::OnEditCursorStartRight() {
 /***************************************************************************/
 // CSaView::OnEditCursorStopRight Move Stop Cursor Right
 /***************************************************************************/
-void CSaView::OnEditCursorStopRight() {
+void CSaView::OnEditCursorStopRight()
+{
     CSaDoc * pDoc = GetDocument();
     int nBlockAlign = pDoc->GetBlockAlign();
     DWORD dataSize = pDoc->GetDataSize();
     DWORD movementScale = ((DWORD)(m_fMaxZoom/m_fZoom + 0.5))* nBlockAlign;
     DWORD dwStop = GetStopCursorPosition();
-    if (dwStop + movementScale >= dataSize) {
+    if (dwStop + movementScale >= dataSize)
+    {
         return;
     }
 
     DWORD dwStopNew = pDoc->SnapCursor(STOP_CURSOR, dwStop + movementScale, SNAP_RIGHT);
-    if (dwStop != dwStopNew) {
+    if (dwStop != dwStopNew)
+    {
         SetStopCursorPosition(dwStopNew);
     }
 }
@@ -3600,13 +4186,15 @@ void CSaView::OnEditCursorStopRight() {
 /***************************************************************************/
 // CSaView::OnEditCursorStopLeft Move Stop Cursor Left
 /***************************************************************************/
-void CSaView::OnEditCursorStopLeft() {
+void CSaView::OnEditCursorStopLeft()
+{
     CSaDoc * pDoc = GetDocument();
     int nBlockAlign = pDoc->GetBlockAlign();
     DWORD minSeparation = ((DWORD)(CURSOR_MIN_DISTANCE * (m_fMaxZoom/m_fZoom))) * nBlockAlign;
     DWORD movementScale = ((DWORD)(m_fMaxZoom/m_fZoom + 0.5))* nBlockAlign;
     DWORD dwStop = GetStopCursorPosition();
-    if (dwStop < movementScale) {
+    if (dwStop < movementScale)
+    {
         return;
     }
 
@@ -3614,22 +4202,27 @@ void CSaView::OnEditCursorStopLeft() {
 
     DWORD dwOffset = GetStartCursorPosition();
     DWORD dwOffsetNew = dwOffset;
-    if ((dwOffsetNew + minSeparation) > dwStopNew) {
+    if ((dwOffsetNew + minSeparation) > dwStopNew)
+    {
         dwOffsetNew = pDoc->SnapCursor(START_CURSOR, (dwStopNew > minSeparation) ? (dwStopNew - minSeparation): 0, SNAP_LEFT);
     }
-    if ((dwOffsetNew + minSeparation) > dwStopNew) {
+    if ((dwOffsetNew + minSeparation) > dwStopNew)
+    {
         dwStopNew = pDoc->SnapCursor(STOP_CURSOR, dwOffsetNew + minSeparation, SNAP_RIGHT);
     }
 
-    if (dwOffsetNew + minSeparation > dwStopNew) {
+    if (dwOffsetNew + minSeparation > dwStopNew)
+    {
         return;
     }
 
-    if (dwOffset != dwOffsetNew) {
+    if (dwOffset != dwOffsetNew)
+    {
         SetStartCursorPosition(dwOffsetNew);
     }
 
-    if (dwStop != dwStopNew) {
+    if (dwStop != dwStopNew)
+    {
         SetStopCursorPosition(dwStopNew);
     }
 }
@@ -3637,39 +4230,46 @@ void CSaView::OnEditCursorStopLeft() {
 /***************************************************************************/
 // CSaView::OnEditBoundaryStartLeft Move Start Cursor Left
 /***************************************************************************/
-void CSaView::OnEditBoundaryStartLeft() {
+void CSaView::OnEditBoundaryStartLeft()
+{
     MoveBoundary(true,true);
 }
 
 /***************************************************************************/
 // CSaView::OnEditBoundaryStartRight Move Start Cursor Right
 /***************************************************************************/
-void CSaView::OnEditBoundaryStartRight() {
+void CSaView::OnEditBoundaryStartRight()
+{
     MoveBoundary(true,false);
 }
 
 /***************************************************************************/
 // CSaView::OnEditCursorStopLeft Move Stop Cursor Left
 /***************************************************************************/
-void CSaView::OnEditBoundaryStopLeft() {
+void CSaView::OnEditBoundaryStopLeft()
+{
     MoveBoundary(false,true);
 }
 
 /***************************************************************************/
 // CSaView::OnEditCursorStopRight Move Stop Cursor Right
 /***************************************************************************/
-void CSaView::OnEditBoundaryStopRight() {
+void CSaView::OnEditBoundaryStopRight()
+{
     MoveBoundary(false,false);
 }
 
-void CSaView::MoveBoundary(bool start, bool left) {
+void CSaView::MoveBoundary(bool start, bool left)
+{
     bool editSegment = (m_bEditSegmentSize|m_bEditBoundaries);
-    if (!editSegment) {
+    if (!editSegment)
+    {
         return;
     }
 
     bool overlap = m_bEditSegmentSize;
-    if (overlap) {
+    if (overlap)
+    {
         TRACE("clearing\n");
         lastBoundaryStartCursor = UNDEFINED_OFFSET;
         lastBoundaryStopCursor = UNDEFINED_OFFSET;
@@ -3678,7 +4278,8 @@ void CSaView::MoveBoundary(bool start, bool left) {
     }
 
     ECursorSelect cursor = (start)?START_CURSOR:STOP_CURSOR;
-    if (cursor!=lastBoundaryCursor) {
+    if (cursor!=lastBoundaryCursor)
+    {
         TRACE("clearing\n");
         lastBoundaryStartCursor = UNDEFINED_OFFSET;
         lastBoundaryStopCursor = UNDEFINED_OFFSET;
@@ -3688,11 +4289,13 @@ void CSaView::MoveBoundary(bool start, bool left) {
 
     // if there's no annotation selection, we can't move anything...
     int nLoop = FindSelectedAnnotationIndex();
-    if (nLoop==-1) {
+    if (nLoop==-1)
+    {
         TRACE("no selection\n");
         return;
     }
-    if (nLoop!=lastBoundaryIndex) {
+    if (nLoop!=lastBoundaryIndex)
+    {
         TRACE("clearing\n");
         lastBoundaryStartCursor = UNDEFINED_OFFSET;
         lastBoundaryStopCursor = UNDEFINED_OFFSET;
@@ -3702,19 +4305,23 @@ void CSaView::MoveBoundary(bool start, bool left) {
 
     // are we editing segment size?
     CSegment * pSegment = GetAnnotation(nLoop);
-    if (pSegment==NULL) {
+    if (pSegment==NULL)
+    {
         return;
     }
     CGraphWnd * pGraph = GetGraphForAnnotation(nLoop);
-    if (pGraph==NULL) {
+    if (pGraph==NULL)
+    {
         return;
     }
     CAnnotationWnd * pWnd = pGraph->GetAnnotationWnd(nLoop);
-    if (pWnd==NULL) {
+    if (pWnd==NULL)
+    {
         return;
     }
     CPlotWnd * pPlot = pGraph->GetPlot();
-    if (pPlot==NULL) {
+    if (pPlot==NULL)
+    {
         return;
     }
 
@@ -3733,17 +4340,25 @@ void CSaView::MoveBoundary(bool start, bool left) {
     TRACE("start=%d stop=%d\n",dwStart,dwStop);
 
     // record the original cursor positions
-    if (!overlap) {
-        if (start) {
-            if (!left) {
-                if (lastBoundaryStopCursor == UNDEFINED_OFFSET) {
+    if (!overlap)
+    {
+        if (start)
+        {
+            if (!left)
+            {
+                if (lastBoundaryStopCursor == UNDEFINED_OFFSET)
+                {
                     TRACE("setting stop\n");
                     lastBoundaryStopCursor = dwStop;
                 }
             }
-        } else {
-            if (left) {
-                if (lastBoundaryStartCursor == UNDEFINED_OFFSET) {
+        }
+        else
+        {
+            if (left)
+            {
+                if (lastBoundaryStartCursor == UNDEFINED_OFFSET)
+                {
                     TRACE("setting start\n");
                     lastBoundaryStartCursor = dwStart;
                 }
@@ -3763,16 +4378,20 @@ void CSaView::MoveBoundary(bool start, bool left) {
     DWORD startGap = dwStart+minSeparation;
     DWORD stopGap = dwStop-minSeparation;
 
-    if (start) {
+    if (start)
+    {
         dwStart = (left) ? ((dwStart<movement) ? 0 : (dwStart-movement)) : (dwStart += movement);
         dwStart = (overlap) ? ((dwStart>stopGap)? stopGap: dwStart) : dwStart;
         // check limits
         dwStart = (dwStart<minStart)?minStart:dwStart;
         dwStart = (dwStart>maxStart)?maxStart:dwStart;
-        if (left) {
+        if (left)
+        {
         }
         dwStart = pDoc->SnapCursor(START_CURSOR, dwStart, snap);
-    } else {
+    }
+    else
+    {
         dwStop = (left) ? ((dwStop<movement) ? 0 : (dwStop - movement)) : (dwStop += movement);
         dwStop = (overlap) ? ((dwStop<startGap)?startGap:dwStop) : dwStop;
         // check limits
@@ -3786,17 +4405,22 @@ void CSaView::MoveBoundary(bool start, bool left) {
     // on edit boundaries, we push the other cursor if we run into it.
     // we need to manage restore a 'pushed' cursor to it's original position
     // if the 'pulling' cursor restores the 'pushed' cursor paste it's original location.
-    if (!overlap) {
-        if (start) {
+    if (!overlap)
+    {
+        if (start)
+        {
             startGap = dwStart+minSeparation;
             dwStop = (dwStop<startGap)?startGap:dwStop;
-            if (lastBoundaryStopCursor!=UNDEFINED_OFFSET) {
+            if (lastBoundaryStopCursor!=UNDEFINED_OFFSET)
+            {
                 DWORD a = dwStop;
-                if ((left)&&(dwStop>startGap)) {
+                if ((left)&&(dwStop>startGap))
+                {
                     // 'pull' the stop cursor if necessary
                     dwStop = startGap;
                 }
-                if (dwStop<lastBoundaryStopCursor) {
+                if (dwStop<lastBoundaryStopCursor)
+                {
                     TRACE("recovering\n");
                     dwStop = lastBoundaryStopCursor;
                 }
@@ -3805,15 +4429,20 @@ void CSaView::MoveBoundary(bool start, bool left) {
             dwStop = (dwStop<minStop)?minStop:dwStop;
             dwStop = (dwStop>maxStop)?maxStop:dwStop;
             dwStop = pDoc->SnapCursor(STOP_CURSOR, dwStop);
-        } else {
+        }
+        else
+        {
             stopGap = dwStop-minSeparation;
             dwStart = (dwStart>stopGap)?stopGap:dwStart;
-            if (lastBoundaryStartCursor!=UNDEFINED_OFFSET) {
-                if ((!left)&&(dwStart<stopGap)) {
+            if (lastBoundaryStartCursor!=UNDEFINED_OFFSET)
+            {
+                if ((!left)&&(dwStart<stopGap))
+                {
                     // 'pull' the stop cursor if necessary
                     dwStart = stopGap;
                 }
-                if (dwStart>lastBoundaryStartCursor) {
+                if (dwStart>lastBoundaryStartCursor)
+                {
                     TRACE("recovering\n");
                     dwStart = lastBoundaryStartCursor;
                 }
@@ -3825,7 +4454,8 @@ void CSaView::MoveBoundary(bool start, bool left) {
     }
 
     // see if it will fly...
-    if (pSegment->CheckPosition(pDoc, dwStart, dwStop, CSegment::MODE_AUTOMATIC, overlap) == -1) {
+    if (pSegment->CheckPosition(pDoc, dwStart, dwStop, CSegment::MODE_AUTOMATIC, overlap) == -1)
+    {
         TRACE("failed check\n");
         return;
     }
@@ -3847,14 +4477,16 @@ void CSaView::MoveBoundary(bool start, bool left) {
 /***************************************************************************/
 // CSaView::OnEditAddSyllable Add Syllable Break to Phonetic Segment
 /***************************************************************************/
-void CSaView::OnEditAddSyllable() {
+void CSaView::OnEditAddSyllable()
+{
     CSaDoc * pDoc = GetDocument(); // get pointer to document
     pDoc->CheckPoint();
     CSaString szString = "."; //Fill new segment with segment break character
 
     CPhoneticSegment * pSeg = (CPhoneticSegment *)GetAnnotation(PHONETIC);
 
-    if (pSeg->GetSelection()!=-1) { // Phonetic Segment Selected
+    if (pSeg->GetSelection()!=-1)   // Phonetic Segment Selected
+    {
         int nSelection = pSeg->GetSelection();
         DWORD dwStart = pSeg->GetOffset(nSelection); // Start at current start
         DWORD dwMaxStop;
@@ -3862,7 +4494,8 @@ void CSaView::OnEditAddSyllable() {
 
         dwMaxStop = dwStart + pSeg->GetDuration(nSelection) - pDoc->GetBytesFromTime(MIN_ADD_SEGMENT_TIME);
 
-        if (pDoc->Is16Bit()) { // SDM 1.5Test8.2
+        if (pDoc->Is16Bit())   // SDM 1.5Test8.2
+        {
             dwMaxStop = dwMaxStop & ~1; // Round down
         }
 
@@ -3871,13 +4504,15 @@ void CSaView::OnEditAddSyllable() {
 
         dwStop = (dwStart + pDoc->GetBytesFromTime(ADD_SYLLABLE_TIME));
 
-        if (pDoc->Is16Bit()) { // SDM 1.5Test8.2
+        if (pDoc->Is16Bit())   // SDM 1.5Test8.2
+        {
             dwStop = (dwStop + 1) & ~1; // Round up
         }
 
         dwStop = pDoc->SnapCursor(STOP_CURSOR, dwStop, dwStop, pDoc->GetDataSize(), SNAP_RIGHT);
 
-        if (dwStop <= dwMaxStop) { // enough room
+        if (dwStop <= dwMaxStop)   // enough room
+        {
             pSeg->Adjust(pDoc,nSelection,dwStop,pSeg->GetDuration(nSelection)+dwStop-pSeg->GetOffset(nSelection));
             pSeg->Insert(nSelection, szString, true, dwStart,dwStop - dwStart);
             pDoc->SetModifiedFlag(TRUE); // document has been modified
@@ -3888,7 +4523,8 @@ void CSaView::OnEditAddSyllable() {
         }
     }
     int i = GetGraphIndexForIDD(IDD_RAWDATA);
-    if ((i != -1) && m_apGraphs[i]) {
+    if ((i != -1) && m_apGraphs[i])
+    {
         int nAnnot = PHONETIC;
         m_apGraphs[i]->ShowAnnotation(nAnnot, TRUE, TRUE);
     }
@@ -3897,13 +4533,15 @@ void CSaView::OnEditAddSyllable() {
 /***************************************************************************/
 // CSaView::OnUpdateEditAddSyllable
 /***************************************************************************/
-void CSaView::OnUpdateEditAddSyllable(CCmdUI * pCmdUI) {
+void CSaView::OnUpdateEditAddSyllable(CCmdUI * pCmdUI)
+{
     CSaDoc * pDoc = GetDocument(); // get pointer to document
     BOOL bEnable = FALSE;
 
     CPhoneticSegment * pSeg = (CPhoneticSegment *) GetAnnotation(PHONETIC);
 
-    if (pSeg->GetSelection()!=-1) { // Phonetic Segment Selected
+    if (pSeg->GetSelection()!=-1)   // Phonetic Segment Selected
+    {
         int nSelection = pSeg->GetSelection();
         DWORD dwStart = pSeg->GetOffset(nSelection); // Start at current start
         DWORD dwMaxStop;
@@ -3911,7 +4549,8 @@ void CSaView::OnUpdateEditAddSyllable(CCmdUI * pCmdUI) {
 
         dwMaxStop = dwStart + pSeg->GetDuration(nSelection) - pDoc->GetBytesFromTime(MIN_ADD_SEGMENT_TIME);
 
-        if (pDoc->Is16Bit()) {          // SDM 1.5Test8.2
+        if (pDoc->Is16Bit())            // SDM 1.5Test8.2
+        {
             dwMaxStop = dwMaxStop & ~1; // Round down
         }
 
@@ -3920,13 +4559,15 @@ void CSaView::OnUpdateEditAddSyllable(CCmdUI * pCmdUI) {
 
         dwStop = (dwStart + pDoc->GetBytesFromTime(ADD_SYLLABLE_TIME));
 
-        if (pDoc->Is16Bit()) {          // SDM 1.5Test8.2
+        if (pDoc->Is16Bit())            // SDM 1.5Test8.2
+        {
             dwStop = (dwStop + 1) & ~1; // Round up
         }
 
         dwStop = pDoc->SnapCursor(STOP_CURSOR, dwStop, dwStop, pDoc->GetDataSize(), SNAP_RIGHT);
 
-        if (dwStop <= dwMaxStop) { // enough room
+        if (dwStop <= dwMaxStop)   // enough room
+        {
             bEnable=TRUE;
         }
     }
@@ -3937,20 +4578,22 @@ void CSaView::OnUpdateEditAddSyllable(CCmdUI * pCmdUI) {
 /***************************************************************************/
 // CSaView::OnEditAutoAdd WAT macro
 /***************************************************************************/
-void CSaView::OnEditAutoAdd() {
+void CSaView::OnEditAutoAdd()
+{
     DWORD start = GetStartCursorPosition();
     DWORD stop = GetStopCursorPosition();
 
     TRACE("Running WAT macro\n");
-    OnEditAdd();
-    OnEditAddWord();
+    OnEditAddPhonetic();
+    OnEditAddGloss();
     OnEditAddPhraseL1();
     DWORD save = GetStartCursorPosition();
     OnEditAddAutoPhraseL2();
 
     start = GetStartCursorPosition();
     stop = GetStopCursorPosition();
-    if (stop<start) {
+    if (stop<start)
+    {
         SetStopCursorPosition(start+1);
     }
 
@@ -3964,14 +4607,16 @@ void CSaView::OnEditAutoAdd() {
 * NOTE: If the start cursor is not in the correct position, we need
 * to move it to the end of the last segment before the stop cursor
 ***************************************************************************/
-void CSaView::OnEditAutoAddStorySection() {
+void CSaView::OnEditAutoAddStorySection()
+{
     DWORD stop = GetStopCursorPosition();
 
     // move the start cursor to the end of the last phonetic segment
     CSaDoc * pDoc = GetDocument();  // get pointer to document
     int nSelection = pDoc->GetLastSegmentBeforePosition(PHONETIC,stop);
     DWORD offset = 0;
-    if (nSelection!=-1) {
+    if (nSelection!=-1)
+    {
         CPhoneticSegment * pSeg = (CPhoneticSegment *) GetAnnotation(PHONETIC);
         offset = pSeg->GetStop(nSelection);
     }
@@ -3979,38 +4624,46 @@ void CSaView::OnEditAutoAddStorySection() {
     DWORD start = GetStartCursorPosition();
 
     TRACE("Running Story Section macro\n");
-    OnEditAdd();
-    OnEditAddWord();
+    OnEditAddPhonetic();
+    OnEditAddGloss();
     OnEditAddPhraseL1();
     DWORD save = GetStartCursorPosition();
     OnEditAddAutoPhraseL2();
 
     start = GetStartCursorPosition();
     stop = GetStopCursorPosition();
-    if (stop<start) {
+    if (stop<start)
+    {
         SetStopCursorPosition(start+1);
     }
 
     m_advancedSelection.SelectFromPosition(this, MUSIC_PL1, save, true);
 }
 
-BOOL CSaView::IsPhoneticOverlapping(bool story) {
+BOOL CSaView::IsPhoneticOverlapping(bool story)
+{
     DWORD start = GetStartCursorPosition();
     DWORD stop = GetStopCursorPosition();
     // Check if either the Begin cursor or the End cursor are inside of any existing phonetic segment.
     // If either of them are, then that would result in an invalid new segment, so again do nothing.
     CPhoneticSegment * pSeg = (CPhoneticSegment *)GetAnnotation(PHONETIC);
-    for (int i = 0; i< pSeg->GetOffsetSize(); i++) {
+    for (int i = 0; i< pSeg->GetOffsetSize(); i++)
+    {
         DWORD begin = pSeg->GetOffset(i);
         DWORD end = pSeg->GetStop(i);
         // for story mode, only worry about the stop cursor.
         // the start cursor will be automatically advanced
-        if (story) {
-            if ((begin<=stop)&&(stop<=end)) {
+        if (story)
+        {
+            if ((begin<=stop)&&(stop<=end))
+            {
                 return TRUE;
             }
-        } else {
-            if (((begin<=start)&&(start<=end)) || ((begin<=stop)&&(stop<=end))) {
+        }
+        else
+        {
+            if (((begin<=start)&&(start<=end)) || ((begin<=stop)&&(stop<=end)))
+            {
                 return TRUE;
             }
         }
@@ -4018,14 +4671,17 @@ BOOL CSaView::IsPhoneticOverlapping(bool story) {
     return FALSE;
 }
 
-BOOL CSaView::AllowAutoAdd(bool story) {
+BOOL CSaView::AllowAutoAdd(bool story)
+{
     // check the phonetic location
-    if (!AllowEditAdd(story)) {
+    if (!AllowEditAdd(story))
+    {
         TRACE("edit-add not allowed\n");
         return FALSE;
     }
 
-    if (IsPhoneticOverlapping(story)) {
+    if (IsPhoneticOverlapping(story))
+    {
         TRACE("phonetic overlap\n");
         return FALSE;
     }
@@ -4033,13 +4689,15 @@ BOOL CSaView::AllowAutoAdd(bool story) {
     // no checks for gloss at this point...
 
     // check the PL1 location
-    if (!AllowAddPhrase(MUSIC_PL1,story)) {
+    if (!AllowAddPhrase(MUSIC_PL1,story))
+    {
         TRACE("not allowed to add PL1\n");
         return FALSE;
     }
 
     // check the PL2 location
-    if (!AllowAddPhrase(MUSIC_PL2,story)) {
+    if (!AllowAddPhrase(MUSIC_PL2,story))
+    {
         TRACE("not allowed to add PL2\n");
         return FALSE;
     }
@@ -4051,126 +4709,165 @@ BOOL CSaView::AllowAutoAdd(bool story) {
 /***************************************************************************/
 // CSaView::OnEditAutoAdd WAT macro
 /***************************************************************************/
-void CSaView::OnUpdateEditAutoAdd(CCmdUI * pCmdUI) {
+void CSaView::OnUpdateEditAutoAdd(CCmdUI * pCmdUI)
+{
     pCmdUI->Enable(AllowAutoAdd(false));
 }
 
 /***************************************************************************/
 // CSaView::OnEditAutoAddStorySection Story Section macro
 /***************************************************************************/
-void CSaView::OnUpdateEditAutoAddStorySection(CCmdUI * pCmdUI) {
+void CSaView::OnUpdateEditAutoAddStorySection(CCmdUI * pCmdUI)
+{
     pCmdUI->Enable(AllowAutoAdd(true));
 }
 
 //SDM 1.5Test11.3
 /***************************************************************************/
-// CSaView::OnEditAdd Add Phonetic Segment
+// CSaView::OnEditAddPhonetic 
+// Add Phonetic Segment
 /***************************************************************************/
-void CSaView::OnEditAdd() {
+void CSaView::OnEditAddPhonetic()
+{
     CSaDoc * pDoc = (CSaDoc *) GetDocument();
-    CPhoneticSegment * pSeg = (CPhoneticSegment *) GetAnnotation(PHONETIC);
+    CPhoneticSegment * pPhonetic = (CPhoneticSegment *) GetAnnotation(PHONETIC);
     CGlossSegment * pGloss = (CGlossSegment *) GetAnnotation(GLOSS);
+    CReferenceSegment * pReference = (CReferenceSegment *) GetAnnotation(REFERENCE);
 
     pDoc->CheckPoint();
     CSaString szString = SEGMENT_DEFAULT_CHAR; //Fill new segment with default character
 
-    int nInsertAt = pSeg->CheckPosition(pDoc,GetStartCursorPosition(),GetStopCursorPosition(),CSegment::MODE_ADD);
-    if (nInsertAt != -1) {
-        int nPrevious = pSeg->GetPrevious(nInsertAt);
+    int nInsertAt = pPhonetic->CheckPosition(pDoc,GetStartCursorPosition(),GetStopCursorPosition(),CSegment::MODE_ADD);
+    if (nInsertAt != -1)
+    {
+        int nPrevious = pPhonetic->GetPrevious(nInsertAt);
         if ((nPrevious != -1) &&
-                (pSeg->GetStop(nPrevious) + pDoc->GetBytesFromTime(MAX_ADD_JOIN_TIME)> GetStartCursorPosition())) {
-            pSeg->Adjust(pDoc, nPrevious,pSeg->GetOffset(nPrevious),GetStartCursorPosition() - pSeg->GetOffset(nPrevious));
+            (pPhonetic->GetStop(nPrevious) + pDoc->GetBytesFromTime(MAX_ADD_JOIN_TIME)> GetStartCursorPosition()))
+        {
+            pPhonetic->Adjust(pDoc, nPrevious, pPhonetic->GetOffset(nPrevious),GetStartCursorPosition() - pPhonetic->GetOffset(nPrevious));
         }
 
         int nNext  = -1;
-        if (nInsertAt > 0) {
-            nNext = pSeg->GetNext(nInsertAt - 1);
-        } else if (!pSeg->IsEmpty()) {
+        if (nInsertAt > 0)
+        {
+            nNext = pPhonetic->GetNext(nInsertAt - 1);
+        }
+        else if (!pPhonetic->IsEmpty())
+        {
             nNext = nInsertAt;
         }
         if ((nNext != -1) &&
-                (pSeg->GetOffset(nNext) < GetStopCursorPosition()+pDoc->GetBytesFromTime(MAX_ADD_JOIN_TIME))) {
-            pSeg->Adjust(pDoc, nNext,GetStopCursorPosition(),pSeg->GetStop(nNext)-GetStopCursorPosition());
+            (pPhonetic->GetOffset(nNext) < GetStopCursorPosition()+pDoc->GetBytesFromTime(MAX_ADD_JOIN_TIME)))
+        {
+            pPhonetic->Adjust( pDoc, nNext, GetStopCursorPosition(), pPhonetic->GetStop(nNext)-GetStopCursorPosition());
         }
 
-        pSeg->Insert(nInsertAt, szString, true, GetStartCursorPosition(), GetStopCursorPosition()-GetStartCursorPosition());
+        pPhonetic->Insert(nInsertAt, szString, true, GetStartCursorPosition(), GetStopCursorPosition()-GetStartCursorPosition());
 
         // Adjust Gloss
-        if ((!pGloss->IsEmpty()) && pSeg->GetPrevious(nInsertAt)) {
-            int nPrevious = pSeg->GetPrevious(nInsertAt);
-            int nIndex = pGloss->FindStop(pSeg->GetStop(nPrevious));
-            if (nIndex != -1) {
-                pGloss->Adjust(pDoc, nIndex, pGloss->GetOffset(nIndex), pGloss->CalculateDuration(pDoc,nIndex));
+        if ((!pGloss->IsEmpty()) && (pPhonetic->GetPrevious(nInsertAt)))
+        {
+            int nPrevious = pPhonetic->GetPrevious(nInsertAt);
+            int nIndex = pGloss->FindStop(pPhonetic->GetStop(nPrevious));
+            if (nIndex != -1)
+            {
+                pGloss->Adjust( pDoc, nIndex, pGloss->GetOffset(nIndex), pGloss->CalculateDuration(pDoc,nIndex));
+				if (!pReference->IsEmpty()) {
+	                pReference->Adjust( pDoc, nIndex, pReference->GetOffset(nIndex), pReference->CalculateDuration(pDoc,nIndex));
+				}
             }
         }
+
         pDoc->SetModifiedFlag(TRUE); // document has been modified
         pDoc->SetTransModifiedFlag(TRUE); // transcription data has been modified
         RefreshGraphs(TRUE);
-        pSeg->SetSelection(-1);
+        pPhonetic->SetSelection(-1);
         m_advancedSelection.SelectFromPosition(this, PHONETIC, GetStartCursorPosition(), true);
-    } else { // Can we insert after selected segment
-        if (pSeg->GetSelection()!=-1) { // Phonetic Segment Selected
-            int nSelection = pSeg->GetSelection();
-            DWORD dwStart = pSeg->GetStop(nSelection); // Start at current stop
+
+    }
+    else
+    {
+        // Can we insert after selected segment
+        if (pPhonetic->GetSelection()!=-1)
+        {
+            // Phonetic Segment Selected
+            int nSelection = pPhonetic->GetSelection();
+            DWORD dwStart = pPhonetic->GetStop(nSelection); // Start at current stop
             DWORD dwMaxStop;
             DWORD dwStop;
 
-            if (pSeg->GetNext(nSelection) == -1) { // Last Selection
+            if (pPhonetic->GetNext(nSelection) == -1)   // Last Selection
+            {
                 dwMaxStop = pDoc->GetDataSize();
-            } else { // Fit before next
-                dwMaxStop = pSeg->GetOffset(pSeg->GetNext(nSelection));
+            }
+            else     // Fit before next
+            {
+                dwMaxStop = pPhonetic->GetOffset(pPhonetic->GetNext(nSelection));
             }
 
             // Snap Start Position
             dwStart = pDoc->SnapCursor(START_CURSOR, dwStart, dwStart, dwMaxStop, SNAP_RIGHT);
-
             dwStop = (dwStart + pDoc->GetBytesFromTime(MIN_ADD_SEGMENT_TIME));
 
-            if (pDoc->Is16Bit()) {          // SDM 1.5Test8.2
+            if (pDoc->Is16Bit())            // SDM 1.5Test8.2
+            {
                 dwStop = (dwStop + 1) & ~1; // Round up
             }
 
-            if (pSeg->GetNext(nSelection) != -1) {
+            if (pPhonetic->GetNext(nSelection) != -1)
+            {
                 dwStop = pDoc->SnapCursor(STOP_CURSOR, dwStop, dwStop, pDoc->GetDataSize(), SNAP_RIGHT);
             }
 
-            if (dwStop <= dwMaxStop) { // enough room
+            if (dwStop <= dwMaxStop)   // enough room
+            {
                 dwStop = dwStart + pDoc->GetBytesFromTime(DEFAULT_ADD_SEGMENT_TIME);
 
-                if (pDoc->Is16Bit()) {          // SDM 1.5Test8.2
+                if (pDoc->Is16Bit())            // SDM 1.5Test8.2
+                {
                     dwStop = (dwStop + 1) & ~1; // Round up
                 }
 
-                if (dwStop > dwMaxStop) {
+                if (dwStop > dwMaxStop)
+                {
                     dwStop = dwMaxStop;
-                } else
+                }
+                else
                     // Snap Stop Position
                 {
                     dwStop = pDoc->SnapCursor(STOP_CURSOR, dwStop, dwStart, dwMaxStop, SNAP_LEFT);
                 }
 
-                nInsertAt = pSeg->CheckPosition(pDoc,dwStart,dwStop,CSegment::MODE_ADD);
+                nInsertAt = pPhonetic->CheckPosition(pDoc,dwStart,dwStop,CSegment::MODE_ADD);
                 ASSERT(nInsertAt >= 0);
-                pSeg->Insert(nInsertAt, szString, true, dwStart,dwStop - dwStart);
-                // Adjust Gloss
-                if ((!pGloss->IsEmpty()) && pSeg->GetPrevious(nInsertAt)) {
-                    int nPrevious = pSeg->GetPrevious(nInsertAt);
-                    int nIndex = pGloss->FindStop(pSeg->GetStop(nPrevious));
-                    if (nIndex != -1) {
+                pPhonetic->Insert(nInsertAt, szString, true, dwStart,dwStop - dwStart);
+                
+				// Adjust Gloss
+                if ((!pGloss->IsEmpty()) && (pPhonetic->GetPrevious(nInsertAt)))
+                {
+                    int nPrevious = pPhonetic->GetPrevious(nInsertAt);
+                    int nIndex = pGloss->FindStop(pPhonetic->GetStop(nPrevious));
+                    if (nIndex != -1)
+                    {
                         pGloss->Adjust(pDoc, nIndex, pGloss->GetOffset(nIndex), pGloss->CalculateDuration(pDoc,nIndex));
+						if (!pReference->IsEmpty()) {
+							pReference->Adjust( pDoc, nIndex, pReference->GetOffset(nIndex), pReference->CalculateDuration(pDoc,nIndex));
+						}
                     }
                 }
-                pDoc->SetModifiedFlag(TRUE); // document has been modified
+
+				pDoc->SetModifiedFlag(TRUE); // document has been modified
                 pDoc->SetTransModifiedFlag(TRUE); // transcription data has been modified
                 RefreshGraphs(TRUE);
-                pSeg->SetSelection(-1);
+                pPhonetic->SetSelection(-1);
                 m_advancedSelection.SelectFromPosition(this, PHONETIC, dwStart, true);
             }
         }
     }
 
     int i = GetGraphIndexForIDD(IDD_RAWDATA);
-    if ((i != -1) && m_apGraphs[i]) {
+    if ((i != -1) && m_apGraphs[i])
+    {
         int nAnnot = PHONETIC;
         m_apGraphs[i]->ShowAnnotation(nAnnot, TRUE, TRUE);
     }
@@ -4184,68 +4881,86 @@ void CSaView::OnEditAdd() {
 * section
 * NOTE: Be careful not to change cursor positions in this code!
 */
-BOOL CSaView::AllowEditAdd(bool story) {
+BOOL CSaView::AllowEditAdd(bool story)
+{
 
     CSaDoc * pDoc = GetDocument(); // get pointer to document
     CPhoneticSegment * pSeg = (CPhoneticSegment *)GetAnnotation(PHONETIC);
     DWORD startCursor = GetStartCursorPosition();
     DWORD stopCursor = GetStopCursorPosition();
     int nInsertAt = pSeg->CheckPosition(pDoc,startCursor,stopCursor,CSegment::MODE_ADD);
-    if (nInsertAt != -1) {
+    if (nInsertAt != -1)
+    {
         m_advancedSelection.Update(this);
         int nLoop = m_advancedSelection.GetSelectionIndex();
-        if (nLoop == -1) {
+        if (nLoop == -1)
+        {
             return TRUE;
         }
         return FALSE;
     }
 
     int nSelection = pSeg->GetSelection();
-    if (nSelection==-1) {           // Phonetic Segment not selected
-        if (story) {
+    if (nSelection==-1)             // Phonetic Segment not selected
+    {
+        if (story)
+        {
             nSelection = pDoc->GetLastSegmentBeforePosition(PHONETIC, stopCursor);
-        } else {
+        }
+        else
+        {
             return FALSE;
         }
     }
 
     DWORD dwStart = pSeg->GetStop(nSelection);  // Start at current stop
     DWORD dwMaxStop = 0;
-    if (pSeg->GetNext(nSelection) == -1) {      // Last Selection
+    if (pSeg->GetNext(nSelection) == -1)        // Last Selection
+    {
         dwMaxStop = pDoc->GetDataSize();
-    } else { // Fit before next
+    }
+    else     // Fit before next
+    {
         dwMaxStop = pSeg->GetOffset(pSeg->GetNext(nSelection));
     }
 
     // Snap Start Position
     dwStart = pDoc->SnapCursor(START_CURSOR, dwStart, dwStart, dwMaxStop, SNAP_RIGHT);;
     DWORD dwStop = (dwStart + pDoc->GetBytesFromTime(MIN_ADD_SEGMENT_TIME));
-    if (pDoc->Is16Bit()) {          // SDM 1.5Test8.2
+    if (pDoc->Is16Bit())            // SDM 1.5Test8.2
+    {
         dwStop = (dwStop + 1) & ~1; // Round up
     }
 
-    if (pSeg->GetNext(nSelection) != -1) {
+    if (pSeg->GetNext(nSelection) != -1)
+    {
         dwStop = pDoc->SnapCursor(STOP_CURSOR, dwStop, dwStop, pDoc->GetDataSize(), SNAP_RIGHT);
     }
 
-    if (dwStop > dwMaxStop) { // not enough room
+    if (dwStop > dwMaxStop)   // not enough room
+    {
         return FALSE;
     }
 
     dwStop = dwStart + pDoc->GetBytesFromTime(DEFAULT_ADD_SEGMENT_TIME);
-    if (pDoc->Is16Bit()) { // SDM 1.5Test8.2
+    if (pDoc->Is16Bit())   // SDM 1.5Test8.2
+    {
         dwStop = (dwStop + 1) & ~1; // Round up
     }
 
-    if (dwStop > dwMaxStop) {
+    if (dwStop > dwMaxStop)
+    {
         dwStop = dwMaxStop;
-    } else {
+    }
+    else
+    {
         // Snap Stop Position
         dwStop = pDoc->SnapCursor(STOP_CURSOR, dwStop, dwStart, dwMaxStop, SNAP_LEFT);
     }
 
     nInsertAt = pSeg->CheckPosition(pDoc,dwStart,dwStop,CSegment::MODE_ADD);
-    if (nInsertAt >= 0) {
+    if (nInsertAt >= 0)
+    {
         return TRUE;
     }
     return FALSE;
@@ -4254,33 +4969,40 @@ BOOL CSaView::AllowEditAdd(bool story) {
 /***************************************************************************/
 // CSaView::OnUpdateEditAdd
 /***************************************************************************/
-void CSaView::OnUpdateEditAdd(CCmdUI * pCmdUI) {
+void CSaView::OnUpdateEditAdd(CCmdUI * pCmdUI)
+{
     pCmdUI->Enable(AllowEditAdd(false));
 }
 
 /***************************************************************************/
 // CSaView::OnEditAddPhrase
 /***************************************************************************/
-void CSaView::OnEditAddPhrase(CMusicPhraseSegment * pSeg) {
+void CSaView::OnEditAddPhrase(CMusicPhraseSegment * pSeg)
+{
     CSaDoc * pDoc = (CSaDoc *) GetDocument();
 
     pDoc->CheckPoint();
     CSaString szString = SEGMENT_DEFAULT_CHAR; //Fill new segment with default character
 
     int nInsertAt = pSeg->CheckPosition(pDoc,GetStartCursorPosition(),GetStopCursorPosition(),CSegment::MODE_ADD);
-    if (nInsertAt != -1) {
+    if (nInsertAt != -1)
+    {
         int nPrevious = pSeg->GetPrevious(nInsertAt);
-        if (nPrevious != -1) {
+        if (nPrevious != -1)
+        {
             // is the previous segment+jointime overlapping our start?
-            if (pSeg->GetStop(nPrevious) + pDoc->GetBytesFromTime(MAX_ADD_JOIN_TIME)> GetStartCursorPosition()) { // SDM 1.5Test10.2
+            if (pSeg->GetStop(nPrevious) + pDoc->GetBytesFromTime(MAX_ADD_JOIN_TIME)> GetStartCursorPosition())   // SDM 1.5Test10.2
+            {
                 pSeg->Adjust(pDoc,nPrevious,pSeg->GetOffset(nPrevious),GetStartCursorPosition()-pSeg->GetOffset(nPrevious));
             }
         }
 
         // this code seems useless...
         int nNext = pSeg->GetNext(nInsertAt - 1);
-        if (nNext != -1) {
-            if (pSeg->GetOffset(nNext)<GetStopCursorPosition()+pDoc->GetBytesFromTime(MAX_ADD_JOIN_TIME)) { // SDM 1.5Test10.2
+        if (nNext != -1)
+        {
+            if (pSeg->GetOffset(nNext)<GetStopCursorPosition()+pDoc->GetBytesFromTime(MAX_ADD_JOIN_TIME))   // SDM 1.5Test10.2
+            {
                 pSeg->Adjust(pDoc,nNext,GetStopCursorPosition(),pSeg->GetStop(nNext)-GetStopCursorPosition());
             }
         }
@@ -4290,16 +5012,22 @@ void CSaView::OnEditAddPhrase(CMusicPhraseSegment * pSeg) {
         RefreshGraphs(TRUE);
         pSeg->SetSelection(-1);
         m_advancedSelection.SelectFromPosition(this, pSeg->GetAnnotationIndex(), GetStartCursorPosition(), true);
-    } else { // Can we insert after selected segment
-        if (pSeg->GetSelection()!=-1) { // Phonetic Segment Selected
+    }
+    else     // Can we insert after selected segment
+    {
+        if (pSeg->GetSelection()!=-1)   // Phonetic Segment Selected
+        {
             int nSelection = pSeg->GetSelection();
             DWORD dwStart = pSeg->GetStop(nSelection); // Start at current stop
             DWORD dwMaxStop;
             DWORD dwStop;
 
-            if (pSeg->GetNext(nSelection) == -1) { // Last Selection
+            if (pSeg->GetNext(nSelection) == -1)   // Last Selection
+            {
                 dwMaxStop = pDoc->GetDataSize();
-            } else { // Fit before next
+            }
+            else     // Fit before next
+            {
                 dwMaxStop = pSeg->GetOffset(pSeg->GetNext(nSelection));
             }
 
@@ -4308,24 +5036,30 @@ void CSaView::OnEditAddPhrase(CMusicPhraseSegment * pSeg) {
 
             dwStop = (dwStart + pDoc->GetBytesFromTime(MIN_ADD_SEGMENT_TIME));
 
-            if (pDoc->Is16Bit()) { // SDM 1.5Test8.2
+            if (pDoc->Is16Bit())   // SDM 1.5Test8.2
+            {
                 dwStop = (dwStop + 1) & ~1; // Round up
             }
 
-            if (pSeg->GetNext(nSelection) != -1) {
+            if (pSeg->GetNext(nSelection) != -1)
+            {
                 dwStop = pDoc->SnapCursor(STOP_CURSOR, dwStop, dwStop, pDoc->GetDataSize(), SNAP_RIGHT);
             }
 
-            if (dwStop <= dwMaxStop) { // enough room
+            if (dwStop <= dwMaxStop)   // enough room
+            {
                 dwStop = dwStart + pDoc->GetBytesFromTime(DEFAULT_ADD_SEGMENT_TIME);
 
-                if (pDoc->Is16Bit()) { // SDM 1.5Test8.2
+                if (pDoc->Is16Bit())   // SDM 1.5Test8.2
+                {
                     dwStop = (dwStop + 1) & ~1; // Round up
                 }
 
-                if (dwStop > dwMaxStop) {
+                if (dwStop > dwMaxStop)
+                {
                     dwStop = dwMaxStop;
-                } else
+                }
+                else
                     // Snap Stop Position
                 {
                     dwStop = pDoc->SnapCursor(STOP_CURSOR, dwStop, dwStart, dwMaxStop, SNAP_LEFT);
@@ -4343,27 +5077,34 @@ void CSaView::OnEditAddPhrase(CMusicPhraseSegment * pSeg) {
     }
 
     int i = GetGraphIndexForIDD(IDD_RAWDATA);
-    if ((i != -1) && m_apGraphs[i]) {
+    if ((i != -1) && m_apGraphs[i])
+    {
         int nAnnot = pSeg->GetAnnotationIndex();
         m_apGraphs[i]->ShowAnnotation(nAnnot, TRUE, TRUE);
     }
 }
 
-BOOL CSaView::AllowAddPhrase(EAnnotation annot, bool story) {
+BOOL CSaView::AllowAddPhrase(EAnnotation annot, bool story)
+{
     CSaDoc * pDoc = GetDocument(); // get pointer to document
     CMusicPhraseSegment * pSeg = (CMusicPhraseSegment *)GetAnnotation(annot);
     DWORD startCursor = GetStartCursorPosition();
     DWORD stopCursor = GetStopCursorPosition();
     int nInsertAt = pSeg->CheckPosition(pDoc,startCursor,stopCursor,CSegment::MODE_ADD);
-    if (nInsertAt != -1) {
+    if (nInsertAt != -1)
+    {
         return TRUE;
     }
 
     int nSelection = pSeg->GetSelection();
-    if (nSelection==-1) {           // no segment selected
-        if (story) {
+    if (nSelection==-1)             // no segment selected
+    {
+        if (story)
+        {
             nSelection = pDoc->GetLastSegmentBeforePosition(PHONETIC, stopCursor);
-        } else {
+        }
+        else
+        {
             return FALSE;
         }
     }
@@ -4371,9 +5112,12 @@ BOOL CSaView::AllowAddPhrase(EAnnotation annot, bool story) {
     DWORD dwStart = pSeg->GetStop(nSelection);  // Start at current stop
     DWORD dwMaxStop = 0;
 
-    if (pSeg->GetNext(nSelection) == -1) {      // Last Selection
+    if (pSeg->GetNext(nSelection) == -1)        // Last Selection
+    {
         dwMaxStop = pDoc->GetDataSize();
-    } else { // Fit before next
+    }
+    else     // Fit before next
+    {
         dwMaxStop = pSeg->GetOffset(pSeg->GetNext(nSelection));
     }
 
@@ -4381,15 +5125,18 @@ BOOL CSaView::AllowAddPhrase(EAnnotation annot, bool story) {
     dwStart = pDoc->SnapCursor(START_CURSOR, dwStart, dwStart, dwMaxStop, SNAP_RIGHT);
 
     DWORD dwStop = (dwStart + pDoc->GetBytesFromTime(MIN_ADD_SEGMENT_TIME));
-    if (pDoc->Is16Bit()) { // SDM 1.5Test8.2
+    if (pDoc->Is16Bit())   // SDM 1.5Test8.2
+    {
         dwStop = (dwStop + 1) & ~1; // Round up
     }
 
-    if (pSeg->GetNext(nSelection) != -1) {
+    if (pSeg->GetNext(nSelection) != -1)
+    {
         dwStop = pDoc->SnapCursor(STOP_CURSOR, dwStop, dwStop, pDoc->GetDataSize(), SNAP_RIGHT);
     }
 
-    if (dwStop <= dwMaxStop) { // enough room
+    if (dwStop <= dwMaxStop)   // enough room
+    {
         return TRUE;
     }
 
@@ -4399,21 +5146,26 @@ BOOL CSaView::AllowAddPhrase(EAnnotation annot, bool story) {
 /***************************************************************************/
 // CSaView::OnUpdateEditAddPhrase
 /***************************************************************************/
-void CSaView::OnUpdateEditAddPhrase(CCmdUI * pCmdUI, EAnnotation annot) {
+void CSaView::OnUpdateEditAddPhrase(CCmdUI * pCmdUI, EAnnotation annot)
+{
     pCmdUI->Enable(AllowAddPhrase(annot, false));
 }
 
-void CSaView::OnEditAddAutoPhraseL2() {
+void CSaView::OnEditAddAutoPhraseL2()
+{
     CMusicPhraseSegment * pSeg = (CMusicPhraseSegment *)GetAnnotation(MUSIC_PL2);
 
     CSaDoc * pDoc = (CSaDoc *) GetDocument();
     pDoc->CheckPoint();
     CSaString szString = SEGMENT_DEFAULT_CHAR; //Fill new segment with default character
 
-    if (pSeg->IsEmpty()) {
+    if (pSeg->IsEmpty())
+    {
         // if there are no segment yet, add at the beginning of the file
         SetStartCursorPosition(0);
-    } else {
+    }
+    else
+    {
         // there are segments. // get the last one and add after it.
         int size = pSeg->GetOffsetSize();
 
@@ -4423,34 +5175,43 @@ void CSaView::OnEditAddAutoPhraseL2() {
         ASSERT(newStart<newStop);
 
         bool found = false;
-        for (int i=0; i<size; i++) {
+        for (int i=0; i<size; i++)
+        {
             // if there's only one, where are we?
             DWORD thisStart = pSeg->GetOffset(i);
             DWORD thisStop = pSeg->GetStop(i);
             // are we after?
-            if (newStart>thisStop) {
+            if (newStart>thisStop)
+            {
                 continue;
             }
 
             // are we before?
-            if (newStop<=thisStart) {
+            if (newStop<=thisStart)
+            {
                 // it's before or overlapping
-                if (i>0) {
+                if (i>0)
+                {
                     //place after previous segment
                     SetStartCursorPosition(pSeg->GetStop(i-1));
                     TRACE("Adding PL2 after previous segment\n");
                     found=true;
                     break;
-                } else {
+                }
+                else
+                {
                     // place at beginning of file
                     SetStartCursorPosition(0);
                     TRACE("Adding PL2 at beginning of file\n");
                     found=true;
                     break;
                 }
-            } else {
+            }
+            else
+            {
                 // we are overlapping at end
-                if ((newStart==thisStop)&&(newStop>thisStop)) {
+                if ((newStart==thisStop)&&(newStop>thisStop))
+                {
                     // just insert as normal
                     SetStartCursorPosition(thisStop);
                     TRACE("Adding PL2 after previous segment\n");
@@ -4458,18 +5219,23 @@ void CSaView::OnEditAddAutoPhraseL2() {
                     break;
                 }
                 // we are overlapping in some way...
-                else if ((newStart<thisStart)&&(newStop>thisStart)&&(newStop<thisStop)) {
+                else if ((newStart<thisStart)&&(newStop>thisStart)&&(newStop<thisStop))
+                {
                     // we are overlapping beginning
                     SetStartCursorPosition(newStart);
                     found=true;
                     break;
-                } else if ((newStart>thisStart)&&(newStart<thisStop)&&(newStop>thisStop)) {
+                }
+                else if ((newStart>thisStart)&&(newStart<thisStop)&&(newStop>thisStop))
+                {
                     // we are overlapping at end
                     // we are overlapping beginning
                     SetStartCursorPosition(thisStop);
                     found=true;
                     break;
-                } else {
+                }
+                else
+                {
                 }
                 // it's overlapping
                 // leave the position alone - it will default in the following code and
@@ -4478,7 +5244,8 @@ void CSaView::OnEditAddAutoPhraseL2() {
                 break;
             }
         }
-        if (!found) {
+        if (!found)
+        {
             // set at end
             SetStartCursorPosition(pSeg->GetStop(size-1));
             TRACE("Adding PL2 at end of file\n");
@@ -4486,21 +5253,29 @@ void CSaView::OnEditAddAutoPhraseL2() {
     }
 
     int nInsertAt = pSeg->CheckPosition(pDoc,GetStartCursorPosition(),GetStopCursorPosition(),CSegment::MODE_ADD);
-    if (nInsertAt != -1) {
+    if (nInsertAt != -1)
+    {
         int nPrevious = pSeg->GetPrevious(nInsertAt);
-        if (nPrevious != -1) {
-            if (pSeg->GetStop(nPrevious) + pDoc->GetBytesFromTime(MAX_ADD_JOIN_TIME)> GetStartCursorPosition()) { // SDM 1.5Test10.2
+        if (nPrevious != -1)
+        {
+            if (pSeg->GetStop(nPrevious) + pDoc->GetBytesFromTime(MAX_ADD_JOIN_TIME)> GetStartCursorPosition())   // SDM 1.5Test10.2
+            {
                 pSeg->Adjust(pDoc, nPrevious,pSeg->GetOffset(nPrevious),GetStartCursorPosition() - pSeg->GetOffset(nPrevious));
             }
         }
         int nNext  = -1;
-        if (nInsertAt > 0) {
+        if (nInsertAt > 0)
+        {
             nNext = pSeg->GetNext(nInsertAt - 1);
-        } else if (!pSeg->IsEmpty()) {
+        }
+        else if (!pSeg->IsEmpty())
+        {
             nNext = nInsertAt;
         }
-        if (nNext != -1) {
-            if (pSeg->GetOffset(nNext) < GetStopCursorPosition()+pDoc->GetBytesFromTime(MAX_ADD_JOIN_TIME)) { // SDM 1.5Test10.2
+        if (nNext != -1)
+        {
+            if (pSeg->GetOffset(nNext) < GetStopCursorPosition()+pDoc->GetBytesFromTime(MAX_ADD_JOIN_TIME))   // SDM 1.5Test10.2
+            {
                 pSeg->Adjust(pDoc, nNext,GetStopCursorPosition(),pSeg->GetStop(nNext)-GetStopCursorPosition());
             }
         }
@@ -4510,16 +5285,22 @@ void CSaView::OnEditAddAutoPhraseL2() {
         RefreshGraphs(TRUE);
         pSeg->SetSelection(-1);
         m_advancedSelection.SelectFromPosition(this, pSeg->GetAnnotationIndex(), GetStartCursorPosition(), true);
-    } else { // Can we insert after selected segment?
-        if (pSeg->GetSelection()!=-1) { // Phonetic Segment Selected
+    }
+    else     // Can we insert after selected segment?
+    {
+        if (pSeg->GetSelection()!=-1)   // Phonetic Segment Selected
+        {
             int nSelection = pSeg->GetSelection();
             DWORD dwStart = pSeg->GetStop(nSelection); // Start at current stop
             DWORD dwMaxStop;
             DWORD dwStop;
 
-            if (pSeg->GetNext(nSelection) == -1) { // Last Selection
+            if (pSeg->GetNext(nSelection) == -1)   // Last Selection
+            {
                 dwMaxStop = pDoc->GetDataSize();
-            } else { // Fit before next
+            }
+            else     // Fit before next
+            {
                 dwMaxStop = pSeg->GetOffset(pSeg->GetNext(nSelection));
             }
 
@@ -4528,24 +5309,30 @@ void CSaView::OnEditAddAutoPhraseL2() {
 
             dwStop = (dwStart + pDoc->GetBytesFromTime(MIN_ADD_SEGMENT_TIME));
 
-            if (pDoc->Is16Bit()) { // SDM 1.5Test8.2
+            if (pDoc->Is16Bit())   // SDM 1.5Test8.2
+            {
                 dwStop = (dwStop + 1) & ~1; // Round up
             }
 
-            if (pSeg->GetNext(nSelection) != -1) {
+            if (pSeg->GetNext(nSelection) != -1)
+            {
                 dwStop = pDoc->SnapCursor(STOP_CURSOR, dwStop, dwStop, pDoc->GetDataSize(), SNAP_RIGHT);
             }
 
-            if (dwStop <= dwMaxStop) { // enough room
+            if (dwStop <= dwMaxStop)   // enough room
+            {
                 dwStop = dwStart + pDoc->GetBytesFromTime(DEFAULT_ADD_SEGMENT_TIME);
 
-                if (pDoc->Is16Bit()) { // SDM 1.5Test8.2
+                if (pDoc->Is16Bit())   // SDM 1.5Test8.2
+                {
                     dwStop = (dwStop + 1) & ~1; // Round up
                 }
 
-                if (dwStop > dwMaxStop) {
+                if (dwStop > dwMaxStop)
+                {
                     dwStop = dwMaxStop;
-                } else
+                }
+                else
                     // Snap Stop Position
                 {
                     dwStop = pDoc->SnapCursor(STOP_CURSOR, dwStop, dwStart, dwMaxStop, SNAP_LEFT);
@@ -4563,115 +5350,158 @@ void CSaView::OnEditAddAutoPhraseL2() {
     }
 
     int i = GetGraphIndexForIDD(IDD_RAWDATA);
-    if ((i != -1) && m_apGraphs[i]) {
+    if ((i != -1) && m_apGraphs[i])
+    {
         int nAnnot = pSeg->GetAnnotationIndex();
         m_apGraphs[i]->ShowAnnotation(nAnnot, TRUE, TRUE);
     }
 }
 
-void CSaView::OnUpdateEditAddAutoPhraseL2(CCmdUI * pCmdUI) {
+void CSaView::OnUpdateEditAddAutoPhraseL2(CCmdUI * pCmdUI)
+{
     pCmdUI->Enable(AllowAddPhrase(MUSIC_PL2,false));
 }
 
-void CSaView::OnEditAddPhraseL1() {
+void CSaView::OnEditAddPhraseL1()
+{
     OnEditAddPhrase((CMusicPhraseSegment *) GetAnnotation(MUSIC_PL1));
 }
 
-void CSaView::OnEditAddPhraseL2() {
+void CSaView::OnEditAddPhraseL2()
+{
     OnEditAddPhrase((CMusicPhraseSegment *) GetAnnotation(MUSIC_PL2));
 }
 
-void CSaView::OnEditAddPhraseL3() {
+void CSaView::OnEditAddPhraseL3()
+{
     OnEditAddPhrase((CMusicPhraseSegment *) GetAnnotation(MUSIC_PL3));
 }
 
-void CSaView::OnEditAddPhraseL4() {
+void CSaView::OnEditAddPhraseL4()
+{
     OnEditAddPhrase((CMusicPhraseSegment *) GetAnnotation(MUSIC_PL4));
 }
 
-void CSaView::OnUpdateEditAddPhraseL1(CCmdUI * pCmdUI) {
+void CSaView::OnUpdateEditAddPhraseL1(CCmdUI * pCmdUI)
+{
     OnUpdateEditAddPhrase(pCmdUI,MUSIC_PL1);
 }
 
-void CSaView::OnUpdateEditAddPhraseL2(CCmdUI * pCmdUI) {
+void CSaView::OnUpdateEditAddPhraseL2(CCmdUI * pCmdUI)
+{
     OnUpdateEditAddPhrase(pCmdUI,MUSIC_PL2);
 }
 
-void CSaView::OnUpdateEditAddPhraseL3(CCmdUI * pCmdUI) {
+void CSaView::OnUpdateEditAddPhraseL3(CCmdUI * pCmdUI)
+{
     OnUpdateEditAddPhrase(pCmdUI,MUSIC_PL3);
 }
 
-void CSaView::OnUpdateEditAddPhraseL4(CCmdUI * pCmdUI) {
+void CSaView::OnUpdateEditAddPhraseL4(CCmdUI * pCmdUI)
+{
     OnUpdateEditAddPhrase(pCmdUI,MUSIC_PL4);
 }
 
 //SDM 1.06.5
 /***************************************************************************/
-// CSaView::OnEditAddWord Add Gloss Word Segment
+// CSaView::OnEditAddGloss 
+// Add Gloss Word Segment
 /***************************************************************************/
-void CSaView::OnEditAddWord() {
+void CSaView::OnEditAddGloss()
+{
     EditAddGloss(false);
 }
 
 //SDM 1.06.5
 /***************************************************************************/
-// CSaView::OnEditAddBookmark Add Gloss Bookmark Segment
+// CSaView::OnEditAddBookmark 
+// Add Gloss Bookmark Segment
 /***************************************************************************/
-void CSaView::OnEditAddBookmark() {
+void CSaView::OnEditAddBookmark()
+{
     EditAddGloss(true);
 }
 
 //SDM 1.06.5
 /***************************************************************************/
-// CSaView::EditAddGloss Add Gloss Segment
+// CSaView::EditAddGloss 
+// Add Gloss Segment
 /***************************************************************************/
-void CSaView::EditAddGloss(bool bDelimiter) {
+void CSaView::EditAddGloss(bool bDelimiter)
+{
 
     CSaDoc * pDoc = (CSaDoc *)GetDocument(); // get pointer to document
     CSaString szString = ""; //Fill new segment with default character
+	CSaString szEmpty = "";
 
-    CTextSegment * pSeg = (CTextSegment *)GetAnnotation(GLOSS);
-    int nInsertAt = pSeg->CheckPosition(pDoc,GetStartCursorPosition(),GetStopCursorPosition(),CSegment::MODE_ADD);
-    if (nInsertAt != -1) {
+    CGlossSegment * pGloss = (CGlossSegment *)GetAnnotation(GLOSS);
+	CReferenceSegment * pReference = (CReferenceSegment *)GetAnnotation(REFERENCE);
+
+	DWORD dwStartR = GetStartCursorPosition();
+	DWORD dwStopR = GetStopCursorPosition();
+
+    int nInsertAt = pGloss->CheckPosition(pDoc,GetStartCursorPosition(),GetStopCursorPosition(),CSegment::MODE_ADD);
+    if (nInsertAt != -1)
+    {
         DWORD dwStart = 0;
-        pSeg->AdjustCursorsToMaster(pDoc, FALSE, &dwStart);
-        pSeg->Add(GetDocument(), dwStart, szString, bDelimiter, TRUE); // add a segment
-    } else {
+        pGloss->AdjustCursorsToMaster(pDoc, FALSE, &dwStart);
+        pGloss->Add( pDoc, dwStart, szString, bDelimiter, TRUE); // add a segment
+		if (!pReference->IsEmpty()) {
+			pReference->Add( pDoc, dwStart, szEmpty, bDelimiter, TRUE);
+		}
+    }
+    else
+    {
         //SDM 1.5Test8.2
         DWORD dwStart = GetStartCursorPosition();
-
-        int nPos = pSeg->FindFromPosition(dwStart,TRUE);
-        if (nPos==-1) {
-            nPos = pSeg->FindFromPosition(dwStart,FALSE);
-        } else {
+        int nPos = pGloss->FindFromPosition(dwStart,TRUE);
+        if (nPos==-1)
+        {
+            nPos = pGloss->FindFromPosition(dwStart,FALSE);
+        }
+        else
+        {
             nPos++;
         }
 
-        DWORD dwStop;
-        if ((nPos == -1) || (nPos >= pSeg->GetTexts().GetSize())) {
+        DWORD dwStop = 0;
+        if ((nPos == -1) || (nPos >= pGloss->GetTexts().GetSize()))
+        {
             dwStop = pDoc->GetDataSize();
-        } else {
-            dwStop = pSeg->GetOffset(nPos);
+        }
+        else
+        {
+            dwStop = pGloss->GetOffset(nPos);
         }
 
         nInsertAt = GetAnnotation(PHONETIC)->CheckPosition(pDoc,dwStart,dwStop,CSegment::MODE_ADD);
-        if (nInsertAt != -1) {
+        if (nInsertAt != -1)
+        {
             SetStopCursorPosition(dwStop);
-            OnEditAdd();
+            OnEditAddPhonetic();
 
-            pSeg->AdjustCursorsToMaster(pDoc, FALSE, &dwStart);
-            pSeg->Add(pDoc, dwStart, szString, bDelimiter, FALSE); // add a segment
+            pGloss->AdjustCursorsToMaster(pDoc, FALSE, &dwStart);
+            pGloss->Add(pDoc, dwStart, szString, bDelimiter, FALSE); // add a segment
+			if (!pReference->IsEmpty()) {
+				pReference->Add( pDoc, dwStart, szEmpty, bDelimiter, TRUE);
+			}
 
             int i = GetGraphIndexForIDD(IDD_RAWDATA);
-            if ((i != -1) && m_apGraphs[i]) {
-                int nAnnot = pSeg->GetAnnotationIndex();
+            if ((i != -1) && (m_apGraphs[i]))
+            {
+                int nAnnot = pGloss->GetAnnotationIndex();
                 m_apGraphs[i]->ShowAnnotation(nAnnot, TRUE, TRUE);
             }
-        } else if (pSeg->GetSelection()!=-1) { // Set Delimiter
+        }
+        else if (pGloss->GetSelection()!=-1)     // Set Delimiter
+        {
             CSaString szString = GetSelectedAnnotationString();
-            if (bDelimiter) {
+            if (bDelimiter)
+            {
                 szString = TEXT_DELIMITER + szString.Mid(1);
-            } else {
+            }
+            else
+            {
                 szString = WORD_DELIMITER + szString.Mid(1);
             }
             m_advancedSelection.Update(this);
@@ -4680,22 +5510,26 @@ void CSaView::EditAddGloss(bool bDelimiter) {
     }
 
     int i = GetGraphIndexForIDD(IDD_RAWDATA);
-    if ((i != -1) && m_apGraphs[i]) {
-        int nAnnot = pSeg->GetAnnotationIndex();
+    if ((i != -1) && (m_apGraphs[i]!=NULL))
+    {
+        int nAnnot = pGloss->GetAnnotationIndex();
         m_apGraphs[i]->ShowAnnotation(nAnnot, TRUE, TRUE);
     }
 }
 
 //SDM 1.06.5
 /***************************************************************************/
-// CSaView::OnUpdateEditAddWord Update handler for AddWord
+// CSaView::OnUpdateEditAddGloss 
+// Update handler for AddWord
 /***************************************************************************/
-void CSaView::OnUpdateEditAddWord(CCmdUI * pCmdUI) {
+void CSaView::OnUpdateEditAddGloss(CCmdUI * pCmdUI)
+{
     // get pointer to document
     CSaDoc * pDoc = (CSaDoc *) GetDocument();
 
     CSegment * pSeg = GetAnnotation(GLOSS);
-    if (pSeg->CheckPosition(pDoc,GetStartCursorPosition(),GetStopCursorPosition(),CSegment::MODE_ADD) != -1) {
+    if (pSeg->CheckPosition(pDoc,GetStartCursorPosition(),GetStopCursorPosition(),CSegment::MODE_ADD) != -1)
+    {
         // if we are completely within a segment we are good...
         pCmdUI->Enable(TRUE);
         return;
@@ -4704,16 +5538,19 @@ void CSaView::OnUpdateEditAddWord(CCmdUI * pCmdUI) {
     //SDM 1.5Test8.2
     DWORD dwStart = GetStartCursorPosition();
     int nPos = pSeg->FindFromPosition(dwStart,TRUE);
-    if (nPos == -1) {
+    if (nPos == -1)
+    {
         // if there aren't any segments yet...
-        if (pSeg->GetOffsetSize()==0) {
+        if (pSeg->GetOffsetSize()==0)
+        {
             pCmdUI->Enable(TRUE);
             return;
         }
 
         // if we are outside and beyond the last segment we are done.
-        if (dwStart > pSeg->GetStop(pSeg->GetOffsetSize()-1)) {
-            TRACE("outside and beyond last segment\n");
+        if (dwStart > pSeg->GetStop(pSeg->GetOffsetSize()-1))
+        {
+            //TRACE("outside and beyond last segment\n");
             pCmdUI->Enable(FALSE);
             return;
         }
@@ -4722,24 +5559,30 @@ void CSaView::OnUpdateEditAddWord(CCmdUI * pCmdUI) {
         nPos = pSeg->FindFromPosition(dwStart,FALSE);
         DWORD dwStop = 0;
         // if we weren't within a segment or we are on the last segment
-        if ((nPos == -1) || (nPos >= pSeg->GetOffsetSize())) {
+        if ((nPos == -1) || (nPos >= pSeg->GetOffsetSize()))
+        {
             // stop will be at end of data
             dwStop = pDoc->GetDataSize();
-        } else {
+        }
+        else
+        {
             // stop is at end of selected segment
             dwStop = pSeg->GetOffset(nPos);
         }
         // if segments are within phonetic
-        if (GetAnnotation(PHONETIC)->CheckPosition(pDoc,dwStart,dwStop,CSegment::MODE_ADD) != -1) {
+        if (GetAnnotation(PHONETIC)->CheckPosition(pDoc,dwStart,dwStop,CSegment::MODE_ADD) != -1)
+        {
             pCmdUI->Enable(TRUE);
             return;
         }
 
         // if a gloss character is selected...
-        if (pSeg->GetSelection()!=-1) {
+        if (pSeg->GetSelection()!=-1)
+        {
             // Set Delimiter
             CSaString szString = GetSelectedAnnotationString();
-            if (szString[0] != WORD_DELIMITER) {
+            if (szString[0] != WORD_DELIMITER)
+            {
                 pCmdUI->Enable(TRUE);
                 return;
             }
@@ -4754,25 +5597,31 @@ void CSaView::OnUpdateEditAddWord(CCmdUI * pCmdUI) {
     nPos++;
     DWORD dwStop = 0;
     // if we weren't within a segment or we are on the last segment
-    if (nPos >= pSeg->GetOffsetSize()) {
+    if (nPos >= pSeg->GetOffsetSize())
+    {
         // stop will be at end of data
         dwStop = pDoc->GetDataSize();
-    } else {
+    }
+    else
+    {
         // stop is at end of selected segment
         dwStop = pSeg->GetOffset(nPos);
     }
 
     // if segments are within phonetic
-    if (GetAnnotation(PHONETIC)->CheckPosition(pDoc,dwStart,dwStop,CSegment::MODE_ADD) != -1) {
+    if (GetAnnotation(PHONETIC)->CheckPosition(pDoc,dwStart,dwStop,CSegment::MODE_ADD) != -1)
+    {
         pCmdUI->Enable(TRUE);
         return;
     }
 
     // if a gloss character is selected...
-    if (pSeg->GetSelection()!=-1) {
+    if (pSeg->GetSelection()!=-1)
+    {
         // Set Delimiter
         CSaString szString = GetSelectedAnnotationString();
-        if (szString[0] != WORD_DELIMITER) {
+        if (szString[0] != WORD_DELIMITER)
+        {
             pCmdUI->Enable(TRUE);
             return;
         }
@@ -4785,38 +5634,52 @@ void CSaView::OnUpdateEditAddWord(CCmdUI * pCmdUI) {
 /***************************************************************************/
 // CSaView::OnUpdateEditAddBookmark Update handler for AddBookmark
 /***************************************************************************/
-void CSaView::OnUpdateEditAddBookmark(CCmdUI * pCmdUI) {
+void CSaView::OnUpdateEditAddBookmark(CCmdUI * pCmdUI)
+{
     BOOL bEnable = FALSE;
     CSaDoc * pDoc = (CSaDoc *) GetDocument(); // get pointer to document
 
     CSegment * pSeg = GetAnnotation(GLOSS);
     int nInsertAt = pSeg->CheckPosition(pDoc,GetStartCursorPosition(),GetStopCursorPosition(),CSegment::MODE_ADD);
-    if (nInsertAt != -1) {
+    if (nInsertAt != -1)
+    {
         bEnable = TRUE;
-    } else {
+    }
+    else
+    {
         //SDM 1.5Test8.2
         DWORD dwStart = GetStartCursorPosition();
 
         int nPos = pSeg->FindFromPosition(dwStart,TRUE);
-        if (nPos==-1) {
+        if (nPos==-1)
+        {
             nPos = pSeg->FindFromPosition(dwStart,FALSE);
-        } else {
+        }
+        else
+        {
             nPos++;
         }
 
         DWORD dwStop;
-        if ((nPos == -1) || (nPos >= pSeg->GetOffsetSize())) {
+        if ((nPos == -1) || (nPos >= pSeg->GetOffsetSize()))
+        {
             dwStop = pDoc->GetDataSize();
-        } else {
+        }
+        else
+        {
             dwStop = pSeg->GetOffset(nPos);
         }
 
         nInsertAt = GetAnnotation(PHONETIC)->CheckPosition(pDoc, dwStart,dwStop,CSegment::MODE_ADD);
-        if (nInsertAt != -1) {
+        if (nInsertAt != -1)
+        {
             bEnable = TRUE;
-        } else if (pSeg->GetSelection()!=-1) { // Set Delimiter
+        }
+        else if (pSeg->GetSelection()!=-1)     // Set Delimiter
+        {
             CSaString szString = GetSelectedAnnotationString();
-            if (szString[0] != TEXT_DELIMITER) {
+            if (szString[0] != TEXT_DELIMITER)
+            {
                 bEnable = TRUE;
             }
         }
@@ -4827,9 +5690,11 @@ void CSaView::OnUpdateEditAddBookmark(CCmdUI * pCmdUI) {
 /***************************************************************************/
 // CSaView::OnEditRemove
 /***************************************************************************/
-void CSaView::OnEditRemove() {
+void CSaView::OnEditRemove()
+{
     CSegment * pSeg = FindSelectedAnnotation();
-    if (pSeg && (pSeg->GetSelection() != -1)) {
+    if ((pSeg!=NULL) && (pSeg->GetSelection() != -1))
+    {
         pSeg->Remove(GetDocument(), TRUE);
     }
 }
@@ -4838,10 +5703,12 @@ void CSaView::OnEditRemove() {
 /***************************************************************************/
 // CSaView::OnUpdateEditRemove
 /***************************************************************************/
-void CSaView::OnUpdateEditRemove(CCmdUI * pCmdUI) {
+void CSaView::OnUpdateEditRemove(CCmdUI * pCmdUI)
+{
     BOOL bEnable = FALSE;
     CSegment * pSeg = FindSelectedAnnotation();
-    if (pSeg && (pSeg->GetSelection() != -1)) {
+    if ((pSeg!=NULL) && (pSeg->GetSelection() != -1))
+    {
         bEnable = TRUE;
     }
     pCmdUI->Enable(bEnable);
@@ -4852,30 +5719,40 @@ void CSaView::OnUpdateEditRemove(CCmdUI * pCmdUI) {
 // CSaView::OnEditUp Move annotation selection one visible
 // window up (or start at bottom left)
 /***************************************************************************/
-void CSaView::OnEditUp() {
+void CSaView::OnEditUp()
+{
     int nLoop;
     DWORD dwOffset;
 
-    if (m_pFocusedGraph) { // needs to have a focused graph
+    if (m_pFocusedGraph)   // needs to have a focused graph
+    {
         m_advancedSelection.Update(this);
         nLoop = m_advancedSelection.GetSelectionIndex();
         dwOffset = m_advancedSelection.GetSelectionStart();
 
-        if (nLoop == -1) {
+        if (nLoop == -1)
+        {
             // no selection yet, search for last annotation which is not empty
-            for (nLoop=ANNOT_WND_NUMBER - 1; nLoop >= 0; nLoop--) {
-                if (GetAnnotation(CGraphWnd::m_anAnnWndOrder[nLoop])->IsEmpty() == FALSE) {
+            for (nLoop=ANNOT_WND_NUMBER - 1; nLoop >= 0; nLoop--)
+            {
+                if (GetAnnotation(CGraphWnd::m_anAnnWndOrder[nLoop])->IsEmpty() == FALSE)
+                {
                     dwOffset = GetAnnotation(CGraphWnd::m_anAnnWndOrder[nLoop])->GetOffset(0);
                     nLoop++;
                     break;
                 }
             }
-            if (nLoop == -1) {
+            if (nLoop == -1)
+            {
                 return;    // no segments navigation irrelevant
             }
-        } else { // SDM 1.5Test8.1 find window position from segment index
-            for (int nIndex = 0; nIndex < ANNOT_WND_NUMBER; nIndex++) {
-                if (CGraphWnd::m_anAnnWndOrder[nIndex] == nLoop) {
+        }
+        else     // SDM 1.5Test8.1 find window position from segment index
+        {
+            for (int nIndex = 0; nIndex < ANNOT_WND_NUMBER; nIndex++)
+            {
+                if (CGraphWnd::m_anAnnWndOrder[nIndex] == nLoop)
+                {
                     nLoop = nIndex;
                     break;
                 }
@@ -4883,17 +5760,21 @@ void CSaView::OnEditUp() {
         }
 
         // search for next upper visible annotation window which is not empty
-        for (nLoop--; nLoop >= 0; nLoop--) {
+        for (nLoop--; nLoop >= 0; nLoop--)
+        {
             if (m_pFocusedGraph->HaveAnnotation(CGraphWnd::m_anAnnWndOrder[nLoop]) && ((GetAnnotation(CGraphWnd::m_anAnnWndOrder[nLoop])->IsEmpty() == FALSE)
-                    ||((CGraphWnd::m_anAnnWndOrder[nLoop] != GLOSS)&&(CGraphWnd::m_anAnnWndOrder[nLoop] != PHONETIC)))) { // SDM 1.5Test8.1
+                    ||((CGraphWnd::m_anAnnWndOrder[nLoop] != GLOSS)&&(CGraphWnd::m_anAnnWndOrder[nLoop] != PHONETIC))))   // SDM 1.5Test8.1
+            {
                 m_advancedSelection.SelectFromPosition(this, CGraphWnd::m_anAnnWndOrder[nLoop], dwOffset, true);// SDM 1.5Test8.1
 
-                if (m_advancedSelection.GetSelectionIndex() == -1) {
+                if (m_advancedSelection.GetSelectionIndex() == -1)
+                {
                     m_advancedSelection.SelectFromPosition(this, CGraphWnd::m_anAnnWndOrder[nLoop], dwOffset,false);
                 }
 
                 if ((m_advancedSelection.GetSelectionStart() <= m_dwDataPosition) ||
-                        (m_advancedSelection.GetSelectionStop() >= (m_dwDataPosition + GetDataFrame()))) {
+                        (m_advancedSelection.GetSelectionStop() >= (m_dwDataPosition + GetDataFrame())))
+                {
                     ZoomIn(0, FALSE);    // center selection in view
                 }
                 break;
@@ -4906,28 +5787,38 @@ void CSaView::OnEditUp() {
 // CSaView::OnUpdateEditUp Able to move annotation selection one visible
 // window up (or start at bottom left)
 /***************************************************************************/
-void CSaView::OnUpdateEditUp(CCmdUI * pCmdUI) {
+void CSaView::OnUpdateEditUp(CCmdUI * pCmdUI)
+{
     int nLoop;
 
-    if (m_pFocusedGraph) { // needs to have a focused graph
+    if (m_pFocusedGraph)   // needs to have a focused graph
+    {
         m_advancedSelection.Update(this);
         nLoop = m_advancedSelection.GetSelectionIndex();
 
-        if (nLoop == -1) {
+        if (nLoop == -1)
+        {
             // no selection yet, search for last annotation which is not empty
-            for (nLoop=ANNOT_WND_NUMBER - 1; nLoop >= 0; nLoop--) {
-                if (GetAnnotation(CGraphWnd::m_anAnnWndOrder[nLoop])->IsEmpty() == FALSE) {
+            for (nLoop=ANNOT_WND_NUMBER - 1; nLoop >= 0; nLoop--)
+            {
+                if (GetAnnotation(CGraphWnd::m_anAnnWndOrder[nLoop])->IsEmpty() == FALSE)
+                {
                     nLoop++;
                     break;
                 }
             }
-            if (nLoop == -1) {
+            if (nLoop == -1)
+            {
                 pCmdUI->Enable(FALSE);
                 return; // no segments navigation irrelevant
             }
-        } else { // SDM 1.5Test8.1 find window position from segment index
-            for (int nIndex = 0; nIndex < ANNOT_WND_NUMBER; nIndex++) {
-                if (CGraphWnd::m_anAnnWndOrder[nIndex] == nLoop) {
+        }
+        else     // SDM 1.5Test8.1 find window position from segment index
+        {
+            for (int nIndex = 0; nIndex < ANNOT_WND_NUMBER; nIndex++)
+            {
+                if (CGraphWnd::m_anAnnWndOrder[nIndex] == nLoop)
+                {
                     nLoop = nIndex;
                     break;
                 }
@@ -4936,9 +5827,11 @@ void CSaView::OnUpdateEditUp(CCmdUI * pCmdUI) {
 
 
         // search for next upper visible annotation window which is not empty
-        for (nLoop--; nLoop >= 0; nLoop--) {
+        for (nLoop--; nLoop >= 0; nLoop--)
+        {
             if (m_pFocusedGraph->HaveAnnotation(CGraphWnd::m_anAnnWndOrder[nLoop]) && ((GetAnnotation(CGraphWnd::m_anAnnWndOrder[nLoop])->IsEmpty() == FALSE)
-                    ||((CGraphWnd::m_anAnnWndOrder[nLoop] != GLOSS)&&(CGraphWnd::m_anAnnWndOrder[nLoop] != PHONETIC)))) { // SDM 1.5Test8.1
+                    ||((CGraphWnd::m_anAnnWndOrder[nLoop] != GLOSS)&&(CGraphWnd::m_anAnnWndOrder[nLoop] != PHONETIC))))   // SDM 1.5Test8.1
+            {
                 pCmdUI->Enable(TRUE);
                 return; // possibility found
             }
@@ -4953,30 +5846,40 @@ void CSaView::OnUpdateEditUp(CCmdUI * pCmdUI) {
 // CSaView::OnEditDown Move annotation selection one visible
 // window down (or start at top left)
 /***************************************************************************/
-void CSaView::OnEditDown() {
+void CSaView::OnEditDown()
+{
     int nLoop;
     DWORD dwOffset;
 
-    if (m_pFocusedGraph) { // needs to have a focused graph
+    if (m_pFocusedGraph)   // needs to have a focused graph
+    {
         m_advancedSelection.Update(this);
         nLoop = m_advancedSelection.GetSelectionIndex();
         dwOffset = m_advancedSelection.GetSelectionStart();
 
-        if (nLoop == -1) {
+        if (nLoop == -1)
+        {
             // no selection yet, search for last annotation which is not empty
-            for (nLoop=0; nLoop < ANNOT_WND_NUMBER; nLoop++) {
-                if (GetAnnotation(CGraphWnd::m_anAnnWndOrder[nLoop])->IsEmpty() == FALSE) {
+            for (nLoop=0; nLoop < ANNOT_WND_NUMBER; nLoop++)
+            {
+                if (GetAnnotation(CGraphWnd::m_anAnnWndOrder[nLoop])->IsEmpty() == FALSE)
+                {
                     dwOffset = GetAnnotation(CGraphWnd::m_anAnnWndOrder[nLoop])->GetOffset(0);
                     nLoop--;
                     break;
                 }
             }
-            if (nLoop == ANNOT_WND_NUMBER) {
+            if (nLoop == ANNOT_WND_NUMBER)
+            {
                 return;    // no segments navigation irrelevant
             }
-        } else { // SDM 1.5Test8.1 find window position from segment index
-            for (int nIndex = 0; nIndex < ANNOT_WND_NUMBER; nIndex++) {
-                if (CGraphWnd::m_anAnnWndOrder[nIndex] == nLoop) {
+        }
+        else     // SDM 1.5Test8.1 find window position from segment index
+        {
+            for (int nIndex = 0; nIndex < ANNOT_WND_NUMBER; nIndex++)
+            {
+                if (CGraphWnd::m_anAnnWndOrder[nIndex] == nLoop)
+                {
                     nLoop = nIndex;
                     break;
                 }
@@ -4984,18 +5887,22 @@ void CSaView::OnEditDown() {
         }
 
         // search for next lower visible annotation window which is not empty
-        for (nLoop++; nLoop < ANNOT_WND_NUMBER; nLoop++) {
+        for (nLoop++; nLoop < ANNOT_WND_NUMBER; nLoop++)
+        {
             if (m_pFocusedGraph->HaveAnnotation(CGraphWnd::m_anAnnWndOrder[nLoop]) && ((GetAnnotation(CGraphWnd::m_anAnnWndOrder[nLoop])->IsEmpty() == FALSE)
-                    ||((CGraphWnd::m_anAnnWndOrder[nLoop] != GLOSS)&&(CGraphWnd::m_anAnnWndOrder[nLoop] != PHONETIC)))) { // SDM 1.5Test8.1
+                    ||((CGraphWnd::m_anAnnWndOrder[nLoop] != GLOSS)&&(CGraphWnd::m_anAnnWndOrder[nLoop] != PHONETIC))))   // SDM 1.5Test8.1
+            {
                 m_advancedSelection.SelectFromPosition(this, CGraphWnd::m_anAnnWndOrder[nLoop], dwOffset, true);// SDM 1.5Test8.1
 
-                if (m_advancedSelection.GetSelectionIndex() == -1) {
+                if (m_advancedSelection.GetSelectionIndex() == -1)
+                {
                     m_advancedSelection.SelectFromPosition(this, CGraphWnd::m_anAnnWndOrder[nLoop], dwOffset,false);
                 }
 
 
                 if ((m_advancedSelection.GetSelectionStart() <= m_dwDataPosition)
-                        || (m_advancedSelection.GetSelectionStop() >= (m_dwDataPosition + GetDataFrame()))) {
+                        || (m_advancedSelection.GetSelectionStop() >= (m_dwDataPosition + GetDataFrame())))
+                {
                     ZoomIn(0, FALSE);    // center selection in view
                 }
                 break;
@@ -5008,29 +5915,39 @@ void CSaView::OnEditDown() {
 // CSaView::OnUpdateEditDown Able to move annotation selection one visible
 // window down (or start at top left)
 /***************************************************************************/
-void CSaView::OnUpdateEditDown(CCmdUI * pCmdUI) {
+void CSaView::OnUpdateEditDown(CCmdUI * pCmdUI)
+{
     int nLoop = -1;
 
     // needs to have a focused graph
-    if (m_pFocusedGraph!=NULL) {
+    if (m_pFocusedGraph!=NULL)
+    {
         m_advancedSelection.Update(this);
         nLoop = m_advancedSelection.GetSelectionIndex();
 
-        if (nLoop == -1) {
+        if (nLoop == -1)
+        {
             // no selection yet, search for last annotation which is not empty
-            for (nLoop=0; nLoop < ANNOT_WND_NUMBER; nLoop++) {
-                if (GetAnnotation(CGraphWnd::m_anAnnWndOrder[nLoop])->IsEmpty() == FALSE) {
+            for (nLoop=0; nLoop < ANNOT_WND_NUMBER; nLoop++)
+            {
+                if (GetAnnotation(CGraphWnd::m_anAnnWndOrder[nLoop])->IsEmpty() == FALSE)
+                {
                     nLoop--;
                     break;
                 }
             }
-            if (nLoop == ANNOT_WND_NUMBER) {
+            if (nLoop == ANNOT_WND_NUMBER)
+            {
                 pCmdUI->Enable(FALSE);
                 return; // no segments navigation irrelevant
             }
-        } else { // SDM 1.5Test8.1 find window position from segment index
-            for (int nIndex = 0; nIndex < ANNOT_WND_NUMBER; nIndex++) {
-                if (CGraphWnd::m_anAnnWndOrder[nIndex] == nLoop) {
+        }
+        else     // SDM 1.5Test8.1 find window position from segment index
+        {
+            for (int nIndex = 0; nIndex < ANNOT_WND_NUMBER; nIndex++)
+            {
+                if (CGraphWnd::m_anAnnWndOrder[nIndex] == nLoop)
+                {
                     nLoop = nIndex;
                     break;
                 }
@@ -5038,11 +5955,13 @@ void CSaView::OnUpdateEditDown(CCmdUI * pCmdUI) {
         }
 
         // search for next lower visible annotation window which is not empty
-        for (nLoop++; nLoop < ANNOT_WND_NUMBER; nLoop++) {
+        for (nLoop++; nLoop < ANNOT_WND_NUMBER; nLoop++)
+        {
             EAnnotation type = CGraphWnd::m_anAnnWndOrder[nLoop];
             if (m_pFocusedGraph->HaveAnnotation(type) &&
                     ((GetAnnotation(type)->IsEmpty() == FALSE) ||
-                     ((type != GLOSS) && (type != PHONETIC)))) {
+                     ((type != GLOSS) && (type != PHONETIC))))
+            {
                 pCmdUI->Enable(TRUE);
                 return;
             }
@@ -5059,108 +5978,140 @@ void CSaView::OnUpdateEditDown(CCmdUI * pCmdUI) {
 // selects the last segment in the first visible annotation window. There
 // needs to be a graph window with focus.
 /***************************************************************************/
-void CSaView::OnEditPrevious() {
+void CSaView::OnEditPrevious()
+{
     int nLoop;
 
-    if (m_pFocusedGraph) { // needs to have a focused graph
+    if (m_pFocusedGraph)   // needs to have a focused graph
+    {
         m_advancedSelection.Update(this);
         nLoop = m_advancedSelection.GetSelectionIndex();
         // only work from visible selections
-        if ((nLoop != -1)&& !(m_pFocusedGraph->HaveAnnotation(nLoop))) {
+        if ((nLoop != -1)&& !(m_pFocusedGraph->HaveAnnotation(nLoop)))
+        {
             nLoop=-1;    // only work from visible selections
         }
 
         int nSelection;
-        if (nLoop == -1) {
+        if (nLoop == -1)
+        {
             // no selection yet, search for first visible annotation with segments
-            for (nLoop = 0; nLoop < ANNOT_WND_NUMBER; nLoop++) {
+            for (nLoop = 0; nLoop < ANNOT_WND_NUMBER; nLoop++)
+            {
                 if ((m_pFocusedGraph->HaveAnnotation(CGraphWnd::m_anAnnWndOrder[nLoop])) &&
                         ((GetAnnotation(CGraphWnd::m_anAnnWndOrder[nLoop])->IsEmpty() == FALSE) ||
-                         ((CGraphWnd::m_anAnnWndOrder[nLoop] != GLOSS) && (CGraphWnd::m_anAnnWndOrder[nLoop] != PHONETIC)))) { // SDM 1.5Test8.1
+                         ((CGraphWnd::m_anAnnWndOrder[nLoop] != GLOSS) && (CGraphWnd::m_anAnnWndOrder[nLoop] != PHONETIC))))   // SDM 1.5Test8.1
+                {
                     nLoop = CGraphWnd::m_anAnnWndOrder[nLoop];
                     break;
                 }
             }
-            if (nLoop >= ANNOT_WND_NUMBER) {
+            if (nLoop >= ANNOT_WND_NUMBER)
+            {
                 return;    // no possibility found
             }
             // try to find selection within start cursor or left of it
             m_advancedSelection.SelectFromPosition(this, nLoop, GetStartCursorPosition(), true);
-            if (m_advancedSelection.GetSelectionIndex() == -1) {
+            if (m_advancedSelection.GetSelectionIndex() == -1)
+            {
                 m_advancedSelection.SelectFromPosition(this, nLoop, GetStartCursorPosition(),false);
             }
-        } else {
+        }
+        else
+        {
             int MASTER = GetAnnotation(nLoop)->GetMasterIndex();
-            if ((MASTER!=-1)&&(nLoop != GLOSS)&&(nLoop != PHONETIC)) {
+            if ((MASTER!=-1)&&(nLoop != GLOSS)&&(nLoop != PHONETIC))
+            {
                 CSegment * pMaster=GetAnnotation(MASTER);
 
                 DWORD dwPosition = m_advancedSelection.GetSelectionStart();
                 int nIndexMaster = pMaster->FindOffset(dwPosition); // Should always find...
-                if (nIndexMaster==-1) {
+                if (nIndexMaster==-1)
+                {
                     nIndexMaster = pMaster->FindFromPosition(dwPosition, TRUE);    // Better Coverage
                 }
 
-                if (nIndexMaster == -1) {
+                if (nIndexMaster == -1)
+                {
                     return;
                 }
                 nIndexMaster = pMaster->GetPrevious(nIndexMaster);
-                if (nIndexMaster == -1) {
+                if (nIndexMaster == -1)
+                {
                     return;
                 }
                 m_advancedSelection.SelectFromStopPosition(this, nLoop, pMaster->GetStop(nIndexMaster),true);
-                if (m_advancedSelection.GetSelectionIndex() == -1) {
+                if (m_advancedSelection.GetSelectionIndex() == -1)
+                {
                     m_advancedSelection.SelectFromStopPosition(this, nLoop, pMaster->GetStop(nIndexMaster),false);
                 }
-            } else {
+            }
+            else
+            {
                 DWORD dwStop;
                 DWORD dwStart;
 
                 nSelection = GetAnnotation(nLoop)->GetSelection();
-                if (nSelection == -1) {
+                if (nSelection == -1)
+                {
                     dwStart = m_advancedSelection.GetSelectionStart();
                     nSelection = GetAnnotation(nLoop)->FindFromPosition(dwStart,FALSE);
-                    if (nSelection == -1) {
+                    if (nSelection == -1)
+                    {
                         return;
                     }
 
-                    if (GetAnnotation(nLoop)->GetOffset(nSelection) < dwStart) {
+                    if (GetAnnotation(nLoop)->GetOffset(nSelection) < dwStart)
+                    {
                         dwStop = GetAnnotation(nLoop)->GetStop(nSelection);
-                    } else {
+                    }
+                    else
+                    {
                         int nPrevious = GetAnnotation(nLoop)->GetPrevious(nSelection);
-                        if (nPrevious == -1) {
+                        if (nPrevious == -1)
+                        {
                             return;
                         }
                         dwStop = GetAnnotation(nLoop)->GetStop(nPrevious);
                     }
-                } else {
+                }
+                else
+                {
                     int nPrevious = GetAnnotation(nLoop)->GetPrevious();
                     dwStart = GetAnnotation(nLoop)->GetOffset(nSelection);
 
-                    if (nPrevious == -1) {
+                    if (nPrevious == -1)
+                    {
                         dwStop = 0;
-                    } else {
+                    }
+                    else
+                    {
                         dwStop = GetAnnotation(nLoop)->GetStop(nPrevious);
                     }
 
-                    if ((nLoop != PHONETIC) && (nLoop != GLOSS) && (dwStop + GetDocument()->GetBytesFromTime(DEFAULT_ADD_SEGMENT_TIME)) < dwStart) {
+                    if ((nLoop != PHONETIC) && (nLoop != GLOSS) && (dwStop + GetDocument()->GetBytesFromTime(DEFAULT_ADD_SEGMENT_TIME)) < dwStart)
+                    {
                         dwStop = dwStart - 2;
                     }
                 }
 
-                if (dwStop < GetDocument()->GetBytesFromTime(MIN_ADD_SEGMENT_TIME)) {
+                if (dwStop < GetDocument()->GetBytesFromTime(MIN_ADD_SEGMENT_TIME))
+                {
                     return;
                 }
 
                 // change the selection
                 m_advancedSelection.SelectFromStopPosition(this, nLoop, dwStop,true);
-                if (m_advancedSelection.GetSelectionIndex() == -1) {
+                if (m_advancedSelection.GetSelectionIndex() == -1)
+                {
                     m_advancedSelection.SelectFromStopPosition(this, nLoop, dwStop,false);
                 }
             }
         }
         // if necessary scroll selection into view
         if ((m_advancedSelection.GetSelectionStart() <= m_dwDataPosition)
-                || (m_advancedSelection.GetSelectionStop() >= (m_dwDataPosition + GetDataFrame()))) {
+                || (m_advancedSelection.GetSelectionStop() >= (m_dwDataPosition + GetDataFrame())))
+        {
             ZoomIn(0, FALSE);    // center selection in view
         }
     }
@@ -5169,83 +6120,108 @@ void CSaView::OnEditPrevious() {
 /***************************************************************************/
 // CSaView::OnUpdateEditPrevious Menu update
 /***************************************************************************/
-void CSaView::OnUpdateEditPrevious(CCmdUI * pCmdUI) {
+void CSaView::OnUpdateEditPrevious(CCmdUI * pCmdUI)
+{
     CSaDoc * pDoc = (CSaDoc *)GetDocument();
     int nLoop;
 
     BOOL bEnable = FALSE;
-    if ((pDoc->GetDataSize() != 0) && GetFocusedGraphWnd()) { // needs focused graph
+    if ((pDoc->GetDataSize() != 0) && GetFocusedGraphWnd())   // needs focused graph
+    {
         m_advancedSelection.Update(this);
         nLoop = m_advancedSelection.GetSelectionIndex();
         // only work from visible selections
-        if ((nLoop != -1)&& !(m_pFocusedGraph->HaveAnnotation(nLoop))) {
+        if ((nLoop != -1)&& !(m_pFocusedGraph->HaveAnnotation(nLoop)))
+        {
             nLoop=-1;    // only work from visible selections
         }
 
         int nSelection;
-        if (nLoop == -1) {
+        if (nLoop == -1)
+        {
             // no selection yet, search for first visible annotation with segments
-            for (nLoop = 0; nLoop < ANNOT_WND_NUMBER; nLoop++) {
+            for (nLoop = 0; nLoop < ANNOT_WND_NUMBER; nLoop++)
+            {
                 if (m_pFocusedGraph->HaveAnnotation(CGraphWnd::m_anAnnWndOrder[nLoop])
                         && ((GetAnnotation(CGraphWnd::m_anAnnWndOrder[nLoop])->IsEmpty() == FALSE)
-                            ||((CGraphWnd::m_anAnnWndOrder[nLoop] != GLOSS)&&(CGraphWnd::m_anAnnWndOrder[nLoop] != PHONETIC)))) { // SDM 1.5Test8.1
+                            ||((CGraphWnd::m_anAnnWndOrder[nLoop] != GLOSS)&&(CGraphWnd::m_anAnnWndOrder[nLoop] != PHONETIC))))   // SDM 1.5Test8.1
+                {
                     nLoop = CGraphWnd::m_anAnnWndOrder[nLoop];
                     break;
                 }
             }
-            if (nLoop < ANNOT_WND_NUMBER) {
+            if (nLoop < ANNOT_WND_NUMBER)
+            {
                 bEnable = TRUE;
             }
-        } else {
+        }
+        else
+        {
             int MASTER = GetAnnotation(nLoop)->GetMasterIndex();
-            if ((MASTER!=-1) && (nLoop != GLOSS) && (nLoop != PHONETIC)) {
+            if ((MASTER!=-1) && (nLoop != GLOSS) && (nLoop != PHONETIC))
+            {
                 CSegment * pMaster=GetAnnotation(MASTER);
 
                 DWORD dwPosition = m_advancedSelection.GetSelectionStart();
                 int nIndexMaster = pMaster->FindOffset(dwPosition); // Should always find...
-                if (nIndexMaster==-1) {
+                if (nIndexMaster==-1)
+                {
                     nIndexMaster = pMaster->FindFromPosition(dwPosition, TRUE);    // Better Coverage
                 }
 
-                if (nIndexMaster != -1) {
+                if (nIndexMaster != -1)
+                {
                     nIndexMaster = pMaster->GetPrevious(nIndexMaster);
                 }
-                if (nIndexMaster != -1) {
+                if (nIndexMaster != -1)
+                {
                     bEnable = TRUE;
                 }
-            } else {
+            }
+            else
+            {
                 DWORD dwStop = 0;
                 DWORD dwStart;
 
                 nSelection = GetAnnotation(nLoop)->GetSelection();
-                if (nSelection == -1) {
+                if (nSelection == -1)
+                {
                     dwStart = m_advancedSelection.GetSelectionStart();
                     nSelection = GetAnnotation(nLoop)->FindFromPosition(dwStart,FALSE);
-                    if (nSelection != -1) {
+                    if (nSelection != -1)
+                    {
 
                         int nPrevious = GetAnnotation(nLoop)->GetPrevious(nSelection);
-                        if (nPrevious != -1) {
+                        if (nPrevious != -1)
+                        {
                             dwStop = GetAnnotation(nLoop)->GetStop(nPrevious);
                         }
                     }
-                } else {
+                }
+                else
+                {
                     int nPrevious = GetAnnotation(nLoop)->GetPrevious();
                     dwStart = GetAnnotation(nLoop)->GetOffset(nSelection);
 
-                    if (nPrevious == -1) {
+                    if (nPrevious == -1)
+                    {
                         dwStop = 0;
-                    } else {
+                    }
+                    else
+                    {
                         dwStop = GetAnnotation(nLoop)->GetStop(nPrevious);
                     }
 
-                    if ((nLoop != PHONETIC) && (nLoop != GLOSS) && (dwStop + GetDocument()->GetBytesFromTime(DEFAULT_ADD_SEGMENT_TIME)) < dwStart) {
+                    if ((nLoop != PHONETIC) && (nLoop != GLOSS) && (dwStop + GetDocument()->GetBytesFromTime(DEFAULT_ADD_SEGMENT_TIME)) < dwStart)
+                    {
                         dwStop = dwStart - 2;
                     }
 
                 }
                 bEnable = TRUE;
 
-                if (dwStop < GetDocument()->GetBytesFromTime(MIN_ADD_SEGMENT_TIME)) {
+                if (dwStop < GetDocument()->GetBytesFromTime(MIN_ADD_SEGMENT_TIME))
+                {
                     bEnable = FALSE;
                 }
             }
@@ -5257,107 +6233,137 @@ void CSaView::OnUpdateEditPrevious(CCmdUI * pCmdUI) {
 /***************************************************************************/
 // CSaView::OnEditNext Select next phonetic character
 /***************************************************************************/
-void CSaView::OnEditNext() {
+void CSaView::OnEditNext()
+{
     int nLoop;
 
-    if (m_pFocusedGraph) { // needs to have a focused graph
+    if (m_pFocusedGraph)   // needs to have a focused graph
+    {
         m_advancedSelection.Update(this);
         nLoop = m_advancedSelection.GetSelectionIndex();
         // only work from visible selections
-        if ((nLoop != -1)&& !(m_pFocusedGraph->HaveAnnotation(nLoop))) {
+        if ((nLoop != -1)&& !(m_pFocusedGraph->HaveAnnotation(nLoop)))
+        {
             nLoop=-1;    // only work from visible selections
         }
 
-        if (GetAnnotation(PHONETIC)->IsEmpty()) {
+        if (GetAnnotation(PHONETIC)->IsEmpty())
+        {
             return;    // no segments
         }
         int nSelection;
-        if (nLoop == -1) {
+        if (nLoop == -1)
+        {
             // no selection yet, search for first visible annotation with segments
-            for (nLoop = 0; nLoop < ANNOT_WND_NUMBER; nLoop++) {
+            for (nLoop = 0; nLoop < ANNOT_WND_NUMBER; nLoop++)
+            {
                 if (m_pFocusedGraph->HaveAnnotation(CGraphWnd::m_anAnnWndOrder[nLoop])
                         && ((GetAnnotation(CGraphWnd::m_anAnnWndOrder[nLoop])->IsEmpty() == FALSE)
-                            ||((CGraphWnd::m_anAnnWndOrder[nLoop] != GLOSS)&&(CGraphWnd::m_anAnnWndOrder[nLoop] != PHONETIC)))) { // SDM 1.5Test8.1
+                            ||((CGraphWnd::m_anAnnWndOrder[nLoop] != GLOSS)&&(CGraphWnd::m_anAnnWndOrder[nLoop] != PHONETIC))))   // SDM 1.5Test8.1
+                {
                     nLoop = CGraphWnd::m_anAnnWndOrder[nLoop];
                     break;
                 }
             }
-            if (nLoop >= ANNOT_WND_NUMBER) {
+            if (nLoop >= ANNOT_WND_NUMBER)
+            {
                 return;    // no possibility found
             }
             // try to find selection within start cursor or left of it
             m_advancedSelection.SelectFromPosition(this, nLoop, GetStartCursorPosition(),true);
-            if (m_advancedSelection.GetSelectionIndex() == -1) {
+            if (m_advancedSelection.GetSelectionIndex() == -1)
+            {
                 m_advancedSelection.SelectFromPosition(this, nLoop, GetStartCursorPosition(),false);
             }
-        } else {
+        }
+        else
+        {
             int MASTER = GetAnnotation(nLoop)->GetMasterIndex();
-            if ((MASTER!=-1)&&(nLoop != GLOSS)&&(nLoop != PHONETIC)) {
+            if ((MASTER!=-1)&&(nLoop != GLOSS)&&(nLoop != PHONETIC))
+            {
                 CSegment * pMaster=GetAnnotation(MASTER);
 
                 DWORD dwPosition = m_advancedSelection.GetSelectionStop();
                 int nIndexMaster = pMaster->FindStop(dwPosition); // Should always find...
-                if (nIndexMaster==-1) {
+                if (nIndexMaster==-1)
+                {
                     nIndexMaster = pMaster->FindFromPosition(dwPosition, TRUE);    // Better Coverage
                 }
 
-                if (nIndexMaster == -1) {
+                if (nIndexMaster == -1)
+                {
                     return;
                 }
                 nIndexMaster = pMaster->GetNext(nIndexMaster);
-                if (nIndexMaster == -1) {
+                if (nIndexMaster == -1)
+                {
                     return;
                 }
                 m_advancedSelection.SelectFromPosition(this, nLoop, pMaster->GetOffset(nIndexMaster),true);
-                if (m_advancedSelection.GetSelectionIndex() == -1) {
+                if (m_advancedSelection.GetSelectionIndex() == -1)
+                {
                     m_advancedSelection.SelectFromPosition(this, nLoop, pMaster->GetOffset(nIndexMaster),false);
                 }
-            } else {
+            }
+            else
+            {
                 DWORD dwStop;
                 DWORD dwStart;
 
                 nSelection = GetAnnotation(nLoop)->GetSelection();
-                if (nSelection == -1) {
+                if (nSelection == -1)
+                {
                     dwStop = m_advancedSelection.GetSelectionStop();
                     nSelection = GetAnnotation(nLoop)->FindFromPosition(dwStop,FALSE);
-                    if (nSelection == -1) {
+                    if (nSelection == -1)
+                    {
                         return;
                     }
 
-                    if (dwStop >= GetAnnotation(nLoop)->GetOffset(nSelection)) {
+                    if (dwStop >= GetAnnotation(nLoop)->GetOffset(nSelection))
+                    {
                         return;
                     }
 
                     dwStart = GetAnnotation(nLoop)->GetOffset(nSelection);
-                } else {
+                }
+                else
+                {
                     int nNext = GetAnnotation(nLoop)->GetNext();
                     dwStop = GetAnnotation(nLoop)->GetStop(nSelection);
 
-                    if (nNext == -1) {
+                    if (nNext == -1)
+                    {
                         dwStart = GetDocument()->GetDataSize();
-                    } else {
+                    }
+                    else
+                    {
                         dwStart = GetAnnotation(nLoop)->GetOffset(nNext);
                     }
 
-                    if ((dwStop + GetDocument()->GetBytesFromTime(DEFAULT_ADD_SEGMENT_TIME)) < dwStart) {
+                    if ((dwStop + GetDocument()->GetBytesFromTime(DEFAULT_ADD_SEGMENT_TIME)) < dwStart)
+                    {
                         dwStart = dwStop + 2;
                     }
                 }
 
-                if (dwStart + GetDocument()->GetBytesFromTime(MIN_ADD_SEGMENT_TIME) > GetDocument()->GetDataSize()) {
+                if (dwStart + GetDocument()->GetBytesFromTime(MIN_ADD_SEGMENT_TIME) > GetDocument()->GetDataSize())
+                {
                     return;
                 }
 
                 // change the selection
                 m_advancedSelection.SelectFromPosition(this, nLoop, dwStart,true);
-                if (m_advancedSelection.GetSelectionIndex() == -1) {
+                if (m_advancedSelection.GetSelectionIndex() == -1)
+                {
                     m_advancedSelection.SelectFromPosition(this, nLoop, dwStart,false);
                 }
             }
         }
         // if necessary scroll selection into view
         if ((m_advancedSelection.GetSelectionStart() <= m_dwDataPosition)
-                || (m_advancedSelection.GetSelectionStop() >= (m_dwDataPosition + GetDataFrame()))) {
+                || (m_advancedSelection.GetSelectionStop() >= (m_dwDataPosition + GetDataFrame())))
+        {
             ZoomIn(0, FALSE);    // center selection in view
         }
     }
@@ -5366,94 +6372,121 @@ void CSaView::OnEditNext() {
 /***************************************************************************/
 // CSaView::OnUpdateEditNext Menu update
 /***************************************************************************/
-void CSaView::OnUpdateEditNext(CCmdUI * pCmdUI) {
+void CSaView::OnUpdateEditNext(CCmdUI * pCmdUI)
+{
     CSaDoc * pDoc = (CSaDoc *)GetDocument();
     int nLoop;
 
     BOOL bEnable = FALSE;
     if ((pDoc->GetDataSize() != 0) &&
             (GetFocusedGraphWnd()!=NULL) &&
-            (!(GetAnnotation(PHONETIC)->IsEmpty()))) { // needs focused graph
+            (!(GetAnnotation(PHONETIC)->IsEmpty())))   // needs focused graph
+    {
         m_advancedSelection.Update(this);
         nLoop = m_advancedSelection.GetSelectionIndex();
         // only work from visible selections
-        if ((nLoop != -1)&& !(m_pFocusedGraph->HaveAnnotation(nLoop))) {
+        if ((nLoop != -1)&& !(m_pFocusedGraph->HaveAnnotation(nLoop)))
+        {
             nLoop=-1;    // only work from visible selections
         }
 
         int nSelection = -1;
-        if (nLoop == -1) {
+        if (nLoop == -1)
+        {
             // no selection yet, search for first visible annotation with segments
-            for (nLoop = 0; nLoop < ANNOT_WND_NUMBER; nLoop++) {
+            for (nLoop = 0; nLoop < ANNOT_WND_NUMBER; nLoop++)
+            {
                 if (m_pFocusedGraph->HaveAnnotation(CGraphWnd::m_anAnnWndOrder[nLoop])
                         && ((GetAnnotation(CGraphWnd::m_anAnnWndOrder[nLoop])->IsEmpty() == FALSE)
-                            ||((CGraphWnd::m_anAnnWndOrder[nLoop] != GLOSS)&&(CGraphWnd::m_anAnnWndOrder[nLoop] != PHONETIC)))) { // SDM 1.5Test8.1
+                            ||((CGraphWnd::m_anAnnWndOrder[nLoop] != GLOSS)&&(CGraphWnd::m_anAnnWndOrder[nLoop] != PHONETIC))))   // SDM 1.5Test8.1
+                {
                     nLoop = CGraphWnd::m_anAnnWndOrder[nLoop];
                     break;
                 }
             }
-            if (nLoop < ANNOT_WND_NUMBER) {
+            if (nLoop < ANNOT_WND_NUMBER)
+            {
                 bEnable = TRUE;
             }
-        } else {
+        }
+        else
+        {
             int MASTER = GetAnnotation(nLoop)->GetMasterIndex();
-            if ((MASTER!=-1)&&(nLoop != GLOSS)&&(nLoop != PHONETIC)) {
+            if ((MASTER!=-1)&&(nLoop != GLOSS)&&(nLoop != PHONETIC))
+            {
                 CSegment * pMaster=GetAnnotation(MASTER);
 
                 DWORD dwPosition = m_advancedSelection.GetSelectionStop();
                 // Should always find...
                 int nIndexMaster = pMaster->FindStop(dwPosition);
-                if (nIndexMaster==-1) {
+                if (nIndexMaster==-1)
+                {
                     nIndexMaster = pMaster->FindFromPosition(dwPosition, TRUE);    // Better Coverage
                 }
 
-                if (nIndexMaster != -1) {
+                if (nIndexMaster != -1)
+                {
                     nIndexMaster = pMaster->GetNext(nIndexMaster);
                 }
-                if (nIndexMaster != -1) {
+                if (nIndexMaster != -1)
+                {
                     bEnable = TRUE;
                 }
-            } else {
+            }
+            else
+            {
                 DWORD dwStop = 0;
 
                 DWORD dwStart = GetDocument()->GetDataSize();
 
                 nSelection = GetAnnotation(nLoop)->GetSelection();
-                if (nSelection == -1) {
+                if (nSelection == -1)
+                {
                     dwStop = m_advancedSelection.GetSelectionStop();
                     nSelection = GetAnnotation(nLoop)->FindFromPosition(dwStop,FALSE);
-                    if (nSelection != -1) {
+                    if (nSelection != -1)
+                    {
                         dwStart = GetAnnotation(nLoop)->GetOffset(nSelection);
 
-                        if (dwStop > GetAnnotation(nLoop)->GetOffset(nSelection)) {
+                        if (dwStop > GetAnnotation(nLoop)->GetOffset(nSelection))
+                        {
                             dwStart = GetDocument()->GetDataSize();
                         }
                     }
 
                     bEnable = TRUE;
                     DWORD dwBytes = GetDocument()->GetBytesFromTime(MIN_ADD_SEGMENT_TIME);
-                    if ((dwStart + dwBytes) > GetDocument()->GetDataSize()) {
+                    if ((dwStart + dwBytes) > GetDocument()->GetDataSize())
+                    {
                         bEnable = FALSE;
                     }
-                } else {
+                }
+                else
+                {
                     int nNext = GetAnnotation(nLoop)->GetNext();
                     dwStop = GetAnnotation(nLoop)->GetStop(nSelection);
 
-                    if (nNext == -1) {
+                    if (nNext == -1)
+                    {
                         dwStart = GetDocument()->GetDataSize();
-                    } else {
+                    }
+                    else
+                    {
                         dwStart = GetAnnotation(nLoop)->GetOffset(nNext);
                     }
 
-                    if ((dwStop + GetDocument()->GetBytesFromTime(DEFAULT_ADD_SEGMENT_TIME)) < dwStart) {
+                    if ((dwStop + GetDocument()->GetBytesFromTime(DEFAULT_ADD_SEGMENT_TIME)) < dwStart)
+                    {
                         dwStart = dwStop + 2;
                     }
 
-                    if (nNext!=-1) {
+                    if (nNext!=-1)
+                    {
                         bEnable = TRUE;
                     }
                     DWORD dwBytes = GetDocument()->GetBytesFromTime(MIN_ADD_SEGMENT_TIME);
-                    if ((dwStart + dwBytes) > GetDocument()->GetDataSize()) {
+                    if ((dwStart + dwBytes) > GetDocument()->GetDataSize())
+                    {
                         bEnable = FALSE;
                     }
                 }
@@ -5466,10 +6499,14 @@ void CSaView::OnUpdateEditNext(CCmdUI * pCmdUI) {
 /***************************************************************************/
 // CSaView::GetCursorAlignment()
 /***************************************************************************/
-ECursorAlignment CSaView::GetCursorAlignment() {
-    if (GetDocument()->GetFragments()->IsDataReady()) {
+ECursorAlignment CSaView::GetCursorAlignment()
+{
+    if (GetDocument()->GetFragments()->IsDataReady())
+    {
         return m_nCursorAlignment;
-    } else {
+    }
+    else
+    {
         return m_nCursorAlignment == ALIGN_AT_FRAGMENT ? ALIGN_AT_ZERO_CROSSING : m_nCursorAlignment;
     }
 }
@@ -5477,10 +6514,14 @@ ECursorAlignment CSaView::GetCursorAlignment() {
 /***************************************************************************/
 // CSaView::GetGraphUpdateMode
 /***************************************************************************/
-int CSaView::GetGraphUpdateMode() {
-    if (GetCursorAlignment() != ALIGN_AT_FRAGMENT) {
+int CSaView::GetGraphUpdateMode()
+{
+    if (GetCursorAlignment() != ALIGN_AT_FRAGMENT)
+    {
         return STATIC_UPDATE;    // This file must be in static mode fragments disabled.
-    } else {
+    }
+    else
+    {
         return MainFrame()->GetGraphUpdateMode();
     }
 }
@@ -5488,10 +6529,14 @@ int CSaView::GetGraphUpdateMode() {
 /***************************************************************************/
 // CSaView::IsAnimationRequested
 /***************************************************************************/
-BOOL CSaView::IsAnimationRequested() {
-    if (GetGraphUpdateMode() == STATIC_UPDATE) {
+BOOL CSaView::IsAnimationRequested()
+{
+    if (GetGraphUpdateMode() == STATIC_UPDATE)
+    {
         return FALSE;    // This file must be in dynamic mode to animate
-    } else {
+    }
+    else
+    {
         return MainFrame()->IsAnimationRequested();
     }
 }
@@ -5499,11 +6544,13 @@ BOOL CSaView::IsAnimationRequested() {
 /***************************************************************************/
 // CSaView::GetAnimationFrameRate
 /***************************************************************************/
-int CSaView::GetAnimationFrameRate() {
+int CSaView::GetAnimationFrameRate()
+{
     return MainFrame()->GetAnimationFrameRate();
 }
 
-void CSaView::OnSpectroFormants() {
+void CSaView::OnSpectroFormants()
+{
 
     CSaDoc * pDoc = GetDocument();
 
@@ -5511,7 +6558,8 @@ void CSaView::OnSpectroFormants() {
 
     BOOL bFormantSelected = !parameters.bShowFormants;
 
-    for (int AB = FALSE; AB <= TRUE; AB++) {
+    for (int AB = FALSE; AB <= TRUE; AB++)
+    {
         bool ab = (AB == TRUE);
         CSpectroParm parameters = pDoc->GetSpectrogram(ab)->GetSpectroParm();
         parameters.bShowFormants = bFormantSelected;
@@ -5531,35 +6579,41 @@ void CSaView::OnSpectroFormants() {
         pMain->SetSnapshotParmDefaults(parameters);
     }
 
-    if (bFormantSelected && pDoc->GetSpectrogram(TRUE)->GetFormantProcess()->IsCanceled()) {
+    if (bFormantSelected && pDoc->GetSpectrogram(TRUE)->GetFormantProcess()->IsCanceled())
+    {
         pDoc->RestartAllProcesses();
     }
 
     RefreshGraphs();
 }
 
-void CSaView::OnUpdateSpectroFormants(CCmdUI * pCmdUI) {
+void CSaView::OnUpdateSpectroFormants(CCmdUI * pCmdUI)
+{
     CSaDoc * pDoc = GetDocument();
 
     CSpectroParm parameters = pDoc->GetSpectrogram(TRUE)->GetSpectroParm();
 
-    if ((parameters.bShowFormants) && pDoc->GetSpectrogram(TRUE)->GetFormantProcess()->IsCanceled()) {
+    if ((parameters.bShowFormants) && pDoc->GetSpectrogram(TRUE)->GetFormantProcess()->IsCanceled())
+    {
         OnSpectroFormants();
     }
 
     pCmdUI->SetCheck(parameters.bShowFormants);
 }
 
-void CSaView::OnMoveStopCursorHere() {
+void CSaView::OnMoveStopCursorHere()
+{
 
     // prevent crash
-    if (m_pFocusedGraph==NULL) {
+    if (m_pFocusedGraph==NULL)
+    {
         TRACE("no graph in focus\n");
         return;
     }
 
     CPlotWnd * pPlot = m_pFocusedGraph->GetPlot();
-    if (pPlot==NULL) {
+    if (pPlot==NULL)
+    {
         TRACE("no plot in focus\n");
         return;
     }
@@ -5576,11 +6630,14 @@ void CSaView::OnMoveStopCursorHere() {
     double fDataPos;
     DWORD dwDataFrame;
     // check if area graph type
-    if (m_pFocusedGraph->IsAreaGraph()) {
+    if (m_pFocusedGraph->IsAreaGraph())
+    {
         // get necessary data from area plot
         fDataPos = pPlot->GetAreaPosition();
         dwDataFrame = pPlot->GetAreaLength();
-    } else {
+    }
+    else
+    {
         // get necessary data from document and from view
         fDataPos = GetDataPosition(rWnd.Width());       // data index of first sample to display
         dwDataFrame = AdjustDataFrame(rWnd.Width());    // number of data points to display
@@ -5596,34 +6653,39 @@ void CSaView::OnMoveStopCursorHere() {
     DWORD dwStopCursor = (DWORD) round(fDataPos/nSmpSize + ((double)point.x) * fSamplesPerPix);
     dwStopCursor = dwStopCursor*nSmpSize;
     // check the range
-    if (dwStopCursor < (DWORD)nSmpSize) {
+    if (dwStopCursor < (DWORD)nSmpSize)
+    {
         dwStopCursor = (DWORD)nSmpSize;
     }
     // check the range
-    if (dwStopCursor >= (dwDataSize - (DWORD)nSmpSize)) {
+    if (dwStopCursor >= (dwDataSize - (DWORD)nSmpSize))
+    {
         dwStopCursor = dwDataSize - (DWORD)nSmpSize;
     }
 
     // calculate maximum position for start cursor
     DWORD dwDifference = (DWORD)(CURSOR_MIN_DISTANCE * fSamplesPerPix * nSmpSize);
     DWORD dwStartCursor = 0;
-    if (dwStopCursor > dwDifference) {
+    if (dwStopCursor > dwDifference)
+    {
         dwStartCursor = dwStopCursor - dwDifference;
     }
 
     // check the calculated start position against the current setting
-    if (GetStartCursorPosition() <= dwStartCursor) {
+    if (GetStartCursorPosition() <= dwStartCursor)
+    {
         dwStartCursor = GetStartCursorPosition();
     }
 
-    int nLoop = FindSelectedAnnotationIndex();
-    if (nLoop!=-1) {
-        // Added and modified from CStartCursorWnd::OnLButtonUp and modified by AKE 7/22/01 to deselect segment
-        // while cursor is moving
-        CSegment * pSegment = FindSelectedAnnotation();
+    // Added and modified from CStartCursorWnd::OnLButtonUp and modified by AKE 7/22/01 to deselect segment
+    // while cursor is moving
+    CSegment * pSegment = FindSelectedAnnotation();
+    if (pSegment!=NULL)
+    {
         int nIndex = pSegment->GetSelection();
         if ((dwStopCursor > pSegment->GetStop(nIndex)) ||
-                (dwStartCursor < pSegment->GetOffset(nIndex))) {
+                (dwStartCursor < pSegment->GetOffset(nIndex)))
+        {
             // Deselect segment
             DeselectAnnotations();
         }
@@ -5639,24 +6701,29 @@ void CSaView::OnMoveStopCursorHere() {
 /***************************************************************************/
 // CSaDoc::OnAutoSnapUpdate Adjust all independent segments to snap boundaries
 /***************************************************************************/
-void CSaView::OnEditCopyPhoneticToPhonemic(void) {
+void CSaView::OnEditCopyPhoneticToPhonemic(void)
+{
     // doesn't user want to keep existing gloss?
-    if (AfxMessageBox(IDS_CONFIRM_PHONEMIC_COPY, MB_YESNO | MB_ICONQUESTION, 0) != IDYES) {
+    if (AfxMessageBox(IDS_CONFIRM_PHONEMIC_COPY, MB_YESNO | MB_ICONQUESTION, 0) != IDYES)
+    {
         return;
     }
 
     BeginWaitCursor();
 
     CSegment * pPhonemic = GetAnnotation(PHONEMIC);
-    if (pPhonemic!=NULL) {
+    if (pPhonemic!=NULL)
+    {
         pPhonemic->DeleteContents();
     }
 
     DWORD lastOffset = -1;
     CPhoneticSegment * pPhonetic = (CPhoneticSegment *)GetAnnotation(PHONETIC);
-    for (int i=0; i<pPhonetic->GetOffsetSize(); i++) {
+    for (int i=0; i<pPhonetic->GetOffsetSize(); i++)
+    {
         DWORD offset = pPhonetic->GetOffset(i);
-        if (offset==lastOffset) {
+        if (offset==lastOffset)
+        {
             continue;
         }
         lastOffset = offset;
@@ -5667,8 +6734,10 @@ void CSaView::OnEditCopyPhoneticToPhonemic(void) {
     }
 
     // show the phonemic annotation if it isn't already displayed
-    if (m_pFocusedGraph!=NULL) {
-        if (!m_pFocusedGraph->HaveAnnotation(PHONEMIC)) {
+    if (m_pFocusedGraph!=NULL)
+    {
+        if (!m_pFocusedGraph->HaveAnnotation(PHONEMIC))
+        {
             ShowAnnotation(PHONEMIC);
         }
     }
@@ -5681,149 +6750,184 @@ void CSaView::OnEditCopyPhoneticToPhonemic(void) {
 /***************************************************************************/
 // CSaDoc::OnUpdateAutoSnapUpdate
 /***************************************************************************/
-void CSaView::OnUpdateEditCopyPhoneticToPhonemic(CCmdUI * pCmdUI) {
+void CSaView::OnUpdateEditCopyPhoneticToPhonemic(CCmdUI * pCmdUI)
+{
     pCmdUI->Enable(TRUE);
 }
 
-BOOL CSaView::GetGraphSubRect(const CRect * pWndRect, CRect * pSubRect, int nPos, const UINT * anGraphID) const {
+BOOL CSaView::GetGraphSubRect(const CRect * pWndRect, CRect * pSubRect, int nPos, const UINT * anGraphID) const
+{
     return GetGraphSubRect(m_nLayout, pWndRect, pSubRect, nPos, anGraphID);
 }
 
-UINT CSaView::GetLayout(void) {
+UINT CSaView::GetLayout(void)
+{
     return m_nLayout;   // DDO - 08/07/00
 }
 
-UINT * CSaView::GetGraphIDs() {
+UINT * CSaView::GetGraphIDs()
+{
     // get the graph IDs
     return &m_anGraphID[0];
 }
 
-CGraphWnd * CSaView::GetGraph(int nIndex) {
+CGraphWnd * CSaView::GetGraph(int nIndex)
+{
     // get the pointers to a graph
-    if (nIndex < 0) {
+    if (nIndex < 0)
+    {
         return NULL;
     }
-    if (nIndex > MAX_GRAPHS_NUMBER) {
+    if (nIndex > MAX_GRAPHS_NUMBER)
+    {
         return NULL;
     }
     return m_apGraphs[nIndex];
 }
 
-BOOL CSaView::IsAnimating() {
+BOOL CSaView::IsAnimating()
+{
     return m_bAnimating;
 }
 
-void CSaView::ChangeCursorAlignment(ECursorAlignment nCursorSetting) {
+void CSaView::ChangeCursorAlignment(ECursorAlignment nCursorSetting)
+{
     m_nCursorAlignment = nCursorSetting;
     OnCursorAlignmentChanged();
 }
 
-CURSORPOS CSaView::GetStartCursorPosition() {
+CURSORPOS CSaView::GetStartCursorPosition()
+{
     // get the start cursor position
     return m_dwStartCursor;
 }
 
-CURSORPOS CSaView::GetStopCursorPosition() {
+CURSORPOS CSaView::GetStopCursorPosition()
+{
     // get the stop cursor position
     return m_dwStopCursor;
 }
 
-DWORD CSaView::GetPlaybackCursorPosition() {
+DWORD CSaView::GetPlaybackCursorPosition()
+{
     return lastPlaybackPosition;
 }
 
-CGraphWnd * CSaView::GetFocusedGraphWnd() {
+CGraphWnd * CSaView::GetFocusedGraphWnd()
+{
     // gets the focused graph window pointer
     return m_pFocusedGraph;
 }
 
-UINT CSaView::GetFocusedGraphID() {
+UINT CSaView::GetFocusedGraphID()
+{
     // gets the focused graph ID
     return m_nFocusedID;
 }
 
-BOOL CSaView::ViewIsActive() {
+BOOL CSaView::ViewIsActive()
+{
     // returns TRUE, if view is active
     return m_bViewIsActive;
 };
 
-BOOL CSaView::IsUpdateBoundaries() {
+BOOL CSaView::IsUpdateBoundaries()
+{
     // return TRUE, if boundaries updated
     return m_bUpdateBoundaries;
 }
 
-void CSaView::SetUpdateBoundaries(BOOL bUpdate) {
+void CSaView::SetUpdateBoundaries(BOOL bUpdate)
+{
     m_bUpdateBoundaries = bUpdate;
 }
 
-void CSaView::Scroll(DWORD desiredPosition) {
+void CSaView::Scroll(DWORD desiredPosition)
+{
     UINT nPos = (UINT)(desiredPosition / m_dwHScrollFactor);
     SendMessage(WM_HSCROLL, MAKEWPARAM(SB_THUMBPOSITION,nPos));
 };
 
-void CSaView::Scroll(UINT nSBCode, UINT nPos) {
+void CSaView::Scroll(UINT nSBCode, UINT nPos)
+{
     SendMessage(WM_HSCROLL, MAKEWPARAM(nSBCode, nPos));
 }
 
-BOOL CSaView::PrintPreviewInProgress() {
+BOOL CSaView::PrintPreviewInProgress()
+{
     return m_bPrintPreviewInProgress;
 };
 
-int CSaView::PrinterDPI() {
+int CSaView::PrinterDPI()
+{
     return m_newPrinterDPI;
 };
 
-CPoint CSaView::RealPrinterDPI() {
+CPoint CSaView::RealPrinterDPI()
+{
     return m_printerDPI;
 };
 
-int CSaView::GetZ() const {
+int CSaView::GetZ() const
+{
     return m_z;    // The bottom window's z is zero.
 }
 
-void CSaView::SetZ(int z) {
+void CSaView::SetZ(int z)
+{
     m_z = z;    // Greater z means above; lesser z means below.
 }
 
-BOOL CSaView::GetStaticTWC() {
+BOOL CSaView::GetStaticTWC()
+{
     return m_bStaticTWC;   // TCJ 6/23/00
 }
 
-void CSaView::SetStaticTWC(BOOL bChecked) {
+void CSaView::SetStaticTWC(BOOL bChecked)
+{
     m_bStaticTWC = bChecked;   // TCJ 6/23/00
 }
 
-BOOL CSaView::GetNormalMelogram() {
+BOOL CSaView::GetNormalMelogram()
+{
     return m_bNormalMelogram;   // TCJ 6/23/00
 }
 
-void CSaView::SetNormalMelogram(BOOL bChecked) {
+void CSaView::SetNormalMelogram(BOOL bChecked)
+{
     m_bNormalMelogram = bChecked;   // TCJ 6/23/00
 }
 
-CMainFrame * CSaView::MainFrame() {
+CMainFrame * CSaView::MainFrame()
+{
     return pViewMainFrame;
 }
 
-LRESULT CSaView::OnAutoSave(WPARAM, LPARAM) {
+LRESULT CSaView::OnAutoSave(WPARAM, LPARAM)
+{
     GetDocument()->StoreAutoRecoveryInformation();
     return 0;
 }
 
-CGraphWnd * CSaView::GetGraphForAnnotation(int annotation) {
-    for (size_t i = 0; i<MAX_GRAPHS_NUMBER; i++) {
+CGraphWnd * CSaView::GetGraphForAnnotation(int annotation)
+{
+    for (size_t i = 0; i<MAX_GRAPHS_NUMBER; i++)
+    {
         CGraphWnd * pGraph = m_apGraphs[i];
-        if (pGraph==NULL) {
+        if (pGraph==NULL)
+        {
             continue;
         }
-        if (pGraph->HaveAnnotation(annotation)) {
+        if (pGraph->HaveAnnotation(annotation))
+        {
             return pGraph;
         }
     }
     return NULL;
 }
 
-DWORD CSaView::GetMinimumSeparation(CSaDoc * pDoc, CGraphWnd * pGraph, CPlotWnd * pPlot) {
+DWORD CSaView::GetMinimumSeparation(CSaDoc * pDoc, CGraphWnd * pGraph, CPlotWnd * pPlot)
+{
     // get window coordinates of parent
     CRect rWnd;
     pPlot->GetClientRect(rWnd);
@@ -5833,11 +6937,14 @@ DWORD CSaView::GetMinimumSeparation(CSaDoc * pDoc, CGraphWnd * pGraph, CPlotWnd 
     double fDataPos;
     DWORD dwDataFrame;
     // check if area graph type
-    if (pGraph->IsAreaGraph()) {
+    if (pGraph->IsAreaGraph())
+    {
         // get necessary data from area plot
         fDataPos = pPlot->GetAreaPosition();
         dwDataFrame = pPlot->GetAreaLength();
-    } else {
+    }
+    else
+    {
         // get necessary data from document and from view
         fDataPos = GetDataPosition(nWidth); // data index of first sample to display
         dwDataFrame = AdjustDataFrame(nWidth); // number of data points to display
@@ -5850,27 +6957,33 @@ DWORD CSaView::GetMinimumSeparation(CSaDoc * pDoc, CGraphWnd * pGraph, CPlotWnd 
     return (DWORD)(CURSOR_MIN_DISTANCE*fSamplesPerPix*nSmpSize);
 }
 
-BOOL CSaView::SelectFromPosition(int nSegmentIndex, DWORD dwPosition, int nMode) {
+BOOL CSaView::SelectFromPosition(int nSegmentIndex, DWORD dwPosition, int nMode)
+{
     return m_advancedSelection.SelectFromPosition(this, nSegmentIndex, dwPosition, nMode);
 }
 
-BOOL CSaView::SetSelectedAnnotationString(CSaString & szString, BOOL bIncludesDelimiter, BOOL bCheck) {
+BOOL CSaView::SetSelectedAnnotationString(CSaString & szString, BOOL bIncludesDelimiter, BOOL bCheck)
+{
     return m_advancedSelection.SetSelectedAnnotationString(this, szString, bIncludesDelimiter, bCheck);
 }
 
-CString CSaView::GetSelectedAnnotationString(BOOL bRemoveDelimiter) {
+CString CSaView::GetSelectedAnnotationString(BOOL bRemoveDelimiter)
+{
     return m_advancedSelection.GetSelectedAnnotationString(this, bRemoveDelimiter);
 }
 
 /***************************************************************************/
 // CSaView::GetSelectedAnnotationString
 /***************************************************************************/
-CSaString CSaView::GetSelectedAnnotationString() {
+CSaString CSaView::GetSelectedAnnotationString()
+{
     CSaString ret;
 
-    for (int nLoop = 0; nLoop < ANNOT_WND_NUMBER; nLoop++) {
+    for (int nLoop = 0; nLoop < ANNOT_WND_NUMBER; nLoop++)
+    {
         CSegment * pSegments = GetAnnotation(nLoop);
-        if (pSegments->GetSelection() != -1) {
+        if (pSegments->GetSelection() != -1)
+        {
             int selection = pSegments->GetSelection();
             ret = pSegments->GetSegmentString(selection);
             break;
@@ -5880,80 +6993,89 @@ CSaString CSaView::GetSelectedAnnotationString() {
     return ret;
 }
 
-void CSaView::UpdateSelection(BOOL bClearVirtual) {
+void CSaView::UpdateSelection(BOOL bClearVirtual)
+{
     m_advancedSelection.Update(this, bClearVirtual);
 }
 
-DWORD CSaView::GetSelectionStart() {
+DWORD CSaView::GetSelectionStart()
+{
     return m_advancedSelection.GetSelectionStart();
 }
 
-DWORD CSaView::GetSelectionStop() {
+DWORD CSaView::GetSelectionStop()
+{
     return m_advancedSelection.GetSelectionStop();
 }
 
-int CSaView::GetSelectionIndex() {
+int CSaView::GetSelectionIndex()
+{
     return m_advancedSelection.GetSelectionIndex();
 }
 
-bool CSaView::IsSelectionVirtual() {
+bool CSaView::IsSelectionVirtual()
+{
     return m_advancedSelection.IsSelectionVirtual();
 }
 
-void CSaView::OnSelectTranscriptionBars() {
+void CSaView::OnSelectTranscriptionBars()
+{
 
-	// validity of m_pFocusedGraph is checked in OnUpdate call..
+    // validity of m_pFocusedGraph is checked in OnUpdate call..
 
-	BOOL bReference = FALSE;
-	BOOL bPhonetic = FALSE;
-	BOOL bTone = FALSE;
-	BOOL bPhonemic = FALSE;
-	BOOL bOrthographic = FALSE;
-	BOOL bGloss = FALSE;
-	BOOL bPhraseList1 = FALSE;
-	BOOL bPhraseList2 = FALSE;
-	BOOL bPhraseList3 = FALSE;
-	BOOL bPhraseList4 = FALSE;
-	if (m_pFocusedGraph!=NULL) {
-		bReference = m_pFocusedGraph->HaveAnnotation(ID_POPUPGRAPH_REFERENCE-ID_POPUPGRAPH_PHONETIC);
-		bPhonetic = m_pFocusedGraph->HaveAnnotation(ID_POPUPGRAPH_PHONETIC-ID_POPUPGRAPH_PHONETIC);
-		bTone = m_pFocusedGraph->HaveAnnotation(ID_POPUPGRAPH_TONE-ID_POPUPGRAPH_PHONETIC);
-		bPhonemic = m_pFocusedGraph->HaveAnnotation(ID_POPUPGRAPH_PHONEMIC-ID_POPUPGRAPH_PHONETIC);
-		bOrthographic = m_pFocusedGraph->HaveAnnotation(ID_POPUPGRAPH_ORTHO-ID_POPUPGRAPH_PHONETIC);
-		bGloss = m_pFocusedGraph->HaveAnnotation(ID_POPUPGRAPH_GLOSS-ID_POPUPGRAPH_PHONETIC);
-		bPhraseList1 = m_pFocusedGraph->HaveAnnotation(ID_POPUPGRAPH_MUSIC_PL1-ID_POPUPGRAPH_PHONETIC);
-		bPhraseList2 = m_pFocusedGraph->HaveAnnotation(ID_POPUPGRAPH_MUSIC_PL2-ID_POPUPGRAPH_PHONETIC);
-		bPhraseList3 = m_pFocusedGraph->HaveAnnotation(ID_POPUPGRAPH_MUSIC_PL3-ID_POPUPGRAPH_PHONETIC);
-		bPhraseList4 = m_pFocusedGraph->HaveAnnotation(ID_POPUPGRAPH_MUSIC_PL4-ID_POPUPGRAPH_PHONETIC);
-	}
+    BOOL bReference = FALSE;
+    BOOL bPhonetic = FALSE;
+    BOOL bTone = FALSE;
+    BOOL bPhonemic = FALSE;
+    BOOL bOrthographic = FALSE;
+    BOOL bGloss = FALSE;
+    BOOL bPhraseList1 = FALSE;
+    BOOL bPhraseList2 = FALSE;
+    BOOL bPhraseList3 = FALSE;
+    BOOL bPhraseList4 = FALSE;
+    if (m_pFocusedGraph!=NULL)
+    {
+        bReference = m_pFocusedGraph->HaveAnnotation(ID_POPUPGRAPH_REFERENCE-ID_POPUPGRAPH_PHONETIC);
+        bPhonetic = m_pFocusedGraph->HaveAnnotation(ID_POPUPGRAPH_PHONETIC-ID_POPUPGRAPH_PHONETIC);
+        bTone = m_pFocusedGraph->HaveAnnotation(ID_POPUPGRAPH_TONE-ID_POPUPGRAPH_PHONETIC);
+        bPhonemic = m_pFocusedGraph->HaveAnnotation(ID_POPUPGRAPH_PHONEMIC-ID_POPUPGRAPH_PHONETIC);
+        bOrthographic = m_pFocusedGraph->HaveAnnotation(ID_POPUPGRAPH_ORTHO-ID_POPUPGRAPH_PHONETIC);
+        bGloss = m_pFocusedGraph->HaveAnnotation(ID_POPUPGRAPH_GLOSS-ID_POPUPGRAPH_PHONETIC);
+        bPhraseList1 = m_pFocusedGraph->HaveAnnotation(ID_POPUPGRAPH_MUSIC_PL1-ID_POPUPGRAPH_PHONETIC);
+        bPhraseList2 = m_pFocusedGraph->HaveAnnotation(ID_POPUPGRAPH_MUSIC_PL2-ID_POPUPGRAPH_PHONETIC);
+        bPhraseList3 = m_pFocusedGraph->HaveAnnotation(ID_POPUPGRAPH_MUSIC_PL3-ID_POPUPGRAPH_PHONETIC);
+        bPhraseList4 = m_pFocusedGraph->HaveAnnotation(ID_POPUPGRAPH_MUSIC_PL4-ID_POPUPGRAPH_PHONETIC);
+    }
 
-	CDlgSelectTranscriptionBars dlg;
-	dlg.bReference = bReference;
-	dlg.bPhonetic = bPhonetic;
-	dlg.bTone = bTone;
-	dlg.bPhonemic = bPhonemic;
-	dlg.bOrthographic = bOrthographic;
-	dlg.bGloss = bGloss;
-	dlg.bPhraseList1 = bPhraseList1;
-	dlg.bPhraseList2 = bPhraseList2;
-	dlg.bPhraseList3 = bPhraseList3;
-	dlg.bPhraseList4 = bPhraseList4;
+    CDlgSelectTranscriptionBars dlg;
+    dlg.bReference = bReference;
+    dlg.bPhonetic = bPhonetic;
+    dlg.bTone = bTone;
+    dlg.bPhonemic = bPhonemic;
+    dlg.bOrthographic = bOrthographic;
+    dlg.bGloss = bGloss;
+    dlg.bPhraseList1 = bPhraseList1;
+    dlg.bPhraseList2 = bPhraseList2;
+    dlg.bPhraseList3 = bPhraseList3;
+    dlg.bPhraseList4 = bPhraseList4;
 
-	if (dlg.DoModal() != IDOK) {
-		m_pFocusedGraph->ShowAnnotation(ID_POPUPGRAPH_REFERENCE-ID_POPUPGRAPH_PHONETIC,bReference,TRUE);
-		m_pFocusedGraph->ShowAnnotation(ID_POPUPGRAPH_PHONETIC-ID_POPUPGRAPH_PHONETIC,bPhonetic,TRUE);
-		m_pFocusedGraph->ShowAnnotation(ID_POPUPGRAPH_TONE-ID_POPUPGRAPH_PHONETIC,bTone,TRUE);
-		m_pFocusedGraph->ShowAnnotation(ID_POPUPGRAPH_PHONEMIC-ID_POPUPGRAPH_PHONETIC,bPhonemic,TRUE);
-		m_pFocusedGraph->ShowAnnotation(ID_POPUPGRAPH_ORTHO-ID_POPUPGRAPH_PHONETIC,bOrthographic,TRUE);
-		m_pFocusedGraph->ShowAnnotation(ID_POPUPGRAPH_GLOSS-ID_POPUPGRAPH_PHONETIC,bGloss,TRUE);
-		m_pFocusedGraph->ShowAnnotation(ID_POPUPGRAPH_MUSIC_PL1-ID_POPUPGRAPH_PHONETIC,bPhraseList1,TRUE);
-		m_pFocusedGraph->ShowAnnotation(ID_POPUPGRAPH_MUSIC_PL2-ID_POPUPGRAPH_PHONETIC,bPhraseList2,TRUE);
-		m_pFocusedGraph->ShowAnnotation(ID_POPUPGRAPH_MUSIC_PL3-ID_POPUPGRAPH_PHONETIC,bPhraseList3,TRUE);
-		m_pFocusedGraph->ShowAnnotation(ID_POPUPGRAPH_MUSIC_PL4-ID_POPUPGRAPH_PHONETIC,bPhraseList4,TRUE);
-	}
+    if (dlg.DoModal() != IDOK)
+    {
+        m_pFocusedGraph->ShowAnnotation(ID_POPUPGRAPH_REFERENCE-ID_POPUPGRAPH_PHONETIC,bReference,TRUE);
+        m_pFocusedGraph->ShowAnnotation(ID_POPUPGRAPH_PHONETIC-ID_POPUPGRAPH_PHONETIC,bPhonetic,TRUE);
+        m_pFocusedGraph->ShowAnnotation(ID_POPUPGRAPH_TONE-ID_POPUPGRAPH_PHONETIC,bTone,TRUE);
+        m_pFocusedGraph->ShowAnnotation(ID_POPUPGRAPH_PHONEMIC-ID_POPUPGRAPH_PHONETIC,bPhonemic,TRUE);
+        m_pFocusedGraph->ShowAnnotation(ID_POPUPGRAPH_ORTHO-ID_POPUPGRAPH_PHONETIC,bOrthographic,TRUE);
+        m_pFocusedGraph->ShowAnnotation(ID_POPUPGRAPH_GLOSS-ID_POPUPGRAPH_PHONETIC,bGloss,TRUE);
+        m_pFocusedGraph->ShowAnnotation(ID_POPUPGRAPH_MUSIC_PL1-ID_POPUPGRAPH_PHONETIC,bPhraseList1,TRUE);
+        m_pFocusedGraph->ShowAnnotation(ID_POPUPGRAPH_MUSIC_PL2-ID_POPUPGRAPH_PHONETIC,bPhraseList2,TRUE);
+        m_pFocusedGraph->ShowAnnotation(ID_POPUPGRAPH_MUSIC_PL3-ID_POPUPGRAPH_PHONETIC,bPhraseList3,TRUE);
+        m_pFocusedGraph->ShowAnnotation(ID_POPUPGRAPH_MUSIC_PL4-ID_POPUPGRAPH_PHONETIC,bPhraseList4,TRUE);
+    }
 }
 
-void CSaView::OnUpdateSelectTranscriptionBars(CCmdUI * pCmdUI) {
-	pCmdUI->Enable(m_pFocusedGraph!=NULL);
+void CSaView::OnUpdateSelectTranscriptionBars(CCmdUI * pCmdUI)
+{
+    pCmdUI->Enable(m_pFocusedGraph!=NULL);
 }
 

@@ -138,7 +138,8 @@ extern CSaApp NEAR theApp;
 /***************************************************************************/
 // CLegendWnd::CLegendWnd Constructor
 /***************************************************************************/
-CLegendWnd::CLegendWnd() {
+CLegendWnd::CLegendWnd()
+{
     m_nScaleMode = NO_SCALE | SCALE_INFO;
     m_nGridDivisions = -1; // set divisions
     m_dScaleMinValue = 0;  // scale min value
@@ -157,7 +158,8 @@ CLegendWnd::CLegendWnd() {
 /***************************************************************************/
 // CLegendWnd::~CLegendWnd Destructor
 /***************************************************************************/
-CLegendWnd::~CLegendWnd() {
+CLegendWnd::~CLegendWnd()
+{
 }
 
 /***************************************************************************/
@@ -165,7 +167,8 @@ CLegendWnd::~CLegendWnd() {
 // Called from the framework before the creation of the window. Registers
 // the new window class.
 /***************************************************************************/
-BOOL CLegendWnd::PreCreateWindow(CREATESTRUCT & cs) {
+BOOL CLegendWnd::PreCreateWindow(CREATESTRUCT & cs)
+{
     // register the window class
     cs.lpszClass = AfxRegisterWndClass(CS_HREDRAW | CS_VREDRAW | CS_DBLCLKS,
                                        AfxGetApp()->LoadStandardCursor(IDC_ARROW), 0, 0);
@@ -177,7 +180,8 @@ BOOL CLegendWnd::PreCreateWindow(CREATESTRUCT & cs) {
 // Calculating the width of the current font times the longest text to
 // display.
 /***************************************************************************/
-int CLegendWnd::GetWindowWidth() {
+int CLegendWnd::GetWindowWidth()
+{
     // get width of the legend window font
     TEXTMETRIC tm;
     CDC * pDC = GetDC(); // get device context
@@ -197,38 +201,49 @@ int CLegendWnd::GetWindowWidth() {
 // as dimension title. The string pointers can be NULL (no dimension drawn).
 // The function returns TRUE if the legend window has to be redrawn.
 /***************************************************************************/
-BOOL CLegendWnd::SetScale(int nMode, double dMinValue, double dMaxValue, TCHAR * pszDimension, int nGridDivisions,  double d3dOffset) {
+BOOL CLegendWnd::SetScale(int nMode, double dMinValue, double dMaxValue, TCHAR * pszDimension, int nGridDivisions,  double d3dOffset)
+{
     BOOL bRedraw = FALSE;
-    if (m_nScaleMode != nMode) {
+    if (m_nScaleMode != nMode)
+    {
         m_nScaleMode = nMode; // set scale mode
         bRedraw = TRUE;
     }
-    if (m_nGridDivisions != nGridDivisions) {
+    if (m_nGridDivisions != nGridDivisions)
+    {
         m_nGridDivisions = nGridDivisions; // set divisions
         bRedraw = TRUE;
     }
-    if (m_d3dOffset != d3dOffset) {
+    if (m_d3dOffset != d3dOffset)
+    {
         m_d3dOffset = d3dOffset;
         bRedraw = TRUE;
     }
-    if (m_dScaleMinValue != dMinValue) {
+    if (m_dScaleMinValue != dMinValue)
+    {
         m_dScaleMinValue = dMinValue; // set scale min value
         bRedraw = TRUE;
     }
-    if (m_dScaleMaxValue != dMaxValue) {
+    if (m_dScaleMaxValue != dMaxValue)
+    {
         m_dScaleMaxValue = dMaxValue; // set scale max value
         bRedraw = TRUE;
     }
-    if (pszDimension) {
-        if (m_szScaleDimension != pszDimension) {
+    if (pszDimension)
+    {
+        if (m_szScaleDimension != pszDimension)
+        {
             m_szScaleDimension = pszDimension; // set scale dimension text
             bRedraw = TRUE;
         }
-    } else if (!m_szScaleDimension.IsEmpty()) {
+    }
+    else if (!m_szScaleDimension.IsEmpty())
+    {
         m_szScaleDimension.Empty();
         bRedraw = TRUE;
     }
-    if (bRedraw) {
+    if (bRedraw)
+    {
         m_bRecalculate = TRUE;
     }
     return bRedraw;
@@ -244,15 +259,18 @@ BOOL CLegendWnd::SetScale(int nMode, double dMinValue, double dMaxValue, TCHAR *
 // context is NULL, the function will get the pointer by itself to get the
 // text metrics from the actual window font.
 /***************************************************************************/
-void CLegendWnd::CalculateScale(CDC * pDC, CRect * prWnd) {
+void CLegendWnd::CalculateScale(CDC * pDC, CRect * prWnd)
+{
     CGraphWnd * pGraph = (CGraphWnd *)GetParent(); // get pointer to graph
     // calculate new scale with magnify
     double fMagnify = pGraph->GetMagnify(); // get magnify
     if (!m_bRecalculate && (prWnd->Height() == m_nHeightUsed)
-            && (m_fMagnifyUsed == fMagnify) && (m_nDivisionsUsed == m_nGridDivisions)) {
+            && (m_fMagnifyUsed == fMagnify) && (m_nDivisionsUsed == m_nGridDivisions))
+    {
         return;    // scale up to date
     }
-    if (prWnd->Height() <= 0) {
+    if (prWnd->Height() <= 0)
+    {
         return;    // no scale to draw
     }
     // scale has changed, recalculate
@@ -263,11 +281,13 @@ void CLegendWnd::CalculateScale(CDC * pDC, CRect * prWnd) {
     // calculate new scale with magnify
     double dMinValue = m_dScaleMinValue;
     double dMaxValue = dMinValue + (m_dScaleMaxValue - dMinValue) / fMagnify;
-    if (m_dScaleMinValue < 0) {
+    if (m_dScaleMinValue < 0)
+    {
         dMinValue = m_dScaleMinValue / fMagnify;
         dMaxValue = m_dScaleMaxValue / fMagnify;
     }
-    if (m_nScaleMode & LOG10) {
+    if (m_nScaleMode & LOG10)
+    {
         // logarithmic scale
         if (dMinValue < 0.)
             // Log plots must draw ranges greater than zero
@@ -288,22 +308,29 @@ void CLegendWnd::CalculateScale(CDC * pDC, CRect * prWnd) {
         }
 
         m_fGridDistance = (double)(prWnd->Height() - 2) / (fTop - m_fBase); // distance
-        if (m_fGridDistance < 1.0) {
+        if (m_fGridDistance < 1.0)
+        {
             // Why is this code necessary... Height() could be zero, but isn't 0 a legitimate grid distance
             ASSERT(FALSE);
             TRACE(_T("Exceptional legend grid distance\n"));
             m_fGridDistance = 1.0;
         }
         m_dFirstGridPos = prWnd->bottom - 1;  // location which should map to m_dScaleMinValue
-    } else {
+    }
+    else
+    {
         // linear scale
         m_fNumbPerPix = (dMaxValue - dMinValue) / ((double)prWnd->Height()/* - 3*/);
-        if (m_nGridDivisions == -1) {
+        if (m_nGridDivisions == -1)
+        {
             TEXTMETRIC tm;
             // check if pDC known
-            if (pDC) {
+            if (pDC)
+            {
                 pDC->GetTextMetrics(&tm);    // get text metrics
-            } else {
+            }
+            else
+            {
                 // get pDC to get textmetrics
                 CDC * pDC = GetDC(); // get device context
                 CFont * pOldFont = pDC->SelectObject(&m_font); // select legend font
@@ -313,7 +340,8 @@ void CLegendWnd::CalculateScale(CDC * pDC, CRect * prWnd) {
             }
             // find minimum scale distance in measures
             DWORD dwMinScale = (DWORD)(m_fNumbPerPix * (double)(2 * tm.tmHeight));
-            if (!dwMinScale) {
+            if (!dwMinScale)
+            {
                 dwMinScale = 1;
             }
             // find the 10 based log of this distance
@@ -321,27 +349,39 @@ void CLegendWnd::CalculateScale(CDC * pDC, CRect * prWnd) {
             // now find the next appropriate scale division
             // Fix axis min problem in log plots CLW 9/21/00
             m_fBase = pow(10, (double)dw10Base);
-            if ((DWORD)(m_fBase * 2) < dwMinScale) {
-                if (((DWORD)m_fBase * 5) % 2) {
+            if ((DWORD)(m_fBase * 2) < dwMinScale)
+            {
+                if (((DWORD)m_fBase * 5) % 2)
+                {
                     m_fBase *= 6;
-                } else {
+                }
+                else
+                {
                     m_fBase *= 5;
                 }
-            } else {
+            }
+            else
+            {
                 m_fBase *= 2;
             }
-            if ((DWORD)m_fBase < dwMinScale) {
+            if ((DWORD)m_fBase < dwMinScale)
+            {
                 m_fBase = pow(10, (double)(++dw10Base));
             }
-        } else {
+        }
+        else
+        {
             m_fBase = (m_dScaleMaxValue - m_dScaleMinValue)/m_nGridDivisions;
         }
         // calculate grid distance
         m_fGridDistance = m_fBase / m_fNumbPerPix; // gridline distance in pixels
         // calculate first (top) gridline position in plot window client coordinates
-        if (!(m_nScaleMode & ARBITRARY)) {
+        if (!(m_nScaleMode & ARBITRARY))
+        {
             m_dFirstGridPos = prWnd->bottom - (floor(dMaxValue/(m_fBase))*m_fBase - dMinValue) / m_fNumbPerPix;
-        } else {
+        }
+        else
+        {
             m_dFirstGridPos = prWnd->top;
         }
     }
@@ -351,8 +391,10 @@ void CLegendWnd::CalculateScale(CDC * pDC, CRect * prWnd) {
 // CLegendWnd::OnCreate Window creation
 // Creation of the legend font, used in the window.
 /***************************************************************************/
-int CLegendWnd::OnCreate(LPCREATESTRUCT lpCreateStruct) {
-    if (CWnd::OnCreate(lpCreateStruct) == -1) {
+int CLegendWnd::OnCreate(LPCREATESTRUCT lpCreateStruct)
+{
+    if (CWnd::OnCreate(lpCreateStruct) == -1)
+    {
         return -1;
     }
     // create legend font
@@ -364,7 +406,8 @@ int CLegendWnd::OnCreate(LPCREATESTRUCT lpCreateStruct) {
 
     // get pointer to graph
     CGraphWnd * pGraph = (CGraphWnd *)GetParent();
-    if (pGraph->IsPlotID(IDD_STAFF)) {
+    if (pGraph->IsPlotID(IDD_STAFF))
+    {
         CString szButtonText(_T('\0'),2);
 
         szButtonText.SetAt(0,DISPLAY_NOTE_ICON);
@@ -411,7 +454,9 @@ int CLegendWnd::OnCreate(LPCREATESTRUCT lpCreateStruct) {
         ::SendMessage(hImportButton, WM_SETFONT, (WPARAM)hButtonFont, 0);
         ::SendMessage(hExportButton, WM_SETFONT, (WPARAM)hButtonFont, 0);
         ::SendMessage(hConvertButton, WM_SETFONT, (WPARAM)hButtonFont, 0);
-    } else if (pGraph->IsPlotID(IDD_TWC) || pGraph->IsPlotID(IDD_WAVELET)) {
+    }
+    else if (pGraph->IsPlotID(IDD_TWC) || pGraph->IsPlotID(IDD_WAVELET))
+    {
         CRect rWnd;
         GetClientRect(rWnd);
         int YDown = rWnd.Height() - 23; // Place Down button 23 units above bottom (so it's bottom is 3 above bottom of window)
@@ -427,7 +472,9 @@ int CLegendWnd::OnCreate(LPCREATESTRUCT lpCreateStruct) {
 
         ::SendMessage(m_hDownButton,WM_SETFONT,(WPARAM)hButtonFont,0);
         ::SendMessage(m_hUpButton,WM_SETFONT,(WPARAM)hButtonFont,0);
-    } else {
+    }
+    else
+    {
         hPlayButton = hPlayBothButton = hPlayBothButton = hPauseButton = hStopButton = hLoopButton =
                                             hVoiceButton = hTempoButton = hConvertButton = hImportButton = hExportButton = NULL;
         hButtonFont = NULL;
@@ -440,12 +487,15 @@ int CLegendWnd::OnCreate(LPCREATESTRUCT lpCreateStruct) {
 // Handle button presses.
 /***************************************************************************/
 extern "C" void cdecl Splash(HWND hWnd,HINSTANCE hInst,char * BitmapName);
-BOOL CLegendWnd::OnCommand(WPARAM wParam, LPARAM /* lParam */) {
+BOOL CLegendWnd::OnCommand(WPARAM wParam, LPARAM /* lParam */)
+{
     CGraphWnd * pGraph = (CGraphWnd *)GetParent(); // get pointer to graph
 
-    if (pGraph->IsPlotID(IDD_STAFF)) {
+    if (pGraph->IsPlotID(IDD_STAFF))
+    {
         CPlotStaff * staff = (CPlotStaff *) pGraph->GetPlot();
-        switch (LOWORD(wParam)) {
+        switch (LOWORD(wParam))
+        {
         case IDM_PLAY:
             staff->SetFocusedGraph(pGraph);
             staff->PlaySelection();
@@ -495,7 +545,9 @@ BOOL CLegendWnd::OnCommand(WPARAM wParam, LPARAM /* lParam */) {
             break;
         }
         return TRUE;
-    } else if (pGraph->IsPlotID(IDD_TWC)) {
+    }
+    else if (pGraph->IsPlotID(IDD_TWC))
+    {
         static_cast<CSaView *>(pGraph->GetParent())->SetFocusedGraph(pGraph);
         CPlotTonalWeightChart * pTWC = (CPlotTonalWeightChart *) pGraph->GetPlot();
         WORD UpDown = LOWORD(wParam);
@@ -505,9 +557,11 @@ BOOL CLegendWnd::OnCommand(WPARAM wParam, LPARAM /* lParam */) {
     }
 
     // 8/03/01 ARH Added to use arrows on wavelet graph
-    else if (pGraph->IsPlotID(IDD_WAVELET)) {
+    else if (pGraph->IsPlotID(IDD_WAVELET))
+    {
         CPlotWavelet * pWavelet = (CPlotWavelet *) pGraph->GetPlot();
-        switch (LOWORD(wParam)) {
+        switch (LOWORD(wParam))
+        {
         case IDM_UP:
             pWavelet->IncreaseDrawingLevel();
             pWavelet->RedrawPlot(true);
@@ -523,7 +577,8 @@ BOOL CLegendWnd::OnCommand(WPARAM wParam, LPARAM /* lParam */) {
 
     }
 
-    else {
+    else
+    {
         return FALSE;
     }
 }
@@ -532,10 +587,12 @@ BOOL CLegendWnd::OnCommand(WPARAM wParam, LPARAM /* lParam */) {
 // CLegendWnd::OnSetFocus
 // If this is a Staff Control, keyboard focus is given to the staff edit window
 /***************************************************************************/
-void CLegendWnd::OnSetFocus(CWnd *) {
+void CLegendWnd::OnSetFocus(CWnd *)
+{
     // get pointer to graph
     CGraphWnd * pGraph = (CGraphWnd *)GetParent();
-    if (pGraph->IsPlotID(IDD_STAFF)) {
+    if (pGraph->IsPlotID(IDD_STAFF))
+    {
         ::SetFocus(pGraph->GetPlot()->m_hWnd);
     }
 }
@@ -544,7 +601,8 @@ void CLegendWnd::OnSetFocus(CWnd *) {
 // CLegendWnd::OnPaint
 // Paints using OnDraw, which is shared with OnPrint
 /***************************************************************************/
-void CLegendWnd::OnPaint() {
+void CLegendWnd::OnPaint()
+{
     CRect dummyRect1(0,0,0,0);
     CRect dummyRect2(0,0,0,0);
     CRect dummyRect3(0,0,0,0);
@@ -566,12 +624,14 @@ void CLegendWnd::OnDraw(CDC * pDC,
                         const CRect & printRect,
                         const CRect & printPlotWnd,
                         const CRect & printXscaleRect,
-                        const CRect * printAnnotation) {
+                        const CRect * printAnnotation)
+{
     // get pointer to graph
     CGraphWnd * pGraph = (CGraphWnd *)GetParent();
 
     // Create staff control buttons - TCJ 4/19/2000
-    if (pGraph->IsPlotID(IDD_STAFF)) {
+    if (pGraph->IsPlotID(IDD_STAFF))
+    {
         CPlotStaff * staff = (CPlotStaff *) pGraph->GetPlot();
         staff->HideButtons();
         ::ShowWindow(hPlayButton,SW_SHOW);
@@ -597,16 +657,20 @@ void CLegendWnd::OnDraw(CDC * pDC,
     double fMagnify = pGraph->GetMagnify(); // get magnify
     double dScaleMinValue = m_dScaleMinValue;
     double dScaleMaxValue = dScaleMinValue + (m_dScaleMaxValue - dScaleMinValue) / fMagnify;
-    if (m_dScaleMinValue < 0) {
+    if (m_dScaleMinValue < 0)
+    {
         dScaleMinValue = m_dScaleMinValue / fMagnify;
         dScaleMaxValue = m_dScaleMaxValue / fMagnify;
     }
     // get coordinates of plot window
     CRect rPlotWnd;
 
-    if (pDC->IsPrinting()) {
+    if (pDC->IsPrinting())
+    {
         rPlotWnd = printPlotWnd;
-    } else {
+    }
+    else
+    {
         pGraph->GetPlot()->GetClientRect(rPlotWnd);
     }
 
@@ -615,12 +679,16 @@ void CLegendWnd::OnDraw(CDC * pDC,
     // get window coordinates
     CRect rWnd;
 
-    if (pDC->IsPrinting()) {
+    if (pDC->IsPrinting())
+    {
         rWnd = printRect;
-    } else {
+    }
+    else
+    {
         GetClientRect(rWnd);
     }
-    if (rWnd.Height() == 0) {
+    if (rWnd.Height() == 0)
+    {
         pDC->SelectObject(pOldFont);  // set back old font
         return; // nothing to draw
     }
@@ -643,7 +711,8 @@ void CLegendWnd::OnDraw(CDC * pDC,
     rWnd.left += 2;
     rWnd.bottom = -2;
 
-    int StringIndex[] = {
+    int StringIndex[] =
+    {
         IDS_WINDOW_PHONETIC,
         IDS_WINDOW_TONE,
         IDS_WINDOW_PHONEMIC,
@@ -658,14 +727,19 @@ void CLegendWnd::OnDraw(CDC * pDC,
 
 
     CString szText;
-    for (int nLoop = 0; nLoop < ANNOT_WND_NUMBER; nLoop++) {
+    for (int nLoop = 0; nLoop < ANNOT_WND_NUMBER; nLoop++)
+    {
         int current = CGraphWnd::m_anAnnWndOrder[nLoop];
-        if (pGraph->HaveAnnotation(current)) {
+        if (pGraph->HaveAnnotation(current))
+        {
             // gloss window is visible
             szText.LoadString(StringIndex[current]);
-            if (pDC->IsPrinting()) {
+            if (pDC->IsPrinting())
+            {
                 rWnd.bottom += printAnnotation[current].Height();
-            } else {
+            }
+            else
+            {
                 rWnd.bottom += pGraph->GetAnnotationWnd(current)->GetWindowHeight();
             }
             pDC->DrawText(szText, szText.GetLength(), rWnd, DT_SINGLELINE | DT_VCENTER | DT_LEFT | DT_NOCLIP);
@@ -682,28 +756,36 @@ void CLegendWnd::OnDraw(CDC * pDC,
     pDC->MoveTo(rWnd.right - 1, rWnd.top);
     pDC->LineTo(rWnd.right - 1, rWnd.bottom);
     pDC->SelectObject(&penDkgray);
-    if (rWnd.Height() > 0) {
+    if (rWnd.Height() > 0)
+    {
         pDC->MoveTo(rWnd.right - 2, rWnd.top);
         pDC->LineTo(rWnd.right - 2, rWnd.bottom - 1);
     }
 
     rWnd.top = rWnd.bottom;
     rWnd.bottom = nBottom; // restore bottom
-    if (pGraph->HaveXScale()) {
-        if (pDC->IsPrinting()) {
+    if (pGraph->HaveXScale())
+    {
+        if (pDC->IsPrinting())
+        {
             rWnd.bottom -= printXscaleRect.Height();
-        } else {
+        }
+        else
+        {
             rWnd.bottom -= pGraph->GetXScaleWnd()->GetWindowHeight();
         }
     }
-    if (rWnd.Height() > 0) {
+    if (rWnd.Height() > 0)
+    {
         pDC->MoveTo(rWnd.right - 1, rWnd.top - 1);
         pDC->LineTo(rWnd.right - 1, rWnd.bottom);
     }
     pDC->SelectObject(pOldPen);
     rWnd.right -= 1; // don't draw over the border
-    if ((m_nScaleMode != NO_SCALE) || (rPlotWnd.Height() <= 0)) {
-        if (rWnd.Height() < tm.tmHeight) {
+    if ((m_nScaleMode != NO_SCALE) || (rPlotWnd.Height() <= 0))
+    {
+        if (rWnd.Height() < tm.tmHeight)
+        {
             pDC->SelectObject(pOldFont); // set back old font
             return; // not enough space to draw scale
         }
@@ -713,7 +795,8 @@ void CLegendWnd::OnDraw(CDC * pDC,
         int nLineTopLimit = rWnd.top; // upper line position limit
         int nLineBottomLimit = rWnd.bottom; // lower line position limit
         // draw the vertical dimension text
-        if (!m_szScaleDimension.IsEmpty()) {
+        if (!m_szScaleDimension.IsEmpty())
+        {
             // create the vertical font
             LOGFONT logFont;
             m_font.GetObject(sizeof(LOGFONT), (void *)&logFont); // fill up logFont
@@ -730,7 +813,8 @@ void CLegendWnd::OnDraw(CDC * pDC,
             pDC->GetTextMetrics(&tmv);
             // enough space?
             int nHeight = (m_szScaleDimension.GetLength() + 2) * tmv.tmAveCharWidth;
-            if (nHeight < rWnd.Height()) { // draw the text
+            if (nHeight < rWnd.Height())   // draw the text
+            {
                 pDC->TextOut(rWnd.left, rWnd.bottom - (rWnd.Height() - nHeight) / 2, m_szScaleDimension);
             }
             pDC->SelectObject(&m_font); // set back normal text font
@@ -742,13 +826,17 @@ void CLegendWnd::OnDraw(CDC * pDC,
         int nHorPos = rWnd.right - 4; // vertical line horizontal position
         // draw the vertical line
         pDC->MoveTo(nHorPos, rWnd.bottom - 1);
-        if (fMagnify <= 1.0 || m_d3dOffset != 0.) {
+        if (fMagnify <= 1.0 || m_d3dOffset != 0.)
+        {
             pDC->LineTo(nHorPos, (int) floor(rWnd.top + rWnd.Height()*m_d3dOffset) - 1);
-        } else {
+        }
+        else
+        {
             pDC->LineTo(nHorPos, rWnd.top - 1);
         }
         // draw the arrows
-        if ((dScaleMaxValue > 0) && (fMagnify <= 1.0) && (m_d3dOffset == 0.)) {
+        if ((dScaleMaxValue > 0) && (fMagnify <= 1.0) && (m_d3dOffset == 0.))
+        {
             // draw up arrow
             pDC->LineTo(nHorPos - 2, rWnd.top + 5);
             pDC->LineTo(nHorPos + 2, rWnd.top + 5);
@@ -758,7 +846,8 @@ void CLegendWnd::OnDraw(CDC * pDC,
             // modify the scale line limits
             nLineTopLimit = rWnd.top + 7; // upper line position limit
         }
-        if ((dScaleMinValue < 0) && ((fMagnify <= 1.0) || (dScaleMaxValue == 0))) {
+        if ((dScaleMinValue < 0) && ((fMagnify <= 1.0) || (dScaleMaxValue == 0)))
+        {
             // draw down arrow
             pDC->MoveTo(nHorPos, rWnd.bottom);
             pDC->LineTo(nHorPos - 2, rWnd.bottom - 5);
@@ -769,8 +858,10 @@ void CLegendWnd::OnDraw(CDC * pDC,
             // modify the scale line limits
             nLineBottomLimit = rWnd.bottom - 6; // lower line position limit
         }
-        if (m_nScaleMode & SCALE) {
-            if (m_nScaleMode & LOG10) {
+        if (m_nScaleMode & SCALE)
+        {
+            if (m_nScaleMode & LOG10)
+            {
                 // logarithmic scale
                 int nLogPos = (int) floor(m_fBase);
                 int nLogDisp = (int) ceil(dScaleMinValue / pow(10, floor(m_fBase)));
@@ -778,33 +869,44 @@ void CLegendWnd::OnDraw(CDC * pDC,
                 int nPixelPos = round(fPixelBase);
                 int nLastNumber = nPixelPos + 2 * tm.tmHeight;
                 int nBase = (int)pow(10, (double)nLogPos);
-                while (nPixelPos > nLineTopLimit) {
-                    if (nLogDisp > 9) {
+                while (nPixelPos > nLineTopLimit)
+                {
+                    if (nLogDisp > 9)
+                    {
                         nLogDisp = 1;
                         nLogPos++;
                         fPixelBase -= m_fGridDistance;
                         nPixelPos = round(fPixelBase);
-                        if (nPixelPos > nLineTopLimit) {
+                        if (nPixelPos > nLineTopLimit)
+                        {
                             // draw large line
                             pDC->MoveTo(nHorPos - 3, nPixelPos);
                             pDC->LineTo(nHorPos + 1, nPixelPos);
-                        } else {
+                        }
+                        else
+                        {
                             break;
                         }
                         nBase = (int)pow(10, (double)nLogPos);
-                    } else {
+                    }
+                    else
+                    {
                         // draw small line
                         nPixelPos = round(fPixelBase - log10((double)nLogDisp) * m_fGridDistance);
-                        if (nPixelPos > nLineTopLimit) {
+                        if (nPixelPos > nLineTopLimit)
+                        {
                             pDC->MoveTo(nHorPos - 2, nPixelPos);
                             pDC->LineTo(nHorPos, nPixelPos);
-                        } else {
+                        }
+                        else
+                        {
                             break;
                         }
                     }
                     // draw the number
                     if ((m_nScaleMode & NUMBERS) && (nPixelPos > nTextTopLimit) && (nPixelPos < nTextBottomLimit)
-                            && (nLastNumber > (nPixelPos + tm.tmHeight + 2)) && (nLogDisp < 6) && (nLogDisp != 4)) {
+                            && (nLastNumber > (nPixelPos + tm.tmHeight + 2)) && (nLogDisp < 6) && (nLogDisp != 4))
+                    {
                         CRect rText(rWnd.left, nPixelPos - tm.tmHeight, rWnd.right - 9, nPixelPos + tm.tmHeight);
                         TCHAR szText[16];
                         swprintf_s(szText, _T("%d"), nBase * nLogDisp);
@@ -813,9 +915,12 @@ void CLegendWnd::OnDraw(CDC * pDC,
                     }
                     nLogDisp++;
                 }
-            } else { // linear scale
+            }
+            else     // linear scale
+            {
                 // draw the positive lines and numbers
-                if (m_dScaleMaxValue == 0) {
+                if (m_dScaleMaxValue == 0)
+                {
                     dScaleMinValue = m_dScaleMinValue;
                 }
 
@@ -824,7 +929,8 @@ void CLegendWnd::OnDraw(CDC * pDC,
 
                 BOOL bLargeLine = TRUE;
 
-                if (!(m_nScaleMode & ARBITRARY)) {
+                if (!(m_nScaleMode & ARBITRARY))
+                {
                     int nHalfTicks = (int) floor(-dScaleMinLoopValue/(m_fBase/2));
 
                     // The first tick needs to be a multiple of (m_fBase/2) from zero
@@ -835,30 +941,38 @@ void CLegendWnd::OnDraw(CDC * pDC,
                 }
 
                 // there are positive values or no magnify (we need at least the zero line)
-                for (double dLoop = dScaleMinLoopValue; m_fBase > 0 ? dLoop <= dScaleMaxLoopValue : dLoop >= dScaleMaxLoopValue; dLoop += (m_fBase / 2)) {
+                for (double dLoop = dScaleMinLoopValue; m_fBase > 0 ? dLoop <= dScaleMaxLoopValue : dLoop >= dScaleMaxLoopValue; dLoop += (m_fBase / 2))
+                {
                     // calculate line position
                     int nPos = round(rWnd.bottom - (double)(1 - m_d3dOffset)*(dLoop - dScaleMinValue) / m_fNumbPerPix);
-                    if (nPos <= nLineTopLimit) {
+                    if (nPos <= nLineTopLimit)
+                    {
                         break;
                     }
                     // draw the line
-                    if (nPos <= nLineBottomLimit) {
-                        if (bLargeLine) {
+                    if (nPos <= nLineBottomLimit)
+                    {
+                        if (bLargeLine)
+                        {
                             // draw a large line
                             pDC->MoveTo(nHorPos - 3, nPos);
                             pDC->LineTo(nHorPos + 1, nPos);
                             // draw the number
-                            if ((m_nScaleMode & NUMBERS) && (nPos > nTextTopLimit) && (nPos < nTextBottomLimit)) {
+                            if ((m_nScaleMode & NUMBERS) && (nPos > nTextTopLimit) && (nPos < nTextBottomLimit))
+                            {
                                 CRect rText(rWnd.left, nPos - tm.tmHeight, rWnd.right - 9, nPos + tm.tmHeight);
                                 TCHAR szText[16];
                                 int nWidth = (int) -log10(m_fBase);
-                                if (nWidth < 0) {
+                                if (nWidth < 0)
+                                {
                                     nWidth = 0;
                                 }
                                 swprintf_s(szText, _T("%.*f"), nWidth, dLoop);
                                 pDC->DrawText(szText, -1, rText, DT_SINGLELINE | DT_VCENTER | DT_RIGHT | DT_NOCLIP);
                             }
-                        } else {
+                        }
+                        else
+                        {
                             // draw a small line
                             pDC->MoveTo(nHorPos - 2, nPos);
                             pDC->LineTo(nHorPos, nPos);
@@ -869,14 +983,18 @@ void CLegendWnd::OnDraw(CDC * pDC,
             }
         }
         pDC->SelectObject(pOldPen);
-    } else if (m_nScaleMode & SCALE_INFO && !pGraph->IsPlotID(IDD_STAFF)) { // TCJ 4/20/00
+    }
+    else if (m_nScaleMode & SCALE_INFO && !pGraph->IsPlotID(IDD_STAFF))     // TCJ 4/20/00
+    {
         // no scale, but text
         TCHAR szText[16];
         int nHeight = 7 * tm.tmHeight / 2;
-        if (pGraph->IsAreaGraph() && !pGraph->IsPlotID(IDD_RECORDING)) {
+        if (pGraph->IsAreaGraph() && !pGraph->IsPlotID(IDD_RECORDING))
+        {
             nHeight += tm.tmHeight + 4;    // add extra space for recalculation button
         }
-        if (rWnd.Height() >= nHeight) {
+        if (rWnd.Height() >= nHeight)
+        {
             rWnd.top += (rWnd.Height() - nHeight) / 2;
 
             // create and write effective sample size text
@@ -897,10 +1015,12 @@ void CLegendWnd::OnDraw(CDC * pDC,
     }
     // draw the dimension text for the xscale
     if ((!pGraph->IsAreaGraph() || pGraph->IsPlotID(IDD_RECORDING)) && !pGraph->IsPlotID(IDD_TWC) &&
-            pGraph->HaveXScale()  && ((nBottom - tm.tmHeight - 2) > rWnd.top)) {
+            pGraph->HaveXScale()  && ((nBottom - tm.tmHeight - 2) > rWnd.top))
+    {
         // check if text available
         CString * pszText = pGraph->GetXScaleWnd()->GetDimensionText();
-        if (!pszText->IsEmpty()) {
+        if (!pszText->IsEmpty())
+        {
             // set up the text rectangle
             CRect rText(rWnd.left, nBottom - tm.tmHeight - 2, rWnd.right - 3, nBottom - 1);
             // create the bold font
@@ -916,14 +1036,16 @@ void CLegendWnd::OnDraw(CDC * pDC,
     }
     // create the recalculation button
     if ((pGraph->IsAreaGraph() && !pGraph->IsPlotID(IDD_RECORDING) && !pGraph->IsPlotID(IDD_SNAPSHOT) &&
-            (pGraph->HaveXScale() || !(m_nScaleMode & SCALE))) && ((nBottom - tm.tmHeight - 4) > rWnd.top)) {
+            (pGraph->HaveXScale() || !(m_nScaleMode & SCALE))) && ((nBottom - tm.tmHeight - 4) > rWnd.top))
+    {
         // set up the recalculation button rectangle
         m_rRecalc.SetRect(rWnd.left, nBottom - tm.tmHeight - 4, rWnd.right - 3, nBottom - 2);
         // create the pens
         CPen penLtgray(PS_SOLID, 1, pColors->cSysBtnHilite);
         CPen penDkgray(PS_SOLID, 1, pColors->cSysBtnShadow);
         pOldPen = pDC->SelectObject(&penLtgray);
-        if (m_bRecalcUp) {
+        if (m_bRecalcUp)
+        {
             // draw up state
             pDC->MoveTo(m_rRecalc.left, m_rRecalc.bottom - 1);
             pDC->LineTo(m_rRecalc.left, m_rRecalc.top);
@@ -938,7 +1060,9 @@ void CLegendWnd::OnDraw(CDC * pDC,
             pDC->MoveTo(m_rRecalc.right - 2, m_rRecalc.top + 1);
             pDC->LineTo(m_rRecalc.right - 2, m_rRecalc.bottom - 2);
             pDC->LineTo(m_rRecalc.left + 1, m_rRecalc.bottom - 2);
-        } else {
+        }
+        else
+        {
             // draw down state
             pDC->MoveTo(m_rRecalc.right - 1, m_rRecalc.top);
             pDC->LineTo(m_rRecalc.right - 1, m_rRecalc.bottom - 1);
@@ -957,7 +1081,9 @@ void CLegendWnd::OnDraw(CDC * pDC,
         pDC->SelectObject(pOldPen);
         szText.LoadString(IDS_RECALC_BUTTON);
         pDC->DrawText(szText, -1, m_rRecalc, DT_SINGLELINE | DT_VCENTER | DT_CENTER | DT_NOCLIP);
-    } else {
+    }
+    else
+    {
         m_rRecalc.SetRect(0, 0, 0, 0);
     }
     pDC->SelectObject(pOldFont);  // set back old font
@@ -967,7 +1093,8 @@ void CLegendWnd::OnDraw(CDC * pDC,
 /***************************************************************************/
 // CLegendWnd::OnEraseBkgnd Erasing background
 /***************************************************************************/
-BOOL CLegendWnd::OnEraseBkgnd(CDC * pDC) {
+BOOL CLegendWnd::OnEraseBkgnd(CDC * pDC)
+{
     // get background color from main frame
     CMainFrame * pMainWnd = (CMainFrame *)AfxGetMainWnd();
     // create the background brush
@@ -986,26 +1113,31 @@ BOOL CLegendWnd::OnEraseBkgnd(CDC * pDC) {
 // This event initiates a popup menu. The graph also has to get focus, so
 // the parent graph is informed to do this.
 /***************************************************************************/
-void CLegendWnd::OnRButtonDown(UINT nFlags, CPoint point) {
+void CLegendWnd::OnRButtonDown(UINT nFlags, CPoint point)
+{
     // inform parent graph
     GetParent()->SendMessage(WM_RBUTTONDOWN, nFlags, MAKELONG(point.x, point.y));
     // handle the floating popup menu
     CMenu mPopup;
-    if (mPopup.LoadMenu(((CMainFrame *)AfxGetMainWnd())->GetPopup())) { //SDM 1.5Test8.5
+    if (mPopup.LoadMenu(((CMainFrame *)AfxGetMainWnd())->GetPopup()))   //SDM 1.5Test8.5
+    {
         CMenu & pFloatingPopup = *mPopup.GetSubMenu(0);
         ASSERT(pFloatingPopup.m_hMenu != NULL);
         // attach the layout menu
         CMenu * mLayout = new CLayoutMenu;
         TCHAR szString[256]; // don't change the string
-        if (pFloatingPopup.GetMenuString(ID_GRAPHS_LAYOUT, szString, sizeof(szString)/sizeof(TCHAR), MF_BYCOMMAND)) { //SDM 1.5Test8.5
-            if (mLayout) {
+        if (pFloatingPopup.GetMenuString(ID_GRAPHS_LAYOUT, szString, sizeof(szString)/sizeof(TCHAR), MF_BYCOMMAND))   //SDM 1.5Test8.5
+        {
+            if (mLayout)
+            {
                 VERIFY(pFloatingPopup.ModifyMenu(ID_GRAPHS_LAYOUT, MF_BYCOMMAND | MF_POPUP, (UINT)mLayout->m_hMenu, szString));
             }
         }
         // pop the menu up
         ClientToScreen(&point);
         pFloatingPopup.TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point.x, point.y,  AfxGetMainWnd());
-        if (mLayout) {
+        if (mLayout)
+        {
             delete mLayout;
         }
     }
@@ -1018,9 +1150,11 @@ void CLegendWnd::OnRButtonDown(UINT nFlags, CPoint point) {
 // parent graph to do this. Then it also sets the recalculation button to
 // the down state and redraws it, if the click hits the buttons area.
 /***************************************************************************/
-void CLegendWnd::OnLButtonDown(UINT nFlags, CPoint point) {
+void CLegendWnd::OnLButtonDown(UINT nFlags, CPoint point)
+{
     // inform parent graph
-    if (m_rRecalc.PtInRect(point)) {
+    if (m_rRecalc.PtInRect(point))
+    {
         // recalculation button hit
         m_bRecalcUp = FALSE;
         InvalidateRect(m_rRecalc);
@@ -1036,12 +1170,15 @@ void CLegendWnd::OnLButtonDown(UINT nFlags, CPoint point) {
 // If the recalculation button is in the down state, it releases the button
 // and starts a recalculation process.
 /***************************************************************************/
-void CLegendWnd::OnLButtonUp(UINT nFlags, CPoint point) {
-    if (!m_bRecalcUp) {
+void CLegendWnd::OnLButtonUp(UINT nFlags, CPoint point)
+{
+    if (!m_bRecalcUp)
+    {
         m_bRecalcUp = TRUE;
         InvalidateRect(m_rRecalc);
         ReleaseCapture();
-        if (m_rRecalc.PtInRect(point)) {
+        if (m_rRecalc.PtInRect(point))
+        {
             GetParent()->GetParent()->SendMessage(WM_COMMAND, ID_RESTART_PROCESS, 0L);    // send restart process
         }
     }
@@ -1053,9 +1190,12 @@ void CLegendWnd::OnLButtonUp(UINT nFlags, CPoint point) {
 // If the recalculation button is in the down state, and the mouse moves
 // outside of the button, it releases it.
 /***************************************************************************/
-void CLegendWnd::OnMouseMove(UINT nFlags, CPoint point) {
-    if (!m_bRecalcUp) {
-        if (!m_rRecalc.PtInRect(point)) {
+void CLegendWnd::OnMouseMove(UINT nFlags, CPoint point)
+{
+    if (!m_bRecalcUp)
+    {
+        if (!m_rRecalc.PtInRect(point))
+        {
             // move not over recalculation button
             m_bRecalcUp = TRUE;
             InvalidateRect(m_rRecalc);
@@ -1096,7 +1236,8 @@ END_MESSAGE_MAP()
 /***************************************************************************/
 // CXScaleWnd::CXScaleWnd Constructor
 /***************************************************************************/
-CXScaleWnd::CXScaleWnd() {
+CXScaleWnd::CXScaleWnd()
+{
     m_nScaleMode = SCALE | NUMBERS | TIME_FROM_VIEW;
     m_nGridDivisions = -1; // set divisions
     m_fScaleMinValue = 0;  // scale min value
@@ -1114,7 +1255,8 @@ CXScaleWnd::CXScaleWnd() {
 /***************************************************************************/
 // CXScaleWnd::~CXScaleWnd Destructor
 /***************************************************************************/
-CXScaleWnd::~CXScaleWnd() {
+CXScaleWnd::~CXScaleWnd()
+{
 }
 
 /***************************************************************************/
@@ -1122,7 +1264,8 @@ CXScaleWnd::~CXScaleWnd() {
 // Called from the framework before the creation of the window. Registers
 // the new window class.
 /***************************************************************************/
-BOOL CXScaleWnd::PreCreateWindow(CREATESTRUCT & cs) {
+BOOL CXScaleWnd::PreCreateWindow(CREATESTRUCT & cs)
+{
     // register the window class
     cs.lpszClass = AfxRegisterWndClass(CS_HREDRAW | CS_VREDRAW | CS_DBLCLKS,
                                        AfxGetApp()->LoadStandardCursor(IDC_ARROW), 0, 0);
@@ -1133,7 +1276,8 @@ BOOL CXScaleWnd::PreCreateWindow(CREATESTRUCT & cs) {
 // CXScaleWnd::GetWindowHeight
 // Calculating the height of the current font.
 /***************************************************************************/
-int CXScaleWnd::GetWindowHeight() {
+int CXScaleWnd::GetWindowHeight()
+{
     CGraphWnd * pGraph = (CGraphWnd *)GetParent();
 
     //*************************************************************
@@ -1144,7 +1288,8 @@ int CXScaleWnd::GetWindowHeight() {
     // window's plot. All other graphs will have a fixed x-scale
     // window height.
     //*************************************************************
-    if (pGraph->IsPlotID(IDD_TWC)) {
+    if (pGraph->IsPlotID(IDD_TWC))
+    {
         return GetTWCXScaleWindowHeight();
     }
 
@@ -1165,18 +1310,21 @@ int CXScaleWnd::GetWindowHeight() {
 *  The extra space needs to be consumed by increasing the size of the
 *  XScale window.
 **/
-int CXScaleWnd::GetTWCXScaleWindowHeight() {
+int CXScaleWnd::GetTWCXScaleWindowHeight()
+{
     //***********************************************************
     // Get a pointer to the melogram's plot window.
     //***********************************************************
     CGraphWnd * pGraph    = (CGraphWnd *)GetParent();
     CSaView  *  pView     = (CSaView *)pGraph->GetParent();
     CGraphWnd * pMelGraph = pView->GraphIDtoPtr(IDD_MELOGRAM);
-    if (!pMelGraph) {
+    if (!pMelGraph)
+    {
         return 0;
     }
     CPlotWnd * pMelPlot = pMelGraph->GetPlot();
-    if (!pMelPlot) {
+    if (!pMelPlot)
+    {
         return 0;
     }
 
@@ -1203,40 +1351,52 @@ int CXScaleWnd::GetTWCXScaleWindowHeight() {
 // scale). The string pointers can be NULL (no dimension drawn). The function
 // returns TRUE if the legend window has to be redrawn.
 /***************************************************************************/
-BOOL CXScaleWnd::SetScale(int nMode, double dMinValue, double dMaxValue, TCHAR * pszDimension, int nGridDivisions, double d3dOffset) {
+BOOL CXScaleWnd::SetScale(int nMode, double dMinValue, double dMaxValue, TCHAR * pszDimension, int nGridDivisions, double d3dOffset)
+{
     BOOL bRedraw = FALSE;
-    if (m_nScaleMode != nMode) {
+    if (m_nScaleMode != nMode)
+    {
         m_nScaleMode = nMode; // set scale mode
         bRedraw = TRUE;
     }
-    if (m_nGridDivisions != nGridDivisions) {
+    if (m_nGridDivisions != nGridDivisions)
+    {
         m_nGridDivisions = nGridDivisions; // set divisions
         bRedraw = TRUE;
     }
-    if (m_d3dOffset != d3dOffset) {
+    if (m_d3dOffset != d3dOffset)
+    {
         m_d3dOffset = d3dOffset;
         bRedraw = TRUE;
     }
-    if (m_fScaleMinValue != dMinValue) {
+    if (m_fScaleMinValue != dMinValue)
+    {
         m_fScaleMinValue = dMinValue; // set scale min value
         bRedraw = TRUE;
     }
-    if (m_fScaleMaxValue != dMaxValue) {
+    if (m_fScaleMaxValue != dMaxValue)
+    {
         m_fScaleMaxValue = dMaxValue; // set scale max value
         bRedraw = TRUE;
     }
-    if (pszDimension) {
-        if (m_szScaleDimension != pszDimension) {
+    if (pszDimension)
+    {
+        if (m_szScaleDimension != pszDimension)
+        {
             m_szScaleDimension = pszDimension; // set scale dimension text
             bRedraw = TRUE;
         }
-    } else {
-        if (!m_szScaleDimension.IsEmpty()) {
+    }
+    else
+    {
+        if (!m_szScaleDimension.IsEmpty())
+        {
             m_szScaleDimension.Empty();
             bRedraw = TRUE;
         }
     }
-    if (bRedraw) {
+    if (bRedraw)
+    {
         m_bRecalculate = TRUE;
     }
     return bRedraw;
@@ -1250,18 +1410,23 @@ BOOL CXScaleWnd::SetScale(int nMode, double dMinValue, double dMaxValue, TCHAR *
 // function will get the pointer by itself to get the text metrics from the
 // actual window font.
 /***************************************************************************/
-void CXScaleWnd::CalculateScale(CDC * pDC, int nWidth) {
+void CXScaleWnd::CalculateScale(CDC * pDC, int nWidth)
+{
     // get pointer to graph, view and document
     CGraphWnd * pGraph = (CGraphWnd *)GetParent();
     CSaView * pView = (CSaView *)pGraph->GetParent();
     CSaDoc * pDoc = (CSaDoc *)pView->GetDocument();
     // check if regular time scale expected
-    if (m_nScaleMode & TIME_FROM_VIEW) {
-        if (pGraph->IsAreaGraph()) {
+    if (m_nScaleMode & TIME_FROM_VIEW)
+    {
+        if (pGraph->IsAreaGraph())
+        {
             // get scale range from area plot
             m_fScaleMinValue = pDoc->GetTimeFromBytes(pGraph->GetPlot()->GetAreaPosition());
             m_fScaleMaxValue = m_fScaleMinValue + pDoc->GetTimeFromBytes(pGraph->GetPlot()->GetAreaLength());
-        } else {
+        }
+        else
+        {
             // get scale range from view
             // SDM 1.06.6U4 Get value of first pixel
             DWORD dwFrame = pView->AdjustDataFrame(nWidth);
@@ -1273,10 +1438,12 @@ void CXScaleWnd::CalculateScale(CDC * pDC, int nWidth) {
         m_szScaleDimension = "t(sec)";
     }
     if (!m_bRecalculate && (nWidth == m_nWidthUsed) && (m_nDivisionsUsed == m_nGridDivisions)
-            && (m_fMinValueUsed == m_fScaleMinValue) && (m_fMaxValueUsed == m_fScaleMaxValue)) {
+            && (m_fMinValueUsed == m_fScaleMinValue) && (m_fMaxValueUsed == m_fScaleMaxValue))
+    {
         return;    // scale up to date
     }
-    if (nWidth <= 0) {
+    if (nWidth <= 0)
+    {
         return;    // no scale to draw
     }
     // scale has changed, recalculate
@@ -1286,12 +1453,16 @@ void CXScaleWnd::CalculateScale(CDC * pDC, int nWidth) {
     m_fMinValueUsed = m_fScaleMinValue;
     m_fMaxValueUsed = m_fScaleMaxValue;
     m_fNumbPerPix = 1000 * (m_fScaleMaxValue - m_fScaleMinValue) / (double)nWidth;
-    if (m_nGridDivisions == -1) {
+    if (m_nGridDivisions == -1)
+    {
         TEXTMETRIC tm;
         // check if pDC known
-        if (pDC) {
+        if (pDC)
+        {
             pDC->GetTextMetrics(&tm);    // get text metrics
-        } else {
+        }
+        else
+        {
             // get pDC to get textmetrics
             CDC * pDC = GetDC(); // get device context
             CFont * pOldFont = pDC->SelectObject(&m_font); // select legend font
@@ -1301,23 +1472,31 @@ void CXScaleWnd::CalculateScale(CDC * pDC, int nWidth) {
         }
         // find minimum scale distance in measures
         DWORD dwMinScale = (DWORD)(m_fNumbPerPix * (double)(tm.tmAveCharWidth * 10));
-        if (!dwMinScale) {
+        if (!dwMinScale)
+        {
             dwMinScale = 1;
         }
         // find the 10 based log of this distance
         DWORD dw10Base = (DWORD)log10((double)dwMinScale);
         // now find the next appropriate scale division
         DWORD dwBase = (DWORD)pow(10, (double)dw10Base);
-        if ((dwBase * 2) < dwMinScale) {
-            if ((dwBase * 5) % 2) {
+        if ((dwBase * 2) < dwMinScale)
+        {
+            if ((dwBase * 5) % 2)
+            {
                 dwBase *= 6;
-            } else {
+            }
+            else
+            {
                 dwBase *= 5;
             }
-        } else {
+        }
+        else
+        {
             dwBase *= 2;
         }
-        if (dwBase < dwMinScale) {
+        if (dwBase < dwMinScale)
+        {
             dwBase = (DWORD)pow(10, (double)(++dw10Base));
         }
         m_fNumbPerPix /= 1000;
@@ -1334,10 +1513,13 @@ void CXScaleWnd::CalculateScale(CDC * pDC, int nWidth) {
         dwDivisions = (DWORD)(m_fScaleMinValue / m_fBase);
         m_fPosition = (double)dwDivisions * m_fBase;
         m_bLargeLine = TRUE;
-        if (dwDivisions % 2) {
+        if (dwDivisions % 2)
+        {
             m_bLargeLine = FALSE;
         }
-    } else {
+    }
+    else
+    {
         m_fNumbPerPix /= 1000;
         m_fBase = (m_fScaleMaxValue - m_fScaleMinValue)/m_nGridDivisions;
         // calculate first (leftmost) gridline position in plot window client coordinates
@@ -1356,8 +1538,10 @@ void CXScaleWnd::CalculateScale(CDC * pDC, int nWidth) {
 // CXScaleWnd::OnCreate Window creation
 // Creation of the legend font, used in the window.
 /***************************************************************************/
-int CXScaleWnd::OnCreate(LPCREATESTRUCT lpCreateStruct) {
-    if (CWnd::OnCreate(lpCreateStruct) == -1) {
+int CXScaleWnd::OnCreate(LPCREATESTRUCT lpCreateStruct)
+{
+    if (CWnd::OnCreate(lpCreateStruct) == -1)
+    {
         return -1;
     }
     // create legend font
@@ -1375,7 +1559,8 @@ int CXScaleWnd::OnCreate(LPCREATESTRUCT lpCreateStruct) {
 // CXScaleWnd::OnPaint
 // Paints using OnDraw, which is shared with OnPrint
 /***************************************************************************/
-void CXScaleWnd::OnPaint() {
+void CXScaleWnd::OnPaint()
+{
     CRect dummyRect1(0,0,0,0);
     CRect dummyRect2(0,0,0,0);
 
@@ -1390,12 +1575,14 @@ void CXScaleWnd::OnPaint() {
 /***************************************************************************/
 void CXScaleWnd::OnDraw(CDC * pDC,
                         const CRect & printRect,
-                        const CRect & printPlotWnd) {
+                        const CRect & printPlotWnd)
+{
     // get pointer to graph and document
     CGraphWnd * pGraph = (CGraphWnd *)GetParent();
 
     // x scale doesn't make sense for TWC graph.
-    if (pGraph->IsPlotID(IDD_TWC)) {
+    if (pGraph->IsPlotID(IDD_TWC))
+    {
         return;
     }
     CSaView * pView = (CSaView *)pGraph->GetParent();
@@ -1410,13 +1597,17 @@ void CXScaleWnd::OnDraw(CDC * pDC,
     // get coordinates of plot window
     CRect rPlotWnd;
 
-    if (pDC->IsPrinting()) {
+    if (pDC->IsPrinting())
+    {
         rPlotWnd = printPlotWnd;
-    } else {
+    }
+    else
+    {
         pGraph->GetPlot()->GetClientRect(rPlotWnd);
     }
 
-    if ((rPlotWnd.Height() <= 0) || (pDoc->GetDataSize() == 0)) {
+    if ((rPlotWnd.Height() <= 0) || (pDoc->GetDataSize() == 0))
+    {
         pDC->SelectObject(pOldFont); // set back old font
         return; // nothing to draw
     }
@@ -1424,14 +1615,18 @@ void CXScaleWnd::OnDraw(CDC * pDC,
     // get window coordinates
     CRect rWnd;
 
-    if (pDC->IsPrinting()) {
+    if (pDC->IsPrinting())
+    {
         rWnd = printRect;
-    } else {
+    }
+    else
+    {
         GetClientRect(rWnd);
     }
 
 
-    if (rWnd.Width() == 0) {
+    if (rWnd.Width() == 0)
+    {
         pDC->SelectObject(pOldFont);  // set back old font
         return; // nothing to draw
     }
@@ -1448,8 +1643,10 @@ void CXScaleWnd::OnDraw(CDC * pDC,
     pDC->SetBkMode(TRANSPARENT); // letters may overlap, so they must be transparent
     rWnd.top += 2; // don't draw over the border
     rWnd.bottom -= 2;
-    if ((m_nScaleMode != NO_SCALE) && (pDoc->GetDataSize() > 0)) {
-        if (rWnd.Width() < (5 * tm.tmAveCharWidth)) {
+    if ((m_nScaleMode != NO_SCALE) && (pDoc->GetDataSize() > 0))
+    {
+        if (rWnd.Width() < (5 * tm.tmAveCharWidth))
+        {
             pDC->SelectObject(pOldFont);  // set back old font
             return; // not enough space to draw scale
         }
@@ -1457,7 +1654,8 @@ void CXScaleWnd::OnDraw(CDC * pDC,
         int nDimLeftLimit = 0;
         int nDimRightLimit = 0;
         if (!m_szScaleDimension.IsEmpty() && !pGraph->IsPlotID(IDD_TWC) &&
-                (!pGraph->HaveLegend() || (pGraph->IsAreaGraph() && !pGraph->IsPlotID(IDD_RECORDING)))) {
+                (!pGraph->HaveLegend() || (pGraph->IsAreaGraph() && !pGraph->IsPlotID(IDD_RECORDING))))
+        {
             // create the bold font
             LOGFONT logFont;
             m_font.GetObject(sizeof(LOGFONT), (void *)&logFont); // fill up logFont
@@ -1479,34 +1677,43 @@ void CXScaleWnd::OnDraw(CDC * pDC,
         // draw the horizontal line
         pDC->MoveTo(rWnd.left, nVertPos);
         pDC->LineTo(rWnd.left + round(rWnd.Width()*(1 - m_d3dOffset)), nVertPos);
-        if (m_nScaleMode & SCALE) {
+        if (m_nScaleMode & SCALE)
+        {
             // draw the vertical lines and numbers
             int nTextWidth2 = tm.tmAveCharWidth * 4;
             int nTextLeftLimit = nTextWidth2; // left text position limit
             int nTextRightLimit = rWnd.right - nTextWidth2; // right text position limit
             double fPosition = m_fPosition;
             BOOL bLargeLine = m_bLargeLine;
-            while (m_fBase > 0 ? fPosition <= m_fScaleMaxValue : fPosition >= m_fScaleMaxValue) {
+            while (m_fBase > 0 ? fPosition <= m_fScaleMaxValue : fPosition >= m_fScaleMaxValue)
+            {
                 // calculate line position
                 int nPos = (int)((1 - m_d3dOffset)*(fPosition - m_fScaleMinValue) / m_fNumbPerPix);
                 // draw the line
-                if (bLargeLine) {
+                if (bLargeLine)
+                {
                     // draw a large line
                     pDC->MoveTo(nPos, nVertPos);
                     pDC->LineTo(nPos, nVertPos + 4);
                     // draw the number
                     if ((m_nScaleMode & NUMBERS) && (nPos > nTextLeftLimit) && (nPos < nTextRightLimit)
-                            && ((nPos < nDimLeftLimit) || (nPos >= nDimRightLimit))) {
+                            && ((nPos < nDimLeftLimit) || (nPos >= nDimRightLimit)))
+                    {
                         CRect rText(nPos - nTextWidth2, nVertPos + 3, nPos + nTextWidth2, rWnd.bottom);
                         TCHAR szText[16];
-                        if (m_nScaleMode & TIME_FROM_VIEW) {
+                        if (m_nScaleMode & TIME_FROM_VIEW)
+                        {
                             swprintf_s(szText, _T("%8.3f"), fPosition);
-                        } else {
+                        }
+                        else
+                        {
                             swprintf_s(szText, _countof(szText), _T("%5.0f"), fPosition);
                         }
                         pDC->DrawText(szText, -1, rText, DT_SINGLELINE | DT_TOP | DT_CENTER | DT_NOCLIP);
                     }
-                } else {
+                }
+                else
+                {
                     // draw a small line
                     pDC->MoveTo(nPos, nVertPos);
                     pDC->LineTo(nPos, nVertPos + 3);
@@ -1525,7 +1732,8 @@ void CXScaleWnd::OnDraw(CDC * pDC,
 /***************************************************************************/
 // CXScaleWnd::OnEraseBkgnd Erasing background
 /***************************************************************************/
-BOOL CXScaleWnd::OnEraseBkgnd(CDC * pDC) {
+BOOL CXScaleWnd::OnEraseBkgnd(CDC * pDC)
+{
     // get background color from main frame
     CMainFrame * pMainWnd = (CMainFrame *)AfxGetMainWnd();
     // create the background brush
@@ -1544,26 +1752,31 @@ BOOL CXScaleWnd::OnEraseBkgnd(CDC * pDC) {
 // This event initiates a popup menu. The graph also has to get focus, so
 // the parent graph is informed to do this.
 /***************************************************************************/
-void CXScaleWnd::OnRButtonDown(UINT nFlags, CPoint point) {
+void CXScaleWnd::OnRButtonDown(UINT nFlags, CPoint point)
+{
     // inform parent graph
     GetParent()->SendMessage(WM_RBUTTONDOWN, nFlags, MAKELONG(point.x, point.y));
     // handle the floating popup menu
     CMenu mPopup;
-    if (mPopup.LoadMenu(((CMainFrame *)AfxGetMainWnd())->GetPopup())) { //SDM 1.5Test8.5
+    if (mPopup.LoadMenu(((CMainFrame *)AfxGetMainWnd())->GetPopup()))   //SDM 1.5Test8.5
+    {
         CMenu & pFloatingPopup = *mPopup.GetSubMenu(0);
         ASSERT(pFloatingPopup.m_hMenu != NULL);
         // attach the layout menu
         CMenu * mLayout = new CLayoutMenu;
         TCHAR szString[256]; // don't change the string
-        if (pFloatingPopup.GetMenuString(ID_GRAPHS_LAYOUT, szString, sizeof(szString)/sizeof(TCHAR), MF_BYCOMMAND)) { //SDM 1.5Test8.5
-            if (mLayout) {
+        if (pFloatingPopup.GetMenuString(ID_GRAPHS_LAYOUT, szString, sizeof(szString)/sizeof(TCHAR), MF_BYCOMMAND))   //SDM 1.5Test8.5
+        {
+            if (mLayout)
+            {
                 VERIFY(pFloatingPopup.ModifyMenu(ID_GRAPHS_LAYOUT, MF_BYCOMMAND | MF_POPUP, (UINT)mLayout->m_hMenu, szString));
             }
         }
         // pop the menu up
         ClientToScreen(&point);
         pFloatingPopup.TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point.x, point.y,  AfxGetMainWnd());
-        if (mLayout) {
+        if (mLayout)
+        {
             delete mLayout;
         }
     }
@@ -1575,7 +1788,8 @@ void CXScaleWnd::OnRButtonDown(UINT nFlags, CPoint point) {
 // This event should set the focus to the parent, so the window informs the
 // parent graph to do this.
 /***************************************************************************/
-void CXScaleWnd::OnLButtonDown(UINT nFlags, CPoint point) {
+void CXScaleWnd::OnLButtonDown(UINT nFlags, CPoint point)
+{
     // inform parent graph
     CGraphWnd * pWnd = (CGraphWnd *)GetParent();
     pWnd->SendMessage(WM_LBUTTONDOWN, nFlags, MAKELONG(point.x, point.y)); // send message to parent
@@ -1586,7 +1800,8 @@ void CXScaleWnd::OnLButtonDown(UINT nFlags, CPoint point) {
 // CXScaleWnd::OnMouseMove Mouse move
 // Detects mouse movement outside the plot area
 /***************************************************************************/
-void CXScaleWnd::OnMouseMove(UINT nFlags, CPoint point) {
+void CXScaleWnd::OnMouseMove(UINT nFlags, CPoint point)
+{
     CGraphWnd * pGraph = (CGraphWnd *)GetParent();
     CPlotWnd * pPlot = pGraph->GetPlot();
     CSaView * pView = (CSaView *)pGraph->GetParent();
@@ -1618,7 +1833,8 @@ END_MESSAGE_MAP()
 /////////////////////////////////////////////////////////////////////////////
 // CAnnotationWnd construction/destruction/creation
 
-CAnnotationWnd::CAnnotationWnd(int nIndex) {
+CAnnotationWnd::CAnnotationWnd(int nIndex)
+{
     m_nIndex = nIndex; // index of annotation window
     m_bHintUpdateBoundaries = false;
     m_bTranscriptionBoundary = false;
@@ -1629,7 +1845,8 @@ CAnnotationWnd::CAnnotationWnd(int nIndex) {
 // Called from the framework before the creation of the window. Registers
 // the new window class.
 /***************************************************************************/
-BOOL CAnnotationWnd::PreCreateWindow(CREATESTRUCT & cs) {
+BOOL CAnnotationWnd::PreCreateWindow(CREATESTRUCT & cs)
+{
     // register the window class
     cs.lpszClass = AfxRegisterWndClass(CS_HREDRAW | CS_VREDRAW | CS_DBLCLKS,
                                        AfxGetApp()->LoadStandardCursor(IDC_ARROW), 0, 0);
@@ -1641,8 +1858,10 @@ BOOL CAnnotationWnd::PreCreateWindow(CREATESTRUCT & cs) {
 // Creation of the font and setting the font colors, used in the
 // window.
 /***************************************************************************/
-int CAnnotationWnd::OnCreate(LPCREATESTRUCT lpCreateStruct) {
-    if (CWnd::OnCreate(lpCreateStruct) == -1) {
+int CAnnotationWnd::OnCreate(LPCREATESTRUCT lpCreateStruct)
+{
+    if (CWnd::OnCreate(lpCreateStruct) == -1)
+    {
         return -1;
     }
     return 0;
@@ -1651,7 +1870,8 @@ int CAnnotationWnd::OnCreate(LPCREATESTRUCT lpCreateStruct) {
 /***************************************************************************/
 // CAnnotationWnd::GetFont
 /***************************************************************************/
-CFont * CAnnotationWnd::GetFont() {
+CFont * CAnnotationWnd::GetFont()
+{
     // get pointer to graph, view and document
     CGraphWnd * pGraph = (CGraphWnd *)GetParent();
     CSaView * pView = (CSaView *)pGraph->GetParent();
@@ -1667,7 +1887,8 @@ CFont * CAnnotationWnd::GetFont() {
 // is the tone window, the font height does not include the descenders,
 // because tone never has descenders.
 /***************************************************************************/
-int CAnnotationWnd::GetWindowHeight() {
+int CAnnotationWnd::GetWindowHeight()
+{
     // get height of the annotation window font
     TEXTMETRIC tm;
     CDC * pDC = GetDC(); // get device context
@@ -1689,7 +1910,8 @@ int CAnnotationWnd::GetWindowHeight() {
 // CAnnotationWnd::OnPaint
 // Paints using OnDraw, which is shared with OnPrint
 /***************************************************************************/
-void CAnnotationWnd::OnPaint() {
+void CAnnotationWnd::OnPaint()
+{
     CRect dummyRect(0,0,0,0); // needed for second OnDraw parameter
     // which is only really used for printing
 
@@ -1703,21 +1925,26 @@ void CAnnotationWnd::OnPaint() {
 // CAnnotationWnd::AnnotationStandardPaint Standard painting of annotation
 // This function may be used for classic non text annotation windows.
 /***************************************************************************/
-void CAnnotationWnd::OnDraw(CDC * pDC, const CRect & printRect) {
+void CAnnotationWnd::OnDraw(CDC * pDC, const CRect & printRect)
+{
     // get window coordinates
     CRect rWnd;
     CRect rClip; // get invalid region
 
-    if (pDC->IsPrinting()) {
+    if (pDC->IsPrinting())
+    {
         rClip = printRect;
         rWnd  = printRect;
-    } else {
+    }
+    else
+    {
         GetClientRect(rWnd);
         pDC->GetClipBox(&rClip);
         pDC->LPtoDP(&rClip);
     }
 
-    if (rWnd.Width() == 0) {
+    if (rWnd.Width() == 0)
+    {
         return;    // nothing to draw
     }
 
@@ -1756,7 +1983,8 @@ void CAnnotationWnd::OnDraw(CDC * pDC, const CRect & printRect) {
     // 09/27/2000 - DDO If the graph is the TWC graph
     // then we don't want to draw the annotation text.
     //*******************************************************
-    if (pGraph->IsPlotID(IDD_TWC)) {
+    if (pGraph->IsPlotID(IDD_TWC))
+    {
         pDC->SelectObject(pOldFont);  // set back old font
         return;
     }
@@ -1768,24 +1996,31 @@ void CAnnotationWnd::OnDraw(CDC * pDC, const CRect & printRect) {
     // check if area graph type
     double fDataStart;
     DWORD dwDataFrame;
-    if (pGraph->IsAreaGraph()) {
+    if (pGraph->IsAreaGraph())
+    {
         // get necessary data from area plot
         fDataStart = pGraph->GetPlot()->GetAreaPosition();
         dwDataFrame = pGraph->GetPlot()->GetAreaLength();
-    } else {
+    }
+    else
+    {
         // check if graph has private cursor
-        if (pGraph->HavePrivateCursor()) {
+        if (pGraph->HavePrivateCursor())
+        {
             // get necessary data from between public cursors
             WORD wSmpSize = WORD(pDoc->GetSampleSize());
             fDataStart = (double)pView->GetStartCursorPosition(); // data index of first sample to display
             dwDataFrame = pView->GetStopCursorPosition() - (DWORD)fDataStart + wSmpSize; // number of data points to display
-        } else {
+        }
+        else
+        {
             // get necessary data from document and from view
             fDataStart = pView->GetDataPosition(rWnd.Width());  // data index of first sample to display
             dwDataFrame = pView->AdjustDataFrame(rWnd.Width()); // number of data points to display
         }
     }
-    if (dwDataFrame == 0) {
+    if (dwDataFrame == 0)
+    {
         return;    // nothing to draw
     }
 
@@ -1795,41 +2030,49 @@ void CAnnotationWnd::OnDraw(CDC * pDC, const CRect & printRect) {
 
     // get pointer to annotation string
     CString * pAnnot = pDoc->GetSegment(m_nIndex)->GetString();
-    if (!pAnnot->IsEmpty()) { // string is not empty
+    if (!pAnnot->IsEmpty())   // string is not empty
+    {
         // get pointer to annotation offset and duration arrays
         CSegment * pSegment = pDoc->GetSegment(m_nIndex);
         // position prepare loop. Find first char to display in clipping rect
         double fStart = fDataStart + (double)(rClip.left - tm.tmAveCharWidth) * fBytesPerPix;
         int nLoop = 0;
-        if ((fStart > 0) && (pAnnot->GetLength() > 1)) {
-            for (nLoop = 1; nLoop < pAnnot->GetLength(); nLoop++) {
+        if ((fStart > 0) && (pAnnot->GetLength() > 1))
+        {
+            for (nLoop = 1; nLoop < pAnnot->GetLength(); nLoop++)
+            {
                 // SDM 1.06.6U2
-                if ((double)(pSegment->GetStop(nLoop)) > fStart) { // first char must be at lower position
+                if ((double)(pSegment->GetStop(nLoop)) > fStart)   // first char must be at lower position
+                {
                     nLoop--; // this is it
                     break;
                 }
             }
         }
-        if (nLoop < pAnnot->GetLength()) { // there is something to display
+        if (nLoop < pAnnot->GetLength())   // there is something to display
+        {
             // display loop
             int nDisplayPos; // start position in pixels to display character(s)
             // Create Font For "*"
             CFont cFontAsterisk;
             cFontAsterisk.CreateFont(tm.tmHeight, 0, 0, 0, FW_NORMAL, FALSE, FALSE, FALSE, ANSI_CHARSET, OUT_DEFAULT_PRECIS,
                                      CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, FF_DONTCARE|DEFAULT_PITCH,_T("MS Sans Serif"));
-            do {
+            do
+            {
                 //SDM 1.06.6U4
                 DWORD o = pSegment->GetOffset(nLoop);
                 nDisplayPos = round((o - fDataStart) / fBytesPerPix);
                 // check if the character is selected
                 BOOL bSelect = FALSE;
-                if (pSegment->GetSelection() == nLoop) {
+                if (pSegment->GetSelection() == nLoop)
+                {
                     bSelect = TRUE;
                 }
                 // put all characters width same offset in one string
                 CString szAnnot = pAnnot->GetAt(nLoop);
                 DWORD dwOffset = pSegment->GetOffset(nLoop++);
-                while ((nLoop < pAnnot->GetLength()) && (dwOffset == pSegment->GetOffset(nLoop))) {
+                while ((nLoop < pAnnot->GetLength()) && (dwOffset == pSegment->GetOffset(nLoop)))
+                {
                     szAnnot += pAnnot->GetAt(nLoop++);
                 }
 
@@ -1837,23 +2080,32 @@ void CAnnotationWnd::OnDraw(CDC * pDC, const CRect & printRect) {
                 int nDisplayStop = round((pSegment->GetStop(nLoop - 1) - fDataStart)/ fBytesPerPix);
 
                 // SDM 1.5Test8.1
-                if (m_bHintUpdateBoundaries) { // Show New Boundaries
-                    if (bSelect) {
+                if (m_bHintUpdateBoundaries)   // Show New Boundaries
+                {
+                    if (bSelect)
+                    {
                         nDisplayPos = round((m_dwHintStart - fDataStart)/ fBytesPerPix);
                         nDisplayStop = round((m_dwHintStop - fDataStart)/ fBytesPerPix);
-                    } else if (((m_nIndex == PHONETIC) || (m_nIndex >= MUSIC_PL1 && m_nIndex <= MUSIC_PL4)) && !m_bOverlap) {
-                        if (pSegment->GetSelection() == (nLoop)) { // Segment before selected segment
+                    }
+                    else if (((m_nIndex == PHONETIC) || (m_nIndex >= MUSIC_PL1 && m_nIndex <= MUSIC_PL4)) && !m_bOverlap)
+                    {
+                        if (pSegment->GetSelection() == (nLoop))   // Segment before selected segment
+                        {
                             nDisplayStop = round((m_dwHintStart - fDataStart)/ fBytesPerPix);
-                        } else if ((pSegment->GetPrevious(nLoop)!=-1)
-                                   &&(pSegment->GetSelection() == pSegment->GetPrevious(pSegment->GetPrevious(nLoop)))) { // Segment after selected segment
+                        }
+                        else if ((pSegment->GetPrevious(nLoop)!=-1)
+                                 &&(pSegment->GetSelection() == pSegment->GetPrevious(pSegment->GetPrevious(nLoop))))   // Segment after selected segment
+                        {
                             nDisplayPos = round((m_dwHintStop - fDataStart)/ fBytesPerPix);
                         }
                     }
                 }
-                if ((nDisplayStop - nDisplayPos) < 2) {
+                if ((nDisplayStop - nDisplayPos) < 2)
+                {
                     nDisplayStop++;    // must be at least 2 to display a point
                 }
-                if ((nDisplayStop - nDisplayPos) < 2) {
+                if ((nDisplayStop - nDisplayPos) < 2)
+                {
                     nDisplayPos--;    // must be at least 2 to display a point
                 }
 
@@ -1861,7 +2113,8 @@ void CAnnotationWnd::OnDraw(CDC * pDC, const CRect & printRect) {
                 rWnd.SetRect(nDisplayPos, rWnd.top, nDisplayStop, rWnd.bottom);
                 // highlight background if selected character
                 COLORREF normalTextColor = pDC->GetTextColor();
-                if (bSelect) {
+                if (bSelect)
+                {
                     normalTextColor = pDC->SetTextColor(pColors->cSysColorHiText); // set highlighted text
                     CBrush brushHigh(pColors->cSysColorHilite);
                     CPen penHigh(PS_SOLID, 1, pColors->cSysColorHilite);
@@ -1872,31 +2125,40 @@ void CAnnotationWnd::OnDraw(CDC * pDC, const CRect & printRect) {
                     pDC->SelectObject(pOldPen);
                 }
 
-				DrawTranscriptionBorders(pDC,rWnd,pColors);
+                DrawTranscriptionBorders(pDC,rWnd,pColors);
 
                 // check, if there is enough space to display the character(s)
                 BOOL bNotEnough = (nDisplayStop - nDisplayPos) <= tm.tmAveCharWidth;
-                if (!bNotEnough) {
+                if (!bNotEnough)
+                {
                     bNotEnough = ((nDisplayStop - nDisplayPos) <= (szAnnot.GetLength() * tm.tmAveCharWidth));
                 }
 
-                if (bNotEnough) {
+                if (bNotEnough)
+                {
                     // not enough space, draw dot or star with MS Sans Serif
                     pDC->SelectObject(cFontAsterisk);
-                    if (m_nIndex == ORTHO) {
+                    if (m_nIndex == ORTHO)
+                    {
                         pDC->DrawText(_T("*"), 1, rWnd, DT_VCENTER | DT_SINGLELINE | DT_CENTER | DT_NOCLIP);
-                    } else {
+                    }
+                    else
+                    {
                         pDC->DrawText(_T("."), 1, rWnd, DT_VCENTER | DT_SINGLELINE | DT_CENTER | DT_NOCLIP);
                     }
                     //SDM 1.06.4
                     pDC->SelectObject(GetFont()); // reselect specific annotation font
-                } else { // enough space to display character(s), draw the string
+                }
+                else     // enough space to display character(s), draw the string
+                {
                     pDC->DrawText(szAnnot, szAnnot.GetLength(), rWnd, DT_VCENTER | DT_SINGLELINE | DT_CENTER | DT_NOCLIP);
                 }
-                if (bSelect) {
+                if (bSelect)
+                {
                     pDC->SetTextColor(normalTextColor);    // set back old text color
                 }
-            } while ((nDisplayPos < rClip.right) && (nLoop < pAnnot->GetLength()));
+            }
+            while ((nDisplayPos < rClip.right) && (nLoop < pAnnot->GetLength()));
         }
     }
 
@@ -1906,8 +2168,8 @@ void CAnnotationWnd::OnDraw(CDC * pDC, const CRect & printRect) {
     pView->UpdateSelection();
 
     // Show virtual selection (No text just highlight)
-    if ((pView->IsSelectionVirtual()) &&
-            (pView->GetSelectionIndex() == m_nIndex)) {
+    if ((pView->IsSelectionVirtual()) && (pView->GetSelectionIndex() == m_nIndex))
+    {
         int nStart = int(((double)pView->GetSelectionStart() - fDataStart)/ fBytesPerPix);
         int nStop = int(((double)pView->GetSelectionStop() - fDataStart)/ fBytesPerPix + 1);
         rWnd.SetRect(nStart, rWnd.top, nStop, rWnd.bottom);
@@ -1927,16 +2189,19 @@ void CAnnotationWnd::OnDraw(CDC * pDC, const CRect & printRect) {
 /***************************************************************************/
 // CAnnotationWnd::SetHintUpdateBoundaries Set Hint Data and Invalidate
 /***************************************************************************/
-void CAnnotationWnd::SetHintUpdateBoundaries(bool bHint, DWORD dwStart, DWORD dwStop, bool bOverlap) {
+void CAnnotationWnd::SetHintUpdateBoundaries(bool bHint, DWORD dwStart, DWORD dwStop, bool bOverlap)
+{
     // get pointer to graph, view and document
     CGraphWnd * pGraph = (CGraphWnd *)GetParent();
     CSaView * pView = (CSaView *)pGraph->GetParent();
     CSaDoc * pDoc = (CSaDoc *)pView->GetDocument();
     CSegment * pSegment = pDoc->GetSegment(m_nIndex);
 
-    if (bHint==TRUE) {
+    if (bHint==TRUE)
+    {
         pSegment->LimitPosition(pDoc,dwStart, dwStop, (bOverlap)?CSegment::LIMIT_MOVING_BOTH:CSegment::LIMIT_MOVING_BOTH_NO_OVERLAP);
-        if (pSegment->CheckPosition(pDoc, dwStart, dwStop, CSegment::MODE_EDIT, bOverlap)==-1) {
+        if (pSegment->CheckPosition(pDoc, dwStart, dwStop, CSegment::MODE_EDIT, bOverlap)==-1)
+        {
             bHint=FALSE;
         }
     }
@@ -1944,8 +2209,10 @@ void CAnnotationWnd::SetHintUpdateBoundaries(bool bHint, DWORD dwStart, DWORD dw
     if ((m_bHintUpdateBoundaries != bHint) ||
             (m_dwHintStart!=dwStart) ||
             (m_dwHintStop != dwStop) ||
-            (bOverlap != m_bOverlap)) { // If change
-        if ((bHint)||(m_bHintUpdateBoundaries)) {
+            (bOverlap != m_bOverlap))   // If change
+    {
+        if ((bHint)||(m_bHintUpdateBoundaries))
+        {
             InvalidateRect(NULL);    // If hint drawn or will be drawn
         }
         m_bHintUpdateBoundaries = bHint;  // request for draw hint of updated boundaries
@@ -1958,7 +2225,10 @@ void CAnnotationWnd::SetHintUpdateBoundaries(bool bHint, DWORD dwStart, DWORD dw
 /***************************************************************************/
 // CAnnotationWnd::OnEraseBkgnd Erasing background
 /***************************************************************************/
-BOOL CAnnotationWnd::OnEraseBkgnd(CDC * pDC) {
+BOOL CAnnotationWnd::OnEraseBkgnd(CDC * pDC)
+{
+
+    CAnnotationWnd * p = this;
     // get background color from main frame
     CMainFrame * pMainWnd = (CMainFrame *)AfxGetMainWnd();
     // create the background brush
@@ -1977,11 +2247,13 @@ BOOL CAnnotationWnd::OnEraseBkgnd(CDC * pDC) {
 // This event initiates a popup menu. The graph also has to get focus, so
 // the parent graph is informed to do this.
 /***************************************************************************/
-void CAnnotationWnd::OnRButtonDown(UINT nFlags, CPoint point) {
+void CAnnotationWnd::OnRButtonDown(UINT nFlags, CPoint point)
+{
     // inform parent graph
     CGraphWnd * pGraph = (CGraphWnd *)GetParent();
     pGraph->SendMessage(WM_RBUTTONDOWN, nFlags, MAKELONG(point.x, point.y));
-    if (pGraph->IsPlotID(IDD_TWC)) {
+    if (pGraph->IsPlotID(IDD_TWC))
+    {
         CWnd::OnRButtonDown(nFlags, point);
         return;
     }
@@ -1990,15 +2262,18 @@ void CAnnotationWnd::OnRButtonDown(UINT nFlags, CPoint point) {
     // get pointer to segment object
     CSegment * pSegment = pView->GetDocument()->GetSegment(m_nIndex);
     // if there is no selection in this window, deselect all the others too
-    if (pSegment->GetSelection() == -1) {
+    if (pSegment->GetSelection() == -1)
+    {
         pView->ChangeAnnotationSelection(pSegment, -1, 0, 0);
     }
     // handle the floating popup menu
     CMenu mPopup;
-    if (mPopup.LoadMenu(((CMainFrame *)AfxGetMainWnd())->GetPopup())) { //SDM 1.5Test8.5
+    if (mPopup.LoadMenu(((CMainFrame *)AfxGetMainWnd())->GetPopup()))   //SDM 1.5Test8.5
+    {
         CMenu & pmFloatingPopup = *mPopup.GetSubMenu(1);
         ASSERT(&pmFloatingPopup != NULL && pmFloatingPopup.m_hMenu != NULL);
-        if (&pmFloatingPopup != NULL && pmFloatingPopup.m_hMenu != NULL) {
+        if (&pmFloatingPopup != NULL && pmFloatingPopup.m_hMenu != NULL)
+        {
             ClientToScreen(&point);
             pmFloatingPopup.TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point.x, point.y, AfxGetMainWnd());
         }
@@ -2012,17 +2287,19 @@ void CAnnotationWnd::OnRButtonDown(UINT nFlags, CPoint point) {
 // parent graph to do this. It selects the clicked segment and informs the
 // view.
 /***************************************************************************/
-void CAnnotationWnd::OnLButtonDown(UINT nFlags, CPoint point) {
+void CAnnotationWnd::OnLButtonDown(UINT nFlags, CPoint point)
+{
 
     // inform parent plot
     CGraphWnd * pGraph = (CGraphWnd *)GetParent();
     pGraph->SendMessage(WM_LBUTTONDOWN, nFlags, MAKELONG(point.x, point.y)); // send message to parent
-    if (pGraph->IsPlotID(IDD_TWC)) {
+    if (pGraph->IsPlotID(IDD_TWC))
+    {
         CWnd::OnLButtonDown(nFlags, point);
         return;
     }
-    
-	// get pointer to view and to document
+
+    // get pointer to view and to document
     CSaView * pView = (CSaView *)pGraph->GetParent();
     CSaDoc * pDoc = (CSaDoc *)pView->GetDocument();
     // find out, which character has been clicked
@@ -2031,24 +2308,31 @@ void CAnnotationWnd::OnLButtonDown(UINT nFlags, CPoint point) {
     // check if area graph type
     double fDataStart;
     DWORD dwDataFrame;
-    if (pGraph->IsAreaGraph()) {
+    if (pGraph->IsAreaGraph())
+    {
         // get necessary data from area plot
         fDataStart = pGraph->GetPlot()->GetAreaPosition();
         dwDataFrame = pGraph->GetPlot()->GetAreaLength();
-    } else {
+    }
+    else
+    {
         // check if graph has private cursor
-        if (pGraph->HavePrivateCursor()) {
+        if (pGraph->HavePrivateCursor())
+        {
             // get necessary data from between public cursors
             WORD wSmpSize = WORD(pDoc->GetSampleSize());
             fDataStart = (LONG)pView->GetStartCursorPosition(); // data index of first sample to display
             dwDataFrame = pView->GetStopCursorPosition() - (DWORD)fDataStart + wSmpSize; // number of data points to display
-        } else {
+        }
+        else
+        {
             // get necessary data from document and from view
             fDataStart = pView->GetDataPosition(rWnd.Width()); // data index of first sample to display
             dwDataFrame = pView->AdjustDataFrame(rWnd.Width()); // number of data points to display
         }
     }
-    if (dwDataFrame != 0) { // data is available
+    if (dwDataFrame != 0)   // data is available
+    {
         ASSERT(rWnd.Width());
         double fBytesPerPix = (double)dwDataFrame / (double)rWnd.Width();
         // calculate clicked data position
@@ -2056,21 +2340,28 @@ void CAnnotationWnd::OnLButtonDown(UINT nFlags, CPoint point) {
         //SDM 1.06.5
         //SDM 1.06.6
         //SDM 1.5Test8.5
-		TRACE("selection_index=%d selectpos=%d\n",pView->GetSelectionIndex(),!pView->SelectFromPosition(m_nIndex, dwPosition));
+        int index = pView->GetSelectionIndex();
+        BOOL selected = !pView->SelectFromPosition(m_nIndex, dwPosition);
+        TRACE("selection_index=%d selectpos=%d\n",index,selected);
         if (((CMainFrame *)AfxGetMainWnd())->IsEditAllowed() &&
-             (!pView->SelectFromPosition(m_nIndex, dwPosition)) &&
-             (pView->GetSelectionIndex()!=-1)) {
+                (!pView->SelectFromPosition(m_nIndex, dwPosition)) &&
+                (pView->GetSelectionIndex()!=-1))
+        {
             //SDM 1.5Test8.5
             // Selection not changed
-            if (GetTickCount() < (m_nSelectTickCount + SLOW_CLICK_TIME_LIMIT * 1000)) {
+            if (GetTickCount() < (m_nSelectTickCount + SLOW_CLICK_TIME_LIMIT * 1000))
+            {
                 OnCreateEdit();
             }
         };
 
         // SDM 1.06.6U2
-        if (pView->GetSelectionIndex() != -1) {
+        if (pView->GetSelectionIndex() != -1)
+        {
             m_nSelectTickCount = GetTickCount();
-        } else {
+        }
+        else
+        {
             // disable slow click (timed out)
             m_nSelectTickCount = GetTickCount() - DWORD(SLOW_CLICK_TIME_LIMIT * 1000);
         }
@@ -2082,7 +2373,8 @@ void CAnnotationWnd::OnLButtonDown(UINT nFlags, CPoint point) {
 // CAnnotationWnd::OnMouseMove Mouse move
 // Detects mouse movement outside the plot area
 /***************************************************************************/
-void CAnnotationWnd::OnMouseMove(UINT nFlags, CPoint point) {
+void CAnnotationWnd::OnMouseMove(UINT nFlags, CPoint point)
+{
     CGraphWnd * pGraph = (CGraphWnd *)GetParent();
     CPlotWnd * pPlot = pGraph->GetPlot();
     CSaView * pView = (CSaView *)pGraph->GetParent();
@@ -2097,15 +2389,18 @@ void CAnnotationWnd::OnMouseMove(UINT nFlags, CPoint point) {
 // CAnnotationWnd::OnLButtonDblClk
 // disable slow click after dblClk
 //###########################################################################
-void CAnnotationWnd::OnLButtonDblClk(UINT nFlags, CPoint point) {
+void CAnnotationWnd::OnLButtonDblClk(UINT nFlags, CPoint point)
+{
     CGraphWnd * pGraph = (CGraphWnd *)GetParent();
-    if (pGraph->IsPlotID(IDD_TWC)) {
+    if (pGraph->IsPlotID(IDD_TWC))
+    {
         CWnd::OnLButtonDblClk(nFlags, point);
         return;
     }
     CSaView * pView = (CSaView *)pGraph->GetParent();
     // if nothing selected select it
-    if (pView->GetDocument()->GetSegment(m_nIndex)->GetSelection() == -1) {
+    if (pView->GetDocument()->GetSegment(m_nIndex)->GetSelection() == -1)
+    {
         SendMessage(WM_LBUTTONDOWN, nFlags, MAKELONG(point.x, point.y));    // send message to parent
     }
     AfxGetMainWnd()->PostMessage(WM_COMMAND, ID_EDIT_EDITOR, 0L);
@@ -2120,10 +2415,12 @@ void CAnnotationWnd::OnLButtonDblClk(UINT nFlags, CPoint point) {
 //###########################################################################
 // CAnnotationWnd::CreateEdit
 //###########################################################################
-void CAnnotationWnd::OnCreateEdit(const CString * szInitialString) {
+void CAnnotationWnd::OnCreateEdit(const CString * szInitialString)
+{
 
     CGraphWnd * pGraph = (CGraphWnd *)GetParent();
-    if (pGraph->IsPlotID(IDD_TWC)) {
+    if (pGraph->IsPlotID(IDD_TWC))
+    {
         return;
     }
     CSaView * pView = (CSaView *)pGraph->GetParent();
@@ -2134,27 +2431,34 @@ void CAnnotationWnd::OnCreateEdit(const CString * szInitialString) {
     // check if area graph type
     double fDataStart = 0;
     DWORD dwDataFrame = 0;
-    if (pGraph->IsAreaGraph()) {
+    if (pGraph->IsAreaGraph())
+    {
         // get necessary data from area plot
         fDataStart = pGraph->GetPlot()->GetAreaPosition();
         dwDataFrame = pGraph->GetPlot()->GetAreaLength();
-    } else {
+    }
+    else
+    {
         // check if graph has private cursor
-        if (pGraph->HavePrivateCursor()) {
+        if (pGraph->HavePrivateCursor())
+        {
             // get necessary data from between public cursors
             CSaDoc * pDoc = pView->GetDocument();
             WORD wSmpSize = WORD(pDoc->GetSampleSize());
             fDataStart = (LONG)pView->GetStartCursorPosition(); // data index of first sample to display
             dwDataFrame = pView->GetStopCursorPosition() - (DWORD)fDataStart + wSmpSize; // number of data points to display
-        } else {
+        }
+        else
+        {
             // get necessary data from document and from view
             fDataStart = pView->GetDataPosition(rWnd.Width()); // data index of first sample to display
             dwDataFrame = pView->AdjustDataFrame(rWnd.Width()); // number of data points to display
         }
     }
 
-	// data is available
-    if (dwDataFrame != 0) { 
+    // data is available
+    if (dwDataFrame != 0)
+    {
         ASSERT(rWnd.Width());
         double fBytesPerPix = (double)dwDataFrame / (double)rWnd.Width();
         // Calculate Window Position
@@ -2163,8 +2467,10 @@ void CAnnotationWnd::OnCreateEdit(const CString * szInitialString) {
         rEdit.left = int((pView->GetSelectionStart() - fDataStart)/fBytesPerPix + 0.5);
         rEdit.right = int(((double)pView->GetSelectionStop() - (double)fDataStart)/fBytesPerPix + 1.5);
         rEdit.IntersectRect(rWnd,rEdit);
-        if (rEdit.Width() && dwDataFrame) {
-            if (rEdit.Width() < 2*rEdit.Height()) {
+        if (rEdit.Width() && dwDataFrame)
+        {
+            if (rEdit.Width() < 2*rEdit.Height())
+            {
                 // Edit box too small
                 int nMore = 2*rEdit.Height()  - rEdit.Width();
                 rEdit.left -= nMore/2;
@@ -2176,7 +2482,8 @@ void CAnnotationWnd::OnCreateEdit(const CString * szInitialString) {
             CDlgAnnotationEdit * pAnnotationEdit = new CDlgAnnotationEdit();
             pAnnotationEdit->Create(CDlgAnnotationEdit::IDD);
             pAnnotationEdit->SetWindowPos(&wndTop,rEdit.left,rEdit.top + 1,rEdit.Width(),rEdit.Height() - 2,SWP_SHOWWINDOW);
-            if (szInitialString) {
+            if (szInitialString)
+            {
                 pAnnotationEdit->SetText(*szInitialString);
             }
             pAnnotationEdit = NULL; // window needs to destroy itself
@@ -2188,16 +2495,21 @@ int CALLBACK EnumFontFamExProc(const ENUMLOGFONTEX * lpelfe,    // logical-font 
                                const NEWTEXTMETRICEX * lpntme, // physical-font data
                                DWORD FontType,                 // type of font
                                LPARAM lParam                   // application-defined data
-                              ) {
+                              )
+{
     UNUSED_ALWAYS(FontType);
     UNUSED_ALWAYS(lpntme);
     long & nCharset = *(long *) lParam;
 
-    if (nCharset == DEFAULT_CHARSET) {
+    if (nCharset == DEFAULT_CHARSET)
+    {
         nCharset = lpelfe->elfLogFont.lfCharSet;
-    } else {
+    }
+    else
+    {
         // If ANSI is one of the many chose it.
-        if (lpelfe->elfLogFont.lfCharSet == ANSI_CHARSET) {
+        if (lpelfe->elfLogFont.lfCharSet == ANSI_CHARSET)
+        {
             nCharset = lpelfe->elfLogFont.lfCharSet;
         }
 
@@ -2207,7 +2519,8 @@ int CALLBACK EnumFontFamExProc(const ENUMLOGFONTEX * lpelfe,    // logical-font 
     return 0;
 }
 
-void CAnnotationWnd::CreateAnnotationFont(CFont * pFont, int nPoints, LPCTSTR szFace) {
+void CAnnotationWnd::CreateAnnotationFont(CFont * pFont, int nPoints, LPCTSTR szFace)
+{
     HDC dc = ::GetDC(NULL);
     int nFontSizeLU = MulDiv(nPoints, GetDeviceCaps(dc, LOGPIXELSY), 72);
     LOGFONT lfEnum;
@@ -2231,15 +2544,19 @@ void CAnnotationWnd::CreateAnnotationFont(CFont * pFont, int nPoints, LPCTSTR sz
 /***************************************************************************/
 // CGlossWnd::OnDraw Drawing
 /***************************************************************************/
-void CGlossWnd::OnDraw(CDC * pDC, const CRect & printRect) {
+void CGlossWnd::OnDraw(CDC * pDC, const CRect & printRect)
+{
 
     CRect rWnd;
     CRect rClip; // get invalid region
 
-    if (pDC->IsPrinting()) {
+    if (pDC->IsPrinting())
+    {
         rWnd  = printRect;
         rClip = printRect;
-    } else {
+    }
+    else
+    {
         GetClientRect(rWnd);
         pDC->GetClipBox(&rClip);
         pDC->LPtoDP(&rClip);
@@ -2251,7 +2568,8 @@ void CGlossWnd::OnDraw(CDC * pDC, const CRect & printRect) {
     TEXTMETRIC tm;
     pDC->GetTextMetrics(&tm);
     // get window coordinates
-    if (rWnd.Width() == 0) {
+    if (rWnd.Width() == 0)
+    {
         return;    // nothing to draw
     }
     // set font colors
@@ -2282,7 +2600,8 @@ void CGlossWnd::OnDraw(CDC * pDC, const CRect & printRect) {
     // 09/27/2000 - DDO If the graph is the TWC graph
     // then we don't want to draw the annotation text.
     //*******************************************************
-    if (pGraph->IsPlotID(IDD_TWC)) {
+    if (pGraph->IsPlotID(IDD_TWC))
+    {
         pDC->SelectObject(pOldFont);  // set back old font
         return;
     }
@@ -2294,24 +2613,31 @@ void CGlossWnd::OnDraw(CDC * pDC, const CRect & printRect) {
     // check if area graph type
     double fDataStart;
     DWORD dwDataFrame;
-    if (pGraph->IsAreaGraph()) {
+    if (pGraph->IsAreaGraph())
+    {
         // get necessary data from area plot
         fDataStart = pGraph->GetPlot()->GetAreaPosition();
         dwDataFrame = pGraph->GetPlot()->GetAreaLength();
-    } else {
+    }
+    else
+    {
         // check if graph has private cursor
-        if (pGraph->HavePrivateCursor()) {
+        if (pGraph->HavePrivateCursor())
+        {
             // get necessary data from between public cursors
             WORD wSmpSize = WORD(pDoc->GetSampleSize());
             fDataStart = pView->GetStartCursorPosition(); // data index of first sample to display
             dwDataFrame = pView->GetStopCursorPosition() - (DWORD) fDataStart + wSmpSize; // number of data points to display
-        } else {
+        }
+        else
+        {
             // get necessary data from document and from view
             fDataStart = pView->GetDataPosition(rWnd.Width()); // data index of first sample to display
             dwDataFrame = pView->AdjustDataFrame(rWnd.Width()); // number of data points to display
         }
     }
-    if (dwDataFrame == 0) {
+    if (dwDataFrame == 0)
+    {
         return;    // nothing to draw
     }
     // calculate the number of data samples per pixel
@@ -2320,71 +2646,88 @@ void CGlossWnd::OnDraw(CDC * pDC, const CRect & printRect) {
     // get pointer to gloss strings
     CGlossSegment * pGloss = (CGlossSegment *)pDoc->GetSegment(m_nIndex);
     const CStringArray & gloss = pGloss->GetTexts(); //SDM 1.5Test8.1
-    if (gloss.GetCount()>0) {
+    if (gloss.GetCount()>0)
+    {
         // array is not empty
         // get pointer to gloss offset and duration arrays
         CSegment * pSegment = pDoc->GetSegment(m_nIndex);
         CSegment * pPhonetic = pDoc->GetSegment(PHONETIC);
         // position prepare loop. Find first string to display in clipping rect
         int nLoop = 0;
-        if ((fDataStart > 0) && (gloss.GetSize() > 1)) {
+        if ((fDataStart > 0) && (gloss.GetSize() > 1))
+        {
             double fStart = fDataStart + (double)(rClip.left - tm.tmAveCharWidth) * fBytesPerPix;
-            for (nLoop = 1; nLoop < gloss.GetSize(); nLoop++) {
-                if ((double)(pSegment->GetStop(nLoop)) > fStart) { // first string must be at lower position
+            for (nLoop = 1; nLoop < gloss.GetSize(); nLoop++)
+            {
+                if ((double)(pSegment->GetStop(nLoop)) > fStart)   // first string must be at lower position
+                {
                     nLoop--; // this is it
                     break;
                 }
             }
         }
-        if (nLoop < gloss.GetSize()) { // there is something to display
+        if (nLoop < gloss.GetSize())   // there is something to display
+        {
             // display loop
             int nDisplayPos, nDisplayStop;
             CString string;
-            do {
+            do
+            {
                 string.Empty();
                 // get the string to display
                 string = gloss.GetAt(nLoop);
                 // insert a space after the delimiter
-                if (string.GetLength() > 1) {
+                if (string.GetLength() > 1)
+                {
                     CString szSpace = " ";
                     string = string.GetAt(0) + szSpace + string.Right(string.GetLength() - 1);
                 }
                 nDisplayPos = round((pSegment->GetOffset(nLoop) - fDataStart) / fBytesPerPix);
                 // check if the character is selected
                 BOOL bSelect = FALSE;
-                if (pSegment->GetSelection() == nLoop) {
+                if (pSegment->GetSelection() == nLoop)
+                {
                     bSelect = TRUE;
                 }
                 // calculate duration
                 nDisplayStop = round((pSegment->GetStop(nLoop)- fDataStart)/ fBytesPerPix);
                 //SDM 1.06.2
-                if (m_bHintUpdateBoundaries) { // Show New Boundaries
-                    if (bSelect) {
+                if (m_bHintUpdateBoundaries)   // Show New Boundaries
+                {
+                    if (bSelect)
+                    {
                         nDisplayPos = round((m_dwHintStart - fDataStart)/ fBytesPerPix);
                         nDisplayStop = round((m_dwHintStop - fDataStart)/ fBytesPerPix);
-                    } else if (pSegment->GetSelection() == (nLoop+1)) { // Segment prior to selected segment
+                    }
+                    else if (pSegment->GetSelection() == (nLoop+1))     // Segment prior to selected segment
+                    {
                         // SDM 1.5Test11.1
                         int nIndex = pPhonetic->GetPrevious(pPhonetic->FindOffset(m_dwHintStart));
                         DWORD dwStop = pPhonetic->GetStop(nIndex);
                         nDisplayStop = round((dwStop - fDataStart)/ fBytesPerPix);
-                    } else if (pSegment->GetSelection() == (nLoop-1)) { // Segment after selected segment
+                    }
+                    else if (pSegment->GetSelection() == (nLoop-1))     // Segment after selected segment
+                    {
                         // SDM 1.5Test11.1
                         int nIndex = pPhonetic->GetNext(pPhonetic->FindStop(m_dwHintStop));
                         DWORD dwStart = pPhonetic->GetOffset(nIndex);
                         nDisplayPos = round((dwStart - fDataStart)/ fBytesPerPix);
                     }
                 }
-                if ((nDisplayStop - nDisplayPos) < 2) {
+                if ((nDisplayStop - nDisplayPos) < 2)
+                {
                     nDisplayStop++;    // must be at least 2 to display a point
                 }
-                if ((nDisplayStop - nDisplayPos) < 2) {
+                if ((nDisplayStop - nDisplayPos) < 2)
+                {
                     nDisplayPos--;    // must be at least 2 to display a point
                 }
                 // set rectangle to display string centered within
                 rWnd.SetRect(nDisplayPos, rWnd.top, nDisplayStop, rWnd.bottom);
                 // highlight background if selected character
                 COLORREF normalTextColor = pDC->GetTextColor();
-                if (bSelect) {
+                if (bSelect)
+                {
                     normalTextColor = pDC->SetTextColor(pColors->cSysColorHiText); // set highlighted text
                     CBrush brushHigh(pColors->cSysColorHilite);
                     CPen penHigh(PS_SOLID, 1, pColors->cSysColorHilite);
@@ -2395,26 +2738,34 @@ void CGlossWnd::OnDraw(CDC * pDC, const CRect & printRect) {
                     pDC->SelectObject(pOldPen);
                 }
 
-				DrawTranscriptionBorders(pDC,rWnd,pColors);
+                DrawTranscriptionBorders(pDC,rWnd,pColors);
 
-                if ((nDisplayStop-nDisplayPos) <= (string.GetLength() * tm.tmAveCharWidth)) { // not enough space
-                    if ((nDisplayStop-nDisplayPos) <= 4 * tm.tmAveCharWidth) { // even not enough space for at least two characters with dots
+                if ((nDisplayStop-nDisplayPos) <= (string.GetLength() * tm.tmAveCharWidth))   // not enough space
+                {
+                    if ((nDisplayStop-nDisplayPos) <= 4 * tm.tmAveCharWidth)   // even not enough space for at least two characters with dots
+                    {
                         // draw only first character
                         TCHAR c = string.GetAt(0);
                         pDC->DrawText(&c, 1, rWnd, DT_VCENTER | DT_SINGLELINE | DT_LEFT | DT_NOCLIP); // print first character
-                    } else {
+                    }
+                    else
+                    {
                         // draw as many characters as possible and 3 dots
                         string = string.Left((nDisplayStop-nDisplayPos) / tm.tmAveCharWidth - 2) + "...";
                         pDC->DrawText(string, string.GetLength(), rWnd, DT_VCENTER | DT_SINGLELINE | DT_LEFT | DT_NOCLIP);
                     }
-                } else { // enough space to display string
+                }
+                else     // enough space to display string
+                {
                     pDC->DrawText(string, 1, rWnd, DT_VCENTER | DT_SINGLELINE | DT_LEFT | DT_NOCLIP);
                     pDC->DrawText(LPCTSTR(string) + 1, string.GetLength() - 1, rWnd, DT_VCENTER | DT_SINGLELINE | DT_CENTER | DT_NOCLIP);
                 }
-                if (bSelect) {
+                if (bSelect)
+                {
                     pDC->SetTextColor(normalTextColor);    // set back old text color
                 }
-            } while ((nDisplayPos < rClip.right) && (++nLoop < gloss.GetSize()));
+            }
+            while ((nDisplayPos < rClip.right) && (++nLoop < gloss.GetSize()));
         }
     }
 
@@ -2436,15 +2787,19 @@ void CGlossWnd::OnDraw(CDC * pDC, const CRect & printRect) {
 /***************************************************************************/
 // CReferenceWnd::OnDraw Drawing
 /***************************************************************************/
-void CReferenceWnd::OnDraw(CDC * pDC, const CRect & printRect) {
+void CReferenceWnd::OnDraw(CDC * pDC, const CRect & printRect)
+{
 
     CRect rWnd;
     CRect rClip; // get invalid region
 
-    if (pDC->IsPrinting()) {
+    if (pDC->IsPrinting())
+    {
         rWnd  = printRect;
         rClip = printRect;
-    } else {
+    }
+    else
+    {
         GetClientRect(rWnd);
         pDC->GetClipBox(&rClip);
         pDC->LPtoDP(&rClip);
@@ -2456,7 +2811,8 @@ void CReferenceWnd::OnDraw(CDC * pDC, const CRect & printRect) {
     TEXTMETRIC tm;
     pDC->GetTextMetrics(&tm);
     // get window coordinates
-    if (rWnd.Width() == 0) {
+    if (rWnd.Width() == 0)
+    {
         return;    // nothing to draw
     }
     // set font colors
@@ -2487,7 +2843,8 @@ void CReferenceWnd::OnDraw(CDC * pDC, const CRect & printRect) {
     // 09/27/2000 - DDO If the graph is the TWC graph
     // then we don't want to draw the annotation text.
     //*******************************************************
-    if (pGraph->IsPlotID(IDD_TWC)) {
+    if (pGraph->IsPlotID(IDD_TWC))
+    {
         pDC->SelectObject(pOldFont);  // set back old font
         return;
     }
@@ -2499,24 +2856,31 @@ void CReferenceWnd::OnDraw(CDC * pDC, const CRect & printRect) {
     // check if area graph type
     double fDataStart;
     DWORD dwDataFrame;
-    if (pGraph->IsAreaGraph()) {
+    if (pGraph->IsAreaGraph())
+    {
         // get necessary data from area plot
         fDataStart = pGraph->GetPlot()->GetAreaPosition();
         dwDataFrame = pGraph->GetPlot()->GetAreaLength();
-    } else {
+    }
+    else
+    {
         // check if graph has private cursor
-        if (pGraph->HavePrivateCursor()) {
+        if (pGraph->HavePrivateCursor())
+        {
             // get necessary data from between public cursors
             WORD wSmpSize = WORD(pDoc->GetSampleSize());
             fDataStart = pView->GetStartCursorPosition(); // data index of first sample to display
             dwDataFrame = pView->GetStopCursorPosition() - (DWORD) fDataStart + wSmpSize; // number of data points to display
-        } else {
+        }
+        else
+        {
             // get necessary data from document and from view
             fDataStart = pView->GetDataPosition(rWnd.Width()); // data index of first sample to display
             dwDataFrame = pView->AdjustDataFrame(rWnd.Width()); // number of data points to display
         }
     }
-    if (dwDataFrame == 0) {
+    if (dwDataFrame == 0)
+    {
         return;    // nothing to draw
     }
     // calculate the number of data samples per pixel
@@ -2525,59 +2889,75 @@ void CReferenceWnd::OnDraw(CDC * pDC, const CRect & printRect) {
     // get pointer to gloss strings
     CReferenceSegment * pRef = (CReferenceSegment *)pDoc->GetSegment(m_nIndex);
     const CStringArray & ref = pRef->GetTexts();
-    if (ref.GetCount()>0) {
+    if (ref.GetCount()>0)
+    {
         // array is not empty
         // get pointer to gloss offset and duration arrays
         CSegment * pSegment = pDoc->GetSegment(m_nIndex);
         // position prepare loop. Find first string to display in clipping rect
         int nLoop = 0;
-        if ((fDataStart > 0) && (ref.GetSize() > 1)) {
+        if ((fDataStart > 0) && (ref.GetSize() > 1))
+        {
             double fStart = fDataStart + (double)(rClip.left - tm.tmAveCharWidth) * fBytesPerPix;
-            for (nLoop = 1; nLoop < ref.GetSize(); nLoop++) {
-                if ((double)(pSegment->GetStop(nLoop)) > fStart) { // first string must be at lower position
+            for (nLoop = 1; nLoop < ref.GetSize(); nLoop++)
+            {
+                if ((double)(pSegment->GetStop(nLoop)) > fStart)   // first string must be at lower position
+                {
                     nLoop--; // this is it
                     break;
                 }
             }
         }
-        if (nLoop < ref.GetSize()) { // there is something to display
+        if (nLoop < ref.GetSize())   // there is something to display
+        {
             // display loop
             int nDisplayPos, nDisplayStop;
             CString string;
-            do {
+            do
+            {
                 string.Empty();
                 // get the string to display
                 string = ref.GetAt(nLoop);
                 nDisplayPos = round((pSegment->GetOffset(nLoop) - fDataStart) / fBytesPerPix);
                 // check if the character is selected
                 BOOL bSelect = FALSE;
-                if (pSegment->GetSelection() == nLoop) {
+                if (pSegment->GetSelection() == nLoop)
+                {
                     bSelect = TRUE;
                 }
                 // calculate duration
                 nDisplayStop = round((pSegment->GetStop(nLoop) - fDataStart)/ fBytesPerPix);
                 //SDM 1.06.2
-                if (m_bHintUpdateBoundaries) { // Show New Boundaries
-                    if (bSelect) {
+                if (m_bHintUpdateBoundaries)   // Show New Boundaries
+                {
+                    if (bSelect)
+                    {
                         nDisplayPos = round((m_dwHintStart - fDataStart)/ fBytesPerPix);
                         nDisplayStop = round((m_dwHintStop - fDataStart)/ fBytesPerPix);
-                    } else if (pSegment->GetSelection() == (nLoop+1)) { // Segment prior to selected segment
+                    }
+                    else if (pSegment->GetSelection() == (nLoop+1))     // Segment prior to selected segment
+                    {
                         nDisplayStop = round((m_dwHintStart - fDataStart)/ fBytesPerPix);
-                    } else if (pSegment->GetSelection() == (nLoop-1)) { // Segment after selected segment
+                    }
+                    else if (pSegment->GetSelection() == (nLoop-1))     // Segment after selected segment
+                    {
                         nDisplayPos = round((m_dwHintStop - fDataStart)/ fBytesPerPix);
                     }
                 }
-                if ((nDisplayStop - nDisplayPos) < 2) {
+                if ((nDisplayStop - nDisplayPos) < 2)
+                {
                     nDisplayStop++;    // must be at least 2 to display a point
                 }
-                if ((nDisplayStop - nDisplayPos) < 2) {
+                if ((nDisplayStop - nDisplayPos) < 2)
+                {
                     nDisplayPos--;    // must be at least 2 to display a point
                 }
                 // set rectangle to display string centered within
                 rWnd.SetRect(nDisplayPos, rWnd.top, nDisplayStop, rWnd.bottom);
                 // highlight background if selected character
                 COLORREF normalTextColor = pDC->GetTextColor();
-                if (bSelect) {
+                if (bSelect)
+                {
                     normalTextColor = pDC->SetTextColor(pColors->cSysColorHiText); // set highlighted text
                     CBrush brushHigh(pColors->cSysColorHilite);
                     CPen penHigh(PS_SOLID, 1, pColors->cSysColorHilite);
@@ -2588,28 +2968,37 @@ void CReferenceWnd::OnDraw(CDC * pDC, const CRect & printRect) {
                     pDC->SelectObject(pOldPen);
                 }
 
-				DrawTranscriptionBorders(pDC,rWnd,pColors);
+                DrawTranscriptionBorders(pDC,rWnd,pColors);
 
                 BOOL bNotEnough = (nDisplayStop - nDisplayPos) <= tm.tmAveCharWidth;
-                if (!bNotEnough) {
+                if (!bNotEnough)
+                {
                     bNotEnough = ((nDisplayStop - nDisplayPos) <= (string.GetLength() * tm.tmAveCharWidth));
                 }
 
-                if (bNotEnough) {
-                    if ((nDisplayStop-nDisplayPos) <= 4 * tm.tmAveCharWidth) { // even not enough space for at least two characters with dots
+                if (bNotEnough)
+                {
+                    if ((nDisplayStop-nDisplayPos) <= 4 * tm.tmAveCharWidth)   // even not enough space for at least two characters with dots
+                    {
                         pDC->DrawText(_T("*"), 1, rWnd, DT_VCENTER | DT_SINGLELINE | DT_LEFT | DT_NOCLIP); // print first character
-                    } else {
+                    }
+                    else
+                    {
                         // draw as many characters as possible and 3 dots
                         string = string.Left((nDisplayStop-nDisplayPos) / tm.tmAveCharWidth - 2) + "...";
                         pDC->DrawText((LPCTSTR)string, string.GetLength(), rWnd, DT_VCENTER | DT_SINGLELINE | DT_LEFT | DT_NOCLIP);
                     }
-                } else { // enough space to display string
+                }
+                else     // enough space to display string
+                {
                     pDC->DrawText((LPCTSTR)string, string.GetLength(), rWnd, DT_VCENTER | DT_SINGLELINE | DT_CENTER | DT_NOCLIP);
                 }
-                if (bSelect) {
+                if (bSelect)
+                {
                     pDC->SetTextColor(normalTextColor);    // set back old text color
                 }
-            } while ((nDisplayPos < rClip.right) && (++nLoop < ref.GetSize()));
+            }
+            while ((nDisplayPos < rClip.right) && (++nLoop < ref.GetSize()));
         }
     }
     pDC->SelectObject(pOldFont);  // set back old font
@@ -2621,7 +3010,8 @@ void CReferenceWnd::OnDraw(CDC * pDC, const CRect & printRect) {
 
     // Show virtual selection (No text just highlight)
     if ((pView->IsSelectionVirtual()) &&
-        (pView->GetSelectionIndex() == m_nIndex)) {
+            (pView->GetSelectionIndex() == m_nIndex))
+    {
         int nStart = int(((double)pView->GetSelectionStart() - fDataStart)/ fBytesPerPix);
         int nStop = int(((double)pView->GetSelectionStop() - fDataStart)/ fBytesPerPix + 1);
         rWnd.SetRect(nStart, rWnd.top, nStop, rWnd.bottom);
@@ -2636,49 +3026,53 @@ void CReferenceWnd::OnDraw(CDC * pDC, const CRect & printRect) {
     pDC->SelectObject(pOldFont);  // set back old font
 }
 
-void CAnnotationWnd::SetHintUpdateBoundaries(bool bHint, bool bOverlap) {
+void CAnnotationWnd::SetHintUpdateBoundaries(bool bHint, bool bOverlap)
+{
     SetHintUpdateBoundaries(bHint,m_dwHintStart,m_dwHintStop, bOverlap);
 }
 
-void CAnnotationWnd::ShowTranscriptionBoundaries(bool val) {
+void CAnnotationWnd::ShowTranscriptionBoundaries(bool val)
+{
     m_bTranscriptionBoundary = val;
 }
 
-void CAnnotationWnd::DrawTranscriptionBorders(CDC * pDC, CRect rWnd, Colors * pColors) {
+void CAnnotationWnd::DrawTranscriptionBorders(CDC * pDC, CRect rWnd, Colors * pColors)
+{
 
-	// draw the borders
-	if (m_bTranscriptionBoundary) {
+    // draw the borders
+    if (m_bTranscriptionBoundary)
+    {
 
         // define points for the boundary arrows
         POINT points[3];
         points[0].y = 0;
-		points[1].y = 0;
+        points[1].y = 0;
         points[2].y = 4;
 
-		CPen penBoundary(PS_SOLID, 1, pColors->cPlotBoundaries);
-        CBrush brushBoundary( pColors->cPlotBoundaries);
-		CPen * pOldPen = pDC->SelectObject(&penBoundary);
+        CPen penBoundary(PS_SOLID, 1, pColors->cPlotBoundaries);
+        CBrush brushBoundary(pColors->cPlotBoundaries);
+        CPen * pOldPen = pDC->SelectObject(&penBoundary);
         CBrush * pOldBrush = (CBrush *)pDC->SelectObject(&brushBoundary);
-		
-		// draw the left line
-		pDC->MoveTo(rWnd.left, rWnd.top-2);
-		pDC->LineTo(rWnd.left, rWnd.bottom);
-		// draw top left triangle
+
+        // draw the left line
+        pDC->MoveTo(rWnd.left, rWnd.top-2);
+        pDC->LineTo(rWnd.left, rWnd.bottom);
+        // draw top left triangle
         points[0].x = rWnd.left + 4;
         points[1].x = rWnd.left;
-		points[2].x = rWnd.left;
+        points[2].x = rWnd.left;
         pDC->Polygon(points, 3);
 
-		// draw the right line
-		pDC->MoveTo(rWnd.right, rWnd.top-1);
-		pDC->LineTo(rWnd.right, rWnd.bottom);
-		// draw top left triangle
+        // draw the right line
+        pDC->MoveTo(rWnd.right, rWnd.top-1);
+        pDC->LineTo(rWnd.right, rWnd.bottom);
+        // draw top left triangle
         points[0].x = rWnd.right - 4;
         points[1].x = rWnd.right;
-		points[2].x = rWnd.right;
+        points[2].x = rWnd.right;
         pDC->Polygon(points, 3);
 
-		pDC->SelectObject(pOldPen);
-		pDC->SelectObject(pOldBrush);
-	}
+        pDC->SelectObject(pOldPen);
+        pDC->SelectObject(pOldBrush);
+    }
 }

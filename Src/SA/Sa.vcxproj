@@ -355,6 +355,7 @@
     <ClCompile Include="WaveWarp.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Annotation Windows.cd" />
     <None Include="Export.cd" />
     <None Include="Graphs.cd" />
     <None Include="Process.cd" />

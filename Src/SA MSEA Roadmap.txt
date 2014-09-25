@@ -1,10 +1,6 @@
-8/31/2013
+9/24/2013
 
 *September 2014*****************************************
-
-ELAN 2.0
-
-*October 2014*******************************************
 Tone-to-Gloss National
 Change all reference of Tone to Gloss Nat., see email Aug 19
   . Main Menu: Graphs/ Transcription Bars/ Tone
@@ -17,22 +13,28 @@ So the Tone transcription field now needs to work like the current Gloss transcr
 Or maybe just hide the Tone transcription field and make a copy of the current Gloss code.
 
 
-*APLTW: October 21-25************************************
-
-*November 2014 ******************************************
-Lift 2.0 ?
-
-*Some Day************************************************
-
+*October 2014*******************************************
+Revision of IPA
 1. In File\ Information\ Comments\ Phonetic
-
 Would you put a space character between each Phonetic Word.
 Then, for example ChFrench would go from looking like this:
    m??sibuku?tu??lezæmiki¹s??tisio?o?dyi
 to:
    m??si buku ? tu?? lez æmi ki¹ s??t isi o?o?dyi
 
+Color Work
 2. Color Options see email Aug 7
+
+
+*APLTW: October 21-25************************************
+
+
+*November 2014 ******************************************
+Lift 2.0 ?
+ELAN 2.0
+
+
+*Some Day************************************************
 
 3. Create an SA Export option that would format Wordlist data in SA so it could be imported into LM.
 I'm thinking it would use the code that is used for Fieldworks (SFM), but put the data into an LM
@@ -42,11 +44,13 @@ project. Then I will ask Russ to make an LM Import feature that can read the SMF
 
 5. Enable SA to directly open 24-bit recordings
 
-
-*3/6/2013 ************************************************
 . show a chart of the ‘frequency of occurrence’ of Vowels and Consonants in the current file.
+
 . show a chart of the ‘frequency of occurrence’ chart from a composite of several files.
+
 . show a chart of all Vowel lengths.
+
 . show a chart of the Pitch of all vowels.
+
 . play a Video file in a child window, and extract the audio for phonetic analysis.
 
