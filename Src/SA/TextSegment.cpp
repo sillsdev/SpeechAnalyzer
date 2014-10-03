@@ -615,7 +615,8 @@ CSaString CTextSegment::GetContainedText(DWORD dwStart, DWORD dwStop)
     for (int i=0; i<GetOffsetSize(); i++)
     {
         DWORD offset = GetOffset(i);
-        if ((offset>=dwStart)&&(offset<=dwStop))
+		// offset can't be dwStop, because then the the segments length would be zero.
+        if ((offset>=dwStart)&&(offset<dwStop))
         {
             szText.Append(m_Texts.GetAt(i));
         }

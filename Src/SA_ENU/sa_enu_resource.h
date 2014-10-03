@@ -1348,10 +1348,11 @@
 #define IDS_MC_CHANNEL_LEFT             11025
 #define IDS_MC_CHANNEL_RIGHT            11026
 #define IDS_SUPPORT_WAVE_COPY           11028
-#define IDS_DEFAULT                     11029
-#define IDS_INTERLINEAR                 11030
-#define IDS_MULTIRECORD                 11031
-#define IDS_COLUMNAR                    11032
+#define IDS_NO_CHOICE                   11030
+#define IDS_DEFAULT                     11031
+#define IDS_INTERLINEAR                 11032
+#define IDS_MULTIRECORD                 11033
+#define IDS_COLUMNAR                    11034
 #define ID_FILE_RECORD                  32776
 #define ID_EDIT_SCREENCAPTURE           32778
 #define ID_EDIT_EQUALIZELENGTH          32785
@@ -1774,6 +1775,7 @@
 #define IDS_NO_ISO                      61324
 #define IDS_STRING4                     61325
 #define IDS_DISABLED_SEGMENT            61325
+#define IDS_DELETE_REFERENCE            61326
 
 // Next default values for new objects
 // 

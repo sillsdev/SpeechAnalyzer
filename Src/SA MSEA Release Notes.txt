@@ -1,3 +1,10 @@
+SA - 3.1.0.99 10/2/2014
+1) Fixed bug in SFM export - column and multi-record mode - where adjoining segments that ended and started on the same data sample cause concatenation of the data.
+2) For SFM Export dialog - added 'Select Export Type...' to dropdown box list.
+3) Fixed Add-Ref bug.  There were several bugs existing in this feature (eg. Insert text wasn't save, Inserting at end causes text to wrap.  Inserting text with existing text injected errors in the new and old references numbers.  
+At this time, adding reference numbers will overwrite existing numbers.
+4) Enabled split file support for stereo files.
+
 SA - 3.1.0.98 9/24/2014
 1) Fixed 'Show Boundaries' bug.  Annotation windows that were hidden were not being updated with change-in-state of 'show-boundaries' flag.
 2) Ref Bug#1 - Fixed problem where Reference fields were not added when new gloss segments were added.  NOTE: Reference segments are not automatically added if the entire reference annotation line is empty.

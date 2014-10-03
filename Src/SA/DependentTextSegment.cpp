@@ -32,7 +32,7 @@ void CDependentTextSegment::LimitPosition(CSaDoc *, DWORD & dwStart, DWORD & dwS
 // available index.  For example if we are inserting at the 4 gloss segment
 // but only reference segments 0 and 1 exist, then the next index is 2, not 3.
 /***************************************************************************/
-BOOL CDependentTextSegment::SetAt(const CSaString * pszString, bool, DWORD dwStart, DWORD dwDuration)
+BOOL CDependentTextSegment::SetAt( const CSaString * pszString, bool, DWORD dwStart, DWORD dwDuration)
 {
 
     try

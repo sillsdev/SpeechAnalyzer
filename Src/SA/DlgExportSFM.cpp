@@ -144,6 +144,7 @@ BOOL CDlgExportSFM::OnInitDialog()
 	CString choice3;
 	CString choice4;
 
+	noChoice.LoadStringW(IDS_NO_CHOICE);
 	choice1.LoadStringW(IDS_DEFAULT);
 	choice2.LoadStringW(IDS_COLUMNAR);
 	choice3.LoadStringW(IDS_INTERLINEAR);
@@ -223,8 +224,6 @@ BEGIN_MESSAGE_MAP(CDlgExportSFM, CDialog)
     ON_BN_CLICKED(IDC_EX_SFM_RECORD_DATA, OnAllParameters)
     ON_BN_CLICKED(IDC_EXTAB_ANNOTATIONS, OnAllAnnotations)
     ON_COMMAND(IDHELP, OnHelpExportBasic)
-    //ON_BN_CLICKED(IDC_EX_SFM_INTERLINEAR, OnClickedExSfmInterlinear)
-    //ON_BN_CLICKED(IDC_EX_SFM_MULTIRECORD, OnClickedExSfmMultirecord)
 	ON_CBN_SELCHANGE(IDC_EX_SFM_EXPORT_TYPE, &CDlgExportSFM::OnSelchangeExSfmExportType)
 END_MESSAGE_MAP()
 

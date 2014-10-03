@@ -26,7 +26,7 @@ LANGUAGE LANG_NEUTRAL, SUBLANG_NEUTRAL
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 3,1,0,98
+ FILEVERSION 3,1,0,99
  PRODUCTVERSION 1,0,0,1
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
@@ -44,7 +44,7 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "SIL International"
             VALUE "FileDescription", "Speech Analyzer Resource DLL"
-            VALUE "FileVersion", "v3.1.0.98"
+            VALUE "FileVersion", "v3.1.0.99"
             VALUE "InternalName", "SA_ENU"
             VALUE "LegalCopyright", "© 1996-2014 SIL International (MSEA)"
             VALUE "OriginalFilename", "SA_ENU.dll"
@@ -4443,7 +4443,7 @@ IDC_MHANDN              CURSOR                  "res\\MedHandN.cur"
 
 STRINGTABLE
 BEGIN
-    VS_VERSION              "Version 3.1.0.98"
+    VS_VERSION              "Version 3.1.0.99"
     VS_COPYRIGHT            "© 1996-2014 SIL International (MSEA).\nAll Rights Reserved."
     IDR_MAINFRAME           "Speech Analyzer"
     IDR_SA_ANNTYPE          "\nSA\nSA Document\nWAV Files (*.wav)\n.wav\nannFileType\nANN File Type"
@@ -5201,6 +5201,7 @@ BEGIN
                             "Speech Analyzer will markup the audio file according to the markup that was done in SayMore.\nThese segments will be considered as breath groups and  the Transcription from SayMore will be placed in the Phonetic Transcription field.\nThe Free Translation will be associated with each group and placed in the Phrase Level 1 Transcription field."
     IDS_NO_ISO              "Unable to load '%1' file. Please make sure the application has been installed properly!"
     IDS_DISABLED_SEGMENT    "Disabled - select or add a segment"
+    IDS_DELETE_REFERENCE    "Delete existing Reference Numbers?"
 END
 
 STRINGTABLE
@@ -5507,6 +5508,7 @@ BEGIN
     IDS_MC_CHANNEL_LEFT     "Channel %1 (Left)"
     IDS_MC_CHANNEL_RIGHT    "Channel %1 (Right)"
     IDS_SUPPORT_WAVE_COPY   "This files format is not directly editable by Speech Analyzer.\nSpeech Analyzer will now make a copy of the file and convert it to a supported format.\nYou can use 'Save As' to save this copy."
+    IDS_NO_CHOICE           "Select Export Type..."
     IDS_DEFAULT             "Default"
     IDS_INTERLINEAR         "Interlinear"
     IDS_MULTIRECORD         "Multi-Record"
