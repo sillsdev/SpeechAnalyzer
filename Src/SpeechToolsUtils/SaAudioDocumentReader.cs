@@ -21,11 +21,12 @@ namespace SIL.SpeechTools.Utils
 		Phonemic = 2,
 		Orthographic = 3,
 		Gloss = 4,
-		Reference = 5,
-		MusicPhraseLevel1 = 6,
-		MusicPhraseLevel2 = 7,
-		MusicPhraseLevel3 = 8,
-		MusicPhraseLevel4 = 9,
+        GlossNat = 5,
+		Reference = 6,
+		MusicPhraseLevel1 = 7,
+		MusicPhraseLevel2 = 8,
+		MusicPhraseLevel3 = 9,
+		MusicPhraseLevel4 = 10
 	}
 
 	/// ----------------------------------------------------------------------------------------
@@ -352,11 +353,14 @@ namespace SIL.SpeechTools.Utils
 
 		/// </summary>
 		/// ------------------------------------------------------------------------------------
-		public bool ReadMarkSegment( out uint offset, out uint length, out string gloss, out string partOfSpeech, out string reference, out bool isBookmark)
+		public bool ReadMarkSegment( out uint offset, out uint length, out string gloss, out string glossNat, out string reference, out bool isBookmark)
 		{
 			// Get the intialization out of the way.
-			offset = length = 0;
-			gloss = partOfSpeech = reference = null;
+            offset = 0;
+            length = 0;
+            gloss = null;
+            glossNat = null;
+            reference = null;
 			isBookmark = false;
 		
 			// Check if there is no record for the audio file or we've finished reading segments.
@@ -382,7 +386,7 @@ namespace SIL.SpeechTools.Utils
 			offset = m_doc.m_segments[m_markEnumIndex].Offset;
 			length = m_doc.m_segments[m_markEnumIndex].MarkDuration;
 			gloss = m_doc.m_segments[m_markEnumIndex].Gloss;
-			partOfSpeech = m_doc.m_segments[m_markEnumIndex].PartOfSpeech;
+            glossNat = m_doc.m_segments[m_markEnumIndex].GlossNat;
 			reference = m_doc.m_segments[m_markEnumIndex].Reference;
 			isBookmark = m_doc.m_segments[m_markEnumIndex].IsBookmark;
 			m_markEnumIndex++;
@@ -599,14 +603,15 @@ namespace SIL.SpeechTools.Utils
 			uint length;
 			bool isBkMrk;
 			string gloss;
-			string pos;
+			string glossNat;
 			string reference;
 
-			while (ReadMarkSegment(out offset, out length, out gloss, out pos, out reference, out isBkMrk))
+			while (ReadMarkSegment( out offset, out length, out gloss, out glossNat, out reference, out isBkMrk))
 			{
 				AudioDocWords adw = new AudioDocWords();
 				adw.m_words[AnnotationType.Gloss] = gloss;
-				adw.m_words[AnnotationType.Reference] = reference;
+                adw.m_words[AnnotationType.GlossNat] = glossNat;
+                adw.m_words[AnnotationType.Reference] = reference;
 				adw.AudioLength = length;
 				words[offset] = adw;
 			}
@@ -1075,7 +1080,8 @@ namespace SIL.SpeechTools.Utils
 			m_words[AnnotationType.Tone] = null;
 			m_words[AnnotationType.Orthographic] = null;
 			m_words[AnnotationType.Gloss] = null;
-			m_words[AnnotationType.Reference] = null;
+            m_words[AnnotationType.GlossNat] = null;
+            m_words[AnnotationType.Reference] = null;
 		}
 
 		#region Properties
@@ -1084,7 +1090,8 @@ namespace SIL.SpeechTools.Utils
 		public string Tone { get { return m_words[AnnotationType.Tone]; } }
 		public string Orthographic { get { return m_words[AnnotationType.Orthographic]; } }
 		public string Gloss { get { return m_words[AnnotationType.Gloss]; } }
-		public string Reference { get { return m_words[AnnotationType.Reference]; } }
+        public string GlossNat { get { return m_words[AnnotationType.GlossNat]; } }
+        public string Reference { get { return m_words[AnnotationType.Reference]; } }
 		#endregion
 	}
 }

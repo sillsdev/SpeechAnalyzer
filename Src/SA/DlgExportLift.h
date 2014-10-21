@@ -30,10 +30,10 @@ class CDlgExportLift : public CDialog
 public:
     CDlgExportLift(LPCTSTR szDocTitle,
                  BOOL gloss,
+				 BOOL glossNat,
                  BOOL ortho,
                  BOOL phonemic,
                  BOOL phonetic,
-                 BOOL pos,
                  BOOL reference,
 				 list<wstring> iso,
                  CWnd * pParent = NULL);
@@ -66,6 +66,7 @@ protected:
     CButton ctlButtonOK;
     
     BOOL bGlossDflt;
+	BOOL bGlossNatDflt;
     BOOL bOrthoDflt;
     BOOL bPhonemicDflt;
     BOOL bPhoneticDflt;
@@ -76,8 +77,8 @@ protected:
 	CComboBox ctlPhonemicList;
 	CComboBox ctlPhoneticList;
 	CComboBox ctlGlossList;
+	CComboBox ctlGlossNatList;
 	CComboBox ctlOrthoList;
-	CComboBox ctlPOSList;
 
 	wstring refLang;
 	wstring phonemicLang;

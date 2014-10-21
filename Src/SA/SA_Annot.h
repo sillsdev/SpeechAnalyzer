@@ -7,8 +7,8 @@
 //                  CToneWnd
 //                  CPhonemicWnd
 //                  COrthographicWnd
-//                  CGlossWnd
-//                  CReferenceWnd classes.
+//                  CGlossWnd classes.
+//
 // Author: Urs Ruchti
 // copyright 2000 JAARS Inc. SIL
 //
@@ -37,8 +37,6 @@
 /////////////////////////////////////////////////////////////////////////////
 #ifndef _SA_ANNOT_H
 #define _SA_ANNOT_H
-
-
 
 //###########################################################################
 // CLegendWnd window
@@ -349,13 +347,6 @@ public:
     virtual void OnDraw(CDC * pDC, const CRect & printRect);
 };
 
-class CReferenceWnd : public CAnnotationWnd
-{
-public:
-    CReferenceWnd(int nIndex) : CAnnotationWnd(nIndex) {};
-    virtual void OnDraw(CDC * pDC, const CRect & printRect);
-};
-
 class CMusicPhraseWnd : public CAnnotationWnd
 {
 public:
@@ -363,5 +354,3 @@ public:
 };
 
 #endif
-
-

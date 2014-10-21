@@ -66,13 +66,13 @@ const char CDlgExportXML::XML_HEADER1[] =
     "    <!ELEMENT OrigFormat (#PCDATA)>\r\n"
     "    <!ELEMENT DatabaseName (#PCDATA)>\r\n"
     "\r\n"
-    "  <!ELEMENT LinguisticInfo (PhoneticText?,Tone?,PhonemicText?,Orthographic?,Gloss?,PartOfSpeech?,Reference?,PhraseLevel1?,PhraseLevel2?,PhraseLevel3?,PhraseLevel4?,FreeTranslation?,NumPhones?,NumWords?)>\r\n"
+    "  <!ELEMENT LinguisticInfo (PhoneticText?,Tone?,PhonemicText?,Orthographic?,Gloss?,GlossNat?,Reference?,PhraseLevel1?,PhraseLevel2?,PhraseLevel3?,PhraseLevel4?,FreeTranslation?,NumPhones?,NumWords?)>\r\n"
     "    <!ELEMENT PhoneticText (#PCDATA)>\r\n"
     "    <!ELEMENT Tone (#PCDATA)>\r\n"
     "    <!ELEMENT PhonemicText (#PCDATA)>\r\n"
     "    <!ELEMENT Orthographic (#PCDATA)>\r\n"
     "    <!ELEMENT Gloss (#PCDATA)>\r\n"
-    "    <!ELEMENT PartOfSpeech (#PCDATA)>\r\n"
+    "    <!ELEMENT GlossNat (#PCDATA)>\r\n"
     "    <!ELEMENT Reference (#PCDATA)>\r\n"
     "    <!ELEMENT PhraseLevel1 (#PCDATA)>\r\n"
     "    <!ELEMENT PhraseLevel2 (#PCDATA)>\r\n"
@@ -149,10 +149,10 @@ CDlgExportXML::CDlgExportXML(const CSaString & szDocTitle, CWnd * pParent) :
     m_bWords = TRUE;
     m_bAllAnnotations = TRUE;
     m_bGloss = TRUE;
+    m_bGlossNat = TRUE;
     m_bOrtho = TRUE;
     m_bPhonemic = TRUE;
     m_bPhonetic = TRUE;
-    m_bPOS = FALSE;
     m_bReference = FALSE;
     m_bTone = FALSE;
     m_bPhrase = FALSE;
@@ -241,7 +241,7 @@ void CDlgExportXML::OnOK()
     // process all flags
     if (m_bAllAnnotations)
     {
-        m_bReference = m_bPhonetic = m_bTone = m_bPhonemic = m_bOrtho = m_bGloss = m_bPOS = m_bPhrase = TRUE;
+        m_bReference = m_bPhonetic = m_bTone = m_bPhonemic = m_bOrtho = m_bGloss = m_bGlossNat = m_bPhrase = TRUE;
     }
 
     if (m_bAllFile)
@@ -327,7 +327,7 @@ void CDlgExportXML::OnOK()
             {
                 bBreak = TRUE;
             }
-            if (!m_bInterlinear && bBreak)
+            if ((!m_bInterlinear) && (bBreak))
             {
                 for (int nLoop = PHONETIC; nLoop < ANNOT_WND_NUMBER; nLoop++)
                 {
@@ -360,11 +360,6 @@ void CDlgExportXML::OnOK()
                     if (nLoop == GLOSS)
                     {
                         szAnnotation[nLoop] += pDoc->GetSegment(nLoop)->GetSegmentString(nFind).Mid(1);
-                        szPOS += ((CGlossSegment *)pDoc->GetSegment(GLOSS))->GetPOSAt(nFind);
-                        if (szPOS.GetLength() > nMaxLength)
-                        {
-                            nMaxLength = szPOS.GetLength();
-                        }
                     }
                     else
                     {
@@ -400,9 +395,9 @@ void CDlgExportXML::OnOK()
         {
             OutputXMLField(pFile,_T("Gloss"),szAnnotation[GLOSS]);
         }
-        if (m_bPOS)
+        if (m_bGlossNat)
         {
-            OutputXMLField(pFile,_T("PartOfSpeech"),szPOS);
+            OutputXMLField(pFile,_T("GlossNat"),szAnnotation[GLOSS_NAT]);
         }
         if (m_bReference)
         {
@@ -414,7 +409,7 @@ void CDlgExportXML::OnOK()
     {
         CSaString szPhrase;
         szString.Format(_T("PhraseLevel%d"), nPhrase - MUSIC_PL1 + 1);
-        if (m_bPhrase && !pDoc->GetSegment(nPhrase)->IsEmpty())
+        if ((m_bPhrase) && (!pDoc->GetSegment(nPhrase)->IsEmpty()))
         {
             int nNumber = 0;
             while (nNumber != -1)
@@ -628,10 +623,10 @@ void CDlgExportXML::DoDataExchange(CDataExchange * pDX)
     DDX_Check(pDX, IDC_EX_SFM_WORDS, m_bWords);
     DDX_Check(pDX, IDC_EXTAB_ANNOTATIONS, m_bAllAnnotations);
     DDX_Check(pDX, IDC_EXTAB_GLOSS, m_bGloss);
+    DDX_Check(pDX, IDC_EXTAB_GLOSS_NAT, m_bGlossNat);
     DDX_Check(pDX, IDC_EXTAB_ORTHO, m_bOrtho);
     DDX_Check(pDX, IDC_EXTAB_PHONEMIC, m_bPhonemic);
     DDX_Check(pDX, IDC_EXTAB_PHONETIC, m_bPhonetic);
-    DDX_Check(pDX, IDC_EXTAB_POS, m_bPOS);
     DDX_Check(pDX, IDC_EXTAB_REFERENCE, m_bReference);
     DDX_Check(pDX, IDC_EXTAB_TONE, m_bTone);
     DDX_Check(pDX, IDC_EXTAB_PHRASE, m_bPhrase);
@@ -649,17 +644,17 @@ void CDlgExportXML::OnAllAnnotations()
     SetEnable(IDC_EXTAB_PHONEMIC, bEnable);
     SetEnable(IDC_EXTAB_ORTHO, bEnable);
     SetEnable(IDC_EXTAB_GLOSS, bEnable);
+    SetEnable(IDC_EXTAB_GLOSS_NAT, bEnable);
     SetEnable(IDC_EXTAB_REFERENCE, bEnable);
-    SetEnable(IDC_EXTAB_POS, bEnable);
     SetEnable(IDC_EXTAB_PHRASE, bEnable);
     if (m_bAllAnnotations)
     {
-        m_bReference = m_bPhonetic = m_bTone = m_bPhonemic = m_bOrtho = m_bGloss = m_bPOS = m_bPhrase = TRUE;
+        m_bReference = m_bPhonetic = m_bTone = m_bPhonemic = m_bOrtho = m_bGloss = m_bGlossNat = m_bPhrase = TRUE;
         UpdateData(FALSE);
     }
     else
     {
-        m_bReference = m_bPhonetic = m_bTone = m_bPhonemic = m_bOrtho = m_bGloss = m_bPOS = m_bPhrase = FALSE;
+        m_bReference = m_bPhonetic = m_bTone = m_bPhonemic = m_bOrtho = m_bGloss = m_bGlossNat = m_bPhrase = FALSE;
         UpdateData(FALSE);
     }
 }

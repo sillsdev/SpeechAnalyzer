@@ -1,19 +1,8 @@
-9/24/2013
+10/20/2014
 
-*September 2014*****************************************
-Tone-to-Gloss National
-Change all reference of Tone to Gloss Nat., see email Aug 19
-  . Main Menu: Graphs/ Transcription Bars/ Tone
-  . Right-Mouse click on a plot:  Transcription Bars/ Tone
-  . Tone label in Transcription Bar
-  . Main Menu: File/ Export/ (.SFM) (.STF) (.XML) dialog boxes
-. Tone is currently tied to each phonetic item (or series of IPA characters as in a single Word).
-A Gloss Nat. transcription can only be associated with a Word and not a single IPA character.
-So the Tone transcription field now needs to work like the current Gloss transcription field.
-Or maybe just hide the Tone transcription field and make a copy of the current Gloss code.
+*APLTW: October 21-25************************************
 
-
-*October 2014*******************************************
+November 2014*******************************************
 Revision of IPA
 1. In File\ Information\ Comments\ Phonetic
 Would you put a space character between each Phonetic Word.
@@ -25,14 +14,9 @@ to:
 Color Work
 2. Color Options see email Aug 7
 
-
-*APLTW: October 21-25************************************
-
-
-*November 2014 ******************************************
+*December 2014 ******************************************
 Lift 2.0 ?
 ELAN 2.0
-
 
 *Some Day************************************************
 
@@ -54,3 +38,4 @@ project. Then I will ask Russ to make an LM Import feature that can read the SMF
 
 . play a Video file in a child window, and extract the audio for phonetic analysis.
 
+6. Add control the the split file feature to allow user to disable or enable export of phrase segments.

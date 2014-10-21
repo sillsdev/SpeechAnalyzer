@@ -13,6 +13,7 @@ IMPLEMENT_DYNAMIC(CDlgAlignTranscriptionDataSheet, CPropertySheet)
 
 CDlgAlignTranscriptionDataSheet::CDlgAlignTranscriptionDataSheet(CWnd * pParentWnd, CSaDoc * pSaDoc) :
     gloss(pSaDoc,GLOSS,IDD_ANNOTATION_GLOSS_PAGE),
+	glossNat(pSaDoc,GLOSS_NAT,IDD_ANNOTATION_GLOSS_NAT_PAGE),
     ortho(pSaDoc,ORTHO,IDD_ANNOTATION_ORTHOGRAPHIC_PAGE),
     phonemic(pSaDoc,PHONEMIC,IDD_ANNOTATION_PHONEMIC_PAGE),
     phonetic(pSaDoc,PHONETIC,IDD_ANNOTATION_PHONETIC_PAGE),
@@ -23,6 +24,7 @@ CDlgAlignTranscriptionDataSheet::CDlgAlignTranscriptionDataSheet(CWnd * pParentW
     AddPage(&init);
     AddPage(&import);
     AddPage(&gloss);
+	AddPage(&glossNat);
     AddPage(&ortho);
     AddPage(&phonetic);
     AddPage(&phonemic);

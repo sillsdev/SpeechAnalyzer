@@ -11,8 +11,7 @@ namespace SIL.SpeechTools.Utils
 		bool Initialize(string audioFilePath, string origMD5HashCode, bool isTempDB);
 		void Close();
 		void AddSegment(int annotationType, uint offset, uint length, string annotation);
-		void AddMarkSegment(uint offset, uint length, string gloss, string partOfSpeech,
-			string reference, bool isBookmark);
+		void AddMarkSegment(uint offset, uint length, string gloss, string glossNat, string reference, bool isBookmark);
 		void DeleteSegments();
 		void WriteAsMusicXML(string SAMAString);
         void ExportMusicXML(string SAMAString, string fileName);

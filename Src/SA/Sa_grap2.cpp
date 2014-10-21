@@ -95,6 +95,8 @@
 #include "time.h"
 #include <afxpriv.h>
 #include "PrivateCursorWnd.h"
+#include "ReferenceWnd.h"
+#include "GlossNatWnd.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE
@@ -183,6 +185,7 @@ void CGraphWnd::CreateAnnotationWindows()
     m_apAnnWnd[PHONEMIC] = new CPhonemicWnd(PHONEMIC);
     m_apAnnWnd[ORTHO] = new COrthographicWnd(ORTHO);
     m_apAnnWnd[GLOSS] = new CGlossWnd(GLOSS);
+    m_apAnnWnd[GLOSS_NAT] = new CGlossNatWnd(GLOSS_NAT);
     m_apAnnWnd[REFERENCE] = new CReferenceWnd(REFERENCE);
     m_apAnnWnd[MUSIC_PL1] = new CMusicPhraseWnd(MUSIC_PL1);
     m_apAnnWnd[MUSIC_PL2] = new CMusicPhraseWnd(MUSIC_PL2);
@@ -452,8 +455,7 @@ void CGraphWnd::PrintHiResGraph(CDC * pDC, const CRect * printRect,
     {
         if (m_abAnnWnd[nLoop])
         {
-            pDC->SetWindowOrg(CPoint(originX - A[nLoop].left,
-                                     originY - A[nLoop].top));
+            pDC->SetWindowOrg(CPoint(originX - A[nLoop].left,originY - A[nLoop].top));
             m_apAnnWnd[nLoop]->OnDraw(pDC,scaledAnnotRect[nLoop]);
         }
     }
@@ -871,11 +873,11 @@ BOOL CGraphWnd::bSetProperties(int nID)
     CSaView * pView = ((CMainFrame *)AfxGetMainWnd())->GetCurrSaView();
     if (pView)
     {
-        if (nID == IDD_MELOGRAM && pView->GetGraphIndexForIDD(IDD_TWC) == -1)
+        if ((nID == IDD_MELOGRAM) && (pView->GetGraphIndexForIDD(IDD_TWC) == -1))
         {
             m_bLegend = TRUE;
         }
-        else if (nID == IDD_MAGNITUDE && pView->GetGraphIndexForIDD(IDD_TWC) == -1)
+        else if ((nID == IDD_MAGNITUDE) && (pView->GetGraphIndexForIDD(IDD_TWC) == -1))
         {
             CGraphWnd * pGraph = (CGraphWnd *)pView->GraphIDtoPtr(IDD_MELOGRAM);
             if (pGraph)
@@ -893,7 +895,7 @@ BOOL CGraphWnd::bSetProperties(int nID)
 
     for (int i = 0; i < ANNOT_WND_NUMBER; i++)
     {
-        m_abAnnWnd[i] = (nID == IDD_RAWDATA && i == 0);
+        m_abAnnWnd[i] = ((nID == IDD_RAWDATA) && (i == 0));
     }
 
     return TRUE;

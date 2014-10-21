@@ -26,7 +26,7 @@ LANGUAGE LANG_NEUTRAL, SUBLANG_NEUTRAL
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 3,1,0,99
+ FILEVERSION 3,1,0,101
  PRODUCTVERSION 1,0,0,1
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
@@ -44,7 +44,7 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "SIL International"
             VALUE "FileDescription", "Speech Analyzer Resource DLL"
-            VALUE "FileVersion", "v3.1.0.99"
+            VALUE "FileVersion", "v3.1.0.101"
             VALUE "InternalName", "SA_ENU"
             VALUE "LegalCopyright", "© 1996-2014 SIL International (MSEA)"
             VALUE "OriginalFilename", "SA_ENU.dll"
@@ -1468,12 +1468,13 @@ FONT 8, "MS Sans Serif", 0, 0, 0x0
 BEGIN
     LTEXT           "Select Transcriptions To Modify",IDC_TITLE,5,7,324,10
     LTEXT           "The Transcription Alignment tool aids the process of importing transcription and aligning them to the utterance.\n\nPlease select the transcriptions to be modified.",IDC_INSTRUCTION,5,19,324,47
-    GROUPBOX        "Modify",IDC_GROUP,17,96,60,65
+    GROUPBOX        "Modify",IDC_GROUP,17,96,60,74
     LTEXT           "The transcriptions are synchronized using the spaces as embedded word delimiters.",IDC_DETAILS,82,100,247,50
     CONTROL         "&Phonetic",IDC_PHONETIC,"Button",BS_AUTOCHECKBOX | WS_GROUP | WS_TABSTOP,20,117,54,10
     CONTROL         "P&honemic",IDC_PHONEMIC,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,20,127,54,10
     CONTROL         "&Orthographic",IDC_ORTHOGRAPHIC,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,20,137,54,10
     CONTROL         "&Gloss",IDC_GLOSS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,20,147,54,10
+    CONTROL         "Gloss &Nat.",IDC_GLOSS_NAT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,20,157,54,10
     CONTROL         "&Reference",IDC_REFERENCE,"Button",BS_AUTOCHECKBOX | WS_GROUP | WS_TABSTOP,20,107,54,10
     CONTROL         "Use Reference Data To Import Transcriptions",IDC_USE_REFERENCE,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,21,67,159,10
@@ -1552,28 +1553,28 @@ BEGIN
     LTEXT           "Please select Finish to perform automatic import and alignment.\n\nNOTE: The result can be undone using the Undo command in the edit menu.",IDC_INSTRUCTION,5,19,324,47
 END
 
-IDD_EDITOR DIALOGEX 0, 0, 250, 112
+IDD_EDITOR DIALOGEX 0, 0, 249, 112
 STYLE DS_SETFONT | WS_CLIPSIBLINGS | WS_CAPTION | WS_SYSMENU
 CAPTION "Transcription Editor"
 FONT 8, "MS Sans Serif", 0, 0, 0x0
 BEGIN
     EDITTEXT        IDC_INPUTSTRING,5,10,180,52,ES_MULTILINE | WS_VSCROLL
-    PUSHBUTTON      "Wor&d",ID_EDIT_ADD_WORD,10,75,45,12,WS_GROUP
-    PUSHBUTTON      "Book&mark",ID_EDIT_ADD_BOOKMARK,10,90,45,12
-    PUSHBUTTON      "&Add",ID_EDIT_ADD,70,75,45,12,WS_GROUP
-    PUSHBUTTON      "&Remove",ID_EDIT_REMOVE,70,90,45,12,NOT WS_TABSTOP
+    PUSHBUTTON      "Wor&d",ID_EDIT_ADD_WORD,10,77,45,12,WS_GROUP
+    PUSHBUTTON      "Book&mark",ID_EDIT_ADD_BOOKMARK,10,91,45,12
+    PUSHBUTTON      "&Add",ID_EDIT_ADD,70,76,45,12,WS_GROUP
+    PUSHBUTTON      "&Remove",ID_EDIT_REMOVE,70,91,45,12,NOT WS_TABSTOP
     PUSHBUTTON      "IDB_UP",ID_EDIT_UP,141,71,19,17,BS_ICON | WS_GROUP | NOT WS_TABSTOP
     PUSHBUTTON      "IDB_PREV",ID_EDIT_PREVIOUS,122,80,19,17,BS_ICON | WS_GROUP
     DEFPUSHBUTTON   "IDB_NEXT",ID_EDIT_NEXT,160,80,19,17,BS_ICON | BS_CENTER | BS_VCENTER
     PUSHBUTTON      "IDB_DOWN",ID_EDIT_DOWN,141,88,19,17,BS_ICON
-    PUSHBUTTON      "&Segment",IDC_PLAY_SEGMENT,195,60,45,12,WS_GROUP
+    PUSHBUTTON      "&Segment",IDC_PLAY_SEGMENT,195,61,45,12,WS_GROUP
     PUSHBUTTON      "&Word",IDC_PLAY_WORD,195,75,45,12,NOT WS_TABSTOP
     PUSHBUTTON      "S&top",IDC_STOP_WORD,195,75,45,12,NOT WS_TABSTOP
     PUSHBUTTON      "&Close",IDOK,195,4,45,12,WS_GROUP
     PUSHBUTTON      "I&PA Chart",IDC_CHARACTERCHART,195,34,45,12,WS_GROUP
-    GROUPBOX        "Add Gloss",IDC_GLOSS,5,64,55,43
-    GROUPBOX        "Segment",IDC_SEGMENTTEXT,65,64,120,43
-    GROUPBOX        "Playback",IDC_STATIC,190,49,55,57
+    GROUPBOX        "Add Gloss",IDC_GLOSS,5,64,55,45
+    GROUPBOX        "Segment",IDC_SEGMENTTEXT,65,64,120,45
+    GROUPBOX        "Playback",IDC_STATIC,190,52,55,56
     PUSHBUTTON      "&Help",IDHELP,195,19,45,12
     PUSHBUTTON      "Phrase &L1",IDC_PLAY_PHRASE_L1,195,90,45,12,NOT WS_TABSTOP
     PUSHBUTTON      "S&top",IDC_STOP_PHRASE_L1,195,90,45,12,NOT WS_TABSTOP
@@ -1603,7 +1604,7 @@ BEGIN
     CONTROL         "Phonemic",IDC_EXTAB_PHONEMIC,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,27,90,47,10
     CONTROL         "Orthographic",IDC_EXTAB_ORTHO,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,27,102,57,10
     CONTROL         "Gloss",IDC_EXTAB_GLOSS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,27,114,33,10
-    CONTROL         "Part of Speech",IDC_EXTAB_POS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,27,126,63,10
+    CONTROL         "Gloss Nat.",IDC_EXTAB_GLOSS_NAT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,27,126,67,10
     CONTROL         "All &Calculations",IDC_EXTAB_CALC,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,101,18,63,10
     CONTROL         "Magnitude",IDC_EXTAB_MAGNITUDE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,109,30,49,10
     CONTROL         "Pitch",IDC_EXTAB_PITCH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,109,42,32,10
@@ -1631,7 +1632,7 @@ BEGIN
     PUSHBUTTON      "&Help",IDHELP,211,147,50,14
 END
 
-IDD_EXPORT_SFM DIALOGEX 0, 0, 310, 207
+IDD_EXPORT_SFM DIALOGEX 0, 0, 310, 203
 STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
 CAPTION "Export Standard Format"
 FONT 8, "MS Sans Serif", 0, 0, 0x0
@@ -1644,11 +1645,11 @@ BEGIN
     CONTROL         "Phonemic",IDC_EXTAB_PHONEMIC,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,22,78,47,10
     CONTROL         "Orthographic",IDC_EXTAB_ORTHO,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,22,90,57,10
     CONTROL         "Gloss",IDC_EXTAB_GLOSS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,22,102,33,10
-    CONTROL         "Part of Speech",IDC_EXTAB_POS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,22,114,63,10
-    CONTROL         "Phrase Levels",IDC_EXTAB_PHRASE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,22,126,60,10
-    CONTROL         "Free Translation",IDC_EX_SFM_FREE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,138,66,10
-    CONTROL         "Number of Phones",IDC_EX_SFM_PHONES,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,150,71,10
-    CONTROL         "Number of Words",IDC_EX_SFM_WORDS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,162,68,10
+    CONTROL         "Gloss Nat.",IDC_EXTAB_GLOSS_NAT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,22,114,58,10
+    CONTROL         "Phrase Levels",IDC_EXTAB_PHRASE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,22,125,60,10
+    CONTROL         "Free Translation",IDC_EX_SFM_FREE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,137,66,10
+    CONTROL         "Number of Phones",IDC_EX_SFM_PHONES,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,149,71,10
+    CONTROL         "Number of Words",IDC_EX_SFM_WORDS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,161,68,10
     CONTROL         "All File Information",IDC_EX_SFM_FILE_INFO,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,110,18,73,10
     CONTROL         "Creation Time",IDC_EX_SFM_ORIGINAL_DATE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,118,30,59,10
     CONTROL         "Last Edit",IDC_EX_SFM_LAST_DATE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,118,42,43,10
@@ -1678,7 +1679,7 @@ BEGIN
     GROUPBOX        "Include",-1,9,6,292,170
     CONTROL         "Quantization Size",IDC_EX_SFM_QUANTIZATION,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,118,162,71,10
     PUSHBUTTON      "&Help",IDHELP,251,179,50,14
-    COMBOBOX        IDC_EX_SFM_EXPORT_TYPE,14,180,123,10,CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
+    COMBOBOX        IDC_EX_SFM_EXPORT_TYPE,14,179,123,10,CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
 END
 
 IDD_EXPORT_XML DIALOGEX 0, 0, 295, 205
@@ -1694,7 +1695,7 @@ BEGIN
     CONTROL         "Phonemic",IDC_EXTAB_PHONEMIC,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,27,78,47,10
     CONTROL         "Orthographic",IDC_EXTAB_ORTHO,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,27,90,57,10
     CONTROL         "Gloss",IDC_EXTAB_GLOSS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,27,102,33,10
-    CONTROL         "Part of Speech",IDC_EXTAB_POS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,27,114,63,10
+    CONTROL         "Gloss Nat.",IDC_EXTAB_GLOSS_NAT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,27,114,55,10
     CONTROL         "Phrase Levels",IDC_EXTAB_PHRASE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,27,126,60,10
     CONTROL         "Free Translation",IDC_EX_SFM_FREE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,19,138,66,10
     CONTROL         "Number of Phones",IDC_EX_SFM_PHONES,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,19,150,71,10
@@ -1742,8 +1743,8 @@ BEGIN
     CONTROL         "Phonemic",IDC_EXTAB_PHONEMIC,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,27,58,47,10
     CONTROL         "Orthographic",IDC_EXTAB_ORTHO,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,27,69,57,10
     CONTROL         "Gloss",IDC_EXTAB_GLOSS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,27,81,33,10
-    CONTROL         "Part of Speech",IDC_EXTAB_POS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,27,93,63,10
-    CONTROL         "Phrase Levels",IDC_EXTAB_PHRASE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,27,105,61,10
+    CONTROL         "Gloss Nat.",IDC_EXTAB_GLOSS_NAT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,27,93,59,10
+    CONTROL         "Phrase Levels",IDC_EXTAB_PHRASE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,27,104,61,9
     PUSHBUTTON      "Cancel",IDCANCEL,177,277,50,14
     DEFPUSHBUTTON   "Export",IDOK,123,277,50,14
     GROUPBOX        "Include",IDC_STATIC,9,6,271,147
@@ -1970,7 +1971,7 @@ BEGIN
     GROUPBOX        "Select from one to six graphs",IDC_STATIC,5,3,264,155
 END
 
-IDD_ANNOTATION_IMPORT_SFM DIALOGEX 0, 0, 222, 96
+IDD_ANNOTATION_IMPORT_SFM DIALOGEX 0, 0, 222, 114
 STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
 CAPTION "Import as SFM"
 FONT 8, "MS Sans Serif", 0, 0, 0x0
@@ -1987,7 +1988,10 @@ BEGIN
     CONTROL         "Import Orthographic .....",IDC_ORTHO_ENABLED,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,62,89,10
     LTEXT           "",IDC_STATIC,0,3,30,8
     CONTROL         "Import Gloss ................",IDC_GLOSS_ENABLED,"Button",BS_AUTOCHECKBOX | NOT WS_VISIBLE | WS_DISABLED | WS_TABSTOP,7,78,90,10
-    EDITTEXT        IDC_GLOSS,104,77,25,12,ES_AUTOHSCROLL | NOT WS_VISIBLE | WS_DISABLED
+    EDITTEXT        IDC_GLOSS,104,76,25,12,ES_AUTOHSCROLL | NOT WS_VISIBLE | WS_DISABLED
+    CONTROL         "Import Gloss Nat.............",IDC_GLOSS_NAT_ENABLED,
+                    "Button",BS_AUTOCHECKBOX | NOT WS_VISIBLE | WS_DISABLED | WS_TABSTOP,7,93,90,10
+    EDITTEXT        IDC_GLOSS_NAT,104,93,25,12,ES_AUTOHSCROLL | NOT WS_VISIBLE | WS_DISABLED
     LTEXT           "SFM Marker",IDC_STATIC,97,11,43,8
 END
 
@@ -2282,7 +2286,7 @@ STYLE DS_SETFONT | WS_CHILD | WS_DISABLED | WS_CAPTION
 CAPTION "Transcription Alignment"
 FONT 8, "MS Sans Serif", 0, 0, 0x0
 BEGIN
-    LTEXT           "Modify Gloss Transcription",IDC_TITLE,5,7,324,10
+    LTEXT           "Modify Gloss Nat. Transcription",IDC_TITLE,5,7,324,10
     LTEXT           "Make any necessary changes to the gloss.\n\nThe import button will import an transcription from either a plain text or SFM-formatted file.\nThe revert button will reload the current transcription.",IDC_INSTRUCTION,5,19,324,47
     PUSHBUTTON      "&Revert",IDC_REVERT,169,76,45,14
     EDITTEXT        IDC_ANNOTATION,5,94,324,87,ES_MULTILINE | ES_AUTOVSCROLL | ES_NOHIDESEL | ES_WANTRETURN
@@ -2302,7 +2306,7 @@ BEGIN
     LTEXT           "The import button will import an transcription from either marked-up text or SFM-formatted file.\nThe revert button will reload the current transcription.",IDC_INSTRUCTION2,5,20,324,18
 END
 
-IDD_ANNOTATION_IMPORT_SFM_WITH_REF DIALOGEX 0, 0, 222, 111
+IDD_ANNOTATION_IMPORT_SFM_WITH_REF DIALOGEX 0, 0, 220, 138
 STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
 CAPTION "Import as SFM with Reference"
 FONT 8, "MS Sans Serif", 0, 0, 0x0
@@ -2312,7 +2316,7 @@ BEGIN
     EDITTEXT        IDC_ORTHOGRAPHIC,104,76,25,12,ES_AUTOHSCROLL
     EDITTEXT        IDC_PHONETIC,104,42,25,12,ES_AUTOHSCROLL
     EDITTEXT        IDC_PHONEMIC,104,59,25,12,ES_AUTOHSCROLL
-    PUSHBUTTON      "Plain &Text",IDC_IMPORT_PLAIN_TEXT,163,92,50,14
+    PUSHBUTTON      "Plain &Text",IDC_IMPORT_PLAIN_TEXT,163,113,50,14
     CONTROL         "Import Phonetic ............",IDC_PHONETIC_ENABLED,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,44,92,10
     CONTROL         "Import Phonemic ..........",IDC_PHONEMIC_ENABLED,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,61,92,10
@@ -2320,6 +2324,9 @@ BEGIN
     LTEXT           "",IDC_STATIC,0,3,30,8
     CONTROL         "Import Gloss ................",IDC_GLOSS_ENABLED,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,94,92,10
     EDITTEXT        IDC_GLOSS,104,93,25,12,ES_AUTOHSCROLL
+    CONTROL         "Import Gloss Nat.............",IDC_GLOSS_NAT_ENABLED,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,110,92,10
+    EDITTEXT        IDC_GLOSS_NAT,104,109,25,12,ES_AUTOHSCROLL
     LTEXT           "SFM Marker",IDC_STATIC,97,11,43,8
     EDITTEXT        IDC_REFERENCE,103,26,25,12,ES_AUTOHSCROLL
     LTEXT           "Reference.....................",IDC_STATIC,18,27,80,8
@@ -2397,8 +2404,8 @@ BEGIN
     COMBOBOX        IDC_COMBO_ORTHO,45,72,110,30,CBS_DROPDOWN | CBS_SORT | WS_VSCROLL | WS_TABSTOP
     LTEXT           "Gloss",IDC_STATIC,24,91,18,8
     COMBOBOX        IDC_COMBO_GLOSS,45,89,110,30,CBS_DROPDOWN | CBS_SORT | WS_VSCROLL | WS_TABSTOP
-    LTEXT           "POS",IDC_STATIC,195,24,16,8
-    COMBOBOX        IDC_COMBO_POS,215,22,110,30,CBS_DROPDOWN | CBS_SORT | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "Gloss Nat.",IDC_STATIC,178,24,34,8
+    COMBOBOX        IDC_COMBO_GLOSS_NAT,215,22,110,30,CBS_DROPDOWN | CBS_SORT | WS_VSCROLL | WS_TABSTOP
     LTEXT           "Phrase L1",IDC_STATIC,178,41,33,8
     COMBOBOX        IDC_COMBO_PL1,215,39,110,30,CBS_DROPDOWN | CBS_SORT | WS_VSCROLL | WS_TABSTOP
     LTEXT           "Phrase L2",IDC_STATIC,178,58,33,8
@@ -2419,7 +2426,7 @@ BEGIN
     CONTROL         "Phonemic",IDC_EXTAB_PHONEMIC,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,86,65,12
     CONTROL         "Orthographic",IDC_EXTAB_ORTHO,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,102,65,12
     CONTROL         "Gloss",IDC_EXTAB_GLOSS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,118,65,12
-    CONTROL         "Part of Speech",IDC_EXTAB_POS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,132,65,12
+    CONTROL         "Gloss Nat.",IDC_EXTAB_GLOSS_NAT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,132,65,12
     LTEXT           "For each transcription to be exported, please specify the language code that identifies the language used for the transcription.",IDC_STATIC,10,17,270,20
     LTEXT           "Language Code",IDC_STATIC,96,44,52,8
     COMBOBOX        IDC_LIST_REFERENCE,95,57,50,58,CBS_DROPDOWNLIST | CBS_SORT | WS_VSCROLL | WS_TABSTOP
@@ -2427,7 +2434,6 @@ BEGIN
     COMBOBOX        IDC_LIST_PHONEMIC,95,87,50,80,CBS_DROPDOWNLIST | CBS_SORT | WS_VSCROLL | WS_TABSTOP
     COMBOBOX        IDC_LIST_ORTHO,95,102,50,79,CBS_DROPDOWNLIST | CBS_SORT | WS_VSCROLL | WS_TABSTOP
     COMBOBOX        IDC_LIST_GLOSS,95,117,50,95,CBS_DROPDOWNLIST | CBS_SORT | WS_VSCROLL | WS_TABSTOP
-    COMBOBOX        IDC_LIST_POS,95,132,50,85,CBS_DROPDOWNLIST | CBS_SORT | WS_VSCROLL | WS_TABSTOP
     PUSHBUTTON      "Cancel",IDCANCEL,177,219,50,14
     DEFPUSHBUTTON   "Export",IDOK,123,219,50,14
     GROUPBOX        "Include",IDC_STATIC,9,6,271,147
@@ -2435,9 +2441,10 @@ BEGIN
     EDITTEXT        IDC_EDIT_FIELDWORKS_FOLDER,10,172,271,14,ES_AUTOHSCROLL | WS_DISABLED
     COMBOBOX        IDC_COMBO_FIELDWORKS_PROJECT,10,192,271,101,CBS_DROPDOWN | CBS_SORT | WS_VSCROLL | WS_TABSTOP
     LTEXT           "FieldWorks Project",IDC_STATIC_FIELDWORKS_PROJECT,9,159,270,8
+    COMBOBOX        IDC_LIST_GLOSS_NAT,95,131,50,95,CBS_DROPDOWNLIST | CBS_SORT | WS_VSCROLL | WS_TABSTOP
 END
 
-IDD_SELECT_TRANSCRIPTION_BARS DIALOGEX 0, 0, 116, 134
+IDD_SELECT_TRANSCRIPTION_BARS DIALOGEX 0, 0, 116, 144
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Select Transcription Bars"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
@@ -2448,12 +2455,13 @@ BEGIN
     CONTROL         "Phone&mic",ID_POPUPGRAPH_PHONEMIC,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,26,38,46,10
     CONTROL         "Orthogr&aphic",ID_POPUPGRAPH_ORTHO,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,26,48,58,10
     CONTROL         "&Gloss",ID_POPUPGRAPH_GLOSS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,26,58,33,10
-    CONTROL         "Phrase Level &1",ID_POPUPGRAPH_MUSIC_PL1,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,26,68,63,10
-    CONTROL         "Phrase Level &2",ID_POPUPGRAPH_MUSIC_PL2,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,26,78,63,10
-    CONTROL         "Phrase Level &3",ID_POPUPGRAPH_MUSIC_PL3,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,26,88,63,10
-    CONTROL         "Phrase Level &4",ID_POPUPGRAPH_MUSIC_PL4,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,26,98,63,10
-    DEFPUSHBUTTON   "OK",IDOK,6,113,50,14
-    PUSHBUTTON      "Cancel",IDCANCEL,60,113,50,14
+    CONTROL         "Gloss &Nat.",ID_POPUPGRAPH_GLOSS_NAT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,26,68,50,10
+    CONTROL         "Phrase Level &1",ID_POPUPGRAPH_MUSIC_PL1,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,26,78,63,10
+    CONTROL         "Phrase Level &2",ID_POPUPGRAPH_MUSIC_PL2,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,26,88,63,10
+    CONTROL         "Phrase Level &3",ID_POPUPGRAPH_MUSIC_PL3,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,26,98,63,10
+    CONTROL         "Phrase Level &4",ID_POPUPGRAPH_MUSIC_PL4,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,26,108,63,10
+    DEFPUSHBUTTON   "OK",IDOK,6,123,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,60,123,50,14
 END
 
 IDD_EXPORTLIFTRESULT DIALOGEX 0, 0, 244, 144
@@ -2472,6 +2480,18 @@ BEGIN
     GROUPBOX        "",IDC_STATIC,11,73,221,43
     LTEXT           "The WAV file(s) are already associated with this project.\n",IDC_STATIC,16,98,211,8
     LTEXT           "Run FieldWorks and import this Lift file.",IDC_STATIC,16,84,212,9
+END
+
+IDD_ANNOTATION_GLOSS_NAT_PAGE DIALOGEX 0, 0, 335, 186
+STYLE DS_SETFONT | WS_CHILD | WS_DISABLED | WS_CAPTION
+CAPTION "Transcription Alignment"
+FONT 8, "MS Sans Serif", 0, 0, 0x0
+BEGIN
+    LTEXT           "Modify Gloss Transcription",IDC_TITLE,5,7,324,10
+    LTEXT           "Make any necessary changes to the gloss.\n\nThe import button will import an transcription from either a plain text or SFM-formatted file.\nThe revert button will reload the current transcription.",IDC_INSTRUCTION,5,19,324,47
+    PUSHBUTTON      "&Revert",IDC_REVERT,169,76,45,14
+    EDITTEXT        IDC_ANNOTATION,5,94,324,87,ES_MULTILINE | ES_AUTOVSCROLL | ES_NOHIDESEL | ES_WANTRETURN
+    DEFPUSHBUTTON   "&Import ",IDC_IMPORT,120,76,45,14
 END
 
 
@@ -2499,6 +2519,10 @@ BEGIN
         VERTGUIDE, 13
         TOPMARGIN, 7
         BOTTOMMARGIN, 22
+    END
+
+    IDD_GRAPHSTYPES, DIALOG
+    BEGIN
     END
 
     IDD_PARAMETERSSPECTROPAGE, DIALOG
@@ -2529,6 +2553,10 @@ BEGIN
         VERTGUIDE, 270
     END
 
+    IDD_FONT_TEMPLATE_ANNOTATION, DIALOG
+    BEGIN
+    END
+
     IDD_PLAYER, DIALOG
     BEGIN
         RIGHTMARGIN, 279
@@ -2538,6 +2566,18 @@ BEGIN
     IDD_FINDREPLACE, DIALOG
     BEGIN
         BOTTOMMARGIN, 126
+    END
+
+    IDD_FNKEYS, DIALOG
+    BEGIN
+    END
+
+    IDD_EQUALIZE, DIALOG
+    BEGIN
+    END
+
+    IDD_CHARTVOWELSPAGE, DIALOG
+    BEGIN
     END
 
     IDD_CHARTCONSONANTSPAGE, DIALOG
@@ -2550,9 +2590,41 @@ BEGIN
         RIGHTMARGIN, 352
     END
 
+    IDD_ANNOTATION_INIT_PAGE, DIALOG
+    BEGIN
+    END
+
+    IDD_ANNOTATION_ORTHOGRAPHIC_PAGE, DIALOG
+    BEGIN
+    END
+
+    IDD_ANNOTATION_PHONETIC_PAGE, DIALOG
+    BEGIN
+    END
+
+    IDD_ANNOTATION_PHONEMIC_PAGE, DIALOG
+    BEGIN
+    END
+
+    IDD_ANNOTATION_ALIGN_PAGE, DIALOG
+    BEGIN
+    END
+
+    IDD_ANNOTATION_SEGMENT_PAGE, DIALOG
+    BEGIN
+    END
+
+    IDD_ANNOTATION_FINISH_PAGE, DIALOG
+    BEGIN
+    END
+
     IDD_EDITOR, DIALOG
     BEGIN
-        BOTTOMMARGIN, 95
+        BOTTOMMARGIN, 109
+    END
+
+    IDD_ANNOTATION_EDIT, DIALOG
+    BEGIN
     END
 
     IDD_EXPORT_TABLE, DIALOG
@@ -2560,7 +2632,7 @@ BEGIN
         LEFTMARGIN, 10
         RIGHTMARGIN, 260
         TOPMARGIN, 10
-        BOTTOMMARGIN, 150
+        BOTTOMMARGIN, 161
     END
 
     IDD_EXPORT_SFM, DIALOG
@@ -2568,7 +2640,7 @@ BEGIN
         LEFTMARGIN, 10
         RIGHTMARGIN, 300
         TOPMARGIN, 10
-        BOTTOMMARGIN, 197
+        BOTTOMMARGIN, 193
     END
 
     IDD_EXPORT_XML, DIALOG
@@ -2585,6 +2657,10 @@ BEGIN
         RIGHTMARGIN, 280
         TOPMARGIN, 10
         BOTTOMMARGIN, 290
+    END
+
+    IDD_IMPORT_DIALOG, DIALOG
+    BEGIN
     END
 
     IDD_OPTIONSVIEWPAGE, DIALOG
@@ -2605,7 +2681,7 @@ BEGIN
 
     IDD_ANNOTATION_IMPORT_SFM, DIALOG
     BEGIN
-        BOTTOMMARGIN, 95
+        BOTTOMMARGIN, 113
     END
 
     IDD_MBROLA, DIALOG
@@ -2670,6 +2746,10 @@ BEGIN
         BOTTOMMARGIN, 156
     END
 
+    IDD_ANNOTATION_GLOSS_PAGE, DIALOG
+    BEGIN
+    END
+
     IDD_ANNOTATION_IMPORT_REF, DIALOG
     BEGIN
         BOTTOMMARGIN, 183
@@ -2677,7 +2757,8 @@ BEGIN
 
     IDD_ANNOTATION_IMPORT_SFM_WITH_REF, DIALOG
     BEGIN
-        BOTTOMMARGIN, 106
+        RIGHTMARGIN, 218
+        BOTTOMMARGIN, 133
     END
 
     IDD_EXPORTFWRESULT, DIALOG
@@ -2696,6 +2777,18 @@ BEGIN
         BOTTOMMARGIN, 42
     END
 
+    IDD_IMPORT_ELAN_FINISH_PAGE, DIALOG
+    BEGIN
+    END
+
+    IDD_IMPORT_ELAN_INTRO_PAGE, DIALOG
+    BEGIN
+    END
+
+    IDD_IMPORT_ELAN_SELECT_PAGE, DIALOG
+    BEGIN
+    END
+
     IDD_EXPORT_LIFT, DIALOG
     BEGIN
         LEFTMARGIN, 10
@@ -2709,7 +2802,7 @@ BEGIN
         LEFTMARGIN, 7
         RIGHTMARGIN, 109
         TOPMARGIN, 7
-        BOTTOMMARGIN, 127
+        BOTTOMMARGIN, 137
     END
 
     IDD_EXPORTLIFTRESULT, DIALOG
@@ -2718,6 +2811,10 @@ BEGIN
         RIGHTMARGIN, 237
         TOPMARGIN, 7
         BOTTOMMARGIN, 137
+    END
+
+    IDD_ANNOTATION_GLOSS_NAT_PAGE, DIALOG
+    BEGIN
     END
 END
 #endif    // APSTUDIO_INVOKED
@@ -3103,10 +3200,17 @@ BEGIN
                 MENUITEM "&Waveform Only",              ID_ORTHO_RAWDATA
                 MENUITEM "&No Graphs",                  ID_ORTHO_NONE
             END
-            POPUP "&Gloss"
+            POPUP "&Gloss Eng."
             BEGIN
                 MENUITEM "&All Graphs",                 ID_GLOSS_ALL
                 MENUITEM "&This Graph",                 ID_POPUPGRAPH_GLOSS
+                MENUITEM "&Waveform Only",              ID_GLOSS_RAWDATA
+                MENUITEM "&No Graphs",                  ID_GLOSS_NONE
+            END
+            POPUP "Gloss &Nat."
+            BEGIN
+                MENUITEM "&All Graphs",                 ID_GLOSS_ALL
+                MENUITEM "&This Graph",                 ID_POPUPGRAPH_GLOSS_NAT
                 MENUITEM "&Waveform Only",              ID_GLOSS_RAWDATA
                 MENUITEM "&No Graphs",                  ID_GLOSS_NONE
             END
@@ -4443,7 +4547,7 @@ IDC_MHANDN              CURSOR                  "res\\MedHandN.cur"
 
 STRINGTABLE
 BEGIN
-    VS_VERSION              "Version 3.1.0.99"
+    VS_VERSION              "Version 3.1.0.101"
     VS_COPYRIGHT            "© 1996-2014 SIL International (MSEA).\nAll Rights Reserved."
     IDR_MAINFRAME           "Speech Analyzer"
     IDR_SA_ANNTYPE          "\nSA\nSA Document\nWAV Files (*.wav)\n.wav\nannFileType\nANN File Type"
@@ -4889,7 +4993,8 @@ BEGIN
     IDS_WINDOW_PHONETIC     "Phonetic"
     IDS_WINDOW_PHONEMIC     "Phonemic"
     IDS_WINDOW_ORTHO        "Ortho."
-    IDS_WINDOW_GLOSS        "Gloss"
+    IDS_WINDOW_GLOSS        "Gloss Eng."
+    IDS_WINDOW_GLOSS_NAT    "Gloss Nat."
     IDS_WINDOW_TONE         "Tone"
     IDS_WINDOW_REFERENCE    "Ref."
     IDS_WINDOW_MUSIC_PL1    "Phrase L1"
@@ -4956,11 +5061,14 @@ BEGIN
     ID_POPUPGRAPH_PHONEMIC  "Show/Hide phonemic window on top of the current graph\nPhonemic On/Off"
     ID_POPUPGRAPH_ORTHO     "Show/Hide  orthographic window on top of the current graph\nOrthographic On/Off"
     ID_POPUPGRAPH_GLOSS     "Show/Hide gloss window on top of the current graph\nGloss On/Off"
+    ID_POPUPGRAPH_GLOSS_NAT "Show/Hide gloss national window on top of the current graph\nGloss Nat. On/Off"
     ID_POPUPGRAPH_REFERENCE "Show/Hide reference window on top of the current graph\nReference On/Off"
     ID_POPUPGRAPH_MUSIC_PL1 "Show/Hide phrase window on top of the current graph\nPhrase On/Off"
     ID_POPUPGRAPH_MUSIC_PL2 "Show/Hide phrase window on top of the current graph\nPhrase On/Off"
     ID_POPUPGRAPH_MUSIC_PL3 "Show/Hide phrase window on top of the current graph\nPhrase On/Off"
     ID_POPUPGRAPH_MUSIC_PL4 "Show/Hide phrase window on top of the current graph\nPhrase On/Off"
+    ID_POPUPGRAPH_LEGEND    "Show/Hide legend window in current graph\nLegend On/Off"
+    ID_POPUPGRAPH_XSCALE    "Show/Hide time-scale window in current graph\nX-Scale On/Off"
 END
 
 STRINGTABLE
@@ -5033,12 +5141,6 @@ END
 STRINGTABLE
 BEGIN
     IDR_MAINFRAME_SAS       "SA Server"
-END
-
-STRINGTABLE
-BEGIN
-    ID_POPUPGRAPH_LEGEND    "Show/Hide legend window in current graph\nLegend On/Off"
-    ID_POPUPGRAPH_XSCALE    "Show/Hide time-scale window in current graph\nX-Scale On/Off"
 END
 
 STRINGTABLE
@@ -5201,7 +5303,7 @@ BEGIN
                             "Speech Analyzer will markup the audio file according to the markup that was done in SayMore.\nThese segments will be considered as breath groups and  the Transcription from SayMore will be placed in the Phonetic Transcription field.\nThe Free Translation will be associated with each group and placed in the Phrase Level 1 Transcription field."
     IDS_NO_ISO              "Unable to load '%1' file. Please make sure the application has been installed properly!"
     IDS_DISABLED_SEGMENT    "Disabled - select or add a segment"
-    IDS_DELETE_REFERENCE    "Delete existing Reference Numbers?"
+    IDS_DELETE_REFERENCE    "This process will delete existing reference numbers.\nDo you want to continue?"
 END
 
 STRINGTABLE

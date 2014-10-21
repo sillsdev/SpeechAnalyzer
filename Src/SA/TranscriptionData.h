@@ -22,6 +22,7 @@ public:
     bool m_bPhonemic;
     bool m_bOrthographic;
     bool m_bGloss;
+	bool m_bGlossNat;
 };
 
 #endif

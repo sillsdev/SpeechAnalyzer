@@ -65,19 +65,22 @@ static char BASED_CODE THIS_FILE[] = __FILE__;
 // CDlgImportSFMRef dialog
 static LPCSTR psz_Phonemic = "pm";
 static LPCSTR psz_Gloss = "gl";
+static LPCSTR psz_GlossNat = "gn";
 static LPCSTR psz_Phonetic = "ph";
 static LPCSTR psz_Orthographic = "or";
 static LPCSTR psz_Reference = "ref";
 
-CDlgImportSFMRef::CDlgImportSFMRef(BOOL bPhonetic, BOOL bPhonemic, BOOL bOrtho, BOOL bGloss, CWnd * pParent /*=NULL*/)
+CDlgImportSFMRef::CDlgImportSFMRef(BOOL bPhonetic, BOOL bPhonemic, BOOL bOrtho, BOOL bGloss, BOOL bGlossNat, CWnd * pParent /*=NULL*/)
     : CDialog(CDlgImportSFMRef::IDD, pParent)
 {
     m_bGloss = bGloss;
+	m_bGlossNat = bGlossNat;
     m_bPhonemic = bPhonemic;
     m_bPhonetic = bPhonetic;
     m_bOrthographic = bOrtho;
     m_szPhonemic = psz_Phonemic;
     m_szGloss = psz_Gloss;
+    m_szGlossNat = psz_GlossNat;
     m_szPhonetic = psz_Phonetic;
     m_szOrthographic = psz_Orthographic;
     m_szReference = psz_Reference;
@@ -87,10 +90,12 @@ void CDlgImportSFMRef::DoDataExchange(CDataExchange * pDX)
 {
     CDialog::DoDataExchange(pDX);
     DDX_Check(pDX, IDC_GLOSS_ENABLED, m_bGloss);
+    DDX_Check(pDX, IDC_GLOSS_NAT_ENABLED, m_bGlossNat);
     DDX_Check(pDX, IDC_PHONEMIC_ENABLED, m_bPhonemic);
     DDX_Check(pDX, IDC_PHONETIC_ENABLED, m_bPhonetic);
     DDX_Check(pDX, IDC_ORTHO_ENABLED, m_bOrthographic);
     DDX_Text(pDX, IDC_GLOSS, m_szGloss);
+    DDX_Text(pDX, IDC_GLOSS_NAT, m_szGlossNat);
     DDX_Text(pDX, IDC_PHONEMIC, m_szPhonemic);
     DDX_Text(pDX, IDC_PHONETIC, m_szPhonetic);
     DDX_Text(pDX, IDC_ORTHOGRAPHIC, m_szOrthographic);
@@ -130,10 +135,12 @@ BOOL CDlgImportSFMRef::OnInitDialog()
     CDialog::OnInitDialog();
 
     SetEnable(IDC_GLOSS, m_bGloss);
+    SetEnable(IDC_GLOSS_NAT, m_bGlossNat);
     SetEnable(IDC_PHONETIC, m_bPhonetic);
     SetEnable(IDC_PHONEMIC, m_bPhonemic);
     SetEnable(IDC_ORTHOGRAPHIC, m_bOrthographic);
     SetEnable(IDC_GLOSS_ENABLED, m_bGloss);
+    SetEnable(IDC_GLOSS_NAT_ENABLED, m_bGlossNat);
     SetEnable(IDC_PHONETIC_ENABLED, m_bPhonetic);
     SetEnable(IDC_PHONEMIC_ENABLED, m_bPhonemic);
     SetEnable(IDC_ORTHO_ENABLED, m_bOrthographic);

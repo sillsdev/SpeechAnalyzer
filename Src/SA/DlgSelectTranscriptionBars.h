@@ -20,6 +20,7 @@ public:
 	BOOL bPhonemic;
 	BOOL bOrthographic;
 	BOOL bGloss;
+	BOOL bGlossNat;
 	BOOL bPhraseList1;
 	BOOL bPhraseList2;
 	BOOL bPhraseList3;

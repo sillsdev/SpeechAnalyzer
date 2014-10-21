@@ -188,8 +188,11 @@ static LPCSTR psz_sagraph = "sagraph";
 //                  wrote this to get it out of the CreateGraphs functions
 //                  which was too bloated.
 /***************************************************************************/
-void CSaView::CreateOneGraphStepOne(UINT nID, CGraphWnd ** pGraph, CREATE_HOW how,
-                                    CGraphWnd * pFromGraph, CObjectIStream * pObs)
+void CSaView::CreateOneGraphStepOne(UINT nID, 
+									CGraphWnd ** pGraph, 
+									CREATE_HOW how,
+                                    CGraphWnd * pFromGraph, 
+									CObjectIStream * pObs)
 {
     if (nID != ID_GRAPHS_OVERLAY)
     {
@@ -686,10 +689,10 @@ void CSaView::OnExportLift()
 
     CSaString title = pDoc->GetTitle();
     BOOL gloss = pDoc->HasSegmentData(GLOSS);
+	BOOL glossNat = pDoc->HasSegmentData(GLOSS_NAT);
     BOOL ortho = pDoc->HasSegmentData(ORTHO);
     BOOL phonemic = pDoc->HasSegmentData(PHONEMIC);
     BOOL phonetic = pDoc->HasSegmentData(PHONETIC);
-    BOOL pos = FALSE;
     BOOL reference = pDoc->HasSegmentData(REFERENCE);
     BOOL phrase = pDoc->HasSegmentData(MUSIC_PL1)|pDoc->HasSegmentData(MUSIC_PL1);
 
@@ -775,7 +778,7 @@ void CSaView::OnExportLift()
         it++;
     }
 
-    CDlgExportLift dlg(title, gloss, ortho, phonemic, phonetic, pos, reference,codes);
+    CDlgExportLift dlg(title, gloss, glossNat, ortho, phonemic, phonetic, reference,codes);
     if (dlg.DoModal()==IDOK)
     {
         pDoc->DoExportLift(dlg.settings);
@@ -800,14 +803,14 @@ void CSaView::OnExportFW()
 
     CSaString title = pDoc->GetTitle();
     BOOL gloss = pDoc->HasSegmentData(GLOSS);
+    BOOL glossNat = pDoc->HasSegmentData(GLOSS_NAT);
     BOOL ortho = pDoc->HasSegmentData(ORTHO);
     BOOL phonemic = pDoc->HasSegmentData(PHONEMIC);
     BOOL phonetic = pDoc->HasSegmentData(PHONETIC);
-    BOOL pos = FALSE;
     BOOL reference = pDoc->HasSegmentData(REFERENCE);
     BOOL phrase = pDoc->HasSegmentData(MUSIC_PL1)|pDoc->HasSegmentData(MUSIC_PL1);
 
-    CDlgExportFW dlg(title, gloss, ortho, phonemic, phonetic, pos, reference, phrase);
+    CDlgExportFW dlg(title, gloss, glossNat, ortho, phonemic, phonetic, reference, phrase);
     if (dlg.DoModal()==IDOK)
     {
         pDoc->DoExportFieldWorks(dlg.settings);
@@ -1824,7 +1827,10 @@ void CSaView::OnPopupgraphAnnotation(UINT nID)
 void CSaView::OnUpdatePopupgraphAnnotation(CCmdUI * pCmdUI)
 {
     int nAnnotationID = pCmdUI->m_nID - ID_POPUPGRAPH_PHONETIC;
-    BOOL bEnable = (m_pFocusedGraph && GetDocument()->GetDataSize() != 0 && (m_pFocusedGraph->HaveAnnotation(REFERENCE) || !m_pFocusedGraph->DisableAnnotation(nAnnotationID)) && m_nFocusedID != IDD_TWC);
+    BOOL bEnable = ((m_pFocusedGraph!=NULL) && 
+					(GetDocument()->GetDataSize() != 0) && 
+					((m_pFocusedGraph->HaveAnnotation(REFERENCE)) || (!m_pFocusedGraph->DisableAnnotation(nAnnotationID))) && 
+					(m_nFocusedID != IDD_TWC));
     pCmdUI->Enable(bEnable);
     if (m_pFocusedGraph)
     {

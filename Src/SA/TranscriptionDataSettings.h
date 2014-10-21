@@ -23,6 +23,7 @@ public:
     bool m_bPhonemic;
     bool m_bPhonetic;
     bool m_bGloss;
+	bool m_bGlossNat;
     
 	CSaString m_szReference;
 	CSaString m_szPhonetic;

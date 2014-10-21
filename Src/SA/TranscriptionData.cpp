@@ -7,6 +7,7 @@ CTranscriptionData::CTranscriptionData()
     m_bPhonemic = false;
     m_bOrthographic = false;
     m_bGloss = false;
+	m_bGlossNat = false;
 }
 
 void CTranscriptionData::ResetContent()
@@ -19,4 +20,5 @@ void CTranscriptionData::ResetContent()
     m_bPhonemic = false;
     m_bOrthographic = false;
     m_bGloss = false;
+	m_bGlossNat = false;
 }

@@ -251,8 +251,7 @@ UINT CPickOverlayDlg::GraphsCount(void)
 CGraphWnd * CPickOverlayDlg::GetNextSelectedGraph(int & pos)
 {
     CGraphWnd * pGraphRet = NULL;
-
-    while (!pGraphRet && (pos < m_numItems))
+    while ((!pGraphRet) && (pos < m_numItems))
     {
         if (m_bIsItemSelected[pos])
         {

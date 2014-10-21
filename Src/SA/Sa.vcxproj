@@ -165,6 +165,8 @@
     <ClCompile Include="ExportLiftSettings.cpp" />
     <ClCompile Include="FileEncodingHelper.cpp" />
     <ClCompile Include="FmtParm.cpp" />
+    <ClCompile Include="GlossNatSegment.cpp" />
+    <ClCompile Include="GlossNatWnd.cpp" />
     <ClCompile Include="GlossSegment.cpp" />
     <ClCompile Include="ImportELAN.cpp" />
     <ClCompile Include="ImportSFM.cpp" />
@@ -220,6 +222,7 @@
     <ClCompile Include="PickOver.cpp" />
     <ClCompile Include="RecMixer.cpp" />
     <ClCompile Include="ReferenceSegment.cpp" />
+    <ClCompile Include="ReferenceWnd.cpp" />
     <ClCompile Include="SaParam.cpp" />
     <ClCompile Include="SaString.cpp" />
     <ClCompile Include="SAXMLUtils.cpp">
@@ -356,7 +359,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="..\SA MSEA Release Notes.txt" />
-    <None Include="Annotation Windows.cd" />
+    <None Include="Annotation.cd" />
     <None Include="Export.cd" />
     <None Include="Graphs.cd" />
     <None Include="Process.cd" />
@@ -409,6 +412,8 @@
     <ClInclude Include="FlexEditGrid.h" />
     <ClInclude Include="FmtParm.h" />
     <ClInclude Include="font.h" />
+    <ClInclude Include="GlossNatSegment.h" />
+    <ClInclude Include="GlossNatWnd.h" />
     <ClInclude Include="GlossSegment.h" />
     <ClInclude Include="ImportELAN.h" />
     <ClInclude Include="ImportSFM.h" />
@@ -448,6 +453,7 @@
     <ClInclude Include="process\sa_p_mel.h" />
     <ClInclude Include="process\sa_p_pit.h" />
     <ClInclude Include="RecMixer.h" />
+    <ClInclude Include="ReferenceWnd.h" />
     <ClInclude Include="SaParam.h" />
     <ClInclude Include="SaString.h" />
     <ClInclude Include="DocList.h" />
@@ -600,6 +606,9 @@
     </ProjectReference>
     <ProjectReference Include="..\SA_KLATT\SA_KLATT.vcxproj">
       <Project>{56f754f7-b130-4ccf-8a99-9422d3f0234d}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\SilTools\SilTools.csproj">
+      <Project>{87f94fcc-bc32-4203-a919-115f4ff43ff0}</Project>
     </ProjectReference>
     <ProjectReference Include="..\WaveUtils\WaveUtils.vcxproj">
       <Project>{7710bea3-39dc-4485-893f-ed4d9ca91973}</Project>

@@ -27,10 +27,10 @@ class CDlgExportFW : public CDialog
 public:
     CDlgExportFW(LPCTSTR szDocTitle,
                  BOOL gloss,
+				 BOOL glossNat,
                  BOOL ortho,
                  BOOL phonemic,
                  BOOL phonetic,
-                 BOOL pos,
                  BOOL reference,
                  BOOL phrase,
                  CWnd * pParent = NULL);
@@ -71,6 +71,7 @@ protected:
     CStatic ctlStaticTags;
 
     BOOL bGlossDflt;
+	BOOL bGlossNatDflt;
     BOOL bOrthoDflt;
     BOOL bPhonemicDflt;
     BOOL bPhoneticDflt;

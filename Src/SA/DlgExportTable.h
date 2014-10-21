@@ -35,6 +35,7 @@ protected:
     BOOL  m_bF4;
     BOOL  m_bFormants;
     BOOL  m_bGloss;
+    BOOL  m_bGlossNat;
     CSaString m_szIntervalTime;
     BOOL  m_bSegmentLength;
     BOOL  m_bMagnitude;
@@ -42,7 +43,6 @@ protected:
     BOOL  m_bPhonemic;
     BOOL  m_bPhonetic;
     BOOL  m_bPitch;
-    BOOL  m_bPOS;
     BOOL  m_bReference;
     BOOL  m_bSegmentStart;
     BOOL  m_bSampleTime;

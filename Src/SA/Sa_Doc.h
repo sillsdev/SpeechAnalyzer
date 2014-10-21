@@ -84,9 +84,11 @@ class CProcessGlottis;
 class CProcessTonalWeightChart;
 class CSegment;
 class CGlossSegment;
+class CGlossNatSegment;
 class CDlgAdvancedSegment;
 class CDlgAdvancedParseWords;
 class CDlgAdvancedParsePhrases;
+class CDlgAutoReferenceData;
 class CTranscriptionDataSettings;
 class CMusicPhraseSegment;
 
@@ -160,6 +162,7 @@ public:
     CSegment * GetSegment(int nIndex);								// get the pointers to a segment object
     CSegment * GetSegment(EAnnotation nIndex);                      // get the pointers to a segment object
     CGlossSegment * GetGlossSegment();
+    CGlossNatSegment * GetGlossNatSegment();
     CFontTable * GetFont(int nIndex);                               // return font size
     CSaString GetMeasurementsString(DWORD dwOffset, DWORD dwLength, BOOL * pbRes);
     void DestroyAdvancedSegment();
@@ -240,8 +243,8 @@ public:
     void DoExportFieldWorks(CExportFWSettings & settings);
     void DoExportLift(CExportLiftSettings & settings);
     const CSaString BuildString(int nSegment);
-    const CSaString BuildImportString(BOOL gloss, BOOL phonetic, BOOL phonemic, BOOL orthographic);
-    const bool ImportTranscription( wistringstream & strm, BOOL gloss, BOOL phonetic, BOOL phonemic, BOOL orthographic, CTranscriptionData & td, bool addTag, bool showDlg);
+    const CSaString BuildImportString(BOOL gloss, BOOL glossNat, BOOL phonetic, BOOL phonemic, BOOL orthographic);
+    const bool ImportTranscription( wistringstream & strm, BOOL gloss, BOOL glossNat, BOOL phonetic, BOOL phonemic, BOOL orthographic, CTranscriptionData & td, bool addTag, bool showDlg);
     void ApplyTranscriptionChanges(CTranscriptionDataSettings & settings);
     void RevertTranscriptionChanges();
     bool IsTempFile();
@@ -329,6 +332,8 @@ protected:
     LPCTSTR GetTag(EAnnotation val);
     void WriteFileUtf8(CFile * pFile, const CSaString szString);
     LPCTSTR GetProcessFilename();
+	bool PreflightAddReferenceData( CDlgAutoReferenceData & dlg, int selection);
+	void AddReferenceData( CDlgAutoReferenceData & dlg, int selection);
 
     afx_msg void OnUpdateFileSave(CCmdUI * pCmdUI);
     afx_msg void OnFileSaveAs();
@@ -343,8 +348,8 @@ protected:
     afx_msg void OnUpdateAdvancedSegment(CCmdUI * pCmdUI);
     afx_msg void OnAutoAlign();
     afx_msg void OnUpdateAutoAlign(CCmdUI * pCmdUI);
-    afx_msg void OnAutoReferenceData();
-    afx_msg void OnUpdateAutoReferenceData(CCmdUI * pCmdUI);
+    afx_msg void OnAddReferenceData();
+    afx_msg void OnUpdateAddReferenceData(CCmdUI * pCmdUI);
     afx_msg void OnUpdateBoundaries();
     afx_msg void OnUpdateUpdateBoundaries(CCmdUI * pCmdUI);
     afx_msg void OnAutoSnapUpdate();

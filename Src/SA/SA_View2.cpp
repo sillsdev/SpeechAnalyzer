@@ -37,6 +37,7 @@
 #include "DlgExportFW.h"
 #include "sa_g_stf.h"
 #include "GlossSegment.h"
+#include "GlossNatSegment.h"
 #include "MusicPhraseSegment.h"
 #include "PhoneticSegment.h"
 #include "FileUtils.h"
@@ -4731,7 +4732,7 @@ void CSaView::OnEditAddPhonetic()
 {
     CSaDoc * pDoc = (CSaDoc *) GetDocument();
     CPhoneticSegment * pPhonetic = (CPhoneticSegment *) GetAnnotation(PHONETIC);
-    CGlossSegment * pGloss = (CGlossSegment *) GetAnnotation(GLOSS);
+    CGlossSegment * pGloss = (CGlossSegment *)GetAnnotation(GLOSS);
     CReferenceSegment * pReference = (CReferenceSegment *) GetAnnotation(REFERENCE);
 
     pDoc->CheckPoint();
@@ -5436,11 +5437,12 @@ void CSaView::EditAddGloss(bool bDelimiter)
 
     CGlossSegment * pGloss = (CGlossSegment *)GetAnnotation(GLOSS);
 	CReferenceSegment * pReference = (CReferenceSegment *)GetAnnotation(REFERENCE);
+	CGlossNatSegment * pGlossNat = (CGlossNatSegment *)GetAnnotation(GLOSS_NAT);
 
 	DWORD dwStartR = GetStartCursorPosition();
 	DWORD dwStopR = GetStopCursorPosition();
 
-    int nInsertAt = pGloss->CheckPosition(pDoc,GetStartCursorPosition(),GetStopCursorPosition(),CSegment::MODE_ADD);
+    int nInsertAt = pGloss->CheckPosition(pDoc,dwStartR,dwStopR,CSegment::MODE_ADD);
     if (nInsertAt != -1)
     {
         DWORD dwStart = 0;
@@ -5448,6 +5450,9 @@ void CSaView::EditAddGloss(bool bDelimiter)
         pGloss->Add( pDoc, dwStart, szString, bDelimiter, TRUE); // add a segment
 		if (!pReference->IsEmpty()) {
 			pReference->Add( pDoc, dwStart, szEmpty, bDelimiter, TRUE);
+		}
+		if (!pGlossNat->IsEmpty()) {
+			pGlossNat->Add( pDoc, dwStart, szEmpty, bDelimiter, TRUE);
 		}
     }
     else
@@ -5485,12 +5490,15 @@ void CSaView::EditAddGloss(bool bDelimiter)
 			if (!pReference->IsEmpty()) {
 				pReference->Add( pDoc, dwStart, szEmpty, bDelimiter, TRUE);
 			}
+			if (!pGlossNat->IsEmpty()) {
+				pGlossNat->Add( pDoc, dwStart, szEmpty, bDelimiter, TRUE);
+			}
 
             int i = GetGraphIndexForIDD(IDD_RAWDATA);
             if ((i != -1) && (m_apGraphs[i]))
             {
                 int nAnnot = pGloss->GetAnnotationIndex();
-                m_apGraphs[i]->ShowAnnotation(nAnnot, TRUE, TRUE);
+                m_apGraphs[i]->ShowAnnotation( nAnnot, TRUE, TRUE);
             }
         }
         else if (pGloss->GetSelection()!=-1)     // Set Delimiter
@@ -7029,6 +7037,7 @@ void CSaView::OnSelectTranscriptionBars()
     BOOL bPhonemic = FALSE;
     BOOL bOrthographic = FALSE;
     BOOL bGloss = FALSE;
+	BOOL bGlossNat = FALSE;
     BOOL bPhraseList1 = FALSE;
     BOOL bPhraseList2 = FALSE;
     BOOL bPhraseList3 = FALSE;
@@ -7041,6 +7050,7 @@ void CSaView::OnSelectTranscriptionBars()
         bPhonemic = m_pFocusedGraph->HaveAnnotation(ID_POPUPGRAPH_PHONEMIC-ID_POPUPGRAPH_PHONETIC);
         bOrthographic = m_pFocusedGraph->HaveAnnotation(ID_POPUPGRAPH_ORTHO-ID_POPUPGRAPH_PHONETIC);
         bGloss = m_pFocusedGraph->HaveAnnotation(ID_POPUPGRAPH_GLOSS-ID_POPUPGRAPH_PHONETIC);
+        bGlossNat = m_pFocusedGraph->HaveAnnotation(ID_POPUPGRAPH_GLOSS_NAT-ID_POPUPGRAPH_PHONETIC);
         bPhraseList1 = m_pFocusedGraph->HaveAnnotation(ID_POPUPGRAPH_MUSIC_PL1-ID_POPUPGRAPH_PHONETIC);
         bPhraseList2 = m_pFocusedGraph->HaveAnnotation(ID_POPUPGRAPH_MUSIC_PL2-ID_POPUPGRAPH_PHONETIC);
         bPhraseList3 = m_pFocusedGraph->HaveAnnotation(ID_POPUPGRAPH_MUSIC_PL3-ID_POPUPGRAPH_PHONETIC);
@@ -7054,6 +7064,7 @@ void CSaView::OnSelectTranscriptionBars()
     dlg.bPhonemic = bPhonemic;
     dlg.bOrthographic = bOrthographic;
     dlg.bGloss = bGloss;
+	dlg.bGlossNat = bGlossNat;
     dlg.bPhraseList1 = bPhraseList1;
     dlg.bPhraseList2 = bPhraseList2;
     dlg.bPhraseList3 = bPhraseList3;
@@ -7067,6 +7078,7 @@ void CSaView::OnSelectTranscriptionBars()
         m_pFocusedGraph->ShowAnnotation(ID_POPUPGRAPH_PHONEMIC-ID_POPUPGRAPH_PHONETIC,bPhonemic,TRUE);
         m_pFocusedGraph->ShowAnnotation(ID_POPUPGRAPH_ORTHO-ID_POPUPGRAPH_PHONETIC,bOrthographic,TRUE);
         m_pFocusedGraph->ShowAnnotation(ID_POPUPGRAPH_GLOSS-ID_POPUPGRAPH_PHONETIC,bGloss,TRUE);
+        m_pFocusedGraph->ShowAnnotation(ID_POPUPGRAPH_GLOSS_NAT-ID_POPUPGRAPH_PHONETIC,bGlossNat,TRUE);
         m_pFocusedGraph->ShowAnnotation(ID_POPUPGRAPH_MUSIC_PL1-ID_POPUPGRAPH_PHONETIC,bPhraseList1,TRUE);
         m_pFocusedGraph->ShowAnnotation(ID_POPUPGRAPH_MUSIC_PL2-ID_POPUPGRAPH_PHONETIC,bPhraseList2,TRUE);
         m_pFocusedGraph->ShowAnnotation(ID_POPUPGRAPH_MUSIC_PL3-ID_POPUPGRAPH_PHONETIC,bPhraseList3,TRUE);

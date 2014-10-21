@@ -6,6 +6,7 @@
 #include "Segment.h"
 #include "MainFrm.h"
 #include "GlossSegment.h"
+#include "GlossNatSegment.h"
 #include "PhoneticSegment.h"
 #include "DlgExportFW.h"
 #include "FileUtils.h"
@@ -42,6 +43,7 @@ CDlgExportTable::CDlgExportTable(const CSaString & szDocTitle, CWnd * pParent /*
     m_bF4 = FALSE;
     m_bFormants = FALSE;
     m_bGloss = TRUE;
+	m_bGlossNat = TRUE;
     m_szIntervalTime = "20";
     m_bSegmentLength = TRUE;
     m_bMagnitude = TRUE;
@@ -49,7 +51,6 @@ CDlgExportTable::CDlgExportTable(const CSaString & szDocTitle, CWnd * pParent /*
     m_bPhonemic = TRUE;
     m_bPhonetic = TRUE;
     m_bPitch = TRUE;
-    m_bPOS = FALSE;
     m_bReference = FALSE;
     m_bSegmentStart = TRUE;
     m_bSampleTime = TRUE;
@@ -66,7 +67,7 @@ CDlgExportTable::CDlgExportTable(const CSaString & szDocTitle, CWnd * pParent /*
 
     if (pDoc->GetSegment(PHONETIC)->IsEmpty())   // no annotations
     {
-        m_bReference = m_bPhonetic = m_bTone = m_bPhonemic = m_bOrtho = m_bGloss = m_bPOS = FALSE;
+        m_bReference = m_bPhonetic = m_bTone = m_bPhonemic = m_bOrtho = m_bGloss = m_bGlossNat = FALSE;
         m_bSegmentStart = m_bSegmentLength = FALSE; // no segments
         m_nSampleRate = 1;
     }
@@ -85,6 +86,7 @@ void CDlgExportTable::DoDataExchange(CDataExchange * pDX)
     DDX_Check(pDX, IDC_EXTAB_F4, m_bF4);
     DDX_Check(pDX, IDC_EXTAB_FORMANTS, m_bFormants);
     DDX_Check(pDX, IDC_EXTAB_GLOSS, m_bGloss);
+    DDX_Check(pDX, IDC_EXTAB_GLOSS_NAT, m_bGlossNat);
     DDX_Text(pDX, IDC_EXTAB_INTERVAL_TIME, m_szIntervalTime);
     DDV_MaxChars(pDX, m_szIntervalTime, 4);
     DDX_Check(pDX, IDC_EXTAB_LENGTH, m_bSegmentLength);
@@ -93,7 +95,6 @@ void CDlgExportTable::DoDataExchange(CDataExchange * pDX)
     DDX_Check(pDX, IDC_EXTAB_PHONEMIC, m_bPhonemic);
     DDX_Check(pDX, IDC_EXTAB_PHONETIC, m_bPhonetic);
     DDX_Check(pDX, IDC_EXTAB_PITCH, m_bPitch);
-    DDX_Check(pDX, IDC_EXTAB_POS, m_bPOS);
     DDX_Check(pDX, IDC_EXTAB_REFERENCE, m_bReference);
     DDX_Check(pDX, IDC_EXTAB_START, m_bSegmentStart);
     DDX_Check(pDX, IDC_EXTAB_TIME, m_bSampleTime);
@@ -135,8 +136,8 @@ void CDlgExportTable::OnAllAnnotations()
         SetVisible(IDC_EXTAB_PHONEMIC, TRUE, bEnable);
         SetVisible(IDC_EXTAB_ORTHO, TRUE, bEnable);
         SetVisible(IDC_EXTAB_GLOSS, TRUE, bEnable);
+        SetVisible(IDC_EXTAB_GLOSS_NAT, TRUE, bEnable);
         SetVisible(IDC_EXTAB_REFERENCE, TRUE, bEnable);
-        SetVisible(IDC_EXTAB_POS, TRUE, bEnable);
     }
     else
     {
@@ -150,12 +151,12 @@ void CDlgExportTable::OnAllAnnotations()
         SetVisible(IDC_EXTAB_PHONEMIC, FALSE);
         SetVisible(IDC_EXTAB_ORTHO, FALSE);
         SetVisible(IDC_EXTAB_GLOSS, FALSE);
+        SetVisible(IDC_EXTAB_GLOSS_NAT, FALSE);
         SetVisible(IDC_EXTAB_REFERENCE, FALSE);
-        SetVisible(IDC_EXTAB_POS, FALSE);
     }
     if (m_bAnnotations)
     {
-        m_bReference = m_bPhonetic = m_bTone = m_bPhonemic = m_bOrtho = m_bGloss = m_bPOS = TRUE;
+        m_bReference = m_bPhonetic = m_bTone = m_bPhonemic = m_bOrtho = m_bGloss = m_bGlossNat = TRUE;
 
         UpdateData(FALSE);
     }
@@ -220,7 +221,7 @@ void CDlgExportTable::OnOK()
     // process all flags
     if (m_bAnnotations)
     {
-        m_bReference = m_bPhonetic = m_bTone = m_bPhonemic = m_bOrtho = m_bGloss = m_bPOS = TRUE;
+        m_bReference = m_bPhonetic = m_bTone = m_bPhonemic = m_bOrtho = m_bGloss = m_bGlossNat = TRUE;
     }
     if (m_bCalculations)
     {
@@ -236,7 +237,7 @@ void CDlgExportTable::OnOK()
     }
     else
     {
-        m_bReference = m_bTone = m_bPhonemic = m_bOrtho = m_bGloss = m_bPOS = FALSE;
+        m_bReference = m_bTone = m_bPhonemic = m_bOrtho = m_bGloss = m_bGlossNat = FALSE;
         m_bSegmentStart = m_bSegmentLength = FALSE;
     }
 
@@ -250,7 +251,7 @@ void CDlgExportTable::OnOK()
 
     if (pPhonetic->IsEmpty())   // no annotations
     {
-        m_bReference = m_bPhonetic = m_bTone = m_bPhonemic = m_bOrtho = m_bGloss = m_bPOS = FALSE;
+        m_bReference = m_bPhonetic = m_bTone = m_bPhonemic = m_bOrtho = m_bGloss = m_bGlossNat = FALSE;
         m_bSegmentStart = m_bSegmentLength = FALSE; // no segments
         if (m_nSampleRate == 0)
         {
@@ -509,11 +510,10 @@ void CDlgExportTable::OnOK()
     {
         szString += "Gloss\t";
     }
-    if (m_bPOS)
+    if (m_bGlossNat)
     {
-        szString += "POS\t";
+        szString += "Gloss Nat.\t";
     }
-
     if (m_bMagnitude)
     {
         szString += "Int(dB)\t";
@@ -666,18 +666,25 @@ void CDlgExportTable::OnOK()
                     szString = "\t";
                 }
                 WriteFileUtf8(pFile, szString);
-                if (m_bPOS)
+            }
+            if (m_bGlossNat)
+            {
+                int nIndex = pDoc->GetSegment(GLOSS_NAT)->FindOffset(dwPhonetic);
+                if (nIndex != -1)
                 {
-                    if (nIndex != -1)
+                    // SDM 1.5Test10.1
+                    szString = pDoc->GetSegment(GLOSS_NAT)->GetSegmentString(nIndex);
+                    if ((szString.GetLength() > 1)&&(szString[0] == WORD_DELIMITER))
                     {
-                        szString = ((CGlossSegment *) pDoc->GetSegment(GLOSS))->GetPOSAt(nIndex) + "\t";
+                        szString = szString.Mid(1);    // Remove Word Delimiter
                     }
-                    else
-                    {
-                        szString = "\t";
-                    }
-                    WriteFileUtf8(pFile, szString);
+                    szString += "\t";
                 }
+                else
+                {
+                    szString = "\t";
+                }
+                WriteFileUtf8(pFile, szString);
             }
             nIndex = pPhonetic->GetNext(nIndex);
         }
@@ -990,8 +997,8 @@ BOOL CDlgExportTable::OnInitDialog()
         SetEnable(IDC_EXTAB_PHONEMIC, bEnable);
         SetEnable(IDC_EXTAB_ORTHO, bEnable);
         SetEnable(IDC_EXTAB_GLOSS, bEnable);
+        SetEnable(IDC_EXTAB_GLOSS_NAT, bEnable);
         SetEnable(IDC_EXTAB_REFERENCE, bEnable);
-        SetEnable(IDC_EXTAB_POS, bEnable);
         SetEnable(IDC_EXTAB_ANNOTATIONS, bEnable);
         SetEnable(IDC_EXTAB_LENGTH, bEnable);
         SetEnable(IDC_EXTAB_START, bEnable);
@@ -1114,6 +1121,7 @@ void CDlgExportTable::OnPhonetic()
 
 static LPCSTR psz_Phonemic = "pm";
 static LPCSTR psz_Gloss = "gl";
+static LPCSTR psz_GlossNat = "gn";
 static LPCSTR psz_Phonetic = "ph";
 static LPCSTR psz_Orthographic = "or";
 static LPCSTR psz_ImportEnd = "import";

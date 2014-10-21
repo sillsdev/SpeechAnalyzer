@@ -185,7 +185,7 @@ void CDlgAutoReferenceData::DoDataExchange(CDataExchange * pDX)
 					} 
 					else 
 					{
-						if (mSaDoc->ImportTranscription(stream,FALSE,FALSE,FALSE,FALSE,td,true,false)) 
+						if (mSaDoc->ImportTranscription(stream,FALSE,FALSE,FALSE,FALSE,FALSE,td,true,false)) 
 						{
 							CString ref = td.m_szPrimary;
 							mComboBegin.ResetContent();
@@ -276,7 +276,7 @@ void CDlgAutoReferenceData::DoDataExchange(CDataExchange * pDX)
                 pDX->Fail();
 			}
 
-            if (!mSaDoc->ImportTranscription(stream,FALSE,FALSE,FALSE,FALSE,td,true,false))
+            if (!mSaDoc->ImportTranscription(stream,FALSE,FALSE,FALSE,FALSE,FALSE,td,true,false))
             {
                 pDX->PrepareEditCtrl(IDC_FILENAME);
                 CString msg;

@@ -8,44 +8,51 @@
     </TypeIdentifier>
   </Class>
   <Class Name="CWnd" Collapsed="true">
-    <Position X="5.25" Y="0.5" Width="1.5" />
+    <Position X="6" Y="0.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>v977//bff7//b//96f/P/f/97/+e33f39uv7/d///7c=</HashCode>
       <FileName>c:\program files (x86)\microsoft visual studio 10.0\vc\atlmfc\include\afxwin.h</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="CReferenceWnd">
-    <Position X="2.75" Y="3.25" Width="1.5" />
+  <Class Name="CReferenceWnd" Collapsed="true">
+    <Position X="1.25" Y="3.25" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAACAAAAAA=</HashCode>
       <FileName>SA_Annot.h</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="CPhonemicWnd" Collapsed="true">
-    <Position X="7" Y="3.25" Width="1.5" />
+    <Position X="5.5" Y="3.25" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>SA_Annot.h</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="CPhoneticWnd" Collapsed="true">
-    <Position X="4.75" Y="3.25" Width="1.5" />
+    <Position X="3.25" Y="3.25" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>SA_Annot.h</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="COrthographicWnd" Collapsed="true">
-    <Position X="9.25" Y="3.25" Width="1.5" />
+    <Position X="7.75" Y="3.25" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>SA_Annot.h</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="CGlossWnd">
-    <Position X="11.25" Y="3.25" Width="1.5" />
+  <Class Name="CGlossWnd" Collapsed="true">
+    <Position X="9.75" Y="3.25" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAI=</HashCode>
+      <FileName>SA_Annot.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CGlossNatWnd" Collapsed="true">
+    <Position X="11.5" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAABABAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>SA_Annot.h</FileName>
     </TypeIdentifier>
   </Class>

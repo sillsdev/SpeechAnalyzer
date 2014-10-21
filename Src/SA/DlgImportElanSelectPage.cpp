@@ -45,7 +45,7 @@ void CDlgImportElanSelectPage::DoDataExchange(CDataExchange* pDX)
     DDX_Control( pDX, IDC_COMBO_PHONEMIC, phonemic);
     DDX_Control( pDX, IDC_COMBO_ORTHO, ortho);
     DDX_Control( pDX, IDC_COMBO_GLOSS, gloss);
-    DDX_Control( pDX, IDC_COMBO_POS, pos);
+    DDX_Control( pDX, IDC_COMBO_GLOSS_NAT, glossNat);
     DDX_Control( pDX, IDC_COMBO_PL1, pl1);
     DDX_Control( pDX, IDC_COMBO_PL2, pl2);
     DDX_Control( pDX, IDC_COMBO_PL3, pl3);
@@ -71,8 +71,8 @@ void CDlgImportElanSelectPage::DoDataExchange(CDataExchange* pDX)
 		if (gloss.GetCurSel()>0) {
 			result[GLOSS] = document.tiers[gloss.GetCurSel()-1].tierID.c_str();
 		}
-		if (pos.GetCurSel()>0) {
-			result[TONE] = document.tiers[pos.GetCurSel()-1].tierID.c_str();
+		if (glossNat.GetCurSel()>0) {
+			result[GLOSS_NAT] = document.tiers[glossNat.GetCurSel()-1].tierID.c_str();
 		}
 		if (pl1.GetCurSel()>0) {
 			result[MUSIC_PL1] = document.tiers[pl1.GetCurSel()-1].tierID.c_str();
@@ -103,7 +103,7 @@ BOOL CDlgImportElanSelectPage::OnInitDialog()
 	phonemic.AddString(L"");
 	ortho.AddString(L"");
 	gloss.AddString(L"");
-	pos.AddString(L"");
+	glossNat.AddString(L"");
 	pl1.AddString(L"");
 	pl2.AddString(L"");
 	pl3.AddString(L"");
@@ -115,7 +115,7 @@ BOOL CDlgImportElanSelectPage::OnInitDialog()
 		phonemic.AddString(document.tiers[i].tierID.c_str());
 		ortho.AddString(document.tiers[i].tierID.c_str());
 		gloss.AddString(document.tiers[i].tierID.c_str());
-		pos.AddString(document.tiers[i].tierID.c_str());
+		glossNat.AddString(document.tiers[i].tierID.c_str());
 		pl1.AddString(document.tiers[i].tierID.c_str());
 		pl2.AddString(document.tiers[i].tierID.c_str());
 		pl3.AddString(document.tiers[i].tierID.c_str());
@@ -127,7 +127,7 @@ BOOL CDlgImportElanSelectPage::OnInitDialog()
 	phonemic.SetCurSel(0);
 	ortho.SetCurSel(0);
 	gloss.SetCurSel(0);
-	pos.SetCurSel(0);
+	glossNat.SetCurSel(0);
 	pl1.SetCurSel(0);
 	pl2.SetCurSel(0);
 	pl3.SetCurSel(0);
@@ -145,7 +145,7 @@ BOOL CDlgImportElanSelectPage::OnInitDialog()
     phonemic.SetWindowPos(NULL,0,0,cbSize.right,height,SWP_NOMOVE|SWP_NOZORDER);
     ortho.SetWindowPos(NULL,0,0,cbSize.right,height,SWP_NOMOVE|SWP_NOZORDER);
     gloss.SetWindowPos(NULL,0,0,cbSize.right,height,SWP_NOMOVE|SWP_NOZORDER);
-    pos.SetWindowPos(NULL,0,0,cbSize.right,height,SWP_NOMOVE|SWP_NOZORDER);
+    glossNat.SetWindowPos(NULL,0,0,cbSize.right,height,SWP_NOMOVE|SWP_NOZORDER);
     pl1.SetWindowPos(NULL,0,0,cbSize.right,height,SWP_NOMOVE|SWP_NOZORDER);
     pl2.SetWindowPos(NULL,0,0,cbSize.right,height,SWP_NOMOVE|SWP_NOZORDER);
     pl3.SetWindowPos(NULL,0,0,cbSize.right,height,SWP_NOMOVE|SWP_NOZORDER);

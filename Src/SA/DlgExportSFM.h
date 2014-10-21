@@ -81,10 +81,10 @@ protected:
     BOOL m_bWords;
     BOOL m_bAllAnnotations;
     BOOL m_bGloss;
+    BOOL m_bGlossNat;
     BOOL m_bOrtho;
     BOOL m_bPhonemic;
     BOOL m_bPhonetic;
-    BOOL m_bPOS;
     BOOL m_bReference;
     BOOL m_bTone;
     BOOL m_bCountry;

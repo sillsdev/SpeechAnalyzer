@@ -23,6 +23,7 @@ void CDlgSelectTranscriptionBars::DoDataExchange(CDataExchange* pDX) {
     DDX_Check(pDX, ID_POPUPGRAPH_PHONEMIC, bPhonemic);
     DDX_Check(pDX, ID_POPUPGRAPH_ORTHO, bOrthographic);
     DDX_Check(pDX, ID_POPUPGRAPH_GLOSS, bGloss);
+    DDX_Check(pDX, ID_POPUPGRAPH_GLOSS_NAT, bGlossNat);
     DDX_Check(pDX, ID_POPUPGRAPH_MUSIC_PL1, bPhraseList1);
     DDX_Check(pDX, ID_POPUPGRAPH_MUSIC_PL2, bPhraseList2);
     DDX_Check(pDX, ID_POPUPGRAPH_MUSIC_PL3, bPhraseList3);

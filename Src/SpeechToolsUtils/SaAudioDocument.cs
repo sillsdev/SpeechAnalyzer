@@ -1324,13 +1324,13 @@ namespace SIL.SpeechTools.Utils
 		public string Orthographic = null;
 
 		/// <summary>This will only contain a value when the segment is the first in a word.</summary>
-		public string PartOfSpeech = null;
-
-		/// <summary>This will only contain a value when the segment is the first in a word.</summary>
 		public string Gloss = null;
 
-		/// <summary>This will only contain a value when the segment is the first in a word.</summary>
-		public string Reference = null;
+        /// <summary>This will only contain a value when the segment is the first in a word.</summary>
+        public string GlossNat = null;
+
+        /// <summary>This will only contain a value when the segment is the first in a word.</summary>
+        public string Reference = null;
 	}
 
 	#endregion

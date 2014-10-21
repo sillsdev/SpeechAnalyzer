@@ -78,6 +78,7 @@ enum EUpdateMode
 #define PHONEMIC_DEFAULT_FONT           _T("Doulos SIL")
 #define ORTHOGRAPHIC_DEFAULT_FONT       _T("Doulos SIL")
 #define GLOSS_DEFAULT_FONT              _T("Doulos SIL")
+#define GLOSS_NAT_DEFAULT_FONT          _T("Doulos SIL")
 #define REFERENCE_DEFAULT_FONT          _T("Doulos SIL")
 #define MUSIC_PHRASE_DEFAULT_FONT       _T("Doulos SIL")
 
@@ -86,6 +87,7 @@ enum EUpdateMode
 #define PHONEMIC_DEFAULT_FONTSIZE       12
 #define ORTHOGRAPHIC_DEFAULT_FONTSIZE   10
 #define GLOSS_DEFAULT_FONTSIZE          10
+#define GLOSS_NAT_DEFAULT_FONTSIZE      10
 #define REFERENCE_DEFAULT_FONTSIZE      12
 #define MUSIC_PHRASE_DEFAULT_FONTSIZE   12
 
@@ -261,6 +263,7 @@ enum EAnnotation                    // annotation windows
     PHONEMIC,
     ORTHO,
     GLOSS,
+	GLOSS_NAT,
     REFERENCE,
     MUSIC_PL1,
     MUSIC_PL2,

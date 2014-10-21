@@ -2016,6 +2016,30 @@
 				>
 			</File>
 		</Filter>
+		<File
+			RelativePath=".\GlossNatSegment.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\GlossNatSegment.h"
+			>
+		</File>
+		<File
+			RelativePath=".\GlossNatWnd.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\GlossNatWnd.h"
+			>
+		</File>
+		<File
+			RelativePath=".\ReferenceWnd.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\ReferenceWnd.h"
+			>
+		</File>
 	</Files>
 	<Globals>
 		<Global

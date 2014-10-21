@@ -25,6 +25,7 @@ BEGIN_MESSAGE_MAP(CDlgAlignTranscriptionDataInitPage, CWnd)
     ON_BN_CLICKED(IDC_PHONEMIC, &CDlgAlignTranscriptionDataInitPage::OnBnClicked)
     ON_BN_CLICKED(IDC_ORTHOGRAPHIC, &CDlgAlignTranscriptionDataInitPage::OnBnClicked)
     ON_BN_CLICKED(IDC_GLOSS, &CDlgAlignTranscriptionDataInitPage::OnBnClicked)
+    ON_BN_CLICKED(IDC_GLOSS_NAT, &CDlgAlignTranscriptionDataInitPage::OnBnClicked)
 END_MESSAGE_MAP()
 
 void CDlgAlignTranscriptionDataInitPage::OnBnClicked()
@@ -44,6 +45,7 @@ void CDlgAlignTranscriptionDataInitPage::DoDataExchange(CDataExchange * pDX)
 {
     CPropertyPage::DoDataExchange(pDX);
     DDX_Check(pDX, IDC_GLOSS, m_bGloss);
+    DDX_Check(pDX, IDC_GLOSS_NAT, m_bGlossNat);
     DDX_Check(pDX, IDC_ORTHOGRAPHIC, m_bOrthographic);
     DDX_Check(pDX, IDC_PHONEMIC, m_bPhonemic);
     DDX_Check(pDX, IDC_PHONETIC, m_bPhonetic);
@@ -56,6 +58,7 @@ void CDlgAlignTranscriptionDataInitPage::UpdateNext()
     bool enable = ((IsDlgButtonChecked(IDC_PHONETIC)!=0)||
                    (IsDlgButtonChecked(IDC_PHONEMIC)!=0)||
                    (IsDlgButtonChecked(IDC_GLOSS)!=0)||
+                   (IsDlgButtonChecked(IDC_GLOSS_NAT)!=0)||
                    (IsDlgButtonChecked(IDC_ORTHOGRAPHIC)!=0));
     CPropertySheet * pSheet = reinterpret_cast<CPropertySheet *>(GetParent());
     if (enable)

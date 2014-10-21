@@ -23,6 +23,7 @@ static char BASED_CODE THIS_FILE[] = __FILE__;
 static LPCTSTR psz_Ref = L"ref";
 static LPCTSTR psz_Phonemic = L"pm";
 static LPCTSTR psz_Gloss = L"gl";
+static LPCTSTR psz_GlossNat = L"gn";
 static LPCTSTR psz_Phonetic = L"ph";
 static LPCTSTR psz_Orthographic = L"or";
 static LPCTSTR psz_ImportEnd = L"import";
@@ -959,13 +960,6 @@ BOOL CImportSFM::ReadTable( CStringStream & stream, int nMode)
             pDoc->GetSegment(nIndex)->DeleteContents();
         }
     }
-    if (nAnnotField[ANNOT_WND_NUMBER/* POS*/] != -1)
-    {
-        for (int nIndex = 0; nIndex < pDoc->GetSegment(GLOSS)->GetOffsetSize(); nIndex++)
-        {
-            ((CGlossSegment *)pDoc->GetSegment(GLOSS))->POSSetAt( nIndex, L"");
-        }
-    }
 
     // insert fields into segments
     int nIndexPhonetic = 0;
@@ -1024,16 +1018,6 @@ BOOL CImportSFM::ReadTable( CStringStream & stream, int nMode)
             }
             pGloss->ReplaceSelectedSegment(pDoc, szString);
 
-            // POS
-            szString = CSFMHelper::ExtractTabField(szLine, nAnnotField[ANNOT_WND_NUMBER/*POS*/]);
-            if (szString.GetLength())
-            {
-                if (bAppendGloss)
-                {
-                    szString = pGloss->GetPOSAt(nIndexGloss) + " " + szString;
-                }
-                pGloss->POSSetAt( nIndexGloss, szString);
-            }
             // Reference
             szString = CSFMHelper::ExtractTabField(szLine, nAnnotField[REFERENCE]);
             if (szString.GetLength())
@@ -1302,6 +1286,7 @@ bool CImportSFM::ProcessNormal( wistringstream & data, EImportMode nMode, wstrin
     CSaString phonemic;
     CSaString ortho;
     CSaString gloss;
+	CSaString glossNat;
 
     const CSaString CrLf("\r\n");
     BOOL bTable = FALSE;
@@ -1521,6 +1506,83 @@ bool CImportSFM::ProcessNormal( wistringstream & data, EImportMode nMode, wstrin
 				}
                 continue;
             }
+            else if (stream.ReadStreamString(psz_GlossNat, text))
+            {
+				bool first = true;
+				bool hasSpaces = (text.Find(SPACE_DELIMITER)!=-1);
+				bool hasPounds = (text.Find(WORD_DELIMITER)!=-1);
+				if (hasPounds)
+				{
+					// if it has pounds, then make sure that a space preceeds each pound.
+					// spaces without pounds are treated as embedded spaces
+					for (int i=0;i<text.GetLength();)
+					{
+						if (text[i]==SPACE_DELIMITER)
+						{
+							if ((i+1)<text.GetLength())
+							{
+								if (text[i+1]==WORD_DELIMITER)
+								{
+									glossNat += text[i++];
+									glossNat += text[i++];
+								}
+								else
+								{
+									// space followed by something else - treat as embedded space
+									glossNat += text[i++];
+								}
+							}
+							else
+							{
+								// we are done.
+								glossNat += text[i++];
+							}
+						}
+						else if (text[i]==WORD_DELIMITER)
+						{
+							// if we are here, we didn't see a preceeding space - add one
+							glossNat += CSaString(SPACE_DELIMITER);
+							glossNat += text[i++];
+						}
+						else
+						{
+							glossNat += text[i++];
+						}
+					}
+				}
+				else if (hasSpaces)
+				{
+					// if it doesn't have pounds then convert spaces to space/pounds sequences
+					for (int i=0;i<text.GetLength();)
+					{
+						if (text[i]==SPACE_DELIMITER)
+						{
+							glossNat += text[i++];
+							glossNat += CSaString(WORD_DELIMITER);
+						}
+						else
+						{
+							if (first)
+							{
+								glossNat += CSaString(SPACE_DELIMITER);
+								glossNat += CSaString(WORD_DELIMITER);
+								first=false;
+							}
+							glossNat += text[i++];
+						}
+						first=false;
+					}
+				}
+				else
+				{
+					// neither? add something in front
+					glossNat += CSaString(SPACE_DELIMITER);
+					glossNat += CSaString(WORD_DELIMITER);
+					glossNat += text;
+
+				}
+                continue;
+            }
             else if (stream.bEnd(psz_ImportEnd))
             {
                 break;
@@ -1549,6 +1611,7 @@ bool CImportSFM::ProcessNormal( wistringstream & data, EImportMode nMode, wstrin
 		(phonemic.GetLength()!=0) || 
 		(ortho.GetLength()!=0) || 
 		(gloss.GetLength()!=0) ||
+		(glossNat.GetLength()!=0) ||
 		(ref.GetLength()!=0))
     {
         if (!bTable)
@@ -1577,6 +1640,11 @@ bool CImportSFM::ProcessNormal( wistringstream & data, EImportMode nMode, wstrin
         {
             Report += "\\" + CSaString(psz_Gloss) + gloss + CrLf;
 			gloss = "";
+        }
+        if (glossNat.GetLength()!=0)
+        {
+            Report += "\\" + CSaString(psz_GlossNat) + glossNat + CrLf;
+			glossNat = "";
         }
 
         if (bTable)

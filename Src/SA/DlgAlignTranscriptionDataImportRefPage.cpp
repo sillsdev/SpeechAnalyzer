@@ -74,6 +74,7 @@ BOOL CDlgAlignTranscriptionDataImportRefPage::OnSetActive()
 
     if (m_pSaDoc->ImportTranscription( stream,
                                        pParent->init.m_bGloss,
+									   pParent->init.m_bGlossNat,
                                        pParent->init.m_bPhonetic,
                                        pParent->init.m_bPhonemic,
                                        pParent->init.m_bOrthographic,
@@ -128,6 +129,7 @@ void CDlgAlignTranscriptionDataImportRefPage::OnClickedImport()
     m_bModified = true;
     if (m_pSaDoc->ImportTranscription( stream,
                                        pParent->init.m_bGloss,
+                                       pParent->init.m_bGlossNat,
                                        pParent->init.m_bPhonetic,
                                        pParent->init.m_bPhonemic,
                                        pParent->init.m_bOrthographic,
@@ -169,6 +171,7 @@ void CDlgAlignTranscriptionDataImportRefPage::OnClickedRevert()
     CDlgAlignTranscriptionDataSheet * pParent = GetParent();
 
     m_szText = m_pSaDoc->BuildImportString(pParent->init.m_bGloss,
+                                           pParent->init.m_bGlossNat,
                                            pParent->init.m_bPhonetic,
                                            pParent->init.m_bPhonemic,
                                            pParent->init.m_bOrthographic);

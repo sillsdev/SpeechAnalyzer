@@ -19,6 +19,7 @@ public:
     virtual void DoDataExchange(CDataExchange * pDX);
 
     BOOL m_bGloss;
+	BOOL m_bGlossNat;
     BOOL m_bPhonemic;
     BOOL m_bPhonetic;
     BOOL m_bReference;

@@ -28,8 +28,8 @@ private:
 	CComboBox phonetic;
 	CComboBox phonemic;
 	CComboBox gloss;
+	CComboBox glossNat;
 	CComboBox ortho;
-	CComboBox pos;
 	CComboBox pl1;
 	CComboBox pl2;
 	CComboBox pl3;

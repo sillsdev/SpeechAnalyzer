@@ -274,7 +274,7 @@ namespace SIL.SpeechTools.Utils
 		/// Adds information that spans one or more segment boundaries.
 		/// </summary>
 		/// ------------------------------------------------------------------------------------
-		public void AddMarkSegment( uint offset, uint length, string gloss, string partOfSpeech, string reference, bool isBookmark)
+        public void AddMarkSegment(uint offset, uint length, string gloss, string glossNat, string reference, bool isBookmark)
 		{
             uint segIndex = GetSegmentIndexFromOffset(offset);
             if (segIndex == System.UInt32.MaxValue)
@@ -286,7 +286,7 @@ namespace SIL.SpeechTools.Utils
 
 			m_doc.m_segments[segIndex].Gloss = gloss;
 			m_doc.m_segments[segIndex].Reference = reference;
-			m_doc.m_segments[segIndex].PartOfSpeech = partOfSpeech;
+			m_doc.m_segments[segIndex].GlossNat = glossNat;
 			m_doc.m_segments[segIndex].MarkDurationInSeconds = m_doc.BytesToSeconds(length);
 			m_doc.m_segments[segIndex].IsBookmark = isBookmark;
 		}

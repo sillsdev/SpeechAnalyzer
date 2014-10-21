@@ -270,6 +270,7 @@ CMainFrame::CMainFrame()
             m_GraphFontFaces.Add(PHONEMIC_DEFAULT_FONT);
             m_GraphFontFaces.Add(ORTHOGRAPHIC_DEFAULT_FONT);
             m_GraphFontFaces.Add(GLOSS_DEFAULT_FONT);
+            m_GraphFontFaces.Add(GLOSS_NAT_DEFAULT_FONT);
             m_GraphFontFaces.Add(REFERENCE_DEFAULT_FONT);
             m_GraphFontFaces.Add(MUSIC_PHRASE_DEFAULT_FONT);
             m_GraphFontFaces.Add(MUSIC_PHRASE_DEFAULT_FONT);
@@ -280,6 +281,7 @@ CMainFrame::CMainFrame()
             m_GraphFontSizes.Add(PHONEMIC_DEFAULT_FONTSIZE);
             m_GraphFontSizes.Add(ORTHOGRAPHIC_DEFAULT_FONTSIZE);
             m_GraphFontSizes.Add(GLOSS_DEFAULT_FONTSIZE);
+            m_GraphFontSizes.Add(GLOSS_NAT_DEFAULT_FONTSIZE);
             m_GraphFontSizes.Add(REFERENCE_DEFAULT_FONTSIZE);
             m_GraphFontSizes.Add(MUSIC_PHRASE_DEFAULT_FONTSIZE);
             m_GraphFontSizes.Add(MUSIC_PHRASE_DEFAULT_FONTSIZE);

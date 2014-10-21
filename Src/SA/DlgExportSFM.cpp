@@ -116,10 +116,10 @@ CDlgExportSFM::CDlgExportSFM(const CSaString & szDocTitle, CWnd * pParent) :
     m_bWords = TRUE;
     m_bAllAnnotations = TRUE;
     m_bGloss = TRUE;
+	m_bGlossNat = TRUE;
     m_bOrtho = TRUE;
     m_bPhonemic = TRUE;
     m_bPhonetic = TRUE;
-    m_bPOS = FALSE;
     m_bReference = FALSE;
     m_bTone = FALSE;
     m_bPhrase = FALSE;
@@ -206,10 +206,10 @@ void CDlgExportSFM::DoDataExchange(CDataExchange * pDX)
 	DDX_Check(pDX, IDC_EX_SFM_WORDS, m_bWords);
 	DDX_Check(pDX, IDC_EXTAB_ANNOTATIONS, m_bAllAnnotations);
 	DDX_Check(pDX, IDC_EXTAB_GLOSS, m_bGloss);
+	DDX_Check(pDX, IDC_EXTAB_GLOSS_NAT, m_bGlossNat);
 	DDX_Check(pDX, IDC_EXTAB_ORTHO, m_bOrtho);
 	DDX_Check(pDX, IDC_EXTAB_PHONEMIC, m_bPhonemic);
 	DDX_Check(pDX, IDC_EXTAB_PHONETIC, m_bPhonetic);
-	DDX_Check(pDX, IDC_EXTAB_POS, m_bPOS);
 	DDX_Check(pDX, IDC_EXTAB_REFERENCE, m_bReference);
 	DDX_Check(pDX, IDC_EXTAB_TONE, m_bTone);
 	DDX_Check(pDX, IDC_EXTAB_PHRASE, m_bPhrase);
@@ -247,7 +247,7 @@ void CDlgExportSFM::OnOK()
     // process all flags
     if (m_bAllAnnotations)
     {
-        m_bReference = m_bPhonetic = m_bTone = m_bPhonemic = m_bOrtho = m_bGloss = m_bPOS = m_bPhrase = TRUE;
+        m_bReference = m_bPhonetic = m_bTone = m_bPhonemic = m_bOrtho = m_bGloss = m_bGlossNat = m_bPhrase = TRUE;
     }
 
     if (m_bAllFile)
@@ -333,11 +333,6 @@ void CDlgExportSFM::ExportDefault()
                     if (nLoop == GLOSS)
                     {
                         szAnnotation[nLoop] += pDoc->GetSegment(nLoop)->GetSegmentString(nFind).Mid(1);
-                        szPOS += ((CGlossSegment *)pDoc->GetSegment(GLOSS))->GetPOSAt(nFind);
-                        if (szPOS.GetLength() > nMaxLength)
-                        {
-                            nMaxLength = szPOS.GetLength();
-                        }
                     }
                     else
                     {
@@ -383,9 +378,9 @@ void CDlgExportSFM::ExportDefault()
             szString = "\\gl  " + szAnnotation[GLOSS] + szCrLf;
             WriteFileUtf8(&file, szString);
         }
-        if (m_bPOS)   // \pos  Part of Speech
+        if (m_bGlossNat)   // \gn   Gloss National
         {
-            szString = "\\pos " + szPOS + szCrLf;
+            szString = "\\gn  " + szAnnotation[GLOSS_NAT] + szCrLf;
             WriteFileUtf8(&file, szString);
         }
     }
@@ -472,9 +467,9 @@ void CDlgExportSFM::ExportColumnar()
         szString.Append(L"\\gl");
 		szString.Append(szTab);
     }
-    if (m_bPOS)   // \pos  Part of Speech
+    if (m_bGlossNat)   // \gn   Gloss Nat.
     {
-        szString.Append(L"\\pos");
+        szString.Append(L"\\gn");
 		szString.Append(szTab);
     }
 	if (m_bPhrase)
@@ -584,11 +579,6 @@ void CDlgExportSFM::ExportInterlinear()
                     if (nLoop == GLOSS)
                     {
                         szAnnotation[nLoop] += pDoc->GetSegment(nLoop)->GetSegmentString(nFind).Mid(1);
-                        szPOS += ((CGlossSegment *)pDoc->GetSegment(GLOSS))->GetPOSAt(nFind);
-                        if (szPOS.GetLength() > nMaxLength)
-                        {
-                            nMaxLength = szPOS.GetLength();
-                        }
                     }
                     else
                     {
@@ -634,9 +624,9 @@ void CDlgExportSFM::ExportInterlinear()
             szString = "\\gl  " + szAnnotation[GLOSS] + szCrLf;
             WriteFileUtf8(&file, szString);
         }
-        if (m_bPOS)   // \pos  Part of Speech
+        if (m_bGlossNat)   // \gn   Gloss Nat.
         {
-            szString = "\\pos " + szPOS + szCrLf;
+            szString = "\\gn  " + szAnnotation[GLOSS_NAT] + szCrLf;
             WriteFileUtf8(&file, szString);
         }
     }
@@ -689,17 +679,20 @@ void CDlgExportSFM::ExportMultiRecord()
     {
         if (!TryExportSegmentsBy(GLOSS,pDoc,file))
         {
-            if (!TryExportSegmentsBy(ORTHO,pDoc,file))
-            {
-                if (!TryExportSegmentsBy(PHONEMIC,pDoc,file))
-                {
-                    if (!TryExportSegmentsBy(TONE,pDoc,file))
-                    {
-                        TryExportSegmentsBy(PHONETIC,pDoc,file);
-                    }
-                }
-            }
-        }
+			if (!TryExportSegmentsBy(GLOSS_NAT,pDoc,file))
+			{
+				if (!TryExportSegmentsBy(ORTHO,pDoc,file))
+				{
+					if (!TryExportSegmentsBy(PHONEMIC,pDoc,file))
+					{
+						if (!TryExportSegmentsBy(TONE,pDoc,file))
+						{
+							TryExportSegmentsBy(PHONETIC,pDoc,file);
+						}
+					}
+				}
+			}
+		}
     }
 
     ExportCounts(pDoc, file);
@@ -783,6 +776,10 @@ bool CDlgExportSFM::TryExportSegmentsBy(EAnnotation master, CSaDoc * pDoc, CFile
         if (results[GLOSS].GetLength()>0)
         {
             WriteFileUtf8(&file, results[GLOSS]);
+        }
+        if (results[GLOSS_NAT].GetLength()>0)
+        {
+            WriteFileUtf8(&file, results[GLOSS_NAT]);
         }
 
         if (results[MUSIC_PL1].GetLength()>0)
@@ -886,6 +883,11 @@ bool CDlgExportSFM::TryExportColumnsBy(EAnnotation master, CSaDoc * pDoc, CFile 
             result.Append(results[GLOSS]);
 			result.Append(szTab);
         }
+		if (m_bGlossNat)
+        {
+            result.Append(results[GLOSS_NAT]);
+			result.Append(szTab);
+        }
 		if (m_bPhrase)
 		{
             result.Append(results[MUSIC_PL1]);
@@ -910,9 +912,8 @@ bool CDlgExportSFM::TryExportColumnsBy(EAnnotation master, CSaDoc * pDoc, CFile 
     return true;
 }
 
-CSaString CDlgExportSFM::BuildRecord(EAnnotation target, DWORD dwStart, DWORD dwStop, CSaDoc * pDoc, bool plain)
+CSaString CDlgExportSFM::BuildRecord( EAnnotation target, DWORD dwStart, DWORD dwStop, CSaDoc * pDoc, bool plain)
 {
-
     CSaString szTag = GetTag(target);
     CSegment * pSegment = pDoc->GetSegment(target);
     CSaString szText = pSegment->GetContainedText(dwStart,dwStop);
@@ -950,26 +951,17 @@ BOOL CDlgExportSFM::GetFlag(EAnnotation val)
 
     switch (val)
     {
-    case PHONETIC:
-        return m_bPhonetic;
-    case TONE:
-        return m_bTone;
-    case PHONEMIC:
-        return m_bPhonemic;
-    case ORTHO:
-        return m_bOrtho;
-    case GLOSS:
-        return m_bGloss;
-    case REFERENCE:
-        return m_bReference;
-    case MUSIC_PL1:
-        return m_bPhrase;
-    case MUSIC_PL2:
-        return m_bPhrase;
-    case MUSIC_PL3:
-        return m_bPhrase;
-    case MUSIC_PL4:
-        return m_bPhrase;
+    case PHONETIC:	return m_bPhonetic;
+    case TONE:		return m_bTone;
+    case PHONEMIC:	return m_bPhonemic;
+    case ORTHO:		return m_bOrtho;
+    case GLOSS:		return m_bGloss;
+    case GLOSS_NAT:	return m_bGlossNat;
+    case REFERENCE:	return m_bReference;
+    case MUSIC_PL1:	return m_bPhrase;
+    case MUSIC_PL2:	return m_bPhrase;
+    case MUSIC_PL3:	return m_bPhrase;
+    case MUSIC_PL4:	return m_bPhrase;
     }
     return false;
 }
@@ -979,55 +971,36 @@ int CDlgExportSFM::GetIndex(EAnnotation val)
 
     switch (val)
     {
-    case PHONETIC:
-        return 0;
-    case TONE:
-        return 1;
-    case PHONEMIC:
-        return 2;
-    case ORTHO:
-        return 3;
-    case GLOSS:
-        return 4;
-    case REFERENCE:
-        return 5;
-    case MUSIC_PL1:
-        return 6;
-    case MUSIC_PL2:
-        return 7;
-    case MUSIC_PL3:
-        return 8;
-    case MUSIC_PL4:
-        return 9;
+    case PHONETIC:	return 0;
+    case TONE:		return 1;
+    case PHONEMIC:	return 2;
+    case ORTHO:		return 3;
+    case GLOSS:		return 4;
+    case GLOSS_NAT:	return 5;
+    case REFERENCE:	return 6;
+    case MUSIC_PL1:	return 7;
+    case MUSIC_PL2:	return 8;
+    case MUSIC_PL3:	return 9;
+    case MUSIC_PL4:	return 10;
     }
     return false;
 }
 
 LPCTSTR CDlgExportSFM::GetTag(EAnnotation val)
 {
-
     switch (val)
     {
-    case PHONETIC:
-        return L"\\ph";
-    case TONE:
-        return L"\\tn";
-    case PHONEMIC:
-        return L"\\pm";
-    case ORTHO:
-        return L"\\or";
-    case GLOSS:
-        return L"\\gl";
-    case REFERENCE:
-        return L"\\ref";
-    case MUSIC_PL1:
-        return L"\\phr1";
-    case MUSIC_PL2:
-        return L"\\phr2";
-    case MUSIC_PL3:
-        return L"\\phr3";
-    case MUSIC_PL4:
-        return L"\\phr4";
+    case PHONETIC:	return L"\\ph";
+    case TONE:		return L"\\tn";
+    case PHONEMIC:	return L"\\pm";
+    case ORTHO:		return L"\\or";
+    case GLOSS:		return L"\\gl";
+    case GLOSS_NAT:	return L"\\gn";
+    case REFERENCE:	return L"\\ref";
+    case MUSIC_PL1:	return L"\\phr1";
+    case MUSIC_PL2:	return L"\\phr2";
+    case MUSIC_PL3:	return L"\\phr3";
+    case MUSIC_PL4:	return L"\\phr4";
     }
     return L"";
 }
@@ -1037,26 +1010,17 @@ EAnnotation CDlgExportSFM::GetAnnotation(int val)
 
     switch (val)
     {
-    case 0:
-        return PHONETIC;
-    case 1:
-        return TONE;
-    case 2:
-        return PHONEMIC;
-    case 3:
-        return ORTHO;
-    case 4:
-        return GLOSS;
-    case 5:
-        return REFERENCE;
-    case 6:
-        return MUSIC_PL1;
-    case 7:
-        return MUSIC_PL2;
-    case 8:
-        return MUSIC_PL3;
-    case 9:
-        return MUSIC_PL4;
+    case 0: return PHONETIC;
+    case 1: return TONE;
+    case 2: return PHONEMIC;
+    case 3: return ORTHO;
+    case 4: return GLOSS;
+	case 5: return GLOSS_NAT;
+    case 6: return REFERENCE;
+    case 7: return MUSIC_PL1;
+    case 8: return MUSIC_PL2;
+    case 9: return MUSIC_PL3;
+    case 10: return MUSIC_PL4;
     }
     return PHONETIC;
 }
@@ -1323,17 +1287,17 @@ void CDlgExportSFM::OnAllAnnotations()
     SetEnable(IDC_EXTAB_PHONEMIC, bEnable);
     SetEnable(IDC_EXTAB_ORTHO, bEnable);
     SetEnable(IDC_EXTAB_GLOSS, bEnable);
+    SetEnable(IDC_EXTAB_GLOSS_NAT, bEnable);
     SetEnable(IDC_EXTAB_REFERENCE, bEnable);
-    SetEnable(IDC_EXTAB_POS, bEnable);
     SetEnable(IDC_EXTAB_PHRASE, bEnable);
     if (m_bAllAnnotations)
     {
-        m_bReference = m_bPhonetic = m_bTone = m_bPhonemic = m_bOrtho = m_bGloss = m_bPOS = m_bPhrase = TRUE;
+        m_bReference = m_bPhonetic = m_bTone = m_bPhonemic = m_bOrtho = m_bGloss = m_bGlossNat = m_bPhrase = TRUE;
         UpdateData(FALSE);
     }
     else
     {
-        m_bReference = m_bPhonetic = m_bTone = m_bPhonemic = m_bOrtho = m_bGloss = m_bPOS = m_bPhrase = FALSE;
+        m_bReference = m_bPhonetic = m_bTone = m_bPhonemic = m_bOrtho = m_bGloss = m_bGlossNat = m_bPhrase = FALSE;
         UpdateData(FALSE);
     }
 }

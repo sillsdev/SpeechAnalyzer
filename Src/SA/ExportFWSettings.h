@@ -8,10 +8,10 @@ class CExportFWSettings
 
 public:
     BOOL bGloss;
+	BOOL bGlossNat;
     BOOL bOrtho;
     BOOL bPhonemic;
     BOOL bPhonetic;
-    BOOL bPOS;
     BOOL bReference;
     BOOL bPhrase;
     CString szDocTitle;

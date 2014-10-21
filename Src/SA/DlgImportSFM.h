@@ -39,12 +39,14 @@ public:
 
     // Dialog Data
     enum { IDD = IDD_ANNOTATION_IMPORT_SFM };
-    BOOL    m_bGloss;
-    BOOL    m_bPhonemic;
-    BOOL    m_bPhonetic;
-    BOOL    m_bOrthographic;
+    BOOL m_bGloss;
+    BOOL m_bGlossNat;
+    BOOL m_bPhonemic;
+    BOOL m_bPhonetic;
+    BOOL m_bOrthographic;
     CSaString m_szPhonemic;
     CSaString m_szGloss;
+	CSaString m_szGlossNat;
     CSaString m_szPhonetic;
     CSaString m_szOrthographic;
 

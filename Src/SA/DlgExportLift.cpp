@@ -62,20 +62,20 @@ END_MESSAGE_MAP()
 
 CDlgExportLift::CDlgExportLift(LPCTSTR docTitle,
 							   BOOL gloss,
+							   BOOL glossNat,
 							   BOOL ortho,
 							   BOOL phonemic,
 							   BOOL phonetic,
-							   BOOL pos,
 							   BOOL reference,
 							   list<wstring> codes,
 							   CWnd * pParent) :
     CDialog(CDlgExportLift::IDD, pParent) {
 
     settings.bGloss = bGlossDflt = gloss;
+    settings.bGlossNat = bGlossNatDflt = glossNat;
     settings.bOrtho = bOrthoDflt = ortho;
     settings.bPhonemic = bPhonemicDflt = phonemic;
     settings.bPhonetic = bPhoneticDflt = phonetic;
-    settings.bPOS = bPOSDflt = pos;
     settings.bReference = bReferenceDflt = reference;
     settings.bPhrase = false;
     settings.szDocTitle = docTitle;
@@ -106,7 +106,7 @@ BOOL CDlgExportLift::OnInitDialog()
 		ctlReferenceList.AddString(code.c_str());
 		ctlOrthoList.AddString(code.c_str());
 		ctlGlossList.AddString(code.c_str());
-		ctlPOSList.AddString(code.c_str());
+		ctlGlossNatList.AddString(code.c_str());
 		ctlPhonemicList.AddString(code.c_str());
 		ctlPhoneticList.AddString(code.c_str());
 		it++;
@@ -115,7 +115,7 @@ BOOL CDlgExportLift::OnInitDialog()
 	ctlReferenceList.SetCurSel(0);
 	ctlOrthoList.SetCurSel(0);
 	ctlGlossList.SetCurSel(0);
-	ctlPOSList.SetCurSel(0);
+	ctlGlossNatList.SetCurSel(0);
 	ctlPhonemicList.SetCurSel(0);
 	ctlPhoneticList.SetCurSel(0);
 
@@ -129,10 +129,10 @@ void CDlgExportLift::DoDataExchange(CDataExchange * pDX)
 
     CDialog::DoDataExchange(pDX);
     DDX_Check(pDX, IDC_EXTAB_GLOSS, settings.bGloss);
+    DDX_Check(pDX, IDC_EXTAB_GLOSS_NAT, settings.bGlossNat);
     DDX_Check(pDX, IDC_EXTAB_ORTHO, settings.bOrtho);
     DDX_Check(pDX, IDC_EXTAB_PHONEMIC, settings.bPhonemic);
     DDX_Check(pDX, IDC_EXTAB_PHONETIC,settings. bPhonetic);
-    DDX_Check(pDX, IDC_EXTAB_POS, settings.bPOS);
     DDX_Check(pDX, IDC_EXTAB_REFERENCE, settings.bReference);
     DDX_Control(pDX, IDC_EDIT_FIELDWORKS_FOLDER, ctlEditFieldWorksFolder);
     DDX_Control(pDX, IDC_COMBO_FIELDWORKS_PROJECT, ctlComboFieldWorksProject);
@@ -142,7 +142,7 @@ void CDlgExportLift::DoDataExchange(CDataExchange * pDX)
 	DDX_Control(pDX, IDC_LIST_PHONETIC, ctlPhoneticList);
 	DDX_Control(pDX, IDC_LIST_ORTHO, ctlOrthoList);
 	DDX_Control(pDX, IDC_LIST_GLOSS, ctlGlossList);
-	DDX_Control(pDX, IDC_LIST_POS, ctlPOSList);
+	DDX_Control(pDX, IDC_LIST_GLOSS_NAT, ctlGlossNatList);
 
     if (!pDX->m_bSaveAndValidate)
     {
@@ -182,6 +182,9 @@ void CDlgExportLift::DoDataExchange(CDataExchange * pDX)
 		ctlGlossList.GetWindowTextW(buffer);
 		settings.gloss = buffer;
 
+		ctlGlossNatList.GetWindowTextW(buffer);
+		settings.glossNat = buffer;
+
 		ctlReferenceList.GetWindowTextW(buffer);
 		settings.reference = buffer;
 
@@ -194,9 +197,7 @@ void CDlgExportLift::DoDataExchange(CDataExchange * pDX)
 		ctlPhoneticList.GetWindowTextW(buffer);
 		settings.phonetic = buffer;
 
-		ctlPOSList.GetWindowTextW(buffer);
-		settings.pos = buffer;
-}
+	}
 }
 
 void CDlgExportLift::SetEnable(int nItem, BOOL bEnable)

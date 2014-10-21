@@ -7,18 +7,18 @@ class CExportLiftSettings
 {
 public:
     BOOL bGloss;
+    BOOL bGlossNat;
     BOOL bOrtho;
     BOOL bPhonemic;
     BOOL bPhonetic;
-    BOOL bPOS;
     BOOL bReference;
     BOOL bPhrase;
 
     wstring gloss;
+	wstring glossNat;
     wstring ortho;
     wstring phonemic;
     wstring phonetic;
-    wstring pos;
     wstring reference;
     wstring phrase;
 

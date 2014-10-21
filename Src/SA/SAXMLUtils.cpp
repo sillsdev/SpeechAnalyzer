@@ -28,11 +28,12 @@ static char THIS_FILE[]=__FILE__;
 
 LPCTSTR GetAnnotationName( EAnnotation ea) {
 	switch (ea) {
-		case PHONETIC: return L"Phonetic";
-		case PHONEMIC: return L"Phonemic";
-		case GLOSS: return L"Gloss";
-		case ORTHO: return L"Ortho";
-		case TONE: return L"Tone";
+		case PHONETIC:	return L"Phonetic";
+		case PHONEMIC:	return L"Phonemic";
+		case GLOSS:		return L"Gloss";
+		case GLOSS_NAT:	return L"Gloss Nat.";
+		case ORTHO:		return L"Ortho";
+		case TONE:		return L"Tone";
 		case REFERENCE: return L"Reference";
 		case MUSIC_PL1: return L"Annotation";
 		case MUSIC_PL2: return L"Annotation";

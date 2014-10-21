@@ -66,10 +66,10 @@ END_MESSAGE_MAP()
 
 CDlgExportFW::CDlgExportFW(LPCTSTR docTitle,
                            BOOL gloss,
+						   BOOL glossNat,
                            BOOL ortho,
                            BOOL phonemic,
                            BOOL phonetic,
-                           BOOL pos,
                            BOOL reference,
                            BOOL phrase,
                            CWnd * pParent) :
@@ -77,10 +77,10 @@ CDlgExportFW::CDlgExportFW(LPCTSTR docTitle,
 {
 
     settings.bGloss = bGlossDflt = gloss;
+	settings.bGlossNat = bGlossNatDflt = glossNat;
     settings.bOrtho = bOrthoDflt = ortho;
     settings.bPhonemic = bPhonemicDflt = phonemic;
     settings.bPhonetic = bPhoneticDflt = phonetic;
-    settings.bPOS = bPOSDflt = pos;
     settings.bReference = bReferenceDflt = reference;
     settings.bPhrase = bPhraseDflt = phrase;
     settings.szDocTitle = docTitle;
@@ -131,10 +131,10 @@ void CDlgExportFW::DoDataExchange(CDataExchange * pDX)
 
     CDialog::DoDataExchange(pDX);
     DDX_Check(pDX, IDC_EXTAB_GLOSS, settings.bGloss);
+    DDX_Check(pDX, IDC_EXTAB_GLOSS_NAT, settings.bGlossNat);
     DDX_Check(pDX, IDC_EXTAB_ORTHO, settings.bOrtho);
     DDX_Check(pDX, IDC_EXTAB_PHONEMIC, settings.bPhonemic);
     DDX_Check(pDX, IDC_EXTAB_PHONETIC,settings. bPhonetic);
-    DDX_Check(pDX, IDC_EXTAB_POS, settings.bPOS);
     DDX_Check(pDX, IDC_EXTAB_REFERENCE, settings.bReference);
     DDX_Check(pDX, IDC_EXTAB_PHRASE, settings.bPhrase);
     DDX_Control(pDX, IDC_BROWSE_OTHER, ctlButtonBrowseOther);
@@ -195,22 +195,22 @@ void CDlgExportFW::OnAllAnnotations()
     SetEnable(IDC_EXTAB_PHONEMIC, bEnable);
     SetEnable(IDC_EXTAB_ORTHO, bEnable);
     SetEnable(IDC_EXTAB_GLOSS, bEnable);
+    SetEnable(IDC_EXTAB_GLOSS_NAT, bEnable);
     SetEnable(IDC_EXTAB_REFERENCE, bEnable);
-    SetEnable(IDC_EXTAB_POS, bEnable);
     SetEnable(IDC_EXTAB_PHRASE, bEnable);
     if (checked)
     {
         settings.bGloss = bGlossDflt;
+		settings.bGlossNat = bGlossNatDflt;
         settings.bOrtho = bOrthoDflt;
         settings.bPhonemic = bPhonemicDflt;
         settings.bPhonetic = bPhoneticDflt;
-        settings.bPOS = bPOSDflt;
         settings.bReference = bReferenceDflt;
         settings.bPhrase = bPhraseDflt;
     }
     else
     {
-        settings.bReference = settings.bPhonetic = settings.bPhonemic = settings.bOrtho = settings.bGloss = settings.bPOS = settings.bPhrase = FALSE;
+        settings.bReference = settings.bPhonetic = settings.bPhonemic = settings.bOrtho = settings.bGloss = settings.bGlossNat = settings.bPhrase = FALSE;
     }
     UpdateData(FALSE);
 }

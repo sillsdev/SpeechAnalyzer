@@ -19,6 +19,7 @@ class CDlgAlignTranscriptionDataSheet : public CPropertySheet
     CDlgAlignTranscriptionDataInitPage init;
     CDlgAlignTranscriptionDataImportRefPage import;
     CDlgAlignTranscriptionDataTextPage gloss;
+    CDlgAlignTranscriptionDataTextPage glossNat;
     CDlgAlignTranscriptionDataTextPage phonetic;
     CDlgAlignTranscriptionDataTextPage phonemic;
     CDlgAlignTranscriptionDataTextPage ortho;

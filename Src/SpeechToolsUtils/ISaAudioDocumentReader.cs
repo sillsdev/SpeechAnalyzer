@@ -12,8 +12,7 @@ namespace SIL.SpeechTools.Utils
 		void Close();
 		void ResetSegmentEnumerators();
 		bool ReadSegment(int annotationType, out uint offset, out uint length, out string annotation);
-		bool ReadMarkSegment(out uint offset, out uint length, out string gloss,
-			out string partOfSpeech, out string reference, out bool isBookmark);
+		bool ReadMarkSegment(out uint offset, out uint length, out string gloss, out string glossNat, out string reference, out bool isBookmark);
         string ReadAsMusicXML();
         string ImportMusicXML(string fileName);
 		#endregion
