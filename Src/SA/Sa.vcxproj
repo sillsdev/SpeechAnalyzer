@@ -149,6 +149,7 @@
     <ClCompile Include="DlgExportTable.cpp" />
     <ClCompile Include="DlgExportXML.cpp" />
     <ClCompile Include="DlgFnKeys.cpp" />
+    <ClCompile Include="DlgHelpSFMMarkers.cpp" />
     <ClCompile Include="DlgImport.cpp" />
     <ClCompile Include="DlgImportElanFinishPage.cpp" />
     <ClCompile Include="DlgImportElanIntroPage.cpp" />
@@ -392,6 +393,7 @@
     <ClInclude Include="DlgExportTable.h" />
     <ClInclude Include="DlgExportXML.h" />
     <ClInclude Include="DlgFnKeys.h" />
+    <ClInclude Include="DlgHelpSFMMarkers.h" />
     <ClInclude Include="DlgImport.h" />
     <ClInclude Include="DlgImportElanFinishPage.h" />
     <ClInclude Include="DlgImportElanIntroPage.h" />

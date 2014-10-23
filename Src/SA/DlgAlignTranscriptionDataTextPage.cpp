@@ -103,6 +103,7 @@ void CDlgAlignTranscriptionDataTextPage::OnClickedImport()
             else if ((dlg2.m_bPhonemic) && (stream.ReadStreamString(dlg2.m_szPhonemic,pSheet->phonemic.m_szText)));
             else if ((dlg2.m_bOrthographic) && (stream.ReadStreamString(dlg2.m_szOrthographic,pSheet->ortho.m_szText)));
             else if ((dlg2.m_bGloss)  && (stream.ReadStreamString(dlg2.m_szGloss,pSheet->gloss.m_szText)));
+            else if ((dlg2.m_bGlossNat)  && (stream.ReadStreamString(dlg2.m_szGlossNat,pSheet->glossNat.m_szText)));
             else if (stream.bEnd(psz_ImportEnd))
             {
                 break;

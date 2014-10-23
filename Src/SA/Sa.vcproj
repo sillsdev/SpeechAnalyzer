@@ -357,6 +357,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\DlgHelpSFMMarkers.cpp"
+				>
+			</File>
+			<File
 				RelativePath="DlgImport.cpp"
 				>
 			</File>
@@ -486,6 +490,14 @@
 			</File>
 			<File
 				RelativePath="Process\FormantTracker.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\GlossNatSegment.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\GlossNatWnd.cpp"
 				>
 			</File>
 			<File
@@ -638,6 +650,10 @@
 			</File>
 			<File
 				RelativePath="ReferenceSegment.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ReferenceWnd.cpp"
 				>
 			</File>
 			<File
@@ -1260,6 +1276,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\DlgHelpSFMMarkers.h"
+				>
+			</File>
+			<File
 				RelativePath="DlgImport.h"
 				>
 			</File>
@@ -1397,6 +1417,14 @@
 			</File>
 			<File
 				RelativePath="Process\FormantTracker.h"
+				>
+			</File>
+			<File
+				RelativePath=".\GlossNatSegment.h"
+				>
+			</File>
+			<File
+				RelativePath=".\GlossNatWnd.h"
 				>
 			</File>
 			<File
@@ -1541,6 +1569,10 @@
 			</File>
 			<File
 				RelativePath="ReferenceSegment.h"
+				>
+			</File>
+			<File
+				RelativePath=".\ReferenceWnd.h"
 				>
 			</File>
 			<File
@@ -2016,30 +2048,6 @@
 				>
 			</File>
 		</Filter>
-		<File
-			RelativePath=".\GlossNatSegment.cpp"
-			>
-		</File>
-		<File
-			RelativePath=".\GlossNatSegment.h"
-			>
-		</File>
-		<File
-			RelativePath=".\GlossNatWnd.cpp"
-			>
-		</File>
-		<File
-			RelativePath=".\GlossNatWnd.h"
-			>
-		</File>
-		<File
-			RelativePath=".\ReferenceWnd.cpp"
-			>
-		</File>
-		<File
-			RelativePath=".\ReferenceWnd.h"
-			>
-		</File>
 	</Files>
 	<Globals>
 		<Global

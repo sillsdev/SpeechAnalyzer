@@ -549,8 +549,8 @@ int CSegment::FindOffset(DWORD dwOffset) const
 /***************************************************************************/
 // CSegment::FindStop Find the annotation segment stop match
 // Returns the index of the annotation segment (first character in the
-// string) whichs offset matches the parameter. If there is no match, the
-// function returns -1.
+// string) whichs offset matches the parameter. 
+// If there is no match, the function returns -1.
 /***************************************************************************/
 int CSegment::FindStop(DWORD dwStop) const
 {

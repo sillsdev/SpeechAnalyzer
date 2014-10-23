@@ -423,6 +423,15 @@ bool CSFMHelper::IsGloss( LPCTSTR text, size_t length)
 	return true;
 }
 
+bool CSFMHelper::IsGlossNat( LPCTSTR text, size_t length)
+{
+	if (length<3) return false;
+	if (::tolower(text[0])!='\\') return false;
+	if (::tolower(text[1])!='g') return false;
+	if (::tolower(text[2])!='n') return false;
+	return true;
+}
+
 bool CSFMHelper::IsRef( LPCTSTR text, size_t length)
 {
 	if (length<4) return false;

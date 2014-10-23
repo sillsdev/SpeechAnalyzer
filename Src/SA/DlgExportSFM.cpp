@@ -145,7 +145,7 @@ BOOL CDlgExportSFM::OnInitDialog()
 	CString choice4;
 
 	noChoice.LoadStringW(IDS_NO_CHOICE);
-	choice1.LoadStringW(IDS_DEFAULT);
+	choice1.LoadStringW(IDS_ROWS);
 	choice2.LoadStringW(IDS_COLUMNAR);
 	choice3.LoadStringW(IDS_INTERLINEAR);
 	choice4.LoadStringW(IDS_MULTIRECORD);

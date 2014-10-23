@@ -5431,8 +5431,8 @@ void CSaView::OnEditAddBookmark()
 void CSaView::EditAddGloss(bool bDelimiter)
 {
 
-    CSaDoc * pDoc = (CSaDoc *)GetDocument(); // get pointer to document
-    CSaString szString = ""; //Fill new segment with default character
+    CSaDoc * pDoc = (CSaDoc *)GetDocument();	// get pointer to document
+    CSaString szString = "";					//Fill new segment with default character
 	CSaString szEmpty = "";
 
     CGlossSegment * pGloss = (CGlossSegment *)GetAnnotation(GLOSS);

@@ -152,6 +152,9 @@
 #define IDD_AUTO_REFERENCE_DATA         363
 #define IDD_DIALOG1                     369
 #define IDD_SELECT_TRANSCRIPTION_BARS   369
+#define IDD_DIALOG2                     370
+#define IDD_HELP_SFM_MARKERS            370
+#define IDD_DIALOG3                     371
 #define IDC_HIGHPASS                    502
 #define ID_STATUSPANE_EMPTY             700
 #define ID_STATUSPANE_1                 701
@@ -1354,7 +1357,7 @@
 #define IDS_MC_CHANNEL_RIGHT            11026
 #define IDS_SUPPORT_WAVE_COPY           11028
 #define IDS_NO_CHOICE                   11030
-#define IDS_DEFAULT                     11031
+#define IDS_ROWS                        11031
 #define IDS_INTERLINEAR                 11032
 #define IDS_MULTIRECORD                 11033
 #define IDS_COLUMNAR                    11034
@@ -1625,6 +1628,7 @@
 #define ID_EXPORT_LIFT                  33243
 #define ID_VIEW_TRANSCRIPTION_BOUNDARIES 33244
 #define ID_Menu                         33245
+#define ID_HELP_SFMMARKERS              33246
 #define ID_GRAPHTYPES_SELECT_FIRST      40000
 #define ID_GRAPHTYPES_SELECT_LAST       40011
 #define ID_PHONETIC_ALL                 40100
@@ -1788,8 +1792,8 @@
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_3D_CONTROLS                     1
-#define _APS_NEXT_RESOURCE_VALUE        370
-#define _APS_NEXT_COMMAND_VALUE         33246
+#define _APS_NEXT_RESOURCE_VALUE        372
+#define _APS_NEXT_COMMAND_VALUE         33247
 #define _APS_NEXT_CONTROL_VALUE         2111
 #define _APS_NEXT_SYMED_VALUE           105
 #endif

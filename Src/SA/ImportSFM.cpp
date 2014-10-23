@@ -96,7 +96,7 @@ BOOL CImportSFM::Import( EImportMode nMode)
 /***************************************************************************/
 // CImportSFM::AutoAlign Execute changes by request from batch file
 /***************************************************************************/
-void CImportSFM::AutoAlign(CSaDoc * pSaDoc, LPCTSTR pReference, LPCTSTR pPhonetic, LPCTSTR pPhonemic, LPCTSTR pOrtho, LPCTSTR pGloss)
+void CImportSFM::AutoAlign(CSaDoc * pSaDoc, LPCTSTR pReference, LPCTSTR pPhonetic, LPCTSTR pPhonemic, LPCTSTR pOrtho, LPCTSTR pGloss, LPCTSTR pGlossNat)
 {
     CTranscriptionDataSettings settings;
 
@@ -104,12 +104,14 @@ void CImportSFM::AutoAlign(CSaDoc * pSaDoc, LPCTSTR pReference, LPCTSTR pPhoneti
     settings.m_bPhonemic = (pPhonemic != NULL);
     settings.m_bOrthographic = (pOrtho != NULL);
     settings.m_bGloss = (pGloss != NULL);
+    settings.m_bGlossNat = (pGlossNat != NULL);
 	settings.m_bReference = (pReference != NULL);
 
     settings.m_bPhoneticModified = (settings.m_bPhonetic!=FALSE);
     settings.m_bPhonemicModified = (settings.m_bPhonemic!=FALSE);
     settings.m_bOrthographicModified = (settings.m_bOrthographic!=FALSE);
     settings.m_bGlossModified = (settings.m_bGloss!=FALSE);
+    settings.m_bGlossNatModified = (settings.m_bGlossNat!=FALSE);
 	settings.m_bReferenceModified = (settings.m_bReference!=FALSE);
 
 	if (settings.m_bReference)
@@ -131,6 +133,10 @@ void CImportSFM::AutoAlign(CSaDoc * pSaDoc, LPCTSTR pReference, LPCTSTR pPhoneti
     if (settings.m_bGloss)
     {
         settings.m_szGloss = pGloss;
+    }
+    if (settings.m_bGlossNat)
+    {
+        settings.m_szGlossNat = pGlossNat;
     }
 
     // save state for undo ability
@@ -573,6 +579,75 @@ void CImportSFM::AutoAlign(CSaDoc * pSaDoc, LPCTSTR pReference, LPCTSTR pPhoneti
             pSegment->SelectSegment(*pSaDoc,nIndex);
             ((CGlossSegment *)pSegment)->ReplaceSelectedSegment(pSaDoc,szNext);
         }
+
+        // Process gloss national
+        // SDM 1.06.8 only change  if new segmentation or text changed
+        if (settings.m_bGlossNatModified)
+        {
+
+            nStringIndex = 0;
+            nGlossIndex = 0;
+            nWordIndex = 0;
+            pSegment = pSaDoc->GetSegment(GLOSS_NAT);
+            pTable = pSaDoc->GetFont(GLOSS_NAT);
+            pSegment->DeleteContents();		// Delete contents and reinsert from scratch
+
+            nOffsetSize = charOffsets.GetSize();
+            for (nIndex = 0; nIndex < (nOffsetSize-1); nIndex++)
+            {
+                // the line is entered one character per segment
+                szNext.Empty();
+                while (true)
+                {
+                    CSaString szTemp = pTable->GetNext(nAlignMode, nStringIndex, settings.m_szReference);
+                    if (szTemp.GetLength()==0)
+                    {
+                        break;
+                    }
+                    else if ((szTemp.GetLength()==1)&&(szTemp[0]==SPACE_DELIMITER))
+                    {
+                        // time to stop!
+                        break;
+                    }
+                    else if (szTemp.GetLength()>1)
+                    {
+                        // in some situations if the trailing character is not a break
+                        // it will be combined with the space.  we will break it here.
+                        if (szTemp[0]==SPACE_DELIMITER)
+                        {
+                            if (szNext.GetLength()==0)
+                            {
+                                // remove space and append
+                                szTemp.Delete(0,1);
+                            }
+                            else
+                            {
+                                // backup and let the next character go into the next segment
+                                nStringIndex--;
+                                break;
+                            }
+                        }
+                    }
+                    szNext += szTemp;
+                }
+                if (szNext.GetLength()>0)
+                {
+                    pSegment->Insert(pSegment->GetOffsetSize(),szNext, FALSE,charOffsets[nIndex], charDurations[nIndex]);
+                }
+            }
+
+            szNext = pTable->GetRemainder(nAlignMode, nStringIndex, settings.m_szReference);
+            // Skip empty segments
+            if (szNext.GetLength()!=0)
+            {
+                pSegment->Insert(pSegment->GetOffsetSize(),szNext,FALSE, charOffsets[nOffsetSize-1], charDurations[nOffsetSize-1]);
+            }
+            // SDM 1.06.8 apply input filter to segment
+            if (pSegment->GetInputFilter())
+            {
+                (pSegment->GetInputFilter())(*pSegment->GetString());
+            }
+        }
     }
 
     pView->ChangeAnnotationSelection(pSegment, -1);
@@ -595,6 +670,10 @@ void CImportSFM::AutoAlign(CSaDoc * pSaDoc, LPCTSTR pReference, LPCTSTR pPhoneti
         if (settings.m_bGloss)
         {
             pGraph->ShowAnnotation(GLOSS, TRUE, TRUE);
+        }
+        if (settings.m_bGlossNat)
+        {
+            pGraph->ShowAnnotation(GLOSS_NAT, TRUE, TRUE);
         }
 		if (settings.m_bReference)
 		{
@@ -754,10 +833,10 @@ BOOL CImportSFM::ReadTable( CStringStream & stream, int nMode)
     }
 
     // parse header
-    int nAnnotField[ANNOT_WND_NUMBER+1];
+    int nAnnotField[ANNOT_WND_NUMBER];
     CSaString szField;
 
-    for (int nLoop = 0; nLoop < ANNOT_WND_NUMBER+1; nLoop++)
+    for (int nLoop = 0; nLoop < ANNOT_WND_NUMBER; nLoop++)
     {
         nAnnotField[nLoop] = -1;
     }
@@ -795,9 +874,9 @@ BOOL CImportSFM::ReadTable( CStringStream & stream, int nMode)
         {
             nAnnotField[GLOSS] = nLoop;
         }
-        else if (szField.Find(_T("POS")) != -1)
+        else if (szField.Find(_T("GlossNat")) != -1)
         {
-            nAnnotField[ANNOT_WND_NUMBER] = nLoop;
+            nAnnotField[GLOSS_NAT] = nLoop;
         }
     }
     // create new segmentation
@@ -1234,6 +1313,7 @@ BOOL CImportSFM::ProcessColumnar( wistringstream & stream, wstring & result)
 	wstring phonemic;
 	wstring ortho;
 	wstring gloss;
+	wstring glossNat;
 
 	for (size_t i=0;i<rows.size();i++)
 	{
@@ -1253,6 +1333,10 @@ BOOL CImportSFM::ProcessColumnar( wistringstream & stream, wstring & result)
 		{
 			gloss = rows[i].c_str();
 		}
+		else if (CSFMHelper::IsGlossNat(rows[i].c_str(),rows[i].length()))
+		{
+			glossNat = rows[i].c_str();
+		}
 		else if (CSFMHelper::IsRef(rows[i].c_str(),rows[i].length()))
 		{
 			ref = rows[i].c_str();
@@ -1264,9 +1348,10 @@ BOOL CImportSFM::ProcessColumnar( wistringstream & stream, wstring & result)
 	phonemic = (phonemic.length()>4)?phonemic.substr(4):phonemic;
 	ortho = (ortho.length()>4)?ortho.substr(4):ortho;
 	gloss = (gloss.length()>4)?gloss.substr(4):gloss;
+	glossNat = (glossNat.length()>4)?glossNat.substr(4):glossNat;
 	ref = (ref.length()>5)?ref.substr(5):ref;
 
-	AutoAlign( pDoc, ref.c_str(), phonetic.c_str(), phonemic.c_str(), ortho.c_str(), gloss.c_str());
+	AutoAlign( pDoc, ref.c_str(), phonetic.c_str(), phonemic.c_str(), ortho.c_str(), gloss.c_str(), glossNat.c_str());
 
 	// now build the result string
 	for (size_t i=0;i<rows.size();i++)
@@ -1616,7 +1701,7 @@ bool CImportSFM::ProcessNormal( wistringstream & data, EImportMode nMode, wstrin
     {
         if (!bTable)
         {
-            AutoAlign( pDoc, ref, phonetic, phonemic, ortho, gloss);
+            AutoAlign( pDoc, ref, phonetic, phonemic, ortho, gloss, glossNat);
         }
 
         CSaString Report;

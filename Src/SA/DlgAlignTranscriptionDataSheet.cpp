@@ -68,7 +68,10 @@ CTranscriptionDataSettings CDlgAlignTranscriptionDataSheet::GetSettings()
 
         result.m_bGlossModified = gloss.m_bModified;
         result.m_szGloss = gloss.m_szText;
-    }
+
+        result.m_bGlossNatModified = glossNat.m_bModified;
+        result.m_szGlossNat = glossNat.m_szText;
+	}
 
     result.m_nAlignBy = align.m_nAlignBy;
     result.m_nSegmentBy = segment.m_nSegmentBy;
@@ -119,6 +122,11 @@ LRESULT CDlgAlignTranscriptionDataSheet::CalculateNext(int currentIDD)
             {
                 return gloss.IDD;
             }
+        case IDD_ANNOTATION_GLOSS_PAGE:
+            if (init.m_bGlossNat)
+            {
+                return glossNat.IDD;
+            }
         }
         return align.IDD;
     }
@@ -141,6 +149,11 @@ LRESULT CDlgAlignTranscriptionDataSheet::CalculateBack(int currentIDD)
         switch (currentIDD)
         {
         case IDD_ANNOTATION_ALIGN_PAGE:
+            if (init.m_bGlossNat)
+            {
+                return glossNat.IDD;
+            }
+        case IDD_ANNOTATION_GLOSS_NAT_PAGE:
             if (init.m_bGloss)
             {
                 return gloss.IDD;

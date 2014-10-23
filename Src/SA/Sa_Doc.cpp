@@ -7071,6 +7071,7 @@ void CSaDoc::OnAutoAlign()
     CDlgAlignTranscriptionDataSheet dlg(NULL,this);
 
     dlg.init.m_bGloss = (AfxGetApp()->GetProfileInt(L"TranscriptionAlignment",L"Gloss",0)!=0);
+    dlg.init.m_bGlossNat = (AfxGetApp()->GetProfileInt(L"TranscriptionAlignment",L"GlossNat",0)!=0);
     dlg.init.m_bOrthographic = (AfxGetApp()->GetProfileInt(L"TranscriptionAlignment",L"Orthographic",0)!=0);
     dlg.init.m_bPhonemic = (AfxGetApp()->GetProfileInt(L"TranscriptionAlignment",L"Phonemic",0)!=0);
     dlg.init.m_bPhonetic = (AfxGetApp()->GetProfileInt(L"TranscriptionAlignment",L"Phonetic",1)!=0);
@@ -7082,6 +7083,7 @@ void CSaDoc::OnAutoAlign()
     if (result==ID_WIZFINISH)
     {
         AfxGetApp()->WriteProfileInt(L"TranscriptionAlignment",L"Gloss",(dlg.init.m_bGloss)?1:0);
+        AfxGetApp()->WriteProfileInt(L"TranscriptionAlignment",L"GlossNat",(dlg.init.m_bGlossNat)?1:0);
         AfxGetApp()->WriteProfileInt(L"TranscriptionAlignment",L"Orthographic",(dlg.init.m_bOrthographic)?1:0);
         AfxGetApp()->WriteProfileInt(L"TranscriptionAlignment",L"Phonemic",(dlg.init.m_bPhonemic)?1:0);
         AfxGetApp()->WriteProfileInt(L"TranscriptionAlignment",L"Phonetic",(dlg.init.m_bPhonetic)?1:0);
@@ -7876,6 +7878,7 @@ void CSaDoc::AlignTranscriptionData(CTranscriptionDataSettings & settings)
             GetSegment(GLOSS)->Insert(0, szEmpty, FALSE, pArray[CHARACTER_OFFSETS][0], pArray[WORD_OFFSETS][0]-pArray[CHARACTER_OFFSETS][0]);
             pArray[WORD_OFFSETS].InsertAt(0,pArray[CHARACTER_OFFSETS][0]);
             settings.m_szGloss = CSaString(SPACE_DELIMITER) + settings.m_szGloss;
+			settings.m_szGlossNat = CSaString(SPACE_DELIMITER) + settings.m_szGlossNat;
             settings.m_szPhonetic = CSaString(SPACE_DELIMITER) + settings.m_szPhonetic;
             settings.m_szPhonemic = CSaString(SPACE_DELIMITER) + settings.m_szPhonemic;
             settings.m_szOrthographic = CSaString(SPACE_DELIMITER) + settings.m_szOrthographic;
@@ -8126,7 +8129,7 @@ void CSaDoc::AlignTranscriptionData(CTranscriptionDataSettings & settings)
         // Process phonemic
         // SDM 1.06.8 only change  if new segmentation or text changed
         if ((settings.m_bPhonemic) &&
-                ((settings.m_nSegmentBy != IDC_KEEP)||(settings.m_bPhonemicModified)))
+            ((settings.m_nSegmentBy != IDC_KEEP)||(settings.m_bPhonemicModified)))
         {
 
             nStringIndex = 0;
@@ -8430,29 +8433,7 @@ void CSaDoc::AlignTranscriptionData(CTranscriptionDataSettings & settings)
                 pSegment->SelectSegment(*this,nIndex);
                 ((CGlossSegment *)pSegment)->ReplaceSelectedSegment(this,szNext);
             };
-
-            // take care of remainder
-            szNext = pTable->GetRemainder(nAlignMode, nStringIndex, settings.m_szGloss);
-            if (szNext.GetLength()==0)
-            {
-                szNext = CSaString(WORD_DELIMITER);
-            }
-            else
-            {
-                if (szNext[0]==WORD_DELIMITER)
-                {
-                    // do nothing
-                }
-                else
-                {
-                    szNext = CSaString(WORD_DELIMITER)+szNext;
-                }
-            }
-            szNext.Remove(0x0d);
-            szNext.Remove(0x0a);
-            pSegment->SelectSegment(*this,nIndex);
-            ((CGlossSegment *)pSegment)->ReplaceSelectedSegment(this,szNext);
-        }
+		}
     }
 
     pView->ChangeAnnotationSelection(pSegment, -1);
@@ -8476,6 +8457,10 @@ void CSaDoc::AlignTranscriptionData(CTranscriptionDataSettings & settings)
         {
             pGraph->ShowAnnotation(GLOSS, TRUE, TRUE);
         }
+        if (settings.m_bGlossNat)
+        {
+            pGraph->ShowAnnotation(GLOSS_NAT, TRUE, TRUE);
+        }
     }
     pView->RefreshGraphs(); // redraw all graphs without legend window
 }
@@ -8494,6 +8479,7 @@ void CSaDoc::AlignTranscriptionDataByRef(CTranscriptionData & td)
     // cycle through reference and assign the other fields
     CReferenceSegment * pReference = (CReferenceSegment *)GetSegment(REFERENCE);
     CGlossSegment * pGloss = GetGlossSegment();
+    CGlossNatSegment * pGlossNat = GetGlossNatSegment();
     CPhoneticSegment * pPhonetic = (CPhoneticSegment *)GetSegment(PHONETIC);
     CPhonemicSegment * pPhonemic = (CPhonemicSegment *)GetSegment(PHONEMIC);
     COrthoSegment * pOrthographic = (COrthoSegment *)GetSegment(ORTHO);
@@ -8512,11 +8498,13 @@ void CSaDoc::AlignTranscriptionDataByRef(CTranscriptionData & td)
         DWORD start = pReference->GetOffset(i);
         DWORD duration = pReference->GetDuration(i);
         MarkerList::iterator git = td.m_TranscriptionData[td.m_MarkerDefs[GLOSS]].begin();
+        MarkerList::iterator gnit = td.m_TranscriptionData[td.m_MarkerDefs[GLOSS_NAT]].begin();
         MarkerList::iterator pmit = td.m_TranscriptionData[td.m_MarkerDefs[PHONEMIC]].begin();
         MarkerList::iterator pnit = td.m_TranscriptionData[td.m_MarkerDefs[PHONETIC]].begin();
         MarkerList::iterator oit = td.m_TranscriptionData[td.m_MarkerDefs[ORTHO]].begin();
 
         bool glossValid = git!=td.m_TranscriptionData[td.m_MarkerDefs[GLOSS]].end();
+        bool glossNatValid = gnit!=td.m_TranscriptionData[td.m_MarkerDefs[GLOSS_NAT]].end();
         bool phonemicValid = pmit!=td.m_TranscriptionData[td.m_MarkerDefs[PHONEMIC]].end();
         bool phoneticValid = pnit!=td.m_TranscriptionData[td.m_MarkerDefs[PHONETIC]].end();
         bool orthoValid = oit!=td.m_TranscriptionData[td.m_MarkerDefs[ORTHO]].end();
@@ -8554,6 +8542,18 @@ void CSaDoc::AlignTranscriptionDataByRef(CTranscriptionData & td)
                         pGloss->SetAt(&text,false,start,duration);
                     }
                 }
+                if ((td.m_bGlossNat)&&(glossNatValid))
+                {
+                    CSaString text = *gnit;
+					if (pGlossNat->FindOffset(start)>=0) {
+						pGlossNat->SetAt(&text,false,start,duration);
+					} else if (pGlossNat->IsEmpty()) {
+						pGlossNat->Insert(0,text,false,start,duration);
+					} else {
+						int ro = pReference->FindOffset(start);
+						pGlossNat->Insert(ro,text,false,start,duration);
+					}
+                }
             }
             if ((td.m_bPhonetic)&&(phoneticValid))
             {
@@ -8570,6 +8570,10 @@ void CSaDoc::AlignTranscriptionDataByRef(CTranscriptionData & td)
             if ((td.m_bGloss)&&(glossValid))
             {
                 git++;
+            }
+            if ((td.m_bGlossNat)&&(glossNatValid))
+            {
+                gnit++;
             }
         }
     }
@@ -8777,6 +8781,12 @@ const bool CSaDoc::ImportTranscription(wistringstream & stream, BOOL gloss, BOOL
                 td.m_MarkerDefs[GLOSS] = dlg.m_szGloss;
                 td.m_Markers.push_back(dlg.m_szGloss);
                 td.m_bGloss = true;
+            }
+            if (dlg.m_bGlossNat)
+            {
+                td.m_MarkerDefs[GLOSS_NAT] = dlg.m_szGlossNat;
+                td.m_Markers.push_back(dlg.m_szGlossNat);
+                td.m_bGlossNat = true;
             }
         }
 

@@ -12,6 +12,7 @@ public:
     bool m_bPhonemicModified;
     bool m_bOrthographicModified;
     bool m_bGlossModified;
+    bool m_bGlossNatModified;
 	bool m_bReferenceModified;
 
     int m_nAlignBy;
@@ -30,6 +31,7 @@ public:
     CSaString m_szPhonemic;
     CSaString m_szOrthographic;
     CSaString m_szGloss;
+    CSaString m_szGlossNat;
 
     CTranscriptionData m_TranscriptionData;
 };

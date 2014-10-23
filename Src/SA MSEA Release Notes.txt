@@ -1,3 +1,9 @@
+SA - 3.1.0.102 10/22/2014
+Modified several dialogs to change 'Gloss' to 'Gloss English' and 'Gloss Nat.' to 'Gloss National'.
+Modified SFM export dialog combo list box to use the term 'Rows' instead of 'Default'
+Added a SFM Marker help dialog box.
+Fixed problem where transcription alignment importing was not functioning for gloss national transcription fields when using reference numbers for importing.
+
 SA - 3.1.0.101 10/20/2014
 Fixed two bugs related to refreshing annotations.
 Fixed 'gloss national' bugs in 'export SFM'

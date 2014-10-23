@@ -106,6 +106,7 @@
 #include <wchar.h>
 #include "array_ptr.h"
 #include <direct.h>
+#include "DlgHelpSFMMarkers.h"
 
 #pragma comment(linker, "/SECTION:.shr,RWS")
 #pragma data_seg(".shr")
@@ -173,6 +174,7 @@ BEGIN_MESSAGE_MAP(CSaApp, CWinApp)
     ON_UPDATE_COMMAND_UI(ID_FILE_RETURN, OnUpdateFileReturn)
     ON_COMMAND(ID_HELP_CONTENTS, OnHelpContents)
     ON_COMMAND(ID_HELP_WHATS_NEW, OnHelpWhatsNew)
+	ON_COMMAND(ID_HELP_SFMMARKERS, OnHelpSFMMarkers)
     ON_COMMAND(ID_HELP_TROUBLE, OnHelpTrouble)
     ON_COMMAND(ID_HELP_GRAPHS, OnHelpGraphs)
     ON_COMMAND(ID_HELP_MUSIC, OnHelpMusic)
@@ -1962,6 +1964,14 @@ void CSaApp::OnHelpWhatsNew()
     ShellExecute(NULL, _T("open"), szCommandLine.GetBuffer(1), NULL, NULL, SW_SHOWNORMAL);
 }
 
+/***************************************************************************/
+// CSaApp::OnHelpSFMMarkers Display SFM Marker table
+/***************************************************************************/
+void CSaApp::OnHelpSFMMarkers()
+{
+	CDlgHelpSFMMarkers dlg;
+	dlg.DoModal();
+}
 /***************************************************************************/
 // CSaApp::OnHelpGraphs Call Graphs overview help topic
 /***************************************************************************/

@@ -38,8 +38,6 @@ protected:
     void SetCheck(int nItem, BOOL bCheck);
     void WriteFileUtf8(CFile * pFile, const CSaString szString);
 
-    //afx_msg void OnClickedExSfmInterlinear();
-    //afx_msg void OnClickedExSfmMultirecord();
     afx_msg void OnAllSource();
     afx_msg void OnAllFileInfo();
     afx_msg void OnAllParameters();

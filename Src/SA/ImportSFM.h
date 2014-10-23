@@ -12,7 +12,7 @@ public:
 
     CImportSFM(const CSaString & szFileName, BOOL batch=FALSE);
     BOOL Import( EImportMode nMode = QUERY);
-    void AutoAlign( CSaDoc * pSaDoc, LPCTSTR pRef, LPCTSTR pPhonetic, LPCTSTR pPhonemic, LPCTSTR pOrtho, LPCTSTR pGloss);
+    void AutoAlign( CSaDoc * pSaDoc, LPCTSTR pRef, LPCTSTR pPhonetic, LPCTSTR pPhonemic, LPCTSTR pOrtho, LPCTSTR pGloss, LPCTSTR pGlossNat);
 
     CSaString m_szPath;
     BOOL m_bBatch;
