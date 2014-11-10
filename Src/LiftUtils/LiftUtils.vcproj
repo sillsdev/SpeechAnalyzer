@@ -41,7 +41,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="$(XERCES_VC10_HOME)\include"
+				AdditionalIncludeDirectories="../uriparser/include;../XMLUtils;../FileUtils;$(XERCES_VC9_HOME)\include"
 				PreprocessorDefinitions="WIN32;_DEBUG;_LIB"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
