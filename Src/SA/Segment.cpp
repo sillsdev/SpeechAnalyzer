@@ -428,7 +428,7 @@ void CSegment::SetSelection(int nIndex)
 {
     if (m_nSelection == nIndex)
     {
-        m_nSelection = -1; // deselect
+        m_nSelection = -1;		// deselect
     }
     else
     {

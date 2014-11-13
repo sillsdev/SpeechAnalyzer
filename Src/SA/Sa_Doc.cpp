@@ -247,12 +247,12 @@ CSaDoc::CSaDoc()
     m_bTransModified = false;
     m_bTempOverlay = false;
     m_ID = -1;
-    m_apSegments[PHONETIC] = new CPhoneticSegment(PHONETIC);			// create phonetic segment object
-    m_apSegments[TONE] = new CToneSegment(TONE,PHONETIC);				// create tone segment object
-    m_apSegments[PHONEMIC] = new CPhonemicSegment(PHONEMIC,PHONETIC);	// create phonemic segment object
-    m_apSegments[ORTHO] = new COrthoSegment(ORTHO,PHONETIC);			// create orthographic segment object
-    m_apSegments[GLOSS] = new CGlossSegment(GLOSS,PHONETIC);			// create gloss segment object
-    m_apSegments[GLOSS_NAT] = new CGlossNatSegment(GLOSS_NAT,GLOSS);	// create gloss nat. segment object
+    m_apSegments[PHONETIC] = new CPhoneticSegment(PHONETIC);            // create phonetic segment object
+    m_apSegments[TONE] = new CToneSegment(TONE,PHONETIC);               // create tone segment object
+    m_apSegments[PHONEMIC] = new CPhonemicSegment(PHONEMIC,PHONETIC);   // create phonemic segment object
+    m_apSegments[ORTHO] = new COrthoSegment(ORTHO,PHONETIC);            // create orthographic segment object
+    m_apSegments[GLOSS] = new CGlossSegment(GLOSS,PHONETIC);            // create gloss segment object
+    m_apSegments[GLOSS_NAT] = new CGlossNatSegment(GLOSS_NAT,GLOSS);    // create gloss nat. segment object
     m_apSegments[REFERENCE] = new CReferenceSegment(REFERENCE,GLOSS);
     m_apSegments[MUSIC_PL1] = new CMusicPhraseSegment(MUSIC_PL1);
     m_apSegments[MUSIC_PL2] = new CMusicPhraseSegment(MUSIC_PL2);
@@ -1397,7 +1397,7 @@ void CSaDoc::ReadTranscription(int transType, ISaAudioDocumentReaderPtr saAudioD
 // reference information from the database.
 // @param limit the length of the audio data in seconds.
 /***************************************************************************/
-void CSaDoc::ReadGlossPosAndRefSegments( ISaAudioDocumentReaderPtr saAudioDocRdr, DWORD limit, int & exceeded, int & limited)
+void CSaDoc::ReadGlossPosAndRefSegments(ISaAudioDocumentReaderPtr saAudioDocRdr, DWORD limit, int & exceeded, int & limited)
 {
 
     CGlossSegment * pGloss = (CGlossSegment *)m_apSegments[GLOSS];
@@ -1409,7 +1409,7 @@ void CSaDoc::ReadGlossPosAndRefSegments( ISaAudioDocumentReaderPtr saAudioDocRdr
     VARIANT_BOOL isBookmark;
     int i = 0;
     int nRef = 0;
-	int nGlossNat = 0;
+    int nGlossNat = 0;
 
     // length (which is mark duration) determines whether segment exists or not
     // string pointer may be NULL if no data exists - but length>0 indicates empty segment.
@@ -1446,7 +1446,7 @@ void CSaDoc::ReadGlossPosAndRefSegments( ISaAudioDocumentReaderPtr saAudioDocRdr
         {
             m_apSegments[REFERENCE]->Insert(nRef++, szRef, 0, offset, length);
         }
-	}
+    }
 
     free(gloss);
     free(glossNat);
@@ -1575,7 +1575,7 @@ BOOL CSaDoc::InsertTranscription(int transType, ISaAudioDocumentReaderPtr saAudi
 // CSaDoc::InsertPosTranscription  Insert gloss, POS and Ref
 // transcriptions from another WAV file into current document
 /***************************************************************************/
-void CSaDoc::InsertGlossPosRefTranscription( ISaAudioDocumentReaderPtr saAudioDocRdr, DWORD dwPos)
+void CSaDoc::InsertGlossPosRefTranscription(ISaAudioDocumentReaderPtr saAudioDocRdr, DWORD dwPos)
 {
     CGlossSegment * pGloss = (CGlossSegment *)m_apSegments[GLOSS];
 
@@ -2585,7 +2585,7 @@ void CSaDoc::WriteGlossPosAndRefSegments(ISaAudioDocumentWriterPtr saAudioDocWri
 
     DWORD offset;
     DWORD length;
-	int nGlossNat = 0;
+    int nGlossNat = 0;
     int nRef = 0;
 
     for (int i = 0; i < pGloss->GetTexts().GetSize(); i++)
@@ -2602,7 +2602,7 @@ void CSaDoc::WriteGlossPosAndRefSegments(ISaAudioDocumentWriterPtr saAudioDocWri
         }
 
 
-		CReferenceSegment * pRef = (CReferenceSegment *)m_apSegments[REFERENCE];
+        CReferenceSegment * pRef = (CReferenceSegment *)m_apSegments[REFERENCE];
         if ((nRef < pRef->GetTexts().GetSize()) && (pRef->GetOffset(nRef) == offset))
         {
             szRef = pRef->GetTexts().GetAt(nRef++);
@@ -2612,7 +2612,7 @@ void CSaDoc::WriteGlossPosAndRefSegments(ISaAudioDocumentWriterPtr saAudioDocWri
 
         // Strip off the word boundary or bookmark character.
         if ((szGloss.GetLength() > 0) &&
-            ((szGloss[0] == WORD_DELIMITER) || (szGloss[0] == TEXT_DELIMITER)))
+                ((szGloss[0] == WORD_DELIMITER) || (szGloss[0] == TEXT_DELIMITER)))
         {
             isBookmark = (szGloss[0] == TEXT_DELIMITER);
             szGloss = szGloss.Mid(1);
@@ -2630,7 +2630,7 @@ void CSaDoc::WriteGlossPosAndRefSegments(ISaAudioDocumentWriterPtr saAudioDocWri
                                          isBookmark);
 
         szRef.Empty();
-		szGlossNat.Empty();
+        szGlossNat.Empty();
     }
 }
 
@@ -7432,57 +7432,60 @@ bool CSaDoc::IsTempFile()
     return true;
 }
 
-bool CSaDoc::PreflightAddReferenceData( CDlgAutoReferenceData & dlg, int selection)
+bool CSaDoc::PreflightAddReferenceData(CDlgAutoReferenceData & dlg, int selection)
 {
     CGlossSegment * pGloss = (CGlossSegment *)m_apSegments[GLOSS];
-	if (dlg.mUsingNumbers)
+    if (dlg.mUsingNumbers)
     {
         // apply the number
         int val = dlg.mBegin;
         // iterate through the gloss segments and add number to empty reference fields
         CReferenceSegment * pReference = (CReferenceSegment *)m_apSegments[REFERENCE];
         int start = (dlg.mUsingFirstGloss)?0:selection;
-		// there are references
-		for (int i = start; i < pGloss->GetOffsetSize(); i++)
-		{
-			DWORD offset = pGloss->GetOffset(i);
-			bool found=false;
-			for (int j = 0; j < pReference->GetOffsetSize(); j++)
-			{
-				DWORD roffset = pReference->GetOffset(j);
-				if (roffset==offset)
-				{
-					return true;
-				}
-				else if (roffset>offset)
-				{
-					// for this instance, we are placed before a segment
-					found = true;
-				}
-				if (found) break;
-			}
-			if (!found)
-			{
-				// if the segment preceeding this one overlaps,
-				// we need to adjust it's length
-				int j = pReference->GetOffsetSize();
-				if (j>0)
-				{
-					int r = j-1;
-					DWORD poffset = pReference->GetOffset(r);
-					DWORD pstop = pReference->GetStop(r);
-					if ((poffset<offset)&&(offset<pstop))
-					{	
-						return true;
-					}
-				}
-			}
-			if (val==dlg.mEnd)
-			{
-				break;
-			}
-			val++;
-		}
+        // there are references
+        for (int i = start; i < pGloss->GetOffsetSize(); i++)
+        {
+            DWORD offset = pGloss->GetOffset(i);
+            bool found=false;
+            for (int j = 0; j < pReference->GetOffsetSize(); j++)
+            {
+                DWORD roffset = pReference->GetOffset(j);
+                if (roffset==offset)
+                {
+                    return true;
+                }
+                else if (roffset>offset)
+                {
+                    // for this instance, we are placed before a segment
+                    found = true;
+                }
+                if (found)
+                {
+                    break;
+                }
+            }
+            if (!found)
+            {
+                // if the segment preceeding this one overlaps,
+                // we need to adjust it's length
+                int j = pReference->GetOffsetSize();
+                if (j>0)
+                {
+                    int r = j-1;
+                    DWORD poffset = pReference->GetOffset(r);
+                    DWORD pstop = pReference->GetStop(r);
+                    if ((poffset<offset)&&(offset<pstop))
+                    {
+                        return true;
+                    }
+                }
+            }
+            if (val==dlg.mEnd)
+            {
+                break;
+            }
+            val++;
+        }
     }
     else
     {
@@ -7500,7 +7503,7 @@ bool CSaDoc::PreflightAddReferenceData( CDlgAutoReferenceData & dlg, int selecti
         }
         if (!ImportTranscription(stream,FALSE,FALSE,FALSE,FALSE,FALSE,td,true,false))
         {
-			// we will let the implementation code catch this...
+            // we will let the implementation code catch this...
         }
 
         CString ref = td.m_szPrimary;
@@ -7512,53 +7515,56 @@ bool CSaDoc::PreflightAddReferenceData( CDlgAutoReferenceData & dlg, int selecti
         CReferenceSegment * pReference = (CReferenceSegment *)m_apSegments[REFERENCE];
         int start = (dlg.mUsingFirstGloss)?0:selection;
 
-		// there are references
-		for (int i = start; i < pGloss->GetOffsetSize(); i++)
-		{
-	        CSaString text = *begin;
-			DWORD offset = pGloss->GetOffset(i);
-			bool found=false;
-			for (int j = 0; j < pReference->GetOffsetSize(); j++)
-			{
-				DWORD roffset = pReference->GetOffset(j);
-				if (roffset==offset)
-				{
-					return true;
-				}
-				else if (roffset>offset)
-				{
-					// for this instance, we are placed before a segment
-					found=true;
-				}
-				if (found) break;
-			}
-			if (!found)
-			{
-				// if the segment preceeding this one overlaps,
-				// we need to adjust it's length
-				int j = pReference->GetOffsetSize();
-				if (j>0)
-				{
-					int r = j-1;
-					DWORD poffset = pReference->GetOffset(r);
-					DWORD pstop = pReference->GetStop(r);
-					if ((poffset<offset)&&(offset<pstop))
-					{	
-						return true;
-					}
-				}
-			}
-			if (begin==end)
-			{
-				break;
-			}
-			begin++;
-		}
-	}
-	return false;
+        // there are references
+        for (int i = start; i < pGloss->GetOffsetSize(); i++)
+        {
+            CSaString text = *begin;
+            DWORD offset = pGloss->GetOffset(i);
+            bool found=false;
+            for (int j = 0; j < pReference->GetOffsetSize(); j++)
+            {
+                DWORD roffset = pReference->GetOffset(j);
+                if (roffset==offset)
+                {
+                    return true;
+                }
+                else if (roffset>offset)
+                {
+                    // for this instance, we are placed before a segment
+                    found=true;
+                }
+                if (found)
+                {
+                    break;
+                }
+            }
+            if (!found)
+            {
+                // if the segment preceeding this one overlaps,
+                // we need to adjust it's length
+                int j = pReference->GetOffsetSize();
+                if (j>0)
+                {
+                    int r = j-1;
+                    DWORD poffset = pReference->GetOffset(r);
+                    DWORD pstop = pReference->GetStop(r);
+                    if ((poffset<offset)&&(offset<pstop))
+                    {
+                        return true;
+                    }
+                }
+            }
+            if (begin==end)
+            {
+                break;
+            }
+            begin++;
+        }
+    }
+    return false;
 }
 
-void CSaDoc::AddReferenceData( CDlgAutoReferenceData & dlg, int selection)
+void CSaDoc::AddReferenceData(CDlgAutoReferenceData & dlg, int selection)
 {
     //NOTES
     //-refererences will always start on gloss boundaries.
@@ -7566,73 +7572,76 @@ void CSaDoc::AddReferenceData( CDlgAutoReferenceData & dlg, int selection)
     //-a gloss may be empty, but the matching ref can be filled in
     //
     CGlossSegment * pGloss = (CGlossSegment *)m_apSegments[GLOSS];
-	if (dlg.mUsingNumbers)
+    if (dlg.mUsingNumbers)
     {
         // apply the number
         int val = dlg.mBegin;
         // iterate through the gloss segments and add number to empty reference fields
         CReferenceSegment * pReference = (CReferenceSegment *)m_apSegments[REFERENCE];
         int start = (dlg.mUsingFirstGloss)?0:selection;
-		// there are references
-		for (int i = start; i < pGloss->GetOffsetSize(); i++)
-		{
-			CSaString text;
-			text.Format(L"%d",val);
-			DWORD offset = pGloss->GetOffset(i);
-			DWORD duration = pGloss->GetDuration(i);
-			bool found=false;
-			for (int j = 0; j < pReference->GetOffsetSize(); j++)
-			{
-				DWORD roffset = pReference->GetOffset(j);
-				DWORD rduration = pReference->GetDuration(j);
-				if (roffset==offset)
-				{
-					if (rduration==duration)
-					{
-						// we can just overwrite the text
-						pReference->SetText(j,text,0,offset,duration);
-						found=true;
-					}
-					else
-					{
-						// we can just overwrite the text
-						pReference->SetAt(&text,0,offset,duration);
-						found=true;
-					}
-				}
-				else if (roffset>offset)
-				{
-					// we need to insert before
-					pReference->Insert(j,text,0,offset,duration);
-					found=true;
-				}
-				if (found) break;
-			}
-			if (!found)
-			{
-				// if the segment preceeding this one overlaps,
-				// we need to adjust it's length
-				int j = pReference->GetOffsetSize();
-				if (j>0)
-				{
-					int r = j-1;
-					DWORD poffset = pReference->GetOffset(r);
-					DWORD pstop = pReference->GetStop(r);
-					if ((poffset<offset)&&(offset<pstop))
-					{	
-						CSaString rtext = pReference->GetContainedText(poffset,pstop);
-						pReference->SetAt(&rtext,r,poffset,offset-poffset);
-					}
-				}
-				// add at end
-				pReference->Insert(j,text,0,offset,duration);
-			}
-			if (val==dlg.mEnd)
-			{
-				break;
-			}
-			val++;
-		}
+        // there are references
+        for (int i = start; i < pGloss->GetOffsetSize(); i++)
+        {
+            CSaString text;
+            text.Format(L"%d",val);
+            DWORD offset = pGloss->GetOffset(i);
+            DWORD duration = pGloss->GetDuration(i);
+            bool found=false;
+            for (int j = 0; j < pReference->GetOffsetSize(); j++)
+            {
+                DWORD roffset = pReference->GetOffset(j);
+                DWORD rduration = pReference->GetDuration(j);
+                if (roffset==offset)
+                {
+                    if (rduration==duration)
+                    {
+                        // we can just overwrite the text
+                        pReference->SetText(j,text,0,offset,duration);
+                        found=true;
+                    }
+                    else
+                    {
+                        // we can just overwrite the text
+                        pReference->SetAt(&text,0,offset,duration);
+                        found=true;
+                    }
+                }
+                else if (roffset>offset)
+                {
+                    // we need to insert before
+                    pReference->Insert(j,text,0,offset,duration);
+                    found=true;
+                }
+                if (found)
+                {
+                    break;
+                }
+            }
+            if (!found)
+            {
+                // if the segment preceeding this one overlaps,
+                // we need to adjust it's length
+                int j = pReference->GetOffsetSize();
+                if (j>0)
+                {
+                    int r = j-1;
+                    DWORD poffset = pReference->GetOffset(r);
+                    DWORD pstop = pReference->GetStop(r);
+                    if ((poffset<offset)&&(offset<pstop))
+                    {
+                        CSaString rtext = pReference->GetContainedText(poffset,pstop);
+                        pReference->SetAt(&rtext,r,poffset,offset-poffset);
+                    }
+                }
+                // add at end
+                pReference->Insert(j,text,0,offset,duration);
+            }
+            if (val==dlg.mEnd)
+            {
+                break;
+            }
+            val++;
+        }
     }
     else
     {
@@ -7670,68 +7679,71 @@ void CSaDoc::AddReferenceData( CDlgAutoReferenceData & dlg, int selection)
         CReferenceSegment * pReference = (CReferenceSegment *)m_apSegments[REFERENCE];
         int start = (dlg.mUsingFirstGloss)?0:selection;
 
-		// there are references
-		for (int i = start; i < pGloss->GetOffsetSize(); i++)
-		{
-	        CSaString text = *begin;
-			DWORD offset = pGloss->GetOffset(i);
-			DWORD duration = pGloss->GetDuration(i);
-			bool found=false;
-			for (int j = 0; j < pReference->GetOffsetSize(); j++)
-			{
-				DWORD roffset = pReference->GetOffset(j);
-				DWORD rduration = pReference->GetDuration(j);
-				if (roffset==offset)
-				{
-					if (rduration==duration)
-					{
-						// the segment sizes are the same
-						// we can just overwrite the text
-						pReference->SetText(j,text,0,offset,duration);
-						found=true;
-					}
-					else
-					{
-						// we need to readjust the segment to it's new size
-						// we can just overwrite the text
-						pReference->SetAt(&text,0,offset,duration);
-						found=true;
-					}
-				}
-				else if (roffset>offset)
-				{
-					// we need to insert before
-					pReference->Insert(j,text,0,offset,duration);
-					found=true;
-				}
-				if (found) break;
-			}
-			if (!found)
-			{
-				// if the segment preceeding this one overlaps,
-				// we need to adjust it's length
-				int j = pReference->GetOffsetSize();
-				if (j>0)
-				{
-					int r = j-1;
-					DWORD poffset = pReference->GetOffset(r);
-					DWORD pstop = pReference->GetStop(r);
-					if ((poffset<offset)&&(offset<pstop))
-					{	
-						CSaString rtext = pReference->GetContainedText(poffset,pstop);
-						pReference->SetAt(&rtext,r,poffset,offset-poffset);
-					}
-				}
-				// add at end
-				pReference->Insert(j,text,0,offset,duration);
-			}
-			if (begin==end)
-			{
-				break;
-			}
-			begin++;
-		}
-	}
+        // there are references
+        for (int i = start; i < pGloss->GetOffsetSize(); i++)
+        {
+            CSaString text = *begin;
+            DWORD offset = pGloss->GetOffset(i);
+            DWORD duration = pGloss->GetDuration(i);
+            bool found=false;
+            for (int j = 0; j < pReference->GetOffsetSize(); j++)
+            {
+                DWORD roffset = pReference->GetOffset(j);
+                DWORD rduration = pReference->GetDuration(j);
+                if (roffset==offset)
+                {
+                    if (rduration==duration)
+                    {
+                        // the segment sizes are the same
+                        // we can just overwrite the text
+                        pReference->SetText(j,text,0,offset,duration);
+                        found=true;
+                    }
+                    else
+                    {
+                        // we need to readjust the segment to it's new size
+                        // we can just overwrite the text
+                        pReference->SetAt(&text,0,offset,duration);
+                        found=true;
+                    }
+                }
+                else if (roffset>offset)
+                {
+                    // we need to insert before
+                    pReference->Insert(j,text,0,offset,duration);
+                    found=true;
+                }
+                if (found)
+                {
+                    break;
+                }
+            }
+            if (!found)
+            {
+                // if the segment preceeding this one overlaps,
+                // we need to adjust it's length
+                int j = pReference->GetOffsetSize();
+                if (j>0)
+                {
+                    int r = j-1;
+                    DWORD poffset = pReference->GetOffset(r);
+                    DWORD pstop = pReference->GetStop(r);
+                    if ((poffset<offset)&&(offset<pstop))
+                    {
+                        CSaString rtext = pReference->GetContainedText(poffset,pstop);
+                        pReference->SetAt(&rtext,r,poffset,offset-poffset);
+                    }
+                }
+                // add at end
+                pReference->Insert(j,text,0,offset,duration);
+            }
+            if (begin==end)
+            {
+                break;
+            }
+            begin++;
+        }
+    }
 }
 
 // SDM 1.06.4
@@ -7778,22 +7790,23 @@ void CSaDoc::OnAddReferenceData()
         return;
     }
 
-	pApp->WriteProfileString(L"AutoRef",L"LastImport",dlg.mLastImport);
+    pApp->WriteProfileString(L"AutoRef",L"LastImport",dlg.mLastImport);
     pApp->WriteProfileString(L"AutoRef",L"BeginRef",dlg.mBeginRef);
     pApp->WriteProfileString(L"AutoRef",L"EndRef",dlg.mEndRef);
     pApp->WriteProfileInt(L"AutoRef",L"UsingNumbers",((dlg.mUsingNumbers)?1:0));
     pApp->WriteProfileInt(L"AutoRef",L"UsingFirstGloss",((dlg.mUsingFirstGloss)?1:0));
 
-	if (PreflightAddReferenceData(dlg,selection)) {
-		int result = AfxMessageBox(IDS_DELETE_REFERENCE, MB_YESNO | MB_ICONQUESTION);
+    if (PreflightAddReferenceData(dlg,selection))
+    {
+        int result = AfxMessageBox(IDS_DELETE_REFERENCE, MB_YESNO | MB_ICONQUESTION);
         if (result!=IDYES)
         {
-			return;
+            return;
         }
-	}
+    }
 
-	// do it for real
-	AddReferenceData(dlg,selection);
+    // do it for real
+    AddReferenceData(dlg,selection);
 
     SetModifiedFlag(TRUE); // data has been modified
 
@@ -7878,7 +7891,7 @@ void CSaDoc::AlignTranscriptionData(CTranscriptionDataSettings & settings)
             GetSegment(GLOSS)->Insert(0, szEmpty, FALSE, pArray[CHARACTER_OFFSETS][0], pArray[WORD_OFFSETS][0]-pArray[CHARACTER_OFFSETS][0]);
             pArray[WORD_OFFSETS].InsertAt(0,pArray[CHARACTER_OFFSETS][0]);
             settings.m_szGloss = CSaString(SPACE_DELIMITER) + settings.m_szGloss;
-			settings.m_szGlossNat = CSaString(SPACE_DELIMITER) + settings.m_szGlossNat;
+            settings.m_szGlossNat = CSaString(SPACE_DELIMITER) + settings.m_szGlossNat;
             settings.m_szPhonetic = CSaString(SPACE_DELIMITER) + settings.m_szPhonetic;
             settings.m_szPhonemic = CSaString(SPACE_DELIMITER) + settings.m_szPhonemic;
             settings.m_szOrthographic = CSaString(SPACE_DELIMITER) + settings.m_szOrthographic;
@@ -8129,7 +8142,7 @@ void CSaDoc::AlignTranscriptionData(CTranscriptionDataSettings & settings)
         // Process phonemic
         // SDM 1.06.8 only change  if new segmentation or text changed
         if ((settings.m_bPhonemic) &&
-            ((settings.m_nSegmentBy != IDC_KEEP)||(settings.m_bPhonemicModified)))
+                ((settings.m_nSegmentBy != IDC_KEEP)||(settings.m_bPhonemicModified)))
         {
 
             nStringIndex = 0;
@@ -8433,7 +8446,7 @@ void CSaDoc::AlignTranscriptionData(CTranscriptionDataSettings & settings)
                 pSegment->SelectSegment(*this,nIndex);
                 ((CGlossSegment *)pSegment)->ReplaceSelectedSegment(this,szNext);
             };
-		}
+        }
     }
 
     pView->ChangeAnnotationSelection(pSegment, -1);
@@ -8545,14 +8558,19 @@ void CSaDoc::AlignTranscriptionDataByRef(CTranscriptionData & td)
                 if ((td.m_bGlossNat)&&(glossNatValid))
                 {
                     CSaString text = *gnit;
-					if (pGlossNat->FindOffset(start)>=0) {
-						pGlossNat->SetAt(&text,false,start,duration);
-					} else if (pGlossNat->IsEmpty()) {
-						pGlossNat->Insert(0,text,false,start,duration);
-					} else {
-						int ro = pReference->FindOffset(start);
-						pGlossNat->Insert(ro,text,false,start,duration);
-					}
+                    if (pGlossNat->FindOffset(start)>=0)
+                    {
+                        pGlossNat->SetAt(&text,false,start,duration);
+                    }
+                    else if (pGlossNat->IsEmpty())
+                    {
+                        pGlossNat->Insert(0,text,false,start,duration);
+                    }
+                    else
+                    {
+                        int ro = pReference->FindOffset(start);
+                        pGlossNat->Insert(ro,text,false,start,duration);
+                    }
                 }
             }
             if ((td.m_bPhonetic)&&(phoneticValid))
@@ -8675,7 +8693,7 @@ const CSaString CSaDoc::BuildString(int nSegment)
             nIndex = pSegment->GetNext(nIndex);
         }
         break;
-	default:
+    default:
         ;
     }
     return szBuild;
@@ -9339,7 +9357,7 @@ void CSaDoc::DoExportLift(CExportLiftSettings & settings)
     //wcscat_s(szBuffer,MAX_PATH,L"LinkedFiles\\");
     //if (!FileUtils::FolderExists(szBuffer))
     //{
-        //FileUtils::CreateFolder(szBuffer);
+    //FileUtils::CreateFolder(szBuffer);
     //}
     int result = GetSaveAsFilename(settings.szDocTitle, _T("Lift Format (*.lift) |*.lift||"), _T("lift"), szBuffer, filename);
     if (result!=IDOK)
@@ -9355,9 +9373,9 @@ void CSaDoc::DoExportLift(CExportLiftSettings & settings)
 
     bool skipEmptyGloss = true;
 
-	// extract the path from the returned filename in the case that they relocated it.
+    // extract the path from the returned filename in the case that they relocated it.
     wchar_t buffer[MAX_PATH];
-	swprintf_s(buffer,_countof(buffer),filename.c_str());
+    swprintf_s(buffer,_countof(buffer),filename.c_str());
     wchar_t drive[_MAX_DRIVE];
     wchar_t dir[_MAX_DIR];
     wchar_t fname[_MAX_FNAME];
@@ -9388,7 +9406,7 @@ void CSaDoc::DoExportLift(CExportLiftSettings & settings)
     Lift13::header header(L"header");
     header.fields = fields;
 
-    Lift13::lift document(L"Speech Analyzer 3.1.0.103");
+    Lift13::lift document(L"Speech Analyzer 3.1.0.104");
     document.header = header;
 
     ExportSegments(settings, document, skipEmptyGloss, szPath, dataCount, wavCount);
@@ -9734,16 +9752,26 @@ BOOL CSaDoc::GetFlag(EAnnotation val, CExportFWSettings & settings)
 {
     switch (val)
     {
-    case PHONETIC:	return settings.bPhonetic;
-    case PHONEMIC:	return settings.bPhonemic;
-    case ORTHO:     return settings.bOrtho;
-    case GLOSS:     return settings.bGloss;
-    case GLOSS_NAT: return settings.bGlossNat;
-    case REFERENCE: return settings.bReference;
-    case MUSIC_PL1: return settings.bPhrase;
-    case MUSIC_PL2: return settings.bPhrase;
-    case MUSIC_PL3: return settings.bPhrase;
-    case MUSIC_PL4: return settings.bPhrase;
+    case PHONETIC:
+        return settings.bPhonetic;
+    case PHONEMIC:
+        return settings.bPhonemic;
+    case ORTHO:
+        return settings.bOrtho;
+    case GLOSS:
+        return settings.bGloss;
+    case GLOSS_NAT:
+        return settings.bGlossNat;
+    case REFERENCE:
+        return settings.bReference;
+    case MUSIC_PL1:
+        return settings.bPhrase;
+    case MUSIC_PL2:
+        return settings.bPhrase;
+    case MUSIC_PL3:
+        return settings.bPhrase;
+    case MUSIC_PL4:
+        return settings.bPhrase;
     }
     return false;
 }
@@ -9752,16 +9780,26 @@ BOOL CSaDoc::GetFlag(EAnnotation val, CExportLiftSettings & settings)
 {
     switch (val)
     {
-    case PHONETIC:	return settings.bPhonetic;
-    case PHONEMIC:	return settings.bPhonemic;
-    case ORTHO:		return settings.bOrtho;
-    case GLOSS:		return settings.bGloss;
-    case GLOSS_NAT:	return settings.bGlossNat;
-    case REFERENCE:	return settings.bReference;
-    case MUSIC_PL1:	return settings.bPhrase;
-    case MUSIC_PL2:	return settings.bPhrase;
-    case MUSIC_PL3:	return settings.bPhrase;
-    case MUSIC_PL4:	return settings.bPhrase;
+    case PHONETIC:
+        return settings.bPhonetic;
+    case PHONEMIC:
+        return settings.bPhonemic;
+    case ORTHO:
+        return settings.bOrtho;
+    case GLOSS:
+        return settings.bGloss;
+    case GLOSS_NAT:
+        return settings.bGlossNat;
+    case REFERENCE:
+        return settings.bReference;
+    case MUSIC_PL1:
+        return settings.bPhrase;
+    case MUSIC_PL2:
+        return settings.bPhrase;
+    case MUSIC_PL3:
+        return settings.bPhrase;
+    case MUSIC_PL4:
+        return settings.bPhrase;
     }
     return false;
 }
@@ -9770,17 +9808,28 @@ int CSaDoc::GetIndex(EAnnotation val)
 {
     switch (val)
     {
-    case PHONETIC:	return 0;
-    case TONE:		return 1;
-    case PHONEMIC:	return 2;
-    case ORTHO:		return 3;
-    case GLOSS:		return 4;
-    case GLOSS_NAT:	return 5;
-    case REFERENCE:	return 6;
-    case MUSIC_PL1:	return 7;
-    case MUSIC_PL2:	return 8;
-    case MUSIC_PL3:	return 9;
-    case MUSIC_PL4:	return 10;
+    case PHONETIC:
+        return 0;
+    case TONE:
+        return 1;
+    case PHONEMIC:
+        return 2;
+    case ORTHO:
+        return 3;
+    case GLOSS:
+        return 4;
+    case GLOSS_NAT:
+        return 5;
+    case REFERENCE:
+        return 6;
+    case MUSIC_PL1:
+        return 7;
+    case MUSIC_PL2:
+        return 8;
+    case MUSIC_PL3:
+        return 9;
+    case MUSIC_PL4:
+        return 10;
     }
     return false;
 }
@@ -9789,17 +9838,28 @@ LPCTSTR CSaDoc::GetTag(EAnnotation val)
 {
     switch (val)
     {
-    case PHONETIC:	return L"\\lx-ph";
-    case TONE:		return L"\\tn";
-    case PHONEMIC:	return L"\\lx-pm";
-    case ORTHO:		return L"\\lx-or";
-    case GLOSS:		return L"\\ge";
-    case GLOSS_NAT:	return L"\\gn";
-    case REFERENCE:	return L"\\rf";
-    case MUSIC_PL1:	return L"\\pf";
-    case MUSIC_PL2:	return L"\\tn";
-    case MUSIC_PL3:	return L"\\pf";
-    case MUSIC_PL4:	return L"\\tn";
+    case PHONETIC:
+        return L"\\lx-ph";
+    case TONE:
+        return L"\\tn";
+    case PHONEMIC:
+        return L"\\lx-pm";
+    case ORTHO:
+        return L"\\lx-or";
+    case GLOSS:
+        return L"\\ge";
+    case GLOSS_NAT:
+        return L"\\gn";
+    case REFERENCE:
+        return L"\\rf";
+    case MUSIC_PL1:
+        return L"\\pf";
+    case MUSIC_PL2:
+        return L"\\tn";
+    case MUSIC_PL3:
+        return L"\\pf";
+    case MUSIC_PL4:
+        return L"\\tn";
     }
     return L"";
 }
@@ -9808,17 +9868,28 @@ EAnnotation CSaDoc::ConvertToAnnotation(int val)
 {
     switch (val)
     {
-    case 0:		return PHONETIC;
-    case 1:		return TONE;
-    case 2:		return PHONEMIC;
-    case 3:		return ORTHO;
-    case 4:		return GLOSS;
-    case 5:		return GLOSS_NAT;
-    case 6:		return REFERENCE;
-    case 7:		return MUSIC_PL1;
-    case 8:		return MUSIC_PL2;
-    case 9:		return MUSIC_PL3;
-    case 10:	return MUSIC_PL4;
+    case 0:
+        return PHONETIC;
+    case 1:
+        return TONE;
+    case 2:
+        return PHONEMIC;
+    case 3:
+        return ORTHO;
+    case 4:
+        return GLOSS;
+    case 5:
+        return GLOSS_NAT;
+    case 6:
+        return REFERENCE;
+    case 7:
+        return MUSIC_PL1;
+    case 8:
+        return MUSIC_PL2;
+    case 9:
+        return MUSIC_PL3;
+    case 10:
+        return MUSIC_PL4;
     }
     return PHONETIC;
 }
@@ -10267,37 +10338,104 @@ int CSaDoc::GetSaveAsFilename(LPCTSTR title, LPCTSTR filter, LPCTSTR extension, 
     return result;
 }
 
-void CSaDoc::SplitSegment( CPhoneticSegment * pSeg) {
-	int sel = pSeg->GetSelection();
-	if (sel==-1) return;
-	int offset = pSeg->GetOffset(sel);
-	int duration = pSeg->GetDuration(sel);
-	int newduration = duration/2;
-	CheckPoint();
+void CSaDoc::SplitSegment(CPhoneticSegment * pSeg)
+{
+    int sel = pSeg->GetSelection();
+    if (sel==-1)
+    {
+        return;
+    }
+    DWORD start = pSeg->GetOffset(sel);
+    DWORD duration = pSeg->GetDuration(sel);
+    DWORD newduration = duration/2;
+    DWORD newstop = start+newduration;
+	DWORD start2 = newstop;
+	DWORD stop2 = start2+newduration;
 
-	// record next-stop position
-	pSeg->Adjust(this,sel,offset,newduration);
-	pSeg->Insert(sel+1,L"a",true,offset+newduration,newduration);
+    CheckPoint();
+
+    // record next-stop position
+    pSeg->Adjust(this,sel,start,newduration);
+    pSeg->Insert(sel+1,L"a",true,newstop,newduration);
+
     POSITION pos = GetFirstViewPosition();
     CSaView * pView = (CSaView *)GetNextView(pos);
+
+    BOOL bDelimiter = FALSE;
+
+    CSaString szString = "";                    //Fill new segment with default character
+    CSaString szEmpty = "";
+
+	// get gloss index
+	// adjust existing segment
+    CGlossSegment * pGloss = (CGlossSegment *)pView->GetAnnotation(GLOSS);
+	int index = pGloss->FindFromPosition(start);
+	if (index!=-1) {
+		DWORD offset = pGloss->GetOffset(index);
+		if (offset<=start) {
+			pGloss->SetDurationAt(index,newstop-offset);
+			pGloss->Add(this, start2, szString, bDelimiter, TRUE);
+		}
+	}
+
+	// get gloss index
+	// adjust existing segment
+    CGlossNatSegment * pGlossNat = (CGlossNatSegment *)pView->GetAnnotation(GLOSS_NAT);
+	index= pGlossNat->FindFromPosition(start);
+	if (index!=-1) {
+		DWORD offset = pGlossNat->GetOffset(index);
+		if (offset<=start) {
+			pGlossNat->SetDurationAt(index,newstop-offset);
+			pGlossNat->Add(this, start2, szString, bDelimiter, TRUE);
+		}
+	}
+
+	// get gloss index
+	// adjust existing segment
+    CReferenceSegment * pReference = (CReferenceSegment *)pView->GetAnnotation(REFERENCE);
+	index= pReference->FindFromPosition(start);
+	if (index!=-1) {
+		DWORD offset = pReference->GetOffset(index);
+		if (offset<=start) {
+			pReference->SetDurationAt(index,newstop-offset);
+			pReference->Add(this, start2, szString, bDelimiter, TRUE);
+		}
+	}
+
+    int i = pView->GetGraphIndexForIDD(IDD_RAWDATA);
+    if ((i != -1) && (pView->GetGraph(i)!=NULL))
+    {
+        EAnnotation nAnnot = pGloss->GetAnnotationIndex();
+        pView->GetGraph(i)->ShowAnnotation(nAnnot, TRUE, TRUE);
+    }
+
+	pSeg->SelectSegment(*this,sel);
+    pView->SetCursorPosition(ECursorSelect::STOP_CURSOR,(newstop));
     pView->RefreshGraphs(TRUE,FALSE);
 
 }
 
-void CSaDoc::MergeSegments( CPhoneticSegment * pSeg) {
-	int sel = pSeg->GetSelection();
-	if (sel==-1) return;
-	int offset = pSeg->GetOffset(sel);
-	// find the end of the next segment
-	int next = pSeg->GetNext(sel);
-	if (next==-1) return;
+void CSaDoc::MergeSegments(CPhoneticSegment * pSeg)
+{
+    int sel = pSeg->GetSelection();
+    if (sel==-1)
+    {
+        return;
+    }
+    // find the end of the prev segment
+    int prev = pSeg->GetPrevious(sel);
+    if (prev==-1)
+    {
+        return;
+    }
 
-	CheckPoint();
-	// record next-stop position
-	DWORD stop = pSeg->GetStop(next);
-	pSeg->SetSelection(next);
-	pSeg->Remove(this,FALSE);
-	pSeg->SetSelection(sel);
-	pSeg->Adjust(this,sel,offset,(stop-offset));	
+    CheckPoint();
+    // record next-stop position
+    int offset = pSeg->GetOffset(prev);
+    DWORD stop = pSeg->GetStop(sel);
+	// remove this segment
+    pSeg->Remove(this,FALSE);
+    pSeg->SetSelection(prev);
+    pSeg->Adjust(this,prev,offset,(stop-offset));
 }
 

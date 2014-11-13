@@ -284,7 +284,8 @@ int CTextSegment::CheckPosition(ISaDoc * pSaDoc, DWORD dwStart, DWORD dwStop, EM
 
     int nTextIndex = GetSelection();
 
-    if (((nMode==MODE_EDIT)||(nMode==MODE_AUTOMATIC))&&(nTextIndex != -1))   // segment selected (edit)
+    if (((nMode==MODE_EDIT)||(nMode==MODE_AUTOMATIC))&&
+		(nTextIndex != -1))   // segment selected (edit)
     {
         int nIndex;
         if (dwAlignedStart >= dwAlignedStop)

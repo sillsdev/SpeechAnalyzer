@@ -3183,7 +3183,7 @@ BEGIN
         MENUITEM "Edit Segment &Size\tCtrl+E",  ID_EDIT_SEGMENT_SIZE
         MENUITEM SEPARATOR
         MENUITEM "&Split Segment\tCtrl+G",               ID_EDIT_SPLIT
-        MENUITEM "M&erge Segents\tCtrl+H",               ID_EDIT_MERGE
+        MENUITEM "M&erge Segments\tCtrl+H",               ID_EDIT_MERGE
         MENUITEM SEPARATOR
         MENUITEM "Cu&t\tCtrl+X",                ID_EDIT_CUT
         MENUITEM "&Copy\tCtrl+C",               ID_EDIT_COPY
@@ -3542,7 +3542,7 @@ BEGIN
         MENUITEM "&Remove\tDelete",             ID_EDIT_REMOVE
         MENUITEM SEPARATOR
         MENUITEM "&Split Segment\tCtrl+G",               ID_EDIT_SPLIT
-        MENUITEM "&Merge Segents\tCtrl+H",               ID_EDIT_MERGE
+        MENUITEM "&Merge Segments\tCtrl+H",               ID_EDIT_MERGE
         MENUITEM "&Edit\tF4",                   ID_EDIT_EDITOR
         MENUITEM "&View Boundaries",             ID_VIEW_TRANSCRIPTION_BOUNDARIES
         MENUITEM SEPARATOR
