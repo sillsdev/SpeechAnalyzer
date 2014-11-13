@@ -91,6 +91,7 @@ class CDlgAdvancedParsePhrases;
 class CDlgAutoReferenceData;
 class CTranscriptionDataSettings;
 class CMusicPhraseSegment;
+class CPhoneticSegment;
 
 class CSaDoc : public CUndoRedoDoc, public ISaDoc
 {
@@ -311,6 +312,8 @@ public:
 	int GetLastSegmentBeforePosition( int annotSetID, DWORD cursorPos);
 
 	static int GetSaveAsFilename(LPCTSTR title, LPCTSTR filter, LPCTSTR extension, LPTSTR path, wstring & result);
+	void SplitSegment( CPhoneticSegment * pSeg);
+	void MergeSegments( CPhoneticSegment * pSeg);
 
 protected:
     virtual void DeleteContents();

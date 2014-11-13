@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "ReferenceSegment.h"
 
-CReferenceSegment::CReferenceSegment(int index, int master) : CDependentTextSegment(index, master)
+CReferenceSegment::CReferenceSegment(EAnnotation index, int master) : CDependentTextSegment(index, master)
 {
 }
 

@@ -6,7 +6,7 @@
 class CDependentTextSegment : public CTextSegment
 {
 public:
-    CDependentTextSegment(int index, int master = -1);
+    CDependentTextSegment(EAnnotation index, int master = -1);
 
     virtual void LimitPosition(CSaDoc *,DWORD & dwStart,DWORD & dwStop, ELimit nMode=LIMIT_MOVING_BOTH) const;
     virtual BOOL SetAt(const CSaString *, bool delimiter, DWORD dwStart, DWORD dwDuration);                 // set text segment

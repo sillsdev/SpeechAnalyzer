@@ -16,7 +16,7 @@ static char BASED_CODE THIS_FILE[] = __FILE__;
 // CPhoneticSegment
 // class to do all the handling for the phonetic annotation segments.
 
-CPhoneticSegment::CPhoneticSegment(int index, int master) :
+CPhoneticSegment::CPhoneticSegment(EAnnotation index, int master) :
 CIndependentSegment(index,master)
 {
 }

@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "OrthoSegment.h"
 
-COrthoSegment::COrthoSegment(int index, int master) :
+COrthoSegment::COrthoSegment(EAnnotation index, int master) :
     CDependentSegment(index,master)
 {
 }

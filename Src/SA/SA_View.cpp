@@ -255,7 +255,7 @@ void CSaView::CreateOneGraphStepOne(UINT nID,
             (*pGraph)->ShowXScale(!m_bXScaleNone);
             for (int i = 0; i < ANNOT_WND_NUMBER; i++)
             {
-                (*pGraph)->ShowAnnotation(i, !m_abAnnNone[i]);
+                (*pGraph)->ShowAnnotation((EAnnotation)i, !m_abAnnNone[i]);
             }
         }
         break;
@@ -275,7 +275,7 @@ void CSaView::CreateOneGraphStepOne(UINT nID,
                 (*pGraph)->ShowXScale(m_bXScaleAll);
                 for (int i = 0; i < ANNOT_WND_NUMBER; i++)
                 {
-                    (*pGraph)->ShowAnnotation(i, m_abAnnAll[i]);
+                    (*pGraph)->ShowAnnotation((EAnnotation)i, m_abAnnAll[i]);
                 }
             }
         }
@@ -1719,7 +1719,7 @@ void CSaView::OnUpdateXScaleNone(CCmdUI * pCmdUI)
 /***************************************************************************/
 // 09/24/2000 - DDO
 /***************************************************************************/
-void CSaView::ToggleAnnotation(int nAnnot, BOOL bShow, BOOL bRawDataOnly)
+void CSaView::ToggleAnnotation( int nAnnot, BOOL bShow, BOOL bRawDataOnly)
 {
     if (!bRawDataOnly)
     {
@@ -1733,7 +1733,7 @@ void CSaView::ToggleAnnotation(int nAnnot, BOOL bShow, BOOL bRawDataOnly)
         {
             if (m_apGraphs[i])
             {
-                m_apGraphs[i]->ShowAnnotation(nAnnot, bShow, TRUE);
+                m_apGraphs[i]->ShowAnnotation((EAnnotation)nAnnot, bShow, TRUE);
             }
         }
     }
@@ -1748,7 +1748,7 @@ void CSaView::ToggleAnnotation(int nAnnot, BOOL bShow, BOOL bRawDataOnly)
         for (int i = 0; i < MAX_GRAPHS_NUMBER; i++)
             if (m_apGraphs[i])
             {
-                m_apGraphs[i]->ShowAnnotation(nAnnot, m_anGraphID[i] == IDD_RAWDATA, TRUE);
+                m_apGraphs[i]->ShowAnnotation((EAnnotation)nAnnot, m_anGraphID[i] == IDD_RAWDATA, TRUE);
             }
     }
 }
@@ -1816,7 +1816,7 @@ void CSaView::OnUpdateAnnotationNone(CCmdUI * pCmdUI)
 /***************************************************************************/
 void CSaView::OnPopupgraphAnnotation(UINT nID)
 {
-    int nAnnotationID = nID - ID_POPUPGRAPH_PHONETIC;
+    EAnnotation nAnnotationID = (EAnnotation)(nID - ID_POPUPGRAPH_PHONETIC);
     ShowAnnotation(nAnnotationID);
 }
 
@@ -3183,7 +3183,7 @@ void CSaView::OnUpdatePopupgraphXScale(CCmdUI * pCmdUI)
 //                  current view when the view is first being started up.
 //                  I don't understand what the deal is.
 /***************************************************************************/
-void CSaView::ShowAnnotation(int nAnnot)
+void CSaView::ShowAnnotation(EAnnotation nAnnot)
 {
 
     if (m_pFocusedGraph)

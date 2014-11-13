@@ -9336,11 +9336,11 @@ void CSaDoc::DoExportLift(CExportLiftSettings & settings)
     {
         FileUtils::CreateFolder(szBuffer);
     }
-    wcscat_s(szBuffer,MAX_PATH,L"LinkedFiles\\");
-    if (!FileUtils::FolderExists(szBuffer))
-    {
-        FileUtils::CreateFolder(szBuffer);
-    }
+    //wcscat_s(szBuffer,MAX_PATH,L"LinkedFiles\\");
+    //if (!FileUtils::FolderExists(szBuffer))
+    //{
+        //FileUtils::CreateFolder(szBuffer);
+    //}
     int result = GetSaveAsFilename(settings.szDocTitle, _T("Lift Format (*.lift) |*.lift||"), _T("lift"), szBuffer, filename);
     if (result!=IDOK)
     {
@@ -9355,14 +9355,23 @@ void CSaDoc::DoExportLift(CExportLiftSettings & settings)
 
     bool skipEmptyGloss = true;
 
+	// extract the path from the returned filename in the case that they relocated it.
+    wchar_t buffer[MAX_PATH];
+	swprintf_s(buffer,_countof(buffer),filename.c_str());
+    wchar_t drive[_MAX_DRIVE];
+    wchar_t dir[_MAX_DIR];
+    wchar_t fname[_MAX_FNAME];
+    wchar_t ext[_MAX_EXT];
+    _wsplitpath_s(buffer, drive, dir, fname, ext);
+
     TCHAR szPath[MAX_PATH];
     memset(szPath, 0, MAX_PATH);
-    wcscpy_s(szPath,MAX_PATH,settings.szPath);
+    wcscpy_s(szPath,MAX_PATH,dir);
     if (!FileUtils::FolderExists(szPath))
     {
         FileUtils::CreateFolder(szPath);
     }
-    wcscat_s(szPath,MAX_PATH,L"LinkedFiles\\Media\\");
+    wcscat_s(szPath,MAX_PATH,L"audio\\");
     if (!FileUtils::FolderExists(szPath))
     {
         FileUtils::CreateFolder(szPath);
@@ -9379,7 +9388,7 @@ void CSaDoc::DoExportLift(CExportLiftSettings & settings)
     Lift13::header header(L"header");
     header.fields = fields;
 
-    Lift13::lift document(L"Speech Analyzer 3.1.0.100");
+    Lift13::lift document(L"Speech Analyzer 3.1.0.103");
     document.header = header;
 
     ExportSegments(settings, document, skipEmptyGloss, szPath, dataCount, wavCount);
@@ -10257,3 +10266,38 @@ int CSaDoc::GetSaveAsFilename(LPCTSTR title, LPCTSTR filter, LPCTSTR extension, 
     }
     return result;
 }
+
+void CSaDoc::SplitSegment( CPhoneticSegment * pSeg) {
+	int sel = pSeg->GetSelection();
+	if (sel==-1) return;
+	int offset = pSeg->GetOffset(sel);
+	int duration = pSeg->GetDuration(sel);
+	int newduration = duration/2;
+	CheckPoint();
+
+	// record next-stop position
+	pSeg->Adjust(this,sel,offset,newduration);
+	pSeg->Insert(sel+1,L"a",true,offset+newduration,newduration);
+    POSITION pos = GetFirstViewPosition();
+    CSaView * pView = (CSaView *)GetNextView(pos);
+    pView->RefreshGraphs(TRUE,FALSE);
+
+}
+
+void CSaDoc::MergeSegments( CPhoneticSegment * pSeg) {
+	int sel = pSeg->GetSelection();
+	if (sel==-1) return;
+	int offset = pSeg->GetOffset(sel);
+	// find the end of the next segment
+	int next = pSeg->GetNext(sel);
+	if (next==-1) return;
+
+	CheckPoint();
+	// record next-stop position
+	DWORD stop = pSeg->GetStop(next);
+	pSeg->SetSelection(next);
+	pSeg->Remove(this,FALSE);
+	pSeg->SetSelection(sel);
+	pSeg->Adjust(this,sel,offset,(stop-offset));	
+}
+

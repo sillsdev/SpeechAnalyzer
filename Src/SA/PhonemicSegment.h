@@ -6,7 +6,7 @@
 class CPhonemicSegment : public CDependentSegment
 {
 public:
-    CPhonemicSegment(int index, int master = -1);
+    CPhonemicSegment(EAnnotation index, int master = -1);
     virtual CSegment::TpInputFilterProc GetInputFilter() const; // filter function for input
 
 private:

@@ -170,6 +170,7 @@ void CDlgExportLift::DoDataExchange(CDataExchange * pDX)
 			}
 			while (more);
 		}
+		ctlComboFieldWorksProject.SetCurSel(0);
     }
     else
     {

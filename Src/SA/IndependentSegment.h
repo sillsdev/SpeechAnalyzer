@@ -11,7 +11,7 @@ class CIndependentSegment : public CSegment
 {
     // Operations
 public:
-    CIndependentSegment(int index, int master = -1);
+    CIndependentSegment(EAnnotation index, int master = -1);
     virtual int CheckPosition(ISaDoc *,DWORD dwStart,DWORD dwStop, EMode nMode=MODE_AUTOMATIC,BOOL bOverlap=TRUE) const;
     virtual void LimitPosition(CSaDoc *,DWORD & dwStart,DWORD & dwStop, ELimit nMode=LIMIT_MOVING_BOTH) const;
 };

@@ -78,12 +78,12 @@ class CSegment : public CProcess
 {
 
 public:
-    CSegment(int index, int master = -1);
+    CSegment(EAnnotation index, int master = -1);
     virtual ~CSegment();
 
     virtual void Serialize(CArchive & ar);
     int GetMasterIndex(void) const;
-    int GetAnnotationIndex(void) const;
+    EAnnotation GetAnnotationIndex(void) const;
     // get copies of internal data.  (const functions)
     virtual CFontTable * NewFontTable() const = 0;  // return selected font table
     int GetOffsetSize() const;
@@ -166,7 +166,7 @@ protected:
 
     CSaString * m_pAnnotation;          // annotation string
     int m_nSelection;                   // selected segment
-    int m_nAnnotationIndex;
+    EAnnotation m_nAnnotationIndex;
     int m_nMasterIndex;
 
 private:

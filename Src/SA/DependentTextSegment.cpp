@@ -12,7 +12,7 @@ static char BASED_CODE THIS_FILE[] = __FILE__;
 /////////////////////////////////////////////////////////////////////////////
 // CDependentTextSegment helper functions
 
-CDependentTextSegment::CDependentTextSegment(int index, int master) :
+CDependentTextSegment::CDependentTextSegment(EAnnotation index, int master) :
     CTextSegment(index,master)
 {
 }

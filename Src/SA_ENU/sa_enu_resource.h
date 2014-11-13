@@ -155,6 +155,16 @@
 #define IDD_DIALOG2                     370
 #define IDD_HELP_SFM_MARKERS            370
 #define IDD_DIALOG3                     371
+#define IDB_REVU                        375
+#define IDB_RESULTU                     376
+#define IDB_RAWU                        377
+#define IDB_PORTU                       378
+#define IDB_LANDU                       379
+#define IDB_EQU                         380
+#define IDB_BPU                         381
+#define IDB_ECHOU                       382
+#define IDB_HPU                         383
+#define IDB_LPU                         384
 #define IDC_HIGHPASS                    502
 #define ID_STATUSPANE_EMPTY             700
 #define ID_STATUSPANE_1                 701
@@ -1629,6 +1639,8 @@
 #define ID_VIEW_TRANSCRIPTION_BOUNDARIES 33244
 #define ID_Menu                         33245
 #define ID_HELP_SFMMARKERS              33246
+#define ID_EDIT_MERGE					33247
+#define ID_EDIT_SPLIT					33248
 #define ID_GRAPHTYPES_SELECT_FIRST      40000
 #define ID_GRAPHTYPES_SELECT_LAST       40011
 #define ID_PHONETIC_ALL                 40100
@@ -1792,8 +1804,8 @@
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_3D_CONTROLS                     1
-#define _APS_NEXT_RESOURCE_VALUE        372
-#define _APS_NEXT_COMMAND_VALUE         33247
+#define _APS_NEXT_RESOURCE_VALUE        385
+#define _APS_NEXT_COMMAND_VALUE         33250
 #define _APS_NEXT_CONTROL_VALUE         2111
 #define _APS_NEXT_SYMED_VALUE           105
 #endif

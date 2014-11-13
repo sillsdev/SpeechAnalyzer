@@ -51,7 +51,7 @@ CSaString CTextSegment::GetSegmentString(int nIndex) const
 /***************************************************************************/
 // CTextSegment::CTextSegment Constructor
 /***************************************************************************/
-CTextSegment::CTextSegment(int index, int master) : CDependentSegment(index,master)
+CTextSegment::CTextSegment(EAnnotation index, int master) : CDependentSegment(index,master)
 {
 }
 
@@ -431,10 +431,8 @@ void CTextSegment::Add(CSaDoc * pDoc, DWORD dwStart, CSaString & szString, bool 
 /***************************************************************************/
 void CTextSegment::Remove(CDocument * pSaDoc, BOOL bCheck)
 {
-
     // get pointer to view
     CSaDoc * pDoc = (CSaDoc *)pSaDoc; // cast pointer
-
     // save state for undo ability
     if (bCheck)
     {

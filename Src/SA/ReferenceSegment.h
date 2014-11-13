@@ -6,7 +6,7 @@
 class CReferenceSegment : public CDependentTextSegment
 {
 public:
-    CReferenceSegment(int index, int master = -1);
+    CReferenceSegment(EAnnotation index, int master = -1);
 
     // Attributes
 private:

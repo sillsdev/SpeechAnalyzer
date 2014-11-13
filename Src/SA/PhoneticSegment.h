@@ -7,7 +7,7 @@
 class CPhoneticSegment : public CIndependentSegment
 {
 public:
-    CPhoneticSegment(int index, int master = -1);
+    CPhoneticSegment(EAnnotation index, int master = -1);
 
     virtual CSegment::TpInputFilterProc GetInputFilter(void) const; // filter function for input
     virtual long Process(void * pCaller, CSaDoc * pDoc, int nProgress = 0, int nLevel = 1);

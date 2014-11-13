@@ -10,7 +10,7 @@ class CGlossSegment : public CTextSegment
 {
 
 public:
-    CGlossSegment(int index, int master = -1);
+    CGlossSegment(EAnnotation index, int master = -1);
     virtual ~CGlossSegment();
 
     virtual long Process(void * pCaller, ISaDoc * pDoc, int nProgress = 0, int nLevel = 1);

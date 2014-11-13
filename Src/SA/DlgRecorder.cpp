@@ -877,6 +877,7 @@ void CDlgRecorder::OnRecord()
 /***************************************************************************/
 void CDlgRecorder::OnPlay()
 {
+	TRACE("OnPlay");
     if ((m_nMode != PLAYING) && (m_nMode != PAUSED))
     {
         SetRecorderMode(PLAYING);

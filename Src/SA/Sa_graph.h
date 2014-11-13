@@ -116,7 +116,7 @@ public:
     CXScaleWnd * GetXScaleWnd();
     void ShowLegend(BOOL bShow, BOOL bRedraw = FALSE);   // show or hide legend window
     void ShowXScale(BOOL bShow, BOOL bRedraw = FALSE);   // show or hide x-scale window
-    void ShowAnnotation(int nIndex, BOOL bShow, BOOL bRedraw = FALSE); // show or hide indexed annotation window
+    void ShowAnnotation(EAnnotation nIndex, BOOL bShow, BOOL bRedraw = FALSE); // show or hide indexed annotation window
     void ShowCursors(bool bPrivate, bool bShow);
     BOOL HaveLegend();
     BOOL HaveXScale();

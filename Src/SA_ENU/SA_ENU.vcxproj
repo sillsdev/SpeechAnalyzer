@@ -155,6 +155,7 @@
     <None Include="Res\FINGERNW.CUR" />
     <None Include="Res\HANDN.CUR" />
     <None Include="Res\HPU.BMP" />
+    <None Include="res\icon1.ico" />
     <None Include="res\IDR_BAR_ADVANCED.bmp" />
     <None Include="RES\IDR_BAR_BASIC.BMP" />
     <None Include="Res\idr_sa_a.ico" />
@@ -163,6 +164,7 @@
     <None Include="Res\KNOBH.BMP" />
     <None Include="Res\KNOBV.BMP" />
     <None Include="Res\LANDU.BMP" />
+    <None Include="Res\ldpi_ic_launcher.bmp" />
     <None Include="Res\LED.BMP" />
     <None Include="Res\LPU.BMP" />
     <None Include="Res\MedFingerN.cur" />

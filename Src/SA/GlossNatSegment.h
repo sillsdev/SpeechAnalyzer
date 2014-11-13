@@ -6,7 +6,7 @@
 class CGlossNatSegment : public CDependentTextSegment
 {
 public:
-    CGlossNatSegment(int index, int master = -1);
+    CGlossNatSegment(EAnnotation index, int master = -1);
 
     // Attributes
 private:

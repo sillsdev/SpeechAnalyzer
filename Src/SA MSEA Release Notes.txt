@@ -1,3 +1,7 @@
+SA - 3.1.0.103 11/10/2014
+Updated application icons
+Added SAB features - merge and split transcriptions
+
 SA - 3.1.0.102 10/22/2014
 Modified several dialogs to change 'Gloss' to 'Gloss English' and 'Gloss Nat.' to 'Gloss National'.
 Modified SFM export dialog combo list box to use the term 'Rows' instead of 'Default'

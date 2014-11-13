@@ -2,7 +2,7 @@
 #include "MusicPhraseSegment.h"
 #include "Sa_Doc.h"
 
-CMusicPhraseSegment::CMusicPhraseSegment(int index, int master) :
+CMusicPhraseSegment::CMusicPhraseSegment(EAnnotation index, int master) :
     CIndependentSegment(index,master) 
 {
 }

@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "GlossNatSegment.h"
 
-CGlossNatSegment::CGlossNatSegment(int index, int master) : CDependentTextSegment(index, master)
+CGlossNatSegment::CGlossNatSegment(EAnnotation index, int master) : CDependentTextSegment(index, master)
 {
 }
 

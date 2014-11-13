@@ -10,7 +10,7 @@ class CToneSegment : public CDependentSegment
 {
     // Operations
 public:
-    CToneSegment(int index, int master = -1);
+    CToneSegment(EAnnotation index, int master = -1);
 
     // Attributes
 private:

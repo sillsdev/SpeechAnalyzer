@@ -9,7 +9,7 @@
 class CTextSegment : public CDependentSegment
 {
 public:
-    CTextSegment(int index, int master = -1);
+    CTextSegment(EAnnotation index, int master = -1);
     virtual ~CTextSegment();
 
     virtual void Serialize(CArchive & ar);

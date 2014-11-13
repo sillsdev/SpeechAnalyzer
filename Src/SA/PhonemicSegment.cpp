@@ -4,7 +4,7 @@
 //###########################################################################
 // CPhonemicSegment data processing
 
-CPhonemicSegment::CPhonemicSegment(int index, int master) : CDependentSegment(index,master)
+CPhonemicSegment::CPhonemicSegment(EAnnotation index, int master) : CDependentSegment(index,master)
 {
 }
 

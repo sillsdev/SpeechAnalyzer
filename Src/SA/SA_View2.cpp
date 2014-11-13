@@ -105,6 +105,8 @@ BEGIN_MESSAGE_MAP(CSaView, CView)
     ON_COMMAND(ID_EDIT_PREVIOUS, OnEditPrevious)
     ON_COMMAND(ID_EDIT_REDO, OnEditRedo)
     ON_COMMAND(ID_EDIT_REMOVE, OnEditRemove)
+	ON_COMMAND(ID_EDIT_SPLIT, OnEditSplit)
+	ON_COMMAND(ID_EDIT_MERGE, OnEditMerge)
     ON_COMMAND(ID_EDIT_SEGMENT_BOUNDARIES, OnEditBoundaries)
     ON_COMMAND(ID_EDIT_SEGMENT_SIZE, OnEditSegmentSize)
     ON_COMMAND(ID_EDIT_SELECTWAVEFORM, OnEditSelectWaveform)
@@ -287,6 +289,8 @@ BEGIN_MESSAGE_MAP(CSaView, CView)
     ON_UPDATE_COMMAND_UI(ID_EDIT_PREVIOUS, OnUpdateEditPrevious)
     ON_UPDATE_COMMAND_UI(ID_EDIT_REDO, OnUpdateEditRedo)
     ON_UPDATE_COMMAND_UI(ID_EDIT_REMOVE, OnUpdateEditRemove)
+	ON_UPDATE_COMMAND_UI(ID_EDIT_SPLIT, OnUpdateEditSplit)
+	ON_UPDATE_COMMAND_UI(ID_EDIT_MERGE, OnUpdateEditMerge)
     ON_UPDATE_COMMAND_UI(ID_EDIT_SEGMENT_BOUNDARIES, OnUpdateEditBoundaries)
     ON_UPDATE_COMMAND_UI(ID_EDIT_SEGMENT_SIZE, OnUpdateEditSegmentSize)
     ON_UPDATE_COMMAND_UI(ID_EDIT_SELECTWAVEFORM, OnUpdateEditSelectWaveform)
@@ -3961,7 +3965,6 @@ void CSaView::ChangeSelectedAnnotationData(const CSaString & str)
 /***************************************************************************/
 void CSaView::RemoveSelectedAnnotation()
 {
-
     CSegment * pAnnotationSet = FindSelectedAnnotation();
     if (pAnnotationSet!=NULL)
     {
@@ -4526,8 +4529,7 @@ void CSaView::OnEditAddSyllable()
     int i = GetGraphIndexForIDD(IDD_RAWDATA);
     if ((i != -1) && m_apGraphs[i])
     {
-        int nAnnot = PHONETIC;
-        m_apGraphs[i]->ShowAnnotation(nAnnot, TRUE, TRUE);
+        m_apGraphs[i]->ShowAnnotation(PHONETIC, TRUE, TRUE);
     }
 }
 
@@ -4869,8 +4871,7 @@ void CSaView::OnEditAddPhonetic()
     int i = GetGraphIndexForIDD(IDD_RAWDATA);
     if ((i != -1) && m_apGraphs[i])
     {
-        int nAnnot = PHONETIC;
-        m_apGraphs[i]->ShowAnnotation(nAnnot, TRUE, TRUE);
+        m_apGraphs[i]->ShowAnnotation(PHONETIC, TRUE, TRUE);
     }
 }
 
@@ -5080,7 +5081,7 @@ void CSaView::OnEditAddPhrase(CMusicPhraseSegment * pSeg)
     int i = GetGraphIndexForIDD(IDD_RAWDATA);
     if ((i != -1) && m_apGraphs[i])
     {
-        int nAnnot = pSeg->GetAnnotationIndex();
+        EAnnotation nAnnot = pSeg->GetAnnotationIndex();
         m_apGraphs[i]->ShowAnnotation(nAnnot, TRUE, TRUE);
     }
 }
@@ -5353,7 +5354,7 @@ void CSaView::OnEditAddAutoPhraseL2()
     int i = GetGraphIndexForIDD(IDD_RAWDATA);
     if ((i != -1) && m_apGraphs[i])
     {
-        int nAnnot = pSeg->GetAnnotationIndex();
+        EAnnotation nAnnot = pSeg->GetAnnotationIndex();
         m_apGraphs[i]->ShowAnnotation(nAnnot, TRUE, TRUE);
     }
 }
@@ -5497,7 +5498,7 @@ void CSaView::EditAddGloss(bool bDelimiter)
             int i = GetGraphIndexForIDD(IDD_RAWDATA);
             if ((i != -1) && (m_apGraphs[i]))
             {
-                int nAnnot = pGloss->GetAnnotationIndex();
+                EAnnotation nAnnot = pGloss->GetAnnotationIndex();
                 m_apGraphs[i]->ShowAnnotation( nAnnot, TRUE, TRUE);
             }
         }
@@ -5520,7 +5521,7 @@ void CSaView::EditAddGloss(bool bDelimiter)
     int i = GetGraphIndexForIDD(IDD_RAWDATA);
     if ((i != -1) && (m_apGraphs[i]!=NULL))
     {
-        int nAnnot = pGloss->GetAnnotationIndex();
+        EAnnotation nAnnot = pGloss->GetAnnotationIndex();
         m_apGraphs[i]->ShowAnnotation(nAnnot, TRUE, TRUE);
     }
 }
@@ -5707,6 +5708,33 @@ void CSaView::OnEditRemove()
     }
 }
 
+/***************************************************************************/
+// CSaView::OnEditSplit
+/***************************************************************************/
+void CSaView::OnEditSplit()
+{
+    CSegment * pSeg = FindSelectedAnnotation();
+    if ((pSeg!=NULL) && 
+		(pSeg->GetSelection() != -1) &&
+		(pSeg->GetAnnotationIndex()==PHONETIC))
+    {
+		GetDocument()->SplitSegment((CPhoneticSegment*)pSeg);
+    }
+}
+
+/***************************************************************************/
+// CSaView::OnEditMerge
+/***************************************************************************/
+void CSaView::OnEditMerge()
+{
+    CSegment * pSeg = FindSelectedAnnotation();
+    if ((pSeg!=NULL) && 
+		(pSeg->GetSelection() != -1) &&
+		(pSeg->GetAnnotationIndex()==PHONETIC))
+    {
+		GetDocument()->MergeSegments((CPhoneticSegment*)pSeg);
+    }
+}
 
 /***************************************************************************/
 // CSaView::OnUpdateEditRemove
@@ -5716,6 +5744,38 @@ void CSaView::OnUpdateEditRemove(CCmdUI * pCmdUI)
     BOOL bEnable = FALSE;
     CSegment * pSeg = FindSelectedAnnotation();
     if ((pSeg!=NULL) && (pSeg->GetSelection() != -1))
+    {
+        bEnable = TRUE;
+    }
+    pCmdUI->Enable(bEnable);
+}
+
+/***************************************************************************/
+// CSaView::OnUpdateEditSplit
+/***************************************************************************/
+void CSaView::OnUpdateEditSplit(CCmdUI * pCmdUI)
+{
+    BOOL bEnable = FALSE;
+    CSegment * pSeg = FindSelectedAnnotation();
+    if ((pSeg!=NULL) && 
+		(pSeg->GetSelection() != -1) &&
+		(pSeg->GetAnnotationIndex()==PHONETIC))
+    {
+        bEnable = TRUE;
+    }
+    pCmdUI->Enable(bEnable);
+}
+
+/***************************************************************************/
+// CSaView::OnUpdateEditMerge
+/***************************************************************************/
+void CSaView::OnUpdateEditMerge(CCmdUI * pCmdUI)
+{
+    BOOL bEnable = FALSE;
+    CSegment * pSeg = FindSelectedAnnotation();
+    if ((pSeg!=NULL) && 
+		(pSeg->GetSelection() != -1) &&
+		(pSeg->GetAnnotationIndex()==PHONETIC))
     {
         bEnable = TRUE;
     }
@@ -6028,7 +6088,7 @@ void CSaView::OnEditPrevious()
         else
         {
             int MASTER = GetAnnotation(nLoop)->GetMasterIndex();
-            if ((MASTER!=-1)&&(nLoop != GLOSS)&&(nLoop != PHONETIC))
+            if ((MASTER!=-1) && (nLoop != GLOSS) && (nLoop != PHONETIC))
             {
                 CSegment * pMaster=GetAnnotation(MASTER);
 
@@ -7072,17 +7132,17 @@ void CSaView::OnSelectTranscriptionBars()
 
     if (dlg.DoModal() != IDOK)
     {
-        m_pFocusedGraph->ShowAnnotation(ID_POPUPGRAPH_REFERENCE-ID_POPUPGRAPH_PHONETIC,bReference,TRUE);
-        m_pFocusedGraph->ShowAnnotation(ID_POPUPGRAPH_PHONETIC-ID_POPUPGRAPH_PHONETIC,bPhonetic,TRUE);
-        m_pFocusedGraph->ShowAnnotation(ID_POPUPGRAPH_TONE-ID_POPUPGRAPH_PHONETIC,bTone,TRUE);
-        m_pFocusedGraph->ShowAnnotation(ID_POPUPGRAPH_PHONEMIC-ID_POPUPGRAPH_PHONETIC,bPhonemic,TRUE);
-        m_pFocusedGraph->ShowAnnotation(ID_POPUPGRAPH_ORTHO-ID_POPUPGRAPH_PHONETIC,bOrthographic,TRUE);
-        m_pFocusedGraph->ShowAnnotation(ID_POPUPGRAPH_GLOSS-ID_POPUPGRAPH_PHONETIC,bGloss,TRUE);
-        m_pFocusedGraph->ShowAnnotation(ID_POPUPGRAPH_GLOSS_NAT-ID_POPUPGRAPH_PHONETIC,bGlossNat,TRUE);
-        m_pFocusedGraph->ShowAnnotation(ID_POPUPGRAPH_MUSIC_PL1-ID_POPUPGRAPH_PHONETIC,bPhraseList1,TRUE);
-        m_pFocusedGraph->ShowAnnotation(ID_POPUPGRAPH_MUSIC_PL2-ID_POPUPGRAPH_PHONETIC,bPhraseList2,TRUE);
-        m_pFocusedGraph->ShowAnnotation(ID_POPUPGRAPH_MUSIC_PL3-ID_POPUPGRAPH_PHONETIC,bPhraseList3,TRUE);
-        m_pFocusedGraph->ShowAnnotation(ID_POPUPGRAPH_MUSIC_PL4-ID_POPUPGRAPH_PHONETIC,bPhraseList4,TRUE);
+        m_pFocusedGraph->ShowAnnotation((EAnnotation)(ID_POPUPGRAPH_REFERENCE-ID_POPUPGRAPH_PHONETIC),bReference,TRUE);
+        m_pFocusedGraph->ShowAnnotation((EAnnotation)(ID_POPUPGRAPH_PHONETIC-ID_POPUPGRAPH_PHONETIC),bPhonetic,TRUE);
+        m_pFocusedGraph->ShowAnnotation((EAnnotation)(ID_POPUPGRAPH_TONE-ID_POPUPGRAPH_PHONETIC),bTone,TRUE);
+        m_pFocusedGraph->ShowAnnotation((EAnnotation)(ID_POPUPGRAPH_PHONEMIC-ID_POPUPGRAPH_PHONETIC),bPhonemic,TRUE);
+        m_pFocusedGraph->ShowAnnotation((EAnnotation)(ID_POPUPGRAPH_ORTHO-ID_POPUPGRAPH_PHONETIC),bOrthographic,TRUE);
+        m_pFocusedGraph->ShowAnnotation((EAnnotation)(ID_POPUPGRAPH_GLOSS-ID_POPUPGRAPH_PHONETIC),bGloss,TRUE);
+        m_pFocusedGraph->ShowAnnotation((EAnnotation)(ID_POPUPGRAPH_GLOSS_NAT-ID_POPUPGRAPH_PHONETIC),bGlossNat,TRUE);
+        m_pFocusedGraph->ShowAnnotation((EAnnotation)(ID_POPUPGRAPH_MUSIC_PL1-ID_POPUPGRAPH_PHONETIC),bPhraseList1,TRUE);
+        m_pFocusedGraph->ShowAnnotation((EAnnotation)(ID_POPUPGRAPH_MUSIC_PL2-ID_POPUPGRAPH_PHONETIC),bPhraseList2,TRUE);
+        m_pFocusedGraph->ShowAnnotation((EAnnotation)(ID_POPUPGRAPH_MUSIC_PL3-ID_POPUPGRAPH_PHONETIC),bPhraseList3,TRUE);
+        m_pFocusedGraph->ShowAnnotation((EAnnotation)(ID_POPUPGRAPH_MUSIC_PL4-ID_POPUPGRAPH_PHONETIC),bPhraseList4,TRUE);
     }
 }
 

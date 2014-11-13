@@ -371,7 +371,7 @@ BOOL CGraphWnd::DisableAnnotation(int /*nIndex*/)
 /***************************************************************************/
 // CGraphWnd::ShowAnnotation Show or hide annotation window
 /***************************************************************************/
-void CGraphWnd::ShowAnnotation(int nIndex, BOOL bShow, BOOL bRedraw)
+void CGraphWnd::ShowAnnotation( EAnnotation nIndex, BOOL bShow, BOOL bRedraw)
 {
 
     m_abAnnWnd[nIndex] = ((bShow) && (!DisableAnnotation(nIndex)));

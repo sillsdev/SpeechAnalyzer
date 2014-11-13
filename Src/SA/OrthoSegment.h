@@ -6,7 +6,7 @@
 class COrthoSegment : public CDependentSegment
 {
 public:
-    COrthoSegment(int index, int master = -1);
+    COrthoSegment(EAnnotation index, int master = -1);
 
 private:
     virtual CFontTable * NewFontTable() const;

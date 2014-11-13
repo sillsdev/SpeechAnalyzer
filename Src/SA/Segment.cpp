@@ -102,7 +102,7 @@ static char BASED_CODE THIS_FILE[] = __FILE__;
 /***************************************************************************/
 // CSegment::CSegment Constructor
 /***************************************************************************/
-CSegment::CSegment(int index, int master)
+CSegment::CSegment( EAnnotation index, int master)
 {
     m_nAnnotationIndex = index;
     m_nMasterIndex = master;
@@ -1099,7 +1099,7 @@ int CSegment::GetMasterIndex(void) const
     return m_nMasterIndex;
 }
 
-int CSegment::GetAnnotationIndex(void) const
+EAnnotation CSegment::GetAnnotationIndex(void) const
 {
     return m_nAnnotationIndex;
 }

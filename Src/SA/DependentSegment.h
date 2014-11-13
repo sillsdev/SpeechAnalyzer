@@ -10,7 +10,7 @@
 class CDependentSegment : public CSegment
 {
 public:
-    CDependentSegment(int index, int master = -1): CSegment(index,master) {};
+    CDependentSegment(EAnnotation index, int master = -1): CSegment(index,master) {};
 
     // Attributes
 private:

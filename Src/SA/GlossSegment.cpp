@@ -18,7 +18,7 @@ static char BASED_CODE THIS_FILE[] = __FILE__;
 // CGlossSegment
 // class to do all the handling for the gloss annotation segments.
 
-CGlossSegment::CGlossSegment(int index, int master) : 
+CGlossSegment::CGlossSegment(EAnnotation index, int master) : 
 CTextSegment(index,master)
 {
 }

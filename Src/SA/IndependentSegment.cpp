@@ -10,7 +10,7 @@ static char BASED_CODE THIS_FILE[] = __FILE__;
 // CIndependentSegment
 // class to do all the handling for the master annotation segments.
 
-CIndependentSegment::CIndependentSegment(int index, int master) :
+CIndependentSegment::CIndependentSegment(EAnnotation index, int master) :
     CSegment(index,master)
 {
 }

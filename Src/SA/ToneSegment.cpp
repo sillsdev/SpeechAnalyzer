@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "ToneSegment.h"
 
-CToneSegment::CToneSegment(int index, int master) :
+CToneSegment::CToneSegment(EAnnotation index, int master) :
     CDependentSegment(index,master)
 {
 }

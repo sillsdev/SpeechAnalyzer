@@ -368,6 +368,10 @@ protected:
     afx_msg void OnUpdateSetupFnkeys(CCmdUI * pCmdUI);
     afx_msg void OnEditRemove();
     afx_msg void OnUpdateEditRemove(CCmdUI * pCmdUI);
+    afx_msg void OnEditSplit();
+    afx_msg void OnUpdateEditSplit(CCmdUI * pCmdUI);
+    afx_msg void OnEditMerge();
+    afx_msg void OnUpdateEditMerge(CCmdUI * pCmdUI);
     afx_msg void OnEditAutoAdd();
     afx_msg void OnUpdateEditAutoAdd(CCmdUI * pCmdUI);
     afx_msg void OnEditAutoAddStorySection();
@@ -481,7 +485,7 @@ private:
     void SendPlayMessage(WORD Int1, WORD Int2);
     BOOL StartAnimation(DWORD dwStartWaveIndex, DWORD dwStopWaveIndex);
     void EndAnimation();
-    void ShowAnnotation(int nAnnot);
+    void ShowAnnotation(EAnnotation nAnnot);
     UINT GraphPtrtoID(CGraphWnd * pGraph);
     int  GraphPtrToOffset(CGraphWnd * pGraph);
     void ToggleAnnotation(int nAnnot, BOOL bShow, BOOL bRawDataOnly = FALSE);
