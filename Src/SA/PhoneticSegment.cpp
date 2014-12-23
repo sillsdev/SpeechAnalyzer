@@ -596,4 +596,40 @@ long CPhoneticSegment::Process(void * pCaller, CSaDoc * pDoc, int nProgress, int
     return MAKELONG(nLevel, nProgress);
 }
 
+/**
+* Split this segment
+* @param start the offset of the phonetic segment
+*/
+void CPhoneticSegment::Split( CSaDoc * pDoc, CSaView * pView, DWORD thisOffset, DWORD newStopStart, DWORD newDuration)
+{
+	if (GetOffsetSize()==0) return;
+	int nIndex = FindIndex(thisOffset);
+	if (nIndex==-1) return;
+	AdjustDuration( thisOffset, newDuration);
+	int length = GetSegmentLength(nIndex);
+	Insert( nIndex+length, GetDefaultChar(), true, newStopStart, newDuration);
+}
 
+/**
+* Split this segment
+* @param start the offset of the phonetic segment
+*/
+void CPhoneticSegment::Merge( CSaDoc * pDoc, CSaView * pView, DWORD thisOffset, DWORD prevOffset, DWORD thisStop)
+{
+	if (GetOffsetSize()==0) return;
+	int index = FindIndex(thisOffset);
+	int prev = FindIndex(prevOffset);
+	if (index==-1) return;
+	if (prev==-1) return;
+	// short text
+    int length = GetSegmentLength(index);
+	int end = m_pAnnotation->GetLength();
+    *m_pAnnotation = m_pAnnotation->Left(index) + m_pAnnotation->Right( end - length - index);
+    RemoveAt(index,length);
+	// increase segment
+	AdjustDuration( prevOffset, thisStop-prevOffset);
+}
+
+CSaString CPhoneticSegment::GetDefaultChar() {
+	return CSaString(SEGMENT_DEFAULT_CHAR);
+}

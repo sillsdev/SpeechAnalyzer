@@ -4,8 +4,9 @@ using System.IO;
 using System.Security.Cryptography;
 using System.Text;
 using System.Windows.Forms;
+
 using SilEncConverters40;
-using SilUtils;
+using SIL.SpeechTools;
 
 namespace SIL.SpeechTools.Utils
 {
@@ -409,7 +410,7 @@ namespace SIL.SpeechTools.Utils
 				{
 					// If there's a splash screen open, then close it before showing the
 					// dialog. Otherwise, the dialog will popup behind the splash screen.
-					SilUtils.Utils.ForceCloseOfSplashScreen();
+					GUI.Utils.ForceCloseOfSplashScreen();
 
 					DialogResult res = dlg.ShowDialog();
 					if (res == DialogResult.Cancel)

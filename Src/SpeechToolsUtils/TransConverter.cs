@@ -1,10 +1,11 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Xml.Serialization;
-using SilEncConverters40;
 using System;
-using SilUtils;
+
+using SilEncConverters40;
 using ECInterfaces;
+using SIL.SpeechTools.GUI;
 
 namespace SIL.SpeechTools.Utils
 {
@@ -58,7 +59,7 @@ namespace SIL.SpeechTools.Utils
 		{
 			string filename = Path.Combine(SASettingsPath, kPersistedInfoFilename);
 
-			TransConverterInfo info = SilUtils.Utils.DeserializeData(
+			TransConverterInfo info = GUI.Utils.DeserializeData(
 				filename, typeof(TransConverterInfo)) as TransConverterInfo;
 
 			if (info == null)
@@ -80,7 +81,7 @@ namespace SIL.SpeechTools.Utils
 			string filename = Path.Combine(SASettingsPath,
 				kPersistedInfoFilename);
 
-			SilUtils.Utils.SerializeData(filename, this);
+            GUI.Utils.SerializeData(filename, this);
 		}
 
 		/// ------------------------------------------------------------------------------------

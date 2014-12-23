@@ -468,7 +468,7 @@ void CDlgFind::OnNext() {
             TRACE("bf:begin2\n");
             if (pAnnot->Match(curSel, findme)) {
                 ScrollIfNeeded();
-                pAnnot->SelectSegment(*pDoc,m_curPos);
+                pDoc->SelectSegment(pAnnot,m_curPos);
             } else {
                 TRACE("onnext1\n");
                 OnNext();
@@ -507,12 +507,12 @@ void CDlgFind::OnNext() {
             AfxMessageBox(IDS_FIND_FINISHED,MB_ICONINFORMATION,0);
             m_curPos = m_beginFind;
             ScrollIfNeeded();
-            pAnnot->SelectSegment(*pDoc,m_curPos);
+            pDoc->SelectSegment(pAnnot,m_curPos);
             ResetCompletionCheck();
         } else {
             m_curPos = newPos;
             ScrollIfNeeded();
-            pAnnot->SelectSegment(*pDoc,m_curPos);
+            pDoc->SelectSegment(pAnnot,m_curPos);
         }
     } else {
         if (AfxMessageBox(IDS_FIND_WRAP_PAST_END, MB_YESNO|MB_ICONQUESTION,0)==IDYES) {
@@ -567,12 +567,12 @@ void CDlgFind::OnPrevious() {
             AfxMessageBox(IDS_FIND_FINISHED,MB_ICONINFORMATION,0);
             m_curPos = m_beginFind;
             ScrollIfNeeded();
-            pAnnot->SelectSegment(*pDoc,m_curPos);
+            pDoc->SelectSegment(pAnnot,m_curPos);
             ResetCompletionCheck();
         } else {
             m_curPos = newPos;
             ScrollIfNeeded();
-            pAnnot->SelectSegment(*pDoc,m_curPos);
+            pDoc->SelectSegment(pAnnot,m_curPos);
         }
     } else {
         if (AfxMessageBox(IDS_FIND_WRAP_PAST_START, MB_YESNO|MB_ICONQUESTION,0)==IDYES) {
@@ -580,7 +580,7 @@ void CDlgFind::OnPrevious() {
             m_wrapped = true;
             OnPrevious();
         } else {
-            pAnnot->SelectSegment(*pDoc,m_curPos);
+            pDoc->SelectSegment(pAnnot,m_curPos);
             ResetCompletionCheck();
         }
     }
@@ -672,7 +672,7 @@ void CDlgFind::OnReplaceAll() {
     pDoc->CheckPoint();
     while (newPos >= 0) {
         if (newPos != pAnnot->GetSelection()) {
-            pAnnot->SelectSegment(*pDoc,newPos);
+            pDoc->SelectSegment(pAnnot,newPos);
         }
         pAnnot->ReplaceSelectedSegment(pDoc,replaceme);
         newPos = pAnnot->FindNext(newPos,findme);

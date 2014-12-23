@@ -32,21 +32,6 @@ CFontTable * CGlossSegment::NewFontTable() const
     return new CFontTableANSI();
 }
 
-/***************************************************************************/
-// CGlossSegment::ReplaceSelectedSegment
-// Replaces the selected segment with the string passes in.
-/***************************************************************************/
-void CGlossSegment::ReplaceSelectedSegment( CSaDoc * pSaDoc, LPCTSTR replace)
-{
-    CSaString POS;
-    if (m_nSelection != -1)
-    {
-        POS = pos.GetAt(m_nSelection); //SDM 1.5Test8.2
-    }
-    CTextSegment::ReplaceSelectedSegment( pSaDoc, replace);
-    pos.SetAt( m_nSelection, POS); // SDM 1.5Test8.2
-}
-
 //SDM 1.5Test8.1
 /***************************************************************************/
 // CGlossSegment::Remove Remove annotation segment
@@ -55,16 +40,13 @@ void CGlossSegment::ReplaceSelectedSegment( CSaDoc * pSaDoc, LPCTSTR replace)
 /***************************************************************************/
 void CGlossSegment::Remove(CDocument * pSaDoc, BOOL bCheck)
 {
-
     CSaDoc * pDoc = (CSaDoc *) pSaDoc;
-
     DWORD dwOldOffset = DWORD(~0);
     if (m_nSelection != -1)
     {
         dwOldOffset = GetOffset(m_nSelection);
     }
     CTextSegment::Remove(pSaDoc, bCheck);
-
     if (dwOldOffset == ~0)
     {
         return;
@@ -86,74 +68,20 @@ void CGlossSegment::Remove(CDocument * pSaDoc, BOOL bCheck)
 
 //SDM 1.5Test8.1
 /***************************************************************************/
-// CGlossSegment::RemoveNoRefresh Remove gloss segment
-/***************************************************************************/
-DWORD CGlossSegment::RemoveNoRefresh(CDocument * pDoc)
-{
-    // change the segment arrays
-    pos.RemoveAt(m_nSelection, 1);
-    return CTextSegment::RemoveNoRefresh(pDoc);
-}
-
-//SDM 1.5Test8.1
-/***************************************************************************/
-// CGlossSegment::DeleteContents Delete all contents of the gloss arrays
-/***************************************************************************/
-void CGlossSegment::DeleteContents()
-{
-    pos.RemoveAll();
-    CTextSegment::DeleteContents(); // call the base class to delete positions
-}
-
-//SDM 1.5Test8.1
-/***************************************************************************/
 // CGlossSegment::Insert Insert/append a gloss segment
 // Returns FALSE if an error occured. If the pointer to the string is NULL
 // there will be no string added.
 /***************************************************************************/
 BOOL CGlossSegment::SetAt(const CSaString * pszString, bool delimiter, DWORD dwStart, DWORD dwDuration)
 {
-
     int nIndex = FindOffset(dwStart);
     ASSERT(nIndex>=0);
-    try
-    {
-        pos.SetAtGrow(nIndex, NULL);
-    }
-    catch (CMemoryException e)
-    {
-        // memory allocation error
-        ErrorMessage(IDS_ERROR_MEMALLOC);
-        return FALSE;
-    }
     return CTextSegment::SetAt(pszString, delimiter, dwStart, dwDuration);
-}
-
-//SDM 1.5Test8.1
-/***************************************************************************/
-// CGlossSegment::Insert Insert/append a gloss segment
-// Returns FALSE if an error occured. If the pointer to the string is NULL
-// there will be no string added.
-/***************************************************************************/
-BOOL CGlossSegment::Insert(int nIndex, LPCTSTR pszString, bool delimiter, DWORD dwStart, DWORD dwDuration)
-{
-    try
-    {
-        pos.InsertAt(nIndex, NULL,  1);
-    }
-    catch (CMemoryException e)
-    {
-        // memory allocation error
-        ErrorMessage(IDS_ERROR_MEMALLOC);
-        return FALSE;
-    }
-    return CTextSegment::Insert(nIndex, pszString, delimiter, dwStart, dwDuration);
 }
 
 //SDM 1.5Test8.1
 void CGlossSegment::Serialize(CArchive & ar)
 {
-
     CSegment::Serialize(ar);
     CTextSegment::Serialize(ar);
     if (ar.IsStoring())
@@ -166,9 +94,10 @@ void CGlossSegment::Serialize(CArchive & ar)
         ar >> detailTagCheck;
         SA_ASSERT(detailTagCheck == "CGlossSegmentDetail tag");
     }
-    pos.Serialize(ar);
+	// use to be POS
+	CStringArray temp;
+    temp.Serialize(ar);
 }
-
 
 /***************************************************************************/
 // CGlossSegment::Exit Exit parsing on error
@@ -508,24 +437,3 @@ void CGlossSegment::CorrectGlossDurations( ISaDoc * pDoc)
         }
     }
 }
-
-CString CGlossSegment::GetPOSAt( int index)
-{
-	return pos.GetAt( index);
-}
-
-void CGlossSegment::POSSetAt( int index, LPCTSTR val)
-{
-	pos.SetAt( index, val);
-}
-
-void CGlossSegment::POSInsertAt( int index, LPCTSTR val)
-{
-	pos.InsertAt( index, val);
-}
-
-void CGlossSegment::POSSetAtGrow( int index, LPCTSTR val)
-{
-	pos.SetAtGrow( index, val);
-}
-

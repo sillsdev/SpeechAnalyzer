@@ -1,80 +1,94 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ClassDiagram MajorVersion="1" MinorVersion="1">
   <Class Name="CReferenceSegment" Collapsed="true">
-    <Position X="0.75" Y="5.75" Width="2" />
+    <Position X="3.75" Y="5.75" Width="1.75" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAABAAAA=</HashCode>
-      <FileName>Sa_segm.h</FileName>
+      <FileName>ReferenceSegment.h</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="CDependentTextSegment" Collapsed="true">
-    <Position X="0.75" Y="4.5" Width="2" />
+    <Position X="4.75" Y="4.5" Width="1.75" />
     <TypeIdentifier>
-      <HashCode>AAIAAEAAAABAAAAAAIAACAAAAAAAAAAAAAAAAAIAAAA=</HashCode>
-      <FileName>Sa_segm.h</FileName>
+      <HashCode>IAIAAEAAAAhAAAAAAIAACAAAAAAAAAAAAAAAAAIAAAA=</HashCode>
+      <FileName>DependentTextSegment.h</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="CTextSegment" Collapsed="true">
-    <Position X="1.25" Y="3.25" Width="1.5" />
+    <Position X="6" Y="3.25" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAIBAmAACAAAEAQJAAAABAAAQTAAAAAEEwAAAEIAAAA=</HashCode>
-      <FileName>Sa_segm.h</FileName>
+      <HashCode>IAIBAmAQCAAAEwQJAAAABAAAQaAAAQAUEwAAAEIAACA=</HashCode>
+      <FileName>TextSegment.h</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="CDependentSegment" Collapsed="true">
-    <Position X="2.5" Y="2" Width="1.75" />
+    <Position X="2.75" Y="2" Width="1.75" />
     <TypeIdentifier>
       <HashCode>CAIAAAAAAAAAAAAAAABADAAAAAAAAAAAEAAAgCIAAAA=</HashCode>
-      <FileName>Sa_segm.h</FileName>
+      <FileName>DependentSegment.h</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="CPhonemicSegment" Collapsed="true">
-    <Position X="3" Y="3.25" Width="1.75" />
+    <Position X="0.5" Y="3.25" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAEAAAAAAABAAAAAAAAAAAAAABAAAA=</HashCode>
-      <FileName>Sa_segm.h</FileName>
+      <FileName>PhonemicSegment.h</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="CPhoneticSegment" Collapsed="true">
-    <Position X="9.75" Y="3.25" Width="1.75" />
+    <Position X="10" Y="3.25" Width="1.75" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAQEAgACBAAAAAAAAAAAIAAAAEBAAAA=</HashCode>
-      <FileName>Sa_segm.h</FileName>
+      <HashCode>AAAAAAAAAAAAAAQEAgACBAAAAAAAAQAQIAAAAEBAAAA=</HashCode>
+      <FileName>PhoneticSegment.h</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="CIndependentSegment" Collapsed="true">
-    <Position X="8" Y="2" Width="2" />
+    <Position X="8.25" Y="2" Width="2" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAEAAAAAIAAAA=</HashCode>
-      <FileName>Sa_segm.h</FileName>
+      <HashCode>AAIAAAAAAAAAAAAAAAAAAAAAAAAAACAAEQAAAAIAAAA=</HashCode>
+      <FileName>IndependentSegment.h</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="CSegment" Collapsed="true">
-    <Position X="5.5" Y="0.5" Width="1.5" />
+    <Position X="5.75" Y="0.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AABADmAoCAhgFQwNAgSEBACAISBAKhoAmgBIAkrAAgw=</HashCode>
-      <FileName>Sa_segm.h</FileName>
+      <HashCode>IAJIDmg4SAjgFgwNAkSEBACAAKBAOxIQmgBIAkpAAiw=</HashCode>
+      <FileName>Segment.h</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="CMusicPhraseSegment" Collapsed="true">
-    <Position X="7.5" Y="3.25" Width="2" />
+    <Position X="8" Y="3.25" Width="1.75" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAEAAAAABAAAA=</HashCode>
-      <FileName>Sa_segm.h</FileName>
+      <FileName>MusicPhraseSegment.h</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="CGlossSegment" Collapsed="true">
-    <Position X="3" Y="4.5" Width="1.5" />
+    <Position X="6.75" Y="4.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAUAQAIAAAAQBAgAABAAAADAAAAAAIAAAAEBAgAA=</HashCode>
-      <FileName>Sa_segm.h</FileName>
+      <HashCode>IAAAAQAAAAAAAAAAAgAABAAAADAAAAAAIAAAAABAgAA=</HashCode>
+      <FileName>GlossSegment.h</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="COrthoSegment" Collapsed="true">
-    <Position X="5" Y="3.25" Width="1.5" />
+    <Position X="2.25" Y="3.25" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAA=</HashCode>
-      <FileName>Sa_segm.h</FileName>
+      <FileName>OrthoSegment.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CGlossNatSegment" Collapsed="true">
+    <Position X="5.75" Y="5.75" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAABAAAA=</HashCode>
+      <FileName>GlossNatSegment.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CToneSegment" Collapsed="true">
+    <Position X="4" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIBAAAA=</HashCode>
+      <FileName>ToneSegment.h</FileName>
     </TypeIdentifier>
   </Class>
   <Font Name="Segoe UI" Size="9" />

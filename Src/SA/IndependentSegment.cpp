@@ -410,3 +410,83 @@ int CIndependentSegment::CheckPosition(ISaDoc * pDoc, DWORD dwStart,DWORD dwStop
 	TRACE("unhandled case\n");
     return -1;
 }
+
+/***************************************************************************/
+// CTextSegment::CaluculateDuration calculate segment duration from master data
+/***************************************************************************/
+DWORD CIndependentSegment::CalculateDuration( ISaDoc * pDoc, const int nIndex) const
+{
+	DWORD offset_size = GetOffsetSize();
+    if ((nIndex < 0) || (nIndex >= offset_size))
+    {
+        return DWORD(-1);
+    }
+    if ((nIndex + 1) == offset_size)
+    {
+        return GetStop( GetOffsetSize()-1) - GetOffset(nIndex);
+    }
+    else
+    {
+		DWORD next = GetNext(nIndex);
+		DWORD offset = GetOffset(next);
+		DWORD find_offset = FindOffset(offset)-1;
+        DWORD dwStop = GetStop(find_offset);
+        if (dwStop == -1)
+        {
+            return DWORD(-1);
+        }
+        return  dwStop - GetOffset(nIndex);
+    }
+}
+
+// SDM 1.06.5
+/***************************************************************************/
+// CIndependentSegment::Add Add text segment
+/***************************************************************************/
+void CIndependentSegment::Add( CSaDoc * pDoc, CSaView * pView, DWORD dwStart, CSaString & szString, bool bDelimiter, bool bCheck)
+{
+    int nPos = FindFromPosition( dwStart,TRUE);
+    if (nPos==-1)
+    {
+        nPos = FindFromPosition( dwStart,FALSE);
+    }
+    else
+    {
+        nPos++;
+    }
+
+    DWORD dwStop = GetStop(nPos);
+
+    ASSERT(dwStop > dwStart);
+
+    nPos = CheckPosition( pDoc, dwStart, dwStop, CSegment::MODE_ADD);  // get the insert position
+    if (nPos == -1)
+    {
+        return;    // return on error
+    }
+
+    ASSERT(dwStop > dwStart);
+
+    // save state for undo ability
+    if (bCheck)
+    {
+        pDoc->CheckPoint();
+    }
+
+    // insert or append the new segment
+    if (!Insert(nPos, szString, bDelimiter, dwStart, dwStop - dwStart))
+    {
+        return;    // return on error
+    }
+
+    // move the end of the previous text segment
+    if (nPos > 0)
+    {
+        Adjust(pDoc, nPos - 1, GetOffset(nPos - 1), CalculateDuration(pDoc, nPos -1));
+    }
+    pDoc->SetModifiedFlag(TRUE); // document has been modified
+    pDoc->SetTransModifiedFlag(TRUE); // transcription data has been modified
+    pView->ChangeAnnotationSelection(this, nPos); // change the selection
+    pView->RefreshGraphs(FALSE); // refresh the graphs between cursors
+}
+

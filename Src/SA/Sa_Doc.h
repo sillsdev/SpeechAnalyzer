@@ -312,8 +312,17 @@ public:
 	int GetLastSegmentBeforePosition( int annotSetID, DWORD cursorPos);
 
 	static int GetSaveAsFilename(LPCTSTR title, LPCTSTR filter, LPCTSTR extension, LPTSTR path, wstring & result);
-	void SplitSegment( CPhoneticSegment * pSeg);
-	void MergeSegments( CPhoneticSegment * pSeg);
+	void SplitSegment( CSaView * pView, CPhoneticSegment * pSeg, int sel, bool segmental);
+	bool CanSplit( CSegment * pSeg);
+	bool CanMerge( CSegment * pSeg);
+	void MergeSegments( CSaView * pView, CPhoneticSegment * pSeg);
+	bool IsSegmental( CPhoneticSegment * pSeg, int sel);
+	bool IsBoundary( CPhoneticSegment * pPhonetic, int sel);
+	void SelectSegment( CSegment * pSegment, int index);
+	bool CanMoveDataLeft( CSegment * pSegment);
+	bool CanMoveDataRight( CSegment * pSegment);
+	void MoveDataLeft( DWORD offset);
+	void MoveDataRight( DWORD offset);
 
 protected:
     virtual void DeleteContents();

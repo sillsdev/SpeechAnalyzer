@@ -230,8 +230,10 @@ protected:
     BOOL CreateAsSingleton(LPCTSTR aName);
     // Callback when the instance is woken up by another
     virtual void WakeUp(LPCTSTR aCommandLine);
-    // Sleeping thread waiting for activation
-    static UINT Sleeper(CSaApp * aObject);
+	// thread for display splash screen
+	static UINT SplashScreenThread( CSaApp * aObject);
+    // sleeping thread that waits for activation
+    static UINT ActivationThread(CSaApp * aObject);
     bool IsSAS();
 
     DECLARE_MESSAGE_MAP()

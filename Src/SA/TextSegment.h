@@ -19,7 +19,7 @@ public:
     virtual void DeleteContents();							// delete all contents of the segment arrays
     virtual int  GetSegmentLength(int nIndex) const;		// return segment length always 1
     virtual CSaString GetSegmentString(int nIndex) const;	// return segment string
-    virtual void Add(CSaDoc * pDoc, DWORD dwStart, CSaString & szString, bool bDelimiter = false, bool bCheck = true); // add a segment
+    virtual void Add(CSaDoc * pDoc, CSaView * pView, DWORD dwStart, CSaString & szString, bool bDelimiter = false, bool bCheck = true); // add a segment
     virtual void Remove(CDocument *, BOOL bCheck = TRUE);	// remove a segment
 	virtual void Replace( CSaDoc * pDoc, int index, LPCTSTR find, LPCTSTR replace);
     virtual void ReplaceSelectedSegment( CSaDoc * pSaDoc, LPCTSTR replace);
@@ -32,6 +32,10 @@ public:
     int CountWords();
     DWORD CalculateDuration( ISaDoc * pDoc, const int nIndex) const;
     virtual CSaString GetContainedText(DWORD dwStart, DWORD dwStop);
+	virtual void Split( CSaDoc * pDoc, CSaView * pView, DWORD start, DWORD newStopStart, DWORD newDuration);
+	virtual void Merge( CSaDoc * pDoc, CSaView * pView, DWORD thisOffset, DWORD prevOffset, DWORD thisStop);
+	virtual void MoveDataLeft( DWORD offset);
+	virtual void MoveDataRight( DWORD offset);
 
 protected:
     CSaString GetText(int nIndex);      // return text string

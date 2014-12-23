@@ -14,7 +14,7 @@ public:
     virtual BOOL InsertBlank( int nIndex, DWORD dwStart, DWORD dwDuration);									// insert a new segment with no text
     virtual BOOL SetText(int nIndex, LPCTSTR pszString, int nDelimiter, DWORD dwStart, DWORD dwDuration);   // insert a new segment
     int CheckPositionToMaster(ISaDoc *,DWORD dwStart,DWORD dwStop, EMode nMode) const;
-    virtual void Add(CSaDoc * pDoc, DWORD dwStart, CSaString & szString, BOOL bDelimiter = FALSE, BOOL bCheck = TRUE); // add a segment
+    virtual void Add(CSaDoc * pDoc, CSaView * pView, DWORD dwStart, CSaString & szString, bool bDelimiter = false, bool bCheck = true); // add a segment
 };
 
 #endif

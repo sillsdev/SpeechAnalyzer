@@ -14,9 +14,12 @@ public:
     virtual void Remove(CDocument *, BOOL bCheck = TRUE);			// remove a segment
     virtual DWORD RemoveNoRefresh(CDocument * pSaDoc);
     virtual void ReplaceSelectedSegment( CSaDoc * pSaDoc, LPCTSTR replace);
+	virtual void Split( CSaDoc * pDoc, CSaView * pView, DWORD start, DWORD newStopStart, DWORD newDuration);
+	virtual void Merge( CSaDoc * pDoc, CSaView * pView, DWORD thisOffset, DWORD prevOffset, DWORD thisStop);
 
 protected:
     virtual long Exit(int nError); // exit processing on error
+	virtual CSaString GetDefaultChar();
 
 private:
     virtual CFontTable * NewFontTable() const;

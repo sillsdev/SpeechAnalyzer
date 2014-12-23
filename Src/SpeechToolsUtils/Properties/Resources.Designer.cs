@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace SIL.SpeechTools.Utils.Properties {
+namespace SIL.SpeechTools.Properties {
     using System;
     
     
@@ -39,7 +39,7 @@ namespace SIL.SpeechTools.Utils.Properties {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("SIL.SpeechTools.Utils.Properties.Resources", typeof(Resources).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("SIL.SpeechTools.Properties.Resources", typeof(Resources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -57,6 +57,36 @@ namespace SIL.SpeechTools.Utils.Properties {
             }
             set {
                 resourceCulture = value;
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap kimidCollapse {
+            get {
+                object obj = ResourceManager.GetObject("kimidCollapse", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap kimidExpand {
+            get {
+                object obj = ResourceManager.GetObject("kimidExpand", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap kimidSilLogo {
+            get {
+                object obj = ResourceManager.GetObject("kimidSilLogo", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
             }
         }
         
@@ -156,6 +186,33 @@ namespace SIL.SpeechTools.Utils.Properties {
         internal static string kstidFileTypeTecFile {
             get {
                 return ResourceManager.GetString("kstidFileTypeTecFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ({0} records).
+        /// </summary>
+        internal static string kstidHierarchicalRowChildCountLongFmt {
+            get {
+                return ResourceManager.GetString("kstidHierarchicalRowChildCountLongFmt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ({0} rec.).
+        /// </summary>
+        internal static string kstidHierarchicalRowChildCountMedFmt {
+            get {
+                return ResourceManager.GetString("kstidHierarchicalRowChildCountMedFmt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ({0}).
+        /// </summary>
+        internal static string kstidHierarchicalRowChildCountShortFmt {
+            get {
+                return ResourceManager.GetString("kstidHierarchicalRowChildCountShortFmt", resourceCulture);
             }
         }
         
@@ -271,6 +328,36 @@ namespace SIL.SpeechTools.Utils.Properties {
         internal static string kstidWaveFileNotFound {
             get {
                 return ResourceManager.GetString("kstidWaveFileNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap LoadingWheel {
+            get {
+                object obj = ResourceManager.GetObject("LoadingWheel", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap RemoveGridRowHot {
+            get {
+                object obj = ResourceManager.GetObject("RemoveGridRowHot", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap RemoveGridRowNormal {
+            get {
+                object obj = ResourceManager.GetObject("RemoveGridRowNormal", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
             }
         }
     }

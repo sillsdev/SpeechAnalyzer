@@ -109,7 +109,6 @@ BOOL CTextSegment::SetAt(const CSaString * pszString, bool delimiter, DWORD dwSt
 /***************************************************************************/
 BOOL CTextSegment::Insert(int nIndex, LPCTSTR pszString, bool delimiter, DWORD dwStart, DWORD dwDuration)
 {
-
     // prepare delimiter
     CSaString szDelimiter = WORD_DELIMITER;
     if (delimiter)
@@ -359,14 +358,8 @@ int CTextSegment::CheckPosition(ISaDoc * pSaDoc, DWORD dwStart, DWORD dwStop, EM
 /***************************************************************************/
 // CTextSegment::Add Add text segment
 /***************************************************************************/
-void CTextSegment::Add(CSaDoc * pDoc, DWORD dwStart, CSaString & szString, bool bDelimiter, bool bCheck)
+void CTextSegment::Add(CSaDoc * pDoc, CSaView * pView, DWORD dwStart, CSaString & szString, bool bDelimiter, bool bCheck)
 {
-
-    // add a segment
-    // get pointer to view
-    POSITION pos = pDoc->GetFirstViewPosition();
-    CSaView * pView = (CSaView *)pDoc->GetNextView(pos);
-
     int nPos = FindFromPosition(dwStart,TRUE);
     if (nPos==-1)
     {
@@ -378,7 +371,7 @@ void CTextSegment::Add(CSaDoc * pDoc, DWORD dwStart, CSaString & szString, bool 
     }
 
     CSegment * pMaster = pDoc->GetSegment(m_nMasterIndex);
-    int nMaster;
+    int nMaster = -1;
 
     if ((nPos == -1) || (nPos >= GetOffsetSize()) || dwStart > GetStop(nPos))
     {
@@ -430,7 +423,7 @@ void CTextSegment::Add(CSaDoc * pDoc, DWORD dwStart, CSaString & szString, bool 
 /***************************************************************************/
 // CTextSegment::Remove Remove text segment
 /***************************************************************************/
-void CTextSegment::Remove(CDocument * pSaDoc, BOOL bCheck)
+void CTextSegment::Remove( CDocument * pSaDoc, BOOL bCheck)
 {
     // get pointer to view
     CSaDoc * pDoc = (CSaDoc *)pSaDoc; // cast pointer
@@ -443,9 +436,11 @@ void CTextSegment::Remove(CDocument * pSaDoc, BOOL bCheck)
     // move the end of the previous text segment
     if (m_nSelection > 0)
     {
-        SetDurationAt(m_nSelection - 1, GetStop(m_nSelection) - GetOffset(m_nSelection - 1));
+		DWORD offset = GetOffset(m_nSelection - 1);
+		DWORD stop = GetStop(m_nSelection);
+        AdjustDuration( offset,  stop-offset);
     }
-    CDependentSegment::Remove(pSaDoc, FALSE);
+    CDependentSegment::Remove( pSaDoc, FALSE);
 }
 
 /***************************************************************************/
@@ -621,4 +616,52 @@ CSaString CTextSegment::GetContainedText(DWORD dwStart, DWORD dwStop)
         }
     }
     return szText;
+}
+
+void CTextSegment::MoveDataLeft( DWORD offset) 
+{
+	int sel = FindOffset(offset);
+	if (sel==-1) return;
+	if (m_Texts.GetCount()==0) return;
+
+	m_Texts.RemoveAt(sel,1);
+	CSegment::Remove( GetOffsetSize()-1);
+}
+
+void CTextSegment::MoveDataRight( DWORD offset) 
+{
+	int sel = FindOffset(offset);
+	if (sel==-1) return;
+	if (m_Texts.GetCount()==0) return;
+
+	m_Texts.InsertAt(sel,"");
+	size_t last = GetOffsetSize()-1;
+	DWORD lastOffset = GetOffset(last);
+	DWORD lastDuration = GetDuration(last);
+	CSegment::Add( lastOffset+lastDuration, 20);
+}
+
+void CTextSegment::Split( CSaDoc * pDoc, CSaView * pView, DWORD thisOffset, DWORD newStopStart, DWORD newDuration)
+{
+	if (GetOffsetSize()==0) return;
+	int index = FindIndex(thisOffset);
+	if (index==-1) return;
+	DWORD duration = GetDuration(index);
+	AdjustDuration(thisOffset,newStopStart-thisOffset);
+	Insert(index+1,GetDefaultChar(),FALSE,newStopStart,newDuration);
+}
+
+void CTextSegment::Merge( CSaDoc * pDoc, CSaView * pView, DWORD thisOffset, DWORD prevOffset, DWORD thisStop)
+{
+	if (GetOffsetSize()==0) return;
+	int index = FindIndex(thisOffset);
+	int prev = FindIndex(prevOffset);
+	if (index==-1) return;
+	if (prev==-1) return;
+	// remove text
+    // change the segment arrays
+    m_Texts.RemoveAt(index, 1);
+    RemoveAt(index, 1);
+	// increase segment
+	AdjustDuration(prevOffset,thisStop-prevOffset);
 }

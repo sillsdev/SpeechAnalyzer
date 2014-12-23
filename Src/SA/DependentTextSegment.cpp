@@ -162,13 +162,8 @@ int CDependentTextSegment::CheckPositionToMaster(ISaDoc * pSaDoc, DWORD dwAligne
 /***************************************************************************/
 // CDependentTextSegment::Add Add dependent annotation segment
 /***************************************************************************/
-void CDependentTextSegment::Add(CSaDoc * pDoc, DWORD dwStart, CSaString & szString, BOOL, BOOL bCheck)
+void CDependentTextSegment::Add(CSaDoc * pDoc, CSaView * pView, DWORD dwStart, CSaString & szString, bool bDelimiter, bool bCheck)
 {
-
-    // get pointer to view
-    POSITION pos = pDoc->GetFirstViewPosition();
-    CSaView * pView = (CSaView *)pDoc->GetNextView(pos);
-
     // get the offset and duration from master
     int nSegment = pDoc->GetSegment(GLOSS)->FindOffset(dwStart);
     if (nSegment == -1)

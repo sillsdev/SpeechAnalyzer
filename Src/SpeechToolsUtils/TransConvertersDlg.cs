@@ -2,10 +2,12 @@ using System;
 using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
-using SIL.SpeechTools.Utils.Properties;
+
 using SilEncConverters40;
-using SilUtils;
 using ECInterfaces;
+
+using SIL.SpeechTools.GUI;
+using SIL.SpeechTools.Properties;
 
 namespace SIL.SpeechTools.Utils
 {
@@ -248,7 +250,7 @@ namespace SIL.SpeechTools.Utils
 				}
 				catch (Exception exp)
 				{
-					SilUtils.Utils.STMsgBox(exp.Message, MessageBoxButtons.OK);
+					GUI.Utils.MsgBox(exp.Message, MessageBoxButtons.OK);
 				}
 
 				// The converter must be OK so save it in the grid and

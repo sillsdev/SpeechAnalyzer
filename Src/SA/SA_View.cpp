@@ -362,7 +362,7 @@ DWORD CSaView::OnPlaybackWord()
         if (pSegment->GetOffsetSize() > 0)
         {
             // there is gloss, so the segment must be below the first gloss
-            pSegment->SelectSegment(*pDoc, 0); // select first gloss
+            pDoc->SelectSegment(pSegment, 0); // select first gloss
             // playback below start cursor
             SetStartCursorPosition(0);
             SetStopCursorPosition(pSegment->GetOffset(0));
@@ -378,9 +378,9 @@ DWORD CSaView::OnPlaybackWord()
     {
         if (pSegment->GetSelection()==nActualGloss)
         {
-            pSegment->SelectSegment(*pDoc, -1);
+            pDoc->SelectSegment(pSegment, -1);
         }
-        pSegment->SelectSegment(*pDoc, nActualGloss);
+        pDoc->SelectSegment(pSegment, nActualGloss);
     }
 
     DWORD dwReturn = GetStopCursorPosition() - GetStartCursorPosition();
@@ -388,7 +388,7 @@ DWORD CSaView::OnPlaybackWord()
     // playback
     OnPlaybackCursors();
 
-    pSegment->SelectSegment(*pDoc, -1);
+    pDoc->SelectSegment(pSegment, -1);
 
     // set back actual segment
     if (nSelection != -1)
@@ -396,7 +396,7 @@ DWORD CSaView::OnPlaybackWord()
         // Select segment (do not toggle off.)
         if (pSelected->GetSelection()!=nSelection)
         {
-            pSelected->SelectSegment(*pDoc, nSelection);
+            pDoc->SelectSegment(pSegment, nSelection);
         }
     }
     // return cursors
@@ -435,7 +435,7 @@ DWORD CSaView::OnPlaybackPhraseL1()
         if (pSegment->GetOffsetSize() > 0)
         {
             // there is phrase, so the segment must be below the first phrase
-            pSegment->SelectSegment(*pDoc, 0); // select first phrase
+            pDoc->SelectSegment(pSegment, 0); // select first phrase
             // playback below start cursor
             SetStartCursorPosition(0);
             SetStopCursorPosition(pSegment->GetOffset(0));
@@ -451,9 +451,9 @@ DWORD CSaView::OnPlaybackPhraseL1()
     {
         if (pSegment->GetSelection()==nActualPhrase)
         {
-            pSegment->SelectSegment(*pDoc, -1);
+            pDoc->SelectSegment(pSegment, -1);
         }
-        pSegment->SelectSegment(*pDoc, nActualPhrase);
+        pDoc->SelectSegment(pSegment, nActualPhrase);
     }
 
     DWORD dwReturn = GetStopCursorPosition() - GetStartCursorPosition();
@@ -461,7 +461,7 @@ DWORD CSaView::OnPlaybackPhraseL1()
     // playback
     OnPlaybackCursors();
 
-    pSegment->SelectSegment(*pDoc, -1);
+    pDoc->SelectSegment(pSegment, -1);
 
     // set back actual segment
     if (nSelection != -1)
@@ -469,7 +469,7 @@ DWORD CSaView::OnPlaybackPhraseL1()
         // Select segment (do not toggle off.)
         if (pSelected->GetSelection()!=nSelection)
         {
-            pSelected->SelectSegment(*pDoc, nSelection);
+            pDoc->SelectSegment(pSelected, nSelection);
         }
     }
     // return cursors
@@ -4661,3 +4661,10 @@ void CSaView::EnableScrolling(bool value)
     bEnableScrolling = value;
 }
 
+void CSaView::SelectSegment( CSegment * pSegment, int index)
+{
+    DWORD dwStart = pSegment->GetOffset(index);
+    DWORD dwEnd = pSegment->GetStop(index);
+    ChangeAnnotationSelection( pSegment, index, dwStart, dwEnd);
+    RefreshGraphs(FALSE); // refresh the graphs between cursors
+}

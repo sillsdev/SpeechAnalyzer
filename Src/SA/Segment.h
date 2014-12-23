@@ -100,15 +100,23 @@ public:
     int FindFromPosition(DWORD dwPosition, BOOL bWithin = FALSE) const; // get segment index from position
     virtual BOOL Match(int index, LPCTSTR find);
 	virtual void Replace( CSaDoc * pDoc, int index, LPCTSTR find, LPCTSTR replace);
+	int FindIndex( DWORD offset);
     virtual int FindNext(int fromIndex, LPCTSTR strToFind);
     virtual int FindPrev(int fromIndex, LPCTSTR strToFind);
     int CheckCursors(CSaDoc *, BOOL bOverlap) const;        // checks the position of the cursors for new segment
     DWORD GetDurationAt(int index) const;
-    void SetDurationAt(int index, DWORD duration);
     void SetAt(int index, DWORD offset, DWORD duration);
     void InsertAt(int index, DWORD offset, DWORD duration);
     // remove offset and duration
     void RemoveAt(int index, int length);
+	virtual void Split( CSaDoc * pDoc, CSaView * pView, DWORD start, DWORD newStopStart, DWORD newDuration);
+	virtual void Merge( CSaDoc * pDoc, CSaView * pView, DWORD thisOffset, DWORD prevOffset, DWORD thisStop);
+	virtual void MoveDataLeft( DWORD offset);
+	virtual void MoveDataRight( DWORD offset);
+	void AdjustDuration( DWORD offset, DWORD duration);
+	virtual void Add( CSaDoc * pDoc, CSaView * pView, DWORD dwStart, CSaString & szString, bool bDelimiter, bool bCheck) = 0;
+	void Add( DWORD offset, DWORD duration);
+	void Remove( int sel);
 
     enum EMode
     {
@@ -137,14 +145,13 @@ public:
     BOOL IsEmpty() const;
 
     // modify internal data
-    void SelectSegment(CSaDoc & pSaDoc, int segIdx);
     void AdjustCursorsToSnap(CDocument * pDoc); // adjust cursors to appropriate snap position
     void SetSelection(int nIndex); // set selection
     virtual void Remove(CDocument *, BOOL bCheck = TRUE); // remove a segment
     virtual DWORD RemoveNoRefresh(CDocument *); // remove a segment
     virtual void ReplaceSelectedSegment(CSaDoc * pSaDoc, LPCTSTR replace);
     virtual void DeleteContents(); // delete all contents of the segment arrays
-    virtual void Adjust(ISaDoc * saDoc, int nIndex, DWORD dwOffset, DWORD dwDuration = 0); // adjust position of segment
+    virtual void Adjust(ISaDoc * saDoc, int nIndex, DWORD dwOffset, DWORD dwDuration = 0, bool segmental = false); // adjust position of segment
     virtual BOOL SetAt(const CSaString *, bool delimiter, DWORD dwStart, DWORD dwDuration);  // sets a new segment
     virtual BOOL Insert(int nIndex, LPCTSTR szText, bool delimiter, DWORD dwStart, DWORD dwDuration); // insert a new segment
     virtual long Process(void * pCaller, ISaDoc * pDoc, int nProgress = 0, int nLevel = 1);
@@ -158,6 +165,8 @@ public:
     CSaString * GetString();                                // return pointer to annotation string
     size_t GetStringLength();                               // return the text string length
     void SetString(LPCTSTR val);                             // sets the annotation string
+
+	virtual CSaString GetDefaultChar();
 
 	void Validate();
 

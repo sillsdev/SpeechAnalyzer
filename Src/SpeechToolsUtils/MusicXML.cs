@@ -5,8 +5,9 @@ using System.Reflection;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.Schema;
-using SIL.SpeechTools.Utils.Properties;
-using SilUtils;
+
+using SIL.SpeechTools.Properties;
+using SIL.SpeechTools;
 
 namespace SIL.SpeechTools.Utils
 {
@@ -209,8 +210,8 @@ namespace SIL.SpeechTools.Utils
 			{
 				if (!isValid)
 				{
-					string path = SilUtils.Utils.PrepFilePathForSTMsgBox(filePath);
-					SilUtils.Utils.STMsgBox(
+					string path = GUI.Utils.PrepFilePathForMsgBox(filePath);
+					SIL.SpeechTools.GUI.Utils.MsgBox(
 						string.Format(Resources.kstidInvalidMusicXMLFile, path),
 						MessageBoxButtons.OK);
 				}
@@ -378,7 +379,7 @@ namespace SIL.SpeechTools.Utils
 				}
 				catch
 				{
-					SilUtils.Utils.STMsgBox("Unable to create document type element.", MessageBoxButtons.OK);
+					GUI.Utils.MsgBox("Unable to create document type element.", MessageBoxButtons.OK);
 				}
 			}
 
@@ -876,11 +877,11 @@ namespace SIL.SpeechTools.Utils
 
 			if (m_validationErrors != string.Empty)
 			{
-				string filePath = SilUtils.Utils.PrepFilePathForSTMsgBox(m_filePath);
+				string filePath = GUI.Utils.PrepFilePathForMsgBox(m_filePath);
 				string msg = string.Format(Resources.kstidMusicXMLValidationErrMsg,
 					filePath, m_validationErrors);
 
-				SilUtils.Utils.STMsgBox(msg, MessageBoxButtons.OK);
+				GUI.Utils.MsgBox(msg, MessageBoxButtons.OK);
 				m_validationErrors = string.Empty;
 				return false;
 			}
@@ -924,7 +925,7 @@ namespace SIL.SpeechTools.Utils
 			// Check the document type name
 			if (name != "score-partwise")
 			{
-				SilUtils.Utils.STMsgBox("XML document type is not recognized.", MessageBoxButtons.OK);
+                GUI.Utils.MsgBox("XML document type is not recognized.", MessageBoxButtons.OK);
 				return;
 			}
 

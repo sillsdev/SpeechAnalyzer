@@ -208,7 +208,7 @@ int CDependentSegment::AdjustPositionToMaster(CDocument * pSaDoc, DWORD & dwNewO
     }
 
     // Find Nearest master Stop
-    nIndex = AlignStopToMaster(pDoc, dwAlignStop);
+    nIndex = AlignStopToMaster( pDoc, dwAlignStop);
     if (nIndex == -1)
     {
         if (GetOffsetSize() > 0)   // SDM 1.5Test11.0 if less than one segment stop is end of file
@@ -217,7 +217,7 @@ int CDependentSegment::AdjustPositionToMaster(CDocument * pSaDoc, DWORD & dwNewO
         }
         else
         {
-            dwNewStop = pMaster->GetStop(pMaster->GetOffsetSize() - 1);
+            dwNewStop = 0;
         }
     }
     else
@@ -409,12 +409,8 @@ int CDependentSegment::CheckPositionToMaster( ISaDoc * pSaDoc, DWORD dwStart, DW
 /***************************************************************************/
 // CDependentSegment::Add Add dependent annotation segment
 /***************************************************************************/
-void CDependentSegment::Add(CSaDoc * pDoc, DWORD dwStart, CSaString & szString, BOOL , BOOL bCheck)
+void CDependentSegment::Add( CSaDoc * pDoc, CSaView * pView, DWORD dwStart, CSaString & szString, bool bDelimiter, bool bCheck)
 {
-    // get pointer to view
-    POSITION pos = pDoc->GetFirstViewPosition();
-    CSaView * pView = (CSaView *)pDoc->GetNextView(pos);
-
     // get the offset and duration from master
     int nSegment = pDoc->GetSegment(m_nMasterIndex)->FindOffset(dwStart);
     if (nSegment == -1)
@@ -443,10 +439,10 @@ void CDependentSegment::Add(CSaDoc * pDoc, DWORD dwStart, CSaString & szString, 
         return;    // return on error
     }
 
-    pDoc->SetModifiedFlag(TRUE); // document has been modified
-    pDoc->SetTransModifiedFlag(TRUE); // transcription data has been modified
+    pDoc->SetModifiedFlag(TRUE);		// document has been modified
+    pDoc->SetTransModifiedFlag(TRUE);	// transcription data has been modified
     pView->ChangeAnnotationSelection(this, nPos, dwStart, dwStop); // change the selection
-    pView->RefreshGraphs(FALSE); // refresh the graphs between cursors
+    pView->RefreshGraphs(FALSE);		// refresh the graphs between cursors
 }
 
 int CDependentSegment::CheckPosition( ISaDoc * pDoc, DWORD dwStart, DWORD dwStop, EMode nMode, BOOL /*bUnused*/) const

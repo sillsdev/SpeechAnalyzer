@@ -225,6 +225,7 @@ public:
 	afx_msg BOOL OnMouseWheel(UINT nFlags, short zDelta, CPoint pt);
 
 	void EnableScrolling( bool val);
+	void SelectSegment(  CSegment * pSegment, int index);
 
 protected:
     BOOL PreCreateWindow(CREATESTRUCT & cs);
@@ -372,6 +373,14 @@ protected:
     afx_msg void OnUpdateEditSplit(CCmdUI * pCmdUI);
     afx_msg void OnEditMerge();
     afx_msg void OnUpdateEditMerge(CCmdUI * pCmdUI);
+    afx_msg void OnEditMoveLeft();
+    afx_msg void OnUpdateEditMoveLeft(CCmdUI * pCmdUI);
+    afx_msg void OnEditMoveRight();
+    afx_msg void OnUpdateEditMoveRight(CCmdUI * pCmdUI);
+    afx_msg void OnEditSplitMoveLeft();
+    afx_msg void OnUpdateEditSplitMoveLeft(CCmdUI * pCmdUI);
+    afx_msg void OnEditMoveRightMerge();
+    afx_msg void OnUpdateEditMoveRightMerge(CCmdUI * pCmdUI);
     afx_msg void OnEditAutoAdd();
     afx_msg void OnUpdateEditAutoAdd(CCmdUI * pCmdUI);
     afx_msg void OnEditAutoAddStorySection();

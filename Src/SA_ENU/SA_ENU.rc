@@ -26,7 +26,7 @@ LANGUAGE LANG_NEUTRAL, SUBLANG_NEUTRAL
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 3,1,0,104
+ FILEVERSION 3,1,0,105
  PRODUCTVERSION 1,0,0,1
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
@@ -44,7 +44,7 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "SIL International"
             VALUE "FileDescription", "Speech Analyzer Resource DLL"
-            VALUE "FileVersion", "v3.1.0.104"
+            VALUE "FileVersion", "v3.1.0.105"
             VALUE "InternalName", "SA_ENU"
             VALUE "LegalCopyright", "© 1996-2014 SIL International (MSEA)"
             VALUE "OriginalFilename", "SA_ENU.dll"
@@ -3182,8 +3182,10 @@ BEGIN
         MENUITEM "Edit Segment &Boundaries\tINS", ID_EDIT_SEGMENT_BOUNDARIES
         MENUITEM "Edit Segment &Size\tCtrl+E",  ID_EDIT_SEGMENT_SIZE
         MENUITEM SEPARATOR
-        MENUITEM "&Split Segment\tCtrl+G",               ID_EDIT_SPLIT
-        MENUITEM "M&erge Segments\tCtrl+H",               ID_EDIT_MERGE
+        MENUITEM "&Split Segment\tCtrl+G",      ID_EDIT_SPLIT
+        MENUITEM "M&erge Segments\tCtrl+H",     ID_EDIT_MERGE
+        MENUITEM "Move Data Left\tShift+G",		ID_EDIT_MOVE_LEFT
+        MENUITEM "Move Data Right\tShift+H",	ID_EDIT_MOVE_RIGHT
         MENUITEM SEPARATOR
         MENUITEM "Cu&t\tCtrl+X",                ID_EDIT_CUT
         MENUITEM "&Copy\tCtrl+C",               ID_EDIT_COPY
@@ -3537,14 +3539,16 @@ BEGIN
         MENUITEM "&Undo\tCtrl+Z",               ID_EDIT_UNDO
         MENUITEM SEPARATOR
         MENUITEM "&Add Phonetic\tCtrl+Q",       ID_EDIT_ADD
-        MENUITEM "Add &Bookmark\tCtrl+B",        ID_EDIT_ADD_BOOKMARK
-        MENUITEM "Add &Word\tCtrl+W",            ID_EDIT_ADD_WORD
+        MENUITEM "Add &Bookmark\tCtrl+B",       ID_EDIT_ADD_BOOKMARK
+        MENUITEM "Add &Word\tCtrl+W",           ID_EDIT_ADD_WORD
         MENUITEM "&Remove\tDelete",             ID_EDIT_REMOVE
         MENUITEM SEPARATOR
-        MENUITEM "&Split Segment\tCtrl+G",               ID_EDIT_SPLIT
-        MENUITEM "&Merge Segments\tCtrl+H",               ID_EDIT_MERGE
+        MENUITEM "&Split Segment\tCtrl+G",      ID_EDIT_SPLIT
+        MENUITEM "&Merge Segments\tCtrl+H",     ID_EDIT_MERGE
+        MENUITEM "Move Data Left\tShift+G",		ID_EDIT_MOVE_LEFT
+        MENUITEM "Move Data Right\tShift+H",	ID_EDIT_MOVE_RIGHT
         MENUITEM "&Edit\tF4",                   ID_EDIT_EDITOR
-        MENUITEM "&View Boundaries",             ID_VIEW_TRANSCRIPTION_BOUNDARIES
+        MENUITEM "&View Boundaries",			ID_VIEW_TRANSCRIPTION_BOUNDARIES
         MENUITEM SEPARATOR
         MENUITEM "Cu&t\tCtrl+X",                ID_EDIT_CUT
         MENUITEM "&Copy\tCtrl+C",               ID_EDIT_COPY
@@ -4022,7 +4026,11 @@ BEGIN
     "E",            ID_EDIT_SEGMENT_SIZE,   VIRTKEY, CONTROL, NOINVERT
     "F",            ID_EDIT_FIND,           VIRTKEY, CONTROL, NOINVERT
     "G",            ID_EDIT_SPLIT,			VIRTKEY, CONTROL, NOINVERT
+    "G",            ID_EDIT_MOVE_LEFT,		VIRTKEY, SHIFT, NOINVERT
+    "G",            ID_EDIT_SPLIT_MOVE_LEFT, VIRTKEY, SHIFT, CONTROL, NOINVERT
     "H",            ID_EDIT_MERGE,			VIRTKEY, CONTROL, NOINVERT
+    "H",            ID_EDIT_MOVE_RIGHT,		VIRTKEY, SHIFT, NOINVERT
+    "H",            ID_EDIT_MOVE_RIGHT_MERGE, VIRTKEY, SHIFT, CONTROL, NOINVERT
     "I",            ID_FILE_INFORMATION,    VIRTKEY, CONTROL, NOINVERT
     "L",            ID_EDIT_ADD_SYLLABLE,   VIRTKEY, CONTROL, NOINVERT
     "N",            ID_EDIT_PASTENEW,       VIRTKEY, CONTROL, NOINVERT
@@ -4630,7 +4638,7 @@ IDC_MHANDN              CURSOR                  "res\\MedHandN.cur"
 
 STRINGTABLE
 BEGIN
-    VS_VERSION              "Version 3.1.0.104"
+    VS_VERSION              "Version 3.1.0.105"
     VS_COPYRIGHT            "© 1996-2014 SIL International (MSEA).\nAll Rights Reserved."
     IDR_MAINFRAME           "Speech Analyzer"
     IDR_SA_ANNTYPE          "\nSA\nSA Document\nWAV Files (*.wav)\n.wav\nannFileType\nANN File Type"

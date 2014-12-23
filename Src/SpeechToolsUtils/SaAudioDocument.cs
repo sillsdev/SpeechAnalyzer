@@ -4,8 +4,7 @@ using System.IO;
 using System.Text;
 using System.Windows.Forms;
 using System.Xml.Serialization;
-using SIL.SpeechTools.Utils.Properties;
-using SilUtils;
+using SIL.SpeechTools.Properties;
 
 namespace SIL.SpeechTools.Utils
 {
@@ -258,8 +257,8 @@ namespace SIL.SpeechTools.Utils
 			// Make sure the wave file exists.
 			if (!File.Exists(audioFilePath))
 			{
-				string msg = string.Format(Resources.kstidWaveFileNotFound,SilUtils.Utils.PrepFilePathForSTMsgBox(audioFilePath));
-				SilUtils.Utils.STMsgBox(msg, MessageBoxButtons.OK);
+                string msg = string.Format(Resources.kstidWaveFileNotFound, GUI.Utils.PrepFilePathForMsgBox(audioFilePath));
+                GUI.Utils.MsgBox(msg, MessageBoxButtons.OK);
 				return null;
 			}
 
@@ -281,7 +280,7 @@ namespace SIL.SpeechTools.Utils
 				// Get the transcription data from the companion transcription file.
 				Exception e;
 				s_audioFileLoading = audioFilePath;
-				doc = SilUtils.Utils.DeserializeData(transcriptionFile,typeof(SaAudioDocument), out e) as SaAudioDocument;
+                doc = GUI.Utils.DeserializeData(transcriptionFile, typeof(SaAudioDocument), out e) as SaAudioDocument;
 
 				if (e != null)
 				{
@@ -343,8 +342,8 @@ namespace SIL.SpeechTools.Utils
 				string transFileNameOnly = Path.ChangeExtension(audioFileNameOnly, ".saxml");
 				string msg = Resources.kstidReadOnlyFolderMsg;
 				msg = string.Format(msg, audioFileNameOnly, audioFileNameOnly, transFileNameOnly);
-				msg = SilUtils.Utils.ConvertLiteralNewLines(msg);
-				SilUtils.Utils.STMsgBox(msg, MessageBoxButtons.OK);
+                msg = GUI.Utils.ConvertLiteralNewLines(msg);
+                GUI.Utils.MsgBox(msg, MessageBoxButtons.OK);
 
 				using (FolderBrowserDialog dlg = new FolderBrowserDialog())
 				{
@@ -375,7 +374,7 @@ namespace SIL.SpeechTools.Utils
 				AudioFile = audioFile;
 			}
 
-			return SilUtils.Utils.SerializeData( TranscriptionFile, this);
+            return GUI.Utils.SerializeData(TranscriptionFile, this);
 		}
 
 		/// ------------------------------------------------------------------------------------
@@ -589,10 +588,9 @@ namespace SIL.SpeechTools.Utils
 				// Make sure the wave file exists.
 				if (!File.Exists(value))
 				{
-					string msg = string.Format(Resources.kstidWaveFileNotFound,
-						SilUtils.Utils.PrepFilePathForSTMsgBox(value));
+                    string msg = string.Format(Resources.kstidWaveFileNotFound, GUI.Utils.PrepFilePathForMsgBox(value));
 
-					SilUtils.Utils.STMsgBox(msg, MessageBoxButtons.OK);
+                    GUI.Utils.MsgBox(msg, MessageBoxButtons.OK);
 					return;
 				}
 

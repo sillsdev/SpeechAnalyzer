@@ -609,9 +609,6 @@
     <ProjectReference Include="..\SA_KLATT\SA_KLATT.vcxproj">
       <Project>{56f754f7-b130-4ccf-8a99-9422d3f0234d}</Project>
     </ProjectReference>
-    <ProjectReference Include="..\SilTools\SilTools.csproj">
-      <Project>{87f94fcc-bc32-4203-a919-115f4ff43ff0}</Project>
-    </ProjectReference>
     <ProjectReference Include="..\WaveUtils\WaveUtils.vcxproj">
       <Project>{7710bea3-39dc-4485-893f-ed4d9ca91973}</Project>
     </ProjectReference>

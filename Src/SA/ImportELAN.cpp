@@ -495,7 +495,7 @@ void CImportELAN::AutoAlign( CSaDoc * pSaDoc, LPCTSTR pReference, LPCTSTR pPhone
             nAlignMode = CFontTable::DELIMITEDWORD;
             nOffsetSize = wordOffsets.GetSize();
             // Don't Select this segment SDM 1.5Test8.2
-            pSegment->SelectSegment(*pSaDoc,-1);
+            pSaDoc->SelectSegment(pSegment,-1);
 
             // the gloss table uses a space as a delimiter,
             // the normally the text is delimited with a #.
@@ -552,7 +552,7 @@ void CImportELAN::AutoAlign( CSaDoc * pSaDoc, LPCTSTR pReference, LPCTSTR pPhone
 
                 szNext.Remove(0x0d);
                 szNext.Remove(0x0a);
-                pSegment->SelectSegment(*pSaDoc,nIndex);
+                pSaDoc->SelectSegment(pSegment,nIndex);
                 ((CGlossSegment *)pSegment)->ReplaceSelectedSegment(pSaDoc,szNext);
             };
 
@@ -575,7 +575,7 @@ void CImportELAN::AutoAlign( CSaDoc * pSaDoc, LPCTSTR pReference, LPCTSTR pPhone
             }
             szNext.Remove(0x0d);
             szNext.Remove(0x0a);
-            pSegment->SelectSegment(*pSaDoc,nIndex);
+            pSaDoc->SelectSegment(pSegment,nIndex);
             ((CGlossSegment *)pSegment)->ReplaceSelectedSegment(pSaDoc,szNext);
         }
 

@@ -1,9 +1,22 @@
+SA - 3.1.0.105 12/22/2014
+Modified splash screen so that it displays and closes quicker.  It is now on it's own thread.
+Merged the yeti*.dlls, ST_Audio.dll, SILTools.dll, SILUtils.dll into SpeechToolsUtils.dll
+Improved SAB features - All features are operational.
+The following hot keys are implemented:
+CTRL-G 		- Split annotations
+SHIFT-G 	- Move annotations left
+CTRL-SHIFT-G 	- Split and move annotations left
+CTRL-H 		- Merge annotations
+SHIFT-H 	- Move annotations right
+CTRL-SHIFT-H 	- Move annotations right and merge
+
+
 SA - 3.1.0.104 11/13/2014
-Improved SAB features - split and merge transcriptions
+Improved SAB features - split and merge segments
 
 SA - 3.1.0.103 11/10/2014
 Updated application icons
-Added SAB features - merge and split transcriptions
+Added SAB features - split and merge segments
 
 SA - 3.1.0.102 10/22/2014
 Modified several dialogs to change 'Gloss' to 'Gloss English' and 'Gloss Nat.' to 'Gloss National'.

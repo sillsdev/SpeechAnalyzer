@@ -8378,7 +8378,7 @@ void CSaDoc::AlignTranscriptionData(CTranscriptionDataSettings & settings)
             nAlignMode = CFontTable::DELIMITEDWORD;
             nOffsetSize = pArray[WORD_OFFSETS].GetSize();
             // Don't Select this segment SDM 1.5Test8.2
-            pSegment->SelectSegment(*this,-1);
+            SelectSegment(pSegment,-1);
             // the gloss table uses a space as a delimiter,
             // the normally the text is delimited with a #.
             // if we see a # in the first position, we will continue
@@ -8443,7 +8443,7 @@ void CSaDoc::AlignTranscriptionData(CTranscriptionDataSettings & settings)
 
                 szNext.Remove(0x0d);
                 szNext.Remove(0x0a);
-                pSegment->SelectSegment(*this,nIndex);
+                SelectSegment(pSegment,nIndex);
                 ((CGlossSegment *)pSegment)->ReplaceSelectedSegment(this,szNext);
             };
         }
@@ -10338,104 +10338,186 @@ int CSaDoc::GetSaveAsFilename(LPCTSTR title, LPCTSTR filter, LPCTSTR extension, 
     return result;
 }
 
-void CSaDoc::SplitSegment(CPhoneticSegment * pSeg)
+/**
+* Split the segments
+* @param pView the view to update
+* @param sel the selected phonetic segment
+* @param segmental true if there are multiple phonetic segments to a gloss segment
+*/
+void CSaDoc::SplitSegment( CSaView * pView, CPhoneticSegment * pSeg, int sel, bool segmental)
 {
-    int sel = pSeg->GetSelection();
-    if (sel==-1)
-    {
-        return;
-    }
-    DWORD start = pSeg->GetOffset(sel);
+    if (sel==-1) return;
+	DWORD start = pSeg->GetOffset(sel);
     DWORD duration = pSeg->GetDuration(sel);
-    DWORD newduration = duration/2;
-    DWORD newstop = start+newduration;
-	DWORD start2 = newstop;
-	DWORD stop2 = start2+newduration;
+    DWORD newDuration = duration/2;
+	DWORD newStopStart = start+newDuration;
 
     CheckPoint();
 
-    // record next-stop position
-    pSeg->Adjust(this,sel,start,newduration);
-    pSeg->Insert(sel+1,L"a",true,newstop,newduration);
-
-    POSITION pos = GetFirstViewPosition();
-    CSaView * pView = (CSaView *)GetNextView(pos);
-
-    BOOL bDelimiter = FALSE;
-
-    CSaString szString = "";                    //Fill new segment with default character
-    CSaString szEmpty = "";
-
-	// get gloss index
-	// adjust existing segment
-    CGlossSegment * pGloss = (CGlossSegment *)pView->GetAnnotation(GLOSS);
-	int index = pGloss->FindFromPosition(start);
-	if (index!=-1) {
-		DWORD offset = pGloss->GetOffset(index);
-		if (offset<=start) {
-			pGloss->SetDurationAt(index,newstop-offset);
-			pGloss->Add(this, start2, szString, bDelimiter, TRUE);
+	for (int n = 0; n < ANNOT_WND_NUMBER; n++) {
+		CSegment * pSeg = m_apSegments[n];
+		if (n==PHONETIC) {
+			pSeg->Split( this, pView, start, newStopStart, newDuration);
+		} else if ((pSeg->GetMasterIndex()==PHONETIC) && (pSeg->GetAnnotationIndex()!=GLOSS)) {
+			pSeg->Split( this, pView, start, newStopStart, newDuration);
+		} else if (!segmental) {
+			pSeg->Split( this, pView, start, newStopStart, newDuration);
 		}
 	}
-
-	// get gloss index
-	// adjust existing segment
-    CGlossNatSegment * pGlossNat = (CGlossNatSegment *)pView->GetAnnotation(GLOSS_NAT);
-	index= pGlossNat->FindFromPosition(start);
-	if (index!=-1) {
-		DWORD offset = pGlossNat->GetOffset(index);
-		if (offset<=start) {
-			pGlossNat->SetDurationAt(index,newstop-offset);
-			pGlossNat->Add(this, start2, szString, bDelimiter, TRUE);
-		}
-	}
-
-	// get gloss index
-	// adjust existing segment
-    CReferenceSegment * pReference = (CReferenceSegment *)pView->GetAnnotation(REFERENCE);
-	index= pReference->FindFromPosition(start);
-	if (index!=-1) {
-		DWORD offset = pReference->GetOffset(index);
-		if (offset<=start) {
-			pReference->SetDurationAt(index,newstop-offset);
-			pReference->Add(this, start2, szString, bDelimiter, TRUE);
-		}
-	}
-
-    int i = pView->GetGraphIndexForIDD(IDD_RAWDATA);
-    if ((i != -1) && (pView->GetGraph(i)!=NULL))
-    {
-        EAnnotation nAnnot = pGloss->GetAnnotationIndex();
-        pView->GetGraph(i)->ShowAnnotation(nAnnot, TRUE, TRUE);
-    }
-
-	pSeg->SelectSegment(*this,sel);
-    pView->SetCursorPosition(ECursorSelect::STOP_CURSOR,(newstop));
-    pView->RefreshGraphs(TRUE,FALSE);
-
 }
 
-void CSaDoc::MergeSegments(CPhoneticSegment * pSeg)
+bool CSaDoc::CanSplit( CSegment * pSeg) {
+	if (pSeg==NULL) return false;
+	if (pSeg->GetAnnotationIndex()!=PHONETIC) return false;
+	CPhoneticSegment * pPhonetic = (CPhoneticSegment*)pSeg;
+	// no data
+	if (pPhonetic->GetOffsetSize()==0) return false;
+	int sel = pPhonetic->GetSelection();
+	if (sel==-1) return false;
+	return true;
+}
+
+bool CSaDoc::CanMerge( CSegment * pSeg) {
+	
+	if (pSeg==NULL) return false;
+	// phonetic not selected
+	if (pSeg->GetAnnotationIndex()!=PHONETIC) return false;
+	CPhoneticSegment * pPhonetic = (CPhoneticSegment*)pSeg;
+	// no data
+	if (pPhonetic->GetOffsetSize()==0) return false;
+	int sel = pPhonetic->GetSelection();
+	if (sel==-1) return false;
+	// can't merge first segment
+	if (sel==0) return false;
+
+	// if we are in a segmental transcription, we can't merge left
+	if ((IsBoundary(pPhonetic,sel))&&
+		(IsSegmental(pPhonetic,sel))) {
+		TRACE("current segment is boundary-segmental\n");
+		return false;
+	}
+
+	// if we are not segmental, but the segment to our
+	// left is segmental, we can not merge.
+	if ((IsBoundary(pPhonetic,sel))&&
+		(IsSegmental(pPhonetic,sel-1))) {
+		TRACE("adjacent segment is boundary-segmental\n");
+		return false;
+	}
+
+	return true;
+}
+
+void CSaDoc::MergeSegments( CSaView * pView, CPhoneticSegment * pPhonetic)
 {
-    int sel = pSeg->GetSelection();
-    if (sel==-1)
-    {
-        return;
-    }
+    int sel = pPhonetic->GetSelection();
+    if (sel==-1) return;
     // find the end of the prev segment
-    int prev = pSeg->GetPrevious(sel);
-    if (prev==-1)
-    {
-        return;
-    }
+    int prev = pPhonetic->GetPrevious(sel);
+    if (prev==-1) return;
+	bool segmental = IsSegmental( pPhonetic, sel);
 
     CheckPoint();
-    // record next-stop position
-    int offset = pSeg->GetOffset(prev);
-    DWORD stop = pSeg->GetStop(sel);
+	DWORD thisOffset = pPhonetic->GetOffset(sel);
+    DWORD prevOffset = pPhonetic->GetOffset(prev);
+    DWORD thisStop = pPhonetic->GetStop(sel);
+
 	// remove this segment
-    pSeg->Remove(this,FALSE);
-    pSeg->SetSelection(prev);
-    pSeg->Adjust(this,prev,offset,(stop-offset));
+	for (int n = 0; n < ANNOT_WND_NUMBER; n++) {
+		CSegment * pSeg = m_apSegments[n];
+		if (n==PHONETIC) {
+			pSeg->Merge( this, pView, thisOffset, prevOffset, thisStop);
+		} else if ((pSeg->GetMasterIndex()==PHONETIC) && (pSeg->GetAnnotationIndex()!=GLOSS)) {
+			pSeg->Merge( this, pView, thisOffset, prevOffset, thisStop);
+		} else if (!segmental) {
+			pSeg->Merge( this, pView, thisOffset, prevOffset, thisStop);
+		}
+	}
 }
 
+// determine if the transcriptions are segmental - multiple phonetic segments per 
+bool CSaDoc::IsSegmental( CPhoneticSegment * pPhonetic, int sel) {
+
+	CGlossSegment * pGloss = (CGlossSegment*)GetSegment(GLOSS);
+	if (pGloss->IsEmpty()) return false;
+
+	DWORD offset = pPhonetic->GetOffset(sel);
+	int gsel = pGloss->FindFromPosition(offset);
+	if (gsel==-1) return false;
+
+    DWORD start = pGloss->GetOffset(gsel);
+	DWORD stop = pGloss->GetStop(gsel);
+
+	size_t count = 0;
+	DWORD lastoffset = 0;
+	for (size_t i=0;i<pPhonetic->GetOffsetSize();i++) {
+		DWORD offset = pPhonetic->GetOffset(i);
+		if (offset>=stop) break;
+		if (lastoffset==offset) continue;
+		lastoffset = offset;
+		if (offset<start) continue;
+		count++;
+	}
+	return (count>1);
+}
+
+// determine if we are at a segment boundary.
+// The phonetic offset would match a gloss offset
+bool CSaDoc::IsBoundary( CPhoneticSegment * pPhonetic, int sel) {
+
+	CGlossSegment * pGloss = (CGlossSegment*)GetSegment(GLOSS);
+	if (pGloss->IsEmpty()) return false;
+	DWORD thisOffset = pPhonetic->GetOffset(sel);
+	int gsel = pGloss->FindOffset(thisOffset);
+	return (gsel!=-1)?true:false;
+}
+
+void CSaDoc::SelectSegment( CSegment * pSegment, int index) {
+	POSITION pos = GetFirstViewPosition();
+    CSaView * pView = (CSaView*)GetNextView(pos);
+	pView->SelectSegment( pSegment, index);
+}
+
+bool CSaDoc::CanMoveDataLeft( CSegment * pSeg)
+{
+	if (pSeg==NULL) return false;
+	int sel = pSeg->GetSelection();
+	if (sel==-1) return false;
+	if (sel==pSeg->GetOffsetSize()-1) return false;
+	if (pSeg->GetAnnotationIndex()!=PHONETIC) return false;
+	CPhoneticSegment * pPhonetic = (CPhoneticSegment*)pSeg;
+	bool segmental = IsSegmental( pPhonetic, sel);
+	return !segmental;
+}
+
+void CSaDoc::MoveDataLeft( DWORD offset) 
+{
+	CheckPoint();
+	for (int n = 0; n < ANNOT_WND_NUMBER; n++)
+    {
+        CSegment * pSeg = m_apSegments[n];
+		pSeg->MoveDataLeft(offset);
+	}
+}
+
+bool CSaDoc::CanMoveDataRight( CSegment * pSeg)
+{
+	if (pSeg==NULL) return false;
+	int sel = pSeg->GetSelection();
+	if (sel==-1) return false;
+	if (sel==pSeg->GetOffsetSize()-1) return false;
+	if (pSeg->GetAnnotationIndex()!=PHONETIC) return false;
+	CPhoneticSegment * pPhonetic = (CPhoneticSegment*)pSeg;
+	bool segmental = IsSegmental( pPhonetic, sel);
+	return !segmental;
+}
+
+void CSaDoc::MoveDataRight( DWORD offset) 
+{
+	CheckPoint();
+    for (int n = 0; n < ANNOT_WND_NUMBER; n++)
+    {
+        CSegment * pSeg = m_apSegments[n];
+		pSeg->MoveDataRight(offset);
+	}
+}
