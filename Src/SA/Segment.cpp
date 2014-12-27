@@ -1213,11 +1213,13 @@ void CSegment::AdjustDuration( DWORD offset, DWORD duration)
 * Split this segment
 * @param start the offset of the phonetic segment
 */
-void CSegment::Split( CSaDoc * pDoc, CSaView * pView, DWORD thisOffset, DWORD newStopStart, DWORD newDuration) 
+void CSegment::Split( CSaDoc * pDoc, CSaView * pView, DWORD thisOffset, DWORD newStopStart) 
 {
 	if (GetOffsetSize()==0) return;
 	int index=FindIndex(thisOffset);
 	if (index==-1) return;
+	// store old stop location
+	DWORD stop = GetStop(index);
 	// shorten segment
     AdjustDuration(thisOffset,newStopStart-thisOffset);
 	Add( pDoc, pView, newStopStart, GetDefaultChar(), FALSE, FALSE);
@@ -1240,6 +1242,7 @@ void CSegment::Merge( CSaDoc * pDoc, CSaView * pView, DWORD thisOffset, DWORD pr
     *m_pAnnotation = m_pAnnotation->Left(index) + m_pAnnotation->Right( end - length - index);
     m_Offset.RemoveAt(index,length);
     m_Duration.RemoveAt(index,length);
+
 	// increase segment size
     AdjustDuration(prevOffset,thisStop-prevOffset);
 }
@@ -1276,6 +1279,9 @@ void CSegment::MoveDataLeft( DWORD offset)
 	m_Offset.RemoveAt(sel,length);
 	m_Duration.RemoveAt(sel,length);
 
+	m_pAnnotation->AppendChar(GetDefaultChar()[0]);
+	m_Offset.Add(o);
+	m_Duration.Add(d);
 	TRACE("end\n");
 	for (size_t i=0;i<m_Offset.GetCount();i++) {
 		TRACE("offset[%d]=%d %c\n",i,m_Offset[i],m_pAnnotation[i]);

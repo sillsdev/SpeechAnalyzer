@@ -57,7 +57,7 @@ public class SplashScreenForm : Form {
     private int delay = 0;
 
     const int TICK = 25;
-    const int DELAY = 1000/TICK;
+    const int DELAY = 800/TICK;
     const float STEP = 0.025f;
 
     /// ------------------------------------------------------------------------------------

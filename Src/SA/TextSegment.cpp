@@ -558,7 +558,6 @@ int CTextSegment::FindPrev(int fromIndex, LPCTSTR strToFind)
     return -1;
 }
 
-
 /***************************************************************************/
 // CTextSegment::CountWords
 //***************************************************************************/i
@@ -625,7 +624,7 @@ void CTextSegment::MoveDataLeft( DWORD offset)
 	if (m_Texts.GetCount()==0) return;
 
 	m_Texts.RemoveAt(sel,1);
-	CSegment::Remove( GetOffsetSize()-1);
+	m_Texts.Add("");
 }
 
 void CTextSegment::MoveDataRight( DWORD offset) 
@@ -641,14 +640,15 @@ void CTextSegment::MoveDataRight( DWORD offset)
 	CSegment::Add( lastOffset+lastDuration, 20);
 }
 
-void CTextSegment::Split( CSaDoc * pDoc, CSaView * pView, DWORD thisOffset, DWORD newStopStart, DWORD newDuration)
+void CTextSegment::Split( CSaDoc * pDoc, CSaView * pView, DWORD thisOffset, DWORD newStopStart)
 {
 	if (GetOffsetSize()==0) return;
 	int index = FindIndex(thisOffset);
 	if (index==-1) return;
-	DWORD duration = GetDuration(index);
+	// store old stop
+	DWORD stop = GetStop(index);
 	AdjustDuration(thisOffset,newStopStart-thisOffset);
-	Insert(index+1,GetDefaultChar(),FALSE,newStopStart,newDuration);
+	Insert(index+1,GetDefaultChar(),FALSE,newStopStart,stop-newStopStart);
 }
 
 void CTextSegment::Merge( CSaDoc * pDoc, CSaView * pView, DWORD thisOffset, DWORD prevOffset, DWORD thisStop)

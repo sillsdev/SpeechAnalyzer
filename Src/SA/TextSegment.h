@@ -32,7 +32,7 @@ public:
     int CountWords();
     DWORD CalculateDuration( ISaDoc * pDoc, const int nIndex) const;
     virtual CSaString GetContainedText(DWORD dwStart, DWORD dwStop);
-	virtual void Split( CSaDoc * pDoc, CSaView * pView, DWORD start, DWORD newStopStart, DWORD newDuration);
+	virtual void Split( CSaDoc * pDoc, CSaView * pView, DWORD start, DWORD newStopStart);
 	virtual void Merge( CSaDoc * pDoc, CSaView * pView, DWORD thisOffset, DWORD prevOffset, DWORD thisStop);
 	virtual void MoveDataLeft( DWORD offset);
 	virtual void MoveDataRight( DWORD offset);

@@ -109,7 +109,7 @@ public:
     void InsertAt(int index, DWORD offset, DWORD duration);
     // remove offset and duration
     void RemoveAt(int index, int length);
-	virtual void Split( CSaDoc * pDoc, CSaView * pView, DWORD start, DWORD newStopStart, DWORD newDuration);
+	virtual void Split( CSaDoc * pDoc, CSaView * pView, DWORD start, DWORD newStopStart);
 	virtual void Merge( CSaDoc * pDoc, CSaView * pView, DWORD thisOffset, DWORD prevOffset, DWORD thisStop);
 	virtual void MoveDataLeft( DWORD offset);
 	virtual void MoveDataRight( DWORD offset);

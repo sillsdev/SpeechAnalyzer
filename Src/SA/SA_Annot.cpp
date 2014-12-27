@@ -2669,7 +2669,8 @@ void CGlossWnd::OnDraw(CDC * pDC, const CRect & printRect)
         if (nLoop < gloss.GetSize())   // there is something to display
         {
             // display loop
-            int nDisplayPos, nDisplayStop;
+            int nDisplayPos = 0;
+			int nDisplayStop = 0;
             CString string;
             do
             {
@@ -2752,13 +2753,15 @@ void CGlossWnd::OnDraw(CDC * pDC, const CRect & printRect)
                     {
                         // draw as many characters as possible and 3 dots
                         string = string.Left((nDisplayStop-nDisplayPos) / tm.tmAveCharWidth - 2) + "...";
-                        pDC->DrawText(string, string.GetLength(), rWnd, DT_VCENTER | DT_SINGLELINE | DT_LEFT | DT_NOCLIP);
+                        pDC->DrawText((LPCTSTR)string, string.GetLength(), rWnd, DT_VCENTER | DT_SINGLELINE | DT_LEFT | DT_NOCLIP);
                     }
                 }
                 else     // enough space to display string
                 {
-                    pDC->DrawText(string, 1, rWnd, DT_VCENTER | DT_SINGLELINE | DT_LEFT | DT_NOCLIP);
-                    pDC->DrawText(LPCTSTR(string) + 1, string.GetLength() - 1, rWnd, DT_VCENTER | DT_SINGLELINE | DT_CENTER | DT_NOCLIP);
+					TCHAR c = string.GetAt(0);
+                    pDC->DrawText((LPCTSTR)&c, 1, rWnd, DT_VCENTER | DT_SINGLELINE | DT_LEFT | DT_NOCLIP);
+					CString temp = string.Right(string.GetLength()-1);
+                    pDC->DrawText((LPCTSTR)temp, string.GetLength() - 1, rWnd, DT_VCENTER | DT_SINGLELINE | DT_CENTER | DT_NOCLIP);
                 }
                 if (bSelect)
                 {

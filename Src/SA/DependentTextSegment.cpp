@@ -103,10 +103,6 @@ BOOL CDependentTextSegment::InsertBlank(int nIndex, DWORD dwStart, DWORD dwDurat
     return TRUE;
 }
 
-//SDM 1.5Test8.1
-/////////////////////////////////////////////////////////////////////////////
-// CDependentTextSegment helper functions
-
 /***************************************************************************/
 // CDependentTextSegment::Insert Insert/append a text segment
 // Returns FALSE if an error occurred. If the pointer to the string is NULL

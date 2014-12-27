@@ -600,14 +600,17 @@ long CPhoneticSegment::Process(void * pCaller, CSaDoc * pDoc, int nProgress, int
 * Split this segment
 * @param start the offset of the phonetic segment
 */
-void CPhoneticSegment::Split( CSaDoc * pDoc, CSaView * pView, DWORD thisOffset, DWORD newStopStart, DWORD newDuration)
+void CPhoneticSegment::Split( CSaDoc * pDoc, CSaView * pView, DWORD thisOffset, DWORD newStopStart)
 {
 	if (GetOffsetSize()==0) return;
-	int nIndex = FindIndex(thisOffset);
-	if (nIndex==-1) return;
-	AdjustDuration( thisOffset, newDuration);
-	int length = GetSegmentLength(nIndex);
-	Insert( nIndex+length, GetDefaultChar(), true, newStopStart, newDuration);
+	int index = FindIndex(thisOffset);
+	if (index==-1) return;
+	// store the old stop location
+	DWORD stop = GetStop(index);
+	AdjustDuration( thisOffset, newStopStart-thisOffset);
+	int length = GetSegmentLength(index);
+	// second segment still ends on old stop
+	Insert( index+length, GetDefaultChar(), true, newStopStart, stop-newStopStart);
 }
 
 /**

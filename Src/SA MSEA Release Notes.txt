@@ -1,3 +1,7 @@
+SA - 3.1.0.106 12/26/2014
+-Fixed bug where last segment markup is deleted when moving data left.
+-Fixed segment alignment problem that occurs when splitting segments
+
 SA - 3.1.0.105 12/22/2014
 Modified splash screen so that it displays and closes quicker.  It is now on it's own thread.
 Merged the yeti*.dlls, ST_Audio.dll, SILTools.dll, SILUtils.dll into SpeechToolsUtils.dll

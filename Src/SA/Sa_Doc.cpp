@@ -10349,19 +10349,21 @@ void CSaDoc::SplitSegment( CSaView * pView, CPhoneticSegment * pSeg, int sel, bo
     if (sel==-1) return;
 	DWORD start = pSeg->GetOffset(sel);
     DWORD duration = pSeg->GetDuration(sel);
-    DWORD newDuration = duration/2;
-	DWORD newStopStart = start+newDuration;
+	DWORD newStopStart = start+(duration/2);
+
+	newStopStart = SnapCursor( STOP_CURSOR, newStopStart, newStopStart, GetDataSize(), SNAP_RIGHT);
+    DWORD newDuration = newStopStart-start;
 
     CheckPoint();
 
 	for (int n = 0; n < ANNOT_WND_NUMBER; n++) {
 		CSegment * pSeg = m_apSegments[n];
 		if (n==PHONETIC) {
-			pSeg->Split( this, pView, start, newStopStart, newDuration);
+			pSeg->Split( this, pView, start, newStopStart);
 		} else if ((pSeg->GetMasterIndex()==PHONETIC) && (pSeg->GetAnnotationIndex()!=GLOSS)) {
-			pSeg->Split( this, pView, start, newStopStart, newDuration);
+			pSeg->Split( this, pView, start, newStopStart);
 		} else if (!segmental) {
-			pSeg->Split( this, pView, start, newStopStart, newDuration);
+			pSeg->Split( this, pView, start, newStopStart);
 		}
 	}
 }
