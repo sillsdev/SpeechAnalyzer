@@ -12,7 +12,7 @@
 //
 ////////////////////////////////////////////////////////////////////////////
 
-#import "speechtoolsutils.tlb" no_namespace named_guids
+#import "SAUtils.tlb" no_namespace named_guids
 
 #ifndef PARTITURE_HPP
 #define PARTITURE_HPP

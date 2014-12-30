@@ -148,7 +148,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="4"
 				InlineFunctionExpansion="2"
-				AdditionalIncludeDirectories=".;..\liftutils;..\uriparser\include;..\fileutils;..\xmlutils;..\elanutils;..\lib;..\waveutils;..\sa_dsp;..\mbrola;..\zgraph;..\sa_klatt;..\sa_enu;$(XERCES_VC9_HOME)\include"
+				AdditionalIncludeDirectories=".;..\liftutils;..\uriparser\include;..\fileutils;..\xmlutils;..\elanutils;..\lib;..\waveutils;..\sa_dsp;..\mbrola;..\zgraph;..\sa_klatt;..\sa_enu;&quot;$(XERCES_VC9_HOME)\include&quot;;..\..\output\release"
 				PreprocessorDefinitions="_WINDOWS;WINDOWS_PLATFORM;WIN32;NDEBUG;WINVER=0x501"
 				MinimalRebuild="true"
 				RuntimeLibrary="2"

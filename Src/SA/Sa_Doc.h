@@ -50,8 +50,7 @@
 #include <ElanUtils.h>
 #include <LiftUtils.h>
 
-#import "speechtoolsutils.tlb" no_namespace named_guids
-#import "st_audio.tlb" no_namespace named_guids
+#import "SAUtils.tlb" no_namespace named_guids
 
 //###########################################################################
 // CSaDoc document

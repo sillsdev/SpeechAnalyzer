@@ -297,8 +297,8 @@ BEGIN_MESSAGE_MAP(CSaView, CView)
 	ON_UPDATE_COMMAND_UI(ID_EDIT_MERGE, OnUpdateEditMerge)
 	ON_UPDATE_COMMAND_UI(ID_EDIT_MOVE_LEFT, OnUpdateEditMoveLeft)
 	ON_UPDATE_COMMAND_UI(ID_EDIT_MOVE_RIGHT, OnUpdateEditMoveRight)
-	ON_UPDATE_COMMAND_UI(ID_EDIT_MOVE_LEFT, OnUpdateEditSplitMoveLeft)
-	ON_UPDATE_COMMAND_UI(ID_EDIT_MOVE_RIGHT, OnUpdateEditMoveRightMerge)
+	ON_UPDATE_COMMAND_UI(ID_EDIT_SPLIT_MOVE_LEFT, OnUpdateEditSplitMoveLeft)
+	ON_UPDATE_COMMAND_UI(ID_EDIT_MOVE_RIGHT_MERGE, OnUpdateEditMoveRightMerge)
     ON_UPDATE_COMMAND_UI(ID_EDIT_SEGMENT_BOUNDARIES, OnUpdateEditBoundaries)
     ON_UPDATE_COMMAND_UI(ID_EDIT_SEGMENT_SIZE, OnUpdateEditSegmentSize)
     ON_UPDATE_COMMAND_UI(ID_EDIT_SELECTWAVEFORM, OnUpdateEditSelectWaveform)
@@ -5717,6 +5717,15 @@ void CSaView::OnEditRemove()
 }
 
 /***************************************************************************/
+// CSaView::OnUpdateEditSplit
+/***************************************************************************/
+void CSaView::OnUpdateEditSplit(CCmdUI * pCmdUI)
+{
+    CSegment * pSeg = FindSelectedAnnotation();
+    pCmdUI->Enable((GetDocument()->CanSplit(pSeg)?TRUE:FALSE));
+}
+
+/***************************************************************************/
 // CSaView::OnEditSplit
 /***************************************************************************/
 void CSaView::OnEditSplit()
@@ -5728,7 +5737,10 @@ void CSaView::OnEditSplit()
 	if (pSeg->GetAnnotationIndex()!=PHONETIC) return;
 	CPhoneticSegment * pPhonetic = (CPhoneticSegment*)pSeg;
 	bool segmental = GetDocument()->IsSegmental( pPhonetic, sel);
-	int newsel = pSeg->GetNext(sel);
+	int length = pPhonetic->GetSegmentLength(sel);
+	int newsel = pPhonetic->GetNext(sel);
+	// if we are splitting at the end, we need to calculate the new segment
+	newsel = (newsel==-1)?sel+length:newsel;
 
 	GetDocument()->SplitSegment( this, pPhonetic, sel, segmental);
 
@@ -5738,6 +5750,15 @@ void CSaView::OnEditSplit()
 	SetCursorPosition(ECursorSelect::START_CURSOR,newStart);
 	SetCursorPosition(ECursorSelect::STOP_CURSOR,newStop);
 	RefreshGraphs(TRUE,FALSE);
+}
+
+/***************************************************************************/
+// CSaView::OnUpdateEditMerge
+/***************************************************************************/
+void CSaView::OnUpdateEditMerge(CCmdUI * pCmdUI)
+{
+    CSegment * pSeg = FindSelectedAnnotation();
+    pCmdUI->Enable((GetDocument()->CanMerge(pSeg)?TRUE:FALSE));
 }
 
 /***************************************************************************/
@@ -5761,6 +5782,14 @@ void CSaView::OnEditMerge()
 	SetCursorPosition(ECursorSelect::START_CURSOR,newStart);
 	SetCursorPosition(ECursorSelect::STOP_CURSOR,newStop);
 	RefreshGraphs(TRUE,FALSE);
+}
+
+/***************************************************************************/
+// CSaView::OnUpdateEditMoveLeft
+/***************************************************************************/
+void CSaView::OnUpdateEditMoveLeft(CCmdUI * pCmdUI) {
+    CSegment * pSeg = FindSelectedAnnotation();
+    pCmdUI->Enable((GetDocument()->CanMoveDataLeft(pSeg))?TRUE:FALSE);
 }
 
 /***************************************************************************/
@@ -5790,12 +5819,32 @@ void CSaView::OnEditMoveLeft()
 }
 
 /***************************************************************************/
+// CSaView::OnUpdateEditSplitMoveLeft
+/***************************************************************************/
+void CSaView::OnUpdateEditSplitMoveLeft(CCmdUI * pCmdUI)
+{
+    CSegment * pSeg = FindSelectedAnnotation();
+	bool a = GetDocument()->CanMoveDataLeft(pSeg);
+	bool b = GetDocument()->CanSplit(pSeg);
+    pCmdUI->Enable((a&b)?TRUE:FALSE);
+}
+
+/***************************************************************************/
 // CSaView::OnEditMoveLeft
 /***************************************************************************/
 void CSaView::OnEditSplitMoveLeft()
 {
 	OnEditSplit();
 	OnEditMoveLeft();
+}
+
+/***************************************************************************/
+// CSaView::OnUpdateEditMoveRight
+/***************************************************************************/
+void CSaView::OnUpdateEditMoveRight(CCmdUI * pCmdUI)
+{
+    CSegment * pSeg = FindSelectedAnnotation();
+    pCmdUI->Enable(GetDocument()->CanMoveDataRight(pSeg)?TRUE:FALSE);
 }
 
 /***************************************************************************/
@@ -5823,6 +5872,17 @@ void CSaView::OnEditMoveRight()
 }
 
 /***************************************************************************/
+// CSaView::OnUpdateEditMoveRightMerge
+/***************************************************************************/
+void CSaView::OnUpdateEditMoveRightMerge(CCmdUI * pCmdUI)
+{
+    CSegment * pSeg = FindSelectedAnnotation();
+	bool a = GetDocument()->CanMoveDataRight(pSeg);
+	bool b = GetDocument()->CanMerge(pSeg);
+    pCmdUI->Enable((a&b)?TRUE:FALSE);
+}
+
+/***************************************************************************/
 // CSaView::OnEditMoveRightMerge
 /***************************************************************************/
 void CSaView::OnEditMoveRightMerge()
@@ -5843,64 +5903,6 @@ void CSaView::OnUpdateEditRemove(CCmdUI * pCmdUI)
         bEnable = TRUE;
     }
     pCmdUI->Enable(bEnable);
-}
-
-/***************************************************************************/
-// CSaView::OnUpdateEditSplit
-/***************************************************************************/
-void CSaView::OnUpdateEditSplit(CCmdUI * pCmdUI)
-{
-    CSegment * pSeg = FindSelectedAnnotation();
-    pCmdUI->Enable((GetDocument()->CanSplit(pSeg)?TRUE:FALSE));
-}
-
-/***************************************************************************/
-// CSaView::OnUpdateEditMerge
-/***************************************************************************/
-void CSaView::OnUpdateEditMerge(CCmdUI * pCmdUI)
-{
-    CSegment * pSeg = FindSelectedAnnotation();
-    pCmdUI->Enable((GetDocument()->CanMerge(pSeg)?TRUE:FALSE));
-}
-
-/***************************************************************************/
-// CSaView::OnUpdateEditMoveLeft
-/***************************************************************************/
-void CSaView::OnUpdateEditMoveLeft(CCmdUI * pCmdUI)
-{
-    CSegment * pSeg = FindSelectedAnnotation();
-    pCmdUI->Enable(GetDocument()->CanMoveDataLeft(pSeg)?TRUE:FALSE);
-}
-
-/***************************************************************************/
-// CSaView::OnUpdateEditMoveRight
-/***************************************************************************/
-void CSaView::OnUpdateEditMoveRight(CCmdUI * pCmdUI)
-{
-    CSegment * pSeg = FindSelectedAnnotation();
-    pCmdUI->Enable(GetDocument()->CanMoveDataRight(pSeg)?TRUE:FALSE);
-}
-
-/***************************************************************************/
-// CSaView::OnUpdateEditSplitMoveLeft
-/***************************************************************************/
-void CSaView::OnUpdateEditSplitMoveLeft(CCmdUI * pCmdUI)
-{
-    CSegment * pSeg = FindSelectedAnnotation();
-	bool a = GetDocument()->CanMoveDataLeft(pSeg);
-	bool b = GetDocument()->CanSplit(pSeg);
-    pCmdUI->Enable((a&b)?TRUE:FALSE);
-}
-
-/***************************************************************************/
-// CSaView::OnUpdateEditMoveRightMerge
-/***************************************************************************/
-void CSaView::OnUpdateEditMoveRightMerge(CCmdUI * pCmdUI)
-{
-    CSegment * pSeg = FindSelectedAnnotation();
-	bool a = GetDocument()->CanMoveDataRight(pSeg);
-	bool b = GetDocument()->CanMerge(pSeg);
-    pCmdUI->Enable((a&b)?TRUE:FALSE);
 }
 
 //SDM 1.06.5

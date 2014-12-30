@@ -50,7 +50,7 @@
 #include "sa_dlwnd.h"
 #include <afxmt.h>
 
-#import "speechtoolsutils.tlb" no_namespace named_guids
+#import "SAUtils.tlb" no_namespace named_guids
 
 class CSaDoc;
 class CSaView;

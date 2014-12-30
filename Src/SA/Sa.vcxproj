@@ -58,7 +58,7 @@
     </Midl>
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>.;..\ElanUtils;..\XMLUtils;..\FileUtils;..\LiftUtils;..\lib;..\WaveUtils;..\SA_KLATT;..\mbrola;..\SA_ENU;..\SA_DSP;..\zGraph;$(XERCES_VC10_HOME)\include;..\uriparser\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.;..\ElanUtils;..\XMLUtils;..\FileUtils;..\LiftUtils;..\lib;..\WaveUtils;..\SA_KLATT;..\mbrola;..\SA_ENU;..\SA_DSP;..\zGraph;$(XERCES_VC10_HOME)\include;..\uriparser\include;..\..\output\debug;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_WINDOWS;WINDOWS_PLATFORM;_DEBUG;WIN32;WINVER=0x0501;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
@@ -600,6 +600,9 @@
     <ProjectReference Include="..\MBROLA\mbrola.vcxproj">
       <Project>{70e56708-42c2-4233-af98-dc57f936c968}</Project>
     </ProjectReference>
+    <ProjectReference Include="..\SAUtils\SAUtils.csproj">
+      <Project>{45f4f307-5c89-46e1-b92b-0a2e3489ff6f}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\SA_DSP\SA_DSP.vcxproj">
       <Project>{bb3f670e-28af-42ce-9c9f-de267d3cb986}</Project>
     </ProjectReference>
@@ -611,6 +614,12 @@
     </ProjectReference>
     <ProjectReference Include="..\WaveUtils\WaveUtils.vcxproj">
       <Project>{7710bea3-39dc-4485-893f-ed4d9ca91973}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\yeti.mmedia\yeti.mmedia.csproj">
+      <Project>{315ee7bf-eae2-42c0-bfc6-cca9160f3cfe}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\yeti.wmfsdk\yeti.wmfsdk.csproj">
+      <Project>{fecb5beb-ab05-454a-bb14-6a554e897274}</Project>
     </ProjectReference>
     <ProjectReference Include="..\ZGraph\zGraph.vcxproj">
       <Project>{f8066672-47ab-44da-8698-ad978581a138}</Project>

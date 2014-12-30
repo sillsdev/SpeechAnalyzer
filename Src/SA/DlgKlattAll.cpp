@@ -26,11 +26,8 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-//#import <mshflxgd.ocx>
-
 /////////////////////////////////////////////////////////////////////////////
 // CDlgSynthesisAdjustCells dialog
-
 
 CDlgSynthesisAdjustCells::CDlgSynthesisAdjustCells(CWnd * pParent /*=NULL*/, double dScale, double dOffset)
     : CDialog(CDlgSynthesisAdjustCells::IDD, pParent)

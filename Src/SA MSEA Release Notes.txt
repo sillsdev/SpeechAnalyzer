@@ -1,3 +1,8 @@
+SA - 3.1.0.107 12/292014
+-Modified wording on Option Dialog
+-Fixed COM problem between older versions of SA and 3.1.0.105.  Renamed SpeechToolsUtils.dll to SAUtils.dll and gave it it's own GUIDs and interface names.
+-Fixed Shift-Ctrl-H exception that occurs when merging first phonetic segment.
+
 SA - 3.1.0.106 12/26/2014
 -Fixed bug where last segment markup is deleted when moving data left.
 -Fixed segment alignment problem that occurs when splitting segments
