@@ -1225,7 +1225,7 @@ static void CreateWordSegments(const int nWord, int & nSegments)
             }
             DWORD dwBegin = dwStart + nCount;
             CSaString szEmpty(SEGMENT_DEFAULT_CHAR);
-            pPhonetic->Insert(nIndex, szEmpty, FALSE, dwBegin, 1);
+            pPhonetic->Insert(nIndex, szEmpty, false, dwBegin, 1);
             nIndex = pPhonetic->GetNext(nIndex);
             nCount++;
         }

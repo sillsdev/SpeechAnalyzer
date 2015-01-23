@@ -391,30 +391,22 @@ BOOL CSegment::SetAt(const CSaString * pszString, bool, DWORD dwStart, DWORD dwD
 * nDelimiter is not used in this basic version of the function.
 * nIndex index into annotation string
 ***************************************************************************/
-BOOL CSegment::Insert( int nIndex, LPCTSTR pszString, bool /*delimiter*/, DWORD dwStart, DWORD dwDuration)
+BOOL CSegment::Insert( int nIndex, LPCTSTR pszString, bool delimiter, DWORD dwStart, DWORD dwDuration)
 {
+	ASSERT(delimiter==false);
     // get the length of the new string
     int nStringLength = wcslen(pszString);
-    try
+    if (nIndex < m_pAnnotation->GetLength())
     {
-        if (nIndex < m_pAnnotation->GetLength())
-        {
-            // insert
-            *m_pAnnotation = m_pAnnotation->Left(nIndex) + pszString + m_pAnnotation->Right(m_pAnnotation->GetLength() - nIndex);
-        }
-        else
-        {
-            *m_pAnnotation += pszString;
-        }
-        m_Offset.InsertAt(nIndex, dwStart, nStringLength);
-        m_Duration.InsertAt(nIndex, dwDuration, nStringLength);
+        // insert
+        *m_pAnnotation = m_pAnnotation->Left(nIndex) + pszString + m_pAnnotation->Right(m_pAnnotation->GetLength() - nIndex);
     }
-    catch (CMemoryException e)
+    else
     {
-        // memory allocation error
-        ErrorMessage(IDS_ERROR_MEMALLOC);
-        return FALSE;
+        *m_pAnnotation += pszString;
     }
+    m_Offset.InsertAt(nIndex, dwStart, nStringLength);
+    m_Duration.InsertAt(nIndex, dwDuration, nStringLength);
     return TRUE;
 }
 
@@ -481,28 +473,33 @@ int CSegment::GetPrevious(int nIndex) const
 
 /***************************************************************************/
 // CSegment::GetNext Get next annotation segment
-// Returns the index of the next annotation segment (first character in the
-// string) next to the one with the given index. If the return is -1, there
-// is no next segment. If the parameter nIndex delivers -1, the function
-// takes the actual selected segment to look for.
+// Returns the index of the next annotation segment 
+// (first character in the string) next to the one with the given index. 
+// If the return is -1, there is no next segment. 
+// If the parameter nIndex delivers -1, the function takes the actual 
+// selected segment to look for.
 /***************************************************************************/
 int CSegment::GetNext(int nIndex) const
 {
     // find out, which character is the reference
-    int nReference;
+    int nReference = 0;
     if (nIndex >= 0)
     {
-        nReference = nIndex; // user defined reference
+        nReference = nIndex;	// user defined reference
     }
-    else     // take current selection
+    else						// take current selection
     {
+		if (m_Offset.GetCount()==0)
+		{
+			return -1;
+		}
         if (m_nSelection != -1)
         {
             nReference = m_nSelection;
         }
         else
         {
-            nReference = 0; // default for nothing has been selected yet
+            nReference = 0;		// default for nothing has been selected yet
         }
     }
     DWORD dwOffset = GetOffset(nReference);
@@ -1024,7 +1021,8 @@ DWORD CSegment::GetDuration(const int nIndex) const
 
 DWORD CSegment::GetStop(const int nIndex) const
 {
-    return m_Offset[nIndex]+m_Duration[nIndex];
+    return (GetOffset(nIndex)+GetDuration(nIndex));
+	//m_Offset[nIndex]+m_Duration[nIndex];
 }
 
 /** returns true if there are no offsets */

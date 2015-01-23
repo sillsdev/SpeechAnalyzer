@@ -1027,7 +1027,6 @@ BOOL CSaDoc::LoadDataFiles(LPCTSTR pszPathName, bool bTemp/*=FALSE*/)
     s_bDocumentWasAlreadyOpen = FALSE;
 
     ((CGlossSegment *)m_apSegments[GLOSS])->CorrectGlossDurations(this); // SDM 1.5Test11.3
-    ((CGlossSegment *)m_apSegments[GLOSS_NAT])->CorrectGlossDurations(this); // SDM 1.5Test11.3
 
     // if player is visible, disable the speed slider until required processing is completed
     CMainFrame * pMain = (CMainFrame *)AfxGetMainWnd();

@@ -487,7 +487,6 @@ int CLegendWnd::OnCreate(LPCREATESTRUCT lpCreateStruct)
 // CLegendWnd::OnCommand
 // Handle button presses.
 /***************************************************************************/
-extern "C" void cdecl Splash(HWND hWnd,HINSTANCE hInst,char * BitmapName);
 BOOL CLegendWnd::OnCommand(WPARAM wParam, LPARAM /* lParam */)
 {
     CGraphWnd * pGraph = (CGraphWnd *)GetParent(); // get pointer to graph

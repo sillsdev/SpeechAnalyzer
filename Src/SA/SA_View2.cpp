@@ -3925,10 +3925,10 @@ CSegment * CSaView::FindSelectedAnnotation()
 {
     for (int nLoop = 0; nLoop < ANNOT_WND_NUMBER; nLoop++)
     {
-        CSegment * pSegments = GetAnnotation(nLoop);
-        if ((pSegments!=NULL) && (pSegments->GetSelection() != -1))
+        CSegment * pSegment = GetAnnotation(nLoop);
+        if ((pSegment!=NULL) && (pSegment->GetSelection() != -1))
         {
-            return pSegments;
+            return pSegment;
         }
     }
     return NULL;
@@ -3973,10 +3973,10 @@ void CSaView::ChangeSelectedAnnotationData(const CSaString & str)
 /***************************************************************************/
 void CSaView::RemoveSelectedAnnotation()
 {
-    CSegment * pAnnotationSet = FindSelectedAnnotation();
-    if (pAnnotationSet!=NULL)
+    CSegment * pSegment = FindSelectedAnnotation();
+    if (pSegment!=NULL)
     {
-        pAnnotationSet->Remove(GetDocument());
+        pSegment->Remove(GetDocument());
     }
 }
 
@@ -4773,7 +4773,7 @@ void CSaView::OnEditAddPhonetic()
             pPhonetic->Adjust( pDoc, nNext, GetStopCursorPosition(), pPhonetic->GetStop(nNext)-GetStopCursorPosition());
         }
 
-        pPhonetic->Insert(nInsertAt, szString, true, GetStartCursorPosition(), GetStopCursorPosition()-GetStartCursorPosition());
+        pPhonetic->Insert(nInsertAt, szString, false, GetStartCursorPosition(), GetStopCursorPosition()-GetStartCursorPosition());
 
         // Adjust Gloss
         if ((!pGloss->IsEmpty()) && (pPhonetic->GetPrevious(nInsertAt)))
@@ -4851,7 +4851,7 @@ void CSaView::OnEditAddPhonetic()
 
                 nInsertAt = pPhonetic->CheckPosition(pDoc,dwStart,dwStop,CSegment::MODE_ADD);
                 ASSERT(nInsertAt >= 0);
-                pPhonetic->Insert(nInsertAt, szString, true, dwStart,dwStop - dwStart);
+                pPhonetic->Insert( nInsertAt, szString, false, dwStart, dwStop - dwStart);
                 
 				// Adjust Gloss
                 if ((!pGloss->IsEmpty()) && (pPhonetic->GetPrevious(nInsertAt)))
@@ -4987,7 +4987,7 @@ void CSaView::OnUpdateEditAdd(CCmdUI * pCmdUI)
 /***************************************************************************/
 // CSaView::OnEditAddPhrase
 /***************************************************************************/
-void CSaView::OnEditAddPhrase(CMusicPhraseSegment * pSeg)
+void CSaView::OnEditAddPhrase( CMusicPhraseSegment * pSeg)
 {
     CSaDoc * pDoc = (CSaDoc *) GetDocument();
 
@@ -5007,16 +5007,23 @@ void CSaView::OnEditAddPhrase(CMusicPhraseSegment * pSeg)
             }
         }
 
-        // this code seems useless...
-        int nNext = pSeg->GetNext(nInsertAt - 1);
-        if (nNext != -1)
-        {
-            if (pSeg->GetOffset(nNext)<GetStopCursorPosition()+pDoc->GetBytesFromTime(MAX_ADD_JOIN_TIME))   // SDM 1.5Test10.2
-            {
-                pSeg->Adjust(pDoc,nNext,GetStopCursorPosition(),pSeg->GetStop(nNext)-GetStopCursorPosition());
-            }
-        }
-        pSeg->Insert(nInsertAt, szString, true, GetStartCursorPosition(),GetStopCursorPosition()-GetStartCursorPosition());
+		if (pSeg->GetOffsetSize()>0)
+		{
+			int nNext = pSeg->GetNext(nInsertAt);
+			if (nNext != -1)
+			{
+				CURSORPOS stopPos = GetStopCursorPosition();
+				DWORD byteCount = pDoc->GetBytesFromTime(MAX_ADD_JOIN_TIME);
+				DWORD nextOffset = pSeg->GetOffset(nNext);
+				if (nextOffset<(stopPos+byteCount))   // SDM 1.5Test10.2
+				{
+					DWORD stop = pSeg->GetStop(nNext);
+					CURSORPOS stopPos = GetStopCursorPosition();
+					pSeg->Adjust( pDoc,nNext,stopPos,stop-stopPos);
+				}
+			}
+		}
+        pSeg->Insert( nInsertAt, szString, false, GetStartCursorPosition(),GetStopCursorPosition()-GetStartCursorPosition());
         pDoc->SetModifiedFlag(TRUE);        // document has been modified
         pDoc->SetTransModifiedFlag(TRUE);   // transcription data has been modified
         RefreshGraphs(TRUE);
@@ -5289,7 +5296,7 @@ void CSaView::OnEditAddAutoPhraseL2()
                 pSeg->Adjust(pDoc, nNext,GetStopCursorPosition(),pSeg->GetStop(nNext)-GetStopCursorPosition());
             }
         }
-        pSeg->Insert(nInsertAt, szString, true, GetStartCursorPosition(),GetStopCursorPosition()-GetStartCursorPosition());
+        pSeg->Insert(nInsertAt, szString, false, GetStartCursorPosition(),GetStopCursorPosition()-GetStartCursorPosition());
         pDoc->SetModifiedFlag(TRUE); // document has been modified
         pDoc->SetTransModifiedFlag(TRUE); // transcription data has been modified
         RefreshGraphs(TRUE);
@@ -5451,7 +5458,7 @@ void CSaView::EditAddGloss(bool bDelimiter)
 	DWORD dwStartR = GetStartCursorPosition();
 	DWORD dwStopR = GetStopCursorPosition();
 
-    int nInsertAt = pGloss->CheckPosition(pDoc,dwStartR,dwStopR,CSegment::MODE_ADD);
+    int nInsertAt = pGloss->CheckPosition( pDoc, dwStartR, dwStopR, CSegment::MODE_ADD);
     if (nInsertAt != -1)
     {
         DWORD dwStart = 0;
@@ -5494,7 +5501,7 @@ void CSaView::EditAddGloss(bool bDelimiter)
             SetStopCursorPosition(dwStop);
             OnEditAddPhonetic();
 
-            pGloss->AdjustCursorsToMaster(pDoc, FALSE, &dwStart);
+            pGloss->AdjustCursorsToMaster( pDoc, FALSE, &dwStart);
             pGloss->Add( pDoc, this, dwStart, szString, bDelimiter, FALSE); // add a segment
 			if (!pReference->IsEmpty()) {
 				pReference->Add( pDoc, this, dwStart, szEmpty, bDelimiter, TRUE);
@@ -5709,10 +5716,10 @@ void CSaView::OnUpdateEditAddBookmark(CCmdUI * pCmdUI)
 /***************************************************************************/
 void CSaView::OnEditRemove()
 {
-    CSegment * pSeg = FindSelectedAnnotation();
-    if ((pSeg!=NULL) && (pSeg->GetSelection() != -1))
+    CSegment * pSegment = FindSelectedAnnotation();
+    if ((pSegment!=NULL) && (pSegment->GetSelection() != -1))
     {
-        pSeg->Remove(GetDocument(), TRUE);
+        pSegment->Remove(GetDocument(), TRUE);
     }
 }
 
@@ -7094,7 +7101,7 @@ CMainFrame * CSaView::MainFrame()
 
 LRESULT CSaView::OnAutoSave(WPARAM, LPARAM)
 {
-    GetDocument()->StoreAutoRecoveryInformation();
+	GetDocument()->StoreAutoRecoveryInformation();
     return 0;
 }
 

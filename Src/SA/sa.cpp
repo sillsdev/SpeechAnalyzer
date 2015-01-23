@@ -353,6 +353,66 @@ BOOL CSaApp::InitInstance() {
                                          RUNTIME_CLASS(CMDIChildWnd),
                                          RUNTIME_CLASS(CSaWorkbenchView)));
 
+    // check if SA runs in batchmode
+    m_nBatchMode = CheckForBatchMode(m_lpCmdLine);
+	if (!GetBatchMode()) {
+
+		ISplashScreenPtr splash(NULL);
+		CSaString szSplashText;
+
+		// display splash screen
+		//CoInitialize(NULL);
+		HRESULT createResult = splash.CreateInstance(__uuidof(SplashScreen));
+		if (createResult) 
+		{
+			CSaString szCreateResult;
+			szCreateResult.Format(_T("%x"), createResult);
+			CSaString szText;
+			AfxFormatString2(szText, IDS_ERROR_CREATE_INSTANCE,  _T("SplashScreen.CreateInstance()"), szCreateResult);
+			AfxMessageBox(szText, MB_OK | MB_ICONEXCLAMATION, 0);
+		}
+		else
+		{
+			splash->ShowWithoutFade();
+			//splash->Show();
+			szSplashText.LoadString(IDS_SPLASH_LOADING);
+			splash->Message = (_bstr_t)szSplashText;
+			szSplashText.LoadString(IDR_MAINFRAME);
+			splash->ProdName = (_bstr_t)szSplashText;
+			// load version info
+			CSaString szVersion((LPCTSTR)VS_VERSION);
+			szVersion = szVersion.Right(szVersion.GetLength() - szVersion.Find(' ') - 1);
+			// Beta version display
+			int nBuildIndex = szVersion.Find(_T("Build"));
+			if (nBuildIndex > 0) {
+				szVersion = szVersion.Left(nBuildIndex - 2);
+			}
+			// RC version display
+			int nRCIndex = szVersion.Find(_T("RC"));
+			if (nRCIndex > 0) {
+				szVersion = szVersion.Left(nRCIndex - 1);
+			}
+			splash->ProdVersion = (_bstr_t)szVersion;
+			// load version info
+			CSaString szCopyright((LPCTSTR)VS_COPYRIGHT);
+			splash->Copyright = (_bstr_t)szCopyright;
+
+			// Perform setup new user, if needed
+			if (m_bNewUser) {
+				szSplashText.LoadString(IDS_SPLASH_NEW_USER_SETUP);
+				splash->Message = (_bstr_t)szSplashText;
+			}
+	
+			splash->Activate();
+
+			::Sleep(1500);
+
+			splash->Close();
+			splash->Release();
+			splash = NULL;
+		}
+	}
+
     // create main MDI Frame window
     CMainFrame * pMainFrame = new CMainFrame();
     if (!IsSAS()) {
@@ -364,12 +424,7 @@ BOOL CSaApp::InitInstance() {
     }
 
     m_pMainWnd = pMainFrame;
-
-    // check if SA runs in batchmode
-    m_nBatchMode = CheckForBatchMode(m_lpCmdLine);
-	if (!GetBatchMode()) {
-		AfxBeginThread((AFX_THREADPROC)SplashScreenThread, (LPVOID)this);
-	}
+	m_pMainWnd->ShowWindow(SW_SHOW);
 
     // update help file path
     //      m_pszHelpFilePath;
@@ -2634,62 +2689,5 @@ CSaString GetShellFolderPath(DWORD csidl) {
         FreeLibrary(hModule);
     }
     return CSaString(documentPath);
-}
-
-UINT CSaApp::SplashScreenThread( CSaApp * pOwner) {
-
-    ISplashScreenPtr splash(NULL);
-    CSaString szSplashText;
-
-    // display splash screen
-    CoInitialize(NULL);
-    HRESULT createResult = splash.CreateInstance(__uuidof(SplashScreen));
-    if (createResult) {
-        CSaString szCreateResult;
-        szCreateResult.Format(_T("%x"), createResult);
-        CSaString szText;
-        AfxFormatString2(szText, IDS_ERROR_CREATE_INSTANCE,  _T("SplashScreen.CreateInstance()"), szCreateResult);
-        AfxMessageBox(szText, MB_OK | MB_ICONEXCLAMATION, 0);
-        return FALSE;
-    }
-
-    splash->Show();
-    szSplashText.LoadString(IDS_SPLASH_LOADING);
-    splash->Message = (_bstr_t)szSplashText;
-    szSplashText.LoadString(IDR_MAINFRAME);
-    splash->ProdName = (_bstr_t)szSplashText;
-    // load version info
-    CSaString szVersion((LPCTSTR)VS_VERSION);
-    szVersion = szVersion.Right(szVersion.GetLength() - szVersion.Find(' ') - 1);
-    // Beta version display
-    int nBuildIndex = szVersion.Find(_T("Build"));
-    if (nBuildIndex > 0) {
-        szVersion = szVersion.Left(nBuildIndex - 2);
-    }
-    // RC version display
-    int nRCIndex = szVersion.Find(_T("RC"));
-    if (nRCIndex > 0) {
-        szVersion = szVersion.Left(nRCIndex - 1);
-    }
-    splash->ProdVersion = (_bstr_t)szVersion;
-    // load version info
-    CSaString szCopyright((LPCTSTR)VS_COPYRIGHT);
-    splash->Copyright = (_bstr_t)szCopyright;
-
-	// Perform setup new user, if needed
-	if (pOwner->m_bNewUser) {
-        szSplashText.LoadString(IDS_SPLASH_NEW_USER_SETUP);
-        splash->Message = (_bstr_t)szSplashText;
-    }
-	
-	splash->Activate();
-
-	::Sleep(7000);
-
-    splash->Close();
-    splash->Release();
-    splash = NULL;
-    CoUninitialize();
-	return 0;
 }
 

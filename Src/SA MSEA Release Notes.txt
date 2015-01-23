@@ -1,3 +1,9 @@
+SA - 3.1.0.108 1/22/2015
+-Modified splash screen so that it is displayed sooner, and for a shorter amount of time.  Display time is 1.5 seconds
+-Fixed 'improper argument' bug.  Application was setting non-existent reference segment as 'selected'.
+-Fixed file save/open gloss-nat bug.  Gloss-nat segments were being adjusted on startup when they should not be.
+-Fixed Ctrl1-4, AltZ, AltX bug - Previous modification had altered offset and duration values are returned for segments that don't exist.  Previous code returned zero - new code was causing out-of-bounds exception which prevented function from completing.
+
 SA - 3.1.0.107 12/292014
 -Modified wording on Option Dialog
 -Fixed COM problem between older versions of SA and 3.1.0.105.  Renamed SpeechToolsUtils.dll to SAUtils.dll and gave it it's own GUIDs and interface names.

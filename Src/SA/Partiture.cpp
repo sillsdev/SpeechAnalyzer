@@ -4900,7 +4900,7 @@ LRESULT CALLBACK PartitureProc(HWND hWnd,UINT uMsg,WPARAM wParam,LPARAM lParam)
     }
     }
     return DefWindowProc(hWnd,uMsg,wParam,lParam);
-}//PartitureProc
+}
 
 int INIT(HINSTANCE hInst)
 {
@@ -4918,54 +4918,7 @@ int INIT(HINSTANCE hInst)
     wc.lpszClassName = "Partiture";
 
     return (int) RegisterClass(&wc);
-}//Init
-
-extern "C" void cdecl Splash(HWND hWnd,HINSTANCE hInst,char * BitmapName)
-{
-    HBITMAP hbmpMyBitmap, hbmpOld;
-    BITMAP bm;
-
-    hbmpMyBitmap = LoadBitmap(hInst, BitmapName);
-    GetObject(hbmpMyBitmap, sizeof(BITMAP), &bm);
-
-    RECT r;
-    GetClientRect(hWnd,&r);
-    int xx = (r.right/2) - (bm.bmWidth/2);
-    if (xx<0)
-    {
-        xx=0;
-    }
-    int yy = (r.bottom/2) - (bm.bmHeight/2);
-    if (yy<0)
-    {
-        yy=0;
-    }
-
-    HWND hSplashWindow = CreateWindow("STATIC",BitmapName,WS_BORDER|WS_CHILD|WS_VISIBLE,
-                                      xx,yy,bm.bmWidth,bm.bmHeight,hWnd,NULL,hInst,NULL);
-    if (!hSplashWindow)
-    {
-        return;
-    }
-
-    HDC hdc, hdcMemory;
-
-    hdc = GetDC(hSplashWindow);
-    hdcMemory = CreateCompatibleDC(hdc);
-    hbmpOld = (HBITMAP) SelectObject(hdcMemory, hbmpMyBitmap);
-
-    GetClientRect(hSplashWindow,&r);
-
-    BitBlt(hdc, (r.right-bm.bmWidth)/2, (r.bottom-bm.bmHeight)/2, bm.bmWidth, bm.bmHeight, hdcMemory, 0, 0, SRCCOPY);
-    SelectObject(hdcMemory, hbmpOld);
-    DeleteObject(hbmpMyBitmap);
-
-    DeleteDC(hdcMemory);
-    ReleaseDC(hSplashWindow, hdc);
-    Sleep(5000);
-    DestroyWindow(hSplashWindow);
-}//Splash
-
+}
 
 // static globals for MIDI commands
 static WORD wDeviceID = NULL;

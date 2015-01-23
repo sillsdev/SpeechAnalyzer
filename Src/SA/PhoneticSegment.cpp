@@ -133,7 +133,7 @@ void CPhoneticSegment::Remove(CDocument * pDoc, BOOL bCheck)
     for (int nLoop = 1; nLoop <= GLOSS; nLoop++)   //SDM 1.5Test8.1 segments after gloss are dependent on gloss
     {
         CSegment * pSegment = pSaDoc->GetSegment(nLoop);
-        if (pSegment)
+        if (pSegment != NULL)
         {
             int nIndex = pSegment->FindOffset(dwOldOffset);
             if (nIndex != -1)

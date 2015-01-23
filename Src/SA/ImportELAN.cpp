@@ -765,7 +765,7 @@ static void CreateWordSegments(const int nWord, int & nSegments)
             }
             DWORD dwBegin = dwStart + nCount;
             CSaString szEmpty(SEGMENT_DEFAULT_CHAR);
-            pPhonetic->Insert(nIndex, szEmpty, FALSE, dwBegin, 1);
+            pPhonetic->Insert(nIndex, szEmpty, false, dwBegin, 1);
             nIndex = pPhonetic->GetNext(nIndex);
             nCount++;
         }
@@ -949,7 +949,7 @@ BOOL CImportELAN::ReadTable( CStringStream & stream, int nMode)
                 }
                 else     // add segments
                 {
-                    pPhonetic->Insert(nWordCurr, szEmpty, FALSE, dwStart, dwDuration);
+                    pPhonetic->Insert(nWordCurr, szEmpty, false, dwStart, dwDuration);
                 }
                 pGloss->Insert(nWordCurr, szEmptyGloss, 0, dwStart, dwDuration);
                 nIndex = nWordCurr;

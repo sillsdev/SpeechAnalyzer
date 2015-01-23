@@ -244,6 +244,7 @@ void CAutoSave::CleanAll()
 
 void CAutoSave::StoreAutoRecoveryInformation( CSaDoc * pDoc)
 {
+	TRACE("autosave\n");
 	if (updating)
 	{
 		//TRACE("save in process. ignoring request\n");
@@ -370,6 +371,7 @@ void CAutoSave::StoreAutoRecoveryInformation( CSaDoc * pDoc)
 	else
 	{
 		TRACE("skipping autosave because .wave file is readonly\n");
+		updating=false;
 		return;
 	}
 
@@ -407,7 +409,6 @@ void CAutoSave::StoreAutoRecoveryInformation( CSaDoc * pDoc)
 
 	WriteInfo( info.c_str(), isTempFile, currentwave.c_str(), currentxml.c_str(), restorewave.c_str(), root.c_str(), folder.c_str());
 
-    //TRACE(L"saved\n");
 	updating = false;
 }
 
