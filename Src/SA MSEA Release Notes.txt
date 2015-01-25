@@ -1,3 +1,6 @@
+SA - 3.1.0.109 1/24/2015
+-Fixed function that test file read-only attribute.  Function was not working correctly.  This also caused the autosave feature to fail.
+
 SA - 3.1.0.108 1/22/2015
 -Modified splash screen so that it is displayed sooner, and for a shorter amount of time.  Display time is 1.5 seconds
 -Fixed 'improper argument' bug.  Application was setting non-existent reference segment as 'selected'.

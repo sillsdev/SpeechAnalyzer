@@ -207,12 +207,10 @@ void FileUtils::RenameFile(LPCTSTR oldname, LPCTSTR newname) {
 }
 
 bool FileUtils::IsReadOnly(LPCTSTR filename) {
-    int result = _waccess(filename,04);
-    if (result!=0) {
-        // true if file is missing or does not have attribute
-        return false;
-    }
-    return true;
+	DWORD dwFileAttributes = GetFileAttributes(filename);
+	// oh no! can't determine attribute
+    if (dwFileAttributes==INVALID_FILE_ATTRIBUTES) return true; 
+    return (dwFileAttributes & FILE_ATTRIBUTE_READONLY); 
 }
 
 wstring FileUtils::NormalizePath(LPCTSTR path) {

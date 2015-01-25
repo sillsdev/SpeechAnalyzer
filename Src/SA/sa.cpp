@@ -405,7 +405,7 @@ BOOL CSaApp::InitInstance() {
 	
 			splash->Activate();
 
-			::Sleep(1500);
+			::Sleep(1000);
 
 			splash->Close();
 			splash->Release();
