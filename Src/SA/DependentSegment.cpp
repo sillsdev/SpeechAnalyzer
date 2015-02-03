@@ -419,7 +419,7 @@ void CDependentSegment::Add( CSaDoc * pDoc, CSaView * pView, DWORD dwStart, CSaS
     }
 
     DWORD dwDuration = pDoc->GetSegment(m_nMasterIndex)->GetDuration(nSegment);
-	DWORD dwStop = dwStart+dwDuration;
+	DWORD dwStop = dwStart + dwDuration;
 
     int nPos = CheckPosition(pDoc, dwStart, dwStop, MODE_ADD); // get the insert position
     if (nPos == -1)
@@ -434,7 +434,7 @@ void CDependentSegment::Add( CSaDoc * pDoc, CSaView * pView, DWORD dwStart, CSaS
     }
 
     // insert or append the new dependent segment
-    if (!Insert(nPos, szString, 0, dwStart, dwDuration))
+    if (!Insert( nPos, szString, 0, dwStart, dwDuration))
     {
         return;    // return on error
     }

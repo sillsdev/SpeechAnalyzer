@@ -14,7 +14,6 @@ public:
     virtual ~CGlossSegment();
 
     virtual long Process(void * pCaller, ISaDoc * pDoc, int nProgress = 0, int nLevel = 1);
-    virtual BOOL SetAt( const CSaString *, bool delimiter, DWORD dwStart, DWORD dwDuration); // insert a new segment
     virtual void Remove(CDocument *, BOOL bCheck = TRUE);	// remove a segment
     void CorrectGlossDurations( ISaDoc * pSaDoc);
     virtual void Serialize(CArchive & ar);

@@ -4743,6 +4743,7 @@ void CSaView::OnEditAddPhonetic()
     CSaDoc * pDoc = (CSaDoc *) GetDocument();
     CPhoneticSegment * pPhonetic = (CPhoneticSegment *) GetAnnotation(PHONETIC);
     CGlossSegment * pGloss = (CGlossSegment *)GetAnnotation(GLOSS);
+	CGlossNatSegment * pGlossNat = (CGlossNatSegment *)GetAnnotation(GLOSS_NAT);
     CReferenceSegment * pReference = (CReferenceSegment *) GetAnnotation(REFERENCE);
 
     pDoc->CheckPoint();
@@ -4783,9 +4784,8 @@ void CSaView::OnEditAddPhonetic()
             if (nIndex != -1)
             {
                 pGloss->Adjust( pDoc, nIndex, pGloss->GetOffset(nIndex), pGloss->CalculateDuration(pDoc,nIndex));
-				if (!pReference->IsEmpty()) {
-	                pReference->Adjust( pDoc, nIndex, pReference->GetOffset(nIndex), pReference->CalculateDuration(pDoc,nIndex));
-				}
+				pGlossNat->Adjust( pDoc, nIndex, pGlossNat->GetOffset(nIndex), pGlossNat->CalculateDuration(pDoc,nIndex));
+                pReference->Adjust( pDoc, nIndex, pReference->GetOffset(nIndex), pReference->CalculateDuration(pDoc,nIndex));
             }
         }
 
@@ -4794,7 +4794,6 @@ void CSaView::OnEditAddPhonetic()
         RefreshGraphs(TRUE);
         pPhonetic->SetSelection(-1);
         m_advancedSelection.SelectFromPosition(this, PHONETIC, GetStartCursorPosition(), true);
-
     }
     else
     {
@@ -4860,10 +4859,9 @@ void CSaView::OnEditAddPhonetic()
                     int nIndex = pGloss->FindStop(pPhonetic->GetStop(nPrevious));
                     if (nIndex != -1)
                     {
-                        pGloss->Adjust(pDoc, nIndex, pGloss->GetOffset(nIndex), pGloss->CalculateDuration(pDoc,nIndex));
-						if (!pReference->IsEmpty()) {
-							pReference->Adjust( pDoc, nIndex, pReference->GetOffset(nIndex), pReference->CalculateDuration(pDoc,nIndex));
-						}
+                        pGloss->Adjust( pDoc, nIndex, pGloss->GetOffset(nIndex), pGloss->CalculateDuration(pDoc,nIndex));
+						pGlossNat->Adjust( pDoc, nIndex, pGlossNat->GetOffset(nIndex), pGlossNat->CalculateDuration(pDoc,nIndex));
+						pReference->Adjust( pDoc, nIndex, pReference->GetOffset(nIndex), pReference->CalculateDuration(pDoc,nIndex));
                     }
                 }
 
@@ -5464,12 +5462,8 @@ void CSaView::EditAddGloss(bool bDelimiter)
         DWORD dwStart = 0;
         pGloss->AdjustCursorsToMaster(pDoc, FALSE, &dwStart);
         pGloss->Add( pDoc, this, dwStart, szString, bDelimiter, TRUE); // add a segment
-		if (!pReference->IsEmpty()) {
-			pReference->Add( pDoc, this, dwStart, szEmpty, bDelimiter, TRUE);
-		}
-		if (!pGlossNat->IsEmpty()) {
-			pGlossNat->Add( pDoc, this, dwStart, szEmpty, bDelimiter, TRUE);
-		}
+		pReference->Add( pDoc, this, dwStart, szEmpty, bDelimiter, TRUE);
+		pGlossNat->Add( pDoc, this, dwStart, szEmpty, bDelimiter, TRUE);
     }
     else
     {
@@ -5486,7 +5480,7 @@ void CSaView::EditAddGloss(bool bDelimiter)
         }
 
         DWORD dwStop = 0;
-        if ((nPos == -1) || (nPos >= pGloss->GetTexts().GetSize()))
+        if ((nPos == -1) || (nPos >= pGloss->GetOffsetSize()))
         {
             dwStop = pDoc->GetDataSize();
         }
@@ -5503,12 +5497,8 @@ void CSaView::EditAddGloss(bool bDelimiter)
 
             pGloss->AdjustCursorsToMaster( pDoc, FALSE, &dwStart);
             pGloss->Add( pDoc, this, dwStart, szString, bDelimiter, FALSE); // add a segment
-			if (!pReference->IsEmpty()) {
-				pReference->Add( pDoc, this, dwStart, szEmpty, bDelimiter, TRUE);
-			}
-			if (!pGlossNat->IsEmpty()) {
-				pGlossNat->Add( pDoc, this, dwStart, szEmpty, bDelimiter, TRUE);
-			}
+			pReference->Add( pDoc, this, dwStart, szEmpty, bDelimiter, TRUE);
+			pGlossNat->Add( pDoc, this, dwStart, szEmpty, bDelimiter, TRUE);
 
             int i = GetGraphIndexForIDD(IDD_RAWDATA);
             if ((i != -1) && (m_apGraphs[i]))

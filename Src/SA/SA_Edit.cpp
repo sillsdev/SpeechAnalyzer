@@ -270,14 +270,13 @@ void CDlgEditor::OnUpdateInputstring() {
     CEdit * pEdit = (CEdit *) GetDlgItem(IDC_INPUTSTRING);
     CSaString szString;
     pEdit->GetWindowText(szString);
-    // Filter Inputstring if input filter specified
-    if (GetView()->GetAnnotation(GetView()->GetSelectionIndex())->GetInputFilter() != NULL) {
-        BOOL bChanged = (GetView()->GetAnnotation(GetView()->GetSelectionIndex())->GetInputFilter())(szString);
-        if (bChanged) {
-            DWORD dwSelection = pEdit->GetSel();
-            pEdit->SetWindowText(szString);
-            pEdit->SetSel(dwSelection);
-        }
+
+    // Filter input string if input filter specified
+	CSegment * pSegment = GetView()->GetAnnotation(GetView()->GetSelectionIndex());
+	if (pSegment->Filter(szString)) {
+		DWORD dwSelection = pEdit->GetSel();
+        pEdit->SetWindowText(szString);
+        pEdit->SetSel(dwSelection);
     }
 
     if (!IsDifferent(FALSE)) { // Insure selection has not changed
@@ -693,16 +692,14 @@ void CDlgAnnotationEdit::OnUpdateInputstring() {
     m_bChanged = TRUE;
 
     // Filter Inputstring if input filter specified
-    if (GetView()->GetAnnotation(GetView()->GetSelectionIndex())->GetInputFilter() != NULL) {
-        CEdit * pEdit = (CEdit *) GetDlgItem(IDC_INPUTSTRING);
-        CSaString szString;
-        pEdit->GetWindowText(szString);
-        BOOL bChanged = (GetView()->GetAnnotation(GetView()->GetSelectionIndex())->GetInputFilter())(szString);
-        if (bChanged) {
-            DWORD dwSelection = pEdit->GetSel();
-            pEdit->SetWindowText(szString);
-            pEdit->SetSel(dwSelection);
-        }
+	CSegment * pSegment = GetView()->GetAnnotation(GetView()->GetSelectionIndex());
+    CEdit * pEdit = (CEdit *)GetDlgItem(IDC_INPUTSTRING);
+    CSaString szString;
+    pEdit->GetWindowText(szString);
+	if (pSegment->Filter(szString)) {
+        DWORD dwSelection = pEdit->GetSel();
+        pEdit->SetWindowText(szString);
+        pEdit->SetSel(dwSelection);
     }
 }
 

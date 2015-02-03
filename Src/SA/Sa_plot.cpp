@@ -1661,8 +1661,8 @@ void CPlotWnd::PlotPaintFinish(CDC * pDC, CRect rWnd, CRect rClip)
             // calculate the number of data samples per pixel
             double fBytesPerPix = (double)dwDataFrame / (double)rWnd.Width();
             // get pointer to phonetic string
-            CString * pPhonetic = pDoc->GetSegment(PHONETIC)->GetString();
-            if (!pPhonetic->IsEmpty())   // string is not empty
+            CString pPhonetic = pDoc->GetSegment(PHONETIC)->GetContent();
+            if (!pPhonetic.IsEmpty())   // string is not empty
             {
                 // get pointer to phonetic offset and duration arrays
                 CSegment * pOffsets = pDoc->GetSegment(PHONETIC);
@@ -1671,7 +1671,7 @@ void CPlotWnd::PlotPaintFinish(CDC * pDC, CRect rWnd, CRect rClip)
                 int nLoop = 0;
                 if (fStart > 0)
                 {
-                    for (nLoop = 1; nLoop < pPhonetic->GetLength(); nLoop++)
+                    for (nLoop = 1; nLoop < pPhonetic.GetLength(); nLoop++)
                     {
                         if (pOffsets->GetStop(nLoop)> fStart)
                         {

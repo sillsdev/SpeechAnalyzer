@@ -109,7 +109,7 @@ BOOL CDlgImportElanSelectPage::OnInitDialog()
 	pl3.AddString(L"");
 	pl4.AddString(L"");
 
-	for (int i=0;i<document.tiers.size();i++) {
+	for (size_t i=0;i<document.tiers.size();i++) {
 		refnum.AddString(document.tiers[i].tierID.c_str());
 		phonetic.AddString(document.tiers[i].tierID.c_str());
 		phonemic.AddString(document.tiers[i].tierID.c_str());
@@ -155,7 +155,7 @@ BOOL CDlgImportElanSelectPage::OnInitDialog()
 	// 'Translation' and 'Transcription' tags and preassign those
 	if (selection==0) {
 		int found = 0;
-		for (int i=0;i<document.tiers.size();i++) {
+		for (size_t i=0;i<document.tiers.size();i++) {
 			if (_wcsicmp(document.tiers[i].tierID.c_str(),SAYMORE_TRANSCRIPTION)==0) found++;
 			else if (_wcsicmp(document.tiers[i].tierID.c_str(),SAYMORE_TRANSLATION)==0) found++;
 		}

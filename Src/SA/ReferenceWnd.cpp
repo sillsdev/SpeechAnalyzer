@@ -147,18 +147,17 @@ void CReferenceWnd::OnDraw(CDC * pDC, const CRect & printRect)
 
     // get pointer to gloss strings
     CReferenceSegment * pRef = (CReferenceSegment *)pDoc->GetSegment(m_nIndex);
-    const CStringArray & ref = pRef->GetTexts();
-    if (ref.GetCount()>0)
+    if (pRef->GetOffsetSize()>0)
     {
         // array is not empty
         // get pointer to gloss offset and duration arrays
         CSegment * pSegment = pDoc->GetSegment(m_nIndex);
         // position prepare loop. Find first string to display in clipping rect
         int nLoop = 0;
-        if ((fDataStart > 0) && (ref.GetSize() > 1))
+        if ((fDataStart > 0) && (pRef->GetOffsetSize() > 1))
         {
             double fStart = fDataStart + (double)(rClip.left - tm.tmAveCharWidth) * fBytesPerPix;
-            for (nLoop = 1; nLoop < ref.GetSize(); nLoop++)
+            for (nLoop = 1; nLoop < pRef->GetOffsetSize(); nLoop++)
             {
                 if ((double)(pSegment->GetStop(nLoop)) > fStart)   // first string must be at lower position
                 {
@@ -167,16 +166,17 @@ void CReferenceWnd::OnDraw(CDC * pDC, const CRect & printRect)
                 }
             }
         }
-        if (nLoop < ref.GetSize())   // there is something to display
+        if (nLoop < pRef->GetOffsetSize())   // there is something to display
         {
             // display loop
-            int nDisplayPos, nDisplayStop;
+            int nDisplayPos = 0;
+			int nDisplayStop = 0;
             CString string;
             do
             {
                 string.Empty();
                 // get the string to display
-                string = ref.GetAt(nLoop);
+                string = pRef->GetText(nLoop);
                 nDisplayPos = round((pSegment->GetOffset(nLoop) - fDataStart) / fBytesPerPix);
                 // check if the character is selected
                 BOOL bSelect = FALSE;
@@ -257,7 +257,7 @@ void CReferenceWnd::OnDraw(CDC * pDC, const CRect & printRect)
                     pDC->SetTextColor(normalTextColor);    // set back old text color
                 }
             }
-            while ((nDisplayPos < rClip.right) && (++nLoop < ref.GetSize()));
+            while ((nDisplayPos < rClip.right) && (++nLoop < pRef->GetOffsetSize()));
         }
     }
     pDC->SelectObject(pOldFont);  // set back old font

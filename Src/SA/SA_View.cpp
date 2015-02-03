@@ -51,7 +51,6 @@
 //        SDM fixed CreateGraphs to correct overlay bug introduced in 10.7
 // 1.5Test11.0
 //        SDM replaced GetOffset() + GetDuration() with CSegment::GetStop()
-//        SDM replaced GetTexts()->GetSize() with GetSize()
 // 1.5Test11.3
 //         SDM changed OnEditAddPhonetic to support new Gloss positions
 //         SDM changed CSegment::AdjustPositionAll to CSegment::Adjust

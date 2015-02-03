@@ -235,7 +235,7 @@ BOOL CDlgInformationWavePage::OnInitDialog()
     // create and write number of phones text
     int nNumber = 0;
     int nLoop = 0;
-    if (pDoc->GetSegment(PHONETIC)->GetString()->GetLength() > 0)
+    if (pDoc->GetSegment(PHONETIC)->GetContentLength() > 0)
     {
         // find number of phones
         while (TRUE)

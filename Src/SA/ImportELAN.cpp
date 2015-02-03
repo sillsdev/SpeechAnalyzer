@@ -268,10 +268,7 @@ void CImportELAN::AutoAlign( CSaDoc * pSaDoc, LPCTSTR pReference, LPCTSTR pPhone
             pSegment->Insert(pSegment->GetOffsetSize(),szNext,FALSE,charOffsets[nOffsetSize-1], charDurations[nOffsetSize-1]);
 
             // SDM 1.06.8 apply input filter to segment
-            if (pSegment->GetInputFilter())
-            {
-                (pSegment->GetInputFilter())(*pSegment->GetString());
-            }
+			pSegment->Filter();
         }
 
         // Process phonemic
@@ -337,10 +334,7 @@ void CImportELAN::AutoAlign( CSaDoc * pSaDoc, LPCTSTR pReference, LPCTSTR pPhone
                 pSegment->Insert(pSegment->GetOffsetSize(),szNext,FALSE, charOffsets[nOffsetSize-1], charDurations[nOffsetSize-1]);
             }
             // SDM 1.06.8 apply input filter to segment
-            if (pSegment->GetInputFilter())
-            {
-                (pSegment->GetInputFilter())(*pSegment->GetString());
-            }
+            pSegment->Filter();
         }
 
         // Process orthographic
@@ -407,10 +401,7 @@ void CImportELAN::AutoAlign( CSaDoc * pSaDoc, LPCTSTR pReference, LPCTSTR pPhone
             }
 
             // SDM 1.06.8 apply input filter to segment
-            if (pSegment->GetInputFilter())
-            {
-                (pSegment->GetInputFilter())(*pSegment->GetString());
-            }
+			pSegment->Filter();
         }
 
         // Process reference
@@ -476,10 +467,7 @@ void CImportELAN::AutoAlign( CSaDoc * pSaDoc, LPCTSTR pReference, LPCTSTR pPhone
                 pSegment->Insert(pSegment->GetOffsetSize(),szNext,FALSE, charOffsets[nOffsetSize-1], charDurations[nOffsetSize-1]);
             }
             // SDM 1.06.8 apply input filter to segment
-            if (pSegment->GetInputFilter())
-            {
-                (pSegment->GetInputFilter())(*pSegment->GetString());
-            }
+			pSegment->Filter();
         }
 
         // Process gloss
@@ -642,10 +630,7 @@ void CImportELAN::AutoAlign( CSaDoc * pSaDoc, LPCTSTR pReference, LPCTSTR pPhone
                 pSegment->Insert(pSegment->GetOffsetSize(),szNext,FALSE, charOffsets[nOffsetSize-1], charDurations[nOffsetSize-1]);
             }
             // SDM 1.06.8 apply input filter to segment
-            if (pSegment->GetInputFilter())
-            {
-                (pSegment->GetInputFilter())(*pSegment->GetString());
-            }
+			pSegment->Filter();
         }
 	}
 
@@ -939,7 +924,6 @@ BOOL CImportELAN::ReadTable( CStringStream & stream, int nMode)
         DWORD dwDuration = 0;
         while (nWordCurr < nWords || nIndex != -1)
         {
-            CSaString szTest = pPhonetic->GetText(nIndex);
             if (nWordCurr < nWords)
             {
                 dwDuration = (DWORD)((float)dwFileLength * (float)(nSegmentToBeginWord[nWordCurr + 1] - nSegmentToBeginWord[nWordCurr]) / (float)nSegmentCount);

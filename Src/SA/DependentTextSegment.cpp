@@ -26,32 +26,6 @@ void CDependentTextSegment::LimitPosition(CSaDoc *, DWORD & dwStart, DWORD & dwS
 
 /***************************************************************************/
 // CDependentTextSegment::Insert Insert/append a text segment
-// Returns FALSE if an error occurred. If the pointer to the string is NULL
-// there will be no string added.
-//
-// When inserting beyond the end of the current list, nIndex is the next
-// available index.  For example if we are inserting at the 4 gloss segment
-// but only reference segments 0 and 1 exist, then the next index is 2, not 3.
-/***************************************************************************/
-BOOL CDependentTextSegment::SetAt( const CSaString * pszString, bool, DWORD dwStart, DWORD dwDuration)
-{
-	if (pszString==NULL)
-	{
-		return TRUE;
-	}
-	if (pszString->GetLength()>0) 
-	{
-		return TRUE;
-	}
-    int nIndex = FindOffset(dwStart);
-    ASSERT(nIndex>=0);
-    m_Texts.SetAtGrow(nIndex, *pszString);
-    CSegment::SetAt(nIndex,dwStart,dwDuration);
-    return TRUE;
-}
-
-/***************************************************************************/
-// CDependentTextSegment::Insert Insert/append a text segment
 // Returns FALSE if an error occurred. 
 // if pszString is NULL, no string is added, and an error is returned
 //
@@ -66,32 +40,7 @@ BOOL CDependentTextSegment::Insert( int nIndex, LPCTSTR pszString, bool, DWORD d
     {
         return FALSE;
     }
-	if (wcslen(pszString)==0) 
-	{
-		return FALSE;
-	}
-    m_Texts.InsertAt( nIndex, pszString, 1);
-    InsertAt(nIndex,dwStart,dwDuration);
-    return TRUE;
-}
-
-/***************************************************************************/
-// CDependentTextSegment::Insert Insert/append a text segment
-// Returns FALSE if an error occurred. If the pointer to the string is NULL
-// there will be no string added.
-/***************************************************************************/
-BOOL CDependentTextSegment::SetText(int nIndex, LPCTSTR pszString, int, DWORD, DWORD)
-{
-
-    if (pszString==NULL)
-    {
-        return TRUE;
-    }
-
-    if (wcslen(pszString)>0)
-    {
-        m_Texts.SetAt(nIndex, pszString);
-    }
+    InsertAt( nIndex,CString(pszString),dwStart,dwDuration);
     return TRUE;
 }
 

@@ -483,7 +483,7 @@
     <ClInclude Include="process\sa_p_zcr.h" />
     <ClInclude Include="process\sa_w_adj.h" />
     <ClInclude Include="process\sa_w_equ.h" />
-    <ClInclude Include="process\sa_w_pas.h" />
+    <ClInclude Include="process\SA_W_PAS.h" />
     <ClInclude Include="process\sa_w_rev.h" />
     <ClInclude Include="Process\TrackState.h" />
     <ClInclude Include="recordset.h" />

@@ -21,11 +21,6 @@ CIndependentSegment(index,master)
 {
 }
 
-CSegment::TpInputFilterProc CPhoneticSegment::GetInputFilter(void) const
-{
-    return gIPAInputFilter;
-}
-
 CFontTable * CPhoneticSegment::NewFontTable() const
 {
     return new CFontTableIPA;
@@ -62,7 +57,8 @@ void CPhoneticSegment::ReplaceSelectedSegment( CSaDoc * pSaDoc, LPCTSTR replace)
     DWORD dwStart = pView->GetStartCursorPosition();
     DWORD dwStop = pView->GetStopCursorPosition();
 
-    DWORD dwOldOffset = RemoveNoRefresh(pDoc);
+    DWORD dwOldOffset = GetOffset(m_nSelection);
+	RemoveAt(m_nSelection);
     if (dwOldOffset == -1)
     {
         return;
@@ -118,7 +114,8 @@ void CPhoneticSegment::Remove(CDocument * pDoc, BOOL bCheck)
     }
     int nSelection = m_nSelection;
     DWORD dwOldStop = GetStop(nSelection);
-    DWORD dwOldOffset = RemoveNoRefresh(pSaDoc);
+    DWORD dwOldOffset = GetOffset(m_nSelection);
+	RemoveAt(m_nSelection);
     if (dwOldOffset == -1)
     {
         return;
@@ -158,27 +155,6 @@ void CPhoneticSegment::Remove(CDocument * pDoc, BOOL bCheck)
         }
     }
     pView->RefreshGraphs(TRUE,FALSE);
-}
-
-
-/***************************************************************************/
-// CPhoneticSegment::RemoveNoRefresh Remove annotation segment
-// All the dependent segments that are aligned to the removed phonetic
-// segment have to be removed too. The user will be informed before.
-/***************************************************************************/
-DWORD CPhoneticSegment::RemoveNoRefresh(CDocument *)
-{
-    // find length of string to delete
-    int nLength = GetSegmentLength(m_nSelection); // find length of string to delete
-
-    // check if there are aligned dependent segments
-    DWORD dwOldOffset = GetOffset(m_nSelection);
-
-    // change the phonetic arrays
-    *m_pAnnotation = m_pAnnotation->Left(m_nSelection) + m_pAnnotation->Right(m_pAnnotation->GetLength() - nLength - m_nSelection);
-    RemoveAt(m_nSelection,nLength);
-
-    return dwOldOffset;
 }
 
 /***************************************************************************/
@@ -596,43 +572,28 @@ long CPhoneticSegment::Process(void * pCaller, CSaDoc * pDoc, int nProgress, int
     return MAKELONG(nLevel, nProgress);
 }
 
-/**
-* Split this segment
-* @param start the offset of the phonetic segment
-*/
-void CPhoneticSegment::Split( CSaDoc * pDoc, CSaView * pView, DWORD thisOffset, DWORD newStopStart)
-{
-	if (GetOffsetSize()==0) return;
-	int index = FindIndex(thisOffset);
-	if (index==-1) return;
-	// store the old stop location
-	DWORD stop = GetStop(index);
-	AdjustDuration( thisOffset, newStopStart-thisOffset);
-	int length = GetSegmentLength(index);
-	// second segment still ends on old stop
-	Insert( index+length, GetDefaultChar(), true, newStopStart, stop-newStopStart);
-}
-
-/**
-* Split this segment
-* @param start the offset of the phonetic segment
-*/
-void CPhoneticSegment::Merge( CSaDoc * pDoc, CSaView * pView, DWORD thisOffset, DWORD prevOffset, DWORD thisStop)
-{
-	if (GetOffsetSize()==0) return;
-	int index = FindIndex(thisOffset);
-	int prev = FindIndex(prevOffset);
-	if (index==-1) return;
-	if (prev==-1) return;
-	// short text
-    int length = GetSegmentLength(index);
-	int end = m_pAnnotation->GetLength();
-    *m_pAnnotation = m_pAnnotation->Left(index) + m_pAnnotation->Right( end - length - index);
-    RemoveAt(index,length);
-	// increase segment
-	AdjustDuration( prevOffset, thisStop-prevOffset);
-}
-
 CSaString CPhoneticSegment::GetDefaultChar() {
 	return CSaString(SEGMENT_DEFAULT_CHAR);
 }
+
+bool CPhoneticSegment::Filter() {
+	bool changed = false;
+	for (int i=0;i<m_Text.GetCount();i++) {
+		changed |= Filter(m_Text[i]);
+	}
+	return changed;
+}
+
+bool CPhoneticSegment::Filter( CString & text) {
+    TCHAR cIPASpaceReplace = 0xFFFD;		// Box Character
+    bool bChanged = false;
+	for (int i=0;i<text.GetLength();i++) {
+		if (text[i]==0) break;
+        if (text[i] < 0x20) {
+			text.SetAt(i, cIPASpaceReplace);
+            bChanged = true;
+        }
+    }
+    return bChanged;
+}
+

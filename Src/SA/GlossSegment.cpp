@@ -46,7 +46,7 @@ void CGlossSegment::Remove(CDocument * pSaDoc, BOOL bCheck)
     {
         dwOldOffset = GetOffset(m_nSelection);
     }
-    CTextSegment::Remove(pSaDoc, bCheck);
+    CTextSegment::Remove( pSaDoc, bCheck);
     if (dwOldOffset == ~0)
     {
         return;
@@ -67,23 +67,9 @@ void CGlossSegment::Remove(CDocument * pSaDoc, BOOL bCheck)
 }
 
 //SDM 1.5Test8.1
-/***************************************************************************/
-// CGlossSegment::Insert Insert/append a gloss segment
-// Returns FALSE if an error occured. If the pointer to the string is NULL
-// there will be no string added.
-/***************************************************************************/
-BOOL CGlossSegment::SetAt(const CSaString * pszString, bool delimiter, DWORD dwStart, DWORD dwDuration)
-{
-    int nIndex = FindOffset(dwStart);
-    ASSERT(nIndex>=0);
-    return CTextSegment::SetAt(pszString, delimiter, dwStart, dwDuration);
-}
-
-//SDM 1.5Test8.1
 void CGlossSegment::Serialize(CArchive & ar)
 {
     CSegment::Serialize(ar);
-    CTextSegment::Serialize(ar);
     if (ar.IsStoring())
     {
         ar << CSaString("CGlossSegmentDetail tag");

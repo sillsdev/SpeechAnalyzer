@@ -159,10 +159,10 @@ void CSAXMLUtils::WriteSAXML( LPCTSTR filename, Elan::CAnnotationDocument & docu
 				it++;
 				continue;
 			}
-			for (int i=0;i<document.tiers.size();i++) {
+			for (size_t i=0;i<document.tiers.size();i++) {
 				Elan::CTier & tier = document.tiers[i];
 				if (_wcsicmp(tier.tierID.c_str(),it->second.c_str())==0) {
-					for (int j=0;j<tier.annotations.size();j++) {
+					for (size_t j=0;j<tier.annotations.size();j++) {
 						DOMElement * pSegData = doc->createElement(L"SegmentData");
 						pSegData->setAttribute(L"IsBookmark",L"false");
 						Elan::CAnnotation & annotation = tier.annotations[j];
@@ -204,10 +204,10 @@ void CSAXMLUtils::WriteSAXML( LPCTSTR filename, Elan::CAnnotationDocument & docu
 				it++;
 				continue;
 			}
-			for (int i=0;i<document.tiers.size();i++) {
+			for (size_t i=0;i<document.tiers.size();i++) {
 				Elan::CTier & tier = document.tiers[i];
 				if (_wcsicmp(tier.tierID.c_str(),it->second.c_str())==0) {
-					for (int j=0;j<tier.annotations.size();j++) {
+					for (size_t j=0;j<tier.annotations.size();j++) {
 						Elan::CAnnotation & annotation = tier.annotations[j];
 						DOMElement * pSegData = doc->createElement(L"MusicSegmentData");
 						pSegData->setAttribute(L"PhraseLevel",GetPhraseLevel(it->first));

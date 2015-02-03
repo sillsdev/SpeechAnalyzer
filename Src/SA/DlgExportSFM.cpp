@@ -1062,7 +1062,7 @@ void CDlgExportSFM::ExportCounts(CSaDoc * pDoc, CFile & file)
         // create and write number of phones text
         int nNumber = 0;
         int nLoop = 0;
-        if (pDoc->GetSegment(PHONETIC)->GetStringLength() > 0)
+        if (pDoc->GetSegment(PHONETIC)->GetContentLength() > 0)
         {
             // find number of phones
             while (TRUE)

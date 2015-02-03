@@ -29,7 +29,6 @@
 //         SDM changed alignToSegment to take a segment index to align to
 //         SDM added CDependentTextSegment
 //         SDM changed CGlossSegment to handle embedded POS and dependentText segments
-//         SDM changed CSegment::GetTexts() to return const
 //         SDM changed added bOverlap to CheckPosition CheckCursors
 // 1.5Test8.2
 //         SDM added CSegment::GetSize
@@ -66,8 +65,6 @@
 #include "SaString.h"
 #include "process\Process.h"
 
-BOOL CALLBACK EXPORT gIPAInputFilter(CSaString &);
-
 class CSaDoc;
 class CSaView;
 
@@ -82,6 +79,7 @@ public:
     virtual ~CSegment();
 
     virtual void Serialize(CArchive & ar);
+
     int GetMasterIndex(void) const;
     EAnnotation GetAnnotationIndex(void) const;
     // get copies of internal data.  (const functions)
@@ -90,34 +88,31 @@ public:
     int GetDurationSize() const;
     DWORD GetOffset(const int nIndex) const;        // return offset
     DWORD GetDuration(const int nIndex) const;      // return duration
+	CString GetText(const int nIndex) const;		// return text
     DWORD GetStop(const int nIndex) const;          // return stop
-    TCHAR GetChar(int nIndex) const;                // return annotation character
     int GetSelection() const;						// return the index of the selected character
     int GetPrevious(int nIndex = -1) const;         // return the index of the previous segment
     int GetNext(int nIndex = -1) const;             // return the index of the next segment
     int FindOffset(DWORD dwOffset) const;           // return segment with matching offset
     int FindStop(DWORD dwOffset) const;             // return segment with matching stop
     int FindFromPosition(DWORD dwPosition, BOOL bWithin = FALSE) const; // get segment index from position
-    virtual BOOL Match(int index, LPCTSTR find);
+    virtual bool Match(int index, LPCTSTR find);
 	virtual void Replace( CSaDoc * pDoc, int index, LPCTSTR find, LPCTSTR replace);
 	int FindIndex( DWORD offset);
     virtual int FindNext(int fromIndex, LPCTSTR strToFind);
     virtual int FindPrev(int fromIndex, LPCTSTR strToFind);
     int CheckCursors(CSaDoc *, BOOL bOverlap) const;        // checks the position of the cursors for new segment
     DWORD GetDurationAt(int index) const;
-    void SetAt(int index, DWORD offset, DWORD duration);
-    void InsertAt(int index, DWORD offset, DWORD duration);
-    // remove offset and duration
-    void RemoveAt(int index, int length);
+    void InsertAt(int index, CString & text, DWORD offset, DWORD duration);
+    void RemoveAt(int index);						// remove text, offset and duration
 	virtual void Split( CSaDoc * pDoc, CSaView * pView, DWORD start, DWORD newStopStart);
 	virtual void Merge( CSaDoc * pDoc, CSaView * pView, DWORD thisOffset, DWORD prevOffset, DWORD thisStop);
 	virtual void MoveDataLeft( DWORD offset);
 	virtual void MoveDataRight( DWORD offset);
 	void AdjustDuration( DWORD offset, DWORD duration);
 	virtual void Add( CSaDoc * pDoc, CSaView * pView, DWORD dwStart, CSaString & szString, bool bDelimiter, bool bCheck) = 0;
-	void Add( DWORD offset, DWORD duration);
-	void Remove( int sel);
-
+    virtual BOOL SetText(int nIndex, LPCTSTR pszString, int nDelimiter, DWORD dwOffset, DWORD dwDuration);   // insert a new segment
+	
     enum EMode
     {
         MODE_AUTOMATIC,
@@ -145,15 +140,14 @@ public:
     BOOL IsEmpty() const;
 
     // modify internal data
-    void AdjustCursorsToSnap(CDocument * pDoc); // adjust cursors to appropriate snap position
-    void SetSelection(int nIndex); // set selection
-    virtual void Remove(CDocument *, BOOL bCheck = TRUE); // remove a segment
-    virtual DWORD RemoveNoRefresh(CDocument *); // remove a segment
+    void AdjustCursorsToSnap(CDocument * pDoc);				// adjust cursors to appropriate snap position
+    void SetSelection(int nIndex);							// set selection
+    virtual void Remove(CDocument *, BOOL bCheck = TRUE);	// remove a segment
     virtual void ReplaceSelectedSegment(CSaDoc * pSaDoc, LPCTSTR replace);
-    virtual void DeleteContents(); // delete all contents of the segment arrays
-    virtual void Adjust(ISaDoc * saDoc, int nIndex, DWORD dwOffset, DWORD dwDuration = 0, bool segmental = false); // adjust position of segment
-    virtual BOOL SetAt(const CSaString *, bool delimiter, DWORD dwStart, DWORD dwDuration);  // sets a new segment
-    virtual BOOL Insert(int nIndex, LPCTSTR szText, bool delimiter, DWORD dwStart, DWORD dwDuration); // insert a new segment
+    virtual void DeleteContents();							// delete all contents of the segment arrays
+    virtual void Adjust(ISaDoc * saDoc, int nIndex, DWORD dwOffset, DWORD dwDuration = 0, bool segmental = false);	// adjust position of segment
+    virtual BOOL SetAt( const CSaString &, bool delimiter, DWORD dwStart, DWORD dwDuration, bool textSegment);		// sets a new segment
+    virtual BOOL Insert(int nIndex, LPCTSTR szText, bool delimiter, DWORD dwStart, DWORD dwDuration);				// insert a new segment
     virtual long Process(void * pCaller, ISaDoc * pDoc, int nProgress = 0, int nLevel = 1);
     virtual CSaString GetContainedText(DWORD dwStart, DWORD dwStop);
     virtual CSaString GetOverlappingText(DWORD dwStart, DWORD dwStop);
@@ -161,29 +155,30 @@ public:
     // annotation functions
     virtual CSaString GetSegmentString(int nIndex) const;   // return segment string
     virtual int GetSegmentLength(int nIndex) const;         // return segment length
-    virtual CSaString GetText(int nIndex) const;            // return text string
-    CSaString * GetString();                                // return pointer to annotation string
-    size_t GetStringLength();                               // return the text string length
-    void SetString(LPCTSTR val);                             // sets the annotation string
 
 	virtual CSaString GetDefaultChar();
 
 	void Validate();
 
+	CString GetContent() const;								// return the contents of the entire segment
+    size_t GetContentLength() const;                        // return the text string length
+
+	virtual bool Filter();
+	virtual bool Filter( CString & text);
+
+    int CountWords();
+
 protected:
     typedef BOOL (CALLBACK EXPORT * TpInputFilterProc)(CSaString &);
-
-    CSaString * m_pAnnotation;          // annotation string
     int m_nSelection;                   // selected segment
     EAnnotation m_nAnnotationIndex;
     int m_nMasterIndex;
 
+protected:
+	CStringArray m_Text;				// array of text strings
 private:
     CDWordArray m_Offset;               // array of offsets
     CDWordArray m_Duration;             // array of durations
-
-public:
-    virtual TpInputFilterProc GetInputFilter(void) const; // filter function for input
 };
 
 #endif

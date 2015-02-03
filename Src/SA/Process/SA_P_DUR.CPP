@@ -60,7 +60,7 @@ long CProcessDurations::Process(void * pCaller, ISaDoc * pDoc, int nProgress, in
 
     // set pointer to segment durations
     CSegment * pSegment = pDoc->GetSegment(PHONETIC);
-    CString * pPhonetic = pSegment->GetString();
+    CString pPhonetic = pSegment->GetContent();
 	m_Durations.RemoveAll();
 	for (int i=0;i<pSegment->GetDurationSize();i++) 
 	{
@@ -70,7 +70,7 @@ long CProcessDurations::Process(void * pCaller, ISaDoc * pDoc, int nProgress, in
     // find min and max durations
     m_dwMaxValue = 0;
     m_dwMinValue = ULONG_MAX;
-    for (int i = 0; i < pPhonetic->GetLength(); i++)
+    for (int i = 0; i < pPhonetic.GetLength(); i++)
     {
         m_dwMaxValue = max(m_dwMaxValue, pSegment->GetDurationAt(i));
         m_dwMinValue = min(m_dwMinValue, pSegment->GetDurationAt(i));

@@ -2464,9 +2464,8 @@ void CTranscriptionDisp::Init(UINT nID, CWnd * pParent)
         CSaView * pView = (CSaView *)pMDIFrameWnd->GetCurrSaView();
         ASSERT(pView->IsKindOf(RUNTIME_CLASS(CSaView)));
         CSaDoc * pDoc = (CSaDoc *)pView->GetDocument();
-        CString * pPhonetic = pDoc->GetSegment(PHONETIC)->GetString();
-
-        pWnd->SetWindowText(*pPhonetic);
+        CString content = pDoc->GetSegment(PHONETIC)->GetContent();
+        pWnd->SetWindowText(content);
         CFont * pFont = pDoc->GetFont(PHONETIC);
         pWnd->SetFont(pFont);
     }

@@ -816,7 +816,7 @@ BOOL CSaDoc::OnOpenDocument(LPCTSTR pszPathName)
             document = Elan::LoadDocument(pszPathName);
         }
         int found = 0;
-        for (int i=0; i<document.header.mediaDescriptors.size(); i++)
+        for (size_t i=0; i<document.header.mediaDescriptors.size(); i++)
         {
             wstring filename = document.header.mediaDescriptors[i].mediaURL.c_str();
 
@@ -1348,6 +1348,7 @@ void CSaDoc::ReadTranscription(int transType, ISaAudioDocumentReaderPtr saAudioD
     BSTR * annotation = (BSTR *)calloc(1, sizeof(long));
     CSaString szFullTrans = _T("");
 
+	CStringArray texts;
     CDWordArray dwOffsets;
     CDWordArray dwDurations;
 
@@ -1369,23 +1370,16 @@ void CSaDoc::ReadTranscription(int transType, ISaAudioDocumentReaderPtr saAudioD
             length = limit-offset;
         }
 
-        CSaString sztmpAnnotation = *annotation;
-        szFullTrans += sztmpAnnotation;
-
         // Loop through the code points in the annotation and save
-        // offsets and durations for each.
-        for (int i = 0; i < sztmpAnnotation.GetLength(); i++)
-        {
-            dwOffsets.Add(offset);
-            dwDurations.Add(length);
-        }
+		texts.Add(*annotation);
+        dwOffsets.Add(offset);
+        dwDurations.Add(length);
     }
 
-    pSegment->SetString(szFullTrans);
     ASSERT(dwOffsets.GetSize()==dwDurations.GetSize());
     for (int i=0; i<dwOffsets.GetSize(); i++)
     {
-        pSegment->InsertAt(i,dwOffsets[i],dwDurations[i]);
+        pSegment->InsertAt(i,texts[i],dwOffsets[i],dwDurations[i]);
     }
 
     free(annotation);
@@ -1557,14 +1551,10 @@ BOOL CSaDoc::InsertTranscription(int transType, ISaAudioDocumentReaderPtr saAudi
     free(annotation);
 
     // apply input filter to transcription data
-    if (pSegment->GetInputFilter())
+    if (pSegment->Filter())
     {
-        BOOL bChanged = (pSegment->GetInputFilter())(*pSegment->GetString());
-        if (bChanged)
-        {
-            SetModifiedFlag(TRUE);
-            SetTransModifiedFlag(TRUE); // transcription data has been modified
-        }
+        SetModifiedFlag(TRUE);
+        SetTransModifiedFlag(TRUE); // transcription data has been modified
     }
 
     return TRUE;
@@ -2539,36 +2529,23 @@ void CSaDoc::WriteNonSegmentData(DWORD dwDataSize, ISaAudioDocumentWriterPtr saA
 // CSaDoc::WriteTranscription  Write the transcription from the document
 // to the transcription database.
 /***************************************************************************/
-void CSaDoc::WriteTranscription(int transType, ISaAudioDocumentWriterPtr saAudioDocWriter)
+void CSaDoc::WriteTranscription( int transType, ISaAudioDocumentWriterPtr saAudioDocWriter)
 {
-    CSaString szFullTrans = *m_apSegments[transType]->GetString();
-    WORD wTransLength = (WORD)szFullTrans.GetLength();
-    if (wTransLength == 0)
+	CSegment * pSegment = m_apSegments[transType];
+	size_t count = pSegment->GetOffsetSize();
+	if (count==0)
+	{
+		return;
+	}
+
+	TRACE("entries to write = %d\n",count);
+    for (size_t i = 0; i < count; i++)
     {
-        return;
+		CSaString text = pSegment->GetText(i);
+		DWORD dwOffset = pSegment->GetOffset(i) * m_FmtParm.wChannels;
+		DWORD dwLength = pSegment->GetDuration(i) * m_FmtParm.wChannels;
+	    saAudioDocWriter->AddSegment( transType, dwOffset, dwLength, (_bstr_t)text);
     }
-
-    TRACE("trans length = %d\n",wTransLength);
-
-    CSaString szAnnotation = _T("");
-    DWORD dwOffset = m_apSegments[transType]->GetOffset(0) * m_FmtParm.wChannels;
-    DWORD dwLength = m_apSegments[transType]->GetDuration(0) * m_FmtParm.wChannels;
-
-    for (int i = 0; i < (int)wTransLength; i++)
-    {
-        if (dwOffset != m_apSegments[transType]->GetOffset(i) * m_FmtParm.wChannels)
-        {
-            // Write annotation
-            saAudioDocWriter->AddSegment(transType, dwOffset, dwLength, (_bstr_t)szAnnotation);
-            szAnnotation.Empty();
-            dwOffset = m_apSegments[transType]->GetOffset(i) * m_FmtParm.wChannels;
-            dwLength = m_apSegments[transType]->GetDuration(i) * m_FmtParm.wChannels;
-        }
-
-        szAnnotation += szFullTrans[i];
-    }
-
-    saAudioDocWriter->AddSegment(transType, dwOffset, dwLength, (_bstr_t)szAnnotation);
 }
 
 /***************************************************************************/
@@ -2587,24 +2564,22 @@ void CSaDoc::WriteGlossPosAndRefSegments(ISaAudioDocumentWriterPtr saAudioDocWri
     int nGlossNat = 0;
     int nRef = 0;
 
-    for (int i = 0; i < pGloss->GetTexts().GetSize(); i++)
+    for (int i = 0; i < pGloss->GetOffsetSize(); i++)
     {
         offset = pGloss->GetOffset(i);
         length = pGloss->GetDuration(i);
 
-        szGloss = pGloss->GetTexts().GetAt(i);
-
+        szGloss = pGloss->GetText(i);
         CGlossNatSegment * pGlossNat = (CGlossNatSegment *)m_apSegments[GLOSS_NAT];
-        if ((nGlossNat < pGlossNat->GetTexts().GetSize()) && (pGlossNat->GetOffset(nGlossNat) == offset))
+        if ((nGlossNat < pGlossNat->GetOffsetSize()) && (pGlossNat->GetOffset(nGlossNat) == offset))
         {
-            szGlossNat = pGlossNat->GetTexts().GetAt(nGlossNat++);
+            szGlossNat = pGlossNat->GetText(nGlossNat++);
         }
 
-
         CReferenceSegment * pRef = (CReferenceSegment *)m_apSegments[REFERENCE];
-        if ((nRef < pRef->GetTexts().GetSize()) && (pRef->GetOffset(nRef) == offset))
+        if ((nRef < pRef->GetOffsetSize()) && (pRef->GetOffset(nRef) == offset))
         {
-            szRef = pRef->GetTexts().GetAt(nRef++);
+            szRef = pRef->GetText(nRef++);
         }
 
         VARIANT_BOOL isBookmark = FALSE;
@@ -5013,10 +4988,7 @@ void CSaDoc::AdjustSegments(WAVETIME sectionStart, WAVETIME sectionLength, bool 
                 {
                     // delete segment
                     // change the independent arrays
-                    int nLength = m_apSegments[independent]->GetSegmentLength(nIndex);
-                    CString * pAnnotation = m_apSegments[independent]->GetString();
-                    *pAnnotation = pAnnotation->Left(nIndex) + pAnnotation->Right(pAnnotation->GetLength() - nLength - nIndex);
-                    m_apSegments[independent]->RemoveAt(nIndex,nLength);
+                    m_apSegments[independent]->RemoveAt(nIndex);
                     // delete aligned dependent segments and gloss
                     for (int nLoop = 1; nLoop < ANNOT_WND_NUMBER; nLoop++)
                     {
@@ -5030,7 +5002,7 @@ void CSaDoc::AdjustSegments(WAVETIME sectionStart, WAVETIME sectionLength, bool 
                                 {
                                     pSegment->SetSelection(nInnerIndex);
                                 }
-                                pSegment->RemoveNoRefresh(this);
+								pSegment->RemoveAt(pSegment->GetSelection());
                             }
                         }
                     }
@@ -7601,7 +7573,7 @@ void CSaDoc::AddReferenceData(CDlgAutoReferenceData & dlg, int selection)
                     else
                     {
                         // we can just overwrite the text
-                        pReference->SetAt(&text,0,offset,duration);
+                        pReference->SetAt(text,0,offset,duration,true);
                         found=true;
                     }
                 }
@@ -7629,7 +7601,7 @@ void CSaDoc::AddReferenceData(CDlgAutoReferenceData & dlg, int selection)
                     if ((poffset<offset)&&(offset<pstop))
                     {
                         CSaString rtext = pReference->GetContainedText(poffset,pstop);
-                        pReference->SetAt(&rtext,r,poffset,offset-poffset);
+                        pReference->SetAt(rtext,r,poffset,offset-poffset,true);
                     }
                 }
                 // add at end
@@ -7702,7 +7674,7 @@ void CSaDoc::AddReferenceData(CDlgAutoReferenceData & dlg, int selection)
                     {
                         // we need to readjust the segment to it's new size
                         // we can just overwrite the text
-                        pReference->SetAt(&text,0,offset,duration);
+                        pReference->SetAt(text,0,offset,duration,true);
                         found=true;
                     }
                 }
@@ -7730,7 +7702,7 @@ void CSaDoc::AddReferenceData(CDlgAutoReferenceData & dlg, int selection)
                     if ((poffset<offset)&&(offset<pstop))
                     {
                         CSaString rtext = pReference->GetContainedText(poffset,pstop);
-                        pReference->SetAt(&rtext,r,poffset,offset-poffset);
+                        pReference->SetAt(rtext,r,poffset,offset-poffset,true);
                     }
                 }
                 // add at end
@@ -8132,16 +8104,13 @@ void CSaDoc::AlignTranscriptionData(CTranscriptionDataSettings & settings)
             pSegment->Insert(pSegment->GetOffsetSize(),szNext,FALSE,pArray[CHARACTER_OFFSETS][nOffsetSize-1], pArray[CHARACTER_DURATIONS][nOffsetSize-1]);
 
             // SDM 1.06.8 apply input filter to segment
-            if (pSegment->GetInputFilter())
-            {
-                (pSegment->GetInputFilter())(*pSegment->GetString());
-            }
+			pSegment->Filter();
         }
 
         // Process phonemic
         // SDM 1.06.8 only change  if new segmentation or text changed
         if ((settings.m_bPhonemic) &&
-                ((settings.m_nSegmentBy != IDC_KEEP)||(settings.m_bPhonemicModified)))
+            ((settings.m_nSegmentBy != IDC_KEEP)||(settings.m_bPhonemicModified)))
         {
 
             nStringIndex = 0;
@@ -8239,10 +8208,7 @@ void CSaDoc::AlignTranscriptionData(CTranscriptionDataSettings & settings)
                 pSegment->Insert(pSegment->GetOffsetSize(),szNext,FALSE, pArray[CHARACTER_OFFSETS][nOffsetSize-1], pArray[CHARACTER_DURATIONS][nOffsetSize-1]);
             }
             // SDM 1.06.8 apply input filter to segment
-            if (pSegment->GetInputFilter())
-            {
-                (pSegment->GetInputFilter())(*pSegment->GetString());
-            }
+			pSegment->Filter();
         }
 
         // Process tone
@@ -8357,10 +8323,7 @@ void CSaDoc::AlignTranscriptionData(CTranscriptionDataSettings & settings)
             }
 
             // SDM 1.06.8 apply input filter to segment
-            if (pSegment->GetInputFilter())
-            {
-                (pSegment->GetInputFilter())(*pSegment->GetString());
-            }
+			pSegment->Filter();
         }
 
         // Process gloss
@@ -8502,11 +8465,9 @@ void CSaDoc::AlignTranscriptionDataByRef(CTranscriptionData & td)
         return;
     }
 
-    const CStringArray & references = pReference->GetTexts();
-
     for (int i=0; i<pReference->GetOffsetSize(); i++)
     {
-        CSaString thisRef = references.GetAt(i);
+        CSaString thisRef = pReference->GetText(i);
         DWORD start = pReference->GetOffset(i);
         DWORD duration = pReference->GetDuration(i);
         MarkerList::iterator git = td.m_TranscriptionData[td.m_MarkerDefs[GLOSS]].begin();
@@ -8530,17 +8491,17 @@ void CSaDoc::AlignTranscriptionDataByRef(CTranscriptionData & td)
                 if ((td.m_bPhonetic)&&(phoneticValid))
                 {
                     CSaString text = *pnit;
-                    pPhonetic->SetAt(&text,false,start,duration);
+                    pPhonetic->SetAt(text,false,start,duration,false);
                 }
                 if ((td.m_bPhonemic)&&(phonemicValid))
                 {
                     CSaString text = *pmit;
-                    pPhonemic->SetAt(&text,false,start,duration);
+                    pPhonemic->SetAt(text,false,start,duration,false);
                 }
                 if ((td.m_bOrthographic)&&(orthoValid))
                 {
                     CSaString text = *oit;
-                    pOrthographic->SetAt(&text,false,start,duration);
+                    pOrthographic->SetAt(text,false,start,duration,false);
                 }
                 if ((td.m_bGloss)&&(glossValid))
                 {
@@ -8551,7 +8512,7 @@ void CSaDoc::AlignTranscriptionDataByRef(CTranscriptionData & td)
                         {
                             text = text.Mid(1);
                         }
-                        pGloss->SetAt(&text,false,start,duration);
+                        pGloss->SetAt(text,false,start,duration,true);
                     }
                 }
                 if ((td.m_bGlossNat)&&(glossNatValid))
@@ -8559,7 +8520,7 @@ void CSaDoc::AlignTranscriptionDataByRef(CTranscriptionData & td)
                     CSaString text = *gnit;
                     if (pGlossNat->FindOffset(start)>=0)
                     {
-                        pGlossNat->SetAt(&text,false,start,duration);
+                        pGlossNat->SetAt(text,false,start,duration,true);
                     }
                     else if (pGlossNat->IsEmpty())
                     {
