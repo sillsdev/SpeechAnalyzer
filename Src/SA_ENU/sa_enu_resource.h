@@ -1507,7 +1507,7 @@
 #define ID_AUTO_ALIGN                   33060
 #define ID_EDIT_AUTO_SNAP_UPDATE        33061
 #define ID_EDIT_UPDATE_BOUNDARIES       33062
-#define ID_EDIT_ADD                     33063
+#define ID_EDIT_ADD_PHONETIC            33063
 #define ID_EDIT_EDITOR                  33064
 #define ID_EDIT_ADD_BOOKMARK            33065
 #define ID_EDIT_REMOVE                  33066
@@ -1639,12 +1639,14 @@
 #define ID_VIEW_TRANSCRIPTION_BOUNDARIES 33244
 #define ID_Menu                         33245
 #define ID_HELP_SFMMARKERS              33246
-#define ID_EDIT_SPLIT					33247
-#define ID_EDIT_MOVE_LEFT				33248
-#define ID_EDIT_SPLIT_MOVE_LEFT			33249
-#define ID_EDIT_MERGE					33250
-#define ID_EDIT_MOVE_RIGHT				33251
-#define ID_EDIT_MOVE_RIGHT_MERGE		33252
+#define ID_EDIT_SPLIT                   33247
+#define ID_EDIT_MOVE_LEFT               33248
+#define ID_EDIT_SPLIT_MOVE_LEFT         33249
+#define ID_EDIT_MERGE                   33250
+#define ID_EDIT_MOVE_RIGHT              33251
+#define ID_EDIT_MOVE_RIGHT_MERGE        33252
+#define ID_EDIT_ADD_MARKUP              33253
+#define ID_ACCELERATOR33255             33255
 #define ID_GRAPHTYPES_SELECT_FIRST      40000
 #define ID_GRAPHTYPES_SELECT_LAST       40011
 #define ID_PHONETIC_ALL                 40100
@@ -1809,7 +1811,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_3D_CONTROLS                     1
 #define _APS_NEXT_RESOURCE_VALUE        385
-#define _APS_NEXT_COMMAND_VALUE         33250
+#define _APS_NEXT_COMMAND_VALUE         33257
 #define _APS_NEXT_CONTROL_VALUE         2111
 #define _APS_NEXT_SYMED_VALUE           105
 #endif

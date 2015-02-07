@@ -274,7 +274,7 @@ public:
     void SetHintUpdateBoundaries(bool bHint, bool bOverlap);
     void OnCreateEdit(const CString * szString = NULL);
     static void CreateAnnotationFont(CFont * pFont, int nPoint, LPCTSTR szFace);
-	void ShowTranscriptionBoundaries( bool val);
+	void ShowTranscriptionBoundaries( BOOL val);
 
 protected:
 	void DrawTranscriptionBorders(CDC * pDC, CRect rWnd, Colors * pColors);

@@ -2684,7 +2684,7 @@ void CDlgKlattAll::LabelDocument(CSaDoc * pDoc)
             double length = elapsedTime - lastCharStopTime;
             DWORD dwDuration = DWORD(length*spkrDef.SR+0.5)*2;
             CSaString szIpa(cChars[i].ipa);
-            pCharSeg->Insert(pCharSeg->GetOffsetSize(), szIpa, true, dwStart, dwDuration);
+            pCharSeg->Append( szIpa, true, dwStart, dwDuration);
             lastCharStopTime += length;
         }
     }

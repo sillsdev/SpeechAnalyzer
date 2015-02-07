@@ -386,7 +386,7 @@ protected:
     afx_msg void OnEditAutoAddStorySection();
     afx_msg void OnUpdateEditAutoAddStorySection(CCmdUI * pCmdUI);
     afx_msg void OnEditAddPhonetic();
-    afx_msg void OnUpdateEditAdd(CCmdUI * pCmdUI);
+    afx_msg void OnUpdateEditAddPhonetic(CCmdUI * pCmdUI);
     afx_msg void OnEditAddAutoPhraseL2();
     afx_msg void OnUpdateEditAddAutoPhraseL2(CCmdUI * pCmdUI);
     afx_msg void OnEditAddPhraseL1();
@@ -409,6 +409,8 @@ protected:
     afx_msg void OnUpdateEditAddSyllable(CCmdUI * pCmdUI);
     afx_msg void OnEditAddGloss();
     afx_msg void OnUpdateEditAddGloss(CCmdUI * pCmdUI);
+    afx_msg void OnEditAddMarkup();
+    afx_msg void OnUpdateEditAddMarkup(CCmdUI * pCmdUI);
     afx_msg void OnEditAddBookmark();
     afx_msg void OnUpdateEditAddBookmark(CCmdUI * pCmdUI);
     afx_msg void OnEditCursorStartLeft();

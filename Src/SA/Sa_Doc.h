@@ -402,6 +402,10 @@ private:
 
 	void ErrorMessage( UINT nTextID, LPCTSTR pszText1=NULL, LPCTSTR pszText2=NULL);
 	void ErrorMessage( CSaString & text);
+
+	void NormalizePhoneticDependencies();
+	int GetInsertionIndex( CSegment * pSegment, DWORD offset);
+
     bool m_bAudioModified;                      // dirty flag for audio data
     bool m_bTransModified;                      // dirty flag for transcription data
     bool m_bTempOverlay;

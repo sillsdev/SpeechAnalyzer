@@ -139,49 +139,50 @@ void CGlossNatWnd::OnDraw(CDC * pDC, const CRect & printRect)
     {
         return;    // nothing to draw
     }
+
     // calculate the number of data samples per pixel
     double fBytesPerPix = (double)dwDataFrame / (double)rWnd.Width();
 
     // get pointer to gloss strings
-    CGlossNatSegment * pSeg = (CGlossNatSegment *)pDoc->GetSegment(m_nIndex);
-    if (pSeg->GetOffsetSize()>0)
+    CGlossNatSegment * pGlossNat = (CGlossNatSegment *)pDoc->GetSegment(m_nIndex);
+    if (pGlossNat->GetOffsetSize()>0)
     {
         // array is not empty
         // get pointer to gloss offset and duration arrays
-        CSegment * pSegment = pDoc->GetSegment(m_nIndex);
         // position prepare loop. Find first string to display in clipping rect
         int nLoop = 0;
-        if ((fDataStart > 0) && (pSeg->GetOffsetSize() > 1))
+        if ((fDataStart > 0) && (pGlossNat->GetOffsetSize() > 1))
         {
             double fStart = fDataStart + (double)(rClip.left - tm.tmAveCharWidth) * fBytesPerPix;
-            for (nLoop = 1; nLoop < pSeg->GetOffsetSize(); nLoop++)
+            for (nLoop = 1; nLoop < pGlossNat->GetOffsetSize(); nLoop++)
             {
-                if ((double)(pSegment->GetStop(nLoop)) > fStart)   // first string must be at lower position
+                if ((double)(pGlossNat->GetStop(nLoop)) > fStart)   // first string must be at lower position
                 {
                     nLoop--; // this is it
                     break;
                 }
             }
         }
-        if (nLoop < pSeg->GetOffsetSize())   // there is something to display
+        if (nLoop < pGlossNat->GetOffsetSize())   // there is something to display
         {
             // display loop
-            int nDisplayPos, nDisplayStop;
+            int nDisplayPos = 0;
+			int nDisplayStop = 0;
             CString string;
             do
             {
                 string.Empty();
                 // get the string to display
-                string = pSeg->GetText(nLoop);
-                nDisplayPos = round((pSegment->GetOffset(nLoop) - fDataStart) / fBytesPerPix);
+                string = pGlossNat->GetText(nLoop);
+                nDisplayPos = round((pGlossNat->GetOffset(nLoop) - fDataStart) / fBytesPerPix);
                 // check if the character is selected
                 BOOL bSelect = FALSE;
-                if (pSegment->GetSelection() == nLoop)
+                if (pGlossNat->GetSelection() == nLoop)
                 {
                     bSelect = TRUE;
                 }
                 // calculate duration
-                nDisplayStop = round((pSegment->GetStop(nLoop) - fDataStart)/ fBytesPerPix);
+                nDisplayStop = round((pGlossNat->GetStop(nLoop) - fDataStart)/ fBytesPerPix);
                 //SDM 1.06.2
                 if (m_bHintUpdateBoundaries)   // Show New Boundaries
                 {
@@ -190,11 +191,11 @@ void CGlossNatWnd::OnDraw(CDC * pDC, const CRect & printRect)
                         nDisplayPos = round((m_dwHintStart - fDataStart)/ fBytesPerPix);
                         nDisplayStop = round((m_dwHintStop - fDataStart)/ fBytesPerPix);
                     }
-                    else if (pSegment->GetSelection() == (nLoop+1))     // Segment prior to selected segment
+                    else if (pGlossNat->GetSelection() == (nLoop+1))     // Segment prior to selected segment
                     {
                         nDisplayStop = round((m_dwHintStart - fDataStart)/ fBytesPerPix);
                     }
-                    else if (pSegment->GetSelection() == (nLoop-1))     // Segment after selected segment
+                    else if (pGlossNat->GetSelection() == (nLoop-1))     // Segment after selected segment
                     {
                         nDisplayPos = round((m_dwHintStop - fDataStart)/ fBytesPerPix);
                     }
@@ -253,7 +254,7 @@ void CGlossNatWnd::OnDraw(CDC * pDC, const CRect & printRect)
                     pDC->SetTextColor(normalTextColor);    // set back old text color
                 }
             }
-            while ((nDisplayPos < rClip.right) && (++nLoop < pSeg->GetOffsetSize()));
+            while ((nDisplayPos < rClip.right) && (++nLoop < pGlossNat->GetOffsetSize()));
         }
     }
     pDC->SelectObject(pOldFont);  // set back old font

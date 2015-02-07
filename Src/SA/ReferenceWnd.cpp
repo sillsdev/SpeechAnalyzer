@@ -46,19 +46,15 @@ CReferenceWnd::CReferenceWnd(int nIndex) : CAnnotationWnd(nIndex) {
 /***************************************************************************/
 // CReferenceWnd::OnDraw Drawing
 /***************************************************************************/
-void CReferenceWnd::OnDraw(CDC * pDC, const CRect & printRect)
-{
+void CReferenceWnd::OnDraw(CDC * pDC, const CRect & printRect) {
 
     CRect rWnd;
     CRect rClip; // get invalid region
 
-    if (pDC->IsPrinting())
-    {
+    if (pDC->IsPrinting()) {
         rWnd  = printRect;
         rClip = printRect;
-    }
-    else
-    {
+    } else {
         GetClientRect(rWnd);
         pDC->GetClipBox(&rClip);
         pDC->LPtoDP(&rClip);
@@ -70,8 +66,7 @@ void CReferenceWnd::OnDraw(CDC * pDC, const CRect & printRect)
     TEXTMETRIC tm;
     pDC->GetTextMetrics(&tm);
     // get window coordinates
-    if (rWnd.Width() == 0)
-    {
+    if (rWnd.Width() == 0) {
         return;    // nothing to draw
     }
     // set font colors
@@ -102,8 +97,7 @@ void CReferenceWnd::OnDraw(CDC * pDC, const CRect & printRect)
     // 09/27/2000 - DDO If the graph is the TWC graph
     // then we don't want to draw the annotation text.
     //*******************************************************
-    if (pGraph->IsPlotID(IDD_TWC))
-    {
+    if (pGraph->IsPlotID(IDD_TWC)) {
         pDC->SelectObject(pOldFont);  // set back old font
         return;
     }
@@ -115,108 +109,85 @@ void CReferenceWnd::OnDraw(CDC * pDC, const CRect & printRect)
     // check if area graph type
     double fDataStart;
     DWORD dwDataFrame;
-    if (pGraph->IsAreaGraph())
-    {
+    if (pGraph->IsAreaGraph()) {
         // get necessary data from area plot
         fDataStart = pGraph->GetPlot()->GetAreaPosition();
         dwDataFrame = pGraph->GetPlot()->GetAreaLength();
-    }
-    else
-    {
+    } else {
         // check if graph has private cursor
-        if (pGraph->HavePrivateCursor())
-        {
+        if (pGraph->HavePrivateCursor()) {
             // get necessary data from between public cursors
             WORD wSmpSize = WORD(pDoc->GetSampleSize());
             fDataStart = pView->GetStartCursorPosition(); // data index of first sample to display
             dwDataFrame = pView->GetStopCursorPosition() - (DWORD) fDataStart + wSmpSize; // number of data points to display
-        }
-        else
-        {
+        } else {
             // get necessary data from document and from view
             fDataStart = pView->GetDataPosition(rWnd.Width()); // data index of first sample to display
             dwDataFrame = pView->AdjustDataFrame(rWnd.Width()); // number of data points to display
         }
     }
-    if (dwDataFrame == 0)
-    {
+    if (dwDataFrame == 0) {
         return;    // nothing to draw
     }
+
     // calculate the number of data samples per pixel
     double fBytesPerPix = (double)dwDataFrame / (double)rWnd.Width();
 
     // get pointer to gloss strings
-    CReferenceSegment * pRef = (CReferenceSegment *)pDoc->GetSegment(m_nIndex);
-    if (pRef->GetOffsetSize()>0)
-    {
+    CReferenceSegment * pReference = (CReferenceSegment *)pDoc->GetSegment(m_nIndex);
+    if (pReference->GetOffsetSize()>0) {
         // array is not empty
-        // get pointer to gloss offset and duration arrays
-        CSegment * pSegment = pDoc->GetSegment(m_nIndex);
         // position prepare loop. Find first string to display in clipping rect
         int nLoop = 0;
-        if ((fDataStart > 0) && (pRef->GetOffsetSize() > 1))
-        {
+        if ((fDataStart > 0) && (pReference->GetOffsetSize() > 1)) {
             double fStart = fDataStart + (double)(rClip.left - tm.tmAveCharWidth) * fBytesPerPix;
-            for (nLoop = 1; nLoop < pRef->GetOffsetSize(); nLoop++)
-            {
-                if ((double)(pSegment->GetStop(nLoop)) > fStart)   // first string must be at lower position
-                {
+            for (nLoop = 1; nLoop < pReference->GetOffsetSize(); nLoop++) {
+                if ((double)(pReference->GetStop(nLoop)) > fStart) { // first string must be at lower position
                     nLoop--; // this is it
                     break;
                 }
             }
         }
-        if (nLoop < pRef->GetOffsetSize())   // there is something to display
-        {
+        if (nLoop < pReference->GetOffsetSize()) { 
+			// there is something to display
             // display loop
             int nDisplayPos = 0;
-			int nDisplayStop = 0;
+            int nDisplayStop = 0;
             CString string;
-            do
-            {
+            do {
                 string.Empty();
                 // get the string to display
-                string = pRef->GetText(nLoop);
-                nDisplayPos = round((pSegment->GetOffset(nLoop) - fDataStart) / fBytesPerPix);
+                string = pReference->GetText(nLoop);
+                nDisplayPos = round((pReference->GetOffset(nLoop) - fDataStart) / fBytesPerPix);
                 // check if the character is selected
                 BOOL bSelect = FALSE;
-                if (pSegment->GetSelection() == nLoop)
-                {
+                if (pReference->GetSelection() == nLoop) {
                     bSelect = TRUE;
                 }
                 // calculate duration
-                nDisplayStop = round((pSegment->GetStop(nLoop) - fDataStart)/ fBytesPerPix);
+                nDisplayStop = round((pReference->GetStop(nLoop) - fDataStart)/ fBytesPerPix);
                 //SDM 1.06.2
-                if (m_bHintUpdateBoundaries)   // Show New Boundaries
-                {
-                    if (bSelect)
-                    {
+                if (m_bHintUpdateBoundaries) { // Show New Boundaries
+                    if (bSelect) {
                         nDisplayPos = round((m_dwHintStart - fDataStart)/ fBytesPerPix);
                         nDisplayStop = round((m_dwHintStop - fDataStart)/ fBytesPerPix);
-                    }
-                    else if (pSegment->GetSelection() == (nLoop+1))     // Segment prior to selected segment
-                    {
+                    } else if (pReference->GetSelection() == (nLoop+1)) { // Segment prior to selected segment
                         nDisplayStop = round((m_dwHintStart - fDataStart)/ fBytesPerPix);
-                    }
-                    else if (pSegment->GetSelection() == (nLoop-1))     // Segment after selected segment
-                    {
+                    } else if (pReference->GetSelection() == (nLoop-1)) { // Segment after selected segment
                         nDisplayPos = round((m_dwHintStop - fDataStart)/ fBytesPerPix);
                     }
                 }
-                if ((nDisplayStop - nDisplayPos) < 2)
-                {
+                if ((nDisplayStop - nDisplayPos) < 2) {
                     nDisplayStop++;    // must be at least 2 to display a point
                 }
-                if ((nDisplayStop - nDisplayPos) < 2)
-                {
+                if ((nDisplayStop - nDisplayPos) < 2) {
                     nDisplayPos--;    // must be at least 2 to display a point
                 }
                 // set rectangle to display string centered within
                 rWnd.SetRect(nDisplayPos, rWnd.top, nDisplayStop, rWnd.bottom);
                 // highlight background if selected character
                 COLORREF normalTextColor = pDC->GetTextColor();
-                if (bSelect)
-                {
+                if (bSelect) {
                     normalTextColor = pDC->SetTextColor(pColors->cSysColorHiText); // set highlighted text
                     CBrush brushHigh(pColors->cSysColorHilite);
                     CPen penHigh(PS_SOLID, 1, pColors->cSysColorHilite);
@@ -230,34 +201,25 @@ void CReferenceWnd::OnDraw(CDC * pDC, const CRect & printRect)
                 DrawTranscriptionBorders(pDC,rWnd,pColors);
 
                 BOOL bNotEnough = (nDisplayStop - nDisplayPos) <= tm.tmAveCharWidth;
-                if (!bNotEnough)
-                {
+                if (!bNotEnough) {
                     bNotEnough = ((nDisplayStop - nDisplayPos) <= (string.GetLength() * tm.tmAveCharWidth));
                 }
 
-                if (bNotEnough)
-                {
-                    if ((nDisplayStop-nDisplayPos) <= 4 * tm.tmAveCharWidth)   // even not enough space for at least two characters with dots
-                    {
+                if (bNotEnough) {
+                    if ((nDisplayStop-nDisplayPos) <= 4 * tm.tmAveCharWidth) { // even not enough space for at least two characters with dots
                         pDC->DrawText(_T("*"), 1, rWnd, DT_VCENTER | DT_SINGLELINE | DT_LEFT | DT_NOCLIP); // print first character
-                    }
-                    else
-                    {
+                    } else {
                         // draw as many characters as possible and 3 dots
                         string = string.Left((nDisplayStop-nDisplayPos) / tm.tmAveCharWidth - 2) + "...";
                         pDC->DrawText((LPCTSTR)string, string.GetLength(), rWnd, DT_VCENTER | DT_SINGLELINE | DT_LEFT | DT_NOCLIP);
                     }
-                }
-                else     // enough space to display string
-                {
+                } else { // enough space to display string
                     pDC->DrawText((LPCTSTR)string, string.GetLength(), rWnd, DT_VCENTER | DT_SINGLELINE | DT_CENTER | DT_NOCLIP);
                 }
-                if (bSelect)
-                {
+                if (bSelect) {
                     pDC->SetTextColor(normalTextColor);    // set back old text color
                 }
-            }
-            while ((nDisplayPos < rClip.right) && (++nLoop < pRef->GetOffsetSize()));
+            } while ((nDisplayPos < rClip.right) && (++nLoop < pReference->GetOffsetSize()));
         }
     }
     pDC->SelectObject(pOldFont);  // set back old font
@@ -269,8 +231,7 @@ void CReferenceWnd::OnDraw(CDC * pDC, const CRect & printRect)
 
     // Show virtual selection (No text just highlight)
     if ((pView->IsSelectionVirtual()) &&
-            (pView->GetSelectionIndex() == m_nIndex))
-    {
+        (pView->GetSelectionIndex() == m_nIndex)) {
         int nStart = int(((double)pView->GetSelectionStart() - fDataStart)/ fBytesPerPix);
         int nStop = int(((double)pView->GetSelectionStop() - fDataStart)/ fBytesPerPix + 1);
         rWnd.SetRect(nStart, rWnd.top, nStop, rWnd.bottom);

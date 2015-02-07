@@ -1799,15 +1799,14 @@ void CAnnotationWnd::OnDraw( CDC * pDC, const CRect & printRect) {
 	CSegment * pSegment = pDoc->GetSegment(m_nIndex);
 
     // get pointer to annotation string
-    CString content = pSegment->GetContent();
-    if (!content.IsEmpty()) { 
+    if (pSegment->GetOffsetSize()>0) { 
 
 		// string is not empty
         // position prepare loop. Find first char to display in clipping rect
         double fStart = fDataStart + (double)(rClip.left - tm.tmAveCharWidth) * fBytesPerPix;
         
 		int nLoop = 0;
-        if ((fStart > 0) && (content.GetLength() > 1)) {
+        if ((fStart > 0) && (pSegment->GetOffsetSize() > 1)) {
             for (nLoop = 1; nLoop < pSegment->GetOffsetSize(); nLoop++) {
                 // SDM 1.06.6U2
                 if ((double)(pSegment->GetStop(nLoop)) > fStart) { 
@@ -2335,14 +2334,13 @@ void CGlossWnd::OnDraw(CDC * pDC, const CRect & printRect) {
     if (pGloss->GetOffsetSize()>0) {
         // array is not empty
         // get pointer to gloss offset and duration arrays
-        CSegment * pSegment = pDoc->GetSegment(m_nIndex);
         CSegment * pPhonetic = pDoc->GetSegment(PHONETIC);
         // position prepare loop. Find first string to display in clipping rect
         int nLoop = 0;
         if ((fDataStart > 0) && (pGloss->GetOffsetSize() > 1)) {
             double fStart = fDataStart + (double)(rClip.left - tm.tmAveCharWidth) * fBytesPerPix;
             for (nLoop = 1; nLoop < pGloss->GetOffsetSize(); nLoop++) {
-                if ((double)(pSegment->GetStop(nLoop)) > fStart) { // first string must be at lower position
+                if ((double)(pGloss->GetStop(nLoop)) > fStart) { // first string must be at lower position
                     nLoop--; // this is it
                     break;
                 }
@@ -2363,25 +2361,25 @@ void CGlossWnd::OnDraw(CDC * pDC, const CRect & printRect) {
                     CString szSpace = " ";
                     string = string.GetAt(0) + szSpace + string.Right(string.GetLength() - 1);
                 }
-                nDisplayPos = round((pSegment->GetOffset(nLoop) - fDataStart) / fBytesPerPix);
+                nDisplayPos = round((pGloss->GetOffset(nLoop) - fDataStart) / fBytesPerPix);
                 // check if the character is selected
                 BOOL bSelect = FALSE;
-                if (pSegment->GetSelection() == nLoop) {
+                if (pGloss->GetSelection() == nLoop) {
                     bSelect = TRUE;
                 }
                 // calculate duration
-                nDisplayStop = round((pSegment->GetStop(nLoop)- fDataStart)/ fBytesPerPix);
+                nDisplayStop = round((pGloss->GetStop(nLoop)- fDataStart)/ fBytesPerPix);
                 //SDM 1.06.2
                 if (m_bHintUpdateBoundaries) { // Show New Boundaries
                     if (bSelect) {
                         nDisplayPos = round((m_dwHintStart - fDataStart)/ fBytesPerPix);
                         nDisplayStop = round((m_dwHintStop - fDataStart)/ fBytesPerPix);
-                    } else if (pSegment->GetSelection() == (nLoop+1)) { // Segment prior to selected segment
+                    } else if (pGloss->GetSelection() == (nLoop+1)) { // Segment prior to selected segment
                         // SDM 1.5Test11.1
                         int nIndex = pPhonetic->GetPrevious(pPhonetic->FindOffset(m_dwHintStart));
                         DWORD dwStop = pPhonetic->GetStop(nIndex);
                         nDisplayStop = round((dwStop - fDataStart)/ fBytesPerPix);
-                    } else if (pSegment->GetSelection() == (nLoop-1)) { // Segment after selected segment
+                    } else if (pGloss->GetSelection() == (nLoop-1)) { // Segment after selected segment
                         // SDM 1.5Test11.1
                         int nIndex = pPhonetic->GetNext(pPhonetic->FindStop(m_dwHintStop));
                         DWORD dwStart = pPhonetic->GetOffset(nIndex);
@@ -2446,7 +2444,7 @@ void CAnnotationWnd::SetHintUpdateBoundaries(bool bHint, bool bOverlap) {
     SetHintUpdateBoundaries(bHint,m_dwHintStart,m_dwHintStop, bOverlap);
 }
 
-void CAnnotationWnd::ShowTranscriptionBoundaries(bool val) {
+void CAnnotationWnd::ShowTranscriptionBoundaries(BOOL val) {
     m_bTranscriptionBoundary = val;
 }
 

@@ -2267,7 +2267,7 @@ void CDlgVocalTract::LabelDocument(CSaDoc * pDoc)
 
             CSaString szIndex;
             szIndex.Format(_T("%d"),i+1);
-            pIndexSeg->Insert(pIndexSeg->GetOffsetSize(), szIndex, true, dwStart, dwDuration);
+            pIndexSeg->Append( szIndex, true, dwStart, dwDuration);
 
             labelTime = elapsedTime + minLabelTime;
         }
@@ -2280,7 +2280,7 @@ void CDlgVocalTract::LabelDocument(CSaDoc * pDoc)
 
             if (dwDuration)
             {
-                pCharSeg->Insert(pCharSeg->GetOffsetSize(), szIPA, true, dwStart, dwDuration);
+                pCharSeg->Append( szIPA, true, dwStart, dwDuration);
             }
             szIPA = cChars[i].m_ipa;
 

@@ -1,3 +1,15 @@
+SA - 3.1.0.113 2/6/2015
+-Added Alt-M command and toolbar icon
+-Fixed fieldworks export bugs - tone and gloss national were not exported.
+
+SA - 3.1.0.112 2/5/2015
+-Modified code so that missing segments for phonemic, orthographic and tone are added if phonetic segment is present.
+-Modified code so that administrator privileges are required to run SA.  This is required for updating registry for PA.
+-Fixed bug where transcription boundary state from property file is not properly displayed when opening an document. 
+
+SA - 3.1.0.111 2/4/2015
+Fixing text-change bugs.
+
 SA - 3.1.0.110 2/2/2015
 -Modified code so that phonetic, phonemic and orthographic segments use an array of text strings for data storage, rather than using a single string buffer.
 

@@ -148,6 +148,7 @@ public:
     virtual void Adjust(ISaDoc * saDoc, int nIndex, DWORD dwOffset, DWORD dwDuration = 0, bool segmental = false);	// adjust position of segment
     virtual BOOL SetAt( const CSaString &, bool delimiter, DWORD dwStart, DWORD dwDuration, bool textSegment);		// sets a new segment
     virtual BOOL Insert(int nIndex, LPCTSTR szText, bool delimiter, DWORD dwStart, DWORD dwDuration);				// insert a new segment
+    virtual BOOL Append( LPCTSTR szText, bool delimiter, DWORD dwStart, DWORD dwDuration);				// insert a new segment
     virtual long Process(void * pCaller, ISaDoc * pDoc, int nProgress = 0, int nLevel = 1);
     virtual CSaString GetContainedText(DWORD dwStart, DWORD dwStop);
     virtual CSaString GetOverlappingText(DWORD dwStart, DWORD dwStop);

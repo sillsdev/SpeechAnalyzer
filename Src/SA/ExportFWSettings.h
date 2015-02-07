@@ -10,6 +10,7 @@ public:
     BOOL bGloss;
 	BOOL bGlossNat;
     BOOL bOrtho;
+	BOOL bTone;
     BOOL bPhonemic;
     BOOL bPhonetic;
     BOOL bReference;

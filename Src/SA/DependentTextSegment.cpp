@@ -14,34 +14,44 @@ static char BASED_CODE THIS_FILE[] = __FILE__;
 // CDependentTextSegment helper functions
 
 CDependentTextSegment::CDependentTextSegment(EAnnotation index, int master) :
-    CTextSegment(index,master)
-{
+    CTextSegment(index,master) {
 }
 
-void CDependentTextSegment::LimitPosition(CSaDoc *, DWORD & dwStart, DWORD & dwStop, ELimit /*nMode*/) const
-{
+void CDependentTextSegment::LimitPosition(CSaDoc *, DWORD & dwStart, DWORD & dwStop, ELimit /*nMode*/) const {
     dwStart=GetOffset(GetSelection());
     dwStop=GetStop(GetSelection());
 }
 
 /***************************************************************************/
-// CDependentTextSegment::Insert Insert/append a text segment
-// Returns FALSE if an error occurred. 
+// CDependentTextSegment::Insert Insert a text segment
+// Returns FALSE if an error occurred.
 // if pszString is NULL, no string is added, and an error is returned
 //
 // When inserting beyond the end of the current list, nIndex is the next
-// available index.  
-// For example if we are inserting at the 4 gloss segment but only reference 
+// available index.
+// For example if we are inserting at the 4 gloss segment but only reference
 // segments 0 and 1 exist, then the next index is 2, not 3.
 /***************************************************************************/
-BOOL CDependentTextSegment::Insert( int nIndex, LPCTSTR pszString, bool, DWORD dwStart, DWORD dwDuration)
-{
-    if (pszString==NULL)
-    {
+BOOL CDependentTextSegment::Insert( int nIndex, LPCTSTR pszString, bool, DWORD dwStart, DWORD dwDuration) {
+	if (pszString==NULL) {
         return FALSE;
     }
     InsertAt( nIndex,CString(pszString),dwStart,dwDuration);
     return TRUE;
+}
+
+/***************************************************************************/
+// CDependentTextSegment::Append append a text segment
+// Returns FALSE if an error occurred.
+// if pszString is NULL, no string is added, and an error is returned
+//
+// When inserting beyond the end of the current list, nIndex is the next
+// available index.
+// For example if we are inserting at the 4 gloss segment but only reference
+// segments 0 and 1 exist, then the next index is 2, not 3.
+/***************************************************************************/
+BOOL CDependentTextSegment::Append( LPCTSTR pszString, bool delimiter, DWORD dwStart, DWORD dwDuration) {
+	return Insert( GetOffsetSize(), pszString, delimiter, dwStart, dwDuration);
 }
 
 // SDM 1.5 Test11.0
@@ -53,16 +63,12 @@ BOOL CDependentTextSegment::Insert( int nIndex, LPCTSTR pszString, bool, DWORD d
 // start must not be placed in the range of a segment, where already
 // another segment is aligned to, but there must be a segment to align to.
 /***************************************************************************/
-int CDependentTextSegment::CheckPositionToMaster(ISaDoc * pSaDoc, DWORD dwAlignedStart, DWORD dwStop, EMode nMode) const
-{
+int CDependentTextSegment::CheckPositionToMaster(ISaDoc * pSaDoc, DWORD dwAlignedStart, DWORD dwStop, EMode nMode) const {
 
     int nTextIndex = GetSelection();
-    if (((nMode==MODE_EDIT)||(nMode==MODE_AUTOMATIC))&&(nTextIndex != -1))   // segment selected (edit)
-    {
+    if (((nMode==MODE_EDIT)||(nMode==MODE_AUTOMATIC))&&(nTextIndex != -1)) { // segment selected (edit)
         return -1;
-    }
-    else     // Add
-    {
+    } else { // Add
         return CDependentSegment::CheckPositionToMaster(pSaDoc, dwAlignedStart, dwStop, nMode);
     }
 }
@@ -70,34 +76,30 @@ int CDependentTextSegment::CheckPositionToMaster(ISaDoc * pSaDoc, DWORD dwAligne
 /***************************************************************************/
 // CDependentTextSegment::Add Add dependent annotation segment
 /***************************************************************************/
-void CDependentTextSegment::Add( CSaDoc * pDoc, CSaView * pView, DWORD dwStart, CSaString & szString, bool bDelimiter, bool bCheck)
-{
-    // get the offset and duration from master
+void CDependentTextSegment::Add( CSaDoc * pDoc, CSaView * pView, DWORD dwStart, CSaString & szString, bool bDelimiter, bool bCheck) {
+    
+	// get the offset and duration from master
     int nSegment = pDoc->GetSegment(GLOSS)->FindOffset(dwStart);
-    if (nSegment == -1)
-    {
+    if (nSegment == -1) {
         return; // return on error
     }
 
     DWORD dwDuration = pDoc->GetSegment(GLOSS)->GetDuration(nSegment);
-	DWORD dwStop = dwStart + dwDuration;
+    DWORD dwStop = dwStart + dwDuration;
 
     int nPos = CheckPosition(pDoc, dwStart, dwStop, MODE_ADD); // get the insert position
-    if (nPos == -1)
-    {
+    if (nPos == -1) {
         return; // return on error
     }
 
     // save state for undo ability
-    if (bCheck)
-    {
+    if (bCheck) {
         pDoc->CheckPoint();
     }
 
     // insert or append the new dependent segment
-    if (!Insert( nPos, szString, 0, dwStart, dwDuration))
-    {
-		pView->RefreshGraphs(TRUE);									// refresh the graphs between cursors
+    if (!Insert( nPos, szString, 0, dwStart, dwDuration)) {
+        pView->RefreshGraphs(TRUE);									// refresh the graphs between cursors
         return;														// return on error or not inserted.
     }
 

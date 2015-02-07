@@ -26,7 +26,7 @@ LANGUAGE LANG_NEUTRAL, SUBLANG_NEUTRAL
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 3,1,0,110
+ FILEVERSION 3,1,0,113
  PRODUCTVERSION 1,0,0,1
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
@@ -44,7 +44,7 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "SIL International"
             VALUE "FileDescription", "Speech Analyzer Resource DLL"
-            VALUE "FileVersion", "v3.1.0.110"
+            VALUE "FileVersion", "v3.1.0.113"
             VALUE "InternalName", "SA_ENU"
             VALUE "LegalCopyright", "© 1996-2015 SIL International (MSEA)"
             VALUE "OriginalFilename", "SA_ENU.dll"
@@ -1561,7 +1561,7 @@ BEGIN
     EDITTEXT        IDC_INPUTSTRING,5,10,180,52,ES_MULTILINE | WS_VSCROLL
     PUSHBUTTON      "Wor&d",ID_EDIT_ADD_WORD,10,77,45,12,WS_GROUP
     PUSHBUTTON      "Book&mark",ID_EDIT_ADD_BOOKMARK,10,91,45,12
-    PUSHBUTTON      "&Add",ID_EDIT_ADD,70,76,45,12,WS_GROUP
+    PUSHBUTTON      "&Add",ID_EDIT_ADD_PHONETIC,70,76,45,12,WS_GROUP
     PUSHBUTTON      "&Remove",ID_EDIT_REMOVE,70,91,45,12,NOT WS_TABSTOP
     PUSHBUTTON      "IDB_UP",ID_EDIT_UP,141,71,19,17,BS_ICON | WS_GROUP | NOT WS_TABSTOP
     PUSHBUTTON      "IDB_PREV",ID_EDIT_PREVIOUS,122,80,19,17,BS_ICON | WS_GROUP
@@ -1742,12 +1742,13 @@ BEGIN
     CONTROL         "Phonetic",IDC_EXTAB_PHONETIC,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,27,47,44,10
     CONTROL         "Phonemic",IDC_EXTAB_PHONEMIC,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,27,58,47,10
     CONTROL         "Orthographic",IDC_EXTAB_ORTHO,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,27,69,57,10
-    CONTROL         "Gloss English",IDC_EXTAB_GLOSS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,27,81,58,10
-    CONTROL         "Gloss National",IDC_EXTAB_GLOSS_NAT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,27,93,59,10
-    CONTROL         "Phrase Levels",IDC_EXTAB_PHRASE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,27,104,61,9
+    CONTROL         "Tone",IDC_EXTAB_TONE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,27,80,33,10
+    CONTROL         "Gloss English",IDC_EXTAB_GLOSS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,27,91,58,10
+    CONTROL         "Gloss National",IDC_EXTAB_GLOSS_NAT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,27,103,59,10
+    CONTROL         "Phrase Levels",IDC_EXTAB_PHRASE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,27,114,61,9
     PUSHBUTTON      "Cancel",IDCANCEL,177,277,50,14
     DEFPUSHBUTTON   "Export",IDOK,123,277,50,14
-    GROUPBOX        "Include",IDC_STATIC,9,6,271,147
+    GROUPBOX        "Include",IDC_STATIC,9,6,271,156
     PUSHBUTTON      "&Help",IDHELP,231,277,50,14
     LTEXT           "FieldWorks Project",IDC_STATIC_FIELDWORKS_PROJECT,9,202,270,8
     EDITTEXT        IDC_EDIT_FIELDWORKS_FOLDER,10,182,271,14,ES_AUTOHSCROLL | WS_DISABLED
@@ -1757,7 +1758,7 @@ BEGIN
                     "Button",BS_AUTORADIOBUTTON,9,169,270,10
     CONTROL         "Export To Another Location",IDC_RADIO_OTHER,"Button",BS_AUTORADIOBUTTON,9,240,270,10
     COMBOBOX        IDC_COMBO_FIELDWORKS_PROJECT,10,213,271,101,CBS_DROPDOWN | CBS_SORT | WS_DISABLED | WS_VSCROLL | WS_TABSTOP
-    LTEXT           "",IDC_STATIC_TAGS,115,18,152,124,WS_BORDER
+    LTEXT           "",IDC_STATIC_TAGS,115,18,152,135,WS_BORDER
 END
 
 IDD_IMPORT_DIALOG DIALOG 0, 0, 187, 95
@@ -2968,7 +2969,7 @@ BEGIN
     BUTTON      ID_EDIT_UNDO
     BUTTON      ID_EDIT_REDO
     SEPARATOR
-    BUTTON      ID_EDIT_ADD
+    BUTTON      ID_EDIT_ADD_PHONETIC
     BUTTON      ID_EDIT_ADD_WORD
     BUTTON      ID_EDIT_SEGMENT_BOUNDARIES
     BUTTON      ID_EDIT_SEGMENT_SIZE
@@ -3005,9 +3006,11 @@ BEGIN
     BUTTON      ID_EDIT_PREVIOUS
     BUTTON      ID_EDIT_NEXT
     SEPARATOR
-    BUTTON      ID_EDIT_ADD
+    BUTTON      ID_EDIT_ADD_PHONETIC
     BUTTON      ID_EDIT_ADD_SYLLABLE
     BUTTON      ID_EDIT_ADD_WORD
+    BUTTON      ID_EDIT_ADD_MARKUP
+    SEPARATOR
     BUTTON      ID_EDIT_SEGMENT_BOUNDARIES
     BUTTON      ID_EDIT_SEGMENT_SIZE
     BUTTON      ID_SHOW_BORDERS
@@ -3165,7 +3168,7 @@ BEGIN
         MENUITEM SEPARATOR
         POPUP "&Transcription"
         BEGIN
-            MENUITEM "&Add Phonetic Segment\tCtrl+Q", ID_EDIT_ADD
+            MENUITEM "&Add Phonetic Segment\tCtrl+Q", ID_EDIT_ADD_PHONETIC
             MENUITEM "Tr&anscription Editor\tF4",   ID_EDIT_EDITOR
             MENUITEM "&Direct Edit\tF2",            ID_EDIT_INPLACE
             MENUITEM "Re&move Segment\tDelete",     ID_EDIT_REMOVE
@@ -3173,6 +3176,7 @@ BEGIN
             MENUITEM "Add &Syllable Segment\tCtrl+L", ID_EDIT_ADD_SYLLABLE
             MENUITEM "Add Gloss &Word Segment\tCtrl+W", ID_EDIT_ADD_WORD
             MENUITEM "Add Gloss &Bookmark\tCtrl+B", ID_EDIT_ADD_BOOKMARK
+            MENUITEM "Add Markup\tAlt+M",           ID_EDIT_ADD_MARKUP
             MENUITEM "Add Phrase L&1 Segment\tCtrl+1", ID_EDIT_ADD_PHRASE_L1
             MENUITEM "Add Phrase L&2 Segment\tCtrl+2", ID_EDIT_ADD_PHRASE_L2
             MENUITEM "Add Phrase L&3 Segment\tCtrl+3", ID_EDIT_ADD_PHRASE_L3
@@ -3543,9 +3547,10 @@ BEGIN
     BEGIN
         MENUITEM "&Undo\tCtrl+Z",               ID_EDIT_UNDO
         MENUITEM SEPARATOR
-        MENUITEM "&Add Phonetic\tCtrl+Q",       ID_EDIT_ADD
+        MENUITEM "&Add Phonetic\tCtrl+Q",       ID_EDIT_ADD_PHONETIC
         MENUITEM "Add &Bookmark\tCtrl+B",       ID_EDIT_ADD_BOOKMARK
         MENUITEM "Add &Word\tCtrl+W",           ID_EDIT_ADD_WORD
+        MENUITEM "Add Markup\tAlt+M",           ID_EDIT_ADD_MARKUP
         MENUITEM "&Remove\tDelete",             ID_EDIT_REMOVE
         MENUITEM SEPARATOR
         MENUITEM "&Split Segment\tCtrl+G",      ID_EDIT_SPLIT
@@ -4017,47 +4022,72 @@ END
 
 IDR_SA_ANNTYPE ACCELERATORS
 BEGIN
-    " ",            ID_PLAYER_PAUSE,        ASCII,  NOINVERT
+    "=",            ID_EDIT_ADD_PHONETIC,   ASCII,  ALT, NOINVERT
+    "Q",            ID_EDIT_ADD_PHONETIC,   VIRTKEY, CONTROL, NOINVERT
+    VK_ADD,         ID_EDIT_ADD_PHONETIC,   VIRTKEY, ALT, NOINVERT
+    "2",            ID_EDIT_ADD_AUTO_PHRASE_L2, VIRTKEY, ALT, NOINVERT
+    "B",            ID_EDIT_ADD_BOOKMARK,   VIRTKEY, CONTROL, NOINVERT
     "1",            ID_EDIT_ADD_PHRASE_L1,  VIRTKEY, CONTROL, NOINVERT
     "2",            ID_EDIT_ADD_PHRASE_L2,  VIRTKEY, CONTROL, NOINVERT
-    "2",            ID_EDIT_ADD_AUTO_PHRASE_L2, VIRTKEY, ALT, NOINVERT
     "3",            ID_EDIT_ADD_PHRASE_L3,  VIRTKEY, CONTROL, NOINVERT
     "4",            ID_EDIT_ADD_PHRASE_L4,  VIRTKEY, CONTROL, NOINVERT
-    "=",            ID_EDIT_ADD,            ASCII,  ALT, NOINVERT
-    "A",            ID_EDIT_SELECTWAVEFORM, VIRTKEY, CONTROL, NOINVERT
-    "B",            ID_EDIT_ADD_BOOKMARK,   VIRTKEY, CONTROL, NOINVERT
+    "L",            ID_EDIT_ADD_SYLLABLE,   VIRTKEY, CONTROL, NOINVERT
+    "W",            ID_EDIT_ADD_WORD,       VIRTKEY, CONTROL, NOINVERT
+    "Z",            ID_EDIT_AUTO_ADD,       VIRTKEY, ALT, NOINVERT
+    "X",            ID_EDIT_AUTO_ADD_STORY_SECTION, VIRTKEY, ALT, NOINVERT
+    VK_LEFT,        ID_EDIT_BOUNDARY_START_LEFT, VIRTKEY, CONTROL, ALT, NOINVERT
+    VK_RIGHT,       ID_EDIT_BOUNDARY_START_RIGHT, VIRTKEY, CONTROL, ALT, NOINVERT
+    VK_LEFT,        ID_EDIT_BOUNDARY_STOP_LEFT, VIRTKEY, SHIFT, ALT, NOINVERT
+    VK_RIGHT,       ID_EDIT_BOUNDARY_STOP_RIGHT, VIRTKEY, SHIFT, ALT, NOINVERT
     "C",            ID_EDIT_COPY,           VIRTKEY, CONTROL, NOINVERT
+    VK_INSERT,      ID_EDIT_COPY,           VIRTKEY, CONTROL, NOINVERT
     "C",            ID_EDIT_COPY_MEASUREMENTS, VIRTKEY, SHIFT, CONTROL, NOINVERT
-    "E",            ID_EDIT_SEGMENT_SIZE,   VIRTKEY, CONTROL, NOINVERT
+    VK_LEFT,        ID_EDIT_CURSOR_START_LEFT, VIRTKEY, CONTROL, NOINVERT
+    VK_RIGHT,       ID_EDIT_CURSOR_START_RIGHT, VIRTKEY, CONTROL, NOINVERT
+    VK_LEFT,        ID_EDIT_CURSOR_STOP_LEFT, VIRTKEY, SHIFT, NOINVERT
+    VK_RIGHT,       ID_EDIT_CURSOR_STOP_RIGHT, VIRTKEY, SHIFT, NOINVERT
+    VK_DELETE,      ID_EDIT_CUT,            VIRTKEY, SHIFT, NOINVERT
+    "X",            ID_EDIT_CUT,            VIRTKEY, CONTROL, NOINVERT
+    VK_DOWN,        ID_EDIT_DOWN,           VIRTKEY, ALT, NOINVERT
+    VK_F4,          ID_EDIT_EDITOR,         VIRTKEY, NOINVERT
     "F",            ID_EDIT_FIND,           VIRTKEY, CONTROL, NOINVERT
-    "G",            ID_EDIT_SPLIT,          VIRTKEY, CONTROL, NOINVERT
-    "G",            ID_EDIT_MOVE_LEFT,      VIRTKEY, SHIFT, NOINVERT
-    "G",            ID_EDIT_SPLIT_MOVE_LEFT, VIRTKEY, SHIFT, CONTROL, NOINVERT
+    VK_F3,          ID_EDIT_FIND_NEXT,      VIRTKEY, NOINVERT
+    VK_F2,          ID_EDIT_INPLACE,        VIRTKEY, NOINVERT
     "H",            ID_EDIT_MERGE,          VIRTKEY, CONTROL, NOINVERT
+    "G",            ID_EDIT_MOVE_LEFT,      VIRTKEY, SHIFT, NOINVERT
     "H",            ID_EDIT_MOVE_RIGHT,     VIRTKEY, SHIFT, NOINVERT
     "H",            ID_EDIT_MOVE_RIGHT_MERGE, VIRTKEY, SHIFT, CONTROL, NOINVERT
-    "I",            ID_FILE_INFORMATION,    VIRTKEY, CONTROL, NOINVERT
-    "L",            ID_EDIT_ADD_SYLLABLE,   VIRTKEY, CONTROL, NOINVERT
+    VK_RIGHT,       ID_EDIT_NEXT,           VIRTKEY, ALT, NOINVERT
+    VK_TAB,         ID_EDIT_NEXT,           VIRTKEY, NOINVERT
+    "V",            ID_EDIT_PASTE,          VIRTKEY, CONTROL, NOINVERT
+    VK_INSERT,      ID_EDIT_PASTE,          VIRTKEY, SHIFT, NOINVERT
     "N",            ID_EDIT_PASTENEW,       VIRTKEY, CONTROL, NOINVERT
+    VK_LEFT,        ID_EDIT_PREVIOUS,       VIRTKEY, ALT, NOINVERT
+    "Y",            ID_EDIT_REDO,           VIRTKEY, CONTROL, NOINVERT
+    VK_DELETE,      ID_EDIT_REMOVE,         VIRTKEY, NOINVERT
+    VK_INSERT,      ID_EDIT_SEGMENT_BOUNDARIES, VIRTKEY, NOINVERT
+    "E",            ID_EDIT_SEGMENT_SIZE,   VIRTKEY, CONTROL, NOINVERT
+    "A",            ID_EDIT_SELECTWAVEFORM, VIRTKEY, CONTROL, NOINVERT
+    "G",            ID_EDIT_SPLIT,          VIRTKEY, CONTROL, NOINVERT
+    "G",            ID_EDIT_SPLIT_MOVE_LEFT, VIRTKEY, SHIFT, CONTROL, NOINVERT
+    VK_BACK,        ID_EDIT_UNDO,           VIRTKEY, ALT, NOINVERT
+    "Z",            ID_EDIT_UNDO,           VIRTKEY, CONTROL, NOINVERT
+    VK_UP,          ID_EDIT_UP,             VIRTKEY, ALT, NOINVERT
+    "I",            ID_FILE_INFORMATION,    VIRTKEY, CONTROL, NOINVERT
     "O",            ID_FILE_OPEN,           VIRTKEY, CONTROL, NOINVERT
     "P",            ID_FILE_PRINT,          VIRTKEY, CONTROL, NOINVERT
-    "Q",            ID_EDIT_ADD,            VIRTKEY, CONTROL, NOINVERT
     "R",            ID_FILE_RECORD,         VIRTKEY, CONTROL, NOINVERT
     "S",            ID_FILE_SAVE,           VIRTKEY, CONTROL, NOINVERT
     "T",            ID_GRAPHS_TILE,         VIRTKEY, CONTROL, NOINVERT
-    "V",            ID_EDIT_PASTE,          VIRTKEY, CONTROL, NOINVERT
-    VK_ADD,         ID_EDIT_ADD,            VIRTKEY, ALT, NOINVERT
-    VK_BACK,        ID_EDIT_UNDO,           VIRTKEY, ALT, NOINVERT
-    VK_DELETE,      ID_EDIT_REMOVE,         VIRTKEY, NOINVERT
-    VK_DELETE,      ID_EDIT_CUT,            VIRTKEY, SHIFT, NOINVERT
-    VK_DOWN,        ID_EDIT_DOWN,           VIRTKEY, ALT, NOINVERT
+    VK_HOME,        ID_GRAPHS_ZOOM_ALL,     VIRTKEY, CONTROL, NOINVERT
+    VK_RETURN,      ID_GRAPHS_ZOOM_CURSORS, VIRTKEY, CONTROL, NOINVERT
+    VK_NEXT,        ID_GRAPHS_ZOOM_IN,      VIRTKEY, CONTROL, NOINVERT
+    VK_PRIOR,       ID_GRAPHS_ZOOM_OUT,     VIRTKEY, CONTROL, NOINVERT
     VK_F1,          ID_HELP_CONTENTS,       VIRTKEY, NOINVERT
+    VK_TAB,         ID_NEXT_GRAPH,          VIRTKEY, SHIFT, NOINVERT
     VK_F1,          ID_PLAY_F1,             VIRTKEY, CONTROL, NOINVERT
-    VK_F10,         ID_PLAYBACK_STOPTOR,    VIRTKEY, NOINVERT
     VK_F10,         ID_PLAY_F10,            VIRTKEY, CONTROL, NOINVERT
-    VK_F11,         ID_PLAYBACK_WINDOW,     VIRTKEY, NOINVERT
     VK_F11,         ID_PLAY_F11,            VIRTKEY, CONTROL, NOINVERT
-    VK_F12,         ID_PLAYBACK_FILE,       VIRTKEY, NOINVERT
     VK_F12,         ID_PLAY_F12,            VIRTKEY, CONTROL, NOINVERT
     VK_F13,         ID_PLAY_F13,            VIRTKEY, CONTROL, NOINVERT
     VK_F14,         ID_PLAY_F14,            VIRTKEY, CONTROL, NOINVERT
@@ -4066,52 +4096,28 @@ BEGIN
     VK_F17,         ID_PLAY_F17,            VIRTKEY, SHIFT, NOINVERT
     VK_F18,         ID_PLAY_F18,            VIRTKEY, CONTROL, NOINVERT
     VK_F19,         ID_PLAY_F19,            VIRTKEY, CONTROL, NOINVERT
-    VK_F2,          ID_EDIT_INPLACE,        VIRTKEY, NOINVERT
     VK_F2,          ID_PLAY_F2,             VIRTKEY, CONTROL, NOINVERT
     VK_F20,         ID_PLAY_F20,            VIRTKEY, CONTROL, NOINVERT
     VK_F21,         ID_PLAY_F21,            VIRTKEY, CONTROL, NOINVERT
     VK_F22,         ID_PLAY_F22,            VIRTKEY, CONTROL, NOINVERT
     VK_F23,         ID_PLAY_F23,            VIRTKEY, CONTROL, NOINVERT
     VK_F24,         ID_PLAY_F24,            VIRTKEY, CONTROL, NOINVERT
-    VK_F3,          ID_EDIT_FIND_NEXT,      VIRTKEY, NOINVERT
     VK_F3,          ID_PLAY_F3,             VIRTKEY, CONTROL, NOINVERT
-    VK_F4,          ID_EDIT_EDITOR,         VIRTKEY, NOINVERT
     VK_F4,          ID_PLAY_F4,             VIRTKEY, CONTROL, NOINVERT
     VK_F5,          ID_PLAY_F5,             VIRTKEY, CONTROL, NOINVERT
     VK_F6,          ID_PLAY_F6,             VIRTKEY, CONTROL, NOINVERT
-    VK_F7,          ID_PLAYBACK_ENDCURSOR,  VIRTKEY, NOINVERT
     VK_F7,          ID_PLAY_F7,             VIRTKEY, CONTROL, NOINVERT
-    VK_F8,          ID_PLAYBACK_CURSORS,    VIRTKEY, NOINVERT
     VK_F8,          ID_PLAY_F8,             VIRTKEY, CONTROL, NOINVERT
-    VK_F9,          ID_PLAYBACK_LTOSTOP,    VIRTKEY, NOINVERT
     VK_F9,          ID_PLAY_F9,             VIRTKEY, CONTROL, NOINVERT
-    VK_HOME,        ID_GRAPHS_ZOOM_ALL,     VIRTKEY, CONTROL, NOINVERT
-    VK_INSERT,      ID_EDIT_SEGMENT_BOUNDARIES, VIRTKEY, NOINVERT
-    VK_INSERT,      ID_EDIT_COPY,           VIRTKEY, CONTROL, NOINVERT
-    VK_INSERT,      ID_EDIT_PASTE,          VIRTKEY, SHIFT, NOINVERT
-    VK_LEFT,        ID_EDIT_CURSOR_START_LEFT, VIRTKEY, CONTROL, NOINVERT
-    VK_LEFT,        ID_EDIT_PREVIOUS,       VIRTKEY, ALT, NOINVERT
-    VK_LEFT,        ID_EDIT_BOUNDARY_START_LEFT, VIRTKEY, CONTROL, ALT, NOINVERT
-    VK_LEFT,        ID_EDIT_CURSOR_STOP_LEFT, VIRTKEY, SHIFT, NOINVERT
-    VK_LEFT,        ID_EDIT_BOUNDARY_STOP_LEFT, VIRTKEY, SHIFT, ALT, NOINVERT
-    VK_NEXT,        ID_GRAPHS_ZOOM_IN,      VIRTKEY, CONTROL, NOINVERT
-    VK_PRIOR,       ID_GRAPHS_ZOOM_OUT,     VIRTKEY, CONTROL, NOINVERT
+    VK_F8,          ID_PLAYBACK_CURSORS,    VIRTKEY, NOINVERT
+    VK_F7,          ID_PLAYBACK_ENDCURSOR,  VIRTKEY, NOINVERT
+    VK_F12,         ID_PLAYBACK_FILE,       VIRTKEY, NOINVERT
+    VK_F9,          ID_PLAYBACK_LTOSTOP,    VIRTKEY, NOINVERT
+    VK_F10,         ID_PLAYBACK_STOPTOR,    VIRTKEY, NOINVERT
+    VK_F11,         ID_PLAYBACK_WINDOW,     VIRTKEY, NOINVERT
+    " ",            ID_PLAYER_PAUSE,        ASCII,  NOINVERT
     VK_RETURN,      ID_RESTART_PROCESS,     VIRTKEY, NOINVERT
-    VK_RETURN,      ID_GRAPHS_ZOOM_CURSORS, VIRTKEY, CONTROL, NOINVERT
-    VK_RIGHT,       ID_EDIT_CURSOR_START_RIGHT, VIRTKEY, CONTROL, NOINVERT
-    VK_RIGHT,       ID_EDIT_NEXT,           VIRTKEY, ALT, NOINVERT
-    VK_RIGHT,       ID_EDIT_BOUNDARY_START_RIGHT, VIRTKEY, CONTROL, ALT, NOINVERT
-    VK_RIGHT,       ID_EDIT_CURSOR_STOP_RIGHT, VIRTKEY, SHIFT, NOINVERT
-    VK_RIGHT,       ID_EDIT_BOUNDARY_STOP_RIGHT, VIRTKEY, SHIFT, ALT, NOINVERT
-    VK_TAB,         ID_EDIT_NEXT,           VIRTKEY, NOINVERT
-    VK_TAB,         ID_NEXT_GRAPH,          VIRTKEY, SHIFT, NOINVERT
-    VK_UP,          ID_EDIT_UP,             VIRTKEY, ALT, NOINVERT
-    "W",            ID_EDIT_ADD_WORD,       VIRTKEY, CONTROL, NOINVERT
-    "X",            ID_EDIT_CUT,            VIRTKEY, CONTROL, NOINVERT
-    "X",            ID_EDIT_AUTO_ADD_STORY_SECTION, VIRTKEY, ALT, NOINVERT
-    "Y",            ID_EDIT_REDO,           VIRTKEY, CONTROL, NOINVERT
-    "Z",            ID_EDIT_UNDO,           VIRTKEY, CONTROL, NOINVERT
-    "Z",            ID_EDIT_AUTO_ADD,       VIRTKEY, ALT, NOINVERT
+    "M",            ID_EDIT_ADD_MARKUP,     VIRTKEY, ALT, NOINVERT
 END
 
 IDR_SA_DISPLAYPLOT ACCELERATORS
@@ -4643,7 +4649,7 @@ IDC_MHANDN              CURSOR                  "res\\MedHandN.cur"
 
 STRINGTABLE
 BEGIN
-    VS_VERSION              "Version 3.1.0.110"
+    VS_VERSION              "Version 3.1.0.113"
     VS_COPYRIGHT            "© 1996-2015 SIL International (MSEA).\nAll Rights Reserved."
     IDR_MAINFRAME           "Speech Analyzer"
     IDR_SA_ANNTYPE          "\nSA\nSA Document\nWAV Files (*.wav)\n.wav\nannFileType\nANN File Type"
@@ -5348,7 +5354,7 @@ BEGIN
                             "Update all transcription segment boundaries\nUpdate All"
     ID_EDIT_UPDATE_BOUNDARIES 
                             "Update transcription segment boundaries\nUpdate Boundaries"
-    ID_EDIT_ADD             "Add a phonetic segment\nAdd Phonetic Segment"
+    ID_EDIT_ADD_PHONETIC    "Add a phonetic segment\nAdd Phonetic Segment"
     ID_EDIT_EDITOR          "Show/Hide transcription editor\nToggle Editor"
     ID_EDIT_ADD_BOOKMARK    "Add gloss bookmark\nAdd Bookmark"
     ID_EDIT_REMOVE          "Remove a selected character or string\nRemove"
@@ -5357,6 +5363,12 @@ BEGIN
     ID_EDIT_ADD_WORD        "Add gloss word\nAdd Word Segment"
     ID_GRAPHS_SCREENCOPY    "Copy whole SA screen to clipboard\nCopy Screenshot"
     ID_GRAPHS_GRAPHSCAPTURE "Capture graphs screenshot and save it in a file\nSave Graphs"
+END
+
+STRINGTABLE
+BEGIN
+    ID_EDIT_MERGE           "Merge two segments into one segment"
+    ID_EDIT_ADD_MARKUP      "Add markup\nAdd Markup"
 END
 
 STRINGTABLE
@@ -5680,11 +5692,6 @@ END
 
 STRINGTABLE
 BEGIN
-    ID_EDIT_MERGE           "Merge two segments into one segment"
-END
-
-STRINGTABLE
-BEGIN
     IDS_ERROR_AUDIOCON_MISSING "Unable to locate Audio Converter program."
     IDS_ERROR_AUDIOCON_UNKNOWN 
                             "An error occurred while opening Audio Converter."
@@ -5726,7 +5733,7 @@ BEGIN
     IDS_ENABLE_PA           "Enable Phonology Assistant to find Speech Analyzer?"
     IDS_AUTO_REF_MAIN_3     "2) If the file is suppose to be delimited, make sure there are an equal number of tabs or spaces in each row and that there are no missing fields within a row.\n"
     IDS_AUTO_REF_TAG        "Tag"
-    IDS_SFM_TAGS            "\n\tStandard Format Marker Map\n\n\tSpeech\t\tFieldWorks\n\tAnalyzer\n\t\\ph\t  >\t\\lx-ph\n\t\\pm\t  >\t\\lx-pm\n\t\\or\t  >\t\\lx-or\n\t\\gl\t  >\t\\ge\n\t\\pos\t  >\t\\ps\n\t\\ref\t  >\t\\rf\n\t\\wav\t  >\t\\pf\n\t\\phr1\t  >\t\\pf\n\t\\phr2\t  >\t\\pf\n"
+    IDS_SFM_TAGS            "\n\tStandard Format Marker Map\n\n\tSpeech\t\tFieldWorks\n\tAnalyzer\n\t\\ph\t  >\t\\lx-ph\n\t\\pm\t  >\t\\lx-pm\n\t\\or\t  >\t\\lx-or\n\t\\tn\t  >\t\\tn\n\t\\gl\t  >\t\\ge\n\t\\gn\t  >\t\\gn\n\t\\ref\t  >\t\\rf\n\t\\wav\t  >\t\\pf\n\t\\phr1\t  >\t\\pf\n\t\\phr2\t  >\t\\pf\n"
     IDS_AUTOSAVE_MSG        "Autosaved files found.  Would you like to recover them?\n WARNING: IF YOU PRESS NO, YOU WILL NOT BE ABLE TO RECOVER THE FILES IN THE FUTURE!"
     IDS_AUTOSAVE_RESTORE    "Do you wish to restore '%1'?\n\nThis file was last updated on %2.\nAny existing files will be renamed with a '.bak' extension."
     IDS_AUTOSAVE_RESTORE_TEMP 

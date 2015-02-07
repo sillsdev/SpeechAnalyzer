@@ -298,7 +298,7 @@ BOOL CSegment::SetAt(const CSaString & text, bool delimiter, DWORD dwStart, DWOR
 }
 
 /***************************************************************************
-* CSegment::Insert Insert/append an annotation segment
+* CSegment::Insert Insert an annotation segment
 * Returns FALSE if an error occurred.
 * nDelimiter is not used in this basic version of the function.
 * nIndex index into annotation string
@@ -307,6 +307,16 @@ BOOL CSegment::Insert(int nIndex, LPCTSTR pszString, bool delimiter, DWORD dwSta
     ASSERT(delimiter==false);
     InsertAt(nIndex,CString(pszString),dwStart,dwDuration);
     return TRUE;
+}
+
+/***************************************************************************
+* CSegment::Append append an annotation segment
+* Returns FALSE if an error occurred.
+* nDelimiter is not used in this basic version of the function.
+* nIndex index into annotation string
+***************************************************************************/
+BOOL CSegment::Append( LPCTSTR pszString, bool delimiter, DWORD dwStart, DWORD dwDuration) {
+    return Insert( GetOffsetSize(), pszString, delimiter, dwStart, dwDuration);
 }
 
 /***************************************************************************/
@@ -397,6 +407,7 @@ int CSegment::GetNext(int nIndex) const {
 // If there is no match, the function returns -1.
 /***************************************************************************/
 int CSegment::FindOffset(DWORD dwOffset) const {
+
     if (IsEmpty()) {
         return -1;
     }
@@ -732,8 +743,6 @@ int CSegment::GetDurationSize() const {
 }
 
 DWORD CSegment::GetOffset(const int nIndex) const {
-	ASSERT(nIndex>=0);
-	ASSERT(nIndex<m_Offset.GetSize());
     return ((nIndex < m_Offset.GetSize()) && (nIndex >= 0)) ? m_Offset[nIndex] : 0L;
 }
 
@@ -743,7 +752,6 @@ DWORD CSegment::GetDuration(const int nIndex) const {
 
 DWORD CSegment::GetStop(const int nIndex) const {
     return (GetOffset(nIndex)+GetDuration(nIndex));
-    //m_Offset[nIndex]+m_Duration[nIndex];
 }
 
 /** returns true if there are no offsets */

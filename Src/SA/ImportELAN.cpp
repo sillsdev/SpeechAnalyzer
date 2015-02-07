@@ -257,7 +257,7 @@ void CImportELAN::AutoAlign( CSaDoc * pSaDoc, LPCTSTR pReference, LPCTSTR pPhone
                     }
                     szNext += szTemp;
                 }
-                pSegment->Insert(pSegment->GetOffsetSize(),szNext, FALSE, charOffsets[nIndex], charDurations[nIndex]);
+                pSegment->Append( szNext, FALSE, charOffsets[nIndex], charDurations[nIndex]);
             }
 
             szNext = pTable->GetRemainder(nAlignMode, nStringIndex, settings.m_szPhonetic);
@@ -265,7 +265,7 @@ void CImportELAN::AutoAlign( CSaDoc * pSaDoc, LPCTSTR pReference, LPCTSTR pPhone
             {
                 szNext+=SEGMENT_DEFAULT_CHAR;
             }
-            pSegment->Insert(pSegment->GetOffsetSize(),szNext,FALSE,charOffsets[nOffsetSize-1], charDurations[nOffsetSize-1]);
+            pSegment->Append(szNext,FALSE,charOffsets[nOffsetSize-1], charDurations[nOffsetSize-1]);
 
             // SDM 1.06.8 apply input filter to segment
 			pSegment->Filter();
@@ -323,7 +323,7 @@ void CImportELAN::AutoAlign( CSaDoc * pSaDoc, LPCTSTR pReference, LPCTSTR pPhone
                 }
                 if (szNext.GetLength()>0)
                 {
-                    pSegment->Insert(pSegment->GetOffsetSize(),szNext, FALSE,charOffsets[nIndex], charDurations[nIndex]);
+                    pSegment->Append( szNext, FALSE,charOffsets[nIndex], charDurations[nIndex]);
                 }
             }
 
@@ -331,7 +331,7 @@ void CImportELAN::AutoAlign( CSaDoc * pSaDoc, LPCTSTR pReference, LPCTSTR pPhone
             // Skip empty segments
             if (szNext.GetLength()!=0)
             {
-                pSegment->Insert(pSegment->GetOffsetSize(),szNext,FALSE, charOffsets[nOffsetSize-1], charDurations[nOffsetSize-1]);
+                pSegment->Append(szNext,FALSE, charOffsets[nOffsetSize-1], charDurations[nOffsetSize-1]);
             }
             // SDM 1.06.8 apply input filter to segment
             pSegment->Filter();
@@ -389,7 +389,7 @@ void CImportELAN::AutoAlign( CSaDoc * pSaDoc, LPCTSTR pReference, LPCTSTR pPhone
                 }
                 if (szNext.GetLength()>0)
                 {
-                    pSegment->Insert(pSegment->GetOffsetSize(),szNext, FALSE,charOffsets[nIndex], charDurations[nIndex]);
+                    pSegment->Append(szNext, FALSE,charOffsets[nIndex], charDurations[nIndex]);
                 }
             }
 
@@ -397,7 +397,7 @@ void CImportELAN::AutoAlign( CSaDoc * pSaDoc, LPCTSTR pReference, LPCTSTR pPhone
             if (szNext.GetLength()!=0)
             {
                 // Skip empty segments
-                pSegment->Insert(pSegment->GetOffsetSize(),szNext,FALSE,charOffsets[nOffsetSize-1], charDurations[nOffsetSize-1]);
+                pSegment->Append(szNext,FALSE,charOffsets[nOffsetSize-1], charDurations[nOffsetSize-1]);
             }
 
             // SDM 1.06.8 apply input filter to segment
@@ -456,7 +456,7 @@ void CImportELAN::AutoAlign( CSaDoc * pSaDoc, LPCTSTR pReference, LPCTSTR pPhone
                 }
                 if (szNext.GetLength()>0)
                 {
-                    pSegment->Insert(pSegment->GetOffsetSize(),szNext, FALSE,charOffsets[nIndex], charDurations[nIndex]);
+                    pSegment->Append(szNext, FALSE,charOffsets[nIndex], charDurations[nIndex]);
                 }
             }
 
@@ -464,7 +464,7 @@ void CImportELAN::AutoAlign( CSaDoc * pSaDoc, LPCTSTR pReference, LPCTSTR pPhone
             // Skip empty segments
             if (szNext.GetLength()!=0)
             {
-                pSegment->Insert(pSegment->GetOffsetSize(),szNext,FALSE, charOffsets[nOffsetSize-1], charDurations[nOffsetSize-1]);
+                pSegment->Append(szNext,FALSE, charOffsets[nOffsetSize-1], charDurations[nOffsetSize-1]);
             }
             // SDM 1.06.8 apply input filter to segment
 			pSegment->Filter();
@@ -619,7 +619,7 @@ void CImportELAN::AutoAlign( CSaDoc * pSaDoc, LPCTSTR pReference, LPCTSTR pPhone
                 }
                 if (szNext.GetLength()>0)
                 {
-                    pSegment->Insert(pSegment->GetOffsetSize(),szNext, FALSE,charOffsets[nIndex], charDurations[nIndex]);
+                    pSegment->Append(szNext, FALSE,charOffsets[nIndex], charDurations[nIndex]);
                 }
             }
 
@@ -627,7 +627,7 @@ void CImportELAN::AutoAlign( CSaDoc * pSaDoc, LPCTSTR pReference, LPCTSTR pPhone
             // Skip empty segments
             if (szNext.GetLength()!=0)
             {
-                pSegment->Insert(pSegment->GetOffsetSize(),szNext,FALSE, charOffsets[nOffsetSize-1], charDurations[nOffsetSize-1]);
+                pSegment->Append(szNext,FALSE, charOffsets[nOffsetSize-1], charDurations[nOffsetSize-1]);
             }
             // SDM 1.06.8 apply input filter to segment
 			pSegment->Filter();

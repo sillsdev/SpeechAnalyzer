@@ -68,6 +68,7 @@ protected:
     BOOL bGlossDflt;
 	BOOL bGlossNatDflt;
     BOOL bOrthoDflt;
+	BOOL bToneDflt;
     BOOL bPhonemicDflt;
     BOOL bPhoneticDflt;
     BOOL bPOSDflt;

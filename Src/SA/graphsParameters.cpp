@@ -51,19 +51,16 @@ BEGIN_MESSAGE_MAP(CDlgParametersRawdataPage, CPropertyPage)
     ON_CBN_SELCHANGE(IDC_RAWDATA_PROCESS, OnProcess)
 END_MESSAGE_MAP()
 
-CDlgParametersRawdataPage::CDlgParametersRawdataPage() : CPropertyPage(CDlgParametersRawdataPage::IDD)
-{
+CDlgParametersRawdataPage::CDlgParametersRawdataPage() : CPropertyPage(CDlgParametersRawdataPage::IDD) {
     m_nProcess = 0;
 }
 
-void CDlgParametersRawdataPage::DoDataExchange(CDataExchange * pDX)
-{
+void CDlgParametersRawdataPage::DoDataExchange(CDataExchange * pDX) {
     CPropertyPage::DoDataExchange(pDX);
     DDX_CBIndex(pDX, IDC_RAWDATA_PROCESS, m_nProcess);
 }
 
-BOOL CDlgParametersRawdataPage::OnInitDialog()
-{
+BOOL CDlgParametersRawdataPage::OnInitDialog() {
 
     CPropertyPage::OnInitDialog();
 
@@ -78,13 +75,11 @@ BOOL CDlgParametersRawdataPage::OnInitDialog()
 /***************************************************************************/
 // CDlgParametersRawdataPage::OnProcess Process changed
 /***************************************************************************/
-void CDlgParametersRawdataPage::OnProcess()
-{
+void CDlgParametersRawdataPage::OnProcess() {
 
     UpdateData(TRUE);
     // check if this process already used
-    if ((m_nProcess) && ((CMainFrame *)AfxGetMainWnd())->IsProcessUsed(m_nProcess))
-    {
+    if ((m_nProcess) && ((CMainFrame *)AfxGetMainWnd())->IsProcessUsed(m_nProcess)) {
         // already used, switch back to plain
         m_nProcess = 0;
         AfxMessageBox(IDS_ERROR_MULTIPLEPROCESS,MB_OK,0);
@@ -130,13 +125,11 @@ BEGIN_MESSAGE_MAP(CDlgParametersPitchPage, CPropertyPage)
     ON_BN_CLICKED(IDC_PITCH_MANUAL_DEFAULT_FILE, OnPitchManualDefaultFile)
 END_MESSAGE_MAP()
 
-CDlgParametersPitchPage::CDlgParametersPitchPage() : CPropertyPage(CDlgParametersPitchPage::IDD)
-{
+CDlgParametersPitchPage::CDlgParametersPitchPage() : CPropertyPage(CDlgParametersPitchPage::IDD) {
     m_bModified = FALSE;
 }
 
-void CDlgParametersPitchPage::DoDataExchange(CDataExchange * pDX)
-{
+void CDlgParametersPitchPage::DoDataExchange(CDataExchange * pDX) {
 
     CPropertyPage::DoDataExchange(pDX);
     CString szVoicing("");
@@ -165,11 +158,9 @@ void CDlgParametersPitchPage::DoDataExchange(CDataExchange * pDX)
 /***************************************************************************/
 // CDlgParametersPitchPage::Apply Apply button hit
 /***************************************************************************/
-void CDlgParametersPitchPage::Apply()
-{
+void CDlgParametersPitchPage::Apply() {
 
-    if (m_bModified)   // retrieve data
-    {
+    if (m_bModified) { // retrieve data
         // get pointer to document
         CMainFrame * pMDIFrameWnd = (CMainFrame *)AfxGetMainWnd();
         ASSERT(pMDIFrameWnd->IsKindOf(RUNTIME_CLASS(CMainFrame)));
@@ -183,8 +174,7 @@ void CDlgParametersPitchPage::Apply()
         int nVoicingRaw16 = (int)(m_fVoicing * 16. * .01 * pow(2.F, pDoc->GetBitsPerSample() - 1) + 0.5);
         if (((UINT)m_nMaxFreq != pUttParm->nMaxFreq) ||
                 ((UINT)m_nMinFreq != pUttParm->nMinFreq) ||
-                (nVoicingRaw16 != pUttParm->nCritLoud))
-        {
+                (nVoicingRaw16 != pUttParm->nCritLoud)) {
             pUttParm->nMaxFreq = m_nMaxFreq;
             pUttParm->nMinFreq = m_nMinFreq;
             pUttParm->nCritLoud = nVoicingRaw16;
@@ -200,8 +190,7 @@ void CDlgParametersPitchPage::Apply()
             pDoc->SetTransModifiedFlag(TRUE); // transcription data has been modified
         }
         if ((m_nChange != pUttParm->nMaxChange) || (m_nGroup != pUttParm->nMinGroup)
-                || (m_nInterpol != pUttParm->nMaxInterp))
-        {
+                || (m_nInterpol != pUttParm->nMaxInterp)) {
             pUttParm->nMaxChange = m_nChange;
             pUttParm->nMinGroup = m_nGroup;
             pUttParm->nMaxInterp = m_nInterpol;
@@ -216,8 +205,7 @@ void CDlgParametersPitchPage::Apply()
         pPitchParm->nUpperBound = m_nUpperBound;
         pPitchParm->nLowerBound = m_nLowerBound;
         pPitchParm->nRangeMode = m_nPitchRange;
-        if (m_nPitchRange)
-        {
+        if (m_nPitchRange) {
             CMainFrame * pMainFrame = (CMainFrame *)AfxGetMainWnd();
             ASSERT(pMainFrame->IsKindOf(RUNTIME_CLASS(CMainFrame)));
             CPitchParm cParm = *pMainFrame->GetPitchParmDefaults();
@@ -236,8 +224,7 @@ void CDlgParametersPitchPage::Apply()
     }
 }
 
-BOOL CDlgParametersPitchPage::OnInitDialog()
-{
+BOOL CDlgParametersPitchPage::OnInitDialog() {
 
     CPropertyPage::OnInitDialog();
     CRect rWnd;
@@ -276,72 +263,57 @@ BOOL CDlgParametersPitchPage::OnInitDialog()
     m_nCepMedianFilterSize = pPitchParm->nCepMedianFilterSize;
     m_bUseCepMedianFilter  = pPitchParm->bUseCepMedianFilter;
     m_nChange = pUttParm->nMaxChange;
-    if (m_nChange > 20)
-    {
+    if (m_nChange > 20) {
         m_nChange = 20;
     }
-    if (m_nChange < 1)
-    {
+    if (m_nChange < 1) {
         m_nChange = 1;
     }
     m_nGroup = pUttParm->nMinGroup;
-    if (m_nGroup > 20)
-    {
+    if (m_nGroup > 20) {
         m_nGroup = 20;
     }
-    if (m_nGroup < 1)
-    {
+    if (m_nGroup < 1) {
         m_nGroup = 1;
     }
     m_nInterpol = pUttParm->nMaxInterp;
-    if (m_nInterpol > 10)
-    {
+    if (m_nInterpol > 10) {
         m_nInterpol = 10;
     }
-    if (m_nInterpol < 0)
-    {
+    if (m_nInterpol < 0) {
         m_nInterpol = 0;
     }
     m_fVoicing = (double)pUttParm->nCritLoud / 16. / pow(2.F, pDoc->GetBitsPerSample() - 1) * 100.;
-    if (m_fVoicing > 5.0)
-    {
+    if (m_fVoicing > 5.0) {
         m_fVoicing = 5.0;
     }
-    if (m_fVoicing < 0.)
-    {
+    if (m_fVoicing < 0.) {
         m_fVoicing = 0.;
     }
     int nVoicingRaw16 = (int)(m_fVoicing * 16. * .01 * pow(2.F, pDoc->GetBitsPerSample() - 1) + 0.5);
     m_nMaxFreq = pUttParm->nMaxFreq;
-    if (m_nMaxFreq > 2047)
-    {
+    if (m_nMaxFreq > 2047) {
         m_nMaxFreq = 2047;    //CLW 10/4/99
     }
-    if (m_nMaxFreq < 80)
-    {
+    if (m_nMaxFreq < 80) {
         m_nMaxFreq = 80;
     }
     m_nMinFreq = pUttParm->nMinFreq;
-    if (m_nMinFreq > 460)
-    {
+    if (m_nMinFreq > 460) {
         m_nMinFreq = 460;
     }
-    if (m_nMinFreq < 40)
-    {
+    if (m_nMinFreq < 40) {
         m_nMinFreq = 40;
     }
-    if (m_nMinFreq > (m_nMaxFreq - 40))
-    {
+    if (m_nMinFreq > (m_nMaxFreq - 40)) {
         m_nMinFreq = m_nMaxFreq - 40;
     }
-    if (m_nMaxFreq < (m_nMinFreq + 40))
-    {
+    if (m_nMaxFreq < (m_nMinFreq + 40)) {
         m_nMaxFreq = m_nMinFreq + 40;
     }
     if ((m_nChange != pUttParm->nMaxChange) || (m_nGroup != pUttParm->nMinGroup)
             || (m_nInterpol != pUttParm->nMaxInterp) || (nVoicingRaw16 != pUttParm->nCritLoud)
-            || (m_nMaxFreq != (int)pUttParm->nMaxFreq) || (m_nMinFreq != (int)pUttParm->nMinFreq))
-    {
+            || (m_nMaxFreq != (int)pUttParm->nMaxFreq) || (m_nMinFreq != (int)pUttParm->nMinFreq)) {
         m_bModified = TRUE;
         SetModified(TRUE); // data modified, enable apply button
     }
@@ -355,8 +327,7 @@ BOOL CDlgParametersPitchPage::OnInitDialog()
 
     m_nPitchRange = pPitchParm->nRangeMode;
     m_nPitchScaling = pPitchParm->nScaleMode;
-    if (!m_nPitchRange)
-    {
+    if (!m_nPitchRange) {
         CPitchParm::GetAutoRange(pDoc, m_nUpperBound, m_nLowerBound);
 
         // auto range, disable boundaries
@@ -374,8 +345,7 @@ BOOL CDlgParametersPitchPage::OnInitDialog()
     UINT nFocusedID = pView->GetFocusedGraphID();
 
     if (nFocusedID != IDD_CEPPITCH && nFocusedID != IDD_SMPITCH
-            && nFocusedID != IDD_CHPITCH && nFocusedID != IDD_PITCH)
-    {
+            && nFocusedID != IDD_CHPITCH && nFocusedID != IDD_PITCH) {
         GetDlgItem(IDC_PITCH_MANUAL_GROUP)->EnableWindow(FALSE);
         GetDlgItem(IDC_PITCH_MINFREQTXT)->EnableWindow(FALSE);
         GetDlgItem(IDC_PITCH_MINFREQ)->EnableWindow(FALSE);
@@ -392,8 +362,7 @@ BOOL CDlgParametersPitchPage::OnInitDialog()
         GetDlgItem(IDC_PITCH_MANUAL_DEFAULT_APP)->EnableWindow(FALSE);
     }
 
-    if (nFocusedID != IDD_CEPPITCH && nFocusedID != IDD_SMPITCH && nFocusedID != IDD_CHPITCH)
-    {
+    if (nFocusedID != IDD_CEPPITCH && nFocusedID != IDD_SMPITCH && nFocusedID != IDD_CHPITCH) {
         GetDlgItem(IDC_PITCH_CHANGETXT)->EnableWindow(FALSE);
         GetDlgItem(IDC_PITCH_CHANGE)->EnableWindow(FALSE);
         GetDlgItem(IDC_PITCH_CHANGEDIM)->EnableWindow(FALSE);
@@ -413,8 +382,7 @@ BOOL CDlgParametersPitchPage::OnInitDialog()
 /***************************************************************************/
 // CDlgParametersPitchPage::OnSetActive  RLJ 1.5Test10.9B
 /***************************************************************************/
-BOOL CDlgParametersPitchPage::OnSetActive()
-{
+BOOL CDlgParametersPitchPage::OnSetActive() {
     CPropertyPage::OnSetActive();
     return TRUE;
 }
@@ -422,27 +390,20 @@ BOOL CDlgParametersPitchPage::OnSetActive()
 /***************************************************************************/
 // CDlgParametersPitchPage::OnChangeScroll Change spin control hit
 /***************************************************************************/
-void CDlgParametersPitchPage::OnChangeScroll()
-{
+void CDlgParametersPitchPage::OnChangeScroll() {
     int nData = GetDlgItemInt(IDC_PITCH_CHANGE, NULL, TRUE);
-    if (m_SpinChange.UpperButtonClicked())
-    {
+    if (m_SpinChange.UpperButtonClicked()) {
         nData++;
-    }
-    else
-    {
+    } else {
         nData--;
     }
-    if (nData > 20)
-    {
+    if (nData > 20) {
         nData = 20;
     }
-    if (nData < 1)
-    {
+    if (nData < 1) {
         nData = 1;
     }
-    if (nData != m_nChange)
-    {
+    if (nData != m_nChange) {
         m_nChange = nData;
         m_bModified = TRUE;
         SetModified(TRUE); // data modified, enable apply button
@@ -453,8 +414,7 @@ void CDlgParametersPitchPage::OnChangeScroll()
 /***************************************************************************/
 // CDlgParametersPitchPage::OnChange page changed
 /***************************************************************************/
-void CDlgParametersPitchPage::OnChange()
-{
+void CDlgParametersPitchPage::OnChange() {
     m_bModified = TRUE;
     SetModified(TRUE); // data modified, enable apply button
 }
@@ -462,19 +422,15 @@ void CDlgParametersPitchPage::OnChange()
 /***************************************************************************/
 // CDlgParametersPitchPage::OnKillfocusChange Change changed
 /***************************************************************************/
-void CDlgParametersPitchPage::OnKillfocusChange()
-{
+void CDlgParametersPitchPage::OnKillfocusChange() {
     int nData = GetDlgItemInt(IDC_PITCH_CHANGE, NULL, TRUE);
-    if (nData > 20)
-    {
+    if (nData > 20) {
         nData = 20;
     }
-    if (nData < 1)
-    {
+    if (nData < 1) {
         nData = 1;
     }
-    if (nData != m_nChange)
-    {
+    if (nData != m_nChange) {
         m_nChange = nData;
         m_bModified = TRUE;
         SetModified(TRUE); // data modified, enable apply button
@@ -485,27 +441,20 @@ void CDlgParametersPitchPage::OnKillfocusChange()
 /***************************************************************************/
 // CDlgParametersPitchPage::OnGroupScroll Group spin control hit
 /***************************************************************************/
-void CDlgParametersPitchPage::OnGroupScroll()
-{
+void CDlgParametersPitchPage::OnGroupScroll() {
     int nData = GetDlgItemInt(IDC_PITCH_GROUP, NULL, TRUE);
-    if (m_SpinGroup.UpperButtonClicked())
-    {
+    if (m_SpinGroup.UpperButtonClicked()) {
         nData++;
-    }
-    else
-    {
+    } else {
         nData--;
     }
-    if (nData > 20)
-    {
+    if (nData > 20) {
         nData = 20;
     }
-    if (nData < 1)
-    {
+    if (nData < 1) {
         nData = 1;
     }
-    if (nData != m_nGroup)
-    {
+    if (nData != m_nGroup) {
         m_nGroup = nData;
         m_bModified = TRUE;
         SetModified(TRUE); // data modified, enable apply button
@@ -516,19 +465,15 @@ void CDlgParametersPitchPage::OnGroupScroll()
 /***************************************************************************/
 // CDlgParametersPitchPage::OnKillfocusGroup Group changed
 /***************************************************************************/
-void CDlgParametersPitchPage::OnKillfocusGroup()
-{
+void CDlgParametersPitchPage::OnKillfocusGroup() {
     int nData = GetDlgItemInt(IDC_PITCH_GROUP, NULL, TRUE);
-    if (nData > 20)
-    {
+    if (nData > 20) {
         nData = 20;
     }
-    if (nData < 1)
-    {
+    if (nData < 1) {
         nData = 1;
     }
-    if (nData != m_nGroup)
-    {
+    if (nData != m_nGroup) {
         m_nGroup = nData;
         m_bModified = TRUE;
         SetModified(TRUE); // data modified, enable apply button
@@ -539,27 +484,20 @@ void CDlgParametersPitchPage::OnKillfocusGroup()
 /***************************************************************************/
 // CDlgParametersPitchPage::OnInterpolScroll Interpol spin control hit
 /***************************************************************************/
-void CDlgParametersPitchPage::OnInterpolScroll()
-{
+void CDlgParametersPitchPage::OnInterpolScroll() {
     int nData = GetDlgItemInt(IDC_PITCH_INTERPOLATION, NULL, TRUE);
-    if (m_SpinInterpol.UpperButtonClicked())
-    {
+    if (m_SpinInterpol.UpperButtonClicked()) {
         nData++;
-    }
-    else
-    {
+    } else {
         nData--;
     }
-    if (nData > 10)
-    {
+    if (nData > 10) {
         nData = 10;
     }
-    if (nData < 0)
-    {
+    if (nData < 0) {
         nData = 0;
     }
-    if (nData != m_nInterpol)
-    {
+    if (nData != m_nInterpol) {
         m_nInterpol = nData;
         m_bModified = TRUE;
         SetModified(TRUE); // data modified, enable apply button
@@ -570,19 +508,15 @@ void CDlgParametersPitchPage::OnInterpolScroll()
 /***************************************************************************/
 // CDlgParametersPitchPage::OnKillfocusInterpol Interpol changed
 /***************************************************************************/
-void CDlgParametersPitchPage::OnKillfocusInterpol()
-{
+void CDlgParametersPitchPage::OnKillfocusInterpol() {
     int nData = GetDlgItemInt(IDC_PITCH_INTERPOLATION, NULL, TRUE);
-    if (nData > 10)
-    {
+    if (nData > 10) {
         nData = 10;
     }
-    if (nData < 0)
-    {
+    if (nData < 0) {
         nData = 0;
     }
-    if (nData != m_nInterpol)
-    {
+    if (nData != m_nInterpol) {
         m_nInterpol = nData;
         m_bModified = TRUE;
         SetModified(TRUE); // data modified, enable apply button
@@ -593,8 +527,7 @@ void CDlgParametersPitchPage::OnKillfocusInterpol()
 /***************************************************************************/
 // CDlgParametersPitchPage::OnVoicingScroll Voicing spin control hit
 /***************************************************************************/
-void CDlgParametersPitchPage::OnVoicingScroll()
-{
+void CDlgParametersPitchPage::OnVoicingScroll() {
 
     CString szData("");
     GetDlgItemText(IDC_PITCH_LOUDNESS, szData.GetBuffer(_MAX_PATH), 5);
@@ -602,24 +535,18 @@ void CDlgParametersPitchPage::OnVoicingScroll()
 
     swscanf_s(szData.GetBuffer(_MAX_PATH), _T("%lf"), &fData);
 
-    if (m_SpinVoicing.UpperButtonClicked())
-    {
+    if (m_SpinVoicing.UpperButtonClicked()) {
         fData += 0.1;
-    }
-    else
-    {
+    } else {
         fData -= 0.1;
     }
-    if (fData > 5.0)
-    {
+    if (fData > 5.0) {
         fData = 5.0;
     }
-    if (fData < 0.)
-    {
+    if (fData < 0.) {
         fData = 0.;
     }
-    if (fData != m_fVoicing)
-    {
+    if (fData != m_fVoicing) {
         m_fVoicing = fData;
         m_bModified = TRUE;
         SetModified(TRUE); // data modified, enable apply button
@@ -632,8 +559,7 @@ void CDlgParametersPitchPage::OnVoicingScroll()
 /***************************************************************************/
 // CDlgParametersPitchPage::OnKillfocusVoicing Voicing changed
 /***************************************************************************/
-void CDlgParametersPitchPage::OnKillfocusVoicing()
-{
+void CDlgParametersPitchPage::OnKillfocusVoicing() {
 
     CString szData("");
     GetDlgItemText(IDC_PITCH_LOUDNESS, szData.GetBuffer(_MAX_PATH), 5);
@@ -641,16 +567,13 @@ void CDlgParametersPitchPage::OnKillfocusVoicing()
 
     swscanf_s(szData.GetBuffer(_MAX_PATH), _T("%lf"), &fData);
 
-    if (fData > 5.0)
-    {
+    if (fData > 5.0) {
         fData = 5.0;
     }
-    if (fData < 0.)
-    {
+    if (fData < 0.) {
         fData = 0.;
     }
-    if (fData != m_fVoicing)
-    {
+    if (fData != m_fVoicing) {
         m_fVoicing = fData;
         m_bModified = TRUE;
         SetModified(TRUE); // data modified, enable apply button
@@ -663,34 +586,26 @@ void CDlgParametersPitchPage::OnKillfocusVoicing()
 /***************************************************************************/
 // CDlgParametersPitchPage::OnMaxFreqScroll Max frequency spin control hit
 /***************************************************************************/
-void CDlgParametersPitchPage::OnMaxFreqScroll()
-{
+void CDlgParametersPitchPage::OnMaxFreqScroll() {
 
     int nData = GetDlgItemInt(IDC_PITCH_MAXFREQ, NULL, TRUE);
-    if (m_SpinMaxFreq.UpperButtonClicked())
-    {
+    if (m_SpinMaxFreq.UpperButtonClicked()) {
         nData++;
-    }
-    else
-    {
+    } else {
         nData--;
     }
-    if (nData > 2047)
-    {
+    if (nData > 2047) {
         nData = 2047;    //CLW 10/4/99
     }
-    if (nData < 80)
-    {
+    if (nData < 80) {
         nData = 80;
     }
-    if (nData != m_nMaxFreq)
-    {
+    if (nData != m_nMaxFreq) {
         m_nMaxFreq = nData;
         m_bModified = TRUE;
         SetModified(TRUE); // data modified, enable apply button
         SetDlgItemInt(IDC_PITCH_MAXFREQ, m_nMaxFreq, TRUE);
-        if (m_nMinFreq > (m_nMaxFreq * 4 / 5))
-        {
+        if (m_nMinFreq > (m_nMaxFreq * 4 / 5)) {
             m_nMinFreq = m_nMaxFreq * 4 / 5;
             SetDlgItemInt(IDC_PITCH_MINFREQ, m_nMinFreq, TRUE);
         }
@@ -700,30 +615,24 @@ void CDlgParametersPitchPage::OnMaxFreqScroll()
 /***************************************************************************/
 // CDlgParametersPitchPage::OnKillfocusMaxfreq Max frequency changed
 /***************************************************************************/
-void CDlgParametersPitchPage::OnKillfocusMaxfreq()
-{
+void CDlgParametersPitchPage::OnKillfocusMaxfreq() {
 
     BOOL bTrans = FALSE; //CLW 8/27/99
     int nData = (int)GetDlgItemInt(IDC_PITCH_MAXFREQ, &bTrans, TRUE); //CLW 8/27/99
-    if ((!bTrans) && (nData==0))
-    {
+    if ((!bTrans) && (nData==0)) {
         nData = 460;    //CLW 8/27/99
     }
-    if (nData > 460)
-    {
+    if (nData > 460) {
         nData = 460;
     }
-    if (nData < 40)
-    {
+    if (nData < 40) {
         nData = 40;
     }
-    if (nData != m_nMaxFreq)
-    {
+    if (nData != m_nMaxFreq) {
         m_nMaxFreq = nData;
         m_bModified = TRUE;
         SetModified(TRUE); // data modified, enable apply button
-        if (m_nMinFreq > (m_nMaxFreq * 4 / 5))
-        {
+        if (m_nMinFreq > (m_nMaxFreq * 4 / 5)) {
             m_nMinFreq = m_nMaxFreq * 4 / 5;
             SetDlgItemInt(IDC_PITCH_MINFREQ, m_nMinFreq, TRUE);
         }
@@ -734,34 +643,26 @@ void CDlgParametersPitchPage::OnKillfocusMaxfreq()
 /***************************************************************************/
 // CDlgParametersPitchPage::OnMinFreqScroll Min frequency spin control hit
 /***************************************************************************/
-void CDlgParametersPitchPage::OnMinFreqScroll()
-{
+void CDlgParametersPitchPage::OnMinFreqScroll() {
 
     int nData = GetDlgItemInt(IDC_PITCH_MINFREQ, NULL, TRUE);
-    if (m_SpinMinFreq.UpperButtonClicked())
-    {
+    if (m_SpinMinFreq.UpperButtonClicked()) {
         nData++;
-    }
-    else
-    {
+    } else {
         nData--;
     }
-    if (nData > 460)
-    {
+    if (nData > 460) {
         nData = 460;
     }
-    if (nData < 40)
-    {
+    if (nData < 40) {
         nData = 40;
     }
-    if (nData != m_nMinFreq)
-    {
+    if (nData != m_nMinFreq) {
         m_nMinFreq = nData;
         m_bModified = TRUE;
         SetModified(TRUE); // data modified, enable apply button
         SetDlgItemInt(IDC_PITCH_MINFREQ, m_nMinFreq, TRUE);
-        if (m_nMaxFreq < ceil(m_nMinFreq * 5 / 4.))
-        {
+        if (m_nMaxFreq < ceil(m_nMinFreq * 5 / 4.)) {
             m_nMaxFreq = (int)(ceil(m_nMinFreq * 5 / 4.));
             SetDlgItemInt(IDC_PITCH_MAXFREQ, m_nMaxFreq, TRUE);
         }
@@ -771,30 +672,24 @@ void CDlgParametersPitchPage::OnMinFreqScroll()
 /***************************************************************************/
 // CDlgParametersPitchPage::OnKillfocusMinfreq Min frequency changed
 /***************************************************************************/
-void CDlgParametersPitchPage::OnKillfocusMinfreq()
-{
+void CDlgParametersPitchPage::OnKillfocusMinfreq() {
 
     BOOL bTrans; //CLW 8/27/99
     int nData = (int)GetDlgItemInt(IDC_PITCH_MINFREQ, &bTrans, TRUE); //CLW 8/27/99
-    if (!bTrans && (nData==0))
-    {
+    if (!bTrans && (nData==0)) {
         nData = 460;    //CLW 8/27/99
     }
-    if (nData > 460)
-    {
+    if (nData > 460) {
         nData = 460;
     }
-    if (nData < 40)
-    {
+    if (nData < 40) {
         nData = 40;
     }
-    if (nData != m_nMinFreq)
-    {
+    if (nData != m_nMinFreq) {
         m_nMinFreq = nData;
         m_bModified = TRUE;
         SetModified(TRUE); // data modified, enable apply button
-        if (m_nMaxFreq < ceil(m_nMinFreq * 5 / 4.))
-        {
+        if (m_nMaxFreq < ceil(m_nMinFreq * 5 / 4.)) {
             m_nMaxFreq = (int)(ceil(m_nMinFreq * 5 / 4.));
             SetDlgItemInt(IDC_PITCH_MAXFREQ, m_nMaxFreq, TRUE);
         }
@@ -808,22 +703,18 @@ void CDlgParametersPitchPage::OnKillfocusMinfreq()
 /***************************************************************************/
 // CDlgParametersPitchPage::OnKillfocusMedianFilter
 /***************************************************************************/
-void CDlgParametersPitchPage::OnKillfocusMedianFilter()
-{
+void CDlgParametersPitchPage::OnKillfocusMedianFilter() {
 
     int nData = GetDlgItemInt(IDC_MEDIANFILTERSIZE, NULL, TRUE);
 
-    if (nData > 250)
-    {
+    if (nData > 250) {
         nData = 250;
     }
-    if (nData < 1)
-    {
+    if (nData < 1) {
         nData = 1;
     }
 
-    if (nData != m_nCepMedianFilterSize)
-    {
+    if (nData != m_nCepMedianFilterSize) {
         m_nCepMedianFilterSize = nData;
         m_bModified = TRUE;
         SetModified(TRUE); // data modified, enable apply button
@@ -836,38 +727,29 @@ void CDlgParametersPitchPage::OnKillfocusMedianFilter()
 /***************************************************************************/
 // CDlgParametersPitchPage::OnUpperBoundScroll Upper boundary spin control hit
 /***************************************************************************/
-void CDlgParametersPitchPage::OnUpperBoundScroll()
-{
+void CDlgParametersPitchPage::OnUpperBoundScroll() {
 
-    if (m_nPitchRange)
-    {
+    if (m_nPitchRange) {
         int nData = GetDlgItemInt(IDC_PITCH_UPPERBOUNDEDIT, NULL, TRUE);
-        if (m_SpinUpperBound.UpperButtonClicked())
-        {
+        if (m_SpinUpperBound.UpperButtonClicked()) {
             nData++;
-        }
-        else
-        {
+        } else {
             nData--;
         }
         // RLJ 09/21/2000: Bug GPI-03
         //      if (nData > m_nFreqLimit) nData = m_nFreqLimit;
-        if (nData > CECIL_PITCH_MAXFREQ)
-        {
+        if (nData > CECIL_PITCH_MAXFREQ) {
             nData = CECIL_PITCH_MAXFREQ;
         }
-        if (nData < 100)
-        {
+        if (nData < 100) {
             nData = 100;
         }
-        if (nData != m_nUpperBound)
-        {
+        if (nData != m_nUpperBound) {
             m_nUpperBound = nData;
             m_bModified = TRUE;
             SetModified(TRUE); // data modified, enable apply button
             SetDlgItemInt(IDC_PITCH_UPPERBOUNDEDIT, m_nUpperBound, TRUE);
-            if (m_nLowerBound >= m_nUpperBound)
-            {
+            if (m_nLowerBound >= m_nUpperBound) {
                 m_nLowerBound = m_nUpperBound - 1;
                 SetDlgItemInt(IDC_PITCH_LOWERBOUNDEDIT, m_nLowerBound, TRUE);
             }
@@ -878,33 +760,27 @@ void CDlgParametersPitchPage::OnUpperBoundScroll()
 /***************************************************************************/
 // CDlgParametersPitchPage::OnKillfocusUpperBound Upper boundary changed
 /***************************************************************************/
-void CDlgParametersPitchPage::OnKillfocusUpperBound()
-{
+void CDlgParametersPitchPage::OnKillfocusUpperBound() {
 
     BOOL bTrans = FALSE; //CLW 8/27/99
     int nData = (int)GetDlgItemInt(IDC_PITCH_UPPERBOUNDEDIT, &bTrans, TRUE); //CLW 8/27/99
     // RLJ 09/21/2000: Bug GPI-03
     //    if (!bTrans && (nData==0)) nData = m_nFreqLimit; //CLW 8/27/99
     //    if (nData > m_nFreqLimit) nData = m_nFreqLimit;
-    if (!bTrans && (nData==0))
-    {
+    if (!bTrans && (nData==0)) {
         nData = CECIL_PITCH_MAXFREQ;    //CLW 8/27/99
     }
-    if (nData > CECIL_PITCH_MAXFREQ)
-    {
+    if (nData > CECIL_PITCH_MAXFREQ) {
         nData = CECIL_PITCH_MAXFREQ;
     }
-    if (nData < 100)
-    {
+    if (nData < 100) {
         nData = 100;
     }
-    if (nData != m_nUpperBound)
-    {
+    if (nData != m_nUpperBound) {
         m_nUpperBound = nData;
         m_bModified = TRUE;
         SetModified(TRUE); // data modified, enable apply button
-        if (m_nLowerBound >= m_nUpperBound)
-        {
+        if (m_nLowerBound >= m_nUpperBound) {
             m_nLowerBound = m_nUpperBound - 1;
             SetDlgItemInt(IDC_PITCH_LOWERBOUNDEDIT, m_nLowerBound, TRUE);
         }
@@ -915,38 +791,29 @@ void CDlgParametersPitchPage::OnKillfocusUpperBound()
 /***************************************************************************/
 // CDlgParametersPitchPage::OnLowerBoundScroll Lower boundary spin control hit
 /***************************************************************************/
-void CDlgParametersPitchPage::OnLowerBoundScroll()
-{
+void CDlgParametersPitchPage::OnLowerBoundScroll() {
 
-    if (m_nPitchRange)
-    {
+    if (m_nPitchRange) {
         int nData = GetDlgItemInt(IDC_PITCH_LOWERBOUNDEDIT, NULL, TRUE);
-        if (m_SpinLowerBound.UpperButtonClicked())
-        {
+        if (m_SpinLowerBound.UpperButtonClicked()) {
             nData++;
-        }
-        else
-        {
+        } else {
             nData--;
         }
         // RLJ 09/21/2000: Bug GPI-03
         //      if (nData > (m_nFreqLimit - 1)) nData = m_nFreqLimit - 1;
-        if (nData > (CECIL_PITCH_MAXFREQ - 1))
-        {
+        if (nData > (CECIL_PITCH_MAXFREQ - 1)) {
             nData = CECIL_PITCH_MAXFREQ - 1;
         }
-        if (nData < 10)
-        {
+        if (nData < 10) {
             nData = 10;
         }
-        if (nData != m_nLowerBound)
-        {
+        if (nData != m_nLowerBound) {
             m_nLowerBound = nData;
             m_bModified = TRUE;
             SetModified(TRUE); // data modified, enable apply button
             SetDlgItemInt(IDC_PITCH_LOWERBOUNDEDIT, m_nLowerBound, TRUE);
-            if (m_nUpperBound <= m_nLowerBound)
-            {
+            if (m_nUpperBound <= m_nLowerBound) {
                 m_nUpperBound = m_nLowerBound + 1;
                 SetDlgItemInt(IDC_PITCH_UPPERBOUNDEDIT, m_nUpperBound, TRUE);
             }
@@ -957,31 +824,24 @@ void CDlgParametersPitchPage::OnLowerBoundScroll()
 /***************************************************************************/
 // CDlgParametersPitchPage::OnMedianFilterSizeSpin size spin hit.
 /***************************************************************************/
-void CDlgParametersPitchPage::OnMedianFilterSizeSpin()
-{
+void CDlgParametersPitchPage::OnMedianFilterSizeSpin() {
 
     int nData = GetDlgItemInt(IDC_MEDIANFILTERSIZE, NULL, TRUE);
 
-    if (m_SpinMedianFilterSize.UpperButtonClicked())
-    {
+    if (m_SpinMedianFilterSize.UpperButtonClicked()) {
         nData++;
-    }
-    else
-    {
+    } else {
         nData--;
     }
 
-    if (nData > 250)
-    {
+    if (nData > 250) {
         nData = 250;
     }
-    if (nData < 1)
-    {
+    if (nData < 1) {
         nData = 1;
     }
 
-    if (nData != m_nCepMedianFilterSize)
-    {
+    if (nData != m_nCepMedianFilterSize) {
         m_nCepMedianFilterSize = nData;
         m_bModified = TRUE;
         SetModified(TRUE); // data modified, enable apply button
@@ -992,27 +852,22 @@ void CDlgParametersPitchPage::OnMedianFilterSizeSpin()
 /***************************************************************************/
 // CDlgParametersPitchPage::OnKillfocusLowerBound Lower boundary changed
 /***************************************************************************/
-void CDlgParametersPitchPage::OnKillfocusLowerBound()
-{
+void CDlgParametersPitchPage::OnKillfocusLowerBound() {
 
     int nData = GetDlgItemInt(IDC_PITCH_LOWERBOUNDEDIT, NULL, TRUE);
     // RLJ 09/21/2000: Bug GPI-03CECIL_PITCH_MAXFREQ
     //    if (nData > (m_nFreqLimit - 1)) nData = m_nFreqLimit - 1;
-    if (nData > (CECIL_PITCH_MAXFREQ - 1))
-    {
+    if (nData > (CECIL_PITCH_MAXFREQ - 1)) {
         nData = CECIL_PITCH_MAXFREQ - 1;
     }
-    if (nData < 10)
-    {
+    if (nData < 10) {
         nData = 10;
     }
-    if (nData != m_nLowerBound)
-    {
+    if (nData != m_nLowerBound) {
         m_nLowerBound = nData;
         m_bModified = TRUE;
         SetModified(TRUE); // data modified, enable apply button
-        if (m_nUpperBound <= m_nLowerBound)
-        {
+        if (m_nUpperBound <= m_nLowerBound) {
             m_nUpperBound = m_nLowerBound + 1;
             SetDlgItemInt(IDC_PITCH_UPPERBOUNDEDIT, m_nUpperBound, TRUE);
         }
@@ -1023,19 +878,16 @@ void CDlgParametersPitchPage::OnKillfocusLowerBound()
 /***************************************************************************/
 // CDlgParametersPitchPage::OnRange Range selection changed
 /***************************************************************************/
-void CDlgParametersPitchPage::OnRange()
-{
+void CDlgParametersPitchPage::OnRange() {
 
     int nOldPitchRange = m_nPitchRange;
     UpdateData(TRUE);
 
-    if (nOldPitchRange == m_nPitchRange)
-    {
+    if (nOldPitchRange == m_nPitchRange) {
         return;    // no change
     }
 
-    if (!m_nPitchRange)
-    {
+    if (!m_nPitchRange) {
         m_nManualLowerBound = m_nLowerBound;
         m_nManualUpperBound = m_nUpperBound;
 
@@ -1055,9 +907,7 @@ void CDlgParametersPitchPage::OnRange()
         GetDlgItem(IDC_PITCH_LOWERBOUNDEDIT)->EnableWindow(FALSE);
         GetDlgItem(IDC_PITCH_LOWERBOUNDTEXT)->EnableWindow(FALSE);
         m_SpinLowerBound.EnableWindow(FALSE);
-    }
-    else
-    {
+    } else {
         // manual range, enable boundaries
         GetDlgItem(IDC_PITCH_UPPERBOUNDTITLE)->EnableWindow(TRUE);
         GetDlgItem(IDC_PITCH_UPPERBOUNDEDIT)->EnableWindow(TRUE);
@@ -1078,8 +928,7 @@ void CDlgParametersPitchPage::OnRange()
 /***************************************************************************/
 // CDlgParametersPitchPage::OnScaling Scale mode changed
 /***************************************************************************/
-void CDlgParametersPitchPage::OnScaling()
-{
+void CDlgParametersPitchPage::OnScaling() {
 
     UpdateData(TRUE);
     m_bModified = TRUE;
@@ -1089,8 +938,7 @@ void CDlgParametersPitchPage::OnScaling()
 /***************************************************************************/
 // CDlgParametersPitchPage::EnableCepstralSettings Enable cepstral pitch settings
 /***************************************************************************/
-void CDlgParametersPitchPage::EnableCepstralSettings(BOOL enable)
-{
+void CDlgParametersPitchPage::EnableCepstralSettings(BOOL enable) {
 
     GetDlgItem(IDC_CEPSTRAL_BOX)->EnableWindow(enable);
     GetDlgItem(IDC_USEMEDIANFILTER)->EnableWindow(enable);
@@ -1100,8 +948,7 @@ void CDlgParametersPitchPage::EnableCepstralSettings(BOOL enable)
 /***************************************************************************/
 // CDlgParametersPitchPage::EnableCepMedianSize Enable median filter spin control
 /***************************************************************************/
-void CDlgParametersPitchPage::EnableCepMedianSize(BOOL enable)
-{
+void CDlgParametersPitchPage::EnableCepMedianSize(BOOL enable) {
 
     m_SpinMedianFilterSize.EnableWindow(enable);
     GetDlgItem(IDC_MEDIANFILTERSIZE)->EnableWindow(enable);
@@ -1111,8 +958,7 @@ void CDlgParametersPitchPage::EnableCepMedianSize(BOOL enable)
 /***************************************************************************/
 // CDlgParametersPitchPage::OnUsemedianFilter Handle median filter checkbox
 /***************************************************************************/
-void CDlgParametersPitchPage::OnUsemedianfilter()
-{
+void CDlgParametersPitchPage::OnUsemedianfilter() {
 
     m_bUseCepMedianFilter = (BOOL)IsDlgButtonChecked(IDC_USEMEDIANFILTER);
     SetModified(TRUE); // data modified, enable apply button
@@ -1125,21 +971,18 @@ void CDlgParametersPitchPage::OnUsemedianfilter()
 /***************************************************************************/
 // OnPitchManualDefaultFile::OnPitchManualDefaultFile Set items to file values
 /***************************************************************************/
-void CDlgParametersPitchPage::OnPitchManualDefaultFile()
-{
+void CDlgParametersPitchPage::OnPitchManualDefaultFile() {
     OnPitchManualDefault(FALSE);
 }
 
 /***************************************************************************/
 // CDlgParametersPitchPage::OnPitchManualDefaultApp items to default app values
 /***************************************************************************/
-void CDlgParametersPitchPage::OnPitchManualDefaultApp()
-{
+void CDlgParametersPitchPage::OnPitchManualDefaultApp() {
     OnPitchManualDefault(TRUE);
 }
 
-void CDlgParametersPitchPage::OnPitchManualDefault(BOOL bAppDefaults)
-{
+void CDlgParametersPitchPage::OnPitchManualDefault(BOOL bAppDefaults) {
     CUttParm UttDefault;
     CUttParm * pUttParm = &UttDefault;
 
@@ -1147,26 +990,22 @@ void CDlgParametersPitchPage::OnPitchManualDefault(BOOL bAppDefaults)
     ASSERT(pMDIFrameWnd->IsKindOf(RUNTIME_CLASS(CMainFrame)));
     CSaView * pView = (CSaView *)pMDIFrameWnd->GetCurrSaView();
     CSaDoc * pDoc = (CSaDoc *)pView->GetDocument();
-    if (bAppDefaults)
-    {
+    if (bAppDefaults) {
         // initialize utterance parameters
         pUttParm->Init(pDoc->GetBitsPerSample());
-    }
-    else
-    {
+    } else {
         pDoc->GetUttParm(pUttParm, TRUE);  // Get file original utt parm settings
     }
 
     // calculate raw voicing value
     int nVoicingRaw16 = (int)(m_fVoicing * 16. * .01 * pow(2.F, pDoc->GetBitsPerSample() - 1) + 0.5);
 
-    if ((m_nChange != pUttParm->nMaxChange) || 
-		(m_nGroup != pUttParm->nMinGroup) || 
-		(m_nInterpol != pUttParm->nMaxInterp) || 
-		(nVoicingRaw16 != pUttParm->nCritLoud) || 
-		(m_nMaxFreq != (int)pUttParm->nMaxFreq) || 
-		(m_nMinFreq != (int)pUttParm->nMinFreq))
-    {
+    if ((m_nChange != pUttParm->nMaxChange) ||
+            (m_nGroup != pUttParm->nMinGroup) ||
+            (m_nInterpol != pUttParm->nMaxInterp) ||
+            (nVoicingRaw16 != pUttParm->nCritLoud) ||
+            (m_nMaxFreq != (int)pUttParm->nMaxFreq) ||
+            (m_nMinFreq != (int)pUttParm->nMinFreq)) {
         m_bModified = TRUE;
         SetModified(TRUE); // data modified, enable apply button
         m_nChange = pUttParm->nMaxChange;
@@ -1206,13 +1045,12 @@ BEGIN_MESSAGE_MAP(CDlgParametersSpectroPage, CPropertyPage)
 END_MESSAGE_MAP()
 
 CDlgParametersSpectroPage::CDlgParametersSpectroPage(UINT nID, UINT graphId, const CSpectroParm * pSpectroParmDefaults) :
-    CPropertyPage(CDlgParametersSpectroPage::IDD, nID)
-{
+    CPropertyPage(CDlgParametersSpectroPage::IDD, nID) {
 
     m_GraphId = graphId;
     m_nResolution = (UINT) pSpectroParmDefaults->nResolution;
     m_nColor = (UINT) pSpectroParmDefaults->nColor;
-	m_bShowFormants = pSpectroParmDefaults->bShowFormants;
+    m_bShowFormants = pSpectroParmDefaults->bShowFormants;
     m_bF1 = (UINT) pSpectroParmDefaults->bShowF1;
     m_bF2 = (UINT) pSpectroParmDefaults->bShowF2;
     m_bF3 = (UINT) pSpectroParmDefaults->bShowF3;
@@ -1233,11 +1071,9 @@ Do the work of applying the settings in the dialog page.
 m_GrapId should be the graph to operate on (which spectrogram).
 Rationale: Simplify the Apply() function in SpectroPageA&B.
 */
-void CDlgParametersSpectroPage::Apply()
-{
+void CDlgParametersSpectroPage::Apply() {
 
-    if (m_bModified)   // retrieve data
-    {
+    if (m_bModified) { // retrieve data
         UpdateData(TRUE); // Get Data from dialog
         CMainFrame * pMDIFrameWnd = (CMainFrame *)AfxGetMainWnd();
         ASSERT(pMDIFrameWnd->IsKindOf(RUNTIME_CLASS(CMainFrame)));
@@ -1247,10 +1083,8 @@ void CDlgParametersSpectroPage::Apply()
         // Find the proper graph
         UINT * pnID = pView->GetGraphIDs();
         CGraphWnd * pGraph = NULL;
-        for (int nLoop = 0; nLoop < MAX_GRAPHS_NUMBER; nLoop++)
-        {
-            if (pnID[nLoop] == m_GraphId)
-            {
+        for (int nLoop = 0; nLoop < MAX_GRAPHS_NUMBER; nLoop++) {
+            if (pnID[nLoop] == m_GraphId) {
                 pGraph = pView->GetGraph(nLoop);
             }
         }
@@ -1258,14 +1092,12 @@ void CDlgParametersSpectroPage::Apply()
         CSpectroParm cSpectroParm = pDoc->GetSpectrogram(m_GraphId==IDD_SPECTROGRAM)->GetSpectroParm();
         CSpectroParm * pSpectroParm = &cSpectroParm;
         // save member data
-        if (pSpectroParm->nResolution != m_nResolution)
-        {
+        if (pSpectroParm->nResolution != m_nResolution) {
             // processed data is invalid
             pDoc->GetSpectrogram(m_GraphId==IDD_SPECTROGRAM)->SetDataInvalid();
         }
 
-        if (pSpectroParm->bSmoothFormantTracks != m_bSmoothFormantTracks)
-        {
+        if (pSpectroParm->bSmoothFormantTracks != m_bSmoothFormantTracks) {
             // processed data is invalid
             pDoc->GetSpectrogram(TRUE)->GetFormantProcess()->SetDataInvalid();
         }
@@ -1276,7 +1108,7 @@ void CDlgParametersSpectroPage::Apply()
         pSpectroParm->nResolution = m_nResolution;
         pSpectroParm->nColor = m_nColor;
         pSpectroParm->nOverlay = m_nOverlay;
-		pSpectroParm->bShowFormants = m_bShowFormants;
+        pSpectroParm->bShowFormants = m_bShowFormants;
         pSpectroParm->bShowPitch = m_bShowPitch;
         pSpectroParm->bShowF1 = m_bF1;
         pSpectroParm->bShowF2 = m_bF2;
@@ -1298,13 +1130,11 @@ void CDlgParametersSpectroPage::Apply()
     }
 }
 
-void CDlgParametersSpectroPage::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar * pScrollBar)
-{
+void CDlgParametersSpectroPage::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar * pScrollBar) {
 
     int nCtrlID = pScrollBar->GetDlgCtrlID();
 
-    switch (nCtrlID)
-    {
+    switch (nCtrlID) {
     case IDC_SLIDER_MAX:
     case IDC_SLIDER_MIN:
     case IDC_SLIDER_FREQ:
@@ -1313,8 +1143,7 @@ void CDlgParametersSpectroPage::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar * 
         break;
     }
 
-    switch (nCtrlID)
-    {
+    switch (nCtrlID) {
     case IDC_SLIDER_MAX:
         SetMaxThreshold(nPos);
         Apply();
@@ -1337,8 +1166,7 @@ void CDlgParametersSpectroPage::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar * 
 Initialize this page (I supposes).
 Rationale: Simplify the OnDialogInit function of SpectroPageA&B. -wgm
 */
-BOOL CDlgParametersSpectroPage::OnInitDialog()
-{
+BOOL CDlgParametersSpectroPage::OnInitDialog() {
 
     CPropertyPage::OnInitDialog();
     // get pointer to document
@@ -1351,10 +1179,8 @@ BOOL CDlgParametersSpectroPage::OnInitDialog()
     // get spectrogram graph
     UINT * pnID = pView->GetGraphIDs();
     CGraphWnd * pGraph = NULL;
-    for (int nLoop = 0; nLoop < MAX_GRAPHS_NUMBER; nLoop++)
-    {
-        if (pnID[nLoop] == m_GraphId)
-        {
+    for (int nLoop = 0; nLoop < MAX_GRAPHS_NUMBER; nLoop++) {
+        if (pnID[nLoop] == m_GraphId) {
             pGraph = pView->GetGraph(nLoop);
         }
     }
@@ -1364,7 +1190,7 @@ BOOL CDlgParametersSpectroPage::OnInitDialog()
     m_nResolution = pSpectroParm->nResolution;
     m_nColor = pSpectroParm->nColor;
     m_nOverlay = pSpectroParm->nOverlay;
-	m_bShowFormants = pSpectroParm->bShowFormants;
+    m_bShowFormants = pSpectroParm->bShowFormants;
     m_bF1 = pSpectroParm->bShowF1;
     m_bF2 = pSpectroParm->bShowF2;
     m_bF3 = pSpectroParm->bShowF3;
@@ -1393,8 +1219,7 @@ BOOL CDlgParametersSpectroPage::OnInitDialog()
 /***************************************************************************/
 // CDlgParametersSpectroPage::DoDataExchange Data exchange
 /***************************************************************************/
-void CDlgParametersSpectroPage::DoDataExchange(CDataExchange * pDX)
-{
+void CDlgParametersSpectroPage::DoDataExchange(CDataExchange * pDX) {
 
     CPropertyPage::DoDataExchange(pDX);
     DDX_Control(pDX, IDC_MIN_STATIC, m_cMinStatic);
@@ -1422,8 +1247,7 @@ void CDlgParametersSpectroPage::DoDataExchange(CDataExchange * pDX)
 /***************************************************************************/
 // CDlgParametersSpectroPage::OnChange page changed
 /***************************************************************************/
-void CDlgParametersSpectroPage::OnChange()
-{
+void CDlgParametersSpectroPage::OnChange() {
 
     m_bModified = TRUE;
     SetModified(TRUE); // data modified, enable apply button
@@ -1432,25 +1256,18 @@ void CDlgParametersSpectroPage::OnChange()
 /***************************************************************************/
 // CDlgParametersSpectroPage::SetFrequency Frequency changed
 /***************************************************************************/
-int CDlgParametersSpectroPage::SetFrequency(int nData)
-{
+int CDlgParametersSpectroPage::SetFrequency(int nData) {
 
     int nReturn = m_nFrequency;
     int nLowerFreq = (int)CSpectroParm::Bandwidth(m_nResolution);
-    if (nData + 25 > m_nFreqLimit)
-    {
+    if (nData + 25 > m_nFreqLimit) {
         nData = m_nFreqLimit;
-    }
-    else if (nData - 25 <= nLowerFreq)
-    {
+    } else if (nData - 25 <= nLowerFreq) {
         nData = nLowerFreq + 1;
-    }
-    else
-    {
+    } else {
         nData = ((nData+ 25)/50)*50;    // Round to nearest 50 Hz
     }
-    if (nData != m_nFrequency)
-    {
+    if (nData != m_nFrequency) {
         m_nFrequency = nData;
         m_bModified = TRUE;
         SetModified(TRUE); // data modified, enable apply button
@@ -1466,8 +1283,7 @@ int CDlgParametersSpectroPage::SetFrequency(int nData)
 /***************************************************************************/
 // CDlgParametersSpectroPage::SetMaxThreshold
 /***************************************************************************/
-int CDlgParametersSpectroPage::SetMaxThreshold(int nData)
-{
+int CDlgParametersSpectroPage::SetMaxThreshold(int nData) {
 
     int nReturn = m_nMaxThreshold;
     if (nData <= m_nMinThreshold)
@@ -1475,22 +1291,18 @@ int CDlgParametersSpectroPage::SetMaxThreshold(int nData)
     {
         nData = m_nMinThreshold + 1;
     }
-    if (nData > 233)
-    {
+    if (nData > 233) {
         nData = 233;
     }
-    if (nData < 1)
-    {
+    if (nData < 1) {
         nData = 1;
     }
 
-    if (nData != m_nMaxThreshold)
-    {
+    if (nData != m_nMaxThreshold) {
         m_nMaxThreshold = nData;
         m_bModified = TRUE;
         SetModified(TRUE); // data modified, enable apply button
-        if (m_nMaxThreshold <= m_nMinThreshold)
-        {
+        if (m_nMaxThreshold <= m_nMinThreshold) {
             SetMinThreshold(m_nMaxThreshold - 1);
         }
     }
@@ -1505,8 +1317,7 @@ int CDlgParametersSpectroPage::SetMaxThreshold(int nData)
 /***************************************************************************/
 // CDlgParametersSpectroPage::SetMinThreshold
 /***************************************************************************/
-int CDlgParametersSpectroPage::SetMinThreshold(int nData)
-{
+int CDlgParametersSpectroPage::SetMinThreshold(int nData) {
 
     int nReturn = m_nMinThreshold;
     if (nData >= m_nMaxThreshold)
@@ -1514,21 +1325,17 @@ int CDlgParametersSpectroPage::SetMinThreshold(int nData)
     {
         nData = m_nMaxThreshold - 1;
     }
-    if (nData > 234)
-    {
+    if (nData > 234) {
         nData = 234;
     }
-    if (nData < 1)
-    {
+    if (nData < 1) {
         nData = 1;
     }
-    if (nData != m_nMinThreshold)
-    {
+    if (nData != m_nMinThreshold) {
         m_nMinThreshold = nData;
         m_bModified = TRUE;
         SetModified(TRUE); // data modified, enable apply button
-        if (m_nMaxThreshold <= m_nMinThreshold)
-        {
+        if (m_nMaxThreshold <= m_nMinThreshold) {
             SetMaxThreshold(m_nMinThreshold + 1);
         }
     }
@@ -1543,33 +1350,28 @@ int CDlgParametersSpectroPage::SetMinThreshold(int nData)
 /***************************************************************************/
 // CDlgParametersSpectroPage::OnModifiedFormants Formants on/off changed
 /***************************************************************************/
-void CDlgParametersSpectroPage::OnModifiedFormants()
-{
+void CDlgParametersSpectroPage::OnModifiedFormants() {
 
     OnModifiedFormants(TRUE);
 }
 
-void CDlgParametersSpectroPage::OnModifiedFormants(BOOL bMessage)
-{
+void CDlgParametersSpectroPage::OnModifiedFormants(BOOL bMessage) {
     BOOL bOldFormants = m_bShowFormants;
     BOOL bMasterEnableChange = !bMessage;
 
-    if (bMessage)
-    {
+    if (bMessage) {
         UpdateData(TRUE);
         SetModified(TRUE); // data modified, enable apply button
         m_bModified = TRUE;
     }
 
     if ((m_bShowFormants != bOldFormants) ||
-        ((!m_bShowFormants) && (m_bShowPitch || m_bF1 || m_bF2 || m_bF3 || m_bF4)))
-    {
+            ((!m_bShowFormants) && (m_bShowPitch || m_bF1 || m_bF2 || m_bF3 || m_bF4))) {
         UpdateData(FALSE);
         bMasterEnableChange = TRUE;
     }
 
-    if (bMasterEnableChange)
-    {
+    if (bMasterEnableChange) {
         GetDlgItem(IDC_SHOW_PITCH)->EnableWindow(m_bShowFormants);
         GetDlgItem(IDC_F1)->EnableWindow(m_bShowFormants);
         GetDlgItem(IDC_F2)->EnableWindow(m_bShowFormants);
@@ -1589,8 +1391,7 @@ void CDlgParametersSpectroPage::OnModifiedFormants(BOOL bMessage)
 /***************************************************************************/
 // CDlgParametersSpectroPage::OnModifiedSmoothFormantTracks  Smooth formant tracks on/off changed
 /***************************************************************************/
-void CDlgParametersSpectroPage::OnModifiedSmoothFormantTracks()
-{
+void CDlgParametersSpectroPage::OnModifiedSmoothFormantTracks() {
 
     //m_bSmoothFormantTracks = (BOOL)IsDlgButtonChecked(IDC_SMOOTH_FORMANTTRACKS);
     SetModified(TRUE); // data modified, enable apply button
@@ -1604,12 +1405,10 @@ void CDlgParametersSpectroPage::OnModifiedSmoothFormantTracks()
 // the dialog captures the palette and must be closed to allow the palette
 // to be changed.
 /***************************************************************************/
-void CDlgParametersSpectroPage::OnModifiedColor()
-{
+void CDlgParametersSpectroPage::OnModifiedColor() {
 
     int nData = (int)IsDlgButtonChecked(IDC_MONO);
-    if (nData != m_nColor)
-    {
+    if (nData != m_nColor) {
         m_nColor = nData;
         m_bModified = TRUE;
         GetDlgItem(IDC_FORMANT_COLOR)->EnableWindow((m_nColor) && (m_bShowFormants));
@@ -1621,13 +1420,11 @@ void CDlgParametersSpectroPage::OnModifiedColor()
 /***************************************************************************/
 // CDlgParametersSpectroPage::OnModifiedResolution Resolution modified
 /***************************************************************************/
-void CDlgParametersSpectroPage::OnModifiedResolution()
-{
+void CDlgParametersSpectroPage::OnModifiedResolution() {
 
     int nData = (int)m_nResolution;
     UpdateData(TRUE);
-    if (nData != m_nResolution)
-    {
+    if (nData != m_nResolution) {
         m_nResolution = nData;
         m_bModified = TRUE;
         SetModified(TRUE); // data modified, enable apply button
@@ -1643,12 +1440,10 @@ void CDlgParametersSpectroPage::OnModifiedResolution()
 // the dialog captures the palette and must be closed to allow the palette
 // to be changed.
 /***************************************************************************/
-void CDlgParametersSpectroPage::OnModifiedOverlay()
-{
+void CDlgParametersSpectroPage::OnModifiedOverlay() {
 
     int nData = (int)IsDlgButtonChecked(IDC_ONLY);
-    if (nData != m_nOverlay)
-    {
+    if (nData != m_nOverlay) {
         m_nOverlay = nData;
         m_bModified = TRUE;
         SetModified(TRUE); // data modified, enable apply button
@@ -1658,8 +1453,7 @@ void CDlgParametersSpectroPage::OnModifiedOverlay()
 /***************************************************************************/
 // CDlgParametersSpectroPage::OnMoreInfo More Info clicked
 /***************************************************************************/
-void CDlgParametersSpectroPage::OnMoreInfo()
-{
+void CDlgParametersSpectroPage::OnMoreInfo() {
 
     // create the pathname
     CString szPath = AfxGetApp()->m_pszHelpFilePath;
@@ -1708,8 +1502,7 @@ END_MESSAGE_MAP()
 /***************************************************************************/
 // CDlgParametersSpectrumPage::CDlgParametersSpectrumPage Constructor
 /***************************************************************************/
-CDlgParametersSpectrumPage::CDlgParametersSpectrumPage() : CPropertyPage(CDlgParametersSpectrumPage::IDD)
-{
+CDlgParametersSpectrumPage::CDlgParametersSpectrumPage() : CPropertyPage(CDlgParametersSpectrumPage::IDD) {
     m_nFreqScaleRange = -1;
     m_bModified = FALSE;
 }
@@ -1720,8 +1513,7 @@ CDlgParametersSpectrumPage::CDlgParametersSpectrumPage() : CPropertyPage(CDlgPar
 /***************************************************************************/
 // CDlgParametersSpectrumPage::DoDataExchange Data exchange
 /***************************************************************************/
-void CDlgParametersSpectrumPage::DoDataExchange(CDataExchange * pDX)
-{
+void CDlgParametersSpectrumPage::DoDataExchange(CDataExchange * pDX) {
 
     CPropertyPage::DoDataExchange(pDX);
     DDX_Text(pDX, IDC_SPECTRUM_PWRLOWEREDIT, m_nPwrLower);
@@ -1742,11 +1534,9 @@ void CDlgParametersSpectrumPage::DoDataExchange(CDataExchange * pDX)
 /***************************************************************************/
 // CDlgParametersSpectrumPage::Apply Apply button hit
 /***************************************************************************/
-void CDlgParametersSpectrumPage::Apply()
-{
+void CDlgParametersSpectrumPage::Apply() {
 
-    if (m_bModified)   // retrieve data
-    {
+    if (m_bModified) { // retrieve data
         // get pointer to spectrum process
         CMainFrame * pMDIFrameWnd = (CMainFrame *)AfxGetMainWnd();
         ASSERT(pMDIFrameWnd->IsKindOf(RUNTIME_CLASS(CMainFrame)));
@@ -1777,11 +1567,10 @@ void CDlgParametersSpectrumPage::Apply()
         // refresh the spectrum
         int nSpectrumGraph = pView->GetGraphIndexForIDD(IDD_SPECTRUM);
         CGraphWnd * pSpectrumGraph = pView->GetGraph(nSpectrumGraph);
-        if (nFreqScaleOld != pSpecParm->nFreqScaleRange)
-        {
+        if (nFreqScaleOld != pSpecParm->nFreqScaleRange) {
             CPlotWnd * pSpectrumPlot = pSpectrumGraph->GetPlot();
-            
-			CPoint point;
+
+            CPoint point;
             point.x = pSpectrumPlot->GetPrivateCursorPosition();
 
             double ratio = (pSpecParm->nFreqScaleRange + 1)/double(nFreqScaleOld + 1);
@@ -1791,8 +1580,7 @@ void CDlgParametersSpectrumPage::Apply()
             // full scale to half scale
             CRect rPlotWnd;
             pSpectrumPlot->GetClientRect(rPlotWnd);
-            if (point.x >= rPlotWnd.right)
-            {
+            if (point.x >= rPlotWnd.right) {
                 point.x = rPlotWnd.right - 1;
             }
 
@@ -1801,26 +1589,22 @@ void CDlgParametersSpectrumPage::Apply()
 
         pSpectrumGraph->RedrawGraph(TRUE,TRUE);
         int nFormantChart = pView->GetGraphIndexForIDD(IDD_F1F2);
-        if (nFormantChart >= 0)
-        {
+        if (nFormantChart >= 0) {
             CGraphWnd * pFormantChart = pView->GetGraph(nFormantChart);
             pFormantChart->RedrawGraph(TRUE, TRUE);
         }
         nFormantChart = pView->GetGraphIndexForIDD(IDD_F2F1);
-        if (nFormantChart >= 0)
-        {
+        if (nFormantChart >= 0) {
             CGraphWnd * pFormantChart = pView->GetGraph(nFormantChart);
             pFormantChart->RedrawGraph(TRUE, TRUE);
         }
         nFormantChart = pView->GetGraphIndexForIDD(IDD_F2F1F1);
-        if (nFormantChart >= 0)
-        {
+        if (nFormantChart >= 0) {
             CGraphWnd * pFormantChart = pView->GetGraph(nFormantChart);
             pFormantChart->RedrawGraph(TRUE, TRUE);
         }
         nFormantChart = pView->GetGraphIndexForIDD(IDD_3D);
-        if (nFormantChart >= 0)
-        {
+        if (nFormantChart >= 0) {
             CGraphWnd * pFormantChart = pView->GetGraph(nFormantChart);
             pFormantChart->RedrawGraph(TRUE, TRUE);
         }
@@ -1833,8 +1617,7 @@ void CDlgParametersSpectrumPage::Apply()
 /***************************************************************************/
 // CDlgParametersSpectrumPage::OnInitDialog Dialog initialization
 /***************************************************************************/
-BOOL CDlgParametersSpectrumPage::OnInitDialog()
-{
+BOOL CDlgParametersSpectrumPage::OnInitDialog() {
 
     // get pointer to spectrum process
     CMainFrame * pMDIFrameWnd = (CMainFrame *)AfxGetMainWnd();
@@ -1892,14 +1675,11 @@ BOOL CDlgParametersSpectrumPage::OnInitDialog()
     CheckDlgButton(IDC_SPECTRUM_FORMANTBANDWIDTH, pSpecParm->bShowFormantBandwidth);
     CheckDlgButton(IDC_SPECTRUM_FORMANTPOWER, pSpecParm->bShowFormantPower);
     // show or hide power range dimension
-    if (m_nSpectrumScaling)
-    {
+    if (m_nSpectrumScaling) {
         // hide power range dimension
         GetDlgItem(IDC_SPECTRUM_PWRUPPERDIM)->ShowWindow(SW_HIDE);
         GetDlgItem(IDC_SPECTRUM_PWRLOWERDIM)->ShowWindow(SW_HIDE);
-    }
-    else
-    {
+    } else {
         // show power range dimension
         GetDlgItem(IDC_SPECTRUM_PWRUPPERDIM)->ShowWindow(SW_SHOW);
         GetDlgItem(IDC_SPECTRUM_PWRLOWERDIM)->ShowWindow(SW_SHOW);
@@ -1911,34 +1691,26 @@ BOOL CDlgParametersSpectrumPage::OnInitDialog()
 /***************************************************************************/
 // CDlgParametersSpectrumPage::OnPwrUpperScroll Upper power bnd spin control hit
 /***************************************************************************/
-void CDlgParametersSpectrumPage::OnPwrUpperScroll()
-{
+void CDlgParametersSpectrumPage::OnPwrUpperScroll() {
 
     int nData = GetDlgItemInt(IDC_SPECTRUM_PWRUPPEREDIT, NULL, TRUE);
-    if (m_SpinPwrUpper.UpperButtonClicked())
-    {
+    if (m_SpinPwrUpper.UpperButtonClicked()) {
         nData++;
-    }
-    else
-    {
+    } else {
         nData--;
     }
-    if (nData > 0x7FFF)
-    {
+    if (nData > 0x7FFF) {
         nData = 0x7FFF;
     }
-    if (nData < 0)
-    {
+    if (nData < 0) {
         nData = 0;
     }
-    if (nData != m_nPwrUpper)
-    {
+    if (nData != m_nPwrUpper) {
         m_nPwrUpper = nData;
         m_bModified = TRUE;
         SetModified(TRUE); // data modified, enable apply button
         SetDlgItemInt(IDC_SPECTRUM_PWRUPPEREDIT, m_nPwrUpper, TRUE);
-        if (m_nPwrLower >= m_nPwrUpper)
-        {
+        if (m_nPwrLower >= m_nPwrUpper) {
             m_nPwrLower = m_nPwrUpper - 1;
             SetDlgItemInt(IDC_SPECTRUM_PWRLOWEREDIT, m_nPwrLower, TRUE);
         }
@@ -1948,30 +1720,24 @@ void CDlgParametersSpectrumPage::OnPwrUpperScroll()
 /***************************************************************************/
 // CDlgParametersSpectrumPage::OnKillfocusPwrUpper Upper power boundary changed
 /***************************************************************************/
-void CDlgParametersSpectrumPage::OnKillfocusPwrUpper()
-{
+void CDlgParametersSpectrumPage::OnKillfocusPwrUpper() {
 
     BOOL bTrans; //CLW 8/27/99
     int nData = (int)GetDlgItemInt(IDC_SPECTRUM_PWRUPPEREDIT, &bTrans, TRUE); //CLW 8/27/99
-    if (!bTrans && (nData==0))
-    {
+    if (!bTrans && (nData==0)) {
         nData = 0x7FFF;    //CLW 8/27/99
     }
-    if (nData > 0x7FFF)
-    {
+    if (nData > 0x7FFF) {
         nData = 0x7FFF;
     }
-    if (nData < 0)
-    {
+    if (nData < 0) {
         nData = 0;
     }
-    if (nData != m_nPwrUpper)
-    {
+    if (nData != m_nPwrUpper) {
         m_nPwrUpper = nData;
         m_bModified = TRUE;
         SetModified(TRUE); // data modified, enable apply button
-        if (m_nPwrLower >= m_nPwrUpper)
-        {
+        if (m_nPwrLower >= m_nPwrUpper) {
             m_nPwrLower = m_nPwrUpper - 1;
             SetDlgItemInt(IDC_SPECTRUM_PWRLOWEREDIT, m_nPwrLower, TRUE);
         }
@@ -1982,13 +1748,11 @@ void CDlgParametersSpectrumPage::OnKillfocusPwrUpper()
 /***************************************************************************/
 // CDlgParametersSpectrumPage::OnModifiedFreqRange
 /***************************************************************************/
-void CDlgParametersSpectrumPage::OnModifiedFreqRange()
-{
+void CDlgParametersSpectrumPage::OnModifiedFreqRange() {
 
     int nData = m_nFreqScaleRange;
     UpdateData(TRUE);
-    if (nData != m_nFreqScaleRange)
-    {
+    if (nData != m_nFreqScaleRange) {
         m_bModified = TRUE;
         SetModified(TRUE); // data modified, enable apply button
     }
@@ -1997,8 +1761,7 @@ void CDlgParametersSpectrumPage::OnModifiedFreqRange()
 /***************************************************************************/
 // CDlgParametersSpectrumPage::OnChange page changed
 /***************************************************************************/
-void CDlgParametersSpectrumPage::OnChange()
-{
+void CDlgParametersSpectrumPage::OnChange() {
 
     m_bModified = TRUE;
     SetModified(TRUE); // data modified, enable apply button
@@ -2007,34 +1770,26 @@ void CDlgParametersSpectrumPage::OnChange()
 /***************************************************************************/
 // CDlgParametersSpectrumPage::OnPwrLowerScroll Lower power bnd spin control hit
 /***************************************************************************/
-void CDlgParametersSpectrumPage::OnPwrLowerScroll()
-{
+void CDlgParametersSpectrumPage::OnPwrLowerScroll() {
 
     int nData = GetDlgItemInt(IDC_SPECTRUM_PWRLOWEREDIT, NULL, TRUE);
-    if (m_SpinPwrLower.UpperButtonClicked())
-    {
+    if (m_SpinPwrLower.UpperButtonClicked()) {
         nData++;
-    }
-    else
-    {
+    } else {
         nData--;
     }
-    if (nData > 0x7FFE)
-    {
+    if (nData > 0x7FFE) {
         nData = 0x7FFE;
     }
-    if (nData < -200)
-    {
+    if (nData < -200) {
         nData = -200;
     }
-    if (nData != m_nPwrLower)
-    {
+    if (nData != m_nPwrLower) {
         m_nPwrLower = nData;
         m_bModified = TRUE;
         SetModified(TRUE); // data modified, enable apply button
         SetDlgItemInt(IDC_SPECTRUM_PWRLOWEREDIT, m_nPwrLower, TRUE);
-        if (m_nPwrUpper <= m_nPwrLower)
-        {
+        if (m_nPwrUpper <= m_nPwrLower) {
             m_nPwrUpper = m_nPwrLower + 1;
             SetDlgItemInt(IDC_SPECTRUM_PWRUPPEREDIT, m_nPwrUpper, TRUE);
         }
@@ -2044,30 +1799,24 @@ void CDlgParametersSpectrumPage::OnPwrLowerScroll()
 /***************************************************************************/
 // CDlgParametersSpectrumPage::OnKillfocusPwrLower Lower power boundary changed
 /***************************************************************************/
-void CDlgParametersSpectrumPage::OnKillfocusPwrLower()
-{
+void CDlgParametersSpectrumPage::OnKillfocusPwrLower() {
 
     BOOL bTrans; //CLW 8/27/99
     int nData = (int)GetDlgItemInt(IDC_SPECTRUM_PWRLOWEREDIT, &bTrans, TRUE); //CLW 8/27/99
-    if (!bTrans && (nData==0))
-    {
+    if (!bTrans && (nData==0)) {
         nData = 0x7FFE;    //CLW 8/27/99
     }
-    if (nData > 0x7FFE)
-    {
+    if (nData > 0x7FFE) {
         nData = 0x7FFE;
     }
-    if (nData < -200)
-    {
+    if (nData < -200) {
         nData = -200;
     }
-    if (nData != m_nPwrLower)
-    {
+    if (nData != m_nPwrLower) {
         m_nPwrLower = nData;
         m_bModified = TRUE;
         SetModified(TRUE); // data modified, enable apply button
-        if (m_nPwrUpper <= m_nPwrLower)
-        {
+        if (m_nPwrUpper <= m_nPwrLower) {
             m_nPwrUpper = m_nPwrLower + 1;
             SetDlgItemInt(IDC_SPECTRUM_PWRUPPEREDIT, m_nPwrUpper, TRUE);
         }
@@ -2078,34 +1827,26 @@ void CDlgParametersSpectrumPage::OnKillfocusPwrLower()
 /***************************************************************************/
 // CDlgParametersSpectrumPage::OnFreqUpperScroll Upper freq. bnd spin cntrl hit
 /***************************************************************************/
-void CDlgParametersSpectrumPage::OnFreqUpperScroll()
-{
+void CDlgParametersSpectrumPage::OnFreqUpperScroll() {
 
     int nData = GetDlgItemInt(IDC_SPECTRUM_FREQUPPEREDIT, NULL, TRUE);
-    if (m_SpinFreqUpper.UpperButtonClicked())
-    {
+    if (m_SpinFreqUpper.UpperButtonClicked()) {
         nData++;
-    }
-    else
-    {
+    } else {
         nData--;
     }
-    if (nData > m_nFreqLimit)
-    {
+    if (nData > m_nFreqLimit) {
         nData = m_nFreqLimit;
     }
-    if (nData < 100)
-    {
+    if (nData < 100) {
         nData = 100;
     }
-    if (nData != m_nFreqUpper)
-    {
+    if (nData != m_nFreqUpper) {
         m_nFreqUpper = nData;
         m_bModified = TRUE;
         SetModified(TRUE); // data modified, enable apply button
         SetDlgItemInt(IDC_SPECTRUM_FREQUPPEREDIT, m_nFreqUpper, TRUE);
-        if (m_nFreqLower >= (m_nFreqUpper - 99))
-        {
+        if (m_nFreqLower >= (m_nFreqUpper - 99)) {
             m_nFreqLower = m_nFreqUpper - 100;
             SetDlgItemInt(IDC_SPECTRUM_FREQLOWEREDIT, m_nFreqLower, TRUE);
         }
@@ -2115,25 +1856,20 @@ void CDlgParametersSpectrumPage::OnFreqUpperScroll()
 /***************************************************************************/
 // CDlgParametersSpectrumPage::OnKillfocusFreqUpper Upper freq. boundary changed
 /***************************************************************************/
-void CDlgParametersSpectrumPage::OnKillfocusFreqUpper()
-{
+void CDlgParametersSpectrumPage::OnKillfocusFreqUpper() {
 
     int nData = GetDlgItemInt(IDC_SPECTRUM_FREQUPPEREDIT, NULL, TRUE);
-    if (nData > m_nFreqLimit)
-    {
+    if (nData > m_nFreqLimit) {
         nData = m_nFreqLimit;
     }
-    if (nData < 100)
-    {
+    if (nData < 100) {
         nData = 100;
     }
-    if (nData != m_nFreqUpper)
-    {
+    if (nData != m_nFreqUpper) {
         m_nFreqUpper = nData;
         m_bModified = TRUE;
         SetModified(TRUE); // data modified, enable apply button
-        if (m_nFreqLower >= (m_nFreqUpper - 99))
-        {
+        if (m_nFreqLower >= (m_nFreqUpper - 99)) {
             m_nFreqLower = m_nFreqUpper - 100;
             SetDlgItemInt(IDC_SPECTRUM_FREQLOWEREDIT, m_nFreqLower, TRUE);
         }
@@ -2144,34 +1880,26 @@ void CDlgParametersSpectrumPage::OnKillfocusFreqUpper()
 /***************************************************************************/
 // CDlgParametersSpectrumPage::OnFreqLowerScroll Lower freq. bnd spin control hit
 /***************************************************************************/
-void CDlgParametersSpectrumPage::OnFreqLowerScroll()
-{
+void CDlgParametersSpectrumPage::OnFreqLowerScroll() {
 
     int nData = GetDlgItemInt(IDC_SPECTRUM_FREQLOWEREDIT, NULL, TRUE);
-    if (m_SpinFreqLower.UpperButtonClicked())
-    {
+    if (m_SpinFreqLower.UpperButtonClicked()) {
         nData++;
-    }
-    else
-    {
+    } else {
         nData--;
     }
-    if (nData > (m_nFreqLimit - 100))
-    {
+    if (nData > (m_nFreqLimit - 100)) {
         nData = m_nFreqLimit - 100;
     }
-    if (nData < 0)
-    {
+    if (nData < 0) {
         nData = 0;
     }
-    if (nData != m_nFreqLower)
-    {
+    if (nData != m_nFreqLower) {
         m_nFreqLower = nData;
         m_bModified = TRUE;
         SetModified(TRUE); // data modified, enable apply button
         SetDlgItemInt(IDC_SPECTRUM_FREQLOWEREDIT, m_nFreqLower, TRUE);
-        if (m_nFreqUpper <= (m_nFreqLower + 99))
-        {
+        if (m_nFreqUpper <= (m_nFreqLower + 99)) {
             m_nFreqUpper = m_nFreqLower + 100;
             SetDlgItemInt(IDC_SPECTRUM_FREQUPPEREDIT, m_nFreqUpper, TRUE);
         }
@@ -2181,25 +1909,20 @@ void CDlgParametersSpectrumPage::OnFreqLowerScroll()
 /***************************************************************************/
 // CDlgParametersSpectrumPage::OnKillfocusFreqLower Lower freq. boundary changed
 /***************************************************************************/
-void CDlgParametersSpectrumPage::OnKillfocusFreqLower()
-{
+void CDlgParametersSpectrumPage::OnKillfocusFreqLower() {
 
     int nData = GetDlgItemInt(IDC_SPECTRUM_FREQLOWEREDIT, NULL, TRUE);
-    if (nData > (m_nFreqLimit - 100))
-    {
+    if (nData > (m_nFreqLimit - 100)) {
         nData = m_nFreqLimit - 100;
     }
-    if (nData < 0)
-    {
+    if (nData < 0) {
         nData = 0;
     }
-    if (nData != m_nFreqLower)
-    {
+    if (nData != m_nFreqLower) {
         m_nFreqLower = nData;
         m_bModified = TRUE;
         SetModified(TRUE); // data modified, enable apply button
-        if (m_nFreqUpper <= (m_nFreqLower + 99))
-        {
+        if (m_nFreqUpper <= (m_nFreqLower + 99)) {
             m_nFreqUpper = m_nFreqLower + 100;
             SetDlgItemInt(IDC_SPECTRUM_FREQUPPEREDIT, m_nFreqUpper, TRUE);
         }
@@ -2210,28 +1933,21 @@ void CDlgParametersSpectrumPage::OnKillfocusFreqLower()
 /***************************************************************************/
 // CDlgParametersSpectrumPage::OnSmoothScroll Smoothing spin control hit
 /***************************************************************************/
-void CDlgParametersSpectrumPage::OnSmoothScroll()
-{
+void CDlgParametersSpectrumPage::OnSmoothScroll() {
 
     int nData = GetDlgItemInt(IDC_SPECTRUM_SMOOTHEDIT, NULL, TRUE);
-    if (m_SpinSmoothLevel.UpperButtonClicked())
-    {
+    if (m_SpinSmoothLevel.UpperButtonClicked()) {
         nData++;
-    }
-    else
-    {
+    } else {
         nData--;
     }
-    if (nData > 9)
-    {
+    if (nData > 9) {
         nData = 9;
     }
-    if (nData < 0)
-    {
+    if (nData < 0) {
         nData = 0;
     }
-    if (nData != m_nSmooth)
-    {
+    if (nData != m_nSmooth) {
         m_nSmooth = nData;
         m_bModified = TRUE;
         SetModified(TRUE); // data modified, enable apply button
@@ -2242,20 +1958,16 @@ void CDlgParametersSpectrumPage::OnSmoothScroll()
 /***************************************************************************/
 // CDlgParametersSpectrumPage::OnKillfocusSmooth Smoothing changed
 /***************************************************************************/
-void CDlgParametersSpectrumPage::OnKillfocusSmooth()
-{
+void CDlgParametersSpectrumPage::OnKillfocusSmooth() {
 
     int nData = GetDlgItemInt(IDC_SPECTRUM_SMOOTHEDIT, NULL, TRUE);
-    if (nData > 9)
-    {
+    if (nData > 9) {
         nData = 9;
     }
-    if (nData < 0)
-    {
+    if (nData < 0) {
         nData = 0;
     }
-    if (nData != m_nSmooth)
-    {
+    if (nData != m_nSmooth) {
         m_nSmooth = nData;
         m_bModified = TRUE;
         SetModified(TRUE); // data modified, enable apply button
@@ -2266,28 +1978,21 @@ void CDlgParametersSpectrumPage::OnKillfocusSmooth()
 /***************************************************************************/
 // CDlgParametersSpectrumPage::OnPeakScroll Peaking spin control hit
 /***************************************************************************/
-void CDlgParametersSpectrumPage::OnPeakScroll()
-{
+void CDlgParametersSpectrumPage::OnPeakScroll() {
 
     int nData = GetDlgItemInt(IDC_SPECTRUM_PEAKEDIT, NULL, TRUE);
-    if (m_SpinSharpening.UpperButtonClicked())
-    {
+    if (m_SpinSharpening.UpperButtonClicked()) {
         nData++;
-    }
-    else
-    {
+    } else {
         nData--;
     }
-    if (nData > 9)
-    {
+    if (nData > 9) {
         nData = 9;
     }
-    if (nData < 0)
-    {
+    if (nData < 0) {
         nData = 0;
     }
-    if (nData != m_nPeak)
-    {
+    if (nData != m_nPeak) {
         m_nPeak = nData;
         m_bModified = TRUE;
         SetModified(TRUE); // data modified, enable apply button
@@ -2298,20 +2003,16 @@ void CDlgParametersSpectrumPage::OnPeakScroll()
 /***************************************************************************/
 // CDlgParametersSpectrumPage::OnKillfocusPeak Peaking changed
 /***************************************************************************/
-void CDlgParametersSpectrumPage::OnKillfocusPeak()
-{
+void CDlgParametersSpectrumPage::OnKillfocusPeak() {
 
     int nData = GetDlgItemInt(IDC_SPECTRUM_PEAKEDIT, NULL, TRUE);
-    if (nData > 9)
-    {
+    if (nData > 9) {
         nData = 9;
     }
-    if (nData < 0)
-    {
+    if (nData < 0) {
         nData = 0;
     }
-    if (nData != m_nPeak)
-    {
+    if (nData != m_nPeak) {
         m_nPeak = nData;
         m_bModified = TRUE;
         SetModified(TRUE); // data modified, enable apply button
@@ -2324,20 +2025,16 @@ void CDlgParametersSpectrumPage::OnKillfocusPeak()
 // If the scaling is log (0), the power range dimension text has to be
 // visible, otherwise it must be hidden.
 /***************************************************************************/
-void CDlgParametersSpectrumPage::OnScaling()
-{
+void CDlgParametersSpectrumPage::OnScaling() {
 
     UpdateData(TRUE);
     m_bModified = TRUE;
     SetModified(TRUE); // data modified, enable apply button
-    if (m_nSpectrumScaling)
-    {
+    if (m_nSpectrumScaling) {
         // hide power range dimension
         GetDlgItem(IDC_SPECTRUM_PWRUPPERDIM)->ShowWindow(SW_HIDE);
         GetDlgItem(IDC_SPECTRUM_PWRLOWERDIM)->ShowWindow(SW_HIDE);
-    }
-    else
-    {
+    } else {
         // show power range dimension
         GetDlgItem(IDC_SPECTRUM_PWRUPPERDIM)->ShowWindow(SW_SHOW);
         GetDlgItem(IDC_SPECTRUM_PWRLOWERDIM)->ShowWindow(SW_SHOW);
@@ -2347,12 +2044,10 @@ void CDlgParametersSpectrumPage::OnScaling()
 /***************************************************************************/
 // CDlgParametersSpectrumPage::OnModifiedShowSmoothedPlots  Lpc or Cepstral checkbox modified
 /***************************************************************************/
-void CDlgParametersSpectrumPage::OnModifiedShowSmoothedPlots()
-{
+void CDlgParametersSpectrumPage::OnModifiedShowSmoothedPlots() {
 
     BOOL bShowLpcSpectrum = (BOOL)IsDlgButtonChecked(IDC_SPECTRUM_LPCSMOOTH);
-    if (bShowLpcSpectrum != m_bShowLpcSpectrum)
-    {
+    if (bShowLpcSpectrum != m_bShowLpcSpectrum) {
         m_bShowLpcSpectrum = bShowLpcSpectrum;
         m_bModified = TRUE;
         SetModified(TRUE); // data modified, enable apply button
@@ -2362,8 +2057,7 @@ void CDlgParametersSpectrumPage::OnModifiedShowSmoothedPlots()
     }
 
     BOOL bShowCepSpectrum = (BOOL)IsDlgButtonChecked(IDC_SPECTRUM_CEPSMOOTH);
-    if (bShowCepSpectrum != m_bShowCepSpectrum)
-    {
+    if (bShowCepSpectrum != m_bShowCepSpectrum) {
         m_bShowCepSpectrum = bShowCepSpectrum;
         m_bModified = TRUE;
         SetModified(TRUE); // data modified, enable apply button
@@ -2380,22 +2074,17 @@ void CDlgParametersSpectrumPage::OnModifiedShowSmoothedPlots()
 /***************************************************************************/
 // CDlgParametersSpectrumPage::OnModifiedShowFormantFreq  Frequency checkbox modified
 /***************************************************************************/
-void CDlgParametersSpectrumPage::OnModifiedShowFormantFreq()
-{
+void CDlgParametersSpectrumPage::OnModifiedShowFormantFreq() {
 
     BOOL bShowFormantFreq = (BOOL)IsDlgButtonChecked(IDC_SPECTRUM_FORMANTFREQ);
-    if (bShowFormantFreq != m_bShowFormantFreq)
-    {
+    if (bShowFormantFreq != m_bShowFormantFreq) {
         m_bShowFormantFreq = bShowFormantFreq;
         m_bModified = TRUE;
         SetModified(TRUE); // data modified, enable apply button
     }
-    if (bShowFormantFreq)
-    {
+    if (bShowFormantFreq) {
         GetDlgItem(IDC_SPECTRUM_FORMANTBANDWIDTH)->EnableWindow(TRUE);
-    }
-    else
-    {
+    } else {
         m_bShowFormantBandwidth = FALSE;
         CheckDlgButton(IDC_SPECTRUM_FORMANTBANDWIDTH, FALSE);
         GetDlgItem(IDC_SPECTRUM_FORMANTBANDWIDTH)->EnableWindow(FALSE);
@@ -2405,12 +2094,10 @@ void CDlgParametersSpectrumPage::OnModifiedShowFormantFreq()
 /***************************************************************************/
 // CDlgParametersSpectrumPage::OnModifiedShowFormantBandwidth  Bandwidth checkbox modified
 /***************************************************************************/
-void CDlgParametersSpectrumPage::OnModifiedShowFormantBandwidth()
-{
+void CDlgParametersSpectrumPage::OnModifiedShowFormantBandwidth() {
 
     BOOL bShowFormantBandwidth = (BOOL)IsDlgButtonChecked(IDC_SPECTRUM_FORMANTBANDWIDTH);
-    if (bShowFormantBandwidth != m_bShowFormantBandwidth)
-    {
+    if (bShowFormantBandwidth != m_bShowFormantBandwidth) {
         m_bShowFormantBandwidth = bShowFormantBandwidth;
         m_bModified = TRUE;
         SetModified(TRUE); // data modified, enable apply button
@@ -2420,12 +2107,10 @@ void CDlgParametersSpectrumPage::OnModifiedShowFormantBandwidth()
 /***************************************************************************/
 // CDlgParametersSpectrumPage::OnModifiedShowFormantPower  Power checkbox modified
 /***************************************************************************/
-void CDlgParametersSpectrumPage::OnModifiedShowFormantPower()
-{
+void CDlgParametersSpectrumPage::OnModifiedShowFormantPower() {
 
     BOOL bShowFormantPower = (BOOL)IsDlgButtonChecked(IDC_SPECTRUM_FORMANTPOWER);
-    if (bShowFormantPower != m_bShowFormantPower)
-    {
+    if (bShowFormantPower != m_bShowFormantPower) {
         m_bShowFormantPower = bShowFormantPower;
         m_bModified = TRUE;
         SetModified(TRUE); // data modified, enable apply button
@@ -2456,8 +2141,7 @@ END_MESSAGE_MAP()
 /***************************************************************************/
 // CDlgParametersFormantsPage::CDlgParametersFormantsPage Constructor
 /***************************************************************************/
-CDlgParametersFormantsPage::CDlgParametersFormantsPage() : CPropertyPage(CDlgParametersFormantsPage::IDD)
-{
+CDlgParametersFormantsPage::CDlgParametersFormantsPage() : CPropertyPage(CDlgParametersFormantsPage::IDD) {
     m_bModified = FALSE;
 }
 
@@ -2467,8 +2151,7 @@ CDlgParametersFormantsPage::CDlgParametersFormantsPage() : CPropertyPage(CDlgPar
 /***************************************************************************/
 // CDlgParametersFormantsPage::DoDataExchange Data exchange
 /***************************************************************************/
-void CDlgParametersFormantsPage::DoDataExchange(CDataExchange * pDX)
-{
+void CDlgParametersFormantsPage::DoDataExchange(CDataExchange * pDX) {
 
     CPropertyPage::DoDataExchange(pDX);
     DDX_Control(pDX, IDC_FORMANTS_EDIT, m_cFormantVowelEdit);
@@ -2482,11 +2165,9 @@ void CDlgParametersFormantsPage::DoDataExchange(CDataExchange * pDX)
 /***************************************************************************/
 // CDlgParametersFormantsPage::Apply Apply button hit
 /***************************************************************************/
-void CDlgParametersFormantsPage::Apply()
-{
+void CDlgParametersFormantsPage::Apply() {
 
-    if (m_bModified)   // retrieve data
-    {
+    if (m_bModified) { // retrieve data
         // get pointer to document
         CMainFrame * pMDIFrameWnd = (CMainFrame *)AfxGetMainWnd();
         ASSERT(pMDIFrameWnd->IsKindOf(RUNTIME_CLASS(CMainFrame)));
@@ -2510,8 +2191,7 @@ void CDlgParametersFormantsPage::Apply()
         pFormantParms->bFromCepstralSpectrum = m_bCepstralFormants;
         pFormantParms->bTrackFormants = m_bTrackFormants;
         if (pFormantParms->bMelScale != m_bMelScale ||
-                pFormantParms->bSmoothFormants != m_bSmoothFormants)
-        {
+                pFormantParms->bSmoothFormants != m_bSmoothFormants) {
             pFormants->ResetTracking();
         }
         pFormantParms->bMelScale = m_bMelScale;
@@ -2528,8 +2208,7 @@ void CDlgParametersFormantsPage::Apply()
     }
 }
 
-BOOL CDlgParametersFormantsPage::OnInitDialog()
-{
+BOOL CDlgParametersFormantsPage::OnInitDialog() {
 
     // get pointer to document
     CMainFrame * pMDIFrameWnd = (CMainFrame *)AfxGetMainWnd();
@@ -2547,8 +2226,7 @@ BOOL CDlgParametersFormantsPage::OnInitDialog()
     m_bMelScale = pFormantParms->bMelScale;
 
     CPropertyPage::OnInitDialog();
-    if (m_bAccess)
-    {
+    if (m_bAccess) {
         GetDlgItem(IDC_FORMANTS_CEPSTRAL)->ShowWindow(SW_SHOW);
         GetDlgItem(IDC_FORMANTS_TRACK)->ShowWindow(SW_SHOW);
         GetDlgItem(IDC_FORMANTS_TRACK_SMOOTH)->ShowWindow(SW_SHOW);
@@ -2573,34 +2251,29 @@ BOOL CDlgParametersFormantsPage::OnInitDialog()
     return TRUE;
 }
 
-void CDlgParametersFormantsPage::OnModifiedSource()
-{
+void CDlgParametersFormantsPage::OnModifiedSource() {
 
     BOOL bCepstralFormants= (BOOL)IsDlgButtonChecked(IDC_FORMANTS_CEPSTRAL);
-    if (bCepstralFormants != m_bCepstralFormants)
-    {
+    if (bCepstralFormants != m_bCepstralFormants) {
         m_bCepstralFormants = bCepstralFormants;
         m_bModified = TRUE;
         SetModified(TRUE); // data modified, enable apply button
     }
 }
 
-void CDlgParametersFormantsPage::OnEditChangeFormantVowels()
-{
+void CDlgParametersFormantsPage::OnEditChangeFormantVowels() {
     m_bModified = TRUE;
     SetModified(TRUE); // data modified, enable apply button
     m_cFormantVowelEdit.EnableWindow(TRUE);
 }
 
-void CDlgParametersFormantsPage::OnFormantVowelsEdit()
-{
+void CDlgParametersFormantsPage::OnFormantVowelsEdit() {
 
     GetVowelSets().SetDefaultSet(m_cVowelSet.GetCurSel());
 
     CDlgVowelFormants cEdit(GetVowelSets()[m_cVowelSet.GetCurSel()], this);
 
-    if (cEdit.DoModal() == IDOK)   // Edited
-    {
+    if (cEdit.DoModal() == IDOK) { // Edited
         PopulateVowelSetCombo(m_cVowelSet);
 
         // get pointer to document
@@ -2613,14 +2286,12 @@ void CDlgParametersFormantsPage::OnFormantVowelsEdit()
     }
 }
 
-void CDlgParametersFormantsPage::PopulateVowelSetCombo(CComboBox & cBox)
-{
+void CDlgParametersFormantsPage::PopulateVowelSetCombo(CComboBox & cBox) {
 
     cBox.ResetContent();
     CVowelFormantSets & cSets = GetVowelSets();
 
-    for (unsigned int i=0; i < cSets.size(); i++)
-    {
+    for (unsigned int i=0; i < cSets.size(); i++) {
         cBox.AddString(cSets[i].GetName());
     }
 
@@ -2630,21 +2301,16 @@ void CDlgParametersFormantsPage::PopulateVowelSetCombo(CComboBox & cBox)
 /***************************************************************************/
 // CDlgParametersFormantsPage::OnModifiedTrack  Formant tracking checkbox modified
 /***************************************************************************/
-void CDlgParametersFormantsPage::OnModifiedTrack()
-{
+void CDlgParametersFormantsPage::OnModifiedTrack() {
 
     BOOL bTrackFormants= (BOOL)IsDlgButtonChecked(IDC_FORMANTS_TRACK);
-    if (bTrackFormants)
-    {
+    if (bTrackFormants) {
         GetDlgItem(IDC_FORMANTS_TRACK_SMOOTH)->EnableWindow(TRUE);
-    }
-    else
-    {
+    } else {
         GetDlgItem(IDC_FORMANTS_TRACK_SMOOTH)->EnableWindow(FALSE);
         CheckDlgButton(IDC_FORMANTS_TRACK_SMOOTH, FALSE);
     }
-    if (bTrackFormants != m_bTrackFormants)
-    {
+    if (bTrackFormants != m_bTrackFormants) {
         m_bTrackFormants = bTrackFormants;
         m_bModified = TRUE;
         SetModified(TRUE); // data modified, enable apply button
@@ -2654,12 +2320,10 @@ void CDlgParametersFormantsPage::OnModifiedTrack()
 /***************************************************************************/
 // CDlgParametersFormantsPage::OnModifiedSmooth  Formant smoothing checkbox modified
 /***************************************************************************/
-void CDlgParametersFormantsPage::OnModifiedSmooth()
-{
+void CDlgParametersFormantsPage::OnModifiedSmooth() {
 
     BOOL bSmoothFormants= (BOOL)IsDlgButtonChecked(IDC_FORMANTS_TRACK_SMOOTH);
-    if (bSmoothFormants != m_bSmoothFormants)
-    {
+    if (bSmoothFormants != m_bSmoothFormants) {
         m_bSmoothFormants = bSmoothFormants;
         m_bModified = TRUE;
         SetModified(TRUE); // data modified, enable apply button
@@ -2668,12 +2332,10 @@ void CDlgParametersFormantsPage::OnModifiedSmooth()
 /***************************************************************************/
 // CDlgParametersFormantsPage::OnModifiedScale  Mel scale checkbox modified
 /***************************************************************************/
-void CDlgParametersFormantsPage::OnModifiedScale()
-{
+void CDlgParametersFormantsPage::OnModifiedScale() {
 
     BOOL bMelScale = (BOOL)IsDlgButtonChecked(IDC_FORMANTS_MELSCALE);
-    if (bMelScale != m_bMelScale)
-    {
+    if (bMelScale != m_bMelScale) {
         m_bMelScale = bMelScale;
         m_bModified = TRUE;
         SetModified(TRUE); // data modified, enable apply button
@@ -2698,16 +2360,14 @@ BEGIN_MESSAGE_MAP(CDlgParametersSDPPage, CPropertyPage)
     ON_EN_CHANGE(IDC_SDP_UPPEREDIT, OnChange)
 END_MESSAGE_MAP()
 
-CDlgParametersSDPPage::CDlgParametersSDPPage() : CPropertyPage(CDlgParametersSDPPage::IDD)
-{
+CDlgParametersSDPPage::CDlgParametersSDPPage() : CPropertyPage(CDlgParametersSDPPage::IDD) {
 
     m_bAverage = FALSE;
     m_nStepMode = 0;
     m_bModified = FALSE;
 }
 
-void CDlgParametersSDPPage::DoDataExchange(CDataExchange * pDX)
-{
+void CDlgParametersSDPPage::DoDataExchange(CDataExchange * pDX) {
 
     CPropertyPage::DoDataExchange(pDX);
     DDX_Text(pDX, IDC_SDP_PANESEDIT, m_nPanes);
@@ -2717,11 +2377,9 @@ void CDlgParametersSDPPage::DoDataExchange(CDataExchange * pDX)
     DDX_CBIndex(pDX, IDC_SDP_STEPMODE, m_nStepMode);
 }
 
-void CDlgParametersSDPPage::Apply()
-{
+void CDlgParametersSDPPage::Apply() {
 
-    if (m_bModified)   // retrieve data
-    {
+    if (m_bModified) { // retrieve data
         // get pointer to SDP parameters
         CMainFrame * pMDIFrameWnd = (CMainFrame *)AfxGetMainWnd();
         ASSERT(pMDIFrameWnd->IsKindOf(RUNTIME_CLASS(CMainFrame)));
@@ -2739,10 +2397,8 @@ void CDlgParametersSDPPage::Apply()
         SetModified(FALSE);
         // invalidate SDP data and refresh the SDP graphs
         UINT * pnID = pView->GetGraphIDs();
-        for (int nLoop = 0; nLoop < MAX_GRAPHS_NUMBER; nLoop++)
-        {
-            if ((pnID[nLoop] == IDD_SDP_A) || (pnID[nLoop] == IDD_SDP_B))
-            {
+        for (int nLoop = 0; nLoop < MAX_GRAPHS_NUMBER; nLoop++) {
+            if ((pnID[nLoop] == IDD_SDP_A) || (pnID[nLoop] == IDD_SDP_B)) {
                 pDoc->GetSDP(pnID[nLoop] == IDD_SDP_A ? 0:1)->SetDataInvalid();
                 pView->GetGraph(nLoop)->RedrawGraph(TRUE, TRUE);
             }
@@ -2750,8 +2406,7 @@ void CDlgParametersSDPPage::Apply()
     }
 }
 
-BOOL CDlgParametersSDPPage::OnInitDialog()
-{
+BOOL CDlgParametersSDPPage::OnInitDialog() {
 
     CPropertyPage::OnInitDialog();
     CRect rWnd;
@@ -2773,8 +2428,7 @@ BOOL CDlgParametersSDPPage::OnInitDialog()
     m_nSteps = pSDPParm->nSteps;
     m_nUpperBound = pSDPParm->nUpperBound;
     m_bAverage = pSDPParm->bAverage;
-    if (!m_nStepMode)
-    {
+    if (!m_nStepMode) {
         // auto steps, disable steps
         GetDlgItem(IDC_SDP_STEPSTEXT)->EnableWindow(FALSE);
         GetDlgItem(IDC_SDP_STEPSEDIT)->EnableWindow(FALSE);
@@ -2788,26 +2442,19 @@ BOOL CDlgParametersSDPPage::OnInitDialog()
 /***************************************************************************/
 // CDlgParametersSDPPage::OnPanesScroll Panes spin control hit
 /***************************************************************************/
-void CDlgParametersSDPPage::OnPanesScroll()
-{
+void CDlgParametersSDPPage::OnPanesScroll() {
 
     UINT nData = GetDlgItemInt(IDC_SDP_PANESEDIT, NULL, TRUE);
-    if (m_SpinPanes.UpperButtonClicked())
-    {
-        if (nData < 8)
-        {
+    if (m_SpinPanes.UpperButtonClicked()) {
+        if (nData < 8) {
             nData++;
         }
-    }
-    else
-    {
-        if (nData > 1)
-        {
+    } else {
+        if (nData > 1) {
             nData--;
         }
     }
-    if (nData != m_nPanes)
-    {
+    if (nData != m_nPanes) {
         m_nPanes = nData;
         m_bModified = TRUE;
         SetModified(TRUE); // data modified, enable apply button
@@ -2818,8 +2465,7 @@ void CDlgParametersSDPPage::OnPanesScroll()
 /***************************************************************************/
 // CDlgParametersSDPPage::OnChange page changed
 /***************************************************************************/
-void CDlgParametersSDPPage::OnChange()
-{
+void CDlgParametersSDPPage::OnChange() {
 
     m_bModified = TRUE;
     SetModified(TRUE); // data modified, enable apply button
@@ -2828,20 +2474,16 @@ void CDlgParametersSDPPage::OnChange()
 /***************************************************************************/
 // CDlgParametersSDPPage::OnKillfocusPanes Panes changed
 /***************************************************************************/
-void CDlgParametersSDPPage::OnKillfocusPanes()
-{
+void CDlgParametersSDPPage::OnKillfocusPanes() {
 
     UINT nData = GetDlgItemInt(IDC_SDP_PANESEDIT, NULL, TRUE);
-    if (nData > 8)
-    {
+    if (nData > 8) {
         nData = 8;
     }
-    if (nData < 1)
-    {
+    if (nData < 1) {
         nData = 1;
     }
-    if (nData != m_nPanes)
-    {
+    if (nData != m_nPanes) {
         m_nPanes = nData;
         m_bModified = TRUE;
         SetModified(TRUE); // data modified, enable apply button
@@ -2852,26 +2494,19 @@ void CDlgParametersSDPPage::OnKillfocusPanes()
 /***************************************************************************/
 // CDlgParametersSDPPage::OnStepsScroll Steps spin control hit
 /***************************************************************************/
-void CDlgParametersSDPPage::OnStepsScroll()
-{
+void CDlgParametersSDPPage::OnStepsScroll() {
 
     UINT nData = GetDlgItemInt(IDC_SDP_STEPSEDIT, NULL, TRUE);
-    if (m_SpinSteps.UpperButtonClicked())
-    {
-        if (nData < 0xFFFF)
-        {
+    if (m_SpinSteps.UpperButtonClicked()) {
+        if (nData < 0xFFFF) {
             nData++;
         }
-    }
-    else
-    {
-        if (nData > 1)
-        {
+    } else {
+        if (nData > 1) {
             nData--;
         }
     }
-    if (nData != m_nSteps)
-    {
+    if (nData != m_nSteps) {
         m_nSteps = nData;
         m_bModified = TRUE;
         SetModified(TRUE); // data modified, enable apply button
@@ -2882,16 +2517,13 @@ void CDlgParametersSDPPage::OnStepsScroll()
 /***************************************************************************/
 // CDlgParametersSDPPage::OnKillfocusSteps Steps changed
 /***************************************************************************/
-void CDlgParametersSDPPage::OnKillfocusSteps()
-{
+void CDlgParametersSDPPage::OnKillfocusSteps() {
 
     UINT nData = GetDlgItemInt(IDC_SDP_STEPSEDIT, NULL, TRUE);
-    if (nData < 1)
-    {
+    if (nData < 1) {
         nData = 1;
     }
-    if (nData != m_nSteps)
-    {
+    if (nData != m_nSteps) {
         m_nSteps = nData;
         m_bModified = TRUE;
         SetModified(TRUE); // data modified, enable apply button
@@ -2902,26 +2534,19 @@ void CDlgParametersSDPPage::OnKillfocusSteps()
 /***************************************************************************/
 // CDlgParametersSDPPage::OnUpperScroll Upper boundary spin control hit
 /***************************************************************************/
-void CDlgParametersSDPPage::OnUpperScroll()
-{
+void CDlgParametersSDPPage::OnUpperScroll() {
 
     UINT nData = GetDlgItemInt(IDC_SDP_UPPEREDIT, NULL, TRUE);
-    if (m_SpinUpper.UpperButtonClicked())
-    {
-        if (nData < 360)
-        {
+    if (m_SpinUpper.UpperButtonClicked()) {
+        if (nData < 360) {
             nData++;
         }
-    }
-    else
-    {
-        if (nData > 1)
-        {
+    } else {
+        if (nData > 1) {
             nData--;
         }
     }
-    if (nData != m_nUpperBound)
-    {
+    if (nData != m_nUpperBound) {
         m_nUpperBound = nData;
         m_bModified = TRUE;
         SetModified(TRUE); // data modified, enable apply button
@@ -2932,20 +2557,16 @@ void CDlgParametersSDPPage::OnUpperScroll()
 /***************************************************************************/
 // CDlgParametersSDPPage::OnKillfocusUpper Upper boundary changed
 /***************************************************************************/
-void CDlgParametersSDPPage::OnKillfocusUpper()
-{
+void CDlgParametersSDPPage::OnKillfocusUpper() {
 
     UINT nData = GetDlgItemInt(IDC_SDP_UPPEREDIT, NULL, TRUE);
-    if (nData > 360)
-    {
+    if (nData > 360) {
         nData = 360;
     }
-    if (nData < 1)
-    {
+    if (nData < 1) {
         nData = 1;
     }
-    if (nData != m_nUpperBound)
-    {
+    if (nData != m_nUpperBound) {
         m_nUpperBound = nData;
         m_bModified = TRUE;
         SetModified(TRUE); // data modified, enable apply button
@@ -2956,20 +2577,16 @@ void CDlgParametersSDPPage::OnKillfocusUpper()
 /***************************************************************************/
 // CDlgParametersSDPPage::OnStepMode Steps mode selection changed
 /***************************************************************************/
-void CDlgParametersSDPPage::OnStepMode()
-{
+void CDlgParametersSDPPage::OnStepMode() {
 
     UpdateData(TRUE);
-    if (!m_nStepMode)
-    {
+    if (!m_nStepMode) {
         // auto steps, disable steps
         GetDlgItem(IDC_SDP_STEPSTEXT)->EnableWindow(FALSE);
         GetDlgItem(IDC_SDP_STEPSEDIT)->EnableWindow(FALSE);
         m_SpinSteps.EnableWindow(FALSE);
         GetDlgItem(IDC_SDP_STEPSDIM)->EnableWindow(FALSE);
-    }
-    else
-    {
+    } else {
         // manual steps, enable steps
         GetDlgItem(IDC_SDP_STEPSTEXT)->EnableWindow(TRUE);
         GetDlgItem(IDC_SDP_STEPSEDIT)->EnableWindow(TRUE);
@@ -2983,8 +2600,7 @@ void CDlgParametersSDPPage::OnStepMode()
 /***************************************************************************/
 // CDlgParametersSDPPage::OnModified Data modified
 /***************************************************************************/
-void CDlgParametersSDPPage::OnModified()
-{
+void CDlgParametersSDPPage::OnModified() {
 
     m_bModified = TRUE;
     SetModified(TRUE); // data modified, enable apply button
@@ -2993,15 +2609,13 @@ void CDlgParametersSDPPage::OnModified()
 
 /////////////////////////////////////////////////////////////////////////////
 // CDlgParametersMusicPage dialog
-CDlgParametersMusicPage::CDlgParametersMusicPage() : CPropertyPage(CDlgParametersMusicPage::IDD)
-{
+CDlgParametersMusicPage::CDlgParametersMusicPage() : CPropertyPage(CDlgParametersMusicPage::IDD) {
 
     m_nDynamic = FALSE;
     m_nWeighted = FALSE;
 }
 
-void CDlgParametersMusicPage::DoDataExchange(CDataExchange * pDX)
-{
+void CDlgParametersMusicPage::DoDataExchange(CDataExchange * pDX) {
 
     CPropertyPage::DoDataExchange(pDX);
     DDX_Check(pDX, IDC_TWC_DYNAMIC, m_nDynamic);
@@ -3033,8 +2647,7 @@ BEGIN_MESSAGE_MAP(CDlgParametersMusicPage, CPropertyPage)
     ON_EN_CHANGE(IDC_CALC_LOWERBOUNDEDIT, OnChange)
 END_MESSAGE_MAP()
 
-BOOL CDlgParametersMusicPage::OnInitDialog()
-{
+BOOL CDlgParametersMusicPage::OnInitDialog() {
 
     CPropertyPage::OnInitDialog();
 
@@ -3066,8 +2679,7 @@ BOOL CDlgParametersMusicPage::OnInitDialog()
     m_nManualUpperBound = pMainFrame->GetMusicParmDefaults()->nManualUpper;
 
     m_nRange = pParm->nRangeMode;
-    if (!m_nRange)
-    {
+    if (!m_nRange) {
         CMusicParm::GetAutoRange(pDoc, m_nUpperBound, m_nLowerBound);
         // auto range, disable boundaries
         GetDlgItem(IDC_PITCH_UPPERBOUNDTITLE)->EnableWindow(FALSE);
@@ -3087,8 +2699,7 @@ BOOL CDlgParametersMusicPage::OnInitDialog()
     m_nManualCalcUpperBound = pMainFrame->GetMusicParmDefaults()->nManualCalcUpper;
 
     m_nCalcRange = pParm->nCalcRangeMode;
-    if (!m_nCalcRange)
-    {
+    if (!m_nCalcRange) {
         // auto range, disable boundaries
         GetDlgItem(IDC_CALC_UPPERBOUNDTITLE)->EnableWindow(FALSE);
         GetDlgItem(IDC_CALC_UPPERBOUNDEDIT)->EnableWindow(FALSE);
@@ -3108,8 +2719,7 @@ BOOL CDlgParametersMusicPage::OnInitDialog()
 /***************************************************************************/
 // CDlgParametersMusicPage::OnChange page changed
 /***************************************************************************/
-void CDlgParametersMusicPage::OnChange()
-{
+void CDlgParametersMusicPage::OnChange() {
 
     m_bModified = TRUE;
     SetModified(TRUE); // data modified, enable apply button
@@ -3118,8 +2728,7 @@ void CDlgParametersMusicPage::OnChange()
 /***************************************************************************/
 // 09/25/2000 - DDO
 /***************************************************************************/
-void CDlgParametersMusicPage::OnClickWeighted()
-{
+void CDlgParametersMusicPage::OnClickWeighted() {
 
     m_bModified = TRUE;
     SetModified(TRUE);
@@ -3128,8 +2737,7 @@ void CDlgParametersMusicPage::OnClickWeighted()
 /***************************************************************************/
 // 09/25/2000 - DDO
 /***************************************************************************/
-void CDlgParametersMusicPage::OnClickDynamic()
-{
+void CDlgParametersMusicPage::OnClickDynamic() {
 
     m_bModified = TRUE;
     SetModified(TRUE);
@@ -3138,37 +2746,28 @@ void CDlgParametersMusicPage::OnClickDynamic()
 /***************************************************************************/
 // CDlgParametersMusicPage::OnUpperBoundScroll Upper boundary spin control hit
 /***************************************************************************/
-void CDlgParametersMusicPage::OnUpperBoundScroll()
-{
+void CDlgParametersMusicPage::OnUpperBoundScroll() {
 
-    if (m_nRange)
-    {
+    if (m_nRange) {
         int nData = GetDlgItemInt(IDC_PITCH_UPPERBOUNDEDIT, NULL, TRUE);
-        if (m_SpinUpperBound.UpperButtonClicked())
-        {
+        if (m_SpinUpperBound.UpperButtonClicked()) {
             nData++;
-        }
-        else
-        {
+        } else {
             nData--;
         }
 
-        if (nData > 100)
-        {
+        if (nData > 100) {
             nData = 100;
         }
-        if (nData < 1)
-        {
+        if (nData < 1) {
             nData = 1;
         }
-        if (nData != m_nUpperBound)
-        {
+        if (nData != m_nUpperBound) {
             m_nUpperBound = nData;
             m_bModified = TRUE;
             SetModified(TRUE); // data modified, enable apply button
             SetDlgItemInt(IDC_PITCH_UPPERBOUNDEDIT, m_nUpperBound, TRUE);
-            if (m_nLowerBound >= m_nUpperBound)
-            {
+            if (m_nLowerBound >= m_nUpperBound) {
                 m_nLowerBound = m_nUpperBound - 1;
                 SetDlgItemInt(IDC_PITCH_LOWERBOUNDEDIT, m_nLowerBound, TRUE);
             }
@@ -3179,31 +2778,25 @@ void CDlgParametersMusicPage::OnUpperBoundScroll()
 /***************************************************************************/
 // CDlgParametersMusicPage::OnKillfocusUpperBound Upper boundary changed
 /***************************************************************************/
-void CDlgParametersMusicPage::OnKillfocusUpperBound()
-{
+void CDlgParametersMusicPage::OnKillfocusUpperBound() {
 
     BOOL bTrans;
     int nData = (int)GetDlgItemInt(IDC_PITCH_UPPERBOUNDEDIT, &bTrans, TRUE); //CLW 8/27/99
 
-    if (!bTrans && (nData==0))
-    {
+    if (!bTrans && (nData==0)) {
         nData = 100;
     }
-    if (nData > 100)
-    {
+    if (nData > 100) {
         nData = 100;
     }
-    if (nData < 1)
-    {
+    if (nData < 1) {
         nData = 1;
     }
-    if (nData != m_nUpperBound)
-    {
+    if (nData != m_nUpperBound) {
         m_nUpperBound = nData;
         m_bModified = TRUE;
         SetModified(TRUE); // data modified, enable apply button
-        if (m_nLowerBound >= m_nUpperBound)
-        {
+        if (m_nLowerBound >= m_nUpperBound) {
             m_nLowerBound = m_nUpperBound - 1;
             SetDlgItemInt(IDC_PITCH_LOWERBOUNDEDIT, m_nLowerBound, TRUE);
         }
@@ -3214,37 +2807,28 @@ void CDlgParametersMusicPage::OnKillfocusUpperBound()
 /***************************************************************************/
 // CDlgParametersMusicPage::OnLowerBoundScroll Lower boundary spin control hit
 /***************************************************************************/
-void CDlgParametersMusicPage::OnLowerBoundScroll()
-{
+void CDlgParametersMusicPage::OnLowerBoundScroll() {
 
-    if (m_nRange)
-    {
+    if (m_nRange) {
         int nData = GetDlgItemInt(IDC_PITCH_LOWERBOUNDEDIT, NULL, TRUE);
-        if (m_SpinLowerBound.UpperButtonClicked())
-        {
+        if (m_SpinLowerBound.UpperButtonClicked()) {
             nData++;
-        }
-        else
-        {
+        } else {
             nData--;
         }
 
-        if (nData > 99)
-        {
+        if (nData > 99) {
             nData = 99;
         }
-        if (nData < 0)
-        {
+        if (nData < 0) {
             nData = 0;
         }
-        if (nData != m_nLowerBound)
-        {
+        if (nData != m_nLowerBound) {
             m_nLowerBound = nData;
             m_bModified = TRUE;
             SetModified(TRUE); // data modified, enable apply button
             SetDlgItemInt(IDC_PITCH_LOWERBOUNDEDIT, m_nLowerBound, TRUE);
-            if (m_nUpperBound <= m_nLowerBound)
-            {
+            if (m_nUpperBound <= m_nLowerBound) {
                 m_nUpperBound = m_nLowerBound + 1;
                 SetDlgItemInt(IDC_PITCH_UPPERBOUNDEDIT, m_nUpperBound, TRUE);
             }
@@ -3255,26 +2839,21 @@ void CDlgParametersMusicPage::OnLowerBoundScroll()
 /***************************************************************************/
 // CDlgParametersMusicPage::OnKillfocusLowerBound Lower boundary changed
 /***************************************************************************/
-void CDlgParametersMusicPage::OnKillfocusLowerBound()
-{
+void CDlgParametersMusicPage::OnKillfocusLowerBound() {
 
     int nData = GetDlgItemInt(IDC_PITCH_LOWERBOUNDEDIT, NULL, TRUE);
 
-    if (nData > 99)
-    {
+    if (nData > 99) {
         nData = 99;
     }
-    if (nData < 0)
-    {
+    if (nData < 0) {
         nData = 0;
     }
-    if (nData != m_nLowerBound)
-    {
+    if (nData != m_nLowerBound) {
         m_nLowerBound = nData;
         m_bModified = TRUE;
         SetModified(TRUE); // data modified, enable apply button
-        if (m_nUpperBound <= m_nLowerBound)
-        {
+        if (m_nUpperBound <= m_nLowerBound) {
             m_nUpperBound = m_nLowerBound + 1;
             SetDlgItemInt(IDC_PITCH_UPPERBOUNDEDIT, m_nUpperBound, TRUE);
         }
@@ -3285,19 +2864,16 @@ void CDlgParametersMusicPage::OnKillfocusLowerBound()
 /***************************************************************************/
 // CDlgParametersMusicPage::OnRange Range selection changed
 /***************************************************************************/
-void CDlgParametersMusicPage::OnRange()
-{
+void CDlgParametersMusicPage::OnRange() {
 
     int nOldRange = m_nRange;
     UpdateData(TRUE);
 
-    if (nOldRange == m_nRange)
-    {
+    if (nOldRange == m_nRange) {
         return;    // no change
     }
 
-    if (!m_nRange)
-    {
+    if (!m_nRange) {
         m_nManualLowerBound = m_nLowerBound;
         m_nManualUpperBound = m_nUpperBound;
 
@@ -3317,9 +2893,7 @@ void CDlgParametersMusicPage::OnRange()
         GetDlgItem(IDC_PITCH_LOWERBOUNDEDIT)->EnableWindow(FALSE);
         GetDlgItem(IDC_PITCH_LOWERBOUNDTEXT)->EnableWindow(FALSE);
         m_SpinLowerBound.EnableWindow(FALSE);
-    }
-    else
-    {
+    } else {
         // manual range, enable boundaries
         GetDlgItem(IDC_PITCH_UPPERBOUNDTITLE)->EnableWindow(TRUE);
         GetDlgItem(IDC_PITCH_UPPERBOUNDEDIT)->EnableWindow(TRUE);
@@ -3340,37 +2914,28 @@ void CDlgParametersMusicPage::OnRange()
 /***************************************************************************/
 // CDlgParametersMusicPage::OnCalcUpperBoundScroll Upper boundary spin control hit
 /***************************************************************************/
-void CDlgParametersMusicPage::OnCalcUpperBoundScroll()
-{
+void CDlgParametersMusicPage::OnCalcUpperBoundScroll() {
 
-    if (m_nCalcRange)
-    {
+    if (m_nCalcRange) {
         int nData = GetDlgItemInt(IDC_CALC_UPPERBOUNDEDIT, NULL, TRUE);
-        if (m_SpinCalcUpperBound.UpperButtonClicked())
-        {
+        if (m_SpinCalcUpperBound.UpperButtonClicked()) {
             nData++;
-        }
-        else
-        {
+        } else {
             nData--;
         }
 
-        if (nData > 100)
-        {
+        if (nData > 100) {
             nData = 100;
         }
-        if (nData < 1)
-        {
+        if (nData < 1) {
             nData = 1;
         }
-        if (nData != m_nCalcUpperBound)
-        {
+        if (nData != m_nCalcUpperBound) {
             m_nCalcUpperBound = nData;
             m_bModified = TRUE;
             SetModified(TRUE); // data modified, enable apply button
             SetDlgItemInt(IDC_CALC_UPPERBOUNDEDIT, m_nCalcUpperBound, TRUE);
-            if (m_nCalcLowerBound >= m_nCalcUpperBound)
-            {
+            if (m_nCalcLowerBound >= m_nCalcUpperBound) {
                 m_nCalcLowerBound = m_nCalcUpperBound - 1;
                 SetDlgItemInt(IDC_CALC_LOWERBOUNDEDIT, m_nCalcLowerBound, TRUE);
             }
@@ -3381,31 +2946,25 @@ void CDlgParametersMusicPage::OnCalcUpperBoundScroll()
 /***************************************************************************/
 // CDlgParametersMusicPage::OnKillfocusCalcUpperBound Upper boundary changed
 /***************************************************************************/
-void CDlgParametersMusicPage::OnKillfocusCalcUpperBound()
-{
+void CDlgParametersMusicPage::OnKillfocusCalcUpperBound() {
 
     BOOL bTrans;
     int nData = (int)GetDlgItemInt(IDC_CALC_UPPERBOUNDEDIT, &bTrans, TRUE); //CLW 8/27/99
 
-    if (!bTrans && (nData==0))
-    {
+    if (!bTrans && (nData==0)) {
         nData = 100;
     }
-    if (nData > 100)
-    {
+    if (nData > 100) {
         nData = 100;
     }
-    if (nData < 1)
-    {
+    if (nData < 1) {
         nData = 1;
     }
-    if (nData != m_nCalcUpperBound)
-    {
+    if (nData != m_nCalcUpperBound) {
         m_nCalcUpperBound = nData;
         m_bModified = TRUE;
         SetModified(TRUE); // data modified, enable apply button
-        if (m_nCalcLowerBound >= m_nCalcUpperBound)
-        {
+        if (m_nCalcLowerBound >= m_nCalcUpperBound) {
             m_nCalcLowerBound = m_nCalcUpperBound - 1;
             SetDlgItemInt(IDC_CALC_LOWERBOUNDEDIT, m_nCalcLowerBound, TRUE);
         }
@@ -3416,37 +2975,28 @@ void CDlgParametersMusicPage::OnKillfocusCalcUpperBound()
 /***************************************************************************/
 // CDlgParametersMusicPage::OnCalcLowerBoundScroll Lower boundary spin control hit
 /***************************************************************************/
-void CDlgParametersMusicPage::OnCalcLowerBoundScroll()
-{
+void CDlgParametersMusicPage::OnCalcLowerBoundScroll() {
 
-    if (m_nCalcRange)
-    {
+    if (m_nCalcRange) {
         int nData = GetDlgItemInt(IDC_CALC_LOWERBOUNDEDIT, NULL, TRUE);
-        if (m_SpinCalcLowerBound.UpperButtonClicked())
-        {
+        if (m_SpinCalcLowerBound.UpperButtonClicked()) {
             nData++;
-        }
-        else
-        {
+        } else {
             nData--;
         }
 
-        if (nData > 99)
-        {
+        if (nData > 99) {
             nData = 99;
         }
-        if (nData < 0)
-        {
+        if (nData < 0) {
             nData = 0;
         }
-        if (nData != m_nCalcLowerBound)
-        {
+        if (nData != m_nCalcLowerBound) {
             m_nCalcLowerBound = nData;
             m_bModified = TRUE;
             SetModified(TRUE); // data modified, enable apply button
             SetDlgItemInt(IDC_CALC_LOWERBOUNDEDIT, m_nCalcLowerBound, TRUE);
-            if (m_nCalcUpperBound <= m_nCalcLowerBound)
-            {
+            if (m_nCalcUpperBound <= m_nCalcLowerBound) {
                 m_nCalcUpperBound = m_nCalcLowerBound + 1;
                 SetDlgItemInt(IDC_CALC_UPPERBOUNDEDIT, m_nCalcUpperBound, TRUE);
             }
@@ -3457,26 +3007,21 @@ void CDlgParametersMusicPage::OnCalcLowerBoundScroll()
 /***************************************************************************/
 // CDlgParametersMusicPage::OnKillfocusCalcLowerBound Lower boundary changed
 /***************************************************************************/
-void CDlgParametersMusicPage::OnKillfocusCalcLowerBound()
-{
+void CDlgParametersMusicPage::OnKillfocusCalcLowerBound() {
 
     int nData = GetDlgItemInt(IDC_CALC_LOWERBOUNDEDIT, NULL, TRUE);
 
-    if (nData > 99)
-    {
+    if (nData > 99) {
         nData = 99;
     }
-    if (nData < 0)
-    {
+    if (nData < 0) {
         nData = 0;
     }
-    if (nData != m_nCalcLowerBound)
-    {
+    if (nData != m_nCalcLowerBound) {
         m_nCalcLowerBound = nData;
         m_bModified = TRUE;
         SetModified(TRUE); // data modified, enable apply button
-        if (m_nCalcUpperBound <= m_nCalcLowerBound)
-        {
+        if (m_nCalcUpperBound <= m_nCalcLowerBound) {
             m_nCalcUpperBound = m_nCalcLowerBound + 1;
             SetDlgItemInt(IDC_CALC_UPPERBOUNDEDIT, m_nCalcUpperBound, TRUE);
         }
@@ -3487,19 +3032,16 @@ void CDlgParametersMusicPage::OnKillfocusCalcLowerBound()
 /***************************************************************************/
 // CDlgParametersMusicPage::OnCalcRange Range selection changed
 /***************************************************************************/
-void CDlgParametersMusicPage::OnCalcRange()
-{
+void CDlgParametersMusicPage::OnCalcRange() {
 
     int nOldRange = m_nCalcRange;
     UpdateData(TRUE);
 
-    if (nOldRange == m_nCalcRange)
-    {
+    if (nOldRange == m_nCalcRange) {
         return;    // no change
     }
 
-    if (!m_nCalcRange)
-    {
+    if (!m_nCalcRange) {
         m_nManualCalcLowerBound = m_nCalcLowerBound;
         m_nManualCalcUpperBound = m_nCalcUpperBound;
         // RLJ, 09/21/2000: Bug GPI-01
@@ -3519,9 +3061,7 @@ void CDlgParametersMusicPage::OnCalcRange()
         GetDlgItem(IDC_CALC_LOWERBOUNDEDIT)->EnableWindow(FALSE);
         GetDlgItem(IDC_CALC_LOWERBOUNDTEXT)->EnableWindow(FALSE);
         m_SpinCalcLowerBound.EnableWindow(FALSE);
-    }
-    else
-    {
+    } else {
         // manual range, enable boundaries
         GetDlgItem(IDC_CALC_UPPERBOUNDTITLE)->EnableWindow(TRUE);
         GetDlgItem(IDC_CALC_UPPERBOUNDEDIT)->EnableWindow(TRUE);
@@ -3542,12 +3082,10 @@ void CDlgParametersMusicPage::OnCalcRange()
 /***************************************************************************/
 // 09/25/2000 - DDO
 /***************************************************************************/
-void CDlgParametersMusicPage::Apply()
-{
+void CDlgParametersMusicPage::Apply() {
 
     // CLW 10/26/00 m_hWnd is NULL if music page has never been accessed
-    if (m_bModified && m_hWnd)
-    {
+    if (m_bModified && m_hWnd) {
         UpdateData(TRUE);
         CMainFrame * pMDIFrameWnd = (CMainFrame *)AfxGetMainWnd();
         ASSERT(pMDIFrameWnd->IsKindOf(RUNTIME_CLASS(CMainFrame)));
@@ -3561,8 +3099,7 @@ void CDlgParametersMusicPage::Apply()
         pParm->nUpperBound = m_nUpperBound;
         pParm->nLowerBound = m_nLowerBound;
         pParm->nRangeMode = m_nRange;
-        if (m_nRange)
-        {
+        if (m_nRange) {
             CMainFrame * pMainFrame = (CMainFrame *)AfxGetMainWnd();
             ASSERT(pMainFrame->IsKindOf(RUNTIME_CLASS(CMainFrame)));
             CMusicParm cParm = *pMainFrame->GetMusicParmDefaults();
@@ -3574,8 +3111,7 @@ void CDlgParametersMusicPage::Apply()
         pParm->nCalcLowerBound = m_nCalcLowerBound;
         pParm->nCalcRangeMode = m_nCalcRange;
         pDoc->SetMusicParm(cParm);
-        if (m_nCalcRange)
-        {
+        if (m_nCalcRange) {
             CMainFrame * pMainFrame = (CMainFrame *)AfxGetMainWnd();
             ASSERT(pMainFrame->IsKindOf(RUNTIME_CLASS(CMainFrame)));
             CMusicParm cParm = *pMainFrame->GetMusicParmDefaults();
@@ -3593,18 +3129,15 @@ void CDlgParametersMusicPage::Apply()
 /////////////////////////////////////////////////////////////////////////////
 // CDlgParametersIntensityPage property page
 
-CDlgParametersIntensityPage::CDlgParametersIntensityPage() : CPropertyPage(CDlgParametersIntensityPage::IDD)
-{
+CDlgParametersIntensityPage::CDlgParametersIntensityPage() : CPropertyPage(CDlgParametersIntensityPage::IDD) {
     m_nScaleMode = -1;
 }
 
-CDlgParametersIntensityPage::~CDlgParametersIntensityPage()
-{
+CDlgParametersIntensityPage::~CDlgParametersIntensityPage() {
 
 }
 
-void CDlgParametersIntensityPage::DoDataExchange(CDataExchange * pDX)
-{
+void CDlgParametersIntensityPage::DoDataExchange(CDataExchange * pDX) {
     CPropertyPage::DoDataExchange(pDX);
     DDX_Radio(pDX, IDC_DISPLAY_SCALEMODE, m_nScaleMode);
 }
@@ -3621,8 +3154,7 @@ END_MESSAGE_MAP()
 /***************************************************************************/
 // CDlgParametersIntensityPage::OnInitDialog
 /***************************************************************************/
-BOOL CDlgParametersIntensityPage::OnInitDialog()
-{
+BOOL CDlgParametersIntensityPage::OnInitDialog() {
 
     CPropertyPage::OnInitDialog();
 
@@ -3644,8 +3176,7 @@ BOOL CDlgParametersIntensityPage::OnInitDialog()
 /***************************************************************************/
 // CDlgParametersIntensityPage::OnChange page changed
 /***************************************************************************/
-void CDlgParametersIntensityPage::OnChange()
-{
+void CDlgParametersIntensityPage::OnChange() {
 
     m_bModified = TRUE;
     SetModified(TRUE); // data modified, enable apply button
@@ -3654,11 +3185,9 @@ void CDlgParametersIntensityPage::OnChange()
 /***************************************************************************/
 // CDlgParametersIntensityPage::Apply
 /***************************************************************************/
-void CDlgParametersIntensityPage::Apply()
-{
+void CDlgParametersIntensityPage::Apply() {
 
-    if (m_bModified && m_hWnd)
-    {
+    if (m_bModified && m_hWnd) {
         UpdateData(TRUE);
         CMainFrame * pMDIFrameWnd = (CMainFrame *)AfxGetMainWnd();
         ASSERT(pMDIFrameWnd->IsKindOf(RUNTIME_CLASS(CMainFrame)));
@@ -3694,8 +3223,7 @@ CResearchSettings ResearchSettings;
 
 int researchSmoothSettings[] = { -1, 40, 50, 60, 70, 85, 100, 120, 140, 170, 200, 240, 280, 340, 400, 480, 560, 680, 800, 960 };
 
-void CResearchSettings::Init()
-{
+void CResearchSettings::Init() {
 
     m_bSpectrogramConnectFormants = FALSE;
     m_bSpectrogramContrastEnhance = FALSE;
@@ -3709,33 +3237,28 @@ void CResearchSettings::Init()
     m_nLpcCepstralSharp = 0;
 }
 
-CDlgParametersResearchPage::CDlgParametersResearchPage() : CPropertyPage(CDlgParametersResearchPage::IDD)
-{
+CDlgParametersResearchPage::CDlgParametersResearchPage() : CPropertyPage(CDlgParametersResearchPage::IDD) {
     m_workingSettings = ResearchSettings;
 }
 
 
-CDlgParametersResearchPage::~CDlgParametersResearchPage()
-{
+CDlgParametersResearchPage::~CDlgParametersResearchPage() {
 
 }
 
-BOOL CDlgParametersResearchPage::OnInitDialog()
-{
+BOOL CDlgParametersResearchPage::OnInitDialog() {
 
     CPropertyPage::OnInitDialog();
 
 
     m_cSmooth.AddString(_T("Def."));
     int nSelect = 0;
-    for (int i = 1; i < sizeof(researchSmoothSettings)/sizeof(int); i++)
-    {
+    for (int i = 1; i < sizeof(researchSmoothSettings)/sizeof(int); i++) {
         CString szString;
         szString.Format(_T("%d"), researchSmoothSettings[i]);
         m_cSmooth.AddString(szString);
 
-        if (researchSmoothSettings[i] == ResearchSettings.m_nLpcCepstralSmooth)
-        {
+        if (researchSmoothSettings[i] == ResearchSettings.m_nLpcCepstralSmooth) {
             nSelect = i;
         }
     }
@@ -3747,11 +3270,9 @@ BOOL CDlgParametersResearchPage::OnInitDialog()
     // EXCEPTION: OCX Property Pages should return FALSE
 }
 
-void CDlgParametersResearchPage::Apply()
-{
+void CDlgParametersResearchPage::Apply() {
 
-    if (m_bModified && m_hWnd)
-    {
+    if (m_bModified && m_hWnd) {
         UpdateData(TRUE); // Get Data from dialog
 
         CMainFrame * pMDIFrameWnd = (CMainFrame *)AfxGetMainWnd();
@@ -3774,16 +3295,14 @@ void CDlgParametersResearchPage::Apply()
              (ResearchSettings.m_nLpcCepstralSharp != m_workingSettings.m_nLpcCepstralSharp ||
               ResearchSettings.m_nLpcCepstralSmooth != m_workingSettings.m_nLpcCepstralSmooth));
 
-        if (bSpectrumSettingsChanged)
-        {
+        if (bSpectrumSettingsChanged) {
             pDoc->GetSpectrogram(TRUE)->GetFormantProcess()->SetDataInvalid();
             CProcessSpectrum * pSpectrum = pDoc->GetSpectrum();
             // invalidate processed data
             pSpectrum->SetDataInvalid();
         }
 
-        if (ResearchSettings.m_cWindow.m_nType != m_workingSettings.m_cWindow.m_nType)
-        {
+        if (ResearchSettings.m_cWindow.m_nType != m_workingSettings.m_cWindow.m_nType) {
             // processed data is invalid
             pDoc->GetSpectrogram(TRUE)->SetDataInvalid();
         }
@@ -3794,8 +3313,7 @@ void CDlgParametersResearchPage::Apply()
     }
 }
 
-void CDlgParametersResearchPage::DoDataExchange(CDataExchange * pDX)
-{
+void CDlgParametersResearchPage::DoDataExchange(CDataExchange * pDX) {
 
     CPropertyPage::DoDataExchange(pDX);
     DDX_Check(pDX, IDC_RESEARCH_HILBERT, m_workingSettings.m_bShowHilbertTransform);
@@ -3825,8 +3343,7 @@ void CDlgParametersResearchPage::DoDataExchange(CDataExchange * pDX)
     DDX_Control(pDX, IDC_RESEARCH_LPC_SMOOTH, m_cSmooth);
 }
 
-void CDlgParametersResearchPage::OnModified()
-{
+void CDlgParametersResearchPage::OnModified() {
 
     SetModified(TRUE);
     Apply();
@@ -3864,8 +3381,7 @@ IMPLEMENT_DYNCREATE(CDlgParametersFormantTracker, CPropertyPage)
 
 CFormantTrackerOptions formantTrackerOptions;
 
-void CFormantTrackerOptions::Init()
-{
+void CFormantTrackerOptions::Init() {
 
     m_nWindowType = CDspWin::kBlackman;
     m_dUpdateRate = 100;
@@ -3879,8 +3395,7 @@ void CFormantTrackerOptions::Init()
     m_bShowOriginalFormantTracks = FALSE;
 }
 
-BOOL CFormantTrackerOptions::operator !=(const CFormantTrackerOptions & ref) const
-{
+BOOL CFormantTrackerOptions::operator !=(const CFormantTrackerOptions & ref) const {
 
     return
         (m_nWindowType != ref.m_nWindowType) ||
@@ -3896,18 +3411,15 @@ BOOL CFormantTrackerOptions::operator !=(const CFormantTrackerOptions & ref) con
 }
 
 CDlgParametersFormantTracker::CDlgParametersFormantTracker() :
-    CPropertyPage(CDlgParametersFormantTracker::IDD)
-{
+    CPropertyPage(CDlgParametersFormantTracker::IDD) {
     m_workingSettings = formantTrackerOptions;
 }
 
-CDlgParametersFormantTracker::~CDlgParametersFormantTracker()
-{
+CDlgParametersFormantTracker::~CDlgParametersFormantTracker() {
 
 }
 
-void CDlgParametersFormantTracker::DoDataExchange(CDataExchange * pDX)
-{
+void CDlgParametersFormantTracker::DoDataExchange(CDataExchange * pDX) {
 
     CPropertyPage::DoDataExchange(pDX);
     DDX_Text(pDX, IDC_FTRACKER_AZF_BANDWIDTH, m_workingSettings.m_dAzfMinBandwidth);
@@ -3940,17 +3452,14 @@ END_MESSAGE_MAP()
 /////////////////////////////////////////////////////////////////////////////
 // CDlgParametersFormantTracker message handlers
 
-void CDlgParametersFormantTracker::OnModified()
-{
+void CDlgParametersFormantTracker::OnModified() {
 
     UpdateData(TRUE); // Get Data from dialog
     SetModified(formantTrackerOptions != m_workingSettings);
 }
 
-void CDlgParametersFormantTracker::Apply()
-{
-    if ((formantTrackerOptions != m_workingSettings) && m_hWnd)
-    {
+void CDlgParametersFormantTracker::Apply() {
+    if ((formantTrackerOptions != m_workingSettings) && m_hWnd) {
         UpdateData(TRUE); // Get Data from dialog
 
         CMainFrame * pMDIFrameWnd = (CMainFrame *)AfxGetMainWnd();
@@ -3962,8 +3471,7 @@ void CDlgParametersFormantTracker::Apply()
         CFormantTrackerOptions testSettings = m_workingSettings;
 
         testSettings.m_bShowOriginalFormantTracks = formantTrackerOptions.m_bShowOriginalFormantTracks;
-        if (testSettings != formantTrackerOptions)
-        {
+        if (testSettings != formantTrackerOptions) {
             pDoc->GetFormantTracker()->SetDataInvalid();
         }
 
@@ -3997,8 +3505,7 @@ END_MESSAGE_MAP()
 // CDlgGraphsParameters::CDlgGraphsParameters Constructor
 /***************************************************************************/
 CDlgGraphsParameters::CDlgGraphsParameters(LPCTSTR pszCaption, CWnd * pParent)
-    : CPropertySheet(pszCaption, pParent)
-{
+    : CPropertySheet(pszCaption, pParent) {
 
     m_pDlgSpectrogramPage = NULL;
     m_pDlgSnapshotPage = NULL;
@@ -4015,125 +3522,104 @@ CDlgGraphsParameters::CDlgGraphsParameters(LPCTSTR pszCaption, CWnd * pParent)
 
     int nFocusedID = pView->GetFocusedGraphID();
 
-    if (pView->GetGraphIndexForIDD(IDD_RAWDATA) >= 0 || pView->GetGraphIndexForIDD(IDD_MAGNITUDE) >= 0 || pView->GetGraphIndexForIDD(IDD_RECORDING) >= 0)
-    {
+    if (pView->GetGraphIndexForIDD(IDD_RAWDATA) >= 0 || pView->GetGraphIndexForIDD(IDD_MAGNITUDE) >= 0 || pView->GetGraphIndexForIDD(IDD_RECORDING) >= 0) {
         AddPage(&m_dlgRawdataPage);
 
-        if (nFocusedID == IDD_RAWDATA || nFocusedID == IDD_MAGNITUDE || nFocusedID == IDD_RECORDING)
-        {
+        if (nFocusedID == IDD_RAWDATA || nFocusedID == IDD_MAGNITUDE || nFocusedID == IDD_RECORDING) {
             nPage = GetPageCount() - 1;
         }
     }
 
     if (pView->GetGraphIndexForIDD(IDD_CEPPITCH) >= 0 || pView->GetGraphIndexForIDD(IDD_GRAPITCH) >= 0
             || pView->GetGraphIndexForIDD(IDD_SMPITCH) >= 0 || pView->GetGraphIndexForIDD(IDD_PITCH) >= 0
-            || pView->GetGraphIndexForIDD(IDD_CHPITCH) >= 0)
-    {
+            || pView->GetGraphIndexForIDD(IDD_CHPITCH) >= 0) {
         AddPage(&m_dlgPitchPage);
 
         if (nFocusedID == IDD_CEPPITCH || nFocusedID == IDD_GRAPITCH || nFocusedID == IDD_SMPITCH
-                || nFocusedID == IDD_CHPITCH || nFocusedID == IDD_PITCH)
-        {
+                || nFocusedID == IDD_CHPITCH || nFocusedID == IDD_PITCH) {
             nPage = GetPageCount() - 1;
         }
     }
 
-    if (pView->GetGraphIndexForIDD(IDD_SPECTROGRAM) >= 0)
-    {
+    if (pView->GetGraphIndexForIDD(IDD_SPECTROGRAM) >= 0) {
         m_pDlgSpectrogramPage = new CDlgParametersSpectroPage(IDS_TABTITLE_SPECTROGRAM,
                 IDD_SPECTROGRAM, pMainWnd->GetSpectrogramParmDefaults());
         AddPage(m_pDlgSpectrogramPage);
-        if (nFocusedID == IDD_SPECTROGRAM)
-        {
+        if (nFocusedID == IDD_SPECTROGRAM) {
             nPage = GetPageCount() - 1;
         }
     }
 
 
-    if (pView->GetGraphIndexForIDD(IDD_SNAPSHOT) >= 0)
-    {
+    if (pView->GetGraphIndexForIDD(IDD_SNAPSHOT) >= 0) {
         m_pDlgSnapshotPage = new CDlgParametersSpectroPage(IDS_TABTITLE_SNAPSHOT,
                 IDD_SNAPSHOT, pMainWnd->GetSnapshotParmDefaults());
         AddPage(m_pDlgSnapshotPage);
-        if (nFocusedID == IDD_SNAPSHOT)
-        {
+        if (nFocusedID == IDD_SNAPSHOT) {
             nPage = GetPageCount() - 1;
         }
     }
 
     // check if spectrum graph available
-    if (pView->GetGraphIndexForIDD(IDD_SPECTRUM) >= 0)
-    {
+    if (pView->GetGraphIndexForIDD(IDD_SPECTRUM) >= 0) {
         AddPage(&m_dlgSpectrumPage);
-        if (nFocusedID == IDD_SPECTRUM)
-        {
+        if (nFocusedID == IDD_SPECTRUM) {
             nPage = GetPageCount() - 1;
         }
     }
 
-    if ((pView->GetGraphIndexForIDD(IDD_F1F2) >= 0) || 
-		(pView->GetGraphIndexForIDD(IDD_F2F1) >= 0) || 
-		(pView->GetGraphIndexForIDD(IDD_F2F1F1) >= 0) || 
-		(pView->GetGraphIndexForIDD(IDD_3D) >= 0))
-    {
+    if ((pView->GetGraphIndexForIDD(IDD_F1F2) >= 0) ||
+            (pView->GetGraphIndexForIDD(IDD_F2F1) >= 0) ||
+            (pView->GetGraphIndexForIDD(IDD_F2F1F1) >= 0) ||
+            (pView->GetGraphIndexForIDD(IDD_3D) >= 0)) {
         AddPage(&m_dlgFormantsPage);
         m_dlgFormantsPage.m_bAccess = EXPERIMENTAL_ACCESS;
 
-        if (nFocusedID == IDD_F1F2 || nFocusedID == IDD_F2F1 || nFocusedID == IDD_F2F1F1 || nFocusedID == IDD_3D)
-        {
+        if (nFocusedID == IDD_F1F2 || nFocusedID == IDD_F2F1 || nFocusedID == IDD_F2F1F1 || nFocusedID == IDD_3D) {
             nPage = GetPageCount() - 1;
         }
     }
 
     // check if SDP graphs available
-    if (pView->GetGraphIndexForIDD(IDD_SDP_A) >= 0 || pView->GetGraphIndexForIDD(IDD_SDP_B) >= 0 || pView->GetGraphIndexForIDD(IDD_INVSDP) >= 0)
-    {
+    if (pView->GetGraphIndexForIDD(IDD_SDP_A) >= 0 || pView->GetGraphIndexForIDD(IDD_SDP_B) >= 0 || pView->GetGraphIndexForIDD(IDD_INVSDP) >= 0) {
         AddPage(&m_dlgSDPPage);
 
-        if (nFocusedID == IDD_SDP_A || nFocusedID == IDD_SDP_B || nFocusedID == IDD_INVSDP)
-        {
+        if (nFocusedID == IDD_SDP_A || nFocusedID == IDD_SDP_B || nFocusedID == IDD_INVSDP) {
             nPage = GetPageCount() - 1;
         }
     }
 
     // check if melogram or TWC graph is available - 09/25/2000, DDO
-    if (pView->GetGraphIndexForIDD(IDD_MELOGRAM) >= 0 || pView->GetGraphIndexForIDD(IDD_TWC) >= 0)
-    {
+    if (pView->GetGraphIndexForIDD(IDD_MELOGRAM) >= 0 || pView->GetGraphIndexForIDD(IDD_TWC) >= 0) {
         AddPage(&m_dlgMusicPage);
 
-        if (nFocusedID == IDD_MELOGRAM || nFocusedID == IDD_TWC)
-        {
+        if (nFocusedID == IDD_MELOGRAM || nFocusedID == IDD_TWC) {
             nPage = GetPageCount() - 1;
         }
     }
 
     // check if melogram or TWC graph is available - 09/25/2000, DDO
-    if (pView->GetGraphIndexForIDD(IDD_LOUDNESS) >= 0)
-    {
+    if (pView->GetGraphIndexForIDD(IDD_LOUDNESS) >= 0) {
         AddPage(&m_dlgIntensityPage);
 
-        if (nFocusedID == IDD_LOUDNESS)
-        {
+        if (nFocusedID == IDD_LOUDNESS) {
             nPage = GetPageCount() - 1;
         }
     }
 
-    if (PROGRAMMER_ACCESS)
-    {
+    if (PROGRAMMER_ACCESS) {
         m_pDlgResearchPage = new CDlgParametersResearchPage;
 
         AddPage(m_pDlgResearchPage);
     }
 
-    if (PROGRAMMER_ACCESS)
-    {
+    if (PROGRAMMER_ACCESS) {
         m_pDlgFTrackerPage = new CDlgParametersFormantTracker;
 
         AddPage(m_pDlgFTrackerPage);
     }
 
-    if (!GetPageCount())
-    {
+    if (!GetPageCount()) {
         AddPage(&m_dlgRawdataPage);    // add a page (must have at least one page
     }
 
@@ -4146,22 +3632,17 @@ CDlgGraphsParameters::CDlgGraphsParameters(LPCTSTR pszCaption, CWnd * pParent)
 /***************************************************************************/
 // CDlgGraphsParameters::~CDlgGraphsParameters Destructor
 /***************************************************************************/
-CDlgGraphsParameters::~CDlgGraphsParameters()
-{
-    if (m_pDlgSpectrogramPage)
-    {
+CDlgGraphsParameters::~CDlgGraphsParameters() {
+    if (m_pDlgSpectrogramPage) {
         delete m_pDlgSpectrogramPage;
     }
-    if (m_pDlgSnapshotPage)
-    {
+    if (m_pDlgSnapshotPage) {
         delete m_pDlgSnapshotPage;
     }
-    if (m_pDlgResearchPage)
-    {
+    if (m_pDlgResearchPage) {
         delete m_pDlgResearchPage;
     }
-    if (m_pDlgFTrackerPage)
-    {
+    if (m_pDlgFTrackerPage) {
         delete m_pDlgFTrackerPage;
     }
 }
@@ -4169,8 +3650,7 @@ CDlgGraphsParameters::~CDlgGraphsParameters()
 /***************************************************************************/
 // CDlgGraphsParameters::OnInitDialog Dialog initialization
 /***************************************************************************/
-BOOL CDlgGraphsParameters::OnInitDialog()
-{
+BOOL CDlgGraphsParameters::OnInitDialog() {
 
     CPropertySheet::OnInitDialog();
     ChangeButtons();
@@ -4180,8 +3660,7 @@ BOOL CDlgGraphsParameters::OnInitDialog()
 /***************************************************************************/
 // CDlgGraphsParameters::ChangeButtons Rearrange buttons on the dialog
 /***************************************************************************/
-void CDlgGraphsParameters::ChangeButtons()
-{
+void CDlgGraphsParameters::ChangeButtons() {
 
     CWnd * pWndOK = GetDlgItem(IDOK); // get pointers to the button objects
     CWnd * pWndCancel = GetDlgItem(IDCANCEL);
@@ -4217,8 +3696,7 @@ void CDlgGraphsParameters::ChangeButtons()
 /***************************************************************************/
 // CDlgGraphsParameters::DoDataExchange Data exchange
 /***************************************************************************/
-void CDlgGraphsParameters::DoDataExchange(CDataExchange * pDX)
-{
+void CDlgGraphsParameters::DoDataExchange(CDataExchange * pDX) {
     CPropertySheet::DoDataExchange(pDX);
 }
 
@@ -4228,11 +3706,9 @@ void CDlgGraphsParameters::DoDataExchange(CDataExchange * pDX)
 /***************************************************************************/
 // CDlgGraphsParameters::OnCreate Dialog creation
 /***************************************************************************/
-int CDlgGraphsParameters::OnCreate(LPCREATESTRUCT lpCreateStruct)
-{
+int CDlgGraphsParameters::OnCreate(LPCREATESTRUCT lpCreateStruct) {
 
-    if (CPropertySheet::OnCreate(lpCreateStruct) == -1)
-    {
+    if (CPropertySheet::OnCreate(lpCreateStruct) == -1) {
         return -1;
     }
 
@@ -4243,8 +3719,7 @@ int CDlgGraphsParameters::OnCreate(LPCREATESTRUCT lpCreateStruct)
 /***************************************************************************/
 // CDlgGraphsParameters::OnApply Apply button hit
 /***************************************************************************/
-void CDlgGraphsParameters::OnApply()
-{
+void CDlgGraphsParameters::OnApply() {
 
     m_dlgPitchPage.Apply();
     m_dlgFormantsPage.Apply();
@@ -4257,16 +3732,13 @@ void CDlgGraphsParameters::OnApply()
     // If either spectrogram is visible then apply settings.
     // If there is a spectrum visible then apply its settings.
     //***********************************************************
-    if (pView->GetGraphIndexForIDD(IDD_SPECTROGRAM) >= 0)
-    {
+    if (pView->GetGraphIndexForIDD(IDD_SPECTROGRAM) >= 0) {
         m_pDlgSpectrogramPage->Apply();
     }
-    if (pView->GetGraphIndexForIDD(IDD_SNAPSHOT) >= 0)
-    {
+    if (pView->GetGraphIndexForIDD(IDD_SNAPSHOT) >= 0) {
         m_pDlgSnapshotPage->Apply();
     }
-    if (pView->GetGraphIndexForIDD(IDD_SPECTRUM) >= 0)
-    {
+    if (pView->GetGraphIndexForIDD(IDD_SPECTRUM) >= 0) {
         m_dlgSpectrumPage.Apply();
     }
 
@@ -4274,9 +3746,8 @@ void CDlgGraphsParameters::OnApply()
     // If any of the SDP graphs are visible apply their settings.
     //***********************************************************
     if ((pView->GetGraphIndexForIDD(IDD_SDP_A)  >= 0) ||
-        (pView->GetGraphIndexForIDD(IDD_SDP_B)  >= 0) ||
-        (pView->GetGraphIndexForIDD(IDD_INVSDP) >= 0))
-    {
+            (pView->GetGraphIndexForIDD(IDD_SDP_B)  >= 0) ||
+            (pView->GetGraphIndexForIDD(IDD_INVSDP) >= 0)) {
         m_dlgSDPPage.Apply();
     }
 
@@ -4284,26 +3755,22 @@ void CDlgGraphsParameters::OnApply()
     // If music graphs are visible then apply their settings.
     //***********************************************************
     if ((pView->GetGraphIndexForIDD(IDD_MELOGRAM) >= 0) ||
-        (pView->GetGraphIndexForIDD(IDD_TWC) >= 0))
-    {
+            (pView->GetGraphIndexForIDD(IDD_TWC) >= 0)) {
         m_dlgMusicPage.Apply();
     }
 
     //***********************************************************
     // If intensity graph is visible then apply settings.
     //***********************************************************
-    if (pView->GetGraphIndexForIDD(IDD_LOUDNESS) >= 0)
-    {
+    if (pView->GetGraphIndexForIDD(IDD_LOUDNESS) >= 0) {
         m_dlgIntensityPage.Apply();
     }
 
-    if (m_pDlgResearchPage)
-    {
+    if (m_pDlgResearchPage) {
         m_pDlgResearchPage->Apply();
     }
 
-    if (m_pDlgFTrackerPage)
-    {
+    if (m_pDlgFTrackerPage) {
         m_pDlgFTrackerPage->Apply();
     }
 
@@ -4314,14 +3781,12 @@ void CDlgGraphsParameters::OnApply()
 /***************************************************************************/
 // CDlgGraphsParameters::OnOK OK button hit
 /***************************************************************************/
-void CDlgGraphsParameters::OnOK()
-{
+void CDlgGraphsParameters::OnOK() {
 
     SetWindowPos(NULL, 0,0,0,0,SWP_NOMOVE | SWP_NOZORDER);
 
     MSG msg;
-    while (::PeekMessage(&msg, NULL, 0, 0, PM_NOREMOVE))
-    {
+    while (::PeekMessage(&msg, NULL, 0, 0, PM_NOREMOVE)) {
         AfxGetApp()->PumpMessage();
     }
 
@@ -4332,8 +3797,7 @@ void CDlgGraphsParameters::OnOK()
 /***************************************************************************/
 // CDlgGraphsParameters::OnHelpParameters Call Parameters help
 /***************************************************************************/
-void CDlgGraphsParameters::OnHelpParameters()
-{
+void CDlgGraphsParameters::OnHelpParameters() {
 
     // create the pathname
     CString szPath = AfxGetApp()->m_pszHelpFilePath;
@@ -4344,36 +3808,21 @@ void CDlgGraphsParameters::OnHelpParameters()
     GetActivePage()->GetWindowText(szPageName);
 
     // find the correct topic for the active page
-    if (szPageName == "Waveform")
-    {
+    if (szPageName == "Waveform") {
         szPath += "Waveform_tab_Graph_Parameters.htm";
-    }
-    else if (szPageName == "Pitch")
-    {
+    } else if (szPageName == "Pitch") {
         szPath += "Pitch_tab_Graph_Parameters.htm";
-    }
-    else if ((szPageName == "Spectrogram") || (szPageName == "Snapshot"))
-    {
+    } else if ((szPageName == "Spectrogram") || (szPageName == "Snapshot")) {
         szPath += "Spectrogram_tab_Graph_Parameters.htm";
-    }
-    else if (szPageName == "Spectrum")
-    {
+    } else if (szPageName == "Spectrum") {
         szPath += "Spectrum_tab_Graph_Parameters.htm";
-    }
-    else if (szPageName == "Formants")
-    {
+    } else if (szPageName == "Formants") {
         szPath += "Formants_tab_Graph_Parameters.htm";
-    }
-    else if (szPageName == "Music")
-    {
+    } else if (szPageName == "Music") {
         szPath += "Music_tab_Graph_Parameters.htm";
-    }
-    else if (szPageName == "Intensity")
-    {
+    } else if (szPageName == "Intensity") {
         szPath += "Intensity_tab_Graph_Parameters.htm";
-    }
-    else
-    {
+    } else {
         szPath += "Graph_Parameters_overview.htm";
     }
 

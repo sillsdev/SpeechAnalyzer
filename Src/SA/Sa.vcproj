@@ -176,6 +176,7 @@
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories="$(OutDir);$(XERCES_VC9_HOME)\lib;"
+				UACExecutionLevel="2"
 				IgnoreAllDefaultLibraries="true"
 				GenerateDebugInformation="false"
 				ProgramDatabaseFile="$(OutDir)\SA.pdb"

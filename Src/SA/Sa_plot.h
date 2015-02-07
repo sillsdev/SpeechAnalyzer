@@ -139,8 +139,8 @@ public:
     virtual void RemoveRtPlots();
     virtual CPlotWnd * NewCopy(void);
     virtual void CopyTo(CPlotWnd * pTarg);
-    void ShowSegmentBoundaries(BOOL bShow, BOOL bRedraw = FALSE);  // show or hide boundaries
-    virtual void SetMagnify(double, BOOL bRedraw = FALSE);  // set magnify factor
+    void ShowSegmentBoundaries(BOOL bShow, BOOL bRedraw = FALSE);	// show or hide boundaries
+    virtual void SetMagnify(double, BOOL bRedraw = FALSE);			// set magnify factor
     double GetMagnify();
     BOOL HaveBoundaries();
     BOOL HaveDrawingStyleLine();
@@ -234,7 +234,7 @@ protected:
     CPrivateCursorWnd m_PlaybackCursor;		// private cursor window embedded object
     CProcess * m_pLastProcess;              // pointer to MRU process
     CProcessAreaData * m_pAreaProcess;      // pointer to area process (needs deleting)
-    BOOL m_bBoundaries;                     // TRUE = boundaries shown
+    bool m_bBoundaries;                     // TRUE = boundaries shown
     BOOL m_bLineDraw;                       // TRUE = drawing style is line
     BOOL m_bDotDraw;                        // TRUE = drawing style is dots
     bool m_bCursors;                        // TRUE = cursors visible
