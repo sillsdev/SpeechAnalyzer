@@ -10,7 +10,7 @@ public:
     CPhoneticSegment(EAnnotation index, int master = -1);
 
     virtual long Process(void * pCaller, CSaDoc * pDoc, int nProgress = 0, int nLevel = 1);
-    virtual void Remove(CDocument *, BOOL bCheck = TRUE);			// remove a segment
+    virtual void Remove( CSaDoc * pDoc, int index, BOOL bCheck);			// remove a segment
     virtual void ReplaceSelectedSegment( CSaDoc * pSaDoc, LPCTSTR replace);
 	virtual bool Filter();
 	virtual bool Filter( CString & text);

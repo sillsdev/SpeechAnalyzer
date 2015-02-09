@@ -6,6 +6,7 @@
 #include "Sa_Doc.h"
 #include "MainFrm.h"
 #include "SA_View.h"
+#include "GlossSegment.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE
@@ -55,7 +56,7 @@ void CPhoneticSegment::ReplaceSelectedSegment( CSaDoc * pSaDoc, LPCTSTR replace)
     DWORD dwStop = pView->GetStopCursorPosition();
 
     DWORD dwOldOffset = GetOffset(m_nSelection);
-    RemoveAt(m_nSelection);
+    RemoveAt(m_nSelection,true);
     if (dwOldOffset == -1) {
         return;
     }
@@ -93,50 +94,102 @@ void CPhoneticSegment::ReplaceSelectedSegment( CSaDoc * pSaDoc, LPCTSTR replace)
 // All the dependent segments that are aligned to the removed master
 // segment have to be removed too. The user will be informed before.
 /***************************************************************************/
-void CPhoneticSegment::Remove(CDocument * pDoc, BOOL bCheck) {
-    // get pointer to view
-    POSITION pos = pDoc->GetFirstViewPosition();
-    CSaView * pView = (CSaView *)pDoc->GetNextView(pos);
-    CSaDoc * pSaDoc = (CSaDoc *)pDoc;
+void CPhoneticSegment::Remove( CSaDoc * pDoc, int sel, BOOL bCheck) {
 
     // save state for undo ability
     if (bCheck) {
-        pSaDoc->CheckPoint();
-    }
-    int nSelection = m_nSelection;
-    DWORD dwOldStop = GetStop(nSelection);
-    DWORD dwOldOffset = GetOffset(m_nSelection);
-    RemoveAt(m_nSelection);
-    if (dwOldOffset == -1) {
-        return;
+        pDoc->CheckPoint();
     }
 
-    pDoc->SetModifiedFlag(TRUE);		// document has been modified
-    pSaDoc->SetTransModifiedFlag(TRUE); // transcription data has been modified
-    pView->ChangeAnnotationSelection(this, m_nSelection, 0, 0); // deselect
-    pView->RefreshGraphs(FALSE);		// refresh the graphs between cursors
+    DWORD dwOldOffset = GetOffset(sel);
+    DWORD dwOldStop = GetStop(sel);
+
+	// handle dependent gloss separately
+	CGlossSegment * pGloss = (CGlossSegment*)pDoc->GetSegment(GLOSS);
+    if (pGloss != NULL) {
+        int gindex = pGloss->FindOffset(dwOldOffset);
+        if (gindex != -1) {
+            if (pGloss->GetStop(gindex) == dwOldStop) {
+				// stop and start match
+				pGloss->Remove( pDoc, gindex, FALSE);
+            } else {
+				// stop doesn't match
+				int refcount = GetReferenceCount( pGloss, gindex);
+				if (refcount<=1) {
+					// this is the last segment, delete it
+					pGloss->Remove( pDoc, gindex, FALSE);
+				} else {
+					// start matches, stop doesn't
+					int next = GetNext(sel);
+					if (next!=-1) {
+						DWORD offset = GetOffset(next);
+						DWORD stop = pGloss->GetStop(gindex);
+						pGloss->Adjust( pDoc, gindex, offset, stop - offset);
+					}
+				}
+            }
+        } else {
+			// start doesn't match
+			// are we deleting the last master segment?
+			gindex = pGloss->FindStop(dwOldStop);
+			if (gindex != -1) {
+				// stop matches
+				int refcount = GetReferenceCount( pGloss, gindex);
+				if (refcount<=1) {
+					// this is the last segment, delete it
+					pGloss->Remove( pDoc, gindex, FALSE);
+				} else {
+					// find the previous phonetic segment
+					// adjust gloss to match the prevous segment.
+					int prev = GetPrevious(sel);
+					if (prev!=-1) {
+						DWORD offset = pGloss->GetOffset(gindex);
+						DWORD stop = GetStop(prev);
+						pGloss->Adjust(pDoc, gindex, offset, stop - offset);
+					}
+				}
+			}
+		}
+    }
 
     // delete aligned dependent segments and gloss
-    for (int nLoop = 1; nLoop <= GLOSS; nLoop++) { //SDM 1.5Test8.1 segments after gloss are dependent on gloss
-        CSegment * pSegment = pSaDoc->GetSegment(nLoop);
-        if (pSegment != NULL) {
-            int nIndex = pSegment->FindOffset(dwOldOffset);
-            if (nIndex != -1) {
-                if (pSegment->GetStop(nIndex) == dwOldStop) {
-                    pSegment->SetSelection(nIndex);
-                    pSegment->Remove(pDoc, FALSE); // no checkpoint
-                } else {
-                    DWORD dwOffset = GetOffset(nSelection);
-                    pSegment->Adjust(pSaDoc, nIndex, dwOffset, pSegment->GetStop(nIndex) - dwOffset);
-                }
+    for (int nLoop = 1; nLoop < GLOSS; nLoop++) { 
+		//SDM 1.5Test8.1 segments after gloss are dependent on gloss
+        CSegment * pSegment = pDoc->GetSegment(nLoop);
+        if (pSegment == NULL) continue;
+        int nIndex = pSegment->FindOffset(dwOldOffset);
+        if (nIndex != -1) {
+			// start matches
+            if (pSegment->GetStop(nIndex) == dwOldStop) {
+				// stop and start match
+                pSegment->RemoveAt(nIndex,true);	
+            } else {
+				// start matches, stop doesn't
+                DWORD offset = GetOffset(sel);
+				DWORD stop = pSegment->GetStop(nIndex);
+                pSegment->Adjust( pDoc, nIndex, offset, stop - offset);
             }
-            nIndex = pSegment->FindStop(dwOldStop);
-            if (nIndex != -1) {
-                DWORD dwStop = GetStop(GetPrevious(nSelection));
-                pSegment->Adjust(pSaDoc, nIndex, pSegment->GetOffset(nIndex), dwStop - pSegment->GetOffset(nIndex));
-            }
-        }
+        } else {
+			// start doesn't match
+			nIndex = pSegment->FindStop(dwOldStop);
+			if (nIndex != -1) {
+				DWORD offset = pSegment->GetOffset(nIndex);
+				int prev = GetPrevious(sel);
+				DWORD stop = GetStop(prev);
+				pSegment->Adjust(pDoc, nIndex, offset, stop - offset);
+			}
+		}
     }
+
+    RemoveAt(sel,true);
+
+    // get pointer to view
+    POSITION pos = pDoc->GetFirstViewPosition();
+    CSaView * pView = (CSaView *)pDoc->GetNextView(pos);
+
+	pDoc->SetModifiedFlag(TRUE);		// document has been modified
+    pDoc->SetTransModifiedFlag(TRUE);	// transcription data has been modified
+    pView->ChangeAnnotationSelection( this, sel, 0, 0);	// deselect
     pView->RefreshGraphs(TRUE,FALSE);
 }
 

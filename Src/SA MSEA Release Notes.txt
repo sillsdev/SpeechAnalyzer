@@ -1,3 +1,9 @@
+SA - 3.1.0.114 2/9/2015
+-Fixed bug in playback - selecting playback of 'word' when phrase is selected in which start of selected segment preceeds 'word' segment start causes wrong audio portion to be played.
+-Fixed selection bug that occurs when playing 'word' from the audio player.
+-Fixed segment 'delete' bugs.  Code was allowing dependent segments to be deleted.  Code was modified so that the content is only deleted.
+-Fixed segment 'delete' bugs.  When deleting the last phonetic segment holding a gloss segment, the gloss segments were resized to zero and not deleted.
+
 SA - 3.1.0.113 2/6/2015
 -Added Alt-M command and toolbar icon
 -Fixed fieldworks export bugs - tone and gloss national were not exported.

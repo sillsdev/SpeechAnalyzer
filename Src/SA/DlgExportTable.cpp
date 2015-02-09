@@ -32,8 +32,7 @@ static char BASED_CODE THIS_FILE[] = __FILE__;
 // CDlgExportTable dialog
 
 CDlgExportTable::CDlgExportTable(const CSaString & szDocTitle, CWnd * pParent /*=NULL*/) :
-    CDialog(CDlgExportTable::IDD, pParent)
-{
+    CDialog(CDlgExportTable::IDD, pParent) {
 
     m_bAnnotations = TRUE;
     m_bCalculations = FALSE;
@@ -43,7 +42,7 @@ CDlgExportTable::CDlgExportTable(const CSaString & szDocTitle, CWnd * pParent /*
     m_bF4 = FALSE;
     m_bFormants = FALSE;
     m_bGloss = TRUE;
-	m_bGlossNat = TRUE;
+    m_bGlossNat = TRUE;
     m_szIntervalTime = "20";
     m_bSegmentLength = TRUE;
     m_bMagnitude = TRUE;
@@ -65,16 +64,14 @@ CDlgExportTable::CDlgExportTable(const CSaString & szDocTitle, CWnd * pParent /*
 
     CSaDoc * pDoc = (CSaDoc *)((CMainFrame *)AfxGetMainWnd())->GetCurrSaView()->GetDocument();
 
-    if (pDoc->GetSegment(PHONETIC)->IsEmpty())   // no annotations
-    {
+    if (pDoc->GetSegment(PHONETIC)->IsEmpty()) { // no annotations
         m_bReference = m_bPhonetic = m_bTone = m_bPhonemic = m_bOrtho = m_bGloss = m_bGlossNat = FALSE;
         m_bSegmentStart = m_bSegmentLength = FALSE; // no segments
         m_nSampleRate = 1;
     }
 }
 
-void CDlgExportTable::DoDataExchange(CDataExchange * pDX)
-{
+void CDlgExportTable::DoDataExchange(CDataExchange * pDX) {
 
     CDialog::DoDataExchange(pDX);
 
@@ -119,12 +116,10 @@ BEGIN_MESSAGE_MAP(CDlgExportTable, CDialog)
     ON_COMMAND(IDHELP, OnHelpExportTable)
 END_MESSAGE_MAP()
 
-void CDlgExportTable::OnAllAnnotations()
-{
+void CDlgExportTable::OnAllAnnotations() {
 
     UpdateData(TRUE);
-    if (m_nSampleRate == 0)
-    {
+    if (m_nSampleRate == 0) {
         SetVisible(IDC_EXTAB_TIME, FALSE);
         SetVisible(IDC_EXTAB_START, TRUE);
         SetVisible(IDC_EXTAB_LENGTH, TRUE);
@@ -138,9 +133,7 @@ void CDlgExportTable::OnAllAnnotations()
         SetVisible(IDC_EXTAB_GLOSS, TRUE, bEnable);
         SetVisible(IDC_EXTAB_GLOSS_NAT, TRUE, bEnable);
         SetVisible(IDC_EXTAB_REFERENCE, TRUE, bEnable);
-    }
-    else
-    {
+    } else {
         SetVisible(IDC_EXTAB_TIME, TRUE);
         SetVisible(IDC_EXTAB_START, FALSE);
         SetVisible(IDC_EXTAB_LENGTH, FALSE);
@@ -154,16 +147,14 @@ void CDlgExportTable::OnAllAnnotations()
         SetVisible(IDC_EXTAB_GLOSS_NAT, FALSE);
         SetVisible(IDC_EXTAB_REFERENCE, FALSE);
     }
-    if (m_bAnnotations)
-    {
+    if (m_bAnnotations) {
         m_bReference = m_bPhonetic = m_bTone = m_bPhonemic = m_bOrtho = m_bGloss = m_bGlossNat = TRUE;
 
         UpdateData(FALSE);
     }
 }
 
-void CDlgExportTable::OnAllFormants()
-{
+void CDlgExportTable::OnAllFormants() {
 
     UpdateData(TRUE);
     BOOL bEnable = !m_bFormants;
@@ -171,16 +162,14 @@ void CDlgExportTable::OnAllFormants()
     SetEnable(IDC_EXTAB_F2, bEnable && !m_bFormants);
     SetEnable(IDC_EXTAB_F3, bEnable && !m_bFormants);
     SetEnable(IDC_EXTAB_F4, bEnable && !m_bFormants);
-    if (m_bFormants)
-    {
+    if (m_bFormants) {
         m_bF1 = m_bF2 = m_bF3 = m_bF4 = TRUE;
 
         UpdateData(FALSE);
     }
 }
 
-void CDlgExportTable::OnAllCalculations()
-{
+void CDlgExportTable::OnAllCalculations() {
 
     UpdateData(TRUE);
     BOOL bEnable = !m_bCalculations;
@@ -193,8 +182,7 @@ void CDlgExportTable::OnAllCalculations()
     SetEnable(IDC_EXTAB_PITCH, bEnable);
     SetEnable(IDC_EXTAB_MELOGRAM, bEnable);
     SetEnable(IDC_EXTAB_ZERO, bEnable);
-    if (m_bCalculations)
-    {
+    if (m_bCalculations) {
         m_bMagnitude = m_bZeroCrossings = m_bPitch = m_bMelogram  = m_bFormants = TRUE;
         UpdateData(FALSE);
 
@@ -202,41 +190,32 @@ void CDlgExportTable::OnAllCalculations()
     }
 }
 
-void CDlgExportTable::OnOK()
-{
+void CDlgExportTable::OnOK() {
 
     wstring filename;
     int result = CSaDoc::GetSaveAsFilename(m_szDocTitle, _T("SFM Time Table (*.sft) |*.sft||"), _T("sft"), NULL, filename);
-    if (result!=IDOK)
-    {
+    if (result!=IDOK) {
         return;
     }
     m_szFileName = filename.c_str();
-    if (m_szFileName == "")
-    {
+    if (m_szFileName == "") {
         return;
     }
 
     UpdateData(TRUE);
     // process all flags
-    if (m_bAnnotations)
-    {
+    if (m_bAnnotations) {
         m_bReference = m_bPhonetic = m_bTone = m_bPhonemic = m_bOrtho = m_bGloss = m_bGlossNat = TRUE;
     }
-    if (m_bCalculations)
-    {
+    if (m_bCalculations) {
         m_bMagnitude = m_bZeroCrossings = m_bPitch = m_bMelogram = m_bFormants = TRUE;
     }
-    if (m_bFormants)
-    {
+    if (m_bFormants) {
         m_bF1 = m_bF2 = m_bF3 = m_bF4 = TRUE;
     }
-    if (m_nSampleRate == 0)
-    {
+    if (m_nSampleRate == 0) {
         m_bSampleTime = FALSE;
-    }
-    else
-    {
+    } else {
         m_bReference = m_bTone = m_bPhonemic = m_bOrtho = m_bGloss = m_bGlossNat = FALSE;
         m_bSegmentStart = m_bSegmentLength = FALSE;
     }
@@ -249,47 +228,39 @@ void CDlgExportTable::OnOK()
     CSaView * pView = (CSaView *)pDoc->GetNextView(pos); // get pointer to view
     CSegment * pPhonetic = pDoc->GetSegment(PHONETIC);
 
-    if (pPhonetic->IsEmpty())   // no annotations
-    {
+    if (pPhonetic->IsEmpty()) { // no annotations
         m_bReference = m_bPhonetic = m_bTone = m_bPhonemic = m_bOrtho = m_bGloss = m_bGlossNat = FALSE;
         m_bSegmentStart = m_bSegmentLength = FALSE; // no segments
-        if (m_nSampleRate == 0)
-        {
+        if (m_nSampleRate == 0) {
             m_nSampleRate = 1;
         }
     }
 
     DWORD dwOffset = pView->GetStartCursorPosition();
     DWORD dwStopPosition = pView->GetStopCursorPosition();
-    if (m_nRegion != 0)   // entire file
-    {
+    if (m_nRegion != 0) { // entire file
         dwOffset = 0;
         dwStopPosition = pDoc->GetDataSize() - pDoc->GetBlockAlign();
     }
 
     int nIndex = 0;
 
-    if (m_nSampleRate != 1)   // phonetic sampling
-    {
+    if (m_nSampleRate != 1) { // phonetic sampling
         nIndex = pPhonetic->FindFromPosition(dwStopPosition);
 
-        if ((nIndex != -1) && dwStopPosition < pPhonetic->GetOffset(nIndex))
-        {
+        if ((nIndex != -1) && dwStopPosition < pPhonetic->GetOffset(nIndex)) {
             nIndex = pPhonetic->GetPrevious(nIndex);
         }
 
-        if ((nIndex != -1)  && dwStopPosition < pPhonetic->GetStop(nIndex))
-        {
+        if ((nIndex != -1)  && dwStopPosition < pPhonetic->GetStop(nIndex)) {
             dwStopPosition = pPhonetic->GetStop(nIndex);
         }
     }
 
     nIndex = pPhonetic->FindFromPosition(dwOffset);
 
-    if (m_nSampleRate != 1)   // phonetic sampling
-    {
-        if (nIndex != -1)
-        {
+    if (m_nSampleRate != 1) { // phonetic sampling
+        if (nIndex != -1) {
             dwOffset = pPhonetic->GetOffset(nIndex);
         }
     }
@@ -297,24 +268,19 @@ void CDlgExportTable::OnOK()
     DWORD dwNext = 0;
     DWORD dwIncrement = 0;
 
-    if (m_nSampleRate == 1)   // interval sampling
-    {
+    if (m_nSampleRate == 1) { // interval sampling
         int nInterval = 20;
-        if (m_szIntervalTime.GetLength() != 0)
-        {
+        if (m_szIntervalTime.GetLength() != 0) {
             swscanf_s(m_szIntervalTime, _T("%d"), &nInterval);
         }
-        if (nInterval < 1)
-        {
+        if (nInterval < 1) {
             nInterval = 20;
         }
         dwIncrement = pDoc->GetBytesFromTime(nInterval/1000.0);
-        if (dwIncrement < 1)
-        {
+        if (dwIncrement < 1) {
             dwIncrement++;
         }
-        if (pDoc->Is16Bit())
-        {
+        if (pDoc->Is16Bit()) {
             dwIncrement++;
             dwIncrement &= ~1;
         }
@@ -326,118 +292,79 @@ void CDlgExportTable::OnOK()
     enum {MAG, PITCH, MELOGRAM, ZCROSS, FMTTRACKER, CALCULATIONS};
     double fSizeFactor[CALCULATIONS];
 
-    if (m_bMagnitude)
-    {
+    if (m_bMagnitude) {
         CProcessLoudness * pLoudness = (CProcessLoudness *)pDoc->GetLoudness(); // get pointer to loudness object
         nResult = LOWORD(pLoudness->Process(this, pDoc)); // process data
-        if (nResult == PROCESS_ERROR)
-        {
+        if (nResult == PROCESS_ERROR) {
             m_bMagnitude = FALSE;
-        }
-        else if (nResult == PROCESS_CANCELED)
-        {
+        } else if (nResult == PROCESS_CANCELED) {
             return;
-        }
-        else
-        {
+        } else {
             fSizeFactor[MAG] = (double)pDoc->GetDataSize() / (double)(pLoudness->GetDataSize() - 1);
         }
     }
-    if (m_bPitch || m_bF1 || m_bF2 || m_bF3 || m_bF4)   // formants need pitch info
-    {
+    if (m_bPitch || m_bF1 || m_bF2 || m_bF3 || m_bF4) { // formants need pitch info
         CProcessGrappl * pPitch = pDoc->GetGrappl(); // SDM 1.5 Test 11.0
         // We also want raw and smoothed
         CProcessPitch * pRawPitch = pDoc->GetPitch();
         CProcessSmoothedPitch * pSmoothedPitch = pDoc->GetSmoothedPitch();
         nResult = LOWORD(pPitch->Process(this, pDoc)); // process data
-        if (nResult == PROCESS_ERROR)
-        {
+        if (nResult == PROCESS_ERROR) {
             m_bPitch = FALSE;
-        }
-        else if (nResult == PROCESS_CANCELED)
-        {
+        } else if (nResult == PROCESS_CANCELED) {
             return;
         }
         nResult = LOWORD(pRawPitch->Process(this, pDoc));
-        if (nResult == PROCESS_ERROR)
-        {
+        if (nResult == PROCESS_ERROR) {
             m_bPitch = m_bPitch && FALSE;
-        }
-        else if (nResult == PROCESS_CANCELED)
-        {
+        } else if (nResult == PROCESS_CANCELED) {
             return;
         }
         nResult = LOWORD(pSmoothedPitch->Process(this, pDoc));
-        if (nResult == PROCESS_ERROR)
-        {
+        if (nResult == PROCESS_ERROR) {
             m_bPitch = m_bPitch && FALSE;
-        }
-        else if (nResult == PROCESS_CANCELED)
-        {
+        } else if (nResult == PROCESS_CANCELED) {
             return;
-        }
-        else
-        {
+        } else {
             fSizeFactor[PITCH] = (double)pDoc->GetDataSize() / (double)(pPitch->GetDataSize() - 1);
         }
     }
-    if (m_bMelogram)
-    {
+    if (m_bMelogram) {
         CProcessMelogram * pMelogram = pDoc->GetMelogram(); // SDM 1.5 Test 11.0
         nResult = LOWORD(pMelogram->Process(this, pDoc)); // process data
-        if (nResult == PROCESS_ERROR)
-        {
+        if (nResult == PROCESS_ERROR) {
             m_bMelogram = FALSE;
-        }
-        else if (nResult == PROCESS_CANCELED)
-        {
+        } else if (nResult == PROCESS_CANCELED) {
             return;
-        }
-        else
-        {
+        } else {
             fSizeFactor[MELOGRAM] = (double)pDoc->GetDataSize() / (double)(pMelogram->GetDataSize() - 1);
         }
     }
-    if (m_bZeroCrossings || m_bF1 || m_bF2 || m_bF3 || m_bF4)
-    {
+    if (m_bZeroCrossings || m_bF1 || m_bF2 || m_bF3 || m_bF4) {
         CProcessZCross  * pZCross = pDoc->GetZCross();
         nResult = LOWORD(pZCross->Process(this, pDoc)); // process data
-        if (nResult == PROCESS_ERROR)
-        {
+        if (nResult == PROCESS_ERROR) {
             m_bZeroCrossings = FALSE;
-        }
-        else if (nResult == PROCESS_CANCELED)
-        {
+        } else if (nResult == PROCESS_CANCELED) {
             return;
-        }
-        else
-        {
+        } else {
             fSizeFactor[ZCROSS] = (double)pDoc->GetDataSize() / (double)(pZCross->GetDataSize() - 1);
         }
     }
-    if (m_bF1 || m_bF2 || m_bF3 || m_bF4)
-    {
+    if (m_bF1 || m_bF2 || m_bF3 || m_bF4) {
         CProcessFormantTracker * pSpectroFormants = pDoc->GetFormantTracker();
 
         // If pitch processed successfully, generate formant data.
-        if (pDoc->GetGrappl()->IsDataReady())
-        {
+        if (pDoc->GetGrappl()->IsDataReady()) {
             short int nResult = LOWORD(pSpectroFormants->Process(pView, pDoc));
-            if (nResult == PROCESS_ERROR)
-            {
+            if (nResult == PROCESS_ERROR) {
                 m_bF1 = m_bF2 = m_bF3 = m_bF4 = FALSE;
-            }
-            else if (nResult == PROCESS_CANCELED)
-            {
+            } else if (nResult == PROCESS_CANCELED) {
                 return;
-            }
-            else
-            {
+            } else {
                 fSizeFactor[FMTTRACKER] = (double)pDoc->GetDataSize() / (double)(pSpectroFormants->GetDataSize() - 1);
             }
-        }
-        else
-        {
+        } else {
             m_bF1 = m_bF2 = m_bF3 = m_bF4 = FALSE;
         }
     }
@@ -460,257 +387,189 @@ void CDlgExportTable::OnOK()
     WriteFileUtf8(pFile, szString);
 
     // \calc calculation method
-    if (m_nCalculationMethod == 0)
-    {
+    if (m_nCalculationMethod == 0) {
         szString = "\\calc "  "midpoint" + szCrLf;
-    }
-    else
-    {
+    } else {
         szString = "\\calc "  "average" + szCrLf;
     }
     WriteFileUtf8(pFile, szString);
 
-    if (m_bSampleTime)
-    {
+    if (m_bSampleTime) {
         szString = "\\table time " "every "+ m_szIntervalTime + "ms" "\r\nTime\t";
-    }
-    else
-    {
+    } else {
         szString = "\\table Etic\r\n";
     }
-    if (m_bSegmentStart)
-    {
+    if (m_bSegmentStart) {
         szString += "Start\t";
     }
-    if (m_bSegmentLength)
-    {
+    if (m_bSegmentLength) {
         szString += "Length\t";
     }
-    if (m_bReference)
-    {
+    if (m_bReference) {
         szString += "Ref\t";
     }
-    if (m_bPhonetic)
-    {
+    if (m_bPhonetic) {
         szString += "Etic\t";
     }
-    if (m_bTone)
-    {
+    if (m_bTone) {
         szString += "Tone\t";
     }
-    if (m_bPhonemic)
-    {
+    if (m_bPhonemic) {
         szString += "Emic\t";
     }
-    if (m_bOrtho)
-    {
+    if (m_bOrtho) {
         szString += "Ortho\t";
     };
-    if (m_bGloss)
-    {
+    if (m_bGloss) {
         szString += "Gloss\t";
     }
-    if (m_bGlossNat)
-    {
+    if (m_bGlossNat) {
         szString += "Gloss Nat.\t";
     }
-    if (m_bMagnitude)
-    {
+    if (m_bMagnitude) {
         szString += "Int(dB)\t";
     }
-    if (m_bPitch)
-    {
+    if (m_bPitch) {
         szString += "Pitch(Hz)\tRawPitch\tSmPitch\t";
     }
-    if (m_bMelogram)
-    {
+    if (m_bMelogram) {
         szString += "Melogram(st)\t";
     }
-    if (m_bZeroCrossings)
-    {
+    if (m_bZeroCrossings) {
         szString += "ZCross\t";
     }
-    if (m_bF1)
-    {
+    if (m_bF1) {
         szString += "F1(Hz)\t";
     }
-    if (m_bF2)
-    {
+    if (m_bF2) {
         szString += "F2(Hz)\t";
     }
-    if (m_bF3)
-    {
+    if (m_bF3) {
         szString += "F3(Hz)\t";
     }
-    if (m_bF4)
-    {
+    if (m_bF4) {
         szString += "F4(Hz)\t";
     }
     szString += "\r\n";
     WriteFileUtf8(pFile, szString);
 
     // construct table entries
-    while (dwOffset < dwStopPosition)
-    {
-        if (m_nSampleRate == 1)   // interval sampling
-        {
+    while (dwOffset < dwStopPosition) {
+        if (m_nSampleRate == 1) { // interval sampling
             dwNext = dwOffset+dwIncrement;
-        }
-        else     // phonetic segment samples
-        {
-            if (nIndex != -1)
-            {
+        } else { // phonetic segment samples
+            if (nIndex != -1) {
                 dwNext = pPhonetic->GetStop(nIndex);
-            }
-            else
-            {
+            } else {
                 dwNext = pDoc->GetDataSize();
             }
         }
 
-        if (m_bSampleTime)
-        {
+        if (m_bSampleTime) {
             swprintf_s(szString.GetBuffer(25),25,_T("%.3f\t"),pDoc->GetTimeFromBytes(dwOffset));
             szString.ReleaseBuffer();
             WriteFileUtf8(pFile, szString);
         }
 
-        if ((m_nSampleRate==0) && (nIndex != -1) && (pPhonetic->GetOffset(nIndex) < dwNext))
-        {
+        if ((m_nSampleRate==0) && (nIndex != -1) && (pPhonetic->GetOffset(nIndex) < dwNext)) {
             DWORD dwPhonetic = pPhonetic->GetOffset(nIndex);
-            if (m_bSegmentStart)
-            {
+            if (m_bSegmentStart) {
                 swprintf_s(szString.GetBuffer(25),25,_T("%.3f\t"),pDoc->GetTimeFromBytes(dwPhonetic));
                 szString.ReleaseBuffer();
                 WriteFileUtf8(pFile, szString);
             }
-            if (m_bSegmentLength)
-            {
+            if (m_bSegmentLength) {
                 swprintf_s(szString.GetBuffer(25),25,_T("%.3f\t"),pDoc->GetTimeFromBytes(pPhonetic->GetDuration(nIndex)));
                 szString.ReleaseBuffer();
                 WriteFileUtf8(pFile, szString);
             }
 
-            if (m_bReference)
-            {
+            if (m_bReference) {
                 int nIndex = pDoc->GetSegment(REFERENCE)->FindOffset(dwPhonetic);
-                if (nIndex != -1)
-                {
+                if (nIndex != -1) {
                     szString = pDoc->GetSegment(REFERENCE)->GetSegmentString(nIndex) + "\t";
-                }
-                else
-                {
+                } else {
                     szString = "\t";
                 }
                 WriteFileUtf8(pFile, szString);
             }
-            if (m_bPhonetic)
-            {
+            if (m_bPhonetic) {
                 szString = pPhonetic->GetSegmentString(nIndex) + "\t";
                 WriteFileUtf8(pFile, szString);
             }
-            if (m_bTone)
-            {
+            if (m_bTone) {
                 int nIndex = pDoc->GetSegment(TONE)->FindOffset(dwPhonetic);
-                if (nIndex != -1)
-                {
+                if (nIndex != -1) {
                     szString = pDoc->GetSegment(TONE)->GetSegmentString(nIndex) + "\t";
-                }
-                else
-                {
+                } else {
                     szString = "\t";
                 }
                 WriteFileUtf8(pFile, szString);
             }
-            if (m_bPhonemic)
-            {
+            if (m_bPhonemic) {
                 int nIndex = pDoc->GetSegment(PHONEMIC)->FindOffset(dwPhonetic);
-                if (nIndex != -1)
-                {
+                if (nIndex != -1) {
                     szString = pDoc->GetSegment(PHONEMIC)->GetSegmentString(nIndex) + "\t";
-                }
-                else
-                {
+                } else {
                     szString = "\t";
                 }
                 WriteFileUtf8(pFile, szString);
             }
-            if (m_bOrtho)
-            {
+            if (m_bOrtho) {
                 int nIndex = pDoc->GetSegment(ORTHO)->FindOffset(dwPhonetic);
-                if (nIndex != -1)
-                {
+                if (nIndex != -1) {
                     szString = pDoc->GetSegment(ORTHO)->GetSegmentString(nIndex) + "\t";
-                }
-                else
-                {
+                } else {
                     szString = "\t";
                 }
                 WriteFileUtf8(pFile, szString);
             }
-            if (m_bGloss)
-            {
+            if (m_bGloss) {
                 int nIndex = pDoc->GetSegment(GLOSS)->FindOffset(dwPhonetic);
-                if (nIndex != -1)
-                {
+                if (nIndex != -1) {
                     // SDM 1.5Test10.1
                     szString = pDoc->GetSegment(GLOSS)->GetSegmentString(nIndex);
-                    if ((szString.GetLength() > 1)&&(szString[0] == WORD_DELIMITER))
-                    {
+                    if ((szString.GetLength() > 1)&&(szString[0] == WORD_DELIMITER)) {
                         szString = szString.Mid(1);    // Remove Word Delimiter
                     }
                     szString += "\t";
-                }
-                else
-                {
+                } else {
                     szString = "\t";
                 }
                 WriteFileUtf8(pFile, szString);
             }
-            if (m_bGlossNat)
-            {
+            if (m_bGlossNat) {
                 int nIndex = pDoc->GetSegment(GLOSS_NAT)->FindOffset(dwPhonetic);
-                if (nIndex != -1)
-                {
+                if (nIndex != -1) {
                     // SDM 1.5Test10.1
                     szString = pDoc->GetSegment(GLOSS_NAT)->GetSegmentString(nIndex);
-                    if ((szString.GetLength() > 1)&&(szString[0] == WORD_DELIMITER))
-                    {
+                    if ((szString.GetLength() > 1)&&(szString[0] == WORD_DELIMITER)) {
                         szString = szString.Mid(1);    // Remove Word Delimiter
                     }
                     szString += "\t";
-                }
-                else
-                {
+                } else {
                     szString = "\t";
                 }
                 WriteFileUtf8(pFile, szString);
             }
             nIndex = pPhonetic->GetNext(nIndex);
-        }
-        else if (m_bPhonetic && (m_nSampleRate==1) && !pPhonetic->IsEmpty())
-        {
+        } else if (m_bPhonetic && (m_nSampleRate==1) && !pPhonetic->IsEmpty()) {
             nIndex = 0;
 
-            while ((nIndex != -1) && (pPhonetic->GetStop(nIndex) < dwOffset))
-            {
+            while ((nIndex != -1) && (pPhonetic->GetStop(nIndex) < dwOffset)) {
                 nIndex = pPhonetic->GetNext(nIndex);
             }
 
-            if ((nIndex != -1) && pPhonetic->GetOffset(nIndex) < dwNext)   // this one overlaps
-            {
+            if ((nIndex != -1) && pPhonetic->GetOffset(nIndex) < dwNext) { // this one overlaps
                 int nLast = pPhonetic->GetNext(nIndex);
                 szString = pPhonetic->GetSegmentString(nIndex);
 
-                while ((nLast != -1) && (pPhonetic->GetOffset(nLast) < dwNext))
-                {
+                while ((nLast != -1) && (pPhonetic->GetOffset(nLast) < dwNext)) {
                     szString += " " + pPhonetic->GetSegmentString(nLast);
                     nLast = pPhonetic->GetNext(nLast);
                 }
                 szString +="\t";
-            }
-            else
-            {
+            } else {
                 szString = "\t";
             }
             WriteFileUtf8(pFile, szString);
@@ -720,78 +579,62 @@ void CDlgExportTable::OnOK()
         DWORD dwEnd;
         DWORD dwCalcIncrement;
         DWORD dwIndex;
-        if (m_nCalculationMethod == 0)
-        {
+        if (m_nCalculationMethod == 0) {
             dwBegin = dwEnd = (dwOffset + dwNext)/2;
             dwEnd++;
             dwCalcIncrement = 10;
-        }
-        else
-        {
+        } else {
             dwBegin = dwOffset;
             dwEnd = dwNext;
             dwCalcIncrement = (dwEnd - dwBegin)/20;
-            if (!dwCalcIncrement)
-            {
+            if (!dwCalcIncrement) {
                 dwCalcIncrement = 1;
             }
         }
 
-        if (m_bMagnitude)
-        {
+        if (m_bMagnitude) {
             int dwSamples = 0;
             BOOL bRes = TRUE;
             double fData = 0;
-            for (dwIndex = dwBegin; dwIndex < dwEnd; dwIndex += dwCalcIncrement)
-            {
+            for (dwIndex = dwBegin; dwIndex < dwEnd; dwIndex += dwCalcIncrement) {
                 DWORD dwProcData = (DWORD)(dwIndex/fSizeFactor[MAG]);
                 // get data for this pixel
                 fData += pDoc->GetLoudness()->GetProcessedData(dwProcData, &bRes);
                 dwSamples++;
             }
-            if (dwSamples && bRes)
-            {
+            if (dwSamples && bRes) {
                 fData = fData/ dwSamples;
                 double fLoudnessMax = pDoc->GetLoudness()->GetMaxValue();
-                if (fData*10000. < fLoudnessMax)
-                {
+                if (fData*10000. < fLoudnessMax) {
                     fData = fLoudnessMax/10000.;
                 }
 
                 double db = 20.0 * log10(fData/32767.) + 9.;  // loudness is rms full scale would be 9dB over recommended recording level
                 swprintf_s(szString.GetBuffer(25),25,_T("%0.1f\t"),db);
                 szString.ReleaseBuffer();
-            }
-            else
-            {
+            } else {
                 szString = "\t";
             }
             WriteFileUtf8(pFile, szString);
         }
-        if (m_bPitch)
-        {
+        if (m_bPitch) {
             int dwSamples = 0;
             BOOL bRes = TRUE;
             long nData = 0;
-            for (dwIndex = dwBegin; dwIndex < dwEnd; dwIndex += dwCalcIncrement)
-            {
+            for (dwIndex = dwBegin; dwIndex < dwEnd; dwIndex += dwCalcIncrement) {
                 DWORD dwProcData = (DWORD)(dwIndex/fSizeFactor[PITCH]);
                 // get data for this pixel
                 int nHere = pDoc->GetGrappl()->GetProcessedData(dwProcData, &bRes); // SDM 1.5Test11.0
-                if (nHere > 0)
-                {
+                if (nHere > 0) {
                     nData += nHere;
                     dwSamples++;
                 }
             }
-            if (dwSamples && bRes)
-            {
+            if (dwSamples && bRes) {
                 double fData = double(nData) / PRECISION_MULTIPLIER/ dwSamples;
                 swprintf_s(szString.GetBuffer(25),25,_T("%.1f\t"),fData);
                 szString.ReleaseBuffer();
-            }
-            else
-            {
+            } else {
                 szString = "\t";
             }
             WriteFileUtf8(pFile, szString);
@@ -800,25 +643,20 @@ void CDlgExportTable::OnOK()
             dwSamples = 0;
             bRes = TRUE;
             nData = 0;
-            for (dwIndex = dwBegin; dwIndex < dwEnd; dwIndex += dwCalcIncrement)
-            {
+            for (dwIndex = dwBegin; dwIndex < dwEnd; dwIndex += dwCalcIncrement) {
                 DWORD dwProcData = (DWORD)(dwIndex/fSizeFactor[PITCH]);
                 // get data for this pixel
                 int nHere = pDoc->GetPitch()->GetProcessedData(dwProcData, &bRes);
-                if (nHere > 0)
-                {
+                if (nHere > 0) {
                     nData += nHere;
                     dwSamples++;
                 }
             }
-            if (dwSamples && bRes)
-            {
+            if (dwSamples && bRes) {
                 double fData = double(nData) / PRECISION_MULTIPLIER/ dwSamples;
                 swprintf_s(szString.GetBuffer(25),25,_T("%.1f\t"),fData);
                 szString.ReleaseBuffer();
-            }
-            else
-            {
+            } else {
                 szString = "\t";
             }
             WriteFileUtf8(pFile, szString);
@@ -827,115 +665,90 @@ void CDlgExportTable::OnOK()
             dwSamples = 0;
             bRes = TRUE;
             nData = 0;
-            for (dwIndex = dwBegin; dwIndex < dwEnd; dwIndex += dwCalcIncrement)
-            {
+            for (dwIndex = dwBegin; dwIndex < dwEnd; dwIndex += dwCalcIncrement) {
                 DWORD dwProcData = (DWORD)(dwIndex/fSizeFactor[PITCH]);
                 // get data for this pixel
                 int nHere = pDoc->GetSmoothedPitch()->GetProcessedData(dwProcData, &bRes);
-                if (nHere > 0)
-                {
+                if (nHere > 0) {
                     nData += nHere;
                     dwSamples++;
                 }
             }
-            if (dwSamples && bRes)
-            {
+            if (dwSamples && bRes) {
                 double fData = double(nData) / PRECISION_MULTIPLIER/ dwSamples;
                 swprintf_s(szString.GetBuffer(25),25,_T("%.1f\t"),fData);
                 szString.ReleaseBuffer();
-            }
-            else
-            {
+            } else {
                 szString = "\t";
             }
             WriteFileUtf8(pFile, szString);
         }
-        if (m_bMelogram)
-        {
+        if (m_bMelogram) {
             int dwSamples = 0;
             BOOL bRes = TRUE;
             long nData = 0;
-            for (dwIndex = dwBegin; dwIndex < dwEnd; dwIndex += dwCalcIncrement)
-            {
+            for (dwIndex = dwBegin; dwIndex < dwEnd; dwIndex += dwCalcIncrement) {
                 DWORD dwProcData = (DWORD)(dwIndex/fSizeFactor[MELOGRAM]);
                 // get data for this pixel
                 int nHere = pDoc->GetMelogram()->GetProcessedData(dwProcData, &bRes); // SDM 1.5Test11.0
-                if (nHere > 0)
-                {
+                if (nHere > 0) {
                     nData += nHere;
                     dwSamples++;
                 }
             }
-            if (dwSamples && bRes)
-            {
+            if (dwSamples && bRes) {
                 double fData = double(nData) / 100.0 / dwSamples;
                 swprintf_s(szString.GetBuffer(25),25,_T("%.2f\t"),fData);
                 szString.ReleaseBuffer();
-            }
-            else
-            {
+            } else {
                 szString = "\t";
             }
             WriteFileUtf8(pFile, szString);
         }
-        if (m_bZeroCrossings)
-        {
+        if (m_bZeroCrossings) {
             int dwSamples = 0;
             BOOL bRes = TRUE;
             long nData = 0;
-            for (dwIndex = dwBegin; dwIndex < dwEnd; dwIndex += dwCalcIncrement)
-            {
+            for (dwIndex = dwBegin; dwIndex < dwEnd; dwIndex += dwCalcIncrement) {
                 DWORD dwProcData = (DWORD)(dwIndex/fSizeFactor[ZCROSS]);
                 // get data for this pixel
                 nData += pDoc->GetZCross()->GetProcessedData(dwProcData, &bRes);
                 dwSamples++;
             }
-            if (dwSamples && bRes)
-            {
+            if (dwSamples && bRes) {
                 nData = nData/ dwSamples;
                 swprintf_s(szString.GetBuffer(25),25,_T("%d\t"),(int)nData);
                 szString.ReleaseBuffer();
-            }
-            else
-            {
+            } else {
                 szString = "\t";
             }
             WriteFileUtf8(pFile, szString);
         }
 
-        if (m_bF1 || m_bF2 || m_bF3 || m_bF4)
-        {
+        if (m_bF1 || m_bF2 || m_bF3 || m_bF4) {
             int dwSamples[5] = {0,0,0,0,0};
             double pFormFreq[5] = {0,0,0,0,0};
             int bFormOn[5] = {0, m_bF1, m_bF2, m_bF3, m_bF4};
 
             // get FormantTracker data
-            for (dwIndex = dwBegin; dwIndex < dwEnd; dwIndex++)
-            {
+            for (dwIndex = dwBegin; dwIndex < dwEnd; dwIndex++) {
                 DWORD dwProcData = (DWORD)((DWORD)(dwIndex/fSizeFactor[FMTTRACKER]/sizeof(SFormantFreq)))*sizeof(SFormantFreq);
                 SFormantFreq * pFormFreqCurr = (SFormantFreq *)pDoc->GetFormantTracker()->GetProcessedData(dwProcData, sizeof(SFormantFreq));
-                for (int n = 1; n<5; n++)
-                {
-                    if (pFormFreqCurr->F[n] == (float)NA)
-                    {
+                for (int n = 1; n<5; n++) {
+                    if (pFormFreqCurr->F[n] == (float)NA) {
                         continue;
                     }
                     pFormFreq[n] += (double)pFormFreqCurr->F[n];
                     dwSamples[n]++;
                 }
             }
-            for (int n = 1; n<5; n++)
-            {
+            for (int n = 1; n<5; n++) {
                 pFormFreq[n] /= dwSamples[n];
-                if (bFormOn[n])
-                {
-                    if (dwSamples[n])
-                    {
+                if (bFormOn[n]) {
+                    if (dwSamples[n]) {
                         swprintf_s(szString.GetBuffer(25),25,_T("%.1f\t"),(double) pFormFreq[n]);
                         szString.ReleaseBuffer();
-                    }
-                    else
-                    {
+                    } else {
                         szString = "\t";
                     }
                     WriteFileUtf8(pFile, szString);
@@ -946,24 +759,17 @@ void CDlgExportTable::OnOK()
         szString = "\r\n"; // next line of table
         WriteFileUtf8(pFile, szString);
 
-        if (m_nSampleRate == 1)   // interval sampling
-        {
+        if (m_nSampleRate == 1) { // interval sampling
             dwOffset = dwNext < dwStopPosition ? dwNext : dwStopPosition;
-        }
-        else     // phonetic segment samples
-        {
-            if (nIndex >= 0)
-            {
+        } else { // phonetic segment samples
+            if (nIndex >= 0) {
                 dwOffset = pPhonetic->GetOffset(nIndex);
-            }
-            else
-            {
+            } else {
                 dwOffset = dwStopPosition;
             }
         }
     }
-    if (pFile)
-    {
+    if (pFile) {
         delete pFile;
     }
 
@@ -973,8 +779,7 @@ void CDlgExportTable::OnOK()
 /***************************************************************************/
 // CDlgExportTable::OnHelpExportTable Call Export Table help
 /***************************************************************************/
-void CDlgExportTable::OnHelpExportTable()
-{
+void CDlgExportTable::OnHelpExportTable() {
 
     // create the pathname
     CString szPath = AfxGetApp()->m_pszHelpFilePath;
@@ -982,15 +787,13 @@ void CDlgExportTable::OnHelpExportTable()
     ::HtmlHelp(NULL, szPath, HH_DISPLAY_TOPIC, NULL);
 }
 
-BOOL CDlgExportTable::OnInitDialog()
-{
+BOOL CDlgExportTable::OnInitDialog() {
 
     CDialog::OnInitDialog();
 
     CSaDoc * pDoc = (CSaDoc *)((CMainFrame *)AfxGetMainWnd())->GetCurrSaView()->GetDocument();
 
-    if (pDoc->GetSegment(PHONETIC)->IsEmpty())   // no annotations
-    {
+    if (pDoc->GetSegment(PHONETIC)->IsEmpty()) { // no annotations
         BOOL bEnable = FALSE;
         SetEnable(IDC_EXTAB_PHONETIC, bEnable);
         SetEnable(IDC_EXTAB_TONE, bEnable);
@@ -1016,12 +819,10 @@ BOOL CDlgExportTable::OnInitDialog()
 /***************************************************************************/
 // CDlgExportTable::SetEnable Enables/Disables controls
 /***************************************************************************/
-void CDlgExportTable::SetEnable(int nItem, BOOL bEnable)
-{
+void CDlgExportTable::SetEnable(int nItem, BOOL bEnable) {
 
     CWnd * pWnd = GetDlgItem(nItem);
-    if (pWnd)
-    {
+    if (pWnd) {
         pWnd->EnableWindow(bEnable);
     }
 }
@@ -1029,19 +830,14 @@ void CDlgExportTable::SetEnable(int nItem, BOOL bEnable)
 /***************************************************************************/
 // CDlgExportTable::SetVisible Sets the visibility of dialog items
 /***************************************************************************/
-void CDlgExportTable::SetVisible(int nItem, BOOL bVisible, BOOL bEnable /*=TRUE*/)
-{
+void CDlgExportTable::SetVisible(int nItem, BOOL bVisible, BOOL bEnable /*=TRUE*/) {
 
     CWnd * pWnd = GetDlgItem(nItem);
-    if (pWnd)
-    {
+    if (pWnd) {
         pWnd->EnableWindow(bVisible && bEnable);// disable invisible items, enable on show
-        if (bVisible)
-        {
+        if (bVisible) {
             pWnd->SetWindowPos(NULL, 0,0,0,0,SWP_NOMOVE+SWP_NOSIZE+SWP_NOZORDER+SWP_SHOWWINDOW);
-        }
-        else
-        {
+        } else {
             pWnd->SetWindowPos(NULL, 0,0,0,0,SWP_NOMOVE+SWP_NOSIZE+SWP_NOZORDER+SWP_HIDEWINDOW);
         }
     }
@@ -1051,26 +847,21 @@ void CDlgExportTable::SetVisible(int nItem, BOOL bVisible, BOOL bEnable /*=TRUE*
 /***************************************************************************/
 // CDlgExportTable::OnUpdateIntervalTime Filter edit box to only accept digits
 /***************************************************************************/
-void CDlgExportTable::OnUpdateIntervalTime()
-{
+void CDlgExportTable::OnUpdateIntervalTime() {
 
     CWnd * pWnd = GetDlgItem(IDC_EXTAB_INTERVAL_TIME);
-    if (pWnd)
-    {
+    if (pWnd) {
         CSaString szText;
         BOOL bChanged = FALSE;
 
         pWnd->GetWindowText(szText);
 
-        for (int nIndex=0; nIndex < szText.GetLength(); nIndex++)
-        {
-            if ((szText[nIndex] < '0') || (szText[nIndex] > '9'))
-            {
+        for (int nIndex=0; nIndex < szText.GetLength(); nIndex++) {
+            if ((szText[nIndex] < '0') || (szText[nIndex] > '9')) {
                 szText = szText.Left(nIndex) + szText.Mid(nIndex+1);
                 bChanged = TRUE;
             }
-            if (bChanged)   // only change if necessary (will cause infinite loop)
-            {
+            if (bChanged) { // only change if necessary (will cause infinite loop)
                 pWnd->SetWindowText(szText);
             }
         }
@@ -1082,16 +873,13 @@ void CDlgExportTable::OnUpdateIntervalTime()
 // CDlgExportTable::OnSample disable Phonetic Sampling on empty phonetic segment
 // and update visibility of check boxes
 /***************************************************************************/
-void CDlgExportTable::OnSample()
-{
+void CDlgExportTable::OnSample() {
 
     UpdateData(TRUE);
     CSaDoc * pDoc = (CSaDoc *)((CMainFrame *)AfxGetMainWnd())->GetCurrSaView()->GetDocument();
 
-    if (pDoc->GetSegment(PHONETIC)->IsEmpty())   // no annotations
-    {
-        if (m_nSampleRate == 0)
-        {
+    if (pDoc->GetSegment(PHONETIC)->IsEmpty()) { // no annotations
+        if (m_nSampleRate == 0) {
             AfxMessageBox(IDS_ERROR_NOSEGMENTS,MB_OK,0);
             m_nSampleRate = 1;
             UpdateData(FALSE);
@@ -1104,16 +892,12 @@ void CDlgExportTable::OnSample()
 /***************************************************************************/
 // CDlgExportTable::OnPhonetic keep invisible phonetic check box in sync with visible
 /***************************************************************************/
-void CDlgExportTable::OnPhonetic()
-{
+void CDlgExportTable::OnPhonetic() {
 
     UpdateData(TRUE);
-    if (m_nSampleRate == 0)
-    {
+    if (m_nSampleRate == 0) {
         m_bPhonetic2 = m_bPhonetic;
-    }
-    else
-    {
+    } else {
         m_bPhonetic = m_bPhonetic2;
     }
     UpdateData(FALSE);
@@ -1141,86 +925,66 @@ static LPCSTR psz_Comments = "cmnt"; // Comments
 static LPCSTR psz_Description = "desc"; // Description
 static LPCSTR psz_Table = "table";
 
-static void CreateWordSegments(const int nWord, int & nSegments)
-{
+static void CreateWordSegments(const int nWord, int & nSegments) {
 
     CSaDoc * pDoc = (CSaDoc *)((CMainFrame *)AfxGetMainWnd())->GetCurrSaView()->GetDocument();
 
-    if (pDoc->GetSegment(GLOSS)->GetOffsetSize() > nWord)
-    {
+    if (pDoc->GetSegment(GLOSS)->GetOffsetSize() > nWord) {
         DWORD dwStart;
         DWORD dwStop;
         int nPhonetic;
         CPhoneticSegment * pPhonetic = (CPhoneticSegment *) pDoc->GetSegment(PHONETIC);
 
-        if (nWord == -1)
-        {
+        if (nWord == -1) {
             dwStart = 0;
-            if (pDoc->GetSegment(GLOSS)->IsEmpty())
-            {
+            if (pDoc->GetSegment(GLOSS)->IsEmpty()) {
                 dwStop = pDoc->GetDataSize();
-            }
-            else
-            {
+            } else {
                 dwStop = pDoc->GetSegment(GLOSS)->GetOffset(0);
             }
-            if (dwStart + pDoc->GetBytesFromTime(MIN_EDIT_SEGMENT_TIME) > dwStop)
-            {
+            if (dwStart + pDoc->GetBytesFromTime(MIN_EDIT_SEGMENT_TIME) > dwStop) {
                 return;
             }
             nPhonetic = 0;
-        }
-        else
-        {
+        } else {
             ASSERT(nSegments);
             dwStart = pDoc->GetSegment(GLOSS)->GetOffset(nWord);
             dwStop = pDoc->GetSegment(GLOSS)->GetDuration(nWord) + dwStart;
             nPhonetic = pPhonetic->FindOffset(dwStart);
         }
         // Limit number of segments
-        if (nSegments*pDoc->GetBytesFromTime(MIN_ADD_SEGMENT_TIME) > (dwStop -dwStart))
-        {
+        if (nSegments*pDoc->GetBytesFromTime(MIN_ADD_SEGMENT_TIME) > (dwStop -dwStart)) {
             nSegments = (int)((dwStop -dwStart)/pDoc->GetBytesFromTime(MIN_ADD_SEGMENT_TIME));
-            if (!nSegments)
-            {
+            if (!nSegments) {
                 nSegments = 1;
             }
-            if (nSegments*pDoc->GetBytesFromTime(MIN_EDIT_SEGMENT_TIME) > (dwStop -dwStart))
-            {
+            if (nSegments*pDoc->GetBytesFromTime(MIN_EDIT_SEGMENT_TIME) > (dwStop -dwStart)) {
                 return;
             }
         }
         // remove excess segments
         int nCount = 0;
         int nIndex = nPhonetic;
-        while ((nIndex != -1)&&(pPhonetic->GetOffset(nIndex) < dwStop))
-        {
-            if (nCount >= nSegments)
-            {
-                pPhonetic->SetSelection(nIndex);
-                pPhonetic->Remove(pDoc, FALSE); // no checkpoint
-                if (nIndex >= pPhonetic->GetOffsetSize())
-                {
+        while ((nIndex != -1) && (pPhonetic->GetOffset(nIndex) < dwStop)) {
+            if (nCount >= nSegments) {
+				// no checkpoint
+                pPhonetic->Remove(pDoc, nIndex, FALSE); 
+                if (nIndex >= pPhonetic->GetOffsetSize()) {
                     break;
                 }
-            }
-            else
-            {
+            } else {
                 DWORD dwBegin = dwStart + nCount;
                 pPhonetic->Adjust(pDoc, nIndex, dwBegin, 1);
                 nIndex = pPhonetic->GetNext(nIndex);
                 nCount++;
             }
         }
-        if (nSegments == 0)
-        {
+        if (nSegments == 0) {
             return;    // done
         }
         // add segments
-        while (nCount < nSegments)
-        {
-            if (nIndex == -1)
-            {
+        while (nCount < nSegments) {
+            if (nIndex == -1) {
                 nIndex = pPhonetic->GetOffsetSize();
             }
             DWORD dwBegin = dwStart + nCount;
@@ -1231,23 +995,19 @@ static void CreateWordSegments(const int nWord, int & nSegments)
         }
         // adjust segment spacing
         DWORD dwSize = (dwStop - dwStart)/nSegments;
-        if (pDoc->Is16Bit())
-        {
+        if (pDoc->Is16Bit()) {
             dwSize &= ~1;
         }
         dwSize += pDoc->GetBlockAlign();
-        if (nIndex == -1)
-        {
+        if (nIndex == -1) {
             nIndex = pPhonetic->GetOffsetSize();
         }
         nIndex = pPhonetic->GetPrevious(nIndex);
-        while ((nIndex != -1)&&(pPhonetic->GetOffset(nIndex) >= dwStart))
-        {
+        while ((nIndex != -1)&&(pPhonetic->GetOffset(nIndex) >= dwStart)) {
             nCount--;
             DWORD dwBegin = dwStart+nCount*dwSize;
             DWORD dwDuration = dwSize;
-            if ((dwBegin + dwDuration) > dwStop)
-            {
+            if ((dwBegin + dwDuration) > dwStop) {
                 dwDuration = dwStop - dwBegin;
             }
             pPhonetic->Adjust(pDoc, nIndex, dwBegin, dwDuration);
@@ -1257,8 +1017,7 @@ static void CreateWordSegments(const int nWord, int & nSegments)
     nSegments = 0;
 }
 
-void CDlgExportTable::WriteFileUtf8(CFile * pFile, const CSaString szString)
-{
+void CDlgExportTable::WriteFileUtf8(CFile * pFile, const CSaString szString) {
 
     std::string szUtf8 = szString.utf8();
     pFile->Write(szUtf8.c_str(), szUtf8.size());

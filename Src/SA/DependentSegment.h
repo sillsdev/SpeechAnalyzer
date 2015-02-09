@@ -17,11 +17,12 @@ public:
     virtual int CheckPosition(ISaDoc * pDoc, DWORD dwStart, DWORD dwStop, EMode nMode=MODE_AUTOMATIC, BOOL /*bUnused*/=TRUE) const;
     virtual void LimitPosition(CSaDoc *,DWORD & dwStart,DWORD & dwStop, ELimit nMode=LIMIT_MOVING_BOTH) const;
     virtual void Add(CSaDoc * pDoc, CSaView * pView, DWORD dwStart, CSaString & szString, bool bDelimiter = false, bool bCheck = true); // add a segment
-
+    virtual void Remove( CSaDoc * pDoc, int index, BOOL bCheck);// remove a segment
+	
     // Operations
 protected:
     int AlignOffsetToMaster(ISaDoc *, DWORD * pdwOffset) const; // find the nearest master segment to the given position
-    int AlignStopToMaster(CDocument *, DWORD * pdwStop) const; // find the nearest master segment to the given position
+    int AlignStopToMaster(CDocument *, DWORD * pdwStop) const;	// find the nearest master segment to the given position
 };
 
 #endif

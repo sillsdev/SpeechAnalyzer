@@ -3288,6 +3288,7 @@ void CSaView::OnEditCopyMeasurements() {
 // CSaView::OnEditCut
 /***************************************************************************/
 void CSaView::OnEditCut() {
+
     // cut annontation
     if (IsAnyAnnotationSelected()) {
         OnEditCopy();
@@ -3426,9 +3427,10 @@ void CSaView::ChangeSelectedAnnotationData(const CSaString & str) {
 /***************************************************************************/
 void CSaView::RemoveSelectedAnnotation() {
     CSegment * pSegment = FindSelectedAnnotation();
-    if (pSegment!=NULL) {
-        pSegment->Remove(GetDocument());
-    }
+    if (pSegment == NULL) return;
+	int index = pSegment->GetSelection();
+	if (index == -1) return;
+    pSegment->Remove( GetDocument(), index, TRUE);
 }
 
 /***************************************************************************/
@@ -4912,10 +4914,7 @@ void CSaView::OnUpdateEditAddBookmark(CCmdUI * pCmdUI) {
 // CSaView::OnEditRemove
 /***************************************************************************/
 void CSaView::OnEditRemove() {
-    CSegment * pSegment = FindSelectedAnnotation();
-    if ((pSegment!=NULL) && (pSegment->GetSelection() != -1)) {
-        pSegment->Remove(GetDocument(), TRUE);
-    }
+	RemoveSelectedAnnotation();
 }
 
 /***************************************************************************/

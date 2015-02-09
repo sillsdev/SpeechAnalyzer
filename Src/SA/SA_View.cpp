@@ -297,7 +297,8 @@ DWORD CSaView::OnPlaybackSegment() {
     DWORD dwStop = GetStopCursorPosition();
 
     CSegment * pSelected = FindSelectedAnnotation();
-    if (pSelected!=NULL) { // Adjust Cursors to Current Boundaries
+    if (pSelected!=NULL) { 
+		// Adjust Cursors to Current Boundaries
         int nSelection = pSelected->GetSelection();
         // set cursor to segment boundaries
         SetStartCursorPosition(pSelected->GetOffset(nSelection));
@@ -341,8 +342,8 @@ DWORD CSaView::OnPlaybackWord() {
             // there is gloss, so the segment must be below the first gloss
             pDoc->SelectSegment(pGloss, 0); // select first gloss
             // playback below start cursor
-            SetStartCursorPosition(0);
-            SetStopCursorPosition(pGloss->GetOffset(0));
+            SetStartCursorPosition(pGloss->GetOffset(0));
+            SetStopCursorPosition(pGloss->GetOffset(0)+pGloss->GetDuration(0));
         } else {
             // there is no gloss, playback the whole file
             OnPlaybackFile();
@@ -366,7 +367,7 @@ DWORD CSaView::OnPlaybackWord() {
     if (nSelection != -1) {
         // Select segment (do not toggle off.)
         if (pSelected->GetSelection()!=nSelection) {
-            pDoc->SelectSegment(pGloss, nSelection);
+            pDoc->SelectSegment(pSelected, nSelection);
         }
     }
     // return cursors

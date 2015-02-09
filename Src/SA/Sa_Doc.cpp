@@ -4360,7 +4360,7 @@ void CSaDoc::AdjustSegments(WAVETIME sectionStart, WAVETIME sectionLength, bool 
                 if (!bAdjusted) {
                     // delete segment
                     // change the independent arrays
-                    m_apSegments[independent]->RemoveAt(nIndex);
+                    m_apSegments[independent]->RemoveAt(nIndex,true);
                     // delete aligned dependent segments and gloss
                     for (int nLoop = 1; nLoop < ANNOT_WND_NUMBER; nLoop++) {
                         CSegment * pSegment = m_apSegments[nLoop];
@@ -4370,7 +4370,7 @@ void CSaDoc::AdjustSegments(WAVETIME sectionStart, WAVETIME sectionLength, bool 
                                 if (pSegment->GetSelection() != nInnerIndex) {
                                     pSegment->SetSelection(nInnerIndex);
                                 }
-                                pSegment->RemoveAt(pSegment->GetSelection());
+                                pSegment->RemoveAt(pSegment->GetSelection(),true);
                             }
                         }
                     }

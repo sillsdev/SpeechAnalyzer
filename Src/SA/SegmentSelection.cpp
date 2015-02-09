@@ -528,7 +528,10 @@ BOOL CSegmentSelection::SetSelectedAnnotationString(CSaView * pView, CSaString &
 		// We need to remove the dependent segment
         DWORD dwPosition = m_dwStart;
         // Remove refreshes graphs, set modified flag, & check point
-        pSegment->Remove(pView->GetDocument(), bCheck);
+		int index = pSegment->GetSelection();
+		if (index != -1) {
+			pSegment->Remove( pView->GetDocument(), index, bCheck);
+		}
         SelectFromPosition(pView, nIndex, dwPosition, true);
     } else {
         if (bCheck) {

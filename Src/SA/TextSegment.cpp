@@ -288,23 +288,3 @@ void CTextSegment::Add(CSaDoc * pDoc, CSaView * pView, DWORD dwStart, CSaString 
     pView->RefreshGraphs(FALSE); // refresh the graphs between cursors
 }
 
-// SDM 1.5Test11.3
-/***************************************************************************/
-// CTextSegment::Remove Remove text segment
-/***************************************************************************/
-void CTextSegment::Remove( CDocument * pSaDoc, BOOL bCheck) {
-    // get pointer to view
-    CSaDoc * pDoc = (CSaDoc *)pSaDoc; // cast pointer
-    // save state for undo ability
-    if (bCheck) {
-        pDoc->CheckPoint();
-    }
-
-    // move the end of the previous text segment
-    if (m_nSelection > 0) {
-        DWORD offset = GetOffset(m_nSelection-1);
-        DWORD stop = GetStop(m_nSelection);
-        AdjustDuration( offset,  stop-offset);
-    }
-    CDependentSegment::Remove( pSaDoc, FALSE);
-}

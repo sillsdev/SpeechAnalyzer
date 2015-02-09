@@ -167,9 +167,9 @@ void CSegment::Serialize(CArchive & ar) {
 /***************************************************************************/
 // CSegment::Remove Remove dependent annotation segment
 /***************************************************************************/
-void CSegment::Remove(CDocument * pSaDoc, BOOL bCheck) {
-    // get pointer to view
-    CSaDoc * pDoc = (CSaDoc *)pSaDoc; // cast pointer
+void CSegment::Remove(CSaDoc * pDoc, int sel, BOOL bCheck) {
+    
+	// get pointer to view
     POSITION pos = pDoc->GetFirstViewPosition();
     CSaView * pView = (CSaView *)pDoc->GetNextView(pos);
 
@@ -178,13 +178,13 @@ void CSegment::Remove(CDocument * pSaDoc, BOOL bCheck) {
         pDoc->CheckPoint();
     }
 
-    RemoveAt(m_nSelection);
+    RemoveAt(sel,true);
 
     // refresh ui
-    pDoc->SetModifiedFlag(TRUE); // document has been modified
-    pDoc->SetTransModifiedFlag(TRUE); // transcription data has been modified
-    pView->ChangeAnnotationSelection(this, m_nSelection, 0, 0); // deselect
-    pView->RefreshGraphs(FALSE); // refresh the graphs between cursors
+    pDoc->SetModifiedFlag(TRUE);						// document has been modified
+    pDoc->SetTransModifiedFlag(TRUE);					// transcription data has been modified
+    pView->ChangeAnnotationSelection(this, sel, 0, 0);	// deselect
+    pView->RefreshGraphs(FALSE);						// refresh the graphs between cursors
 }
 
 /***************************************************************************/
@@ -283,7 +283,7 @@ BOOL CSegment::SetAt(const CSaString & text, bool delimiter, DWORD dwStart, DWOR
         if (nIndex>=0) {
             // index was found
             // remove the existing string
-            RemoveAt(nIndex);
+            RemoveAt(nIndex,true);
             InsertAt(nIndex,CString(data),dwStart,dwDuration);
         } else {
             // index was at end of string
@@ -764,7 +764,8 @@ DWORD CSegment::GetDurationAt(int index) const {
 }
 
 void CSegment::InsertAt(int index, CString & text, DWORD offset, DWORD duration) {
-    ASSERT(index>=0);
+	ASSERT(index>=0);
+	if (index<0) return;
     m_Text.InsertAt(index,text);
     m_Offset.InsertAt(index,offset);
     m_Duration.InsertAt(index,duration);
@@ -775,12 +776,18 @@ void CSegment::InsertAt(int index, CString & text, DWORD offset, DWORD duration)
 /**
 * remove text, offset and duration
 */
-void CSegment::RemoveAt(int index) {
-    ASSERT(index>=0);
-    ASSERT(index<m_Offset.GetCount());
-    m_Text.RemoveAt(index);
-    m_Offset.RemoveAt(index);
-    m_Duration.RemoveAt(index);
+void CSegment::RemoveAt(int index, bool remove) {
+	ASSERT(index>=0);
+	ASSERT(index<m_Offset.GetCount());
+	if (index<0) return;
+	if (index>=m_Offset.GetCount()) return;
+	if (remove)  {
+		m_Text.RemoveAt(index);
+		m_Offset.RemoveAt(index);
+		m_Duration.RemoveAt(index);
+	} else {
+		m_Text[index] = "";
+	}
 }
 
 /*
@@ -828,10 +835,10 @@ CString CSegment::GetText(int index) const {
 }
 
 /**
-* returns the selection index, or -1 if no segment is selected
+* Returns the selection index, or -1 if no segment is selected
 */
 int CSegment::GetSelection() const {
-    return m_nSelection;   // return the index of the selected character
+    return m_nSelection;
 }
 
 long CSegment::Process(void * /*pCaller*/, ISaDoc * /*pDoc*/, int /*nProgress*/, int /*nLevel*/) {
@@ -905,7 +912,7 @@ void CSegment::Merge( CSaDoc * pDoc, CSaView * pView, DWORD thisOffset, DWORD pr
     if (prev==-1) return;
 
     // shorten text
-    RemoveAt(index);
+    RemoveAt(index,true);
     // increase segment size
     AdjustDuration(prevOffset,thisStop-prevOffset);
 }
@@ -996,5 +1003,24 @@ int CSegment::CountWords() {
         }
     }
     return nWords;
+}
+
+/**
+* Returns the number segments that this transcription has that
+* are contained within the selected segment.
+*/
+int CSegment::GetReferenceCount( CSegment * pOther, int sel) {
+	if (sel==-1) return 0;
+	DWORD thatOffset = pOther->GetOffset(sel);
+	DWORD thatStop = pOther->GetStop(sel);
+	int count = 0;
+	for (int i=0;i<m_Offset.GetCount();i++) {
+		DWORD thisOffset = m_Offset[i];
+		DWORD thisStop = m_Offset[i]+m_Duration[i];
+		if ((thisOffset>=thatOffset) && (thisStop<=thatStop)) {
+			count++;
+		}
+	}
+	return count;
 }
 
