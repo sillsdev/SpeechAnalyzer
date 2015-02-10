@@ -155,7 +155,7 @@ BEGIN_MESSAGE_MAP(CMainFrame, CMDIFrameWnd)
     ON_COMMAND(ID_CONTEXT_HELP, CMDIFrameWnd::OnHelpIndex) // SDM 1.5Test8.5 disable context sensitive help
     // Custom messages
     ON_MESSAGE(WM_USER_APPLY_TOOLSOPTIONS, OnApplyToolsOptions)
-	ON_MESSAGE(WM_USER_UPDATE_PLAYER, OnUpdatePlayer)
+    ON_MESSAGE(WM_USER_UPDATE_PLAYER, OnUpdatePlayer)
     ON_MESSAGE(WM_USER_PLAYER, OnPlayer)
     ON_MESSAGE(WM_USER_CHANGEVIEW, OnChangeView)
     ON_MESSAGE(WM_USER_SPEECHAPPLICATION, OnSpeechAppCall)
@@ -184,8 +184,7 @@ BEGIN_MESSAGE_MAP(CMainFrame, CMDIFrameWnd)
     ON_COMMAND(ID_AUTOSAVE_OFF, OnAutoSaveOff)
 END_MESSAGE_MAP()
 
-static UINT BASED_CODE dataIndicators[] =
-{
+static UINT BASED_CODE dataIndicators[] = {
     ID_SEPARATOR,           // data status line indicator
     ID_SEPARATOR,
     ID_SEPARATOR,
@@ -200,8 +199,7 @@ static UINT BASED_CODE dataIndicators[] =
     ID_SEPARATOR,
 };
 
-static UINT BASED_CODE progressIndicators[] =
-{
+static UINT BASED_CODE progressIndicators[] = {
     ID_SEPARATOR,           // progress status line indicator
     ID_SEPARATOR,
     ID_SEPARATOR,
@@ -213,8 +211,7 @@ static UINT BASED_CODE progressIndicators[] =
 /***************************************************************************/
 // CMainFrame::CMainFrame Constructor
 /***************************************************************************/
-CMainFrame::CMainFrame()
-{
+CMainFrame::CMainFrame() {
 
     // options default settings
     m_bStatusBar = TRUE;               // status bar enabled at startup
@@ -239,13 +236,11 @@ CMainFrame::CMainFrame()
     //SDM 1.06.5
     m_pDlgEditor = NULL;              // editor
     m_bIsPrinting = FALSE;
-	m_pAutoRecorder = NULL;
+    m_pAutoRecorder = NULL;
 
     // reset workbench processes and filter IDs
-    for (int nLoop = 0; nLoop < MAX_PROCESS_NUMBER; nLoop++)
-    {
-        for (int nFilterLoop = 0; nFilterLoop < MAX_FILTER_NUMBER; nFilterLoop++)
-        {
+    for (int nLoop = 0; nLoop < MAX_PROCESS_NUMBER; nLoop++) {
+        for (int nFilterLoop = 0; nFilterLoop < MAX_FILTER_NUMBER; nFilterLoop++) {
             m_apWbProcess[nLoop][nFilterLoop] = NULL;
             m_aWbFilterID[nLoop][nFilterLoop] = 0;
         }
@@ -261,10 +256,8 @@ CMainFrame::CMainFrame()
     m_bShowAdvancedAudio = FALSE;
 
     // init the graph fonts with default
-    try
-    {
-        if (!m_GraphFontFaces.GetSize())
-        {
+    try {
+        if (!m_GraphFontFaces.GetSize()) {
             m_GraphFontFaces.Add(PHONETIC_DEFAULT_FONT);
             m_GraphFontFaces.Add(TONE_DEFAULT_FONT);
             m_GraphFontFaces.Add(PHONEMIC_DEFAULT_FONT);
@@ -287,9 +280,7 @@ CMainFrame::CMainFrame()
             m_GraphFontSizes.Add(MUSIC_PHRASE_DEFAULT_FONTSIZE);
             m_GraphFontSizes.Add(MUSIC_PHRASE_DEFAULT_FONTSIZE);
             m_GraphFontSizes.Add(MUSIC_PHRASE_DEFAULT_FONTSIZE);
-        }
-        else
-        {
+        } else {
             m_GraphFontFaces.SetAt(PHONETIC, PHONETIC_DEFAULT_FONT);
             m_GraphFontFaces.SetAt(TONE, TONE_DEFAULT_FONT);
             m_GraphFontFaces.SetAt(PHONEMIC, PHONEMIC_DEFAULT_FONT);
@@ -311,9 +302,7 @@ CMainFrame::CMainFrame()
             m_GraphFontSizes.SetAt(MUSIC_PL3, MUSIC_PHRASE_DEFAULT_FONTSIZE);
             m_GraphFontSizes.SetAt(MUSIC_PL4, MUSIC_PHRASE_DEFAULT_FONTSIZE);
         }
-    }
-    catch (CMemoryException e)
-    {
+    } catch (CMemoryException e) {
         // handle memory fail exception
         CSaApp * pApp = (CSaApp *)AfxGetApp();
         pApp->ErrorMessage(IDS_ERROR_MEMALLOC);
@@ -323,7 +312,7 @@ CMainFrame::CMainFrame()
     m_bPrintPreviewInProgress = FALSE;
     m_wplDlgEditor.length = 0;	// SDM 1.5Test8.2
     m_pDisplayPlot = NULL;		// SDM 1.5Test8.5
-	m_pAutoRecorder = NULL;
+    m_pAutoRecorder = NULL;
     m_hNewMenu = NULL;			// SDM 1.5Test8.5
     m_hNewAccel = NULL;			// SDM 1.5Test8.5
     m_nPopup = 0;				// SDM 1.5Test8.5
@@ -349,62 +338,52 @@ CMainFrame::CMainFrame()
     m_bAnimate = FALSE;
     m_nAnimationRate = MAX_ANIMATION_RATE;
     m_nCursorAlignment = ALIGN_AT_FRAGMENT;
-	m_bAutoSave = TRUE;
+    m_bAutoSave = TRUE;
 }
 
 /***************************************************************************/
 // CMainFrame::~CMainFrame Destructor
 /***************************************************************************/
-CMainFrame::~CMainFrame()
-{
+CMainFrame::~CMainFrame() {
     // delete modeless dialog and other objects
-    if (m_pWorkbenchView)
-    {
+    if (m_pWorkbenchView) {
         delete m_pWorkbenchView; // workbench
         m_pWorkbenchView = NULL;
     }
-    if (m_pDlgFind)
-    {
+    if (m_pDlgFind) {
         delete m_pDlgFind;
         m_pDlgFind = NULL;
     }
-    if (m_pDlgPlayer)
-    {
+    if (m_pDlgPlayer) {
         delete m_pDlgPlayer;
         m_pDlgPlayer = NULL;
     }
-    if (m_pDlgEditor!=NULL)
-    {
+    if (m_pDlgEditor!=NULL) {
         delete m_pDlgEditor; // SDM 1.06.5 editor
         m_pDlgEditor = NULL;
     }
-    if (m_pDefaultViewConfig)
-    {
+    if (m_pDefaultViewConfig) {
         delete m_pDefaultViewConfig;
         m_pDefaultViewConfig = NULL;
     }
-	if (CDlgAutoRecorder::IsLaunched())
-	{
-		m_pAutoRecorder->SendMessage(WM_CLOSE);
-		m_pAutoRecorder = NULL;
-	}
+    if (CDlgAutoRecorder::IsLaunched()) {
+        m_pAutoRecorder->SendMessage(WM_CLOSE);
+        m_pAutoRecorder = NULL;
+    }
 
     DestroySynthesizer();
     CDlgKlattAll::DestroySynthesizer();
     CDlgVocalTract::DestroySynthesizer();
 
     // delete workbench processes
-    for (int nLoop = 0; nLoop < MAX_PROCESS_NUMBER; nLoop++)
-    {
+    for (int nLoop = 0; nLoop < MAX_PROCESS_NUMBER; nLoop++) {
         for (int nFilterLoop = 0; nFilterLoop < MAX_FILTER_NUMBER; nFilterLoop++)
-            if (m_apWbProcess[nLoop][nFilterLoop])
-            {
+            if (m_apWbProcess[nLoop][nFilterLoop]) {
                 delete m_apWbProcess[nLoop][nFilterLoop];
             }
     }
 
-    if (m_pDisplayPlot!=NULL)
-    {
+    if (m_pDisplayPlot!=NULL) {
         // SDM 1.5Test8.5
         delete m_pDisplayPlot;
         m_pDisplayPlot = NULL;
@@ -417,8 +396,7 @@ CMainFrame::~CMainFrame()
 /***************************************************************************/
 // CMainFrame::SwapInOverlayColors
 /***************************************************************************/
-void CMainFrame::SwapInOverlayColors(int index)
-{
+void CMainFrame::SwapInOverlayColors(int index) {
     // save away for restore later on.
     m_colors.cBackupColor   = m_colors.cPlotData[0];
 
@@ -430,24 +408,20 @@ void CMainFrame::SwapInOverlayColors(int index)
 /***************************************************************************/
 // CMainFrame::SwapOutOverlayColors
 /***************************************************************************/
-void CMainFrame::SwapOutOverlayColors()
-{
+void CMainFrame::SwapOutOverlayColors() {
     m_colors.cPlotData[0]   = m_colors.cBackupColor;
 }
 
 /***************************************************************************/
 // CMainFrame::GetVisibleMenuItemCount
 /***************************************************************************/
-UINT CMainFrame::GetVisibleMenuItemCount(CMenu * pMenu)
-{
+UINT CMainFrame::GetVisibleMenuItemCount(CMenu * pMenu) {
     UINT count = 0;
     UINT maxCount = pMenu->GetMenuItemCount();
     CSaString rString;
-    for (UINT i = 1; i <= maxCount; i++)
-    {
+    for (UINT i = 1; i <= maxCount; i++) {
         pMenu->GetMenuString(i, rString, MF_BYPOSITION);
-        if (rString.IsEmpty())
-        {
+        if (rString.IsEmpty()) {
             break;
         }
         count++;
@@ -459,18 +433,13 @@ UINT CMainFrame::GetVisibleMenuItemCount(CMenu * pMenu)
 /***************************************************************************/
 // CMainFrame::ShowDataStatusBar Show or hide data status bar
 /***************************************************************************/
-void CMainFrame::ShowDataStatusBar(BOOL bShow)
-{
-    if (m_bStatusBar)   // status bar is on
-    {
-        if (bShow)
-        {
+void CMainFrame::ShowDataStatusBar(BOOL bShow) {
+    if (m_bStatusBar) { // status bar is on
+        if (bShow) {
             // show data status bar, hide process status bar
             m_progressStatusBar.ShowWindow(SW_HIDE);
             m_dataStatusBar.ShowWindow(SW_SHOW);
-        }
-        else
-        {
+        } else {
             // show process status bar, hide data status bar
             m_dataStatusBar.ShowWindow(SW_HIDE);
             // move progress status bar over data status bar
@@ -479,8 +448,7 @@ void CMainFrame::ShowDataStatusBar(BOOL bShow)
             ScreenToClient(rWnd);
             m_progressStatusBar.MoveWindow(rWnd);
             m_progressStatusBar.InitProgress();
-            if (!m_bIsPrinting)
-            {
+            if (!m_bIsPrinting) {
                 m_progressStatusBar.ShowWindow(SW_SHOW);
                 m_progressStatusBar.Invalidate();
                 m_progressStatusBar.UpdateWindow();
@@ -495,10 +463,8 @@ void CMainFrame::ShowDataStatusBar(BOOL bShow)
 // parameter contains a valid pointer, it will also copy the function key
 // setting to this pointer.
 /***************************************************************************/
-CFnKeys * CMainFrame::GetFnKeys(CFnKeys * pfnKeys)
-{
-    if (pfnKeys)
-    {
+CFnKeys * CMainFrame::GetFnKeys(CFnKeys * pfnKeys) {
+    if (pfnKeys) {
         *pfnKeys = m_fnKeys;
     }
     return &m_fnKeys;
@@ -507,22 +473,17 @@ CFnKeys * CMainFrame::GetFnKeys(CFnKeys * pfnKeys)
 /***************************************************************************/
 // CMainFrame::SetFnKeys Sets the function keys structure
 /***************************************************************************/
-void CMainFrame::SetFnKeys(CFnKeys * pfnKeys)
-{
+void CMainFrame::SetFnKeys(CFnKeys * pfnKeys) {
     m_fnKeys = *pfnKeys;
 }
 
 /***************************************************************************/
 // CMainFrame::IsPlayerPlaying Returns TRUE if player is playing
 /***************************************************************************/
-BOOL CMainFrame::IsPlayerPlaying()
-{
-    if (CDlgPlayer::IsLaunched())				// player launched
-    {
+BOOL CMainFrame::IsPlayerPlaying() {
+    if (CDlgPlayer::IsLaunched()) {			// player launched
         return GetPlayer(false)->IsPlaying();	// return TRUE if player is playing
-    }
-    else
-    {
+    } else {
         return FALSE;
     }
 }
@@ -530,14 +491,10 @@ BOOL CMainFrame::IsPlayerPlaying()
 /***************************************************************************/
 // CMainFrame::IsPlayerPlaying Returns TRUE if player is playing
 /***************************************************************************/
-BOOL CMainFrame::IsPlayerPaused()
-{
-    if (CDlgPlayer::IsLaunched())				// player launched
-    {
+BOOL CMainFrame::IsPlayerPaused() {
+    if (CDlgPlayer::IsLaunched()) {			// player launched
         return GetPlayer(false)->IsPaused();	// return TRUE if player is paused
-    }
-    else
-    {
+    } else {
         return FALSE;
     }
 }
@@ -545,14 +502,10 @@ BOOL CMainFrame::IsPlayerPaused()
 /***************************************************************************/
 // CMainFrame::IsPlayerTestRun Returns TRUE if player runs function key test
 /***************************************************************************/
-BOOL CMainFrame::IsPlayerTestRun()
-{
-    if (CDlgPlayer::IsLaunched())				// player launched
-    {
+BOOL CMainFrame::IsPlayerTestRun() {
+    if (CDlgPlayer::IsLaunched()) {			// player launched
         return GetPlayer(false)->IsTestRun();	// return TRUE if player runs Fn test
-    }
-    else
-    {
+    } else {
         return FALSE;
     }
 }
@@ -560,10 +513,8 @@ BOOL CMainFrame::IsPlayerTestRun()
 /***************************************************************************/
 // CMainFrame::SetPlayerTimes  sets time indicators for layer
 /***************************************************************************/
-void CMainFrame::SetPlayerTimes()
-{
-    if (CDlgPlayer::IsLaunched())                                   // if player dialogue launched
-    {
+void CMainFrame::SetPlayerTimes() {
+    if (CDlgPlayer::IsLaunched()) {                                 // if player dialogue launched
         CRect rWnd;
         GetPlayer(false)->SetPositionTime();                        // set the start time
         CWnd * pWnd = GetPlayer(false)->GetDlgItem(IDC_POSITIONTIME); // get start LED indicator
@@ -579,22 +530,18 @@ void CMainFrame::SetPlayerTimes()
 /***************************************************************************/
 // CMainFrame::SetupFunctionKeys Start setup Fn-keys dialog in player
 /***************************************************************************/
-void CMainFrame::SetupFunctionKeys()
-{
-    if (GetPlayer(false))
-    {
+void CMainFrame::SetupFunctionKeys() {
+    if (GetPlayer(false)) {
         GetPlayer(false)->SendMessage(WM_USER_SETUP_FNKEYS, 0, 0L);
     }
 }
 
 #ifdef _DEBUG
-void CMainFrame::AssertValid() const
-{
+void CMainFrame::AssertValid() const {
     CMDIFrameWnd::AssertValid();
 }
 
-void CMainFrame::Dump(CDumpContext & dc) const
-{
+void CMainFrame::Dump(CDumpContext & dc) const {
     CMDIFrameWnd::Dump(dc);
 }
 
@@ -605,11 +552,9 @@ void CMainFrame::Dump(CDumpContext & dc) const
 // Called by framework to initially create the one and only mainframe window.
 // Creates the toolbar and statusbar. Returns FALSE on error.
 /***************************************************************************/
-int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
-{
+int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct) {
 
-    if (CMDIFrameWnd::OnCreate(lpCreateStruct) == -1)
-    {
+    if (CMDIFrameWnd::OnCreate(lpCreateStruct) == -1) {
         return -1;
     }
 
@@ -617,8 +562,7 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
     if (!m_wndToolBarBasic.CreateEx(this, TBSTYLE_FLAT, WS_CHILD | WS_VISIBLE | CBRS_TOP
                                     | CBRS_GRIPPER | CBRS_TOOLTIPS | CBRS_FLYBY | CBRS_SIZE_DYNAMIC,
                                     CRect(0,0,0,0), IDR_BAR_BASIC) ||
-            !m_wndToolBarBasic.LoadToolBar(IDR_BAR_BASIC))
-    {
+            !m_wndToolBarBasic.LoadToolBar(IDR_BAR_BASIC)) {
         TRACE(_T("Failed to create toolbar\n"));
         return -1; // failed to create
     }
@@ -626,16 +570,14 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
     if (!m_wndToolBarAdvanced.CreateEx(this, TBSTYLE_FLAT, WS_CHILD | WS_VISIBLE | CBRS_TOP
                                        | CBRS_GRIPPER | CBRS_TOOLTIPS | CBRS_FLYBY | CBRS_SIZE_DYNAMIC,
                                        CRect(0,0,0,0), IDR_BAR_ADVANCED) ||
-            !m_wndToolBarAdvanced.LoadToolBar(IDR_BAR_ADVANCED))
-    {
+            !m_wndToolBarAdvanced.LoadToolBar(IDR_BAR_ADVANCED)) {
         TRACE(_T("Failed to create toolbar\n"));
         return -1; // failed to create
     }
 
     // create data statusbar
     if ((!m_dataStatusBar.Create(this)) ||
-        (!m_dataStatusBar.SetIndicators( dataIndicators, sizeof(dataIndicators)/sizeof(UINT))))
-    {
+            (!m_dataStatusBar.SetIndicators( dataIndicators, sizeof(dataIndicators)/sizeof(UINT)))) {
         TRACE(_T("Failed to create data status bar\n"));
         return -1; // failed to create
     }
@@ -644,8 +586,7 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
     m_dataStatusBar.Init();
     // create progress statusbar
     if ((!m_progressStatusBar.Create(this)) ||
-        (!m_progressStatusBar.SetIndicators(progressIndicators, sizeof(progressIndicators)/sizeof(UINT))))
-    {
+            (!m_progressStatusBar.SetIndicators(progressIndicators, sizeof(progressIndicators)/sizeof(UINT)))) {
         TRACE(_T("Failed to create progress status bar\n"));
         return -1; // failed to create
     }
@@ -664,8 +605,7 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
     // Create Task Bar last this affects its position Z-Order and therefore layout behavior
     // Last in the Z-Order is preferrable for the task bar
     if (!m_wndTaskBar.Create(this, IDD_TASKBAR, WS_CHILD | WS_VISIBLE | CBRS_ALIGN_LEFT
-                             | CBRS_TOOLTIPS | CBRS_FLYBY | CBRS_SIZE_FIXED, ID_VIEW_TASKBAR))
-    {
+                             | CBRS_TOOLTIPS | CBRS_FLYBY | CBRS_SIZE_FIXED, ID_VIEW_TASKBAR)) {
         TRACE(_T("Failed to create data task bar\n"));
         return -1; // failed to create
     }
@@ -686,34 +626,27 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 // Called by framework to initially create the mainframe menu. Attaches
 // the graph layout menu onto the mainframe menu (if not already done).
 /***************************************************************************/
-void CMainFrame::OnInitMenu(CMenu * pMenu)
-{
+void CMainFrame::OnInitMenu(CMenu * pMenu) {
     CMDIFrameWnd::OnInitMenu(pMenu);
     UINT nMenuCount = GetVisibleMenuItemCount(pMenu);
     if ((nMenuCount > 6) &&			// standalone menu loaded
-        (pMenu == GetMenu()))		// don't modify floating popup menu
-    {
-        if (!m_bMenuModified)		// attach layout menu on standalone menu
-        {
+            (pMenu == GetMenu())) {	// don't modify floating popup menu
+        if (!m_bMenuModified) {	// attach layout menu on standalone menu
             TCHAR szString[256];	// don't change the string
             pMenu->GetMenuString(ID_GRAPHS_LAYOUT, szString, sizeof(szString)/sizeof(TCHAR), MF_BYCOMMAND);
-            if (szString[0] != 0)
-            {
+            if (szString[0] != 0) {
                 VERIFY(pMenu->ModifyMenu(ID_GRAPHS_LAYOUT, MF_BYCOMMAND | MF_POPUP, (UINT)m_LayoutMenu.m_hMenu, szString));
                 m_bMenuModified = TRUE; // modification done
             }
         }
     }
 
-	//TRACE(L"posting autosave message %d\n",m_bAutoSave);
-	if (m_bAutoSave) 
-	{
-		PostMessage(WM_COMMAND,ID_AUTOSAVE_ON);
-	} 
-	else 
-	{
-		PostMessage(WM_COMMAND,ID_AUTOSAVE_OFF);
-	}
+    //TRACE(L"posting autosave message %d\n",m_bAutoSave);
+    if (m_bAutoSave) {
+        PostMessage(WM_COMMAND,ID_AUTOSAVE_ON);
+    } else {
+        PostMessage(WM_COMMAND,ID_AUTOSAVE_OFF);
+    }
 }
 
 /***************************************************************************/
@@ -722,88 +655,76 @@ void CMainFrame::OnInitMenu(CMenu * pMenu)
 // up some initial values and sends a apply message, if the user hits the OK
 // button.
 /***************************************************************************/
-void CMainFrame::OnToolsOptions()
-{
-	if (GetCurrSaView() != NULL)
-	{
-		// set property sheet caption
-		CSaString szCaption;
-		szCaption.LoadString(IDS_DLGTITLE_TOOLSOPTIO); // load caption string
-		// create property sheet object
-		CDlgToolsOptions dlg( szCaption, NULL, true);
-		// get pointer to active view and document
-		CSaView * pView = (CSaView *)GetCurrSaView();
-		// setup initial dialog values
-		dlg.m_dlgViewPage.m_nCaptionStyle = m_nCaptionStyle; // DDO - 08/07/00
-		dlg.m_dlgViewPage.m_bStatusbar = m_bStatusBar;       // setup check boxes
-		dlg.m_dlgViewPage.m_nPosMode = m_nStatusPosReadout;
-		dlg.m_dlgViewPage.m_nPitchMode = m_nStatusPitchReadout;
-		dlg.m_dlgViewPage.m_bToolbar = bToolBarVisible();
-		dlg.m_dlgViewPage.m_bTaskbar = bTaskBarVisible();
-		dlg.m_dlgViewPage.m_bToneAbove = m_bToneAbove;
-		dlg.m_dlgViewPage.m_bScrollZoom = m_bScrollZoom;
-		dlg.m_dlgViewPage.m_nCursorAlignment = pView->GetCursorAlignment();
-		dlg.m_dlgViewPage.m_nGraphUpdateMode = pView->GetGraphUpdateMode();
-		dlg.m_dlgViewPage.m_bAnimate = pView->IsAnimationRequested();
-		dlg.m_dlgViewPage.m_nAnimationRate = pView->GetAnimationFrameRate();
-		dlg.m_dlgViewPage.m_bXGrid = m_grid.bXGrid;
-		dlg.m_dlgViewPage.m_bYGrid = m_grid.bYGrid;
-		dlg.m_dlgViewPage.SetGridStyle(m_grid.nXStyle, m_grid.nYStyle);
-		dlg.m_dlgColorPage.m_cColors = m_colors;
+void CMainFrame::OnToolsOptions() {
+    if (GetCurrSaView() != NULL) {
+        // set property sheet caption
+        CSaString szCaption;
+        szCaption.LoadString(IDS_DLGTITLE_TOOLSOPTIO); // load caption string
+        // create property sheet object
+        CDlgToolsOptions dlg( szCaption, NULL, true);
+        // get pointer to active view and document
+        CSaView * pView = (CSaView *)GetCurrSaView();
+        // setup initial dialog values
+        dlg.m_dlgViewPage.m_nCaptionStyle = m_nCaptionStyle; // DDO - 08/07/00
+        dlg.m_dlgViewPage.m_bStatusbar = m_bStatusBar;       // setup check boxes
+        dlg.m_dlgViewPage.m_nPosMode = m_nStatusPosReadout;
+        dlg.m_dlgViewPage.m_nPitchMode = m_nStatusPitchReadout;
+        dlg.m_dlgViewPage.m_bToolbar = bToolBarVisible();
+        dlg.m_dlgViewPage.m_bTaskbar = bTaskBarVisible();
+        dlg.m_dlgViewPage.m_bToneAbove = m_bToneAbove;
+        dlg.m_dlgViewPage.m_bScrollZoom = m_bScrollZoom;
+        dlg.m_dlgViewPage.m_nCursorAlignment = pView->GetCursorAlignment();
+        dlg.m_dlgViewPage.m_nGraphUpdateMode = pView->GetGraphUpdateMode();
+        dlg.m_dlgViewPage.m_bAnimate = pView->IsAnimationRequested();
+        dlg.m_dlgViewPage.m_nAnimationRate = pView->GetAnimationFrameRate();
+        dlg.m_dlgViewPage.m_bXGrid = m_grid.bXGrid;
+        dlg.m_dlgViewPage.m_bYGrid = m_grid.bYGrid;
+        dlg.m_dlgViewPage.SetGridStyle(m_grid.nXStyle, m_grid.nYStyle);
+        dlg.m_dlgColorPage.m_cColors = m_colors;
 
-		try
-		{
-			for (int nLoop = 0; nLoop < ANNOT_WND_NUMBER; nLoop++)
-			{
-				dlg.m_dlgFontPage.m_GraphFonts.Add(GetFontFace(nLoop));
-				dlg.m_dlgFontPage.m_GraphFontSizes.Add(GetFontSize(nLoop));
-			}
-		}
-		catch (CMemoryException e)
-		{
-			// memory allocation error
-			CSaApp * pApp = (CSaApp *)AfxGetApp();
-			pApp->ErrorMessage(IDS_ERROR_MEMALLOC);
-			return;
-		}
+        try {
+            for (int nLoop = 0; nLoop < ANNOT_WND_NUMBER; nLoop++) {
+                dlg.m_dlgFontPage.m_GraphFonts.Add(GetFontFace(nLoop));
+                dlg.m_dlgFontPage.m_GraphFontSizes.Add(GetFontSize(nLoop));
+            }
+        } catch (CMemoryException e) {
+            // memory allocation error
+            CSaApp * pApp = (CSaApp *)AfxGetApp();
+            pApp->ErrorMessage(IDS_ERROR_MEMALLOC);
+            return;
+        }
 
-		// create the modal dialog box
-		if (dlg.DoModal() == IDOK)         // OK button pressed
-		{
-			SetToolSettings(dlg.GetSettings(),true);
-			SendMessage(WM_USER_APPLY_TOOLSOPTIONS, 0, 0);    // do apply changes
-		}
-	}
-	else
-	{
-		// there is no view - show a limited version of the tools options dialog box
-		// set property sheet caption
-		CSaString szCaption;
-		szCaption.LoadString(IDS_DLGTITLE_TOOLSOPTIO); // load caption string
-		// create property sheet object
-		CDlgToolsOptions dlg( szCaption, NULL, false);
+        // create the modal dialog box
+        if (dlg.DoModal() == IDOK) {       // OK button pressed
+            SetToolSettings(dlg.GetSettings(),true);
+            SendMessage(WM_USER_APPLY_TOOLSOPTIONS, 0, 0);    // do apply changes
+        }
+    } else {
+        // there is no view - show a limited version of the tools options dialog box
+        // set property sheet caption
+        CSaString szCaption;
+        szCaption.LoadString(IDS_DLGTITLE_TOOLSOPTIO); // load caption string
+        // create property sheet object
+        CDlgToolsOptions dlg( szCaption, NULL, false);
 
-		// create the modal dialog box
-		if (dlg.DoModal() == IDOK)         // OK button pressed
-		{
-			SetToolSettings(dlg.GetSettings(),false);
-			SendMessage(WM_USER_APPLY_TOOLSOPTIONS, 0, 0);    // do apply changes
-		}
-	}
+        // create the modal dialog box
+        if (dlg.DoModal() == IDOK) {       // OK button pressed
+            SetToolSettings(dlg.GetSettings(),false);
+            SendMessage(WM_USER_APPLY_TOOLSOPTIONS, 0, 0);    // do apply changes
+        }
+    }
 }
 
-void CMainFrame::OnUpdateToolsOptions(CCmdUI * pCmdUI)
-{
+void CMainFrame::OnUpdateToolsOptions(CCmdUI * pCmdUI) {
     pCmdUI->Enable(TRUE);
 }
 
 /***************************************************************************/
 // CMainFrame::OnToolsSelfTest Starts CSelfTest
 /***************************************************************************/
-void CMainFrame::OnToolsSelfTest()
-{
+void CMainFrame::OnToolsSelfTest() {
     CSelfTestRunner test;
-	test.Do();
+    test.Do();
 }
 
 /***************************************************************************/
@@ -812,14 +733,11 @@ void CMainFrame::OnToolsSelfTest()
 // apparently because either the status bar or toolbar windows (descendants
 // of CMainFrame) choked on a WM_USER_? message sent to them.
 /***************************************************************************/
-void CMainFrame::SendMessageToMDIDescendants(UINT message, WPARAM wParam, LPARAM lParam)
-{
+void CMainFrame::SendMessageToMDIDescendants(UINT message, WPARAM wParam, LPARAM lParam) {
     CDocList doclst; // list of currently open docs
-    for (CSaDoc * pdoc = doclst.pdocFirst(); pdoc; pdoc = doclst.pdocNext())
-    {
+    for (CSaDoc * pdoc = doclst.pdocFirst(); pdoc; pdoc = doclst.pdocNext()) {
         POSITION pos = pdoc->GetFirstViewPosition();
-        while (pos)
-        {
+        while (pos) {
             // ramble thru all views for this document
             CSaView * pview = (CSaView *)pdoc->GetNextView(pos); // increments pos
             pview->SendMessage(message, wParam, lParam);
@@ -834,59 +752,48 @@ void CMainFrame::SendMessageToMDIDescendants(UINT message, WPARAM wParam, LPARAM
 // The user wants to apply the changes from options dialog. Applies all the
 // changes and sends the necessary messages.
 /***************************************************************************/
-LRESULT CMainFrame::OnApplyToolsOptions(WPARAM, LPARAM)
-{
+LRESULT CMainFrame::OnApplyToolsOptions(WPARAM, LPARAM) {
     // apply to statusbar
-    if (toolSettings.m_bStatusbar != m_bStatusBar)
-    {
+    if (toolSettings.m_bStatusbar != m_bStatusBar) {
         SendMessage(WM_COMMAND, ID_VIEW_STATUS_BAR, 0); // change statusbar status
         m_bStatusBar = !m_bStatusBar;
     }
 
-    if (m_nStatusPosReadout != toolSettings.m_nPosMode)
-    {
+    if (m_nStatusPosReadout != toolSettings.m_nPosMode) {
         m_nStatusPosReadout = toolSettings.m_nPosMode;
         CSaView * pView = GetCurrSaView();
         CGraphWnd * pGraph = pView ? pView->GetFocusedGraphWnd() : NULL;
-        if (pGraph!=NULL)
-        {
+        if (pGraph!=NULL) {
             pGraph->UpdateStatusBar(pView->GetStartCursorPosition(), pView->GetStopCursorPosition(), TRUE);    // update the status bar
         }
     }
 
     m_nStatusPitchReadout = toolSettings.m_nPitchMode;
     // apply to toolbar
-    if (toolSettings.m_bToolbar != bToolBarVisible())
-    {
+    if (toolSettings.m_bToolbar != bToolBarVisible()) {
         BOOL bAdvanced = toolSettings.m_bToolbar;
         ShowControlBar(GetControlBar(IDR_BAR_BASIC),!bAdvanced, FALSE); // change toolbar status
         ShowControlBar(GetControlBar(IDR_BAR_ADVANCED), bAdvanced, FALSE); // change toolbar status
     }
     // apply to taskbar
-    if (toolSettings.m_bTaskbar != bTaskBarVisible())
-    {
+    if (toolSettings.m_bTaskbar != bTaskBarVisible()) {
         BOOL bTaskbar = toolSettings.m_bTaskbar;
         ShowControlBar(GetControlBar(ID_VIEW_TASKBAR),bTaskbar, FALSE); // change taskbar status
     }
     // apply tone position
-    if (toolSettings.m_bToneAbove != m_bToneAbove)
-    {
+    if (toolSettings.m_bToneAbove != m_bToneAbove) {
         m_bToneAbove = !m_bToneAbove;
-        if (m_bToneAbove)
-        {
+        if (m_bToneAbove) {
             CGraphWnd::m_anAnnWndOrder[1] = TONE;
             CGraphWnd::m_anAnnWndOrder[2] = PHONETIC;
-        }
-        else
-        {
+        } else {
             CGraphWnd::m_anAnnWndOrder[1] = PHONETIC;
             CGraphWnd::m_anAnnWndOrder[2] = TONE;
         }
         SendMessageToMDIDescendants(WM_USER_GRAPH_ORDERCHANGED, 0, 0L);
     }
     // apply to scrolling zoom
-    if (toolSettings.m_bScrollZoom != m_bScrollZoom)
-    {
+    if (toolSettings.m_bScrollZoom != m_bScrollZoom) {
         m_bScrollZoom = !m_bScrollZoom;
         // tell about the change to all views
         SendMessageToMDIDescendants(WM_USER_VIEW_SCROLLZOOMCHANGED, m_bScrollZoom, 0L);
@@ -895,8 +802,7 @@ LRESULT CMainFrame::OnApplyToolsOptions(WPARAM, LPARAM)
     // update cursor alignment for the active view
     ECursorAlignment nCursorAlignmentSetting = (ECursorAlignment) toolSettings.m_nCursorAlignment;
     CSaView * pView = (CSaView *)GetCurrSaView();
-    if ((pView!=NULL) && (nCursorAlignmentSetting != pView->GetCursorAlignment()))
-    {
+    if ((pView!=NULL) && (nCursorAlignmentSetting != pView->GetCursorAlignment())) {
         pView->ChangeCursorAlignment(nCursorAlignmentSetting);
     }
 
@@ -905,8 +811,7 @@ LRESULT CMainFrame::OnApplyToolsOptions(WPARAM, LPARAM)
 
     // update graph mode
     int nGraphUpdateModeSetting = toolSettings.m_nGraphUpdateMode;
-    if (nGraphUpdateModeSetting != GetGraphUpdateMode())
-    {
+    if (nGraphUpdateModeSetting != GetGraphUpdateMode()) {
         SetGraphUpdateMode(nGraphUpdateModeSetting);
         SendMessageToMDIDescendants(WM_USER_VIEW_GRAPHUPDATECHANGED, 0L, 0L);
     }
@@ -914,17 +819,14 @@ LRESULT CMainFrame::OnApplyToolsOptions(WPARAM, LPARAM)
     int bAnimateSetting = toolSettings.m_bAnimate;
     int nAnimationRateSetting = toolSettings.m_nAnimationRate;
     if ((bAnimateSetting != IsAnimationRequested()) ||
-            (nAnimationRateSetting != GetAnimationFrameRate()))
-    {
+            (nAnimationRateSetting != GetAnimationFrameRate())) {
         m_bAnimate = bAnimateSetting;
         m_nAnimationRate = nAnimationRateSetting;
         SendMessageToMDIDescendants(WM_USER_VIEW_ANIMATIONCHANGED, 0, 0);
     }
     // apply graph caption style
-    if (toolSettings.m_nCaptionStyle != m_nCaptionStyle)
-    {
-        if (AfxMessageBox(IDS_QUESTION_RECREATEGRAPHS, MB_YESNO | MB_ICONQUESTION,0) == IDYES)
-        {
+    if (toolSettings.m_nCaptionStyle != m_nCaptionStyle) {
+        if (AfxMessageBox(IDS_QUESTION_RECREATEGRAPHS, MB_YESNO | MB_ICONQUESTION,0) == IDYES) {
             m_nCaptionStyle = toolSettings.m_nCaptionStyle;
             // tell about the change to all views
             SendMessageToMDIDescendants(WM_USER_GRAPH_STYLECHANGED, 0, 0L);
@@ -934,8 +836,7 @@ LRESULT CMainFrame::OnApplyToolsOptions(WPARAM, LPARAM)
     if ((toolSettings.m_bXGrid != m_grid.bXGrid) ||
             (toolSettings.m_bYGrid != m_grid.bYGrid) ||
             (toolSettings.m_nDlgXStyle != m_grid.nXStyle) ||
-            (toolSettings.m_nDlgYStyle != m_grid.nYStyle))
-    {
+            (toolSettings.m_nDlgYStyle != m_grid.nYStyle)) {
         m_grid.bXGrid = toolSettings.m_bXGrid;
         m_grid.bYGrid = toolSettings.m_bYGrid;
         m_grid.nXStyle = toolSettings.m_nDlgXStyle;
@@ -944,21 +845,18 @@ LRESULT CMainFrame::OnApplyToolsOptions(WPARAM, LPARAM)
         SendMessageToMDIDescendants(WM_USER_GRAPH_GRIDCHANGED, 0, 0L);
     }
     // apply graph colors
-    if (toolSettings.m_bColorsChanged)
-    {
+    if (toolSettings.m_bColorsChanged) {
         toolSettings.m_bColorsChanged = FALSE;
         m_colors = toolSettings.m_cColors;
         // tell about the change to all views
         SendMessageToMDIDescendants(WM_USER_GRAPH_COLORCHANGED, 0, 0L);
     }
     // apply graph fonts
-    if (toolSettings.m_bFontChanged)
-    {
+    if (toolSettings.m_bFontChanged) {
         // get pointer to active document
         CSaDoc * pDoc = (CSaDoc *)GetCurrSaView()->GetDocument();
         toolSettings.m_bFontChanged = FALSE;
-        for (int nLoop = 0; nLoop < ANNOT_WND_NUMBER; nLoop++)
-        {
+        for (int nLoop = 0; nLoop < ANNOT_WND_NUMBER; nLoop++) {
             SetFontFace(nLoop, toolSettings.m_GraphFonts.GetAt(nLoop));
             SetFontSize(nLoop, toolSettings.m_GraphFontSizes.GetAt(nLoop));
         }
@@ -977,24 +875,19 @@ LRESULT CMainFrame::OnApplyToolsOptions(WPARAM, LPARAM)
     return 0;
 }
 
-CDlgPlayer * CMainFrame::GetPlayer(bool bCreate)
-{
-    if (!CDlgPlayer::IsLaunched())
-    {
+CDlgPlayer * CMainFrame::GetPlayer(bool bCreate) {
+    if (!CDlgPlayer::IsLaunched()) {
         // player dialog not launched
-        if (!bCreate)
-        {
+        if (!bCreate) {
             return NULL;
         }
-        if (m_pDlgPlayer!=NULL)
-        {
+        if (m_pDlgPlayer!=NULL) {
             delete m_pDlgPlayer;		// delete old dialog object
-			m_pDlgPlayer = NULL;
+            m_pDlgPlayer = NULL;
         }
         m_pDlgPlayer = new CDlgPlayer();	// create new player object
 
-        if (!CDlgPlayer::IsLaunched())  // player dialog not launched
-        {
+        if (!CDlgPlayer::IsLaunched()) { // player dialog not launched
             m_pDlgPlayer->Create();		// create player
         }
     }
@@ -1008,8 +901,7 @@ CDlgPlayer * CMainFrame::GetPlayer(bool bCreate)
 // and on top of all other windows. lParam delivers the player mode to be
 // set.
 /***************************************************************************/
-LRESULT CMainFrame::OnPlayer( WPARAM wParam, LPARAM lParam)
-{
+LRESULT CMainFrame::OnPlayer( WPARAM wParam, LPARAM lParam) {
     return OnPlayer(wParam, lParam, NULL);
 }
 
@@ -1020,46 +912,37 @@ LRESULT CMainFrame::OnPlayer( WPARAM wParam, LPARAM lParam)
 // and on top of all other windows. lParam delivers the player mode to be
 // set.
 /***************************************************************************/
-LRESULT CMainFrame::OnPlayer( WPARAM wParam2, LPARAM lParam, SSpecific * pSpecific)
-{
-	CDlgPlayer::EMode mode = (CDlgPlayer::EMode)wParam2;
+LRESULT CMainFrame::OnPlayer( WPARAM wParam2, LPARAM lParam, SSpecific * pSpecific) {
+    CDlgPlayer::EMode mode = (CDlgPlayer::EMode)wParam2;
 
     TRACE("OnPlayer %s %x %x\n", CDlgPlayer::GetMode(mode), HIWORD(lParam), LOWORD(lParam));
 
     CWnd * pWnd = GetActiveWindow(); // retrieve pointer to active window
-    if (!CDlgPlayer::IsLaunched())   // player dialog not launched
-    {
+    if (!CDlgPlayer::IsLaunched()) { // player dialog not launched
         GetPlayer(true); // get or create player object
         BOOL bFnKey = FALSE;
-        if (HIWORD(lParam) == (WORD) -1)
-        {
+        if (HIWORD(lParam) == (WORD) -1) {
             // function key call
             bFnKey = TRUE;
             lParam = MAKELONG(LOWORD(lParam), FALSE);
         }
         // if player will not have size, set the old active window
-        if (!(BOOL)HIWORD(lParam))
-        {
+        if (!(BOOL)HIWORD(lParam)) {
             pWnd->SetActiveWindow();
         }
         GetPlayer(false)->SetPlayerMode( mode, LOWORD(lParam), (BOOL)HIWORD(lParam), bFnKey, pSpecific); // set player mode
-    }
-    else
-    {
-        if (!GetPlayer(false)->IsTestRun())
-        {
+    } else {
+        if (!GetPlayer(false)->IsTestRun()) {
             // player not running function key test
             BOOL bFnKey = FALSE;
             // kg 32 bit cast needed
-            if (HIWORD(lParam) == (WORD)-1)
-            {
+            if (HIWORD(lParam) == (WORD)-1) {
                 // function key call
                 bFnKey = TRUE;
                 lParam = MAKELONG(LOWORD(lParam), FALSE);
             }
             GetPlayer(false)->SetPlayerMode( mode, LOWORD(lParam), (BOOL)HIWORD(lParam), bFnKey, pSpecific); // set player mode
-            if (GetPlayer(false)->IsFullSize())   // player has full size, set it the active window
-            {
+            if (GetPlayer(false)->IsFullSize()) { // player has full size, set it the active window
                 GetPlayer(false)->SetActiveWindow(); // set focus on player
                 GetPlayer(false)->ShowWindow(SW_SHOW);
             }
@@ -1075,42 +958,31 @@ LRESULT CMainFrame::OnPlayer( WPARAM wParam2, LPARAM lParam, SSpecific * pSpecif
 // it creates the editor dialog, otherwise it just sets the editor active
 // and on top of all other windows.
 /***************************************************************************/
-void CMainFrame::OnEditor()
-{
-    if (!IsEditAllowed())
-    {
+void CMainFrame::OnEditor() {
+    if (!IsEditAllowed()) {
         return;
     }
-    if (m_pDlgEditor==NULL)
-    {
+    if (m_pDlgEditor==NULL) {
         m_pDlgEditor = new CDlgEditor(this);  // New Editor with view parent
     }
-    if (m_pDlgEditor!=NULL)
-    {
+    if (m_pDlgEditor!=NULL) {
         // Create window if necessary
         m_pDlgEditor->CreateSafe(CDlgEditor::IDD, this, &m_wplDlgEditor);
     }
 
-    if ((m_pDlgEditor!=NULL) && (!m_pDlgEditor->IsWindowVisible()))
-    {
+    if ((m_pDlgEditor!=NULL) && (!m_pDlgEditor->IsWindowVisible())) {
         m_pDlgEditor->SetWindowPos(&wndTop, 0, 0, 0, 0, SWP_NOMOVE|SWP_NOSIZE|SWP_SHOWWINDOW);
-    }
-    else if (m_pDlgEditor!=NULL)
-    {
+    } else if (m_pDlgEditor!=NULL) {
         m_pDlgEditor->ShowWindow(SW_HIDE);
     }
 }
 
 /**************************************************************************/
 /**************************************************************************/
-void CMainFrame::OnUpdateEditEditor(CCmdUI * pCmdUI)
-{
-    if ((m_pDlgEditor!=NULL) && (m_pDlgEditor->IsWindowVisible()))
-    {
+void CMainFrame::OnUpdateEditEditor(CCmdUI * pCmdUI) {
+    if ((m_pDlgEditor!=NULL) && (m_pDlgEditor->IsWindowVisible())) {
         pCmdUI->SetText(_T("Hide Transcription Editor\tF4"));
-    }
-    else
-    {
+    } else {
         pCmdUI->SetText(_T("Show Transcription Editor\tF4"));
     }
 }
@@ -1119,10 +991,8 @@ void CMainFrame::OnUpdateEditEditor(CCmdUI * pCmdUI)
 /***************************************************************************/
 // CMainFrame::OnIdleUpdate handles idle time update needs
 /***************************************************************************/
-LRESULT CMainFrame::OnIdleUpdate(WPARAM /*wParam*/, LPARAM /*lParam*/)
-{
-    if (m_pDlgEditor!=NULL)
-    {
+LRESULT CMainFrame::OnIdleUpdate(WPARAM /*wParam*/, LPARAM /*lParam*/) {
+    if (m_pDlgEditor!=NULL) {
         m_pDlgEditor->UpdateDialog();
     }
 
@@ -1133,14 +1003,10 @@ LRESULT CMainFrame::OnIdleUpdate(WPARAM /*wParam*/, LPARAM /*lParam*/)
 /***************************************************************************/
 // CMainFrame::IsEditAllowed
 /***************************************************************************/
-BOOL CMainFrame::IsEditAllowed()
-{
-    if (m_pDisplayPlot!=NULL)
-    {
+BOOL CMainFrame::IsEditAllowed() {
+    if (m_pDisplayPlot!=NULL) {
         return FALSE;
-    }
-    else
-    {
+    } else {
         return TRUE;
     }
 }
@@ -1149,62 +1015,50 @@ BOOL CMainFrame::IsEditAllowed()
 /***************************************************************************/
 // CMainFrame::OnEditFind Launches the find dialog
 /***************************************************************************/
-void CMainFrame::OnEditFind()
-{
+void CMainFrame::OnEditFind() {
     MaybeCreateFindOrReplaceDlg(true);
 }
 
 /***************************************************************************/
 // CMainFrame::OnUpdateEditFind Menu Update
 /***************************************************************************/
-void CMainFrame::OnUpdateEditFind(CCmdUI * pCmdUI)
-{
+void CMainFrame::OnUpdateEditFind(CCmdUI * pCmdUI) {
     OnUpdateEditReplace(pCmdUI);
 }
 
 // CMainFrame::OnEditFind Launches the find dialog
 /***************************************************************************/
-void CMainFrame::OnEditFindNext()
-{
-	// if the dialog is available, force it to do a 'next'
-	if ((m_pDlgFind!=NULL)&&(m_pDlgFind->IsWindowVisible()))
-    {
-		m_pDlgFind->OnNext();
+void CMainFrame::OnEditFindNext() {
+    // if the dialog is available, force it to do a 'next'
+    if ((m_pDlgFind!=NULL)&&(m_pDlgFind->IsWindowVisible())) {
+        m_pDlgFind->OnNext();
+    } else {
+        MaybeCreateFindOrReplaceDlg(true);
     }
-	else
-	{
-	    MaybeCreateFindOrReplaceDlg(true);
-	}
 }
 
 /***************************************************************************/
 // CMainFrame::OnUpdateEditFindNext Menu Update
 /***************************************************************************/
-void CMainFrame::OnUpdateEditFindNext(CCmdUI * pCmdUI)
-{
+void CMainFrame::OnUpdateEditFindNext(CCmdUI * pCmdUI) {
     OnUpdateEditReplace(pCmdUI);
 }
 
 /***************************************************************************/
 // CMainFrame::OnEditReplace Launches the replace dialog
 /***************************************************************************/
-void CMainFrame::OnEditReplace()
-{
+void CMainFrame::OnEditReplace() {
     MaybeCreateFindOrReplaceDlg(false);
 }
 
 /***************************************************************************/
 // CMainFrame::OnUpdateEditReplace Menu Update
 /***************************************************************************/
-void CMainFrame::OnUpdateEditReplace(CCmdUI * pCmdUI)
-{
+void CMainFrame::OnUpdateEditReplace(CCmdUI * pCmdUI) {
     CSaDoc * pDoc = GetCurrDoc();
-    if (pDoc!=NULL)
-    {
+    if (pDoc!=NULL) {
         pCmdUI->Enable(pDoc->GetDataSize() != 0); // enable if data is available
-    }
-    else
-    {
+    } else {
         pCmdUI->Enable(FALSE);
     }
 }
@@ -1215,42 +1069,30 @@ void CMainFrame::OnUpdateEditReplace(CCmdUI * pCmdUI)
 // informed to stop playing immediatly and to change caption. The statusbar
 // panes have to be cleared if there is no more view.
 /***************************************************************************/
-LRESULT CMainFrame::OnChangeView( WPARAM wParam, LPARAM lParam)
-{
-    if (m_pDlgFind!=NULL)
-    {
-        if (wParam!=FALSE)
-        {
+LRESULT CMainFrame::OnChangeView( WPARAM wParam, LPARAM lParam) {
+    if (m_pDlgFind!=NULL) {
+        if (wParam!=FALSE) {
             m_pDlgFind->ChangeView();
-        }
-        else
-        {
+        } else {
             m_pDlgFind->SendMessage(WM_CLOSE);
-			m_pDlgFind = NULL;
+            m_pDlgFind = NULL;
         }
     }
-    if (CDlgPlayer::IsLaunched())						// player dialog launched
-    {
-        if (wParam!=FALSE)
-        {
+    if (CDlgPlayer::IsLaunched()) {					// player dialog launched
+        if (wParam!=FALSE) {
             GetPlayer(false)->ChangeView((CSaView *)lParam);    // inform player
-        }
-        else
-        {
+        } else {
             GetPlayer(false)->SendMessage(WM_CLOSE);    // last view closed, close player too
         }
     }
-	if (CDlgAutoRecorder::IsLaunched())
-	{
-		if (wParam==FALSE)
-		{
-			m_pAutoRecorder->SendMessage(WM_CLOSE);
-			m_pAutoRecorder = NULL;
-		}
-	}
+    if (CDlgAutoRecorder::IsLaunched()) {
+        if (wParam==FALSE) {
+            m_pAutoRecorder->SendMessage(WM_CLOSE);
+            m_pAutoRecorder = NULL;
+        }
+    }
 
-    if (wParam==FALSE)   // last view closed
-    {
+    if (wParam==FALSE) { // last view closed
         // turn off symbols
         m_dataStatusBar.SetPaneSymbol(ID_STATUSPANE_SAMPLES, FALSE);
         m_dataStatusBar.SetPaneSymbol(ID_STATUSPANE_FORMAT, FALSE);
@@ -1290,18 +1132,15 @@ LRESULT CMainFrame::OnChangeView( WPARAM wParam, LPARAM lParam)
 // workbench view. If SA runs in batch mode, don't close, but call the return
 // to SM menu item.
 /***************************************************************************/
-void CMainFrame::OnClose()
-{
+void CMainFrame::OnClose() {
     CSaApp * pApp = (CSaApp *)AfxGetApp();
-    if (pApp->GetBatchMode() == 1)
-    {
+    if (pApp->GetBatchMode() == 1) {
         // TODO: this can probably be completely removed at some point
         SendMessage(WM_COMMAND, ID_FILE_RETURN, 0L);
         return;
     }
 
-    if (!AfxGetApp()->SaveAllModified())   // user canceled close operation
-    {
+    if (!AfxGetApp()->SaveAllModified()) { // user canceled close operation
         return;
     }
 
@@ -1311,8 +1150,7 @@ void CMainFrame::OnClose()
     //******************************************************
     // close the workbench
     //******************************************************
-    if (pWbDoc)
-    {
+    if (pWbDoc) {
         POSITION pos = pWbDoc->GetFirstViewPosition();
         CView * pView = pWbDoc->GetNextView(pos);
         pView->SendMessage(WM_COMMAND, ID_FILE_CLOSE, 0); // close view
@@ -1323,41 +1161,36 @@ void CMainFrame::OnClose()
     //******************************************************
     // Workbench is still there, don't close
     //******************************************************
-    if (((CSaApp *)AfxGetApp())->GetWbDoc())
-    {
+    if (((CSaApp *)AfxGetApp())->GetWbDoc()) {
         return;
     }
 
     //******************************************************
     //******************************************************
-    if (!m_bPrintPreviewInProgress)
-    {
+    if (!m_bPrintPreviewInProgress) {
         ((CSaApp *)AfxGetApp())->WriteSettings();
     }
 
     //******************************************************
     // If player dialog open then close it.
     //******************************************************
-    if (CDlgPlayer::IsLaunched())
-    {
+    if (CDlgPlayer::IsLaunched()) {
         m_pDlgPlayer->SendMessage(WM_CLOSE);
-		m_pDlgPlayer = NULL;
+        m_pDlgPlayer = NULL;
     }
 
     //******************************************************
     // If find dialog open then close it.
     //******************************************************
-    if (m_pDlgFind!=NULL)
-    {
+    if (m_pDlgFind!=NULL) {
         m_pDlgFind->SendMessage(WM_CLOSE);
-		m_pDlgFind = NULL;
+        m_pDlgFind = NULL;
     }
 
-	if (CDlgAutoRecorder::IsLaunched())
-	{
-		m_pAutoRecorder->SendMessage(WM_CLOSE);
-		m_pAutoRecorder = NULL;
-	}
+    if (CDlgAutoRecorder::IsLaunched()) {
+        m_pAutoRecorder->SendMessage(WM_CLOSE);
+        m_pAutoRecorder = NULL;
+    }
 
     CMDIFrameWnd::OnClose();
 }
@@ -1365,8 +1198,7 @@ void CMainFrame::OnClose()
 /***************************************************************************/
 // CMainFrame::OnSysColorChange System colors changed
 /***************************************************************************/
-void CMainFrame::OnSysColorChange()
-{
+void CMainFrame::OnSysColorChange() {
 
     CMDIFrameWnd::OnSysColorChange();
     // update system colors
@@ -1378,13 +1210,9 @@ void CMainFrame::OnSysColorChange()
 /***************************************************************************/
 // CMainFrame::OnUpdateDataPane Data statusbar pane updating
 /***************************************************************************/
-void CMainFrame::OnUpdateDataPane(CCmdUI * pCmdUI)
-{
-    if (m_bIsPrinting)
-    {
-    }
-    else
-    {
+void CMainFrame::OnUpdateDataPane(CCmdUI * pCmdUI) {
+    if (m_bIsPrinting) {
+    } else {
         pCmdUI->Enable();
     }
 }
@@ -1392,13 +1220,9 @@ void CMainFrame::OnUpdateDataPane(CCmdUI * pCmdUI)
 /***************************************************************************/
 // CMainFrame::OnUpdateProgressPane Progress statusbar pane updating
 /***************************************************************************/
-void CMainFrame::OnUpdateProgressPane(CCmdUI * pCmdUI)
-{
-    if (m_bIsPrinting)
-    {
-    }
-    else
-    {
+void CMainFrame::OnUpdateProgressPane(CCmdUI * pCmdUI) {
+    if (m_bIsPrinting) {
+    } else {
         pCmdUI->Enable();
     }
 }
@@ -1409,23 +1233,19 @@ void CMainFrame::OnUpdateProgressPane(CCmdUI * pCmdUI)
 // is to close, be sure to first take SA out of batch mode to enable standard
 // exit procedure and then send the ID_APP_EXIT.
 /***************************************************************************/
-LRESULT CMainFrame::OnSpeechAppCall(WPARAM wParam, LPARAM lParam)
-{
+LRESULT CMainFrame::OnSpeechAppCall(WPARAM wParam, LPARAM lParam) {
     // ASSERT(FALSE); // Assert to debug this function
     CSaApp * pApp = (CSaApp *)AfxGetApp();
-    if (wParam == SPEECH_WPARAM_CLOSE)
-    {
+    if (wParam == SPEECH_WPARAM_CLOSE) {
         pApp->CancelBatchMode(); // cancel batch mode for exit
         PostMessage(WM_COMMAND, ID_APP_EXIT, 0L); // close SA
     }
     CSaString szCmd;
     UNUSED_ALWAYS(lParam);
-    if (wParam == SPEECH_WPARAM_SHOWSA)
-    {
+    if (wParam == SPEECH_WPARAM_SHOWSA) {
         pApp->ExamineCmdLine(szCmd, wParam);    // start up SA in batch mode with list file
     }
-    if (wParam == SPEECH_WPARAM_SHOWSAREC)
-    {
+    if (wParam == SPEECH_WPARAM_SHOWSAREC) {
         pApp->ExamineCmdLine(szCmd, wParam);    // start up SA in batch mode in recording mode
     }
     return 0;
@@ -1435,12 +1255,10 @@ LRESULT CMainFrame::OnSpeechAppCall(WPARAM wParam, LPARAM lParam)
 // CMainFrame::GetAnnotation
 // Gets the annotation set index annotSetID for the current view/doc.
 /***************************************************************************/
-CSegment * CMainFrame::GetAnnotation(int annotSetID)
-{
+CSegment * CMainFrame::GetAnnotation(int annotSetID) {
     CSegment * pSeg = NULL;
     CSaView * pView = (CSaView *)GetCurrSaView();
-    if ((pView != NULL) && pView->IsKindOf(RUNTIME_CLASS(CSaView)))
-    {
+    if ((pView != NULL) && pView->IsKindOf(RUNTIME_CLASS(CSaView))) {
         pSeg = pView->GetAnnotation(annotSetID);
     }
     return pSeg;
@@ -1451,16 +1269,13 @@ CSegment * CMainFrame::GetAnnotation(int annotSetID)
 // CMainFrame::GetCurrSaView
 // returns the active SaView.
 /***************************************************************************/
-CSaView * CMainFrame::GetCurrSaView(void)
-{
+CSaView * CMainFrame::GetCurrSaView(void) {
     CMDIChildWnd * pMDIWnd = MDIGetActive(); // get active child window
 
-    if (pMDIWnd)
-    {
+    if (pMDIWnd) {
         CSaView * pView = (CSaView *)MDIGetActive()->GetActiveView();
 
-        if ((pView != NULL) && pView->IsKindOf(RUNTIME_CLASS(CSaView)))
-        {
+        if ((pView != NULL) && pView->IsKindOf(RUNTIME_CLASS(CSaView))) {
             return pView;
         }
     }
@@ -1473,13 +1288,11 @@ CSaView * CMainFrame::GetCurrSaView(void)
 // CMainFrame::GetCurrDoc
 // returns the doc for the active view.
 /***************************************************************************/
-CSaDoc * CMainFrame::GetCurrDoc()
-{
+CSaDoc * CMainFrame::GetCurrDoc() {
     CSaDoc * pDoc = NULL;
     CSaView * pView = GetCurrSaView();
 
-    if (pView)
-    {
+    if (pView) {
         pDoc = pView->GetDocument();
     }
 
@@ -1494,8 +1307,7 @@ CSaDoc * CMainFrame::GetCurrDoc()
 // Sets the "is printing" state to true.  Passes on the setting to the
 // progress bar.
 /***************************************************************************/
-void  CMainFrame::SetPrintingFlag()
-{
+void  CMainFrame::SetPrintingFlag() {
     m_bIsPrinting = TRUE;
     m_progressStatusBar.SetIsPrintingFlag(m_bIsPrinting);
 };
@@ -1506,8 +1318,7 @@ void  CMainFrame::SetPrintingFlag()
 /***************************************************************************/
 // CMainFrame::ClearPrintingFlag
 /***************************************************************************/
-void  CMainFrame::ClearPrintingFlag()
-{
+void  CMainFrame::ClearPrintingFlag() {
     m_bIsPrinting = FALSE;
     m_progressStatusBar.SetIsPrintingFlag(m_bIsPrinting);
 };
@@ -1516,12 +1327,10 @@ void  CMainFrame::ClearPrintingFlag()
 /***************************************************************************/
 // CMainFrame::OnSaveScreenAsBMP
 /***************************************************************************/
-void CMainFrame::OnSaveScreenAsBMP()
-{
+void CMainFrame::OnSaveScreenAsBMP() {
     CDib dib;
     CWnd * pWnd = GetTopLevelParent();
-    if (pWnd==NULL)
-    {
+    if (pWnd==NULL) {
         pWnd = this;
     }
     dib.CaptureWindow(pWnd);
@@ -1532,8 +1341,7 @@ void CMainFrame::OnSaveScreenAsBMP()
 /***************************************************************************/
 // CMainFrame::OnSaveWindowAsBMP
 /***************************************************************************/
-void CMainFrame::OnSaveWindowAsBMP()
-{
+void CMainFrame::OnSaveWindowAsBMP() {
     CDib dib;
     CRect rectCrop(0,0,0,0);
     CRect rectToolbar, rectMainWnd;
@@ -1541,14 +1349,11 @@ void CMainFrame::OnSaveWindowAsBMP()
     AfxGetMainWnd()->GetWindowRect(&rectMainWnd);
     int nHeight = rectToolbar.bottom - rectToolbar.top;
     int nWidth = rectToolbar.right - rectToolbar.left;
-    if (!GetControlBar(IDR_BAR_BASIC)->IsFloating())
-    {
-        if ((nWidth > nHeight) && (rectToolbar.top < (rectMainWnd.top + rectMainWnd.bottom) / 2))
-        {
+    if (!GetControlBar(IDR_BAR_BASIC)->IsFloating()) {
+        if ((nWidth > nHeight) && (rectToolbar.top < (rectMainWnd.top + rectMainWnd.bottom) / 2)) {
             rectCrop.top = nHeight - 2;
         }
-        if ((nWidth < nHeight) && (rectToolbar.left < (rectMainWnd.left + rectMainWnd.right) / 2))
-        {
+        if ((nWidth < nHeight) && (rectToolbar.left < (rectMainWnd.left + rectMainWnd.right) / 2)) {
             rectCrop.left = nWidth - 2;
         }
     }
@@ -1560,11 +1365,9 @@ void CMainFrame::OnSaveWindowAsBMP()
 /***************************************************************************/
 // CMainFrame::OnSaveGraphsAsBMP
 /***************************************************************************/
-void CMainFrame::OnSaveGraphsAsBMP()
-{
+void CMainFrame::OnSaveGraphsAsBMP() {
     CSaView * pSaView = GetCurrSaView();
-    if (pSaView==NULL)
-    {
+    if (pSaView==NULL) {
         return;
     }
     CDib dib;
@@ -1577,14 +1380,12 @@ void CMainFrame::OnSaveGraphsAsBMP()
 /***************************************************************************/
 // CMainFrame::OnCopyScreenAsBMP
 /***************************************************************************/
-void CMainFrame::OnCopyScreenAsBMP()
-{
+void CMainFrame::OnCopyScreenAsBMP() {
     CWnd * pWnd = GetTopLevelParent();
-    if (pWnd==NULL)
-    {
+    if (pWnd==NULL) {
         pWnd = this;
     }
-	CDib dib;
+    CDib dib;
     dib.CaptureWindow(pWnd);
     dib.CopyToClipboard(pWnd);
 }
@@ -1593,8 +1394,7 @@ void CMainFrame::OnCopyScreenAsBMP()
 /***************************************************************************/
 // CMainFrame::OnCopyWindowAsBMP
 /***************************************************************************/
-void CMainFrame::OnCopyWindowAsBMP()
-{
+void CMainFrame::OnCopyWindowAsBMP() {
     CDib dib;
     CRect rectCrop(0,0,0,0);
     CRect rectToolbar, rectMainWnd;
@@ -1602,19 +1402,16 @@ void CMainFrame::OnCopyWindowAsBMP()
     AfxGetMainWnd()->GetWindowRect(&rectMainWnd);
     int nHeight = rectToolbar.bottom - rectToolbar.top;
     int nWidth = rectToolbar.right - rectToolbar.left;
-    if (!GetControlBar(IDR_BAR_BASIC)->IsFloating())
-    {
-        if ((nWidth > nHeight) && (rectToolbar.top < (rectMainWnd.top + rectMainWnd.bottom) / 2))
-        {
+    if (!GetControlBar(IDR_BAR_BASIC)->IsFloating()) {
+        if ((nWidth > nHeight) && (rectToolbar.top < (rectMainWnd.top + rectMainWnd.bottom) / 2)) {
             rectCrop.top = nHeight - 2;
         }
-        if ((nWidth < nHeight) && (rectToolbar.left < (rectMainWnd.left + rectMainWnd.right) / 2))
-        {
+        if ((nWidth < nHeight) && (rectToolbar.left < (rectMainWnd.left + rectMainWnd.right) / 2)) {
             rectCrop.left = nWidth - 2;
         }
     }
 
-	dib.CaptureWindow( this, rectCrop, TRUE);
+    dib.CaptureWindow( this, rectCrop, TRUE);
     dib.CopyToClipboard( this);
 }
 
@@ -1622,14 +1419,12 @@ void CMainFrame::OnCopyWindowAsBMP()
 /***************************************************************************/
 // CMainFrame::OnCopyGraphsAsBMP
 /***************************************************************************/
-void CMainFrame::OnCopyGraphsAsBMP()
-{
+void CMainFrame::OnCopyGraphsAsBMP() {
     CSaView * pSaView = GetCurrSaView();
-    if (pSaView==NULL)
-    {
+    if (pSaView==NULL) {
         return;
     }
-	CDib dib;
+    CDib dib;
     dib.CaptureWindow(pSaView);
     dib.CopyToClipboard(pSaView);
 }
@@ -1638,16 +1433,14 @@ void CMainFrame::OnCopyGraphsAsBMP()
 /***************************************************************************/
 // CMainFrame::OnUpdateGraphsAsBMP
 /***************************************************************************/
-void CMainFrame::OnUpdateGraphsAsBMP(CCmdUI * pCmdUI)
-{
+void CMainFrame::OnUpdateGraphsAsBMP(CCmdUI * pCmdUI) {
     pCmdUI->Enable((GetCurrSaView() != NULL));
 }
 
 /***************************************************************************/
 // CMainFrame::OnSetDefault
 /***************************************************************************/
-void CMainFrame::OnSetDefaultGraphs(BOOL bPermanent)
-{
+void CMainFrame::OnSetDefaultGraphs(BOOL bPermanent) {
     //**********************************************************
     // Get pointers to the active view and it's document.
     //**********************************************************
@@ -1658,8 +1451,7 @@ void CMainFrame::OnSetDefaultGraphs(BOOL bPermanent)
     // delete it so we can create a new default from the
     // current view.  DDO - 08/07/00
     //**********************************************************
-    if (m_pDefaultViewConfig)
-    {
+    if (m_pDefaultViewConfig) {
         delete m_pDefaultViewConfig;
     }
     m_pDefaultViewConfig = new CSaView(pSrcView);
@@ -1673,8 +1465,7 @@ void CMainFrame::OnSetDefaultGraphs(BOOL bPermanent)
     m_szTempDefaultGraphs = "";
     m_nTempDefaultLayout = (bPermanent) ? 0 : pSrcView->GetLayout();
 
-    if (bPermanent)
-    {
+    if (bPermanent) {
         m_szPermDefaultGraphs = "";
         m_nPermDefaultLayout = pSrcView->GetLayout();
     }
@@ -1689,13 +1480,11 @@ void CMainFrame::OnSetDefaultGraphs(BOOL bPermanent)
     //**********************************************************
     BOOL bMaximized = m_bDefaultMaximizeView;
 
-    if (MDIGetActive(&bMaximized))
-    {
+    if (MDIGetActive(&bMaximized)) {
         m_bDefaultMaximizeView = bMaximized;
         WINDOWPLACEMENT WP;
         WP.length = sizeof(WINDOWPLACEMENT);
-        if (MDIGetActive()->GetWindowPlacement(&WP))
-        {
+        if (MDIGetActive()->GetWindowPlacement(&WP)) {
             // SDM 32 bit conversion
             m_nDefaultHeightView = WP.rcNormalPosition.bottom - WP.rcNormalPosition.top;
             m_nDefaultWidthView  = WP.rcNormalPosition.right - WP.rcNormalPosition.left;
@@ -1707,8 +1496,7 @@ void CMainFrame::OnSetDefaultGraphs(BOOL bPermanent)
     // the default settings to the file that holds the
     // temporary default view settings. DDO - 08/08/00
     //**********************************************************
-    if (bPermanent)
-    {
+    if (bPermanent) {
         m_nStartDataMode = 0;
         WriteReadDefaultViewToTempFile(TRUE);
     }
@@ -1717,8 +1505,7 @@ void CMainFrame::OnSetDefaultGraphs(BOOL bPermanent)
 /***************************************************************************/
 // CMainFrame::OnSetDefaultParameters
 /***************************************************************************/
-void CMainFrame::OnSetDefaultParameters()
-{
+void CMainFrame::OnSetDefaultParameters() {
     //**********************************************************
     // Get pointers to the active view and it's document.
     //**********************************************************
@@ -1763,8 +1550,7 @@ void CMainFrame::OnSetDefaultParameters()
     BOOL bSpectrogramGraphUsed = FALSE;
     BOOL bSnapshotGraphUsed = FALSE;
 
-    for (int nLoop = 0; nLoop < MAX_GRAPHS_NUMBER; nLoop++)
-    {
+    for (int nLoop = 0; nLoop < MAX_GRAPHS_NUMBER; nLoop++) {
         if (pnID[nLoop] == IDD_3D ||
                 pnID[nLoop] == IDD_F1F2 ||
                 pnID[nLoop] == IDD_F2F1 ||
@@ -1773,17 +1559,11 @@ void CMainFrame::OnSetDefaultParameters()
 
         {
             bFormantGraphUsed = TRUE;
-        }
-        else if (pnID[nLoop] == IDD_SPECTRUM)
-        {
+        } else if (pnID[nLoop] == IDD_SPECTRUM) {
             bSpectrumGraphUsed = TRUE;
-        }
-        else if (pnID[nLoop] == IDD_SPECTROGRAM)
-        {
+        } else if (pnID[nLoop] == IDD_SPECTROGRAM) {
             bSpectrogramGraphUsed = TRUE;
-        }
-        else if (pnID[nLoop] == IDD_SNAPSHOT)
-        {
+        } else if (pnID[nLoop] == IDD_SNAPSHOT) {
             bSnapshotGraphUsed = TRUE;
         }
     }
@@ -1792,8 +1572,7 @@ void CMainFrame::OnSetDefaultParameters()
     // AKE 1.5Test13.1 - Copy current formant chart parameter
     // values to defaults.
     //**********************************************************
-    if (bFormantGraphUsed)
-    {
+    if (bFormantGraphUsed) {
         CProcessFormants * pFormants                 = (CProcessFormants *)pDoc->GetFormants();
         CFormantParm * pFormantParm                   = pFormants->GetFormantParms();  // Get formant chart parameter values.
         m_formantParmDefaults.bFromLpcSpectrum      = pFormantParm->bFromLpcSpectrum;
@@ -1807,8 +1586,7 @@ void CMainFrame::OnSetDefaultParameters()
     // RLJ 1.5Test11.1A - Copy current spectrum parameter
     // values to defaults.
     //**********************************************************
-    if (bSpectrumGraphUsed)
-    {
+    if (bSpectrumGraphUsed) {
         CProcessSpectrum * pSpectrum            = (CProcessSpectrum *)pDoc->GetSpectrum();
         CSpectrumParm * pSpectrumParm            = pSpectrum->GetSpectrumParms();  // Get spectrum parameter values.
         m_spectrumParmDefaults.nScaleMode      = pSpectrumParm->nScaleMode;
@@ -1831,14 +1609,11 @@ void CMainFrame::OnSetDefaultParameters()
     // RLJ 1.5Test11.1A - Get process index of Spectrogram
     // graph.
     //**********************************************************
-    if (bSpectrogramGraphUsed)
-    {
+    if (bSpectrogramGraphUsed) {
         CGraphWnd * pGraph = NULL;
 
-        for (int nLoop = 0; nLoop < MAX_GRAPHS_NUMBER; nLoop++)
-        {
-            if (pnID[nLoop] == IDD_SPECTROGRAM)
-            {
+        for (int nLoop = 0; nLoop < MAX_GRAPHS_NUMBER; nLoop++) {
+            if (pnID[nLoop] == IDD_SPECTROGRAM) {
                 pGraph = pView->GetGraph(nLoop);
             }
         }
@@ -1861,14 +1636,11 @@ void CMainFrame::OnSetDefaultParameters()
         }
     }
 
-    if (bSnapshotGraphUsed)
-    {
+    if (bSnapshotGraphUsed) {
         CGraphWnd * pGraph = NULL;
 
-        for (int nLoop = 0; nLoop < MAX_GRAPHS_NUMBER; nLoop++)
-        {
-            if (pnID[nLoop] == IDD_SNAPSHOT)
-            {
+        for (int nLoop = 0; nLoop < MAX_GRAPHS_NUMBER; nLoop++) {
+            if (pnID[nLoop] == IDD_SNAPSHOT) {
                 pGraph = pView->GetGraph(nLoop);
             }
         }
@@ -1896,29 +1668,22 @@ void CMainFrame::OnSetDefaultParameters()
 /***************************************************************************/
 // CMainFrame::OnEqualizeLength
 /***************************************************************************/
-void CMainFrame::OnEqualizeLength()
-{
+void CMainFrame::OnEqualizeLength() {
     CDlgTargView dlg(this);
-    if (dlg.DoModal()==IDOK)
-    {
+    if (dlg.DoModal()==IDOK) {
         CSaView * pSrcView = (CSaView *)GetCurrSaView();
         CSaView * pTarg = dlg.Targ();
-        if (pTarg)
-        {
+        if (pTarg) {
             CSaDoc  * pTargDoc = pTarg->GetDocument();
-            if (pTargDoc)
-            {
+            if (pTargDoc) {
                 CSaDoc * pSrcDoc = pSrcView->GetDocument();
                 DWORD wSrcSmpSize = pSrcDoc->GetSampleSize();
                 DWORD SrcLen = (pSrcView->GetStopCursorPosition() - pSrcView->GetStartCursorPosition() + wSrcSmpSize) / wSrcSmpSize;
                 DWORD wTargSmpSize = pTargDoc->GetSampleSize();
                 DWORD TargStop = pTarg->GetStartCursorPosition() + (DWORD)((double)SrcLen * (double)pTargDoc->GetSamplesPerSec() / (double)pSrcDoc->GetSamplesPerSec() + 0.5) * wTargSmpSize;
-                if (TargStop > pTargDoc->GetDataSize())
-                {
+                if (TargStop > pTargDoc->GetDataSize()) {
                     AfxMessageBox(IDS_EQUALIZE_TOO_FAR_RIGHT);
-                }
-                else
-                {
+                } else {
                     pTarg->SetStopCursorPosition(TargStop);
                 }
             }
@@ -1929,15 +1694,12 @@ void CMainFrame::OnEqualizeLength()
 /***************************************************************************/
 // CMainFrame::OnUpdateEqualizeLength
 /***************************************************************************/
-void CMainFrame::OnUpdateEqualizeLength(CCmdUI * pCmdUI)
-{
+void CMainFrame::OnUpdateEqualizeLength(CCmdUI * pCmdUI) {
 
     int count = 0;
     CDocList doclst; // list of currently open docs
-    for (CSaDoc * pdoc = doclst.pdocFirst(); pdoc; pdoc = doclst.pdocNext())
-    {
-        if (pdoc != NULL)
-        {
+    for (CSaDoc * pdoc = doclst.pdocFirst(); pdoc; pdoc = doclst.pdocNext()) {
+        if (pdoc != NULL) {
             count++;
         }
     }
@@ -1950,22 +1712,19 @@ void CMainFrame::OnUpdateEqualizeLength(CCmdUI * pCmdUI)
 // CMainFrame::CreateFindReplaceDlg Launches the find/replace dialog
 // The user wants to see the modeless find dialog.
 /***************************************************************************/
-void CMainFrame::CreateFindOrReplaceDlg()
-{
+void CMainFrame::CreateFindOrReplaceDlg() {
     // Get the string segment represented;
     CSaString sToFind;
     int annotWndIndex = 0;
     CSaView * pView = (CSaView *)GetCurrSaView();
-    if (pView->IsAnyAnnotationSelected())
-    {
+    if (pView->IsAnyAnnotationSelected()) {
         sToFind = pView->GetSelectedAnnotationString();
         annotWndIndex = pView->FindSelectedAnnotationIndex();
     }
     CSaString sFields;
     sFields.LoadString(IDS_FINDFIELDS);
     m_pDlgFind = new CDlgFind((CWnd *)this,sFields, sToFind, m_bFindOnly,CSaString(_T("")),annotWndIndex,this);
-    if (!m_pDlgFind->Created())
-    {
+    if (!m_pDlgFind->Created()) {
         delete m_pDlgFind;
         m_pDlgFind = NULL;
         ASSERT_VALID(this);
@@ -1978,10 +1737,8 @@ void CMainFrame::CreateFindOrReplaceDlg()
 // CMainFrame::MaybeCreateFindOrReplaceDlg
 // Brings up the find or replace dialog, creating it if neccessary.
 /***************************************************************************/
-void CMainFrame::MaybeCreateFindOrReplaceDlg(bool bWantFindOnly)
-{
-    if (m_pDlgFind!=NULL)
-    {
+void CMainFrame::MaybeCreateFindOrReplaceDlg(bool bWantFindOnly) {
+    if (m_pDlgFind!=NULL) {
         delete m_pDlgFind;
         m_pDlgFind = NULL;
     }
@@ -1993,8 +1750,7 @@ void CMainFrame::MaybeCreateFindOrReplaceDlg(bool bWantFindOnly)
 // CMainFrame::SetWbProcess Set new pointer to workbench process
 // Sets a new pointer to a workbench process and returns the old one.
 /***************************************************************************/
-CProcess * CMainFrame::SetWbProcess(int nProcess, int nFilter, CProcess * pProcess)
-{
+CProcess * CMainFrame::SetWbProcess(int nProcess, int nFilter, CProcess * pProcess) {
     CProcess * pTempProcess = m_apWbProcess[nProcess][nFilter];
     m_apWbProcess[nProcess][nFilter] = pProcess;
     return pTempProcess;
@@ -2004,8 +1760,7 @@ CProcess * CMainFrame::SetWbProcess(int nProcess, int nFilter, CProcess * pProce
 // CMainFrame::SetWbFilterID Set new filter ID to workbench
 // Sets a new filter ID into the workbench and returns the old one.
 /***************************************************************************/
-int CMainFrame::SetWbFilterID(int nProcess, int nFilter, int nID)
-{
+int CMainFrame::SetWbFilterID(int nProcess, int nFilter, int nID) {
     int nTempID = m_aWbFilterID[nProcess][nFilter];
     m_aWbFilterID[nProcess][nFilter] = nID;
     return nTempID;
@@ -2016,15 +1771,11 @@ int CMainFrame::SetWbFilterID(int nProcess, int nFilter, int nID)
 // Returns a pointer to the document that uses the process if there is one,
 // else it returns NULL.
 /***************************************************************************/
-CDocument * CMainFrame::IsProcessUsed(int nProcess)
-{
+CDocument * CMainFrame::IsProcessUsed(int nProcess) {
     CDocList doclst; // list of currently open docs
-    for (CSaDoc * pDoc = doclst.pdocFirst(); pDoc; pDoc = doclst.pdocNext())
-    {
-        if (pDoc != NULL)
-        {
-            if (nProcess == pDoc->GetWbProcess())
-            {
+    for (CSaDoc * pDoc = doclst.pdocFirst(); pDoc; pDoc = doclst.pdocNext()) {
+        if (pDoc != NULL) {
+            if (nProcess == pDoc->GetWbProcess()) {
                 return (CDocument *)pDoc;
             }
         }
@@ -2038,18 +1789,13 @@ CDocument * CMainFrame::IsProcessUsed(int nProcess)
 // it back to plain with recalculating if the flag bSwitchBack is TRUE
 // (default).
 /***************************************************************************/
-void CMainFrame::DeleteWbProcesses(BOOL bSwitchBack)
-{
+void CMainFrame::DeleteWbProcesses(BOOL bSwitchBack) {
     // delete workbench processes
-    for (int nLoop = 0; nLoop < MAX_PROCESS_NUMBER; nLoop++)
-    {
-        for (int nFilterLoop = 0; nFilterLoop < MAX_FILTER_NUMBER; nFilterLoop++)
-        {
-            if (m_apWbProcess[nLoop][nFilterLoop])
-            {
+    for (int nLoop = 0; nLoop < MAX_PROCESS_NUMBER; nLoop++) {
+        for (int nFilterLoop = 0; nFilterLoop < MAX_FILTER_NUMBER; nFilterLoop++) {
+            if (m_apWbProcess[nLoop][nFilterLoop]) {
                 CDocument * pDoc = IsProcessUsed(nLoop);
-                if ((pDoc!=NULL) && (bSwitchBack))
-                {
+                if ((pDoc!=NULL) && (bSwitchBack)) {
                     ((CSaDoc *)pDoc)->SetWbProcess(0);    // switch back to plain
                 }
                 delete m_apWbProcess[nLoop][nFilterLoop];
@@ -2098,8 +1844,7 @@ static const char * psz_autosave     = "AutoSave";
 //********************************************************************
 //
 //********************************************************************
-void CMainFrame::WriteProperties(CObjectOStream & obs)
-{
+void CMainFrame::WriteProperties(CObjectOStream & obs) {
     //*****************************************************
     // Before beginning to write the properties, make sure
     // that if there has been a permanent default view
@@ -2110,8 +1855,7 @@ void CMainFrame::WriteProperties(CObjectOStream & obs)
     // the temp. default view isn't the one written to the
     // settings file.  DDO - 08/07/00
     //*****************************************************
-    if (m_bDefaultViewExists)
-    {
+    if (m_bDefaultViewExists) {
         WriteReadDefaultViewToTempFile(FALSE);
     }
 
@@ -2123,13 +1867,10 @@ void CMainFrame::WriteProperties(CObjectOStream & obs)
     this->GetWindowPlacement(&wpl);
     obs.WriteWindowPlacement(psz_placementMain, wpl);
 
-    if (m_pDlgEditor!=NULL)
-    {
+    if (m_pDlgEditor!=NULL) {
         m_pDlgEditor->GetWindowPlacement(&wpl);
         obs.WriteWindowPlacement(psz_placementEditor, wpl);
-    }
-    else if (m_wplDlgEditor.length)
-    {
+    } else if (m_wplDlgEditor.length) {
         obs.WriteWindowPlacement(psz_placementEditor, m_wplDlgEditor);
     }
 
@@ -2173,8 +1914,7 @@ void CMainFrame::WriteProperties(CObjectOStream & obs)
     obs.WriteInteger(psz_captionstyle, m_nCaptionStyle);
 
     obs.WriteBeginMarker(psz_graphfontarray);
-    for (int nLoop = 0; nLoop < ANNOT_WND_NUMBER; nLoop++)
-    {
+    for (int nLoop = 0; nLoop < ANNOT_WND_NUMBER; nLoop++) {
         CSaString szFont = m_GraphFontFaces.GetAt(nLoop);
         obs.WriteString(psz_graphfont, szFont.utf8().c_str());
         obs.WriteUInt(psz_graphfontsize, m_GraphFontSizes.GetAt(nLoop));
@@ -2185,13 +1925,11 @@ void CMainFrame::WriteProperties(CObjectOStream & obs)
     BOOL bMaximized;
 
     //SDM 1.06.6U5 if there is an active child save its maximized state and normal size as the defaults
-    if (MDIGetActive(&bMaximized))
-    {
+    if (MDIGetActive(&bMaximized)) {
         m_bDefaultMaximizeView = bMaximized;
         WINDOWPLACEMENT WP;
         WP.length = sizeof(WINDOWPLACEMENT);
-        if (MDIGetActive()->GetWindowPlacement(&WP))   // SDM 32bit conversion
-        {
+        if (MDIGetActive()->GetWindowPlacement(&WP)) { // SDM 32bit conversion
             m_nDefaultHeightView = WP.rcNormalPosition.bottom - WP.rcNormalPosition.top;
             m_nDefaultWidthView = WP.rcNormalPosition.right - WP.rcNormalPosition.left;
         }
@@ -2200,7 +1938,7 @@ void CMainFrame::WriteProperties(CObjectOStream & obs)
     obs.WriteBool(psz_bMaxView,  m_bDefaultMaximizeView);
     obs.WriteInteger(psz_HeightView, m_nDefaultHeightView);
     obs.WriteInteger(psz_WidthView, m_nDefaultWidthView);
-	obs.WriteBool(psz_autosave, m_bAutoSave);
+    obs.WriteBool(psz_autosave, m_bAutoSave);
 
     obs.WriteEndMarker(psz_mainframe);
 }
@@ -2208,18 +1946,15 @@ void CMainFrame::WriteProperties(CObjectOStream & obs)
 //********************************************************************
 // Read the open databases and windows
 //********************************************************************
-BOOL CMainFrame::ReadProperties(CObjectIStream & obs)
-{
-    if (!obs.bAtBackslash() || !obs.bReadBeginMarker(psz_mainframe))
-    {
+BOOL CMainFrame::ReadProperties(CObjectIStream & obs) {
+    if (!obs.bAtBackslash() || !obs.bReadBeginMarker(psz_mainframe)) {
         return FALSE;
     }
 
     BOOL b = FALSE;
     int nValue;
 
-    while (!obs.bAtEnd())
-    {
+    while (!obs.bAtEnd()) {
         WINDOWPLACEMENT wpl;
         //     if ( obs.bReadBool(psz_saveonexit, m_bSaveOnExit));                        // DDO - 08/03/00 Don't need setting anymore.
 
@@ -2227,10 +1962,8 @@ BOOL CMainFrame::ReadProperties(CObjectIStream & obs)
         else if (obs.bReadBool(psz_showstartupdlg, m_bShowStartupDlg));             // DDO - 08/03/00
         else if (obs.bReadBool(psz_saveopenfiles, m_bSaveOpenFiles));               // tdg - 09/03/97
         else if (obs.bReadBool(psz_showadvancedaudio, m_bShowAdvancedAudio));
-        else if (obs.bReadWindowPlacement(psz_placementMain, wpl))
-        {
-            if (wpl.showCmd == SW_SHOWMINIMIZED)
-            {
+        else if (obs.bReadWindowPlacement(psz_placementMain, wpl)) {
+            if (wpl.showCmd == SW_SHOWMINIMIZED) {
                 wpl.showCmd = SW_SHOWNORMAL;
             }
             wpl.ptMinPosition.x = -1;
@@ -2238,17 +1971,14 @@ BOOL CMainFrame::ReadProperties(CObjectIStream & obs)
 
             this->SetWindowPlacement(&wpl);
 
-            if (wpl.showCmd == SW_SHOWMAXIMIZED)
-            {
+            if (wpl.showCmd == SW_SHOWMAXIMIZED) {
                 this->ShowWindow(wpl.showCmd);
             }
         }
 
         else if (obs.bReadWindowPlacement(psz_placementEditor, m_wplDlgEditor));    // SDM - 1.5Test8.2
-        else if (obs.bReadBool(psz_statusbar, b))
-        {
-            if (b != m_bStatusBar)
-            {
+        else if (obs.bReadBool(psz_statusbar, b)) {
+            if (b != m_bStatusBar) {
                 SendMessage(WM_COMMAND, ID_VIEW_STATUS_BAR, 0); // change status bar status
                 m_bStatusBar = !m_bStatusBar;
             }
@@ -2256,36 +1986,25 @@ BOOL CMainFrame::ReadProperties(CObjectIStream & obs)
 
         else if (obs.bReadInteger(psz_statusposreadout, m_nStatusPosReadout));
         else if (obs.bReadInteger(psz_statuspitchreadout, m_nStatusPitchReadout));
-        else if (obs.bReadBool(psz_toolbar, b))
-        {
-            if (b != bToolBarVisible())
-            {
+        else if (obs.bReadBool(psz_toolbar, b)) {
+            if (b != bToolBarVisible()) {
                 BOOL bAdvanced = b;
                 ShowControlBar(GetControlBar(IDR_BAR_BASIC),!bAdvanced, TRUE); // change toolbar status
                 ShowControlBar(GetControlBar(IDR_BAR_ADVANCED), bAdvanced, TRUE); // change toolbar status
             }
-        }
-        else if (obs.bReadBool(psz_taskbar, b))
-        {
-            if (b != bTaskBarVisible())
-            {
+        } else if (obs.bReadBool(psz_taskbar, b)) {
+            if (b != bTaskBarVisible()) {
                 ShowControlBar(GetControlBar(ID_VIEW_TASKBAR),b, TRUE); // change toolbar status
             }
-        }
-        else if (obs.bReadBool(psz_toneAbove, b))
-        {
+        } else if (obs.bReadBool(psz_toneAbove, b)) {
             //SDM 1.5Test8.2
-            if (b != m_bToneAbove)
-            {
+            if (b != m_bToneAbove) {
                 m_bToneAbove = !m_bToneAbove;
 
-                if (m_bToneAbove)
-                {
+                if (m_bToneAbove) {
                     CGraphWnd::m_anAnnWndOrder[1] = TONE;
                     CGraphWnd::m_anAnnWndOrder[2] = PHONETIC;
-                }
-                else
-                {
+                } else {
                     CGraphWnd::m_anAnnWndOrder[1] = PHONETIC;
                     CGraphWnd::m_anAnnWndOrder[2] = TONE;
                 }
@@ -2297,11 +2016,9 @@ BOOL CMainFrame::ReadProperties(CObjectIStream & obs)
         else if (obs.bReadInteger(psz_graphUpdateMode, m_nGraphUpdateMode));
         else if (obs.bReadBool(psz_bAnimate, m_bAnimate));
         else if (obs.bReadInteger(psz_animationRate, m_nAnimationRate));
-        else if (obs.bReadInteger(psz_cursorMode, nValue))
-        {
+        else if (obs.bReadInteger(psz_cursorMode, nValue)) {
             m_nCursorAlignment = (ECursorAlignment) nValue;
-        }
-        else if (m_colors.ReadProperties(obs));
+        } else if (m_colors.ReadProperties(obs));
         else if (m_fnKeys.ReadProperties(obs));
         else if (m_grid.ReadProperties(obs));
         else if (m_waveformGeneratorSettings.ReadProperties(obs));
@@ -2314,18 +2031,14 @@ BOOL CMainFrame::ReadProperties(CObjectIStream & obs)
         else if (m_spectrumParmDefaults.ReadProperties(obs));
         else if (m_spectrogramParmDefaults.ReadPropertiesA(obs));
         else if (m_snapshotParmDefaults.ReadPropertiesB(obs));
-        else if (obs.bReadBeginMarker(psz_graphfontarray))
-        {
-            for (int nLoop = 0; nLoop < ANNOT_WND_NUMBER; nLoop++)
-            {
+        else if (obs.bReadBeginMarker(psz_graphfontarray)) {
+            for (int nLoop = 0; nLoop < ANNOT_WND_NUMBER; nLoop++) {
                 UINT u = 0;
                 CSaString str;
-                if (ReadStreamString(obs,psz_graphfont,str))
-                {
+                if (ReadStreamString(obs,psz_graphfont,str)) {
                     m_GraphFontFaces.SetAtGrow(nLoop, str);
                 }
-                if (obs.bReadUInt(psz_graphfontsize, u))
-                {
+                if (obs.bReadUInt(psz_graphfontsize, u)) {
                     m_GraphFontSizes.SetAtGrow(nLoop, u);
                 }
             }
@@ -2336,9 +2049,8 @@ BOOL CMainFrame::ReadProperties(CObjectIStream & obs)
         else if (obs.bReadBool(psz_bMaxView, m_bDefaultMaximizeView));
         else if (obs.bReadInteger(psz_HeightView, m_nDefaultHeightView));
         else if (obs.bReadInteger(psz_WidthView, m_nDefaultWidthView));
-		else if (obs.bReadBool(psz_autosave, m_bAutoSave));
-        else if (obs.bEnd(psz_mainframe))
-        {
+        else if (obs.bReadBool(psz_autosave, m_bAutoSave));
+        else if (obs.bEnd(psz_mainframe)) {
             break;
         }
     }
@@ -2350,41 +2062,31 @@ static LPCSTR psz_defaultviewconfig = "defaultviewconfig";
 //********************************************************************
 //
 //********************************************************************
-BOOL CMainFrame::ReadDefaultView(CObjectIStream & obs)
-{
-    if (!obs.bAtBackslash() || !obs.bReadBeginMarker(psz_defaultviewconfig))
-    {
+BOOL CMainFrame::ReadDefaultView(CObjectIStream & obs) {
+    if (!obs.bAtBackslash() || !obs.bReadBeginMarker(psz_defaultviewconfig)) {
         return FALSE;
     }
 
-    if (m_pDefaultViewConfig)
-    {
+    if (m_pDefaultViewConfig) {
         delete m_pDefaultViewConfig;    // always start from scratch
     }
     m_pDefaultViewConfig = new CSaView();
     m_nPermDefaultLayout = 0;
     m_szPermDefaultGraphs  = "";
 
-    while (!obs.bAtEnd())
-    {
-        if (m_pDefaultViewConfig ? m_pDefaultViewConfig->ReadProperties(obs, FALSE) : FALSE)
-        {
+    while (!obs.bAtEnd()) {
+        if (m_pDefaultViewConfig ? m_pDefaultViewConfig->ReadProperties(obs, FALSE) : FALSE) {
             if (m_pDefaultViewConfig->GetLayout() < ID_LAYOUT_FIRST ||
                     m_pDefaultViewConfig->GetLayout() > ID_LAYOUT_LAST ||
-                    m_pDefaultViewConfig->GetGraphIDs()[0] == 0)
-            {
+                    m_pDefaultViewConfig->GetGraphIDs()[0] == 0) {
                 // This is a corrupted default view
                 delete m_pDefaultViewConfig;
                 m_pDefaultViewConfig = NULL;
-            }
-            else
-            {
+            } else {
                 m_nPermDefaultLayout = m_pDefaultViewConfig->GetLayout();
                 m_szPermDefaultGraphs  = m_pDefaultViewConfig->GetGraphsDescription();
             }
-        }
-        else if (obs.bEnd(psz_defaultviewconfig))
-        {
+        } else if (obs.bEnd(psz_defaultviewconfig)) {
             break;
         }
     }
@@ -2392,8 +2094,7 @@ BOOL CMainFrame::ReadDefaultView(CObjectIStream & obs)
     // Now that documents and views have been opened, activate the top window
     // and maximize it if it had been when SA was closed.
     CSaView * pviewT = ((CSaApp *)AfxGetApp())->GetViewTop();
-    if (pviewT)
-    {
+    if (pviewT) {
         pviewT->ShowInitialTopState();
     }
 
@@ -2405,10 +2106,8 @@ BOOL CMainFrame::ReadDefaultView(CObjectIStream & obs)
 //********************************************************************
 //
 //********************************************************************
-void CMainFrame::WriteDefaultView(CObjectOStream & obs)
-{
-    if (m_bDefaultViewExists && m_pDefaultViewConfig)
-    {
+void CMainFrame::WriteDefaultView(CObjectOStream & obs) {
+    if (m_bDefaultViewExists && m_pDefaultViewConfig) {
         obs.WriteBeginMarker(psz_defaultviewconfig);
         obs.WriteString(psz_defaultgraphlist, "");   // We don't use this anymore but the old code expected/required it
         m_pDefaultViewConfig->WriteProperties(obs);
@@ -2423,8 +2122,7 @@ static LPCSTR pszTmpDfltSettingsFile = "~!SA!~.tmp";
 // writes defaultView properties to predefined temp file
 // WARNING ....read destroys temp file
 //********************************************************************
-void CMainFrame::WriteReadDefaultViewToTempFile(BOOL bWrite)
-{
+void CMainFrame::WriteReadDefaultViewToTempFile(BOOL bWrite) {
     CSaString szPath;
 
     GetTempPath(_MAX_PATH, szPath.GetBuffer(_MAX_PATH));
@@ -2435,12 +2133,9 @@ void CMainFrame::WriteReadDefaultViewToTempFile(BOOL bWrite)
 
     szPath += szTmpDfltSettingsFile;
 
-    try
-    {
-        if (bWrite)
-        {
-            if (!m_pDefaultViewConfig)
-            {
+    try {
+        if (bWrite) {
+            if (!m_pDefaultViewConfig) {
                 return;
             }
             CObjectOStream obs(szPath.utf8().c_str());
@@ -2451,28 +2146,23 @@ void CMainFrame::WriteReadDefaultViewToTempFile(BOOL bWrite)
             m_pDefaultViewConfig->WriteProperties(obs);
             obs.getIos().close();
             m_bDefaultViewExists = TRUE;
-        }
-        else
-        {
+        } else {
             CObjectIStream obs( szPath.utf8().c_str());
 
             obs.bReadBool(psz_bMaxView, m_bDefaultMaximizeView);
             obs.bReadInteger(psz_HeightView, m_nDefaultHeightView);
             obs.bReadInteger(psz_WidthView, m_nDefaultWidthView);
-            if (m_pDefaultViewConfig)
-            {
+            if (m_pDefaultViewConfig) {
                 delete m_pDefaultViewConfig;
             }
             m_pDefaultViewConfig = new CSaView();
 
             m_pDefaultViewConfig->ReadProperties(obs, FALSE);
-			obs.Close();
+            obs.Close();
             std::string szUtf8 = szPath.utf8();
             remove(szUtf8.c_str());
         }
-    }
-    catch (...)
-    {
+    } catch (...) {
     }
 }
 
@@ -2480,11 +2170,9 @@ void CMainFrame::WriteReadDefaultViewToTempFile(BOOL bWrite)
 /***************************************************************************/
 // CMainFrame::OnActivateApp delete display plot on loss of focus
 /***************************************************************************/
-void CMainFrame::OnActivateApp(BOOL bActive, DWORD dwThreadID)
-{
+void CMainFrame::OnActivateApp(BOOL bActive, DWORD dwThreadID) {
     CMDIFrameWnd::OnActivateApp(bActive, dwThreadID);
-    if ((!bActive) && (m_pDisplayPlot!=NULL))
-    {
+    if ((!bActive) && (m_pDisplayPlot!=NULL)) {
         delete m_pDisplayPlot;
         m_pDisplayPlot = NULL;
     }
@@ -2494,25 +2182,19 @@ void CMainFrame::OnActivateApp(BOOL bActive, DWORD dwThreadID)
 /***************************************************************************/
 // CMainFrame::OnWindowTileHorz set window order then tile
 /***************************************************************************/
-void CMainFrame::OnWindowTileHorz()
-{
+void CMainFrame::OnWindowTileHorz() {
     CDocList doclst; // list of currently open docs
     int nLoop;
     int maxID = -1;
 
-    for (CSaDoc * pdoc = doclst.pdocFirst(); pdoc; pdoc = doclst.pdocNext())
-    {
-        if (pdoc->GetID() > maxID)
-        {
+    for (CSaDoc * pdoc = doclst.pdocFirst(); pdoc; pdoc = doclst.pdocNext()) {
+        if (pdoc->GetID() > maxID) {
             maxID = pdoc->GetID();
         }
     }
-    for (nLoop = maxID; nLoop >= 0; nLoop--)
-    {
-        for (CSaDoc * pdoc = doclst.pdocFirst(); pdoc; pdoc = doclst.pdocNext())
-        {
-            if (pdoc->GetID() == nLoop)
-            {
+    for (nLoop = maxID; nLoop >= 0; nLoop--) {
+        for (CSaDoc * pdoc = doclst.pdocFirst(); pdoc; pdoc = doclst.pdocNext()) {
+            if (pdoc->GetID() == nLoop) {
                 POSITION pos = pdoc->GetFirstViewPosition();
                 CView * pFirstView = pdoc->GetNextView(pos);
                 CWnd * pWnd = pFirstView->GetParent(); // MDIChildWnd
@@ -2528,25 +2210,19 @@ void CMainFrame::OnWindowTileHorz()
 /***************************************************************************/
 // CMainFrame::OnWindowTileVert set window order then tile
 /***************************************************************************/
-void CMainFrame::OnWindowTileVert()
-{
+void CMainFrame::OnWindowTileVert() {
     CDocList doclst; // list of currently open docs
     int nLoop;
     int maxID = -1;
 
-    for (CSaDoc * pdoc = doclst.pdocFirst(); pdoc; pdoc = doclst.pdocNext())
-    {
-        if (pdoc->GetID() > maxID)
-        {
+    for (CSaDoc * pdoc = doclst.pdocFirst(); pdoc; pdoc = doclst.pdocNext()) {
+        if (pdoc->GetID() > maxID) {
             maxID = pdoc->GetID();
         }
     }
-    for (nLoop = maxID; nLoop >= 0; nLoop--)
-    {
-        for (CSaDoc * pdoc = doclst.pdocFirst(); pdoc; pdoc = doclst.pdocNext())
-        {
-            if (pdoc->GetID() == nLoop)
-            {
+    for (nLoop = maxID; nLoop >= 0; nLoop--) {
+        for (CSaDoc * pdoc = doclst.pdocFirst(); pdoc; pdoc = doclst.pdocNext()) {
+            if (pdoc->GetID() == nLoop) {
                 POSITION pos = pdoc->GetFirstViewPosition();
                 CView * pFirstView = pdoc->GetNextView(pos);
                 CWnd * pWnd = pFirstView->GetParent(); // MDIChildWnd
@@ -2561,11 +2237,9 @@ void CMainFrame::OnWindowTileVert()
 /***************************************************************************/
 // CMainFrame::NotifyFragmentDone  respond to fragment processing done
 /***************************************************************************/
-void CMainFrame::NotifyFragmentDone(void * /*pCaller*/)
-{
+void CMainFrame::NotifyFragmentDone(void * /*pCaller*/) {
     // kg - prevent exception
-    if ((CDlgPlayer::IsLaunched()) && (GetPlayer(false)->IsWindowVisible()))
-    {
+    if ((CDlgPlayer::IsLaunched()) && (GetPlayer(false)->IsWindowVisible())) {
         GetPlayer(false)->EnableSpeedSlider();
     }
 }
@@ -2573,22 +2247,18 @@ void CMainFrame::NotifyFragmentDone(void * /*pCaller*/)
 /***************************************************************************/
 // CMainFrame::DestroyPlayer
 /***************************************************************************/
-void CMainFrame::DestroyPlayer()
-{
-    if (m_pDlgPlayer!=NULL)
-    {
+void CMainFrame::DestroyPlayer() {
+    if (m_pDlgPlayer!=NULL) {
         delete m_pDlgPlayer;
         m_pDlgPlayer = NULL;
     }
 }
 
-void CMainFrame::OnWaveformGenerator()
-{
+void CMainFrame::OnWaveformGenerator() {
     CDlgWaveformGenerator dlg;
     dlg.working = m_waveformGeneratorSettings;
 
-    if (dlg.DoModal()!=IDOK)
-    {
+    if (dlg.DoModal()!=IDOK) {
         return;
     }
 
@@ -2602,8 +2272,7 @@ void CMainFrame::OnWaveformGenerator()
     TCHAR szFile[_MAX_PATH];
     // create temp filename for synthesized waveform
     FileUtils::GetTempFileName(_T("WAV"), szFile, _MAX_PATH);
-    if (m_waveformGeneratorSettings.Synthesize(szFile))
-    {
+    if (m_waveformGeneratorSettings.Synthesize(szFile)) {
         CSaApp * pApp = (CSaApp *)(AfxGetApp());
         pApp->OpenWavFileAsNew(szFile);
     }
@@ -2613,13 +2282,11 @@ static CDlgSynthesis * s_pDlgSynthesis = NULL;
 /***************************************************************************/
 // CMainFrame::OnSynthesis Open synthesis dialog
 /***************************************************************************/
-void CMainFrame::OnSynthesis()
-{
+void CMainFrame::OnSynthesis() {
     DestroySynthesizer();
     ASSERT(s_pDlgSynthesis == NULL);
     s_pDlgSynthesis = new CDlgSynthesis(_T("Synthesis"));
-    if (s_pDlgSynthesis)
-    {
+    if (s_pDlgSynthesis) {
         s_pDlgSynthesis->Create(this);
     }
 }
@@ -2627,18 +2294,15 @@ void CMainFrame::OnSynthesis()
 /***************************************************************************/
 // CMainFrame::OnUpdateSynthesis Menu update
 /***************************************************************************/
-void CMainFrame::OnUpdateSynthesis(CCmdUI * /*pCmdUI*/)
-{
+void CMainFrame::OnUpdateSynthesis(CCmdUI * /*pCmdUI*/) {
     // pCmdUI->Enable(EXPERIMENTAL_ACCESS); // enable if control key pressed
 }
 
 /***************************************************************************/
 // CMainFrame::DestroySynthesizer
 /***************************************************************************/
-void CMainFrame::DestroySynthesizer()
-{
-    if (s_pDlgSynthesis)
-    {
+void CMainFrame::DestroySynthesizer() {
+    if (s_pDlgSynthesis) {
         s_pDlgSynthesis->DestroyWindow();
         delete s_pDlgSynthesis;
         s_pDlgSynthesis = NULL;
@@ -2648,24 +2312,21 @@ void CMainFrame::DestroySynthesizer()
 /***************************************************************************/
 // CMainFrame::OnSynthesisKlattIpa Open synthesis dialog
 /***************************************************************************/
-void CMainFrame::OnSynthesisKlattIpa()
-{
+void CMainFrame::OnSynthesisKlattIpa() {
     CDlgKlattAll::CreateSynthesizer(this, CDlgKlattAll::kSegment);
 }
 
 /***************************************************************************/
 // CMainFrame::OnSynthesisKlattFragments Open synthesis dialog
 /***************************************************************************/
-void CMainFrame::OnSynthesisKlattFragments()
-{
+void CMainFrame::OnSynthesisKlattFragments() {
     CDlgKlattAll::CreateSynthesizer(this, CDlgKlattAll::kFragment);
 }
 
 /***************************************************************************/
 // CMainFrame::OnSynthesis Open synthesis dialog
 /***************************************************************************/
-void CMainFrame::OnSynthesisVocalTract()
-{
+void CMainFrame::OnSynthesisVocalTract() {
     CDlgVocalTract::CreateSynthesizer(this);
 }
 
@@ -2673,12 +2334,10 @@ void CMainFrame::OnSynthesisVocalTract()
 * used to create a new document, record and overlay in it and load it
 * in another document.
 ******************************************************************************/
-void CMainFrame::OnRecordOverlay()
-{
+void CMainFrame::OnRecordOverlay() {
     // find the view that launched this message
     CSaView * pSourceView = GetCurrSaView();
-    if (!pSourceView)
-    {
+    if (!pSourceView) {
         return;
     }
 
@@ -2686,16 +2345,14 @@ void CMainFrame::OnRecordOverlay()
     // graphs that can be merged with it, (m_pPickOverlay) then
     // call AssignGraph to merge them in.
     if ((!pSourceView->GetFocusedGraphWnd()) ||
-            (!CGraphWnd::IsMergeableGraph(pSourceView->GetFocusedGraphWnd())))
-    {
+            (!CGraphWnd::IsMergeableGraph(pSourceView->GetFocusedGraphWnd()))) {
         return;
     }
 
     CSaApp * pApp = (CSaApp *)AfxGetApp();
     CSaDoc * pDoc = (CSaDoc *)pApp->OpenBlankView(true);
 
-    if (pDoc!=NULL)
-    {
+    if (pDoc!=NULL) {
         //hide the temporary overlay document
         MDIActivate(pSourceView->pwndChildFrame());
 
@@ -2706,46 +2363,37 @@ void CMainFrame::OnRecordOverlay()
 
         CAlignInfo alignInfo;
         pSourceDoc->GetAlignInfo(alignInfo);
-        
-		if (pos)
-        {
+
+        if (pos) {
             CSaView * pView = (CSaView *)pDoc->GetNextView(pos);
-            if (pView->IsKindOf(RUNTIME_CLASS(CSaView)))
-            {
-				if (!CDlgAutoRecorder::IsLaunched())
-				{
-					int wholeFile = (AfxGetApp()->GetProfileInt(L"AutoRecorder",L"WholeFile",0)!=0);
-					m_pAutoRecorder = new CDlgAutoRecorder( pDoc, pView, pSourceView, alignInfo, wholeFile);
-					if (m_pDisplayPlot!=NULL)
-					{
-						m_pDisplayPlot->m_pModal = m_pAutoRecorder;
-					}
-					m_pAutoRecorder->Create(this);
-				}
+            if (pView->IsKindOf(RUNTIME_CLASS(CSaView))) {
+                if (!CDlgAutoRecorder::IsLaunched()) {
+                    int wholeFile = (AfxGetApp()->GetProfileInt(L"AutoRecorder",L"WholeFile",0)!=0);
+                    m_pAutoRecorder = new CDlgAutoRecorder( pDoc, pView, pSourceView, alignInfo, wholeFile);
+                    if (m_pDisplayPlot!=NULL) {
+                        m_pDisplayPlot->m_pModal = m_pAutoRecorder;
+                    }
+                    m_pAutoRecorder->Create(this);
+                }
             }
-        }
-        else
-        {
+        } else {
             pDoc->OnCloseDocument();
         }
     }
 }
 
-void CMainFrame::OnUpdateRecordOverlay(CCmdUI * pCmdUI)
-{
+void CMainFrame::OnUpdateRecordOverlay(CCmdUI * pCmdUI) {
     // if the recorder is up, we can't restart
     BOOL bEnable = FALSE;
 
     {
         CSaView * pSourceView = GetCurrSaView();
-        if (pSourceView)
-        {
+        if (pSourceView) {
             // if the focused graph is mergeable, bring up a list of all other
             // graphs that can be merged with it, (m_pPickOverlay) then
             // call AssignGraph to merge them in.
             if ((pSourceView->GetFocusedGraphWnd()) &&
-                (CGraphWnd::IsMergeableGraph(pSourceView->GetFocusedGraphWnd())))
-            {
+                    (CGraphWnd::IsMergeableGraph(pSourceView->GetFocusedGraphWnd()))) {
                 bEnable = TRUE;
             }
         }
@@ -2754,8 +2402,7 @@ void CMainFrame::OnUpdateRecordOverlay(CCmdUI * pCmdUI)
     pCmdUI->Enable(bEnable);
 }
 
-BOOL CMainFrame::OnCopyData(CWnd * /*pWnd*/, COPYDATASTRUCT * pCopyDataStruct)
-{
+BOOL CMainFrame::OnCopyData(CWnd * /*pWnd*/, COPYDATASTRUCT * pCopyDataStruct) {
 
     // length is in bytes
     int len = pCopyDataStruct->cbData;
@@ -2769,370 +2416,291 @@ BOOL CMainFrame::OnCopyData(CWnd * /*pWnd*/, COPYDATASTRUCT * pCopyDataStruct)
     return TRUE;
 }
 
-BOOL CMainFrame::bToolBarVisible()
-{
+BOOL CMainFrame::bToolBarVisible() {
     // toolbar on/off
     return m_wndToolBarAdvanced.IsVisible() ;
 };
-BOOL CMainFrame::bTaskBarVisible()
-{
+BOOL CMainFrame::bTaskBarVisible() {
     // taskbar on/off
     return m_wndTaskBar.IsVisible();
 };
-const CSaString CMainFrame::GetPermGraphNames(void)
-{
+const CSaString CMainFrame::GetPermGraphNames(void) {
     return m_szPermDefaultGraphs;
 }
-const CSaString CMainFrame::GetTempGraphNames(void)
-{
+const CSaString CMainFrame::GetTempGraphNames(void) {
     return m_szTempDefaultGraphs;
 }
-const UINT CMainFrame::GetPermLayout(void)
-{
+const UINT CMainFrame::GetPermLayout(void) {
     return m_nPermDefaultLayout;
 }
-const UINT CMainFrame::GetTempLayout(void)
-{
+const UINT CMainFrame::GetTempLayout(void) {
     return m_nTempDefaultLayout;
 }
-BOOL CMainFrame::GetShowStartupDlg(void)
-{
+BOOL CMainFrame::GetShowStartupDlg(void) {
     return m_bShowStartupDlg;
 }
-int CMainFrame::GetStartDataMode(void)
-{
+int CMainFrame::GetStartDataMode(void) {
     return m_nStartDataMode;
 }
-BOOL CMainFrame::GetSaveOpenFiles(void)
-{
+BOOL CMainFrame::GetSaveOpenFiles(void) {
     return m_bSaveOpenFiles;
 }
-BOOL CMainFrame::GetShowAdvancedAudio(void)
-{
+BOOL CMainFrame::GetShowAdvancedAudio(void) {
     return m_bShowAdvancedAudio;
 }
-void CMainFrame::SetShowStartupDlg(BOOL bShow)
-{
+void CMainFrame::SetShowStartupDlg(BOOL bShow) {
     m_bShowStartupDlg = bShow;
 }
-void CMainFrame::SetStartDataMode(int nMode)
-{
+void CMainFrame::SetStartDataMode(int nMode) {
     m_nStartDataMode = nMode;
 }
 
-CParseParm * CMainFrame::GetCParseParm()
-{
+CParseParm * CMainFrame::GetCParseParm() {
     return &m_parseParmDefaults;
 }
-CSegmentParm * CMainFrame::GetSegmentParm()
-{
+CSegmentParm * CMainFrame::GetSegmentParm() {
     return &m_segmentParmDefaults;
 }
-const CPitchParm * CMainFrame::GetPitchParmDefaults() const
-{
+const CPitchParm * CMainFrame::GetPitchParmDefaults() const {
     return &m_pitchParmDefaults;
 }
-void CMainFrame::SetPitchParmDefaults(const CPitchParm & cParm)
-{
+void CMainFrame::SetPitchParmDefaults(const CPitchParm & cParm) {
     m_pitchParmDefaults = cParm;
 }
-const CMusicParm * CMainFrame::GetMusicParmDefaults() const
-{
+const CMusicParm * CMainFrame::GetMusicParmDefaults() const {
     return &m_musicParmDefaults;
 }
-void CMainFrame::SetMusicParmDefaults(const CMusicParm & cParm)
-{
+void CMainFrame::SetMusicParmDefaults(const CMusicParm & cParm) {
     m_musicParmDefaults = cParm;
 }
-const CIntensityParm & CMainFrame::GetCIntensityParmDefaults() const
-{
+const CIntensityParm & CMainFrame::GetCIntensityParmDefaults() const {
     return m_intensityParmDefaults;
 }
-void CMainFrame::SetCIntensityParmDefaults(const CIntensityParm & cParm)
-{
+void CMainFrame::SetCIntensityParmDefaults(const CIntensityParm & cParm) {
     m_intensityParmDefaults = cParm;
 }
-CFormantParm * CMainFrame::GetFormantParmDefaults()
-{
+CFormantParm * CMainFrame::GetFormantParmDefaults() {
     return &m_formantParmDefaults;
 }
-CSpectrumParm * CMainFrame::GetSpectrumParmDefaults()
-{
+CSpectrumParm * CMainFrame::GetSpectrumParmDefaults() {
     return &m_spectrumParmDefaults;
 }
-const CSpectroParm * CMainFrame::GetSpectrogramParmDefaults() const
-{
+const CSpectroParm * CMainFrame::GetSpectrogramParmDefaults() const {
     return &m_spectrogramParmDefaults;
 }
-void CMainFrame::SetSpectrogramParmDefaults(const CSpectroParm & cParm)
-{
+void CMainFrame::SetSpectrogramParmDefaults(const CSpectroParm & cParm) {
     m_spectrogramParmDefaults = cParm;
 }
-const CSpectroParm * CMainFrame::GetSnapshotParmDefaults() const
-{
+const CSpectroParm * CMainFrame::GetSnapshotParmDefaults() const {
     return &m_snapshotParmDefaults;
 }
-void CMainFrame::SetSnapshotParmDefaults(const CSpectroParm & cParm)
-{
+void CMainFrame::SetSnapshotParmDefaults(const CSpectroParm & cParm) {
     m_snapshotParmDefaults = cParm;
 }
-const CSaView * CMainFrame::pDefaultViewConfig()
-{
+const CSaView * CMainFrame::pDefaultViewConfig() {
     return m_pDefaultViewConfig;
 }
-BOOL CMainFrame::DefaultIsValid()
-{
+BOOL CMainFrame::DefaultIsValid() {
     return m_pDefaultViewConfig != NULL;
 }
-BOOL CMainFrame::IsDefaultViewMaximized()
-{
+BOOL CMainFrame::IsDefaultViewMaximized() {
     return m_bDefaultMaximizeView;
 }
-CPoint CMainFrame::GetDefaultViewSize()
-{
+CPoint CMainFrame::GetDefaultViewSize() {
     return CPoint(m_nDefaultWidthView, m_nDefaultHeightView);
 }
-void CMainFrame::DisplayPlot(CDisplayPlot * pPlot)
-{
+void CMainFrame::DisplayPlot(CDisplayPlot * pPlot) {
     m_pDisplayPlot = pPlot;
 }
-CSaString CMainFrame::GetFontFace(int nIndex)
-{
+CSaString CMainFrame::GetFontFace(int nIndex) {
     // return font face string
     return m_GraphFontFaces.GetAt(nIndex);
 }
-int CMainFrame::GetFontSize(int nIndex)
-{
+int CMainFrame::GetFontSize(int nIndex) {
     // return font size
     return (int)m_GraphFontSizes.GetAt(nIndex);
 }
-void CMainFrame::SetFontFace(int nIndex, LPCTSTR pString)
-{
+void CMainFrame::SetFontFace(int nIndex, LPCTSTR pString) {
     // set font face string
-    if (_tcslen(pString))
-    {
+    if (_tcslen(pString)) {
         m_GraphFontFaces.SetAtGrow(nIndex, pString);
     }
 }
-void CMainFrame::SetFontSize(int nIndex, int nSize)
-{
+void CMainFrame::SetFontSize(int nIndex, int nSize) {
     // set font size
-    if (nSize)
-    {
+    if (nSize) {
         m_GraphFontSizes.SetAtGrow(nIndex, (UINT)nSize);
     }
 }
 
-CDataStatusBar * CMainFrame::GetDataStatusBar()
-{
+CDataStatusBar * CMainFrame::GetDataStatusBar() {
     return &m_dataStatusBar;   // return pointer to status bar object
 }
 
-CProgressStatusBar * CMainFrame::GetProgressStatusBar()
-{
+CProgressStatusBar * CMainFrame::GetProgressStatusBar() {
     return &m_progressStatusBar;   // return pointer to progress status bar object
 }
 
-int CMainFrame::ComputeNumberOfViews(int nNum)
-{
+int CMainFrame::ComputeNumberOfViews(int nNum) {
     m_nNumberOfViews += nNum;
     return m_nNumberOfViews;
 }
 
-int CMainFrame::GetCaptionStyle()
-{
+int CMainFrame::GetCaptionStyle() {
     // return graph caption style
     return m_nCaptionStyle;
 }
 
-Colors * CMainFrame::GetColors()
-{
+Colors * CMainFrame::GetColors() {
     return &m_colors;
 }
 
-CGrid * CMainFrame::GetGrid()
-{
+CGrid * CMainFrame::GetGrid() {
     return &m_grid;
 }
 
-BOOL CMainFrame::IsStatusBar()
-{
+BOOL CMainFrame::IsStatusBar() {
     return m_bStatusBar;
 }
 
-BOOL CMainFrame::IsScrollZoom()
-{
+BOOL CMainFrame::IsScrollZoom() {
     return m_bScrollZoom;
 }
 
-int  CMainFrame::GetStatusPosReadout()
-{
+int  CMainFrame::GetStatusPosReadout() {
     return m_nStatusPosReadout;
 }
 
-int  CMainFrame::GetStatusPitchReadout()
-{
+int  CMainFrame::GetStatusPitchReadout() {
     return m_nStatusPitchReadout;
 }
 
-int  CMainFrame::GetGraphUpdateMode()
-{
+int  CMainFrame::GetGraphUpdateMode() {
     return m_nGraphUpdateMode;
 }
 
-void CMainFrame::SetGraphUpdateMode(int nMode)
-{
+void CMainFrame::SetGraphUpdateMode(int nMode) {
     m_nGraphUpdateMode = nMode;
 }
 
-BOOL CMainFrame::IsAnimationRequested()
-{
+BOOL CMainFrame::IsAnimationRequested() {
     return m_bAnimate;
 }
 
-int CMainFrame::GetAnimationFrameRate()
-{
+int CMainFrame::GetAnimationFrameRate() {
     return m_nAnimationRate;
 }
 
-ECursorAlignment CMainFrame::GetCursorAlignment()
-{
+ECursorAlignment CMainFrame::GetCursorAlignment() {
     // get cursor snap mode
     return m_nCursorAlignment;
 }
 
-void CMainFrame::AppMessage(WPARAM wParam, LPARAM lParam)
-{
+void CMainFrame::AppMessage(WPARAM wParam, LPARAM lParam) {
     this->SendMessage(WM_USER_APP_MESSAGE,wParam, lParam);
     SendMessageToMDIDescendants(WM_USER_APP_MESSAGE, wParam, lParam);
 };
 
-void CMainFrame::SetPreviewFlag()
-{
+void CMainFrame::SetPreviewFlag() {
     m_bPrintPreviewInProgress = TRUE;
 };
 
-void CMainFrame::ClearPreviewFlag()
-{
+void CMainFrame::ClearPreviewFlag() {
     m_bPrintPreviewInProgress = FALSE;
 };
 
-CProcess * CMainFrame::GetWbProcess(int nProcess, int nFilter)
-{
+CProcess * CMainFrame::GetWbProcess(int nProcess, int nFilter) {
     return m_apWbProcess[nProcess][nFilter];   // return pointer to workbench process
 }
 
-int CMainFrame::GetWbFilterID(int nProcess, int nFilter)
-{
+int CMainFrame::GetWbFilterID(int nProcess, int nFilter) {
     return m_aWbFilterID[nProcess][nFilter];   // return filter ID
 }
 
-void CMainFrame::SetNewMenu(const HMENU hMenu)
-{
+void CMainFrame::SetNewMenu(const HMENU hMenu) {
     m_hNewMenu = hMenu;
 }
 
-HMENU CMainFrame::GetNewMenu() const
-{
+HMENU CMainFrame::GetNewMenu() const {
     return m_hNewMenu;
 }
 
-void CMainFrame::SetNewAccel(const HACCEL hAccel)
-{
+void CMainFrame::SetNewAccel(const HACCEL hAccel) {
     m_hNewAccel = hAccel;
 }
 
-HACCEL CMainFrame::GetNewAccel() const
-{
+HACCEL CMainFrame::GetNewAccel() const {
     return m_hNewAccel;
 }
 
-void CMainFrame::SetPopup(int nPopup)
-{
+void CMainFrame::SetPopup(int nPopup) {
     m_nPopup = nPopup;
 };
 
-int CMainFrame::GetPopup() const
-{
+int CMainFrame::GetPopup() const {
     return m_nPopup ? m_nPopup : IDR_SA_FLOATINGPOPUP;
 };
 
-void CMainFrame::SetToolSettings( CToolSettings settings, bool fullView)
-{
-	if (fullView)
-	{
-	    toolSettings = settings;
-	}
-	else
-	{
-		toolSettings.m_bShowAdvancedAudio = settings.m_bShowAdvancedAudio;
-	}
+void CMainFrame::SetToolSettings( CToolSettings settings, bool fullView) {
+    if (fullView) {
+        toolSettings = settings;
+    } else {
+        toolSettings.m_bShowAdvancedAudio = settings.m_bShowAdvancedAudio;
+    }
 }
 
 /**
 * callback for EnumChildWindows in OnTimer function
 */
-BOOL CALLBACK AutosaveTimerChildProc( HWND hwnd,  LPARAM)
-{
-    if (DYNAMIC_DOWNCAST(CSaView,CWnd::FromHandle(hwnd)) != NULL)
-    {
+BOOL CALLBACK AutosaveTimerChildProc( HWND hwnd,  LPARAM) {
+    if (DYNAMIC_DOWNCAST(CSaView,CWnd::FromHandle(hwnd)) != NULL) {
         ::PostMessage(hwnd,WM_USER_AUTOSAVE,0,0);
     }
     return(TRUE);
 }
 
-void CMainFrame::OnTimer(UINT nIDEvent)
-{
-    if (nIDEvent == ID_TIMER_AUTOSAVE)
-    {
-		// if we are playing something, defer autosave for performance reasons
-		if (IsPlayerPlaying())
-		{
-			return;
-		}
+void CMainFrame::OnTimer(UINT nIDEvent) {
+    if (nIDEvent == ID_TIMER_AUTOSAVE) {
+        // if we are playing something, defer autosave for performance reasons
+        if (IsPlayerPlaying()) {
+            return;
+        }
         ::EnumChildWindows(m_hWnd, AutosaveTimerChildProc, NULL);
-    }
-    else
-    {
+    } else {
         CWnd::OnTimer(nIDEvent);
     }
 }
 
-void CMainFrame::OnAutoSaveOn()
-{
-	CMenu * pMenu = GetMenu();
-	UINT state = pMenu->GetMenuState(ID_AUTOSAVE_ON,MF_BYCOMMAND);
-	if ((m_bAutoSave)&&((state&MF_CHECKED)==MF_CHECKED)) return;
-	TRACE("enabling autosave\n");
-	pMenu->CheckMenuItem(ID_AUTOSAVE_ON, MF_CHECKED);
-	pMenu->CheckMenuItem(ID_AUTOSAVE_OFF, MF_UNCHECKED);
+void CMainFrame::OnAutoSaveOn() {
+    CMenu * pMenu = GetMenu();
+    UINT state = pMenu->GetMenuState(ID_AUTOSAVE_ON,MF_BYCOMMAND);
+    if ((m_bAutoSave)&&((state&MF_CHECKED)==MF_CHECKED)) return;
+    TRACE("enabling autosave\n");
+    pMenu->CheckMenuItem(ID_AUTOSAVE_ON, MF_CHECKED);
+    pMenu->CheckMenuItem(ID_AUTOSAVE_OFF, MF_UNCHECKED);
     SetTimer(ID_TIMER_AUTOSAVE, AUTOSAVE_TIMER, NULL);  // start the timer
-	m_bAutoSave = TRUE;
+    m_bAutoSave = TRUE;
 }
 
-void CMainFrame::OnAutoSaveOff()
-{
-	CMenu * pMenu = GetMenu();
-	UINT state = pMenu->GetMenuState(ID_AUTOSAVE_OFF,MF_BYCOMMAND);
-	if ((!m_bAutoSave)&&((state&MF_CHECKED)==MF_CHECKED)) return;
-	TRACE("disabling autosave\n");
-	pMenu->CheckMenuItem(ID_AUTOSAVE_ON, MF_UNCHECKED);
-	pMenu->CheckMenuItem(ID_AUTOSAVE_OFF, MF_CHECKED);
-	KillTimer(ID_TIMER_AUTOSAVE);
-	CAutoSave::CleanAll();
-	m_bAutoSave = FALSE;
+void CMainFrame::OnAutoSaveOff() {
+    CMenu * pMenu = GetMenu();
+    UINT state = pMenu->GetMenuState(ID_AUTOSAVE_OFF,MF_BYCOMMAND);
+    if ((!m_bAutoSave)&&((state&MF_CHECKED)==MF_CHECKED)) return;
+    TRACE("disabling autosave\n");
+    pMenu->CheckMenuItem(ID_AUTOSAVE_ON, MF_UNCHECKED);
+    pMenu->CheckMenuItem(ID_AUTOSAVE_OFF, MF_CHECKED);
+    KillTimer(ID_TIMER_AUTOSAVE);
+    CAutoSave::CleanAll();
+    m_bAutoSave = FALSE;
 }
 
-LRESULT CMainFrame::OnUpdatePlayer( WPARAM wParam, LPARAM /*lParam*/)
-{
-	if (m_pDlgEditor!=NULL)
-	{
-		m_pDlgEditor->UpdatePlayer();
-	}
-	if (CDlgAutoRecorder::IsLaunched())
-	{
-		if (wParam ==2) m_pAutoRecorder->EndPlayback();
-	}
-	return 0;
+LRESULT CMainFrame::OnUpdatePlayer( WPARAM wParam, LPARAM /*lParam*/) {
+    if (m_pDlgEditor!=NULL) {
+        m_pDlgEditor->UpdatePlayer();
+    }
+    if (CDlgAutoRecorder::IsLaunched()) {
+        if (wParam ==2) m_pAutoRecorder->EndPlayback();
+    }
+    return 0;
 }
 

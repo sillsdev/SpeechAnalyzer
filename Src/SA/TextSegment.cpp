@@ -40,7 +40,8 @@ CTextSegment::~CTextSegment() {
 // there will be no string added.
 /***************************************************************************/
 BOOL CTextSegment::Insert( int nIndex, LPCTSTR pszString, bool delimiter, DWORD dwStart, DWORD dwDuration) {
-    // prepare delimiter
+    
+	// prepare delimiter
     CSaString szDelimiter = WORD_DELIMITER;
     if (delimiter) {
         szDelimiter.SetAt(0, TEXT_DELIMITER);

@@ -1289,10 +1289,10 @@ void CSaDoc::ReadGlossPosAndRefSegments(ISaAudioDocumentReaderPtr saAudioDocRdr,
         pGloss->Insert(i++, szGloss, (isBookmark!=0), offset, length);
 
         CSaString szGlossNat = *glossNat;
-        pGlossNat->Insert(nGlossNat++, szGlossNat, 0, offset, length);
+        pGlossNat->Insert(nGlossNat++, szGlossNat, false, offset, length);
 
         CSaString szRef = *ref;
-        pReference->Insert(nRef++, szRef, 0, offset, length);
+        pReference->Insert(nRef++, szRef, false, offset, length);
     }
 
     free(gloss);
@@ -1440,10 +1440,10 @@ void CSaDoc::InsertGlossPosRefTranscription(ISaAudioDocumentReaderPtr saAudioDoc
         pGloss->Insert(nIndex, szGloss, (isBookmark!=0), offset + dwPos, length);
 
         CSaString szGlossNat = *glossNat;
-        pGlossNat->Insert(nIndex, szGlossNat, 0, offset + dwPos, length);
+        pGlossNat->Insert(nIndex, szGlossNat, false, offset + dwPos, length);
 
 		CSaString szRef = *ref;
-        pReference->Insert(nIndex++, szRef, 0, offset + dwPos, length);
+        pReference->Insert(nIndex++, szRef, false, offset + dwPos, length);
     }
 
     free(gloss);
@@ -5830,8 +5830,8 @@ BOOL CSaDoc::AdvancedParsePhrase() {
         DWORD dwStart = pSegmentPho->GetOffset(i);
         DWORD dwDuration = pSegmentPho->GetDuration(i);
         if (dwStart!=dwLast) {
-            pSegmentL1->Insert(dwOrder,delimiter,0,dwStart,dwDuration);
-            pSegmentL2->Insert(dwOrder,delimiter,0,dwStart,dwDuration);
+            pSegmentL1->Insert(dwOrder,delimiter,false,dwStart,dwDuration);
+            pSegmentL2->Insert(dwOrder,delimiter,false,dwStart,dwDuration);
             dwLast=dwStart;
             dwOrder++;
         }
@@ -5956,7 +5956,7 @@ BOOL CSaDoc::AdvancedSegment() {
                     pSegment->Adjust(this, nPrevious, pSegment->GetOffset(nPrevious), dwStart - pSegment->GetOffset(nPrevious));
                 }
                 CSaString szEmpty = SEGMENT_DEFAULT_CHAR;
-                pSegment->Insert(nPhonetic, szEmpty, FALSE, dwStart , pSegment->GetOffset(nPhonetic) - dwStart);
+                pSegment->Insert(nPhonetic, szEmpty, false, dwStart , pSegment->GetOffset(nPhonetic) - dwStart);
             } else {
                 pGloss->Adjust(this, nGloss, dwStart, dwStop - dwStart);
             }
@@ -6539,7 +6539,7 @@ void CSaDoc::AddReferenceData(CDlgAutoReferenceData & dlg, int selection) {
                     }
                 } else if (roffset>offset) {
                     // we need to insert before
-                    pReference->Insert(j,text,0,offset,duration);
+                    pReference->Insert(j,text,false,offset,duration);
                     found=true;
                 }
                 if (found) {
@@ -6560,7 +6560,7 @@ void CSaDoc::AddReferenceData(CDlgAutoReferenceData & dlg, int selection) {
                     }
                 }
                 // add at end
-                pReference->Insert(j,text,0,offset,duration);
+                pReference->Insert(j,text,false,offset,duration);
             }
             if (val==dlg.mEnd) {
                 break;
@@ -6622,7 +6622,7 @@ void CSaDoc::AddReferenceData(CDlgAutoReferenceData & dlg, int selection) {
                     }
                 } else if (roffset>offset) {
                     // we need to insert before
-                    pReference->Insert(j,text,0,offset,duration);
+                    pReference->Insert(j,text,false,offset,duration);
                     found=true;
                 }
                 if (found) {
@@ -6643,7 +6643,7 @@ void CSaDoc::AddReferenceData(CDlgAutoReferenceData & dlg, int selection) {
                     }
                 }
                 // add at end
-                pReference->Insert(j,text,0,offset,duration);
+                pReference->Insert(j,text,false,offset,duration);
             }
             if (begin==end) {
                 break;
@@ -6782,7 +6782,7 @@ void CSaDoc::AlignTranscriptionData(CTranscriptionDataSettings & settings) {
         // Create a gloss break at initial position SDM 1.5Test8.2
         if (pArray[WORD_OFFSETS][0] != pArray[CHARACTER_OFFSETS][0]) {
             CSaString szEmpty = "";
-            pGloss->Insert(0, szEmpty, FALSE, pArray[CHARACTER_OFFSETS][0], pArray[WORD_OFFSETS][0]-pArray[CHARACTER_OFFSETS][0]);
+            pGloss->Insert(0, szEmpty, false, pArray[CHARACTER_OFFSETS][0], pArray[WORD_OFFSETS][0]-pArray[CHARACTER_OFFSETS][0]);
             pArray[WORD_OFFSETS].InsertAt(0,pArray[CHARACTER_OFFSETS][0]);
             settings.m_szGloss = CSaString(SPACE_DELIMITER) + settings.m_szGloss;
             settings.m_szGlossNat = CSaString(SPACE_DELIMITER) + settings.m_szGlossNat;

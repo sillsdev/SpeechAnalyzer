@@ -323,7 +323,7 @@ TranscriptionDataMap CSFMHelper::ImportColumnarSFM( wistringstream & stream)
 			wstring tag = tags[j];
 			tag = (tag[0]=='\\')?tag.substr(1):tag;
 			bool gloss = false;
-			if (CSFMHelper::IsGloss(tag.c_str(),tags[j].length())) 
+			if (CSFMHelper::IsGloss(tags[j].c_str(),tags[j].length())) 
 			{
 				gloss = true;
 			}

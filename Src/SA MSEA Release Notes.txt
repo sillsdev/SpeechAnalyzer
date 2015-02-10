@@ -1,3 +1,10 @@
+SA - 3.1.0.115 2/9/2014
+-Increased display time of splash dialog by 0.5 seconds.
+-Fixed wordlist data alignment problem for gloss-english. 
+-Added validation for case where autosave files in .info file may be missing.
+-Fixed autosave problem that prevents autosave files from being saved when temp-recordings have been made.
+-Removed 'requireAdministrator' attribute from manifest.  Application now runs as 'user'.
+
 SA - 3.1.0.114 2/9/2015
 -Fixed bug in playback - selecting playback of 'word' when phrase is selected in which start of selected segment preceeds 'word' segment start causes wrong audio portion to be played.
 -Fixed selection bug that occurs when playing 'word' from the audio player.

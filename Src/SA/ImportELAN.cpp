@@ -762,7 +762,7 @@ BOOL CImportELAN::ReadTable(CStringStream & stream, int nMode) {
 					// add segments
                     pPhonetic->Insert(nWordCurr, szEmpty, false, dwStart, dwDuration);
                 }
-                pGloss->Insert(nWordCurr, szEmptyGloss, 0, dwStart, dwDuration);
+                pGloss->Insert(nWordCurr, szEmptyGloss, false, dwStart, dwDuration);
                 nIndex = nWordCurr;
                 nWordCurr++;
                 dwStart += dwDuration;

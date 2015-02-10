@@ -32,10 +32,8 @@ void CDependentTextSegment::LimitPosition(CSaDoc *, DWORD & dwStart, DWORD & dwS
 // For example if we are inserting at the 4 gloss segment but only reference
 // segments 0 and 1 exist, then the next index is 2, not 3.
 /***************************************************************************/
-BOOL CDependentTextSegment::Insert( int nIndex, LPCTSTR pszString, bool, DWORD dwStart, DWORD dwDuration) {
-	if (pszString==NULL) {
-        return FALSE;
-    }
+BOOL CDependentTextSegment::Insert( int nIndex, LPCTSTR pszString, bool delimiter, DWORD dwStart, DWORD dwDuration) {
+	if (pszString==NULL) return FALSE;
     InsertAt( nIndex,CString(pszString),dwStart,dwDuration);
     return TRUE;
 }

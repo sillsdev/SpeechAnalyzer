@@ -59,8 +59,8 @@ public class SplashScreenForm : Form {
 
     // timer interval is 25 ms
     const int TICK = 25;
-    // delay is how long dialog will be displayed at full opacity (0.8 seconds)
-    const int DELAY = 800/TICK;
+    // delay is how long dialog will be displayed at full opacity (1.3 seconds)
+    const int DELAY = 1300/TICK;
     // opacity ranges from 0 to 1. 
     const float STEP = 0.05f;
 

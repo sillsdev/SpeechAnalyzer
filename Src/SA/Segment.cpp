@@ -253,20 +253,19 @@ void CSegment::ReplaceSelectedSegment(CSaDoc * pDoc, LPCTSTR replace) {
 * nIndex index into annotation string
 ***************************************************************************/
 BOOL CSegment::SetAt(const CSaString & text, bool delimiter, DWORD dwStart, DWORD dwDuration, bool textSegment) {
-    CSaString data(text);
-    if (textSegment) {
 
-        if (text.GetLength()>0) {
+	CSaString data = text;
+
+	if (textSegment) {
+        if (text.GetLength()==0) {
             return TRUE;
         }
-
         // this should only be used for 'text' segments
         // prepare delimiter
         CSaString szDelimiter = WORD_DELIMITER;
         if (delimiter) {
             szDelimiter.SetAt(0, TEXT_DELIMITER);
         }
-
         if (text.GetLength()!=0) {
             data = szDelimiter + data;
         } else {
@@ -304,7 +303,6 @@ BOOL CSegment::SetAt(const CSaString & text, bool delimiter, DWORD dwStart, DWOR
 * nIndex index into annotation string
 ***************************************************************************/
 BOOL CSegment::Insert(int nIndex, LPCTSTR pszString, bool delimiter, DWORD dwStart, DWORD dwDuration) {
-    ASSERT(delimiter==false);
     InsertAt(nIndex,CString(pszString),dwStart,dwDuration);
     return TRUE;
 }

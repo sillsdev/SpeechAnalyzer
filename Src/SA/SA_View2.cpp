@@ -5906,7 +5906,7 @@ void CSaView::OnEditCopyPhoneticToPhonemic(void) {
         CSaString text = pPhonetic->GetSegmentString(i);
         DWORD duration = pPhonetic->GetDuration(i);
         TRACE(L"text=%s offset=%d duration=%d\n",(LPCTSTR)text,offset,duration);
-        pPhonemic->Insert(i,text,0,offset,duration);
+        pPhonemic->Insert(i,text,false,offset,duration);
     }
 
     // show the phonemic annotation if it isn't already displayed

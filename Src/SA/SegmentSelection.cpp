@@ -472,7 +472,7 @@ CString CSegmentSelection::GetSelectedAnnotationString(CSaView * pView, BOOL bRe
 // removes empty dependent segments.  Refreshes graphs, sets modified flag
 // and optionally adds CheckPoint()
 /***************************************************************************/
-BOOL CSegmentSelection::SetSelectedAnnotationString(CSaView * pView, CSaString & szString, BOOL bIncludesDelimiter, BOOL bCheck) {
+BOOL CSegmentSelection::SetSelectedAnnotationString( CSaView * pView, CSaString & szString, BOOL bIncludesDelimiter, BOOL bCheck) {
     
 	if (m_nIndex == -1) {
         return FALSE;
@@ -521,7 +521,7 @@ BOOL CSegmentSelection::SetSelectedAnnotationString(CSaView * pView, CSaString &
                 pDoc->SetModifiedFlag(TRUE); // document has been modified
                 pDoc->SetTransModifiedFlag(TRUE); // transcription has been modified
                 pSegment->Insert(nInsertAt, szString, true, m_dwStart,m_dwDuration);
-                pView->ChangeAnnotationSelection(pSegment, nInsertAt);
+                pView->ChangeAnnotationSelection( pSegment, nInsertAt);
             }
         }
     } else if (szString.GetLength() == 0) { 
