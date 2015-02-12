@@ -289,7 +289,12 @@ void CAutoSave::StoreAutoRecoveryInformation( CSaDoc * pDoc) {
         filename.append(original);
         filename = filename.substr(temp.length(),filename.length()-temp.length());
         isTempFile = true;
-        root = filename.substr( 0, filename.length()-4);
+		// remove extension
+        size_t pos2 = filename.rfind('.');
+        if (pos2!=wstring::npos) {
+            filename = filename.substr(0,pos2);
+        }
+        root = filename;
         restorewave = original;
         folder = L"";
 
@@ -304,11 +309,19 @@ void CAutoSave::StoreAutoRecoveryInformation( CSaDoc * pDoc) {
         // a prerecorded file
         wstring original = pDoc->GetPathName();
         filename = original;
+
+		// remove parent folder
         size_t pos = filename.rfind('\\');
         if (pos!=wstring::npos) {
             filename = filename.substr(pos+1,filename.length()-pos-1);
         }
-        root = filename.substr( 0, filename.length()-4);
+		// remove extension
+        size_t pos2 = filename.rfind('.');
+        if (pos2!=wstring::npos) {
+            filename = filename.substr(0,pos2);
+        }
+		root = filename;
+
         restorewave = original;
         folder = original.substr(0,pos);
         FileUtils::AppendDirSep(folder);
@@ -353,7 +366,9 @@ void CAutoSave::StoreAutoRecoveryInformation( CSaDoc * pDoc) {
         wstring oldname;
         oldname.append(currentwave);
         int pos = oldname.rfind('.');
-        oldname = oldname.substr(0,pos);
+		if (pos!=wstring::npos) {
+			oldname = oldname.substr(0,pos);
+		}
         oldname.append(L".saxml");
         FileUtils::RenameFile( oldname.c_str(), currentxml.c_str());
     }
@@ -418,3 +433,61 @@ ULONGLONG CAutoSave::GetFileSize( LPCTSTR filename) {
     if (!CFile::GetStatus( filename,fs)) return 0;
     return fs.m_size;
 }
+
+void CAutoSave::Close( LPCTSTR filename) {
+
+    wstring original = filename;
+	if (original.length()==0) return;
+
+    size_t pos = original.rfind('\\');
+    if (pos!=wstring::npos) {
+        original = original.substr(pos+1,original.length()-pos-1);
+    }
+	// remove extension
+    size_t pos2 = original.rfind('.');
+    if (pos2!=wstring::npos) {
+        original = original.substr(0,pos2);
+    }
+	wstring root = original;
+	wstring info = root + L".info";
+	wstring wave = root + L".wav.autosave";
+	wstring saxml = root + L".saxml.autosave";
+	wstring tmp = root + L".tmp.autosave";
+
+	// compute the three autosave names
+
+	TRACE(L"cleaning %s\n",original.c_str());
+
+    wstring autosavedir = GetDirectory();
+    wstring search(autosavedir);
+    search.append(L"*.*");
+
+    CFileFind finder;
+    if (finder.FindFile(search.c_str(),0)) {
+        
+		BOOL more = TRUE;
+        do {
+            more = finder.FindNextFileW();
+            if (finder.IsDirectory()) continue;
+            if (finder.IsDots()) continue;
+            wstring path = finder.GetFilePath();
+			wstring fn = path;
+			// remove parent folder
+			size_t pos = fn.rfind('\\');
+			if (pos!=wstring::npos) {
+				fn = fn.substr(pos+1,fn.length()-pos-1);
+			}
+			if (fn.compare(info)==0) {
+			    FileUtils::RemoveFile(path.c_str());
+			} else if (fn.compare(wave)==0) {
+			    FileUtils::RemoveFile(path.c_str());
+			} else if (fn.compare(saxml)==0) {
+			    FileUtils::RemoveFile(path.c_str());
+			} else if (fn.compare(tmp)==0) {
+			    FileUtils::RemoveFile(path.c_str());
+			}
+
+        } while (more);
+    }
+}
+

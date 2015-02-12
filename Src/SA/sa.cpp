@@ -1702,7 +1702,7 @@ void CSaApp::OnHelpWhatsNew() {
 
     CSaString szAppPath = m_pszHelpFilePath;
     szAppPath = szAppPath.Left(szAppPath.ReverseFind('\\'));
-    CSaString szCommandLine = "\"" + szAppPath + _T("\\What's new.pdf\"");
+    CSaString szCommandLine = "\"" + szAppPath + _T("\\SA MSEA Release Notes.txt\"");
     ShellExecute(NULL, _T("open"), szCommandLine.GetBuffer(1), NULL, NULL, SW_SHOWNORMAL);
 }
 

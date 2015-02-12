@@ -247,7 +247,7 @@ void CSegment::ReplaceSelectedSegment(CSaDoc * pDoc, LPCTSTR replace) {
 }
 
 /***************************************************************************
-* CSegment::Insert Insert/append an annotation segment
+* CSegment::Insert Insert an annotation segment
 * Returns FALSE if an error occured.
 * nDelimiter is not used in this basic version of the function.
 * nIndex index into annotation string
@@ -273,21 +273,32 @@ BOOL CSegment::SetAt(const CSaString & text, bool delimiter, DWORD dwStart, DWOR
         }
     }
 
+	return SetAt( data, dwStart, dwDuration);
+}
+
+/***************************************************************************
+* CSegment::Insert Insert an annotation segment
+* Returns FALSE if an error occured.
+* nDelimiter is not used in this basic version of the function.
+* nIndex index into annotation string
+***************************************************************************/
+BOOL CSegment::SetAt(const CSaString & text, DWORD dwStart, DWORD dwDuration) {
+
     if (m_Offset.GetCount()==0) {
         ASSERT(m_Duration.GetCount()==0);
         ASSERT(GetContentLength()==0);
-        InsertAt(0,CString(data),dwStart,dwDuration);
+        InsertAt(0,CString(text),dwStart,dwDuration);
     } else {
         int nIndex = FindOffset(dwStart);
         if (nIndex>=0) {
             // index was found
             // remove the existing string
             RemoveAt(nIndex,true);
-            InsertAt(nIndex,CString(data),dwStart,dwDuration);
+            InsertAt(nIndex,CString(text),dwStart,dwDuration);
         } else {
             // index was at end of string
             nIndex = m_Offset.GetCount();
-            InsertAt(nIndex,CString(data),dwStart,dwDuration);
+            InsertAt(nIndex,CString(text),dwStart,dwDuration);
         }
     }
 

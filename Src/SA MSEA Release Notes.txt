@@ -1,3 +1,10 @@
+SA - 3.1.0.116 2/10/2015
+-Changed 'what's new' help link to point to release notes document.
+-Fixed rendering of /gl on 'import word list' view of 'align transcription data' dialog box. removed '#' character.
+-Fixed bug where /ge was prepended with '#' during 'align transcription data' function.
+-Modified autosave feature so that when a file is closed, it's autosave files are also removed.
+-Modified autosave feature so that it doesn't assume wave file extension is '.wav'.
+
 SA - 3.1.0.115 2/9/2014
 -Increased display time of splash dialog by 0.5 seconds.
 -Fixed wordlist data alignment problem for gloss-english. 

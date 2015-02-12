@@ -701,9 +701,16 @@ void CSaDoc::CreateFonts() {
 // CSaDoc::OnCloseDocument document closing
 /***************************************************************************/
 void CSaDoc::OnCloseDocument() {
+
     CMainFrame * pFrame = (CMainFrame *) AfxGetMainWnd();
     ASSERT(pFrame);
     ASSERT(pFrame->IsKindOf(RUNTIME_CLASS(CMainFrame)));
+
+    if (IsUsingTempFile()) {
+		CAutoSave::Close(GetTempFilename());
+	} else {
+		CAutoSave::Close(GetPathName());
+	}
 
     // NOTE - OnCloseDocument calls delete this,
     // don't access the document after this point.
@@ -745,11 +752,10 @@ BOOL CSaDoc::OnOpenDocument(LPCTSTR pszPathName) {
         for (size_t i=0; i<document.header.mediaDescriptors.size(); i++) {
             wstring filename = document.header.mediaDescriptors[i].mediaURL.c_str();
 
+            /*
             wchar_t buffer[MAX_PATH];
             wmemset(buffer,0,_countof(buffer));
             DWORD length = MAX_PATH;
-
-            /*
             HRESULT result = PathCreateFromUrl( filename.c_str(), buffer, &length, NULL);
             if (result!=S_OK) {
                 continue;
@@ -1993,6 +1999,7 @@ BOOL CSaDoc::OnSaveDocument(LPCTSTR pszPathName, BOOL bSaveAudio) {
         }
 
         DeleteWaveFromUndo(); // delete wave undo entry
+
         if (!WriteDataFiles(target.c_str(), bSaveAudio)) {
             return FALSE;
         }
@@ -5256,6 +5263,13 @@ void CSaDoc::OnFileSaveAs() {
 
     const bool stereo = GetNumChannels()>1;
 
+	wstring original_name;
+    if (IsUsingTempFile()) {
+		original_name = GetTempFilename();
+	} else {
+		original_name = GetPathName();
+	}
+
     CSaString ifileName = GetPathName();
     if (ifileName.IsEmpty()) {
         ifileName = GetFilenameFromTitle().c_str(); // get the current view caption string
@@ -5280,7 +5294,7 @@ void CSaDoc::OnFileSaveAs() {
         bSameFile = true;
         dlg.m_eShowFiles = showNew; // There is only one file.
         if ((stereo) &&
-                ((dlg.m_eFileFormat==formatMono) || (dlg.m_eFileFormat==formatRight))) {
+            ((dlg.m_eFileFormat==formatMono) || (dlg.m_eFileFormat==formatRight))) {
             ((CSaApp *) AfxGetApp())->ErrorMessage(IDS_ERROR_NO_DUPE_FILENAME);
             return;
         }
@@ -5381,6 +5395,8 @@ void CSaDoc::OnFileSaveAs() {
     if (_tcslen(newFile) > 0) {
         CFile::SetStatus(newFile, m_fileStat);
     }
+
+	CAutoSave::Close(original_name.c_str());
 
     switch (dlg.m_eShowFiles) {
     case showBoth:
@@ -6534,7 +6550,7 @@ void CSaDoc::AddReferenceData(CDlgAutoReferenceData & dlg, int selection) {
                         found=true;
                     } else {
                         // we can just overwrite the text
-                        pReference->SetAt(text,0,offset,duration,true);
+                        pReference->SetAt(text,false,offset,duration,true);
                         found=true;
                     }
                 } else if (roffset>offset) {
@@ -6617,7 +6633,7 @@ void CSaDoc::AddReferenceData(CDlgAutoReferenceData & dlg, int selection) {
                     } else {
                         // we need to readjust the segment to it's new size
                         // we can just overwrite the text
-                        pReference->SetAt(text,0,offset,duration,true);
+                        pReference->SetAt(text,false,offset,duration,true);
                         found=true;
                     }
                 } else if (roffset>offset) {
@@ -7297,15 +7313,15 @@ void CSaDoc::AlignTranscriptionDataByRef(CTranscriptionData & td) {
             if (thisRef.Compare(thatRef)==0) {
                 if ((td.m_bPhonetic)&&(phoneticValid)) {
                     CSaString text = *pnit;
-                    pPhonetic->SetAt(text,false,start,duration,false);
+                    pPhonetic->SetAt(text,start,duration);
                 }
                 if ((td.m_bPhonemic)&&(phonemicValid)) {
                     CSaString text = *pmit;
-                    pPhonemic->SetAt(text,false,start,duration,false);
+                    pPhonemic->SetAt(text,start,duration);
                 }
                 if ((td.m_bOrthographic)&&(orthoValid)) {
                     CSaString text = *oit;
-                    pOrthographic->SetAt(text,false,start,duration,false);
+                    pOrthographic->SetAt(text,start,duration);
                 }
                 if ((td.m_bGloss)&&(glossValid)) {
                     if (git!=td.m_TranscriptionData[td.m_MarkerDefs[GLOSS]].end()) {
@@ -7319,7 +7335,7 @@ void CSaDoc::AlignTranscriptionDataByRef(CTranscriptionData & td) {
                 if ((td.m_bGlossNat)&&(glossNatValid)) {
                     CSaString text = *gnit;
                     if (pGlossNat->FindOffset(start)>=0) {
-                        pGlossNat->SetAt(text,false,start,duration,true);
+                        pGlossNat->SetAt(text,start,duration);
                     } else if (pGlossNat->IsEmpty()) {
                         pGlossNat->Insert(0,text,false,start,duration);
                     } else {
@@ -7446,7 +7462,8 @@ const CSaString CSaDoc::BuildImportString(BOOL /*gloss*/, BOOL /*glossnat*/, BOO
 * This is used by the automatic transcription feature returns false on failure
 */
 const bool CSaDoc::ImportTranscription(wistringstream & stream, BOOL gloss, BOOL glossNat, BOOL phonetic, BOOL phonemic, BOOL orthographic, CTranscriptionData & td, bool addTag, bool showDlg) {
-    // rewind the stream
+    
+	// rewind the stream
     stream.clear();
     stream.seekg(0);
     stream.clear();

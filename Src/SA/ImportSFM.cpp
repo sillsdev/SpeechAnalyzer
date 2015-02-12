@@ -52,6 +52,7 @@ CImportSFM::CImportSFM(const CSaString & szFileName, BOOL batch) {
 // CImport::Import read import file
 /***************************************************************************/
 BOOL CImportSFM::Import(EImportMode nMode) {
+
     CSaDoc * pDoc = (CSaDoc *)((CMainFrame *)AfxGetMainWnd())->GetCurrSaView()->GetDocument();
     pDoc->CheckPoint();
     pDoc->SetModifiedFlag(TRUE);
@@ -89,6 +90,7 @@ BOOL CImportSFM::Import(EImportMode nMode) {
 // CImportSFM::AutoAlign Execute changes by request from batch file
 /***************************************************************************/
 void CImportSFM::AutoAlign(CSaDoc * pSaDoc, LPCTSTR pReference, LPCTSTR pPhonetic, LPCTSTR pPhonemic, LPCTSTR pOrtho, LPCTSTR pGloss, LPCTSTR pGlossNat) {
+
     CTranscriptionDataSettings settings;
 
     settings.m_bPhonetic = (pPhonetic != NULL);
@@ -149,7 +151,8 @@ void CImportSFM::AutoAlign(CSaDoc * pSaDoc, LPCTSTR pReference, LPCTSTR pPhoneti
         }
     }
 
-    CSegment * pSegment=pSaDoc->GetSegment(PHONETIC);
+    CSegment * pSegment = pSaDoc->GetSegment(PHONETIC);
+
     // Copy gloss segments SDM 1.5Test8.2
     for (int i=0; i<pSaDoc->GetSegment(GLOSS)->GetOffsetSize(); i++) {
         DWORD offset = pSaDoc->GetSegment(GLOSS)->GetOffset(i);
@@ -922,6 +925,7 @@ BOOL CImportSFM::ReadTable(CStringStream & stream, int nMode) {
 * isColumnar should have already confirmed that this is a columnar file
 */
 BOOL CImportSFM::ProcessColumnar(wistringstream & stream, wstring & result) {
+
     // rewind the stream
     stream.clear();
     stream.seekg(0);

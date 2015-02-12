@@ -24,6 +24,9 @@ public:
     static void CleanAll();
     static wstring GetDirectory();
     
+	// the user is closing the file and we don't need to track it
+	static void Close( LPCTSTR filename);
+
 private:
 	void WriteInfo( LPCTSTR path, bool isTempFile, LPCTSTR aswave, LPCTSTR asxml, LPCTSTR restorewave, LPCTSTR root, LPCTSTR folder);
 	ULONGLONG GetFileSize( LPCTSTR filename);
