@@ -352,6 +352,7 @@
     <ClCompile Include="TaskBar.cpp" />
     <ClCompile Include="Undoredo.cpp" />
     <ClCompile Include="UnicodeString.cpp" />
+    <ClCompile Include="Utils.cpp" />
     <ClCompile Include="WaveformGenerator.cpp" />
     <ClCompile Include="WaveformGeneratorSettings.cpp" />
     <ClCompile Include="WaveInDevice.cpp" />
@@ -565,6 +566,7 @@
     <ClInclude Include="TranscriptionHelper.h" />
     <ClInclude Include="Undoredo.h" />
     <ClInclude Include="UnicodeString.h" />
+    <ClInclude Include="Utils.h" />
     <ClInclude Include="voctract.h" />
     <ClInclude Include="DlgAdvancedParsePhrases.h" />
     <ClInclude Include="DlgAdvancedParseWords.h" />

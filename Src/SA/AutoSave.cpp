@@ -5,6 +5,7 @@
 #include "sa.h"
 #include "Shlobj.h"
 #include <Windows.h>
+#include "AppDefs.h"
 
 static int CALLBACK BrowseCallbackProc(HWND hwnd, UINT uMsg, LPARAM /*lParam*/, LPARAM lpData) {
 
@@ -234,20 +235,27 @@ void CAutoSave::CleanAll() {
     }
 }
 
-void CAutoSave::StoreAutoRecoveryInformation( CSaDoc * pDoc) {
+class Lock {
+public:
+	Lock( bool & val) : lock(val) {
+		lock = true;
+	}
+	~Lock() {
+		lock = false;
+	}
+private:
+	bool & lock;
+};
+
+void CAutoSave::Save( CSaDoc & document) {
 
     TRACE("autosave\n");
-    if (updating) {
-        //TRACE("save in process. ignoring request\n");
-        return;
-    }
-    updating = true;
+    if (updating) return;
 
-    if (!pDoc->IsModified()) {
-        //TRACE("No changes pending. nothing to save\n");
-        updating = false;
-        return;
-    }
+	// is there anything to do?
+	if (!document.IsModified()) return;
+
+	Lock lock(updating);
 
     CSaApp * pSaApp = (CSaApp *)AfxGetApp();
 
@@ -268,7 +276,6 @@ void CAutoSave::StoreAutoRecoveryInformation( CSaDoc * pDoc) {
                 pSaApp->ErrorMessage(IDS_ERROR_AUTOSAVE_FAIL,autosavedir.c_str());
                 error = true;
             }
-            updating = false;
             return;
         }
     }
@@ -282,9 +289,12 @@ void CAutoSave::StoreAutoRecoveryInformation( CSaDoc * pDoc) {
     wstring currentxml;
 
     // what is our scenario?
-    if (pDoc->IsUsingTempFile()) {
+    if (document.IsUsingTempFile()) {
         // a recorded file
-        wstring original = pDoc->GetTempFilename();
+        wstring original = document.GetTempFilename();
+		
+		if (original.length()==0) return;
+
         // extract the filename
         filename.append(original);
         filename = filename.substr(temp.length(),filename.length()-temp.length());
@@ -307,7 +317,10 @@ void CAutoSave::StoreAutoRecoveryInformation( CSaDoc * pDoc) {
         currentxml.append(L".saxml.autosave");
     } else {
         // a prerecorded file
-        wstring original = pDoc->GetPathName();
+        wstring original = document.GetPathName();
+
+		if (original.length()==0) return;
+
         filename = original;
 
 		// remove parent folder
@@ -350,7 +363,7 @@ void CAutoSave::StoreAutoRecoveryInformation( CSaDoc * pDoc) {
         }
     }
 
-    if (pDoc->IsTransModified()) {
+    if (document.IsTransModified()) {
         if (currentxml.length()>0) {
             if (FileUtils::FileExists(currentxml.c_str())) {
                 FileUtils::RemoveFile(currentxml.c_str());
@@ -359,7 +372,7 @@ void CAutoSave::StoreAutoRecoveryInformation( CSaDoc * pDoc) {
 
         // copy any transcription to the autosave directory
         saving = true;
-        pDoc->WriteDataFiles( currentwave.c_str());
+        document.WriteDataFiles( currentwave.c_str());
         saving = false;
 
         // rename it to the appropriate name
@@ -380,8 +393,6 @@ void CAutoSave::StoreAutoRecoveryInformation( CSaDoc * pDoc) {
     info.append(L".info");
 
     WriteInfo( info.c_str(), isTempFile, currentwave.c_str(), currentxml.c_str(), restorewave.c_str(), root.c_str(), folder.c_str());
-
-    updating = false;
 }
 
 bool CAutoSave::IsSaving() {
@@ -436,7 +447,8 @@ ULONGLONG CAutoSave::GetFileSize( LPCTSTR filename) {
 
 void CAutoSave::Close( LPCTSTR filename) {
 
-    wstring original = filename;
+	wstring original = filename;
+
 	if (original.length()==0) return;
 
     size_t pos = original.rfind('\\');

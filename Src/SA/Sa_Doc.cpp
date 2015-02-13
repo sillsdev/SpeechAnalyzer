@@ -706,10 +706,10 @@ void CSaDoc::OnCloseDocument() {
     ASSERT(pFrame);
     ASSERT(pFrame->IsKindOf(RUNTIME_CLASS(CMainFrame)));
 
-    if (IsUsingTempFile()) {
-		CAutoSave::Close(GetTempFilename());
+	if (IsUsingTempFile()) {
+		m_AutoSave.Close(GetTempFilename());
 	} else {
-		CAutoSave::Close(GetPathName());
+		m_AutoSave.Close(GetPathName());
 	}
 
     // NOTE - OnCloseDocument calls delete this,
@@ -740,6 +740,7 @@ BOOL CSaDoc::OnNewDocument() {
 // block of data is read and stored in the data buffer.
 /***************************************************************************/
 BOOL CSaDoc::OnOpenDocument(LPCTSTR pszPathName) {
+
     wstring wave_file_name = pszPathName;
 
     if (FileUtils::EndsWith(pszPathName,L".eaf")) {
@@ -929,6 +930,7 @@ BOOL CSaDoc::LoadDataFiles(LPCTSTR pszPathName, bool bTemp/*=FALSE*/) {
     if ((pPlayer!=NULL) && (pPlayer->IsWindowVisible())) {
         pPlayer->EnableSpeedSlider(FALSE);
     }
+
     return TRUE;
 }
 
@@ -2914,6 +2916,7 @@ BOOL CSaDoc::InsertWaveToTemp(LPCTSTR pszSourcePathName, LPCTSTR pszTempPathName
 // the graph title (because the user may cancel the closing).
 /***************************************************************************/
 BOOL CSaDoc::SaveModified() {
+
     CSaString szCaption, szGraphTitle;
     if (!IsModified()) {
         return TRUE;    // ok to continue
@@ -5145,6 +5148,7 @@ void CSaDoc::Dump(CDumpContext & dc) const {
 // has again to be modified with the graph title.
 /***************************************************************************/
 BOOL CSaDoc::DoFileSave() {
+
     // SDM 1.5Test10.2
     if ((m_fileStat.m_szFullName[0] == 0) || !(IsModified() || m_nWbProcess)) {
         // OnFileSaveDisabled
@@ -5276,7 +5280,7 @@ void CSaDoc::OnFileSaveAs() {
     }
     ifileName = SetFileExtension(ifileName, _T(".wav"));
 
-    CSaString originalFile = ifileName;
+	CString originalFile = ifileName;
 
     CDlgSaveAsOptions dlg(_T("wav"), ifileName, OFN_PATHMUSTEXIST | OFN_OVERWRITEPROMPT, _T("WAV Files (*.wav)|*.wav||"), NULL, true, stereo);
 
@@ -5396,7 +5400,7 @@ void CSaDoc::OnFileSaveAs() {
         CFile::SetStatus(newFile, m_fileStat);
     }
 
-	CAutoSave::Close(original_name.c_str());
+	m_AutoSave.Close(originalFile);
 
     switch (dlg.m_eShowFiles) {
     case showBoth:
@@ -8614,7 +8618,7 @@ bool CSaDoc::IsUsingTempFile() {
 }
 
 void CSaDoc::StoreAutoRecoveryInformation() {
-    m_AutoSave.StoreAutoRecoveryInformation(this);
+	m_AutoSave.Save( *this);
 }
 
 wstring CSaDoc::GetFilenameFromTitle() {

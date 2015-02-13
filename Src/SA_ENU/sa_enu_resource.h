@@ -1775,6 +1775,8 @@
 #define IDS_ERROR_FORMAT_CHANNELS       61268
 #define IDS_STRING61269                 61269
 #define IDS_ERROR_BADFILENAME_CHARS     61269
+#define IDS_ERROR_NO_SETTING_DIR        61270
+#define IDS_ERROR_UNKNOWN               61271
 #define IDS_AUTO_REF_MAIN               61300
 #define IDS_AUTO_REF_MAIN_1             61300
 #define IDS_AUTO_REF_MAIN_2             61301

@@ -1,3 +1,7 @@
+SA - 3.1.0.117 2/12/2015
+-Fixed autosave timer problem.  Timer was not starting until document menu was initialized.
+-Modified application so that settings directory is automatically created if it does not exist.
+
 SA - 3.1.0.116 2/10/2015
 -Changed 'what's new' help link to point to release notes document.
 -Fixed rendering of /gl on 'import word list' view of 'align transcription data' dialog box. removed '#' character.

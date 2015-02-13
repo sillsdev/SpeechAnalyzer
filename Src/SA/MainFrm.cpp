@@ -641,12 +641,20 @@ void CMainFrame::OnInitMenu(CMenu * pMenu) {
         }
     }
 
-    //TRACE(L"posting autosave message %d\n",m_bAutoSave);
-    if (m_bAutoSave) {
-        PostMessage(WM_COMMAND,ID_AUTOSAVE_ON);
-    } else {
-        PostMessage(WM_COMMAND,ID_AUTOSAVE_OFF);
-    }
+	// setup the autosave checks
+	if (m_bAutoSave) {
+	    UINT state = pMenu->GetMenuState(ID_AUTOSAVE_ON,MF_BYCOMMAND);
+		if ((m_bAutoSave)&&((state&MF_CHECKED)!=MF_CHECKED)) {
+			pMenu->CheckMenuItem(ID_AUTOSAVE_ON, MF_CHECKED);
+			pMenu->CheckMenuItem(ID_AUTOSAVE_OFF, MF_UNCHECKED);
+		}
+	} else {
+		UINT state = pMenu->GetMenuState(ID_AUTOSAVE_OFF,MF_BYCOMMAND);
+		if ((!m_bAutoSave)&&((state&MF_CHECKED)!=MF_CHECKED)) {
+			pMenu->CheckMenuItem(ID_AUTOSAVE_ON, MF_UNCHECKED);
+			pMenu->CheckMenuItem(ID_AUTOSAVE_OFF, MF_CHECKED);
+		}
+	}
 }
 
 /***************************************************************************/
@@ -669,8 +677,8 @@ void CMainFrame::OnToolsOptions() {
         dlg.m_dlgViewPage.m_bStatusbar = m_bStatusBar;       // setup check boxes
         dlg.m_dlgViewPage.m_nPosMode = m_nStatusPosReadout;
         dlg.m_dlgViewPage.m_nPitchMode = m_nStatusPitchReadout;
-        dlg.m_dlgViewPage.m_bToolbar = bToolBarVisible();
-        dlg.m_dlgViewPage.m_bTaskbar = bTaskBarVisible();
+        dlg.m_dlgViewPage.m_bToolbar = ToolBarVisible();
+        dlg.m_dlgViewPage.m_bTaskbar = TaskBarVisible();
         dlg.m_dlgViewPage.m_bToneAbove = m_bToneAbove;
         dlg.m_dlgViewPage.m_bScrollZoom = m_bScrollZoom;
         dlg.m_dlgViewPage.m_nCursorAlignment = pView->GetCursorAlignment();
@@ -770,13 +778,13 @@ LRESULT CMainFrame::OnApplyToolsOptions(WPARAM, LPARAM) {
 
     m_nStatusPitchReadout = toolSettings.m_nPitchMode;
     // apply to toolbar
-    if (toolSettings.m_bToolbar != bToolBarVisible()) {
+    if (toolSettings.m_bToolbar != ToolBarVisible()) {
         BOOL bAdvanced = toolSettings.m_bToolbar;
         ShowControlBar(GetControlBar(IDR_BAR_BASIC),!bAdvanced, FALSE); // change toolbar status
         ShowControlBar(GetControlBar(IDR_BAR_ADVANCED), bAdvanced, FALSE); // change toolbar status
     }
     // apply to taskbar
-    if (toolSettings.m_bTaskbar != bTaskBarVisible()) {
+    if (toolSettings.m_bTaskbar != TaskBarVisible()) {
         BOOL bTaskbar = toolSettings.m_bTaskbar;
         ShowControlBar(GetControlBar(ID_VIEW_TASKBAR),bTaskbar, FALSE); // change taskbar status
     }
@@ -991,11 +999,10 @@ void CMainFrame::OnUpdateEditEditor(CCmdUI * pCmdUI) {
 /***************************************************************************/
 // CMainFrame::OnIdleUpdate handles idle time update needs
 /***************************************************************************/
-LRESULT CMainFrame::OnIdleUpdate(WPARAM /*wParam*/, LPARAM /*lParam*/) {
+LRESULT CMainFrame::OnIdleUpdate( WPARAM /*wParam*/, LPARAM /*lParam*/) {
     if (m_pDlgEditor!=NULL) {
         m_pDlgEditor->UpdateDialog();
     }
-
     return 0;
 }
 
@@ -1887,8 +1894,8 @@ void CMainFrame::WriteProperties(CObjectOStream & obs) {
     obs.WriteBool(psz_statusbar , m_bStatusBar);
     obs.WriteInteger(psz_statusposreadout, m_nStatusPosReadout);
     obs.WriteInteger(psz_statuspitchreadout, m_nStatusPitchReadout);
-    obs.WriteBool(psz_toolbar, bToolBarVisible());
-    obs.WriteBool(psz_taskbar, bTaskBarVisible());
+    obs.WriteBool(psz_toolbar, ToolBarVisible());
+    obs.WriteBool(psz_taskbar, TaskBarVisible());
     obs.WriteBool(psz_toneAbove, m_bToneAbove);  //SDM 1.5Test8.2
     obs.WriteBool(psz_scrollzoom, m_bScrollZoom);
     obs.WriteInteger(psz_graphUpdateMode, m_nGraphUpdateMode);
@@ -1947,6 +1954,7 @@ void CMainFrame::WriteProperties(CObjectOStream & obs) {
 // Read the open databases and windows
 //********************************************************************
 BOOL CMainFrame::ReadProperties(CObjectIStream & obs) {
+
     if (!obs.bAtBackslash() || !obs.bReadBeginMarker(psz_mainframe)) {
         return FALSE;
     }
@@ -1987,13 +1995,13 @@ BOOL CMainFrame::ReadProperties(CObjectIStream & obs) {
         else if (obs.bReadInteger(psz_statusposreadout, m_nStatusPosReadout));
         else if (obs.bReadInteger(psz_statuspitchreadout, m_nStatusPitchReadout));
         else if (obs.bReadBool(psz_toolbar, b)) {
-            if (b != bToolBarVisible()) {
+            if (b != ToolBarVisible()) {
                 BOOL bAdvanced = b;
                 ShowControlBar(GetControlBar(IDR_BAR_BASIC),!bAdvanced, TRUE); // change toolbar status
                 ShowControlBar(GetControlBar(IDR_BAR_ADVANCED), bAdvanced, TRUE); // change toolbar status
             }
         } else if (obs.bReadBool(psz_taskbar, b)) {
-            if (b != bTaskBarVisible()) {
+            if (b != TaskBarVisible()) {
                 ShowControlBar(GetControlBar(ID_VIEW_TASKBAR),b, TRUE); // change toolbar status
             }
         } else if (obs.bReadBool(psz_toneAbove, b)) {
@@ -2416,11 +2424,11 @@ BOOL CMainFrame::OnCopyData(CWnd * /*pWnd*/, COPYDATASTRUCT * pCopyDataStruct) {
     return TRUE;
 }
 
-BOOL CMainFrame::bToolBarVisible() {
+BOOL CMainFrame::ToolBarVisible() {
     // toolbar on/off
     return m_wndToolBarAdvanced.IsVisible() ;
 };
-BOOL CMainFrame::bTaskBarVisible() {
+BOOL CMainFrame::TaskBarVisible() {
     // taskbar on/off
     return m_wndTaskBar.IsVisible();
 };
@@ -2660,6 +2668,7 @@ BOOL CALLBACK AutosaveTimerChildProc( HWND hwnd,  LPARAM) {
 }
 
 void CMainFrame::OnTimer(UINT nIDEvent) {
+	//TRACE("OnTimer %d\n",nIDEvent);
     if (nIDEvent == ID_TIMER_AUTOSAVE) {
         // if we are playing something, defer autosave for performance reasons
         if (IsPlayerPlaying()) {
@@ -2669,6 +2678,16 @@ void CMainFrame::OnTimer(UINT nIDEvent) {
     } else {
         CWnd::OnTimer(nIDEvent);
     }
+}
+
+void CMainFrame::InitializeAutoSave() {
+    if (m_bAutoSave) {
+	    TRACE("enabling autosave\n");
+		SetTimer(ID_TIMER_AUTOSAVE, AUTOSAVE_TIMER, NULL);  // start the timer
+	} else {
+	    TRACE("disabling autosave\n");
+	    KillTimer(ID_TIMER_AUTOSAVE);
+	}
 }
 
 void CMainFrame::OnAutoSaveOn() {
@@ -2703,4 +2722,3 @@ LRESULT CMainFrame::OnUpdatePlayer( WPARAM wParam, LPARAM /*lParam*/) {
     }
     return 0;
 }
-

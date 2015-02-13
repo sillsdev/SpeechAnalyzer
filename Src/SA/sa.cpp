@@ -107,6 +107,7 @@
 #include "array_ptr.h"
 #include <direct.h>
 #include "DlgHelpSFMMarkers.h"
+#include "Utils.h"
 
 #pragma comment(linker, "/SECTION:.shr,RWS")
 #pragma data_seg(".shr")
@@ -462,13 +463,15 @@ BOOL CSaApp::InitInstance() {
         BOOL bSettingSuccess = ReadSettings();
 
         // Dispatch commands specified on the command line
-        if ((cmdInfo.m_nShellCommand != CCommandLineInfo::FileNew) && (!ProcessShellCommand(cmdInfo))) {
+        if ((cmdInfo.m_nShellCommand != CCommandLineInfo::FileNew) && 
+			(!ProcessShellCommand(cmdInfo))) {
             return FALSE;
         }
 
         if (!bSettingSuccess) {
             pMainFrame->ShowWindow(m_nCmdShow);
         }
+
         pMainFrame->UpdateWindow();
 
         // Perform setup new user, if needed
@@ -483,13 +486,15 @@ BOOL CSaApp::InitInstance() {
 
         CAutoSave::Check(this);
 
+		pMainFrame->InitializeAutoSave();
+
         // Show startup dialog
         CMainFrame * pMainWnd = (CMainFrame *)AfxGetMainWnd();
         if ((pMainWnd->GetShowStartupDlg()) && (!pMainWnd->GetCurrSaView())) {
             ShowStartupDialog(TRUE);
         }
 
-    } else {
+	} else {
         if (!ReadSettings()) {
             // settings read failed.  at least show the window correctly.
             pMainFrame->ShowWindow(m_nCmdShow + 3);
@@ -1362,11 +1367,11 @@ void CSaApp::OnFileRecord() {
 /***************************************************************************/
 void CSaApp::FileOpen() {
     int id = GetOpenAsID();
-    CDocument * pDoc = OpenBlankView(true); // uses auto naming
+    CDocument * pDoc = OpenBlankView(true);					// uses auto naming
 
     CMainFrame * pMDIFrameWnd = (CMainFrame *)AfxGetMainWnd();
     ASSERT(pMDIFrameWnd->IsKindOf(RUNTIME_CLASS(CMainFrame)));
-    pMDIFrameWnd->SendMessage(WM_USER_IDLE_UPDATE, 0, 0); // give editor a chance to close
+    pMDIFrameWnd->SendMessage(WM_USER_IDLE_UPDATE, 0, 0);	// give editor a chance to close
 
     SetOpenAsID(id);
 
@@ -2214,10 +2219,17 @@ BOOL CSaApp::ReadSettings() {
         szPath = szPath.Left(szPath.GetLength() - 1);
     }
 
-    CFileStatus status;
-    if ((!(CFile::GetStatus(szPath, status)) && (status.m_attribute & CFile::directory))) {
-        CreateDirectory(szPath, NULL);
-    }
+	if (!FileUtils::FolderExists(szPath)) {
+		// it doesn't exist...
+        if (!CreateDirectory(szPath, NULL)) {
+			// and we can't create it.
+			CString error = FormatGetLastError(GetLastError());
+			CString msg;
+			AfxFormatString2( msg, IDS_ERROR_NO_SETTING_DIR, szPath, error);
+			AfxMessageBox(msg,MB_OK|MB_ICONEXCLAMATION,0);
+			return FALSE;
+		}
+	}
 
     szPath += "\\";
 

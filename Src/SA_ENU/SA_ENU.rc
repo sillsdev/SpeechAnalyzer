@@ -26,7 +26,7 @@ LANGUAGE LANG_NEUTRAL, SUBLANG_NEUTRAL
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 3,1,0,116
+ FILEVERSION 3,1,0,117
  PRODUCTVERSION 1,0,0,1
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
@@ -44,7 +44,7 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "SIL International"
             VALUE "FileDescription", "Speech Analyzer Resource DLL"
-            VALUE "FileVersion", "v3.1.0.116"
+            VALUE "FileVersion", "v3.1.0.117"
             VALUE "InternalName", "SA_ENU"
             VALUE "LegalCopyright", "© 1996-2015 SIL International (MSEA)"
             VALUE "OriginalFilename", "SA_ENU.dll"
@@ -4649,7 +4649,7 @@ IDC_MHANDN              CURSOR                  "res\\MedHandN.cur"
 
 STRINGTABLE
 BEGIN
-    VS_VERSION              "Version 3.1.0.116"
+    VS_VERSION              "Version 3.1.0.117"
     VS_COPYRIGHT            "© 1996-2015 SIL International (MSEA).\nAll Rights Reserved."
     IDR_MAINFRAME           "Speech Analyzer"
     IDR_SA_ANNTYPE          "\nSA\nSA Document\nWAV Files (*.wav)\n.wav\nannFileType\nANN File Type"
@@ -4702,6 +4702,9 @@ BEGIN
     IDS_ERROR_FORMAT_CHANNELS "Data in file '%1' has too many channels"
     IDS_ERROR_BADFILENAME_CHARS 
                             "A filename can't contain any of the following characters: \\ / : * ? "" < > | "
+    IDS_ERROR_NO_SETTING_DIR 
+	"Speech Analyzer was unable create or access the directory:\n'%1'\nSpeech Analyzer uses this directory to store application settings and documents.\nPlease correct the error and restart the application.\nReason: %2"
+    IDS_ERROR_UNKNOWN       "Unknown error code %08x (%d)"
 END
 
 STRINGTABLE
@@ -5452,7 +5455,7 @@ BEGIN
     IDS_AWIZ_GL_MARKER      "gl"
     IDS_SPLASH_LOADING      "Loading..."
     IDS_SPLASH_NEW_USER_SETUP "Configuring for first use..."
-    IDS_STARTUP_3_0         "Speech Analyzer now stores transcription data for each audio \nfile in a companion .saxml file. This should also be copied \nwhen copying, moving or archiving the audio file.\n\nFor more details on transcription storage see the Speech \nAnalyzer help file."
+    IDS_STARTUP_3_0         "Speech Analyzer now stores transcription data for each audio\nfile in a companion .saxml file.\nThis should also be copied when copying, moving or archiving the audio file.\n\nFor more details on transcription storage, see the Speech \nAnalyzer help file."
 END
 
 STRINGTABLE

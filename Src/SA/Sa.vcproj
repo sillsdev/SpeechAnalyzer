@@ -1096,6 +1096,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Utils.cpp"
+				>
+			</File>
+			<File
 				RelativePath="WaveformGenerator.cpp"
 				>
 			</File>
@@ -1994,6 +1998,10 @@
 			</File>
 			<File
 				RelativePath="UnicodeString.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Utils.h"
 				>
 			</File>
 			<File
