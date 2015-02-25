@@ -46,6 +46,7 @@
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\..\..\Output\Release\</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(Configuration)\</IntDir>
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">SA</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">SA</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <Midl>
@@ -102,7 +103,7 @@
     <ClCompile>
       <Optimization>Disabled</Optimization>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
-      <AdditionalIncludeDirectories>.;..\lib;..\WaveUtils;..\SA_KLATT;..\mbrola;..\SA_ENU;..\SA_DSP;..\zGraph;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.;..\ElanUtils;..\XMLUtils;..\FileUtils;..\LiftUtils;..\lib;..\WaveUtils;..\SA_KLATT;..\mbrola;..\SA_ENU;..\SA_DSP;..\zGraph;$(XERCES_VC10_HOME)\include;..\uriparser\include;..\..\output\release;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_WINDOWS;WINDOWS_PLATFORM;WIN32;NDEBUG;WINVER=0x501;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
@@ -114,9 +115,10 @@
       <PreprocessorDefinitions>%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ResourceCompile>
     <Link>
-      <AdditionalDependencies>mfc90u.lib;mfcs90u.lib;msvcrt.lib;msvcprt.lib;comdlg32.lib;user32.lib;gdi32.lib;kernel32.lib;advapi32.lib;oldnames.lib;winmm.lib;version.lib;imm32.lib;ole32.lib;oleaut32.lib;uuid.lib;comsuppw.lib;HtmlHelp\htmlhelp.lib;shell32.lib;msacm32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>mfc100u.lib;mfcs100u.lib;atls.lib;msvcrt.lib;msvcprt.lib;comdlg32.lib;user32.lib;gdi32.lib;kernel32.lib;advapi32.lib;oldnames.lib;winmm.lib;version.lib;imm32.lib;ole32.lib;oleaut32.lib;uuid.lib;comsuppw.lib;htmlhelp.lib;shell32.lib;msacm32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <IgnoreAllDefaultLibraries>true</IgnoreAllDefaultLibraries>
+      <IgnoreAllDefaultLibraries>
+      </IgnoreAllDefaultLibraries>
       <GenerateDebugInformation>false</GenerateDebugInformation>
       <GenerateMapFile>false</GenerateMapFile>
       <SubSystem>Windows</SubSystem>
@@ -125,7 +127,7 @@
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
       <DataExecutionPrevention>
       </DataExecutionPrevention>
-      <AdditionalLibraryDirectories>.\..\..\Output\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(OutDir);$(XERCES_VC10_HOME)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>

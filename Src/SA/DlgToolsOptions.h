@@ -237,7 +237,7 @@ public:
     CDlgOptionsSavePage m_dlgSavePage;
     CDlgOptionsAudioPage m_dlgAudioPage;
 
-    CToolSettings GetSettings();
+    CToolSettings GetSettings( bool fullView);
 
 protected:
     virtual void DoDataExchange(CDataExchange * pDX);   // DDX/DDV support

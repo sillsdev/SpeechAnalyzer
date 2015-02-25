@@ -90,7 +90,7 @@
 *          :                                                                  *
 *   SSigParms stFrameParm;                                                    *
 *   stFrameParm.Length = dwFrameSize / wSmpSize;                              *
-*   stFrameParm.SmpRate = pDoc->GetSamplesPerSec();							  *
+*   stFrameParm.SmpRate = pDoc->GetSamplesPerSec();                           *
 *   if (wSmpSize == 1) stFrameParm.SmpDataFmt = PCM_UBYTE;                    *
 *   else stFrameParm.SmpDataFmt = PCM_2SSHORT;                                *
 *   stFrameParm.Start = (void *)new char[dwFrameSize];                        *
@@ -104,7 +104,7 @@
 *   (load pitch contour buffer)                                               *
 *          :                                                                  *
 *   CFragment *poFragment;                                                    *
-*   SFragParms *pstFragParm;												  *
+*   SFragParms *pstFragParm;                                                  *
 *   dspError_t Err = CFragment::CreateObject(&poFragment, , &pstFragParm,     *
 *                                     stFrameParm, stPitchParm);              *
 *   if (Err) return;                                                          *
@@ -164,21 +164,19 @@
 ////////////////////////////////////////////////////////////////////////////////////////
 // Class function to return copyright notice.                                         //
 ////////////////////////////////////////////////////////////////////////////////////////
-char * CFragment::Copyright(void)
-{
+char * CFragment::Copyright(void) {
     static char Notice[] = {"Fragment Version " VERSION_NUMBER "\n"
                             "Copyright (c) " COPYRIGHT_DATE " by Summer Institute of Linguistics. "
                             "All rights reserved.\n"
                            };
-    return(Notice);
+    return (Notice);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////
 // Class function to return version of class.                                         //
 ////////////////////////////////////////////////////////////////////////////////////////
-float CFragment::Version(void)
-{
-    return((float)atof(VERSION_NUMBER));
+float CFragment::Version(void) {
+    return ((float)atof(VERSION_NUMBER));
 }
 
 #undef COPYRIGHT_DATE
@@ -189,113 +187,93 @@ float CFragment::Version(void)
 ////////////////////////////////////////////////////////////////////////////////////////
 dspError_t CFragment::CreateObject(CFragment ** ppoFragment, SFragParms * pstFragParmBfr, uint32 dwFragParmBfrLength,
                                    SSigParms & stSigParm, void * pWaveBfr, uint32 dwWaveBfrLength,
-                                   SPitchParms & stPitchParm, short * psPitchBfr, uint32 dwPitchBfrLength)
-{
+                                   SPitchParms & stPitchParm, short * psPitchBfr, uint32 dwPitchBfrLength) {
 // Validate parameters passed.
-    if (!ppoFragment)
-    {
-        return(Code(INVALID_PARM_PTR));    //address to return object pointer must not be NULL
+    if (!ppoFragment) {
+        return (Code(INVALID_PARM_PTR));   //address to return object pointer must not be NULL
     }
     *ppoFragment = NULL;
 
-    if (!pstFragParmBfr)
-    {
-        return(Code(INVALID_PARM_PTR));    //pointer to fragment buffer must not be NULL
+    if (!pstFragParmBfr) {
+        return (Code(INVALID_PARM_PTR));   //pointer to fragment buffer must not be NULL
     }
-    if (!dwFragParmBfrLength)
-    {
-        return(Code(INVALID_PARM));    //fragment buffer length must not be zero
+    if (!dwFragParmBfrLength) {
+        return (Code(INVALID_PARM));   //fragment buffer length must not be zero
     }
     dspError_t Err = ValidateSignalParms(stSigParm);                   //check signal parameters
-    if (Err)
-    {
-        return(Err);
+    if (Err) {
+        return (Err);
     }
-    if (!pWaveBfr)
-    {
-        return(Code(INVALID_PARM_PTR));
+    if (!pWaveBfr) {
+        return (Code(INVALID_PARM_PTR));
     }
-    if (!dwWaveBfrLength)
-    {
-        return(Code(INVALID_PARM));
+    if (!dwWaveBfrLength) {
+        return (Code(INVALID_PARM));
     }
 
     Err = ValidatePitchParms(stPitchParm);                      //check pitch parameters
-    if (Err)
-    {
-        return(Err);
+    if (Err) {
+        return (Err);
     }
-    if (!psPitchBfr)
-    {
-        return(Code(INVALID_PARM_PTR));
+    if (!psPitchBfr) {
+        return (Code(INVALID_PARM_PTR));
     }
-    if (!dwPitchBfrLength)
-    {
-        return(Code(INVALID_PARM));
+    if (!dwPitchBfrLength) {
+        return (Code(INVALID_PARM));
     }
 
 
 // Construct filter object.
     *ppoFragment = new CFragment(stSigParm, pWaveBfr, dwWaveBfrLength, stPitchParm, psPitchBfr, dwPitchBfrLength,
                                  pstFragParmBfr, dwFragParmBfrLength);
-    if (!*ppoFragment)
-    {
-        return(Code(OUT_OF_MEMORY));
+    if (!*ppoFragment) {
+        return (Code(OUT_OF_MEMORY));
     }
 
 
-    return(DONE);
+    return (DONE);
 }
 
 
 ////////////////////////////////////////////////////////////////////////////////////////
 // Class function to validate signal parameters.                                      //
 ////////////////////////////////////////////////////////////////////////////////////////
-dspError_t CFragment::ValidateSignalParms(SSigParms & stSigParm)
-{
-    if (!stSigParm.Length)
-    {
-        return(Code(INVALID_SIG_LEN));
+dspError_t CFragment::ValidateSignalParms(SSigParms & stSigParm) {
+    if (!stSigParm.Length) {
+        return (Code(INVALID_SIG_LEN));
     }
 
-    if (stSigParm.SmpRate < 1)             //ensure signal sampled at valid
-    {
-        return(Code(UNSUPP_SMP_RATE));    //  Microsoft Windows frequencies.
+    if (stSigParm.SmpRate < 1) {           //ensure signal sampled at valid
+        return (Code(UNSUPP_SMP_RATE));   //  Microsoft Windows frequencies.
     }
 
     if (stSigParm.SmpDataFmt != PCM_UBYTE &&   //sample data format should be unsigned byte PCM or
-            stSigParm.SmpDataFmt != PCM_2SSHORT)   //  2's complement signed 16-bit PCM
-    {
-        return(Code(UNSUPP_SMP_DATA_FMT));
+            stSigParm.SmpDataFmt != PCM_2SSHORT) { //  2's complement signed 16-bit PCM
+        return (Code(UNSUPP_SMP_DATA_FMT));
     }
 
-    return(DONE);
+    return (DONE);
 }
 
 
 ////////////////////////////////////////////////////////////////////////////////////////
 // Class function to validate pitch parameters.                                       //
 ////////////////////////////////////////////////////////////////////////////////////////
-dspError_t CFragment::ValidatePitchParms(SPitchParms & stPitchParm)
-{
-    if (!stPitchParm.dwContourLength)
-    {
-        return(Code(INVALID_PITCH_CONTOUR_LEN));
+dspError_t CFragment::ValidatePitchParms(SPitchParms & stPitchParm) {
+    if (!stPitchParm.dwContourLength) {
+        return (Code(INVALID_PITCH_CONTOUR_LEN));
     }
-    if (!stPitchParm.wSmpIntvl)
-    {
-        return(Code(INVALID_SMP_INTERVAL));
+    if (!stPitchParm.wSmpIntvl) {
+        return (Code(INVALID_SMP_INTERVAL));
     }
-    if (!stPitchParm.wScaleFac)
-    {
-        return(Code(INVALID_SCALE_FACTOR));
+    if (!stPitchParm.wScaleFac) {
+        return (Code(INVALID_SCALE_FACTOR));
     }
-    if (stPitchParm.wCalcRangeMin >= stPitchParm.wCalcRangeMax)
-    {
-        return(Code(INVALID_RANGE));
+    if (stPitchParm.wCalcRangeMin >= stPitchParm.wCalcRangeMax) {
+        return (Code(INVALID_RANGE));
     }
 
-    return(DONE);
+    return (DONE);
 }
 
 
@@ -304,8 +282,7 @@ dspError_t CFragment::ValidatePitchParms(SPitchParms & stPitchParm)
 ////////////////////////////////////////////////////////////////////////////////////////
 CFragment::CFragment(SSigParms & stSigParm, void * pWaveBfr, uint32 dwWaveBfrLength,
                      SPitchParms & stPitchParm, short * psPitchBfr, uint32 dwPitchBfrLength,
-                     SFragParms * pstFragParmBfr, uint32 dwFragParmBfrLength)
-{
+                     SFragParms * pstFragParmBfr, uint32 dwFragParmBfrLength) {
 // Update object member variables.
     m_pWaveBfr = pWaveBfr;
     m_dwWaveBfrLength = dwWaveBfrLength;
@@ -334,6 +311,7 @@ CFragment::CFragment(SSigParms & stSigParm, void * pWaveBfr, uint32 dwWaveBfrLen
     m_dwMaxRange = 0;
     m_dwMaxRangeCrossing = 0;
     m_bUnvoiced = true;
+	m_dwFragBlockLength = 0;
 
 
 //  Since the output will be smoothed, the filtering operation may be expedited by
@@ -358,24 +336,21 @@ CFragment::CFragment(SSigParms & stSigParm, void * pWaveBfr, uint32 dwWaveBfrLen
 ////////////////////////////////////////////////////////////////////////////////////////
 // Fragment object destructor.                                                        //
 ////////////////////////////////////////////////////////////////////////////////////////
-CFragment::~CFragment()
-{
+CFragment::~CFragment() {
 
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////
 // Fragment routine.                                                                  //
 ////////////////////////////////////////////////////////////////////////////////////////
-dspError_t CFragment::Fragment(void)
-{
-    switch (m_sbSmpFormat)
-    {
+dspError_t CFragment::Fragment(void) {
+    switch (m_sbSmpFormat) {
     case PCM_UBYTE:
-        return(Process((uint8 *)m_pWaveBfr));
+        return (Process((uint8 *)m_pWaveBfr));
     case PCM_2SSHORT:
-        return(Process((short *)m_pWaveBfr));
+        return (Process((short *)m_pWaveBfr));
     default:
-        return(0);
+        return (0);
     }
 }
 
@@ -383,8 +358,7 @@ dspError_t CFragment::Fragment(void)
 ////////////////////////////////////////////////////////////////////////////////////////
 // Process routine.                                                                   //
 ////////////////////////////////////////////////////////////////////////////////////////
-dspError_t CFragment::Process(uint8 * pubWaveBfr)
-{
+dspError_t CFragment::Process(uint8 * pubWaveBfr) {
 
 //  Set moving average filter parameters.
     uint16 wFltrLen;      // number of samples in filter window
@@ -394,33 +368,29 @@ dspError_t CFragment::Process(uint8 * pubWaveBfr)
     uint8 * pLead,                //pointer to next sample to be included in moving sum
           *pTrail;                //pointer to oldest sample to be removed from moving sum
 
-    if (m_dwWaveIndex == 0)    //!!what if buffer too small? initialize
-    {
+    if (m_dwWaveIndex == 0) {  //!!what if buffer too small? initialize
         // initialize filter parms
-        nPitch = m_psPitchBfr[0];														//set current pitch to smoothed pitch value
+        nPitch = m_psPitchBfr[0];                                                       //set current pitch to smoothed pitch value
         // in pitch buffer
-        if (nPitch > 0)																	//if voiced,
-        {
+        if (nPitch > 0) {                                                               //if voiced,
             nPitch = (short)((nPitch + (short)(m_wPitchScaleFac>>1))/
-                             (short)m_wPitchScaleFac);									// scale and round value
+                             (short)m_wPitchScaleFac);                                  // scale and round value
             //  to nearest whole number
-            wFltrLen = (uint16)((m_wSmpRate + (uint16)nPitch) / (uint16)(nPitch<<1));	// size filter length to
+            wFltrLen = (uint16)((m_wSmpRate + (uint16)nPitch) / (uint16)(nPitch<<1));   // size filter length to
             //  pass fundamental,
             //  suppress even harmonics
             //  and attenuate odd
-        }
-        else wFltrLen = (uint16)((m_wSmpRate + (DEFAULT_CUTOFF>>1)) /					// otherwise, use length
-                                     DEFAULT_CUTOFF);									// closest to default cutoff
+        } else wFltrLen = (uint16)((m_wSmpRate + (DEFAULT_CUTOFF>>1)) /                 // otherwise, use length
+                                       DEFAULT_CUTOFF);                                   // closest to default cutoff
 
-        wFltrLen |= 1;																	// force length odd to ensure sample at center
+        wFltrLen |= 1;                                                                  // force length odd to ensure sample at center
         wFltrHalf = (uint16)(wFltrLen / 2);
 
 
-        pLead = pTrail = pubWaveBfr;													// initialize filter edge pointers
+        pLead = pTrail = pubWaveBfr;                                                    // initialize filter edge pointers
         m_lCurrSum = 0;
-        for (uint16 i = 0; i <= wFltrHalf; i++)
-        {
-            m_lCurrSum += (int32)(*pLead++-128);										// initialize filter sum
+        for (uint16 i = 0; i <= wFltrHalf; i++) {
+            m_lCurrSum += (int32)(*pLead++-128);                                        // initialize filter sum
         }
 
 
@@ -438,13 +408,10 @@ dspError_t CFragment::Process(uint8 * pubWaveBfr)
         fprintf(m_hFltrDump, "%ld ", (m_lCurrSum + (int32)wFltrHalf) / wFltrLen);
 #endif
         /******************************************************************************/
-    }
-    else
-    {
+    } else {
         // restore filter parms
         nPitch = m_nPrevPitch;                                                 //set current pitch to previous value
-        if (nPitch > 0)                                                        //if voiced,
-        {
+        if (nPitch > 0) {                                                      //if voiced,
             nPitch = (short)((nPitch + (short)(m_wPitchScaleFac>>1))/
                              (short)m_wPitchScaleFac);                                    // scale and round value
             //  to nearest whole number
@@ -453,9 +420,8 @@ dspError_t CFragment::Process(uint8 * pubWaveBfr)
             //  pass fundamental,
             //  suppress even harmonics
             //  and attenuate odd
-        }
-        else wFltrLen = (uint16)((m_wSmpRate + (DEFAULT_CUTOFF>>1)) /           //otherwise, use length
-                                     DEFAULT_CUTOFF);                                        // closest to default cutoff
+        } else wFltrLen = (uint16)((m_wSmpRate + (DEFAULT_CUTOFF>>1)) /         //otherwise, use length
+                                       DEFAULT_CUTOFF);                                        // closest to default cutoff
 
         wFltrLen |= 1;                                                          //force length odd to ensure sample at center
         wFltrHalf = (uint16)(wFltrLen / 2);
@@ -470,21 +436,18 @@ dspError_t CFragment::Process(uint8 * pubWaveBfr)
     uint16 wWaveFragLen=0;        //length of fragment in samples
     uint32 dwFragMagSum;         //sum of sample magnitudes within waveform fragment
 
-    do
-    {
+    do {
         // Reload waveform buffer if sample to be requested is out of range.
-        if (m_dwWaveIndex + wFltrHalf >= m_dwWaveBlock + m_dwWaveBfrLength)
-        {
+        if (m_dwWaveIndex + wFltrHalf >= m_dwWaveBlock + m_dwWaveBfrLength) {
             m_dwWaveBlock = __min(m_dwWaveFragStart, m_dwWaveIndex - (uint32)m_wMaxFltrHalf - 1);   //!!what if < 0
-            return(WAVE_BUFFER_CALLBACK);
+            return (WAVE_BUFFER_CALLBACK);
         }
 
         // Reload pitch buffer if data value requested could be out of range.
         uint32 dwPitchIndex = (m_dwWaveIndex + m_wMaxFltrHalf) / m_wPitchCalcIntvl;
-        if (dwPitchIndex  >= m_dwPitchBlock + m_dwPitchBfrLength)
-        {
+        if (dwPitchIndex  >= m_dwPitchBlock + m_dwPitchBfrLength) {
             m_dwPitchBlock = (m_dwWaveFragStart + 1) / (uint32)m_wPitchCalcIntvl ;     //!!initialize
-            return(PITCH_BUFFER_CALLBACK);
+            return (PITCH_BUFFER_CALLBACK);
         }
         dwPitchIndex = m_dwWaveIndex / (uint32)m_wPitchCalcIntvl;      // map to current waveform same to
         // pitch calculation scale
@@ -493,62 +456,48 @@ dspError_t CFragment::Process(uint8 * pubWaveBfr)
         m_lPrevSum = m_lCurrSum;
 
         uint32 j = dwPitchIndex - m_dwPitchBlock;
-        if (dwPitchIndex < m_dwPitchDataLength)                      //!!needed?
-        {
+        if (dwPitchIndex < m_dwPitchDataLength) {                    //!!needed?
             // Adapt filter to current pitch if pitch has changed.
             nPitch = m_psPitchBfr[j];
 
-            if (nPitch != m_nPrevPitch)                          //if pitch has changed,
-            {
-                if (nPitch > 0)                                  // if voiced,
-                {
-					// scale and round to nearest whole number
-                    nPitch = (short)((nPitch + (short)(m_wPitchScaleFac>>1)) / (short)m_wPitchScaleFac);	
+            if (nPitch != m_nPrevPitch) {                        //if pitch has changed,
+                if (nPitch > 0) {                                // if voiced,
+                    // scale and round to nearest whole number
+                    nPitch = (short)((nPitch + (short)(m_wPitchScaleFac>>1)) / (short)m_wPitchScaleFac);
                     // round filter length to value which passes fundamental, supresses even harmonics, and attenuates odd harmonics
                     wFltrLen = (uint16)((m_wSmpRate + (uint16)nPitch) / (uint16)(nPitch<<1));
-                }
-                else
-				{
-					// otherwise, use length closest to default cutoff
+                } else {
+                    // otherwise, use length closest to default cutoff
                     wFltrLen = (uint16)((m_wSmpRate + (DEFAULT_CUTOFF>>1)) / DEFAULT_CUTOFF);
-				}
+                }
 
                 wFltrLen |= 1;                                       // force length odd
 
                 wFltrHalf = (uint16)(wFltrLen / 2);
 
-                if (wFltrHalf > m_wPrevFltrHalf)                     // if filter length has increased,
-                {
-                    if (m_dwWaveIndex + wFltrHalf - m_dwWaveBlock >= m_dwWaveBfrLength)   //if it will extend beyond
-                    {
+                if (wFltrHalf > m_wPrevFltrHalf) {                   // if filter length has increased,
+                    if (m_dwWaveIndex + wFltrHalf - m_dwWaveBlock >= m_dwWaveBfrLength) { //if it will extend beyond
                         // end of waveform buffer
                         m_dwWaveBlock = __min(m_dwWaveFragStart, m_dwWaveIndex - (uint32)m_wMaxFltrHalf - 1);   //!!what if < 0
-                        return(WAVE_BUFFER_CALLBACK);                                    // return for reload
+                        return (WAVE_BUFFER_CALLBACK);                                   // return for reload
                     }
 
-                    for (uint16 i = 0; i < wFltrHalf - m_wPrevFltrHalf; i++)   //update sum for
-                    {
+                    for (uint16 i = 0; i < wFltrHalf - m_wPrevFltrHalf; i++) { //update sum for
                         //expanded filter length
-                        if (m_dwWaveIndex  > (uint32)(m_wPrevFltrHalf + 1 + i))
-                        {
+                        if (m_dwWaveIndex  > (uint32)(m_wPrevFltrHalf + 1 + i)) {
                             m_lCurrSum += (int32)(*--pTrail-128);
                         }
-                        if (m_dwWaveIndex < m_dwSigLength - (uint32)(m_wPrevFltrHalf + i))
-                        {
+                        if (m_dwWaveIndex < m_dwSigLength - (uint32)(m_wPrevFltrHalf + i)) {
                             m_lCurrSum += (int32)(*pLead++-128);
                         }
                     }
-                }
-                else                                                 // otherwise, filter length has decreased
-                    for (uint16 i = 0; i < m_wPrevFltrHalf - wFltrHalf; i++)   //update sum for
-                    {
+                } else                                               // otherwise, filter length has decreased
+                    for (uint16 i = 0; i < m_wPrevFltrHalf - wFltrHalf; i++) { //update sum for
                         //reduced length
-                        if (m_dwWaveIndex > (uint32)(m_wPrevFltrHalf - i))
-                        {
+                        if (m_dwWaveIndex > (uint32)(m_wPrevFltrHalf - i)) {
                             m_lCurrSum -= (int32)(*pTrail++-128);
                         }
-                        if (m_dwWaveIndex <= m_dwSigLength - (uint32)(m_wPrevFltrHalf - i))   //!!<?
-                        {
+                        if (m_dwWaveIndex <= m_dwSigLength - (uint32)(m_wPrevFltrHalf - i)) { //!!<?
                             m_lCurrSum -= (int32)(*--pLead-128);
                         }
                     }
@@ -564,12 +513,10 @@ dspError_t CFragment::Process(uint8 * pubWaveBfr)
         }
 
         // Update filter parameters and calculate filter output.
-        if (m_dwWaveIndex > wFltrHalf)
-        {
+        if (m_dwWaveIndex > wFltrHalf) {
             m_lCurrSum -= (int32)(*pTrail++-128);
         }
-        if (m_dwWaveIndex < m_dwSigLength - wFltrHalf)
-        {
+        if (m_dwWaveIndex < m_dwSigLength - wFltrHalf) {
             m_lCurrSum += (int32)(*pLead++-128);
         }
 
@@ -583,35 +530,28 @@ dspError_t CFragment::Process(uint8 * pubWaveBfr)
         /******************************************************************************/
 
         // If current sample being processed is beyond beginning of the fragment,
-        if (m_dwWaveIndex > m_dwWaveFragStart)      //!!needed?
-        {
+        if (m_dwWaveIndex > m_dwWaveFragStart) {    //!!needed?
             short nSmpValue = (short)(pubWaveBfr[m_dwWaveIndex-m_dwWaveBlock]-128);
-            if (nSmpValue >= 0)
-            {
+            if (nSmpValue >= 0) {
                 //  If negative to positive zero crossing, save location.
                 if (m_dwWaveIndex > 0 &&  //!!replace this
-                        (short)(pubWaveBfr[m_dwWaveIndex-1-m_dwWaveBlock]-128) < 0)
-                {
+                        (short)(pubWaveBfr[m_dwWaveIndex-1-m_dwWaveBlock]-128) < 0) {
                     m_dwWaveCrossing = m_dwWaveIndex;
                 }
 
                 //  Record maximum sample value.
-                if (nSmpValue > m_nMaxSmpValue)
-                {
+                if (nSmpValue > m_nMaxSmpValue) {
                     m_nMaxSmpValue = nSmpValue;
                 }
             }
 
-            else
-            {
+            else {
                 //  If positive to negative zero crossing, compute previous range of
                 //  negative to positive wave reversal.
                 if (m_dwWaveIndex > 0 &&  //!!replace this
-                        (short)(pubWaveBfr[m_dwWaveIndex-1-m_dwWaveBlock]-128) >= 0)
-                {
+                        (short)(pubWaveBfr[m_dwWaveIndex-1-m_dwWaveBlock]-128) >= 0) {
                     uint32 dwSmpRange = (uint32)((int32)m_nMaxSmpValue - (int32)m_nMinSmpValue);
-                    if (dwSmpRange > m_dwMaxRange)
-                    {
+                    if (dwSmpRange > m_dwMaxRange) {
                         //!!need to ensure transition through zero is smooth
                         m_dwMaxRange = dwSmpRange;
                         m_dwMaxRangeCrossing = m_dwWaveCrossing;
@@ -624,26 +564,22 @@ dspError_t CFragment::Process(uint8 * pubWaveBfr)
                 }
 
                 //  Record minimum sample value.
-                if (nSmpValue <= m_nMinSmpValue)
-                {
+                if (nSmpValue <= m_nMinSmpValue) {
                     m_nMinSmpValue = nSmpValue;
                 }
             }
 
 
-            if (lCurrFltrOut >= 0)
-            {
+            if (lCurrFltrOut >= 0) {
                 // Reset peak location and value at negative to positive zero crossing in the filtered
                 // waveform.
-                if (m_lPrevFltrOut < 0)
-                {
+                if (m_lPrevFltrOut < 0) {
                     m_dwFltrPeakIndex = 0;
                     m_lFltrPeak = 0;
                 }
 
                 // Record location and value of first positive peak if it meets or exceeds the peak threshold.
-                if (m_lPrevFltrOut >= lCurrFltrOut && m_lPrevFltrOut >= m_lFltrPeakThd)
-                {
+                if (m_lPrevFltrOut >= lCurrFltrOut && m_lPrevFltrOut >= m_lFltrPeakThd) {
                     m_dwFltrPeakIndex = m_dwWaveIndex - 1;
                     m_lFltrPeak = m_lPrevFltrOut;
                 }
@@ -653,13 +589,11 @@ dspError_t CFragment::Process(uint8 * pubWaveBfr)
             // and the waveform is negative.  Scanning for the beginning of the fragment under these
             // conditions ensures a strong peak has occurred and the full range from maximum negative to
             // positive, indicating a sharp reversal, has been found in the waveform.
-            if (m_dwFltrPeakIndex && m_lPrevFltrOut >= 0 && lCurrFltrOut < 0)
-            {
+            if (m_dwFltrPeakIndex && m_lPrevFltrOut >= 0 && lCurrFltrOut < 0) {
 
                 //  Update value and location of sharpest reversal.
                 uint32 dwSmpRange = (uint32)((int32)m_nMaxSmpValue - (int32)m_nMinSmpValue);
-                if (dwSmpRange > m_dwMaxRange)
-                {
+                if (dwSmpRange > m_dwMaxRange) {
                     m_dwMaxRange = dwSmpRange;
                     m_dwMaxRangeCrossing = m_dwWaveCrossing;
                 }
@@ -668,14 +602,12 @@ dspError_t CFragment::Process(uint8 * pubWaveBfr)
                 m_nMinSmpValue = 0;
                 m_nMaxSmpValue = 0;
 
-                if (m_dwMaxRangeCrossing)
-                {
+                if (m_dwMaxRangeCrossing) {
                     m_dwWaveCrossing = m_dwMaxRangeCrossing;
 
                     //  Search for a zero crossing which corresponds to the smooth pitch period starting
                     //  with the zero crossing which occurred during the sharpest reversal of the waveform.
-                    do
-                    {
+                    do {
                         //  Get pre-computed pitch estimate
                         short nPitchUpperBound;
                         short nSmoothPitch = m_psPitchBfr[m_dwWaveCrossing/m_wPitchCalcIntvl - m_dwPitchBlock];
@@ -690,9 +622,7 @@ dspError_t CFragment::Process(uint8 * pubWaveBfr)
                             //  whole number
                             nPitchUpperBound = (short)(nPitchUpperBound + (nPitchUpperBound>>2));  //set upper bound to
                             //  25% above nominal
-                        }
-                        else
-                        {
+                        } else {
                             nPitchUpperBound = DEFAULT_CUTOFF;    //otherwise limit
                         }
                         //  to default filter cutoff
@@ -701,16 +631,12 @@ dspError_t CFragment::Process(uint8 * pubWaveBfr)
                         //  is less than or equal to 125% of nominal smooth pitch at zero crossing.
                         wWaveFragLen = (uint16)(m_dwWaveCrossing - m_dwWaveFragStart);                                        //!!Len to Length
                         short nFragPitch = (short)((m_wSmpRate + (wWaveFragLen>>1))/wWaveFragLen);
-                        if (nFragPitch <= nPitchUpperBound)
-                        {
+                        if (nFragPitch <= nPitchUpperBound) {
                             m_lFltrPeakThd = 0;
 
-                            if (nSmoothPitch > 0)
-                            {
+                            if (nSmoothPitch > 0) {
                                 m_bUnvoiced = false;
-                            }
-                            else
-                            {
+                            } else {
                                 m_bUnvoiced = true;
                             }
 
@@ -718,18 +644,14 @@ dspError_t CFragment::Process(uint8 * pubWaveBfr)
                             m_pstFragParmBfr[m_dwFragBfrIndex].wLength = wWaveFragLen;
                             m_pstFragParmBfr[m_dwFragBfrIndex].nPitch = nSmoothPitch;
                             dwFragMagSum = 0;
-                            for (uint16 i = 0; i < wWaveFragLen; i++)
-                            {
+                            for (uint16 i = 0; i < wWaveFragLen; i++) {
                                 dwFragMagSum += (uint32)abs((short)(pubWaveBfr[m_dwWaveFragStart+(uint32)i-m_dwWaveBlock]-128));
                                 /***************************** DEBUG ONLY *************************************/
 #ifdef DUMP
                                 fprintf(m_hWaveDump, "%d ", (short)(pubWaveBfr[m_dwWaveFragStart+i-m_dwWaveBlock]-128));
-                                if (i == 0)
-                                {
+                                if (i == 0) {
                                     fprintf(m_hFragDump, "32767 ");
-                                }
-                                else
-                                {
+                                } else {
                                     fprintf(m_hFragDump, "0 ");
                                 }
 #endif
@@ -749,13 +671,11 @@ dspError_t CFragment::Process(uint8 * pubWaveBfr)
                         //  continue to the next zero crossing.
                         for (m_dwWaveCrossing++; m_dwWaveCrossing <= m_dwFltrPeakIndex; m_dwWaveCrossing++)
                             if ((short)(pubWaveBfr[m_dwWaveCrossing-1-m_dwWaveBlock]-128) < 0 &&
-                                    (short)(pubWaveBfr[m_dwWaveCrossing-m_dwWaveBlock]-128) >= 0)
-                            {
+                                    (short)(pubWaveBfr[m_dwWaveCrossing-m_dwWaveBlock]-128) >= 0) {
                                 break;
                             }
 
-                    }
-                    while (m_dwWaveCrossing <= m_dwFltrPeakIndex);
+                    } while (m_dwWaveCrossing <= m_dwFltrPeakIndex);
 
                     m_dwMaxRange = 0;
                     m_dwMaxRangeCrossing = 0;
@@ -770,17 +690,13 @@ dspError_t CFragment::Process(uint8 * pubWaveBfr)
             // If no zero crossings occurred in filtered waveform, truncate fragment
             // at nearest zero crossing to the left, if possible.  Otherwise truncate
             // at current position.
-            else if (m_dwWaveIndex >= m_dwWaveFragStart + (uint32)m_wMaxPitchPeriod)
-            {
+            else if (m_dwWaveIndex >= m_dwWaveFragStart + (uint32)m_wMaxPitchPeriod) {
                 m_bUnvoiced = true;
                 m_dwWaveCrossing = 0;
                 uint16 wMinFragLength;
-                if (nPitch > 0)
-                {
+                if (nPitch > 0) {
                     wMinFragLength = m_wMinPitchPeriod;
-                }
-                else
-                {
+                } else {
                     wMinFragLength = wFltrHalf;
                 }
 
@@ -788,16 +704,14 @@ dspError_t CFragment::Process(uint8 * pubWaveBfr)
                         (m_dwWaveIndex-k) > m_dwWaveFragStart + wMinFragLength;
                         k++)   //search left
                     if ((short)(pubWaveBfr[m_dwWaveIndex-k-1-m_dwWaveBlock]-128) < 0 &&
-                            (short)(pubWaveBfr[m_dwWaveIndex-k-m_dwWaveBlock]-128) >= 0)
-                    {
+                            (short)(pubWaveBfr[m_dwWaveIndex-k-m_dwWaveBlock]-128) >= 0) {
                         //zero crossing found
                         m_dwWaveCrossing = m_dwWaveIndex - k;
                         wWaveFragLen = (uint16)(m_dwWaveCrossing - m_dwWaveFragStart);
                         break;
                     }
 
-                if (!m_dwWaveCrossing)
-                {
+                if (!m_dwWaveCrossing) {
                     wWaveFragLen = (uint16)(m_dwWaveIndex - m_dwWaveFragStart);    //chop here since no zero crossing found
                 }
 
@@ -806,18 +720,14 @@ dspError_t CFragment::Process(uint8 * pubWaveBfr)
                 m_pstFragParmBfr[m_dwFragBfrIndex].nPitch = m_psPitchBfr[(m_dwWaveFragStart+wWaveFragLen-1)/
                         m_wPitchCalcIntvl-m_dwPitchBlock];
                 dwFragMagSum = 0;
-                for (uint16 i = 0; i < wWaveFragLen; i++)
-                {
+                for (uint16 i = 0; i < wWaveFragLen; i++) {
                     dwFragMagSum += (uint32)abs((short)(pubWaveBfr[m_dwWaveFragStart+i-m_dwWaveBlock]-128));
                     /***************************** DEBUG ONLY *************************************/
 #ifdef DUMP
                     fprintf(m_hWaveDump, "%d ", (short)(pubWaveBfr[m_dwWaveFragStart+i-m_dwWaveBlock]-128));
-                    if (i == 0)
-                    {
+                    if (i == 0) {
                         fprintf(m_hFragDump, "32767 ");
-                    }
-                    else
-                    {
+                    } else {
                         fprintf(m_hFragDump, "0 ");
                     }
 #endif
@@ -836,61 +746,48 @@ dspError_t CFragment::Process(uint8 * pubWaveBfr)
         }
 
         //  If voiced, set peak threshold
-        if (m_psPitchBfr[j] > 0)
-        {
+        if (m_psPitchBfr[j] > 0) {
             //  to 50% of first filtered peak in the pitch period.
-            if (!m_lFltrPeakThd && m_dwFltrPeakIndex)
-            {
+            if (!m_lFltrPeakThd && m_dwFltrPeakIndex) {
                 m_lFltrPeakThd = m_lFltrPeak>>1;
             }
         }
         //  Otherwise, do not use a threshold.
-        else
-        {
+        else {
             m_lFltrPeakThd = 0;
         }
 
         // Check if fragment parameter buffer is full.
         m_dwWaveIndex++;
-        if (m_dwFragBfrIndex == m_dwFragBfrLength)
-        {
+        if (m_dwFragBfrIndex == m_dwFragBfrLength) {
             m_dwFragBlockLength = m_dwFragBfrIndex;
             m_dwFragCount += m_dwFragBlockLength;
-            if (m_dwWaveIndex == m_dwSigLength)
-            {
-                return(DONE);
-            }
-            else
-            {
+            if (m_dwWaveIndex == m_dwSigLength) {
+                return (DONE);
+            } else {
                 m_dwFragBfrIndex = 0;
                 return (FRAG_BUFFER_FULL);
             }
         }
 
-    }
-    while (m_dwWaveIndex < m_dwSigLength);
+    } while (m_dwWaveIndex < m_dwSigLength);
 
 
 //  Append remaining fragment from last zero crossing.
     wWaveFragLen = (uint16)(m_dwSigLength - m_dwWaveFragStart);
-    if (wWaveFragLen > 1)
-    {
+    if (wWaveFragLen > 1) {
         m_pstFragParmBfr[m_dwFragBfrIndex].dwOffset = m_dwWaveFragStart;
         m_pstFragParmBfr[m_dwFragBfrIndex].wLength = wWaveFragLen;
         m_pstFragParmBfr[m_dwFragBfrIndex].nPitch = m_psPitchBfr[m_dwPitchDataLength-1-m_dwPitchBlock];
         dwFragMagSum = 0;
-        for (uint16 i = 0; i < wWaveFragLen; i++)
-        {
+        for (uint16 i = 0; i < wWaveFragLen; i++) {
             dwFragMagSum += (uint32)abs((short)(pubWaveBfr[m_dwWaveFragStart+i-m_dwWaveBlock]-128));
             /***************************** DEBUG ONLY *************************************/
 #ifdef DUMP
             fprintf(m_hWaveDump, "%d ", (short)(pubWaveBfr[m_dwWaveFragStart+i-m_dwWaveBlock]-128));
-            if (i == 0)
-            {
+            if (i == 0) {
                 fprintf(m_hFragDump, "32767 ");
-            }
-            else
-            {
+            } else {
                 fprintf(m_hFragDump, "0 ");
             }
 #endif
@@ -912,11 +809,10 @@ dspError_t CFragment::Process(uint8 * pubWaveBfr)
 #endif
     /******************************************************************************/
 
-    return(DONE);
+    return (DONE);
 }
 
-dspError_t CFragment::Process(short * psWaveBfr)
-{
+dspError_t CFragment::Process(short * psWaveBfr) {
 
 //  Set moving average filter parameters.
     uint16 wFltrLen;      // number of samples in filter window
@@ -926,13 +822,11 @@ dspError_t CFragment::Process(short * psWaveBfr)
     short * pLead,                //pointer to next sample to be included in moving sum
           *pTrail;                //pointer to oldest sample to be removed from moving sum
 
-    if (m_dwWaveIndex == 0)    //!!what if buffer too small? initialize
-    {
+    if (m_dwWaveIndex == 0) {  //!!what if buffer too small? initialize
         // initialize filter parms
         nPitch = m_psPitchBfr[0];                                              //set current pitch to smoothed pitch value
         // in pitch buffer
-        if (nPitch > 0)                                                        //if voiced,
-        {
+        if (nPitch > 0) {                                                      //if voiced,
             nPitch = (short)((nPitch + (short)(m_wPitchScaleFac>>1))/
                              (short)m_wPitchScaleFac);                               // scale and round value
             //  to nearest whole number
@@ -941,9 +835,8 @@ dspError_t CFragment::Process(short * psWaveBfr)
             //  pass fundamental,
             //  suppress even harmonics
             //  and attenuate odd
-        }
-        else wFltrLen = (uint16)((m_wSmpRate + (DEFAULT_CUTOFF>>1)) /          //otherwise, use length
-                                     DEFAULT_CUTOFF);                              // closest to default cutoff
+        } else wFltrLen = (uint16)((m_wSmpRate + (DEFAULT_CUTOFF>>1)) /        //otherwise, use length
+                                       DEFAULT_CUTOFF);                              // closest to default cutoff
 
         wFltrLen |= 1;                                                         //force length odd to ensure sample at center
         wFltrHalf = (uint16)(wFltrLen / 2);
@@ -951,8 +844,7 @@ dspError_t CFragment::Process(short * psWaveBfr)
 
         pLead = pTrail = psWaveBfr;                                            //initialize filter edge pointers
         m_lCurrSum = 0;
-        for (uint16 i = 0; i <= wFltrHalf; i++)
-        {
+        for (uint16 i = 0; i <= wFltrHalf; i++) {
             m_lCurrSum += (int32)*pLead++;    //initialize filter sum
         }
 
@@ -971,13 +863,10 @@ dspError_t CFragment::Process(short * psWaveBfr)
         fprintf(m_hFltrDump, "%ld ", (m_lCurrSum + (int32)wFltrHalf) / wFltrLen);
 #endif
         /******************************************************************************/
-    }
-    else
-    {
+    } else {
         // restore filter parms
         nPitch = m_nPrevPitch;                                                 //set current pitch to previous value
-        if (nPitch > 0)                                                        //if voiced,
-        {
+        if (nPitch > 0) {                                                      //if voiced,
             nPitch = (short)((nPitch + (short)(m_wPitchScaleFac>>1))/
                              (short)m_wPitchScaleFac);                                   // scale and round value
             //  to nearest whole number
@@ -986,9 +875,8 @@ dspError_t CFragment::Process(short * psWaveBfr)
             //  pass fundamental,
             //  suppress even harmonics
             //  and attenuate odd
-        }
-        else wFltrLen = (uint16)((m_wSmpRate + (DEFAULT_CUTOFF>>1)) /           //otherwise, use length
-                                     DEFAULT_CUTOFF);                               // closest to default cutoff
+        } else wFltrLen = (uint16)((m_wSmpRate + (DEFAULT_CUTOFF>>1)) /         //otherwise, use length
+                                       DEFAULT_CUTOFF);                               // closest to default cutoff
 
         wFltrLen |= 1;                                                          //force length odd to ensure sample at center
         wFltrHalf = (uint16)(wFltrLen / 2);
@@ -1003,21 +891,18 @@ dspError_t CFragment::Process(short * psWaveBfr)
     uint16 wWaveFragLen=0;        //length of fragment in samples
     uint32 dwFragMagSum=0;         //sum of sample magnitudes within waveform fragment
 
-    do
-    {
+    do {
         // Reload waveform buffer if sample to be requested is out of range.
-        if (m_dwWaveIndex + wFltrHalf >= m_dwWaveBlock + m_dwWaveBfrLength)
-        {
+        if (m_dwWaveIndex + wFltrHalf >= m_dwWaveBlock + m_dwWaveBfrLength) {
             m_dwWaveBlock = __min(m_dwWaveFragStart, m_dwWaveIndex - (uint32)m_wMaxFltrHalf - 1);   //!!what if < 0
-            return(WAVE_BUFFER_CALLBACK);
+            return (WAVE_BUFFER_CALLBACK);
         }
 
         // Reload pitch buffer if data value requested could be out of range.
         uint32 dwPitchIndex = (m_dwWaveIndex + m_wMaxFltrHalf) / m_wPitchCalcIntvl;
-        if (dwPitchIndex  >= m_dwPitchBlock + m_dwPitchBfrLength)
-        {
+        if (dwPitchIndex  >= m_dwPitchBlock + m_dwPitchBfrLength) {
             m_dwPitchBlock = (m_dwWaveFragStart + 1) / (uint32)m_wPitchCalcIntvl ;     //!!initialize
-            return(PITCH_BUFFER_CALLBACK);
+            return (PITCH_BUFFER_CALLBACK);
         }
         dwPitchIndex = m_dwWaveIndex / (uint32)m_wPitchCalcIntvl;     // map to current waveform same to
         // pitch calculation scale
@@ -1026,15 +911,12 @@ dspError_t CFragment::Process(short * psWaveBfr)
         m_lPrevSum = m_lCurrSum;
 
         uint32 j = dwPitchIndex - m_dwPitchBlock;
-        if (dwPitchIndex < m_dwPitchDataLength)                       //!!needed?
-        {
+        if (dwPitchIndex < m_dwPitchDataLength) {                     //!!needed?
             // Adapt filter to current pitch if pitch has changed.
             nPitch = m_psPitchBfr[j];
 
-            if (nPitch != m_nPrevPitch)                              //if pitch has changed,
-            {
-                if (nPitch > 0)                                      // if voiced,
-                {
+            if (nPitch != m_nPrevPitch) {                            //if pitch has changed,
+                if (nPitch > 0) {                                    // if voiced,
                     nPitch = (short)((nPitch + (short)(m_wPitchScaleFac>>1)) /
                                      (short)m_wPitchScaleFac);           //  scale and round to nearest
                     //  whole number
@@ -1043,8 +925,7 @@ dspError_t CFragment::Process(short * psWaveBfr)
                     //  which passes fundamental,
                     //  supresses even harmonics, and
                     //  attenuates odd harmonics
-                }
-                else
+                } else
                     wFltrLen = (uint16)((m_wSmpRate + (DEFAULT_CUTOFF>>1)) /
                                         DEFAULT_CUTOFF);              //  otherwise, use length closest
                 //  to default cutoff
@@ -1053,38 +934,29 @@ dspError_t CFragment::Process(short * psWaveBfr)
 
                 wFltrHalf = (short)(wFltrLen / 2);
 
-                if (wFltrHalf > m_wPrevFltrHalf)                     // if filter length has increased,
-                {
-                    if (m_dwWaveIndex + wFltrHalf - m_dwWaveBlock >= m_dwWaveBfrLength)   //if it will extend beyond
-                    {
+                if (wFltrHalf > m_wPrevFltrHalf) {                   // if filter length has increased,
+                    if (m_dwWaveIndex + wFltrHalf - m_dwWaveBlock >= m_dwWaveBfrLength) { //if it will extend beyond
                         // end of waveform buffer
                         m_dwWaveBlock = __min(m_dwWaveFragStart, m_dwWaveIndex - (uint32)m_wMaxFltrHalf - 1);   //!!what if < 0
-                        return(WAVE_BUFFER_CALLBACK);                                    // return for reload
+                        return (WAVE_BUFFER_CALLBACK);                                   // return for reload
                     }
 
-                    for (uint16 i = 0; i < wFltrHalf - m_wPrevFltrHalf; i++)   //update sum for
-                    {
+                    for (uint16 i = 0; i < wFltrHalf - m_wPrevFltrHalf; i++) { //update sum for
                         //expanded filter length
-                        if (m_dwWaveIndex  > (uint32)(m_wPrevFltrHalf + 1 + i))
-                        {
+                        if (m_dwWaveIndex  > (uint32)(m_wPrevFltrHalf + 1 + i)) {
                             m_lCurrSum += (int32)*--pTrail;
                         }
-                        if (m_dwWaveIndex < m_dwSigLength - (uint32)(m_wPrevFltrHalf + i))
-                        {
+                        if (m_dwWaveIndex < m_dwSigLength - (uint32)(m_wPrevFltrHalf + i)) {
                             m_lCurrSum += (int32)*pLead++;
                         }
                     }
-                }
-                else                                                 // otherwise, filter length has decreased
-                    for (uint16 i = 0; i < m_wPrevFltrHalf - wFltrHalf; i++)   //update sum for
-                    {
+                } else                                               // otherwise, filter length has decreased
+                    for (uint16 i = 0; i < m_wPrevFltrHalf - wFltrHalf; i++) { //update sum for
                         //reduced length
-                        if (m_dwWaveIndex > (uint32)(m_wPrevFltrHalf - i))
-                        {
+                        if (m_dwWaveIndex > (uint32)(m_wPrevFltrHalf - i)) {
                             m_lCurrSum -= (int32)*pTrail++;
                         }
-                        if (m_dwWaveIndex <= m_dwSigLength - (uint32)(m_wPrevFltrHalf - i))   //!!<?
-                        {
+                        if (m_dwWaveIndex <= m_dwSigLength - (uint32)(m_wPrevFltrHalf - i)) { //!!<?
                             m_lCurrSum -= (int32)*--pLead;
                         }
                     }
@@ -1100,12 +972,10 @@ dspError_t CFragment::Process(short * psWaveBfr)
         }
 
         // Update filter parameters and calculate filter output.
-        if (m_dwWaveIndex > wFltrHalf)
-        {
+        if (m_dwWaveIndex > wFltrHalf) {
             m_lCurrSum -= (int32)*pTrail++;
         }
-        if (m_dwWaveIndex < m_dwSigLength - wFltrHalf)
-        {
+        if (m_dwWaveIndex < m_dwSigLength - wFltrHalf) {
             m_lCurrSum += (int32)*pLead++;
         }
 
@@ -1119,42 +989,34 @@ dspError_t CFragment::Process(short * psWaveBfr)
         /******************************************************************************/
 #ifdef DUMP
 #define SAMPLE  8236
-        if (m_dwWaveIndex == SAMPLE)
-        {
+        if (m_dwWaveIndex == SAMPLE) {
             bool breakpoint = true;
         }
 #endif
 
         // If current sample being processed is beyond beginning of the fragment,
-        if (m_dwWaveIndex > m_dwWaveFragStart)      //!!needed?
-        {
+        if (m_dwWaveIndex > m_dwWaveFragStart) {    //!!needed?
             short nSmpValue = psWaveBfr[m_dwWaveIndex-m_dwWaveBlock];
-            if (nSmpValue >= 0)
-            {
+            if (nSmpValue >= 0) {
                 //  If negative to positive zero crossing, save location.
                 if (m_dwWaveIndex > 0 &&  //!!replace this
-                        psWaveBfr[m_dwWaveIndex-1-m_dwWaveBlock] < 0)
-                {
+                        psWaveBfr[m_dwWaveIndex-1-m_dwWaveBlock] < 0) {
                     m_dwWaveCrossing = m_dwWaveIndex;
                 }
 
                 //  Record maximum sample value.
-                if (nSmpValue > m_nMaxSmpValue)
-                {
+                if (nSmpValue > m_nMaxSmpValue) {
                     m_nMaxSmpValue = nSmpValue;
                 }
             }
 
-            else
-            {
+            else {
                 //  If positive to negative zero crossing, compute previous range of
                 //  negative to positive wave reversal.
                 if (m_dwWaveIndex > 0 &&  //!!replace this
-                        psWaveBfr[m_dwWaveIndex-1-m_dwWaveBlock] >= 0)
-                {
+                        psWaveBfr[m_dwWaveIndex-1-m_dwWaveBlock] >= 0) {
                     uint32 dwSmpRange = (uint32)((int32)m_nMaxSmpValue - (int32)m_nMinSmpValue);
-                    if (dwSmpRange > m_dwMaxRange)
-                    {
+                    if (dwSmpRange > m_dwMaxRange) {
                         //!!need to ensure transition through zero is smooth
                         m_dwMaxRange = dwSmpRange;
                         m_dwMaxRangeCrossing = m_dwWaveCrossing;
@@ -1167,26 +1029,22 @@ dspError_t CFragment::Process(short * psWaveBfr)
                 }
 
                 //  Record minimum sample value.
-                if (nSmpValue <= m_nMinSmpValue)
-                {
+                if (nSmpValue <= m_nMinSmpValue) {
                     m_nMinSmpValue = nSmpValue;
                 }
             }
 
 
-            if (lCurrFltrOut >= 0)
-            {
+            if (lCurrFltrOut >= 0) {
                 // Reset peak location and value at negative to positive zero crossing in the filtered
                 // waveform.
-                if (m_lPrevFltrOut < 0)
-                {
+                if (m_lPrevFltrOut < 0) {
                     m_dwFltrPeakIndex = 0;
                     m_lFltrPeak = 0;
                 }
 
                 // Record location and value of first positive peak if it meets or exceeds the peak threshold.
-                if (m_lPrevFltrOut >= lCurrFltrOut && m_lPrevFltrOut >= m_lFltrPeakThd)
-                {
+                if (m_lPrevFltrOut >= lCurrFltrOut && m_lPrevFltrOut >= m_lFltrPeakThd) {
                     m_dwFltrPeakIndex = m_dwWaveIndex - 1;
                     m_lFltrPeak = m_lPrevFltrOut;
                 }
@@ -1196,13 +1054,11 @@ dspError_t CFragment::Process(short * psWaveBfr)
             // and the waveform is negative.  Scanning for the beginning of the fragment under these
             // conditions ensures a strong peak has occurred and the full range from maximum negative to
             // positive, indicating a sharp reversal, has been found in the waveform.
-            if (m_dwFltrPeakIndex && m_lPrevFltrOut >= 0 && lCurrFltrOut < 0)
-            {
+            if (m_dwFltrPeakIndex && m_lPrevFltrOut >= 0 && lCurrFltrOut < 0) {
 
                 //  Update value and location of sharpest reversal.
                 uint32 dwSmpRange = (uint32)((int32)m_nMaxSmpValue - (int32)m_nMinSmpValue);
-                if (dwSmpRange > m_dwMaxRange)
-                {
+                if (dwSmpRange > m_dwMaxRange) {
                     m_dwMaxRange = dwSmpRange;
                     m_dwMaxRangeCrossing = m_dwWaveCrossing;
                 }
@@ -1211,14 +1067,12 @@ dspError_t CFragment::Process(short * psWaveBfr)
                 m_nMinSmpValue = 0;
                 m_nMaxSmpValue = 0;
 
-                if (m_dwMaxRangeCrossing)
-                {
+                if (m_dwMaxRangeCrossing) {
                     m_dwWaveCrossing = m_dwMaxRangeCrossing;
 
                     //  Search for a zero crossing which corresponds to the smooth pitch period starting
                     //  with the zero crossing which occurred during the sharpest reversal of the waveform.
-                    do
-                    {
+                    do {
                         //  Get pre-computed pitch estimate
                         short nPitchUpperBound;
                         short nSmoothPitch = m_psPitchBfr[m_dwWaveCrossing/m_wPitchCalcIntvl - m_dwPitchBlock];
@@ -1233,9 +1087,7 @@ dspError_t CFragment::Process(short * psWaveBfr)
                             //  whole number
                             nPitchUpperBound = (short)(nPitchUpperBound + (nPitchUpperBound>>2));  //set upper bound to
                             //  25% above nominal
-                        }
-                        else
-                        {
+                        } else {
                             nPitchUpperBound = DEFAULT_CUTOFF;    //otherwise limit
                         }
                         //  to default filter cutoff
@@ -1244,16 +1096,12 @@ dspError_t CFragment::Process(short * psWaveBfr)
                         //  is less than or equal to 125% of nominal smooth pitch at zero crossing.
                         wWaveFragLen = (uint16)(m_dwWaveCrossing - m_dwWaveFragStart);                                        //!!Len to Length
                         short nFragPitch = (short)((m_wSmpRate + (wWaveFragLen>>1))/wWaveFragLen);
-                        if (nFragPitch <= nPitchUpperBound)
-                        {
+                        if (nFragPitch <= nPitchUpperBound) {
                             m_lFltrPeakThd = 0;
 
-                            if (nSmoothPitch > 0)
-                            {
+                            if (nSmoothPitch > 0) {
                                 m_bUnvoiced = false;
-                            }
-                            else
-                            {
+                            } else {
                                 m_bUnvoiced = true;
                             }
 
@@ -1261,18 +1109,14 @@ dspError_t CFragment::Process(short * psWaveBfr)
                             m_pstFragParmBfr[m_dwFragBfrIndex].wLength = wWaveFragLen;
                             m_pstFragParmBfr[m_dwFragBfrIndex].nPitch = nSmoothPitch;
                             dwFragMagSum = 0;
-                            for (uint16 i = 0; i < wWaveFragLen; i++)
-                            {
+                            for (uint16 i = 0; i < wWaveFragLen; i++) {
                                 dwFragMagSum += (uint32)abs(psWaveBfr[m_dwWaveFragStart+(uint32)i-m_dwWaveBlock]);
                                 /***************************** DEBUG ONLY *************************************/
 #ifdef DUMP
                                 fprintf(m_hWaveDump, "%d ", psWaveBfr[m_dwWaveFragStart+i-m_dwWaveBlock]);
-                                if (i == 0)
-                                {
+                                if (i == 0) {
                                     fprintf(m_hFragDump, "32767 ");
-                                }
-                                else
-                                {
+                                } else {
                                     fprintf(m_hFragDump, "0 ");
                                 }
 #endif
@@ -1292,13 +1136,11 @@ dspError_t CFragment::Process(short * psWaveBfr)
                         //  continue to the next zero crossing.
                         for (m_dwWaveCrossing++; m_dwWaveCrossing <= m_dwFltrPeakIndex; m_dwWaveCrossing++)
                             if (psWaveBfr[m_dwWaveCrossing-1-m_dwWaveBlock] < 0 &&
-                                    psWaveBfr[m_dwWaveCrossing-m_dwWaveBlock] >= 0)
-                            {
+                                    psWaveBfr[m_dwWaveCrossing-m_dwWaveBlock] >= 0) {
                                 break;
                             }
 
-                    }
-                    while (m_dwWaveCrossing <= m_dwFltrPeakIndex);
+                    } while (m_dwWaveCrossing <= m_dwFltrPeakIndex);
 
                     m_dwMaxRange = 0;
                     m_dwMaxRangeCrossing = 0;
@@ -1313,17 +1155,13 @@ dspError_t CFragment::Process(short * psWaveBfr)
             // If no zero crossings occurred in filtered waveform, truncate fragment
             // at nearest zero crossing to the left, if possible.  Otherwise truncate
             // at current position.
-            else if (m_dwWaveIndex >= m_dwWaveFragStart + (uint32)m_wMaxPitchPeriod)
-            {
+            else if (m_dwWaveIndex >= m_dwWaveFragStart + (uint32)m_wMaxPitchPeriod) {
                 m_bUnvoiced = true;
                 m_dwWaveCrossing = 0;
                 uint16 wMinFragLength;
-                if (nPitch > 0)
-                {
+                if (nPitch > 0) {
                     wMinFragLength = m_wMinPitchPeriod;
-                }
-                else
-                {
+                } else {
                     wMinFragLength = wFltrHalf;
                 }
 
@@ -1331,16 +1169,14 @@ dspError_t CFragment::Process(short * psWaveBfr)
                         (m_dwWaveIndex-k) > m_dwWaveFragStart + wMinFragLength;
                         k++)   //search left
                     if (psWaveBfr[m_dwWaveIndex-k-1-m_dwWaveBlock] < 0 &&
-                            psWaveBfr[m_dwWaveIndex-k-m_dwWaveBlock] >= 0)
-                    {
+                            psWaveBfr[m_dwWaveIndex-k-m_dwWaveBlock] >= 0) {
                         //zero crossing found
                         m_dwWaveCrossing = m_dwWaveIndex - k;
                         wWaveFragLen = (uint16)(m_dwWaveCrossing - m_dwWaveFragStart);
                         break;
                     }
 
-                if (!m_dwWaveCrossing)
-                {
+                if (!m_dwWaveCrossing) {
                     wWaveFragLen = (uint16)(m_dwWaveIndex - m_dwWaveFragStart);    //chop here since no zero crossing found
                 }
 
@@ -1349,18 +1185,14 @@ dspError_t CFragment::Process(short * psWaveBfr)
                 m_pstFragParmBfr[m_dwFragBfrIndex].nPitch = m_psPitchBfr[(m_dwWaveFragStart+wWaveFragLen-1)/
                         m_wPitchCalcIntvl-m_dwPitchBlock];
                 dwFragMagSum = 0;
-                for (uint16 i = 0; i < wWaveFragLen; i++)
-                {
+                for (uint16 i = 0; i < wWaveFragLen; i++) {
                     dwFragMagSum += (uint32)abs(psWaveBfr[m_dwWaveFragStart+i-m_dwWaveBlock]);
                     /***************************** DEBUG ONLY *************************************/
 #ifdef DUMP
                     fprintf(m_hWaveDump, "%d ", psWaveBfr[m_dwWaveFragStart+i-m_dwWaveBlock]);
-                    if (i == 0)
-                    {
+                    if (i == 0) {
                         fprintf(m_hFragDump, "32767 ");
-                    }
-                    else
-                    {
+                    } else {
                         fprintf(m_hFragDump, "0 ");
                     }
 #endif
@@ -1379,69 +1211,55 @@ dspError_t CFragment::Process(short * psWaveBfr)
         }
 
         //  If voiced, set peak threshold
-        if (m_psPitchBfr[j] > 0)
-        {
+        if (m_psPitchBfr[j] > 0) {
             //  to 50% of first filtered peak in the pitch period.
-            if (!m_lFltrPeakThd && m_dwFltrPeakIndex)
-            {
+            if (!m_lFltrPeakThd && m_dwFltrPeakIndex) {
                 m_lFltrPeakThd = m_lFltrPeak>>1;
             }
         }
         //  Otherwise, do not use a threshold.
-        else
-        {
+        else {
             m_lFltrPeakThd = 0;
         }
 
         // Check if fragment parameter buffer is full.
         m_dwWaveIndex++;
-        if (m_dwFragBfrIndex == m_dwFragBfrLength)
-        {
+        if (m_dwFragBfrIndex == m_dwFragBfrLength) {
             m_dwFragBlockLength = m_dwFragBfrIndex;
             m_dwFragCount += m_dwFragBlockLength;
-            if (m_dwWaveIndex == m_dwSigLength)
-            {
-                return(DONE);
-            }
-            else
-            {
+            if (m_dwWaveIndex == m_dwSigLength) {
+                return (DONE);
+            } else {
                 m_dwFragBfrIndex = 0;
                 return (FRAG_BUFFER_FULL);
             }
         }
 
-    }
-    while (m_dwWaveIndex < m_dwSigLength);
+    } while (m_dwWaveIndex < m_dwSigLength);
 
 
 //  Append remaining fragment from last zero crossing.
     wWaveFragLen = (uint16)(m_dwSigLength - m_dwWaveFragStart);
-    if (wWaveFragLen > 1)
-    {
+    if (wWaveFragLen > 1) {
         m_pstFragParmBfr[m_dwFragBfrIndex].dwOffset = m_dwWaveFragStart;
         m_pstFragParmBfr[m_dwFragBfrIndex].wLength = wWaveFragLen;
         m_pstFragParmBfr[m_dwFragBfrIndex].nPitch = m_psPitchBfr[m_dwPitchDataLength-1-m_dwPitchBlock];
         dwFragMagSum = 0;
-        for (uint16 i = 0; i < wWaveFragLen; i++)
-        {
+        for (uint16 i = 0; i < wWaveFragLen; i++) {
             dwFragMagSum += (uint32)abs(psWaveBfr[m_dwWaveFragStart+i-m_dwWaveBlock]);
             /***************************** DEBUG ONLY *************************************/
 #ifdef DUMP
             fprintf(m_hWaveDump, "%d ", psWaveBfr[m_dwWaveFragStart+i-m_dwWaveBlock]);
-            if (i == 0)
-            {
+            if (i == 0) {
                 fprintf(m_hFragDump, "32767 ");
-            }
-            else
-            {
+            } else {
                 fprintf(m_hFragDump, "0 ");
             }
 #endif
             /******************************************************************************/
 
         }
-        m_pstFragParmBfr[m_dwFragBfrIndex++].wAvgMag = (uint16)((dwFragMagSum + (uint32)(wWaveFragLen>>1)) /
-                wWaveFragLen);
+        m_pstFragParmBfr[m_dwFragBfrIndex++].wAvgMag = (uint16)((dwFragMagSum + (uint32)(wWaveFragLen>>1)) / wWaveFragLen);
         m_dwFragBlockLength = m_dwFragBfrIndex;
         m_dwFragCount += m_dwFragBlockLength;
     }
@@ -1455,23 +1273,19 @@ dspError_t CFragment::Process(short * psWaveBfr)
 #endif
     /******************************************************************************/
 
-    return(DONE);
+    return (DONE);
 }
 
-uint32 CFragment::GetWaveBlockIndex()
-{
+uint32 CFragment::GetWaveBlockIndex() {
     return m_dwWaveBlock;
 }
-uint32 CFragment::GetPitchBlockIndex()
-{
+uint32 CFragment::GetPitchBlockIndex() {
     return m_dwPitchBlock;
 }
-uint32 CFragment::GetFragmentBlockLength()
-{
+uint32 CFragment::GetFragmentBlockLength() {
     return m_dwFragBlockLength;
 }
-uint32 CFragment::GetFragmentCount()
-{
+uint32 CFragment::GetFragmentCount() {
     return m_dwFragCount;
 }
 

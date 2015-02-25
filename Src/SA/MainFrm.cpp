@@ -664,15 +664,20 @@ void CMainFrame::OnInitMenu(CMenu * pMenu) {
 // button.
 /***************************************************************************/
 void CMainFrame::OnToolsOptions() {
-    if (GetCurrSaView() != NULL) {
+    
+	if (GetCurrSaView() != NULL) {
+
         // set property sheet caption
         CSaString szCaption;
         szCaption.LoadString(IDS_DLGTITLE_TOOLSOPTIO); // load caption string
-        // create property sheet object
+        
+		// create property sheet object
         CDlgToolsOptions dlg( szCaption, NULL, true);
-        // get pointer to active view and document
+        
+		// get pointer to active view and document
         CSaView * pView = (CSaView *)GetCurrSaView();
-        // setup initial dialog values
+        
+		// setup initial dialog values
         dlg.m_dlgViewPage.m_nCaptionStyle = m_nCaptionStyle; // DDO - 08/07/00
         dlg.m_dlgViewPage.m_bStatusbar = m_bStatusBar;       // setup check boxes
         dlg.m_dlgViewPage.m_nPosMode = m_nStatusPosReadout;
@@ -704,7 +709,7 @@ void CMainFrame::OnToolsOptions() {
 
         // create the modal dialog box
         if (dlg.DoModal() == IDOK) {       // OK button pressed
-            SetToolSettings(dlg.GetSettings(),true);
+            SetToolSettings(dlg.GetSettings(true),true);
             SendMessage(WM_USER_APPLY_TOOLSOPTIONS, 0, 0);    // do apply changes
         }
     } else {
@@ -717,7 +722,7 @@ void CMainFrame::OnToolsOptions() {
 
         // create the modal dialog box
         if (dlg.DoModal() == IDOK) {       // OK button pressed
-            SetToolSettings(dlg.GetSettings(),false);
+            SetToolSettings(dlg.GetSettings(false), false);
             SendMessage(WM_USER_APPLY_TOOLSOPTIONS, 0, 0);    // do apply changes
         }
     }
@@ -761,6 +766,7 @@ void CMainFrame::SendMessageToMDIDescendants(UINT message, WPARAM wParam, LPARAM
 // changes and sends the necessary messages.
 /***************************************************************************/
 LRESULT CMainFrame::OnApplyToolsOptions(WPARAM, LPARAM) {
+
     // apply to statusbar
     if (toolSettings.m_bStatusbar != m_bStatusBar) {
         SendMessage(WM_COMMAND, ID_VIEW_STATUS_BAR, 0); // change statusbar status

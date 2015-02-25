@@ -7,8 +7,7 @@
 #include "IProcess.h"
 #include "Process.h"
 
-class CProcessIIRFilter : public CProcess
-{
+class CProcessIIRFilter : public CProcess {
 public:
     CProcessIIRFilter(BOOL bDstWBench = TRUE);
     virtual ~CProcessIIRFilter();
@@ -31,16 +30,15 @@ protected:
     IProcess * m_pSourceProcess;
 
 private:
-    enum
-    {
+    enum {
         DEFAULT_FILTER_FILTER_SILENCE_SAMPLES = 4096
     };
 
     void SetFilterFilter(bool bSet);
     static int round(double value);
     int ReadSourceData(DWORD dwDataPos, int wSmpSize, ISaDoc * pDoc);
-	long ProcessForward( ISaDoc * pDoc, IProcess * pLowerProcess, int & nProgress, int & nLevel);
-	long ProcessReverse( void * pCaller, ISaDoc * pDoc, int & nProgress, int & nLevel);
+    long ProcessForward(ISaDoc * pDoc, IProcess * pLowerProcess, int & nProgress, int & nLevel);
+    long ProcessReverse(void * pCaller, ISaDoc * pDoc, int & nProgress, int & nLevel);
 };
 
 #endif

@@ -1,18 +1,51 @@
 #include "Stdafx.h"
 #include "ToolSettings.h"
 
-CToolSettings::CToolSettings()
-{
+CToolSettings::CToolSettings() {
+    // view page
+    m_bStatusbar = FALSE;
+    m_bToolbar = FALSE;
+    m_bScrollZoom = FALSE;
+    m_nCaptionStyle = 0;
+    m_bXGrid = FALSE;
+    m_bYGrid = FALSE;
+    m_nXStyleIndex = 0;
+    m_nYStyleIndex = 0;
+    m_nCursorAlignment = 0;
+    m_nPitchMode = 0;
+    m_nPosMode = 0;
+    m_bToneAbove = FALSE;
+    m_nGraphUpdateMode = 0;
+    m_bAnimate = FALSE;
+    m_nAnimationRate = 0;
+    m_bTaskbar = FALSE;
+    m_nDlgXStyle = 0;
+    m_nDlgYStyle = 0;
+
+    // color page
+    m_bColorsChanged = FALSE;  // TRUE, if colors changed by user
+    m_nGraphSelect = 0;
+    m_nAnnotationSelect = 0;
+    m_nScaleSelect = 0;
+    m_nOverlaySelect = 0;
+
+    //font page
+    m_bFontChanged = FALSE;            // TRUE, if fonts changed by user
+    m_bUseUnicodeEncoding = FALSE;     // Experimental....
+
+    // save page
+    m_saveOpenFiles = FALSE;           // tdg - 09/03/97
+    m_showStartupDlg = FALSE;          // DDO - 08/03/00
+
+    // audio page
+    m_bShowAdvancedAudio = FALSE;
 }
 
-CToolSettings::CToolSettings(const CToolSettings & right)
-{
+CToolSettings::CToolSettings(const CToolSettings & right) {
     *this = right;
 }
 
-CToolSettings & CToolSettings::operator=(const CToolSettings & right)
-{
-
+CToolSettings & CToolSettings::operator=(const CToolSettings & right) {
     // view page
     m_bStatusbar = right.m_bStatusbar;
     m_bToolbar = right.m_bToolbar;
@@ -44,13 +77,11 @@ CToolSettings & CToolSettings::operator=(const CToolSettings & right)
     //font page
     m_bFontChanged = right.m_bFontChanged;
     m_GraphFonts.RemoveAll();
-    for (int i=0; i<right.m_GraphFonts.GetCount(); i++)
-    {
+    for (int i=0; i<right.m_GraphFonts.GetCount(); i++) {
         m_GraphFonts.Add(right.m_GraphFonts.GetAt(i));
     }
     m_GraphFontSizes.RemoveAll();
-    for (int i=0; i<right.m_GraphFontSizes.GetCount(); i++)
-    {
+    for (int i=0; i<right.m_GraphFontSizes.GetCount(); i++) {
         m_GraphFontSizes.Add(right.m_GraphFontSizes.GetAt(i));
     }
     m_bUseUnicodeEncoding = right.m_bUseUnicodeEncoding;

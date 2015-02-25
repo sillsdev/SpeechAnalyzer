@@ -6334,6 +6334,7 @@ CProcessSDP * CSaDoc::GetSDP(int nIndex) {
 
 
 void CSaDoc::OnToolsAdjustInvert() {
+
     m_pProcessAdjust->SetInvert(!m_pProcessAdjust->GetInvert());
     InvalidateAllProcesses();
     WorkbenchProcess();

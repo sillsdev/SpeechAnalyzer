@@ -1308,7 +1308,7 @@ void CDlgToolsOptions::OnApplyNow()
     GetActivePage()->UpdateData(TRUE); // retrieve data
 
     CMainFrame * pMainWnd = (CMainFrame *)AfxGetMainWnd();
-    pMainWnd->SetToolSettings(GetSettings(),fullView);
+    pMainWnd->SetToolSettings( GetSettings( fullView),fullView);
     AfxGetMainWnd()->SendMessage(WM_USER_APPLY_TOOLSOPTIONS, 0, 0);
     GetActivePage()->SetModified(FALSE);
     SendMessage(PSM_CANCELTOCLOSE, 0, 0L);
@@ -1344,59 +1344,61 @@ void CDlgToolsOptions::OnHelpToolsOptions()
     ::HtmlHelp(NULL, szPath, HH_DISPLAY_TOPIC, NULL);
 }
 
-CToolSettings CDlgToolsOptions::GetSettings()
+CToolSettings CDlgToolsOptions::GetSettings( bool full)
 {
     // view page
     CToolSettings settings;
-    settings.m_bStatusbar = m_dlgViewPage.m_bStatusbar;
-    settings.m_bToolbar = m_dlgViewPage.m_bToolbar;
-    settings.m_bScrollZoom = m_dlgViewPage.m_bScrollZoom;
-    settings.m_nCaptionStyle = m_dlgViewPage.m_nCaptionStyle;
-    settings.m_bXGrid = m_dlgViewPage.m_bXGrid;
-    settings.m_bYGrid = m_dlgViewPage.m_bYGrid;
-    settings.m_nXStyleIndex = m_dlgViewPage.m_nXStyleIndex;
-    settings.m_nYStyleIndex = m_dlgViewPage.m_nYStyleIndex;
-    settings.m_nCursorAlignment = m_dlgViewPage.m_nCursorAlignment;
-    settings.m_nPitchMode = m_dlgViewPage.m_nPitchMode;
-    settings.m_nPosMode = m_dlgViewPage.m_nPosMode;
-    settings.m_bToneAbove = m_dlgViewPage.m_bToneAbove;
-    settings.m_nGraphUpdateMode = m_dlgViewPage.m_nGraphUpdateMode;
-    settings.m_bAnimate = m_dlgViewPage.m_bAnimate;
-    settings.m_nAnimationRate = m_dlgViewPage.m_nAnimationRate;
-    settings.m_bTaskbar = m_dlgViewPage.m_bTaskbar;
-    settings.m_nDlgXStyle = m_dlgViewPage.IndexToStyle[m_dlgViewPage.m_nXStyleIndex];
-    settings.m_nDlgYStyle = m_dlgViewPage.IndexToStyle[m_dlgViewPage.m_nYStyleIndex];
+	if (full) {
+		settings.m_bStatusbar = m_dlgViewPage.m_bStatusbar;
+		settings.m_bToolbar = m_dlgViewPage.m_bToolbar;
+		settings.m_bScrollZoom = m_dlgViewPage.m_bScrollZoom;
+		settings.m_nCaptionStyle = m_dlgViewPage.m_nCaptionStyle;
+		settings.m_bXGrid = m_dlgViewPage.m_bXGrid;
+		settings.m_bYGrid = m_dlgViewPage.m_bYGrid;
+		settings.m_nXStyleIndex = m_dlgViewPage.m_nXStyleIndex;
+		settings.m_nYStyleIndex = m_dlgViewPage.m_nYStyleIndex;
+		settings.m_nCursorAlignment = m_dlgViewPage.m_nCursorAlignment;
+		settings.m_nPitchMode = m_dlgViewPage.m_nPitchMode;
+		settings.m_nPosMode = m_dlgViewPage.m_nPosMode;
+		settings.m_bToneAbove = m_dlgViewPage.m_bToneAbove;
+		settings.m_nGraphUpdateMode = m_dlgViewPage.m_nGraphUpdateMode;
+		settings.m_bAnimate = m_dlgViewPage.m_bAnimate;
+		settings.m_nAnimationRate = m_dlgViewPage.m_nAnimationRate;
+		settings.m_bTaskbar = m_dlgViewPage.m_bTaskbar;
+		settings.m_nDlgXStyle = m_dlgViewPage.IndexToStyle[m_dlgViewPage.m_nXStyleIndex];
+		settings.m_nDlgYStyle = m_dlgViewPage.IndexToStyle[m_dlgViewPage.m_nYStyleIndex];
 
 
-    // color page
-    settings.m_bColorsChanged = m_dlgColorPage.m_bColorsChanged;
-    settings.m_cColors = m_dlgColorPage.m_cColors;
-    settings.m_nGraphSelect = m_dlgColorPage.m_nGraphSelect;
-    settings.m_nAnnotationSelect = m_dlgColorPage.m_nAnnotationSelect;
-    settings.m_nScaleSelect = m_dlgColorPage.m_nScaleSelect;
-    settings.m_nOverlaySelect = m_dlgColorPage.m_nOverlaySelect;
+		// color page
+		settings.m_bColorsChanged = m_dlgColorPage.m_bColorsChanged;
+		settings.m_cColors = m_dlgColorPage.m_cColors;
+		settings.m_nGraphSelect = m_dlgColorPage.m_nGraphSelect;
+		settings.m_nAnnotationSelect = m_dlgColorPage.m_nAnnotationSelect;
+		settings.m_nScaleSelect = m_dlgColorPage.m_nScaleSelect;
+		settings.m_nOverlaySelect = m_dlgColorPage.m_nOverlaySelect;
 
-    //font page
-    settings.m_bFontChanged = m_dlgFontPage.m_bFontChanged;
-    settings.m_GraphFonts.RemoveAll();
-    for (int i=0; i<m_dlgFontPage.m_GraphFonts.GetCount(); i++)
-    {
-        settings.m_GraphFonts.Add(m_dlgFontPage.m_GraphFonts.GetAt(i));
-    }
-    settings.m_GraphFontSizes.RemoveAll();
-    for (int i=0; i<m_dlgFontPage.m_GraphFontSizes.GetCount(); i++)
-    {
-        settings.m_GraphFontSizes.Add(m_dlgFontPage.m_GraphFontSizes.GetAt(i));
-    }
-    settings.m_bUseUnicodeEncoding = m_dlgFontPage.m_bUseUnicodeEncoding;
+		//font page
+		settings.m_bFontChanged = m_dlgFontPage.m_bFontChanged;
+		settings.m_GraphFonts.RemoveAll();
+		for (int i=0; i<m_dlgFontPage.m_GraphFonts.GetCount(); i++)
+		{
+			settings.m_GraphFonts.Add(m_dlgFontPage.m_GraphFonts.GetAt(i));
+		}
+		settings.m_GraphFontSizes.RemoveAll();
+		for (int i=0; i<m_dlgFontPage.m_GraphFontSizes.GetCount(); i++)
+		{
+			settings.m_GraphFontSizes.Add(m_dlgFontPage.m_GraphFontSizes.GetAt(i));
+		}
+		settings.m_bUseUnicodeEncoding = m_dlgFontPage.m_bUseUnicodeEncoding;
 
-    // save page
-    settings.m_saveOpenFiles = m_dlgSavePage.m_saveOpenFiles;
-    settings.m_showStartupDlg = m_dlgSavePage.m_showStartupDlg;
-    settings.m_szPermGraphs = m_dlgSavePage.m_szPermGraphs;
-    settings.m_szTempGraphs = m_dlgSavePage.m_szTempGraphs;
-    settings.m_szPermCurrLabel = m_dlgSavePage.m_szPermCurrLabel;
-    settings.m_szTempCurrLabel = m_dlgSavePage.m_szTempCurrLabel;
+		// save page
+		settings.m_saveOpenFiles = m_dlgSavePage.m_saveOpenFiles;
+		settings.m_showStartupDlg = m_dlgSavePage.m_showStartupDlg;
+		settings.m_szPermGraphs = m_dlgSavePage.m_szPermGraphs;
+		settings.m_szTempGraphs = m_dlgSavePage.m_szTempGraphs;
+		settings.m_szPermCurrLabel = m_dlgSavePage.m_szPermCurrLabel;
+		settings.m_szTempCurrLabel = m_dlgSavePage.m_szTempCurrLabel;
+	}
 
     // audio page
     settings.m_bShowAdvancedAudio = m_dlgAudioPage.m_bShowAdvancedAudio;

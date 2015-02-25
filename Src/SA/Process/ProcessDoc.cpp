@@ -18,18 +18,15 @@
 static char BASED_CODE THIS_FILE[] = __FILE__;
 #endif
 
-CProcessDoc::CProcessDoc()
-{
+CProcessDoc::CProcessDoc() {
 
     m_dwBufferOffset = UNDEFINED_OFFSET;    // buffer undefined, force buffer reload
 }
 
-CProcessDoc::~CProcessDoc()
-{
+CProcessDoc::~CProcessDoc() {
 }
 
-long CProcessDoc::Process(void * /*pCaller*/, ISaDoc * /*pDoc*/, int /*nProgress*/, int nLevel)
-{
+long CProcessDoc::Process(void * /*pCaller*/, ISaDoc * /*pDoc*/, int /*nProgress*/, int nLevel) {
     return MAKELONG(nLevel, 100);
 }
 
@@ -44,35 +41,29 @@ long CProcessDoc::Process(void * /*pCaller*/, ISaDoc * /*pDoc*/, int /*nProgress
 // buffer, and only the actual pointer to the data block will be returned.
 // The data offset contains a byte index.
 /***************************************************************************/
-HPSTR CProcessDoc::GetProcessedWaveData( LPCTSTR szName, int selectedChannel, int numChannels, int sampleSize, DWORD dwOffset, BOOL bBlockBegin)
-{
-    if (wcslen(szName)==0)
-    {
+HPSTR CProcessDoc::GetProcessedWaveData(LPCTSTR szName, int selectedChannel, int numChannels, int sampleSize, DWORD dwOffset, BOOL bBlockBegin) {
+    
+	if (wcslen(szName)==0) {
         return NULL;
     }
 
-    if (dwOffset == UNDEFINED_OFFSET)
-    {
+    if (dwOffset == UNDEFINED_OFFSET) {
         m_dwBufferOffset = UNDEFINED_OFFSET;
         return NULL;
     }
 
     //TRACE(L"GetProcessedWaveData %s %d %d %d %d %d %d %d\n", szName, selectedChannel, numChannels, sampleSize, dwOffset, bBlockBegin,m_dwBufferOffset,_countof(m_Buffer));
     if (((!bBlockBegin) && ((dwOffset >= m_dwBufferOffset) && (dwOffset < m_dwBufferOffset + _countof(m_Buffer)))) ||
-         ((bBlockBegin) && (m_dwBufferOffset == dwOffset)))
-    {
+            ((bBlockBegin) && (m_dwBufferOffset == dwOffset))) {
         // this data is actually in buffer
         // return pointer to data
         return m_Buffer;
     }
 
     // new data block has to be read
-    if (bBlockBegin)
-    {
+    if (bBlockBegin) {
         m_dwBufferOffset = dwOffset;                                        // given offset 1st first sample in data block
-    }
-    else
-    {
+    } else {
         m_dwBufferOffset = dwOffset - (dwOffset % _countof(m_Buffer));      // new block offset
     }
 
@@ -82,24 +73,19 @@ HPSTR CProcessDoc::GetProcessedWaveData( LPCTSTR szName, int selectedChannel, in
 
     CFile file;
     // open the temporary file
-    if (!file.Open(szName, CFile::modeRead | CFile::shareExclusive, NULL))
-    {
+    if (!file.Open(szName, CFile::modeRead | CFile::shareExclusive, NULL)) {
         // error opening file
         pApp->ErrorMessage(IDS_ERROR_OPENTEMPFILE, szName);
         return NULL;
     }
 
     // find the right position in the data
-    if (m_dwBufferOffset != 0L)
-    {
-        try
-        {
+    if (m_dwBufferOffset != 0L) {
+        try {
             DWORD index = m_dwBufferOffset*numChannels;
             //TRACE("seek %d\n",index);
             file.Seek(index, CFile::begin);
-        }
-        catch (CFileException e)
-        {
+        } catch (CFileException e) {
             // error seeking file
             pApp->ErrorMessage(IDS_ERROR_READTEMPFILE, szName);
             m_dwBufferOffset = UNDEFINED_OFFSET;
@@ -113,13 +99,10 @@ HPSTR CProcessDoc::GetProcessedWaveData( LPCTSTR szName, int selectedChannel, in
     memset(buffer,0,size);
     ASSERT(sampleSize<3);
 
-    try
-    {
+    try {
         UINT bytesRead = file.Read(buffer, size);
-        LoadBuffer( buffer, size, sampleSize, selectedChannel, numChannels, bytesRead);
-    }
-    catch (CFileException e)
-    {
+        LoadBuffer(buffer, size, sampleSize, selectedChannel, numChannels, bytesRead);
+    } catch (CFileException e) {
         delete [] buffer;
         // error reading file
         pApp->ErrorMessage(IDS_ERROR_READTEMPFILE, szName);
@@ -139,11 +122,9 @@ HPSTR CProcessDoc::GetProcessedWaveData( LPCTSTR szName, int selectedChannel, in
 // CProcess::GetProcessedObject returns a pointer to requested data object
 // uses data buffer to optimize requests
 /***************************************************************************/
-void * CProcessDoc::GetProcessedObject(LPCTSTR szName, int selectedChannel, int numChannels, int sampleSize, DWORD dwIndex, size_t sObjectSize, BOOL bReverse)
-{
+void * CProcessDoc::GetProcessedObject(LPCTSTR szName, int selectedChannel, int numChannels, int sampleSize, DWORD dwIndex, size_t sObjectSize, BOOL bReverse) {
 
-    if (dwIndex == UNDEFINED_OFFSET)
-    {
+    if (dwIndex == UNDEFINED_OFFSET) {
         m_dwBufferOffset = UNDEFINED_OFFSET;
         return NULL;
     }
@@ -156,19 +137,18 @@ void * CProcessDoc::GetProcessedObject(LPCTSTR szName, int selectedChannel, int 
 // CProcess::GetProcessedDataBlock returns a pointer to requested data object
 // uses data buffer to optimize requests
 /***************************************************************************/
-void * CProcessDoc::GetProcessedDataBlock(LPCTSTR szName, int selectedChannel, int numChannels, int sampleSize, DWORD dwByteOffset, size_t sObjectSize, BOOL bReverse)
-{
+void * CProcessDoc::GetProcessedDataBlock( LPCTSTR szName, int selectedChannel, int numChannels, int sampleSize, DWORD dwByteOffset, size_t sObjectSize, BOOL bReverse) {
+    
 	//TRACE("read %d %d %d %d %d\n",dwByteOffset,m_dwBufferOffset,sObjectSize,_countof(m_Buffer),bReverse);
     //TRACE(L"GetProcessedDataBlock %s\n",szName);
 
-    if (dwByteOffset == UNDEFINED_OFFSET)
-    {
+    if (dwByteOffset == UNDEFINED_OFFSET) {
         m_dwBufferOffset = UNDEFINED_OFFSET;
         return NULL;
     }
 
-    if ((dwByteOffset >= m_dwBufferOffset) && ((dwByteOffset+sObjectSize) < (m_dwBufferOffset + _countof(m_Buffer))))
-    {
+    if ((dwByteOffset >= m_dwBufferOffset) && 
+		((dwByteOffset+sObjectSize) <= (m_dwBufferOffset + _countof(m_Buffer)))) {
         // this data is actually in buffer
         // return pointer to data
         return &m_Buffer[dwByteOffset - m_dwBufferOffset];
@@ -176,17 +156,13 @@ void * CProcessDoc::GetProcessedDataBlock(LPCTSTR szName, int selectedChannel, i
 
     // new data block has to be read
     m_dwBufferOffset = dwByteOffset; // given offset is the first sample in data block
-    if (bReverse)
-    {
+    if (bReverse) {
         // since we are traversing the file in reverse
         // load buffer so that object is biased to end of buffer
         m_dwBufferOffset = dwByteOffset + sObjectSize;
-        if (m_dwBufferOffset > _countof(m_Buffer))
-        {
+        if (m_dwBufferOffset > _countof(m_Buffer)) {
             m_dwBufferOffset -= _countof(m_Buffer);
-        }
-        else
-        {
+        } else {
             m_dwBufferOffset = 0;
         }
     }
@@ -194,22 +170,18 @@ void * CProcessDoc::GetProcessedDataBlock(LPCTSTR szName, int selectedChannel, i
     CSaApp * pApp = (CSaApp *) AfxGetApp();
 
     CFile file;
-    if (!file.Open(szName, CFile::modeRead | CFile::shareExclusive, NULL))
-    {
+    if (!file.Open(szName, CFile::modeRead | CFile::shareExclusive, NULL)) {
         // error opening file
         pApp->ErrorMessage(IDS_ERROR_OPENTEMPFILE, szName);
         return NULL;
     }
 
     // find the right position in the data
-    if (m_dwBufferOffset != 0L)
-    {
-        try
-        {
-            file.Seek(m_dwBufferOffset, CFile::begin);
-        }
-        catch (...)
-        {
+    if (m_dwBufferOffset != 0L) {
+        try {
+			size_t seek = m_dwBufferOffset*numChannels;
+            file.Seek(seek, CFile::begin);
+        } catch (...) {
             // error seeking file
             pApp->ErrorMessage(IDS_ERROR_READTEMPFILE, szName);
             m_dwBufferOffset = UNDEFINED_OFFSET;
@@ -224,13 +196,10 @@ void * CProcessDoc::GetProcessedDataBlock(LPCTSTR szName, int selectedChannel, i
     ASSERT(sampleSize<3);
 
     // read the processed data block
-    try
-    {
-        UINT bytesRead = file.Read( buffer, size);
+    try {
+        UINT bytesRead = file.Read(buffer, size);
         LoadBuffer(buffer, size, sampleSize, selectedChannel, numChannels, bytesRead);
-    }
-    catch (...)
-    {
+    } catch (...) {
         delete [] buffer;
         // error reading file
         pApp->ErrorMessage(IDS_ERROR_READTEMPFILE, szName);
@@ -245,34 +214,28 @@ void * CProcessDoc::GetProcessedDataBlock(LPCTSTR szName, int selectedChannel, i
     return &m_Buffer[dwByteOffset - m_dwBufferOffset]; // return pointer to data
 }
 
-void CProcessDoc::LoadBuffer( char * buffer, size_t /*size*/, int sampleSize, int selectedChannel, int numChannels, UINT bytesRead)
-{
-    if (sampleSize==1)
-    {
+void CProcessDoc::LoadBuffer(char * buffer, size_t /*size*/, int sampleSize, int selectedChannel, int numChannels, UINT bytesRead) {
+    if (sampleSize==1) {
         char * src = buffer;
         char * dest = m_Buffer;
         // 8 bit processing
         int index = selectedChannel;
         int write = 0;
         UINT i = 0;
-        while (i<bytesRead)
-        {
+        while (i<bytesRead) {
             dest[write++] = src[index];
             index += numChannels;
             i += numChannels;
         }
-    }
-    else
-    {
+    } else {
         // 16 bit processing
-        unsigned short * src = (unsigned short *)buffer;
-        unsigned short * dest = (unsigned short *)m_Buffer;
+        WORD * src = (WORD *)buffer;
+        WORD * dest = (WORD *)m_Buffer;
         // 8 bit processing
         int index = selectedChannel;
         int write = 0;
         UINT i = 0;
-        while (i<bytesRead)
-        {
+        while (i<bytesRead) {
             dest[write++] = src[index];
             index += numChannels;
             i += (numChannels*sampleSize);
@@ -280,28 +243,23 @@ void CProcessDoc::LoadBuffer( char * buffer, size_t /*size*/, int sampleSize, in
     }
 }
 
-DWORD CProcessDoc::GetNumSamples(ISaDoc * pDoc) const
-{
+DWORD CProcessDoc::GetNumSamples(ISaDoc * pDoc) const {
     return pDoc->GetNumSamples();
 }
 
-DWORD CProcessDoc::GetProcessedWaveDataSize(ISaDoc * pDoc)
-{
+DWORD CProcessDoc::GetProcessedWaveDataSize(ISaDoc * pDoc) {
     return pDoc->GetDataSize();
 }
 
-DWORD CProcessDoc::GetProcessBufferIndex(size_t nSize)
-{
+DWORD CProcessDoc::GetProcessBufferIndex(size_t nSize) {
     // return index to process buffer
     return (m_dwBufferOffset >= 0x40000000) ? UNDEFINED_OFFSET : m_dwBufferOffset/nSize;
 }
 
-DWORD CProcessDoc::GetBufferSize()
-{
+DWORD CProcessDoc::GetBufferSize() {
     return _countof(m_Buffer);
 }
 
-void CProcessDoc::SetDataInvalid()
-{
+void CProcessDoc::SetDataInvalid() {
     m_dwBufferOffset = UNDEFINED_OFFSET;
 }

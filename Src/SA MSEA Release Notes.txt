@@ -1,3 +1,9 @@
+SA - 3.1.0.118 2/16/2015
+-Fixed crash that occurs when using tools-options dialog box before any document is opened.  Crash occurs when existing dialog.
+-Fixed crash that occurs when loading user document 44khz-1minute/10second.  Divide by zero was causing crash.
+-Fixed errors that occur when using Invert and Normalize functions on stereo data.
+-Modified application to use and deploy VS2010 Microsoft Visual C++ Runtime libraries.
+
 SA - 3.1.0.117 2/12/2015
 -Fixed autosave timer problem.  Timer was not starting until document menu was initialized.
 -Modified application so that settings directory is automatically created if it does not exist.

@@ -22,8 +22,7 @@ static char BASED_CODE THIS_FILE[] = __FILE__;
 /***************************************************************************/
 // CProcessFragments::CProcessFragments Constructor
 /***************************************************************************/
-CProcessFragments::CProcessFragments()
-{
+CProcessFragments::CProcessFragments() {
     m_pFragmenter = NULL;
     m_dwFragmentIndex = 0;
     m_dwFragmentCount = 0;
@@ -34,10 +33,8 @@ CProcessFragments::CProcessFragments()
 /***************************************************************************/
 // CProcessFragments::~CProcessFragments Destructor
 /***************************************************************************/
-CProcessFragments::~CProcessFragments()
-{
-    if (m_pFragmenter!=NULL)
-    {
+CProcessFragments::~CProcessFragments() {
+    if (m_pFragmenter!=NULL) {
         delete m_pFragmenter;
         m_pFragmenter = NULL;
     }
@@ -59,35 +56,28 @@ CProcessFragments::~CProcessFragments()
 // value and the end process progress percentage in the higher word.
 /***************************************************************************/
 long CProcessFragments::Process(void * pCaller, ISaDoc * pDoc, int nProgress,
-                                int nLevel)
-{
+                                int nLevel) {
     //TRACE(_T("Process: CProcessFragments\n"));
-    if (IsCanceled())
-    {
+    if (IsCanceled()) {
         return MAKELONG(PROCESS_CANCELED, nProgress);    // process canceled
     }
-    if (IsDataReady())
-    {
+    if (IsDataReady()) {
         return MAKELONG(--nLevel, nProgress);    // data is already ready
     }
 
     BOOL bBackground = pDoc->IsBackgroundProcessing();
-    if (!bBackground)
-    {
+    if (!bBackground) {
         BeginWaitCursor();    // wait cursor
     }
 
     // generate pitch contour
     CProcessGrappl * pAutoPitch = pDoc->GetGrappl();
     short int nResult = LOWORD(pAutoPitch->Process(this, pDoc)); // process data
-    if (nResult == PROCESS_ERROR || nResult == PROCESS_NO_DATA || (nResult == PROCESS_CANCELED))
-    {
-        if ((nResult == PROCESS_CANCELED))
-        {
+    if (nResult == PROCESS_ERROR || nResult == PROCESS_NO_DATA || (nResult == PROCESS_CANCELED)) {
+        if ((nResult == PROCESS_CANCELED)) {
             CancelProcess();    // set your own cancel flag
         }
-        if (!bBackground)
-        {
+        if (!bBackground) {
             EndWaitCursor();
         }
         return MAKELONG(nResult, nProgress);
@@ -95,13 +85,11 @@ long CProcessFragments::Process(void * pCaller, ISaDoc * pDoc, int nProgress,
     DWORD dwOldPitchBlock = pAutoPitch->GetProcessBufferIndex();  // save current pitch buffer block offset
 
     // start processing fragments
-    if (!(bBackground ? StartProcess(pCaller, IDS_STATTXT_BACKGNDFRA) : StartProcess(pCaller, IDS_STATTXT_PROCESSFRA)))   
-    {
-		// memory allocation failed
-		// end data processing
-        EndProcess(); 
-        if (!bBackground)
-        {
+    if (!(bBackground ? StartProcess(pCaller, IDS_STATTXT_BACKGNDFRA) : StartProcess(pCaller, IDS_STATTXT_PROCESSFRA))) {
+        // memory allocation failed
+        // end data processing
+        EndProcess();
+        if (!bBackground) {
             EndWaitCursor();
         }
         return MAKELONG(PROCESS_ERROR, nProgress);
@@ -114,20 +102,16 @@ long CProcessFragments::Process(void * pCaller, ISaDoc * pDoc, int nProgress,
     DWORD dwOldWaveBlock = pDoc->GetWaveBufferIndex();
 
     // if file has not been created
-    if (!GetProcessFileName()[0])
-    {
-        if (m_pFragmenter!=NULL)
-        {
+    if (!GetProcessFileName()[0]) {
+        if (m_pFragmenter!=NULL) {
             delete m_pFragmenter;
             m_pFragmenter = NULL;
         }
         // create the temporary fragment file
-        if (!CreateTempFile(_T("FRA")))   // creating error
-        {
+        if (!CreateTempFile(_T("FRA"))) { // creating error
             EndProcess(); // end data processing
             SetDataInvalid();
-            if (!bBackground)
-            {
+            if (!bBackground) {
                 EndWaitCursor();
             }
             return MAKELONG(PROCESS_ERROR, nProgress);
@@ -154,14 +138,11 @@ long CProcessFragments::Process(void * pCaller, ISaDoc * pDoc, int nProgress,
         DWORD dwWaveBufferLen;
         SSigParms SigParm;
         SigParm.SmpRate = pDoc->GetSamplesPerSec();
-        if (wSmpSize == 1)
-        {
+        if (wSmpSize == 1) {
             SigParm.SmpDataFmt = PCM_UBYTE;
             SigParm.Length = pDoc->GetDataSize();
             dwWaveBufferLen = GetBufferSize();
-        }
-        else
-        {
+        } else {
             SigParm.SmpDataFmt = PCM_2SSHORT;
             SigParm.Length = pDoc->GetDataSize() / 2;
             dwWaveBufferLen = GetBufferSize() / 2;
@@ -173,31 +154,24 @@ long CProcessFragments::Process(void * pCaller, ISaDoc * pDoc, int nProgress,
 
 
         // construct fragmenter
-        dspError_t Err = CFragment::CreateObject( &m_pFragmenter, pFragParmBuffer, dwFragBufferLen, SigParm, pWaveBuffer, dwWaveBufferLen, CPitchParm, pPitchBuffer, dwPitchBufferLen);
-        if (Err)
-        {
+        dspError_t Err = CFragment::CreateObject(&m_pFragmenter, pFragParmBuffer, dwFragBufferLen, SigParm, pWaveBuffer, dwWaveBufferLen, CPitchParm, pPitchBuffer, dwPitchBufferLen);
+        if (Err) {
             EndProcess(); // end data processing
             SetDataInvalid();
-            if (!bBackground)
-            {
+            if (!bBackground) {
                 EndWaitCursor();
             }
             return MAKELONG(PROCESS_ERROR, nProgress);
         }
 
-    }
-    else
-    {
+    } else {
         // open file to append data
-        if (!OpenFileToAppend())
-        {
+        if (!OpenFileToAppend()) {
             EndProcess(); // end data processing
-            if (!bBackground)
-            {
+            if (!bBackground) {
                 EndWaitCursor();
             }
-            if (m_pFragmenter!=NULL)
-            {
+            if (m_pFragmenter!=NULL) {
                 delete m_pFragmenter;
                 m_pFragmenter = NULL;
             }
@@ -211,48 +185,39 @@ long CProcessFragments::Process(void * pCaller, ISaDoc * pDoc, int nProgress,
 
     // fragment waveform
     dspError_t lStatus;
-    do
-    {
+    do {
         lStatus = m_pFragmenter->Fragment();
-        switch (lStatus)
-        {
+        switch (lStatus) {
         case WAVE_BUFFER_CALLBACK:
             // reload waveform buffer
             m_dwWaveIndex = m_pFragmenter->GetWaveBlockIndex();
-            if (!bBackground)
-            {
+            if (!bBackground) {
                 pDoc->GetWaveData(m_dwWaveIndex * wSmpSize, TRUE);
             }
             break;
         case PITCH_BUFFER_CALLBACK:
             // reload pitch buffer
             m_dwPitchIndex = m_pFragmenter->GetPitchBlockIndex();
-            if (!bBackground)
-            {
+            if (!bBackground) {
                 pAutoPitch->GetProcessedData(m_dwPitchIndex, TRUE);    //!!check byte offset
             }
             break;
         case FRAG_BUFFER_FULL:
         case DONE:
             // write the processed data block
-            try
-            {
+            try {
                 Write(m_lpBuffer, m_pFragmenter->GetFragmentBlockLength() * sizeof(SFragParms));
-            }
-            catch (CFileException e)
-            {
+            } catch (CFileException e) {
                 // error writing file
                 ErrorMessage(IDS_ERROR_WRITETEMPFILE, GetProcessFileName());
                 return Exit(PROCESS_ERROR); // error, writing failed
             }
             break;
         }
-        if (bBackground)
-        {
+        if (bBackground) {
             break;
         }
-    }
-    while (lStatus != DONE);
+    } while (lStatus != DONE);
 
 
     // calculate the actual progress
@@ -260,8 +225,7 @@ long CProcessFragments::Process(void * pCaller, ISaDoc * pDoc, int nProgress,
     EndProcess((nProgress >= 95)); // end data processing
 
     // restore wave and pitch blocks
-    if (dwOldWaveBlock != UNDEFINED_OFFSET)
-    {
+    if (dwOldWaveBlock != UNDEFINED_OFFSET) {
         pDoc->GetWaveData(dwOldWaveBlock, TRUE);
     }
     pAutoPitch->GetProcessedData(dwOldPitchBlock, TRUE);
@@ -271,28 +235,23 @@ long CProcessFragments::Process(void * pCaller, ISaDoc * pDoc, int nProgress,
 
     // check for end of fragmetation
     m_dwFragmentCount = m_pFragmenter->GetFragmentCount();
-    if (lStatus == DONE)
-    {
+    if (lStatus == DONE) {
         m_dwFragmentIndex = (m_dwFragmentCount - 1) / 2;  // initialize for GetFragmentIndex() binary search
-		if (m_pFragmenter!=NULL) 
-		{
-			delete m_pFragmenter;
-			m_pFragmenter = NULL;
-		}
+        if (m_pFragmenter!=NULL) {
+            delete m_pFragmenter;
+            m_pFragmenter = NULL;
+        }
         SetDataReady();
-        if (GetDataSize() == 0)
-        {
+        if (GetDataSize() == 0) {
             return Exit(PROCESS_ERROR);    // error, not enough data
         }
         pDoc->NotifyFragmentDone(this);
     }
 
     // if foreground processing and data is not ready, return a process error
-    if (!bBackground)
-    {
+    if (!bBackground) {
         EndWaitCursor();
-        if (!IsDataReady())
-        {
+        if (!IsDataReady()) {
             SetDataInvalid(); // delete the temporary file
             return MAKELONG(PROCESS_ERROR, 100);
         }
@@ -306,8 +265,7 @@ long CProcessFragments::Process(void * pCaller, ISaDoc * pDoc, int nProgress,
 // CProcessFragments::GetBufferLength Retrieves buffer fragment parm capacity
 // Returns the number of fragment parameter structures the buffer can contain.
 /***************************************************************************/
-ULONG CProcessFragments::GetBufferLength()
-{
+ULONG CProcessFragments::GetBufferLength() {
     return GetProcessBufferSize() / sizeof(SFragParms);
 }
 
@@ -316,8 +274,7 @@ ULONG CProcessFragments::GetBufferLength()
 // CProcessFragments::GetFragmentBlock Loads buffer with block of fragment
 // parms starting at specified index.
 /***************************************************************************/
-SFragParms * CProcessFragments::GetFragmentBlock(ULONG dwFragmentIndex)
-{
+SFragParms * CProcessFragments::GetFragmentBlock(ULONG dwFragmentIndex) {
     return (SFragParms *)GetProcessedWaveData(dwFragmentIndex*sizeof(SFragParms), TRUE);
 }
 
@@ -326,8 +283,7 @@ SFragParms * CProcessFragments::GetFragmentBlock(ULONG dwFragmentIndex)
 // CProcessFragments::GetFragmentParms Returns reference to fragment parms
 // at specified index.
 /***************************************************************************/
-const SFragParms & CProcessFragments::GetFragmentParms(ULONG dwFragmentIndex)
-{
+const SFragParms & CProcessFragments::GetFragmentParms(ULONG dwFragmentIndex) {
     return *(SFragParms *) GetProcessedObject(dwFragmentIndex,sizeof(SFragParms));
 }
 
@@ -335,8 +291,7 @@ const SFragParms & CProcessFragments::GetFragmentParms(ULONG dwFragmentIndex)
 // CProcessFragments::GetFragmentIndex Returns index of fragment containing
 // sample at waveform index.
 /***************************************************************************/
-ULONG CProcessFragments::GetFragmentIndex(ULONG dwWaveIndex)
-{
+ULONG CProcessFragments::GetFragmentIndex(ULONG dwWaveIndex) {
 
     // Set bounds for binary search.
     ULONG dwMaxSearchIndex = m_dwFragmentCount - 1;
@@ -345,42 +300,31 @@ ULONG CProcessFragments::GetFragmentIndex(ULONG dwWaveIndex)
     // But first check to see if current fragment or adjacent fragments contain the waveform sample.
     // This is the fastest method if cursor is being dragged across fragments.
     SFragParms stFragment = GetFragmentParms(m_dwFragmentIndex);
-    if (dwWaveIndex >= stFragment.dwOffset)
-    {
-        if (dwWaveIndex < stFragment.dwOffset + stFragment.wLength)
-        {
+    if (dwWaveIndex >= stFragment.dwOffset) {
+        if (dwWaveIndex < stFragment.dwOffset + stFragment.wLength) {
             return m_dwFragmentIndex;
         }
-        if (m_dwFragmentIndex + 1 >= m_dwFragmentCount)
-        {
+        if (m_dwFragmentIndex + 1 >= m_dwFragmentCount) {
             return UNDEFINED_OFFSET;
         }
         dwMinSearchIndex = m_dwFragmentIndex++;
-    }
-    else
-    {
-        if (m_dwFragmentIndex == 0)
-        {
+    } else {
+        if (m_dwFragmentIndex == 0) {
             return UNDEFINED_OFFSET;
         }
         dwMaxSearchIndex = m_dwFragmentIndex--;
     }
 
     // Otherwise resort to a binary search.
-    while (dwMinSearchIndex < dwMaxSearchIndex)   // true as long as dwWaveIndex within range spanned by fragments
-    {
+    while (dwMinSearchIndex < dwMaxSearchIndex) { // true as long as dwWaveIndex within range spanned by fragments
         SFragParms stFragment = GetFragmentParms(m_dwFragmentIndex);
-        if (dwWaveIndex >= stFragment.dwOffset)
-        {
-            if (dwWaveIndex < stFragment.dwOffset + stFragment.wLength)
-            {
+        if (dwWaveIndex >= stFragment.dwOffset) {
+            if (dwWaveIndex < stFragment.dwOffset + stFragment.wLength) {
                 return m_dwFragmentIndex;
             }
             dwMinSearchIndex = m_dwFragmentIndex;   // previous fragment index becomes lower end of search range
             m_dwFragmentIndex = (dwMaxSearchIndex + dwMinSearchIndex + 1) / 2;   // go half the range, rounding up if necessary
-        }
-        else
-        {
+        } else {
             dwMaxSearchIndex = m_dwFragmentIndex;   // previous fragment index becomes upper end of search range
             m_dwFragmentIndex = (dwMaxSearchIndex + dwMinSearchIndex) / 2;  // go half the range, rounding down if necessary
         }
@@ -389,7 +333,6 @@ ULONG CProcessFragments::GetFragmentIndex(ULONG dwWaveIndex)
     return UNDEFINED_OFFSET;
 }
 
-ULONG CProcessFragments::GetFragmentCount()
-{
+ULONG CProcessFragments::GetFragmentCount() {
     return m_dwFragmentCount;
 }

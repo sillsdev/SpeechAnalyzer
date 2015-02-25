@@ -43,7 +43,7 @@
     <OutDir>.\..\..\..\Output\Debug\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <OutDir>.\..\..\Output\Release\</OutDir>
+    <OutDir>.\..\..\..\Output\Release\</OutDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -68,14 +68,14 @@
       <WarningLevel>Level4</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32_LEAN_AND_MEAN;WIN32;_DEBUG;WINVER=0x0501;WINDOWS_PLATFORM;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>../waveutils;../saexe;../ElanUtils;../LiftUtils;../XMLUtils;$(GTEST_HOME)/include;$(XERCES_VC10_HOME)/include;</AdditionalIncludeDirectories>
-      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <AdditionalIncludeDirectories>..\..\waveutils;..\..\fileutils;..\..\saexe;..\..\ElanUtils;..\..\LiftUtils;..\..\XMLUtils;$(GTEST_HOME)/include;$(XERCES_VC10_HOME)/include</AdditionalIncludeDirectories>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>.\..\..\Output\Release;$(GTEST_HOME)\build\Release;$(XERCES_VC10_HOME)\lib</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(OutDir);$(GTEST_HOME)\build\Release;$(XERCES_VC10_HOME)\lib</AdditionalLibraryDirectories>
       <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>

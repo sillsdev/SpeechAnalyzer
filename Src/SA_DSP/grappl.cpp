@@ -1451,6 +1451,8 @@ static  int16  select_continuous(pGrappl work,int16 this16,int16 mid16,
         return(false);
     }
 
+	/* protect against divide-by-zero */
+	if ((this16+mid16)==0) return (false);
     /* then check % change from previous */
     change_pc10=(int16)((this16-mid16)*2000L/(this16+mid16));
     if (change_pc10 < 0)
